@@ -3429,11 +3429,6 @@
     "description": "API error when the bulk migration of user accounts to SAML authentication fails; admin-facing."
   },
   {
-    "id": "api.no_license",
-    "translation": "E10 or E20 license required to use this endpoint.",
-    "description": "API error when an endpoint requires a paid license; 'E10' and 'E20' are legacy Mattermost license tier names."
-  },
-  {
     "id": "api.oauth.allow_oauth.pkce_required_public.app_error",
     "translation": "PKCE (Proof Key for Code Exchange) is required for public OAuth clients using authorization code flow.",
     "description": "OAuth authorization error shown to developers/users when a public OAuth client omits PKCE; keep 'PKCE' and the parenthetical expansion technical."
@@ -5493,56 +5488,6 @@
     "id": "api.unmarshal_error",
     "translation": "Failed to unmarshal.",
     "description": "Generic technical error when the server fails to parse JSON data; 'unmarshal' is a deserialization term, developer-facing."
-  },
-  {
-    "id": "api.upgrade_to_enterprise.already-done.app_error",
-    "translation": "You have already upgraded to Mattermost Enterprise Edition. Please restart the server to finish the upgrade.",
-    "description": "API error in the in-product upgrade flow when the Enterprise Edition binary was already downloaded and only a server restart is pending; admin-facing."
-  },
-  {
-    "id": "api.upgrade_to_enterprise.already-enterprise.app_error",
-    "translation": "You cannot upgrade because you are already running Mattermost Enterprise Edition.",
-    "description": "API error when an admin triggers the in-product upgrade but the server is already running Enterprise Edition."
-  },
-  {
-    "id": "api.upgrade_to_enterprise.app_error",
-    "translation": "An upgrade to Mattermost Enterprise Edition is already running.",
-    "description": "API error when an admin triggers the in-product Enterprise Edition upgrade while another upgrade is already in progress."
-  },
-  {
-    "id": "api.upgrade_to_enterprise.generic_error.app_error",
-    "translation": "Mattermost was unable to upgrade to Enterprise Edition.",
-    "description": "Generic API error when the in-product upgrade to Mattermost Enterprise Edition fails; admin-facing."
-  },
-  {
-    "id": "api.upgrade_to_enterprise.invalid-permission.app_error",
-    "translation": "Mattermost was unable to upgrade to Enterprise Edition. The Mattermost system user {{.MattermostUsername}} does not have write access to the necessary binary file. A system administrator can update the file permissions by executing the following command on the server where Mattermost is installed:\n\n```\nchmod +w \"{{.Path}}\"\n```\n\nAfter changing the file permissions, try to upgrade Mattermost again. When you have upgraded and restarted, remember to restore the original binary file permissions:\n\n```\nchmod -w \"{{.Path}}\"\n```",
-    "description": "Long admin-facing error for the in-product Enterprise upgrade when the server binary is not writable; {{.MattermostUsername}} is the OS account running Mattermost, {{.Path}} is the binary file path, and the fenced blocks contain literal shell commands that must not be translated."
-  },
-  {
-    "id": "api.upgrade_to_enterprise.invalid-user-and-permission.app_error",
-    "translation": "Mattermost was unable to upgrade to Enterprise Edition. The Mattermost system user {{.MattermostUsername}} does not have write access to the necessary binary file. A system administrator can update the file permissions by executing the following command on the server where Mattermost is installed:\n\n```\nchown {{.MattermostUsername}} \"{{.Path}}\"\nchmod +w \"{{.Path}}\"\n```\n\nAfter changing the file permissions, try to upgrade Mattermost again. When you have upgraded and restarted, remember to restore the original binary file permissions:\n\n```\nchown {{.FileUsername}} \"{{.Path}}\"\nchmod -w \"{{.Path}}\"\n```",
-    "description": "Long admin-facing error for the in-product Enterprise upgrade when both file owner and permissions block writing the binary; {{.MattermostUsername}} and {{.FileUsername}} are OS account names, {{.Path}} is the binary path, and the fenced shell commands must not be translated."
-  },
-  {
-    "id": "api.upgrade_to_enterprise.invalid-user.app_error",
-    "translation": "Mattermost was unable to upgrade to Enterprise Edition. The Mattermost system user {{.MattermostUsername}} does not have write access to the necessary binary file. A system administrator can update the file permissions by executing the following command on the server where Mattermost is installed:\n\n```\nchown {{.MattermostUsername}} \"{{.Path}}\"\n```\n\nAfter changing the file permissions, try to upgrade Mattermost again. When you have upgraded and restarted, remember to restore the original binary file permissions:\n\n```\nchown {{.FileUsername}} \"{{.Path}}\"\n```",
-    "description": "Long admin-facing error for the in-product Enterprise upgrade when the binary file is owned by a different OS user; {{.MattermostUsername}} and {{.FileUsername}} are OS account names, {{.Path}} is the binary path, and the fenced shell commands must not be translated."
-  },
-  {
-    "id": "api.upgrade_to_enterprise.system_not_supported.app_error",
-    "translation": "Mattermost was unable to upgrade to Enterprise Edition. This feature will only work on Linux systems with x86-64 architecture.",
-    "description": "API error when the in-product Enterprise Edition upgrade is attempted on an unsupported platform; only Linux x86-64 is supported."
-  },
-  {
-    "id": "api.upgrade_to_enterprise_status.app_error",
-    "translation": "Mattermost was unable to upgrade to Enterprise Edition.",
-    "description": "API error reported when checking the status of an in-product Enterprise Edition upgrade shows it failed; admin-facing."
-  },
-  {
-    "id": "api.upgrade_to_enterprise_status.signature.app_error",
-    "translation": "Mattermost was unable to upgrade to Enterprise Edition. The digital signature of the downloaded binary file could not be verified.",
-    "description": "API error when the digital signature of the downloaded Enterprise Edition binary cannot be verified during the in-product upgrade; admin-facing."
   },
   {
     "id": "api.upload.create.check_directory.app_error",
