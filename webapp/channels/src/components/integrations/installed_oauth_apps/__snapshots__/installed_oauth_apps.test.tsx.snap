@@ -57,7 +57,7 @@ exports[`components/integrations/InstalledOAuthApps should match snapshot 1`] = 
       >
         OAuth 2.0 applications
       </a>
-       to securely integrate bots and third-party apps with Mattermost. Visit the 
+       to securely integrate bots and third-party apps with Antimatter. Visit the 
       <a
         href="https://mattermost.com/marketplace/?utm_source=mattermost&utm_medium=in-product&utm_content=installed_oauth_apps&uid=currentUserId&sid=&edition=team&server_version="
         location="installed_oauth_apps"
@@ -402,7 +402,7 @@ exports[`components/integrations/InstalledOAuthApps should match snapshot for Ap
       >
         OAuth 2.0 applications
       </a>
-       to securely integrate bots and third-party apps with Mattermost. Visit the 
+       to securely integrate bots and third-party apps with Antimatter. Visit the 
       <a
         href="https://mattermost.com/marketplace/?utm_source=mattermost&utm_medium=in-product&utm_content=installed_oauth_apps&uid=currentUserId&sid=&edition=team&server_version="
         location="installed_oauth_apps"

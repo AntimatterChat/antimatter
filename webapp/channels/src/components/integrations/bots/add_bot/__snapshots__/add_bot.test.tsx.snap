@@ -221,7 +221,7 @@ exports[`components/integrations/bots/AddBot blank 1`] = `
             <div
               class="form__help"
             >
-              Bot will have access to post to all Mattermost channels including direct messages.
+              Bot will have access to post to all Antimatter channels including direct messages.
             </div>
           </div>
         </div>
@@ -253,7 +253,7 @@ exports[`components/integrations/bots/AddBot blank 1`] = `
             <div
               class="form__help"
             >
-              Bot will have access to post to all Mattermost public channels.
+              Bot will have access to post to all Antimatter public channels.
             </div>
           </div>
         </div>

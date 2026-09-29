@@ -37,7 +37,7 @@ exports[`components/integrations/ConfirmIntegration should match snapshot, comma
         Setup Successful
       </h4>
       <p>
-        Your slash command is set up. The following token will be sent in the outgoing payload. Please use it to verify the request came from your Mattermost team (details at 
+        Your slash command is set up. The following token will be sent in the outgoing payload. Please use it to verify the request came from your Antimatter team (details at 
         <a
           href="https://mattermost.com/pl/setup-custom-slash-commands?utm_source=mattermost&utm_medium=in-product&utm_content=confirm_integration&uid=currentUserId&sid=&edition=team&server_version="
           location="confirm_integration"
@@ -298,7 +298,7 @@ exports[`components/integrations/ConfirmIntegration should match snapshot, outgo
         Setup Successful
       </h4>
       <p>
-        Your outgoing webhook is set up. The following token will be sent in the outgoing payload. Please use it to verify that the request came from your Mattermost team (details at 
+        Your outgoing webhook is set up. The following token will be sent in the outgoing payload. Please use it to verify that the request came from your Antimatter team (details at 
         <a
           href="https://mattermost.com/pl/setup-outgoing-webhooks?utm_source=mattermost&utm_medium=in-product&utm_content=confirm_integration&uid=currentUserId&sid=&edition=team&server_version="
           location="confirm_integration"

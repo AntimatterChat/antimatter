@@ -75,7 +75,7 @@ exports[`components/integrations/AbstractOAuthApp should match snapshot 1`] = `
             <div
               class="form__help"
             >
-              If true, the OAuth 2.0 application is considered trusted by the Mattermost server and does not require the user to accept authorization. If false, a window opens to ask the user to accept or deny the authorization.
+              If true, the OAuth 2.0 application is considered trusted by the Antimatter server and does not require the user to accept authorization. If false, a window opens to ask the user to accept or deny the authorization.
             </div>
           </div>
         </div>
@@ -354,7 +354,7 @@ exports[`components/integrations/AbstractOAuthApp should match snapshot, display
             <div
               class="form__help"
             >
-              If true, the OAuth 2.0 application is considered trusted by the Mattermost server and does not require the user to accept authorization. If false, a window opens to ask the user to accept or deny the authorization.
+              If true, the OAuth 2.0 application is considered trusted by the Antimatter server and does not require the user to accept authorization. If false, a window opens to ask the user to accept or deny the authorization.
             </div>
           </div>
         </div>
