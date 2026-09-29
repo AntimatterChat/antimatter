@@ -2123,38 +2123,6 @@
     "defaultMessage": "Note:",
     "description": "Default bold heading of a note/warning banner in the System Console, prepended before the banner's description text."
   },
-  "admin.billing.subscription.cloudReverseTrial.daysLeftOnTrial": {
-    "defaultMessage": "{daysLeftOnTrial} days left on your trial. Purchase a plan or contact sales to keep your workspace.",
-    "description": "Announcement banner during a Cloud trial; {daysLeftOnTrial} is the number of days remaining."
-  },
-  "admin.billing.subscription.cloudReverseTrial.lastDay": {
-    "defaultMessage": "This is the last day of your trial. Purchase a plan before {userEndTrialHour} or contact sales",
-    "description": "Announcement banner on the final day of a Cloud trial; {userEndTrialHour} is the time the trial ends in the user's timezone."
-  },
-  "admin.billing.subscription.cloudReverseTrial.subscribeButton": {
-    "defaultMessage": "Review your options",
-    "description": "Button in the Cloud trial announcement banner leading to purchase/plan options."
-  },
-  "admin.billing.subscription.cloudTrial.daysLeft": {
-    "defaultMessage": "Your trial has started! There are {daysLeftOnTrial} days left",
-    "description": "Announcement banner shown after a Cloud trial starts; {daysLeftOnTrial} is the number of days remaining."
-  },
-  "admin.billing.subscription.cloudTrial.subscribeButton": {
-    "defaultMessage": "Upgrade Now",
-    "description": "Button in the Cloud trial announcement banner that starts the paid plan upgrade flow."
-  },
-  "admin.billing.subscription.creditCardExpired": {
-    "defaultMessage": "Your credit card has expired. Update your payment information to avoid disruption.",
-    "description": "Announcement banner for Cloud admins when the subscription's credit card has expired."
-  },
-  "admin.billing.subscription.mostRecentPaymentFailed": {
-    "defaultMessage": "Your most recent payment failed",
-    "description": "Announcement banner for Cloud admins when the latest subscription payment failed."
-  },
-  "admin.billing.subscription.updatePaymentInfo": {
-    "defaultMessage": "Update Payment Information",
-    "description": "Link/button in the billing announcement banner that opens the payment information page."
-  },
   "admin.board_attributes.add_attribute": {
     "defaultMessage": "Add attribute",
     "description": "Link-style button under the Boards attributes table in the System Console; adds a new attribute row."
@@ -7738,10 +7706,6 @@
   "admin.ldap.usernameAttrTitle": {
     "defaultMessage": "Username Attribute:",
     "description": "Field label on the AD/LDAP settings page for the LDAP attribute mapped to username; ends with a colon."
-  },
-  "admin.license.trialCard.contactSales": {
-    "defaultMessage": "Contact Sales",
-    "description": "Button that opens the sales contact flow; used on the trial license card, workspace limits panel, and announcement banner."
   },
   "admin.lockTeammateNameDisplay": {
     "defaultMessage": "Lock Teammate Name Display for all users: ",
@@ -15679,14 +15643,6 @@
     "defaultMessage": "Activated users on this server",
     "description": "Tooltip title for the Total Activated Users statistic on the System Console statistics page."
   },
-  "announcement_bar.cloud_preview.contact_sales": {
-    "defaultMessage": "Contact sales",
-    "description": "Button in the announcement banner shown in Mattermost Cloud preview environments; opens a contact-sales page."
-  },
-  "announcement_bar.cloud_preview.message": {
-    "defaultMessage": "This is your Mattermost preview environment. Time left: {timeLeft}",
-    "description": "Text of the announcement banner in Cloud preview environments; {timeLeft} is the remaining preview duration (e.g. '2 hours')."
-  },
   "announcement_bar.error.email_verification_required": {
     "defaultMessage": "Check your email inbox to verify the address.",
     "description": "Text in the announcement bar at the top of the app prompting the user to verify their email address."
@@ -15707,10 +15663,6 @@
     "defaultMessage": "Preview Mode: Email notifications have not been configured.",
     "description": "Announcement banner shown when the server runs in preview mode without SMTP/email notifications configured."
   },
-  "announcement_bar.error.purchase_a_license_now": {
-    "defaultMessage": "Purchase a License Now",
-    "description": "Link/button in the license expiry announcement banner leading to license purchase."
-  },
   "announcement_bar.error.site_url_gitlab.full": {
     "defaultMessage": "Please configure your <linkSite>site URL</linkSite> either on the <linkConsole>System Console</linkConsole> or, if you're using GitLab Antimatter, in gitlab.rb.",
     "description": "GitLab-specific variant of the site URL announcement banner; <linkSite> and <linkConsole> wrap links, and gitlab.rb is a config file name."
@@ -15722,18 +15674,6 @@
   "announcement_bar.error.trial_license_expiring": {
     "defaultMessage": "There are {days} days left on your free trial.",
     "description": "Announcement banner during a trial license; {days} is the number of days left in the trial."
-  },
-  "announcement_bar.error.trial_license_expiring_last_day": {
-    "defaultMessage": "This is the last day of your free trial. Purchase a license now to continue using Mattermost Professional and Enterprise features.",
-    "description": "Announcement bar text shown to system admins on the final day of a free trial license."
-  },
-  "announcement_bar.error.trial_license_expiring_last_day.short": {
-    "defaultMessage": "This is the last day of your free trial.",
-    "description": "Compact variant of the last-day-of-trial announcement bar text used on narrow/mobile viewports."
-  },
-  "announcement_bar.non_production_license.message": {
-    "defaultMessage": "Non-production license. Test or staging use only.",
-    "description": "Text of the always-visible announcement bar at the top of the app when the server runs on a non-production (test/staging) license. Seen by all users, not just admins."
   },
   "announcement_bar.notification.email_verified": {
     "defaultMessage": "Email verified",
@@ -15750,10 +15690,6 @@
   "announcement_bar.warn.no_internet_connection": {
     "defaultMessage": "Looks like you do not have access to the internet.",
     "description": "Announcement banner text when the server cannot reach the internet to complete a license renewal."
-  },
-  "announcement_bar.warn.renew_license_contact_sales": {
-    "defaultMessage": "Contact sales",
-    "description": "Button in the license renewal announcement banner that opens a contact-sales page."
   },
   "announcementBar.notification.permissionNeverGrantedBar.cta": {
     "defaultMessage": "Manage notification preferences",
@@ -19107,30 +19043,6 @@
     "defaultMessage": "Your message is too long. Character count: {length}/{limit}",
     "description": "Error under the message box when a draft exceeds the maximum length; {length} is the current character count, {limit} the maximum."
   },
-  "create_post.file_limit_sticky_banner.admin_message": {
-    "defaultMessage": "New uploads will automatically archive older files. To view them again, you can delete older files or <a>upgrade to a paid plan.</a>",
-    "description": "Body of a sticky banner above the message box for system admins when the Cloud free plan's file storage limit is reached; the <a> tag wraps a link that opens the upgrade flow."
-  },
-  "create_post.file_limit_sticky_banner.admin_message_airgapped": {
-    "defaultMessage": "New uploads will automatically archive older files. To view them again, you can delete older files.",
-    "description": "Sticky banner above the message input shown to system admins on air-gapped servers when the free-plan file storage limit is reached."
-  },
-  "create_post.file_limit_sticky_banner.messageTitle": {
-    "defaultMessage": "Your free plan is limited to {storageGB} of files.",
-    "description": "Leading sentence of the sticky banner shown when file storage is full; {storageGB} is a formatted storage amount like '10GB'."
-  },
-  "create_post.file_limit_sticky_banner.non_admin_message": {
-    "defaultMessage": "New uploads will automatically archive older files. To view them again, <a>notify your admin to upgrade to a paid plan.</a>",
-    "description": "Body of the file storage limit sticky banner for non-admin users; the <a> tag wraps a link that sends an upgrade request to the admin."
-  },
-  "create_post.file_limit_sticky_banner.non_admin_message_airgapped": {
-    "defaultMessage": "New uploads will automatically archive older files. To view them again, contact your admin.",
-    "description": "Sticky banner above the message input shown to regular users on air-gapped servers when the file storage limit is reached."
-  },
-  "create_post.file_limit_sticky_banner.snooze_tooltip": {
-    "defaultMessage": "Snooze for {snoozeDays} days",
-    "description": "Tooltip on the close button of the file storage limit banner; {snoozeDays} is the number of days the banner stays hidden."
-  },
   "create_post.fileProcessing": {
     "defaultMessage": "Processing...",
     "description": "Status text on a file upload preview thumbnail while the file is still being processed after upload."
@@ -20606,10 +20518,6 @@
   "forward_post_modal.title": {
     "defaultMessage": "Forward message",
     "description": "Title of the modal for forwarding a message to another channel."
-  },
-  "free.banner.downgraded": {
-    "defaultMessage": "Your workspace now has restrictions and some data has been archived",
-    "description": "Announcement banner shown after a Cloud trial ends and the workspace is downgraded to the free plan."
   },
   "free.professional_feature.back": {
     "defaultMessage": "Back",
@@ -23023,10 +22931,6 @@
     "defaultMessage": "Your workspace user count has exceeded your licensed seat count by {seats, number} {seats, plural, one {seat} other {seats}}",
     "description": "Title of a banner shown to system admins when active users exceed licensed seats; {seats} is the number of seats over the license, with plural branches for 'seat'."
   },
-  "licensingPage.overageUsersBanner.text": {
-    "defaultMessage": "(Only visible to admins) The user count exceeds the number of licensed seats by {seats, number} {seats, plural, one {seat} other {seats}}. Purchase more seats to stay compliant.",
-    "description": "Admin-only announcement banner when active users exceed licensed seats; {seats} is the overage count with plural forms for 'seat'."
-  },
   "link_preview.hide_image_preview": {
     "defaultMessage": "Hide image preview",
     "description": "Screen-reader label for the collapse toggle on the image of a link preview under a message. Pairs with 'Show image preview'."
@@ -23814,10 +23718,6 @@
   "more_direct_channels.title": {
     "defaultMessage": "Direct Messages",
     "description": "Title of the dialog for starting a direct or group message and selecting its participants."
-  },
-  "more.details": {
-    "defaultMessage": "More details",
-    "description": "Button in the trial-ended announcement banner that opens details about the downgrade and its restrictions."
   },
   "move_thread_modal.button.cancel": {
     "defaultMessage": "Cancel",
@@ -27927,14 +27827,6 @@
     "defaultMessage": "Create Account | {siteName}",
     "description": "Browser tab/window title of the account creation page; {siteName} is the server's configured site name."
   },
-  "single_channel_guest_limit_banner.cta": {
-    "defaultMessage": "Contact sales",
-    "description": "Button in the banner shown when the workspace hits its single-channel guest limit; opens a contact-sales page."
-  },
-  "single_channel_guest_limit_banner.message": {
-    "defaultMessage": "Your workspace has reached the limit for single-channel guests",
-    "description": "Announcement banner text when the workspace has reached its limit of single-channel guest accounts."
-  },
   "single_image_view.copied_link_tooltip": {
     "defaultMessage": "Copied",
     "description": "Tooltip confirmation shown briefly after a link to an image is copied; replaces the 'Copy link' tooltip."
@@ -31311,18 +31203,6 @@
     "defaultMessage": "Training resources",
     "description": "Menu item in the help menu linking to Mattermost training materials such as the Mattermost Academy."
   },
-  "users_limits_announcement_bar.copyText": {
-    "defaultMessage": "User limits exceeded. Contact administrator with: {ErrorCode}",
-    "description": "Critical announcement banner when the server exceeds its user safety limit; {ErrorCode} is a literal error code string for the administrator."
-  },
-  "users_limits_announcement_bar.ctaText": {
-    "defaultMessage": "Learn More",
-    "description": "Button in the user-limit announcement banner linking to more information."
-  },
-  "users_limits_announcement_bar.warning.copyText": {
-    "defaultMessage": "This workspace is approaching the user limit ({activeUserCount}/{maxUsersHardLimit} users).",
-    "description": "Warning announcement banner as the workspace nears its user limit; {activeUserCount} and {maxUsersHardLimit} are user counts."
-  },
   "userSettings.adminMode.admin_mode_badge": {
     "defaultMessage": "Admin Mode",
     "description": "Badge in the Settings modal header shown when a system admin is editing another user's settings; compact space."
@@ -31543,14 +31423,6 @@
     "defaultMessage": "You're getting closer to the free {limit} message limit. <a>{callToAction}</a>",
     "description": "Cloud usage warning in the main menu as message history approaches the free limit; {limit} is a message count; <a> wraps {callToAction}."
   },
-  "workspace_limits.message_history.locked.description.admin": {
-    "defaultMessage": "Full access to message history is included in <a>paid plans</a>",
-    "description": "Description shown to admins in the banner at the top of a channel when older messages are hidden by the Cloud Free message-history limit; <a> wraps the 'paid plans' link text."
-  },
-  "workspace_limits.message_history.locked.title.admin": {
-    "defaultMessage": "Limited history is displayed",
-    "description": "Title of the banner shown to admins at the top of a channel when older messages are hidden due to the Cloud Free message-history limit."
-  },
   "workspace_limits.modals.close": {
     "defaultMessage": "Close",
     "description": "Secondary button that dismisses the cloud usage-limits modal."
@@ -31570,14 +31442,6 @@
   "workspace_limits.modals.view_plan_options": {
     "defaultMessage": "View plan options",
     "description": "Button in workspace-limit notices that opens the pricing/plan comparison modal."
-  },
-  "workspace_limits.post_history_banner.cta_button": {
-    "defaultMessage": "Restore Access",
-    "description": "Button in the message-history limit banner on Cloud free plans; leads to upgrading to restore access to older messages."
-  },
-  "workspace_limits.post_history_banner.text": {
-    "defaultMessage": "{limit, number}-message limit reached. Messages sent before {date} are hidden",
-    "description": "Announcement banner on Cloud free plans when the message history limit is reached; {limit} is the message count limit and {date} a formatted date."
   },
   "wysiwyg.link.display_text": {
     "defaultMessage": "Display text",
