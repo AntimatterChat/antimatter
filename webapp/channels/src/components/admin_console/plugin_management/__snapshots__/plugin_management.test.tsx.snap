@@ -71,7 +71,7 @@ exports[`components/PluginManagement should match snapshot 1`] = `
                   >
                     When true, enables plugins on your Antimatter server. Use plugins to integrate with third-party systems, extend functionality, or customize the user interface of your Antimatter server. See 
                     <a
-                      href="https://mattermost.com/pl/plugins?utm_source=mattermost&utm_medium=in-product&utm_content=plugin_management&uid=&sid=&edition=team&server_version="
+                      href="https://mattermost.com/pl/plugins?utm_source=mattermost&utm_medium=in-product&utm_content=plugin_management&uid=&sid=&server_version="
                       location="plugin_management"
                       rel="noopener noreferrer"
                       target="_blank"
@@ -126,7 +126,7 @@ exports[`components/PluginManagement should match snapshot 1`] = `
                   >
                     When true, uploading plugins is disabled and may only be installed through the Marketplace. Plugins are always verified during Antimatter server startup and initialization. See 
                     <a
-                      href="https://mattermost.com/pl/sign-plugins?utm_source=mattermost&utm_medium=in-product&utm_content=plugin_management&uid=&sid=&edition=team&server_version="
+                      href="https://mattermost.com/pl/sign-plugins?utm_source=mattermost&utm_medium=in-product&utm_content=plugin_management&uid=&sid=&server_version="
                       location="plugin_management"
                       rel="noopener noreferrer"
                       target="_blank"
@@ -223,7 +223,7 @@ exports[`components/PluginManagement should match snapshot 1`] = `
                   >
                     Upload a plugin for your Antimatter server. See 
                     <a
-                      href="https://mattermost.com/pl/plugins?utm_source=mattermost&utm_medium=in-product&utm_content=plugin_management&uid=&sid=&edition=team&server_version="
+                      href="https://mattermost.com/pl/plugins?utm_source=mattermost&utm_medium=in-product&utm_content=plugin_management&uid=&sid=&server_version="
                       location="plugin_management"
                       rel="noopener noreferrer"
                       target="_blank"
@@ -278,7 +278,7 @@ exports[`components/PluginManagement should match snapshot 1`] = `
                   >
                     When true, enables System Administrators to install plugins from the 
                     <a
-                      href="https://mattermost.com/pl/default-mattermost-marketplace.html?utm_source=mattermost&utm_medium=in-product&utm_content=plugin_management&uid=&sid=&edition=team&server_version="
+                      href="https://mattermost.com/pl/default-mattermost-marketplace.html?utm_source=mattermost&utm_medium=in-product&utm_content=plugin_management&uid=&sid=&server_version="
                       location="plugin_management"
                       rel="noopener noreferrer"
                       target="_blank"
@@ -484,7 +484,7 @@ exports[`components/PluginManagement should match snapshot when \`Enable Marketp
                   >
                     When true, enables plugins on your Antimatter server. Use plugins to integrate with third-party systems, extend functionality, or customize the user interface of your Antimatter server. See 
                     <a
-                      href="https://mattermost.com/pl/plugins?utm_source=mattermost&utm_medium=in-product&utm_content=plugin_management&uid=&sid=&edition=team&server_version="
+                      href="https://mattermost.com/pl/plugins?utm_source=mattermost&utm_medium=in-product&utm_content=plugin_management&uid=&sid=&server_version="
                       location="plugin_management"
                       rel="noopener noreferrer"
                       target="_blank"
@@ -539,7 +539,7 @@ exports[`components/PluginManagement should match snapshot when \`Enable Marketp
                   >
                     When true, uploading plugins is disabled and may only be installed through the Marketplace. Plugins are always verified during Antimatter server startup and initialization. See 
                     <a
-                      href="https://mattermost.com/pl/sign-plugins?utm_source=mattermost&utm_medium=in-product&utm_content=plugin_management&uid=&sid=&edition=team&server_version="
+                      href="https://mattermost.com/pl/sign-plugins?utm_source=mattermost&utm_medium=in-product&utm_content=plugin_management&uid=&sid=&server_version="
                       location="plugin_management"
                       rel="noopener noreferrer"
                       target="_blank"
@@ -636,7 +636,7 @@ exports[`components/PluginManagement should match snapshot when \`Enable Marketp
                   >
                     Upload a plugin for your Antimatter server. See 
                     <a
-                      href="https://mattermost.com/pl/plugins?utm_source=mattermost&utm_medium=in-product&utm_content=plugin_management&uid=&sid=&edition=team&server_version="
+                      href="https://mattermost.com/pl/plugins?utm_source=mattermost&utm_medium=in-product&utm_content=plugin_management&uid=&sid=&server_version="
                       location="plugin_management"
                       rel="noopener noreferrer"
                       target="_blank"
@@ -691,7 +691,7 @@ exports[`components/PluginManagement should match snapshot when \`Enable Marketp
                   >
                     When true, enables System Administrators to install plugins from the 
                     <a
-                      href="https://mattermost.com/pl/default-mattermost-marketplace.html?utm_source=mattermost&utm_medium=in-product&utm_content=plugin_management&uid=&sid=&edition=team&server_version="
+                      href="https://mattermost.com/pl/default-mattermost-marketplace.html?utm_source=mattermost&utm_medium=in-product&utm_content=plugin_management&uid=&sid=&server_version="
                       location="plugin_management"
                       rel="noopener noreferrer"
                       target="_blank"
@@ -973,7 +973,7 @@ exports[`components/PluginManagement should match snapshot when \`Enable Remote 
                   >
                     When true, enables plugins on your Antimatter server. Use plugins to integrate with third-party systems, extend functionality, or customize the user interface of your Antimatter server. See 
                     <a
-                      href="https://mattermost.com/pl/plugins?utm_source=mattermost&utm_medium=in-product&utm_content=plugin_management&uid=&sid=&edition=team&server_version="
+                      href="https://mattermost.com/pl/plugins?utm_source=mattermost&utm_medium=in-product&utm_content=plugin_management&uid=&sid=&server_version="
                       location="plugin_management"
                       rel="noopener noreferrer"
                       target="_blank"
@@ -1028,7 +1028,7 @@ exports[`components/PluginManagement should match snapshot when \`Enable Remote 
                   >
                     When true, uploading plugins is disabled and may only be installed through the Marketplace. Plugins are always verified during Antimatter server startup and initialization. See 
                     <a
-                      href="https://mattermost.com/pl/sign-plugins?utm_source=mattermost&utm_medium=in-product&utm_content=plugin_management&uid=&sid=&edition=team&server_version="
+                      href="https://mattermost.com/pl/sign-plugins?utm_source=mattermost&utm_medium=in-product&utm_content=plugin_management&uid=&sid=&server_version="
                       location="plugin_management"
                       rel="noopener noreferrer"
                       target="_blank"
@@ -1125,7 +1125,7 @@ exports[`components/PluginManagement should match snapshot when \`Enable Remote 
                   >
                     Upload a plugin for your Antimatter server. See 
                     <a
-                      href="https://mattermost.com/pl/plugins?utm_source=mattermost&utm_medium=in-product&utm_content=plugin_management&uid=&sid=&edition=team&server_version="
+                      href="https://mattermost.com/pl/plugins?utm_source=mattermost&utm_medium=in-product&utm_content=plugin_management&uid=&sid=&server_version="
                       location="plugin_management"
                       rel="noopener noreferrer"
                       target="_blank"
@@ -1180,7 +1180,7 @@ exports[`components/PluginManagement should match snapshot when \`Enable Remote 
                   >
                     When true, enables System Administrators to install plugins from the 
                     <a
-                      href="https://mattermost.com/pl/default-mattermost-marketplace.html?utm_source=mattermost&utm_medium=in-product&utm_content=plugin_management&uid=&sid=&edition=team&server_version="
+                      href="https://mattermost.com/pl/default-mattermost-marketplace.html?utm_source=mattermost&utm_medium=in-product&utm_content=plugin_management&uid=&sid=&server_version="
                       location="plugin_management"
                       rel="noopener noreferrer"
                       target="_blank"
@@ -1387,7 +1387,7 @@ exports[`components/PluginManagement should match snapshot when \`Require Signat
                   >
                     When true, enables plugins on your Antimatter server. Use plugins to integrate with third-party systems, extend functionality, or customize the user interface of your Antimatter server. See 
                     <a
-                      href="https://mattermost.com/pl/plugins?utm_source=mattermost&utm_medium=in-product&utm_content=plugin_management&uid=&sid=&edition=team&server_version="
+                      href="https://mattermost.com/pl/plugins?utm_source=mattermost&utm_medium=in-product&utm_content=plugin_management&uid=&sid=&server_version="
                       location="plugin_management"
                       rel="noopener noreferrer"
                       target="_blank"
@@ -1442,7 +1442,7 @@ exports[`components/PluginManagement should match snapshot when \`Require Signat
                   >
                     When true, uploading plugins is disabled and may only be installed through the Marketplace. Plugins are always verified during Antimatter server startup and initialization. See 
                     <a
-                      href="https://mattermost.com/pl/sign-plugins?utm_source=mattermost&utm_medium=in-product&utm_content=plugin_management&uid=&sid=&edition=team&server_version="
+                      href="https://mattermost.com/pl/sign-plugins?utm_source=mattermost&utm_medium=in-product&utm_content=plugin_management&uid=&sid=&server_version="
                       location="plugin_management"
                       rel="noopener noreferrer"
                       target="_blank"
@@ -1548,7 +1548,7 @@ exports[`components/PluginManagement should match snapshot when \`Require Signat
                   >
                     Upload a plugin for your Antimatter server. See 
                     <a
-                      href="https://mattermost.com/pl/plugins?utm_source=mattermost&utm_medium=in-product&utm_content=plugin_management&uid=&sid=&edition=team&server_version="
+                      href="https://mattermost.com/pl/plugins?utm_source=mattermost&utm_medium=in-product&utm_content=plugin_management&uid=&sid=&server_version="
                       location="plugin_management"
                       rel="noopener noreferrer"
                       target="_blank"
@@ -1603,7 +1603,7 @@ exports[`components/PluginManagement should match snapshot when \`Require Signat
                   >
                     When true, enables System Administrators to install plugins from the 
                     <a
-                      href="https://mattermost.com/pl/default-mattermost-marketplace.html?utm_source=mattermost&utm_medium=in-product&utm_content=plugin_management&uid=&sid=&edition=team&server_version="
+                      href="https://mattermost.com/pl/default-mattermost-marketplace.html?utm_source=mattermost&utm_medium=in-product&utm_content=plugin_management&uid=&sid=&server_version="
                       location="plugin_management"
                       rel="noopener noreferrer"
                       target="_blank"
@@ -1809,7 +1809,7 @@ exports[`components/PluginManagement should match snapshot, No installed plugins
                   >
                     When true, enables plugins on your Antimatter server. Use plugins to integrate with third-party systems, extend functionality, or customize the user interface of your Antimatter server. See 
                     <a
-                      href="https://mattermost.com/pl/plugins?utm_source=mattermost&utm_medium=in-product&utm_content=plugin_management&uid=&sid=&edition=team&server_version="
+                      href="https://mattermost.com/pl/plugins?utm_source=mattermost&utm_medium=in-product&utm_content=plugin_management&uid=&sid=&server_version="
                       location="plugin_management"
                       rel="noopener noreferrer"
                       target="_blank"
@@ -1864,7 +1864,7 @@ exports[`components/PluginManagement should match snapshot, No installed plugins
                   >
                     When true, uploading plugins is disabled and may only be installed through the Marketplace. Plugins are always verified during Antimatter server startup and initialization. See 
                     <a
-                      href="https://mattermost.com/pl/sign-plugins?utm_source=mattermost&utm_medium=in-product&utm_content=plugin_management&uid=&sid=&edition=team&server_version="
+                      href="https://mattermost.com/pl/sign-plugins?utm_source=mattermost&utm_medium=in-product&utm_content=plugin_management&uid=&sid=&server_version="
                       location="plugin_management"
                       rel="noopener noreferrer"
                       target="_blank"
@@ -1961,7 +1961,7 @@ exports[`components/PluginManagement should match snapshot, No installed plugins
                   >
                     Upload a plugin for your Antimatter server. See 
                     <a
-                      href="https://mattermost.com/pl/plugins?utm_source=mattermost&utm_medium=in-product&utm_content=plugin_management&uid=&sid=&edition=team&server_version="
+                      href="https://mattermost.com/pl/plugins?utm_source=mattermost&utm_medium=in-product&utm_content=plugin_management&uid=&sid=&server_version="
                       location="plugin_management"
                       rel="noopener noreferrer"
                       target="_blank"
@@ -2016,7 +2016,7 @@ exports[`components/PluginManagement should match snapshot, No installed plugins
                   >
                     When true, enables System Administrators to install plugins from the 
                     <a
-                      href="https://mattermost.com/pl/default-mattermost-marketplace.html?utm_source=mattermost&utm_medium=in-product&utm_content=plugin_management&uid=&sid=&edition=team&server_version="
+                      href="https://mattermost.com/pl/default-mattermost-marketplace.html?utm_source=mattermost&utm_medium=in-product&utm_content=plugin_management&uid=&sid=&server_version="
                       location="plugin_management"
                       rel="noopener noreferrer"
                       target="_blank"
@@ -2223,7 +2223,7 @@ exports[`components/PluginManagement should match snapshot, allow insecure URL e
                   >
                     When true, enables plugins on your Antimatter server. Use plugins to integrate with third-party systems, extend functionality, or customize the user interface of your Antimatter server. See 
                     <a
-                      href="https://mattermost.com/pl/plugins?utm_source=mattermost&utm_medium=in-product&utm_content=plugin_management&uid=&sid=&edition=team&server_version="
+                      href="https://mattermost.com/pl/plugins?utm_source=mattermost&utm_medium=in-product&utm_content=plugin_management&uid=&sid=&server_version="
                       location="plugin_management"
                       rel="noopener noreferrer"
                       target="_blank"
@@ -2278,7 +2278,7 @@ exports[`components/PluginManagement should match snapshot, allow insecure URL e
                   >
                     When true, uploading plugins is disabled and may only be installed through the Marketplace. Plugins are always verified during Antimatter server startup and initialization. See 
                     <a
-                      href="https://mattermost.com/pl/sign-plugins?utm_source=mattermost&utm_medium=in-product&utm_content=plugin_management&uid=&sid=&edition=team&server_version="
+                      href="https://mattermost.com/pl/sign-plugins?utm_source=mattermost&utm_medium=in-product&utm_content=plugin_management&uid=&sid=&server_version="
                       location="plugin_management"
                       rel="noopener noreferrer"
                       target="_blank"
@@ -2375,7 +2375,7 @@ exports[`components/PluginManagement should match snapshot, allow insecure URL e
                   >
                     Upload a plugin for your Antimatter server. See 
                     <a
-                      href="https://mattermost.com/pl/plugins?utm_source=mattermost&utm_medium=in-product&utm_content=plugin_management&uid=&sid=&edition=team&server_version="
+                      href="https://mattermost.com/pl/plugins?utm_source=mattermost&utm_medium=in-product&utm_content=plugin_management&uid=&sid=&server_version="
                       location="plugin_management"
                       rel="noopener noreferrer"
                       target="_blank"
@@ -2430,7 +2430,7 @@ exports[`components/PluginManagement should match snapshot, allow insecure URL e
                   >
                     When true, enables System Administrators to install plugins from the 
                     <a
-                      href="https://mattermost.com/pl/default-mattermost-marketplace.html?utm_source=mattermost&utm_medium=in-product&utm_content=plugin_management&uid=&sid=&edition=team&server_version="
+                      href="https://mattermost.com/pl/default-mattermost-marketplace.html?utm_source=mattermost&utm_medium=in-product&utm_content=plugin_management&uid=&sid=&server_version="
                       location="plugin_management"
                       rel="noopener noreferrer"
                       target="_blank"
@@ -2636,7 +2636,7 @@ exports[`components/PluginManagement should match snapshot, disabled 1`] = `
                   >
                     When true, enables plugins on your Antimatter server. Use plugins to integrate with third-party systems, extend functionality, or customize the user interface of your Antimatter server. See 
                     <a
-                      href="https://mattermost.com/pl/plugins?utm_source=mattermost&utm_medium=in-product&utm_content=plugin_management&uid=&sid=&edition=team&server_version="
+                      href="https://mattermost.com/pl/plugins?utm_source=mattermost&utm_medium=in-product&utm_content=plugin_management&uid=&sid=&server_version="
                       location="plugin_management"
                       rel="noopener noreferrer"
                       target="_blank"
@@ -2693,7 +2693,7 @@ exports[`components/PluginManagement should match snapshot, disabled 1`] = `
                   >
                     When true, uploading plugins is disabled and may only be installed through the Marketplace. Plugins are always verified during Antimatter server startup and initialization. See 
                     <a
-                      href="https://mattermost.com/pl/sign-plugins?utm_source=mattermost&utm_medium=in-product&utm_content=plugin_management&uid=&sid=&edition=team&server_version="
+                      href="https://mattermost.com/pl/sign-plugins?utm_source=mattermost&utm_medium=in-product&utm_content=plugin_management&uid=&sid=&server_version="
                       location="plugin_management"
                       rel="noopener noreferrer"
                       target="_blank"
@@ -2805,7 +2805,7 @@ exports[`components/PluginManagement should match snapshot, disabled 1`] = `
                     </strong>
                      to true. See 
                     <a
-                      href="https://mattermost.com/pl/plugins?utm_source=mattermost&utm_medium=in-product&utm_content=plugin_management&uid=&sid=&edition=team&server_version="
+                      href="https://mattermost.com/pl/plugins?utm_source=mattermost&utm_medium=in-product&utm_content=plugin_management&uid=&sid=&server_version="
                       location="plugin_management"
                       rel="noopener noreferrer"
                       target="_blank"
@@ -2862,7 +2862,7 @@ exports[`components/PluginManagement should match snapshot, disabled 1`] = `
                   >
                     When true, enables System Administrators to install plugins from the 
                     <a
-                      href="https://mattermost.com/pl/default-mattermost-marketplace.html?utm_source=mattermost&utm_medium=in-product&utm_content=plugin_management&uid=&sid=&edition=team&server_version="
+                      href="https://mattermost.com/pl/default-mattermost-marketplace.html?utm_source=mattermost&utm_medium=in-product&utm_content=plugin_management&uid=&sid=&server_version="
                       location="plugin_management"
                       rel="noopener noreferrer"
                       target="_blank"
@@ -3052,7 +3052,7 @@ exports[`components/PluginManagement should match snapshot, text entered into th
                   >
                     When true, enables plugins on your Antimatter server. Use plugins to integrate with third-party systems, extend functionality, or customize the user interface of your Antimatter server. See 
                     <a
-                      href="https://mattermost.com/pl/plugins?utm_source=mattermost&utm_medium=in-product&utm_content=plugin_management&uid=&sid=&edition=team&server_version="
+                      href="https://mattermost.com/pl/plugins?utm_source=mattermost&utm_medium=in-product&utm_content=plugin_management&uid=&sid=&server_version="
                       location="plugin_management"
                       rel="noopener noreferrer"
                       target="_blank"
@@ -3107,7 +3107,7 @@ exports[`components/PluginManagement should match snapshot, text entered into th
                   >
                     When true, uploading plugins is disabled and may only be installed through the Marketplace. Plugins are always verified during Antimatter server startup and initialization. See 
                     <a
-                      href="https://mattermost.com/pl/sign-plugins?utm_source=mattermost&utm_medium=in-product&utm_content=plugin_management&uid=&sid=&edition=team&server_version="
+                      href="https://mattermost.com/pl/sign-plugins?utm_source=mattermost&utm_medium=in-product&utm_content=plugin_management&uid=&sid=&server_version="
                       location="plugin_management"
                       rel="noopener noreferrer"
                       target="_blank"
@@ -3204,7 +3204,7 @@ exports[`components/PluginManagement should match snapshot, text entered into th
                   >
                     Upload a plugin for your Antimatter server. See 
                     <a
-                      href="https://mattermost.com/pl/plugins?utm_source=mattermost&utm_medium=in-product&utm_content=plugin_management&uid=&sid=&edition=team&server_version="
+                      href="https://mattermost.com/pl/plugins?utm_source=mattermost&utm_medium=in-product&utm_content=plugin_management&uid=&sid=&server_version="
                       location="plugin_management"
                       rel="noopener noreferrer"
                       target="_blank"
@@ -3259,7 +3259,7 @@ exports[`components/PluginManagement should match snapshot, text entered into th
                   >
                     When true, enables System Administrators to install plugins from the 
                     <a
-                      href="https://mattermost.com/pl/default-mattermost-marketplace.html?utm_source=mattermost&utm_medium=in-product&utm_content=plugin_management&uid=&sid=&edition=team&server_version="
+                      href="https://mattermost.com/pl/default-mattermost-marketplace.html?utm_source=mattermost&utm_medium=in-product&utm_content=plugin_management&uid=&sid=&server_version="
                       location="plugin_management"
                       rel="noopener noreferrer"
                       target="_blank"
@@ -3465,7 +3465,7 @@ exports[`components/PluginManagement should match snapshot, upload disabled 1`] 
                   >
                     When true, enables plugins on your Antimatter server. Use plugins to integrate with third-party systems, extend functionality, or customize the user interface of your Antimatter server. See 
                     <a
-                      href="https://mattermost.com/pl/plugins?utm_source=mattermost&utm_medium=in-product&utm_content=plugin_management&uid=&sid=&edition=team&server_version="
+                      href="https://mattermost.com/pl/plugins?utm_source=mattermost&utm_medium=in-product&utm_content=plugin_management&uid=&sid=&server_version="
                       location="plugin_management"
                       rel="noopener noreferrer"
                       target="_blank"
@@ -3520,7 +3520,7 @@ exports[`components/PluginManagement should match snapshot, upload disabled 1`] 
                   >
                     When true, uploading plugins is disabled and may only be installed through the Marketplace. Plugins are always verified during Antimatter server startup and initialization. See 
                     <a
-                      href="https://mattermost.com/pl/sign-plugins?utm_source=mattermost&utm_medium=in-product&utm_content=plugin_management&uid=&sid=&edition=team&server_version="
+                      href="https://mattermost.com/pl/sign-plugins?utm_source=mattermost&utm_medium=in-product&utm_content=plugin_management&uid=&sid=&server_version="
                       location="plugin_management"
                       rel="noopener noreferrer"
                       target="_blank"
@@ -3626,7 +3626,7 @@ exports[`components/PluginManagement should match snapshot, upload disabled 1`] 
                   >
                     Enable plugin uploads in config.json. See 
                     <a
-                      href="https://mattermost.com/pl/plugins?utm_source=mattermost&utm_medium=in-product&utm_content=plugin_management&uid=&sid=&edition=team&server_version="
+                      href="https://mattermost.com/pl/plugins?utm_source=mattermost&utm_medium=in-product&utm_content=plugin_management&uid=&sid=&server_version="
                       location="plugin_management"
                       rel="noopener noreferrer"
                       target="_blank"
@@ -3681,7 +3681,7 @@ exports[`components/PluginManagement should match snapshot, upload disabled 1`] 
                   >
                     When true, enables System Administrators to install plugins from the 
                     <a
-                      href="https://mattermost.com/pl/default-mattermost-marketplace.html?utm_source=mattermost&utm_medium=in-product&utm_content=plugin_management&uid=&sid=&edition=team&server_version="
+                      href="https://mattermost.com/pl/default-mattermost-marketplace.html?utm_source=mattermost&utm_medium=in-product&utm_content=plugin_management&uid=&sid=&server_version="
                       location="plugin_management"
                       rel="noopener noreferrer"
                       target="_blank"
@@ -3770,7 +3770,7 @@ exports[`components/PluginManagement should match snapshot, upload disabled 1`] 
                     <div>
                       Enable plugin uploads in config.json. See 
                       <a
-                        href="https://mattermost.com/pl/plugins?utm_source=mattermost&utm_medium=in-product&utm_content=plugin_management&uid=&sid=&edition=team&server_version="
+                        href="https://mattermost.com/pl/plugins?utm_source=mattermost&utm_medium=in-product&utm_content=plugin_management&uid=&sid=&server_version="
                         location="plugin_management"
                         rel="noopener noreferrer"
                         target="_blank"
@@ -3899,7 +3899,7 @@ exports[`components/PluginManagement should match snapshot, with installed plugi
                   >
                     When true, enables plugins on your Antimatter server. Use plugins to integrate with third-party systems, extend functionality, or customize the user interface of your Antimatter server. See 
                     <a
-                      href="https://mattermost.com/pl/plugins?utm_source=mattermost&utm_medium=in-product&utm_content=plugin_management&uid=&sid=&edition=team&server_version="
+                      href="https://mattermost.com/pl/plugins?utm_source=mattermost&utm_medium=in-product&utm_content=plugin_management&uid=&sid=&server_version="
                       location="plugin_management"
                       rel="noopener noreferrer"
                       target="_blank"
@@ -3954,7 +3954,7 @@ exports[`components/PluginManagement should match snapshot, with installed plugi
                   >
                     When true, uploading plugins is disabled and may only be installed through the Marketplace. Plugins are always verified during Antimatter server startup and initialization. See 
                     <a
-                      href="https://mattermost.com/pl/sign-plugins?utm_source=mattermost&utm_medium=in-product&utm_content=plugin_management&uid=&sid=&edition=team&server_version="
+                      href="https://mattermost.com/pl/sign-plugins?utm_source=mattermost&utm_medium=in-product&utm_content=plugin_management&uid=&sid=&server_version="
                       location="plugin_management"
                       rel="noopener noreferrer"
                       target="_blank"
@@ -4051,7 +4051,7 @@ exports[`components/PluginManagement should match snapshot, with installed plugi
                   >
                     Upload a plugin for your Antimatter server. See 
                     <a
-                      href="https://mattermost.com/pl/plugins?utm_source=mattermost&utm_medium=in-product&utm_content=plugin_management&uid=&sid=&edition=team&server_version="
+                      href="https://mattermost.com/pl/plugins?utm_source=mattermost&utm_medium=in-product&utm_content=plugin_management&uid=&sid=&server_version="
                       location="plugin_management"
                       rel="noopener noreferrer"
                       target="_blank"
@@ -4106,7 +4106,7 @@ exports[`components/PluginManagement should match snapshot, with installed plugi
                   >
                     When true, enables System Administrators to install plugins from the 
                     <a
-                      href="https://mattermost.com/pl/default-mattermost-marketplace.html?utm_source=mattermost&utm_medium=in-product&utm_content=plugin_management&uid=&sid=&edition=team&server_version="
+                      href="https://mattermost.com/pl/default-mattermost-marketplace.html?utm_source=mattermost&utm_medium=in-product&utm_content=plugin_management&uid=&sid=&server_version="
                       location="plugin_management"
                       rel="noopener noreferrer"
                       target="_blank"
@@ -4595,7 +4595,7 @@ exports[`components/PluginManagement should match snapshot, with installed plugi
                   >
                     When true, enables plugins on your Antimatter server. Use plugins to integrate with third-party systems, extend functionality, or customize the user interface of your Antimatter server. See 
                     <a
-                      href="https://mattermost.com/pl/plugins?utm_source=mattermost&utm_medium=in-product&utm_content=plugin_management&uid=&sid=&edition=team&server_version="
+                      href="https://mattermost.com/pl/plugins?utm_source=mattermost&utm_medium=in-product&utm_content=plugin_management&uid=&sid=&server_version="
                       location="plugin_management"
                       rel="noopener noreferrer"
                       target="_blank"
@@ -4650,7 +4650,7 @@ exports[`components/PluginManagement should match snapshot, with installed plugi
                   >
                     When true, uploading plugins is disabled and may only be installed through the Marketplace. Plugins are always verified during Antimatter server startup and initialization. See 
                     <a
-                      href="https://mattermost.com/pl/sign-plugins?utm_source=mattermost&utm_medium=in-product&utm_content=plugin_management&uid=&sid=&edition=team&server_version="
+                      href="https://mattermost.com/pl/sign-plugins?utm_source=mattermost&utm_medium=in-product&utm_content=plugin_management&uid=&sid=&server_version="
                       location="plugin_management"
                       rel="noopener noreferrer"
                       target="_blank"
@@ -4747,7 +4747,7 @@ exports[`components/PluginManagement should match snapshot, with installed plugi
                   >
                     Upload a plugin for your Antimatter server. See 
                     <a
-                      href="https://mattermost.com/pl/plugins?utm_source=mattermost&utm_medium=in-product&utm_content=plugin_management&uid=&sid=&edition=team&server_version="
+                      href="https://mattermost.com/pl/plugins?utm_source=mattermost&utm_medium=in-product&utm_content=plugin_management&uid=&sid=&server_version="
                       location="plugin_management"
                       rel="noopener noreferrer"
                       target="_blank"
@@ -4802,7 +4802,7 @@ exports[`components/PluginManagement should match snapshot, with installed plugi
                   >
                     When true, enables System Administrators to install plugins from the 
                     <a
-                      href="https://mattermost.com/pl/default-mattermost-marketplace.html?utm_source=mattermost&utm_medium=in-product&utm_content=plugin_management&uid=&sid=&edition=team&server_version="
+                      href="https://mattermost.com/pl/default-mattermost-marketplace.html?utm_source=mattermost&utm_medium=in-product&utm_content=plugin_management&uid=&sid=&server_version="
                       location="plugin_management"
                       rel="noopener noreferrer"
                       target="_blank"
@@ -5089,7 +5089,7 @@ exports[`components/PluginManagement should match snapshot, with installed plugi
                   >
                     When true, enables plugins on your Antimatter server. Use plugins to integrate with third-party systems, extend functionality, or customize the user interface of your Antimatter server. See 
                     <a
-                      href="https://mattermost.com/pl/plugins?utm_source=mattermost&utm_medium=in-product&utm_content=plugin_management&uid=&sid=&edition=team&server_version="
+                      href="https://mattermost.com/pl/plugins?utm_source=mattermost&utm_medium=in-product&utm_content=plugin_management&uid=&sid=&server_version="
                       location="plugin_management"
                       rel="noopener noreferrer"
                       target="_blank"
@@ -5144,7 +5144,7 @@ exports[`components/PluginManagement should match snapshot, with installed plugi
                   >
                     When true, uploading plugins is disabled and may only be installed through the Marketplace. Plugins are always verified during Antimatter server startup and initialization. See 
                     <a
-                      href="https://mattermost.com/pl/sign-plugins?utm_source=mattermost&utm_medium=in-product&utm_content=plugin_management&uid=&sid=&edition=team&server_version="
+                      href="https://mattermost.com/pl/sign-plugins?utm_source=mattermost&utm_medium=in-product&utm_content=plugin_management&uid=&sid=&server_version="
                       location="plugin_management"
                       rel="noopener noreferrer"
                       target="_blank"
@@ -5241,7 +5241,7 @@ exports[`components/PluginManagement should match snapshot, with installed plugi
                   >
                     Upload a plugin for your Antimatter server. See 
                     <a
-                      href="https://mattermost.com/pl/plugins?utm_source=mattermost&utm_medium=in-product&utm_content=plugin_management&uid=&sid=&edition=team&server_version="
+                      href="https://mattermost.com/pl/plugins?utm_source=mattermost&utm_medium=in-product&utm_content=plugin_management&uid=&sid=&server_version="
                       location="plugin_management"
                       rel="noopener noreferrer"
                       target="_blank"
@@ -5296,7 +5296,7 @@ exports[`components/PluginManagement should match snapshot, with installed plugi
                   >
                     When true, enables System Administrators to install plugins from the 
                     <a
-                      href="https://mattermost.com/pl/default-mattermost-marketplace.html?utm_source=mattermost&utm_medium=in-product&utm_content=plugin_management&uid=&sid=&edition=team&server_version="
+                      href="https://mattermost.com/pl/default-mattermost-marketplace.html?utm_source=mattermost&utm_medium=in-product&utm_content=plugin_management&uid=&sid=&server_version="
                       location="plugin_management"
                       rel="noopener noreferrer"
                       target="_blank"
@@ -5583,7 +5583,7 @@ exports[`components/PluginManagement should match snapshot, with installed plugi
                   >
                     When true, enables plugins on your Antimatter server. Use plugins to integrate with third-party systems, extend functionality, or customize the user interface of your Antimatter server. See 
                     <a
-                      href="https://mattermost.com/pl/plugins?utm_source=mattermost&utm_medium=in-product&utm_content=plugin_management&uid=&sid=&edition=team&server_version="
+                      href="https://mattermost.com/pl/plugins?utm_source=mattermost&utm_medium=in-product&utm_content=plugin_management&uid=&sid=&server_version="
                       location="plugin_management"
                       rel="noopener noreferrer"
                       target="_blank"
@@ -5638,7 +5638,7 @@ exports[`components/PluginManagement should match snapshot, with installed plugi
                   >
                     When true, uploading plugins is disabled and may only be installed through the Marketplace. Plugins are always verified during Antimatter server startup and initialization. See 
                     <a
-                      href="https://mattermost.com/pl/sign-plugins?utm_source=mattermost&utm_medium=in-product&utm_content=plugin_management&uid=&sid=&edition=team&server_version="
+                      href="https://mattermost.com/pl/sign-plugins?utm_source=mattermost&utm_medium=in-product&utm_content=plugin_management&uid=&sid=&server_version="
                       location="plugin_management"
                       rel="noopener noreferrer"
                       target="_blank"
@@ -5735,7 +5735,7 @@ exports[`components/PluginManagement should match snapshot, with installed plugi
                   >
                     Upload a plugin for your Antimatter server. See 
                     <a
-                      href="https://mattermost.com/pl/plugins?utm_source=mattermost&utm_medium=in-product&utm_content=plugin_management&uid=&sid=&edition=team&server_version="
+                      href="https://mattermost.com/pl/plugins?utm_source=mattermost&utm_medium=in-product&utm_content=plugin_management&uid=&sid=&server_version="
                       location="plugin_management"
                       rel="noopener noreferrer"
                       target="_blank"
@@ -5790,7 +5790,7 @@ exports[`components/PluginManagement should match snapshot, with installed plugi
                   >
                     When true, enables System Administrators to install plugins from the 
                     <a
-                      href="https://mattermost.com/pl/default-mattermost-marketplace.html?utm_source=mattermost&utm_medium=in-product&utm_content=plugin_management&uid=&sid=&edition=team&server_version="
+                      href="https://mattermost.com/pl/default-mattermost-marketplace.html?utm_source=mattermost&utm_medium=in-product&utm_content=plugin_management&uid=&sid=&server_version="
                       location="plugin_management"
                       rel="noopener noreferrer"
                       target="_blank"
@@ -6077,7 +6077,7 @@ exports[`components/PluginManagement should match snapshot, with installed plugi
                   >
                     When true, enables plugins on your Antimatter server. Use plugins to integrate with third-party systems, extend functionality, or customize the user interface of your Antimatter server. See 
                     <a
-                      href="https://mattermost.com/pl/plugins?utm_source=mattermost&utm_medium=in-product&utm_content=plugin_management&uid=&sid=&edition=team&server_version="
+                      href="https://mattermost.com/pl/plugins?utm_source=mattermost&utm_medium=in-product&utm_content=plugin_management&uid=&sid=&server_version="
                       location="plugin_management"
                       rel="noopener noreferrer"
                       target="_blank"
@@ -6132,7 +6132,7 @@ exports[`components/PluginManagement should match snapshot, with installed plugi
                   >
                     When true, uploading plugins is disabled and may only be installed through the Marketplace. Plugins are always verified during Antimatter server startup and initialization. See 
                     <a
-                      href="https://mattermost.com/pl/sign-plugins?utm_source=mattermost&utm_medium=in-product&utm_content=plugin_management&uid=&sid=&edition=team&server_version="
+                      href="https://mattermost.com/pl/sign-plugins?utm_source=mattermost&utm_medium=in-product&utm_content=plugin_management&uid=&sid=&server_version="
                       location="plugin_management"
                       rel="noopener noreferrer"
                       target="_blank"
@@ -6229,7 +6229,7 @@ exports[`components/PluginManagement should match snapshot, with installed plugi
                   >
                     Upload a plugin for your Antimatter server. See 
                     <a
-                      href="https://mattermost.com/pl/plugins?utm_source=mattermost&utm_medium=in-product&utm_content=plugin_management&uid=&sid=&edition=team&server_version="
+                      href="https://mattermost.com/pl/plugins?utm_source=mattermost&utm_medium=in-product&utm_content=plugin_management&uid=&sid=&server_version="
                       location="plugin_management"
                       rel="noopener noreferrer"
                       target="_blank"
@@ -6284,7 +6284,7 @@ exports[`components/PluginManagement should match snapshot, with installed plugi
                   >
                     When true, enables System Administrators to install plugins from the 
                     <a
-                      href="https://mattermost.com/pl/default-mattermost-marketplace.html?utm_source=mattermost&utm_medium=in-product&utm_content=plugin_management&uid=&sid=&edition=team&server_version="
+                      href="https://mattermost.com/pl/default-mattermost-marketplace.html?utm_source=mattermost&utm_medium=in-product&utm_content=plugin_management&uid=&sid=&server_version="
                       location="plugin_management"
                       rel="noopener noreferrer"
                       target="_blank"

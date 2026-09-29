@@ -4,7 +4,7 @@
 import React from 'react';
 import {useIntl} from 'react-intl';
 
-import type {AdminConfig, ClientLicense} from '@mattermost/types/config';
+import type {AdminConfig} from '@mattermost/types/config';
 
 import BooleanSetting from 'components/admin_console/boolean_setting';
 
@@ -21,7 +21,6 @@ type BoolSettingProps = {
     setByEnv: boolean;
     config: Partial<AdminConfig>;
     state: {[x: string]: any};
-    license?: ClientLicense;
 } & GeneralSettingProps;
 
 const LDAPBooleanSetting = (props: BoolSettingProps) => {
@@ -38,7 +37,6 @@ const LDAPBooleanSetting = (props: BoolSettingProps) => {
                 setting={props.setting}
                 config={props.config}
                 state={props.state}
-                license={props.license}
                 isDisabled={Boolean(props.disabled)}
             />
             {renderLDAPSettingHelpText(props.setting, props.schema, Boolean(props.disabled))}

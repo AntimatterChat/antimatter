@@ -963,11 +963,10 @@ describe('components/PluginManagement', () => {
         });
     });
 
-    describe('unlicensed add-on plugins', () => {
-        const renderAddOn = (license: Record<string, string>) => {
+    describe('add-on plugins', () => {
+        test('does not offer Enable for a plugin that declares a required add-on', () => {
             const props = {
                 ...defaultProps,
-                license,
                 plugins: {
                     plugin_0: {
                         ...defaultProps.plugins.plugin_0,
@@ -985,22 +984,10 @@ describe('components/PluginManagement', () => {
             act(() => {
                 ref.current!.setState({loading: false} as any);
             });
-        };
-
-        test('replaces the Enable link with an explanation when the license lacks the add-on', () => {
-            renderAddOn({IsLicensed: 'true'});
 
             const row = screen.getByTestId('plugin_0');
-            expect(row).toHaveTextContent('Not included in your license');
+            expect(row).toHaveTextContent('Requires a commercial Mattermost add-on');
             expect(row).not.toHaveTextContent('Enable');
-        });
-
-        test('offers Enable when the license grants the add-on', () => {
-            renderAddOn({IsLicensed: 'true', AddOns: 'crossguard'});
-
-            const row = screen.getByTestId('plugin_0');
-            expect(row).toHaveTextContent('Enable');
-            expect(row).not.toHaveTextContent('Not included in your license');
         });
     });
 });

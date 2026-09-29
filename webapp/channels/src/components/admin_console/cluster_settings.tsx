@@ -4,7 +4,7 @@
 import React from 'react';
 import {FormattedMessage, defineMessage, defineMessages} from 'react-intl';
 
-import type {AdminConfig, ClientLicense} from '@mattermost/types/config';
+import type {AdminConfig} from '@mattermost/types/config';
 
 import {Client4} from 'mattermost-redux/client';
 
@@ -20,9 +20,7 @@ import OLDAdminSettings from './old_admin_settings';
 import SettingsGroup from './settings_group';
 import TextSetting from './text_setting';
 
-type Props = {
-    license: ClientLicense;
-} & BaseProps;
+type Props = BaseProps;
 
 type State = {
     Enable: boolean;
@@ -113,11 +111,6 @@ export default class ClusterSettings extends OLDAdminSettings<Props, State> {
     };
 
     renderSettings = () => {
-        const licenseEnabled = this.props.license.IsLicensed === 'true' && this.props.license.Cluster === 'true';
-        if (!licenseEnabled) {
-            return (<></>);
-        }
-
         let configLoadedFromCluster = null;
 
         if (Client4.clusterId) {

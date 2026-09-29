@@ -5,7 +5,7 @@ import React, {type JSX} from 'react';
 import {FormattedMessage, defineMessages} from 'react-intl';
 import {Link} from 'react-router-dom';
 
-import type {AdminConfig, ClientLicense} from '@mattermost/types/config';
+import type {AdminConfig} from '@mattermost/types/config';
 import type {TermsOfService} from '@mattermost/types/terms_of_service';
 
 import type {ActionResult} from 'mattermost-redux/types/actions';
@@ -25,7 +25,6 @@ type Props = BaseProps & {
         createTermsOfService: (text: string) => Promise<ActionResult<TermsOfService>>;
     };
     config: AdminConfig;
-    license: ClientLicense;
     setNavigationBlocked: () => void;
 
     /*
@@ -212,7 +211,7 @@ export default class CustomTermsOfServiceSettings extends OLDAdminSettings<Props
                     value={Boolean(this.state.termsEnabled)}
                     onChange={this.handleTermsEnabledChange}
                     setByEnv={this.isSetByEnv('SupportSettings.CustomTermsOfServiceEnabled')}
-                    disabled={this.props.isDisabled || !(this.props.license.IsLicensed && this.props.license.CustomTermsOfService === 'true')}
+                    disabled={this.props.isDisabled}
                 />
                 <TextSetting
                     key={'customTermsOfServiceText'}

@@ -4,7 +4,7 @@
 import React from 'react';
 import {useIntl} from 'react-intl';
 
-import type {AdminConfig, ClientLicense} from '@mattermost/types/config';
+import type {AdminConfig} from '@mattermost/types/config';
 
 import type {GeneralSettingProps} from './ldap_wizard';
 
@@ -13,7 +13,6 @@ import Setting from '../setting';
 
 type Props = {
     config: Partial<AdminConfig>;
-    license: ClientLicense;
     value?: any;
     registerSaveAction: (saveAction: () => Promise<{error?: {message?: string}}>) => void;
     unRegisterSaveAction: (saveAction: () => Promise<{error?: {message?: string}}>) => void;
@@ -46,7 +45,6 @@ const LDAPCustomSetting = (props: Props) => {
             value={props.value}
             disabled={props.disabled}
             config={props.config}
-            license={props.license}
             setByEnv={props.setByEnv}
             onChange={props.onChange}
             registerSaveAction={props.registerSaveAction}

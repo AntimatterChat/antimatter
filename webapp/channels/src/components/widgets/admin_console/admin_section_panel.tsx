@@ -5,14 +5,11 @@ import React from 'react';
 import type {MessageDescriptor} from 'react-intl';
 import {FormattedMessage} from 'react-intl';
 
-import {LicenseSkuBadge} from 'components/widgets/badges';
-
 import './admin_section_panel.scss';
 
 type Props = {
     title?: string | MessageDescriptor;
     description?: string | MessageDescriptor;
-    licenseSku?: string;
     children: React.ReactNode;
     'data-testid'?: string;
 };
@@ -20,7 +17,6 @@ type Props = {
 const AdminSectionPanel: React.FC<Props> = ({
     title,
     description,
-    licenseSku,
     children,
     'data-testid': dataTestId,
 }) => {
@@ -38,7 +34,6 @@ const AdminSectionPanel: React.FC<Props> = ({
                             ) : (
                                 <FormattedMessage {...title}/>
                             )}
-                            {licenseSku && <LicenseSkuBadge sku={licenseSku}/>}
                         </h3>
                     )}
                     {description && (

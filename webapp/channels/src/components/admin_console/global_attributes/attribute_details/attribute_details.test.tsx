@@ -59,11 +59,9 @@ describe('AttributeDetails', () => {
 
     const ALL_RESOURCES_STATE = {entities: {general: {
         config: {FeatureFlagChannelAttributes: 'true', FeatureFlagChannelAttributesRequired: 'true', FeatureFlagPostAttributes: 'true'},
-        license: {IsLicensed: 'true', SkuShortName: 'advanced'},
     }}};
 
-    // Channels is only offered with its flag on and an Enterprise Advanced
-    // licence, Posts only with PostAttributes on, and most cases here exercise
+    // Channels is only offered with its flag on, Posts only with PostAttributes on, and most cases here exercise
     // all three resources.
     const renderComponent = (graphEnabled = false) => renderWithContext(
         <div>
@@ -574,7 +572,6 @@ describe('AttributeDetails', () => {
             expect(screen.getAllByRole('menuitem').map((item) => item.textContent)).toEqual(['Users', 'Channels']);
         });
 
-        // No licence here: Posts is gated on its flag alone, unlike Channels.
         it('is offered with the PostAttributes feature flag, and adds a Posts row', async () => {
             withState({entities: {general: {config: {FeatureFlagPostAttributes: 'true'}}}});
 
@@ -603,7 +600,7 @@ describe('AttributeDetails', () => {
             await waitFor(() => expect(screen.getByTestId('attributeAppliesToRow-channel')).toBeInTheDocument());
         };
 
-        it('is not offered without the feature flag and an Enterprise Advanced licence', async () => {
+        it('is not offered without the feature flag', async () => {
             withoutChannelAttributes();
 
             await userEvent.click(screen.getByTestId('attributeAppliesToAddResourceButtonHeader'));
@@ -2166,7 +2163,7 @@ describe('AttributeDetails', () => {
                 return Promise.resolve([]);
             });
 
-            renderEdit({entities: {general: {config: {FeatureFlagChannelAttributes: 'false'}, license: {SkuShortName: 'professional'}}}});
+            renderEdit({entities: {general: {config: {FeatureFlagChannelAttributes: 'false'}}}});
             await waitForForm();
 
             expect(screen.getByTestId('attributeDisplayNameInput')).toHaveValue('Department');
@@ -2192,7 +2189,7 @@ describe('AttributeDetails', () => {
                 return Promise.resolve([]);
             });
 
-            renderEdit({entities: {general: {config: {FeatureFlagChannelAttributes: 'false'}, license: {SkuShortName: 'professional'}}}});
+            renderEdit({entities: {general: {config: {FeatureFlagChannelAttributes: 'false'}}}});
             await waitForForm();
 
             expect(screen.getByTestId('attributeDisplayNameInput')).toHaveValue('Department');

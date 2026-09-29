@@ -6,20 +6,18 @@ import {FormattedMessage, defineMessages} from 'react-intl';
 
 import type {AnalyticsRow, PluginAnalyticsRow, IndexedPluginAnalyticsRow, AnalyticsState} from '@mattermost/types/admin';
 import {AnalyticsVisualizationType} from '@mattermost/types/admin';
-import type {ClientConfig, ClientLicense} from '@mattermost/types/config';
-import type {ServerLimits} from '@mattermost/types/limits';
+import type {ClientConfig} from '@mattermost/types/config';
 
 import {getFormattedFileSize} from 'mattermost-redux/utils/file_utils';
 
 import * as AdminActions from 'actions/admin_actions';
 
-import UserSeatAlertBanner from 'components/admin_console/license_settings/user_seat_alert_banner';
 import ActivatedUserCard from 'components/analytics/activated_users_card';
 import SingleChannelGuestsCard from 'components/analytics/single_channel_guests_card';
 import ExternalLink from 'components/external_link';
 import AdminHeader from 'components/widgets/admin_console/admin_header';
 
-import Constants, {LicenseSkus} from 'utils/constants';
+import Constants from 'utils/constants';
 
 import './analytics.scss';
 
@@ -38,12 +36,9 @@ import StatisticCount from '../statistic_count';
 const StatTypes = Constants.StatTypes;
 
 type Props = {
-    isLicensed: boolean;
     stats?: AnalyticsState;
-    license: ClientLicense;
     config?: Partial<ClientConfig>;
     pluginStatHandlers: GlobalState['plugins']['siteStatsHandlers'];
-    serverLimits: ServerLimits;
 };
 
 type State = {
@@ -103,11 +98,7 @@ export default class SystemAnalytics extends React.PureComponent<Props, State> {
 
     public async componentDidMount() {
         AdminActions.getStandardAnalytics();
-        AdminActions.refreshServerLimits();
-
-        if (this.props.isLicensed) {
-            AdminActions.getAdvancedAnalytics();
-        }
+        AdminActions.getAdvancedAnalytics();
         this.fetchPluginStats();
     }
 
@@ -163,7 +154,6 @@ export default class SystemAnalytics extends React.PureComponent<Props, State> {
 
     public render() {
         const stats = this.props.stats!;
-        const isLicensed = this.props.isLicensed;
         const skippedIntensiveQueries = stats[StatTypes.TOTAL_POSTS] === -1;
 
         const labels = synchronizeChartLabels(stats[StatTypes.POST_PER_DAY], stats[StatTypes.BOT_POST_PER_DAY], stats[StatTypes.USERS_WITH_POSTS_PER_DAY]);
@@ -249,136 +239,107 @@ export default class SystemAnalytics extends React.PureComponent<Props, State> {
             );
         }
 
-        let advancedStats;
-        let advancedGraphs;
-        let sessionCount;
-        let commandCount;
-        let incomingCount;
-        let outgoingCount;
-        let totalFiles;
-        let totalFilesSize;
-        if (this.props.isLicensed) {
-            sessionCount = (
-                <StatisticCount
-                    id='totalSessions'
-                    title={<FormattedMessage {...messages.totalSessions}/>}
-                    icon='fa-signal'
-                    count={this.getStatValue(stats[StatTypes.TOTAL_SESSIONS])}
-                />
-            );
-
-            commandCount = (
-                <StatisticCount
-                    id='totalCommands'
-                    title={<FormattedMessage {...messages.totalCommands}/>}
-                    icon='fa-terminal'
-                    count={this.getStatValue(stats[StatTypes.TOTAL_COMMANDS])}
-                />
-            );
-
-            incomingCount = (
-                <StatisticCount
-                    id='incomingWebhooks'
-                    title={<FormattedMessage {...messages.totalIncomingWebhooks}/>
-                    }
-                    icon='fa-arrow-down'
-                    count={this.getStatValue(stats[StatTypes.TOTAL_IHOOKS])}
-                />
-            );
-
-            outgoingCount = (
-                <StatisticCount
-                    id='outgoingWebhooks'
-                    title={<FormattedMessage {...messages.totalOutgoingWebhooks}/>
-                    }
-                    icon='fa-arrow-up'
-                    count={this.getStatValue(stats[StatTypes.TOTAL_OHOOKS])}
-                />
-            );
-
-            totalFiles = (
-                <StatisticCount
-                    id='totalFiles'
-                    title={<FormattedMessage {...messages.totalFiles}/>}
-                    icon='fa-files-o'
-                    count={this.getStatValue(stats[StatTypes.TOTAL_FILE_COUNT])}
-                />
-            );
-
-            totalFilesSize = (
-                <StatisticCount
-                    id='totalFilesSize'
-                    title={<FormattedMessage {...messages.totalFilesSize}/>}
-                    icon='fa-files-o'
-                    count={this.getStatValue(stats[StatTypes.TOTAL_FILE_SIZE])}
-                    formatter={getFormattedFileSize}
-                />
-            );
-
-            advancedStats = (
-                <>
-                    <StatisticCount
-                        id='websocketConns'
-                        title={<FormattedMessage {...messages.totalWebsockets}/>
-                        }
-                        icon='fa-user'
-                        count={this.getStatValue(stats[StatTypes.TOTAL_WEBSOCKET_CONNECTIONS])}
-                    />
-                    <StatisticCount
-                        id='masterDbConns'
-                        title={<FormattedMessage {...messages.totalMasterDbConnections}/>
-                        }
-                        icon='fa-terminal'
-                        count={this.getStatValue(stats[StatTypes.TOTAL_MASTER_DB_CONNECTIONS])}
-                    />
-                    <StatisticCount
-                        id='replicaDbConns'
-                        title={<FormattedMessage {...messages.totalReadDbConnections}/>
-                        }
-                        icon='fa-terminal'
-                        count={this.getStatValue(stats[StatTypes.TOTAL_READ_DB_CONNECTIONS])}
-                    />
-                </>
-            );
-
-            const channelTypeData = formatChannelDoughtnutData(stats[StatTypes.TOTAL_PUBLIC_CHANNELS], stats[StatTypes.TOTAL_PRIVATE_GROUPS]);
-
-            advancedGraphs = (
-                <div className='row'>
-                    <DoughnutChart
-                        title={<FormattedMessage {...messages.channelTypes}/>
-                        }
-                        data={channelTypeData}
-                        width={300}
-                        height={225}
-                    />
-                </div>
-            );
-        }
-
-        const isCloud = this.props.license.Cloud === 'true';
-        const guestAccountsEnabled = this.props.config?.EnableGuestAccounts === 'true';
-        const seatAdjustedUserCount = this.props.serverLimits?.activeUserCount ?? this.getStatValue(stats[StatTypes.TOTAL_USERS]);
-        const userCount = (
-            <ActivatedUserCard
-                activatedUsers={seatAdjustedUserCount}
-                seatsPurchased={parseInt(this.props.license.Users, 10)}
-                isCloud={isCloud}
-                guestAccountsEnabled={guestAccountsEnabled}
+        const sessionCount = (
+            <StatisticCount
+                id='totalSessions'
+                title={<FormattedMessage {...messages.totalSessions}/>}
+                icon='fa-signal'
+                count={this.getStatValue(stats[StatTypes.TOTAL_SESSIONS])}
             />
         );
 
-        const seatsPurchased = (
+        const commandCount = (
             <StatisticCount
-                id='seatPurchased'
-                title={
-                    <FormattedMessage
-                        id='analytics.system.seatsPurchased'
-                        defaultMessage='Licensed Seats'
-                    />
+                id='totalCommands'
+                title={<FormattedMessage {...messages.totalCommands}/>}
+                icon='fa-terminal'
+                count={this.getStatValue(stats[StatTypes.TOTAL_COMMANDS])}
+            />
+        );
+
+        const incomingCount = (
+            <StatisticCount
+                id='incomingWebhooks'
+                title={<FormattedMessage {...messages.totalIncomingWebhooks}/>
                 }
-                icon='fa-users'
-                count={parseInt(this.props.license.Users, 10)}
+                icon='fa-arrow-down'
+                count={this.getStatValue(stats[StatTypes.TOTAL_IHOOKS])}
+            />
+        );
+
+        const outgoingCount = (
+            <StatisticCount
+                id='outgoingWebhooks'
+                title={<FormattedMessage {...messages.totalOutgoingWebhooks}/>
+                }
+                icon='fa-arrow-up'
+                count={this.getStatValue(stats[StatTypes.TOTAL_OHOOKS])}
+            />
+        );
+
+        const totalFiles = (
+            <StatisticCount
+                id='totalFiles'
+                title={<FormattedMessage {...messages.totalFiles}/>}
+                icon='fa-files-o'
+                count={this.getStatValue(stats[StatTypes.TOTAL_FILE_COUNT])}
+            />
+        );
+
+        const totalFilesSize = (
+            <StatisticCount
+                id='totalFilesSize'
+                title={<FormattedMessage {...messages.totalFilesSize}/>}
+                icon='fa-files-o'
+                count={this.getStatValue(stats[StatTypes.TOTAL_FILE_SIZE])}
+                formatter={getFormattedFileSize}
+            />
+        );
+
+        const advancedStats = (
+            <>
+                <StatisticCount
+                    id='websocketConns'
+                    title={<FormattedMessage {...messages.totalWebsockets}/>
+                    }
+                    icon='fa-user'
+                    count={this.getStatValue(stats[StatTypes.TOTAL_WEBSOCKET_CONNECTIONS])}
+                />
+                <StatisticCount
+                    id='masterDbConns'
+                    title={<FormattedMessage {...messages.totalMasterDbConnections}/>
+                    }
+                    icon='fa-terminal'
+                    count={this.getStatValue(stats[StatTypes.TOTAL_MASTER_DB_CONNECTIONS])}
+                />
+                <StatisticCount
+                    id='replicaDbConns'
+                    title={<FormattedMessage {...messages.totalReadDbConnections}/>
+                    }
+                    icon='fa-terminal'
+                    count={this.getStatValue(stats[StatTypes.TOTAL_READ_DB_CONNECTIONS])}
+                />
+            </>
+        );
+
+        const channelTypeData = formatChannelDoughtnutData(stats[StatTypes.TOTAL_PUBLIC_CHANNELS], stats[StatTypes.TOTAL_PRIVATE_GROUPS]);
+
+        const advancedGraphs = (
+            <div className='row'>
+                <DoughnutChart
+                    title={<FormattedMessage {...messages.channelTypes}/>
+                    }
+                    data={channelTypeData}
+                    width={300}
+                    height={225}
+                />
+            </div>
+        );
+
+        const guestAccountsEnabled = this.props.config?.EnableGuestAccounts === 'true';
+        const userCount = (
+            <ActivatedUserCard
+                activatedUsers={this.getStatValue(stats[StatTypes.TOTAL_USERS])}
             />
         );
 
@@ -485,48 +446,27 @@ export default class SystemAnalytics extends React.PureComponent<Props, State> {
             }
         }
 
-        const isEntrySku = this.props.license.SkuShortName === LicenseSkus.Entry;
-        const shouldShowSingleChannelGuests = isLicensed && !isEntrySku && guestAccountsEnabled;
-
-        const singleChannelGuestsCount = this.getStatValue(stats[StatTypes.SINGLE_CHANNEL_GUESTS]);
-        const singleChannelGuestLimit = this.props.serverLimits?.singleChannelGuestLimit ?? parseInt(this.props.license.Users, 10);
-
-        const singleChannelGuests = shouldShowSingleChannelGuests ? (
+        const singleChannelGuests = guestAccountsEnabled ? (
             <SingleChannelGuestsCard
-                singleChannelGuestsCount={singleChannelGuestsCount}
-                singleChannelGuestLimit={singleChannelGuestLimit}
+                singleChannelGuestsCount={this.getStatValue(stats[StatTypes.SINGLE_CHANNEL_GUESTS])}
             />
         ) : null;
 
-        let systemCards;
-        if (isLicensed) {
-            systemCards = (
-                <>
-                    {userCount}
-                    {isCloud ? null : seatsPurchased}
-                    {singleChannelGuests}
-                    {teamCount}
-                    {channelCount}
-                    {skippedIntensiveQueries ? null : postCount}
-                    {sessionCount}
-                    {commandCount}
-                    {incomingCount}
-                    {outgoingCount}
-                    {totalFiles}
-                    {totalFilesSize}
-                </>
-            );
-        } else if (!isLicensed) {
-            systemCards = (
-                <>
-                    {userCount}
-                    {isCloud || !isLicensed ? null : seatsPurchased}
-                    {teamCount}
-                    {channelCount}
-                    {skippedIntensiveQueries ? null : postCount}
-                </>
-            );
-        }
+        const systemCards = (
+            <>
+                {userCount}
+                {singleChannelGuests}
+                {teamCount}
+                {channelCount}
+                {skippedIntensiveQueries ? null : postCount}
+                {sessionCount}
+                {commandCount}
+                {incomingCount}
+                {outgoingCount}
+                {totalFiles}
+                {totalFilesSize}
+            </>
+        );
 
         return (
             <div className='wrapper--fixed team_statistics'>
@@ -535,11 +475,6 @@ export default class SystemAnalytics extends React.PureComponent<Props, State> {
                 </AdminHeader>
                 <div className='admin-console__wrapper'>
                     <div className='admin-console__content'>
-                        <UserSeatAlertBanner
-                            license={this.props.license}
-                            totalUsers={this.props.serverLimits?.activeUserCount ?? this.getStatValue(stats[StatTypes.TOTAL_USERS]) ?? 0}
-                            location='system_statistics'
-                        />
                         {banner}
                         <div className='grid-statistics'>
                             {systemCards}

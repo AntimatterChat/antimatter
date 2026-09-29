@@ -4,7 +4,7 @@
 import React from 'react';
 import {FormattedMessage, defineMessage, defineMessages} from 'react-intl';
 
-import type {AdminConfig, ClientLicense, ServiceSettings} from '@mattermost/types/config';
+import type {AdminConfig, ServiceSettings} from '@mattermost/types/config';
 
 import BooleanSetting from './boolean_setting';
 import OLDAdminSettings from './old_admin_settings';
@@ -20,12 +20,9 @@ interface State extends BaseState {
     sessionLengthSSOInHours: ServiceSettings['SessionLengthSSOInHours'];
     sessionCacheInMinutes: ServiceSettings['SessionCacheInMinutes'];
     sessionIdleTimeoutInMinutes: ServiceSettings['SessionIdleTimeoutInMinutes'];
-    sessionIdleTimeoutMobileInMinutes: ClientLicense['SessionIdleTimeoutMobileInMinutes'];
 }
 
-type Props = BaseProps & {
-    license: ClientLicense;
-};
+type Props = BaseProps;
 
 const messages = defineMessages({
     title: {id: 'admin.sessionLengths.title', defaultMessage: 'Session Lengths'},
@@ -116,7 +113,7 @@ export default class SessionLengthSettings extends OLDAdminSettings<Props, State
             sessionLengthMobileHelpText = (<FormattedMessage {...messages.mobileSessionHoursDesc}/>);
             sessionLengthSSOHelpText = (<FormattedMessage {...messages.ssoSessionHoursDesc}/>);
         }
-        if (this.props.license.Compliance && !this.state.extendSessionLengthWithActivity) {
+        if (!this.state.extendSessionLengthWithActivity) {
             sessionTimeoutSetting = (
                 <TextSetting
                     id='sessionIdleTimeoutInMinutes'

@@ -7,8 +7,7 @@ import {FormattedMessage} from 'react-intl';
 
 import {WithTooltip} from '@mattermost/shared/components/tooltip';
 import type {TestLdapFiltersResponse} from '@mattermost/types/admin';
-import type {CloudState} from '@mattermost/types/cloud';
-import type {AdminConfig, ClientLicense, EnvironmentConfig} from '@mattermost/types/config';
+import type {AdminConfig, EnvironmentConfig} from '@mattermost/types/config';
 import type {Role} from '@mattermost/types/roles';
 import type {DeepPartial} from '@mattermost/types/utilities';
 
@@ -71,14 +70,11 @@ type Props = {
     environmentConfig: Partial<EnvironmentConfig>;
     setNavigationBlocked: (blocked: boolean) => void;
     roles: Record<string, Role>;
-    license: ClientLicense;
     editRole: (role: Role) => void;
     patchConfig: (config: DeepPartial<AdminConfig>) => Promise<ActionResult>;
     isDisabled: boolean;
     consoleAccess: ConsoleAccess;
-    cloud: CloudState;
     isCurrentUserSystemAdmin: boolean;
-    enterpriseReady: boolean;
 } & WrappedComponentProps;
 
 type State = {
@@ -188,7 +184,6 @@ const LDAPWizard = (props: Props) => {
                 setting={setting}
                 config={props.config}
                 state={state}
-                license={props.license}
             />
         );
     };
@@ -197,8 +192,6 @@ const LDAPWizard = (props: Props) => {
         return (
             <LDAPDropdownSetting
                 config={props.config}
-                license={props.license}
-                enterpriseReady={props.enterpriseReady}
                 key={schema.id + '_dropdown_' + setting.key}
                 state={state}
                 onChange={handleChange}
@@ -273,7 +266,6 @@ const LDAPWizard = (props: Props) => {
         return (
             <LDAPCustomSetting
                 config={props.config}
-                license={props.license}
                 key={schema.id + '_custom_' + setting.key}
                 schema={schema}
                 setting={setting}
@@ -334,14 +326,14 @@ const LDAPWizard = (props: Props) => {
 
     const isDisabled = (setting: AdminDefinitionSetting) => {
         if (typeof setting.isDisabled === 'function') {
-            return setting.isDisabled(props.config, state, props.license, props.enterpriseReady, props.consoleAccess, props.cloud, props.isCurrentUserSystemAdmin);
+            return setting.isDisabled(props.config, state, props.consoleAccess, props.isCurrentUserSystemAdmin);
         }
         return Boolean(setting.isDisabled);
     };
 
     const isHidden = (setting: AdminDefinitionSetting) => {
         if (typeof setting.isHidden === 'function') {
-            return setting.isHidden(props.config, state, props.license);
+            return setting.isHidden(props.config, state);
         }
         return Boolean(setting.isHidden);
     };
@@ -430,13 +422,7 @@ const LDAPWizard = (props: Props) => {
     };
 
     const handleChange = (id: string, value: unknown, confirm = false, shouldSubmit = false, warning = false) => {
-        let saveNeeded: State['saveNeeded'] = state.saveNeeded === 'permissions' ? 'both' : 'config';
-
-        // Exception: Since OpenId-Custom is treated as feature discovery for Cloud Starter licenses, save button is disabled.
-        const isCloudStarter = props.license.Cloud === 'true' && props.license.SkuShortName === 'starter';
-        if (id === 'openidType' && value === 'openid' && isCloudStarter) {
-            saveNeeded = false;
-        }
+        const saveNeeded: State['saveNeeded'] = state.saveNeeded === 'permissions' ? 'both' : 'config';
 
         const clientWarning = warning === false ? state.clientWarning : warning;
 
@@ -548,7 +534,7 @@ const LDAPWizard = (props: Props) => {
                 if ('isHidden' in setting) {
                     let hidden = false;
                     if (typeof setting.isHidden === 'function') {
-                        hidden = setting.isHidden?.(props.config, state, props.license, props.enterpriseReady, props.consoleAccess, props.cloud, props.isCurrentUserSystemAdmin);
+                        hidden = setting.isHidden?.(props.config, state, props.consoleAccess, props.isCurrentUserSystemAdmin);
                     } else {
                         hidden = Boolean(setting.isHidden);
                     }

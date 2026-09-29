@@ -16,7 +16,6 @@ import LoadingScreen from 'components/loading_screen';
 import ReloadIcon from 'components/widgets/icons/fa_reload_icon';
 
 type Props = {
-    isLicensed: boolean;
     audits: Audit[];
     isDisabled?: boolean;
     actions: {
@@ -33,7 +32,6 @@ export const searchableStrings = [
 ];
 
 const Audits = ({
-    isLicensed,
     audits,
     isDisabled,
     actions,
@@ -82,13 +80,6 @@ const Audits = ({
         );
     };
 
-    const renderComplianceReports = () => {
-        if (!isLicensed) {
-            return <div/>;
-        }
-        return <ComplianceReports readOnly={isDisabled}/>;
-    };
-
     let content = null;
 
     if (isLoadingAudits) {
@@ -108,7 +99,7 @@ const Audits = ({
 
     return (
         <div>
-            {renderComplianceReports()}
+            <ComplianceReports readOnly={isDisabled}/>
             <div className='panel compliance-panel'>
                 {activityLogHeader()}
                 <div className='compliance-panel__table'>

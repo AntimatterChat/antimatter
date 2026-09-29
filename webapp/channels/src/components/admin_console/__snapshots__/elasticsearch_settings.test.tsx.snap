@@ -65,7 +65,7 @@ exports[`components/ElasticSearchSettings should match snapshot, disabled 1`] = 
               >
                 When true, indexing of new posts occurs automatically. Search queries will use database search until "Enable Elasticsearch for search queries" is enabled. 
                 <a
-                  href="https://mattermost.com/pl/setup-elasticsearch?utm_source=mattermost&utm_medium=in-product&utm_content=elasticsearch_settings&uid=&sid=&edition=team&server_version="
+                  href="https://mattermost.com/pl/setup-elasticsearch?utm_source=mattermost&utm_medium=in-product&utm_content=elasticsearch_settings&uid=&sid=&server_version="
                   location="elasticsearch_settings"
                   rel="noopener noreferrer"
                   target="_blank"
@@ -137,7 +137,7 @@ exports[`components/ElasticSearchSettings should match snapshot, disabled 1`] = 
               >
                 The address of the Elasticsearch server. 
                 <a
-                  href="https://mattermost.com/pl/setup-elasticsearch?utm_source=mattermost&utm_medium=in-product&utm_content=elasticsearch_settings&uid=&sid=&edition=team&server_version="
+                  href="https://mattermost.com/pl/setup-elasticsearch?utm_source=mattermost&utm_medium=in-product&utm_content=elasticsearch_settings&uid=&sid=&server_version="
                   location="elasticsearch_settings"
                   rel="noopener noreferrer"
                   target="_blank"
@@ -823,7 +823,7 @@ exports[`components/ElasticSearchSettings should match snapshot, enabled 1`] = `
               >
                 When true, indexing of new posts occurs automatically. Search queries will use database search until "Enable Elasticsearch for search queries" is enabled. 
                 <a
-                  href="https://mattermost.com/pl/setup-elasticsearch?utm_source=mattermost&utm_medium=in-product&utm_content=elasticsearch_settings&uid=&sid=&edition=team&server_version="
+                  href="https://mattermost.com/pl/setup-elasticsearch?utm_source=mattermost&utm_medium=in-product&utm_content=elasticsearch_settings&uid=&sid=&server_version="
                   location="elasticsearch_settings"
                   rel="noopener noreferrer"
                   target="_blank"
@@ -893,7 +893,7 @@ exports[`components/ElasticSearchSettings should match snapshot, enabled 1`] = `
               >
                 The address of the Elasticsearch server. 
                 <a
-                  href="https://mattermost.com/pl/setup-elasticsearch?utm_source=mattermost&utm_medium=in-product&utm_content=elasticsearch_settings&uid=&sid=&edition=team&server_version="
+                  href="https://mattermost.com/pl/setup-elasticsearch?utm_source=mattermost&utm_medium=in-product&utm_content=elasticsearch_settings&uid=&sid=&server_version="
                   location="elasticsearch_settings"
                   rel="noopener noreferrer"
                   target="_blank"
@@ -1559,7 +1559,7 @@ exports[`components/ElasticSearchSettings should match snapshot, sniff enabled 1
               >
                 When true, indexing of new posts occurs automatically. Search queries will use database search until "Enable Elasticsearch for search queries" is enabled. 
                 <a
-                  href="https://mattermost.com/pl/setup-elasticsearch?utm_source=mattermost&utm_medium=in-product&utm_content=elasticsearch_settings&uid=&sid=&edition=team&server_version="
+                  href="https://mattermost.com/pl/setup-elasticsearch?utm_source=mattermost&utm_medium=in-product&utm_content=elasticsearch_settings&uid=&sid=&server_version="
                   location="elasticsearch_settings"
                   rel="noopener noreferrer"
                   target="_blank"
@@ -1629,7 +1629,7 @@ exports[`components/ElasticSearchSettings should match snapshot, sniff enabled 1
               >
                 The address of the Elasticsearch server. 
                 <a
-                  href="https://mattermost.com/pl/setup-elasticsearch?utm_source=mattermost&utm_medium=in-product&utm_content=elasticsearch_settings&uid=&sid=&edition=team&server_version="
+                  href="https://mattermost.com/pl/setup-elasticsearch?utm_source=mattermost&utm_medium=in-product&utm_content=elasticsearch_settings&uid=&sid=&server_version="
                   location="elasticsearch_settings"
                   rel="noopener noreferrer"
                   target="_blank"
