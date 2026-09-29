@@ -8,6 +8,7 @@ import (
 	_ "github.com/mattermost/mattermost/server/v8/libre/accountmigration"
 	_ "github.com/mattermost/mattermost/server/v8/libre/cluster"
 	_ "github.com/mattermost/mattermost/server/v8/libre/compliance"
+	_ "github.com/mattermost/mattermost/server/v8/libre/dataretention"
 	_ "github.com/mattermost/mattermost/server/v8/libre/intune"
 	_ "github.com/mattermost/mattermost/server/v8/libre/ldap"
 	_ "github.com/mattermost/mattermost/server/v8/libre/metrics"
