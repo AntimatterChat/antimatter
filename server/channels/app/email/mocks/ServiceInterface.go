@@ -248,17 +248,17 @@ func (_m *ServiceInterface) SendGuestInviteEmails(rctx request.CTX, team *model.
 	return r0
 }
 
-// SendIPFiltersChangedEmail provides a mock function with given fields: _a0, userWhoChangedFilter, siteURL, portalURL, locale, isWorkspaceOwner
-func (_m *ServiceInterface) SendIPFiltersChangedEmail(_a0 string, userWhoChangedFilter *model.User, siteURL string, portalURL string, locale string, isWorkspaceOwner bool) error {
-	ret := _m.Called(_a0, userWhoChangedFilter, siteURL, portalURL, locale, isWorkspaceOwner)
+// SendIPFiltersChangedEmail provides a mock function with given fields: _a0, userWhoChangedFilter, siteURL, locale
+func (_m *ServiceInterface) SendIPFiltersChangedEmail(_a0 string, userWhoChangedFilter *model.User, siteURL string, locale string) error {
+	ret := _m.Called(_a0, userWhoChangedFilter, siteURL, locale)
 
 	if len(ret) == 0 {
 		panic("no return value specified for SendIPFiltersChangedEmail")
 	}
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(string, *model.User, string, string, string, bool) error); ok {
-		r0 = rf(_a0, userWhoChangedFilter, siteURL, portalURL, locale, isWorkspaceOwner)
+	if rf, ok := ret.Get(0).(func(string, *model.User, string, string) error); ok {
+		r0 = rf(_a0, userWhoChangedFilter, siteURL, locale)
 	} else {
 		r0 = ret.Error(0)
 	}

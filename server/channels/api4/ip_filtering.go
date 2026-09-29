@@ -10,7 +10,6 @@ import (
 	"github.com/mattermost/mattermost/server/public/model"
 	"github.com/mattermost/mattermost/server/public/shared/mlog"
 	"github.com/mattermost/mattermost/server/v8/channels/app"
-	"github.com/mattermost/mattermost/server/v8/einterfaces"
 )
 
 func (api *API) InitIPFiltering() {
@@ -19,43 +18,18 @@ func (api *API) InitIPFiltering() {
 	api.BaseRoutes.IPFiltering.Handle("/my_ip", api.APISessionRequired(myIP)).Methods(http.MethodGet)
 }
 
-func ensureIPFilteringInterface(c *Context, where string) (einterfaces.IPFilteringInterface, bool) {
-	if c.App.IPFiltering() == nil {
-		c.Err = model.NewAppError(where, "api.context.ip_filtering.not_available.app_error", nil, "", http.StatusNotImplemented)
-		return nil, false
-	}
-	return c.App.IPFiltering(), true
-}
-
 func getIPFilters(c *Context, w http.ResponseWriter, r *http.Request) {
-	ipFiltering, ok := ensureIPFilteringInterface(c, "getIPFilters")
-	if !ok {
-		return
-	}
-
 	if !c.App.SessionHasPermissionTo(*c.AppContext.Session(), model.PermissionSysconsoleReadIPFilters) {
 		c.SetPermissionError(model.PermissionSysconsoleReadIPFilters)
 		return
 	}
 
-	allowedRanges, err := ipFiltering.GetIPFilters()
-	if err != nil {
-		c.Err = model.NewAppError("getIPFilters", "api.context.ip_filtering.get_ip_filters.app_error", nil, "", http.StatusInternalServerError).Wrap(err)
-		return
-	}
-
-	if err := json.NewEncoder(w).Encode(allowedRanges); err != nil {
-		c.Err = model.NewAppError("getIPFilters", "api.context.ip_filtering.get_ip_filters.app_error", nil, "", http.StatusInternalServerError).Wrap(err)
-		return
+	if err := json.NewEncoder(w).Encode(c.App.GetIPFilters()); err != nil {
+		c.Logger.Warn("Error while writing response", mlog.Err(err))
 	}
 }
 
 func applyIPFilters(c *Context, w http.ResponseWriter, r *http.Request) {
-	ipFiltering, ok := ensureIPFilteringInterface(c, "applyIPFilters")
-	if !ok {
-		return
-	}
-
 	if !c.App.SessionHasPermissionTo(*c.AppContext.Session(), model.PermissionSysconsoleWriteIPFilters) {
 		c.SetPermissionError(model.PermissionSysconsoleWriteIPFilters)
 		return
@@ -64,53 +38,40 @@ func applyIPFilters(c *Context, w http.ResponseWriter, r *http.Request) {
 	auditRec := c.MakeAuditRecord(model.AuditEventApplyIPFilters, model.AuditStatusFail)
 	defer c.LogAuditRecWithLevel(auditRec, app.LevelContent)
 
-	allowedRanges := &model.AllowedIPRanges{} // Initialize the allowedRanges variable
-	if err := json.NewDecoder(r.Body).Decode(allowedRanges); err != nil {
-		c.Err = model.NewAppError("applyIPFilters", "api.context.ip_filtering.apply_ip_filters.app_error", nil, "", http.StatusInternalServerError).Wrap(err)
+	var ranges model.AllowedIPRanges
+	if err := json.NewDecoder(r.Body).Decode(&ranges); err != nil {
+		c.SetInvalidParamWithErr("ip_filters", err)
 		return
 	}
 
-	model.AddEventParameterAuditableToAuditRec(auditRec, "IPFilter", allowedRanges)
+	model.AddEventParameterAuditableToAuditRec(auditRec, "IPFilter", &ranges)
 
-	updatedAllowedRanges, err := ipFiltering.ApplyIPFilters(allowedRanges)
-
-	if err != nil {
-		c.Err = model.NewAppError("applyIPFilters", "api.context.ip_filtering.apply_ip_filters.app_error", nil, "", http.StatusInternalServerError).Wrap(err)
+	applied, appErr := c.App.ApplyIPFilters(c.AppContext, ranges, c.AppContext.IPAddress())
+	if appErr != nil {
+		c.Err = appErr
 		return
 	}
 
 	auditRec.Success()
 
-	go func() {
-		if err := c.App.SendIPFiltersChangedEmail(c.AppContext, c.AppContext.Session().UserId); err != nil {
+	userID := c.AppContext.Session().UserId
+	c.App.Srv().Go(func() {
+		if err := c.App.SendIPFiltersChangedEmail(c.AppContext, userID); err != nil {
 			c.Logger.Warn("Failed to send IP filters changed email", mlog.Err(err))
 		}
-	}()
+	})
 
-	if err := json.NewEncoder(w).Encode(updatedAllowedRanges); err != nil {
-		c.Err = model.NewAppError("getIPFilters", "api.context.ip_filtering.get_ip_filters.app_error", nil, "", http.StatusInternalServerError).Wrap(err)
-		return
+	if err := json.NewEncoder(w).Encode(applied); err != nil {
+		c.Logger.Warn("Error while writing response", mlog.Err(err))
 	}
 }
 
 func myIP(c *Context, w http.ResponseWriter, r *http.Request) {
-	_, ok := ensureIPFilteringInterface(c, "myIP")
-
-	if !ok {
-		return
-	}
-
 	response := &model.GetIPAddressResponse{
 		IP: c.AppContext.IPAddress(),
 	}
 
-	json, err := json.Marshal(response)
-	if err != nil {
-		c.Err = model.NewAppError("myIP", "api.context.ip_filtering.get_my_ip.failed", nil, "", http.StatusInternalServerError).Wrap(err)
-		return
-	}
-
-	if _, err := w.Write(json); err != nil {
+	if err := json.NewEncoder(w).Encode(response); err != nil {
 		c.Logger.Warn("Error while writing response", mlog.Err(err))
 	}
 }
