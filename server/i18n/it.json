@@ -85,7 +85,7 @@
   },
   {
     "id": "api.admin.test_email.body",
-    "translation": "La configurazione email di Mattermost è corretta!"
+    "translation": "La configurazione email di Antimatter è corretta!"
   },
   {
     "id": "api.admin.test_email.missing_server",
@@ -97,7 +97,7 @@
   },
   {
     "id": "api.admin.test_email.subject",
-    "translation": "Mattermost - Test delle impostazioni Email"
+    "translation": "Antimatter - Test delle impostazioni Email"
   },
   {
     "id": "api.admin.test_s3.missing_s3_bucket",
@@ -341,7 +341,7 @@
   },
   {
     "id": "api.command.invite_people.desc",
-    "translation": "Manda un email di invito al tuo gruppo Mattermost"
+    "translation": "Manda un email di invito al tuo gruppo Antimatter"
   },
   {
     "id": "api.command.invite_people.email_invitations_off",
@@ -609,7 +609,7 @@
   },
   {
     "id": "api.command_help.desc",
-    "translation": "Vai alla pagina di aiuto di Mattermost"
+    "translation": "Vai alla pagina di aiuto di Antimatter"
   },
   {
     "id": "api.command_help.name",
@@ -705,7 +705,7 @@
   },
   {
     "id": "api.command_logout.desc",
-    "translation": "Logout da Mattermost"
+    "translation": "Logout da Antimatter"
   },
   {
     "id": "api.command_logout.name",
@@ -2913,7 +2913,7 @@
   },
   {
     "id": "ent.ldap.syncronize.search_failure.app_error",
-    "translation": "Impossibile trovare gli utenti AD/LDAP. Controllare se il server Mattermost riesce a collegarsi al server AD/LDAP e riprovare."
+    "translation": "Impossibile trovare gli utenti AD/LDAP. Controllare se il server Antimatter riesce a collegarsi al server AD/LDAP e riprovare."
   },
   {
     "id": "ent.ldap.validate_filter.app_error",
@@ -2957,7 +2957,7 @@
   },
   {
     "id": "ent.migration.migratetosaml.username_already_used_by_other_user",
-    "translation": "Nome utente in uso da un altro utente Mattermost."
+    "translation": "Nome utente in uso da un altro utente Antimatter."
   },
   {
     "id": "ent.saml.attribute.app_error",
@@ -3037,7 +3037,7 @@
   },
   {
     "id": "mattermost.bulletin.subject",
-    "translation": "Bollettino di Sicurezza di Mattermost"
+    "translation": "Bollettino di Sicurezza di Antimatter"
   },
   {
     "id": "mfa.activate.bad_token.app_error",
@@ -4565,7 +4565,7 @@
   },
   {
     "id": "api.bot.teams_channels.add_message_mobile",
-    "translation": "Per favore aggiungimi alle squadre e ai canali con cui vuoi che interagisca. Per farlo utilizza il browser oppure l'app desktop di Mattermost."
+    "translation": "Per favore aggiungimi alle squadre e ai canali con cui vuoi che interagisca. Per farlo utilizza il browser oppure l'app desktop di Antimatter."
   },
   {
     "id": "api.channel.get_channel_moderations.license.error",
@@ -5205,11 +5205,11 @@
   },
   {
     "id": "web.error.unsupported_browser.no_longer_support",
-    "translation": "Questo browser non è più supportato da Mattermost"
+    "translation": "Questo browser non è più supportato da Antimatter"
   },
   {
     "id": "web.error.unsupported_browser.no_longer_support_version",
-    "translation": "La versione del tuo browser non è più supportata da Mattermost"
+    "translation": "La versione del tuo browser non è più supportata da Antimatter"
   },
   {
     "id": "web.error.unsupported_browser.open_system_browser.edge",

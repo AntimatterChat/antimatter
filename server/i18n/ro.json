@@ -85,7 +85,7 @@
   },
   {
     "id": "api.admin.test_email.body",
-    "translation": "Se pare că e-mailul tau Mattermost este setat corect!"
+    "translation": "Se pare că e-mailul tau Antimatter este setat corect!"
   },
   {
     "id": "api.admin.test_email.missing_server",
@@ -97,7 +97,7 @@
   },
   {
     "id": "api.admin.test_email.subject",
-    "translation": "Mattermost - Testarea setărilor de e-mail"
+    "translation": "Antimatter - Testarea setărilor de e-mail"
   },
   {
     "id": "api.admin.test_s3.missing_s3_bucket",
@@ -341,7 +341,7 @@
   },
   {
     "id": "api.command.invite_people.desc",
-    "translation": "Trimite un e-mail de a invita în echipa ta de Mattermost"
+    "translation": "Trimite un e-mail de a invita în echipa ta de Antimatter"
   },
   {
     "id": "api.command.invite_people.email_invitations_off",
@@ -617,7 +617,7 @@
   },
   {
     "id": "api.command_help.desc",
-    "translation": "Deschideți pagina de ajutor Mattermost"
+    "translation": "Deschideți pagina de ajutor Antimatter"
   },
   {
     "id": "api.command_help.name",
@@ -713,7 +713,7 @@
   },
   {
     "id": "api.command_logout.desc",
-    "translation": "Radierea Mattermost"
+    "translation": "Radierea Antimatter"
   },
   {
     "id": "api.command_logout.name",
@@ -1777,7 +1777,7 @@
   },
   {
     "id": "api.templates.verify_body.info",
-    "translation": "Această adresă de e-mail a fost utilizată pentru a crea un cont cu Mattermost."
+    "translation": "Această adresă de e-mail a fost utilizată pentru a crea un cont cu Antimatter."
   },
   {
     "id": "api.templates.verify_body.title",
@@ -1797,7 +1797,7 @@
   },
   {
     "id": "api.templates.welcome_body.info",
-    "translation": "Această adresă de e-mail a fost utilizată pentru a crea un cont cu Mattermost."
+    "translation": "Această adresă de e-mail a fost utilizată pentru a crea un cont cu Antimatter."
   },
   {
     "id": "api.templates.welcome_body.title",
@@ -2925,7 +2925,7 @@
   },
   {
     "id": "ent.ldap.do_login.user_filtered.app_error",
-    "translation": "Contul AD/LDAP nu are permisiunea de a utiliza acest server Mattermost. Vă rugăm să cereţi administratorului de sistem pentru a verifica filtrul de utilizator AD/LDAP."
+    "translation": "Contul AD/LDAP nu are permisiunea de a utiliza acest server Antimatter. Vă rugăm să cereţi administratorului de sistem pentru a verifica filtrul de utilizator AD/LDAP."
   },
   {
     "id": "ent.ldap.do_login.user_not_registered.app_error",
@@ -2945,7 +2945,7 @@
   },
   {
     "id": "ent.ldap.syncronize.search_failure.app_error",
-    "translation": "Căutarea utilizatorilor în AD/LDAP nu a reușit. Testaţi dacă serverul Mattermost poate conecta la serverul de anunţuri/LDAP și încercați din nou."
+    "translation": "Căutarea utilizatorilor în AD/LDAP nu a reușit. Testaţi dacă serverul Antimatter poate conecta la serverul de anunţuri/LDAP și încercați din nou."
   },
   {
     "id": "ent.ldap.validate_filter.app_error",
@@ -2989,7 +2989,7 @@
   },
   {
     "id": "ent.migration.migratetosaml.username_already_used_by_other_user",
-    "translation": "Numele de utilizator deja folosit de alt utilizator de Mattermost."
+    "translation": "Numele de utilizator deja folosit de alt utilizator de Antimatter."
   },
   {
     "id": "ent.saml.attribute.app_error",
@@ -3069,7 +3069,7 @@
   },
   {
     "id": "mattermost.bulletin.subject",
-    "translation": "Buletin de securitate Mattermost"
+    "translation": "Buletin de securitate Antimatter"
   },
   {
     "id": "mfa.activate.bad_token.app_error",
@@ -4329,11 +4329,11 @@
   },
   {
     "id": "web.error.unsupported_browser.no_longer_support_version",
-    "translation": "Această versiune a browserului nu mai este suportată de Mattermost"
+    "translation": "Această versiune a browserului nu mai este suportată de Antimatter"
   },
   {
     "id": "web.error.unsupported_browser.no_longer_support",
-    "translation": "Acest browser nu mai este suportat de Mattermost"
+    "translation": "Acest browser nu mai este suportat de Antimatter"
   },
   {
     "id": "web.error.unsupported_browser.min_os_version.windows",
@@ -7065,7 +7065,7 @@
   },
   {
     "id": "api.command_remote.desc",
-    "translation": "Invitați clustere Mattermost la distanță pentru comunicarea inter-cluster."
+    "translation": "Invitați clustere Antimatter la distanță pentru comunicarea inter-cluster."
   },
   {
     "id": "api.command_remote.decode_invitation.error",
@@ -7141,7 +7141,7 @@
   },
   {
     "id": "api.templates.invite_body_footer.title",
-    "translation": "Ce este Mattermost?"
+    "translation": "Ce este Antimatter?"
   },
   {
     "id": "api.templates.invite_body_footer.learn_more",
@@ -7149,11 +7149,11 @@
   },
   {
     "id": "api.templates.invite_body_footer.info",
-    "translation": "Mattermost este o platformă de mesagerie flexibilă, open source, care permite colaborarea securizată în echipă."
+    "translation": "Antimatter este o platformă de mesagerie flexibilă, open source, care permite colaborarea securizată în echipă."
   },
   {
     "id": "api.templates.invite_body.subTitle",
-    "translation": "Începeți să colaborați cu echipa dvs. pe Mattermost"
+    "translation": "Începeți să colaborați cu echipa dvs. pe Antimatter"
   },
   {
     "id": "api.templates.cloud_welcome_email.subtitle_info",
@@ -7409,7 +7409,7 @@
   },
   {
     "id": "api.command_share.desc",
-    "translation": "Partajează canalul curent cu o instanță Mattermost de la distanță."
+    "translation": "Partajează canalul curent cu o instanță Antimatter de la distanță."
   },
   {
     "id": "api.command_share.could_not_uninvite.error",

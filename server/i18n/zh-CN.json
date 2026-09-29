@@ -85,7 +85,7 @@
   },
   {
     "id": "api.admin.test_email.body",
-    "translation": "看来您的 Mattermost 邮件设置成功了！"
+    "translation": "看来您的 Antimatter 邮件设置成功了！"
   },
   {
     "id": "api.admin.test_email.missing_server",
@@ -97,7 +97,7 @@
   },
   {
     "id": "api.admin.test_email.subject",
-    "translation": "Mattermost - 测试邮件设置"
+    "translation": "Antimatter - 测试邮件设置"
   },
   {
     "id": "api.admin.test_s3.missing_s3_bucket",
@@ -341,7 +341,7 @@
   },
   {
     "id": "api.command.invite_people.desc",
-    "translation": "向您的 Mattermost 团队发送邀请邮件"
+    "translation": "向您的 Antimatter 团队发送邀请邮件"
   },
   {
     "id": "api.command.invite_people.email_invitations_off",
@@ -615,7 +615,7 @@
   },
   {
     "id": "api.command_help.desc",
-    "translation": "显示 Mattermost 帮助信息"
+    "translation": "显示 Antimatter 帮助信息"
   },
   {
     "id": "api.command_help.name",
@@ -721,7 +721,7 @@
   },
   {
     "id": "api.command_logout.desc",
-    "translation": "退出登录 Mattermost"
+    "translation": "退出登录 Antimatter"
   },
   {
     "id": "api.command_logout.name",
@@ -1719,7 +1719,7 @@
   },
   {
     "id": "api.templates.post_body.button",
-    "translation": "在 Mattermost 中回复"
+    "translation": "在 Antimatter 中回复"
   },
   {
     "id": "api.templates.reset_body.button",
@@ -1779,7 +1779,7 @@
   },
   {
     "id": "api.templates.verify_body.info",
-    "translation": "此邮箱地址用于创建 Mattermost 账号。"
+    "translation": "此邮箱地址用于创建 Antimatter 账号。"
   },
   {
     "id": "api.templates.verify_body.title",
@@ -1799,7 +1799,7 @@
   },
   {
     "id": "api.templates.welcome_body.info",
-    "translation": "此邮箱地址用于创建 Mattermost 账号。"
+    "translation": "此邮箱地址用于创建 Antimatter 账号。"
   },
   {
     "id": "api.templates.welcome_body.title",
@@ -2983,7 +2983,7 @@
   },
   {
     "id": "ent.ldap.do_login.user_filtered.app_error",
-    "translation": "您的 AD/LDAP 账号没有使用此 Mattermost 服务器的权限。请向您的系统管理员询问确认 AD/LDAP 用户过滤器。"
+    "translation": "您的 AD/LDAP 账号没有使用此 Antimatter 服务器的权限。请向您的系统管理员询问确认 AD/LDAP 用户过滤器。"
   },
   {
     "id": "ent.ldap.do_login.user_not_registered.app_error",
@@ -3003,7 +3003,7 @@
   },
   {
     "id": "ent.ldap.syncronize.search_failure.app_error",
-    "translation": "从 AD/LDAP 搜索用户失败。请测试 Mattermost 服务器是否可以连接您的 AD/LDAP 服务器后重新尝试。"
+    "translation": "从 AD/LDAP 搜索用户失败。请测试 Antimatter 服务器是否可以连接您的 AD/LDAP 服务器后重新尝试。"
   },
   {
     "id": "ent.ldap.validate_filter.app_error",
@@ -3047,7 +3047,7 @@
   },
   {
     "id": "ent.migration.migratetosaml.username_already_used_by_other_user",
-    "translation": "用户名已被其他 Mattermost 用户使用。"
+    "translation": "用户名已被其他 Antimatter 用户使用。"
   },
   {
     "id": "ent.saml.attribute.app_error",
@@ -3131,7 +3131,7 @@
   },
   {
     "id": "mattermost.bulletin.subject",
-    "translation": "Mattermost 安全公告"
+    "translation": "Antimatter 安全公告"
   },
   {
     "id": "mfa.activate.bad_token.app_error",
@@ -4259,7 +4259,7 @@
   },
   {
     "id": "oauth.gitlab.tos.error",
-    "translation": "GitLab 的使用条款已更新。请到 {{.URL}} 接受新的使用条款后再尝试登录 Mattermost。"
+    "translation": "GitLab 的使用条款已更新。请到 {{.URL}} 接受新的使用条款后再尝试登录 Antimatter。"
   },
   {
     "id": "plugin.api.update_user_status.bad_status",
@@ -5331,11 +5331,11 @@
   },
   {
     "id": "web.error.unsupported_browser.no_longer_support_version",
-    "translation": "您的浏览器不再被 Mattermost 支持"
+    "translation": "您的浏览器不再被 Antimatter 支持"
   },
   {
     "id": "web.error.unsupported_browser.no_longer_support",
-    "translation": "Mattermost 不再支持此浏览器"
+    "translation": "Antimatter 不再支持此浏览器"
   },
   {
     "id": "web.error.unsupported_browser.min_os_version.windows",
@@ -7167,7 +7167,7 @@
   },
   {
     "id": "api.templates.invite_body_footer.title",
-    "translation": "什么是 Mattermost？"
+    "translation": "什么是 Antimatter？"
   },
   {
     "id": "api.templates.invite_body_footer.learn_more",
@@ -7175,7 +7175,7 @@
   },
   {
     "id": "api.templates.invite_body.subTitle",
-    "translation": "开始在 Mattermost 与您的团队合作"
+    "translation": "开始在 Antimatter 与您的团队合作"
   },
   {
     "id": "api.templates.email_footer_v2",
@@ -7359,7 +7359,7 @@
   },
   {
     "id": "api.command_remote.invite_summary",
-    "translation": "将以下 AES 256 位加密的邀请与密码一起发送给外部 Mattermost 管理员。对方将使用 `{{.Command}}` 斜杠命令来接受邀请。\n\n```\n{{.Invitation}}\n```\n\n**确保远程站点可以通过 {{.SiteURL}} 访问您的 Mattermost 实例**"
+    "translation": "将以下 AES 256 位加密的邀请与密码一起发送给外部 Antimatter 管理员。对方将使用 `{{.Command}}` 斜杠命令来接受邀请。\n\n```\n{{.Invitation}}\n```\n\n**确保远程站点可以通过 {{.SiteURL}} 访问您的 Antimatter 实例**"
   },
   {
     "id": "api.command_remote.invite_password.hint",
@@ -7403,11 +7403,11 @@
   },
   {
     "id": "api.command_remote.desc",
-    "translation": "邀请安全连接以在 Mattermost 实例之间进行通信。"
+    "translation": "邀请安全连接以在 Antimatter 实例之间进行通信。"
   },
   {
     "id": "api.command_remote.accept.help",
-    "translation": "接受来自外部 Mattermost 的邀请"
+    "translation": "接受来自外部 Antimatter 的邀请"
   },
   {
     "id": "api.command_remote.decode_invitation.error",
@@ -7499,7 +7499,7 @@
   },
   {
     "id": "api.command_share.invite_remote.help",
-    "translation": "邀请外部 Mattermost 实例加入当前共享频道"
+    "translation": "邀请外部 Antimatter 实例加入当前共享频道"
   },
   {
     "id": "api.command_share.invitation_sent",
@@ -7519,7 +7519,7 @@
   },
   {
     "id": "api.command_share.desc",
-    "translation": "与外部 Mattermost 实例共享当前频道。"
+    "translation": "与外部 Antimatter 实例共享当前频道。"
   },
   {
     "id": "api.command_share.could_not_uninvite.error",
@@ -7623,7 +7623,7 @@
   },
   {
     "id": "api.email_batching.send_batched_email_notification.button",
-    "translation": "打开 Mattermost"
+    "translation": "打开 Antimatter"
   },
   {
     "id": "api.context.remote_id_missing.app_error",
@@ -7759,7 +7759,7 @@
   },
   {
     "id": "app.notification.footer.infoLogin",
-    "translation": "登录至 Mattermost"
+    "translation": "登录至 Antimatter"
   },
   {
     "id": "app.notification.footer.info",
@@ -7835,7 +7835,7 @@
   },
   {
     "id": "api.templates.invite_body_footer.info",
-    "translation": "Mattermost 是一个灵活的开源通讯平台，可实现安全的团队协作。"
+    "translation": "Antimatter 是一个灵活的开源通讯平台，可实现安全的团队协作。"
   },
   {
     "id": "api.license.upgrade_needed.app_error",
@@ -8179,7 +8179,7 @@
   },
   {
     "id": "api.command_help.success",
-    "translation": "Mattermost 是一个开源平台，用于跨工具和团队的安全通信、协作和工作编排。\nMattermost 包含两个关键工具：\n\n**频道** - 通过 1:1 和群组消息与您的团队保持联系。\n**[Playbooks](/playbooks)** - 构建和配置可重复的流程以实现特定且可预测的结果。\n\n[查看文档和指南]({{.HelpLink}})"
+    "translation": "Antimatter 是一个开源平台，用于跨工具和团队的安全通信、协作和工作编排。\nAntimatter 包含两个关键工具：\n\n**频道** - 通过 1:1 和群组消息与您的团队保持联系。\n**[Playbooks](/playbooks)** - 构建和配置可重复的流程以实现特定且可预测的结果。\n\n[查看文档和指南]({{.HelpLink}})"
   },
   {
     "id": "api.team.invite_guests_to_channels.disabled.error",
@@ -9143,7 +9143,7 @@
   },
   {
     "id": "api.server.cws.disabled",
-    "translation": "与 Mattermost 客户门户的交互已被系统管理员禁用。"
+    "translation": "与 Antimatter 客户门户的交互已被系统管理员禁用。"
   },
   {
     "id": "api.command_share.invite_remote_to_channel.error",
@@ -9263,7 +9263,7 @@
   },
   {
     "id": "api.config.update.elasticsearch.autocomplete_cannot_be_enabled_error",
-    "translation": "频道自动补全无法启用，因为频道索引表已过期。推荐您重新生成频道索引。查看 Mattermost 更新日志以了解更多信息"
+    "translation": "频道自动补全无法启用，因为频道索引表已过期。推荐您重新生成频道索引。查看 Antimatter 更新日志以了解更多信息"
   },
   {
     "id": "app.channel.bookmark.update.app_error",
@@ -10679,7 +10679,7 @@
   },
   {
     "id": "api.templates.guest_magic_link_body.footer.info",
-    "translation": "您收到此邮件是因为有人为 Mattermost 请求了登录链接。如果不是您本人操作，可以放心忽略此邮件。"
+    "translation": "您收到此邮件是因为有人为 Antimatter 请求了登录链接。如果不是您本人操作，可以放心忽略此邮件。"
   },
   {
     "id": "api.templates.guest_magic_link_body.footer.title",
@@ -10691,7 +10691,7 @@
   },
   {
     "id": "api.templates.guest_magic_link_body.title",
-    "translation": "登录 Mattermost"
+    "translation": "登录 Antimatter"
   },
   {
     "id": "api.templates.guest_magic_link_subject",
@@ -10835,7 +10835,7 @@
   },
   {
     "id": "ent.intune.login.account_not_found.app_error",
-    "translation": "您的账号尚未完全设置。请先通过网页或桌面端登录 Mattermost。"
+    "translation": "您的账号尚未完全设置。请先通过网页或桌面端登录 Antimatter。"
   },
   {
     "id": "ent.intune.login.extract_auth_data.app_error",

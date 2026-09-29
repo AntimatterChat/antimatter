@@ -85,7 +85,7 @@
   },
   {
     "id": "api.admin.test_email.body",
-    "translation": "사용자의 Mattermost 전자우편이 잘 설정되었습니다!"
+    "translation": "사용자의 Antimatter 전자우편이 잘 설정되었습니다!"
   },
   {
     "id": "api.admin.test_email.missing_server",
@@ -97,7 +97,7 @@
   },
   {
     "id": "api.admin.test_email.subject",
-    "translation": "Mattermost - 전자우편 설정 검사 중"
+    "translation": "Antimatter - 전자우편 설정 검사 중"
   },
   {
     "id": "api.admin.test_s3.missing_s3_bucket",
@@ -341,7 +341,7 @@
   },
   {
     "id": "api.command.invite_people.desc",
-    "translation": "여러분의 Mattermost 팀에게 전자우편 초대를 보내기"
+    "translation": "여러분의 Antimatter 팀에게 전자우편 초대를 보내기"
   },
   {
     "id": "api.command.invite_people.email_invitations_off",
@@ -615,7 +615,7 @@
   },
   {
     "id": "api.command_help.desc",
-    "translation": "Mattermost 도움말 보기"
+    "translation": "Antimatter 도움말 보기"
   },
   {
     "id": "api.command_help.name",
@@ -721,7 +721,7 @@
   },
   {
     "id": "api.command_logout.desc",
-    "translation": "Mattermost 로그아웃"
+    "translation": "Antimatter 로그아웃"
   },
   {
     "id": "api.command_logout.name",
@@ -1779,7 +1779,7 @@
   },
   {
     "id": "api.templates.verify_body.info",
-    "translation": "이 전자우편 주소는 Mattermost 계정을 생성하기 위해 사용되었습니다."
+    "translation": "이 전자우편 주소는 Antimatter 계정을 생성하기 위해 사용되었습니다."
   },
   {
     "id": "api.templates.verify_body.title",
@@ -1799,7 +1799,7 @@
   },
   {
     "id": "api.templates.welcome_body.info",
-    "translation": "이 전자우편 주소는 Mattermost 계정을 생성하는 데 사용되었습니다."
+    "translation": "이 전자우편 주소는 Antimatter 계정을 생성하는 데 사용되었습니다."
   },
   {
     "id": "api.templates.welcome_body.title",
@@ -2979,7 +2979,7 @@
   },
   {
     "id": "ent.ldap.do_login.user_filtered.app_error",
-    "translation": "AD/LDAP 계정이 Mattermost 서버를 사용하기 위한 권한이 없습니다. 시스템 관리자에게 AD/LDAP 사용자 필터 확인을 문의해보세요."
+    "translation": "AD/LDAP 계정이 Antimatter 서버를 사용하기 위한 권한이 없습니다. 시스템 관리자에게 AD/LDAP 사용자 필터 확인을 문의해보세요."
   },
   {
     "id": "ent.ldap.do_login.user_not_registered.app_error",
@@ -2999,7 +2999,7 @@
   },
   {
     "id": "ent.ldap.syncronize.search_failure.app_error",
-    "translation": "Failed to search users in AD/LDAP. Test if the Mattermost server can connect to your AD/LDAP server and try again."
+    "translation": "Failed to search users in AD/LDAP. Test if the Antimatter server can connect to your AD/LDAP server and try again."
   },
   {
     "id": "ent.ldap.validate_filter.app_error",
@@ -3043,7 +3043,7 @@
   },
   {
     "id": "ent.migration.migratetosaml.username_already_used_by_other_user",
-    "translation": "Username already used by another Mattermost user."
+    "translation": "Username already used by another Antimatter user."
   },
   {
     "id": "ent.saml.attribute.app_error",
@@ -5279,7 +5279,7 @@
   },
   {
     "id": "api.bot.teams_channels.add_message_mobile",
-    "translation": "나를 대화하기를 원하는 팀과 채널에 추가하여 주십시오. 이렇게 하려면 브라우저 또는 Mattermost 데스크탑 앱을 사용하십시오."
+    "translation": "나를 대화하기를 원하는 팀과 채널에 추가하여 주십시오. 이렇게 하려면 브라우저 또는 Antimatter 데스크탑 앱을 사용하십시오."
   },
   {
     "id": "api.bot.create_disabled",
@@ -6511,7 +6511,7 @@
   },
   {
     "id": "api.command_remote.desc",
-    "translation": "Mattermost 인스턴스 간의 통신을 위해 보안 연결을 초대합니다."
+    "translation": "Antimatter 인스턴스 간의 통신을 위해 보안 연결을 초대합니다."
   },
   {
     "id": "api.command_remote.decode_invitation.error",
@@ -6535,7 +6535,7 @@
   },
   {
     "id": "api.command_remote.accept.help",
-    "translation": "외부 Mattermost 인스턴스의 초대 수락"
+    "translation": "외부 Antimatter 인스턴스의 초대 수락"
   },
   {
     "id": "api.command_channel_purpose.update_channel.max_length",
@@ -6683,7 +6683,7 @@
   },
   {
     "id": "api.command_share.desc",
-    "translation": "현재 채널을 외부 Mattermost 인스턴스와 공유합니다."
+    "translation": "현재 채널을 외부 Antimatter 인스턴스와 공유합니다."
   },
   {
     "id": "api.command_share.could_not_uninvite.error",
@@ -6815,7 +6815,7 @@
   },
   {
     "id": "api.email_batching.send_batched_email_notification.button",
-    "translation": "Mattermost 열기"
+    "translation": "Antimatter 열기"
   },
   {
     "id": "api.context.remote_id_missing.app_error",
@@ -7183,7 +7183,7 @@
   },
   {
     "id": "api.command_remote.invite_summary",
-    "translation": "AES-256으로 암호화된 초대를 비밀번호와 함께 외부 Mattermost 시스템 관리자에게 보냅니다. 초대를 받기 위해 `{{.Command}}` 슬래시 명령어를 사용합니다.\n\n```\n{{.Invitation}}\n```\n\n**보안 연결이 다음 링크를 통해 Mattermost에 접근할 수 있는지 확인하세요** {{.SiteURL}}"
+    "translation": "AES-256으로 암호화된 초대를 비밀번호와 함께 외부 Antimatter 시스템 관리자에게 보냅니다. 초대를 받기 위해 `{{.Command}}` 슬래시 명령어를 사용합니다.\n\n```\n{{.Invitation}}\n```\n\n**보안 연결이 다음 링크를 통해 Mattermost에 접근할 수 있는지 확인하세요** {{.SiteURL}}"
   },
   {
     "id": "api.command_marketplace.unsupported.app_error",
@@ -7695,7 +7695,7 @@
   },
   {
     "id": "api.config.update.elasticsearch.autocomplete_cannot_be_enabled_error",
-    "translation": "채널 인덱스 스키마가 오래되어 채널 자동 완성 기능을 사용할 수 없습니다. 채널 인덱스를 다시 생성하는 것이 좋습니다. 자세한 내용은 Mattermost changelog를 참조하세요."
+    "translation": "채널 인덱스 스키마가 오래되어 채널 자동 완성 기능을 사용할 수 없습니다. 채널 인덱스를 다시 생성하는 것이 좋습니다. 자세한 내용은 Antimatter changelog를 참조하세요."
   },
   {
     "id": "api.context.get_session.app_error",

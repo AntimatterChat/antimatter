@@ -453,7 +453,7 @@
   },
   {
     "id": "mattermost.bulletin.subject",
-    "translation": "Mattermost biztonsági értesítő"
+    "translation": "Antimatter biztonsági értesítő"
   },
   {
     "id": "manaultesting.test_autolink.unable.app_error",
@@ -589,7 +589,7 @@
   },
   {
     "id": "ent.migration.migratetosaml.username_already_used_by_other_user",
-    "translation": "Ez a felhasználónév már használatban van egy másik Mattermost felhasználó által."
+    "translation": "Ez a felhasználónév már használatban van egy másik Antimatter felhasználó által."
   },
   {
     "id": "ent.migration.migratetosaml.user_not_found_in_users_mapping_file",
@@ -653,7 +653,7 @@
   },
   {
     "id": "ent.ldap.syncronize.search_failure.app_error",
-    "translation": "Nem sikerült a felhasználók keresése az AD/LDAP-ban. Ellenőrizze, hogy a Mattermost szerver képes-e csatlakozni az AD/LDAP szerverhez, és próbálja újra."
+    "translation": "Nem sikerült a felhasználók keresése az AD/LDAP-ban. Ellenőrizze, hogy a Antimatter szerver képes-e csatlakozni az AD/LDAP szerverhez, és próbálja újra."
   },
   {
     "id": "ent.ldap.syncronize.populate_syncables",
@@ -689,7 +689,7 @@
   },
   {
     "id": "ent.ldap.do_login.user_filtered.app_error",
-    "translation": "Az Ön AD/LDAP fiókjának nincs jogosultsága, hogy használja ezt a Mattermost szervert. Kérje meg a rendszergazdát, hogy ellenőrizze az AD/LDAP felhasználói szűrőt."
+    "translation": "Az Ön AD/LDAP fiókjának nincs jogosultsága, hogy használja ezt a Antimatter szervert. Kérje meg a rendszergazdát, hogy ellenőrizze az AD/LDAP felhasználói szűrőt."
   },
   {
     "id": "ent.ldap.do_login.unable_to_connect.app_error",
@@ -2745,11 +2745,11 @@
   },
   {
     "id": "web.error.unsupported_browser.no_longer_support_version",
-    "translation": "A Mattermost már nem támogatja a böngésző ezen verzióját"
+    "translation": "A Antimatter már nem támogatja a böngésző ezen verzióját"
   },
   {
     "id": "web.error.unsupported_browser.no_longer_support",
-    "translation": "Ezt a böngészőt a Mattermost már nem támogatja"
+    "translation": "Ezt a böngészőt a Antimatter már nem támogatja"
   },
   {
     "id": "web.error.unsupported_browser.min_os_version.windows",
@@ -4489,7 +4489,7 @@
   },
   {
     "id": "api.templates.welcome_body.info",
-    "translation": "Ezt az e-mail címet használták Mattermost fiók létrehozásához."
+    "translation": "Ezt az e-mail címet használták Antimatter fiók létrehozásához."
   },
   {
     "id": "api.templates.welcome_body.button",
@@ -4533,7 +4533,7 @@
   },
   {
     "id": "api.templates.verify_body.info",
-    "translation": "Ez az e-mail cím volt használva a Mattermost fiók létrehozásakor."
+    "translation": "Ez az e-mail cím volt használva a Antimatter fiók létrehozásakor."
   },
   {
     "id": "api.templates.verify_body.button",
@@ -4849,7 +4849,7 @@
   },
   {
     "id": "api.templates.invite_body_footer.title",
-    "translation": "Mi az a Mattermost?"
+    "translation": "Mi az a Antimatter?"
   },
   {
     "id": "api.templates.invite_body_footer.learn_more",
@@ -4857,7 +4857,7 @@
   },
   {
     "id": "api.templates.invite_body_footer.info",
-    "translation": "A Mattermost egy rugalmas, nyílt forráskódú üzenetküldő platform, amely biztonságos csapat együttműködést tesz lehetővé."
+    "translation": "A Antimatter egy rugalmas, nyílt forráskódú üzenetküldő platform, amely biztonságos csapat együttműködést tesz lehetővé."
   },
   {
     "id": "api.templates.invite_body.title",
@@ -5784,7 +5784,7 @@
   },
   {
     "id": "api.command_share.invite_remote.help",
-    "translation": "Meghív egy külső Mattermost példányt az aktuális megosztott csatornára"
+    "translation": "Meghív egy külső Antimatter példányt az aktuális megosztott csatornára"
   },
   {
     "id": "api.command_share.invitation_sent",
@@ -5848,7 +5848,7 @@
   },
   {
     "id": "api.command_share.desc",
-    "translation": "Megosztja az aktuális csatornát egy külső Mattermost példánnyal."
+    "translation": "Megosztja az aktuális csatornát egy külső Antimatter példánnyal."
   },
   {
     "id": "api.command_share.could_not_uninvite.error",
@@ -6020,7 +6020,7 @@
   },
   {
     "id": "api.command_remote.invite_summary",
-    "translation": "Küldje el a következő AES 256 bites titkosított meghívót a külső Mattermost rendszer rendszergazdának a jelszóval együtt. A meghívás elfogadásához a `{{.Command}}` perjel parancsot fogják használni.\n\n```\n{{.Invitation}}\n```\n\n**Győződjön meg róla, hogy a biztonságos kapcsolat a** {{.SiteURL}} **cím segítségével érheti el az Ön Mattermost példányát.**"
+    "translation": "Küldje el a következő AES 256 bites titkosított meghívót a külső Antimatter rendszer rendszergazdának a jelszóval együtt. A meghívás elfogadásához a `{{.Command}}` perjel parancsot fogják használni.\n\n```\n{{.Invitation}}\n```\n\n**Győződjön meg róla, hogy a biztonságos kapcsolat a** {{.SiteURL}} **cím segítségével érheti el az Ön Antimatter példányát.**"
   },
   {
     "id": "api.command_remote.invite_password.hint",
@@ -6068,7 +6068,7 @@
   },
   {
     "id": "api.command_remote.desc",
-    "translation": "Hívjon meg biztonságos kapcsolatokat a Mattermost példányok közötti kommunikációhoz."
+    "translation": "Hívjon meg biztonságos kapcsolatokat a Antimatter példányok közötti kommunikációhoz."
   },
   {
     "id": "api.command_remote.decode_invitation.error",
@@ -6260,7 +6260,7 @@
   },
   {
     "id": "api.command.invite_people.desc",
-    "translation": "Küldjön egy e-mail meghívót az Ön Mattermost csapatának"
+    "translation": "Küldjön egy e-mail meghívót az Ön Antimatter csapatának"
   },
   {
     "id": "api.command.execute_command.start.app_error",
@@ -6576,7 +6576,7 @@
   },
   {
     "id": "api.bot.teams_channels.add_message_mobile",
-    "translation": "Kérem, adjon hozzá azokhoz a csapatokhoz és csatornákhoz, amelyekben szeretné, hogy részt vegyek. Ehhez használjon egy böngészőt vagy a Mattermost alkalmazást."
+    "translation": "Kérem, adjon hozzá azokhoz a csapatokhoz és csatornákhoz, amelyekben szeretné, hogy részt vegyek. Ehhez használjon egy böngészőt vagy a Antimatter alkalmazást."
   },
   {
     "id": "api.bot.create_disabled",
@@ -7030,7 +7030,7 @@
   },
   {
     "id": "api.command_remote.accept.help",
-    "translation": "Fogadja el egy külső Mattermost példány meghívását"
+    "translation": "Fogadja el egy külső Antimatter példány meghívását"
   },
   {
     "id": "api.command_open.name",
@@ -7253,7 +7253,7 @@
   },
   {
     "id": "api.command_help.desc",
-    "translation": "Mattermost súgó üzenet megjelenítése"
+    "translation": "Antimatter súgó üzenet megjelenítése"
   },
   {
     "id": "api.command_groupmsg.permission.app_error",
@@ -7372,7 +7372,7 @@
   },
   {
     "id": "api.admin.test_email.subject",
-    "translation": "Mattermost - E-mail beállítások tesztelése"
+    "translation": "Antimatter - E-mail beállítások tesztelése"
   },
   {
     "id": "api.admin.test_email.reenter_password",
@@ -7384,7 +7384,7 @@
   },
   {
     "id": "api.admin.test_email.body",
-    "translation": "Úgy tűnik a Mattermost e-mail helyesen van beállítva!"
+    "translation": "Úgy tűnik a Antimatter e-mail helyesen van beállítva!"
   },
   {
     "id": "api.admin.saml.set_certificate_from_metadata.missing_content_type.app_error",
@@ -7568,7 +7568,7 @@
   },
   {
     "id": "api.email_batching.send_batched_email_notification.button",
-    "translation": "Mattermost megnyitása"
+    "translation": "Antimatter megnyitása"
   },
   {
     "id": "api.command_channel_purpose.update_channel.max_length",
@@ -8040,7 +8040,7 @@
   },
   {
     "id": "api.command_help.success",
-    "translation": "A Mattermost egy nyílt forráskódú platform a biztonságos kommunikációhoz, együttműködéshez és az eszközök és csapatok közötti munka összehangolásához.\nA Mattermost két kulcsfontosságú eszközt tartalmaz:\n\n**Csatornák** - Maradjon kapcsolatban csapatával 1:1 és csoportos üzenetküldéssel.\n**[Forgatókönyvek](/playbooks)** - Építsen és konfiguráljon megismételhető folyamatokat meghatározott és kiszámítható eredmények elérése érdekében.\n\n[Dokumentáció és útmutatók megtekintése]({{.HelpLink}})"
+    "translation": "A Antimatter egy nyílt forráskódú platform a biztonságos kommunikációhoz, együttműködéshez és az eszközök és csapatok közötti munka összehangolásához.\nA Antimatter két kulcsfontosságú eszközt tartalmaz:\n\n**Csatornák** - Maradjon kapcsolatban csapatával 1:1 és csoportos üzenetküldéssel.\n**[Forgatókönyvek](/playbooks)** - Építsen és konfiguráljon megismételhető folyamatokat meghatározott és kiszámítható eredmények elérése érdekében.\n\n[Dokumentáció és útmutatók megtekintése]({{.HelpLink}})"
   },
   {
     "id": "api.command_marketplace.desc",

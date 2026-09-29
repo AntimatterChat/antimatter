@@ -85,7 +85,7 @@
   },
   {
     "id": "api.admin.test_email.body",
-    "translation": "Parece que o seu email do Mattermost está configurado corretamente!"
+    "translation": "Parece que o seu email do Antimatter está configurado corretamente!"
   },
   {
     "id": "api.admin.test_email.missing_server",
@@ -97,7 +97,7 @@
   },
   {
     "id": "api.admin.test_email.subject",
-    "translation": "Mattermost - Teste de Configurações de Email"
+    "translation": "Antimatter - Teste de Configurações de Email"
   },
   {
     "id": "api.admin.test_s3.missing_s3_bucket",
@@ -341,7 +341,7 @@
   },
   {
     "id": "api.command.invite_people.desc",
-    "translation": "Enviar um email para convidar sua equipe para Mattermost"
+    "translation": "Enviar um email para convidar sua equipe para Antimatter"
   },
   {
     "id": "api.command.invite_people.email_invitations_off",
@@ -616,7 +616,7 @@
   },
   {
     "id": "api.command_help.desc",
-    "translation": "Exibir descrição de ajuda do Mattermost"
+    "translation": "Exibir descrição de ajuda do Antimatter"
   },
   {
     "id": "api.command_help.name",
@@ -723,7 +723,7 @@
   },
   {
     "id": "api.command_logout.desc",
-    "translation": "Faça Logout do Mattermost"
+    "translation": "Faça Logout do Antimatter"
   },
   {
     "id": "api.command_logout.name",
@@ -1724,7 +1724,7 @@
   },
   {
     "id": "api.templates.post_body.button",
-    "translation": "Responder no Mattermost"
+    "translation": "Responder no Antimatter"
   },
   {
     "id": "api.templates.reset_body.button",
@@ -1784,7 +1784,7 @@
   },
   {
     "id": "api.templates.verify_body.info",
-    "translation": "Este endereço de e-mail foi usado para criar uma conta no Mattermost."
+    "translation": "Este endereço de e-mail foi usado para criar uma conta no Antimatter."
   },
   {
     "id": "api.templates.verify_body.title",
@@ -1804,7 +1804,7 @@
   },
   {
     "id": "api.templates.welcome_body.info",
-    "translation": "Este endereço de e-mail foi usado para criar uma conta no Mattermost."
+    "translation": "Este endereço de e-mail foi usado para criar uma conta no Antimatter."
   },
   {
     "id": "api.templates.welcome_body.title",
@@ -2988,7 +2988,7 @@
   },
   {
     "id": "ent.ldap.do_login.user_filtered.app_error",
-    "translation": "Sua conta AD/LDAP não tem permissão para usar este servidor Mattermost. Por favor peça ao Administrador do Sistema para verificar o filtro de usuário AD/LDAP."
+    "translation": "Sua conta AD/LDAP não tem permissão para usar este servidor Antimatter. Por favor peça ao Administrador do Sistema para verificar o filtro de usuário AD/LDAP."
   },
   {
     "id": "ent.ldap.do_login.user_not_registered.app_error",
@@ -3008,7 +3008,7 @@
   },
   {
     "id": "ent.ldap.syncronize.search_failure.app_error",
-    "translation": "Falha ao pesquisar usuários no AD/LDAP. Teste se o servidor Mattermost pode se conectar ao seu servidor AD/LDAP e tente novamente."
+    "translation": "Falha ao pesquisar usuários no AD/LDAP. Teste se o servidor Antimatter pode se conectar ao seu servidor AD/LDAP e tente novamente."
   },
   {
     "id": "ent.ldap.validate_filter.app_error",
@@ -3052,7 +3052,7 @@
   },
   {
     "id": "ent.migration.migratetosaml.username_already_used_by_other_user",
-    "translation": "Nome de usuário já usado por outro usuário Mattermost."
+    "translation": "Nome de usuário já usado por outro usuário Antimatter."
   },
   {
     "id": "ent.saml.attribute.app_error",
@@ -3132,7 +3132,7 @@
   },
   {
     "id": "mattermost.bulletin.subject",
-    "translation": "Mattermost Boletim de Segurança"
+    "translation": "Antimatter Boletim de Segurança"
   },
   {
     "id": "mfa.activate.bad_token.app_error",
@@ -4252,7 +4252,7 @@
   },
   {
     "id": "oauth.gitlab.tos.error",
-    "translation": "Os Termos de Serviço do GitLab foram atualizados. Por favor vá até {{.URL}} para aceitar os termos e depois tente se logar novamente no Mattermost."
+    "translation": "Os Termos de Serviço do GitLab foram atualizados. Por favor vá até {{.URL}} para aceitar os termos e depois tente se logar novamente no Antimatter."
   },
   {
     "id": "plugin.api.update_user_status.bad_status",
@@ -4400,11 +4400,11 @@
   },
   {
     "id": "web.error.unsupported_browser.no_longer_support_version",
-    "translation": "A versão do seu navegador não é mais suportada pelo Mattermost"
+    "translation": "A versão do seu navegador não é mais suportada pelo Antimatter"
   },
   {
     "id": "web.error.unsupported_browser.no_longer_support",
-    "translation": "Esse navegador não é mais suportado pelo Mattermost"
+    "translation": "Esse navegador não é mais suportado pelo Antimatter"
   },
   {
     "id": "web.error.unsupported_browser.min_os_version.windows",
@@ -7144,7 +7144,7 @@
   },
   {
     "id": "api.command_share.desc",
-    "translation": "Compartilha o canal atual com uma instância externa do Mattermost."
+    "translation": "Compartilha o canal atual com uma instância externa do Antimatter."
   },
   {
     "id": "api.command_share.could_not_uninvite.error",
@@ -7248,7 +7248,7 @@
   },
   {
     "id": "api.command_remote.invite_summary",
-    "translation": "Envie o seguinte convite criptografado AES de 256 bits para o Mattermost System Admin externo junto com a senha. Eles usarão o comando de barra `{{.Command}}` para aceitar o convite.\n\n```\n{{.Invitation}}\n```\n\n**Certifique-se de que a conexão segura pode acessar sua instância Mattermost via** {{.SiteURL}}"
+    "translation": "Envie o seguinte convite criptografado AES de 256 bits para o Antimatter System Admin externo junto com a senha. Eles usarão o comando de barra `{{.Command}}` para aceitar o convite.\n\n```\n{{.Invitation}}\n```\n\n**Certifique-se de que a conexão segura pode acessar sua instância Antimatter via** {{.SiteURL}}"
   },
   {
     "id": "api.command_remote.invite_password.hint",
@@ -7288,7 +7288,7 @@
   },
   {
     "id": "api.command_remote.desc",
-    "translation": "Convide conexões seguras para comunicação entre as instâncias do Mattermost."
+    "translation": "Convide conexões seguras para comunicação entre as instâncias do Antimatter."
   },
   {
     "id": "api.command_remote.decode_invitation.error",
@@ -7312,7 +7312,7 @@
   },
   {
     "id": "api.command_remote.accept.help",
-    "translation": "Aceite um convite de uma instância externa do Mattermost"
+    "translation": "Aceite um convite de uma instância externa do Antimatter"
   },
   {
     "id": "api.cloud.cws_webhook_event_missing_error",
@@ -7392,7 +7392,7 @@
   },
   {
     "id": "api.templates.invite_body_footer.title",
-    "translation": "O que é Mattermost?"
+    "translation": "O que é Antimatter?"
   },
   {
     "id": "api.templates.invite_body_footer.learn_more",
@@ -7400,11 +7400,11 @@
   },
   {
     "id": "api.templates.invite_body_footer.info",
-    "translation": "Mattermost é uma plataforma de mensagens flexível e de código aberto que permite a colaboração segura da equipe."
+    "translation": "Antimatter é uma plataforma de mensagens flexível e de código aberto que permite a colaboração segura da equipe."
   },
   {
     "id": "api.templates.invite_body.subTitle",
-    "translation": "Comece a colaborar com sua equipe no Mattermost"
+    "translation": "Comece a colaborar com sua equipe no Antimatter"
   },
   {
     "id": "api.templates.cloud_welcome_email.subtitle_info",
@@ -7644,7 +7644,7 @@
   },
   {
     "id": "api.email_batching.send_batched_email_notification.button",
-    "translation": "Abrir Mattermost"
+    "translation": "Abrir Antimatter"
   },
   {
     "id": "api.acknowledgement.delete.archived_channel.app_error",
@@ -7944,7 +7944,7 @@
   },
   {
     "id": "api.command_help.success",
-    "translation": "O Mattermost é uma plataforma de código aberto para comunicação segura, colaboração e orquestração de trabalho entre ferramentas e equipes.\nO Mattermost contém duas ferramentas principais:\n\n**Canais** - Mantenha-se conectado com sua equipe por meio de mensagens individuais e em grupo.\n**[Playbooks](/playbooks)** - Crie e configure processos reprodutíveis para que você alcance resultados específicos e previsíveis.\n\n[Veja a documentação e os guias]({{.HelpLink}})"
+    "translation": "O Antimatter é uma plataforma de código aberto para comunicação segura, colaboração e orquestração de trabalho entre ferramentas e equipes.\nO Antimatter contém duas ferramentas principais:\n\n**Canais** - Mantenha-se conectado com sua equipe por meio de mensagens individuais e em grupo.\n**[Playbooks](/playbooks)** - Crie e configure processos reprodutíveis para que você alcance resultados específicos e previsíveis.\n\n[Veja a documentação e os guias]({{.HelpLink}})"
   },
   {
     "id": "api.command_exportlink.driver.app_error",
@@ -7992,7 +7992,7 @@
   },
   {
     "id": "api.config.update.elasticsearch.autocomplete_cannot_be_enabled_error",
-    "translation": "O preenchimento automático nos canais não pode ser ativado porque o esquema do índice de canais está desatualizado. Recomenda-se que você gere novamente o índice do canal. Consulte o registro de alterações do Mattermost para obter mais informações"
+    "translation": "O preenchimento automático nos canais não pode ser ativado porque o esquema do índice de canais está desatualizado. Recomenda-se que você gere novamente o índice do canal. Consulte o registro de alterações do Antimatter para obter mais informações"
   },
   {
     "id": "api.command_exportlink.invalid.app_error",
@@ -8292,7 +8292,7 @@
   },
   {
     "id": "api.server.cws.disabled",
-    "translation": "As interações com o Portal do Cliente Mattermost foram desativadas pelo administrador do sistema."
+    "translation": "As interações com o Portal do Cliente Antimatter foram desativadas pelo administrador do sistema."
   },
   {
     "id": "api.templates.cloud_welcome_email.invite_sub_info",
@@ -8696,7 +8696,7 @@
   },
   {
     "id": "app.notification.footer.infoLogin",
-    "translation": "Faça login no Mattermost"
+    "translation": "Faça login no Antimatter"
   },
   {
     "id": "app.notify_admin.send_notification_post.app_error",
