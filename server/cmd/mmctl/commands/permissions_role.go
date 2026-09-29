@@ -36,7 +36,7 @@ var ShowCmd = &cobra.Command{
 var AssignCmd = &cobra.Command{
 	Use:   "assign <role_name> <username...>",
 	Short: "Assign users to role (EE Only)",
-	Long:  "Assign users to a role by username (Only works in Enterprise Edition).",
+	Long:  "Assign users to a role by username.",
 	Example: `  # Assign users with usernames 'john.doe' and 'jane.doe' to the role named 'system_admin'.
   permissions assign system_admin john.doe jane.doe
 
@@ -51,7 +51,7 @@ var AssignCmd = &cobra.Command{
 var UnassignCmd = &cobra.Command{
 	Use:   "unassign <role_name> <username...>",
 	Short: "Unassign users from role (EE Only)",
-	Long:  "Unassign users from a role by username (Only works in Enterprise Edition).",
+	Long:  "Unassign users from a role by username.",
 	Example: `  # Unassign users with usernames 'john.doe' and 'jane.doe' from the role named 'system_admin'.
   permissions unassign system_admin john.doe jane.doe
 

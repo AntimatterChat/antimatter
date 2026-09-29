@@ -521,7 +521,6 @@ func (s *MmctlE2ETestSuite) TestUserGroupRestoreCmd() {
 		RemoteId:    new(model.NewId()),
 	})
 	s.Require().Nil(appErr)
-	s.th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuProfessional, "ldap"))
 
 	defer func() {
 		_, err := s.th.App.DeleteGroup(group.Id)

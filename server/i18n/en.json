@@ -2646,11 +2646,6 @@
     "description": "Lowercase API error when custom user groups are disabled on the server."
   },
   {
-    "id": "api.custom_groups.license_error",
-    "translation": "not licensed for custom groups",
-    "description": "Lowercase API error when the server license does not include custom user groups."
-  },
-  {
     "id": "api.custom_groups.must_be_referenceable",
     "translation": "allow_reference must be 'true' for custom groups",
     "description": "Lowercase API validation error for custom user groups; 'allow_reference' is a literal JSON field name and must not be translated."
@@ -3322,11 +3317,6 @@
     "id": "api.ldap_groups.existing_user_name_error",
     "translation": "group name already exists as a user name",
     "description": "Lowercase API error when an LDAP group's chosen mention name is already taken by a user's username."
-  },
-  {
-    "id": "api.ldap_groups.license_error",
-    "translation": "your license does not support ldap groups",
-    "description": "Lowercase API error when the server license does not include AD/LDAP group synchronization."
   },
   {
     "id": "api.license.add_license.array.app_error",
@@ -4480,11 +4470,6 @@
     "description": "API error when a request asks for more roles by name than allowed at once; {{.MaxNames}} is the maximum number of role names per request."
   },
   {
-    "id": "api.roles.patch_roles.license.error",
-    "translation": "Your license does not support advanced permissions.",
-    "description": "API error shown to a system admin when editing role permissions requires the advanced permissions feature, which their license lacks."
-  },
-  {
     "id": "api.roles.patch_roles.not_allowed_permission.error",
     "translation": "One or more of the following permissions that you are trying to add or remove is not allowed",
     "description": "API error when a role update tries to grant or revoke a permission that cannot be changed through this endpoint; shown to system admins."
@@ -4505,16 +4490,6 @@
     "description": "API error when a user tries to access or modify a scheduled recap (recurring AI channel summary) belonging to another user."
   },
   {
-    "id": "api.scheme.create_scheme.license.error",
-    "translation": "Your license does not support creating permissions schemes.",
-    "description": "API error shown to a system admin when creating a permissions scheme is not supported by the server license; 'scheme' is a named set of role permissions."
-  },
-  {
-    "id": "api.scheme.delete_scheme.license.error",
-    "translation": "Your license not support delete permissions schemes",
-    "description": "API error shown to a system admin when deleting a permissions scheme is not supported by the server license; source English is ungrammatical ('license not support')."
-  },
-  {
     "id": "api.scheme.get_channels_for_scheme.scope.error",
     "translation": "Unable to get the channels for scheme because the supplied scheme is not a channel scheme.",
     "description": "API error when listing channels for a permissions scheme whose scope is not channel-level; 'scheme' is a named set of role permissions."
@@ -4523,11 +4498,6 @@
     "id": "api.scheme.get_teams_for_scheme.scope.error",
     "translation": "Unable to get the teams for scheme because the supplied scheme is not a team scheme.",
     "description": "API error when listing teams for a permissions scheme whose scope is not team-level; 'scheme' is a named set of role permissions."
-  },
-  {
-    "id": "api.scheme.patch_scheme.license.error",
-    "translation": "Your license does not support update permissions schemes",
-    "description": "API error shown to a system admin when updating a permissions scheme is not supported by the server license."
   },
   {
     "id": "api.server.cws.disabled",

@@ -44,8 +44,6 @@ func configForLdap(th *api4.TestHelper) {
 		*cfg.LdapSettings.GroupIdAttribute = "entRyUuId"
 		*cfg.LdapSettings.MaxPageSize = 0
 	})
-
-	th.App.Srv().SetLicense(model.NewTestLicense("ldap"))
 }
 
 func (s *MmctlE2ETestSuite) TestLdapSyncCmd() {

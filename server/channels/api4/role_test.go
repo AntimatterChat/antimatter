@@ -349,13 +349,6 @@ func TestPatchRole(t *testing.T) {
 	})
 
 	t.Run("system manager cannot patch system_guest", func(t *testing.T) {
-		license := model.NewTestLicense()
-		license.Features.GuestAccountsPermissions = new(true)
-		th.App.Srv().SetLicense(license)
-		t.Cleanup(func() {
-			th.App.Srv().SetLicense(nil)
-		})
-
 		systemGuestRole, appErr := th.App.GetRoleByName(th.Context, model.SystemGuestRoleId)
 		require.Nil(t, appErr)
 
@@ -392,22 +385,7 @@ func TestPatchRole(t *testing.T) {
 		assert.ElementsMatch(t, expectedPermissions, received.Permissions)
 		assert.Equal(t, received.SchemeManaged, role.SchemeManaged)
 
-		t.Run("Check guest permissions editing without E20 license", func(t *testing.T) {
-			license := model.NewTestLicense()
-			license.Features.GuestAccountsPermissions = new(false)
-			th.App.Srv().SetLicense(license)
-
-			guestRole, err := th.App.Srv().Store().Role().GetByName(th.Context, "system_guest")
-			require.NoError(t, err)
-			received, resp, err = client.PatchRole(context.Background(), guestRole.Id, patch)
-			require.Error(t, err)
-			CheckNotImplementedStatus(t, resp)
-		})
-
-		t.Run("Check guest permissions editing with E20 license", func(t *testing.T) {
-			license := model.NewTestLicense()
-			license.Features.GuestAccountsPermissions = new(true)
-			th.App.Srv().SetLicense(license)
+		t.Run("Check guest permissions editing", func(t *testing.T) {
 			guestRole, err := th.App.Srv().Store().Role().GetByName(th.Context, "system_guest")
 			require.NoError(t, err)
 			_, _, err = client.PatchRole(context.Background(), guestRole.Id, patch)

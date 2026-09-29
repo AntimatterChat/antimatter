@@ -9,7 +9,7 @@ Synopsis
 ~~~~~~~~
 
 
-Remove one or more permissions from an existing role (Only works in Enterprise Edition).
+Remove one or more permissions from an existing role.
 
 ::
 
