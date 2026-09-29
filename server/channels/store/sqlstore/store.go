@@ -79,7 +79,6 @@ type SqlStoreStores struct {
 	command                    store.CommandStore
 	commandWebhook             store.CommandWebhookStore
 	preference                 store.PreferenceStore
-	license                    store.LicenseStore
 	token                      store.TokenStore
 	emoji                      store.EmojiStore
 	status                     store.StatusStore
@@ -141,8 +140,6 @@ type SqlStore struct {
 	stores            SqlStoreStores
 	settings          *model.SqlSettings
 	lockedToMaster    bool
-	license           *model.License
-	licenseMutex      sync.RWMutex
 	logger            mlog.LoggerIFace
 	metrics           einterfaces.MetricsInterface
 
@@ -274,7 +271,6 @@ func New(settings model.SqlSettings, logger mlog.LoggerIFace, metrics einterface
 	store.stores.command = newSqlCommandStore(store)
 	store.stores.commandWebhook = newSqlCommandWebhookStore(store)
 	store.stores.preference = newSqlPreferenceStore(store)
-	store.stores.license = newSqlLicenseStore(store)
 	store.stores.token = newSqlTokenStore(store)
 	store.stores.emoji = newSqlEmojiStore(store, metrics)
 	store.stores.status = newSqlStatusStore(store)
@@ -816,10 +812,6 @@ func (ss *SqlStore) Preference() store.PreferenceStore {
 	return ss.stores.preference
 }
 
-func (ss *SqlStore) License() store.LicenseStore {
-	return ss.stores.license
-}
-
 func (ss *SqlStore) Token() store.TokenStore {
 	return ss.stores.token
 }
@@ -1016,24 +1008,6 @@ func (ss *SqlStore) CheckIntegrity() <-chan model.IntegrityCheckResult {
 	results := make(chan model.IntegrityCheckResult)
 	go CheckRelationalIntegrity(ss, results)
 	return results
-}
-
-func (ss *SqlStore) UpdateLicense(license *model.License) {
-	ss.licenseMutex.Lock()
-	defer ss.licenseMutex.Unlock()
-	ss.license = license
-}
-
-func (ss *SqlStore) GetLicense() *model.License {
-	return ss.license
-}
-
-func (ss *SqlStore) hasLicense() bool {
-	ss.licenseMutex.Lock()
-	hasLicense := ss.license != nil
-	ss.licenseMutex.Unlock()
-
-	return hasLicense
 }
 
 // IsDuplicate checks whether an error is a duplicate key error, which comes when processes are competing on creating the same

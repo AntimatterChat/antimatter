@@ -55,9 +55,6 @@ func TestGetPendingScheduledPostsReadsFromMaster(t *testing.T) {
 	require.NoError(t, err)
 	defer store.Close()
 
-	// A license is required for replica reads to route to the replica. Without one, GetReplica()
-	// falls back to master and the test could pass even if the code read from the replica.
-	store.UpdateLicense(&model.License{})
 	require.NotSame(t, store.GetMaster(), store.GetReplica(), "replica must be a distinct connection for this test to be meaningful")
 
 	scheduledPost := &model.ScheduledPost{
