@@ -26,7 +26,7 @@ import (
 
 var serverCmd = &cobra.Command{
 	Use:          "server",
-	Short:        "Run the Mattermost server",
+	Short:        "Run the Antimatter server",
 	RunE:         serverCmdF,
 	SilenceUsage: true,
 }
