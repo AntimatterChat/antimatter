@@ -177,10 +177,10 @@ func updateConfig(c *Context, w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	// if ES autocomplete was enabled, we need to make sure that index has been checked.
-	// we need to stop enabling ES autocomplete otherwise.
+	// ES autocomplete can only be enabled when a search engine is running. The engine
+	// itself keeps autocomplete off until its channel/user indexes have current mappings.
 	if !*appCfg.ElasticsearchSettings.EnableAutocomplete && *cfg.ElasticsearchSettings.EnableAutocomplete {
-		if !c.App.SearchEngine().ElasticsearchEngine.IsAutocompletionEnabled() {
+		if es := c.App.SearchEngine().ElasticsearchEngine; es == nil || !es.IsActive() {
 			c.Err = model.NewAppError("updateConfig", "api.config.update.elasticsearch.autocomplete_cannot_be_enabled_error", nil, "", http.StatusBadRequest)
 			return
 		}
