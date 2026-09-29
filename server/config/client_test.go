@@ -19,18 +19,16 @@ func TestGetClientConfig(t *testing.T) {
 		description    string
 		config         *model.Config
 		telemetryID    string
-		license        *model.License
 		expectedFields map[string]string
 		absentFields   []string
 	}{
 		{
-			"unlicensed",
+			"basic settings",
 			&model.Config{
 				EmailSettings: model.EmailSettings{
 					EmailNotificationContentsType: model.NewPointer(model.EmailNotificationContentsFull),
 				},
 				ThemeSettings: model.ThemeSettings{
-					// Ignored, since not licensed.
 					AllowCustomThemes: new(false),
 				},
 				ServiceSettings: model.ServiceSettings{
@@ -40,11 +38,10 @@ func TestGetClientConfig(t *testing.T) {
 				},
 			},
 			"",
-			nil,
 			map[string]string{
 				"DiagnosticId":                     "",
 				"EmailNotificationContentsType":    "full",
-				"AllowCustomThemes":                "true",
+				"AllowCustomThemes":                "false",
 				"EnforceMultifactorAuthentication": "false",
 				"WebsocketURL":                     "ws://mattermost.example.com:8065",
 				"WebsocketPort":                    "80",
@@ -53,31 +50,7 @@ func TestGetClientConfig(t *testing.T) {
 			nil,
 		},
 		{
-			"licensed, but not for theme management",
-			&model.Config{
-				EmailSettings: model.EmailSettings{
-					EmailNotificationContentsType: model.NewPointer(model.EmailNotificationContentsFull),
-				},
-				ThemeSettings: model.ThemeSettings{
-					// Ignored, since not licensed.
-					AllowCustomThemes: new(false),
-				},
-			},
-			"tag1",
-			&model.License{
-				Features: &model.Features{
-					ThemeManagement: new(false),
-				},
-			},
-			map[string]string{
-				"DiagnosticId":                  "tag1",
-				"EmailNotificationContentsType": "full",
-				"AllowCustomThemes":             "true",
-			},
-			nil,
-		},
-		{
-			"licensed for theme management",
+			"theme management",
 			&model.Config{
 				EmailSettings: model.EmailSettings{
 					EmailNotificationContentsType: model.NewPointer(model.EmailNotificationContentsFull),
@@ -87,11 +60,6 @@ func TestGetClientConfig(t *testing.T) {
 				},
 			},
 			"tag2",
-			&model.License{
-				Features: &model.Features{
-					ThemeManagement: new(true),
-				},
-			},
 			map[string]string{
 				"DiagnosticId":                  "tag2",
 				"EmailNotificationContentsType": "full",
@@ -100,18 +68,13 @@ func TestGetClientConfig(t *testing.T) {
 			nil,
 		},
 		{
-			"licensed for enforcement",
+			"MFA enforcement",
 			&model.Config{
 				ServiceSettings: model.ServiceSettings{
 					EnforceMultifactorAuthentication: new(true),
 				},
 			},
 			"tag1",
-			&model.License{
-				Features: &model.Features{
-					MFA: new(true),
-				},
-			},
 			map[string]string{
 				"EnforceMultifactorAuthentication": "true",
 			},
@@ -125,7 +88,6 @@ func TestGetClientConfig(t *testing.T) {
 				},
 			},
 			"tag1",
-			nil,
 			map[string]string{
 				"IsDefaultMarketplace": "true",
 			},
@@ -139,7 +101,6 @@ func TestGetClientConfig(t *testing.T) {
 				},
 			},
 			"tag1",
-			nil,
 			map[string]string{
 				"IsDefaultMarketplace": "false",
 			},
@@ -153,7 +114,6 @@ func TestGetClientConfig(t *testing.T) {
 				},
 			},
 			"tag1",
-			nil,
 			map[string]string{
 				"ShowFullName": "true",
 			},
@@ -167,103 +127,28 @@ func TestGetClientConfig(t *testing.T) {
 				},
 			},
 			"tag1",
-			nil,
 			map[string]string{
 				"UseAnonymousURLs": "true",
 			},
 			nil,
 		},
 		{
-			"Custom groups professional license",
+			"custom groups",
 			&model.Config{},
 			"",
-			&model.License{
-				Features:     &model.Features{},
-				SkuShortName: model.LicenseShortSkuProfessional,
-			},
 			map[string]string{
 				"EnableCustomGroups": "true",
 			},
 			nil,
 		},
 		{
-			"Custom groups enterprise license",
-			&model.Config{},
-			"",
-			&model.License{
-				Features:     &model.Features{},
-				SkuShortName: model.LicenseShortSkuEnterprise,
-			},
-			map[string]string{
-				"EnableCustomGroups": "true",
-			},
-			nil,
-		},
-		{
-			"Custom groups other license",
-			&model.Config{},
-			"",
-			&model.License{
-				Features:     &model.Features{},
-				SkuShortName: "other",
-			},
-			map[string]string{
-				"EnableCustomGroups": "false",
-			},
-			nil,
-		},
-		{
-			"Shared channels other license",
+			"shared channels",
 			&model.Config{
 				ConnectedWorkspacesSettings: model.ConnectedWorkspacesSettings{
 					EnableSharedChannels: new(true),
 				},
 			},
 			"",
-			&model.License{
-				Features: &model.Features{
-					SharedChannels: new(false),
-				},
-				SkuShortName: "other",
-			},
-			map[string]string{
-				"ExperimentalSharedChannels": "false",
-			},
-			nil,
-		},
-		{
-			"licensed for shared channels",
-			&model.Config{
-				ConnectedWorkspacesSettings: model.ConnectedWorkspacesSettings{
-					EnableSharedChannels: new(true),
-				},
-			},
-			"",
-			&model.License{
-				Features: &model.Features{
-					SharedChannels: new(true),
-				},
-				SkuShortName: "other",
-			},
-			map[string]string{
-				"ExperimentalSharedChannels": "true",
-			},
-			nil,
-		},
-		{
-			"Shared channels professional license",
-			&model.Config{
-				ConnectedWorkspacesSettings: model.ConnectedWorkspacesSettings{
-					EnableSharedChannels: new(true),
-				},
-			},
-			"",
-			&model.License{
-				Features: &model.Features{
-					SharedChannels: new(false),
-				},
-				SkuShortName: model.LicenseShortSkuProfessional,
-			},
 			map[string]string{
 				"ExperimentalSharedChannels": "true",
 			},
@@ -277,28 +162,8 @@ func TestGetClientConfig(t *testing.T) {
 				},
 			},
 			"",
-			nil,
 			map[string]string{
 				"EnableUserStatuses": "false",
-			},
-			nil,
-		},
-		{
-			"Shared channels enterprise license",
-			&model.Config{
-				ConnectedWorkspacesSettings: model.ConnectedWorkspacesSettings{
-					EnableSharedChannels: new(true),
-				},
-			},
-			"",
-			&model.License{
-				Features: &model.Features{
-					SharedChannels: new(false),
-				},
-				SkuShortName: model.LicenseShortSkuEnterprise,
-			},
-			map[string]string{
-				"ExperimentalSharedChannels": "true",
 			},
 			nil,
 		},
@@ -310,7 +175,6 @@ func TestGetClientConfig(t *testing.T) {
 				},
 			},
 			"",
-			nil,
 			map[string]string{
 				"DisableAppBar": "true",
 			},
@@ -320,7 +184,6 @@ func TestGetClientConfig(t *testing.T) {
 			"default EnableJoinLeaveMessage",
 			&model.Config{},
 			"tag1",
-			nil,
 			map[string]string{
 				"EnableJoinLeaveMessageByDefault": "true",
 			},
@@ -334,7 +197,6 @@ func TestGetClientConfig(t *testing.T) {
 				},
 			},
 			"tag1",
-			nil,
 			map[string]string{
 				"EnableJoinLeaveMessageByDefault": "false",
 			},
@@ -348,7 +210,6 @@ func TestGetClientConfig(t *testing.T) {
 				},
 			},
 			"",
-			nil,
 			map[string]string{
 				"GiphySdkKey": model.ServiceSettingsDefaultGiphySdkKeyTest,
 			},
@@ -365,7 +226,6 @@ func TestGetClientConfig(t *testing.T) {
 				},
 			},
 			"",
-			nil,
 			map[string]string{
 				"ReportAProblemType": "type",
 				"ReportAProblemLink": "http://example.com",
@@ -384,7 +244,6 @@ func TestGetClientConfig(t *testing.T) {
 				},
 			},
 			"",
-			nil,
 			map[string]string{
 				"EnableAttributeBasedAccessControl": "true",
 				"EnableUserManagedAttributes":       "true",
@@ -402,7 +261,6 @@ func TestGetClientConfig(t *testing.T) {
 				},
 			},
 			"",
-			nil,
 			map[string]string{
 				"EnableAttributeBasedAccessControl": "false",
 				"EnableUserManagedAttributes":       "false",
@@ -414,7 +272,6 @@ func TestGetClientConfig(t *testing.T) {
 			"access control settings default",
 			&model.Config{},
 			"",
-			nil,
 			map[string]string{
 				"EnableAttributeBasedAccessControl": "false",
 				"EnableUserManagedAttributes":       "false",
@@ -431,7 +288,6 @@ func TestGetClientConfig(t *testing.T) {
 				},
 			},
 			"",
-			nil,
 			map[string]string{
 				"EnableBurnOnRead":          "true",
 				"BurnOnReadDurationSeconds": "1800",
@@ -447,7 +303,6 @@ func TestGetClientConfig(t *testing.T) {
 				},
 			},
 			"",
-			nil,
 			map[string]string{
 				"EnableBurnOnRead":          "false",
 				"BurnOnReadDurationSeconds": "600",
@@ -458,7 +313,6 @@ func TestGetClientConfig(t *testing.T) {
 			"burn on read default",
 			&model.Config{},
 			"",
-			nil,
 			map[string]string{
 				"EnableBurnOnRead":          "true",
 				"BurnOnReadDurationSeconds": "600", // 10 minutes in seconds
@@ -473,17 +327,13 @@ func TestGetClientConfig(t *testing.T) {
 				},
 			},
 			"",
-			&model.License{
-				Features:     &model.Features{},
-				SkuShortName: model.LicenseShortSkuEnterprise,
-			},
 			map[string]string{
 				"ExperimentalEnableWatermark": "true",
 			},
 			nil,
 		},
 		{
-			"Intune MAM enabled with Enterprise Advanced license and Office365 AuthService",
+			"Intune MAM enabled with Office365 AuthService",
 			&model.Config{
 				IntuneSettings: model.IntuneSettings{
 					Enable:      new(true),
@@ -493,10 +343,6 @@ func TestGetClientConfig(t *testing.T) {
 				},
 			},
 			"",
-			&model.License{
-				Features:     &model.Features{},
-				SkuShortName: model.LicenseShortSkuEnterpriseAdvanced,
-			},
 			map[string]string{
 				"IntuneMAMEnabled": "true",
 				"IntuneScope":      "api://87654321-4321-4321-4321-210987654321/login.mattermost",
@@ -514,10 +360,6 @@ func TestGetClientConfig(t *testing.T) {
 				},
 			},
 			"",
-			&model.License{
-				Features:     &model.Features{},
-				SkuShortName: model.LicenseShortSkuEnterpriseAdvanced,
-			},
 			map[string]string{
 				"IntuneMAMEnabled": "false",
 			},
@@ -534,10 +376,6 @@ func TestGetClientConfig(t *testing.T) {
 				},
 			},
 			"",
-			&model.License{
-				Features:     &model.Features{},
-				SkuShortName: model.LicenseShortSkuEnterpriseAdvanced,
-			},
 			map[string]string{
 				"IntuneMAMEnabled": "false",
 			},
@@ -554,50 +392,13 @@ func TestGetClientConfig(t *testing.T) {
 				},
 			},
 			"",
-			&model.License{
-				Features:     &model.Features{},
-				SkuShortName: model.LicenseShortSkuEnterpriseAdvanced,
-			},
 			map[string]string{
 				"IntuneMAMEnabled": "false",
 			},
 			nil,
 		},
 		{
-			"Intune MAM not exposed with lower license tier",
-			&model.Config{
-				IntuneSettings: model.IntuneSettings{
-					Enable:      new(true),
-					TenantId:    new("12345678-1234-1234-1234-123456789012"),
-					ClientId:    new("87654321-4321-4321-4321-210987654321"),
-					AuthService: model.NewPointer(model.ServiceOffice365),
-				},
-			},
-			"",
-			&model.License{
-				Features:     &model.Features{},
-				SkuShortName: model.LicenseShortSkuProfessional,
-			},
-			map[string]string{},
-			[]string{"IntuneMAMEnabled", "IntuneScope"},
-		},
-		{
-			"Intune MAM not exposed without license",
-			&model.Config{
-				IntuneSettings: model.IntuneSettings{
-					Enable:      new(true),
-					TenantId:    new("12345678-1234-1234-1234-123456789012"),
-					ClientId:    new("87654321-4321-4321-4321-210987654321"),
-					AuthService: model.NewPointer(model.ServiceOffice365),
-				},
-			},
-			"",
-			nil,
-			map[string]string{},
-			[]string{"IntuneMAMEnabled", "IntuneScope"},
-		},
-		{
-			"Intune MAM enabled with Enterprise Advanced license and SAML AuthService",
+			"Intune MAM enabled with SAML AuthService",
 			&model.Config{
 				IntuneSettings: model.IntuneSettings{
 					Enable:      new(true),
@@ -610,10 +411,6 @@ func TestGetClientConfig(t *testing.T) {
 				},
 			},
 			"",
-			&model.License{
-				Features:     &model.Features{},
-				SkuShortName: model.LicenseShortSkuEnterpriseAdvanced,
-			},
 			map[string]string{
 				"IntuneMAMEnabled":  "true",
 				"IntuneScope":       "api://87654321-4321-4321-4321-210987654321/login.mattermost",
@@ -632,10 +429,6 @@ func TestGetClientConfig(t *testing.T) {
 				},
 			},
 			"",
-			&model.License{
-				Features:     &model.Features{},
-				SkuShortName: model.LicenseShortSkuEnterpriseAdvanced,
-			},
 			map[string]string{
 				"IntuneMAMEnabled": "false",
 			},
@@ -653,10 +446,6 @@ func TestGetClientConfig(t *testing.T) {
 				},
 			},
 			"",
-			&model.License{
-				Features:     &model.Features{},
-				SkuShortName: model.LicenseShortSkuEnterpriseAdvanced,
-			},
 			map[string]string{
 				"MobileEphemeralModeEnabled":                      "true",
 				"MobileEphemeralModeDisconnectionTimeoutSeconds":  "120",
@@ -677,10 +466,6 @@ func TestGetClientConfig(t *testing.T) {
 				},
 			},
 			"",
-			&model.License{
-				Features:     &model.Features{},
-				SkuShortName: model.LicenseShortSkuEnterpriseAdvanced,
-			},
 			map[string]string{
 				"MobileEphemeralModeEnabled":                      "false",
 				"MobileEphemeralModeDisconnectionTimeoutSeconds":  "60",
@@ -698,39 +483,6 @@ func TestGetClientConfig(t *testing.T) {
 				},
 			},
 			"",
-			&model.License{
-				Features:     &model.Features{},
-				SkuShortName: model.LicenseShortSkuEnterpriseAdvanced,
-			},
-			map[string]string{},
-			[]string{"MobileEphemeralModeEnabled", "MobileEphemeralModeDisconnectionTimeoutSeconds", "MobileEphemeralModeOfflinePersistenceTimerHours", "MobileEphemeralModeAutoCacheCleanupDays"},
-		},
-		{
-			"Mobile Ephemeral Mode not exposed without license",
-			&model.Config{
-				FeatureFlags: &model.FeatureFlags{MobileEphemeralMode: true},
-				MobileEphemeralModeSettings: model.MobileEphemeralModeSettings{
-					Enable: model.NewPointer(true),
-				},
-			},
-			"",
-			nil,
-			map[string]string{},
-			[]string{"MobileEphemeralModeEnabled", "MobileEphemeralModeDisconnectionTimeoutSeconds", "MobileEphemeralModeOfflinePersistenceTimerHours", "MobileEphemeralModeAutoCacheCleanupDays"},
-		},
-		{
-			"Mobile Ephemeral Mode not exposed with lower license tier",
-			&model.Config{
-				FeatureFlags: &model.FeatureFlags{MobileEphemeralMode: true},
-				MobileEphemeralModeSettings: model.MobileEphemeralModeSettings{
-					Enable: model.NewPointer(true),
-				},
-			},
-			"",
-			&model.License{
-				Features:     &model.Features{},
-				SkuShortName: model.LicenseShortSkuProfessional,
-			},
 			map[string]string{},
 			[]string{"MobileEphemeralModeEnabled", "MobileEphemeralModeDisconnectionTimeoutSeconds", "MobileEphemeralModeOfflinePersistenceTimerHours", "MobileEphemeralModeAutoCacheCleanupDays"},
 		},
@@ -738,7 +490,6 @@ func TestGetClientConfig(t *testing.T) {
 			"audit logging - default config",
 			&model.Config{},
 			"",
-			nil,
 			map[string]string{
 				"EnableAccessControlAuditLogging": "false",
 				"AuditLoggingActive":              "false",
@@ -754,7 +505,6 @@ func TestGetClientConfig(t *testing.T) {
 				},
 			},
 			"",
-			nil,
 			map[string]string{
 				"EnableAccessControlAuditLogging": "false",
 				"AuditLoggingActive":              "true",
@@ -769,7 +519,6 @@ func TestGetClientConfig(t *testing.T) {
 				},
 			},
 			"",
-			nil,
 			map[string]string{
 				"EnableAccessControlAuditLogging": "true",
 				"AuditLoggingActive":              "false",
@@ -777,35 +526,15 @@ func TestGetClientConfig(t *testing.T) {
 			[]string{},
 		},
 		{
-			"audit logging - advanced target with license",
+			"audit logging - advanced target",
 			&model.Config{
 				ExperimentalAuditSettings: model.ExperimentalAuditSettings{
 					AdvancedLoggingJSON: json.RawMessage(`{"my-audit":{"type":"file","levels":[{"id":100,"name":"audit-api"}],"options":{"filename":"audit.log"}}}`),
 				},
 			},
 			"",
-			&model.License{
-				Features: &model.Features{
-					AdvancedLogging: model.NewPointer(true),
-				},
-				SkuShortName: model.LicenseShortSkuEnterprise,
-			},
 			map[string]string{
 				"AuditLoggingActive": "true",
-			},
-			[]string{},
-		},
-		{
-			"audit logging - advanced target without license",
-			&model.Config{
-				ExperimentalAuditSettings: model.ExperimentalAuditSettings{
-					AdvancedLoggingJSON: json.RawMessage(`{"my-audit":{"type":"file","levels":[{"id":100,"name":"audit-api"}],"options":{"filename":"audit.log"}}}`),
-				},
-			},
-			"",
-			nil,
-			map[string]string{
-				"AuditLoggingActive": "false",
 			},
 			[]string{},
 		},
@@ -818,11 +547,6 @@ func TestGetClientConfig(t *testing.T) {
 				},
 			},
 			"",
-			&model.License{
-				Features: &model.Features{
-					Cluster: new(true),
-				},
-			},
 			map[string]string{
 				"EnableMetrics":             "true",
 				"EnableNotificationMetrics": "true",
@@ -838,11 +562,6 @@ func TestGetClientConfig(t *testing.T) {
 				},
 			},
 			"",
-			&model.License{
-				Features: &model.Features{
-					Cluster: new(true),
-				},
-			},
 			map[string]string{
 				"EnableMetrics":             "true",
 				"EnableNotificationMetrics": "false",
@@ -856,11 +575,8 @@ func TestGetClientConfig(t *testing.T) {
 			t.Parallel()
 
 			testCase.config.SetDefaults()
-			if testCase.license != nil {
-				testCase.license.Features.SetDefaults()
-			}
 
-			configMap := GenerateClientConfig(testCase.config, testCase.telemetryID, testCase.license)
+			configMap := GenerateClientConfig(testCase.config, testCase.telemetryID)
 			for expectedField, expectedValue := range testCase.expectedFields {
 				actualValue, ok := configMap[expectedField]
 				if assert.True(t, ok, fmt.Sprintf("config does not contain %v", expectedField)) {
@@ -876,23 +592,12 @@ func TestGetClientConfig(t *testing.T) {
 }
 
 func TestGenerateClientConfigLockProfileFieldsForEmailUsers(t *testing.T) {
-	for name, testCase := range map[string]struct {
-		license  *model.License
-		expected string
-	}{
-		"unlicensed":   {expected: model.TeamSettingsLockProfileFieldsNone},
-		"professional": {license: model.NewTestLicenseSKU(model.LicenseShortSkuProfessional), expected: model.TeamSettingsLockProfileFieldsNone},
-		"enterprise":   {license: model.NewTestLicenseSKU(model.LicenseShortSkuEnterprise), expected: model.TeamSettingsLockProfileFieldsAll},
-	} {
-		t.Run(name, func(t *testing.T) {
-			config := &model.Config{}
-			config.SetDefaults()
-			config.TeamSettings.LockProfileFieldsForEmailUsers = model.NewPointer(model.TeamSettingsLockProfileFieldsAll)
+	config := &model.Config{}
+	config.SetDefaults()
+	config.TeamSettings.LockProfileFieldsForEmailUsers = model.NewPointer(model.TeamSettingsLockProfileFieldsAll)
 
-			clientConfig := GenerateClientConfig(config, "", testCase.license)
-			assert.Equal(t, testCase.expected, clientConfig["LockProfileFieldsForEmailUsers"])
-		})
-	}
+	clientConfig := GenerateClientConfig(config, "")
+	assert.Equal(t, model.TeamSettingsLockProfileFieldsAll, clientConfig["LockProfileFieldsForEmailUsers"])
 }
 
 func TestGetLimitedClientConfig(t *testing.T) {
@@ -901,18 +606,13 @@ func TestGetLimitedClientConfig(t *testing.T) {
 		description    string
 		config         *model.Config
 		telemetryID    string
-		license        *model.License
 		expectedFields map[string]string
 	}{
 		{
-			"unlicensed",
+			"basic settings",
 			&model.Config{
 				EmailSettings: model.EmailSettings{
 					EmailNotificationContentsType: model.NewPointer(model.EmailNotificationContentsFull),
-				},
-				ThemeSettings: model.ThemeSettings{
-					// Ignored, since not licensed.
-					AllowCustomThemes: new(false),
 				},
 				ServiceSettings: model.ServiceSettings{
 					WebsocketURL:        new("ws://mattermost.example.com:8065"),
@@ -921,7 +621,6 @@ func TestGetLimitedClientConfig(t *testing.T) {
 				},
 			},
 			"",
-			nil,
 			map[string]string{
 				"DiagnosticId":                     "",
 				"EnforceMultifactorAuthentication": "false",
@@ -942,7 +641,6 @@ func TestGetLimitedClientConfig(t *testing.T) {
 				},
 			},
 			"",
-			nil,
 			map[string]string{
 				"PasswordMinimumLength":    "15",
 				"PasswordRequireLowercase": "true",
@@ -960,7 +658,6 @@ func TestGetLimitedClientConfig(t *testing.T) {
 				},
 			},
 			"",
-			nil,
 			map[string]string{
 				"FeatureFlagTestFeature":    "myvalue",
 				"FeatureFlagPostAttributes": "true",
@@ -974,10 +671,6 @@ func TestGetLimitedClientConfig(t *testing.T) {
 				},
 			},
 			"",
-			&model.License{
-				Features:     &model.Features{},
-				SkuShortName: model.LicenseShortSkuEnterprise,
-			},
 			map[string]string{
 				"ExperimentalEnableWatermark": "true",
 			},
@@ -989,11 +682,8 @@ func TestGetLimitedClientConfig(t *testing.T) {
 			t.Parallel()
 
 			testCase.config.SetDefaults()
-			if testCase.license != nil {
-				testCase.license.Features.SetDefaults()
-			}
 
-			configMap := GenerateLimitedClientConfig(testCase.config, testCase.telemetryID, testCase.license)
+			configMap := GenerateLimitedClientConfig(testCase.config, testCase.telemetryID)
 			for expectedField, expectedValue := range testCase.expectedFields {
 				actualValue, ok := configMap[expectedField]
 				if assert.True(t, ok, fmt.Sprintf("config does not contain %v", expectedField)) {
