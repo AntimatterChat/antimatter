@@ -2,40 +2,58 @@
 // See LICENSE.txt for license information.
 
 import React from 'react';
-import type {CSSProperties} from 'react';
 import {useIntl} from 'react-intl';
 
+// Antimatter mark: a particle and its antiparticle on mirrored orbits.
 export default function MattermostLogo(props: React.HTMLAttributes<HTMLSpanElement>) {
     const {formatMessage} = useIntl();
     return (
         <span {...props}>
             <svg
                 version='1.1'
-                x='0px'
-                y='0px'
-                viewBox='0 0 500 500'
-                enableBackground='new 0 0 500 500'
+                viewBox='0 0 64 64'
                 role='img'
-                aria-label={formatMessage({id: 'generic_icons.mattermost', defaultMessage: 'Mattermost Logo'})}
+                aria-label={formatMessage({id: 'generic_icons.mattermost', defaultMessage: 'Antimatter Logo'})}
             >
-                <g>
-                    <g>
-                        <path
-                            style={style}
-                            d='M396.9,47.7l2.6,53.1c43,47.5,60,114.8,38.6,178.1c-32,94.4-137.4,144.1-235.4,110.9 S51.1,253.1,83,158.7C104.5,95.2,159.2,52,222.5,40.5l34.2-40.4C150-2.8,49.3,63.4,13.3,169.9C-31,300.6,39.1,442.5,169.9,486.7 s272.6-25.8,316.9-156.6C522.7,223.9,483.1,110.3,396.9,47.7z'
-                        />
-                    </g>
-                    <path
-                        style={style}
-                        d='M335.6,204.3l-1.8-74.2l-1.5-42.7l-1-37c0,0,0.2-17.8-0.4-22c-0.1-0.9-0.4-1.6-0.7-2.2 c0-0.1-0.1-0.2-0.1-0.3c0-0.1-0.1-0.2-0.1-0.2c-0.7-1.2-1.8-2.1-3.1-2.6c-1.4-0.5-2.9-0.4-4.2,0.2c0,0-0.1,0-0.1,0 c-0.2,0.1-0.3,0.1-0.4,0.2c-0.6,0.3-1.2,0.7-1.8,1.3c-3,3-13.7,17.2-13.7,17.2l-23.2,28.8l-27.1,33l-46.5,57.8 c0,0-21.3,26.6-16.6,59.4s29.1,48.7,48,55.1c18.9,6.4,48,8.5,71.6-14.7C336.4,238.4,335.6,204.3,335.6,204.3z'
-                    />
-                </g>
+                <ellipse
+                    cx='32'
+                    cy='32'
+                    rx='25'
+                    ry='9.5'
+                    fill='none'
+                    stroke='#6D28D9'
+                    strokeWidth='4.5'
+                    transform='rotate(45 32 32)'
+                />
+                <ellipse
+                    cx='32'
+                    cy='32'
+                    rx='25'
+                    ry='9.5'
+                    fill='none'
+                    stroke='#0891B2'
+                    strokeWidth='4.5'
+                    transform='rotate(-45 32 32)'
+                />
+                <path
+                    d='M32 20.5 Q33.9 30.1 43.5 32 Q33.9 33.9 32 43.5 Q30.1 33.9 20.5 32 Q30.1 30.1 32 20.5 Z'
+                    fill='#F59E0B'
+                />
+                <circle
+                    cx='14.32'
+                    cy='14.32'
+                    r='5.5'
+                    fill='#6D28D9'
+                />
+                <circle
+                    cx='49.68'
+                    cy='14.32'
+                    r='4.25'
+                    fill='#FFFFFF'
+                    stroke='#0891B2'
+                    strokeWidth='2.5'
+                />
             </svg>
         </span>
     );
 }
-
-const style: CSSProperties = {
-    fillRule: 'evenodd',
-    clipRule: 'evenodd',
-};

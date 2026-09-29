@@ -22888,8 +22888,8 @@
     "description": "Accessibility title for an envelope/mail icon."
   },
   "generic_icons.mattermost": {
-    "defaultMessage": "Mattermost Logo",
-    "description": "Accessibility title for the Mattermost logo; Mattermost is the product name."
+    "defaultMessage": "Antimatter Logo",
+    "description": "Accessibility title for the Antimatter logo; Antimatter is the product name."
   },
   "generic_icons.member": {
     "defaultMessage": "Member Icon",
