@@ -4440,11 +4440,6 @@
     "description": "API error shown to an admin when updating a secure connection to a URL already used by another connection."
   },
   {
-    "id": "api.restricted_system_admin",
-    "translation": "This action is forbidden to a restricted system admin.",
-    "description": "API error when a restricted system admin (an admin role with limited settings access) attempts an action outside their allowed scope."
-  },
-  {
     "id": "api.roles.get_multiple_by_name_too_many.request_error",
     "translation": "Unable to get that many roles by name. Only {{.MaxNames}} roles can be requested at once.",
     "description": "API error when a request asks for more roles by name than allowed at once; {{.MaxNames}} is the maximum number of role names per request."
@@ -8526,11 +8521,6 @@
     "description": "Validation error when a user group record has a malformed ID; developer-facing detail text."
   },
   {
-    "id": "app.group.license_error",
-    "translation": "LDAP license required.",
-    "description": "Error returned from the plugin API when a group operation requires an LDAP-enabled (Enterprise) license."
-  },
-  {
     "id": "app.group.no_rows",
     "translation": "no matching group found",
     "description": "Lowercase error detail returned when a user group lookup finds no match; 'group' is a Mattermost user group."
@@ -10146,14 +10136,14 @@
     "description": "Error when the server fails to evaluate an attribute-based access control policy while deciding whether a user may access a resource."
   },
   {
+    "id": "app.plugin.addon_not_supported.app_error",
+    "translation": "This plugin requires the commercial Mattermost {{.AddOn}} add-on, which is not available on this server.",
+    "description": "Error shown to admins when enabling or installing a plugin that declares it needs a separately licensed commercial Mattermost add-on, which this server cannot provide. {{.AddOn}} is the add-on's name; \"Mattermost\" refers to the vendor of the add-on and must stay as-is."
+  },
+  {
     "id": "app.pdp.access_evaluation.permission_policy.app_error",
     "translation": "Failed to evaluate permission policy.",
     "description": "Error when the server fails to evaluate a permission policy while checking a user's access."
-  },
-  {
-    "id": "app.plugin.addon_not_licensed.app_error",
-    "translation": "This plugin requires the {{.AddOn}} add-on, which your license does not include.",
-    "description": "Error shown to an admin trying to enable a plugin that requires a separately purchased license add-on. {{.AddOn}} is the add-on's internal name from the license; it is not translated."
   },
   {
     "id": "app.plugin.cluster.save_config.app_error",
@@ -10319,6 +10309,11 @@
     "id": "app.plugin.remove_bundle.app_error",
     "translation": "Unable to remove plugin bundle from file store.",
     "description": "Admin console error when deleting a plugin's bundle file from the file store fails."
+  },
+  {
+    "id": "app.plugin.request_trial_license.not_supported.app_error",
+    "translation": "Trial licenses are not supported: every feature is already available on this server.",
+    "description": "Error returned to a plugin that asks the server to start a trial license. There are no licenses on this server because every feature is always available."
   },
   {
     "id": "app.plugin.restart.app_error",

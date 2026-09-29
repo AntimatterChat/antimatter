@@ -3292,8 +3292,6 @@ func makePluginHTTPRequest(t *testing.T, pluginID string, port int, token string
 func TestPluginMFAEnforcement(t *testing.T) {
 	th := Setup(t).InitBasic(t)
 
-	th.App.Srv().SetLicense(model.NewTestLicense("mfa"))
-
 	pluginCode := `
 	package main
 
@@ -3609,12 +3607,14 @@ func TestPluginAPIIsEnterpriseReady(t *testing.T) {
 	oldValue := model.BuildEnterpriseReady
 	defer func() { model.BuildEnterpriseReady = oldValue }()
 
+	// Proprietary plugins must never be told this is an enterprise-ready build.
 	model.BuildEnterpriseReady = "true"
 	th := Setup(t)
 
 	api := th.SetupPluginAPI()
 
-	assert.Equal(t, true, api.IsEnterpriseReady())
+	assert.False(t, api.IsEnterpriseReady())
+	assert.Nil(t, api.GetLicense())
 }
 
 func TestPluginUploadsAPI(t *testing.T) {
@@ -4582,12 +4582,6 @@ func TestPluginAPICreateTeamAnonymousURLs(t *testing.T) {
 		th.App.UpdateConfig(func(cfg *model.Config) { *cfg.PrivacySettings.UseAnonymousURLs = true })
 		defer th.App.UpdateConfig(func(cfg *model.Config) { *cfg.PrivacySettings.UseAnonymousURLs = false })
 
-		th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterpriseAdvanced))
-		defer func() {
-			appErr := th.App.Srv().RemoveLicense()
-			require.Nil(t, appErr)
-		}()
-
 		originalName := "original-team-name"
 		team := &model.Team{
 			DisplayName: "Anonymous URL Team",
@@ -4607,39 +4601,9 @@ func TestPluginAPICreateTeamAnonymousURLs(t *testing.T) {
 	t.Run("should preserve team name when UseAnonymousURLs is disabled", func(t *testing.T) {
 		th.App.UpdateConfig(func(cfg *model.Config) { *cfg.PrivacySettings.UseAnonymousURLs = false })
 
-		th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterpriseAdvanced))
-		defer func() {
-			appErr := th.App.Srv().RemoveLicense()
-			require.Nil(t, appErr)
-		}()
-
 		originalName := "preserved-team-name"
 		team := &model.Team{
 			DisplayName: "Normal Team",
-			Name:        originalName,
-			Type:        model.TeamOpen,
-		}
-
-		createdTeam, appErr := api.CreateTeam(team)
-		require.Nil(t, appErr)
-		require.NotNil(t, createdTeam)
-
-		assert.Equal(t, originalName, createdTeam.Name, "team name should not be overridden")
-	})
-
-	t.Run("should not override team name without Enterprise Advanced license", func(t *testing.T) {
-		th.App.UpdateConfig(func(cfg *model.Config) { *cfg.PrivacySettings.UseAnonymousURLs = true })
-		defer th.App.UpdateConfig(func(cfg *model.Config) { *cfg.PrivacySettings.UseAnonymousURLs = false })
-
-		th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterprise))
-		defer func() {
-			appErr := th.App.Srv().RemoveLicense()
-			require.Nil(t, appErr)
-		}()
-
-		originalName := "original-team-name"
-		team := &model.Team{
-			DisplayName: "Enterprise Team",
 			Name:        originalName,
 			Type:        model.TeamOpen,
 		}
@@ -4662,11 +4626,6 @@ func TestPluginAPICreateChannelManagedCategory(t *testing.T) {
 	})
 	api := th.SetupPluginAPI()
 
-	th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterprise))
-	defer func() {
-		appErr := th.App.Srv().RemoveLicense()
-		require.Nil(t, appErr)
-	}()
 	th.App.UpdateConfig(func(cfg *model.Config) { cfg.FeatureFlags.ManagedChannelCategories = true })
 	defer th.App.UpdateConfig(func(cfg *model.Config) { cfg.FeatureFlags.ManagedChannelCategories = false })
 
@@ -5065,12 +5024,6 @@ func TestPluginAPICreateChannelAnonymousURLs(t *testing.T) {
 		th.App.UpdateConfig(func(cfg *model.Config) { *cfg.PrivacySettings.UseAnonymousURLs = true })
 		defer th.App.UpdateConfig(func(cfg *model.Config) { *cfg.PrivacySettings.UseAnonymousURLs = false })
 
-		th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterpriseAdvanced))
-		defer func() {
-			appErr := th.App.Srv().RemoveLicense()
-			require.Nil(t, appErr)
-		}()
-
 		originalName := "original-channel-name"
 		channel := &model.Channel{
 			DisplayName: "Anonymous URL Channel",
@@ -5091,12 +5044,6 @@ func TestPluginAPICreateChannelAnonymousURLs(t *testing.T) {
 	t.Run("should override private channel name when UseAnonymousURLs is enabled", func(t *testing.T) {
 		th.App.UpdateConfig(func(cfg *model.Config) { *cfg.PrivacySettings.UseAnonymousURLs = true })
 		defer th.App.UpdateConfig(func(cfg *model.Config) { *cfg.PrivacySettings.UseAnonymousURLs = false })
-
-		th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterpriseAdvanced))
-		defer func() {
-			appErr := th.App.Srv().RemoveLicense()
-			require.Nil(t, appErr)
-		}()
 
 		originalName := "private-channel-name"
 		channel := &model.Channel{
@@ -5126,12 +5073,6 @@ func TestPluginAPICreateChannelAnonymousURLs(t *testing.T) {
 			cfg.FeatureFlags.EnableDocs = false
 		})
 
-		th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterpriseAdvanced))
-		defer func() {
-			appErr := th.App.Srv().RemoveLicense()
-			require.Nil(t, appErr)
-		}()
-
 		originalName := "space-" + model.NewId()
 		channel := &model.Channel{
 			DisplayName: "Space",
@@ -5150,38 +5091,7 @@ func TestPluginAPICreateChannelAnonymousURLs(t *testing.T) {
 	t.Run("should preserve channel name when UseAnonymousURLs is disabled", func(t *testing.T) {
 		th.App.UpdateConfig(func(cfg *model.Config) { *cfg.PrivacySettings.UseAnonymousURLs = false })
 
-		th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterpriseAdvanced))
-		defer func() {
-			appErr := th.App.Srv().RemoveLicense()
-			require.Nil(t, appErr)
-		}()
-
 		originalName := "preserved-channel"
-		channel := &model.Channel{
-			DisplayName: "Normal Channel",
-			Name:        originalName,
-			Type:        model.ChannelTypeOpen,
-			TeamId:      th.BasicTeam.Id,
-		}
-
-		createdChannel, appErr := api.CreateChannel(channel)
-		require.Nil(t, appErr)
-		require.NotNil(t, createdChannel)
-
-		assert.Equal(t, originalName, createdChannel.Name, "channel name should not be overridden")
-	})
-
-	t.Run("should not override channel name without Enterprise Advanced license", func(t *testing.T) {
-		th.App.UpdateConfig(func(cfg *model.Config) { *cfg.PrivacySettings.UseAnonymousURLs = true })
-		defer th.App.UpdateConfig(func(cfg *model.Config) { *cfg.PrivacySettings.UseAnonymousURLs = false })
-
-		th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterprise))
-		defer func() {
-			appErr := th.App.Srv().RemoveLicense()
-			require.Nil(t, appErr)
-		}()
-
-		originalName := "original-channel-name"
 		channel := &model.Channel{
 			DisplayName: "Normal Channel",
 			Name:        originalName,

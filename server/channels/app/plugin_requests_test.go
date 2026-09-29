@@ -163,7 +163,6 @@ func TestUnauthRequestsMFAWarningFix(t *testing.T) {
 		*cfg.ServiceSettings.EnableMultifactorAuthentication = true
 		*cfg.ServiceSettings.EnforceMultifactorAuthentication = true
 	})
-	th.App.Srv().SetLicense(model.NewTestLicense())
 
 	// Setup a buffer to capture logs
 	buffer := &mlog.Buffer{}
@@ -371,7 +370,6 @@ func TestServePluginRequest(t *testing.T) {
 			*cfg.ServiceSettings.EnableMultifactorAuthentication = true
 			*cfg.ServiceSettings.EnforceMultifactorAuthentication = true
 		})
-		th.App.Srv().SetLicense(model.NewTestLicense())
 		t.Cleanup(func() {
 			th.App.UpdateConfig(func(cfg *model.Config) {
 				*cfg.ServiceSettings.EnableMultifactorAuthentication = false
