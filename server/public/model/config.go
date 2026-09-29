@@ -4292,6 +4292,7 @@ type Config struct {
 	DeliveryTrackingSettings    DeliveryTrackingSettings
 	AutoTranslationSettings     AutoTranslationSettings
 	AIRecapSettings             AIRecapSettings
+	IPFilteringSettings         IPFilteringSettings
 }
 
 func (o *Config) Auditable() map[string]any {
@@ -4413,6 +4414,7 @@ func (o *Config) SetDefaults() {
 	o.ContentFlaggingSettings.SetDefaults()
 	o.DeliveryTrackingSettings.SetDefaults()
 	o.AIRecapSettings.SetDefaults()
+	o.IPFilteringSettings.SetDefaults()
 }
 
 func (o *Config) IsValid() *AppError {
@@ -4574,6 +4576,10 @@ func (o *Config) IsValid() *AppError {
 	}
 
 	if appErr := o.AIRecapSettings.IsValid(); appErr != nil {
+		return appErr
+	}
+
+	if appErr := o.IPFilteringSettings.IsValid(); appErr != nil {
 		return appErr
 	}
 

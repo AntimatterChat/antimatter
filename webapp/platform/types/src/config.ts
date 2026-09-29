@@ -1157,6 +1157,7 @@ export type AdminConfig = {
     ContentFlaggingSettings: ContentFlaggingSettings;
     AutoTranslationSettings: AutoTranslationSettings;
     AIRecapSettings: AIRecapSettings;
+    IPFilteringSettings: IPFilteringSettings;
     MobileEphemeralModeSettings: MobileEphemeralModeSettings;
 };
 
@@ -1187,11 +1188,22 @@ export enum ServiceEnvironment {
     DEV = 'dev',
 }
 
+export type IPFilteringSettings = {
+    Rules: AllowedIPRanges;
+};
+
+export type IPFilterAction = 'allow' | 'deny';
+
 export type AllowedIPRange = {
+
+    // cidr_block is an IPv4 or IPv6 range in CIDR notation, or a single address.
     cidr_block: string;
     description: string;
     enabled: boolean;
     owner_id: string;
+
+    // action defaults to 'allow' when missing.
+    action?: IPFilterAction;
 };
 
 export type AllowedIPRanges = AllowedIPRange[];
