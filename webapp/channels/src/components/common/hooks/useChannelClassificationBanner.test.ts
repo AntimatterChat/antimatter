@@ -355,7 +355,6 @@ describe('useChannelClassificationBanner', () => {
                 entities: {
                     general: {
                         config: {FeatureFlagChannelAttributes: 'true'},
-                        license: {IsLicensed: 'true', SkuShortName: 'advanced'},
                     },
                     channels: {
                         channels: {

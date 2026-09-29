@@ -33,9 +33,6 @@ describe('components/global/GlobalHeader', () => {
         entities: {
             general: {
                 config: {},
-                license: {
-                    IsLicensed: 'false',
-                },
             },
             preferences: {
                 myPreferences: {},

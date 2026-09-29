@@ -1,20 +1,41 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 
-import React from 'react';
-import {useSelector} from 'react-redux';
+import React, {type JSX} from 'react';
 
-import {isFreeEdition as isFreeEditionSelector} from 'mattermost-redux/selectors/entities/general';
+import glyphMap, {ProductChannelsIcon} from '@mattermost/compass-icons/components';
+import type {IconGlyphTypes} from '@mattermost/compass-icons/IconGlyphs';
 
-import ProductBrandingFreeEdition from './product_branding_free_edition';
-import ProductBrandingLicensedEdition from './product_branding_licensed_edition';
+import {useCurrentProduct} from 'utils/products';
 
-export function ProductBranding() {
-    const isFreeEdition = useSelector(isFreeEditionSelector);
+export const ProductBranding = (): JSX.Element => {
+    const currentProduct = useCurrentProduct();
 
-    if (isFreeEdition) {
-        return <ProductBrandingFreeEdition/>;
-    }
+    const productName = currentProduct ? currentProduct.switcherText : 'Channels';
 
-    return <ProductBrandingLicensedEdition/>;
-}
+    // Products may register either a compass icon name or a React element.
+    const renderIcon = () => {
+        if (!currentProduct?.switcherIcon) {
+            return <ProductChannelsIcon size={24}/>;
+        }
+
+        if (typeof currentProduct.switcherIcon === 'string') {
+            const Icon = glyphMap[currentProduct.switcherIcon as IconGlyphTypes];
+
+            return Icon ? <Icon size={24}/> : <ProductChannelsIcon size={24}/>;
+        }
+
+        return <>{currentProduct.switcherIcon}</>;
+    };
+
+    return (
+        <span className='globalHeader-leftControls-productBranding-licensedEdition'>
+            {renderIcon()}
+            <span className='globalHeader-leftControls-productBranding-licensedEdition-heading'>
+                {productName}
+            </span>
+        </span >
+    );
+};
+
+export default ProductBranding;

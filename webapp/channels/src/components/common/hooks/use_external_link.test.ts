@@ -22,9 +22,6 @@ function getBaseState(): DeepPartial<GlobalState> {
                 config: {
                     TelemetryId: baseTelemetryId,
                 },
-                license: {
-                    Cloud: 'true',
-                },
             },
         },
     };
@@ -50,12 +47,12 @@ describe('useExternalLink', () => {
         const {result: {current: [href, queryParams]}} = renderHookWithContext(() => useExternalLink(url), getBaseState());
         const parsedLink = new URL(href);
         expect(parsedLink.searchParams.get('utm_source')).toBe('mattermost');
-        expect(parsedLink.searchParams.get('utm_medium')).toBe('in-product-cloud');
+        expect(parsedLink.searchParams.get('utm_medium')).toBe('in-product');
         expect(parsedLink.searchParams.get('utm_content')).toBe('');
         expect(parsedLink.searchParams.get('uid')).toBe(baseCurrentUserId);
         expect(parsedLink.searchParams.get('sid')).toBe(baseTelemetryId);
         expect(queryParams.utm_source).toBe('mattermost');
-        expect(queryParams.utm_medium).toBe('in-product-cloud');
+        expect(queryParams.utm_medium).toBe('in-product');
         expect(queryParams.utm_content).toBe('');
         expect(queryParams.uid).toBe(baseCurrentUserId);
         expect(queryParams.sid).toBe(baseTelemetryId);
@@ -69,16 +66,6 @@ describe('useExternalLink', () => {
         const parsedLink = new URL(href);
         expect(parsedLink.searchParams.get('utm_content')).toBe(location);
         expect(queryParams.utm_content).toBe(location);
-    });
-
-    it('non cloud environments set the proper utm medium', () => {
-        const url = 'https://www.mattermost.com/some/url';
-        const state = getBaseState();
-        state.entities!.general!.license!.Cloud = 'false';
-        const {result: {current: [href, queryParams]}} = renderHookWithContext(() => useExternalLink(url), state);
-        const parsedLink = new URL(href);
-        expect(parsedLink.searchParams.get('utm_medium')).toBe('in-product');
-        expect(queryParams.utm_medium).toBe('in-product');
     });
 
     it('keep existing query parameters untouched', () => {

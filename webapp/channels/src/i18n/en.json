@@ -20919,10 +20919,6 @@
     "defaultMessage": "Team Membership Icon",
     "description": "Accessible title of the icon on the Team Membership tab in the team settings sidebar."
   },
-  "generic_icons.upgradeBadge": {
-    "defaultMessage": "Upgrade badge",
-    "description": "Accessibility title for the badge icon prompting a plan upgrade."
-  },
   "generic_icons.user_groups": {
     "defaultMessage": "User Groups Icon",
     "description": "Accessible label (aria-label) of a decorative illustration shown in the user groups empty state."
@@ -21079,21 +21075,9 @@
     "defaultMessage": "Product menu",
     "description": "Screen-reader label for the product menu that opens from the grid icon and product name at the top left of the global header."
   },
-  "globalHeader.productSwitcherMenu.cloudLimitsFooter.infoButtonAriaLabel": {
-    "defaultMessage": "View limits",
-    "description": "Screen-reader label for the info icon button in the usage-limits footer of the product menu, on Cloud workspaces. It opens a dialog with workspace usage limits. 'View' is a verb."
-  },
   "globalHeader.productSwitcherMenu.downloadMenuItem.label": {
     "defaultMessage": "Download Apps",
     "description": "Menu item in the product menu at the top left of the global header. It opens the download page for the desktop and mobile apps. Hidden in the desktop app."
-  },
-  "globalHeader.productSwitcherMenu.editionMenuitem.entry": {
-    "defaultMessage": "Entry offers Enterprise Advanced capabilities <b>with limits</b> designed to support evaluation. Learn more.",
-    "description": "Clickable item at the bottom of the product menu on servers with an Entry license, next to an 'ENTRY EDITION' badge. The whole item opens a page about Entry's limits; 'Learn more.' is not a separate link. 'Entry' and 'Enterprise Advanced' are edition names. <b> marks bold text."
-  },
-  "globalHeader.productSwitcherMenu.editionMenuitem.unsupported": {
-    "defaultMessage": "This is the free <b>unsupported</b> edition of Antimatter. See pricing.",
-    "description": "Clickable item at the bottom of the product menu on unlicensed (Team Edition) servers, next to a 'TEAM EDITION' badge. The whole item opens the pricing page; 'See pricing.' is not a separate link. <b> marks bold text."
   },
   "globalHeader.productSwitcherMenu.integrationsMenuItem.label": {
     "defaultMessage": "Integrations",
@@ -21110,22 +21094,6 @@
   "globalHeader.productSwitcherMenu.systemConsoleMenuItem.label": {
     "defaultMessage": "System Console",
     "description": "Menu item in the product menu at the top left of the global header, shown to admins. It opens the System Console. Use the product's standard translation of 'System Console'."
-  },
-  "globalHeader.productSwitcherMenu.trialMenuItem.isFreeTrial.primaryLabel": {
-    "defaultMessage": "Enterprise Advanced Trial",
-    "description": "First line of a product menu item on Cloud workspaces during a free trial. 'Enterprise Advanced' is the edition name being trialed."
-  },
-  "globalHeader.productSwitcherMenu.trialMenuItem.isFreeTrial.secondaryLabel": {
-    "defaultMessage": "Your trial is active until {trialEndDay}. Discover our top Enterprise features.",
-    "description": "Second line of the trial item in the product menu on Cloud workspaces during a free trial. {trialEndDay} is the trial end date formatted in the user's locale, for example 'March 05, 2026'. Clicking opens trial benefits (admins) or pricing (others)."
-  },
-  "globalHeader.productSwitcherMenu.trialMenuItem.noFreeTrial.primaryLabel": {
-    "defaultMessage": "Interested in a limitless plan with high-security features?",
-    "description": "First line of a product menu item shown to admins of Cloud workspaces on the free plan, promoting an upgrade."
-  },
-  "globalHeader.productSwitcherMenu.trialMenuItem.noFreeTrial.secondaryLabel": {
-    "defaultMessage": "See plans",
-    "description": "Second line of the upgrade item in the product menu for Cloud free-plan admins. Clicking the item opens the pricing dialog. 'See' is an imperative verb."
   },
   "globalHeader.productSwitcherMenu.userGroupsMenuItem.label": {
     "defaultMessage": "User Groups",
@@ -22991,10 +22959,6 @@
     "defaultMessage": "Yes",
     "description": "Confirm button label in the leave-team confirmation modal."
   },
-  "licensingPage.overageUsersBanner.cta": {
-    "defaultMessage": "Contact Sales",
-    "description": "Call-to-action button on the admin console licensing page banner shown when the licensed seat count is exceeded; opens a sales contact link."
-  },
   "licensingPage.overageUsersBanner.noticeDescription": {
     "defaultMessage": "Notify your Customer Success Manager on your next true-up check. <a></a>",
     "description": "Body of a banner shown to system admins when active users exceed licensed seats; <a></a> is replaced by a contact-sales call-to-action link. A true-up check is a license reconciliation."
@@ -23426,18 +23390,6 @@
   "media_gallery.video_label": {
     "defaultMessage": "Video {current} of {total}: {name}. Press Enter or Space to play.",
     "description": "Accessibility label for a video tile in the media gallery; {current} is its position, {total} the total count, {name} the file name; mentions the keyboard keys to start playback."
-  },
-  "menu.cloudFree.enterpriseTrialDescription": {
-    "defaultMessage": "Your trial is active until {trialEndDay}. Discover our top Enterprise features. <openModalLink>Learn more</openModalLink>",
-    "description": "Description in the main menu item about an active Enterprise trial; {trialEndDay} is the trial end date and <openModalLink> wraps the 'Learn more' link."
-  },
-  "menu.cloudFree.enterpriseTrialTitle": {
-    "defaultMessage": "Enterprise Advanced Trial",
-    "description": "Title of the main menu item shown while an Enterprise Advanced trial is active; plan name, do not translate 'Enterprise Advanced'."
-  },
-  "menu.cloudFree.postTrial.tryEnterprise": {
-    "defaultMessage": "Interested in a limitless plan with high-security features? <openModalLink>See plans</openModalLink>",
-    "description": "Main menu text shown after a trial ends encouraging viewing paid plans; <openModalLink> wraps the 'See plans' link."
   },
   "message_submit_error.invalidCommand": {
     "defaultMessage": "Command with a trigger of ''{command}'' not found. ",
@@ -23991,10 +23943,6 @@
     "defaultMessage": "During your trial you are able to create multiple teams. These teams will be archived after your trial.",
     "description": "Tooltip on the create-team option during a Cloud free trial, warning that teams created will be archived when the trial ends."
   },
-  "navbar_dropdown.entryVersionText": {
-    "defaultMessage": "Entry offers Enterprise Advance capabilities <link>with limits</link> designed to support evaluation.",
-    "description": "Text in the main menu describing the free Entry edition; 'Entry' and 'Enterprise Advanced' are plan names; <link> wraps the linked words."
-  },
   "navbar_dropdown.help": {
     "defaultMessage": "Help",
     "description": "Menu item in the mobile right sidebar menu linking to help documentation."
@@ -24050,38 +23998,6 @@
   "navbar_dropdown.teamSettings": {
     "defaultMessage": "Team Settings",
     "description": "Menu item in the mobile right sidebar menu that opens the Team Settings dialog."
-  },
-  "navbar_dropdown.userGroups.modal.messageAdminPostTrial": {
-    "defaultMessage": "User groups are a way to organize users and apply actions to all users within that group. Upgrade to the Professional plan to create unlimited user groups.",
-    "description": "Body of the upsell modal shown to a workspace admin (after their trial ended) when user groups require a paid plan."
-  },
-  "navbar_dropdown.userGroups.modal.messageAdminPreTrial": {
-    "defaultMessage": "Create unlimited user groups with one of our paid plans. Get the full experience of Enterprise when you start a free, {trialLength} day trial.",
-    "description": "Body of the upsell modal about user groups shown to admins before starting a trial; {trialLength} is the trial duration in days."
-  },
-  "navbar_dropdown.userGroups.modal.messageEndUser": {
-    "defaultMessage": "User groups are a way to organize users and apply actions to all users within that group.",
-    "description": "Body of the modal shown to non-admin users explaining what user groups are when the feature requires a paid plan."
-  },
-  "navbar_dropdown.userGroups.modal.titleAdminPostTrial": {
-    "defaultMessage": "Upgrade to create unlimited user groups",
-    "description": "Title of the upsell modal about user groups, shown to admins after their trial ended."
-  },
-  "navbar_dropdown.userGroups.modal.titleAdminPreTrial": {
-    "defaultMessage": "Try unlimited user groups with a free trial",
-    "description": "Title of the upsell modal offering a free trial for user groups, shown to admins before starting a trial."
-  },
-  "navbar_dropdown.userGroups.modal.titleEndUser": {
-    "defaultMessage": "User groups available in paid plans",
-    "description": "Title of the modal shown to non-admin users explaining user groups require a paid plan."
-  },
-  "navbar_dropdown.userGroups.tooltip.cloudFreeTrial": {
-    "defaultMessage": "During your trial you are able to create user groups. These user groups will be archived after your trial.",
-    "description": "Tooltip on the user groups option during a Cloud free trial, warning that groups created will be archived when the trial ends."
-  },
-  "navbar_dropdown.versionText": {
-    "defaultMessage": "This is the free <link>unsupported</link> edition of Antimatter.",
-    "description": "Text in the main menu describing the free unsupported edition; <link> wraps the word that links to more information."
   },
   "navbar_dropdown.viewMembers": {
     "defaultMessage": "View Members",
@@ -24222,26 +24138,6 @@
   "notification.dm": {
     "defaultMessage": "Direct Message",
     "description": "Title of a desktop/browser notification for an incoming direct message."
-  },
-  "notify_admin_to_upgrade_cta.notify-admin.already_notified": {
-    "defaultMessage": "Already notified!",
-    "description": "Button state text after clicking 'Notify your admin' when the admin was already notified about the upgrade request earlier."
-  },
-  "notify_admin_to_upgrade_cta.notify-admin.failed": {
-    "defaultMessage": "Try again later!",
-    "description": "Button state text when the request to notify the admin about an upgrade fails."
-  },
-  "notify_admin_to_upgrade_cta.notify-admin.notified": {
-    "defaultMessage": "Admin notified!",
-    "description": "Button state text confirming the admin was successfully notified about the user's upgrade request."
-  },
-  "notify_admin_to_upgrade_cta.notify-admin.notify": {
-    "defaultMessage": "Notify your admin",
-    "description": "Button label an end user clicks to send their system admin a request to upgrade the workspace plan."
-  },
-  "notify_admin_to_upgrade_cta.notify-admin.notifying": {
-    "defaultMessage": "Notifying...",
-    "description": "Button text while the request notifying the workspace admin to upgrade the plan is being sent; ellipsis indicates progress."
   },
   "notify_all.confirm": {
     "defaultMessage": "Confirm",
@@ -25299,14 +25195,6 @@
     "defaultMessage": "New Messages",
     "description": "Label on the horizontal separator line in the message list marking where unread messages begin."
   },
-  "pricing_modal.btn.tooltip": {
-    "defaultMessage": "Only visible to system admins",
-    "description": "Tooltip on the 'View plans' button in the global header clarifying that the button is shown only to system admins."
-  },
-  "pricing_modal.btn.viewPlans": {
-    "defaultMessage": "View plans",
-    "description": "Button in the global header that opens the pricing/plans modal; visible to system admins."
-  },
   "product_menu_item.open_in_new_tab": {
     "defaultMessage": "Open in new tab",
     "description": "Tooltip/accessibility label on external product links in the product switcher menu indicating they open in a new browser tab."
@@ -26230,18 +26118,6 @@
   "request_join_channel.title": {
     "defaultMessage": "Request to join channel",
     "description": "Title of the modal for requesting to join a private/restricted channel."
-  },
-  "restricted_indicator.tooltip.mesage": {
-    "defaultMessage": "During your trial you are able to use this feature.",
-    "description": "Tooltip body on the indicator marking a paid feature, shown while the workspace is on a trial."
-  },
-  "restricted_indicator.tooltip.message.blocked": {
-    "defaultMessage": "This is a paid feature, available with a free {trialLength}-day trial",
-    "description": "Tooltip body on the indicator marking a paid feature the user cannot access; {trialLength} is the number of trial days."
-  },
-  "restricted_indicator.tooltip.title": {
-    "defaultMessage": "{minimumPlanRequiredForFeature} feature",
-    "description": "Tooltip title on the paid-feature indicator; {minimumPlanRequiredForFeature} is a plan name such as Professional or Enterprise."
   },
   "revoke_user_sessions_modal.desc": {
     "defaultMessage": "This action revokes all sessions for {username}. They will be logged out from all devices. Are you sure you want to revoke all sessions for {username}?",
@@ -28975,10 +28851,6 @@
     "defaultMessage": "Update",
     "description": "Submit button label (verb) on the Edit Outgoing Webhook form and in its confirmation modal."
   },
-  "upgradeLink.warn.upgrade_now": {
-    "defaultMessage": "Upgrade now",
-    "description": "Call-to-action button/link prompting the workspace to upgrade to a paid plan."
-  },
   "upload_overlay.info": {
     "defaultMessage": "Drop a file to upload it.",
     "description": "Text on the full-screen overlay shown while dragging a file over the app, prompting the user to drop it to upload."
@@ -31434,90 +31306,6 @@
   "workspace_limits.archived_file.tooltip_title": {
     "defaultMessage": "Unarchive this file by upgrading",
     "description": "Tooltip title on an archived file attachment prompting an upgrade to a paid plan to restore access."
-  },
-  "workspace_limits.menu_limit.critical.files_storage": {
-    "defaultMessage": "You’re getting closer to the {limit} file storage limit. <a>{callToAction}</a>",
-    "description": "Cloud usage warning in the main menu when file storage nears its limit; {limit} is a storage amount (e.g. 10GB); <a> wraps {callToAction}, a link like 'View plans'."
-  },
-  "workspace_limits.menu_limit.critical.messages_history": {
-    "defaultMessage": "You’re close to hitting the free {limit} message history limit <a>{callToAction}</a>",
-    "description": "Cloud usage warning in the main menu when message history nears the free limit; {limit} is a message count; <a> wraps {callToAction}, a link like 'View plans'."
-  },
-  "workspace_limits.menu_limit.critical.messages_history_non_admin": {
-    "defaultMessage": "You’re almost at the message limit. Your admin can upgrade your plan for unlimited messages. <a>{callToAction}</a>",
-    "description": "Warning shown to non-admin end users in the main menu usage widget when the workspace nears the Cloud Free message limit; <a> wraps the {callToAction} link text (e.g. 'Notify admin')."
-  },
-  "workspace_limits.menu_limit.file_storage": {
-    "defaultMessage": "File storage limit",
-    "description": "Label of the file storage usage meter shown in the main menu for cloud workspaces near their limits."
-  },
-  "workspace_limits.menu_limit.messages": {
-    "defaultMessage": "Total messages",
-    "description": "Label of the message count usage meter shown in the main menu for cloud workspaces near their limits."
-  },
-  "workspace_limits.menu_limit.notify_admin": {
-    "defaultMessage": "Notify admin",
-    "description": "Call-to-action link text for non-admin users to notify their admin about a reached cloud usage limit."
-  },
-  "workspace_limits.menu_limit.over.files_storage": {
-    "defaultMessage": "You’re over the {limit} file storage limit. You can only access the most recent {limit} worth of files. <a>{callToAction}</a>",
-    "description": "Cloud usage notice in the main menu when file storage is over its limit; {limit} is a storage amount; <a> wraps {callToAction}."
-  },
-  "workspace_limits.menu_limit.over.messages_history": {
-    "defaultMessage": "You’re over the free message history limit. You can only view up to the last {limit} messages in your history. <a>{callToAction}</a>",
-    "description": "Cloud usage notice in the main menu when message history is over the free limit; {limit} is a message count; <a> wraps {callToAction}."
-  },
-  "workspace_limits.menu_limit.over.messages_history_non_admin": {
-    "defaultMessage": "You’re over your message limit. Your admin can upgrade your plan for unlimited messages. <a>{callToAction}</a>",
-    "description": "Warning shown to non-admin end users in the main menu usage widget when the workspace has exceeded the Cloud Free message limit; <a> wraps the {callToAction} link text."
-  },
-  "workspace_limits.menu_limit.reached.files_storage": {
-    "defaultMessage": "You’ve reached the {limit} file storage limit. You can only access the most recent {limit} worth of files. <a>{callToAction}</a>",
-    "description": "Cloud usage notice in the main menu when file storage has hit its limit; {limit} is a storage amount; <a> wraps {callToAction}."
-  },
-  "workspace_limits.menu_limit.reached.messages_history": {
-    "defaultMessage": "You’ve reached the free message history limit. You can only view up to the last {limit} messages in your history. <a>{callToAction}</a>",
-    "description": "Cloud usage notice in the main menu when message history has hit the free limit; {limit} is a message count; <a> wraps {callToAction}."
-  },
-  "workspace_limits.menu_limit.reached.messages_history_non_admin": {
-    "defaultMessage": "You’ve reached your message limit. Your admin can upgrade your plan for unlimited messages. <a>{callToAction}</a>",
-    "description": "Warning shown to non-admin end users in the main menu usage widget when the workspace has just hit the Cloud Free message limit; <a> wraps the {callToAction} link text."
-  },
-  "workspace_limits.menu_limit.view_plans": {
-    "defaultMessage": "View plans",
-    "description": "Short link/button that opens the plan comparison view; used on license panels and usage menus; compact space."
-  },
-  "workspace_limits.menu_limit.view_upgrade_options": {
-    "defaultMessage": "View upgrade options.",
-    "description": "Call-to-action link text for admins in the cloud usage limit notices; opens upgrade/pricing options."
-  },
-  "workspace_limits.menu_limit.warn.files_storage": {
-    "defaultMessage": "You’re getting closer to the {limit} file storage limit. <a>{callToAction}</a>",
-    "description": "Cloud usage warning in the main menu as file storage approaches its limit; {limit} is a storage amount; <a> wraps {callToAction}."
-  },
-  "workspace_limits.menu_limit.warn.messages_history": {
-    "defaultMessage": "You're getting closer to the free {limit} message limit. <a>{callToAction}</a>",
-    "description": "Cloud usage warning in the main menu as message history approaches the free limit; {limit} is a message count; <a> wraps {callToAction}."
-  },
-  "workspace_limits.modals.close": {
-    "defaultMessage": "Close",
-    "description": "Secondary button that dismisses the cloud usage-limits modal."
-  },
-  "workspace_limits.modals.limits_reached.description.message_history": {
-    "defaultMessage": "Your sent message history is no longer available but you can still send messages. Upgrade to a paid plan and get unlimited access to your message history.",
-    "description": "Body of the modal shown when a cloud workspace exceeds its message-history limit, prompting an upgrade."
-  },
-  "workspace_limits.modals.limits_reached.title": {
-    "defaultMessage": "{limitName} limit reached",
-    "description": "Title of the modal shown to cloud admins on login when a usage limit is exceeded; {limitName} is the limit's name (e.g. 'Message history')."
-  },
-  "workspace_limits.modals.limits_reached.title.message_history": {
-    "defaultMessage": "Message history",
-    "description": "Name of the limit inserted into the 'limits reached' modal title shown to Cloud admins; refers to the stored message history limit."
-  },
-  "workspace_limits.modals.view_plan_options": {
-    "defaultMessage": "View plan options",
-    "description": "Button in workspace-limit notices that opens the pricing/plan comparison modal."
   },
   "wysiwyg.link.display_text": {
     "defaultMessage": "Display text",

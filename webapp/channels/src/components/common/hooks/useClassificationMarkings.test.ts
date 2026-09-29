@@ -46,12 +46,8 @@ function makeChannelField(overrides: Partial<PropertyField> = {}): PropertyField
 
 const GROUP_ID = 'group_access_control';
 
-const ENTERPRISE_LICENSE = {IsLicensed: 'true', SkuShortName: 'enterprise'};
-const STARTER_LICENSE = {IsLicensed: 'true', SkuShortName: 'starter'};
-
-function stateWith({featureFlag, license, fields = {}}: {
+function stateWith({featureFlag, fields = {}}: {
     featureFlag?: string;
-    license?: typeof ENTERPRISE_LICENSE | typeof STARTER_LICENSE | Record<string, never>;
     fields?: Record<string, PropertyField>;
 }): PartialState {
     // Fields are looked up through the group-scoped map, which the fetch action
@@ -60,7 +56,6 @@ function stateWith({featureFlag, license, fields = {}}: {
         entities: {
             general: {
                 config: featureFlag === undefined ? {} : {FeatureFlagClassificationMarkings: featureFlag},
-                license: license ?? {},
             },
             properties: {
                 groups: {
@@ -95,7 +90,7 @@ describe('useClassificationMarkings', () => {
     test('returns available=false when feature flag is disabled', () => {
         const {result} = renderHookWithContext(
             () => useClassificationMarkings(),
-            stateWith({featureFlag: 'false', license: ENTERPRISE_LICENSE}),
+            stateWith({featureFlag: 'false'}),
         );
 
         expect(result.current.available).toBe(false);
@@ -107,7 +102,7 @@ describe('useClassificationMarkings', () => {
     test('returns available=false when feature flag is missing from config', () => {
         const {result} = renderHookWithContext(
             () => useClassificationMarkings(),
-            stateWith({license: ENTERPRISE_LICENSE}),
+            stateWith({}),
         );
 
         expect(result.current.available).toBe(false);
@@ -115,31 +110,10 @@ describe('useClassificationMarkings', () => {
         expect(dispatchMock).not.toHaveBeenCalled();
     });
 
-    test('returns available=false when license is not Enterprise', () => {
+    test('returns loading=true and dispatches fetch when flag is on but no channel field', () => {
         const {result} = renderHookWithContext(
             () => useClassificationMarkings(),
-            stateWith({featureFlag: 'true', license: STARTER_LICENSE}),
-        );
-
-        expect(result.current.available).toBe(false);
-        expect(result.current.loading).toBe(false);
-        expect(dispatchMock).not.toHaveBeenCalled();
-    });
-
-    test('returns available=false when license is missing entirely', () => {
-        const {result} = renderHookWithContext(
-            () => useClassificationMarkings(),
-            stateWith({featureFlag: 'true', license: {}}),
-        );
-
-        expect(result.current.available).toBe(false);
-        expect(dispatchMock).not.toHaveBeenCalled();
-    });
-
-    test('returns loading=true and dispatches fetch when flag and license are on but no channel field', () => {
-        const {result} = renderHookWithContext(
-            () => useClassificationMarkings(),
-            stateWith({featureFlag: 'true', license: ENTERPRISE_LICENSE}),
+            stateWith({featureFlag: 'true'}),
         );
 
         expect(result.current.loading).toBe(true);
@@ -163,7 +137,7 @@ describe('useClassificationMarkings', () => {
 
         const {result} = renderHookWithContext(
             () => useClassificationMarkings(),
-            stateWith({featureFlag: 'true', license: ENTERPRISE_LICENSE, fields: {channel1: channel}}),
+            stateWith({featureFlag: 'true', fields: {channel1: channel}}),
         );
 
         expect(result.current.available).toBe(true);
@@ -181,7 +155,7 @@ describe('useClassificationMarkings', () => {
 
         const {result} = renderHookWithContext(
             () => useClassificationMarkings(),
-            stateWith({featureFlag: 'true', license: ENTERPRISE_LICENSE, fields: {channel1: channel}}),
+            stateWith({featureFlag: 'true', fields: {channel1: channel}}),
         );
 
         expect(result.current.available).toBe(false);
@@ -197,7 +171,6 @@ describe('useClassificationMarkings', () => {
             () => useClassificationMarkings(),
             stateWith({
                 featureFlag: 'true',
-                license: ENTERPRISE_LICENSE,
                 fields: {channel1: channel},
             }),
         );
@@ -212,7 +185,6 @@ describe('useClassificationMarkings', () => {
             () => useClassificationMarkings(),
             stateWith({
                 featureFlag: 'true',
-                license: ENTERPRISE_LICENSE,
                 fields: {orphan},
             }),
         );
@@ -227,7 +199,6 @@ describe('useClassificationMarkings', () => {
             () => useClassificationMarkings(),
             stateWith({
                 featureFlag: 'true',
-                license: ENTERPRISE_LICENSE,
                 fields: {channel1: deleted},
             }),
         );
@@ -242,7 +213,6 @@ describe('useClassificationMarkings', () => {
             () => useClassificationMarkings(),
             stateWith({
                 featureFlag: 'true',
-                license: ENTERPRISE_LICENSE,
                 fields: {channel1: channel},
             }),
         );
