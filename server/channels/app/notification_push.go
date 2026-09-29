@@ -803,7 +803,7 @@ func (a *App) BuildPushNotificationMessage(rctx request.CTX, contentsConfig stri
 	var msg *model.PushNotification
 
 	notificationInterface := a.ch.Notification
-	if (notificationInterface == nil || notificationInterface.CheckLicense() != nil) && contentsConfig == model.IdLoadedNotification {
+	if notificationInterface == nil && contentsConfig == model.IdLoadedNotification {
 		contentsConfig = model.GenericNotification
 	}
 

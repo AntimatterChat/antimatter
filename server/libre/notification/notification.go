@@ -32,11 +32,6 @@ type Notification struct {
 
 var _ einterfaces.NotificationInterface = (*Notification)(nil)
 
-// CheckLicense always succeeds: every feature is available in Mattermost Libre.
-func (n *Notification) CheckLicense() *model.AppError {
-	return nil
-}
-
 // GetNotificationMessage builds the full push notification for the post
 // referenced by an ID-loaded notification acknowledgement.
 //

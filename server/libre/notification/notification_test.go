@@ -65,10 +65,6 @@ func setup(t *testing.T) *fixture {
 	return &fixture{app: app.New(app.ServerConnector(s.Channels())), users: users, posts: posts, channels: channels}
 }
 
-func TestCheckLicense(t *testing.T) {
-	assert.Nil(t, (&Notification{}).CheckLicense())
-}
-
 func TestGetNotificationMessage(t *testing.T) {
 	f := setup(t)
 	rctx := request.TestContext(t)

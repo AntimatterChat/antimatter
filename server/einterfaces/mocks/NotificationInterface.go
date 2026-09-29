@@ -15,26 +15,6 @@ type NotificationInterface struct {
 	mock.Mock
 }
 
-// CheckLicense provides a mock function with no fields
-func (_m *NotificationInterface) CheckLicense() *model.AppError {
-	ret := _m.Called()
-
-	if len(ret) == 0 {
-		panic("no return value specified for CheckLicense")
-	}
-
-	var r0 *model.AppError
-	if rf, ok := ret.Get(0).(func() *model.AppError); ok {
-		r0 = rf()
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*model.AppError)
-		}
-	}
-
-	return r0
-}
-
 // GetNotificationMessage provides a mock function with given fields: rctx, ack, userID
 func (_m *NotificationInterface) GetNotificationMessage(rctx request.CTX, ack *model.PushNotificationAck, userID string) (*model.PushNotification, *model.AppError) {
 	ret := _m.Called(rctx, ack, userID)

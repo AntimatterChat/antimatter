@@ -23,20 +23,6 @@ import (
 	"github.com/mattermost/mattermost/server/v8/channels/store"
 )
 
-func getLicWithSkuShortName(skuShortName string) *model.License {
-	return &model.License{
-		Features: &model.Features{},
-		Customer: &model.Customer{
-			Name:  "TestName",
-			Email: "test@example.com",
-		},
-		SkuName:      "SKU NAME",
-		SkuShortName: skuShortName,
-		StartsAt:     model.GetMillis() - 1000,
-		ExpiresAt:    model.GetMillis() + 100000,
-	}
-}
-
 func TestSendNotifications(t *testing.T) {
 	mainHelper.Parallel(t)
 	th := Setup(t).InitBasic(t)
@@ -60,7 +46,7 @@ func TestSendNotifications(t *testing.T) {
 		require.True(t, slices.Contains(mentions, th.BasicUser2.Id), "mentions", mentions)
 	})
 
-	t.Run("license is required for group mention", func(t *testing.T) {
+	t.Run("group mention generates mention", func(t *testing.T) {
 		group := th.CreateGroup(t)
 		group.AllowReference = true
 		group, updateErr := th.App.UpdateGroup(group)
@@ -79,13 +65,6 @@ func TestSendNotifications(t *testing.T) {
 		require.Nil(t, createPostErr)
 
 		mentions, err := th.App.SendNotifications(th.Context, groupMentionPost, th.BasicTeam, th.BasicChannel, th.BasicUser, nil, true)
-		require.NoError(t, err)
-		require.NotNil(t, mentions)
-		require.Len(t, mentions, 0)
-
-		th.App.Srv().SetLicense(getLicWithSkuShortName(model.LicenseShortSkuProfessional))
-
-		mentions, err = th.App.SendNotifications(th.Context, groupMentionPost, th.BasicTeam, th.BasicChannel, th.BasicUser, nil, true)
 		require.NoError(t, err)
 		require.NotNil(t, mentions)
 		require.Len(t, mentions, 1)
@@ -301,8 +280,6 @@ func TestSendNotifications_MentionsFollowers(t *testing.T) {
 			_, appErr = th.App.UpdateChannelMemberRoles(th.Context, member.ChannelId, member.UserId, originalRoles)
 			require.Nil(t, appErr)
 		}()
-
-		th.App.Srv().SetLicense(getLicWithSkuShortName(model.LicenseShortSkuEnterprise))
 
 		// Make a group and add users
 		group := th.CreateGroup(t)
@@ -1806,29 +1783,6 @@ func TestAllowGroupMentions(t *testing.T) {
 	th := Setup(t).InitBasic(t)
 
 	post := &model.Post{ChannelId: th.BasicChannel.Id, UserId: th.BasicUser.Id}
-
-	t.Run("should return false without the correct license sku short name", func(t *testing.T) {
-		tests := map[string]struct {
-			license *model.License
-			want    bool
-		}{
-			"no license":                        {nil, false},
-			"license with wrong SKU short name": {getLicWithSkuShortName("foobar"), false},
-			"'professional' license":            {getLicWithSkuShortName(model.LicenseShortSkuProfessional), true},
-			"'enterprise' license":              {getLicWithSkuShortName(model.LicenseShortSkuEnterprise), true},
-		}
-
-		for name, tc := range tests {
-			t.Run(name, func(t *testing.T) {
-				th.App.Srv().SetLicense(tc.license)
-				got := th.App.allowGroupMentions(th.Context, post)
-				assert.Equal(t, tc.want, got)
-			})
-		}
-	})
-
-	// we set the enterprise license for the rest of the tests
-	th.App.Srv().SetLicense(getLicWithSkuShortName(model.LicenseShortSkuEnterprise))
 
 	t.Run("should return true for a regular post with few channel members", func(t *testing.T) {
 		allowGroupMentions := th.App.allowGroupMentions(th.Context, post)
