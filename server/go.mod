@@ -87,6 +87,7 @@ require (
 )
 
 require (
+	github.com/abadojack/whatlanggo v1.0.1
 	github.com/google/cel-go v0.26.1
 )
 

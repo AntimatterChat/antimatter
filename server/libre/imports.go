@@ -7,6 +7,7 @@ import (
 	// Each import registers its implementation from init().
 	_ "github.com/mattermost/mattermost/server/v8/libre/accesscontrol"
 	_ "github.com/mattermost/mattermost/server/v8/libre/accountmigration"
+	_ "github.com/mattermost/mattermost/server/v8/libre/autotranslation"
 	_ "github.com/mattermost/mattermost/server/v8/libre/cluster"
 	_ "github.com/mattermost/mattermost/server/v8/libre/compliance"
 	_ "github.com/mattermost/mattermost/server/v8/libre/dataretention"
