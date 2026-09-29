@@ -35,7 +35,7 @@ export default function ProductSwitcherAboutMenuItem(props: Props) {
                 <FormattedMessage
                     id='globalHeader.productSwitcherMenu.aboutMenuItem.label'
                     defaultMessage='About {appTitle}'
-                    values={{appTitle: props.siteName || 'Mattermost'}}
+                    values={{appTitle: props.siteName || 'Antimatter'}}
                 />
             }
             onClick={handleClick}

@@ -30,7 +30,7 @@ const WebMarketplaceBanner = () => {
                     <ArrowRightIcon size={24}/>
                 </Title>
                 <Description>
-                    {formatMessage({id: 'marketplace_modal.web_marketplace_link.desc', defaultMessage: 'Connect the tools you use most to Mattermost'})}
+                    {formatMessage({id: 'marketplace_modal.web_marketplace_link.desc', defaultMessage: 'Connect the tools you use most to Antimatter'})}
                 </Description>
                 <IconsContainer>
                     <PluginIcon src={pluginIconConfluence}/>

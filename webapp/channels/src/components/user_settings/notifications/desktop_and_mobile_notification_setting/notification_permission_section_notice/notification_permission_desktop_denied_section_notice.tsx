@@ -38,10 +38,10 @@ export default function NotificationPermissionDesktopDeniedSectionNotice(props: 
 
     const text = checkedPermissionDenied ? intl.formatMessage({
         id: 'user.settings.notifications.desktopAndMobile.notificationSection.permissionDeniedDesktop.messageDenied',
-        defaultMessage: 'Notifications for this Mattermost server are blocked. To receive notifications, please enable them manually.',
+        defaultMessage: 'Notifications for this Antimatter server are blocked. To receive notifications, please enable them manually.',
     }) : intl.formatMessage({
         id: 'user.settings.notifications.desktopAndMobile.notificationSection.permissionDeniedDesktop.message',
-        defaultMessage: "You're missing important message and call notifications from Mattermost. To start receiving them, please enable them manually.",
+        defaultMessage: "You're missing important message and call notifications from Antimatter. To start receiving them, please enable them manually.",
     });
 
     return (

@@ -41,7 +41,7 @@ export class PasswordResetSendLink extends React.PureComponent<Props, State> {
                 id: 'password_form.pageTitle',
                 defaultMessage: 'Password Reset | {siteName}',
             },
-            {siteName: siteName || 'Mattermost'},
+            {siteName: siteName || 'Antimatter'},
         );
     }
 

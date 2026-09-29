@@ -11,7 +11,7 @@ exports[`components/VersionBar should match snapshot - bar rendered after build 
       class="announcement-bar__text"
     >
       <span>
-        A new version of Mattermost is available.
+        A new version of Antimatter is available.
         <a
           style="margin-left: 0.5rem;"
         >

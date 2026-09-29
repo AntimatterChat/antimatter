@@ -735,7 +735,7 @@ export class SecurityTab extends React.PureComponent<Props, State> {
                 <div className='pt-2'>
                     <FormattedMessage
                         id='user.settings.security.ssoUsernameSyncNote'
-                        defaultMessage='Note: When using Google SSO, changes to your Google username or email do not automatically sync to Mattermost. To update your username, switch temporarily to email/password login, update your username, and then switch back to Google SSO.'
+                        defaultMessage='Note: When using Google SSO, changes to your Google username or email do not automatically sync to Antimatter. To update your username, switch temporarily to email/password login, update your username, and then switch back to Google SSO.'
                     />
                 </div>
             ) : null;

@@ -245,7 +245,7 @@ export class ManageLanguage extends React.PureComponent<Props, State> {
                     <br/>
                     <FormattedMessage
                         id='user.settings.languages.promote1'
-                        defaultMessage='Select which language Mattermost displays in the user interface.'
+                        defaultMessage='Select which language Antimatter displays in the user interface.'
                     />
                     <p/>
                     <FormattedMessage

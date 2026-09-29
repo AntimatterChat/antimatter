@@ -31,7 +31,7 @@ export default function ProductSwitcherEditionFooter() {
     let label = (
         <FormattedMessage
             id='globalHeader.productSwitcherMenu.editionMenuitem.unsupported'
-            defaultMessage='This is the free <b>unsupported</b> edition of Mattermost. See pricing.'
+            defaultMessage='This is the free <b>unsupported</b> edition of Antimatter. See pricing.'
             values={{
                 b: (msg: React.ReactNode) => (
                     <b>

@@ -318,7 +318,7 @@ export default function AboutBuildModal(props: Props) {
                     <FormattedMessage
                         id='about.title'
                         values={{
-                            appTitle: config.SiteName || 'Mattermost',
+                            appTitle: config.SiteName || 'Antimatter',
                         }}
                         defaultMessage='About {appTitle}'
                     />
@@ -332,7 +332,7 @@ export default function AboutBuildModal(props: Props) {
                     <div>
                         <h3 className='about-modal__title'>
                             <strong>
-                                {'Mattermost'} {title}
+                                {'Antimatter'} {title}
                             </strong>
                         </h3>
                         <p className='about-modal__subtitle pb-2'>
@@ -374,7 +374,7 @@ export default function AboutBuildModal(props: Props) {
                         <div className='about-modal__copyright'>
                             <FormattedMessage
                                 id='about.copyright'
-                                defaultMessage='Copyright 2015 - {currentYear} Mattermost, Inc. All rights reserved'
+                                defaultMessage='Based on Mattermost. Copyright 2015 - {currentYear} Mattermost, Inc. All rights reserved'
                                 values={{
                                     currentYear: new Date().getFullYear(),
                                 }}
@@ -391,7 +391,7 @@ export default function AboutBuildModal(props: Props) {
                     <p>
                         <FormattedMessage
                             id='about.notice'
-                            defaultMessage='Mattermost is made possible by the open source software used in our <linkServer>server</linkServer>, <linkDesktop>desktop</linkDesktop> and <linkMobile>mobile</linkMobile> apps.'
+                            defaultMessage='Antimatter is made possible by the open source software used in our <linkServer>server</linkServer>, <linkDesktop>desktop</linkDesktop> and <linkMobile>mobile</linkMobile> apps.'
                             values={{
                                 linkServer: (msg: React.ReactNode) => (
                                     <ExternalLink

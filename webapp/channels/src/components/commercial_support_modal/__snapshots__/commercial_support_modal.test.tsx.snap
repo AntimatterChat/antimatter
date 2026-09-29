@@ -18,7 +18,7 @@ exports[`components/CommercialSupportModal should match snapshot 1`] = `
         >
           submit a support ticket
         </a>
-        . To help with troubleshooting, it's recommended to download the Support Packet below that includes more details about your Mattermost environment.
+        . To help with troubleshooting, it's recommended to download the Support Packet below that includes more details about your Antimatter environment.
         <div
           class="CommercialSupportModal__packet_contents_download"
         >
