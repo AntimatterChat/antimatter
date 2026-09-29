@@ -82,7 +82,6 @@ func (s *MmctlE2ETestSuite) SetupMessageExportTestHelper() *api4.TestHelper {
 
 	jobs.DefaultWatcherPollingInterval = 100
 	s.th = api4.SetupEnterprise(s.T()).InitBasic(s.T())
-	s.th.App.Srv().SetLicense(model.NewTestLicense("message_export"))
 	s.th.App.UpdateConfig(func(cfg *model.Config) {
 		*cfg.MessageExportSettings.DownloadExportResults = true
 		*cfg.MessageExportSettings.EnableExport = true
