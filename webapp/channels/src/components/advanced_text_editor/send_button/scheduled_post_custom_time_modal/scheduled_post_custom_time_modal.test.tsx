@@ -43,7 +43,6 @@ describe('ScheduledPostCustomTimeModal', () => {
                             ScheduledPosts: 'true',
                             FeatureFlagRecurringScheduledPosts: String(recurringEnabled),
                         },
-                        license: {IsLicensed: 'true'},
                     },
                     users: {
                         currentUserId: 'current_user_id',

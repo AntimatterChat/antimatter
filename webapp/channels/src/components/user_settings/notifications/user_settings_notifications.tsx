@@ -17,9 +17,8 @@ import type {UserNotifyProps, UserProfile} from '@mattermost/types/users';
 import ExternalLink from 'components/external_link';
 import SettingItem from 'components/setting_item';
 import SettingItemMax from 'components/setting_item_max';
-import RestrictedIndicator from 'components/widgets/menu/menu_items/restricted_indicator';
 
-import Constants, {NotificationLevels, MattermostFeatures, LicenseSkus, UserSettingsNotificationSections} from 'utils/constants';
+import Constants, {NotificationLevels, UserSettingsNotificationSections} from 'utils/constants';
 import {notificationSoundKeys, stopTryNotificationRing} from 'utils/notification_sounds';
 import {a11yFocus} from 'utils/utils';
 
@@ -492,10 +491,6 @@ class NotificationsTab extends React.PureComponent<Props, State> {
         }
     };
 
-    handleCloseSettingsModal = () => {
-        this.props.closeModal();
-    };
-
     createChannelMentionAutoFollowSection = () => {
         const serverError = this.state.serverError;
         const isSectionExpanded = this.props.activeSection === UserSettingsNotificationSections.CHANNEL_MENTION_AUTO_FOLLOW;
@@ -825,64 +820,10 @@ class NotificationsTab extends React.PureComponent<Props, State> {
         }
 
         let collapsedDescription = this.props.intl.formatMessage({id: 'user.settings.notifications.keywordsWithHighlight.none', defaultMessage: 'None'});
-        if (!this.props.isEnterpriseOrCloudOrSKUStarterFree && this.props.isEnterpriseReady && this.state.customKeysWithHighlight.length > 0) {
+        if (this.state.customKeysWithHighlight.length > 0) {
             const customKeysWithHighlightStringArray = this.state.customKeysWithHighlight.map((key) => key.value);
             collapsedDescription = customKeysWithHighlightStringArray.map((key) => `"${key}"`).join(', ');
         }
-
-        const collapsedEditButtonWhenDisabled = (
-            <RestrictedIndicator
-                blocked={this.props.isEnterpriseOrCloudOrSKUStarterFree && this.props.isEnterpriseReady}
-                feature={MattermostFeatures.HIGHLIGHT_WITHOUT_NOTIFICATION}
-                minimumPlanRequiredForFeature={LicenseSkus.Professional}
-                tooltipTitle={this.props.intl.formatMessage({
-                    id: 'user.settings.notifications.keywordsWithHighlight.disabledTooltipTitle',
-                    defaultMessage: 'Professional feature',
-                })}
-                tooltipMessageBlocked={this.props.intl.formatMessage({
-                    id: 'user.settings.notifications.keywordsWithHighlight.disabledTooltipMessage',
-                    defaultMessage:
-                    'This feature is available on the Professional plan',
-                })}
-                titleAdminPreTrial={this.props.intl.formatMessage({
-                    id: 'user.settings.notifications.keywordsWithHighlight.userModal.titleAdminPreTrial',
-                    defaultMessage: 'Highlight keywords without notifications with Mattermost Professional',
-                })}
-                messageAdminPreTrial={this.props.intl.formatMessage({
-                    id: 'user.settings.notifications.keywordsWithHighlight.userModal.messageAdminPreTrial',
-                    defaultMessage: 'Get the ability to passively highlight keywords that you care about. Upgrade to Professional plan to unlock this feature.',
-                })}
-                titleAdminPostTrial={this.props.intl.formatMessage({
-                    id: 'user.settings.notifications.keywordsWithHighlight.userModal.titleAdminPostTrial',
-                    defaultMessage: 'Highlight keywords without notifications with Mattermost Professional',
-                })}
-                messageAdminPostTrial={this.props.intl.formatMessage({
-                    id: 'user.settings.notifications.keywordsWithHighlight.userModal.messageAdminPostTrial',
-                    defaultMessage: 'Get the ability to passively highlight keywords that you care about. Upgrade to Professional plan to unlock this feature.',
-                },
-                )}
-                titleEndUser={this.props.intl.formatMessage({
-                    id: 'user.settings.notifications.keywordsWithHighlight.userModal.titleEndUser',
-                    defaultMessage: 'Highlight keywords without notifications with Mattermost Professional',
-                })}
-                messageEndUser={this.props.intl.formatMessage(
-                    {
-                        id: 'user.settings.notifications.keywordsWithHighlight.userModal.messageEndUser',
-                        defaultMessage: 'Get the ability to passively highlight keywords that you care about.{br}{br}Request your admin to upgrade to Mattermost Professional to access this feature.',
-                    },
-                    {
-                        br: <br/>,
-                    },
-                )}
-                ctaExtraContent={
-                    <FormattedMessage
-                        id='user.settings.notifications.keywordsWithHighlight.professional'
-                        defaultMessage='Professional'
-                    />
-                }
-                clickCallback={this.handleCloseSettingsModal}
-            />
-        );
 
         return (
             <SettingItem
@@ -893,8 +834,6 @@ class NotificationsTab extends React.PureComponent<Props, State> {
                 describe={collapsedDescription}
                 updateSection={this.handleUpdateSection}
                 max={expandedSection}
-                isDisabled={this.props.isEnterpriseOrCloudOrSKUStarterFree && this.props.isEnterpriseReady}
-                collapsedEditButtonWhenDisabled={collapsedEditButtonWhenDisabled}
             />);
     };
 
@@ -1184,12 +1123,8 @@ class NotificationsTab extends React.PureComponent<Props, State> {
                     {channelMentionAutoFollowSection}
                     <div className='divider-light'/>
                     {keywordsWithNotificationSection}
-                    {(!this.props.isEnterpriseOrCloudOrSKUStarterFree && this.props.isEnterpriseReady) && (
-                        <>
-                            <div className='divider-light'/>
-                            {keywordsWithHighlightSection}
-                        </>
-                    )}
+                    <div className='divider-light'/>
+                    {keywordsWithHighlightSection}
                     <div className='divider-light'/>
                     {!this.props.isCollapsedThreadsEnabled && (
                         <>
@@ -1204,13 +1139,6 @@ class NotificationsTab extends React.PureComponent<Props, State> {
                         </>
                     )}
 
-                    {/*  We placed the disabled items in the last */}
-                    {(this.props.isEnterpriseOrCloudOrSKUStarterFree && this.props.isEnterpriseReady) && (
-                        <>
-                            <div className='divider-light'/>
-                            {keywordsWithHighlightSection}
-                        </>
-                    )}
                     <SendTestNotificationNotice adminMode={this.props.adminMode}/>
                 </div>
             </div>

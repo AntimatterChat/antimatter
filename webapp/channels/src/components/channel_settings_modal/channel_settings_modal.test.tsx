@@ -27,14 +27,6 @@ const mockChannelSettingsPluginTab = jest.fn();
 const pluginSaveMocks = new Map<string, jest.Mock<Promise<void>, []>>();
 const pluginResetMocks = new Map<string, jest.Mock<void, []>>();
 
-// Mock the channel banner selector
-jest.mock('mattermost-redux/selectors/entities/channel_banner', () => ({
-    selectChannelBannerEnabled: jest.fn().mockImplementation((state) => {
-        // Return true only for advanced license, false for all others
-        return state?.entities?.general?.license?.SkuShortName === 'advanced';
-    }),
-}));
-
 // Mock the roles selector which is used for permission checks
 jest.mock('mattermost-redux/selectors/entities/roles', () => ({
     haveIChannelPermission: jest.fn().mockImplementation((state, teamId, channelId, permission) => {
@@ -70,7 +62,6 @@ jest.mock('utils/url', () => ({
 
 // Mock child components to provide controlled testing interfaces
 jest.mock('./channel_settings_info_tab', () => {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
     const React = require('react');
 
     return function MockChannelSettingsInfoTab({
@@ -270,9 +261,6 @@ describe('ChannelSettingsModal', () => {
                     },
                 },
                 general: {
-                    license: {
-                        SkuShortName: '',
-                    },
                     config: {},
                 },
             },
@@ -479,42 +467,15 @@ describe('ChannelSettingsModal', () => {
         expect(screen.queryByRole('tab', {name: /archive channel/i})).not.toBeInTheDocument();
     });
 
-    it('should not show banner section without enterprise advanced license', async () => {
+    it('should show banner section', async () => {
         const testState = makeTestState();
-
-        renderWithContext(<ChannelSettingsModal {...baseProps}/>, testState);
-        await userEvent.click(screen.getByTestId('configuration-tab-button'));
-        expect(screen.queryByTestId('banner-section')).not.toBeInTheDocument();
-    });
-
-    it('should not show banner section with professional license', async () => {
-        const testState = makeTestState();
-        testState.entities.general.license.SkuShortName = 'professional';
-
-        renderWithContext(<ChannelSettingsModal {...baseProps}/>, testState);
-        await userEvent.click(screen.getByTestId('configuration-tab-button'));
-        expect(screen.queryByTestId('banner-section')).not.toBeInTheDocument();
-    });
-
-    it('should not show banner section with enterprise license', async () => {
-        const testState = makeTestState();
-        testState.entities.general.license.SkuShortName = 'enterprise';
-
-        renderWithContext(<ChannelSettingsModal {...baseProps}/>, testState);
-        await userEvent.click(screen.getByTestId('configuration-tab-button'));
-        expect(screen.queryByTestId('banner-section')).not.toBeInTheDocument();
-    });
-
-    it('should show banner section when enterprise advanced license', async () => {
-        const testState = makeTestState();
-        testState.entities.general.license.SkuShortName = 'advanced';
 
         renderWithContext(<ChannelSettingsModal {...baseProps}/>, testState);
         await userEvent.click(screen.getByTestId('configuration-tab-button'));
         expect(screen.getByTestId('banner-section')).toBeInTheDocument();
     });
 
-    it('should show join/leave section on open channel regardless of license', async () => {
+    it('should show join/leave section on open channel', async () => {
         const testState = makeTestState();
 
         renderWithContext(<ChannelSettingsModal {...baseProps}/>, testState);

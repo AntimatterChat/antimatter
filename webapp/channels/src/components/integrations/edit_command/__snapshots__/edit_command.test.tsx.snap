@@ -118,7 +118,7 @@ exports[`components/integrations/EditCommand should have match renderExtra 1`] =
             >
               Reserved: 
               <a
-                href="https://mattermost.com/pl/custom-slash-commands?utm_source=mattermost&utm_medium=in-product&utm_content=abstract_command&uid=&sid=&edition=team&server_version="
+                href="https://mattermost.com/pl/custom-slash-commands?utm_source=mattermost&utm_medium=in-product&utm_content=abstract_command&uid=&sid=&server_version="
                 location="abstract_command"
                 rel="noopener noreferrer"
                 target="_blank"
@@ -473,7 +473,7 @@ exports[`components/integrations/EditCommand should match snapshot 1`] = `
             >
               Reserved: 
               <a
-                href="https://mattermost.com/pl/custom-slash-commands?utm_source=mattermost&utm_medium=in-product&utm_content=abstract_command&uid=&sid=&edition=team&server_version="
+                href="https://mattermost.com/pl/custom-slash-commands?utm_source=mattermost&utm_medium=in-product&utm_content=abstract_command&uid=&sid=&server_version="
                 location="abstract_command"
                 rel="noopener noreferrer"
                 target="_blank"

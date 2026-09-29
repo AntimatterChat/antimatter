@@ -15,13 +15,12 @@ import {
     getCustomProfileAttributeValues,
 } from 'mattermost-redux/actions/users';
 import {Permissions} from 'mattermost-redux/constants';
-import {getConfig, getCustomProfileAttributes, getLicense} from 'mattermost-redux/selectors/entities/general';
+import {getConfig, getCustomProfileAttributes} from 'mattermost-redux/selectors/entities/general';
 import {haveISystemPermission} from 'mattermost-redux/selectors/entities/roles';
 
 import {getIsMobileView} from 'selectors/views/browser';
 
 import {normalizeLockProfileFieldsSetting} from 'utils/constants';
-import {isEnterpriseLicense} from 'utils/license_utils';
 
 import type {GlobalState} from 'types/store';
 
@@ -44,10 +43,6 @@ function mapStateToProps(state: GlobalState) {
     const ldapPictureAttributeSet = config.LdapPictureAttributeSet === 'true';
     const lockProfileFieldsForEmailUsers = normalizeLockProfileFieldsSetting(config.LockProfileFieldsForEmailUsers);
 
-    const license = getLicense(state);
-    const isEnterprise = isEnterpriseLicense(license);
-    const enableCustomProfileAttributes = isEnterprise;
-
     return {
         isMobileView: getIsMobileView(state),
         requireEmailVerification,
@@ -64,7 +59,6 @@ function mapStateToProps(state: GlobalState) {
         ldapPictureAttributeSet,
         lockProfileFieldsForEmailUsers,
         canEditOtherUsers: haveISystemPermission(state, {permission: Permissions.EDIT_OTHER_USERS}),
-        enableCustomProfileAttributes,
     };
 }
 

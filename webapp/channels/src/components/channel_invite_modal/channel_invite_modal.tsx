@@ -75,7 +75,6 @@ export type Props = {
     canInviteGuests?: boolean;
     emailInvitationsEnabled?: boolean;
     groups: Group[];
-    isGroupsEnabled: boolean;
     actions: {
         addUsersToChannel: (channelId: string, userIds: string[]) => Promise<ActionResult>;
         getProfilesNotInChannel: (teamId: string, channelId: string, groupConstrained: boolean, page: number, perPage?: number, cursorId?: string) => Promise<ActionResult>;
@@ -546,19 +545,15 @@ const ChannelInviteModalComponent = (props: Props) => {
                     include_member_ids: true,
                 };
 
-                const promises = [
+                await Promise.all([
                     props.actions.searchProfiles(term, options),
-                ];
-
-                if (props.isGroupsEnabled) {
-                    promises.push(props.actions.searchAssociatedGroupsForReference(term, props.channel.team_id, props.channel.id, opts));
-                }
-                await Promise.all(promises);
+                    props.actions.searchAssociatedGroupsForReference(term, props.channel.team_id, props.channel.id, opts),
+                ]);
                 setUsersLoadingState(false);
             },
             Constants.SEARCH_TIMEOUT_MILLISECONDS,
         );
-    }, [props.actions, props.channel, props.isGroupsEnabled, isPolicyEnforcedPrivate, setUsersLoadingState]);
+    }, [props.actions, props.channel, isPolicyEnforcedPrivate, setUsersLoadingState]);
 
     // Render aria label for options
     const renderAriaLabel = useCallback((option: UserProfileValue | GroupValue): string => {
@@ -820,7 +815,7 @@ const ChannelInviteModalComponent = (props: Props) => {
             buttonSubmitLoadingText={buttonSubmitLoadingText}
             saving={saving}
             loading={loadingUsers}
-            placeholderText={props.isGroupsEnabled ? defineMessage({id: 'multiselect.placeholder.peopleOrGroups', defaultMessage: 'Search for people or groups'}) : defineMessage({id: 'multiselect.placeholder', defaultMessage: 'Search for people'})}
+            placeholderText={defineMessage({id: 'multiselect.placeholder.peopleOrGroups', defaultMessage: 'Search for people or groups'})}
             valueWithImage={true}
             backButtonText={defineMessage({id: 'multiselect.cancel', defaultMessage: 'Cancel'})}
             backButtonClick={closeMembersInviteModal}

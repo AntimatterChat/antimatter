@@ -133,9 +133,7 @@ export default class PostMarkdown extends React.PureComponent<Props> {
 
         const allowInlineActions = !this.props.disableInteractions && (isBot || isWebhook || isPlugin);
         const postProps = this.props.post?.props as Record<string, unknown> | undefined;
-        const mmBlocksActionsCookie = typeof postProps?.mm_blocks_actions === 'string' ?
-            postProps.mm_blocks_actions :
-            undefined;
+        const mmBlocksActionsCookie = typeof postProps?.mm_blocks_actions === 'string' ? postProps.mm_blocks_actions : undefined;
         const integrationFormat = mmBlocksActionsCookie ? 'mm_block' : undefined;
 
         const options = this.getOptions(
@@ -146,17 +144,12 @@ export default class PostMarkdown extends React.PureComponent<Props> {
             this.props?.renderEmoticonsAsEmoji,
         );
 
-        let highlightKeys;
-        if (!this.props.isEnterpriseOrCloudOrSKUStarterFree && this.props.isEnterpriseReady) {
-            highlightKeys = this.props.highlightKeys;
-        }
-
         return (
             <Markdown
                 imageProps={this.props.imageProps}
                 message={message}
                 mentionKeys={this.props.mentionKeys}
-                highlightKeys={highlightKeys}
+                highlightKeys={this.props.highlightKeys}
                 options={options}
                 channelNamesMap={channelNamesMap}
                 hasPluginTooltips={this.props.hasPluginTooltips}

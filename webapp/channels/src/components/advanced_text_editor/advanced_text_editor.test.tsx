@@ -70,10 +70,6 @@ const initialState = {
                 EnableCustomEmoji: 'false',
                 AllowSyncedDrafts: 'false',
             },
-            license: {
-                IsLicensed: 'false',
-                LDAPGroups: 'false',
-            },
         },
         channels: {
             channels: {

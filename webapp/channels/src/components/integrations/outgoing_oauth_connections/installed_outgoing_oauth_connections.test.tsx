@@ -54,10 +54,6 @@ describe('components/integrations/InstalledOutgoingOAuthConnections', () => {
                     config: {
                         EnableOutgoingOAuthConnections: 'true',
                     },
-                    license: {
-                        IsLicensed: 'true',
-                        Cloud: 'true',
-                    },
                 },
                 users: {
                     currentUserId: 'current_user_id',

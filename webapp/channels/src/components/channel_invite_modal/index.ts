@@ -11,9 +11,9 @@ import {getTeamStats, getTeamMembersByIds} from 'mattermost-redux/actions/teams'
 import {getProfilesNotInChannel, getProfilesInChannel, searchProfiles} from 'mattermost-redux/actions/users';
 import {Permissions} from 'mattermost-redux/constants';
 import {getRecentProfilesFromDMs, getChannel} from 'mattermost-redux/selectors/entities/channels';
-import {getConfig, getLicense} from 'mattermost-redux/selectors/entities/general';
+import {getConfig} from 'mattermost-redux/selectors/entities/general';
 import {makeGetAllAssociatedGroupsForReference} from 'mattermost-redux/selectors/entities/groups';
-import {getTeammateNameDisplaySetting, isCustomGroupsEnabled} from 'mattermost-redux/selectors/entities/preferences';
+import {getTeammateNameDisplaySetting} from 'mattermost-redux/selectors/entities/preferences';
 import {haveICurrentTeamPermission} from 'mattermost-redux/selectors/entities/roles';
 import {getCurrentTeam, getMembersInCurrentTeam, getMembersInTeam, getTeam} from 'mattermost-redux/selectors/entities/teams';
 import {getProfilesNotInCurrentChannel, getProfilesInCurrentChannel, getProfilesNotInCurrentTeam, getProfilesNotInTeam, getUserStatuses, makeGetProfilesNotInChannel, makeGetProfilesInChannel} from 'mattermost-redux/selectors/entities/users';
@@ -80,18 +80,13 @@ function makeMapStateToProps(initialState: GlobalState, initialProps: OwnProps) 
         // For ABAC channels, also return empty DM profiles to avoid contamination
         const profilesFromRecentDMs = isAbacChannel ? [] : getRecentProfilesFromDMs(state);
         const config = getConfig(state);
-        const license = getLicense(state);
 
         const currentTeam = props.teamId ? getTeam(state, props.teamId) : getCurrentTeam(state);
 
         const guestAccountsEnabled = config.EnableGuestAccounts === 'true';
         const emailInvitationsEnabled = config.EnableEmailInvitations === 'true';
-        const isLicensed = license && license.IsLicensed === 'true';
         const isGroupConstrained = Boolean(currentTeam?.group_constrained);
-        const canInviteGuests = !isGroupConstrained && isLicensed && guestAccountsEnabled && haveICurrentTeamPermission(state, Permissions.INVITE_GUEST);
-        const enableCustomUserGroups = isCustomGroupsEnabled(state);
-
-        const isGroupsEnabled = enableCustomUserGroups || (license?.IsLicensed === 'true' && license?.LDAPGroups === 'true');
+        const canInviteGuests = !isGroupConstrained && guestAccountsEnabled && haveICurrentTeamPermission(state, Permissions.INVITE_GUEST);
 
         const userStatuses = getUserStatuses(state);
 
@@ -109,7 +104,6 @@ function makeMapStateToProps(initialState: GlobalState, initialProps: OwnProps) 
             canInviteGuests,
             emailInvitationsEnabled,
             groups,
-            isGroupsEnabled,
         };
     };
 }

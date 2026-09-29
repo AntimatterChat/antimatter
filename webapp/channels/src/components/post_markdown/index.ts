@@ -8,8 +8,7 @@ import type {Post} from '@mattermost/types/posts';
 
 import {createSelector} from 'mattermost-redux/selectors/create_selector';
 import {getChannel} from 'mattermost-redux/selectors/entities/channels';
-import {getSubscriptionProduct} from 'mattermost-redux/selectors/entities/cloud';
-import {getConfig, getLicense} from 'mattermost-redux/selectors/entities/general';
+import {getConfig} from 'mattermost-redux/selectors/entities/general';
 import {
     getMyGroupMentionKeysForChannel,
     getMyGroupMentionKeys,
@@ -21,7 +20,6 @@ import {getCurrentUserMentionKeys, getHighlightWithoutNotificationKeys} from 'ma
 
 import {canManageMembers} from 'utils/channel_utils';
 import {Preferences} from 'utils/constants';
-import {isEnterpriseOrCloudOrSKUStarterFree} from 'utils/license_utils';
 import type {MentionKey} from 'utils/text_formatting';
 
 import type {GlobalState} from 'types/store';
@@ -67,12 +65,6 @@ function makeMapStateToProps() {
         const channel = getChannel(state, ownProps.channelId);
         const currentTeam = getCurrentTeam(state);
 
-        const license = getLicense(state);
-        const subscriptionProduct = getSubscriptionProduct(state);
-
-        const config = getConfig(state);
-        const isEnterpriseReady = config.BuildEnterpriseReady === 'true';
-
         return {
             channel,
             currentTeam,
@@ -84,8 +76,6 @@ function makeMapStateToProps() {
             isMilitaryTime: getBool(state, Preferences.CATEGORY_DISPLAY_SETTINGS, Preferences.USE_MILITARY_TIME, false),
             timezone: getCurrentTimezone(state),
             hideGuestTags: getConfig(state).HideGuestTags === 'true',
-            isEnterpriseOrCloudOrSKUStarterFree: isEnterpriseOrCloudOrSKUStarterFree(license, subscriptionProduct, isEnterpriseReady),
-            isEnterpriseReady,
             renderEmoticonsAsEmoji: getBool(state, Preferences.CATEGORY_DISPLAY_SETTINGS, Preferences.RENDER_EMOTICONS_AS_EMOJI, Preferences.RENDER_EMOTICONS_AS_EMOJI_DEFAULT === 'true'),
         };
     };

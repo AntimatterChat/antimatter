@@ -50,7 +50,7 @@ exports[`components/integrations/InstalledOutgoingWebhooks should match snapshot
     >
       Use outgoing webhooks to connect external tools to Antimatter. 
       <a
-        href="https://mattermost.com/pl/setup-outgoing-webhooks?utm_source=mattermost&utm_medium=in-product&utm_content=installed_outgoing_webhooks&uid=currentUserId&sid=&edition=team&server_version="
+        href="https://mattermost.com/pl/setup-outgoing-webhooks?utm_source=mattermost&utm_medium=in-product&utm_content=installed_outgoing_webhooks&uid=currentUserId&sid=&server_version="
         location="installed_outgoing_webhooks"
         rel="noopener noreferrer"
         target="_blank"
@@ -59,7 +59,7 @@ exports[`components/integrations/InstalledOutgoingWebhooks should match snapshot
       </a>
        or visit the 
       <a
-        href="https://mattermost.com/marketplace?utm_source=mattermost&utm_medium=in-product&utm_content=installed_outgoing_webhooks&uid=currentUserId&sid=&edition=team&server_version="
+        href="https://mattermost.com/marketplace?utm_source=mattermost&utm_medium=in-product&utm_content=installed_outgoing_webhooks&uid=currentUserId&sid=&server_version="
         location="installed_outgoing_webhooks"
         rel="noopener noreferrer"
         target="_blank"

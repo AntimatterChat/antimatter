@@ -83,9 +83,6 @@ function getBaseState(): DeepPartial<GlobalState> {
                 config: {
                     ScheduledPosts: 'true',
                 },
-                license: {
-                    IsLicensed: 'true',
-                },
             },
         },
     };

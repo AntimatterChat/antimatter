@@ -69,26 +69,12 @@ describe('components/new_search/SearchBoxHints', () => {
         expect(screen.getByText('Press Enter to select')).toBeInTheDocument();
     });
 
-    test('should not show the plugin suggestions without license', () => {
-        const props = {...baseProps, searchType: 'test-id', searchTerms: 'test-search-terms'};
-        renderWithContext(
-            <SearchBoxHints {...props}/>,
-            {
-                plugins: {components: {SearchHints: [{component: TestPluginProviderComponent as React.ComponentType, pluginId: 'test-id'}]}},
-                entities: {general: {license: {IsLicensed: 'false'}}},
-            },
-        );
-        expect(screen.queryByText('Plugin suggestion')).not.toBeInTheDocument();
-        expect(screen.queryByText('test-search-terms')).not.toBeInTheDocument();
-    });
-
     test('should show the plugin suggestions', () => {
         const props = {...baseProps, searchType: 'test-id', searchTerms: 'test-search-terms'};
         renderWithContext(
             <SearchBoxHints {...props}/>,
             {
                 plugins: {components: {SearchHints: [{component: TestPluginProviderComponent as React.ComponentType, pluginId: 'test-id'}]}},
-                entities: {general: {license: {IsLicensed: 'true'}}},
             },
         );
         expect(screen.getByText('Plugin suggestion')).toBeInTheDocument();
@@ -101,7 +87,6 @@ describe('components/new_search/SearchBoxHints', () => {
             <SearchBoxHints {...props}/>,
             {
                 plugins: {components: {SearchHints: [{component: TestPluginProviderComponent as React.ComponentType, pluginId: 'test-id'}]}},
-                entities: {general: {license: {IsLicensed: 'true'}}},
             },
         );
         screen.getByText('onChangeSearch').click();

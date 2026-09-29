@@ -39,11 +39,6 @@ jest.mock('components/post_view/new_message_separator/new_message_separator', ()
     default: (props: any) => <div data-testid='new-message-separator'>{`NewMessageSeparator: ${props.separatorId}`}</div>,
 }));
 
-jest.mock('components/center_message_lock', () => ({
-    __esModule: true,
-    default: () => <div data-testid='center-message-lock'>{'CenterMessageLock'}</div>,
-}));
-
 describe('components/post_view/post_list_row', () => {
     const defaultProps = {
         listId: '1234',

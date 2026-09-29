@@ -176,7 +176,6 @@ export type Props = {
     ldapPictureAttributeSet?: boolean;
     lockProfileFieldsForEmailUsers: LockProfileFieldsSetting;
     canEditOtherUsers: boolean;
-    enableCustomProfileAttributes: boolean;
 };
 
 type State = {
@@ -220,7 +219,7 @@ export class UserSettingsGeneralTab extends PureComponent<Props, State> {
     }
 
     componentDidMount() {
-        if (this.props.enableCustomProfileAttributes && !this.props.user.custom_profile_attributes) {
+        if (!this.props.user.custom_profile_attributes) {
             this.props.actions.getCustomProfileAttributeValues(this.props.user.id);
         }
     }

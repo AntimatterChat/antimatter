@@ -36,11 +36,10 @@ interface Props extends Menu.FirstMenuItemProps {
     isMobile: boolean;
     isFavorite: boolean;
     pluginItems: ReactNode[];
-    isChannelBookmarksEnabled: boolean;
     isChannelAutotranslated: boolean;
 }
 
-const ChannelHeaderDirectMenu = ({channel, user, isMuted, isMobile, isFavorite, pluginItems, isChannelBookmarksEnabled, isChannelAutotranslated, ...rest}: Props) => {
+const ChannelHeaderDirectMenu = ({channel, user, isMuted, isMobile, isFavorite, pluginItems, isChannelAutotranslated, ...rest}: Props) => {
     const canAccessChannelSettingsForChannel = useSelector((state: GlobalState) => canAccessChannelSettings(state, channel.id));
 
     return (
@@ -81,7 +80,7 @@ const ChannelHeaderDirectMenu = ({channel, user, isMuted, isMobile, isFavorite, 
                 />
             )}
             <Menu.Separator/>
-            {!isGuest(user.roles) && isChannelBookmarksEnabled && (
+            {!isGuest(user.roles) && (
                 <MenuItemChannelBookmarks
                     channel={channel}
                 />

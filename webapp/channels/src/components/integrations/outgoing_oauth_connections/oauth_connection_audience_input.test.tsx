@@ -44,10 +44,6 @@ describe('components/integrations/outgoing_oauth_connections/OAuthConnectionAudi
                     config: {
                         EnableOutgoingOAuthConnections: 'true',
                     },
-                    license: {
-                        IsLicensed: 'true',
-                        Cloud: 'true',
-                    },
                 },
                 teams: {
                     teams: {

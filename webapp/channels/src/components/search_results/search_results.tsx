@@ -38,7 +38,6 @@ import type {RhsState, SearchType} from 'types/store/rhs';
 import FilesFilterMenu from './files_filter_menu';
 import MessageOrFileSelector from './messages_or_files_selector';
 import PostSearchResultsItem from './post_search_results_item';
-import SearchLimitsBanner from './search_limits_banner';
 
 import type {OwnProps, PropsFromRedux} from './index';
 
@@ -440,9 +439,6 @@ const SearchResults: React.FC<Props> = (props: Props): JSX.Element => {
                     />
                 </div>
             }
-            <SearchLimitsBanner
-                searchType={searchType}
-            />
             <Scrollbars
                 ref={scrollbars}
                 color='--center-channel-color-rgb'

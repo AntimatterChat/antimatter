@@ -31,9 +31,6 @@ const baseState: DeepPartial<GlobalState> = {
             config: {
                 ScheduledPosts: 'true',
             },
-            license: {
-                IsLicensed: 'true',
-            },
         },
         preferences: {
             myPreferences: {},
@@ -147,29 +144,6 @@ describe('components/drafts/drafts_link', () => {
         expect(screen.queryByTestId('scheduledPostIcon')).not.toBeInTheDocument();
     });
 
-    it('should not show scheduled posts badge when not licensed', () => {
-        const state = {
-            ...baseState,
-            entities: {
-                ...baseState.entities,
-                scheduledPosts: {
-                    byTeamId: {
-                        team1: ['scheduled_post1', 'scheduled_post2'],
-                    },
-                },
-                general: {
-                    license: {
-                        IsLicensed: 'false',
-                    },
-                },
-            },
-        };
-
-        renderWithRouter(state);
-
-        expect(screen.queryByTestId('scheduledPostIcon')).not.toBeInTheDocument();
-    });
-
     it('should show error indicator when scheduled posts have errors', () => {
         const state: DeepPartial<GlobalState> = {
             ...baseState,
@@ -204,7 +178,6 @@ describe('components/drafts/drafts_link', () => {
 
     it.each<DeepPartial<GeneralState>>([
         {config: {ScheduledPosts: 'false'}},
-        {license: {IsLicensed: 'false'}},
     ])('should not fetch scheduled posts when component mounts if disabled', async (partialConf) => {
         const fetchTeamScheduledPosts = require('mattermost-redux/actions/scheduled_posts').fetchTeamScheduledPosts;
         const state: DeepPartial<GlobalState> = {

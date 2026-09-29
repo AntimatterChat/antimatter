@@ -39,7 +39,7 @@ exports[`components/integrations/ConfirmIntegration should match snapshot, comma
       <p>
         Your slash command is set up. The following token will be sent in the outgoing payload. Please use it to verify the request came from your Antimatter team (details at 
         <a
-          href="https://mattermost.com/pl/setup-custom-slash-commands?utm_source=mattermost&utm_medium=in-product&utm_content=confirm_integration&uid=currentUserId&sid=&edition=team&server_version="
+          href="https://mattermost.com/pl/setup-custom-slash-commands?utm_source=mattermost&utm_medium=in-product&utm_content=confirm_integration&uid=currentUserId&sid=&server_version="
           location="confirm_integration"
           rel="noopener noreferrer"
           target="_blank"
@@ -118,7 +118,7 @@ exports[`components/integrations/ConfirmIntegration should match snapshot, incom
       <p>
         Your incoming webhook is set up. Please send data to the following URL (details at 
         <a
-          href="https://mattermost.com/pl/setup-incoming-webhooks?utm_source=mattermost&utm_medium=in-product&utm_content=confirm_integration&uid=currentUserId&sid=&edition=team&server_version="
+          href="https://mattermost.com/pl/setup-incoming-webhooks?utm_source=mattermost&utm_medium=in-product&utm_content=confirm_integration&uid=currentUserId&sid=&server_version="
           location="confirm_integration"
           rel="noopener noreferrer"
           target="_blank"
@@ -197,7 +197,7 @@ exports[`components/integrations/ConfirmIntegration should match snapshot, oauth
       <p>
         Your OAuth 2.0 application is set up. Please use the following Client ID and Client Secret when requesting authorization for your application (details at 
         <a
-          href="https://mattermost.com/pl/setup-oauth-2.0?utm_source=mattermost&utm_medium=in-product&utm_content=confirm_integration&uid=currentUserId&sid=&edition=team&server_version="
+          href="https://mattermost.com/pl/setup-oauth-2.0?utm_source=mattermost&utm_medium=in-product&utm_content=confirm_integration&uid=currentUserId&sid=&server_version="
           location="confirm_integration"
           rel="noopener noreferrer"
           target="_blank"
@@ -300,7 +300,7 @@ exports[`components/integrations/ConfirmIntegration should match snapshot, outgo
       <p>
         Your outgoing webhook is set up. The following token will be sent in the outgoing payload. Please use it to verify that the request came from your Antimatter team (details at 
         <a
-          href="https://mattermost.com/pl/setup-outgoing-webhooks?utm_source=mattermost&utm_medium=in-product&utm_content=confirm_integration&uid=currentUserId&sid=&edition=team&server_version="
+          href="https://mattermost.com/pl/setup-outgoing-webhooks?utm_source=mattermost&utm_medium=in-product&utm_content=confirm_integration&uid=currentUserId&sid=&server_version="
           location="confirm_integration"
           rel="noopener noreferrer"
           target="_blank"
@@ -379,7 +379,7 @@ exports[`components/integrations/ConfirmIntegration should match snapshot, outgo
       <p>
         Your Outgoing OAuth 2.0 Connection is set up. When a request is sent to one of the following Audience URLs, the Client ID and Client Secret will now be used to retrieve a token from the Token URL, before sending the integration request (details at 
         <a
-          href="https://mattermost.com/pl/setup-oauth-2.0?utm_source=mattermost&utm_medium=in-product&utm_content=confirm_integration&uid=currentUserId&sid=&edition=team&server_version="
+          href="https://mattermost.com/pl/setup-oauth-2.0?utm_source=mattermost&utm_medium=in-product&utm_content=confirm_integration&uid=currentUserId&sid=&server_version="
           location="confirm_integration"
           rel="noopener noreferrer"
           target="_blank"

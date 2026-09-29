@@ -106,7 +106,6 @@ function makeState(fields: PropertyField[], values: Array<PropertyValue<unknown>
         entities: {
             general: {
                 config: {FeatureFlagChannelAttributes: flag},
-                license: {IsLicensed: 'true', SkuShortName: 'advanced'},
             },
             channels: {
                 channels: {[CHANNEL_ID]: {id: CHANNEL_ID, team_id: TEAM_ID, type: 'P'}},

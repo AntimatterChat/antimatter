@@ -161,9 +161,6 @@ describe('components/ProfilePopoverCustomAttributes', () => {
                     select_attribute_id: selectAttribute,
                     graph_attribute_id: graphAttribute,
                 },
-                license: {
-                    Cloud: 'false',
-                },
             },
             users: {
                 profiles: {

@@ -55,11 +55,6 @@ function focusReplyPost(post: Post, channel: Channel, teamId: string, returnTo: 
             return {data: false};
         }
 
-        if (data!.first_inaccessible_post_time) {
-            getHistory().replace(`/error?type=${ErrorPageTypes.CLOUD_ARCHIVED}&returnTo=${returnTo}`);
-            return {data: false};
-        }
-
         const state = getState();
 
         const team = getTeam(state, channel.team_id || teamId);
@@ -125,11 +120,6 @@ export function focusPost(postId: string, returnTo = '', currentUserId: string, 
 
         if (!threadData) {
             getHistory().replace(`/error?type=${ErrorPageTypes.PERMALINK_NOT_FOUND}&returnTo=${returnTo}`);
-            return;
-        }
-
-        if (threadData.first_inaccessible_post_time) {
-            getHistory().replace(`/error?type=${ErrorPageTypes.CLOUD_ARCHIVED}&returnTo=${returnTo}`);
             return;
         }
 

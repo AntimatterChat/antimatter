@@ -30,9 +30,7 @@ describe('MobileSidebarRightItems', () => {
         moreTeamsToJoin: false,
         pluginMenuItems: [],
         isMentionSearch: false,
-        usageDeltaTeams: 0,
         siteName: 'site-name',
-        isLicensedForLDAPGroups: false,
         guestAccessEnabled: true,
         actions: {
             showMentions: jest.fn(),
@@ -42,8 +40,6 @@ describe('MobileSidebarRightItems', () => {
             openModal: jest.fn(),
         },
         teamIsGroupConstrained: false,
-        isStarterFree: false,
-        isFreeTrial: false,
         userId: 'test-user-id',
         profilePicture: 'http://localhost/api/v4/users/test-user-id/image',
         autoResetPref: '',
@@ -64,9 +60,6 @@ describe('MobileSidebarRightItems', () => {
             },
             general: {
                 config: {},
-                license: {
-                    Cloud: 'false',
-                },
             },
             teams: {
                 currentTeamId: 'team-id',

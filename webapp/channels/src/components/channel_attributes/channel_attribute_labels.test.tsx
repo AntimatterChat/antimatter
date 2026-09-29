@@ -95,7 +95,6 @@ function makeState(fields: PropertyField[], flag = 'true'): DeepPartial<GlobalSt
         entities: {
             general: {
                 config: {FeatureFlagChannelAttributes: flag},
-                license: {IsLicensed: 'true', SkuShortName: 'advanced'},
             },
             properties: {
                 groups: {byId: {[GROUP_ID]: {id: GROUP_ID, name: 'access_control'}}, byName: {access_control: {id: GROUP_ID, name: 'access_control'}}},

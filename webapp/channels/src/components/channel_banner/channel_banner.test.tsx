@@ -9,7 +9,7 @@ import type {ChannelType} from '@mattermost/types/channels';
 import * as ClassificationBannerHook from 'components/common/hooks/useChannelClassificationBanner';
 
 import {renderWithContext} from 'tests/react_testing_utils';
-import {LicenseSkus, Constants} from 'utils/constants';
+import {Constants} from 'utils/constants';
 import {TestHelper} from 'utils/test_helper';
 
 import ChannelBanner from './channel_banner';
@@ -85,12 +85,7 @@ describe('components/channel_banner', () => {
 
     const baseState = {
         entities: {
-            general: {
-                license: {
-                    IsLicensed: 'true',
-                    SkuShortName: LicenseSkus.EnterpriseAdvanced,
-                },
-            },
+            general: {},
             channels: {
                 channels: {
                     [channel1.id]: channel1,
@@ -111,64 +106,6 @@ describe('components/channel_banner', () => {
             },
         },
     };
-
-    test('should not render when license is professional', () => {
-        const nonEnterpriseLicenseState = {
-            ...baseState,
-            entities: {
-                ...baseState.entities,
-                general: {
-                    license: {
-                        IsLicensed: 'true',
-                        SkuShortName: LicenseSkus.Professional,
-                    },
-                },
-            },
-        };
-
-        renderWithContext(
-            <ChannelBanner channelId={'channel_id_1'}/>,
-            nonEnterpriseLicenseState,
-        );
-        expect(screen.queryByTestId('channel_banner_container')).not.toBeInTheDocument();
-    });
-
-    test('should not render when license is enterprise', () => {
-        const nonEnterpriseLicenseState = {
-            ...baseState,
-            entities: {
-                ...baseState.entities,
-                general: {
-                    license: {
-                        IsLicensed: 'true',
-                        SkuShortName: LicenseSkus.Enterprise,
-                    },
-                },
-            },
-        };
-
-        renderWithContext(
-            <ChannelBanner channelId={'channel_id_1'}/>,
-            nonEnterpriseLicenseState,
-        );
-        expect(screen.queryByTestId('channel_banner_container')).not.toBeInTheDocument();
-    });
-
-    test('should not render when there is no license', () => {
-        const noLicenseState = {
-            ...baseState,
-            entities: {
-                ...baseState.entities,
-                general: {},
-            },
-        };
-
-        renderWithContext(
-            <ChannelBanner channelId={'channel_id_1'}/>,
-            noLicenseState,
-        );
-        expect(screen.queryByTestId('channel_banner_container')).not.toBeInTheDocument();
-    });
 
     test('should not render when banner is disabled', () => {
         renderWithContext(

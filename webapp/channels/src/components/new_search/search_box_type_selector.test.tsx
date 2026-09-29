@@ -28,23 +28,11 @@ describe('components/new_search/SearchBoxTypeSelector', () => {
         expect(baseProps.setSearchType).toHaveBeenCalledWith('messages');
     });
 
-    test('should not have the plugin options without license', () => {
-        renderWithContext(
-            <SearchBoxTypeSelector {...baseProps}/>,
-            {
-                plugins: {components: {SearchButtons: [{component: (() => <pre>{'test'}</pre>) as React.ComponentType, pluginId: 'test-id'}]}},
-                entities: {general: {license: {IsLicensed: 'false'}}},
-            },
-        );
-        expect(screen.queryByText('test')).not.toBeInTheDocument();
-    });
-
     test('should have the plugin options', () => {
         renderWithContext(
             <SearchBoxTypeSelector {...baseProps}/>,
             {
                 plugins: {components: {SearchButtons: [{component: (() => <pre>{'test'}</pre>) as React.ComponentType, pluginId: 'test-id'}]}},
-                entities: {general: {license: {IsLicensed: 'true'}}},
             },
         );
         expect(screen.getByText('test')).toBeInTheDocument();
@@ -55,7 +43,6 @@ describe('components/new_search/SearchBoxTypeSelector', () => {
             <SearchBoxTypeSelector {...baseProps}/>,
             {
                 plugins: {components: {SearchButtons: [{component: (() => <pre>{'test'}</pre>) as React.ComponentType, pluginId: 'test-id'}]}},
-                entities: {general: {license: {IsLicensed: 'true'}}},
             },
         );
         screen.getByText('test').click();
