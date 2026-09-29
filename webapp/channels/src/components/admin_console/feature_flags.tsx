@@ -40,7 +40,7 @@ const FeatureFlags: React.FC<Props> = (props: Props) => {
                         <div className='banner__content'>
                             <FormattedMessage
                                 id='admin.feature_flags.introBanner'
-                                defaultMessage={'The following feature flag values show the status of features enabled on this instance. The values are used for debugging purposes by the Mattermost support team.'}
+                                defaultMessage={'The following feature flag values show the status of features enabled on this instance. The values are used for debugging purposes by the Antimatter support team.'}
                             />
                         </div>
                     </div>

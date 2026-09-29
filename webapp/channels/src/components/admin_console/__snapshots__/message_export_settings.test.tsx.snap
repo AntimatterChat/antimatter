@@ -63,7 +63,7 @@ exports[`components/MessageExportSettings should match snapshot, disabled, actia
                 class="help-text"
                 data-testid="enableComplianceExporthelp-text"
               >
-                When true, Mattermost will export all messages that were posted in the last 24 hours. The export task is scheduled to run once per day. See 
+                When true, Antimatter will export all messages that were posted in the last 24 hours. The export task is scheduled to run once per day. See 
                 <a
                   href="https://mattermost.com/pl/compliance-export?utm_source=mattermost&utm_medium=in-product&utm_content=message_export_settings&uid=&sid=&edition=team&server_version="
                   location="message_export_settings"
@@ -303,7 +303,7 @@ exports[`components/MessageExportSettings should match snapshot, disabled, globa
                 class="help-text"
                 data-testid="enableComplianceExporthelp-text"
               >
-                When true, Mattermost will export all messages that were posted in the last 24 hours. The export task is scheduled to run once per day. See 
+                When true, Antimatter will export all messages that were posted in the last 24 hours. The export task is scheduled to run once per day. See 
                 <a
                   href="https://mattermost.com/pl/compliance-export?utm_source=mattermost&utm_medium=in-product&utm_content=message_export_settings&uid=&sid=&edition=team&server_version="
                   location="message_export_settings"
@@ -749,7 +749,7 @@ exports[`components/MessageExportSettings should match snapshot, enabled, actian
                 class="help-text"
                 data-testid="enableComplianceExporthelp-text"
               >
-                When true, Mattermost will export all messages that were posted in the last 24 hours. The export task is scheduled to run once per day. See 
+                When true, Antimatter will export all messages that were posted in the last 24 hours. The export task is scheduled to run once per day. See 
                 <a
                   href="https://mattermost.com/pl/compliance-export?utm_source=mattermost&utm_medium=in-product&utm_content=message_export_settings&uid=&sid=&edition=team&server_version="
                   location="message_export_settings"
@@ -986,7 +986,7 @@ exports[`components/MessageExportSettings should match snapshot, enabled, global
                 class="help-text"
                 data-testid="enableComplianceExporthelp-text"
               >
-                When true, Mattermost will export all messages that were posted in the last 24 hours. The export task is scheduled to run once per day. See 
+                When true, Antimatter will export all messages that were posted in the last 24 hours. The export task is scheduled to run once per day. See 
                 <a
                   href="https://mattermost.com/pl/compliance-export?utm_source=mattermost&utm_medium=in-product&utm_content=message_export_settings&uid=&sid=&edition=team&server_version="
                   location="message_export_settings"
@@ -1422,7 +1422,7 @@ exports[`components/MessageExportSettings should match snapshot, enabled, global
                 class="help-text"
                 data-testid="enableComplianceExporthelp-text"
               >
-                When true, Mattermost will export all messages that were posted in the last 24 hours. The export task is scheduled to run once per day. See 
+                When true, Antimatter will export all messages that were posted in the last 24 hours. The export task is scheduled to run once per day. See 
                 <a
                   href="https://mattermost.com/pl/compliance-export?utm_source=mattermost&utm_medium=in-product&utm_content=message_export_settings&uid=&sid=&edition=team&server_version="
                   location="message_export_settings"

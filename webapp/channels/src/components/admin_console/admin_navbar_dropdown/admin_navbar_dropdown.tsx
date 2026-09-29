@@ -171,7 +171,7 @@ const AdminNavbarDropdown = (firstItemFocusProps: Menu.FirstMenuItemProps) => {
                     <FormattedMessage
                         id='navbar_dropdown.about'
                         defaultMessage='About {appTitle}'
-                        values={{appTitle: siteName || 'Mattermost'}}
+                        values={{appTitle: siteName || 'Antimatter'}}
                     />
                 }
             />

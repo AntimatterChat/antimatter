@@ -32,7 +32,7 @@ const OverallScore = ({
     const contentDescription = description || (
         <FormattedMessage
             id='admin.reporting.workspace_optimization.overall_workspace_score_description'
-            defaultMessage='Stay on top of optimizing your Mattermost workspace by reviewing your overall score below based on our recommended indicators of health and growth. Ensure your workspace is running smoothly so your users can get the most out of Mattermost.'
+            defaultMessage='Stay on top of optimizing your Antimatter workspace by reviewing your overall score below based on our recommended indicators of health and growth. Ensure your workspace is running smoothly so your users can get the most out of Antimatter.'
         />
     );
 

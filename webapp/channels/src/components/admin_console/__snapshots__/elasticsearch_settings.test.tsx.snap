@@ -287,7 +287,7 @@ exports[`components/ElasticSearchSettings should match snapshot, disabled 1`] = 
                 class="help-text"
                 data-testid="skipTLSVerificationhelp-text"
               >
-                When true, Mattermost will not require the Elasticsearch certificate to be signed by a trusted Certificate Authority.
+                When true, Antimatter will not require the Elasticsearch certificate to be signed by a trusted Certificate Authority.
               </div>
             </div>
           </fieldset>
@@ -422,7 +422,7 @@ exports[`components/ElasticSearchSettings should match snapshot, disabled 1`] = 
               <div
                 class="help-text"
               >
-                Tests if the Mattermost server can connect to the Elasticsearch server specified. Testing the connection only saves the configuration if the test is successful. A successful test will also re-initialize the client if you have started Elasticsearch after starting Mattermost. But this will not restart the workers. To do that, please toggle "Enable Elasticsearch Indexing".
+                Tests if the Antimatter server can connect to the Elasticsearch server specified. Testing the connection only saves the configuration if the test is successful. A successful test will also re-initialize the client if you have started Elasticsearch after starting Antimatter. But this will not restart the workers. To do that, please toggle "Enable Elasticsearch Indexing".
               </div>
             </div>
           </div>
@@ -1038,7 +1038,7 @@ exports[`components/ElasticSearchSettings should match snapshot, enabled 1`] = `
                 class="help-text"
                 data-testid="skipTLSVerificationhelp-text"
               >
-                When true, Mattermost will not require the Elasticsearch certificate to be signed by a trusted Certificate Authority.
+                When true, Antimatter will not require the Elasticsearch certificate to be signed by a trusted Certificate Authority.
               </div>
             </div>
           </fieldset>
@@ -1168,7 +1168,7 @@ exports[`components/ElasticSearchSettings should match snapshot, enabled 1`] = `
               <div
                 class="help-text"
               >
-                Tests if the Mattermost server can connect to the Elasticsearch server specified. Testing the connection only saves the configuration if the test is successful. A successful test will also re-initialize the client if you have started Elasticsearch after starting Mattermost. But this will not restart the workers. To do that, please toggle "Enable Elasticsearch Indexing".
+                Tests if the Antimatter server can connect to the Elasticsearch server specified. Testing the connection only saves the configuration if the test is successful. A successful test will also re-initialize the client if you have started Elasticsearch after starting Antimatter. But this will not restart the workers. To do that, please toggle "Enable Elasticsearch Indexing".
               </div>
             </div>
           </div>
@@ -1774,7 +1774,7 @@ exports[`components/ElasticSearchSettings should match snapshot, sniff enabled 1
                 class="help-text"
                 data-testid="skipTLSVerificationhelp-text"
               >
-                When true, Mattermost will not require the Elasticsearch certificate to be signed by a trusted Certificate Authority.
+                When true, Antimatter will not require the Elasticsearch certificate to be signed by a trusted Certificate Authority.
               </div>
             </div>
           </fieldset>
@@ -1913,7 +1913,7 @@ exports[`components/ElasticSearchSettings should match snapshot, sniff enabled 1
               <div
                 class="help-text"
               >
-                Tests if the Mattermost server can connect to the Elasticsearch server specified. Testing the connection only saves the configuration if the test is successful. A successful test will also re-initialize the client if you have started Elasticsearch after starting Mattermost. But this will not restart the workers. To do that, please toggle "Enable Elasticsearch Indexing".
+                Tests if the Antimatter server can connect to the Elasticsearch server specified. Testing the connection only saves the configuration if the test is successful. A successful test will also re-initialize the client if you have started Elasticsearch after starting Antimatter. But this will not restart the workers. To do that, please toggle "Enable Elasticsearch Indexing".
               </div>
             </div>
           </div>

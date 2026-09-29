@@ -52,7 +52,7 @@ const GroupSettings = ({isDisabled}: Props) => {
                         id='ldap_groups'
                         title={defineMessage({id: 'admin.group_settings.ldapGroupsTitle', defaultMessage: 'AD/LDAP Groups'})}
                         // eslint-disable-next-line formatjs/enforce-placeholders -- placeholders via subtitleValues
-                        subtitle={defineMessage({id: 'admin.group_settings.ldapGroupsDescription', defaultMessage: 'Connect AD/LDAP and create groups in Mattermost. To get started, configure group attributes on the <link>AD/LDAP</link> configuration page.'})}
+                        subtitle={defineMessage({id: 'admin.group_settings.ldapGroupsDescription', defaultMessage: 'Connect AD/LDAP and create groups in Antimatter. To get started, configure group attributes on the <link>AD/LDAP</link> configuration page.'})}
                         subtitleValues={{
                             link: (msg: React.ReactNode) => (
                                 <ExternalLink

@@ -63,7 +63,7 @@ exports[`components/admin_console/CustomTermsOfServiceSettings should match snap
                 class="help-text"
                 data-testid="SupportSettings.CustomTermsOfServiceEnabledhelp-text"
               >
-                When true, new users must accept the terms of service before accessing any Mattermost teams on desktop, web or mobile. Existing users must accept them after login or a page refresh. To update terms of service link displayed in account creation and login pages, go to 
+                When true, new users must accept the terms of service before accessing any Antimatter teams on desktop, web or mobile. Existing users must accept them after login or a page refresh. To update terms of service link displayed in account creation and login pages, go to 
                 <a
                   href="/admin_console/site_config/customization"
                 >

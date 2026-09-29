@@ -75,7 +75,7 @@ const messages = defineMessages({
     },
     body: {
         id: 'admin.global_attributes.classification.remove_channels.body',
-        defaultMessage: 'This deletes the classification value on every channel that has one. It cannot be undone from Mattermost.',
+        defaultMessage: 'This deletes the classification value on every channel that has one. It cannot be undone from Antimatter.',
     },
     confirm: {
         id: 'admin.global_attributes.classification.remove_channels.confirm',

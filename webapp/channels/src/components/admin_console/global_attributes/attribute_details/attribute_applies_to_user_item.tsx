@@ -246,7 +246,7 @@ const messages = defineMessages({
     },
     managedByHelp: {
         id: 'admin.global_attributes.attribute_details.applies_to.item.user.managed_by.help',
-        defaultMessage: 'Not editable in Mattermost.',
+        defaultMessage: 'Not editable in Antimatter.',
     },
     profileDisplayLabel: {
         id: 'admin.global_attributes.attribute_details.applies_to.item.user.profile_display.label',

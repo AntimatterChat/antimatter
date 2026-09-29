@@ -253,7 +253,7 @@ exports[`components/admin_console/group_settings/GroupsList.tsx should match sna
         <div
           class="group-description"
         >
-          Mattermost Linking
+          Antimatter Linking
         </div>
         <div
           class="group-actions"
@@ -562,7 +562,7 @@ exports[`components/admin_console/group_settings/GroupsList.tsx should match sna
         <div
           class="group-description"
         >
-          Mattermost Linking
+          Antimatter Linking
         </div>
         <div
           class="group-actions"
@@ -815,7 +815,7 @@ exports[`components/admin_console/group_settings/GroupsList.tsx should match sna
         <div
           class="group-description"
         >
-          Mattermost Linking
+          Antimatter Linking
         </div>
         <div
           class="group-actions"
@@ -1068,7 +1068,7 @@ exports[`components/admin_console/group_settings/GroupsList.tsx should match sna
         <div
           class="group-description"
         >
-          Mattermost Linking
+          Antimatter Linking
         </div>
         <div
           class="group-actions"
@@ -1311,7 +1311,7 @@ exports[`components/admin_console/group_settings/GroupsList.tsx should match sna
         <div
           class="group-description"
         >
-          Mattermost Linking
+          Antimatter Linking
         </div>
         <div
           class="group-actions"
@@ -1826,7 +1826,7 @@ exports[`components/admin_console/group_settings/GroupsList.tsx should match sna
         <div
           class="group-description"
         >
-          Mattermost Linking
+          Antimatter Linking
         </div>
         <div
           class="group-actions"
@@ -2340,7 +2340,7 @@ exports[`components/admin_console/group_settings/GroupsList.tsx should match sna
         <div
           class="group-description"
         >
-          Mattermost Linking
+          Antimatter Linking
         </div>
         <div
           class="group-actions"
@@ -2648,7 +2648,7 @@ exports[`components/admin_console/group_settings/GroupsList.tsx should match sna
         <div
           class="group-description"
         >
-          Mattermost Linking
+          Antimatter Linking
         </div>
         <div
           class="group-actions"
