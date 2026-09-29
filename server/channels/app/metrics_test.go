@@ -9,7 +9,7 @@ import (
 
 	"github.com/mattermost/mattermost/server/public/model"
 	"github.com/mattermost/mattermost/server/v8/channels/app/platform"
-	"github.com/mattermost/mattermost/server/v8/enterprise/metrics"
+	"github.com/mattermost/mattermost/server/v8/libre/metrics"
 	"github.com/prometheus/client_golang/prometheus"
 	prometheusModels "github.com/prometheus/client_model/go"
 	"github.com/stretchr/testify/require"
