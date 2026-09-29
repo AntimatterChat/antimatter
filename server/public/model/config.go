@@ -3694,6 +3694,11 @@ func (s *PluginSettings) SetDefaults(ls LogSettings) {
 		s.PluginStates[PluginIdAI] = &PluginState{Enable: true}
 	}
 
+	if s.PluginStates[PluginIdFocalboard] == nil {
+		// Enable the boards plugin by default
+		s.PluginStates[PluginIdFocalboard] = &PluginState{Enable: true}
+	}
+
 	if s.EnableMarketplace == nil {
 		s.EnableMarketplace = new(PluginSettingsDefaultEnableMarketplace)
 	}
