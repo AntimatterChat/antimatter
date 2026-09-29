@@ -8,7 +8,6 @@ import type {AdminConfig} from '@mattermost/types/config';
 
 import {patchConfig} from 'mattermost-redux/actions/admin';
 import {getConfig, getEnvironmentConfig} from 'mattermost-redux/selectors/entities/admin';
-import {getLicense} from 'mattermost-redux/selectors/entities/general';
 
 import {setNavigationBlocked} from 'actions/admin_actions';
 
@@ -29,13 +28,12 @@ export const useAdminSettingState = <T extends Record<string, any>>(
 ) => {
     const dispatch = useDispatch();
 
-    const license = useSelector(getLicense);
     const config = useSelector(getConfig) as AdminConfig;
 
     const [saveNeeded, setSaveNeeded] = useState(false);
     const [saving, setSaving] = useState(false);
     const [serverError, setServerError] = useState<string | undefined>(undefined);
-    const [settingValues, setSettingValues] = useState<T>(() => getStateFromConfig(config, license));
+    const [settingValues, setSettingValues] = useState<T>(() => getStateFromConfig(config));
 
     const handleChange = useCallback((id: string, value: unknown) => {
         setSaveNeeded(true);
@@ -64,7 +62,7 @@ export const useAdminSettingState = <T extends Record<string, any>>(
         const {data, error} = await dispatch(patchConfig(configToPatch));
 
         if (data) {
-            setSettingValues(getStateFromConfig(data, license));
+            setSettingValues(getStateFromConfig(data));
             setSaveNeeded(false);
             setSaving(false);
 
@@ -76,7 +74,7 @@ export const useAdminSettingState = <T extends Record<string, any>>(
 
             handleSaved?.(configToPatch, handleChange);
         }
-    }, [dispatch, getConfigFromState, getStateFromConfig, handleChange, handleSaved, license, preSave, settingValues]);
+    }, [dispatch, getConfigFromState, getStateFromConfig, handleChange, handleSaved, preSave, settingValues]);
 
     return {handleChange, doSubmit, saveNeeded, saving, serverError, settingValues};
 };

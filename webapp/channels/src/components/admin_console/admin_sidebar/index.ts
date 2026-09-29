@@ -7,8 +7,7 @@ import {bindActionCreators} from 'redux';
 import type {Dispatch} from 'redux';
 
 import {getPlugins} from 'mattermost-redux/actions/admin';
-import {getSubscriptionProduct} from 'mattermost-redux/selectors/entities/cloud';
-import {getConfig, getLicense} from 'mattermost-redux/selectors/entities/general';
+import {getConfig} from 'mattermost-redux/selectors/entities/general';
 import {getBool} from 'mattermost-redux/selectors/entities/preferences';
 import {isFirstAdmin} from 'mattermost-redux/selectors/entities/users';
 
@@ -23,9 +22,7 @@ import type {GlobalState} from 'types/store';
 import AdminSidebar from './admin_sidebar';
 
 function mapStateToProps(state: GlobalState) {
-    const license = getLicense(state);
     const config = getConfig(state);
-    const buildEnterpriseReady = config.BuildEnterpriseReady === 'true';
     const siteName = config.SiteName;
     const adminDefinition = getAdminDefinition(state);
     const consoleAccess = getConsoleAccess(state);
@@ -33,20 +30,15 @@ function mapStateToProps(state: GlobalState) {
     const isUserFirstAdmin = isFirstAdmin(state);
     const isMobileView = getIsMobileView(state);
     const showTaskList = isUserFirstAdmin && taskListStatus && !isMobileView;
-    const subscriptionProduct = getSubscriptionProduct(state);
 
     return {
-        license,
         config: state.entities.admin.config,
         plugins: state.entities.admin.plugins,
         navigationBlocked: getNavigationBlocked(state),
-        buildEnterpriseReady,
         siteName,
         adminDefinition,
         consoleAccess,
-        cloud: state.entities.cloud,
         showTaskList,
-        subscriptionProduct,
     };
 }
 

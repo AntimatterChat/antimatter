@@ -22,7 +22,7 @@ const noAccess = {
 
 function isHidden(config: Partial<AdminConfig>, access: ConsoleAccess = readAccess) {
     const check = AdminDefinition.site.subsections.recaps.isHidden as Extract<Check, (...args: any[]) => boolean>;
-    return check(config, {}, {}, true, access);
+    return check(config, {}, access);
 }
 
 describe('AdminDefinition - Recaps', () => {

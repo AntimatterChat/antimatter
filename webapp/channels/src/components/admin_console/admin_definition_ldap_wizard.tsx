@@ -23,7 +23,7 @@ import {
 
 import ExternalLink from 'components/external_link';
 
-import Constants, {DocLinks, LicenseSkus} from 'utils/constants';
+import Constants, {DocLinks} from 'utils/constants';
 import {getSiteURL} from 'utils/url';
 
 import * as DefinitionConstants from './admin_definition_constants';
@@ -307,7 +307,6 @@ export const ldapWizardAdminDefinition: LDAPAdminDefinitionConfigSchemaSettings 
                         help_text_values: {siteURL: getSiteURL()},
                         help_text_more_info: defineMessage({id: 'admin.ldap.groupFilterFilterDescHover', defaultMessage: 'Only the groups selected by the query will be available to Antimatter.'}),
                         placeholder: defineMessage({id: 'admin.ldap.groupFilterEx', defaultMessage: 'E.g.: "(objectClass=group)"'}),
-                        isHidden: it.not(it.licensedForFeature('LDAPGroups')),
                         isDisabled: it.any(
                             it.not(it.userHasWritePermissionOnResource(RESOURCE_KEYS.AUTHENTICATION.LDAP)),
                             it.stateIsFalse('LdapSettings.EnableSync'),
@@ -551,7 +550,6 @@ export const ldapWizardAdminDefinition: LDAPAdminDefinitionConfigSchemaSettings 
                 type: 'custom',
                 key: 'LdapSettings.CustomProfileAttributes',
                 component: CustomProfileAttributes,
-                isHidden: it.not(it.minLicenseTier(LicenseSkus.Enterprise)),
             },
         ],
     },
@@ -565,7 +563,6 @@ export const ldapWizardAdminDefinition: LDAPAdminDefinitionConfigSchemaSettings 
                 label: defineMessage({id: 'admin.ldap.groupDisplayNameAttributeTitle', defaultMessage: 'Group Display Name Attribute:'}),
                 help_text: defineMessage({id: 'admin.ldap.groupDisplayNameAttributeDesc', defaultMessage: 'The attribute in the AD/LDAP server used to populate the group display names.'}),
                 placeholder: defineMessage({id: 'admin.ldap.groupDisplayNameAttributeEx', defaultMessage: 'E.g.: "cn"'}),
-                isHidden: it.not(it.licensedForFeature('LDAPGroups')),
                 isDisabled: it.any(
                     it.not(it.userHasWritePermissionOnResource(RESOURCE_KEYS.AUTHENTICATION.LDAP)),
                     it.stateIsFalse('LdapSettings.EnableSync'),
@@ -579,7 +576,6 @@ export const ldapWizardAdminDefinition: LDAPAdminDefinitionConfigSchemaSettings 
                 help_text_more_info: defineMessage({id: 'admin.ldap.groupIdAttributeDescHover', defaultMessage: 'This should be a AD/LDAP attribute with a value that does not change such as entryUUID for LDAP or objectGUID for Active Directory.'}),
                 help_text_markdown: false,
                 placeholder: defineMessage({id: 'admin.ldap.groupIdAttributeEx', defaultMessage: 'E.g.: "objectGUID" or "entryUUID"'}),
-                isHidden: it.not(it.licensedForFeature('LDAPGroups')),
                 isDisabled: it.any(
                     it.not(it.userHasWritePermissionOnResource(RESOURCE_KEYS.AUTHENTICATION.LDAP)),
                     it.stateIsFalse('LdapSettings.EnableSync'),

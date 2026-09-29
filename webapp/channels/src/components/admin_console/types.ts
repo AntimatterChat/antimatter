@@ -10,8 +10,7 @@ import type {
     IntlShape,
 } from 'react-intl';
 
-import type {CloudState, Product} from '@mattermost/types/cloud';
-import type {AdminConfig, ClientLicense} from '@mattermost/types/config';
+import type {AdminConfig} from '@mattermost/types/config';
 import type {JobType} from '@mattermost/types/jobs';
 
 import type Constants from 'utils/constants';
@@ -203,18 +202,12 @@ export type AdminDefinitionConfigSchemaSection = {
     title?: string | MessageDescriptor;
     subtitle?: string;
     description?: string | MessageDescriptor;
-    license_sku?: string;
     settings: AdminDefinitionSetting[];
     header?: string | MessageDescriptor;
     footer?: string | MessageDescriptor;
     component?: Component;
     componentProps?: any;
     isHidden?: Check;
-};
-
-type RestrictedIndicatorType = {
-    value: (cloud: CloudState) => JSX.Element;
-    shouldDisplay: (license: ClientLicense, subscriptionProduct: Product | undefined) => boolean;
 };
 
 export type AdminDefinitionSubSectionSchema = AdminDefinitionConfigSchemaComponent | AdminDefinitionConfigSchemaSettings;
@@ -224,10 +217,8 @@ export type AdminDefinitionSubSection = {
     title?: string | MessageDescriptor;
     searchableStrings?: SearchableStrings;
     isHidden?: Check;
-    isDiscovery?: boolean;
     isDisabled?: Check;
     schema: AdminDefinitionSubSectionSchema;
-    restrictedIndicator?: RestrictedIndicatorType;
 };
 
 export type AdminDefinitionSection = {
@@ -247,4 +238,4 @@ export type SearchableStrings = Array<string | MessageDescriptor | Parameters<Fo
 
 export type AdminDefinition = {[key: string]: AdminDefinitionSection};
 
-export type Check = boolean | ((config: Partial<AdminConfig>, state: any, license?: ClientLicense, enterpriseReady?: boolean, consoleAccess?: ConsoleAccess, cloud?: CloudState, isSystemAdmin?: boolean) => boolean);
+export type Check = boolean | ((config: Partial<AdminConfig>, state: any, consoleAccess?: ConsoleAccess, isSystemAdmin?: boolean) => boolean);

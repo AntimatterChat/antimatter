@@ -18,10 +18,9 @@ type Props = {
     parentLink?: string;
     subsection?: boolean;
     tag?: string | JSX.Element;
-    restrictedIndicator?: string | JSX.Element;
 };
 
-const AdminSidebarSection = ({name, title, action, children = [], definitionKey, type, parentLink = '', subsection = false, tag, restrictedIndicator}: Props) => {
+const AdminSidebarSection = ({name, title, action, children = [], definitionKey, type, parentLink = '', subsection = false, tag}: Props) => {
     const getLink = () => parentLink + '/' + name;
 
     const link = getLink();
@@ -52,11 +51,6 @@ const AdminSidebarSection = ({name, title, action, children = [], definitionKey,
             {tag}
         </span>
     ) : null;
-    const indicatorElem = restrictedIndicator && (
-        <span className={`${className}-indicator`}>
-            {restrictedIndicator}
-        </span>
-    );
     const sidebarItemSafeId = createSafeId(name);
     let sidebarItem = (
         <BlockableLink
@@ -68,7 +62,6 @@ const AdminSidebarSection = ({name, title, action, children = [], definitionKey,
             <span className={`${className}-title__text`}>
                 {title}{tagDiv}
             </span>
-            {indicatorElem}
             {action}
         </BlockableLink>
     );

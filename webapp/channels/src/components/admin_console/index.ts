@@ -11,7 +11,6 @@ import {loadRolesIfNeeded, editRole} from 'mattermost-redux/actions/roles';
 import {selectTeam} from 'mattermost-redux/actions/teams';
 import {General} from 'mattermost-redux/constants';
 import * as Selectors from 'mattermost-redux/selectors/entities/admin';
-import {getConfig as getGeneralConfig, getLicense} from 'mattermost-redux/selectors/entities/general';
 import {getRoles} from 'mattermost-redux/selectors/entities/roles';
 import {getTeam} from 'mattermost-redux/selectors/entities/teams';
 import {isCurrentUserSystemAdmin, currentUserHasAnAdminRole, getCurrentUserId} from 'mattermost-redux/selectors/entities/users';
@@ -28,8 +27,6 @@ import type {GlobalState} from 'types/store';
 import AdminConsole from './admin_console';
 
 function mapStateToProps(state: GlobalState) {
-    const generalConfig = getGeneralConfig(state);
-    const buildEnterpriseReady = generalConfig.BuildEnterpriseReady === 'true';
     const adminDefinition = getAdminDefinition(state);
     const teamId = LocalStorageStore.getPreviousTeamId(getCurrentUserId(state));
     const team = getTeam(state, teamId || '');
@@ -39,8 +36,6 @@ function mapStateToProps(state: GlobalState) {
     return {
         config: Selectors.getConfig(state),
         environmentConfig: Selectors.getEnvironmentConfig(state),
-        license: getLicense(state),
-        buildEnterpriseReady,
         unauthorizedRoute,
         showNavigationPrompt: showNavigationPrompt(state),
         isCurrentUserSystemAdmin: isCurrentUserSystemAdmin(state),
@@ -48,7 +43,6 @@ function mapStateToProps(state: GlobalState) {
         roles: getRoles(state),
         adminDefinition,
         consoleAccess,
-        cloud: state.entities.cloud,
         team,
     };
 }

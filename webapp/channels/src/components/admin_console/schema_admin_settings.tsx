@@ -8,8 +8,7 @@ import {Link} from 'react-router-dom';
 
 import {AlertOutlineIcon, CheckIcon, CloseCircleIcon, InformationOutlineIcon} from '@mattermost/compass-icons/components';
 import {WithTooltip} from '@mattermost/shared/components/tooltip';
-import type {CloudState} from '@mattermost/types/cloud';
-import type {AdminConfig, ClientLicense, EnvironmentConfig} from '@mattermost/types/config';
+import type {AdminConfig, EnvironmentConfig} from '@mattermost/types/config';
 import type {PluginRedux, PluginStatusRedux} from '@mattermost/types/plugins';
 import type {Role} from '@mattermost/types/roles';
 import type {DeepPartial} from '@mattermost/types/utilities';
@@ -42,7 +41,6 @@ import WarningIcon from 'components/widgets/icons/fa_warning_icon';
 import BetaTag from 'components/widgets/tag/beta_tag';
 
 import * as I18n from 'i18n/i18n';
-import {isUnlicensedAddOn} from 'utils/addons';
 import Constants from 'utils/constants';
 import {mappingValueFromRoles, rolesFromMapping} from 'utils/policy_roles_adapter';
 
@@ -64,7 +62,6 @@ export type SystemConsoleCustomSettingsComponentProps = {
     value: unknown;
     disabled: boolean;
     config: Partial<AdminConfig>;
-    license: ClientLicense;
     setByEnv: boolean;
     onChange: SystemConsoleCustomSettingChangeHandler;
     registerSaveAction: (saveAction: () => Promise<{error?: {message?: string}}>) => void;
@@ -80,14 +77,11 @@ export type SchemaAdminSettingsProps = {
     setNavigationBlocked: (blocked: boolean) => void;
     schema: AdminDefinitionSubSectionSchema | null;
     roles: Record<string, Role>;
-    license: ClientLicense;
     editRole: (role: Role) => void;
     patchConfig: (config: DeepPartial<AdminConfig>) => Promise<ActionResult>;
     isDisabled: boolean;
     consoleAccess: ConsoleAccess;
-    cloud: CloudState;
     isCurrentUserSystemAdmin: boolean;
-    enterpriseReady: boolean;
     plugin?: PluginRedux;
     pluginStatus?: PluginStatusRedux;
     pluginVersion?: string;
@@ -381,10 +375,6 @@ export class SchemaAdminSettings extends React.PureComponent<SchemaAdminSettings
         const pluginState = this.props.pluginStatus?.state ?? (this.props.plugin.active ? PluginState.PLUGIN_STATE_RUNNING : PluginState.PLUGIN_STATE_NOT_RUNNING);
         const description = (this.props.plugin.description || this.props.pluginStatus?.description || '').trim();
 
-        // Enabling an unlicensed add-on only ever returns 403, and the settings list
-        // already shows an explanation in place of the toggle.
-        const unlicensedAddOn = isUnlicensedAddOn(this.props.plugin.required_add_on, this.props.license);
-
         return (
             <div className='PluginMetadataPanel__settingsWrapper'>
                 <div className='PluginMetadataPanel__actionsPanel'>
@@ -406,7 +396,7 @@ export class SchemaAdminSettings extends React.PureComponent<SchemaAdminSettings
                                 )}
                             </div>
                         </div>
-                        {!unlicensedAddOn && (
+                        {!this.props.plugin.required_add_on && (
                             <PluginEnableButton
                                 id={getPluginEnabledConfigKey(this.props.plugin.id)}
                                 disabled={this.props.isDisabled}
@@ -561,21 +551,21 @@ export class SchemaAdminSettings extends React.PureComponent<SchemaAdminSettings
 
     isDisabled = (setting: AdminDefinitionSetting) => {
         if (typeof setting.isDisabled === 'function') {
-            return setting.isDisabled(this.props.config, this.state, this.props.license, this.props.enterpriseReady, this.props.consoleAccess, this.props.cloud, this.props.isCurrentUserSystemAdmin);
+            return setting.isDisabled(this.props.config, this.state, this.props.consoleAccess, this.props.isCurrentUserSystemAdmin);
         }
         return Boolean(setting.isDisabled);
     };
 
     isHidden = (setting: AdminDefinitionSetting) => {
         if (typeof setting.isHidden === 'function') {
-            return setting.isHidden(this.props.config, this.state, this.props.license);
+            return setting.isHidden(this.props.config, this.state);
         }
         return Boolean(setting.isHidden);
     };
 
     isSectionHidden = (section: AdminDefinitionConfigSchemaSection) => {
         if (typeof section.isHidden === 'function') {
-            return section.isHidden(this.props.config, this.state, this.props.license);
+            return section.isHidden(this.props.config, this.state);
         }
         return Boolean(section.isHidden);
     };
@@ -588,7 +578,6 @@ export class SchemaAdminSettings extends React.PureComponent<SchemaAdminSettings
                     setting={setting}
                     config={this.props.config}
                     state={this.state}
-                    license={this.props.license}
                     isDisabled={isDisabled}
                 />
                 {renderSettingHelpText(setting, this.props.schema, isDisabled)}
@@ -798,7 +787,7 @@ export class SchemaAdminSettings extends React.PureComponent<SchemaAdminSettings
 
         const options: AdminDefinitionSettingDropdownOption[] = [];
         setting.options.forEach((option) => {
-            if (!option.isHidden || (typeof option.isHidden === 'function' && !option.isHidden(this.props.config, this.state, this.props.license, this.props.enterpriseReady))) {
+            if (!option.isHidden || (typeof option.isHidden === 'function' && !option.isHidden(this.props.config, this.state))) {
                 options.push(option);
             }
         });
@@ -814,11 +803,10 @@ export class SchemaAdminSettings extends React.PureComponent<SchemaAdminSettings
             }
         }
 
-        // used to hide help in case of cloud-starter and open-id selection to show upgrade notice.
         let hideHelp = false;
         if (setting.isHelpHidden) {
             if (typeof (setting.isHelpHidden) === 'function') {
-                hideHelp = setting.isHelpHidden(this.props.config, this.state, this.props.license, this.props.enterpriseReady);
+                hideHelp = setting.isHelpHidden(this.props.config, this.state);
             } else {
                 hideHelp = setting.isHelpHidden;
             }
@@ -1017,13 +1005,7 @@ export class SchemaAdminSettings extends React.PureComponent<SchemaAdminSettings
     };
 
     handleChange = (id: string, value: any, confirm = false, doSubmit = false, warning = false) => {
-        let saveNeeded: State['saveNeeded'] = this.state.saveNeeded === 'permissions' ? 'both' : 'config';
-
-        // Exception: Since OpenId-Custom is treated as feature discovery for Cloud Starter licenses, save button is disabled.
-        const isCloudStarter = this.props.license.Cloud === 'true' && this.props.license.SkuShortName === 'starter';
-        if (id === 'openidType' && value === 'openid' && isCloudStarter) {
-            saveNeeded = false;
-        }
+        const saveNeeded: State['saveNeeded'] = this.state.saveNeeded === 'permissions' ? 'both' : 'config';
 
         const clientWarning = warning === false ? this.state.clientWarning : warning;
 
@@ -1189,7 +1171,6 @@ export class SchemaAdminSettings extends React.PureComponent<SchemaAdminSettings
                 value={this.state[setting.key]}
                 disabled={this.isDisabled(setting)}
                 config={this.props.config}
-                license={this.props.license}
                 setByEnv={isSetByEnv(setting.key, this.props.environmentConfig)}
                 onChange={this.handleChange}
                 registerSaveAction={this.registerSaveAction}
@@ -1354,7 +1335,7 @@ export class SchemaAdminSettings extends React.PureComponent<SchemaAdminSettings
                 }
 
                 // Sections with enhanced properties use AdminSectionPanel for richer UI
-                const hasEnhancedProps = section.description || section.license_sku;
+                const hasEnhancedProps = section.description;
 
                 if (hasEnhancedProps) {
                     sections.push(
@@ -1362,7 +1343,6 @@ export class SchemaAdminSettings extends React.PureComponent<SchemaAdminSettings
                             key={section.key}
                             title={section.title}
                             description={section.description}
-                            licenseSku={section.license_sku}
                             data-testid={section.key}
                         >
                             {header}
@@ -1502,7 +1482,7 @@ export class SchemaAdminSettings extends React.PureComponent<SchemaAdminSettings
                 if ('isHidden' in setting) {
                     let hidden = false;
                     if (typeof setting.isHidden === 'function') {
-                        hidden = setting.isHidden?.(this.props.config, this.state, this.props.license, this.props.enterpriseReady, this.props.consoleAccess, this.props.cloud, this.props.isCurrentUserSystemAdmin);
+                        hidden = setting.isHidden?.(this.props.config, this.state, this.props.consoleAccess, this.props.isCurrentUserSystemAdmin);
                     } else {
                         hidden = Boolean(setting.isHidden);
                     }

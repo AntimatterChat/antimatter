@@ -1,12 +1,10 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 
-import type {AdminConfig, ClientLicense} from '@mattermost/types/config';
+import type {AdminConfig} from '@mattermost/types/config';
 
 import {RESOURCE_KEYS} from 'mattermost-redux/constants/permissions_sysconsole';
 import {getConfig} from 'mattermost-redux/selectors/entities/general';
-
-import {LicenseSkus} from 'utils/constants';
 
 import AdminDefinition from './admin_definition';
 import type {AdminDefinitionSettingInput, Check, ConsoleAccess} from './types';
@@ -19,16 +17,6 @@ jest.mock('mattermost-redux/selectors/entities/general', () => ({
 const mockedGetConfig = getConfig as jest.Mock;
 
 type BoolAdminDefinitionSetting = AdminDefinitionSettingInput;
-
-const enterpriseAdvancedLicense = {
-    IsLicensed: 'true',
-    SkuShortName: LicenseSkus.EnterpriseAdvanced,
-} as ClientLicense;
-
-const professionalLicense = {
-    IsLicensed: 'true',
-    SkuShortName: LicenseSkus.Professional,
-} as ClientLicense;
 
 const consoleAccess = {
     read: {},
@@ -52,7 +40,7 @@ function getAuditLoggingSetting(): BoolAdminDefinitionSetting {
 
 function callIsDisabled(check: Check | undefined, state: Record<string, unknown>) {
     const disabledCheck = check as Extract<Check, (...args: any[]) => boolean>;
-    return disabledCheck({}, state, enterpriseAdvancedLicense, true, consoleAccess);
+    return disabledCheck({}, state, consoleAccess);
 }
 
 describe('AdminDefinition - ABAC audit logging toggle', () => {
@@ -110,7 +98,7 @@ describe('AdminDefinition - ABAC audit logging toggle', () => {
         expect(disabled).toBe(true);
     });
 
-    test('subsection is hidden below Enterprise Advanced license tier', () => {
+    test('subsection is visible with the feature flag and read access', () => {
         const subsection = AdminDefinition.system_attributes.subsections.attribute_based_access_control;
         const hiddenCheck = subsection.isHidden as Extract<Check, (...args: any[]) => boolean>;
 
@@ -118,7 +106,6 @@ describe('AdminDefinition - ABAC audit logging toggle', () => {
             read: {[RESOURCE_KEYS.USER_MANAGEMENT.SYSTEM_ROLES]: true},
         } as unknown as ConsoleAccess;
 
-        expect(hiddenCheck(abacFeatureFlagEnabled, {}, enterpriseAdvancedLicense, true, readAccess)).toBe(false);
-        expect(hiddenCheck(abacFeatureFlagEnabled, {}, professionalLicense, true, readAccess)).toBe(true);
+        expect(hiddenCheck(abacFeatureFlagEnabled, {}, readAccess)).toBe(false);
     });
 });

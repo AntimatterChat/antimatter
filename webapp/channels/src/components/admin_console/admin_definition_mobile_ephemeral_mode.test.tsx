@@ -3,8 +3,6 @@
 
 import type {AdminConfig} from '@mattermost/types/config';
 
-import {LicenseSkus} from 'utils/constants';
-
 import AdminDefinition from './admin_definition';
 import type {AdminDefinitionSetting, AdminDefinitionConfigSchemaSection} from './types';
 
@@ -62,20 +60,6 @@ describe('AdminDefinition - Mobile Ephemeral Mode Settings', () => {
                 expect('defaultMessage' in setting.help_text).toBe(true);
             }
         });
-    });
-
-    test('should use LicensedSectionContainer with Enterprise Advanced', () => {
-        const section = getEphemeralModeSection();
-
-        expect(section?.component).toBeDefined();
-        expect(section?.license_sku).toBe(LicenseSkus.EnterpriseAdvanced);
-        expect(section?.componentProps).toBeDefined();
-        expect(section?.componentProps?.requiredSku).toBe(LicenseSkus.EnterpriseAdvanced);
-        expect(section?.componentProps?.featureDiscoveryConfig).toBeDefined();
-        expect(section?.componentProps?.featureDiscoveryConfig?.featureName).toBe('mobile_ephemeral_mode');
-        expect(section?.componentProps?.featureDiscoveryConfig?.learnMoreURL).toBe(
-            'https://docs.mattermost.com/configure/environment-configuration-settings.html#mobile-security',
-        );
     });
 
     test('isHidden should return true when feature flag is disabled', () => {
