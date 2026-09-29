@@ -11,6 +11,7 @@ import (
 	_ "github.com/mattermost/mattermost/server/v8/libre/dataretention"
 	_ "github.com/mattermost/mattermost/server/v8/libre/intune"
 	_ "github.com/mattermost/mattermost/server/v8/libre/ldap"
+	_ "github.com/mattermost/mattermost/server/v8/libre/messageexport"
 	_ "github.com/mattermost/mattermost/server/v8/libre/metrics"
 	_ "github.com/mattermost/mattermost/server/v8/libre/notification"
 	_ "github.com/mattermost/mattermost/server/v8/libre/oauth/google"
