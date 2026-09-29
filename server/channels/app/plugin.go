@@ -1029,7 +1029,6 @@ func (ch *Channels) processPrepackagedPlugin(pluginPath *pluginSignaturePath) (*
 
 var transitionallyPrepackagedPlugins = []string{
 	"antivirus",
-	"focalboard",
 	"mattermost-autolink",
 	"com.mattermost.aws-sns",
 	"com.mattermost.confluence",
