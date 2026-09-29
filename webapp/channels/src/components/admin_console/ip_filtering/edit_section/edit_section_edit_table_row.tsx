@@ -38,6 +38,13 @@ const EditTableRow = ({
             onMouseLeave={handleRowMouseLeave}
         >
             <div className='FilterName'>{allowedIPRange.description}</div>
+            <div className='FilterAction'>
+                {allowedIPRange.action === 'deny' ? (
+                    <span className='ActionTag deny'>{formatMessage({id: 'admin.ip_filtering.action_tag_deny', defaultMessage: 'Deny'})}</span>
+                ) : (
+                    <span className='ActionTag allow'>{formatMessage({id: 'admin.ip_filtering.action_tag_allow', defaultMessage: 'Allow'})}</span>
+                )}
+            </div>
             <div className='IpAddressRange'>{allowedIPRange.cidr_block}</div>
             <div className='Actions'>
                 {hoveredRow === index && (

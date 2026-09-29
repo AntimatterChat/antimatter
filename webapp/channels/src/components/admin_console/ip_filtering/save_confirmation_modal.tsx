@@ -8,8 +8,6 @@ import {FormattedMessage, useIntl} from 'react-intl';
 import {InformationOutlineIcon} from '@mattermost/compass-icons/components';
 import {Button} from '@mattermost/shared/components/button';
 
-import ExternalLink from 'components/external_link';
-
 import './save_confirmation_modal.scss';
 
 type Props = {
@@ -44,20 +42,13 @@ export default function SaveConfirmationModal({onExited, onConfirm, title, subti
                             <InformationOutlineIcon/>
                         </div>
                         <div className='Body'>
-                            <div className='Title'>{formatMessage({id: 'admin.ip_filtering.save_disclaimer_title', defaultMessage: 'Using the Customer Portal to restore access'})}</div>
-                            {/* TODO - replace "workspace owner" with owner's email address? */}
+                            <div className='Title'>{formatMessage({id: 'admin.ip_filtering.save_disclaimer_title', defaultMessage: 'Restoring access'})}</div>
                             <div className='Subtitle'>
                                 <FormattedMessage
                                     id={'admin.ip_filtering.save_disclaimer_subtitle'}
-                                    defaultMessage={'If you happen to block yourself with these settings, your workspace owner can log in to the <customerportal>Customer Portal</customerportal> to disable IP filtering to restore access.'}
+                                    defaultMessage={'If these rules block you, an administrator with access to the server can clear them in local mode, which is not subject to IP filtering: <code>mmctl --local config edit</code>, then empty <code>IPFilteringSettings.Rules</code>.'}
                                     values={{
-                                        customerportal: (msg) => (
-                                            <ExternalLink
-                                                location='save_confirmation_modal'
-                                                href='https://customers.mattermost.com/console/ip_filtering'
-                                            >
-                                                {msg}
-                                            </ExternalLink>),
+                                        code: (msg) => <code>{msg}</code>,
                                     }}
                                 />
                             </div>

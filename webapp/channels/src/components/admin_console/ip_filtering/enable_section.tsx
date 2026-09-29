@@ -2,9 +2,8 @@
 // See LICENSE.txt for license information.
 
 import React from 'react';
-import {FormattedMessage, useIntl} from 'react-intl';
+import {useIntl} from 'react-intl';
 
-import ExternalLink from 'components/external_link';
 import Toggle from 'components/toggle';
 
 type Props = {
@@ -23,20 +22,7 @@ const EnableSectionContent: React.FC<Props> = ({filterToggle, setFilterToggle}) 
                         {formatMessage({id: 'admin.ip_filtering.enable_ip_filtering', defaultMessage: 'Enable IP Filtering'})}
                     </div>
                     <div className='Subtitle'>
-                        <FormattedMessage
-                            id={'admin.ip_filtering.enable_ip_filtering_description'}
-                            defaultMessage={'Limit access to your workspace by IP address. <learnmore>Learn more in the docs</learnmore>'}
-                            values={{
-                                learnmore: (msg) => (
-                                    <ExternalLink
-                                        href='https://mattermost.com/pl/cloud-ip-filtering'
-                                        location={'ip_filtering_enable_section'}
-                                    >
-                                        {msg}
-                                    </ExternalLink>
-                                ),
-                            }}
-                        />
+                        {formatMessage({id: 'admin.ip_filtering.enable_ip_filtering_description', defaultMessage: 'Limit access to this server by IP address, with allow and deny rules.'})}
                     </div>
                 </div>
                 <div className='SwitchSelector'>

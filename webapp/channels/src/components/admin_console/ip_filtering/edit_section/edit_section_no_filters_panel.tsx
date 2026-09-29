@@ -29,7 +29,7 @@ const NoFiltersPanel = ({setShowAddModal}: NoFiltersPanelProps) => (
         <div className='Subtitle'>
             <FormattedMessage
                 id='admin.ip_filtering.any_ip_can_access_add_filter'
-                defaultMessage='Any IP can access your workspace. To limit access to selected IP Addresses, <add>Add a filter</add>.'
+                defaultMessage='Any IP address can reach the server. To allow or deny specific addresses, <add>Add a filter</add>.'
                 values={{
                     add: (msg) => (
                         <Button

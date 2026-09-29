@@ -29,7 +29,7 @@ describe('EnableSectionContent', () => {
         );
 
         expect(screen.getByText('Enable IP Filtering')).toBeInTheDocument();
-        expect(screen.getByText('Limit access to your workspace by IP address.')).toBeInTheDocument();
+        expect(screen.getByText('Limit access to this server by IP address, with allow and deny rules.')).toBeInTheDocument();
         expect(screen.getByTestId('filterToggle-button')).toBeInTheDocument();
         expect(screen.getByRole('button', {pressed: true})).toBeInTheDocument();
     });
@@ -56,7 +56,7 @@ describe('EnableSectionContent', () => {
         );
 
         expect(screen.getByText('Enable IP Filtering')).toBeInTheDocument();
-        expect(screen.getByText('Limit access to your workspace by IP address.')).toBeInTheDocument();
+        expect(screen.getByText('Limit access to this server by IP address, with allow and deny rules.')).toBeInTheDocument();
         expect(screen.getByTestId('filterToggle-button')).toBeInTheDocument();
         expect(screen.getByRole('button', {pressed: false})).toBeInTheDocument();
     });

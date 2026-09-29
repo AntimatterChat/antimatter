@@ -3,7 +3,7 @@
 
 import type {AllowedIPRange} from '@mattermost/types/config';
 
-import {isIPAddressInRanges, validateCIDR} from './ip_filtering_utils';
+import {isIPAddressAllowed, isIPAddressInRanges, validateCIDR} from './ip_filtering_utils';
 
 describe('isIPAddressInRanges', () => {
     const allowedIPRanges = [
@@ -95,5 +95,57 @@ describe('validateCIDR', () => {
         for (const allowedIPRange of badRanges) {
             expect(validateCIDR(allowedIPRange.cidr_block)).not.toBeTruthy();
         }
+    });
+});
+
+describe('validateCIDR single addresses', () => {
+    test('accepts single addresses, as the server does', () => {
+        expect(validateCIDR('192.0.2.7')).toBe(true);
+        expect(validateCIDR('2001:db8::1')).toBe(true);
+        expect(validateCIDR('::ffff:192.0.2.0/120')).toBe(true);
+    });
+
+    test('rejects garbage and oversized masks', () => {
+        expect(validateCIDR('not-an-ip')).toBe(false);
+        expect(validateCIDR('192.0.2.0/33')).toBe(false);
+        expect(validateCIDR('::ffff:0.0.0.0/64')).toBe(false);
+    });
+});
+
+describe('isIPAddressAllowed', () => {
+    const rule = (cidr: string, action: 'allow' | 'deny', enabled = true) => ({cidr_block: cidr, action, enabled, description: '', owner_id: ''});
+
+    test('no enabled rules allow everyone', () => {
+        expect(isIPAddressAllowed('192.0.2.1', [])).toBe(true);
+        expect(isIPAddressAllowed('192.0.2.1', [rule('192.0.2.0/24', 'deny', false)])).toBe(true);
+    });
+
+    test('allow rules form an allowlist', () => {
+        const rules = [rule('192.0.2.0/24', 'allow')];
+        expect(isIPAddressAllowed('192.0.2.1', rules)).toBe(true);
+        expect(isIPAddressAllowed('198.51.100.1', rules)).toBe(false);
+    });
+
+    test('deny rules alone form a blocklist', () => {
+        const rules = [rule('192.0.2.0/24', 'deny')];
+        expect(isIPAddressAllowed('192.0.2.1', rules)).toBe(false);
+        expect(isIPAddressAllowed('198.51.100.1', rules)).toBe(true);
+    });
+
+    test('deny wins over allow', () => {
+        const rules = [rule('10.0.0.0/8', 'allow'), rule('10.1.0.0/16', 'deny')];
+        expect(isIPAddressAllowed('10.2.0.1', rules)).toBe(true);
+        expect(isIPAddressAllowed('10.1.2.3', rules)).toBe(false);
+    });
+
+    test('rules without an action are allow rules', () => {
+        const rules = [{cidr_block: '192.0.2.0/24', enabled: true, description: '', owner_id: ''}];
+        expect(isIPAddressAllowed('192.0.2.1', rules)).toBe(true);
+        expect(isIPAddressAllowed('198.51.100.1', rules)).toBe(false);
+    });
+
+    test('IPv4-mapped IPv6 clients match IPv4 rules', () => {
+        expect(isIPAddressAllowed('::ffff:192.0.2.1', [rule('192.0.2.0/24', 'deny')])).toBe(false);
+        expect(isIPAddressInRanges('::ffff:192.0.2.1', [rule('192.0.2.7', 'allow'), rule('192.0.2.0/24', 'allow')])).toBe(true);
     });
 });

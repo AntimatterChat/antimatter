@@ -34,7 +34,7 @@ export default function DeleteConfirmationModal({onExited, onConfirm, filterToDe
             <Modal.Body>
                 {formatMessage({
                     id: 'admin.ip_filtering.delete_confirmation_body',
-                    defaultMessage: 'Are you sure you want to delete IP filter {filter}? Users with IP addresses outside of this range won\'t be able to access the workspace when IP Filtering is enabled',
+                    defaultMessage: 'Are you sure you want to delete IP filter {filter}? This may change which IP addresses can reach the server.',
                 },
                 {filter: (<strong>{filterToDelete?.description}</strong>)},
                 )}

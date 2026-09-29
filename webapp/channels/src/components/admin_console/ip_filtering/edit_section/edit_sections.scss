@@ -47,6 +47,10 @@
                     font-weight: 600;
                 }
 
+                .FilterAction {
+                    width: 80px;
+                }
+
                 .IpAddressRange {
                     flex: 1 1 0;
                 }
@@ -74,6 +78,28 @@
 
                 .FilterName {
                     width: 291px;
+                }
+
+                .FilterAction {
+                    width: 80px;
+
+                    .ActionTag {
+                        padding: 2px 6px;
+                        border-radius: 4px;
+                        font-size: 12px;
+                        font-weight: 600;
+                        line-height: 16px;
+
+                        &.allow {
+                            background: rgba(var(--online-indicator-rgb), 0.12);
+                            color: var(--online-indicator);
+                        }
+
+                        &.deny {
+                            background: rgba(var(--error-text-color-rgb), 0.12);
+                            color: var(--error-text);
+                        }
+                    }
                 }
 
                 .IpAddressRange {

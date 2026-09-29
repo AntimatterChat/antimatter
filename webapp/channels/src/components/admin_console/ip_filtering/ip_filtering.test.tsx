@@ -6,7 +6,6 @@ import {IntlProvider} from 'react-intl';
 import {Provider} from 'react-redux';
 import {BrowserRouter as Router} from 'react-router-dom';
 
-import type {Installation} from '@mattermost/types/cloud';
 import type {AllowedIPRange, FetchIPResponse} from '@mattermost/types/config';
 
 import {Client4} from 'mattermost-redux/client';
@@ -15,7 +14,7 @@ import configureStore from 'store';
 
 import ModalController from 'components/modal_controller';
 
-import {fireEvent, render, screen, userEvent, waitFor} from 'tests/react_testing_utils';
+import {render, screen, userEvent, waitFor} from 'tests/react_testing_utils';
 
 import IPFiltering from './index';
 
@@ -38,13 +37,11 @@ describe('IPFiltering', () => {
     const applyIPFiltersMock = jest.fn(() => Promise.resolve(ipFilters));
     const getIPFiltersMock = jest.fn(() => Promise.resolve(ipFilters));
     const getCurrentIPMock = jest.fn(() => Promise.resolve({ip: currentIP} as FetchIPResponse));
-    const getInstallationMock = jest.fn(() => Promise.resolve({id: 'abc123', state: 'stable'} as Installation));
 
     beforeEach(() => {
         Client4.applyIPFilters = applyIPFiltersMock;
         Client4.getIPFilters = getIPFiltersMock;
         Client4.getCurrentIP = getCurrentIPMock;
-        Client4.getInstallation = getInstallationMock;
     });
 
     const mockedStore = configureStore({
@@ -117,7 +114,7 @@ describe('IPFiltering', () => {
         await userEvent.click(getByText('Add Filter'));
 
         const descriptionInput = getByLabelText('Enter a name for this rule');
-        const cidrInput = getByLabelText('Enter IP Range');
+        const cidrInput = getByLabelText('Enter an IP address or range');
         const saveButton = screen.getByTestId('save-add-edit-button');
 
         await userEvent.clear(cidrInput);
@@ -145,7 +142,7 @@ describe('IPFiltering', () => {
         }));
 
         const descriptionInput = getByLabelText('Enter a name for this rule');
-        const cidrInput = getByLabelText('Enter IP Range');
+        const cidrInput = getByLabelText('Enter an IP address or range');
         const saveButton = screen.getByTestId('save-add-edit-button');
 
         await userEvent.clear(cidrInput);
@@ -223,7 +220,7 @@ describe('IPFiltering', () => {
         }));
 
         const descriptionInput = getByLabelText('Enter a name for this rule');
-        const cidrInput = getByLabelText('Enter IP Range');
+        const cidrInput = getByLabelText('Enter an IP address or range');
         const saveButton = screen.getByTestId('save-add-edit-button');
 
         await userEvent.clear(cidrInput);
@@ -242,38 +239,24 @@ describe('IPFiltering', () => {
         });
     });
 
-    test('Save button is disabled with a spinner when the page is loaded with a not-stable installation', async () => {
-        const getInstallationNotStableMock = jest.fn(() => Promise.resolve({id: 'abc123', state: 'update-in-progress'} as Installation));
-        Client4.getInstallation = getInstallationNotStableMock;
+    test('shows the server error when the rules are refused', async () => {
+        Client4.applyIPFilters = jest.fn(() => Promise.reject(new Error('These rules would block your own address')));
 
-        jest.useFakeTimers();
-        const {getByText, queryByText} = render(wrapWithIntlProviderAndStore(<IPFiltering/>));
+        render(wrapWithIntlProviderAndStore(<IPFiltering/>));
 
         await waitFor(() => {
-            expect(screen.getByTestId('filterToggle-button')).toBeInTheDocument();
-            expect(screen.getByRole('button', {pressed: true})).toBeInTheDocument();
+            expect(screen.getByText('Test IP Filter')).toBeInTheDocument();
         });
 
-        // Use fireEvent.click here because userEvent doesn't work well with fake timers
-        fireEvent.click(screen.getByTestId('filterToggle-button'));
+        await userEvent.hover(screen.getByText('Test IP Filter'));
+        await userEvent.click(screen.getByRole('button', {name: /Delete/i}));
+        await userEvent.click(screen.getByText('Delete filter'));
+        await userEvent.click(screen.getByText('Save'));
+        await userEvent.click(screen.getByText('Yes, apply changes'));
 
         await waitFor(() => {
-            expect(screen.getByRole('button', {pressed: false})).toBeInTheDocument();
+            expect(screen.getByText('These rules would block your own address', {exact: false})).toBeInTheDocument();
         });
-
-        await waitFor(() => {
-            expect(queryByText('Test IP Filter')).not.toBeInTheDocument();
-        });
-
-        expect(getByText('Other changes being applied...')).toBeInTheDocument();
-        expect(getByText('Other changes being applied...').closest('button')).toBeDisabled();
-
-        // Adjust mock so it now returns a stable state
-        Client4.getInstallation = getInstallationMock;
-
-        jest.advanceTimersByTime(5100);
-        await waitFor(() => {
-            expect(getByText('Save')).toBeInTheDocument();
-        });
+        expect(screen.getByText('Save')).toBeInTheDocument();
     });
 });

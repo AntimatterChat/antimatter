@@ -25,20 +25,20 @@ const EditSectionHeader = ({
                 <div className='TitleSubtitle'>
                     <div className='Title'>
                         <FormattedMessage
-                            id='admin.ip_filtering.allowed_ip_addresses'
-                            defaultMessage='Allowed IP Addresses'
+                            id='admin.ip_filtering.rules_title'
+                            defaultMessage='IP Filter Rules'
                         />
                     </div>
                     <div className='Subtitle'>
                         <FormattedMessage
                             id='admin.ip_filtering.edit_section_description_line_1'
-                            defaultMessage='Create rules to allow access to the workspace for specified IP addresses only.'
+                            defaultMessage='Deny rules always block the addresses they match. If any allow rule exists, only addresses matching an allow rule can reach the server.'
                         />
                     </div>
                     <div className='Subtitle'>
                         <FormattedMessage
                             id='admin.ip_filtering.edit_section_description_line_2'
-                            defaultMessage='<strong>NOTE:</strong> If no rules are added, all IP addresses will be allowed.'
+                            defaultMessage='<strong>NOTE:</strong> If no rules are enabled, all IP addresses are allowed.'
                             values={{
                                 strong: (msg) => <strong>{msg}</strong>,
                             }}
