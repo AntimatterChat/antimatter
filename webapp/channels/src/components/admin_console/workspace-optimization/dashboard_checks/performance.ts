@@ -20,11 +20,10 @@ const search = async (
 ): Promise<ItemModel> => {
     const testElasticsearch = async (
         config: Partial<AdminConfig>,
-        options: Options,
     ) => {
         let check = ItemStatus.INFO;
 
-        if (!options.isLicensed || !options.isEnterpriseLicense || !(config.ElasticsearchSettings?.EnableIndexing && config.ElasticsearchSettings?.EnableSearching)) {
+        if (!(config.ElasticsearchSettings?.EnableIndexing && config.ElasticsearchSettings?.EnableSearching)) {
             return check;
         }
 
@@ -39,7 +38,7 @@ const search = async (
 
     const totalPosts = options.analytics?.TOTAL_POSTS as number;
     const totalUsers = options.analytics?.TOTAL_USERS as number;
-    const status = totalPosts < 2_000_000 && totalUsers < 500 ? ItemStatus.OK : await testElasticsearch(config, options);
+    const status = totalPosts < 2_000_000 && totalUsers < 500 ? ItemStatus.OK : await testElasticsearch(config);
     return {
         id: 'search',
         title: formatMessage({
@@ -50,10 +49,8 @@ const search = async (
             id: 'admin.reporting.workspace_optimization.performance.search.description',
             defaultMessage: 'Your server has reached over 500 users and 2 million posts which can result in slow search performance. We recommend enabling Elasticsearch for better performance.',
         }),
-        ...(options.isLicensed && options.isEnterpriseLicense ? {
-            configUrl: ConsolePages.ELASTICSEARCH,
-            configText: formatMessage({id: 'admin.reporting.workspace_optimization.search.cta', defaultMessage: 'Try Elasticsearch'}),
-        } : options.trialOrEnterpriseCtaConfig),
+        configUrl: ConsolePages.ELASTICSEARCH,
+        configText: formatMessage({id: 'admin.reporting.workspace_optimization.search.cta', defaultMessage: 'Try Elasticsearch'}),
         infoUrl: DocLinks.ELASTICSEARCH,
         infoText: formatMessage({id: 'admin.reporting.workspace_optimization.cta.learnMore', defaultMessage: 'Learn more'}),
         telemetryAction: 'search-optimization',

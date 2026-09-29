@@ -59,8 +59,7 @@ const WorkspaceOptimizationDashboard = (props: Props) => {
         current: 0,
     };
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const accordionItemsData: AccordionItemType[] | undefined = data && Object.entries(data).filter(([_, y]) => !y.hide).map(([accordionKey, accordionData]) => {
+    const accordionItemsData: AccordionItemType[] | undefined = data && Object.entries(data).map(([accordionKey, accordionData]) => {
         const accordionDataChips: ChipsInfoType = {
             [ItemStatus.INFO]: 0,
             [ItemStatus.WARNING]: 0,

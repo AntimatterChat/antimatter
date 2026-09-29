@@ -23,10 +23,6 @@ describe('components/analytics/system_analytics/system_analytics.tsx', () => {
     const initialState = {
         entities: {
             general: {
-                license: {
-                    IsLicensed: 'true',
-                    Cloud: 'true',
-                },
                 config: {
                     TelemetryId: 'test123',
                 },
@@ -39,14 +35,6 @@ describe('components/analytics/system_analytics/system_analytics.tsx', () => {
             },
             admin: {
                 analytics: {},
-            },
-            limits: {
-                serverLimits: {
-                    activeUserCount: 0,
-                    maxUsersLimit: 0,
-                    singleChannelGuestCount: 0,
-                    singleChannelGuestLimit: 0,
-                },
             },
         },
         plugins: {
@@ -251,20 +239,13 @@ describe('components/analytics/system_analytics/system_analytics.tsx', () => {
         expect(screen.getByText('Calls per day')).toBeInTheDocument();
     });
 
-    test('shows single-channel guests card when licensed, not entry, and guest accounts enabled', () => {
+    test('shows single-channel guests card when guest accounts are enabled', () => {
         const state = {
             ...initialState,
             entities: {
                 ...initialState.entities,
                 general: {
                     ...initialState.entities.general,
-                    license: {
-                        IsLicensed: 'true',
-                        Cloud: 'false',
-                        SkuShortName: 'enterprise',
-                        GuestAccounts: 'true',
-                        Users: '100',
-                    },
                     config: {
                         ...initialState.entities.general.config,
                         EnableGuestAccounts: 'true',
@@ -273,14 +254,6 @@ describe('components/analytics/system_analytics/system_analytics.tsx', () => {
                 admin: {
                     analytics: {
                         [StatTypes.SINGLE_CHANNEL_GUESTS]: 500,
-                    },
-                },
-                limits: {
-                    serverLimits: {
-                        singleChannelGuestCount: 0,
-                        singleChannelGuestLimit: 1000,
-                        activeUserCount: 0,
-                        maxUsersLimit: 0,
                     },
                 },
             },
@@ -291,46 +264,6 @@ describe('components/analytics/system_analytics/system_analytics.tsx', () => {
         expect(screen.getByTestId('singleChannelGuests')).toBeInTheDocument();
     });
 
-    test('does not show single-channel guests card for Entry SKU', () => {
-        const state = {
-            ...initialState,
-            entities: {
-                ...initialState.entities,
-                general: {
-                    ...initialState.entities.general,
-                    license: {
-                        IsLicensed: 'true',
-                        Cloud: 'false',
-                        SkuShortName: 'entry',
-                        GuestAccounts: 'true',
-                        Users: '100',
-                    },
-                    config: {
-                        ...initialState.entities.general.config,
-                        EnableGuestAccounts: 'true',
-                    },
-                },
-                admin: {
-                    analytics: {
-                        [StatTypes.SINGLE_CHANNEL_GUESTS]: 500,
-                    },
-                },
-                limits: {
-                    serverLimits: {
-                        singleChannelGuestCount: 0,
-                        singleChannelGuestLimit: 1000,
-                        activeUserCount: 0,
-                        maxUsersLimit: 0,
-                    },
-                },
-            },
-        };
-
-        renderWithContext(<SystemAnalytics {...baseProps}/>, state, {useMockedStore: true});
-
-        expect(screen.queryByTestId('singleChannelGuests')).not.toBeInTheDocument();
-    });
-
     test('does not show single-channel guests card when guest accounts disabled', () => {
         const state = {
             ...initialState,
@@ -338,13 +271,6 @@ describe('components/analytics/system_analytics/system_analytics.tsx', () => {
                 ...initialState.entities,
                 general: {
                     ...initialState.entities.general,
-                    license: {
-                        IsLicensed: 'true',
-                        Cloud: 'false',
-                        SkuShortName: 'enterprise',
-                        GuestAccounts: 'true',
-                        Users: '100',
-                    },
                     config: {
                         ...initialState.entities.general.config,
                         EnableGuestAccounts: 'false',
@@ -355,60 +281,11 @@ describe('components/analytics/system_analytics/system_analytics.tsx', () => {
                         [StatTypes.SINGLE_CHANNEL_GUESTS]: 500,
                     },
                 },
-                limits: {
-                    serverLimits: {
-                        singleChannelGuestCount: 0,
-                        singleChannelGuestLimit: 1000,
-                        activeUserCount: 0,
-                        maxUsersLimit: 0,
-                    },
-                },
             },
         };
 
         renderWithContext(<SystemAnalytics {...baseProps}/>, state, {useMockedStore: true});
 
         expect(screen.queryByTestId('singleChannelGuests')).not.toBeInTheDocument();
-    });
-
-    test('shows error status when single-channel guests exceed limit', () => {
-        const state = {
-            ...initialState,
-            entities: {
-                ...initialState.entities,
-                general: {
-                    ...initialState.entities.general,
-                    license: {
-                        IsLicensed: 'true',
-                        Cloud: 'false',
-                        SkuShortName: 'enterprise',
-                        GuestAccounts: 'true',
-                        Users: '100',
-                    },
-                    config: {
-                        ...initialState.entities.general.config,
-                        EnableGuestAccounts: 'true',
-                    },
-                },
-                admin: {
-                    analytics: {
-                        [StatTypes.SINGLE_CHANNEL_GUESTS]: 150,
-                    },
-                },
-                limits: {
-                    serverLimits: {
-                        singleChannelGuestCount: 0,
-                        singleChannelGuestLimit: 100,
-                        activeUserCount: 0,
-                        maxUsersLimit: 0,
-                    },
-                },
-            },
-        };
-
-        renderWithContext(<SystemAnalytics {...baseProps}/>, state, {useMockedStore: true});
-
-        const titleElement = screen.getByTestId('singleChannelGuestsTitle');
-        expect(titleElement).toHaveClass('team_statistics--error');
     });
 });

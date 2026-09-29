@@ -8,12 +8,7 @@ import ClusterSettings from 'components/admin_console/cluster_settings';
 import {renderWithContext, screen} from 'tests/react_testing_utils';
 
 describe('components/ClusterSettings', () => {
-    const baseProps = {
-        license: {
-            IsLicensed: 'true',
-            Cluster: 'true',
-        },
-    };
+    const baseProps = {};
     test('should match snapshot, encryption disabled', () => {
         const props = {
             ...baseProps,

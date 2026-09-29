@@ -4471,10 +4471,6 @@
     "defaultMessage": "Server Username:",
     "description": "Field label on the Elasticsearch admin page for the server authentication username; ends with a colon."
   },
-  "admin.email.agreeHPNS": {
-    "defaultMessage": " I understand and accept the Mattermost Hosted Push Notification Service <linkTerms>Terms of Service</linkTerms> and <linkPrivacy>Privacy Policy</linkPrivacy>.",
-    "description": "Checkbox label on the Push Notification Server admin page accepting the hosted push service terms; <linkTerms></linkTerms> and <linkPrivacy></linkPrivacy> wrap the hyperlinked document names. Leading space is intentional."
-  },
   "admin.email.allowEmailSignInDescription": {
     "defaultMessage": "When true, Antimatter allows users to sign in using their email and password.",
     "description": "Admin console help text for the email sign-in toggle on the Authentication > Email page."
@@ -4503,14 +4499,6 @@
     "defaultMessage": "Learn more about compiling and deploying your own mobile apps from an <link>Enterprise App Store</link>.",
     "description": "Help text on the Push Notification Server admin page; <link></link> wraps the words for the Enterprise App Store documentation hyperlink."
   },
-  "admin.email.mhpns": {
-    "defaultMessage": "Use HPNS connection with uptime SLA to send notifications to iOS and Android apps",
-    "description": "Radio option on the Push Notification Server admin page; HPNS (Hosted Push Notification Service) and SLA are acronyms to keep."
-  },
-  "admin.email.mhpnsHelp": {
-    "defaultMessage": "Download <linkIOS>Mattermost iOS app</linkIOS> from iTunes. Download <linkAndroid>Mattermost Android app</linkAndroid> from Google Play. Learn more about the <linkHPNS>Mattermost Hosted Push Notification Service</linkHPNS>.",
-    "description": "Help text under the push notification server setting when using the licensed Mattermost Hosted Push Notification Service; <linkIOS>, <linkAndroid> and <linkHPNS> wrap link texts."
-  },
   "admin.email.mtpns": {
     "defaultMessage": "Use TPNS connection to send notifications to iOS and Android apps",
     "description": "Radio option on the Push Notification Server admin page; TPNS (Test Push Notification Service) is an acronym to keep."
@@ -4530,30 +4518,6 @@
   "admin.email.pushServerEx": {
     "defaultMessage": "E.g.: \"https://push-test.mattermost.com\"",
     "description": "Placeholder in the Push Notification Server URL input showing an example URL."
-  },
-  "admin.email.pushServerLocationDE": {
-    "defaultMessage": "Germany",
-    "description": "Dropdown option for the push notification server location; country name (Germany)."
-  },
-  "admin.email.pushServerLocationGlobal": {
-    "defaultMessage": "Global",
-    "description": "Dropdown option for the push notification server location; means geo-balanced routing to the nearest server rather than a specific region."
-  },
-  "admin.email.pushServerLocationHelp": {
-    "defaultMessage": "Location of the push notification server. Global uses geobalancing to route requests to the nearest server for optimal performance.",
-    "description": "Admin console help text for the Push Notification Server location dropdown."
-  },
-  "admin.email.pushServerLocationJP": {
-    "defaultMessage": "Japan",
-    "description": "Dropdown option for the push notification server location; country name (Japan)."
-  },
-  "admin.email.pushServerLocationTitle": {
-    "defaultMessage": "Push Notification Server location:",
-    "description": "Dropdown setting name on the Push Notification Server admin page choosing the hosted server's region; ends with a colon."
-  },
-  "admin.email.pushServerLocationUS": {
-    "defaultMessage": "US",
-    "description": "Dropdown option for the push notification server location; country abbreviation (United States)."
   },
   "admin.email.pushServerTitle": {
     "defaultMessage": "Push Notification Server:",
@@ -10463,13 +10427,13 @@
     "defaultMessage": "More plugin actions",
     "description": "Tooltip on the per-plugin actions menu button in System Console > Plugin Management."
   },
-  "admin.plugin.addOn.notLicensed": {
-    "defaultMessage": "Not included in your license",
-    "description": "Replaces the Enable/Disable button for a plugin in System Console > Plugins > Plugin Management when the plugin is a paid add-on that the current license does not cover."
+  "admin.plugin.addOn.notSupported": {
+    "defaultMessage": "Requires a commercial Mattermost add-on",
+    "description": "Short status label next to a plugin in System Console > Plugins > Plugin Management when the plugin needs a commercial add-on sold by Mattermost, which this server does not support. \"Mattermost\" is the add-on vendor's name and must stay as-is."
   },
-  "admin.plugin.addOn.notLicensedWarning": {
-    "defaultMessage": "This plugin is a licensed add-on. Your license does not include it, so it cannot be enabled. Contact your Mattermost account team to purchase it.",
-    "description": "Warning banner shown instead of the settings on a plugin's System Console settings page when the plugin is a licensed add-on that the current license does not include."
+  "admin.plugin.addOn.notSupportedWarning": {
+    "defaultMessage": "This plugin requires a commercial Mattermost add-on that is licensed separately, so it cannot be enabled on this server.",
+    "description": "Warning in the plugin's settings page in the System Console explaining why a plugin that needs a separately licensed commercial Mattermost add-on cannot be enabled. \"Mattermost\" is the add-on vendor's name and must stay as-is."
   },
   "admin.plugin.backToPlugins": {
     "defaultMessage": "Go back to the Plugins",
@@ -11370,14 +11334,6 @@
   "admin.reporting.workspace_optimization.cta.learnMore": {
     "defaultMessage": "Learn more",
     "description": "Generic 'Learn more' button on Workspace Optimization check items; opens documentation."
-  },
-  "admin.reporting.workspace_optimization.cta.startTrial": {
-    "defaultMessage": "Start trial",
-    "description": "Button on Workspace Optimization dashboard check items that starts an Enterprise trial."
-  },
-  "admin.reporting.workspace_optimization.cta.upgradeLicense": {
-    "defaultMessage": "Contact sales",
-    "description": "Button on Workspace Optimization dashboard check items that opens a contact-sales flow for a license upgrade."
   },
   "admin.reporting.workspace_optimization.data_privacy.description": {
     "defaultMessage": "Get better insight and control over your data.",
@@ -15679,29 +15635,9 @@
     "defaultMessage": "Public Channels",
     "description": "Title of the statistics card counting public channels on the admin console System Statistics page."
   },
-  "analytics.system.seatsPurchased": {
-    "defaultMessage": "Licensed Seats",
-    "description": "Title of the statistics card showing the number of seats included in the license, on the System Statistics page."
-  },
   "analytics.system.singleChannelGuests": {
     "defaultMessage": "Single-channel Guests",
     "description": "Title of the statistics card counting guests who belong to only one channel, on the admin console System Statistics page."
-  },
-  "analytics.system.singleChannelGuests.info.tooltip.hint": {
-    "defaultMessage": "Guests that are only in one channel are not counted towards your total activated user count.",
-    "description": "Tooltip body on the System Console statistics page explaining how single-channel guests are counted toward licensing."
-  },
-  "analytics.system.singleChannelGuests.info.tooltip.title": {
-    "defaultMessage": "Single-channel guests",
-    "description": "Tooltip title on the System Console statistics page for the single-channel guests statistic; compact space."
-  },
-  "analytics.system.singleChannelGuests.tooltip.hint": {
-    "defaultMessage": "The number of single-channel guests cannot exceed the total number of licensed seats",
-    "description": "Tooltip body on the System Console statistics page warning that the single-channel guest count is capped by licensed seats."
-  },
-  "analytics.system.singleChannelGuests.tooltip.title": {
-    "defaultMessage": "Limit reached for single-channel guests",
-    "description": "Tooltip title on the System Console statistics page shown when the single-channel guest limit is reached."
   },
   "analytics.system.skippedIntensiveQueries": {
     "defaultMessage": "To maximize performance, some statistics are disabled. You can <link>re-enable them in config.json</link>.",
@@ -15775,10 +15711,6 @@
     "defaultMessage": "This server has no teams for which to view statistics.",
     "description": "Empty-state message on the admin console Team Statistics page when the server has no teams."
   },
-  "analytics.team.overageUsersSeats": {
-    "defaultMessage": "This exceeds total licensed seats",
-    "description": "Warning note on the activated users card in admin console statistics when the user count exceeds the licensed seat count."
-  },
   "analytics.team.privateGroups": {
     "defaultMessage": "Private Channels",
     "description": "Title of the statistics card counting the team's private channels on the Team Statistics page."
@@ -15806,10 +15738,6 @@
   "analytics.team.totalUsers.title.tooltip.hint": {
     "defaultMessage": "Also called Registered Users",
     "description": "Tooltip body for the Total Activated Users statistic on the System Console statistics page; 'Registered Users' is an alternate term for the same metric."
-  },
-  "analytics.team.totalUsers.title.tooltip.hint.withGuests": {
-    "defaultMessage": "Also called Registered Users. Excludes single-channel guests.",
-    "description": "Tooltip body variant for the Total Activated Users statistic when single-channel guests exist and are excluded from the count."
   },
   "analytics.team.totalUsers.title.tooltip.title": {
     "defaultMessage": "Activated users on this server",

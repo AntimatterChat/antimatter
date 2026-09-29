@@ -8,7 +8,6 @@ export type DataModel = {
         descriptionOk: string;
         items: ItemModel[];
         icon: React.ReactNode;
-        hide?: boolean;
     };
 };
 
@@ -62,14 +61,6 @@ type Analytics = {
     TOTAL_WEBSOCKET_CONNECTIONS: number;
 };
 export type Options = {
-    isLicensed: boolean;
-    isEnterpriseLicense: boolean;
-    trialOrEnterpriseCtaConfig: {
-        configUrl: string;
-        configText: string;
-    };
-    isCloud: boolean;
-    isStarterLicense: boolean;
     analytics: Analytics | undefined;
     installedVersion: string;
 };

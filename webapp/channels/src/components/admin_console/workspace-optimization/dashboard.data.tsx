@@ -16,11 +16,7 @@ import {
 import type {AdminConfig} from '@mattermost/types/config';
 import type {GlobalState} from '@mattermost/types/store';
 
-import {getLicense, getServerVersion} from 'mattermost-redux/selectors/entities/general';
-
-import useOpenSalesLink from 'components/common/hooks/useOpenSalesLink';
-
-import {ConsolePages} from 'utils/constants';
+import {getServerVersion} from 'mattermost-redux/selectors/entities/general';
 
 import {ItemStatus} from './dashboard.type';
 import type {DataModel, Options} from './dashboard.type';
@@ -30,8 +26,6 @@ import {runDataPrivacyChecks} from './dashboard_checks/data_privacy';
 import {runEaseOfUseChecks} from './dashboard_checks/easy_management';
 import {runPerformanceChecks} from './dashboard_checks/performance';
 import {runUpdateChecks} from './dashboard_checks/updates';
-
-import {daysToLicenseExpire, getIsStarterLicense, isEnterpriseLicense} from '../../../utils/license_utils';
 
 export const impactModifiers: Record<ItemStatus, number> = {
     [ItemStatus.NONE]: 1,
@@ -82,7 +76,6 @@ const getConfigurationData = async (
         id: 'admin.reporting.workspace_optimization.configuration.description',
         defaultMessage: 'You have configuration issues to resolve',
     }),
-    hide: options.isCloud,
     descriptionOk: formatMessage({
         id: 'admin.reporting.workspace_optimization.configuration.descriptionOk',
         defaultMessage: 'You\'ve successfully configured SSL and Session Lengths!',
@@ -101,7 +94,6 @@ const getConfigurationData = async (
 const getAccessData = async (
     config: Partial<AdminConfig>,
     formatMessage: ReturnType<typeof useIntl>['formatMessage'],
-    options: Options,
 ) => ({
     title: formatMessage({
         id: 'admin.reporting.workspace_optimization.access.title',
@@ -111,7 +103,6 @@ const getAccessData = async (
         id: 'admin.reporting.workspace_optimization.access.description',
         defaultMessage: 'Web server configuration may be affecting access to your Antimatter workspace.',
     }),
-    hide: options.isCloud,
     descriptionOk: formatMessage({
         id: 'admin.reporting.workspace_optimization.access.descriptionOk',
         defaultMessage: 'Your web server configuration is passing a live URL test!',
@@ -140,7 +131,6 @@ const getPerformanceData = async (
         id: 'admin.reporting.workspace_optimization.performance.description',
         defaultMessage: 'Your server would benefit from some performance tweaks.',
     }),
-    hide: options.isCloud,
     descriptionOk: formatMessage({
         id: 'admin.reporting.workspace_optimization.performance.descriptionOk',
         defaultMessage: 'Your search performance suits your workspace usage!',
@@ -159,7 +149,6 @@ const getPerformanceData = async (
 const getDataPrivacyData = async (
     config: Partial<AdminConfig>,
     formatMessage: ReturnType<typeof useIntl>['formatMessage'],
-    options: Options,
 ) => ({
     title: formatMessage({
         id: 'admin.reporting.workspace_optimization.data_privacy.title',
@@ -181,7 +170,7 @@ const getDataPrivacyData = async (
             />
         </div>
     ),
-    items: await runDataPrivacyChecks(config, formatMessage, options),
+    items: await runDataPrivacyChecks(config, formatMessage),
 });
 
 const getEaseOfManagementData = async (
@@ -219,38 +208,15 @@ const useMetricsData = (
     const [data, setData] = useState<DataModel | undefined>(undefined);
 
     const {formatMessage} = useIntl();
-    const prevTrialLicense = useSelector((state: GlobalState) => state.entities.admin.prevTrialLicense);
-    const license = useSelector(getLicense);
 
     // get the currently installed server version
     const installedVersion = useSelector((state: GlobalState) => getServerVersion(state));
     const analytics = useSelector((state: GlobalState) => state.entities.admin.analytics) as unknown as Options['analytics'];
 
-    const canStartTrial = license?.IsLicensed !== 'true' && prevTrialLicense?.IsLicensed !== 'true';
-    const daysUntilExpiration = daysToLicenseExpire(license) || -1;
-
-    const isLicensed = license?.IsLicensed === 'true' && daysUntilExpiration >= 0;
-
-    const isCloud = license?.Cloud === 'true';
-    const isEnterprise = isEnterpriseLicense(license);
-    const isStarterLicense = getIsStarterLicense(license);
-
-    const [, contactSalesLink] = useOpenSalesLink();
-
-    const trialOrEnterpriseCtaConfig = useMemo(() => ({
-        configUrl: canStartTrial ? ConsolePages.LICENSE : contactSalesLink,
-        configText: canStartTrial ? formatMessage({id: 'admin.reporting.workspace_optimization.cta.startTrial', defaultMessage: 'Start trial'}) : formatMessage({id: 'admin.reporting.workspace_optimization.cta.upgradeLicense', defaultMessage: 'Contact sales'}),
-    }), [canStartTrial, contactSalesLink, formatMessage]);
-
     const options: Options = useMemo(() => ({
-        isLicensed,
-        isEnterpriseLicense: isEnterprise,
-        trialOrEnterpriseCtaConfig,
-        isStarterLicense,
-        isCloud,
         analytics,
         installedVersion,
-    }), [isLicensed, isEnterprise, trialOrEnterpriseCtaConfig, isStarterLicense, isCloud, analytics, installedVersion]);
+    }), [analytics, installedVersion]);
 
     useEffect(() => {
         setLoading(true);
@@ -258,9 +224,9 @@ const useMetricsData = (
             const data = {
                 updates: await getUpdatesData(config, formatMessage, options),
                 configuration: await getConfigurationData(config, formatMessage, options),
-                access: await getAccessData(config, formatMessage, options),
+                access: await getAccessData(config, formatMessage),
                 performance: await getPerformanceData(config, formatMessage, options),
-                dataPrivacy: await getDataPrivacyData(config, formatMessage, options),
+                dataPrivacy: await getDataPrivacyData(config, formatMessage),
                 easyManagement: await getEaseOfManagementData(config, formatMessage, options),
             };
 

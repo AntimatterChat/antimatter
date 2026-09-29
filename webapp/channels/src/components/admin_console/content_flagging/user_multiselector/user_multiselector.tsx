@@ -16,9 +16,7 @@ import {getGroup, searchGroups} from 'mattermost-redux/actions/groups';
 import {debounce} from 'mattermost-redux/actions/helpers';
 import {getTeam, searchTeams} from 'mattermost-redux/actions/teams';
 import {getMissingProfilesByIds, searchProfiles} from 'mattermost-redux/actions/users';
-import {getLicense} from 'mattermost-redux/selectors/entities/general';
 import {getAllGroups} from 'mattermost-redux/selectors/entities/groups';
-import {isCustomGroupsEnabled} from 'mattermost-redux/selectors/entities/preferences';
 import {getTeams} from 'mattermost-redux/selectors/entities/teams';
 import {makeGetUsersByIds} from 'mattermost-redux/selectors/entities/users';
 import type {ActionResult} from 'mattermost-redux/types/actions';
@@ -75,16 +73,7 @@ export function UserSelector({id, isMulti, className, multiSelectOnChange, multi
     const {formatMessage} = useIntl();
     const initialDataLoaded = useRef<boolean>(false);
 
-    // Check if groups are enabled
-    const currentLicense = useSelector(getLicense);
-    const isGroupsEnabled = useSelector((state: GlobalState) => {
-        if (!enableGroups) {
-            return false;
-        }
-        const customGroupsEnabled = isCustomGroupsEnabled(state);
-        const ldapGroupsEnabled = currentLicense?.IsLicensed === 'true' && currentLicense?.LDAPGroups === 'true';
-        return customGroupsEnabled || ldapGroupsEnabled;
-    });
+    const isGroupsEnabled = enableGroups;
 
     const initialValue = useMemo(() => {
         return isMulti ? multiSelectInitialValue : [singleSelectInitialValue || ''];

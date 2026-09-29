@@ -11,7 +11,6 @@ import type {UserProfile} from '@mattermost/types/users';
 import {createComplianceReport, getComplianceReports} from 'mattermost-redux/actions/admin';
 import {createSelector} from 'mattermost-redux/selectors/create_selector';
 import {getComplianceReports as selectComplianceReports, getConfig} from 'mattermost-redux/selectors/entities/admin';
-import {getLicense} from 'mattermost-redux/selectors/entities/general';
 
 import ComplianceReports from './compliance_reports';
 
@@ -32,9 +31,6 @@ const getUsersForReports = createSelector(
 );
 
 function mapStateToProps(state: GlobalState) {
-    const license = getLicense(state);
-    const isLicensed = license.IsLicensed === 'true';
-
     let enabled = false;
     const config = getConfig(state);
     if (config && config.ComplianceSettings) {
@@ -52,7 +48,6 @@ function mapStateToProps(state: GlobalState) {
     });
 
     return {
-        isLicensed,
         enabled,
         reports,
         serverError,

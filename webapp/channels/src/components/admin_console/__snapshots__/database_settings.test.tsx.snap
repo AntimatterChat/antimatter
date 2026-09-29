@@ -415,7 +415,7 @@ exports[`components/DatabaseSettings should match snapshot 1`] = `
               >
                 Disables the use of the database to perform searches. Should only be used when other 
                 <a
-                  href="https://mattermost.com/pl/setup-elasticsearch?utm_source=mattermost&utm_medium=in-product&utm_content=database_settings&uid=&sid=&edition=team&server_version="
+                  href="https://mattermost.com/pl/setup-elasticsearch?utm_source=mattermost&utm_medium=in-product&utm_content=database_settings&uid=&sid=&server_version="
                   location="database_settings"
                   rel="noopener noreferrer"
                   target="_blank"

@@ -21,10 +21,6 @@ jest.mock('actions/admin_actions', () => {
 
 describe('components/DatabaseSettings', () => {
     const baseProps = {
-        license: {
-            IsLicensed: 'true',
-            Cluster: 'true',
-        },
     };
     test('should match snapshot', () => {
         const config = {

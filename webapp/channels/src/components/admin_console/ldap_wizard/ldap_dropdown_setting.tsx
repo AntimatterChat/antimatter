@@ -4,7 +4,7 @@
 import React, {type JSX} from 'react';
 import {useIntl} from 'react-intl';
 
-import type {AdminConfig, ClientLicense} from '@mattermost/types/config';
+import type {AdminConfig} from '@mattermost/types/config';
 
 import DropdownSetting from 'components/admin_console/dropdown_setting';
 
@@ -16,8 +16,6 @@ import type {AdminDefinitionSettingDropdownOption} from '../types';
 type Props = {
     config: Partial<AdminConfig>;
     state: Record<string, unknown>;
-    license: ClientLicense;
-    enterpriseReady: boolean;
     onChange(id: string, value: any): void;
     disabled: boolean;
     setByEnv: boolean;
@@ -33,7 +31,7 @@ const LDAPDropdownSetting = (props: Props) => {
     const options: AdminDefinitionSettingDropdownOption[] = [];
     props.setting.options.forEach((option) => {
         if (!option.isHidden || (typeof option.isHidden === 'function' &&
-            !option.isHidden(props.config, props.state, props.license, props.enterpriseReady))) {
+            !option.isHidden(props.config, props.state))) {
             options.push(option);
         }
     });
@@ -49,11 +47,10 @@ const LDAPDropdownSetting = (props: Props) => {
         }
     }
 
-    // used to hide help in case of cloud-starter and open-id selection to show upgrade notice.
     let hideHelp = false;
     if (props.setting.isHelpHidden) {
         if (typeof (props.setting.isHelpHidden) === 'function') {
-            hideHelp = props.setting.isHelpHidden(props.config, props.state, props.license, props.enterpriseReady);
+            hideHelp = props.setting.isHelpHidden(props.config, props.state);
         } else {
             hideHelp = props.setting.isHelpHidden;
         }

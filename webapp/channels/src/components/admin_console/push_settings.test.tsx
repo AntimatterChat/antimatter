@@ -9,13 +9,13 @@ import {PushSettings} from 'components/admin_console/push_settings';
 
 import {defaultIntl} from 'tests/helpers/intl-test-helper';
 import {act, renderWithContext} from 'tests/react_testing_utils';
+import {Constants} from 'utils/constants';
 
 describe('components/PushSettings', () => {
-    test('should match snapshot, licensed', () => {
+    test('should match snapshot, TPNS selected', () => {
         const config = {
             EmailSettings: {
                 PushNotificationServer: 'https://global.push.mattermost.com',
-                PushNotificationServerType: 'mhpns',
                 SendPushNotifications: true,
             },
             TeamSettings: {
@@ -26,10 +26,6 @@ describe('components/PushSettings', () => {
         const props = {
             intl: defaultIntl,
             config,
-            license: {
-                IsLicensed: 'true',
-                MHPNS: 'true',
-            },
         };
 
         const ref = React.createRef<InstanceType<typeof PushSettings>>();
@@ -41,16 +37,16 @@ describe('components/PushSettings', () => {
         );
 
         act(() => {
-            ref.current!.handleDropdownChange('pushNotificationServerType', 'mhpns');
+            ref.current!.handleDropdownChange('pushNotificationServerType', 'mtpns');
         });
+        expect(ref.current!.state.pushNotificationServer).toBe(Constants.MTPNS);
         expect(container).toMatchSnapshot();
     });
 
-    test('should match snapshot, unlicensed', () => {
+    test('should match snapshot, custom push server', () => {
         const config = {
             EmailSettings: {
                 PushNotificationServer: 'https://global.push.mattermost.com',
-                PushNotificationServerType: 'mhpns',
                 SendPushNotifications: true,
             },
             TeamSettings: {
@@ -61,7 +57,6 @@ describe('components/PushSettings', () => {
         const props = {
             intl: defaultIntl,
             config,
-            license: {},
         };
 
         const {container} = renderWithContext(

@@ -80,26 +80,20 @@ function getBaseState(): DeepPartial<GlobalState> {
 
 type EntitiesPartial = NonNullable<DeepPartial<GlobalState>['entities']>;
 
-// State where the Classification Markings admin page is actually reachable: Enterprise
-// Advanced license (matching admin_definition.tsx's minLicenseTier(EnterpriseAdvanced)
-// check) and the ClassificationMarkings feature flag on, read from the same entities/admin
-// config tree the route rule itself reads. Both conditions default to "reachable" but can
-// be independently overridden to exercise the AND logic off the all-true/all-false diagonal
-// (e.g. license ok but flag off, or vice versa).
-function getReachableState(overrides: {licenseSku?: string; classificationMarkingsFlagOn?: boolean; channelAttributesFlagOn?: boolean} = {}): DeepPartial<GlobalState> {
-    const {licenseSku = 'advanced', classificationMarkingsFlagOn = true, channelAttributesFlagOn = true} = overrides;
+// State where the Classification Markings admin page is actually reachable: the
+// ClassificationMarkings feature flag on, read from the same entities/admin config tree the
+// route rule itself reads. Both flags default to on but can be independently overridden.
+function getReachableState(overrides: {classificationMarkingsFlagOn?: boolean; channelAttributesFlagOn?: boolean} = {}): DeepPartial<GlobalState> {
+    const {classificationMarkingsFlagOn = true, channelAttributesFlagOn = true} = overrides;
     const state = getBaseState();
-    state.entities!.general = {
-        license: {IsLicensed: 'true', SkuShortName: licenseSku},
-    } as EntitiesPartial['general'];
     state.entities!.admin = {
         config: {FeatureFlags: {ClassificationMarkings: classificationMarkingsFlagOn, ChannelAttributes: channelAttributesFlagOn}},
     } as EntitiesPartial['admin'];
     return state;
 }
 
-// State where the table fetches every resource scope: Enterprise Advanced
-// license plus the ChannelAttributes and PostAttributes flags in client config
+// State where the table fetches every resource scope: the ChannelAttributes
+// and PostAttributes flags in client config
 // (where the flag selectors read them), matching the gate the table applies
 // before fetching. Without this those scopes are skipped and the *-channel-* /
 // *-post-* mocks below go unconsumed.
@@ -107,7 +101,6 @@ function getAllScopesState(): DeepPartial<GlobalState> {
     const state = getBaseState();
     state.entities!.general = {
         config: {FeatureFlagChannelAttributes: 'true', FeatureFlagPostAttributes: 'true'},
-        license: {IsLicensed: 'true', SkuShortName: 'advanced'},
     } as EntitiesPartial['general'];
     return state;
 }
@@ -423,24 +416,8 @@ describe('GlobalAttributesTable', () => {
             consoleSpy.mockRestore();
         });
 
-        it('skips the channel scope below Enterprise Advanced, so a channel 501 cannot fail the page', async () => {
-            // The server 501s a channel-scoped access_control GET below Enterprise
-            // Advanced; fetching it here would reject the load and show the error
-            // state. getBaseState() has no Advanced license, so the channel scope
-            // must be skipped entirely -- the reject below must never be reached.
-            getPropertyFields.mockImplementation((_group, objectType) =>
-                (objectType === 'channel' ? Promise.reject(new Error('channel 501')) : Promise.resolve([])),
-            );
-
-            renderWithContext(<GlobalAttributesTable/>, getBaseState());
-
-            expect(await screen.findByTestId('global-attributes-empty')).toBeInTheDocument();
-            expect(screen.queryByTestId('global-attributes-error')).not.toBeInTheDocument();
-            expect(getPropertyFields.mock.calls.every((call) => call[1] !== 'channel')).toBe(true);
-        });
-
         it('hides a cached channel field when channel attributes are disabled', async () => {
-            // Channel-header labels (and a prior visit while licensed) can leave a
+            // Channel-header labels (and a prior visit with the flag on) can leave a
             // channel field in the store after this page has stopped fetching that
             // scope.
             const cachedChannel = makeField({id: 'c1', name: 'cached_channel_field', object_type: 'channel'});
@@ -1602,10 +1579,10 @@ describe('GlobalAttributesTable', () => {
             expect(screen.queryByTestId('global-attribute-actions-field-1')).not.toBeInTheDocument();
         });
 
-        it('hides the Classification row when the destination is not reachable (flag off / no license)', async () => {
+        it('hides the Classification row when the destination is not reachable (flag off)', async () => {
             getPropertyFields.mockResolvedValueOnce([makeClassificationField()]).mockResolvedValue([]);
 
-            // getBaseState() has no license/FeatureFlags set, so the reachability check is false.
+            // getBaseState() has no FeatureFlags set, so the reachability check is false.
             renderWithContext(<GlobalAttributesTable/>, getBaseState());
 
             await waitFor(() => expect(getPropertyFields).toHaveBeenCalled());
@@ -1614,23 +1591,10 @@ describe('GlobalAttributesTable', () => {
             expect(screen.queryByTestId('global-attribute-actions-field-1')).not.toBeInTheDocument();
         });
 
-        it('hides the Classification row when the license is Advanced but the ClassificationMarkings flag is off', async () => {
+        it('hides the Classification row when the ClassificationMarkings flag is off', async () => {
             getPropertyFields.mockResolvedValueOnce([makeClassificationField()]).mockResolvedValue([]);
 
             renderWithContext(<GlobalAttributesTable/>, getReachableState({classificationMarkingsFlagOn: false}));
-
-            await waitFor(() => expect(getPropertyFields).toHaveBeenCalled());
-            expect(screen.queryByTestId('global-attribute-name')).not.toBeInTheDocument();
-            expect(screen.queryByTestId('global-attribute-classification-link-field-1')).not.toBeInTheDocument();
-            expect(screen.queryByTestId('global-attribute-actions-field-1')).not.toBeInTheDocument();
-        });
-
-        it('hides the Classification row when ClassificationMarkings is on but the license is below Enterprise Advanced', async () => {
-            getPropertyFields.mockResolvedValueOnce([makeClassificationField()]).mockResolvedValue([]);
-
-            // Enterprise (not Advanced) can open Attribute Management but not Classification
-            // Markings — hide the row rather than offering an ordinary Edit/Delete menu.
-            renderWithContext(<GlobalAttributesTable/>, getReachableState({licenseSku: 'enterprise'}));
 
             await waitFor(() => expect(getPropertyFields).toHaveBeenCalled());
             expect(screen.queryByTestId('global-attribute-name')).not.toBeInTheDocument();

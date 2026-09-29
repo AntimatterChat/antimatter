@@ -19,7 +19,6 @@ import {valueRefersToOptions} from '@mattermost/types/properties';
 import PropertyTypes from 'mattermost-redux/action_types/properties';
 import {fetchPropertyFields} from 'mattermost-redux/actions/properties';
 import {getConfig as getAdminConfig} from 'mattermost-redux/selectors/entities/admin';
-import {getLicense} from 'mattermost-redux/selectors/entities/general';
 import {getPropertyGroupByName, getUnlinkedSystemFieldsForGroup, makeGetPropertyFieldsForObjectTypeAndGroup} from 'mattermost-redux/selectors/entities/properties';
 import {getPropertyFieldLabel} from 'mattermost-redux/utils/property_utils';
 
@@ -39,7 +38,6 @@ import * as Menu from 'components/menu';
 import LoadingSpinner from 'components/widgets/loading/loading_spinner';
 
 import {getHistory} from 'utils/browser_history';
-import {LicenseSkus} from 'utils/constants';
 
 import type {GlobalState} from 'types/store';
 
@@ -86,29 +84,26 @@ export function isClassificationMarkingsField(field: PropertyField, groupId: str
 }
 
 // Mirrors admin_definition.tsx's own `classification_markings` route visibility rule
-// (isHidden: it.any(it.not(it.minLicenseTier(EnterpriseAdvanced)), it.not(it.configIsTrue(
-// 'FeatureFlags', 'ClassificationMarkings')))) by calling the exact same `it.minLicenseTier`/
-// `it.configIsTrue` helpers the route rule itself calls — not a re-implementation of their
-// bodies, so the two can never drift — reading from the same entities/admin config tree the
-// route rule itself reads. Without this, the chevron/subtitle could point at a route that's
-// actually hidden (independent flag from the one gating this listing page).
+// (isHidden: it.not(it.configIsTrue('FeatureFlags', 'ClassificationMarkings'))) by calling the
+// exact same `it.configIsTrue` helper the route rule itself calls — not a re-implementation of its
+// body, so the two can never drift — reading from the same entities/admin config tree the route
+// rule itself reads.
+// Without this, the chevron/subtitle could point at a route that's actually hidden (independent
+// flag from the one gating this listing page).
 function useClassificationMarkingsReachable(): boolean {
     return useSelector((state: GlobalState) => {
         const config = getAdminConfig(state);
-        const license = getLicense(state);
-        return it.minLicenseTier(LicenseSkus.EnterpriseAdvanced)(config, state, license) &&
-            it.configIsTrue('FeatureFlags', 'ClassificationMarkings')(config);
+        return it.configIsTrue('FeatureFlags', 'ClassificationMarkings')(config);
     });
 }
 
 // Mirrors the classification_attribute route's own gate, the way the hook above
-// mirrors the Classification Markings one. Below Enterprise Advanced, or without
-// the flag, the route is hidden, so Edit must not offer it.
+// mirrors the Classification Markings one. Without the flag, the route is hidden,
+// so Edit must not offer it.
 function useClassificationAttributePageReachable(): boolean {
     return useSelector((state: GlobalState) => {
         const config = getAdminConfig(state);
-        return it.minLicenseTier(LicenseSkus.EnterpriseAdvanced)(config, state, getLicense(state)) &&
-            it.configIsTrue('FeatureFlags', 'ChannelAttributes')(config);
+        return it.configIsTrue('FeatureFlags', 'ChannelAttributes')(config);
     });
 }
 
@@ -470,7 +465,7 @@ export default function GlobalAttributesTable({searchQuery = '', disabled = fals
 
                 // Both non-template rows and applies-to chips come from the
                 // per-resource fields. A rejected fetch does not replace that
-                // scope in Redux, and a scope this license never requests stays
+                // scope in Redux, and a scope this page never requests stays
                 // cached, so drop those scopes from the table instead of showing
                 // stale data.
                 const scopeResults = await Promise.allSettled(resourceTypesToFetch.map((objectType) =>
@@ -513,7 +508,7 @@ export default function GlobalAttributesTable({searchQuery = '', disabled = fals
 
     // getUnlinkedSystemFieldsForGroup reads every cached user/channel/post field.
     // Channel fields can already be in the store (channel-header labels, a prior
-    // visit while licensed) after resourceTypesToFetch has dropped that scope, so
+    // visit) after resourceTypesToFetch has dropped that scope, so
     // keep the table in lockstep with what this page actually fetched. Unlinked
     // rows also wait on resourcesLoaded so they do not flash before suppressedScopes
     // is known.

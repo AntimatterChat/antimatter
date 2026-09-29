@@ -22,10 +22,6 @@ describe('components/admin_console/CustomTermsOfServiceSettings', () => {
                 CustomTermsOfServiceReAcceptancePeriod: 365,
             },
         } as AdminConfig,
-        license: {
-            IsLicensed: 'true',
-            CustomTermsOfService: 'true',
-        },
         setNavigationBlocked: jest.fn(),
         patchConfig: jest.fn(),
     });

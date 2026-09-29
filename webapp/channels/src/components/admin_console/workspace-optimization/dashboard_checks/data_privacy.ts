@@ -11,7 +11,6 @@ import {ConsolePages, DocLinks} from 'utils/constants';
 
 import {impactModifiers} from '../dashboard.data';
 import {ItemStatus} from '../dashboard.type';
-import type {Options} from '../dashboard.type';
 
 /**
  *
@@ -20,16 +19,10 @@ import type {Options} from '../dashboard.type';
 const dataRetentionCheck = async (
     config: Partial<AdminConfig>,
     formatMessage: ReturnType<typeof useIntl>['formatMessage'],
-    options: Options,
 ) => {
     const testDataRetention = async (
         config: Partial<AdminConfig>,
-        options: Options,
     ) => {
-        if (!options.isLicensed || !options.isEnterpriseLicense) {
-            return ItemStatus.INFO;
-        }
-
         if (config.DataRetentionSettings?.EnableMessageDeletion || config.DataRetentionSettings?.EnableFileDeletion) {
             return ItemStatus.OK;
         }
@@ -38,7 +31,7 @@ const dataRetentionCheck = async (
         return policyCount.total_count > 0 ? ItemStatus.OK : ItemStatus.INFO;
     };
 
-    const status = await testDataRetention(config, options);
+    const status = await testDataRetention(config);
     return {
         id: 'data-retention',
         title: formatMessage({
@@ -49,10 +42,8 @@ const dataRetentionCheck = async (
             id: 'admin.reporting.workspace_optimization.data_privacy.retention.description',
             defaultMessage: 'Organizations in highly regulated industries require more control and insight with their data. We recommend enabling Data Retention and Compliance features.',
         }),
-        ...(options.isLicensed && options.isEnterpriseLicense ? {
-            configUrl: ConsolePages.DATA_RETENTION,
-            configText: formatMessage({id: 'admin.reporting.workspace_optimization.data_privacy.retention.cta', defaultMessage: 'Try data retention'}),
-        } : options.trialOrEnterpriseCtaConfig),
+        configUrl: ConsolePages.DATA_RETENTION,
+        configText: formatMessage({id: 'admin.reporting.workspace_optimization.data_privacy.retention.cta', defaultMessage: 'Try data retention'}),
         infoUrl: DocLinks.DATA_RETENTION_POLICY,
         infoText: formatMessage({id: 'admin.reporting.workspace_optimization.cta.learnMore', defaultMessage: 'Learn more'}),
         telemetryAction: 'data-retention',
@@ -65,11 +56,10 @@ const dataRetentionCheck = async (
 export const runDataPrivacyChecks = async (
     config: Partial<AdminConfig>,
     formatMessage: ReturnType<typeof useIntl>['formatMessage'],
-    options: Options,
 ) => {
     const checks = [
         dataRetentionCheck,
     ];
-    const results = await Promise.all(checks.map((check) => check(config, formatMessage, options)));
+    const results = await Promise.all(checks.map((check) => check(config, formatMessage)));
     return results;
 };

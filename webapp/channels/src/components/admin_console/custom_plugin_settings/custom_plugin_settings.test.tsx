@@ -3,7 +3,6 @@
 
 import React from 'react';
 
-import type {CloudState} from '@mattermost/types/cloud';
 import type {PluginSettings} from '@mattermost/types/config';
 import type {PluginRedux} from '@mattermost/types/plugins';
 
@@ -23,12 +22,9 @@ describe('components/admin_console/CustomPluginSettings', () => {
         environmentConfig: {},
         setNavigationBlocked: jest.fn(),
         roles: {},
-        cloud: {} as CloudState,
-        license: {},
         editRole: jest.fn(),
         consoleAccess: {read: {}, write: {}},
         isCurrentUserSystemAdmin: false,
-        enterpriseReady: false,
     };
     beforeEach(() => {
         plugin = {
@@ -194,12 +190,9 @@ describe('custom plugin sections', () => {
         environmentConfig: {},
         setNavigationBlocked: jest.fn(),
         roles: {},
-        cloud: {} as CloudState,
-        license: {},
         editRole: jest.fn(),
         consoleAccess: {read: {}, write: {}},
         isCurrentUserSystemAdmin: false,
-        enterpriseReady: false,
     };
 
     it('empty sections', () => {

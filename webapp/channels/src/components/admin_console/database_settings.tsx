@@ -23,9 +23,6 @@ import SettingsGroup from './settings_group';
 import TextSetting from './text_setting';
 
 type Props = {
-    license: {
-        IsLicensed: string;
-    };
     isDisabled: boolean;
 };
 
@@ -164,44 +161,41 @@ export default class DatabaseSettings extends OLDAdminSettings<Props, State> {
     renderSettings = () => {
         const dataSource = '**********' + this.state.dataSource.substring(this.state.dataSource.indexOf('@'));
 
-        let recycleDbButton = <div/>;
-        if (this.props.license.IsLicensed === 'true') {
-            recycleDbButton = (
-                <RequestButton
-                    requestAction={recycleDatabaseConnection}
-                    helpText={
-                        <FormattedMessage
-                            {...messages.recycleDescription}
-                            values={{
-                                featureName: (
+        const recycleDbButton = (
+            <RequestButton
+                requestAction={recycleDatabaseConnection}
+                helpText={
+                    <FormattedMessage
+                        {...messages.recycleDescription}
+                        values={{
+                            featureName: (
+                                <b>
+                                    <FormattedMessage {...messages.featureName}/>
+                                </b>
+                            ),
+                            reloadConfiguration: (
+                                <a href='../environment/web_server'>
                                     <b>
-                                        <FormattedMessage {...messages.featureName}/>
+                                        <FormattedMessage {...messages.reloadConfiguration}/>
                                     </b>
-                                ),
-                                reloadConfiguration: (
-                                    <a href='../environment/web_server'>
-                                        <b>
-                                            <FormattedMessage {...messages.reloadConfiguration}/>
-                                        </b>
-                                    </a>
-                                ),
-                            }}
-                        />
-                    }
-                    buttonText={
-                        <FormattedMessage {...messages.button}/>
-                    }
-                    showSuccessMessage={false}
-                    errorMessage={defineMessage({
-                        id: 'admin.recycle.reloadFail',
-                        // eslint-disable-next-line formatjs/enforce-placeholders -- error provided by RequestButton
-                        defaultMessage: 'Recycling unsuccessful: {error}',
-                    })}
-                    includeDetailedError={true}
-                    disabled={this.props.isDisabled}
-                />
-            );
-        }
+                                </a>
+                            ),
+                        }}
+                    />
+                }
+                buttonText={
+                    <FormattedMessage {...messages.button}/>
+                }
+                showSuccessMessage={false}
+                errorMessage={defineMessage({
+                    id: 'admin.recycle.reloadFail',
+                    // eslint-disable-next-line formatjs/enforce-placeholders -- error provided by RequestButton
+                    defaultMessage: 'Recycling unsuccessful: {error}',
+                })}
+                includeDetailedError={true}
+                disabled={this.props.isDisabled}
+            />
+        );
 
         return (
             <SettingsGroup>

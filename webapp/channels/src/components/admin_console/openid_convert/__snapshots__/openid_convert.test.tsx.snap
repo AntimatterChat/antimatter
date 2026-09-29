@@ -32,7 +32,7 @@ exports[`components/OpenIdConvert should match snapshot 1`] = `
         <a
           class="btn-secondary"
           data-testid="openIdLearnMore"
-          href="https://www.mattermost.com/default-openid-docs?utm_source=mattermost&utm_medium=in-product&utm_content=openid_convert&uid=&sid=&edition=team&server_version="
+          href="https://www.mattermost.com/default-openid-docs?utm_source=mattermost&utm_medium=in-product&utm_content=openid_convert&uid=&sid=&server_version="
           location="openid_convert"
           rel="noopener noreferrer"
           target="_blank"

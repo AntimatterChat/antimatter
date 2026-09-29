@@ -6,7 +6,6 @@ import type {MessageDescriptor} from 'react-intl';
 import {FormattedDate, FormattedMessage, defineMessages} from 'react-intl';
 
 import type {AnalyticsRow, AnalyticsState} from '@mattermost/types/admin';
-import type {ClientLicense} from '@mattermost/types/config';
 import type {Team} from '@mattermost/types/teams';
 import type {UserProfile} from '@mattermost/types/users';
 import type {RelationOneToOne} from '@mattermost/types/utilities';
@@ -48,8 +47,6 @@ type Props = {
      * The locale of the current user
      */
     locale: string;
-
-    license: ClientLicense;
 
     stats: RelationOneToOne<Team, AnalyticsState>;
 
@@ -332,8 +329,6 @@ export default class TeamAnalytics extends React.PureComponent<Props, State> {
                         >
                             <ActivatedUserCard
                                 activatedUsers={this.getStatValue(stats[StatTypes.TOTAL_USERS])}
-                                seatsPurchased={parseInt(this.props.license.Users, 10)}
-                                isCloud={this.props.license.Cloud === 'true'}
                             />
                             <StatisticCount
                                 id='publicChannels'

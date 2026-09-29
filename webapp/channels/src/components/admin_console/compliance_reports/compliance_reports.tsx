@@ -18,11 +18,6 @@ import ReloadIcon from 'components/widgets/icons/fa_reload_icon';
 type Props = {
 
     /*
-        * Set if compliance reports are licensed
-        */
-    isLicensed: boolean;
-
-    /*
         * Set if compliance reports are enabled in the config
         */
     enabled: boolean;
@@ -81,7 +76,7 @@ export default class ComplianceReports extends React.PureComponent<Props, State>
     }
 
     componentDidMount() {
-        if (!this.props.isLicensed || !this.props.enabled) {
+        if (!this.props.enabled) {
             return;
         }
 
@@ -156,7 +151,7 @@ export default class ComplianceReports extends React.PureComponent<Props, State>
     }
 
     render() {
-        if (!this.props.isLicensed || !this.props.enabled) {
+        if (!this.props.enabled) {
             return <div/>;
         }
 
