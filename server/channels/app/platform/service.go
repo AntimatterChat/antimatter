@@ -465,9 +465,7 @@ func New(sc ServiceConfig, options ...Option) (*PlatformService, error) {
 		ps.logger.Error("Failed to update search engine config", mlog.Err(err))
 	}
 
-	searchConfigListenerId, searchLicenseListenerId := ps.StartSearchEngine()
-	ps.searchConfigListenerId = searchConfigListenerId
-	ps.searchLicenseListenerId = searchLicenseListenerId
+	ps.searchConfigListenerId = ps.StartSearchEngine()
 
 	ps.startExtractionWorkers()
 

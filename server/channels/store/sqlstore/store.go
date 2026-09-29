@@ -455,10 +455,6 @@ func (ss *SqlStore) GetInternalMasterDB() *sql.DB {
 }
 
 func (ss *SqlStore) GetSearchReplicaX() *sqlxDBWrapper {
-	if !ss.hasLicense() {
-		return ss.GetMaster()
-	}
-
 	if len(ss.settings.DataSourceSearchReplicas) == 0 {
 		return ss.GetReplica()
 	}
@@ -476,7 +472,7 @@ func (ss *SqlStore) GetSearchReplicaX() *sqlxDBWrapper {
 }
 
 func (ss *SqlStore) GetReplica() *sqlxDBWrapper {
-	if len(ss.settings.DataSourceReplicas) == 0 || ss.lockedToMaster || !ss.hasLicense() {
+	if len(ss.settings.DataSourceReplicas) == 0 || ss.lockedToMaster {
 		return ss.GetMaster()
 	}
 
@@ -550,7 +546,7 @@ func (ss *SqlStore) setDB(replica *atomic.Pointer[sqlxDBWrapper], handle *sql.DB
 }
 
 func (ss *SqlStore) GetInternalReplicaDB() *sql.DB {
-	if len(ss.settings.DataSourceReplicas) == 0 || ss.lockedToMaster || !ss.hasLicense() {
+	if len(ss.settings.DataSourceReplicas) == 0 || ss.lockedToMaster {
 		return ss.GetMaster().DB().DB
 	}
 

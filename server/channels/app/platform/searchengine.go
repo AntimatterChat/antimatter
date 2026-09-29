@@ -8,7 +8,7 @@ import (
 	"github.com/mattermost/mattermost/server/public/shared/mlog"
 )
 
-func (ps *PlatformService) StartSearchEngine() (string, string) {
+func (ps *PlatformService) StartSearchEngine() string {
 	if ps.SearchEngine.ElasticsearchEngine != nil {
 		ps.esWatcher = newSearchEngineWatcher(ps)
 		ps.esWatcher.start()
@@ -61,24 +61,7 @@ func (ps *PlatformService) StartSearchEngine() (string, string) {
 		}
 	})
 
-	licenseListenerId := ps.AddLicenseListener(func(oldLicense, newLicense *model.License) {
-		if ps.SearchEngine == nil {
-			return
-		}
-		if oldLicense == nil && newLicense != nil {
-			// License added -- watcher will try Start() on next evaluation.
-			ps.esWatcher.reevaluate()
-		} else if oldLicense != nil && newLicense == nil {
-			// License removed -- tell the watcher to stop the engine.
-			// The watcher will then retry Start() which returns nil
-			// without a license, so it backs off gracefully.
-			if ps.SearchEngine.ElasticsearchEngine != nil {
-				ps.esWatcher.requestRestart()
-			}
-		}
-	})
-
-	return configListenerId, licenseListenerId
+	return configListenerId
 }
 
 func (ps *PlatformService) StopSearchEngine() {
@@ -86,7 +69,6 @@ func (ps *PlatformService) StopSearchEngine() {
 		ps.esWatcher.stop()
 	}
 	ps.RemoveConfigListener(ps.searchConfigListenerId)
-	ps.RemoveLicenseListener(ps.searchLicenseListenerId)
 	if ps.SearchEngine != nil && ps.SearchEngine.ElasticsearchEngine != nil && ps.SearchEngine.ElasticsearchEngine.IsActive() {
 		if err := ps.SearchEngine.ElasticsearchEngine.Stop(); err != nil {
 			ps.Log().Error("Failed to stop Elasticsearch engine", mlog.Err(err))
