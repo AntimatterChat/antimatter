@@ -256,7 +256,7 @@
   },
   {
     "id": "api.admin.test_email.body",
-    "translation": "It appears your Mattermost email is setup correctly!",
+    "translation": "It appears your Antimatter email is setup correctly!",
     "description": "Body text of the test email sent when an admin clicks Test Connection in the System Console SMTP settings."
   },
   {
@@ -271,7 +271,7 @@
   },
   {
     "id": "api.admin.test_email.subject",
-    "translation": "Mattermost - Testing Email Settings",
+    "translation": "Antimatter - Testing Email Settings",
     "description": "Subject line of the test email sent when an admin clicks Test Connection in the System Console SMTP settings."
   },
   {
@@ -1106,7 +1106,7 @@
   },
   {
     "id": "api.command.invite_people.desc",
-    "translation": "Send an email invite to your Mattermost team",
+    "translation": "Send an email invite to your Antimatter team",
     "description": "Autocomplete description for the /invite_people slash command, which emails team invitations to the given addresses."
   },
   {
@@ -1549,7 +1549,7 @@
   },
   {
     "id": "api.command_help.desc",
-    "translation": "Show Mattermost help message",
+    "translation": "Show Antimatter help message",
     "description": "Autocomplete description for the /help slash command, which posts a help message."
   },
   {
@@ -1559,8 +1559,8 @@
   },
   {
     "id": "api.command_help.success",
-    "translation": "Mattermost is an open source platform for secure communication, collaboration, and orchestration of work across tools and teams.\r\nMattermost contains two key tools:\r\n\r\n**Channels** - Stay connected with your team via 1:1 and group messaging.\r\n**[Playbooks](/playbooks)** - Build and configure repeatable processes to achieve specific and predictable outcomes.\r\n\r\n[View documentation and guides]({{.HelpLink}})",
-    "description": "Ephemeral Markdown message posted by the /help slash command describing Mattermost; {{.HelpLink}} is the documentation URL; keep the Markdown links and bold formatting."
+    "translation": "Antimatter is an open source platform for secure communication, collaboration, and orchestration of work across tools and teams.\r\nAntimatter contains two key tools:\r\n\r\n**Channels** - Stay connected with your team via 1:1 and group messaging.\r\n**[Playbooks](/playbooks)** - Build and configure repeatable processes to achieve specific and predictable outcomes.\r\n\r\n[View documentation and guides]({{.HelpLink}})",
+    "description": "Ephemeral Markdown message posted by the /help slash command describing Antimatter; {{.HelpLink}} is the documentation URL; keep the Markdown links and bold formatting."
   },
   {
     "id": "api.command_invite.channel.app_error",
@@ -1712,8 +1712,8 @@
   },
   {
     "id": "api.command_logout.desc",
-    "translation": "Logout of Mattermost",
-    "description": "Autocomplete description for the /logout slash command, which logs the user out of Mattermost."
+    "translation": "Logout of Antimatter",
+    "description": "Autocomplete description for the /logout slash command, which logs the user out of Antimatter."
   },
   {
     "id": "api.command_logout.name",
@@ -1927,8 +1927,8 @@
   },
   {
     "id": "api.command_remote.accept.help",
-    "translation": "Accept an invitation from an external Mattermost instance",
-    "description": "Autocomplete help for the 'accept' subcommand of the /secure-connection slash command, used for connecting Mattermost instances (shared channels)."
+    "translation": "Accept an invitation from an external Antimatter instance",
+    "description": "Autocomplete help for the 'accept' subcommand of the /secure-connection slash command, used for connecting Antimatter instances (shared channels)."
   },
   {
     "id": "api.command_remote.accept_invitation",
@@ -1962,8 +1962,8 @@
   },
   {
     "id": "api.command_remote.desc",
-    "translation": "Invite secure connections for communication across Mattermost instances.",
-    "description": "Autocomplete description for the /secure-connection slash command, which manages connections between Mattermost instances for shared channels."
+    "translation": "Invite secure connections for communication across Antimatter instances.",
+    "description": "Autocomplete description for the /secure-connection slash command, which manages connections between Antimatter instances for shared channels."
   },
   {
     "id": "api.command_remote.displayname.help",
@@ -2022,7 +2022,7 @@
   },
   {
     "id": "api.command_remote.invite_summary",
-    "translation": "Send the following AES 256-bit encrypted invitation to the external Mattermost System Admin along with the password. They will use the `{{.Command}}` slash command to accept the invitation.\n\n```\n{{.Invitation}}\n```\n\n**Ensure the secure connection can access your Mattermost instance via** {{.SiteURL}}",
+    "translation": "Send the following AES 256-bit encrypted invitation to the external Antimatter System Admin along with the password. They will use the `{{.Command}}` slash command to accept the invitation.\n\n```\n{{.Invitation}}\n```\n\n**Ensure the secure connection can access your Antimatter instance via** {{.SiteURL}}",
     "description": "Ephemeral Markdown message shown after creating a secure connection invitation; {{.Command}} is a slash command name, {{.Invitation}} is the encrypted invitation string inside a code block, {{.SiteURL}} is this server's URL; keep the code fences and bold."
   },
   {
@@ -2242,8 +2242,8 @@
   },
   {
     "id": "api.command_share.desc",
-    "translation": "Shares the current channel with an external Mattermost instance.",
-    "description": "Autocomplete description for the /share-channel slash command; 'shares' is a verb, sharing the channel with another Mattermost instance."
+    "translation": "Shares the current channel with an external Antimatter instance.",
+    "description": "Autocomplete description for the /share-channel slash command; 'shares' is a verb, sharing the channel with another Antimatter instance."
   },
   {
     "id": "api.command_share.fetch_remote.error",
@@ -2272,8 +2272,8 @@
   },
   {
     "id": "api.command_share.invite_remote.help",
-    "translation": "Invites an external Mattermost instance to the current shared channel",
-    "description": "Autocomplete help for the 'invite' subcommand of the /share-channel slash command; 'invites' is a verb, inviting another Mattermost instance to the shared channel."
+    "translation": "Invites an external Antimatter instance to the current shared channel",
+    "description": "Autocomplete help for the 'invite' subcommand of the /share-channel slash command; 'invites' is a verb, inviting another Antimatter instance to the shared channel."
   },
   {
     "id": "api.command_share.invite_remote_to_channel.error",
@@ -2452,7 +2452,7 @@
   },
   {
     "id": "api.config.update.elasticsearch.autocomplete_cannot_be_enabled_error",
-    "translation": "Channel autocomplete cannot be enabled as channel index schema is out of date. It is recommended to regenerate your channel index. See the Mattermost changelog for more information",
+    "translation": "Channel autocomplete cannot be enabled as channel index schema is out of date. It is recommended to regenerate your channel index. See the Antimatter changelog for more information",
     "description": "Admin console error when enabling Elasticsearch channel autocomplete with an outdated search index; 'channel index' is the Elasticsearch index of channels."
   },
   {
@@ -2832,8 +2832,8 @@
   },
   {
     "id": "api.email_batching.send_batched_email_notification.button",
-    "translation": "Open Mattermost",
-    "description": "Main button label in the batched notification email; opens the Mattermost site."
+    "translation": "Open Antimatter",
+    "description": "Main button label in the batched notification email; opens the Antimatter site."
   },
   {
     "id": "api.email_batching.send_batched_email_notification.messageButton",
@@ -5266,7 +5266,7 @@
   },
   {
     "id": "api.templates.guest_magic_link_body.footer.info",
-    "translation": "This email was sent to you because someone requested a login link for Mattermost. If you did not request this, you can safely ignore this email.",
+    "translation": "This email was sent to you because someone requested a login link for Antimatter. If you did not request this, you can safely ignore this email.",
     "description": "Footer paragraph in the guest magic-login-link email reassuring recipients who did not request the link."
   },
   {
@@ -5281,7 +5281,7 @@
   },
   {
     "id": "api.templates.guest_magic_link_body.title",
-    "translation": "Sign in to Mattermost",
+    "translation": "Sign in to Antimatter",
     "description": "Heading of the email containing a one-time sign-in (magic) link for a guest user."
   },
   {
@@ -5296,7 +5296,7 @@
   },
   {
     "id": "api.templates.invite_body.subTitle",
-    "translation": "Start collaborating with your team on Mattermost",
+    "translation": "Start collaborating with your team on Antimatter",
     "description": "Subtitle line in the team invitation email, under the '{sender} invited you' heading."
   },
   {
@@ -5311,8 +5311,8 @@
   },
   {
     "id": "api.templates.invite_body_footer.info",
-    "translation": "Mattermost is a flexible, open source messaging platform that enables secure team collaboration.",
-    "description": "Footer paragraph in invitation emails briefly describing what Mattermost is, for recipients unfamiliar with the product."
+    "translation": "Antimatter is a flexible, open source messaging platform that enables secure team collaboration.",
+    "description": "Footer paragraph in invitation emails briefly describing what Antimatter is, for recipients unfamiliar with the product."
   },
   {
     "id": "api.templates.invite_body_footer.learn_more",
@@ -5321,8 +5321,8 @@
   },
   {
     "id": "api.templates.invite_body_footer.title",
-    "translation": "What is Mattermost?",
-    "description": "Footer heading in invitation emails, above the short description of Mattermost."
+    "translation": "What is Antimatter?",
+    "description": "Footer heading in invitation emails, above the short description of Antimatter."
   },
   {
     "id": "api.templates.invite_body_guest.subTitle",
@@ -5476,8 +5476,8 @@
   },
   {
     "id": "api.templates.post_body.button",
-    "translation": "Reply in Mattermost",
-    "description": "Button label in message notification emails; clicking opens the message in Mattermost. 'Reply' is a verb."
+    "translation": "Reply in Antimatter",
+    "description": "Button label in message notification emails; clicking opens the message in Antimatter. 'Reply' is a verb."
   },
   {
     "id": "api.templates.questions_footer.info",
@@ -5606,7 +5606,7 @@
   },
   {
     "id": "api.templates.verify_body.info",
-    "translation": "This email address was used to create an account with Mattermost.",
+    "translation": "This email address was used to create an account with Antimatter.",
     "description": "Body line in the email-verification email explaining why the recipient got it."
   },
   {
@@ -5661,7 +5661,7 @@
   },
   {
     "id": "api.templates.welcome_body.info",
-    "translation": "This email address was used to create an account with Mattermost.",
+    "translation": "This email address was used to create an account with Antimatter.",
     "description": "Body line in the welcome email explaining why the recipient got it (their address was used to create an account)."
   },
   {
@@ -9922,8 +9922,8 @@
   },
   {
     "id": "app.notification.footer.infoLogin",
-    "translation": "Login to Mattermost",
-    "description": "Link/label text in the footer of notification emails inviting the recipient to sign in to the Mattermost server."
+    "translation": "Login to Antimatter",
+    "description": "Link/label text in the footer of notification emails inviting the recipient to sign in to the Antimatter server."
   },
   {
     "id": "app.notification.footer.title",
@@ -13738,8 +13738,8 @@
   },
   {
     "id": "ent.intune.login.account_not_found.app_error",
-    "translation": "Your account isn't fully set up yet. Please sign in to Mattermost via the web or desktop app first.",
-    "description": "Error shown on the mobile app sign-in flow via Microsoft Intune when no matching Mattermost account exists yet; end-user audience."
+    "translation": "Your account isn't fully set up yet. Please sign in to Antimatter via the web or desktop app first.",
+    "description": "Error shown on the mobile app sign-in flow via Microsoft Intune when no matching Antimatter account exists yet; end-user audience."
   },
   {
     "id": "ent.intune.login.extract_auth_data.app_error",
@@ -13853,7 +13853,7 @@
   },
   {
     "id": "ent.ldap.do_login.user_filtered.app_error",
-    "translation": "Your AD/LDAP account does not have permission to use this Mattermost server. Please ask your System Administrator to check the AD/LDAP user filter.",
+    "translation": "Your AD/LDAP account does not have permission to use this Antimatter server. Please ask your System Administrator to check the AD/LDAP user filter.",
     "description": "Error shown to an end user whose AD/LDAP account is excluded by the configured user filter; 'user filter' is an LDAP setting name."
   },
   {
@@ -13888,7 +13888,7 @@
   },
   {
     "id": "ent.ldap.switch_to_ldap.already_attached.app_error",
-    "translation": "This AD/LDAP account is already associated with another Mattermost account.",
+    "translation": "This AD/LDAP account is already associated with another Antimatter account.",
     "description": "Error shown when a user tries to switch their sign-in method to AD/LDAP but the AD/LDAP account they entered is already linked to a different user account on this server."
   },
   {
@@ -13908,7 +13908,7 @@
   },
   {
     "id": "ent.ldap.syncronize.search_failure.app_error",
-    "translation": "Failed to search users in AD/LDAP. Test if the Mattermost server can connect to your AD/LDAP server and try again.",
+    "translation": "Failed to search users in AD/LDAP. Test if the Antimatter server can connect to your AD/LDAP server and try again.",
     "description": "Error status of the AD/LDAP synchronization job when the directory search fails; advises admins to test connectivity."
   },
   {
@@ -14023,8 +14023,8 @@
   },
   {
     "id": "ent.migration.migratetosaml.username_already_used_by_other_user",
-    "translation": "Username already used by another Mattermost user.",
-    "description": "Error from the migrate-to-SAML admin command when a mapped username is already taken by another Mattermost account."
+    "translation": "Username already used by another Antimatter user.",
+    "description": "Error from the migrate-to-SAML admin command when a mapped username is already taken by another Antimatter account."
   },
   {
     "id": "ent.outgoing_oauth_connections.authenticate.app_error",
@@ -15428,7 +15428,7 @@
   },
   {
     "id": "model.config.is_valid.atmos_camo_image_proxy_removed.app_error",
-    "translation": "The 'atmos/camo' image proxy type was removed in Mattermost v12.0. Set ImageProxySettings.ImageProxyType to 'local', or set ImageProxySettings.Enable to false to disable the image proxy.",
+    "translation": "The 'atmos/camo' image proxy type was removed in Antimatter v12.0. Set ImageProxySettings.ImageProxyType to 'local', or set ImageProxySettings.Enable to false to disable the image proxy.",
     "description": "Configuration validation error shown to a system admin (and logged at startup) when the config still selects the removed 'atmos/camo' image proxy. The setting names, the value 'local', and 'false' are literal identifiers and must not be translated."
   },
   {
@@ -17973,8 +17973,8 @@
   },
   {
     "id": "oauth.gitlab.tos.error",
-    "translation": "GitLab's Terms of Service have updated. Please go to {{.URL}} to accept them and then try logging into Mattermost again.",
-    "description": "Login error for GitLab SSO users who must accept GitLab's updated Terms of Service; {{.URL}} is the GitLab ToS page link. Keep 'GitLab' and 'Mattermost' as product names."
+    "translation": "GitLab's Terms of Service have updated. Please go to {{.URL}} to accept them and then try logging into Antimatter again.",
+    "description": "Login error for GitLab SSO users who must accept GitLab's updated Terms of Service; {{.URL}} is the GitLab ToS page link. Keep 'GitLab' and 'Antimatter' as product names."
   },
   {
     "id": "plugin.api.get_users_in_channel",
@@ -18258,13 +18258,13 @@
   },
   {
     "id": "web.error.unsupported_browser.no_longer_support",
-    "translation": "This browser is no longer supported by Mattermost",
-    "description": "Main heading of the full-page error shown when someone opens Mattermost in an outdated/unsupported web browser."
+    "translation": "This browser is no longer supported by Antimatter",
+    "description": "Main heading of the full-page error shown when someone opens Antimatter in an outdated/unsupported web browser."
   },
   {
     "id": "web.error.unsupported_browser.no_longer_support_version",
-    "translation": "This version of your browser is no longer supported by Mattermost",
-    "description": "Headline on the full-page error shown when someone opens Mattermost in an outdated browser version."
+    "translation": "This version of your browser is no longer supported by Antimatter",
+    "description": "Headline on the full-page error shown when someone opens Antimatter in an outdated browser version."
   },
   {
     "id": "web.error.unsupported_browser.open_system_browser.edge",
