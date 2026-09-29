@@ -23,7 +23,6 @@ type Location = {
 type Props = {
     location: Location;
     children?: React.ReactNode;
-    mfa: boolean;
     enableMultifactorAuthentication: boolean;
     enforceMultifactorAuthentication: boolean;
 
@@ -57,7 +56,7 @@ export default class MFAController extends React.PureComponent<Props & RouteComp
 
     public render(): JSX.Element {
         let backButton;
-        if (this.props.mfa && this.props.enforceMultifactorAuthentication) {
+        if (this.props.enforceMultifactorAuthentication) {
             backButton = (
                 <div className='signup-header'>
                     <button

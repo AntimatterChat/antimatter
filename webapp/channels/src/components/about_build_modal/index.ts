@@ -3,7 +3,7 @@
 
 import {connect} from 'react-redux';
 
-import {getConfig, getLicense} from 'mattermost-redux/selectors/entities/general';
+import {getConfig} from 'mattermost-redux/selectors/entities/general';
 
 import {getSocketStatus} from 'selectors/views/websocket';
 
@@ -14,7 +14,6 @@ import AboutBuildModal from './about_build_modal';
 function mapStateToProps(state: GlobalState) {
     return {
         config: getConfig(state),
-        license: getLicense(state),
         socketStatus: getSocketStatus(state),
     };
 }

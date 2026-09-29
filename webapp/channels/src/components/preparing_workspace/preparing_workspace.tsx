@@ -10,10 +10,9 @@ import type {Team} from '@mattermost/types/teams';
 
 import {GeneralTypes} from 'mattermost-redux/action_types';
 import {getFirstAdminSetupComplete as getFirstAdminSetupCompleteAction} from 'mattermost-redux/actions/general';
-import {sendEmailInvitesToTeamGracefully} from 'mattermost-redux/actions/teams';
 import {Client4} from 'mattermost-redux/client';
 import {General} from 'mattermost-redux/constants';
-import {getFirstAdminSetupComplete, getConfig, getLicense} from 'mattermost-redux/selectors/entities/general';
+import {getFirstAdminSetupComplete, getConfig} from 'mattermost-redux/selectors/entities/general';
 import {getIsOnboardingFlowEnabled, getTheme} from 'mattermost-redux/selectors/entities/preferences';
 import {getCurrentTeam, getMyTeams} from 'mattermost-redux/selectors/entities/teams';
 import {isFirstAdmin} from 'mattermost-redux/selectors/entities/users';
@@ -96,11 +95,9 @@ const PreparingWorkspace = ({
     const pluginsEnabled = config.PluginsEnabled === 'true';
     const showOnMountTimeout = useRef<NodeJS.Timeout>(undefined);
     const configSiteUrl = config.SiteURL;
-    const isConfigSiteUrlDefault = Boolean(config.SiteURL && config.SiteURL === Constants.DEFAULT_SITE_URL);
-    const isSelfHosted = useSelector(getLicense).Cloud !== 'true';
 
     const stepOrder = [
-        isSelfHosted && WizardSteps.Organization,
+        WizardSteps.Organization,
         pluginsEnabled && WizardSteps.Plugins,
         WizardSteps.InviteMembers,
         WizardSteps.LaunchingWorkspace,
@@ -206,19 +203,6 @@ const PreparingWorkspace = ({
     const sendForm = async () => {
         const sendFormStart = Date.now();
         setSubmissionState(SubmissionStates.Submitting);
-
-        if (!form.teamMembers.skipped && !isConfigSiteUrlDefault && !isSelfHosted) {
-            try {
-                const inviteResult = await dispatch(sendEmailInvitesToTeamGracefully(team.id, form.teamMembers.invites));
-                if ((inviteResult as ActionResult).error) {
-                    redirectWithError(WizardSteps.InviteMembers, genericSubmitError);
-                    return;
-                }
-            } catch {
-                redirectWithError(WizardSteps.InviteMembers, genericSubmitError);
-                return;
-            }
-        }
 
         // send plugins
         const {skipped: skippedPlugins, ...pluginChoices} = form.plugins;
@@ -407,7 +391,6 @@ const PreparingWorkspace = ({
                 />
 
                 <Plugins
-                    isSelfHosted={isSelfHosted}
                     previous={previous}
                     next={() => {
                         makeNext(WizardSteps.Plugins)();
@@ -453,18 +436,7 @@ const PreparingWorkspace = ({
                     configSiteUrl={configSiteUrl}
                     formUrl={form.url}
                     browserSiteUrl={browserSiteUrl}
-                    emails={form.teamMembers.invites}
-                    setEmails={(emails: string[]) => {
-                        setForm({
-                            ...form,
-                            teamMembers: {
-                                ...form.teamMembers,
-                                invites: emails,
-                            },
-                        });
-                    }}
                     inferredProtocol={form.inferredProtocol}
-                    isSelfHosted={isSelfHosted}
                 />
                 <LaunchingWorkspace
                     show={currentStep === WizardSteps.LaunchingWorkspace}

@@ -74,15 +74,6 @@ export default class ErrorPage extends React.PureComponent<Props> {
                     />
                 </Link>
             );
-        } else if (type === ErrorPageTypes.CLOUD_ARCHIVED && returnTo) {
-            backButton = (
-                <Link to={returnTo}>
-                    <FormattedMessage
-                        id='error.generic.link'
-                        defaultMessage='Back to Antimatter'
-                    />
-                </Link>
-            );
         } else if (type === ErrorPageTypes.TEAM_NOT_FOUND) {
             backButton = (
                 <Link to='/'>

@@ -7,7 +7,7 @@ import {FormattedMessage, injectIntl, type WrappedComponentProps} from 'react-in
 import {Button} from '@mattermost/shared/components/button';
 import type {AnalyticsState} from '@mattermost/types/admin';
 import type {Channel} from '@mattermost/types/channels';
-import type {ClientConfig, ClientLicense} from '@mattermost/types/config';
+import type {ClientConfig} from '@mattermost/types/config';
 import type {PreferenceType} from '@mattermost/types/preferences';
 
 import type {Notice} from 'components/system_notice/types';
@@ -23,7 +23,6 @@ export interface Props extends WrappedComponentProps {
     isSystemAdmin?: boolean;
     serverVersion: string;
     config: Partial<ClientConfig>;
-    license: ClientLicense;
     analytics?: AnalyticsState;
     currentChannel?: Channel;
     actions: {
@@ -64,7 +63,6 @@ export class SystemNotice extends React.PureComponent<Props> {
             if (!notice.show?.(
                 this.props.serverVersion,
                 this.props.config,
-                this.props.license,
                 this.props.analytics,
                 this.props.currentChannel,
             )) {

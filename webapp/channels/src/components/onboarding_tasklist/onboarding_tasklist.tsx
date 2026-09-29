@@ -9,15 +9,13 @@ import styled, {css} from 'styled-components';
 
 import {CloseIcon, PlaylistCheckIcon} from '@mattermost/compass-icons/components';
 
-import {getPrevTrialLicense} from 'mattermost-redux/actions/admin';
 import {getMyPreferences, savePreferences} from 'mattermost-redux/actions/preferences';
-import {getCloudSubscription} from 'mattermost-redux/selectors/entities/cloud';
-import {getConfig, getLicense} from 'mattermost-redux/selectors/entities/general';
+import {getConfig} from 'mattermost-redux/selectors/entities/general';
 import {
     getBool,
     getMyPreferences as getMyPreferencesSelector,
 } from 'mattermost-redux/selectors/entities/preferences';
-import {getCurrentUserId, isFirstAdmin, isCurrentUserSystemAdmin} from 'mattermost-redux/selectors/entities/users';
+import {getCurrentUserId} from 'mattermost-redux/selectors/entities/users';
 
 import {getShowTaskListBool} from 'selectors/onboarding';
 
@@ -131,13 +129,8 @@ const OnBoardingTaskList = (): JSX.Element | null => {
     const {formatMessage} = useIntl();
     const location = useLocation();
     const hasPreferences = useSelector((state: GlobalState) => Object.keys(getMyPreferencesSelector(state)).length !== 0);
-    const subscription = useSelector(getCloudSubscription);
-    const license = useSelector(getLicense);
-    const isCloud = license?.Cloud === 'true';
-    const isCloudPreview = subscription?.is_cloud_preview === true;
 
     useEffect(() => {
-        dispatch(getPrevTrialLicense());
         if (!hasPreferences) {
             dispatch(getMyPreferences());
         }
@@ -152,8 +145,6 @@ const OnBoardingTaskList = (): JSX.Element | null => {
     const [completedCount, setCompletedCount] = useState(tasksList.filter((task) => task.status).length);
     const [showAnimation, setShowAnimation] = useState(false);
     const itemsLeft = tasksList.length - completedCount;
-    const isUserSystemAdmin = useSelector(isCurrentUserSystemAdmin);
-    const isUserFirstAdmin = useSelector(isFirstAdmin);
     const isEnableOnboardingFlow = useSelector((state: GlobalState) => getConfig(state).EnableOnboardingFlow === 'true');
     const [showTaskList, firstTimeOnboarding] = useSelector(
         getShowTaskListBool,
@@ -242,7 +233,7 @@ const OnBoardingTaskList = (): JSX.Element | null => {
         dispatch(savePreferences(currentUserId, preferences));
     }, [open, currentUserId]);
 
-    if (!hasPreferences || !showTaskList || !isEnableOnboardingFlow || (isCloud && isCloudPreview) || location.pathname === '/preparing-workspace') {
+    if (!hasPreferences || !showTaskList || !isEnableOnboardingFlow || location.pathname === '/preparing-workspace') {
         return null;
     }
 
@@ -270,8 +261,6 @@ const OnBoardingTaskList = (): JSX.Element | null => {
                     {completedCount === tasksList.length ? (
                         <Completed
                             dismissAction={dismissChecklist}
-                            isFirstAdmin={isUserFirstAdmin}
-                            isCurrentUserSystemAdmin={isUserSystemAdmin}
                         />
                     ) : (
                         <>

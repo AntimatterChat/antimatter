@@ -15,7 +15,7 @@ import type {UserProfile} from '@mattermost/types/users';
 import {getTeamInviteInfo} from 'mattermost-redux/actions/teams';
 import {createUser, loadMe} from 'mattermost-redux/actions/users';
 import {Client4} from 'mattermost-redux/client';
-import {getConfig, getLicense, getPasswordConfig} from 'mattermost-redux/selectors/entities/general';
+import {getConfig, getPasswordConfig} from 'mattermost-redux/selectors/entities/general';
 import {getIsOnboardingFlowEnabled} from 'mattermost-redux/selectors/entities/preferences';
 import {getCurrentUserId} from 'mattermost-redux/selectors/entities/users';
 import {isEmail} from 'mattermost-redux/utils/helpers';
@@ -101,7 +101,6 @@ const Signup = ({onCustomizeHeader}: SignupProps) => {
         TermsOfServiceLink,
         PrivacyPolicyLink,
     } = config;
-    const {IsLicensed} = useSelector(getLicense);
     const loggedIn = Boolean(useSelector(getCurrentUserId));
     const onboardingFlowEnabled = useSelector(getIsOnboardingFlowEnabled);
     const usedBefore = useSelector((state: GlobalState) => (!inviteId && !loggedIn && token ? getGlobalItem(state, token, null) : undefined));
@@ -110,7 +109,6 @@ const Signup = ({onCustomizeHeader}: SignupProps) => {
     const nameInput = useRef<HTMLInputElement>(null);
     const passwordInput = useRef<HTMLInputElement>(null);
 
-    const isLicensed = IsLicensed === 'true';
     const enableOpenServer = EnableOpenServer === 'true';
     const enableUserCreation = EnableUserCreation === 'true';
     const noAccounts = NoAccounts === 'true';
@@ -168,7 +166,7 @@ const Signup = ({onCustomizeHeader}: SignupProps) => {
             });
         }
 
-        if (isLicensed && enableSignUpWithGoogle) {
+        if (enableSignUpWithGoogle) {
             const url = `${Client4.getOAuthRoute()}/google/signup${search}`;
             externalLoginOptions.push({
                 id: 'google',
@@ -179,7 +177,7 @@ const Signup = ({onCustomizeHeader}: SignupProps) => {
             });
         }
 
-        if (isLicensed && enableSignUpWithOffice365) {
+        if (enableSignUpWithOffice365) {
             const url = `${Client4.getOAuthRoute()}/office365/signup${search}`;
             externalLoginOptions.push({
                 id: 'office365',
@@ -190,7 +188,7 @@ const Signup = ({onCustomizeHeader}: SignupProps) => {
             });
         }
 
-        if (isLicensed && enableSignUpWithOpenId) {
+        if (enableSignUpWithOpenId) {
             const url = `${Client4.getOAuthRoute()}/openid/signup${search}`;
             externalLoginOptions.push({
                 id: 'openid',
@@ -202,7 +200,7 @@ const Signup = ({onCustomizeHeader}: SignupProps) => {
             });
         }
 
-        if (isLicensed && enableLDAP) {
+        if (enableLDAP) {
             const newSearchParam = new URLSearchParams(search);
             newSearchParam.set('extra', Constants.CREATE_LDAP);
 
@@ -215,7 +213,7 @@ const Signup = ({onCustomizeHeader}: SignupProps) => {
             });
         }
 
-        if (isLicensed && enableSAML) {
+        if (enableSAML) {
             const newSearchParam = new URLSearchParams(search);
             newSearchParam.set('action', 'signup');
 

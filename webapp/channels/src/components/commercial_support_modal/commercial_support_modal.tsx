@@ -10,7 +10,6 @@ import {Link} from 'react-router-dom';
 import {extractFilenameFromContentDisposition} from '@mattermost/client';
 import {Button} from '@mattermost/shared/components/button';
 import type {SupportPacketContent} from '@mattermost/types/admin';
-import type {UserProfile} from '@mattermost/types/users';
 
 import {Client4} from 'mattermost-redux/client';
 
@@ -28,10 +27,6 @@ type Props = {
     onExited: () => void;
 
     showBannerWarning: boolean;
-
-    isCloud: boolean;
-
-    currentUser: UserProfile;
 
     packetContents: SupportPacketContent[];
 };
@@ -128,9 +123,7 @@ export default class CommercialSupportModal extends React.PureComponent<Props, S
 
     render() {
         const {showBannerWarning} = this.state;
-        const {isCloud, currentUser} = this.props;
-
-        const supportLink = isCloud ? `https://customers.mattermost.com/cloud/contact-us?name=${currentUser.first_name} ${currentUser.last_name}&email=${currentUser.email}&inquiry=technical` : 'https://support.mattermost.com/hc/en-us/requests/new';
+        const supportLink = 'https://support.mattermost.com/hc/en-us/requests/new';
         return (
             <Modal
                 id='commercialSupportModal'

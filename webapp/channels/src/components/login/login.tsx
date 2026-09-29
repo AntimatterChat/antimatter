@@ -15,7 +15,7 @@ import type {Team} from '@mattermost/types/teams';
 import {loadMe} from 'mattermost-redux/actions/users';
 import {Client4} from 'mattermost-redux/client';
 import {RequestStatus} from 'mattermost-redux/constants';
-import {getConfig, getLicense} from 'mattermost-redux/selectors/entities/general';
+import {getConfig} from 'mattermost-redux/selectors/entities/general';
 import {getIsOnboardingFlowEnabled} from 'mattermost-redux/selectors/entities/preferences';
 import {getTeamByName, getMyTeamMember} from 'mattermost-redux/selectors/entities/teams';
 import {getCurrentUser} from 'mattermost-redux/selectors/entities/users';
@@ -104,7 +104,6 @@ const Login = ({onCustomizeHeader}: LoginProps) => {
         ForgotPasswordLink,
         PasswordEnableForgotLink,
     } = useSelector(getConfig);
-    const {IsLicensed} = useSelector(getLicense);
     const initializing = useSelector((state: GlobalState) => state.requests.users.logout.status === RequestStatus.SUCCESS || !state.storage.initialized);
     const currentUser = useSelector(getCurrentUser);
     const experimentalPrimaryTeam = useSelector((state: GlobalState) => (ExperimentalPrimaryTeam ? getTeamByName(state, ExperimentalPrimaryTeam) : undefined));
@@ -140,13 +139,10 @@ const Login = ({onCustomizeHeader}: LoginProps) => {
     const enableSignUpWithGoogle = EnableSignUpWithGoogle === 'true';
     const enableSignUpWithOffice365 = EnableSignUpWithOffice365 === 'true';
     const enableSignUpWithOpenId = EnableSignUpWithOpenId === 'true';
-    const isLicensed = IsLicensed === 'true';
-    const ldapEnabled = isLicensed && enableLdap;
-    const enableSignUpWithSaml = isLicensed && enableSaml;
     const siteName = SiteName ?? '';
 
-    const enableBaseLogin = enableSignInWithEmail || enableSignInWithUsername || ldapEnabled;
-    const enableExternalSignup = enableSignUpWithGitLab || enableSignUpWithOffice365 || enableSignUpWithGoogle || enableSignUpWithOpenId || enableSignUpWithSaml;
+    const enableBaseLogin = enableSignInWithEmail || enableSignInWithUsername || enableLdap;
+    const enableExternalSignup = enableSignUpWithGitLab || enableSignUpWithOffice365 || enableSignUpWithGoogle || enableSignUpWithOpenId || enableSaml;
     const showSignup = enableOpenServer && (enableExternalSignup || enableSignUpWithEmail || enableLdap);
     const onlyLdapEnabled = enableLdap && !(enableSaml || enableSignInWithEmail || enableSignInWithUsername || enableSignUpWithEmail || enableSignUpWithGitLab || enableSignUpWithGoogle || enableSignUpWithOffice365 || enableSignUpWithOpenId);
 
@@ -205,7 +201,7 @@ const Login = ({onCustomizeHeader}: LoginProps) => {
             });
         }
 
-        if (enableSignUpWithSaml) {
+        if (enableSaml) {
             const url = `${Client4.getUrl()}/login/sso/saml${search}`;
             externalLoginOptions.push({
                 id: 'saml',
@@ -556,7 +552,7 @@ const Login = ({onCustomizeHeader}: LoginProps) => {
             loginPlaceholders.push(formatMessage({id: 'login.username', defaultMessage: 'Username'}));
         }
 
-        if (ldapEnabled) {
+        if (enableLdap) {
             loginPlaceholders.push(LdapLoginFieldName || formatMessage({id: 'login.ldapUsername', defaultMessage: 'AD/LDAP Username'}));
         }
 
@@ -611,7 +607,7 @@ const Login = ({onCustomizeHeader}: LoginProps) => {
             // 3 methods, 2 methods, 1 method - Keep in mind order of cases.
             switch (true) {
             // three login methods enabled
-            case enableSignInWithEmail && enableSignInWithUsername && ldapEnabled:
+            case enableSignInWithEmail && enableSignInWithUsername && enableLdap:
                 title = formatMessage({id: 'login.noEmailUsernameLdapUsername', defaultMessage: 'Please enter your email, username or {ldapUsername}'}, {ldapUsername});
                 break;
 
@@ -619,10 +615,10 @@ const Login = ({onCustomizeHeader}: LoginProps) => {
             case enableSignInWithEmail && enableSignInWithUsername:
                 title = formatMessage({id: 'login.noEmailUsername', defaultMessage: 'Please enter your email or username'});
                 break;
-            case enableSignInWithEmail && ldapEnabled:
+            case enableSignInWithEmail && enableLdap:
                 title = formatMessage({id: 'login.noEmailLdapUsername', defaultMessage: 'Please enter your email or {ldapUsername}'}, {ldapUsername});
                 break;
-            case enableSignInWithUsername && ldapEnabled:
+            case enableSignInWithUsername && enableLdap:
                 title = formatMessage({id: 'login.noUsernameLdapUsername', defaultMessage: 'Please enter your username or {ldapUsername}'}, {ldapUsername});
                 break;
 
@@ -630,7 +626,7 @@ const Login = ({onCustomizeHeader}: LoginProps) => {
             case enableSignInWithEmail:
                 title = formatMessage({id: 'login.noEmail', defaultMessage: 'Please enter your email'});
                 break;
-            case ldapEnabled:
+            case enableLdap:
                 title = formatMessage({id: 'login.noLdapUsername', defaultMessage: 'Please enter your {ldapUsername}'}, {ldapUsername});
                 break;
             case enableSignInWithUsername:

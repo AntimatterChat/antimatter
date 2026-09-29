@@ -31,7 +31,6 @@ import AddToChannels, {defaultCustomMessage, defaultInviteChannels} from './add_
 import type {CustomMessageProps, InviteChannels} from './add_to_channels';
 import InviteAs, {InviteType} from './invite_as';
 import MemberProfileInputs from './member_profile_inputs';
-import OverageUsersBannerNotice from './overage_users_banner_notice';
 
 import './invite_view.scss';
 
@@ -74,7 +73,6 @@ export type Props = InviteState & {
     membershipPolicyStrict: boolean;
     usersLoader: (value: string, callback: (users: UserProfile[]) => void) => Promise<UserProfile[]> | undefined;
     onChangeUsersEmails: (usersEmails: Array<UserProfile | string>) => void;
-    isCloud: boolean;
     emailInvitationsEnabled: boolean;
     onUsersInputChange: (usersEmailsSearch: string) => void;
     headerClass: string;
@@ -383,7 +381,6 @@ export default function InviteView(props: Props) {
                         </label>
                     </div>
                 )}
-                <OverageUsersBannerNotice/>
             </Modal.Body>
             <Modal.Footer className={classNames('InviteView__footer', props.footerClass, {'InviteView__footer-guest': props.inviteType === InviteType.GUEST})}>
                 {props.inviteType === InviteType.MEMBER && props.membershipPolicyEnforced && (

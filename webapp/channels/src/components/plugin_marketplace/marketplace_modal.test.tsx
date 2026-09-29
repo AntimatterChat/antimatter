@@ -92,9 +92,6 @@ describe('components/marketplace/', () => {
                 general: {
                     firstAdminCompleteSetup: false,
                     config: {},
-                    license: {
-                        Cloud: 'false',
-                    },
                 },
                 admin: {
                     pluginStatuses: {},
@@ -200,21 +197,6 @@ describe('components/marketplace/', () => {
 
         expect(baseElement.querySelector('#searchMarketplaceTextbox')).not.toBeInTheDocument();
         expect(document.querySelector('.WebMarketplaceBanner')).toBeInTheDocument();
-
-        expect(baseElement).toMatchSnapshot();
-    });
-
-    test("doesn't show web marketplace banner for Cloud", async () => {
-        mockState.entities.general.license.Cloud = 'true';
-
-        const {baseElement} = renderWithContext(
-            <MarketplaceModal/>,
-            mockState,
-        );
-
-        await waitForListingToLoad();
-
-        expect(document.querySelector('.WebMarketplaceBanner')).not.toBeInTheDocument();
 
         expect(baseElement).toMatchSnapshot();
     });

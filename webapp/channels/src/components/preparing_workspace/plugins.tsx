@@ -27,7 +27,6 @@ type Props = PreparingWorkspacePageProps & {
     options: Form['plugins'];
     setOption: (option: keyof Form['plugins']) => void;
     className?: string;
-    isSelfHosted: boolean;
     handleVisitMarketPlaceClick: () => void;
 };
 const Plugins = (props: Props) => {
@@ -157,27 +156,25 @@ const Plugins = (props: Props) => {
                                 },
                             ]}
                         />
-                        {props.isSelfHosted && (
-                            <div className='Plugins__marketplace'>
-                                <FormattedMessage
-                                    id='onboarding_wizard.plugins.marketplace'
-                                    defaultMessage='More tools can be added once your workspace is set up. To see all available integrations, <a>visit the Marketplace.</a>'
-                                    values={{
-                                        a: (chunks: React.ReactNode | readonly React.ReactNode[]) => (
-                                            <strong>
-                                                <ExternalLink
-                                                    href='https://mattermost.com/marketplace/'
-                                                    location='preparing_workspace_plugins'
-                                                    onClick={props.handleVisitMarketPlaceClick}
-                                                >
-                                                    {chunks}
-                                                </ExternalLink>
-                                            </strong>
-                                        ),
-                                    }}
-                                />
-                            </div>
-                        )}
+                        <div className='Plugins__marketplace'>
+                            <FormattedMessage
+                                id='onboarding_wizard.plugins.marketplace'
+                                defaultMessage='More tools can be added once your workspace is set up. To see all available integrations, <a>visit the Marketplace.</a>'
+                                values={{
+                                    a: (chunks: React.ReactNode | readonly React.ReactNode[]) => (
+                                        <strong>
+                                            <ExternalLink
+                                                href='https://mattermost.com/marketplace/'
+                                                location='preparing_workspace_plugins'
+                                                onClick={props.handleVisitMarketPlaceClick}
+                                            >
+                                                {chunks}
+                                            </ExternalLink>
+                                        </strong>
+                                    ),
+                                }}
+                            />
+                        </div>
                     </PageBody>
                     <div>
                         <button

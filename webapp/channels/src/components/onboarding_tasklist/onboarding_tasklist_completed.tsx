@@ -1,23 +1,16 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 
-import React, {useEffect, useRef, type JSX} from 'react';
+import React, {useRef, type JSX} from 'react';
 import {FormattedMessage} from 'react-intl';
-import {useSelector, useDispatch} from 'react-redux';
 import {CSSTransition} from 'react-transition-group';
 import styled from 'styled-components';
 
 import {isDesktopApp} from '@mattermost/shared/utils/user_agent';
-import type {GlobalState} from '@mattermost/types/store';
-
-import {getPrevTrialLicense} from 'mattermost-redux/actions/admin';
-import {getLicense} from 'mattermost-redux/selectors/entities/general';
 
 import ExternalLink from 'components/external_link';
-import StartTrialBtn from 'components/learn_more_trial_modal/start_trial_btn';
 
 import completedImg from 'images/completed.svg';
-import {AboutLinks, LicenseLinks} from 'utils/constants';
 
 const CompletedWrapper = styled.div`
     display: flex;
@@ -48,7 +41,7 @@ const CompletedWrapper = styled.div`
     &.fade-exit-done {
         transform: scale(1);
     }
-    .start-trial-btn, .got-it-button {
+    .got-it-button {
         padding: 13px 20px;
         background: var(--button-bg);
         border-radius: 4px;
@@ -69,7 +62,7 @@ const CompletedWrapper = styled.div`
         font-weight: 600;
     }
 
-    .start-trial-text, .completed-subtitle {
+    .completed-subtitle {
         font-size: 14px !important;
         color: rgba(var(--center-channel-color-rgb), 0.75);
         line-height: 20px;
@@ -79,7 +72,7 @@ const CompletedWrapper = styled.div`
         margin-top: 5px;
     }
 
-    .disclaimer, .download-apps {
+    .download-apps {
         width: 90%;
         margin-top: 15px;
         color: rgba(var(--center-channel-color-rgb), 0.75);
@@ -89,68 +82,21 @@ const CompletedWrapper = styled.div`
         line-height: 16px;
     }
 
-    .disclaimer {
-        text-align: left;
-        margin-top: auto;
-        font-size: 11px;
-    }
-
     .download-apps {
         margin-top: 24px;
         width: 200px;
         font-size: 12px;
     }
-
-    .style-link {
-        border: none;
-        background: none !important;
-        color: var(--button-bg) !important;
-    }
-
-    .no-thanks-link {
-        display: inline-block;
-        min-width: fit-content;
-        margin-top: 18px;
-        font-weight: 600;
-        font-size: 14px;
-        line-height: 20px;
-        &:hover {
-            text-decoration: underline;
-        }
-    }
 `;
 
 interface Props {
     dismissAction: () => void;
-    isCurrentUserSystemAdmin: boolean;
-    isFirstAdmin: boolean;
 }
 
 const Completed = (props: Props): JSX.Element => {
     const {dismissAction} = props;
 
-    const dispatch = useDispatch();
     const wrapperRef = useRef<HTMLDivElement>(null);
-
-    useEffect(() => {
-        dispatch(getPrevTrialLicense());
-    }, []);
-
-    const prevTrialLicense = useSelector((state: GlobalState) => state.entities.admin.prevTrialLicense);
-    const license = useSelector(getLicense);
-    const isPrevLicensed = prevTrialLicense?.IsLicensed;
-    const isCurrentLicensed = license?.IsLicensed;
-
-    // Cloud conditions
-    const isCloud = license?.Cloud === 'true';
-
-    // Show this CTA if the instance is currently not licensed and has never had a trial license loaded before
-    // also check that the user is a system admin (this after the onboarding task list is shown to all users)
-    const selfHostedTrialCondition = (isCurrentLicensed === 'false' && isPrevLicensed === 'false') &&
-        (props.isCurrentUserSystemAdmin || props.isFirstAdmin);
-
-    // if Cloud, don't show
-    const showStartTrialBtn = selfHostedTrialCondition && !isCloud;
 
     return (
         <>
@@ -178,43 +124,15 @@ const Completed = (props: Props): JSX.Element => {
                         />
                     </span>
 
-                    {showStartTrialBtn ? (
-                        <>
-                            <span className='start-trial-text'>
-                                <FormattedMessage
-                                    id='onboardingTask.checklist.higher_security_features'
-                                    defaultMessage='Interested in our higher-security features?'
-                                /> <br/>
-                                <FormattedMessage
-                                    id='onboardingTask.checklist.start_enterprise_now'
-                                    defaultMessage='Start your free Enterprise trial now!'
-                                />
-                            </span>
-                            <StartTrialBtn
-                                onClick={dismissAction}
-                            />
-                            <button
-                                onClick={dismissAction}
-                                className={'no-thanks-link style-link'}
-                            >
-                                <FormattedMessage
-                                    id={'onboardingTask.checklist.no_thanks'}
-                                    defaultMessage='No, thanks'
-                                />
-                            </button>
-                        </>
-
-                    ) : (
-                        <button
-                            onClick={dismissAction}
-                            className='got-it-button'
-                        >
-                            <FormattedMessage
-                                id={'collapsed_reply_threads_modal.confirm'}
-                                defaultMessage='Got it'
-                            />
-                        </button>
-                    )}
+                    <button
+                        onClick={dismissAction}
+                        className='got-it-button'
+                    >
+                        <FormattedMessage
+                            id={'collapsed_reply_threads_modal.confirm'}
+                            defaultMessage='Got it'
+                        />
+                    </button>
                     {!isDesktopApp() && (
                         <div className='download-apps'>
                             <span>
@@ -235,32 +153,6 @@ const Completed = (props: Props): JSX.Element => {
                             </span>
                         </div>
                     )}
-                    {showStartTrialBtn && <div className='disclaimer'>
-                        <span>
-                            <FormattedMessage
-                                id='onboardingTask.checklist.disclaimer'
-                                defaultMessage='By clicking “Start trial”, I agree to the <linkEvaluation>Mattermost Software Evaluation Agreement</linkEvaluation>, <linkPrivacy>privacy policy</linkPrivacy> and receiving product emails.'
-                                values={{
-                                    linkEvaluation: (msg: React.ReactNode) => (
-                                        <ExternalLink
-                                            href={LicenseLinks.SOFTWARE_SERVICES_LICENSE_AGREEMENT}
-                                            location='onboarding_tasklist_completed'
-                                        >
-                                            {msg}
-                                        </ExternalLink>
-                                    ),
-                                    linkPrivacy: (msg: React.ReactNode) => (
-                                        <ExternalLink
-                                            href={AboutLinks.PRIVACY_POLICY}
-                                            location='onboarding_tasklist_completed'
-                                        >
-                                            {msg}
-                                        </ExternalLink>
-                                    ),
-                                }}
-                            />
-                        </span>
-                    </div>}
                 </CompletedWrapper>
             </CSSTransition>
         </>

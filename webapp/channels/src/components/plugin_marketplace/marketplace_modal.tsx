@@ -12,7 +12,7 @@ import {FooterPagination, GenericModal} from '@mattermost/components';
 
 import {getPluginStatuses} from 'mattermost-redux/actions/admin';
 import {setFirstAdminVisitMarketplaceStatus} from 'mattermost-redux/actions/general';
-import {getFirstAdminVisitMarketplaceStatus, getLicense} from 'mattermost-redux/selectors/entities/general';
+import {getFirstAdminVisitMarketplaceStatus} from 'mattermost-redux/selectors/entities/general';
 
 import {fetchListing} from 'actions/marketplace';
 import {closeModal} from 'actions/views/modals';
@@ -23,7 +23,6 @@ import usePluginStatusesSync from 'components/common/hooks/usePluginStatusesSync
 import LoadingScreen from 'components/loading_screen';
 
 import {ModalIdentifiers} from 'utils/constants';
-import {isCloudLicense} from 'utils/license_utils';
 
 import type {GlobalState} from 'types/store';
 
@@ -49,8 +48,6 @@ const MarketplaceModal = () => {
     // Refetch plugin statuses while the modal is open whenever the server signals a change.
     const pluginStatuses = usePluginStatusesSync();
     const hasFirstAdminVisitedMarketplace = useSelector(getFirstAdminVisitMarketplaceStatus);
-    const license = useSelector(getLicense);
-    const isCloud = isCloudLicense(license);
 
     const [page, setPage] = useState(0);
     const [hasLoaded, setHasLoaded] = useState(false);
@@ -130,20 +127,10 @@ const MarketplaceModal = () => {
         );
     }, [listing.length, page, handleOnNextPage, handleOnPreviousPage]);
 
-    const getAppendedContent = useCallback(() => {
-        if (isCloud) {
-            return null;
-        }
-
-        return <WebMarketplaceBanner/>;
-    }, [isCloud]);
-
     return (
         <GenericModal
             id='marketplace-modal'
-            className={classNames('marketplace-modal', 'streamlined-marketplace', {
-                'with-web-marketplace-link': !isCloud,
-            })}
+            className={classNames('marketplace-modal', 'streamlined-marketplace', 'with-web-marketplace-link')}
             modalHeaderText={formatMessage({id: 'marketplace_modal.title', defaultMessage: 'App Marketplace'})}
             ariaLabel={formatMessage({id: 'marketplace_modal.title', defaultMessage: 'App Marketplace'})}
             errorText={serverError ? (
@@ -162,7 +149,7 @@ const MarketplaceModal = () => {
             footerDivider={true}
             onExited={handleOnClose}
             footerContent={getFooterContent()}
-            appendedContent={getAppendedContent()}
+            appendedContent={<WebMarketplaceBanner/>}
         >
             {loading ? (
                 <LoadingScreen className='loading'/>

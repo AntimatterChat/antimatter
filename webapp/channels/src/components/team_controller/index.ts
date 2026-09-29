@@ -7,7 +7,7 @@ import type {RouteComponentProps} from 'react-router-dom';
 
 import {fetchAllMyTeamsChannels, fetchAllMyChannelMembers, fetchChannelsAndMembers, unsetActiveChannelOnServer} from 'mattermost-redux/actions/channels';
 import {getCurrentChannelId} from 'mattermost-redux/selectors/entities/channels';
-import {getLicense, getConfig} from 'mattermost-redux/selectors/entities/general';
+import {getConfig} from 'mattermost-redux/selectors/entities/general';
 import {getCurrentTeamId, getMyTeams} from 'mattermost-redux/selectors/entities/teams';
 import {getCurrentUser} from 'mattermost-redux/selectors/entities/users';
 
@@ -32,7 +32,6 @@ type Params = {
 export type OwnProps = RouteComponentProps<Params>;
 
 function mapStateToProps(state: GlobalState, ownProps: OwnProps) {
-    const license = getLicense(state);
     const config = getConfig(state);
     const currentUser = getCurrentUser(state);
     const plugins = state.plugins.components.NeedsTeamComponent;
@@ -48,7 +47,7 @@ function mapStateToProps(state: GlobalState, ownProps: OwnProps) {
         products,
         selectedThreadId: getSelectedThreadIdInCurrentTeam(state),
         selectedPostId: getSelectedPostId(state),
-        mfaRequired: checkIfMFARequired(currentUser, license, config, ownProps.match.url),
+        mfaRequired: checkIfMFARequired(currentUser, config, ownProps.match.url),
         disableRefetchingOnBrowserFocus,
         disableWakeUpReconnectHandler,
     };

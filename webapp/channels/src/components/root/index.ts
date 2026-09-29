@@ -8,7 +8,6 @@ import {withRouter} from 'react-router-dom';
 import {bindActionCreators} from 'redux';
 import type {Dispatch} from 'redux';
 
-import {isCurrentLicenseCloud} from 'mattermost-redux/selectors/entities/cloud';
 import {getConfig} from 'mattermost-redux/selectors/entities/general';
 import {getTeam} from 'mattermost-redux/selectors/entities/teams';
 import {shouldShowTermsOfService, getCurrentUserId} from 'mattermost-redux/selectors/entities/users';
@@ -67,7 +66,6 @@ function mapStateToProps(state: GlobalState) {
         rhsIsOpen: getIsRhsOpen(state),
         rhsState: getRhsState(state),
         shouldShowAppBar: shouldShowAppBar(state),
-        isCloud: isCurrentLicenseCloud(state),
         isDevModeEnabled: isDevModeEnabled(state),
     };
 }

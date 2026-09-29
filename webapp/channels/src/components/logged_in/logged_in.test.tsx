@@ -45,7 +45,6 @@ describe('components/logged_in/LoggedIn', () => {
     const baseProps: Props = {
         currentUser: {} as UserProfile,
         mfaRequired: false,
-        customProfileAttributesEnabled: false,
         actions: {
             autoUpdateTimezone: jest.fn(),
             getChannelURLAction: jest.fn(),
@@ -201,26 +200,14 @@ describe('components/logged_in/LoggedIn', () => {
     });
 
     describe('custom profile attributes', () => {
-        it('should call getCustomProfileAttributeFields when feature is enabled on mount', () => {
+        it('should call getCustomProfileAttributeFields on mount', () => {
             const props = {
                 ...baseProps,
-                customProfileAttributesEnabled: true,
             };
 
             renderWithContext(<LoggedIn {...props}>{children}</LoggedIn>);
 
             expect(props.actions.getCustomProfileAttributeFields).toHaveBeenCalledTimes(1);
-        });
-
-        it('should not call getCustomProfileAttributeFields when feature is disabled', () => {
-            const props = {
-                ...baseProps,
-                customProfileAttributesEnabled: false,
-            };
-
-            renderWithContext(<LoggedIn {...props}>{children}</LoggedIn>);
-
-            expect(props.actions.getCustomProfileAttributeFields).not.toHaveBeenCalled();
         });
     });
 });

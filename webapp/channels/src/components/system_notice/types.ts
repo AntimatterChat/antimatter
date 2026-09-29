@@ -16,7 +16,6 @@ export type Notice = {
     show?(
         serverVersion: string,
         config: any,
-        license: any,
         analytics?: AnalyticsState,
         currentChannel?: Channel,
     ): boolean;
