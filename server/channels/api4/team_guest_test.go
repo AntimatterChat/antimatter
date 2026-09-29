@@ -17,7 +17,6 @@ import (
 func TestGetTeamAsGuest(t *testing.T) {
 	th := Setup(t).InitBasic(t)
 
-	th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterprise))
 	th.App.UpdateConfig(func(cfg *model.Config) { *cfg.GuestAccountsSettings.Enable = true })
 
 	guest, guestClient := th.CreateGuestAndClient(t)

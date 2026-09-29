@@ -251,8 +251,6 @@ func TestPreparePostForClient(t *testing.T) {
 		// Enable BurnOnRead feature flag
 		th.App.UpdateConfig(func(cfg *model.Config) { cfg.FeatureFlags.BurnOnRead = true })
 
-		// Enable BoR feature with license and config
-		th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterpriseAdvanced))
 		th.App.UpdateConfig(func(cfg *model.Config) {
 			*cfg.ServiceSettings.PostPriority = true
 			*cfg.ServiceSettings.EnableBurnOnRead = true
@@ -3702,8 +3700,6 @@ func TestPreparePostForClient_BurnOnReadSenderExpireAt(t *testing.T) {
 	// Enable BurnOnRead feature flag
 	th.App.UpdateConfig(func(cfg *model.Config) { cfg.FeatureFlags.BurnOnRead = true })
 
-	// Enable Enterprise Advanced license and BoR config
-	th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterpriseAdvanced))
 	th.App.UpdateConfig(func(cfg *model.Config) {
 		cfg.ServiceSettings.EnableBurnOnRead = new(true)
 	})

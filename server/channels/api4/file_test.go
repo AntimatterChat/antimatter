@@ -892,14 +892,6 @@ func TestGetFile(t *testing.T) {
 
 	t.Run("content reviewer should be able to get file of channel and team they are not a member of", func(t *testing.T) {
 		th.LoginBasic(t)
-		ok := th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterpriseAdvanced))
-		require.True(t, ok, "failed to set license")
-
-		defer func() {
-			appErr := th.App.Srv().RemoveLicense()
-			require.Nil(t, appErr)
-		}()
-
 		newChannel := th.CreatePrivateChannel(t)
 
 		sent, err := testutils.ReadTestFile("test.png")
@@ -998,10 +990,6 @@ func TestGetFileAsContentReviewer(t *testing.T) {
 	if *th.App.Config().FileSettings.DriverName == "" {
 		t.Skip("skipping because no file driver is enabled")
 	}
-
-	ok := th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterpriseAdvanced))
-	require.True(t, ok, "failed to set license")
-	defer th.RemoveLicense(t)
 
 	appErr := setBasicCommonReviewerConfig(th)
 	require.Nil(t, appErr)

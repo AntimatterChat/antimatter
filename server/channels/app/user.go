@@ -332,19 +332,6 @@ func (a *App) CreateGuest(rctx request.CTX, user *model.User) (*model.User, *mod
 }
 
 func (a *App) createUserOrGuest(rctx request.CTX, user *model.User, guest bool) (*model.User, *model.AppError) {
-	atUserLimit, limitErr := a.isAtUserLimit()
-	if limitErr != nil {
-		return nil, limitErr
-	}
-
-	if atUserLimit {
-		// Use different error messages based on whether server is licensed
-		if a.License() != nil {
-			return nil, model.NewAppError("createUserOrGuest", "api.user.create_user.license_user_limits.exceeded", nil, "", http.StatusBadRequest)
-		}
-		return nil, model.NewAppError("createUserOrGuest", "api.user.create_user.user_limits.exceeded", nil, "", http.StatusBadRequest)
-	}
-
 	if err := a.isUniqueToGroupNames(user.Username); err != nil {
 		err.Where = "createUserOrGuest"
 		return nil, err
@@ -424,22 +411,6 @@ func (a *App) createUserOrGuest(rctx request.CTX, user *model.User, guest bool) 
 			return true
 		}, plugin.UserHasBeenCreatedID)
 	})
-
-	userLimits, limitErr := a.GetServerLimits(true)
-	if limitErr != nil {
-		// we don't want to break the create user flow just because of this.
-		// So, we log the error, not return
-		rctx.Logger().Error("Error fetching user limits in createUserOrGuest", mlog.Err(limitErr))
-	} else {
-		if userLimits.MaxUsersLimit > 0 && userLimits.ActiveUserCount > userLimits.MaxUsersLimit {
-			// Use different warning messages based on whether server is licensed
-			if a.License() != nil {
-				rctx.Logger().Warn("ERROR_LICENSED_USERS_LIMIT_EXCEEDED: Created user exceeds the maximum licensed users.", mlog.Int("user_limit", userLimits.MaxUsersLimit))
-			} else {
-				rctx.Logger().Warn("ERROR_SAFETY_LIMITS_EXCEEDED: Created user exceeds the total activated users limit.", mlog.Int("user_limit", userLimits.MaxUsersLimit))
-			}
-		}
-	}
 
 	return ruser, nil
 }
@@ -1226,21 +1197,6 @@ func (a *App) invalidateUserChannelMembersCaches(rctx request.CTX, userID string
 }
 
 func (a *App) UpdateActive(rctx request.CTX, user *model.User, active bool) (*model.User, *model.AppError) {
-	if active {
-		atUserLimit, appErr := a.isAtUserLimit()
-		if appErr != nil {
-			return nil, appErr
-		}
-
-		if atUserLimit {
-			// Use different error messages based on whether server is licensed
-			if a.License() != nil {
-				return nil, model.NewAppError("UpdateActive", "app.user.update_active.license_user_limit.exceeded", nil, "", http.StatusBadRequest)
-			}
-			return nil, model.NewAppError("UpdateActive", "app.user.update_active.user_limit.exceeded", nil, "", http.StatusBadRequest)
-		}
-	}
-
 	user.UpdateAt = model.GetMillis()
 	if active {
 		user.DeleteAt = 0
@@ -1286,22 +1242,6 @@ func (a *App) UpdateActive(rctx request.CTX, user *model.User, active bool) (*mo
 				return true
 			}, plugin.UserHasBeenDeactivatedID)
 		})
-	}
-
-	if active {
-		userLimits, appErr := a.GetServerLimits(true)
-		if appErr != nil {
-			rctx.Logger().Error("Error fetching user limits in UpdateActive", mlog.Err(appErr))
-		} else {
-			if userLimits.MaxUsersLimit > 0 && userLimits.ActiveUserCount > userLimits.MaxUsersLimit {
-				// Use different warning messages based on whether server is licensed
-				if a.License() != nil {
-					rctx.Logger().Warn("ERROR_LICENSED_USERS_LIMIT_EXCEEDED: Activated user exceeds the maximum licensed users.", mlog.Int("user_limit", userLimits.MaxUsersLimit))
-				} else {
-					rctx.Logger().Warn("ERROR_SAFETY_LIMITS_EXCEEDED: Activated user exceeds the total active user limit.", mlog.Int("user_limit", userLimits.MaxUsersLimit))
-				}
-			}
-		}
 	}
 
 	return ruser, nil
@@ -1419,11 +1359,10 @@ func (a *App) CheckProviderAttributes(rctx request.CTX, user *model.User, patch 
 
 // CheckLockedProfileFields returns the name of the first profile field in the patch that
 // conflicts with TeamSettings.LockProfileFieldsForEmailUsers, or "" when there is no conflict.
-// It only applies to email/password users on Enterprise-licensed servers and exempts sessions
+// It only applies to email/password users and exempts sessions
 // with the edit_other_users permission.
 func (a *App) CheckLockedProfileFields(session model.Session, user *model.User, patch *model.UserPatch) string {
 	if a.SessionHasPermissionTo(session, model.PermissionEditOtherUsers) ||
-		!model.MinimumEnterpriseLicense(a.License()) ||
 		user.AuthService != "" {
 		return ""
 	}
@@ -1463,7 +1402,6 @@ func (a *App) CheckLockedProfileFields(session model.Session, user *model.User, 
 // edit_other_users permission.
 func (a *App) IsProfileImageLockedForUser(session model.Session, user *model.User) bool {
 	return !a.SessionHasPermissionTo(session, model.PermissionEditOtherUsers) &&
-		model.MinimumEnterpriseLicense(a.License()) &&
 		user.AuthService == "" &&
 		*a.Config().TeamSettings.LockProfileFieldsForEmailUsers == model.TeamSettingsLockProfileFieldsAll
 }

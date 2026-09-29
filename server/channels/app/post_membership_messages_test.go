@@ -256,7 +256,7 @@ func TestGetPostsByIdsSuppression(t *testing.T) {
 	t.Run("returns regular posts when suppression is enabled", func(t *testing.T) {
 		setChannelDisableJoinLeaveMessages(t, th, channel, true)
 
-		posts, _, appErr := th.App.GetPostsByIds([]string{normalPost.Id})
+		posts, appErr := th.App.GetPostsByIds([]string{normalPost.Id})
 		require.Nil(t, appErr)
 		require.Len(t, posts, 1, "regular posts must survive GetPostsByIds when suppression is on")
 		require.Equal(t, normalPost.Id, posts[0].Id)
@@ -265,7 +265,7 @@ func TestGetPostsByIdsSuppression(t *testing.T) {
 	t.Run("returns regular posts when suppression is disabled", func(t *testing.T) {
 		setChannelDisableJoinLeaveMessages(t, th, channel, false)
 
-		posts, _, appErr := th.App.GetPostsByIds([]string{normalPost.Id})
+		posts, appErr := th.App.GetPostsByIds([]string{normalPost.Id})
 		require.Nil(t, appErr)
 		require.Len(t, posts, 1)
 		require.Equal(t, normalPost.Id, posts[0].Id)
@@ -274,7 +274,7 @@ func TestGetPostsByIdsSuppression(t *testing.T) {
 	t.Run("suppresses membership post from GetPostsByIds when enabled", func(t *testing.T) {
 		setChannelDisableJoinLeaveMessages(t, th, channel, true)
 
-		posts, _, appErr := th.App.GetPostsByIds([]string{membershipPost.Id})
+		posts, appErr := th.App.GetPostsByIds([]string{membershipPost.Id})
 		require.Nil(t, appErr)
 		require.Len(t, posts, 0, "membership post must be suppressed")
 	})
@@ -282,7 +282,7 @@ func TestGetPostsByIdsSuppression(t *testing.T) {
 	t.Run("returns membership post from GetPostsByIds when suppression is disabled", func(t *testing.T) {
 		setChannelDisableJoinLeaveMessages(t, th, channel, false)
 
-		posts, _, appErr := th.App.GetPostsByIds([]string{membershipPost.Id})
+		posts, appErr := th.App.GetPostsByIds([]string{membershipPost.Id})
 		require.Nil(t, appErr)
 		require.Len(t, posts, 1)
 		require.Equal(t, membershipPost.Id, posts[0].Id)
@@ -291,7 +291,7 @@ func TestGetPostsByIdsSuppression(t *testing.T) {
 	t.Run("partial suppression: returns only regular post when both IDs requested with suppression enabled", func(t *testing.T) {
 		setChannelDisableJoinLeaveMessages(t, th, channel, true)
 
-		posts, _, appErr := th.App.GetPostsByIds([]string{membershipPost.Id, normalPost.Id})
+		posts, appErr := th.App.GetPostsByIds([]string{membershipPost.Id, normalPost.Id})
 		require.Nil(t, appErr)
 		require.Len(t, posts, 1, "only the regular post should survive")
 		require.Equal(t, normalPost.Id, posts[0].Id)

@@ -19,8 +19,6 @@ func TestProcessScheduledPosts(t *testing.T) {
 	t.Run("base case - happy path", func(t *testing.T) {
 		th := Setup(t).InitBasic(t)
 
-		th.App.Srv().SetLicense(getLicWithSkuShortName(model.LicenseShortSkuProfessional))
-
 		scheduledAt := model.GetMillis() + 1000
 		scheduledPost1 := &model.ScheduledPost{
 			Draft: model.Draft{
@@ -58,8 +56,6 @@ func TestProcessScheduledPosts(t *testing.T) {
 	t.Run("advances weekly recurring scheduled post instead of deleting", func(t *testing.T) {
 		th := Setup(t).InitBasic(t)
 
-		th.App.Srv().SetLicense(getLicWithSkuShortName(model.LicenseShortSkuProfessional))
-
 		scheduledAt := model.GetMillis() - 1000
 		scheduledPost := &model.ScheduledPost{
 			Draft: model.Draft{
@@ -92,8 +88,6 @@ func TestProcessScheduledPosts(t *testing.T) {
 
 	t.Run("advances multiple weekly recurring scheduled posts", func(t *testing.T) {
 		th := Setup(t).InitBasic(t)
-
-		th.App.Srv().SetLicense(getLicWithSkuShortName(model.LicenseShortSkuProfessional))
 
 		scheduledAt := model.GetMillis() - 1000
 		firstScheduledPost := &model.ScheduledPost{
@@ -148,8 +142,6 @@ func TestProcessScheduledPosts(t *testing.T) {
 	t.Run("advances overdue weekly recurring scheduled post older than one day", func(t *testing.T) {
 		th := Setup(t).InitBasic(t)
 
-		th.App.Srv().SetLicense(getLicWithSkuShortName(model.LicenseShortSkuProfessional))
-
 		scheduledAt := model.GetMillis() - (48 * 60 * 60 * 1000)
 		scheduledPost := &model.ScheduledPost{
 			Draft: model.Draft{
@@ -180,8 +172,6 @@ func TestProcessScheduledPosts(t *testing.T) {
 
 	t.Run("permanently deletes recurring and one-shot posts when the channel no longer exists", func(t *testing.T) {
 		th := Setup(t).InitBasic(t)
-
-		th.App.Srv().SetLicense(getLicWithSkuShortName(model.LicenseShortSkuProfessional))
 
 		scheduledAt := model.GetMillis() - 1000
 		deletedChannelId := model.NewId()
@@ -224,8 +214,6 @@ func TestProcessScheduledPosts(t *testing.T) {
 
 	t.Run("marks overdue one-shot posts even when overdue weekly posts move pagination backward", func(t *testing.T) {
 		th := Setup(t).InitBasic(t)
-
-		th.App.Srv().SetLicense(getLicWithSkuShortName(model.LicenseShortSkuProfessional))
 
 		now := model.GetMillis()
 		weeklyScheduledAt := now - (48 * 60 * 60 * 1000)
@@ -280,8 +268,6 @@ func TestProcessScheduledPosts(t *testing.T) {
 	t.Run("sets error code for archived channel", func(t *testing.T) {
 		th := Setup(t).InitBasic(t)
 
-		th.App.Srv().SetLicense(getLicWithSkuShortName(model.LicenseShortSkuProfessional))
-
 		appErr := th.App.DeleteChannel(th.Context, th.BasicChannel, th.BasicUser.Id)
 		assert.Nil(t, appErr)
 
@@ -329,8 +315,6 @@ func TestProcessScheduledPosts(t *testing.T) {
 
 	t.Run("sets error code for archived user", func(t *testing.T) {
 		th := Setup(t).InitBasic(t)
-
-		th.App.Srv().SetLicense(getLicWithSkuShortName(model.LicenseShortSkuProfessional))
 
 		scheduledAt := model.GetMillis() + 1000
 		scheduledPost1 := &model.ScheduledPost{
@@ -382,8 +366,6 @@ func TestProcessScheduledPosts(t *testing.T) {
 	t.Run("sets error code when user is not a channel member", func(t *testing.T) {
 		th := Setup(t).InitBasic(t)
 
-		th.App.Srv().SetLicense(getLicWithSkuShortName(model.LicenseShortSkuProfessional))
-
 		scheduledAt := model.GetMillis() + 1000
 		scheduledPost1 := &model.ScheduledPost{
 			Draft: model.Draft{
@@ -433,8 +415,6 @@ func TestProcessScheduledPosts(t *testing.T) {
 
 	t.Run("sets error code when user is not a team member", func(t *testing.T) {
 		th := Setup(t).InitBasic(t)
-
-		th.App.Srv().SetLicense(getLicWithSkuShortName(model.LicenseShortSkuProfessional))
 
 		scheduledAt := model.GetMillis() + 1000
 		scheduledPost1 := &model.ScheduledPost{
@@ -563,8 +543,6 @@ func TestProcessScheduledPostsWithSystemPostType(t *testing.T) {
 	for _, testCase := range testCases {
 		t.Run(testCase.name, func(t *testing.T) {
 			th := Setup(t).InitBasic(t)
-
-			th.App.Srv().SetLicense(getLicWithSkuShortName(model.LicenseShortSkuProfessional))
 
 			message := "scheduled post: " + testCase.name
 			scheduledAt := model.GetMillis() - 1000

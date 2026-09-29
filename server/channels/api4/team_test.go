@@ -94,7 +94,6 @@ func TestCreateTeam(t *testing.T) {
 	})
 
 	t.Run("should verify user permissions during team creation", func(t *testing.T) {
-		th.App.Srv().SetLicense(model.NewTestLicense("custom_permissions_schemes"))
 		err := th.App.SetPhase2PermissionsMigrationStatus(true)
 		require.NoError(t, err)
 
@@ -154,12 +153,6 @@ func TestCreateTeam(t *testing.T) {
 	t.Run("should override team name with server-generated ID when UseAnonymousURLs is enabled", func(t *testing.T) {
 		th.App.UpdateConfig(func(cfg *model.Config) { *cfg.PrivacySettings.UseAnonymousURLs = true })
 
-		th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterpriseAdvanced))
-		defer func() {
-			appErr := th.App.Srv().RemoveLicense()
-			require.Nil(t, appErr)
-		}()
-
 		th.LoginBasic(t)
 
 		originalName := "originalname"
@@ -179,60 +172,8 @@ func TestCreateTeam(t *testing.T) {
 		require.NoError(t, err)
 		CheckCreatedStatus(t, resp)
 		require.Equal(t, originalName, createdTeam.Name)
-
-		// setting license to something other than Enterprise Advanced should preserve team name
-		th.App.UpdateConfig(func(cfg *model.Config) { *cfg.PrivacySettings.UseAnonymousURLs = true })
-		th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterprise))
-
-		originalName = "original-name-2"
-		team = &model.Team{Name: originalName, DisplayName: "Regular URL Team", Type: model.TeamOpen}
-		createdTeam, resp, err = th.Client.CreateTeam(context.Background(), team)
-		require.NoError(t, err)
-		CheckCreatedStatus(t, resp)
-		require.Equal(t, originalName, createdTeam.Name)
 	})
 
-	t.Run("cloud limit reached returns 400", func(t *testing.T) {
-		th.App.Srv().SetLicense(model.NewTestLicense("cloud"))
-
-		cloud := &mocks.CloudInterface{}
-		cloudImpl := th.App.Srv().Cloud
-		defer func() {
-			th.App.Srv().Cloud = cloudImpl
-		}()
-		th.App.Srv().Cloud = cloud
-
-		cloud.Mock.On("GetCloudLimits", mock.Anything).Return(&model.ProductLimits{
-			Teams: &model.TeamsLimits{
-				Active: new(1),
-			},
-		}, nil).Once()
-		team := &model.Team{Name: GenerateTestUsername(), DisplayName: "Some Team", Type: model.TeamOpen}
-		_, resp, err := th.Client.CreateTeam(context.Background(), team)
-		require.Error(t, err)
-		CheckBadRequestStatus(t, resp)
-	})
-
-	t.Run("cloud below limit returns 200", func(t *testing.T) {
-		th.App.Srv().SetLicense(model.NewTestLicense("cloud"))
-
-		cloud := &mocks.CloudInterface{}
-		cloudImpl := th.App.Srv().Cloud
-		defer func() {
-			th.App.Srv().Cloud = cloudImpl
-		}()
-		th.App.Srv().Cloud = cloud
-
-		cloud.Mock.On("GetCloudLimits", mock.Anything).Return(&model.ProductLimits{
-			Teams: &model.TeamsLimits{
-				Active: new(200),
-			},
-		}, nil).Once()
-		team := &model.Team{Name: GenerateTestUsername(), DisplayName: "Some Team", Type: model.TeamOpen}
-		_, resp, err := th.Client.CreateTeam(context.Background(), team)
-		require.NoError(t, err)
-		CheckCreatedStatus(t, resp)
-	})
 }
 
 func TestCreateTeamSanitization(t *testing.T) {
@@ -378,7 +319,6 @@ func TestCreateTeamInviteUserPermissionSystemAdmin(t *testing.T) {
 // Exercises the scheme branch of creatorCanInviteUsersOnTeam.
 func TestCreateTeamInviteUserPermissionScheme(t *testing.T) {
 	th := Setup(t)
-	th.App.Srv().SetLicense(model.NewTestLicense("custom_permissions_schemes"))
 	err := th.App.SetPhase2PermissionsMigrationStatus(true)
 	require.NoError(t, err)
 
@@ -545,7 +485,6 @@ func TestGetTeam(t *testing.T) {
 	})
 
 	t.Run("Content reviewer should be able to get team without membership with flagged post", func(t *testing.T) {
-		th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterpriseAdvanced))
 		appErr := setBasicCommonReviewerConfig(th)
 		require.Nil(t, appErr)
 
@@ -591,7 +530,6 @@ func TestGetTeam(t *testing.T) {
 	})
 
 	t.Run("Content reviewer should not be able to get a team via a DM or GM post", func(t *testing.T) {
-		th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterpriseAdvanced))
 		appErr := setBasicCommonReviewerConfig(th)
 		require.Nil(t, appErr)
 
@@ -631,7 +569,6 @@ func TestGetTeam(t *testing.T) {
 	})
 
 	t.Run("Content reviewer should not be able to get a team via a post from another team", func(t *testing.T) {
-		th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterpriseAdvanced))
 		appErr := setBasicCommonReviewerConfig(th)
 		require.Nil(t, appErr)
 
@@ -1260,11 +1197,6 @@ func TestPatchTeam(t *testing.T) {
 
 	t.Run("GroupConstrained flag set to true and non group members are removed", func(t *testing.T) {
 		var appErr *model.AppError
-		th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterprise))
-		defer func() {
-			appErr = th.App.Srv().RemoveLicense()
-			require.Nil(t, appErr)
-		}()
 		th.LoginTeamAdmin(t)
 		team2 := &model.Team{DisplayName: "Name", Name: GenerateTestTeamName(), Email: th.GenerateTestEmail(), Type: model.TeamOpen, AllowOpenInvite: false}
 		team2, _, _ = th.Client.CreateTeam(context.Background(), team2)
@@ -1329,11 +1261,6 @@ func TestPatchTeam(t *testing.T) {
 
 	t.Run("GroupConstrained flag changed from true to false and non group members are not removed", func(t *testing.T) {
 		var appErr *model.AppError
-		th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterprise))
-		defer func() {
-			appErr = th.App.Srv().RemoveLicense()
-			require.Nil(t, appErr)
-		}()
 		th.LoginTeamAdmin(t)
 		team2 := &model.Team{DisplayName: "Name", Name: GenerateTestTeamName(), Email: th.GenerateTestEmail(), Type: model.TeamOpen, AllowOpenInvite: false}
 		team2, _, _ = th.Client.CreateTeam(context.Background(), team2)
@@ -1546,49 +1473,6 @@ func TestRestoreTeam(t *testing.T) {
 		CheckOKStatus(t, resp)
 	})
 
-	t.Run("cloud limit reached returns 400", func(t *testing.T) {
-		// Create an archived team to be restored later
-		team := createTeam(t, true, model.TeamOpen)
-		th.App.Srv().SetLicense(model.NewTestLicense("cloud"))
-
-		cloud := &mocks.CloudInterface{}
-		cloudImpl := th.App.Srv().Cloud
-		defer func() {
-			th.App.Srv().Cloud = cloudImpl
-		}()
-		th.App.Srv().Cloud = cloud
-
-		cloud.Mock.On("GetCloudLimits", mock.Anything).Return(&model.ProductLimits{
-			Teams: &model.TeamsLimits{
-				Active: new(1),
-			},
-		}, nil).Once()
-
-		_, resp, err := client.RestoreTeam(context.Background(), team.Id)
-		require.Error(t, err)
-		CheckBadRequestStatus(t, resp)
-	})
-
-	t.Run("cloud below limit returns 200", func(t *testing.T) {
-		th.App.Srv().SetLicense(model.NewTestLicense("cloud"))
-
-		cloud := &mocks.CloudInterface{}
-		cloudImpl := th.App.Srv().Cloud
-		defer func() {
-			th.App.Srv().Cloud = cloudImpl
-		}()
-		th.App.Srv().Cloud = cloud
-
-		cloud.Mock.On("GetCloudLimits", mock.Anything).Return(&model.ProductLimits{
-			Teams: &model.TeamsLimits{
-				Active: new(200),
-			},
-		}, nil).Twice()
-		team := createTeam(t, true, model.TeamOpen)
-		_, resp, err := client.RestoreTeam(context.Background(), team.Id)
-		require.NoError(t, err)
-		CheckOKStatus(t, resp)
-	})
 }
 
 func TestPatchTeamSanitization(t *testing.T) {
@@ -2993,9 +2877,6 @@ func TestAddTeamMember(t *testing.T) {
 	team := th.BasicTeam
 	otherUser := th.CreateUser(t)
 
-	th.App.Srv().SetLicense(model.NewTestLicense(""))
-	defer th.App.Srv().SetLicense(nil)
-
 	enableGuestAccounts := *th.App.Config().GuestAccountsSettings.Enable
 	defer func() {
 		th.App.UpdateConfig(func(cfg *model.Config) { cfg.GuestAccountsSettings.Enable = &enableGuestAccounts })
@@ -3165,8 +3046,6 @@ func TestAddTeamMember(t *testing.T) {
 	require.Nil(t, appErr)
 	// by invite_id
 
-	th.App.Srv().SetLicense(model.NewTestLicense(""))
-	defer th.App.Srv().SetLicense(nil)
 	_, _, err = client.Login(context.Background(), guest.Email, guest.Password)
 	require.NoError(t, err)
 
@@ -3241,11 +3120,8 @@ func TestAddTeamMemberGuestPermissions(t *testing.T) {
 	enableGuestAccounts := *th.App.Config().GuestAccountsSettings.Enable
 	defer func() {
 		th.App.UpdateConfig(func(cfg *model.Config) { *cfg.GuestAccountsSettings.Enable = enableGuestAccounts })
-		appErr := th.App.Srv().RemoveLicense()
-		require.Nil(t, appErr)
 	}()
 	th.App.UpdateConfig(func(cfg *model.Config) { *cfg.GuestAccountsSettings.Enable = true })
-	th.App.Srv().SetLicense(model.NewTestLicense())
 
 	defaultRolePermissions := th.SaveDefaultRolePermissions(t)
 	defer func() {
@@ -3590,11 +3466,8 @@ func TestAddTeamMembersGuestPermissions(t *testing.T) {
 	enableGuestAccounts := *th.App.Config().GuestAccountsSettings.Enable
 	defer func() {
 		th.App.UpdateConfig(func(cfg *model.Config) { *cfg.GuestAccountsSettings.Enable = enableGuestAccounts })
-		appErr := th.App.Srv().RemoveLicense()
-		require.Nil(t, appErr)
 	}()
 	th.App.UpdateConfig(func(cfg *model.Config) { *cfg.GuestAccountsSettings.Enable = true })
-	th.App.Srv().SetLicense(model.NewTestLicense())
 
 	defaultRolePermissions := th.SaveDefaultRolePermissions(t)
 	defer func() {
@@ -3935,11 +3808,8 @@ func TestUpdateTeamMemberSchemeRoles(t *testing.T) {
 	enableGuestAccounts := *th.App.Config().GuestAccountsSettings.Enable
 	defer func() {
 		th.App.UpdateConfig(func(cfg *model.Config) { *cfg.GuestAccountsSettings.Enable = enableGuestAccounts })
-		appErr := th.App.Srv().RemoveLicense()
-		require.Nil(t, appErr)
 	}()
 	th.App.UpdateConfig(func(cfg *model.Config) { *cfg.GuestAccountsSettings.Enable = true })
-	th.App.Srv().SetLicense(model.NewTestLicense())
 
 	id := model.NewId()
 	guest := &model.User{
@@ -4452,17 +4322,6 @@ func TestInviteUsersToTeamWithProfiles(t *testing.T) {
 		return nil
 	}
 
-	t.Run("rejected without an Enterprise license", func(t *testing.T) {
-		th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuProfessional))
-
-		_, resp, err := th.Client.InviteMembersToTeamGracefully(context.Background(), th.BasicTeam.Id, newInvite())
-		require.Error(t, err)
-		CheckBadRequestStatus(t, resp)
-		CheckErrorID(t, err, "api.team.invite_members.profiles_license.app_error")
-	})
-
-	th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterprise))
-
 	t.Run("rejected when locked profile fields are disabled", func(t *testing.T) {
 		_, resp, err := th.Client.InviteMembersToTeamGracefully(context.Background(), th.BasicTeam.Id, newInvite())
 		require.Error(t, err)
@@ -4646,8 +4505,6 @@ func TestInviteGuestsToTeam(t *testing.T) {
 		th.App.UpdateConfig(func(cfg *model.Config) { cfg.GuestAccountsSettings.Enable = &enableGuestAccounts })
 	}()
 
-	th.App.Srv().SetLicense(model.NewTestLicense(""))
-
 	th.App.UpdateConfig(func(cfg *model.Config) { *cfg.GuestAccountsSettings.Enable = false })
 	_, err = th.SystemAdminClient.InviteGuestsToTeam(context.Background(), th.BasicTeam.Id, emailList, []string{th.BasicChannel.Id}, "test-message")
 	assert.Error(t, err, "Should be disabled")
@@ -4658,14 +4515,6 @@ func TestInviteGuestsToTeam(t *testing.T) {
 	require.Error(t, err, "Should be disabled")
 
 	th.App.UpdateConfig(func(cfg *model.Config) { *cfg.ServiceSettings.EnableEmailInvitations = true })
-
-	th.App.Srv().SetLicense(nil)
-
-	_, err = th.SystemAdminClient.InviteGuestsToTeam(context.Background(), th.BasicTeam.Id, emailList, []string{th.BasicChannel.Id}, "test-message")
-	require.Error(t, err, "Should be disabled")
-
-	th.App.Srv().SetLicense(model.NewTestLicense(""))
-	defer th.App.Srv().SetLicense(nil)
 
 	_, err = th.SystemAdminClient.InviteGuestsToTeam(context.Background(), th.BasicTeam.Id, emailList, []string{th.BasicChannel.Id}, "test-message")
 	require.NoError(t, err)
@@ -4773,26 +4622,7 @@ func TestInviteGuest(t *testing.T) {
 	th.App.UpdateConfig(func(cfg *model.Config) { *cfg.GuestAccountsSettings.Enable = true })
 	th.App.UpdateConfig(func(cfg *model.Config) { *cfg.ServiceSettings.EnableEmailInvitations = true })
 
-	t.Run("Guest Account not available in license returns forbidden", func(t *testing.T) {
-		th.App.Srv().SetLicense(model.NewTestLicenseWithFalseDefaults("guest_accounts"))
-
-		guestsInvite := model.GuestsInvite{
-			Emails:   emailList,
-			Channels: []string{th.BasicChannel.Id},
-			Message:  "test message",
-		}
-		buf, err := json.Marshal(guestsInvite)
-		require.NoError(t, err)
-
-		res, err := th.SystemAdminClient.DoAPIPost(context.Background(), "/teams/"+th.BasicTeam.Id+"/invite-guests/email", string(buf))
-
-		require.Equal(t, http.StatusForbidden, res.StatusCode)
-		require.True(t, strings.Contains(err.Error(), "Guest accounts are disabled"))
-		require.Error(t, err)
-	})
-
-	t.Run("Guest Account available in license returns OK", func(t *testing.T) {
-		th.App.Srv().SetLicense(model.NewTestLicense("guest_accounts"))
+	t.Run("Guest Account invite returns OK", func(t *testing.T) {
 
 		guestsInvite := model.GuestsInvite{
 			Emails:   emailList,
@@ -4954,8 +4784,6 @@ func TestUpdateTeamScheme(t *testing.T) {
 	mainHelper.Parallel(t)
 	th := Setup(t)
 
-	th.App.Srv().SetLicense(model.NewTestLicense(""))
-
 	err := th.App.SetPhase2PermissionsMigrationStatus(true)
 	require.NoError(t, err)
 
@@ -5009,13 +4837,6 @@ func TestUpdateTeamScheme(t *testing.T) {
 	resp, err = th.Client.UpdateTeamScheme(context.Background(), team.Id, teamScheme.Id)
 	require.Error(t, err)
 	CheckForbiddenStatus(t, resp)
-
-	// Test that a license is required.
-	th.App.Srv().SetLicense(nil)
-	resp, err = th.SystemAdminClient.UpdateTeamScheme(context.Background(), team.Id, teamScheme.Id)
-	require.Error(t, err)
-	CheckNotImplementedStatus(t, resp)
-	th.App.Srv().SetLicense(model.NewTestLicense(""))
 
 	// Test an invalid scheme scope.
 	resp, err = th.SystemAdminClient.UpdateTeamScheme(context.Background(), team.Id, channelScheme.Id)
@@ -5401,9 +5222,6 @@ func TestGetAllTeamsDirectoryHiding(t *testing.T) {
 		cfg.FeatureFlags.TeamMembershipAccessControl = true
 	}).InitBasic(t)
 
-	ok := th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterpriseAdvanced))
-	require.True(t, ok, "SetLicense should return true")
-	defer th.App.Srv().SetLicense(nil)
 	th.App.UpdateConfig(func(cfg *model.Config) {
 		cfg.AccessControlSettings.EnableAttributeBasedAccessControl = model.NewPointer(true)
 	})

@@ -32,10 +32,6 @@ func (a *App) ProcessScheduledPosts(rctx request.CTX) {
 		return
 	}
 
-	if a.License() == nil {
-		return
-	}
-
 	beforeTime := model.GetMillis()
 	afterTime := beforeTime - (24 * 60 * 60 * 1000) // subtracting 24 hours from beforeTime
 	lastScheduledPostId := ""
@@ -304,7 +300,7 @@ func (a *App) canPostScheduledPost(rctx request.CTX, scheduledPost *model.Schedu
 	}
 
 	if scheduledPost.RootId != "" {
-		rootPosts, _, appErr := a.GetPostsByIds([]string{scheduledPost.RootId})
+		rootPosts, appErr := a.GetPostsByIds([]string{scheduledPost.RootId})
 		if appErr != nil {
 			if appErr.StatusCode == http.StatusNotFound {
 				rctx.Logger().Debug("canPostScheduledPost thread root post for scheduled post is missing", mlog.String("scheduled_post_id", scheduledPost.Id), mlog.String("root_post_id", scheduledPost.RootId), mlog.String("error_code", model.ScheduledPostErrorThreadDeleted))
