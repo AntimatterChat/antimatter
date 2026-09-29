@@ -292,36 +292,7 @@ func TestRunSearchEngineWatcher(t *testing.T) {
 }
 
 func TestStartIfInactive(t *testing.T) {
-	t.Run("parks when Start returns nil but no ES license", func(t *testing.T) {
-		w, engineMock := setupWatcherTest(t)
-
-		engineMock.On("IsEnabled").Return(true).Maybe()
-		engineMock.On("IsActive").Return(false).Maybe()
-
-		// Start() succeeds but engine stays inactive (no license).
-		var startCalls atomic.Int32
-		engineMock.On("Start", mock.Anything).Run(func(mock.Arguments) {
-			startCalls.Add(1)
-		}).Return(nil)
-
-		// No license is set — the default for the test PlatformService.
-
-		w.start()
-		t.Cleanup(w.stop)
-
-		// Wait for the first Start() call.
-		require.Eventually(t, func() bool {
-			return startCalls.Load() >= 1
-		}, 2*time.Second, 5*time.Millisecond)
-
-		// The watcher should park — no further Start() calls after the first one.
-		time.Sleep(100 * time.Millisecond)
-		assert.Equal(t, int32(1), startCalls.Load(),
-			"watcher should park after one Start() call when there is no ES license")
-		engineMock.AssertNotCalled(t, "HealthCheck", mock.Anything)
-	})
-
-	t.Run("retries when Start returns nil but engine not active with ES license", func(t *testing.T) {
+	t.Run("retries when Start returns nil but engine not active", func(t *testing.T) {
 		w, engineMock := setupWatcherTest(t)
 
 		engineMock.On("IsEnabled").Return(true).Maybe()
@@ -332,17 +303,14 @@ func TestStartIfInactive(t *testing.T) {
 			startCalls.Add(1)
 		}).Return(nil)
 
-		// Set a license with Elasticsearch feature enabled.
-		w.ps.licenseValue.Store(model.NewTestLicense("elastic_search"))
-
 		w.start()
 		t.Cleanup(w.stop)
 
-		// The watcher should keep retrying because the license is present.
+		// The watcher should keep retrying.
 		require.Eventually(t, func() bool {
 			return startCalls.Load() >= 3
 		}, 2*time.Second, 5*time.Millisecond,
-			"watcher should retry Start when it returns nil but engine is not active (with license)")
+			"watcher should retry Start when it returns nil but engine is not active")
 		engineMock.AssertNotCalled(t, "HealthCheck", mock.Anything)
 	})
 }

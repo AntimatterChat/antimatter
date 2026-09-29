@@ -352,7 +352,7 @@ func TestGetReplica(t *testing.T) {
 	}
 
 	for _, testCase := range testCases {
-		t.Run(testCase.Description+" with license", func(t *testing.T) {
+		t.Run(testCase.Description, func(t *testing.T) {
 			settings, err := makeSqlSettings(model.DatabaseDriverPostgres)
 			if err != nil {
 				t.Skip(err)
@@ -375,8 +375,6 @@ func TestGetReplica(t *testing.T) {
 				store.Close()
 				storetest.CleanupSqlSettings(settings)
 			}()
-
-			store.UpdateLicense(&model.License{})
 
 			replicas := make(map[*sqlxDBWrapper]bool)
 			for range 5 {
@@ -418,74 +416,6 @@ func TestGetReplica(t *testing.T) {
 					assert.True(t, searchReplicas[k])
 				}
 			} else if testCase.DataSourceReplicaNum == 0 && assert.Len(t, searchReplicas, 1) {
-				// Otherwise ensure the search replicas contains the master.
-				for searchReplica := range searchReplicas {
-					assert.Same(t, store.GetMaster(), searchReplica)
-				}
-			}
-		})
-
-		t.Run(testCase.Description+" without license", func(t *testing.T) {
-			settings, err := makeSqlSettings(model.DatabaseDriverPostgres)
-			if err != nil {
-				t.Skip(err)
-			}
-
-			dataSourceReplicas := []string{}
-			dataSourceSearchReplicas := []string{}
-			for range testCase.DataSourceReplicaNum {
-				dataSourceReplicas = append(dataSourceReplicas, *settings.DataSource)
-			}
-			for range testCase.DataSourceSearchReplicaNum {
-				dataSourceSearchReplicas = append(dataSourceSearchReplicas, *settings.DataSource)
-			}
-
-			settings.DataSourceReplicas = dataSourceReplicas
-			settings.DataSourceSearchReplicas = dataSourceSearchReplicas
-			store, err := New(*settings, logger, nil)
-			require.NoError(t, err)
-			defer func() {
-				store.Close()
-				storetest.CleanupSqlSettings(settings)
-			}()
-
-			replicas := make(map[*sqlxDBWrapper]bool)
-			for range 5 {
-				replicas[store.GetReplica()] = true
-			}
-
-			searchReplicas := make(map[*sqlxDBWrapper]bool)
-			for range 5 {
-				searchReplicas[store.GetSearchReplicaX()] = true
-			}
-
-			if testCase.DataSourceReplicaNum > 0 {
-				// If replicas were defined, ensure none are the master.
-				assert.Len(t, replicas, 1)
-
-				for replica := range replicas {
-					assert.Same(t, store.GetMaster(), replica)
-				}
-			} else if assert.Len(t, replicas, 1) {
-				// Otherwise ensure the replicas contains only the master.
-				for replica := range replicas {
-					assert.Same(t, store.GetMaster(), replica)
-				}
-			}
-
-			if testCase.DataSourceSearchReplicaNum > 0 {
-				// If search replicas were defined, ensure none are the master nor the replicas.
-				assert.Len(t, searchReplicas, 1)
-
-				for searchReplica := range searchReplicas {
-					assert.Same(t, store.GetMaster(), searchReplica)
-				}
-			} else if testCase.DataSourceReplicaNum > 0 {
-				assert.Equal(t, len(replicas), len(searchReplicas))
-				for k := range replicas {
-					assert.True(t, searchReplicas[k])
-				}
-			} else if assert.Len(t, searchReplicas, 1) {
 				// Otherwise ensure the search replicas contains the master.
 				for searchReplica := range searchReplicas {
 					assert.Same(t, store.GetMaster(), searchReplica)
