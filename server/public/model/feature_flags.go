@@ -165,10 +165,6 @@ type FeatureFlags struct {
 	// being unreachable.
 	ClusterGracefulDrain bool
 
-	// Enable verifying plugin signatures against the MFI public key, in addition to the
-	// existing hard-coded Mattermost public key and any admin-configured public keys.
-	EnableMFIPluginSignaturePublicKey bool
-
 	// FEATURE_FLAG_REMOVAL: RecurringScheduledPosts - Remove this when the feature is GA.
 	RecurringScheduledPosts bool
 
@@ -243,8 +239,6 @@ func (f *FeatureFlags) SetDefaults() {
 	f.ChannelAttributesRequired = false
 
 	f.MmBlocksEnabled = true
-
-	f.EnableMFIPluginSignaturePublicKey = true
 
 	f.RecurringScheduledPosts = false
 

@@ -123,33 +123,10 @@ MMCTL_PACKAGES=$(shell $(GO) list ./... | grep -E 'server/v8/cmd/mmctl')
 TEMPLATES_DIR=templates
 
 # Plugins Packages
-PLUGIN_PACKAGES ?= $(PLUGIN_PACKAGES:)
-PLUGIN_PACKAGES += mattermost-plugin-calls-v1.12.5
-PLUGIN_PACKAGES += mattermost-plugin-github-v3.0.0
-PLUGIN_PACKAGES += mattermost-plugin-gitlab-v2.0.0
-PLUGIN_PACKAGES += mattermost-plugin-jira-v5.0.0
-PLUGIN_PACKAGES += mattermost-plugin-playbooks-v2.12.1
-PLUGIN_PACKAGES += mattermost-plugin-servicenow-v2.4.0
-PLUGIN_PACKAGES += mattermost-plugin-zoom-v2.0.0
-PLUGIN_PACKAGES += mattermost-plugin-agents-v2.9.0
-PLUGIN_PACKAGES += mattermost-plugin-boards-v10.0.0
-PLUGIN_PACKAGES += mattermost-plugin-user-survey-v1.1.1
-PLUGIN_PACKAGES += mattermost-plugin-mscalendar-v2.0.0
-PLUGIN_PACKAGES += mattermost-plugin-msteams-meetings-v3.0.0
-PLUGIN_PACKAGES += mattermost-plugin-metrics-v0.7.0
-PLUGIN_PACKAGES += mattermost-plugin-channel-export-v1.3.0
-PLUGIN_PACKAGES += mattermost-plugin-dataminr-v2.0.0
-PLUGIN_PACKAGES += mattermost-plugin-legal-hold-v1.1.6
-
-# Overwrite the definition of PLUGIN_PACKAGES with the list of FIPS-ready plugins
-# Note that the '+' in the file name is encoded as %2B for the URL we use to
-# download the package from to work. This will no longer be needed when we unify
-# the way we pre-package FIPS and non-FIPS plugins.
-ifeq ($(FIPS_ENABLED),true)
-	PLUGIN_PACKAGES  = mattermost-plugin-playbooks-v2.12.1%2Bf370c05-fips
-	PLUGIN_PACKAGES += mattermost-plugin-agents-v2.9.0%2Bc234d17-fips
-	PLUGIN_PACKAGES += mattermost-plugin-boards-v10.0.0%2B05efecf-fips
-endif
+# Prepackaged plugins are built and signed with the Antimatter plugin signing key by the
+# Antimatter image build; plugins signed by other publishers no longer verify, so none are
+# downloaded here.
+PLUGIN_PACKAGES ?=
 
 ALL_PACKAGES=$(TE_PACKAGES)
 

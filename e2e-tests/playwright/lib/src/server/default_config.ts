@@ -832,7 +832,6 @@ const defaultServerConfig: AdminConfig = {
         MmBlocksEnabled: true,
         ClusterGracefulDrain: true,
         ChannelBookmarks: true,
-        EnableMFIPluginSignaturePublicKey: true,
         RecurringScheduledPosts: false,
     },
     ImportSettings: {
