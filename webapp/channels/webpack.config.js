@@ -172,7 +172,6 @@ var config = {
                 {from: 'src/images/appIcons.png', to: 'images'},
                 {from: 'src/images/logo-email.png', to: 'images'},
                 {from: 'src/images/browser-icons', to: 'images/browser-icons'},
-                {from: 'src/images/cloud', to: 'images'},
                 {from: 'src/images/welcome_illustration_new.png', to: 'images'},
                 {from: 'src/images/logo_email_blue.png', to: 'images'},
                 {from: 'src/images/logo_email_dark.png', to: 'images'},
