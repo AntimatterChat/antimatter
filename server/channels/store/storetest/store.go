@@ -36,7 +36,6 @@ type Store struct {
 	CommandStore                    mocks.CommandStore
 	CommandWebhookStore             mocks.CommandWebhookStore
 	PreferenceStore                 mocks.PreferenceStore
-	LicenseStore                    mocks.LicenseStore
 	TokenStore                      mocks.TokenStore
 	EmojiStore                      mocks.EmojiStore
 	ThreadStore                     mocks.ThreadStore
@@ -106,7 +105,6 @@ func (s *Store) Webhook() store.WebhookStore                       { return &s.W
 func (s *Store) Command() store.CommandStore                       { return &s.CommandStore }
 func (s *Store) CommandWebhook() store.CommandWebhookStore         { return &s.CommandWebhookStore }
 func (s *Store) Preference() store.PreferenceStore                 { return &s.PreferenceStore }
-func (s *Store) License() store.LicenseStore                       { return &s.LicenseStore }
 func (s *Store) Token() store.TokenStore                           { return &s.TokenStore }
 func (s *Store) Emoji() store.EmojiStore                           { return &s.EmojiStore }
 func (s *Store) Thread() store.ThreadStore                         { return &s.ThreadStore }
@@ -234,7 +232,6 @@ func (s *Store) AssertExpectations(t mock.TestingT) bool {
 		&s.CommandStore,
 		&s.CommandWebhookStore,
 		&s.PreferenceStore,
-		&s.LicenseStore,
 		&s.TokenStore,
 		&s.EmojiStore,
 		&s.StatusStore,

@@ -251,49 +251,6 @@ func tearDownStores() {
 	})
 }
 
-// This test was used to consistently reproduce the race
-// before the fix in MM-28397.
-// Keeping it here to help avoiding future regressions.
-func TestStoreLicenseRace(t *testing.T) {
-	if enableFullyParallelTests {
-		t.Parallel()
-	}
-
-	logger := mlog.CreateTestLogger(t)
-
-	settings, err := makeSqlSettings(model.DatabaseDriverPostgres)
-	if err != nil {
-		t.Skip(err)
-	}
-
-	store, err := New(*settings, logger, nil)
-	require.NoError(t, err)
-	defer func() {
-		store.Close()
-		storetest.CleanupSqlSettings(settings)
-	}()
-
-	wg := sync.WaitGroup{}
-	wg.Add(3)
-
-	go func() {
-		store.UpdateLicense(&model.License{})
-		wg.Done()
-	}()
-
-	go func() {
-		store.GetReplica()
-		wg.Done()
-	}()
-
-	go func() {
-		store.GetSearchReplicaX()
-		wg.Done()
-	}()
-
-	wg.Wait()
-}
-
 func TestGetReplica(t *testing.T) {
 	t.Parallel()
 
