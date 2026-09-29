@@ -7,7 +7,7 @@ import type {GlobalState} from '@mattermost/types/store';
 
 import {General, Preferences} from 'mattermost-redux/constants';
 import {createSelector} from 'mattermost-redux/selectors/create_selector';
-import {getConfig, getFeatureFlagValue, getLicense} from 'mattermost-redux/selectors/entities/general';
+import {getConfig, getFeatureFlagValue} from 'mattermost-redux/selectors/entities/general';
 import {createIdsSelector, createShallowSelector} from 'mattermost-redux/utils/helpers';
 import {getPreferenceKey} from 'mattermost-redux/utils/preference_utils';
 import {setThemeDefaults} from 'mattermost-redux/utils/theme_utils';
@@ -99,9 +99,8 @@ export const getTeammateNameDisplaySetting: (state: GlobalState) => string = cre
     'getTeammateNameDisplaySetting',
     getConfig,
     (state) => getPreferenceObject(state, Preferences.CATEGORY_DISPLAY_SETTINGS, Preferences.NAME_NAME_FORMAT),
-    getLicense,
-    (config, teammateNameDisplayPreference, license) => {
-        const useAdminTeammateNameDisplaySetting = (license && license.LockTeammateNameDisplay === 'true') && config.LockTeammateNameDisplay === 'true';
+    (config, teammateNameDisplayPreference) => {
+        const useAdminTeammateNameDisplaySetting = config.LockTeammateNameDisplay === 'true';
         if (teammateNameDisplayPreference && !useAdminTeammateNameDisplaySetting) {
             return teammateNameDisplayPreference.value || '';
         } else if (config.TeammateNameDisplay) {
@@ -323,7 +322,7 @@ export function getVisibleDmGmLimit(state: GlobalState, userPreferences?: Prefer
 }
 
 export function moveThreadsEnabled(state: GlobalState): boolean {
-    return getFeatureFlagValue(state, 'MoveThreadsEnabled') === 'true' && getLicense(state).IsLicensed === 'true';
+    return getFeatureFlagValue(state, 'MoveThreadsEnabled') === 'true';
 }
 
 export function getWysiwygEditorPreference(state: GlobalState): boolean {

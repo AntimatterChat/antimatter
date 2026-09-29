@@ -101,7 +101,6 @@ describe('PostUtils', () => {
     });
 
     describe('canEditPost', () => {
-        const licensed = {IsLicensed: 'true'};
         const teamId = 'team-id';
         const channelId = 'channel-id';
         const userId = 'user-id';
@@ -150,12 +149,12 @@ describe('PostUtils', () => {
             } as unknown as GlobalState;
 
             // With new permissions
-            expect(!canEditPost(newVersionState, {PostEditTimeLimit: -1}, licensed, teamId, channelId, userId, TestHelper.getPostMock({user_id: userId}))).toBeTruthy();
-            expect(!canEditPost(newVersionState, {PostEditTimeLimit: 300}, licensed, teamId, channelId, userId, TestHelper.getPostMock({user_id: userId, create_at: Date.now() - 100}))).toBeTruthy();
-            expect(!canEditPost(newVersionState, {PostEditTimeLimit: 300}, licensed, teamId, channelId, userId, TestHelper.getPostMock({user_id: userId, create_at: Date.now() - 6000000}))).toBeTruthy();
-            expect(!canEditPost(newVersionState, {PostEditTimeLimit: -1}, licensed, teamId, channelId, userId, TestHelper.getPostMock({user_id: 'other'}))).toBeTruthy();
-            expect(!canEditPost(newVersionState, {PostEditTimeLimit: 300}, licensed, teamId, channelId, userId, TestHelper.getPostMock({user_id: 'other', create_at: Date.now() - 100}))).toBeTruthy();
-            expect(!canEditPost(newVersionState, {PostEditTimeLimit: 300}, licensed, teamId, channelId, userId, TestHelper.getPostMock({user_id: 'other', create_at: Date.now() - 6000000}))).toBeTruthy();
+            expect(!canEditPost(newVersionState, {PostEditTimeLimit: -1}, teamId, channelId, userId, TestHelper.getPostMock({user_id: userId}))).toBeTruthy();
+            expect(!canEditPost(newVersionState, {PostEditTimeLimit: 300}, teamId, channelId, userId, TestHelper.getPostMock({user_id: userId, create_at: Date.now() - 100}))).toBeTruthy();
+            expect(!canEditPost(newVersionState, {PostEditTimeLimit: 300}, teamId, channelId, userId, TestHelper.getPostMock({user_id: userId, create_at: Date.now() - 6000000}))).toBeTruthy();
+            expect(!canEditPost(newVersionState, {PostEditTimeLimit: -1}, teamId, channelId, userId, TestHelper.getPostMock({user_id: 'other'}))).toBeTruthy();
+            expect(!canEditPost(newVersionState, {PostEditTimeLimit: 300}, teamId, channelId, userId, TestHelper.getPostMock({user_id: 'other', create_at: Date.now() - 100}))).toBeTruthy();
+            expect(!canEditPost(newVersionState, {PostEditTimeLimit: 300}, teamId, channelId, userId, TestHelper.getPostMock({user_id: 'other', create_at: Date.now() - 6000000}))).toBeTruthy();
 
             newVersionState.entities.roles = {
                 roles: {
@@ -166,12 +165,12 @@ describe('PostUtils', () => {
                 pending: new Set(),
             };
             newVersionState = {...newVersionState};
-            expect(canEditPost(newVersionState, {PostEditTimeLimit: -1}, licensed, teamId, channelId, userId, TestHelper.getPostMock({user_id: userId}))).toBeTruthy();
-            expect(canEditPost(newVersionState, {PostEditTimeLimit: 300}, licensed, teamId, channelId, userId, TestHelper.getPostMock({user_id: userId, create_at: Date.now() - 100}))).toBeTruthy();
-            expect(!canEditPost(newVersionState, {PostEditTimeLimit: 300}, licensed, teamId, channelId, userId, TestHelper.getPostMock({user_id: userId, create_at: Date.now() - 6000000}))).toBeTruthy();
-            expect(!canEditPost(newVersionState, {PostEditTimeLimit: -1}, licensed, teamId, channelId, userId, TestHelper.getPostMock({user_id: 'other'}))).toBeTruthy();
-            expect(!canEditPost(newVersionState, {PostEditTimeLimit: 300}, licensed, teamId, channelId, userId, TestHelper.getPostMock({user_id: 'other', create_at: Date.now() - 100}))).toBeTruthy();
-            expect(!canEditPost(newVersionState, {PostEditTimeLimit: 300}, licensed, teamId, channelId, userId, TestHelper.getPostMock({user_id: 'other', create_at: Date.now() - 6000000}))).toBeTruthy();
+            expect(canEditPost(newVersionState, {PostEditTimeLimit: -1}, teamId, channelId, userId, TestHelper.getPostMock({user_id: userId}))).toBeTruthy();
+            expect(canEditPost(newVersionState, {PostEditTimeLimit: 300}, teamId, channelId, userId, TestHelper.getPostMock({user_id: userId, create_at: Date.now() - 100}))).toBeTruthy();
+            expect(!canEditPost(newVersionState, {PostEditTimeLimit: 300}, teamId, channelId, userId, TestHelper.getPostMock({user_id: userId, create_at: Date.now() - 6000000}))).toBeTruthy();
+            expect(!canEditPost(newVersionState, {PostEditTimeLimit: -1}, teamId, channelId, userId, TestHelper.getPostMock({user_id: 'other'}))).toBeTruthy();
+            expect(!canEditPost(newVersionState, {PostEditTimeLimit: 300}, teamId, channelId, userId, TestHelper.getPostMock({user_id: 'other', create_at: Date.now() - 100}))).toBeTruthy();
+            expect(!canEditPost(newVersionState, {PostEditTimeLimit: 300}, teamId, channelId, userId, TestHelper.getPostMock({user_id: 'other', create_at: Date.now() - 6000000}))).toBeTruthy();
 
             newVersionState.entities.roles = {
                 roles: {
@@ -182,12 +181,12 @@ describe('PostUtils', () => {
                 pending: new Set(),
             };
             newVersionState = {...newVersionState};
-            expect(canEditPost(newVersionState, {PostEditTimeLimit: -1}, licensed, teamId, channelId, userId, TestHelper.getPostMock({user_id: userId}))).toBeTruthy();
-            expect(canEditPost(newVersionState, {PostEditTimeLimit: 300}, licensed, teamId, channelId, userId, TestHelper.getPostMock({user_id: userId, create_at: Date.now() - 100}))).toBeTruthy();
-            expect(!canEditPost(newVersionState, {PostEditTimeLimit: 300}, licensed, teamId, channelId, userId, TestHelper.getPostMock({user_id: userId, create_at: Date.now() - 6000000}))).toBeTruthy();
-            expect(!canEditPost(newVersionState, {PostEditTimeLimit: -1}, licensed, teamId, channelId, userId, TestHelper.getPostMock({user_id: 'other'}))).toBeTruthy();
-            expect(!canEditPost(newVersionState, {PostEditTimeLimit: 300}, licensed, teamId, channelId, userId, TestHelper.getPostMock({user_id: 'other', create_at: Date.now() - 100}))).toBeTruthy();
-            expect(!canEditPost(newVersionState, {PostEditTimeLimit: 300}, licensed, teamId, channelId, userId, TestHelper.getPostMock({user_id: 'other', create_at: Date.now() - 6000000}))).toBeTruthy();
+            expect(canEditPost(newVersionState, {PostEditTimeLimit: -1}, teamId, channelId, userId, TestHelper.getPostMock({user_id: userId}))).toBeTruthy();
+            expect(canEditPost(newVersionState, {PostEditTimeLimit: 300}, teamId, channelId, userId, TestHelper.getPostMock({user_id: userId, create_at: Date.now() - 100}))).toBeTruthy();
+            expect(!canEditPost(newVersionState, {PostEditTimeLimit: 300}, teamId, channelId, userId, TestHelper.getPostMock({user_id: userId, create_at: Date.now() - 6000000}))).toBeTruthy();
+            expect(!canEditPost(newVersionState, {PostEditTimeLimit: -1}, teamId, channelId, userId, TestHelper.getPostMock({user_id: 'other'}))).toBeTruthy();
+            expect(!canEditPost(newVersionState, {PostEditTimeLimit: 300}, teamId, channelId, userId, TestHelper.getPostMock({user_id: 'other', create_at: Date.now() - 100}))).toBeTruthy();
+            expect(!canEditPost(newVersionState, {PostEditTimeLimit: 300}, teamId, channelId, userId, TestHelper.getPostMock({user_id: 'other', create_at: Date.now() - 6000000}))).toBeTruthy();
 
             newVersionState.entities.roles = {
                 roles: {
@@ -198,12 +197,12 @@ describe('PostUtils', () => {
                 pending: new Set(),
             };
             newVersionState = {...newVersionState};
-            expect(canEditPost(newVersionState, {PostEditTimeLimit: -1}, licensed, teamId, channelId, userId, TestHelper.getPostMock({user_id: userId}))).toBeTruthy();
-            expect(canEditPost(newVersionState, {PostEditTimeLimit: 300}, licensed, teamId, channelId, userId, TestHelper.getPostMock({user_id: userId, create_at: Date.now() - 100}))).toBeTruthy();
-            expect(!canEditPost(newVersionState, {PostEditTimeLimit: 300}, licensed, teamId, channelId, userId, TestHelper.getPostMock({user_id: userId, create_at: Date.now() - 6000000}))).toBeTruthy();
-            expect(!canEditPost(newVersionState, {PostEditTimeLimit: -1}, licensed, teamId, channelId, userId, TestHelper.getPostMock({user_id: 'other'}))).toBeTruthy();
-            expect(!canEditPost(newVersionState, {PostEditTimeLimit: 300}, licensed, teamId, channelId, userId, TestHelper.getPostMock({user_id: 'other', create_at: Date.now() - 100}))).toBeTruthy();
-            expect(!canEditPost(newVersionState, {PostEditTimeLimit: 300}, licensed, teamId, channelId, userId, TestHelper.getPostMock({user_id: 'other', create_at: Date.now() - 6000000}))).toBeTruthy();
+            expect(canEditPost(newVersionState, {PostEditTimeLimit: -1}, teamId, channelId, userId, TestHelper.getPostMock({user_id: userId}))).toBeTruthy();
+            expect(canEditPost(newVersionState, {PostEditTimeLimit: 300}, teamId, channelId, userId, TestHelper.getPostMock({user_id: userId, create_at: Date.now() - 100}))).toBeTruthy();
+            expect(!canEditPost(newVersionState, {PostEditTimeLimit: 300}, teamId, channelId, userId, TestHelper.getPostMock({user_id: userId, create_at: Date.now() - 6000000}))).toBeTruthy();
+            expect(!canEditPost(newVersionState, {PostEditTimeLimit: -1}, teamId, channelId, userId, TestHelper.getPostMock({user_id: 'other'}))).toBeTruthy();
+            expect(!canEditPost(newVersionState, {PostEditTimeLimit: 300}, teamId, channelId, userId, TestHelper.getPostMock({user_id: 'other', create_at: Date.now() - 100}))).toBeTruthy();
+            expect(!canEditPost(newVersionState, {PostEditTimeLimit: 300}, teamId, channelId, userId, TestHelper.getPostMock({user_id: 'other', create_at: Date.now() - 6000000}))).toBeTruthy();
 
             newVersionState.entities.roles = {
                 roles: {
@@ -214,12 +213,12 @@ describe('PostUtils', () => {
                 pending: new Set(),
             };
             newVersionState = {...newVersionState};
-            expect(!canEditPost(newVersionState, {PostEditTimeLimit: -1}, licensed, teamId, channelId, userId, TestHelper.getPostMock({user_id: userId}))).toBeTruthy();
-            expect(!canEditPost(newVersionState, {PostEditTimeLimit: 300}, licensed, teamId, channelId, userId, TestHelper.getPostMock({user_id: userId, create_at: Date.now() - 100}))).toBeTruthy();
-            expect(!canEditPost(newVersionState, {PostEditTimeLimit: 300}, licensed, teamId, channelId, userId, TestHelper.getPostMock({user_id: userId, create_at: Date.now() - 6000000}))).toBeTruthy();
-            expect(canEditPost(newVersionState, {PostEditTimeLimit: -1}, licensed, teamId, channelId, userId, TestHelper.getPostMock({user_id: 'other'}))).toBeTruthy();
-            expect(canEditPost(newVersionState, {PostEditTimeLimit: 300}, licensed, teamId, channelId, userId, TestHelper.getPostMock({user_id: 'other', create_at: Date.now() - 100}))).toBeTruthy();
-            expect(!canEditPost(newVersionState, {PostEditTimeLimit: 300}, licensed, teamId, channelId, userId, TestHelper.getPostMock({user_id: 'other', create_at: Date.now() - 6000000}))).toBeTruthy();
+            expect(!canEditPost(newVersionState, {PostEditTimeLimit: -1}, teamId, channelId, userId, TestHelper.getPostMock({user_id: userId}))).toBeTruthy();
+            expect(!canEditPost(newVersionState, {PostEditTimeLimit: 300}, teamId, channelId, userId, TestHelper.getPostMock({user_id: userId, create_at: Date.now() - 100}))).toBeTruthy();
+            expect(!canEditPost(newVersionState, {PostEditTimeLimit: 300}, teamId, channelId, userId, TestHelper.getPostMock({user_id: userId, create_at: Date.now() - 6000000}))).toBeTruthy();
+            expect(canEditPost(newVersionState, {PostEditTimeLimit: -1}, teamId, channelId, userId, TestHelper.getPostMock({user_id: 'other'}))).toBeTruthy();
+            expect(canEditPost(newVersionState, {PostEditTimeLimit: 300}, teamId, channelId, userId, TestHelper.getPostMock({user_id: 'other', create_at: Date.now() - 100}))).toBeTruthy();
+            expect(!canEditPost(newVersionState, {PostEditTimeLimit: 300}, teamId, channelId, userId, TestHelper.getPostMock({user_id: 'other', create_at: Date.now() - 6000000}))).toBeTruthy();
 
             newVersionState.entities.roles = {
                 roles: {
@@ -230,12 +229,12 @@ describe('PostUtils', () => {
                 pending: new Set(),
             };
             newVersionState = {...newVersionState};
-            expect(!canEditPost(newVersionState, {PostEditTimeLimit: -1}, licensed, teamId, channelId, userId, TestHelper.getPostMock({user_id: userId}))).toBeTruthy();
-            expect(!canEditPost(newVersionState, {PostEditTimeLimit: 300}, licensed, teamId, channelId, userId, TestHelper.getPostMock({user_id: userId, create_at: Date.now() - 100}))).toBeTruthy();
-            expect(!canEditPost(newVersionState, {PostEditTimeLimit: 300}, licensed, teamId, channelId, userId, TestHelper.getPostMock({user_id: userId, create_at: Date.now() - 6000000}))).toBeTruthy();
-            expect(canEditPost(newVersionState, {PostEditTimeLimit: -1}, licensed, teamId, channelId, userId, TestHelper.getPostMock({user_id: 'other'}))).toBeTruthy();
-            expect(canEditPost(newVersionState, {PostEditTimeLimit: 300}, licensed, teamId, channelId, userId, TestHelper.getPostMock({user_id: 'other', create_at: Date.now() - 100}))).toBeTruthy();
-            expect(!canEditPost(newVersionState, {PostEditTimeLimit: 300}, licensed, teamId, channelId, userId, TestHelper.getPostMock({user_id: 'other', create_at: Date.now() - 6000000}))).toBeTruthy();
+            expect(!canEditPost(newVersionState, {PostEditTimeLimit: -1}, teamId, channelId, userId, TestHelper.getPostMock({user_id: userId}))).toBeTruthy();
+            expect(!canEditPost(newVersionState, {PostEditTimeLimit: 300}, teamId, channelId, userId, TestHelper.getPostMock({user_id: userId, create_at: Date.now() - 100}))).toBeTruthy();
+            expect(!canEditPost(newVersionState, {PostEditTimeLimit: 300}, teamId, channelId, userId, TestHelper.getPostMock({user_id: userId, create_at: Date.now() - 6000000}))).toBeTruthy();
+            expect(canEditPost(newVersionState, {PostEditTimeLimit: -1}, teamId, channelId, userId, TestHelper.getPostMock({user_id: 'other'}))).toBeTruthy();
+            expect(canEditPost(newVersionState, {PostEditTimeLimit: 300}, teamId, channelId, userId, TestHelper.getPostMock({user_id: 'other', create_at: Date.now() - 100}))).toBeTruthy();
+            expect(!canEditPost(newVersionState, {PostEditTimeLimit: 300}, teamId, channelId, userId, TestHelper.getPostMock({user_id: 'other', create_at: Date.now() - 6000000}))).toBeTruthy();
 
             newVersionState.entities.roles = {
                 roles: {
@@ -246,12 +245,12 @@ describe('PostUtils', () => {
                 pending: new Set(),
             };
             newVersionState = {...newVersionState};
-            expect(!canEditPost(newVersionState, {PostEditTimeLimit: -1}, licensed, teamId, channelId, userId, TestHelper.getPostMock({user_id: userId}))).toBeTruthy();
-            expect(!canEditPost(newVersionState, {PostEditTimeLimit: 300}, licensed, teamId, channelId, userId, TestHelper.getPostMock({user_id: userId, create_at: Date.now() - 100}))).toBeTruthy();
-            expect(!canEditPost(newVersionState, {PostEditTimeLimit: 300}, licensed, teamId, channelId, userId, TestHelper.getPostMock({user_id: userId, create_at: Date.now() - 6000000}))).toBeTruthy();
-            expect(canEditPost(newVersionState, {PostEditTimeLimit: -1}, licensed, teamId, channelId, userId, TestHelper.getPostMock({user_id: 'other'}))).toBeTruthy();
-            expect(canEditPost(newVersionState, {PostEditTimeLimit: 300}, licensed, teamId, channelId, userId, TestHelper.getPostMock({user_id: 'other', create_at: Date.now() - 100}))).toBeTruthy();
-            expect(!canEditPost(newVersionState, {PostEditTimeLimit: 300}, licensed, teamId, channelId, userId, TestHelper.getPostMock({user_id: 'other', create_at: Date.now() - 6000000}))).toBeTruthy();
+            expect(!canEditPost(newVersionState, {PostEditTimeLimit: -1}, teamId, channelId, userId, TestHelper.getPostMock({user_id: userId}))).toBeTruthy();
+            expect(!canEditPost(newVersionState, {PostEditTimeLimit: 300}, teamId, channelId, userId, TestHelper.getPostMock({user_id: userId, create_at: Date.now() - 100}))).toBeTruthy();
+            expect(!canEditPost(newVersionState, {PostEditTimeLimit: 300}, teamId, channelId, userId, TestHelper.getPostMock({user_id: userId, create_at: Date.now() - 6000000}))).toBeTruthy();
+            expect(canEditPost(newVersionState, {PostEditTimeLimit: -1}, teamId, channelId, userId, TestHelper.getPostMock({user_id: 'other'}))).toBeTruthy();
+            expect(canEditPost(newVersionState, {PostEditTimeLimit: 300}, teamId, channelId, userId, TestHelper.getPostMock({user_id: 'other', create_at: Date.now() - 100}))).toBeTruthy();
+            expect(!canEditPost(newVersionState, {PostEditTimeLimit: 300}, teamId, channelId, userId, TestHelper.getPostMock({user_id: 'other', create_at: Date.now() - 6000000}))).toBeTruthy();
 
             newVersionState.entities.roles = {
                 roles: {
@@ -262,12 +261,12 @@ describe('PostUtils', () => {
                 pending: new Set(),
             };
             newVersionState = {...newVersionState};
-            expect(canEditPost(newVersionState, {PostEditTimeLimit: -1}, licensed, teamId, channelId, userId, TestHelper.getPostMock({user_id: userId}))).toBeTruthy();
-            expect(canEditPost(newVersionState, {PostEditTimeLimit: 300}, licensed, teamId, channelId, userId, TestHelper.getPostMock({user_id: userId, create_at: Date.now() - 100}))).toBeTruthy();
-            expect(!canEditPost(newVersionState, {PostEditTimeLimit: 300}, licensed, teamId, channelId, userId, TestHelper.getPostMock({user_id: userId, create_at: Date.now() - 6000000}))).toBeTruthy();
-            expect(canEditPost(newVersionState, {PostEditTimeLimit: -1}, licensed, teamId, channelId, userId, TestHelper.getPostMock({user_id: 'other'}))).toBeTruthy();
-            expect(canEditPost(newVersionState, {PostEditTimeLimit: 300}, licensed, teamId, channelId, userId, TestHelper.getPostMock({user_id: 'other', create_at: Date.now() - 100}))).toBeTruthy();
-            expect(!canEditPost(newVersionState, {PostEditTimeLimit: 300}, licensed, teamId, channelId, userId, TestHelper.getPostMock({user_id: 'other', create_at: Date.now() - 6000000}))).toBeTruthy();
+            expect(canEditPost(newVersionState, {PostEditTimeLimit: -1}, teamId, channelId, userId, TestHelper.getPostMock({user_id: userId}))).toBeTruthy();
+            expect(canEditPost(newVersionState, {PostEditTimeLimit: 300}, teamId, channelId, userId, TestHelper.getPostMock({user_id: userId, create_at: Date.now() - 100}))).toBeTruthy();
+            expect(!canEditPost(newVersionState, {PostEditTimeLimit: 300}, teamId, channelId, userId, TestHelper.getPostMock({user_id: userId, create_at: Date.now() - 6000000}))).toBeTruthy();
+            expect(canEditPost(newVersionState, {PostEditTimeLimit: -1}, teamId, channelId, userId, TestHelper.getPostMock({user_id: 'other'}))).toBeTruthy();
+            expect(canEditPost(newVersionState, {PostEditTimeLimit: 300}, teamId, channelId, userId, TestHelper.getPostMock({user_id: 'other', create_at: Date.now() - 100}))).toBeTruthy();
+            expect(!canEditPost(newVersionState, {PostEditTimeLimit: 300}, teamId, channelId, userId, TestHelper.getPostMock({user_id: 'other', create_at: Date.now() - 6000000}))).toBeTruthy();
 
             newVersionState.entities.roles = {
                 roles: {
@@ -278,12 +277,12 @@ describe('PostUtils', () => {
                 pending: new Set(),
             };
             newVersionState = {...newVersionState};
-            expect(canEditPost(newVersionState, {PostEditTimeLimit: -1}, licensed, teamId, channelId, userId, TestHelper.getPostMock({user_id: userId}))).toBeTruthy();
-            expect(canEditPost(newVersionState, {PostEditTimeLimit: 300}, licensed, teamId, channelId, userId, TestHelper.getPostMock({user_id: userId, create_at: Date.now() - 100}))).toBeTruthy();
-            expect(!canEditPost(newVersionState, {PostEditTimeLimit: 300}, licensed, teamId, channelId, userId, TestHelper.getPostMock({user_id: userId, create_at: Date.now() - 6000000}))).toBeTruthy();
-            expect(canEditPost(newVersionState, {PostEditTimeLimit: -1}, licensed, teamId, channelId, userId, TestHelper.getPostMock({user_id: 'other'}))).toBeTruthy();
-            expect(canEditPost(newVersionState, {PostEditTimeLimit: 300}, licensed, teamId, channelId, userId, TestHelper.getPostMock({user_id: 'other', create_at: Date.now() - 100}))).toBeTruthy();
-            expect(!canEditPost(newVersionState, {PostEditTimeLimit: 300}, licensed, teamId, channelId, userId, TestHelper.getPostMock({user_id: 'other', create_at: Date.now() - 6000000}))).toBeTruthy();
+            expect(canEditPost(newVersionState, {PostEditTimeLimit: -1}, teamId, channelId, userId, TestHelper.getPostMock({user_id: userId}))).toBeTruthy();
+            expect(canEditPost(newVersionState, {PostEditTimeLimit: 300}, teamId, channelId, userId, TestHelper.getPostMock({user_id: userId, create_at: Date.now() - 100}))).toBeTruthy();
+            expect(!canEditPost(newVersionState, {PostEditTimeLimit: 300}, teamId, channelId, userId, TestHelper.getPostMock({user_id: userId, create_at: Date.now() - 6000000}))).toBeTruthy();
+            expect(canEditPost(newVersionState, {PostEditTimeLimit: -1}, teamId, channelId, userId, TestHelper.getPostMock({user_id: 'other'}))).toBeTruthy();
+            expect(canEditPost(newVersionState, {PostEditTimeLimit: 300}, teamId, channelId, userId, TestHelper.getPostMock({user_id: 'other', create_at: Date.now() - 100}))).toBeTruthy();
+            expect(!canEditPost(newVersionState, {PostEditTimeLimit: 300}, teamId, channelId, userId, TestHelper.getPostMock({user_id: 'other', create_at: Date.now() - 6000000}))).toBeTruthy();
 
             newVersionState.entities.roles = {
                 roles: {
@@ -294,12 +293,12 @@ describe('PostUtils', () => {
                 pending: new Set(),
             };
             newVersionState = {...newVersionState};
-            expect(canEditPost(newVersionState, {PostEditTimeLimit: -1}, licensed, teamId, channelId, userId, TestHelper.getPostMock({user_id: userId}))).toBeTruthy();
-            expect(canEditPost(newVersionState, {PostEditTimeLimit: 300}, licensed, teamId, channelId, userId, TestHelper.getPostMock({user_id: userId, create_at: Date.now() - 100}))).toBeTruthy();
-            expect(!canEditPost(newVersionState, {PostEditTimeLimit: 300}, licensed, teamId, channelId, userId, TestHelper.getPostMock({user_id: userId, create_at: Date.now() - 6000000}))).toBeTruthy();
-            expect(canEditPost(newVersionState, {PostEditTimeLimit: -1}, licensed, teamId, channelId, userId, TestHelper.getPostMock({user_id: 'other'}))).toBeTruthy();
-            expect(canEditPost(newVersionState, {PostEditTimeLimit: 300}, licensed, teamId, channelId, userId, TestHelper.getPostMock({user_id: 'other', create_at: Date.now() - 100}))).toBeTruthy();
-            expect(!canEditPost(newVersionState, {PostEditTimeLimit: 300}, licensed, teamId, channelId, userId, TestHelper.getPostMock({user_id: 'other', create_at: Date.now() - 6000000}))).toBeTruthy();
+            expect(canEditPost(newVersionState, {PostEditTimeLimit: -1}, teamId, channelId, userId, TestHelper.getPostMock({user_id: userId}))).toBeTruthy();
+            expect(canEditPost(newVersionState, {PostEditTimeLimit: 300}, teamId, channelId, userId, TestHelper.getPostMock({user_id: userId, create_at: Date.now() - 100}))).toBeTruthy();
+            expect(!canEditPost(newVersionState, {PostEditTimeLimit: 300}, teamId, channelId, userId, TestHelper.getPostMock({user_id: userId, create_at: Date.now() - 6000000}))).toBeTruthy();
+            expect(canEditPost(newVersionState, {PostEditTimeLimit: -1}, teamId, channelId, userId, TestHelper.getPostMock({user_id: 'other'}))).toBeTruthy();
+            expect(canEditPost(newVersionState, {PostEditTimeLimit: 300}, teamId, channelId, userId, TestHelper.getPostMock({user_id: 'other', create_at: Date.now() - 100}))).toBeTruthy();
+            expect(!canEditPost(newVersionState, {PostEditTimeLimit: 300}, teamId, channelId, userId, TestHelper.getPostMock({user_id: 'other', create_at: Date.now() - 6000000}))).toBeTruthy();
         });
     });
 

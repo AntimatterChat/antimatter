@@ -51,10 +51,8 @@ import type {
     ClientConfig,
     ClientLicense,
     DataRetentionPolicy,
-    License,
     AdminConfig,
     EnvironmentConfig,
-    RequestLicenseBody,
     AllowedIPRanges,
     AllowedIPRange,
     FetchIPResponse,
@@ -3052,37 +3050,6 @@ export default class Client4 {
         );
     };
 
-    upgradeToEnterprise = async () => {
-        return this.doFetch<StatusOK>(
-            `${this.getBaseRoute()}/upgrade_to_enterprise`,
-            {method: 'post'},
-        );
-    };
-
-    upgradeToEnterpriseStatus = async () => {
-        return this.doFetch<{
-            percentage: number;
-            error: string | null;
-        }>(
-            `${this.getBaseRoute()}/upgrade_to_enterprise/status`,
-            {method: 'get'},
-        );
-    };
-
-    isAllowedToUpgradeToEnterprise = async () => {
-        return this.doFetch<StatusOK>(
-            `${this.getBaseRoute()}/upgrade_to_enterprise/allowed`,
-            {method: 'get'},
-        );
-    };
-
-    restartServer = async () => {
-        return this.doFetch<StatusOK>(
-            `${this.getBaseRoute()}/restart`,
-            {method: 'post'},
-        );
-    };
-
     logClientError = (message: string, level = LogLevel.Error) => {
         const url = `${this.getBaseRoute()}/logs`;
 
@@ -3112,15 +3079,6 @@ export default class Client4 {
     getClientLicenseOld = () => {
         return this.doFetch<ClientLicense>(
             `${this.getBaseRoute()}/license/client`,
-            {method: 'get'},
-        );
-    };
-
-    getLicenseLoadMetric = () => {
-        return this.doFetch<{
-            load: number;
-        }>(
-            `${this.getBaseRoute()}/license/load_metric`,
             {method: 'get'},
         );
     };
@@ -4164,57 +4122,6 @@ export default class Client4 {
         return this.doFetch<StatusOK>(
             `${this.getBaseRoute()}/elasticsearch/purge_indexes${indexes && indexes.length > 0 ? '?index=' + indexes.join(',') : ''}`,
             {method: 'post'},
-        );
-    };
-
-    uploadLicense = (fileData: File) => {
-        const formData = new FormData();
-        formData.append('license', fileData);
-
-        const request: any = {
-            method: 'post',
-            body: formData,
-        };
-
-        return this.doFetch<License>(
-            `${this.getBaseRoute()}/license`,
-            request,
-        );
-    };
-
-    previewLicense = (fileData: File) => {
-        const formData = new FormData();
-        formData.append('license', fileData);
-
-        const request: any = {
-            method: 'post',
-            body: formData,
-        };
-
-        return this.doFetch<License>(
-            `${this.getBaseRoute()}/license/preview`,
-            request,
-        );
-    };
-
-    requestTrialLicense = (body: RequestLicenseBody) => {
-        return this.doFetchWithResponse<ClientLicense>(
-            `${this.getBaseRoute()}/trial-license`,
-            {method: 'POST', body: JSON.stringify(body)},
-        );
-    };
-
-    removeLicense = () => {
-        return this.doFetch<StatusOK>(
-            `${this.getBaseRoute()}/license`,
-            {method: 'delete'},
-        );
-    };
-
-    getPrevTrialLicense = () => {
-        return this.doFetch<ClientLicense>(
-            `${this.getBaseRoute()}/trial-license/prev`,
-            {method: 'get'},
         );
     };
 

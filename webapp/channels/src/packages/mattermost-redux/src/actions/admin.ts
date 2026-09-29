@@ -26,7 +26,6 @@ import type {
 import type {DeepPartial} from '@mattermost/types/utilities';
 
 import {AdminTypes} from 'mattermost-redux/action_types';
-import {getServerLimits} from 'mattermost-redux/actions/limits';
 import {Client4} from 'mattermost-redux/client';
 import type {ActionFuncAsync} from 'mattermost-redux/types/actions';
 
@@ -430,55 +429,6 @@ export function purgeElasticsearchIndexes(indexes?: string[]) {
             indexes,
         ],
     });
-}
-
-export function uploadLicense(fileData: File) {
-    return bindClientFunc({
-        clientFunc: Client4.uploadLicense,
-        params: [
-            fileData,
-        ],
-    });
-}
-
-export function previewLicense(fileData: File) {
-    return bindClientFunc({
-        clientFunc: Client4.previewLicense,
-        params: [
-            fileData,
-        ],
-    });
-}
-
-export function removeLicense(): ActionFuncAsync<boolean> {
-    return async (dispatch, getState) => {
-        try {
-            await Client4.removeLicense();
-        } catch (error) {
-            forceLogoutIfNecessary(error as ServerError, dispatch, getState);
-            dispatch(logError(error as ServerError));
-            return {error: error as ServerError};
-        }
-
-        await dispatch(getServerLimits());
-
-        return {data: true};
-    };
-}
-
-export function getPrevTrialLicense(): ActionFuncAsync {
-    return async (dispatch, getState) => {
-        let data;
-        try {
-            data = await Client4.getPrevTrialLicense();
-        } catch (error) {
-            forceLogoutIfNecessary(error as ServerError, dispatch, getState);
-            return {error};
-        }
-
-        dispatch({type: AdminTypes.PREV_TRIAL_LICENSE_SUCCESS, data});
-        return {data};
-    };
 }
 
 export function getAnalytics(name: string, teamId = ''): ActionFuncAsync {

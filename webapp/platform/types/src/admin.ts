@@ -4,7 +4,7 @@
 import type {AccessControlPolicy} from './access_control';
 import type {Audit} from './audits';
 import type {Compliance} from './compliance';
-import type {AdminConfig, ClientLicense, EnvironmentConfig} from './config';
+import type {AdminConfig, EnvironmentConfig} from './config';
 import type {DataRetentionCustomPolicies} from './data_retention';
 import type {MixedUnlinkedGroupRedux} from './groups';
 import type {PluginRedux, PluginStatusRedux} from './plugins';
@@ -69,7 +69,6 @@ export type AdminState = {
     samlMetadataResponse?: SamlMetadataResponse;
     dataRetentionCustomPolicies: DataRetentionCustomPolicies;
     dataRetentionCustomPoliciesCount: number;
-    prevTrialLicense: ClientLicense;
     accessControlPolicies: IDMappedObjects<AccessControlPolicy>;
     channelsForAccessControlPolicy: Record<string, string[]>;
 };
