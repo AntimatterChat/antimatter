@@ -62,7 +62,7 @@ describe('IPFilteringAddOrEditModal', () => {
         );
 
         expect(getByLabelText('Enter a name for this rule')).toHaveValue('Test IP Filter');
-        expect(getByLabelText('Enter IP Range')).toHaveValue('192.168.0.0/16');
+        expect(getByLabelText('Enter an IP address or range')).toHaveValue('192.168.0.0/16');
     });
 
     test('calls the onSave function with the correct values when the Save button is clicked', async () => {
@@ -74,8 +74,8 @@ describe('IPFilteringAddOrEditModal', () => {
 
         await userEvent.clear(getByLabelText('Enter a name for this rule'));
         await userEvent.type(getByLabelText('Enter a name for this rule'), 'Test IP Filter 2');
-        await userEvent.clear(getByLabelText('Enter IP Range'));
-        await userEvent.type(getByLabelText('Enter IP Range'), '10.0.0.0/8');
+        await userEvent.clear(getByLabelText('Enter an IP address or range'));
+        await userEvent.type(getByLabelText('Enter an IP address or range'), '10.0.0.0/8');
         await userEvent.click(getByTestId('save-add-edit-button'));
 
         await waitFor(() => {
@@ -84,6 +84,7 @@ describe('IPFilteringAddOrEditModal', () => {
                 description: 'Test IP Filter 2',
                 enabled: true,
                 owner_id: '',
+                action: 'allow',
             }, existingRange);
             expect(onExited).toHaveBeenCalled();
         });
@@ -99,8 +100,8 @@ describe('IPFilteringAddOrEditModal', () => {
 
         await userEvent.clear(getByLabelText('Enter a name for this rule'));
         await userEvent.type(getByLabelText('Enter a name for this rule'), 'Test IP Filter 2');
-        await userEvent.clear(getByLabelText('Enter IP Range'));
-        await userEvent.type(getByLabelText('Enter IP Range'), '10.0.0.0/8');
+        await userEvent.clear(getByLabelText('Enter an IP address or range'));
+        await userEvent.type(getByLabelText('Enter an IP address or range'), '10.0.0.0/8');
         await userEvent.click(getByTestId('save-add-edit-button'));
 
         await waitFor(() => {
@@ -109,6 +110,7 @@ describe('IPFilteringAddOrEditModal', () => {
                 description: 'Test IP Filter 2',
                 enabled: true,
                 owner_id: '',
+                action: 'allow',
             });
             expect(onExited).toHaveBeenCalled();
         });
@@ -121,15 +123,15 @@ describe('IPFilteringAddOrEditModal', () => {
             />,
         );
 
-        await userEvent.clear(getByLabelText('Enter IP Range'));
-        await userEvent.type(getByLabelText('Enter IP Range'), 'invalid-cidr');
+        await userEvent.clear(getByLabelText('Enter an IP address or range'));
+        await userEvent.type(getByLabelText('Enter an IP address or range'), 'invalid-cidr');
 
         // Trigger validation on blur - fireEvent used because userEvent doesn't have direct focus/blur methods
-        fireEvent.blur(getByLabelText('Enter IP Range'));
+        fireEvent.blur(getByLabelText('Enter an IP address or range'));
         await userEvent.click(getByTestId('save-add-edit-button'));
 
         await waitFor(() => {
-            expect(getByText('Invalid CIDR address range')).toBeInTheDocument();
+            expect(getByText('Enter an IP address or a range in CIDR format')).toBeInTheDocument();
             expect(onSave).not.toHaveBeenCalled();
             expect(onExited).not.toHaveBeenCalled();
         });
@@ -142,11 +144,35 @@ describe('IPFilteringAddOrEditModal', () => {
             />,
         );
 
-        await userEvent.clear(getByLabelText('Enter IP Range'));
-        await userEvent.type(getByLabelText('Enter IP Range'), 'invalid-cidr');
+        await userEvent.clear(getByLabelText('Enter an IP address or range'));
+        await userEvent.type(getByLabelText('Enter an IP address or range'), 'invalid-cidr');
 
-        fireEvent.blur(getByLabelText('Enter IP Range'));
+        fireEvent.blur(getByLabelText('Enter an IP address or range'));
 
         expect(getByTestId('save-add-edit-button')).toBeDisabled();
+    });
+
+    test('saves a deny rule when Deny is chosen', async () => {
+        const {getByLabelText, getByTestId} = renderWithContext(
+            <IPFilteringAddOrEditModal
+                {...baseProps}
+                existingRange={undefined}
+            />,
+        );
+
+        await userEvent.type(getByLabelText('Enter a name for this rule'), 'Blocked range');
+        await userEvent.type(getByLabelText('Enter an IP address or range'), '192.0.2.7');
+        await userEvent.click(getByTestId('ip-filter-action-deny'));
+        await userEvent.click(getByTestId('save-add-edit-button'));
+
+        await waitFor(() => {
+            expect(onSave).toHaveBeenCalledWith({
+                cidr_block: '192.0.2.7',
+                description: 'Blocked range',
+                enabled: true,
+                owner_id: '',
+                action: 'deny',
+            });
+        });
     });
 });

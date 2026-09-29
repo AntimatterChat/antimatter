@@ -48,6 +48,12 @@ const EditSection = ({
                                     defaultMessage: 'Filter Name',
                                 })}
                             </div>
+                            <div className='FilterAction'>
+                                {formatMessage({
+                                    id: 'admin.ip_filtering.rule_action',
+                                    defaultMessage: 'Action',
+                                })}
+                            </div>
                             <div className='IpAddressRange'>
                                 {formatMessage({
                                     id: 'admin.ip_filtering.ip_address_range',
@@ -57,7 +63,7 @@ const EditSection = ({
                         </div>
                         {ipFilters?.map((allowedIPRange, index) => (
                             <EditTableRow
-                                key={allowedIPRange.cidr_block}
+                                key={`${allowedIPRange.action ?? 'allow'}:${allowedIPRange.cidr_block}`}
                                 allowedIPRange={allowedIPRange}
                                 index={index}
                                 handleRowMouseEnter={(index) => setHoveredRow(index)}

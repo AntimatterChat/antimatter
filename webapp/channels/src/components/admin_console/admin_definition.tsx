@@ -73,6 +73,7 @@ import AttributeDetails from './global_attributes/attribute_details';
 import ClassificationAttribute from './global_attributes/classification_attribute';
 import GroupDetails from './group_settings/group_details';
 import GroupSettings from './group_settings/group_settings';
+import IPFiltering from './ip_filtering';
 import LDAPWizard from './ldap_wizard';
 import AutoTranslation, {searchableStrings as autoTranslationSearchableStrings} from './localization/auto_translation';
 import Localization, {searchableStrings as localizationSearchableStrings} from './localization/localization';
@@ -226,6 +227,7 @@ const reportAProblemTypeOptions = [
 
 const adminDefinitionMessages = defineMessages({
     data_retention_title: {id: 'admin.data_retention.title', defaultMessage: 'Data Retention Policy'},
+    ip_filtering_title: {id: 'admin.sidebar.ip_filtering', defaultMessage: 'IP Filtering'},
     cache_settings_title: {id: 'admin.cacheSettings.title', defaultMessage: 'Cache Settings'},
 
     cache_type_title: {id: 'admin.cacheSettings.cacheTypeTitle', defaultMessage: 'Cache Type'},
@@ -3873,6 +3875,17 @@ const AdminDefinition: AdminDefinitionType = {
                     ],
                 },
             },
+            ip_filtering: {
+                url: 'site_config/ip_filtering',
+                title: adminDefinitionMessages.ip_filtering_title,
+                isHidden: it.not(it.userHasReadPermissionOnResource(RESOURCE_KEYS.SITE.IP_FILTERING)),
+                isDisabled: it.not(it.userHasWritePermissionOnResource(RESOURCE_KEYS.SITE.IP_FILTERING)),
+                searchableStrings: [adminDefinitionMessages.ip_filtering_title],
+                schema: {
+                    id: 'IPFiltering',
+                    component: IPFiltering,
+                },
+            },
             secure_connection_detail: {
                 url: `site_config/secure_connections/:connection_id(create|${ID_PATH_PATTERN})`,
                 isHidden: it.not(it.all(
@@ -4135,7 +4148,7 @@ const AdminDefinition: AdminDefinitionType = {
                             type: 'bool',
                             key: 'SamlSettings.EnableSyncWithLdapIncludeAuth',
                             label: defineMessage({id: 'admin.saml.enableSyncWithLdapIncludeAuthTitle', defaultMessage: 'Override SAML bind data with AD/LDAP information:'}),
-                            help_text: defineMessage({id: 'admin.saml.enableSyncWithLdapIncludeAuthDescription', defaultMessage: 'When true, Antimatter will override the SAML ID attribute with the AD/LDAP ID attribute if configured or override the SAML Email attribute with the AD/LDAP Email attribute if SAML ID attribute is not present. This will allow you automatically migrate users from Email binding to ID binding to prevent creation of new users when an email address changes for a user. Moving from true to false, will remove the override from happening. <strong>Note:</strong> SAML IDs must match the LDAP IDs to prevent disabling of user accounts. Please review <link>documentation</link> for more information.'}), // eslint-disable-line formatjs/no-multiple-whitespaces, formatjs/enforce-placeholders -- placeholders provided
+                            help_text: defineMessage({id: 'admin.saml.enableSyncWithLdapIncludeAuthDescription', defaultMessage: 'When true, Antimatter will override the SAML ID attribute with the AD/LDAP ID attribute if configured or override the SAML Email attribute with the AD/LDAP Email attribute if SAML ID attribute is not present. This will allow you automatically migrate users from Email binding to ID binding to prevent creation of new users when an email address changes for a user. Moving from true to false, will remove the override from happening. <strong>Note:</strong> SAML IDs must match the LDAP IDs to prevent disabling of user accounts. Please review <link>documentation</link> for more information.'}), // eslint-disable-line formatjs/enforce-placeholders -- placeholders provided
                             help_text_values: {
                                 link: (msg: string) => (
                                     <ExternalLink
@@ -5512,7 +5525,7 @@ const AdminDefinition: AdminDefinitionType = {
                             type: 'bool',
                             key: 'ServiceSettings.EnableUserAccessTokens',
                             label: defineMessage({id: 'admin.service.userAccessTokensTitle', defaultMessage: 'Enable Personal Access Tokens:'}),
-                            help_text: defineMessage({id: 'admin.service.userAccessTokensDescription', defaultMessage: 'When true, users can create <link>personal access tokens</link> for integrations in <strong>Profile > Security</strong>. They can be used to authenticate against the API and give full access to the account.\n\n To manage who can create personal access tokens or to search users by token ID, go to <strong>System Console > User Management > Users</strong>.'}), // eslint-disable-line formatjs/no-multiple-whitespaces, formatjs/enforce-placeholders -- placeholders provided
+                            help_text: defineMessage({id: 'admin.service.userAccessTokensDescription', defaultMessage: 'When true, users can create <link>personal access tokens</link> for integrations in <strong>Profile > Security</strong>. They can be used to authenticate against the API and give full access to the account.\n\n To manage who can create personal access tokens or to search users by token ID, go to <strong>System Console > User Management > Users</strong>.'}), // eslint-disable-line formatjs/enforce-placeholders -- placeholders provided
                             help_text_values: {
                                 link: (msg: string) => (
                                     <ExternalLink

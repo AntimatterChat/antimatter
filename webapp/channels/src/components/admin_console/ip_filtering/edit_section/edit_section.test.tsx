@@ -38,9 +38,9 @@ describe('EditSection', () => {
             />,
         );
 
-        expect(screen.getByText('Allowed IP Addresses')).toBeInTheDocument();
-        expect(screen.getByText('Create rules to allow access to the workspace for specified IP addresses only.')).toBeInTheDocument();
-        expect(screen.getByText('If no rules are added, all IP addresses will be allowed.')).toBeInTheDocument();
+        expect(screen.getByText('IP Filter Rules')).toBeInTheDocument();
+        expect(screen.getByText('Deny rules always block the addresses they match. If any allow rule exists, only addresses matching an allow rule can reach the server.')).toBeInTheDocument();
+        expect(screen.getByText('If no rules are enabled, all IP addresses are allowed.')).toBeInTheDocument();
         expect(screen.getByText('Add Filter')).toBeInTheDocument();
         expect(screen.getByText('Filter Name')).toBeInTheDocument();
         expect(screen.getByText('IP Address Range')).toBeInTheDocument();
@@ -102,8 +102,8 @@ describe('EditSection', () => {
             />,
         );
 
-        expect(screen.getByText('Your IP address 192.168.1.1 is not included in your allowed IP address rules.')).toBeInTheDocument();
-        expect(screen.getByText('Include your IP address in at least one of the rules below to continue.')).toBeInTheDocument();
+        expect(screen.getByText('These rules would block your own IP address 192.168.1.1.')).toBeInTheDocument();
+        expect(screen.getByText('Allow your IP address, or remove the deny rule matching it, to continue.')).toBeInTheDocument();
         expect(screen.getByText('Add your IP address')).toBeInTheDocument();
     });
 

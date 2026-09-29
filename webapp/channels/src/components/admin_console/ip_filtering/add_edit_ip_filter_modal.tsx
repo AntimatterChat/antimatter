@@ -3,13 +3,13 @@
 
 import React, {useState} from 'react';
 import {Modal} from 'react-bootstrap';
-import {FormattedMessage, useIntl} from 'react-intl';
+import {useIntl} from 'react-intl';
 
 import {InformationOutlineIcon} from '@mattermost/compass-icons/components';
 import {Button} from '@mattermost/shared/components/button';
-import type {AllowedIPRange} from '@mattermost/types/config';
+import type {AllowedIPRange, IPFilterAction} from '@mattermost/types/config';
 
-import ExternalLink from 'components/external_link';
+import RadioGroup from 'components/common/radio_group';
 import type {CustomMessageInputType} from 'components/widgets/inputs/input/input';
 import Input from 'components/widgets/inputs/input/input';
 
@@ -27,15 +27,17 @@ export default function IPFilteringAddOrEditModal({onExited, onSave, existingRan
     const {formatMessage} = useIntl();
     const [name, setName] = useState(existingRange?.description || '');
     const [CIDR, setCIDR] = useState(existingRange?.cidr_block || '');
+    const [action, setAction] = useState<IPFilterAction>(existingRange?.action ?? 'allow');
 
     const [CIDRError, setCIDRError] = useState<CustomMessageInputType>(null);
 
     const handleSave = () => {
         const allowedIPRange: AllowedIPRange = {
-            cidr_block: CIDR,
+            cidr_block: CIDR.trim(),
             description: name,
             enabled: true,
-            owner_id: '',
+            owner_id: existingRange?.owner_id ?? '',
+            action,
         };
 
         if (existingRange) {
@@ -55,7 +57,7 @@ export default function IPFilteringAddOrEditModal({onExited, onSave, existingRan
 
     const validateCIDRInput = () => {
         if (!validateCIDR(CIDR)) {
-            setCIDRError({type: 'error', value: 'Invalid CIDR address range'});
+            setCIDRError({type: 'error', value: formatMessage({id: 'admin.ip_filtering.invalid_range', defaultMessage: 'Enter an IP address or a range in CIDR format'})});
         }
     };
 
@@ -92,34 +94,41 @@ export default function IPFilteringAddOrEditModal({onExited, onSave, existingRan
                                 useLegend={false}
                             />
                         </div>
-                        <div>{formatMessage({id: 'admin.ip_filtering.allow_following_range', defaultMessage: 'Allow the following range of IP Addresses'})}
+                        <div>
+                            {formatMessage({id: 'admin.ip_filtering.rule_action', defaultMessage: 'Action'})}
+                            <RadioGroup
+                                id='ip_filter_action'
+                                value={action}
+                                onChange={(e) => setAction(e.target.value as IPFilterAction)}
+                                values={[
+                                    {
+                                        key: formatMessage({id: 'admin.ip_filtering.action_allow', defaultMessage: 'Allow these addresses'}),
+                                        value: 'allow',
+                                        testId: 'ip-filter-action-allow',
+                                    },
+                                    {
+                                        key: formatMessage({id: 'admin.ip_filtering.action_deny', defaultMessage: 'Deny these addresses'}),
+                                        value: 'deny',
+                                        testId: 'ip-filter-action-deny',
+                                    },
+                                ]}
+                            />
+                        </div>
+                        <div>{formatMessage({id: 'admin.ip_filtering.ip_address_range', defaultMessage: 'IP Address Range'})}
                             <Input
                                 type='text'
                                 name='ip_address_range'
                                 onChange={handleCIDRChange}
                                 onBlur={validateCIDRInput}
                                 value={CIDR}
-                                placeholder={'Enter IP Range'}
+                                placeholder={formatMessage({id: 'admin.ip_filtering.ip_range_placeholder', defaultMessage: 'Enter an IP address or range'})}
                                 required={true}
                                 useLegend={false}
                                 customMessage={CIDRError}
                             />
                         </div>
                         <p>
-                            <FormattedMessage
-                                id={'admin.ip_filtering.more_info'}
-                                defaultMessage={'Enter ranges in CIDR format (e.g. 192.168.0.1/8). <link>More info</link>'}
-                                values={{
-                                    link: (msg) => (
-                                        <ExternalLink
-                                            href='https://mattermost.com/pl/cloud-ip-filtering'
-                                            location={'ip_filtering_add_edit_rule_modal'}
-                                        >
-                                            {msg}
-                                        </ExternalLink>
-                                    ),
-                                }}
-                            />
+                            {formatMessage({id: 'admin.ip_filtering.range_format', defaultMessage: 'Enter a single address (e.g. 192.0.2.7) or a range in CIDR format (e.g. 192.168.0.0/16 or 2001:db8::/32).'})}
                         </p>
                     </div>
                 </div>

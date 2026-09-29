@@ -47,7 +47,7 @@ describe('SaveConfirmationModal', () => {
             />,
         );
 
-        expect(getByText('Using the Customer Portal to restore access')).toBeInTheDocument();
+        expect(getByText('Restoring access')).toBeInTheDocument();
     });
 
     test('calls onClose when the cancel button is clicked', async () => {

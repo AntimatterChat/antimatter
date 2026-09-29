@@ -6927,6 +6927,22 @@
     "defaultMessage": "Tenant ID:",
     "description": "Setting label for a text field in the Intune section of the Mobile Security admin page; ends with a colon."
   },
+  "admin.ip_filtering.action_allow": {
+    "defaultMessage": "Allow these addresses",
+    "description": "Option in the IP filter rule editor in System Console > Site Configuration > IP Filtering: the rule lets the listed IP addresses reach the server."
+  },
+  "admin.ip_filtering.action_deny": {
+    "defaultMessage": "Deny these addresses",
+    "description": "Option in the IP filter rule editor in System Console > Site Configuration > IP Filtering: the rule blocks the listed IP addresses from reaching the server."
+  },
+  "admin.ip_filtering.action_tag_allow": {
+    "defaultMessage": "Allow",
+    "description": "Short tag in the IP filter rule list in System Console > Site Configuration > IP Filtering marking a rule that allows its addresses. Verb, keep it short."
+  },
+  "admin.ip_filtering.action_tag_deny": {
+    "defaultMessage": "Deny",
+    "description": "Short tag in the IP filter rule list in System Console > Site Configuration > IP Filtering marking a rule that blocks its addresses. Verb, keep it short."
+  },
   "admin.ip_filtering.add_filter": {
     "defaultMessage": "Add Filter",
     "description": "Primary button in the Allowed IP Addresses section header; opens the modal to add a new filter rule."
@@ -6940,7 +6956,7 @@
     "description": "Button in the warning panel shown when the admin's own IP is not in any rule; opens the add filter modal pre-filled."
   },
   "admin.ip_filtering.any_ip_can_access_add_filter": {
-    "defaultMessage": "Any IP can access your workspace. To limit access to selected IP Addresses, <add>Add a filter</add>.",
+    "defaultMessage": "Any IP address can reach the server. To allow or deny specific addresses, <add>Add a filter</add>.",
     "description": "Empty-state text when no IP filter rules exist; <add> wraps an inline link that opens the add filter modal."
   },
   "admin.ip_filtering.apply_changes": {
@@ -6952,7 +6968,7 @@
     "description": "Title of the confirmation modal shown before saving IP filter changes."
   },
   "admin.ip_filtering.apply_ip_filter_changes_are_you_sure": {
-    "defaultMessage": "Are you sure you want to apply these IP Filter changes? <strong>Users with IP addresses outside of the IP ranges provided will no longer have access to the workspace.</strong>",
+    "defaultMessage": "Are you sure you want to apply these IP Filter changes? <strong>Users whose IP address matches a deny rule, or no allow rule when there are some, will no longer have access to the server.</strong>",
     "description": "Body of the confirmation modal before applying IP filter changes in the System Console; <strong> wraps the warning about locked-out users."
   },
   "admin.ip_filtering.cancel": {
@@ -6964,7 +6980,7 @@
     "description": "Tooltip on the trash icon in an IP filter table row, and label of the delete action; removes the rule."
   },
   "admin.ip_filtering.delete_confirmation_body": {
-    "defaultMessage": "Are you sure you want to delete IP filter {filter}? Users with IP addresses outside of this range won't be able to access the workspace when IP Filtering is enabled",
+    "defaultMessage": "Are you sure you want to delete IP filter {filter}? This may change which IP addresses can reach the server.",
     "description": "Body of the confirmation modal when deleting an IP filter rule; {filter} is the filter's name."
   },
   "admin.ip_filtering.delete_confirmation_title": {
@@ -6988,11 +7004,11 @@
     "description": "Title of the modal for editing an existing IP filter rule."
   },
   "admin.ip_filtering.edit_section_description_line_1": {
-    "defaultMessage": "Create rules to allow access to the workspace for specified IP addresses only.",
-    "description": "First line of the description in the IP filter rules section of the System Console IP filtering page."
+    "defaultMessage": "Deny rules always block the addresses they match. If any allow rule exists, only addresses matching an allow rule can reach the server.",
+    "description": "First line of the description in the IP filter rules section of the System Console IP filtering page, explaining how allow and deny rules combine."
   },
   "admin.ip_filtering.edit_section_description_line_2": {
-    "defaultMessage": "<strong>NOTE:</strong> If no rules are added, all IP addresses will be allowed.",
+    "defaultMessage": "<strong>NOTE:</strong> If no rules are enabled, all IP addresses are allowed.",
     "description": "Second line of the IP filter rules section description; <strong> wraps the 'NOTE:' prefix."
   },
   "admin.ip_filtering.enable_ip_filtering": {
@@ -7000,20 +7016,24 @@
     "description": "Title next to the master toggle that turns the IP Filtering feature on or off (Cloud admin page)."
   },
   "admin.ip_filtering.enable_ip_filtering_description": {
-    "defaultMessage": "Limit access to your workspace by IP address. <learnmore>Learn more in the docs</learnmore>",
-    "description": "Description next to the toggle that enables IP filtering; <learnmore> wraps the documentation link text."
+    "defaultMessage": "Limit access to this server by IP address, with allow and deny rules.",
+    "description": "Description next to the toggle that enables IP filtering in System Console > Site Configuration > IP Filtering; 'allow and deny rules' are the two kinds of IP filter rule."
   },
   "admin.ip_filtering.error_on_page": {
-    "defaultMessage": "Your IP address is not included in your filters",
-    "description": "Error in the save bar of the IP Filtering page when the admin's own IP address is not covered by any rule (saving is blocked)."
+    "defaultMessage": "These rules would block your own IP address",
+    "description": "Error in the save bar of the IP Filtering page when the configured rules would block the admin's own IP address (saving is blocked)."
   },
   "admin.ip_filtering.filter_name": {
     "defaultMessage": "Filter Name",
     "description": "Column header in the IP filter rules table for the rule's name."
   },
   "admin.ip_filtering.include_your_ip": {
-    "defaultMessage": "Include your IP address in at least one of the rules below to continue.",
-    "description": "Warning panel text telling the admin their own IP must be covered by a rule before changes can be saved."
+    "defaultMessage": "Allow your IP address, or remove the deny rule matching it, to continue.",
+    "description": "Warning panel text telling the admin that the rules block their own IP address, and how to fix it, before changes can be saved."
+  },
+  "admin.ip_filtering.invalid_range": {
+    "defaultMessage": "Enter an IP address or a range in CIDR format",
+    "description": "Inline validation error under the IP range field of the IP filter rule editor in the System Console when the entry is not a valid IP address or CIDR range."
   },
   "admin.ip_filtering.ip_address_range": {
     "defaultMessage": "IP Address Range",
@@ -7022,6 +7042,10 @@
   "admin.ip_filtering.ip_filtering": {
     "defaultMessage": "IP Filtering",
     "description": "Page header of the IP Filtering section in the System Console (Cloud feature)."
+  },
+  "admin.ip_filtering.ip_range_placeholder": {
+    "defaultMessage": "Enter an IP address or range",
+    "description": "Placeholder text of the IP address or range input in the IP filter rule editor in the System Console."
   },
   "admin.ip_filtering.name": {
     "defaultMessage": "Name",
@@ -7032,31 +7056,43 @@
     "description": "Empty-state title on the IP Filtering page when no rules have been added."
   },
   "admin.ip_filtering.no_filters_added": {
-    "defaultMessage": "Are you sure you want to apply these IP filter changes? There are currently no filters added, so <strong>all IP addresses will have access to the workspace.</strong>",
+    "defaultMessage": "Are you sure you want to apply these IP filter changes? There are currently no filters added, so <strong>all IP addresses will have access to the server.</strong>",
     "description": "Body of the confirmation modal when applying IP filtering with no rules defined; <strong> wraps the warning that all IPs will be allowed."
+  },
+  "admin.ip_filtering.range_format": {
+    "defaultMessage": "Enter a single address (e.g. 192.0.2.7) or a range in CIDR format (e.g. 192.168.0.0/16 or 2001:db8::/32).",
+    "description": "Help text under the IP range field of the IP filter rule editor in the System Console. The example addresses and ranges must stay as-is."
+  },
+  "admin.ip_filtering.rule_action": {
+    "defaultMessage": "Action",
+    "description": "Label of the control choosing whether an IP filter rule allows or denies its addresses, and column header of the rule list, in System Console > Site Configuration > IP Filtering."
   },
   "admin.ip_filtering.rule_name_placeholder": {
     "defaultMessage": "Enter a name for this rule",
     "description": "Placeholder of the rule name input in the add/edit IP filter modal."
+  },
+  "admin.ip_filtering.rules_title": {
+    "defaultMessage": "IP Filter Rules",
+    "description": "Heading of the list of IP filter rules in System Console > Site Configuration > IP Filtering."
   },
   "admin.ip_filtering.save": {
     "defaultMessage": "Save",
     "description": "Confirm/save button label used in the add IP filter modal and the save confirmation modal."
   },
   "admin.ip_filtering.save_disclaimer_subtitle": {
-    "defaultMessage": "If you happen to block yourself with these settings, your workspace owner can log in to the <customerportal>Customer Portal</customerportal> to disable IP filtering to restore access.",
-    "description": "Disclaimer text in the IP filtering save confirmation explaining recovery via the Customer Portal; <customerportal> wraps the portal link text."
+    "defaultMessage": "If these rules block you, an administrator with access to the server can clear them in local mode, which is not subject to IP filtering: <code>mmctl --local config edit</code>, then empty <code>IPFilteringSettings.Rules</code>.",
+    "description": "Note in the IP filtering save confirmation explaining how to recover from a lockout through the server's local mode. The text inside <code> tags is a command and a configuration setting name and must stay as-is."
   },
   "admin.ip_filtering.save_disclaimer_title": {
-    "defaultMessage": "Using the Customer Portal to restore access",
-    "description": "Heading above the disclaimer about restoring access through the Customer Portal in the IP filtering save confirmation."
+    "defaultMessage": "Restoring access",
+    "description": "Heading above the note, in the IP filtering save confirmation, explaining how an administrator can restore access if the rules lock them out."
   },
   "admin.ip_filtering.saving_changes": {
     "defaultMessage": "Applying changes...",
     "description": "Save button label while the admin's IP filter changes are being applied to the workspace."
   },
   "admin.ip_filtering.turn_off_ip_filtering": {
-    "defaultMessage": "Are you sure you want to turn off IP Filtering? <strong>All IP addresses will have access to the workspace.</strong>",
+    "defaultMessage": "Are you sure you want to turn off IP Filtering? <strong>All IP addresses will have access to the server.</strong>",
     "description": "Body of the confirmation modal for disabling IP filtering; <strong> bolds the warning that all IPs get access."
   },
   "admin.ip_filtering.update_filter": {
@@ -7070,6 +7106,10 @@
   "admin.ip_filtering.your_current_ip_is": {
     "defaultMessage": "Your current IP address is {ip}",
     "description": "Informational note in the IP filtering UI showing the admin's own IP; {ip} is an IP address."
+  },
+  "admin.ip_filtering.your_current_ip_would_be_blocked": {
+    "defaultMessage": "These rules would block your own IP address {ip}.",
+    "description": "Warning in System Console > Site Configuration > IP Filtering when the configured rules would block the admin's own IP address, locking them out. {ip} is that IP address."
   },
   "admin.jobTable.cancelButton": {
     "defaultMessage": "Cancel",

@@ -23,15 +23,15 @@ const IPNotInRangeErrorPanel = ({
         <div className='Content'>
             <div className='Title'>
                 <FormattedMessage
-                    id='admin.ip_filtering.your_current_ip_is_not_in_allowed_rules'
-                    defaultMessage='Your IP address {ip} is not included in your allowed IP address rules.'
+                    id='admin.ip_filtering.your_current_ip_would_be_blocked'
+                    defaultMessage='These rules would block your own IP address {ip}.'
                     values={{ip: currentUsersIP}}
                 />
             </div>
             <div className='Body'>
                 <FormattedMessage
                     id='admin.ip_filtering.include_your_ip'
-                    defaultMessage='Include your IP address in at least one of the rules below to continue.'
+                    defaultMessage='Allow your IP address, or remove the deny rule matching it, to continue.'
                 />
                 <Button
                     emphasis='primary'
