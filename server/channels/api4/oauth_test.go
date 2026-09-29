@@ -18,7 +18,6 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/mattermost/mattermost/server/public/model"
-	"github.com/mattermost/mattermost/server/v8/channels/app"
 )
 
 func TestCreateOAuthApp(t *testing.T) {
@@ -1134,8 +1133,7 @@ func TestRegisterOAuthClientAudit(t *testing.T) {
 	require.NoError(t, err)
 	defer os.Remove(logFile.Name())
 
-	options := []app.Option{app.WithLicense(model.NewTestLicense("advanced_logging"))}
-	th := SetupWithServerOptionsAndConfig(t, options, func(cfg *model.Config) {
+	th := SetupWithServerOptionsAndConfig(t, nil, func(cfg *model.Config) {
 		cfg.ExperimentalAuditSettings.FileEnabled = new(true)
 		cfg.ExperimentalAuditSettings.FileName = new(logFile.Name())
 		*cfg.ServiceSettings.EnableOAuthServiceProvider = true

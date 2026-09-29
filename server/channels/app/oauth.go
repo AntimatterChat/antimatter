@@ -1185,7 +1185,7 @@ func (a *App) AuthorizeOAuthUser(rctx request.CTX, w http.ResponseWriter, r *htt
 }
 
 func (a *App) SwitchEmailToOAuth(rctx request.CTX, w http.ResponseWriter, r *http.Request, email, password, code, service string) (string, *model.AppError) {
-	if a.Srv().License() != nil && !*a.Config().ServiceSettings.ExperimentalEnableAuthenticationTransfer {
+	if !*a.Config().ServiceSettings.ExperimentalEnableAuthenticationTransfer {
 		return "", model.NewAppError("emailToOAuth", "api.user.email_to_oauth.not_available.app_error", nil, "", http.StatusForbidden)
 	}
 
@@ -1220,7 +1220,7 @@ func (a *App) SwitchEmailToOAuth(rctx request.CTX, w http.ResponseWriter, r *htt
 }
 
 func (a *App) SwitchOAuthToEmail(rctx request.CTX, email, password, requesterId string) (string, *model.AppError) {
-	if a.Srv().License() != nil && !*a.Config().ServiceSettings.ExperimentalEnableAuthenticationTransfer {
+	if !*a.Config().ServiceSettings.ExperimentalEnableAuthenticationTransfer {
 		return "", model.NewAppError("oauthToEmail", "api.user.oauth_to_email.not_available.app_error", nil, "", http.StatusForbidden)
 	}
 

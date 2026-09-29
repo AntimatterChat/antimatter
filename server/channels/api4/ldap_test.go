@@ -104,14 +104,6 @@ func TestTestLdap(t *testing.T) {
 	mainHelper.Parallel(t)
 	th := Setup(t)
 
-	th.TestForSystemAdminAndLocal(t, func(t *testing.T, client *model.Client4) {
-		resp, err := client.TestLdap(context.Background())
-		CheckNotImplementedStatus(t, resp)
-		require.Error(t, err)
-		CheckErrorID(t, err, "api.ldap_groups.license_error")
-	})
-	th.App.Srv().SetLicense(model.NewTestLicense("ldap_groups"))
-
 	resp, err := th.Client.TestLdap(context.Background())
 	CheckForbiddenStatus(t, resp)
 	require.Error(t, err)
@@ -130,14 +122,6 @@ func TestSyncLdap(t *testing.T) {
 	mainHelper.Parallel(t)
 	th := Setup(t)
 
-	th.TestForSystemAdminAndLocal(t, func(t *testing.T, client *model.Client4) {
-		resp, err := client.TestLdap(context.Background())
-		CheckNotImplementedStatus(t, resp)
-		require.Error(t, err)
-		CheckErrorID(t, err, "api.ldap_groups.license_error")
-	})
-
-	th.App.Srv().SetLicense(model.NewTestLicense("ldap_groups"))
 	th.App.UpdateConfig(func(cfg *model.Config) {
 		*cfg.LdapSettings.EnableSync = true
 	})

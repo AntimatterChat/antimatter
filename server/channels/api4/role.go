@@ -164,15 +164,7 @@ func patchRole(c *Context, w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	isGuest := oldRole.Name == model.SystemGuestRoleId || oldRole.Name == model.TeamGuestRoleId || oldRole.Name == model.ChannelGuestRoleId
-	if c.App.Channels().License() == nil && patch.Permissions != nil {
-		if isGuest {
-			c.Err = model.NewAppError("Api4.PatchRoles", "api.roles.patch_roles.license.error", nil, "", http.StatusNotImplemented)
-			return
-		}
-	}
-
-	// Licensed instances can not change permissions in the blacklist set.
+	// Permissions in the blacklist set can not be changed.
 	if patch.Permissions != nil {
 		deltaPermissions := model.PermissionsChangedByPatch(oldRole, &patch)
 
@@ -191,11 +183,6 @@ func patchRole(c *Context, w http.ResponseWriter, r *http.Request) {
 		}
 
 		*patch.Permissions = model.RemoveDuplicateStrings(*patch.Permissions)
-	}
-
-	if c.App.Channels().License() != nil && isGuest && !*c.App.Channels().License().Features.GuestAccountsPermissions {
-		c.Err = model.NewAppError("Api4.PatchRoles", "api.roles.patch_roles.license.error", nil, "", http.StatusNotImplemented)
-		return
 	}
 
 	if oldRole.Name == model.TeamAdminRoleId ||

@@ -9,7 +9,7 @@ Synopsis
 ~~~~~~~~
 
 
-Add one or more permissions to an existing role (Only works in Enterprise Edition).
+Add one or more permissions to an existing role.
 
 ::
 

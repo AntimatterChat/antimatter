@@ -18,8 +18,6 @@ func TestCreateScheme(t *testing.T) {
 	mainHelper.Parallel(t)
 	th := Setup(t)
 
-	th.App.Srv().SetLicense(model.NewTestLicense("custom_permissions_schemes"))
-
 	err := th.App.SetPhase2PermissionsMigrationStatus(true)
 	require.NoError(t, err)
 
@@ -140,32 +138,6 @@ func TestCreateScheme(t *testing.T) {
 	require.Error(t, err)
 	CheckForbiddenStatus(t, r5)
 
-	// Try and create a scheme without a license.
-	th.App.Srv().SetLicense(nil)
-	scheme6 := &model.Scheme{
-		DisplayName: model.NewId(),
-		Name:        model.NewId(),
-		Description: model.NewId(),
-		Scope:       model.SchemeScopeTeam,
-	}
-	_, r6, _ := th.SystemAdminClient.CreateScheme(context.Background(), scheme6)
-	CheckNotImplementedStatus(t, r6)
-
-	// Create scheme with a Professional SKU license but no explicit 'custom_permissions_schemes' license feature.
-	lic := &model.License{
-		Features: &model.Features{
-			CustomPermissionsSchemes: new(false),
-		},
-		Customer: &model.Customer{
-			Name:  "TestName",
-			Email: "test@example.com",
-		},
-		SkuName:      "SKU NAME",
-		SkuShortName: model.LicenseShortSkuProfessional,
-		StartsAt:     model.GetMillis() - 1000,
-		ExpiresAt:    model.GetMillis() + 100000,
-	}
-	th.App.Srv().SetLicense(lic)
 	scheme6b := &model.Scheme{
 		DisplayName: model.NewId(),
 		Name:        model.NewId(),
@@ -180,7 +152,6 @@ func TestCreateScheme(t *testing.T) {
 	require.NoError(t, err)
 
 	th.LoginSystemAdmin(t)
-	th.App.Srv().SetLicense(model.NewTestLicense("custom_permissions_schemes"))
 
 	scheme7 := &model.Scheme{
 		DisplayName: model.NewId(),
@@ -195,8 +166,6 @@ func TestCreateScheme(t *testing.T) {
 func TestGetScheme(t *testing.T) {
 	mainHelper.Parallel(t)
 	th := Setup(t).InitBasic(t)
-
-	th.App.Srv().SetLicense(model.NewTestLicense("custom_permissions_schemes"))
 
 	// Basic test of creating a team scheme.
 	scheme1 := &model.Scheme{
@@ -244,7 +213,6 @@ func TestGetScheme(t *testing.T) {
 
 	_, _, err = th.SystemAdminClient.Login(context.Background(), th.SystemAdminUser.Username, th.SystemAdminUser.Password)
 	require.NoError(t, err)
-	th.App.Srv().SetLicense(nil)
 	_, _, err = th.SystemAdminClient.GetScheme(context.Background(), s1.Id)
 	require.NoError(t, err)
 
@@ -262,8 +230,6 @@ func TestGetScheme(t *testing.T) {
 func TestGetSchemes(t *testing.T) {
 	mainHelper.Parallel(t)
 	th := Setup(t).InitBasic(t)
-
-	th.App.Srv().SetLicense(model.NewTestLicense("custom_permissions_schemes"))
 
 	scheme1 := &model.Scheme{
 		DisplayName: model.NewId(),
@@ -330,8 +296,6 @@ func TestGetSchemes(t *testing.T) {
 func TestGetTeamsForScheme(t *testing.T) {
 	mainHelper.Parallel(t)
 	th := Setup(t).InitBasic(t)
-
-	th.App.Srv().SetLicense(model.NewTestLicense("custom_permissions_schemes"))
 
 	err := th.App.SetPhase2PermissionsMigrationStatus(true)
 	require.NoError(t, err)
@@ -428,8 +392,6 @@ func TestGetTeamsForScheme_SanitizesPrivilegedFieldsForUserManager(t *testing.T)
 	mainHelper.Parallel(t)
 	th := Setup(t)
 
-	th.App.Srv().SetLicense(model.NewTestLicense("custom_permissions_schemes"))
-
 	err := th.App.SetPhase2PermissionsMigrationStatus(true)
 	require.NoError(t, err)
 
@@ -486,8 +448,6 @@ func TestGetTeamsForScheme_SanitizesPrivilegedFieldsForUserManager(t *testing.T)
 func TestGetChannelsForScheme(t *testing.T) {
 	mainHelper.Parallel(t)
 	th := Setup(t).InitBasic(t)
-
-	th.App.Srv().SetLicense(model.NewTestLicense("custom_permissions_schemes"))
 
 	err := th.App.SetPhase2PermissionsMigrationStatus(true)
 	require.NoError(t, err)
@@ -586,8 +546,6 @@ func TestPatchScheme(t *testing.T) {
 	mainHelper.Parallel(t)
 	th := Setup(t)
 
-	th.App.Srv().SetLicense(model.NewTestLicense("custom_permissions_schemes"))
-
 	err := th.App.SetPhase2PermissionsMigrationStatus(true)
 	require.NoError(t, err)
 
@@ -677,26 +635,6 @@ func TestPatchScheme(t *testing.T) {
 	require.Error(t, err)
 	CheckForbiddenStatus(t, r10)
 
-	// Test without license.
-	th.App.Srv().SetLicense(nil)
-	_, r11, _ := th.SystemAdminClient.PatchScheme(context.Background(), s6.Id, schemePatch)
-	CheckNotImplementedStatus(t, r11)
-
-	// Patch scheme with a Professional SKU license but no explicit 'custom_permissions_schemes' license feature.
-	lic := &model.License{
-		Features: &model.Features{
-			CustomPermissionsSchemes: new(false),
-		},
-		Customer: &model.Customer{
-			Name:  "TestName",
-			Email: "test@example.com",
-		},
-		SkuName:      "SKU NAME",
-		SkuShortName: model.LicenseShortSkuProfessional,
-		StartsAt:     model.GetMillis() - 1000,
-		ExpiresAt:    model.GetMillis() + 100000,
-	}
-	th.App.Srv().SetLicense(lic)
 	_, _, err = th.SystemAdminClient.PatchScheme(context.Background(), s6.Id, schemePatch)
 	require.NoError(t, err)
 
@@ -704,7 +642,6 @@ func TestPatchScheme(t *testing.T) {
 	require.NoError(t, err)
 
 	th.LoginSystemAdmin(t)
-	th.App.Srv().SetLicense(model.NewTestLicense("custom_permissions_schemes"))
 
 	_, r12, _ := th.SystemAdminClient.PatchScheme(context.Background(), s6.Id, schemePatch)
 	CheckNotImplementedStatus(t, r12)
@@ -715,7 +652,6 @@ func TestDeleteScheme(t *testing.T) {
 	th := Setup(t)
 
 	t.Run("ValidTeamScheme", func(t *testing.T) {
-		th.App.Srv().SetLicense(model.NewTestLicense("custom_permissions_schemes"))
 
 		err := th.App.SetPhase2PermissionsMigrationStatus(true)
 		require.NoError(t, err)
@@ -794,7 +730,6 @@ func TestDeleteScheme(t *testing.T) {
 	})
 
 	t.Run("ValidChannelScheme", func(t *testing.T) {
-		th.App.Srv().SetLicense(model.NewTestLicense("custom_permissions_schemes"))
 
 		err := th.App.SetPhase2PermissionsMigrationStatus(true)
 		require.NoError(t, err)
@@ -855,7 +790,6 @@ func TestDeleteScheme(t *testing.T) {
 	})
 
 	t.Run("FailureCases", func(t *testing.T) {
-		th.App.Srv().SetLicense(model.NewTestLicense("custom_permissions_schemes"))
 
 		err := th.App.SetPhase2PermissionsMigrationStatus(true)
 		require.NoError(t, err)
@@ -894,34 +828,11 @@ func TestDeleteScheme(t *testing.T) {
 		require.Error(t, err)
 		CheckForbiddenStatus(t, r4)
 
-		// Test without license.
-		th.App.Srv().SetLicense(nil)
-		r5, err := th.SystemAdminClient.DeleteScheme(context.Background(), s1.Id)
-		require.Error(t, err)
-		CheckNotImplementedStatus(t, r5)
-
-		// Delete scheme with a Professional SKU license but no explicit 'custom_permissions_schemes' license feature.
-		lic := &model.License{
-			Features: &model.Features{
-				CustomPermissionsSchemes: new(false),
-			},
-			Customer: &model.Customer{
-				Name:  "TestName",
-				Email: "test@example.com",
-			},
-			SkuName:      "SKU NAME",
-			SkuShortName: model.LicenseShortSkuProfessional,
-			StartsAt:     model.GetMillis() - 1000,
-			ExpiresAt:    model.GetMillis() + 100000,
-		}
-		th.App.Srv().SetLicense(lic)
 		_, err = th.SystemAdminClient.DeleteScheme(context.Background(), s2.Id)
 		require.NoError(t, err)
 
 		err = th.App.SetPhase2PermissionsMigrationStatus(false)
 		require.NoError(t, err)
-
-		th.App.Srv().SetLicense(model.NewTestLicense("custom_permissions_schemes"))
 
 		r6, err := th.SystemAdminClient.DeleteScheme(context.Background(), s1.Id)
 		require.Error(t, err)

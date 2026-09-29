@@ -17,27 +17,24 @@ import (
 // SyncLdap starts an LDAP sync job.
 func (a *App) SyncLdap(rctx request.CTX) {
 	a.Srv().Go(func() {
-		if license := a.Srv().License(); license != nil && *license.Features.LDAP {
-			if !*a.Config().LdapSettings.EnableSync {
-				rctx.Logger().Error("LdapSettings.EnableSync is set to false. Skipping LDAP sync.")
-				return
-			}
+		if !*a.Config().LdapSettings.EnableSync {
+			rctx.Logger().Error("LdapSettings.EnableSync is set to false. Skipping LDAP sync.")
+			return
+		}
 
-			ldapI := a.Ldap()
-			if ldapI == nil {
-				rctx.Logger().Error("Not executing ldap sync because ldap is not available")
-				return
-			}
-			if _, appErr := ldapI.StartSynchronizeJob(rctx, false); appErr != nil {
-				rctx.Logger().Error("Failed to start LDAP sync job")
-			}
+		ldapI := a.Ldap()
+		if ldapI == nil {
+			rctx.Logger().Error("Not executing ldap sync because ldap is not available")
+			return
+		}
+		if _, appErr := ldapI.StartSynchronizeJob(rctx, false); appErr != nil {
+			rctx.Logger().Error("Failed to start LDAP sync job")
 		}
 	})
 }
 
 func (a *App) TestLdap(rctx request.CTX) *model.AppError {
-	license := a.Srv().License()
-	if ldapI := a.LdapDiagnostic(); ldapI != nil && license != nil && *license.Features.LDAP && (*a.Config().LdapSettings.Enable || *a.Config().LdapSettings.EnableSync) {
+	if ldapI := a.LdapDiagnostic(); ldapI != nil && (*a.Config().LdapSettings.Enable || *a.Config().LdapSettings.EnableSync) {
 		return ldapI.RunTest(rctx)
 	}
 
@@ -77,12 +74,11 @@ func (a *App) TestLdapConnection(rctx request.CTX, settings model.LdapSettings) 
 		return appErr
 	}
 
-	license := a.Srv().License()
 	ldapI := a.LdapDiagnostic()
 
 	// NOTE: normally we would test (*a.Config().LdapSettings.Enable || *a.Config().LdapSettings.EnableSync),
 	// but we want to allow sysadmins to test the connection without enabling and saving the config first.
-	if ldapI != nil && license != nil && model.SafeDereference(license.Features.LDAP) {
+	if ldapI != nil {
 		return ldapI.RunTestConnection(rctx, settings)
 	}
 
@@ -95,12 +91,11 @@ func (a *App) TestLdapDiagnostics(rctx request.CTX, testType model.LdapDiagnosti
 		return nil, appErr
 	}
 
-	license := a.Srv().License()
 	ldapI := a.LdapDiagnostic()
 
 	// NOTE: normally we would test (*a.Config().LdapSettings.Enable || *a.Config().LdapSettings.EnableSync),
 	// but we want to allow sysadmins to test the connection without enabling and saving the config first.
-	if ldapI != nil && license != nil && *license.Features.LDAP {
+	if ldapI != nil {
 		return ldapI.RunTestDiagnostics(rctx, testType, settings)
 	}
 
@@ -146,7 +141,7 @@ func (a *App) GetAllLdapGroupsPage(rctx request.CTX, page int, perPage int, opts
 }
 
 func (a *App) SwitchEmailToLdap(rctx request.CTX, email, password, code, ldapLoginId, ldapPassword string) (string, *model.AppError) {
-	if a.Srv().License() != nil && !*a.Config().ServiceSettings.ExperimentalEnableAuthenticationTransfer {
+	if !*a.Config().ServiceSettings.ExperimentalEnableAuthenticationTransfer {
 		return "", model.NewAppError("emailToLdap", "api.user.email_to_ldap.not_available.app_error", nil, "", http.StatusForbidden)
 	}
 
@@ -182,7 +177,7 @@ func (a *App) SwitchEmailToLdap(rctx request.CTX, email, password, code, ldapLog
 }
 
 func (a *App) SwitchLdapToEmail(rctx request.CTX, ldapPassword, code, email, newPassword string) (string, *model.AppError) {
-	if a.Srv().License() != nil && !*a.Config().ServiceSettings.ExperimentalEnableAuthenticationTransfer {
+	if !*a.Config().ServiceSettings.ExperimentalEnableAuthenticationTransfer {
 		return "", model.NewAppError("ldapToEmail", "api.user.ldap_to_email.not_available.app_error", nil, "", http.StatusForbidden)
 	}
 

@@ -9,7 +9,7 @@ Synopsis
 ~~~~~~~~
 
 
-Assign users to a role by username (Only works in Enterprise Edition).
+Assign users to a role by username.
 
 ::
 

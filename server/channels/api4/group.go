@@ -105,12 +105,6 @@ func (api *API) InitGroup() {
 }
 
 func getGroup(c *Context, w http.ResponseWriter, r *http.Request) {
-	permissionErr := requireLicense(c)
-	if permissionErr != nil {
-		c.Err = permissionErr
-		return
-	}
-
 	c.RequireGroupId()
 	if c.Err != nil {
 		return
@@ -138,7 +132,7 @@ func getGroup(c *Context, w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	if appErr := licensedAndConfiguredForGroupBySource(c.App, group.Source); appErr != nil {
+	if appErr := configuredForGroupBySource(c.App, group.Source); appErr != nil {
 		appErr.Where = "Api4.getGroup"
 		c.Err = appErr
 		return
@@ -156,11 +150,6 @@ func getGroup(c *Context, w http.ResponseWriter, r *http.Request) {
 }
 
 func createGroup(c *Context, w http.ResponseWriter, r *http.Request) {
-	permissionErr := requireLicense(c)
-	if permissionErr != nil {
-		c.Err = permissionErr
-		return
-	}
 	var group *model.GroupWithUserIds
 	if err := json.NewDecoder(r.Body).Decode(&group); err != nil || group == nil {
 		c.SetInvalidParamWithErr("group", err)
@@ -172,7 +161,7 @@ func createGroup(c *Context, w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if appErr := licensedAndConfiguredForGroupBySource(c.App, group.Source); appErr != nil {
+	if appErr := configuredForGroupBySource(c.App, group.Source); appErr != nil {
 		appErr.Where = "Api4.createGroup"
 		c.Err = appErr
 		return
@@ -218,11 +207,6 @@ func createGroup(c *Context, w http.ResponseWriter, r *http.Request) {
 }
 
 func patchGroup(c *Context, w http.ResponseWriter, r *http.Request) {
-	permissionErr := requireLicense(c)
-	if permissionErr != nil {
-		c.Err = permissionErr
-		return
-	}
 	c.RequireGroupId()
 	if c.Err != nil {
 		return
@@ -234,7 +218,7 @@ func patchGroup(c *Context, w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	appErr = licensedAndConfiguredForGroupBySource(c.App, group.Source)
+	appErr = configuredForGroupBySource(c.App, group.Source)
 	if appErr != nil {
 		appErr.Where = "Api4.patchGroup"
 		c.Err = appErr
@@ -317,11 +301,6 @@ func patchGroup(c *Context, w http.ResponseWriter, r *http.Request) {
 }
 
 func linkGroupSyncable(c *Context, w http.ResponseWriter, r *http.Request) {
-	permissionErr := requireLicense(c)
-	if permissionErr != nil {
-		c.Err = permissionErr
-		return
-	}
 	c.RequireGroupId()
 	if c.Err != nil {
 		return
@@ -359,11 +338,6 @@ func linkGroupSyncable(c *Context, w http.ResponseWriter, r *http.Request) {
 	}
 
 	model.AddEventParameterAuditableToAuditRec(auditRec, "patch", patch)
-
-	if !*c.App.Channels().License().Features.LDAPGroups {
-		c.Err = model.NewAppError("Api4.createGroupSyncable", "api.ldap_groups.license_error", nil, "", http.StatusForbidden)
-		return
-	}
 
 	appErr := verifyLinkUnlinkPermission(c, syncableType, syncableID)
 	if appErr != nil {
@@ -431,11 +405,6 @@ func linkGroupSyncable(c *Context, w http.ResponseWriter, r *http.Request) {
 }
 
 func getGroupSyncable(c *Context, w http.ResponseWriter, r *http.Request) {
-	permissionErr := requireLicense(c)
-	if permissionErr != nil {
-		c.Err = permissionErr
-		return
-	}
 	c.RequireGroupId()
 	if c.Err != nil {
 		return
@@ -452,11 +421,6 @@ func getGroupSyncable(c *Context, w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	syncableType := c.Params.SyncableType
-
-	if !*c.App.Channels().License().Features.LDAPGroups {
-		c.Err = model.NewAppError("Api4.getGroupSyncable", "api.ldap_groups.license_error", nil, "", http.StatusForbidden)
-		return
-	}
 
 	if !c.App.SessionHasPermissionTo(*c.AppContext.Session(), model.PermissionManageSystem) {
 		c.SetPermissionError(model.PermissionManageSystem)
@@ -481,11 +445,6 @@ func getGroupSyncable(c *Context, w http.ResponseWriter, r *http.Request) {
 }
 
 func getGroupSyncables(c *Context, w http.ResponseWriter, r *http.Request) {
-	permissionErr := requireLicense(c)
-	if permissionErr != nil {
-		c.Err = permissionErr
-		return
-	}
 	c.RequireGroupId()
 	if c.Err != nil {
 		return
@@ -496,11 +455,6 @@ func getGroupSyncables(c *Context, w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	syncableType := c.Params.SyncableType
-
-	if !*c.App.Channels().License().Features.LDAPGroups {
-		c.Err = model.NewAppError("Api4.getGroupSyncables", "api.ldap_groups.license_error", nil, "", http.StatusForbidden)
-		return
-	}
 
 	if !c.App.SessionHasPermissionTo(*c.AppContext.Session(), model.PermissionSysconsoleReadUserManagementGroups) {
 		c.SetPermissionError(model.PermissionSysconsoleReadUserManagementGroups)
@@ -525,11 +479,6 @@ func getGroupSyncables(c *Context, w http.ResponseWriter, r *http.Request) {
 }
 
 func patchGroupSyncable(c *Context, w http.ResponseWriter, r *http.Request) {
-	permissionErr := requireLicense(c)
-	if permissionErr != nil {
-		c.Err = permissionErr
-		return
-	}
 	c.RequireGroupId()
 	if c.Err != nil {
 		return
@@ -567,12 +516,6 @@ func patchGroupSyncable(c *Context, w http.ResponseWriter, r *http.Request) {
 	}
 
 	model.AddEventParameterAuditableToAuditRec(auditRec, "patch", patch)
-
-	if !*c.App.Channels().License().Features.LDAPGroups {
-		c.Err = model.NewAppError("Api4.patchGroupSyncable", "api.ldap_groups.license_error", nil, "",
-			http.StatusForbidden)
-		return
-	}
 
 	appErr := verifyLinkUnlinkPermission(c, syncableType, syncableID)
 	if appErr != nil {
@@ -622,11 +565,6 @@ func patchGroupSyncable(c *Context, w http.ResponseWriter, r *http.Request) {
 }
 
 func unlinkGroupSyncable(c *Context, w http.ResponseWriter, r *http.Request) {
-	permissionErr := requireLicense(c)
-	if permissionErr != nil {
-		c.Err = permissionErr
-		return
-	}
 	c.RequireGroupId()
 	if c.Err != nil {
 		return
@@ -649,11 +587,6 @@ func unlinkGroupSyncable(c *Context, w http.ResponseWriter, r *http.Request) {
 	model.AddEventParameterToAuditRec(auditRec, "group_id", c.Params.GroupId)
 	model.AddEventParameterToAuditRec(auditRec, "syncable_id", syncableID)
 	model.AddEventParameterToAuditRec(auditRec, "syncable_type", string(syncableType))
-
-	if !*c.App.Channels().License().Features.LDAPGroups {
-		c.Err = model.NewAppError("Api4.unlinkGroupSyncable", "api.ldap_groups.license_error", nil, "", http.StatusForbidden)
-		return
-	}
 
 	appErr := verifyLinkUnlinkPermission(c, syncableType, syncableID)
 	if appErr != nil {
@@ -768,11 +701,6 @@ func verifySchemeAdminAssignmentPermission(c *Context, syncableType model.GroupS
 }
 
 func getGroupMembers(c *Context, w http.ResponseWriter, r *http.Request) {
-	permissionErr := requireLicense(c)
-	if permissionErr != nil {
-		c.Err = permissionErr
-		return
-	}
 	c.RequireGroupId()
 	if c.Err != nil {
 		return
@@ -812,18 +740,8 @@ func getGroupMembers(c *Context, w http.ResponseWriter, r *http.Request) {
 }
 
 func getGroupStats(c *Context, w http.ResponseWriter, r *http.Request) {
-	permissionErr := requireLicense(c)
-	if permissionErr != nil {
-		c.Err = permissionErr
-		return
-	}
 	c.RequireGroupId()
 	if c.Err != nil {
-		return
-	}
-
-	if !*c.App.Channels().License().Features.LDAPGroups {
-		c.Err = model.NewAppError("Api4.getGroupStats", "api.ldap_groups.license_error", nil, "", http.StatusForbidden)
 		return
 	}
 
@@ -854,11 +772,6 @@ func getGroupStats(c *Context, w http.ResponseWriter, r *http.Request) {
 }
 
 func getGroupsByUserId(c *Context, w http.ResponseWriter, r *http.Request) {
-	permissionErr := requireLicense(c)
-	if permissionErr != nil {
-		c.Err = permissionErr
-		return
-	}
 	c.RequireUserId()
 	if c.Err != nil {
 		return
@@ -866,11 +779,6 @@ func getGroupsByUserId(c *Context, w http.ResponseWriter, r *http.Request) {
 
 	if c.AppContext.Session().UserId != c.Params.UserId && !c.App.SessionHasPermissionTo(*c.AppContext.Session(), model.PermissionManageSystem) {
 		c.SetPermissionError(model.PermissionManageSystem)
-		return
-	}
-
-	if !*c.App.Channels().License().Features.LDAPGroups {
-		c.Err = model.NewAppError("Api4.getGroupsByUserId", "api.ldap_groups.license_error", nil, "", http.StatusForbidden)
 		return
 	}
 
@@ -898,11 +806,6 @@ func getGroupsByUserId(c *Context, w http.ResponseWriter, r *http.Request) {
 }
 
 func getGroupsByChannel(c *Context, w http.ResponseWriter, r *http.Request) {
-	permissionErr := requireLicense(c)
-	if permissionErr != nil {
-		c.Err = permissionErr
-		return
-	}
 	c.RequireChannelId()
 	if c.Err != nil {
 		return
@@ -918,12 +821,6 @@ func getGroupsByChannel(c *Context, w http.ResponseWriter, r *http.Request) {
 }
 
 func getGroupsByNames(c *Context, w http.ResponseWriter, r *http.Request) {
-	permissionErr := requireLicense(c)
-	if permissionErr != nil {
-		c.Err = permissionErr
-		return
-	}
-
 	groupNames, err := model.SortedArrayFromJSON(r.Body)
 	if err != nil {
 		c.Err = model.NewAppError("getGroupsByNames", model.PayloadParseError, nil, "", http.StatusBadRequest).Wrap(err)
@@ -959,11 +856,6 @@ func getGroupsByNames(c *Context, w http.ResponseWriter, r *http.Request) {
 }
 
 func getGroupsByTeam(c *Context, w http.ResponseWriter, r *http.Request) {
-	permissionErr := requireLicense(c)
-	if permissionErr != nil {
-		c.Err = permissionErr
-		return
-	}
 	c.RequireTeamId()
 	if c.Err != nil {
 		return
@@ -980,10 +872,6 @@ func getGroupsByTeam(c *Context, w http.ResponseWriter, r *http.Request) {
 }
 
 func getGroupsByTeamCommon(c *Context, r *http.Request) ([]byte, *model.AppError) {
-	if c.App.Channels().License() == nil || !*c.App.Channels().License().Features.LDAPGroups {
-		return nil, model.NewAppError("Api4.getGroupsByTeam", "api.ldap_groups.license_error", nil, "", http.StatusForbidden)
-	}
-
 	if !c.App.SessionHasPermissionToTeam(*c.AppContext.Session(), c.Params.TeamId, model.PermissionListTeamChannels) {
 		return nil, model.MakePermissionError(c.AppContext.Session(), []*model.Permission{model.PermissionListTeamChannels})
 	}
@@ -1019,10 +907,6 @@ func getGroupsByTeamCommon(c *Context, r *http.Request) ([]byte, *model.AppError
 }
 
 func getGroupsByChannelCommon(c *Context, r *http.Request) ([]byte, *model.AppError) {
-	if c.App.Channels().License() == nil || !*c.App.Channels().License().Features.LDAPGroups {
-		return nil, model.NewAppError("Api4.getGroupsByChannel", "api.ldap_groups.license_error", nil, "", http.StatusForbidden)
-	}
-
 	channel, appErr := c.App.GetChannel(c.AppContext, c.Params.ChannelId)
 	if appErr != nil {
 		return nil, appErr
@@ -1068,18 +952,8 @@ func getGroupsByChannelCommon(c *Context, r *http.Request) ([]byte, *model.AppEr
 }
 
 func getGroupsAssociatedToChannelsByTeam(c *Context, w http.ResponseWriter, r *http.Request) {
-	permissionErr := requireLicense(c)
-	if permissionErr != nil {
-		c.Err = permissionErr
-		return
-	}
 	c.RequireTeamId()
 	if c.Err != nil {
-		return
-	}
-
-	if !*c.App.Channels().License().Features.LDAPGroups {
-		c.Err = model.NewAppError("Api4.getGroupsAssociatedToChannelsByTeam", "api.ldap_groups.license_error", nil, "", http.StatusForbidden)
 		return
 	}
 
@@ -1123,12 +997,6 @@ func getGroupsAssociatedToChannelsByTeam(c *Context, w http.ResponseWriter, r *h
 func getGroups(c *Context, w http.ResponseWriter, r *http.Request) {
 	var teamID, NotAssociatedToChannelID, ChannelIDForMemberCount string
 
-	permissionErr := requireLicense(c)
-	if permissionErr != nil {
-		c.Err = permissionErr
-		return
-	}
-
 	source := c.Params.GroupSource
 
 	onlySyncableSources := r.URL.Query().Get("only_syncable_sources") == "true"
@@ -1146,7 +1014,7 @@ func getGroups(c *Context, w http.ResponseWriter, r *http.Request) {
 	}
 
 	// If they specify the group_source as custom when the feature is disabled, throw an error
-	if appErr := licensedAndConfiguredForGroupBySource(c.App, source); appErr != nil {
+	if appErr := configuredForGroupBySource(c.App, source); appErr != nil {
 		appErr.Where = "Api4.getGroups"
 		c.Err = appErr
 		return
@@ -1293,11 +1161,6 @@ func getGroups(c *Context, w http.ResponseWriter, r *http.Request) {
 }
 
 func deleteGroup(c *Context, w http.ResponseWriter, r *http.Request) {
-	permissionErr := requireLicense(c)
-	if permissionErr != nil {
-		c.Err = permissionErr
-		return
-	}
 	c.RequireGroupId()
 	if c.Err != nil {
 		return
@@ -1314,7 +1177,7 @@ func deleteGroup(c *Context, w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if lcErr := licensedAndConfiguredForGroupBySource(c.App, model.GroupSourceCustom); lcErr != nil {
+	if lcErr := configuredForGroupBySource(c.App, model.GroupSourceCustom); lcErr != nil {
 		lcErr.Where = "Api4.deleteGroup"
 		c.Err = lcErr
 		return
@@ -1347,12 +1210,6 @@ func deleteGroup(c *Context, w http.ResponseWriter, r *http.Request) {
 }
 
 func restoreGroup(c *Context, w http.ResponseWriter, r *http.Request) {
-	permissionErr := requireLicense(c)
-	if permissionErr != nil {
-		c.Err = permissionErr
-		return
-	}
-
 	c.RequireGroupId()
 	if c.Err != nil {
 		return
@@ -1369,7 +1226,7 @@ func restoreGroup(c *Context, w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if lcErr := licensedAndConfiguredForGroupBySource(c.App, model.GroupSourceCustom); lcErr != nil {
+	if lcErr := configuredForGroupBySource(c.App, model.GroupSourceCustom); lcErr != nil {
 		lcErr.Where = "Api4.restoreGroup"
 		c.Err = lcErr
 		return
@@ -1403,11 +1260,6 @@ func restoreGroup(c *Context, w http.ResponseWriter, r *http.Request) {
 }
 
 func addGroupMembers(c *Context, w http.ResponseWriter, r *http.Request) {
-	permissionErr := requireLicense(c)
-	if permissionErr != nil {
-		c.Err = permissionErr
-		return
-	}
 	c.RequireGroupId()
 	if c.Err != nil {
 		return
@@ -1424,7 +1276,7 @@ func addGroupMembers(c *Context, w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	appErr = licensedAndConfiguredForGroupBySource(c.App, model.GroupSourceCustom)
+	appErr = configuredForGroupBySource(c.App, model.GroupSourceCustom)
 	if appErr != nil {
 		appErr.Where = "Api4.addGroupMembers"
 		c.Err = appErr
@@ -1471,11 +1323,6 @@ func addGroupMembers(c *Context, w http.ResponseWriter, r *http.Request) {
 }
 
 func deleteGroupMembers(c *Context, w http.ResponseWriter, r *http.Request) {
-	permissionErr := requireLicense(c)
-	if permissionErr != nil {
-		c.Err = permissionErr
-		return
-	}
 	c.RequireGroupId()
 	if c.Err != nil {
 		return
@@ -1492,7 +1339,7 @@ func deleteGroupMembers(c *Context, w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	appErr = licensedAndConfiguredForGroupBySource(c.App, model.GroupSourceCustom)
+	appErr = configuredForGroupBySource(c.App, model.GroupSourceCustom)
 	if appErr != nil {
 		appErr.Where = "Api4.deleteGroupMembers"
 		c.Err = appErr
@@ -1545,7 +1392,7 @@ func hasPermissionToReadGroupMembers(c *web.Context, groupID string) *model.AppE
 		return err
 	}
 
-	if lcErr := licensedAndConfiguredForGroupBySource(c.App, group.Source); lcErr != nil {
+	if lcErr := configuredForGroupBySource(c.App, group.Source); lcErr != nil {
 		return lcErr
 	}
 
@@ -1558,30 +1405,12 @@ func hasPermissionToReadGroupMembers(c *web.Context, groupID string) *model.AppE
 	return nil
 }
 
-// licensedAndConfiguredForGroupBySource returns an app error if not properly license or configured for the given group type. The returned app error
+// configuredForGroupBySource returns an app error if not properly configured for the given group type. The returned app error
 // will have a blank 'Where' field, which should be subsequently set by the caller, for example:
 //
-//	err := licensedAndConfiguredForGroupBySource(c.App, group.Source)
+//	err := configuredForGroupBySource(c.App, group.Source)
 //	err.Where = "Api4.getGroup"
-func licensedAndConfiguredForGroupBySource(app *app.App, source model.GroupSource) *model.AppError {
-	lic := app.Srv().License()
-
-	if lic == nil {
-		return model.NewAppError("", "api.license_error", nil, "", http.StatusForbidden)
-	}
-
-	if source == model.GroupSourceLdap && !*lic.Features.LDAPGroups {
-		return model.NewAppError("", "api.ldap_groups.license_error", nil, "", http.StatusForbidden)
-	}
-
-	if strings.HasPrefix(string(source), string(model.GroupSourcePluginPrefix)) && !*lic.Features.LDAPGroups {
-		return model.NewAppError("", "api.ldap_groups.license_error", nil, "", http.StatusForbidden)
-	}
-
-	if source == model.GroupSourceCustom && !model.MinimumProfessionalLicense(lic) {
-		return model.NewAppError("", "api.custom_groups.license_error", nil, "", http.StatusBadRequest)
-	}
-
+func configuredForGroupBySource(app *app.App, source model.GroupSource) *model.AppError {
 	if source == model.GroupSourceCustom && !*app.Config().ServiceSettings.EnableCustomGroups {
 		return model.NewAppError("", "api.custom_groups.feature_disabled", nil, "", http.StatusBadRequest)
 	}

@@ -9,7 +9,7 @@ Synopsis
 ~~~~~~~~
 
 
-Unassign users from a role by username (Only works in Enterprise Edition).
+Unassign users from a role by username.
 
 ::
 

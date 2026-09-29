@@ -23,7 +23,7 @@ var PermissionsCmd = &cobra.Command{
 var AddPermissionsCmd = &cobra.Command{
 	Use:   "add <role> <permission...>",
 	Short: "Add permissions to a role (EE Only)",
-	Long:  `Add one or more permissions to an existing role (Only works in Enterprise Edition).`,
+	Long:  `Add one or more permissions to an existing role.`,
 	Example: `  permissions add system_user list_open_teams
   permissions add system_manager sysconsole_read_user_management_channels`,
 	Args: cobra.MinimumNArgs(2),
@@ -33,7 +33,7 @@ var AddPermissionsCmd = &cobra.Command{
 var RemovePermissionsCmd = &cobra.Command{
 	Use:   "remove <role> <permission...>",
 	Short: "Remove permissions from a role (EE Only)",
-	Long:  `Remove one or more permissions from an existing role (Only works in Enterprise Edition).`,
+	Long:  `Remove one or more permissions from an existing role.`,
 	Example: `  permissions remove system_user list_open_teams
   permissions remove system_manager sysconsole_read_user_management_channels`,
 	Args: cobra.MinimumNArgs(2),
