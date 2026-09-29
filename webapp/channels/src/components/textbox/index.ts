@@ -10,7 +10,7 @@ import type {GlobalState} from '@mattermost/types/store';
 import {getAgents} from 'mattermost-redux/actions/agents';
 import Permissions from 'mattermost-redux/constants/permissions';
 import {getDefaultAgent} from 'mattermost-redux/selectors/entities/agents';
-import {getConfig, getLicense} from 'mattermost-redux/selectors/entities/general';
+import {getConfig} from 'mattermost-redux/selectors/entities/general';
 import {getAssociatedGroupsForReference} from 'mattermost-redux/selectors/entities/groups';
 import {makeGetProfilesForThread} from 'mattermost-redux/selectors/entities/posts';
 import {haveIChannelPermission} from 'mattermost-redux/selectors/entities/roles';
@@ -35,8 +35,7 @@ const makeMapStateToProps = () => {
     const getProfilesForThread = makeGetProfilesForThread();
     return (state: GlobalState, ownProps: Props) => {
         const teamId = getCurrentTeamId(state);
-        const license = getLicense(state);
-        const useGroupMentions = license?.IsLicensed === 'true' && license?.LDAPGroups === 'true' && haveIChannelPermission(state,
+        const useGroupMentions = haveIChannelPermission(state,
             teamId,
             ownProps.channelId,
             Permissions.USE_GROUP_MENTIONS,

@@ -11,7 +11,7 @@ import type {Post} from '@mattermost/types/posts';
 import {savePreferences} from 'mattermost-redux/actions/preferences';
 import {setThreadFollow} from 'mattermost-redux/actions/threads';
 import {getChannel} from 'mattermost-redux/selectors/entities/channels';
-import {getLicense, getConfig} from 'mattermost-redux/selectors/entities/general';
+import {getConfig} from 'mattermost-redux/selectors/entities/general';
 import {getPost} from 'mattermost-redux/selectors/entities/posts';
 import {getBool, isCollapsedThreadsEnabled} from 'mattermost-redux/selectors/entities/preferences';
 import {
@@ -62,7 +62,6 @@ function makeMapStateToProps() {
     return function mapStateToProps(state: GlobalState, ownProps: Props) {
         const {post} = ownProps;
 
-        const license = getLicense(state);
         const config = getConfig(state);
         const userId = getCurrentUserId(state);
         const channel = getChannel(state, post.channel_id);
@@ -114,9 +113,8 @@ function makeMapStateToProps() {
             channelIsArchived: isArchivedChannel(channel),
             components: state.plugins.components,
             postEditTimeLimit: config.PostEditTimeLimit,
-            isLicensed: license.IsLicensed === 'true',
             teamId: getCurrentTeamId(state),
-            canEdit: PostUtils.canEditPost(state, post, license, config, channel, userId),
+            canEdit: PostUtils.canEditPost(state, post, config, channel, userId),
             canDelete: PostUtils.canDeletePost(state, post, channel),
             teamUrl,
             userId,

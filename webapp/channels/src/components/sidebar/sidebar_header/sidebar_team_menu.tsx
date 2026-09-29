@@ -2,7 +2,7 @@
 // See LICENSE.txt for license information.
 
 import React, {useCallback} from 'react';
-import {FormattedMessage, useIntl} from 'react-intl';
+import {FormattedMessage} from 'react-intl';
 import {useDispatch, useSelector} from 'react-redux';
 import {useHistory} from 'react-router-dom';
 
@@ -21,8 +21,7 @@ import {buttonClassNames} from '@mattermost/shared/components/button';
 import type {Team} from '@mattermost/types/teams';
 
 import {Permissions} from 'mattermost-redux/constants';
-import {getCloudSubscription, getSubscriptionProduct} from 'mattermost-redux/selectors/entities/cloud';
-import {getConfig, getLicense} from 'mattermost-redux/selectors/entities/general';
+import {getConfig} from 'mattermost-redux/selectors/entities/general';
 import {haveICurrentTeamPermission} from 'mattermost-redux/selectors/entities/roles';
 import {haveISystemPermission} from 'mattermost-redux/selectors/entities/roles_helpers';
 import {getJoinableTeamIds} from 'mattermost-redux/selectors/entities/teams';
@@ -31,18 +30,14 @@ import {openModal} from 'actions/views/modals';
 import {getMainMenuPluginComponents} from 'selectors/plugins';
 
 import AddGroupsToTeamModal from 'components/add_groups_to_team_modal';
-import useGetUsageDeltas from 'components/common/hooks/useGetUsageDeltas';
 import InvitationModal from 'components/invitation_modal';
 import LeaveTeamModal from 'components/leave_team_modal';
 import * as Menu from 'components/menu';
 import TeamGroupsManageModal from 'components/team_groups_manage_modal';
 import TeamMembersModal from 'components/team_members_modal';
 import TeamSettingsModal from 'components/team_settings_modal';
-import RestrictedIndicator from 'components/widgets/menu/menu_items/restricted_indicator';
 
-import {FREEMIUM_TO_ENTERPRISE_TRIAL_LENGTH_DAYS} from 'utils/cloud_utils';
-import {LicenseSkus, ModalIdentifiers, MattermostFeatures, CloudProducts} from 'utils/constants';
-import {isCloudLicense} from 'utils/license_utils';
+import {ModalIdentifiers} from 'utils/constants';
 
 import type {GlobalState} from 'types/store';
 
@@ -51,17 +46,14 @@ interface Props {
 }
 
 export default function SidebarTeamMenu(props: Props) {
-    const license = useSelector(getLicense);
     const config = useSelector(getConfig);
 
     const havePermissionToCreateTeam = useSelector((state: GlobalState) => haveISystemPermission(state, {permission: Permissions.CREATE_TEAM}));
     const havePermissionToManageTeam = useSelector((state: GlobalState) => haveICurrentTeamPermission(state, Permissions.MANAGE_TEAM));
     const havePermissionToAddUserToTeam = useSelector((state: GlobalState) => haveICurrentTeamPermission(state, Permissions.ADD_USER_TO_TEAM));
     const havePermissionToInviteGuest = useSelector((state: GlobalState) => haveICurrentTeamPermission(state, Permissions.INVITE_GUEST));
-    const isCloud = isCloudLicense(license);
     const isGuestAccessEnabled = config?.EnableGuestAccounts === 'true';
     const isTeamGroupConstrained = Boolean(props.currentTeam?.group_constrained);
-    const isLicensedForLDAPGroups = license?.LDAPGroups === 'true';
     const experimentalPrimaryTeam = config.ExperimentalPrimaryTeam;
     const joinableTeams = useSelector(getJoinableTeamIds);
     const haveMoreJoinableTeams = joinableTeams?.length > 0;
@@ -91,14 +83,14 @@ export default function SidebarTeamMenu(props: Props) {
             {((isGuestAccessEnabled && havePermissionToInviteGuest) || havePermissionToAddUserToTeam) && (
                 <InvitePeopleMenuItem/>
             )}
-            {isTeamGroupConstrained && isLicensedForLDAPGroups && havePermissionToManageTeam && (
+            {isTeamGroupConstrained && havePermissionToManageTeam && (
                 <AddGroupsToTeamMenuItem/>
             )}
             {havePermissionToManageTeam && (
                 <TeamSettingsMenuItem/>
             )}
             <ManageViewMembersMenuItem/>
-            {(isTeamGroupConstrained && isLicensedForLDAPGroups && havePermissionToManageTeam) && (
+            {(isTeamGroupConstrained && havePermissionToManageTeam) && (
                 <ManageGroupsMenuItem
                     teamID={props.currentTeam.id}
                 />
@@ -111,9 +103,7 @@ export default function SidebarTeamMenu(props: Props) {
                 <JoinAnotherTeamMenuItem/>
             }
             {havePermissionToCreateTeam && (
-                <CreateTeamMenuItem
-                    isCloud={isCloud}
-                />
+                <CreateTeamMenuItem/>
             )}
             <Menu.Separator/>
             <LearnAboutTeamsMenuItem/>
@@ -372,28 +362,12 @@ function JoinAnotherTeamMenuItem() {
     );
 }
 
-interface CreateTeamMenuItemProps {
-    isCloud: boolean;
-}
-
-function CreateTeamMenuItem({isCloud}: CreateTeamMenuItemProps) {
+function CreateTeamMenuItem() {
     const history = useHistory();
 
-    const cloudSubscription = useSelector(getCloudSubscription);
-    const subscriptionProduct = useSelector(getSubscriptionProduct);
-    const isFreeTrial = isCloud && cloudSubscription?.is_free_trial === 'true';
-    const isStarterFree = isCloud && subscriptionProduct?.sku === CloudProducts.STARTER;
-    const usageDeltas = useGetUsageDeltas();
-    const isTeamsLimitReached = isStarterFree && !isFreeTrial && usageDeltas.teams.active >= 0;
-    const isTeamCreateRestricted = isCloud && (isFreeTrial || isTeamsLimitReached);
-
     const handleClick = useCallback(() => {
-        if (isTeamsLimitReached || isTeamCreateRestricted) {
-            return;
-        }
-
         history.push('/create_team');
-    }, [history, isTeamsLimitReached]);
+    }, [history]);
 
     return (
         <Menu.Item
@@ -410,51 +384,6 @@ function CreateTeamMenuItem({isCloud}: CreateTeamMenuItemProps) {
                     defaultMessage='Create a team'
                 />
             )}
-            trailingElements={isTeamCreateRestricted && <RestrictedIndicatorForCreateTeam isFreeTrial={isFreeTrial}/>}
-        />
-    );
-}
-
-function RestrictedIndicatorForCreateTeam({isFreeTrial}: {isFreeTrial: boolean}) {
-    const {formatMessage} = useIntl();
-
-    return (
-        <RestrictedIndicator
-            feature={MattermostFeatures.CREATE_MULTIPLE_TEAMS}
-            minimumPlanRequiredForFeature={LicenseSkus.Professional}
-            blocked={!isFreeTrial}
-            tooltipMessage={formatMessage({
-                id: 'navbar_dropdown.create.tooltip.cloudFreeTrial',
-                defaultMessage: 'During your trial you are able to create multiple teams. These teams will be archived after your trial.',
-            })}
-            titleAdminPreTrial={formatMessage({
-                id: 'navbar_dropdown.create.modal.titleAdminPreTrial',
-                defaultMessage: 'Try unlimited teams with a free trial',
-            })}
-            messageAdminPreTrial={formatMessage({
-                id: 'navbar_dropdown.create.modal.messageAdminPreTrial',
-                defaultMessage: 'Create unlimited teams with one of our paid plans. Get the full experience of Enterprise when you start a free, {trialLength} day trial.',
-            },
-            {
-                trialLength: FREEMIUM_TO_ENTERPRISE_TRIAL_LENGTH_DAYS,
-            },
-            )}
-            titleAdminPostTrial={formatMessage({
-                id: 'navbar_dropdown.create.modal.titleAdminPostTrial',
-                defaultMessage: 'Upgrade to create unlimited teams',
-            })}
-            messageAdminPostTrial={formatMessage({
-                id: 'navbar_dropdown.create.modal.messageAdminPostTrial',
-                defaultMessage: 'Multiple teams allow for context-specific spaces that are more attuned to your and your teams’ needs. Upgrade to the Professional plan to create unlimited teams.',
-            })}
-            titleEndUser={formatMessage({
-                id: 'navbar_dropdown.create.modal.titleEndUser',
-                defaultMessage: 'Multiple teams available in paid plans',
-            })}
-            messageEndUser={formatMessage({
-                id: 'navbar_dropdown.create.modal.messageEndUser',
-                defaultMessage: 'Multiple teams allow for context-specific spaces that are more attuned to your teams’ needs.',
-            })}
         />
     );
 }

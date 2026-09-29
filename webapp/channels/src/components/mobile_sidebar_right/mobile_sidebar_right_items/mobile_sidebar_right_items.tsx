@@ -34,9 +34,7 @@ import {makeUrlSafe} from 'utils/url';
 
 import type {PropsFromRedux} from './index';
 
-export interface Props extends PropsFromRedux, WrappedComponentProps {
-    usageDeltaTeams: number;
-}
+export interface Props extends PropsFromRedux, WrappedComponentProps {}
 
 export class MobileSidebarRightItems extends React.PureComponent<Props> {
     static defaultProps = {
@@ -76,7 +74,6 @@ export class MobileSidebarRightItems extends React.PureComponent<Props> {
         const {formatMessage} = this.props.intl;
 
         const safeAppDownloadLink = makeUrlSafe(this.props.appDownloadLink || '');
-        const teamsLimitReached = this.props.isStarterFree && !this.props.isFreeTrial && this.props.usageDeltaTeams >= 0;
 
         const pluginItems = this.props.pluginMenuItems.map((item) => (
             <Menu.ItemAction
@@ -99,24 +96,6 @@ export class MobileSidebarRightItems extends React.PureComponent<Props> {
             <Menu
                 ariaLabel={formatMessage({id: 'navbar_dropdown.menuAriaLabel', defaultMessage: 'main menu'})}
             >
-                <Menu.Group>
-                    <SystemPermissionGate
-                        permissions={[Permissions.SYSCONSOLE_WRITE_BILLING]}
-                    >
-                        <Menu.CloudTrial
-                            id='menuCloudTrial'
-                        />
-                    </SystemPermissionGate>
-                </Menu.Group>
-                <Menu.Group>
-                    <SystemPermissionGate
-                        permissions={[Permissions.SYSCONSOLE_WRITE_ABOUT_EDITION_AND_LICENSE]}
-                    >
-                        <Menu.StartTrial
-                            id='startTrial'
-                        />
-                    </SystemPermissionGate>
-                </Menu.Group>
                 <Menu.Group>
                     <UserAccountOnlineMenuItem
                         userId={this.props.userId}
@@ -221,7 +200,7 @@ export class MobileSidebarRightItems extends React.PureComponent<Props> {
                     >
                         <Menu.ItemToggleModalRedux
                             id='addGroupsToTeam'
-                            show={this.props.teamIsGroupConstrained && this.props.isLicensedForLDAPGroups}
+                            show={this.props.teamIsGroupConstrained}
                             modalId={ModalIdentifiers.ADD_GROUPS_TO_TEAM}
                             dialogType={AddGroupsToTeamModal}
                             text={formatMessage({id: 'navbar_dropdown.addGroupsToTeam', defaultMessage: 'Add Groups to Team'})}
@@ -287,7 +266,7 @@ export class MobileSidebarRightItems extends React.PureComponent<Props> {
                     >
                         <Menu.ItemToggleModalRedux
                             id='manageGroups'
-                            show={this.props.teamIsGroupConstrained && this.props.isLicensedForLDAPGroups}
+                            show={this.props.teamIsGroupConstrained}
                             modalId={ModalIdentifiers.MANAGE_TEAM_GROUPS}
                             dialogProps={{
                                 teamID: this.props.teamId,
@@ -342,7 +321,6 @@ export class MobileSidebarRightItems extends React.PureComponent<Props> {
                     <SystemPermissionGate permissions={[Permissions.CREATE_TEAM]}>
                         <Menu.ItemLink
                             id='createTeam'
-                            show={!teamsLimitReached}
                             to='/create_team'
                             text={formatMessage({id: 'navbar_dropdown.create', defaultMessage: 'Create a Team'})}
                             icon={

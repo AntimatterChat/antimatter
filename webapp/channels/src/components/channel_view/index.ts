@@ -13,14 +13,12 @@ import {
     getMyChannelMembership,
     isDeactivatedDirectChannel,
 } from 'mattermost-redux/selectors/entities/channels';
-import {getConfig, getLicense} from 'mattermost-redux/selectors/entities/general';
+import {getConfig} from 'mattermost-redux/selectors/entities/general';
 import {getRoles} from 'mattermost-redux/selectors/entities/roles_helpers';
 import {getCurrentRelativeTeamUrl} from 'mattermost-redux/selectors/entities/teams';
 import {isFirstAdmin} from 'mattermost-redux/selectors/entities/users';
 
 import {goToLastViewedChannel} from 'actions/views/channel';
-
-import {getIsChannelBookmarksEnabled} from 'components/channel_bookmarks/utils';
 
 import type {GlobalState} from 'types/store';
 
@@ -45,12 +43,10 @@ function mapStateToProps(state: GlobalState) {
         deactivatedChannel: channel ? isDeactivatedDirectChannel(state, channel.id) : false,
         enableOnboardingFlow,
         channelIsArchived: channel ? channel.delete_at !== 0 : false,
-        isCloud: getLicense(state).Cloud === 'true',
         teamUrl: getCurrentRelativeTeamUrl(state),
         isFirstAdmin: isFirstAdmin(state),
         canRestrictDirectMessage: config.RestrictDirectMessage === 'team' && (channel?.type === 'D' || channel?.type === 'G'),
         restrictDirectMessage: channel ? state.entities.channels.restrictedDMs[channel.id] : false,
-        isChannelBookmarksEnabled: getIsChannelBookmarksEnabled(state),
         missingChannelRole,
     };
 }

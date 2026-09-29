@@ -34,9 +34,6 @@ describe('YoutubeVideo', () => {
         entities: {
             general: {
                 config: {},
-                license: {
-                    Cloud: 'true',
-                },
             },
             users: {
                 currentUserId: 'currentUserId',

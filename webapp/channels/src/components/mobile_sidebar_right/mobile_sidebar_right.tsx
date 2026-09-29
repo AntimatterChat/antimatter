@@ -5,8 +5,6 @@ import classNames from 'classnames';
 import React, {memo, useEffect, useRef} from 'react';
 import {CSSTransition} from 'react-transition-group';
 
-import useGetUsageDeltas from 'components/common/hooks/useGetUsageDeltas';
-
 import MobileRightDrawerItems from './mobile_sidebar_right_items';
 
 import type {PropsFromRedux} from './index';
@@ -20,7 +18,6 @@ const MobileRightDrawer = ({
     isOpen,
     currentUser,
 }: Props) => {
-    const usageDeltas = useGetUsageDeltas();
     const sidebarRef = useRef<HTMLDivElement>(null);
     const drawerRef = useRef<HTMLDivElement>(null);
 
@@ -55,9 +52,7 @@ const MobileRightDrawer = ({
                     timeout={TRANSITION_TIMEOUT}
                 >
                     <div ref={drawerRef}>
-                        <MobileRightDrawerItems
-                            usageDeltaTeams={usageDeltas.teams.active}
-                        />
+                        <MobileRightDrawerItems/>
                     </div>
                 </CSSTransition>
             </div>

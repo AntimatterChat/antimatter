@@ -45,11 +45,10 @@ interface Props extends Menu.FirstMenuItemProps {
     isMobile: boolean;
     isFavorite: boolean;
     pluginItems: ReactNode[];
-    isChannelBookmarksEnabled: boolean;
     isChannelAutotranslated: boolean;
 }
 
-const ChannelHeaderGroupMenu = ({channel, user, isMuted, isMobile, isFavorite, pluginItems, isChannelBookmarksEnabled, isChannelAutotranslated, ...rest}: Props) => {
+const ChannelHeaderGroupMenu = ({channel, user, isMuted, isMobile, isFavorite, pluginItems, isChannelAutotranslated, ...rest}: Props) => {
     const isGroupConstrained = channel?.group_constrained === true;
     const isArchived = channel.delete_at !== 0;
     const {formatMessage} = useIntl();
@@ -135,7 +134,7 @@ const ChannelHeaderGroupMenu = ({channel, user, isMuted, isMobile, isFavorite, p
                     channel={channel}
                 />
             )}
-            {!isArchived && !isGuest(user.roles) && isChannelBookmarksEnabled && (
+            {!isArchived && !isGuest(user.roles) && (
                 <MenuItemChannelBookmarks
                     channel={channel}
                 />

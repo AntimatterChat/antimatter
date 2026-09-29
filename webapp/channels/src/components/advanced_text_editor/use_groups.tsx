@@ -9,7 +9,6 @@ import {GroupSource} from '@mattermost/types/groups';
 import {getChannelMemberCountsByGroup} from 'mattermost-redux/actions/channels';
 import {Permissions} from 'mattermost-redux/constants';
 import {getChannel, getChannelMemberCountsByGroup as selectChannelMemberCountsByGroup} from 'mattermost-redux/selectors/entities/channels';
-import {getLicense} from 'mattermost-redux/selectors/entities/general';
 import {getAssociatedGroupsForReferenceByMention} from 'mattermost-redux/selectors/entities/groups';
 import {isCustomGroupsEnabled} from 'mattermost-redux/selectors/entities/preferences';
 import {haveIChannelPermission} from 'mattermost-redux/selectors/entities/roles';
@@ -38,9 +37,7 @@ const useGroups = (
         if (!channel) {
             return false;
         }
-        const license = getLicense(state);
-        const isLDAPEnabled = license?.IsLicensed === 'true' && license?.LDAPGroups === 'true';
-        return isLDAPEnabled && haveIChannelPermission(state, channel.team_id, channel.id, Permissions.USE_GROUP_MENTIONS);
+        return haveIChannelPermission(state, channel.team_id, channel.id, Permissions.USE_GROUP_MENTIONS);
     });
 
     const canUseCustomGroupMentions = useSelector((state: GlobalState) => {

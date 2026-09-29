@@ -11,7 +11,6 @@ import type {ChannelType} from '@mattermost/types/channels';
 import CheckCircleIcon from 'components/widgets/icons/check_circle_icon';
 import GlobeCircleSolidIcon from 'components/widgets/icons/globe_circle_solid_icon';
 import LockCircleSolidIcon from 'components/widgets/icons/lock_circle_solid_icon';
-import UpgradeBadge from 'components/widgets/icons/upgrade_badge_icon';
 
 import {Constants} from 'utils/constants';
 
@@ -35,7 +34,6 @@ type BigButtonSelectorProps = {
     tooltip?: string;
     selected?: boolean;
     disabled?: boolean;
-    locked?: boolean;
     onClick: (id: string) => void;
 };
 
@@ -50,7 +48,6 @@ const BigButtonSelector = ({
     tooltip,
     selected,
     disabled,
-    locked,
     onClick,
 }: BigButtonSelectorProps) => {
     const handleOnClick = useCallback(
@@ -64,14 +61,13 @@ const BigButtonSelector = ({
     const button = (
         <button
             id={`public-private-selector-button-${id}`}
-            className={classNames('public-private-selector-button', {selected, disabled, locked})}
+            className={classNames('public-private-selector-button', {selected, disabled})}
             onClick={handleOnClick}
         >
             <IconSVG className={classNames('public-private-selector-button-icon', iconClassName)}/>
             <div className='public-private-selector-button-text'>
                 <div className={classNames('public-private-selector-button-title', titleClassName)}>
                     {title}
-                    {locked && <UpgradeBadge className='public-private-selector-button-icon-upgrade'/>}
                 </div>
                 <div className={classNames('public-private-selector-button-description', descriptionClassName)}>
                     {description}
@@ -103,7 +99,6 @@ type ButtonSelectorProps = {
     tooltip?: string;
     selected?: boolean;
     disabled?: boolean;
-    locked?: boolean;
 };
 
 type PublicPrivateSelectorProps = {
@@ -126,7 +121,6 @@ const PublicPrivateSelector = ({
         iconClassName: iconClassNamePublic,
         tooltip: tooltipPublic,
         disabled: disabledPublic,
-        locked: lockedPublic,
     } = {} as ButtonSelectorProps,
     privateButtonProps: {
         title: titlePrivate,
@@ -136,15 +130,14 @@ const PublicPrivateSelector = ({
         iconClassName: iconClassNamePrivate,
         tooltip: tooltipPrivate,
         disabled: disabledPrivate,
-        locked: lockedPrivate,
     } = {} as ButtonSelectorProps,
     pluginOptions,
     onChange,
 }: PublicPrivateSelectorProps) => {
     const {formatMessage} = useIntl();
 
-    const canSelectPublic = !disabledPublic && !lockedPublic;
-    const canSelectPrivate = !disabledPrivate && !lockedPrivate;
+    const canSelectPublic = !disabledPublic;
+    const canSelectPrivate = !disabledPrivate;
 
     const handleOnClick = useCallback(
         (selection: string) => {
@@ -174,7 +167,6 @@ const PublicPrivateSelector = ({
                 tooltip={tooltipPublic}
                 selected={selected === Constants.OPEN_CHANNEL}
                 disabled={disabledPublic}
-                locked={lockedPublic}
                 onClick={handleOnClick}
             />
             <BigButtonSelector
@@ -188,7 +180,6 @@ const PublicPrivateSelector = ({
                 tooltip={tooltipPrivate}
                 selected={selected === Constants.PRIVATE_CHANNEL}
                 disabled={disabledPrivate}
-                locked={lockedPrivate}
                 onClick={handleOnClick}
             />
             {pluginOptions?.map((option) => (
@@ -200,7 +191,6 @@ const PublicPrivateSelector = ({
                     iconSVG={({className: cls}) => <span className={cls}>{option.icon}</span>}
                     selected={selected === option.id}
                     disabled={false}
-                    locked={false}
                     onClick={handleOnClick}
                 />
             ))}

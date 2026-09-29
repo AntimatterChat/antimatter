@@ -112,7 +112,6 @@ describe('components/channel_invite_modal', () => {
         groups: [],
         userStatuses: {},
         teammateNameDisplaySetting: General.TEAMMATE_NAME_DISPLAY.SHOW_USERNAME,
-        isGroupsEnabled: true,
         actions: {
             addUsersToChannel: jest.fn().mockImplementation(() => {
                 const error = {
@@ -1011,7 +1010,7 @@ describe('components/channel_invite_modal', () => {
         // ...and is sorted to the top of the option list. compareDocumentPosition
         // returns DOCUMENT_POSITION_FOLLOWING (4) when the second arg is later
         // in the DOM than the first — so user-2 preceding user-1 yields 4.
-        // eslint-disable-next-line no-bitwise
+
         expect(user2Span.compareDocumentPosition(user1Span) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
 
         // The recommended-users endpoint was queried with an empty cursor

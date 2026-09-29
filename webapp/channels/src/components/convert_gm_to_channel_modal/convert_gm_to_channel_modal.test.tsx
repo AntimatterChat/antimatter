@@ -16,7 +16,6 @@ import ConvertGmToChannelModal from 'components/convert_gm_to_channel_modal/conv
 
 import TestHelper from 'packages/mattermost-redux/test/test_helper';
 import {fireEvent, renderWithContext, screen, userEvent, waitFor} from 'tests/react_testing_utils';
-import {LicenseSkus} from 'utils/constants';
 
 import type {GlobalState} from 'types/store';
 
@@ -64,7 +63,6 @@ describe('component/ConvertGmToChannelModal', () => {
                 config: {
                     UseAnonymousURLs: 'false',
                 },
-                license: {SkuShortName: LicenseSkus.EnterpriseAdvanced},
             },
         },
     };

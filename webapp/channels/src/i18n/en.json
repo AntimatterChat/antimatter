@@ -23791,34 +23791,6 @@
     "defaultMessage": "Create a Team",
     "description": "Menu item label for creating a new team; appears in the mobile sidebar menu, the team menu, and the team sidebar."
   },
-  "navbar_dropdown.create.modal.messageAdminPostTrial": {
-    "defaultMessage": "Multiple teams allow for context-specific spaces that are more attuned to your and your teams’ needs. Upgrade to the Professional plan to create unlimited teams.",
-    "description": "Body of the upsell modal shown to a workspace admin (whose trial has ended) when trying to create additional teams on a free plan."
-  },
-  "navbar_dropdown.create.modal.messageAdminPreTrial": {
-    "defaultMessage": "Create unlimited teams with one of our paid plans. Get the full experience of Enterprise when you start a free, {trialLength} day trial.",
-    "description": "Body of the upsell modal shown to a workspace admin who hasn't started a trial, about creating unlimited teams; {trialLength} is the trial duration in days."
-  },
-  "navbar_dropdown.create.modal.messageEndUser": {
-    "defaultMessage": "Multiple teams allow for context-specific spaces that are more attuned to your teams’ needs.",
-    "description": "Body of the modal shown to a non-admin user when team creation requires a paid plan."
-  },
-  "navbar_dropdown.create.modal.titleAdminPostTrial": {
-    "defaultMessage": "Upgrade to create unlimited teams",
-    "description": "Title of the upsell modal about creating unlimited teams, shown to admins after their trial ended."
-  },
-  "navbar_dropdown.create.modal.titleAdminPreTrial": {
-    "defaultMessage": "Try unlimited teams with a free trial",
-    "description": "Title of the upsell modal offering a free trial to create unlimited teams, shown to admins before starting a trial."
-  },
-  "navbar_dropdown.create.modal.titleEndUser": {
-    "defaultMessage": "Multiple teams available in paid plans",
-    "description": "Title of the modal shown to non-admin users explaining multiple teams require a paid plan."
-  },
-  "navbar_dropdown.create.tooltip.cloudFreeTrial": {
-    "defaultMessage": "During your trial you are able to create multiple teams. These teams will be archived after your trial.",
-    "description": "Tooltip on the create-team option during a Cloud free trial, warning that teams created will be archived when the trial ends."
-  },
   "navbar_dropdown.help": {
     "defaultMessage": "Help",
     "description": "Menu item in the mobile right sidebar menu linking to help documentation."
@@ -30187,14 +30159,6 @@
     "defaultMessage": "Notification Settings Icon",
     "description": "Screen reader label for the icon next to the Notifications tab in the Settings modal."
   },
-  "user.settings.notifications.keywordsWithHighlight.disabledTooltipMessage": {
-    "defaultMessage": "This feature is available on the Professional plan",
-    "description": "Tooltip body on the highlight keywords setting when the server lacks a Professional license."
-  },
-  "user.settings.notifications.keywordsWithHighlight.disabledTooltipTitle": {
-    "defaultMessage": "Professional feature",
-    "description": "Tooltip title on the highlight keywords setting when it is gated behind the Professional plan; 'Professional' is a plan name."
-  },
   "user.settings.notifications.keywordsWithHighlight.extraInfo": {
     "defaultMessage": "These keywords will be shown to you with a highlight when anyone sends a message that includes them.",
     "description": "Help text under the highlight keywords input explaining what the keywords do."
@@ -30207,37 +30171,9 @@
     "defaultMessage": "None",
     "description": "Collapsed summary of the highlight keywords setting when no keywords are configured."
   },
-  "user.settings.notifications.keywordsWithHighlight.professional": {
-    "defaultMessage": "Professional",
-    "description": "Plan name shown on a small badge next to the highlight keywords setting; compact space."
-  },
   "user.settings.notifications.keywordsWithHighlight.title": {
     "defaultMessage": "Keywords that get highlighted (without notifications)",
     "description": "Setting row title in notification settings for keywords that are visually highlighted but do not trigger notifications."
-  },
-  "user.settings.notifications.keywordsWithHighlight.userModal.messageAdminPostTrial": {
-    "defaultMessage": "Get the ability to passively highlight keywords that you care about. Upgrade to Professional plan to unlock this feature.",
-    "description": "Body of the upgrade prompt modal shown to an admin (who already used a trial) when opening the gated highlight keywords feature."
-  },
-  "user.settings.notifications.keywordsWithHighlight.userModal.messageAdminPreTrial": {
-    "defaultMessage": "Get the ability to passively highlight keywords that you care about. Upgrade to Professional plan to unlock this feature.",
-    "description": "Body of the upgrade prompt modal shown to an admin (before any trial) when opening the gated highlight keywords feature."
-  },
-  "user.settings.notifications.keywordsWithHighlight.userModal.messageEndUser": {
-    "defaultMessage": "Get the ability to passively highlight keywords that you care about.{br}{br}Request your admin to upgrade to Mattermost Professional to access this feature.",
-    "description": "Body of the upgrade prompt modal shown to a non-admin end user for the gated highlight keywords feature; {br} inserts line breaks."
-  },
-  "user.settings.notifications.keywordsWithHighlight.userModal.titleAdminPostTrial": {
-    "defaultMessage": "Highlight keywords without notifications with Mattermost Professional",
-    "description": "Title of the upgrade prompt modal for the highlight keywords feature shown to admins after a trial; 'Mattermost Professional' is a plan name."
-  },
-  "user.settings.notifications.keywordsWithHighlight.userModal.titleAdminPreTrial": {
-    "defaultMessage": "Highlight keywords without notifications with Mattermost Professional",
-    "description": "Title of the upgrade prompt modal for the highlight keywords feature shown to admins before a trial; 'Mattermost Professional' is a plan name."
-  },
-  "user.settings.notifications.keywordsWithHighlight.userModal.titleEndUser": {
-    "defaultMessage": "Highlight keywords without notifications with Mattermost Professional",
-    "description": "Title of the upgrade prompt modal for the highlight keywords feature shown to end users; 'Mattermost Professional' is a plan name."
   },
   "user.settings.notifications.keywordsWithNotification.extraInfo": {
     "defaultMessage": "Notifications are triggered when someone sends a message that includes your username (\"@{username}\") or any of the options selected above.",
@@ -31126,14 +31062,6 @@
   "workspace_limits.archived_file.archived_compact": {
     "defaultMessage": "(archived)",
     "description": "Parenthetical tag shown on a file attachment that was archived because the Cloud Free plan's storage limit was exceeded; compact inline space."
-  },
-  "workspace_limits.archived_file.tooltip_description": {
-    "defaultMessage": "Your workspace has hit the file storage limit of {storageLimit}. To view this again, upgrade to a paid plan",
-    "description": "Tooltip body on a file attachment that was archived because the Cloud free plan's storage limit was reached; {storageLimit} is a formatted size such as '10GB'."
-  },
-  "workspace_limits.archived_file.tooltip_title": {
-    "defaultMessage": "Unarchive this file by upgrading",
-    "description": "Tooltip title on an archived file attachment prompting an upgrade to a paid plan to restore access."
   },
   "wysiwyg.link.display_text": {
     "defaultMessage": "Display text",

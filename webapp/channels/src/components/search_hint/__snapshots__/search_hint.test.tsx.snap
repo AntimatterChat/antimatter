@@ -288,7 +288,7 @@ exports[`components/SearchHint should match snapshot, without searchType 1`] = `
       What are you searching for?
       <a
         class="search-hint_learn-search"
-        href="https://mattermost.com/pl/mattermost-academy-search-training?utm_source=mattermost&utm_medium=in-product&utm_content=search_hint&uid=currentUserId&sid=&edition=team&server_version="
+        href="https://mattermost.com/pl/mattermost-academy-search-training?utm_source=mattermost&utm_medium=in-product&utm_content=search_hint&uid=currentUserId&sid=&server_version="
         location="search_hint"
         rel="noopener noreferrer"
         target="_blank"

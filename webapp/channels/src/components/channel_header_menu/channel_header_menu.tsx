@@ -17,14 +17,12 @@ import {
     isCurrentChannelFavorite,
     isCurrentChannelMuted,
 } from 'mattermost-redux/selectors/entities/channels';
-import {getLicense} from 'mattermost-redux/selectors/entities/general';
 import {
     getCurrentUser,
 } from 'mattermost-redux/selectors/entities/users';
 
 import {getChannelHeaderMenuPluginComponents} from 'selectors/plugins';
 
-import {getIsChannelBookmarksEnabled} from 'components/channel_bookmarks/utils';
 import * as Menu from 'components/menu';
 
 import {Constants} from 'utils/constants';
@@ -57,9 +55,7 @@ export default function ChannelHeaderMenu({dmUser, gmMembers, isMobile, archived
     const isDefault = useSelector(isCurrentChannelDefault);
     const isFavorite = useSelector(isCurrentChannelFavorite);
     const isMuted = useSelector(isCurrentChannelMuted);
-    const isLicensedForLDAPGroups = useSelector(getLicense).LDAPGroups === 'true';
     const pluginMenuItems = useSelector(getChannelHeaderMenuPluginComponents);
-    const isChannelBookmarksEnabled = useSelector(getIsChannelBookmarksEnabled);
     const isChannelAutotranslated = useSelector((state: GlobalState) => (channel?.id ? isChannelAutotranslatedSelector(state, channel.id) : false));
 
     if (!channel) {
@@ -154,7 +150,6 @@ export default function ChannelHeaderMenu({dmUser, gmMembers, isMobile, archived
                     pluginItems={pluginItems}
                     isFavorite={isFavorite}
                     isMobile={isMobile || false}
-                    isChannelBookmarksEnabled={isChannelBookmarksEnabled}
                     isChannelAutotranslated={isChannelAutotranslated}
                 />
             )}
@@ -166,7 +161,6 @@ export default function ChannelHeaderMenu({dmUser, gmMembers, isMobile, archived
                     pluginItems={pluginItems}
                     isFavorite={isFavorite}
                     isMobile={isMobile || false}
-                    isChannelBookmarksEnabled={isChannelBookmarksEnabled}
                     isChannelAutotranslated={isChannelAutotranslated}
                 />
             )}
@@ -179,8 +173,6 @@ export default function ChannelHeaderMenu({dmUser, gmMembers, isMobile, archived
                     isFavorite={isFavorite}
                     isMobile={isMobile || false}
                     isDefault={isDefault}
-                    isLicensedForLDAPGroups={isLicensedForLDAPGroups}
-                    isChannelBookmarksEnabled={isChannelBookmarksEnabled}
                     isChannelAutotranslated={isChannelAutotranslated}
                 />
             )}

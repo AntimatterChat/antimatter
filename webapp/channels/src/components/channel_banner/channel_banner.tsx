@@ -10,7 +10,6 @@ import type {ChannelBanner} from '@mattermost/types/channels';
 
 import {selectShowChannelBanner} from 'mattermost-redux/selectors/entities/channel_banner';
 import {getChannelBanner} from 'mattermost-redux/selectors/entities/channels';
-import {getLicense} from 'mattermost-redux/selectors/entities/general';
 import {getContrastingSimpleColor} from 'mattermost-redux/utils/theme_utils';
 
 import {renderBannerTemplate} from 'components/channel_attributes/banner_template';
@@ -19,7 +18,6 @@ import useChannelClassificationBanner from 'components/common/hooks/useChannelCl
 import useResolvedChannelAttributes from 'components/common/hooks/useResolvedChannelAttributes';
 import Markdown from 'components/markdown';
 
-import {isMinimumEnterpriseAdvancedLicense} from 'utils/license_utils';
 import type {TextFormattingOptions} from 'utils/text_formatting';
 
 import type {GlobalState} from 'types/store';
@@ -37,19 +35,14 @@ type Props = {
 
 export default function ChannelBanner({channelId}: Props) {
     const channelBannerInfo = useSelector((state: GlobalState) => getChannelBanner(state, channelId));
-    const license = useSelector(getLicense);
-    const licenseEnabled = isMinimumEnterpriseAdvancedLicense(license);
-    const channelBannerConfigured = useSelector((state: GlobalState) => selectShowChannelBanner(state, channelId));
-    const showNativeBanner = licenseEnabled && channelBannerConfigured;
+    const showNativeBanner = useSelector((state: GlobalState) => selectShowChannelBanner(state, channelId));
 
     const {enabled: channelAttributesEnabled} = useChannelAttributes();
     const resolvedAttributes = useResolvedChannelAttributes(channelId);
     const classificationBanner = useChannelClassificationBanner(channelId);
 
     // Classification property value takes priority over native banner_info
-    const effectiveBanner: ChannelBanner | undefined = classificationBanner.hasClassification ?
-        classificationBanner.classificationBanner :
-        channelBannerInfo;
+    const effectiveBanner: ChannelBanner | undefined = classificationBanner.hasClassification ? classificationBanner.classificationBanner : channelBannerInfo;
 
     const showBanner = classificationBanner.hasClassification || showNativeBanner;
 

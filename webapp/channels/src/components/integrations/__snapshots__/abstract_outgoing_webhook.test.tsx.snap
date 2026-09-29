@@ -251,7 +251,7 @@ callbackUrl2.com
             >
               Specify the URL that the messages will be sent to. If the URL is private, add it as a 
               <a
-                href="https://mattermost.com/pl/default-allow-untrusted-internal-connections?utm_source=mattermost&utm_medium=in-product&utm_content=abstract_outgoing_webhook&uid=&sid=&edition=team&server_version="
+                href="https://mattermost.com/pl/default-allow-untrusted-internal-connections?utm_source=mattermost&utm_medium=in-product&utm_content=abstract_outgoing_webhook&uid=&sid=&server_version="
                 location="abstract_outgoing_webhook"
                 rel="noopener noreferrer"
                 target="_blank"

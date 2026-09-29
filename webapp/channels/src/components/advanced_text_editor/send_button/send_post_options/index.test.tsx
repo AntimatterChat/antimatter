@@ -31,9 +31,6 @@ const baseState: DeepPartial<GlobalState> = {
             config: {
                 ScheduledPosts: 'true',
             },
-            license: {
-                IsLicensed: 'true',
-            },
         },
         users: {
             currentUserId: 'currentUserId',

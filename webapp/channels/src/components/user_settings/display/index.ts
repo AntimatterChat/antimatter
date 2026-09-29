@@ -12,7 +12,7 @@ import {savePreferences} from 'mattermost-redux/actions/preferences';
 import {autoUpdateTimezone} from 'mattermost-redux/actions/timezone';
 import {patchUser, updateMe} from 'mattermost-redux/actions/users';
 import {General} from 'mattermost-redux/constants';
-import {getConfig, getLicense} from 'mattermost-redux/selectors/entities/general';
+import {getConfig} from 'mattermost-redux/selectors/entities/general';
 import {
     get,
     isCollapsedThreadsAllowed,
@@ -46,7 +46,7 @@ export function makeMapStateToProps() {
         const allowCustomThemes = config.AllowCustomThemes === 'true';
         const enableLinkPreviews = config.EnableLinkPreviews === 'true';
         const enableThemeSelection = config.EnableThemeSelection === 'true';
-        const lockTeammateNameDisplay = getLicense(state).LockTeammateNameDisplay === 'true' && config.LockTeammateNameDisplay === 'true';
+        const lockTeammateNameDisplay = config.LockTeammateNameDisplay === 'true';
         const configTeammateNameDisplay = config.TeammateNameDisplay as string;
         const emojiPickerEnabled = config.EnableEmojiPicker === 'true';
         const lastActiveTimeEnabled = config.EnableLastActiveTime === 'true';

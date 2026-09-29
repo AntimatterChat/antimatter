@@ -70,7 +70,6 @@ describe('components/user_settings/general/UserSettingsGeneral', () => {
         ldapPictureAttributeSet: false,
         lockProfileFieldsForEmailUsers: 'none' as const,
         canEditOtherUsers: false,
-        enableCustomProfileAttributes: false,
     };
 
     const customProfileAttribute: UserPropertyField = {
@@ -326,7 +325,6 @@ describe('components/user_settings/general/UserSettingsGeneral', () => {
 
         const props = {
             ...requiredProps,
-            enableCustomProfileAttributes: true,
             customProfileAttributeFields: [customProfileAttribute],
             user: testUser,
         };
@@ -343,7 +341,6 @@ describe('components/user_settings/general/UserSettingsGeneral', () => {
 
         const props = {
             ...requiredProps,
-            enableCustomProfileAttributes: true,
             customProfileAttributeFields: [customProfileAttribute],
             user: testUser,
         };
@@ -360,7 +357,6 @@ describe('components/user_settings/general/UserSettingsGeneral', () => {
 
         const props = {
             ...requiredProps,
-            enableCustomProfileAttributes: true,
             customProfileAttributeFields: [customProfileAttribute],
             user: testUser,
         };
@@ -375,7 +371,6 @@ describe('components/user_settings/general/UserSettingsGeneral', () => {
         const testUser = {...user};
         const props = {
             ...requiredProps,
-            enableCustomProfileAttributes: true,
             customProfileAttributeFields: [customProfileAttribute],
             actions: {...requiredProps.actions},
             user: testUser,
@@ -394,7 +389,6 @@ describe('components/user_settings/general/UserSettingsGeneral', () => {
     test('should show Custom Attribute Field editing with empty value', async () => {
         const props = {
             ...requiredProps,
-            enableCustomProfileAttributes: true,
             customProfileAttributeFields: [customProfileAttribute],
             user,
             activeSection: 'customAttribute_field1',
@@ -422,7 +416,6 @@ describe('components/user_settings/general/UserSettingsGeneral', () => {
         const testUser = {...user, custom_profile_attributes: {field1: 'opt1'}};
         const props = {
             ...requiredProps,
-            enableCustomProfileAttributes: true,
             customProfileAttributeFields: [selectAttribute],
             user: testUser,
             activeSection: 'customAttribute_field1',
@@ -450,7 +443,6 @@ describe('components/user_settings/general/UserSettingsGeneral', () => {
         const testUser = {...user, custom_profile_attributes: {field1: 'opt2'}};
         const props = {
             ...requiredProps,
-            enableCustomProfileAttributes: true,
             customProfileAttributeFields: [multiselectAttribute],
             user: testUser,
             activeSection: 'customAttribute_field1',
@@ -464,7 +456,6 @@ describe('components/user_settings/general/UserSettingsGeneral', () => {
         const saveCustomProfileAttribute = jest.fn().mockResolvedValue({field1: 'Updated Value'});
         const props = {
             ...requiredProps,
-            enableCustomProfileAttributes: true,
             actions: {...requiredProps.actions, saveCustomProfileAttribute},
             customProfileAttributeFields: [customProfileAttribute],
             user: {...user},
@@ -487,7 +478,6 @@ describe('components/user_settings/general/UserSettingsGeneral', () => {
         const saveCustomProfileAttribute = jest.fn().mockResolvedValue({error: {message: 'Server Error'}});
         const props = {
             ...requiredProps,
-            enableCustomProfileAttributes: true,
             actions: {...requiredProps.actions, saveCustomProfileAttribute},
             customProfileAttributeFields: [customProfileAttribute],
             user: {...user},
@@ -521,7 +511,6 @@ describe('components/user_settings/general/UserSettingsGeneral', () => {
 
         const props = {
             ...requiredProps,
-            enableCustomProfileAttributes: true,
             customProfileAttributeFields: [selectAttribute],
             user: {...user},
             activeSection: 'customAttribute_field1',
@@ -561,7 +550,6 @@ describe('components/user_settings/general/UserSettingsGeneral', () => {
 
         const props = {
             ...requiredProps,
-            enableCustomProfileAttributes: true,
             customProfileAttributeFields: [multiselectAttribute],
             user: {...user},
             activeSection: 'customAttribute_field1',
@@ -605,7 +593,6 @@ describe('components/user_settings/general/UserSettingsGeneral', () => {
         const testUser = {...user, custom_profile_attributes: {field1: 'opt1'}};
         const props = {
             ...requiredProps,
-            enableCustomProfileAttributes: true,
             customProfileAttributeFields: [selectAttribute],
             user: testUser,
             activeSection: 'customAttribute_field1',
@@ -650,7 +637,6 @@ describe('components/user_settings/general/UserSettingsGeneral', () => {
         const testUser = {...user, custom_profile_attributes: {field1: 'opt2'}};
         const props = {
             ...requiredProps,
-            enableCustomProfileAttributes: true,
             customProfileAttributeFields: [selectAttribute],
             user: testUser,
             activeSection: '',
@@ -688,7 +674,6 @@ describe('components/user_settings/general/UserSettingsGeneral', () => {
         const testUser = {...user, custom_profile_attributes: {field1: ['opt1', 'opt2', 'opt3']}};
         const props = {
             ...requiredProps,
-            enableCustomProfileAttributes: true,
             customProfileAttributeFields: [multiselectAttribute],
             user: testUser,
             activeSection: '',
@@ -727,7 +712,6 @@ describe('components/user_settings/general/UserSettingsGeneral', () => {
         const testUser = {...user, custom_profile_attributes: {field1: 'opt2'}};
         const props = {
             ...requiredProps,
-            enableCustomProfileAttributes: true,
             customProfileAttributeFields: [selectAttribute],
             user: testUser,
             activeSection: 'customAttribute_field1',
@@ -772,7 +756,6 @@ describe('components/user_settings/general/UserSettingsGeneral', () => {
         const testUser = {...user, custom_profile_attributes: {field1: ['opt1', 'opt2']}};
         const props = {
             ...requiredProps,
-            enableCustomProfileAttributes: true,
             customProfileAttributeFields: [multiselectAttribute],
             user: testUser,
             activeSection: 'customAttribute_field1',
@@ -811,7 +794,6 @@ describe('components/user_settings/general/UserSettingsGeneral', () => {
         const testUser = {...user, custom_profile_attributes: {field1: 'opt1'}};
         const props = {
             ...requiredProps,
-            enableCustomProfileAttributes: true,
             customProfileAttributeFields: [selectAttribute],
             user: testUser,
         };
@@ -840,7 +822,6 @@ describe('components/user_settings/general/UserSettingsGeneral', () => {
         const testUser = {...user, custom_profile_attributes: {field1: ['opt1']}};
         const props = {
             ...requiredProps,
-            enableCustomProfileAttributes: true,
             customProfileAttributeFields: [graphAttribute],
             user: testUser,
         };
@@ -866,7 +847,6 @@ describe('components/user_settings/general/UserSettingsGeneral', () => {
         const testUser = {...user, custom_profile_attributes: {field1: 'opt1'}};
         const props = {
             ...requiredProps,
-            enableCustomProfileAttributes: true,
             customProfileAttributeFields: [selectAttribute],
             user: testUser,
         };
@@ -895,7 +875,6 @@ describe('components/user_settings/general/UserSettingsGeneral', () => {
         const testUser = {...user, custom_profile_attributes: {field1: ['opt1']}};
         const props = {
             ...requiredProps,
-            enableCustomProfileAttributes: true,
             customProfileAttributeFields: [graphAttribute],
             user: testUser,
         };
@@ -909,7 +888,6 @@ describe('components/user_settings/general/UserSettingsGeneral', () => {
     test('should not show custom attribute input field when LDAP attribute is set', async () => {
         const props = {
             ...requiredProps,
-            enableCustomProfileAttributes: true,
             customProfileAttributeFields: [
                 {
                     ...customProfileAttribute,
@@ -932,7 +910,6 @@ describe('components/user_settings/general/UserSettingsGeneral', () => {
     test('should not show custom attribute input field when SAML attribute is set', async () => {
         const props = {
             ...requiredProps,
-            enableCustomProfileAttributes: true,
             customProfileAttributeFields: [
                 {
                     ...customProfileAttribute,
@@ -955,7 +932,6 @@ describe('components/user_settings/general/UserSettingsGeneral', () => {
     test('should show custom attribute input field when LDAP auth but no LDAP attribute set', async () => {
         const props = {
             ...requiredProps,
-            enableCustomProfileAttributes: true,
             customProfileAttributeFields: [
                 {
                     ...customProfileAttribute,
@@ -986,7 +962,6 @@ describe('components/user_settings/general/UserSettingsGeneral', () => {
         const saveCustomProfileAttribute = jest.fn().mockResolvedValue({});
         const props = {
             ...requiredProps,
-            enableCustomProfileAttributes: true,
             customProfileAttributeFields: [urlAttribute],
             user: {...user},
             activeSection: 'customAttribute_field1',
@@ -1030,7 +1005,6 @@ describe('components/user_settings/general/UserSettingsGeneral', () => {
         const saveCustomProfileAttribute = jest.fn().mockResolvedValue({});
         const props = {
             ...requiredProps,
-            enableCustomProfileAttributes: true,
             customProfileAttributeFields: [emailAttribute],
             user: {...user},
             activeSection: 'customAttribute_field1',
@@ -1074,7 +1048,6 @@ describe('components/user_settings/general/UserSettingsGeneral', () => {
 
         const props = {
             ...requiredProps,
-            enableCustomProfileAttributes: true,
             customProfileAttributeFields: [adminManagedAttribute],
             user: {...user},
             activeSection: 'customAttribute_field1',
@@ -1097,7 +1070,6 @@ describe('components/user_settings/general/UserSettingsGeneral', () => {
 
         const props = {
             ...requiredProps,
-            enableCustomProfileAttributes: true,
             customProfileAttributeFields: [regularAttribute],
             user: {...user},
             activeSection: 'customAttribute_field1',
@@ -1120,7 +1092,6 @@ describe('components/user_settings/general/UserSettingsGeneral', () => {
 
         const props = {
             ...requiredProps,
-            enableCustomProfileAttributes: true,
             customProfileAttributeFields: [protectedAttribute],
             user: {...user},
             activeSection: 'customAttribute_field1',
@@ -1143,7 +1114,6 @@ describe('components/user_settings/general/UserSettingsGeneral', () => {
 
         const props = {
             ...requiredProps,
-            enableCustomProfileAttributes: true,
             customProfileAttributeFields: [normalAttribute],
             user: {...user},
             activeSection: 'customAttribute_field1',
@@ -1166,7 +1136,6 @@ describe('components/user_settings/general/UserSettingsGeneral', () => {
 
         const props = {
             ...requiredProps,
-            enableCustomProfileAttributes: true,
             customProfileAttributeFields: [attributeWithDisplayName],
             user: {...user, custom_profile_attributes: {field1: 'FieldOneValue'}},
             activeSection: '',
@@ -1192,7 +1161,6 @@ describe('components/user_settings/general/UserSettingsGeneral', () => {
 
         const props = {
             ...requiredProps,
-            enableCustomProfileAttributes: true,
             customProfileAttributeFields: [attributeWithDisplayName],
             user: {...user},
             activeSection: 'customAttribute_field1',
@@ -1219,7 +1187,6 @@ describe('components/user_settings/general/UserSettingsGeneral', () => {
 
         const props = {
             ...requiredProps,
-            enableCustomProfileAttributes: true,
             customProfileAttributeFields: [attributeWithDisplayName],
             user: {...user},
             activeSection: 'customAttribute_field1',
@@ -1277,7 +1244,6 @@ describe('components/user_settings/general/UserSettingsGeneral', () => {
         ) => {
             const props = {
                 ...requiredProps,
-                enableCustomProfileAttributes: true,
                 customProfileAttributeFields: attributes,
                 user: values ? {...user, custom_profile_attributes: values} : {...user},
                 activeSection,
@@ -1520,7 +1486,6 @@ describe('components/user_settings/general/UserSettingsGeneral', () => {
             for (const [attrs, copy, userOverrides] of cases) {
                 const props = {
                     ...requiredProps,
-                    enableCustomProfileAttributes: true,
                     customProfileAttributeFields: [buildAttribute({options_omitted: true, ...attrs})],
                     user: {...user, ...userOverrides, custom_profile_attributes: {field1: ['opt1']}},
                     activeSection: SECTION,

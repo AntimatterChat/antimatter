@@ -43,8 +43,6 @@ describe('components/PostMarkdown', () => {
         highlightKeys: [],
         hasPluginTooltips: false,
         isUserCanManageMembers: false,
-        isEnterpriseOrCloudOrSKUStarterFree: true,
-        isEnterpriseReady: false,
         dispatch: jest.fn(),
         renderEmoticonsAsEmoji: true,
     };

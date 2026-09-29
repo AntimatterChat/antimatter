@@ -585,9 +585,7 @@ describe('components/ProfilePopover', () => {
         };
 
         renderWithPluginReducers(<ProfilePopover {...props}/>, initialState);
-        await act(async () => {
-            expect(await screen.findByLabelText('Start Call')).toBeInTheDocument();
-        });
+        expect(await screen.findByLabelText('Start Call')).toBeInTheDocument();
     });
 
     test('should display attributes if attribute exists for user', async () => {
@@ -598,11 +596,6 @@ describe('components/ProfilePopover', () => {
                 456: 'Seargent York',
             };
         });
-
-        initialState.entities!.general!.license = {
-            IsLicensed: 'true',
-            SkuShortName: 'enterprise',
-        };
         initialState.entities!.general!.customProfileAttributes = {
             123: {id: '123', name: 'Rank', type: 'text'},
             456: {id: '456', name: 'CO', type: 'text'},
@@ -626,11 +619,6 @@ describe('components/ProfilePopover', () => {
                 123: 'opt1',
             };
         });
-
-        initialState.entities!.general!.license = {
-            IsLicensed: 'true',
-            SkuShortName: 'enterprise',
-        };
         initialState.entities!.general!.customProfileAttributes = {
             123: {
                 id: '123',
@@ -658,11 +646,6 @@ describe('components/ProfilePopover', () => {
                 123: ['opt1', 'opt2'],
             };
         });
-
-        initialState.entities!.general!.license = {
-            IsLicensed: 'true',
-            SkuShortName: 'enterprise',
-        };
         initialState.entities!.general!.customProfileAttributes = {
             123: {
                 id: '123',
@@ -685,11 +668,6 @@ describe('components/ProfilePopover', () => {
 
     test('should not display attributes if user attributes is null', async () => {
         const [props, initialState] = getBasePropsAndState();
-
-        initialState.entities!.general!.license = {
-            IsLicensed: 'true',
-            SkuShortName: 'enterprise',
-        };
         initialState.entities!.general!.customProfileAttributes = {
             123: {id: '123', name: 'Rank', type: 'text'},
             456: {id: '456', name: 'CO', type: 'text'},
@@ -703,7 +681,7 @@ describe('components/ProfilePopover', () => {
         });
     });
 
-    test('should not display attributes without Enterprise license', async () => {
+    test('should display attributes with feature flag', async () => {
         const [props, initialState] = getBasePropsAndState();
         (Client4.getUserCustomProfileAttributesValues as jest.Mock).mockImplementation(async () => {
             return {
@@ -711,38 +689,6 @@ describe('components/ProfilePopover', () => {
                 456: 'Seargent York',
             };
         });
-
-        initialState.entities!.general!.license = {
-            IsLicensed: 'false',
-            SkuShortName: '',
-        };
-        initialState.entities!.general!.customProfileAttributes = {
-            123: {id: '123', name: 'Rank', type: 'text'},
-            456: {id: '456', name: 'CO', type: 'text'},
-        };
-
-        renderWithPluginReducers(<ProfilePopover {...props}/>, initialState);
-        await act(async () => {
-            expect(await screen.queryByText('Rank')).not.toBeInTheDocument();
-            expect(await screen.queryByText('CO')).not.toBeInTheDocument();
-            expect(await screen.queryByText('Private')).not.toBeInTheDocument();
-            expect(await screen.queryByText('Seargent York')).not.toBeInTheDocument();
-        });
-    });
-
-    test('should display attributes with Enterprise license and feature flag', async () => {
-        const [props, initialState] = getBasePropsAndState();
-        (Client4.getUserCustomProfileAttributesValues as jest.Mock).mockImplementation(async () => {
-            return {
-                123: 'Private',
-                456: 'Seargent York',
-            };
-        });
-
-        initialState.entities!.general!.license = {
-            IsLicensed: 'true',
-            SkuShortName: 'enterprise',
-        };
         initialState.entities!.general!.customProfileAttributes = {
             123: {id: '123', name: 'Rank', type: 'text'},
             456: {id: '456', name: 'CO', type: 'text'},

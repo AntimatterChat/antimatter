@@ -89,7 +89,6 @@ type Props = {
     handleAddReactionClick?: (showEmojiPicker: boolean) => void;
     isMenuOpen?: boolean;
     isReadOnly?: boolean;
-    isLicensed?: boolean; // TechDebt: Made non-mandatory while converting to typescript
     postEditTimeLimit?: string; // TechDebt: Made non-mandatory while converting to typescript
     enableEmojiPicker?: boolean; // TechDebt: Made non-mandatory while converting to typescript
     channelIsArchived?: boolean; // TechDebt: Made non-mandatory while converting to typescript
@@ -211,12 +210,12 @@ export class DotMenuClass extends React.PureComponent<Props, State> {
     }
 
     disableCanEditPostByTime() {
-        const {post, isLicensed} = this.props;
+        const {post} = this.props;
         const {canEdit} = this.state;
 
         const postEditTimeLimit = this.props.postEditTimeLimit || Constants.UNSET_POST_EDIT_TIME_LIMIT;
 
-        if (canEdit && isLicensed) {
+        if (canEdit) {
             if (postEditTimeLimit !== String(Constants.UNSET_POST_EDIT_TIME_LIMIT)) {
                 const milliseconds = 1000;
                 const timeLeft = (post.create_at + (Number(postEditTimeLimit) * milliseconds)) - Utils.getTimestamp();

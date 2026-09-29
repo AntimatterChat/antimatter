@@ -12,7 +12,7 @@ import type {Group} from '@mattermost/types/groups';
 import {addMessageIntoHistory} from 'mattermost-redux/actions/posts';
 import Permissions from 'mattermost-redux/constants/permissions';
 import {getDefaultAgent} from 'mattermost-redux/selectors/entities/agents';
-import {getConfig, getLicense} from 'mattermost-redux/selectors/entities/general';
+import {getConfig} from 'mattermost-redux/selectors/entities/general';
 import {getAssociatedGroupsForReference} from 'mattermost-redux/selectors/entities/groups';
 import {makeGetProfilesForThread} from 'mattermost-redux/selectors/entities/posts';
 import {haveIChannelPermission} from 'mattermost-redux/selectors/entities/roles';
@@ -96,13 +96,11 @@ const WysiwygSuggestionList = ({editor, channelId, rootId, onSubmit}: Props) => 
 
     const currentUserId = useSelector(getCurrentUserId);
     const currentTeamId = useSelector(getCurrentTeamId);
-    const license = useSelector(getLicense);
     const config = useSelector(getConfig);
     const defaultAgent = useSelector(getDefaultAgent);
 
-    const useGroupMentions = license?.IsLicensed === 'true' && license?.LDAPGroups === 'true';
     const autocompleteGroups = useSelector((state: GlobalState) => {
-        if (useGroupMentions && haveIChannelPermission(state, currentTeamId, channelId, Permissions.USE_GROUP_MENTIONS)) {
+        if (haveIChannelPermission(state, currentTeamId, channelId, Permissions.USE_GROUP_MENTIONS)) {
             return getAssociatedGroupsForReference(state, currentTeamId, channelId);
         }
         return null;

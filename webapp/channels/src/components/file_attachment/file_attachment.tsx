@@ -23,7 +23,6 @@ import {
     loadImage,
 } from 'utils/utils';
 
-import ArchivedTooltip from './archived_tooltip';
 import FileThumbnail from './file_thumbnail';
 import FilenameOverlay from './filename_overlay';
 
@@ -385,24 +384,19 @@ export default function FileAttachment(props: Props) {
     }
 
     return (
-        <WithTooltip
-            title={<ArchivedTooltip/>}
-            disabled={!fileInfo.archived}
+        <div
+            className={classNames([
+                'post-image__column',
+                {'keep-open': keepOpen},
+                {'post-image__column--archived': fileInfo.archived},
+            ])}
         >
-            <div
-                className={classNames([
-                    'post-image__column',
-                    {'keep-open': keepOpen},
-                    {'post-image__column--archived': fileInfo.archived},
-                ])}
-            >
-                {fileThumbnail}
-                <div className={classNames('post-image__details', {compact: compactDisplay})}>
-                    {fileDetail}
-                    {fileActions}
-                    {filenameOverlay}
-                </div>
+            {fileThumbnail}
+            <div className={classNames('post-image__details', {compact: compactDisplay})}>
+                {fileDetail}
+                {fileActions}
+                {filenameOverlay}
             </div>
-        </WithTooltip>
+        </div>
     );
 }

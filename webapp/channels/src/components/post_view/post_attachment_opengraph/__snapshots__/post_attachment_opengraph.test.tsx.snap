@@ -5,7 +5,7 @@ exports[`PostAttachmentOpenGraph should match snapshot 1`] = `
   <a
     class="PostAttachmentOpenGraph"
     data-testid="link-preview"
-    href="https://www.mattermost.com/?utm_source=mattermost&utm_medium=in-product&utm_content=post_attachment_opengraph&uid=user-1&sid=&edition=team&server_version="
+    href="https://www.mattermost.com/?utm_source=mattermost&utm_medium=in-product&utm_content=post_attachment_opengraph&uid=user-1&sid=&server_version="
     location="post_attachment_opengraph"
     rel="noopener noreferrer"
     role="link"

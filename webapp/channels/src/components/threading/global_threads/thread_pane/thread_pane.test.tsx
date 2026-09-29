@@ -96,8 +96,8 @@ function attributeValue(field: PropertyField): PropertyValue<unknown> {
     };
 }
 
-// Channel attributes need the flag and an Enterprise Advanced license, plus the
-// group resolved by name, since fields are stored under the group's UUID.
+// Channel attributes need the flag, plus the group resolved by name, since
+// fields are stored under the group's UUID.
 function withChannelAttributes(state: DeepPartial<GlobalState>, fields: PropertyField[]): DeepPartial<GlobalState> {
     return {
         ...state,
@@ -106,7 +106,6 @@ function withChannelAttributes(state: DeepPartial<GlobalState>, fields: Property
             general: {
                 ...state.entities?.general,
                 config: {...state.entities?.general?.config, FeatureFlagChannelAttributes: 'true'},
-                license: {IsLicensed: 'true', SkuShortName: 'advanced'},
             },
             properties: {
                 groups: {

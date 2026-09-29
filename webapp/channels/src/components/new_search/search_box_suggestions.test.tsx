@@ -88,26 +88,12 @@ describe('components/new_search/SearchBoxSuggestions', () => {
         expect(baseProps.setSelectedTerm).toHaveBeenCalledWith('user1');
     });
 
-    test('should not show the plugin suggestions without license', () => {
-        const props = {...baseProps, searchType: 'test-id', searchTerms: 'test-search-terms'};
-        renderWithContext(
-            <SearchBoxSuggestions {...props}/>,
-            {
-                plugins: {components: {SearchSuggestions: [{component: TestPluginProviderComponent as React.ComponentType, pluginId: 'test-id'}]}},
-                entities: {general: {license: {IsLicensed: 'false'}}},
-            },
-        );
-        expect(screen.queryByText('Plugin suggestion')).not.toBeInTheDocument();
-        expect(screen.queryByText('test-search-terms')).not.toBeInTheDocument();
-    });
-
     test('should show the plugin suggestions', () => {
         const props = {...baseProps, searchType: 'test-id', searchTerms: 'test-search-terms'};
         renderWithContext(
             <SearchBoxSuggestions {...props}/>,
             {
                 plugins: {components: {SearchSuggestions: [{component: TestPluginProviderComponent as React.ComponentType, pluginId: 'test-id'}]}},
-                entities: {general: {license: {IsLicensed: 'true'}}},
             },
         );
         expect(screen.getByText('Plugin suggestion')).toBeInTheDocument();
@@ -120,7 +106,6 @@ describe('components/new_search/SearchBoxSuggestions', () => {
             <SearchBoxSuggestions {...props}/>,
             {
                 plugins: {components: {SearchSuggestions: [{component: TestPluginProviderComponent as React.ComponentType, pluginId: 'test-id'}]}},
-                entities: {general: {license: {IsLicensed: 'true'}}},
             },
         );
         screen.getByText('onChangeSearch').click();
@@ -133,7 +118,6 @@ describe('components/new_search/SearchBoxSuggestions', () => {
             <SearchBoxSuggestions {...props}/>,
             {
                 plugins: {components: {SearchSuggestions: [{component: TestPluginProviderComponent as React.ComponentType, pluginId: 'test-id'}]}},
-                entities: {general: {license: {IsLicensed: 'true'}}},
             },
         );
         screen.getByText('onRunSearch').click();

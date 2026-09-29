@@ -28,10 +28,6 @@ describe('components/sidebar/sidebar_header/sidebar_team_menu', () => {
                 config: {
                     EnableGuestAccounts: 'true',
                 },
-                license: {
-                    IsLicensed: 'true',
-                    LDAPGroups: 'true',
-                },
             },
             teams: {
                 currentTeamId: currentTeam.id,
@@ -249,43 +245,6 @@ describe('components/sidebar/sidebar_header/sidebar_team_menu', () => {
 
         await waitFor(() => {
             expect(screen.queryByText('Invite people')).not.toBeInTheDocument();
-        });
-    });
-
-    test('should show restricted indicator for "Create a team" on cloud free plan', async () => {
-        // State with cloud free plan
-        const stateWithCloudFree: DeepPartial<GlobalState> = {
-            ...initialState,
-            entities: {
-                ...initialState.entities,
-                general: {
-                    ...initialState.entities?.general,
-                    license: {
-                        ...initialState.entities?.general?.license,
-                        Cloud: 'true',
-                    },
-                },
-                cloud: {
-                    ...initialState.entities?.cloud,
-                    subscription: {
-                        is_free_trial: 'true',
-                    },
-                },
-            },
-        };
-
-        renderWithContext(
-            <SidebarTeamMenu {...baseProps}/>,
-            stateWithCloudFree,
-        );
-
-        await userEvent.click(screen.getByText(currentTeam.display_name));
-
-        await waitFor(() => {
-            expect(screen.getByText('Create a team')).toBeInTheDocument();
-
-            // Verify the RestrictedIndicator is rendered
-            expect(document.querySelector('.RestrictedIndicator__icon-tooltip')).toBeInTheDocument();
         });
     });
 });
