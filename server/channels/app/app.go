@@ -108,9 +108,6 @@ func (a *App) Intune() einterfaces.IntuneInterface {
 func (a *App) Cloud() einterfaces.CloudInterface {
 	return a.ch.srv.Cloud
 }
-func (a *App) IPFiltering() einterfaces.IPFilteringInterface {
-	return a.ch.srv.IPFiltering
-}
 func (a *App) OutgoingOAuthConnections() einterfaces.OutgoingOAuthConnectionInterface {
 	return a.ch.srv.OutgoingOAuthConnection
 }

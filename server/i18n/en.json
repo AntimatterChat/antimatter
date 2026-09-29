@@ -2481,26 +2481,6 @@
     "description": "API error when a secure connection (remote cluster / shared channels) invitation has passed its expiry time."
   },
   {
-    "id": "api.context.ip_filtering.apply_ip_filters.app_error",
-    "translation": "An error has occurred while applying IP Filters",
-    "description": "Admin API error when saving IP address allow-list filters fails; 'IP Filters' is a Cloud admin feature name."
-  },
-  {
-    "id": "api.context.ip_filtering.get_ip_filters.app_error",
-    "translation": "An error has occurred while fetching IP Filters",
-    "description": "Admin API error when loading the configured IP address filters fails; 'IP Filters' is a Cloud admin feature name."
-  },
-  {
-    "id": "api.context.ip_filtering.get_my_ip.failed",
-    "translation": "An error has occurred while fetching the client's IP address",
-    "description": "Admin API error when determining the requesting client's own IP address fails, used in the IP filtering settings UI."
-  },
-  {
-    "id": "api.context.ip_filtering.not_available.app_error",
-    "translation": "IP Filtering is not available on this server",
-    "description": "Admin API error when the IP filtering feature is not available on this server (e.g. not a Cloud instance)."
-  },
-  {
     "id": "api.context.json_encoding.app_error",
     "translation": "Error encoding JSON.",
     "description": "Generic API error returned when the server fails to encode a response as JSON."
@@ -5118,11 +5098,6 @@
     "id": "api.templates.ip_filters_changed_footer.contact_support",
     "translation": "Contact support",
     "description": "Link/button text in the IP-filtering-change email footer for contacting Mattermost support."
-  },
-  {
-    "id": "api.templates.ip_filters_changed_footer.log_in_to_customer_portal",
-    "translation": "Log in to the customer portal to reset IP filtering",
-    "description": "Link text in the IP-filtering-change email footer; the customer portal lets locked-out admins reset IP filters."
   },
   {
     "id": "api.templates.ip_filters_changed_footer.send_an_email_to",
@@ -9284,6 +9259,11 @@
     "id": "app.insert_error",
     "translation": "insert error",
     "description": "Low-level database error detail meaning an insert query failed; terse developer-facing text used in group-related API errors."
+  },
+  {
+    "id": "app.ip_filtering.apply.lockout.app_error",
+    "translation": "These rules would block your own address ({{.IP}}), so you could no longer reach the server. Add an allow rule covering it, or remove the deny rule that matches it.",
+    "description": "Error shown to the admin saving IP filtering rules in the System Console when the rules would block the admin's own IP address and lock them out. {{.IP}} is that IP address. \"allow rule\" and \"deny rule\" are the two kinds of IP filtering rule."
   },
   {
     "id": "app.job.download_export_results_not_enabled",

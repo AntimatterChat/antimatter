@@ -69,6 +69,7 @@ import (
 	"github.com/mattermost/mattermost/server/v8/einterfaces"
 	"github.com/mattermost/mattermost/server/v8/platform/services/awsmeter"
 	"github.com/mattermost/mattermost/server/v8/platform/services/cache"
+	"github.com/mattermost/mattermost/server/v8/platform/services/ipfiltering"
 	"github.com/mattermost/mattermost/server/v8/platform/services/remotecluster"
 	"github.com/mattermost/mattermost/server/v8/platform/services/sharedchannel"
 	"github.com/mattermost/mattermost/server/v8/platform/services/telemetry"
@@ -99,6 +100,7 @@ type Server struct {
 	Server      *http.Server
 	ListenAddr  *net.TCPAddr
 	RateLimiter *RateLimiter
+	ipFilter    ipfiltering.Filter
 
 	localModeServer *http.Server
 
@@ -142,7 +144,6 @@ type Server struct {
 	skipPostInit bool
 
 	Cloud                   einterfaces.CloudInterface
-	IPFiltering             einterfaces.IPFilteringInterface
 	OutgoingOAuthConnection einterfaces.OutgoingOAuthConnectionInterface
 	PushProxy               einterfaces.PushProxyInterface
 	AutoTranslation         einterfaces.AutoTranslationInterface
@@ -491,9 +492,14 @@ func NewServer(options ...Option) (*Server, error) {
 
 	s.initJobs()
 
-	if ipFilteringInterface != nil {
-		s.IPFiltering = ipFilteringInterface(app)
+	if err = s.updateIPFilter(s.platform.Config()); err != nil {
+		return nil, err
 	}
+	s.platform.AddConfigListener(func(_, newCfg *model.Config) {
+		if err := s.updateIPFilter(newCfg); err != nil {
+			s.Log().Error("Failed to apply the IP filtering rules; keeping the previous ones", mlog.Err(err))
+		}
+	})
 
 	if outgoingOauthConnectionInterface != nil {
 		s.OutgoingOAuthConnection = outgoingOauthConnectionInterface(app)
@@ -1024,6 +1030,9 @@ func (s *Server) Start() error {
 		s.RateLimiter = rateLimiter
 		handler = rateLimiter.RateLimitHandler(handler)
 	}
+
+	// Outermost, so that filtered clients reach nothing else.
+	handler = s.ipFilter.Middleware(handler, s.ClientIPAddress, s.Log())
 
 	// Creating a logger for logging errors from http.Server at error level
 	errStdLog := s.Log().With(mlog.String("source", "httpserver")).StdLogger(mlog.LvlError)

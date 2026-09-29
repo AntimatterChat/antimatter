@@ -92,12 +92,6 @@ func RegisterOutgoingOAuthConnectionInterface(f func(*App) einterfaces.OutgoingO
 	outgoingOauthConnectionInterface = f
 }
 
-var ipFilteringInterface func(*App) einterfaces.IPFilteringInterface
-
-func RegisterIPFilteringInterface(f func(*App) einterfaces.IPFilteringInterface) {
-	ipFilteringInterface = f
-}
-
 var accessControlServiceInterface func(*App) einterfaces.AccessControlServiceInterface
 
 func RegisterAccessControlServiceInterface(f func(*App) einterfaces.AccessControlServiceInterface) {
