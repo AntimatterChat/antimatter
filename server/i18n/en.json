@@ -13852,6 +13852,11 @@
     "description": "Error during AD/LDAP sign-in when the username from the directory is already taken by a different Mattermost account; shown to end users."
   },
   {
+    "id": "ent.ldap.switch_to_ldap.already_attached.app_error",
+    "translation": "This AD/LDAP account is already associated with another Mattermost account.",
+    "description": "Error shown when a user tries to switch their sign-in method to AD/LDAP but the AD/LDAP account they entered is already linked to a different user account on this server."
+  },
+  {
     "id": "ent.ldap.syncronize.get_all.app_error",
     "translation": "Unable to get all users using AD/LDAP.",
     "description": "Error status of the AD/LDAP synchronization job when fetching all users from the directory fails; admin audience."
