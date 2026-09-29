@@ -2123,10 +2123,6 @@
     "defaultMessage": "Note:",
     "description": "Default bold heading of a note/warning banner in the System Console, prepended before the banner's description text."
   },
-  "admin.billing.subscription.byClickingYouAgree": {
-    "defaultMessage": "By clicking {buttonContent}, you agree to the <linkAgreement>{legalText}</linkAgreement>",
-    "description": "Legal consent line under a purchase button; {buttonContent} is the lowercase button label (e.g. 'upgrade'), {legalText} is the license agreement name wrapped in a link."
-  },
   "admin.billing.subscription.cloudReverseTrial.daysLeftOnTrial": {
     "defaultMessage": "{daysLeftOnTrial} days left on your trial. Purchase a plan or contact sales to keep your workspace.",
     "description": "Announcement banner during a Cloud trial; {daysLeftOnTrial} is the number of days remaining."
@@ -2147,45 +2143,17 @@
     "defaultMessage": "Upgrade Now",
     "description": "Button in the Cloud trial announcement banner that starts the paid plan upgrade flow."
   },
-  "admin.billing.subscription.complianceScreenShippingSameAsBilling": {
-    "defaultMessage": "My shipping address is the same as my billing address",
-    "description": "Checkbox-style toggle label on the cloud billing/purchase compliance screen letting the admin reuse the billing address as the shipping address."
-  },
   "admin.billing.subscription.creditCardExpired": {
     "defaultMessage": "Your credit card has expired. Update your payment information to avoid disruption.",
     "description": "Announcement banner for Cloud admins when the subscription's credit card has expired."
-  },
-  "admin.billing.subscription.downgrading": {
-    "defaultMessage": "Downgrading your workspace",
-    "description": "Title of the progress modal shown while a cloud workspace's plan downgrade is being processed; 'Downgrading' is a present participle."
   },
   "admin.billing.subscription.mostRecentPaymentFailed": {
     "defaultMessage": "Your most recent payment failed",
     "description": "Announcement banner for Cloud admins when the latest subscription payment failed."
   },
-  "admin.billing.subscription.privateCloudCard.contactSupport": {
-    "defaultMessage": "Contact Support",
-    "description": "Tertiary button in the failed-plan-change modal (and billing screens) that opens the Mattermost support contact page."
-  },
-  "admin.billing.subscription.proratedPayment.title": {
-    "defaultMessage": "You are now subscribed to {selectedProductName}",
-    "description": "Title of the success modal after a cloud plan change; {selectedProductName} is the purchased plan's name (e.g. 'Cloud Professional')."
-  },
-  "admin.billing.subscription.stateprovince": {
-    "defaultMessage": "State/Province",
-    "description": "Label of the state/province dropdown in the billing address form of the payment/checkout screen."
-  },
   "admin.billing.subscription.updatePaymentInfo": {
     "defaultMessage": "Update Payment Information",
     "description": "Link/button in the billing announcement banner that opens the payment information page."
-  },
-  "admin.billing.subscription.userCount.tooltipText": {
-    "defaultMessage": "You must purchase at least the current number of active users.",
-    "description": "Tooltip body next to the seats input in the purchase seats calculator, explaining the minimum purchase requirement."
-  },
-  "admin.billing.subscription.userCount.tooltipTitle": {
-    "defaultMessage": "Current User Count",
-    "description": "Tooltip hint/title next to the seats input in the purchase seats calculator."
   },
   "admin.board_attributes.add_attribute": {
     "defaultMessage": "Add attribute",
@@ -15623,14 +15591,6 @@
     "defaultMessage": "Select a bot",
     "description": "Fallback text on the AI agent dropdown button when no bot is selected yet."
   },
-  "air_gapped_contact_sales_modal.body": {
-    "defaultMessage": "Please access the link below to contact sales.",
-    "description": "Body text of the modal shown to admins without internet access, above a static contact-sales URL."
-  },
-  "air_gapped_contact_sales_modal.title": {
-    "defaultMessage": "Looks like you do not have access to the internet",
-    "description": "Title of the modal shown when a contact-sales action is attempted on a server without internet access."
-  },
   "alert_banner.tooltipCloseBtn": {
     "defaultMessage": "Close",
     "description": "Accessibility label for the X button that dismisses an alert banner."
@@ -18915,274 +18875,6 @@
     "defaultMessage": "Message Archived",
     "description": "Title of the error page shown when a linked message was archived due to Cloud free plan message limits."
   },
-  "cloud_preview_modal.aria_label": {
-    "defaultMessage": "Cloud Preview Introduction",
-    "description": "Accessible label (aria-label) of the whole cloud preview walkthrough modal shown to trial users."
-  },
-  "cloud_preview_modal.cyberdefense.ai.sku_label": {
-    "defaultMessage": "ENTERPRISE",
-    "description": "Plan badge (all caps) on the AI slide of the cloud preview walkthrough for the cyber defense use case; names the Mattermost Enterprise plan tier."
-  },
-  "cloud_preview_modal.cyberdefense.ai.subtitle": {
-    "defaultMessage": "Supercharge collaboration with Agents. Instantly summarize calls, surface action items, and find answers fast—all using the model you trust.",
-    "description": "Marketing body text of the AI Agents slide in the cloud preview walkthrough (cyber defense use case)."
-  },
-  "cloud_preview_modal.cyberdefense.ai.title": {
-    "defaultMessage": "Bring your own AI model with Mattermost Agents",
-    "description": "Slide title in the cloud preview walkthrough promoting the Mattermost Agents AI feature (cyber defense use case)."
-  },
-  "cloud_preview_modal.cyberdefense.messaging.sku_label": {
-    "defaultMessage": "ENTERPRISE",
-    "description": "Plan badge (all caps) on the messaging slide of the cloud preview walkthrough (cyber defense use case); names the Enterprise plan tier."
-  },
-  "cloud_preview_modal.cyberdefense.messaging.subtitle": {
-    "defaultMessage": "Bring conversations and context together in one secure platform. Communicate with urgency using priority levels, persistent notifications, and acknowledgments—so critical messages are seen and acted on when every second counts.",
-    "description": "Marketing body text of the messaging-features slide in the cloud preview walkthrough (cyber defense use case)."
-  },
-  "cloud_preview_modal.cyberdefense.messaging.title": {
-    "defaultMessage": "Messaging built for action, not noise",
-    "description": "Slide title in the cloud preview walkthrough promoting messaging features (cyber defense use case)."
-  },
-  "cloud_preview_modal.cyberdefense.playbooks.sku_label": {
-    "defaultMessage": "ENTERPRISE",
-    "description": "Plan badge (all caps) on the Playbooks slide of the cloud preview walkthrough (cyber defense use case); names the Enterprise plan tier."
-  },
-  "cloud_preview_modal.cyberdefense.playbooks.subtitle": {
-    "defaultMessage": "Move faster and make fewer mistakes with checklist-based automations that power your team’s workflows.",
-    "description": "Marketing body text of the Playbooks slide in the cloud preview walkthrough (cyber defense use case); 'Playbooks' is the Mattermost workflow product name."
-  },
-  "cloud_preview_modal.cyberdefense.playbooks.title": {
-    "defaultMessage": "Build smart Playbooks for advanced workflows",
-    "description": "Slide title in the cloud preview walkthrough promoting the Playbooks product (cyber defense use case); 'Playbooks' is a product name."
-  },
-  "cloud_preview_modal.cyberdefense.profiles.sku_label": {
-    "defaultMessage": "ENTERPRISE",
-    "description": "Plan badge (all caps) on the custom profile attributes slide of the cloud preview walkthrough (cyber defense use case)."
-  },
-  "cloud_preview_modal.cyberdefense.profiles.subtitle": {
-    "defaultMessage": "Create tailored user profiles with custom attributes like role, location, or clearance level to reflect your organization's structure. Help teams understand who they're working with and how to collaborate more effectively.",
-    "description": "Marketing body text of the custom user profiles slide in the cloud preview walkthrough (cyber defense use case)."
-  },
-  "cloud_preview_modal.cyberdefense.profiles.title": {
-    "defaultMessage": "Tailor user profiles to match your team's structure",
-    "description": "Slide title in the cloud preview walkthrough promoting custom user profile attributes (cyber defense use case)."
-  },
-  "cloud_preview_modal.cyberdefense.sku_label": {
-    "defaultMessage": "ENTERPRISE ADVANCED",
-    "description": "Plan badge (all caps) on the welcome slide of the cloud preview walkthrough (cyber defense use case); names the Enterprise Advanced plan tier."
-  },
-  "cloud_preview_modal.cyberdefense.welcome.subtitle": {
-    "defaultMessage": "This hands-on, 1-hour preview of Mattermost Enterprise Advanced lets your cyber defense team explore secure, threat-aware collaboration. The workspace is preloaded with data to show the platform in action. Watch the 4-minute video to get started.",
-    "description": "Introductory body text on the first slide of the cloud preview walkthrough for cyber defense teams, explaining the 1-hour trial workspace."
-  },
-  "cloud_preview_modal.cyberdefense.welcome.title": {
-    "defaultMessage": "Welcome to your Mattermost preview",
-    "description": "Title of the first (welcome) slide of the cloud preview walkthrough (cyber defense use case)."
-  },
-  "cloud_preview_modal.cyberdefense.zero_trust.sku_label": {
-    "defaultMessage": "ENTERPRISE ADVANCED",
-    "description": "Plan badge (all caps) on the Zero Trust slide of the cloud preview walkthrough (cyber defense use case); names the Enterprise Advanced plan tier."
-  },
-  "cloud_preview_modal.cyberdefense.zero_trust.subtitle": {
-    "defaultMessage": "Define granular access to content using attribute-based policies, and display classification banners and labels to guide user behavior. Limit exposure based on role, clearance level, or operational context.",
-    "description": "Marketing body text of the Zero Trust / attribute-based access control slide in the cloud preview walkthrough (cyber defense use case)."
-  },
-  "cloud_preview_modal.cyberdefense.zero_trust.title": {
-    "defaultMessage": "Enforce Zero Trust collaboration",
-    "description": "Slide title in the cloud preview walkthrough promoting Zero Trust access controls (cyber defense use case); 'Zero Trust' is a security term."
-  },
-  "cloud_preview_modal.devsecops.ai.sku_label": {
-    "defaultMessage": "ENTERPRISE",
-    "description": "Plan badge (all caps) on the AI slide of the cloud preview walkthrough (DevSecOps use case); names the Enterprise plan tier."
-  },
-  "cloud_preview_modal.devsecops.ai.subtitle": {
-    "defaultMessage": "Supercharge collaboration with Agents. Instantly summarize calls, surface action items, and find answers fast—all using the model you trust.",
-    "description": "Marketing body text of the AI Agents slide in the cloud preview walkthrough (DevSecOps use case)."
-  },
-  "cloud_preview_modal.devsecops.ai.title": {
-    "defaultMessage": "Bring your own AI model with Mattermost Agents",
-    "description": "Slide title in the cloud preview walkthrough promoting the Mattermost Agents AI feature (DevSecOps use case)."
-  },
-  "cloud_preview_modal.devsecops.messaging.sku_label": {
-    "defaultMessage": "ENTERPRISE",
-    "description": "Plan badge (all caps) on the messaging slide of the cloud preview walkthrough (DevSecOps use case); names the Enterprise plan tier."
-  },
-  "cloud_preview_modal.devsecops.messaging.subtitle": {
-    "defaultMessage": "Bring conversations and context together in one secure platform. Communicate with urgency using priority levels, persistent notifications, and acknowledgments—so critical messages are seen and acted on when every second counts.",
-    "description": "Marketing body text of the messaging-features slide in the cloud preview walkthrough (DevSecOps use case)."
-  },
-  "cloud_preview_modal.devsecops.messaging.title": {
-    "defaultMessage": "Messaging built for action, not noise",
-    "description": "Slide title in the cloud preview walkthrough promoting messaging features (DevSecOps use case)."
-  },
-  "cloud_preview_modal.devsecops.playbooks.sku_label": {
-    "defaultMessage": "ENTERPRISE",
-    "description": "Plan badge (all caps) on the Playbooks slide of the cloud preview walkthrough (DevSecOps use case); names the Enterprise plan tier."
-  },
-  "cloud_preview_modal.devsecops.playbooks.subtitle": {
-    "defaultMessage": "Move faster and make fewer mistakes with checklist-based automations that power your team’s workflows.",
-    "description": "Marketing body text of the Playbooks slide in the cloud preview walkthrough (DevSecOps use case); 'Playbooks' is the Mattermost workflow product name."
-  },
-  "cloud_preview_modal.devsecops.playbooks.title": {
-    "defaultMessage": "Build smart Playbooks for advanced workflows",
-    "description": "Slide title in the cloud preview walkthrough promoting the Playbooks product (DevSecOps use case); 'Playbooks' is a product name."
-  },
-  "cloud_preview_modal.devsecops.profiles.sku_label": {
-    "defaultMessage": "ENTERPRISE",
-    "description": "Plan badge (all caps) on the custom profile attributes slide of the cloud preview walkthrough (DevSecOps use case)."
-  },
-  "cloud_preview_modal.devsecops.profiles.subtitle": {
-    "defaultMessage": "Create tailored user profiles with custom attributes like role, location, or clearance level to reflect your organization's structure. Help teams understand who they're working with and how to collaborate more effectively.",
-    "description": "Marketing body text of the custom user profiles slide in the cloud preview walkthrough (DevSecOps use case)."
-  },
-  "cloud_preview_modal.devsecops.profiles.title": {
-    "defaultMessage": "Tailor user profiles to match your team's structure",
-    "description": "Slide title in the cloud preview walkthrough promoting custom user profile attributes (DevSecOps use case)."
-  },
-  "cloud_preview_modal.devsecops.sku_label": {
-    "defaultMessage": "ENTERPRISE ADVANCED",
-    "description": "Plan badge (all caps) on the welcome slide of the cloud preview walkthrough (DevSecOps use case); names the Enterprise Advanced plan tier."
-  },
-  "cloud_preview_modal.devsecops.welcome.subtitle": {
-    "defaultMessage": "This hands-on, 1-hour preview of Mattermost Enterprise Advanced lets your DevSecOps team explore secure, collaborative development. The workspace is preloaded with data to show the platform in action. Watch the 4-minute video to get started.",
-    "description": "Introductory body text on the first slide of the cloud preview walkthrough for DevSecOps teams, explaining the 1-hour trial workspace."
-  },
-  "cloud_preview_modal.devsecops.welcome.title": {
-    "defaultMessage": "Welcome to your Mattermost preview",
-    "description": "Title of the first (welcome) slide of the cloud preview walkthrough (DevSecOps use case)."
-  },
-  "cloud_preview_modal.devsecops.zero_trust.sku_label": {
-    "defaultMessage": "ENTERPRISE ADVANCED",
-    "description": "Plan badge (all caps) on the Zero Trust slide of the cloud preview walkthrough (DevSecOps use case); names the Enterprise Advanced plan tier."
-  },
-  "cloud_preview_modal.devsecops.zero_trust.subtitle": {
-    "defaultMessage": "Define granular access to content using attribute-based policies, and display classification banners and labels to guide user behavior. Limit exposure based on role, clearance level, or operational context.",
-    "description": "Marketing body text of the Zero Trust / attribute-based access control slide in the cloud preview walkthrough (DevSecOps use case)."
-  },
-  "cloud_preview_modal.devsecops.zero_trust.title": {
-    "defaultMessage": "Enforce Zero Trust collaboration",
-    "description": "Slide title in the cloud preview walkthrough promoting Zero Trust access controls (DevSecOps use case); 'Zero Trust' is a security term."
-  },
-  "cloud_preview_modal.done": {
-    "defaultMessage": "Finish",
-    "description": "Primary button on the last slide of the cloud preview walkthrough modal; closes the walkthrough."
-  },
-  "cloud_preview_modal.fab.aria_label": {
-    "defaultMessage": "Open cloud preview overview",
-    "description": "Accessible label (aria-label) of the floating action button that reopens the cloud preview walkthrough modal."
-  },
-  "cloud_preview_modal.fab.tooltip": {
-    "defaultMessage": "Open overview",
-    "description": "Tooltip on the floating action button that reopens the cloud preview walkthrough modal; keep short."
-  },
-  "cloud_preview_modal.missionops.ai.sku_label": {
-    "defaultMessage": "ENTERPRISE",
-    "description": "Plan badge (all caps) on the AI slide of the cloud preview walkthrough (mission operations use case); names the Enterprise plan tier."
-  },
-  "cloud_preview_modal.missionops.ai.subtitle": {
-    "defaultMessage": "Supercharge collaboration with Agents. Instantly summarize calls, surface action items, and find answers fast—all using the model you trust.",
-    "description": "Marketing body text of the AI Agents slide in the cloud preview walkthrough (mission operations use case)."
-  },
-  "cloud_preview_modal.missionops.ai.title": {
-    "defaultMessage": "Bring your own AI model with Mattermost Agents",
-    "description": "Slide title in the cloud preview walkthrough promoting the Mattermost Agents AI feature (mission operations use case)."
-  },
-  "cloud_preview_modal.missionops.messaging.sku_label": {
-    "defaultMessage": "ENTERPRISE",
-    "description": "Plan badge (all caps) on the messaging slide of the cloud preview walkthrough (mission operations use case); names the Enterprise plan tier."
-  },
-  "cloud_preview_modal.missionops.messaging.subtitle": {
-    "defaultMessage": "Bring conversations and context together in one secure platform. Communicate with urgency using priority levels, persistent notifications, and acknowledgments—so critical messages are seen and acted on when every second counts.",
-    "description": "Marketing body text of the messaging-features slide in the cloud preview walkthrough (mission operations use case)."
-  },
-  "cloud_preview_modal.missionops.messaging.title": {
-    "defaultMessage": "Messaging built for action, not noise",
-    "description": "Slide title in the cloud preview walkthrough promoting messaging features (mission operations use case)."
-  },
-  "cloud_preview_modal.missionops.playbooks.sku_label": {
-    "defaultMessage": "ENTERPRISE",
-    "description": "Plan badge (all caps) on the Playbooks slide of the cloud preview walkthrough (mission operations use case); names the Enterprise plan tier."
-  },
-  "cloud_preview_modal.missionops.playbooks.subtitle": {
-    "defaultMessage": "Move faster and make fewer mistakes with checklist-based automations that power your team’s workflows.",
-    "description": "Marketing body text of the Playbooks slide in the cloud preview walkthrough (mission operations use case); 'Playbooks' is the Mattermost workflow product name."
-  },
-  "cloud_preview_modal.missionops.playbooks.title": {
-    "defaultMessage": "Build smart Playbooks for advanced workflows",
-    "description": "Slide title in the cloud preview walkthrough promoting the Playbooks product (mission operations use case); 'Playbooks' is a product name."
-  },
-  "cloud_preview_modal.missionops.profiles.sku_label": {
-    "defaultMessage": "ENTERPRISE",
-    "description": "Plan badge (all caps) on the custom profile attributes slide of the cloud preview walkthrough (mission operations use case)."
-  },
-  "cloud_preview_modal.missionops.profiles.subtitle": {
-    "defaultMessage": "Create tailored user profiles with custom attributes like role, location, or clearance level to reflect your organization's structure. Help teams understand who they're working with and how to collaborate more effectively.",
-    "description": "Marketing body text of the custom user profiles slide in the cloud preview walkthrough (mission operations use case)."
-  },
-  "cloud_preview_modal.missionops.profiles.title": {
-    "defaultMessage": "Tailor user profiles to match your team's structure",
-    "description": "Slide title in the cloud preview walkthrough promoting custom user profile attributes (mission operations use case)."
-  },
-  "cloud_preview_modal.missionops.sku_label": {
-    "defaultMessage": "ENTERPRISE ADVANCED",
-    "description": "Plan badge (all caps) on the welcome slide of the cloud preview walkthrough (mission operations use case); names the Enterprise Advanced plan tier."
-  },
-  "cloud_preview_modal.missionops.welcome.subtitle": {
-    "defaultMessage": "This hands-on, 1-hour preview of Mattermost Enterprise Advanced lets your team explore secure, mission-critical collaboration. The workspace is preloaded with data to show the platform in action. Watch the 4-minute video to get started.",
-    "description": "Introductory body text on the first slide of the cloud preview walkthrough for mission operations teams, explaining the 1-hour trial workspace."
-  },
-  "cloud_preview_modal.missionops.welcome.title": {
-    "defaultMessage": "Welcome to your Mattermost preview",
-    "description": "Title of the first (welcome) slide of the cloud preview walkthrough (mission operations use case)."
-  },
-  "cloud_preview_modal.missionops.zero_trust.sku_label": {
-    "defaultMessage": "ENTERPRISE ADVANCED",
-    "description": "Plan badge (all caps) on the Zero Trust slide of the cloud preview walkthrough (mission operations use case); names the Enterprise Advanced plan tier."
-  },
-  "cloud_preview_modal.missionops.zero_trust.subtitle": {
-    "defaultMessage": "Define granular access to content using attribute-based policies, and display classification banners and labels to guide user behavior. Limit exposure based on role, clearance level, or operational context.",
-    "description": "Marketing body text of the Zero Trust / attribute-based access control slide in the cloud preview walkthrough (mission operations use case)."
-  },
-  "cloud_preview_modal.missionops.zero_trust.title": {
-    "defaultMessage": "Enforce Zero Trust collaboration",
-    "description": "Slide title in the cloud preview walkthrough promoting Zero Trust access controls (mission operations use case); 'Zero Trust' is a security term."
-  },
-  "cloud_preview_modal.next": {
-    "defaultMessage": "Next",
-    "description": "Primary button advancing to the next slide of the cloud preview walkthrough modal."
-  },
-  "cloud_preview_modal.play_video": {
-    "defaultMessage": "Play video",
-    "description": "Accessible label (aria-label) of the play button overlaid on the video inside a cloud preview walkthrough slide."
-  },
-  "cloud_preview_modal.previous": {
-    "defaultMessage": "Previous",
-    "description": "Button returning to the previous slide of the cloud preview walkthrough modal."
-  },
-  "cloud_preview_modal.skip": {
-    "defaultMessage": "Skip for now",
-    "description": "Button on the first slide of the cloud preview walkthrough modal that dismisses the whole walkthrough."
-  },
-  "cloud_signup.signup_consequences": {
-    "defaultMessage": "Your credit card will be charged today. <a>See how billing works.</a>",
-    "description": "Billing notice shown during Cloud purchase checkout; the <a> tags wrap a link to billing documentation."
-  },
-  "cloud_upgrade.error_min_seats": {
-    "defaultMessage": "Minimum of 10 seats required",
-    "description": "Validation error under the seats input when fewer than 10 seats are entered during purchase."
-  },
-  "cloud.fetch_error": {
-    "defaultMessage": "Error fetching billing data. Please try again later.",
-    "description": "Error banner shown to admins in cloud billing screens when billing data fails to load; displayed with a Retry button."
-  },
-  "cloud.fetch_error.retry": {
-    "defaultMessage": "Retry",
-    "description": "Button label to retry loading when cloud subscription/billing data fails to fetch; verb, compact button."
-  },
-  "cloud.invoice_pdf_preview.download": {
-    "defaultMessage": "<downloadLink>Download</downloadLink> this page for your records",
-    "description": "Subtitle in the cloud invoice preview modal header; <downloadLink> tags wrap the clickable word that downloads the invoice PDF."
-  },
   "collapsed_reply_threads_modal.confirm": {
     "defaultMessage": "Got it",
     "description": "Acknowledgement button label ('Got it') used to dismiss informational dialogs, including the onboarding completion screen."
@@ -19374,26 +19066,6 @@
   "confirm_reset_failed_attempts_modal.title": {
     "defaultMessage": "Reset failed login attempts for {username} and unlock account",
     "description": "Title of the confirmation modal for resetting failed login attempts and unlocking a user's account; {username} is the affected user's username."
-  },
-  "confirm_switch_to_yearly_modal.confirm": {
-    "defaultMessage": "Confirm",
-    "description": "Confirm button of the dialog for switching a Cloud subscription from monthly to annual billing."
-  },
-  "confirm_switch_to_yearly_modal.contact_sales": {
-    "defaultMessage": "Contact Sales",
-    "description": "Cancel-side button of the switch-to-annual-plan dialog that contacts the sales team instead."
-  },
-  "confirm_switch_to_yearly_modal.subtitle": {
-    "defaultMessage": "Changing to the annual plan is irreversible. Are you sure you want to switch from monthly to the annual plan?",
-    "description": "Body of the confirmation dialog warning that switching from monthly to annual billing cannot be reversed."
-  },
-  "confirm_switch_to_yearly_modal.subtitle2": {
-    "defaultMessage": "For more information, please contact sales.",
-    "description": "Second subtitle line in the confirmation modal for switching a Cloud subscription from monthly to yearly billing; audience is a workspace admin."
-  },
-  "confirm_switch_to_yearly_modal.title": {
-    "defaultMessage": "Confirm switch to annual plan",
-    "description": "Title of the confirmation dialog for switching from a monthly to an annual billing plan."
   },
   "convert_channel.cancel": {
     "defaultMessage": "No, cancel",
@@ -20539,18 +20211,6 @@
     "defaultMessage": "Medium skin tone",
     "description": "Name of the medium skin tone option in the emoji picker's skin tone selector."
   },
-  "error_modal.subtitle": {
-    "defaultMessage": "An error occurred while changing your plan. Please go back and try again, or contact the support team.",
-    "description": "Body text of the modal shown to admins when a cloud subscription plan change fails."
-  },
-  "error_modal.title": {
-    "defaultMessage": "We were unable to change your plan",
-    "description": "Title of the modal shown to admins when a cloud subscription plan change fails."
-  },
-  "error_modal.try_again": {
-    "defaultMessage": "Try again",
-    "description": "Primary button in the failed-plan-change modal; retries the purchase flow."
-  },
   "error.channel_not_found.message": {
     "defaultMessage": "The channel you're requesting is private or does not exist. Please contact an Administrator to be added to the channel.",
     "description": "Body text of the full-page error screen shown when a user navigates to a channel they cannot access."
@@ -20743,57 +20403,9 @@
     "defaultMessage": "Export user data",
     "description": "Title of the confirmation modal shown before exporting user data from the System Console users page."
   },
-  "feature_restricted_modal.agreement": {
-    "defaultMessage": "By selecting <highlight>Try free for {trialLength} days</highlight>, I agree to the <linkEvaluation>Mattermost Software Evaluation Agreement</linkEvaluation>, <linkPrivacy>Privacy Policy</linkPrivacy>, and receiving product emails.",
-    "description": "Legal agreement text under the trial button in the modal shown when a feature requires a paid plan; {trialLength} is the number of trial days; the tags render highlighting and links to legal documents."
-  },
-  "feature_restricted_modal.button.notify": {
-    "defaultMessage": "Notify admin",
-    "description": "Button in the feature-restricted modal for non-admin users; sends a request to the system admin to upgrade the plan."
-  },
-  "feature_restricted_modal.button.plans": {
-    "defaultMessage": "View plans",
-    "description": "Button in the feature-restricted modal that opens the pricing/plans screen; shown to system admins."
-  },
   "feature_toast.tooltipCloseBtn": {
     "defaultMessage": "Close",
     "description": "Accessibility label/tooltip for the close (X) button on new-feature announcement toasts."
-  },
-  "feedback.cancelButton.text": {
-    "defaultMessage": "Cancel",
-    "description": "Cancel button of the plan feedback survey modal."
-  },
-  "feedback.downgradeWorkspace.downgrade": {
-    "defaultMessage": "Downgrade",
-    "description": "Confirm button of the feedback modal shown when a Cloud workspace admin downgrades their plan; verb."
-  },
-  "feedback.downgradeWorkspace.exploringOptions": {
-    "defaultMessage": "Exploring other solutions",
-    "description": "Radio option in the downgrade feedback survey; a reason for downgrading (trying competitor products)."
-  },
-  "feedback.downgradeWorkspace.feedbackTitle": {
-    "defaultMessage": "Please share your reason for downgrading",
-    "description": "Title of the feedback survey modal shown when downgrading a Cloud workspace plan."
-  },
-  "feedback.downgradeWorkspace.noLongerNeeded": {
-    "defaultMessage": "No longer need Cloud Professional features",
-    "description": "Radio option in the downgrade feedback survey; 'Cloud Professional' is a Mattermost plan name and should not be translated."
-  },
-  "feedback.downgradeWorkspace.technicalIssues": {
-    "defaultMessage": "Experienced technical issues",
-    "description": "Radio option in the downgrade feedback survey; a reason for downgrading."
-  },
-  "feedback.downgradeWorkspace.tellUsWhy": {
-    "defaultMessage": "Please tell us why you are downgrading",
-    "description": "Validation prompt in the downgrade feedback survey asking the user to pick or type a reason before submitting."
-  },
-  "feedback.downgradeWorkspace.tooExpensive": {
-    "defaultMessage": "Too expensive",
-    "description": "Radio option in the downgrade feedback survey; a reason for downgrading."
-  },
-  "feedback.other": {
-    "defaultMessage": "Other",
-    "description": "Radio option in feedback survey modals for a reason not covered by the listed choices; selecting it reveals a free-text field."
   },
   "file_attachment.thumbnail": {
     "defaultMessage": "file thumbnail",
@@ -25119,26 +24731,6 @@
     "defaultMessage": "Password Requirements:",
     "description": "Label on the Password admin page preceding the list of password requirement checkboxes; ends with a colon."
   },
-  "payment_form.address": {
-    "defaultMessage": "Address",
-    "description": "Form field label for the street address in the billing address form of the payment/checkout screen."
-  },
-  "payment_form.address_2": {
-    "defaultMessage": "Address 2",
-    "description": "Label for the second address line (apartment/suite) field in the billing payment form."
-  },
-  "payment_form.city": {
-    "defaultMessage": "City",
-    "description": "Form field label for the city in the billing address form of the payment/checkout screen."
-  },
-  "payment_form.country": {
-    "defaultMessage": "Country/Region",
-    "description": "Label of the country/region dropdown in the billing address form of the payment/checkout screen."
-  },
-  "payment_form.zipcode": {
-    "defaultMessage": "Zip/Postal Code",
-    "description": "Form field label for the postal/ZIP code in the billing address form of the payment/checkout screen."
-  },
   "pending_post_actions.cancel": {
     "defaultMessage": "Cancel",
     "description": "Link shown under a message that failed to send; discards the failed message."
@@ -25214,14 +24806,6 @@
   "persist_notification.too_many.title": {
     "defaultMessage": "Too many recipients",
     "description": "Title of the dialog shown when a persistent-notification message mentions more recipients than allowed."
-  },
-  "plan.cloud": {
-    "defaultMessage": "Cloud",
-    "description": "Plan name 'Cloud'; concatenated directly before the 'license purchase only supports purchases up to {num} seats' error message."
-  },
-  "plan.self_serve": {
-    "defaultMessage": "Self-serve",
-    "description": "Plan name 'Self-serve'; concatenated directly before the 'license purchase only supports purchases up to {num} seats' error message."
   },
   "pluggable.errorOccurred": {
     "defaultMessage": "An error occurred in the {pluginId} plugin.",
@@ -25822,18 +25406,6 @@
   "pricing_modal.btn.viewPlans": {
     "defaultMessage": "View plans",
     "description": "Button in the global header that opens the pricing/plans modal; visible to system admins."
-  },
-  "pricing_modal.plan_label_trialDays": {
-    "defaultMessage": "{days} DAYS LEFT ON TRIAL",
-    "description": "All-caps badge on a plan card in the pricing modal during a free trial; {days} is the number of days remaining."
-  },
-  "pricing_modal.wantToTry": {
-    "defaultMessage": "Want to try? ",
-    "description": "Lead-in text before the 'notify your admin' button in upsell prompts, shown to non-admin users before a trial has been used; ends with a space because the button text follows inline."
-  },
-  "pricing_modal.wantToUpgrade": {
-    "defaultMessage": "Want to upgrade? ",
-    "description": "Lead-in text before the 'notify your admin' button in upsell prompts, shown to non-admin users on a workspace that could upgrade its plan; ends with a space because the button text follows inline."
   },
   "product_menu_item.open_in_new_tab": {
     "defaultMessage": "Open in new tab",
@@ -27327,54 +26899,6 @@
     "defaultMessage": "Recommended based on your attributes",
     "description": "Accessibility label for the 'Recommended' badge on a team in the team selection page; the recommendation is based on the user's attributes matching the team's access rules."
   },
-  "self_hosted_signup.air_gapped_content": {
-    "defaultMessage": "It appears that your instance is air-gapped, or it may not be connected to the internet. To purchase a license, please visit",
-    "description": "Body text of the purchase modal on air-gapped servers; the customer portal URL is rendered immediately after this sentence, so it intentionally ends mid-sentence."
-  },
-  "self_hosted_signup.air_gapped_title": {
-    "defaultMessage": "Purchase through the customer portal",
-    "description": "Title of the modal telling admins on air-gapped servers to purchase a license through the customer portal."
-  },
-  "self_hosted_signup.close": {
-    "defaultMessage": "Close",
-    "description": "Button closing the dialog that says a self-hosted license purchase is under review."
-  },
-  "self_hosted_signup.error_invalid_number": {
-    "defaultMessage": "Enter a valid number of seats",
-    "description": "Validation error under the seats input when the entered value is not a valid number."
-  },
-  "self_hosted_signup.error_max_seats": {
-    "defaultMessage": " license purchase only supports purchases up to {num} seats",
-    "description": "Validation error for too many seats; a plan name ('Cloud' or 'Self-serve') is concatenated immediately before it, hence the leading space. {num} is the maximum seat count."
-  },
-  "self_hosted_signup.error_min_seats": {
-    "defaultMessage": "Your workspace currently has {num} users",
-    "description": "Validation error when fewer seats than existing users are entered; {num} is the workspace's current user count."
-  },
-  "self_hosted_signup.line_item_subtotal": {
-    "defaultMessage": "{num} seats × 12 mo.",
-    "description": "Line item label in the purchase seats calculator; {num} is the seat count, '12 mo.' abbreviates 12 months of an annual plan."
-  },
-  "self_hosted_signup.screening_description": {
-    "defaultMessage": "We will check things on our side and get back to you within 3 days once your license is approved. In the meantime, please feel free to continue using the free version of our product.",
-    "description": "Body of the dialog telling an admin their self-hosted license purchase is being manually screened before approval."
-  },
-  "self_hosted_signup.screening_title": {
-    "defaultMessage": "Your transaction is being reviewed",
-    "description": "Title of the dialog telling an admin their self-hosted license purchase transaction is being reviewed."
-  },
-  "self_hosted_signup.seats": {
-    "defaultMessage": "Seats",
-    "description": "Placeholder for the number-of-seats input in the purchase seats calculator; 'Seats' means purchased user licenses."
-  },
-  "self_hosted_signup.signup_consequences": {
-    "defaultMessage": "You will be billed today. Your license will be applied automatically. <a>See how billing works.</a>",
-    "description": "Billing notice shown during self-hosted license purchase; the <a> tags wrap a link to billing documentation."
-  },
-  "self_hosted_signup.total": {
-    "defaultMessage": "Total",
-    "description": "Label for the total price row in the purchase seats calculator."
-  },
   "setting_item_max.cancel": {
     "defaultMessage": "Cancel",
     "description": "Cancel button in an expanded section of the Settings panels; discards the edits in that section."
@@ -28510,14 +28034,6 @@
   "start_trial.tutorialTip.title": {
     "defaultMessage": "Try our premium features for free",
     "description": "Title of the tour tip shown during the 'start trial' onboarding task."
-  },
-  "success_modal.return_to_workspace": {
-    "defaultMessage": "Return to workspace",
-    "description": "Primary button in the successful-plan-change modal that closes it and returns the admin to the app."
-  },
-  "success_modal.subtitle": {
-    "defaultMessage": "Your final bill will be prorated. Your workspace now has {plan} limits.",
-    "description": "Body text of the successful-plan-change modal; {plan} is the new plan's name and refers to its usage limits."
   },
   "suggestion.all": {
     "defaultMessage": "All channel types",
@@ -32039,14 +31555,6 @@
     "defaultMessage": "Unarchive this file by upgrading",
     "description": "Tooltip title on an archived file attachment prompting an upgrade to a paid plan to restore access."
   },
-  "workspace_limits.file_storage.short": {
-    "defaultMessage": "Files",
-    "description": "Compact label for the file storage usage bar in the Cloud workspace usage panel; refers to uploaded file storage."
-  },
-  "workspace_limits.file_storage.short.usage": {
-    "defaultMessage": "{actual} / {limit}",
-    "description": "Compact usage readout next to the file storage bar in the Cloud usage panel; {actual} is current storage used and {limit} the plan's cap (both sizes like '5GB')."
-  },
   "workspace_limits.menu_limit.critical.files_storage": {
     "defaultMessage": "You’re getting closer to the {limit} file storage limit. <a>{callToAction}</a>",
     "description": "Cloud usage warning in the main menu when file storage nears its limit; {limit} is a storage amount (e.g. 10GB); <a> wraps {callToAction}, a link like 'View plans'."
@@ -32119,25 +31627,9 @@
     "defaultMessage": "Limited history is displayed",
     "description": "Title of the banner shown to admins at the top of a channel when older messages are hidden due to the Cloud Free message-history limit."
   },
-  "workspace_limits.message_history.short": {
-    "defaultMessage": "Messages",
-    "description": "Compact label for the message history usage bar in the Cloud workspace usage panel; refers to stored messages."
-  },
-  "workspace_limits.message_history.short.usage": {
-    "defaultMessage": "{actual} / {limit}",
-    "description": "Compact usage readout next to the message history bar in the Cloud usage panel; {actual} is the current message count (e.g. '8K') and {limit} the plan's cap."
-  },
   "workspace_limits.modals.close": {
     "defaultMessage": "Close",
     "description": "Secondary button that dismisses the cloud usage-limits modal."
-  },
-  "workspace_limits.modals.informational.description.freeLimits": {
-    "defaultMessage": "{planName} is restricted to {messages} message history and {storage} file storage.",
-    "description": "Body of the cloud usage-limits modal; {planName} is the plan name, {messages} a formatted message count, {storage} a size like '10GB'."
-  },
-  "workspace_limits.modals.informational.title": {
-    "defaultMessage": "{planName} limits",
-    "description": "Title of the cloud usage-limits modal; {planName} is the subscription plan name (e.g. 'Cloud Free')."
   },
   "workspace_limits.modals.limits_reached.description.message_history": {
     "defaultMessage": "Your sent message history is no longer available but you can still send messages. Upgrade to a paid plan and get unlimited access to your message history.",
@@ -32154,10 +31646,6 @@
   "workspace_limits.modals.view_plan_options": {
     "defaultMessage": "View plan options",
     "description": "Button in workspace-limit notices that opens the pricing/plan comparison modal."
-  },
-  "workspace_limits.modals.view_plans": {
-    "defaultMessage": "View plans",
-    "description": "Primary button in the cloud usage-limits modal that opens the pricing/plans modal."
   },
   "workspace_limits.post_history_banner.cta_button": {
     "defaultMessage": "Restore Access",
