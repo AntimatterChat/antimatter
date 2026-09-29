@@ -108,7 +108,7 @@ func Setup(tb testing.TB, options ...Option) *TestHelper {
 
 	dbStore, dbSettings := setupDBStore(tb)
 
-	return setupTestHelper(dbStore, dbSettings, false, true, tb, options...)
+	return setupTestHelper(dbStore, dbSettings, true, tb, options...)
 }
 
 func (th *TestHelper) InitBasic(tb testing.TB) *TestHelper {
@@ -130,7 +130,7 @@ func (th *TestHelper) InitBasic(tb testing.TB) *TestHelper {
 func SetupWithStoreMock(tb testing.TB, options ...Option) *TestHelper {
 	mockStore := testlib.GetMockStoreForSetupFunctions()
 	options = append(options, StoreOverride(mockStore))
-	th := setupTestHelper(mockStore, &model.SqlSettings{}, false, false, tb, options...)
+	th := setupTestHelper(mockStore, &model.SqlSettings{}, false, tb, options...)
 	return th
 }
 
@@ -141,13 +141,13 @@ func SetupWithCluster(tb testing.TB, cluster einterfaces.ClusterInterface) *Test
 
 	dbStore, dbSettings := setupDBStore(tb)
 
-	th := setupTestHelper(dbStore, dbSettings, true, true, tb)
+	th := setupTestHelper(dbStore, dbSettings, true, tb)
 	th.Service.clusterIFace = cluster
 
 	return th
 }
 
-func setupTestHelper(dbStore store.Store, dbSettings *model.SqlSettings, enterprise bool, includeCacheLayer bool, tb testing.TB, options ...Option) *TestHelper {
+func setupTestHelper(dbStore store.Store, dbSettings *model.SqlSettings, includeCacheLayer bool, tb testing.TB, options ...Option) *TestHelper {
 	tempWorkspace, err := os.MkdirTemp("", "apptest")
 	require.NoError(tb, err)
 
@@ -210,12 +210,6 @@ func setupTestHelper(dbStore store.Store, dbSettings *model.SqlSettings, enterpr
 		*cfg.RateLimitSettings.Enable = false
 		*cfg.TeamSettings.EnableOpenServer = true
 	})
-
-	if enterprise {
-		th.Service.SetLicense(model.NewTestLicense())
-	} else {
-		th.Service.SetLicense(nil)
-	}
 
 	err = th.Service.Start(nil)
 	require.NoError(tb, err)

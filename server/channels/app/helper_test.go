@@ -57,7 +57,7 @@ type PostOptions func(*model.Post)
 
 type PostPatchOptions func(patch *model.PostPatch)
 
-func setupTestHelper(dbStore store.Store, sqlStore *sqlstore.SqlStore, sqlSettings *model.SqlSettings, searchEngine *searchengine.Broker, enterprise bool, includeCacheLayer bool,
+func setupTestHelper(dbStore store.Store, sqlStore *sqlstore.SqlStore, sqlSettings *model.SqlSettings, searchEngine *searchengine.Broker, includeCacheLayer bool,
 	updateConfig func(*model.Config), options []Option, tb testing.TB,
 ) *TestHelper {
 	tempWorkspace, err := os.MkdirTemp("", "apptest")
@@ -67,7 +67,6 @@ func setupTestHelper(dbStore store.Store, sqlStore *sqlstore.SqlStore, sqlSettin
 	memoryConfig := configStore.Get()
 
 	memoryConfig.SqlSettings = model.SafeDereference(sqlSettings)
-	*memoryConfig.ServiceSettings.LicenseFileLocation = filepath.Join(tempWorkspace, "license.json")
 	*memoryConfig.FileSettings.Directory = filepath.Join(tempWorkspace, "data")
 	*memoryConfig.PluginSettings.Directory = filepath.Join(tempWorkspace, "plugins")
 	*memoryConfig.PluginSettings.ClientDirectory = filepath.Join(tempWorkspace, "webapp")
@@ -144,8 +143,6 @@ func setupTestHelper(dbStore store.Store, sqlStore *sqlstore.SqlStore, sqlSettin
 		tempWorkspace:     tempWorkspace,
 	}
 
-	th.App.Srv().SetLicense(getLicense(enterprise, memoryConfig))
-
 	th.App.UpdateConfig(func(cfg *model.Config) { *cfg.TeamSettings.MaxUsersPerTeam = 50 })
 	th.App.UpdateConfig(func(cfg *model.Config) { *cfg.RateLimitSettings.Enable = false })
 	prevListenAddress := *th.App.Config().ServiceSettings.ListenAddress
@@ -187,16 +184,6 @@ func setupTestHelper(dbStore store.Store, sqlStore *sqlstore.SqlStore, sqlSettin
 	return th
 }
 
-func getLicense(enterprise bool, cfg *model.Config) *model.License {
-	if *cfg.ConnectedWorkspacesSettings.EnableRemoteClusterService || *cfg.ConnectedWorkspacesSettings.EnableSharedChannels {
-		return model.NewTestLicenseSKU(model.LicenseShortSkuProfessional)
-	}
-	if enterprise {
-		return model.NewTestLicense()
-	}
-	return nil
-}
-
 func setupStores(tb testing.TB) (store.Store, *sqlstore.SqlStore, *model.SqlSettings, *searchengine.Broker) {
 	var dbStore store.Store
 	var sqlStore *sqlstore.SqlStore
@@ -227,7 +214,7 @@ func Setup(tb testing.TB, options ...Option) *TestHelper {
 
 	dbStore, sqlStore, dbSettings, searchEngine := setupStores(tb)
 
-	return setupTestHelper(dbStore, sqlStore, dbSettings, searchEngine, false, true, nil, options, tb)
+	return setupTestHelper(dbStore, sqlStore, dbSettings, searchEngine, true, nil, options, tb)
 }
 
 func SetupEnterprise(tb testing.TB, options ...Option) *TestHelper {
@@ -237,7 +224,7 @@ func SetupEnterprise(tb testing.TB, options ...Option) *TestHelper {
 
 	dbStore, sqlStore, dbSettings, searchEngine := setupStores(tb)
 
-	return setupTestHelper(dbStore, sqlStore, dbSettings, searchEngine, true, true, nil, options, tb)
+	return setupTestHelper(dbStore, sqlStore, dbSettings, searchEngine, true, nil, options, tb)
 }
 
 func SetupConfig(tb testing.TB, updateConfig func(cfg *model.Config)) *TestHelper {
@@ -247,7 +234,7 @@ func SetupConfig(tb testing.TB, updateConfig func(cfg *model.Config)) *TestHelpe
 
 	dbStore, sqlStore, dbSettings, searchEngine := setupStores(tb)
 
-	return setupTestHelper(dbStore, sqlStore, dbSettings, searchEngine, false, true, updateConfig, nil, tb)
+	return setupTestHelper(dbStore, sqlStore, dbSettings, searchEngine, true, updateConfig, nil, tb)
 }
 
 func SetupWithoutPreloadMigrations(tb testing.TB) *TestHelper {
@@ -258,7 +245,7 @@ func SetupWithoutPreloadMigrations(tb testing.TB) *TestHelper {
 	dbStore.DropAllTables()
 	dbStore.MarkSystemRanUnitTests()
 
-	return setupTestHelper(dbStore, mainHelper.GetSQLStore(), mainHelper.GetSQLSettings(), mainHelper.GetSearchEngine(), false, true, nil, nil, tb)
+	return setupTestHelper(dbStore, mainHelper.GetSQLStore(), mainHelper.GetSQLSettings(), mainHelper.GetSearchEngine(), true, nil, nil, tb)
 }
 
 func useCustomPushNotificationServer(cfg *model.Config) {
@@ -280,7 +267,7 @@ func SetupConfigWithStoreMock(tb testing.TB, updateConfig func(*model.Config)) *
 			updateConfig(cfg)
 		}
 	}
-	th := setupTestHelper(mockStore, mainHelper.GetSQLStore(), mainHelper.GetSQLSettings(), mainHelper.GetSearchEngine(), false, false, setupConfig, nil, tb)
+	th := setupTestHelper(mockStore, mainHelper.GetSQLStore(), mainHelper.GetSQLSettings(), mainHelper.GetSearchEngine(), false, setupConfig, nil, tb)
 	statusMock := mocks.StatusStore{}
 	statusMock.On("UpdateExpiredDNDStatuses").Return([]*model.Status{}, nil)
 	statusMock.On("Get", "user1").Return(&model.Status{UserId: "user1", Status: model.StatusOnline}, nil)
@@ -301,7 +288,7 @@ func SetupConfigWithStoreMock(tb testing.TB, updateConfig func(*model.Config)) *
 
 func SetupEnterpriseWithStoreMock(tb testing.TB) *TestHelper {
 	mockStore := testlib.GetMockStoreForSetupFunctions()
-	th := setupTestHelper(mockStore, mainHelper.GetSQLStore(), mainHelper.GetSQLSettings(), mainHelper.GetSearchEngine(), true, false, useCustomPushNotificationServer, nil, tb)
+	th := setupTestHelper(mockStore, mainHelper.GetSQLStore(), mainHelper.GetSQLSettings(), mainHelper.GetSearchEngine(), false, useCustomPushNotificationServer, nil, tb)
 	statusMock := mocks.StatusStore{}
 	statusMock.On("UpdateExpiredDNDStatuses").Return([]*model.Status{}, nil)
 	statusMock.On("Get", "user1").Return(&model.Status{UserId: "user1", Status: model.StatusOnline}, nil)
@@ -321,7 +308,7 @@ func SetupWithClusterMock(tb testing.TB, cluster einterfaces.ClusterInterface) *
 
 	dbStore, sqlStore, dbSettings, searchEngine := setupStores(tb)
 
-	return setupTestHelper(dbStore, sqlStore, dbSettings, searchEngine, true, true, nil, []Option{SetCluster(cluster)}, tb)
+	return setupTestHelper(dbStore, sqlStore, dbSettings, searchEngine, true, nil, []Option{SetCluster(cluster)}, tb)
 }
 
 func (th *TestHelper) InitBasic(tb testing.TB) *TestHelper {

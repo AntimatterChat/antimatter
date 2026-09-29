@@ -39,7 +39,7 @@ type TestHelper struct {
 	tempWorkspace     string
 }
 
-func setupTestHelper(dbStore store.Store, enterprise bool, includeCacheLayer bool, tb testing.TB, configSet func(*model.Config)) *TestHelper {
+func setupTestHelper(dbStore store.Store, includeCacheLayer bool, tb testing.TB, configSet func(*model.Config)) *TestHelper {
 	tempWorkspace, err := os.MkdirTemp("", "apptest")
 	require.NoError(tb, err)
 
@@ -98,22 +98,6 @@ func setupTestHelper(dbStore store.Store, enterprise bool, includeCacheLayer boo
 		tempWorkspace:     tempWorkspace,
 	}
 
-	if enterprise {
-		stopErr := th.App.Srv().Jobs.StopWorkers()
-		require.NoError(tb, stopErr)
-		stopErr = th.App.Srv().Jobs.StopSchedulers()
-		require.NoError(tb, stopErr)
-
-		th.App.Srv().SetLicense(model.NewTestLicense())
-
-		startErr := th.App.Srv().Jobs.StartWorkers()
-		require.NoError(tb, startErr)
-		startErr = th.App.Srv().Jobs.StartSchedulers()
-		require.NoError(tb, startErr)
-	} else {
-		th.App.Srv().SetLicense(getLicense(false, memoryConfig))
-	}
-
 	th.App.UpdateConfig(func(cfg *model.Config) { *cfg.TeamSettings.MaxUsersPerTeam = 50 })
 	th.App.UpdateConfig(func(cfg *model.Config) { *cfg.RateLimitSettings.Enable = false })
 	prevListenAddress := *th.App.Config().ServiceSettings.ListenAddress
@@ -162,16 +146,6 @@ func (th *TestHelper) ShutdownApp() {
 	}
 }
 
-func getLicense(enterprise bool, cfg *model.Config) *model.License {
-	if *cfg.ConnectedWorkspacesSettings.EnableRemoteClusterService || *cfg.ConnectedWorkspacesSettings.EnableSharedChannels {
-		return model.NewTestLicenseSKU(model.LicenseShortSkuProfessional)
-	}
-	if enterprise {
-		return model.NewTestLicense()
-	}
-	return nil
-}
-
 func setup(tb testing.TB) *TestHelper {
 	if testing.Short() {
 		tb.SkipNow()
@@ -180,7 +154,7 @@ func setup(tb testing.TB) *TestHelper {
 	dbStore.DropAllTables()
 	dbStore.MarkSystemRanUnitTests()
 
-	return setupTestHelper(dbStore, false, true, tb, nil)
+	return setupTestHelper(dbStore, true, tb, nil)
 }
 
 func setupConfig(tb testing.TB, updateConfig func(cfg *model.Config)) *TestHelper {
@@ -191,7 +165,7 @@ func setupConfig(tb testing.TB, updateConfig func(cfg *model.Config)) *TestHelpe
 	dbStore.DropAllTables()
 	dbStore.MarkSystemRanUnitTests()
 
-	return setupTestHelper(dbStore, false, true, tb, updateConfig)
+	return setupTestHelper(dbStore, true, tb, updateConfig)
 }
 
 func (th *TestHelper) initBasic(tb testing.TB) *TestHelper {

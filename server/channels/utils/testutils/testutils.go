@@ -14,7 +14,6 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/mattermost/mattermost/server/v8/channels/utils"
 	"github.com/stretchr/testify/assert"
 
 	"github.com/mattermost/mattermost/server/v8/channels/utils/fileutils"
@@ -86,8 +85,4 @@ func GetInterface(port int) string {
 		return ""
 	}
 	return string(out)
-}
-
-func ResetLicenseValidator() {
-	utils.LicenseValidator = &utils.LicenseValidatorImpl{}
 }

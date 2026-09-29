@@ -42,7 +42,6 @@ func (s *MmctlE2ETestSuite) cleanCPAValuesForUser(userID string) {
 
 func (s *MmctlE2ETestSuite) TestCPAValueList() {
 	s.SetupEnterpriseTestHelper().InitBasic(s.T())
-	s.th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterprise))
 
 	s.Run("List CPA values with no values", func() {
 		c := s.th.SystemAdminClient
@@ -112,7 +111,6 @@ func (s *MmctlE2ETestSuite) TestCPAValueList() {
 
 func (s *MmctlE2ETestSuite) TestCPAValueSet() {
 	s.SetupEnterpriseTestHelper().InitBasic(s.T())
-	s.th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterprise))
 
 	s.Run("Set value for text type field", func() {
 		c := s.th.SystemAdminClient

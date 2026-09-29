@@ -73,8 +73,7 @@ func TestSubmitMetrics(t *testing.T) {
 
 		th := SetupEnterpriseWithServerOptions(t, []app.Option{app.StartMetrics})
 
-		// enable metrics and add the license
-		th.App.Srv().SetLicense(model.NewTestLicense())
+		// enable metrics
 		th.App.UpdateConfig(func(cfg *model.Config) { *cfg.MetricsSettings.Enable = true })
 		th.App.UpdateConfig(func(cfg *model.Config) { *cfg.MetricsSettings.ListenAddress = ":0" })
 
@@ -105,8 +104,7 @@ func TestSubmitMetrics(t *testing.T) {
 
 		th := SetupEnterpriseWithServerOptions(t, []app.Option{app.StartMetrics})
 
-		// enable metrics and add the license
-		th.App.Srv().SetLicense(model.NewTestLicense())
+		// enable metrics
 		th.App.UpdateConfig(func(cfg *model.Config) { *cfg.MetricsSettings.Enable = true })
 		th.App.UpdateConfig(func(cfg *model.Config) { *cfg.MetricsSettings.ListenAddress = ":0" })
 
@@ -137,8 +135,7 @@ func TestSubmitMetrics(t *testing.T) {
 
 		th := SetupEnterpriseWithServerOptions(t, []app.Option{app.StartMetrics})
 
-		// enable metrics and add the license
-		th.App.Srv().SetLicense(model.NewTestLicense())
+		// enable metrics
 		th.App.UpdateConfig(func(cfg *model.Config) { *cfg.MetricsSettings.Enable = true })
 		th.App.UpdateConfig(func(cfg *model.Config) { *cfg.MetricsSettings.EnableClientMetrics = false })
 		th.App.UpdateConfig(func(cfg *model.Config) { *cfg.MetricsSettings.ListenAddress = ":0" })
@@ -175,8 +172,7 @@ func TestSubmitMetrics(t *testing.T) {
 
 		th := SetupEnterpriseWithServerOptions(t, []app.Option{app.StartMetrics})
 
-		// enable metrics and add the license
-		th.App.Srv().SetLicense(model.NewTestLicense())
+		// enable metrics
 		th.App.UpdateConfig(func(cfg *model.Config) { *cfg.MetricsSettings.Enable = true })
 		th.App.UpdateConfig(func(cfg *model.Config) { *cfg.MetricsSettings.ListenAddress = ":0" })
 
@@ -209,8 +205,7 @@ func TestSubmitMetrics(t *testing.T) {
 
 		th := SetupEnterpriseWithServerOptions(t, []app.Option{app.StartMetrics})
 
-		// enable metrics and add the license
-		th.App.Srv().SetLicense(model.NewTestLicense())
+		// enable metrics
 		th.App.UpdateConfig(func(cfg *model.Config) { *cfg.MetricsSettings.Enable = true })
 		th.App.UpdateConfig(func(cfg *model.Config) { *cfg.MetricsSettings.ListenAddress = ":0" })
 		th.App.UpdateConfig(func(cfg *model.Config) { *cfg.ServiceSettings.MaximumURLLength = 1 })

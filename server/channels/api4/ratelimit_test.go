@@ -15,7 +15,6 @@ import (
 
 	"github.com/mattermost/mattermost/server/public/model"
 	"github.com/mattermost/mattermost/server/v8/channels/app"
-	storemocks "github.com/mattermost/mattermost/server/v8/channels/store/storetest/mocks"
 )
 
 func TestRateLimitingMiddleware(t *testing.T) {
@@ -31,9 +30,6 @@ func TestRateLimitingMiddleware(t *testing.T) {
 		*cfg.RateLimitSettings.VaryByUser = false
 		cfg.RateLimitSettings.VaryByHeader = ""
 	})
-	licenseStore := storemocks.LicenseStore{}
-	licenseStore.On("Get", "").Return(&model.LicenseRecord{}, nil)
-	th.App.Srv().Store().(*storemocks.Store).On("License").Return(&licenseStore)
 
 	port := th.App.Srv().ListenAddr.Port
 	url := fmt.Sprintf("http://localhost:%v/api/v4/system/ping", port)
@@ -88,9 +84,6 @@ func TestRateLimitingVaryByHeader(t *testing.T) {
 		*cfg.RateLimitSettings.VaryByUser = false
 		cfg.RateLimitSettings.VaryByHeader = "X-Custom-Key"
 	})
-	licenseStore := storemocks.LicenseStore{}
-	licenseStore.On("Get", "").Return(&model.LicenseRecord{}, nil)
-	th.App.Srv().Store().(*storemocks.Store).On("License").Return(&licenseStore)
 
 	port := th.App.Srv().ListenAddr.Port
 	url := fmt.Sprintf("http://localhost:%v/api/v4/system/ping", port)
