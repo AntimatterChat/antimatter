@@ -9841,11 +9841,6 @@
     "description": "API error (400) shown to a system admin saving an access rule that references channel (resource) attributes on a server where that capability is turned off."
   },
   {
-    "id": "app.pap.save_policy.rule_name_unique.app_error",
-    "translation": "Permission rule names must be unique within the policy.",
-    "description": "Validation error when an admin saves an access control policy containing two permission rules with the same name."
-  },
-  {
     "id": "app.pap.save_policy.self_exclusion",
     "translation": "You do not satisfy one or more conditions in this policy.",
     "description": "API error when saving an access control policy would lock the saving admin out because they do not satisfy the policy's conditions."
@@ -9879,11 +9874,6 @@
     "id": "app.pap.simulate.feature_disabled",
     "translation": "The permission policies feature is currently disabled.",
     "description": "Error returned when an admin runs the access control policy simulator but the permission policies feature is turned off."
-  },
-  {
-    "id": "app.pap.simulate.invalid_policy",
-    "translation": "The policy is not valid.",
-    "description": "Validation error in the access control policy simulator; the submitted policy failed validation."
   },
   {
     "id": "app.pap.simulate.missing_actions",
@@ -9949,11 +9939,6 @@
     "id": "app.plugin.addon_not_supported.app_error",
     "translation": "This plugin requires the commercial Mattermost {{.AddOn}} add-on, which is not available on this server.",
     "description": "Error shown to admins when enabling or installing a plugin that declares it needs a separately licensed commercial Mattermost add-on, which this server cannot provide. {{.AddOn}} is the add-on's name; \"Mattermost\" refers to the vendor of the add-on and must stay as-is."
-  },
-  {
-    "id": "app.pdp.access_evaluation.permission_policy.app_error",
-    "translation": "Failed to evaluate permission policy.",
-    "description": "Error when the server fails to evaluate a permission policy while checking a user's access."
   },
   {
     "id": "app.plugin.cluster.save_config.app_error",
@@ -12212,11 +12197,6 @@
     "description": "Internal error when counting a user's unread messages (for notification badges) fails."
   },
   {
-    "id": "app.user.get_users_batch_for_indexing.get_users.app_error",
-    "translation": "Unable to get the users batch for indexing.",
-    "description": "Error status for the search indexing job when a batch of users cannot be read from the database; visible to admins in the jobs table."
-  },
-  {
     "id": "app.user.missing_account.const",
     "translation": "Unable to find the user.",
     "description": "Generic API error returned when the requested user account does not exist."
@@ -12707,11 +12687,6 @@
     "description": "API error when writing the custom brand image to file storage fails; admin-facing."
   },
   {
-    "id": "ent.access_control.job_data_conversion.app_error",
-    "translation": "Failed to extract data from previous job.",
-    "description": "Background job error (access control membership sync) shown in the admin jobs table when data carried over from a previous job cannot be parsed."
-  },
-  {
     "id": "ent.access_control.sync_job.app_error",
     "translation": "Failed to run access control sync job.",
     "description": "Error status for the background job that synchronizes channel/team membership with access control policies; visible to system admins."
@@ -12727,29 +12702,9 @@
     "description": "Error output of the CLI/mmctl authentication-migration command when SAML-authenticated users cannot be fetched; SAML is the single sign-on protocol name."
   },
   {
-    "id": "ent.api.post.send_notifications_and_forget.push_image_only",
-    "translation": " attached a file.",
-    "description": "Mobile push notification body when a message contains only an attachment; appended directly after the sender's name, so the leading space is intentional."
-  },
-  {
-    "id": "ent.autotranslation.add_task.missing_object_id",
-    "translation": "Translation task must include an object ID.",
-    "description": "Internal validation error when queueing a translation task without the ID of the object (e.g. post) to translate."
-  },
-  {
     "id": "ent.autotranslation.add_task.missing_object_type",
     "translation": "Translation task must include an object type.",
     "description": "Internal validation error when queueing a translation task without the type of object (e.g. post) to translate."
-  },
-  {
-    "id": "ent.autotranslation.add_task.nil_task",
-    "translation": "Translation task cannot be null.",
-    "description": "Internal validation error when a null translation task is queued; developer-leaning register."
-  },
-  {
-    "id": "ent.autotranslation.add_task.worker_stopped",
-    "translation": "Translation task cannot be added because the worker has been stopped.",
-    "description": "Error when a translation task is queued after the background translation worker has shut down."
   },
   {
     "id": "ent.autotranslation.create_translation_failed",
@@ -12772,11 +12727,6 @@
     "description": "Error from the automatic message translation feature when the external translation provider fails to detect a text's language."
   },
   {
-    "id": "ent.autotranslation.extract_content.mask_error",
-    "translation": "Failed to mask content for translation.",
-    "description": "Error when the automatic translation feature fails to mask (replace with placeholder tokens) mentions, links, and code before sending text to the translation provider."
-  },
-  {
     "id": "ent.autotranslation.extract_post.nil_post",
     "translation": "Post object cannot be null.",
     "description": "Internal validation error in automatic message translation when the post object to translate is missing (null)."
@@ -12787,24 +12737,9 @@
     "description": "Error shown to end users trying to use automatic message translation when it is disabled or no translation provider is configured on the server."
   },
   {
-    "id": "ent.autotranslation.invalid_input",
-    "translation": "Invalid language code provided.",
-    "description": "Validation error in automatic message translation when a language code parameter is not valid."
-  },
-  {
-    "id": "ent.autotranslation.mask_verification_failed",
-    "translation": "Failed to update translation with new mask values.",
-    "description": "Error when the automatic translation feature cannot update a stored translation with regenerated mask placeholder values."
-  },
-  {
     "id": "ent.autotranslation.no_translatable_content",
     "translation": "Content contains no translatable text.",
     "description": "Error from the automatic message translation feature when a post has no text that can be translated (e.g. only attachments)."
-  },
-  {
-    "id": "ent.autotranslation.provider_not_available",
-    "translation": "Translation provider is not available.",
-    "description": "Error when the configured machine-translation provider service cannot be reached; 'provider' is the external translation service."
   },
   {
     "id": "ent.autotranslation.provider_not_initialized",
@@ -12815,16 +12750,6 @@
     "id": "ent.autotranslation.store_error",
     "translation": "Unable to process auto-translation request.",
     "description": "Generic database error while processing an automatic message translation request."
-  },
-  {
-    "id": "ent.autotranslation.unmask.missing_mask",
-    "translation": "Translation contains unrecognized tokens.",
-    "description": "Error when the translated text returned by the provider contains placeholder tokens the server did not create; 'tokens' are the masking placeholders."
-  },
-  {
-    "id": "ent.autotranslation.unmask.orphan_token",
-    "translation": "Translation contains invalid tokens.",
-    "description": "Error when restoring masked placeholders in a translated message fails because a token is corrupted or unmatched."
   },
   {
     "id": "ent.autotranslation.validate_content.invalid_json",
@@ -12855,11 +12780,6 @@
     "id": "ent.autotranslation.validate_id.invalid",
     "translation": "Invalid ID format.",
     "description": "Validation error in automatic message translation when an object ID parameter is malformed."
-  },
-  {
-    "id": "ent.cluster.config_changed.info",
-    "translation": "Cluster configuration has changed for id={{ .id }}. The cluster may become unstable and a restart is required. To ensure the cluster is configured correctly you should perform a rolling restart immediately.",
-    "description": "Warning logged/surfaced to system admins of a high-availability cluster; {{ .id }} is the ID of the cluster node whose configuration diverged."
   },
   {
     "id": "ent.cluster.json_encode.error",
@@ -12962,16 +12882,6 @@
     "description": "Admin-facing error when the connection client for the search backend cannot be created; {{.Backend}} is 'Elasticsearch' or 'OpenSearch'."
   },
   {
-    "id": "ent.elasticsearch.create_processor.bulk_processor_create_failed",
-    "translation": "Failed to create Elasticsearch bulk processor",
-    "description": "Admin-facing error when starting Elasticsearch integration; 'bulk processor' is a technical component that batches index writes."
-  },
-  {
-    "id": "ent.elasticsearch.create_processor.sync_bulk_processor_create_failed",
-    "translation": "Failed to create Elasticsearch sync bulk processor",
-    "description": "Admin-facing error when starting Elasticsearch integration; the 'sync bulk processor' is a technical component for synchronous batched writes."
-  },
-  {
     "id": "ent.elasticsearch.create_template_channels_if_not_exists.template_create_failed",
     "translation": "Failed to create {{.Backend}} template for channels",
     "description": "Admin-facing error while setting up search; {{.Backend}} is 'Elasticsearch' or 'OpenSearch'; 'template' is an index template for the channels index."
@@ -13047,19 +12957,9 @@
     "description": "Error when removing a deleted user's posts (messages) from the search index fails."
   },
   {
-    "id": "ent.elasticsearch.generic.disabled",
-    "translation": "{{.Backend}} search is not enabled on this server",
-    "description": "Error returned when a search-backend operation is attempted while the feature is turned off; {{.Backend}} is 'Elasticsearch' or 'OpenSearch'."
-  },
-  {
     "id": "ent.elasticsearch.getAllChannelMembers.error",
     "translation": "Failed to get all channel members",
     "description": "Error status for the search indexing job when channel members cannot be read from the database while indexing a channel."
-  },
-  {
-    "id": "ent.elasticsearch.getAllTeamMembers.error",
-    "translation": "Failed to get all team members",
-    "description": "Error status for the search indexing job when team members cannot be read from the database while indexing a channel."
   },
   {
     "id": "ent.elasticsearch.healthcheck.not_started.app_error",
@@ -13102,11 +13002,6 @@
     "description": "Warning status on a completed search indexing job; {{.NumFailed}} is the number of documents the Elasticsearch/OpenSearch backend rejected."
   },
   {
-    "id": "ent.elasticsearch.indexer.do_job.create_bulk_processor.error",
-    "translation": "Indexing worker failed to initialise the bulk processor",
-    "description": "Error status when the search indexing job cannot initialize its bulk-write component; 'bulk processor' is a technical component name."
-  },
-  {
     "id": "ent.elasticsearch.indexer.do_job.get_oldest_entity.error",
     "translation": "The oldest entity (user, channel or post), could not be retrieved from the database",
     "description": "Error status when the search indexing job cannot determine the oldest record to index; the parenthetical lists the entity kinds."
@@ -13120,11 +13015,6 @@
     "id": "ent.elasticsearch.indexer.do_job.parse_start_time.error",
     "translation": "{{.Backend}} indexing worker failed to parse the start time",
     "description": "Error status for the search indexing job; {{.Backend}} is 'Elasticsearch' or 'OpenSearch'; the start time is a job parameter bounding what is indexed."
-  },
-  {
-    "id": "ent.elasticsearch.indexer.index_batch.nothing_left_to_index.error",
-    "translation": "Trying to index a new batch when all the entities are completed",
-    "description": "Internal error status for the search indexing job when it is asked to index another batch although every entity type has finished."
   },
   {
     "id": "ent.elasticsearch.not_started.error",
@@ -13167,11 +13057,6 @@
     "description": "Error returned to the user when a channel search query against the search backend fails."
   },
   {
-    "id": "ent.elasticsearch.search_channels.unmarshall_channel_failed",
-    "translation": "Failed to decode search results",
-    "description": "Error when the channel search results returned by the search backend cannot be decoded."
-  },
-  {
     "id": "ent.elasticsearch.search_files.disabled",
     "translation": "{{.Backend}} files searching is disabled on this server",
     "description": "Error returned when file search is attempted while it is disabled; {{.Backend}} is 'Elasticsearch' or 'OpenSearch'."
@@ -13182,19 +13067,9 @@
     "description": "Error returned to the user when a file search query against the search backend fails."
   },
   {
-    "id": "ent.elasticsearch.search_files.unmarshall_file_failed",
-    "translation": "Failed to decode search results",
-    "description": "Error when the file search results returned by the search backend cannot be decoded."
-  },
-  {
     "id": "ent.elasticsearch.search_posts.disabled",
     "translation": "{{.Backend}} searching is disabled on this server",
     "description": "Error returned when message search is attempted while search is disabled; {{.Backend}} is 'Elasticsearch' or 'OpenSearch'."
-  },
-  {
-    "id": "ent.elasticsearch.search_posts.parse_matches_failed",
-    "translation": "Failed to parse search result matches",
-    "description": "Error when the highlighted match data in message search results from the search backend cannot be parsed."
   },
   {
     "id": "ent.elasticsearch.search_posts.search_failed",
@@ -13202,19 +13077,9 @@
     "description": "Error returned to the user when a message search query against the search backend fails."
   },
   {
-    "id": "ent.elasticsearch.search_posts.unmarshall_post_failed",
-    "translation": "Failed to decode search results",
-    "description": "Error when the message search results returned by the search backend cannot be decoded."
-  },
-  {
     "id": "ent.elasticsearch.search_users.search_failed",
     "translation": "Search failed to complete",
     "description": "Error returned when a user search query against the search backend fails."
-  },
-  {
-    "id": "ent.elasticsearch.search_users.unmarshall_user_failed",
-    "translation": "Failed to decode search results",
-    "description": "Error when the user search results returned by the search backend cannot be decoded."
   },
   {
     "id": "ent.elasticsearch.start.get_server_version.app_error",
@@ -13247,19 +13112,9 @@
     "description": "Error status for a maintenance job; {{.Backend}} is 'Elasticsearch' or 'OpenSearch'; it failed to update the channel type field on indexed posts."
   },
   {
-    "id": "ent.id_loaded.license_disable.app_error",
-    "translation": "Your license does not support ID Loaded Push Notifications.",
-    "description": "Error when ID-only ('ID Loaded') push notifications are configured without a supporting license; 'ID Loaded Push Notifications' is a feature name; admin audience."
-  },
-  {
     "id": "ent.intune.login.account_not_found.app_error",
     "translation": "Your account isn't fully set up yet. Please sign in to Antimatter via the web or desktop app first.",
     "description": "Error shown on the mobile app sign-in flow via Microsoft Intune when no matching Antimatter account exists yet; end-user audience."
-  },
-  {
-    "id": "ent.intune.login.extract_auth_data.app_error",
-    "translation": "Authentication failed. Please try again or contact your system administrator.",
-    "description": "Error shown to end users when Microsoft Intune sign-in fails while reading identity data from the token."
   },
   {
     "id": "ent.intune.login.not_configured.app_error",
@@ -13292,11 +13147,6 @@
     "description": "Error shown to end users when their Microsoft Intune sign-in token has expired; invites them to sign in again."
   },
   {
-    "id": "ent.jobs.start_synchronize_job.timeout",
-    "translation": "Reached AD/LDAP synchronization job timeout.",
-    "description": "Error when a manually triggered AD/LDAP synchronization job does not finish within the allowed time; admin audience."
-  },
-  {
     "id": "ent.ldap.app_error",
     "translation": "ldap interface was nil.",
     "description": "Internal server error logged/returned when the enterprise LDAP module is not loaded; mostly seen by admins/developers."
@@ -13305,11 +13155,6 @@
     "id": "ent.ldap.connection.test_failed",
     "translation": "LDAP connection test failed. Server: {{.Server}}:{{.Port}}, ConnectionSecurity: {{.ConnectionType}}, PrivateKeyFilename: {{.PrivateKeyFilename}}, PublicCertificateFilename: {{.PublicCertFilename}}, BindUsername: {{.BindUsername}}. Error: {{.Error}}",
     "description": "Result message of the AD/LDAP connection test in the System Console; placeholders hold the configured server host, port, security type, certificate file names, bind username, and the underlying error."
-  },
-  {
-    "id": "ent.ldap.cpa_field_mapping.list_error",
-    "translation": "Failed to retrieve CPA fields",
-    "description": "Error when fetching the Custom Profile Attribute (CPA) fields mapped to AD/LDAP attributes fails; admin/log audience."
   },
   {
     "id": "ent.ldap.create_fail",
@@ -13345,11 +13190,6 @@
     "id": "ent.ldap.do_login.key.app_error",
     "translation": "Error loading LDAP TLS Key file.",
     "description": "Error when the TLS private key file configured for AD/LDAP connections cannot be loaded; admin audience."
-  },
-  {
-    "id": "ent.ldap.do_login.licence_disable.app_error",
-    "translation": "AD/LDAP functionality disabled by current license. Please contact your system administrator about upgrading your enterprise license.",
-    "description": "Error shown when AD/LDAP sign-in is attempted but the server license does not include AD/LDAP authentication."
   },
   {
     "id": "ent.ldap.do_login.matched_to_many_users.app_error",
@@ -13422,19 +13262,9 @@
     "description": "Lowercase error detail from the AD/LDAP sync job; 'syncables' are the teams and channels linked to LDAP groups for automatic membership."
   },
   {
-    "id": "ent.ldap.syncronize.search_failure.app_error",
-    "translation": "Failed to search users in AD/LDAP. Test if the Antimatter server can connect to your AD/LDAP server and try again.",
-    "description": "Error status of the AD/LDAP synchronization job when the directory search fails; advises admins to test connectivity."
-  },
-  {
     "id": "ent.ldap.syncronize.search_failure_size_exceeded.app_error",
     "translation": "Size Limit Exceeded. Try increasing your Maximum page size setting. Check out https://docs.mattermost.com/onboard/ad-ldap.html#i-see-the-log-error-ldap-result-code-4-size-limit-exceeded for more details.",
     "description": "AD/LDAP sync job error for admins; 'Maximum page size' is a System Console setting name and the URL is a documentation link that must stay intact."
-  },
-  {
-    "id": "ent.ldap.update_cpa.empty_attribute",
-    "translation": "Empty LDAP attribute value",
-    "description": "Error detail during AD/LDAP sync when a mapped custom profile attribute has an empty value in the directory; admin/log audience."
   },
   {
     "id": "ent.ldap.validate_admin_filter.app_error",
@@ -13492,16 +13322,6 @@
     "description": "API error shown to admins when the LDAP ID-attribute migration operation fails."
   },
   {
-    "id": "ent.message_export.actiance_export.calculate_channel_exports.activity_message",
-    "translation": "Calculating channel activity: {{.NumCompleted}}/{{.NumChannels}} channels completed.",
-    "description": "Progress status of the compliance message export job shown to admins; {{.NumCompleted}} channels processed out of {{.NumChannels}} total."
-  },
-  {
-    "id": "ent.message_export.actiance_export.calculate_channel_exports.channel_message",
-    "translation": "Exporting channel information for {{.NumChannels}} channels.",
-    "description": "Progress status of the compliance message export job shown to admins; {{.NumChannels}} is the number of channels being exported."
-  },
-  {
     "id": "ent.message_export.calculate_channel_exports.app_error",
     "translation": "Failed to calculate channel export data.",
     "description": "Error status of the compliance message export job when computing per-channel export data fails; admin audience."
@@ -13522,39 +13342,9 @@
     "description": "Error from the migrate-to-LDAP admin command when two users share the same value in the chosen LDAP match field; audience is system admins."
   },
   {
-    "id": "ent.migration.migratetoldap.user_not_found",
-    "translation": "Unable to find user on AD/LDAP server: ",
-    "description": "Error from the migrate-to-LDAP admin command; the user's identifier is appended directly after the trailing colon and space, so keep them."
-  },
-  {
-    "id": "ent.migration.migratetosaml.email_already_used_by_other_user",
-    "translation": "Email already used by another SAML user.",
-    "description": "Error from the migrate-to-SAML admin command when a mapped email is already claimed by a different SAML user."
-  },
-  {
-    "id": "ent.migration.migratetosaml.user_not_found_in_users_mapping_file",
-    "translation": "User not found in the users file.",
-    "description": "Error from the migrate-to-SAML admin command; the 'users file' is the JSON mapping file the admin supplies."
-  },
-  {
-    "id": "ent.migration.migratetosaml.username_already_used_by_other_user",
-    "translation": "Username already used by another Antimatter user.",
-    "description": "Error from the migrate-to-SAML admin command when a mapped username is already taken by another Antimatter account."
-  },
-  {
     "id": "ent.outgoing_oauth_connections.authenticate.app_error",
     "translation": "There was an error while authenticating the outgoing oauth connection: {{ .Error }}",
     "description": "Admin API error when validating an outgoing OAuth connection's credentials fails; {{ .Error }} holds the underlying error text."
-  },
-  {
-    "id": "ent.outgoing_oauth_connections.connection_matching_audience_exists.app_error",
-    "translation": "There is already an outgoing oauth connection for the provided audience.",
-    "description": "Admin API error; 'audience' is the target URL an outgoing OAuth connection applies to, and only one connection may exist per audience."
-  },
-  {
-    "id": "ent.outgoing_oauth_connections.connection_matching_audience_exists.not_found",
-    "translation": "There is no outgoing oauth connection for the provided audience.",
-    "description": "Admin API error when no outgoing OAuth connection is configured for the requested audience (target URL)."
   },
   {
     "id": "ent.outgoing_oauth_connections.delete_connection.app_error",
@@ -13582,19 +13372,9 @@
     "description": "Admin API error when looking up the outgoing OAuth connection for a target URL (audience) fails."
   },
   {
-    "id": "ent.outgoing_oauth_connections.get_connection_for_audience.not_found.app_error",
-    "translation": "The outgoing oauth connection for the provided audience was not found.",
-    "description": "Admin API error when no outgoing OAuth connection matches the given target URL (audience)."
-  },
-  {
     "id": "ent.outgoing_oauth_connections.get_connections.app_error",
     "translation": "There was an error retrieving the outgoing oauth connections.",
     "description": "Admin API error when listing all outgoing OAuth connections fails."
-  },
-  {
-    "id": "ent.outgoing_oauth_connections.license_disable.app_error",
-    "translation": "Your license does not support outgoing oauth connections.",
-    "description": "Error shown to admins using outgoing OAuth connections without a supporting license."
   },
   {
     "id": "ent.outgoing_oauth_connections.save_connection.app_error",
@@ -13617,74 +13397,9 @@
     "description": "Admin API error when updating an outgoing OAuth connection fails; {{ .Error }} holds the underlying error text."
   },
   {
-    "id": "ent.outgoing_oauth_connections.update_connection.audience_duplicated",
-    "translation": "There is already an outgoing oauth connection for the provided audience: {{ .Audience }}",
-    "description": "Admin API error on update; {{ .Audience }} is the target URL already claimed by another outgoing OAuth connection."
-  },
-  {
-    "id": "ent.outgoing_oauth_connections.update_connection.audience_invalid",
-    "translation": "The provided audience is invalid: {{ .Error }}",
-    "description": "Admin API validation error on update; the audience is the connection's target URL and {{ .Error }} holds the validation failure detail."
-  },
-  {
     "id": "ent.push_proxy.delete.app_error",
     "translation": "Failed to delete push proxy auth token.",
     "description": "Server error when deleting the stored authentication token for the push notification proxy fails; admin/log audience."
-  },
-  {
-    "id": "ent.push_proxy.generate.bad_status.app_error",
-    "translation": "Failed to get auth token from push proxy server.",
-    "description": "Server error when the push notification proxy responds with a failure status while issuing an authentication token; admin/log audience."
-  },
-  {
-    "id": "ent.push_proxy.generate.create_request.app_error",
-    "translation": "Failed to create HTTP request for push proxy auth.",
-    "description": "Server error when building the HTTP request to authenticate with the push notification proxy fails; admin/log audience."
-  },
-  {
-    "id": "ent.push_proxy.generate.empty_token.app_error",
-    "translation": "Push proxy returned empty auth token.",
-    "description": "Server error when the push notification proxy returns a blank authentication token; admin/log audience."
-  },
-  {
-    "id": "ent.push_proxy.generate.encrypt.app_error",
-    "translation": "Failed to encrypt payload for push proxy auth.",
-    "description": "Server error when encrypting the payload sent to the push notification proxy for authentication fails; admin/log audience."
-  },
-  {
-    "id": "ent.push_proxy.generate.http_request.app_error",
-    "translation": "Failed to send HTTP request to push proxy.",
-    "description": "Server error when the HTTP call to the push notification proxy fails; admin/log audience."
-  },
-  {
-    "id": "ent.push_proxy.generate.marshal.app_error",
-    "translation": "Failed to marshal payload for push proxy auth.",
-    "description": "Server error when serializing the authentication payload for the push notification proxy fails; 'marshal' means serialize to JSON."
-  },
-  {
-    "id": "ent.push_proxy.generate.marshal_request.app_error",
-    "translation": "Failed to marshal request body for push proxy auth.",
-    "description": "Server error when serializing the request body for push notification proxy authentication fails; admin/log audience."
-  },
-  {
-    "id": "ent.push_proxy.generate.no_key.app_error",
-    "translation": "No encryption key available for push proxy auth.",
-    "description": "Server error when no encryption key exists for authenticating with the push notification proxy; admin/log audience."
-  },
-  {
-    "id": "ent.push_proxy.generate.parse_response.app_error",
-    "translation": "Failed to parse response from push proxy auth endpoint.",
-    "description": "Server error when the response from the push notification proxy's authentication endpoint cannot be parsed; admin/log audience."
-  },
-  {
-    "id": "ent.push_proxy.generate.save_system.app_error",
-    "translation": "Failed to save auth token.",
-    "description": "Server error when persisting the push notification proxy authentication token to the database fails; admin/log audience."
-  },
-  {
-    "id": "ent.push_proxy.worker.interface_nil.app_error",
-    "translation": "Push proxy interface is nil.",
-    "description": "Internal error in the push proxy background worker when its interface is uninitialized (nil); developer/log audience."
   },
   {
     "id": "ent.saml.attribute.app_error",
@@ -13742,11 +13457,6 @@
     "description": "SAML login error shown to end users when the Identity Provider response cannot be parsed."
   },
   {
-    "id": "ent.saml.license_disable.app_error",
-    "translation": "Your license does not support SAML authentication.",
-    "description": "Error when SAML single sign-on is used without a license that includes it; admin audience."
-  },
-  {
     "id": "ent.saml.login.ldap_user_missing",
     "translation": "No user registered on AD/LDAP server that matches the SAML user.",
     "description": "SAML login error when the account cannot be linked because no AD/LDAP directory user matches the SAML identity."
@@ -13775,11 +13485,6 @@
     "id": "ent.saml.update_cpa.empty_attribute_statement",
     "translation": "SAML assertion attribute statement is invalid",
     "description": "Error detail when a SAML assertion lacks the attribute statement needed to update custom profile attributes; admin/log audience."
-  },
-  {
-    "id": "ent.user.complete_switch_with_oauth.blank_email.app_error",
-    "translation": "Unable to complete SAML login with an empty email address.",
-    "description": "Error when a user switches their sign-in method to SAML but the identity provides no email address."
   },
   {
     "id": "error",
