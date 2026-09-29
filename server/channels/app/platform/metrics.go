@@ -82,9 +82,7 @@ func (ps *PlatformService) resetMetrics() error {
 		return err
 	}
 
-	if ps.metricsIFace != nil {
-		ps.metricsIFace.Register()
-	}
+	ps.metricsIFace.Register()
 
 	return ps.metrics.startMetricsServer()
 }

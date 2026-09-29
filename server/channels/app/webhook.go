@@ -454,9 +454,7 @@ func (a *App) CreateWebhookPost(rctx request.CTX, userID string, channel *model.
 		return nil, err
 	}
 
-	if metrics := a.Metrics(); metrics != nil {
-		metrics.IncrementWebhookPost()
-	}
+	a.Metrics().IncrementWebhookPost()
 
 	// Compute effective display-identity values once, then pass them via
 	// CreatePostFlags. SanitizeProps strips override_* and webhook_display_name

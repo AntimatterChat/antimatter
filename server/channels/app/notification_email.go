@@ -274,9 +274,7 @@ func (a *App) sendNotificationEmail(rctx request.CTX, notification *PostNotifica
 		}
 	})
 
-	if a.Metrics() != nil {
-		a.Metrics().IncrementPostSentEmail()
-	}
+	a.Metrics().IncrementPostSentEmail()
 
 	return emailNotification, nil
 }

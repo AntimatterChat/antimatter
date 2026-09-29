@@ -28,7 +28,7 @@ const LatestVersionURL = "https://api.github.com/repos/mattermost/mattermost-ser
 func (s *Server) GetLogs(rctx request.CTX, page, perPage int) ([]string, *model.AppError) {
 	var lines []string
 
-	if s.platform.Cluster() != nil && *s.platform.Config().ClusterSettings.Enable {
+	if *s.platform.Config().ClusterSettings.Enable {
 		if info := s.platform.Cluster().GetMyClusterInfo(); info != nil {
 			lines = append(lines, "-----------------------------------------------------------------------------------------------------------")
 			lines = append(lines, "-----------------------------------------------------------------------------------------------------------")
@@ -47,7 +47,7 @@ func (s *Server) GetLogs(rctx request.CTX, page, perPage int) ([]string, *model.
 
 	lines = append(lines, melines...)
 
-	if s.platform.Cluster() != nil && *s.platform.Config().ClusterSettings.Enable {
+	if *s.platform.Config().ClusterSettings.Enable {
 		clines, err := s.platform.Cluster().GetLogs(rctx, page, perPage)
 		if err != nil {
 			return nil, err
@@ -64,7 +64,7 @@ func (s *Server) QueryLogs(rctx request.CTX, page, perPage int, logFilter *model
 
 	serverName := "default"
 
-	if s.platform.Cluster() != nil && *s.platform.Config().ClusterSettings.Enable {
+	if *s.platform.Config().ClusterSettings.Enable {
 		if info := s.platform.Cluster().GetMyClusterInfo(); info != nil {
 			serverName = info.Hostname
 		} else {
@@ -87,7 +87,7 @@ func (s *Server) QueryLogs(rctx request.CTX, page, perPage int, logFilter *model
 		return nil, appErr
 	}
 
-	if s.platform.Cluster() != nil && *s.Config().ClusterSettings.Enable {
+	if *s.Config().ClusterSettings.Enable {
 		clusterLogs, err := s.platform.Cluster().QueryLogs(rctx, page, perPage)
 		if err != nil {
 			return nil, err
@@ -132,9 +132,6 @@ func (a *App) GetLogsSkipSend(rctx request.CTX, page, perPage int, logFilter *mo
 }
 
 func (a *App) GetClusterStatus(rctx request.CTX) ([]*model.ClusterInfo, error) {
-	if a.Cluster() == nil {
-		return make([]*model.ClusterInfo, 0), nil
-	}
 	return a.Cluster().GetClusterInfos()
 }
 

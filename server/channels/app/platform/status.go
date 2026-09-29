@@ -24,18 +24,16 @@ func (ps *PlatformService) AddStatusCacheSkipClusterSend(status *model.Status) {
 func (ps *PlatformService) AddStatusCache(status *model.Status) {
 	ps.AddStatusCacheSkipClusterSend(status)
 
-	if ps.Cluster() != nil {
-		statusJSON, err := json.Marshal(status)
-		if err != nil {
-			ps.logger.Warn("Failed to encode status to JSON", mlog.Err(err))
-		}
-		msg := &model.ClusterMessage{
-			Event:    model.ClusterEventUpdateStatus,
-			SendType: model.ClusterSendBestEffort,
-			Data:     statusJSON,
-		}
-		ps.Cluster().SendClusterMessage(msg)
+	statusJSON, err := json.Marshal(status)
+	if err != nil {
+		ps.logger.Warn("Failed to encode status to JSON", mlog.Err(err))
 	}
+	msg := &model.ClusterMessage{
+		Event:    model.ClusterEventUpdateStatus,
+		SendType: model.ClusterSendBestEffort,
+		Data:     statusJSON,
+	}
+	ps.Cluster().SendClusterMessage(msg)
 }
 
 func (ps *PlatformService) GetAllStatuses() map[string]*model.Status {

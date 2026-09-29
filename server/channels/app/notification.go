@@ -1844,10 +1844,6 @@ func (a *App) CountNotificationReason(
 }
 
 func (a *App) notificationMetricsDisabled() bool {
-	if a.Metrics() == nil {
-		return true
-	}
-
 	if *a.Config().MetricsSettings.EnableNotificationMetrics {
 		return false
 	}

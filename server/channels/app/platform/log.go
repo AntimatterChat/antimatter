@@ -69,7 +69,7 @@ func (ps *PlatformService) Logger() *mlog.Logger {
 }
 
 func (ps *PlatformService) EnableLoggingMetrics() {
-	if ps.metrics == nil || ps.metricsIFace == nil {
+	if ps.metrics == nil {
 		return
 	}
 

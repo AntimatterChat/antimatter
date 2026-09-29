@@ -17,7 +17,6 @@ import (
 
 	"github.com/mattermost/mattermost/server/public/model"
 	"github.com/mattermost/mattermost/server/public/shared/mlog"
-	"github.com/mattermost/mattermost/server/v8/channels/app/platform"
 	"github.com/mattermost/mattermost/server/v8/channels/store"
 	"github.com/mattermost/mattermost/server/v8/einterfaces"
 )
@@ -82,17 +81,6 @@ var (
 	// Buckets for lengths/sizes of internal queues.
 	queueLengthBuckets = prometheus.ExponentialBuckets(1, 2, 14)
 )
-
-func init() {
-	platform.RegisterMetricsInterface(func(ps *platform.PlatformService, _, _ string) einterfaces.MetricsInterface {
-		return New(Options{
-			Logger:        ps.Log(),
-			HandleMetrics: ps.HandleMetrics,
-			Config:        ps.Config,
-			Store:         func() store.Store { return ps.Store },
-		})
-	})
-}
 
 // Options configures a MetricsInterfaceImpl. Every field is optional.
 type Options struct {

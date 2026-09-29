@@ -135,3 +135,11 @@ func SetCluster(cluster einterfaces.ClusterInterface) Option {
 		return nil
 	}
 }
+
+// SetMetrics replaces the metrics service, for tests.
+func SetMetrics(metrics einterfaces.MetricsInterface) Option {
+	return func(ps *PlatformService) error {
+		ps.metricsIFace = metrics
+		return nil
+	}
+}

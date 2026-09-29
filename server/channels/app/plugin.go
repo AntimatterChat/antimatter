@@ -823,12 +823,10 @@ func (ch *Channels) notifyPluginEnabled(manifest *model.Manifest) error {
 
 	var statuses model.PluginStatuses
 
-	if ch.srv.platform.Cluster() != nil {
-		var err *model.AppError
-		statuses, err = ch.srv.platform.Cluster().GetPluginStatuses()
-		if err != nil {
-			return err
-		}
+	var err *model.AppError
+	statuses, err = ch.srv.platform.Cluster().GetPluginStatuses()
+	if err != nil {
+		return err
 	}
 
 	localStatus, err := ch.GetPluginStatus(manifest.Id)

@@ -31,6 +31,8 @@ import (
 	"github.com/mattermost/mattermost/server/v8/config"
 	"github.com/mattermost/mattermost/server/v8/einterfaces"
 	"github.com/mattermost/mattermost/server/v8/platform/services/cache"
+	"github.com/mattermost/mattermost/server/v8/platform/services/cluster"
+	"github.com/mattermost/mattermost/server/v8/platform/services/metrics"
 	"github.com/mattermost/mattermost/server/v8/platform/services/searchengine"
 	"github.com/mattermost/mattermost/server/v8/platform/shared/filestore"
 )
@@ -253,8 +255,13 @@ func New(sc ServiceConfig, options ...Option) (*PlatformService, error) {
 	ps.initEnterprise()
 
 	// Step 5: Init Metrics
-	if metricsInterfaceFn != nil && ps.metricsIFace == nil { // if the metrics interface is set by options, do not override it
-		ps.metricsIFace = metricsInterfaceFn(ps, *ps.configStore.Get().SqlSettings.DriverName, *ps.configStore.Get().SqlSettings.DataSource)
+	if ps.metricsIFace == nil { // tests may provide their own
+		ps.metricsIFace = metrics.New(metrics.Options{
+			Logger:        ps.Log(),
+			HandleMetrics: ps.HandleMetrics,
+			Config:        ps.Config,
+			Store:         func() store.Store { return ps.Store },
+		})
 	}
 
 	ps.cacheProvider.SetMetrics(ps.metricsIFace)
@@ -479,8 +486,8 @@ func (ps *PlatformService) SetLogger(logger *mlog.Logger) {
 }
 
 func (ps *PlatformService) initEnterprise() {
-	if clusterInterface != nil && ps.clusterIFace == nil {
-		ps.clusterIFace = clusterInterface(ps)
+	if ps.clusterIFace == nil { // tests may provide their own
+		ps.clusterIFace = cluster.New(&clusterHost{ps: ps})
 	}
 
 	if elasticsearchInterface != nil {
@@ -518,9 +525,7 @@ func (ps *PlatformService) Shutdown() error {
 	// after StopInterNodeCommunication has already run, so the cluster
 	// interface's own shutdown accounting needs everything below to have
 	// already happened, which defer guarantees regardless of the early return.
-	if ps.clusterIFace != nil {
-		defer ps.clusterIFace.Shutdown()
-	}
+	defer ps.clusterIFace.Shutdown()
 
 	ps.HubStop()
 
@@ -601,11 +606,7 @@ func (ps *PlatformService) GetPluginStatuses() (model.PluginStatuses, *model.App
 
 	// Add our cluster ID
 	for _, status := range pluginStatuses {
-		if ps.Cluster() != nil {
-			status.ClusterId = ps.Cluster().GetClusterId()
-		} else {
-			status.ClusterId = ""
-		}
+		status.ClusterId = ps.Cluster().GetClusterId()
 	}
 
 	return pluginStatuses, nil
