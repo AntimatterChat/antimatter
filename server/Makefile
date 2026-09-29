@@ -1,6 +1,5 @@
 ROOT := $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 
-# Must be read before parse-time Enterprise detection so BUILD_ENTERPRISE_DIR applies.
 -include $(ROOT)config.override.mk
 
 ifeq ($(OS),Windows_NT)
@@ -57,43 +56,11 @@ MMCTL_LDFLAGS += -X "$(MMCTL_PKG).gitCommit=$(MMCTL_GIT_COMMIT)"
 MMCTL_LDFLAGS += -X "$(MMCTL_PKG).gitTreeState=$(MMCTL_GIT_TREE_STATE)"
 MMCTL_LDFLAGS += -X "$(MMCTL_PKG).commitDate=$(MMCTL_COMMIT_DATE)"
 
-# Enterprise
-BUILD_ENTERPRISE_DIR ?= ../../enterprise
-BUILD_ENTERPRISE ?= true
-BUILD_ENTERPRISE_READY = false
 BUILD_TYPE_NAME = team
-BUILD_HASH_ENTERPRISE = none
-ifneq ($(wildcard $(BUILD_ENTERPRISE_DIR)/.),)
-	MMCTL_TESTFLAGS += -ldflags '-X "$(MMCTL_PKG).EnableEnterpriseTests=true" -X "github.com/mattermost/mattermost/server/public/model.BuildEnterpriseReady=true"'
-	MMCTL_BUILD_TAGS += enterprise
-
-  ifeq ($(BUILD_ENTERPRISE),true)
-	BUILD_ENTERPRISE_READY = true
-	BUILD_TYPE_NAME = enterprise
-	BUILD_HASH_ENTERPRISE = $(shell cd $(BUILD_ENTERPRISE_DIR) && git rev-parse HEAD)
-	BUILD_TAGS += enterprise
-  else
-	BUILD_ENTERPRISE_READY = false
-	BUILD_TYPE_NAME = team
-  endif
-else
-	BUILD_ENTERPRISE_READY = false
-	BUILD_TYPE_NAME = team
-endif
 
 FIPS_ENABLED ?= false
 ifeq ($(FIPS_ENABLED),true)
 	BUILD_TYPE_NAME := $(BUILD_TYPE_NAME)-fips
-endif
-
-# Clean up the old means of importing enterprise source, if it exists
-ifneq ($(wildcard channels/imports/imports.go),)
-	IGNORE := $(shell rm -f channels/imports/imports.go)
-endif
-
-# Source available, already included with enterprise but also available during development.
-ifeq ($(BUILD_NUMBER),dev)
-	BUILD_TAGS += sourceavailable
 endif
 
 # Webapp
@@ -125,8 +92,6 @@ DELVE ?= dlv
 LDFLAGS += -X "github.com/mattermost/mattermost/server/public/model.BuildNumber=$(BUILD_NUMBER)"
 LDFLAGS += -X "github.com/mattermost/mattermost/server/public/model.BuildDate=$(BUILD_DATE)"
 LDFLAGS += -X "github.com/mattermost/mattermost/server/public/model.BuildHash=$(BUILD_HASH)"
-LDFLAGS += -X "github.com/mattermost/mattermost/server/public/model.BuildHashEnterprise=$(BUILD_HASH_ENTERPRISE)"
-LDFLAGS += -X "github.com/mattermost/mattermost/server/public/model.BuildEnterpriseReady=$(BUILD_ENTERPRISE_READY)"
 
 GO_MAJOR_VERSION = $(shell $(GO) version | cut -c 14- | cut -d' ' -f1 | cut -d'.' -f1)
 GO_MINOR_VERSION = $(shell $(GO) version | cut -c 14- | cut -d' ' -f1 | cut -d'.' -f2)
@@ -186,13 +151,7 @@ ifeq ($(FIPS_ENABLED),true)
 	PLUGIN_PACKAGES += mattermost-plugin-boards-v10.0.0%2B05efecf-fips
 endif
 
-EE_PACKAGES=$(shell $(GO) list $(BUILD_ENTERPRISE_DIR)/...)
-
-ifeq ($(BUILD_ENTERPRISE_READY),true)
-  ALL_PACKAGES=$(TE_PACKAGES) $(EE_PACKAGES)
-else
-  ALL_PACKAGES=$(TE_PACKAGES)
-endif
+ALL_PACKAGES=$(TE_PACKAGES)
 
 CONFIG_FILE_PATH ?= ./config/config.json
 
@@ -238,10 +197,8 @@ ifneq ($(DOCKER_SERVICES_OVERRIDE),true)
   ifeq (,$(findstring azurite,$(ENABLED_DOCKER_SERVICES)))
     TEMP_DOCKER_SERVICES:=$(TEMP_DOCKER_SERVICES) azurite
   endif
-  ifeq ($(BUILD_ENTERPRISE_READY),true)
-    ifeq (,$(findstring openldap,$(ENABLED_DOCKER_SERVICES)))
-      TEMP_DOCKER_SERVICES:=$(TEMP_DOCKER_SERVICES) openldap
-    endif
+  ifeq (,$(findstring openldap,$(ENABLED_DOCKER_SERVICES)))
+    TEMP_DOCKER_SERVICES:=$(TEMP_DOCKER_SERVICES) openldap
   endif
   ENABLED_DOCKER_SERVICES:=$(ENABLED_DOCKER_SERVICES) $(TEMP_DOCKER_SERVICES)
 endif
@@ -276,11 +233,9 @@ update-docker: setup-go-work stop-docker ## Updates the docker containers for lo
 
 .PHONY: run-haserver
 run-haserver:
-ifeq ($(BUILD_ENTERPRISE_READY),true)
 	@echo Starting mattermost in an HA topology '(3 node cluster)'
 
 	docker compose -f docker-compose.yaml $(DOCKER_COMPOSE_OVERRIDE) up --remove-orphans haproxy
-endif
 
 .PHONY: stop-haserver
 stop-haserver:
@@ -345,11 +300,7 @@ install-golangci-lint:
 
 .PHONY: golangci-lint
 golangci-lint: setup-go-work install-golangci-lint ## Run golangci-lint on codebase
-ifeq ($(BUILD_ENTERPRISE_READY),true)
-	$(GOBIN)/golangci-lint run ./... ./public/... $(BUILD_ENTERPRISE_DIR)/...
-else
 	$(GOBIN)/golangci-lint run ./... ./public/...
-endif
 
 .PHONY: i18n-extract
 i18n-extract: ## Extract strings for translation from the source code
@@ -399,7 +350,7 @@ filestore-mocks: setup-go-work install-mockery ## Creates mock files.
 
 .PHONY: ldap-mocks
 ldap-mocks: setup-go-work install-mockery ## Creates mock files for ldap.
-	$(GOBIN)/mockery --dir $(BUILD_ENTERPRISE_DIR)/ldap --all --inpackage --note 'Regenerate this file using `make ldap-mocks`.'
+	$(GOBIN)/mockery --dir libre/ldap --all --inpackage --note 'Regenerate this file using `make ldap-mocks`.'
 
 .PHONY: plugin-mocks
 plugin-mocks: setup-go-work install-mockery ## Creates mock files for plugins.
@@ -455,14 +406,7 @@ layers: store-layers pluginapi
 .PHONY: generated
 generated: mocks layers gen-serialized migrations-extract build-templates mmctl-docs modules-tidy default-roles-permissions ## Regenerate every committed generated asset checked by the check-generated CI job.
 
-.PHONY: check-prereqs-enterprise
-check-prereqs-enterprise: setup-go-work ## Checks prerequisite software status for enterprise.
-ifeq ($(BUILD_ENTERPRISE_READY),true)
-	./scripts/prereq-check-enterprise.sh
-endif
-
 .PHONY: setup-go-work
-setup-go-work: export BUILD_ENTERPRISE_READY := $(BUILD_ENTERPRISE_READY)
 setup-go-work: ## Sets up your go.work file
 ifneq ($(SKIP_SETUP_GO_WORK),true)
 	@set -e; \
@@ -471,9 +415,6 @@ ifneq ($(SKIP_SETUP_GO_WORK),true)
 	$(GO) work init; \
 	$(GO) work use .; \
 	$(GO) work use ./public; \
-	if [ "$(BUILD_ENTERPRISE_READY)" = "true" ]; then \
-		$(GO) work use $(BUILD_ENTERPRISE_DIR); \
-	fi; \
 	if [ -f go.work.bak ] && cmp -s go.work go.work.bak; then \
 		mv go.work.bak go.work; \
 	else \
@@ -509,24 +450,18 @@ go-cache: setup-go-work install-ci-tools ## Pre-warm Go module and build cache f
 test-compile: setup-go-work gotestsum ## Compile tests.
 	@echo COMPILE TESTS
 
-	for package in $(TE_PACKAGES) $(EE_PACKAGES); do \
+	for package in $(TE_PACKAGES); do \
 		$(GO) test $(GOFLAGS) -c $$package; \
 	done
 
 .PHONY: modules-tidy
 modules-tidy: setup-go-work ## Tidy Go modules
-	mv enterprise/external_imports.go enterprise/external_imports.go.orig
 	-$(GO) mod tidy
 	-cd public && $(GO) mod tidy
-	mv enterprise/external_imports.go.orig enterprise/external_imports.go
 
 .PHONY: test-server-pre
-test-server-pre: check-prereqs-enterprise start-docker gotestsum golang-versions ## Runs tests.
-ifeq ($(BUILD_ENTERPRISE_READY),true)
+test-server-pre: start-docker gotestsum golang-versions ## Runs tests.
 	@echo Running all tests
-else
-	@echo Running only TE tests
-endif
 
 .PHONY: test-server-race
 test-server-race: export GOTESTSUM_FORMAT := $(GOTESTSUM_FORMAT)
@@ -534,9 +469,9 @@ test-server-race: export GOTESTSUM_JUNITFILE := $(GOTESTSUM_JUNITFILE)
 test-server-race: export GOTESTSUM_JSONFILE := $(GOTESTSUM_JSONFILE)
 test-server-race: test-server-pre
 ifeq ($(IS_CI),true)
-	GOMAXPROCS=4 $(GOBIN)/gotestsum --rerun-fails=3 --packages="$(TE_PACKAGES) $(EE_PACKAGES)" -- -race $(GOFLAGS) -timeout=3h
+	GOMAXPROCS=4 $(GOBIN)/gotestsum --rerun-fails=3 --packages="$(TE_PACKAGES)" -- -race $(GOFLAGS) -timeout=3h
 else
-	$(GOBIN)/gotestsum --rerun-fails=3 --packages="$(TE_PACKAGES) $(EE_PACKAGES)" -- -race $(GOFLAGS) -timeout=3h
+	$(GOBIN)/gotestsum --rerun-fails=3 --packages="$(TE_PACKAGES)" -- -race $(GOFLAGS) -timeout=3h
 endif
 ifneq ($(IS_CI),true)
   ifneq ($(MM_NO_DOCKER),true)
@@ -552,7 +487,7 @@ test-server: export GOTESTSUM_FORMAT := $(GOTESTSUM_FORMAT)
 test-server: export GOTESTSUM_JUNITFILE := $(GOTESTSUM_JUNITFILE)
 test-server: export GOTESTSUM_JSONFILE := $(GOTESTSUM_JSONFILE)
 test-server: test-server-pre
-	$(GOBIN)/gotestsum --rerun-fails=3 --packages="$(TE_PACKAGES) $(EE_PACKAGES)" -- $(GOFLAGS) -timeout=90m $(COVERAGE_FLAG)
+	$(GOBIN)/gotestsum --rerun-fails=3 --packages="$(TE_PACKAGES)" -- $(GOFLAGS) -timeout=90m $(COVERAGE_FLAG)
 ifneq ($(IS_CI),true)
   ifneq ($(MM_NO_DOCKER),true)
     ifneq ($(TEMP_DOCKER_SERVICES),)
@@ -562,31 +497,23 @@ ifneq ($(IS_CI),true)
   endif
 endif
 
-.PHONY: test-server-ee
-test-server-ee: export GOTESTSUM_FORMAT := $(GOTESTSUM_FORMAT)
-test-server-ee: export GOTESTSUM_JUNITFILE := $(GOTESTSUM_JUNITFILE)
-test-server-ee: export GOTESTSUM_JSONFILE := $(GOTESTSUM_JSONFILE)
-test-server-ee: check-prereqs-enterprise start-docker gotestsum ## Runs EE tests.
-	@echo Running only EE tests
-	$(GOBIN)/gotestsum --packages="$(EE_PACKAGES)" -- $(GOFLAGS) -timeout=20m
-
-ES_PACKAGES=$(shell $(GO) list ./enterprise/elasticsearch/...)
+ES_PACKAGES=$(shell $(GO) list ./libre/search/...)
 
 .PHONY: test-server-elasticsearch
 test-server-elasticsearch: export GOTESTSUM_FORMAT := $(GOTESTSUM_FORMAT)
 test-server-elasticsearch: export GOTESTSUM_JUNITFILE := $(GOTESTSUM_JUNITFILE)
 test-server-elasticsearch: export GOTESTSUM_JSONFILE := $(GOTESTSUM_JSONFILE)
-test-server-elasticsearch: check-prereqs-enterprise start-docker gotestsum ## Runs Elasticsearch tests.
+test-server-elasticsearch: start-docker gotestsum ## Runs Elasticsearch tests.
 	@echo Running only Elasticsearch tests
 	$(GOBIN)/gotestsum --rerun-fails=3 --packages="$(ES_PACKAGES)" -- $(GOFLAGS) -timeout=20m
 
-OS_PACKAGES=$(shell $(GO) list ./enterprise/elasticsearch/opensearch/...)
+OS_PACKAGES=$(shell $(GO) list ./libre/search/...)
 
 .PHONY: test-server-opensearch
 test-server-opensearch: export GOTESTSUM_FORMAT := $(GOTESTSUM_FORMAT)
 test-server-opensearch: export GOTESTSUM_JUNITFILE := $(GOTESTSUM_JUNITFILE)
 test-server-opensearch: export GOTESTSUM_JSONFILE := $(GOTESTSUM_JSONFILE)
-test-server-opensearch: check-prereqs-enterprise start-docker gotestsum ## Runs OpenSearch tests.
+test-server-opensearch: start-docker gotestsum ## Runs OpenSearch tests.
 	@echo Running only OpenSearch tests
 	$(GOBIN)/gotestsum --rerun-fails=3 --packages="$(OS_PACKAGES)" -- $(GOFLAGS) -timeout=20m
 
@@ -594,14 +521,9 @@ test-server-opensearch: check-prereqs-enterprise start-docker gotestsum ## Runs 
 test-server-quick: export GOTESTSUM_FORMAT := $(GOTESTSUM_FORMAT)
 test-server-quick: export GOTESTSUM_JUNITFILE := $(GOTESTSUM_JUNITFILE)
 test-server-quick: export GOTESTSUM_JSONFILE := $(GOTESTSUM_JSONFILE)
-test-server-quick: check-prereqs-enterprise ## Runs only quick tests.
-ifeq ($(BUILD_ENTERPRISE_READY),true)
+test-server-quick: ## Runs only quick tests.
 	@echo Running all tests
-	$(GOBIN)/gotestsum --packages="$(TE_PACKAGES) $(EE_PACKAGES)" -- $(GOFLAGS) -short
-else
-	@echo Running only TE tests
 	$(GOBIN)/gotestsum --packages="$(TE_PACKAGES)" -- $(GOFLAGS) -short
-endif
 
 .PHONY: internal-test-web-client
 internal-test-web-client: setup-go-work ## Runs web client tests.
@@ -650,7 +572,7 @@ inject-test-data: # add test data to the local instance.
 test-mmctl-unit: export GOTESTSUM_FORMAT := $(GOTESTSUM_FORMAT)
 test-mmctl-unit: export GOTESTSUM_JUNITFILE := $(GOTESTSUM_JUNITFILE)
 test-mmctl-unit: export GOTESTSUM_JSONFILE := $(GOTESTSUM_JSONFILE)
-test-mmctl-unit: check-prereqs-enterprise gotestsum
+test-mmctl-unit: gotestsum
 	@echo Running mmctl unit tests
 	$(GOBIN)/gotestsum --packages="$(MMCTL_PACKAGES)" -- -tags 'unit $(MMCTL_BUILD_TAGS)' $(MMCTL_TESTFLAGS)
 
@@ -658,7 +580,7 @@ test-mmctl-unit: check-prereqs-enterprise gotestsum
 test-mmctl-e2e: export GOTESTSUM_FORMAT := $(GOTESTSUM_FORMAT)
 test-mmctl-e2e: export GOTESTSUM_JUNITFILE := $(GOTESTSUM_JUNITFILE)
 test-mmctl-e2e: export GOTESTSUM_JSONFILE := $(GOTESTSUM_JSONFILE)
-test-mmctl-e2e: check-prereqs-enterprise gotestsum start-docker
+test-mmctl-e2e: gotestsum start-docker
 	@echo Running mmctl e2e tests
 	$(GOBIN)/gotestsum --packages="$(MMCTL_PACKAGES)" -- -tags 'e2e $(MMCTL_BUILD_TAGS)' $(MMCTL_TESTFLAGS)
 
@@ -666,7 +588,7 @@ test-mmctl-e2e: check-prereqs-enterprise gotestsum start-docker
 test-mmctl: export GOTESTSUM_FORMAT := $(GOTESTSUM_FORMAT)
 test-mmctl: export GOTESTSUM_JUNITFILE := $(GOTESTSUM_JUNITFILE)
 test-mmctl: export GOTESTSUM_JSONFILE := $(GOTESTSUM_JSONFILE)
-test-mmctl: check-prereqs-enterprise gotestsum start-docker
+test-mmctl: gotestsum start-docker
 	@echo Running all mmctl tests
 	$(GOBIN)/gotestsum --packages="$(MMCTL_PACKAGES)" -- -tags 'unit e2e $(MMCTL_BUILD_TAGS)' $(MMCTL_TESTFLAGS)
 
@@ -674,7 +596,7 @@ test-mmctl: check-prereqs-enterprise gotestsum start-docker
 test-mmctl-coverage: export GOTESTSUM_FORMAT := $(GOTESTSUM_FORMAT)
 test-mmctl-coverage: export GOTESTSUM_JUNITFILE := $(GOTESTSUM_JUNITFILE)
 test-mmctl-coverage: export GOTESTSUM_JSONFILE := $(GOTESTSUM_JSONFILE)
-test-mmctl-coverage: check-prereqs-enterprise gotestsum start-docker
+test-mmctl-coverage: gotestsum start-docker
 	@echo Running all mmctl tests with coverage
 	$(GOBIN)/gotestsum --packages="$(MMCTL_PACKAGES)" -- -tags 'unit e2e $(MMCTL_BUILD_TAGS)' -coverprofile=mmctlcover.out $(MMCTL_TESTFLAGS)
 	$(GO) tool cover -html=mmctlcover.out
@@ -740,9 +662,7 @@ debug-server: setup-go-work start-docker ## Compile and start server using delve
 	$(DELVE) debug $(PLATFORM_FILES) --build-flags="-ldflags '\
 		-X github.com/mattermost/mattermost/server/public/model.BuildNumber=$(BUILD_NUMBER)\
 		-X \"github.com/mattermost/mattermost/server/public/model.BuildDate=$(BUILD_DATE)\"\
-		-X github.com/mattermost/mattermost/server/public/model.BuildHash=$(BUILD_HASH)\
-		-X github.com/mattermost/mattermost/server/public/model.BuildHashEnterprise=$(BUILD_HASH_ENTERPRISE)\
-		-X github.com/mattermost/mattermost/server/public/model.BuildEnterpriseReady=$(BUILD_ENTERPRISE_READY)'\
+		-X github.com/mattermost/mattermost/server/public/model.BuildHash=$(BUILD_HASH)'\
 		-tags '$(BUILD_TAGS)'"
 
 .PHONY: debug-server-headless
@@ -751,9 +671,7 @@ debug-server-headless: setup-go-work start-docker ## Debug server from within an
 	$(DELVE) debug --headless --listen=:2345 --api-version=2 --accept-multiclient $(PLATFORM_FILES) --build-flags="-ldflags '\
 		-X github.com/mattermost/mattermost/server/public/model.BuildNumber=$(BUILD_NUMBER)\
 		-X \"github.com/mattermost/mattermost/server/public/model.BuildDate=$(BUILD_DATE)\"\
-		-X github.com/mattermost/mattermost/server/public/model.BuildHash=$(BUILD_HASH)\
-		-X github.com/mattermost/mattermost/server/public/model.BuildHashEnterprise=$(BUILD_HASH_ENTERPRISE)\
-		-X github.com/mattermost/mattermost/server/public/model.BuildEnterpriseReady=$(BUILD_ENTERPRISE_READY)'\
+		-X github.com/mattermost/mattermost/server/public/model.BuildHash=$(BUILD_HASH)'\
 		-tags '$(BUILD_TAGS)'"
 
 .PHONY: run-node
@@ -944,20 +862,11 @@ setup-mac: ## Adds macOS hosts entries for Docker.
 update-dependencies: ## Uses go get -u to update all the dependencies while holding back any that require it.
 	@echo Updating Dependencies
 
-ifeq ($(BUILD_ENTERPRISE_READY),true)
-	@echo Enterprise repository detected, temporarily removing external_imports.go
-	mv enterprise/external_imports.go enterprise/external_imports.go.orig
-endif
-
 	# Update all dependencies (does not update across major versions)
 	$(GO) get -u ./...
 
 	# Tidy up
 	$(GO) mod tidy
-
-ifeq ($(BUILD_ENTERPRISE_READY),true)
-	mv enterprise/external_imports.go.orig enterprise/external_imports.go
-endif
 
 .PHONY: install-govet
 install-govet:
@@ -982,21 +891,11 @@ vet: setup-go-work install-govet ## Run mattermost go vet specific checks
 		-concurrentIndex.minMigration=166 \
 		-sortSlices \
 		./...
-ifeq ($(BUILD_ENTERPRISE_READY),true)
-  ifneq ($(MM_NO_ENTERPRISE_LINT),true)
-	$(GO) vet -vettool=$(GOBIN)/mattermost-govet -structuredLogging -mlogFieldNaming -inconsistentReceiverName -emptyStrCmp -tFatal -configtelemetry -errorAssertions -requestCtxNaming -sortSlices -enterpriseLicense $(BUILD_ENTERPRISE_DIR)/...
-  endif
-endif
 
 .PHONY: vet-fix
 vet-fix: setup-go-work ## Apply the suggested fixes from mattermost go vet checks
 	cd ../tools/mattermost-govet && $(GO) install .
 	$(GO) fix -fixtool=$(GOBIN)/mattermost-govet -mlogFieldNaming ./...
-ifeq ($(BUILD_ENTERPRISE_READY),true)
-  ifneq ($(MM_NO_ENTERPRISE_LINT),true)
-	$(GO) fix -fixtool=$(GOBIN)/mattermost-govet -mlogFieldNaming $(BUILD_ENTERPRISE_DIR)/...
-  endif
-endif
 
 .PHONY: vet-api
 vet-api: export GO := $(GO)
@@ -1040,9 +939,6 @@ gen-serialized: setup-go-work install-msgp ## Generates serialization methods fo
 .PHONY: todo
 todo: ## Display TODO and FIXME items in the source code.
 	@! ag --ignore Makefile --ignore-dir runtime '(TODO|XXX|FIXME|"FIX ME")[: ]+'
-ifeq ($(BUILD_ENTERPRISE_READY),true)
-	@! ag --ignore Makefile --ignore-dir runtime '(TODO|XXX|FIXME|"FIX ME")[: ]+' $(BUILD_ENTERPRISE_DIR)/
-endif
 
 .PHONY: mmctl-build
 mmctl-build: setup-go-work ## Compiles and generates the mmctl binary

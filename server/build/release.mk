@@ -208,12 +208,7 @@ package-prep: setup-go-work
 	cp -RL $(BUILD_WEBAPP_DIR)/channels/dist/* $(DIST_PATH)/client
 
 	@# Help files
-ifeq ($(BUILD_ENTERPRISE_READY),true)
-	cp $(BUILD_ENTERPRISE_DIR)/ENTERPRISE-EDITION-LICENSE.txt $(DIST_PATH)
-	cp -L $(BUILD_ENTERPRISE_DIR)/cloud/config/cloud_defaults.json $(DIST_PATH)/config
-else
-	cp build/MIT-COMPILED-LICENSE.md $(DIST_PATH)
-endif
+	cp ../LICENSE.txt $(DIST_PATH)
 	cp ../NOTICE.txt $(DIST_PATH)
 	cp ../README.md $(DIST_PATH)
 	if [ -f bin/manifest.txt ]; then \
