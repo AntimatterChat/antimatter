@@ -23,6 +23,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/mattermost/mattermost/server/public/model"
+	"github.com/mattermost/mattermost/server/public/utils"
 	"github.com/mattermost/mattermost/server/v8/channels/utils/fileutils"
 )
 
@@ -229,14 +230,11 @@ func TestGenerateSupportPacket(t *testing.T) {
 	th.LoginSystemManager(t)
 
 	t.Run("system admin and local client can generate Support Packet", func(t *testing.T) {
-		l := model.NewTestLicense()
-		th.App.Srv().SetLicense(l)
-
 		th.TestForSystemAdminAndLocal(t, func(t *testing.T, c *model.Client4) {
 			file, filename, resp, err := th.SystemAdminClient.GenerateSupportPacket(context.Background())
 			require.NoError(t, err)
 
-			assert.Contains(t, filename, "mm_support_packet_My_awesome_Company_")
+			assert.Contains(t, filename, "mm_support_packet_"+utils.SanitizeFileName(*th.App.Config().TeamSettings.SiteName)+"_")
 
 			d, err := io.ReadAll(file)
 			require.NoError(t, err)
@@ -274,44 +272,35 @@ func TestGenerateSupportPacket(t *testing.T) {
 		require.Error(t, err)
 		CheckForbiddenStatus(t, resp)
 	})
-
-	t.Run("Server with no License", func(t *testing.T) {
-		_, err := th.SystemAdminClient.RemoveLicenseFile(context.Background())
-		require.NoError(t, err)
-
-		_, _, resp, err := th.SystemAdminClient.GenerateSupportPacket(context.Background())
-		require.Error(t, err)
-		CheckForbiddenStatus(t, resp)
-	})
 }
 
 func TestSupportPacketFileName(t *testing.T) {
 	mainHelper.Parallel(t)
 	tests := map[string]struct {
-		now          time.Time
-		customerName string
-		expected     string
+		now      time.Time
+		siteName string
+		expected string
 	}{
 		"standard case": {
-			now:          time.Date(2023, 11, 12, 13, 14, 15, 0, time.UTC),
-			customerName: "TestCustomer",
-			expected:     "mm_support_packet_TestCustomer_2023-11-12T13-14.zip",
+			now:      time.Date(2023, 11, 12, 13, 14, 15, 0, time.UTC),
+			siteName: "TestSite",
+			expected: "mm_support_packet_TestSite_2023-11-12T13-14.zip",
 		},
-		"customer name with special characters": {
-			now:          time.Date(2023, 11, 12, 13, 14, 15, 0, time.UTC),
-			customerName: "Test/Customer:Name",
-			expected:     "mm_support_packet_Test_Customer_Name_2023-11-12T13-14.zip",
+		"site name with special characters": {
+			now:      time.Date(2023, 11, 12, 13, 14, 15, 0, time.UTC),
+			siteName: "Test/Site:Name",
+			expected: "mm_support_packet_Test_Site_Name_2023-11-12T13-14.zip",
 		},
-		"empty customer name": {
-			now:          time.Date(2023, 10, 10, 10, 10, 10, 0, time.UTC),
-			customerName: "",
-			expected:     "mm_support_packet__2023-10-10T10-10.zip",
+		"empty site name": {
+			now:      time.Date(2023, 10, 10, 10, 10, 10, 0, time.UTC),
+			siteName: "",
+			expected: "mm_support_packet__2023-10-10T10-10.zip",
 		},
 	}
 
 	for name, tt := range tests {
 		t.Run(name, func(t *testing.T) {
-			result := supportPacketFileName(tt.now, tt.customerName)
+			result := supportPacketFileName(tt.now, tt.siteName)
 			assert.Equal(t, tt.expected, result)
 		})
 	}
