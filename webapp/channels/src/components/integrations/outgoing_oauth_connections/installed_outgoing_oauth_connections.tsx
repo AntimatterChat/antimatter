@@ -106,7 +106,7 @@ const InstalledOutgoingOAuthConnections = (props: Props) => {
             helpText={
                 <FormattedMessage
                     id='installed_outgoing_oauth_connections.help'
-                    defaultMessage='Create {outgoingOauthConnections} to securely integrate bots and third-party apps with Mattermost.'
+                    defaultMessage='Create {outgoingOauthConnections} to securely integrate bots and third-party apps with Antimatter.'
                     values={{
                         outgoingOauthConnections: (
                             <ExternalLink

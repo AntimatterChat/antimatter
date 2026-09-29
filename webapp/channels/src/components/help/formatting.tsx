@@ -146,7 +146,7 @@ const HelpFormatting = (): JSX.Element => {
                     <p>
                         <FormattedMessage
                             id='help.formatting.syntax.description'
-                            defaultMessage='To add syntax highlighting, type the language to be highlighted after the <code>```</code> at the beginning of the code block. Mattermost also offers four different code themes (GitHub, Solarized Dark, Solarized Light, Monokai) that can be changed in <b>Settings > Display > Theme > Custom Theme > Center Channel Styles > Code Theme</b>.'
+                            defaultMessage='To add syntax highlighting, type the language to be highlighted after the <code>```</code> at the beginning of the code block. Antimatter also offers four different code themes (GitHub, Solarized Dark, Solarized Light, Monokai) that can be changed in <b>Settings > Display > Theme > Custom Theme > Center Channel Styles > Code Theme</b>.'
                             values={{
                                 b: (chunks: React.ReactNode) => <b>{chunks}</b>,
                                 code: (chunks: React.ReactNode) => <code>{chunks}</code>,

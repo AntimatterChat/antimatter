@@ -57,7 +57,7 @@ exports[`components/integrations/InstalledOutgoingOAuthConnections should match 
       >
         Outgoing OAuth Connections
       </a>
-       to securely integrate bots and third-party apps with Mattermost.
+       to securely integrate bots and third-party apps with Antimatter.
     </span>
     <div
       class="backstage-list"

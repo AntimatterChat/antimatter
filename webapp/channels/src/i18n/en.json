@@ -340,7 +340,7 @@
     "description": "Help text under the Title field on the add/edit slash command page."
   },
   "add_command.doneHelp": {
-    "defaultMessage": "Your slash command is set up. The following token will be sent in the outgoing payload. Please use it to verify the request came from your Mattermost team (details at <link>Slash Commands</link>).",
+    "defaultMessage": "Your slash command is set up. The following token will be sent in the outgoing payload. Please use it to verify the request came from your Antimatter team (details at <link>Slash Commands</link>).",
     "description": "Confirmation text after a slash command is created; <link> wraps a link to the Slash Commands documentation."
   },
   "add_command.iconUrl": {
@@ -364,7 +364,7 @@
     "description": "Dropdown option for the slash command's HTTP request method; GET is an HTTP verb, do not translate."
   },
   "add_command.method.help": {
-    "defaultMessage": "Specify the type of request, either POST or GET, sent to the endpoint that Mattermost hits to reach your application.",
+    "defaultMessage": "Specify the type of request, either POST or GET, sent to the endpoint that Antimatter hits to reach your application.",
     "description": "Help text under the Request Method dropdown on the add/edit slash command page; POST and GET are HTTP verbs."
   },
   "add_command.method.post": {
@@ -448,7 +448,7 @@
     "description": "Form field label on the slash command create/edit page; the username shown as author of the command's response posts."
   },
   "add_command.username.help": {
-    "defaultMessage": "(Optional) Specify the name to use when posting responses for this slash command. Usernames can be up to 22 characters, and contain lowercase letters, numbers, and the symbols \"-\", \"_\", and \".\". If left blank, your Mattermost username is used.",
+    "defaultMessage": "(Optional) Specify the name to use when posting responses for this slash command. Usernames can be up to 22 characters, and contain lowercase letters, numbers, and the symbols \"-\", \"_\", and \".\". If left blank, your Antimatter username is used.",
     "description": "Help text under the Response Username field on the add/edit slash command page explaining username constraints."
   },
   "add_command.username.placeholder": {
@@ -672,7 +672,7 @@
     "description": "Help text under the 'Is Public Client' checkbox on the OAuth 2.0 application create form; explains public vs confidential OAuth clients."
   },
   "add_oauth_app.trusted.help": {
-    "defaultMessage": "If true, the OAuth 2.0 application is considered trusted by the Mattermost server and does not require the user to accept authorization. If false, a window opens to ask the user to accept or deny the authorization.",
+    "defaultMessage": "If true, the OAuth 2.0 application is considered trusted by the Antimatter server and does not require the user to accept authorization. If false, a window opens to ask the user to accept or deny the authorization.",
     "description": "Help text under the 'Is Trusted' checkbox on the OAuth 2.0 application create/edit form; explains skipping the user authorization prompt."
   },
   "add_oauth_app.url": {
@@ -892,7 +892,7 @@
     "description": "Help text under the Title field on the outgoing webhook create/edit form."
   },
   "add_outgoing_webhook.doneHelp": {
-    "defaultMessage": "Your outgoing webhook is set up. The following token will be sent in the outgoing payload. Please use it to verify that the request came from your Mattermost team (details at <link>Outgoing Webhooks</link>).",
+    "defaultMessage": "Your outgoing webhook is set up. The following token will be sent in the outgoing payload. Please use it to verify that the request came from your Antimatter team (details at <link>Outgoing Webhooks</link>).",
     "description": "Confirmation text after an outgoing webhook is created; <link> wraps a link to the Outgoing Webhooks documentation."
   },
   "add_outgoing_webhook.header": {
@@ -18224,7 +18224,7 @@
     "description": "Checkbox option label ('Enabled') for the post:all permission on the Add/Edit Bot Account page; compact space."
   },
   "bot.add.post_all.help": {
-    "defaultMessage": "Bot will have access to post to all Mattermost channels including direct messages.",
+    "defaultMessage": "Bot will have access to post to all Antimatter channels including direct messages.",
     "description": "Help text for the post:all permission checkbox on the Add/Edit Bot Account page, explaining the bot can post to any channel including direct messages."
   },
   "bot.add.post_channels": {
@@ -18236,7 +18236,7 @@
     "description": "Checkbox option label ('Enabled') for the post:channels permission on the Add/Edit Bot Account page; compact space."
   },
   "bot.add.post_channels.help": {
-    "defaultMessage": "Bot will have access to post to all Mattermost public channels.",
+    "defaultMessage": "Bot will have access to post to all Antimatter public channels.",
     "description": "Help text for the post:channels permission checkbox on the Add/Edit Bot Account page, explaining the bot can post to public channels."
   },
   "bot.add.role": {
@@ -18360,7 +18360,7 @@
     "description": "Confirmation text after a bot account is created; {botname} is the bot's name (bold via <strong>) and <link> wraps a documentation link."
   },
   "bots.manage.description": {
-    "defaultMessage": "Use bot accounts to integrate with Mattermost through plugins or the API",
+    "defaultMessage": "Use bot accounts to integrate with Antimatter through plugins or the API",
     "description": "Short description under the Bot Accounts tile on the team Integrations landing page."
   },
   "bots.manage.edit": {
@@ -18384,7 +18384,7 @@
     "description": "Page header/breadcrumb link for the Bot Accounts section of the team Integrations backstage."
   },
   "bots.manage.help1": {
-    "defaultMessage": "Use {botAccounts} to integrate with Mattermost through plugins or the API. Bot accounts are available to everyone on your server. ",
+    "defaultMessage": "Use {botAccounts} to integrate with Antimatter through plugins or the API. Bot accounts are available to everyone on your server. ",
     "description": "Help text at the top of the Bot Accounts page; {botAccounts} is replaced by a documentation link labeled 'Bot Accounts'. Keep the trailing space, the next sentence is concatenated after it."
   },
   "bots.manage.load_error.full": {
@@ -18412,8 +18412,8 @@
     "description": "Note on a bot's row in the bot accounts list indicating a plugin controls it; {pluginName} is the plugin's display name."
   },
   "bots.managed_by.system": {
-    "defaultMessage": "Managed by Mattermost",
-    "description": "Value shown in the \"Managed by\" line of a bot account entry under Integrations > Bot Accounts, for built-in bots owned by the product itself. \"Mattermost\" is the product name and stays untranslated."
+    "defaultMessage": "Managed by Antimatter",
+    "description": "Value shown in the \"Managed by\" line of a bot account entry under Integrations > Bot Accounts, for built-in bots owned by the product itself. \"Antimatter\" is the product name and stays untranslated."
   },
   "bots.managed_by.unknown_plugin": {
     "defaultMessage": "Managed by a plugin",
@@ -23368,7 +23368,7 @@
     "description": "Section heading in the attaching-files help page about pasting files from the clipboard."
   },
   "help.attaching.previewer.description": {
-    "defaultMessage": "Mattermost has a built-in file previewer used to view media, download files, and to share public links. Select the thumbnail of an attached file to open it in the file previewer.",
+    "defaultMessage": "Antimatter has a built-in file previewer used to view media, download files, and to share public links. Select the thumbnail of an attached file to open it in the file previewer.",
     "description": "Paragraph in the attaching-files help page describing the built-in file preview window."
   },
   "help.attaching.previewer.title": {
@@ -23376,7 +23376,7 @@
     "description": "Section heading in the attaching-files help page about the file preview window."
   },
   "help.attaching.public.description": {
-    "defaultMessage": "Public links enable you to share file attachments with people outside your Mattermost team. Open the file previewer by selecting the thumbnail of an attachment, then select <b>Get a public link</b>. Copy the link provided. When the link is shared and opened by another user, the file automatically downloads.",
+    "defaultMessage": "Public links enable you to share file attachments with people outside your Antimatter team. Open the file previewer by selecting the thumbnail of an attachment, then select <b>Get a public link</b>. Copy the link provided. When the link is shared and opened by another user, the file automatically downloads.",
     "description": "Paragraph in the attaching-files help page about sharing files via public links; <b> wraps a UI option name."
   },
   "help.attaching.public.note": {
@@ -23388,7 +23388,7 @@
     "description": "Section heading in the attaching-files help page about public file links."
   },
   "help.attaching.size.description": {
-    "defaultMessage": "Mattermost supports up to ten files attached per post. The default maximum file size is 100 MB (megabytes), but this can be changed by your System Admin. Image files can be a maximum size of 7680 pixels x 4320 pixels, with a maximum image resolution of 33 MP (mega pixels) or 8K resolution, and a maximum raw image file size of approximately 253 MB.",
+    "defaultMessage": "Antimatter supports up to ten files attached per post. The default maximum file size is 100 MB (megabytes), but this can be changed by your System Admin. Image files can be a maximum size of 7680 pixels x 4320 pixels, with a maximum image resolution of 33 MP (mega pixels) or 8K resolution, and a maximum raw image file size of approximately 253 MB.",
     "description": "Paragraph in the attaching-files help page describing file count and size limits; MB, MP, and 8K are technical units."
   },
   "help.attaching.size.title": {
@@ -23400,7 +23400,7 @@
     "description": "Bullet item in the help page listing supported audio file formats; format names are literal."
   },
   "help.attaching.supported.description": {
-    "defaultMessage": "If you are trying to preview a media type that is not supported, the file previewer opens a standard media attachment icon. Supported media formats depend heavily on your browser and operating system. The following formats are supported by Mattermost on most browsers:",
+    "defaultMessage": "If you are trying to preview a media type that is not supported, the file previewer opens a standard media attachment icon. Supported media formats depend heavily on your browser and operating system. The following formats are supported by Antimatter on most browsers:",
     "description": "Paragraph in the attaching-files help page introducing the list of previewable media formats."
   },
   "help.attaching.supported.documents": {
@@ -23428,7 +23428,7 @@
     "description": "Page title of the in-app help page about attaching files; also used as the browser tab title."
   },
   "help.commands.builtin.description": {
-    "defaultMessage": "Built-in slash commands come with all Mattermost installations. See the <link>product documentation</link> for a list of available built-in slash commands.",
+    "defaultMessage": "Built-in slash commands come with all Antimatter installations. See the <link>product documentation</link> for a list of available built-in slash commands.",
     "description": "Paragraph in the slash commands help page; <link> wraps a link to the product documentation."
   },
   "help.commands.builtin.howto": {
@@ -23476,7 +23476,7 @@
     "description": "All-caps column/section header above the example slash commands list in the help page; compact space."
   },
   "help.commands.intro": {
-    "defaultMessage": "You can execute commands, called slash commands, by typing into the text input box to perform operations in Mattermost. To run a slash command, type <code>/</code> followed by a command and some arguments to perform actions.",
+    "defaultMessage": "You can execute commands, called slash commands, by typing into the text input box to perform operations in Antimatter. To run a slash command, type <code>/</code> followed by a command and some arguments to perform actions.",
     "description": "Opening paragraph of the slash commands help page; <code> wraps the literal '/' character."
   },
   "help.commands.title": {
@@ -23612,7 +23612,7 @@
     "description": "Section heading in the Markdown formatting help page about bold and italic text."
   },
   "help.formatting.syntax.description": {
-    "defaultMessage": "To add syntax highlighting, type the language to be highlighted after the <code>```</code> at the beginning of the code block. Mattermost also offers four different code themes (GitHub, Solarized Dark, Solarized Light, Monokai) that can be changed in <b>Settings > Display > Theme > Custom Theme > Center Channel Styles > Code Theme</b>.",
+    "defaultMessage": "To add syntax highlighting, type the language to be highlighted after the <code>```</code> at the beginning of the code block. Antimatter also offers four different code themes (GitHub, Solarized Dark, Solarized Light, Monokai) that can be changed in <b>Settings > Display > Theme > Custom Theme > Center Channel Styles > Code Theme</b>.",
     "description": "Paragraph in the formatting help page about code syntax highlighting; <code> wraps literal backticks and <b> wraps a Settings menu path; theme names are proper nouns."
   },
   "help.formatting.syntax.example_label": {
@@ -23720,7 +23720,7 @@
     "description": "Paragraph in the mentions help page about mentioning individual users; <code> wraps the literal '@' character."
   },
   "help.mentioning.username.description2": {
-    "defaultMessage": "Type <code>@</code> to bring up a list of team members who can be mentioned. To filter the list, type the first few letters of any username, first name, last name, or nickname. The Up and Down arrow keys can then be used to scroll through entries in the list, and pressing ENTER will select which user to mention. Once selected, the username will automatically replace the full name or nickname. The following example sends a special mention notification to alice that alerts her of the channel and message where she has been mentioned. If alice is away from Mattermost and has email notifications turned on, then she will receive an email alert of her mention along with the message text.",
+    "defaultMessage": "Type <code>@</code> to bring up a list of team members who can be mentioned. To filter the list, type the first few letters of any username, first name, last name, or nickname. The Up and Down arrow keys can then be used to scroll through entries in the list, and pressing ENTER will select which user to mention. Once selected, the username will automatically replace the full name or nickname. The following example sends a special mention notification to alice that alerts her of the channel and message where she has been mentioned. If alice is away from Antimatter and has email notifications turned on, then she will receive an email alert of her mention along with the message text.",
     "description": "Paragraph in the in-app help page about @-mentioning teammates; <code>@</code> is HTML markup to keep, and 'alice' is an example username."
   },
   "help.mentioning.username.not_in_channel": {
@@ -23732,7 +23732,7 @@
     "description": "Section heading in the mentions help page; '@Username' is the literal mention pattern."
   },
   "help.messaging.attach.description": {
-    "defaultMessage": "Drag and drop files into Mattermost, or select the Attachment icon in the text input box.",
+    "defaultMessage": "Drag and drop files into Antimatter, or select the Attachment icon in the text input box.",
     "description": "Short paragraph in the messaging basics help page about attaching files."
   },
   "help.messaging.attach.title": {
@@ -23784,7 +23784,7 @@
     "description": "Page title of the in-app help page covering messaging basics; also used as browser tab title."
   },
   "help.messaging.write.description": {
-    "defaultMessage": "Use the text input box at the bottom of the Mattermost interface to write a message. Press <b>ENTER</b> to send the message. Use <b>SHIFT+ENTER</b> to create a new line without sending a message.",
+    "defaultMessage": "Use the text input box at the bottom of the Antimatter interface to write a message. Press <b>ENTER</b> to send the message. Use <b>SHIFT+ENTER</b> to create a new line without sending a message.",
     "description": "Paragraph in the messaging basics help page about composing messages; <b> wraps keyboard key names."
   },
   "help.messaging.write.title": {
@@ -23904,7 +23904,7 @@
     "description": "Page header of the Slash Commands list in the team Integrations backstage."
   },
   "installed_commands.help": {
-    "defaultMessage": "Use slash commands to connect external tools to Mattermost. {buildYourOwn} or visit the {appDirectory} to find self-hosted, third-party apps and integrations.",
+    "defaultMessage": "Use slash commands to connect external tools to Antimatter. {buildYourOwn} or visit the {appDirectory} to find self-hosted, third-party apps and integrations.",
     "description": "Help text at the top of the Slash Commands list; {buildYourOwn} is a 'build your own' documentation link and {appDirectory} is an App Directory link."
   },
   "installed_commands.help.appDirectory": {
@@ -23948,7 +23948,7 @@
     "description": "Page header of the Incoming Webhooks list in the team Integrations backstage."
   },
   "installed_incoming_webhooks.help": {
-    "defaultMessage": "Use incoming webhooks to connect external tools to Mattermost. {buildYourOwn} or visit the {appDirectory} to find self-hosted, third-party apps and integrations.",
+    "defaultMessage": "Use incoming webhooks to connect external tools to Antimatter. {buildYourOwn} or visit the {appDirectory} to find self-hosted, third-party apps and integrations.",
     "description": "Help text at the top of the Incoming Webhooks list; {buildYourOwn} is a 'build your own' documentation link and {appDirectory} is an App Directory link."
   },
   "installed_incoming_webhooks.help.appDirectory": {
@@ -24100,7 +24100,7 @@
     "description": "Page header/breadcrumb link for the OAuth 2.0 Applications section of the team Integrations backstage."
   },
   "installed_oauth_apps.help": {
-    "defaultMessage": "Create {oauthApplications} to securely integrate bots and third-party apps with Mattermost. Visit the {appDirectory} to find available self-hosted apps.",
+    "defaultMessage": "Create {oauthApplications} to securely integrate bots and third-party apps with Antimatter. Visit the {appDirectory} to find available self-hosted apps.",
     "description": "Help text at the top of the OAuth 2.0 Applications list; {oauthApplications} is a documentation link and {appDirectory} is an App Directory link."
   },
   "installed_oauth_apps.help.appDirectory": {
@@ -24200,7 +24200,7 @@
     "description": "Page header of the Outgoing OAuth Connections list and breadcrumb link on the setup confirmation page."
   },
   "installed_outgoing_oauth_connections.help": {
-    "defaultMessage": "Create {outgoingOauthConnections} to securely integrate bots and third-party apps with Mattermost.",
+    "defaultMessage": "Create {outgoingOauthConnections} to securely integrate bots and third-party apps with Antimatter.",
     "description": "Help text at the top of the Outgoing OAuth Connections list; {outgoingOauthConnections} is replaced by a documentation link."
   },
   "installed_outgoing_oauth_connections.help.outgoingOauthConnections": {
@@ -24236,7 +24236,7 @@
     "description": "Page header of the Outgoing Webhooks list in the team Integrations backstage."
   },
   "installed_outgoing_webhooks.help": {
-    "defaultMessage": "Use outgoing webhooks to connect external tools to Mattermost. {buildYourOwn} or visit the {appDirectory} to find self-hosted, third-party apps and integrations.",
+    "defaultMessage": "Use outgoing webhooks to connect external tools to Antimatter. {buildYourOwn} or visit the {appDirectory} to find self-hosted, third-party apps and integrations.",
     "description": "Help text at the top of the Outgoing Webhooks list; {buildYourOwn} is a 'build your own' documentation link and {appDirectory} is an App Directory link."
   },
   "installed_outgoing_webhooks.help.appDirectory": {
@@ -24312,7 +24312,7 @@
     "description": "Page header of the team Integrations landing page listing available integration types."
   },
   "integrations.help": {
-    "defaultMessage": "Visit the {appDirectory} to find self-hosted, third-party apps and integrations for Mattermost.",
+    "defaultMessage": "Visit the {appDirectory} to find self-hosted, third-party apps and integrations for Antimatter.",
     "description": "Help text at the bottom of the Integrations landing page; {appDirectory} is replaced by a link labeled 'App Directory'."
   },
   "integrations.help.appDirectory": {
@@ -24328,7 +24328,7 @@
     "description": "Title of the Incoming Webhooks tile on the team Integrations landing page."
   },
   "integrations.oauthApps.description": {
-    "defaultMessage": "OAuth 2.0 allows external applications to make authorized requests to the Mattermost API",
+    "defaultMessage": "OAuth 2.0 allows external applications to make authorized requests to the Antimatter API",
     "description": "Short description under the OAuth 2.0 Applications tile on the team Integrations landing page."
   },
   "integrations.oauthApps.title": {

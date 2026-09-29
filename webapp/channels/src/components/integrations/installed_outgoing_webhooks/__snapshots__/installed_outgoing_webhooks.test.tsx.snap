@@ -48,7 +48,7 @@ exports[`components/integrations/InstalledOutgoingWebhooks should match snapshot
     <span
       class="backstage-list__help"
     >
-      Use outgoing webhooks to connect external tools to Mattermost. 
+      Use outgoing webhooks to connect external tools to Antimatter. 
       <a
         href="https://mattermost.com/pl/setup-outgoing-webhooks?utm_source=mattermost&utm_medium=in-product&utm_content=installed_outgoing_webhooks&uid=currentUserId&sid=&edition=team&server_version="
         location="installed_outgoing_webhooks"

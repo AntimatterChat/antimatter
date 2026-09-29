@@ -96,7 +96,7 @@ const HelpAttaching = (): JSX.Element => {
                     <p>
                         <FormattedMessage
                             id='help.attaching.previewer.description'
-                            defaultMessage='Mattermost has a built-in file previewer used to view media, download files, and to share public links. Select the thumbnail of an attached file to open it in the file previewer.'
+                            defaultMessage='Antimatter has a built-in file previewer used to view media, download files, and to share public links. Select the thumbnail of an attached file to open it in the file previewer.'
                         />
                     </p>
 
@@ -109,7 +109,7 @@ const HelpAttaching = (): JSX.Element => {
                     <p>
                         <FormattedMessage
                             id='help.attaching.public.description'
-                            defaultMessage='Public links enable you to share file attachments with people outside your Mattermost team. Open the file previewer by selecting the thumbnail of an attachment, then select <b>Get a public link</b>. Copy the link provided. When the link is shared and opened by another user, the file automatically downloads.'
+                            defaultMessage='Public links enable you to share file attachments with people outside your Antimatter team. Open the file previewer by selecting the thumbnail of an attachment, then select <b>Get a public link</b>. Copy the link provided. When the link is shared and opened by another user, the file automatically downloads.'
                             values={{
                                 b: (chunks: React.ReactNode) => <b>{chunks}</b>,
                             }}
@@ -152,7 +152,7 @@ const HelpAttaching = (): JSX.Element => {
                     <p>
                         <FormattedMessage
                             id='help.attaching.supported.description'
-                            defaultMessage='If you are trying to preview a media type that is not supported, the file previewer opens a standard media attachment icon. Supported media formats depend heavily on your browser and operating system. The following formats are supported by Mattermost on most browsers:'
+                            defaultMessage='If you are trying to preview a media type that is not supported, the file previewer opens a standard media attachment icon. Supported media formats depend heavily on your browser and operating system. The following formats are supported by Antimatter on most browsers:'
                         />
                     </p>
                     <ul>
@@ -199,7 +199,7 @@ const HelpAttaching = (): JSX.Element => {
                     <p>
                         <FormattedMessage
                             id='help.attaching.size.description'
-                            defaultMessage='Mattermost supports up to ten files attached per post. The default maximum file size is 100 MB (megabytes), but this can be changed by your System Admin. Image files can be a maximum size of 7680 pixels x 4320 pixels, with a maximum image resolution of 33 MP (mega pixels) or 8K resolution, and a maximum raw image file size of approximately 253 MB.'
+                            defaultMessage='Antimatter supports up to ten files attached per post. The default maximum file size is 100 MB (megabytes), but this can be changed by your System Admin. Image files can be a maximum size of 7680 pixels x 4320 pixels, with a maximum image resolution of 33 MP (mega pixels) or 8K resolution, and a maximum raw image file size of approximately 253 MB.'
                         />
                     </p>
                 </section>

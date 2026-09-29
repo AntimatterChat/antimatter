@@ -38,7 +38,7 @@ const HelpMessaging = (): JSX.Element => {
                     <p>
                         <FormattedMessage
                             id='help.messaging.write.description'
-                            defaultMessage='Use the text input box at the bottom of the Mattermost interface to write a message. Press <b>ENTER</b> to send the message. Use <b>SHIFT+ENTER</b> to create a new line without sending a message.'
+                            defaultMessage='Use the text input box at the bottom of the Antimatter interface to write a message. Press <b>ENTER</b> to send the message. Use <b>SHIFT+ENTER</b> to create a new line without sending a message.'
                             values={{
                                 b: (chunks: React.ReactNode) => <b>{chunks}</b>,
                             }}
@@ -181,7 +181,7 @@ const HelpMessaging = (): JSX.Element => {
                     <p>
                         <FormattedMessage
                             id='help.messaging.attach.description'
-                            defaultMessage='Drag and drop files into Mattermost, or select the Attachment icon in the text input box.'
+                            defaultMessage='Drag and drop files into Antimatter, or select the Attachment icon in the text input box.'
                         />
                     </p>
                 </section>

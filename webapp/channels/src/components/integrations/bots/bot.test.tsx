@@ -229,7 +229,7 @@ describe('components/integrations/bots/Bot', () => {
 
         // System-owned bots are surfaced as managed by Mattermost rather than by
         // the system admin that happens to own them.
-        expect(screen.getByText('Managed by Mattermost')).toBeInTheDocument();
+        expect(screen.getByText('Managed by Antimatter')).toBeInTheDocument();
         expect(screen.queryByText(`Managed by ${owner.username}`)).not.toBeInTheDocument();
     });
 
