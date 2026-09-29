@@ -16,7 +16,6 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/mattermost/mattermost/server/public/model"
-	"github.com/mattermost/mattermost/server/v8/channels/app"
 )
 
 // optionTestFields is the shape every subtest below works against: a template
@@ -913,8 +912,7 @@ func TestPropertyFieldOptionsAudit(t *testing.T) {
 	require.NoError(t, err)
 	defer os.Remove(logFile.Name())
 
-	options := []app.Option{app.WithLicense(model.NewTestLicense("advanced_logging"))}
-	th := SetupWithServerOptionsAndConfig(t, options, func(cfg *model.Config) {
+	th := SetupWithServerOptionsAndConfig(t, nil, func(cfg *model.Config) {
 		cfg.ExperimentalAuditSettings.FileEnabled = model.NewPointer(true)
 		cfg.ExperimentalAuditSettings.FileName = model.NewPointer(logFile.Name())
 		cfg.FeatureFlags.IntegratedBoards = true

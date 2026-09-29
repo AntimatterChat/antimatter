@@ -21,10 +21,7 @@ import (
 )
 
 func (a *App) sessionAttributesEnabled() bool {
-	if !a.Config().FeatureFlags.SessionAttributes {
-		return false
-	}
-	return model.MinimumEnterpriseAdvancedLicense(a.License())
+	return a.Config().FeatureFlags.SessionAttributes
 }
 
 func (a *App) getSessionAttributeFieldsByName(rctx request.CTX) (map[string]*model.PropertyField, *model.AppError) {

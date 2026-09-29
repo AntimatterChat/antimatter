@@ -639,8 +639,8 @@ func authorizeSimulatePolicy(c *Context, channelID, teamID string) (hasSystemPer
 // Non-system admins may only simulate users who belong to the request's
 // channel (when channel_id is set) or team (team-scoped simulation).
 // The endpoint requires the PolicySimulation feature flag (which
-// itself depends on the PermissionPolicies umbrella) and an
-// Enterprise Advanced license. Returns 501 when ABAC is unavailable.
+// itself depends on the PermissionPolicies umbrella). Returns 501 when
+// ABAC is unavailable.
 func simulatePolicyForUsers(c *Context, w http.ResponseWriter, r *http.Request) {
 	if !c.App.Config().FeatureFlags.IsPolicySimulationEnabled() {
 		c.Err = model.NewAppError("simulatePolicyForUsers", "api.access_control_policy.policy_simulation.feature_disabled", nil, "", http.StatusNotImplemented)

@@ -235,7 +235,6 @@ func TestHydratePropertyValues(t *testing.T) {
 	t.Run("an unrevealed burn-on-read post", func(t *testing.T) {
 		th := setupPropertyValuesTest(t)
 
-		th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterpriseAdvanced))
 		th.App.UpdateConfig(func(cfg *model.Config) {
 			cfg.ServiceSettings.EnableBurnOnRead = new(true)
 		})

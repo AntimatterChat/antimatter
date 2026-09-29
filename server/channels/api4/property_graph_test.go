@@ -28,10 +28,7 @@ const (
 )
 
 // setupGraphFieldTest starts a server that will accept a graph property field:
-// the feature flag the type is gated on, and an Enterprise Advanced license.
-// User attributes in the access_control group need Enterprise; channel
-// attributes in the same group need Advanced, and the authoring fixture
-// creates a channel-linked field.
+// the feature flag the type is gated on.
 //
 // Where the option-endpoint tests in property_options_test.go register a property
 // group of their own, these run against access_control — the group access rules
@@ -46,7 +43,6 @@ func setupGraphFieldTest(t *testing.T) *TestHelper {
 		cfg.FeatureFlags.IntegratedBoards = true
 		cfg.FeatureFlags.PropertyFieldGraph = true
 	}).InitBasic(t)
-	th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterpriseAdvanced))
 
 	return th
 }

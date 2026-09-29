@@ -8,13 +8,11 @@ import (
 	"errors"
 	"maps"
 	"net/http"
-	"slices"
 	"strconv"
 	"strings"
 
 	"github.com/mattermost/mattermost/server/public/model"
 	"github.com/mattermost/mattermost/server/public/shared/mlog"
-	"github.com/mattermost/mattermost/server/public/shared/request"
 	"github.com/mattermost/mattermost/server/v8/channels/app"
 	"github.com/mattermost/mattermost/server/v8/channels/web"
 )
@@ -59,71 +57,14 @@ func getV2Group(c *Context, callerName string) *model.PropertyGroup {
 		c.Err = model.NewAppError(callerName, "api.property.v2_group_not_found.app_error", nil, "", http.StatusNotFound)
 		return nil
 	}
-	// Session attributes require both the feature flag and Enterprise
-	// Advanced. This mirrors the dedicated manifest endpoint's gate so the
-	// generic Properties API cannot expose the schema when the feature is off.
-	if group.Name == model.SessionAttributesPropertyGroupName &&
-		(!c.App.Config().FeatureFlags.SessionAttributes || !model.MinimumEnterpriseAdvancedLicense(c.App.License())) {
-		c.Err = model.NewAppError(callerName, "api.property.session_attributes.license.app_error", nil, "", http.StatusNotImplemented)
+	// Session attributes require the feature flag. This mirrors the dedicated
+	// manifest endpoint's gate so the generic Properties API cannot expose the
+	// schema when the feature is off.
+	if group.Name == model.SessionAttributesPropertyGroupName && !c.App.Config().FeatureFlags.SessionAttributes {
+		c.Err = model.NewAppError(callerName, "api.user.session_attributes.disabled.app_error", nil, "", http.StatusNotImplemented)
 		return nil
 	}
 	return group
-}
-
-// requireChannelAttributeLicense gates channel-scoped objects in the
-// access_control group. They are the storage behind channel attributes and
-// classification's channel banner, which are Enterprise Advanced. The same
-// group also holds user attributes, which are not, so the tier is checked per
-// object type rather than on the group as a whole.
-func requireChannelAttributeLicense(c *Context, group *model.PropertyGroup, callerName string, objectTypes ...string) bool {
-	if group.Name != model.AccessControlPropertyGroupName {
-		return true
-	}
-
-	if !slices.Contains(objectTypes, model.PropertyFieldObjectTypeChannel) {
-		return true
-	}
-
-	if !model.MinimumEnterpriseAdvancedLicense(c.App.License()) {
-		c.Err = model.NewAppError(callerName, "api.property.channel_attributes.license.app_error", nil, "", http.StatusNotImplemented)
-		return false
-	}
-
-	return true
-}
-
-// requireChannelAttributeLicenseForTemplate refuses a request against an
-// access_control template that a channel field links to, unless the license is
-// Enterprise Advanced. requireChannelAttributeLicense cannot catch this case:
-// it runs before any field is read and keys on the object type in the URL,
-// which is "template" here. Sets c.Err and returns false on refusal.
-//
-// Best-effort: this catches a template a channel field links to directly.
-// A linked field may not itself be a link target, so a chain cannot hide
-// the template; dependents still come and go, so the answer is only as
-// good as this moment.
-func requireChannelAttributeLicenseForTemplate(c *Context, rctx request.CTX, group *model.PropertyGroup, field *model.PropertyField, callerName string) bool {
-	if group.Name != model.AccessControlPropertyGroupName ||
-		field.ObjectType != model.PropertyFieldObjectTypeTemplate ||
-		model.MinimumEnterpriseAdvancedLicense(c.App.License()) {
-		return true
-	}
-
-	dependents, searchErr := c.App.SearchPropertyFields(rctx, group.ID, model.PropertyFieldSearchOpts{
-		ObjectTypes:   []string{model.PropertyFieldObjectTypeChannel},
-		LinkedFieldID: field.ID,
-		PerPage:       1,
-	})
-	if searchErr != nil {
-		c.Err = searchErr
-		return false
-	}
-	if len(dependents) > 0 {
-		c.Err = model.NewAppError(callerName, "api.property.channel_attributes.license.app_error", nil, "", http.StatusNotImplemented)
-		return false
-	}
-
-	return true
 }
 
 // resolvePropertyGroupParam reads the propertyGroup query parameter and resolves it to a
@@ -153,10 +94,6 @@ func createPropertyField(c *Context, w http.ResponseWriter, r *http.Request) {
 
 	group := getV2Group(c, "createPropertyField")
 	if c.Err != nil {
-		return
-	}
-
-	if !requireChannelAttributeLicense(c, group, "createPropertyField", c.Params.ObjectType) {
 		return
 	}
 
@@ -424,10 +361,6 @@ func searchPropertyFieldsCore(c *Context, w http.ResponseWriter, group *model.Pr
 		opts.TargetType = string(model.PropertyFieldTargetLevelSystem)
 	}
 
-	if !requireChannelAttributeLicense(c, group, callerName, opts.ObjectTypes...) {
-		return
-	}
-
 	if !resolveScopeAndCheckPermissions(c, &opts, callerName) {
 		return
 	}
@@ -532,10 +465,6 @@ func patchPropertyField(c *Context, w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if !requireChannelAttributeLicense(c, group, "patchPropertyField", c.Params.ObjectType) {
-		return
-	}
-
 	var patch *model.PropertyFieldPatch
 	if err := json.NewDecoder(r.Body).Decode(&patch); err != nil || patch == nil {
 		c.SetInvalidParamWithErr("property_field_patch", err)
@@ -581,10 +510,6 @@ func patchPropertyField(c *Context, w http.ResponseWriter, r *http.Request) {
 	// bucket fields by URL ObjectType without leaking cross-bucket existence.
 	if existingField.ObjectType != c.Params.ObjectType {
 		c.Err = model.NewAppError("patchPropertyField", "api.property_field.object_type_mismatch.app_error", nil, "", http.StatusNotFound)
-		return
-	}
-
-	if !requireChannelAttributeLicenseForTemplate(c, rctx, group, existingField, "patchPropertyField") {
 		return
 	}
 
@@ -663,10 +588,6 @@ func deletePropertyField(c *Context, w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if !requireChannelAttributeLicense(c, group, "deletePropertyField", c.Params.ObjectType) {
-		return
-	}
-
 	auditRec := c.MakeAuditRecord(model.AuditEventDeletePropertyField, model.AuditStatusFail)
 	defer c.LogAuditRec(auditRec)
 	model.AddEventParameterToAuditRec(auditRec, "field_id", c.Params.FieldId)
@@ -681,10 +602,6 @@ func deletePropertyField(c *Context, w http.ResponseWriter, r *http.Request) {
 
 	if existingField.ObjectType != c.Params.ObjectType {
 		c.Err = model.NewAppError("deletePropertyField", "api.property_field.object_type_mismatch.app_error", nil, "", http.StatusNotFound)
-		return
-	}
-
-	if !requireChannelAttributeLicenseForTemplate(c, rctx, group, existingField, "deletePropertyField") {
 		return
 	}
 
@@ -744,10 +661,6 @@ func getSystemPropertyValues(c *Context, w http.ResponseWriter, r *http.Request)
 func getPropertyValuesCore(c *Context, w http.ResponseWriter, r *http.Request, objectType, targetID string) {
 	group := getV2Group(c, "getPropertyValues")
 	if c.Err != nil {
-		return
-	}
-
-	if !requireChannelAttributeLicense(c, group, "getPropertyValues", objectType) {
 		return
 	}
 
@@ -859,10 +772,6 @@ func patchSystemPropertyValues(c *Context, w http.ResponseWriter, r *http.Reques
 func patchPropertyValuesCore(c *Context, w http.ResponseWriter, r *http.Request, objectType, targetID string) {
 	group := getV2Group(c, "patchPropertyValues")
 	if c.Err != nil {
-		return
-	}
-
-	if !requireChannelAttributeLicense(c, group, "patchPropertyValues", objectType) {
 		return
 	}
 

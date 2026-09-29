@@ -37,8 +37,6 @@ func auditMetaHasKey(t *testing.T, rec map[string]any, key string) bool {
 // narrowing it must break this test rather than pass unnoticed.
 func TestCPAValueChangeAuditForChannelValues(t *testing.T) {
 	th := Setup(t).InitBasic(t)
-	// LicenseCheckHook gates access_control writes on an Enterprise license.
-	th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterprise))
 	capture := startPluginAuditCapture(t, th)
 
 	rctx := request.TestContext(t)

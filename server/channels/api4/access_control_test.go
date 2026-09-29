@@ -66,16 +66,13 @@ func TestCreateAccessControlPolicy(t *testing.T) {
 		},
 	}
 
-	t.Run("CreateAccessControlPolicy without license", func(t *testing.T) {
+	t.Run("CreateAccessControlPolicy without access control service", func(t *testing.T) {
 		_, resp, err := th.SystemAdminClient.CreateAccessControlPolicy(context.Background(), samplePolicy)
 		require.Error(t, err)
 		CheckNotImplementedStatus(t, resp)
 	})
 
 	t.Run("CreateAccessControlPolicy with regular user", func(t *testing.T) {
-		ok := th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterpriseAdvanced))
-		require.True(t, ok, "SetLicense should return true")
-
 		// Create another user who will create the channel
 		channelCreator := th.CreateUser(t)
 		th.LinkUserToTeam(t, channelCreator, th.BasicTeam)
@@ -120,9 +117,6 @@ func TestCreateAccessControlPolicy(t *testing.T) {
 	})
 
 	t.Run("CreateAccessControlPolicy with channel admin for their channel", func(t *testing.T) {
-		ok := th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterpriseAdvanced))
-		require.True(t, ok, "SetLicense should return true")
-
 		// Add the permission to channel admin role
 		th.AddPermissionToRole(t, model.PermissionManageChannelAccessRules.Id, model.ChannelAdminRoleId)
 
@@ -169,9 +163,6 @@ func TestCreateAccessControlPolicy(t *testing.T) {
 	})
 
 	t.Run("CreateAccessControlPolicy with channel admin for another channel should fail", func(t *testing.T) {
-		ok := th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterpriseAdvanced))
-		require.True(t, ok, "SetLicense should return true")
-
 		// Create two private channels
 		privateChannel1 := th.CreatePrivateChannel(t)
 		privateChannel2 := th.CreatePrivateChannel(t)
@@ -208,9 +199,6 @@ func TestCreateAccessControlPolicy(t *testing.T) {
 	})
 
 	t.Run("CreateAccessControlPolicy with channel admin creating parent policy should fail", func(t *testing.T) {
-		ok := th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterpriseAdvanced))
-		require.True(t, ok, "SetLicense should return true")
-
 		// Create a private channel and make user channel admin
 		privateChannel := th.CreatePrivateChannel(t)
 		channelAdmin := th.CreateUser(t)
@@ -246,10 +234,6 @@ func TestCreateAccessControlPolicy(t *testing.T) {
 	})
 
 	th.TestForSystemAdminAndLocal(t, func(t *testing.T, client *model.Client4) {
-		// Set up a test license with Data Retention enabled
-		ok := th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterpriseAdvanced))
-		require.True(t, ok, "SetLicense should return true")
-
 		// Create and set up the mock
 		mockAccessControlService := &mocks.AccessControlServiceInterface{}
 		th.App.Srv().Channels().AccessControl = mockAccessControlService
@@ -268,10 +252,6 @@ func TestCreateAccessControlPolicy(t *testing.T) {
 	}, "CreateAccessControlPolicy with system admin")
 
 	t.Run("CreateAccessControlPolicy with channel scope permissions", func(t *testing.T) {
-		// Set up a test license with Data Retention enabled
-		ok := th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterpriseAdvanced))
-		require.True(t, ok, "SetLicense should return true")
-
 		// Create and set up the mock
 		mockAccessControlService := &mocks.AccessControlServiceInterface{}
 		th.App.Srv().Channels().AccessControl = mockAccessControlService
@@ -310,9 +290,6 @@ func TestCreateAccessControlPolicy(t *testing.T) {
 	})
 
 	t.Run("CreatePermissionPolicy with feature flag disabled", func(t *testing.T) {
-		ok := th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterpriseAdvanced))
-		require.True(t, ok, "SetLicense should return true")
-
 		updateTestFeatureFlags(t, th, func(cfg *model.Config) {
 			cfg.FeatureFlags.PermissionPolicies = false
 			cfg.AccessControlSettings.EnableAttributeBasedAccessControl = new(true)
@@ -338,9 +315,6 @@ func TestCreateAccessControlPolicy(t *testing.T) {
 	})
 
 	t.Run("CreatePermissionPolicy with feature flag enabled", func(t *testing.T) {
-		ok := th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterpriseAdvanced))
-		require.True(t, ok, "SetLicense should return true")
-
 		permissionPolicy := &model.AccessControlPolicy{
 			ID:       model.NewId(),
 			Type:     model.AccessControlPolicyTypePermission,
@@ -374,9 +348,6 @@ func TestCreateAccessControlPolicy(t *testing.T) {
 		// accepted in every case of the policy-type switch. Parent and Team
 		// types are only exercised as sysadmin here; Channel and Permission
 		// sysadmin paths are covered by the sibling subtests above.
-		ok := th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterpriseAdvanced))
-		require.True(t, ok, "SetLicense should return true")
-
 		updateTestFeatureFlags(t, th, func(cfg *model.Config) {
 			cfg.AccessControlSettings.EnableAttributeBasedAccessControl = new(true)
 		})
@@ -415,9 +386,6 @@ func TestCreateAccessControlPolicy(t *testing.T) {
 		// are exercised by the sibling "CreateAccessControlPolicy
 		// with channel scope permissions" test above; this one
 		// pins the permission-rule branch specifically.
-		ok := th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterpriseAdvanced))
-		require.True(t, ok, "SetLicense should return true")
-
 		updateTestFeatureFlags(t, th, func(cfg *model.Config) {
 			cfg.FeatureFlags.PermissionPolicies = true
 			cfg.FeatureFlags.ChannelPermissionPolicies = false
@@ -453,9 +421,6 @@ func TestCreateAccessControlPolicy(t *testing.T) {
 		// the sub-flag on but leaves the umbrella off still gets
 		// a 501. Mirrors the corresponding subtest in
 		// TestSimulatePolicyForUsers.
-		ok := th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterpriseAdvanced))
-		require.True(t, ok, "SetLicense should return true")
-
 		updateTestFeatureFlags(t, th, func(cfg *model.Config) {
 			cfg.FeatureFlags.PermissionPolicies = false
 			cfg.FeatureFlags.ChannelPermissionPolicies = true
@@ -484,9 +449,6 @@ func TestCreateAccessControlPolicy(t *testing.T) {
 	})
 
 	t.Run("CreateChannelPolicy with permission rules accepted when both flags are on", func(t *testing.T) {
-		ok := th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterpriseAdvanced))
-		require.True(t, ok, "SetLicense should return true")
-
 		// Use a real private channel for the policy ID; channel-
 		// scope creation runs an eligibility check that fetches the
 		// channel even for system admins. The sibling
@@ -533,9 +495,6 @@ func TestCreateAccessControlPolicy(t *testing.T) {
 		// eligibility guard must live in the app layer. This test rides that
 		// path: SystemAdmin → handler skips ValidateChannelAccessControlPolicyCreation
 		// → CreateOrUpdateAccessControlPolicy must still reject default channels.
-		ok := th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterpriseAdvanced))
-		require.True(t, ok, "SetLicense should return true")
-
 		mockAccessControlService := &mocks.AccessControlServiceInterface{}
 		th.App.Srv().Channels().AccessControl = mockAccessControlService
 		// SavePolicy should never be reached — the guard rejects before that.
@@ -597,8 +556,6 @@ func TestCreateAccessControlPolicyPreservesSystemManagedFields(t *testing.T) {
 
 	setupChannelAdmin := func(t *testing.T) (*model.Channel, *model.Client4, *mocks.AccessControlServiceInterface) {
 		t.Helper()
-		ok := th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterpriseAdvanced))
-		require.True(t, ok, "SetLicense should return true")
 		th.AddPermissionToRole(t, model.PermissionManageChannelAccessRules.Id, model.ChannelAdminRoleId)
 
 		privateChannel := th.CreatePrivateChannel(t)
@@ -619,8 +576,6 @@ func TestCreateAccessControlPolicyPreservesSystemManagedFields(t *testing.T) {
 	// reaches the save. Caller must defer th.LoginBasic(t).
 	setupTeamAdmin := func(t *testing.T) *mocks.AccessControlServiceInterface {
 		t.Helper()
-		ok := th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterpriseAdvanced))
-		require.True(t, ok, "SetLicense should return true")
 		th.AddPermissionToRole(t, model.PermissionManageTeamAccessRules.Id, model.TeamAdminRoleId)
 
 		teamAdmin := th.CreateUser(t)
@@ -733,9 +688,6 @@ func TestCreateAccessControlPolicyPreservesSystemManagedFields(t *testing.T) {
 	})
 
 	t.Run("system admin retains full control over imports", func(t *testing.T) {
-		ok := th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterpriseAdvanced))
-		require.True(t, ok, "SetLicense should return true")
-
 		privateChannel := th.CreatePrivateChannel(t)
 		mockACS := enableABAC()
 
@@ -850,16 +802,13 @@ func TestGetAccessControlPolicy(t *testing.T) {
 		},
 	}
 
-	t.Run("GetAccessControlPolicy without license", func(t *testing.T) {
+	t.Run("GetAccessControlPolicy without access control service", func(t *testing.T) {
 		_, resp, err := th.SystemAdminClient.GetAccessControlPolicy(context.Background(), samplePolicy.ID)
 		require.Error(t, err)
 		CheckNotImplementedStatus(t, resp)
 	})
 
 	t.Run("GetAccessControlPolicy with regular user", func(t *testing.T) {
-		ok := th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterpriseAdvanced))
-		require.True(t, ok, "SetLicense should return true")
-
 		// Create and set up the mock
 		mockAccessControlService := &mocks.AccessControlServiceInterface{}
 		th.App.Srv().Channels().AccessControl = mockAccessControlService
@@ -880,9 +829,6 @@ func TestGetAccessControlPolicy(t *testing.T) {
 		// receive a clean 404 (handled by the UI as "first-time create")
 		// rather than a misleading 403. Authorization for a channel policy
 		// must not hinge on the policy record already existing.
-		ok := th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterpriseAdvanced))
-		require.True(t, ok, "SetLicense should return true")
-
 		th.AddPermissionToRole(t, model.PermissionManageChannelAccessRules.Id, model.ChannelAdminRoleId)
 
 		privateChannel := th.CreatePrivateChannel(t)
@@ -914,9 +860,6 @@ func TestGetAccessControlPolicy(t *testing.T) {
 		// fallback must only admit admins of the requested channel. A
 		// channel admin asking for an unrelated channel's (missing) policy
 		// must still be denied with 403.
-		ok := th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterpriseAdvanced))
-		require.True(t, ok, "SetLicense should return true")
-
 		th.AddPermissionToRole(t, model.PermissionManageChannelAccessRules.Id, model.ChannelAdminRoleId)
 
 		ownedChannel := th.CreatePrivateChannel(t)
@@ -944,9 +887,6 @@ func TestGetAccessControlPolicy(t *testing.T) {
 	})
 
 	th.TestForSystemAdminAndLocal(t, func(t *testing.T, client *model.Client4) {
-		ok := th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterpriseAdvanced))
-		require.True(t, ok, "SetLicense should return true")
-
 		// Create and set up the mock
 		mockAccessControlService := &mocks.AccessControlServiceInterface{}
 		th.App.Srv().Channels().AccessControl = mockAccessControlService
@@ -967,16 +907,13 @@ func TestDeleteAccessControlPolicy(t *testing.T) {
 
 	samplePolicyID := model.NewId()
 
-	t.Run("DeleteAccessControlPolicy without license", func(t *testing.T) {
+	t.Run("DeleteAccessControlPolicy without access control service", func(t *testing.T) {
 		resp, err := th.SystemAdminClient.DeleteAccessControlPolicy(context.Background(), samplePolicyID)
 		require.Error(t, err)
 		CheckNotImplementedStatus(t, resp)
 	})
 
 	t.Run("DeleteAccessControlPolicy with regular user", func(t *testing.T) {
-		ok := th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterpriseAdvanced))
-		require.True(t, ok, "SetLicense should return true")
-
 		mockAccessControlService := &mocks.AccessControlServiceInterface{}
 		th.App.Srv().Channels().AccessControl = mockAccessControlService
 
@@ -1005,9 +942,6 @@ func TestDeleteAccessControlPolicy(t *testing.T) {
 	})
 
 	t.Run("DeleteAccessControlPolicy returns a status body, not an empty 200", func(t *testing.T) {
-		ok := th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterpriseAdvanced))
-		require.True(t, ok, "SetLicense should return true")
-
 		mockAccessControlService := &mocks.AccessControlServiceInterface{}
 		th.App.Srv().Channels().AccessControl = mockAccessControlService
 
@@ -1038,9 +972,6 @@ func TestDeleteAccessControlPolicy(t *testing.T) {
 	})
 
 	th.TestForSystemAdminAndLocal(t, func(t *testing.T, client *model.Client4) {
-		ok := th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterpriseAdvanced))
-		require.True(t, ok, "SetLicense should return true")
-
 		mockAccessControlService := &mocks.AccessControlServiceInterface{}
 		th.App.Srv().Channels().AccessControl = mockAccessControlService
 
@@ -1074,16 +1005,13 @@ func TestDeleteAccessControlPolicy(t *testing.T) {
 func TestCheckExpression(t *testing.T) {
 	th := SetupConfig(t, maskingOffTestConfig).InitBasic(t)
 
-	t.Run("CheckExpression without license", func(t *testing.T) {
+	t.Run("CheckExpression without access control service", func(t *testing.T) {
 		_, resp, err := th.SystemAdminClient.CheckExpression(context.Background(), "true")
 		require.Error(t, err)
 		CheckNotImplementedStatus(t, resp)
 	})
 
 	t.Run("CheckExpression with regular user", func(t *testing.T) {
-		ok := th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterpriseAdvanced))
-		require.True(t, ok, "SetLicense should return true")
-
 		mockAccessControlService := &mocks.AccessControlServiceInterface{}
 		th.App.Srv().Channels().AccessControl = mockAccessControlService
 
@@ -1097,9 +1025,6 @@ func TestCheckExpression(t *testing.T) {
 	})
 
 	th.TestForSystemAdminAndLocal(t, func(t *testing.T, client *model.Client4) {
-		ok := th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterpriseAdvanced))
-		require.True(t, ok, "SetLicense should return true")
-
 		mockAccessControlService := &mocks.AccessControlServiceInterface{}
 		th.App.Srv().Channels().AccessControl = mockAccessControlService
 		mockAccessControlService.On("CheckExpression", mock.AnythingOfType("*request.Context"), "true").Return([]model.CELExpressionError{}, nil).Times(1)
@@ -1115,9 +1040,6 @@ func TestCheckExpression(t *testing.T) {
 	}, "CheckExpression with system admin")
 
 	th.TestForSystemAdminAndLocal(t, func(t *testing.T, client *model.Client4) {
-		ok := th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterpriseAdvanced))
-		require.True(t, ok, "SetLicense should return true")
-
 		mockAccessControlService := &mocks.AccessControlServiceInterface{}
 		th.App.Srv().Channels().AccessControl = mockAccessControlService
 		mockAccessControlService.On("CheckExpression", mock.AnythingOfType("*request.Context"), "true").Return([]model.CELExpressionError{
@@ -1142,9 +1064,6 @@ func TestCheckExpression(t *testing.T) {
 		// Reload config to pick up the feature flag
 		err := th.App.ReloadConfig()
 		require.NoError(t, err)
-
-		ok := th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterpriseAdvanced))
-		require.True(t, ok, "SetLicense should return true")
 
 		// Add permission to channel admin role
 		th.AddPermissionToRole(t, model.PermissionManageChannelAccessRules.Id, model.ChannelAdminRoleId)
@@ -1209,16 +1128,13 @@ func TestCheckExpression(t *testing.T) {
 func TestTestExpression(t *testing.T) {
 	th := SetupConfig(t, maskingOffTestConfig).InitBasic(t)
 
-	t.Run("TestExpression without license", func(t *testing.T) {
+	t.Run("TestExpression without access control service", func(t *testing.T) {
 		_, resp, err := th.SystemAdminClient.TestExpression(context.Background(), model.QueryExpressionParams{})
 		require.Error(t, err)
 		CheckNotImplementedStatus(t, resp)
 	})
 
 	t.Run("TestExpression with regular user", func(t *testing.T) {
-		ok := th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterpriseAdvanced))
-		require.True(t, ok, "SetLicense should return true")
-
 		mockAccessControlService := &mocks.AccessControlServiceInterface{}
 		th.App.Srv().Channels().AccessControl = mockAccessControlService
 
@@ -1232,9 +1148,6 @@ func TestTestExpression(t *testing.T) {
 	})
 
 	th.TestForSystemAdminAndLocal(t, func(t *testing.T, client *model.Client4) {
-		ok := th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterpriseAdvanced))
-		require.True(t, ok, "SetLicense should return true")
-
 		mockAccessControlService := &mocks.AccessControlServiceInterface{}
 		th.App.Srv().Channels().AccessControl = mockAccessControlService
 		mockAccessControlService.On("QueryUsersForExpression", mock.AnythingOfType("*request.Context"), "true", model.SubjectSearchOptions{}).Return([]*model.User{}, int64(0), nil).Times(1)
@@ -1256,16 +1169,13 @@ func TestTestExpression(t *testing.T) {
 func TestSearchAccessControlPolicies(t *testing.T) {
 	th := SetupConfig(t, maskingOffTestConfig).InitBasic(t)
 
-	t.Run("SearchAccessControlPolicies without license", func(t *testing.T) {
+	t.Run("SearchAccessControlPolicies without access control service", func(t *testing.T) {
 		_, resp, err := th.SystemAdminClient.SearchAccessControlPolicies(context.Background(), model.AccessControlPolicySearch{})
 		require.Error(t, err)
 		CheckNotImplementedStatus(t, resp)
 	})
 
 	t.Run("SearchAccessControlPolicies with regular user", func(t *testing.T) {
-		ok := th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterpriseAdvanced))
-		require.True(t, ok, "SetLicense should return true")
-
 		mockAccessControlService := &mocks.AccessControlServiceInterface{}
 		th.App.Srv().Channels().AccessControl = mockAccessControlService
 
@@ -1279,9 +1189,6 @@ func TestSearchAccessControlPolicies(t *testing.T) {
 	})
 
 	th.TestForSystemAdminAndLocal(t, func(t *testing.T, client *model.Client4) {
-		ok := th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterpriseAdvanced))
-		require.True(t, ok, "SetLicense should return true")
-
 		mockAccessControlService := &mocks.AccessControlServiceInterface{}
 		th.App.Srv().Channels().AccessControl = mockAccessControlService
 		mockAccessControlService.On("SearchPolicies", mock.AnythingOfType("*request.Context"), model.AccessControlPolicySearch{
@@ -1302,9 +1209,6 @@ func TestSearchAccessControlPolicies(t *testing.T) {
 	}, "SearchAccessControlPolicies with system admin")
 
 	t.Run("SearchPermissionPolicies with feature flag disabled", func(t *testing.T) {
-		ok := th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterpriseAdvanced))
-		require.True(t, ok, "SetLicense should return true")
-
 		updateTestFeatureFlags(t, th, func(cfg *model.Config) {
 			cfg.FeatureFlags.PermissionPolicies = false
 			cfg.AccessControlSettings.EnableAttributeBasedAccessControl = new(true)
@@ -1319,9 +1223,6 @@ func TestSearchAccessControlPolicies(t *testing.T) {
 	})
 
 	t.Run("SearchPermissionPolicies with feature flag enabled", func(t *testing.T) {
-		ok := th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterpriseAdvanced))
-		require.True(t, ok, "SetLicense should return true")
-
 		mockAccessControlService := &mocks.AccessControlServiceInterface{}
 		th.App.Srv().Channels().AccessControl = mockAccessControlService
 		mockAccessControlService.On("SearchPolicies", mock.AnythingOfType("*request.Context"), model.AccessControlPolicySearch{
@@ -1349,11 +1250,8 @@ func TestSearchTeamAccessControlPolicies(t *testing.T) {
 
 	teamSearch := model.AccessControlPolicySearch{TeamID: th.BasicTeam.Id}
 
-	setupLicenseAndABAC := func(t *testing.T) {
+	setupABAC := func(t *testing.T) {
 		t.Helper()
-		ok := th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterpriseAdvanced))
-		require.True(t, ok, "SetLicense should return true")
-
 		mockAccessControlService := &mocks.AccessControlServiceInterface{}
 		th.App.Srv().Channels().AccessControl = mockAccessControlService
 
@@ -1364,7 +1262,7 @@ func TestSearchTeamAccessControlPolicies(t *testing.T) {
 		th.AddPermissionToRole(t, model.PermissionManageTeamAccessRules.Id, model.TeamAdminRoleId)
 	}
 
-	t.Run("without license returns not implemented", func(t *testing.T) {
+	t.Run("without access control service returns not implemented", func(t *testing.T) {
 		originalACS := th.App.Srv().Channels().AccessControl
 		th.App.Srv().Channels().AccessControl = nil
 		defer func() { th.App.Srv().Channels().AccessControl = originalACS }()
@@ -1375,7 +1273,7 @@ func TestSearchTeamAccessControlPolicies(t *testing.T) {
 	})
 
 	t.Run("regular user without manage_team_access_rules permission gets forbidden", func(t *testing.T) {
-		setupLicenseAndABAC(t)
+		setupABAC(t)
 
 		_, resp, err := th.Client.SearchAccessControlPolicies(context.Background(), teamSearch)
 		require.Error(t, err)
@@ -1383,7 +1281,7 @@ func TestSearchTeamAccessControlPolicies(t *testing.T) {
 	})
 
 	t.Run("team admin with manage_team_access_rules can search", func(t *testing.T) {
-		setupLicenseAndABAC(t)
+		setupABAC(t)
 
 		th.LoginTeamAdmin(t)
 		defer th.LoginBasic(t)
@@ -1397,7 +1295,7 @@ func TestSearchTeamAccessControlPolicies(t *testing.T) {
 	})
 
 	t.Run("team admin without manage_team_access_rules gets forbidden", func(t *testing.T) {
-		setupLicenseAndABAC(t)
+		setupABAC(t)
 
 		defaultPerms := th.SaveDefaultRolePermissions(t)
 		defer th.RestoreDefaultRolePermissions(t, defaultPerms)
@@ -1412,7 +1310,7 @@ func TestSearchTeamAccessControlPolicies(t *testing.T) {
 	})
 
 	th.TestForSystemAdminAndLocal(t, func(t *testing.T, client *model.Client4) {
-		setupLicenseAndABAC(t)
+		setupABAC(t)
 
 		policiesResp, resp, err := client.SearchAccessControlPolicies(context.Background(), teamSearch)
 		require.NoError(t, err)
@@ -1439,16 +1337,13 @@ func TestAssignAccessPolicy(t *testing.T) {
 		},
 	}
 
-	t.Run("AssignAccessPolicy without license", func(t *testing.T) {
+	t.Run("AssignAccessPolicy without access control service", func(t *testing.T) {
 		resp, err := th.SystemAdminClient.AssignAccessControlPolicies(context.Background(), model.NewId(), []string{model.NewId()})
 		require.Error(t, err)
 		CheckNotImplementedStatus(t, resp)
 	})
 
 	t.Run("AssignAccessPolicy with regular user", func(t *testing.T) {
-		ok := th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterpriseAdvanced))
-		require.True(t, ok, "SetLicense should return true")
-
 		mockAccessControlService := &mocks.AccessControlServiceInterface{}
 		th.App.Srv().Channels().AccessControl = mockAccessControlService
 
@@ -1462,9 +1357,6 @@ func TestAssignAccessPolicy(t *testing.T) {
 	})
 
 	th.TestForSystemAdminAndLocal(t, func(t *testing.T, client *model.Client4) {
-		ok := th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterpriseAdvanced))
-		require.True(t, ok, "SetLicense should return true")
-
 		// Use a real private channel: GetChannels hits the DB and returns ErrNotFound
 		// for a random UUID with no matching row, causing the handler to return 404.
 		privateCh := th.CreateChannelWithClientAndTeam(t, th.SystemAdminClient, model.ChannelTypePrivate, th.BasicTeam.Id)
@@ -1516,16 +1408,13 @@ func TestUnassignAccessPolicy(t *testing.T) {
 		},
 	}
 
-	t.Run("UnassignAccessPolicy without license", func(t *testing.T) {
+	t.Run("UnassignAccessPolicy without access control service", func(t *testing.T) {
 		resp, err := th.SystemAdminClient.UnassignAccessControlPolicies(context.Background(), samplePolicy.ID, []string{model.NewId()})
 		require.Error(t, err)
 		CheckNotImplementedStatus(t, resp)
 	})
 
 	t.Run("UnassignAccessPolicy with regular user", func(t *testing.T) {
-		ok := th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterpriseAdvanced))
-		require.True(t, ok, "SetLicense should return true")
-
 		mockAccessControlService := &mocks.AccessControlServiceInterface{}
 		th.App.Srv().Channels().AccessControl = mockAccessControlService
 
@@ -1540,9 +1429,6 @@ func TestUnassignAccessPolicy(t *testing.T) {
 
 	th.TestForSystemAdminAndLocal(t, func(t *testing.T, client *model.Client4) {
 		resourceID := model.NewId()
-
-		ok := th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterpriseAdvanced))
-		require.True(t, ok, "SetLicense should return true")
 
 		child := &model.AccessControlPolicy{
 			ID:       resourceID,
@@ -1589,16 +1475,13 @@ func TestGetChannelsForAccessControlPolicy(t *testing.T) {
 		},
 	}
 
-	t.Run("GetChannelsForAccessControlPolicy without license", func(t *testing.T) {
+	t.Run("GetChannelsForAccessControlPolicy without access control service", func(t *testing.T) {
 		_, resp, err := th.SystemAdminClient.GetChannelsForAccessControlPolicy(context.Background(), samplePolicy.ID, "", 1000)
 		require.Error(t, err)
 		CheckNotImplementedStatus(t, resp)
 	})
 
 	t.Run("GetChannelsForAccessControlPolicy with regular user", func(t *testing.T) {
-		ok := th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterpriseAdvanced))
-		require.True(t, ok, "SetLicense should return true")
-
 		mockAccessControlService := &mocks.AccessControlServiceInterface{}
 		th.App.Srv().Channels().AccessControl = mockAccessControlService
 
@@ -1612,9 +1495,6 @@ func TestGetChannelsForAccessControlPolicy(t *testing.T) {
 	})
 
 	th.TestForSystemAdminAndLocal(t, func(t *testing.T, client *model.Client4) {
-		ok := th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterpriseAdvanced))
-		require.True(t, ok, "SetLicense should return true")
-
 		mockAccessControlService := &mocks.AccessControlServiceInterface{}
 		th.App.Srv().Channels().AccessControl = mockAccessControlService
 		mockAccessControlService.On("GetPolicy", mock.AnythingOfType("*request.Context"), samplePolicy.ID).Return(samplePolicy, nil).Times(1)
@@ -1651,11 +1531,8 @@ func TestSearchChannelsForAccessControlPolicy(t *testing.T) {
 		}
 	}
 
-	setupLicenseAndABAC := func(t *testing.T) {
+	setupABAC := func(t *testing.T) {
 		t.Helper()
-		ok := th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterpriseAdvanced))
-		require.True(t, ok, "SetLicense should return true")
-
 		mockAccessControlService := &mocks.AccessControlServiceInterface{}
 		th.App.Srv().Channels().AccessControl = mockAccessControlService
 
@@ -1667,7 +1544,7 @@ func TestSearchChannelsForAccessControlPolicy(t *testing.T) {
 	}
 
 	t.Run("regular user gets forbidden", func(t *testing.T) {
-		setupLicenseAndABAC(t)
+		setupABAC(t)
 
 		_, resp, err := th.Client.SearchChannelsForAccessControlPolicy(context.Background(), model.NewId(), model.ChannelSearch{})
 		require.Error(t, err)
@@ -1675,7 +1552,7 @@ func TestSearchChannelsForAccessControlPolicy(t *testing.T) {
 	})
 
 	t.Run("team admin without team_id query param gets forbidden", func(t *testing.T) {
-		setupLicenseAndABAC(t)
+		setupABAC(t)
 
 		th.LinkUserToTeam(t, th.TeamAdminUser, th.BasicTeam)
 		th.UpdateUserToTeamAdmin(t, th.TeamAdminUser, th.BasicTeam)
@@ -1690,7 +1567,7 @@ func TestSearchChannelsForAccessControlPolicy(t *testing.T) {
 	})
 
 	t.Run("team admin with valid team_id can search", func(t *testing.T) {
-		setupLicenseAndABAC(t)
+		setupABAC(t)
 
 		policy := newSamplePolicy()
 		savedPolicy, err := th.App.Srv().Store().AccessControlPolicy().Save(th.Context, policy)
@@ -1713,7 +1590,7 @@ func TestSearchChannelsForAccessControlPolicy(t *testing.T) {
 	})
 
 	t.Run("public channels assigned to the policy appear in search results", func(t *testing.T) {
-		setupLicenseAndABAC(t)
+		setupABAC(t)
 
 		parentPolicy := newSamplePolicy()
 		savedParent, err := th.App.Srv().Store().AccessControlPolicy().Save(th.Context, parentPolicy)
@@ -1785,7 +1662,7 @@ func TestSearchChannelsForAccessControlPolicy(t *testing.T) {
 	})
 
 	t.Run("team admin body TeamIds forced to authorized team", func(t *testing.T) {
-		setupLicenseAndABAC(t)
+		setupABAC(t)
 
 		policy := newSamplePolicy()
 		savedPolicy, err := th.App.Srv().Store().AccessControlPolicy().Save(th.Context, policy)
@@ -1824,7 +1701,7 @@ func TestSearchChannelsForAccessControlPolicy(t *testing.T) {
 	})
 
 	th.TestForSystemAdminAndLocal(t, func(t *testing.T, client *model.Client4) {
-		setupLicenseAndABAC(t)
+		setupABAC(t)
 
 		policy := newSamplePolicy()
 		savedPolicy, err := th.App.Srv().Store().AccessControlPolicy().Save(th.Context, policy)
@@ -1871,16 +1748,13 @@ func TestSetActiveStatus(t *testing.T) {
 		},
 	}
 
-	t.Run("SetActiveStatus without license", func(t *testing.T) {
+	t.Run("SetActiveStatus without access control service", func(t *testing.T) {
 		_, resp, err := th.SystemAdminClient.SetAccessControlPolicyActive(context.Background(), updateReq)
 		require.Error(t, err)
 		CheckNotImplementedStatus(t, resp)
 	})
 
 	t.Run("SetActiveStatus with regular user", func(t *testing.T) {
-		ok := th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterpriseAdvanced))
-		require.True(t, ok, "SetLicense should return true")
-
 		// Remove permission from regular user
 		_, resp, err := th.Client.SetAccessControlPolicyActive(context.Background(), updateReq)
 		require.Error(t, err)
@@ -1888,9 +1762,6 @@ func TestSetActiveStatus(t *testing.T) {
 	})
 
 	th.TestForSystemAdminAndLocal(t, func(t *testing.T, client *model.Client4) {
-		ok := th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterpriseAdvanced))
-		require.True(t, ok, "SetLicense should return true")
-
 		th.App.UpdateConfig(func(cfg *model.Config) {
 			cfg.AccessControlSettings.EnableAttributeBasedAccessControl = new(true)
 		})
@@ -1914,9 +1785,6 @@ func TestSetActiveStatus(t *testing.T) {
 		th.App.UpdateConfig(func(cfg *model.Config) {
 			cfg.AccessControlSettings.EnableAttributeBasedAccessControl = new(true)
 		})
-
-		ok := th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterpriseAdvanced))
-		require.True(t, ok, "SetLicense should return true")
 
 		// Add permission to channel admin role
 		th.AddPermissionToRole(t, model.PermissionManageChannelAccessRules.Id, model.ChannelAdminRoleId)
@@ -1976,9 +1844,6 @@ func TestSetActiveStatus(t *testing.T) {
 			cfg.AccessControlSettings.EnableAttributeBasedAccessControl = new(true)
 		})
 
-		ok := th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterpriseAdvanced))
-		require.True(t, ok, "SetLicense should return true")
-
 		// Add permission to channel admin role
 		th.AddPermissionToRole(t, model.PermissionManageChannelAccessRules.Id, model.ChannelAdminRoleId)
 
@@ -2035,7 +1900,6 @@ func TestSetActiveStatus(t *testing.T) {
 // against a canned mock response.
 func wirePolicyStore(t *testing.T, th *TestHelper) {
 	t.Helper()
-	require.True(t, th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterpriseAdvanced)))
 	th.App.UpdateConfig(func(cfg *model.Config) {
 		cfg.AccessControlSettings.EnableAttributeBasedAccessControl = model.NewPointer(true)
 	})
@@ -2187,9 +2051,6 @@ func TestAccessControlPolicyAutoAddWire(t *testing.T) {
 
 func setupTeamAdminABAC(t *testing.T, th *TestHelper) *mocks.AccessControlServiceInterface {
 	t.Helper()
-	ok := th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterpriseAdvanced))
-	require.True(t, ok, "SetLicense should return true")
-
 	mockACS := &mocks.AccessControlServiceInterface{}
 	th.App.Srv().Channels().AccessControl = mockACS
 
@@ -2241,8 +2102,6 @@ func newParentPolicy(teamID string) *model.AccessControlPolicy {
 func TestResponseMaskingOnPolicyEndpoints(t *testing.T) {
 	th := Setup(t).InitBasic(t)
 
-	ok := th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterpriseAdvanced))
-	require.True(t, ok, "SetLicense should return true")
 	th.App.UpdateConfig(func(cfg *model.Config) {
 		cfg.AccessControlSettings.EnableAttributeBasedAccessControl = new(true)
 	})
@@ -3037,9 +2896,7 @@ func TestScopeReconciliationCrossTeam(t *testing.T) {
 
 	t.Run("scope cleared when cross-team channel is added then restored after removal", func(t *testing.T) {
 		// This test exercises ReconcilePolicyTeamScope via the app/store directly —
-		// no HTTP handler is involved, so no ACS mock is needed. Only license + config.
-		ok := th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterpriseAdvanced))
-		require.True(t, ok, "SetLicense should return true")
+		// no HTTP handler is involved, so no ACS mock is needed. Only config.
 		th.App.UpdateConfig(func(cfg *model.Config) {
 			cfg.AccessControlSettings.EnableAttributeBasedAccessControl = new(true)
 		})
@@ -3152,18 +3009,6 @@ func TestSimulatePolicyForUsers(t *testing.T) {
 	th := SetupConfig(t, maskingOffTestConfig).InitBasic(t)
 
 	t.Run("returns 501 when umbrella PermissionPolicies flag is disabled", func(t *testing.T) {
-		// Set the Enterprise Advanced license up-front so any future
-		// license-level middleware ahead of the handler can't be the
-		// reason for a 501 here. With the license valid, the only
-		// remaining thing that can flip the response is the
-		// FeatureFlag below — which is the contract under test.
-		// Sibling sub-tests (rejects empty users / system admin
-		// reaches the service mock) follow the same pattern of
-		// setting but not clearing the license; the helper is
-		// scoped to this Test* function.
-		ok := th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterpriseAdvanced))
-		require.True(t, ok)
-
 		updateTestFeatureFlags(t, th, func(cfg *model.Config) {
 			cfg.FeatureFlags.PermissionPolicies = false
 			cfg.FeatureFlags.PolicySimulation = true // sub-flag alone must not be enough
@@ -3189,9 +3034,6 @@ func TestSimulatePolicyForUsers(t *testing.T) {
 		// IsPolicySimulationEnabled helper requires the sub-flag too.
 		// This pins the dependency direction: turning the umbrella on
 		// must NOT silently enable simulation.
-		ok := th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterpriseAdvanced))
-		require.True(t, ok)
-
 		updateTestFeatureFlags(t, th, func(cfg *model.Config) {
 			cfg.FeatureFlags.PermissionPolicies = true
 			cfg.FeatureFlags.PolicySimulation = false
@@ -3209,14 +3051,8 @@ func TestSimulatePolicyForUsers(t *testing.T) {
 	})
 
 	t.Run("rejects regular users without channel/team permission", func(t *testing.T) {
-		// Set the Enterprise Advanced license explicitly so this
-		// subtest is self-contained — the deny we assert below comes
-		// from `authorizeSimulatePolicy`'s permission check, and we
-		// want to verify that gate in isolation regardless of the
-		// license state any sibling subtest may have left behind.
-		ok := th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterpriseAdvanced))
-		require.True(t, ok)
-		defer th.App.Srv().SetLicense(nil)
+		// The deny we assert below comes from `authorizeSimulatePolicy`'s
+		// permission check.
 
 		updateTestFeatureFlags(t, th, func(cfg *model.Config) {
 			cfg.FeatureFlags.PermissionPolicies = true
@@ -3236,9 +3072,6 @@ func TestSimulatePolicyForUsers(t *testing.T) {
 	})
 
 	t.Run("rejects empty users", func(t *testing.T) {
-		ok := th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterpriseAdvanced))
-		require.True(t, ok)
-
 		updateTestFeatureFlags(t, th, func(cfg *model.Config) {
 			cfg.FeatureFlags.PermissionPolicies = true
 			cfg.FeatureFlags.PolicySimulation = true
@@ -3260,9 +3093,6 @@ func TestSimulatePolicyForUsers(t *testing.T) {
 	})
 
 	t.Run("system admin reaches the service mock", func(t *testing.T) {
-		ok := th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterpriseAdvanced))
-		require.True(t, ok)
-
 		updateTestFeatureFlags(t, th, func(cfg *model.Config) {
 			cfg.FeatureFlags.PermissionPolicies = true
 			cfg.FeatureFlags.PolicySimulation = true
@@ -3290,9 +3120,6 @@ func TestSimulatePolicyForUsers(t *testing.T) {
 	})
 
 	t.Run("rejects delegated simulate when user is not in team scope", func(t *testing.T) {
-		ok := th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterpriseAdvanced))
-		require.True(t, ok)
-
 		updateTestFeatureFlags(t, th, func(cfg *model.Config) {
 			cfg.FeatureFlags.PermissionPolicies = true
 			cfg.FeatureFlags.PolicySimulation = true
@@ -3330,9 +3157,6 @@ func TestSimulatePolicyForUsers(t *testing.T) {
 	})
 
 	t.Run("channel admin response strips evaluation trees", func(t *testing.T) {
-		ok := th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterpriseAdvanced))
-		require.True(t, ok)
-
 		updateTestFeatureFlags(t, th, func(cfg *model.Config) {
 			cfg.FeatureFlags.PermissionPolicies = true
 			cfg.FeatureFlags.PolicySimulation = true
@@ -3401,9 +3225,6 @@ func TestSimulatePolicyForUsers(t *testing.T) {
 	})
 
 	t.Run("system admin response keeps evaluation trees", func(t *testing.T) {
-		ok := th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterpriseAdvanced))
-		require.True(t, ok)
-
 		updateTestFeatureFlags(t, th, func(cfg *model.Config) {
 			cfg.FeatureFlags.PermissionPolicies = true
 			cfg.FeatureFlags.PolicySimulation = true
@@ -3465,7 +3286,6 @@ func TestSimulatePolicyForUsers(t *testing.T) {
 // and does not go through the mocked AccessControl engine.
 func TestGetFieldsAutocompleteResourceFields(t *testing.T) {
 	th := Setup(t).InitBasic(t)
-	th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterprise))
 	// Setup() only clears the read-only guard on feature flags when it is handed a
 	// config updater, so do it explicitly before flipping one.
 	th.ConfigStore.SetReadOnlyFF(false)

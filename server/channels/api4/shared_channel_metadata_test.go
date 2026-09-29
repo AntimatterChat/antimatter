@@ -23,11 +23,6 @@ func setupTestEnvironment(t *testing.T) (*TestHelper, *sharedchannel.Service) {
 	ss := th.App.Srv().Store()
 	EnsureCleanState(t, th, ss)
 
-	// Set license with all enterprise features
-	license := model.NewTestLicense()
-	license.SkuShortName = model.LicenseShortSkuEnterprise
-	th.App.Srv().SetLicense(license)
-
 	// Enable post priorities and persistent notifications
 	th.App.UpdateConfig(func(cfg *model.Config) {
 		*cfg.ServiceSettings.PostPriority = true
@@ -36,8 +31,7 @@ func setupTestEnvironment(t *testing.T) (*TestHelper, *sharedchannel.Service) {
 		*cfg.ServiceSettings.PersistentNotificationMaxRecipients = 100
 	})
 
-	// Verify license and settings
-	require.NotNil(t, th.App.Srv().License(), "License should be active")
+	// Verify settings
 	postPriorityEnabled := *th.App.Config().ServiceSettings.PostPriority
 	require.True(t, postPriorityEnabled, "Post priorities should be enabled")
 

@@ -81,13 +81,6 @@ func TestMapPropertyServiceError(t *testing.T) {
 			expectDetail:   true,
 		},
 		{
-			name:           "license required",
-			sentinel:       properties.ErrLicenseRequired,
-			expectedID:     "app.property.license_error",
-			expectedStatus: http.StatusForbidden,
-			expectDetail:   false,
-		},
-		{
 			name:           "invalid field attrs",
 			sentinel:       properties.ErrInvalidFieldAttrs,
 			expectedID:     "app.property_field.invalid_attrs.app_error",

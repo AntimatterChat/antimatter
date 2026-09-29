@@ -35,11 +35,6 @@ func cleanupCPAFields(t *testing.T, th *TestHelper) {
 func TestPluginProperties(t *testing.T) {
 	th := Setup(t).InitBasic(t)
 
-	// Subtests that exercise the access_control group require an
-	// Enterprise license because LicenseCheckHook gates that group.
-	th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterprise))
-	t.Cleanup(func() { _ = th.App.Srv().RemoveLicense() })
-
 	t.Run("test property field methods", func(t *testing.T) {
 		groupName := model.NewId()
 		tearDown, pluginIDs, activationErrors := SetAppEnvironmentWithPlugins(t, []string{`

@@ -163,8 +163,6 @@ func TestGetScheduledPostsWithholdsThumbnailWhenPolicyDenies(t *testing.T) {
 		cfg.FeatureFlags.PermissionPolicies = true
 	}).InitBasic(t)
 
-	th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuProfessional))
-
 	info := uploadTestImage(t, th, th.BasicChannel.Id, "scheduled-attachment.png")
 
 	created, _, err := th.Client.CreateScheduledPost(context.Background(), &model.ScheduledPost{
@@ -248,7 +246,6 @@ func TestFileMetadataServedWhenPolicyAllows(t *testing.T) {
 		cfg.FeatureFlags.PermissionPolicies = true
 	}).InitBasic(t)
 
-	th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuProfessional))
 	th.App.UpdateConfig(func(cfg *model.Config) { *cfg.ServiceSettings.AllowSyncedDrafts = true })
 
 	requireFileServed := func(metadata *model.PostMetadata, fileID, where string) {

@@ -54,7 +54,7 @@ type PropertyHook interface {
 
 	// Field pre-hook for count operations. Count operations return only a
 	// scalar so there is no post-hook — access control applied to per-row
-	// data does not apply, but license/group-level gating still does.
+	// data does not apply, but group-level gating still does.
 	// Return an error to block the count.
 	PreCountPropertyFields(rctx request.CTX, groupID string) error
 

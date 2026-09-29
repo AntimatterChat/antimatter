@@ -14,8 +14,8 @@ import (
 	"github.com/mattermost/mattermost/server/v8/einterfaces/mocks"
 )
 
-// setupTeamABACEnforcement returns a TestHelper with the team ABAC kill switch,
-// license, and config all enabled — the only state under which the JoinUserToTeam
+// setupTeamABACEnforcement returns a TestHelper with the team ABAC kill switch
+// and config both enabled — the only state under which the JoinUserToTeam
 // gate engages. The feature flag must be set at setup time because the config
 // store treats the FeatureFlags section as read-only at runtime.
 func setupTeamABACEnforcement(t *testing.T) *TestHelper {
@@ -25,12 +25,10 @@ func setupTeamABACEnforcement(t *testing.T) *TestHelper {
 	th.App.UpdateConfig(func(cfg *model.Config) {
 		*cfg.AccessControlSettings.EnableAttributeBasedAccessControl = true
 	})
-	require.True(t, th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterpriseAdvanced)))
-	t.Cleanup(func() { th.App.Srv().SetLicense(nil) })
 	return th
 }
 
-// setupTeamABACPrereqsFlagOff enables the license and config prerequisites but
+// setupTeamABACPrereqsFlagOff enables the config prerequisites but
 // leaves the TeamMembershipAccessControl flag off, so a governed team exercises
 // the kill-switch branch with everything else in place.
 func setupTeamABACPrereqsFlagOff(t *testing.T) *TestHelper {
@@ -40,8 +38,6 @@ func setupTeamABACPrereqsFlagOff(t *testing.T) *TestHelper {
 	th.App.UpdateConfig(func(cfg *model.Config) {
 		*cfg.AccessControlSettings.EnableAttributeBasedAccessControl = true
 	})
-	require.True(t, th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterpriseAdvanced)))
-	t.Cleanup(func() { th.App.Srv().SetLicense(nil) })
 	return th
 }
 
@@ -126,7 +122,7 @@ func TestJoinUserToTeamAccessControlEnforcement(t *testing.T) {
 	t.Run("unavailable PDP denies a governed join (no silent allow)", func(t *testing.T) {
 		team := newEnforcedTeam(t)
 		user := th.CreateUser(t)
-		// No AccessControl service wired, yet license/config/flag and a policy
+		// No AccessControl service wired, yet config/flag and a policy
 		// are all present: the team is governed but unevaluable → deny.
 		th.App.Srv().ch.AccessControl = nil
 

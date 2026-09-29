@@ -22,8 +22,8 @@ const attributeViewRefreshInterval = 30 * time.Second
 
 const accessControlChildPolicySearchLimit = 1000
 
-// attributeBasedAccessControlEnabled must stay the exact predicate the enforcement paths use, with
-// no license check, so the render-ETag and cache-invalidation gates can never be narrower than the
+// attributeBasedAccessControlEnabled must stay the exact predicate the enforcement paths use, so
+// the render-ETag and cache-invalidation gates can never be narrower than the
 // sanitization they keep in step with.
 func attributeBasedAccessControlEnabled(cfg *model.Config) bool {
 	return cfg.FeatureFlags.PermissionPolicies &&
@@ -700,8 +700,7 @@ func (a *App) TestExpression(rctx request.CTX, expression string, opts model.Sub
 //     that isn't a draft-side blame on the editing rule and flips
 //     orphaned denies back to allow.
 //
-// Returns NotImplemented when the access control service is unavailable
-// (no enterprise license / ABAC disabled).
+// Returns NotImplemented when the access control service is unavailable.
 func (a *App) SimulateAccessControlPolicyForUsers(rctx request.CTX, params model.PolicySimulationByUsersParams) (*model.PolicySimulationResponse, *model.AppError) {
 	acs := a.Srv().ch.AccessControl
 	if acs == nil {
