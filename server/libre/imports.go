@@ -10,9 +10,11 @@ import (
 	_ "github.com/mattermost/mattermost/server/v8/libre/intune"
 	_ "github.com/mattermost/mattermost/server/v8/libre/ldap"
 	_ "github.com/mattermost/mattermost/server/v8/libre/metrics"
+	_ "github.com/mattermost/mattermost/server/v8/libre/notification"
 	_ "github.com/mattermost/mattermost/server/v8/libre/oauth/google"
 	_ "github.com/mattermost/mattermost/server/v8/libre/oauth/office365"
 	_ "github.com/mattermost/mattermost/server/v8/libre/oauth/openid"
 	_ "github.com/mattermost/mattermost/server/v8/libre/outgoingoauth"
+	_ "github.com/mattermost/mattermost/server/v8/libre/pushproxy"
 	_ "github.com/mattermost/mattermost/server/v8/libre/saml"
 )
