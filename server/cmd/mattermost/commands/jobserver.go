@@ -41,8 +41,6 @@ func jobserverCmdF(command *cobra.Command, args []string) error {
 	}
 	defer a.Srv().Shutdown()
 
-	a.Srv().LoadLicense()
-
 	rctx := request.EmptyContext(a.Log())
 
 	// Run jobs

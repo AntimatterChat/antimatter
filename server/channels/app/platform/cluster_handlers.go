@@ -165,7 +165,6 @@ func (ps *PlatformService) InvalidateAllCachesSkipSend() *model.AppError {
 	if err := linkCache.Purge(); err != nil {
 		ps.logger.Warn("Failed to clear the link cache", mlog.Err(err))
 	}
-	ps.LoadLicense()
 	return nil
 }
 

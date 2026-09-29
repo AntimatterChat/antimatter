@@ -32,12 +32,6 @@ func RegisterSamlDiagnosticInterface(f func(*PlatformService) einterfaces.SamlDi
 	samlDiagnosticInterface = f
 }
 
-var licenseInterface func(*PlatformService) einterfaces.LicenseInterface
-
-func RegisterLicenseInterface(f func(*PlatformService) einterfaces.LicenseInterface) {
-	licenseInterface = f
-}
-
 var metricsInterfaceFn func(*PlatformService, string, string) einterfaces.MetricsInterface
 
 func RegisterMetricsInterface(f func(*PlatformService, string, string) einterfaces.MetricsInterface) {

@@ -234,14 +234,6 @@ func (api *API) RateLimitedHandler(apiHandler http.Handler, settings model.RateL
 	return rateLimiter.RateLimitHandler(apiHandler)
 }
 
-func requireLicense(c *Context) *model.AppError {
-	if c.App.Channels().License() == nil {
-		err := model.NewAppError("", "api.license_error", nil, "", http.StatusNotImplemented)
-		return err
-	}
-	return nil
-}
-
 func setHandlerOpts(handler *web.Handler, opts ...APIHandlerOption) {
 	if len(opts) == 0 {
 		return

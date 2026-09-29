@@ -135,10 +135,3 @@ func SetCluster(cluster einterfaces.ClusterInterface) Option {
 		return nil
 	}
 }
-
-func ForceEnableRedis() Option {
-	return func(ps *PlatformService) error {
-		ps.forceEnableRedis = true
-		return nil
-	}
-}

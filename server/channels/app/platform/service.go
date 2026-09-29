@@ -79,22 +79,15 @@ type PlatformService struct {
 	featureFlagStop              chan struct{}
 	featureFlagStopped           chan struct{}
 
-	licenseValue       atomic.Pointer[model.License]
-	clientLicenseValue atomic.Value
-	licenseListeners   map[string]func(*model.License, *model.License)
-	licenseManager     einterfaces.LicenseInterface
-
-	telemetryId       string
-	configListenerId  string
-	licenseListenerId string
+	telemetryId      string
+	configListenerId string
 
 	clusterLeaderListeners sync.Map
 	clusterIFace           einterfaces.ClusterInterface
 	Busy                   *Busy
 
-	SearchEngine            *searchengine.Broker
-	searchConfigListenerId  string
-	searchLicenseListenerId string
+	SearchEngine           *searchengine.Broker
+	searchConfigListenerId string
 
 	esWatcher *searchEngineWatcher
 
@@ -129,10 +122,6 @@ type PlatformService struct {
 	sharedChannelService   SharedChannelServiceIFace
 
 	pluginEnv HookRunner
-
-	// This is a test mode setting used to enable Redis
-	// without a license.
-	forceEnableRedis bool
 
 	pdpService einterfaces.PolicyDecisionPointInterface
 
@@ -178,7 +167,6 @@ func New(sc ServiceConfig, options ...Option) (*PlatformService, error) {
 		WebSocketRouter: &WebSocketRouter{
 			handlers: make(map[string]webSocketHandler),
 		},
-		licenseListeners:          map[string]func(*model.License, *model.License){},
 		additionalClusterHandlers: map[model.ClusterEvent]einterfaces.ClusterMessageHandler{},
 		statusUpdateChan:          make(chan *model.Status, statusUpdateBufferSize),
 		statusUpdateExitSignal:    make(chan struct{}),
@@ -220,30 +208,15 @@ func New(sc ServiceConfig, options ...Option) (*PlatformService, error) {
 
 	ps.Log().Info("Server is initializing...", mlog.String("go_version", runtime.Version()))
 
-	logCurrentVersion := fmt.Sprintf("Current version is %v (%v/%v/%v/%v)", model.CurrentVersion, model.BuildNumber, model.BuildDate, model.BuildHash, model.BuildHashEnterprise)
+	logCurrentVersion := fmt.Sprintf("Current version is %v (%v/%v/%v)", model.CurrentVersion, model.BuildNumber, model.BuildDate, model.BuildHash)
 	ps.Log().Info(
 		logCurrentVersion,
 		mlog.String("current_version", model.CurrentVersion),
 		mlog.String("build_number", model.BuildNumber),
 		mlog.String("build_date", model.BuildDate),
 		mlog.String("build_hash", model.BuildHash),
-		mlog.String("build_hash_enterprise", model.BuildHashEnterprise),
 		mlog.String("service_environment", model.GetServiceEnvironment()),
 	)
-
-	if model.BuildEnterpriseReady == "true" {
-		isTrial := false
-		if licence := ps.License(); licence != nil {
-			isTrial = licence.IsTrial
-		}
-		ps.Log().Info(
-			"Enterprise Build",
-			mlog.Bool("enterprise_build", true),
-			mlog.Bool("is_trial", isTrial),
-		)
-	} else {
-		ps.Log().Info("Team Edition Build", mlog.Bool("enterprise_build", false))
-	}
 
 	// Step 2: Cache provider.
 	cacheConfig := ps.configStore.Get().CacheSettings
@@ -329,12 +302,6 @@ func New(sc ServiceConfig, options ...Option) (*PlatformService, error) {
 				return nil, fmt.Errorf("cannot create local cache layer: %w", err2)
 			}
 
-			license := ps.License()
-			ps.sqlStore.UpdateLicense(license)
-			ps.AddLicenseListener(func(oldLicense, newLicense *model.License) {
-				ps.sqlStore.UpdateLicense(newLicense)
-			})
-
 			return lcl, nil
 		}
 	}
@@ -349,9 +316,6 @@ func New(sc ServiceConfig, options ...Option) (*PlatformService, error) {
 	markdown.SetMaxPostRunes(ps.MaxPostSize())
 
 	// Step 7: initialize status and session cache.
-	// We need to do this because ps.LoadLicense() called in step 8, could
-	// end up calling InvalidateAllCaches, so the status and session caches
-	// need to be initialized before that.
 
 	// Note: we hardcode the session and status cache to LRU because they lead
 	// to a lot of SCAN calls in case of Redis. We could potentially have a
@@ -378,25 +342,11 @@ func New(sc ServiceConfig, options ...Option) (*PlatformService, error) {
 		return nil, fmt.Errorf("could not create session cache: %w", err)
 	}
 
-	// Step 8: Init License
-	if model.BuildEnterpriseReady == "true" {
-		ps.LoadLicense()
-	}
-	license := ps.License()
-
-	// This is a hack because ideally we wouldn't even have started the Redis client
-	// if the license didn't have clustering. But there's an intricate deadlock
-	// where license cannot be loaded before store, and store cannot be loaded before
-	// cache. So loading license before loading cache is an uphill battle.
-	if (license == nil || !*license.Features.Cluster) && *cacheConfig.CacheType == model.CacheTypeRedis && !ps.forceEnableRedis {
-		return nil, fmt.Errorf("Redis cannot be used in an instance without a license or a license without clustering")
-	}
-
-	// Step 9: Initialize filestore
+	// Step 8: Initialize filestore
 	if ps.filestore == nil {
 		insecure := ps.Config().ServiceSettings.EnableInsecureOutgoingConnections
 		allowedUntrustedInternalConnections := model.SafeDereference(ps.Config().ServiceSettings.AllowedUntrustedInternalConnections)
-		backend, err2 := filestore.NewFileBackend(filestore.NewFileBackendSettingsFromConfig(&ps.Config().FileSettings, license != nil && *license.Features.Compliance, insecure != nil && *insecure, allowedUntrustedInternalConnections))
+		backend, err2 := filestore.NewFileBackend(filestore.NewFileBackendSettingsFromConfig(&ps.Config().FileSettings, true, insecure != nil && *insecure, allowedUntrustedInternalConnections))
 		if err2 != nil {
 			return nil, fmt.Errorf("failed to initialize filebackend: %w", err2)
 		}
@@ -409,7 +359,7 @@ func New(sc ServiceConfig, options ...Option) (*PlatformService, error) {
 		if *ps.Config().FileSettings.DedicatedExportStore {
 			mlog.Info("Setting up dedicated export filestore", mlog.String("driver_name", *ps.Config().FileSettings.ExportDriverName))
 			allowedUntrustedInternalConnections := model.SafeDereference(ps.Config().ServiceSettings.AllowedUntrustedInternalConnections)
-			backend, errFileBack := filestore.NewExportFileBackend(filestore.NewExportFileBackendSettingsFromConfig(&ps.Config().FileSettings, license != nil && *license.Features.Compliance, false, allowedUntrustedInternalConnections))
+			backend, errFileBack := filestore.NewExportFileBackend(filestore.NewExportFileBackendSettingsFromConfig(&ps.Config().FileSettings, true, false, allowedUntrustedInternalConnections))
 			if errFileBack != nil {
 				return nil, fmt.Errorf("failed to initialize export filebackend: %w", errFileBack)
 			}
@@ -418,7 +368,7 @@ func New(sc ServiceConfig, options ...Option) (*PlatformService, error) {
 		}
 	}
 
-	// Step 10: Init Metrics Server depends on step 6 (store) and 8 (license)
+	// Step 9: Init Metrics Server depends on step 6 (store)
 	if ps.startMetrics {
 		if mErr := ps.resetMetrics(); mErr != nil {
 			return nil, mErr
@@ -433,7 +383,7 @@ func New(sc ServiceConfig, options ...Option) (*PlatformService, error) {
 		})
 	}
 
-	// Step 11: Init AsymmetricSigningKey depends on step 6 (store)
+	// Step 10: Init AsymmetricSigningKey depends on step 6 (store)
 	if err = ps.EnsureAsymmetricSigningKey(); err != nil {
 		return nil, fmt.Errorf("unable to ensure asymmetric signing key: %w", err)
 	}
@@ -447,19 +397,6 @@ func New(sc ServiceConfig, options ...Option) (*PlatformService, error) {
 			*cfg.ServiceSettings.EnableLocalMode = true
 		})
 	}
-
-	ps.AddLicenseListener(func(oldLicense, newLicense *model.License) {
-		wasLicensed := (oldLicense != nil && *oldLicense.Features.Metrics) || (model.BuildNumber == "dev")
-		isLicensed := (newLicense != nil && *newLicense.Features.Metrics) || (model.BuildNumber == "dev")
-
-		if wasLicensed == isLicensed || !ps.startMetrics {
-			return
-		}
-
-		if err := ps.RestartMetrics(); err != nil {
-			ps.logger.Error("Failed to reset metrics server", mlog.Err(err))
-		}
-	})
 
 	if err := ps.SearchEngine.UpdateConfig(ps.Config()); err != nil {
 		ps.logger.Error("Failed to update search engine config", mlog.Err(err))
@@ -493,14 +430,6 @@ func (ps *PlatformService) Start(broadcastHooks map[string]BroadcastHook) error 
 			mlog.Error("Error re-configuring logging after config change", mlog.Err(err))
 			return
 		}
-	})
-
-	ps.licenseListenerId = ps.AddLicenseListener(func(oldLicense, newLicense *model.License) {
-		ps.regenerateClientConfig()
-
-		message := model.NewWebSocketEvent(model.WebsocketEventLicenseChanged, "", "", "", nil, "")
-		message.Add("license", ps.GetSanitizedClientLicense())
-		ps.Publish(message)
 	})
 	return nil
 }
@@ -566,10 +495,6 @@ func (ps *PlatformService) initEnterprise() {
 		ps.samlDiagnostic = samlDiagnosticInterface(ps)
 	}
 
-	if licenseInterface != nil {
-		ps.licenseManager = licenseInterface(ps)
-	}
-
 	if accessControlServiceInterface != nil {
 		ps.pdpService = accessControlServiceInterface(ps)
 	}
@@ -604,8 +529,6 @@ func (ps *PlatformService) Shutdown() error {
 	close(ps.statusUpdateExitSignal)
 	// wait for it to be stopped.
 	<-ps.statusUpdateDoneSignal
-
-	ps.RemoveLicenseListener(ps.licenseListenerId)
 
 	// Stop the document extraction workers and wait for any in-flight
 	// extraction to finish before closing the store it depends on.

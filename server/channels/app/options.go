@@ -67,13 +67,6 @@ func SetFileStore(filestore filestore.FileBackend) Option {
 	}
 }
 
-func ForceEnableRedis() Option {
-	return func(s *Server) error {
-		s.platformOptions = append(s.platformOptions, platform.ForceEnableRedis())
-		return nil
-	}
-}
-
 func RunEssentialJobs(s *Server) error {
 	s.runEssentialJobs = true
 
@@ -89,16 +82,6 @@ func JoinCluster(s *Server) error {
 func StartMetrics(s *Server) error {
 	s.platformOptions = append(s.platformOptions, platform.StartMetrics())
 	return nil
-}
-
-func WithLicense(license *model.License) Option {
-	return func(s *Server) error {
-		s.platformOptions = append(s.platformOptions, func(p *platform.PlatformService) error {
-			p.SetLicense(license)
-			return nil
-		})
-		return nil
-	}
 }
 
 // SetLogger requires platform service to be initialized before calling.

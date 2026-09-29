@@ -18,7 +18,6 @@ type TeamService struct {
 	users        Users
 	wh           WebHub
 	config       func() *model.Config
-	license      func() *model.License
 }
 
 // ServiceConfig is used to initialize the TeamService.
@@ -30,7 +29,6 @@ type ServiceConfig struct {
 	Users        Users
 	WebHub       WebHub
 	ConfigFn     func() *model.Config
-	LicenseFn    func() *model.License
 }
 
 // Users is a subset of UserService interface
@@ -55,13 +53,12 @@ func New(c ServiceConfig) (*TeamService, error) {
 		channelStore: c.ChannelStore,
 		users:        c.Users,
 		config:       c.ConfigFn,
-		license:      c.LicenseFn,
 		wh:           c.WebHub,
 	}, nil
 }
 
 func (c *ServiceConfig) validate() error {
-	if c.ConfigFn == nil || c.TeamStore == nil || c.LicenseFn == nil || c.Users == nil || c.ChannelStore == nil || c.GroupStore == nil || c.WebHub == nil {
+	if c.ConfigFn == nil || c.TeamStore == nil || c.Users == nil || c.ChannelStore == nil || c.GroupStore == nil || c.WebHub == nil {
 		return errors.New("required parameters are not provided")
 	}
 

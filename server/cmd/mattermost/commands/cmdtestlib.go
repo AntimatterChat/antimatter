@@ -49,10 +49,7 @@ func SetupWithStoreMock(tb testing.TB) *testHelper {
 	api4TestHelper := api4.SetupWithStoreMock(tb)
 	systemStore := mocks.SystemStore{}
 	systemStore.On("Get").Return(make(model.StringMap), nil)
-	licenseStore := mocks.LicenseStore{}
-	licenseStore.On("Get", "").Return(&model.LicenseRecord{}, nil)
 	api4TestHelper.App.Srv().Store().(*mocks.Store).On("System").Return(&systemStore)
-	api4TestHelper.App.Srv().Store().(*mocks.Store).On("License").Return(&licenseStore)
 
 	testHelper := &testHelper{
 		TestHelper:     api4TestHelper,
