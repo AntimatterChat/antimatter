@@ -19,10 +19,6 @@ describe('SwitchProductMenu', () => {
         entities: {
             general: {
                 config: {},
-                license: TestHelper.getLicenseMock({
-                    IsLicensed: 'true',
-                    SkuShortName: 'professional',
-                }),
             },
             users: {
                 currentUserId: 'user_id',
@@ -72,7 +68,7 @@ describe('SwitchProductMenu', () => {
 
         await userEvent.click(screen.getByRole('button', {name: 'Open product menu'}));
 
-        await userEvent.click(screen.getByText('About Mattermost'));
+        await userEvent.click(screen.getByText('About Antimatter'));
 
         // The menu defers item actions until its close animation finishes.
         await waitFor(() => {

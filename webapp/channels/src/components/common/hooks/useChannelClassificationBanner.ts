@@ -20,14 +20,12 @@ import {
     SYSTEM_TARGET_TYPE,
 } from 'mattermost-redux/constants/properties';
 import {getChannelBanner} from 'mattermost-redux/selectors/entities/channels';
-import {getFeatureFlagValue, getLicense} from 'mattermost-redux/selectors/entities/general';
+import {getFeatureFlagValue} from 'mattermost-redux/selectors/entities/general';
 import type {ResolvedChannelAttribute} from 'mattermost-redux/selectors/entities/properties';
 import {getChannelAttributeFields, getChannelBannerFields, getPropertyValueForTargetField, makeGetResolvedChannelAttributes} from 'mattermost-redux/selectors/entities/properties';
 
 import {CLASSIFICATIONS_CHANNEL_FIELD_NAME, CLASSIFICATIONS_CHANNEL_OBJECT_TYPE} from 'components/admin_console/classification_markings/utils';
 import {hasAttributeToken, renderBannerTemplate} from 'components/channel_attributes/banner_template';
-
-import {isMinimumEnterpriseAdvancedLicense} from 'utils/license_utils';
 
 import useClassificationMarkings from './useClassificationMarkings';
 import useGraphAttributeNames from './useGraphAttributeNames';
@@ -104,7 +102,6 @@ export default function useChannelClassificationBanner(channelId: string): Chann
     const classification = useClassificationMarkings();
 
     const attributesEnabled = useSelector((state: GlobalState) => getFeatureFlagValue(state, 'ChannelAttributes') === 'true');
-    const hasAdvancedLicense = isMinimumEnterpriseAdvancedLicense(useSelector(getLicense));
     const channelFields = useSelector(getChannelAttributeFields);
 
     // All of them, in sort_order: designation is the admin's default for what a
@@ -112,11 +109,11 @@ export default function useChannelClassificationBanner(channelId: string): Chann
     // banner; a channel may rewrite or drop any of them once it authors text.
     const bannerFields = useSelector(getChannelBannerFields);
     const designatedFields = useMemo(() => {
-        if (!attributesEnabled || !hasAdvancedLicense) {
+        if (!attributesEnabled) {
             return EMPTY_FIELDS;
         }
         return bannerFields;
-    }, [attributesEnabled, hasAdvancedLicense, bannerFields]);
+    }, [attributesEnabled, bannerFields]);
 
     // Position and any authored colour come from the first, since one banner cannot
     // sit in two places.
@@ -166,7 +163,7 @@ export default function useChannelClassificationBanner(channelId: string): Chann
     // Loaded here too, so the banner works on surfaces that never mount the header
     // chips — a popout, or a channel where the label component is absent.
     useEffect(() => {
-        if (!attributesEnabled || !hasAdvancedLicense || channelFields.length > 0) {
+        if (!attributesEnabled || channelFields.length > 0) {
             return;
         }
         dispatch(fetchPropertyFields(
@@ -175,7 +172,7 @@ export default function useChannelClassificationBanner(channelId: string): Chann
             SYSTEM_TARGET_TYPE,
             SYSTEM_TARGET_ID,
         ));
-    }, [attributesEnabled, hasAdvancedLicense, channelFields.length, dispatch]);
+    }, [attributesEnabled, channelFields.length, dispatch]);
 
     // Returns every access_control value on the channel, so this also feeds the
     // header chips and Channel Info — hence firing with Classification Markings off.
@@ -183,7 +180,7 @@ export default function useChannelClassificationBanner(channelId: string): Chann
     // nothing else loads them.
     const shouldLoadValues = Boolean(channelId) && (
         (classification.available && Boolean(classification.channelField)) ||
-        (attributesEnabled && hasAdvancedLicense)
+        attributesEnabled
     );
 
     useEffect(() => {

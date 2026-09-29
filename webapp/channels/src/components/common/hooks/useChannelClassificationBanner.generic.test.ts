@@ -85,7 +85,6 @@ function makeState(
         entities: {
             general: {
                 config: {FeatureFlagChannelAttributes: flag},
-                license: {IsLicensed: 'true', SkuShortName: 'advanced'},
             },
             channels: {
                 channels: {[CHANNEL_ID]: {id: CHANNEL_ID, banner_info: bannerInfo}},

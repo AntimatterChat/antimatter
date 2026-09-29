@@ -27,93 +27,14 @@ jest.mock('@mattermost/compass-icons/components', () => {
 });
 
 describe('ProductBranding', () => {
-    // Anything licensed other than Entry renders the licensed-edition branding,
-    // which is the variant that shows the current product's icon and name.
-    const licensedState = {
-        entities: {
-            general: {
-                license: TestHelper.getLicenseMock({
-                    IsLicensed: 'true',
-                    SkuShortName: 'professional',
-                }),
-            },
-        },
-    };
-
     afterEach(() => {
         jest.restoreAllMocks();
-    });
-
-    test('should render TEAM EDITION for unlicensed users', () => {
-        const state = {
-            entities: {
-                general: {
-                    license: TestHelper.getLicenseMock({
-                        IsLicensed: 'false',
-                        SkuShortName: '',
-                    }),
-                },
-            },
-        };
-
-        renderWithContext(<ProductBranding/>, state);
-
-        expect(screen.getByText('TEAM EDITION')).toBeInTheDocument();
-    });
-
-    test('should render ENTRY EDITION for Entry license', () => {
-        const state = {
-            entities: {
-                general: {
-                    license: TestHelper.getLicenseMock({
-                        IsLicensed: 'true',
-                        SkuShortName: 'entry',
-                    }),
-                },
-            },
-        };
-
-        renderWithContext(<ProductBranding/>, state);
-
-        expect(screen.getByText('ENTRY EDITION')).toBeInTheDocument();
-    });
-
-    test('should not render a license name for a licensed edition that is not Entry', () => {
-        jest.spyOn(productUtils, 'useCurrentProduct').mockReturnValue(null);
-
-        const state = {
-            entities: {
-                general: {
-                    license: TestHelper.getLicenseMock({
-                        IsLicensed: 'true',
-                        SkuShortName: 'professional',
-                    }),
-                },
-            },
-        };
-
-        renderWithContext(<ProductBranding/>, state);
-
-        expect(screen.queryByText('TEAM EDITION')).not.toBeInTheDocument();
-        expect(screen.queryByText('ENTRY EDITION')).not.toBeInTheDocument();
-        expect(screen.queryByText('PROFESSIONAL')).not.toBeInTheDocument();
     });
 
     test('should show Channels when on Channels product', () => {
         jest.spyOn(productUtils, 'useCurrentProduct').mockReturnValue(null);
 
-        const state = {
-            entities: {
-                general: {
-                    license: TestHelper.getLicenseMock({
-                        IsLicensed: 'true',
-                        SkuShortName: 'professional',
-                    }),
-                },
-            },
-        };
-
-        renderWithContext(<ProductBranding/>, state);
+        renderWithContext(<ProductBranding/>);
 
         expect(screen.getAllByText('Channels').length).toBeGreaterThan(0);
     });
@@ -122,18 +43,7 @@ describe('ProductBranding', () => {
         jest.spyOn(productUtils, 'useCurrentProduct').mockReturnValue(
             TestHelper.makeProduct(TopLevelProducts.PLAYBOOKS),
         );
-
-        const state = {
-            entities: {
-                general: {
-                    license: TestHelper.getLicenseMock({
-                        IsLicensed: 'true',
-                        SkuShortName: 'professional',
-                    }),
-                },
-            },
-        };
-        renderWithContext(<ProductBranding/>, state);
+        renderWithContext(<ProductBranding/>);
 
         expect(screen.getAllByText('Playbooks').length).toBeGreaterThan(0);
     });
@@ -142,18 +52,7 @@ describe('ProductBranding', () => {
         jest.spyOn(productUtils, 'useCurrentProduct').mockReturnValue(
             TestHelper.makeProduct(TopLevelProducts.BOARDS),
         );
-
-        const state = {
-            entities: {
-                general: {
-                    license: TestHelper.getLicenseMock({
-                        IsLicensed: 'true',
-                        SkuShortName: 'professional',
-                    }),
-                },
-            },
-        };
-        renderWithContext(<ProductBranding/>, state);
+        renderWithContext(<ProductBranding/>);
 
         expect(screen.getAllByText('Boards').length).toBeGreaterThan(0);
     });
@@ -174,7 +73,7 @@ describe('ProductBranding', () => {
             switcherIcon: CustomIcon as unknown as ProductComponent['switcherIcon'],
         });
 
-        renderWithContext(<ProductBranding/>, licensedState);
+        renderWithContext(<ProductBranding/>);
 
         expect(screen.getByTestId('custom-icon')).toBeInTheDocument();
     });
@@ -185,43 +84,8 @@ describe('ProductBranding', () => {
             switcherIcon: 'non-existent-icon-name' as ProductComponent['switcherIcon'],
         });
 
-        renderWithContext(<ProductBranding/>, licensedState);
+        renderWithContext(<ProductBranding/>);
 
         expect(screen.getByTestId('ProductChannelsIcon')).toBeInTheDocument();
-    });
-
-    test('should not render an edition badge for Enterprise license', () => {
-        const state = {
-            entities: {
-                general: {
-                    license: TestHelper.getLicenseMock({
-                        IsLicensed: 'true',
-                        SkuShortName: 'enterprise',
-                    }),
-                },
-            },
-        };
-
-        jest.spyOn(productUtils, 'useCurrentProduct').mockReturnValue(null);
-
-        renderWithContext(<ProductBranding/>, state);
-
-        expect(screen.queryByText('ENTRY EDITION')).not.toBeInTheDocument();
-        expect(screen.queryByText('TEAM EDITION')).not.toBeInTheDocument();
-    });
-
-    test('should not render an edition badge when the license object is empty', () => {
-        const state = {
-            entities: {
-                general: {
-                    license: {},
-                },
-            },
-        };
-
-        renderWithContext(<ProductBranding/>, state);
-
-        expect(screen.queryByText('ENTRY EDITION')).not.toBeInTheDocument();
-        expect(screen.queryByText('TEAM EDITION')).not.toBeInTheDocument();
     });
 });

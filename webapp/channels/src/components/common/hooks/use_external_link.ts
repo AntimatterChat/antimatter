@@ -4,7 +4,7 @@
 import {useMemo} from 'react';
 import {useSelector} from 'react-redux';
 
-import {getConfig, getLicense} from 'mattermost-redux/selectors/entities/general';
+import {getConfig} from 'mattermost-redux/selectors/entities/general';
 import {getCurrentUserId} from 'mattermost-redux/selectors/entities/users';
 
 import type {GlobalState} from 'types/store';
@@ -31,12 +31,7 @@ export type ExternalLinkQueryParams = {
 export function useExternalLink(href: string, location: string = '', overwriteQueryParams: ExternalLinkQueryParams = {}): [string, Record<string, string>] {
     const userId = useSelector(getCurrentUserId);
     const config = useSelector(getConfig);
-    const license = useSelector(getLicense);
-    const isCloudPreview = useSelector((state: GlobalState) => {
-        return state.entities?.cloud?.subscription?.is_cloud_preview === true;
-    });
     const telemetryId = useSelector((state: GlobalState) => getConfig(state)?.TelemetryId || '');
-    const isCloud = useSelector((state: GlobalState) => getLicense(state)?.Cloud === 'true');
 
     return useMemo(() => {
         let parsedUrl;
@@ -54,30 +49,17 @@ export function useExternalLink(href: string, location: string = '', overwriteQu
             return [href, {}];
         }
 
-        // Determine edition type (enterprise vs team)
-        const isEnterpriseReady = config?.BuildEnterpriseReady === 'true';
-        const edition = isEnterpriseReady ? 'enterprise' : 'team';
-
         // Determine server version
         const serverVersion = config?.BuildNumber === 'dev' ? config.BuildNumber : (config?.Version || '');
-
-        // Determine utm_medium based on cloud preview, cloud, or regular
-        let utmMedium = 'in-product';
-        if (isCloudPreview) {
-            utmMedium = 'in-product-preview';
-        } else if (isCloud) {
-            utmMedium = 'in-product-cloud';
-        }
 
         const existingURLSearchParams = parsedUrl.searchParams;
         const existingQueryParamsObj = Object.fromEntries(existingURLSearchParams.entries());
         const queryParams = {
             utm_source: 'mattermost',
-            utm_medium: utmMedium,
+            utm_medium: 'in-product',
             utm_content: location,
             uid: userId,
             sid: telemetryId,
-            edition,
             server_version: serverVersion,
             ...overwriteQueryParams,
             ...existingQueryParamsObj,
@@ -85,5 +67,5 @@ export function useExternalLink(href: string, location: string = '', overwriteQu
         parsedUrl.search = Object.entries(queryParams).map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`).join('&');
 
         return [parsedUrl.toString(), queryParams];
-    }, [href, isCloud, isCloudPreview, location, overwriteQueryParams, telemetryId, userId, config, license]);
+    }, [href, location, overwriteQueryParams, telemetryId, userId, config]);
 }
