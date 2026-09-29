@@ -373,17 +373,19 @@ func (h Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h Handler) recordMetrics(c *Context, r *http.Request, now time.Time, statusCode string) {
-	c.App.Metrics().IncrementHTTPRequest()
+	if c.App.Metrics() != nil {
+		c.App.Metrics().IncrementHTTPRequest()
 
-	if r.URL.Path != model.APIURLSuffix+"/websocket" {
-		elapsed := float64(time.Since(now)) / float64(time.Second)
+		if r.URL.Path != model.APIURLSuffix+"/websocket" {
+			elapsed := float64(time.Since(now)) / float64(time.Second)
 
-		pageLoadContext := r.Header.Get("X-Page-Load-Context")
-		if pageLoadContext != "page_load" && pageLoadContext != "reconnect" {
-			pageLoadContext = ""
+			pageLoadContext := r.Header.Get("X-Page-Load-Context")
+			if pageLoadContext != "page_load" && pageLoadContext != "reconnect" {
+				pageLoadContext = ""
+			}
+
+			c.App.Metrics().ObserveAPIEndpointDuration(h.HandlerName, r.Method, statusCode, string(GetOriginClient(r)), pageLoadContext, elapsed)
 		}
-
-		c.App.Metrics().ObserveAPIEndpointDuration(h.HandlerName, r.Method, statusCode, string(GetOriginClient(r)), pageLoadContext, elapsed)
 	}
 }
 
@@ -448,7 +450,9 @@ func (h Handler) handleContextError(c *Context, w http.ResponseWriter, r *http.R
 		utils.RenderWebAppError(c.App.Config(), w, r, c.Err, c.App.AsymmetricSigningKey())
 	}
 
-	c.App.Metrics().IncrementHTTPError()
+	if c.App.Metrics() != nil {
+		c.App.Metrics().IncrementHTTPError()
+	}
 }
 
 type OriginClient string
