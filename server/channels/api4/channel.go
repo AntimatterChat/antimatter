@@ -19,7 +19,7 @@ const maxListSize = 1000
 
 // classificationChannelFieldName is the channel-linked classification field's
 // Name within the access_control property group. Classification predates
-// channel attributes and ships behind its own flag/license pair, but writes
+// channel attributes and ships behind its own feature flag, but writes
 // through the same property-values path as channel attributes on creation.
 const classificationChannelFieldName = "classification"
 
@@ -147,8 +147,7 @@ func createChannel(c *Context, w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	license := c.App.Channels().License()
-	if !channel.IsGroupOrDirect() && model.SafeDereference(c.App.Config().PrivacySettings.UseAnonymousURLs) && model.MinimumEnterpriseAdvancedLicense(license) {
+	if !channel.IsGroupOrDirect() && model.SafeDereference(c.App.Config().PrivacySettings.UseAnonymousURLs) {
 		channel.Name = model.NewId()
 	}
 
@@ -197,7 +196,7 @@ func createChannel(c *Context, w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	propertyValues, appErr := channelAttributeValuesForCreate(c, channel, license, req.PropertyValues)
+	propertyValues, appErr := channelAttributeValuesForCreate(c, channel, req.PropertyValues)
 	if appErr != nil {
 		c.Err = appErr
 		return
@@ -223,14 +222,14 @@ func createChannel(c *Context, w http.ResponseWriter, r *http.Request) {
 // channelAttributeValuesForCreate turns the submitted attribute values into
 // PropertyValues to write with the channel, and refuses the creation when a
 // required attribute has no value. Each field is gated by its own feature:
-// classification by ClassificationMarkings + Enterprise, everything else by
-// ChannelAttributes + Enterprise Advanced. Both off with no items keeps
+// classification by ClassificationMarkings, everything else by
+// ChannelAttributes. Both off with no items keeps
 // creation byte-identical to its pre-feature behaviour, which is what makes
 // this safe to add to an endpoint every integration uses.
 //
 // Errors never name an attribute: which markings a server defines is itself
 // sensitive, and the caller may not be allowed to see them.
-func channelAttributeValuesForCreate(c *Context, channel *model.Channel, license *model.License, items []model.PropertyValuePatchItem) ([]*model.PropertyValue, *model.AppError) {
+func channelAttributeValuesForCreate(c *Context, channel *model.Channel, items []model.PropertyValuePatchItem) ([]*model.PropertyValue, *model.AppError) {
 	// A DM/GM type reaching here is refused by the app layer anyway, but values on
 	// one are never legitimate: DM/GM attributes are derived from the participants,
 	// not hand-written.
@@ -241,8 +240,8 @@ func channelAttributeValuesForCreate(c *Context, channel *model.Channel, license
 		return nil, nil
 	}
 
-	channelAttributesAvailable := c.App.Config().FeatureFlags.ChannelAttributes && model.MinimumEnterpriseAdvancedLicense(license)
-	classificationAvailable := c.App.Config().FeatureFlags.ClassificationMarkings && model.MinimumEnterpriseLicense(license)
+	channelAttributesAvailable := c.App.Config().FeatureFlags.ChannelAttributes
+	classificationAvailable := c.App.Config().FeatureFlags.ClassificationMarkings
 	requiredAttributesEnforced := c.App.Config().FeatureFlags.IsChannelAttributesRequiredEnabled()
 
 	if !channelAttributesAvailable && !classificationAvailable {
@@ -695,7 +694,7 @@ func patchChannel(c *Context, w http.ResponseWriter, r *http.Request) {
 	}
 
 	if updatingManagedCategory {
-		if model.MinimumEnterpriseLicense(c.App.Channels().License()) && c.App.Config().FeatureFlags.ManagedChannelCategories {
+		if c.App.Config().FeatureFlags.ManagedChannelCategories {
 			if ok, _ := c.App.SessionHasPermissionToChannel(c.AppContext, *c.AppContext.Session(), c.Params.ChannelId, model.PermissionManageChannelRoles); !ok {
 				c.Err = model.NewAppError("patchChannel", "api.channel.patch_update_channel.cannot_update_managed_category.app_error", nil, "", http.StatusForbidden)
 				return
@@ -719,7 +718,7 @@ func patchChannel(c *Context, w http.ResponseWriter, r *http.Request) {
 	}
 
 	if updatingManagedCategory {
-		if !model.MinimumEnterpriseLicense(c.App.Channels().License()) || !c.App.Config().FeatureFlags.ManagedChannelCategories {
+		if !c.App.Config().FeatureFlags.ManagedChannelCategories {
 			c.Logger.Info("Managed category update ignored: feature not available")
 		} else {
 			name := *patch.ManagedCategoryName
@@ -3006,11 +3005,6 @@ func updateChannelScheme(c *Context, w http.ResponseWriter, r *http.Request) {
 
 	model.AddEventParameterToAuditRec(auditRec, "scheme_id", *schemeID)
 
-	if c.App.Channels().License() == nil {
-		c.Err = model.NewAppError("Api4.UpdateChannelScheme", "api.channel.update_channel_scheme.license.error", nil, "", http.StatusForbidden)
-		return
-	}
-
 	if !c.App.SessionHasPermissionTo(*c.AppContext.Session(), model.PermissionManageSystem) {
 		c.SetPermissionError(model.PermissionManageSystem)
 		return
@@ -3108,11 +3102,6 @@ func channelMembersMinusGroupMembers(c *Context, w http.ResponseWriter, r *http.
 }
 
 func channelMemberCountsByGroup(c *Context, w http.ResponseWriter, r *http.Request) {
-	if c.App.Channels().License() == nil {
-		c.Err = model.NewAppError("Api4.channelMemberCountsByGroup", "api.channel.channel_member_counts_by_group.license.error", nil, "", http.StatusForbidden)
-		return
-	}
-
 	c.RequireChannelId()
 	if c.Err != nil {
 		return
@@ -3143,11 +3132,6 @@ func channelMemberCountsByGroup(c *Context, w http.ResponseWriter, r *http.Reque
 }
 
 func getChannelModerations(c *Context, w http.ResponseWriter, r *http.Request) {
-	if c.App.Channels().License() == nil {
-		c.Err = model.NewAppError("Api4.GetChannelModerations", "api.channel.get_channel_moderations.license.error", nil, "", http.StatusForbidden)
-		return
-	}
-
 	c.RequireChannelId()
 	if c.Err != nil {
 		return
@@ -3182,11 +3166,6 @@ func getChannelModerations(c *Context, w http.ResponseWriter, r *http.Request) {
 }
 
 func patchChannelModerations(c *Context, w http.ResponseWriter, r *http.Request) {
-	if c.App.Channels().License() == nil {
-		c.Err = model.NewAppError("Api4.patchChannelModerations", "api.channel.patch_channel_moderations.license.error", nil, "", http.StatusForbidden)
-		return
-	}
-
 	c.RequireChannelId()
 	if c.Err != nil {
 		return
@@ -3416,10 +3395,6 @@ func convertGroupMessageToChannel(c *Context, w http.ResponseWriter, r *http.Req
 }
 
 func canEditChannelBanner(c *Context, originalChannel *model.Channel) {
-	if !model.MinimumEnterpriseAdvancedLicense(c.App.License()) {
-		c.Err = model.NewAppError("patchChannel", "license_error.feature_unavailable.specific", map[string]any{"Feature": "Channel Banner"}, "feature is not available for the current license", http.StatusForbidden)
-	}
-
 	switch originalChannel.Type {
 	case model.ChannelTypePrivate:
 		if ok, _ := c.App.SessionHasPermissionToChannel(c.AppContext, *c.AppContext.Session(), c.Params.ChannelId, model.PermissionManagePrivateChannelBanner); !ok {
@@ -3479,11 +3454,6 @@ func getManagedCategories(c *Context, w http.ResponseWriter, r *http.Request) {
 	}
 
 	teamID := c.Params.TeamId
-
-	if !model.MinimumEnterpriseLicense(c.App.Channels().License()) {
-		c.Err = model.NewAppError("Api4.getManagedCategories", "api.license_error", nil, "", http.StatusNotImplemented)
-		return
-	}
 
 	mappings, appErr := c.App.GetVisibleManagedCategoryMappings(c.AppContext, teamID)
 	if appErr != nil {

@@ -380,11 +380,6 @@
     "description": "API error when a client tries to modify a channel bookmark that is auto-managed by the boards feature; 'bookmarks API' refers to the REST endpoints."
   },
   {
-    "id": "api.channel.bookmark.channel_bookmark.license.error",
-    "translation": "Your license does not support channel bookmarks.",
-    "description": "API error when using channel bookmarks (saved links pinned to a channel) without a license that includes them."
-  },
-  {
     "id": "api.channel.bookmark.create_channel_bookmark.deleted_channel.forbidden.app_error",
     "translation": "Failed to create the channel bookmark.",
     "description": "Deliberately generic error when creating a channel bookmark is denied because the channel is archived; wording hides the reason."
@@ -473,11 +468,6 @@
     "id": "api.channel.change_channel_privacy.public_to_private",
     "translation": "This channel has been converted to a Private Channel.",
     "description": "System message posted in a channel when it is converted from public to private."
-  },
-  {
-    "id": "api.channel.channel_member_counts_by_group.license.error",
-    "translation": "Your license does not support groups",
-    "description": "API error when requesting member counts by group without a license that includes user groups; 'groups' are user groups."
   },
   {
     "id": "api.channel.create_channel.attribute_no_permission.app_error",
@@ -645,11 +635,6 @@
     "description": "API error in the content-flagging (post review) flow when the channel ID in the request differs from the flagged post's channel."
   },
   {
-    "id": "api.channel.get_channel_moderations.license.error",
-    "translation": "Your license does not support channel moderation",
-    "description": "API error when reading channel moderation settings without a license that includes channel moderation."
-  },
-  {
     "id": "api.channel.gm_to_channel_conversion.not_allowed_for_user.request_error",
     "translation": "User is not allowed to convert group message to private channel",
     "description": "API error when a user lacks permission to convert a group message conversation into a private channel."
@@ -698,11 +683,6 @@
     "id": "api.channel.patch_channel_moderations.cache_invalidation.error",
     "translation": "Error invalidating cache",
     "description": "Internal error when clearing cached data fails while updating channel moderation (per-channel permission) settings; technical, admin-facing."
-  },
-  {
-    "id": "api.channel.patch_channel_moderations.license.error",
-    "translation": "Your license does not support channel moderation",
-    "description": "API error when changing channel moderation settings without a license that includes channel moderation."
   },
   {
     "id": "api.channel.patch_channel_moderations_for_channel.restricted_permission.app_error",
@@ -973,11 +953,6 @@
     "id": "api.channel.update_channel_privacy.default_channel_error",
     "translation": "The default channel cannot be made private.",
     "description": "API error when converting the team's default channel (e.g. Town Square) to private, which is not allowed."
-  },
-  {
-    "id": "api.channel.update_channel_scheme.license.error",
-    "translation": "Your license does not support updating a channel's scheme",
-    "description": "API error when setting a channel's permissions scheme without a supporting license; 'scheme' is a permissions scheme."
   },
   {
     "id": "api.channel.update_channel_scheme.scheme_scope.error",
@@ -2656,11 +2631,6 @@
     "description": "API authentication error when a session token is passed in the URL query string for a non-OAuth session, which is not allowed."
   },
   {
-    "id": "api.create_terms_of_service.custom_terms_of_service_disabled.app_error",
-    "translation": "Custom terms of service feature is disabled.",
-    "description": "API error when creating custom Terms of Service while that (enterprise) feature is disabled; admin-facing."
-  },
-  {
     "id": "api.create_terms_of_service.empty_text.app_error",
     "translation": "Please enter text for your Custom Terms of Service.",
     "description": "API error shown to a system admin who saves Custom Terms of Service without entering any text."
@@ -2746,11 +2716,6 @@
     "description": "API error when flagging a post whose type cannot be quarantined; {{.PostType}} is the post's internal type identifier (e.g. a system message type)."
   },
   {
-    "id": "api.data_spillage.error.license",
-    "translation": "Your license does not support Data Spillage Handling.",
-    "description": "API error when using the data spillage (flagged content review) feature without a license that includes it; 'Data Spillage Handling' is a feature name."
-  },
-  {
     "id": "api.data_spillage.error.not_available_on_team",
     "translation": "Data Spillage Handling feature is not enabled on this team.",
     "description": "API error when data spillage handling (flagged content review) is not enabled for the team where the post lives."
@@ -2794,11 +2759,6 @@
     "id": "api.delivery_tracking.error.feature_flag",
     "translation": "Post delivery audit logging is not enabled on this server.",
     "description": "API error when a post delivery audit logging endpoint is called while the feature is disabled on the server."
-  },
-  {
-    "id": "api.delivery_tracking.error.license",
-    "translation": "Your license does not support post delivery audit logging.",
-    "description": "API error when a post delivery audit logging endpoint is called on a server whose license does not include the feature."
   },
   {
     "id": "api.draft.create_draft.can_not_draft_to_deleted.error",
@@ -4548,11 +4508,6 @@
     "id": "api.scheduled_posts.feature_disabled",
     "translation": "scheduled posts feature is disabled",
     "description": "API error when a user tries to use scheduled posts (messages scheduled to send later) while the feature is disabled on the server."
-  },
-  {
-    "id": "api.scheduled_posts.license_error",
-    "translation": "Scheduled posts feature requires a license",
-    "description": "API error when scheduled posts (messages scheduled to send later) are used on a server without the required license."
   },
   {
     "id": "api.scheduled_recap.permission_denied",
@@ -10741,11 +10696,6 @@
     "description": "API error returned when a compliance/reporting query for posts has invalid parameters."
   },
   {
-    "id": "app.post.get_posts_for_reporting.license_error",
-    "translation": "Your license does not support reporting on posts.",
-    "description": "API error shown to an admin when the server's license tier does not include post reporting."
-  },
-  {
     "id": "app.post.get_posts_for_view.app_error",
     "translation": "Unable to get the posts for the view.",
     "description": "API error when loading the posts to display in a channel view fails."
@@ -11584,11 +11534,6 @@
     "id": "app.report.start_users_batch_export.job_exists",
     "translation": "Job already exists for this user and date range.",
     "description": "API error shown to an admin who starts a user-data export while an identical export (same user and date range) is already running."
-  },
-  {
-    "id": "app.report.start_users_batch_export.license_error",
-    "translation": "Batch reporting export only available to Pro and Enterprise.",
-    "description": "API error shown to an admin when batch user-report export requires a Professional or Enterprise license; 'Pro' and 'Enterprise' are license tier names."
   },
   {
     "id": "app.report.start_users_batch_export.started_export",
@@ -14325,11 +14270,6 @@
     "id": "license_error.feature_unavailable",
     "translation": "Feature is not available for the current license",
     "description": "Generic API error when a requested feature is not included in the server's current license."
-  },
-  {
-    "id": "license_error.feature_unavailable.specific",
-    "translation": "{{.Feature}} feature is not available for the current license",
-    "description": "API error shown when using a feature not covered by the server's license; {{.Feature}} is the English feature name (e.g. 'Channel Banner') inserted at runtime."
   },
   {
     "id": "manaultesting.manual_test.parse.app_error",

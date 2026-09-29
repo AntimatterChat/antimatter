@@ -336,7 +336,7 @@ func (a *App) CreateChannel(rctx request.CTX, channel *model.Channel, addMember 
 	}
 
 	if channel.ManagedCategoryName != "" {
-		if !model.MinimumEnterpriseLicense(a.Channels().License()) || !a.Config().FeatureFlags.ManagedChannelCategories {
+		if !a.Config().FeatureFlags.ManagedChannelCategories {
 			rctx.Logger().Warn("Managed category update ignored: feature not available")
 			sc.ManagedCategoryName = ""
 		} else {
@@ -4052,10 +4052,6 @@ func (a *App) GetPinnedPosts(rctx request.CTX, channelID string) (*model.PostLis
 		return nil, model.NewAppError("GetPinnedPosts", "app.channel.pinned_posts.app_error", nil, "", http.StatusInternalServerError).Wrap(err)
 	}
 
-	if appErr := a.filterInaccessiblePosts(posts, filterPostOptions{assumeSortedCreatedAt: true}); appErr != nil {
-		return nil, appErr
-	}
-
 	return posts, nil
 }
 
@@ -4577,7 +4573,7 @@ func (a *App) CheckIfChannelIsRestrictedDM(rctx request.CTX, channel *model.Chan
 // fetches the channel via the store directly (not App.GetChannel) and then
 // invokes the hydrator explicitly to avoid the recursive plumbing surface.
 func (a *App) ChannelAccessControlled(rctx request.CTX, channelID string) (bool, *model.AppError) {
-	if l := a.License(); !model.MinimumEnterpriseAdvancedLicense(l) || !*a.Config().AccessControlSettings.EnableAttributeBasedAccessControl {
+	if !*a.Config().AccessControlSettings.EnableAttributeBasedAccessControl {
 		return false, nil
 	}
 
@@ -4614,8 +4610,8 @@ func (a *App) ChannelAccessControlled(rctx request.CTX, channelID string) (bool,
 //
 // When the enterprise access control service is unavailable (acs == nil) or
 // reports the operation as unsupported (NotImplemented / NotAcceptable —
-// e.g. running on Team Edition or under a license that gates the ABAC
-// engine), we still need to remove the underlying row to avoid leaving an
+// e.g. an access control implementation that does not support the
+// operation), we still need to remove the underlying row to avoid leaving an
 // orphaned policy behind. In those cases we fall back to deleting directly
 // through the access control policy store.
 func (a *App) cleanupChannelAccessControlPolicy(rctx request.CTX, channel *model.Channel) {
@@ -4678,10 +4674,9 @@ const recommendedPublicChannelsScanCap = 2000
 // Browse Channels UI has its own "Hide joined channels" preference and may
 // want to show membership state alongside each recommendation).
 //
-// Returns an empty list when the Enterprise Advanced license or ABAC feature
-// flag is not available, or when the access control service is not wired up.
+// Returns an empty list when attribute-based access control is disabled, or when the access control service is not wired up.
 func (a *App) GetRecommendedPublicChannelsForUser(rctx request.CTX, userID, teamID string) (model.ChannelList, *model.AppError) {
-	if l := a.License(); !model.MinimumEnterpriseAdvancedLicense(l) || !*a.Config().AccessControlSettings.EnableAttributeBasedAccessControl {
+	if !*a.Config().AccessControlSettings.EnableAttributeBasedAccessControl {
 		return model.ChannelList{}, nil
 	}
 

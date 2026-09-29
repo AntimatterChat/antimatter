@@ -18,7 +18,6 @@ import (
 	"github.com/mattermost/mattermost/server/public/model"
 	"github.com/mattermost/mattermost/server/public/plugin/plugintest/mock"
 	"github.com/mattermost/mattermost/server/public/shared/i18n"
-	"github.com/mattermost/mattermost/server/v8/channels/app"
 	"github.com/mattermost/mattermost/server/v8/einterfaces/mocks"
 	"github.com/stretchr/testify/require"
 )
@@ -27,8 +26,6 @@ func TestGenerateFlaggedPostReport(t *testing.T) {
 	th := Setup(t).InitBasic(t)
 
 	client := th.Client
-	th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterpriseAdvanced))
-	defer th.RemoveLicense(t)
 
 	t.Run("Should return 501 when feature is disabled", func(t *testing.T) {
 		th.App.UpdateConfig(func(config *model.Config) {
@@ -253,8 +250,6 @@ func TestGeneratePostExposureReport(t *testing.T) {
 	th := Setup(t).InitBasic(t)
 
 	client := th.Client
-	th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterpriseAdvanced))
-	defer th.RemoveLicense(t)
 
 	t.Run("Should return 501 when feature is disabled", func(t *testing.T) {
 		th.App.UpdateConfig(func(config *model.Config) {
@@ -468,8 +463,6 @@ func TestGenerateFlaggedPostReportFileDownloadPolicy(t *testing.T) {
 	}).InitBasic(t)
 
 	client := th.Client
-	th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterpriseAdvanced))
-	defer th.RemoveLicense(t)
 
 	th.App.UpdateConfig(func(cfg *model.Config) {
 		*cfg.AccessControlSettings.EnableAttributeBasedAccessControl = true
@@ -538,19 +531,13 @@ func TestGenerateFlaggedPostReportAttachmentsOmittedAudit(t *testing.T) {
 	require.NoError(t, err)
 	defer logFile.Close()
 
-	options := []app.Option{app.WithLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterpriseAdvanced, "advanced_logging"))}
-	th := SetupWithServerOptionsAndConfig(t, options, func(cfg *model.Config) {
+	th := SetupWithServerOptionsAndConfig(t, nil, func(cfg *model.Config) {
 		cfg.FeatureFlags.PermissionPolicies = true
 		cfg.ExperimentalAuditSettings.FileEnabled = model.NewPointer(true)
 		cfg.ExperimentalAuditSettings.FileName = model.NewPointer(logFile.Name())
 	}).InitBasic(t)
 
 	client := th.Client
-
-	// WithLicense seeds the license early enough for the audit sink to come up; the
-	// test helper clears it again during setup, so re-apply it for content flagging.
-	th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterpriseAdvanced, "advanced_logging"))
-	defer th.RemoveLicense(t)
 
 	th.App.UpdateConfig(func(cfg *model.Config) {
 		*cfg.AccessControlSettings.EnableAttributeBasedAccessControl = true
@@ -622,8 +609,6 @@ func TestGenerateFlaggedPostReportEvaluatesSessionAttributes(t *testing.T) {
 	}).InitBasic(t)
 
 	client := th.Client
-	th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterpriseAdvanced))
-	defer th.RemoveLicense(t)
 
 	th.App.UpdateConfig(func(cfg *model.Config) {
 		*cfg.AccessControlSettings.EnableAttributeBasedAccessControl = true

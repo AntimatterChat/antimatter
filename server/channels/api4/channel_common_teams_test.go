@@ -41,7 +41,6 @@ func TestGetDirectOrGroupMessageMembersCommonTeams(t *testing.T) {
 		th.App.UpdateConfig(func(cfg *model.Config) {
 			*cfg.GuestAccountsSettings.Enable = true
 		})
-		th.App.Srv().SetLicense(model.NewTestLicense())
 
 		guestUser, guestClient := th.CreateGuestAndClient(t)
 		team1 := th.BasicTeam

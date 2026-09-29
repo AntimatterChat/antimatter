@@ -31,11 +31,6 @@ func (api *API) InitEphemeralMode() {
 }
 
 func logCleanup(c *Context, w http.ResponseWriter, r *http.Request) {
-	if !model.MinimumEnterpriseAdvancedLicense(c.App.License()) {
-		c.Err = model.NewAppError("logCleanup", "license_error.feature_unavailable.specific", map[string]any{"Feature": "Ephemeral Mode"}, "", http.StatusNotImplemented)
-		return
-	}
-
 	var report model.CleanupReport
 	if err := json.NewDecoder(r.Body).Decode(&report); err != nil {
 		c.SetInvalidParamWithErr("cleanup_report", err)
@@ -79,11 +74,6 @@ func logCleanup(c *Context, w http.ResponseWriter, r *http.Request) {
 }
 
 func logOfflinePurge(c *Context, w http.ResponseWriter, r *http.Request) {
-	if !model.MinimumEnterpriseAdvancedLicense(c.App.License()) {
-		c.Err = model.NewAppError("logOfflinePurge", "license_error.feature_unavailable.specific", map[string]any{"Feature": "Ephemeral Mode"}, "", http.StatusNotImplemented)
-		return
-	}
-
 	var report model.OfflinePurgeReport
 	if err := json.NewDecoder(r.Body).Decode(&report); err != nil {
 		c.SetInvalidParamWithErr("offline_purge_report", err)
@@ -120,11 +110,6 @@ func logOfflinePurge(c *Context, w http.ResponseWriter, r *http.Request) {
 // logSessionWipe is called by a client confirming a local wipe after its session was revoked, so
 // it runs without a session and the actor is taken from the signature the wipe push carried.
 func logSessionWipe(c *Context, w http.ResponseWriter, r *http.Request) {
-	if !model.MinimumEnterpriseAdvancedLicense(c.App.License()) {
-		c.Err = model.NewAppError("logSessionWipe", "license_error.feature_unavailable.specific", map[string]any{"Feature": "Ephemeral Mode"}, "", http.StatusNotImplemented)
-		return
-	}
-
 	var report model.SessionWipeReport
 	if err := json.NewDecoder(r.Body).Decode(&report); err != nil {
 		c.SetInvalidParamWithErr("session_wipe_report", err)

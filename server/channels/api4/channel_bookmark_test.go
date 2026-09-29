@@ -23,22 +23,8 @@ func TestCreateChannelBookmark(t *testing.T) {
 	err := th.App.SetPhase2PermissionsMigrationStatus(true)
 	require.NoError(t, err)
 
-	t.Run("should not work without a license", func(t *testing.T) {
-		channelBookmark := &model.ChannelBookmark{
-			ChannelId:   th.BasicChannel.Id,
-			DisplayName: "Link bookmark test",
-			LinkUrl:     "https://mattermost.com",
-			Type:        model.ChannelBookmarkLink,
-			Emoji:       ":smile:",
-		}
-
-		_, _, err := th.Client.CreateChannelBookmark(context.Background(), channelBookmark)
-		CheckErrorID(t, err, "api.channel.bookmark.channel_bookmark.license.error")
-	})
-
-	// enable guest accounts and add the license
+	// enable guest accounts
 	th.App.UpdateConfig(func(cfg *model.Config) { *cfg.GuestAccountsSettings.Enable = true })
-	th.App.Srv().SetLicense(model.NewTestLicense())
 
 	guest, guestClient := th.CreateGuestAndClient(t)
 
@@ -284,14 +270,8 @@ func TestEditChannelBookmark(t *testing.T) {
 	err := th.App.SetPhase2PermissionsMigrationStatus(true)
 	require.NoError(t, err)
 
-	t.Run("should not work without a license", func(t *testing.T) {
-		_, _, err := th.Client.UpdateChannelBookmark(context.Background(), th.BasicChannel.Id, model.NewId(), &model.ChannelBookmarkPatch{})
-		CheckErrorID(t, err, "api.channel.bookmark.channel_bookmark.license.error")
-	})
-
-	// enable guest accounts and add the license
+	// enable guest accounts
 	th.App.UpdateConfig(func(cfg *model.Config) { *cfg.GuestAccountsSettings.Enable = true })
-	th.App.Srv().SetLicense(model.NewTestLicense())
 
 	guest, guestClient := th.CreateGuestAndClient(t)
 
@@ -716,14 +696,8 @@ func TestUpdateChannelBookmarkSortOrder(t *testing.T) {
 	_ = createBookmark("three", th.BasicPrivateChannel.Id)
 	privateBookmark4 := createBookmark("four", th.BasicPrivateChannel.Id)
 
-	t.Run("should not work without a license", func(t *testing.T) {
-		_, _, err := th.Client.UpdateChannelBookmarkSortOrder(context.Background(), th.BasicChannel.Id, model.NewId(), 1)
-		CheckErrorID(t, err, "api.channel.bookmark.channel_bookmark.license.error")
-	})
-
-	// enable guest accounts and add the license
+	// enable guest accounts
 	th.App.UpdateConfig(func(cfg *model.Config) { *cfg.GuestAccountsSettings.Enable = true })
-	th.App.Srv().SetLicense(model.NewTestLicense())
 
 	guest, guestClient := th.CreateGuestAndClient(t)
 
@@ -1102,14 +1076,8 @@ func TestDeleteChannelBookmark(t *testing.T) {
 
 	th.Context.Session().UserId = th.BasicUser.Id // set the user for the session
 
-	t.Run("should not work without a license", func(t *testing.T) {
-		_, _, err := th.Client.DeleteChannelBookmark(context.Background(), th.BasicChannel.Id, model.NewId())
-		CheckErrorID(t, err, "api.channel.bookmark.channel_bookmark.license.error")
-	})
-
-	// enable guest accounts and add the license
+	// enable guest accounts
 	th.App.UpdateConfig(func(cfg *model.Config) { *cfg.GuestAccountsSettings.Enable = true })
-	th.App.Srv().SetLicense(model.NewTestLicense())
 
 	guest, guestClient := th.CreateGuestAndClient(t)
 
@@ -1472,14 +1440,8 @@ func TestListChannelBookmarksForChannel(t *testing.T) {
 
 	th.Context.Session().UserId = th.BasicUser.Id // set the user for the session
 
-	t.Run("should not work without a license", func(t *testing.T) {
-		_, _, err := th.Client.DeleteChannelBookmark(context.Background(), th.BasicChannel.Id, model.NewId())
-		CheckErrorID(t, err, "api.channel.bookmark.channel_bookmark.license.error")
-	})
-
-	// enable guest accounts and add the license
+	// enable guest accounts
 	th.App.UpdateConfig(func(cfg *model.Config) { *cfg.GuestAccountsSettings.Enable = true })
-	th.App.Srv().SetLicense(model.NewTestLicense())
 
 	guest, guestClient := th.CreateGuestAndClient(t)
 
@@ -1704,7 +1666,6 @@ func TestListChannelBookmarksForChannel(t *testing.T) {
 func TestBoardChannelBookmarkAPIReadonly(t *testing.T) {
 	mainHelper.Parallel(t)
 	th := Setup(t).InitBasic(t)
-	th.App.Srv().SetLicense(model.NewTestLicense())
 	err := th.App.SetPhase2PermissionsMigrationStatus(true)
 	require.NoError(t, err)
 
@@ -1796,7 +1757,6 @@ func TestListChannelBookmarksForChannelFileInfoABAC(t *testing.T) {
 		cfg.AccessControlSettings.EnableAttributeBasedAccessControl = model.NewPointer(true)
 	}).InitBasic(t)
 
-	th.App.Srv().SetLicense(model.NewTestLicense())
 	th.Context.Session().UserId = th.BasicUser.Id
 
 	mockDownloadDecision := func(t *testing.T, allowed bool) {
@@ -1920,7 +1880,6 @@ func TestChannelBookmarkWriteEndpointsFileInfoABAC(t *testing.T) {
 		cfg.AccessControlSettings.EnableAttributeBasedAccessControl = model.NewPointer(true)
 	}).InitBasic(t)
 
-	th.App.Srv().SetLicense(model.NewTestLicense())
 	th.Context.Session().UserId = th.BasicUser.Id
 
 	mockDownloadDecision := func(t *testing.T, allowed bool) {

@@ -51,8 +51,6 @@ func setupEphemeralModeAuditTest(t *testing.T) (*TestHelper, *os.File) {
 		cfg.ExperimentalAuditSettings.FileEnabled = new(true)
 		cfg.ExperimentalAuditSettings.FileName = new(logFile.Name())
 	}).InitBasic(t)
-	th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterpriseAdvanced))
-	t.Cleanup(func() { th.RemoveLicense(t) })
 
 	return th, logFile
 }
@@ -153,8 +151,6 @@ func TestLogCleanup(t *testing.T) {
 
 	t.Run("rejects a success report that provides only the cleanup date", func(t *testing.T) {
 		th := Setup(t).InitBasic(t)
-		th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterpriseAdvanced))
-		defer th.RemoveLicense(t)
 
 		body := mustMarshal(t, model.CleanupReport{
 			CleanupAt: model.NewPointer(model.GetMillis()),
@@ -167,8 +163,6 @@ func TestLogCleanup(t *testing.T) {
 
 	t.Run("rejects a success report that provides only the deleted post count", func(t *testing.T) {
 		th := Setup(t).InitBasic(t)
-		th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterpriseAdvanced))
-		defer th.RemoveLicense(t)
 
 		body := mustMarshal(t, model.CleanupReport{
 			PostsDeleted: model.NewPointer(int64(3)),
@@ -177,18 +171,6 @@ func TestLogCleanup(t *testing.T) {
 		require.Error(t, err)
 		defer resp.Body.Close()
 		require.Equal(t, http.StatusBadRequest, resp.StatusCode)
-	})
-
-	t.Run("rejects request when license does not support ephemeral mode", func(t *testing.T) {
-		th := Setup(t).InitBasic(t)
-
-		body := mustMarshal(t, model.CleanupReport{
-			CleanupAt: model.NewPointer(model.GetMillis()),
-		})
-		resp, err := th.Client.DoAPIPost(context.Background(), "/ephemeral_mode/cleanup", string(body))
-		require.Error(t, err)
-		defer resp.Body.Close()
-		require.Equal(t, http.StatusNotImplemented, resp.StatusCode)
 	})
 }
 
@@ -271,8 +253,6 @@ func TestLogOfflinePurge(t *testing.T) {
 
 	t.Run("rejects request missing offline time even when purge date is provided", func(t *testing.T) {
 		th := Setup(t).InitBasic(t)
-		th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterpriseAdvanced))
-		defer th.RemoveLicense(t)
 
 		body := mustMarshal(t, model.OfflinePurgeReport{
 			PurgeAt: model.NewPointer(model.GetMillis()),
@@ -285,26 +265,12 @@ func TestLogOfflinePurge(t *testing.T) {
 
 	t.Run("rejects request missing offline time and purge date", func(t *testing.T) {
 		th := Setup(t).InitBasic(t)
-		th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterpriseAdvanced))
-		defer th.RemoveLicense(t)
 
 		body := mustMarshal(t, model.OfflinePurgeReport{})
 		resp, err := th.Client.DoAPIPost(context.Background(), "/ephemeral_mode/purge", string(body))
 		require.Error(t, err)
 		defer resp.Body.Close()
 		require.Equal(t, http.StatusBadRequest, resp.StatusCode)
-	})
-
-	t.Run("rejects request when license does not support ephemeral mode", func(t *testing.T) {
-		th := Setup(t).InitBasic(t)
-
-		body := mustMarshal(t, model.OfflinePurgeReport{
-			OfflineTimeMinutes: model.NewPointer(int64(45)),
-		})
-		resp, err := th.Client.DoAPIPost(context.Background(), "/ephemeral_mode/purge", string(body))
-		require.Error(t, err)
-		defer resp.Body.Close()
-		require.Equal(t, http.StatusNotImplemented, resp.StatusCode)
 	})
 }
 
@@ -376,8 +342,6 @@ func TestLogSessionWipe(t *testing.T) {
 	// unauthenticated, so that would let anyone append unattributable audit records.
 	t.Run("rejects a failure report that omits the signature", func(t *testing.T) {
 		th := Setup(t).InitBasic(t)
-		th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterpriseAdvanced))
-		defer th.RemoveLicense(t)
 		client := th.CreateClient()
 
 		body := mustMarshal(t, model.SessionWipeReport{
@@ -407,19 +371,6 @@ func TestLogSessionWipe(t *testing.T) {
 		data, err := io.ReadAll(logFile)
 		require.NoError(t, err)
 		require.Nil(t, FindAuditEntry(string(data), model.AuditEventSessionWipe, ""))
-	})
-
-	t.Run("rejects request when license does not support ephemeral mode", func(t *testing.T) {
-		th := Setup(t).InitBasic(t)
-		client := th.CreateClient()
-
-		body := mustMarshal(t, model.SessionWipeReport{
-			Signature: signWipePush(t, th, th.BasicUser.Id),
-		})
-		resp, err := client.DoAPIPost(context.Background(), "/ephemeral_mode/wipe", string(body))
-		require.Error(t, err)
-		defer resp.Body.Close()
-		require.Equal(t, http.StatusNotImplemented, resp.StatusCode)
 	})
 }
 

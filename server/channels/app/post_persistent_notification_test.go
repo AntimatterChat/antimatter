@@ -31,7 +31,6 @@ func TestResolvePersistentNotification(t *testing.T) {
 		mockPostPersistentNotification.On("GetSingle", mock.Anything).Return(nil, &store.ErrNotFound{})
 		mockPostPersistentNotification.On("Delete", mock.Anything).Return(nil)
 
-		th.App.Srv().SetLicense(getLicWithSkuShortName(model.LicenseShortSkuProfessional))
 		cfg := th.App.Config()
 		*cfg.ServiceSettings.PostPriority = true
 		*cfg.ServiceSettings.AllowPersistentNotificationsForGuests = true
@@ -75,7 +74,6 @@ func TestResolvePersistentNotification(t *testing.T) {
 		mockStore.On("Group").Return(&mockGroup)
 		mockGroup.On("GetGroups", mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return([]*model.Group{}, nil)
 
-		th.App.Srv().SetLicense(getLicWithSkuShortName(model.LicenseShortSkuProfessional))
 		cfg := th.App.Config()
 		*cfg.ServiceSettings.PostPriority = true
 		*cfg.ServiceSettings.AllowPersistentNotificationsForGuests = true
@@ -137,7 +135,6 @@ func TestResolvePersistentNotification(t *testing.T) {
 		mockStore.On("Group").Return(&mockGroup)
 		mockGroup.On("GetGroups", mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return([]*model.Group{}, nil)
 
-		th.App.Srv().SetLicense(getLicWithSkuShortName(model.LicenseShortSkuProfessional))
 		cfg := th.App.Config()
 		*cfg.ServiceSettings.PostPriority = true
 		*cfg.ServiceSettings.AllowPersistentNotificationsForGuests = true
@@ -162,7 +159,6 @@ func TestDeletePersistentNotification(t *testing.T) {
 		mockStore := th.App.Srv().Store().(*storemocks.Store)
 		mockStore.On("PostPersistentNotification").Return(&mockPostPersistentNotification)
 
-		th.App.Srv().SetLicense(getLicWithSkuShortName(model.LicenseShortSkuProfessional))
 		cfg := th.App.Config()
 		*cfg.ServiceSettings.PostPriority = true
 		*cfg.ServiceSettings.AllowPersistentNotificationsForGuests = true
@@ -184,7 +180,6 @@ func TestDeletePersistentNotification(t *testing.T) {
 		mockStore := th.App.Srv().Store().(*storemocks.Store)
 		mockStore.On("PostPersistentNotification").Return(&mockPostPersistentNotification)
 
-		th.App.Srv().SetLicense(getLicWithSkuShortName(model.LicenseShortSkuProfessional))
 		cfg := th.App.Config()
 		*cfg.ServiceSettings.PostPriority = true
 
@@ -235,7 +230,6 @@ func TestForEachPersistentNotificationPost(t *testing.T) {
 		mockPostPersistentNotification.On("GetSingle", post2.Id).Return(&model.PostPersistentNotifications{PostId: post2.Id}, nil)
 		mockPostPersistentNotification.On("Delete", []string{post2.Id}).Return(nil)
 
-		th.App.Srv().SetLicense(getLicWithSkuShortName(model.LicenseShortSkuProfessional))
 		cfg := th.App.Config()
 		*cfg.ServiceSettings.PostPriority = true
 		*cfg.ServiceSettings.AllowPersistentNotifications = true
@@ -293,7 +287,6 @@ func TestForEachPersistentNotificationPost(t *testing.T) {
 		mockPostPersistentNotification.On("GetSingle", post2.Id).Return(&model.PostPersistentNotifications{PostId: post2.Id}, nil)
 		mockPostPersistentNotification.On("Delete", []string{post2.Id}).Return(nil)
 
-		th.App.Srv().SetLicense(getLicWithSkuShortName(model.LicenseShortSkuProfessional))
 		cfg := th.App.Config()
 		*cfg.ServiceSettings.PostPriority = true
 		*cfg.ServiceSettings.AllowPersistentNotifications = true
@@ -342,7 +335,6 @@ func TestForEachPersistentNotificationPost(t *testing.T) {
 		mockPostPersistentNotification := storemocks.PostPersistentNotificationStore{}
 		mockStore.On("PostPersistentNotification").Return(&mockPostPersistentNotification)
 
-		th.App.Srv().SetLicense(getLicWithSkuShortName(model.LicenseShortSkuProfessional))
 		cfg := th.App.Config()
 		*cfg.ServiceSettings.PostPriority = true
 		*cfg.ServiceSettings.AllowPersistentNotifications = true
@@ -393,7 +385,6 @@ func TestForEachPersistentNotificationPost(t *testing.T) {
 		mockPostPersistentNotification := storemocks.PostPersistentNotificationStore{}
 		mockStore.On("PostPersistentNotification").Return(&mockPostPersistentNotification)
 
-		th.App.Srv().SetLicense(getLicWithSkuShortName(model.LicenseShortSkuProfessional))
 		cfg := th.App.Config()
 		*cfg.ServiceSettings.PostPriority = true
 		*cfg.ServiceSettings.AllowPersistentNotifications = true
