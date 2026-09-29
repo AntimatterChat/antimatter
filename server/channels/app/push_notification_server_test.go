@@ -14,77 +14,42 @@ import (
 	clustermocks "github.com/mattermost/mattermost/server/v8/einterfaces/mocks"
 )
 
-func TestSyncPushNotificationServerWithLicense(t *testing.T) {
-	// Not parallel: subtests mutate the license, shared config, and environment.
+func TestRevertHostedPushNotificationServer(t *testing.T) {
+	// Not parallel: subtests mutate the shared config and environment.
 	th := Setup(t)
-
-	licenseWithMHPNS := model.NewTestLicense("mhpns")
-	licenseWithoutMHPNS := model.NewTestLicense()
-	licenseWithoutMHPNS.Features.MHPNS = model.NewPointer(false)
 
 	tests := []struct {
 		name           string
-		license        *model.License
 		initialServer  string
 		expectedServer string
 	}{
 		{
-			name:           "entitled license switches TPNS to Global",
-			license:        licenseWithMHPNS,
-			initialServer:  model.GenericNotificationServer,
-			expectedServer: model.MHPNSGlobal,
-		},
-		{
-			name:           "entitlement removed reverts Global to TPNS",
-			license:        licenseWithoutMHPNS,
+			name:           "reverts Global to TPNS",
 			initialServer:  model.MHPNSGlobal,
 			expectedServer: model.GenericNotificationServer,
 		},
 		{
-			name:           "license removed reverts Global to TPNS",
-			license:        nil,
-			initialServer:  model.MHPNSGlobal,
-			expectedServer: model.GenericNotificationServer,
-		},
-		{
-			name:           "entitled license leaves custom endpoint untouched",
-			license:        licenseWithMHPNS,
-			initialServer:  "https://push.example.com",
-			expectedServer: "https://push.example.com",
-		},
-		{
-			name:           "entitled license leaves regional endpoint untouched",
-			license:        licenseWithMHPNS,
-			initialServer:  model.MHPNSEU,
-			expectedServer: model.MHPNSEU,
-		},
-		{
-			name:           "entitled license leaves Global untouched",
-			license:        licenseWithMHPNS,
-			initialServer:  model.MHPNSGlobal,
-			expectedServer: model.MHPNSGlobal,
-		},
-		{
-			name:           "unentitled license reverts regional endpoint (MHPNSUS) to TPNS",
-			license:        licenseWithoutMHPNS,
+			name:           "reverts regional endpoint (MHPNSUS) to TPNS",
 			initialServer:  model.MHPNSUS,
 			expectedServer: model.GenericNotificationServer,
 		},
 		{
-			name:           "unentitled license reverts legacy endpoint (MHPNSLegacyDE) to TPNS",
-			license:        licenseWithoutMHPNS,
+			name:           "reverts regional endpoint (MHPNSEU) to TPNS",
+			initialServer:  model.MHPNSEU,
+			expectedServer: model.GenericNotificationServer,
+		},
+		{
+			name:           "reverts legacy endpoint (MHPNSLegacyDE) to TPNS",
 			initialServer:  model.MHPNSLegacyDE,
 			expectedServer: model.GenericNotificationServer,
 		},
 		{
-			name:           "unentitled license leaves TPNS untouched",
-			license:        licenseWithoutMHPNS,
+			name:           "leaves TPNS untouched",
 			initialServer:  model.GenericNotificationServer,
 			expectedServer: model.GenericNotificationServer,
 		},
 		{
-			name:           "unentitled license leaves custom endpoint untouched",
-			license:        licenseWithoutMHPNS,
+			name:           "leaves custom endpoint untouched",
 			initialServer:  "https://push.example.com",
 			expectedServer: "https://push.example.com",
 		},
@@ -92,15 +57,12 @@ func TestSyncPushNotificationServerWithLicense(t *testing.T) {
 
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			th.App.Srv().SetLicense(nil)
 			th.App.UpdateConfig(func(cfg *model.Config) {
 				*cfg.EmailSettings.PushNotificationServer = tc.initialServer
 				*cfg.EmailSettings.SendPushNotifications = true
 			})
 
-			// Setting the license fires the listener registered in NewServer,
-			// which runs syncPushNotificationServerWithLicense.
-			th.App.Srv().SetLicense(tc.license)
+			th.Server.revertHostedPushNotificationServer()
 
 			cfg := th.App.Config()
 			assert.Equal(t, tc.expectedServer, *cfg.EmailSettings.PushNotificationServer)
@@ -108,38 +70,8 @@ func TestSyncPushNotificationServerWithLicense(t *testing.T) {
 		})
 	}
 
-	t.Run("direct call switches TPNS to Global on the startup path", func(t *testing.T) {
-		th.App.Srv().SetLicense(licenseWithMHPNS)
-		th.App.UpdateConfig(func(cfg *model.Config) {
-			*cfg.EmailSettings.PushNotificationServer = model.GenericNotificationServer
-		})
-
-		th.Server.syncPushNotificationServerWithLicense()
-
-		assert.Equal(t, model.MHPNSGlobal, *th.App.Config().EmailSettings.PushNotificationServer)
-	})
-
-	t.Run("license with nil MHPNS feature is unentitled and reverts Global to TPNS", func(t *testing.T) {
-		license := model.NewTestLicense()
-		th.App.Srv().SetLicense(license)
-		// SetLicense normalizes feature defaults, back-filling any nil pointer, so a license
-		// with a nil MHPNS can only reach the sync through the direct path. Clear the field
-		// on the stored license to prove the entitlement check is nil-safe and treats the
-		// license as unentitled. Restore it afterwards: license logging during teardown
-		// dereferences every feature pointer via Features.ToMap.
-		license.Features.MHPNS = nil
-		t.Cleanup(func() { license.Features.MHPNS = model.NewPointer(false) })
-		th.App.UpdateConfig(func(cfg *model.Config) {
-			*cfg.EmailSettings.PushNotificationServer = model.MHPNSGlobal
-		})
-
-		th.Server.syncPushNotificationServerWithLicense()
-
-		assert.Equal(t, model.GenericNotificationServer, *th.App.Config().EmailSettings.PushNotificationServer)
-	})
-
 	t.Run("environment override leaves setting untouched", func(t *testing.T) {
-		t.Setenv("MM_EMAILSETTINGS_PUSHNOTIFICATIONSERVER", model.GenericNotificationServer)
+		t.Setenv("MM_EMAILSETTINGS_PUSHNOTIFICATIONSERVER", model.MHPNSGlobal)
 
 		// The config value alone can't prove the env-override guard fired: a save of this
 		// config would be a no-op anyway, because the store re-applies env overrides and
@@ -161,15 +93,10 @@ func TestSyncPushNotificationServerWithLicense(t *testing.T) {
 		// that read it. Setup also isolates the env var set above.
 		envTh := SetupWithClusterMock(t, clusterMock)
 
-		envTh.App.Srv().SetLicense(licenseWithMHPNS)
-		envTh.App.UpdateConfig(func(cfg *model.Config) {
-			*cfg.EmailSettings.PushNotificationServer = model.GenericNotificationServer
-		})
-
-		envTh.Server.syncPushNotificationServerWithLicense()
+		envTh.Server.revertHostedPushNotificationServer()
 
 		clusterMock.AssertNotCalled(t, "ConfigChanged", mock.Anything, mock.Anything, mock.Anything)
-		assert.Equal(t, model.GenericNotificationServer, *envTh.App.Config().EmailSettings.PushNotificationServer)
+		assert.Equal(t, model.MHPNSGlobal, *envTh.App.Config().EmailSettings.PushNotificationServer)
 	})
 
 	t.Run("reverting hosted endpoint does not re-init email batching", func(t *testing.T) {
@@ -184,7 +111,7 @@ func TestSyncPushNotificationServerWithLicense(t *testing.T) {
 		th.App.UpdateConfig(func(cfg *model.Config) {
 			*cfg.EmailSettings.PushNotificationServer = model.MHPNSGlobal
 		})
-		th.App.Srv().SetLicense(nil)
+		th.Server.revertHostedPushNotificationServer()
 
 		emailServiceMock.AssertNotCalled(t, "InitEmailBatching")
 		assert.Equal(t, model.GenericNotificationServer, *th.App.Config().EmailSettings.PushNotificationServer)
