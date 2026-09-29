@@ -91,7 +91,7 @@ describe('AttributeAppliesToUserItem', () => {
         // Label, value and helper text in one assertion, so dropping or
         // reordering any of the three fails.
         expect(managedBy.closest('.AttributeAppliesToItem__row')).toHaveTextContent(
-            new RegExp(`^Managed by${sourceLabel.replace('/', '\\/')}Not editable in Mattermost\\.$`),
+            new RegExp(`^Managed by${sourceLabel.replace('/', '\\/')}Not editable in Antimatter\\.$`),
         );
 
         const body = screen.getByTestId('attributeAppliesToRow-user-body');

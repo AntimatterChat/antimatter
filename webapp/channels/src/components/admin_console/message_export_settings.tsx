@@ -51,7 +51,7 @@ const messages = defineMessages({
     globalRelaySenderAddress_title: {id: 'admin.complianceExport.globalRelaySenderAddress.title', defaultMessage: 'Sender Address:'},
     globalRelaySenderAddress_description: {id: 'admin.complianceExport.globalRelaySenderAddress.description', defaultMessage: 'Optional fixed From address used for every exported EML and as the SMTP envelope sender. Leave blank to use the first channel participant by username. Participant emails remain in the To header.'},
     complianceExportTitle: {id: 'admin.service.complianceExportTitle', defaultMessage: 'Enable Compliance Export:'},
-    complianceExportDesc: {id: 'admin.service.complianceExportDesc', defaultMessage: 'When true, Mattermost will export all messages that were posted in the last 24 hours. The export task is scheduled to run once per day. See <link>the documentation</link> to learn more.'},
+    complianceExportDesc: {id: 'admin.service.complianceExportDesc', defaultMessage: 'When true, Antimatter will export all messages that were posted in the last 24 hours. The export task is scheduled to run once per day. See <link>the documentation</link> to learn more.'},
     exportJobStartTime_title: {id: 'admin.complianceExport.exportJobStartTime.title', defaultMessage: 'Compliance Export Time:'},
     exportJobStartTime_description: {id: 'admin.complianceExport.exportJobStartTime.description', defaultMessage: 'Set the start time of the daily scheduled compliance export job. Choose a time when fewer people are using your system. Must be a 24-hour time stamp in the form HH:MM.'},
     exportFormat_title: {id: 'admin.complianceExport.exportFormat.title', defaultMessage: 'Export Format:'},

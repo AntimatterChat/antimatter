@@ -204,7 +204,7 @@ exports[`components/admin_console/group_settings/group_details/GroupDetails shou
               <div
                 class="mt-2"
               >
-                Listing of users in Mattermost associated with this group.
+                Listing of users in Antimatter associated with this group.
               </div>
             </div>
           </div>
@@ -615,7 +615,7 @@ exports[`components/admin_console/group_settings/group_details/GroupDetails shou
               <div
                 class="mt-2"
               >
-                Listing of users in Mattermost associated with this group.
+                Listing of users in Antimatter associated with this group.
               </div>
             </div>
           </div>
@@ -1024,7 +1024,7 @@ exports[`components/admin_console/group_settings/group_details/GroupDetails shou
               <div
                 class="mt-2"
               >
-                Listing of users in Mattermost associated with this group.
+                Listing of users in Antimatter associated with this group.
               </div>
             </div>
           </div>
@@ -1431,7 +1431,7 @@ exports[`components/admin_console/group_settings/group_details/GroupDetails shou
               <div
                 class="mt-2"
               >
-                Listing of users in Mattermost associated with this group.
+                Listing of users in Antimatter associated with this group.
               </div>
             </div>
           </div>

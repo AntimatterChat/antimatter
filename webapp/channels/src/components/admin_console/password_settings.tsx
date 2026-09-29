@@ -290,7 +290,7 @@ export default class PasswordSettings extends OLDAdminSettings<Props, State> {
                     helpText={
                         <FormattedMessage
                             id='admin.password.enableForgotLink.description'
-                            defaultMessage='When true, “Forgot password” link appears on the Mattermost login page, which allows users to reset their password. When false, the link is hidden from users. This link can be customized to redirect to a URL of your choice from <a>Site Configuration > Customization.</a>'
+                            defaultMessage='When true, “Forgot password” link appears on the Antimatter login page, which allows users to reset their password. When false, the link is hidden from users. This link can be customized to redirect to a URL of your choice from <a>Site Configuration > Customization.</a>'
                             values={{
                                 a: (chunks) => (
                                     <BlockableLink to='/admin_console/site_config/customization'>

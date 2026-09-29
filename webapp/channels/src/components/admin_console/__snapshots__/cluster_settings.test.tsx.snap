@@ -90,7 +90,7 @@ exports[`components/ClusterSettings should match snapshot, compression disabled 
                 class="help-text"
                 data-testid="Enablehelp-text"
               >
-                When true, Mattermost will run in High Availability mode. Please see 
+                When true, Antimatter will run in High Availability mode. Please see 
                 <a
                   href="https://mattermost.com/pl/high-availability-cluster?utm_source=mattermost&utm_medium=in-product&utm_content=cluster_settings&uid=&sid=&edition=team&server_version="
                   location="cluster_settings"
@@ -99,7 +99,7 @@ exports[`components/ClusterSettings should match snapshot, compression disabled 
                 >
                   documentation
                 </a>
-                 to learn more about configuring High Availability for Mattermost.
+                 to learn more about configuring High Availability for Antimatter.
               </div>
             </div>
           </fieldset>
@@ -449,7 +449,7 @@ exports[`components/ClusterSettings should match snapshot, compression enabled 1
                 class="help-text"
                 data-testid="Enablehelp-text"
               >
-                When true, Mattermost will run in High Availability mode. Please see 
+                When true, Antimatter will run in High Availability mode. Please see 
                 <a
                   href="https://mattermost.com/pl/high-availability-cluster?utm_source=mattermost&utm_medium=in-product&utm_content=cluster_settings&uid=&sid=&edition=team&server_version="
                   location="cluster_settings"
@@ -458,7 +458,7 @@ exports[`components/ClusterSettings should match snapshot, compression enabled 1
                 >
                   documentation
                 </a>
-                 to learn more about configuring High Availability for Mattermost.
+                 to learn more about configuring High Availability for Antimatter.
               </div>
             </div>
           </fieldset>
@@ -808,7 +808,7 @@ exports[`components/ClusterSettings should match snapshot, encryption disabled 1
                 class="help-text"
                 data-testid="Enablehelp-text"
               >
-                When true, Mattermost will run in High Availability mode. Please see 
+                When true, Antimatter will run in High Availability mode. Please see 
                 <a
                   href="https://mattermost.com/pl/high-availability-cluster?utm_source=mattermost&utm_medium=in-product&utm_content=cluster_settings&uid=&sid=&edition=team&server_version="
                   location="cluster_settings"
@@ -817,7 +817,7 @@ exports[`components/ClusterSettings should match snapshot, encryption disabled 1
                 >
                   documentation
                 </a>
-                 to learn more about configuring High Availability for Mattermost.
+                 to learn more about configuring High Availability for Antimatter.
               </div>
             </div>
           </fieldset>
@@ -1167,7 +1167,7 @@ exports[`components/ClusterSettings should match snapshot, encryption enabled 1`
                 class="help-text"
                 data-testid="Enablehelp-text"
               >
-                When true, Mattermost will run in High Availability mode. Please see 
+                When true, Antimatter will run in High Availability mode. Please see 
                 <a
                   href="https://mattermost.com/pl/high-availability-cluster?utm_source=mattermost&utm_medium=in-product&utm_content=cluster_settings&uid=&sid=&edition=team&server_version="
                   location="cluster_settings"
@@ -1176,7 +1176,7 @@ exports[`components/ClusterSettings should match snapshot, encryption enabled 1`
                 >
                   documentation
                 </a>
-                 to learn more about configuring High Availability for Mattermost.
+                 to learn more about configuring High Availability for Antimatter.
               </div>
             </div>
           </fieldset>

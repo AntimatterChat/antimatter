@@ -45,14 +45,14 @@ export const ldapWizardAdminDefinition: LDAPAdminDefinitionConfigSchemaSettings 
                 type: 'bool',
                 key: 'LdapSettings.Enable',
                 label: defineMessage({id: 'admin.ldap.enableTitle', defaultMessage: 'Enable sign-in with AD/LDAP:'}),
-                help_text: defineMessage({id: 'admin.ldap.enableDesc', defaultMessage: 'When true, Mattermost allows login using AD/LDAP'}),
+                help_text: defineMessage({id: 'admin.ldap.enableDesc', defaultMessage: 'When true, Antimatter allows login using AD/LDAP'}),
                 isDisabled: it.not(it.userHasWritePermissionOnResource(RESOURCE_KEYS.AUTHENTICATION.LDAP)),
             },
             {
                 type: 'bool',
                 key: 'LdapSettings.EnableSync',
                 label: defineMessage({id: 'admin.ldap.enableSyncTitle', defaultMessage: 'Enable Synchronization with AD/LDAP:'}),
-                help_text: defineMessage({id: 'admin.ldap.enableSyncDesc', defaultMessage: 'When true, Mattermost periodically synchronizes users from AD/LDAP. When false, user attributes are updated from AD/LDAP during user login only.'}),
+                help_text: defineMessage({id: 'admin.ldap.enableSyncDesc', defaultMessage: 'When true, Antimatter periodically synchronizes users from AD/LDAP. When false, user attributes are updated from AD/LDAP during user login only.'}),
                 isDisabled: it.not(it.userHasWritePermissionOnResource(RESOURCE_KEYS.AUTHENTICATION.LDAP)),
             },
             {
@@ -87,7 +87,7 @@ export const ldapWizardAdminDefinition: LDAPAdminDefinitionConfigSchemaSettings 
                 type: 'number',
                 key: 'LdapSettings.LdapPort',
                 label: defineMessage({id: 'admin.ldap.portTitle', defaultMessage: 'AD/LDAP Port:'}),
-                help_text: defineMessage({id: 'admin.ldap.portDesc', defaultMessage: 'The port Mattermost will use to connect to the AD/LDAP server. Default is 389.'}),
+                help_text: defineMessage({id: 'admin.ldap.portDesc', defaultMessage: 'The port Antimatter will use to connect to the AD/LDAP server. Default is 389.'}),
                 placeholder: defineMessage({id: 'admin.ldap.portEx', defaultMessage: 'E.g.: "389"'}),
                 isDisabled: it.any(
                     it.not(it.userHasWritePermissionOnResource(RESOURCE_KEYS.AUTHENTICATION.LDAP)),
@@ -102,7 +102,7 @@ export const ldapWizardAdminDefinition: LDAPAdminDefinitionConfigSchemaSettings 
                 key: 'LdapSettings.BindUsername',
                 label: defineMessage({id: 'admin.ldap.bindUserTitle', defaultMessage: 'Bind Username:'}),
                 help_text: defineMessage({id: 'admin.ldap.bindUserDesc', defaultMessage: 'The username used to perform the AD/LDAP search.'}),
-                help_text_more_info: defineMessage({id: 'admin.ldap.bindUserDescHover', defaultMessage: 'This should typically be an account created specifically for use with Mattermost. It should have access limited to read the portion of the AD/LDAP tree specified in the Base DN field.'}),
+                help_text_more_info: defineMessage({id: 'admin.ldap.bindUserDescHover', defaultMessage: 'This should typically be an account created specifically for use with Antimatter. It should have access limited to read the portion of the AD/LDAP tree specified in the Base DN field.'}),
                 isDisabled: it.any(
                     it.not(it.userHasWritePermissionOnResource(RESOURCE_KEYS.AUTHENTICATION.LDAP)),
                     it.all(
@@ -167,7 +167,7 @@ export const ldapWizardAdminDefinition: LDAPAdminDefinitionConfigSchemaSettings 
                 production_warning: {
                     isEnabled: it.stateIsTrue('LdapSettings.SkipCertificateVerification'),
                     title: defineMessage({id: 'admin.ldap.skipCertificateVerificationProductionWarning.title', defaultMessage: 'Skipping certificate verification is not recommended for production environments'}),
-                    text: defineMessage({id: 'admin.ldap.skipCertificateVerificationProductionWarning.text', defaultMessage: "Mattermost will not validate the AD/LDAP server's TLS certificate, exposing the connection to man-in-the-middle attacks. Enable only while troubleshooting in non-production environments."}),
+                    text: defineMessage({id: 'admin.ldap.skipCertificateVerificationProductionWarning.text', defaultMessage: "Antimatter will not validate the AD/LDAP server's TLS certificate, exposing the connection to man-in-the-middle attacks. Enable only while troubleshooting in non-production environments."}),
                 },
                 isDisabled: it.any(
                     it.not(it.userHasWritePermissionOnResource(RESOURCE_KEYS.AUTHENTICATION.LDAP)),
@@ -220,8 +220,8 @@ export const ldapWizardAdminDefinition: LDAPAdminDefinitionConfigSchemaSettings 
                 type: 'number',
                 key: 'LdapSettings.MaximumLoginAttempts',
                 label: defineMessage({id: 'admin.ldap.maximumLoginAttemptsTitle', defaultMessage: 'Maximum Login Attempts:'}),
-                help_text: defineMessage({id: 'admin.ldap.maximumLoginAttemptsDesc', defaultMessage: 'The maximum number of login attempts before the Mattermost account is locked.'}),
-                help_text_more_info: defineMessage({id: 'admin.ldap.maximumLoginAttemptsDescHover', defaultMessage: 'You can unlock the account in system console on the users page. Setting this value lower than your LDAP maximum login attempts ensures that the users won\'t be locked out of your LDAP server because of failed login attempts in Mattermost.'}),
+                help_text: defineMessage({id: 'admin.ldap.maximumLoginAttemptsDesc', defaultMessage: 'The maximum number of login attempts before the Antimatter account is locked.'}),
+                help_text_more_info: defineMessage({id: 'admin.ldap.maximumLoginAttemptsDescHover', defaultMessage: 'You can unlock the account in system console on the users page. Setting this value lower than your LDAP maximum login attempts ensures that the users won\'t be locked out of your LDAP server because of failed login attempts in Antimatter.'}),
                 isDisabled: it.any(
                     it.not(it.userHasWritePermissionOnResource(RESOURCE_KEYS.AUTHENTICATION.LDAP)),
                     it.all(
@@ -242,7 +242,7 @@ export const ldapWizardAdminDefinition: LDAPAdminDefinitionConfigSchemaSettings 
                     ),
                 ),
                 label: defineMessage({id: 'admin.ldap.testConnectionTitle', defaultMessage: 'Test Connection'}),
-                help_text: defineMessage({id: 'admin.ldap.testHelpText', defaultMessage: 'Tests if the Mattermost server can connect to the AD/LDAP server specified. Please review "System Console > Logs" and <link>documentation</link> to troubleshoot errors.'}),
+                help_text: defineMessage({id: 'admin.ldap.testHelpText', defaultMessage: 'Tests if the Antimatter server can connect to the AD/LDAP server specified. Please review "System Console > Logs" and <link>documentation</link> to troubleshoot errors.'}),
                 help_text_values: {
                     link: (msg: string) => (
                         <ExternalLink
@@ -262,13 +262,13 @@ export const ldapWizardAdminDefinition: LDAPAdminDefinitionConfigSchemaSettings 
     {
         key: 'admin.authentication.ldap.dn_and_filters',
         title: 'User Filters',
-        subtitle: 'Tell Mattermost how to identify your users within LDAP',
+        subtitle: 'Tell Antimatter how to identify your users within LDAP',
         settings: [
             {
                 type: 'text',
                 key: 'LdapSettings.BaseDN',
                 label: defineMessage({id: 'admin.ldap.baseTitle', defaultMessage: 'Base DN:'}),
-                help_text: defineMessage({id: 'admin.ldap.baseDesc', defaultMessage: 'The Base DN is the Distinguished Name of the location where Mattermost should start its search for user and group objects in the AD/LDAP tree.'}),
+                help_text: defineMessage({id: 'admin.ldap.baseDesc', defaultMessage: 'The Base DN is the Distinguished Name of the location where Antimatter should start its search for user and group objects in the AD/LDAP tree.'}),
                 placeholder: defineMessage({id: 'admin.ldap.baseEx', defaultMessage: 'E.g.: "ou=Unit Name,dc=corp,dc=example,dc=com"'}),
                 isDisabled: it.any(
                     it.not(it.userHasWritePermissionOnResource(RESOURCE_KEYS.AUTHENTICATION.LDAP)),
@@ -283,7 +283,7 @@ export const ldapWizardAdminDefinition: LDAPAdminDefinitionConfigSchemaSettings 
                 key: 'LdapSettings.UserFilter',
                 label: defineMessage({id: 'admin.ldap.userFilterTitle', defaultMessage: 'User Filter:'}),
                 help_text: defineMessage({id: 'admin.ldap.userFilterDisc', defaultMessage: '(Optional) Enter an AD/LDAP filter to use when searching for user objects. When blank, defaults to the ID Attribute.\nFor Active Directory, the query to filter out disabled users is\n(&(objectCategory=Person)(!(UserAccountControl:1.2.840.113556.1.4.803:=2))).'}),
-                help_text_more_info: defineMessage({id: 'admin.ldap.userFilterDiscHover', defaultMessage: 'Only the users selected by the query will be able to access Mattermost.'}),
+                help_text_more_info: defineMessage({id: 'admin.ldap.userFilterDiscHover', defaultMessage: 'Only the users selected by the query will be able to access Antimatter.'}),
                 placeholder: defineMessage({id: 'admin.ldap.userFilterEx', defaultMessage: 'Ex. "(objectClass=user)"'}),
                 isDisabled: it.any(
                     it.not(it.userHasWritePermissionOnResource(RESOURCE_KEYS.AUTHENTICATION.LDAP)),
@@ -305,7 +305,7 @@ export const ldapWizardAdminDefinition: LDAPAdminDefinitionConfigSchemaSettings 
                         help_text: defineMessage({id: 'admin.ldap.groupFilterFilterDesc', defaultMessage: '(Optional) Enter an AD/LDAP filter to use when searching for group objects. From [User Management > Groups]({siteURL}/admin_console/user_management/groups), select which AD/LDAP groups should be linked and configured.'}),
                         help_text_markdown: true,
                         help_text_values: {siteURL: getSiteURL()},
-                        help_text_more_info: defineMessage({id: 'admin.ldap.groupFilterFilterDescHover', defaultMessage: 'Only the groups selected by the query will be available to Mattermost.'}),
+                        help_text_more_info: defineMessage({id: 'admin.ldap.groupFilterFilterDescHover', defaultMessage: 'Only the groups selected by the query will be available to Antimatter.'}),
                         placeholder: defineMessage({id: 'admin.ldap.groupFilterEx', defaultMessage: 'E.g.: "(objectClass=group)"'}),
                         isHidden: it.not(it.licensedForFeature('LDAPGroups')),
                         isDisabled: it.any(
@@ -331,7 +331,7 @@ export const ldapWizardAdminDefinition: LDAPAdminDefinitionConfigSchemaSettings 
                         label: defineMessage({id: 'admin.ldap.adminFilterTitle', defaultMessage: 'Admin Filter:'}),
                         help_text: defineMessage({id: 'admin.ldap.adminFilterFilterDesc', defaultMessage: '(Optional) Enter an AD/LDAP filter to use for designating System Admins.'}),
                         // eslint-disable-next-line formatjs/no-multiple-whitespaces
-                        help_text_more_info: defineMessage({id: 'admin.ldap.adminFilterFilterDescHover', defaultMessage: 'The users selected by the query will have access to your Mattermost server as System Admins. By default, System Admins have complete access to the Mattermost System Console. Existing members that are identified by this attribute will be promoted from member to System Admin upon next login. The next login is based upon Session lengths set in System Console > Session Lengths. It is highly recommend to manually demote users to members in System Console > User Management to ensure access is restricted immediately.\n \nNote: If this filter is removed/changed, System Admins that were promoted via this filter will be demoted to members and will not retain access to the System Console. When this filter is not in use, System Admins can be manually promoted/demoted in System Console > User Management.'}),
+                        help_text_more_info: defineMessage({id: 'admin.ldap.adminFilterFilterDescHover', defaultMessage: 'The users selected by the query will have access to your Antimatter server as System Admins. By default, System Admins have complete access to the Antimatter System Console. Existing members that are identified by this attribute will be promoted from member to System Admin upon next login. The next login is based upon Session lengths set in System Console > Session Lengths. It is highly recommend to manually demote users to members in System Console > User Management to ensure access is restricted immediately.\n \nNote: If this filter is removed/changed, System Admins that were promoted via this filter will be demoted to members and will not retain access to the System Console. When this filter is not in use, System Admins can be manually promoted/demoted in System Console > User Management.'}),
                         placeholder: defineMessage({id: 'admin.ldap.adminFilterEx', defaultMessage: 'E.g.: "(objectClass=user)"'}),
                         isDisabled: it.any(
                             it.not(it.isSystemAdmin),
@@ -348,7 +348,7 @@ export const ldapWizardAdminDefinition: LDAPAdminDefinitionConfigSchemaSettings 
                         label: defineMessage({id: 'admin.ldap.guestFilterTitle', defaultMessage: 'Guest Filter:'}),
                         help_text: defineMessage({id: 'admin.ldap.guestFilterFilterDesc', defaultMessage: '(Optional) Requires Guest Access to be enabled before being applied. Enter an AD/LDAP filter to use when searching for guest objects.'}),
                         // eslint-disable-next-line formatjs/no-multiple-whitespaces
-                        help_text_more_info: defineMessage({id: 'admin.ldap.guestFilterFilterDescHover', defaultMessage: 'Only the users selected by the query will be able to access Mattermost as Guests. Guests are prevented from accessing teams or channels upon logging in until they are assigned a team and at least one channel.\n \nNote: If this filter is removed/changed, active guests will not be promoted to a member and will retain their Guest role. Guests can be promoted in System Console > User Management. Existing members that are identified by this attribute as a guest will be demoted from a member to a guest when they are asked to login next. The next login is based upon Session lengths set in System Console > Session Lengths. It is highly recommend to manually demote users to guests in System Console > User Management  to ensure access is restricted immediately.'}),
+                        help_text_more_info: defineMessage({id: 'admin.ldap.guestFilterFilterDescHover', defaultMessage: 'Only the users selected by the query will be able to access Antimatter as Guests. Guests are prevented from accessing teams or channels upon logging in until they are assigned a team and at least one channel.\n \nNote: If this filter is removed/changed, active guests will not be promoted to a member and will retain their Guest role. Guests can be promoted in System Console > User Management. Existing members that are identified by this attribute as a guest will be demoted from a member to a guest when they are asked to login next. The next login is based upon Session lengths set in System Console > Session Lengths. It is highly recommend to manually demote users to guests in System Console > User Management  to ensure access is restricted immediately.'}),
                         placeholder: defineMessage({id: 'admin.ldap.guestFilterEx', defaultMessage: 'E.g.: "(objectClass=user)"'}),
                         isDisabled: it.any(
                             it.not(it.userHasWritePermissionOnResource(RESOURCE_KEYS.AUTHENTICATION.LDAP)),
@@ -390,8 +390,8 @@ export const ldapWizardAdminDefinition: LDAPAdminDefinitionConfigSchemaSettings 
                 key: 'LdapSettings.IdAttribute',
                 label: defineMessage({id: 'admin.ldap.idAttrTitle', defaultMessage: 'ID Attribute: '}),
                 placeholder: defineMessage({id: 'admin.ldap.idAttrEx', defaultMessage: 'E.g.: "objectGUID" or "uid"'}),
-                help_text: defineMessage({id: 'admin.ldap.idAttrDesc', defaultMessage: 'The attribute in the AD/LDAP server used as a unique identifier in Mattermost. If you need to change this field after users have already logged in, use the <link>mattermost ldap idmigrate</link> CLI tool.'}),
-                help_text_more_info: defineMessage({id: 'admin.ldap.idAttrDescHover', defaultMessage: 'It should be an AD/LDAP attribute with a value that does not change such as uid for LDAP or objectGUID for Active Directory. If a user\'s ID Attribute changes, it will create a new Mattermost account unassociated with their old one.'}),
+                help_text: defineMessage({id: 'admin.ldap.idAttrDesc', defaultMessage: 'The attribute in the AD/LDAP server used as a unique identifier in Antimatter. If you need to change this field after users have already logged in, use the <link>mattermost ldap idmigrate</link> CLI tool.'}),
+                help_text_more_info: defineMessage({id: 'admin.ldap.idAttrDescHover', defaultMessage: 'It should be an AD/LDAP attribute with a value that does not change such as uid for LDAP or objectGUID for Active Directory. If a user\'s ID Attribute changes, it will create a new Antimatter account unassociated with their old one.'}),
                 help_text_markdown: false,
                 help_text_values: {
                     link: (msg: string) => (
@@ -416,7 +416,7 @@ export const ldapWizardAdminDefinition: LDAPAdminDefinitionConfigSchemaSettings 
                 key: 'LdapSettings.LoginIdAttribute',
                 label: defineMessage({id: 'admin.ldap.loginAttrTitle', defaultMessage: 'Login ID Attribute: '}),
                 placeholder: defineMessage({id: 'admin.ldap.loginIdAttrEx', defaultMessage: 'E.g.: "sAMAccountName"'}),
-                help_text: defineMessage({id: 'admin.ldap.loginAttrDesc', defaultMessage: 'The attribute in the AD/LDAP server used to log in to Mattermost.'}),
+                help_text: defineMessage({id: 'admin.ldap.loginAttrDesc', defaultMessage: 'The attribute in the AD/LDAP server used to log in to Antimatter.'}),
                 help_text_more_info: defineMessage({id: 'admin.ldap.loginAttrDescHover', defaultMessage: 'Normally this attribute is the same as the "Username Attribute" field above. If your team typically uses domain/username to log in to other services with AD/LDAP, you may enter domain/username in this field to maintain consistency between sites.'}),
                 help_text_markdown: false,
                 isDisabled: it.any(
@@ -432,7 +432,7 @@ export const ldapWizardAdminDefinition: LDAPAdminDefinitionConfigSchemaSettings 
                 key: 'LdapSettings.UsernameAttribute',
                 label: defineMessage({id: 'admin.ldap.usernameAttrTitle', defaultMessage: 'Username Attribute:'}),
                 placeholder: defineMessage({id: 'admin.ldap.usernameAttrEx', defaultMessage: 'E.g.: "sAMAccountName"'}),
-                help_text: defineMessage({id: 'admin.ldap.usernameAttrDesc', defaultMessage: 'The attribute in the AD/LDAP server used to populate the username field in Mattermost.'}),
+                help_text: defineMessage({id: 'admin.ldap.usernameAttrDesc', defaultMessage: 'The attribute in the AD/LDAP server used to populate the username field in Antimatter.'}),
                 help_text_more_info: defineMessage({id: 'admin.ldap.usernameAttrDescHover', defaultMessage: 'This may be the same as the Login ID Attribute.'}),
                 isDisabled: it.any(
                     it.not(it.userHasWritePermissionOnResource(RESOURCE_KEYS.AUTHENTICATION.LDAP)),
@@ -447,7 +447,7 @@ export const ldapWizardAdminDefinition: LDAPAdminDefinitionConfigSchemaSettings 
                 key: 'LdapSettings.EmailAttribute',
                 label: defineMessage({id: 'admin.ldap.emailAttrTitle', defaultMessage: 'Email Attribute:'}),
                 placeholder: defineMessage({id: 'admin.ldap.emailAttrEx', defaultMessage: 'E.g.: "mail" or "userPrincipalName"'}),
-                help_text: defineMessage({id: 'admin.ldap.emailAttrDesc', defaultMessage: 'The attribute in the AD/LDAP server used to populate the email address field in Mattermost.'}),
+                help_text: defineMessage({id: 'admin.ldap.emailAttrDesc', defaultMessage: 'The attribute in the AD/LDAP server used to populate the email address field in Antimatter.'}),
                 isDisabled: it.any(
                     it.not(it.userHasWritePermissionOnResource(RESOURCE_KEYS.AUTHENTICATION.LDAP)),
                     it.all(
@@ -461,7 +461,7 @@ export const ldapWizardAdminDefinition: LDAPAdminDefinitionConfigSchemaSettings 
                 key: 'LdapSettings.FirstNameAttribute',
                 label: defineMessage({id: 'admin.ldap.firstnameAttrTitle', defaultMessage: 'First Name Attribute:'}),
                 placeholder: defineMessage({id: 'admin.ldap.firstnameAttrEx', defaultMessage: 'E.g.: "givenName"'}),
-                help_text: defineMessage({id: 'admin.ldap.firstnameAttrDesc', defaultMessage: '(Optional) The attribute in the AD/LDAP server used to populate the first name of users in Mattermost.'}),
+                help_text: defineMessage({id: 'admin.ldap.firstnameAttrDesc', defaultMessage: '(Optional) The attribute in the AD/LDAP server used to populate the first name of users in Antimatter.'}),
                 help_text_more_info: defineMessage({id: 'admin.ldap.firstnameAttrDescHover', defaultMessage: 'When set, users cannot edit their first name, since it is synchronized with the LDAP server. When left blank, users can set their first name in Account Menu > Account Settings > Profile.'}),
                 isDisabled: it.any(
                     it.not(it.userHasWritePermissionOnResource(RESOURCE_KEYS.AUTHENTICATION.LDAP)),
@@ -476,7 +476,7 @@ export const ldapWizardAdminDefinition: LDAPAdminDefinitionConfigSchemaSettings 
                 key: 'LdapSettings.LastNameAttribute',
                 label: defineMessage({id: 'admin.ldap.lastnameAttrTitle', defaultMessage: 'Last Name Attribute:'}),
                 placeholder: defineMessage({id: 'admin.ldap.lastnameAttrEx', defaultMessage: 'E.g.: "sn"'}),
-                help_text: defineMessage({id: 'admin.ldap.lastnameAttrDesc', defaultMessage: '(Optional) The attribute in the AD/LDAP server used to populate the last name of users in Mattermost.'}),
+                help_text: defineMessage({id: 'admin.ldap.lastnameAttrDesc', defaultMessage: '(Optional) The attribute in the AD/LDAP server used to populate the last name of users in Antimatter.'}),
                 help_text_more_info: defineMessage({id: 'admin.ldap.lastnameAttrDescHover', defaultMessage: 'When set, users cannot edit their last name, since it is synchronized with the LDAP server. When left blank, users can set their last name in Account Menu > Account Settings > Profile.'}),
                 isDisabled: it.any(
                     it.not(it.userHasWritePermissionOnResource(RESOURCE_KEYS.AUTHENTICATION.LDAP)),
@@ -491,7 +491,7 @@ export const ldapWizardAdminDefinition: LDAPAdminDefinitionConfigSchemaSettings 
                 key: 'LdapSettings.NicknameAttribute',
                 label: defineMessage({id: 'admin.ldap.nicknameAttrTitle', defaultMessage: 'Nickname Attribute:'}),
                 placeholder: defineMessage({id: 'admin.ldap.nicknameAttrEx', defaultMessage: 'E.g.: "nickname"'}),
-                help_text: defineMessage({id: 'admin.ldap.nicknameAttrDesc', defaultMessage: '(Optional) The attribute in the AD/LDAP server used to populate the nickname of users in Mattermost.'}),
+                help_text: defineMessage({id: 'admin.ldap.nicknameAttrDesc', defaultMessage: '(Optional) The attribute in the AD/LDAP server used to populate the nickname of users in Antimatter.'}),
                 help_text_more_info: defineMessage({id: 'admin.ldap.nicknameAttrDescHover', defaultMessage: 'When set, users cannot edit their nickname, since it is synchronized with the LDAP server. When left blank, users can set their nickname in Account Menu > Account Settings > Profile.'}),
                 isDisabled: it.any(
                     it.not(it.userHasWritePermissionOnResource(RESOURCE_KEYS.AUTHENTICATION.LDAP)),
@@ -506,7 +506,7 @@ export const ldapWizardAdminDefinition: LDAPAdminDefinitionConfigSchemaSettings 
                 key: 'LdapSettings.PositionAttribute',
                 label: defineMessage({id: 'admin.ldap.positionAttrTitle', defaultMessage: 'Position Attribute:'}),
                 placeholder: defineMessage({id: 'admin.ldap.positionAttrEx', defaultMessage: 'E.g.: "title"'}),
-                help_text: defineMessage({id: 'admin.ldap.positionAttrDesc', defaultMessage: '(Optional) The attribute in the AD/LDAP server used to populate the position field in Mattermost.'}),
+                help_text: defineMessage({id: 'admin.ldap.positionAttrDesc', defaultMessage: '(Optional) The attribute in the AD/LDAP server used to populate the position field in Antimatter.'}),
                 help_text_more_info: defineMessage({id: 'admin.ldap.positionAttrDescHover', defaultMessage: 'When set, users cannot edit their position, since it is synchronized with the LDAP server. When left blank, users can set their position in Account Menu > Account Settings > Profile.'}),
                 isDisabled: it.any(
                     it.not(it.userHasWritePermissionOnResource(RESOURCE_KEYS.AUTHENTICATION.LDAP)),
@@ -521,7 +521,7 @@ export const ldapWizardAdminDefinition: LDAPAdminDefinitionConfigSchemaSettings 
                 key: 'LdapSettings.PictureAttribute',
                 label: defineMessage({id: 'admin.ldap.pictureAttrTitle', defaultMessage: 'Profile Picture Attribute:'}),
                 placeholder: defineMessage({id: 'admin.ldap.pictureAttrEx', defaultMessage: 'E.g.: "thumbnailPhoto" or "jpegPhoto"'}),
-                help_text: defineMessage({id: 'admin.ldap.pictureAttrDesc', defaultMessage: '(Optional) The attribute in the AD/LDAP server used to populate the profile picture in Mattermost.'}),
+                help_text: defineMessage({id: 'admin.ldap.pictureAttrDesc', defaultMessage: '(Optional) The attribute in the AD/LDAP server used to populate the profile picture in Antimatter.'}),
                 isDisabled: it.any(
                     it.not(it.userHasWritePermissionOnResource(RESOURCE_KEYS.AUTHENTICATION.LDAP)),
                     it.all(
@@ -613,7 +613,7 @@ export const ldapWizardAdminDefinition: LDAPAdminDefinitionConfigSchemaSettings 
                 type: 'number',
                 key: 'LdapSettings.SyncIntervalMinutes',
                 label: defineMessage({id: 'admin.ldap.syncIntervalTitle', defaultMessage: 'Synchronization Interval (minutes):'}),
-                help_text: defineMessage({id: 'admin.ldap.syncIntervalHelpText', defaultMessage: 'AD/LDAP Synchronization updates Mattermost user information to reflect updates on the AD/LDAP server. For example, when a user\'s name changes on the AD/LDAP server, the change updates in Mattermost when synchronization is performed. Accounts removed from or disabled in the AD/LDAP server have their Mattermost accounts set to "Inactive" and have their account sessions revoked. Mattermost performs synchronization on the interval entered. For example, if 60 is entered, Mattermost synchronizes every 60 minutes.'}),
+                help_text: defineMessage({id: 'admin.ldap.syncIntervalHelpText', defaultMessage: 'AD/LDAP Synchronization updates Antimatter user information to reflect updates on the AD/LDAP server. For example, when a user\'s name changes on the AD/LDAP server, the change updates in Antimatter when synchronization is performed. Accounts removed from or disabled in the AD/LDAP server have their Antimatter accounts set to "Inactive" and have their account sessions revoked. Antimatter performs synchronization on the interval entered. For example, if 60 is entered, Antimatter synchronizes every 60 minutes.'}),
                 isDisabled: it.any(
                     it.not(it.userHasWritePermissionOnResource(RESOURCE_KEYS.AUTHENTICATION.LDAP)),
                     it.all(
@@ -627,7 +627,7 @@ export const ldapWizardAdminDefinition: LDAPAdminDefinitionConfigSchemaSettings 
                 key: 'LdapSettings.MaxPageSize',
                 label: defineMessage({id: 'admin.ldap.maxPageSizeTitle', defaultMessage: 'Maximum Page Size:'}),
                 placeholder: defineMessage({id: 'admin.ldap.maxPageSizeEx', defaultMessage: 'E.g.: "2000"'}),
-                help_text: defineMessage({id: 'admin.ldap.maxPageSizeHelpText', defaultMessage: 'The maximum number of users the Mattermost server will request from the AD/LDAP server at one time. 0 is unlimited.'}),
+                help_text: defineMessage({id: 'admin.ldap.maxPageSizeHelpText', defaultMessage: 'The maximum number of users the Antimatter server will request from the AD/LDAP server at one time. 0 is unlimited.'}),
                 isDisabled: it.any(
                     it.not(it.userHasWritePermissionOnResource(RESOURCE_KEYS.AUTHENTICATION.LDAP)),
                     it.all(

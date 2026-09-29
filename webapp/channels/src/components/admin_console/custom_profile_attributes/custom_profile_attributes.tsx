@@ -52,7 +52,7 @@ const AttributeHelpText = ({attributeKey, attributeName, attributeType}: Attribu
         {attributeKey === 'ldap' && (
             <FormattedMessage
                 id='admin.customProfileAttribDesc.ldap'
-                defaultMessage='(Optional) The attribute in the AD/LDAP server used to populate the {name} of users in Mattermost. When set, users cannot edit their {name}, since it is synchronized with the LDAP server. When left blank, users can set their {name} in <strong>Account Menu > Account Settings > Profile</strong>.'
+                defaultMessage='(Optional) The attribute in the AD/LDAP server used to populate the {name} of users in Antimatter. When set, users cannot edit their {name}, since it is synchronized with the LDAP server. When left blank, users can set their {name} in <strong>Account Menu > Account Settings > Profile</strong>.'
                 values={{
                     name: attributeName,
                     strong: (msg) => <strong>{msg}</strong>,
@@ -62,7 +62,7 @@ const AttributeHelpText = ({attributeKey, attributeName, attributeType}: Attribu
         {attributeKey === 'saml' && (
             <FormattedMessage
                 id='admin.customProfileAttribDesc.saml'
-                defaultMessage='(Optional) The attribute in the SAML Assertion that will be used to populate the {name} of users in Mattermost.'
+                defaultMessage='(Optional) The attribute in the SAML Assertion that will be used to populate the {name} of users in Antimatter.'
                 values={{
                     name: attributeName,
                 }}

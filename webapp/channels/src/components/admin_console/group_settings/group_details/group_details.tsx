@@ -765,7 +765,7 @@ export class GroupDetails extends React.PureComponent<Props, State> {
                         <AdminPanel
                             id='group_users'
                             title={defineMessage({id: 'admin.group_settings.group_detail.groupUsersTitle', defaultMessage: 'Users'})}
-                            subtitle={defineMessage({id: 'admin.group_settings.group_detail.groupUsersDescription', defaultMessage: 'Listing of users in Mattermost associated with this group.'})}
+                            subtitle={defineMessage({id: 'admin.group_settings.group_detail.groupUsersDescription', defaultMessage: 'Listing of users in Antimatter associated with this group.'})}
                         >
                             <GroupUsers
                                 members={members}
