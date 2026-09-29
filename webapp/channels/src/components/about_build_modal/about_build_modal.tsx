@@ -1,14 +1,12 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import {Modal} from 'react-bootstrap';
 import {FormattedMessage, useIntl} from 'react-intl';
 
 import {getDesktopVersion, isDesktopApp} from '@mattermost/shared/utils/user_agent';
-import type {ClientConfig, ClientLicense} from '@mattermost/types/config';
-
-import {Client4} from 'mattermost-redux/client';
+import type {ClientConfig} from '@mattermost/types/config';
 
 import CopyButton from 'components/copy_button';
 import ExternalLink from 'components/external_link';
@@ -16,9 +14,6 @@ import Nbsp from 'components/html_entities/nbsp';
 import MattermostLogo from 'components/widgets/icons/mattermost_logo';
 
 import {AboutLinks} from 'utils/constants';
-import {getSkuDisplayName} from 'utils/subscription';
-
-import AboutBuildModalCloud from './about_build_modal_cloud/about_build_modal_cloud';
 
 type SocketStatus = {
     connected: boolean;
@@ -37,68 +32,27 @@ type Props = {
      */
     config: Partial<ClientConfig>;
 
-    /**
-     * Global license object
-     */
-    license: ClientLicense;
-
     socketStatus: SocketStatus;
 };
 
 export default function AboutBuildModal(props: Props) {
     const intl = useIntl();
     const [show, setShow] = useState(true);
-    const [loadMetric, setLoadMetric] = useState<number | null>(0);
-
-    useEffect(() => {
-        const fetchLoadMetric = async () => {
-            try {
-                const result = await Client4.getLicenseLoadMetric();
-                if (result?.load) {
-                    setLoadMetric(result.load);
-                }
-            } catch (e) {
-                // eslint-disable-next-line no-console
-                console.error('Error fetching load metric:', e);
-            }
-        };
-
-        fetchLoadMetric();
-    }, []);
-
     const doHide = () => {
         setShow(false);
         props.onExited();
     };
 
     const config = props.config;
-    const license = props.license;
 
-    if (license.Cloud === 'true') {
-        return (
-            <AboutBuildModalCloud
-                {...props}
-                show={show}
-                doHide={doHide}
-            />
-        );
-    }
-
-    let title = (
-        <FormattedMessage
-            id='about.teamEditiont0'
-            defaultMessage='Team Edition'
-        />
-    );
-
-    let subTitle = (
+    const subTitle = (
         <FormattedMessage
             id='about.teamEditionSt'
             defaultMessage='All your team communication in one place, instantly searchable and accessible anywhere.'
         />
     );
 
-    let learnMore = (
+    const learnMore = (
         <div>
             <FormattedMessage
                 id='about.teamEditionLearn'
@@ -112,76 +66,6 @@ export default function AboutBuildModal(props: Props) {
             </ExternalLink>
         </div>
     );
-
-    let licensee;
-    if (config.BuildEnterpriseReady === 'true') {
-        title = (
-            <FormattedMessage
-                id='about.teamEditiont1'
-                defaultMessage='Enterprise Edition'
-            />
-        );
-
-        subTitle = (
-            <FormattedMessage
-                id='about.enterpriseEditionSt'
-                defaultMessage='Modern communication from behind your firewall.'
-            />
-        );
-
-        if (license.IsLicensed === 'true') {
-            // Show the plan name instead of generic "Enterprise Edition"
-            const skuName = getSkuDisplayName(license.SkuShortName || '', license.IsGovSku === 'true');
-            title = <>{skuName}</>;
-            learnMore = (
-                <div>
-                    <FormattedMessage
-                        id='about.planNameLearn'
-                        defaultMessage='Learn more about Mattermost {planName} at {link}'
-                        values={{
-                            planName: skuName,
-                            link: (
-                                <ExternalLink
-                                    location='about_build_modal'
-                                    href='https://mattermost.com/'
-                                >
-                                    {'mattermost.com'}
-                                </ExternalLink>
-                            ),
-                        }}
-                    />
-                </div>
-            );
-            licensee = (
-                <div className='form-group'>
-                    <FormattedMessage
-                        id='about.licensed'
-                        defaultMessage='Licensed to:'
-                    />
-                    <Nbsp/>{license.Company}
-                </div>
-            );
-        } else {
-            learnMore = (
-                <div>
-                    <FormattedMessage
-                        id='about.enterpriseEditionLearn'
-                        defaultMessage='Learn more about Enterprise Edition at {link}'
-                        values={{
-                            link: (
-                                <ExternalLink
-                                    location='about_build_modal'
-                                    href='https://mattermost.com/'
-                                >
-                                    {'mattermost.com'}
-                                </ExternalLink>
-                            ),
-                        }}
-                    />
-                </div>
-            );
-        }
-    }
 
     const termsOfService = (
         <ExternalLink
@@ -223,12 +107,6 @@ export default function AboutBuildModal(props: Props) {
         ) + '\u00a0' + getDesktopVersion();
     };
 
-    const getLoadMetricString = () => {
-        return intl.formatMessage(
-            {id: 'about.loadmetric', defaultMessage: 'Load Metric:'},
-        ) + '\u00a0' + loadMetric;
-    };
-
     const getDbVersionString = () => {
         return intl.formatMessage(
             {id: 'about.dbversion', defaultMessage: 'Database Schema Version:'},
@@ -251,7 +129,6 @@ export default function AboutBuildModal(props: Props) {
         const parts = [
             getServerVersionString(),
             isDesktopApp() && getDesktopVersionString(),
-            (loadMetric !== null && loadMetric > 0) && getLoadMetricString(),
             getDbVersionString(),
             getBuildNumberString(),
             getDatabaseString(),
@@ -332,7 +209,7 @@ export default function AboutBuildModal(props: Props) {
                     <div>
                         <h3 className='about-modal__title'>
                             <strong>
-                                {'Antimatter'} {title}
+                                {'Antimatter'}
                             </strong>
                         </h3>
                         <p className='about-modal__subtitle pb-2'>
@@ -349,11 +226,6 @@ export default function AboutBuildModal(props: Props) {
                                         {getDesktopVersionString()}<br/>
                                     </>
                                 )}
-                                {(loadMetric !== null && loadMetric > 0) && (
-                                    <>
-                                        {getLoadMetricString()}<br/>
-                                    </>
-                                )}
                                 {getDbVersionString()}<br/>
                                 {getBuildNumberString()}<br/>
                                 {getDatabaseString()}<br/>
@@ -365,7 +237,6 @@ export default function AboutBuildModal(props: Props) {
                             </div>
                             {serverHostname}
                         </div>
-                        {licensee}
                     </div>
                 </div>
                 <div className='about-modal__footer'>
@@ -429,13 +300,6 @@ export default function AboutBuildModal(props: Props) {
                         />
                         <Nbsp/>
                         {config.BuildHash}
-                        <br/>
-                        <FormattedMessage
-                            id='about.hashee'
-                            defaultMessage='EE Build Hash:'
-                        />
-                        <Nbsp/>
-                        {config.BuildHashEnterprise}
                     </p>
                     <p>
                         <FormattedMessage

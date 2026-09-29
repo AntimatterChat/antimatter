@@ -65,9 +65,6 @@ describe('components/login/Login', () => {
                     ExperimentalPrimaryTeam: '',
                     PasswordEnableForgotLink: 'true',
                 },
-                license: {
-                    IsLicensed: 'false',
-                },
             },
             users: {
                 currentUserId: '',

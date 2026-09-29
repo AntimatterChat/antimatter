@@ -19,11 +19,7 @@ describe('mapStateToProps', () => {
             general: {
                 config: {
                     EnableGuestAccounts: 'true',
-                    BuildEnterpriseReady: 'true',
                     EnableGuestMagicLink: 'false',
-                },
-                license: {
-                    IsLicensed: 'true',
                 },
             },
             teams: {
@@ -80,36 +76,6 @@ describe('mapStateToProps', () => {
             ...initialState,
             entities: {
                 ...initialState.entities,
-                teams: {
-                    ...initialState.entities.teams,
-                    teams: {
-                        [currentTeamId]: {
-                            id: currentTeamId,
-                            group_constrained: true,
-                        },
-                    },
-                },
-            },
-        } as unknown as GlobalState;
-
-        const props = mapStateToProps(testState, {});
-        expect(props.canInviteGuests).toBe(false);
-    });
-
-    test('canInviteGuests is false when BuildEnterpriseReady is false', () => {
-        const testState = {
-            ...initialState,
-            entities: {
-                ...initialState.entities,
-                general: {
-                    config: {
-                        EnableGuestAccounts: 'true',
-                        BuildEnterpriseReady: 'false',
-                    },
-                    license: {
-                        IsLicensed: 'true',
-                    },
-                },
                 teams: {
                     ...initialState.entities.teams,
                     teams: {
@@ -190,11 +156,7 @@ describe('mapStateToProps', () => {
                 general: {
                     config: {
                         EnableGuestAccounts: 'true',
-                        BuildEnterpriseReady: 'true',
                         EnableGuestMagicLink: 'false',
-                    },
-                    license: {
-                        IsLicensed: 'true',
                     },
                 },
                 teams: {
@@ -221,11 +183,7 @@ describe('mapStateToProps', () => {
                 general: {
                     config: {
                         EnableGuestAccounts: 'true',
-                        BuildEnterpriseReady: 'true',
                         EnableGuestMagicLink: 'true',
-                    },
-                    license: {
-                        IsLicensed: 'true',
                     },
                 },
                 teams: {
@@ -252,11 +210,7 @@ describe('mapStateToProps', () => {
                 general: {
                     config: {
                         EnableGuestAccounts: 'false',
-                        BuildEnterpriseReady: 'true',
                         EnableGuestMagicLink: 'true',
-                    },
-                    license: {
-                        IsLicensed: 'true',
                     },
                 },
                 teams: {

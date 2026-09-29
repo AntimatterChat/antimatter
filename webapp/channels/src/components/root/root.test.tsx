@@ -62,7 +62,6 @@ describe('components/Root', () => {
         rhsIsOpen: false,
         rhsState: null,
         shouldShowAppBar: false,
-        isCloud: false,
         enableDesktopLandingPage: true,
         actions: {
             loadConfigAndMe: jest.fn().mockImplementation(() => {

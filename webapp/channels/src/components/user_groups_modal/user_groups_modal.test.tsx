@@ -62,16 +62,7 @@ describe('component/user_groups_modal', () => {
     const initialState = {
         entities: {
             general: {
-                license: {
-                    Cloud: 'false',
-                },
                 config: {},
-            },
-            cloud: {},
-            admin: {
-                prevTrialLicense: {
-                    IsLicensed: 'false',
-                },
             },
             users: {
                 currentUserId: 'user1',

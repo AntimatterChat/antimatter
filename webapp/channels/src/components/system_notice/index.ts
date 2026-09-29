@@ -12,7 +12,7 @@ import {savePreferences} from 'mattermost-redux/actions/preferences';
 import {Permissions} from 'mattermost-redux/constants';
 import {createSelector} from 'mattermost-redux/selectors/create_selector';
 import {getCurrentChannel} from 'mattermost-redux/selectors/entities/channels';
-import {getConfig, getLicense} from 'mattermost-redux/selectors/entities/general';
+import {getConfig} from 'mattermost-redux/selectors/entities/general';
 import {makeGetCategory} from 'mattermost-redux/selectors/entities/preferences';
 import {haveISystemPermission} from 'mattermost-redux/selectors/entities/roles';
 
@@ -39,7 +39,6 @@ const getPreferenceNameMap = createSelector(
 );
 
 function mapStateToProps(state: GlobalState) {
-    const license = getLicense(state);
     const config = getConfig(state);
     const serverVersion = state.entities.general.serverVersion;
     const analytics = state.entities.admin.analytics;
@@ -51,7 +50,6 @@ function mapStateToProps(state: GlobalState) {
         isSystemAdmin: haveISystemPermission(state, {permission: Permissions.MANAGE_SYSTEM}),
         notices: Notices,
         config,
-        license,
         serverVersion,
         analytics,
         currentChannel: getCurrentChannel(state),

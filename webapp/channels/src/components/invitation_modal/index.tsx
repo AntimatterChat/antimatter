@@ -13,7 +13,7 @@ import {regenerateTeamInviteId} from 'mattermost-redux/actions/teams';
 import {getProfiles, searchProfiles as reduxSearchProfiles} from 'mattermost-redux/actions/users';
 import {Permissions} from 'mattermost-redux/constants';
 import {getCurrentChannel, getChannelsInCurrentTeam, getChannelsNameMapInCurrentTeam} from 'mattermost-redux/selectors/entities/channels';
-import {getConfig, getLicense} from 'mattermost-redux/selectors/entities/general';
+import {getConfig} from 'mattermost-redux/selectors/entities/general';
 import {haveIChannelPermission, haveICurrentTeamPermission} from 'mattermost-redux/selectors/entities/roles';
 import {getCurrentTeam, getCurrentTeamId, getTeam} from 'mattermost-redux/selectors/entities/teams';
 import {getCurrentUser} from 'mattermost-redux/selectors/entities/users';
@@ -51,7 +51,6 @@ type OwnProps = {
 
 export function mapStateToProps(state: GlobalState, props: OwnProps) {
     const config = getConfig(state);
-    const license = getLicense(state);
     const channels = getChannelsInCurrentTeam(state);
     const channelsByName = getChannelsNameMapInCurrentTeam(state);
     const townSquareDisplayName = channelsByName[Constants.DEFAULT_CHANNEL]?.display_name || Constants.DEFAULT_CHANNEL_UI_NAME;
@@ -71,12 +70,9 @@ export function mapStateToProps(state: GlobalState, props: OwnProps) {
     const guestAccountsEnabled = config.EnableGuestAccounts === 'true';
     const emailInvitationsEnabled = config.EnableEmailInvitations === 'true';
     const lockProfileFieldsForEmailUsers = normalizeLockProfileFieldsSetting(config.LockProfileFieldsForEmailUsers);
-    const isEnterpriseReady = config.BuildEnterpriseReady === 'true';
     const isGroupConstrained = Boolean(currentTeam?.group_constrained);
-    const calculatedCanInviteGuests = !isGroupConstrained && isEnterpriseReady && guestAccountsEnabled && haveICurrentTeamPermission(state, Permissions.INVITE_GUEST);
+    const calculatedCanInviteGuests = !isGroupConstrained && guestAccountsEnabled && haveICurrentTeamPermission(state, Permissions.INVITE_GUEST);
     const canInviteGuests = props.canInviteGuests === undefined ? calculatedCanInviteGuests : (calculatedCanInviteGuests && props.canInviteGuests);
-
-    const isCloud = license.Cloud === 'true';
 
     const canAddUsers = haveICurrentTeamPermission(state, Permissions.ADD_USER_TO_TEAM);
 
@@ -90,7 +86,6 @@ export function mapStateToProps(state: GlobalState, props: OwnProps) {
         canAddUsers,
         emailInvitationsEnabled,
         lockProfileFieldsForEmailUsers,
-        isCloud,
         isAdmin: isAdmin(getCurrentUser(state).roles),
         currentChannel,
         townSquareDisplayName,

@@ -9,7 +9,6 @@ import type {UserProfile} from '@mattermost/types/users';
 import {GeneralTypes} from 'mattermost-redux/action_types';
 import {logError} from 'mattermost-redux/actions/errors';
 import {getClientConfig, getLicenseConfig, getFirstAdminSetupComplete} from 'mattermost-redux/actions/general';
-import {getServerLimits} from 'mattermost-redux/actions/limits';
 import {getMyPreferences} from 'mattermost-redux/actions/preferences';
 import {getMyTeamMembers, getMyTeams, getMyTeamUnreads} from 'mattermost-redux/actions/teams';
 import {getMe, getProfiles} from 'mattermost-redux/actions/users';
@@ -69,7 +68,6 @@ export function loadConfigAndMe(): ThunkActionFunc<Promise<{isLoaded: boolean; i
             ]);
 
             dispatch(getMyTeamUnreads(isCollapsedThreadsEnabled(getState())));
-            dispatch(getServerLimits());
         } catch (error) {
             dispatch(logError(error as ServerError));
             return {

@@ -3,8 +3,7 @@
 
 import {connect} from 'react-redux';
 
-import {getConfig, getLicense} from 'mattermost-redux/selectors/entities/general';
-import {getCurrentUser} from 'mattermost-redux/selectors/entities/users';
+import {getConfig} from 'mattermost-redux/selectors/entities/general';
 
 import type {GlobalState} from 'types/store';
 
@@ -12,10 +11,7 @@ import CommercialSupportModal from './commercial_support_modal';
 
 function mapStateToProps(state: GlobalState) {
     const config = getConfig(state);
-    const license = getLicense(state);
-    const isCloud = license.Cloud === 'true';
-    const currentUser = getCurrentUser(state);
-    const showBannerWarning = (config.EnableFile !== 'true' || config.FileLevel !== 'DEBUG') && !(isCloud);
+    const showBannerWarning = (config.EnableFile !== 'true' || config.FileLevel !== 'DEBUG');
     const packetContents = [
         {id: 'basic.contents', label: 'Basic contents', selected: true, mandatory: true},
         {id: 'basic.server.logs', label: 'Server logs', selected: true, mandatory: false},
@@ -33,8 +29,6 @@ function mapStateToProps(state: GlobalState) {
     }
 
     return {
-        isCloud,
-        currentUser,
         showBannerWarning,
         packetContents,
     };

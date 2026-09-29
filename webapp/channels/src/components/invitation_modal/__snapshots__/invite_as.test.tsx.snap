@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
-exports[`components/cloud_start_trial_btn/cloud_start_trial_btn should match snapshot 1`] = `
+exports[`components/invitation_modal/invite_as should match snapshot 1`] = `
 <div>
   <div
     class="InviteAs"
@@ -44,7 +44,7 @@ exports[`components/cloud_start_trial_btn/cloud_start_trial_btn should match sna
               value="GUEST"
             />
             <span
-              class="InviteAs__label "
+              class="InviteAs__label"
             >
               Guest
               <span

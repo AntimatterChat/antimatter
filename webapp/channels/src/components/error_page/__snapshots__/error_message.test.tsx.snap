@@ -84,7 +84,7 @@ exports[`components/error_page/ErrorMessage should match snapshot, oauth_missing
     <p>
       For 
       <a
-        href="https://docs.mattermost.com/deployment/sso-google.html?utm_source=mattermost&utm_medium=in-product&utm_content=error_link&uid=user-id-123&sid=telemetry-id-456&edition=team&server_version=9.0.0"
+        href="https://docs.mattermost.com/deployment/sso-google.html?utm_source=mattermost&utm_medium=in-product&utm_content=error_link&uid=user-id-123&sid=telemetry-id-456&server_version=9.0.0"
         location="error_link"
         rel="noopener noreferrer"
         target="_blank"
@@ -96,7 +96,7 @@ exports[`components/error_page/ErrorMessage should match snapshot, oauth_missing
     <p>
       For 
       <a
-        href="https://docs.mattermost.com/deployment/sso-office.html?utm_source=mattermost&utm_medium=in-product&utm_content=error_link&uid=user-id-123&sid=telemetry-id-456&edition=team&server_version=9.0.0"
+        href="https://docs.mattermost.com/deployment/sso-office.html?utm_source=mattermost&utm_medium=in-product&utm_content=error_link&uid=user-id-123&sid=telemetry-id-456&server_version=9.0.0"
         location="error_link"
         rel="noopener noreferrer"
         target="_blank"
@@ -108,7 +108,7 @@ exports[`components/error_page/ErrorMessage should match snapshot, oauth_missing
     <p>
       For 
       <a
-        href="https://docs.mattermost.com/deployment/sso-gitlab.html?utm_source=mattermost&utm_medium=in-product&utm_content=error_link&uid=user-id-123&sid=telemetry-id-456&edition=team&server_version=9.0.0"
+        href="https://docs.mattermost.com/deployment/sso-gitlab.html?utm_source=mattermost&utm_medium=in-product&utm_content=error_link&uid=user-id-123&sid=telemetry-id-456&server_version=9.0.0"
         location="error_link"
         rel="noopener noreferrer"
         target="_blank"
@@ -120,7 +120,7 @@ exports[`components/error_page/ErrorMessage should match snapshot, oauth_missing
     <p>
       If you reviewed the above and are still having trouble with configuration, you may post in our 
       <a
-        href="https://forum.mattermost.com/c/trouble-shoot?utm_source=mattermost&utm_medium=in-product&utm_content=error_link&uid=user-id-123&sid=telemetry-id-456&edition=team&server_version=9.0.0"
+        href="https://forum.mattermost.com/c/trouble-shoot?utm_source=mattermost&utm_medium=in-product&utm_content=error_link&uid=user-id-123&sid=telemetry-id-456&server_version=9.0.0"
         location="error_link"
         rel="noopener noreferrer"
         target="_blank"

@@ -14,7 +14,6 @@ import deepFreeze from 'mattermost-redux/utils/deep_freeze';
 import {renderWithContext, screen, act, waitFor} from 'tests/react_testing_utils';
 import {SelfHostedProducts} from 'utils/constants';
 import {TestHelper} from 'utils/test_helper';
-import {generateId} from 'utils/utils';
 
 import InvitationModal, {View} from './invitation_modal';
 import type {Props} from './invitation_modal';
@@ -39,7 +38,6 @@ const defaultProps: Props = deepFreeze({
     emailInvitationsEnabled: true,
     lockProfileFieldsForEmailUsers: 'none',
     isAdmin: false,
-    isCloud: false,
     canAddUsers: true,
     canInviteGuests: true,
     canInviteGuestsWithMagicLink: false,
@@ -55,25 +53,8 @@ let props = defaultProps;
 describe('InvitationModal', () => {
     const state = {
         entities: {
-            admin: {
-                prevTrialLicense: {
-                    IsLicensed: 'true',
-                },
-            },
             general: {
                 config: {
-                    BuildEnterpriseReady: 'true',
-                },
-                license: {
-                    IsLicensed: 'true',
-                    Cloud: 'true',
-                    Id: generateId(),
-                },
-            },
-            cloud: {
-                subscription: {
-                    is_free_trial: 'false',
-                    trial_end_at: 0,
                 },
             },
             users: {

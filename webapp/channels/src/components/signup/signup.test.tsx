@@ -19,7 +19,6 @@ import type {GlobalState} from 'types/store';
 let mockState: GlobalState;
 let mockLocation = {pathname: '', search: '', hash: ''};
 const mockHistoryPush = jest.fn();
-let mockLicense = {IsLicensed: 'true', Cloud: 'false'};
 let mockConfig: Partial<ClientConfig>;
 let mockDispatch = jest.fn();
 
@@ -39,7 +38,6 @@ jest.mock('react-router-dom', () => ({
 
 jest.mock('mattermost-redux/selectors/entities/general', () => ({
     ...jest.requireActual('mattermost-redux/selectors/entities/general') as typeof import('mattermost-redux/selectors/entities/general'),
-    getLicense: () => mockLicense,
     getConfig: () => mockConfig,
 }));
 
@@ -80,13 +78,10 @@ describe('components/signup/Signup', () => {
         mockDispatch.mockClear();
         mockCurrentUserId = '';
 
-        mockLicense = {IsLicensed: 'true', Cloud: 'false'};
-
         mockState = {
             entities: {
                 general: {
                     config: {},
-                    license: {},
                 },
                 users: {
                     currentUserId: '',
@@ -155,16 +150,6 @@ describe('components/signup/Signup', () => {
     });
 
     it('should match snapshot for all signup options enabled with isLicensed enabled', () => {
-        const {container} = renderWithContext(
-            <Signup/>,
-        );
-
-        expect(container).toMatchSnapshot();
-    });
-
-    it('should match snapshot for all signup options enabled with isLicensed disabled', () => {
-        mockLicense = {IsLicensed: 'false', Cloud: 'false'};
-
         const {container} = renderWithContext(
             <Signup/>,
         );

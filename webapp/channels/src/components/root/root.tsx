@@ -70,7 +70,6 @@ const LaunchingWorkspace = makeAsyncComponent('LaunchingWorkspace', lazy(() => i
 const TeamController = makeAsyncComponent('TeamController', lazy(() => import('components/team_controller')));
 const AnnouncementBarController = makeAsyncComponent('AnnouncementBarController', lazy(() => import('components/announcement_bar')));
 const SystemNotice = makeAsyncComponent('SystemNotice', lazy(() => import('components/system_notice')));
-const CloudEffects = makeAsyncComponent('CloudEffects', lazy(() => import('components/cloud_effects')));
 const TeamSidebar = makeAsyncComponent('TeamSidebar', lazy(() => import('components/team_sidebar')));
 const SidebarRight = makeAsyncComponent('SidebarRight', lazy(() => import('components/sidebar_right')));
 const ModalController = makeAsyncComponent('ModalController', lazy(() => import('components/modal_controller')));
@@ -162,11 +161,6 @@ export default class Root extends React.PureComponent<Props, State> {
 
         // Stop this infinitely redirecting
         if (this.props.location.pathname.includes('/landing')) {
-            return;
-        }
-
-        // Disabled to avoid breaking the CWS flow
-        if (this.props.isCloud) {
             return;
         }
 
@@ -422,7 +416,6 @@ export default class Root extends React.PureComponent<Props, State> {
                         <AnnouncementBarController/>
                         <SystemNotice/>
                         <GlobalHeader/>
-                        <CloudEffects/>
                         <TeamSidebar/>
                         <div className='main-wrapper'>
                             <Switch>

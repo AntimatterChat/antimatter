@@ -15,7 +15,6 @@ describe('components/SystemNotice', () => {
         isSystemAdmin: false,
         notices: [{name: 'notice1', adminOnly: false, title: 'some title', body: 'some body', allowForget: true, show: () => true}],
         serverVersion: '5.1',
-        license: {IsLicensed: 'true'},
         config: {},
         analytics: {TOTAL_USERS: 300},
         actions: {

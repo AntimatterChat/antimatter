@@ -8,7 +8,6 @@ import {Client4} from 'mattermost-redux/client';
 import CommercialSupportModal from 'components/commercial_support_modal/commercial_support_modal';
 
 import {act, renderWithContext, screen, userEvent, waitFor} from 'tests/react_testing_utils';
-import {TestHelper} from 'utils/test_helper';
 
 jest.mock('react-bootstrap', () => {
     const Modal = ({children, show}: {children: React.ReactNode; show: boolean}) => (show ? <div>{children}</div> : null);
@@ -47,8 +46,6 @@ describe('components/CommercialSupportModal', () => {
     const baseProps = {
         onExited: jest.fn(),
         showBannerWarning: false,
-        isCloud: false,
-        currentUser: TestHelper.getUserMock(),
         packetContents: [
             {id: 'basic.server.logs', label: 'Server Logs', selected: true, mandatory: true},
         ],

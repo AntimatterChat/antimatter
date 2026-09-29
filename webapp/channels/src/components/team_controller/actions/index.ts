@@ -11,8 +11,6 @@ import {getGroups, getAllGroupsAssociatedToChannelsInTeam, getAllGroupsAssociate
 import {forceLogoutIfNecessary} from 'mattermost-redux/actions/helpers';
 import {getTeamByName, selectTeam} from 'mattermost-redux/actions/teams';
 import {getIsUserStatusesConfigEnabled} from 'mattermost-redux/selectors/entities/common';
-import {getLicense} from 'mattermost-redux/selectors/entities/general';
-import {isCustomGroupsEnabled} from 'mattermost-redux/selectors/entities/preferences';
 import {getCurrentUser} from 'mattermost-redux/selectors/entities/users';
 
 import {addVisibleUsersInCurrentChannelAndSelfToStatusPoll} from 'actions/status_actions';
@@ -35,37 +33,29 @@ export function initializeTeam(team: Team): ActionFuncAsync<Team> {
             dispatch(addVisibleUsersInCurrentChannelAndSelfToStatusPoll());
         }
 
-        const license = getLicense(state);
-        const customGroupEnabled = isCustomGroupsEnabled(state);
-        if (license &&
-            license.IsLicensed === 'true' &&
-            (license.LDAPGroups === 'true' || customGroupEnabled)) {
-            const groupsParams: GetGroupsParams = {
-                filter_allow_reference: false,
-                page: 0,
-                per_page: 60,
-                include_member_count: true,
-                include_member_ids: true,
-                include_archived: false,
-            };
-            const myGroupsParams: GetGroupsForUserParams = {
-                ...groupsParams,
-                filter_has_member: currentUser.id,
-            };
+        const groupsParams: GetGroupsParams = {
+            filter_allow_reference: false,
+            page: 0,
+            per_page: 60,
+            include_member_count: true,
+            include_member_ids: true,
+            include_archived: false,
+        };
+        const myGroupsParams: GetGroupsForUserParams = {
+            ...groupsParams,
+            filter_has_member: currentUser.id,
+        };
 
-            if (currentUser) {
-                dispatch(getGroupsByUserIdPaginated(myGroupsParams));
-            }
+        if (currentUser) {
+            dispatch(getGroupsByUserIdPaginated(myGroupsParams));
+        }
 
-            if (license.LDAPGroups === 'true') {
-                dispatch(getAllGroupsAssociatedToChannelsInTeam(team.id, true));
-            }
+        dispatch(getAllGroupsAssociatedToChannelsInTeam(team.id, true));
 
-            if (team.group_constrained && license.LDAPGroups === 'true') {
-                dispatch(getAllGroupsAssociatedToTeam(team.id, true));
-            } else {
-                dispatch(getGroups(groupsParams));
-            }
+        if (team.group_constrained) {
+            dispatch(getAllGroupsAssociatedToTeam(team.id, true));
+        } else {
+            dispatch(getGroups(groupsParams));
         }
 
         return {data: team};

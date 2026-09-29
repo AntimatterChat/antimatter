@@ -11,11 +11,6 @@ import {renderWithContext, screen} from 'tests/react_testing_utils';
 
 import OnBoardingTaskList from './onboarding_tasklist';
 
-jest.mock('mattermost-redux/actions/admin', () => ({
-    ...jest.requireActual('mattermost-redux/actions/admin'),
-    getPrevTrialLicense: jest.fn(() => ({type: 'MOCK_GET_PREV_TRIAL_LICENSE'})),
-}));
-
 // Isolate the ServiceSettings.EnableOnboardingFlow gate from the unrelated
 // onboarding-eligibility logic: force the task list to be shown so that the
 // config value is the only remaining variable.
@@ -37,13 +32,6 @@ describe('components/onboarding_tasklist - EnableOnboardingFlow effect', () => {
             },
             general: {
                 config: enableOnboardingFlow === undefined ? {} : {EnableOnboardingFlow: enableOnboardingFlow},
-                license: {IsLicensed: 'false', Cloud: 'false'},
-            },
-            admin: {
-                prevTrialLicense: {IsLicensed: 'false'},
-            },
-            cloud: {
-                subscription: {},
             },
             preferences: {
                 myPreferences: {

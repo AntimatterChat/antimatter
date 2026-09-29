@@ -10,10 +10,8 @@ import {isDesktopApp} from '@mattermost/shared/utils/user_agent';
 
 import {savePreferences} from 'mattermost-redux/actions/preferences';
 import {getCurrentUserId} from 'mattermost-redux/selectors/entities/common';
-import {getLicense} from 'mattermost-redux/selectors/entities/general';
 import {isCurrentUserGuestUser, isCurrentUserSystemAdmin, isFirstAdmin} from 'mattermost-redux/selectors/entities/users';
 
-import {openModal} from 'actions/views/modals';
 import {
     openInvitationsModal,
     setShowOnboardingCompleteProfileTour,
@@ -26,10 +24,8 @@ import Channels from 'components/common/svg_images_components/channels_svg';
 import Gears from 'components/common/svg_images_components/gears_svg';
 import Handshake from 'components/common/svg_images_components/handshake_svg';
 import Phone from 'components/common/svg_images_components/phone_svg';
-import Security from 'components/common/svg_images_components/security_svg';
 import Sunglasses from 'components/common/svg_images_components/sunglasses_svg';
 import {ELEMENT_ID_FOR_SWITCH_PRODUCT_MENU_BUTTON} from 'components/global_header/left_controls/switch_product_menu';
-import LearnMoreTrialModal from 'components/learn_more_trial_modal/learn_more_trial_modal';
 import {openMenu} from 'components/menu';
 import {
     AutoTourStatus,
@@ -40,8 +36,6 @@ import {
     TutorialTourName,
 } from 'components/tours';
 import {ELEMENT_ID_FOR_USER_ACCOUNT_MENU_BUTTON} from 'components/user_account_menu/user_account_menu';
-
-import {ModalIdentifiers} from 'utils/constants';
 
 import type {GlobalState} from 'types/store';
 
@@ -92,47 +86,18 @@ const useGetTaskDetails = () => {
                 defaultMessage: 'Visit the System Console to configure your workspace.',
             }),
         },
-        [OnboardingTasksName.START_TRIAL]: {
-            id: 'task_start_enterprise_trial',
-            svg: Security,
-            message: formatMessage({
-                id: 'onboardingTask.checklist.task_start_enterprise_trial',
-                defaultMessage: 'Learn more about Enterprise-level high-security features.',
-            }),
-        },
     };
 };
 
 export const useTasksList = () => {
-    const prevTrialLicense = useSelector((state: GlobalState) => state.entities.admin.prevTrialLicense);
-    const license = useSelector(getLicense);
-    const isPrevLicensed = prevTrialLicense?.IsLicensed;
-    const isCurrentLicensed = license?.IsLicensed;
     const isUserAdmin = useSelector((state: GlobalState) => isCurrentUserSystemAdmin(state));
     const isGuestUser = useSelector((state: GlobalState) => isCurrentUserGuestUser(state));
     const isUserFirstAdmin = useSelector(isFirstAdmin);
 
-    // Cloud conditions
-    const subscription = useSelector((state: GlobalState) => state.entities.cloud.subscription);
-    const isCloud = license?.Cloud === 'true';
-    const isFreeTrial = subscription?.is_free_trial === 'true';
-    const hadPrevCloudTrial = subscription?.is_free_trial === 'false' && subscription?.trial_end_at > 0;
-
-    // Show this CTA if the instance is currently not licensed and has never had a trial license loaded before
-    // if Cloud, show if not in trial and had never been on trial
-    const selfHostedTrialCondition = isCurrentLicensed === 'false' && isPrevLicensed === 'false';
-    const cloudTrialCondition = isCloud && !isFreeTrial && !hadPrevCloudTrial;
-
-    const showStartTrialTask = selfHostedTrialCondition || cloudTrialCondition;
-
     const list: Record<string, string> = {...OnboardingTasksName};
-    if (!showStartTrialTask) {
-        delete list.START_TRIAL;
-    }
 
     if (!isUserFirstAdmin && !isUserAdmin) {
         delete list.VISIT_SYSTEM_CONSOLE;
-        delete list.START_TRIAL;
     }
 
     // invite other users is hidden for guest users
@@ -271,15 +236,6 @@ export const useHandleOnBoardingTaskTrigger = () => {
             }];
             dispatch(savePreferences(currentUserId, preferences));
             window.open('https://mattermost.com/download#desktop', '_blank', 'noopener,noreferrer');
-            break;
-        }
-        case OnboardingTasksName.START_TRIAL: {
-            dispatch(openModal({
-                modalId: ModalIdentifiers.LEARN_MORE_TRIAL_MODAL,
-                dialogType: LearnMoreTrialModal,
-            }));
-
-            handleSaveData(taskName, TaskNameMapToSteps[taskName].FINISHED);
             break;
         }
         default:

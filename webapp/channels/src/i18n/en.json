@@ -3,10 +3,6 @@
     "defaultMessage": "Build Number:",
     "description": "Field label in the About Mattermost dialog; the build number value follows the colon."
   },
-  "about.cloudEdition": {
-    "defaultMessage": "Cloud",
-    "description": "Edition name displayed in the About Mattermost dialog for Mattermost Cloud instances."
-  },
   "about.copyright": {
     "defaultMessage": "Based on Mattermost. Copyright 2015 - {currentYear} Mattermost, Inc. All rights reserved",
     "description": "Copyright line in the About Antimatter dialog, crediting the upstream Mattermost project; {currentYear} is the current year. 'Mattermost' and 'Mattermost, Inc.' are names and stay as-is."
@@ -27,41 +23,13 @@
     "defaultMessage": "Desktop Version:",
     "description": "Field label in the About Mattermost dialog when running in the desktop app; the desktop app version follows the colon."
   },
-  "about.enterpriseEditionLearn": {
-    "defaultMessage": "Learn more about Enterprise Edition at {link}",
-    "description": "Line in the About Mattermost dialog for Enterprise Edition; {link} is a website URL."
-  },
-  "about.enterpriseEditionSst": {
-    "defaultMessage": "High-trust messaging for the enterprise",
-    "description": "Subtitle shown under the edition name in the About Mattermost dialog for enterprise deployments."
-  },
-  "about.enterpriseEditionSt": {
-    "defaultMessage": "Modern communication from behind your firewall.",
-    "description": "Tagline shown under the Enterprise Edition name in the About Mattermost dialog."
-  },
   "about.hash": {
     "defaultMessage": "Build Hash:",
     "description": "Field label in the About Mattermost dialog; the build hash follows the colon."
   },
-  "about.hashee": {
-    "defaultMessage": "EE Build Hash:",
-    "description": "Label in the About Mattermost modal shown before the Enterprise Edition build hash value; 'EE' means Enterprise Edition; the hash is concatenated after the colon."
-  },
-  "about.licensed": {
-    "defaultMessage": "Licensed to:",
-    "description": "Field label in the About Mattermost dialog; the license holder's name follows the colon."
-  },
-  "about.loadmetric": {
-    "defaultMessage": "Load Metric:",
-    "description": "Field label in the About Mattermost dialog; the license load metric value follows the colon."
-  },
   "about.notice": {
     "defaultMessage": "Antimatter is made possible by the open source software used in our <linkServer>server</linkServer>, <linkDesktop>desktop</linkDesktop> and <linkMobile>mobile</linkMobile> apps.",
     "description": "Open-source notice in the About Antimatter dialog; the <linkServer>, <linkDesktop> and <linkMobile> tags wrap the words that become links to each project's license page."
-  },
-  "about.planNameLearn": {
-    "defaultMessage": "Learn more about Mattermost {planName} at {link}",
-    "description": "Line in the About Mattermost dialog; {planName} is the subscription plan name and {link} is a website URL."
   },
   "about.privacy": {
     "defaultMessage": "Privacy Policy",
@@ -91,14 +59,6 @@
     "defaultMessage": "All your team communication in one place, instantly searchable and accessible anywhere.",
     "description": "Tagline shown under the Team Edition name in the About Mattermost dialog."
   },
-  "about.teamEditiont0": {
-    "defaultMessage": "Team Edition",
-    "description": "Edition name displayed in the About Mattermost dialog for the free Team Edition."
-  },
-  "about.teamEditiont1": {
-    "defaultMessage": "Enterprise Edition",
-    "description": "Edition name displayed in the About Mattermost dialog for licensed Enterprise Edition servers."
-  },
   "about.title": {
     "defaultMessage": "About {appTitle}",
     "description": "Title of the About dialog; {appTitle} is the configured site or application name."
@@ -106,10 +66,6 @@
   "about.tos": {
     "defaultMessage": "Terms of Use",
     "description": "Link text in the About Mattermost dialog footer pointing to the terms of use ('Terms of Use')."
-  },
-  "about.version": {
-    "defaultMessage": "Antimatter Version:",
-    "description": "Field label in the About Antimatter dialog; the Antimatter version number follows the colon."
   },
   "access_history.title": {
     "defaultMessage": "Access History",
@@ -1018,30 +974,6 @@
   "add_workspace_modal.loading": {
     "defaultMessage": "Loading workspaces...",
     "description": "Disabled menu item shown in the 'Add workspace' dropdown while the list of connected workspaces (remote servers) is being fetched."
-  },
-  "adldap_upsell_banner.banner_message": {
-    "defaultMessage": "AD/LDAP group sync creates groups faster",
-    "description": "Text of the upsell banner in the User Groups modal, shown to admins on the Professional plan promoting AD/LDAP group sync (an Enterprise feature)."
-  },
-  "adldap_upsell_banner.confirm.continue": {
-    "defaultMessage": "Continue",
-    "description": "Button in the trial-started confirmation overlay of the AD/LDAP upsell banner; dismisses the overlay."
-  },
-  "adldap_upsell_banner.confirm.learn_more": {
-    "defaultMessage": "Learn more",
-    "description": "Button in the trial-started confirmation overlay of the AD/LDAP upsell banner; opens a contact-sales/info link."
-  },
-  "adldap_upsell_banner.confirm.license_trial": {
-    "defaultMessage": "Welcome to your Mattermost Enterprise trial! It expires on {endDate}. You now have access to high-security Enterprise features, for free.",
-    "description": "Body of the confirmation shown to an admin after starting an Enterprise trial from the AD/LDAP upsell banner; {endDate} is the trial expiration date."
-  },
-  "adldap_upsell_banner.confirm.title": {
-    "defaultMessage": "Your trial has started!",
-    "description": "Title of the confirmation shown to an admin after starting an Enterprise trial from the AD/LDAP upsell banner."
-  },
-  "adldap_upsell_banner.sales_btn": {
-    "defaultMessage": "Contact sales to use",
-    "description": "Button on the AD/LDAP upsell banner shown when a trial was already used; opens the contact-sales page."
   },
   "admin_settings.save_unsaved_changes": {
     "defaultMessage": "Please save unsaved changes first",
@@ -18731,14 +18663,6 @@
     "defaultMessage": "Switch {type} Account to Email",
     "description": "Page heading (h3) of the account-claim flow converting an SSO account to email sign-in; {type} is the provider name followed by 'SSO'."
   },
-  "cloud_archived.error.access": {
-    "defaultMessage": "Permalink belongs to a message that has been archived because of {planName} limits. Upgrade to access message again.",
-    "description": "Body text of the error page for a permalink to a message archived due to plan limits; {planName} is the Cloud plan name, e.g. 'Cloud Free'."
-  },
-  "cloud_archived.error.title": {
-    "defaultMessage": "Message Archived",
-    "description": "Title of the error page shown when a linked message was archived due to Cloud free plan message limits."
-  },
   "collapsed_reply_threads_modal.confirm": {
     "defaultMessage": "Got it",
     "description": "Acknowledgement button label ('Got it') used to dismiss informational dialogs, including the onboarding completion screen."
@@ -19110,14 +19034,6 @@
   "create_post.write": {
     "defaultMessage": "Write to {channelDisplayName}",
     "description": "Placeholder in the message box for a channel; {channelDisplayName} is the channel's display name."
-  },
-  "create_team.createTeamRestricted.message": {
-    "defaultMessage": "Your workspace plan has reached the limit on the number of teams. Create unlimited teams with a free 30-day trial. Contact your System Administrator.",
-    "description": "Body text on the team creation page when the workspace plan's team limit is reached, prompting a trial or admin contact."
-  },
-  "create_team.createTeamRestricted.title": {
-    "defaultMessage": "Professional feature",
-    "description": "Heading on the team creation page when team creation is blocked by the plan limit; names the required plan tier."
   },
   "create_team.display_name.create": {
     "defaultMessage": "Create",
@@ -20518,22 +20434,6 @@
   "forward_post_modal.title": {
     "defaultMessage": "Forward message",
     "description": "Title of the modal for forwarding a message to another channel."
-  },
-  "free.professional_feature.back": {
-    "defaultMessage": "Back",
-    "description": "Secondary button in the upsell modal for guest invitations; returns to the Invite People modal."
-  },
-  "free.professional_feature.professional": {
-    "defaultMessage": "Professional feature",
-    "description": "Short badge text next to the Guest option in the Invite People modal during a free trial, indicating a paid-plan feature; compact space."
-  },
-  "free.professional_feature.try_free": {
-    "defaultMessage": "Professional feature- try it out free",
-    "description": "Short badge text next to the Guest option in the Invite People modal on a free plan without prior trial, promoting a free trial; compact space."
-  },
-  "free.professional_feature.upgrade": {
-    "defaultMessage": "Upgrade",
-    "description": "Short badge/tooltip text (verb) next to the Guest option prompting the admin to upgrade the plan; compact space."
   },
   "full_screen_modal.back": {
     "defaultMessage": "Back",
@@ -22543,22 +22443,6 @@
     "defaultMessage": "This username is reserved.",
     "description": "Validation error under the username field in the invite modal when the entered username is reserved by the system."
   },
-  "invite_modal.restricted_invite_guest.post_trial_description": {
-    "defaultMessage": "Collaborate with users outside of your organization while tightly controlling their access to channels and team members. Upgrade to the Professional plan to create unlimited user groups.",
-    "description": "Body of the upsell modal shown to admins after their trial ended, explaining the guest accounts feature and asking them to upgrade."
-  },
-  "invite_modal.restricted_invite_guest.post_trial_title": {
-    "defaultMessage": "Upgrade to invite guest",
-    "description": "Title of the upsell modal shown to admins after their trial ended when trying to invite guests."
-  },
-  "invite_modal.restricted_invite_guest.pre_trial_description": {
-    "defaultMessage": "Collaborate with users outside of your organization while tightly controlling their access to channels and team members. Get the full experience of Enterprise when you start a free, {trialLength} day trial.",
-    "description": "Body of the upsell modal offering a free trial for guest invitations; {trialLength} is the number of trial days."
-  },
-  "invite_modal.restricted_invite_guest.pre_trial_title": {
-    "defaultMessage": "Try inviting guests with a free trial",
-    "description": "Title of the upsell modal offering a free trial when an admin on a free plan tries to invite guests."
-  },
   "invite_modal.title": {
     "defaultMessage": "Invite {inviteType} to {team_name}",
     "description": "Title of the Invite People modal; {inviteType} is a lowercase word ('people' or 'guests') and {team_name} is the team's display name."
@@ -22886,14 +22770,6 @@
   "leave_team_modal.yes": {
     "defaultMessage": "Yes",
     "description": "Confirm button label in the leave-team confirmation modal."
-  },
-  "licensingPage.overageUsersBanner.noticeDescription": {
-    "defaultMessage": "Notify your Customer Success Manager on your next true-up check. <a></a>",
-    "description": "Body of a banner shown to system admins when active users exceed licensed seats; <a></a> is replaced by a contact-sales call-to-action link. A true-up check is a license reconciliation."
-  },
-  "licensingPage.overageUsersBanner.noticeTitle": {
-    "defaultMessage": "Your workspace user count has exceeded your licensed seat count by {seats, number} {seats, plural, one {seat} other {seats}}",
-    "description": "Title of a banner shown to system admins when active users exceed licensed seats; {seats} is the number of seats over the license, with plural branches for 'seat'."
   },
   "link_preview.hide_image_preview": {
     "defaultMessage": "Hide image preview",
@@ -24111,10 +23987,6 @@
     "defaultMessage": "{num, number} {num, plural, one {member} other {members}}",
     "description": "Member count shown next to a group in group picker lists; {num} is the number of members and the plural picks 'member' or 'members'."
   },
-  "onboarding_wizard.invite_members_cloud.title": {
-    "defaultMessage": "Invite your team members",
-    "description": "Title of the invite-members step of the first-run workspace setup wizard (Cloud edition)."
-  },
   "onboarding_wizard.invite_members.copied_link": {
     "defaultMessage": "Link Copied",
     "description": "Confirmation label shown briefly on the copy button after the invite link is copied to the clipboard."
@@ -24127,29 +23999,13 @@
     "defaultMessage": "team invite link",
     "description": "Accessibility label for the read-only input containing the team invite URL on the onboarding wizard's invite step."
   },
-  "onboarding_wizard.invite_members.description": {
-    "defaultMessage": "Collaboration is tough by yourself. Invite a few team members. Separate each email address with a comma or semicolon.",
-    "description": "Description text on the invite-members step of the first-run workspace setup wizard, above the email address input."
-  },
   "onboarding_wizard.invite_members.description_link": {
     "defaultMessage": "Collaboration is tough by yourself. Invite a few team members using the invitation link below.",
     "description": "Description on the onboarding wizard's invite step when inviting teammates via a shareable link."
   },
-  "onboarding_wizard.invite_members.next": {
-    "defaultMessage": "Send invites",
-    "description": "Primary button on the invite-members step of the workspace setup wizard; sends the entered email invitations and advances."
-  },
   "onboarding_wizard.invite_members.next_link": {
     "defaultMessage": "Finish setup",
     "description": "Button label on the onboarding wizard's invite step that completes the setup flow."
-  },
-  "onboarding_wizard.invite_members.placeholder": {
-    "defaultMessage": "Enter email addresses",
-    "description": "Placeholder text in the email address input on the invite-members step of the workspace setup wizard."
-  },
-  "onboarding_wizard.invite_members.skip": {
-    "defaultMessage": "Skip",
-    "description": "Button on the invite-members step of the workspace setup wizard that advances without sending invitations."
   },
   "onboarding_wizard.invite_members.title": {
     "defaultMessage": "Invite your team members",
@@ -24271,10 +24127,6 @@
     "defaultMessage": "Well done. You’ve completed all of the tasks!",
     "description": "Congratulatory title on the onboarding task list screen once every task is completed."
   },
-  "onboardingTask.checklist.disclaimer": {
-    "defaultMessage": "By clicking “Start trial”, I agree to the <linkEvaluation>Mattermost Software Evaluation Agreement</linkEvaluation>, <linkPrivacy>privacy policy</linkPrivacy> and receiving product emails.",
-    "description": "Legal disclaimer under the trial button on the onboarding completion screen; <linkEvaluation> and <linkPrivacy> wrap links to the evaluation agreement and privacy policy, and 'Start trial' quotes the button label."
-  },
   "onboardingTask.checklist.dismiss_link": {
     "defaultMessage": "No thanks, I’ll figure it out myself",
     "description": "Link at the bottom of the onboarding task list that dismisses the checklist entirely."
@@ -24283,21 +24135,9 @@
     "defaultMessage": "Now that you’re all set up, <link>download our apps.</link>",
     "description": "Follow-up line on the onboarding completion screen; the <link> tags wrap the link to the desktop/mobile app download page."
   },
-  "onboardingTask.checklist.higher_security_features": {
-    "defaultMessage": "Interested in our higher-security features?",
-    "description": "Question line on the onboarding completion screen introducing the Enterprise trial offer."
-  },
   "onboardingTask.checklist.main_subtitle": {
     "defaultMessage": "Let's get up and running.",
     "description": "Subtitle under the welcome title of the onboarding task list panel."
-  },
-  "onboardingTask.checklist.no_thanks": {
-    "defaultMessage": "No, thanks",
-    "description": "Button label on the onboarding completion screen declining the Enterprise trial offer."
-  },
-  "onboardingTask.checklist.start_enterprise_now": {
-    "defaultMessage": "Start your free Enterprise trial now!",
-    "description": "Call-to-action line on the onboarding completion screen inviting the user to start a free Enterprise trial."
   },
   "onboardingTask.checklist.start_onboarding_process": {
     "defaultMessage": "Start the onboarding process.",
@@ -24318,10 +24158,6 @@
   "onboardingTask.checklist.task_learn_more_about_messaging": {
     "defaultMessage": "Take a tour of Channels.",
     "description": "Task item in the onboarding checklist that starts a guided tour of the Channels (messaging) interface."
-  },
-  "onboardingTask.checklist.task_start_enterprise_trial": {
-    "defaultMessage": "Learn more about Enterprise-level high-security features.",
-    "description": "Task item in the onboarding checklist promoting the Enterprise trial and its security features."
   },
   "onboardingTask.checklist.task_visit_system_console": {
     "defaultMessage": "Visit the System Console to configure your workspace.",
@@ -27718,14 +27554,6 @@
   "slash_commands.header": {
     "defaultMessage": "Slash Commands",
     "description": "Breadcrumb link on the slash command setup confirmation page; navigates back to the Slash Commands list."
-  },
-  "start_trial.tutorialTip.desc": {
-    "defaultMessage": "Explore our most requested premium features. Determine user access with Guest Accounts, automate compliance reports, and send secure ID-only mobile push notifications.",
-    "description": "Body text of the tour tip shown during the 'start trial' onboarding task, listing premium features; 'Guest Accounts' and 'ID-only push notifications' are feature names."
-  },
-  "start_trial.tutorialTip.title": {
-    "defaultMessage": "Try our premium features for free",
-    "description": "Title of the tour tip shown during the 'start trial' onboarding task."
   },
   "suggestion.all": {
     "defaultMessage": "All channel types",

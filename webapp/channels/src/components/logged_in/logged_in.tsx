@@ -34,7 +34,6 @@ export type Props = {
     isCurrentChannelManuallyUnread: boolean;
     children?: React.ReactNode;
     mfaRequired: boolean;
-    customProfileAttributesEnabled: boolean;
     actions: {
         autoUpdateTimezone: (deviceTimezone: string) => void;
         getChannelURLAction: (channelId: string, teamId: string, url: string) => void;
@@ -71,9 +70,7 @@ export default class LoggedIn extends React.PureComponent<Props> {
         this.updateTimeZone();
 
         // Fetch custom profile attributes for authenticated user
-        if (this.props.customProfileAttributesEnabled) {
-            this.props.actions.getCustomProfileAttributeFields();
-        }
+        this.props.actions.getCustomProfileAttributeFields();
 
         // Make sure the websockets close and reset version
         window.addEventListener('beforeunload', this.handleBeforeUnload);

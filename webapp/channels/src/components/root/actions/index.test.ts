@@ -48,11 +48,6 @@ jest.mock('mattermost-redux/selectors/entities/preferences', () => {
     };
 });
 
-jest.mock('mattermost-redux/actions/limits', () => ({
-    ...jest.requireActual('mattermost-redux/actions/limits'),
-    getServerLimits: () => ({type: 'MOCK_GET_SERVER_LIMITS'}),
-}));
-
 describe('loadConfigAndMe', () => {
     test('loadConfigAndMe, without user logged in', async () => {
         const testStore = mockStore({});
@@ -86,7 +81,6 @@ describe('loadConfigAndMe', () => {
             {type: 'MOCK_GET_MY_TEAMS'},
             {type: 'MOCK_GET_MY_TEAM_MEMBERS'},
             {type: 'MOCK_GET_MY_TEAM_UNREADS'},
-            {type: 'MOCK_GET_SERVER_LIMITS'},
         ]);
     });
 });

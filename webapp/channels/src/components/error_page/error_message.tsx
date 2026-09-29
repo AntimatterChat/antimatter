@@ -7,7 +7,6 @@ import {FormattedMessage, defineMessage} from 'react-intl';
 import {ErrorPageTypes} from 'utils/constants';
 
 import ErrorLink from './error_link';
-import CloudArchived from './messages/cloud_archived';
 
 type Props = {
     type?: string | null;
@@ -67,13 +66,6 @@ const ErrorMessage: React.FC<Props> = ({type, message, service, isGuest}: Props)
                         id='post.error.access'
                         defaultMessage="The post you're requesting is private or does not exist."
                     />
-                </p>
-            );
-            break;
-        case ErrorPageTypes.CLOUD_ARCHIVED:
-            errorMessage = (
-                <p>
-                    <CloudArchived/>
                 </p>
             );
             break;
