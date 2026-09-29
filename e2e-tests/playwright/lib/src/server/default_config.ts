@@ -937,4 +937,7 @@ const defaultServerConfig: AdminConfig = {
         EnforcePostsPerDay: true,
         EnforceCooldown: true,
     },
+    IPFilteringSettings: {
+        Rules: [],
+    },
 };

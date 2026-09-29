@@ -15972,6 +15972,21 @@
     "description": "API validation error when saving an incoming webhook whose override username (the name webhook posts appear under) is invalid."
   },
   {
+    "id": "model.ip_filtering.is_valid.action.app_error",
+    "translation": "Invalid IP filtering action \"{{.Action}}\". Use \"allow\" or \"deny\".",
+    "description": "Validation error for an IP filtering rule whose action is not recognised. {{.Action}} is the invalid value; \"allow\" and \"deny\" are literal configuration values and must stay as-is."
+  },
+  {
+    "id": "model.ip_filtering.is_valid.cidr_block.app_error",
+    "translation": "Invalid IP filtering range \"{{.CIDRBlock}}\". Use an IPv4 or IPv6 address, or a range in CIDR notation such as 192.0.2.0/24.",
+    "description": "Validation error for an IP filtering rule whose address range cannot be parsed. {{.CIDRBlock}} is the invalid value; \"CIDR notation\" is the standard networking term and 192.0.2.0/24 is an example range that must stay as-is."
+  },
+  {
+    "id": "model.ip_filtering.is_valid.description.app_error",
+    "translation": "IP filtering rule descriptions can be at most {{.Max}} characters.",
+    "description": "Validation error for an IP filtering rule whose name/description is too long. {{.Max}} is the maximum number of characters."
+  },
+  {
     "id": "model.job.is_valid.create_at.app_error",
     "translation": "Create at must be a valid time.",
     "description": "Validation error for a background job record (e.g. data retention, export) whose creation timestamp field (CreateAt) is unset; seen by system admins via the Jobs API."
