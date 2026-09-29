@@ -19232,7 +19232,7 @@
     "description": "Fragment appended (note the leading space) after the sender's name in a desktop notification body when the message contains an image."
   },
   "channel_loader.socketError": {
-    "defaultMessage": "Please check connection, Mattermost unreachable. If issue persists, ask administrator to [check WebSocket port](!https://docs.mattermost.com/install/troubleshooting.html#please-check-connection-mattermost-unreachable-if-issue-persists-ask-administrator-to-check-websocket-port).",
+    "defaultMessage": "Please check connection, Antimatter unreachable. If issue persists, ask administrator to [check WebSocket port](!https://docs.mattermost.com/install/troubleshooting.html#please-check-connection-mattermost-unreachable-if-issue-persists-ask-administrator-to-check-websocket-port).",
     "description": "Error shown in the announcement bar when the WebSocket connection to the server fails; supports markdown and the bracketed text becomes a documentation link, keep the link syntax intact."
   },
   "channel_loader.someone": {
