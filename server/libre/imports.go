@@ -5,6 +5,7 @@ package libre
 
 import (
 	// Each import registers its implementation from init().
+	_ "github.com/mattermost/mattermost/server/v8/libre/accountmigration"
 	_ "github.com/mattermost/mattermost/server/v8/libre/cluster"
 	_ "github.com/mattermost/mattermost/server/v8/libre/ldap"
 	_ "github.com/mattermost/mattermost/server/v8/libre/metrics"
