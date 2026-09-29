@@ -6,7 +6,7 @@ import {RESOURCE_KEYS} from 'mattermost-redux/constants/permissions_sysconsole';
 import AdminDefinition from './admin_definition';
 import type {AdminDefinitionSetting, AdminDefinitionSubSection, ConsoleAccess} from './types';
 
-type DisabledCheck = (config: object, state: object, license: undefined, enterpriseReady: boolean, consoleAccess: ConsoleAccess) => boolean;
+type DisabledCheck = (config: object, state: object, consoleAccess: ConsoleAccess) => boolean;
 
 const CHANNEL_VIEWED_MESSAGES_KEY = 'ServiceSettings.EnableChannelViewedMessages';
 
@@ -40,7 +40,7 @@ describe('AdminDefinition - Enable Channel Viewed WebSocket Messages setting', (
         const isDisabled = getSetting()?.isDisabled as DisabledCheck;
         expect(typeof isDisabled).toBe('function');
 
-        expect(isDisabled({}, {}, undefined, true, writeAccessTo(RESOURCE_KEYS.ENVIRONMENT.WEB_SERVER))).toBe(false);
-        expect(isDisabled({}, {}, undefined, true, writeAccessTo(RESOURCE_KEYS.EXPERIMENTAL.FEATURES))).toBe(true);
+        expect(isDisabled({}, {}, writeAccessTo(RESOURCE_KEYS.ENVIRONMENT.WEB_SERVER))).toBe(false);
+        expect(isDisabled({}, {}, writeAccessTo(RESOURCE_KEYS.EXPERIMENTAL.FEATURES))).toBe(true);
     });
 });

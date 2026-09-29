@@ -30,14 +30,13 @@ describe('AdminDefinition - DCR Redirect URI Allowlist', () => {
         expect(allowlistIndex).toBe(dcrIndex + 1);
     });
 
-    test('DCR allowlist setting should have correct disabled and hidden conditions', () => {
+    test('DCR allowlist setting should have correct disabled conditions and always be visible', () => {
         const settings = getIntegrationManagementSettings();
         const allowlistSetting = settings.find((s) => s.key === 'ServiceSettings.DCRRedirectURIAllowlist');
 
         expect(allowlistSetting?.isDisabled).toBeDefined();
         expect(typeof allowlistSetting?.isDisabled).toBe('function');
-        expect(allowlistSetting?.isHidden).toBeDefined();
-        expect(typeof allowlistSetting?.isHidden).toBe('function');
+        expect(allowlistSetting?.isHidden).toBeUndefined();
 
         const isDisabled = allowlistSetting?.isDisabled as ((config: object, state: Record<string, boolean>) => boolean);
         expect(isDisabled({}, {

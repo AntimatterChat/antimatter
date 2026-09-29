@@ -6,14 +6,11 @@ import cloneDeep from 'lodash/cloneDeep';
 import Permissions from 'mattermost-redux/constants/permissions';
 import {ResourceToSysConsolePermissionsTable, RESOURCE_KEYS} from 'mattermost-redux/constants/permissions_sysconsole';
 import {createSelector} from 'mattermost-redux/selectors/create_selector';
-import {getLicense} from 'mattermost-redux/selectors/entities/general';
 import {getMySystemPermissions, haveISystemPermission} from 'mattermost-redux/selectors/entities/roles_helpers';
 
 import AdminDefinition from 'components/admin_console/admin_definition';
 
 import type {GlobalState} from 'types/store';
-
-import {isEnterpriseLicense} from '../utils/license_utils';
 
 export const getAdminDefinition = createSelector(
     'getAdminDefinition',
@@ -66,28 +63,4 @@ export const getConsoleAccess = createSelector(
     },
 );
 
-export const getShowManageUserSettings = createSelector(
-    'showManageUserSettings',
-    getLicense,
-    (state) => state,
-    (license, state) => {
-        const hasWriteUserManagementPermission = haveISystemPermission(state, {permission: Permissions.SYSCONSOLE_WRITE_USERMANAGEMENT_USERS});
-
-        const isEnterprise = isEnterpriseLicense(license);
-
-        return hasWriteUserManagementPermission && isEnterprise;
-    },
-);
-
-export const getShowLockedManageUserSettings = createSelector(
-    'showLockedManageUserSettings',
-    getLicense,
-    (state) => state,
-    (license, state) => {
-        const hasWriteUserManagementPermission = haveISystemPermission(state, {permission: Permissions.SYSCONSOLE_WRITE_USERMANAGEMENT_USERS});
-
-        const isEnterprise = isEnterpriseLicense(license);
-
-        return hasWriteUserManagementPermission && !isEnterprise;
-    },
-);
+export const getShowManageUserSettings = (state: GlobalState) => haveISystemPermission(state, {permission: Permissions.SYSCONSOLE_WRITE_USERMANAGEMENT_USERS});

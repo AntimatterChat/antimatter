@@ -7,7 +7,7 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import {ChevronRightIcon} from '@mattermost/compass-icons/components';
 
-import {getConfig, getLicense} from 'mattermost-redux/selectors/entities/general';
+import {getConfig} from 'mattermost-redux/selectors/entities/general';
 import {getMyTeams} from 'mattermost-redux/selectors/entities/teams';
 
 import {deferNavigation} from 'actions/admin_actions';
@@ -35,9 +35,6 @@ const AdminNavbarDropdown = (firstItemFocusProps: Menu.FirstMenuItemProps) => {
     const teams = useSelector(getMyTeams);
     const siteName = useSelector((state: GlobalState) => getConfig(state).SiteName);
     const navigationBlocked = useSelector(getNavigationBlocked);
-    const license = useSelector(getLicense);
-    const isLicensed = license.IsLicensed === 'true';
-    const isCloud = license.Cloud === 'true';
 
     const sortedTeams = useMemo(
         () => filterAndSortTeamsByDisplayName(teams, locale),
@@ -67,16 +64,7 @@ const AdminNavbarDropdown = (firstItemFocusProps: Menu.FirstMenuItemProps) => {
         }));
     }, [dispatch]);
 
-    const adminGuideLink = isCloud ?
-        'https://docs.mattermost.com/guides/administration.html#cloud-workspace-management' :
-        'https://docs.mattermost.com/guides/administration.html';
-
-    const commercialSupportLabels = (
-        <FormattedMessage
-            id='admin.nav.commercialSupport'
-            defaultMessage='Commercial Support'
-        />
-    );
+    const adminGuideLink = 'https://docs.mattermost.com/guides/administration.html';
 
     let switchTeamsMenuItem = null;
     if (sortedTeams.length === 0) {
@@ -149,21 +137,16 @@ const AdminNavbarDropdown = (firstItemFocusProps: Menu.FirstMenuItemProps) => {
                     />
                 }
             />
-            {isLicensed ? (
-                <Menu.Item
-                    id='adminConsoleCommercialSupport'
-                    onClick={handleCommercialSupport}
-                    labels={commercialSupportLabels}
-                />
-            ) : (
-                <Menu.ItemExternalLink
-                    id='adminConsoleCommercialSupport'
-                    href='https://mattermost.com/support/'
-                    location='admin_navbar_dropdown'
-                    showOpenInNewIcon={true}
-                    labels={commercialSupportLabels}
-                />
-            )}
+            <Menu.Item
+                id='adminConsoleCommercialSupport'
+                onClick={handleCommercialSupport}
+                labels={
+                    <FormattedMessage
+                        id='admin.nav.commercialSupport'
+                        defaultMessage='Commercial Support'
+                    />
+                }
+            />
             <Menu.Item
                 id='adminConsoleAbout'
                 onClick={handleAbout}

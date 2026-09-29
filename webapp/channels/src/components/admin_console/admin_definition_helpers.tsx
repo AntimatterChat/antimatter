@@ -1,39 +1,32 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 
-import React from 'react';
-import {defineMessage, type MessageDescriptor} from 'react-intl';
+import type {MessageDescriptor} from 'react-intl';
 
-import type {CloudState, Product} from '@mattermost/types/cloud';
-import type {AdminConfig, ClientConfig, ClientLicense} from '@mattermost/types/config';
+import type {AdminConfig, ClientConfig} from '@mattermost/types/config';
 
 import {getConfig as getClientConfig} from 'mattermost-redux/selectors/entities/general';
 
 import store from 'stores/redux_store';
 
-import RestrictedIndicator from 'components/widgets/menu/menu_items/restricted_indicator';
-
-import {CloudProducts, getLicenseTier, LicenseSkus} from 'utils/constants';
-import {isCloudLicense} from 'utils/license_utils';
-
 import type {Check, ConsoleAccess} from './types';
 import ValidationResult from './validation';
 
 export const it = {
-    not: (func: Check) => (config: Partial<AdminConfig>, state: any, license?: ClientLicense, enterpriseReady?: boolean, consoleAccess?: ConsoleAccess, cloud?: CloudState, isSystemAdmin?: boolean) => {
-        return typeof func === 'function' ? !func(config, state, license, enterpriseReady, consoleAccess, cloud, isSystemAdmin) : !func;
+    not: (func: Check) => (config: Partial<AdminConfig>, state: any, consoleAccess?: ConsoleAccess, isSystemAdmin?: boolean) => {
+        return typeof func === 'function' ? !func(config, state, consoleAccess, isSystemAdmin) : !func;
     },
-    all: (...funcs: Check[]) => (config: Partial<AdminConfig>, state: any, license?: ClientLicense, enterpriseReady?: boolean, consoleAccess?: ConsoleAccess, cloud?: CloudState, isSystemAdmin?: boolean) => {
+    all: (...funcs: Check[]) => (config: Partial<AdminConfig>, state: any, consoleAccess?: ConsoleAccess, isSystemAdmin?: boolean) => {
         for (const func of funcs) {
-            if (typeof func === 'function' ? !func(config, state, license, enterpriseReady, consoleAccess, cloud, isSystemAdmin) : !func) {
+            if (typeof func === 'function' ? !func(config, state, consoleAccess, isSystemAdmin) : !func) {
                 return false;
             }
         }
         return true;
     },
-    any: (...funcs: Check[]) => (config: Partial<AdminConfig>, state: any, license?: ClientLicense, enterpriseReady?: boolean, consoleAccess?: ConsoleAccess, cloud?: CloudState, isSystemAdmin?: boolean) => {
+    any: (...funcs: Check[]) => (config: Partial<AdminConfig>, state: any, consoleAccess?: ConsoleAccess, isSystemAdmin?: boolean) => {
         for (const func of funcs) {
-            if (typeof func === 'function' ? func(config, state, license, enterpriseReady, consoleAccess, cloud, isSystemAdmin) : func) {
+            if (typeof func === 'function' ? func(config, state, consoleAccess, isSystemAdmin) : func) {
                 return true;
             }
         }
@@ -52,28 +45,10 @@ export const it = {
     clientConfigIsTrue: (setting: keyof ClientConfig) => () => getClientConfig(store.getState())[setting] === 'true',
     clientConfigIsFalse: (setting: keyof ClientConfig) => () => getClientConfig(store.getState())[setting] !== 'true',
     configContains: (group: keyof Partial<AdminConfig>, setting: string, word: string) => (config: Partial<AdminConfig>) => Boolean((config[group] as any)?.[setting]?.includes(word)),
-    enterpriseReady: (config: Partial<AdminConfig>, state: any, license?: ClientLicense, enterpriseReady?: boolean) => Boolean(enterpriseReady),
-    licensed: (config: Partial<AdminConfig>, state: any, license?: ClientLicense) => license?.IsLicensed === 'true',
-    isFreeEdition: (config: Partial<AdminConfig>, state: any, license?: ClientLicense) => license?.IsLicensed !== 'true' || license?.SkuShortName === LicenseSkus.Entry,
-    cloudLicensed: (config: Partial<AdminConfig>, state: any, license?: ClientLicense) => Boolean(license?.IsLicensed && isCloudLicense(license)),
-    licensedForFeature: (feature: string) => (config: Partial<AdminConfig>, state: any, license?: ClientLicense) => Boolean(license?.IsLicensed && license[feature] === 'true'),
-    licensedForSku: (skuName: string) => (config: Partial<AdminConfig>, state: any, license?: ClientLicense) => Boolean(license?.IsLicensed && license.SkuShortName === skuName),
-    minLicenseTier: (skuName: string) => (config: Partial<AdminConfig>, state: any, license?: ClientLicense) => Boolean(license?.IsLicensed && getLicenseTier(license.SkuShortName) >= getLicenseTier(skuName)),
-    licensedForCloudStarter: (config: Partial<AdminConfig>, state: any, license?: ClientLicense) => Boolean(license?.IsLicensed && isCloudLicense(license) && license.SkuShortName === LicenseSkus.Starter),
-    hidePaymentInfo: (config: Partial<AdminConfig>, state: any, license?: ClientLicense, enterpriseReady?: boolean, consoleAccess?: ConsoleAccess, cloud?: CloudState) => {
-        if (!cloud) {
-            return true;
-        }
-        const productId = cloud?.subscription?.product_id;
-        if (!productId) {
-            return false;
-        }
-        return cloud?.subscription?.is_free_trial === 'true';
-    },
-    userHasReadPermissionOnResource: (key: string) => (config: Partial<AdminConfig>, state: any, license?: ClientLicense, enterpriseReady?: boolean, consoleAccess?: ConsoleAccess) => (consoleAccess?.read as any)?.[key],
-    userHasReadPermissionOnSomeResources: (key: {[key: string]: string}) => (config: Partial<AdminConfig>, state: any, license?: ClientLicense, enterpriseReady?: boolean, consoleAccess?: ConsoleAccess) => Object.values(key).some((resource) => (consoleAccess?.read as any)?.[resource]),
-    userHasWritePermissionOnResource: (key: string) => (config: Partial<AdminConfig>, state: any, license?: ClientLicense, enterpriseReady?: boolean, consoleAccess?: ConsoleAccess) => (consoleAccess?.write as any)?.[key],
-    isSystemAdmin: (config: Partial<AdminConfig>, state: any, license?: ClientLicense, enterpriseReady?: boolean, consoleAccess?: ConsoleAccess, cloud?: CloudState, isSystemAdmin?: boolean) => Boolean(isSystemAdmin),
+    userHasReadPermissionOnResource: (key: string) => (config: Partial<AdminConfig>, state: any, consoleAccess?: ConsoleAccess) => (consoleAccess?.read as any)?.[key],
+    userHasReadPermissionOnSomeResources: (key: {[key: string]: string}) => (config: Partial<AdminConfig>, state: any, consoleAccess?: ConsoleAccess) => Object.values(key).some((resource) => (consoleAccess?.read as any)?.[resource]),
+    userHasWritePermissionOnResource: (key: string) => (config: Partial<AdminConfig>, state: any, consoleAccess?: ConsoleAccess) => (consoleAccess?.write as any)?.[key],
+    isSystemAdmin: (config: Partial<AdminConfig>, state: any, consoleAccess?: ConsoleAccess, isSystemAdmin?: boolean) => Boolean(isSystemAdmin),
 };
 
 export const validators = {
@@ -83,7 +58,7 @@ export const validators = {
     numberInRange: (min: number, max: number, text: MessageDescriptor | string) => (value: number) => new ValidationResult(Number.isNaN(value) || (value >= min && value <= max), text),
 };
 
-export const usesLegacyOauth = (config: Partial<AdminConfig>, state: any, license?: ClientLicense, enterpriseReady?: boolean, consoleAccess?: ConsoleAccess, cloud?: CloudState) => {
+export const usesLegacyOauth = (config: Partial<AdminConfig>, state: any, consoleAccess?: ConsoleAccess) => {
     if (!config.GitLabSettings || !config.GoogleSettings || !config.Office365Settings) {
         return false;
     }
@@ -110,21 +85,5 @@ export const usesLegacyOauth = (config: Partial<AdminConfig>, state: any, licens
                 it.configIsTrue('Office365Settings', 'Secret'),
             ),
         ),
-    )(config, state, license, enterpriseReady, consoleAccess, cloud);
+    )(config, state, consoleAccess);
 };
-
-export const getRestrictedIndicator = (displayBlocked = false, minimumPlanRequiredForFeature = LicenseSkus.Professional) => ({
-    value: (cloud: CloudState) => (
-        <RestrictedIndicator
-            useModal={false}
-            blocked={displayBlocked || !(cloud?.subscription?.is_free_trial === 'true')}
-            minimumPlanRequiredForFeature={minimumPlanRequiredForFeature}
-            tooltipMessageBlocked={defineMessage({
-                id: 'admin.sidebar.restricted_indicator.tooltip.message.blocked',
-                // eslint-disable-next-line formatjs/enforce-placeholders -- Placeholders provided in RestrictedIndicator
-                defaultMessage: 'This feature requires {minimumPlanRequiredForFeature}, available with an upgrade or free {trialLength}-day trial',
-            })}
-        />
-    ),
-    shouldDisplay: (license: ClientLicense, subscriptionProduct: Product | undefined) => displayBlocked || (isCloudLicense(license) && subscriptionProduct?.sku === CloudProducts.STARTER),
-});

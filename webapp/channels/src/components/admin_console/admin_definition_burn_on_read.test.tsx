@@ -3,8 +3,6 @@
 
 import type {AdminConfig} from '@mattermost/types/config';
 
-import {LicenseSkus} from 'utils/constants';
-
 import AdminDefinition from './admin_definition';
 import type {AdminDefinitionSetting, AdminDefinitionConfigSchemaSection} from './types';
 
@@ -103,27 +101,6 @@ describe('AdminDefinition - Burn-on-Read Settings', () => {
                 expect('defaultMessage' in setting.help_text).toBe(true);
             }
         });
-    });
-
-    test('Burn-on-Read section should use LicensedSectionContainer with proper feature discovery', () => {
-        const postsSection = AdminDefinition.site.subsections.posts;
-        const sections = 'sections' in postsSection.schema! ? postsSection.schema.sections : undefined;
-
-        // Find the Burn-on-Read section
-        const burnOnReadSection = sections?.find((section: AdminDefinitionConfigSchemaSection) => section.key === 'PostSettings.BurnOnRead');
-        expect(burnOnReadSection).toBeDefined();
-
-        // Check that the section uses LicensedSectionContainer
-        expect(burnOnReadSection?.component).toBeDefined();
-
-        // Check that it has proper license SKU requirement
-        expect(burnOnReadSection?.license_sku).toBe(LicenseSkus.EnterpriseAdvanced);
-
-        // Check that component props include feature discovery config
-        expect(burnOnReadSection?.componentProps).toBeDefined();
-        expect(burnOnReadSection?.componentProps?.requiredSku).toBe(LicenseSkus.EnterpriseAdvanced);
-        expect(burnOnReadSection?.componentProps?.featureDiscoveryConfig).toBeDefined();
-        expect(burnOnReadSection?.componentProps?.featureDiscoveryConfig?.featureName).toBe('burn_on_read');
     });
 
     test('Burn-on-Read section isHidden should return true when feature flag is disabled', () => {

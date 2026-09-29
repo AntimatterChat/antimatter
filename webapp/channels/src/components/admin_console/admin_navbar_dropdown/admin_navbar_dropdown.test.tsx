@@ -57,7 +57,6 @@ describe('components/admin_console/admin_navbar_dropdown', () => {
     function renderDropdown(
         teams: Record<string, typeof team1>,
         options: {
-            isLicensed?: boolean;
             navigationBlocked?: boolean;
         } = {},
     ) {
@@ -67,10 +66,6 @@ describe('components/admin_console/admin_navbar_dropdown', () => {
                 general: {
                     config: {
                         SiteName: 'Mattermost',
-                    },
-                    license: {
-                        IsLicensed: options.isLicensed === false ? 'false' : 'true',
-                        Cloud: 'false',
                     },
                 },
                 teams: {
@@ -149,8 +144,8 @@ describe('components/admin_console/admin_navbar_dropdown', () => {
         expect(item).toHaveAttribute('rel', 'noopener noreferrer');
     });
 
-    test('should open Commercial Support modal when licensed', async () => {
-        renderDropdown({[team1.id]: team1}, {isLicensed: true});
+    test('should open Commercial Support modal', async () => {
+        renderDropdown({[team1.id]: team1});
 
         await clickMenuItem('Commercial Support');
 
@@ -158,18 +153,6 @@ describe('components/admin_console/admin_navbar_dropdown', () => {
             modalId: ModalIdentifiers.COMMERCIAL_SUPPORT,
             dialogType: CommercialSupportModal,
         });
-    });
-
-    test('should render Commercial Support as an external link when unlicensed', () => {
-        renderDropdown({[team1.id]: team1}, {isLicensed: false});
-
-        const item = screen.getByRole('menuitem', {name: 'Commercial Support'});
-
-        expect(item.tagName).toBe('A');
-        expect(item).toHaveAttribute('href', expect.stringContaining('https://mattermost.com/support/'));
-        expect(item).toHaveAttribute('target', '_blank');
-        expect(item).toHaveAttribute('rel', 'noopener noreferrer');
-        expect(openModalMock).not.toHaveBeenCalled();
     });
 
     test('should open About modal', async () => {

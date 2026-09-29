@@ -2063,34 +2063,6 @@
     "defaultMessage": "Performance Monitoring",
     "description": "Page name for Environment > Performance Monitoring in the System Console sidebar."
   },
-  "admin.audit_logging_experimental.certificate.help_text": {
-    "defaultMessage": "The certificate file used for audit logging encryption.",
-    "description": "Admin console help text under the certificate field on the Compliance > Audit Logging page."
-  },
-  "admin.audit_logging_experimental.certificate.remove_button": {
-    "defaultMessage": "Remove Certificate",
-    "description": "Button in the System Console audit logging settings that deletes the uploaded encryption certificate."
-  },
-  "admin.audit_logging_experimental.certificate.remove_help_text": {
-    "defaultMessage": "Remove the certificate used for audit logging encryption.",
-    "description": "Help text under the remove-certificate control in the System Console audit logging settings."
-  },
-  "admin.audit_logging_experimental.certificate.removing": {
-    "defaultMessage": "Removing Certificate...",
-    "description": "In-progress label on the remove-certificate button while the audit logging certificate is being deleted."
-  },
-  "admin.audit_logging_experimental.certificate.title": {
-    "defaultMessage": "Certificate",
-    "description": "Admin console field label on the Compliance > Audit Logging page for the encryption certificate file."
-  },
-  "admin.audit_logging_experimental.certificate.tooltip": {
-    "defaultMessage": "A previous update is still in progress. Please wait.",
-    "description": "Tooltip on the disabled certificate upload/remove controls while a previous cloud installation update is still running."
-  },
-  "admin.audit_logging_experimental.certificate.uploading": {
-    "defaultMessage": "Uploading Certificate...",
-    "description": "In-progress label on the upload control while the audit logging certificate file is being uploaded."
-  },
   "admin.audit_logging_experimental.file_enabled.help_text": {
     "defaultMessage": "Choose whether audit logs are written locally to a file or not.",
     "description": "Admin console help text under the file-output toggle on the Compliance > Audit Logging page."
@@ -2119,17 +2091,9 @@
     "defaultMessage": "Email",
     "description": "Page name for Authentication > Email in the System Console sidebar; refers to email-based login settings."
   },
-  "admin.authentication.gitlab": {
-    "defaultMessage": "GitLab",
-    "description": "Page name for Authentication > GitLab in the System Console sidebar; GitLab is a product name."
-  },
   "admin.authentication.guest_access": {
     "defaultMessage": "Guest Access",
     "description": "Page name for Authentication > Guest Access in the System Console sidebar."
-  },
-  "admin.authentication.ldap": {
-    "defaultMessage": "AD/LDAP",
-    "description": "Page name for Authentication > AD/LDAP in the System Console sidebar; AD/LDAP is a technical acronym."
   },
   "admin.authentication.ldap.wizard": {
     "defaultMessage": "AD/LDAP Wizard",
@@ -2362,14 +2326,6 @@
   "admin.board_attributes.values.rename_placeholder": {
     "defaultMessage": "Option name",
     "description": "Placeholder of the text input used to rename an option value inside the chip's edit menu."
-  },
-  "admin.burn_on_read_feature_discovery.description": {
-    "defaultMessage": "With Mattermost Enterprise Advanced, users can send transient messages that are automatically deleted a fixed time after they are read by a recipient.",
-    "description": "Marketing description on the feature-discovery (upsell) page for burn-on-read messages, shown to admins whose license does not include the feature."
-  },
-  "admin.burn_on_read_feature_discovery.title": {
-    "defaultMessage": "Send burn-on-read messages that are automatically deleted after being read",
-    "description": "Headline of the feature-discovery (upsell) page for burn-on-read messages in the System Console."
   },
   "admin.cacheSettings.cacheType.lru": {
     "defaultMessage": "LRU",
@@ -4759,10 +4715,6 @@
     "defaultMessage": "Generic description with only sender name",
     "description": "Dropdown option for the Push Notification Contents setting: send only the sender name."
   },
-  "admin.environment.notifications.pushContents.help": {
-    "defaultMessage": "**Generic description with only sender name** - Includes only the name of the person who sent the message in push notifications, with no information about channel name or message contents.\n **Generic description with sender and channel names** - Includes the name of the person who sent the message and the channel it was sent in, but not the message contents.\n **Full message content sent in the notification payload** - Includes the message contents in the push notification payload that is relayed through Apple's Push Notification Service (APNS) or Google's Firebase Cloud Messaging (FCM). It is **highly recommended** this option only be used with an \"https\" protocol to encrypt the connection and protect confidential information sent in messages.",
-    "description": "Help text for the Push Notification Contents setting explaining each option; bold markdown (**) marks the option names, which should match the dropdown option translations."
-  },
   "admin.environment.notifications.pushContents.idLoaded": {
     "defaultMessage": "Full message content fetched from the server on receipt",
     "description": "Dropdown option for the Push Notification Contents setting: send only a message ID and fetch content from the server on receipt (ID-loaded push)."
@@ -7095,14 +7047,6 @@
     "defaultMessage": "Integration Management",
     "description": "Page title of the Integration Management settings page in the System Console integrations section."
   },
-  "admin.intune_feature_discovery.description": {
-    "defaultMessage": "With Mattermost Enterprise Advanced, you can enable Microsoft Intune Mobile Application Management (MAM) to enforce App Protection Policies (APP) on Mattermost Mobile. Users sign in with Microsoft Entra ID (Azure AD), and Intune MAM applies data protection, selective wipe, and compliance policies on supported iOS devices.",
-    "description": "Body text of a feature-discovery upsell panel shown in the System Console when the server lacks the Enterprise Advanced license for Intune MAM; Microsoft product names must not be translated."
-  },
-  "admin.intune_feature_discovery.title": {
-    "defaultMessage": "Protect mobile data with Microsoft Intune App Protection Policies (MAM) and Entra ID authentication",
-    "description": "Headline of a feature-discovery upsell panel in the System Console promoting Microsoft Intune MAM support; Microsoft product names must not be translated."
-  },
   "admin.intune.authServiceDescription": {
     "defaultMessage": "Select how users authenticate into Antimatter.\n* **OpenID Connect** – Use when users sign in to Antimatter via Microsoft 365 / Entra ID using OIDC.\n* **SAML 2.0** – Use when users authenticate via a SAML provider that ultimately maps to Microsoft Entra ID.\nChoose the option that matches how your organization already authenticates users into Antimatter on other clients.",
     "description": "Admin console help text under the Auth Provider dropdown in the Microsoft Intune section of Mobile Security; contains markdown bullets and bold, and OpenID Connect / SAML 2.0 are protocol names."
@@ -7154,182 +7098,6 @@
   "admin.intune.tenantIdTitle": {
     "defaultMessage": "Tenant ID:",
     "description": "Setting label for a text field in the Intune section of the Mobile Security admin page; ends with a colon."
-  },
-  "admin.ip_filtering.add_filter": {
-    "defaultMessage": "Add Filter",
-    "description": "Primary button in the Allowed IP Addresses section header; opens the modal to add a new filter rule."
-  },
-  "admin.ip_filtering.add_ip_filter": {
-    "defaultMessage": "Add IP Filter",
-    "description": "Title of the modal for adding a new IP filter rule (Cloud admin IP Filtering page)."
-  },
-  "admin.ip_filtering.add_your_ip": {
-    "defaultMessage": "Add your IP address",
-    "description": "Button in the warning panel shown when the admin's own IP is not in any rule; opens the add filter modal pre-filled."
-  },
-  "admin.ip_filtering.allow_following_range": {
-    "defaultMessage": "Allow the following range of IP Addresses",
-    "description": "Label above the CIDR range input in the add/edit IP filter modal."
-  },
-  "admin.ip_filtering.allowed_ip_addresses": {
-    "defaultMessage": "Allowed IP Addresses",
-    "description": "Section heading on the IP Filtering admin page above the table of allowed IP address rules."
-  },
-  "admin.ip_filtering.any_ip_can_access_add_filter": {
-    "defaultMessage": "Any IP can access your workspace. To limit access to selected IP Addresses, <add>Add a filter</add>.",
-    "description": "Empty-state text when no IP filter rules exist; <add> wraps an inline link that opens the add filter modal."
-  },
-  "admin.ip_filtering.apply_changes": {
-    "defaultMessage": "Yes, apply changes",
-    "description": "Confirm button of the save confirmation modal on the IP Filtering page; affirmative answer to 'apply these changes?'."
-  },
-  "admin.ip_filtering.apply_ip_filter_changes": {
-    "defaultMessage": "Apply IP Filter Changes",
-    "description": "Title of the confirmation modal shown before saving IP filter changes."
-  },
-  "admin.ip_filtering.apply_ip_filter_changes_are_you_sure": {
-    "defaultMessage": "Are you sure you want to apply these IP Filter changes? <strong>Users with IP addresses outside of the IP ranges provided will no longer have access to the workspace.</strong>",
-    "description": "Body of the confirmation modal before applying IP filter changes in the System Console; <strong> wraps the warning about locked-out users."
-  },
-  "admin.ip_filtering.cancel": {
-    "defaultMessage": "Cancel",
-    "description": "Cancel button in the IP filtering modals (add/edit filter, delete confirmation, save confirmation)."
-  },
-  "admin.ip_filtering.delete": {
-    "defaultMessage": "Delete",
-    "description": "Tooltip on the trash icon in an IP filter table row, and label of the delete action; removes the rule."
-  },
-  "admin.ip_filtering.delete_confirmation_body": {
-    "defaultMessage": "Are you sure you want to delete IP filter {filter}? Users with IP addresses outside of this range won't be able to access the workspace when IP Filtering is enabled",
-    "description": "Body of the confirmation modal when deleting an IP filter rule; {filter} is the filter's name."
-  },
-  "admin.ip_filtering.delete_confirmation_title": {
-    "defaultMessage": "Delete IP Filter",
-    "description": "Title of the confirmation modal when deleting an IP filter rule."
-  },
-  "admin.ip_filtering.delete_filter": {
-    "defaultMessage": "Delete filter",
-    "description": "Menu item / button label that deletes an IP filter rule on the System Console IP filtering page."
-  },
-  "admin.ip_filtering.disable_ip_filtering": {
-    "defaultMessage": "Disable IP Filtering",
-    "description": "Title of the confirmation modal shown when saving with IP filtering turned off."
-  },
-  "admin.ip_filtering.edit": {
-    "defaultMessage": "Edit",
-    "description": "Tooltip on the pencil icon in an IP filter table row; opens the edit modal for that rule."
-  },
-  "admin.ip_filtering.edit_ip_filter": {
-    "defaultMessage": "Edit IP Filter",
-    "description": "Title of the modal for editing an existing IP filter rule."
-  },
-  "admin.ip_filtering.edit_section_description_line_1": {
-    "defaultMessage": "Create rules to allow access to the workspace for specified IP addresses only.",
-    "description": "First line of the description in the IP filter rules section of the System Console IP filtering page."
-  },
-  "admin.ip_filtering.edit_section_description_line_2": {
-    "defaultMessage": "<strong>NOTE:</strong> If no rules are added, all IP addresses will be allowed.",
-    "description": "Second line of the IP filter rules section description; <strong> wraps the 'NOTE:' prefix."
-  },
-  "admin.ip_filtering.enable_ip_filtering": {
-    "defaultMessage": "Enable IP Filtering",
-    "description": "Title next to the master toggle that turns the IP Filtering feature on or off (Cloud admin page)."
-  },
-  "admin.ip_filtering.enable_ip_filtering_description": {
-    "defaultMessage": "Limit access to your workspace by IP address. <learnmore>Learn more in the docs</learnmore>",
-    "description": "Description next to the toggle that enables IP filtering; <learnmore> wraps the documentation link text."
-  },
-  "admin.ip_filtering.error_on_page": {
-    "defaultMessage": "Your IP address is not included in your filters",
-    "description": "Error in the save bar of the IP Filtering page when the admin's own IP address is not covered by any rule (saving is blocked)."
-  },
-  "admin.ip_filtering.failed_to_fetch_installation_state": {
-    "defaultMessage": "Failed to fetch your workspace's status. Please try again later or contact support.",
-    "description": "Error in the save bar when polling the Cloud workspace status fails while IP filter changes are being applied."
-  },
-  "admin.ip_filtering.filter_name": {
-    "defaultMessage": "Filter Name",
-    "description": "Column header in the IP filter rules table for the rule's name."
-  },
-  "admin.ip_filtering.include_your_ip": {
-    "defaultMessage": "Include your IP address in at least one of the rules below to continue.",
-    "description": "Warning panel text telling the admin their own IP must be covered by a rule before changes can be saved."
-  },
-  "admin.ip_filtering.ip_address_range": {
-    "defaultMessage": "IP Address Range",
-    "description": "Column header in the IP filter rules table for the rule's CIDR range."
-  },
-  "admin.ip_filtering.ip_filtering": {
-    "defaultMessage": "IP Filtering",
-    "description": "Page header of the IP Filtering section in the System Console (Cloud feature)."
-  },
-  "admin.ip_filtering.more_info": {
-    "defaultMessage": "Enter ranges in CIDR format (e.g. 192.168.0.1/8). <link>More info</link>",
-    "description": "Hint under the CIDR input in the add/edit IP filter modal; <link> wraps a documentation link, keep the CIDR example intact."
-  },
-  "admin.ip_filtering.name": {
-    "defaultMessage": "Name",
-    "description": "Label above the rule name input in the add/edit IP filter modal."
-  },
-  "admin.ip_filtering.no_filters": {
-    "defaultMessage": "No IP filtering rules added",
-    "description": "Empty-state title on the IP Filtering page when no rules have been added."
-  },
-  "admin.ip_filtering.no_filters_added": {
-    "defaultMessage": "Are you sure you want to apply these IP filter changes? There are currently no filters added, so <strong>all IP addresses will have access to the workspace.</strong>",
-    "description": "Body of the confirmation modal when applying IP filtering with no rules defined; <strong> wraps the warning that all IPs will be allowed."
-  },
-  "admin.ip_filtering.rule_name_placeholder": {
-    "defaultMessage": "Enter a name for this rule",
-    "description": "Placeholder of the rule name input in the add/edit IP filter modal."
-  },
-  "admin.ip_filtering.save": {
-    "defaultMessage": "Save",
-    "description": "Confirm/save button label used in the add IP filter modal and the save confirmation modal."
-  },
-  "admin.ip_filtering.save_disclaimer_subtitle": {
-    "defaultMessage": "If you happen to block yourself with these settings, your workspace owner can log in to the <customerportal>Customer Portal</customerportal> to disable IP filtering to restore access.",
-    "description": "Disclaimer text in the IP filtering save confirmation explaining recovery via the Customer Portal; <customerportal> wraps the portal link text."
-  },
-  "admin.ip_filtering.save_disclaimer_title": {
-    "defaultMessage": "Using the Customer Portal to restore access",
-    "description": "Heading above the disclaimer about restoring access through the Customer Portal in the IP filtering save confirmation."
-  },
-  "admin.ip_filtering.saving_changes": {
-    "defaultMessage": "Applying changes...",
-    "description": "Save button label while the admin's IP filter changes are being applied to the workspace."
-  },
-  "admin.ip_filtering.saving_changes_description": {
-    "defaultMessage": "Please wait while your changes are applied.",
-    "description": "Progress text shown while the admin's own IP filter changes are being applied."
-  },
-  "admin.ip_filtering.saving_previous_change": {
-    "defaultMessage": "Other changes being applied...",
-    "description": "Save button label while changes made by another admin are still being applied; saving is temporarily locked."
-  },
-  "admin.ip_filtering.saving_previous_change_description": {
-    "defaultMessage": "Please wait while changes from another admin are applied.",
-    "description": "Progress text shown while IP filter changes made by another admin are still being applied."
-  },
-  "admin.ip_filtering.turn_off_ip_filtering": {
-    "defaultMessage": "Are you sure you want to turn off IP Filtering? <strong>All IP addresses will have access to the workspace.</strong>",
-    "description": "Body of the confirmation modal for disabling IP filtering; <strong> bolds the warning that all IPs get access."
-  },
-  "admin.ip_filtering.update_filter": {
-    "defaultMessage": "Update filter",
-    "description": "Confirm button of the IP filter modal when editing an existing rule (instead of 'Save')."
-  },
-  "admin.ip_filtering.yes_disable_ip_filtering": {
-    "defaultMessage": "Yes, disable IP Filtering",
-    "description": "Confirm button of the modal that disables IP filtering."
-  },
-  "admin.ip_filtering.your_current_ip_is": {
-    "defaultMessage": "Your current IP address is {ip}",
-    "description": "Informational note in the IP filtering UI showing the admin's own IP; {ip} is an IP address."
-  },
-  "admin.ip_filtering.your_current_ip_is_not_in_allowed_rules": {
-    "defaultMessage": "Your IP address {ip} is not included in your allowed IP address rules.",
-    "description": "Warning banner on the IP filtering page when the admin's own IP would be blocked by the configured rules; {ip} is their current IP address."
   },
   "admin.jobTable.cancelButton": {
     "defaultMessage": "Cancel",
@@ -8438,14 +8206,6 @@
   "admin.mobileSecurity.biometricsTitle": {
     "defaultMessage": "Enable Biometric Authentication:",
     "description": "Setting label (toggle) on the Mobile Security admin page requiring fingerprint/face unlock in the mobile app; ends with a colon."
-  },
-  "admin.mobileSecurity.ephemeralMode_feature_discovery.description": {
-    "defaultMessage": "With Mattermost Enterprise Advanced, you can enable Mobile Ephemeral Mode to enforce data persistence policies on mobile devices. Configure disconnection timeouts, offline data retention, and automatic cache cleanup.",
-    "description": "Body text of a feature-discovery upsell panel shown in the System Console when the server lacks the Enterprise Advanced license for Mobile Ephemeral Mode."
-  },
-  "admin.mobileSecurity.ephemeralMode_feature_discovery.title": {
-    "defaultMessage": "Control mobile data persistence with Mobile Ephemeral Mode",
-    "description": "Headline of a feature-discovery upsell panel in the System Console promoting the Mobile Ephemeral Mode feature."
   },
   "admin.mobileSecurity.ephemeralMode.autoCacheCleanup.placeholder": {
     "defaultMessage": "E.g.: 7",
@@ -13183,10 +12943,6 @@
     "defaultMessage": "Type",
     "description": "Column header in the session attributes admin table for the attribute's data type."
   },
-  "admin.session_attributes.title": {
-    "defaultMessage": "Session Attributes",
-    "description": "Page title of the System Console > Session Attributes settings page (an Enterprise Advanced feature for session-based access attributes)."
-  },
   "admin.session_attributes.type.boolean": {
     "defaultMessage": "Boolean",
     "description": "Data type label (true/false value) shown in the Type column of the session attributes table; a technical term."
@@ -13207,10 +12963,6 @@
     "defaultMessage": "This setting has been set through an environment variable. It cannot be changed through the System Console.",
     "description": "Warning banner shown under a System Console setting that is locked because it was configured via an environment variable."
   },
-  "admin.sidebar.about": {
-    "defaultMessage": "About",
-    "description": "Category heading in the System Console left navigation sidebar, grouping license and edition pages; compact space."
-  },
   "admin.sidebar.announcement": {
     "defaultMessage": "System-wide Notifications",
     "description": "Navigation item in the System Console sidebar; opens the announcement banner (system-wide notifications) settings page; compact space."
@@ -13227,14 +12979,6 @@
     "defaultMessage": "Authentication",
     "description": "Category heading in the System Console left navigation sidebar, grouping login/authentication settings pages; compact space."
   },
-  "admin.sidebar.billing": {
-    "defaultMessage": "Billing & Account",
-    "description": "Category heading in the System Console left navigation sidebar, grouping billing and subscription pages; compact space."
-  },
-  "admin.sidebar.billing_history": {
-    "defaultMessage": "Billing History",
-    "description": "Navigation item in the System Console left sidebar linking to the billing history page (Cloud)."
-  },
   "admin.sidebar.board_attributes": {
     "defaultMessage": "Board Attributes",
     "description": "Navigation item in the System Console sidebar; opens the Boards product attributes page; compact space."
@@ -13246,10 +12990,6 @@
   "admin.sidebar.classificationMarkings": {
     "defaultMessage": "Classification Markings",
     "description": "Navigation item in the System Console sidebar and title of the corresponding page; 'classification markings' are security labels (e.g. for government use); compact space."
-  },
-  "admin.sidebar.company_info": {
-    "defaultMessage": "Company Information",
-    "description": "Navigation item in the System Console sidebar under Billing; opens the company information page; compact space."
   },
   "admin.sidebar.compliance": {
     "defaultMessage": "Compliance",
@@ -13278,10 +13018,6 @@
   "admin.sidebar.database": {
     "defaultMessage": "Database",
     "description": "Navigation item in the System Console sidebar under Environment; opens the database settings page; compact space."
-  },
-  "admin.sidebar.dataRetentionPolicy": {
-    "defaultMessage": "Data Retention Policy",
-    "description": "Navigation item in the System Console sidebar; opens the data retention policy settings page; compact space."
   },
   "admin.sidebar.dataRetentionSettingsPolicies": {
     "defaultMessage": "Data Retention Policies",
@@ -13339,10 +13075,6 @@
     "defaultMessage": "GIF",
     "description": "Navigation item in the System Console sidebar; opens the GIF integration (Giphy) settings page; 'GIF' is an image format acronym; compact space."
   },
-  "admin.sidebar.gitlab": {
-    "defaultMessage": "GitLab",
-    "description": "Navigation item in the System Console sidebar under Authentication; 'GitLab' is a product name, should not be translated; compact space."
-  },
   "admin.sidebar.global_attributes": {
     "defaultMessage": "Attribute Management",
     "description": "Navigation item in the System Console sidebar under System Attributes; opens the page for managing custom attribute definitions; a noun phrase naming the page; compact space."
@@ -13367,17 +13099,9 @@
     "defaultMessage": "Integrations",
     "description": "Category heading in the System Console sidebar grouping integration settings pages; also the title of the end-user Integrations management page; compact space."
   },
-  "admin.sidebar.ip_filtering": {
-    "defaultMessage": "IP Filtering",
-    "description": "Navigation item in the System Console sidebar; opens the IP address filtering settings page; compact space."
-  },
   "admin.sidebar.ldap": {
     "defaultMessage": "AD/LDAP",
     "description": "Navigation item in the System Console sidebar under Authentication; 'AD/LDAP' means Active Directory/LDAP, should not be translated; compact space."
-  },
-  "admin.sidebar.license": {
-    "defaultMessage": "Edition and License",
-    "description": "Navigation item in the System Console sidebar under About; opens the server edition and license page; compact space."
   },
   "admin.sidebar.localization": {
     "defaultMessage": "Localization",
@@ -13467,10 +13191,6 @@
     "defaultMessage": "Reporting",
     "description": "Category heading in the System Console left navigation sidebar, grouping statistics and log pages; compact space."
   },
-  "admin.sidebar.restricted_indicator.tooltip.message.blocked": {
-    "defaultMessage": "This feature requires {minimumPlanRequiredForFeature}, available with an upgrade or free {trialLength}-day trial",
-    "description": "Tooltip on the restricted-feature badge in the System Console sidebar; {article} is 'a' or 'an', {minimumPlanRequiredForFeature} is a plan name like 'Professional', {trialLength} is the number of trial days."
-  },
   "admin.sidebar.saml": {
     "defaultMessage": "SAML 2.0",
     "description": "Navigation item in the System Console sidebar under Authentication; 'SAML 2.0' is a protocol name, should not be translated; compact space."
@@ -13499,10 +13219,6 @@
     "defaultMessage": "SMTP",
     "description": "Navigation item in the System Console sidebar under Environment; 'SMTP' is the email protocol acronym, should not be translated; compact space."
   },
-  "admin.sidebar.subscription": {
-    "defaultMessage": "Subscription",
-    "description": "Navigation item in the System Console sidebar under Billing; opens the subscription management page; compact space."
-  },
   "admin.sidebar.systemAttributes": {
     "defaultMessage": "System Attributes",
     "description": "Category heading in the System Console left navigation sidebar, grouping custom attribute pages; compact space."
@@ -13522,10 +13238,6 @@
   "admin.sidebar.teamStatistics": {
     "defaultMessage": "Team Statistics",
     "description": "Navigation item in the System Console sidebar under Reporting; opens the per-team statistics page; compact space."
-  },
-  "admin.sidebar.user_attributes": {
-    "defaultMessage": "User Attributes",
-    "description": "Navigation item in the System Console sidebar and title of the corresponding page for custom user profile attributes; compact space."
   },
   "admin.sidebar.userManagement": {
     "defaultMessage": "User Management",
@@ -13906,10 +13618,6 @@
   "admin.support.reportAProblemTypeDescriptionLicensed": {
     "defaultMessage": "By default, selecting \"Report a Problem\" from the help menu opens a pre-filled email draft to the Mattermost technical support team. You may provide a custom URL or email address for end user support by choosing \"Custom link\" or \"Email address\". \"Hide link\" removes the \"Report a Problem\" option from the app.",
     "description": "Admin console help text for the Report a Problem type dropdown, shown on licensed servers; the quoted phrases are the dropdown option labels defined elsewhere."
-  },
-  "admin.support.reportAProblemTypeDescriptionUnlicensed": {
-    "defaultMessage": "By default, selecting \"Report a Problem\" from the help menu opens the [Mattermost troubleshooting forums](https://mattermost.com/pl/report_a_problem_unlicensed). You may provide a custom URL or email address for end user support by choosing \"Custom link\" or \"Email address\". \"Hide link\" removes the \"Report a Problem\" option from the app.",
-    "description": "Admin console help text for the Report a Problem type dropdown, shown on unlicensed servers; supports Markdown (link to the Mattermost forums); the quoted phrases are dropdown option labels."
   },
   "admin.support.reportAProblemTypeTitle": {
     "defaultMessage": "Report a Problem:",

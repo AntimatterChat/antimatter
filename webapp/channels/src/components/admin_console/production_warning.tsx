@@ -4,7 +4,7 @@
 import React from 'react';
 import {useIntl} from 'react-intl';
 
-import type {AdminConfig, ClientLicense} from '@mattermost/types/config';
+import type {AdminConfig} from '@mattermost/types/config';
 
 import SectionNotice from 'components/section_notice';
 
@@ -14,11 +14,10 @@ type Props = {
     setting: AdminDefinitionSetting;
     config: Partial<AdminConfig>;
     state: {[x: string]: any};
-    license?: ClientLicense;
     isDisabled?: boolean;
 };
 
-const ProductionWarning = ({setting, config, state, license, isDisabled}: Props) => {
+const ProductionWarning = ({setting, config, state, isDisabled}: Props) => {
     const intl = useIntl();
 
     const warning = setting.production_warning;
@@ -26,7 +25,7 @@ const ProductionWarning = ({setting, config, state, license, isDisabled}: Props)
         return null;
     }
 
-    const isEnabled = typeof warning.isEnabled === 'function' ? warning.isEnabled(config, state, license) : Boolean(warning.isEnabled);
+    const isEnabled = typeof warning.isEnabled === 'function' ? warning.isEnabled(config, state) : Boolean(warning.isEnabled);
     if (!isEnabled) {
         return null;
     }
