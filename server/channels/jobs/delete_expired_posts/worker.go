@@ -23,7 +23,7 @@ type AppIface interface {
 	DeletePost(rctx request.CTX, postID, deleteByID string) (*model.Post, *model.AppError)
 	PermanentDeletePostDataRetainStub(rctx request.CTX, post *model.Post, deleteByID string) (*model.PostDeletionReport, *model.AppError)
 	GetSinglePost(rctx request.CTX, postID string, includeDeleted bool) (*model.Post, *model.AppError)
-	GetPostsByIds(postIDs []string) ([]*model.Post, int64, *model.AppError)
+	GetPostsByIds(postIDs []string) ([]*model.Post, *model.AppError)
 }
 
 func MakeWorker(jobServer *jobs.JobServer, store store.Store, app AppIface) *jobs.SimpleWorker {
@@ -52,7 +52,7 @@ func MakeWorker(jobServer *jobs.JobServer, store store.Store, app AppIface) *job
 
 			lastPostId = postIDs[len(postIDs)-1]
 
-			expiredPosts, _, appErr := app.GetPostsByIds(postIDs)
+			expiredPosts, appErr := app.GetPostsByIds(postIDs)
 			if appErr != nil {
 				logger.Error("Failed to get expired posts by IDs", mlog.Err(appErr))
 				return appErr

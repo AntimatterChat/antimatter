@@ -995,16 +995,6 @@
     "description": "Error when a request to CWS (the Mattermost customer web server / customer portal) fails; admin audience."
   },
   {
-    "id": "api.cloud.teams_limit_reached.create",
-    "translation": "Unable to create team because teams limit has been reached",
-    "description": "API error on Mattermost Cloud when creating a team would exceed the Cloud plan's team limit."
-  },
-  {
-    "id": "api.cloud.teams_limit_reached.restore",
-    "translation": "Unable to restore team because teams limit has been reached",
-    "description": "API error on Mattermost Cloud when restoring an archived team would exceed the Cloud plan's team limit."
-  },
-  {
     "id": "api.command.admin_only.app_error",
     "translation": "Integrations have been limited to admins only.",
     "description": "Error when a non-admin tries to manage integrations (slash commands, webhooks) while the server restricts integration management to admins."
@@ -3869,11 +3859,6 @@
     "description": "API error when creating a burn-on-read (self-destructing) post while the feature is not enabled in server configuration; admin-oriented wording."
   },
   {
-    "id": "api.post.fill_in_post_props.burn_on_read.license.app_error",
-    "translation": "Burn-on-read posts require an Enterprise Advanced license.",
-    "description": "API error when creating a burn-on-read post without the required license; 'Enterprise Advanced' is a license tier name."
-  },
-  {
     "id": "api.post.fill_in_post_props.burn_on_read.self_dm.app_error",
     "translation": "Burn-on-read posts are not allowed when messaging yourself.",
     "description": "API error when sending a burn-on-read (self-destructing) message in one's own self-DM, which is not allowed."
@@ -4755,11 +4740,6 @@
     "description": "API error when the JSON body of a guest invitation request is missing or cannot be parsed."
   },
   {
-    "id": "api.team.invite_guests_to_channels.license.error",
-    "translation": "Your license does not support guest accounts",
-    "description": "API error when guest invitations are attempted on a server whose license does not include guest accounts."
-  },
-  {
     "id": "api.team.invite_members.account_deactivated.app_error",
     "translation": "The account associated with {{.Addresses}} has been deactivated. Please contact your System Administrator for details.",
     "description": "API error (400) shown to the inviter when an email invitation targets an existing but deactivated account. {{.Addresses}} is the email address (or a comma-separated list of addresses) that was rejected. Used for team invites, guest invites, and the mmctl/local invite path."
@@ -4788,11 +4768,6 @@
     "id": "api.team.invite_members.profiles_graceful.app_error",
     "translation": "Pre-setting profile fields on invitations requires graceful mode.",
     "description": "API error when a team invitation tries to pre-fill profile fields without using the API's graceful mode (which reports per-invite results); developer-facing."
-  },
-  {
-    "id": "api.team.invite_members.profiles_license.app_error",
-    "translation": "Pre-setting profile fields on invitations requires an Enterprise license.",
-    "description": "API error when pre-setting profile fields on invitations requires an Enterprise license; 'Enterprise' is a license tier name."
   },
   {
     "id": "api.team.invite_members.unable_to_send_email.app_error",
@@ -4983,11 +4958,6 @@
     "id": "api.team.update_team_member_roles.user_and_guest.app_error",
     "translation": "Invalid team member update: A guest cannot be set for a single team, a System Admin must promote or demote users to/from guests.",
     "description": "API error when trying to change guest status for one team only; guest status is account-wide and only a System Admin can promote/demote."
-  },
-  {
-    "id": "api.team.update_team_scheme.license.error",
-    "translation": "Your license does not support updating a team's scheme",
-    "description": "API error shown to a system admin when assigning a permissions scheme to a team is not supported by the server license."
   },
   {
     "id": "api.team.update_team_scheme.scheme_scope.error",
@@ -5905,11 +5875,6 @@
     "description": "API error during signup when the invitation token is of an unexpected type, so the account cannot be created."
   },
   {
-    "id": "api.user.create_user.license_user_limits.exceeded",
-    "translation": "Can't create user. Server exceeds maximum licensed users. Contact your administrator with: ERROR_LICENSED_USERS_LIMIT_EXCEEDED.",
-    "description": "API error when creating a user would exceed the licensed seat count; 'ERROR_LICENSED_USERS_LIMIT_EXCEEDED' is a support error code and must not be translated."
-  },
-  {
     "id": "api.user.create_user.no_open_server",
     "translation": "This server does not allow open signups.  Please speak with your Administrator to receive an invitation.",
     "description": "API error when someone tries to sign up on a server that requires an invitation (open signups disabled)."
@@ -5928,11 +5893,6 @@
     "id": "api.user.create_user.signup_link_invalid.app_error",
     "translation": "The signup link does not appear to be valid.",
     "description": "API error shown when a user opens a malformed or tampered account-creation link."
-  },
-  {
-    "id": "api.user.create_user.user_limits.exceeded",
-    "translation": "Can't create user. Server exceeds safe user limit. Contact your administrator with: ERROR_SAFETY_LIMITS_EXCEEDED.",
-    "description": "API error when creating a user would exceed the unlicensed server's safety user limit; 'ERROR_SAFETY_LIMITS_EXCEEDED' is a support error code and must not be translated."
   },
   {
     "id": "api.user.delete_channel.not_enabled.app_error",
@@ -9691,21 +9651,6 @@
     "description": "API error shown to admins when a background job's status cannot be changed because the requested status transition is invalid."
   },
   {
-    "id": "app.last_accessible_file.app_error",
-    "translation": "Error fetching last accessible file",
-    "description": "Internal API error when reading the cloud plan's file-access cutoff (the oldest file accessible under message/file limits) fails."
-  },
-  {
-    "id": "app.last_accessible_post.app_error",
-    "translation": "Error fetching last accessible post",
-    "description": "Internal error when determining the oldest post visible under cloud message-history limits fails."
-  },
-  {
-    "id": "app.limits.get_app_limits.single_channel_guest_count.store_error",
-    "translation": "Failed to get single-channel guest count.",
-    "description": "Internal API error when querying the count of guests who belong to only one channel (used for seat-limit calculations) fails."
-  },
-  {
     "id": "app.limits.get_app_limits.user_count.store_error",
     "translation": "Failed to get user count",
     "description": "Internal API error when querying the total activated user count (used for seat-limit calculations) fails."
@@ -12672,16 +12617,6 @@
     "description": "API error when someone tries to rename a bot account to a username reserved for a built-in, system-owned bot."
   },
   {
-    "id": "app.user.update_active.license_user_limit.exceeded",
-    "translation": "Can't activate user. Server exceeds maximum licensed users. ERROR_LICENSED_USERS_LIMIT_EXCEEDED.",
-    "description": "API error when reactivating a user would exceed the licensed seat count; 'ERROR_LICENSED_USERS_LIMIT_EXCEEDED' is a support error code and must not be translated."
-  },
-  {
-    "id": "app.user.update_active.user_limit.exceeded",
-    "translation": "Can't activate user. Server exceeds safe user limit. ERROR_SAFETY_LIMITS_EXCEEDED.",
-    "description": "API error when reactivating a user would exceed the unlicensed server's safety user limit; 'ERROR_SAFETY_LIMITS_EXCEEDED' is a support error code and must not be translated."
-  },
-  {
     "id": "app.user.update_active_for_multiple_users.updating.app_error",
     "translation": "Unable to deactivate guests.",
     "description": "API error when bulk-deactivating guest accounts fails."
@@ -13080,11 +13015,6 @@
     "id": "brand.save_brand_image.save_image.app_error",
     "translation": "Unable to write the image file to your file storage. Please check your connection and try again.",
     "description": "API error when writing the custom brand image to file storage fails; admin-facing."
-  },
-  {
-    "id": "common.parse_error_int64",
-    "translation": "Failed to parse the value:{{.Value}} to int64",
-    "description": "Internal API error when a stored setting cannot be parsed as a number; {{.Value}} is the offending value and 'int64' is a numeric type name."
   },
   {
     "id": "ent.access_control.job_data_conversion.app_error",
@@ -14365,11 +14295,6 @@
     "id": "jobs.set_job_error.update.error",
     "translation": "Failed to set job status to error",
     "description": "Internal error when the server cannot record a background job's failure status; 'error' at the end is the job status name."
-  },
-  {
-    "id": "license_error.feature_unavailable",
-    "translation": "Feature is not available for the current license",
-    "description": "Generic API error when a requested feature is not included in the server's current license."
   },
   {
     "id": "manaultesting.manual_test.parse.app_error",

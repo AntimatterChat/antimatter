@@ -35,9 +35,8 @@ import (
 	einterfacesmocks "github.com/mattermost/mattermost/server/v8/einterfaces/mocks"
 )
 
-// Helper to enable feature with license
+// Helper to enable feature
 func enableBurnOnReadFeature(th *TestHelper) {
-	th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterpriseAdvanced))
 	th.App.UpdateConfig(func(cfg *model.Config) {
 		cfg.ServiceSettings.EnableBurnOnRead = new(true)
 	})
@@ -499,7 +498,6 @@ func TestCreatePostForPriority(t *testing.T) {
 	th := Setup(t).InitBasic(t)
 	client := th.Client
 
-	th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuProfessional))
 	th.App.UpdateConfig(func(cfg *model.Config) {
 		*cfg.ServiceSettings.PostPriority = true
 		*cfg.ServiceSettings.AllowPersistentNotifications = true
@@ -541,33 +539,6 @@ func TestCreatePostForPriority(t *testing.T) {
 		_, resp, err = client.CreatePost(context.Background(), replyPost)
 		require.Error(t, err)
 		CheckBadRequestStatus(t, resp)
-	})
-
-	t.Run("should return statusNotImplemented when min. pro. license not available", func(t *testing.T) {
-		appErr := th.App.Srv().RemoveLicense()
-		require.Nil(t, appErr)
-		defer th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuProfessional))
-		//  for Acknowledment
-		p1 := &model.Post{ChannelId: th.BasicChannel.Id, Message: "test", Metadata: &model.PostMetadata{
-			Priority: &model.PostPriority{
-				Priority:     new("urgent"),
-				RequestedAck: new(true),
-			},
-		}}
-		_, resp, err := client.CreatePost(context.Background(), p1)
-		require.Error(t, err)
-		CheckNotImplementedStatus(t, resp)
-
-		//  for Persistent Notification
-		p2 := &model.Post{ChannelId: th.BasicChannel.Id, Message: "test", Metadata: &model.PostMetadata{
-			Priority: &model.PostPriority{
-				Priority:                new("urgent"),
-				PersistentNotifications: new(true),
-			},
-		}}
-		_, resp, err = client.CreatePost(context.Background(), p2)
-		require.Error(t, err)
-		CheckNotImplementedStatus(t, resp)
 	})
 
 	t.Run("should return forbidden when persistent notification not enabled", func(t *testing.T) {
@@ -1003,8 +974,6 @@ func TestMoveThread(t *testing.T) {
 
 	// Enable MoveThreads feature flag
 	th.App.UpdateConfig(func(cfg *model.Config) { cfg.FeatureFlags.MoveThreadsEnabled = true })
-
-	th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterprise))
 
 	client := th.Client
 
@@ -1765,8 +1734,6 @@ func TestUpdatePost(t *testing.T) {
 	th := Setup(t).InitBasic(t)
 	client := th.Client
 	channel := th.BasicChannel
-
-	th.App.Srv().SetLicense(model.NewTestLicense())
 
 	fileIds := make([]string, 3)
 	data, err2 := testutils.ReadTestFile("test.png")
@@ -2612,8 +2579,6 @@ func TestPatchPost(t *testing.T) {
 	th := Setup(t).InitBasic(t)
 	client := th.Client
 	channel := th.BasicChannel
-
-	th.App.Srv().SetLicense(model.NewTestLicense())
 
 	fileIDs := make([]string, 3)
 	data, err2 := testutils.ReadTestFile("test.png")
@@ -3876,7 +3841,6 @@ func TestGetFlaggedPostsForUser(t *testing.T) {
 	mockStore.On("Webhook").Return(th.App.Srv().Store().Webhook())
 	mockStore.On("DeliveryTracking").Return(th.App.Srv().Store().DeliveryTracking())
 	mockStore.On("System").Return(th.App.Srv().Store().System())
-	mockStore.On("License").Return(th.App.Srv().Store().License())
 	mockStore.On("Role").Return(th.App.Srv().Store().Role())
 	mockStore.On("Close").Return(nil)
 
@@ -6748,7 +6712,6 @@ func TestPostGetInfo(t *testing.T) {
 	mainHelper.Parallel(t)
 
 	th := Setup(t).InitBasic(t)
-	th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterprise))
 	th.App.UpdateConfig(func(cfg *model.Config) { *cfg.GuestAccountsSettings.Enable = true })
 
 	defaultPerms := th.SaveDefaultRolePermissions(t)
@@ -7217,7 +7180,6 @@ func TestAcknowledgePost(t *testing.T) {
 	mainHelper.Parallel(t)
 
 	th := Setup(t).InitBasic(t)
-	th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuProfessional))
 	client := th.Client
 
 	post := th.BasicPost
@@ -7259,7 +7221,6 @@ func TestUnacknowledgePost(t *testing.T) {
 	mainHelper.Parallel(t)
 
 	th := Setup(t).InitBasic(t)
-	th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuProfessional))
 	client := th.Client
 
 	post := th.BasicPost

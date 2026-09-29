@@ -30,7 +30,6 @@ import (
 )
 
 func enableBoRFeature(th *TestHelper) {
-	th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterpriseAdvanced))
 	th.App.UpdateConfig(func(cfg *model.Config) {
 		cfg.ServiceSettings.EnableBurnOnRead = new(true)
 	})
@@ -315,7 +314,7 @@ func TestAttachFilesToPost(t *testing.T) {
 		assert.Contains(t, attachedFiles, info1.Id)
 		assert.Contains(t, attachedFiles, info2.Id)
 
-		infos, _, appErr := th.App.GetFileInfosForPost(th.Context, post, false, false)
+		infos, appErr := th.App.GetFileInfosForPost(th.Context, post, false, false)
 		assert.Nil(t, appErr)
 		assert.Len(t, infos, 2)
 	})
@@ -346,7 +345,7 @@ func TestAttachFilesToPost(t *testing.T) {
 		assert.Len(t, attachedFiles, 1)
 		assert.Contains(t, attachedFiles, info2.Id)
 
-		infos, _, appErr := th.App.GetFileInfosForPost(th.Context, post, false, false)
+		infos, appErr := th.App.GetFileInfosForPost(th.Context, post, false, false)
 		assert.Nil(t, appErr)
 		assert.Len(t, infos, 1)
 		assert.Equal(t, info2.Id, infos[0].Id)
@@ -386,8 +385,6 @@ func TestUpdatePostTimeLimit(t *testing.T) {
 	th := Setup(t).InitBasic(t)
 
 	post := th.BasicPost.Clone()
-
-	th.App.Srv().SetLicense(model.NewTestLicense())
 
 	th.App.UpdateConfig(func(cfg *model.Config) {
 		*cfg.ServiceSettings.PostEditTimeLimit = -1
@@ -1074,7 +1071,6 @@ func TestDeletePostDeletesPersistentNotification(t *testing.T) {
 	mainHelper.Parallel(t)
 	th := Setup(t).InitBasic(t)
 
-	th.App.Srv().SetLicense(getLicWithSkuShortName(model.LicenseShortSkuProfessional))
 	th.App.UpdateConfig(func(cfg *model.Config) {
 		*cfg.ServiceSettings.PostPriority = true
 		*cfg.ServiceSettings.AllowPersistentNotifications = true
@@ -3027,8 +3023,6 @@ func TestSearchPostsForUser(t *testing.T) {
 		}
 
 		if enableElasticsearch {
-			th.App.Srv().SetLicense(model.NewTestLicense("elastic_search"))
-
 			th.App.UpdateConfig(func(cfg *model.Config) {
 				*cfg.ElasticsearchSettings.EnableIndexing = true
 				*cfg.ElasticsearchSettings.EnableSearching = true
@@ -3784,71 +3778,6 @@ func TestCountMentionsFromPost(t *testing.T) {
 		assert.Equal(t, 1, count)
 	})
 
-	t.Run("should not include comments made before the given post when rootPost is inaccessible", func(t *testing.T) {
-		mainHelper.Parallel(t)
-		th := Setup(t).InitBasic(t)
-
-		// Create an Entry license with post history limits
-		license := model.NewTestLicenseSKU(model.LicenseShortSkuMattermostEntry)
-		license.Limits = &model.LicenseLimits{
-			PostHistory: 10000, // Set some post history limit to enable filtering
-		}
-		th.App.Srv().SetLicense(license)
-
-		user1 := th.BasicUser
-		user2 := th.BasicUser2
-
-		channel := th.CreateChannel(t, th.BasicTeam)
-		th.AddUserToChannel(t, user2, channel)
-
-		user2.NotifyProps[model.CommentsNotifyProp] = model.CommentsNotifyAny
-
-		post1, _, err := th.App.CreatePost(th.Context, &model.Post{
-			UserId:    user1.Id,
-			ChannelId: channel.Id,
-			Message:   "test1",
-		}, channel, model.CreatePostFlags{SetOnline: true})
-		require.Nil(t, err)
-		_, _, err = th.App.CreatePost(th.Context, &model.Post{
-			UserId:    user2.Id,
-			ChannelId: channel.Id,
-			RootId:    post1.Id,
-			Message:   "test2",
-		}, channel, model.CreatePostFlags{SetOnline: true})
-		require.Nil(t, err)
-
-		time.Sleep(time.Millisecond * 2)
-
-		post3, _, err := th.App.CreatePost(th.Context, &model.Post{
-			UserId:    user1.Id,
-			ChannelId: channel.Id,
-			Message:   "test3",
-		}, channel, model.CreatePostFlags{SetOnline: true})
-		require.Nil(t, err)
-		_, _, err = th.App.CreatePost(th.Context, &model.Post{
-			UserId:    user1.Id,
-			ChannelId: channel.Id,
-			RootId:    post1.Id,
-			Message:   "test4",
-		}, channel, model.CreatePostFlags{SetOnline: true})
-		require.Nil(t, err)
-
-		// Make posts created before post3 inaccessible
-		e := th.App.Srv().Store().System().SaveOrUpdate(&model.System{
-			Name:  model.SystemLastAccessiblePostTime,
-			Value: strconv.FormatInt(post3.CreateAt, 10),
-		})
-		require.NoError(t, e)
-
-		// post4 should mention the user, but since post2 is inaccessible due to the cloud plan's limit,
-		// post4 does not notify the user.
-
-		count, _, _, err := th.App.countMentionsFromPost(th.Context, user2, post3)
-
-		assert.Nil(t, err)
-		assert.Zero(t, count)
-	})
-
 	t.Run("should count mentions from the user's webhook posts", func(t *testing.T) {
 		mainHelper.Parallel(t)
 		th := Setup(t).InitBasic(t)
@@ -3985,8 +3914,6 @@ func TestFillInPostProps(t *testing.T) {
 		mainHelper.Parallel(t)
 		th := Setup(t).InitBasic(t)
 
-		th.App.Srv().SetLicense(model.NewTestLicense("ldap"))
-
 		user1 := th.BasicUser
 
 		channel := th.CreateChannel(t, th.BasicTeam)
@@ -4004,43 +3931,9 @@ func TestFillInPostProps(t *testing.T) {
 		assert.Equal(t, post1.Props, model.StringInterface{})
 	})
 
-	t.Run("should not add disable group highlight to post props for app without license", func(t *testing.T) {
-		mainHelper.Parallel(t)
-		th := Setup(t).InitBasic(t)
-
-		id := model.NewId()
-		guest := &model.User{
-			Email:         "success+" + id + "@simulator.amazonses.com",
-			Username:      "un_" + id,
-			Nickname:      "nn_" + id,
-			Password:      model.NewTestPassword(),
-			EmailVerified: true,
-		}
-		guest, err := th.App.CreateGuest(th.Context, guest)
-		require.Nil(t, err)
-		th.LinkUserToTeam(t, guest, th.BasicTeam)
-
-		channel := th.CreateChannel(t, th.BasicTeam)
-		th.AddUserToChannel(t, guest, channel)
-
-		post1, _, err := th.App.CreatePost(th.Context, &model.Post{
-			UserId:    guest.Id,
-			ChannelId: channel.Id,
-			Message:   "test123123 @group1 @group2 blah blah blah",
-		}, channel, model.CreatePostFlags{SetOnline: true})
-		require.Nil(t, err)
-
-		err = th.App.FillInPostProps(th.Context, post1, channel)
-
-		assert.Nil(t, err)
-		assert.Equal(t, post1.Props, model.StringInterface{})
-	})
-
 	t.Run("should add disable group highlight to post props for guest user", func(t *testing.T) {
 		mainHelper.Parallel(t)
 		th := Setup(t).InitBasic(t)
-
-		th.App.Srv().SetLicense(model.NewTestLicense("ldap"))
 
 		id := model.NewId()
 		guest := &model.User{
@@ -5043,118 +4936,6 @@ func TestShouldNotRefollowOnOthersReply(t *testing.T) {
 	require.True(t, m.Following)
 }
 
-func TestGetLastAccessiblePostTime(t *testing.T) {
-	mainHelper.Parallel(t)
-	th := SetupWithStoreMock(t)
-
-	// Setup store mocks needed for GetServerLimits
-	mockStore := th.App.Srv().Store().(*storemocks.Store)
-	mockUserStore := storemocks.UserStore{}
-	mockUserStore.On("Count", mock.Anything).Return(int64(10), nil)
-	mockStore.On("User").Return(&mockUserStore)
-
-	// Test with no license - should return 0
-	r, err := th.App.GetLastAccessiblePostTime()
-	assert.Nil(t, err)
-	assert.Equal(t, int64(0), r)
-
-	// Test with Entry license but no limits configured - should return 0
-	entryLicenseNoLimits := model.NewTestLicenseSKU(model.LicenseShortSkuMattermostEntry)
-	entryLicenseNoLimits.Limits = nil // No limits configured
-	th.App.Srv().SetLicense(entryLicenseNoLimits)
-	r, err = th.App.GetLastAccessiblePostTime()
-	assert.Nil(t, err)
-	assert.Equal(t, int64(0), r, "Entry license with no limits should return 0")
-
-	// Test with Entry license with zero post history limit - should return 0
-	entryLicenseZeroLimit := model.NewTestLicenseSKU(model.LicenseShortSkuMattermostEntry)
-	entryLicenseZeroLimit.Limits = &model.LicenseLimits{PostHistory: 0} // Zero limit
-	th.App.Srv().SetLicense(entryLicenseZeroLimit)
-	r, err = th.App.GetLastAccessiblePostTime()
-	assert.Nil(t, err)
-	assert.Equal(t, int64(0), r, "Entry license with zero post history limit should return 0")
-
-	// Test with Entry license that has post history limits
-	entryLicenseWithLimits := model.NewTestLicenseSKU(model.LicenseShortSkuMattermostEntry)
-	entryLicenseWithLimits.Limits = &model.LicenseLimits{PostHistory: 1000} // Actual limit
-	th.App.Srv().SetLicense(entryLicenseWithLimits)
-
-	// Test case 1: No system value found (ErrNotFound) - should return 0
-	mockSystemStore := storemocks.SystemStore{}
-	mockStore.On("System").Return(&mockSystemStore)
-	mockSystemStore.On("GetByName", mock.Anything).Return(nil, store.NewErrNotFound("", ""))
-	r, err = th.App.GetLastAccessiblePostTime()
-	assert.Nil(t, err)
-	assert.Equal(t, int64(0), r)
-
-	// Test case 2: Database error - should return error
-	mockSystemStore = storemocks.SystemStore{}
-	mockStore.On("System").Return(&mockSystemStore)
-	mockSystemStore.On("GetByName", mock.Anything).Return(nil, errors.New("database error"))
-	_, err = th.App.GetLastAccessiblePostTime()
-	assert.NotNil(t, err)
-
-	// Test case 3: Valid system value found - should return parsed timestamp
-	mockSystemStore = storemocks.SystemStore{}
-	mockStore.On("System").Return(&mockSystemStore)
-	mockSystemStore.On("GetByName", mock.Anything).Return(&model.System{Name: model.SystemLastAccessiblePostTime, Value: "1234567890"}, nil)
-	r, err = th.App.GetLastAccessiblePostTime()
-	assert.Nil(t, err)
-	assert.Equal(t, int64(1234567890), r)
-}
-
-func TestComputeLastAccessiblePostTime(t *testing.T) {
-	mainHelper.Parallel(t)
-	t.Run("Updates the time, if Entry license limit is applicable", func(t *testing.T) {
-		th := SetupWithStoreMock(t)
-
-		// Set Entry license with post history limit of 100 messages
-		entryLicensePostsLimit := model.NewTestLicenseSKU(model.LicenseShortSkuMattermostEntry)
-		entryLicensePostsLimit.Limits = &model.LicenseLimits{PostHistory: 100}
-		th.App.Srv().SetLicense(entryLicensePostsLimit)
-
-		mockStore := th.App.Srv().Store().(*storemocks.Store)
-		mockPostStore := storemocks.PostStore{}
-		mockPostStore.On("GetNthRecentPostTime", int64(100)).Return(int64(1234567890), nil)
-		mockSystemStore := storemocks.SystemStore{}
-		mockSystemStore.On("SaveOrUpdate", mock.Anything).Return(nil)
-		mockStore.On("Post").Return(&mockPostStore)
-		mockStore.On("System").Return(&mockSystemStore)
-
-		err := th.App.ComputeLastAccessiblePostTime()
-		assert.NoError(t, err)
-
-		// Verify that the system value was saved with the calculated timestamp
-		mockSystemStore.AssertCalled(t, "SaveOrUpdate", &model.System{
-			Name:  model.SystemLastAccessiblePostTime,
-			Value: "1234567890",
-		})
-	})
-
-	t.Run("Remove the time if license limit is NOT applicable", func(t *testing.T) {
-		th := SetupWithStoreMock(t)
-
-		// Set license without post history limits (using test license without limits)
-		license := model.NewTestLicense()
-		license.Limits = nil // No limits
-		th.App.Srv().SetLicense(license)
-
-		mockStore := th.App.Srv().Store().(*storemocks.Store)
-		mockSystemStore := storemocks.SystemStore{}
-		mockSystemStore.On("GetByName", model.SystemLastAccessiblePostTime).Return(&model.System{Name: model.SystemLastAccessiblePostTime, Value: "1234567890"}, nil)
-		mockSystemStore.On("PermanentDeleteByName", model.SystemLastAccessiblePostTime).Return(nil, nil)
-		mockStore.On("System").Return(&mockSystemStore)
-
-		err := th.App.ComputeLastAccessiblePostTime()
-		assert.NoError(t, err)
-
-		// Verify that SaveOrUpdate was not called (no new timestamp calculated)
-		mockSystemStore.AssertNotCalled(t, "SaveOrUpdate", mock.Anything)
-		// Verify that the previous value was deleted
-		mockSystemStore.AssertCalled(t, "PermanentDeleteByName", model.SystemLastAccessiblePostTime)
-	})
-}
-
 func TestGetEditHistoryForPost(t *testing.T) {
 	mainHelper.Parallel(t)
 	th := Setup(t).InitBasic(t)
@@ -5667,8 +5448,6 @@ func TestPermanentDeletePost(t *testing.T) {
 	})
 
 	t.Run("should permanently delete a burn-on-read post and its file attachments", func(t *testing.T) {
-		// Enable feature with license
-		th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterpriseAdvanced))
 		th.App.UpdateConfig(func(cfg *model.Config) {
 			cfg.ServiceSettings.EnableBurnOnRead = new(true)
 		})
@@ -5732,7 +5511,6 @@ func TestPermanentDeletePost(t *testing.T) {
 	})
 
 	t.Run("should delete persistent notification for root post", func(t *testing.T) {
-		th.App.Srv().SetLicense(getLicWithSkuShortName(model.LicenseShortSkuProfessional))
 		th.App.UpdateConfig(func(cfg *model.Config) {
 			*cfg.ServiceSettings.PostPriority = true
 			*cfg.ServiceSettings.AllowPersistentNotifications = true
@@ -5773,8 +5551,6 @@ func TestPermanentDeletePost(t *testing.T) {
 	})
 
 	t.Run("should send unrevealed post in websocket broadcast", func(t *testing.T) {
-		// Enable feature with license
-		th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterpriseAdvanced))
 		th.App.UpdateConfig(func(cfg *model.Config) {
 			cfg.ServiceSettings.EnableBurnOnRead = new(true)
 		})
@@ -6456,9 +6232,8 @@ func TestBurnPost(t *testing.T) {
 	// Enable BurnOnRead feature flag
 	th.App.UpdateConfig(func(cfg *model.Config) { cfg.FeatureFlags.BurnOnRead = true })
 
-	// feature flag, configuration and license is not checked for this feature
+	// feature flag and configuration are not checked for this feature
 	// so we set these to enable the feature to create a burn on read post
-	th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterpriseAdvanced))
 	th.App.UpdateConfig(func(cfg *model.Config) {
 		cfg.ServiceSettings.EnableBurnOnRead = new(true)
 	})
@@ -6766,8 +6541,6 @@ func TestBurnOnReadRestrictionsForDMsAndBots(t *testing.T) {
 
 	// Enable BurnOnRead feature flag
 	th.App.UpdateConfig(func(cfg *model.Config) { cfg.FeatureFlags.BurnOnRead = true })
-
-	th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterpriseAdvanced))
 
 	th.App.UpdateConfig(func(cfg *model.Config) {
 		cfg.ServiceSettings.EnableBurnOnRead = new(true)

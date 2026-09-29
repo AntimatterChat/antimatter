@@ -676,13 +676,10 @@ func (a *App) FillInPostProps(rctx request.CTX, post *model.Post, channel *model
 	}
 
 	matched := atMentionPattern.MatchString(post.Message)
-	shouldAddProp := false
-	if a.Srv().License() != nil && *a.Srv().License().Features.LDAPGroups && matched {
-		hasPermission, _ := a.HasPermissionToChannel(rctx, post.UserId, post.ChannelId, model.PermissionUseGroupMentions)
-		shouldAddProp = !hasPermission
-	}
-	if shouldAddProp {
-		post.AddProp(model.PostPropsGroupHighlightDisabled, true)
+	if matched {
+		if hasPermission, _ := a.HasPermissionToChannel(rctx, post.UserId, post.ChannelId, model.PermissionUseGroupMentions); !hasPermission {
+			post.AddProp(model.PostPropsGroupHighlightDisabled, true)
+		}
 	}
 
 	// Populate AI-generated username from provided user ID
@@ -704,10 +701,6 @@ func (a *App) FillInPostProps(rctx request.CTX, post *model.Post, channel *model
 	}
 
 	if post.Type == model.PostTypeBurnOnRead {
-		if !model.MinimumEnterpriseAdvancedLicense(a.Srv().License()) {
-			return model.NewAppError("FillInPostProps", "api.post.fill_in_post_props.burn_on_read.license.app_error", nil, "", http.StatusNotImplemented)
-		}
-
 		if !a.Config().FeatureFlags.BurnOnRead || !model.SafeDereference(a.Config().ServiceSettings.EnableBurnOnRead) {
 			return model.NewAppError("FillInPostProps", "api.post.fill_in_post_props.burn_on_read.config.app_error", nil, "", http.StatusNotImplemented)
 		}
@@ -1482,11 +1475,6 @@ func (a *App) GetPostsPage(rctx request.CTX, options model.GetPostsOptions) (*mo
 		return nil, appErr
 	}
 
-	// The postList is sorted as only rootPosts Order is included
-	if appErr = a.filterInaccessiblePosts(postList, filterPostOptions{assumeSortedCreatedAt: true}); appErr != nil {
-		return nil, appErr
-	}
-
 	a.applyPostsWillBeConsumedHook(rctx, postList.Posts)
 
 	return postList, nil
@@ -1516,10 +1504,6 @@ func (a *App) GetPostsForView(rctx request.CTX, options model.GetPostsOptions) (
 		return nil, appErr
 	}
 
-	if appErr = a.filterInaccessiblePosts(postList, filterPostOptions{assumeSortedCreatedAt: true}); appErr != nil {
-		return nil, appErr
-	}
-
 	a.applyPostsWillBeConsumedHook(rctx, postList.Posts)
 
 	return postList, nil
@@ -1544,10 +1528,6 @@ func (a *App) GetPosts(rctx request.CTX, channelID string, offset int, limit int
 	var appErr *model.AppError
 	postList, appErr = a.revealBurnOnReadPostsForUser(rctx, postList, rctx.Session().UserId)
 	if appErr != nil {
-		return nil, appErr
-	}
-
-	if appErr = a.filterInaccessiblePosts(postList, filterPostOptions{}); appErr != nil {
 		return nil, appErr
 	}
 
@@ -1638,10 +1618,6 @@ func (a *App) GetPostsSince(rctx request.CTX, options model.GetPostsSinceOptions
 	}
 
 	a.supplementWithTranslationUpdatedPosts(rctx, postList, options.ChannelId, options.Time, options.CollapsedThreads)
-
-	if appErr := a.filterInaccessiblePosts(postList, filterPostOptions{assumeSortedCreatedAt: true}); appErr != nil {
-		return nil, appErr
-	}
 
 	var appErr *model.AppError
 	postList, appErr = a.revealBurnOnReadPostsForUser(rctx, postList, options.UserId)
@@ -1738,14 +1714,6 @@ func (a *App) GetSinglePost(rctx request.CTX, postID string, includeDeleted bool
 		return nil, appErr
 	}
 
-	firstInaccessiblePostTime, appErr := a.isInaccessiblePost(post)
-	if appErr != nil {
-		return nil, appErr
-	}
-	if firstInaccessiblePostTime != 0 {
-		return nil, model.NewAppError("GetSinglePost", "app.post.cloud.get.app_error", nil, "", http.StatusForbidden)
-	}
-
 	filtered, appErr := a.filterSuppressedMembershipPostsFromSlice(rctx, []*model.Post{post})
 	if appErr != nil {
 		return nil, appErr
@@ -1781,18 +1749,6 @@ func (a *App) GetPostThread(rctx request.CTX, postID string, opts model.GetPosts
 		return nil, appErr
 	}
 
-	// Get inserts the requested post first in the list, then adds the sorted threadPosts.
-	// So, the whole postList.Order is not sorted.
-	// The fully sorted list comes only when the CollapsedThreads is true and the Directions is not empty.
-	filterOptions := filterPostOptions{}
-	if opts.CollapsedThreads && opts.Direction != "" {
-		filterOptions.assumeSortedCreatedAt = true
-	}
-
-	if appErr = a.filterInaccessiblePosts(posts, filterOptions); appErr != nil {
-		return nil, appErr
-	}
-
 	if appErr = a.filterSuppressedMembershipPosts(rctx, posts); appErr != nil {
 		return nil, appErr
 	}
@@ -1812,10 +1768,6 @@ func (a *App) GetFlaggedPosts(rctx request.CTX, userID string, offset int, limit
 	var appErr *model.AppError
 	postList, appErr = a.revealBurnOnReadPostsForUser(rctx, postList, userID)
 	if appErr != nil {
-		return nil, appErr
-	}
-
-	if appErr = a.filterInaccessiblePosts(postList, filterPostOptions{assumeSortedCreatedAt: true}); appErr != nil {
 		return nil, appErr
 	}
 
@@ -1841,10 +1793,6 @@ func (a *App) GetFlaggedPostsForTeam(rctx request.CTX, userID, teamID string, of
 		return nil, appErr
 	}
 
-	if appErr = a.filterInaccessiblePosts(postList, filterPostOptions{assumeSortedCreatedAt: true}); appErr != nil {
-		return nil, appErr
-	}
-
 	if appErr = a.filterSuppressedMembershipPosts(rctx, postList); appErr != nil {
 		return nil, appErr
 	}
@@ -1864,10 +1812,6 @@ func (a *App) GetFlaggedPostsForChannel(rctx request.CTX, userID, channelID stri
 	var appErr *model.AppError
 	postList, appErr = a.revealBurnOnReadPostsForUser(rctx, postList, userID)
 	if appErr != nil {
-		return nil, appErr
-	}
-
-	if appErr = a.filterInaccessiblePosts(postList, filterPostOptions{assumeSortedCreatedAt: true}); appErr != nil {
 		return nil, appErr
 	}
 
@@ -1919,10 +1863,6 @@ func (a *App) GetPermalinkPost(rctx request.CTX, postID string, userID string) (
 		return nil, err
 	}
 
-	if appErr := a.filterInaccessiblePosts(list, filterPostOptions{assumeSortedCreatedAt: true}); appErr != nil {
-		return nil, appErr
-	}
-
 	a.applyPostsWillBeConsumedHook(rctx, list.Posts)
 
 	return list, nil
@@ -1951,19 +1891,6 @@ func (a *App) GetPostsBeforePost(rctx request.CTX, options model.GetPostsOptions
 		return nil, appErr
 	}
 
-	// GetPostsBefore orders by channel id and deleted at,
-	// before sorting based on created at.
-	// but the deleted at is only ever where deleted at = 0,
-	// and channel id may or may not be empty (all channels) or defined (single channel),
-	// so we can still optimize if the search is for a single channel
-	filterOptions := filterPostOptions{}
-	if options.ChannelId != "" {
-		filterOptions.assumeSortedCreatedAt = true
-	}
-	if appErr := a.filterInaccessiblePosts(postList, filterOptions); appErr != nil {
-		return nil, appErr
-	}
-
 	a.applyPostsWillBeConsumedHook(rctx, postList.Posts)
 
 	return postList, nil
@@ -1989,19 +1916,6 @@ func (a *App) GetPostsAfterPost(rctx request.CTX, options model.GetPostsOptions)
 	var appErr *model.AppError
 	postList, appErr = a.revealBurnOnReadPostsForUser(rctx, postList, options.UserId)
 	if appErr != nil {
-		return nil, appErr
-	}
-
-	// GetPostsAfter orders by channel id and deleted at,
-	// before sorting based on created at.
-	// but the deleted at is only ever where deleted at = 0,
-	// and channel id may or may not be empty (all channels) or defined (single channel),
-	// so we can still optimize if the search is for a single channel
-	filterOptions := filterPostOptions{}
-	if options.ChannelId != "" {
-		filterOptions.assumeSortedCreatedAt = true
-	}
-	if appErr := a.filterInaccessiblePosts(postList, filterOptions); appErr != nil {
 		return nil, appErr
 	}
 
@@ -2038,19 +1952,6 @@ func (a *App) GetPostsAroundPost(rctx request.CTX, before bool, options model.Ge
 	var appErr *model.AppError
 	postList, appErr = a.revealBurnOnReadPostsForUser(rctx, postList, options.UserId)
 	if appErr != nil {
-		return nil, appErr
-	}
-
-	// GetPostsBefore and GetPostsAfter order by channel id and deleted at,
-	// before sorting based on created at.
-	// but the deleted at is only ever where deleted at = 0,
-	// and channel id may or may not be empty (all channels) or defined (single channel),
-	// so we can still optimize if the search is for a single channel
-	filterOptions := filterPostOptions{}
-	if options.ChannelId != "" {
-		filterOptions.assumeSortedCreatedAt = true
-	}
-	if appErr := a.filterInaccessiblePosts(postList, filterOptions); appErr != nil {
 		return nil, appErr
 	}
 
@@ -2391,10 +2292,6 @@ func (a *App) searchPostsInTeam(teamID string, userID string, paramsList []*mode
 
 	posts.SortByCreateAt()
 
-	if appErr := a.filterInaccessiblePosts(posts, filterPostOptions{assumeSortedCreatedAt: true}); appErr != nil {
-		return nil, appErr
-	}
-
 	if appErr := a.filterBurnOnReadPosts(posts); appErr != nil {
 		return nil, appErr
 	}
@@ -2424,83 +2321,6 @@ func (a *App) convertUserNameToUserIds(rctx request.CTX, usernames []string) []s
 		usernames[idx] = user.Id
 	}
 	return usernames
-}
-
-// GetLastAccessiblePostTime returns CreateAt time(from cache) of the last accessible post as per the license limit
-func (a *App) GetLastAccessiblePostTime() (int64, *model.AppError) {
-	// Only calculate the last accessible post time when there are actual post history limits
-	license := a.Srv().License()
-
-	if license == nil || license.Limits == nil || license.Limits.PostHistory == 0 {
-		return 0, nil
-	}
-
-	system, err := a.Srv().Store().System().GetByName(model.SystemLastAccessiblePostTime)
-	if err != nil {
-		var nfErr *store.ErrNotFound
-		switch {
-		case errors.As(err, &nfErr):
-			// All posts are accessible
-			return 0, nil
-		default:
-			return 0, model.NewAppError("GetLastAccessiblePostTime", "app.system.get_by_name.app_error", nil, "", http.StatusInternalServerError).Wrap(err)
-		}
-	}
-
-	lastAccessiblePostTime, err := strconv.ParseInt(system.Value, 10, 64)
-	if err != nil {
-		return 0, model.NewAppError("GetLastAccessiblePostTime", "common.parse_error_int64", map[string]any{"Value": system.Value}, "", http.StatusInternalServerError).Wrap(err)
-	}
-
-	return lastAccessiblePostTime, nil
-}
-
-// ComputeLastAccessiblePostTime updates cache with CreateAt time of the last accessible post as per the license limit.
-// Use GetLastAccessiblePostTime() to access the result.
-func (a *App) ComputeLastAccessiblePostTime() error {
-	limit := a.GetPostHistoryLimit()
-
-	if limit == 0 {
-		// All posts are accessible - we must check if a previous value was set so we can clear it
-		systemValue, err := a.Srv().Store().System().GetByName(model.SystemLastAccessiblePostTime)
-		if err != nil {
-			var nfErr *store.ErrNotFound
-			switch {
-			case errors.As(err, &nfErr):
-				// There was no previous value, nothing to do
-				return nil
-			default:
-				return model.NewAppError("ComputeLastAccessiblePostTime", "app.system.get_by_name.app_error", nil, "", http.StatusInternalServerError).Wrap(err)
-			}
-		}
-		if systemValue != nil {
-			// Previous value was set, so we must clear it
-			if _, err = a.Srv().Store().System().PermanentDeleteByName(model.SystemLastAccessiblePostTime); err != nil {
-				return model.NewAppError("ComputeLastAccessiblePostTime", "app.system.permanent_delete_by_name.app_error", nil, "", http.StatusInternalServerError).Wrap(err)
-			}
-		}
-		// Message history limit is not applicable
-		return nil
-	}
-
-	createdAt, err := a.Srv().GetStore().Post().GetNthRecentPostTime(limit)
-	if err != nil {
-		var nfErr *store.ErrNotFound
-		if !errors.As(err, &nfErr) {
-			return model.NewAppError("ComputeLastAccessiblePostTime", "app.last_accessible_post.app_error", nil, "", http.StatusInternalServerError).Wrap(err)
-		}
-	}
-
-	// Update Cache
-	err = a.Srv().Store().System().SaveOrUpdate(&model.System{
-		Name:  model.SystemLastAccessiblePostTime,
-		Value: strconv.FormatInt(createdAt, 10),
-	})
-	if err != nil {
-		return model.NewAppError("ComputeLastAccessiblePostTime", "app.system.save.app_error", nil, "", http.StatusInternalServerError).Wrap(err)
-	}
-
-	return nil
 }
 
 func (a *App) SearchPostsInTeam(teamID string, paramsList []*model.SearchParams) (*model.PostList, *model.AppError) {
@@ -2557,10 +2377,6 @@ func (a *App) SearchPostsForUser(rctx request.CTX, terms string, userID string, 
 		default:
 			return nil, false, model.NewAppError("SearchPostsForUser", "app.post.search.app_error", nil, "", http.StatusInternalServerError).Wrap(err)
 		}
-	}
-
-	if appErr := a.filterInaccessiblePosts(postSearchResults.PostList, filterPostOptions{assumeSortedCreatedAt: true}); appErr != nil {
-		return nil, false, appErr
 	}
 
 	allPostHaveMembership, appErr := a.FilterPostsByChannelPermissions(rctx, postSearchResults.PostList, userID)
@@ -2650,12 +2466,12 @@ func (a *App) GetFileInfosForPostWithMigration(rctx request.CTX, postID string, 
 		}
 	}
 
-	infos, firstInaccessibleFileTime, appErr := a.GetFileInfosForPost(rctx, post, false, includeDeleted)
+	infos, appErr := a.GetFileInfosForPost(rctx, post, false, includeDeleted)
 	if appErr != nil {
 		return nil, appErr
 	}
 
-	if len(infos) == 0 && firstInaccessibleFileTime == 0 && len(post.Filenames) > 0 {
+	if len(infos) == 0 && len(post.Filenames) > 0 {
 		a.Srv().Store().FileInfo().InvalidateFileInfosForPostCache(postID, false)
 		a.Srv().Store().FileInfo().InvalidateFileInfosForPostCache(postID, true)
 		// The post has Filenames that need to be replaced with FileInfos
@@ -2665,20 +2481,19 @@ func (a *App) GetFileInfosForPostWithMigration(rctx request.CTX, postID string, 
 	return infos, nil
 }
 
-// GetFileInfosForPost also returns firstInaccessibleFileTime based on cloud plan's limit.
-func (a *App) GetFileInfosForPost(rctx request.CTX, post *model.Post, fromMaster bool, includeDeleted bool) ([]*model.FileInfo, int64, *model.AppError) {
+func (a *App) GetFileInfosForPost(rctx request.CTX, post *model.Post, fromMaster bool, includeDeleted bool) ([]*model.FileInfo, *model.AppError) {
 	fileIDs := post.FileIds
 	if fromMaster {
 		masterPost, err := a.Srv().Store().Post().GetSingle(sqlstore.RequestContextWithMaster(rctx), post.Id, includeDeleted)
 		if err != nil {
-			return nil, 0, model.NewAppError("GetFileInfosForPost", "app.post.get.app_error", nil, "", http.StatusInternalServerError).Wrap(err)
+			return nil, model.NewAppError("GetFileInfosForPost", "app.post.get.app_error", nil, "", http.StatusInternalServerError).Wrap(err)
 		}
 		fileIDs = masterPost.FileIds
 	}
 
 	fileInfos, err := a.Srv().Store().FileInfo().GetByIds(fileIDs, includeDeleted, true, fromMaster)
 	if err != nil {
-		return nil, 0, model.NewAppError("GetFileInfosForPost", "app.file_info.get_for_post.app_error", nil, "", http.StatusInternalServerError).Wrap(err)
+		return nil, model.NewAppError("GetFileInfosForPost", "app.file_info.get_for_post.app_error", nil, "", http.StatusInternalServerError).Wrap(err)
 	}
 
 	// GetByIds does not preserve the order of post.FileIds (the SQL store sorts
@@ -2686,14 +2501,9 @@ func (a *App) GetFileInfosForPost(rctx request.CTX, post *model.Post, fromMaster
 	// reorder to match the post's stored attachment order.
 	fileInfos = orderFileInfosByID(post.FileIds, fileInfos)
 
-	firstInaccessibleFileTime, appErr := a.removeInaccessibleContentFromFilesSlice(fileInfos)
-	if appErr != nil {
-		return nil, 0, appErr
-	}
-
 	a.generateMiniPreviewForInfos(rctx, fileInfos)
 
-	return fileInfos, firstInaccessibleFileTime, nil
+	return fileInfos, nil
 }
 
 func orderFileInfosByID(ids []string, infos []*model.FileInfo) []*model.FileInfo {
@@ -2957,7 +2767,7 @@ func isCommentMention(user *model.User, post *model.Post, otherPosts map[string]
 	}
 
 	if _, ok := otherPosts[post.RootId]; !ok {
-		mlog.Warn("Can't determine the comment mentions as the rootPost is past the cloud plan's limit", mlog.String("root_post_id", post.RootId), mlog.String("comment_id", post.Id))
+		mlog.Warn("Can't determine the comment mentions as the rootPost is not available", mlog.String("root_post_id", post.RootId), mlog.String("comment_id", post.Id))
 
 		return false
 	}
@@ -3044,30 +2854,25 @@ func (a *App) GetPostIfAuthorized(rctx request.CTX, postID string, session *mode
 	return post, nil, isMember
 }
 
-// GetPostsByIds response bool value indicates, if the post is inaccessible due to cloud plan's limit.
-func (a *App) GetPostsByIds(postIDs []string) ([]*model.Post, int64, *model.AppError) {
+// GetPostsByIds returns the given posts.
+func (a *App) GetPostsByIds(postIDs []string) ([]*model.Post, *model.AppError) {
 	posts, err := a.Srv().Store().Post().GetPostsByIds(postIDs)
 	if err != nil {
 		var nfErr *store.ErrNotFound
 		switch {
 		case errors.As(err, &nfErr):
-			return nil, 0, model.NewAppError("GetPostsByIds", "app.post.get.app_error", nil, "", http.StatusNotFound).Wrap(err)
+			return nil, model.NewAppError("GetPostsByIds", "app.post.get.app_error", nil, "", http.StatusNotFound).Wrap(err)
 		default:
-			return nil, 0, model.NewAppError("GetPostsByIds", "app.post.get.app_error", nil, "", http.StatusInternalServerError).Wrap(err)
+			return nil, model.NewAppError("GetPostsByIds", "app.post.get.app_error", nil, "", http.StatusInternalServerError).Wrap(err)
 		}
 	}
 
-	posts, firstInaccessiblePostTime, appErr := a.getFilteredAccessiblePosts(posts, filterPostOptions{assumeSortedCreatedAt: true})
+	posts, appErr := a.filterSuppressedMembershipPostsFromSlice(request.EmptyContext(a.Log()), posts)
 	if appErr != nil {
-		return nil, 0, appErr
+		return nil, appErr
 	}
 
-	posts, appErr = a.filterSuppressedMembershipPostsFromSlice(request.EmptyContext(a.Log()), posts)
-	if appErr != nil {
-		return nil, 0, appErr
-	}
-
-	return posts, firstInaccessiblePostTime, nil
+	return posts, nil
 }
 
 // GetEditHistoryForPost returns the historical versions of a post, redacting attachments the

@@ -609,11 +609,6 @@ func getPost(c *Context, w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		c.Err = err
 
-		// Post is inaccessible due to cloud plan's limit.
-		if err.Id == "app.post.cloud.get.app_error" {
-			w.Header().Set(model.HeaderFirstInaccessiblePostTime, "1")
-		}
-
 		return
 	}
 
@@ -675,7 +670,7 @@ func getPostsByIds(c *Context, w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	postsList, firstInaccessiblePostTime, appErr := c.App.GetPostsByIds(postIDs)
+	postsList, appErr := c.App.GetPostsByIds(postIDs)
 	if appErr != nil {
 		c.Err = appErr
 		return
@@ -724,8 +719,6 @@ func getPostsByIds(c *Context, w http.ResponseWriter, r *http.Request) {
 		post.StripActionIntegrations()
 		posts = append(posts, post)
 	}
-
-	w.Header().Set(model.HeaderFirstInaccessiblePostTime, strconv.FormatInt(firstInaccessiblePostTime, 10))
 
 	if err := json.NewEncoder(w).Encode(posts); err != nil {
 		c.Logger.Warn("Error while writing response", mlog.Err(err))
@@ -950,18 +943,6 @@ func getPostThread(c *Context, w http.ResponseWriter, r *http.Request) {
 		c.Err = err
 		return
 	}
-	if list.FirstInaccessiblePostTime != 0 {
-		// e.g. if root post is archived in a cloud plan,
-		// we don't want to display the thread,
-		// but at the same time the request was not bad,
-		// so we return the time of archival and let the client
-		// show an error
-		if err := (&model.PostList{Order: []string{}, FirstInaccessiblePostTime: list.FirstInaccessiblePostTime}).EncodeJSON(w); err != nil {
-			c.Logger.Warn("Error while writing response", mlog.Err(err))
-		}
-		return
-	}
-
 	post, ok := list.Posts[c.Params.PostId]
 	if !ok {
 		c.SetInvalidURLParam("post_id")
@@ -1468,12 +1449,6 @@ func unpinPost(c *Context, w http.ResponseWriter, _ *http.Request) {
 }
 
 func acknowledgePost(c *Context, w http.ResponseWriter, r *http.Request) {
-	// license check
-	if !model.MinimumProfessionalLicense(c.App.Srv().License()) {
-		c.Err = model.NewAppError("", model.NoTranslation, nil, "feature is not available for the current license", http.StatusNotImplemented)
-		return
-	}
-
 	c.RequirePostId().RequireUserId()
 	if c.Err != nil {
 		return
@@ -1507,12 +1482,6 @@ func acknowledgePost(c *Context, w http.ResponseWriter, r *http.Request) {
 }
 
 func unacknowledgePost(c *Context, w http.ResponseWriter, r *http.Request) {
-	// license check
-	if !model.MinimumProfessionalLicense(c.App.Srv().License()) {
-		c.Err = model.NewAppError("", "license_error.feature_unavailable", nil, "feature is not available for the current license", http.StatusNotImplemented)
-		return
-	}
-
 	c.RequirePostId().RequireUserId()
 	if c.Err != nil {
 		return
@@ -1549,7 +1518,7 @@ func moveThread(c *Context, w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if !c.App.Config().FeatureFlags.MoveThreadsEnabled || c.App.License() == nil {
+	if !c.App.Config().FeatureFlags.MoveThreadsEnabled {
 		c.Err = model.NewAppError("moveThread", "api.post.move_thread.disabled.app_error", nil, "", http.StatusNotImplemented)
 		return
 	}
@@ -1571,7 +1540,7 @@ func moveThread(c *Context, w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	posts, _, err := c.App.GetPostsByIds([]string{c.Params.PostId})
+	posts, err := c.App.GetPostsByIds([]string{c.Params.PostId})
 	if err != nil {
 		c.Err = err
 		return
@@ -1605,9 +1574,6 @@ func moveThread(c *Context, w http.ResponseWriter, r *http.Request) {
 	sourcePost, err, _ := c.App.GetPostIfAuthorized(c.AppContext, c.Params.PostId, c.AppContext.Session(), false)
 	if err != nil {
 		c.Err = err
-		if err.Id == "app.post.cloud.get.app_error" {
-			w.Header().Set(model.HeaderFirstInaccessiblePostTime, "1")
-		}
 
 		return
 	}
@@ -1929,9 +1895,6 @@ func revealPost(c *Context, w http.ResponseWriter, r *http.Request) {
 	post, err, isMember := c.App.GetPostIfAuthorized(c.AppContext, postId, c.AppContext.Session(), false)
 	if err != nil {
 		c.Err = err
-		if err.Id == "app.post.cloud.get.app_error" {
-			w.Header().Set(model.HeaderFirstInaccessiblePostTime, "1")
-		}
 		return
 	}
 
@@ -1990,9 +1953,6 @@ func burnPost(c *Context, w http.ResponseWriter, r *http.Request) {
 	post, err, _ := c.App.GetPostIfAuthorized(c.AppContext, postId, c.AppContext.Session(), false)
 	if err != nil {
 		c.Err = err
-		if err.Id == "app.post.cloud.get.app_error" {
-			w.Header().Set(model.HeaderFirstInaccessiblePostTime, "1")
-		}
 		return
 	}
 

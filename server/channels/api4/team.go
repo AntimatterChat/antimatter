@@ -81,9 +81,7 @@ func createTeam(c *Context, w http.ResponseWriter, r *http.Request) {
 	}
 	team.Email = strings.ToLower(team.Email)
 
-	license := c.App.Channels().License()
-
-	if model.SafeDereference(c.App.Config().PrivacySettings.UseAnonymousURLs) && model.MinimumEnterpriseAdvancedLicense(license) {
+	if model.SafeDereference(c.App.Config().PrivacySettings.UseAnonymousURLs) {
 		team.Name = model.NewId()
 	}
 
@@ -94,29 +92,6 @@ func createTeam(c *Context, w http.ResponseWriter, r *http.Request) {
 	if !c.App.SessionHasPermissionTo(*c.AppContext.Session(), model.PermissionCreateTeam) {
 		c.Err = model.NewAppError("createTeam", "api.team.is_team_creation_allowed.disabled.app_error", nil, "", http.StatusForbidden)
 		return
-	}
-
-	// On a cloud license, we must check limits before allowing to create
-	if c.App.Channels().License().IsCloud() {
-		limits, err := c.App.Cloud().GetCloudLimits(c.AppContext.Session().UserId)
-		if err != nil {
-			c.Err = model.NewAppError("Api4.createTeam", "api.cloud.app_error", nil, "", http.StatusInternalServerError).Wrap(err)
-			return
-		}
-
-		// If there are no limits for teams, for active teams, or the limit for active teams is less than 0, do nothing
-		if !(limits == nil || limits.Teams == nil || limits.Teams.Active == nil || *limits.Teams.Active <= 0) {
-			teamsUsage, appErr := c.App.GetTeamsUsage()
-			if appErr != nil {
-				c.Err = appErr
-				return
-			}
-			// if the number of active teams is greater than or equal to the limit, return 400
-			if teamsUsage.Active >= int64(*limits.Teams.Active) {
-				c.Err = model.NewAppError("Api4.createTeam", "api.cloud.teams_limit_reached.create", nil, "", http.StatusBadRequest)
-				return
-			}
-		}
 	}
 
 	if team.SchemeId != nil && !c.App.SessionHasPermissionTo(*c.AppContext.Session(), model.PermissionSysconsoleWriteUserManagementPermissions) {
@@ -534,29 +509,6 @@ func restoreTeam(c *Context, w http.ResponseWriter, r *http.Request) {
 		c.SetPermissionError(model.PermissionManageTeam)
 		return
 	}
-	// On a cloud license, we must check limits before allowing to restore
-	if c.App.Channels().License().IsCloud() {
-		limits, err := c.App.Cloud().GetCloudLimits(c.AppContext.Session().UserId)
-		if err != nil {
-			c.Err = model.NewAppError("Api4.restoreTeam", "api.cloud.app_error", nil, "", http.StatusInternalServerError).Wrap(err)
-			return
-		}
-
-		// If there are no limits for teams, for active teams, or the limit for active teams is less than 0, do nothing
-		if !(limits == nil || limits.Teams == nil || limits.Teams.Active == nil || *limits.Teams.Active <= 0) {
-			teamsUsage, appErr := c.App.GetTeamsUsage()
-			if appErr != nil {
-				c.Err = appErr
-				return
-			}
-			// if the number of active teams is greater than or equal to the limit, return 400
-			if teamsUsage.Active >= int64(*limits.Teams.Active) {
-				c.Err = model.NewAppError("Api4.restoreTeam", "api.cloud.teams_limit_reached.restore", nil, "", http.StatusBadRequest)
-				return
-			}
-		}
-	}
-
 	err := c.App.RestoreTeam(c.Params.TeamId)
 	if err != nil {
 		c.Err = err
@@ -1783,11 +1735,6 @@ func inviteUsersToTeam(c *Context, w http.ResponseWriter, r *http.Request) {
 func inviteGuestsToChannels(c *Context, w http.ResponseWriter, r *http.Request) {
 	graceful := r.URL.Query().Get("graceful") != ""
 
-	if c.App.Channels().License() == nil {
-		c.Err = model.NewAppError("Api4.InviteGuestsToChannels", "api.team.invite_guests_to_channels.license.error", nil, "", http.StatusNotImplemented)
-		return
-	}
-
 	if !*c.App.Config().GuestAccountsSettings.Enable {
 		c.Err = model.NewAppError("Api4.InviteGuestsToChannels", "api.team.invite_guests_to_channels.disabled.error", nil, "", http.StatusNotImplemented)
 		return
@@ -1813,13 +1760,6 @@ func inviteGuestsToChannels(c *Context, w http.ResponseWriter, r *http.Request) 
 
 	if !c.App.SessionHasPermissionToTeam(*c.AppContext.Session(), c.Params.TeamId, model.PermissionInviteGuest) {
 		c.SetPermissionError(model.PermissionInviteGuest)
-		return
-	}
-
-	guestEnabled := c.App.Channels().License() != nil && *c.App.Channels().License().Features.GuestAccounts
-
-	if !guestEnabled {
-		c.Err = model.NewAppError("Api4.InviteGuestsToChannels", "api.team.invite_guests_to_channels.disabled.error", nil, "", http.StatusForbidden)
 		return
 	}
 
@@ -2078,11 +2018,6 @@ func updateTeamScheme(c *Context, w http.ResponseWriter, r *http.Request) {
 	auditRec := c.MakeAuditRecord(model.AuditEventUpdateTeamScheme, model.AuditStatusFail)
 	model.AddEventParameterAuditableToAuditRec(auditRec, "scheme_id_patch", &p)
 	defer c.LogAuditRec(auditRec)
-
-	if c.App.Channels().License() == nil {
-		c.Err = model.NewAppError("Api4.UpdateTeamScheme", "api.team.update_team_scheme.license.error", nil, "", http.StatusNotImplemented)
-		return
-	}
 
 	if !c.App.SessionHasPermissionTo(*c.AppContext.Session(), model.PermissionSysconsoleWriteUserManagementPermissions) {
 		c.SetPermissionError(model.PermissionSysconsoleWriteUserManagementPermissions)
