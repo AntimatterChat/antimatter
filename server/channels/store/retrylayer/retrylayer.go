@@ -5951,27 +5951,6 @@ func (s *RetryLayerFileInfoStore) GetStorageUsage(allowFromCache bool, includeDe
 
 }
 
-func (s *RetryLayerFileInfoStore) GetUptoNSizeFileTime(n int64) (int64, error) {
-
-	tries := 0
-	for {
-		result, err := s.FileInfoStore.GetUptoNSizeFileTime(n)
-		if err == nil {
-			return result, nil
-		}
-		if !isRepeatableError(err) {
-			return result, err
-		}
-		tries++
-		if tries >= 3 {
-			err = errors.Wrap(err, "giving up after 3 consecutive repeatable transaction failures")
-			return result, err
-		}
-		timepkg.Sleep(100 * timepkg.Millisecond)
-	}
-
-}
-
 func (s *RetryLayerFileInfoStore) GetWithOptions(page int, perPage int, opt *model.GetFileInfosOptions) ([]*model.FileInfo, error) {
 
 	tries := 0
@@ -9101,27 +9080,6 @@ func (s *RetryLayerPostStore) GetFlaggedPostsForTeam(userID string, teamID strin
 func (s *RetryLayerPostStore) GetMaxPostSize() int {
 
 	return s.PostStore.GetMaxPostSize()
-
-}
-
-func (s *RetryLayerPostStore) GetNthRecentPostTime(n int64) (int64, error) {
-
-	tries := 0
-	for {
-		result, err := s.PostStore.GetNthRecentPostTime(n)
-		if err == nil {
-			return result, nil
-		}
-		if !isRepeatableError(err) {
-			return result, err
-		}
-		tries++
-		if tries >= 3 {
-			err = errors.Wrap(err, "giving up after 3 consecutive repeatable transaction failures")
-			return result, err
-		}
-		timepkg.Sleep(100 * timepkg.Millisecond)
-	}
 
 }
 

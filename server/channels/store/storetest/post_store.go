@@ -69,7 +69,6 @@ func TestPostStore(t *testing.T, rctx request.CTX, ss store.Store, s SqlStore) {
 	t.Run("GetPostReminders", func(t *testing.T) { testGetPostReminders(t, rctx, ss, s) })
 	t.Run("GetPostReminderMetadata", func(t *testing.T) { testGetPostReminderMetadata(t, rctx, ss, s) })
 	t.Run("DeleteAllPostRemindersForPost", func(t *testing.T) { testDeleteAllPostRemindersForPost(t, rctx, ss, s) })
-	t.Run("GetNthRecentPostTime", func(t *testing.T) { testGetNthRecentPostTime(t, rctx, ss) })
 	t.Run("GetEditHistoryForPost", func(t *testing.T) { testGetEditHistoryForPost(t, rctx, ss) })
 	t.Run("RestoreContentFlaggedPost", func(t *testing.T) { testRestoreContentFlaggedPost(t, rctx, ss) })
 	t.Run("GetPostAuthorIDsForTeam", func(t *testing.T) { testPostStoreGetPostAuthorIDsForTeam(t, rctx, ss) })
@@ -5589,115 +5588,6 @@ func getPostIds(posts []*model.Post, morePosts ...*model.Post) []string {
 		ids = append(ids, p.Id)
 	}
 	return ids
-}
-
-func testGetNthRecentPostTime(t *testing.T, rctx request.CTX, ss store.Store) {
-	_, err := ss.Post().GetNthRecentPostTime(0)
-	assert.Error(t, err)
-	_, err = ss.Post().GetNthRecentPostTime(-1)
-	assert.Error(t, err)
-
-	// Use timestamps 1 hour in the future so these posts are always "most recent"
-	// regardless of what parallel tests create concurrently (MM-64438).
-	diff := int64(10000)
-	now := utils.MillisFromTime(time.Now()) + 3600000
-
-	userId := model.NewId()
-	channelId := model.NewId()
-
-	p1 := &model.Post{}
-	p1.ChannelId = channelId
-	p1.UserId = userId
-	p1.Message = "test"
-	p1.CreateAt = now
-	p1, err = ss.Post().Save(rctx, p1)
-	require.NoError(t, err)
-
-	p2 := &model.Post{}
-	p2.ChannelId = channelId
-	p2.UserId = userId
-	p2.Message = p1.Message
-	now = now + diff
-	p2.CreateAt = now
-	p2, err = ss.Post().Save(rctx, p2)
-	require.NoError(t, err)
-
-	bot1 := &model.Bot{
-		Username:    "username",
-		Description: "a bot",
-		OwnerId:     model.NewId(),
-		UserId:      model.NewId(),
-	}
-	_, err = ss.Bot().Save(bot1)
-	require.NoError(t, err)
-
-	b1 := &model.Post{}
-	b1.Message = "bot test"
-	b1.ChannelId = channelId
-	b1.UserId = bot1.UserId
-	now = now + diff
-	b1.CreateAt = now
-	b1, err = ss.Post().Save(rctx, b1)
-	require.NoError(t, err)
-
-	p3 := &model.Post{}
-	p3.ChannelId = channelId
-	p3.UserId = userId
-	p3.Message = p1.Message
-	now = now + diff
-	p3.CreateAt = now
-	p3, err = ss.Post().Save(rctx, p3)
-	require.NoError(t, err)
-
-	s1 := &model.Post{}
-	s1.Type = model.PostTypeJoinChannel
-	s1.ChannelId = channelId
-	s1.UserId = model.NewId()
-	s1.Message = "system_join_channel message"
-	now = now + diff
-	s1.CreateAt = now
-	s1, err = ss.Post().Save(rctx, s1)
-	require.NoError(t, err)
-
-	p4 := &model.Post{}
-	p4.ChannelId = channelId
-	p4.UserId = userId
-	p4.Message = p1.Message
-	now = now + diff
-	p4.CreateAt = now
-	p4, err = ss.Post().Save(rctx, p4)
-	require.NoError(t, err)
-
-	// Clean up far-future posts so they don't leak into other tests (per review feedback).
-	defer func() {
-		for _, p := range []*model.Post{p1, p2, b1, p3, s1, p4} {
-			if delErr := ss.Post().PermanentDelete(rctx, p.Id); delErr != nil {
-				t.Logf("failed to delete post %s: %v", p.Id, delErr)
-			}
-		}
-	}()
-
-	r, err := ss.Post().GetNthRecentPostTime(1)
-	assert.NoError(t, err)
-	assert.Equal(t, p4.CreateAt, r)
-
-	// Skip system post
-	r, err = ss.Post().GetNthRecentPostTime(2)
-	assert.NoError(t, err)
-	assert.Equal(t, p3.CreateAt, r)
-
-	// Skip system & bot post
-	r, err = ss.Post().GetNthRecentPostTime(3)
-	assert.NoError(t, err)
-	assert.Equal(t, p2.CreateAt, r)
-
-	r, err = ss.Post().GetNthRecentPostTime(4)
-	assert.NoError(t, err)
-	assert.Equal(t, p1.CreateAt, r)
-
-	_, err = ss.Post().GetNthRecentPostTime(10000)
-	assert.Error(t, err)
-	assert.IsType(t, &store.ErrNotFound{}, err)
 }
 
 func testGetEditHistoryForPost(t *testing.T, rctx request.CTX, ss store.Store) {

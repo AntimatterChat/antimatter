@@ -4931,22 +4931,6 @@ func (s *TimerLayerFileInfoStore) GetStorageUsage(allowFromCache bool, includeDe
 	return result, err
 }
 
-func (s *TimerLayerFileInfoStore) GetUptoNSizeFileTime(n int64) (int64, error) {
-	start := time.Now()
-
-	result, err := s.FileInfoStore.GetUptoNSizeFileTime(n)
-
-	elapsed := float64(time.Since(start)) / float64(time.Second)
-	if s.Root.Metrics != nil {
-		success := "false"
-		if err == nil {
-			success = "true"
-		}
-		s.Root.Metrics.ObserveStoreMethodDuration("FileInfoStore.GetUptoNSizeFileTime", success, elapsed)
-	}
-	return result, err
-}
-
 func (s *TimerLayerFileInfoStore) GetWithOptions(page int, perPage int, opt *model.GetFileInfosOptions) ([]*model.FileInfo, error) {
 	start := time.Now()
 
@@ -7375,22 +7359,6 @@ func (s *TimerLayerPostStore) GetMaxPostSize() int {
 		s.Root.Metrics.ObserveStoreMethodDuration("PostStore.GetMaxPostSize", success, elapsed)
 	}
 	return result
-}
-
-func (s *TimerLayerPostStore) GetNthRecentPostTime(n int64) (int64, error) {
-	start := time.Now()
-
-	result, err := s.PostStore.GetNthRecentPostTime(n)
-
-	elapsed := float64(time.Since(start)) / float64(time.Second)
-	if s.Root.Metrics != nil {
-		success := "false"
-		if err == nil {
-			success = "true"
-		}
-		s.Root.Metrics.ObserveStoreMethodDuration("PostStore.GetNthRecentPostTime", success, elapsed)
-	}
-	return result, err
 }
 
 func (s *TimerLayerPostStore) GetOldest() (*model.Post, error) {
