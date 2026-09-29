@@ -20,9 +20,8 @@ func PostPriorityCheckWithApp(where string, a *App, rctx request.CTX, userId str
 	isPostPriorityEnabled := a.IsPostPriorityEnabled()
 	IsPersistentNotificationsEnabled := a.IsPersistentNotificationsEnabled()
 	allowPersistentNotificationsForGuests := *a.Config().ServiceSettings.AllowPersistentNotificationsForGuests
-	license := a.License()
 
-	appErr = postPriorityCheck(user, priority, rootId, isPostPriorityEnabled, IsPersistentNotificationsEnabled, allowPersistentNotificationsForGuests, license)
+	appErr = postPriorityCheck(user, priority, rootId, isPostPriorityEnabled, IsPersistentNotificationsEnabled, allowPersistentNotificationsForGuests)
 	if appErr != nil {
 		appErr.Where = where
 		return appErr
@@ -38,7 +37,6 @@ func postPriorityCheck(
 	isPostPriorityEnabled,
 	isPersistentNotificationsEnabled,
 	allowPersistentNotificationsForGuests bool,
-	license *model.License,
 ) *model.AppError {
 	if priority == nil {
 		return nil
@@ -54,16 +52,7 @@ func postPriorityCheck(
 		return model.NewAppError("", "api.post.post_priority.priority_post_only_allowed_for_root_post.request_error", nil, "", http.StatusBadRequest)
 	}
 
-	if ack := priority.RequestedAck; ack != nil && *ack {
-		if !model.MinimumProfessionalLicense(license) {
-			return model.NewAppError("", "license_error.feature_unavailable", nil, "feature is not available for the current license", http.StatusNotImplemented)
-		}
-	}
-
 	if notification := priority.PersistentNotifications; notification != nil && *notification {
-		if !model.MinimumProfessionalLicense(license) {
-			return model.NewAppError("", "license_error.feature_unavailable", nil, "feature is not available for the current license", http.StatusNotImplemented)
-		}
 		if !isPersistentNotificationsEnabled {
 			return priorityForbiddenErr
 		}

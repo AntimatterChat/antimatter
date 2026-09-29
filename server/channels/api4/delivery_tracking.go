@@ -21,11 +21,6 @@ func (api *API) InitDeliveryTracking() {
 }
 
 func requireDeliveryTrackingAvailable(c *Context) {
-	if !model.MinimumEnterpriseAdvancedLicense(c.App.License()) {
-		c.Err = model.NewAppError("requireDeliveryTrackingAvailable", "api.delivery_tracking.error.license", nil, "", http.StatusNotImplemented)
-		return
-	}
-
 	if !c.App.Config().FeatureFlags.PostDeliveryTracking {
 		c.Err = model.NewAppError("requireDeliveryTrackingAvailable", "api.delivery_tracking.error.feature_flag", nil, "", http.StatusNotImplemented)
 		return

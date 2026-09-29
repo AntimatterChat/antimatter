@@ -182,7 +182,6 @@ func TestAssignFlaggedPostReviewer(t *testing.T) {
 	mainHelper.Parallel(t)
 	th := Setup(t).InitBasic(t)
 
-	th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterpriseAdvanced))
 	rctx := RequestContextWithCallerID(th.Context, anonymousCallerId)
 
 	t.Run("should successfully assign reviewer to pending flagged post", func(t *testing.T) {
@@ -384,8 +383,6 @@ func TestSaveContentFlaggingConfig(t *testing.T) {
 	mainHelper.Parallel(t)
 	th := Setup(t).InitBasic(t)
 
-	th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterpriseAdvanced))
-
 	t.Run("should save content flagging config successfully", func(t *testing.T) {
 		config := model.ContentFlaggingSettingsRequest{
 			ContentFlaggingSettingsBase: model.ContentFlaggingSettingsBase{
@@ -482,8 +479,6 @@ func TestGetContentFlaggingConfigReviewerIDs(t *testing.T) {
 	mainHelper.Parallel(t)
 	th := Setup(t).InitBasic(t)
 
-	th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterpriseAdvanced))
-
 	t.Run("should return reviewer IDs after saving config", func(t *testing.T) {
 		config := model.ContentFlaggingSettingsRequest{
 			ReviewerSettings: &model.ReviewSettingsRequest{
@@ -574,8 +569,6 @@ func TestGetContentFlaggingConfigReviewerIDs(t *testing.T) {
 func TestGetContentReviewChannels(t *testing.T) {
 	mainHelper.Parallel(t)
 	th := Setup(t).InitBasic(t)
-
-	th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterpriseAdvanced))
 
 	getBaseConfig := func() model.ContentFlaggingSettingsRequest {
 		config := model.ContentFlaggingSettingsRequest{
@@ -783,8 +776,6 @@ func TestGetReviewersForTeam(t *testing.T) {
 	mainHelper.Parallel(t)
 	th := Setup(t).InitBasic(t)
 
-	th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterpriseAdvanced))
-
 	t.Run("should return common reviewers", func(t *testing.T) {
 		config := &model.ContentFlaggingSettingsRequest{}
 		config.SetDefaults()
@@ -989,7 +980,6 @@ func TestCanFlagPost(t *testing.T) {
 	mainHelper.Parallel(t)
 	th := Setup(t).InitBasic(t)
 
-	th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterpriseAdvanced))
 	rctx := RequestContextWithCallerID(th.Context, anonymousCallerId)
 
 	t.Run("should be able to flag post which has not already been flagged", func(t *testing.T) {
@@ -1055,7 +1045,6 @@ func TestFlagPost(t *testing.T) {
 	mainHelper.Parallel(t)
 	th := Setup(t).InitBasic(t)
 
-	th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterpriseAdvanced))
 	rctx := RequestContextWithCallerID(th.Context, anonymousCallerId)
 	getBaseConfig := func() model.ContentFlaggingSettingsRequest {
 		cfg := model.ContentFlaggingSettingsRequest{}
@@ -1326,8 +1315,6 @@ func TestFlagPost(t *testing.T) {
 func TestSearchReviewers(t *testing.T) {
 	mainHelper.Parallel(t)
 	th := Setup(t).InitBasic(t)
-
-	th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterpriseAdvanced))
 
 	getBaseConfig := func() model.ContentFlaggingSettingsRequest {
 		config := model.ContentFlaggingSettingsRequest{}
@@ -1627,8 +1614,6 @@ func TestGetReviewerPostsForFlaggedPost(t *testing.T) {
 	mainHelper.Parallel(t)
 	th := Setup(t).InitBasic(t)
 
-	th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterpriseAdvanced))
-
 	t.Run("should return reviewer posts for flagged post", func(t *testing.T) {
 		require.Nil(t, setBaseConfig(th))
 
@@ -1736,8 +1721,6 @@ func TestGetReviewerPostsForFlaggedPost(t *testing.T) {
 func TestPostReviewerMessage(t *testing.T) {
 	mainHelper.Parallel(t)
 	th := Setup(t).InitBasic(t)
-
-	th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterpriseAdvanced))
 
 	t.Run("should post reviewer message to thread", func(t *testing.T) {
 		require.Nil(t, setBaseConfig(th))
@@ -1963,8 +1946,6 @@ func TestSendFlaggedPostRemovalNotification(t *testing.T) {
 	mainHelper.Parallel(t)
 	th := Setup(t).InitBasic(t)
 
-	th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterpriseAdvanced))
-
 	t.Run("should send notifications to all configured targets", func(t *testing.T) {
 		// Setup notification config for all targets
 		appErr := setupNotificationConfig(th, map[model.ContentFlaggingEvent][]model.NotificationTarget{
@@ -2097,8 +2078,6 @@ func TestSendFlaggedPostRemovalNotification(t *testing.T) {
 func TestSendKeepFlaggedPostNotification(t *testing.T) {
 	mainHelper.Parallel(t)
 	th := Setup(t).InitBasic(t)
-
-	th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterpriseAdvanced))
 
 	t.Run("should send notifications to all configured targets", func(t *testing.T) {
 		// Setup notification config for all targets
@@ -2248,7 +2227,6 @@ func TestPermanentDeleteFlaggedPost(t *testing.T) {
 	mainHelper.Parallel(t)
 	th := Setup(t).InitBasic(t)
 
-	th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterpriseAdvanced))
 	require.Nil(t, setBaseConfig(th))
 	rctx := RequestContextWithCallerID(th.Context, anonymousCallerId)
 
@@ -2629,7 +2607,6 @@ func TestPermanentDeleteFlaggedPostReport(t *testing.T) {
 	mainHelper.Parallel(t)
 	th := Setup(t).InitBasic(t)
 
-	th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterpriseAdvanced))
 	require.Nil(t, setBaseConfig(th))
 
 	// Upload real files and create a post with those attachments to exercise all report steps
@@ -2830,7 +2807,6 @@ func TestKeepFlaggedPost(t *testing.T) {
 	mainHelper.Parallel(t)
 	th := Setup(t).InitBasic(t)
 
-	th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterpriseAdvanced))
 	require.Nil(t, setBaseConfig(th))
 
 	t.Run("should successfully keep pending flagged post", func(t *testing.T) {
@@ -3369,7 +3345,6 @@ func TestPostReviewerMessageTargeting(t *testing.T) {
 	mainHelper.Parallel(t)
 	th := Setup(t).InitBasic(t)
 
-	th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterpriseAdvanced))
 	require.Nil(t, setTwoReviewerConfig(th))
 
 	post := setupFlaggedPost(t, th)
@@ -3415,7 +3390,6 @@ func TestNotifyRequestingReviewerOfSkippedAttachments(t *testing.T) {
 	mainHelper.Parallel(t)
 	th := Setup(t).InitBasic(t)
 
-	th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterpriseAdvanced))
 	require.Nil(t, setTwoReviewerConfig(th))
 
 	post := setupFlaggedPost(t, th)

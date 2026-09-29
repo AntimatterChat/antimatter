@@ -201,10 +201,6 @@ func (a *App) GetUserCountForReport(filter *model.UserReportOptions) (*int64, *m
 }
 
 func (a *App) StartUsersBatchExport(rctx request.CTX, ro *model.UserReportOptions, startAt int64, endAt int64) *model.AppError {
-	if !model.MinimumProfessionalLicense(a.Srv().License()) {
-		return model.NewAppError("StartUsersBatchExport", "app.report.start_users_batch_export.license_error", nil, "", http.StatusBadRequest)
-	}
-
 	options := map[string]string{
 		"requesting_user_id": rctx.Session().UserId,
 		"date_range":         ro.DateRange,
@@ -313,10 +309,6 @@ func getTranslatedDateRange(dateRange string) string {
 }
 
 func (a *App) GetPostsForReporting(rctx request.CTX, queryParams model.ReportPostQueryParams, includeMetadata bool) (*model.ReportPostListResponse, *model.AppError) {
-	if !model.MinimumEnterpriseLicense(a.Srv().License()) {
-		return nil, model.NewAppError("GetPostsForReporting", "app.post.get_posts_for_reporting.license_error", nil, "", http.StatusBadRequest)
-	}
-
 	response, err := a.Srv().Store().Post().GetPostsForReporting(rctx, queryParams)
 	if err != nil {
 		var invErr *store.ErrInvalidInput

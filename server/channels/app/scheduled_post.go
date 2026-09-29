@@ -13,7 +13,7 @@ import (
 )
 
 // recurringScheduledPostsEnabled gates turning recurrence on. The api4 routes already enforce
-// the ScheduledPosts setting and license for every scheduled post request, and the job keeps
+// the ScheduledPosts setting for every scheduled post request, and the job keeps
 // sending existing recurring series regardless of the flag.
 func (a *App) recurringScheduledPostsEnabled() bool {
 	return a.Config().FeatureFlags.RecurringScheduledPosts

@@ -35,11 +35,6 @@ func createTermsOfService(c *Context, w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if license := c.App.Channels().License(); license == nil || !*license.Features.CustomTermsOfService {
-		c.Err = model.NewAppError("createTermsOfService", "api.create_terms_of_service.custom_terms_of_service_disabled.app_error", nil, "", http.StatusBadRequest)
-		return
-	}
-
 	auditRec := c.MakeAuditRecord(model.AuditEventCreateTermsOfService, model.AuditStatusFail)
 	defer c.LogAuditRec(auditRec)
 

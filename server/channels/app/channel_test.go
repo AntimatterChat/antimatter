@@ -518,7 +518,6 @@ func TestCreateChannelWithUserIgnoresRequiredAttributesWithNoValues(t *testing.T
 		cfg.FeatureFlags.ChannelAttributes = true
 		cfg.FeatureFlags.ChannelAttributesRequired = true
 	}).InitBasic(t)
-	th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterpriseAdvanced))
 
 	group, appErr := th.App.GetPropertyGroup(th.Context, model.AccessControlPropertyGroupName)
 	require.Nil(t, appErr)
@@ -3611,7 +3610,6 @@ func TestConvertGroupMessageToChannel(t *testing.T) {
 		ConfigFn:     th.App.ch.srv.platform.Config,
 		SessionStore: &mocks.SessionStore{},
 		OAuthStore:   &mocks.OAuthStore{},
-		LicenseFn:    th.App.ch.srv.License,
 	})
 	require.NoError(t, err)
 
@@ -3622,7 +3620,6 @@ func TestConvertGroupMessageToChannel(t *testing.T) {
 		Users:        th.App.ch.srv.userService,
 		WebHub:       th.App.ch.srv.platform,
 		ConfigFn:     th.App.ch.srv.platform.Config,
-		LicenseFn:    th.App.ch.srv.License,
 	})
 	require.NoError(t, err)
 

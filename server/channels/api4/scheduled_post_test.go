@@ -21,8 +21,6 @@ func TestUpdateScheduledPost(t *testing.T) {
 		cfg.FeatureFlags.RecurringScheduledPosts = true
 	}).InitBasic(t)
 
-	th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuProfessional))
-
 	t.Run("should not allow updating a scheduled post not belonging to the user", func(t *testing.T) {
 		scheduledPost := &model.ScheduledPost{
 			Draft: model.Draft{
@@ -236,8 +234,6 @@ func TestDeleteScheduledPost(t *testing.T) {
 	mainHelper.Parallel(t)
 	th := Setup(t).InitBasic(t)
 
-	th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuProfessional))
-
 	t.Run("should not allow deleting a scheduled post not belonging to the user", func(t *testing.T) {
 		scheduledPost := &model.ScheduledPost{
 			Draft: model.Draft{
@@ -275,8 +271,6 @@ func TestCreateScheduledPost(t *testing.T) {
 	th := SetupConfig(t, func(cfg *model.Config) {
 		cfg.FeatureFlags.RecurringScheduledPosts = true
 	}).InitBasic(t)
-
-	th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuProfessional))
 
 	client := th.Client
 
@@ -444,8 +438,6 @@ func TestScheduledPostRecurringFeatureFlag(t *testing.T) {
 	th := SetupConfig(t, func(cfg *model.Config) {
 		cfg.FeatureFlags.RecurringScheduledPosts = false
 	}).InitBasic(t)
-
-	th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuProfessional))
 
 	setFlag := func(t *testing.T, enabled bool) {
 		t.Helper()

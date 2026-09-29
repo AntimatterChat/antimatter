@@ -68,7 +68,6 @@ func TestLeaderTaskRunOnLeader(t *testing.T) {
 
 	t.Run("a follower does not start the task", func(t *testing.T) {
 		th := SetupWithClusterMock(t, &testlib.FakeClusterInterface{})
-		th.App.Srv().SetLicense(model.NewTestLicense("cluster"))
 		th.App.UpdateConfig(func(cfg *model.Config) {
 			*cfg.ClusterSettings.Enable = true
 		})

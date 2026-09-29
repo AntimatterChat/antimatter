@@ -37,19 +37,7 @@ func (api *API) InitContentFlagging() {
 	api.BaseRoutes.ContentFlagging.Handle("/config", api.APISessionRequired(getContentFlaggingSettings)).Methods(http.MethodGet)
 }
 
-func requireContentFlaggingAvailable(c *Context) {
-	if !model.MinimumEnterpriseAdvancedLicense(c.App.License()) {
-		c.Err = model.NewAppError("requireContentFlaggingEnabled", "api.data_spillage.error.license", nil, "", http.StatusNotImplemented)
-		return
-	}
-}
-
 func requireContentFlaggingEnabled(c *Context) {
-	requireContentFlaggingAvailable(c)
-	if c.Err != nil {
-		return
-	}
-
 	contentFlaggingEnabled := c.App.Config().ContentFlaggingSettings.EnableContentFlagging
 	if contentFlaggingEnabled == nil || !*contentFlaggingEnabled {
 		c.Err = model.NewAppError("requireContentFlaggingEnabled", "api.data_spillage.error.disabled", nil, "", http.StatusNotImplemented)
@@ -481,11 +469,6 @@ func keepRemoveFlaggedPostChecks(c *Context, r *http.Request) (*model.FlagConten
 }
 
 func saveContentFlaggingSettings(c *Context, w http.ResponseWriter, r *http.Request) {
-	requireContentFlaggingAvailable(c)
-	if c.Err != nil {
-		return
-	}
-
 	var config model.ContentFlaggingSettingsRequest
 	if err := json.NewDecoder(r.Body).Decode(&config); err != nil {
 		c.SetInvalidParamWithErr("config", err)
@@ -517,11 +500,6 @@ func saveContentFlaggingSettings(c *Context, w http.ResponseWriter, r *http.Requ
 }
 
 func getContentFlaggingSettings(c *Context, w http.ResponseWriter, r *http.Request) {
-	requireContentFlaggingAvailable(c)
-	if c.Err != nil {
-		return
-	}
-
 	if !c.App.SessionHasPermissionTo(*c.AppContext.Session(), model.PermissionManageSystem) {
 		c.SetPermissionError(model.PermissionManageSystem)
 		return

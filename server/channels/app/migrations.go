@@ -1164,20 +1164,12 @@ func (s *Server) doSetupCPADisplayNameBackfill(rctx request.CTX) error {
 
 // doSetupCPAToGlobalAttributesMigration migrates every eligible CPA field
 // into a Global Attributes template (PropertyService.MigrateCPAFieldsToGlobalAttributes).
-// Only runs when licensed, since touched fields may predate a lapsed
-// license; unlicensed is not an error — the "done" marker stays unset so a
-// later restart retries once licensed.
 func (s *Server) doSetupCPAToGlobalAttributesMigration(rctx request.CTX) error {
 	var nfErr *store.ErrNotFound
 	if _, err := s.Store().System().GetByName(cpaToGlobalAttributesMigrationKey); err == nil {
 		return nil
 	} else if !errors.As(err, &nfErr) {
 		return fmt.Errorf("could not query CPA-to-Global-Attributes migration: %w", err)
-	}
-
-	if !model.MinimumEnterpriseLicense(s.License()) {
-		mlog.Info("CPA-to-Global-Attributes migration skipped: server is not currently licensed")
-		return nil
 	}
 
 	migrated, skipped, retryable, err := s.propertyService.MigrateCPAFieldsToGlobalAttributes(rctx)

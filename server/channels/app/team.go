@@ -926,25 +926,20 @@ func (a *App) GetTeams(teamIDs []string) ([]*model.Team, *model.AppError) {
 }
 
 // TeamMembershipAccessControlEnabled reports whether attribute-based team
-// membership is fully switched on: the TeamMembershipAccessControl feature flag,
-// an Enterprise Advanced license, and the ABAC config setting. It gates every
+// membership is fully switched on: the TeamMembershipAccessControl feature flag
+// and the ABAC config setting. It gates every
 // team membership ABAC surface — the join gate, directory hiding, and the
 // governed-team listing — so they activate together and stay dark otherwise.
 func (a *App) TeamMembershipAccessControlEnabled() bool {
-	if !a.Config().FeatureFlags.TeamMembershipAccessControl {
-		return false
-	}
-	if l := a.License(); !model.MinimumEnterpriseAdvancedLicense(l) || !*a.Config().AccessControlSettings.EnableAttributeBasedAccessControl {
-		return false
-	}
-	return true
+	return a.Config().FeatureFlags.TeamMembershipAccessControl &&
+		*a.Config().AccessControlSettings.EnableAttributeBasedAccessControl
 }
 
 // TeamAccessControlled reports whether the team enforces an ABAC membership
 // policy. Mirrors ChannelAccessControlled, with one addition: it also gates on
 // the TeamMembershipAccessControl feature flag so team enforcement can ship
 // dark and roll out independently of channel ABAC (which is GA on the umbrella
-// flag). When the flag, license, or config is off it returns (false, nil) and
+// flag). When the flag or config is off it returns (false, nil) and
 // no team join is ever ABAC-evaluated. A hydration error returns (false, err)
 // — fail-closed, never a silent (false, nil).
 func (a *App) TeamAccessControlled(rctx request.CTX, teamID string) (bool, *model.AppError) {
@@ -1654,10 +1649,6 @@ func (a *App) InviteNewUsersToTeamGracefullyForLocal(rctx request.CTX, memberInv
 func (a *App) validateAndNormalizeMemberInviteProfiles(memberInvite *model.MemberInvite) *model.AppError {
 	if len(memberInvite.Profiles) == 0 {
 		return nil
-	}
-
-	if !model.MinimumEnterpriseLicense(a.License()) {
-		return model.NewAppError("InviteNewUsersToTeamGracefully", "api.team.invite_members.profiles_license.app_error", nil, "", http.StatusBadRequest)
 	}
 
 	if *a.Config().TeamSettings.LockProfileFieldsForEmailUsers == model.TeamSettingsLockProfileFieldsNone {

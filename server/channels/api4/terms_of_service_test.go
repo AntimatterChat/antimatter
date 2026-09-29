@@ -9,8 +9,6 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-
-	"github.com/mattermost/mattermost/server/public/model"
 )
 
 func TestGetTermsOfService(t *testing.T) {
@@ -44,13 +42,7 @@ func TestCreateTermsOfServiceAdminUser(t *testing.T) {
 	th := Setup(t).InitBasic(t)
 	client := th.SystemAdminClient
 
-	termsOfService, _, err := client.CreateTermsOfService(context.Background(), "terms of service new", th.SystemAdminUser.Id)
-	CheckErrorID(t, err, "api.create_terms_of_service.custom_terms_of_service_disabled.app_error")
-	assert.Nil(t, termsOfService)
-
-	th.App.Srv().SetLicense(model.NewTestLicense("EnableCustomTermsOfService"))
-
-	termsOfService, _, err = client.CreateTermsOfService(context.Background(), "terms of service new_2", th.SystemAdminUser.Id)
+	termsOfService, _, err := client.CreateTermsOfService(context.Background(), "terms of service new_2", th.SystemAdminUser.Id)
 	require.NoError(t, err)
 	assert.NotEmpty(t, termsOfService.Id)
 	assert.NotEmpty(t, termsOfService.CreateAt)

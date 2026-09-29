@@ -274,7 +274,6 @@ func TestCheckForExistingJobs(t *testing.T) {
 func TestStartUsersBatchExport(t *testing.T) {
 	mainHelper.Parallel(t)
 	th := Setup(t).InitBasic(t)
-	th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuProfessional))
 
 	rctx := th.Context.WithSession(&model.Session{UserId: th.BasicUser.Id})
 

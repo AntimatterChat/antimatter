@@ -1348,7 +1348,6 @@ func TestLeaveTeamPanic(t *testing.T) {
 		SessionStore: &mocks.SessionStore{},
 		OAuthStore:   &mocks.OAuthStore{},
 		ConfigFn:     th.App.ch.srv.platform.Config,
-		LicenseFn:    th.App.ch.srv.License,
 	})
 	require.NoError(t, err)
 
@@ -1362,8 +1361,6 @@ func TestLeaveTeamPanic(t *testing.T) {
 	mockSystemStore.On("GetByName", "UpgradedFromTE").Return(&model.System{Name: "UpgradedFromTE", Value: "false"}, nil)
 	mockSystemStore.On("GetByName", "InstallationDate").Return(&model.System{Name: "InstallationDate", Value: "10"}, nil)
 	mockSystemStore.On("GetByName", "FirstServerRunTimestamp").Return(&model.System{Name: "FirstServerRunTimestamp", Value: "10"}, nil)
-	mockLicenseStore := mocks.LicenseStore{}
-	mockLicenseStore.On("Get", "").Return(&model.LicenseRecord{}, nil)
 
 	mockTeamStore := mocks.TeamStore{}
 	mockTeamStore.On("GetMember", mock.AnythingOfType("*request.Context"), "myteam", "userID").Return(&model.TeamMember{TeamId: "myteam", UserId: "userID"}, nil).Run(func(args mock.Arguments) {
@@ -1379,7 +1376,6 @@ func TestLeaveTeamPanic(t *testing.T) {
 	mockStore.On("Post").Return(&mockPostStore)
 	mockStore.On("User").Return(&mockUserStore)
 	mockStore.On("System").Return(&mockSystemStore)
-	mockStore.On("License").Return(&mockLicenseStore)
 	mockStore.On("Team").Return(&mockTeamStore)
 	mockStore.On("GetDBSchemaVersion").Return(1, nil)
 
@@ -1397,7 +1393,6 @@ func TestLeaveTeamPanic(t *testing.T) {
 		Users:        th.App.ch.srv.userService,
 		WebHub:       th.App.ch.srv.platform,
 		ConfigFn:     th.App.ch.srv.platform.Config,
-		LicenseFn:    th.App.ch.srv.License,
 	})
 	require.NoError(t, err)
 
@@ -1415,7 +1410,6 @@ func TestLeaveTeamCleansUpThreadMemberships(t *testing.T) {
 		*cfg.ServiceSettings.ThreadAutoFollow = true
 		*cfg.ServiceSettings.CollapsedThreads = model.CollapsedThreadsDefaultOn
 	})
-	th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuProfessional))
 
 	admin := th.BasicUser
 	victim := th.BasicUser2
@@ -1463,7 +1457,6 @@ func TestLeaveTeamCleansUpThreadMembershipsAcrossChannels(t *testing.T) {
 		*cfg.ServiceSettings.ThreadAutoFollow = true
 		*cfg.ServiceSettings.CollapsedThreads = model.CollapsedThreadsDefaultOn
 	})
-	th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuProfessional))
 
 	admin := th.BasicUser
 	victim := th.BasicUser2
@@ -1520,7 +1513,6 @@ func TestLeaveTeamPreservesDMThreadMemberships(t *testing.T) {
 		*cfg.ServiceSettings.ThreadAutoFollow = true
 		*cfg.ServiceSettings.CollapsedThreads = model.CollapsedThreadsDefaultOn
 	})
-	th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuProfessional))
 
 	admin := th.BasicUser
 	victim := th.BasicUser2
@@ -1564,7 +1556,6 @@ func TestGetThreadsForUser_ReadPathRejectsOrphanThreadMembership(t *testing.T) {
 		*cfg.ServiceSettings.ThreadAutoFollow = true
 		*cfg.ServiceSettings.CollapsedThreads = model.CollapsedThreadsDefaultOn
 	})
-	th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuProfessional))
 
 	admin := th.BasicUser
 	victim := th.BasicUser2
@@ -1626,7 +1617,6 @@ func TestGetThreadsForUserPreservesWebhookIdentity(t *testing.T) {
 		*cfg.ServiceSettings.EnablePostUsernameOverride = true
 		*cfg.ServiceSettings.EnableIncomingWebhooks = true
 	})
-	th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuProfessional))
 
 	hook, appErr := th.App.CreateIncomingWebhookForChannel(th.BasicUser.Id, th.BasicChannel, &model.IncomingWebhook{
 		ChannelId:   th.BasicChannel.Id,
@@ -1684,7 +1674,6 @@ func TestPermanentDeleteChannelRemovesThreadMemberships(t *testing.T) {
 		*cfg.ServiceSettings.ThreadAutoFollow = true
 		*cfg.ServiceSettings.CollapsedThreads = model.CollapsedThreadsDefaultOn
 	})
-	th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuProfessional))
 
 	admin := th.BasicUser
 	victim := th.BasicUser2
@@ -2284,9 +2273,6 @@ func TestInviteNewUsersToTeamGracefully(t *testing.T) {
 	mainHelper.Parallel(t)
 	th := Setup(t).InitBasic(t)
 
-	license := model.NewTestLicenseWithFalseDefaults("mhpns")
-	license.SkuShortName = model.LicenseShortSkuEnterprise
-	th.App.Srv().SetLicense(license)
 	th.App.UpdateConfig(func(cfg *model.Config) {
 		*cfg.ServiceSettings.EnableEmailInvitations = true
 		*cfg.TeamSettings.LockProfileFieldsForEmailUsers = model.TeamSettingsLockProfileFieldsNameAndUsername
@@ -2435,7 +2421,7 @@ func TestInviteNewUsersToTeamGracefully(t *testing.T) {
 	t.Run("it returns error for deactivated user without sending email", func(t *testing.T) {
 		emailServiceMock := emailmocks.ServiceInterface{}
 		emailServiceMock.On("Stop").Once().Return()
-		// The teardown license reset saves a config change, whose listener re-inits email batching.
+		// A config change during teardown re-inits email batching via the config listener.
 		emailServiceMock.On("InitEmailBatching").Return().Maybe()
 		th.App.Srv().EmailService = &emailServiceMock
 

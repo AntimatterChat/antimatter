@@ -194,11 +194,6 @@ func TestCPADisplayNameBackfill_NoExistingFields(t *testing.T) {
 
 func TestCPADisplayNameBackfill_BackfillsMissing(t *testing.T) {
 	th := Setup(t)
-	// LicenseCheckHook gates writes to the access_control group on an
-	// Enterprise license; the seed CreatePropertyField calls below would
-	// otherwise be rejected with app.property.license_error.
-	th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterprise))
-
 	clearCPABackfillMarker(t, th)
 
 	group, appErr := th.App.GetPropertyGroup(th.Context, model.AccessControlPropertyGroupName)
@@ -252,11 +247,6 @@ func TestCPADisplayNameBackfill_BackfillsMissing(t *testing.T) {
 
 func TestCPADisplayNameBackfill_Idempotent(t *testing.T) {
 	th := Setup(t)
-	// LicenseCheckHook gates writes to the access_control group on an
-	// Enterprise license; the seed CreatePropertyField call below would
-	// otherwise be rejected with app.property.license_error.
-	th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterprise))
-
 	clearCPABackfillMarker(t, th)
 
 	group, appErr := th.App.GetPropertyGroup(th.Context, model.AccessControlPropertyGroupName)
@@ -308,13 +298,6 @@ func TestCPADisplayNameBackfill_Idempotent(t *testing.T) {
 
 func TestCPADisplayNameBackfill_BackfillsProtectedSourceOnlyField(t *testing.T) {
 	th := Setup(t)
-	// LicenseCheckHook gates writes to the access_control group on an
-	// Enterprise license. The seed below bypasses Create-side hooks via a
-	// direct store insert, but the backfill migration calls UpdatePropertyFields
-	// (unhooked) which still runs the version-match check; the license is
-	// nevertheless required by other CPA paths exercised across the suite.
-	th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterprise))
-
 	clearCPABackfillMarker(t, th)
 
 	group, appErr := th.App.GetPropertyGroup(th.Context, model.AccessControlPropertyGroupName)
@@ -373,52 +356,8 @@ func clearCPAToGlobalAttributesMarker(t *testing.T, th *TestHelper) {
 	require.NoError(t, err, "failed to clear CPA-to-Global-Attributes marker for test isolation")
 }
 
-func TestCPAToGlobalAttributesMigration_UnlicensedSkipsAndRetriesOnceLicensed(t *testing.T) {
-	th := Setup(t)
-	clearCPAToGlobalAttributesMarker(t, th)
-
-	group, appErr := th.App.GetPropertyGroup(th.Context, model.AccessControlPropertyGroupName)
-	require.Nil(t, appErr)
-
-	// Seed directly via the store: the server is unlicensed at this point, and
-	// LicenseCheckHook would reject a CreatePropertyField call to this group.
-	seeded, err := th.Store.PropertyField().Create(&model.PropertyField{
-		GroupID:    group.ID,
-		Name:       "unlicensed_field",
-		Type:       model.PropertyFieldTypeText,
-		ObjectType: model.PropertyFieldObjectTypeUser,
-		TargetType: string(model.PropertyFieldTargetLevelSystem),
-	})
-	require.NoError(t, err)
-
-	err = th.Server.doSetupCPAToGlobalAttributesMigration(th.Context)
-	require.NoError(t, err)
-
-	_, sysErr := th.Store.System().GetByName(cpaToGlobalAttributesMigrationKey)
-	require.Error(t, sysErr, "marker must not be written when the server is unlicensed")
-
-	untouched, err := th.Store.PropertyField().Get(th.Context, group.ID, seeded.ID)
-	require.NoError(t, err)
-	assert.Nil(t, untouched.LinkedFieldID, "field must not be migrated while unlicensed")
-
-	// License the server and retry: the migration must now run to completion.
-	th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterprise))
-
-	err = th.Server.doSetupCPAToGlobalAttributesMigration(th.Context)
-	require.NoError(t, err)
-
-	data, sysErr := th.Store.System().GetByName(cpaToGlobalAttributesMigrationKey)
-	require.NoError(t, sysErr)
-	require.Equal(t, "true", data.Value)
-
-	migratedField, appErr := th.App.GetPropertyField(th.Context, group.ID, seeded.ID)
-	require.Nil(t, appErr)
-	require.NotNil(t, migratedField.LinkedFieldID, "field must be migrated once licensed")
-}
-
 func TestCPAToGlobalAttributesMigration_NoExistingFields(t *testing.T) {
 	th := Setup(t)
-	th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterprise))
 	clearCPAToGlobalAttributesMarker(t, th)
 
 	err := th.Server.doSetupCPAToGlobalAttributesMigration(th.Context)
@@ -432,7 +371,6 @@ func TestCPAToGlobalAttributesMigration_NoExistingFields(t *testing.T) {
 
 func TestCPAToGlobalAttributesMigration_MigratesFieldAndSetsMarker(t *testing.T) {
 	th := Setup(t)
-	th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterprise))
 	clearCPAToGlobalAttributesMarker(t, th)
 
 	group, appErr := th.App.GetPropertyGroup(th.Context, model.AccessControlPropertyGroupName)
@@ -474,7 +412,6 @@ func TestCPAToGlobalAttributesMigration_MigratesFieldAndSetsMarker(t *testing.T)
 // marker for it.
 func TestCPAToGlobalAttributesMigration_RerunClearsAlreadyLinkedFieldDuplicatedOptions(t *testing.T) {
 	th := Setup(t)
-	th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterprise))
 	clearCPAToGlobalAttributesMarker(t, th)
 
 	group, appErr := th.App.GetPropertyGroup(th.Context, model.AccessControlPropertyGroupName)

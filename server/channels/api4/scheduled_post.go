@@ -67,12 +67,6 @@ func scheduledPostChecks(where string, c *Context, scheduledPost *model.Schedule
 func requireScheduledPostsEnabled(c *Context) {
 	if !*c.App.Srv().Config().ServiceSettings.ScheduledPosts {
 		c.Err = model.NewAppError("", "api.scheduled_posts.feature_disabled", nil, "", http.StatusBadRequest)
-		return
-	}
-
-	if c.App.Channels().License() == nil {
-		c.Err = model.NewAppError("", "api.scheduled_posts.license_error", nil, "", http.StatusBadRequest)
-		return
 	}
 }
 
