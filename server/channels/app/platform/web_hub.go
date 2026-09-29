@@ -239,14 +239,12 @@ func (ps *PlatformService) InvalidateCacheForUser(userID string) {
 
 func (ps *PlatformService) invalidateWebConnSessionCacheForUser(userID string) {
 	ps.invalidateWebConnSessionCacheForUserSkipClusterSend(userID)
-	if ps.clusterIFace != nil {
-		msg := &model.ClusterMessage{
-			Event:    model.ClusterEventInvalidateWebConnCacheForUser,
-			SendType: model.ClusterSendBestEffort,
-			Data:     []byte(userID),
-		}
-		ps.clusterIFace.SendClusterMessage(msg)
+	msg := &model.ClusterMessage{
+		Event:    model.ClusterEventInvalidateWebConnCacheForUser,
+		SendType: model.ClusterSendBestEffort,
+		Data:     []byte(userID),
 	}
+	ps.clusterIFace.SendClusterMessage(msg)
 }
 
 func (ps *PlatformService) InvalidateChannelCacheForUser(userID string) {
@@ -280,7 +278,7 @@ func (ps *PlatformService) SessionIsRegistered(session model.Session) bool {
 }
 
 func (ps *PlatformService) CheckWebConn(userID, connectionID string, seqNum int64) *CheckConnResult {
-	if ps.Cluster() == nil || seqNum == 0 {
+	if !*ps.Config().ClusterSettings.Enable || seqNum == 0 {
 		hub := ps.GetHubForUserId(userID)
 		if hub != nil {
 			return hub.CheckConn(userID, connectionID)
@@ -667,9 +665,7 @@ func (h *Hub) Start() {
 						// from other nodes.
 						var clusterCnt int
 						var appErr *model.AppError
-						if h.platform.Cluster() != nil {
-							clusterCnt, appErr = h.platform.Cluster().WebConnCountForUser(userID)
-						}
+						clusterCnt, appErr = h.platform.Cluster().WebConnCountForUser(userID)
 						if appErr != nil {
 							mlog.Error("Error in trying to get the webconn count from cluster", mlog.Err(appErr))
 							// We take a conservative approach

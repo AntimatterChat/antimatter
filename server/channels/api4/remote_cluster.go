@@ -69,9 +69,7 @@ func remoteClusterPing(c *Context, w http.ResponseWriter, r *http.Request) {
 	}
 	ping.RecvAt = model.GetMillis()
 
-	if metrics := c.App.Metrics(); metrics != nil {
-		metrics.IncrementRemoteClusterMsgReceivedCounter(rc.RemoteId)
-	}
+	c.App.Metrics().IncrementRemoteClusterMsgReceivedCounter(rc.RemoteId)
 
 	err := json.NewEncoder(w).Encode(ping)
 	if err != nil {

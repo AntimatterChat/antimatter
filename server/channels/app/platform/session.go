@@ -105,14 +105,12 @@ func (ps *PlatformService) ClearAllUsersSessionCacheLocal() error {
 func (ps *PlatformService) ClearUserSessionCache(userID string) {
 	ps.ClearSessionCacheForUserSkipClusterSend(userID)
 
-	if ps.clusterIFace != nil {
-		msg := &model.ClusterMessage{
-			Event:    model.ClusterEventClearSessionCacheForUser,
-			SendType: model.ClusterSendReliable,
-			Data:     []byte(userID),
-		}
-		ps.clusterIFace.SendClusterMessage(msg)
+	msg := &model.ClusterMessage{
+		Event:    model.ClusterEventClearSessionCacheForUser,
+		SendType: model.ClusterSendReliable,
+		Data:     []byte(userID),
 	}
+	ps.clusterIFace.SendClusterMessage(msg)
 }
 
 func (ps *PlatformService) ClearAllUsersSessionCache() error {
@@ -122,13 +120,11 @@ func (ps *PlatformService) ClearAllUsersSessionCache() error {
 	// can act independently.
 	err := ps.ClearSessionCacheForAllUsersSkipClusterSend()
 
-	if ps.clusterIFace != nil {
-		msg := &model.ClusterMessage{
-			Event:    model.ClusterEventClearSessionCacheForAllUsers,
-			SendType: model.ClusterSendReliable,
-		}
-		ps.clusterIFace.SendClusterMessage(msg)
+	msg := &model.ClusterMessage{
+		Event:    model.ClusterEventClearSessionCacheForAllUsers,
+		SendType: model.ClusterSendReliable,
 	}
+	ps.clusterIFace.SendClusterMessage(msg)
 	return err
 }
 

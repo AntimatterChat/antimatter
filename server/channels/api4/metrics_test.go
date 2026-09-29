@@ -11,8 +11,6 @@ import (
 	"github.com/mattermost/mattermost/server/public/model"
 	"github.com/mattermost/mattermost/server/public/plugin/plugintest/mock"
 	"github.com/mattermost/mattermost/server/v8/channels/app"
-	"github.com/mattermost/mattermost/server/v8/channels/app/platform"
-	"github.com/mattermost/mattermost/server/v8/einterfaces"
 	"github.com/mattermost/mattermost/server/v8/einterfaces/mocks"
 	"github.com/stretchr/testify/require"
 )
@@ -62,16 +60,7 @@ func TestSubmitMetrics(t *testing.T) {
 	t.Run("metrics enabled but invalid version", func(t *testing.T) {
 		metricsMock := setupMetricsMock()
 
-		platform.RegisterMetricsInterface(func(_ *platform.PlatformService, _, _ string) einterfaces.MetricsInterface {
-			return metricsMock
-		})
-		t.Cleanup(func() {
-			platform.RegisterMetricsInterface(func(_ *platform.PlatformService, _, _ string) einterfaces.MetricsInterface {
-				return nil
-			})
-		})
-
-		th := SetupEnterpriseWithServerOptions(t, []app.Option{app.StartMetrics})
+		th := SetupEnterpriseWithServerOptions(t, []app.Option{app.StartMetrics, app.SetMetrics(metricsMock)})
 
 		// enable metrics
 		th.App.UpdateConfig(func(cfg *model.Config) { *cfg.MetricsSettings.Enable = true })
@@ -93,16 +82,7 @@ func TestSubmitMetrics(t *testing.T) {
 			mock.AnythingOfType("string"),
 			mock.AnythingOfType("float64")).Return()
 
-		platform.RegisterMetricsInterface(func(_ *platform.PlatformService, _, _ string) einterfaces.MetricsInterface {
-			return metricsMock
-		})
-		t.Cleanup(func() {
-			platform.RegisterMetricsInterface(func(_ *platform.PlatformService, _, _ string) einterfaces.MetricsInterface {
-				return nil
-			})
-		})
-
-		th := SetupEnterpriseWithServerOptions(t, []app.Option{app.StartMetrics})
+		th := SetupEnterpriseWithServerOptions(t, []app.Option{app.StartMetrics, app.SetMetrics(metricsMock)})
 
 		// enable metrics
 		th.App.UpdateConfig(func(cfg *model.Config) { *cfg.MetricsSettings.Enable = true })
@@ -124,16 +104,7 @@ func TestSubmitMetrics(t *testing.T) {
 	t.Run("metrics enabled but client metrics are disabled", func(t *testing.T) {
 		metricsMock := setupMetricsMock()
 
-		platform.RegisterMetricsInterface(func(_ *platform.PlatformService, _, _ string) einterfaces.MetricsInterface {
-			return metricsMock
-		})
-		t.Cleanup(func() {
-			platform.RegisterMetricsInterface(func(_ *platform.PlatformService, _, _ string) einterfaces.MetricsInterface {
-				return nil
-			})
-		})
-
-		th := SetupEnterpriseWithServerOptions(t, []app.Option{app.StartMetrics})
+		th := SetupEnterpriseWithServerOptions(t, []app.Option{app.StartMetrics, app.SetMetrics(metricsMock)})
 
 		// enable metrics
 		th.App.UpdateConfig(func(cfg *model.Config) { *cfg.MetricsSettings.Enable = true })
@@ -161,16 +132,7 @@ func TestSubmitMetrics(t *testing.T) {
 			mock.AnythingOfType("string"),
 			mock.AnythingOfType("float64")).Return()
 
-		platform.RegisterMetricsInterface(func(_ *platform.PlatformService, _, _ string) einterfaces.MetricsInterface {
-			return metricsMock
-		})
-		t.Cleanup(func() {
-			platform.RegisterMetricsInterface(func(_ *platform.PlatformService, _, _ string) einterfaces.MetricsInterface {
-				return nil
-			})
-		})
-
-		th := SetupEnterpriseWithServerOptions(t, []app.Option{app.StartMetrics})
+		th := SetupEnterpriseWithServerOptions(t, []app.Option{app.StartMetrics, app.SetMetrics(metricsMock)})
 
 		// enable metrics
 		th.App.UpdateConfig(func(cfg *model.Config) { *cfg.MetricsSettings.Enable = true })
@@ -194,16 +156,7 @@ func TestSubmitMetrics(t *testing.T) {
 			mock.AnythingOfType("string"),
 			mock.AnythingOfType("float64")).Return()
 
-		platform.RegisterMetricsInterface(func(_ *platform.PlatformService, _, _ string) einterfaces.MetricsInterface {
-			return metricsMock
-		})
-		t.Cleanup(func() {
-			platform.RegisterMetricsInterface(func(_ *platform.PlatformService, _, _ string) einterfaces.MetricsInterface {
-				return nil
-			})
-		})
-
-		th := SetupEnterpriseWithServerOptions(t, []app.Option{app.StartMetrics})
+		th := SetupEnterpriseWithServerOptions(t, []app.Option{app.StartMetrics, app.SetMetrics(metricsMock)})
 
 		// enable metrics
 		th.App.UpdateConfig(func(cfg *model.Config) { *cfg.MetricsSettings.Enable = true })

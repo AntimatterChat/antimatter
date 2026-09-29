@@ -76,9 +76,7 @@ func (a *App) NotifySessionsExpired() error {
 			mlog.String("status", model.PushSendSuccess),
 		)
 
-		if a.Metrics() != nil {
-			a.Metrics().IncrementPostSentPush()
-		}
+		a.Metrics().IncrementPostSentPush()
 
 		err = a.ch.srv.Store().Session().UpdateExpiredNotify(session.Id, true)
 		if err != nil {

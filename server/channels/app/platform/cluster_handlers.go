@@ -173,15 +173,13 @@ func (ps *PlatformService) InvalidateAllCaches() *model.AppError {
 		return err
 	}
 
-	if ps.clusterIFace != nil {
-		msg := &model.ClusterMessage{
-			Event:            model.ClusterEventInvalidateAllCaches,
-			SendType:         model.ClusterSendReliable,
-			WaitForAllToSend: true,
-		}
-
-		ps.clusterIFace.SendClusterMessage(msg)
+	msg := &model.ClusterMessage{
+		Event:            model.ClusterEventInvalidateAllCaches,
+		SendType:         model.ClusterSendReliable,
+		WaitForAllToSend: true,
 	}
+
+	ps.clusterIFace.SendClusterMessage(msg)
 
 	return nil
 }

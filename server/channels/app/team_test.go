@@ -2675,8 +2675,9 @@ func TestTeamSendEvents(t *testing.T) {
 	th := Setup(t).InitBasic(t)
 
 	testCluster := &testlib.FakeClusterInterface{}
+	originalCluster := th.Server.Platform().Cluster()
 	th.Server.Platform().SetCluster(testCluster)
-	defer th.Server.Platform().SetCluster(nil)
+	defer th.Server.Platform().SetCluster(originalCluster)
 
 	team := th.CreateTeam(t)
 

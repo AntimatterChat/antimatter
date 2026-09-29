@@ -37,15 +37,8 @@ import (
 
 	"github.com/mattermost/mattermost/server/public/model"
 	"github.com/mattermost/mattermost/server/public/shared/mlog"
-	"github.com/mattermost/mattermost/server/v8/channels/app/platform"
 	"github.com/mattermost/mattermost/server/v8/einterfaces"
 )
-
-func init() {
-	platform.RegisterClusterInterface(func(ps *platform.PlatformService) einterfaces.ClusterInterface {
-		return New(newPlatformHost(ps))
-	})
-}
 
 const (
 	// memberlist label prefix. Nodes only talk to nodes using the same label,
@@ -53,7 +46,7 @@ const (
 	labelPrefix = "mmlibre1:"
 
 	defaultTCPTimeout       = 10 * time.Second
-	defaultDiscoveryPing    = platform.DiscoveryServiceWritePing
+	defaultDiscoveryPing    = 60 * time.Second
 	defaultJoinInterval     = 60 * time.Second
 	defaultJoinIntervalLone = 10 * time.Second
 	initialJoinTimeout      = 15 * time.Second

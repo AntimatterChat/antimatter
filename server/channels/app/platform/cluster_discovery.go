@@ -69,9 +69,5 @@ func (cds *ClusterDiscoveryService) Stop() {
 }
 
 func (ps *PlatformService) GetClusterId() string {
-	if ps.Cluster() == nil {
-		return ""
-	}
-
 	return ps.Cluster().GetClusterId()
 }

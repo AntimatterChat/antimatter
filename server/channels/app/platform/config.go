@@ -117,12 +117,9 @@ func (ps *PlatformService) SaveConfig(newCfg *model.Config, sendConfigChangeClus
 		return nil, nil, model.NewAppError("saveConfig", "app.save_config.app_error", nil, "", http.StatusInternalServerError).Wrap(err)
 	}
 
-	if ps.clusterIFace != nil {
-		err := ps.clusterIFace.ConfigChanged(ps.configStore.RemoveEnvironmentOverrides(oldCfg),
-			ps.configStore.RemoveEnvironmentOverrides(newCfg), sendConfigChangeClusterMessage)
-		if err != nil {
-			return nil, nil, err
-		}
+	if appErr := ps.clusterIFace.ConfigChanged(ps.configStore.RemoveEnvironmentOverrides(oldCfg),
+		ps.configStore.RemoveEnvironmentOverrides(newCfg), sendConfigChangeClusterMessage); appErr != nil {
+		return nil, nil, appErr
 	}
 
 	return oldCfg, newCfg, nil

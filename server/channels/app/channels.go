@@ -234,7 +234,7 @@ func NewChannels(s *Server) (*Channels, error) {
 	if err := ch.reloadGuardCache(request.EmptyContext(s.Log()), s.Store()); err != nil {
 		s.Log().Warn(
 			"Failed to load channel guard cache at startup; retry scheduled",
-			mlog.Bool("clustered", s.platform.Cluster() != nil),
+			mlog.Bool("clustered", *s.platform.Config().ClusterSettings.Enable),
 			mlog.Err(err),
 		)
 		ch.scheduleGuardCacheReloadRetry()

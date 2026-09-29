@@ -1550,10 +1550,6 @@ func (api *PluginAPI) DeleteOAuthApp(appID string) *model.AppError {
 func (api *PluginAPI) PublishPluginClusterEvent(ev model.PluginClusterEvent,
 	opts model.PluginClusterEventSendOptions,
 ) error {
-	if api.app.Cluster() == nil {
-		return nil
-	}
-
 	msg := &model.ClusterMessage{
 		Event:            model.ClusterEventPluginEvent,
 		SendType:         opts.SendType,

@@ -23,12 +23,10 @@ import (
 func (a *App) AuthenticateUserForLogin(rctx request.CTX, id, loginId, password, mfaToken, cwsToken string, ldapOnly bool) (user *model.User, err *model.AppError) {
 	// Do statistics
 	defer func() {
-		if a.Metrics() != nil {
-			if user == nil || err != nil {
-				a.Metrics().IncrementLoginFail()
-			} else {
-				a.Metrics().IncrementLogin()
-			}
+		if user == nil || err != nil {
+			a.Metrics().IncrementLoginFail()
+		} else {
+			a.Metrics().IncrementLogin()
 		}
 	}()
 

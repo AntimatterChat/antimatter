@@ -24,9 +24,7 @@ func (ch *Channels) GetPluginStatus(id string) (*model.PluginStatus, *model.AppE
 	for _, status := range pluginStatuses {
 		if status.PluginId == id {
 			// Add our cluster ID
-			if ch.srv.platform.Cluster() != nil {
-				status.ClusterId = ch.srv.platform.Cluster().GetClusterId()
-			}
+			status.ClusterId = ch.srv.platform.Cluster().GetClusterId()
 
 			return status, nil
 		}
@@ -54,11 +52,7 @@ func (ch *Channels) GetPluginStatuses() (model.PluginStatuses, *model.AppError) 
 
 	// Add our cluster ID
 	for _, status := range pluginStatuses {
-		if ch.srv.platform.Cluster() != nil {
-			status.ClusterId = ch.srv.platform.Cluster().GetClusterId()
-		} else {
-			status.ClusterId = ""
-		}
+		status.ClusterId = ch.srv.platform.Cluster().GetClusterId()
 	}
 
 	return pluginStatuses, nil
@@ -80,7 +74,7 @@ func (ch *Channels) getClusterPluginStatuses() (model.PluginStatuses, *model.App
 		return nil, err
 	}
 
-	if ch.srv.platform.Cluster() != nil && *ch.cfgSvc.Config().ClusterSettings.Enable {
+	if *ch.cfgSvc.Config().ClusterSettings.Enable {
 		clusterPluginStatuses, err := ch.srv.platform.Cluster().GetPluginStatuses()
 		if err != nil {
 			return nil, model.NewAppError("GetClusterPluginStatuses", "app.plugin.get_cluster_plugin_statuses.app_error", nil, "", http.StatusInternalServerError).Wrap(err)

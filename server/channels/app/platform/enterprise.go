@@ -8,12 +8,6 @@ import (
 	"github.com/mattermost/mattermost/server/v8/platform/services/searchengine"
 )
 
-var clusterInterface func(*PlatformService) einterfaces.ClusterInterface
-
-func RegisterClusterInterface(f func(*PlatformService) einterfaces.ClusterInterface) {
-	clusterInterface = f
-}
-
 var elasticsearchInterface func(*PlatformService) searchengine.SearchEngineInterface
 
 func RegisterElasticsearchInterface(f func(*PlatformService) searchengine.SearchEngineInterface) {
@@ -30,12 +24,6 @@ var samlDiagnosticInterface func(*PlatformService) einterfaces.SamlDiagnosticInt
 
 func RegisterSamlDiagnosticInterface(f func(*PlatformService) einterfaces.SamlDiagnosticInterface) {
 	samlDiagnosticInterface = f
-}
-
-var metricsInterfaceFn func(*PlatformService, string, string) einterfaces.MetricsInterface
-
-func RegisterMetricsInterface(f func(*PlatformService, string, string) einterfaces.MetricsInterface) {
-	metricsInterfaceFn = f
 }
 
 var accessControlServiceInterface func(*PlatformService) einterfaces.AccessControlServiceInterface

@@ -36,11 +36,6 @@ func (ps *PlatformService) IsLeader() bool {
 		return true
 	}
 
-	if ps.clusterIFace == nil {
-		// Clustering isn't supported by this server
-		return true
-	}
-
 	// Check with the clustering code
 	return ps.clusterIFace.IsLeader()
 }
@@ -50,10 +45,6 @@ func (ps *PlatformService) SetCluster(impl einterfaces.ClusterInterface) { //nol
 }
 
 func (ps *PlatformService) PublishPluginClusterEvent(productID string, ev model.PluginClusterEvent, opts model.PluginClusterEventSendOptions) error {
-	if ps.clusterIFace == nil {
-		return nil
-	}
-
 	msg := &model.ClusterMessage{
 		Event:            model.ClusterEventPluginEvent,
 		SendType:         opts.SendType,
@@ -181,34 +172,30 @@ func (ps *PlatformService) InvokeClusterLeaderChangedListeners() {
 }
 
 func (ps *PlatformService) Publish(message *model.WebSocketEvent) {
-	if ps.metricsIFace != nil {
-		ps.metricsIFace.IncrementWebsocketEvent(message.EventType())
-	}
+	ps.metricsIFace.IncrementWebsocketEvent(message.EventType())
 
 	ps.PublishSkipClusterSend(message)
 
-	if ps.clusterIFace != nil {
-		data, err := message.ToJSON()
-		if err != nil {
-			mlog.Warn("Failed to encode message to JSON", mlog.Err(err))
-		}
-		cm := &model.ClusterMessage{
-			Event:    model.ClusterEventPublish,
-			SendType: model.ClusterSendBestEffort,
-			Data:     data,
-		}
-
-		if message.EventType() == model.WebsocketEventPosted ||
-			message.EventType() == model.WebsocketEventPostEdited ||
-			message.EventType() == model.WebsocketEventDirectAdded ||
-			message.EventType() == model.WebsocketEventGroupAdded ||
-			message.EventType() == model.WebsocketEventAddedToTeam ||
-			message.GetBroadcast().ReliableClusterSend {
-			cm.SendType = model.ClusterSendReliable
-		}
-
-		ps.clusterIFace.SendClusterMessage(cm)
+	data, err := message.ToJSON()
+	if err != nil {
+		mlog.Warn("Failed to encode message to JSON", mlog.Err(err))
 	}
+	cm := &model.ClusterMessage{
+		Event:    model.ClusterEventPublish,
+		SendType: model.ClusterSendBestEffort,
+		Data:     data,
+	}
+
+	if message.EventType() == model.WebsocketEventPosted ||
+		message.EventType() == model.WebsocketEventPostEdited ||
+		message.EventType() == model.WebsocketEventDirectAdded ||
+		message.EventType() == model.WebsocketEventGroupAdded ||
+		message.EventType() == model.WebsocketEventAddedToTeam ||
+		message.GetBroadcast().ReliableClusterSend {
+		cm.SendType = model.ClusterSendReliable
+	}
+
+	ps.clusterIFace.SendClusterMessage(cm)
 }
 
 func (ps *PlatformService) PublishSkipClusterSend(event *model.WebSocketEvent) {

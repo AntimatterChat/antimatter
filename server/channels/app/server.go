@@ -810,9 +810,7 @@ func (s *Server) Shutdown() {
 		s.Log().Warn("Failed to shut down config store", mlog.Err(err))
 	}
 
-	if s.platform.Cluster() != nil {
-		s.platform.Cluster().StopInterNodeCommunication()
-	}
+	s.platform.Cluster().StopInterNodeCommunication()
 
 	if err = s.platform.ShutdownMetrics(); err != nil {
 		s.Log().Warn("Failed to stop metrics server", mlog.Err(err))
@@ -917,7 +915,7 @@ func (s *Server) Start() error {
 		return errors.Wrap(err, "Unable to start channels")
 	}
 
-	if s.joinCluster && s.platform.Cluster() != nil {
+	if s.joinCluster {
 		s.registerClusterHandlers()
 		s.platform.Cluster().StartInterNodeCommunication()
 	}
