@@ -1122,22 +1122,6 @@ func (mr *MockClientMockRecorder) GetOAuthApps(ctx, page, perPage any) *gomock.C
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetOAuthApps", reflect.TypeOf((*MockClient)(nil).GetOAuthApps), ctx, page, perPage)
 }
 
-// GetOldClientLicense mocks base method.
-func (m *MockClient) GetOldClientLicense(ctx context.Context, etag string) (map[string]string, *model.Response, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetOldClientLicense", ctx, etag)
-	ret0, _ := ret[0].(map[string]string)
-	ret1, _ := ret[1].(*model.Response)
-	ret2, _ := ret[2].(error)
-	return ret0, ret1, ret2
-}
-
-// GetOldClientLicense indicates an expected call of GetOldClientLicense.
-func (mr *MockClientMockRecorder) GetOldClientLicense(ctx, etag any) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetOldClientLicense", reflect.TypeOf((*MockClient)(nil).GetOldClientLicense), ctx, etag)
-}
-
 // GetOutgoingWebhook mocks base method.
 func (m *MockClient) GetOutgoingWebhook(ctx context.Context, hookID string) (*model.OutgoingWebhook, *model.Response, error) {
 	m.ctrl.T.Helper()
@@ -2149,21 +2133,6 @@ func (mr *MockClientMockRecorder) ReloadConfig(ctx any) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ReloadConfig", reflect.TypeOf((*MockClient)(nil).ReloadConfig), ctx)
 }
 
-// RemoveLicenseFile mocks base method.
-func (m *MockClient) RemoveLicenseFile(ctx context.Context) (*model.Response, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "RemoveLicenseFile", ctx)
-	ret0, _ := ret[0].(*model.Response)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// RemoveLicenseFile indicates an expected call of RemoveLicenseFile.
-func (mr *MockClientMockRecorder) RemoveLicenseFile(ctx any) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RemoveLicenseFile", reflect.TypeOf((*MockClient)(nil).RemoveLicenseFile), ctx)
-}
-
 // RemovePlugin mocks base method.
 func (m *MockClient) RemovePlugin(ctx context.Context, id string) (*model.Response, error) {
 	m.ctrl.T.Helper()
@@ -2675,21 +2644,6 @@ func (m *MockClient) UploadData(ctx context.Context, uploadID string, data io.Re
 func (mr *MockClientMockRecorder) UploadData(ctx, uploadID, data any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UploadData", reflect.TypeOf((*MockClient)(nil).UploadData), ctx, uploadID, data)
-}
-
-// UploadLicenseFile mocks base method.
-func (m *MockClient) UploadLicenseFile(ctx context.Context, data []byte) (*model.Response, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "UploadLicenseFile", ctx, data)
-	ret0, _ := ret[0].(*model.Response)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// UploadLicenseFile indicates an expected call of UploadLicenseFile.
-func (mr *MockClientMockRecorder) UploadLicenseFile(ctx, data any) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UploadLicenseFile", reflect.TypeOf((*MockClient)(nil).UploadLicenseFile), ctx, data)
 }
 
 // UploadPlugin mocks base method.

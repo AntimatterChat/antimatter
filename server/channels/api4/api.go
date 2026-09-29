@@ -480,8 +480,6 @@ func InitLocal(srv *app.Server) *API {
 	api.BaseRoutes.OutgoingHooks = api.BaseRoutes.Hooks.PathPrefix("/outgoing").Subrouter()
 	api.BaseRoutes.OutgoingHook = api.BaseRoutes.OutgoingHooks.PathPrefix("/{hook_id:[A-Za-z0-9]+}").Subrouter()
 
-	api.BaseRoutes.License = api.BaseRoutes.APIRoot.PathPrefix("/license").Subrouter()
-
 	api.BaseRoutes.Groups = api.BaseRoutes.APIRoot.PathPrefix("/groups").Subrouter()
 
 	api.BaseRoutes.LDAP = api.BaseRoutes.APIRoot.PathPrefix("/ldap").Subrouter()
@@ -520,7 +518,6 @@ func InitLocal(srv *app.Server) *API {
 	api.InitWebhookLocal()
 	api.InitPluginLocal()
 	api.InitCommandLocal()
-	api.InitLicenseLocal()
 	api.InitBotLocal()
 	api.InitGroupLocal()
 	api.InitLdapLocal()
