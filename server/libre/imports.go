@@ -13,5 +13,6 @@ import (
 	_ "github.com/mattermost/mattermost/server/v8/libre/oauth/google"
 	_ "github.com/mattermost/mattermost/server/v8/libre/oauth/office365"
 	_ "github.com/mattermost/mattermost/server/v8/libre/oauth/openid"
+	_ "github.com/mattermost/mattermost/server/v8/libre/outgoingoauth"
 	_ "github.com/mattermost/mattermost/server/v8/libre/saml"
 )

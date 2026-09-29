@@ -44,9 +44,9 @@ func (s *SqlOutgoingOAuthConnectionStore) SaveConnection(rctx request.CTX, conn 
 	}
 
 	if _, err := s.GetMaster().NamedExec(`INSERT INTO OutgoingOAuthConnections
-	(Id, Name, ClientId, ClientSecret, CreateAt, UpdateAt, CreatorId, OAuthTokenURL, GrantType, Audiences)
+	(Id, Name, ClientId, ClientSecret, CredentialsUsername, CredentialsPassword, CreateAt, UpdateAt, CreatorId, OAuthTokenURL, GrantType, Audiences)
 	VALUES
-	(:Id, :Name, :ClientId, :ClientSecret, :CreateAt, :UpdateAt, :CreatorId, :OAuthTokenURL, :GrantType, :Audiences)`, conn); err != nil {
+	(:Id, :Name, :ClientId, :ClientSecret, :CredentialsUsername, :CredentialsPassword, :CreateAt, :UpdateAt, :CreatorId, :OAuthTokenURL, :GrantType, :Audiences)`, conn); err != nil {
 		return nil, errors.Wrap(err, "failed to save OutgoingOAuthConnection")
 	}
 	return conn, nil
