@@ -20,4 +20,5 @@ import (
 	_ "github.com/mattermost/mattermost/server/v8/libre/outgoingoauth"
 	_ "github.com/mattermost/mattermost/server/v8/libre/pushproxy"
 	_ "github.com/mattermost/mattermost/server/v8/libre/saml"
+	_ "github.com/mattermost/mattermost/server/v8/libre/search"
 )
