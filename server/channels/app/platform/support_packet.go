@@ -268,7 +268,8 @@ func (ps *PlatformService) GetSupportPacketDiagnostics(rctx request.CTX) (*model
 	d.Websocket.Connections = ps.TotalWebsocketConnections()
 
 	/* Cluster */
-	if cluster := ps.Cluster(); cluster != nil {
+	if *ps.Config().ClusterSettings.Enable {
+		cluster := ps.Cluster()
 		d.Cluster.ID = cluster.GetClusterId()
 		clusterInfo, e := cluster.GetClusterInfos()
 		if e != nil {
