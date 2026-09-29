@@ -4564,12 +4564,22 @@ components:
     AllowedIPRange:
       type: object
       properties:
-        CIDRBlock:
-          description: An IP address range in CIDR notation
+        cidr_block:
+          description: An IPv4 or IPv6 range in CIDR notation, or a single address
           type: string
-        Description:
-          description: A description for the CIDRBlock
+        description:
+          description: A description of the rule
           type: string
+        enabled:
+          description: Whether the rule is in force
+          type: boolean
+        owner_id:
+          description: The ID of the user who created the rule
+          type: string
+        action:
+          description: What happens to clients matching the rule. Defaults to allow.
+          type: string
+          enum: [allow, deny]
     UserReport:
       type: object
       properties:
