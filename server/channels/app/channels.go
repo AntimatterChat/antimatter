@@ -50,7 +50,6 @@ type Channels struct {
 	pluginsLock                   sync.RWMutex
 	pluginsEnvironment            *plugin.Environment
 	pluginConfigListenerID        string
-	pluginLicenseListenerID       string
 	pluginClusterLeaderListenerID string
 
 	// guardCache caches ChannelGuards rows by ChannelId -> []*store.ChannelGuard.
@@ -205,14 +204,6 @@ func NewChannels(s *Server) (*Channels, error) {
 		if appErr != nil && appErr.StatusCode != http.StatusNotImplemented {
 			s.Log().Error("An error occurred while initializing Access Control", mlog.Err(appErr))
 		}
-
-		app.AddLicenseListener(func(newCfg, old *model.License) {
-			if ch.AccessControl != nil {
-				if appErr := ch.AccessControl.Init(request.EmptyContext(s.Log())); appErr != nil && appErr.StatusCode != http.StatusNotImplemented {
-					s.Log().Error("An error occurred while initializing Access Control", mlog.Err(appErr))
-				}
-			}
-		})
 	}
 
 	var imgErr error

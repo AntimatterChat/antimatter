@@ -249,23 +249,6 @@ func (ch *Channels) initPlugins(rctx request.CTX, pluginDir, webappPluginDir str
 			return true
 		}, plugin.OnConfigurationChangeID)
 	})
-
-	ch.srv.RemoveLicenseListener(ch.pluginLicenseListenerID)
-	ch.pluginLicenseListenerID = ch.srv.AddLicenseListener(func(oldLicense, newLicense *model.License) {
-		// The config listener above never fires for a license upload, so add-on
-		// gating would go stale. Guarded because SetLicense fires far more often
-		// than entitlements change and the sync activates every installed plugin
-		// on this goroutine. Sync before the hook, so OnLicenseChanged only
-		// reaches plugins the new license permits.
-		if !addOnEntitlementsEqual(oldLicense, newLicense) {
-			ch.syncPluginsActiveState()
-		}
-
-		ch.RunMultiHook(func(hooks plugin.Hooks, _ *model.Manifest) bool {
-			hooks.OnLicenseChanged(oldLicense, newLicense)
-			return true
-		}, plugin.OnLicenseChangedID)
-	})
 	ch.pluginsLock.Unlock()
 
 	ch.syncPluginsActiveState()
@@ -376,8 +359,6 @@ func (ch *Channels) ShutDownPlugins() {
 
 	ch.RemoveConfigListener(ch.pluginConfigListenerID)
 	ch.pluginConfigListenerID = ""
-	ch.srv.RemoveLicenseListener(ch.pluginLicenseListenerID)
-	ch.pluginLicenseListenerID = ""
 	ch.srv.RemoveClusterLeaderChangedListener(ch.pluginClusterLeaderListenerID)
 	ch.pluginClusterLeaderListenerID = ""
 
@@ -458,11 +439,12 @@ func (ch *Channels) enablePlugin(id string) *model.AppError {
 		return model.NewAppError("EnablePlugin", "app.plugin.not_installed.app_error", nil, "", http.StatusNotFound)
 	}
 
+	// Plugins that declare a required add-on are commercial Mattermost products
+	// that are licensed separately; they cannot be enabled on this server.
 	// Reject up front rather than writing Enable: true and letting
-	// syncPluginsActiveState deactivate it again, reporting success for a plugin
-	// that cannot run.
-	if addOn := manifest.RequiredAddOn; addOn != "" && !ch.srv.License().HasAddOn(addOn) {
-		return model.NewAppError("EnablePlugin", "app.plugin.addon_not_licensed.app_error", map[string]any{"AddOn": addOn}, "", http.StatusForbidden)
+	// syncPluginsActiveState deactivate it again.
+	if addOn := manifest.RequiredAddOn; addOn != "" {
+		return model.NewAppError("EnablePlugin", "app.plugin.addon_not_supported.app_error", map[string]any{"AddOn": addOn}, "", http.StatusForbidden)
 	}
 
 	ch.cfgSvc.UpdateConfig(func(cfg *model.Config) {
@@ -794,19 +776,8 @@ func (ch *Channels) getBaseMarketplaceFilter() *model.MarketplacePluginFilter {
 		ServerVersion: model.CurrentVersion,
 	}
 
-	license := ch.srv.License()
-	if license != nil && license.HasEnterpriseMarketplacePlugins() {
-		filter.EnterprisePlugins = true
-	}
-
-	if license != nil && license.IsCloud() {
-		filter.Cloud = true
-	}
-
-	if model.BuildEnterpriseReady == "true" {
-		filter.BuildEnterpriseReady = true
-	}
-
+	// Never request enterprise/proprietary plugins from the marketplace:
+	// filter.EnterprisePlugins and filter.BuildEnterpriseReady stay false.
 	filter.Platform = runtime.GOOS + "-" + runtime.GOARCH
 
 	return filter
@@ -1266,26 +1237,6 @@ func getIcon(iconPath string) (string, error) {
 	return fmt.Sprintf("data:image/svg+xml;base64,%s", base64.StdEncoding.EncodeToString(icon)), nil
 }
 
-// addOnEntitlementsEqual compares case- and order-insensitively, to match
-// License.HasAddOn.
-func addOnEntitlementsEqual(oldLicense, newLicense *model.License) bool {
-	normalize := func(l *model.License) []string {
-		if l == nil {
-			return nil
-		}
-
-		addOns := make([]string, 0, len(l.AddOns))
-		for _, addOn := range l.AddOns {
-			addOns = append(addOns, strings.ToLower(addOn))
-		}
-		slices.Sort(addOns)
-
-		return slices.Compact(addOns)
-	}
-
-	return slices.Equal(normalize(oldLicense), normalize(newLicense))
-}
-
 func (ch *Channels) getPluginStateOverride(manifest *model.Manifest) (bool, bool) {
 	switch manifest.Id {
 	case model.PluginIdApps:
@@ -1295,9 +1246,9 @@ func (ch *Channels) getPluginStateOverride(manifest *model.Manifest) (bool, bool
 		}
 	}
 
-	// Overrides PluginStates, so an unlicensed add-on cannot be enabled by editing
-	// config.
-	if addOn := manifest.RequiredAddOn; addOn != "" && !ch.srv.License().HasAddOn(addOn) {
+	// Overrides PluginStates, so a plugin requiring a commercial add-on cannot be
+	// enabled by editing config.
+	if manifest.RequiredAddOn != "" {
 		return true, false
 	}
 

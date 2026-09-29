@@ -731,64 +731,7 @@ func TestGetMarketplacePlugins(t *testing.T) {
 		plugins, _, err := client.GetMarketplacePlugins(context.Background(), &model.MarketplacePluginFilter{})
 		require.NoError(t, err)
 		require.Empty(t, plugins)
-	}, "verify EnterprisePlugins is false for TE")
-
-	th.TestForSystemAdminAndLocal(t, func(t *testing.T, client *model.Client4) {
-		testServer := httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
-			licenseType, ok := req.URL.Query()["enterprise_plugins"]
-			require.True(t, ok)
-			require.Len(t, licenseType, 1)
-			require.Equal(t, "false", licenseType[0])
-
-			res.WriteHeader(http.StatusOK)
-			json, err := json.Marshal([]*model.MarketplacePlugin{})
-			require.NoError(t, err)
-			_, err = res.Write(json)
-			require.NoError(t, err)
-		}))
-		defer func() { testServer.Close() }()
-
-		th.App.UpdateConfig(func(cfg *model.Config) {
-			*cfg.PluginSettings.EnableMarketplace = true
-			*cfg.PluginSettings.MarketplaceURL = testServer.URL
-		})
-
-		l := model.NewTestLicense()
-		// model.NewTestLicense generates a E20 license
-		*l.Features.EnterprisePlugins = false
-		th.App.Srv().SetLicense(l)
-
-		plugins, _, err := client.GetMarketplacePlugins(context.Background(), &model.MarketplacePluginFilter{})
-		require.NoError(t, err)
-		require.Empty(t, plugins)
-	}, "verify EnterprisePlugins is false for E10")
-
-	th.TestForSystemAdminAndLocal(t, func(t *testing.T, client *model.Client4) {
-		testServer := httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
-			licenseType, ok := req.URL.Query()["enterprise_plugins"]
-			require.True(t, ok)
-			require.Len(t, licenseType, 1)
-			require.Equal(t, "true", licenseType[0])
-
-			res.WriteHeader(http.StatusOK)
-			json, err := json.Marshal([]*model.MarketplacePlugin{})
-			require.NoError(t, err)
-			_, err = res.Write(json)
-			require.NoError(t, err)
-		}))
-		defer func() { testServer.Close() }()
-
-		th.App.UpdateConfig(func(cfg *model.Config) {
-			*cfg.PluginSettings.EnableMarketplace = true
-			*cfg.PluginSettings.MarketplaceURL = testServer.URL
-		})
-
-		th.App.Srv().SetLicense(model.NewTestLicense("enterprise_plugins"))
-
-		plugins, _, err := client.GetMarketplacePlugins(context.Background(), &model.MarketplacePluginFilter{})
-		require.NoError(t, err)
-		require.Empty(t, plugins)
-	}, "verify EnterprisePlugins is true for E20")
+	}, "verify EnterprisePlugins is false")
 
 	th.TestForSystemAdminAndLocal(t, func(t *testing.T, client *model.Client4) {
 		testServer := httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
@@ -813,34 +756,7 @@ func TestGetMarketplacePlugins(t *testing.T) {
 		plugins, _, err := client.GetMarketplacePlugins(context.Background(), &model.MarketplacePluginFilter{})
 		require.NoError(t, err)
 		require.Empty(t, plugins)
-	}, "verify EnterprisePlugins is false if there is no license")
-
-	th.TestForSystemAdminAndLocal(t, func(t *testing.T, client *model.Client4) {
-		testServer := httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
-			cloud, ok := req.URL.Query()["cloud"]
-			require.True(t, ok)
-			require.Len(t, cloud, 1)
-			require.Equal(t, "true", cloud[0])
-
-			res.WriteHeader(http.StatusOK)
-			json, err := json.Marshal([]*model.MarketplacePlugin{})
-			require.NoError(t, err)
-			_, err = res.Write(json)
-			require.NoError(t, err)
-		}))
-		defer func() { testServer.Close() }()
-
-		th.App.UpdateConfig(func(cfg *model.Config) {
-			*cfg.PluginSettings.EnableMarketplace = true
-			*cfg.PluginSettings.MarketplaceURL = testServer.URL
-		})
-
-		th.App.Srv().SetLicense(model.NewTestLicense("cloud"))
-
-		plugins, _, err := client.GetMarketplacePlugins(context.Background(), &model.MarketplacePluginFilter{})
-		require.NoError(t, err)
-		require.Empty(t, plugins)
-	}, "verify Cloud is true for cloud license")
+	}, "verify Cloud is false")
 }
 
 func TestGetInstalledMarketplacePlugins(t *testing.T) {
@@ -1375,30 +1291,6 @@ func TestGetPrepackagedPluginInMarketplace(t *testing.T) {
 	env := th.App.GetPluginsEnvironment()
 	env.SetPrepackagedPlugins([]*plugin.PrepackagedPlugin{prepackagePlugin}, nil)
 
-	t.Run("prepackaged plugins are shown in Cloud", func(t *testing.T) {
-		th.App.UpdateConfig(func(cfg *model.Config) {
-			*cfg.PluginSettings.EnableRemoteMarketplace = true
-			*cfg.PluginSettings.EnableUploads = true
-		})
-
-		lic := th.App.Srv().License()
-		th.App.Srv().SetLicense(model.NewTestLicense("cloud"))
-		defer th.App.Srv().SetLicense(lic)
-
-		plugins, _, err := th.SystemAdminClient.GetMarketplacePlugins(context.Background(), &model.MarketplacePluginFilter{})
-		require.NoError(t, err)
-
-		expectedPlugins := marketplacePlugins
-		expectedPlugins = append(expectedPlugins, &model.MarketplacePlugin{
-			BaseMarketplacePlugin: &model.BaseMarketplacePlugin{
-				Manifest: prepackagePlugin.Manifest,
-			},
-		})
-
-		require.ElementsMatch(t, expectedPlugins, plugins)
-		require.Len(t, plugins, 2)
-	})
-
 	t.Run("get remote and prepackaged plugins", func(t *testing.T) {
 		th.App.UpdateConfig(func(cfg *model.Config) {
 			*cfg.PluginSettings.EnableRemoteMarketplace = true
@@ -1731,79 +1623,7 @@ func TestInstallMarketplacePlugin(t *testing.T) {
 		CheckInternalErrorStatus(t, resp)
 		require.Nil(t, manifest)
 		assert.True(t, requestHandled)
-	}, "verify EnterprisePlugins is false for TE")
-
-	th.TestForSystemAdminAndLocal(t, func(t *testing.T, client *model.Client4) {
-		requestHandled := false
-
-		testServer := httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
-			licenseType, ok := req.URL.Query()["enterprise_plugins"]
-			require.True(t, ok)
-			require.Len(t, licenseType, 1)
-			require.Equal(t, "false", licenseType[0])
-
-			res.WriteHeader(http.StatusOK)
-			json, err := json.Marshal([]*model.MarketplacePlugin{})
-			require.NoError(t, err)
-			_, err = res.Write(json)
-			require.NoError(t, err)
-
-			requestHandled = true
-		}))
-		defer func() { testServer.Close() }()
-
-		th.App.UpdateConfig(func(cfg *model.Config) {
-			*cfg.PluginSettings.EnableMarketplace = true
-			*cfg.PluginSettings.EnableRemoteMarketplace = true
-			*cfg.PluginSettings.MarketplaceURL = testServer.URL
-		})
-
-		l := model.NewTestLicense()
-		// model.NewTestLicense generates a E20 license
-		*l.Features.EnterprisePlugins = false
-		th.App.Srv().SetLicense(l)
-
-		pRequest := &model.InstallMarketplacePluginRequest{Id: "testplugin"}
-		manifest, resp, err := client.InstallMarketplacePlugin(context.Background(), pRequest)
-		require.Error(t, err)
-		CheckInternalErrorStatus(t, resp)
-		require.Nil(t, manifest)
-		assert.True(t, requestHandled)
-	}, "verify EnterprisePlugins is false for E10")
-
-	th.TestForSystemAdminAndLocal(t, func(t *testing.T, client *model.Client4) {
-		requestHandled := false
-
-		testServer := httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
-			licenseType, ok := req.URL.Query()["enterprise_plugins"]
-			require.True(t, ok)
-			require.Len(t, licenseType, 1)
-			require.Equal(t, "true", licenseType[0])
-
-			res.WriteHeader(http.StatusOK)
-			json, err := json.Marshal([]*model.MarketplacePlugin{})
-			require.NoError(t, err)
-			_, err = res.Write(json)
-			require.NoError(t, err)
-
-			requestHandled = true
-		}))
-		defer func() { testServer.Close() }()
-
-		th.App.UpdateConfig(func(cfg *model.Config) {
-			*cfg.PluginSettings.EnableMarketplace = true
-			*cfg.PluginSettings.MarketplaceURL = testServer.URL
-		})
-
-		th.App.Srv().SetLicense(model.NewTestLicense("enterprise_plugins"))
-
-		pRequest := &model.InstallMarketplacePluginRequest{Id: "testplugin"}
-		manifest, resp, err := client.InstallMarketplacePlugin(context.Background(), pRequest)
-		require.Error(t, err)
-		CheckInternalErrorStatus(t, resp)
-		require.Nil(t, manifest)
-		assert.True(t, requestHandled)
-	}, "verify EnterprisePlugins is true for E20")
+	}, "verify EnterprisePlugins is false")
 }
 
 func TestInstallMarketplacePluginPrepackagedDisabled(t *testing.T) {

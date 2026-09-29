@@ -13,7 +13,6 @@ import (
 	"net/http"
 	"net/url"
 	"path/filepath"
-	"strconv"
 	"strings"
 
 	"github.com/mattermost/mattermost/server/public/model"
@@ -38,14 +37,6 @@ func NewPluginAPI(a *App, rctx request.CTX, manifest *model.Manifest) *PluginAPI
 		app:      a,
 		logger:   a.Log().Sugar(mlog.String("plugin_id", manifest.Id)),
 	}
-}
-
-func (api *PluginAPI) checkLDAPLicense() error {
-	license := api.GetLicense()
-	if license == nil || !*license.Features.LDAPGroups {
-		return fmt.Errorf("license does not support LDAP groups")
-	}
-	return nil
 }
 
 func (api *PluginAPI) LoadPluginConfiguration(dest any) error {
@@ -141,13 +132,15 @@ func (api *PluginAPI) GetBundlePath() (string, error) {
 	return bundlePath, err
 }
 
+// GetLicense always returns nil: this server has no license. Plugins that enforce their own
+// licensing must not be granted access based on anything this server reports.
 func (api *PluginAPI) GetLicense() *model.License {
-	return api.app.Srv().License()
+	return nil
 }
 
+// IsEnterpriseReady always returns false so proprietary plugins keep enforcing their own licensing.
 func (api *PluginAPI) IsEnterpriseReady() bool {
-	result, _ := strconv.ParseBool(model.BuildEnterpriseReady)
-	return result
+	return false
 }
 
 func (api *PluginAPI) GetServerVersion() string {
@@ -167,7 +160,7 @@ func (api *PluginAPI) GetTelemetryId() string {
 }
 
 func (api *PluginAPI) CreateTeam(team *model.Team) (*model.Team, *model.AppError) {
-	if model.SafeDereference(api.app.Config().PrivacySettings.UseAnonymousURLs) && model.MinimumEnterpriseAdvancedLicense(api.app.License()) {
+	if model.SafeDereference(api.app.Config().PrivacySettings.UseAnonymousURLs) {
 		team.Name = model.NewId()
 	}
 
@@ -467,7 +460,7 @@ func (api *PluginAPI) GetLDAPUserAttributes(userID string, attributes []string) 
 }
 
 func (api *PluginAPI) CreateChannel(channel *model.Channel) (*model.Channel, *model.AppError) {
-	UseAnonymousURLs := model.SafeDereference(api.app.Config().PrivacySettings.UseAnonymousURLs) && model.MinimumEnterpriseAdvancedLicense(api.app.License())
+	UseAnonymousURLs := model.SafeDereference(api.app.Config().PrivacySettings.UseAnonymousURLs)
 	// Space backing channels have system-assigned names, not user-visible URLs — anonymous-URL scrambling does not apply.
 	if !channel.IsGroupOrDirect() && !channel.IsSpace() && UseAnonymousURLs {
 		channel.Name = model.NewId()
@@ -807,93 +800,54 @@ func (api *PluginAPI) GetGroupsForUser(userID string) ([]*model.Group, *model.Ap
 }
 
 func (api *PluginAPI) UpsertGroupMember(groupID string, userID string) (*model.GroupMember, *model.AppError) {
-	if err := api.checkLDAPLicense(); err != nil {
-		return nil, model.NewAppError("UpsertGroupMember", "app.group.license_error", nil, "", http.StatusForbidden).Wrap(err)
-	}
 	return api.app.UpsertGroupMember(groupID, userID)
 }
 
 func (api *PluginAPI) UpsertGroupMembers(groupID string, userIDs []string) ([]*model.GroupMember, *model.AppError) {
-	if err := api.checkLDAPLicense(); err != nil {
-		return nil, model.NewAppError("UpsertGroupMembers", "app.group.license_error", nil, "", http.StatusForbidden).Wrap(err)
-	}
 	return api.app.UpsertGroupMembers(groupID, userIDs)
 }
 
 func (api *PluginAPI) GetGroupByRemoteID(remoteID string, groupSource model.GroupSource) (*model.Group, *model.AppError) {
-	if err := api.checkLDAPLicense(); err != nil {
-		return nil, model.NewAppError("GetGroupByRemoteID", "app.group.license_error", nil, "", http.StatusForbidden).Wrap(err)
-	}
 	return api.app.GetGroupByRemoteID(remoteID, groupSource)
 }
 
 func (api *PluginAPI) CreateGroup(group *model.Group) (*model.Group, *model.AppError) {
-	if err := api.checkLDAPLicense(); err != nil {
-		return nil, model.NewAppError("CreateGroup", "app.group.license_error", nil, "", http.StatusForbidden).Wrap(err)
-	}
 	return api.app.CreateGroup(group)
 }
 
 func (api *PluginAPI) UpdateGroup(group *model.Group) (*model.Group, *model.AppError) {
-	if err := api.checkLDAPLicense(); err != nil {
-		return nil, model.NewAppError("UpdateGroup", "app.group.license_error", nil, "", http.StatusForbidden).Wrap(err)
-	}
 	return api.app.UpdateGroup(group)
 }
 
 func (api *PluginAPI) DeleteGroup(groupID string) (*model.Group, *model.AppError) {
-	if err := api.checkLDAPLicense(); err != nil {
-		return nil, model.NewAppError("DeleteGroup", "app.group.license_error", nil, "", http.StatusForbidden).Wrap(err)
-	}
 	return api.app.DeleteGroup(groupID)
 }
 
 func (api *PluginAPI) RestoreGroup(groupID string) (*model.Group, *model.AppError) {
-	if err := api.checkLDAPLicense(); err != nil {
-		return nil, model.NewAppError("RestoreGroup", "app.group.license_error", nil, "", http.StatusForbidden).Wrap(err)
-	}
 	return api.app.RestoreGroup(groupID)
 }
 
 func (api *PluginAPI) DeleteGroupMember(groupID string, userID string) (*model.GroupMember, *model.AppError) {
-	if err := api.checkLDAPLicense(); err != nil {
-		return nil, model.NewAppError("DeleteGroupMember", "app.group.license_error", nil, "", http.StatusForbidden).Wrap(err)
-	}
 	return api.app.DeleteGroupMember(groupID, userID)
 }
 
 func (api *PluginAPI) GetGroupSyncable(groupID string, syncableID string, syncableType model.GroupSyncableType) (*model.GroupSyncable, *model.AppError) {
-	if err := api.checkLDAPLicense(); err != nil {
-		return nil, model.NewAppError("GetGroupSyncable", "app.group.license_error", nil, "", http.StatusForbidden).Wrap(err)
-	}
 	return api.app.GetGroupSyncable(groupID, syncableID, syncableType)
 }
 
 func (api *PluginAPI) GetGroupSyncables(groupID string, syncableType model.GroupSyncableType) ([]*model.GroupSyncable, *model.AppError) {
-	if err := api.checkLDAPLicense(); err != nil {
-		return nil, model.NewAppError("GetGroupSyncables", "app.group.license_error", nil, "", http.StatusForbidden).Wrap(err)
-	}
 	return api.app.GetGroupSyncables(groupID, syncableType)
 }
 
 func (api *PluginAPI) UpsertGroupSyncable(groupSyncable *model.GroupSyncable) (*model.GroupSyncable, *model.AppError) {
-	if err := api.checkLDAPLicense(); err != nil {
-		return nil, model.NewAppError("UpsertGroupSyncable", "app.group.license_error", nil, "", http.StatusForbidden).Wrap(err)
-	}
 	return api.app.UpsertGroupSyncable(groupSyncable)
 }
 
 func (api *PluginAPI) UpdateGroupSyncable(groupSyncable *model.GroupSyncable) (*model.GroupSyncable, *model.AppError) {
-	if err := api.checkLDAPLicense(); err != nil {
-		return nil, model.NewAppError("UpdateGroupSyncable", "app.group.license_error", nil, "", http.StatusForbidden).Wrap(err)
-	}
 	return api.app.UpdateGroupSyncable(groupSyncable)
 }
 
 func (api *PluginAPI) DeleteGroupSyncable(groupID string, syncableID string, syncableType model.GroupSyncableType) (*model.GroupSyncable, *model.AppError) {
-	if err := api.checkLDAPLicense(); err != nil {
-		return nil, model.NewAppError("DeleteGroupSyncable", "app.group.license_error", nil, "", http.StatusForbidden).Wrap(err)
-	}
 	return api.app.DeleteGroupSyncable(groupID, syncableID, syncableType)
 }
 
@@ -1623,16 +1577,9 @@ func (api *PluginAPI) PublishPluginClusterEvent(ev model.PluginClusterEvent,
 	return nil
 }
 
-// RequestTrialLicense requests a trial license and installs it in the server
+// RequestTrialLicense is not supported: this server has no license and every feature is available.
 func (api *PluginAPI) RequestTrialLicense(requesterID string, users int, termsAccepted bool, receiveEmailsAccepted bool) *model.AppError {
-	// Normally, plugins are unrestricted in their abilities, but to maintain backwards compatbilibity with plugins
-	// that were unaware of the nuances of ExperimentalSettings.RestrictSystemAdmin, we restrict the trial license
-	// unconditionally.
-	if *api.app.Config().ExperimentalSettings.RestrictSystemAdmin {
-		return model.NewAppError("RequestTrialLicense", "api.restricted_system_admin", nil, "", http.StatusForbidden)
-	}
-
-	return api.app.Channels().RequestTrialLicense(api.ctx, requesterID, users, termsAccepted, receiveEmailsAccepted)
+	return model.NewAppError("RequestTrialLicense", "app.plugin.request_trial_license.not_supported.app_error", nil, "", http.StatusNotImplemented)
 }
 
 // GetCloudLimits returns any limits associated with the cloud instance
@@ -1742,17 +1689,10 @@ func (api *PluginAPI) GetPluginID() string {
 }
 
 func (api *PluginAPI) GetGroups(page, perPage int, opts model.GroupSearchOpts, viewRestrictions *model.ViewUsersRestrictions) ([]*model.Group, *model.AppError) {
-	if err := api.checkLDAPLicense(); err != nil {
-		return nil, model.NewAppError("GetGroups", "app.group.license_error", nil, "", http.StatusForbidden).Wrap(err)
-	}
 	return api.app.GetGroups(page, perPage, opts, viewRestrictions)
 }
 
 func (api *PluginAPI) CreateDefaultSyncableMemberships(params model.CreateDefaultMembershipParams) *model.AppError {
-	if err := api.checkLDAPLicense(); err != nil {
-		return model.NewAppError("CreateDefaultSyncableMemberships", "app.group.license_error", nil, "", http.StatusForbidden).Wrap(err)
-	}
-
 	err := api.app.CreateDefaultMemberships(api.ctx, params)
 	if err != nil {
 		return model.NewAppError("CreateDefaultSyncableMemberships", "app.group.create_syncable_memberships.error", nil, "", http.StatusInternalServerError).Wrap(err)
@@ -1762,10 +1702,6 @@ func (api *PluginAPI) CreateDefaultSyncableMemberships(params model.CreateDefaul
 }
 
 func (api *PluginAPI) DeleteGroupConstrainedMemberships() *model.AppError {
-	if err := api.checkLDAPLicense(); err != nil {
-		return model.NewAppError("DeleteGroupConstrainedMemberships", "app.group.license_error", nil, "", http.StatusForbidden).Wrap(err)
-	}
-
 	err := api.app.DeleteGroupConstrainedMemberships(api.ctx)
 	if err != nil {
 		return model.NewAppError("DeleteGroupConstrainedMemberships", "app.group.delete_invalid_syncable_memberships.error", nil, "", http.StatusInternalServerError).Wrap(err)
