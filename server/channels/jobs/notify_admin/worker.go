@@ -10,49 +10,11 @@ import (
 )
 
 const (
-	UpgradeNotifyJobName = "UpgradeNotifyAdmin"
-	TrialNotifyJobName   = "TrialNotifyAdmin"
 	InstallNotifyJobName = "InstallNotifyAdmin"
 )
 
 type AppIface interface {
 	DoCheckForAdminNotifications(trial bool) *model.AppError
-}
-
-func MakeUpgradeNotifyWorker(jobServer *jobs.JobServer, license *model.License, app AppIface) *jobs.SimpleWorker {
-	isEnabled := func(_ *model.Config) bool {
-		return license != nil && license.Features != nil && *license.Features.Cloud
-	}
-	execute := func(logger mlog.LoggerIFace, job *model.Job) error {
-		defer jobServer.HandleJobPanic(logger, job)
-
-		appErr := app.DoCheckForAdminNotifications(false)
-		if appErr != nil {
-			return appErr
-		}
-
-		return nil
-	}
-	worker := jobs.NewSimpleWorker(UpgradeNotifyJobName, jobServer, execute, isEnabled)
-	return worker
-}
-
-func MakeTrialNotifyWorker(jobServer *jobs.JobServer, license *model.License, app AppIface) *jobs.SimpleWorker {
-	isEnabled := func(_ *model.Config) bool {
-		return license != nil && license.Features != nil && *license.Features.Cloud
-	}
-	execute := func(logger mlog.LoggerIFace, job *model.Job) error {
-		defer jobServer.HandleJobPanic(logger, job)
-
-		appErr := app.DoCheckForAdminNotifications(true)
-		if appErr != nil {
-			return appErr
-		}
-
-		return nil
-	}
-	worker := jobs.NewSimpleWorker(TrialNotifyJobName, jobServer, execute, isEnabled)
-	return worker
 }
 
 func MakeInstallPluginNotifyWorker(jobServer *jobs.JobServer, app AppIface) *jobs.SimpleWorker {
