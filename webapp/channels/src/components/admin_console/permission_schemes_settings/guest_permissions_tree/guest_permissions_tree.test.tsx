@@ -6,7 +6,6 @@ import React from 'react';
 import type {Permission} from 'components/admin_console/permission_schemes_settings/permissions_tree/types';
 
 import {renderWithContext, screen} from 'tests/react_testing_utils';
-import {LicenseSkus} from 'utils/constants';
 import {TestHelper} from 'utils/test_helper';
 
 import GuestPermissionsTree from './guest_permissions_tree';
@@ -28,10 +27,6 @@ describe('components/admin_console/permission_schemes_settings/guest_permissions
         selectRow: jest.fn(),
         parentRole: undefined,
         readOnly: false,
-        license: {
-            SkuShortName: LicenseSkus.Professional,
-            IsLicensed: 'true',
-        },
     };
 
     test('should render guest permissions tree with headers', () => {
@@ -62,7 +57,7 @@ describe('components/admin_console/permission_schemes_settings/guest_permissions
     });
 
     describe('default guest permissions', () => {
-        const verifyDefaultPermissions = (permissions: Array<Permission | string>, includeGroupMentions: boolean) => {
+        const verifyDefaultPermissions = (permissions: Array<Permission | string>) => {
             const permissionIds = permissions.map((p) => (typeof p === 'string' ? p : p.id));
 
             expect(permissionIds).toContain('guest_create_private_channel');
@@ -73,11 +68,7 @@ describe('components/admin_console/permission_schemes_settings/guest_permissions
             expect(permissionIds).toContain('guest_use_channel_mentions');
             expect(permissionIds).toContain('guest_edit_file_attachment');
 
-            if (includeGroupMentions) {
-                expect(permissionIds).toContain('guest_use_group_mentions');
-            } else {
-                expect(permissionIds).not.toContain('guest_use_group_mentions');
-            }
+            expect(permissionIds).toContain('guest_use_group_mentions');
 
             const createPostPermission = permissions.find((p) => typeof p === 'object' && p.id === 'guest_create_post') as Permission;
             expect(createPostPermission).toBeDefined();
@@ -90,59 +81,15 @@ describe('components/admin_console/permission_schemes_settings/guest_permissions
             expect(reactionsPermission.permissions).toEqual(['add_reaction', 'remove_reaction']);
         };
 
-        [LicenseSkus.Professional, LicenseSkus.Enterprise, LicenseSkus.EnterpriseAdvanced, LicenseSkus.Entry].forEach((sku) => {
-            test(`should include all default permissions with group mentions for ${sku}`, () => {
-                renderWithContext(
-                    <GuestPermissionsTree
-                        {...defaultProps}
-                        license={{
-                            SkuShortName: sku,
-                            IsLicensed: 'true',
-                        }}
-                    />,
-                );
-
-                expect(PermissionGroup).toHaveBeenCalledTimes(1);
-                const calls = PermissionGroup.mock.calls;
-                const permissions = calls[0][0].permissions as Array<Permission | string>;
-                verifyDefaultPermissions(permissions, true);
-            });
-        });
-
-        [LicenseSkus.Starter, LicenseSkus.E10].forEach((sku) => {
-            test(`should include all default permissions without group mentions for ${sku}`, () => {
-                renderWithContext(
-                    <GuestPermissionsTree
-                        {...defaultProps}
-                        license={{
-                            SkuShortName: sku,
-                            IsLicensed: 'true',
-                        }}
-                    />,
-                );
-
-                expect(PermissionGroup).toHaveBeenCalledTimes(1);
-                const calls = PermissionGroup.mock.calls;
-                const permissions = calls[0][0].permissions as Array<Permission | string>;
-                verifyDefaultPermissions(permissions, false);
-            });
-        });
-
-        test('should include all default permissions without group mentions for unlicensed', () => {
+        test('should include all default permissions with group mentions', () => {
             renderWithContext(
-                <GuestPermissionsTree
-                    {...defaultProps}
-                    license={{
-                        SkuShortName: '',
-                        IsLicensed: 'false',
-                    }}
-                />,
+                <GuestPermissionsTree {...defaultProps}/>,
             );
 
             expect(PermissionGroup).toHaveBeenCalledTimes(1);
             const calls = PermissionGroup.mock.calls;
             const permissions = calls[0][0].permissions as Array<Permission | string>;
-            verifyDefaultPermissions(permissions, false);
+            verifyDefaultPermissions(permissions);
         });
     });
 

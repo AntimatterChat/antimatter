@@ -41,7 +41,6 @@ export type Props = {
     roles: Record<string, Role>;
 
     // Delegated administration roles are an Enterprise/Enterprise Advanced feature.
-    isLicensedForDelegatedAdmin: boolean;
 
     // defining custom function type instead of using React.MouseEventHandler
     // to make the event optional
@@ -193,10 +192,6 @@ export default class ManageRolesModal extends React.PureComponent<Props, State> 
     };
 
     renderDelegatedAdminRoles = () => {
-        if (!this.props.isLicensedForDelegatedAdmin) {
-            return null;
-        }
-
         // System Admins already have access to all System Console areas, so the delegated roles are irrelevant.
         if (this.state.isSystemAdmin) {
             return null;

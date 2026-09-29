@@ -55,12 +55,9 @@ describe('SystemUsersListAction Component', () => {
     const guestUser = {...user, roles: General.SYSTEM_GUEST_ROLE} as UserProfile;
     const userManager = TestHelper.getUserMock({id: 'user_manager_id', roles: 'system_user_manager'});
 
-    // "Demote to guest" is only offered when guest accounts are licensed and enabled.
+    // "Demote to guest" is only offered when guest accounts are enabled.
     const guestAccountsEnabledState: DeepPartial<GlobalState> = {
         entities: {
-            general: {
-                license: {IsLicensed: 'true'},
-            },
             admin: {
                 config: {
                     GuestAccountsSettings: {Enable: true},
@@ -190,7 +187,7 @@ describe('SystemUsersListAction Component', () => {
         expect(within(menu).getByRole('menuitem', {name: /promote to member/i})).toBeInTheDocument();
     });
 
-    test('"Promote to member" remains available without a license or guest accounts enabled', async () => {
+    test('"Promote to member" remains available without guest accounts enabled', async () => {
         renderComponent(guestUser);
 
         const menu = await openMenu('Guest');

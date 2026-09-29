@@ -68,6 +68,62 @@ exports[`admin_console/team_channel_settings/team/TeamDetails should match snaps
                   <label
                     class="line-switch__label"
                   >
+                    Sync Group Members
+                  </label>
+                  <div
+                    class="line-switch__toggle"
+                    data-testid="syncGroupSwitch"
+                  >
+                    <button
+                      aria-pressed="false"
+                      class="btn btn-lg btn-toggle"
+                      data-testid="syncGroupSwitch-button"
+                      id="syncGroupSwitch"
+                      tabindex="0"
+                      type="button"
+                    >
+                      <div
+                        class="handle"
+                      />
+                    </button>
+                  </div>
+                </div>
+                <div
+                  class="row"
+                >
+                  <div
+                    class="col-sm-10"
+                  >
+                    <div
+                      class="help-text-small help-text-no-padding "
+                    >
+                      When enabled, adding and removing users from groups will add or remove them from this team. The only way of inviting members to this team is by adding the groups they belong to. 
+                      <a
+                        href="https://www.mattermost.com/pl/default-ldap-group-constrained-team-channel.html?utm_source=mattermost&utm_medium=in-product&utm_content=team_modes&uid=&sid=&server_version="
+                        location="team_modes"
+                        rel="noopener noreferrer"
+                        target="_blank"
+                      >
+                        Learn More
+                      </a>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="section-separator"
+                >
+                  <hr
+                    class="separator__hr"
+                  />
+                </div>
+              </div>
+              <div>
+                <div
+                  class="line-switch d-flex flex-sm-column flex-md-row align-items-sm-start align-items-center"
+                >
+                  <label
+                    class="line-switch__label"
+                  >
                     Anyone can join this team
                   </label>
                   <div
@@ -161,6 +217,107 @@ exports[`admin_console/team_channel_settings/team/TeamDetails should match snaps
                   value=""
                 />
               </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="AdminPanel clearfix "
+          id="team_groups"
+        >
+          <div
+            class="header"
+          >
+            <div>
+              <h3>
+                Groups
+              </h3>
+              <div
+                class="mt-2"
+              >
+                Group members will be added to the team.
+              </div>
+            </div>
+            <div
+              class="button"
+            >
+              <button
+                class="style--none btn btn-primary"
+                id="addGroupsToTeamToggle"
+              >
+                Add Group
+              </button>
+            </div>
+          </div>
+          <div
+            class="groups-list groups-list-no-padding"
+          >
+            <div
+              class="groups-list--header"
+            >
+              <div
+                class="group-name group-name-adjusted"
+              >
+                Group Name
+              </div>
+              <div
+                class="group-content"
+              >
+                <div
+                  class="group-description group-description-adjusted"
+                >
+                  Member Count
+                </div>
+                <div
+                  class="group-description group-description-adjusted"
+                >
+                  Roles
+                </div>
+                <div
+                  class="group-actions"
+                />
+              </div>
+            </div>
+            <div
+              class="groups-list--body"
+              id="groups-list--body"
+            >
+              <div
+                class="groups-list-loading"
+              >
+                <i
+                  class="fa fa-spinner fa-pulse fa-2x"
+                />
+              </div>
+            </div>
+            <div
+              class="groups-list--footer"
+            >
+              <div
+                class="counter"
+              >
+                1 - 1 of 1
+              </div>
+              <button
+                class="btn btn-tertiary disabled"
+                disabled=""
+                type="button"
+              >
+                <i
+                  class="icon icon-chevron-left"
+                  title="Previous Icon"
+                />
+              </button>
+              <button
+                class="btn btn-tertiary disabled"
+                data-testid="page-link-next"
+                disabled=""
+                type="button"
+              >
+                <i
+                  class="icon icon-chevron-right"
+                  title="Next Icon"
+                />
+              </button>
             </div>
           </div>
         </div>

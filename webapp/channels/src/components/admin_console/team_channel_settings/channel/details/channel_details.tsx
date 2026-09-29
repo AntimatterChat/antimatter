@@ -54,8 +54,6 @@ export interface ChannelDetailsProps {
     channelPermissions: ChannelPermissions[];
     teamScheme?: Scheme;
     guestAccountsEnabled: boolean;
-    channelModerationEnabled: boolean;
-    channelGroupsEnabled: boolean;
     abacSupported: boolean;
     isDisabled?: boolean;
     actions: ChannelDetailsActions;
@@ -235,11 +233,9 @@ export default class ChannelDetails extends React.PureComponent<ChannelDetailsPr
     componentDidMount() {
         const {channelID, channel, actions} = this.props;
         if (channelID) {
-            if (this.props.channelModerationEnabled) {
-                actions.getGroups(channelID).
-                    then(() => this.setState({groups: this.props.groups}));
-                actions.getChannelModerations(channelID).then(() => this.restrictChannelMentions());
-            }
+            actions.getGroups(channelID).
+                then(() => this.setState({groups: this.props.groups}));
+            actions.getChannelModerations(channelID).then(() => this.restrictChannelMentions());
             actions.getChannel(channelID);
 
             // Load user attributes and policies if ABAC is supported (regardless of policy_enforced state)
@@ -585,46 +581,40 @@ export default class ChannelDetails extends React.PureComponent<ChannelDetailsPr
 
         if (!(resultWithError && 'error' in resultWithError) && !('error' in patchResult)) {
             const actionsToAwait: any[] = [];
-            if (this.props.channelModerationEnabled) {
-                actionsToAwait.push(actions.getGroups(channelID));
-            }
+            actionsToAwait.push(actions.getGroups(channelID));
             if (isPrivacyChanging) {
                 // If the privacy is changing update the manage_members value for the channel moderation widget
-                if (this.props.channelModerationEnabled) {
-                    actionsToAwait.push(
-                        actions.getChannelModerations(channelID).then(() => {
-                            const manageMembersIndex = channelPermissions.findIndex((element) => element.name === Permissions.CHANNEL_MODERATED_PERMISSIONS.MANAGE_MEMBERS);
-                            if (channelPermissions) {
-                                const updatedManageMembers = this.props.channelPermissions.find((element) => element.name === Permissions.CHANNEL_MODERATED_PERMISSIONS.MANAGE_MEMBERS);
-                                channelPermissions[manageMembersIndex] = updatedManageMembers || channelPermissions[manageMembersIndex];
-                            }
-                            this.setState({channelPermissions});
-                        }),
-                    );
-                }
+                actionsToAwait.push(
+                    actions.getChannelModerations(channelID).then(() => {
+                        const manageMembersIndex = channelPermissions.findIndex((element) => element.name === Permissions.CHANNEL_MODERATED_PERMISSIONS.MANAGE_MEMBERS);
+                        if (channelPermissions) {
+                            const updatedManageMembers = this.props.channelPermissions.find((element) => element.name === Permissions.CHANNEL_MODERATED_PERMISSIONS.MANAGE_MEMBERS);
+                            channelPermissions[manageMembersIndex] = updatedManageMembers || channelPermissions[manageMembersIndex];
+                        }
+                        this.setState({channelPermissions});
+                    }),
+                );
             }
             if (actionsToAwait.length > 0) {
                 await Promise.all(actionsToAwait);
             }
             await Promise.resolve();
         }
-        if (this.props.channelModerationEnabled) {
-            const patchChannelPermissionsArray: ChannelModerationPatch[] = channelPermissions.map((p) => {
-                return {
-                    name: p.name,
-                    roles: {
-                        ...(p.roles.members && p.roles.members.enabled && {members: p.roles.members!.value}),
-                        ...(p.roles.guests && p.roles.guests.enabled && {guests: p.roles.guests!.value}),
-                    },
-                };
-            });
+        const patchChannelPermissionsArray: ChannelModerationPatch[] = channelPermissions.map((p) => {
+            return {
+                name: p.name,
+                roles: {
+                    ...(p.roles.members && p.roles.members.enabled && {members: p.roles.members!.value}),
+                    ...(p.roles.guests && p.roles.guests.enabled && {guests: p.roles.guests!.value}),
+                },
+            };
+        });
 
-            const patchChannelModerationsResult = await actions.patchChannelModerations(channelID, patchChannelPermissionsArray);
-            if (patchChannelModerationsResult.error) {
-                serverError = <FormError error={patchChannelModerationsResult.error.message}/>;
-            }
-            this.restrictChannelMentions();
+        const patchChannelModerationsResult = await actions.patchChannelModerations(channelID, patchChannelPermissionsArray);
+        if (patchChannelModerationsResult.error) {
+            serverError = <FormError error={patchChannelModerationsResult.error.message}/>;
         }
+        this.restrictChannelMentions();
 
         if (policyToggled) {
             if (isPublic) {
@@ -1317,17 +1307,15 @@ export default class ChannelDetails extends React.PureComponent<ChannelDetailsPr
                     toPublic={isPublic}
                 />
 
-                {this.props.channelModerationEnabled &&
-                    <ChannelModeration
-                        channelPermissions={channelPermissions}
-                        onChannelPermissionsChanged={this.channelPermissionsChanged}
-                        teamSchemeID={teamScheme?.id}
-                        teamSchemeDisplayName={teamScheme?.display_name}
-                        guestAccountsEnabled={this.props.guestAccountsEnabled}
-                        isPublic={channel.type === Constants.OPEN_CHANNEL}
-                        readOnly={this.props.isDisabled}
-                    />
-                }
+                <ChannelModeration
+                    channelPermissions={channelPermissions}
+                    onChannelPermissionsChanged={this.channelPermissionsChanged}
+                    teamSchemeID={teamScheme?.id}
+                    teamSchemeDisplayName={teamScheme?.display_name}
+                    guestAccountsEnabled={this.props.guestAccountsEnabled}
+                    isPublic={channel.type === Constants.OPEN_CHANNEL}
+                    readOnly={this.props.isDisabled}
+                />
 
                 <RemoveConfirmModal
                     show={showRemoveConfirmModal}
@@ -1363,7 +1351,6 @@ export default class ChannelDetails extends React.PureComponent<ChannelDetailsPr
                     isDefault={isDefault}
                     onToggle={this.setToggles}
                     isDisabled={this.props.isDisabled}
-                    groupsSupported={this.props.channelGroupsEnabled}
                     abacSupported={this.props.abacSupported}
                     policyEnforced={policyToggled}
                     policyEnforcedToggleAvailable={accessControlPolicies.length === 0}
@@ -1392,7 +1379,7 @@ export default class ChannelDetails extends React.PureComponent<ChannelDetailsPr
                     </>
                 )}
 
-                {this.props.channelGroupsEnabled && !policyToggled &&
+                {!policyToggled &&
                     <ChannelGroups
                         synced={isSynced}
                         channel={channel}

@@ -13,7 +13,6 @@ import {updateUserActive} from 'mattermost-redux/actions/users';
 import {Permissions} from 'mattermost-redux/constants';
 import General from 'mattermost-redux/constants/general';
 import {getConfig} from 'mattermost-redux/selectors/entities/admin';
-import {getLicense} from 'mattermost-redux/selectors/entities/general';
 import {haveISystemPermission} from 'mattermost-redux/selectors/entities/roles_helpers';
 import {isSystemAdmin, isGuest} from 'mattermost-redux/utils/user_utils';
 
@@ -55,7 +54,6 @@ export function SystemUsersListAction({user, currentUser, tableId, rowIndex, onE
     const {formatMessage} = useIntl();
     const dispatch = useDispatch();
     const config = useSelector(getConfig);
-    const isLicensed = useSelector(getLicense)?.IsLicensed === 'true';
     const haveSysConsoleWriteUserManagementUsersPermissions = useSelector((state: GlobalState) => haveISystemPermission(state, {permission: Permissions.SYSCONSOLE_WRITE_USERMANAGEMENT_USERS}));
     const showManageUserSettings = useSelector(getShowManageUserSettings);
 
@@ -507,7 +505,7 @@ export function SystemUsersListAction({user, currentUser, tableId, rowIndex, onE
                     onClick={handlePromoteToMemberClick}
                 />
             }
-            {!isGuestUser && user.id !== currentUser.id && isLicensed && config.GuestAccountsSettings?.Enable &&
+            {!isGuestUser && user.id !== currentUser.id && config.GuestAccountsSettings?.Enable &&
                 <Menu.Item
                     id={`${menuItemIdPrefix}-demoteToGuest`}
                     labels={

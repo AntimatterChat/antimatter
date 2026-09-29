@@ -7,7 +7,6 @@ import type {Dispatch} from 'redux';
 
 import {editRole} from 'mattermost-redux/actions/roles';
 import {updateUserRoles} from 'mattermost-redux/actions/users';
-import {getLicense} from 'mattermost-redux/selectors/entities/general';
 import {getRolesById} from 'mattermost-redux/selectors/entities/roles';
 
 import {setNavigationBlocked} from 'actions/admin_actions';
@@ -26,11 +25,7 @@ type Props = {
 
 function mapStateToProps(state: GlobalState, props: Props) {
     const role = getRolesById(state)[props.match.params.role_id];
-    const license = getLicense(state);
-    const isLicensedForCloud = license.Cloud === 'true';
-
     return {
-        isLicensedForCloud,
         role,
     };
 }

@@ -15,7 +15,6 @@ interface Props {
     isDefault: boolean;
     onToggle: (isSynced: boolean, isPublic: boolean, policyEnforced: boolean) => void;
     isDisabled?: boolean;
-    groupsSupported?: boolean;
     abacSupported?: boolean;
     policyEnforced: boolean;
     policyEnforcedToggleAvailable: boolean;
@@ -172,7 +171,7 @@ const PolicyEnforceToggle = (props: Props): JSX.Element | null => {
 };
 
 export const ChannelModes = (props: Props): JSX.Element => {
-    const {isPublic, isSynced, isDefault, onToggle, isDisabled, groupsSupported, policyEnforced, policyEnforcedToggleAvailable, abacSupported} = props;
+    const {isPublic, isSynced, isDefault, onToggle, isDisabled, policyEnforced, policyEnforcedToggleAvailable, abacSupported} = props;
     return (
         <AdminPanel
             id='channel_manage'
@@ -181,7 +180,7 @@ export const ChannelModes = (props: Props): JSX.Element => {
         >
             <div className='group-teams-and-channels'>
                 <div className='group-teams-and-channels--body'>
-                    {!policyEnforced && groupsSupported &&
+                    {!policyEnforced &&
                         <SyncGroupsToggle
                             isPublic={isPublic}
                             isSynced={isSynced}

@@ -13,7 +13,7 @@ jest.mock('./team_members/index', () => {
 });
 
 // Lightweight stand-in that mirrors the real TeamProfile's name/description
-// editing contract. The real component pulls in cloud usage hooks that are not
+// editing contract. The real component renders UI that is not
 // relevant here and is exercised directly in team_profile.test.tsx; this fake
 // lets us drive TeamDetails' own save/validation logic through real state.
 jest.mock('./team_profile', () => ({

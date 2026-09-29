@@ -4,7 +4,7 @@
 import {connect} from 'react-redux';
 
 import Permissions from 'mattermost-redux/constants/permissions';
-import {getConfig, getLicense} from 'mattermost-redux/selectors/entities/general';
+import {getConfig} from 'mattermost-redux/selectors/entities/general';
 import {isCustomGroupsEnabled} from 'mattermost-redux/selectors/entities/preferences';
 
 import type {GlobalState} from 'types/store';
@@ -23,12 +23,10 @@ export const EXCLUDED_PERMISSIONS = [
 
 function mapStateToProps(state: GlobalState) {
     const config = getConfig(state);
-    const license = getLicense(state);
     const customGroupsEnabled = isCustomGroupsEnabled(state);
 
     return {
         config,
-        license,
         customGroupsEnabled,
     };
 }

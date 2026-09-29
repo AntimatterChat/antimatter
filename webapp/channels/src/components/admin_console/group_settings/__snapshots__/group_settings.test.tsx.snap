@@ -26,7 +26,7 @@ exports[`components/admin_console/group_settings/GroupSettings should match snap
             Groups are a way to organize users and apply actions to all users within that group.
 For more information on Groups, please see 
             <a
-              href="https://mattermost.com/pl/default-ldap-group-sync?utm_source=mattermost&utm_medium=in-product&utm_content=group_settings&uid=&sid=&edition=team&server_version="
+              href="https://mattermost.com/pl/default-ldap-group-sync?utm_source=mattermost&utm_medium=in-product&utm_content=group_settings&uid=&sid=&server_version="
               location="group_settings"
               rel="noopener noreferrer"
               target="_blank"

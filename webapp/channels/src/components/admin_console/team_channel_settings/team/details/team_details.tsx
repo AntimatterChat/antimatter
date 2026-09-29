@@ -42,7 +42,6 @@ export type Props = {
     groups: Group[];
     allGroups: Record<string, Group>;
     isDisabled?: boolean;
-    isLicensedForLDAPGroups?: boolean;
     abacSupported?: boolean;
     actions: {
         setNavigationBlocked: (blocked: boolean) => void;
@@ -958,7 +957,7 @@ export default class TeamDetails extends React.PureComponent<Props, State> {
     };
 
     render = () => {
-        const {team, isLicensedForLDAPGroups} = this.props;
+        const {team} = this.props;
 
         if (!team) {
             return null;
@@ -991,7 +990,6 @@ export default class TeamDetails extends React.PureComponent<Props, State> {
                     syncChecked={syncChecked}
                     onToggle={this.setToggles}
                     isDisabled={this.props.isDisabled}
-                    isLicensedForLDAPGroups={isLicensedForLDAPGroups}
                     abacSupported={this.props.abacSupported}
                     policyEnforced={this.state.policyEnforced}
                     policyEnforcedToggleAvailable={this.state.accessControlPolicies.length === 0}
@@ -1027,7 +1025,7 @@ export default class TeamDetails extends React.PureComponent<Props, State> {
                     </>
                 )}
 
-                {isLicensedForLDAPGroups && !this.state.policyEnforced &&
+                {!this.state.policyEnforced &&
                     <TeamGroups
                         syncChecked={syncChecked}
                         team={team}
@@ -1082,7 +1080,6 @@ export default class TeamDetails extends React.PureComponent<Props, State> {
                             onToggleArchive={this.onToggleArchive}
                             isArchived={isLocalArchived}
                             isDisabled={this.props.isDisabled}
-                            saveNeeded={this.state.saveNeeded}
                         />
                         <ConfirmModal
                             show={showArchiveConfirmModal}

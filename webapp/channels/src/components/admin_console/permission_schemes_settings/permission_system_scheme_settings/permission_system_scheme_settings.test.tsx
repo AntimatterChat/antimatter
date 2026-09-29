@@ -31,11 +31,6 @@ describe('components/admin_console/permission_schemes_settings/permission_system
         config: {
             EnableGuestAccounts: 'true',
         },
-        license: {
-            IsLicensed: 'true',
-            CustomPermissionsSchemes: 'true',
-            GuestAccountsPermissions: 'true',
-        },
         location: {} as Location,
         roles: {
             system_guest: defaultRole,
@@ -69,23 +64,6 @@ describe('components/admin_console/permission_schemes_settings/permission_system
         );
         defaultProps.actions.loadRolesIfNeeded().then(() => {
             expect(ref.current!.state).toMatchSnapshot();
-            done();
-        });
-    });
-
-    test('should match snapshot when the license doesnt have custom schemes', (done) => {
-        const license = {
-            IsLicensed: 'true',
-            CustomPermissionsSchemes: 'false',
-        };
-        const {container} = renderWithContext(
-            <PermissionSystemSchemeSettings
-                {...defaultProps}
-                license={license}
-            />,
-        );
-        defaultProps.actions.loadRolesIfNeeded().then(() => {
-            expect(container).toMatchSnapshot();
             done();
         });
     });
@@ -177,49 +155,6 @@ describe('components/admin_console/permission_schemes_settings/permission_system
 
         await act(async () => {
             await (ref.current as any).handleSubmit();
-        });
-        expect(editRole).toHaveBeenCalledTimes(11);
-    });
-
-    test('should save roles based on license', async () => {
-        const license = {
-            IsLicensed: 'true',
-            CustomPermissionsSchemes: 'false',
-            GuestAccountsPermissions: 'false',
-        };
-        let editRole = jest.fn().mockImplementation(() => Promise.resolve({data: {}}));
-        const ref = React.createRef<InstanceType<typeof PermissionSystemSchemeSettings>>();
-        const {container} = renderWithContext(
-            <PermissionSystemSchemeSettings
-                {...defaultProps}
-                license={license}
-                actions={{...defaultProps.actions, editRole}}
-                ref={ref}
-            />,
-        );
-
-        expect(container).toMatchSnapshot();
-
-        await act(async () => {
-            await (ref.current as any).handleSubmit();
-        });
-        expect(editRole).toHaveBeenCalledTimes(8);
-        license.GuestAccountsPermissions = 'true';
-        editRole = jest.fn().mockImplementation(() => Promise.resolve({data: {}}));
-        const ref2 = React.createRef<InstanceType<typeof PermissionSystemSchemeSettings>>();
-        const {container: container2} = renderWithContext(
-            <PermissionSystemSchemeSettings
-                {...defaultProps}
-                license={license}
-                actions={{...defaultProps.actions, editRole}}
-                ref={ref2}
-            />,
-        );
-
-        expect(container2).toMatchSnapshot();
-
-        await act(async () => {
-            await (ref2.current as any).handleSubmit();
         });
         expect(editRole).toHaveBeenCalledTimes(11);
     });

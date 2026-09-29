@@ -60,11 +60,6 @@ describe('components/admin_console/permission_schemes_settings/permission_team_s
         config: {
             EnableGuestAccounts: 'true',
         },
-        license: {
-            IsLicensed: 'true',
-            CustomPermissionsSchemes: 'true',
-            GuestAccountsPermissions: 'true',
-        },
         location: {search: ''},
         schemeId: '',
         scheme: null,
@@ -563,48 +558,6 @@ describe('components/admin_console/permission_schemes_settings/permission_team_s
         expect(screen.queryByTestId('guest-permissions-tree-guests')).not.toBeInTheDocument();
 
         // Other sections should still be present
-        expect(screen.getByTestId('permissions-tree-all_users')).toBeInTheDocument();
-        expect(screen.getByTestId('permissions-tree-channel_admin')).toBeInTheDocument();
-        expect(screen.getByTestId('permissions-tree-team_admin')).toBeInTheDocument();
-    });
-
-    test('should match snapshot on edit without license', async () => {
-        const props = {
-            ...defaultProps,
-            license: {
-                IsLicensed: 'false',
-            },
-            schemeId: 'xyz',
-            scheme: {
-                id: 'xxx',
-                name: 'yyy',
-                display_name: 'Test scheme',
-                description: 'Test scheme description',
-                default_team_user_role: 'aaa',
-                default_team_admin_role: 'bbb',
-                default_channel_user_role: 'ccc',
-                default_channel_admin_role: 'ddd',
-                default_team_guest_role: 'eee',
-                default_channel_guest_role: 'fff',
-                default_playbook_admin_role: 'ggg',
-                default_playbook_member_role: 'hhh',
-                default_run_admin_role: 'iii',
-                default_run_member_role: 'jjj',
-            },
-        };
-
-        renderWithContext(
-            <PermissionTeamSchemeSettings {...props}/>,
-        );
-        await waitFor(() => {
-            expect(defaultProps.actions.loadRolesIfNeeded).toHaveBeenCalled();
-        });
-
-        // Verify the form still renders
-        expect(screen.getByDisplayValue('Test scheme')).toBeInTheDocument();
-        expect(screen.getByDisplayValue('Test scheme description')).toBeInTheDocument();
-
-        // All Members, Channel Admin, and Team Admin sections still render
         expect(screen.getByTestId('permissions-tree-all_users')).toBeInTheDocument();
         expect(screen.getByTestId('permissions-tree-channel_admin')).toBeInTheDocument();
         expect(screen.getByTestId('permissions-tree-team_admin')).toBeInTheDocument();

@@ -31,15 +31,13 @@ import {getScheme as loadScheme} from 'mattermost-redux/actions/schemes';
 import {getTeam as fetchTeam} from 'mattermost-redux/actions/teams';
 import {getProfilesByIds} from 'mattermost-redux/actions/users';
 import {getChannel, getChannelModerations} from 'mattermost-redux/selectors/entities/channels';
-import {getConfig, getLicense} from 'mattermost-redux/selectors/entities/general';
+import {getConfig} from 'mattermost-redux/selectors/entities/general';
 import {getAllGroups, getGroupsAssociatedToChannel} from 'mattermost-redux/selectors/entities/groups';
 import {getScheme} from 'mattermost-redux/selectors/entities/schemes';
 import {getTeam} from 'mattermost-redux/selectors/entities/teams';
 
 import {setNavigationBlocked} from 'actions/admin_actions';
 import {isChannelAccessControlEnabled} from 'selectors/general';
-
-import {isMinimumEnterpriseAdvancedLicense, isMinimumEnterpriseLicense, isMinimumProfessionalLicense} from 'utils/license_utils';
 
 import type {GlobalState} from 'types/store';
 
@@ -55,20 +53,10 @@ type OwnProps = {
 
 function mapStateToProps(state: GlobalState, ownProps: OwnProps) {
     const config = getConfig(state);
-    const license = getLicense(state);
 
-    const isLicensed = license?.IsLicensed === 'true';
-
-    // Channel Moderation is only available for Professional and above
-    const channelModerationEnabled = isLicensed && isMinimumProfessionalLicense(license);
-
-    // Channel Groups is only available for Enterprise and above
-    const channelGroupsEnabled = isLicensed && isMinimumEnterpriseLicense(license);
-
-    // ABAC must be licensed (Enterprise Advanced) and enabled via the
-    // AccessControlSettings.EnableAttributeBasedAccessControl config setting,
-    // which is now the sole switch for the feature.
-    const abacSupported = isLicensed && isMinimumEnterpriseAdvancedLicense(license) && isChannelAccessControlEnabled(state);
+    // ABAC is enabled via the AccessControlSettings.EnableAttributeBasedAccessControl
+    // config setting, which is the sole switch for the feature.
+    const abacSupported = isChannelAccessControlEnabled(state);
 
     const guestAccountsEnabled = config.EnableGuestAccounts === 'true';
     const channelID = ownProps.match.params.channel_id;
@@ -89,8 +77,6 @@ function mapStateToProps(state: GlobalState, ownProps: OwnProps) {
         channelPermissions,
         teamScheme,
         guestAccountsEnabled,
-        channelModerationEnabled,
-        channelGroupsEnabled,
         abacSupported,
     };
 }

@@ -23,7 +23,6 @@ function mapStateToProps(state: GlobalState) {
     return {
         data: getSortedListOfTeams(state),
         total: state.entities.teams.totalCount || 0,
-        isLicensedForLDAPGroups: state.entities.general.license.LDAPGroups === 'true',
     };
 }
 

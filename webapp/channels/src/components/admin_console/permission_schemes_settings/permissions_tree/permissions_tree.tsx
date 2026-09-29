@@ -4,17 +4,11 @@
 import React from 'react';
 import {FormattedMessage} from 'react-intl';
 
-import type {ClientConfig, ClientLicense} from '@mattermost/types/config';
+import type {ClientConfig} from '@mattermost/types/config';
 import type {Role} from '@mattermost/types/roles';
 
 import GeneralConstants from 'mattermost-redux/constants/general';
 import Permissions from 'mattermost-redux/constants/permissions';
-
-import {
-    isEnterpriseLicense,
-    isMinimumEnterpriseAdvancedLicense,
-    isNonEnterpriseLicense,
-} from 'utils/license_utils';
 
 import type {AdditionalValues, Group} from './types';
 
@@ -31,7 +25,6 @@ type Props = {
     selected?: string;
     selectRow: (id: string) => void;
     readOnly?: boolean;
-    license?: ClientLicense;
     customGroupsEnabled: boolean;
 };
 
@@ -121,18 +114,8 @@ export default class PermissionsTree extends React.PureComponent<Props, State> {
                     Permissions.PLAYBOOK_PUBLIC_CREATE,
                     Permissions.PLAYBOOK_PUBLIC_MANAGE_PROPERTIES,
                     Permissions.PLAYBOOK_PUBLIC_MANAGE_MEMBERS,
-                ],
-                isVisible: isNonEnterpriseLicense,
-            },
-            {
-                id: 'playbook_public',
-                permissions: [
-                    Permissions.PLAYBOOK_PUBLIC_CREATE,
-                    Permissions.PLAYBOOK_PUBLIC_MANAGE_PROPERTIES,
-                    Permissions.PLAYBOOK_PUBLIC_MANAGE_MEMBERS,
                     Permissions.PLAYBOOK_PUBLIC_MAKE_PRIVATE,
                 ],
-                isVisible: isEnterpriseLicense,
             },
             {
                 id: 'playbook_private',
@@ -142,7 +125,6 @@ export default class PermissionsTree extends React.PureComponent<Props, State> {
                     Permissions.PLAYBOOK_PRIVATE_MANAGE_MEMBERS,
                     Permissions.PLAYBOOK_PRIVATE_MAKE_PUBLIC,
                 ],
-                isVisible: isEnterpriseLicense,
             },
             {
                 id: 'runs',
@@ -204,15 +186,15 @@ export default class PermissionsTree extends React.PureComponent<Props, State> {
     }
 
     updateGroups = () => {
-        const {config, scope, license, role} = this.props;
+        const {config, scope, role} = this.props;
 
         const teamsGroup = this.groups[0];
         const publicChannelsGroup = this.groups[1];
         const privateChannelsGroup = this.groups[2];
-        const postsGroup = this.groups[7];
-        const integrationsGroup = this.groups[8];
-        const sharedChannelsGroup = this.groups[9];
-        const customGroupsGroup = this.groups[10];
+        const postsGroup = this.groups[6];
+        const integrationsGroup = this.groups[7];
+        const sharedChannelsGroup = this.groups[8];
+        const customGroupsGroup = this.groups[9];
 
         if (config.EnableIncomingWebhooks === 'true') {
             const incomingWebhookGroup = {
@@ -283,7 +265,7 @@ export default class PermissionsTree extends React.PureComponent<Props, State> {
         if (scope === 'team_scope' && this.groups[0].id !== 'teams_team_scope') {
             this.groups[0].id = 'teams_team_scope';
         }
-        if (license?.IsLicensed === 'true' && (license?.LDAPGroups === 'true' || config.EnableCustomGroups === 'true') && !postsGroup.permissions.includes(Permissions.USE_GROUP_MENTIONS)) {
+        if (!postsGroup.permissions.includes(Permissions.USE_GROUP_MENTIONS)) {
             postsGroup.permissions.push(Permissions.USE_GROUP_MENTIONS);
         }
         postsGroup.permissions.push({
@@ -306,45 +288,33 @@ export default class PermissionsTree extends React.PureComponent<Props, State> {
             privateChannelsGroup.permissions.push(Permissions.CONVERT_PRIVATE_CHANNEL_TO_PUBLIC);
         }
 
-        if (license?.IsLicensed === 'true') {
-            publicChannelsGroup.permissions.push({
-                id: 'manage_public_channel_bookmarks',
-                combined: true,
-                permissions: [
-                    Permissions.ADD_BOOKMARK_PUBLIC_CHANNEL,
-                    Permissions.EDIT_BOOKMARK_PUBLIC_CHANNEL,
-                    Permissions.DELETE_BOOKMARK_PUBLIC_CHANNEL,
-                    Permissions.ORDER_BOOKMARK_PUBLIC_CHANNEL,
-                ],
-            });
-            privateChannelsGroup.permissions.push({
-                id: 'manage_private_channel_bookmarks',
-                combined: true,
-                permissions: [
-                    Permissions.ADD_BOOKMARK_PRIVATE_CHANNEL,
-                    Permissions.EDIT_BOOKMARK_PRIVATE_CHANNEL,
-                    Permissions.DELETE_BOOKMARK_PRIVATE_CHANNEL,
-                    Permissions.ORDER_BOOKMARK_PRIVATE_CHANNEL,
-                ],
-            });
-        }
-
-        if (isMinimumEnterpriseAdvancedLicense(license)) {
-            publicChannelsGroup.permissions.push(Permissions.MANAGE_PUBLIC_CHANNEL_BANNER);
-            publicChannelsGroup.permissions.push(Permissions.MANAGE_PUBLIC_CHANNEL_AUTO_TRANSLATION);
-            privateChannelsGroup.permissions.push(Permissions.MANAGE_PRIVATE_CHANNEL_BANNER);
-            privateChannelsGroup.permissions.push(Permissions.MANAGE_PRIVATE_CHANNEL_AUTO_TRANSLATION);
-            privateChannelsGroup.permissions.push(Permissions.MANAGE_CHANNEL_ACCESS_RULES);
-            teamsGroup.permissions.push(Permissions.MANAGE_TEAM_ACCESS_RULES);
-        }
-
-        this.groups = this.groups.filter((group) => {
-            if (group.isVisible) {
-                return group.isVisible(this.props.license);
-            }
-
-            return true;
+        publicChannelsGroup.permissions.push({
+            id: 'manage_public_channel_bookmarks',
+            combined: true,
+            permissions: [
+                Permissions.ADD_BOOKMARK_PUBLIC_CHANNEL,
+                Permissions.EDIT_BOOKMARK_PUBLIC_CHANNEL,
+                Permissions.DELETE_BOOKMARK_PUBLIC_CHANNEL,
+                Permissions.ORDER_BOOKMARK_PUBLIC_CHANNEL,
+            ],
         });
+        privateChannelsGroup.permissions.push({
+            id: 'manage_private_channel_bookmarks',
+            combined: true,
+            permissions: [
+                Permissions.ADD_BOOKMARK_PRIVATE_CHANNEL,
+                Permissions.EDIT_BOOKMARK_PRIVATE_CHANNEL,
+                Permissions.DELETE_BOOKMARK_PRIVATE_CHANNEL,
+                Permissions.ORDER_BOOKMARK_PRIVATE_CHANNEL,
+            ],
+        });
+
+        publicChannelsGroup.permissions.push(Permissions.MANAGE_PUBLIC_CHANNEL_BANNER);
+        publicChannelsGroup.permissions.push(Permissions.MANAGE_PUBLIC_CHANNEL_AUTO_TRANSLATION);
+        privateChannelsGroup.permissions.push(Permissions.MANAGE_PRIVATE_CHANNEL_BANNER);
+        privateChannelsGroup.permissions.push(Permissions.MANAGE_PRIVATE_CHANNEL_AUTO_TRANSLATION);
+        privateChannelsGroup.permissions.push(Permissions.MANAGE_CHANNEL_ACCESS_RULES);
+        teamsGroup.permissions.push(Permissions.MANAGE_TEAM_ACCESS_RULES);
     };
 
     openPostTimeLimitModal = () => {
@@ -356,7 +326,7 @@ export default class PermissionsTree extends React.PureComponent<Props, State> {
     };
 
     componentDidUpdate(prevProps: Props) {
-        if (this.props.config !== prevProps.config || this.props.license !== prevProps.license) {
+        if (this.props.config !== prevProps.config) {
             this.updateGroups();
         }
     }

@@ -7,7 +7,7 @@ import type {WrappedComponentProps} from 'react-intl';
 import type {RouteComponentProps} from 'react-router-dom';
 
 import {buttonClassNames} from '@mattermost/shared/components/button';
-import type {ClientConfig, ClientLicense} from '@mattermost/types/config';
+import type {ClientConfig} from '@mattermost/types/config';
 import type {Role} from '@mattermost/types/roles';
 import type {Scheme, SchemePatch} from '@mattermost/types/schemes';
 import type {Team} from '@mattermost/types/teams';
@@ -44,7 +44,6 @@ export type Props = {
     schemeId: string;
     scheme: Scheme | null;
     roles: RolesMap;
-    license: ClientLicense;
     teams: Team[] | null;
     isDisabled: boolean;
     config: Partial<ClientConfig>;
@@ -455,11 +454,9 @@ export default class PermissionTeamSchemeSettings extends React.PureComponent<Pr
         promises.push(teamUserPromise);
         promises.push(channelUserPromise);
 
-        if (this.haveGuestAccountsPermissions()) {
-            const teamGuestPromise = this.props.actions.editRole(teamGuest as Role);
-            const channelGuestPromise = this.props.actions.editRole(channelGuest as Role);
-            promises.push(teamGuestPromise, channelGuestPromise);
-        }
+        const teamGuestPromise = this.props.actions.editRole(teamGuest as Role);
+        const channelGuestPromise = this.props.actions.editRole(channelGuest as Role);
+        promises.push(teamGuestPromise, channelGuestPromise);
 
         const currentTeams = new Set((this.state.teams || this.props.teams || []).map((team) => team.id));
         const serverTeams = new Set((this.props.teams || []).map((team) => team.id));
@@ -570,10 +567,6 @@ export default class PermissionTeamSchemeSettings extends React.PureComponent<Pr
 
     closeAddTeam = () => {
         this.setState({addTeamOpen: false});
-    };
-
-    haveGuestAccountsPermissions = () => {
-        return this.props.license.GuestAccountsPermissions === 'true';
     };
 
     render = () => {
@@ -713,7 +706,7 @@ export default class PermissionTeamSchemeSettings extends React.PureComponent<Pr
                             </div>
                         </AdminPanelWithButton>
 
-                        {this.props.license && this.props.config.EnableGuestAccounts === 'true' &&
+                        {this.props.config.EnableGuestAccounts === 'true' &&
                             <AdminPanelTogglable
                                 className='permissions-block'
                                 open={this.state.openRoles.guests}
@@ -728,7 +721,7 @@ export default class PermissionTeamSchemeSettings extends React.PureComponent<Pr
                                     scope={'team_scope'}
                                     onToggle={this.togglePermission}
                                     selectRow={this.selectRow}
-                                    readOnly={this.props.isDisabled || !this.haveGuestAccountsPermissions()}
+                                    readOnly={this.props.isDisabled}
                                 />
                             </AdminPanelTogglable>
                         }
@@ -782,7 +775,6 @@ export default class PermissionTeamSchemeSettings extends React.PureComponent<Pr
                                 onToggle={this.togglePermission}
                                 selectRow={this.selectRow}
                                 readOnly={this.props.isDisabled}
-                                license={this.props.license}
                             />
                         </AdminPanelTogglable>
 

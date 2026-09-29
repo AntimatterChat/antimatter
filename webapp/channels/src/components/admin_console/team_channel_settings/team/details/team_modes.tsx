@@ -156,14 +156,13 @@ const PolicyEnforceToggle = ({syncChecked, policyEnforced, policyEnforcedToggleA
     />);
 
 type TeamModesProps = Props & {
-    isLicensedForLDAPGroups?: boolean;
     abacSupported?: boolean;
     policyEnforced?: boolean;
     policyEnforcedToggleAvailable?: boolean;
     onPolicyEnforcedToggle?: (policyEnforced: boolean) => void;
 };
 
-export const TeamModes = ({allAllowedChecked, syncChecked, allowedDomains, allowedDomainsChecked, onToggle, isDisabled, isLicensedForLDAPGroups, abacSupported, policyEnforced, policyEnforcedToggleAvailable, onPolicyEnforcedToggle}: TeamModesProps) => (
+export const TeamModes = ({allAllowedChecked, syncChecked, allowedDomains, allowedDomainsChecked, onToggle, isDisabled, abacSupported, policyEnforced, policyEnforcedToggleAvailable, onPolicyEnforcedToggle}: TeamModesProps) => (
     <AdminPanel
         id='team_manage'
         title={defineMessage({id: 'admin.team_settings.team_detail.manageTitle', defaultMessage: 'Team Management'})}
@@ -171,7 +170,7 @@ export const TeamModes = ({allAllowedChecked, syncChecked, allowedDomains, allow
     >
         <div className='group-teams-and-channels'>
             <div className='group-teams-and-channels--body'>
-                {isLicensedForLDAPGroups && !policyEnforced &&
+                {!policyEnforced &&
                     <SyncGroupsToggle
                         allAllowedChecked={allAllowedChecked}
                         allowedDomainsChecked={allowedDomainsChecked}

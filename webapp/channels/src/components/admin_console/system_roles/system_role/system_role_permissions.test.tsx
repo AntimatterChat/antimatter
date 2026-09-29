@@ -12,7 +12,6 @@ import {readAccess, writeAccess} from './types';
 
 describe('admin_console/system_role_permissions', () => {
     const props = {
-        isLicensedForCloud: false,
         updatePermissions: jest.fn(),
         permissionsToUpdate: {
             environment: readAccess,
@@ -32,18 +31,7 @@ describe('admin_console/system_role_permissions', () => {
         expect(container).toMatchSnapshot();
     });
 
-    test('should match snapshot with isLicensedForCloud = true', () => {
-        const {container} = renderWithContext(
-            <SystemRolePermissions
-                {...props}
-                isLicensedForCloud={true}
-            />,
-        );
-
-        expect(container).toMatchSnapshot();
-    });
-
-    test('ensure that when you change a prop and component is re-rendered, SystemRolePermission is not being deleted due to isLicensedForCloud being false (test for bug MM-31403)', () => {
+    test('ensure that when you change a prop and component is re-rendered, SystemRolePermission is not being deleted (test for bug MM-31403)', () => {
         const {rerender} = renderWithContext(
             <SystemRolePermissions
                 {...props}
