@@ -10,5 +10,4 @@ import (
 
 type NotificationInterface interface {
 	GetNotificationMessage(rctx request.CTX, ack *model.PushNotificationAck, userID string) (*model.PushNotification, *model.AppError)
-	CheckLicense() *model.AppError
 }

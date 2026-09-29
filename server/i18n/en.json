@@ -5265,41 +5265,6 @@
     "description": "Footer heading in the IP-filtering-change email, above recovery options for admins locked out of the workspace."
   },
   {
-    "id": "api.templates.license_need_help.info",
-    "translation": "<a href=\"https://mattermost.com/contact-sales/\">Talk to a Mattermost expert</a> for help with plans and renewal options.",
-    "description": "Help paragraph in license expiry/renewal emails sent to admins; contains an HTML <a> link to Mattermost sales that must be preserved."
-  },
-  {
-    "id": "api.templates.license_need_help.title",
-    "translation": "Need Help?",
-    "description": "Short footer heading in license renewal emails, above the contact-sales link."
-  },
-  {
-    "id": "api.templates.license_up_for_renewal_contact_sales",
-    "translation": "Contact sales",
-    "description": "Button label in the license renewal reminder email, linking to Mattermost sales."
-  },
-  {
-    "id": "api.templates.license_up_for_renewal_subject",
-    "translation": "Your {{.SkuName}} license is up for renewal",
-    "description": "Subject line of the license renewal reminder email sent to admins; {{.SkuName}} is the license edition name (e.g. Enterprise)."
-  },
-  {
-    "id": "api.templates.license_up_for_renewal_subtitle",
-    "translation": "Your {{.SkuName}} license for <a href=\"{{.SiteURL}}\">{{.SiteName}}</a> is due to expire in {{.Days}} days. We hope you’re enjoying the secure, mission-critical collaboration that Mattermost enables.",
-    "description": "Body text of the license renewal reminder email; {{.SkuName}} is the license edition, {{.Days}} the days until expiry, and the HTML <a> link wraps the site name."
-  },
-  {
-    "id": "api.templates.license_up_for_renewal_subtitle_two",
-    "translation": "Renew soon to ensure your team can keep enjoying these benefits.",
-    "description": "Second subtitle paragraph in the email sent to admins when their Mattermost license is approaching its renewal date."
-  },
-  {
-    "id": "api.templates.license_up_for_renewal_title",
-    "translation": "Your Mattermost license is up for renewal",
-    "description": "Heading of the license renewal reminder email sent to system admins."
-  },
-  {
     "id": "api.templates.mfa_activated_body.info",
     "translation": "Multi-factor authentication has been added to your account on {{ .SiteURL }}.",
     "description": "Body text of the email confirming MFA was enabled on the user's account; {{ .SiteURL }} is the server URL."
@@ -5353,26 +5318,6 @@
     "id": "api.templates.questions_footer.title",
     "translation": "Questions?",
     "description": "Short footer heading in emails, above the support contact line."
-  },
-  {
-    "id": "api.templates.remove_expired_license.body.heading",
-    "translation": "Your Mattermost license has expired",
-    "description": "Heading of the email telling admins that the server's Mattermost license has expired."
-  },
-  {
-    "id": "api.templates.remove_expired_license.body.subtitle",
-    "translation": "Your {{.SkuName}} license for <a href=\"{{.SiteURL}}\">{{.SiteName}}</a> has expired and some features may be disabled.",
-    "description": "Body text of the license-expired email; {{.SkuName}} is the license edition and the HTML <a> link wraps the site name."
-  },
-  {
-    "id": "api.templates.remove_expired_license.body.subtitle_two",
-    "translation": "Please renew your license now to continue using the full capabilities of Mattermost.",
-    "description": "Body paragraph in the email sent to admins after their expired license is removed, urging renewal."
-  },
-  {
-    "id": "api.templates.remove_expired_license.subject",
-    "translation": "Your {{.SkuName}} license has expired",
-    "description": "Subject line of the email telling admins their license expired; {{.SkuName}} is the license edition name."
   },
   {
     "id": "api.templates.reset_body.button",
@@ -7483,26 +7428,6 @@
     "id": "app.cloud.preview_modal_data_parse_error",
     "translation": "Failed to parse preview modal data",
     "description": "API error returned when the downloaded Cloud preview modal content is not valid JSON."
-  },
-  {
-    "id": "app.cloud.trial_plan_bot_message",
-    "translation": "{{.UsersNum}} members of the {{.WorkspaceName}} workspace have requested starting the Enterprise trial for access to: ",
-    "description": "Start of a bot direct message to system admins; {{.UsersNum}} is the number of requesting members and {{.WorkspaceName}} the workspace name; a list of requested features is appended after the trailing colon/space."
-  },
-  {
-    "id": "app.cloud.trial_plan_bot_message_single",
-    "translation": "{{.UsersNum}} member of the {{.WorkspaceName}} workspace has requested starting the Enterprise trial for access to: ",
-    "description": "Direct message from the system bot to admins when exactly one workspace member requested starting an Enterprise trial; {{.UsersNum}} is 1, {{.WorkspaceName}} the workspace name, and a feature list is appended after the trailing space."
-  },
-  {
-    "id": "app.cloud.upgrade_plan_bot_message",
-    "translation": "{{.UsersNum}} members of the {{.WorkspaceName}} workspace have requested a workspace upgrade for: ",
-    "description": "Start of a bot direct message to system admins; {{.UsersNum}} is the number of requesting members and {{.WorkspaceName}} the workspace name; a list of requested features is appended after the trailing colon/space."
-  },
-  {
-    "id": "app.cloud.upgrade_plan_bot_message_single",
-    "translation": "{{.UsersNum}} member of the {{.WorkspaceName}} workspace has requested a workspace upgrade for: ",
-    "description": "Direct message from the system bot to admins when exactly one workspace member requested a paid plan upgrade; {{.UsersNum}} is 1, {{.WorkspaceName}} the workspace name, and a feature list is appended after the trailing space."
   },
   {
     "id": "app.command.createcommand.internal_error",

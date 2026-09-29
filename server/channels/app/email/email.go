@@ -26,15 +26,6 @@ import (
 	"github.com/microcosm-cc/bluemonday"
 )
 
-// Returns category if enabled is true (default false)
-// If "" is returned when enabled is false, the category headers aren't attached to the email
-func getSendGridCategory(category string, enabled bool) string {
-	if enabled {
-		return category
-	}
-	return ""
-}
-
 func (es *Service) SendChangeUsernameEmail(newUsername, email, locale, siteURL string) error {
 	T := i18n.GetUserTranslations(locale)
 
@@ -921,44 +912,34 @@ func (es *Service) SendNotificationMail(to, subject, htmlBody string) error {
 	return es.sendMail(to, subject, htmlBody, "NotificationEmail")
 }
 
+// The category arguments of the send helpers used to tag emails for SendGrid on Mattermost Cloud
+// only; they are no longer attached to outgoing emails.
 func (es *Service) sendMail(to, subject, htmlBody, category string) error {
 	return es.sendMailWithCC(to, subject, htmlBody, "", category)
 }
 
 func (es *Service) sendEmailWithCustomReplyTo(to, subject, htmlBody, replyToAddress, category string) error {
-	license := es.license()
 	mailConfig := es.mailServiceConfig(replyToAddress)
 
-	category = getSendGridCategory(category, license.IsCloud())
-
-	return mail.SendMailUsingConfig(to, subject, htmlBody, mailConfig, license != nil && *license.Features.Compliance, "", "", "", "", category)
+	return mail.SendMailUsingConfig(to, subject, htmlBody, mailConfig, true, "", "", "", "", "")
 }
 
 func (es *Service) sendMailWithCC(to, subject, htmlBody, ccMail, category string) error {
-	license := es.license()
 	mailConfig := es.mailServiceConfig("")
 
-	category = getSendGridCategory(category, license.IsCloud())
-
-	return mail.SendMailUsingConfig(to, subject, htmlBody, mailConfig, license != nil && *license.Features.Compliance, "", "", "", ccMail, category)
+	return mail.SendMailUsingConfig(to, subject, htmlBody, mailConfig, true, "", "", "", ccMail, "")
 }
 
 func (es *Service) SendMailWithEmbeddedFilesAndCustomReplyTo(to, subject, htmlBody, replyToAddress string, embeddedFiles map[string]io.Reader, category string) error {
-	license := es.license()
 	mailConfig := es.mailServiceConfig(replyToAddress)
 
-	category = getSendGridCategory(category, license.IsCloud())
-
-	return mail.SendMailWithEmbeddedFilesUsingConfig(to, subject, htmlBody, embeddedFiles, mailConfig, license != nil && *license.Features.Compliance, "", "", "", "", category)
+	return mail.SendMailWithEmbeddedFilesUsingConfig(to, subject, htmlBody, embeddedFiles, mailConfig, true, "", "", "", "", "")
 }
 
 func (es *Service) SendMailWithEmbeddedFiles(to, subject, htmlBody string, embeddedFiles map[string]io.Reader, messageID string, inReplyTo string, references string, category string) error {
-	license := es.license()
 	mailConfig := es.mailServiceConfig("")
 
-	category = getSendGridCategory(category, license.IsCloud())
-
-	return mail.SendMailWithEmbeddedFilesUsingConfig(to, subject, htmlBody, embeddedFiles, mailConfig, license != nil && *license.Features.Compliance, messageID, inReplyTo, references, "", category)
+	return mail.SendMailWithEmbeddedFilesUsingConfig(to, subject, htmlBody, embeddedFiles, mailConfig, true, messageID, inReplyTo, references, "", "")
 }
 
 func (es *Service) InvalidateVerifyEmailTokensForUser(userID string) *model.AppError {
@@ -1015,66 +996,6 @@ func (es *Service) CreateVerifyEmailToken(userID string, newEmail string) (*mode
 	}
 
 	return token, nil
-}
-
-func (es *Service) SendLicenseUpForRenewalEmail(email, locale string, daysToExpiration int) error {
-	T := i18n.GetUserTranslations(locale)
-	skuName := es.getLicenseSkuName()
-	prefixedSkuName := es.getPrefixedLicenseSkuName()
-	subject := T("api.templates.license_up_for_renewal_subject",
-		map[string]any{"SkuName": prefixedSkuName})
-	siteName := es.getConfigSiteName()
-	siteURL := *es.config().ServiceSettings.SiteURL
-	data := es.NewEmailTemplateData(locale)
-	data.Props["SiteURL"] = siteURL
-	data.Props["Title"] = T("api.templates.license_up_for_renewal_title")
-	data.Props["Button"] = T("api.templates.license_up_for_renewal_contact_sales")
-	data.Props["ButtonURL"] = "https://mattermost.com/contact-sales/"
-	data.Props["NeedHelpTitle"] = T("api.templates.license_need_help.title")
-	data.Props["SubTitleTwo"] = T("api.templates.license_up_for_renewal_subtitle_two")
-	data.HTML["SubTitle"] = i18n.TranslateAsHTML(T, "api.templates.license_up_for_renewal_subtitle", map[string]any{"SkuName": skuName, "SiteURL": siteURL, "SiteName": siteName, "Days": daysToExpiration})
-	data.HTML["NeedHelpInfo"] = template.HTML(T("api.templates.license_need_help.info"))
-
-	body, err := es.templatesContainer.RenderToString("license_notification", data)
-	if err != nil {
-		return err
-	}
-
-	if err := es.sendMail(email, subject, body, "LicenseUpForRenewal"); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (es *Service) SendRemoveExpiredLicenseEmail(email, locale string) error {
-	T := i18n.GetUserTranslations(locale)
-	skuName := es.getLicenseSkuName()
-	prefixedSkuName := es.getPrefixedLicenseSkuName()
-	subject := T("api.templates.remove_expired_license.subject",
-		map[string]any{"SkuName": prefixedSkuName})
-	siteName := es.getConfigSiteName()
-	siteURL := *es.config().ServiceSettings.SiteURL
-	data := es.NewEmailTemplateData(locale)
-	data.Props["SiteURL"] = siteURL
-	data.Props["Title"] = T("api.templates.remove_expired_license.body.heading")
-	data.Props["Button"] = T("api.templates.license_up_for_renewal_contact_sales")
-	data.Props["ButtonURL"] = "https://mattermost.com/contact-sales/"
-	data.Props["NeedHelpTitle"] = T("api.templates.license_need_help.title")
-	data.Props["SubTitleTwo"] = T("api.templates.remove_expired_license.body.subtitle_two")
-	data.HTML["SubTitle"] = i18n.TranslateAsHTML(T, "api.templates.remove_expired_license.body.subtitle", map[string]any{"SkuName": skuName, "SiteURL": siteURL, "SiteName": siteName})
-	data.HTML["NeedHelpInfo"] = template.HTML(T("api.templates.license_need_help.info"))
-
-	body, err := es.templatesContainer.RenderToString("license_notification", data)
-	if err != nil {
-		return err
-	}
-
-	if err := es.sendMail(email, subject, body, "RemoveExpiredLicense"); err != nil {
-		return err
-	}
-
-	return nil
 }
 
 func (es *Service) SendIPFiltersChangedEmail(email string, initiatingUser *model.User, siteURL, portalURL, locale string, isWorkspaceOwner bool) error {

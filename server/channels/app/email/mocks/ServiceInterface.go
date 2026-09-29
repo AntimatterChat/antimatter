@@ -314,24 +314,6 @@ func (_m *ServiceInterface) SendInviteEmailsToTeamAndChannels(rctx request.CTX, 
 	return r0, r1
 }
 
-// SendLicenseUpForRenewalEmail provides a mock function with given fields: _a0, locale, daysToExpiration
-func (_m *ServiceInterface) SendLicenseUpForRenewalEmail(_a0 string, locale string, daysToExpiration int) error {
-	ret := _m.Called(_a0, locale, daysToExpiration)
-
-	if len(ret) == 0 {
-		panic("no return value specified for SendLicenseUpForRenewalEmail")
-	}
-
-	var r0 error
-	if rf, ok := ret.Get(0).(func(string, string, int) error); ok {
-		r0 = rf(_a0, locale, daysToExpiration)
-	} else {
-		r0 = ret.Error(0)
-	}
-
-	return r0
-}
-
 // SendMagicLinkEmailSelfService provides a mock function with given fields: rctx, invite, siteURL
 func (_m *ServiceInterface) SendMagicLinkEmailSelfService(rctx request.CTX, invite string, siteURL string) error {
 	ret := _m.Called(rctx, invite, siteURL)
@@ -448,24 +430,6 @@ func (_m *ServiceInterface) SendPasswordResetEmail(_a0 string, token *model.Toke
 	}
 
 	return r0, r1
-}
-
-// SendRemoveExpiredLicenseEmail provides a mock function with given fields: _a0, locale
-func (_m *ServiceInterface) SendRemoveExpiredLicenseEmail(_a0 string, locale string) error {
-	ret := _m.Called(_a0, locale)
-
-	if len(ret) == 0 {
-		panic("no return value specified for SendRemoveExpiredLicenseEmail")
-	}
-
-	var r0 error
-	if rf, ok := ret.Get(0).(func(string, string) error); ok {
-		r0 = rf(_a0, locale)
-	} else {
-		r0 = ret.Error(0)
-	}
-
-	return r0
 }
 
 // SendSignInChangeEmail provides a mock function with given fields: _a0, method, locale, siteURL

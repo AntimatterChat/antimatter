@@ -264,10 +264,7 @@ func (es *Service) sendBatchedEmailNotification(userID string, notifications []*
 	postsData := make([]*postData, 0 /* len */, len(notifications) /* cap */)
 	embeddedFiles := make(map[string]io.Reader)
 
-	emailNotificationContentsType := model.EmailNotificationContentsFull
-	if license := es.license(); license != nil && *license.Features.EmailNotificationContents {
-		emailNotificationContentsType = *es.config().EmailSettings.EmailNotificationContentsType
-	}
+	emailNotificationContentsType := *es.config().EmailSettings.EmailNotificationContentsType
 
 	// check if user has CRT set to ON
 	appCRT := *es.config().ServiceSettings.CollapsedThreads

@@ -92,14 +92,11 @@ func setupTestHelper(s store.Store, tb testing.TB) *TestHelper {
 	_, _, err = configStore.Set(config)
 	require.NoError(tb, err)
 
-	licenseFn := func() *model.License { return model.NewTestLicense() }
-
 	us, err := users.New(users.ServiceConfig{
 		UserStore:    s.User(),
 		SessionStore: s.Session(),
 		OAuthStore:   s.OAuth(),
 		ConfigFn:     configStore.Get,
-		LicenseFn:    licenseFn,
 	})
 	require.NoError(tb, err)
 
@@ -112,7 +109,6 @@ func setupTestHelper(s store.Store, tb testing.TB) *TestHelper {
 	service := &Service{
 		store:              s,
 		userService:        us,
-		license:            licenseFn,
 		config:             configStore.Get,
 		logger:             logger,
 		templatesContainer: htmlTemplates,

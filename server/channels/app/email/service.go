@@ -7,7 +7,6 @@ import (
 	"io"
 	"net/url"
 	"path"
-	"strings"
 
 	"github.com/pkg/errors"
 	"github.com/throttled/throttled/v2"
@@ -47,9 +46,8 @@ func condenseSiteURL(siteURL string) string {
 }
 
 type Service struct {
-	config  func() *model.Config
-	license func() *model.License
-	logger  mlog.LoggerIFace
+	config func() *model.Config
+	logger mlog.LoggerIFace
 
 	userService *users.UserService
 	store       store.Store
@@ -63,8 +61,7 @@ type Service struct {
 }
 
 type ServiceConfig struct {
-	ConfigFn  func() *model.Config
-	LicenseFn func() *model.License
+	ConfigFn func() *model.Config
 
 	TemplatesContainer     *templates.Container
 	UserService            *users.UserService
@@ -80,7 +77,6 @@ func NewService(config ServiceConfig) (*Service, error) {
 	service := &Service{
 		config:               config.ConfigFn,
 		templatesContainer:   config.TemplatesContainer,
-		license:              config.LicenseFn,
 		logger:               config.Logger,
 		store:                config.Store,
 		userService:          config.UserService,
@@ -101,7 +97,7 @@ func (es *Service) Stop() {
 }
 
 func (c *ServiceConfig) validate() error {
-	if c.ConfigFn == nil || c.Store == nil || c.LicenseFn == nil || c.TemplatesContainer == nil {
+	if c.ConfigFn == nil || c.Store == nil || c.TemplatesContainer == nil {
 		return errors.New("invalid service config")
 	}
 	return nil
@@ -174,8 +170,6 @@ type ServiceInterface interface {
 	SendDeactivateAccountEmail(email string, locale, siteURL string) error
 	SendNotificationMail(to, subject, htmlBody string) error
 	SendMailWithEmbeddedFiles(to, subject, htmlBody string, embeddedFiles map[string]io.Reader, messageID string, inReplyTo string, references string, category string) error
-	SendLicenseUpForRenewalEmail(email, locale string, daysToExpiration int) error
-	SendRemoveExpiredLicenseEmail(email, locale string) error
 	AddNotificationEmailToBatch(user *model.User, post *model.Post, team *model.Team) *model.AppError
 	GetMessageForNotification(post *model.Post, teamName, siteUrl string, translateFunc i18n.TranslateFunc) string
 	GenerateHyperlinkForChannels(postMessage, teamName, teamURL string) (string, error)
@@ -185,28 +179,6 @@ type ServiceInterface interface {
 	SendIPFiltersChangedEmail(email string, userWhoChangedFilter *model.User, siteURL, portalURL, locale string, isWorkspaceOwner bool) error
 	SetStore(st store.Store)
 	Stop()
-}
-
-// getLicenseSkuName returns the license tier descriptor (e.g. "Professional",
-// "Entry", "E20"), stripping the "Mattermost " prefix if the license server
-// included it. Falls back to "Mattermost" when the SKU name is absent so
-// that body text like "Your {{.SkuName}} license..." still reads naturally.
-func (es *Service) getLicenseSkuName() string {
-	if license := es.license(); license != nil && license.SkuName != "" {
-		return strings.TrimPrefix(license.SkuName, "Mattermost ")
-	}
-	return "Mattermost"
-}
-
-// getPrefixedLicenseSkuName returns the full product name including "Mattermost"
-// (e.g. "Mattermost Professional"), suitable for email subjects. Falls back
-// to "Mattermost" when no license exists or the SKU name is empty.
-func (es *Service) getPrefixedLicenseSkuName() string {
-	skuName := es.getLicenseSkuName()
-	if skuName == "Mattermost" {
-		return "Mattermost"
-	}
-	return "Mattermost " + skuName
 }
 
 func (es *Service) getConfigSiteName() string {

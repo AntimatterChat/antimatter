@@ -9,17 +9,6 @@ import (
 )
 
 func (a *App) SendIPFiltersChangedEmail(rctx request.CTX, userID string) error {
-	cloudWorkspaceOwnerEmailAddress := ""
-	if a.License().IsCloud() {
-		portalUserCustomer, cErr := a.Cloud().GetCloudCustomer(userID)
-		if cErr != nil {
-			rctx.Logger().Error("Failed to get portal user customer", mlog.Err(cErr))
-		}
-		if cErr == nil && portalUserCustomer != nil {
-			cloudWorkspaceOwnerEmailAddress = portalUserCustomer.Email
-		}
-	}
-
 	initiatingUser, err := a.Srv().Store().User().GetProfileByIds(rctx, []string{userID}, nil, true)
 	if err != nil {
 		rctx.Logger().Error("Failed to get initiating user", mlog.Err(err))
@@ -31,7 +20,7 @@ func (a *App) SendIPFiltersChangedEmail(rctx request.CTX, userID string) error {
 	}
 
 	for _, user := range users {
-		if err = a.Srv().EmailService.SendIPFiltersChangedEmail(user.Email, initiatingUser[0], *a.Config().ServiceSettings.SiteURL, *a.Config().CloudSettings.CWSURL, user.Locale, cloudWorkspaceOwnerEmailAddress == user.Email); err != nil {
+		if err = a.Srv().EmailService.SendIPFiltersChangedEmail(user.Email, initiatingUser[0], *a.Config().ServiceSettings.SiteURL, *a.Config().CloudSettings.CWSURL, user.Locale, false); err != nil {
 			rctx.Logger().Error("Error while sending IP filters changed email", mlog.Err(err))
 		}
 	}

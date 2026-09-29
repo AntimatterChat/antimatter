@@ -29,13 +29,15 @@ func (a *App) canSendPushNotifications() bool {
 		return false
 	}
 
+	// The Mattermost-hosted push notification service is a paid offering that does not deliver
+	// for this server; operators must run their own push proxy.
 	pushServer := *a.Config().EmailSettings.PushNotificationServer
-	if model.IsMHPNSEndpoint(pushServer) && !a.Srv().License().HasMHPNS() {
-		a.Log().LogM(mlog.MlvlNotificationWarn, "Push notifications are disabled - license missing",
+	if model.IsMHPNSEndpoint(pushServer) {
+		a.Log().LogM(mlog.MlvlNotificationWarn, "Push notifications are disabled - hosted push notification service unsupported",
 			mlog.String("status", model.NotificationStatusNotSent),
-			mlog.String("reason", "push_disabled_license"),
+			mlog.String("reason", "push_disabled_hosted_service"),
 		)
-		mlog.Warn("Push notifications have been disabled. Update your license or go to System Console > Environment > Push Notification Server to use a different server")
+		mlog.Warn("Push notifications have been disabled because the Mattermost-hosted push notification service is not supported. Go to System Console > Environment > Push Notification Server to use your own push proxy")
 		return false
 	}
 
@@ -1505,10 +1507,6 @@ func (a *App) allowChannelMentions(rctx request.CTX, post *model.Post, numProfil
 
 // allowGroupMentions returns whether or not the group mentions are allowed for the given post.
 func (a *App) allowGroupMentions(rctx request.CTX, post *model.Post) bool {
-	if !model.MinimumProfessionalLicense(a.Srv().License()) {
-		return false
-	}
-
 	if ok, _ := a.HasPermissionToChannel(rctx, post.UserId, post.ChannelId, model.PermissionUseGroupMentions); !ok {
 		return false
 	}

@@ -1336,7 +1336,6 @@ func TestSendNotificationEmailDeliveryRecordFollowsSentContent(t *testing.T) {
 		t.Helper()
 
 		th := setupDeliveryTracking(t)
-		th.App.Srv().SetLicense(model.NewTestLicense())
 		th.App.UpdateConfig(func(cfg *model.Config) {
 			*cfg.EmailSettings.EmailNotificationContentsType = contentsAtBuild
 		})

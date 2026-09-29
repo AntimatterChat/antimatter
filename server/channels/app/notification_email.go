@@ -22,10 +22,7 @@ import (
 )
 
 func (a *App) emailNotificationContentsType() string {
-	if license := a.Srv().License(); license != nil && *license.Features.EmailNotificationContents {
-		return *a.Config().EmailSettings.EmailNotificationContentsType
-	}
-	return model.EmailNotificationContentsFull
+	return *a.Config().EmailSettings.EmailNotificationContentsType
 }
 
 func (a *App) buildEmailNotification(

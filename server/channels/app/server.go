@@ -489,7 +489,6 @@ func NewServer(options ...Option) (*Server, error) {
 
 	emailService, err := email.NewService(email.ServiceConfig{
 		ConfigFn:           s.platform.Config,
-		LicenseFn:          s.License,
 		TemplatesContainer: s.TemplatesContainer(),
 		UserService:        s.userService,
 		Store:              s.GetStore(),
@@ -648,8 +647,6 @@ func NewServer(options ...Option) (*Server, error) {
 }
 
 func (s *Server) runJobs() {
-	s.runLicenseExpirationCheckJob()
-
 	s.Go(func() {
 		appInstance := New(ServerConnector(s.Channels()))
 		runLeaderTasks(appInstance)
@@ -1384,13 +1381,6 @@ func runConfigCleanupJob(s *Server) {
 	}, time.Hour*24)
 }
 
-func (s *Server) runLicenseExpirationCheckJob() {
-	s.doLicenseExpirationCheck()
-	model.CreateRecurringTask("License Expiration Check", func() {
-		s.doLicenseExpirationCheck()
-	}, time.Hour*24)
-}
-
 func runReportToAWSMeterJob(s *Server) {
 	model.CreateRecurringTask("Collect and send usage report to AWS Metering Service", func() {
 		doReportUsageToAWSMeteringService(s)
@@ -1471,129 +1461,6 @@ func doConfigCleanup(s *Server) {
 
 func (s *Server) HandleMetrics(route string, h http.Handler) {
 	s.platform.HandleMetrics(route, h)
-}
-
-func (s *Server) sendLicenseUpForRenewalEmail(users map[string]*model.User, license *model.License) *model.AppError {
-	key := model.LicenseUpForRenewalEmailSent + license.Id
-	if _, err := s.Store().System().GetByName(key); err == nil {
-		// return early because the key already exists and that means we already executed the code below to send email successfully
-		return nil
-	}
-
-	daysToExpiration := license.DaysToExpiration()
-
-	// we want to at least have one email sent out to an admin
-	countNotOks := 0
-
-	for _, user := range users {
-		if err := s.EmailService.SendLicenseUpForRenewalEmail(user.Email, user.Locale, daysToExpiration); err != nil {
-			mlog.Error("Error sending license up for renewal email to", mlog.String("user_email", user.Email), mlog.Err(err))
-			countNotOks++
-		}
-	}
-
-	// if not even one admin got an email, we consider that this operation errored
-	if countNotOks == len(users) {
-		return model.NewAppError("s.sendLicenseUpForRenewalEmail", "api.server.license_up_for_renewal.error_sending_email", nil, "", http.StatusInternalServerError)
-	}
-
-	system := model.System{
-		Name:  key,
-		Value: "true",
-	}
-
-	if err := s.Store().System().Save(&system); err != nil {
-		mlog.Debug("Failed to mark license up for renewal email sending as completed.", mlog.Err(err))
-	}
-
-	return nil
-}
-
-func (s *Server) doReportUserCountForCloudSubscriptionJob() {
-	s.LoadLicense()
-
-	if !s.License().IsCloud() {
-		return
-	}
-
-	mlog.Debug("Reporting daily user count for cloud subscription.")
-
-	appInstance := New(ServerConnector(s.Channels()))
-
-	_, err := appInstance.SendSubscriptionHistoryEvent("")
-	if err != nil {
-		mlog.Error("an error occurred during daily user count reporting", mlog.Err(err))
-	}
-
-	mlog.Debug("Daily user count reported for cloud subscription.")
-}
-
-func (s *Server) doLicenseExpirationCheck() {
-	s.LoadLicense()
-
-	// This takes care of a rare edge case reported here https://mattermost.atlassian.net/browse/MM-40962
-	// To reproduce that case locally, attach a license to a server that was started with enterprise enabled
-	// Then restart using BUILD_ENTERPRISE=false make restart-server to enter Team Edition
-	if model.BuildEnterpriseReady != "true" {
-		mlog.Debug("Skipping license expiration check because no license is expected on Team Edition")
-		return
-	}
-
-	license := s.License()
-
-	if license == nil {
-		mlog.Debug("License cannot be found.")
-		return
-	}
-
-	if license.IsCloud() || license.IsMattermostEntry() {
-		return
-	}
-
-	users, err := s.Store().User().GetSystemAdminProfiles()
-	if err != nil {
-		mlog.Error("Failed to get system admins for license expired message from Mattermost.")
-		return
-	}
-
-	if license.IsWithinExpirationPeriod() {
-		appErr := s.sendLicenseUpForRenewalEmail(users, license)
-		if appErr != nil {
-			mlog.Debug(appErr.Error())
-		}
-		return
-	}
-
-	if !license.IsPastGracePeriod() {
-		mlog.Debug("License is not past the grace period.")
-		return
-	}
-
-	// send email to admin(s)
-	for _, user := range users {
-		if user.Email == "" {
-			mlog.Error("Invalid system admin email.", mlog.String("user_email", user.Email))
-			continue
-		}
-
-		mlog.Debug("Sending license expired email.", mlog.String("user_email", user.Email))
-		if err := s.SendRemoveExpiredLicenseEmail(user.Email, user.Locale); err != nil {
-			mlog.Error("Error while sending the license expired email.", mlog.String("user_email", user.Email), mlog.Err(err))
-		}
-	}
-
-	// remove the license
-	if appErr := s.RemoveLicense(); appErr != nil {
-		mlog.Error("Error while removing the license.", mlog.Err(appErr))
-	}
-}
-
-func (s *Server) SendRemoveExpiredLicenseEmail(email, locale string) *model.AppError {
-	if err := s.EmailService.SendRemoveExpiredLicenseEmail(email, locale); err != nil {
-		return model.NewAppError("SendRemoveExpiredLicenseEmail", "api.license.remove_expired_license.failed.error", nil, "", http.StatusInternalServerError).Wrap(err)
-	}
-
-	return nil
 }
 
 func (s *Server) FileBackend() filestore.FileBackend {
