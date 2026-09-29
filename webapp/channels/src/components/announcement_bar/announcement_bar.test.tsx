@@ -14,9 +14,6 @@ describe('components/AnnouncementBar', () => {
         isLoggedIn: true,
         canViewSystemErrors: false,
         canViewAPIv3Banner: false,
-        license: {
-            id: '',
-        },
         siteURL: '',
         sendEmailNotifications: true,
         enablePreviewMode: false,

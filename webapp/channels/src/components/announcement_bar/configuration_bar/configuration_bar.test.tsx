@@ -5,117 +5,50 @@ import React from 'react';
 
 import ConfigurationBar from 'components/announcement_bar/configuration_bar/configuration_bar';
 
-import {renderWithContext} from 'tests/react_testing_utils';
+import {renderWithContext, screen} from 'tests/react_testing_utils';
 
 describe('components/ConfigurationBar', () => {
-    const millisPerDay = 24 * 60 * 60 * 1000;
-
     const baseProps = {
-        isLoggedIn: true,
         canViewSystemErrors: true,
-        license: {
-            Id: '1234',
-            IsLicensed: 'true',
-            ExpiresAt: Date.now() + millisPerDay,
-            ShortSkuName: 'skuShortName',
-        },
         config: {
-            SendEmailNotifications: 'false',
+            SendEmailNotifications: 'true',
+            SiteURL: 'http://localhost:8065',
         },
-        dismissedExpiringLicense: false,
-        dismissedExpiredLicense: false,
-        siteURL: '',
-        totalUsers: 100,
-        actions: {
-            dismissNotice: jest.fn(),
-            savePreferences: jest.fn(),
-        },
-        currentUserId: 'user-id',
+        siteURL: 'http://localhost:8065',
     };
 
-    test('should match snapshot, expired, in grace period', () => {
-        const props = {...baseProps, license: {Id: '1234', IsLicensed: 'true', ExpiresAt: Date.now() - millisPerDay, SkuShortName: 'enterprise'}};
+    test('should show nothing when everything is configured', () => {
         const {container} = renderWithContext(
-            <ConfigurationBar {...props}/>,
+            <ConfigurationBar {...baseProps}/>,
         );
 
-        expect(container).toMatchSnapshot();
+        expect(container).toBeEmptyDOMElement();
     });
 
-    test('should match snapshot, expired', () => {
-        const props = {...baseProps, license: {Id: '1234', IsLicensed: 'true', ExpiresAt: Date.now() - (11 * millisPerDay), SkuShortName: 'enterprise'}};
-        const {container} = renderWithContext(
+    test('should show the preview mode bar when email notifications are not configured', () => {
+        const props = {...baseProps, config: {...baseProps.config, SendEmailNotifications: 'false', EnablePreviewModeBanner: 'true'}};
+        renderWithContext(
             <ConfigurationBar {...props}/>,
         );
 
-        expect(container).toMatchSnapshot();
+        expect(screen.getByText('Preview Mode: Email notifications have not been configured.')).toBeInTheDocument();
     });
 
-    test('should match snapshot, expired, regular user', () => {
-        const props = {...baseProps, canViewSystemErrors: false, license: {Id: '1234', IsLicensed: 'true', ExpiresAt: Date.now() - (11 * millisPerDay), SkuShortName: 'enterprise'}};
-        const {container} = renderWithContext(
+    test('should ask system admins to configure the site URL', () => {
+        const props = {...baseProps, config: {...baseProps.config, SiteURL: ''}};
+        renderWithContext(
             <ConfigurationBar {...props}/>,
         );
 
-        expect(container).toMatchSnapshot();
+        expect(screen.getByText('site URL')).toBeInTheDocument();
     });
 
-    test('should match snapshot, expired, cloud license, show nothing', () => {
-        const props = {...baseProps, canViewSystemErrors: false, license: {Id: '1234', IsLicensed: 'true', Cloud: 'true', ExpiresAt: Date.now() - (11 * millisPerDay)}};
+    test('should not show the site URL bar to regular users', () => {
+        const props = {...baseProps, canViewSystemErrors: false, config: {...baseProps.config, SiteURL: ''}};
         const {container} = renderWithContext(
             <ConfigurationBar {...props}/>,
         );
 
-        expect(container).toMatchSnapshot();
-    });
-
-    test('should match snapshot, expiring, cloud license, show nothing', () => {
-        const props = {...baseProps, canViewSystemErrors: false, license: {Id: '1234', IsLicensed: 'true', Cloud: 'true', ExpiresAt: Date.now()}};
-        const {container} = renderWithContext(
-            <ConfigurationBar {...props}/>,
-        );
-
-        expect(container).toMatchSnapshot();
-    });
-
-    test('should match snapshot, show nothing', () => {
-        const props = {...baseProps, license: {Id: '1234', IsLicensed: 'true', ExpiresAt: Date.now() + (61 * millisPerDay)}};
-        const {container} = renderWithContext(
-            <ConfigurationBar {...props}/>,
-        );
-
-        expect(container).toMatchSnapshot();
-    });
-
-    test('should match snapshot, expiring, trial license, mobile viewport', () => {
-        Object.defineProperty(window, 'innerWidth', {
-            writable: true,
-            configurable: true,
-            value: 150,
-        });
-
-        window.dispatchEvent(new Event('500'));
-        const props = {...baseProps, canViewSystemErrors: true, license: {Id: '1234', IsLicensed: 'true', IsTrial: 'true', ExpiresAt: Date.now() + 1}};
-        const {container} = renderWithContext(
-            <ConfigurationBar {...props}/>,
-        );
-
-        expect(container).toMatchSnapshot();
-    });
-
-    test('should match snapshot, expiring, trial license', () => {
-        Object.defineProperty(window, 'innerWidth', {
-            writable: true,
-            configurable: true,
-            value: 1000,
-        });
-
-        window.dispatchEvent(new Event('500'));
-        const props = {...baseProps, canViewSystemErrors: true, license: {Id: '1234', IsLicensed: 'true', IsTrial: 'true', ExpiresAt: Date.now() + 1}};
-        const {container} = renderWithContext(
-            <ConfigurationBar {...props}/>,
-        );
-
-        expect(container).toMatchSnapshot();
+        expect(container).toBeEmptyDOMElement();
     });
 });
