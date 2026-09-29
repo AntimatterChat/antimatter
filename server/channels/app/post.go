@@ -453,7 +453,9 @@ func (a *App) CreatePost(rctx request.CTX, post *model.Post, channel *model.Chan
 		return nil, false, model.NewAppError("CreatePost", "api.post.deduplicate_create_post.cache_error", nil, "", http.StatusInternalServerError).Wrap(appErr)
 	}
 
-	a.Metrics().IncrementPostCreate()
+	if a.Metrics() != nil {
+		a.Metrics().IncrementPostCreate()
+	}
 
 	if len(fileIDs) > 0 {
 		var attachedFileIds model.StringArray
@@ -464,7 +466,9 @@ func (a *App) CreatePost(rctx request.CTX, post *model.Post, channel *model.Chan
 			post.FileIds = attachedFileIds
 		}
 
-		a.Metrics().IncrementPostFileAttachment(len(post.FileIds))
+		if a.Metrics() != nil {
+			a.Metrics().IncrementPostFileAttachment(len(post.FileIds))
+		}
 	}
 
 	// We make a copy of the post for the plugin hook to avoid a race condition,

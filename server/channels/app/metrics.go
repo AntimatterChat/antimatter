@@ -9,6 +9,10 @@ import (
 )
 
 func (a *App) RegisterPerformanceReport(rctx request.CTX, report *model.PerformanceReport) *model.AppError {
+	if a.Metrics() == nil {
+		return nil
+	}
+
 	commonLabels := report.ProcessLabels()
 	userID := rctx.Session().UserId
 

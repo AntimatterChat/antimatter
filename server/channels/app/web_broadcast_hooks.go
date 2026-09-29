@@ -672,6 +672,10 @@ func (h *onlyChannelAdminsBroadcastHook) Process(msg *platform.HookedWebSocketEv
 }
 
 func incrementWebsocketCounter(wc *platform.WebConn) {
+	if wc.Platform.Metrics() == nil {
+		return
+	}
+
 	if !*wc.Platform.Config().MetricsSettings.EnableNotificationMetrics {
 		return
 	}

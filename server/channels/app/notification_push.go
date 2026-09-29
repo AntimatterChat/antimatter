@@ -277,7 +277,9 @@ func (a *App) sendPushNotificationToAllSessions(rctx request.CTX, msg *model.Pus
 			mlog.String("status", model.PushSendSuccess),
 		)
 
-		a.Metrics().IncrementPostSentPush()
+		if a.Metrics() != nil {
+			a.Metrics().IncrementPostSentPush()
+		}
 
 		if msg.Type == model.PushTypeMessage {
 			// If we are ignoring the ack, we don't count the send

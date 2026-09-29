@@ -249,7 +249,9 @@ func (a *App) sendMobileWipeSignal(rctx request.CTX, sessions ...*model.Session)
 			continue
 		}
 
-		a.Metrics().IncrementPostSentPush()
+		if a.Metrics() != nil {
+			a.Metrics().IncrementPostSentPush()
+		}
 	}
 }
 
