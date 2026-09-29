@@ -62,8 +62,8 @@ func ensureOutgoingOAuthConnectionInterface(c *Context, where string) (einterfac
 		return nil, false
 	}
 
-	if c.App.OutgoingOAuthConnections() == nil || !model.MinimumEnterpriseLicense(c.App.License()) {
-		c.Err = model.NewAppError(where, "api.license.upgrade_needed.app_error", nil, "", http.StatusNotImplemented)
+	if c.App.OutgoingOAuthConnections() == nil {
+		c.Err = model.NewAppError(where, "ent.outgoing_oauth_connections.feature_disabled", nil, "", http.StatusNotImplemented)
 		return nil, false
 	}
 	return c.App.OutgoingOAuthConnections(), true

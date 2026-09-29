@@ -1728,32 +1728,8 @@ func TestExportDeactivatedUserDMs(t *testing.T) {
 func TestGeneratePresignURLForExport(t *testing.T) {
 	mainHelper.Parallel(t)
 
-	t.Run("blocked when not running in Cloud", func(t *testing.T) {
+	t.Run("requires a dedicated export store", func(t *testing.T) {
 		th := Setup(t)
-		th.App.Srv().SetLicense(model.NewTestLicense())
-
-		resp, appErr := th.App.GeneratePresignURLForExport("export.zip")
-		assert.Nil(t, resp)
-		require.NotNil(t, appErr)
-		assert.Equal(t, "app.export.generate_presigned_url.direct_download.app_error", appErr.Id)
-	})
-
-	t.Run("blocked without a license", func(t *testing.T) {
-		th := Setup(t)
-		th.App.Srv().SetLicense(nil)
-
-		resp, appErr := th.App.GeneratePresignURLForExport("export.zip")
-		assert.Nil(t, resp)
-		require.NotNil(t, appErr)
-		assert.Equal(t, "app.export.generate_presigned_url.direct_download.app_error", appErr.Id)
-	})
-
-	t.Run("passes gate when Cloud, then requires a dedicated export store", func(t *testing.T) {
-		th := Setup(t)
-		// The Cloud gate is checked before the dedicated export store requirement,
-		// so a Cloud license advances past it and fails on the (disabled) dedicated
-		// export store instead.
-		th.App.Srv().SetLicense(model.NewTestLicense("cloud"))
 		th.App.UpdateConfig(func(cfg *model.Config) {
 			*cfg.FileSettings.DedicatedExportStore = false
 		})
@@ -1765,7 +1741,7 @@ func TestGeneratePresignURLForExport(t *testing.T) {
 	})
 
 	// The full happy path against a real presign-capable (S3/minio) export store: a
-	// Cloud server with a dedicated export store returns a working presigned URL.
+	// server with a dedicated export store returns a working presigned URL.
 	// Skipped when minio isn't reachable.
 	t.Run("succeeds against a presign-capable export store", func(t *testing.T) {
 		s3Host := os.Getenv("CI_MINIO_HOST")
@@ -1799,7 +1775,6 @@ func TestGeneratePresignURLForExport(t *testing.T) {
 			*cfg.FileSettings.ExportAmazonS3Region = ""
 			*cfg.FileSettings.ExportAmazonS3SSL = false
 		})
-		th.App.Srv().SetLicense(model.NewTestLicense("cloud"))
 
 		backend, ok := th.App.ExportFileBackend().(*filestore.S3FileBackend)
 		require.True(t, ok, "expected a dedicated S3 export backend")

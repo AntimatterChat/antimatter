@@ -30,10 +30,6 @@ func TestGetPolicies(t *testing.T) {
 	mainHelper.Parallel(t)
 	th := Setup(t).InitBasic(t)
 
-	// Set up a test license with Data Retention enabled
-	ok := th.App.Srv().SetLicense(model.NewTestLicense("data_retention"))
-	require.True(t, ok, "SetLicense should return true")
-
 	// Ensure the enterprise features are enabled
 	th.App.UpdateConfig(func(cfg *model.Config) {
 		*cfg.DataRetentionSettings.EnableMessageDeletion = true
@@ -116,10 +112,6 @@ func TestGetDataRetentionPoliciesCount(t *testing.T) {
 	mainHelper.Parallel(t)
 	th := Setup(t).InitBasic(t)
 
-	// Set up a test license with Data Retention enabled
-	ok := th.App.Srv().SetLicense(model.NewTestLicense("data_retention"))
-	require.True(t, ok, "SetLicense should return true")
-
 	// Ensure the enterprise features are enabled
 	th.App.UpdateConfig(func(cfg *model.Config) {
 		*cfg.DataRetentionSettings.EnableMessageDeletion = true
@@ -162,10 +154,6 @@ func TestGetDataRetentionPoliciesCount(t *testing.T) {
 func TestGetPolicy(t *testing.T) {
 	mainHelper.Parallel(t)
 	th := Setup(t).InitBasic(t)
-
-	// Set up a test license with Data Retention enabled
-	ok := th.App.Srv().SetLicense(model.NewTestLicense("data_retention"))
-	require.True(t, ok, "SetLicense should return true")
 
 	// Ensure the enterprise features are enabled
 	th.App.UpdateConfig(func(cfg *model.Config) {
@@ -247,9 +235,6 @@ func TestGetPolicy(t *testing.T) {
 func TestCreatePolicy(t *testing.T) {
 	mainHelper.Parallel(t)
 	th := Setup(t).InitBasic(t)
-
-	ok := th.App.Srv().SetLicense(model.NewTestLicense("data_retention"))
-	require.True(t, ok, "SetLicense should return true")
 
 	// Ensure the enterprise features are enabled
 	th.App.UpdateConfig(func(cfg *model.Config) {
@@ -343,10 +328,6 @@ func TestCreatePolicy(t *testing.T) {
 func TestPatchPolicy(t *testing.T) {
 	mainHelper.Parallel(t)
 	th := Setup(t).InitBasic(t)
-
-	// Set up a test license with Data Retention enabled
-	ok := th.App.Srv().SetLicense(model.NewTestLicense("data_retention"))
-	require.True(t, ok, "SetLicense should return true")
 
 	// Ensure the enterprise features are enabled
 	th.App.UpdateConfig(func(cfg *model.Config) {
@@ -459,10 +440,6 @@ func TestDeletePolicy(t *testing.T) {
 	mainHelper.Parallel(t)
 	th := Setup(t).InitBasic(t)
 
-	// Set up a test license with Data Retention enabled
-	ok := th.App.Srv().SetLicense(model.NewTestLicense("data_retention"))
-	require.True(t, ok, "SetLicense should return true")
-
 	// Ensure the enterprise features are enabled
 	th.App.UpdateConfig(func(cfg *model.Config) {
 		*cfg.DataRetentionSettings.EnableMessageDeletion = true
@@ -525,10 +502,6 @@ func TestDeletePolicy(t *testing.T) {
 func TestGetTeamPoliciesForUser(t *testing.T) {
 	mainHelper.Parallel(t)
 	th := Setup(t).InitBasic(t)
-
-	// Set up a test license with Data Retention enabled
-	ok := th.App.Srv().SetLicense(model.NewTestLicense("data_retention"))
-	require.True(t, ok, "SetLicense should return true")
 
 	// Ensure the enterprise features are enabled
 	th.App.UpdateConfig(func(cfg *model.Config) {
@@ -611,10 +584,6 @@ func TestGetChannelPoliciesForUser(t *testing.T) {
 	mainHelper.Parallel(t)
 	th := Setup(t).InitBasic(t)
 
-	// Set up a test license with Data Retention enabled
-	ok := th.App.Srv().SetLicense(model.NewTestLicense("data_retention"))
-	require.True(t, ok, "SetLicense should return true")
-
 	// Ensure the enterprise features are enabled
 	th.App.UpdateConfig(func(cfg *model.Config) {
 		*cfg.DataRetentionSettings.EnableMessageDeletion = true
@@ -695,10 +664,6 @@ func TestGetChannelPoliciesForUser(t *testing.T) {
 func TestGetTeamsForPolicy(t *testing.T) {
 	mainHelper.Parallel(t)
 	th := Setup(t).InitBasic(t)
-
-	// Set up a test license with Data Retention enabled
-	ok := th.App.Srv().SetLicense(model.NewTestLicense("data_retention"))
-	require.True(t, ok, "SetLicense should return true")
 
 	// Ensure the enterprise features are enabled
 	th.App.UpdateConfig(func(cfg *model.Config) {
@@ -808,10 +773,6 @@ func TestAddTeamsToPolicy(t *testing.T) {
 	mainHelper.Parallel(t)
 	th := Setup(t).InitBasic(t)
 
-	// Set up a test license with Data Retention enabled
-	ok := th.App.Srv().SetLicense(model.NewTestLicense("data_retention"))
-	require.True(t, ok, "SetLicense should return true")
-
 	// Ensure the enterprise features are enabled
 	th.App.UpdateConfig(func(cfg *model.Config) {
 		*cfg.DataRetentionSettings.EnableMessageDeletion = true
@@ -878,10 +839,6 @@ func TestRemoveTeamsFromPolicy(t *testing.T) {
 	mainHelper.Parallel(t)
 	th := Setup(t).InitBasic(t)
 
-	// Set up a test license with Data Retention enabled
-	ok := th.App.Srv().SetLicense(model.NewTestLicense("data_retention"))
-	require.True(t, ok, "SetLicense should return true")
-
 	// Ensure the enterprise features are enabled
 	th.App.UpdateConfig(func(cfg *model.Config) {
 		*cfg.DataRetentionSettings.EnableMessageDeletion = true
@@ -947,10 +904,6 @@ func TestRemoveTeamsFromPolicy(t *testing.T) {
 func TestGetChannelsForPolicy(t *testing.T) {
 	mainHelper.Parallel(t)
 	th := Setup(t).InitBasic(t)
-
-	// Set up a test license with Data Retention enabled
-	ok := th.App.Srv().SetLicense(model.NewTestLicense("data_retention"))
-	require.True(t, ok, "SetLicense should return true")
 
 	// Ensure the enterprise features are enabled
 	th.App.UpdateConfig(func(cfg *model.Config) {
@@ -1048,10 +1001,6 @@ func TestAddChannelsToPolicy(t *testing.T) {
 	mainHelper.Parallel(t)
 	th := Setup(t).InitBasic(t)
 
-	// Set up a test license with Data Retention enabled
-	ok := th.App.Srv().SetLicense(model.NewTestLicense("data_retention"))
-	require.True(t, ok, "SetLicense should return true")
-
 	// Ensure the enterprise features are enabled
 	th.App.UpdateConfig(func(cfg *model.Config) {
 		*cfg.DataRetentionSettings.EnableMessageDeletion = true
@@ -1148,10 +1097,6 @@ func TestAddChannelsToPolicy(t *testing.T) {
 func TestRemoveChannelsFromPolicy(t *testing.T) {
 	mainHelper.Parallel(t)
 	th := Setup(t).InitBasic(t)
-
-	// Set up a test license with Data Retention enabled
-	ok := th.App.Srv().SetLicense(model.NewTestLicense("data_retention"))
-	require.True(t, ok, "SetLicense should return true")
 
 	// Ensure the enterprise features are enabled
 	th.App.UpdateConfig(func(cfg *model.Config) {

@@ -323,7 +323,7 @@ func (a *App) exportVersion(writer io.Writer, teamNames []string, channelNames [
 
 	info := &imports.VersionInfoImportData{
 		Generator: "mattermost-server",
-		Version:   fmt.Sprintf("%s (%s, enterprise: %s)", model.CurrentVersion, model.BuildHash, model.BuildEnterpriseReady),
+		Version:   fmt.Sprintf("%s (%s)", model.CurrentVersion, model.BuildHash),
 		Created:   time.Now().Format(time.RFC3339Nano),
 	}
 
@@ -1620,10 +1620,6 @@ func (a *App) ListExports() ([]string, *model.AppError) {
 }
 
 func (a *App) GeneratePresignURLForExport(name string) (*model.PresignURLResponse, *model.AppError) {
-	if !a.License().IsCloud() {
-		return nil, model.NewAppError("GeneratePresignURLForExport", "app.export.generate_presigned_url.direct_download.app_error", nil, "", http.StatusForbidden)
-	}
-
 	if !*a.Config().FileSettings.DedicatedExportStore {
 		return nil, model.NewAppError("GeneratePresignURLForExport", "app.export.generate_presigned_url.config.app_error", nil, "", http.StatusInternalServerError)
 	}

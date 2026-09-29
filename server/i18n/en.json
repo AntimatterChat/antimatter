@@ -8531,11 +8531,6 @@
     "description": "API error (500) shown to a system admin requesting a direct download link for an export, when the server is not configured with a dedicated export file store."
   },
   {
-    "id": "app.export.generate_presigned_url.direct_download.app_error",
-    "translation": "Direct download of exports is only available in Mattermost Cloud.",
-    "description": "API error (403) shown to a system admin on a self-hosted server who requests a presigned direct download link for an export; the feature is restricted to Mattermost Cloud."
-  },
-  {
     "id": "app.export.generate_presigned_url.driver.app_error",
     "translation": "Your export store driver does not support presign url generation.",
     "description": "API error (500) shown to a system admin when the configured export file store backend cannot produce presigned URLs. \"driver\" refers to the storage backend implementation."
