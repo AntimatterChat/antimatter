@@ -28,7 +28,6 @@ function getBaseProps(userOverride: Partial<UserProfile> = {}) {
         user: TestHelper.getUserMock({id: 'user_id', username: 'manager', roles: 'system_user', ...userOverride}),
         userAccessTokensEnabled: false,
         roles: buildRoles(),
-        isLicensedForDelegatedAdmin: true,
         onSuccess,
         onExited,
         actions: {
@@ -182,16 +181,8 @@ describe('admin_console/manage_roles_modal', () => {
         });
     });
 
-    test('does not render the delegated roles section without an enterprise license', () => {
-        const props = {...getBaseProps({roles: 'system_user system_manager'}), isLicensedForDelegatedAdmin: false};
-        renderWithContext(<ManageRolesModal {...props}/>);
-
-        expect(screen.queryByText('Delegated Administration Roles')).not.toBeInTheDocument();
-        expect(screen.queryByRole('checkbox', {name: /System Manager/})).not.toBeInTheDocument();
-    });
-
-    test('renders the delegated roles section with an enterprise license', () => {
-        const props = {...getBaseProps({roles: 'system_user'}), isLicensedForDelegatedAdmin: true};
+    test('renders the delegated roles section', () => {
+        const props = getBaseProps({roles: 'system_user'});
         renderWithContext(<ManageRolesModal {...props}/>);
 
         expect(screen.getByText('Delegated Administration Roles')).toBeInTheDocument();

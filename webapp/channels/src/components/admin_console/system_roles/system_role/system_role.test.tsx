@@ -27,7 +27,6 @@ describe('admin_console/system_role', () => {
     const props = {
         role: TestHelper.getRoleMock(),
         isDisabled: false,
-        isLicensedForCloud: false,
         actions: {
             editRole: jest.fn(),
             updateUserRoles: jest.fn(),
@@ -39,17 +38,6 @@ describe('admin_console/system_role', () => {
         const {container} = renderWithContext(
             <SystemRole
                 {...props}
-            />,
-        );
-
-        expect(container).toMatchSnapshot();
-    });
-
-    test('should match snapshot with isLicensedForCloud = true', () => {
-        const {container} = renderWithContext(
-            <SystemRole
-                {...props}
-                isLicensedForCloud={true}
             />,
         );
 

@@ -53,7 +53,7 @@ exports[`components/admin_console/permission_schemes_settings/permission_schemes
             <span>
               Permission Schemes set the default permissions for Team Admins, Channel Admins and everyone else. Learn more about permission schemes in our 
               <a
-                href="https://mattermost.com/pl/advanced-permissions?utm_source=mattermost&utm_medium=in-product&utm_content=permission_scheme_settings&uid=&sid=&edition=team&server_version="
+                href="https://mattermost.com/pl/advanced-permissions?utm_source=mattermost&utm_medium=in-product&utm_content=permission_scheme_settings&uid=&sid=&server_version="
                 location="permission_scheme_settings"
                 rel="noopener noreferrer"
                 target="_blank"
@@ -80,7 +80,7 @@ exports[`components/admin_console/permission_schemes_settings/permission_schemes
               >
                 Set the default permissions inherited by all teams unless a 
                 <a
-                  href="https://mattermost.com/pl/advanced-permissions?utm_source=mattermost&utm_medium=in-product&utm_content=permission_scheme_settings&uid=&sid=&edition=team&server_version="
+                  href="https://mattermost.com/pl/advanced-permissions?utm_source=mattermost&utm_medium=in-product&utm_content=permission_scheme_settings&uid=&sid=&server_version="
                   location="permission_scheme_settings"
                   rel="noopener noreferrer"
                   target="_blank"
@@ -119,7 +119,7 @@ exports[`components/admin_console/permission_schemes_settings/permission_schemes
               >
                 Use when specific teams need permission exceptions to the 
                 <a
-                  href="https://mattermost.com/pl/advanced-permissions?utm_source=mattermost&utm_medium=in-product&utm_content=permission_scheme_settings&uid=&sid=&edition=team&server_version="
+                  href="https://mattermost.com/pl/advanced-permissions?utm_source=mattermost&utm_medium=in-product&utm_content=permission_scheme_settings&uid=&sid=&server_version="
                   location="permission_scheme_settings"
                   rel="noopener noreferrer"
                   target="_blank"
@@ -291,7 +291,7 @@ exports[`components/admin_console/permission_schemes_settings/permission_schemes
             <span>
               Permission Schemes set the default permissions for Team Admins, Channel Admins and everyone else. Learn more about permission schemes in our 
               <a
-                href="https://mattermost.com/pl/advanced-permissions?utm_source=mattermost&utm_medium=in-product&utm_content=permission_scheme_settings&uid=&sid=&edition=team&server_version="
+                href="https://mattermost.com/pl/advanced-permissions?utm_source=mattermost&utm_medium=in-product&utm_content=permission_scheme_settings&uid=&sid=&server_version="
                 location="permission_scheme_settings"
                 rel="noopener noreferrer"
                 target="_blank"
@@ -318,7 +318,7 @@ exports[`components/admin_console/permission_schemes_settings/permission_schemes
               >
                 Set the default permissions inherited by all teams unless a 
                 <a
-                  href="https://mattermost.com/pl/advanced-permissions?utm_source=mattermost&utm_medium=in-product&utm_content=permission_scheme_settings&uid=&sid=&edition=team&server_version="
+                  href="https://mattermost.com/pl/advanced-permissions?utm_source=mattermost&utm_medium=in-product&utm_content=permission_scheme_settings&uid=&sid=&server_version="
                   location="permission_scheme_settings"
                   rel="noopener noreferrer"
                   target="_blank"
@@ -357,7 +357,7 @@ exports[`components/admin_console/permission_schemes_settings/permission_schemes
               >
                 Use when specific teams need permission exceptions to the 
                 <a
-                  href="https://mattermost.com/pl/advanced-permissions?utm_source=mattermost&utm_medium=in-product&utm_content=permission_scheme_settings&uid=&sid=&edition=team&server_version="
+                  href="https://mattermost.com/pl/advanced-permissions?utm_source=mattermost&utm_medium=in-product&utm_content=permission_scheme_settings&uid=&sid=&server_version="
                   location="permission_scheme_settings"
                   rel="noopener noreferrer"
                   target="_blank"
@@ -417,7 +417,7 @@ exports[`components/admin_console/permission_schemes_settings/permission_schemes
             <span>
               Permission Schemes set the default permissions for Team Admins, Channel Admins and everyone else. Learn more about permission schemes in our 
               <a
-                href="https://mattermost.com/pl/advanced-permissions?utm_source=mattermost&utm_medium=in-product&utm_content=permission_scheme_settings&uid=&sid=&edition=team&server_version="
+                href="https://mattermost.com/pl/advanced-permissions?utm_source=mattermost&utm_medium=in-product&utm_content=permission_scheme_settings&uid=&sid=&server_version="
                 location="permission_scheme_settings"
                 rel="noopener noreferrer"
                 target="_blank"
@@ -444,7 +444,7 @@ exports[`components/admin_console/permission_schemes_settings/permission_schemes
               >
                 Set the default permissions inherited by all teams unless a 
                 <a
-                  href="https://mattermost.com/pl/advanced-permissions?utm_source=mattermost&utm_medium=in-product&utm_content=permission_scheme_settings&uid=&sid=&edition=team&server_version="
+                  href="https://mattermost.com/pl/advanced-permissions?utm_source=mattermost&utm_medium=in-product&utm_content=permission_scheme_settings&uid=&sid=&server_version="
                   location="permission_scheme_settings"
                   rel="noopener noreferrer"
                   target="_blank"
@@ -483,7 +483,7 @@ exports[`components/admin_console/permission_schemes_settings/permission_schemes
               >
                 Use when specific teams need permission exceptions to the 
                 <a
-                  href="https://mattermost.com/pl/advanced-permissions?utm_source=mattermost&utm_medium=in-product&utm_content=permission_scheme_settings&uid=&sid=&edition=team&server_version="
+                  href="https://mattermost.com/pl/advanced-permissions?utm_source=mattermost&utm_medium=in-product&utm_content=permission_scheme_settings&uid=&sid=&server_version="
                   location="permission_scheme_settings"
                   rel="noopener noreferrer"
                   target="_blank"
@@ -513,7 +513,7 @@ exports[`components/admin_console/permission_schemes_settings/permission_schemes
             >
               Migration job in progress: Team Override Schemes are not available until the job server completes the permissions migration. Learn more in the 
               <a
-                href="https://docs.mattermost.com/administration/config-settings.html?utm_source=mattermost&utm_medium=in-product&utm_content=permission_scheme_settings&uid=&sid=&edition=team&server_version=#jobs"
+                href="https://docs.mattermost.com/administration/config-settings.html?utm_source=mattermost&utm_medium=in-product&utm_content=permission_scheme_settings&uid=&sid=&server_version=#jobs"
                 location="permission_scheme_settings"
                 rel="noopener noreferrer"
                 target="_blank"
@@ -673,7 +673,7 @@ exports[`components/admin_console/permission_schemes_settings/permission_schemes
             <span>
               Permission Schemes set the default permissions for Team Admins, Channel Admins and everyone else. Learn more about permission schemes in our 
               <a
-                href="https://mattermost.com/pl/advanced-permissions?utm_source=mattermost&utm_medium=in-product&utm_content=permission_scheme_settings&uid=&sid=&edition=team&server_version="
+                href="https://mattermost.com/pl/advanced-permissions?utm_source=mattermost&utm_medium=in-product&utm_content=permission_scheme_settings&uid=&sid=&server_version="
                 location="permission_scheme_settings"
                 rel="noopener noreferrer"
                 target="_blank"
@@ -700,7 +700,7 @@ exports[`components/admin_console/permission_schemes_settings/permission_schemes
               >
                 Set the default permissions inherited by all teams unless a 
                 <a
-                  href="https://mattermost.com/pl/advanced-permissions?utm_source=mattermost&utm_medium=in-product&utm_content=permission_scheme_settings&uid=&sid=&edition=team&server_version="
+                  href="https://mattermost.com/pl/advanced-permissions?utm_source=mattermost&utm_medium=in-product&utm_content=permission_scheme_settings&uid=&sid=&server_version="
                   location="permission_scheme_settings"
                   rel="noopener noreferrer"
                   target="_blank"
@@ -739,7 +739,7 @@ exports[`components/admin_console/permission_schemes_settings/permission_schemes
               >
                 Use when specific teams need permission exceptions to the 
                 <a
-                  href="https://mattermost.com/pl/advanced-permissions?utm_source=mattermost&utm_medium=in-product&utm_content=permission_scheme_settings&uid=&sid=&edition=team&server_version="
+                  href="https://mattermost.com/pl/advanced-permissions?utm_source=mattermost&utm_medium=in-product&utm_content=permission_scheme_settings&uid=&sid=&server_version="
                   location="permission_scheme_settings"
                   rel="noopener noreferrer"
                   target="_blank"
@@ -769,7 +769,7 @@ exports[`components/admin_console/permission_schemes_settings/permission_schemes
             >
               Migration job on hold: Team Override Schemes are not available until the job server can execute the permissions migration. The job will be automatically started when the job server is enabled. Learn more in the 
               <a
-                href="https://docs.mattermost.com/administration/config-settings.html?utm_source=mattermost&utm_medium=in-product&utm_content=permission_scheme_settings&uid=&sid=&edition=team&server_version=#jobs"
+                href="https://docs.mattermost.com/administration/config-settings.html?utm_source=mattermost&utm_medium=in-product&utm_content=permission_scheme_settings&uid=&sid=&server_version=#jobs"
                 location="permission_scheme_settings"
                 rel="noopener noreferrer"
                 target="_blank"
@@ -929,7 +929,7 @@ exports[`components/admin_console/permission_schemes_settings/permission_schemes
             <span>
               Permission Schemes set the default permissions for Team Admins, Channel Admins and everyone else. Learn more about permission schemes in our 
               <a
-                href="https://mattermost.com/pl/advanced-permissions?utm_source=mattermost&utm_medium=in-product&utm_content=permission_scheme_settings&uid=&sid=&edition=team&server_version="
+                href="https://mattermost.com/pl/advanced-permissions?utm_source=mattermost&utm_medium=in-product&utm_content=permission_scheme_settings&uid=&sid=&server_version="
                 location="permission_scheme_settings"
                 rel="noopener noreferrer"
                 target="_blank"
@@ -956,7 +956,7 @@ exports[`components/admin_console/permission_schemes_settings/permission_schemes
               >
                 Set the default permissions inherited by all teams unless a 
                 <a
-                  href="https://mattermost.com/pl/advanced-permissions?utm_source=mattermost&utm_medium=in-product&utm_content=permission_scheme_settings&uid=&sid=&edition=team&server_version="
+                  href="https://mattermost.com/pl/advanced-permissions?utm_source=mattermost&utm_medium=in-product&utm_content=permission_scheme_settings&uid=&sid=&server_version="
                   location="permission_scheme_settings"
                   rel="noopener noreferrer"
                   target="_blank"
@@ -995,7 +995,7 @@ exports[`components/admin_console/permission_schemes_settings/permission_schemes
               >
                 Use when specific teams need permission exceptions to the 
                 <a
-                  href="https://mattermost.com/pl/advanced-permissions?utm_source=mattermost&utm_medium=in-product&utm_content=permission_scheme_settings&uid=&sid=&edition=team&server_version="
+                  href="https://mattermost.com/pl/advanced-permissions?utm_source=mattermost&utm_medium=in-product&utm_content=permission_scheme_settings&uid=&sid=&server_version="
                   location="permission_scheme_settings"
                   rel="noopener noreferrer"
                   target="_blank"

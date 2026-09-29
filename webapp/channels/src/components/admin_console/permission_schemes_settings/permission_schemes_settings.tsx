@@ -18,7 +18,7 @@ import AdminHeader from 'components/widgets/admin_console/admin_header';
 import AdminPanelWithLink from 'components/widgets/admin_console/admin_panel_with_link';
 import LoadingWrapper from 'components/widgets/loading/loading_wrapper';
 
-import {DocLinks, LicenseSkus} from 'utils/constants';
+import {DocLinks} from 'utils/constants';
 
 import PermissionsSchemeSummary from './permissions_scheme_summary';
 
@@ -29,10 +29,6 @@ export type Props = {
     schemes: SchemesState['schemes'];
     jobsAreEnabled?: boolean;
     clusterIsEnabled?: boolean;
-    license: {
-        CustomPermissionsSchemes: string;
-        SkuShortName: string;
-    };
     actions: {
         loadSchemes: (scope: SchemeScope, page: number, perPage: number) => Promise<ActionResult>;
         loadSchemeTeams: (id: string) => Promise<ActionResult>;
@@ -174,56 +170,52 @@ export default class PermissionSchemesSettings extends React.PureComponent<Props
                 match={this.props.match}
             />
         ));
-        const hasCustomSchemes = this.props.license.CustomPermissionsSchemes === 'true' || this.props.license.SkuShortName === LicenseSkus.Professional;
         const teamOverrideView = this.teamOverrideSchemesMigrationView();
 
-        if (hasCustomSchemes) {
-            return (
-                <AdminPanelWithLink
-                    id='team-override-schemes'
-                    className='permissions-block'
-                    title={messages.teamOverrideSchemesTitle}
-                    subtitle={messages.teamOverrideSchemesBannerText}
-                    subtitleValues={{
-                        link: (msg: React.ReactNode) => (
-                            <ExternalLink
-                                href={DocLinks.ONBOARD_ADVANCED_PERMISSIONS}
-                                location='permission_scheme_settings'
-                            >
-                                {msg}
-                            </ExternalLink>
-                        ),
-                    }}
-                    url='/admin_console/user_management/permissions/team_override_scheme'
-                    disabled={(teamOverrideView !== null) || this.props.isDisabled}
-                    linkText={messages.teamOverrideSchemesNewButton}
-                >
-                    {schemes.length === 0 && teamOverrideView === null &&
-                        <div className='no-team-schemes'>
-                            <FormattedMessage
-                                {...messages.teamOverrideSchemesNoSchemes}
-                            />
-                        </div>}
-                    {teamOverrideView}
-                    {schemes.length > 0 && schemes}
-                    {schemes.length === (PAGE_SIZE * (this.state.page + 1)) &&
-                        <button
-                            type='button'
-                            className='more-schemes theme style--none color--link'
-                            onClick={this.loadMoreSchemes}
-                            disabled={this.props.isDisabled || this.state.loadingMore}
+        return (
+            <AdminPanelWithLink
+                id='team-override-schemes'
+                className='permissions-block'
+                title={messages.teamOverrideSchemesTitle}
+                subtitle={messages.teamOverrideSchemesBannerText}
+                subtitleValues={{
+                    link: (msg: React.ReactNode) => (
+                        <ExternalLink
+                            href={DocLinks.ONBOARD_ADVANCED_PERMISSIONS}
+                            location='permission_scheme_settings'
                         >
-                            <LoadingWrapper
-                                loading={this.state.loadingMore}
-                                text={defineMessage({id: 'admin.permissions.loadingMoreSchemes', defaultMessage: 'Loading...'})}
-                            >
-                                <FormattedMessage {...messages.loadMoreSchemes}/>
-                            </LoadingWrapper>
-                        </button>}
-                </AdminPanelWithLink>
-            );
-        }
-        return false;
+                            {msg}
+                        </ExternalLink>
+                    ),
+                }}
+                url='/admin_console/user_management/permissions/team_override_scheme'
+                disabled={(teamOverrideView !== null) || this.props.isDisabled}
+                linkText={messages.teamOverrideSchemesNewButton}
+            >
+                {schemes.length === 0 && teamOverrideView === null &&
+                    <div className='no-team-schemes'>
+                        <FormattedMessage
+                            {...messages.teamOverrideSchemesNoSchemes}
+                        />
+                    </div>}
+                {teamOverrideView}
+                {schemes.length > 0 && schemes}
+                {schemes.length === (PAGE_SIZE * (this.state.page + 1)) &&
+                    <button
+                        type='button'
+                        className='more-schemes theme style--none color--link'
+                        onClick={this.loadMoreSchemes}
+                        disabled={this.props.isDisabled || this.state.loadingMore}
+                    >
+                        <LoadingWrapper
+                            loading={this.state.loadingMore}
+                            text={defineMessage({id: 'admin.permissions.loadingMoreSchemes', defaultMessage: 'Loading...'})}
+                        >
+                            <FormattedMessage {...messages.loadMoreSchemes}/>
+                        </LoadingWrapper>
+                    </button>}
+            </AdminPanelWithLink>
+        );
     };
 
     render = () => {

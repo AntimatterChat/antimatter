@@ -10,7 +10,7 @@ import type {GlobalState} from '@mattermost/types/store';
 import {loadRolesIfNeeded, editRole} from 'mattermost-redux/actions/roles';
 import {getScheme as loadScheme, patchScheme, createScheme, getSchemeTeams as loadSchemeTeams} from 'mattermost-redux/actions/schemes';
 import {updateTeamScheme} from 'mattermost-redux/actions/teams';
-import {getLicense, getConfig} from 'mattermost-redux/selectors/entities/general';
+import {getConfig} from 'mattermost-redux/selectors/entities/general';
 import {getRoles} from 'mattermost-redux/selectors/entities/roles';
 import {getScheme, makeGetSchemeTeams} from 'mattermost-redux/selectors/entities/schemes';
 
@@ -33,7 +33,6 @@ function makeMapStateToProps() {
         const schemeId = ownProps.match.params.scheme_id;
         return {
             config: getConfig(state),
-            license: getLicense(state),
             schemeId,
             scheme: schemeId ? getScheme(state, schemeId) : null,
             teams: schemeId ? getSchemeTeams(state, {schemeId}) : null,

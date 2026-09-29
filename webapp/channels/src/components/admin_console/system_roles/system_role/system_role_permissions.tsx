@@ -23,7 +23,6 @@ type Props = {
     permissionsToUpdate: PermissionsToUpdate;
     updatePermissions: (permissions: PermissionToUpdate[]) => void;
     readOnly?: boolean;
-    isLicensedForCloud: boolean;
 };
 
 type State = {
@@ -32,18 +31,6 @@ type State = {
 
 // the actual permissions correlating to these values are of the format `sysconsole_(read|write)_name(.subsection.name)`
 const sectionsList: SystemSection[] = [
-    {
-        name: 'about',
-        hasDescription: true,
-        subsections: [
-            {name: 'about_edition_and_license'},
-        ],
-    },
-    {
-        name: 'billing',
-        hasDescription: true,
-        subsections: [],
-    },
     {
         name: 'reporting',
         hasDescription: true,
@@ -177,13 +164,6 @@ export default class SystemRolePermissions extends React.PureComponent<Props, St
         };
     }
 
-    removeSection = (name: string) => {
-        const sectionIndex = sectionsList.findIndex((section) => section.name === name);
-        if (sectionIndex > -1) {
-            sectionsList.splice(sectionIndex, 1);
-        }
-    };
-
     updatePermissions = (permissions: PermissionToUpdate[]) => {
         this.props.updatePermissions(permissions);
     };
@@ -199,7 +179,6 @@ export default class SystemRolePermissions extends React.PureComponent<Props, St
     };
 
     getRows = (permissionsMap: Record<string, boolean>, permissionsToUpdate: PermissionsToUpdate, visibleSections: Record<string, boolean>) => {
-        const {isLicensedForCloud} = this.props;
         let editedSectionsByRole = {
             ...SECTIONS_BY_ROLES,
         };
@@ -293,17 +272,6 @@ export default class SystemRolePermissions extends React.PureComponent<Props, St
                     ...permissionsToShow,
                 },
             };
-        }
-
-        if (!isLicensedForCloud) {
-            // Remove the billing section if it's not licensed for cloud
-            this.removeSection('billing');
-        }
-
-        if (isLicensedForCloud) {
-            // Remove the site configuration section if it's licensed for cloud
-            this.removeSection('about');
-            this.removeSection('environment');
         }
 
         return getSectionsListForRole(sectionsList, this.props.role.name, editedSectionsByRole).map((section: SystemSection) => {

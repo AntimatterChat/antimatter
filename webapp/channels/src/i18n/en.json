@@ -10015,18 +10015,6 @@
     "defaultMessage": "Team User",
     "description": "Role name shown in the System Console permission scheme editor; a regular member of a team."
   },
-  "admin.permissions.sysconsole_section_about_edition_and_license.name": {
-    "defaultMessage": "Edition and License",
-    "description": "Name of the 'Edition and License' System Console subsection in the admin role privileges list."
-  },
-  "admin.permissions.sysconsole_section_about.description": {
-    "defaultMessage": "The ability to install or upgrade your servers enterprise licensing.",
-    "description": "Description of the 'About' System Console section, shown when configuring an admin role's access to that section."
-  },
-  "admin.permissions.sysconsole_section_about.name": {
-    "defaultMessage": "About",
-    "description": "Name of a System Console section in the admin role privileges list; refers to the About/license area of the console."
-  },
   "admin.permissions.sysconsole_section_authentication_email.name": {
     "defaultMessage": "Email",
     "description": "Name of the email authentication subsection in the admin role privileges list; 'Email' as an authentication method."
@@ -10066,14 +10054,6 @@
   "admin.permissions.sysconsole_section_authentication.name": {
     "defaultMessage": "Authentication",
     "description": "Name of the 'Authentication' System Console section in the admin role privileges list."
-  },
-  "admin.permissions.sysconsole_section_billing.description": {
-    "defaultMessage": "Access subscription details, billing history, company information and payment information.",
-    "description": "Description of the 'Billing' System Console section, shown when configuring an admin role's access to that section (Cloud only)."
-  },
-  "admin.permissions.sysconsole_section_billing.name": {
-    "defaultMessage": "Billing",
-    "description": "Name of the 'Billing' System Console section in the admin role privileges list (Cloud only)."
   },
   "admin.permissions.sysconsole_section_compliance_compliance_export.name": {
     "defaultMessage": "Compliance Export",
@@ -14099,14 +14079,6 @@
     "defaultMessage": "Export",
     "description": "Button above the System Console users table that exports the user report as CSV; verb. Compact space."
   },
-  "admin.system_users.exportButton.notLicensed.hint": {
-    "defaultMessage": "This feature is available on the professional plan",
-    "description": "Tooltip body on the disabled export-user-data button in the System Console Users list when the server lacks a Professional license."
-  },
-  "admin.system_users.exportButton.notLicensed.title": {
-    "defaultMessage": "Professional feature",
-    "description": "Tooltip title on the disabled export-user-data button in the System Console Users list; 'Professional' is a Mattermost plan name."
-  },
   "admin.system_users.filters.role.any": {
     "defaultMessage": "Any",
     "description": "Option in the Role filter of the System Console users page meaning no role restriction."
@@ -15258,10 +15230,6 @@
   "admin.user_item.manageSettings.confirm_dialog.body": {
     "defaultMessage": "You are about to access {userDisplayName}'s account settings. Any modifications you make will take effect immediately in their account. {userDisplayName} retains the ability to view and modify these settings at any time.<br></br><br></br> Are you sure you want to proceed with managing {userDisplayName}'s settings?",
     "description": "Body of the confirmation modal shown before an admin opens another user's settings; {userDisplayName} is that user's display name; <br></br> tags produce line breaks."
-  },
-  "admin.user_item.manageSettings.disabled_tooltip": {
-    "defaultMessage": "Please upgrade to Enterprise to manage user settings",
-    "description": "Tooltip on the disabled 'Manage user settings' menu item when the server lacks an Enterprise license; 'Enterprise' is a Mattermost plan name."
   },
   "admin.user_item.manageTeams": {
     "defaultMessage": "Manage Teams",
@@ -21574,10 +21542,6 @@
   "generic.done": {
     "defaultMessage": "Done",
     "description": "Button closing the in-product notices modal on its last page."
-  },
-  "generic.enterprise_feature": {
-    "defaultMessage": "Enterprise Feature",
-    "description": "Tooltip title shown over buttons for features locked behind an Enterprise license (e.g. the disabled Manage User Settings button)."
   },
   "generic.next": {
     "defaultMessage": "Next",
@@ -29943,18 +29907,6 @@
     "defaultMessage": "Update",
     "description": "Submit button label (verb) on the Edit Outgoing Webhook form and in its confirmation modal."
   },
-  "upgrade_export_data_modal.desc": {
-    "defaultMessage": "Export detailed data reports with ease and analyse user statistics conveniently. Upgrade to the Professional plan to gain access to data export.",
-    "description": "Body of the upsell modal shown when an unlicensed admin clicks Export on the users page; promotes upgrading to the Professional plan."
-  },
-  "upgrade_export_data_modal.title": {
-    "defaultMessage": "Upgrade to export data reports",
-    "description": "Title of the upsell modal shown when the user data export feature requires a paid plan."
-  },
-  "upgrade_export_data_modal.view_plans": {
-    "defaultMessage": "View Plans",
-    "description": "Button in the upsell modal that opens the pricing/plans page."
-  },
   "upgradeLink.warn.upgrade_now": {
     "defaultMessage": "Upgrade now",
     "description": "Call-to-action button/link prompting the workspace to upgrade to a paid plan."
@@ -32554,18 +32506,6 @@
   "workspace_limits.post_history_banner.text": {
     "defaultMessage": "{limit, number}-message limit reached. Messages sent before {date} are hidden",
     "description": "Announcement banner on Cloud free plans when the message history limit is reached; {limit} is the message count limit and {date} a formatted date."
-  },
-  "workspace_limits.teams_limit_reached.tool_tip": {
-    "defaultMessage": "You've reached the team limit for your current plan. Consider upgrading to unarchive this team or archive your other teams",
-    "description": "Tooltip hint on the disabled Unarchive Team button when the workspace's plan team limit is reached; shown to admins."
-  },
-  "workspace_limits.teams_limit_reached.upgrade_to_unarchive": {
-    "defaultMessage": "Upgrade to Unarchive",
-    "description": "Tooltip title on the disabled Unarchive Team button when the plan's team limit is reached."
-  },
-  "workspace_limits.teams_limit_reached.view_upgrade_options": {
-    "defaultMessage": "View upgrade options",
-    "description": "Button next to the disabled Unarchive Team button; opens plan upgrade options."
   },
   "wysiwyg.link.display_text": {
     "defaultMessage": "Display text",

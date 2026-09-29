@@ -24,10 +24,6 @@ describe('components/admin_console/permission_schemes_settings/permission_scheme
             loadSchemes: jest.fn(() => Promise.resolve({data: [], error: {}})),
             loadSchemeTeams: jest.fn(() => Promise.resolve({data: []})),
         },
-        license: {
-            CustomPermissionsSchemes: 'true',
-            SkuShortName: '',
-        },
         ...{} as RouteComponentProps,
     };
 

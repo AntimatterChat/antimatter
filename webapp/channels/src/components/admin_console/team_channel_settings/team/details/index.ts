@@ -14,13 +14,11 @@ import {
     patchGroupSyncable,
 } from 'mattermost-redux/actions/groups';
 import {getTeam as fetchTeam, membersMinusGroupMembers, patchTeam, removeUserFromTeam, updateTeamMemberSchemeRoles, addUserToTeam, deleteTeam, unarchiveTeam, getTeamStats, getTeamMembers} from 'mattermost-redux/actions/teams';
-import {getConfig, getLicense} from 'mattermost-redux/selectors/entities/general';
+import {getConfig} from 'mattermost-redux/selectors/entities/general';
 import {getAllGroups, getGroupsAssociatedToTeam} from 'mattermost-redux/selectors/entities/groups';
 import {getTeam} from 'mattermost-redux/selectors/entities/teams';
 
 import {setNavigationBlocked} from 'actions/admin_actions';
-
-import {isMinimumEnterpriseAdvancedLicense} from 'utils/license_utils';
 
 import type {GlobalState} from 'types/store';
 
@@ -39,14 +37,10 @@ function mapStateToProps(state: GlobalState, props: OwnProps) {
     const allGroups = getAllGroups(state);
     const totalGroups = groups.length;
     const config = getConfig(state);
-    const license = getLicense(state);
-    const isLicensedForLDAPGroups = license.LDAPGroups === 'true';
 
-    // Team ABAC requires Enterprise Advanced plus the team-membership kill
-    // switch, mirroring the server enforcement gate.
-    const abacSupported = license?.IsLicensed === 'true' &&
-        isMinimumEnterpriseAdvancedLicense(license) &&
-        config.FeatureFlagTeamMembershipAccessControl === 'true';
+    // Team ABAC is gated by the team-membership kill switch, mirroring the
+    // server enforcement gate.
+    const abacSupported = config.FeatureFlagTeamMembershipAccessControl === 'true';
 
     return {
         team,
@@ -54,7 +48,6 @@ function mapStateToProps(state: GlobalState, props: OwnProps) {
         totalGroups,
         allGroups,
         teamID,
-        isLicensedForLDAPGroups,
         abacSupported,
     };
 }

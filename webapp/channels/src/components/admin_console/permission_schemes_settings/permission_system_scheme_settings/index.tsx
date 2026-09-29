@@ -8,7 +8,7 @@ import type {Dispatch} from 'redux';
 import type {GlobalState} from '@mattermost/types/store';
 
 import {loadRolesIfNeeded, editRole} from 'mattermost-redux/actions/roles';
-import {getLicense, getConfig} from 'mattermost-redux/selectors/entities/general';
+import {getConfig} from 'mattermost-redux/selectors/entities/general';
 import {getRoles} from 'mattermost-redux/selectors/entities/roles';
 
 import {setNavigationBlocked} from 'actions/admin_actions';
@@ -18,7 +18,6 @@ import PermissionSystemSchemeSettings from './permission_system_scheme_settings'
 function mapStateToProps(state: GlobalState) {
     return {
         config: getConfig(state),
-        license: getLicense(state),
         roles: getRoles(state),
     };
 }

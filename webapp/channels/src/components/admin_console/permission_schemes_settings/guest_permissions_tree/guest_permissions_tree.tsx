@@ -4,19 +4,15 @@
 import React, {useCallback, useMemo} from 'react';
 import {FormattedMessage} from 'react-intl';
 
-import type {ClientLicense} from '@mattermost/types/config';
 import type {Role} from '@mattermost/types/roles';
 
 import Permissions from 'mattermost-redux/constants/permissions';
-
-import {isMinimumProfessionalLicense} from 'utils/license_utils';
 
 import EditPostTimeLimitButton from '../edit_post_time_limit_button';
 import EditPostTimeLimitModal from '../edit_post_time_limit_modal';
 import PermissionGroup from '../permission_group';
 
 type Props = {
-    license: ClientLicense;
     onToggle: (role: string, permissions: string[]) => void;
     readOnly: boolean;
     scope: string;
@@ -26,7 +22,7 @@ type Props = {
     role?: Partial<Role>;
 };
 
-const GuestPermissionsTree = ({license, onToggle, readOnly, scope, selectRow, parentRole, selected, role = {permissions: []}}: Props) => {
+const GuestPermissionsTree = ({onToggle, readOnly, scope, selectRow, parentRole, selected, role = {permissions: []}}: Props) => {
     const permissions = useMemo(() => {
         const defaultPermissions = [
             Permissions.CREATE_PRIVATE_CHANNEL,
@@ -50,10 +46,8 @@ const GuestPermissionsTree = ({license, onToggle, readOnly, scope, selectRow, pa
                 ],
             },
             Permissions.USE_CHANNEL_MENTIONS,
+            Permissions.USE_GROUP_MENTIONS,
         ];
-        if (isMinimumProfessionalLicense(license)) {
-            defaultPermissions.push(Permissions.USE_GROUP_MENTIONS);
-        }
         return defaultPermissions.map((permission) => {
             if (typeof (permission) === 'string') {
                 return {
@@ -64,7 +58,7 @@ const GuestPermissionsTree = ({license, onToggle, readOnly, scope, selectRow, pa
             }
             return permission;
         });
-    }, [license]);
+    }, []);
 
     const [editTimeLimitModalIsVisible, setEditTimeLimitModalIsVisible] = React.useState(false);
 

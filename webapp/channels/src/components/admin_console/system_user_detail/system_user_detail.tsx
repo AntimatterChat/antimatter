@@ -402,7 +402,7 @@ export class SystemUserDetail extends PureComponent<Props, State> {
             // Fetch user data and CPA values in parallel
             const [userResult, cpaValues] = await Promise.all([
                 this.props.getUser(userId) as ActionResult<UserProfile, ServerError>,
-                this.props.customProfileAttributeEnabled ? this.getCustomProfileAttributeValues(userId) : {},
+                this.getCustomProfileAttributeValues(userId),
             ]);
 
             if (userResult.data) {
@@ -445,36 +445,18 @@ export class SystemUserDetail extends PureComponent<Props, State> {
         }
 
         // Fetch CPA field definitions if not already available
-        if (this.props.customProfileAttributeEnabled && this.props.customProfileAttributeFields.length === 0) {
+        if (this.props.customProfileAttributeFields.length === 0) {
             this.props.getCustomProfileAttributeFields();
         }
     }
 
-    componentDidUpdate(prevProps: Props, prevState: State) {
+    componentDidUpdate(_prevProps: Props, prevState: State) {
         // Update navigation blocking whenever relevant state changes
         const hasChanges = this.hasUnsavedChanges();
         const hadChanges = this.hasUnsavedChanges(prevState);
 
         if (hasChanges !== hadChanges) {
             this.props.setNavigationBlocked(hasChanges);
-        }
-
-        // Fetch CPA field definitions if CPA has been enabled
-        const hasCpaBeenEnabled = !prevProps.customProfileAttributeEnabled && this.props.customProfileAttributeEnabled;
-        if (hasCpaBeenEnabled) {
-            if (this.state.user) {
-                this.getCustomProfileAttributeValues(this.state.user.id).
-                    then((cpaValues) => {
-                        this.setState({
-                            customProfileAttributeValues: cpaValues,
-                            originalCpaValues: {...cpaValues}, // Deep copy for change tracking
-                        });
-                    });
-            }
-
-            if (this.props.customProfileAttributeFields.length === 0) {
-                this.props.getCustomProfileAttributeFields();
-            }
         }
     }
 
@@ -500,11 +482,7 @@ export class SystemUserDetail extends PureComponent<Props, State> {
     };
 
     private hasCpaChanges = (state: State = this.state): boolean => {
-        const {customProfileAttributeEnabled, customProfileAttributeFields} = this.props;
-
-        if (!customProfileAttributeEnabled) {
-            return false;
-        }
+        const {customProfileAttributeFields} = this.props;
 
         for (const field of customProfileAttributeFields) {
             const currentValue = state.customProfileAttributeValues[field.id];
@@ -1983,33 +1961,6 @@ export class SystemUserDetail extends PureComponent<Props, State> {
                                         </Button>
                                     }
 
-                                    {
-                                        this.props.showLockedManageUserSettings &&
-                                        <WithTooltip
-                                            title={defineMessage({
-                                                id: 'generic.enterprise_feature',
-                                                defaultMessage: 'Enterprise Feature',
-                                            })}
-                                            hint={defineMessage({
-                                                id: 'admin.user_item.manageSettings.disabled_tooltip',
-                                                defaultMessage: 'Please upgrade to Enterprise to manage user settings',
-                                            })}
-                                        >
-                                            <Button
-                                                emphasis='tertiary'
-                                                className='manageUserSettingsBtn disabled'
-                                                disabled={true}
-                                            >
-                                                <div className='RestrictedIndicator__content'>
-                                                    <i className={classNames('RestrictedIndicator__icon-tooltip', 'icon', 'icon-key-variant')}/>
-                                                </div>
-                                                <FormattedMessage
-                                                    id='admin.user_item.manageSettings'
-                                                    defaultMessage='Manage User Settings'
-                                                />
-                                            </Button>
-                                        </WithTooltip>
-                                    }
                                 </>
                             }
                         />

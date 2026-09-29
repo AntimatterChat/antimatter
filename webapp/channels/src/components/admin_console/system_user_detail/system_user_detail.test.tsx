@@ -42,11 +42,9 @@ describe('SystemUserDetail', () => {
     const defaultProps: Props = {
         currentUserId: 'current_user_id',
         showManageUserSettings: false,
-        showLockedManageUserSettings: false,
         mfaEnabled: false,
         maxFileSize: 1024 * 1024,
         ldapPictureAttributeSet: false,
-        customProfileAttributeEnabled: true,
         customProfileAttributeFields: [],
         patchUser: jest.fn(),
         updateUserAuth: jest.fn(),
@@ -112,18 +110,6 @@ describe('SystemUserDetail', () => {
         expect(container).toMatchSnapshot();
     });
 
-    test('should show manage user settings button as disabled when no license', async () => {
-        const props = {
-            ...defaultProps,
-            showLockedManageUserSettings: false,
-        };
-        const {container} = renderWithContext(<SystemUserDetail {...props}/>);
-
-        await waitForLoadingToFinish();
-
-        expect(container).toMatchSnapshot();
-    });
-
     test('should show the activate user button as disabled when user is LDAP', async () => {
         const props = {
             ...defaultProps,
@@ -148,26 +134,6 @@ describe('SystemUserDetail', () => {
         const {container} = renderWithContext(<SystemUserDetail {...props}/>);
 
         await waitForLoadingToFinish();
-
-        expect(container).toMatchSnapshot();
-    });
-
-    test('should not fetch CPA data if disabled', async () => {
-        const getCustomProfileAttributeFields = jest.fn().mockResolvedValue({data: []});
-        const getCustomProfileAttributeValues = jest.fn().mockResolvedValue({data: {}});
-
-        const props = {
-            ...defaultProps,
-            customProfileAttributeEnabled: false,
-            getCustomProfileAttributeFields,
-            getCustomProfileAttributeValues,
-        };
-        const {container} = renderWithContext(<SystemUserDetail {...props}/>);
-
-        await waitForLoadingToFinish();
-
-        expect(getCustomProfileAttributeFields).not.toHaveBeenCalled();
-        expect(getCustomProfileAttributeValues).not.toHaveBeenCalled();
 
         expect(container).toMatchSnapshot();
     });

@@ -6,7 +6,7 @@ import type {WrappedComponentProps} from 'react-intl';
 import {FormattedMessage, defineMessage, injectIntl} from 'react-intl';
 
 import {Button, buttonClassNames} from '@mattermost/shared/components/button';
-import type {ClientConfig, ClientLicense} from '@mattermost/types/config';
+import type {ClientConfig} from '@mattermost/types/config';
 import type {Role} from '@mattermost/types/roles';
 
 import GeneralConstants from 'mattermost-redux/constants/general';
@@ -30,7 +30,6 @@ import PermissionsTreePlaybooks from '../permissions_tree_playbooks';
 type Props = {
     config: Partial<ClientConfig>;
     roles: Record<string, Role>;
-    license: ClientLicense;
     isDisabled?: boolean;
     actions: {
         loadRolesIfNeeded: (roles: string[]) => void;
@@ -295,13 +294,11 @@ export class PermissionSystemSchemeSettings extends React.PureComponent<Props, S
             runMemberPromise,
         ];
 
-        if (this.haveGuestAccountsPermissions()) {
-            const guestRoles = this.restoreGuestPermissions(this.deriveRolesFromGuests(this.state.roles.guests));
-            const systemGuestPromise = this.props.actions.editRole(guestRoles.system_guest);
-            const teamGuestPromise = this.props.actions.editRole(guestRoles.team_guest);
-            const channelGuestPromise = this.props.actions.editRole(guestRoles.channel_guest);
-            promises.push(systemGuestPromise, teamGuestPromise, channelGuestPromise);
-        }
+        const guestRoles = this.restoreGuestPermissions(this.deriveRolesFromGuests(this.state.roles.guests));
+        const systemGuestPromise = this.props.actions.editRole(guestRoles.system_guest);
+        const teamGuestPromise = this.props.actions.editRole(guestRoles.team_guest);
+        const channelGuestPromise = this.props.actions.editRole(guestRoles.channel_guest);
+        promises.push(systemGuestPromise, teamGuestPromise, channelGuestPromise);
 
         this.setState({saving: true});
 
@@ -378,16 +375,11 @@ export class PermissionSystemSchemeSettings extends React.PureComponent<Props, S
         this.props.actions.setNavigationBlocked(true);
     };
 
-    haveGuestAccountsPermissions = () => {
-        return this.props.license.GuestAccountsPermissions === 'true';
-    };
-
     render = () => {
         if (!this.state.loaded) {
             return <LoadingScreen/>;
         }
 
-        const isLicensed = this.props.license?.IsLicensed === 'true';
         return (
             <div className='wrapper--fixed'>
                 <AdminHeader withBackButton={true}>
@@ -426,7 +418,7 @@ export class PermissionSystemSchemeSettings extends React.PureComponent<Props, S
                             </div>
                         </div>
 
-                        {isLicensed && this.props.config.EnableGuestAccounts === 'true' &&
+                        {this.props.config.EnableGuestAccounts === 'true' &&
                             <AdminPanelTogglable
                                 className='permissions-block'
                                 open={this.state.openRoles.guests}
@@ -441,7 +433,7 @@ export class PermissionSystemSchemeSettings extends React.PureComponent<Props, S
                                     scope={'system_scope'}
                                     onToggle={this.togglePermission}
                                     selectRow={this.selectRow}
-                                    readOnly={this.props.isDisabled || !this.haveGuestAccountsPermissions()}
+                                    readOnly={this.props.isDisabled || false}
                                 />
                             </AdminPanelTogglable>}
 
@@ -495,7 +487,6 @@ export class PermissionSystemSchemeSettings extends React.PureComponent<Props, S
                                 onToggle={this.togglePermission}
                                 selectRow={this.selectRow}
                                 readOnly={this.props.isDisabled || false}
-                                license={this.props.license}
                             />
                         </AdminPanelTogglable>
 

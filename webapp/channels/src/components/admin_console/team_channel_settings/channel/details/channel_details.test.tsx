@@ -129,8 +129,6 @@ describe('admin_console/team_channel_settings/channel/ChannelDetails', () => {
         const additionalProps = {
             channelPermissions: [],
             guestAccountsEnabled: true,
-            channelModerationEnabled: true,
-            channelGroupsEnabled: true,
             abacSupported: true,
             isDisabled: false,
         };
@@ -166,12 +164,10 @@ describe('admin_console/team_channel_settings/channel/ChannelDetails', () => {
         ));
         expect(container).toMatchSnapshot();
     });
-    test('should match snapshot for Professional', () => {
+    test('should match snapshot without ABAC', () => {
         const additionalProps = {
             channelPermissions: [],
             guestAccountsEnabled: true,
-            channelModerationEnabled: true,
-            channelGroupsEnabled: false,
             isDisabled: false,
             abacSupported: false,
         };
@@ -208,12 +204,10 @@ describe('admin_console/team_channel_settings/channel/ChannelDetails', () => {
         expect(container).toMatchSnapshot();
     });
 
-    test('should match snapshot for Enterprise', () => {
+    test('should match snapshot with ABAC', () => {
         const additionalProps = {
             channelPermissions: [],
             guestAccountsEnabled: true,
-            channelModerationEnabled: true,
-            channelGroupsEnabled: false,
             isDisabled: false,
             abacSupported: true,
         };
@@ -274,8 +268,6 @@ describe('admin_console/team_channel_settings/channel/ChannelDetails', () => {
                 allGroups={allGroups}
                 channelPermissions={[]}
                 guestAccountsEnabled={true}
-                channelModerationEnabled={true}
-                channelGroupsEnabled={false}
                 abacSupported={true}
                 isDisabled={false}
             />,

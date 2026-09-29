@@ -4,32 +4,6 @@
 import {defineMessages, type MessageDescriptor} from 'react-intl';
 
 export const sectionStrings: Record<string, Record<string, MessageDescriptor>> = {
-    about: defineMessages({
-        name: {
-            id: 'admin.permissions.sysconsole_section_about.name',
-            defaultMessage: 'About',
-        },
-        description: {
-            id: 'admin.permissions.sysconsole_section_about.description',
-            defaultMessage: 'The ability to install or upgrade your servers enterprise licensing.',
-        },
-    }),
-    about_edition_and_license: defineMessages({
-        name: {
-            id: 'admin.permissions.sysconsole_section_about_edition_and_license.name',
-            defaultMessage: 'Edition and License',
-        },
-    }),
-    billing: defineMessages({
-        name: {
-            id: 'admin.permissions.sysconsole_section_billing.name',
-            defaultMessage: 'Billing',
-        },
-        description: {
-            id: 'admin.permissions.sysconsole_section_billing.description',
-            defaultMessage: 'Access subscription details, billing history, company information and payment information.',
-        },
-    }),
     reporting: defineMessages({
         name: {
             id: 'admin.permissions.sysconsole_section_reporting.name',
