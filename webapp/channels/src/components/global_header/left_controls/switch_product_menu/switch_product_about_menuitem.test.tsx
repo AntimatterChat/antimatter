@@ -17,6 +17,6 @@ describe('ProductSwitcherAboutMenuItem', () => {
     test('should fall back to Mattermost when no site name is configured', () => {
         renderWithContext(<ProductSwitcherAboutMenuItem/>);
 
-        expect(screen.getByText('About Mattermost')).toBeInTheDocument();
+        expect(screen.getByText('About Antimatter')).toBeInTheDocument();
     });
 });

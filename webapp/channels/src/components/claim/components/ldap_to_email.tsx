@@ -136,7 +136,7 @@ const LDAPToEmail = (props: Props) => {
                 <p>
                     <FormattedMessage
                         id='claim.ldap_to_email.email'
-                        defaultMessage='After switching your authentication method, you will use {email} to login. Your AD/LDAP credentials will no longer allow access to Mattermost.'
+                        defaultMessage='After switching your authentication method, you will use {email} to login. Your AD/LDAP credentials will no longer allow access to Antimatter.'
                         values={{email: props.email}}
                     />
                 </p>

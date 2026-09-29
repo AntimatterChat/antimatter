@@ -77,7 +77,7 @@ const MenuStartTrial = (props: Props): JSX.Element | null => {
                     formatMessage(
                         {
                             id: 'navbar_dropdown.versionText',
-                            defaultMessage: 'This is the free <link>unsupported</link> edition of Mattermost.',
+                            defaultMessage: 'This is the free <link>unsupported</link> edition of Antimatter.',
                         },
                         {
                             link: (msg: React.ReactNode) => (

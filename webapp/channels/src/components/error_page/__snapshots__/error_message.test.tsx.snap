@@ -19,7 +19,7 @@ exports[`components/error_page/ErrorMessage should match snapshot, channel_not_f
 exports[`components/error_page/ErrorMessage should match snapshot, local_storage type 1`] = `
 <div>
   <div>
-    Mattermost was unable to load because a setting in your browser prevents the use of its local storage features. To allow Mattermost to load, try the following actions:
+    Antimatter was unable to load because a setting in your browser prevents the use of its local storage features. To allow Antimatter to load, try the following actions:
     <ul>
       <li>
         Enable cookies
@@ -54,7 +54,7 @@ exports[`components/error_page/ErrorMessage should match snapshot, no type nor m
 exports[`components/error_page/ErrorMessage should match snapshot, oauth_access_denied type 1`] = `
 <div>
   <p>
-    You must authorize Mattermost to log in with Gitlab.
+    You must authorize Antimatter to log in with Gitlab.
   </p>
 </div>
 `;

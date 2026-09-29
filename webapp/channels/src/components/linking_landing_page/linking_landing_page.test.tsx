@@ -66,7 +66,7 @@ describe('components/LinkingLandingPage', () => {
             renderWithContext(<LinkingLandingPage {...baseProps}/>);
 
             expect(navigateTo).toHaveBeenCalledWith(nativeUrl);
-            expect(screen.getByText('Opening link in Mattermost...')).toBeVisible();
+            expect(screen.getByText('Opening link in Antimatter...')).toBeVisible();
         });
     });
 

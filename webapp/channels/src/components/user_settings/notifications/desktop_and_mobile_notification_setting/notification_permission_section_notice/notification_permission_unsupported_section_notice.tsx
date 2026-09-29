@@ -23,7 +23,7 @@ export default function NotificationPermissionUnsupportedSectionNotice() {
                 })}
                 text={intl.formatMessage({
                     id: 'user.settings.notifications.desktopAndMobile.notificationSection.permissionUnsupported.message',
-                    defaultMessage: 'You\'re missing important message and call notifications from Mattermost. To start receiving notifications, please update to a supported browser.',
+                    defaultMessage: 'You\'re missing important message and call notifications from Antimatter. To start receiving notifications, please update to a supported browser.',
                 })}
                 tertiaryButton={{
                     text: intl.formatMessage({

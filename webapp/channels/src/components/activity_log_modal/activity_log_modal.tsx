@@ -117,7 +117,7 @@ const ActivityLogModal = ({
                 <p className='session-help-text'>
                     <FormattedMessage
                         id='activity_log.sessionsDescription'
-                        defaultMessage="Sessions are created when you log in through a new browser on a device. Sessions let you use Mattermost without having to log in again for a time period specified by the system administrator. To end the session sooner, use the 'Log Out' button."
+                        defaultMessage="Sessions are created when you log in through a new browser on a device. Sessions let you use Antimatter without having to log in again for a time period specified by the system administrator. To end the session sooner, use the 'Log Out' button."
                     />
                 </p>
                 {content}

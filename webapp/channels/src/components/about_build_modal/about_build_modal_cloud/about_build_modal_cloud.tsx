@@ -92,7 +92,7 @@ export default function AboutBuildModalCloud(props: Props) {
                             <div data-testid='aboutModalVersion'>
                                 <FormattedMessage
                                     id='about.version'
-                                    defaultMessage='Mattermost Version:'
+                                    defaultMessage='Antimatter Version:'
                                 />
                                 <span id='versionString'>{'\u00a0' + config.Version}</span>
                             </div>
@@ -101,7 +101,7 @@ export default function AboutBuildModalCloud(props: Props) {
                         <div className='about-footer'>
                             <FormattedMessage
                                 id='about.notice'
-                                defaultMessage='Mattermost is made possible by the open source software used in our <linkServer>server</linkServer>, <linkDesktop>desktop</linkDesktop> and <linkMobile>mobile</linkMobile> apps.'
+                                defaultMessage='Antimatter is made possible by the open source software used in our <linkServer>server</linkServer>, <linkDesktop>desktop</linkDesktop> and <linkMobile>mobile</linkMobile> apps.'
                                 values={{
                                     linkServer: (msg: React.ReactNode) => (
                                         <ExternalLink
@@ -132,7 +132,7 @@ export default function AboutBuildModalCloud(props: Props) {
                             <div className='copy-right'>
                                 <FormattedMessage
                                     id='about.copyright'
-                                    defaultMessage='Copyright 2015 - {currentYear} Mattermost, Inc. All rights reserved'
+                                    defaultMessage='Based on Mattermost. Copyright 2015 - {currentYear} Mattermost, Inc. All rights reserved'
                                     values={{
                                         currentYear: new Date().getFullYear(),
                                     }}

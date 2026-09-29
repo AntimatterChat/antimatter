@@ -19,7 +19,7 @@ exports[`components/signup/Signup should match snapshot for all signup options e
         <p
           class="signup-body-message-subtitle"
         >
-          Create your Mattermost account to start collaborating with your team
+          Create your Antimatter account to start collaborating with your team
         </p>
       </div>
       <div
@@ -166,7 +166,7 @@ exports[`components/signup/Signup should match snapshot for all signup options e
         <p
           class="signup-body-message-subtitle"
         >
-          Create your Mattermost account to start collaborating with your team
+          Create your Antimatter account to start collaborating with your team
         </p>
       </div>
       <div
@@ -462,7 +462,7 @@ exports[`components/signup/Signup should match snapshot for all signup options e
         <p
           class="signup-body-message-subtitle"
         >
-          Create your Mattermost account to start collaborating with your team
+          Create your Antimatter account to start collaborating with your team
         </p>
       </div>
       <div

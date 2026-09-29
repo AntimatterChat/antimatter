@@ -204,7 +204,7 @@ class TeamMembersDropdown extends React.PureComponent<Props, State> {
                 <div>
                     <FormattedMessage
                         id='team_members_dropdown.confirmDemoteDescription'
-                        defaultMessage="If you demote yourself from the System Admin role and there is not another user with System Admin privileges, you'll need to re-assign a System Admin by accessing the Mattermost server through a terminal and running the following command."
+                        defaultMessage="If you demote yourself from the System Admin role and there is not another user with System Admin privileges, you'll need to re-assign a System Admin by accessing the Antimatter server through a terminal and running the following command."
                     />
                     <br/>
                     <br/>

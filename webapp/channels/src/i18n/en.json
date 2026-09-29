@@ -8,8 +8,8 @@
     "description": "Edition name displayed in the About Mattermost dialog for Mattermost Cloud instances."
   },
   "about.copyright": {
-    "defaultMessage": "Copyright 2015 - {currentYear} Mattermost, Inc. All rights reserved",
-    "description": "Copyright line in the About Mattermost dialog; {currentYear} is the current year."
+    "defaultMessage": "Based on Mattermost. Copyright 2015 - {currentYear} Mattermost, Inc. All rights reserved",
+    "description": "Copyright line in the About Antimatter dialog, crediting the upstream Mattermost project; {currentYear} is the current year. 'Mattermost' and 'Mattermost, Inc.' are names and stay as-is."
   },
   "about.database": {
     "defaultMessage": "Database:",
@@ -56,8 +56,8 @@
     "description": "Field label in the About Mattermost dialog; the license load metric value follows the colon."
   },
   "about.notice": {
-    "defaultMessage": "Mattermost is made possible by the open source software used in our <linkServer>server</linkServer>, <linkDesktop>desktop</linkDesktop> and <linkMobile>mobile</linkMobile> apps.",
-    "description": "Open-source notice in the About Mattermost dialog; the <linkServer>, <linkDesktop> and <linkMobile> tags wrap the words that become links to each project's license page."
+    "defaultMessage": "Antimatter is made possible by the open source software used in our <linkServer>server</linkServer>, <linkDesktop>desktop</linkDesktop> and <linkMobile>mobile</linkMobile> apps.",
+    "description": "Open-source notice in the About Antimatter dialog; the <linkServer>, <linkDesktop> and <linkMobile> tags wrap the words that become links to each project's license page."
   },
   "about.planNameLearn": {
     "defaultMessage": "Learn more about Mattermost {planName} at {link}",
@@ -108,8 +108,8 @@
     "description": "Link text in the About Mattermost dialog footer pointing to the terms of use ('Terms of Use')."
   },
   "about.version": {
-    "defaultMessage": "Mattermost Version:",
-    "description": "Field label in the About Mattermost dialog; the Mattermost version number follows the colon."
+    "defaultMessage": "Antimatter Version:",
+    "description": "Field label in the About Antimatter dialog; the Antimatter version number follows the colon."
   },
   "access_history.title": {
     "defaultMessage": "Access History",
@@ -284,7 +284,7 @@
     "description": "Detail line in an expanded session row; {id} is the technical session identifier."
   },
   "activity_log.sessionsDescription": {
-    "defaultMessage": "Sessions are created when you log in through a new browser on a device. Sessions let you use Mattermost without having to log in again for a time period specified by the system administrator. To end the session sooner, use the 'Log Out' button.",
+    "defaultMessage": "Sessions are created when you log in through a new browser on a device. Sessions let you use Antimatter without having to log in again for a time period specified by the system administrator. To end the session sooner, use the 'Log Out' button.",
     "description": "Explanatory paragraph at the top of the Active Sessions modal describing what sessions are; mentions the 'Log Out' button by name."
   },
   "add_command.autocomplete": {
@@ -17432,7 +17432,7 @@
     "description": "Link/button in the license expiry announcement banner leading to license purchase."
   },
   "announcement_bar.error.site_url_gitlab.full": {
-    "defaultMessage": "Please configure your <linkSite>site URL</linkSite> either on the <linkConsole>System Console</linkConsole> or, if you're using GitLab Mattermost, in gitlab.rb.",
+    "defaultMessage": "Please configure your <linkSite>site URL</linkSite> either on the <linkConsole>System Console</linkConsole> or, if you're using GitLab Antimatter, in gitlab.rb.",
     "description": "GitLab-specific variant of the site URL announcement banner; <linkSite> and <linkConsole> wrap links, and gitlab.rb is a config file name."
   },
   "announcement_bar.error.site_url.full": {
@@ -18108,7 +18108,7 @@
     "description": "Heading on the OAuth authorization page asking the user to grant an application access; {appName} is the application's name, <b> renders it bold."
   },
   "authorize.connectTitle": {
-    "defaultMessage": "Authorize <b>{appName}</b> to Connect to Your <b>Mattermost</b> User Account",
+    "defaultMessage": "Authorize <b>{appName}</b> to Connect to Your <b>Antimatter</b> User Account",
     "description": "Heading of the OAuth authorization page shown when an external app requests account access; {appName} is the OAuth app's name, <b> renders bold text."
   },
   "authorize.deny": {
@@ -19636,7 +19636,7 @@
     "description": "Value shown on the 'Show' submenu of the Direct Messages category menu when all direct message conversations are displayed (no limit)."
   },
   "channel_notifications.mobileNotificationsDesc": {
-    "defaultMessage": "Notification alerts are pushed to your mobile device when there is activity in Mattermost.",
+    "defaultMessage": "Notification alerts are pushed to your mobile device when there is activity in Antimatter.",
     "description": "Help text under the Mobile Notifications heading in the channel notification preferences modal."
   },
   "channel_notifications.mobileNotificationsTitle": {
@@ -20448,7 +20448,7 @@
     "description": "Placeholder for the password-confirmation input on the page that switches an AD/LDAP account to email/password sign-in."
   },
   "claim.ldap_to_email.email": {
-    "defaultMessage": "After switching your authentication method, you will use {email} to login. Your AD/LDAP credentials will no longer allow access to Mattermost.",
+    "defaultMessage": "After switching your authentication method, you will use {email} to login. Your AD/LDAP credentials will no longer allow access to Antimatter.",
     "description": "Explanatory paragraph on the switch-to-email account-claim page; {email} is the user's email address that will become their login ID."
   },
   "claim.ldap_to_email.enterLdapPwd": {
@@ -20952,7 +20952,7 @@
     "description": "Pronoun substituted for the current user's own username inside combined join/leave system messages (e.g. 'You joined the channel'); subject position."
   },
   "commercial_support_modal.description": {
-    "defaultMessage": "If you're experiencing issues, <supportLink>submit a support ticket</supportLink>. To help with troubleshooting, it's recommended to download the Support Packet below that includes more details about your Mattermost environment.",
+    "defaultMessage": "If you're experiencing issues, <supportLink>submit a support ticket</supportLink>. To help with troubleshooting, it's recommended to download the Support Packet below that includes more details about your Antimatter environment.",
     "description": "Intro paragraph of the Commercial Support modal; <supportLink> tags wrap the clickable phrase that opens the support ticket site."
   },
   "commercial_support_modal.download_contents": {
@@ -21624,11 +21624,11 @@
     "description": "Title of the confirmation modal for demoting a user to a guest; {username} is the affected user's username."
   },
   "desktop_auth_token.complete.havingTrouble": {
-    "defaultMessage": "Having trouble logging in? <a>Open Mattermost in your browser</a>",
-    "description": "Help line on the desktop-app login handoff screen; <a> wraps a link that opens Mattermost in the web browser instead."
+    "defaultMessage": "Having trouble logging in? <a>Open Antimatter in your browser</a>",
+    "description": "Help line on the desktop-app login handoff screen; <a> wraps a link that opens Antimatter in the web browser instead."
   },
   "desktop_auth_token.complete.openMattermost": {
-    "defaultMessage": "Click on <b>Open Mattermost</b> in the browser prompt to <a>launch the desktop app</a>",
+    "defaultMessage": "Click on <b>Open Antimatter</b> in the browser prompt to <a>launch the desktop app</a>",
     "description": "Instruction shown during the desktop-app login flow; <b> highlights the button name in the browser's prompt and <a> wraps a link that launches the desktop app."
   },
   "desktop_auth_token.complete.youAreNowLoggedIn": {
@@ -22192,8 +22192,8 @@
     "description": "Back navigation link on the channel-not-found error page; {defaultChannelName} is the default channel's name, usually 'Town Square'."
   },
   "error.generic.link": {
-    "defaultMessage": "Back to Mattermost",
-    "description": "Back navigation link on error pages that returns the user to the previous location in Mattermost."
+    "defaultMessage": "Back to Antimatter",
+    "description": "Back navigation link on error pages that returns the user to the previous location in Antimatter."
   },
   "error.generic.link_login": {
     "defaultMessage": "Back to Login Page",
@@ -22224,11 +22224,11 @@
     "description": "Third bullet in the list of suggested fixes on the local-storage error page; lists supported browser versions."
   },
   "error.local_storage.message": {
-    "defaultMessage": "Mattermost was unable to load because a setting in your browser prevents the use of its local storage features. To allow Mattermost to load, try the following actions:",
+    "defaultMessage": "Antimatter was unable to load because a setting in your browser prevents the use of its local storage features. To allow Antimatter to load, try the following actions:",
     "description": "Body text of the error page shown when the app cannot load because browser local storage is disabled; followed by a bulleted list of fixes."
   },
   "error.local_storage.title": {
-    "defaultMessage": "Cannot Load Mattermost",
+    "defaultMessage": "Cannot Load Antimatter",
     "description": "Title of the error page shown when the app cannot load due to disabled browser local storage."
   },
   "error.magic_link_already_logged_in.message": {
@@ -22248,7 +22248,7 @@
     "description": "Title of the 404 error page."
   },
   "error.oauth_access_denied": {
-    "defaultMessage": "You must authorize Mattermost to log in with {service}.",
+    "defaultMessage": "You must authorize Antimatter to log in with {service}.",
     "description": "Used as both title and body of the error page when the user denied the OAuth authorization request; {service} is the OAuth provider name, e.g. GitLab or Google."
   },
   "error.oauth_access_denied.title": {
@@ -22296,7 +22296,7 @@
     "description": "Microsoft product name (Entra ID) used as link text on the OAuth error page; usually left untranslated."
   },
   "error.oauth_missing_code.title": {
-    "defaultMessage": "Mattermost Needs Your Help",
+    "defaultMessage": "Antimatter Needs Your Help",
     "description": "Title of the error page shown when the OAuth/SSO login response is missing the authorization code; deliberately informal."
   },
   "error.plugin_not_found.desc": {
@@ -23120,8 +23120,8 @@
     "description": "Main heading (h1) of the landing page asking the user to choose between viewing the link in the app or the browser."
   },
   "get_app.openingLink": {
-    "defaultMessage": "Opening link in Mattermost...",
-    "description": "Heading shown on the landing page while a link is being handed off to the Mattermost desktop app; 'Mattermost' is the product name."
+    "defaultMessage": "Opening link in Antimatter...",
+    "description": "Heading shown on the landing page while a link is being handed off to the desktop app; 'Antimatter' is the product name."
   },
   "get_app.openingLinkWhiteLabel": {
     "defaultMessage": "Opening link in {appName}...",
@@ -23204,7 +23204,7 @@
     "description": "Clickable item at the bottom of the product menu on servers with an Entry license, next to an 'ENTRY EDITION' badge. The whole item opens a page about Entry's limits; 'Learn more.' is not a separate link. 'Entry' and 'Enterprise Advanced' are edition names. <b> marks bold text."
   },
   "globalHeader.productSwitcherMenu.editionMenuitem.unsupported": {
-    "defaultMessage": "This is the free <b>unsupported</b> edition of Mattermost. See pricing.",
+    "defaultMessage": "This is the free <b>unsupported</b> edition of Antimatter. See pricing.",
     "description": "Clickable item at the bottom of the product menu on unlicensed (Team Edition) servers, next to a 'TEAM EDITION' badge. The whole item opens the pricing page; 'See pricing.' is not a separate link. <b> marks bold text."
   },
   "globalHeader.productSwitcherMenu.integrationsMenuItem.label": {
@@ -25544,8 +25544,8 @@
     "description": "Title of the dialog where admins browse and install plugins and apps."
   },
   "marketplace_modal.web_marketplace_link.desc": {
-    "defaultMessage": "Connect the tools you use most to Mattermost",
-    "description": "Description line in the App Marketplace banner linking to the public web marketplace; 'Mattermost' is the product name."
+    "defaultMessage": "Connect the tools you use most to Antimatter",
+    "description": "Description line in the App Marketplace banner linking to the public web marketplace; 'Antimatter' is the product name."
   },
   "marketplace_modal.web_marketplace_link.title": {
     "defaultMessage": "Discover community integrations",
@@ -26236,7 +26236,7 @@
     "description": "Tooltip on the user groups option during a Cloud free trial, warning that groups created will be archived when the trial ends."
   },
   "navbar_dropdown.versionText": {
-    "defaultMessage": "This is the free <link>unsupported</link> edition of Mattermost.",
+    "defaultMessage": "This is the free <link>unsupported</link> edition of Antimatter.",
     "description": "Text in the main menu describing the free unsupported edition; <link> wraps the word that links to more information."
   },
   "navbar_dropdown.viewMembers": {
@@ -26280,8 +26280,8 @@
     "description": "Title of the onboarding tour tip pointing at the Boards icon in the App Bar after creating a channel with a board."
   },
   "next_steps_view.welcomeToMattermost": {
-    "defaultMessage": "Welcome to Mattermost",
-    "description": "Title of the onboarding task list panel greeting new users; 'Mattermost' is the product name."
+    "defaultMessage": "Welcome to Antimatter",
+    "description": "Title of the onboarding task list panel greeting new users; 'Antimatter' is the product name."
   },
   "no_results.channel_files_filtered.subtitle": {
     "defaultMessage": "This channel doesn't contains any file with the selected file format.",
@@ -26556,7 +26556,7 @@
     "description": "Product name on a selectable tool card in the setup wizard's plugin selection step; usually left untranslated."
   },
   "onboarding_wizard.plugins.jira.tooltip": {
-    "defaultMessage": "Create Jira tickets from messages in Mattermost, get notified of important updates in Jira",
+    "defaultMessage": "Create Jira tickets from messages in Antimatter, get notified of important updates in Jira",
     "description": "Tooltip describing the Jira plugin on the onboarding wizard's plugins step."
   },
   "onboarding_wizard.plugins.marketplace": {
@@ -26568,7 +26568,7 @@
     "description": "Product name on a selectable tool card in the setup wizard's plugin selection step; usually left untranslated."
   },
   "onboarding_wizard.plugins.servicenow.tooltip": {
-    "defaultMessage": "This plugin serves as an integration between Mattermost and ServiceNow.",
+    "defaultMessage": "This plugin serves as an integration between Antimatter and ServiceNow.",
     "description": "Tooltip describing the ServiceNow plugin on the onboarding wizard's plugins step."
   },
   "onboarding_wizard.plugins.zoom": {
@@ -26576,7 +26576,7 @@
     "description": "Product name on a selectable tool card in the setup wizard's plugin selection step; usually left untranslated."
   },
   "onboarding_wizard.plugins.zoom.tooltip": {
-    "defaultMessage": "Start Zoom audio and video conferencing calls in Mattermost with a single click",
+    "defaultMessage": "Start Zoom audio and video conferencing calls in Antimatter with a single click",
     "description": "Tooltip describing the Zoom plugin on the onboarding wizard's plugins step."
   },
   "onboarding_wizard.previous": {
@@ -26600,8 +26600,8 @@
     "description": "Generic error shown in the workspace setup wizard when submitting a step fails."
   },
   "onboardingTask.checklist.completed_subtitle": {
-    "defaultMessage": "We hope Mattermost is more familiar now.",
-    "description": "Subtitle on the onboarding task list completion screen after all tasks are done; 'Mattermost' is the product name."
+    "defaultMessage": "We hope Antimatter is more familiar now.",
+    "description": "Subtitle on the onboarding task list completion screen after all tasks are done; 'Antimatter' is the product name."
   },
   "onboardingTask.checklist.completed_title": {
     "defaultMessage": "Well done. You’ve completed all of the tasks!",
@@ -30120,7 +30120,7 @@
     "description": "Link at the top of the signup page taking existing users to the login page; 'Log in' is a verb phrase."
   },
   "signup_user_completed.subtitle": {
-    "defaultMessage": "Create your Mattermost account to start collaborating with your team",
+    "defaultMessage": "Create your Antimatter account to start collaborating with your team",
     "description": "Subtitle under the signup page heading."
   },
   "signup_user_completed.title": {
@@ -30528,7 +30528,7 @@
     "description": "Info banner title in the team members modal when team access is strictly restricted by user attributes."
   },
   "team_members_dropdown.confirmDemoteDescription": {
-    "defaultMessage": "If you demote yourself from the System Admin role and there is not another user with System Admin privileges, you'll need to re-assign a System Admin by accessing the Mattermost server through a terminal and running the following command.",
+    "defaultMessage": "If you demote yourself from the System Admin role and there is not another user with System Admin privileges, you'll need to re-assign a System Admin by accessing the Antimatter server through a terminal and running the following command.",
     "description": "Warning body in the dialog when a System Admin demotes themselves; followed by a CLI command to restore the role."
   },
   "team_members_dropdown.confirmDemoteRoleTitle": {
@@ -32520,7 +32520,7 @@
     "description": "Screen reader label for the interface language dropdown selector."
   },
   "user.settings.languages.promote1": {
-    "defaultMessage": "Select which language Mattermost displays in the user interface.",
+    "defaultMessage": "Select which language Antimatter displays in the user interface.",
     "description": "Help text under the language dropdown explaining what the setting does."
   },
   "user.settings.languages.promote2": {
@@ -32724,8 +32724,8 @@
     "description": "Tertiary button on the desktop app permission notice; opens an external help page about enabling notifications."
   },
   "user.settings.notifications.desktopAndMobile.notificationSection.permissionDenied.message": {
-    "defaultMessage": "You're missing important message and call notifications from Mattermost. To start receiving notifications, please enable notifications for Mattermost in your browser settings.",
-    "description": "Body text of a danger notice in notification settings shown when the browser has denied notification permission for Mattermost."
+    "defaultMessage": "You're missing important message and call notifications from Antimatter. To start receiving notifications, please enable notifications for Antimatter in your browser settings.",
+    "description": "Body text of a danger notice in notification settings shown when the browser has denied notification permission for Antimatter."
   },
   "user.settings.notifications.desktopAndMobile.notificationSection.permissionDenied.title": {
     "defaultMessage": "Browser notification permission was denied",
@@ -32736,12 +32736,12 @@
     "description": "Primary button on the desktop app permission notice that re-checks/requests OS notification permission."
   },
   "user.settings.notifications.desktopAndMobile.notificationSection.permissionDeniedDesktop.message": {
-    "defaultMessage": "You're missing important message and call notifications from Mattermost. To start receiving them, please enable them manually.",
+    "defaultMessage": "You're missing important message and call notifications from Antimatter. To start receiving them, please enable them manually.",
     "description": "Body text of a danger notice shown in the desktop app when notification permission has not been granted; 'them' refers to notifications."
   },
   "user.settings.notifications.desktopAndMobile.notificationSection.permissionDeniedDesktop.messageDenied": {
-    "defaultMessage": "Notifications for this Mattermost server are blocked. To receive notifications, please enable them manually.",
-    "description": "Body text of a notice in notification settings when the browser/OS has blocked notification permission for this Mattermost server; instructs the user to re-enable it manually."
+    "defaultMessage": "Notifications for this Antimatter server are blocked. To receive notifications, please enable them manually.",
+    "description": "Body text of a notice in notification settings when the browser/OS has blocked notification permission for this Antimatter server; instructs the user to re-enable it manually."
   },
   "user.settings.notifications.desktopAndMobile.notificationSection.permissionDeniedDesktop.title": {
     "defaultMessage": "Desktop notifications permission required",
@@ -32760,7 +32760,7 @@
     "description": "Button on the notice shown when browser notification permission was never requested; clicking it triggers the browser permission prompt."
   },
   "user.settings.notifications.desktopAndMobile.notificationSection.permissionNeverGranted.message": {
-    "defaultMessage": "You're missing important message and call notifications from Mattermost. Mattermost notifications are disabled by this browser.",
+    "defaultMessage": "You're missing important message and call notifications from Antimatter. Antimatter notifications are disabled by this browser.",
     "description": "Body text of a danger notice in notification settings shown when the browser has notifications disabled because permission was never granted."
   },
   "user.settings.notifications.desktopAndMobile.notificationSection.permissionNeverGranted.title": {
@@ -32772,7 +32772,7 @@
     "description": "Button on the notice shown when the browser does not support the Notification API; links to browser update info."
   },
   "user.settings.notifications.desktopAndMobile.notificationSection.permissionUnsupported.message": {
-    "defaultMessage": "You're missing important message and call notifications from Mattermost. To start receiving notifications, please update to a supported browser.",
+    "defaultMessage": "You're missing important message and call notifications from Antimatter. To start receiving notifications, please update to a supported browser.",
     "description": "Body text of a danger notice shown when the user's browser does not support web notifications."
   },
   "user.settings.notifications.desktopAndMobile.notificationSection.permissionUnsupported.title": {
@@ -33296,7 +33296,7 @@
     "description": "Collapsed summary of the Sign-in Method section; SAML is a protocol name, do not translate."
   },
   "user.settings.security.ssoUsernameSyncNote": {
-    "defaultMessage": "Note: When using Google SSO, changes to your Google username or email do not automatically sync to Mattermost. To update your username, switch temporarily to email/password login, update your username, and then switch back to Google SSO.",
+    "defaultMessage": "Note: When using Google SSO, changes to your Google username or email do not automatically sync to Antimatter. To update your username, switch temporarily to email/password login, update your username, and then switch back to Google SSO.",
     "description": "Note in the expanded Sign-in Method section for Google SSO users, explaining username changes do not sync automatically."
   },
   "user.settings.security.switchEmail": {
@@ -33428,7 +33428,7 @@
     "description": "Body of the delete-token confirmation dialog; {description} is the token's user-given name, rendered bold via the <b> tags."
   },
   "user.settings.tokens.confirmDelete.description": {
-    "defaultMessage": "Any integrations using this token will no longer be able to access the Mattermost API. You cannot undo this action.",
+    "defaultMessage": "Any integrations using this token will no longer be able to access the Antimatter API. You cannot undo this action.",
     "description": "Warning text in the delete-token confirmation dialog explaining the consequences of deletion."
   },
   "user.settings.tokens.confirmDeleteButton": {
@@ -33748,7 +33748,7 @@
     "description": "Menu item in the help menu that opens the keyboard shortcuts reference."
   },
   "userGuideHelp.mattermostUserGuide": {
-    "defaultMessage": "Mattermost user guide",
+    "defaultMessage": "Antimatter user guide",
     "description": "Menu item in the help menu linking to the official user documentation."
   },
   "userGuideHelp.reportAProblem": {
@@ -33784,7 +33784,7 @@
     "description": "All-caps section header in the settings modal sidebar grouping tabs added by plugins."
   },
   "version_bar.new": {
-    "defaultMessage": "A new version of Mattermost is available.",
+    "defaultMessage": "A new version of Antimatter is available.",
     "description": "Announcement banner shown when a newer version of the web app has been deployed on the server."
   },
   "version_bar.refresh": {

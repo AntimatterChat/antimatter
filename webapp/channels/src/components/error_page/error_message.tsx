@@ -25,7 +25,7 @@ const ErrorMessage: React.FC<Props> = ({type, message, service, isGuest}: Props)
                 <div>
                     <FormattedMessage
                         id='error.local_storage.message'
-                        defaultMessage='Mattermost was unable to load because a setting in your browser prevents the use of its local storage features. To allow Mattermost to load, try the following actions:'
+                        defaultMessage='Antimatter was unable to load because a setting in your browser prevents the use of its local storage features. To allow Antimatter to load, try the following actions:'
                     />
                     <ul>
                         <li>
@@ -193,7 +193,7 @@ const ErrorMessage: React.FC<Props> = ({type, message, service, isGuest}: Props)
                 <p>
                     <FormattedMessage
                         id='error.oauth_access_denied'
-                        defaultMessage='You must authorize Mattermost to log in with {service}.'
+                        defaultMessage='You must authorize Antimatter to log in with {service}.'
                         values={{
                             service,
                         }}

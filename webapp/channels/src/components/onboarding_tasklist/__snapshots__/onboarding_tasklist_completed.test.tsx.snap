@@ -15,7 +15,7 @@ exports[`components/onboarding_tasklist/onboarding_tasklist_completed.tsx should
     <span
       class="completed-subtitle"
     >
-      We hope Mattermost is more familiar now.
+      We hope Antimatter is more familiar now.
     </span>
     <span
       class="start-trial-text"
