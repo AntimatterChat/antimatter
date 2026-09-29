@@ -24,7 +24,6 @@ func versionCmdF(command *cobra.Command, args []string) error {
 	CommandPrintln("Build Number: " + model.BuildNumber)
 	CommandPrintln("Build Date: " + model.BuildDate)
 	CommandPrintln("Build Hash: " + model.BuildHash)
-	CommandPrintln("Build Enterprise Ready: " + model.BuildEnterpriseReady)
 
 	return nil
 }
