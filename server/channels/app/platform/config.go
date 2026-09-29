@@ -153,9 +153,6 @@ func (ps *PlatformService) CleanUpConfig() error {
 
 // ConfigureLogger applies the specified configuration to a logger.
 func (ps *PlatformService) ConfigureLogger(name string, logger *mlog.Logger, logSettings *model.LogSettings, getPath func(string) string) error {
-	// Advanced logging is E20 only, however logging must be initialized before the license
-	// file is loaded.  If no valid E20 license exists then advanced logging will be
-	// shutdown once license is loaded/checked.
 	var resultLevel = mlog.LvlInfo
 	var resultMsg string
 	var err error
@@ -218,8 +215,8 @@ func (ps *PlatformService) ClientConfigHash() string {
 }
 
 func (ps *PlatformService) regenerateClientConfig() {
-	clientConfig := config.GenerateClientConfig(ps.Config(), ps.telemetryId, ps.License())
-	limitedClientConfig := config.GenerateLimitedClientConfig(ps.Config(), ps.telemetryId, ps.License())
+	clientConfig := config.GenerateClientConfig(ps.Config(), ps.telemetryId)
+	limitedClientConfig := config.GenerateLimitedClientConfig(ps.Config(), ps.telemetryId)
 
 	if clientConfig["EnableCustomTermsOfService"] == "true" {
 		termsOfService, err := ps.Store.TermsOfService().GetLatest(true)
