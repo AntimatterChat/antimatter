@@ -14,7 +14,7 @@ import {
     maxUserIdsPerStatusesRequest,
 } from 'mattermost-redux/actions/users';
 import {getCurrentUser, getCurrentUserId, getIsUserStatusesConfigEnabled, getUsers} from 'mattermost-redux/selectors/entities/common';
-import {getLicense, getUsersStatusAndProfileFetchingPollInterval} from 'mattermost-redux/selectors/entities/general';
+import {getUsersStatusAndProfileFetchingPollInterval} from 'mattermost-redux/selectors/entities/general';
 import {getUserStatuses} from 'mattermost-redux/selectors/entities/users';
 import type {ActionFunc, ActionFuncAsync, ThunkActionFunc} from 'mattermost-redux/types/actions';
 import {BackgroundDataLoader} from 'mattermost-redux/utils/data_loader';
@@ -178,7 +178,7 @@ export function extractUserIdsAndMentionsFromPosts(posts: Post[]): ActionFunc<Us
  * This action however doesn't refetch the profiles and statuses except for groups if they are already fetched once
  */
 export function batchFetchStatusesProfilesGroupsFromPosts(postsArrayOrMap: Post[] | PostList['posts'] | Post): ActionFunc<boolean> {
-    return (dispatch, getState) => {
+    return (dispatch) => {
         if (!postsArrayOrMap) {
             return {data: false};
         }
@@ -196,7 +196,6 @@ export function batchFetchStatusesProfilesGroupsFromPosts(postsArrayOrMap: Post[
             return {data: false};
         }
 
-        const state = getState();
         const {data: result} = dispatch(extractUserIdsAndMentionsFromPosts(posts));
 
         if (!result) {
@@ -212,14 +211,14 @@ export function batchFetchStatusesProfilesGroupsFromPosts(postsArrayOrMap: Post[
         }
 
         if (result.mentionedUsernamesAndGroups.length > 0) {
-            dispatch(getUsersFromMentionedUsernamesAndGroups(result.mentionedUsernamesAndGroups, getLicense(state).IsLicensed === 'true'));
+            dispatch(getUsersFromMentionedUsernamesAndGroups(result.mentionedUsernamesAndGroups));
         }
 
         return {data: true};
     };
 }
 
-export function getUsersFromMentionedUsernamesAndGroups(usernamesAndGroups: string[], isLicensed: boolean): ActionFuncAsync<string[]> {
+export function getUsersFromMentionedUsernamesAndGroups(usernamesAndGroups: string[]): ActionFuncAsync<string[]> {
     return async (dispatch) => {
         // We run the at-mentioned be it user or group through the user profile search
         const {data: userProfiles} = await dispatch(getProfilesByUsernames(usernamesAndGroups));
@@ -238,7 +237,7 @@ export function getUsersFromMentionedUsernamesAndGroups(usernamesAndGroups: stri
         // Removing usernames from the list will leave only the group names
         const mentionedGroups = usernamesAndGroups.filter((name) => !mentionedUsernames.includes(name));
 
-        if (isLicensed && mentionedGroups.length > 0) {
+        if (mentionedGroups.length > 0) {
             await dispatch(getGroupsByNames(mentionedGroups));
         }
 

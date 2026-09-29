@@ -27,9 +27,6 @@ describe('Actions.StatusProfilePolling', () => {
                     config: {
                         EnableUserStatuses: 'true',
                     },
-                    license: {
-                        IsLicensed: 'true',
-                    },
                 },
                 users: {
                     currentUserId: 'current_user_id',
@@ -104,26 +101,9 @@ describe('Actions.StatusProfilePolling', () => {
             post('/groups/names', ['group1']).
             reply(200, [{id: 'group1', name: 'group1'}]);
 
-        const {data} = await store.dispatch(Actions.getUsersFromMentionedUsernamesAndGroups(usernamesAndGroups, true));
+        const {data} = await store.dispatch(Actions.getUsersFromMentionedUsernamesAndGroups(usernamesAndGroups));
         await waitFor(() => expect(usernameMock.isDone()).toBe(true));
         await waitFor(() => expect(groupMock.isDone()).toBe(true));
-        expect(data).toEqual(['group1']);
-    });
-
-    it('getUsersFromMentionedUsernamesAndGroups without license', async () => {
-        const usernamesAndGroups = ['user1', 'group1'];
-
-        const usernameMock = nock(Client4.getBaseRoute()).
-            post('/users/usernames').
-            reply(200, [{id: 'user1', username: 'user1'}]);
-
-        const groupMock = nock(Client4.getBaseRoute()).
-            post('/groups/names', ['group1']).
-            reply(200, [{id: 'group1', name: 'group1'}]);
-
-        const {data} = await store.dispatch(Actions.getUsersFromMentionedUsernamesAndGroups(usernamesAndGroups, false));
-        await waitFor(() => expect(usernameMock.isDone()).toBe(true));
-        await waitFor(() => expect(groupMock.isDone()).toBe(false));
         expect(data).toEqual(['group1']);
     });
 });

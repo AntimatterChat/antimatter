@@ -640,9 +640,6 @@ describe('Selectors.Users', () => {
                             TeammateNameDisplay: General.TEAMMATE_NAME_DISPLAY.SHOW_USERNAME,
                             LockTeammateNameDisplay: 'false',
                         },
-                        license: {
-                            LockTeammateNameDisplay: 'true',
-                        },
                     },
                 },
             } as unknown as GlobalState;
@@ -665,63 +662,13 @@ describe('Selectors.Users', () => {
                             TeammateNameDisplay: General.TEAMMATE_NAME_DISPLAY.SHOW_USERNAME,
                             LockTeammateNameDisplay: 'true',
                         },
-                        license: {
-                            LockTeammateNameDisplay: 'true',
-                        },
                     },
                 },
             } as unknown as GlobalState;
             expect(Selectors.makeGetDisplayName()(newTestState, testUser1.id)).toEqual('username');
             expect(Selectors.makeDisplayNameGetter()(newTestState, false)(testUser1)).toEqual('username');
         });
-        it('Should show full name since license is false', () => {
-            const newTestState = {
-                entities: {
-                    users: {profiles: newProfiles},
-                    preferences: {
-                        myPreferences: {
-                            [`${Preferences.CATEGORY_DISPLAY_SETTINGS}--${Preferences.NAME_NAME_FORMAT}`]: {
-                                value: General.TEAMMATE_NAME_DISPLAY.SHOW_FULLNAME,
-                            },
-                        },
-                    },
-                    general: {
-                        config: {
-                            TeammateNameDisplay: General.TEAMMATE_NAME_DISPLAY.SHOW_USERNAME,
-                            LockTeammateNameDisplay: 'true',
-                        },
-                        license: {
-                            LockTeammateNameDisplay: 'false',
-                        },
-                    },
-                },
-            } as unknown as GlobalState;
-            expect(Selectors.makeGetDisplayName()(newTestState, testUser1.id)).toEqual('First Last');
-            expect(Selectors.makeDisplayNameGetter()(newTestState, false)(testUser1)).toEqual('First Last');
-        });
-        it('Should show full name since license is not available', () => {
-            const newTestState = {
-                entities: {
-                    users: {profiles: newProfiles},
-                    preferences: {
-                        myPreferences: {
-                            [`${Preferences.CATEGORY_DISPLAY_SETTINGS}--${Preferences.NAME_NAME_FORMAT}`]: {
-                                value: General.TEAMMATE_NAME_DISPLAY.SHOW_FULLNAME,
-                            },
-                        },
-                    },
-                    general: {
-                        config: {
-                            TeammateNameDisplay: General.TEAMMATE_NAME_DISPLAY.SHOW_USERNAME,
-                            LockTeammateNameDisplay: 'true',
-                        },
-                    },
-                },
-            } as GlobalState;
-            expect(Selectors.makeGetDisplayName()(newTestState, testUser1.id)).toEqual('First Last');
-            expect(Selectors.makeDisplayNameGetter()(newTestState, false)(testUser1)).toEqual('First Last');
-        });
-        it('Should show Full name since license is not available and lock teammate name display is false', () => {
+        it('Should show Full name since lock teammate name display is false', () => {
             const newTestState = {
                 entities: {
                     users: {profiles: newProfiles},
@@ -775,9 +722,6 @@ describe('Selectors.Users', () => {
                         CustomTermsOfServiceId: '1',
                         EnableCustomTermsOfService: 'true',
                     },
-                    license: {
-                        IsLicensed: 'true',
-                    },
                 },
                 users: {
                     currentUserId: userId,
@@ -795,30 +739,6 @@ describe('Selectors.Users', () => {
                     config: {
                         CustomTermsOfServiceId: '1',
                         EnableCustomTermsOfService: 'false',
-                    },
-                    license: {
-                        IsLicensed: 'true',
-                    },
-                },
-                users: {
-                    currentUserId: userId,
-                    profiles: {
-                        [userId]: {id: userId, username: 'user', first_name: 'First', last_name: 'Last'},
-                    },
-                },
-            },
-        } as unknown as GlobalState)).toEqual(false);
-
-        // Test unlicensed
-        expect(Selectors.shouldShowTermsOfService({
-            entities: {
-                general: {
-                    config: {
-                        CustomTermsOfServiceId: '1',
-                        EnableCustomTermsOfService: 'true',
-                    },
-                    license: {
-                        IsLicensed: 'false',
                     },
                 },
                 users: {
@@ -838,9 +758,6 @@ describe('Selectors.Users', () => {
                         CustomTermsOfServiceId: '1',
                         EnableCustomTermsOfService: 'true',
                     },
-                    license: {
-                        IsLicensed: 'true',
-                    },
                 },
                 users: {
                     currentUserId: userId,
@@ -858,9 +775,6 @@ describe('Selectors.Users', () => {
                     config: {
                         CustomTermsOfServiceId: '1',
                         EnableCustomTermsOfService: 'true',
-                    },
-                    license: {
-                        IsLicensed: 'true',
                     },
                 },
                 users: {

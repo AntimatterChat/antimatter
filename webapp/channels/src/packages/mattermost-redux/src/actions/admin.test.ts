@@ -595,28 +595,6 @@ describe('Actions.Admin', () => {
         expect(nock.isDone()).toBe(true);
     });
 
-    it('uploadLicense', async () => {
-        const testFileData = fs.createReadStream('src/packages/mattermost-redux/test/assets/images/test.png');
-
-        nock(Client4.getBaseRoute()).
-            post('/license').
-            reply(200, OK_RESPONSE);
-
-        await store.dispatch(Actions.uploadLicense(testFileData as any));
-
-        expect(nock.isDone()).toBe(true);
-    });
-
-    it('removeLicense', async () => {
-        nock(Client4.getBaseRoute()).
-            delete('/license').
-            reply(200, OK_RESPONSE);
-
-        await store.dispatch(Actions.removeLicense());
-
-        expect(nock.isDone()).toBe(true);
-    });
-
     it('getStandardAnalytics', async () => {
         nock(Client4.getBaseRoute()).
             get('/analytics/old').

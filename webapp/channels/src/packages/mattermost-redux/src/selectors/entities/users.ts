@@ -24,7 +24,7 @@ import {
     getMembersInTeam,
     getMembersInChannel,
 } from 'mattermost-redux/selectors/entities/common';
-import {getConfig, getLicense} from 'mattermost-redux/selectors/entities/general';
+import {getConfig} from 'mattermost-redux/selectors/entities/general';
 import {getDirectShowPreferences, getTeammateNameDisplaySetting} from 'mattermost-redux/selectors/entities/preferences';
 import {secureGetFromRecord} from 'mattermost-redux/utils/post_utils';
 import {
@@ -570,13 +570,12 @@ export const shouldShowTermsOfService: (state: GlobalState) => boolean = createS
     'shouldShowTermsOfService',
     getConfig,
     getCurrentUser,
-    getLicense,
-    (config, user, license) => {
+    (config, user) => {
         // Defaults to false if the user is not logged in or the setting doesn't exist
         const acceptedTermsId = user ? user.terms_of_service_id : '';
         const acceptedAt = user ? user.terms_of_service_create_at : 0;
 
-        const featureEnabled = license.IsLicensed === 'true' && config.EnableCustomTermsOfService === 'true';
+        const featureEnabled = config.EnableCustomTermsOfService === 'true';
         const reacceptanceTime = parseInt(config.CustomTermsOfServiceReAcceptancePeriod!, 10) * 1000 * 60 * 60 * 24;
         const timeElapsed = new Date().getTime() - acceptedAt;
         return Boolean(user && featureEnabled && (config.CustomTermsOfServiceId !== acceptedTermsId || timeElapsed > reacceptanceTime));

@@ -90,16 +90,6 @@ function config(state: Partial<AdminConfig> = {}, action: MMReduxAction) {
     }
 }
 
-function prevTrialLicense(state: Partial<AdminConfig> = {}, action: MMReduxAction) {
-    switch (action.type) {
-    case AdminTypes.PREV_TRIAL_LICENSE_SUCCESS: {
-        return action.data;
-    }
-    default:
-        return state;
-    }
-}
-
 function environmentConfig(state: Partial<EnvironmentConfig> = {}, action: MMReduxAction) {
     switch (action.type) {
     case AdminTypes.RECEIVED_ENVIRONMENT_CONFIG: {
@@ -763,9 +753,6 @@ export default combineReducers({
 
     // total custom retention policies
     dataRetentionCustomPoliciesCount,
-
-    // the last trial license the server used.
-    prevTrialLicense,
 
     // object with policy ids as keys and objects representing the policies as values
     accessControlPolicies,

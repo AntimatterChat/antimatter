@@ -14,11 +14,6 @@ describe('Selectors.ChannelBanner', () => {
 
     const baseState: DeepPartial<GlobalState> = {
         entities: {
-            general: {
-                license: {
-                    SkuShortName: General.SKUEnterpriseAdvanced,
-                },
-            },
             channels: {
                 channels: {
                     channel1: {

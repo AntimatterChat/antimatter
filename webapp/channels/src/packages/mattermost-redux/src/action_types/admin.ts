@@ -12,8 +12,6 @@ export default keyMirror({
 
     UNLINK_LDAP_GROUP_FAILURE: null,
 
-    PREV_TRIAL_LICENSE_SUCCESS: null,
-
     ENABLE_PLUGIN_REQUEST: null,
     ENABLE_PLUGIN_FAILURE: null,
 

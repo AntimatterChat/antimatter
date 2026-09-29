@@ -140,21 +140,18 @@ export function isCompatibleWithJoinViewTeamPermissions(state: GlobalState): boo
 export const canUploadFilesOnMobile: (a: GlobalState) => boolean = createSelector(
     'canUploadFilesOnMobile',
     getConfig,
-    getLicense,
-    (config: Partial<ClientConfig>, license: any): boolean => {
+    (config: Partial<ClientConfig>): boolean => {
         // Defaults to true if either setting doesn't exist
-        return config.EnableFileAttachments !== 'false' &&
-           (license.IsLicensed === 'false' || license.Compliance === 'false' || config.EnableMobileFileUpload !== 'false');
+        return config.EnableFileAttachments !== 'false' && config.EnableMobileFileUpload !== 'false';
     },
 );
 
 export const canDownloadFilesOnMobile: (a: GlobalState) => boolean = createSelector(
     'canDownloadFilesOnMobile',
     getConfig,
-    getLicense,
-    (config: Partial<ClientConfig>, license: any): boolean => {
+    (config: Partial<ClientConfig>): boolean => {
         // Defaults to true if the setting doesn't exist
-        return license.IsLicensed === 'false' || license.Compliance === 'false' || config.EnableMobileFileDownload !== 'false';
+        return config.EnableMobileFileDownload !== 'false';
     },
 );
 

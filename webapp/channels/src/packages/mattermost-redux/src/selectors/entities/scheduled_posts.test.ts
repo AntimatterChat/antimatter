@@ -40,7 +40,7 @@ describe('getScheduledPostTeamId', () => {
 });
 
 describe('isRecurringScheduledPostsEnabled', () => {
-    function makeState(scheduledPosts: string, featureFlag: string, isLicensed: string): GlobalState {
+    function makeState(scheduledPosts: string, featureFlag: string): GlobalState {
         return {
             entities: {
                 general: {
@@ -48,17 +48,15 @@ describe('isRecurringScheduledPostsEnabled', () => {
                         ScheduledPosts: scheduledPosts,
                         FeatureFlagRecurringScheduledPosts: featureFlag,
                     },
-                    license: {IsLicensed: isLicensed},
                 },
             },
         } as unknown as GlobalState;
     }
 
-    it('should be enabled only when scheduled posts, the license and the feature flag all allow it', () => {
-        expect(isRecurringScheduledPostsEnabled(makeState('true', 'true', 'true'))).toBe(true);
-        expect(isRecurringScheduledPostsEnabled(makeState('false', 'true', 'true'))).toBe(false);
-        expect(isRecurringScheduledPostsEnabled(makeState('true', 'false', 'true'))).toBe(false);
-        expect(isRecurringScheduledPostsEnabled(makeState('true', 'true', 'false'))).toBe(false);
+    it('should be enabled only when scheduled posts and the feature flag both allow it', () => {
+        expect(isRecurringScheduledPostsEnabled(makeState('true', 'true'))).toBe(true);
+        expect(isRecurringScheduledPostsEnabled(makeState('false', 'true'))).toBe(false);
+        expect(isRecurringScheduledPostsEnabled(makeState('true', 'false'))).toBe(false);
     });
 
     it('should be disabled when the feature flag is missing from the config', () => {
@@ -66,7 +64,6 @@ describe('isRecurringScheduledPostsEnabled', () => {
             entities: {
                 general: {
                     config: {ScheduledPosts: 'true'},
-                    license: {IsLicensed: 'true'},
                 },
             },
         } as unknown as GlobalState;
