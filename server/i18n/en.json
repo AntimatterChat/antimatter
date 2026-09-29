@@ -13268,8 +13268,8 @@
   },
   {
     "id": "ent.autotranslation.feature_unavailable",
-    "translation": "Auto-translation is not available. Please contact your system administrator about upgrading your enterprise license.",
-    "description": "Error shown to end users trying to use automatic message translation when the server license does not include it."
+    "translation": "Auto-translation is not available. Please ask your system administrator to enable it and configure a translation provider.",
+    "description": "Error shown to end users trying to use automatic message translation when it is disabled or no translation provider is configured on the server."
   },
   {
     "id": "ent.autotranslation.invalid_input",
