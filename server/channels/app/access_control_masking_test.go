@@ -637,7 +637,6 @@ func TestMaskConditionValues_SharedOnlyText(t *testing.T) {
 func TestGetMaskedVisualAST_Wiring(t *testing.T) {
 	mainHelper.Parallel(t)
 	th := Setup(t).InitBasic(t)
-	th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterprise))
 
 	rctx := request.TestContext(t)
 	cpaGroup, cErr := th.App.GetPropertyGroup(rctx, model.AccessControlPropertyGroupName)
@@ -897,9 +896,6 @@ func TestMaskSimulationPolicyLiteralsForCaller_SourceOnly(t *testing.T) {
 	th := SetupConfig(t, func(cfg *model.Config) {
 		cfg.FeatureFlags.AttributeValueMasking = true
 	}).InitBasic(t)
-	ok := th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterprise))
-	require.True(t, ok)
-	defer th.App.Srv().SetLicense(nil)
 	rctx := request.TestContext(t)
 
 	cpaGroup, gErr := th.App.GetPropertyGroup(rctx, model.AccessControlPropertyGroupName)
@@ -1016,9 +1012,6 @@ func TestMaskSimulationPolicyLiteralsForCaller_PublicFieldPassesThrough(t *testi
 	th := SetupConfig(t, func(cfg *model.Config) {
 		cfg.FeatureFlags.AttributeValueMasking = true
 	}).InitBasic(t)
-	ok := th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterprise))
-	require.True(t, ok)
-	defer th.App.Srv().SetLicense(nil)
 	rctx := request.TestContext(t)
 
 	cpaGroup, gErr := th.App.GetPropertyGroup(rctx, model.AccessControlPropertyGroupName)
@@ -1094,9 +1087,6 @@ func TestMaskSimulationPolicyLiteralsForCaller_ActualValueIndependentFromExpecte
 	th := SetupConfig(t, func(cfg *model.Config) {
 		cfg.FeatureFlags.AttributeValueMasking = true
 	}).InitBasic(t)
-	ok := th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterprise))
-	require.True(t, ok)
-	defer th.App.Srv().SetLicense(nil)
 	rctx := request.TestContext(t)
 	callerID := model.NewId()
 
@@ -1202,9 +1192,6 @@ func TestMaskSimulationPolicyLiteralsForCaller_CompoundOrPreserved(t *testing.T)
 	th := SetupConfig(t, func(cfg *model.Config) {
 		cfg.FeatureFlags.AttributeValueMasking = true
 	}).InitBasic(t)
-	ok := th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterprise))
-	require.True(t, ok)
-	defer th.App.Srv().SetLicense(nil)
 	rctx := request.TestContext(t)
 
 	cpaGroup, gErr := th.App.GetPropertyGroup(rctx, model.AccessControlPropertyGroupName)
@@ -1335,7 +1322,6 @@ func TestAppMaskingResolver_ChannelFieldUsesUserHoldings(t *testing.T) {
 func assertChannelFieldUsesUserHoldings(t *testing.T, fieldType model.PropertyFieldType) {
 	t.Helper()
 	th := Setup(t).InitBasic(t)
-	th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterprise))
 	rctx := request.TestContext(t)
 
 	cpaGroup, gErr := th.App.GetPropertyGroup(rctx, model.AccessControlPropertyGroupName)
@@ -1427,7 +1413,6 @@ func assertChannelFieldUsesUserHoldings(t *testing.T, fieldType model.PropertyFi
 func TestAppMaskingResolver_AmbiguousUserSibling(t *testing.T) {
 	mainHelper.Parallel(t)
 	th := Setup(t).InitBasic(t)
-	th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterprise))
 	rctx := request.TestContext(t)
 
 	cpaGroup, gErr := th.App.GetPropertyGroup(rctx, model.AccessControlPropertyGroupName)
@@ -1506,7 +1491,6 @@ func TestAppMaskingResolver_AmbiguousUserSibling(t *testing.T) {
 func TestAppMaskingResolver_ChannelFieldProtectedSiblingPublic(t *testing.T) {
 	mainHelper.Parallel(t)
 	th := Setup(t).InitBasic(t)
-	th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterprise))
 	rctx := request.TestContext(t)
 
 	cpaGroup, gErr := th.App.GetPropertyGroup(rctx, model.AccessControlPropertyGroupName)
@@ -1583,7 +1567,6 @@ func TestAppMaskingResolver_ChannelFieldProtectedSiblingPublic(t *testing.T) {
 func TestAppMaskingResolver_HierarchyAndLadderUseOptionNames(t *testing.T) {
 	mainHelper.Parallel(t)
 	th := Setup(t).InitBasic(t)
-	th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterprise))
 	rctx := request.TestContext(t)
 
 	cpaGroup, gErr := th.App.GetPropertyGroup(rctx, model.AccessControlPropertyGroupName)
@@ -1692,7 +1675,6 @@ func TestAppMaskingResolver_HierarchyAndLadderUseOptionNames(t *testing.T) {
 func TestAppMaskingResolver_GraphWithheldOptionList(t *testing.T) {
 	mainHelper.Parallel(t)
 	th := Setup(t).InitBasic(t)
-	th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterprise))
 	rctx := request.TestContext(t)
 
 	cpaGroup, gErr := th.App.GetPropertyGroup(rctx, model.AccessControlPropertyGroupName)
@@ -1767,7 +1749,6 @@ func TestAppMaskingResolver_GraphWithheldOptionList(t *testing.T) {
 func TestGetMaskedVisualAST_GraphWithheldOptionList(t *testing.T) {
 	mainHelper.Parallel(t)
 	th := Setup(t).InitBasic(t)
-	th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterprise))
 	rctx := request.TestContext(t)
 
 	cpaGroup, gErr := th.App.GetPropertyGroup(rctx, model.AccessControlPropertyGroupName)

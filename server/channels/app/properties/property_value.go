@@ -225,8 +225,8 @@ func (ps *PropertyService) UpdatePropertyValues(rctx request.CTX, groupID string
 
 	// Hooks gate on values[0].GroupID for batch operations, so enforce
 	// single-group batches at the public boundary — otherwise a mixed
-	// batch could silently bypass per-group hook logic (license,
-	// validation, access control).
+	// batch could silently bypass per-group hook logic (validation,
+	// access control).
 	for i, v := range values {
 		if v == nil {
 			return nil, fmt.Errorf("UpdatePropertyValues: nil element at index %d", i)

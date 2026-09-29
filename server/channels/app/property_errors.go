@@ -43,8 +43,6 @@ func mapPropertyServiceError(where string, err error) *model.AppError {
 		return model.NewAppError(where, "app.property_field.create.group_limit_reached.app_error", nil, err.Error(), http.StatusUnprocessableEntity).Wrap(err)
 	case errors.Is(err, properties.ErrTargetFieldLimitReached):
 		return model.NewAppError(where, "app.property_field.create.target_limit_reached.app_error", nil, err.Error(), http.StatusUnprocessableEntity).Wrap(err)
-	case errors.Is(err, properties.ErrLicenseRequired):
-		return model.NewAppError(where, "app.property.license_error", nil, "", http.StatusForbidden).Wrap(err)
 	case errors.Is(err, properties.ErrInvalidFieldAttrs):
 		return model.NewAppError(where, "app.property_field.invalid_attrs.app_error", nil, err.Error(), http.StatusBadRequest).Wrap(err)
 	case errors.Is(err, properties.ErrInvalidValue):

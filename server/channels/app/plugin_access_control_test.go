@@ -30,12 +30,10 @@ const (
 	testAgentAction       = "use"
 )
 
-// enablePluginAccessControl licenses and configures the server so
+// enablePluginAccessControl configures the server so
 // pluginAccessControlAvailable() is true.
 func enablePluginAccessControl(t *testing.T, th *TestHelper) {
 	t.Helper()
-	ok := th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterpriseAdvanced))
-	require.True(t, ok)
 	th.App.UpdateConfig(func(cfg *model.Config) {
 		*cfg.AccessControlSettings.EnableAttributeBasedAccessControl = true
 	})
@@ -145,14 +143,6 @@ func TestEvaluatePluginAccessRequest(t *testing.T) {
 				th.App.Srv().ch.AccessControl = nil
 				return userID, nil
 			}},
-			{"insufficient license", func(t *testing.T) (string, *mocks.AccessControlServiceInterface) {
-				enablePluginAccessControl(t, th)
-				mockACS := &mocks.AccessControlServiceInterface{}
-				th.App.Srv().ch.AccessControl = mockACS
-				ok := th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuProfessional))
-				require.True(t, ok)
-				return userID, mockACS
-			}},
 			{"disabled config flag", func(t *testing.T) (string, *mocks.AccessControlServiceInterface) {
 				enablePluginAccessControl(t, th)
 				mockACS := &mocks.AccessControlServiceInterface{}
@@ -204,7 +194,6 @@ func TestEvaluatePluginAccessRequest(t *testing.T) {
 
 		// Branches that must never reach the evaluator.
 		evaluatorNeverCalled := map[string]bool{
-			"insufficient license":  true,
 			"disabled config flag":  true,
 			"unknown user":          true,
 			"subject build failure": true,
@@ -340,8 +329,8 @@ func TestEvaluatePluginAccessRequestStoreError(t *testing.T) {
 		Return(nil, errors.New("simulated store failure"))
 	mockStore.On("AccessControlPolicy").Return(mockACPStore)
 
-	// No license here, so pluginAccessControlAvailable() is false and the
-	// fallback read runs.
+	// No AccessControl service here, so pluginAccessControlAvailable() is false
+	// and the fallback read runs.
 	require.Nil(t, th.App.Srv().ch.AccessControl)
 
 	// Programming errors return before the fallback read.

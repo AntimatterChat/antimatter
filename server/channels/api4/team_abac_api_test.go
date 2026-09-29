@@ -16,13 +16,12 @@ import (
 	"github.com/mattermost/mattermost/server/v8/einterfaces/mocks"
 )
 
-// enableTeamABAC turns on the license + config the team ABAC paths require and
+// enableTeamABAC turns on the config the team ABAC paths require and
 // injects a mock PDP, returning it for per-test stubbing. Feature flags are
 // read-only by default in tests, so unlock them first — otherwise the
 // TeamMembershipAccessControl toggle below is silently dropped.
 func enableTeamABAC(t *testing.T, th *TestHelper) *mocks.AccessControlServiceInterface {
 	t.Helper()
-	require.True(t, th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterpriseAdvanced)))
 	th.ConfigStore.SetReadOnlyFF(false)
 	th.App.UpdateConfig(func(cfg *model.Config) {
 		*cfg.AccessControlSettings.EnableAttributeBasedAccessControl = true
@@ -32,7 +31,6 @@ func enableTeamABAC(t *testing.T, th *TestHelper) *mocks.AccessControlServiceInt
 	th.App.Srv().Channels().AccessControl = m
 	t.Cleanup(func() {
 		th.App.Srv().Channels().AccessControl = nil
-		th.App.Srv().SetLicense(nil)
 	})
 	return m
 }

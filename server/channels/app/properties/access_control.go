@@ -269,7 +269,7 @@ func (h *AccessControlHook) PreUpdatePropertyFields(rctx request.CTX, groupID st
 }
 
 // PreCountPropertyFields is a no-op — counts don't expose per-row metadata,
-// so access control doesn't apply. License gating happens in LicenseCheckHook.
+// so access control doesn't apply.
 func (h *AccessControlHook) PreCountPropertyFields(_ request.CTX, _ string) error {
 	return nil
 }

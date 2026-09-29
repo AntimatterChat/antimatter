@@ -39,8 +39,6 @@ func TestTeamDirectoryABACVisibility(t *testing.T) {
 	th.App.UpdateConfig(func(cfg *model.Config) {
 		*cfg.AccessControlSettings.EnableAttributeBasedAccessControl = true
 	})
-	require.True(t, th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterpriseAdvanced)))
-	defer th.App.Srv().SetLicense(nil)
 
 	// Governed team owned by the System Admin so the regular user is a non-member.
 	// Left non-open-invite (the CreateTeam default) so it is private/strict: a
@@ -171,7 +169,7 @@ func TestTeamDirectoryABACVisibility(t *testing.T) {
 // join_private_teams role: a qualifying regular user can self-join a private
 // governed team even without that role. Non-governed private teams keep the role
 // gate exactly as on master, and the bypass is strictly conditional on team ABAC
-// being enabled (license + feature flag + config).
+// being enabled (feature flag + config).
 func TestTeamSelfJoinABACAttributeGating(t *testing.T) {
 	th := SetupConfig(t, func(cfg *model.Config) {
 		cfg.FeatureFlags.TeamMembershipAccessControl = true
@@ -180,8 +178,6 @@ func TestTeamSelfJoinABACAttributeGating(t *testing.T) {
 	th.App.UpdateConfig(func(cfg *model.Config) {
 		*cfg.AccessControlSettings.EnableAttributeBasedAccessControl = true
 	})
-	require.True(t, th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterpriseAdvanced)))
-	defer th.App.Srv().SetLicense(nil)
 
 	// Log in as BasicUser (a regular user without join_private_teams) so
 	// AddTeamMember(self) is a real self-join.
@@ -283,14 +279,16 @@ func TestTeamSelfJoinABACAttributeGating(t *testing.T) {
 		CheckCreatedStatus(t, resp)
 	})
 
-	t.Run("governed team but ABAC disabled (no license): role gate applies, bypass is strictly gated", func(t *testing.T) {
+	t.Run("governed team but ABAC disabled: role gate applies, bypass is strictly gated", func(t *testing.T) {
 		team := newPrivateTeam(t, true)
 
 		// Feature off: the stored policy must not loosen the role gate.
-		th.App.Srv().SetLicense(nil)
-		defer func() {
-			require.True(t, th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterpriseAdvanced)))
-		}()
+		th.App.UpdateConfig(func(cfg *model.Config) {
+			*cfg.AccessControlSettings.EnableAttributeBasedAccessControl = false
+		})
+		defer th.App.UpdateConfig(func(cfg *model.Config) {
+			*cfg.AccessControlSettings.EnableAttributeBasedAccessControl = true
+		})
 
 		_, resp, err := th.Client.AddTeamMember(context.Background(), team.Id, th.BasicUser.Id)
 		require.Error(t, err, "with team ABAC disabled the join_private_teams role must be required again")

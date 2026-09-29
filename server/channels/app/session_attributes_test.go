@@ -24,7 +24,6 @@ const testUserAgentAndroid = "Mozilla/5.0 (Linux; Android 14; SM-F936W) AppleWeb
 
 func enableSessionAttributesCollection(t *testing.T, th *TestHelper) {
 	t.Helper()
-	th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterpriseAdvanced))
 	th.ConfigStore.SetReadOnlyFF(false)
 	th.App.UpdateConfig(func(cfg *model.Config) { cfg.FeatureFlags.SessionAttributes = true })
 	th.ConfigStore.SetReadOnlyFF(true)
@@ -151,23 +150,6 @@ func sessionAttributeValuesByFieldName(t *testing.T, th *TestHelper, sessionID s
 func TestProcessSessionAttributesRequest(t *testing.T) {
 	t.Run("skips when feature flag is disabled", func(t *testing.T) {
 		th := Setup(t).InitBasic(t)
-		th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterpriseAdvanced))
-
-		session, appErr := th.App.CreateSession(th.Context, &model.Session{UserId: th.BasicUser.Id, Props: model.StringMap{}})
-		require.Nil(t, appErr)
-		rctx := th.Context.WithSession(session)
-
-		r := newSessionAttributesRequest(t, testUserAgentChrome, "192.0.2.10:1234")
-		th.App.ProcessSessionAttributesRequest(rctx, r)
-
-		require.Empty(t, sessionAttributeValuesByFieldName(t, th, session.Id))
-	})
-
-	t.Run("skips when license is missing", func(t *testing.T) {
-		th := Setup(t).InitBasic(t)
-		th.ConfigStore.SetReadOnlyFF(false)
-		th.App.UpdateConfig(func(cfg *model.Config) { cfg.FeatureFlags.SessionAttributes = true })
-		th.ConfigStore.SetReadOnlyFF(true)
 
 		session, appErr := th.App.CreateSession(th.Context, &model.Session{UserId: th.BasicUser.Id, Props: model.StringMap{}})
 		require.Nil(t, appErr)

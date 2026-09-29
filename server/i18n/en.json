@@ -4130,16 +4130,6 @@
     "description": "Internal error when updating the channel sidebar (e.g. favorites categories) after a preference change fails."
   },
   {
-    "id": "api.property.channel_attributes.license.app_error",
-    "translation": "Channel attributes require an Enterprise Advanced license.",
-    "description": "API error when managing channel attribute fields (custom fields defined for channels by admins) on a server without the required license. 'Enterprise Advanced' is a Mattermost license tier name; keep it in English."
-  },
-  {
-    "id": "api.property.session_attributes.license.app_error",
-    "translation": "Session attributes require an Enterprise Advanced license.",
-    "description": "API error when the session attributes (user property) feature is used without the required license; 'Enterprise Advanced' is a license tier name."
-  },
-  {
     "id": "api.property.v2_group_not_found.app_error",
     "translation": "The specified property group was not found.",
     "description": "API error when the requested custom property group does not exist; 'property group' is part of the custom profile attributes / properties system."
@@ -10954,11 +10944,6 @@
     "id": "app.property.invalid_input.app_error",
     "translation": "The property change was rejected.",
     "description": "API error when a change to a custom property field, option or value is rejected because the request is malformed (e.g. an option refers to another field or to itself)."
-  },
-  {
-    "id": "app.property.license_error",
-    "translation": "Your license does not support this property group.",
-    "description": "API error when accessing a property group (custom attributes feature area) not included in the server's license."
   },
   {
     "id": "app.property.not_found.app_error",

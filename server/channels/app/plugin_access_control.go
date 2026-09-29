@@ -37,11 +37,10 @@ func (a *App) pluginAccessControlScopeCheck(where, pluginID, resourceType string
 }
 
 // pluginAccessControlAvailable reports whether the enterprise ABAC service is
-// registered, licensed, and enabled. Checked before calling enterprise so its
+// registered and enabled. Checked before calling enterprise so its
 // readiness AppErrors never leak into plugin decision calls.
 func (a *App) pluginAccessControlAvailable() bool {
 	return a.Srv().ch.AccessControl != nil &&
-		model.MinimumEnterpriseAdvancedLicense(a.License()) &&
 		*a.Config().AccessControlSettings.EnableAttributeBasedAccessControl
 }
 

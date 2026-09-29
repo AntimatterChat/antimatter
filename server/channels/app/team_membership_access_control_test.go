@@ -246,7 +246,7 @@ func saveTestTeamPolicy(t *testing.T, th *TestHelper, teamID string, actions ...
 func TestTeamAccessControlled(t *testing.T) {
 	// The feature flag must be set at setup time: the config store treats the
 	// FeatureFlags section as read-only, so a later UpdateConfig of it is a
-	// no-op. EnableAttributeBasedAccessControl and the license are runtime-
+	// no-op. EnableAttributeBasedAccessControl is runtime-
 	// mutable and toggled per subtest below.
 	th := SetupConfig(t, func(cfg *model.Config) {
 		cfg.FeatureFlags.TeamMembershipAccessControl = true
@@ -254,9 +254,6 @@ func TestTeamAccessControlled(t *testing.T) {
 	th.App.UpdateConfig(func(cfg *model.Config) {
 		*cfg.AccessControlSettings.EnableAttributeBasedAccessControl = true
 	})
-	ok := th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterpriseAdvanced))
-	require.True(t, ok)
-	defer th.App.Srv().SetLicense(nil)
 
 	saveTeamPolicy := func(t *testing.T, teamID string, actions ...string) {
 		t.Helper()
@@ -320,21 +317,10 @@ func TestTeamAccessControlled(t *testing.T) {
 		require.False(t, controlled)
 	})
 
-	t.Run("license missing short-circuits", func(t *testing.T) {
-		team := th.CreateTeam(t)
-		saveTeamPolicy(t, team.Id, model.AccessControlPolicyActionMembership)
-
-		th.App.Srv().SetLicense(nil)
-		defer th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterpriseAdvanced))
-
-		controlled, appErr := th.App.TeamAccessControlled(th.Context, team.Id)
-		require.Nil(t, appErr)
-		require.False(t, controlled)
-	})
 }
 
 // TestTeamAccessControlledFeatureFlagOff exercises the kill switch: with the
-// flag explicitly off — license and config on, and a membership policy
+// flag explicitly off — config on, and a membership policy
 // assigned — the gate must not engage. The flag is set at construction because
 // the config store treats the FeatureFlags section as read-only at runtime.
 func TestTeamAccessControlledFeatureFlagOff(t *testing.T) {

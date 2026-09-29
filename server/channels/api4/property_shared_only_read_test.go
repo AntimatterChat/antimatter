@@ -70,7 +70,6 @@ func setupSharedOnlyRead(t *testing.T, fieldType model.PropertyFieldType, option
 		cfg.FeatureFlags.IntegratedBoards = true
 		cfg.FeatureFlags.PropertyFieldGraph = true
 	}).InitBasic(t)
-	th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterprise))
 
 	ctx := context.Background()
 	admin := th.SystemAdminClient

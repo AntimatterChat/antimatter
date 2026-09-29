@@ -1236,7 +1236,7 @@ func TestChannelDeleteCleansUpAccessControlPolicy(t *testing.T) {
 
 	t.Run("Falls back to direct store delete when acs reports NotImplemented", func(t *testing.T) {
 		// Replace mockACS with one that always reports the operation as
-		// unimplemented (e.g. license-gated build of the enterprise layer);
+		// unimplemented (e.g. an implementation without policy support);
 		// cleanup must still drop the orphan row through the store fallback.
 		notImplementedACS := &mocks.AccessControlServiceInterface{}
 		th.App.Srv().ch.AccessControl = notImplementedACS
@@ -1264,10 +1264,7 @@ func TestChannelDeleteCleansUpAccessControlPolicy(t *testing.T) {
 func TestUpdateChannelBlocksTypeConversionWhenPolicyEnforced(t *testing.T) {
 	th := Setup(t).InitBasic(t)
 
-	// ABAC + license required for ChannelAccessControlled to report `enforced=true`.
-	ok := th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterpriseAdvanced))
-	require.True(t, ok, "SetLicense should return true")
-	t.Cleanup(func() { _ = th.App.Srv().RemoveLicense() })
+	// ABAC must be enabled for ChannelAccessControlled to report `enforced=true`.
 	th.App.UpdateConfig(func(cfg *model.Config) {
 		cfg.AccessControlSettings.EnableAttributeBasedAccessControl = new(true)
 	})
@@ -2586,14 +2583,13 @@ func TestGetRecommendedPublicChannelsForUser(t *testing.T) {
 	originalACS := th.App.Srv().ch.AccessControl
 	t.Cleanup(func() { th.App.Srv().ch.AccessControl = originalACS })
 
-	t.Run("returns empty when license is missing", func(t *testing.T) {
-		// No enterprise license set on the test server: the license short-circuit
-		// at the top of the function must keep the response empty without ever
-		// calling the access control service.
+	t.Run("returns empty when attribute-based access control is disabled", func(t *testing.T) {
+		// The config short-circuit at the top of the function must keep the
+		// response empty without ever calling the access control service.
 		mockACS := &mocks.AccessControlServiceInterface{}
 		th.App.Srv().ch.AccessControl = mockACS
 		th.App.UpdateConfig(func(cfg *model.Config) {
-			cfg.AccessControlSettings.EnableAttributeBasedAccessControl = new(true)
+			cfg.AccessControlSettings.EnableAttributeBasedAccessControl = new(false)
 		})
 
 		channels, appErr := th.App.GetRecommendedPublicChannelsForUser(th.Context, th.BasicUser.Id, th.BasicTeam.Id)
@@ -2603,8 +2599,6 @@ func TestGetRecommendedPublicChannelsForUser(t *testing.T) {
 	})
 
 	t.Run("returns empty when access control service is nil", func(t *testing.T) {
-		ok := th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterpriseAdvanced))
-		require.True(t, ok, "SetLicense should return true")
 		th.App.UpdateConfig(func(cfg *model.Config) {
 			cfg.AccessControlSettings.EnableAttributeBasedAccessControl = new(true)
 		})
@@ -2617,8 +2611,6 @@ func TestGetRecommendedPublicChannelsForUser(t *testing.T) {
 	})
 
 	t.Run("returns only channels the policy allows; tolerates per-channel eval errors", func(t *testing.T) {
-		ok := th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterpriseAdvanced))
-		require.True(t, ok, "SetLicense should return true")
 		th.App.UpdateConfig(func(cfg *model.Config) {
 			cfg.AccessControlSettings.EnableAttributeBasedAccessControl = new(true)
 		})
@@ -3391,10 +3383,6 @@ func TestRedactSimulationAttributesForCaller(t *testing.T) {
 	th := Setup(t).InitBasic(t)
 	rctx := th.emptyContextWithCallerID(anonymousCallerId)
 
-	ok := th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterprise))
-	require.True(t, ok, "SetLicense should return true")
-	defer th.App.Srv().SetLicense(nil)
-
 	cpaGroup, gErr := th.App.GetPropertyGroup(rctx, model.AccessControlPropertyGroupName)
 	require.Nil(t, gErr)
 
@@ -4030,10 +4018,6 @@ func TestRedactSimulationAttributesForCallerAccessModes(t *testing.T) {
 	mainHelper.Parallel(t)
 	th := Setup(t).InitBasic(t)
 	rctx := th.emptyContextWithCallerID(anonymousCallerId)
-
-	ok := th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterprise))
-	require.True(t, ok, "SetLicense should return true")
-	defer th.App.Srv().SetLicense(nil)
 
 	cpaGroup, gErr := th.App.GetPropertyGroup(rctx, model.AccessControlPropertyGroupName)
 	require.Nil(t, gErr)
@@ -4898,9 +4882,6 @@ func TestChannelAccessControlled(t *testing.T) {
 	th.App.UpdateConfig(func(cfg *model.Config) {
 		*cfg.AccessControlSettings.EnableAttributeBasedAccessControl = true
 	})
-	ok := th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterpriseAdvanced))
-	require.True(t, ok)
-	defer th.App.Srv().SetLicense(nil)
 
 	savePolicy := func(t *testing.T, channelID string, actions ...string) {
 		t.Helper()
@@ -5020,7 +5001,6 @@ func TestPublishChannelPolicyEnforcedUpdateHydratesBroadcastPayload(t *testing.T
 // regular channel members through the invite modal or members sidebar.
 func TestGetAccessControlPolicyAttributes_MaskedFieldsFiltered(t *testing.T) {
 	th := Setup(t).InitBasic(t)
-	th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterprise))
 
 	rctx := request.TestContext(t)
 
@@ -5081,7 +5061,6 @@ func TestGetAccessControlPolicyAttributes_MaskedFieldsFiltered(t *testing.T) {
 // public attribute fields are returned unchanged.
 func TestGetAccessControlPolicyAttributes_PublicFieldsPassThrough(t *testing.T) {
 	th := Setup(t).InitBasic(t)
-	th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterprise))
 
 	rctx := request.TestContext(t)
 
@@ -5119,7 +5098,6 @@ func TestGetAccessControlPolicyAttributes_PublicFieldsPassThrough(t *testing.T) 
 // native attribute fields are returned unchanged.
 func TestGetAccessControlPolicyAttributes_NativeFieldsPassThrough(t *testing.T) {
 	th := Setup(t).InitBasic(t)
-	th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterprise))
 
 	// No need to create a native property for this test; native properties are generated in the codebase.
 	// The requirement is the field name must be one of the defined native attribute properties that represent
@@ -5144,7 +5122,6 @@ func TestGetAccessControlPolicyAttributes_NativeFieldsPassThrough(t *testing.T) 
 // a masked field that happens to share the same name as a native filed stil gets filtered.
 func TestGetAccessControlPolicyAttributes_MaskedFieldsWithNameCollisionAreFiltered(t *testing.T) {
 	th := Setup(t).InitBasic(t)
-	th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterprise))
 
 	rctx := request.TestContext(t)
 
@@ -5223,7 +5200,6 @@ func TestGetAccessControlPolicyAttributes_MaskedFieldsWithNameCollisionAreFilter
 // deleted 403 path, which is exercised by the merge tests above.
 func TestMergeStoredPolicyExpressions_ActionsLocked(t *testing.T) {
 	th := Setup(t).InitBasic(t)
-	th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterprise))
 
 	rctx := request.TestContext(t)
 
@@ -5317,7 +5293,6 @@ func TestMergeStoredPolicyExpressions_ActionsLocked(t *testing.T) {
 // rejects it because it contains no matching property comparison for the stored hidden node.
 func TestMergeStoredPolicyExpressions_FailClosedSentinelRejectedOnResubmit(t *testing.T) {
 	th := Setup(t).InitBasic(t)
-	th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterprise))
 
 	rctx := request.TestContext(t)
 
@@ -5368,7 +5343,6 @@ func TestMergeStoredPolicyExpressions_FailClosedSentinelRejectedOnResubmit(t *te
 // a caller who holds all values in a rule can freely change its Actions.
 func TestMergeStoredPolicyExpressions_ActionsEditableWhenNoMasking(t *testing.T) {
 	th := Setup(t).InitBasic(t)
-	th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterprise))
 
 	rctx := request.TestContext(t)
 
@@ -5882,7 +5856,6 @@ func TestMaskPolicyExpressions_FailClosedUsesDenyAllSentinel(t *testing.T) {
 
 func TestGetAccessControlFieldsAutocomplete_ExcludesNonUserFields(t *testing.T) {
 	th := Setup(t).InitBasic(t)
-	th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterprise))
 
 	rctx := request.TestContext(t)
 
@@ -5935,7 +5908,6 @@ func TestGetAccessControlFieldsAutocomplete_ExcludesNonUserFields(t *testing.T) 
 // the user fields.
 func TestGetAccessControlFieldsAutocomplete_IncludesChannelFieldsWhenScoped(t *testing.T) {
 	th := Setup(t).InitBasic(t)
-	th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterprise))
 	th.ConfigStore.SetReadOnlyFF(false)
 	th.App.UpdateConfig(func(cfg *model.Config) {
 		cfg.FeatureFlags.ResourceAttributesInPolicies = true
@@ -5982,7 +5954,6 @@ func TestGetAccessControlFieldsAutocomplete_IncludesChannelFieldsWhenScoped(t *t
 // surfaces channel fields, and that without it channel fields are excluded.
 func TestGetAccessControlFieldsAutocomplete_IncludeResourceFieldsFlag(t *testing.T) {
 	th := Setup(t).InitBasic(t)
-	th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterprise))
 	th.ConfigStore.SetReadOnlyFF(false)
 	th.App.UpdateConfig(func(cfg *model.Config) {
 		cfg.FeatureFlags.ResourceAttributesInPolicies = true
@@ -6062,8 +6033,6 @@ func TestBuildAccessControlSubjectTeamPath(t *testing.T) {
 
 func TestGetAccessControlFieldsAutocompleteNativeAttributes(t *testing.T) {
 	th := Setup(t).InitBasic(t)
-	th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterprise))
-	defer th.App.Srv().SetLicense(nil)
 
 	rctx := request.TestContext(t)
 
