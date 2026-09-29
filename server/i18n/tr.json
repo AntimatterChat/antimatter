@@ -85,7 +85,7 @@
   },
   {
     "id": "api.admin.test_email.body",
-    "translation": "Mattermost e-posta ayarları doğru görünüyor!"
+    "translation": "Antimatter e-posta ayarları doğru görünüyor!"
   },
   {
     "id": "api.admin.test_email.missing_server",
@@ -97,7 +97,7 @@
   },
   {
     "id": "api.admin.test_email.subject",
-    "translation": "Mattermost - E-posta ayarları sınanıyor"
+    "translation": "Antimatter - E-posta ayarları sınanıyor"
   },
   {
     "id": "api.admin.test_s3.missing_s3_bucket",
@@ -341,7 +341,7 @@
   },
   {
     "id": "api.command.invite_people.desc",
-    "translation": "Mattermost takımınıza bir e-posta daveti gönderir"
+    "translation": "Antimatter takımınıza bir e-posta daveti gönderir"
   },
   {
     "id": "api.command.invite_people.email_invitations_off",
@@ -616,7 +616,7 @@
   },
   {
     "id": "api.command_help.desc",
-    "translation": "Mattermost yardım iletisini görüntüle"
+    "translation": "Antimatter yardım iletisini görüntüle"
   },
   {
     "id": "api.command_help.name",
@@ -723,7 +723,7 @@
   },
   {
     "id": "api.command_logout.desc",
-    "translation": "Mattermost oturumunu kapatır"
+    "translation": "Antimatter oturumunu kapatır"
   },
   {
     "id": "api.command_logout.name",
@@ -1724,7 +1724,7 @@
   },
   {
     "id": "api.templates.post_body.button",
-    "translation": "Mattermost içinde yanıtla"
+    "translation": "Antimatter içinde yanıtla"
   },
   {
     "id": "api.templates.reset_body.button",
@@ -1784,7 +1784,7 @@
   },
   {
     "id": "api.templates.verify_body.info",
-    "translation": "Bu e-posta adresi ile açılmış bir Mattermost hesabı var."
+    "translation": "Bu e-posta adresi ile açılmış bir Antimatter hesabı var."
   },
   {
     "id": "api.templates.verify_body.title",
@@ -1804,7 +1804,7 @@
   },
   {
     "id": "api.templates.welcome_body.info",
-    "translation": "Bu e-posta adresi ile açılmış bir Mattermost hesabı var."
+    "translation": "Bu e-posta adresi ile açılmış bir Antimatter hesabı var."
   },
   {
     "id": "api.templates.welcome_body.title",
@@ -2988,7 +2988,7 @@
   },
   {
     "id": "ent.ldap.do_login.user_filtered.app_error",
-    "translation": "AD/LDAP hesabınızın bu Mattermost sunucusunu kullanma izni yok. Lütfen sistem yöneticinizden AD/LDAP kullanıcı süzgecini denetlemesini isteyin."
+    "translation": "AD/LDAP hesabınızın bu Antimatter sunucusunu kullanma izni yok. Lütfen sistem yöneticinizden AD/LDAP kullanıcı süzgecini denetlemesini isteyin."
   },
   {
     "id": "ent.ldap.do_login.user_not_registered.app_error",
@@ -3008,7 +3008,7 @@
   },
   {
     "id": "ent.ldap.syncronize.search_failure.app_error",
-    "translation": "AD/LDAP üzerinde kullanıcılar aranamadı. Mattermost sunucunuzun AD/LDAP sunucunuza bağlanabildiğinden emin olun."
+    "translation": "AD/LDAP üzerinde kullanıcılar aranamadı. Antimatter sunucunuzun AD/LDAP sunucunuza bağlanabildiğinden emin olun."
   },
   {
     "id": "ent.ldap.validate_filter.app_error",
@@ -3052,7 +3052,7 @@
   },
   {
     "id": "ent.migration.migratetosaml.username_already_used_by_other_user",
-    "translation": "Bu kullanıcı adı başka bir Mattermost kullanıcısı tarafından kullanılıyor."
+    "translation": "Bu kullanıcı adı başka bir Antimatter kullanıcısı tarafından kullanılıyor."
   },
   {
     "id": "ent.saml.attribute.app_error",
@@ -3136,7 +3136,7 @@
   },
   {
     "id": "mattermost.bulletin.subject",
-    "translation": "Mattermost güvenlik duyurusu"
+    "translation": "Antimatter güvenlik duyurusu"
   },
   {
     "id": "mfa.activate.bad_token.app_error",
@@ -4264,7 +4264,7 @@
   },
   {
     "id": "oauth.gitlab.tos.error",
-    "translation": "GitLab hizmet koşulları güncellendi. Lütfen {{.URL}} adresine giderek yeni hizmet koşullarını onayladıktan sonra Mattermost oturumunu yeniden açmayı deneyin."
+    "translation": "GitLab hizmet koşulları güncellendi. Lütfen {{.URL}} adresine giderek yeni hizmet koşullarını onayladıktan sonra Antimatter oturumunu yeniden açmayı deneyin."
   },
   {
     "id": "plugin.api.update_user_status.bad_status",
@@ -4732,7 +4732,7 @@
   },
   {
     "id": "api.bot.teams_channels.add_message_mobile",
-    "translation": "Lütfen beni etkileşimde bulunmamı istediğiniz takım ve kanallara ekleyin. Bu işlemi tarayıcı ya da Mattermost bilgisayar uygulaması üzerinden yapabilirsiniz."
+    "translation": "Lütfen beni etkileşimde bulunmamı istediğiniz takım ve kanallara ekleyin. Bu işlemi tarayıcı ya da Antimatter bilgisayar uygulaması üzerinden yapabilirsiniz."
   },
   {
     "id": "api.channel.channel_member_counts_by_group.license.error",
@@ -5000,7 +5000,7 @@
   },
   {
     "id": "web.error.unsupported_browser.no_longer_support",
-    "translation": "Bu tarayıcı artık Mattermost tarafından desteklenmiyor"
+    "translation": "Bu tarayıcı artık Antimatter tarafından desteklenmiyor"
   },
   {
     "id": "api.push_notifications.session.expired",
@@ -5388,7 +5388,7 @@
   },
   {
     "id": "web.error.unsupported_browser.no_longer_support_version",
-    "translation": "Kullandığınız tarayıcının bu sürümü artık Mattermost tarafından desteklenmiyor"
+    "translation": "Kullandığınız tarayıcının bu sürümü artık Antimatter tarafından desteklenmiyor"
   },
   {
     "id": "web.error.unsupported_browser.open_system_browser.edge",
@@ -7192,7 +7192,7 @@
   },
   {
     "id": "api.templates.invite_body_footer.title",
-    "translation": "Mattermost nedir?"
+    "translation": "Antimatter nedir?"
   },
   {
     "id": "api.templates.invite_body_footer.learn_more",
@@ -7200,11 +7200,11 @@
   },
   {
     "id": "api.templates.invite_body_footer.info",
-    "translation": "Mattermost güvenli takım işbirliği sağlayan esnek ve açık kaynaklı bir iletişim platformudur."
+    "translation": "Antimatter güvenli takım işbirliği sağlayan esnek ve açık kaynaklı bir iletişim platformudur."
   },
   {
     "id": "api.templates.invite_body.subTitle",
-    "translation": "Mattermost üzerinde takımınızla iş birliği yapmaya başlayın"
+    "translation": "Antimatter üzerinde takımınızla iş birliği yapmaya başlayın"
   },
   {
     "id": "api.templates.cloud_welcome_email.title",
@@ -7312,7 +7312,7 @@
   },
   {
     "id": "api.command_remote.desc",
-    "translation": "Mattermost kopyaları arasında iletişim kurmak için uzak güvenli bağlantıları davet edin."
+    "translation": "Antimatter kopyaları arasında iletişim kurmak için uzak güvenli bağlantıları davet edin."
   },
   {
     "id": "api.command_remote.decode_invitation.error",
@@ -7332,7 +7332,7 @@
   },
   {
     "id": "api.command_remote.accept.help",
-    "translation": "Bir dış Mattermost kopyasından gelen bir daveti kabul et"
+    "translation": "Bir dış Antimatter kopyasından gelen bir daveti kabul et"
   },
   {
     "id": "api.command_remote.accept_invitation",
@@ -7344,7 +7344,7 @@
   },
   {
     "id": "api.command_share.invite_remote.help",
-    "translation": "Bir dış Mattermost kopyasını geçerli paylaşılmış kanala davet eder"
+    "translation": "Bir dış Antimatter kopyasını geçerli paylaşılmış kanala davet eder"
   },
   {
     "id": "api.command_share.invitation_sent",
@@ -7368,7 +7368,7 @@
   },
   {
     "id": "api.command_share.desc",
-    "translation": "Geçerli kanalı bir dış Mattermost kopyası ile paylaşır."
+    "translation": "Geçerli kanalı bir dış Antimatter kopyası ile paylaşır."
   },
   {
     "id": "api.command_share.could_not_uninvite.error",
@@ -7436,7 +7436,7 @@
   },
   {
     "id": "api.command_remote.invite_summary",
-    "translation": "Aşağıdaki şifreli (AES256 + Base64) veri yığınını parola ile dış Mattermost yöneticisine gönderin. `{{.Command}}` bölü komutunu kullanarak daveti kabul edebilir.\n\n```\n{{.Invitation}}\n```\n\n**Güvenli bağlantının sizin Mattermost kopyanıza ** {{.SiteURL}} adresi ile erişilebildiğinden emin olun"
+    "translation": "Aşağıdaki şifreli (AES256 + Base64) veri yığınını parola ile dış Antimatter yöneticisine gönderin. `{{.Command}}` bölü komutunu kullanarak daveti kabul edebilir.\n\n```\n{{.Invitation}}\n```\n\n**Güvenli bağlantının sizin Antimatter kopyanıza ** {{.SiteURL}} adresi ile erişilebildiğinden emin olun"
   },
   {
     "id": "api.command_remote.remote_add_remove.help",
@@ -7704,7 +7704,7 @@
   },
   {
     "id": "app.notification.footer.infoLogin",
-    "translation": "Mattermost oturumu aç"
+    "translation": "Antimatter oturumu aç"
   },
   {
     "id": "app.notification.footer.info",
@@ -7759,7 +7759,7 @@
   },
   {
     "id": "api.email_batching.send_batched_email_notification.button",
-    "translation": "Mattermost uygulamasını aç"
+    "translation": "Antimatter uygulamasını aç"
   },
   {
     "id": "api.oauth.click_redirect",
@@ -8183,7 +8183,7 @@
   },
   {
     "id": "api.command_help.success",
-    "translation": "Mattermost, sağladığı araçlar ile takımların güvenli iletişim, işbirliği ve birlikte çalışmasını sağlayan açık kaynaklı bir platformdur.\nMattermost üç temel araç sunar:\n\n**Kanallar** - Takımınızla toplu olarak ve üyeleriyle birebir iletişim kurabilirsiniz.\n**[Senaryolar](/playbooks)** - Yinelenen işlemlere özel yapılandırmalar oluşturarak öngörülebilir sonuçlar alabilirsiniz.\n\n[İlgili belgeler ve rehberler]({{.HelpLink}})"
+    "translation": "Antimatter, sağladığı araçlar ile takımların güvenli iletişim, işbirliği ve birlikte çalışmasını sağlayan açık kaynaklı bir platformdur.\nAntimatter üç temel araç sunar:\n\n**Kanallar** - Takımınızla toplu olarak ve üyeleriyle birebir iletişim kurabilirsiniz.\n**[Senaryolar](/playbooks)** - Yinelenen işlemlere özel yapılandırmalar oluşturarak öngörülebilir sonuçlar alabilirsiniz.\n\n[İlgili belgeler ve rehberler]({{.HelpLink}})"
   },
   {
     "id": "api.command_marketplace.unsupported.app_error",
@@ -8831,7 +8831,7 @@
   },
   {
     "id": "api.config.update.elasticsearch.autocomplete_cannot_be_enabled_error",
-    "translation": "Kanal dizini şeması güncel olmadığı için kanal otomatik tamamlama özelliği açılamadı. Kanal dizininizi yeniden oluşturmanız önerilir. Ayrıntılı bilgi almak için Mattermost değişiklik günlüğüne bakın"
+    "translation": "Kanal dizini şeması güncel olmadığı için kanal otomatik tamamlama özelliği açılamadı. Kanal dizininizi yeniden oluşturmanız önerilir. Ayrıntılı bilgi almak için Antimatter değişiklik günlüğüne bakın"
   },
   {
     "id": "api.context.outgoing_oauth_connection.create_connection.input_error",
@@ -9263,7 +9263,7 @@
   },
   {
     "id": "api.server.cws.disabled",
-    "translation": "Mattermost müşteri portalı ile etkileşim kurma özelliği sistem yöneticisi tarafından kapatılmış."
+    "translation": "Antimatter müşteri portalı ile etkileşim kurma özelliği sistem yöneticisi tarafından kapatılmış."
   },
   {
     "id": "api.templates.ip_filters_changed.title",

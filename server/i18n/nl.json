@@ -85,7 +85,7 @@
   },
   {
     "id": "api.admin.test_email.body",
-    "translation": "Mail voor Mattermost lijkt goed geconfigureerd te zijn!"
+    "translation": "Mail voor Antimatter lijkt goed geconfigureerd te zijn!"
   },
   {
     "id": "api.admin.test_email.missing_server",
@@ -97,7 +97,7 @@
   },
   {
     "id": "api.admin.test_email.subject",
-    "translation": "Mattermost - E-mail-instellingen testen"
+    "translation": "Antimatter - E-mail-instellingen testen"
   },
   {
     "id": "api.admin.test_s3.missing_s3_bucket",
@@ -341,7 +341,7 @@
   },
   {
     "id": "api.command.invite_people.desc",
-    "translation": "Stuur een email uitnodiging naar jouw Mattermost team"
+    "translation": "Stuur een email uitnodiging naar jouw Antimatter team"
   },
   {
     "id": "api.command.invite_people.email_invitations_off",
@@ -723,7 +723,7 @@
   },
   {
     "id": "api.command_logout.desc",
-    "translation": "Uitloggen uit Mattermost"
+    "translation": "Uitloggen uit Antimatter"
   },
   {
     "id": "api.command_logout.name",
@@ -1724,7 +1724,7 @@
   },
   {
     "id": "api.templates.post_body.button",
-    "translation": "Beantwoorden in Mattermost"
+    "translation": "Beantwoorden in Antimatter"
   },
   {
     "id": "api.templates.reset_body.button",
@@ -1784,7 +1784,7 @@
   },
   {
     "id": "api.templates.verify_body.info",
-    "translation": "Dit e-mailadres werd gebruikt om een account aan te maken bij Mattermost."
+    "translation": "Dit e-mailadres werd gebruikt om een account aan te maken bij Antimatter."
   },
   {
     "id": "api.templates.verify_body.title",
@@ -1804,7 +1804,7 @@
   },
   {
     "id": "api.templates.welcome_body.info",
-    "translation": "Dit e-mailadres werd gebruikt om een account aan te maken bij Mattermost."
+    "translation": "Dit e-mailadres werd gebruikt om een account aan te maken bij Antimatter."
   },
   {
     "id": "api.templates.welcome_body.title",
@@ -2988,7 +2988,7 @@
   },
   {
     "id": "ent.ldap.do_login.user_filtered.app_error",
-    "translation": "Je AD/LDAP account heeft niet de juiste permissies om van deze Mattermost server gebruik te maken. Vraag je Systeembeheerder om het AD/LDAP gebruikersfilter te controleren."
+    "translation": "Je AD/LDAP account heeft niet de juiste permissies om van deze Antimatter server gebruik te maken. Vraag je Systeembeheerder om het AD/LDAP gebruikersfilter te controleren."
   },
   {
     "id": "ent.ldap.do_login.user_not_registered.app_error",
@@ -3052,7 +3052,7 @@
   },
   {
     "id": "ent.migration.migratetosaml.username_already_used_by_other_user",
-    "translation": "Gebruikersnaam al gebruikt door een andere Mattermost gebruiker."
+    "translation": "Gebruikersnaam al gebruikt door een andere Antimatter gebruiker."
   },
   {
     "id": "ent.saml.attribute.app_error",
@@ -3136,7 +3136,7 @@
   },
   {
     "id": "mattermost.bulletin.subject",
-    "translation": "Mattermost beveiligings bulletin"
+    "translation": "Antimatter beveiligings bulletin"
   },
   {
     "id": "mfa.activate.bad_token.app_error",
@@ -4264,7 +4264,7 @@
   },
   {
     "id": "oauth.gitlab.tos.error",
-    "translation": "GitLab's gebruiksvoorwaarden zijn bijgewerkt. Ga naar {{.URL}} om deze te aanvaarden probeer opnieuw in te loggen op Mattermost."
+    "translation": "GitLab's gebruiksvoorwaarden zijn bijgewerkt. Ga naar {{.URL}} om deze te aanvaarden probeer opnieuw in te loggen op Antimatter."
   },
   {
     "id": "plugin.api.update_user_status.bad_status",
@@ -4452,11 +4452,11 @@
   },
   {
     "id": "web.error.unsupported_browser.no_longer_support_version",
-    "translation": "Deze versie van je browser wordt niet langer ondersteund door Mattermost"
+    "translation": "Deze versie van je browser wordt niet langer ondersteund door Antimatter"
   },
   {
     "id": "web.error.unsupported_browser.no_longer_support",
-    "translation": "Deze browser wordt niet langer ondersteund door Mattermost"
+    "translation": "Deze browser wordt niet langer ondersteund door Antimatter"
   },
   {
     "id": "web.error.unsupported_browser.min_os_version.windows",
@@ -5336,7 +5336,7 @@
   },
   {
     "id": "api.bot.teams_channels.add_message_mobile",
-    "translation": "Voeg me toe aan de teams en kanalen waarin je met me wil praten. Gebruik hiervoor je browser of de Mattermost desktop app."
+    "translation": "Voeg me toe aan de teams en kanalen waarin je met me wil praten. Gebruik hiervoor je browser of de Antimatter desktop app."
   },
   {
     "id": "api.bot.create_disabled",
@@ -7180,7 +7180,7 @@
   },
   {
     "id": "api.templates.invite_body_footer.title",
-    "translation": "Wat is Mattermost?"
+    "translation": "Wat is Antimatter?"
   },
   {
     "id": "api.templates.invite_body_footer.learn_more",
@@ -7188,11 +7188,11 @@
   },
   {
     "id": "api.templates.invite_body_footer.info",
-    "translation": "Mattermost is een flexibel, open source messaging platform dat veilige teamsamenwerking mogelijk maakt."
+    "translation": "Antimatter is een flexibel, open source messaging platform dat veilige teamsamenwerking mogelijk maakt."
   },
   {
     "id": "api.templates.invite_body.subTitle",
-    "translation": "Begin samen te werken met jouw team op Mattermost"
+    "translation": "Begin samen te werken met jouw team op Antimatter"
   },
   {
     "id": "api.team.invite_guests_to_channels.invalid_body.app_error",
@@ -7320,7 +7320,7 @@
   },
   {
     "id": "api.command_remote.accept.help",
-    "translation": "Accepteer een uitnodiging van een externe Mattermost server"
+    "translation": "Accepteer een uitnodiging van een externe Antimatter server"
   },
   {
     "id": "api.command_remote.invitation.hint",
@@ -7436,7 +7436,7 @@
   },
   {
     "id": "api.command_share.invite_remote.help",
-    "translation": "Nodigt een externe Mattermost instantie uit in het huidige gedeelde kanaal"
+    "translation": "Nodigt een externe Antimatter instantie uit in het huidige gedeelde kanaal"
   },
   {
     "id": "api.command_share.invitation_sent",
@@ -7464,7 +7464,7 @@
   },
   {
     "id": "api.command_share.desc",
-    "translation": "Deelt het huidige kanaal met een externe Mattermost instantie."
+    "translation": "Deelt het huidige kanaal met een externe Antimatter instantie."
   },
   {
     "id": "api.command_share.could_not_uninvite.error",
@@ -7572,7 +7572,7 @@
   },
   {
     "id": "api.command_remote.invite_summary",
-    "translation": "Stuur de volgende AES 256-bit versleutelde uitnodiging naar de externe Mattermost systeembeheerder samen met het wachtwoord. De systeembeheerder zal de `{{.Command}}` slashopdracht gebruiken om de uitnodiging te accepteren.\n\n```\n{{.Invitation}}\n```\n\n**Zorg ervoor dat de beveiligde verbinding toegang heeft tot jouw cluster via** {{.SiteURL}}"
+    "translation": "Stuur de volgende AES 256-bit versleutelde uitnodiging naar de externe Antimatter systeembeheerder samen met het wachtwoord. De systeembeheerder zal de `{{.Command}}` slashopdracht gebruiken om de uitnodiging te accepteren.\n\n```\n{{.Invitation}}\n```\n\n**Zorg ervoor dat de beveiligde verbinding toegang heeft tot jouw cluster via** {{.SiteURL}}"
   },
   {
     "id": "api.command_remote.invite_password.hint",
@@ -7704,7 +7704,7 @@
   },
   {
     "id": "app.notification.footer.infoLogin",
-    "translation": "Inloggen op Mattermost"
+    "translation": "Inloggen op Antimatter"
   },
   {
     "id": "app.notification.footer.info",
@@ -7763,7 +7763,7 @@
   },
   {
     "id": "api.email_batching.send_batched_email_notification.button",
-    "translation": "Mattermost openen"
+    "translation": "Antimatter openen"
   },
   {
     "id": "app.team.get_common_team_ids_for_users.app_error",
@@ -8195,7 +8195,7 @@
   },
   {
     "id": "api.command_help.success",
-    "translation": "Mattermost is een open source platform voor veilige communicatie, samenwerking, en regie van werk over tools en teams heen.\nMattermost bevat twee belangrijke tools:\n\n**Channels** - Blijf verbonden met je team via 1:1 en groepsberichten.\n**[Playbooks](/playbooks)** - Bouw en configureer herhaalbare processen om specifieke en voorspelbare resultaten te bereiken.\n\n[Documentatie en leidraden bekijken]({{.HelpLink}})"
+    "translation": "Antimatter is een open source platform voor veilige communicatie, samenwerking, en regie van werk over tools en teams heen.\nAntimatter bevat twee belangrijke tools:\n\n**Channels** - Blijf verbonden met je team via 1:1 en groepsberichten.\n**[Playbooks](/playbooks)** - Bouw en configureer herhaalbare processen om specifieke en voorspelbare resultaten te bereiken.\n\n[Documentatie en leidraden bekijken]({{.HelpLink}})"
   },
   {
     "id": "ent.saml.configure.certificate_parse_error.app_error",
@@ -9163,7 +9163,7 @@
   },
   {
     "id": "api.server.cws.disabled",
-    "translation": "Interacties met het Mattermost Klantenportaal zijn uitgeschakeld door de systeembeheerder."
+    "translation": "Interacties met het Antimatter Klantenportaal zijn uitgeschakeld door de systeembeheerder."
   },
   {
     "id": "basic_security_check.url.too_long_error",
@@ -9299,7 +9299,7 @@
   },
   {
     "id": "api.config.update.elasticsearch.autocomplete_cannot_be_enabled_error",
-    "translation": "Kanalen automatisch aanvullen kan niet worden ingeschakeld omdat het schema van de kanaalindex verouderd is. Het wordt aanbevolen om je kanaalindex te regenereren. Zie de Mattermost changelog voor meer informatie"
+    "translation": "Kanalen automatisch aanvullen kan niet worden ingeschakeld omdat het schema van de kanaalindex verouderd is. Het wordt aanbevolen om je kanaalindex te regenereren. Zie de Antimatter changelog voor meer informatie"
   },
   {
     "id": "ent.elasticsearch.purge_index.delete_failed",
@@ -10813,7 +10813,7 @@
   },
   {
     "id": "api.templates.guest_magic_link_body.footer.info",
-    "translation": "Deze e-mail is naar je gestuurd omdat iemand een login link voor Mattermost heeft aangevraagd. Als je hier niet om gevraagd hebt, kun je deze e-mail gerust negeren."
+    "translation": "Deze e-mail is naar je gestuurd omdat iemand een login link voor Antimatter heeft aangevraagd. Als je hier niet om gevraagd hebt, kun je deze e-mail gerust negeren."
   },
   {
     "id": "api.templates.guest_magic_link_body.footer.title",
@@ -10825,7 +10825,7 @@
   },
   {
     "id": "api.templates.guest_magic_link_body.title",
-    "translation": "Aanmelden bij Mattermost"
+    "translation": "Aanmelden bij Antimatter"
   },
   {
     "id": "api.templates.guest_magic_link_subject",
@@ -11041,7 +11041,7 @@
   },
   {
     "id": "ent.intune.login.account_not_found.app_error",
-    "translation": "Je account is nog niet volledig ingesteld. Meld je eerst aan bij Mattermost via het web of de desktop app."
+    "translation": "Je account is nog niet volledig ingesteld. Meld je eerst aan bij Antimatter via het web of de desktop app."
   },
   {
     "id": "ent.intune.login.extract_auth_data.app_error",

@@ -97,7 +97,7 @@
   },
   {
     "id": "api.admin.test_email.subject",
-    "translation": "Mattermost - 電子メール設定のテスト"
+    "translation": "Antimatter - 電子メール設定のテスト"
   },
   {
     "id": "api.admin.test_s3.missing_s3_bucket",
@@ -8183,7 +8183,7 @@
   },
   {
     "id": "api.command_help.success",
-    "translation": "Mattermost は、ツールやチームをまたがるセキュアなコミュニケーション、コラボレーション、オーケストレーションのためのオープンソースプラットフォームです。\nMattermostには、2つの主要なツールが含まれています:\n\n**Channels** - 1対1もしくはグループとのメッセージングによりチームを常に繋がった状態にします\n**[Playbooks](/playbooks)** - 繰り返し行われる作業をプロセス化し、予測可能な結果を残せるようにします\n\n[ドキュメントとガイドを見る]({{.HelpLink}})"
+    "translation": "Antimatter は、ツールやチームをまたがるセキュアなコミュニケーション、コラボレーション、オーケストレーションのためのオープンソースプラットフォームです。\nMattermostには、2つの主要なツールが含まれています:\n\n**Channels** - 1対1もしくはグループとのメッセージングによりチームを常に繋がった状態にします\n**[Playbooks](/playbooks)** - 繰り返し行われる作業をプロセス化し、予測可能な結果を残せるようにします\n\n[ドキュメントとガイドを見る]({{.HelpLink}})"
   },
   {
     "id": "ent.saml.configure.certificate_parse_error.app_error",

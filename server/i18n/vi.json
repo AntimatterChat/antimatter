@@ -723,7 +723,7 @@
   },
   {
     "id": "api.admin.test_email.body",
-    "translation": "Thông tin email tài khoản Mattermost của bạn đã được cấu hình chính xác!"
+    "translation": "Thông tin email tài khoản Antimatter của bạn đã được cấu hình chính xác!"
   },
   {
     "id": "api.channel.post_update_channel_displayname_message_and_forget.create_post.error",
@@ -825,7 +825,7 @@
   },
   {
     "id": "web.error.unsupported_browser.no_longer_support",
-    "translation": "Trình duyệt này không còn được Mattermost hỗ trợ"
+    "translation": "Trình duyệt này không còn được Antimatter hỗ trợ"
   },
   {
     "id": "api.user.update_active.not_enable.app_error",
@@ -1049,7 +1049,7 @@
   },
   {
     "id": "ent.ldap.do_login.user_filtered.app_error",
-    "translation": "Tài khoản AD / LDAP của bạn không có quyền sử dụng máy chủ Mattermost sever này. Vui lòng yêu cầu Quản trị viên hệ thống của bạn kiểm tra bộ lọc người dùng AD / LDAP."
+    "translation": "Tài khoản AD / LDAP của bạn không có quyền sử dụng máy chủ Antimatter sever này. Vui lòng yêu cầu Quản trị viên hệ thống của bạn kiểm tra bộ lọc người dùng AD / LDAP."
   },
   {
     "id": "api.status.user_not_found.app_error",
@@ -2603,7 +2603,7 @@
   },
   {
     "id": "api.admin.test_email.subject",
-    "translation": "Mattermost - Kiểm tra Cài đặt Email"
+    "translation": "Antimatter - Kiểm tra Cài đặt Email"
   },
   {
     "id": "api.channel.join_channel.post_and_forget",
@@ -3055,7 +3055,7 @@
   },
   {
     "id": "api.command_help.desc",
-    "translation": "Mở trang trợ giúp Mattermost"
+    "translation": "Mở trang trợ giúp Antimatter"
   },
   {
     "id": "api.team.set_team_icon.write_file.app_error",
@@ -4179,7 +4179,7 @@
   },
   {
     "id": "web.error.unsupported_browser.no_longer_support_version",
-    "translation": "Phiên bản hiện tại của trình duyệt không còn được Mattermost hỗ trợ"
+    "translation": "Phiên bản hiện tại của trình duyệt không còn được Antimatter hỗ trợ"
   },
   {
     "id": "api.command_join.desc",
@@ -4297,7 +4297,7 @@
   },
   {
     "id": "ent.ldap.syncronize.search_failure.app_error",
-    "translation": "Không thể tìm kiếm người dùng trong AD / LDAP. Kiểm tra xem máy chủ Mattermost có thể kết nối với máy chủ AD / LDAP của bạn không và thử lại."
+    "translation": "Không thể tìm kiếm người dùng trong AD / LDAP. Kiểm tra xem máy chủ Antimatter có thể kết nối với máy chủ AD / LDAP của bạn không và thử lại."
   },
   {
     "id": "model.authorize.is_valid.expires.app_error",
@@ -4787,7 +4787,7 @@
   },
   {
     "id": "api.command.invite_people.desc",
-    "translation": "Gửi một email mời nhóm Mattermost của bạn"
+    "translation": "Gửi một email mời nhóm Antimatter của bạn"
   },
   {
     "id": "api.admin.ldap.not_available.app_error",
@@ -4959,7 +4959,7 @@
   },
   {
     "id": "ent.migration.migratetosaml.username_already_used_by_other_user",
-    "translation": "Tên người dùng đã được sử dụng bởi một người dùng Mattermost khác."
+    "translation": "Tên người dùng đã được sử dụng bởi một người dùng Antimatter khác."
   },
   {
     "id": "app.channel.create_direct_channel.internal_error",
@@ -5295,7 +5295,7 @@
   },
   {
     "id": "api.command_help.success",
-    "translation": "Matter Extreme là một nền tảng nguồn mở để liên lạc, cộng tác và điều phối công việc một cách an toàn giữa các công cụ và nhóm.\nMattermost chứa ba công cụ chính:\n\n**Kênh** - Luôn kết nối với nhóm của bạn thông qua nhắn tin 1:1 và nhóm.\n**[Playbooks](/playbooks)** - Xây dựng và định cấu hình các quy trình có thể lặp lại để đạt được kết quả cụ thể và có thể dự đoán được.\n**[Boards](/boards)** - Quản lý các dự án và nhiệm vụ theo cấu trúc bảng Kanban để giúp nhóm của bạn đạt được các cột mốc quan trọng.\n\n[Xem tài liệu và hướng dẫn]({{.HelpLink}})"
+    "translation": "Matter Extreme là một nền tảng nguồn mở để liên lạc, cộng tác và điều phối công việc một cách an toàn giữa các công cụ và nhóm.\nAntimatter chứa ba công cụ chính:\n\n**Kênh** - Luôn kết nối với nhóm của bạn thông qua nhắn tin 1:1 và nhóm.\n**[Playbooks](/playbooks)** - Xây dựng và định cấu hình các quy trình có thể lặp lại để đạt được kết quả cụ thể và có thể dự đoán được.\n**[Boards](/boards)** - Quản lý các dự án và nhiệm vụ theo cấu trúc bảng Kanban để giúp nhóm của bạn đạt được các cột mốc quan trọng.\n\n[Xem tài liệu và hướng dẫn]({{.HelpLink}})"
   },
   {
     "id": "api.command_exportlink.driver.app_error",
@@ -5371,7 +5371,7 @@
   },
   {
     "id": "api.command_remote.accept.help",
-    "translation": "Đông ý lời mời từ máy của Mattermost bên ngoài"
+    "translation": "Đông ý lời mời từ máy của Antimatter bên ngoài"
   },
   {
     "id": "api.command_remote.invitation.help",
@@ -5667,7 +5667,7 @@
   },
   {
     "id": "api.templates.invite_body.subTitle",
-    "translation": "Bắt đầu cộng tác với nhóm của bạn trên Mattermost"
+    "translation": "Bắt đầu cộng tác với nhóm của bạn trên Antimatter"
   },
   {
     "id": "api.templates.invite_body_guest.subTitle",
@@ -5679,11 +5679,11 @@
   },
   {
     "id": "api.templates.invite_body_footer.info",
-    "translation": "Mattermost là một nền tảng nhắn tin mã nguồn mở, linh hoạt cho phép cộng tác nhóm một cách an toàn."
+    "translation": "Antimatter là một nền tảng nhắn tin mã nguồn mở, linh hoạt cho phép cộng tác nhóm một cách an toàn."
   },
   {
     "id": "api.templates.invite_body_footer.title",
-    "translation": "Mattermost là gì?"
+    "translation": "Antimatter là gì?"
   },
   {
     "id": "api.templates.invite_team_and_channel_body.title",
@@ -5799,7 +5799,7 @@
   },
   {
     "id": "app.notification.footer.infoLogin",
-    "translation": "Đăng nhập vào Mattermost"
+    "translation": "Đăng nhập vào Antimatter"
   },
   {
     "id": "app.notification.footer.title",

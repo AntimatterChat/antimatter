@@ -53,11 +53,11 @@
   },
   {
     "id": "web.error.unsupported_browser.no_longer_support_version",
-    "translation": "Den här versionen av webbläsaren stöds inte längre av Mattermost"
+    "translation": "Den här versionen av webbläsaren stöds inte längre av Antimatter"
   },
   {
     "id": "web.error.unsupported_browser.no_longer_support",
-    "translation": "Den här webbläsaren stöds inte längre av Mattermost"
+    "translation": "Den här webbläsaren stöds inte längre av Antimatter"
   },
   {
     "id": "web.error.unsupported_browser.min_os_version.windows",
@@ -237,7 +237,7 @@
   },
   {
     "id": "oauth.gitlab.tos.error",
-    "translation": "GitLab's användningsvillkor har uppdaterats. Gå till {{.URL}} för att acceptera dem och logga sedan in i Mattermost igen."
+    "translation": "GitLab's användningsvillkor har uppdaterats. Gå till {{.URL}} för att acceptera dem och logga sedan in i Antimatter igen."
   },
   {
     "id": "model.group_syncable.syncable_id.app_error",
@@ -977,7 +977,7 @@
   },
   {
     "id": "mattermost.bulletin.subject",
-    "translation": "Mattermost Tavlan för säkerheten"
+    "translation": "Antimatter Tavlan för säkerheten"
   },
   {
     "id": "manaultesting.test_autolink.unable.app_error",
@@ -4469,7 +4469,7 @@
   },
   {
     "id": "api.templates.post_body.button",
-    "translation": "Svara i Mattermost"
+    "translation": "Svara i Antimatter"
   },
   {
     "id": "api.templates.password_change_subject",
@@ -5301,7 +5301,7 @@
   },
   {
     "id": "api.templates.welcome_body.info",
-    "translation": "Din mejladress användes för att skapa ett konto hos Mattermost."
+    "translation": "Din mejladress användes för att skapa ett konto hos Antimatter."
   },
   {
     "id": "api.templates.welcome_body.button",
@@ -5321,7 +5321,7 @@
   },
   {
     "id": "api.templates.verify_body.info",
-    "translation": "Denna mejladress användes för att skapa ett konto hos Mattermost."
+    "translation": "Denna mejladress användes för att skapa ett konto hos Antimatter."
   },
   {
     "id": "api.templates.verify_body.button",
@@ -5816,7 +5816,7 @@
   },
   {
     "id": "api.command_logout.desc",
-    "translation": "Logga ut från Mattermost"
+    "translation": "Logga ut från Antimatter"
   },
   {
     "id": "api.command_leave.name",
@@ -5927,7 +5927,7 @@
   },
   {
     "id": "api.command_help.desc",
-    "translation": "Visa Mattermost hjälpmeddelande"
+    "translation": "Visa Antimatter hjälpmeddelande"
   },
   {
     "id": "api.command_groupmsg.permission.app_error",
@@ -6424,7 +6424,7 @@
   },
   {
     "id": "api.command.invite_people.desc",
-    "translation": "Skicka en e-postinbjudan till din Mattermost grupp"
+    "translation": "Skicka en e-postinbjudan till din Antimatter grupp"
   },
   {
     "id": "api.command.execute_command.start.app_error",
@@ -6732,7 +6732,7 @@
   },
   {
     "id": "api.bot.teams_channels.add_message_mobile",
-    "translation": "Lägg till mig i grupper och kanaler som du vill att jag ska interagera i. För att göra detta, använd webbläsare eller Mattermost skrivbordsapp."
+    "translation": "Lägg till mig i grupper och kanaler som du vill att jag ska interagera i. För att göra detta, använd webbläsare eller Antimatter skrivbordsapp."
   },
   {
     "id": "api.bot.create_disabled",
@@ -6764,7 +6764,7 @@
   },
   {
     "id": "api.admin.test_email.subject",
-    "translation": "Mattermost - Testar epostinställningar"
+    "translation": "Antimatter - Testar epostinställningar"
   },
   {
     "id": "api.admin.test_email.reenter_password",
@@ -6776,7 +6776,7 @@
   },
   {
     "id": "api.admin.test_email.body",
-    "translation": "Det verkar som om Mattermost e-postinställningar är korrekta!"
+    "translation": "Det verkar som om Antimatter e-postinställningar är korrekta!"
   },
   {
     "id": "api.admin.saml.set_certificate_from_metadata.missing_content_type.app_error",
@@ -7184,7 +7184,7 @@
   },
   {
     "id": "api.templates.invite_body_footer.title",
-    "translation": "Vad är Mattermost?"
+    "translation": "Vad är Antimatter?"
   },
   {
     "id": "api.templates.invite_body_footer.learn_more",
@@ -7192,11 +7192,11 @@
   },
   {
     "id": "api.templates.invite_body_footer.info",
-    "translation": "Mattermost är en flexibel meddelandeplattform byggd med öppen källkod som möjliggör säkert samarbete i temaet."
+    "translation": "Antimatter är en flexibel meddelandeplattform byggd med öppen källkod som möjliggör säkert samarbete i temaet."
   },
   {
     "id": "api.templates.invite_body.subTitle",
-    "translation": "Börja samarbeta med ditt team med Mattermost"
+    "translation": "Börja samarbeta med ditt team med Antimatter"
   },
   {
     "id": "api.templates.cloud_welcome_email.title",
@@ -7711,7 +7711,7 @@
   },
   {
     "id": "app.notification.footer.infoLogin",
-    "translation": "Logga in på Mattermost"
+    "translation": "Logga in på Antimatter"
   },
   {
     "id": "app.notification.footer.info",
@@ -7747,7 +7747,7 @@
   },
   {
     "id": "api.email_batching.send_batched_email_notification.button",
-    "translation": "Öppna Mattermost"
+    "translation": "Öppna Antimatter"
   },
   {
     "id": "api.oauth.click_redirect",
@@ -8175,7 +8175,7 @@
   },
   {
     "id": "api.command_help.success",
-    "translation": "Mattermost är en plattform med öppen källkod för säker kommunikation, samarbete och orkestrering av arbete över verktyg och team.\nMattermost innehåller tre viktiga verktyg:\n\n**Channels** - Håll kontakten med ditt team via 1:1 och gruppmeddelanden.\n**[Playbooks](/playbooks)** - Bygg och konfigurera repeterbara processer för att uppnå specifika och förutsägbara resultat.\n\n[Visa dokumentation och guider]({{.HelpLink}})"
+    "translation": "Antimatter är en plattform med öppen källkod för säker kommunikation, samarbete och orkestrering av arbete över verktyg och team.\nAntimatter innehåller tre viktiga verktyg:\n\n**Channels** - Håll kontakten med ditt team via 1:1 och gruppmeddelanden.\n**[Playbooks](/playbooks)** - Bygg och konfigurera repeterbara processer för att uppnå specifika och förutsägbara resultat.\n\n[Visa dokumentation och guider]({{.HelpLink}})"
   },
   {
     "id": "ent.saml.configure.certificate_parse_error.app_error",
@@ -9283,7 +9283,7 @@
   },
   {
     "id": "api.config.update.elasticsearch.autocomplete_cannot_be_enabled_error",
-    "translation": "Autokomplettering av kanaler kan inte aktiveras eftersom indexschemat för kanaler är föråldrat. Vi rekommenderar att du omindexerar ditt kanalindex. Se Mattermost changelog för mer information"
+    "translation": "Autokomplettering av kanaler kan inte aktiveras eftersom indexschemat för kanaler är föråldrat. Vi rekommenderar att du omindexerar ditt kanalindex. Se Antimatter changelog för mer information"
   },
   {
     "id": "ent.elasticsearch.purge_index.delete_failed",
@@ -10577,7 +10577,7 @@
   },
   {
     "id": "api.templates.guest_magic_link_body.title",
-    "translation": "Logga in till Mattermost"
+    "translation": "Logga in till Antimatter"
   },
   {
     "id": "app.agents.get_services.app_error",
