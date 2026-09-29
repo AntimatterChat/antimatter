@@ -80,12 +80,6 @@ func getConfig(c *Context, w http.ResponseWriter, r *http.Request) {
 			RemoveMasked:   filterMasked,
 		},
 	}
-	if c.App.Channels().License().IsCloud() {
-		filterOpts.TagFilters = append(filterOpts.TagFilters, model.FilterTag{
-			TagType: model.ConfigAccessTagType,
-			TagName: model.ConfigAccessTagCloudRestrictable,
-		})
-	}
 	m, err := model.FilterConfig(cfg, filterOpts)
 	if err != nil {
 		c.Err = model.NewAppError("getConfig", "api.filter_config_error", nil, "", http.StatusInternalServerError).Wrap(err)
@@ -167,16 +161,6 @@ func updateConfig(c *Context, w http.ResponseWriter, r *http.Request) {
 		*cfg.PluginSettings.MarketplaceURL = *appCfg.PluginSettings.MarketplaceURL
 	}
 
-	// There are some settings that cannot be changed in a cloud env
-	if c.App.Channels().License().IsCloud() {
-		// Both of them cannot be nil since cfg.SetDefaults is called earlier for cfg,
-		// and appCfg is the existing earlier config and if it's nil, server sets a default value.
-		if *appCfg.ComplianceSettings.Directory != *cfg.ComplianceSettings.Directory {
-			c.Err = model.NewAppError("updateConfig", "api.config.update_config.not_allowed_security.app_error", map[string]any{"Name": "ComplianceSettings.Directory"}, "", http.StatusForbidden)
-			return
-		}
-	}
-
 	// ES autocomplete can only be enabled when a search engine is running. The engine
 	// itself keeps autocomplete off until its channel/user indexes have current mappings.
 	if !*appCfg.ElasticsearchSettings.EnableAutocomplete && *cfg.ElasticsearchSettings.EnableAutocomplete {
@@ -233,17 +217,6 @@ func updateConfig(c *Context, w http.ResponseWriter, r *http.Request) {
 	c.LogAudit("updateConfig")
 
 	w.Header().Set("Cache-Control", "no-cache, no-store, must-revalidate")
-	if c.App.Channels().License().IsCloud() {
-		js, err := cfg.ToJSONFiltered(model.ConfigAccessTagType, model.ConfigAccessTagCloudRestrictable)
-		if err != nil {
-			c.Err = model.NewAppError("updateConfig", "api.marshal_error", nil, "", http.StatusInternalServerError).Wrap(err)
-			return
-		}
-		if _, err := w.Write(js); err != nil {
-			c.Logger.Warn("Error while writing response", mlog.Err(err))
-		}
-		return
-	}
 
 	if err := json.NewEncoder(w).Encode(cfg); err != nil {
 		c.Logger.Warn("Error while writing response", mlog.Err(err))
@@ -328,14 +301,6 @@ func patchConfig(c *Context, w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	// There are some settings that cannot be changed in a cloud env
-	if c.App.Channels().License().IsCloud() {
-		if cfg.ComplianceSettings.Directory != nil && *appCfg.ComplianceSettings.Directory != *cfg.ComplianceSettings.Directory {
-			c.Err = model.NewAppError("patchConfig", "api.config.update_config.not_allowed_security.app_error", map[string]any{"Name": "ComplianceSettings.Directory"}, "", http.StatusForbidden)
-			return
-		}
-	}
-
 	if cfg.MessageExportSettings.EnableExport != nil {
 		c.App.HandleMessageExportConfig(cfg, appCfg)
 	}
@@ -392,17 +357,6 @@ func patchConfig(c *Context, w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.Header().Set("Cache-Control", "no-cache, no-store, must-revalidate")
-	if c.App.Channels().License().IsCloud() {
-		js, err := cfg.ToJSONFiltered(model.ConfigAccessTagType, model.ConfigAccessTagCloudRestrictable)
-		if err != nil {
-			c.Err = model.NewAppError("patchConfig", "api.marshal_error", nil, "", http.StatusInternalServerError).Wrap(err)
-			return
-		}
-		if _, err := w.Write(js); err != nil {
-			c.Logger.Warn("Error while writing response", mlog.Err(err))
-		}
-		return
-	}
 
 	if err := json.NewEncoder(w).Encode(cfg); err != nil {
 		c.Logger.Warn("Error while writing response", mlog.Err(err))

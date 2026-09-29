@@ -61,8 +61,6 @@ func TestGetSubscription(t *testing.T) {
 		_, _, err := th.Client.Login(context.Background(), th.BasicUser.Email, th.BasicUser.Password)
 		require.NoError(t, err)
 
-		th.App.Srv().SetLicense(model.NewTestLicense("cloud"))
-
 		cloud := mocks.CloudInterface{}
 
 		cloud.Mock.On("GetSubscription", mock.Anything).Return(subscription, nil)
@@ -86,8 +84,6 @@ func TestGetSubscription(t *testing.T) {
 
 		_, _, err := th.Client.Login(context.Background(), th.BasicUser.Email, th.BasicUser.Password)
 		require.NoError(t, err)
-
-		th.App.Srv().SetLicense(model.NewTestLicense("cloud"))
 
 		cloud := mocks.CloudInterface{}
 
@@ -118,8 +114,6 @@ func TestValidateBusinessEmail(t *testing.T) {
 
 		validBusinessEmail := model.ValidateBusinessEmailRequest{Email: "invalid@slacker.com"}
 
-		th.App.Srv().SetLicense(model.NewTestLicense("cloud"))
-
 		cloud := mocks.CloudInterface{}
 
 		cloud.Mock.On("ValidateBusinessEmail", th.SystemAdminUser.Id, validBusinessEmail.Email).Return(errors.New("invalid email"))
@@ -144,8 +138,6 @@ func TestValidateBusinessEmail(t *testing.T) {
 
 		validBusinessEmail := model.ValidateBusinessEmailRequest{Email: "valid@mattermost.com"}
 
-		th.App.Srv().SetLicense(model.NewTestLicense("cloud"))
-
 		cloud := mocks.CloudInterface{}
 
 		cloud.Mock.On("ValidateBusinessEmail", th.SystemAdminUser.Id, validBusinessEmail.Email).Return(nil)
@@ -168,8 +160,6 @@ func TestValidateBusinessEmail(t *testing.T) {
 		_, _, err := th.Client.Login(context.Background(), th.BasicUser.Email, th.BasicUser.Password)
 		require.NoError(t, err)
 
-		th.App.Srv().SetLicense(model.NewTestLicense("cloud"))
-
 		r, err := th.SystemAdminClient.DoAPIPost(context.Background(), "/cloud/validate-business-email", "")
 		require.Error(t, err)
 		closeBody(r)
@@ -185,8 +175,6 @@ func TestValidateWorkspaceBusinessEmail(t *testing.T) {
 
 		_, _, err := th.Client.Login(context.Background(), th.BasicUser.Email, th.BasicUser.Password)
 		require.NoError(t, err)
-
-		th.App.Srv().SetLicense(model.NewTestLicense("cloud"))
 
 		cloud := mocks.CloudInterface{}
 
@@ -217,8 +205,6 @@ func TestValidateWorkspaceBusinessEmail(t *testing.T) {
 
 		_, _, err := th.Client.Login(context.Background(), th.BasicUser.Email, th.BasicUser.Password)
 		require.NoError(t, err)
-
-		th.App.Srv().SetLicense(model.NewTestLicense("cloud"))
 
 		cloud := mocks.CloudInterface{}
 
@@ -254,8 +240,6 @@ func TestValidateWorkspaceBusinessEmail(t *testing.T) {
 
 		_, _, err := th.Client.Login(context.Background(), th.BasicUser.Email, th.BasicUser.Password)
 		require.NoError(t, err)
-
-		th.App.Srv().SetLicense(model.NewTestLicense("cloud"))
 
 		cloud := mocks.CloudInterface{}
 
@@ -357,8 +341,6 @@ func TestGetCloudProducts(t *testing.T) {
 		_, _, err := th.Client.Login(context.Background(), th.SystemAdminUser.Email, th.SystemAdminUser.Password)
 		require.NoError(t, err)
 
-		th.App.Srv().SetLicense(model.NewTestLicense("cloud"))
-
 		cloud := mocks.CloudInterface{}
 		cloud.Mock.On("GetCloudProducts", mock.Anything, mock.Anything).Return(cloudProducts, nil)
 		cloudImpl := th.App.Srv().Cloud
@@ -379,8 +361,6 @@ func TestGetCloudProducts(t *testing.T) {
 
 		_, _, err := th.Client.Login(context.Background(), th.BasicUser.Email, th.BasicUser.Password)
 		require.NoError(t, err)
-
-		th.App.Srv().SetLicense(model.NewTestLicense("cloud"))
 
 		cloud := mocks.CloudInterface{}
 
@@ -440,8 +420,6 @@ func TestCheckCWSConnection(t *testing.T) {
 		mainHelper.Parallel(t)
 		th := Setup(t).InitBasic(t)
 
-		th.App.Srv().SetLicense(model.NewTestLicense())
-
 		cloud := mocks.CloudInterface{}
 		cloud.Mock.On("CheckCWSConnection", mock.Anything).Return(nil)
 
@@ -464,8 +442,6 @@ func TestCheckCWSConnection(t *testing.T) {
 	t.Run("returns unavailable when CWS is not reachable", func(t *testing.T) {
 		mainHelper.Parallel(t)
 		th := Setup(t).InitBasic(t)
-
-		th.App.Srv().SetLicense(model.NewTestLicense())
 
 		cloud := mocks.CloudInterface{}
 		cloud.Mock.On("CheckCWSConnection", mock.Anything).Return(errors.New("connection failed"))

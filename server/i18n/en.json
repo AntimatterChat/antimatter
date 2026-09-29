@@ -980,11 +980,6 @@
     "description": "Error when a webhook sent by the Mattermost customer portal (CWS) has an unknown or missing event type; admin/log audience."
   },
   {
-    "id": "api.cloud.license_error",
-    "translation": "Your license does not support cloud requests.",
-    "description": "API error when Cloud-only endpoints are called on a server whose license is not a Cloud license; admin audience."
-  },
-  {
     "id": "api.cloud.notify_admin_to_upgrade_error.already_notified",
     "translation": "Already notified admin",
     "description": "API error returned when a user tries to send the 'notify admin to upgrade the plan' request again after already sending it."
@@ -2954,11 +2949,6 @@
     "description": "Error shown to end users trying to attach files when file attachments are disabled server-wide."
   },
   {
-    "id": "api.file.cloud_upload.app_error",
-    "translation": "Uploading via mmctl to a Cloud instance is not supported. Please check the documentation here: https://docs.mattermost.com/manage/cloud-data-export.html.",
-    "description": "API error when an mmctl import upload targets a Mattermost Cloud instance, which is unsupported; the URL is a documentation link and 'mmctl' is the CLI tool name."
-  },
-  {
     "id": "api.file.file_exists.app_error",
     "translation": "Unable to check if the file exists.",
     "description": "API error returned when checking whether a file exists in file storage fails."
@@ -4680,11 +4670,6 @@
     "description": "API error when converting a user to a guest is attempted while the Guest Access feature is disabled."
   },
   {
-    "id": "api.team.demote_user_to_guest.license.error",
-    "translation": "Your license does not support guest accounts",
-    "description": "API error when converting a user to a guest is attempted on a server whose license does not include guest accounts."
-  },
-  {
     "id": "api.team.get_all_teams.insufficient_permissions",
     "translation": "You don't have the appropriate permissions to list all teams",
     "description": "API error when a user without the required permission requests the list of all teams on the server."
@@ -5865,11 +5850,6 @@
     "description": "API error when creating a guest account while the Guest Access feature is disabled."
   },
   {
-    "id": "api.user.create_user.guest_accounts.license.app_error",
-    "translation": "Your license does not support guest accounts.",
-    "description": "API error when creating a guest account on a server whose license does not include guest accounts."
-  },
-  {
     "id": "api.user.create_user.invalid_invitation_type.app_error",
     "translation": "Unable to create the user, invalid invitation.",
     "description": "API error during signup when the invitation token is of an unexpected type, so the account cannot be created."
@@ -6055,11 +6035,6 @@
     "description": "Login error when a guest account tries to log in while the Guest Access feature is disabled."
   },
   {
-    "id": "api.user.login.guest_accounts.license.error",
-    "translation": "Your license does not support guest accounts",
-    "description": "Login error when a guest account tries to log in on a server whose license does not include guest accounts."
-  },
-  {
     "id": "api.user.login.guest_magic_link.disabled.error",
     "translation": "Login with magic link is disabled.",
     "description": "Login error when a guest tries to sign in with a magic link while that option is disabled; 'magic link' is a passwordless email sign-in link."
@@ -6103,11 +6078,6 @@
     "id": "api.user.login.use_auth_service.app_error",
     "translation": "Please sign in using {{.AuthService}}.",
     "description": "Login error telling the user to sign in with their configured authentication provider instead of a password; {{.AuthService}} is the provider name, e.g. GitLab, SAML, LDAP."
-  },
-  {
-    "id": "api.user.login_by_cws.invalid_token.app_error",
-    "translation": "CWS token is not valid",
-    "description": "Login error when the one-time token from the Customer Web Server (Mattermost cloud portal) is invalid; 'CWS' is that portal's name."
   },
   {
     "id": "api.user.login_by_intune.account_locked.app_error",
@@ -6408,11 +6378,6 @@
     "id": "api.user.update_user_auth.invalid_request",
     "translation": "Request is missing either AuthData or AuthService parameter.",
     "description": "API error when an admin request to change a user's authentication method omits both required parameters; 'AuthData' and 'AuthService' are literal field names."
-  },
-  {
-    "id": "api.user.update_user_roles.license.app_error",
-    "translation": "Custom Permission Schemes not supported by current license",
-    "description": "API error when assigning custom roles to a user requires the Custom Permission Schemes feature, which the license lacks; admin-facing."
   },
   {
     "id": "api.user.upload_profile_user.array.app_error",

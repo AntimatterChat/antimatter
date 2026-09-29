@@ -53,9 +53,7 @@ func TestNoticeValidation(t *testing.T) {
 	type args struct {
 		client               model.NoticeClientType
 		clientVersion        string
-		sku                  string
 		postCount, userCount int64
-		cloud                bool
 		teamAdmin            bool
 		systemAdmin          bool
 		serverVersion        string
@@ -395,9 +393,8 @@ func TestNoticeValidation(t *testing.T) {
 			wantOk:  false,
 		},
 		{
-			name: "notice with correct sku",
+			name: "notice targeting a specific sku is skipped",
 			args: args{
-				sku: "e20",
 				notice: &model.ProductNotice{
 					Conditions: model.Conditions{
 						Sku: new(model.NoticeSKUE20),
@@ -405,25 +402,11 @@ func TestNoticeValidation(t *testing.T) {
 				},
 			},
 			wantErr: false,
-			wantOk:  true,
-		},
-		{
-			name: "notice with incorrect sku",
-			args: args{
-				sku: "e20",
-				notice: &model.ProductNotice{
-					Conditions: model.Conditions{
-						Sku: new(model.NoticeSKUE10),
-					},
-				},
-			},
-			wantErr: false,
 			wantOk:  false,
 		},
 		{
-			name: "notice with team sku",
+			name: "notice targeting team sku is skipped",
 			args: args{
-				sku: "",
 				notice: &model.ProductNotice{
 					Conditions: model.Conditions{
 						Sku: new(model.NoticeSKUTeam),
@@ -431,7 +414,7 @@ func TestNoticeValidation(t *testing.T) {
 				},
 			},
 			wantErr: false,
-			wantOk:  true,
+			wantOk:  false,
 		},
 		{
 			name: "notice with sku check for all",
@@ -448,7 +431,6 @@ func TestNoticeValidation(t *testing.T) {
 		{
 			name: "notice with instance check cloud",
 			args: args{
-				cloud: true,
 				notice: &model.ProductNotice{
 					Conditions: model.Conditions{
 						InstanceType: new(model.NoticeInstanceTypeCloud),
@@ -456,7 +438,7 @@ func TestNoticeValidation(t *testing.T) {
 				},
 			},
 			wantErr: false,
-			wantOk:  true,
+			wantOk:  false,
 		},
 		{
 			name: "notice with instance check both",
@@ -528,8 +510,6 @@ func TestNoticeValidation(t *testing.T) {
 				tt.args.userCount,
 				tt.args.systemAdmin,
 				tt.args.teamAdmin,
-				tt.args.cloud,
-				tt.args.sku,
 				tt.args.dbmsName,
 				tt.args.dbmsVer,
 				tt.args.searchEngineName,

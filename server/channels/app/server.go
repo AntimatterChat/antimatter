@@ -156,16 +156,8 @@ type Server struct {
 
 	ch *Channels
 
-	// cwsTokenOverride overrides CWS_CLOUD_TOKEN for CWS login authentication.
-	cwsTokenOverride string
-
 	// notifyAdminCoolOffDaysOverride overrides MM_NOTIFY_ADMIN_COOL_OFF_DAYS.
 	notifyAdminCoolOffDaysOverride string
-}
-
-// SetCWSTokenOverride sets the CWS token override for CWS login authentication.
-func (s *Server) SetCWSTokenOverride(v string) {
-	s.cwsTokenOverride = v
 }
 
 // SetNotifyAdminCoolOffDaysOverride sets the cool-off period override for admin notifications.
@@ -692,9 +684,6 @@ func (s *Server) runJobs() {
 	})
 	s.Go(func() {
 		runConfigCleanupJob(s)
-	})
-	s.Go(func() {
-		runCloudUserCountReportJob(s)
 	})
 
 	if complianceI := s.Channels().Compliance; complianceI != nil {
@@ -1441,13 +1430,6 @@ func doReportUsageToAWSMeteringService(s *Server) {
 
 func doSecurity(s *Server) {
 	s.DoSecurityUpdateCheck()
-}
-
-// Reports activated user count to the CWS every 24 hours
-func runCloudUserCountReportJob(s *Server) {
-	model.CreateRecurringTask("Report user count for cloud subscription", func() {
-		s.doReportUserCountForCloudSubscriptionJob()
-	}, time.Hour*24)
 }
 
 func doTokenCleanup(s *Server) {

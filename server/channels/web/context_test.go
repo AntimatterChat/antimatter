@@ -129,8 +129,6 @@ func TestRequireHookId(t *testing.T) {
 func TestCloudKeyRequired(t *testing.T) {
 	th := SetupWithStoreMock(t)
 
-	th.App.Srv().SetLicense(model.NewTestLicense("cloud"))
-
 	c := &Context{
 		App:        th.App,
 		AppContext: th.Context,
@@ -158,8 +156,6 @@ func TestMfaRequired(t *testing.T) {
 	mockStore.On("Post").Return(&mockPostStore)
 	mockStore.On("System").Return(&mockSystemStore)
 	mockStore.On("GetDBSchemaVersion").Return(1, nil)
-
-	th.App.Srv().SetLicense(model.NewTestLicense("mfa"))
 
 	th.Context = th.Context.WithSession(&model.Session{Id: "abc", UserId: "userid"})
 

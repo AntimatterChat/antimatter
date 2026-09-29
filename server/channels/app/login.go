@@ -4,12 +4,9 @@
 package app
 
 import (
-	"crypto/subtle"
-	"errors"
 	"fmt"
 	"net/http"
 	"net/url"
-	"os"
 	"strconv"
 	"strings"
 	"time"
@@ -20,11 +17,8 @@ import (
 	"github.com/mattermost/mattermost/server/public/plugin"
 	"github.com/mattermost/mattermost/server/public/shared/mlog"
 	"github.com/mattermost/mattermost/server/public/shared/request"
-	"github.com/mattermost/mattermost/server/v8/channels/store"
 	"github.com/mattermost/mattermost/server/v8/channels/utils"
 )
-
-const cwsTokenEnv = "CWS_CLOUD_TOKEN"
 
 func (a *App) AuthenticateUserForLogin(rctx request.CTX, id, loginId, password, mfaToken, cwsToken string, ldapOnly bool) (user *model.User, err *model.AppError) {
 	// Do statistics
@@ -38,52 +32,13 @@ func (a *App) AuthenticateUserForLogin(rctx request.CTX, id, loginId, password, 
 		}
 	}()
 
-	if password == "" && !isCWSLogin(a, cwsToken) {
+	if password == "" {
 		return nil, model.NewAppError("AuthenticateUserForLogin", "api.user.login.blank_pwd.app_error", nil, "", http.StatusBadRequest)
 	}
 
 	// Get the MM user we are trying to login
 	if user, err = a.GetUserForLogin(rctx, id, loginId); err != nil {
 		return nil, err
-	}
-
-	// CWS login allow to use the one-time token to login the users when they're redirected to their
-	// installation for the first time
-	if isCWSLogin(a, cwsToken) {
-		if err = checkUserNotBot(user); err != nil {
-			return nil, err
-		}
-		token, err := a.Srv().Store().Token().GetByToken(cwsToken)
-		if nfErr := new(store.ErrNotFound); err != nil && !errors.As(err, &nfErr) {
-			rctx.Logger().Debug("Error retrieving the cws token from the store", mlog.Err(err))
-			return nil, model.NewAppError("AuthenticateUserForLogin",
-				"api.user.login_by_cws.invalid_token.app_error", nil, "", http.StatusInternalServerError).Wrap(err)
-		}
-		// If token is stored in the database that means it was used
-		if token != nil {
-			return nil, model.NewAppError("AuthenticateUserForLogin",
-				"api.user.login_by_cws.invalid_token.app_error", nil, "", http.StatusBadRequest)
-		}
-		envToken := a.Srv().cwsTokenOverride
-		if envToken == "" {
-			envToken, _ = os.LookupEnv(cwsTokenEnv)
-		}
-		if envToken != "" && subtle.ConstantTimeCompare([]byte(envToken), []byte(cwsToken)) == 1 {
-			token = &model.Token{
-				Token:    cwsToken,
-				CreateAt: model.GetMillis(),
-				Type:     model.TokenTypeCWSAccess,
-			}
-			err := a.Srv().Store().Token().Save(token)
-			if err != nil {
-				rctx.Logger().Debug("Error storing the cws token in the store", mlog.Err(err))
-				return nil, model.NewAppError("AuthenticateUserForLogin",
-					"api.user.login_by_cws.invalid_token.app_error", nil, "", http.StatusInternalServerError)
-			}
-			return user, nil
-		}
-		return nil, model.NewAppError("AuthenticateUserForLogin",
-			"api.user.login_by_cws.invalid_token.app_error", nil, "", http.StatusBadRequest)
 	}
 
 	// and then authenticate them
@@ -229,7 +184,7 @@ func (a *App) DoLogin(rctx request.CTX, w http.ResponseWriter, r *http.Request, 
 
 	rctx = rctx.WithSession(session)
 
-	if a.Srv().License() != nil && *a.Srv().License().Features.LDAP && a.Ldap() != nil {
+	if a.Ldap() != nil {
 		userVal := *user
 		sessionVal := *session
 		a.Srv().Go(func() {
@@ -343,11 +298,6 @@ func (a *App) AttachSessionCookies(rctx request.CTX, w http.ResponseWriter, r *h
 	http.SetCookie(w, sessionCookie)
 	http.SetCookie(w, userCookie)
 	http.SetCookie(w, csrfCookie)
-
-	// For context see: https://mattermost.atlassian.net/browse/MM-39583
-	if a.License().IsCloud() {
-		a.AttachCloudSessionCookie(rctx, w, r)
-	}
 }
 
 func GetProtocol(r *http.Request) string {
@@ -355,8 +305,4 @@ func GetProtocol(r *http.Request) string {
 		return "https"
 	}
 	return "http"
-}
-
-func isCWSLogin(a *App, token string) bool {
-	return a.License().IsCloud() && token != ""
 }

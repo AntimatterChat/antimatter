@@ -268,10 +268,6 @@ func createUser(c *Context, w http.ResponseWriter, r *http.Request) {
 		auditRec.AddMeta("token_type", token.Type)
 
 		if token.Type == model.TokenTypeGuestInvitation {
-			if c.App.Channels().License() == nil {
-				c.Err = model.NewAppError("CreateUserWithToken", "api.user.create_user.guest_accounts.license.app_error", nil, "", http.StatusBadRequest)
-				return
-			}
 			if !*c.App.Config().GuestAccountsSettings.Enable {
 				c.Err = model.NewAppError("CreateUserWithToken", "api.user.create_user.guest_accounts.disabled.app_error", nil, "", http.StatusBadRequest)
 				return
@@ -1034,7 +1030,7 @@ func getUsers(c *Context, w http.ResponseWriter, r *http.Request) {
 		// subset without the list being narrowed for them.
 		//
 		// Surface ChannelAccessControlled errors instead of silently swallowing
-		// them — a transient store / license read failure here would otherwise
+		// them — a transient store read failure here would otherwise
 		// fall through to the unfiltered path and could expose users a hard-gated
 		// private channel was configured to hide.
 		abacMatchOnly, _ := strconv.ParseBool(r.URL.Query().Get("abac_match_only"))
@@ -1739,18 +1735,6 @@ func updateUserRoles(c *Context, w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// require license feature to assign "new system roles"
-	for roleName := range strings.FieldsSeq(newRoles) {
-		for _, id := range model.NewSystemRoleIDs {
-			if roleName == id {
-				if license := c.App.Channels().License(); license == nil || !*license.Features.CustomPermissionsSchemes {
-					c.Err = model.NewAppError("updateUserRoles", "api.user.update_user_roles.license.app_error", nil, "", http.StatusBadRequest)
-					return
-				}
-			}
-		}
-	}
-
 	auditRec := c.MakeAuditRecord(model.AuditEventUpdateUserRoles, model.AuditStatusFail)
 	model.AddEventParameterToAuditRec(auditRec, "roles", newRoles)
 	defer c.LogAuditRec(auditRec)
@@ -2245,10 +2229,6 @@ func login(c *Context, w http.ResponseWriter, r *http.Request) {
 	}
 
 	if user.IsGuest() {
-		if c.App.Channels().License() == nil {
-			c.Err = model.NewAppError("login", "api.user.login.guest_accounts.license.error", nil, "", http.StatusUnauthorized)
-			return
-		}
 		if !*c.App.Config().GuestAccountsSettings.Enable {
 			c.Err = model.NewAppError("login", "api.user.login.guest_accounts.disabled.error", nil, "", http.StatusUnauthorized)
 			return
@@ -2344,85 +2324,10 @@ func loginWithDesktopToken(c *Context, w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// loginCWS is the Cloud (CWS) login endpoint. Cloud is never enabled on this
+// server, so it always refuses.
 func loginCWS(c *Context, w http.ResponseWriter, r *http.Request) {
-	campaignToURL := map[string]string{
-		"focalboard": "/boards",
-	}
-
-	useCaseToURL := map[string]string{
-		"mission-ops":   "/mission-ops-hq",
-		"dev-sec-ops":   "/dev-sec-ops-hq",
-		"cyber-defense": "/cyber-defense-hq",
-	}
-
-	if !c.App.Channels().License().IsCloud() {
-		c.Err = model.NewAppError("loginCWS", "api.user.login_cws.license.error", nil, "", http.StatusUnauthorized)
-		return
-	}
-	if err := r.ParseForm(); err != nil {
-		c.Logger.Warn("Failed to parse form data", mlog.Err(err))
-	}
-	var loginID string
-	var token string
-	var campaign string
-	var useCase string
-	if len(r.Form) > 0 {
-		for key, value := range r.Form {
-			if key == "login_id" {
-				loginID = value[0]
-			}
-			if key == "cws_token" {
-				token = value[0]
-			}
-			if key == "utm_campaign" {
-				campaign = value[0]
-			}
-			if key == "use_case" {
-				useCase = value[0]
-			}
-		}
-	}
-
-	auditRec := c.MakeAuditRecord(model.AuditEventLogin, model.AuditStatusFail)
-	defer c.LogAuditRec(auditRec)
-	model.AddEventParameterToAuditRec(auditRec, "login_id", loginID)
-	user, err := c.App.AuthenticateUserForLogin(c.AppContext, "", loginID, "", "", token, false)
-	if err != nil {
-		c.LogAuditWithUserId("", "failure - login_id="+loginID)
-		c.LogErrorByCode(err)
-		http.Redirect(w, r, *c.App.Config().ServiceSettings.SiteURL, http.StatusFound)
-		return
-	}
-	model.AddEventParameterAuditableToAuditRec(auditRec, "user", user)
-	c.LogAuditWithUserId(user.Id, "authenticated")
-	isMobileDevice := utils.IsMobileRequest(r)
-	session, err := c.App.DoLogin(c.AppContext, w, r, user, model.LoginOptions{
-		IsMobile: isMobileDevice,
-	})
-	if err != nil {
-		c.LogErrorByCode(err)
-		http.Redirect(w, r, *c.App.Config().ServiceSettings.SiteURL, http.StatusFound)
-		return
-	}
-	c.AppContext = c.AppContext.WithSession(session)
-	c.LogAuditWithUserId(user.Id, "success")
-	c.App.AttachSessionCookies(c.AppContext, w, r)
-
-	redirectURL := *c.App.Config().ServiceSettings.SiteURL
-	if campaign != "" {
-		if url, ok := campaignToURL[campaign]; ok {
-			redirectURL += url
-		}
-	}
-
-	// If a cloud preview, redirect to the correct use case URL
-	if c.App.License().IsCloudPreview() && useCase != "" {
-		if url, ok := useCaseToURL[useCase]; ok {
-			redirectURL += url
-		}
-	}
-
-	http.Redirect(w, r, redirectURL, http.StatusFound)
+	c.Err = model.NewAppError("loginCWS", "api.user.login_cws.license.error", nil, "", http.StatusUnauthorized)
 }
 
 func getLoginType(c *Context, w http.ResponseWriter, r *http.Request) {
@@ -2435,8 +2340,7 @@ func getLoginType(c *Context, w http.ResponseWriter, r *http.Request) {
 	// guest magic link is enabled. We can consider adding support for other
 	// login methods in the future, and this check may be removed.
 	if !*c.App.Config().GuestAccountsSettings.EnableGuestMagicLink ||
-		!*c.App.Config().GuestAccountsSettings.Enable ||
-		!*c.App.Channels().License().Features.GuestAccounts {
+		!*c.App.Config().GuestAccountsSettings.Enable {
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
@@ -2485,14 +2389,6 @@ func getLoginType(c *Context, w http.ResponseWriter, r *http.Request) {
 		}
 
 		if !user.IsMagicLinkEnabled() {
-			return false
-		}
-
-		if c.App.Channels().License() == nil {
-			return false
-		}
-
-		if !*c.App.Channels().License().Features.GuestAccounts {
 			return false
 		}
 
@@ -3545,20 +3441,8 @@ func demoteUserToGuest(c *Context, w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if c.App.Channels().License() == nil {
-		c.Err = model.NewAppError("Api4.demoteUserToGuest", "api.team.demote_user_to_guest.license.error", nil, "", http.StatusNotImplemented)
-		return
-	}
-
 	if !*c.App.Config().GuestAccountsSettings.Enable {
 		c.Err = model.NewAppError("Api4.demoteUserToGuest", "api.team.demote_user_to_guest.disabled.error", nil, "", http.StatusNotImplemented)
-		return
-	}
-
-	guestEnabled := c.App.Channels().License() != nil && *c.App.Channels().License().Features.GuestAccounts
-
-	if !guestEnabled {
-		c.Err = model.NewAppError("Api4.demoteUserToGuest", "api.team.invite_guests_to_channels.disabled.error", nil, "", http.StatusForbidden)
 		return
 	}
 
@@ -3850,11 +3734,6 @@ func migrateAuthToLDAP(c *Context, w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if c.App.Channels().License() == nil || !*c.App.Channels().License().Features.LDAP {
-		c.Err = model.NewAppError("api.migrateAuthToLDAP", "api.admin.ldap.not_available.app_error", nil, "", http.StatusNotImplemented)
-		return
-	}
-
 	// Email auth in Mattermost system is represented by ""
 	if from == "email" {
 		from = ""
@@ -3906,11 +3785,6 @@ func migrateAuthToSaml(c *Context, w http.ResponseWriter, r *http.Request) {
 
 	if !c.App.SessionHasPermissionTo(*c.AppContext.Session(), model.PermissionManageSystem) {
 		c.SetPermissionError(model.PermissionManageSystem)
-		return
-	}
-
-	if c.App.Channels().License() == nil || !*c.App.Channels().License().Features.SAML {
-		c.Err = model.NewAppError("api.migrateAuthToSaml", "api.admin.saml.not_available.app_error", nil, "", http.StatusNotImplemented)
 		return
 	}
 

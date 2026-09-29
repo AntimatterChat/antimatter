@@ -17,7 +17,6 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/mattermost/mattermost/server/public/model"
-	"github.com/mattermost/mattermost/server/v8/channels/app"
 	"github.com/mattermost/mattermost/server/v8/config"
 )
 
@@ -288,21 +287,6 @@ func TestUpdateConfig(t *testing.T) {
 		assert.Equal(t, newURL, *cfg2.PluginSettings.MarketplaceURL)
 	})
 
-	t.Run("Should not be able to modify ComplianceSettings.Directory in cloud", func(t *testing.T) {
-		th.App.Srv().SetLicense(model.NewTestLicense("cloud"))
-		defer func() {
-			appErr := th.App.Srv().RemoveLicense()
-			require.Nil(t, appErr)
-		}()
-
-		cfg2 := th.App.Config().Clone()
-		*cfg2.ComplianceSettings.Directory = "hellodir"
-
-		_, resp, err = th.SystemAdminClient.UpdateConfig(context.Background(), cfg2)
-		require.Error(t, err)
-		CheckForbiddenStatus(t, resp)
-	})
-
 	t.Run("Should not be able to modify ImportSettings.Directory", func(t *testing.T) {
 		t.Run("sysadmin", func(t *testing.T) {
 			oldDirectory := *th.App.Config().ImportSettings.Directory
@@ -561,8 +545,7 @@ func TestUpdateConfigDiffInAuditRecord(t *testing.T) {
 	require.NoError(t, err)
 	defer os.Remove(logFile.Name())
 
-	options := []app.Option{app.WithLicense(model.NewTestLicense("advanced_logging"))}
-	th := SetupWithServerOptionsAndConfig(t, options, func(cfg *model.Config) {
+	th := SetupWithServerOptionsAndConfig(t, nil, func(cfg *model.Config) {
 		cfg.ExperimentalAuditSettings.FileEnabled = new(true)
 		cfg.ExperimentalAuditSettings.FileName = new(logFile.Name())
 	})

@@ -149,17 +149,14 @@ func (c *Context) SessionRequired() {
 	}
 }
 
+// CloudKeyRequired always rejects the request: Cloud is never enabled on this server.
 func (c *Context) CloudKeyRequired() {
-	if license := c.App.Channels().License(); license == nil || !license.IsCloud() || c.AppContext.Session().Props[model.SessionPropType] != model.SessionTypeCloudKey {
-		c.Err = model.NewAppError("", "api.context.session_expired.app_error", nil, "TokenRequired", http.StatusUnauthorized)
-		return
-	}
+	c.Err = model.NewAppError("", "api.context.session_expired.app_error", nil, "TokenRequired", http.StatusUnauthorized)
 }
 
 func (c *Context) RemoteClusterTokenRequired() {
-	if license := c.App.Channels().License(); license == nil || !license.HasRemoteClusterService() || c.AppContext.Session().Props[model.SessionPropType] != model.SessionTypeRemoteclusterToken {
+	if c.AppContext.Session().Props[model.SessionPropType] != model.SessionTypeRemoteclusterToken {
 		c.Err = model.NewAppError("", "api.context.session_expired.app_error", nil, "TokenRequired", http.StatusUnauthorized)
-		return
 	}
 }
 

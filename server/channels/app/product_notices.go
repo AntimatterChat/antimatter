@@ -29,7 +29,7 @@ var noticesCache = utils.RequestCache{}
 
 func noticeMatchesConditions(config *model.Config, preferences store.PreferenceStore, userID string,
 	client model.NoticeClientType, serverVersion, clientVersion string, postCount int64, userCount int64, isSystemAdmin bool,
-	isTeamAdmin bool, isCloud bool, sku, dbName, dbVer, searchEngineName, searchEngineVer string,
+	isTeamAdmin bool, dbName, dbVer, searchEngineName, searchEngineVer string,
 	notice *model.ProductNotice) (bool, error) {
 	cnd := notice.Conditions
 
@@ -75,7 +75,7 @@ func noticeMatchesConditions(config *model.Config, preferences store.PreferenceS
 	}
 
 	// check if current server version is notice range
-	if !isCloud && cnd.ServerVersion != nil {
+	if cnd.ServerVersion != nil {
 		serverVersionSemver, err := semver.NewVersion(serverVersion)
 		if err != nil {
 			mlog.Warn("Version number is not in semver format", mlog.String("version_number", serverVersion))
@@ -92,11 +92,9 @@ func noticeMatchesConditions(config *model.Config, preferences store.PreferenceS
 		}
 	}
 
-	// check if sku matches our license
-	if cnd.Sku != nil {
-		if !cnd.Sku.Matches(sku) {
-			return false, nil
-		}
+	// this server has no license/SKU: only notices meant for every SKU apply
+	if cnd.Sku != nil && *cnd.Sku != model.NoticeSKUAll {
+		return false, nil
 	}
 
 	// check the target audience
@@ -170,7 +168,7 @@ func noticeMatchesConditions(config *model.Config, preferences store.PreferenceS
 
 	// check the type of installation
 	if cnd.InstanceType != nil {
-		if !cnd.InstanceType.Matches(isCloud) {
+		if !cnd.InstanceType.Matches(false) {
 			return false, nil
 		}
 	}
@@ -229,8 +227,6 @@ func (a *App) GetProductNotices(rctx request.CTX, userID, teamID string, client 
 		return nil, model.NewAppError("GetProductNotices", "api.system.update_viewed_notices.failed", nil, "", http.StatusBadRequest).Wrap(err)
 	}
 
-	sku := a.Srv().ClientLicense()["SkuShortName"]
-	isCloud := a.Srv().License() != nil && *a.Srv().License().Features.Cloud
 	dbName := *a.Config().SqlSettings.DriverName
 
 	var searchEngineName, searchEngineVersion string
@@ -274,8 +270,6 @@ func (a *App) GetProductNotices(rctx request.CTX, userID, teamID string, client 
 			a.ch.cachedUserCount,
 			isSystemAdmin,
 			isTeamAdmin,
-			isCloud,
-			sku,
 			dbName,
 			a.ch.cachedDBMSVersion,
 			searchEngineName,
