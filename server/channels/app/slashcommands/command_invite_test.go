@@ -280,7 +280,6 @@ func TestUserGroups(t *testing.T) {
 	assert.Nil(t, err)
 	teamGroupCommand := "@" + *teamGroup.Name + " ~" + privateChannel.Name
 
-	// th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuProfessional))
 	groupMembers, upsertErr := th.App.UpsertGroupMembers(teamGroup.Id, []string{th.BasicUser2.Id})
 	require.Nil(t, upsertErr)
 	assert.Len(t, groupMembers, 1)

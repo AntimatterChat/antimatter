@@ -16,12 +16,10 @@ import (
 )
 
 func configureMetrics(th *TestHelper) {
-	th.App.Srv().SetLicense(nil) // clear license
 	th.App.UpdateConfig(func(cfg *model.Config) {
 		*cfg.MetricsSettings.Enable = true
 		*cfg.MetricsSettings.ListenAddress = ":0"
 	})
-	th.App.Srv().SetLicense(model.NewTestLicense("metrics"))
 }
 
 func TestMobileMetrics(t *testing.T) {

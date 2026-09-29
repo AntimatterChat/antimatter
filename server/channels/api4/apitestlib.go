@@ -81,7 +81,7 @@ func SetMainHelper(mh *testlib.MainHelper) {
 	mainHelper = mh
 }
 
-func setupTestHelper(tb testing.TB, dbStore store.Store, sqlSettings *model.SqlSettings, searchEngine *searchengine.Broker, enterprise bool, includeCache bool,
+func setupTestHelper(tb testing.TB, dbStore store.Store, sqlSettings *model.SqlSettings, searchEngine *searchengine.Broker, includeCache bool,
 	updateConfig func(*model.Config), options []app.Option,
 ) *TestHelper {
 	tempWorkspace, err := os.MkdirTemp("", "apptest")
@@ -94,7 +94,6 @@ func setupTestHelper(tb testing.TB, dbStore store.Store, sqlSettings *model.SqlS
 		SqlSettings: model.SafeDereference(sqlSettings),
 	}
 	memoryConfig.SetDefaults()
-	*memoryConfig.ServiceSettings.LicenseFileLocation = filepath.Join(tempWorkspace, "license.json")
 	*memoryConfig.FileSettings.Directory = filepath.Join(tempWorkspace, "data")
 	*memoryConfig.PluginSettings.Directory = filepath.Join(tempWorkspace, "plugins")
 	*memoryConfig.PluginSettings.ClientDirectory = filepath.Join(tempWorkspace, "webapp")
@@ -130,7 +129,6 @@ func setupTestHelper(tb testing.TB, dbStore store.Store, sqlSettings *model.SqlS
 		*memoryConfig.CacheSettings.DisableClientCache = true
 		*memoryConfig.CacheSettings.RedisDB = 0
 		*memoryConfig.CacheSettings.RedisCachePrefix = model.NewId()
-		options = append(options, app.ForceEnableRedis())
 	}
 	if updateConfig != nil {
 		updateConfig(memoryConfig)
@@ -188,8 +186,6 @@ func setupTestHelper(tb testing.TB, dbStore store.Store, sqlSettings *model.SqlS
 	if searchEngine != nil {
 		th.App.SetSearchEngine(searchEngine)
 	}
-
-	th.App.Srv().SetLicense(getLicense(enterprise, memoryConfig))
 
 	th.App.UpdateConfig(func(cfg *model.Config) {
 		*cfg.TeamSettings.MaxUsersPerTeam = 50
@@ -254,16 +250,6 @@ func setupTestHelper(tb testing.TB, dbStore store.Store, sqlSettings *model.SqlS
 	return th
 }
 
-func getLicense(enterprise bool, cfg *model.Config) *model.License {
-	if *cfg.ConnectedWorkspacesSettings.EnableRemoteClusterService || *cfg.ConnectedWorkspacesSettings.EnableSharedChannels {
-		return model.NewTestLicenseSKU(model.LicenseShortSkuProfessional)
-	}
-	if enterprise {
-		return model.NewTestLicense()
-	}
-	return nil
-}
-
 func setupStores(tb testing.TB) (store.Store, *model.SqlSettings, *searchengine.Broker) {
 	var dbStore store.Store
 	var dbSettings *model.SqlSettings
@@ -300,7 +286,7 @@ func SetupEnterprise(tb testing.TB, options ...app.Option) *TestHelper {
 	}
 
 	dbStore, dbSettings, searchEngine := setupStores(tb)
-	th := setupTestHelper(tb, dbStore, dbSettings, searchEngine, true, true, removeSpuriousErrors, options)
+	th := setupTestHelper(tb, dbStore, dbSettings, searchEngine, true, removeSpuriousErrors, options)
 	th.InitLogin(tb)
 
 	return th
@@ -316,7 +302,7 @@ func Setup(tb testing.TB) *TestHelper {
 	}
 
 	dbStore, dbSettings, searchEngine := setupStores(tb)
-	th := setupTestHelper(tb, dbStore, dbSettings, searchEngine, false, true, nil, nil)
+	th := setupTestHelper(tb, dbStore, dbSettings, searchEngine, true, nil, nil)
 	th.InitLogin(tb)
 
 	return th
@@ -332,7 +318,7 @@ func SetupAndApplyConfigBeforeLogin(tb testing.TB, updateConfig func(cfg *model.
 	}
 
 	dbStore, dbSettings, searchEngine := setupStores(tb)
-	th := setupTestHelper(tb, dbStore, dbSettings, searchEngine, false, true, nil, nil)
+	th := setupTestHelper(tb, dbStore, dbSettings, searchEngine, true, nil, nil)
 	th.App.UpdateConfig(updateConfig)
 	th.InitLogin(tb)
 
@@ -349,14 +335,14 @@ func SetupConfig(tb testing.TB, updateConfig func(cfg *model.Config)) *TestHelpe
 	}
 
 	dbStore, dbSettings, searchEngine := setupStores(tb)
-	th := setupTestHelper(tb, dbStore, dbSettings, searchEngine, false, true, updateConfig, nil)
+	th := setupTestHelper(tb, dbStore, dbSettings, searchEngine, true, updateConfig, nil)
 	th.InitLogin(tb)
 
 	return th
 }
 
 func SetupConfigWithStoreMock(tb testing.TB, updateConfig func(cfg *model.Config)) *TestHelper {
-	th := setupTestHelper(tb, testlib.GetMockStoreForSetupFunctions(), nil, nil, false, false, updateConfig, nil)
+	th := setupTestHelper(tb, testlib.GetMockStoreForSetupFunctions(), nil, nil, false, updateConfig, nil)
 	statusMock := mocks.StatusStore{}
 	statusMock.On("UpdateExpiredDNDStatuses").Return([]*model.Status{}, nil)
 	statusMock.On("Get", "user1").Return(&model.Status{UserId: "user1", Status: model.StatusOnline}, nil)
@@ -370,7 +356,7 @@ func SetupConfigWithStoreMock(tb testing.TB, updateConfig func(cfg *model.Config
 }
 
 func SetupWithStoreMock(tb testing.TB) *TestHelper {
-	th := setupTestHelper(tb, testlib.GetMockStoreForSetupFunctions(), nil, nil, false, false, useCustomPushNotificationServer, nil)
+	th := setupTestHelper(tb, testlib.GetMockStoreForSetupFunctions(), nil, nil, false, useCustomPushNotificationServer, nil)
 	statusMock := mocks.StatusStore{}
 	statusMock.On("UpdateExpiredDNDStatuses").Return([]*model.Status{}, nil)
 	statusMock.On("Get", "user1").Return(&model.Status{UserId: "user1", Status: model.StatusOnline}, nil)
@@ -394,7 +380,7 @@ func SetupEnterpriseWithStoreMock(tb testing.TB, options ...app.Option) *TestHel
 		useCustomPushNotificationServer(config)
 	}
 
-	th := setupTestHelper(tb, testlib.GetMockStoreForSetupFunctions(), nil, nil, true, false, removeSpuriousErrors, options)
+	th := setupTestHelper(tb, testlib.GetMockStoreForSetupFunctions(), nil, nil, false, removeSpuriousErrors, options)
 	statusMock := mocks.StatusStore{}
 	statusMock.On("UpdateExpiredDNDStatuses").Return([]*model.Status{}, nil)
 	statusMock.On("Get", "user1").Return(&model.Status{UserId: "user1", Status: model.StatusOnline}, nil)
@@ -417,7 +403,7 @@ func SetupWithServerOptions(tb testing.TB, options []app.Option) *TestHelper {
 	}
 
 	dbStore, dbSettings, searchEngine := setupStores(tb)
-	th := setupTestHelper(tb, dbStore, dbSettings, searchEngine, false, true, nil, options)
+	th := setupTestHelper(tb, dbStore, dbSettings, searchEngine, true, nil, options)
 	th.InitLogin(tb)
 
 	return th
@@ -433,7 +419,7 @@ func SetupWithServerOptionsAndConfig(tb testing.TB, options []app.Option, update
 	}
 
 	dbStore, dbSettings, searchEngine := setupStores(tb)
-	th := setupTestHelper(tb, dbStore, dbSettings, searchEngine, false, true, updateConfig, options)
+	th := setupTestHelper(tb, dbStore, dbSettings, searchEngine, true, updateConfig, options)
 	th.InitLogin(tb)
 
 	return th
@@ -449,7 +435,7 @@ func SetupEnterpriseWithServerOptions(tb testing.TB, options []app.Option) *Test
 	}
 
 	dbStore, dbSettings, searchEngine := setupStores(tb)
-	th := setupTestHelper(tb, dbStore, dbSettings, searchEngine, true, true, nil, options)
+	th := setupTestHelper(tb, dbStore, dbSettings, searchEngine, true, nil, options)
 	th.InitLogin(tb)
 
 	return th
@@ -469,11 +455,6 @@ func (th *TestHelper) ShutdownApp() {
 		// still running App could spuriously fail subsequent tests.
 		panic("failed to shutdown App within 30 seconds")
 	}
-}
-
-func (th *TestHelper) RemoveLicense(tb testing.TB) {
-	err := th.App.Srv().RemoveLicense()
-	require.Nil(tb, err)
 }
 
 func closeBody(r *http.Response) {
@@ -796,7 +777,6 @@ func (th *TestHelper) SetupLdapConfig() {
 		*cfg.LdapSettings.GroupIdAttribute = "entRyUuId"
 		*cfg.LdapSettings.MaxPageSize = 0
 	})
-	th.App.Srv().SetLicense(model.NewTestLicense("ldap"))
 }
 
 func (th *TestHelper) SetupSamlConfig() {
@@ -821,7 +801,6 @@ func (th *TestHelper) SetupSamlConfig() {
 		*cfg.SamlSettings.SignatureAlgorithm = model.SamlSettingsSignatureAlgorithmSha256
 		*cfg.SamlSettings.CanonicalAlgorithm = model.SamlSettingsCanonicalAlgorithmC14n11
 	})
-	th.App.Srv().SetLicense(model.NewTestLicense("saml"))
 }
 
 func (th *TestHelper) CreatePublicChannel(tb testing.TB) *model.Channel {

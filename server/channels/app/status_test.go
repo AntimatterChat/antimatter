@@ -87,7 +87,6 @@ func TestCustomStatusErrors(t *testing.T) {
 				SessionStore: &mockSessionStore,
 				OAuthStore:   &mockOAuthStore,
 				ConfigFn:     th.App.ch.srv.platform.Config,
-				LicenseFn:    th.App.ch.srv.License,
 			})
 			require.NoError(t, err)
 

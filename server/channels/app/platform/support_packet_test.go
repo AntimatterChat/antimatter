@@ -253,13 +253,6 @@ func TestGetSupportPacketDiagnostics(t *testing.T) {
 
 	th.Service.installTypeOverride = "docker"
 
-	licenseUsers := 100
-	license := model.NewTestLicense("ldap")
-	license.SkuShortName = model.LicenseShortSkuEnterprise
-	license.Features.Users = new(licenseUsers)
-	ok := th.Service.SetLicense(license)
-	require.True(t, ok)
-
 	getDiagnostics := func(t *testing.T) *model.SupportPacketDiagnostics {
 		t.Helper()
 
@@ -273,13 +266,6 @@ func TestGetSupportPacketDiagnostics(t *testing.T) {
 		d := getDiagnostics(t)
 
 		assert.Equal(t, 2, d.Version)
-
-		/* License */
-		assert.Equal(t, "My awesome Company", d.License.Company)
-		assert.Equal(t, licenseUsers, d.License.Users)
-		assert.Equal(t, model.LicenseShortSkuEnterprise, d.License.SkuShortName)
-		assert.Equal(t, false, d.License.IsTrial)
-		assert.Equal(t, false, d.License.IsGovSKU)
 
 		/* Server information */
 		assert.NotEmpty(t, d.Server.OS)

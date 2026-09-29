@@ -917,9 +917,6 @@ func TestDeleteImport(t *testing.T) {
 func TestCheckSSOProviderConfig(t *testing.T) {
 	mainHelper.Parallel(t)
 	th := Setup(t)
-	// Enterprise license required to enable LDAP/SAML via UpdateConfig validation.
-	th.App.Srv().SetLicense(model.NewTestLicense())
-	defer th.App.Srv().SetLicense(nil)
 
 	versionLine := `{"type":"version","version":1,"info":{"generator":"mattermost-server","version":"test","created":"2026-01-01T00:00:00Z","additional":{"team_name":"acme"}}}`
 

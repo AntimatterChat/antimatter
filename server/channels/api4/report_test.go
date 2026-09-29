@@ -301,10 +301,6 @@ func TestGetPostsForReporting(t *testing.T) {
 	mainHelper.Parallel(t)
 	th := Setup(t).InitBasic(t)
 
-	// Set up Enterprise license for compliance/reporting features
-	license := model.NewTestLicenseSKU(model.LicenseShortSkuEnterprise)
-	th.App.Srv().SetLicense(license)
-
 	// Create test posts with controlled timestamps using App layer
 	// Setting CreateAt explicitly allows us to test time-based queries accurately
 	// This is a common pattern in API tests (see post_test.go for similar usage)
@@ -322,49 +318,6 @@ func TestGetPostsForReporting(t *testing.T) {
 		require.Nil(t, appErr)
 		testPosts = append(testPosts, createdPost)
 	}
-
-	t.Run("should return bad request when license is not Enterprise", func(t *testing.T) {
-		// Remove license temporarily
-		th.App.Srv().SetLicense(nil)
-		defer func() {
-			// Restore Enterprise license for remaining tests
-			license := model.NewTestLicenseSKU(model.LicenseShortSkuEnterprise)
-			th.App.Srv().SetLicense(license)
-		}()
-
-		th.LoginSystemAdmin(t)
-
-		requestBody := map[string]any{
-			"channel_id": th.BasicChannel.Id,
-			"cursor":     "",
-			"per_page":   10,
-		}
-
-		resp, _ := doPostJSON(t, th.SystemAdminClient, "/api/v4/reports/posts", requestBody)
-		require.Equal(t, http.StatusBadRequest, resp.StatusCode)
-	})
-
-	t.Run("should return bad request when license is Professional (not Enterprise)", func(t *testing.T) {
-		// Set Professional license (not sufficient)
-		professionalLicense := model.NewTestLicenseSKU(model.LicenseShortSkuProfessional)
-		th.App.Srv().SetLicense(professionalLicense)
-		defer func() {
-			// Restore Enterprise license for remaining tests
-			license := model.NewTestLicenseSKU(model.LicenseShortSkuEnterprise)
-			th.App.Srv().SetLicense(license)
-		}()
-
-		th.LoginSystemAdmin(t)
-
-		requestBody := map[string]any{
-			"channel_id": th.BasicChannel.Id,
-			"cursor":     "",
-			"per_page":   10,
-		}
-
-		resp, _ := doPostJSON(t, th.SystemAdminClient, "/api/v4/reports/posts", requestBody)
-		require.Equal(t, http.StatusBadRequest, resp.StatusCode)
-	})
 
 	t.Run("should return forbidden error when user lacks permission", func(t *testing.T) {
 		th.LoginBasic(t)

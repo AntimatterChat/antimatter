@@ -214,34 +214,23 @@ func (h *MainHelper) setupStore() {
 }
 
 func (h *MainHelper) ToggleReplicasOff() {
-	if h.SQLStore.GetLicense() == nil {
-		panic("expecting a license to use this")
-	}
 	h.Settings.DataSourceReplicas = []string{}
-	lic := h.SQLStore.GetLicense()
 
 	var err error
 	h.SQLStore, err = sqlstore.New(*h.Settings, h.Logger, nil, sqlstore.DisableMorphLogging())
 	if err != nil {
 		panic(err)
 	}
-	h.SQLStore.UpdateLicense(lic)
 }
 
 func (h *MainHelper) ToggleReplicasOn() {
-	if h.SQLStore.GetLicense() == nil {
-		panic("expecting a license to use this")
-	}
 	h.Settings.DataSourceReplicas = h.replicas
-	lic := h.SQLStore.GetLicense()
 
 	var err error
 	h.SQLStore, err = sqlstore.New(*h.Settings, h.Logger, nil, sqlstore.DisableMorphLogging())
 	if err != nil {
 		panic(err)
 	}
-
-	h.SQLStore.UpdateLicense(lic)
 }
 
 func (h *MainHelper) setupResources() {

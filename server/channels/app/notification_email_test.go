@@ -1140,7 +1140,7 @@ func TestLandingLink(t *testing.T) {
 
 	// Create a minimal helper that sets the site URL
 	mockStore := testlib.GetMockStoreForSetupFunctions()
-	th := setupTestHelper(mockStore, mainHelper.GetSQLStore(), mainHelper.GetSQLSettings(), mainHelper.GetSearchEngine(), false, false,
+	th := setupTestHelper(mockStore, mainHelper.GetSQLStore(), mainHelper.GetSQLSettings(), mainHelper.GetSearchEngine(), false,
 		func(cfg *model.Config) {
 			cfg.ServiceSettings.SiteURL = new("http://localhost:8065")
 		}, nil, t)
@@ -1179,7 +1179,7 @@ func TestLandingLinkPermalink(t *testing.T) {
 
 	// Create a minimal helper that sets the site URL
 	mockStore := testlib.GetMockStoreForSetupFunctions()
-	th := setupTestHelper(mockStore, mainHelper.GetSQLStore(), mainHelper.GetSQLSettings(), mainHelper.GetSearchEngine(), false, false,
+	th := setupTestHelper(mockStore, mainHelper.GetSQLStore(), mainHelper.GetSQLSettings(), mainHelper.GetSearchEngine(), false,
 		func(cfg *model.Config) {
 			cfg.ServiceSettings.SiteURL = new("http://localhost:8065")
 		}, nil, t)

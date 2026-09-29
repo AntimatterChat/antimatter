@@ -2070,9 +2070,6 @@ func TestExecuteCommandReadOnly(t *testing.T) {
 	require.NoError(t, err)
 	CheckOKStatus(t, resp)
 
-	// Enable Enterprise features
-	th.App.Srv().SetLicense(model.NewTestLicense())
-
 	err = th.App.SetPhase2PermissionsMigrationStatus(true)
 	require.NoError(t, err)
 

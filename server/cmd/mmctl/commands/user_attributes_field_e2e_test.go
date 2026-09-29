@@ -64,7 +64,6 @@ func (s *MmctlE2ETestSuite) cleanCPAFields() {
 
 func (s *MmctlE2ETestSuite) TestCPAFieldListCmd() {
 	s.SetupEnterpriseTestHelper().InitBasic(s.T())
-	s.th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterprise))
 
 	s.RunForSystemAdminAndLocal("List CPA fields with no entries", func(c client.Client) {
 		printer.Clean()
@@ -127,7 +126,6 @@ func (s *MmctlE2ETestSuite) TestCPAFieldListCmd() {
 
 func (s *MmctlE2ETestSuite) TestCPAFieldCreateCmd() {
 	s.SetupEnterpriseTestHelper().InitBasic(s.T())
-	s.th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterprise))
 
 	s.RunForSystemAdminAndLocal("Create managed text field", func(c client.Client) {
 		printer.Clean()
@@ -209,7 +207,6 @@ func (s *MmctlE2ETestSuite) TestCPAFieldCreateCmd() {
 
 func (s *MmctlE2ETestSuite) TestCPAFieldEditCmd() {
 	s.SetupEnterpriseTestHelper().InitBasic(s.T())
-	s.th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterprise))
 
 	s.RunForSystemAdminAndLocal("Edit nonexistent field should fail", func(c client.Client) {
 		printer.Clean()
@@ -470,7 +467,6 @@ func (s *MmctlE2ETestSuite) TestCPAFieldEditCmd() {
 
 func (s *MmctlE2ETestSuite) TestCPAFieldDeleteCmd() {
 	s.SetupEnterpriseTestHelper().InitBasic(s.T())
-	s.th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterprise))
 
 	s.RunForSystemAdminAndLocal("Delete existing field", func(c client.Client) {
 		printer.Clean()
