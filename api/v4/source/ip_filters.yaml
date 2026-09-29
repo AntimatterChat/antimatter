@@ -3,74 +3,83 @@
       tags:
         - ip
         - filtering
-      summary: Get all IP filters
+      summary: Get IP filtering rules
       description: >
-        Retrieve a list of IP filters applied to the workspace
+        Retrieve the IP filtering rules. A client matching an enabled deny rule
+        is refused. If any allow rule is enabled, the client must also match one
+        of them. With no enabled rule, every client is let through.
+
+        ##### Permissions
+
+        Must have the `sysconsole_read_site_ip_filters` permission.
 
         __Minimum server version__: 9.1
-        __Note:__ This is intended for internal use and only applicable to Cloud workspaces
       operationId: GetIPFilters
       responses:
         "200":
-          description: IP Filters returned successfully
+          description: IP filtering rules returned successfully
           content:
             application/json:
               schema:
                 type: array
-                items: 
+                items:
                   $ref: "#/components/schemas/AllowedIPRange"
         "401":
           $ref: "#/components/responses/Unauthorized"
-        "500":
-          $ref: "#/components/responses/InternalServerError"
-        "501":
-          $ref: "#/components/responses/NotImplemented"
+        "403":
+          $ref: "#/components/responses/Forbidden"
     post:
       tags:
         - ip
         - filtering
-      summary: Get all IP filters
+      summary: Replace IP filtering rules
       description: >
-        Adjust IP Filters applied to the workspace
+        Replace the IP filtering rules with the given list. Rules that would
+        block the address the request comes from are refused, since the
+        requester could no longer undo them. Local mode is not subject to IP
+        filtering and can always be used to clear the rules.
+
+        ##### Permissions
+
+        Must have the `sysconsole_write_site_ip_filters` permission.
 
         __Minimum server version__: 9.1
-        __Note:__ This is intended for internal use and only applicable to Cloud workspaces
       operationId: ApplyIPFilters
       requestBody:
         content:
           application/json:
             schema:
               type: array
-              items: 
+              items:
                 $ref: "#/components/schemas/AllowedIPRange"
-        description: IP Filters to apply
+        description: The complete list of IP filtering rules
         required: true
       responses:
         "200":
-          description: IP Filters returned successfully
+          description: IP filtering rules applied successfully
           content:
             application/json:
               schema:
                 type: array
-                items: 
+                items:
                   $ref: "#/components/schemas/AllowedIPRange"
+        "400":
+          $ref: "#/components/responses/BadRequest"
         "401":
           $ref: "#/components/responses/Unauthorized"
-        "500":
-          $ref: "#/components/responses/InternalServerError"
-        "501":
-          $ref: "#/components/responses/NotImplemented"
+        "403":
+          $ref: "#/components/responses/Forbidden"
   /api/v4/ip_filtering/my_ip:
     get:
       tags:
         - ip
         - filtering
-      summary: Get all IP filters
+      summary: Get your IP address
       description: >
-        Retrieve your current IP address as seen by the workspace
+        Retrieve your current IP address as seen by the server, taking the
+        configured trusted proxy headers into account.
 
         __Minimum server version__: 9.1
-        __Note:__ This is intended for internal use and only applicable to Cloud workspaces
       operationId: MyIP
       responses:
         "200":
@@ -86,7 +95,3 @@
                     example: "192.168.0.1"
         "401":
           $ref: "#/components/responses/Unauthorized"
-        "500":
-          $ref: "#/components/responses/InternalServerError"
-        "501":
-          $ref: "#/components/responses/NotImplemented"
