@@ -8216,11 +8216,6 @@
     "description": "Error during a bulk data export when adding a file to the export zip archive fails."
   },
   {
-    "id": "app.file.cloud.get.app_error",
-    "translation": "Can not fetch the file as it is past the cloud plan's limit.",
-    "description": "Error when a file cannot be fetched because it exceeds the Mattermost Cloud plan's storage limit; end-user audience."
-  },
-  {
     "id": "app.file_info.delete_for_post_ids.app_error",
     "translation": "Failed to remove the requested files from database",
     "description": "Internal error when deleting file attachment records for a set of posts fails; log/admin-facing."
@@ -10224,11 +10219,6 @@
     "id": "app.post.analytics_user_counts_posts_by_day.app_error",
     "translation": "Unable to get user counts with posts.",
     "description": "Internal error when the statistics query counting active posting users per day fails; used by System Console analytics charts."
-  },
-  {
-    "id": "app.post.cloud.get.app_error",
-    "translation": "Can not fetch the post as it is past the cloud's plan limit.",
-    "description": "API error on Mattermost Cloud when a post (message) cannot be fetched because it is older than the message history limit of the workspace's Cloud plan."
   },
   {
     "id": "app.post.create_post.shared_dm_or_gm.app_error",
