@@ -341,12 +341,11 @@ export function setEditingPost(postId = '', refocusId = '', isRHS = false): Acti
         }
 
         const config = state.entities.general.config;
-        const license = state.entities.general.license;
         const userId = getCurrentUserId(state);
         const channel = getChannel(state, post.channel_id);
         const teamId = channel?.team_id || '';
 
-        const canEdit = canEditPost(state, config, license, teamId, post.channel_id, userId, post);
+        const canEdit = canEditPost(state, config, teamId, post.channel_id, userId, post);
 
         if (!canEdit) {
             return {data: false};

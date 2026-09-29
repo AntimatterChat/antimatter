@@ -128,20 +128,12 @@ export const Preferences = {
     CATEGORY_SYSTEM_NOTICE: 'system_notice',
     RECOMMENDED_NEXT_STEPS: 'recommended_next_steps',
     TEAMS_ORDER: 'teams_order',
-    CLOUD_UPGRADE_BANNER: 'cloud_upgrade_banner',
-    CLOUD_TRIAL_BANNER: 'cloud_trial_banner',
-    START_TRIAL_MODAL: 'start_trial_modal',
-    ADMIN_CLOUD_UPGRADE_PANEL: 'admin_cloud_upgrade_panel',
     CATEGORY_EMOJI: 'emoji',
     EMOJI_SKINTONE: 'emoji_skintone',
     CATEGORY_AGENTS: 'agents',
     SELECTED_AGENT: 'selected_agent',
     ONE_CLICK_REACTIONS_ENABLED: 'one_click_reactions_enabled',
     ONE_CLICK_REACTIONS_ENABLED_DEFAULT: 'true',
-    CLOUD_TRIAL_END_BANNER: 'cloud_trial_end_banner',
-    CLOUD_USER_EPHEMERAL_INFO: 'cloud_user_ephemeral_info',
-    CATEGORY_CLOUD_LIMITS: 'cloud_limits',
-    THREE_DAYS_LEFT_TRIAL_MODAL: 'three_days_left_trial_modal',
 
     // For one off things that have a special, attention-grabbing UI until you interact with them
     TOUCHED: 'touched',
@@ -157,39 +149,12 @@ export const Preferences = {
     ADVANCED_TEXT_EDITOR: 'advanced_text_editor',
 
     FORWARD_POST_VIEWED: 'forward_post_viewed',
-    HIDE_POST_FILE_UPGRADE_WARNING: 'hide_post_file_upgrade_warning',
-    SHOWN_LIMITS_REACHED_ON_LOGIN: 'shown_limits_reached_on_login',
     USE_CASE: 'use_case',
-    DELINQUENCY_MODAL_CONFIRMED: 'delinquency_modal_confirmed',
-    CONFIGURATION_BANNERS: 'configuration_banners',
-    NOTIFY_ADMIN_REVOKE_DOWNGRADED_WORKSPACE: 'admin_revoke_downgraded_instance',
-    OVERAGE_USERS_BANNER: ReduxPreferences.CATEGORY_OVERAGE_USERS_BANNER,
-    POST_HISTORY_LIMIT_BANNER: ReduxPreferences.CATEGORY_POST_HISTORY_LIMIT_BANNER,
-    USERS_LIMITS_BANNER: 'users_limits_banner',
-    SINGLE_CHANNEL_GUEST_LIMIT_BANNER: 'sc_guest_limit_banner',
-    TO_CLOUD_YEARLY_PLAN_NUDGE: 'to_cloud_yearly_plan_nudge',
-    TO_PAID_PLAN_NUDGE: 'to_paid_plan_nudge',
 };
 
 // For one off things that have a special, attention-grabbing UI until you interact with them
 export const Touched = {
     ADD_CHANNELS_CTA: 'add_channels_cta',
-};
-
-// Category for actions/interactions that will happen just once
-export const Unique = {
-    HAS_CLOUD_PURCHASE: 'has_cloud_purchase',
-    REQUEST_TRIAL_AFTER_SERVER_UPGRADE: 'request_trial_after_upgrade',
-    CLICKED_UPGRADE_AND_TRIAL_BTN: 'clicked_upgradeandtrial_btn',
-};
-
-export const TrialPeriodDays = {
-    TRIAL_30_DAYS: 30,
-    TRIAL_14_DAYS: 14,
-    TRIAL_WARNING_THRESHOLD: 7,
-    TRIAL_2_DAYS: 2,
-    TRIAL_1_DAY: 1,
-    TRIAL_0_DAYS: 0,
 };
 
 export const suitePluginIds = {
@@ -400,19 +365,9 @@ export const ModalIdentifiers = {
     EDIT_CATEGORY: 'edit_category',
     DELETE_CATEGORY: 'delete_category',
     SIDEBAR_WHATS_NEW_MODAL: 'sidebar_whats_new_modal',
-    UPGRADE_CLOUD_ACCOUNT: 'upgrade_cloud_account',
-    START_TRIAL_MODAL: 'start_trial_modal',
-    TRIAL_BENEFITS_MODAL: 'trial_benefits_modal',
-    PRICING_MODAL: 'pricing_modal',
-    LEARN_MORE_TRIAL_MODAL: 'learn_more_trial_modal',
-    ENTERPRISE_EDITION_LICENSE: 'enterprise_edition_license',
-    CONFIRM_NOTIFY_ADMIN: 'confirm_notify_admin',
     REMOVE_NEXT_STEPS_MODAL: 'remove_next_steps_modal',
     MORE_CHANNELS: 'more_channels',
     NEW_CHANNEL_MODAL: 'new_channel_modal',
-    CLOUD_PURCHASE: 'cloud_purchase',
-    SELF_HOSTED_PURCHASE: 'self_hosted_purchase',
-    CLOUD_DOWNGRADE_CHOOSE_TEAM: 'cloud_downgrade_choose_team',
     SUCCESS_MODAL: 'success_modal',
     ERROR_MODAL: 'error_modal',
     DND_CUSTOM_TIME_PICKER: 'dnd_custom_time_picker',
@@ -423,7 +378,6 @@ export const ModalIdentifiers = {
     JOIN_CHANNEL_PROMPT: 'join_channel_prompt',
     COLLAPSED_REPLY_THREADS_MODAL: 'collapsed_reply_threads_modal',
     NOTIFY_CONFIRM_MODAL: 'notify_confirm_modal',
-    CONFIRM_LICENSE_REMOVAL: 'confirm_license_removal',
     CONFIRM: 'confirm',
     USER_GROUPS: 'user_groups',
     USER_GROUPS_CREATE: 'user_groups_create',
@@ -439,41 +393,18 @@ export const ModalIdentifiers = {
     USERS_TO_BE_REMOVED: 'users_to_be_removed',
     DELETE_DRAFT: 'delete_draft_modal',
     SEND_DRAFT: 'send_draft_modal',
-    UPLOAD_LICENSE: 'upload_license',
-    CLOUD_LIMITS: 'cloud_limits',
-    THREE_DAYS_LEFT_TRIAL_MODAL: 'three_days_left_trial_modal',
-    REQUEST_BUSINESS_EMAIL_MODAL: 'request_business_email_modal',
-    FEATURE_RESTRICTED_MODAL: 'feature_restricted_modal',
     FORWARD_POST_MODAL: 'forward_post_modal',
     JOIN_PUBLIC_CHANNEL_MODAL: 'join_public_channel_modal',
-    CLOUD_INVOICE_PREVIEW: 'cloud_invoice_preview',
-    BILLING_HISTORY: 'billing_history',
     RESTORE_POST_MODAL: 'restore_post',
     INFO_TOAST: 'info_toast',
     MARK_ALL_THREADS_AS_READ: 'mark_all_threads_as_read_modal',
-    DELINQUENCY_MODAL_DOWNGRADE: 'delinquency_modal_downgrade',
-    CLOUD_LIMITS_DOWNGRADE: 'cloud_limits_downgrade',
     PERSIST_NOTIFICATION_CONFIRM_MODAL: 'persist_notification_confirm_modal',
-    AIR_GAPPED_SELF_HOSTED_PURCHASE: 'air_gapped_self_hosted_purchase',
-    DOWNGRADE_MODAL: 'downgrade_modal',
-    PURCHASE_IN_PROGRESS: 'purchase_in_progress',
-    DELETE_WORKSPACE: 'delete_workspace',
-    FEEDBACK: 'feedback',
-    DELETE_WORKSPACE_PROGRESS: 'delete_workspace_progress',
-    DELETE_WORKSPACE_RESULT: 'delete_workspace_result',
-    SCREENING_IN_PROGRESS: 'screening_in_progress',
-    CONFIRM_SWITCH_TO_YEARLY: 'confirm_switch_to_yearly',
-    EXPANSION_IN_PROGRESS: 'expansion_in_progress',
-    SELF_HOSTED_EXPANSION: 'self_hosted_expansion',
-    START_TRIAL_FORM_MODAL: 'start_trial_form_modal',
-    START_TRIAL_FORM_MODAL_RESULT: 'start_trial_form_modal_result',
     MOVE_THREAD_MODAL: 'move_thread_modal',
     CONVERT_GM_TO_CHANNEL: 'convert_gm_to_channel',
     IP_FILTERING_ADD_EDIT_MODAL: 'ip_filtering_add_edit_modal',
     IP_FILTERING_DELETE_CONFIRMATION_MODAL: 'ip_filtering_delete_confirmation_modal',
     IP_FILTERING_SAVE_CONFIRMATION_MODAL: 'ip_filtering_save_confirmation_modal',
     REACTION_LIMIT_REACHED: 'reaction_limit_reached',
-    AIR_GAPPED_CONTACT_SALES: 'air_gapped_contact_sales',
     MANAGE_ROLES_MODAL: 'manage_roles_modal',
     MANAGE_TEAMS_MODAL: 'manage_teams_modal',
     MANAGE_TOKENS_MODAL: 'manage_teams_modal',
@@ -485,7 +416,6 @@ export const ModalIdentifiers = {
     REVOKE_SESSIONS_MODAL: 'revoke_sessions_modal',
     CREATE_GROUP_SYNCABLES_MEMBERSHIP_MODAL: 'create_group_syncables_membership_modal',
     EXPORT_USER_DATA_MODAL: 'export_user_data_modal',
-    UPGRADE_EXPORT_DATA_MODAL: 'upgrade_export_data_modal',
     EXPORT_ERROR_MODAL: 'export_error_modal',
     CHANNEL_BOOKMARK_DELETE: 'channel_bookmark_delete',
     CHANNEL_BOOKMARK_CREATE: 'channel_bookmark_create',
@@ -551,59 +481,10 @@ export const CloudProducts = {
     ADVANCED: 'cloud-advanced',
 };
 
-export const CloudBillingTypes = {
-    INTERNAL: 'internal',
-    LICENSED: 'licensed',
-};
-
 export const SelfHostedProducts = {
     STARTER: 'starter',
     PROFESSIONAL: 'professional',
     ENTERPRISE: 'enterprise',
-};
-
-export const MattermostFeatures = {
-    GUEST_ACCOUNTS: 'mattermost.feature.guest_accounts',
-    CUSTOM_USER_GROUPS: 'mattermost.feature.custom_user_groups',
-    CREATE_MULTIPLE_TEAMS: 'mattermost.feature.create_multiple_teams',
-    START_CALL: 'mattermost.feature.start_call',
-    PLAYBOOKS_RETRO: 'mattermost.feature.playbooks_retro',
-    UNLIMITED_MESSAGES: 'mattermost.feature.unlimited_messages',
-    UNLIMITED_FILE_STORAGE: 'mattermost.feature.unlimited_file_storage',
-    ALL_PROFESSIONAL_FEATURES: 'mattermost.feature.all_professional',
-    ALL_ENTERPRISE_FEATURES: 'mattermost.feature.all_enterprise',
-    UPGRADE_DOWNGRADED_WORKSPACE: 'mattermost.feature.upgrade_downgraded_workspace',
-    PLUGIN_FEATURE: 'mattermost.feature.plugin',
-    HIGHLIGHT_WITHOUT_NOTIFICATION: 'mattermost.feature.highlight_without_notification',
-};
-
-export enum LicenseSkus {
-    E10 = 'E10',
-    E20 = 'E20',
-    Starter = 'starter',
-    Professional = 'professional',
-    Enterprise = 'enterprise',
-    EnterpriseAdvanced = 'advanced',
-    Entry = 'entry',
-}
-
-export function getLicenseTier(licenseSku: string): number {
-    switch (licenseSku) {
-    case LicenseSkus.Professional:
-        return 10;
-    case LicenseSkus.Enterprise:
-        return 20;
-    case LicenseSkus.Entry:
-    case LicenseSkus.EnterpriseAdvanced:
-        return 30;
-    default:
-        return 0;
-    }
-}
-
-export const CloudProductToSku = {
-    [CloudProducts.PROFESSIONAL]: LicenseSkus.Professional,
-    [CloudProducts.ENTERPRISE]: LicenseSkus.Enterprise,
 };
 
 export const A11yClassNames = {
@@ -680,12 +561,8 @@ export const TutorialSteps = {
     MENU_POPOVER: 3,
     PRODUCT_SWITCHER: 4,
     SETTINGS: 5,
-    START_TRIAL: 6,
     FINISHED: 999,
 };
-
-// note: add steps in same order as the keys in TutorialSteps above
-export const AdminTutorialSteps = ['START_TRIAL'];
 
 export const TopLevelProducts = {
     BOARDS: 'Boards',
@@ -717,19 +594,6 @@ export const Threads = {
     CHANGED_LAST_VIEWED_AT: 'changed_last_viewed_at',
     MANUALLY_UNREAD_THREAD: 'manually_unread_thread',
     CHANGED_LAST_UPDATE_AT: 'changed_last_update_at',
-};
-
-export const CloudBanners = {
-    HIDE: 'hide',
-    TRIAL: 'trial',
-    UPGRADE_FROM_TRIAL: 'upgrade_from_trial',
-    THREE_DAYS_LEFT_TRIAL_MODAL_DISMISSED: 'dismiss_3_days_left_trial_modal',
-    NUDGE_TO_CLOUD_YEARLY_PLAN_SNOOZED: 'nudge_to_cloud_yearly_plan_snoozed',
-    NUDGE_TO_PAID_PLAN_SNOOZED: 'nudge_to_paid_plan_snoozed',
-};
-
-export const ConfigurationBanners = {
-    LICENSE_EXPIRED: 'license_expired',
 };
 
 export const AdvancedTextEditor = {
@@ -861,7 +725,6 @@ export const ErrorPageTypes = {
     TEAM_NOT_FOUND: 'team_not_found',
     CHANNEL_NOT_FOUND: 'channel_not_found',
     POST_NOT_FOUND: 'post_not_found',
-    CLOUD_ARCHIVED: 'cloud_archived',
     MAGIC_LINK_ALREADY_LOGGED_IN: 'magic_link_already_logged_in',
 };
 
@@ -899,12 +762,8 @@ export const AnnouncementBarTypes = {
 export const AnnouncementBarMessages = {
     EMAIL_VERIFICATION_REQUIRED: 'announcement_bar.error.email_verification_required',
     EMAIL_VERIFIED: 'announcement_bar.notification.email_verified',
-    LICENSE_EXPIRED: 'announcement_bar.error.license_expired',
-    LICENSE_EXPIRING: 'announcement_bar.error.license_expiring',
-    LICENSE_PAST_GRACE: 'announcement_bar.error.past_grace',
     PREVIEW_MODE: 'announcement_bar.error.preview_mode',
     WEBSOCKET_PORT_ERROR: 'channel_loader.socketError',
-    TRIAL_LICENSE_EXPIRING: 'announcement_bar.error.trial_license_expiring',
 };
 
 // These messages correspond to AnnouncementBarMessages above
@@ -917,18 +776,6 @@ defineMessages({
         id: 'announcement_bar.notification.email_verified',
         defaultMessage: 'Email verified',
     },
-    licenseExpired: {
-        id: 'announcement_bar.error.license_expired',
-        defaultMessage: '{licenseSku} license is expired and some features may be disabled.',
-    },
-    licenseExpiring: {
-        id: 'announcement_bar.error.license_expiring',
-        defaultMessage: '{licenseSku} license expires on {date, date, long}.',
-    },
-    pastGrace: {
-        id: 'announcement_bar.error.past_grace',
-        defaultMessage: '{licenseSku} license is expired and some features may be disabled. Please contact your System Administrator for details.',
-    },
     previewMode: {
         id: 'announcement_bar.error.preview_mode',
         defaultMessage: 'Preview Mode: Email notifications have not been configured.',
@@ -936,10 +783,6 @@ defineMessages({
     socketError: {
         id: 'channel_loader.socketError',
         defaultMessage: 'Please check connection, Antimatter unreachable. If issue persists, ask administrator to [check WebSocket port](!https://docs.mattermost.com/install/troubleshooting.html#please-check-connection-mattermost-unreachable-if-issue-persists-ask-administrator-to-check-websocket-port).',
-    },
-    trialLicenseExpiring: {
-        id: 'announcement_bar.error.trial_license_expiring',
-        defaultMessage: 'There are {days} days left on your free trial.',
     },
 });
 
@@ -961,7 +804,6 @@ export const FileTypes = {
     PATCH: 'patch',
     SVG: 'svg',
     OTHER: 'other',
-    LICENSE_EXTENSION: '.mattermost-license',
 };
 
 export const HttpHeaders = {
@@ -1059,25 +901,8 @@ export const AboutLinks = {
 };
 
 export const CloudLinks = {
-    BILLING_DOCS: 'https://docs.mattermost.com/product-overview/cloud-subscriptions.html',
-    PRICING: 'https://mattermost.com/pl/pricing/',
-    PRORATED_PAYMENT: 'https://mattermost.com/pl/mattermost-cloud-prorate-documentation',
     DEPLOYMENT_OPTIONS: 'https://mattermost.com/deploy/',
     DOWNLOAD_UPDATE: 'https://mattermost.com/deploy/',
-    CLOUD_SIGNUP_PAGE: 'https://mattermost.com/sign-up/',
-    SELF_HOSTED_SIGNUP: 'https://customers.mattermost.com/signup',
-    DELINQUENCY_DOCS: 'https://docs.mattermost.com/about/cloud-subscriptions.html#failed-or-late-payments',
-    SELF_HOSTED_PRICING: 'https://mattermost.com/pl/pricing/#self-hosted',
-};
-
-export const HostedCustomerLinks = {
-    BILLING_DOCS: 'https://mattermost.com/pl/how-self-hosted-billing-works',
-    SELF_HOSTED_BILLING: 'https://mattermost.com/pl/self-hosted-billing',
-    TERMS_AND_CONDITIONS: 'https://mattermost.com/enterprise-edition-terms/',
-    SECURITY_UPDATES: 'https://mattermost.com/security-updates/',
-    DOWNLOAD: 'https://mattermost.com/download',
-    NEWSLETTER_UNSUBSCRIBE_LINK: 'https://forms.mattermost.com/UnsubscribePage.html',
-    PRIVACY: AboutLinks.PRIVACY_POLICY,
 };
 
 export const DocLinks = {
@@ -1101,7 +926,6 @@ export const DocLinks = {
     MULTI_FACTOR_AUTH: 'https://mattermost.com/pl/multi-factor-authentication',
     ONBOARD_ADVANCED_PERMISSIONS: 'https://mattermost.com/pl/advanced-permissions',
     ONBOARD_LDAP: 'https://mattermost.com/pl/setup-ldap',
-    SELF_HOSTED_BILLING: HostedCustomerLinks.SELF_HOSTED_BILLING,
     SESSION_LENGTHS: 'https://mattermost.com/pl/configure-session-lengths',
     SETUP_IMAGE_PROXY: 'https://mattermost.com/pl/setup-image-proxy',
     SETUP_LDAP: 'https://mattermost.com/pl/setup-ldap',
@@ -1111,7 +935,6 @@ export const DocLinks = {
     SHARE_LINKS_TO_MESSAGES: 'https://mattermost.com/pl/share-links-to-messages',
     SITE_URL: 'https://mattermost.com/pl/configure-site-url',
     SSL_CERTIFICATE: 'https://mattermost.com/pl/setup-ssl-client-certificate',
-    TRUE_UP_REVIEW: 'https://mattermost.com/pl/true-up-documentation',
     TRUSTED_CONNECTION: 'https://mattermost.com/pl/default-allow-untrusted-internal-connections',
     UPGRADE_SERVER: 'https://mattermost.com/pl/upgrade-mattermost',
 };
@@ -1132,24 +955,7 @@ export const DeveloperLinks = {
     SETUP_OUTGOING_WEBHOOKS: 'https://mattermost.com/pl/setup-outgoing-webhooks',
 };
 
-export const LicenseLinks = {
-    CONTACT_SALES: 'https://mattermost.com/contact-sales/',
-    ENTRY_LIMITS_INFO: 'https://mattermost.com/pl/mattermost-entry-limits',
-    TRIAL_INFO_LINK: 'https://mattermost.com/trial',
-    EMBARGOED_COUNTRIES: 'https://mattermost.com/pl/limitations-for-embargoed-countries',
-    SOFTWARE_SERVICES_LICENSE_AGREEMENT: 'https://mattermost.com/pl/software-and-services-license-agreement',
-    SOFTWARE_SERVICES_LICENSE_AGREEMENT_TEXT: 'Software Services and License Agreement',
-    UNSUPPORTED: 'https://mattermost.com/pricing/',
-    UNSUPPORTED_UPGRADE_LINK: 'https://docs.mattermost.com/administration-guide/upgrade/enterprise-install-upgrade.html#upgrading-to-enterprise-edition-from-mattermost-team-edition',
-};
-
 export const MattermostLink = 'https://mattermost.com/';
-
-export const BillingSchemes = {
-    FLAT_FEE: 'flat_fee',
-    PER_SEAT: 'per_seat',
-    SALES_SERVE: 'sales_serve',
-};
 
 export const RecurringIntervals = {
     YEAR: 'year',
@@ -1475,7 +1281,6 @@ export const Constants = {
     ActionTypes,
     UserStatuses,
     TutorialSteps,
-    AdminTutorialSteps,
     PostTypes,
     ErrorPageTypes,
     AnnouncementBarTypes,
@@ -1592,7 +1397,6 @@ export const Constants = {
     OFFICE365_SERVICE: 'office365',
     OAUTH_SERVICES: ['gitlab', 'google', 'office365', 'openid'],
     OPENID_SERVICE: 'openid',
-    OPENID_SERVICE_FEATURE_DISCOVERY: 'openid_feature_discovery',
     OPENID_SCOPES: 'profile openid email',
     EMAIL_SERVICE: 'email',
     LDAP_SERVICE: 'ldap',
@@ -2092,12 +1896,9 @@ export const Constants = {
     ACCEPT_EMOJI_IMAGE: '.jpeg,.jpg,.png,.gif',
     THREADS_LOADING_INDICATOR_ITEM_ID: 'threads_loading_indicator_item_id',
     THREADS_NO_RESULTS_ITEM_ID: 'threads_no_results_item_id',
-    TRIAL_MODAL_AUTO_SHOWN: 'trial_modal_auto_shown',
     DEFAULT_SITE_URL: 'http://localhost:8065',
     CHANNEL_HEADER_BUTTON_DISABLE_TIMEOUT: 1000,
     FIRST_ADMIN_ROLE: 'first_admin',
-    MAX_PURCHASE_SEATS: 1000000,
-    MIN_PURCHASE_SEATS: 10,
 };
 
 export const ValidationErrors = {
@@ -2116,15 +1917,12 @@ export const ConsolePages = {
     DATA_RETENTION: '/admin_console/compliance/data_retention_settings',
     ELASTICSEARCH: '/admin_console/environment/elasticsearch',
     GUEST_ACCOUNTS: '/admin_console/authentication/guest_access',
-    LICENSE: '/admin_console/about/license',
     SAML: '/admin_console/authentication/saml',
     FILE_STORAGE: '/admin_console/environment/file_storage',
     SESSION_LENGTHS: '/admin_console/environment/session_lengths',
     WEB_SERVER: '/admin_console/environment/web_server',
     PUSH_NOTIFICATION_CENTER: '/admin_console/environment/push_notification_server',
     SMTP: '/admin_console/environment/smtp',
-    PAYMENT_INFO: '/admin_console/billing/payment_info',
-    BILLING_HISTORY: '/admin_console/billing/billing_history',
 };
 
 export const WindowSizes = {

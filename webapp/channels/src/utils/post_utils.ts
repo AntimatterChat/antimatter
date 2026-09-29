@@ -8,7 +8,7 @@ import {useSelector} from 'react-redux';
 
 import {isMobile} from '@mattermost/shared/utils/user_agent';
 import type {Channel} from '@mattermost/types/channels';
-import type {ClientConfig, ClientLicense} from '@mattermost/types/config';
+import type {ClientConfig} from '@mattermost/types/config';
 import type {ServerError} from '@mattermost/types/errors';
 import type {Group} from '@mattermost/types/groups';
 import {isMessageAttachmentArray} from '@mattermost/types/message_attachments';
@@ -130,12 +130,11 @@ export function canDeletePost(state: GlobalState, post: Post, channel?: Channel)
 export function canEditPost(
     state: GlobalState,
     post: Post,
-    license?: ClientLicense,
     config?: Partial<ClientConfig>,
     channel?: Channel,
     userId?: string,
 ): boolean {
-    return canEditPostRedux(state, config, license, channel?.team_id ?? '', channel?.id ?? '', userId ?? '', post);
+    return canEditPostRedux(state, config, channel?.team_id ?? '', channel?.id ?? '', userId ?? '', post);
 }
 
 export function shouldShowDotMenu(state: GlobalState, post: Post, channel: Channel): boolean {

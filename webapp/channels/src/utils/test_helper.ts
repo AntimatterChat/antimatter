@@ -6,7 +6,6 @@ import {CategorySorting} from '@mattermost/types/channel_categories';
 import type {ChannelCategory} from '@mattermost/types/channel_categories';
 import type {Channel, ChannelMembership, ChannelNotifyProps, ChannelWithTeamData} from '@mattermost/types/channels';
 import type {Invoice, Product, Subscription, CloudCustomer} from '@mattermost/types/cloud';
-import type {ClientLicense} from '@mattermost/types/config';
 import type {SystemEmoji, CustomEmoji} from '@mattermost/types/emojis';
 import type {FileInfo} from '@mattermost/types/files';
 import type {Group} from '@mattermost/types/groups';
@@ -478,18 +477,6 @@ export class TestHelper {
             short_name: '',
             short_names: [],
             unified: '',
-            ...override,
-        };
-    }
-    public static getLicenseMock(override: ClientLicense = {}): ClientLicense {
-        return {
-            ...override,
-        };
-    }
-    public static getCloudLicenseMock(override: ClientLicense = {}): ClientLicense {
-        return {
-            ...this.getLicenseMock(override),
-            Cloud: 'true',
             ...override,
         };
     }

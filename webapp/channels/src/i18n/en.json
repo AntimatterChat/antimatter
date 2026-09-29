@@ -15655,18 +15655,6 @@
     "defaultMessage": "Check your email inbox to verify the address.",
     "description": "Text in the announcement bar at the top of the app prompting the user to verify their email address."
   },
-  "announcement_bar.error.license_expired": {
-    "defaultMessage": "{licenseSku} license is expired and some features may be disabled.",
-    "description": "Announcement banner for admins when the license has expired; {licenseSku} is the license edition name (e.g. Enterprise)."
-  },
-  "announcement_bar.error.license_expiring": {
-    "defaultMessage": "{licenseSku} license expires on {date, date, long}.",
-    "description": "Announcement banner for admins when the license is close to expiry; {licenseSku} is the license edition, {date} the formatted expiry date."
-  },
-  "announcement_bar.error.past_grace": {
-    "defaultMessage": "{licenseSku} license is expired and some features may be disabled. Please contact your System Administrator for details.",
-    "description": "Announcement banner shown to all users when the license expired past its grace period; {licenseSku} is the license edition name."
-  },
   "announcement_bar.error.preview_mode": {
     "defaultMessage": "Preview Mode: Email notifications have not been configured.",
     "description": "Announcement banner shown when the server runs in preview mode without SMTP/email notifications configured."
@@ -15678,10 +15666,6 @@
   "announcement_bar.error.site_url.full": {
     "defaultMessage": "Please configure your <linkSite>site URL</linkSite> on the <linkConsole>System Console</linkConsole>.",
     "description": "Announcement banner asking the admin to set the site URL; <linkSite> wraps 'site URL' (documentation link) and <linkConsole> wraps 'System Console' (settings link)."
-  },
-  "announcement_bar.error.trial_license_expiring": {
-    "defaultMessage": "There are {days} days left on your free trial.",
-    "description": "Announcement banner during a trial license; {days} is the number of days left in the trial."
   },
   "announcement_bar.notification.email_verified": {
     "defaultMessage": "Email verified",

@@ -1,7 +1,6 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 
-import cloneDeep from 'lodash/cloneDeep';
 import type {IntlShape} from 'react-intl';
 import type {AnyAction} from 'redux';
 
@@ -11,7 +10,7 @@ import type {ChannelType} from '@mattermost/types/channels';
 import type {Post} from '@mattermost/types/posts';
 import type {DeepPartial} from '@mattermost/types/utilities';
 
-import {ChannelTypes, CloudTypes, JobTypes, PostTypes, RenderPermissionTypes, TeamTypes} from 'mattermost-redux/action_types';
+import {ChannelTypes, JobTypes, PostTypes, RenderPermissionTypes, TeamTypes} from 'mattermost-redux/action_types';
 import {fetchMyCategories} from 'mattermost-redux/actions/channel_categories';
 import {fetchAllMyTeamsChannels, getChannelMember} from 'mattermost-redux/actions/channels';
 import {getCustomProfileAttributeFields} from 'mattermost-redux/actions/general';
@@ -64,7 +63,6 @@ import {
     reconnect,
     handleAppsPluginEnabled,
     handleAppsPluginDisabled,
-    handleCloudSubscriptionChanged,
     handleGroupAddedMemberEvent,
     handleStatusChangedEvent,
     handleCustomAttributeValuesUpdated,
@@ -476,22 +474,11 @@ describe('handlePostUnreadEvent', () => {
 describe('handleUserAddedEvent', () => {
     const currentChannelId = mockState.entities.channels.currentChannelId;
 
-    // getLicense() must resolve to an object for handleUserAddedEvent, so add one
-    // to a local copy of the state rather than mutating the shared mockState.
-    const stateWithLicense = {
-        ...mockState,
-        entities: {
-            ...mockState.entities,
-            general: {
-                ...mockState.entities.general,
-                license: {},
-            },
-        },
-    };
+    const baseState = mockState;
 
     // A state where the added user already has both a loaded profile and a loaded
     // ChannelMembership in the current channel, so nothing needs to be fetched.
-    const stateWithLoadedMember = mergeObjects(stateWithLicense, {
+    const stateWithLoadedMember = mergeObjects(baseState, {
         entities: {
             users: {
                 profiles: {
@@ -509,7 +496,7 @@ describe('handleUserAddedEvent', () => {
     });
 
     test('should load both the profile and the channel membership for a newly synced remote member', async () => {
-        const testStore = configureStore(stateWithLicense);
+        const testStore = configureStore(baseState);
         const msg = wsMessage<WebSocketMessages.UserAddedToChannel>({
             data: {
                 user_id: 'remoteUser',
@@ -533,7 +520,7 @@ describe('handleUserAddedEvent', () => {
         // was silently dropped from the participant list, because the member list
         // requires the membership relation. The membership must be fetched even when
         // the profile fetch is skipped.
-        const testStore = configureStore(stateWithLicense);
+        const testStore = configureStore(baseState);
         const msg = wsMessage<WebSocketMessages.UserAddedToChannel>({
             data: {
                 user_id: 'user',
@@ -567,7 +554,7 @@ describe('handleUserAddedEvent', () => {
     });
 
     test('should not load the profile or membership when the channel is not the current channel', async () => {
-        const testStore = configureStore(stateWithLicense);
+        const testStore = configureStore(baseState);
         const msg = wsMessage<WebSocketMessages.UserAddedToChannel>({
             data: {
                 user_id: 'remoteUser',
@@ -952,52 +939,8 @@ describe('reconnect', () => {
     });
 
     test('should reload custom profile attribute fields on reconnect', () => {
-        const clonedMockState = cloneDeep(mockState);
-
-        mockState = mergeObjects(
-            mockState,
-            {
-                entities: {
-                    general: {
-                        license: {
-                            SkuShortName: 'enterprise',
-                        },
-                    },
-                },
-            },
-        );
-
         reconnect();
         expect(getCustomProfileAttributeFields).toHaveBeenCalled();
-
-        // Restore mock state
-        mockState = clonedMockState;
-    });
-
-    test.each([
-        {SkuShortName: 'starter'},
-        {SkuShortName: 'professional'},
-    ])('should not reload custom profile attribute fields on reconnect without an Enterprise license', ({SkuShortName}) => {
-        const clonedMockState = cloneDeep(mockState);
-
-        mockState = mergeObjects(
-            mockState,
-            {
-                entities: {
-                    general: {
-                        license: {
-                            SkuShortName,
-                        },
-                    },
-                },
-            },
-        );
-
-        reconnect();
-        expect(getCustomProfileAttributeFields).not.toHaveBeenCalled();
-
-        // Restore mock state
-        mockState = clonedMockState;
     });
 });
 
@@ -1227,140 +1170,6 @@ describe('handleTeamAccessControlUpdatedEvent', () => {
         testStore.dispatch(handleTeamAccessControlUpdatedEvent(msg));
 
         expect(testStore.getActions()).toEqual([]);
-    });
-});
-
-describe('handleCloudSubscriptionChanged', () => {
-    const baseSubscription = {
-        id: 'basesub',
-        customer_id: '',
-        product_id: '',
-        add_ons: [],
-        start_at: 0,
-        end_at: 0,
-        create_at: 0,
-        seats: 0,
-        trial_end_at: 0,
-        is_free_trial: '',
-    };
-
-    test('when not cloud, does nothing', () => {
-        const initialState = {
-            entities: {
-                cloud: {
-                    limits: {
-                        messages: {
-                            history: 10000,
-                        },
-                        integrations: {
-                            enabled: 10,
-                        },
-                    },
-                },
-                general: {
-                    license: {
-                        Cloud: 'false',
-                    },
-                },
-            },
-        } as unknown as GlobalState;
-        const newLimits = {
-            messages: {
-                history: 10001,
-            },
-        };
-
-        const newSubscription = {
-            ...baseSubscription,
-            id: 'newsub',
-        };
-        const msg = wsMessage<WebSocketMessages.CloudSubscriptionChanged>({
-            event: WebSocketEvents.CloudSubscriptionChanged,
-            data: {
-                limits: newLimits,
-                subscription: newSubscription,
-            },
-        });
-
-        const testStore = configureStore(initialState);
-        testStore.dispatch(handleCloudSubscriptionChanged(msg));
-
-        expect(testStore.getActions()).toEqual([]);
-    });
-
-    test('when on cloud, entirely replaces cloud limits in store', () => {
-        const initialState = {
-            entities: {
-                cloud: {
-                    limits: {
-                        messages: {
-                            history: 10000,
-                        },
-                        integrations: {
-                            enabled: 10,
-                        },
-                    },
-                },
-                general: {
-                    license: {
-                        Cloud: 'true',
-                    },
-                },
-            },
-        } as unknown as GlobalState;
-        const newLimits = {
-            messages: {
-                history: 10001,
-            },
-        };
-        const msg = wsMessage<WebSocketMessages.CloudSubscriptionChanged>({
-            event: WebSocketEvents.CloudSubscriptionChanged,
-            data: {
-                limits: newLimits,
-            },
-        });
-
-        const testStore = configureStore(initialState);
-        testStore.dispatch(handleCloudSubscriptionChanged(msg));
-
-        expect(testStore.getActions()).toContainEqual({
-            type: CloudTypes.RECEIVED_CLOUD_LIMITS,
-            data: newLimits,
-        });
-    });
-
-    test('when on cloud, entirely replaces cloud limits in store', () => {
-        const initialState = {
-            entities: {
-                cloud: {
-                    subscription: {...baseSubscription},
-                },
-                general: {
-                    license: {
-                        Cloud: 'true',
-                    },
-                },
-            },
-        };
-        const newSubscription = {
-            ...baseSubscription,
-            id: 'newsub',
-        };
-
-        const msg = wsMessage<WebSocketMessages.CloudSubscriptionChanged>({
-            event: WebSocketEvents.CloudSubscriptionChanged,
-            data: {
-                subscription: newSubscription,
-            },
-        });
-
-        const testStore = configureStore(initialState);
-        testStore.dispatch(handleCloudSubscriptionChanged(msg));
-
-        expect(testStore.getActions()).toContainEqual({
-            type: CloudTypes.RECEIVED_CLOUD_SUBSCRIPTION,
-            data: newSubscription,
-        });
     });
 });
 

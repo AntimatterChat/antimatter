@@ -79,7 +79,6 @@ describe('actions/new_post', () => {
                 },
             },
             general: {
-                license: {IsLicensed: 'false'},
                 config: {
                     TeammateNameDisplay: 'username',
                 },

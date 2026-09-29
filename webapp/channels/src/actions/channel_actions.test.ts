@@ -94,7 +94,6 @@ const initialState = {
             },
         },
         general: {
-            license: {IsLicensed: 'false'},
             serverVersion: '5.4.0',
             config: {PostEditTimeLimit: '-1'},
         },

@@ -7,9 +7,7 @@ import type {Post, PostMetadata} from '@mattermost/types/posts';
 import {logError} from 'mattermost-redux/actions/errors';
 import * as PostActions from 'mattermost-redux/actions/posts';
 import {Permissions} from 'mattermost-redux/constants';
-import {getLicense} from 'mattermost-redux/selectors/entities/general';
 import {getAssociatedGroupsForReferenceByMention} from 'mattermost-redux/selectors/entities/groups';
-import {isCustomGroupsEnabled} from 'mattermost-redux/selectors/entities/preferences';
 import {haveIChannelPermission, haveICurrentChannelPermission} from 'mattermost-redux/selectors/entities/roles';
 import {getCurrentTeam} from 'mattermost-redux/selectors/entities/teams';
 import {getCurrentUserId} from 'mattermost-redux/selectors/entities/users';
@@ -53,12 +51,9 @@ export function forwardPost(post: Post, channel: Channel, message = ''): ActionF
         const relativePermaLink = getPermalinkURL(state, currentTeam.id, post.id);
         const permaLink = `${getSiteURL()}${relativePermaLink}`;
 
-        const license = getLicense(state);
-        const isLDAPEnabled = license?.IsLicensed === 'true' && license?.LDAPGroups === 'true';
-        const useLDAPGroupMentions = isLDAPEnabled && haveICurrentChannelPermission(state, Permissions.USE_GROUP_MENTIONS);
+        const useGroupMentions = haveICurrentChannelPermission(state, Permissions.USE_GROUP_MENTIONS);
         const useChannelMentions = haveIChannelPermission(state, channel.team_id, channelId, Permissions.USE_CHANNEL_MENTIONS);
-        const useCustomGroupMentions = isCustomGroupsEnabled(state) && haveICurrentChannelPermission(state, Permissions.USE_GROUP_MENTIONS);
-        const groupsWithAllowReference = useLDAPGroupMentions || useCustomGroupMentions ? getAssociatedGroupsForReferenceByMention(state, currentTeam.id, channelId) : null;
+        const groupsWithAllowReference = useGroupMentions ? getAssociatedGroupsForReferenceByMention(state, currentTeam.id, channelId) : null;
 
         let newPost = {} as Post;
 
@@ -78,7 +73,7 @@ export function forwardPost(post: Post, channel: Channel, message = ''): ActionF
             newPost.props.mentionHighlightDisabled = true;
         }
 
-        if (!useLDAPGroupMentions && !useCustomGroupMentions && groupsMentionedInText(newPost.message, groupsWithAllowReference)) {
+        if (!useGroupMentions && groupsMentionedInText(newPost.message, groupsWithAllowReference)) {
             newPost.props.disable_group_highlight = true;
         }
 
