@@ -224,62 +224,48 @@ func TestIsAuditLoggingActive(t *testing.T) {
 	malformedJSON := json.RawMessage(`{not valid json`)
 
 	tests := []struct {
-		name                 string
-		fileEnabled          bool
-		fileName             string
-		advancedLoggingJSON  json.RawMessage
-		allowAdvancedLogging bool
-		expected             bool
+		name                string
+		fileEnabled         bool
+		fileName            string
+		advancedLoggingJSON json.RawMessage
+		expected            bool
 	}{
 		{
-			name:                 "A - file audit enabled (license independent)",
-			fileEnabled:          true,
-			fileName:             "audit.log",
-			allowAdvancedLogging: false,
-			expected:             true,
+			name:        "A - file audit enabled",
+			fileEnabled: true,
+			fileName:    "audit.log",
+			expected:    true,
 		},
 		{
-			name:                 "B - advanced audit target, licensed",
-			fileEnabled:          false,
-			advancedLoggingJSON:  auditTargetJSON,
-			allowAdvancedLogging: true,
-			expected:             true,
+			name:                "B - advanced audit target",
+			fileEnabled:         false,
+			advancedLoggingJSON: auditTargetJSON,
+			expected:            true,
 		},
 		{
-			name:                 "B - advanced audit target, unlicensed",
-			fileEnabled:          false,
-			advancedLoggingJSON:  auditTargetJSON,
-			allowAdvancedLogging: false,
-			expected:             false,
+			name:                "C - valid advanced config, no audit level",
+			fileEnabled:         false,
+			advancedLoggingJSON: stdTargetJSON,
+			expected:            false,
 		},
 		{
-			name:                 "C - valid advanced config, no audit level",
-			fileEnabled:          false,
-			advancedLoggingJSON:  stdTargetJSON,
-			allowAdvancedLogging: true,
-			expected:             false,
+			name:        "D - nothing configured",
+			fileEnabled: false,
+			expected:    false,
 		},
 		{
-			name:                 "D - nothing configured",
-			fileEnabled:          false,
-			allowAdvancedLogging: true,
-			expected:             false,
-		},
-		{
-			name:                 "malformed advanced JSON",
-			fileEnabled:          false,
-			advancedLoggingJSON:  malformedJSON,
-			allowAdvancedLogging: true,
-			expected:             false,
+			name:                "malformed advanced JSON",
+			fileEnabled:         false,
+			advancedLoggingJSON: malformedJSON,
+			expected:            false,
 		},
 		{
 			// audit-delivery is in MLvlAuditAll but not in the basic audit file target, so
 			// a delivery-only config is not general audit logging.
-			name:                 "advanced target bound only to audit-delivery",
-			fileEnabled:          false,
-			advancedLoggingJSON:  deliveryTargetJSON,
-			allowAdvancedLogging: true,
-			expected:             false,
+			name:                "advanced target bound only to audit-delivery",
+			fileEnabled:         false,
+			advancedLoggingJSON: deliveryTargetJSON,
+			expected:            false,
 		},
 	}
 
@@ -291,7 +277,7 @@ func TestIsAuditLoggingActive(t *testing.T) {
 			*auditSettings.FileName = tc.fileName
 			auditSettings.AdvancedLoggingJSON = tc.advancedLoggingJSON
 
-			assert.Equal(t, tc.expected, IsAuditLoggingActive(auditSettings, tc.allowAdvancedLogging))
+			assert.Equal(t, tc.expected, IsAuditLoggingActive(auditSettings))
 		})
 	}
 }
@@ -301,75 +287,59 @@ func TestIsAuditLevelActive(t *testing.T) {
 	malformedJSON := json.RawMessage(`{not valid json`)
 
 	tests := []struct {
-		name                 string
-		level                mlog.Level
-		fileEnabled          bool
-		advancedLoggingJSON  json.RawMessage
-		allowAdvancedLogging bool
-		expected             bool
+		name                string
+		level               mlog.Level
+		fileEnabled         bool
+		advancedLoggingJSON json.RawMessage
+		expected            bool
 	}{
 		{
-			name:                 "file audit covers audit-api",
-			level:                mlog.LvlAuditAPI,
-			fileEnabled:          true,
-			allowAdvancedLogging: false,
-			expected:             true,
+			name:        "file audit covers audit-api",
+			level:       mlog.LvlAuditAPI,
+			fileEnabled: true,
+			expected:    true,
 		},
 		{
 			// The whole point of the helper: FileEnabled alone must not make
 			// audit-delivery active, because _defAudit is not bound to it.
-			name:                 "file audit does not cover audit-delivery",
-			level:                mlog.LvlAuditDelivery,
-			fileEnabled:          true,
-			allowAdvancedLogging: false,
-			expected:             false,
+			name:        "file audit does not cover audit-delivery",
+			level:       mlog.LvlAuditDelivery,
+			fileEnabled: true,
+			expected:    false,
 		},
 		{
-			name:                 "advanced delivery target, licensed",
-			level:                mlog.LvlAuditDelivery,
-			fileEnabled:          false,
-			advancedLoggingJSON:  deliveryTargetJSON,
-			allowAdvancedLogging: true,
-			expected:             true,
+			name:                "advanced delivery target",
+			level:               mlog.LvlAuditDelivery,
+			fileEnabled:         false,
+			advancedLoggingJSON: deliveryTargetJSON,
+			expected:            true,
 		},
 		{
-			name:                 "advanced delivery target, unlicensed",
-			level:                mlog.LvlAuditDelivery,
-			fileEnabled:          false,
-			advancedLoggingJSON:  deliveryTargetJSON,
-			allowAdvancedLogging: false,
-			expected:             false,
+			name:                "advanced target for a different audit level",
+			level:               mlog.LvlAuditDelivery,
+			fileEnabled:         false,
+			advancedLoggingJSON: auditTargetJSON,
+			expected:            false,
 		},
 		{
-			name:                 "advanced target for a different audit level",
-			level:                mlog.LvlAuditDelivery,
-			fileEnabled:          false,
-			advancedLoggingJSON:  auditTargetJSON,
-			allowAdvancedLogging: true,
-			expected:             false,
+			name:                "file audit plus advanced delivery target",
+			level:               mlog.LvlAuditDelivery,
+			fileEnabled:         true,
+			advancedLoggingJSON: deliveryTargetJSON,
+			expected:            true,
 		},
 		{
-			name:                 "file audit plus advanced delivery target",
-			level:                mlog.LvlAuditDelivery,
-			fileEnabled:          true,
-			advancedLoggingJSON:  deliveryTargetJSON,
-			allowAdvancedLogging: true,
-			expected:             true,
+			name:        "nothing configured",
+			level:       mlog.LvlAuditDelivery,
+			fileEnabled: false,
+			expected:    false,
 		},
 		{
-			name:                 "nothing configured",
-			level:                mlog.LvlAuditDelivery,
-			fileEnabled:          false,
-			allowAdvancedLogging: true,
-			expected:             false,
-		},
-		{
-			name:                 "malformed advanced JSON",
-			level:                mlog.LvlAuditDelivery,
-			fileEnabled:          false,
-			advancedLoggingJSON:  malformedJSON,
-			allowAdvancedLogging: true,
-			expected:             false,
+			name:                "malformed advanced JSON",
+			level:               mlog.LvlAuditDelivery,
+			fileEnabled:         false,
+			advancedLoggingJSON: malformedJSON,
+			expected:            false,
 		},
 	}
 
@@ -381,7 +351,7 @@ func TestIsAuditLevelActive(t *testing.T) {
 			*auditSettings.FileName = "audit.log"
 			auditSettings.AdvancedLoggingJSON = tc.advancedLoggingJSON
 
-			assert.Equal(t, tc.expected, IsAuditLevelActive(auditSettings, tc.allowAdvancedLogging, tc.level))
+			assert.Equal(t, tc.expected, IsAuditLevelActive(auditSettings, tc.level))
 		})
 	}
 }

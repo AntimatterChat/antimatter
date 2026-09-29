@@ -120,11 +120,6 @@
     "description": "API error when acknowledging a message in an archived channel; 'acknowledgment' is the priority-post confirmation feature."
   },
   {
-    "id": "api.admin.add_certificate.app_error",
-    "translation": "Failed to add certificate.",
-    "description": "API error in the System Console when uploading a certificate file (e.g. for audit log mutual TLS) fails; admin-facing."
-  },
-  {
     "id": "api.admin.add_certificate.array.app_error",
     "translation": "No file under 'certificate' in request.",
     "description": "Admin API error uploading a certificate when the 'certificate' form field contains no file; 'certificate' is a literal form field name."

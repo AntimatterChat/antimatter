@@ -549,20 +549,17 @@ func NewServer(options ...Option) (*Server, error) {
 	mlog.Info("Printing current working", mlog.String("directory", pwd))
 	mlog.Info("Loaded config", mlog.String("source", s.platform.DescribeConfig()))
 
-	license := s.License()
-	allowAdvancedLogging := license != nil && *license.Features.AdvancedLogging
-
 	if s.Audit == nil {
 		s.Audit = &audit.Audit{}
 		s.Audit.Init(audit.DefMaxQueueSize)
-		if err = s.configureAudit(s.Audit, allowAdvancedLogging); err != nil {
+		if err = s.configureAudit(s.Audit); err != nil {
 			mlog.Error("Error configuring audit", mlog.Err(err))
 		}
 	}
 
 	if cfg := s.platform.Config(); cfg.AccessControlSettings.EnableAccessControlAuditLogging != nil &&
 		*cfg.AccessControlSettings.EnableAccessControlAuditLogging &&
-		!config.IsAuditLoggingActive(cfg.ExperimentalAuditSettings, allowAdvancedLogging) {
+		!config.IsAuditLoggingActive(cfg.ExperimentalAuditSettings) {
 		mlog.Warn("AccessControlSettings.EnableAccessControlAuditLogging is enabled but no active audit log target is configured; ABAC policy-decision audit logging will have no effect. Enable ExperimentalAuditSettings.FileEnabled or configure an advanced audit logging target bound to an audit level.")
 	}
 
@@ -574,22 +571,12 @@ func NewServer(options ...Option) (*Server, error) {
 		s.warnIfDeliveryAuditTargetMissing(newCfg)
 	})
 
-	s.platform.RemoveUnlicensedLogTargets(license)
 	s.platform.EnableLoggingMetrics()
 
-	s.loggerLicenseListenerId = s.AddLicenseListener(func(oldLicense, newLicense *model.License) {
-		s.platform.RemoveUnlicensedLogTargets(newLicense)
-		s.platform.EnableLoggingMetrics()
-		s.warnIfDeliveryAuditTargetMissing(s.platform.Config())
-	})
-
-	// Keep the push notification server in sync with the license's HPNS entitlement, and let a
-	// newly-elected cluster leader repair any transition missed while another node was leader.
-	s.pushNotificationServerLicenseListenerId = s.AddLicenseListener(func(oldLicense, newLicense *model.License) {
-		s.syncPushNotificationServerWithLicense()
-	})
+	// Move push off the unsupported Mattermost-hosted push notification service, and let a
+	// newly-elected cluster leader do so if this node was not the leader at startup.
 	s.pushNotificationServerClusterLeaderListenerId = s.AddClusterLeaderChangedListener(func() {
-		s.syncPushNotificationServerWithLicense()
+		s.revertHostedPushNotificationServer()
 	})
 
 	// if enabled - perform initial product notices fetch
@@ -1057,7 +1044,7 @@ func (s *Server) Start() error {
 		}
 	}
 
-	s.syncPushNotificationServerWithLicense()
+	s.revertHostedPushNotificationServer()
 
 	s.checkPushNotificationServerURL()
 

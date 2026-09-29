@@ -4,7 +4,6 @@
 package platform
 
 import (
-	"context"
 	"encoding/json"
 	"io"
 	"net/http"
@@ -83,23 +82,6 @@ func (ps *PlatformService) EnableLoggingMetrics() {
 	}
 
 	mlog.Debug("Logging metrics enabled")
-}
-
-// RemoveUnlicensedLogTargets removes any unlicensed log target types.
-func (ps *PlatformService) RemoveUnlicensedLogTargets(license *model.License) {
-	if license != nil && *license.Features.AdvancedLogging {
-		// advanced logging enabled via license; no need to remove any targets
-		return
-	}
-
-	timeoutCtx, cancelCtx := context.WithTimeout(context.Background(), time.Second*10)
-	defer cancelCtx()
-
-	if err := ps.logger.RemoveTargets(timeoutCtx, func(ti mlog.TargetInfo) bool {
-		return ti.Type != "*targets.Writer" && ti.Type != "*targets.File"
-	}); err != nil {
-		mlog.Error("Failed to remove log targets", mlog.Err(err))
-	}
 }
 
 func (ps *PlatformService) GetLogsSkipSend(rctx request.CTX, page, perPage int, logFilter *model.LogFilter) ([]string, *model.AppError) {

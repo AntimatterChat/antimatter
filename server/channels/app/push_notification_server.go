@@ -9,24 +9,17 @@ import (
 	"github.com/mattermost/mattermost/server/public/shared/request"
 )
 
-// syncPushNotificationServerWithLicense switches EmailSettings.PushNotificationServer to the
-// hosted push notification service (MHPNS) endpoint when the license grants MHPNS access, and
-// back to the test (TPNS) endpoint when it no longer does. It runs on license changes, on
-// server start, and when this node becomes the cluster leader.
+// revertHostedPushNotificationServer switches EmailSettings.PushNotificationServer away from
+// the Mattermost-hosted push notification service (MHPNS: global, regional or legacy
+// production endpoints) back to the test (TPNS) endpoint. The hosted service is a paid
+// Mattermost Inc. offering that refuses to deliver for this server, so leaving push pointing
+// at it would silently drop notifications; operators are expected to run their own
+// mattermost-push-proxy. It runs on server start and when this node becomes the cluster
+// leader.
 //
-// The contract: promote only from exact TPNS to the Global endpoint; on entitlement loss,
-// revert any Mattermost-hosted production endpoint (global, regional, or legacy) to TPNS, so
-// a lapsed license never leaves push pointing at an endpoint that refuses to send. Custom
-// endpoints and env-managed values are never touched. The sync stays stateless because both
-// directions derive entirely from the current config value and the license.
-func (s *Server) syncPushNotificationServerWithLicense() {
+// Custom endpoints and env-managed values are never touched.
+func (s *Server) revertHostedPushNotificationServer() {
 	if !s.IsLeader() {
-		return
-	}
-
-	license := s.License()
-	// Cloud config is centrally managed; never rewrite it here.
-	if license.IsCloud() {
 		return
 	}
 
@@ -36,38 +29,30 @@ func (s *Server) syncPushNotificationServerWithLicense() {
 
 	// Respect an environment-variable override on the setting. The config store re-applies env
 	// overrides on save anyway, so without this guard a save would be futile and only produce
-	// spurious audit records, logs, and cluster config traffic on every license event.
+	// spurious audit records, logs, and cluster config traffic.
 	if emailOverrides, ok := s.platform.GetEnvironmentOverrides()["EmailSettings"].(map[string]any); ok {
 		if _, overridden := emailOverrides["PushNotificationServer"]; overridden {
 			return
 		}
 	}
 
-	entitled := license.HasMHPNS()
-
 	// Decide and mutate on the same snapshot so a concurrent config write between the
 	// decision and the save can't be stomped with a stale value. The residual race between
 	// Clone and Set is inherent to every SaveConfig caller.
 	cfg := s.platform.Config().Clone()
 	current := *cfg.EmailSettings.PushNotificationServer
-
-	var target string
-	switch {
-	case entitled && current == model.GenericNotificationServer:
-		target = model.MHPNSGlobal
-	case !entitled && model.IsMHPNSEndpoint(current):
-		target = model.GenericNotificationServer
-	default:
+	if !model.IsMHPNSEndpoint(current) {
 		return
 	}
+	target := model.GenericNotificationServer
 
 	cfg.EmailSettings.PushNotificationServer = model.NewPointer(target)
 	if _, _, appErr := s.platform.SaveConfig(cfg, true); appErr != nil {
-		mlog.Warn("Failed to switch push notification server for license entitlement",
+		mlog.Warn("Failed to switch push notification server away from the hosted push notification service",
 			mlog.String("old", current), mlog.String("new", target), mlog.Err(appErr))
 		return
 	}
-	mlog.Info("Automatically switched push notification server based on license entitlement",
+	mlog.Info("Automatically switched push notification server away from the unsupported hosted push notification service",
 		mlog.String("old", current), mlog.String("new", target))
 
 	rctx := request.EmptyContext(s.Log())

@@ -126,26 +126,24 @@ func (a *App) MakeAuditRecord(rctx request.CTX, event string, initialStatus stri
 	return rec
 }
 
-func (s *Server) configureAudit(adt *audit.Audit, bAllowAdvancedLogging bool) error {
+func (s *Server) configureAudit(adt *audit.Audit) error {
 	adt.OnQueueFull = s.onAuditTargetQueueFull
 	adt.OnError = s.onAuditError
 
 	var logConfigSrc config.LogConfigSrc
 	dsn := s.platform.Config().ExperimentalAuditSettings.GetAdvancedLoggingConfig()
-	if bAllowAdvancedLogging {
-		if !utils.IsEmptyJSON(dsn) {
-			var err error
-			logConfigSrc, err = config.NewLogConfigSrc(dsn, s.platform.GetConfigStore())
-			if err != nil {
-				return fmt.Errorf("invalid config source for audit, %w", err)
-			}
-			s.Log().Debug("Loaded audit configuration", mlog.String("source", dsn))
-		} else {
-			s.Log().Debug("Advanced logging config not provided for audit")
+	if !utils.IsEmptyJSON(dsn) {
+		var err error
+		logConfigSrc, err = config.NewLogConfigSrc(dsn, s.platform.GetConfigStore())
+		if err != nil {
+			return fmt.Errorf("invalid config source for audit, %w", err)
 		}
+		s.Log().Debug("Loaded audit configuration", mlog.String("source", dsn))
+	} else {
+		s.Log().Debug("Advanced logging config not provided for audit")
 	}
 
-	// ExperimentalAuditSettings provides basic file audit (E0, E10); logConfigSrc provides advanced config (E20).
+	// ExperimentalAuditSettings provides basic file audit; logConfigSrc provides advanced config.
 	cfg, err := config.MloggerConfigFromAuditConfig(s.platform.Config().ExperimentalAuditSettings, logConfigSrc)
 	if err != nil {
 		return fmt.Errorf("invalid config for audit, %w", err)
@@ -200,13 +198,6 @@ func (a *App) AddAuditLogCertificate(rctx request.CTX, fileData *multipart.FileH
 
 	a.UpdateConfig(func(dest *model.Config) { *dest = *cfg })
 
-	if a.License().IsCloud() {
-		err = a.Cloud().CreateAuditLoggingCert(rctx.Session().UserId, fileData)
-		if err != nil {
-			return model.NewAppError("AddAuditLogCertificate", "api.admin.add_certificate.app_error", nil, "", http.StatusInternalServerError).Wrap(err)
-		}
-	}
-
 	return nil
 }
 
@@ -225,13 +216,6 @@ func (a *App) RemoveAuditLogCertificate(rctx request.CTX) *model.AppError {
 	}
 
 	a.UpdateConfig(func(dest *model.Config) { *dest = *cfg })
-
-	if a.License().IsCloud() {
-		err = a.Cloud().RemoveAuditLoggingCert(rctx.Session().UserId)
-		if err != nil {
-			return model.NewAppError("RemoveAuditLogCertificate", "api.admin.remove_certificate.app_error", nil, "", http.StatusInternalServerError).Wrap(err)
-		}
-	}
 
 	return nil
 }
