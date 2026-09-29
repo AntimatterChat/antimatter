@@ -18,7 +18,7 @@ import (
 	_ "github.com/mattermost/gosaml2"
 	_ "github.com/mattermost/ldap"
 	_ "github.com/mattermost/mattermost/server/v8/channels/utils/testutils"
-	_ "github.com/mattermost/mattermost/server/v8/enterprise"
+	_ "github.com/mattermost/mattermost/server/v8/libre"
 	_ "github.com/mattermost/rsc/qr"
 	_ "github.com/prometheus/client_golang/prometheus"
 	_ "github.com/prometheus/client_golang/prometheus/collectors"
