@@ -2063,22 +2063,6 @@
     "defaultMessage": "Performance Monitoring",
     "description": "Page name for Environment > Performance Monitoring in the System Console sidebar."
   },
-  "admin.announcement_banner_feature_discovery.copy": {
-    "defaultMessage": "Create announcement banners to notify all members of important information.",
-    "description": "Body copy on the feature discovery (upsell) page for the announcement banner feature, shown to admins without the required license."
-  },
-  "admin.announcement_banner_feature_discovery.title": {
-    "defaultMessage": "Create custom announcement banners with Mattermost Professional",
-    "description": "Headline on the feature discovery (upsell) page for announcement banners; mentions the required paid plan."
-  },
-  "admin.attribute_based_access_control_feature_discovery.desc": {
-    "defaultMessage": "Create policies containing access rules based on user attributes and apply them to channels and other resources within Mattermost.",
-    "description": "Body copy on the feature discovery (upsell) page for attribute-based access control policies."
-  },
-  "admin.attribute_based_access_control_feature_discovery.title": {
-    "defaultMessage": "Use attribute based access policies to control channel access with Mattermost Enterprise Advanced",
-    "description": "Headline on the feature discovery (upsell) page for attribute-based access policies; mentions the required plan."
-  },
   "admin.audit_logging_experimental.certificate.help_text": {
     "defaultMessage": "The certificate file used for audit logging encryption.",
     "description": "Admin console help text under the certificate field on the Compliance > Audit Logging page."
@@ -2171,209 +2155,17 @@
     "defaultMessage": "Signup",
     "description": "Page name for Authentication > Signup in the System Console sidebar; covers account creation settings."
   },
-  "admin.auto_translation_feature_discovery.copy": {
-    "defaultMessage": "Effortlessly collaborate across languages with auto-translation. Messages in shared channels are instantly translated based on each user’s language preference—no extra steps required.{br}<strong>Only available in Enterprise Advanced.</strong>",
-    "description": "Body copy on the feature discovery (upsell) page for auto-translation; {br} is a line break and <strong> bolds the plan note."
-  },
-  "admin.auto_translation_feature_discovery.title": {
-    "defaultMessage": "Remove language barriers with auto-translation",
-    "description": "Headline on the feature discovery (upsell) page for the auto-translation feature."
-  },
   "admin.banner.heading": {
     "defaultMessage": "Note:",
     "description": "Default bold heading of a note/warning banner in the System Console, prepended before the banner's description text."
-  },
-  "admin.billing.company_info_display.companyDetails": {
-    "defaultMessage": "Company Details",
-    "description": "Card heading on the Company Information page above the stored company details."
-  },
-  "admin.billing.company_info_display.detailsProvided": {
-    "defaultMessage": "Your company name and address",
-    "description": "Subtitle under the 'Company Details' heading when company information is on file."
-  },
-  "admin.billing.company_info_display.noCompanyInfo": {
-    "defaultMessage": "There is currently no company information on file.",
-    "description": "Empty-state message on the Company Information page when nothing has been entered yet."
-  },
-  "admin.billing.company_info_display.provideDetails": {
-    "defaultMessage": "Provide your company name and address",
-    "description": "Subtitle under the 'Company Details' heading prompting the admin to enter company information."
-  },
-  "admin.billing.company_info_edit.cancel": {
-    "defaultMessage": "Cancel",
-    "description": "Cancel link at the bottom of the company information edit form; discards changes and returns to the display page."
-  },
-  "admin.billing.company_info_edit.company_address": {
-    "defaultMessage": "Company Address",
-    "description": "Section heading in the company information edit form above the address fields."
-  },
-  "admin.billing.company_info_edit.companyDetails": {
-    "defaultMessage": "Company Details",
-    "description": "Section heading in the company information edit form above the name and employee-count fields."
-  },
-  "admin.billing.company_info_edit.sameAsBillingAddress": {
-    "defaultMessage": "Same as Billing Address",
-    "description": "Checkbox label in the company information edit form; reuses the billing address as the company address."
-  },
-  "admin.billing.company_info_edit.save": {
-    "defaultMessage": "Save info",
-    "description": "Save button at the bottom of the company information edit form."
-  },
-  "admin.billing.company_info_edit.title": {
-    "defaultMessage": "Edit Company Information",
-    "description": "Page title of the form for editing billing company information. 'Edit' is a verb."
-  },
-  "admin.billing.company_info.add": {
-    "defaultMessage": "Add Company Information",
-    "description": "Button/link on the Company Information page that opens the form to enter company details for billing."
-  },
-  "admin.billing.company_info.address": {
-    "defaultMessage": "Address",
-    "description": "Form field label for the first address line on the billing Company Information edit page in the System Console."
-  },
-  "admin.billing.company_info.address_2": {
-    "defaultMessage": "Address 2",
-    "description": "Form field label for the optional second address line on the billing Company Information edit page."
-  },
-  "admin.billing.company_info.billingAddress": {
-    "defaultMessage": "Billing Address",
-    "description": "Heading above the read-only billing address block in the company information edit form."
-  },
-  "admin.billing.company_info.city": {
-    "defaultMessage": "City",
-    "description": "Placeholder of the city input in the company address form for billing."
-  },
-  "admin.billing.company_info.companyAddress": {
-    "defaultMessage": "Company Address",
-    "description": "Section heading on the Company Information display page above the stored company address."
-  },
-  "admin.billing.company_info.companyName": {
-    "defaultMessage": "Company name",
-    "description": "Placeholder of the company name input in the billing company information form."
-  },
-  "admin.billing.company_info.employees": {
-    "defaultMessage": "{employees} employees",
-    "description": "Line under the company name on the Company Information page; {employees} is the number of employees."
-  },
-  "admin.billing.company_info.numEmployees": {
-    "defaultMessage": "Number of employees (optional)",
-    "description": "Placeholder of an optional numeric input for company size in the billing company information form."
-  },
-  "admin.billing.company_info.title": {
-    "defaultMessage": "Company Information",
-    "description": "Page title of the Company Information section under Billing in the System Console."
-  },
-  "admin.billing.company_info.zipcode": {
-    "defaultMessage": "Zip/Postal Code",
-    "description": "Placeholder of the postal code input in the company address form for billing."
   },
   "admin.billing.deleteWorkspace.failureModal.buttonText": {
     "defaultMessage": "Try Again",
     "description": "Button on a failure dialog that retries the failed request (shared with the delete workspace flow)."
   },
-  "admin.billing.deleteWorkspace.progressModal.title": {
-    "defaultMessage": "Deleting your workspace",
-    "description": "Title of the full-screen progress modal shown while a cloud workspace deletion is running."
-  },
-  "admin.billing.deleteWorkspace.resultModal.ContactSupport": {
-    "defaultMessage": "Contact Support",
-    "description": "Tertiary button on the workspace deletion result modal that opens a support form."
-  },
-  "admin.billing.deleteWorkspace.successModal.subtitle": {
-    "defaultMessage": "Your workspace has now been deleted. Thank you for being a customer.",
-    "description": "Body of the modal confirming the cloud workspace was deleted."
-  },
-  "admin.billing.deleteWorkspace.successModal.title": {
-    "defaultMessage": "Your workspace has been deleted",
-    "description": "Title of the modal confirming the cloud workspace was deleted."
-  },
-  "admin.billing.history.allPaymentsShowHere": {
-    "defaultMessage": "All of your invoices will be shown here",
-    "description": "Subtitle under the 'Transactions' heading on the Billing History page in the System Console."
-  },
-  "admin.billing.history.date": {
-    "defaultMessage": "Date",
-    "description": "Column header for the invoice date in the billing history table; compact space."
-  },
-  "admin.billing.history.description": {
-    "defaultMessage": "Description",
-    "description": "Column header for the invoice description in the billing history table; compact space."
-  },
-  "admin.billing.history.fractionalAndRatedSeats": {
-    "defaultMessage": "{fractionalSeats} metered seats, {fullSeats} seats at full rate, {partialSeats} seats with partial charges",
-    "description": "Invoice user-count summary mixing metered and rated seats; {fractionalSeats}, {fullSeats} and {partialSeats} are seat counts. 'Seats' means billed user licenses."
-  },
-  "admin.billing.history.fractionalSeats": {
-    "defaultMessage": "{fractionalSeats} seats",
-    "description": "Invoice user-count summary for metered billing; {fractionalSeats} is a possibly fractional seat count. 'Seats' means billed user licenses."
-  },
-  "admin.billing.history.noBillingHistory": {
-    "defaultMessage": "In the future, this is where your billing history will show.",
-    "description": "Empty-state message on the Billing History page when no invoices exist yet."
-  },
-  "admin.billing.history.onPremSeats": {
-    "defaultMessage": "{num} seats",
-    "description": "Invoice user-count summary for self-hosted purchases; {num} is the whole number of licensed seats."
-  },
-  "admin.billing.history.pageInfo": {
-    "defaultMessage": "{startRecord} - {endRecord} of {totalRecords}",
-    "description": "Pagination summary under the billing history table; {startRecord} and {endRecord} are the visible row range, {totalRecords} the total invoice count."
-  },
-  "admin.billing.history.paid": {
-    "defaultMessage": "Paid",
-    "description": "Payment status badge in the billing history table for a settled invoice; adjective, compact space."
-  },
-  "admin.billing.history.paymentFailed": {
-    "defaultMessage": "Payment failed",
-    "description": "Payment status badge in the billing history table for an invoice whose charge failed; compact space."
-  },
-  "admin.billing.history.pending": {
-    "defaultMessage": "Pending",
-    "description": "Payment status badge in the billing history table for an invoice awaiting payment; adjective, compact space."
-  },
-  "admin.billing.history.seatsAndRates": {
-    "defaultMessage": "{fullSeats} seats at full rate, {partialSeats} seats with partial charges",
-    "description": "Invoice user-count summary; {fullSeats} are seats billed at full rate and {partialSeats} seats billed prorated. 'Seats' means billed user licenses."
-  },
-  "admin.billing.history.seeHowBillingWorks": {
-    "defaultMessage": "See how billing works",
-    "description": "Link under the billing history empty state pointing to external billing documentation."
-  },
-  "admin.billing.history.status": {
-    "defaultMessage": "Status",
-    "description": "Column header for the payment status in the billing history table; compact space."
-  },
-  "admin.billing.history.title": {
-    "defaultMessage": "Billing History",
-    "description": "Page title of the Billing History section in the System Console."
-  },
-  "admin.billing.history.total": {
-    "defaultMessage": "Total",
-    "description": "Column header for the invoice total amount in the billing history table; compact space."
-  },
-  "admin.billing.history.transactions": {
-    "defaultMessage": "Transactions",
-    "description": "Card heading above the invoice table on the Billing History page."
-  },
   "admin.billing.subscription.byClickingYouAgree": {
     "defaultMessage": "By clicking {buttonContent}, you agree to the <linkAgreement>{legalText}</linkAgreement>",
     "description": "Legal consent line under a purchase button; {buttonContent} is the lowercase button label (e.g. 'upgrade'), {legalText} is the license agreement name wrapped in a link."
-  },
-  "admin.billing.subscription.cancelSubscriptionSection.contactUs": {
-    "defaultMessage": "Contact Us",
-    "description": "Button in the cancel-subscription section that opens a support contact channel."
-  },
-  "admin.billing.subscription.cancelSubscriptionSection.description": {
-    "defaultMessage": "At this time, deleting a workspace can only be done with the help of a customer support representative.",
-    "description": "Body text of the cancel-subscription section explaining workspace deletion requires customer support."
-  },
-  "admin.billing.subscription.cancelSubscriptionSection.title": {
-    "defaultMessage": "Cancel your subscription",
-    "description": "Heading of the section on the cloud Subscription page about cancelling the subscription."
-  },
-  "admin.billing.subscription.cloudMonthlyBadge": {
-    "defaultMessage": "Monthly",
-    "description": "Small badge next to the plan name on the Subscription page indicating monthly billing; very compact."
   },
   "admin.billing.subscription.cloudReverseTrial.daysLeftOnTrial": {
     "defaultMessage": "{daysLeftOnTrial} days left on your trial. Purchase a plan or contact sales to keep your workspace.",
@@ -2395,14 +2187,6 @@
     "defaultMessage": "Upgrade Now",
     "description": "Button in the Cloud trial announcement banner that starts the paid plan upgrade flow."
   },
-  "admin.billing.subscription.cloudTrialBadge.daysLeftOnTrial": {
-    "defaultMessage": "{daysLeftOnTrial} trial days left",
-    "description": "Small badge next to the plan name during a trial; {daysLeftOnTrial} is the remaining day count; compact space."
-  },
-  "admin.billing.subscription.cloudYearlyBadge": {
-    "defaultMessage": "Annual",
-    "description": "Small badge next to the plan name on the Subscription page indicating yearly billing; very compact."
-  },
   "admin.billing.subscription.complianceScreenShippingSameAsBilling": {
     "defaultMessage": "My shipping address is the same as my billing address",
     "description": "Checkbox-style toggle label on the cloud billing/purchase compliance screen letting the admin reuse the billing address as the shipping address."
@@ -2411,217 +2195,17 @@
     "defaultMessage": "Your credit card has expired. Update your payment information to avoid disruption.",
     "description": "Announcement banner for Cloud admins when the subscription's credit card has expired."
   },
-  "admin.billing.subscription.creditCardHasExpired": {
-    "defaultMessage": "Your credit card has expired",
-    "description": "Title of a danger banner on the cloud Subscription page when the stored credit card has expired."
-  },
-  "admin.billing.subscription.creditCardHasExpired.description": {
-    "defaultMessage": "Please <link>update your payment information</link> to avoid any disruption.",
-    "description": "Banner text on the Cloud billing subscription page when the credit card on file has expired; <link> wraps 'update your payment information'."
-  },
   "admin.billing.subscription.downgrading": {
     "defaultMessage": "Downgrading your workspace",
     "description": "Title of the progress modal shown while a cloud workspace's plan downgrade is being processed; 'Downgrading' is a present participle."
-  },
-  "admin.billing.subscription.freeTrial.description": {
-    "defaultMessage": "Your free trial will expire in {daysLeftOnTrial} days. Contact Sales to continue after the trial ends.",
-    "description": "Body of the free-trial card in the billing summary; {daysLeftOnTrial} is the number of days remaining."
-  },
-  "admin.billing.subscription.freeTrial.lastDay.description": {
-    "defaultMessage": "Your free trial has ended. Contact Sales to continue enjoying the benefits of Cloud Professional.",
-    "description": "Body of the free-trial card in the billing summary after the trial has ended."
-  },
-  "admin.billing.subscription.freeTrial.lastDay.title": {
-    "defaultMessage": "Your free trial ends today",
-    "description": "Heading of the free-trial card in the billing summary on the trial's final day."
-  },
-  "admin.billing.subscription.freeTrial.lessThan3Days.description": {
-    "defaultMessage": "Your free trial will end in {daysLeftOnTrial, number} {daysLeftOnTrial, plural, one {day} other {days}}. Contact Sales to continue enjoying the benefits of Cloud Professional.",
-    "description": "Body of the free-trial card when few days remain; {daysLeftOnTrial} drives the day/days plural."
-  },
-  "admin.billing.subscription.freeTrial.title": {
-    "defaultMessage": "You're currently on a free trial",
-    "description": "Heading of the free-trial card in the billing summary while the trial is active."
-  },
-  "admin.billing.subscription.invoice.next": {
-    "defaultMessage": "Next Invoice",
-    "description": "Card heading in the billing summary for the upcoming (not yet issued) invoice."
   },
   "admin.billing.subscription.mostRecentPaymentFailed": {
     "defaultMessage": "Your most recent payment failed",
     "description": "Announcement banner for Cloud admins when the latest subscription payment failed."
   },
-  "admin.billing.subscription.planDetails.currentPlan": {
-    "defaultMessage": "Current Plan",
-    "description": "Badge on the plan details card marking the plan the workspace is currently subscribed to."
-  },
-  "admin.billing.subscription.planDetails.features.abac": {
-    "defaultMessage": "Attribute-based access control (ABAC)",
-    "description": "Feature bullet in the plan details list on the billing Subscription page; ABAC is an acronym for the technology."
-  },
-  "admin.billing.subscription.planDetails.features.advanceTeamPermission": {
-    "defaultMessage": "Advanced team permissions",
-    "description": "Feature bullet in the plan details list on the billing Subscription page."
-  },
-  "admin.billing.subscription.planDetails.features.autoComplianceExports": {
-    "defaultMessage": "Automated compliance exports",
-    "description": "Feature bullet in the plan details list on the billing Subscription page."
-  },
-  "admin.billing.subscription.planDetails.features.customRetentionPolicies": {
-    "defaultMessage": "Custom data retention policies",
-    "description": "Feature bullet in the plan details list on the billing Subscription page."
-  },
-  "admin.billing.subscription.planDetails.features.enterpriseAdminAndSso": {
-    "defaultMessage": "Enterprise administration & SSO",
-    "description": "Feature bullet in the plan details list; SSO is single sign-on."
-  },
-  "admin.billing.subscription.planDetails.features.fileStorage": {
-    "defaultMessage": "Unlimited file storage",
-    "description": "Feature bullet in the plan details list on the billing Subscription page."
-  },
-  "admin.billing.subscription.planDetails.features.groupAndOneToOneMessaging": {
-    "defaultMessage": "Group and one-to-one messaging, file sharing, and search",
-    "description": "Feature bullet in the plan details list on the billing Subscription page."
-  },
-  "admin.billing.subscription.planDetails.features.guestAccounts": {
-    "defaultMessage": "Guest Accounts",
-    "description": "Feature bullet in the plan details list; refers to the Guest Accounts feature for external collaborators."
-  },
-  "admin.billing.subscription.planDetails.features.incidentCollaboration": {
-    "defaultMessage": "Incident collaboration",
-    "description": "Feature bullet in the plan details list on the billing Subscription page."
-  },
-  "admin.billing.subscription.planDetails.features.ldapSync": {
-    "defaultMessage": "AD/LDAP group sync to teams & channels",
-    "description": "Feature bullet in the plan details list; AD/LDAP are directory technologies, keep as-is."
-  },
-  "admin.billing.subscription.planDetails.features.ldapUserSync": {
-    "defaultMessage": "AD/LDAP user sync",
-    "description": "Feature bullet in the plan details list; AD/LDAP are directory technologies, keep as-is."
-  },
-  "admin.billing.subscription.planDetails.features.limitedFileStorage": {
-    "defaultMessage": "Limited to {limit} file storage",
-    "description": "Feature bullet in the plan details list for free plans; {limit} is a storage size like '10GB'."
-  },
-  "admin.billing.subscription.planDetails.features.limitedMessageHistory": {
-    "defaultMessage": "Limited to a message history of {limit} messages",
-    "description": "Feature bullet in the plan details list for free plans; {limit} is a message count."
-  },
-  "admin.billing.subscription.planDetails.features.mfa": {
-    "defaultMessage": "Multi-Factor Authentication (MFA)",
-    "description": "Feature bullet in the plan details list; MFA is an acronym for the security feature."
-  },
-  "admin.billing.subscription.planDetails.features.mfaEnforcement": {
-    "defaultMessage": "MFA enforcement",
-    "description": "Feature name in the plan features list on the Cloud billing plan details card; refers to enforcing multi-factor authentication."
-  },
-  "admin.billing.subscription.planDetails.features.multilanguage": {
-    "defaultMessage": "Multi-language translations",
-    "description": "Feature bullet in the plan details list on the billing Subscription page."
-  },
-  "admin.billing.subscription.planDetails.features.multiplatformSso": {
-    "defaultMessage": "SSO with Google, O365",
-    "description": "Feature bullet in the plan details list; Google and O365 (Office 365) are product names."
-  },
-  "admin.billing.subscription.planDetails.features.openid": {
-    "defaultMessage": "OpenID",
-    "description": "Feature bullet in the plan details list; OpenID is a protocol name, keep as-is."
-  },
-  "admin.billing.subscription.planDetails.features.premiumSupport": {
-    "defaultMessage": "Premium Support (optional upgrade)",
-    "description": "Feature bullet in the plan details list on the billing Subscription page."
-  },
-  "admin.billing.subscription.planDetails.features.readOnlyChannels": {
-    "defaultMessage": "Read-only announcement channels",
-    "description": "Feature bullet in the plan details list on the billing Subscription page."
-  },
-  "admin.billing.subscription.planDetails.features.sharedChannels": {
-    "defaultMessage": "Shared channels (coming soon)",
-    "description": "Feature bullet in the plan details list; the parenthetical marks a not-yet-released feature."
-  },
-  "admin.billing.subscription.planDetails.features.ssoSaml": {
-    "defaultMessage": "SSO w/ SAML (includes Okta and OneLogIn)",
-    "description": "Feature bullet in the plan details list; SAML, Okta and OneLogin are technology/product names."
-  },
-  "admin.billing.subscription.planDetails.features.unlimitedUsers": {
-    "defaultMessage": "Unlimited users",
-    "description": "Feature bullet in the plan details list on the billing Subscription page."
-  },
-  "admin.billing.subscription.planDetails.features.unlimittedUsersAndMessagingHistory": {
-    "defaultMessage": "Unlimited users & message history",
-    "description": "Feature bullet in the plan details list on the billing Subscription page."
-  },
-  "admin.billing.subscription.planDetails.productName.cloudAdvanced": {
-    "defaultMessage": "Cloud Enterprise Advanced",
-    "description": "Product/plan name displayed on the plan details card; Mattermost plan tier name."
-  },
-  "admin.billing.subscription.planDetails.productName.cloudEnterprise": {
-    "defaultMessage": "Cloud Enterprise",
-    "description": "Product/plan name displayed on the plan details card; Mattermost plan tier name."
-  },
-  "admin.billing.subscription.planDetails.productName.cloudFree": {
-    "defaultMessage": "Cloud Free",
-    "description": "Product/plan name displayed on the plan details card; Mattermost plan tier name."
-  },
-  "admin.billing.subscription.planDetails.productName.cloudProfessional": {
-    "defaultMessage": "Cloud Professional",
-    "description": "Product/plan name displayed on the plan details card; Mattermost plan tier name."
-  },
-  "admin.billing.subscription.planDetails.productName.unknown": {
-    "defaultMessage": "Unknown product",
-    "description": "Fallback plan name on the plan details card when the subscribed product cannot be identified."
-  },
-  "admin.billing.subscription.planDetails.subheader": {
-    "defaultMessage": "Plan details",
-    "description": "Sub-heading of the plan details card on the billing Subscription page, above the feature list."
-  },
-  "admin.billing.subscription.planDetails.userCount": {
-    "defaultMessage": "{userCount} users",
-    "description": "Line on the plan details card showing workspace size; {userCount} is the number of registered users."
-  },
-  "admin.billing.subscription.privateCloudCard.cloudEnterprise.description": {
-    "defaultMessage": "At Mattermost, we work with you and your organization to meet your needs throughout the product. If you're considering a wider rollout, talk to us.",
-    "description": "Body of the contact-sales card shown to Cloud Enterprise customers on the Subscription page."
-  },
-  "admin.billing.subscription.privateCloudCard.cloudEnterprise.title": {
-    "defaultMessage": "Looking to rollout Mattermost for your entire organization? ",
-    "description": "Heading of the contact-sales card shown to Cloud Enterprise customers; ends with a space before the card body."
-  },
-  "admin.billing.subscription.privateCloudCard.cloudFree.description": {
-    "defaultMessage": "Optimize your processes with Guest Accounts, Office365 suite integrations, GitLab SSO and advanced permissions.",
-    "description": "Body of the upgrade card shown to Cloud Free customers, listing paid-plan features."
-  },
-  "admin.billing.subscription.privateCloudCard.cloudFree.title": {
-    "defaultMessage": "Upgrade to Cloud Professional",
-    "description": "Heading of the upgrade card shown to Cloud Free customers on the Subscription page."
-  },
-  "admin.billing.subscription.privateCloudCard.cloudProfessional.description": {
-    "defaultMessage": "Advanced security and compliance features with premium support. See {pricingLink} for more details.",
-    "description": "Body of the upgrade card shown to Cloud Professional customers; {pricingLink} renders as a link to the pricing page."
-  },
-  "admin.billing.subscription.privateCloudCard.cloudProfessional.title": {
-    "defaultMessage": "Upgrade to Cloud Enterprise",
-    "description": "Heading of the upgrade card shown to Cloud Professional customers on the Subscription page."
-  },
-  "admin.billing.subscription.privateCloudCard.contactSales": {
-    "defaultMessage": "Contact Sales",
-    "description": "Button on subscription/billing cards that opens the sales contact flow."
-  },
   "admin.billing.subscription.privateCloudCard.contactSupport": {
     "defaultMessage": "Contact Support",
     "description": "Tertiary button in the failed-plan-change modal (and billing screens) that opens the Mattermost support contact page."
-  },
-  "admin.billing.subscription.privateCloudCard.freeTrial.description": {
-    "defaultMessage": "We love to work with our customers and their needs. Contact sales for subscription, billing or trial-specific questions.",
-    "description": "Body of the contact-sales card shown to customers on a free trial."
-  },
-  "admin.billing.subscription.privateCloudCard.freeTrial.title": {
-    "defaultMessage": "Questions about your trial?",
-    "description": "Heading of the contact-sales card shown to customers on a free trial."
-  },
-  "admin.billing.subscription.privateCloudCard.upgradeNow": {
-    "defaultMessage": "Upgrade Now",
-    "description": "Button on the subscription upgrade card that starts the purchase flow immediately."
   },
   "admin.billing.subscription.proratedPayment.title": {
     "defaultMessage": "You are now subscribed to {selectedProductName}",
@@ -2630,10 +2214,6 @@
   "admin.billing.subscription.stateprovince": {
     "defaultMessage": "State/Province",
     "description": "Label of the state/province dropdown in the billing address form of the payment/checkout screen."
-  },
-  "admin.billing.subscription.title": {
-    "defaultMessage": "Subscription",
-    "description": "Page title of the Subscription section under Billing in the System Console; noun."
   },
   "admin.billing.subscription.updatePaymentInfo": {
     "defaultMessage": "Update Payment Information",
@@ -2646,70 +2226,6 @@
   "admin.billing.subscription.userCount.tooltipTitle": {
     "defaultMessage": "Current User Count",
     "description": "Tooltip hint/title next to the seats input in the purchase seats calculator."
-  },
-  "admin.billing.subscriptions.billing_summary.lastInvoice.monthlyFlatFee": {
-    "defaultMessage": "Monthly Flat Fee",
-    "description": "Line item description on the invoice summary card for flat-fee billing plans."
-  },
-  "admin.billing.subscriptions.billing_summary.lastInvoice.paid": {
-    "defaultMessage": "Paid",
-    "description": "Status badge on the invoice summary card for a settled invoice; adjective, compact space."
-  },
-  "admin.billing.subscriptions.billing_summary.lastInvoice.partialCharges": {
-    "defaultMessage": "Partial charges",
-    "description": "Sub-heading on the invoice summary card above prorated line items; has an info tooltip next to it."
-  },
-  "admin.billing.subscriptions.billing_summary.lastInvoice.seatCount": {
-    "defaultMessage": " x {seats} seats",
-    "description": "Fragment concatenated directly after a currency amount on the invoice summary card (e.g. '$10 x 25 seats'); {seats} is the seat quantity; keep the leading space."
-  },
-  "admin.billing.subscriptions.billing_summary.lastInvoice.seatCountPartial": {
-    "defaultMessage": "{seats} seats",
-    "description": "Line item in the last-invoice billing summary showing partially charged seats; {seats} is a number of user seats."
-  },
-  "admin.billing.subscriptions.billing_summary.lastInvoice.seeBillingHistory": {
-    "defaultMessage": "See Billing History",
-    "description": "Link at the bottom of the invoice summary card leading to the full Billing History page."
-  },
-  "admin.billing.subscriptions.billing_summary.lastInvoice.taxes": {
-    "defaultMessage": "Taxes",
-    "description": "Line item label on the invoice summary card for the tax amount; compact space."
-  },
-  "admin.billing.subscriptions.billing_summary.lastInvoice.title": {
-    "defaultMessage": "Last Invoice",
-    "description": "Card heading in the billing summary for the most recent issued invoice."
-  },
-  "admin.billing.subscriptions.billing_summary.lastInvoice.total": {
-    "defaultMessage": "Total",
-    "description": "Label of the total amount row on the invoice summary card; compact space."
-  },
-  "admin.billing.subscriptions.billing_summary.lastInvoice.viewInvoice": {
-    "defaultMessage": "View Invoice",
-    "description": "Link/button on the invoice summary card that opens the invoice PDF preview."
-  },
-  "admin.billing.subscriptions.billing_summary.lastInvoice.whatArePartialCharges": {
-    "defaultMessage": "What are partial charges?",
-    "description": "Tooltip title on the info icon next to 'Partial charges' on the invoice summary card."
-  },
-  "admin.billing.subscriptions.billing_summary.lastInvoice.whatArePartialCharges.message": {
-    "defaultMessage": "Users who have not been enabled for the full duration of the month are charged at a prorated monthly rate.",
-    "description": "Tooltip explaining partial charges on the last-invoice billing summary, shown to workspace admins."
-  },
-  "admin.billing.subscriptions.billing_summary.noBillingHistory.description": {
-    "defaultMessage": "In the future, this is where your most recent bill summary will show.",
-    "description": "Body of the billing summary empty state when no invoices exist yet."
-  },
-  "admin.billing.subscriptions.billing_summary.noBillingHistory.link": {
-    "defaultMessage": "See how billing works",
-    "description": "Link under the billing summary empty state pointing to external billing documentation."
-  },
-  "admin.billing.subscriptions.billing_summary.noBillingHistory.title": {
-    "defaultMessage": "No billing history yet",
-    "description": "Heading of the billing summary empty state when no invoices exist yet."
-  },
-  "admin.billing.subscriptions.billing_summary.upcomingInvoice.has_more_line_items": {
-    "defaultMessage": "And {count} more items",
-    "description": "Clickable line at the end of a truncated invoice summary; {count} is the number of line items not shown."
   },
   "admin.board_attributes.add_attribute": {
     "defaultMessage": "Add attribute",
@@ -3343,14 +2859,6 @@
     "defaultMessage": "Team",
     "description": "Bold field label for the team the channel belongs to, in the Channel Profile panel of the admin channel configuration page."
   },
-  "admin.classification_markings_feature_discovery.desc": {
-    "defaultMessage": "Set up global and channel-specific classification banners with built-in presets or custom levels, ensuring that users consistently view the appropriate classification level for their workspace.",
-    "description": "Body copy on the feature discovery (upsell) page for classification markings."
-  },
-  "admin.classification_markings_feature_discovery.title": {
-    "defaultMessage": "Apply classification markings with Mattermost Enterprise Advanced",
-    "description": "Headline on the feature discovery (upsell) page for classification markings; mentions the required plan."
-  },
   "admin.classification_markings.color.open_picker": {
     "defaultMessage": "Open color picker",
     "description": "Accessibility label for the color swatch button in the classification levels table; opens a color picker for that level."
@@ -3682,14 +3190,6 @@
   "admin.cluster.version_mismatch_warning": {
     "defaultMessage": "WARNING: Multiple Antimatter versions have been detected in your HA cluster, or the running versions cannot be properly identified. Unless upgrading, ensure all nodes are on the same version and can communicate via Gossip to prevent platform issues.",
     "description": "Warning banner on the High Availability admin page when cluster nodes report different Antimatter versions."
-  },
-  "admin.compliance_export_feature_discovery.copy": {
-    "defaultMessage": "Run daily compliance reports and export them to a variety of formats consumable by third-party integration tools such as Smarsh (Actiance).",
-    "description": "Body copy on the feature discovery (upsell) page for compliance export; Smarsh (Actiance) is a product name and should not be translated."
-  },
-  "admin.compliance_export_feature_discovery.title": {
-    "defaultMessage": "Run compliance exports with Mattermost Enterprise",
-    "description": "Headline on the feature discovery (upsell) page for compliance exports; mentions the required plan."
   },
   "admin.compliance_reports.desc": {
     "defaultMessage": "Job Name:",
@@ -4043,14 +3543,6 @@
     "defaultMessage": "Content Flagging",
     "description": "Legacy name of the Data Spillage Handling admin page, kept as a searchable string so old searches for 'Content Flagging' still find the page."
   },
-  "admin.custom_terms_of_service_feature_discovery.copy": {
-    "defaultMessage": "Create your own terms of service that new users must accept before accessing your Mattermost instance on desktop, web, or mobile.",
-    "description": "Body copy on the feature discovery (upsell) page for custom terms of service."
-  },
-  "admin.custom_terms_of_service_feature_discovery.title": {
-    "defaultMessage": "Create custom terms of service with Mattermost Enterprise",
-    "description": "Headline on the feature discovery (upsell) page for custom terms of service; mentions the required plan."
-  },
   "admin.customization.allowCustomThemesDesc": {
     "defaultMessage": "Enables the **Display > Theme > Custom Theme** section in Settings.",
     "description": "Help text under the 'Allow Custom Themes' toggle in System Console > Site Configuration > Customization. Markdown; **Display > Theme > Custom Theme** is a navigation path in the end user's Settings dialog and should be translated the same way those UI labels are."
@@ -4387,14 +3879,6 @@
     "defaultMessage": "{startCount, number} - {endCount, number} of {total, number}",
     "description": "Pagination counter in the footer of admin console tables, e.g. '1 - 10 of 250'; all placeholders are formatted numbers."
   },
-  "admin.data_retention_feature_discovery.copy": {
-    "defaultMessage": "Hold on to your data only as long as you need to. Create data retention jobs for select channels and teams to automatically delete disposable data.",
-    "description": "Body copy on the feature discovery (upsell) page for data retention policies."
-  },
-  "admin.data_retention_feature_discovery.title": {
-    "defaultMessage": "Create data retention schedules with Mattermost Enterprise",
-    "description": "Headline on the feature discovery (upsell) page for data retention; mentions the required plan."
-  },
   "admin.data_retention.channel_team_counts": {
     "defaultMessage": "{team_count} {team_count, plural, one {team} other {teams}}, {channel_count} {channel_count, plural, one {channel} other {channels}}",
     "description": "Cell in the 'Applied to' column of the custom retention policies admin table; shows how many teams and channels a policy covers, with plural forms for both counts."
@@ -4602,14 +4086,6 @@
   "admin.data_retention.title": {
     "defaultMessage": "Data Retention Policy",
     "description": "Page name and title of System Console > Compliance > Data Retention Policies."
-  },
-  "admin.data_spillage_feature_discovery.desc": {
-    "defaultMessage": "Set up the ability for users to quarantine messages so designated Content Reviewers can decide whether to keep or remove them.",
-    "description": "Body copy on the feature discovery (upsell) page for data spillage handling; 'Content Reviewers' is the role that reviews quarantined messages."
-  },
-  "admin.data_spillage_feature_discovery.title": {
-    "defaultMessage": "Handle data spillage with Mattermost Enterprise Advanced",
-    "description": "Headline on the feature discovery (upsell) page for data spillage handling; mentions the required plan."
   },
   "admin.data_spillage.enableTitle": {
     "defaultMessage": "Enable Data Spillage Handling",
@@ -5675,22 +5151,6 @@
     "defaultMessage": "False",
     "description": "Radio button label for the 'false' choice of boolean settings throughout the System Console."
   },
-  "admin.feature_discovery.contact_sales": {
-    "defaultMessage": "Contact sales",
-    "description": "Primary button in an inline section-level feature discovery (upsell) card in the System Console; opens the contact-sales form."
-  },
-  "admin.feature_discovery.learn_more": {
-    "defaultMessage": "Learn more",
-    "description": "Secondary button in an inline section-level feature discovery (upsell) card; opens documentation in a new tab."
-  },
-  "admin.feature_discovery.trial-request.accept-terms": {
-    "defaultMessage": "By clicking <highlight>Start trial</highlight>, I agree to the <linkEvaluation>Mattermost Software Evaluation Agreement</linkEvaluation>, <linkPrivacy>Privacy Policy</linkPrivacy> and receiving product emails.",
-    "description": "Legal fine print under the 'Start trial' button on feature discovery (upsell) pages; <highlight> bolds the button name, <linkEvaluation>/<linkPrivacy> wrap links."
-  },
-  "admin.feature_discovery.trial-request.error": {
-    "defaultMessage": "Trial license could not be retrieved. Visit <link>{trialInfoLink}</link> to request a license.",
-    "description": "Error shown on feature discovery pages when requesting a trial license fails; {trialInfoLink} is a URL and <link> makes it clickable."
-  },
   "admin.feature_flags.flag": {
     "defaultMessage": "Flag",
     "description": "Column header in the Feature Flags table in the System Console; 'Flag' is the feature flag's name. Compact space."
@@ -5706,14 +5166,6 @@
   "admin.feature_flags.title": {
     "defaultMessage": "Feature Flags",
     "description": "Page title of the read-only Feature Flags page in the System Console."
-  },
-  "admin.featureDiscovery.WarningDescription": {
-    "defaultMessage": "Your License is being updated to give you full access to all the Enterprise Features. This page will automatically refresh once the license update is complete. Please wait ",
-    "description": "Body of an info banner shown to admins while a just-started trial license is being applied; ends with a trailing space before an inline spinner."
-  },
-  "admin.featureDiscovery.WarningTitle": {
-    "defaultMessage": "Your trial has started and updates are being made to your license.",
-    "description": "Title of the info banner shown to admins while their new trial license is still being applied."
   },
   "admin.file_upload.chooseFile": {
     "defaultMessage": "Choose File",
@@ -5814,14 +5266,6 @@
   "admin.general.log": {
     "defaultMessage": "Logging",
     "description": "Page title of the System Console > Environment > Logging page."
-  },
-  "admin.gitlab_feature_discovery.copy": {
-    "defaultMessage": "When you connect GitLab as your single sign-on provider, your team can access Mattermost without having to re-enter their GitLab credentials. Available only on Mattermost Professional and above.",
-    "description": "Body copy on the feature discovery (upsell) page for GitLab single sign-on."
-  },
-  "admin.gitlab_feature_discovery.title": {
-    "defaultMessage": "Integrate GitLab SSO with OpenID Connect in Mattermost Professional",
-    "description": "Headline on the feature discovery (upsell) page for GitLab SSO via OpenID Connect; mentions the required plan."
   },
   "admin.gitlab.authTitle": {
     "defaultMessage": "Auth Endpoint:",
@@ -7279,22 +6723,6 @@
     "defaultMessage": "Team Admin",
     "description": "Role option in the assigned-role dropdown of a group's team membership row; grants team admin."
   },
-  "admin.groups_feature_discovery.copy": {
-    "defaultMessage": "Use AD/LDAP groups to organize and apply actions to multiple users at once. Manage team and channel memberships, permissions, and more.",
-    "description": "Body copy on the feature discovery (upsell) page for AD/LDAP group synchronization."
-  },
-  "admin.groups_feature_discovery.title": {
-    "defaultMessage": "Synchronize your Active Directory/LDAP groups with Mattermost Enterprise",
-    "description": "Headline on the feature discovery (upsell) page for AD/LDAP group sync; mentions the required plan."
-  },
-  "admin.guest_access_feature_discovery.copy": {
-    "defaultMessage": "Collaborate with users outside of your organization while tightly controlling their access channels and team members.",
-    "description": "Body copy on the feature discovery (upsell) page for guest accounts."
-  },
-  "admin.guest_access_feature_discovery.title": {
-    "defaultMessage": "Enable guest accounts with Mattermost Professional",
-    "description": "Headline on the feature discovery (upsell) page for guest access; mentions the required plan."
-  },
   "admin.guest_access.disableConfirmButton": {
     "defaultMessage": "Save and Disable Guest Access",
     "description": "Confirm button label in the modal shown when a system admin disables Guest Access; saves the config and disables the feature."
@@ -8111,25 +7539,9 @@
     "defaultMessage": "View details",
     "description": "Text of the link-style button at the end of each row in an admin console job table (used by data retention, compliance export, LDAP sync, message export, etc.) that opens that job run's details. Verb phrase."
   },
-  "admin.ldap_feature_discovery_cloud.call_to_action.primary_sales": {
-    "defaultMessage": "Contact sales",
-    "description": "Primary button on feature discovery (upsell) pages; opens the Mattermost contact-sales form."
-  },
   "admin.ldap_feature_discovery.call_to_action.primary": {
     "defaultMessage": "Start trial",
     "description": "Primary call-to-action button label that starts a free Enterprise trial; used on admin console feature discovery pages and in the 'Learn more about trial' modal."
-  },
-  "admin.ldap_feature_discovery.call_to_action.secondary": {
-    "defaultMessage": "Learn more",
-    "description": "Secondary button on feature discovery (upsell) pages in the System Console; links to documentation about the feature."
-  },
-  "admin.ldap_feature_discovery.copy": {
-    "defaultMessage": "When you connect Mattermost with your organization's Active Directory/LDAP, users can log in without having to create new usernames and passwords.",
-    "description": "Body copy on the feature discovery (upsell) page for AD/LDAP authentication."
-  },
-  "admin.ldap_feature_discovery.title": {
-    "defaultMessage": "Integrate Active Directory/LDAP with Mattermost Professional",
-    "description": "Headline on the feature discovery (upsell) page for AD/LDAP integration; mentions the required plan."
   },
   "admin.ldap_wizard.sections_header": {
     "defaultMessage": "Sections",
@@ -8711,533 +8123,13 @@
     "defaultMessage": "Username Attribute:",
     "description": "Field label on the AD/LDAP settings page for the LDAP attribute mapped to username; ends with a colon."
   },
-  "admin.license.apply_error": {
-    "defaultMessage": "Failed to apply license",
-    "description": "Fallback error shown in the upload-license modal when applying the license fails without a specific server message."
-  },
-  "admin.license.confirm-license-removal.cancel": {
-    "defaultMessage": "Cancel",
-    "description": "Cancel button of the confirmation modal shown before removing the server's license."
-  },
-  "admin.license.confirm-license-removal.confirm": {
-    "defaultMessage": "Confirm",
-    "description": "Confirm button of the modal that removes the server's license and downgrades the plan."
-  },
-  "admin.license.confirm-license-removal.subtitle": {
-    "defaultMessage": "Removing the license will downgrade your server from {currentSKU} to Free. You may lose information. ",
-    "description": "Body of the license-removal confirmation modal; {currentSKU} is the current plan name (e.g. 'Enterprise'). Trailing space intentional."
-  },
-  "admin.license.confirm-license-removal.title": {
-    "defaultMessage": "Are you sure?",
-    "description": "Title of the confirmation modal shown before removing the server's license."
-  },
-  "admin.license.contactSales": {
-    "defaultMessage": "Questions? Contact sales",
-    "description": "Button on the right panel of the Edition and License page for Entry servers; opens the contact-sales page."
-  },
-  "admin.license.diff.banner.downgrade_advanced_to_enterprise.description": {
-    "defaultMessage": "You will lose access to Mattermost Enterprise Advanced features, including Zero Trust security, sensitive information controls, and mobile security hardening.",
-    "description": "Body of the danger banner in the license preview modal when downgrading from Enterprise Advanced to Enterprise; lists features that will be lost."
-  },
-  "admin.license.diff.banner.downgrade_advanced_to_professional.description": {
-    "defaultMessage": "You will lose access to Enterprise features for high availability administration, as well as Enterprise Advanced features including Zero Trust security, sensitive information controls, and advanced mobile security controls for mission-critical operations.",
-    "description": "Body of the danger banner in the license preview modal when downgrading from Enterprise Advanced to Professional; lists features that will be lost."
-  },
-  "admin.license.diff.banner.downgrade_enterprise_to_professional.description": {
-    "defaultMessage": "You will lose access to Enterprise features including enterprise scale and high availability, advanced compliance and administration features, and enterprise support options.",
-    "description": "Body of the danger banner in the license preview modal when downgrading from Enterprise to Professional; lists features that will be lost."
-  },
-  "admin.license.diff.banner.downgrade.title": {
-    "defaultMessage": "This license downgrades your plan",
-    "description": "Title of the danger banner in the license preview modal when the uploaded license is a lower plan tier than the current one."
-  },
-  "admin.license.diff.banner.entry_to_advanced.description": {
-    "defaultMessage": "Mattermost Enterprise Advanced includes all Enterprise features, unlocks unlimited message history, and adds exclusive capabilities like Zero Trust security, sensitive information controls, and mobile security hardening for mission-critical operations",
-    "description": "Body of the success banner in the license preview modal when applying an Enterprise Advanced license over Mattermost Entry."
-  },
-  "admin.license.diff.banner.entry_to_advanced.title": {
-    "defaultMessage": "This license adds Enterprise Advanced capabilities",
-    "description": "Title of the success banner in the license preview modal when applying an Enterprise Advanced license over Mattermost Entry."
-  },
-  "admin.license.diff.banner.entry_to_enterprise.description": {
-    "defaultMessage": "Mattermost Enterprise includes unlimited message history and adds enterprise-grade scale, compliance, and administration capabilities. Some features in Mattermost Entry are not included in Enterprise.",
-    "description": "Body of the info banner in the license preview modal when applying an Enterprise license over Mattermost Entry; notes some Entry features are not included."
-  },
-  "admin.license.diff.banner.entry_to_enterprise.title": {
-    "defaultMessage": "This license adds Enterprise capabilities, with feature changes",
-    "description": "Title of the info banner in the license preview modal when applying an Enterprise license over Mattermost Entry."
-  },
-  "admin.license.diff.banner.entry_to_professional.description": {
-    "defaultMessage": "Mattermost Professional adds paid-tier capabilities such as unlimited message history. Some features in Mattermost Entry are not included in Professional (see plan differences).",
-    "description": "Body of the warning banner in the license preview modal when applying a Professional license over Mattermost Entry; notes some Entry features are not included."
-  },
-  "admin.license.diff.banner.entry_to_professional.title": {
-    "defaultMessage": "This license changes your available features",
-    "description": "Title of the warning banner in the license preview modal when applying a Professional license over Mattermost Entry."
-  },
-  "admin.license.diff.banner.same_license.description": {
-    "defaultMessage": "The selected license matches the license currently applied to this workspace. Applying it again will not change any features or limits.",
-    "description": "Body of the info banner in the license preview modal when the uploaded license is identical to the one already applied."
-  },
-  "admin.license.diff.banner.same_license.title": {
-    "defaultMessage": "This license is already active",
-    "description": "Title of the info banner in the license preview modal when the uploaded license is identical to the one already applied."
-  },
-  "admin.license.diff.banner.upgrade_enterprise_to_advanced.description": {
-    "defaultMessage": "Mattermost Enterprise Advanced includes all Enterprise features, plus Zero Trust security, sensitive information controls, and mobile security hardening for mission-critical operations.",
-    "description": "Body of the success banner in the license preview modal when upgrading from Enterprise to Enterprise Advanced; lists added capabilities."
-  },
-  "admin.license.diff.banner.upgrade_enterprise_to_advanced.title": {
-    "defaultMessage": "This license adds Enterprise Advanced capabilities",
-    "description": "Title of the success banner in the license preview modal when upgrading from Enterprise to Enterprise Advanced."
-  },
-  "admin.license.diff.banner.upgrade_professional_to_advanced.description": {
-    "defaultMessage": "Mattermost Enterprise Advanced includes all Professional and Enterprise features — enterprise scale, advanced compliance and administration — plus Zero Trust security, sensitive information controls, and mobile security hardening for mission-critical operations.",
-    "description": "Body of the success banner in the license preview modal when upgrading from Professional to Enterprise Advanced; lists added capabilities."
-  },
-  "admin.license.diff.banner.upgrade_professional_to_advanced.title": {
-    "defaultMessage": "This license adds Enterprise Advanced capabilities",
-    "description": "Title of the success banner in the license preview modal when upgrading from Professional to Enterprise Advanced."
-  },
-  "admin.license.diff.banner.upgrade_professional_to_enterprise.description": {
-    "defaultMessage": "Mattermost Enterprise includes all features available in Mattermost Professional, plus enterprise scale and high availability, advanced compliance and administration features, and enterprise support options.",
-    "description": "Body of the success banner in the license preview modal when upgrading from Professional to Enterprise; lists added capabilities."
-  },
-  "admin.license.diff.banner.upgrade_professional_to_enterprise.title": {
-    "defaultMessage": "This license adds Enterprise capabilities",
-    "description": "Title of the success banner in the license preview modal when upgrading from Professional to Enterprise."
-  },
-  "admin.license.diff.banner.viewPlanDifferences": {
-    "defaultMessage": "View plan differences",
-    "description": "Button on the license comparison banner in the preview modal; opens the Mattermost pricing page in a new tab."
-  },
-  "admin.license.diff.company": {
-    "defaultMessage": "Company",
-    "description": "Row label in the license comparison table of the upload-license modal for the licensed company/organization name."
-  },
-  "admin.license.diff.currentLicense": {
-    "defaultMessage": "Current License",
-    "description": "Column header in the license comparison table of the upload-license modal for the currently applied license."
-  },
-  "admin.license.diff.endDate": {
-    "defaultMessage": "End Date",
-    "description": "Row label in the license comparison table of the upload-license modal for the license expiration date."
-  },
-  "admin.license.diff.name": {
-    "defaultMessage": "Name",
-    "description": "Row label in the license comparison table of the upload-license modal for the licensed customer's name."
-  },
-  "admin.license.diff.newLicense": {
-    "defaultMessage": "New License",
-    "description": "Column header in the license comparison table of the upload-license modal for the license being uploaded."
-  },
-  "admin.license.diff.sku": {
-    "defaultMessage": "Plan",
-    "description": "Row label in the license comparison table of the upload-license modal for the plan/SKU name (e.g. Professional, Enterprise)."
-  },
-  "admin.license.diff.startsAt": {
-    "defaultMessage": "Start Date",
-    "description": "Row label in the license comparison table of the upload-license modal for the license start date."
-  },
-  "admin.license.diff.users": {
-    "defaultMessage": "Users",
-    "description": "Row label in the license comparison table of the upload-license modal for the number of licensed users/seats."
-  },
-  "admin.license.enterprise.license_required_upgrade": {
-    "defaultMessage": "A license is required to unlock enterprise features",
-    "description": "Subtitle on the right panel of the Edition and License page for Team Edition servers, explaining a license is needed for enterprise features."
-  },
-  "admin.license.enterprise.restarting": {
-    "defaultMessage": "Restarting",
-    "description": "Button text while the Mattermost server is restarting after the Enterprise Edition binary upgrade."
-  },
-  "admin.license.enterprise.upgrade": {
-    "defaultMessage": "Upgrade to Enterprise Edition",
-    "description": "Title and button label on the Edition and License page for Team Edition servers; the button starts an in-place upgrade of the server binary to Enterprise Edition."
-  },
-  "admin.license.enterprise.upgrade.eeLicenseLink": {
-    "defaultMessage": "Enterprise Edition License",
-    "description": "Link text within the license/trial banner in the System Console pointing to the Enterprise Edition License terms."
-  },
-  "admin.license.enterprise.upgrading": {
-    "defaultMessage": "Upgrading {percentage}%",
-    "description": "Button text while the Enterprise Edition server binary is downloading; {percentage} is the completion percentage."
-  },
-  "admin.license.enterpriseEdition.add.seats": {
-    "defaultMessage": "+ Add seats",
-    "description": "Button in the license details panel of the Edition and License page; opens contact sales to purchase additional seats. The leading '+' is decorative."
-  },
-  "admin.license.enterprisePlanSubtitle": {
-    "defaultMessage": "We're here to work with you and your needs. Contact us today to get more seats on your plan.",
-    "description": "Subtitle on the right panel of the Edition and License page for Enterprise Advanced customers, encouraging them to contact sales for more seats."
-  },
-  "admin.license.enterprisePlanTitle": {
-    "defaultMessage": "Need to increase your headcount?",
-    "description": "Title on the right panel of the Edition and License page for Enterprise Advanced customers, above a contact-sales prompt about adding seats."
-  },
-  "admin.license.enterpriseToAdvancedAdvantage.adLdapGroupSync": {
-    "defaultMessage": "AD/LDAP group sync",
-    "description": "Feature bullet in the paid-features list on the Edition and License page for Free servers; AD/LDAP is Active Directory/LDAP."
-  },
-  "admin.license.enterpriseToAdvancedAdvantage.advancedCompliance": {
-    "defaultMessage": "Advanced compliance",
-    "description": "Feature bullet in the paid-features list on the Edition and License page for Free servers."
-  },
-  "admin.license.enterpriseToAdvancedAdvantage.advancedWorkflows": {
-    "defaultMessage": "Advanced workflows with Playbooks",
-    "description": "Feature bullet in the paid-features list on the Edition and License page for Free servers; 'Playbooks' is the Mattermost product name."
-  },
-  "admin.license.enterpriseToAdvancedAdvantage.attributeBasedAccess": {
-    "defaultMessage": "Attribute-based access control",
-    "description": "Feature bullet in the paid-features list on the Edition and License page for Free servers; refers to access control based on user attributes."
-  },
-  "admin.license.enterpriseToAdvancedAdvantage.automaticChannelTranslations": {
-    "defaultMessage": "Automatic channel translations",
-    "description": "Feature bullet in the upgrade-advantages list on the Edition and License page, promoting Enterprise Advanced to Enterprise customers."
-  },
-  "admin.license.enterpriseToAdvancedAdvantage.burnOnReadMessages": {
-    "defaultMessage": "Burn-on-read messages",
-    "description": "Feature bullet in the upgrade-advantages list on the Edition and License page; refers to messages that self-destruct after being read."
-  },
-  "admin.license.enterpriseToAdvancedAdvantage.channelBanners": {
-    "defaultMessage": "Channel banners",
-    "description": "Feature bullet in the upgrade-advantages list on the Edition and License page; refers to admin-configured banner bars shown at the top of channels."
-  },
-  "admin.license.enterpriseToAdvancedAdvantage.channelWarningBanners": {
-    "defaultMessage": "Channel warning banners",
-    "description": "Feature bullet in the paid-features list on the Edition and License page for Free servers; refers to warning banner bars shown at the top of channels."
-  },
-  "admin.license.enterpriseToAdvancedAdvantage.dataSpillageHandling": {
-    "defaultMessage": "Data spillage handling",
-    "description": "Feature bullet in the upgrade-advantages list on the Edition and License page; refers to tools for handling accidentally shared sensitive data."
-  },
-  "admin.license.enterpriseToAdvancedAdvantage.dynamicAttributeBasedAccessControls": {
-    "defaultMessage": "Dynamic attribute-based access controls",
-    "description": "Feature bullet in the upgrade-advantages list on the Edition and License page; refers to access control based on user attributes."
-  },
-  "admin.license.enterpriseToAdvancedAdvantage.highAvailability": {
-    "defaultMessage": "High availability",
-    "description": "Feature bullet in the paid-features list on the Edition and License page for Free servers; refers to the server clustering feature."
-  },
-  "admin.license.enterpriseToAdvancedAdvantage.mobileBiometricsAndAdvancedSecurity": {
-    "defaultMessage": "Mobile biometrics & advanced security",
-    "description": "Feature bullet in the upgrade-advantages list on the Edition and License page; refers to biometric authentication and security features in the mobile apps."
-  },
-  "admin.license.entryEdition.limits": {
-    "defaultMessage": "with limits",
-    "description": "Link text injected into the {limitsLink} placeholder of the Entry edition subtitle sentence ('Entry offers Enterprise Advanced capabilities {limitsLink}...'); links to documentation about Entry limits, so it must read naturally within that sentence."
-  },
-  "admin.license.entryEdition.subtitle": {
-    "defaultMessage": "Entry offers Enterprise Advanced capabilities {limitsLink} designed to support evaluation.",
-    "description": "Subtitle on the Edition and License page when the server runs a Mattermost Entry license; {limitsLink} is the 'with limits' documentation link embedded mid-sentence."
-  },
-  "admin.license.entryPlanSubtitle": {
-    "defaultMessage": "Purchase a plan to unlock full access, or <link>start a trial</link> to remove limits while you evaluate Enterprise Advanced.",
-    "description": "Subtitle on the right panel of the Edition and License page for Entry servers; <link> wraps 'start a trial' and points to trial information."
-  },
-  "admin.license.entryPlanTitle": {
-    "defaultMessage": "Get access to full message history, AI-powered coordination, and secure workflow continuity",
-    "description": "Title on the right panel of the Edition and License page for Entry servers, promoting the benefits of purchasing a plan."
-  },
-  "admin.license.freeEdition.subtitle": {
-    "defaultMessage": "Purchase Professional or Enterprise to unlock enterprise features.",
-    "description": "Subtitle under the 'Free' plan name on the Edition and License page for unlicensed servers; Professional and Enterprise are plan names."
-  },
-  "admin.license.freeEdition.title": {
-    "defaultMessage": "Free",
-    "description": "Plan name heading on the Edition and License page when the server has no license; 'Free' is the plan's name."
-  },
-  "admin.license.haveALicense": {
-    "defaultMessage": "Have a license?",
-    "description": "Heading above the license upload button on the Edition and License page for Entry-licensed servers."
-  },
-  "admin.license.key": {
-    "defaultMessage": "License Key: ",
-    "description": "Label displayed before the license upload button on the Edition and License page of an unlicensed (Free) server; trailing space is intentional."
-  },
-  "admin.license.keyAddNew": {
-    "defaultMessage": "Add a new license",
-    "description": "Button/link on the System Console Edition and License page for uploading a new license file."
-  },
-  "admin.license.keyRemove": {
-    "defaultMessage": "Remove license and downgrade to Mattermost Free",
-    "description": "Button on the Edition and License page that removes the current license and downgrades the server to the Free edition."
-  },
-  "admin.license.keyRemoveEntry": {
-    "defaultMessage": "Remove license and downgrade to Mattermost Entry",
-    "description": "Button on the Edition and License page that removes the current license and downgrades the server to the Entry edition; 'Entry' is a plan name."
-  },
-  "admin.license.modal.apply": {
-    "defaultMessage": "Apply License",
-    "description": "Confirm button in the upload-license modal that applies the previewed license to the server."
-  },
-  "admin.license.modal.applying": {
-    "defaultMessage": "Applying",
-    "description": "Loading text on the button in the upload-license modal while the new license is being applied."
-  },
-  "admin.license.modal.cancel": {
-    "defaultMessage": "Cancel",
-    "description": "Cancel button in the license preview step of the upload-license modal."
-  },
-  "admin.license.modal.close": {
-    "defaultMessage": "Close",
-    "description": "Button that closes the upload-license modal after a validation error."
-  },
-  "admin.license.modal.done": {
-    "defaultMessage": "Done",
-    "description": "Button that closes the upload-license modal after the license was applied successfully."
-  },
-  "admin.license.modal.validating": {
-    "defaultMessage": "Validating",
-    "description": "Loading indicator text in the upload-license modal footer while the license file is being validated."
-  },
-  "admin.license.preview_error": {
-    "defaultMessage": "Failed to preview license",
-    "description": "Fallback error shown in the upload-license modal when previewing the license file fails without a specific server message."
-  },
-  "admin.license.purchaseEnterprisePlanSubtitle": {
-    "defaultMessage": "Continue your access to Enterprise Advanced features by purchasing a license.",
-    "description": "Subtitle on the right panel of the Edition and License page while on a trial license, prompting purchase before the trial ends."
-  },
-  "admin.license.purchaseEnterprisePlanTitle": {
-    "defaultMessage": "Purchase Enterprise Advanced",
-    "description": "Title on the right panel of the Edition and License page while on a trial license; 'Enterprise Advanced' is a plan name."
-  },
-  "admin.license.removing": {
-    "defaultMessage": "Removing License...",
-    "description": "Text of the remove-license button on the Edition and License page while the license removal request is in progress."
-  },
-  "admin.license.renewalCard.description.contact_sales": {
-    "defaultMessage": "Renew your {licenseSku} license by contacting sales to avoid any disruption.",
-    "description": "Body of the license renewal banner in the System Console; {licenseSku} is the plan display name (e.g. 'Enterprise')."
-  },
-  "admin.license.renewalCard.licenseExpired": {
-    "defaultMessage": "License expired on {date, date, long}.",
-    "description": "Title of the license renewal banner after the license has expired; {date} is formatted automatically as a long date."
-  },
-  "admin.license.renewalCard.licenseExpiring": {
-    "defaultMessage": "License expires in {days} days on {date, date, long}.",
-    "description": "Title of the license renewal banner before expiry; {days} is the number of days left and {date} is formatted automatically as a long date."
-  },
-  "admin.license.renewalCard.reviewNumbers": {
-    "defaultMessage": "Review your numbers below to ensure you renew for the right number of users.",
-    "description": "Line in the license renewal banner asking the admin to check the user counts listed below it before renewing."
-  },
-  "admin.license.renewalCard.usersNumbers_active": {
-    "defaultMessage": "Active Users: ",
-    "description": "Label preceding the active user count in the license renewal banner; trailing space intentional."
-  },
-  "admin.license.renewalCard.usersNumbers_licensed": {
-    "defaultMessage": "Licensed Users: ",
-    "description": "Label preceding the licensed user count in the license renewal banner; trailing space intentional."
-  },
-  "admin.license.setByEnvVar": {
-    "defaultMessage": "License location is set by environment variable",
-    "description": "Tooltip on the disabled license upload button explaining why uploads are blocked: the license file location is configured through an environment variable."
-  },
-  "admin.license.singleChannelGuests.limitReached": {
-    "defaultMessage": "(Limit reached)",
-    "description": "Compact warning shown in parentheses next to the single-channel guest count in the license details when the guest limit has been exceeded."
-  },
-  "admin.license.singleChannelGuests.limitReached.tooltip.hint": {
-    "defaultMessage": "The number of single-channel guests cannot exceed the total number of licensed seats",
-    "description": "Tooltip body on the Edition and License page explaining the seat limit for single-channel guests."
-  },
-  "admin.license.singleChannelGuests.limitReached.tooltip.title": {
-    "defaultMessage": "Limit reached for single-channel guests",
-    "description": "Tooltip title on the Edition and License page when the single-channel guest limit has been reached."
-  },
-  "admin.license.title": {
-    "defaultMessage": "Edition and License",
-    "description": "Page title of the System Console > Edition and License page; also indexed for admin console search."
-  },
-  "admin.license.Trial": {
-    "defaultMessage": "Trial",
-    "description": "Small uppercase tag displayed next to the plan name on the Edition and License page indicating the current license is a trial; very compact space."
-  },
-  "admin.license.trial-request.accept-terms": {
-    "defaultMessage": "By clicking <strong>Start trial</strong>, I agree to the <linkEvaluation>Mattermost Software and Services License Agreement</linkEvaluation>, <linkPrivacy>Privacy Policy</linkPrivacy>, and receiving product emails.",
-    "description": "Legal-terms sentence below the Start trial button in the System Console trial banner; <strong> wraps the button name and the link tags wrap agreement names."
-  },
-  "admin.license.trial-request.embargoed": {
-    "defaultMessage": "We were unable to process the request due to limitations for embargoed countries. <link>Learn more in our documentation</link>, or reach out to legal@mattermost.com for questions around export limitations.",
-    "description": "Error shown when a trial license request is rejected because the server is in an embargoed country; <link> wraps the documentation link text."
-  },
   "admin.license.trial-request.embargoed.button": {
     "defaultMessage": "Close",
     "description": "Close button of the modal shown when a trial license request is rejected because the user is in an embargoed country."
   },
-  "admin.license.trial-request.startTrial": {
-    "defaultMessage": "Start trial",
-    "description": "Button in the System Console trial banner that requests a 30-day trial license; the same wording is referenced in the accept-terms sentence."
-  },
-  "admin.license.trial-request.title": {
-    "defaultMessage": "Experience all that Mattermost Enterprise Advanced has to offer with a free trial for the next 30 days. No obligation to buy and no credit card required. ",
-    "description": "Body of the trial banner on the Edition and License page promoting the 30-day Enterprise Advanced trial. Trailing space intentional (another sentence follows)."
-  },
   "admin.license.trialCard.contactSales": {
     "defaultMessage": "Contact Sales",
     "description": "Button that opens the sales contact flow; used on the trial license card, workspace limits panel, and announcement banner."
-  },
-  "admin.license.trialCard.licenseExpiring": {
-    "defaultMessage": "You’re currently on a free trial of our Mattermost {licenseType}.",
-    "description": "Title of the trial license banner in the System Console; {licenseType} is the plan display name (e.g. 'Enterprise')."
-  },
-  "admin.license.trialLicenseCard.expiringAfterFewDays": {
-    "defaultMessage": "Your free trial will expire in <b>{daysCount} {daysCount, plural, one {day} other {days}}</b>. Contact sales to purchase a license and continue using advanced features.",
-    "description": "Body of the trial license banner; <b> highlights the remaining time, {daysCount} is days left, and the plural distinguishes one day vs. several days."
-  },
-  "admin.license.trialLicenseCard.expiringToday": {
-    "defaultMessage": "Your free trial expires <b>Today at {time}</b>. Contact sales to purchase a license and continue using advanced features after the trial ends.",
-    "description": "Body of the trial license banner when the trial ends today; <b> highlights the deadline and {time} is the expiry time including timezone."
-  },
-  "admin.license.trialUpgradeAndRequest.submit": {
-    "defaultMessage": "Upgrade Server And Start trial",
-    "description": "Button on Team Edition servers that both upgrades the server binary to Enterprise Edition and starts an Enterprise Advanced trial."
-  },
-  "admin.license.upgrade-and-trial-request.accept-terms-final-part": {
-    "defaultMessage": "Also, I agree to the terms of the Mattermost {eeModalTerms}. Upgrading will download the binary and update your Team Edition instance.",
-    "description": "Second half of the legal-terms text below the upgrade-and-trial button; concatenated after the initial part, and {eeModalTerms} is the 'Enterprise Edition License' link."
-  },
-  "admin.license.upgrade-and-trial-request.accept-terms-initial-part": {
-    "defaultMessage": "By selecting <strong>Upgrade Server And Start trial</strong>, I agree to the <linkEvaluation>Mattermost Software Evaluation Agreement</linkEvaluation>, <linkPrivacy>Privacy Policy</linkPrivacy>, and receiving product emails. ",
-    "description": "First half of the legal-terms text below the upgrade-and-trial button; <strong> wraps the button name and the link tags wrap agreement names. Trailing space intentional."
-  },
-  "admin.license.upgrade-and-trial-request.title": {
-    "defaultMessage": "Upgrade to the Enterprise Edition to unlock a free 30-day trial of Mattermost Enterprise Advanced—our most powerful plan. No credit card required, no obligation to buy. ",
-    "description": "Body of the trial banner on Team Edition servers, promoting the binary upgrade plus 30-day Enterprise Advanced trial. Trailing space intentional."
-  },
-  "admin.license.upgradeAdvantage.adLdapSync": {
-    "defaultMessage": "AD/LDAP Group sync",
-    "description": "Feature bullet in the Enterprise upgrade-advantages list on the Edition and License page; AD/LDAP is Active Directory/LDAP."
-  },
-  "admin.license.upgradeAdvantage.advancedCompliance": {
-    "defaultMessage": "Advanced compliance",
-    "description": "Feature bullet in the Enterprise upgrade-advantages list on the Edition and License page."
-  },
-  "admin.license.upgradeAdvantage.advancedRoles": {
-    "defaultMessage": "Advanced roles and permissions",
-    "description": "Feature bullet in the Enterprise upgrade-advantages list on the Edition and License page."
-  },
-  "admin.license.upgradeAdvantage.andMore": {
-    "defaultMessage": "And more...",
-    "description": "Final bullet in the feature lists on the Edition and License page, indicating the list is not exhaustive."
-  },
-  "admin.license.upgradeAdvantage.highAvailability": {
-    "defaultMessage": "High Availability",
-    "description": "Feature bullet in the Enterprise upgrade-advantages list on the Edition and License page; 'High Availability' is the server clustering feature."
-  },
-  "admin.license.upgradeTitle": {
-    "defaultMessage": "Purchase one of our plans to unlock more features",
-    "description": "Title on the right panel of the Edition and License page for Free servers, above the list of features unlocked by paid plans."
-  },
-  "admin.license.upgradeToEnterprise": {
-    "defaultMessage": "Upgrade to Enterprise",
-    "description": "Title on the right panel of the Edition and License page prompting Professional or unlicensed servers to upgrade to the Enterprise plan."
-  },
-  "admin.license.upgradeToEnterpriseAdvanced": {
-    "defaultMessage": "Upgrade to Enterprise Advanced",
-    "description": "Heading/button in the right panel of the Edition and License page promoting an upgrade to the Enterprise Advanced plan; 'Enterprise Advanced' is a plan name."
-  },
-  "admin.license.upload-modal.error.title": {
-    "defaultMessage": "License validation failed",
-    "description": "Title of the upload-license modal when the uploaded license file failed validation."
-  },
-  "admin.license.upload-modal.loading.subtitle": {
-    "defaultMessage": "Please wait while we validate your license file...",
-    "description": "Subtitle of the upload-license modal while the uploaded license file is being validated."
-  },
-  "admin.license.upload-modal.loading.title": {
-    "defaultMessage": "Validating License",
-    "description": "Title of the upload-license modal while the uploaded license file is being validated."
-  },
-  "admin.license.upload-modal.preview.subtitle": {
-    "defaultMessage": "Please review the changes before applying the new license.",
-    "description": "Subtitle of the upload-license modal's preview step, above the comparison of current vs. new license."
-  },
-  "admin.license.upload-modal.preview.title": {
-    "defaultMessage": "Review License Changes",
-    "description": "Title of the upload-license modal's preview step, where the admin reviews license changes before applying."
-  },
-  "admin.license.upload-modal.successfulUpgrade": {
-    "defaultMessage": "New license successfully applied",
-    "description": "Title of the upload-license modal's success step after a new license was applied."
-  },
-  "admin.license.upload-modal.successfulUpgradeText": {
-    "defaultMessage": "You are now on the {skuName} plan for {licensedUsersNum, number} seats. This is effective from {startsAt} until {expiresAt}.",
-    "description": "Success text in the upload-license modal after applying a license; {skuName} is the plan name, {licensedUsersNum} the seat count, {startsAt} and {expiresAt} are dates."
-  },
-  "admin.license.uploadFile": {
-    "defaultMessage": "Upload File",
-    "description": "Button next to the 'License Key:' label on the Edition and License page; opens a file picker to upload a license file."
-  },
-  "admin.license.uploadLicense": {
-    "defaultMessage": "Upload license",
-    "description": "Button on the Edition and License page (Entry edition) that opens a file picker to upload a license file."
-  },
-  "admin.license.uploadLicenseToUnlock": {
-    "defaultMessage": "Upload your license here to unlock licensed features",
-    "description": "Text in the drag-and-drop license upload area on the Edition and License page."
-  },
-  "admin.license.userSeatAlert.closeBtnTooltip": {
-    "defaultMessage": "Dismiss",
-    "description": "Tooltip on the X button that dismisses the licensed-seat usage alert banner in the System Console."
-  },
-  "admin.license.userSeatAlert.contactSales": {
-    "defaultMessage": "Contact Sales",
-    "description": "Button on the licensed-seat usage alert banner in the System Console; opens the Mattermost contact-sales page."
-  },
-  "admin.license.userSeatAlert.dangerMessage": {
-    "defaultMessage": "All licensed seats are now in use. Contact Sales to extend your license.",
-    "description": "Body of the alert banner shown to system admins when 100% of the licensed seats are in use."
-  },
-  "admin.license.userSeatAlert.dangerTitle": {
-    "defaultMessage": "Your workspace has reached 100% of your licensed seats",
-    "description": "Title of the alert banner shown to system admins when all licensed user seats are in use."
-  },
-  "admin.license.userSeatAlert.infoMessage": {
-    "defaultMessage": "Your organization is approaching full license utilization. Now is a good time to assess future needs and align usage with procurement planning. Contact us to explore available options.",
-    "description": "Body of the alert banner shown to system admins when 95% of the licensed seats are in use, suggesting they plan for more seats."
-  },
-  "admin.license.userSeatAlert.infoTitle": {
-    "defaultMessage": "Your workspace has reached 95% of your licensed seats",
-    "description": "Title of the alert banner shown to system admins when 95% of the licensed user seats are in use."
-  },
-  "admin.license.userSeatAlert.successMessage": {
-    "defaultMessage": "Congratulations! Platform adoption is strong across your organization. To ensure uninterrupted growth, our team can assist in scaling your license to meet operational requirements.",
-    "description": "Body of the congratulatory alert banner shown to system admins when 90% of the licensed seats are in use."
-  },
-  "admin.license.userSeatAlert.successTitle": {
-    "defaultMessage": "Your workspace has reached 90% of your licensed seats",
-    "description": "Title of the alert banner shown to system admins when 90% of the licensed user seats are in use."
-  },
-  "admin.licenseSettings.teamEdition.teamEditionRightPanel.acceptTermsFinal": {
-    "defaultMessage": ". Upgrading will download the binary and update your team edition.",
-    "description": "Final fragment of the upgrade legal-terms sentence; concatenated directly after the 'Enterprise Edition License' link, so the leading period is intentional."
-  },
-  "admin.licenseSettings.teamEdition.teamEditionRightPanel.acceptTermsInitial": {
-    "defaultMessage": "By clicking <b>Upgrade</b>, I agree to the terms of the Mattermost ",
-    "description": "First fragment of the upgrade legal-terms sentence, followed immediately by the 'Enterprise Edition License' link; <b> wraps the button name 'Upgrade'. Trailing space intentional."
-  },
-  "admin.licenseSettings.teamEdition.teamEditionRightPanel.eeLicenseLink": {
-    "defaultMessage": "Enterprise Edition License",
-    "description": "Link text in the middle of the upgrade legal-terms sentence; clicking it opens the Enterprise Edition license agreement modal."
-  },
-  "admin.licenseSettings.teamEdition.teamEditionRightPanel.learnMore": {
-    "defaultMessage": "Learn more",
-    "description": "Link button shown on the Edition and License page when the quick server upgrade is unsupported; opens documentation on manual upgrading."
-  },
-  "admin.licenseSettings.teamEdition.teamEditionRightPanel.restart": {
-    "defaultMessage": "Restart Server",
-    "description": "Button on the Edition and License page that restarts the Mattermost server after the Enterprise Edition binary upgrade completes."
-  },
-  "admin.licenseSettings.teamEdition.teamEditionRightPanel.restarting": {
-    "defaultMessage": "Restarting",
-    "description": "Loading text on the restart-server button on the Edition and License page while the server restarts."
-  },
-  "admin.licenseSettings.teamEdition.teamEditionRightPanel.upgradedRestart": {
-    "defaultMessage": "You have upgraded your binary to mattermost enterprise, please restart the server to start using the new binary. You can do it right here:",
-    "description": "Message shown after the server binary was upgraded to Enterprise Edition, prompting the admin to restart via the button below."
   },
   "admin.lockTeammateNameDisplay": {
     "defaultMessage": "Lock Teammate Name Display for all users: ",
@@ -9607,14 +8499,6 @@
     "defaultMessage": "<link>Multi-factor authentication</link> is available for accounts with AD/LDAP or email login. If other login methods are used, MFA should be configured with the authentication provider.",
     "description": "Info banner at the top of the Authentication > MFA admin page; <link> wraps the words Multi-factor authentication and points to documentation."
   },
-  "admin.mobile_security_feature_discovery.copy": {
-    "defaultMessage": "Enable advanced security features like biometric authentication, screen capture prevention, and jailbreak/root detection for your mobile users.",
-    "description": "Body copy on the feature discovery (upsell) page for mobile security features (biometrics, screen capture prevention, jailbreak detection)."
-  },
-  "admin.mobile_security_feature_discovery.title": {
-    "defaultMessage": "Enhance mobile app security with Mattermost Enterprise",
-    "description": "Headline on the feature discovery (upsell) page for mobile app security; mentions the required plan."
-  },
   "admin.mobileSecurity.allowPdfLinkNavigationDescription": {
     "defaultMessage": "Enables tapping links inside PDFs when Secure File Preview Mode is active. Links will open in the device browser or supported app. Has no effect when Secure File Preview Mode is disabled.",
     "description": "Admin console help text under the Allow Link Navigation in Secure PDFs toggle on the Mobile Security page; Secure File Preview Mode is another setting on the same page."
@@ -9890,22 +8774,6 @@
   "admin.office365.userTitle": {
     "defaultMessage": "User API Endpoint:",
     "description": "Setting label for a text field in the Entra ID (Office 365) OAuth admin settings; the API endpoint used to fetch the user profile. Ends with a colon."
-  },
-  "admin.openid_custom_feature_discovery.copy": {
-    "defaultMessage": "Use OpenID Connect for authentication and single sign-on (SSO) with any service that supports the OIDC specification such as Apple, Okta, OneLogin, and more.",
-    "description": "Body copy on the feature discovery (upsell) page for custom OpenID Connect providers; lists provider product names."
-  },
-  "admin.openid_custom_feature_discovery.title": {
-    "defaultMessage": "Integrate OpenID Connect with Mattermost Professional",
-    "description": "Headline on the feature discovery (upsell) page for custom OpenID Connect providers; mentions the required plan."
-  },
-  "admin.openid_feature_discovery.copy": {
-    "defaultMessage": "Use OpenID Connect for authentication and single sign-on (SSO) with any service that supports the OIDC specification such as Google, Entra ID, Apple, Okta, OneLogin, and more.",
-    "description": "Body copy on the feature discovery (upsell) page for OpenID Connect SSO; lists provider product names that should not be translated."
-  },
-  "admin.openid_feature_discovery.title": {
-    "defaultMessage": "Integrate OpenID Connect with Mattermost Professional",
-    "description": "Headline on the feature discovery (upsell) page for OpenID Connect; mentions the required plan."
   },
   "admin.openid.buttonColorDesc": {
     "defaultMessage": "Specify the color of the OpenID login button for white labeling purposes. Use a hex code with a #-sign before the code.",
@@ -13039,14 +11907,6 @@
     "defaultMessage": "Delete",
     "description": "Button label next to a user's personal access token in the System Console user detail page; deletes (revokes) that token."
   },
-  "admin.saml_feature_discovery.copy": {
-    "defaultMessage": "When you connect Mattermost with your organization's single sign-on provider, users can access Mattermost without having to re-enter their credentials.",
-    "description": "Body copy on the feature discovery (upsell) page for SAML single sign-on."
-  },
-  "admin.saml_feature_discovery.title": {
-    "defaultMessage": "Integrate SAML 2.0 with Mattermost Professional",
-    "description": "Headline on the feature discovery (upsell) page for SAML 2.0; mentions the required plan."
-  },
   "admin.saml.adminAttrDesc": {
     "defaultMessage": "(Optional) The attribute in the SAML Assertion for designating System Admins. The users selected by the query will have access to your Antimatter server as System Admins. By default, System Admins have complete access to the Antimatter System Console.\n \nExisting members that are identified by this attribute will be promoted from member to System Admin upon next login. The next login is based upon Session lengths set in **System Console > Session Lengths**. It is highly recommend to manually demote users to members in **System Console > User Management** to ensure access is restricted immediately.\n \nNote: If this filter is removed/changed, System Admins that were promoted via this filter will be demoted to members and will not retain access to the System Console. When this filter is not in use, System Admins can be manually promoted/demoted in **System Console > User Management**.",
     "description": "Admin console help text for the SAML 'Admin Attribute' setting; supports Markdown (bold path references to other System Console pages)."
@@ -14275,14 +13135,6 @@
     "defaultMessage": "If using HTTP (insecure), this is the maximum time allowed from the end of reading the request headers until the response is written. If using HTTPS, it is the total time from when the connection is accepted until the response is written.",
     "description": "Help text for the Write Timeout setting on the System Console Web Server page; describes an HTTP response write timeout."
   },
-  "admin.session_attributes_feature_discovery.desc": {
-    "defaultMessage": "Define and tune session attributes such as network status, client type, and device posture for use in attribute-based access control policies.",
-    "description": "Body copy on the feature discovery (upsell) page for session attributes used in access control policies."
-  },
-  "admin.session_attributes_feature_discovery.title": {
-    "defaultMessage": "Evaluate per-session context in access policies with Mattermost Enterprise Advanced",
-    "description": "Headline on the feature discovery (upsell) page for session attributes; mentions the required plan."
-  },
   "admin.session_attributes.configure.subtitle": {
     "defaultMessage": "Session attributes are evaluated per session and can be used in access control policies.",
     "description": "Page subtitle on the System Console session attributes page, explaining their use in access control policies."
@@ -15031,18 +13883,6 @@
     "defaultMessage": "SQL Statement Logging: ",
     "description": "Toggle setting name on the Database admin page for logging executed SQL statements; trailing space is intentional."
   },
-  "admin.subscription.cloudTrialCard.description": {
-    "defaultMessage": "Your trial ends on {date} {time}. Upgrade to one of our paid plans with no limits.",
-    "description": "Body of the trial banner on the cloud Subscription page; {date} and {time} are when the trial ends."
-  },
-  "admin.subscription.cloudTrialCard.upgrade": {
-    "defaultMessage": "Upgrade",
-    "description": "Button on the cloud trial banner that starts the paid-plan upgrade flow. 'Upgrade' is a verb."
-  },
-  "admin.subscription.cloudTrialCard.upgradeTitle": {
-    "defaultMessage": "Upgrade to one of our paid plans to keep your workspace",
-    "description": "Title on the trial card of the Cloud billing/subscription admin page urging the admin to upgrade before the trial ends."
-  },
   "admin.support.aboutDesc": {
     "defaultMessage": "The URL for the About link on the Antimatter login and sign-up pages. If this field is empty, the About link is hidden from users.",
     "description": "Admin console help text for the About Link customization setting."
@@ -15486,14 +14326,6 @@
   "admin.system_properties.user_properties.type_menu.label": {
     "defaultMessage": "Select type",
     "description": "Accessibility label for the dropdown that picks a user attribute's data type."
-  },
-  "admin.system_roles_feature_discovery.copy": {
-    "defaultMessage": "Assign customizable admin roles to give designated users read and/or write access to select sections of System Console.",
-    "description": "Body copy on the feature discovery (upsell) page for custom admin (system) roles."
-  },
-  "admin.system_roles_feature_discovery.title": {
-    "defaultMessage": "Provide controlled access to the System Console with Mattermost Enterprise",
-    "description": "Headline on the feature discovery (upsell) page for delegated System Console access; mentions the required plan."
   },
   "admin.system_users_list.pagination": {
     "defaultMessage": "Showing {firstPage} - {lastPage} of {totalItems} users",
@@ -16611,25 +15443,9 @@
     "defaultMessage": "<b>{total, number} {total, plural, one {User} other {Users}}</b> To Be Removed",
     "description": "Title of the modal listing users who will be removed by group sync; {total} is the user count with plural forms, and <b></b> wraps the bolded count portion."
   },
-  "admin.trial_banner.trial-request.error": {
-    "defaultMessage": "Trial license could not be retrieved. Visit <link>{trialInfoLink}</link> to request a license.",
-    "description": "Error under the trial banner when the trial license request fails; {trialInfoLink} is a URL, also wrapped by <link> to make it clickable."
-  },
-  "admin.trial_banner.upgrade_unsupported": {
-    "defaultMessage": "Quick upgrade is only supported on Linux systems with x86-64 architecture. <link>Learn how to upgrade manually.</link>",
-    "description": "Error in the trial banner when the quick server upgrade is not supported on the current platform; <link> wraps the manual-upgrade documentation link text."
-  },
   "admin.true": {
     "defaultMessage": "True",
     "description": "Radio button label for the 'true' choice of boolean settings throughout the System Console."
-  },
-  "admin.user_attributes_feature_discovery.desc": {
-    "defaultMessage": "Define and manage organization-specific user profile attributes as that can synchronize with your AD/LDAP or SAML identity provider.",
-    "description": "Body copy on the feature discovery (upsell) page for custom user profile attributes."
-  },
-  "admin.user_attributes_feature_discovery.title": {
-    "defaultMessage": "Add critical metadata to user profiles using custom user attributes with Mattermost Enterprise",
-    "description": "Headline on the feature discovery (upsell) page for custom user attributes; mentions the required plan."
   },
   "admin.user_grid.channel_admin": {
     "defaultMessage": "Channel Admin",
@@ -18186,14 +17002,6 @@
   "backstage_sidebar.integrations.outgoingOauthConnections": {
     "defaultMessage": "Outgoing OAuth 2.0 Connections",
     "description": "Sidebar navigation item in the integrations backstage for outgoing OAuth 2.0 connections; keep 'OAuth 2.0' as-is."
-  },
-  "billing.subscription.info.mostRecentPaymentFailed": {
-    "defaultMessage": "Your most recent payment failed",
-    "description": "Title of a danger banner on the cloud Subscription page when the latest payment attempt failed."
-  },
-  "billing.subscription.info.mostRecentPaymentFailed.description.mostRecentPaymentFailed": {
-    "defaultMessage": "It looks your most recent payment failed because the credit card on your account has expired. Please <link>update your payment information</link> to avoid any disruption.",
-    "description": "Warning text on the Cloud billing/subscription admin page when the last payment failed due to an expired card; <link> wraps the clickable 'update your payment information' text."
   },
   "bot.add.default_token.expiry": {
     "defaultMessage": "Default token expires",
@@ -20527,10 +19335,6 @@
     "defaultMessage": "Message Archived",
     "description": "Title of the error page shown when a linked message was archived due to Cloud free plan message limits."
   },
-  "cloud_billing_history_modal.title": {
-    "defaultMessage": "Invoice(s)",
-    "description": "Title of the modal listing one or more cloud invoices; '(s)' marks an optional plural."
-  },
   "cloud_preview_modal.aria_label": {
     "defaultMessage": "Cloud Preview Introduction",
     "description": "Accessible label (aria-label) of the whole cloud preview walkthrough modal shown to trial users."
@@ -21598,10 +20402,6 @@
   "delete_post.warning": {
     "defaultMessage": "This message has {count, number} {count, plural, one {comment} other {comments}} on it.",
     "description": "Warning in the delete-post modal that replies will also be removed; {count} is the number of replies and drives the plural branches comment/comments."
-  },
-  "delete_success_modal.button_text": {
-    "defaultMessage": "Go to mattermost.com",
-    "description": "Primary button on the workspace-deleted modal; navigates to the mattermost.com website; keep the domain as-is."
   },
   "deleteChannelModal.canViewArchivedChannelsWarning": {
     "defaultMessage": "This will archive the channel from the team. Channel contents will still be accessible by channel members.",
@@ -25134,10 +23934,6 @@
   "leave_team_modal.yes": {
     "defaultMessage": "Yes",
     "description": "Confirm button label in the leave-team confirmation modal."
-  },
-  "licensingPage.infoBanner.startTrialTitle": {
-    "defaultMessage": "Start a free 30-day trial of Mattermost Enterprise Advanced",
-    "description": "Title of the trial promotion banner on the System Console Edition and License page."
   },
   "licensingPage.overageUsersBanner.cta": {
     "defaultMessage": "Contact Sales",
@@ -30243,10 +29039,6 @@
     "defaultMessage": "Failed",
     "description": "Text shown on the start-trial button after the trial license request failed; compact button label."
   },
-  "start_trial.modal.gettingTrial": {
-    "defaultMessage": "Getting Trial...",
-    "description": "Text shown on the start-trial button while the trial license request is in progress."
-  },
   "start_trial.modal.loaded": {
     "defaultMessage": "Loaded!",
     "description": "Text shown briefly on the start-trial button after the trial license request succeeds."
@@ -33927,10 +32719,6 @@
     "defaultMessage": "Unarchive this file by upgrading",
     "description": "Tooltip title on an archived file attachment prompting an upgrade to a paid plan to restore access."
   },
-  "workspace_limits.file_storage": {
-    "defaultMessage": "File storage",
-    "description": "Name of the file storage usage meter in the cloud workspace limits panel; compact space."
-  },
   "workspace_limits.file_storage.short": {
     "defaultMessage": "Files",
     "description": "Compact label for the file storage usage bar in the Cloud workspace usage panel; refers to uploaded file storage."
@@ -33938,10 +32726,6 @@
   "workspace_limits.file_storage.short.usage": {
     "defaultMessage": "{actual} / {limit}",
     "description": "Compact usage readout next to the file storage bar in the Cloud usage panel; {actual} is current storage used and {limit} the plan's cap (both sizes like '5GB')."
-  },
-  "workspace_limits.file_storage.usage": {
-    "defaultMessage": "{actual} of {limit} ({percent}%)",
-    "description": "Usage readout for file storage on the admin billing/subscription page; {actual} is used storage, {limit} the plan cap, {percent} the numeric percentage used."
   },
   "workspace_limits.menu_limit.critical.files_storage": {
     "defaultMessage": "You’re getting closer to the {limit} file storage limit. <a>{callToAction}</a>",
@@ -34007,10 +32791,6 @@
     "defaultMessage": "You're getting closer to the free {limit} message limit. <a>{callToAction}</a>",
     "description": "Cloud usage warning in the main menu as message history approaches the free limit; {limit} is a message count; <a> wraps {callToAction}."
   },
-  "workspace_limits.message_history": {
-    "defaultMessage": "Message history",
-    "description": "Name of the message history usage meter in the cloud workspace limits panel; compact space."
-  },
   "workspace_limits.message_history.locked.description.admin": {
     "defaultMessage": "Full access to message history is included in <a>paid plans</a>",
     "description": "Description shown to admins in the banner at the top of a channel when older messages are hidden by the Cloud Free message-history limit; <a> wraps the 'paid plans' link text."
@@ -34026,10 +32806,6 @@
   "workspace_limits.message_history.short.usage": {
     "defaultMessage": "{actual} / {limit}",
     "description": "Compact usage readout next to the message history bar in the Cloud usage panel; {actual} is the current message count (e.g. '8K') and {limit} the plan's cap."
-  },
-  "workspace_limits.message_history.usage": {
-    "defaultMessage": "{actual} of {limit} messages ({percent}%)",
-    "description": "Usage readout for message history on the admin billing/subscription page; {actual} is the current message count, {limit} the plan cap, {percent} the numeric percentage used."
   },
   "workspace_limits.modals.close": {
     "defaultMessage": "Close",
@@ -34082,14 +32858,6 @@
   "workspace_limits.teams_limit_reached.view_upgrade_options": {
     "defaultMessage": "View upgrade options",
     "description": "Button next to the disabled Unarchive Team button; opens plan upgrade options."
-  },
-  "workspace_limits.upgrade": {
-    "defaultMessage": "Upgrade to avoid {planName} data limits",
-    "description": "Heading of the workspace limits panel urging an upgrade; {planName} is the current free plan's name."
-  },
-  "workspace_limits.upgrade_reasons.free": {
-    "defaultMessage": "{planName} is restricted to {messagesLimit} message history and {storageLimit} file storage. You can delete items to free up space or upgrade to a paid plan.",
-    "description": "Description on the admin billing page explaining Free plan restrictions; {planName} is the plan name, {messagesLimit} a message count, {storageLimit} a storage size."
   },
   "wysiwyg.link.display_text": {
     "defaultMessage": "Display text",
