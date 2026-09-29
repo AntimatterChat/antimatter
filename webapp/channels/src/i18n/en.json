@@ -7003,6 +7003,150 @@
     "defaultMessage": "Tenant ID:",
     "description": "Setting label for a text field in the Intune section of the Mobile Security admin page; ends with a colon."
   },
+  "admin.ip_filtering.add_filter": {
+    "defaultMessage": "Add Filter",
+    "description": "Primary button in the Allowed IP Addresses section header; opens the modal to add a new filter rule."
+  },
+  "admin.ip_filtering.add_ip_filter": {
+    "defaultMessage": "Add IP Filter",
+    "description": "Title of the modal for adding a new IP filter rule (Cloud admin IP Filtering page)."
+  },
+  "admin.ip_filtering.add_your_ip": {
+    "defaultMessage": "Add your IP address",
+    "description": "Button in the warning panel shown when the admin's own IP is not in any rule; opens the add filter modal pre-filled."
+  },
+  "admin.ip_filtering.any_ip_can_access_add_filter": {
+    "defaultMessage": "Any IP can access your workspace. To limit access to selected IP Addresses, <add>Add a filter</add>.",
+    "description": "Empty-state text when no IP filter rules exist; <add> wraps an inline link that opens the add filter modal."
+  },
+  "admin.ip_filtering.apply_changes": {
+    "defaultMessage": "Yes, apply changes",
+    "description": "Confirm button of the save confirmation modal on the IP Filtering page; affirmative answer to 'apply these changes?'."
+  },
+  "admin.ip_filtering.apply_ip_filter_changes": {
+    "defaultMessage": "Apply IP Filter Changes",
+    "description": "Title of the confirmation modal shown before saving IP filter changes."
+  },
+  "admin.ip_filtering.apply_ip_filter_changes_are_you_sure": {
+    "defaultMessage": "Are you sure you want to apply these IP Filter changes? <strong>Users with IP addresses outside of the IP ranges provided will no longer have access to the workspace.</strong>",
+    "description": "Body of the confirmation modal before applying IP filter changes in the System Console; <strong> wraps the warning about locked-out users."
+  },
+  "admin.ip_filtering.cancel": {
+    "defaultMessage": "Cancel",
+    "description": "Cancel button in the IP filtering modals (add/edit filter, delete confirmation, save confirmation)."
+  },
+  "admin.ip_filtering.delete": {
+    "defaultMessage": "Delete",
+    "description": "Tooltip on the trash icon in an IP filter table row, and label of the delete action; removes the rule."
+  },
+  "admin.ip_filtering.delete_confirmation_body": {
+    "defaultMessage": "Are you sure you want to delete IP filter {filter}? Users with IP addresses outside of this range won't be able to access the workspace when IP Filtering is enabled",
+    "description": "Body of the confirmation modal when deleting an IP filter rule; {filter} is the filter's name."
+  },
+  "admin.ip_filtering.delete_confirmation_title": {
+    "defaultMessage": "Delete IP Filter",
+    "description": "Title of the confirmation modal when deleting an IP filter rule."
+  },
+  "admin.ip_filtering.delete_filter": {
+    "defaultMessage": "Delete filter",
+    "description": "Menu item / button label that deletes an IP filter rule on the System Console IP filtering page."
+  },
+  "admin.ip_filtering.disable_ip_filtering": {
+    "defaultMessage": "Disable IP Filtering",
+    "description": "Title of the confirmation modal shown when saving with IP filtering turned off."
+  },
+  "admin.ip_filtering.edit": {
+    "defaultMessage": "Edit",
+    "description": "Tooltip on the pencil icon in an IP filter table row; opens the edit modal for that rule."
+  },
+  "admin.ip_filtering.edit_ip_filter": {
+    "defaultMessage": "Edit IP Filter",
+    "description": "Title of the modal for editing an existing IP filter rule."
+  },
+  "admin.ip_filtering.edit_section_description_line_1": {
+    "defaultMessage": "Create rules to allow access to the workspace for specified IP addresses only.",
+    "description": "First line of the description in the IP filter rules section of the System Console IP filtering page."
+  },
+  "admin.ip_filtering.edit_section_description_line_2": {
+    "defaultMessage": "<strong>NOTE:</strong> If no rules are added, all IP addresses will be allowed.",
+    "description": "Second line of the IP filter rules section description; <strong> wraps the 'NOTE:' prefix."
+  },
+  "admin.ip_filtering.enable_ip_filtering": {
+    "defaultMessage": "Enable IP Filtering",
+    "description": "Title next to the master toggle that turns the IP Filtering feature on or off (Cloud admin page)."
+  },
+  "admin.ip_filtering.enable_ip_filtering_description": {
+    "defaultMessage": "Limit access to your workspace by IP address. <learnmore>Learn more in the docs</learnmore>",
+    "description": "Description next to the toggle that enables IP filtering; <learnmore> wraps the documentation link text."
+  },
+  "admin.ip_filtering.error_on_page": {
+    "defaultMessage": "Your IP address is not included in your filters",
+    "description": "Error in the save bar of the IP Filtering page when the admin's own IP address is not covered by any rule (saving is blocked)."
+  },
+  "admin.ip_filtering.filter_name": {
+    "defaultMessage": "Filter Name",
+    "description": "Column header in the IP filter rules table for the rule's name."
+  },
+  "admin.ip_filtering.include_your_ip": {
+    "defaultMessage": "Include your IP address in at least one of the rules below to continue.",
+    "description": "Warning panel text telling the admin their own IP must be covered by a rule before changes can be saved."
+  },
+  "admin.ip_filtering.ip_address_range": {
+    "defaultMessage": "IP Address Range",
+    "description": "Column header in the IP filter rules table for the rule's CIDR range."
+  },
+  "admin.ip_filtering.ip_filtering": {
+    "defaultMessage": "IP Filtering",
+    "description": "Page header of the IP Filtering section in the System Console (Cloud feature)."
+  },
+  "admin.ip_filtering.name": {
+    "defaultMessage": "Name",
+    "description": "Label above the rule name input in the add/edit IP filter modal."
+  },
+  "admin.ip_filtering.no_filters": {
+    "defaultMessage": "No IP filtering rules added",
+    "description": "Empty-state title on the IP Filtering page when no rules have been added."
+  },
+  "admin.ip_filtering.no_filters_added": {
+    "defaultMessage": "Are you sure you want to apply these IP filter changes? There are currently no filters added, so <strong>all IP addresses will have access to the workspace.</strong>",
+    "description": "Body of the confirmation modal when applying IP filtering with no rules defined; <strong> wraps the warning that all IPs will be allowed."
+  },
+  "admin.ip_filtering.rule_name_placeholder": {
+    "defaultMessage": "Enter a name for this rule",
+    "description": "Placeholder of the rule name input in the add/edit IP filter modal."
+  },
+  "admin.ip_filtering.save": {
+    "defaultMessage": "Save",
+    "description": "Confirm/save button label used in the add IP filter modal and the save confirmation modal."
+  },
+  "admin.ip_filtering.save_disclaimer_subtitle": {
+    "defaultMessage": "If you happen to block yourself with these settings, your workspace owner can log in to the <customerportal>Customer Portal</customerportal> to disable IP filtering to restore access.",
+    "description": "Disclaimer text in the IP filtering save confirmation explaining recovery via the Customer Portal; <customerportal> wraps the portal link text."
+  },
+  "admin.ip_filtering.save_disclaimer_title": {
+    "defaultMessage": "Using the Customer Portal to restore access",
+    "description": "Heading above the disclaimer about restoring access through the Customer Portal in the IP filtering save confirmation."
+  },
+  "admin.ip_filtering.saving_changes": {
+    "defaultMessage": "Applying changes...",
+    "description": "Save button label while the admin's IP filter changes are being applied to the workspace."
+  },
+  "admin.ip_filtering.turn_off_ip_filtering": {
+    "defaultMessage": "Are you sure you want to turn off IP Filtering? <strong>All IP addresses will have access to the workspace.</strong>",
+    "description": "Body of the confirmation modal for disabling IP filtering; <strong> bolds the warning that all IPs get access."
+  },
+  "admin.ip_filtering.update_filter": {
+    "defaultMessage": "Update filter",
+    "description": "Confirm button of the IP filter modal when editing an existing rule (instead of 'Save')."
+  },
+  "admin.ip_filtering.yes_disable_ip_filtering": {
+    "defaultMessage": "Yes, disable IP Filtering",
+    "description": "Confirm button of the modal that disables IP filtering."
+  },
+  "admin.ip_filtering.your_current_ip_is": {
+    "defaultMessage": "Your current IP address is {ip}",
+    "description": "Informational note in the IP filtering UI showing the admin's own IP; {ip} is an IP address."
+  },
   "admin.jobTable.cancelButton": {
     "defaultMessage": "Cancel",
     "description": "Tooltip on the '×' control in a jobs table row; cancels a pending or running background job."
@@ -12962,6 +13106,10 @@
   "admin.sidebar.integrations": {
     "defaultMessage": "Integrations",
     "description": "Category heading in the System Console sidebar grouping integration settings pages; also the title of the end-user Integrations management page; compact space."
+  },
+  "admin.sidebar.ip_filtering": {
+    "defaultMessage": "IP Filtering",
+    "description": "Navigation item in the System Console sidebar; opens the IP address filtering settings page; compact space."
   },
   "admin.sidebar.ldap": {
     "defaultMessage": "AD/LDAP",
