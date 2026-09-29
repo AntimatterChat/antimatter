@@ -28,9 +28,7 @@ func (a *App) markAdminOnboardingComplete(rctx request.CTX) *model.AppError {
 }
 
 func (a *App) CompleteOnboarding(rctx request.CTX, request *model.CompleteOnboardingRequest) *model.AppError {
-	isCloud := a.Srv().License() != nil && *a.Srv().License().Features.Cloud
-
-	if !isCloud && request.Organization == "" {
+	if request.Organization == "" {
 		rctx.Logger().Error("No organization name provided for self hosted onboarding")
 		return model.NewAppError("CompleteOnboarding", "api.error_no_organization_name_provided_for_self_hosted_onboarding", nil, "", http.StatusBadRequest)
 	}

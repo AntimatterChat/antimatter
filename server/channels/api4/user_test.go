@@ -305,8 +305,7 @@ func TestCreateUserAudit(t *testing.T) {
 	require.NoError(t, err)
 	defer os.Remove(logFile.Name())
 
-	options := []app.Option{app.WithLicense(model.NewTestLicense("advanced_logging"))}
-	th := SetupWithServerOptionsAndConfig(t, options, func(cfg *model.Config) {
+	th := SetupWithServerOptionsAndConfig(t, nil, func(cfg *model.Config) {
 		cfg.ExperimentalAuditSettings.FileEnabled = new(true)
 		cfg.ExperimentalAuditSettings.FileName = new(logFile.Name())
 	})
@@ -340,8 +339,7 @@ func TestUserLoginAudit(t *testing.T) {
 	require.NoError(t, err)
 	defer os.Remove(logFile.Name())
 
-	options := []app.Option{app.WithLicense(model.NewTestLicense("advanced_logging"))}
-	th := SetupWithServerOptionsAndConfig(t, options, func(cfg *model.Config) {
+	th := SetupWithServerOptionsAndConfig(t, nil, func(cfg *model.Config) {
 		cfg.ExperimentalAuditSettings.FileEnabled = new(true)
 		cfg.ExperimentalAuditSettings.FileName = new(logFile.Name())
 	})
@@ -383,8 +381,7 @@ func TestLogoutAuditAuthStatus(t *testing.T) {
 	require.NoError(t, err)
 	defer os.Remove(logFile.Name())
 
-	options := []app.Option{app.WithLicense(model.NewTestLicense("advanced_logging"))}
-	th := SetupWithServerOptionsAndConfig(t, options, func(cfg *model.Config) {
+	th := SetupWithServerOptionsAndConfig(t, nil, func(cfg *model.Config) {
 		cfg.ExperimentalAuditSettings.FileEnabled = new(true)
 		cfg.ExperimentalAuditSettings.FileName = new(logFile.Name())
 	})
@@ -868,7 +865,6 @@ func TestCreateUserWebSocketEvent(t *testing.T) {
 	th := Setup(t).InitBasic(t)
 
 	t.Run("guest should not received new_user event but user should", func(t *testing.T) {
-		th.App.Srv().SetLicense(model.NewTestLicense("guests"))
 		th.App.UpdateConfig(func(cfg *model.Config) { *cfg.GuestAccountsSettings.Enable = true })
 
 		id := model.NewId()
@@ -1840,13 +1836,6 @@ func TestSearchUsers(t *testing.T) {
 	assert.Nil(t, appErr)
 
 	search = &model.UserSearch{Term: th.BasicUser.Username, InGroupId: group.Id}
-	t.Run("Requires ldap license when searching in group", func(t *testing.T) {
-		_, resp, err = th.SystemAdminClient.SearchUsers(context.Background(), search)
-		require.Error(t, err)
-		CheckForbiddenStatus(t, resp)
-	})
-
-	th.App.Srv().SetLicense(model.NewTestLicense("ldap"))
 
 	t.Run("Requires manage system permission when searching for users in a group", func(t *testing.T) {
 		_, resp, err = th.Client.SearchUsers(context.Background(), search)
@@ -1878,8 +1867,6 @@ func TestSearchUsers(t *testing.T) {
 		RemoteId:    new(model.NewId()),
 	})
 	assert.Nil(t, appErr)
-
-	th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuProfessional, "ldap"))
 
 	search = &model.UserSearch{Term: th.BasicUser.Username, NotInGroupId: group.Id}
 	t.Run("Returns users not in group", func(t *testing.T) {
@@ -2050,14 +2037,11 @@ func TestAutocompleteUsersInChannel(t *testing.T) {
 	t.Run("Check OutOfChannel results with/without VIEW_MEMBERS permissions", func(t *testing.T) {
 		// MM-61041: Re-enabled to collect failure data (17mo, "Broken Test").
 		// This subtest is fragile by design — shares th.Client with the parent,
-		// mutates global permissions/license/config. If it still fails, rewrite
+		// mutates global permissions/config. If it still fails, rewrite
 		// as focused app-layer unit tests rather than fixing shared state.
 
 		th.App.UpdateConfig(func(cfg *model.Config) { *cfg.GuestAccountsSettings.Enable = true })
-		th.App.Srv().SetLicense(model.NewTestLicense())
 		defer func() {
-			appErr := th.App.Srv().RemoveLicense()
-			require.Nil(t, appErr)
 			th.App.UpdateConfig(func(cfg *model.Config) { *cfg.GuestAccountsSettings.Enable = false })
 		}()
 		permissionsUser := th.CreateUser(t)
@@ -3877,7 +3861,6 @@ func TestGetUsersNotInChannelTeamScope(t *testing.T) {
 	mainHelper.Parallel(t)
 	th := Setup(t).InitBasic(t)
 
-	th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterprise))
 	th.App.UpdateConfig(func(cfg *model.Config) { *cfg.GuestAccountsSettings.Enable = true })
 
 	// A team the basic user is not a member of, with a member of its own so the
@@ -4058,8 +4041,6 @@ func TestGetUsersNotInChannelTeamScope(t *testing.T) {
 func TestGetUsersNotInChannelAbacMatchOnly(t *testing.T) {
 	th := Setup(t).InitBasic(t)
 
-	ok := th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterpriseAdvanced))
-	require.True(t, ok, "SetLicense should return true")
 	th.App.UpdateConfig(func(cfg *model.Config) {
 		*cfg.AccessControlSettings.EnableAttributeBasedAccessControl = true
 	})
@@ -4197,14 +4178,6 @@ func TestGetUsersInGroup(t *testing.T) {
 	user1, err := th.App.CreateUser(th.Context, &model.User{Email: th.GenerateTestEmail(), Nickname: "test user1", Password: "test-password-1", Username: "test-user-1", Roles: model.SystemUserRoleId})
 	assert.Nil(t, err)
 
-	t.Run("Requires ldap license", func(t *testing.T) {
-		_, response, err := th.SystemAdminClient.GetUsersInGroup(context.Background(), group.Id, 0, 60, "")
-		require.Error(t, err)
-		CheckForbiddenStatus(t, response)
-	})
-
-	th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuProfessional))
-
 	t.Run("Requires manage system permission to access users in group", func(t *testing.T) {
 		_, _, err := th.Client.Login(context.Background(), th.BasicUser.Email, th.BasicUser.Password)
 		require.NoError(t, err)
@@ -4277,7 +4250,6 @@ func TestGetUsersInGroupByDisplayName(t *testing.T) {
 	_, err = th.App.UpsertGroupMember(group.Id, user2.Id)
 	assert.Nil(t, err)
 
-	th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuProfessional))
 	th.App.UpdateConfig(func(cfg *model.Config) {
 		*cfg.PrivacySettings.ShowFullName = true
 	})
@@ -4313,7 +4285,6 @@ func TestUpdateUserMfa(t *testing.T) {
 	mainHelper.Parallel(t)
 	th := Setup(t).InitBasic(t)
 
-	th.App.Srv().SetLicense(model.NewTestLicense("mfa"))
 	t.Run("Without enforcing", func(t *testing.T) {
 		th.App.UpdateConfig(func(cfg *model.Config) { *cfg.ServiceSettings.EnableMultifactorAuthentication = true })
 
@@ -4437,7 +4408,6 @@ func TestGenerateMfaSecret(t *testing.T) {
 	require.Error(t, err)
 	CheckBadRequestStatus(t, resp)
 
-	th.App.Srv().SetLicense(model.NewTestLicense("mfa"))
 	th.App.UpdateConfig(func(cfg *model.Config) { *cfg.ServiceSettings.EnableMultifactorAuthentication = true })
 
 	_, resp, err = th.Client.GenerateMfaSecret(context.Background(), model.NewId())
@@ -5478,7 +5448,6 @@ func TestLoginWithGuestMagicLinkTokenRejectsDeactivatedUser(t *testing.T) {
 	_, err := th.Client.Logout(context.Background())
 	require.NoError(t, err)
 
-	th.App.Srv().SetLicense(model.NewTestLicense("guest_accounts"))
 	th.App.UpdateConfig(func(cfg *model.Config) {
 		*cfg.GuestAccountsSettings.Enable = true
 		*cfg.GuestAccountsSettings.EnableGuestMagicLink = true
@@ -5624,91 +5593,6 @@ func TestLoginCookies(t *testing.T) {
 		}
 	})
 
-	t.Run("should return cookie with MMCLOUDURL for cloud installations", func(t *testing.T) {
-		updateConfig := func(cfg *model.Config) {
-			*cfg.ServiceSettings.SiteURL = "https://testchips.cloud.mattermost.com"
-		}
-		th := SetupAndApplyConfigBeforeLogin(t, updateConfig).InitBasic(t)
-
-		th.App.Srv().SetLicense(model.NewTestLicense("cloud"))
-
-		th.Client.HTTPHeader[model.HeaderRequestedWith] = model.HeaderRequestedWithXML
-		_, resp, _ := th.Client.Login(context.Background(), th.BasicUser.Email, th.BasicUser.Password)
-
-		found := false
-		cookies := resp.Header.Values("Set-Cookie")
-		for i := range cookies {
-			if strings.Contains(cookies[i], "MMCLOUDURL") {
-				found = true
-				assert.Contains(t, cookies[i], "MMCLOUDURL=testchips;", "should contain MMCLOUDURL")
-				assert.Contains(t, cookies[i], "Domain=mattermost.com;", "should contain Domain=mattermost.com")
-				break
-			}
-		}
-		assert.True(t, found, "Did not find MMCLOUDURL cookie")
-	})
-
-	t.Run("should return cookie with MMCLOUDURL for cloud installations when doing cws login", func(t *testing.T) {
-		token := model.NewRandomString(64)
-
-		updateConfig := func(cfg *model.Config) {
-			*cfg.ServiceSettings.SiteURL = "https://testchips.cloud.mattermost.com"
-		}
-		th := SetupAndApplyConfigBeforeLogin(t, updateConfig).InitBasic(t)
-
-		th.App.Srv().SetCWSTokenOverride(token)
-		t.Cleanup(func() { th.App.Srv().SetCWSTokenOverride("") })
-		th.App.Srv().SetLicense(model.NewTestLicense("cloud"))
-
-		form := url.Values{}
-		form.Add("login_id", th.SystemAdminUser.Email)
-		form.Add("cws_token", token)
-
-		th.Client.HTTPClient.CheckRedirect = func(req *http.Request, via []*http.Request) error {
-			return http.ErrUseLastResponse
-		}
-
-		r, _ := th.Client.DoAPIRequestWithHeaders(context.Background(),
-			http.MethodPost,
-			"/users/login/cws",
-			form.Encode(),
-			map[string]string{
-				"Content-Type": "application/x-www-form-urlencoded",
-			},
-		)
-		defer closeBody(r)
-
-		cookies := r.Cookies()
-		found := false
-		for i := range cookies {
-			if cookies[i].Name == model.SessionCookieCloudUrl {
-				found = true
-				assert.Equal(t, "testchips", cookies[i].Value)
-			}
-		}
-		assert.True(t, found, "should have found cookie")
-	})
-
-	t.Run("should NOT return cookie with MMCLOUDURL for cloud installations without expected format of cloud URL", func(t *testing.T) {
-		updateConfig := func(cfg *model.Config) {
-			*cfg.ServiceSettings.SiteURL = "https://testchips.com" // correct cloud URL would be https://testchips.cloud.mattermost.com
-		}
-		th := SetupAndApplyConfigBeforeLogin(t, updateConfig).InitBasic(t)
-
-		th.App.Srv().SetLicense(model.NewTestLicense("cloud"))
-
-		_, resp, _ := th.Client.Login(context.Background(), th.BasicUser.Email, th.BasicUser.Password)
-
-		cloudSessionCookie := ""
-		for _, cookie := range resp.Header["Set-Cookie"] {
-			if match := regexp.MustCompile("^" + model.SessionCookieCloudUrl + "=([a-z0-9]+)").FindStringSubmatch(cookie); match != nil {
-				cloudSessionCookie = match[1]
-			}
-		}
-		// no cookie set
-		assert.Equal(t, "", cloudSessionCookie)
-	})
-
 	t.Run("should NOT return cookie with MMCLOUDURL for NON cloud installations", func(t *testing.T) {
 		updateConfig := func(cfg *model.Config) {
 			*cfg.ServiceSettings.SiteURL = "https://testchips.com"
@@ -5781,7 +5665,6 @@ func TestSwitchAccount(t *testing.T) {
 	})
 
 	t.Run("Auth transfer disabled", func(t *testing.T) {
-		th.App.Srv().SetLicense(model.NewTestLicense())
 		th.App.UpdateConfig(func(cfg *model.Config) { *cfg.ServiceSettings.ExperimentalEnableAuthenticationTransfer = false })
 		t.Cleanup(func() {
 			th.App.UpdateConfig(func(cfg *model.Config) { *cfg.ServiceSettings.ExperimentalEnableAuthenticationTransfer = true })
@@ -8149,27 +8032,13 @@ func TestDemoteUserToGuest(t *testing.T) {
 	enableGuestAccounts := *th.App.Config().GuestAccountsSettings.Enable
 	defer func() {
 		th.App.UpdateConfig(func(cfg *model.Config) { *cfg.GuestAccountsSettings.Enable = enableGuestAccounts })
-		appErr := th.App.Srv().RemoveLicense()
-		require.Nil(t, appErr)
 	}()
 	th.App.UpdateConfig(func(cfg *model.Config) { *cfg.GuestAccountsSettings.Enable = true })
-	th.App.Srv().SetLicense(model.NewTestLicense())
 
 	user := th.BasicUser
 	user2 := th.BasicUser2
 
-	t.Run("Guest Account not available in license returns forbidden", func(t *testing.T) {
-		th.App.Srv().SetLicense(model.NewTestLicenseWithFalseDefaults("guest_accounts"))
-
-		res, err := th.SystemAdminClient.DoAPIPost(context.Background(), "/users/"+user2.Id+"/demote", "")
-
-		require.Equal(t, http.StatusForbidden, res.StatusCode)
-		require.True(t, strings.Contains(err.Error(), "Guest accounts are disabled"))
-		require.Error(t, err)
-	})
-
-	t.Run("Guest Account available in license returns OK", func(t *testing.T) {
-		th.App.Srv().SetLicense(model.NewTestLicense("guest_accounts"))
+	t.Run("demote returns OK", func(t *testing.T) {
 
 		res, err := th.SystemAdminClient.DoAPIPost(context.Background(), "/users/"+user2.Id+"/demote", "")
 
@@ -8178,7 +8047,6 @@ func TestDemoteUserToGuest(t *testing.T) {
 	})
 
 	t.Run("cannot demote bot account", func(t *testing.T) {
-		th.App.Srv().SetLicense(model.NewTestLicense("guest_accounts"))
 
 		prevBotCreation := *th.App.Config().ServiceSettings.EnableBotAccountCreation
 		th.App.UpdateConfig(func(cfg *model.Config) {
@@ -8252,11 +8120,8 @@ func TestPromoteGuestToUser(t *testing.T) {
 	enableGuestAccounts := *th.App.Config().GuestAccountsSettings.Enable
 	defer func() {
 		th.App.UpdateConfig(func(cfg *model.Config) { *cfg.GuestAccountsSettings.Enable = enableGuestAccounts })
-		appErr := th.App.Srv().RemoveLicense()
-		require.Nil(t, appErr)
 	}()
 	th.App.UpdateConfig(func(cfg *model.Config) { *cfg.GuestAccountsSettings.Enable = true })
-	th.App.Srv().SetLicense(model.NewTestLicense())
 
 	user := th.CreateGuestUser(t)
 
@@ -8318,7 +8183,6 @@ func TestVerifyUserEmailWithoutToken(t *testing.T) {
 
 	th.TestForSystemAdminAndLocal(t, func(t *testing.T, client *model.Client4) {
 		// Enable MFA for this test
-		th.App.Srv().SetLicense(model.NewTestLicense("mfa"))
 		th.App.UpdateConfig(func(cfg *model.Config) { *cfg.ServiceSettings.EnableMultifactorAuthentication = true })
 
 		email := th.GenerateTestEmail()
@@ -8752,8 +8616,7 @@ func TestUpdatePasswordAudit(t *testing.T) {
 	require.NoError(t, err)
 	defer os.Remove(logFile.Name())
 
-	options := []app.Option{app.WithLicense(model.NewTestLicense("advanced_logging"))}
-	th := SetupWithServerOptionsAndConfig(t, options, func(cfg *model.Config) {
+	th := SetupWithServerOptionsAndConfig(t, nil, func(cfg *model.Config) {
 		cfg.ExperimentalAuditSettings.FileEnabled = new(true)
 		cfg.ExperimentalAuditSettings.FileName = new(logFile.Name())
 	})
@@ -8786,8 +8649,6 @@ func TestGetThreadsForUser(t *testing.T) {
 		*cfg.ServiceSettings.ThreadAutoFollow = true
 		*cfg.ServiceSettings.CollapsedThreads = model.CollapsedThreadsDefaultOn
 	})
-
-	th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuProfessional))
 
 	t.Run("empty", func(t *testing.T) {
 		client := th.Client
@@ -9255,7 +9116,6 @@ func TestGetThreadsForUser_AfterTeamRemovalAndReinvite(t *testing.T) {
 		*cfg.ServiceSettings.ThreadAutoFollow = true
 		*cfg.ServiceSettings.CollapsedThreads = model.CollapsedThreadsDefaultOn
 	})
-	th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuProfessional))
 
 	admin := th.BasicUser
 	victim := th.BasicUser2
@@ -9801,8 +9661,6 @@ func TestSingleThreadGet(t *testing.T) {
 	mainHelper.Parallel(t)
 	th := Setup(t).InitBasic(t)
 
-	th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuProfessional))
-
 	th.App.UpdateConfig(func(cfg *model.Config) {
 		*cfg.ServiceSettings.ThreadAutoFollow = true
 		*cfg.ServiceSettings.CollapsedThreads = model.CollapsedThreadsDefaultOn
@@ -10331,21 +10189,6 @@ func TestLockProfileFieldsForEmailUsers(t *testing.T) {
 		})
 		require.NoError(t, err)
 	})
-
-	t.Run("setting on without Enterprise license is inert", func(t *testing.T) {
-		th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuProfessional))
-		setLock(model.TeamSettingsLockProfileFieldsAll)
-		setNames("First", "Last")
-
-		_, _, err := th.Client.PatchUser(context.Background(), th.BasicUser.Id, &model.UserPatch{
-			Username:  new("un_" + model.NewId()),
-			FirstName: new("NewFirst"),
-			Nickname:  new("NewNick"),
-		})
-		require.NoError(t, err)
-	})
-
-	th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterprise))
 
 	t.Run("name_and_username locks username and non-empty names", func(t *testing.T) {
 		setLock(model.TeamSettingsLockProfileFieldsNameAndUsername)
@@ -11466,7 +11309,6 @@ func TestResetPasswordFailedAttempts(t *testing.T) {
 	th := SetupEnterprise(t).InitBasic(t)
 	th.SetupLdapConfig()
 
-	th.App.Srv().SetLicense(model.NewTestLicense("ldap"))
 	wrongPassword := model.NewTestPassword()
 
 	t.Run("Reset password failed attempts for regular user", func(t *testing.T) {
@@ -11681,8 +11523,6 @@ func TestResetPasswordFailedAttempts(t *testing.T) {
 func TestSearchUsersWithMfaEnforced(t *testing.T) {
 	th := Setup(t).InitBasic(t)
 
-	th.App.Srv().SetLicense(model.NewTestLicense("mfa"))
-
 	th.App.UpdateConfig(func(cfg *model.Config) {
 		*cfg.ServiceSettings.EnableMultifactorAuthentication = true
 		*cfg.ServiceSettings.EnforceMultifactorAuthentication = true
@@ -11734,8 +11574,6 @@ func TestSearchUsersWithMfaEnforced(t *testing.T) {
 func TestMeEndpointsWithMfaEnforced(t *testing.T) {
 	th := Setup(t).InitBasic(t)
 
-	th.App.Srv().SetLicense(model.NewTestLicense("mfa"))
-
 	th.App.UpdateConfig(func(cfg *model.Config) {
 		*cfg.ServiceSettings.EnableMultifactorAuthentication = true
 		*cfg.ServiceSettings.EnforceMultifactorAuthentication = true
@@ -11782,7 +11620,6 @@ func TestGetSessionAttributesManifest(t *testing.T) {
 		require.Equal(t, http.StatusNotImplemented, resp.StatusCode)
 	})
 
-	th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterpriseAdvanced))
 	th.ConfigStore.SetReadOnlyFF(false)
 	defer th.ConfigStore.SetReadOnlyFF(true)
 	th.App.UpdateConfig(func(cfg *model.Config) {
@@ -11855,7 +11692,6 @@ func setSessionAttributeDeviceID(t *testing.T, th *TestHelper, deviceID string) 
 func TestSessionAttributesDeviceMismatchRejectsSubsequentRequest(t *testing.T) {
 	th := Setup(t).InitBasic(t)
 
-	th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterpriseAdvanced))
 	th.ConfigStore.SetReadOnlyFF(false)
 	defer th.ConfigStore.SetReadOnlyFF(true)
 	th.App.UpdateConfig(func(cfg *model.Config) {

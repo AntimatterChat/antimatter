@@ -52,10 +52,6 @@ func createUpload(c *Context, w http.ResponseWriter, r *http.Request) {
 			c.SetPermissionError(model.PermissionManageSystem)
 			return
 		}
-		if c.App.Srv().License().IsCloud() {
-			c.Err = model.NewAppError("createUpload", "api.file.cloud_upload.app_error", nil, "", http.StatusBadRequest)
-			return
-		}
 		conflict, err := fileutils.CheckDirectoryConflict(*c.App.Config().ImportSettings.Directory, *c.App.Config().PluginSettings.Directory)
 		if err != nil {
 			c.Err = model.NewAppError("createUpload", "api.upload.create.check_directory.app_error", nil, "", http.StatusInternalServerError).Wrap(err)
@@ -145,10 +141,6 @@ func uploadData(c *Context, w http.ResponseWriter, r *http.Request) {
 	if us.Type == model.UploadTypeImport {
 		if !c.IsSystemAdmin() {
 			c.SetPermissionError(model.PermissionManageSystem)
-			return
-		}
-		if c.App.Srv().License().IsCloud() {
-			c.Err = model.NewAppError("UploadData", "api.file.cloud_upload.app_error", nil, "", http.StatusBadRequest)
 			return
 		}
 	} else {

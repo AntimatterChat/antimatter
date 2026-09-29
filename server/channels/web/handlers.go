@@ -230,13 +230,10 @@ func (h Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	subpath, _ := utils.GetSubpathFromConfig(c.App.Config())
 	siteURLHeader := app.GetProtocol(r) + "://" + r.Host + subpath
-	if c.App.Channels().License().IsCloud() {
-		siteURLHeader = *c.App.Config().ServiceSettings.SiteURL + subpath
-	}
 	c.SetSiteURLHeader(siteURLHeader)
 
 	w.Header().Set(model.HeaderRequestId, c.AppContext.RequestId())
-	w.Header().Set(model.HeaderVersionId, fmt.Sprintf("%v.%v.%v.%v", model.CurrentVersion, model.BuildNumber, c.App.ClientConfigHash(), c.App.Channels().License() != nil))
+	w.Header().Set(model.HeaderVersionId, fmt.Sprintf("%v.%v.%v.true", model.CurrentVersion, model.BuildNumber, c.App.ClientConfigHash()))
 
 	if *c.App.Config().ServiceSettings.TLSStrictTransport {
 		w.Header().Set("Strict-Transport-Security", fmt.Sprintf("max-age=%d", *c.App.Config().ServiceSettings.TLSStrictTransportMaxAge))
@@ -302,16 +299,7 @@ func (h Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			c.RemoveSessionCookie(w, r)
 			c.Err = model.NewAppError("ServeHTTP", "api.context.session_expired.app_error", nil, "token_sha256="+tokenDigest(token)+" Appears to be a CSRF attempt", http.StatusUnauthorized)
 		}
-	} else if token != "" && c.App.Channels().License().IsCloud() && tokenLocation == app.TokenLocationCloudHeader {
-		// Check to see if this provided token matches our CWS Token
-		session, err := c.App.GetCloudSession(token)
-		if err != nil {
-			c.Logger.Warn("Invalid CWS token", mlog.String("error", strings.ReplaceAll(err.Error(), token, tokenDigest(token))))
-			c.Err = err
-		} else {
-			c.AppContext = c.AppContext.WithSession(session)
-		}
-	} else if token != "" && c.App.Channels().License() != nil && c.App.Channels().License().HasRemoteClusterService() && tokenLocation == app.TokenLocationRemoteClusterHeader {
+	} else if token != "" && tokenLocation == app.TokenLocationRemoteClusterHeader {
 		// Get the remote cluster
 		if remoteId := c.GetRemoteID(r); remoteId == "" {
 			c.Logger.Warn("Missing remote cluster id") //
