@@ -245,29 +245,8 @@ func TestGeneratePresignedURL(t *testing.T) {
 		CheckErrorID(t, err, "api.context.permissions.app_error")
 	})
 
-	t.Run("blocked when not running in Cloud", func(t *testing.T) {
+	t.Run("requires a dedicated export store", func(t *testing.T) {
 		th := Setup(t)
-		th.App.Srv().SetLicense(model.NewTestLicense())
-
-		_, resp, err := th.SystemAdminClient.GeneratePresignedURL(context.Background(), "export.zip")
-		require.Error(t, err)
-		CheckForbiddenStatus(t, resp)
-		CheckErrorID(t, err, "app.export.generate_presigned_url.direct_download.app_error")
-	})
-
-	t.Run("blocked without a license", func(t *testing.T) {
-		th := Setup(t)
-		th.App.Srv().SetLicense(nil)
-
-		_, resp, err := th.SystemAdminClient.GeneratePresignedURL(context.Background(), "export.zip")
-		require.Error(t, err)
-		CheckForbiddenStatus(t, resp)
-		CheckErrorID(t, err, "app.export.generate_presigned_url.direct_download.app_error")
-	})
-
-	t.Run("passes gate when Cloud, then requires a dedicated export store", func(t *testing.T) {
-		th := Setup(t)
-		th.App.Srv().SetLicense(model.NewTestLicense("cloud"))
 		th.App.UpdateConfig(func(cfg *model.Config) {
 			*cfg.FileSettings.DedicatedExportStore = false
 		})
@@ -278,7 +257,7 @@ func TestGeneratePresignedURL(t *testing.T) {
 	})
 
 	// The full happy path against a real presign-capable (S3/minio) export store: a
-	// Cloud server with a dedicated export store returns a working presigned URL over
+	// server with a dedicated export store returns a working presigned URL over
 	// the API. Skipped when minio isn't reachable.
 	t.Run("succeeds against a presign-capable export store", func(t *testing.T) {
 		s3Host := os.Getenv("CI_MINIO_HOST")
@@ -312,7 +291,6 @@ func TestGeneratePresignedURL(t *testing.T) {
 			*cfg.FileSettings.ExportAmazonS3Region = ""
 			*cfg.FileSettings.ExportAmazonS3SSL = false
 		})
-		th.App.Srv().SetLicense(model.NewTestLicense("cloud"))
 
 		backend, ok := th.App.ExportFileBackend().(*filestore.S3FileBackend)
 		require.True(t, ok, "expected a dedicated S3 export backend")
