@@ -19,9 +19,10 @@ func (scheduler *Scheduler) NextScheduleTime(cfg *model.Config, _ time.Time, _ b
 	return &nextTime
 }
 
-func MakeScheduler(jobServer *jobs.JobServer, licenseFunc func() *model.License) *Scheduler {
+// MakeScheduler creates the persistent notifications scheduler.
+func MakeScheduler(jobServer *jobs.JobServer) *Scheduler {
 	enabledFunc := func(_ *model.Config) bool {
-		return model.MinimumProfessionalLicense(licenseFunc())
+		return true
 	}
 	return &Scheduler{jobs.NewPeriodicScheduler(jobServer, model.JobTypePostPersistentNotifications, 0, enabledFunc)}
 }
