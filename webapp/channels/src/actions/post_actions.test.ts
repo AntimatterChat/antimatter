@@ -172,7 +172,6 @@ describe('Actions.Posts', () => {
                 },
             },
             general: {
-                license: {IsLicensed: 'false'},
                 serverVersion: '5.4.0',
                 config: {PostEditTimeLimit: -1},
             },
@@ -358,7 +357,6 @@ describe('Actions.Posts', () => {
         );
 
         const general = {
-            license: {IsLicensed: 'true'},
             serverVersion: '5.4.0',
             config: {PostEditTimeLimit: -1},
         } as unknown as GlobalState['entities']['general'];

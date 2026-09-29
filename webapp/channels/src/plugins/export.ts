@@ -3,7 +3,7 @@
 
 /* eslint-disable @typescript-eslint/no-require-imports */
 
-import type {JSX} from 'react';
+import type {JSX, MouseEvent, ReactNode} from 'react';
 import * as reactJSXDevRuntime from 'react/jsx-dev-runtime';
 import * as reactJSXRuntime from 'react/jsx-runtime';
 
@@ -24,9 +24,7 @@ import ChannelNotificationsModal from 'components/channel_notifications_modal';
 import DatePicker from 'components/date_picker/date_picker';
 import EditChannelHeaderModal from 'components/edit_channel_header_modal';
 import * as Menu from 'components/menu';
-import {useNotifyAdmin} from 'components/notify_admin_cta/notify_admin_cta';
 import PostMessagePreview from 'components/post_view/post_message_preview';
-import StartTrialFormModal from 'components/start_trial_form_modal';
 import ThreadViewer from 'components/threading/thread_viewer';
 import Timestamp from 'components/timestamp';
 import BotTag from 'components/widgets/tag/bot_tag';
@@ -50,11 +48,14 @@ import {wrapReactDOMRoot} from './react_dom_compatibility';
 import {loadSharedDependency} from './shared_dependencies';
 import Textbox from './textbox';
 
-// Note: We can't directly use the hook here, but we can create a function that opens the external pricing page
-// For plugins, we'll always try to open the external page and let the browser handle if it's blocked
-const openPricingModalForPlugins = () => {
-    (window as any).open('https://mattermost.com/pricing', '_blank', 'noopener,noreferrer');
+// Upsell entry points that older plugins may still call. There are no paid plans, so these are
+// kept only for API compatibility and intentionally do nothing.
+type NotifyAdminHookProps = {ctaText?: ReactNode};
+const useNotifyAdmin = (props: NotifyAdminHookProps): [ReactNode, (e?: MouseEvent) => void, string] => {
+    return [props?.ctaText ?? null, () => {}, 'NOT_STARTED'];
 };
+const openPricingModalForPlugins = () => {};
+const StartTrialFormModal = () => null;
 
 interface WindowWithLibraries {
     React: typeof import('react');
@@ -216,8 +217,6 @@ window.WebappUtils = {
 };
 window.loadSharedDependency = loadSharedDependency;
 
-// For plugins, we provide a simple function that always tries to open the external pricing page
-// This won't respect air-gapped status, but plugins shouldn't be calling this in air-gapped environments
 window.openPricingModal = openPricingModalForPlugins;
 
 // Components exposed on window FOR INTERNAL PLUGIN USE ONLY. These components may have breaking changes in the future

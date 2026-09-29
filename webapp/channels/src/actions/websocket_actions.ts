@@ -42,13 +42,11 @@ import {
     IntegrationTypes,
     PreferenceTypes,
     AppsTypes,
-    CloudTypes,
     ChannelBookmarkTypes,
     PropertyTypes,
     ScheduledPostTypes,
     ContentFlaggingTypes,
 } from 'mattermost-redux/action_types';
-import {getStandardAnalytics} from 'mattermost-redux/actions/admin';
 import {fetchAppBindings, fetchRHSAppsBindings} from 'mattermost-redux/actions/apps';
 import {addChannelToInitialCategory, fetchMyCategories, handleManagedCategoryPropertyValuesUpdated, receivedCategoryOrder} from 'mattermost-redux/actions/channel_categories';
 import {
@@ -66,7 +64,6 @@ import {clearErrors, logError} from 'mattermost-redux/actions/errors';
 import {setServerVersion, getClientConfig, getCustomProfileAttributeFields} from 'mattermost-redux/actions/general';
 import {getGroup as fetchGroup} from 'mattermost-redux/actions/groups';
 import {getJobsByType} from 'mattermost-redux/actions/jobs';
-import {getServerLimits} from 'mattermost-redux/actions/limits';
 import {
     getCustomEmojiForReaction,
     getPosts,
@@ -122,7 +119,7 @@ import {
     hasAutotranslationBecomeEnabled,
 } from 'mattermost-redux/selectors/entities/channels';
 import {getIsUserStatusesConfigEnabled} from 'mattermost-redux/selectors/entities/common';
-import {getConfig, getFeatureFlagValue, getLicense, isPermissionPoliciesEnabled} from 'mattermost-redux/selectors/entities/general';
+import {getConfig, getFeatureFlagValue, isPermissionPoliciesEnabled} from 'mattermost-redux/selectors/entities/general';
 import {getGroup} from 'mattermost-redux/selectors/entities/groups';
 import {getPost, getMostRecentPostIdInChannel, getTeamIdFromPost} from 'mattermost-redux/selectors/entities/posts';
 import {isCollapsedThreadsEnabled} from 'mattermost-redux/selectors/entities/preferences';
@@ -138,15 +135,12 @@ import {
     getRelativeTeamUrl,
 } from 'mattermost-redux/selectors/entities/teams';
 import {getNewestThreadInTeam, getThread, getThreads} from 'mattermost-redux/selectors/entities/threads';
-import {getCurrentUser, getCurrentUserId, getUser, getIsManualStatusForUserId, isCurrentUserSystemAdmin} from 'mattermost-redux/selectors/entities/users';
+import {getCurrentUser, getCurrentUserId, getUser, getIsManualStatusForUserId} from 'mattermost-redux/selectors/entities/users';
 import {isGuest} from 'mattermost-redux/utils/user_utils';
 
 import {handlePostExpired} from 'actions/burn_on_read_deletion';
 import {handleBurnOnReadPostRevealed, handleBurnOnReadAllRevealed} from 'actions/burn_on_read_websocket';
 import {loadChannelsForCurrentUser} from 'actions/channel_actions';
-import {
-    getTeamsUsage,
-} from 'actions/cloud';
 import {loadCustomEmojisIfNeeded} from 'actions/emoji_actions';
 import {redirectUserToDefaultTeam} from 'actions/global_actions';
 import {sendDesktopNotification} from 'actions/notification_actions';
@@ -184,12 +178,11 @@ import {ActionTypes, Constants, AnnouncementBarMessages, JobStatuses, SocketEven
 import DesktopApp from 'utils/desktop_api';
 import {getIntl} from 'utils/i18n';
 import {MAX_OPEN_DIALOGS, getOpenDialogCount} from 'utils/interactive_dialog';
-import {isEnterpriseLicense} from 'utils/license_utils';
 import {isChannelPopoutWindow} from 'utils/popouts/popout_windows';
 import {isWithheldPropertyValue} from 'utils/properties';
 import {getSiteURL} from 'utils/url';
 
-import type {ActionFunc, ThunkActionFunc} from 'types/store';
+import type {ThunkActionFunc} from 'types/store';
 
 import {temporarilySetPageLoadContext} from './telemetry_actions';
 
@@ -351,9 +344,7 @@ export function reconnect() {
     });
 
     // Refresh custom profile attributes on reconnect
-    if (isEnterpriseLicense(getLicense(state))) {
-        dispatch(getCustomProfileAttributeFields());
-    }
+    dispatch(getCustomProfileAttributeFields());
 
     // Refresh classification fields and values on reconnect when the feature flag is active
     if (getFeatureFlagValue(state, 'ClassificationMarkings') === 'true') {
@@ -717,12 +708,6 @@ export function handleEvent(msg: WebSocketMessage) {
         break;
     case WebSocketEvents.PropertyValuesUpdated:
         dispatch(handlePropertyValuesUpdated(msg));
-        break;
-    case WebSocketEvents.UserActivationStatusChange:
-        dispatch(handleUserActivationStatusChange());
-        break;
-    case WebSocketEvents.CloudSubscriptionChanged:
-        dispatch(handleCloudSubscriptionChanged(msg));
         break;
     case WebSocketEvents.FirstAdminVisitMarketplaceStatusReceived:
         handleFirstAdminVisitMarketplaceStatusReceivedEvent(msg);
@@ -1257,10 +1242,6 @@ async function handleTeamAddedEvent(msg: WebSocketMessages.UserAddedToTeam) {
     const state = getState();
     await dispatch(TeamActions.getMyTeamUnreads(isCollapsedThreadsEnabled(state)));
     await dispatch(fetchChannelsAndMembers(msg.data.team_id));
-    const license = getLicense(state);
-    if (license.Cloud === 'true') {
-        dispatch(getTeamsUsage());
-    }
 }
 
 export function handleLeaveTeamEvent(msg: WebSocketMessages.UserRemovedFromTeam) {
@@ -1328,12 +1309,7 @@ export function handleLeaveTeamEvent(msg: WebSocketMessages.UserRemovedFromTeam)
 }
 
 function handleUpdateTeamEvent(msg: WebSocketMessages.Team) {
-    const state = store.getState();
-    const license = getLicense(state);
     dispatch({type: TeamTypes.UPDATED_TEAM, data: JSON.parse(msg.data.team) as Team});
-    if (license.Cloud === 'true') {
-        dispatch(getTeamsUsage());
-    }
 }
 
 function handleUpdateTeamSchemeEvent() {
@@ -1344,10 +1320,6 @@ function handleDeleteTeamEvent(msg: WebSocketMessages.Team) {
     const deletedTeam = JSON.parse(msg.data.team) as Team;
     const state = store.getState();
     const {teams} = state.entities.teams;
-    const license = getLicense(state);
-    if (license.Cloud === 'true') {
-        dispatch(getTeamsUsage());
-    }
     if (
         deletedTeam &&
         teams &&
@@ -1429,7 +1401,6 @@ export function handleUserAddedEvent(msg: WebSocketMessages.UserAddedToChannel):
     return async (doDispatch, doGetState) => {
         const state = doGetState();
         const config = getConfig(state);
-        const license = getLicense(state);
         const currentChannelId = getCurrentChannelId(state);
         if (currentChannelId === msg.broadcast.channel_id) {
             doDispatch(getChannelStats(currentChannelId));
@@ -1455,7 +1426,7 @@ export function handleUserAddedEvent(msg: WebSocketMessages.UserAddedToChannel):
                 doDispatch(getChannelMember(currentChannelId, msg.data.user_id));
             }
 
-            if (license?.IsLicensed === 'true' && license?.LDAPGroups === 'true' && config.EnableConfirmNotificationsToChannel === 'true') {
+            if (config.EnableConfirmNotificationsToChannel === 'true') {
                 doDispatch(getChannelMemberCountsByGroup(currentChannelId));
             }
         }
@@ -1464,11 +1435,6 @@ export function handleUserAddedEvent(msg: WebSocketMessages.UserAddedToChannel):
         const currentUserId = getCurrentUserId(doGetState());
         if (currentUserId === msg.data.user_id) {
             doDispatch(fetchChannelAndAddToSidebar(msg.broadcast.channel_id));
-        }
-
-        // This event is fired when a user first joins the server, so refresh analytics to see if we're now over the user limit
-        if (license.Cloud === 'true' && isCurrentUserSystemAdmin(doGetState())) {
-            doDispatch(getStandardAnalytics());
         }
 
         if (msg.data.team_id && config.RestrictDirectMessage === 'team') {
@@ -1656,7 +1622,6 @@ export function handleUserRemovedEvent(msg: WebSocketMessages.UserRemovedFromCha
     const currentChannel = getCurrentChannel(state);
     const currentUser = getCurrentUser(state);
     const config = getConfig(state);
-    const license = getLicense(state);
 
     if (msg.broadcast.user_id === currentUser.id) {
         dispatch(loadChannelsForCurrentUser());
@@ -1711,7 +1676,7 @@ export function handleUserRemovedEvent(msg: WebSocketMessages.UserRemovedFromCha
             type: UserTypes.RECEIVED_PROFILE_NOT_IN_CHANNEL,
             data: {id: msg.broadcast.channel_id, user_id: msg.data.user_id},
         });
-        if (license?.IsLicensed === 'true' && license?.LDAPGroups === 'true' && config.EnableConfirmNotificationsToChannel === 'true') {
+        if (config.EnableConfirmNotificationsToChannel === 'true') {
             dispatch(getChannelMemberCountsByGroup(currentChannel.id));
         }
     }
@@ -1993,13 +1958,6 @@ function handleConfigChanged(msg: WebSocketMessages.ConfigChanged) {
 
 function handleLicenseChanged(msg: WebSocketMessages.LicenseChanged) {
     store.dispatch({type: GeneralTypes.CLIENT_LICENSE_RECEIVED, data: msg.data.license});
-
-    // A license change can flip ABAC availability, so clear cached render
-    // decisions; they will be recomputed on demand.
-    store.dispatch(clearRenderDecisions());
-
-    // Refresh server limits when license changes since limits may have changed
-    dispatch(getServerLimits());
 }
 
 function handleOpenDialogEvent(msg: WebSocketMessages.OpenDialog) {
@@ -2199,44 +2157,6 @@ function handleSidebarCategoryDeleted(msg: WebSocketMessages.SidebarCategoryDele
 
 function handleSidebarCategoryOrderUpdated(msg: WebSocketMessages.SidebarCategoryOrderUpdated) {
     return receivedCategoryOrder(msg.broadcast.team_id, msg.data.order);
-}
-
-export function handleUserActivationStatusChange(): ThunkActionFunc<void> {
-    return (doDispatch, doGetState) => {
-        const state = doGetState();
-        const license = getLicense(state);
-
-        // This event is fired when a user first joins the server, so refresh analytics to see if we're now over the user limit
-        if (license.Cloud === 'true') {
-            if (isCurrentUserSystemAdmin(state)) {
-                doDispatch(getStandardAnalytics());
-            }
-        }
-    };
-}
-
-export function handleCloudSubscriptionChanged(msg: WebSocketMessages.CloudSubscriptionChanged): ActionFunc<boolean> {
-    return (doDispatch, doGetState) => {
-        const state = doGetState();
-        const license = getLicense(state);
-
-        if (license.Cloud === 'true') {
-            if (msg.data.limits) {
-                doDispatch({
-                    type: CloudTypes.RECEIVED_CLOUD_LIMITS,
-                    data: msg.data.limits,
-                });
-            }
-
-            if (msg.data.subscription) {
-                doDispatch({
-                    type: CloudTypes.RECEIVED_CLOUD_SUBSCRIPTION,
-                    data: msg.data.subscription,
-                });
-            }
-        }
-        return {data: true};
-    };
 }
 
 function handleRefreshAppsBindings(): ThunkActionFunc<void> {

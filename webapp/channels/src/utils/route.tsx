@@ -1,7 +1,6 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 
-import type {ClientLicense} from '@mattermost/types/config';
 import type {UserProfile} from '@mattermost/types/users';
 
 import {isGuest} from 'mattermost-redux/utils/user_utils';
@@ -24,12 +23,10 @@ export type ConfigOption = {
 
 export function checkIfMFARequired(
     user: UserProfile | undefined,
-    license: ClientLicense,
     config: ConfigOption,
     path: string,
 ): boolean {
     if (
-        license.MFA === 'true' &&
         config.EnableMultifactorAuthentication === 'true' &&
         config.EnforceMultifactorAuthentication === 'true' &&
         mfaPaths.indexOf(path) === -1

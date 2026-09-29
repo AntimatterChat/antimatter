@@ -1,7 +1,6 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 
-import type {ClientLicense} from '@mattermost/types/config';
 import type {UserProfile} from '@mattermost/types/users';
 
 import {checkIfMFARequired} from './route';
@@ -49,24 +48,23 @@ describe('Utils.Route', () => {
                 terms_of_service_create_at: 0,
                 remote_id: ''};
             const config: ConfigOption = {EnableMultifactorAuthentication: 'true', EnforceMultifactorAuthentication: 'true'};
-            const license: ClientLicense = {MFA: 'true'};
 
-            expect(checkIfMFARequired(user, license, config, '')).toBeTruthy();
-            expect(!checkIfMFARequired(user, license, config, '/mfa/setup')).toBeTruthy();
-            expect(!checkIfMFARequired(user, license, config, '/mfa/confirm')).toBeTruthy();
+            expect(checkIfMFARequired(user, config, '')).toBeTruthy();
+            expect(!checkIfMFARequired(user, config, '/mfa/setup')).toBeTruthy();
+            expect(!checkIfMFARequired(user, config, '/mfa/confirm')).toBeTruthy();
 
             user.auth_service = 'email';
-            expect(checkIfMFARequired(user, license, config, '')).toBeTruthy();
+            expect(checkIfMFARequired(user, config, '')).toBeTruthy();
 
             user.auth_service = 'ldap';
-            expect(checkIfMFARequired(user, license, config, '')).toBeTruthy();
+            expect(checkIfMFARequired(user, config, '')).toBeTruthy();
 
             user.auth_service = 'saml';
-            expect(!checkIfMFARequired(user, license, config, '')).toBeTruthy();
+            expect(!checkIfMFARequired(user, config, '')).toBeTruthy();
 
             user.auth_service = '';
             user.mfa_active = true;
-            expect(!checkIfMFARequired(user, license, config, '')).toBeTruthy();
+            expect(!checkIfMFARequired(user, config, '')).toBeTruthy();
         });
 
         test('mfa is not enforced or enabled', () => {
@@ -110,16 +108,11 @@ describe('Utils.Route', () => {
                 terms_of_service_create_at: 0,
                 remote_id: ''};
             const config: ConfigOption = {EnableMultifactorAuthentication: 'true', EnforceMultifactorAuthentication: 'true'};
-            const license: ClientLicense = {MFA: 'true'};
-            expect(!checkIfMFARequired(user, license, config, '')).toBeTruthy();
+            expect(!checkIfMFARequired(user, config, '')).toBeTruthy();
 
             config.EnforceMultifactorAuthentication = 'true';
             config.EnableMultifactorAuthentication = 'false';
-            expect(!checkIfMFARequired(user, license, config, '')).toBeTruthy();
-
-            license.MFA = 'false';
-            config.EnableMultifactorAuthentication = 'true';
-            expect(!checkIfMFARequired(user, license, config, '')).toBeTruthy();
+            expect(!checkIfMFARequired(user, config, '')).toBeTruthy();
         });
     });
 });

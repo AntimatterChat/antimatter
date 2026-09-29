@@ -3,7 +3,7 @@
 
 import type {ClusterInfo} from '@mattermost/types/admin';
 import type {StatusOK} from '@mattermost/types/client4';
-import type {AdminConfig, AllowedIPRange, FetchIPResponse, RequestLicenseBody} from '@mattermost/types/config';
+import type {AdminConfig, AllowedIPRange, FetchIPResponse} from '@mattermost/types/config';
 import type {Job, JobTypeBase} from '@mattermost/types/jobs';
 import type {SamlCertificateStatus, SamlMetadataResponse} from '@mattermost/types/saml';
 import type {AuthChangeResponse, UserProfile} from '@mattermost/types/users';
@@ -11,7 +11,6 @@ import type {AuthChangeResponse, UserProfile} from '@mattermost/types/users';
 import * as AdminActions from 'mattermost-redux/actions/admin';
 import {bindClientFunc} from 'mattermost-redux/actions/helpers';
 import {createJob} from 'mattermost-redux/actions/jobs';
-import {getServerLimits as getServerLimitsAction} from 'mattermost-redux/actions/limits';
 import * as TeamActions from 'mattermost-redux/actions/teams';
 import * as UserActions from 'mattermost-redux/actions/users';
 import {Client4} from 'mattermost-redux/client';
@@ -381,10 +380,6 @@ export async function getStandardAnalytics(teamId?: string) {
     await dispatch(AdminActions.getStandardAnalytics(teamId));
 }
 
-export async function refreshServerLimits() {
-    await dispatch(getServerLimitsAction());
-}
-
 export async function getAdvancedAnalytics(teamId?: string) {
     await dispatch(AdminActions.getAdvancedAnalytics(teamId));
 }
@@ -596,53 +591,9 @@ export async function setSamlIdpCertificateFromMetadata(success: SuccessCallback
     }
 }
 
-export function upgradeToE0() {
-    return async () => {
-        const data = await Client4.upgradeToEnterprise();
-        return data;
-    };
-}
-
-export function upgradeToE0Status() {
-    return async () => {
-        const data = await Client4.upgradeToEnterpriseStatus();
-        return data;
-    };
-}
-
-export function isAllowedToUpgradeToEnterprise() {
-    return async () => {
-        try {
-            await Client4.isAllowedToUpgradeToEnterprise();
-            return {data: true};
-        } catch (error) {
-            return {error};
-        }
-    };
-}
-
-export function restartServer() {
-    return async () => {
-        const data = await Client4.restartServer();
-        return data;
-    };
-}
-
 export function ping(getServerStatus?: boolean, deviceId?: string) {
     return async () => {
         const data = await Client4.ping(getServerStatus, deviceId);
         return data;
-    };
-}
-
-export function requestTrialLicense(requestLicenseBody: RequestLicenseBody) {
-    return async () => {
-        try {
-            const response = await Client4.requestTrialLicense(requestLicenseBody);
-            return {data: response};
-        } catch (e) {
-            // In the event that the status code returned is 451, this request has been blocked because it originated from an embargoed country_dropdown
-            return {error: e.message, data: {status: e.status_code}};
-        }
     };
 }
