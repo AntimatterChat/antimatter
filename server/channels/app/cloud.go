@@ -21,24 +21,6 @@ func (a *App) AdjustInProductLimits(limits *model.ProductLimits, subscription *m
 	return nil
 }
 
-// Create/ Update a subscription history event
-// This function is run daily to record the number of activated users in the system for Cloud workspaces
-func (a *App) SendSubscriptionHistoryEvent(userID string) (*model.SubscriptionHistory, error) {
-	license := a.Srv().License()
-
-	// No need to create a Subscription History Event if the license isn't cloud
-	if !license.IsCloud() {
-		return nil, nil
-	}
-
-	userCount, err := a.Srv().Store().User().Count(model.UserCountOptions{})
-	if err != nil {
-		return nil, err
-	}
-
-	return a.Cloud().CreateOrUpdateSubscriptionHistoryEvent(userID, int(userCount))
-}
-
 // GetPreviewModalData fetches modal content data from the configured S3 bucket
 func (a *App) GetPreviewModalData() ([]model.PreviewModalContentData, *model.AppError) {
 	bucketURL := a.Config().CloudSettings.PreviewModalBucketURL

@@ -3314,26 +3314,6 @@
     "description": "Error shown to admins when the uploaded enterprise license file cannot be validated."
   },
   {
-    "id": "api.license.add_license.invalid_count.app_error",
-    "translation": "Unable to count total unique users.",
-    "description": "Error shown to admins during license upload when the server fails to count registered users for the seat check."
-  },
-  {
-    "id": "api.license.add_license.save.app_error",
-    "translation": "License did not save properly.",
-    "description": "Error shown to admins when the uploaded license could not be stored on the server."
-  },
-  {
-    "id": "api.license.add_license.save_active.app_error",
-    "translation": "Active license ID did not save properly.",
-    "description": "Error shown to admins when the server fails to record which license is active after upload."
-  },
-  {
-    "id": "api.license.add_license.unique_users.app_error",
-    "translation": "This license only supports {{.Users}} users, when your system has {{.Count}} unique users. Unique users are counted distinctly by email address. You can see total user count under Site Reports -> View Statistics.",
-    "description": "Error shown to admins when a license's seat count is below the server's user count; {{.Users}} is the licensed seat count, {{.Count}} the current unique user count, and 'Site Reports -> View Statistics' is an admin console menu path."
-  },
-  {
     "id": "api.license.add_license.wrong_environment_production.app_error",
     "translation": "This is a production license, but this server is running in a test or development environment. Production licenses can only be used on production servers.",
     "description": "Error shown to system admins uploading a production Enterprise license to a server running in test/development mode."
@@ -3342,41 +3322,6 @@
     "id": "api.license.add_license.wrong_environment_test.app_error",
     "translation": "This is a test or development license, but this server is running in a production environment. Test or development licenses can only be used on test or development servers.",
     "description": "Error shown to system admins uploading a test/development Enterprise license to a server running in production mode."
-  },
-  {
-    "id": "api.license.remove_expired_license.failed.error",
-    "translation": "Failed to send the disable license email successfully.",
-    "description": "Server error logged/returned when the email notifying admins that an expired license was disabled could not be sent."
-  },
-  {
-    "id": "api.license.request-trial.bad-request",
-    "translation": "The number of users requested is not correct.",
-    "description": "Admin API validation error when requesting a trial license with an invalid number of users."
-  },
-  {
-    "id": "api.license.request-trial.bad-request.business-email",
-    "translation": "Invalid business email for trial",
-    "description": "API error when a system admin requests an Enterprise trial license with an email address that is not accepted as a business email."
-  },
-  {
-    "id": "api.license.request-trial.bad-request.terms-not-accepted",
-    "translation": "You must accept the Mattermost Software Evaluation Agreement and Privacy Policy to request a license.",
-    "description": "API error when a system admin requests a trial license without checking the agreement checkbox; 'Mattermost Software Evaluation Agreement' and 'Privacy Policy' are document titles."
-  },
-  {
-    "id": "api.license.request_trial_license.app_error",
-    "translation": "Unable to get a trial license, please try again or contact with support@mattermost.com.",
-    "description": "Error shown to admins when requesting a trial license from Mattermost's servers fails; the support email address should be kept."
-  },
-  {
-    "id": "api.license.request_trial_license.embargoed",
-    "translation": "We were unable to process the request due to limitations for embargoed countries. [Learn more in our documentation](https://mattermost.com/pl/limitations-for-embargoed-countries), or reach out to legal@mattermost.com for questions around export limitations.",
-    "description": "Error shown to admins when a trial license request is blocked due to trade-embargo restrictions; contains a markdown link that must keep its [text](url) format."
-  },
-  {
-    "id": "api.license_error",
-    "translation": "api endpoint requires a license",
-    "description": "Lowercase generic API error returned when an endpoint requires a paid license and none is installed; developer/admin audience."
   },
   {
     "id": "api.mark_all_as_read.disabled.app_error",
@@ -4438,11 +4383,6 @@
     "id": "api.server.hosted_signup_unavailable.error",
     "translation": "Portal unavailable for self-hosted signup.",
     "description": "API error when the Mattermost customer portal cannot be reached during self-hosted license signup; 'Portal' is the customer portal; admin audience."
-  },
-  {
-    "id": "api.server.license_up_for_renewal.error_sending_email",
-    "translation": "Failed to send license up for renewal emails",
-    "description": "Server error logged/returned when the emails reminding admins that the license is up for renewal fail to send."
   },
   {
     "id": "api.server.start_server.forward80to443.disabled_while_using_lets_encrypt",

@@ -100,19 +100,6 @@ func (s *Snapshot) JobsFor(jobType string) ([]*model.Job, bool) {
 	}
 }
 
-func (s *Snapshot) LicenseFeature(get func(*model.Features) *bool) (bool, bool) {
-	if get == nil || s == nil || s.License == nil || s.License.Features == nil {
-		return false, false
-	}
-
-	value := get(s.License.Features)
-	if value == nil {
-		return false, false
-	}
-
-	return *value, true
-}
-
 func (s *Snapshot) PluginEnabled(id string) (bool, bool) {
 	if !s.Has(model.SectionPlugins) || s == nil || s.Plugins == nil {
 		return false, false

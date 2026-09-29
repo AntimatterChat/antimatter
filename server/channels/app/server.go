@@ -120,9 +120,7 @@ type Server struct {
 	seenPendingPostIdsCache cache.Cache
 	openGraphDataCache      cache.Cache
 	clusterLeaderListenerId string
-	loggerLicenseListenerId string
 
-	pushNotificationServerLicenseListenerId       string
 	pushNotificationServerClusterLeaderListenerId string
 
 	platform         *platform.PlatformService
@@ -221,7 +219,6 @@ func NewServer(options ...Option) (*Server, error) {
 	// Depends on step 1 (s.Platform must be non-nil)
 	s.initEnterprise()
 
-	// Needed to run before loading license.
 	s.userService, err = users.New(users.ServiceConfig{
 		UserStore:    s.Store().User(),
 		SessionStore: s.Store().Session(),
@@ -229,7 +226,6 @@ func NewServer(options ...Option) (*Server, error) {
 		ConfigFn:     s.platform.Config,
 		Metrics:      s.GetMetrics(),
 		Cluster:      s.platform.Cluster(),
-		LicenseFn:    s.License,
 	})
 	if err != nil {
 		return nil, errors.Wrapf(err, "unable to create users service")
@@ -242,7 +238,6 @@ func NewServer(options ...Option) (*Server, error) {
 		Users:        s.userService,
 		WebHub:       s.platform,
 		ConfigFn:     s.platform.Config,
-		LicenseFn:    s.License,
 	})
 	if err != nil {
 		return nil, errors.Wrapf(err, "unable to create teams service")
@@ -308,13 +303,6 @@ func NewServer(options ...Option) (*Server, error) {
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to look up CPA property group")
 	}
-
-	// License check hook — must run before other hooks so unlicensed
-	// operations are rejected early.
-	licenseCheckHook := properties.NewLicenseCheckHook(func() *model.License {
-		return s.License()
-	}, cpaGroup.ID)
-	s.propertyService.AddHook(licenseCheckHook)
 
 	pluginChecker := func(pluginID string) bool {
 		_, err := s.ch.GetPluginStatus(pluginID)
@@ -396,7 +384,7 @@ func NewServer(options ...Option) (*Server, error) {
 	s.propertyService.AddHook(properties.NewSessionAttributesHook(s.propertyService, saGroup.ID))
 
 	// Type-change value cleanup — registered last so the field write has
-	// passed every other gate (license, access control, validation, limit)
+	// passed every other gate (access control, validation, limit)
 	// before we cascade-delete dependent values. PostUpdate hooks run after
 	// the store write succeeds.
 	s.propertyService.AddHook(properties.NewTypeChangeValueCleanupHook(s.propertyService))
@@ -698,21 +686,10 @@ func (s *Server) Channels() *Channels {
 	return s.ch
 }
 
-func (s *Server) startInterClusterServices(license *model.License) error {
-	if license == nil {
-		mlog.Debug("No license provided; Remote Cluster services disabled")
-		return nil
-	}
-
+func (s *Server) startInterClusterServices() error {
 	// Remote Cluster service
 
-	// License check (assume enabled if shared channels enabled)
-	if !license.HasRemoteClusterService() && !license.HasSharedChannels() {
-		mlog.Debug("License does not have Remote Cluster services enabled")
-		return nil
-	}
-
-	// Config check
+	// Config check (assume enabled if shared channels enabled)
 	if !*s.platform.Config().ConnectedWorkspacesSettings.EnableRemoteClusterService && !*s.platform.Config().ConnectedWorkspacesSettings.EnableSharedChannels {
 		mlog.Debug("Remote Cluster Service disabled via config")
 		return nil
@@ -734,12 +711,6 @@ func (s *Server) startInterClusterServices(license *model.License) error {
 	s.serviceMux.Unlock()
 
 	// Shared Channels service (depends on remote cluster service)
-
-	// License check
-	if !license.HasSharedChannels() {
-		mlog.Debug("License does not have shared channels enabled")
-		return nil
-	}
 
 	// Config check
 	if !*s.platform.Config().ConnectedWorkspacesSettings.EnableSharedChannels {
@@ -793,9 +764,7 @@ func (s *Server) Shutdown() {
 
 	defer sentry.Flush(2 * time.Second)
 
-	s.RemoveLicenseListener(s.loggerLicenseListenerId)
 	s.RemoveClusterLeaderChangedListener(s.clusterLeaderListenerId)
-	s.RemoveLicenseListener(s.pushNotificationServerLicenseListenerId)
 	s.RemoveClusterLeaderChangedListener(s.pushNotificationServerClusterLeaderListenerId)
 
 	var err error
@@ -932,7 +901,7 @@ func stripPort(hostport string) string {
 func (s *Server) Start() error {
 	// Start inter-cluster services first so shared channels APIs are
 	// available when plugins activate during channels startup.
-	if err := s.startInterClusterServices(s.License()); err != nil {
+	if err := s.startInterClusterServices(); err != nil {
 		mlog.Error("Error starting inter-cluster services", mlog.Err(err))
 	}
 
@@ -1675,7 +1644,7 @@ func (s *Server) GetStore() store.Store {
 }
 
 // GetRemoteClusterService returns the `RemoteClusterService` instantiated by the server.
-// May be nil if the service is not enabled via license.
+// May be nil if the service is not enabled via config.
 func (s *Server) GetRemoteClusterService() remotecluster.RemoteClusterServiceIFace {
 	s.serviceMux.RLock()
 	defer s.serviceMux.RUnlock()
@@ -1683,7 +1652,7 @@ func (s *Server) GetRemoteClusterService() remotecluster.RemoteClusterServiceIFa
 }
 
 // GetSharedChannelSyncService returns the `SharedChannelSyncService` instantiated by the server.
-// May be nil if the service is not enabled via license.
+// May be nil if the service is not enabled via config.
 func (s *Server) GetSharedChannelSyncService() SharedChannelServiceIFace {
 	s.serviceMux.RLock()
 	defer s.serviceMux.RUnlock()

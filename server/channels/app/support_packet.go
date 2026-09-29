@@ -335,7 +335,7 @@ func (a *App) getPluginsList(_ request.CTX) (*model.SupportPacketPluginList, err
 }
 
 func (a *App) getSupportPacketMetadata(_ request.CTX) (*model.PacketMetadata, error) {
-	metadata, err := model.GeneratePacketMetadata(model.SupportPacketType, a.ServerId(), a.License(), nil)
+	metadata, err := model.GeneratePacketMetadata(model.SupportPacketType, a.ServerId(), nil, nil)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to generate Packet metadata")
 	}

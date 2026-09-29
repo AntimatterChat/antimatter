@@ -14,7 +14,6 @@ type Snapshot struct {
 	CollectedAt time.Time
 
 	Config  *model.SupportPacketConfig
-	License *model.License
 	Stats   *model.SupportPacketStats
 	Jobs    *model.SupportPacketJobList
 	Plugins *model.SupportPacketPluginList

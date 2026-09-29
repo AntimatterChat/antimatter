@@ -23,7 +23,6 @@ const (
 
 	PropSecurityID              = "id"
 	PropSecurityBuild           = "b"
-	PropSecurityEnterpriseReady = "be"
 	PropSecurityDatabase        = "db"
 	PropSecurityOS              = "os"
 	PropSecurityUserCount       = "uc"
@@ -52,7 +51,6 @@ func (s *Server) DoSecurityUpdateCheck() {
 
 		v.Set(PropSecurityID, s.ServerId())
 		v.Set(PropSecurityBuild, model.CurrentVersion+"."+model.BuildNumber)
-		v.Set(PropSecurityEnterpriseReady, model.BuildEnterpriseReady)
 		v.Set(PropSecurityDatabase, *s.platform.Config().SqlSettings.DriverName)
 		v.Set(PropSecurityOS, runtime.GOOS)
 
@@ -125,9 +123,8 @@ func (s *Server) DoSecurityUpdateCheck() {
 
 					for _, user := range users {
 						mlog.Info("Sending security bulletin", mlog.String("bulletin_id", bulletin.Id), mlog.String("user_email", user.Email))
-						license := s.License()
 						mailConfig := s.MailServiceConfig()
-						err = mail.SendMailUsingConfig(user.Email, i18n.T("mattermost.bulletin.subject"), string(body), mailConfig, license != nil && *license.Features.Compliance, "", "", "", "", "SecurityUpdateCheck")
+						err = mail.SendMailUsingConfig(user.Email, i18n.T("mattermost.bulletin.subject"), string(body), mailConfig, true, "", "", "", "", "SecurityUpdateCheck")
 						if err != nil {
 							s.Log().Error("Failed to send security bulletin email", mlog.String("user_email", user.Email), mlog.Err(err))
 						}
