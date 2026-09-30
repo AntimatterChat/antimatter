@@ -28,6 +28,8 @@ func GenerateClientConfig(c *model.Config, telemetryID string) map[string]string
 
 	props["EnableBotAccountCreation"] = strconv.FormatBool(*c.ServiceSettings.EnableBotAccountCreation)
 	props["EnableDesktopLandingPage"] = strconv.FormatBool(*c.ServiceSettings.EnableDesktopLandingPage)
+	props["DefaultWebUI"] = DefaultWebUI(c)
+	props["AllowUserWebUISelection"] = strconv.FormatBool(UserWebUISelectionAllowed(c))
 	props["EnableOAuthServiceProvider"] = strconv.FormatBool(*c.ServiceSettings.EnableOAuthServiceProvider)
 	props["GoogleDeveloperKey"] = *c.ServiceSettings.GoogleDeveloperKey
 	props["EnableIncomingWebhooks"] = strconv.FormatBool(*c.ServiceSettings.EnableIncomingWebhooks)
