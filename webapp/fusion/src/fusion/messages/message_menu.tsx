@@ -9,6 +9,7 @@ import type {Post} from '@mattermost/types/posts';
 
 import {addPostReminder} from 'mattermost-redux/actions/posts';
 import {setThreadFollow} from 'mattermost-redux/actions/threads';
+import {Posts} from 'mattermost-redux/constants';
 import {getChannel} from 'mattermost-redux/selectors/entities/channels';
 import {getConfig} from 'mattermost-redux/selectors/entities/general';
 import {isPostFlagged} from 'mattermost-redux/selectors/entities/posts';
@@ -75,6 +76,9 @@ export default function MessageMenu({post, anchor, inThread, onClose}: Props) {
         onClose();
     };
     const system = isSystemMessage(post);
+
+    // Burn-on-Read messages can't be replied to or forwarded.
+    const burn = post.type === Posts.POST_TYPES.BURN_ON_READ;
     const threadId = post.root_id || post.id;
     const plugins = pluginActions.filter((a) => !a.filter || a.filter(post.id));
 
@@ -101,14 +105,14 @@ export default function MessageMenu({post, anchor, inThread, onClose}: Props) {
                     </button>
                 ))}
             </div>
-            {!inThread && (
+            {!inThread && !burn && (
                 <MenuItem
                     icon='reply'
                     label={formatMessage({id: 'fusion.messageMenu.reply', defaultMessage: 'Reply in thread'})}
                     onClick={run(() => dispatch(selectPost(post)))}
                 />
             )}
-            {!system && (
+            {!system && !burn && (
                 <MenuItem
                     icon='forward'
                     label={formatMessage({id: 'fusion.messageMenu.forward', defaultMessage: 'Forward'})}

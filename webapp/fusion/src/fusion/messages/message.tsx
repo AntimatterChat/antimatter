@@ -17,6 +17,7 @@ import {getCurrentUserId, getUser} from 'mattermost-redux/selectors/entities/use
 
 import {toggleReaction} from 'actions/post_actions';
 import {selectPost} from 'actions/views/rhs';
+import {shouldDisplayConcealedPlaceholder} from 'selectors/burn_on_read_posts';
 import {getIsPostBeingEdited, getIsPostBeingEditedInRHS, isEmbedVisible} from 'selectors/posts';
 
 import FileAttachmentListContainer from 'components/file_attachment_list';
@@ -34,6 +35,7 @@ import {areConsecutivePostsBySameUser, isFromBot, isFromWebhook, isSystemMessage
 import type {GlobalState} from 'types/store';
 
 import Acknowledge from './acknowledge';
+import {BurnCover, BurnTag} from './burn_on_read';
 import EditForm from './edit_form';
 import MessageMenu from './message_menu';
 import Reactions from './reactions';
@@ -94,6 +96,7 @@ export default function Message({postId, previousPostId, inThread = false, highl
     const autotranslated = useSelector((state: GlobalState) => (post ? isMyChannelAutotranslated(state, post.channel_id) : false));
     const pluginPostTypes = useSelector((state: GlobalState) => state.plugins.postTypes);
     const editing = useSelector((state: GlobalState) => getIsPostBeingEdited(state, postId) && getIsPostBeingEditedInRHS(state, postId) === inThread);
+    const concealed = useSelector((state: GlobalState) => shouldDisplayConcealedPlaceholder(state, postId));
     const avatarRef = useRef<HTMLButtonElement>(null);
     const moreRef = useRef<HTMLButtonElement>(null);
     const reactRef = useRef<HTMLButtonElement>(null);
@@ -110,7 +113,8 @@ export default function Message({postId, previousPostId, inThread = false, highl
     const webhook = isFromWebhook(post) && config.EnablePostUsernameOverride === 'true' && Boolean(post.props?.override_username);
     const bot = isFromBot(post) || Boolean(user?.is_bot);
     const priority = priorityEnabled ? post.metadata?.priority?.priority : undefined;
-    const consecutive = !inThread && Boolean(previous) && !priority && !ephemeral && areConsecutivePostsBySameUser(post, previous!) && !isSystemMessage(previous!);
+    const burn = post.type === Posts.POST_TYPES.BURN_ON_READ && post.state !== Posts.POST_DELETED;
+    const consecutive = !inThread && Boolean(previous) && !priority && !burn && !ephemeral && areConsecutivePostsBySameUser(post, previous!) && !isSystemMessage(previous!);
     const deleted = post.state === Posts.POST_DELETED;
     const openThread = () => dispatch(selectPost(post));
 
@@ -135,7 +139,7 @@ export default function Message({postId, previousPostId, inThread = false, highl
                     size='sm'
                 />
             </button>
-            {!inThread && (
+            {!inThread && !burn && (
                 <button
                     title={formatMessage({id: 'fusion.message.reply', defaultMessage: 'Reply in thread'})}
                     aria-label={formatMessage({id: 'fusion.message.reply', defaultMessage: 'Reply in thread'})}
@@ -176,6 +180,7 @@ export default function Message({postId, previousPostId, inThread = false, highl
                     {formatMessage({id: 'fusion.message.saved', defaultMessage: 'Saved'})}
                 </span>
             )}
+            {burn && <BurnTag post={post}/>}
             {priority && (
                 <span className={am('prio', priority)}>
                     <Icon name='flag'/>
@@ -187,13 +192,14 @@ export default function Message({postId, previousPostId, inThread = false, highl
 
     const body = (
         <>
-            {editing && (
+            {concealed && <BurnCover post={post}/>}
+            {!concealed && editing && (
                 <EditForm
                     post={post}
                     inThread={inThread}
                 />
             )}
-            {!editing && (
+            {!concealed && !editing && (
                 <div className={am('body')}>
                     <MessageWithAdditionalContent
                         post={post}
@@ -204,7 +210,7 @@ export default function Message({postId, previousPostId, inThread = false, highl
                     />
                 </div>
             )}
-            {post.file_ids && post.file_ids.length > 0 && !deleted && (
+            {post.file_ids && post.file_ids.length > 0 && !deleted && !concealed && (
                 <FileAttachmentListContainer post={post}/>
             )}
             <Acknowledge post={post}/>
