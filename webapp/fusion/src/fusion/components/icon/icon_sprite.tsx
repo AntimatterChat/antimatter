@@ -97,6 +97,7 @@ const SYMBOLS = [
     '<symbol id="am-i-moon" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></symbol>',
     '<symbol id="am-i-phone" viewBox="0 0 24 24"><path d="M5 4h3.5l2 5-2.5 1.5a11 11 0 0 0 5.5 5.5L15 13.5l5 2V19a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/></symbol>',
     '<symbol id="am-i-pin-top" viewBox="0 0 24 24"><path d="M5 3h14M9.5 7h5l-.8 4.5 2.8 2.8h-9.8l2.8-2.8z M12 14.5V21"/></symbol>',
+    '<symbol id="am-i-hand" viewBox="0 0 24 24"><path d="M8 13V5.5a1.5 1.5 0 0 1 3 0V11M11 10.5V4a1.5 1.5 0 0 1 3 0v6.5M14 10.5V5.5a1.5 1.5 0 0 1 3 0V13"/><path d="M17 12.5V9.5a1.5 1.5 0 0 1 3 0V14a7 7 0 0 1-7 7h-1a6 6 0 0 1-4.6-2.2L4 15.6a1.5 1.5 0 0 1 2.3-1.9L8 15.5V13"/></symbol>',
     '<symbol id="am-i-fullscreen" viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></symbol>',
     '<symbol id="am-i-mark" viewBox="0 0 64 64">',
     '<ellipse cx="32" cy="32" rx="25" ry="9.5" fill="none" stroke="#A78BFA" stroke-width="4.5" transform="rotate(45 32 32)"/>',
@@ -107,7 +108,7 @@ const SYMBOLS = [
     '</symbol>',
 ].join('');
 
-export type IconName = 'hash' | 'speaker' | 'lock' | 'forum' | 'thread' | 'search' | 'users' | 'pin' | 'bell' | 'inbox' | 'cog' | 'shield' | 'mic' | 'mic-off' | 'headphones' | 'headphones-off' | 'video' | 'screen' | 'hangup' | 'plus' | 'apps' | 'reply' | 'smile' | 'dots' | 'x' | 'chev' | 'globe' | 'export' | 'pen' | 'send' | 'compass' | 'menu' | 'board' | 'playbook' | 'check' | 'store' | 'plug' | 'chat' | 'tag' | 'clock' | 'attach' | 'follow' | 'at' | 'bold' | 'italic' | 'strike' | 'heading' | 'link' | 'code' | 'codeblock' | 'quote' | 'sparkle' | 'flag' | 'flame' | 'timer' | 'ul' | 'ol' | 'type' | 'poll' | 'upload' | 'slash' | 'star' | 'bell-off' | 'folder' | 'leave' | 'user-plus' | 'forward' | 'bookmark' | 'copy' | 'trash' | 'sticker' | 'popout' | 'expand' | 'kanban' | 'runbook' | 'ticket' | 'mail' | 'calendar' | 'pad' | 'draw' | 'cursor' | 'rect' | 'ellipse' | 'arrow' | 'text' | 'eraser' | 'undo' | 'checkbox' | 'pause' | 'moon' | 'phone' | 'pin-top' | 'fullscreen' | 'mark';
+export type IconName = 'hash' | 'speaker' | 'lock' | 'forum' | 'thread' | 'search' | 'users' | 'pin' | 'bell' | 'inbox' | 'cog' | 'shield' | 'mic' | 'mic-off' | 'headphones' | 'headphones-off' | 'video' | 'screen' | 'hangup' | 'plus' | 'apps' | 'reply' | 'smile' | 'dots' | 'x' | 'chev' | 'globe' | 'export' | 'pen' | 'send' | 'compass' | 'menu' | 'board' | 'playbook' | 'check' | 'store' | 'plug' | 'chat' | 'tag' | 'clock' | 'attach' | 'follow' | 'at' | 'bold' | 'italic' | 'strike' | 'heading' | 'link' | 'code' | 'codeblock' | 'quote' | 'sparkle' | 'flag' | 'flame' | 'timer' | 'ul' | 'ol' | 'type' | 'poll' | 'upload' | 'slash' | 'star' | 'bell-off' | 'folder' | 'leave' | 'user-plus' | 'forward' | 'bookmark' | 'copy' | 'trash' | 'sticker' | 'popout' | 'expand' | 'kanban' | 'runbook' | 'ticket' | 'mail' | 'calendar' | 'pad' | 'draw' | 'cursor' | 'rect' | 'ellipse' | 'arrow' | 'text' | 'eraser' | 'undo' | 'checkbox' | 'pause' | 'moon' | 'phone' | 'pin-top' | 'fullscreen' | 'hand' | 'mark';
 
 export default function IconSprite() {
     return (

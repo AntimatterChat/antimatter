@@ -13,6 +13,7 @@ import {isSystemAdmin} from 'mattermost-redux/utils/user_utils';
 import {openDirectChannelToUserId} from 'actions/channel_actions';
 import {makeGetCustomStatus} from 'selectors/views/custom_status';
 
+import CallUserButton, {useCanCall} from 'fusion/calls/call_user_button';
 import Avatar from 'fusion/components/avatar';
 import Icon from 'fusion/components/icon';
 import {Popover} from 'fusion/components/layer';
@@ -74,6 +75,7 @@ export default function UserPopover({userId, anchor, onClose}: Props) {
     const getCustomStatus = useMemo(() => makeGetCustomStatus(), []);
     const customStatus = useSelector((state: GlobalState) => getCustomStatus(state, userId));
     const localTime = useLocalTime(user ? getUserCurrentTimezone(user.timezone) : undefined);
+    const canCall = useCanCall(userId === me, Boolean(user?.is_bot));
 
     if (!user) {
         return null;
@@ -136,7 +138,10 @@ export default function UserPopover({userId, anchor, onClose}: Props) {
                         {customStatus.text}
                     </p>
                 )}
-                <div style={{marginTop: 12}}>
+                <div
+                    className={canCall ? am('actions2') : undefined}
+                    style={{marginTop: 12}}
+                >
                     {isMe && (
                         <div style={{display: 'grid', gap: 8}}>
                             <button
@@ -169,7 +174,7 @@ export default function UserPopover({userId, anchor, onClose}: Props) {
                     {!isMe && (
                         <button
                             className={am('btn', 'primary')}
-                            style={{width: '100%', justifyContent: 'center'}}
+                            style={{width: canCall ? undefined : '100%', justifyContent: 'center'}}
                             onClick={message}
                         >
                             <Icon
@@ -178,6 +183,12 @@ export default function UserPopover({userId, anchor, onClose}: Props) {
                             />
                             {formatMessage({id: 'fusion.profile.message', defaultMessage: 'Message'})}
                         </button>
+                    )}
+                    {canCall && (
+                        <CallUserButton
+                            userId={userId}
+                            onDone={onClose}
+                        />
                     )}
                 </div>
             </div>
