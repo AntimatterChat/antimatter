@@ -297,6 +297,7 @@ export default class Root extends React.PureComponent<Props, State> {
     };
 
     render() {
+        const fusionFrame = doesRouteBelongToTeamControllerRoutes(this.props.location.pathname);
         if (!this.state.shouldMountAppRoutes) {
             return <div/>;
         }
@@ -415,9 +416,10 @@ export default class Root extends React.PureComponent<Props, State> {
                         <GlobalClassificationBanner position='top'/>
                         <AnnouncementBarController/>
                         <SystemNotice/>
-                        <GlobalHeader/>
-                        <TeamSidebar/>
-                        <div className='main-wrapper'>
+                        {/* In Channels, the Fusion UI (see ChannelController) draws its own frame around the conversation. */}
+                        {!fusionFrame && <GlobalHeader/>}
+                        {!fusionFrame && <TeamSidebar/>}
+                        <div className={fusionFrame ? 'am-root-main' : 'main-wrapper'}>
                             <Switch>
                                 {this.props.products?.filter((product) => Boolean(product.publicComponent)).map((product) => (
                                     <Route
@@ -466,11 +468,11 @@ export default class Root extends React.PureComponent<Props, State> {
                                 />
                                 <RootRedirect/>
                             </Switch>
-                            <SidebarRight/>
+                            {!fusionFrame && <SidebarRight/>}
                         </div>
                         <GlobalClassificationBanner position='bottom'/>
                         <Pluggable pluggableName='Global'/>
-                        <AppBar/>
+                        {!fusionFrame && <AppBar/>}
                         <Readout/>
                     </WithUserTheme>
                 </Switch>

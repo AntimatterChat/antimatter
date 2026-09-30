@@ -1,7 +1,6 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 
-import classNames from 'classnames';
 import React, {lazy} from 'react';
 import {Route, Switch, Redirect} from 'react-router-dom';
 
@@ -14,7 +13,6 @@ import {IDENTIFIER_PATH_PATTERN, ID_PATH_PATTERN, TEAM_NAME_PATH_PATTERN} from '
 
 import type {OwnProps, PropsFromRedux} from './index';
 
-const MobileChannelHeader = makeAsyncComponent('MobileChannelHeader', lazy(() => import('components/mobile_channel_header')));
 const GlobalThreads = makeAsyncComponent('GlobalThreads', lazy(() => import('components/threading/global_threads')),
     (
         <div className='app__content'>
@@ -71,61 +69,52 @@ export default class CenterChannel extends React.PureComponent<Props, State> {
     }
 
     render() {
-        const {lastChannelPath, isCollapsedThreadsEnabled, isMobileView} = this.props;
+        const {lastChannelPath, isCollapsedThreadsEnabled} = this.props;
         const url = this.props.match.url;
 
+        // The Fusion UI's main column (see FusionApp) holds the route's view directly.
         return (
-            <div
-                key='inner-wrap'
-                className={classNames('inner-wrap', 'channel__wrap', {
-                    'move--right': this.props.lhsOpen,
-                    'move--left': this.props.rhsOpen,
-                    'move--left-small': this.props.rhsMenuOpen,
-                })}
-            >
-                {isMobileView && <MobileChannelHeader/>}
-                <div className='row main'>
-                    <Switch>
-                        <Route
-                            path={`${url}/pl/:postid(${ID_PATH_PATTERN})`}
-                            render={(props) => (
-                                <PermalinkView
-                                    {...props}
-                                    returnTo={this.state.returnTo}
-                                />
-                            )}
-                        />
-                        <Route
-                            path={`/:team(${TEAM_NAME_PATH_PATTERN})/:path(channels|messages)/:identifier(${IDENTIFIER_PATH_PATTERN})/:postid(${ID_PATH_PATTERN})?`}
-                            component={ChannelIdentifierRouter}
-                        />
-                        <Route
-                            path={`/:team(${TEAM_NAME_PATH_PATTERN})/_playbooks/:playbookId(${ID_PATH_PATTERN})/run`}
-                        >
-                            <PlaybookRunner/>
-                        </Route>
-                        {isCollapsedThreadsEnabled ? (
-                            <Route
-                                path={`/:team(${TEAM_NAME_PATH_PATTERN})/threads/:threadIdentifier(${ID_PATH_PATTERN})?`}
-                                component={GlobalThreads}
+            <div className='am-center'>
+                <Switch>
+                    <Route
+                        path={`${url}/pl/:postid(${ID_PATH_PATTERN})`}
+                        render={(props) => (
+                            <PermalinkView
+                                {...props}
+                                returnTo={this.state.returnTo}
                             />
-                        ) : null}
+                        )}
+                    />
+                    <Route
+                        path={`/:team(${TEAM_NAME_PATH_PATTERN})/:path(channels|messages)/:identifier(${IDENTIFIER_PATH_PATTERN})/:postid(${ID_PATH_PATTERN})?`}
+                        component={ChannelIdentifierRouter}
+                    />
+                    <Route
+                        path={`/:team(${TEAM_NAME_PATH_PATTERN})/_playbooks/:playbookId(${ID_PATH_PATTERN})/run`}
+                    >
+                        <PlaybookRunner/>
+                    </Route>
+                    {isCollapsedThreadsEnabled ? (
                         <Route
-                            path={`/:team(${TEAM_NAME_PATH_PATTERN})/recaps`}
-                            component={Recaps}
+                            path={`/:team(${TEAM_NAME_PATH_PATTERN})/threads/:threadIdentifier(${ID_PATH_PATTERN})?`}
+                            component={GlobalThreads}
                         />
-                        <Route
-                            path={`/:team(${TEAM_NAME_PATH_PATTERN})/drafts`}
-                            component={Drafts}
-                        />
-                        <Route
-                            path={`/:team(${TEAM_NAME_PATH_PATTERN})/${SCHEDULED_POST_URL_SUFFIX}`}
-                            component={Drafts}
-                        />
+                    ) : null}
+                    <Route
+                        path={`/:team(${TEAM_NAME_PATH_PATTERN})/recaps`}
+                        component={Recaps}
+                    />
+                    <Route
+                        path={`/:team(${TEAM_NAME_PATH_PATTERN})/drafts`}
+                        component={Drafts}
+                    />
+                    <Route
+                        path={`/:team(${TEAM_NAME_PATH_PATTERN})/${SCHEDULED_POST_URL_SUFFIX}`}
+                        component={Drafts}
+                    />
 
-                        <Redirect to={lastChannelPath}/>
-                    </Switch>
-                </div>
+                    <Redirect to={lastChannelPath}/>
+                </Switch>
             </div>
         );
     }
