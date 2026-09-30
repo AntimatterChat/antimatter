@@ -27,6 +27,7 @@ import {a11yFocus} from 'utils/utils';
 import ManageLanguages from './manage_languages';
 import ManageTimezones from './manage_timezones';
 import RenderEmoticonsAsEmoji from './render_emoticons_as_emoji';
+import WebUISection from './web_ui_section';
 
 import SettingDesktopHeader from '../headers/setting_desktop_header';
 import SettingMobileHeader from '../headers/setting_mobile_header';
@@ -1199,6 +1200,11 @@ export default class UserSettingsDisplay extends React.PureComponent<Props, Stat
                         }
                     />
                     <div className='divider-dark first'/>
+                    <WebUISection
+                        active={this.props.activeSection === WebUISection.section}
+                        areAllSectionsInactive={this.props.activeSection === ''}
+                        updateSection={this.updateSection}
+                    />
                     {themeSection}
                     {collapsedReplyThreads}
                     {clockSection}

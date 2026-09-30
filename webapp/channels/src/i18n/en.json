@@ -3383,6 +3383,14 @@
     "defaultMessage": "When enabled, users message drafts will sync with the server so they can be accessed from any device. Users may opt out of this behaviour in Account settings.",
     "description": "Help text for the setting that lets users' message drafts sync to the server, on a System Console site configuration page."
   },
+  "admin.customization.allowUserWebUISelectionDesc": {
+    "defaultMessage": "When true, users can switch between the classic and Fusion interfaces in **Settings > Display > Web interface**, or by opening any page with `?webui=classic` or `?webui=fusion`. Their choice applies to the browser they made it in.",
+    "description": ""
+  },
+  "admin.customization.allowUserWebUISelectionTitle": {
+    "defaultMessage": "Allow Users to Choose Their Web Interface:",
+    "description": ""
+  },
   "admin.customization.androidAppDownloadLinkDesc": {
     "defaultMessage": "Add a link to download the Android app. Users who access the site on a mobile web browser will be prompted with a page giving them the option to download the app. Leave this field blank to prevent the page from appearing.",
     "description": "Admin console help text under the Android app download link field on the Site Configuration > Customization page."
@@ -3482,6 +3490,14 @@
   "admin.customization.defaultThemeTitle": {
     "defaultMessage": "Default Theme:",
     "description": "Label of the theme dropdown in System Console > Site Configuration > Customization. Keep the trailing colon."
+  },
+  "admin.customization.defaultWebUIDesc": {
+    "defaultMessage": "The web interface served to users who haven't picked one. Fusion is a preview of the new interface; the classic interface is served when Fusion isn't installed.",
+    "description": ""
+  },
+  "admin.customization.defaultWebUITitle": {
+    "defaultMessage": "Default Web Interface:",
+    "description": ""
   },
   "admin.customization.enableCustomEmojiDesc": {
     "defaultMessage": "Enable users to create custom emoji for use in messages. When enabled, custom emoji settings can be accessed in Channels through the emoji picker.",
@@ -3650,6 +3666,14 @@
   "admin.customization.uniqueEmojiReactionLimitPerPostPlaceholder": {
     "defaultMessage": "E.g.: 25",
     "description": "Placeholder example value for the unique emoji reactions per post input."
+  },
+  "admin.customization.webUIClassic": {
+    "defaultMessage": "Classic",
+    "description": ""
+  },
+  "admin.customization.webUIFusion": {
+    "defaultMessage": "Fusion (preview)",
+    "description": ""
   },
   "admin.customProfileAttribDesc.ldap": {
     "defaultMessage": "(Optional) The attribute in the AD/LDAP server used to populate the {name} of users in Antimatter. When set, users cannot edit their {name}, since it is synchronized with the LDAP server. When left blank, users can set their {name} in <strong>Account Menu > Account Settings > Profile</strong>.",
@@ -29526,6 +29550,22 @@
   "user.settings.display.title": {
     "defaultMessage": "Display Settings",
     "description": "Title of the Display tab in the user Settings modal."
+  },
+  "user.settings.display.webUI.classic": {
+    "defaultMessage": "Classic",
+    "description": ""
+  },
+  "user.settings.display.webUI.description": {
+    "defaultMessage": "Choose the interface used in this browser. The page reloads to apply the change.",
+    "description": ""
+  },
+  "user.settings.display.webUI.fusion": {
+    "defaultMessage": "Fusion (preview)",
+    "description": ""
+  },
+  "user.settings.display.webUI.title": {
+    "defaultMessage": "Web interface",
+    "description": ""
   },
   "user.settings.display.wysiwygEditor.markdown": {
     "defaultMessage": "Markdown editing (default)",
