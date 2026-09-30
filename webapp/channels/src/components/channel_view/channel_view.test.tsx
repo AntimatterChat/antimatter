@@ -3,7 +3,12 @@
 
 import React from 'react';
 
-import {renderWithContext, screen} from 'tests/react_testing_utils';
+import type {DeepPartial} from '@mattermost/types/utilities';
+
+import {renderWithContext, screen, userEvent} from 'tests/react_testing_utils';
+
+import type {GlobalState} from 'types/store';
+import type {ChannelViewPanelProps} from 'types/store/plugins';
 
 import ChannelView from './channel_view';
 import type {Props} from './channel_view';
@@ -58,6 +63,7 @@ describe('components/channel_view', () => {
         fetchIsRestrictedDM: jest.fn(),
         canRestrictDirectMessage: false,
         restrictDirectMessage: false,
+        channelViewPanel: null,
     };
 
     it('Should match snapshot with base props', () => {
@@ -129,5 +135,74 @@ describe('components/channel_view', () => {
             />,
         );
         expect(baseProps.fetchIsRestrictedDM).toHaveBeenCalledTimes(1);
+    });
+
+    describe('plugin channel view panel', () => {
+        const Panel = ({channel, messagesVisible, setMessagesVisible}: ChannelViewPanelProps) => (
+            <button
+                data-testid='plugin-panel'
+                data-channel-id={channel.id}
+                onClick={() => setMessagesVisible(!messagesVisible)}
+            >
+                {messagesVisible ? 'hide messages' : 'show messages'}
+            </button>
+        );
+        const panelProps: Props = {
+            ...baseProps,
+            channelViewPanel: {id: 'panel', pluginId: 'plugin', matcher: () => true, component: Panel},
+        };
+        const state = {
+            entities: {
+                channels: {
+                    channels: {
+                        channelId: {id: 'channelId', type: 'O'},
+                        otherChannelId: {id: 'otherChannelId', type: 'O'},
+                    },
+                },
+            },
+        } as DeepPartial<GlobalState>;
+
+        it('shows the panel in place of the messages until it shows them', async () => {
+            renderWithContext(<ChannelView {...panelProps}/>, state);
+
+            expect(screen.getByTestId('plugin-panel')).toHaveAttribute('data-channel-id', 'channelId');
+            expect(screen.queryByTestId('deferred-post-view')).not.toBeInTheDocument();
+            expect(screen.getByTestId('channel-view-panel')).toHaveClass('ChannelViewPanel--fill');
+
+            await userEvent.click(screen.getByText('show messages'));
+
+            expect(screen.getByTestId('deferred-post-view')).toBeInTheDocument();
+            expect(screen.getByTestId('channel-view-panel')).not.toHaveClass('ChannelViewPanel--fill');
+        });
+
+        it('hides the messages again on channel switch', async () => {
+            const {rerender} = renderWithContext(<ChannelView {...panelProps}/>, state);
+            await userEvent.click(screen.getByText('show messages'));
+            expect(screen.getByTestId('deferred-post-view')).toBeInTheDocument();
+
+            rerender(
+                <ChannelView
+                    {...panelProps}
+                    channelId='otherChannelId'
+                    match={{url: '/team/channel/otherChannelId', params: {}} as Props['match']}
+                />,
+            );
+
+            expect(screen.getByTestId('plugin-panel')).toHaveAttribute('data-channel-id', 'otherChannelId');
+            expect(screen.queryByTestId('deferred-post-view')).not.toBeInTheDocument();
+        });
+
+        it('shows the messages for a permalink', () => {
+            renderWithContext(
+                <ChannelView
+                    {...panelProps}
+                    match={{url: '/team/pl/postid', params: {postid: 'postid'}} as Props['match']}
+                />,
+                state,
+            );
+
+            expect(screen.getByTestId('plugin-panel')).toBeInTheDocument();
+            expect(screen.getByTestId('deferred-post-view')).toHaveAttribute('data-focused-post-id', 'postid');
+        });
     });
 });

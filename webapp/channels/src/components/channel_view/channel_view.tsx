@@ -18,6 +18,7 @@ import PostView from 'components/post_view';
 import WebSocketClient from 'client/web_websocket_client';
 
 import {ChannelComposerBanner} from './channel_composer_banner';
+import ChannelViewPanel from './channel_view_panel';
 import InputLoading from './input_loading';
 
 import type {PropsFromRedux} from './index';
@@ -32,6 +33,9 @@ type State = {
     focusedPostId?: string;
     deferredPostView: any;
     waitForLoader: boolean;
+
+    // Whether the messages are shown below a plugin's channel view panel
+    panelMessagesVisible: boolean;
 };
 
 export default class ChannelView extends React.PureComponent<Props, State> {
@@ -57,11 +61,12 @@ export default class ChannelView extends React.PureComponent<Props, State> {
         }
 
         if (props.channelId !== state.channelId) {
-            updatedState = {...updatedState, channelId: props.channelId, focusedPostId};
+            updatedState = {...updatedState, channelId: props.channelId, focusedPostId, panelMessagesVisible: false};
         }
 
         if (focusedPostId && focusedPostId !== state.focusedPostId) {
-            updatedState = {...updatedState, focusedPostId};
+            // Show the messages so that a permalink shows its post
+            updatedState = {...updatedState, focusedPostId, panelMessagesVisible: true};
         }
 
         if (Object.keys(updatedState).length) {
@@ -82,6 +87,7 @@ export default class ChannelView extends React.PureComponent<Props, State> {
             focusedPostId: props.match.params.postid,
             deferredPostView: ChannelView.createDeferredPostView(),
             waitForLoader: false,
+            panelMessagesVisible: Boolean(props.match.params.postid),
         };
 
         this.channelViewRef = React.createRef();
@@ -93,6 +99,10 @@ export default class ChannelView extends React.PureComponent<Props, State> {
 
     onUpdateInputShowLoader = (v: boolean) => {
         this.setState({waitForLoader: v});
+    };
+
+    setPanelMessagesVisible = (visible: boolean) => {
+        this.setState({panelMessagesVisible: visible});
     };
 
     componentDidUpdate(prevProps: Props) {
@@ -212,6 +222,10 @@ export default class ChannelView extends React.PureComponent<Props, State> {
 
         const DeferredPostView = this.state.deferredPostView;
 
+        // A plugin's panel (e.g. a call) can take the place of the messages until it shows them
+        const panel = this.props.channelViewPanel;
+        const messagesVisible = !panel || this.state.panelMessagesVisible;
+
         return (
             <div
                 ref={this.channelViewRef}
@@ -225,11 +239,21 @@ export default class ChannelView extends React.PureComponent<Props, State> {
                 <ChannelHeader/>
                 <ChannelBanner channelId={this.props.channelId}/>
                 <ChannelBookmarks channelId={this.props.channelId}/>
-                <DeferredPostView
-                    channelId={this.props.channelId}
-                    focusedPostId={this.state.focusedPostId}
-                />
-                {createPost}
+                {panel && (
+                    <ChannelViewPanel
+                        registration={panel}
+                        channelId={this.props.channelId}
+                        messagesVisible={messagesVisible}
+                        setMessagesVisible={this.setPanelMessagesVisible}
+                    />
+                )}
+                {messagesVisible && (
+                    <DeferredPostView
+                        channelId={this.props.channelId}
+                        focusedPostId={this.state.focusedPostId}
+                    />
+                )}
+                {messagesVisible && createPost}
             </div>
         );
     }

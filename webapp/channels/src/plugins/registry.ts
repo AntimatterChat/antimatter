@@ -28,6 +28,7 @@ import {
     unregisterPluginReconnectHandler,
 } from 'actions/websocket_actions';
 import {clearLoggedChannelIntroErrors} from 'selectors/channel_intro';
+import {clearLoggedChannelViewPanelErrors} from 'selectors/channel_view_panel';
 import store from 'stores/redux_store';
 
 import {clearComposerPlaceholderErrors} from 'components/advanced_text_editor/composer_placeholder';
@@ -78,6 +79,7 @@ import type {
     ChannelTypeOptionComponent,
     ChannelIconOverrideRegistration,
     ChannelIntroRegistration,
+    ChannelViewPanelRegistration,
     ComposerPlaceholderRegistration,
     ProductSwitcherMenuItemRegistration,
 } from 'types/store/plugins';
@@ -1537,6 +1539,27 @@ export default class PluginRegistry {
         }
         const id = generateId();
         this.dispatchPluginComponentWithData('ChannelIntro', {id, pluginId: this.id, matcher, component});
+        return id;
+    });
+
+    /**
+     * Register a panel shown in the channel view, between the channel header and the messages, for
+     * the channels the matcher selects (e.g. the call of a voice channel). The matcher receives the
+     * full Redux state and the channel. The component receives the `channel`, `messagesVisible` and
+     * `setMessagesVisible(visible)`: the channel's messages and message box are hidden (and the
+     * panel fills the channel view) until the panel shows them, and hidden again when the user
+     * switches channels. First registration whose matcher returns true wins (alphabetical
+     * pluginId, then insertion order). Cleaned up automatically when the plugin is removed.
+     */
+    registerChannelViewPanel = reArg(['matcher', 'component'], ({matcher, component}: {
+        matcher: ChannelViewPanelRegistration['matcher'];
+        component: ChannelViewPanelRegistration['component'];
+    }) => {
+        if (this.isActive()) {
+            clearLoggedChannelViewPanelErrors(this.id);
+        }
+        const id = generateId();
+        this.dispatchPluginComponentWithData('ChannelViewPanel', {id, pluginId: this.id, matcher, component});
         return id;
     });
 
