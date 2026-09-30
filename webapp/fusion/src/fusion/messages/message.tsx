@@ -16,7 +16,7 @@ import {isCollapsedThreadsEnabled} from 'mattermost-redux/selectors/entities/pre
 import {getCurrentUserId, getUser} from 'mattermost-redux/selectors/entities/users';
 
 import {toggleReaction} from 'actions/post_actions';
-import {selectPost} from 'actions/views/rhs';
+import {openShowEditHistory, selectPost} from 'actions/views/rhs';
 import {shouldDisplayConcealedPlaceholder} from 'selectors/burn_on_read_posts';
 import {getIsPostBeingEdited, getIsPostBeingEditedInRHS} from 'selectors/posts';
 
@@ -82,7 +82,8 @@ function SystemLine({post}: {post: Post}) {
 // Message is one message in the Fusion UI's conversation: the mockup's .msg row around the classic web app's
 // message body renderers (markdown, attachments, embeds, plugin post types and files).
 export default function Message({postId, previousPostId, inThread = false, highlighted = false}: Props) {
-    const {formatMessage} = useIntl();
+    const intl = useIntl();
+    const {formatMessage} = intl;
     const dispatch = useDispatch();
     const post = useSelector((state: GlobalState) => getPost(state, postId));
     const previous = useSelector((state: GlobalState) => (previousPostId ? getPost(state, previousPostId) : undefined));
@@ -165,6 +166,7 @@ export default function Message({postId, previousPostId, inThread = false, highl
         </div>
     );
 
+    const editedTitle = formatMessage({id: 'fusion.message.editedAt', defaultMessage: 'Edited {time}'}, {time: intl.formatDate(post.edit_at, {dateStyle: 'medium', timeStyle: 'short'})});
     const tags = (
         <>
             {post.is_pinned && (
@@ -179,13 +181,32 @@ export default function Message({postId, previousPostId, inThread = false, highl
                     {formatMessage({id: 'fusion.message.saved', defaultMessage: 'Saved'})}
                 </span>
             )}
-            {burn && <BurnTag post={post}/>}
+            {post.edit_at > 0 && !deleted && (post.user_id === me ? (
+
+                // Your own edits lead to the message's edit history, as in the classic web app.
+                <button
+                    type='button'
+                    className={am('meta-tag', 'edited')}
+                    title={editedTitle + ' · ' + formatMessage({id: 'fusion.message.editHistory', defaultMessage: 'Click to see the edit history'})}
+                    onClick={() => dispatch(openShowEditHistory(post))}
+                >
+                    {formatMessage({id: 'fusion.message.edited', defaultMessage: '(edited)'})}
+                </button>
+            ) : (
+                <span
+                    className={am('meta-tag', 'edited')}
+                    title={editedTitle}
+                >
+                    {formatMessage({id: 'fusion.message.edited', defaultMessage: '(edited)'})}
+                </span>
+            ))}
             {priority && (
                 <span className={am('prio', priority)}>
                     <Icon name='flag'/>
                     {priority === 'urgent' ? formatMessage({id: 'fusion.message.urgent', defaultMessage: 'Urgent'}) : formatMessage({id: 'fusion.message.important', defaultMessage: 'Important'})}
                 </span>
             )}
+            {burn && <BurnTag post={post}/>}
         </>
     );
 

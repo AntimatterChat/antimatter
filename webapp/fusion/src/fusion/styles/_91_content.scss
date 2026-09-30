@@ -1,6 +1,11 @@
 // What the mockup's message content needs to hold real Mattermost content: pictures instead of the mockup's emoji
 // placeholders, the optional parts of integration cards, and controls the mockup doesn't draw.
 
+// Header tags that are buttons (edit history, burn now).
+:is(.am-app, .am-layer) button.am-meta-tag { font: inherit; font-size: 12px; }
+:is(.am-app, .am-layer) button.am-meta-tag:hover { color: var(--am-text); }
+:is(.am-app, .am-layer) button.am-meta-tag.am-burn:hover { color: #FB923C; }
+
 // Integration cards.
 :is(.am-app, .am-layer) .am-card { position: relative; }
 :is(.am-app, .am-layer) .am-card.am-thumbed { padding-right: 88px; }
