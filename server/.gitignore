@@ -118,6 +118,7 @@ webapp/coverage
 
 /debug
 /client
+/client-fusion
 __debug_bin
 report.xml
 *coverage.txt

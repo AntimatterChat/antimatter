@@ -182,6 +182,15 @@ func UpdateAssetsSubpath(subpath string) error {
 
 // UpdateAssetsSubpathFromConfig uses UpdateAssetsSubpath and any path defined in the SiteURL.
 func UpdateAssetsSubpathFromConfig(config *model.Config) error {
+	return updateAssetsSubpathInDirFromConfig(config, model.ClientDir)
+}
+
+// UpdateFusionAssetsSubpathFromConfig does the same as UpdateAssetsSubpathFromConfig for the Fusion UI's assets.
+func UpdateFusionAssetsSubpathFromConfig(config *model.Config) error {
+	return updateAssetsSubpathInDirFromConfig(config, model.FusionClientDir)
+}
+
+func updateAssetsSubpathInDirFromConfig(config *model.Config, directory string) error {
 	// Don't rewrite in development environments, since webpack in developer mode constantly
 	// updates the assets and must be configured separately.
 	if model.BuildNumber == "dev" {
@@ -200,7 +209,7 @@ func UpdateAssetsSubpathFromConfig(config *model.Config) error {
 		return err
 	}
 
-	return UpdateAssetsSubpath(subpath)
+	return UpdateAssetsSubpathInDir(subpath, directory)
 }
 
 func GetSubpathFromConfig(config *model.Config) (string, error) {

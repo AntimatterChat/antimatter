@@ -12,6 +12,7 @@ import (
 	"path"
 	"path/filepath"
 	"strings"
+	"time"
 
 	"github.com/klauspost/compress/gzhttp"
 
@@ -20,6 +21,7 @@ import (
 	"github.com/mattermost/mattermost/server/v8/channels/app"
 	"github.com/mattermost/mattermost/server/v8/channels/utils"
 	"github.com/mattermost/mattermost/server/v8/channels/utils/fileutils"
+	"github.com/mattermost/mattermost/server/v8/config"
 	"github.com/mattermost/mattermost/server/v8/platform/shared/templates"
 )
 
@@ -30,6 +32,11 @@ func (w *Web) InitStatic() {
 		if err := utils.UpdateAssetsSubpathFromConfig(w.srv.Config()); err != nil {
 			mlog.Error("Failed to update assets subpath from config", mlog.Err(err))
 		}
+		if config.FusionWebUIAvailable() {
+			if err := utils.UpdateFusionAssetsSubpathFromConfig(w.srv.Config()); err != nil {
+				mlog.Error("Failed to update Fusion UI assets subpath from config", mlog.Err(err))
+			}
+		}
 
 		staticDir, _ := fileutils.FindDir(model.ClientDir)
 		mlog.Debug("Using client directory", mlog.String("client_dir", staticDir))
@@ -39,12 +46,18 @@ func (w *Web) InitStatic() {
 		staticHandler := staticFilesHandler(http.StripPrefix(path.Join(subpath, "static"), http.FileServer(http.Dir(staticDir))))
 		pluginHandler := staticFilesHandler(http.StripPrefix(path.Join(subpath, "static", "plugins"), http.FileServer(http.Dir(*w.srv.Config().PluginSettings.ClientDirectory))))
 
+		// The Fusion UI is optional: without its directory, its assets are simply not found.
+		fusionDir, _ := fileutils.FindDir(model.FusionClientDir)
+		fusionHandler := staticFilesHandler(http.StripPrefix(path.Join(subpath, "static", "fusion"), http.FileServer(http.Dir(fusionDir))))
+
 		if *w.srv.Config().ServiceSettings.WebserverMode == "gzip" {
 			staticHandler = gzhttp.GzipHandler(staticHandler)
 			pluginHandler = gzhttp.GzipHandler(pluginHandler)
+			fusionHandler = gzhttp.GzipHandler(fusionHandler)
 		}
 
 		w.MainRouter.PathPrefix("/static/plugins/").Handler(pluginHandler)
+		w.MainRouter.PathPrefix("/static/fusion/").Handler(fusionHandler)
 		w.MainRouter.PathPrefix("/static/").Handler(staticHandler)
 		w.MainRouter.Handle("/robots.txt", http.HandlerFunc(robotsHandler))
 		w.MainRouter.Handle("/unsupported_browser.js", http.HandlerFunc(unsupportedBrowserScriptHandler))
@@ -101,8 +114,15 @@ func root(c *Context, w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.Header().Set("Cache-Control", "no-cache, max-age=31556926, public")
+	// The page served depends on the web UI cookie.
+	w.Header().Add("Vary", "Cookie")
 
-	staticDir, _ := fileutils.FindDir(model.ClientDir)
+	clientDir := model.ClientDir
+	if selectWebUI(c, w, r) == model.WebUIFusion {
+		clientDir = model.FusionClientDir
+	}
+
+	staticDir, _ := fileutils.FindDir(clientDir)
 	contents, err := os.ReadFile(filepath.Join(staticDir, "root.html"))
 	if err != nil {
 		c.Logger.Warn("Failed to read content from file",
@@ -125,6 +145,34 @@ func root(c *Context, w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+}
+
+// selectWebUI returns the web UI to serve for this request: the one picked by the user in this browser
+// when allowed, otherwise the default one. A valid ?webui= query parameter also saves the pick.
+func selectWebUI(c *Context, w http.ResponseWriter, r *http.Request) string {
+	cfg := c.App.Srv().Config()
+	if !config.UserWebUISelectionAllowed(cfg) {
+		return config.DefaultWebUI(cfg)
+	}
+
+	if requested := r.URL.Query().Get(model.WebUIQueryParam); model.IsValidWebUI(requested) {
+		subpath, _ := utils.GetSubpathFromConfig(cfg)
+		http.SetCookie(w, &http.Cookie{
+			Name:     model.WebUICookie,
+			Value:    requested,
+			Path:     subpath,
+			MaxAge:   int((365 * 24 * time.Hour).Seconds()),
+			Secure:   app.GetProtocol(r) == "https",
+			SameSite: http.SameSiteLaxMode,
+		})
+		return requested
+	}
+
+	if cookie, err := r.Cookie(model.WebUICookie); err == nil && model.IsValidWebUI(cookie.Value) {
+		return cookie.Value
+	}
+
+	return config.DefaultWebUI(cfg)
 }
 
 func staticFilesHandler(handler http.Handler) http.Handler {

@@ -153,6 +153,7 @@ junit.xml
 
 /debug
 /client
+/client-fusion
 __debug_bin
 report.xml
 go.*.orig
