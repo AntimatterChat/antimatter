@@ -23,7 +23,8 @@ export default function ThreadSummary({post}: {post: Post}) {
     const replies = post.reply_count || 0;
     const participants = (post.participants || []).slice(0, 3);
 
-    if (!replies && !post.is_following) {
+    // Like the classic thread footer: only for threads with replies (a call post is followed by its starter)
+    if (!replies) {
         return null;
     }
     return (

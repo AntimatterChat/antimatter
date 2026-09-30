@@ -2,17 +2,14 @@
 // See LICENSE.txt for license information.
 
 import React from 'react';
-import {useIntl} from 'react-intl';
-import {useDispatch, useSelector} from 'react-redux';
+import {useSelector} from 'react-redux';
 
-import {closeRightHandSide} from 'actions/views/rhs';
-import {getIsRhsOpen, getRhsState, getSelectedPostId} from 'selectors/rhs';
+import {getIsRhsExpanded, getIsRhsOpen, getRhsState, getSelectedPostId} from 'selectors/rhs';
 
 import ChannelInfoRhs from 'components/channel_info_rhs';
 import PostEditHistory from 'components/post_edit_history';
 import Search from 'components/search/index';
 
-import Icon from 'fusion/components/icon';
 import MemberList from 'fusion/members/member_list';
 import {am} from 'fusion/utils/class_names';
 import RhsPlugin from 'plugins/rhs_plugin';
@@ -21,19 +18,11 @@ import {RHSStates} from 'utils/constants';
 import ResultsPanel from './results_panel';
 import ThreadPanel from './thread_panel';
 
-// A panel of the classic web app, shown as it is inside the Fusion UI's right-hand slot.
+// A panel of the classic web app, shown as it is inside the Fusion UI's right-hand slot. Its own header (title,
+// expand, popout and close buttons) is styled as the mockup's panel header.
 function ClassicPanel({children}: {children: React.ReactNode}) {
-    const {formatMessage} = useIntl();
-    const dispatch = useDispatch();
     return (
         <div className={am('rhs-classic')}>
-            <button
-                className={am('icon-btn', 'rhs-classic-close')}
-                aria-label={formatMessage({id: 'fusion.rhs.close', defaultMessage: 'Close'})}
-                onClick={() => dispatch(closeRightHandSide())}
-            >
-                <Icon name='x'/>
-            </button>
             <div className='sidebar--right__content'>{children}</div>
         </div>
     );
@@ -44,6 +33,7 @@ export default function RightPanel() {
     const open = useSelector(getIsRhsOpen);
     const rhsState = useSelector(getRhsState);
     const selectedPostId = useSelector(getSelectedPostId);
+    const expanded = useSelector(getIsRhsExpanded);
 
     if (!open) {
         return null;
@@ -80,5 +70,7 @@ export default function RightPanel() {
     if (!content) {
         return null;
     }
-    return <aside className={am('rhs', {wide})}>{content}</aside>;
+
+    // The classic expand button toggles between its expand and collapse icons on sidebar--right--expanded.
+    return <aside className={am('rhs', {wide, expanded}) + (expanded ? ' sidebar--right--expanded' : '')}>{content}</aside>;
 }
