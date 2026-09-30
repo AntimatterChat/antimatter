@@ -13,6 +13,6 @@
 .am-app button, .am-app input, .am-app select, .am-app textarea, .am-layer button, .am-layer input, .am-layer select, .am-layer textarea { font: inherit; color: inherit; }
 .am-app button, .am-layer button { cursor: pointer; background: none; border: 0; padding: 0; }
 .am-app :focus-visible, .am-layer :focus-visible { outline: 2px solid var(--am-matter); outline-offset: 2px; }
-.am-ic { width: 20px; height: 20px; flex: none; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
-.am-ic.am-sm { width: 16px; height: 16px; }
-.am-ic.am-xs { width: 13px; height: 13px; }
+:is(.am-app, .am-layer) .am-ic { width: 20px; height: 20px; flex: none; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+:is(.am-app, .am-layer) .am-ic.am-sm { width: 16px; height: 16px; }
+:is(.am-app, .am-layer) .am-ic.am-xs { width: 13px; height: 13px; }

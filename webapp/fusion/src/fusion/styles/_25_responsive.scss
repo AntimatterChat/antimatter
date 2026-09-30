@@ -5,52 +5,52 @@
 @media (max-width: 1100px) {
   .am-app { grid-template-columns: 72px 240px minmax(0, 1fr) 52px; grid-template-areas: "srv side main app"; }
   /* The member list and side panel slide over the chat instead of taking a column. */
-  .am-members, .am-rhs { grid-area: auto; position: absolute; top: 0; bottom: 0; right: 52px; z-index: 35; box-shadow: var(--am-shadow); }
-  .am-rhs { width: min(380px, calc(100% - 52px)); }
+  :is(.am-app, .am-layer) .am-members, :is(.am-app, .am-layer) .am-rhs { grid-area: auto; position: absolute; top: 0; bottom: 0; right: 52px; z-index: 35; box-shadow: var(--am-shadow); }
+  :is(.am-app, .am-layer) .am-rhs { width: min(380px, calc(100% - 52px)); }
 }
 @media (max-width: 860px) {
   .am-app { grid-template-columns: minmax(0, 1fr); grid-template-areas: "main" "main"; }
-  .am-appbar { display: none; }
-  .am-servers, .am-sidebar { grid-area: auto; position: absolute; top: 0; bottom: 0; z-index: 40; transition: transform .2s ease; }
-  .am-servers { left: 0; width: 72px; }
-  .am-sidebar { left: 72px; width: min(260px, calc(100% - 72px)); box-shadow: var(--am-shadow); }
+  :is(.am-app, .am-layer) .am-appbar { display: none; }
+  :is(.am-app, .am-layer) .am-servers, :is(.am-app, .am-layer) .am-sidebar { grid-area: auto; position: absolute; top: 0; bottom: 0; z-index: 40; transition: transform .2s ease; }
+  :is(.am-app, .am-layer) .am-servers { left: 0; width: 72px; }
+  :is(.am-app, .am-layer) .am-sidebar { left: 72px; width: min(260px, calc(100% - 72px)); box-shadow: var(--am-shadow); }
   .am-app:not(.am-nav-open) .am-servers, .am-app:not(.am-nav-open) .am-sidebar { transform: translateX(-340px); }
-  .am-ch-title .am-menu-btn { display: grid; }
-  .am-head-actions .am-me-btn { display: grid; }
-  .am-ch-title .am-topic { display: none; }
-  .am-chat-head { grid-template-columns: auto minmax(0, 1fr) auto; }
-  .am-head-actions .am-wide-only { display: none; }
-  .am-rhs { grid-area: auto; position: absolute; inset: 0 52px 0 auto; width: min(calc(100% - 52px), 400px); z-index: 35; box-shadow: var(--am-shadow); }
-  .am-members { right: 52px; }
+  :is(.am-app, .am-layer) .am-ch-title .am-menu-btn { display: grid; }
+  :is(.am-app, .am-layer) .am-head-actions .am-me-btn { display: grid; }
+  :is(.am-app, .am-layer) .am-ch-title .am-topic { display: none; }
+  :is(.am-app, .am-layer) .am-chat-head { grid-template-columns: auto minmax(0, 1fr) auto; }
+  :is(.am-app, .am-layer) .am-head-actions .am-wide-only { display: none; }
+  :is(.am-app, .am-layer) .am-rhs { grid-area: auto; position: absolute; inset: 0 52px 0 auto; width: min(calc(100% - 52px), 400px); z-index: 35; box-shadow: var(--am-shadow); }
+  :is(.am-app, .am-layer) .am-members { right: 52px; }
   /* Right-hand drawer: app rail + the current panel, opened by swiping left. */
   .am-app:not(.am-right-open) .am-members, .am-app:not(.am-right-open) .am-rhs { display: none !important; }
   .am-app.am-right-open .am-appbar { display: flex; grid-area: auto; position: absolute; top: 0; bottom: 0; right: 0; z-index: 36; box-shadow: var(--am-shadow); animation: am-drawer-in-right .18s ease; }
   .am-app.am-right-open .am-members, .am-app.am-right-open .am-rhs { animation: am-drawer-in-right .18s ease; }
-  .am-drawer-scrim { display: block; position: absolute; inset: 0; z-index: 30; background: rgba(0, 0, 0, 0.45); opacity: 0; pointer-events: none; transition: opacity .18s ease; }
+  :is(.am-app, .am-layer) .am-drawer-scrim { display: block; position: absolute; inset: 0; z-index: 30; background: rgba(0, 0, 0, 0.45); opacity: 0; pointer-events: none; transition: opacity .18s ease; }
   .am-app.am-nav-open .am-drawer-scrim, .am-app.am-right-open .am-drawer-scrim { opacity: 1; pointer-events: auto; }
-  .am-servers.am-dragging, .am-sidebar.am-dragging { transition: none !important; }
-  .am-modal { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr); }
-  .am-modal nav { display: flex; gap: 4px; overflow-x: auto; padding: 10px; }
-  .am-modal nav h5 { display: none; }
-  .am-modal nav button { white-space: nowrap; width: auto; }
+  :is(.am-app, .am-layer) .am-servers.am-dragging, :is(.am-app, .am-layer) .am-sidebar.am-dragging { transition: none !important; }
+  :is(.am-app, .am-layer) .am-modal { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr); }
+  :is(.am-app, .am-layer) .am-modal nav { display: flex; gap: 4px; overflow-x: auto; padding: 10px; }
+  :is(.am-app, .am-layer) .am-modal nav h5 { display: none; }
+  :is(.am-app, .am-layer) .am-modal nav button { white-space: nowrap; width: auto; }
 }
 @media (max-width: 560px) {
-  .am-chat-head { gap: 6px; padding: 0 8px; }
-  .am-search kbd { display: none; }
-  .am-msg { padding-left: 10px; padding-right: 10px; gap: 0 10px; grid-template-columns: 32px minmax(0, 1fr); }
-  .am-msg .am-av.am-lg { width: 32px; height: 32px; font-size: 12px; }
-  .am-composer { padding: 0 10px 12px; }
-  .am-forum, .am-voice { padding-left: 12px; padding-right: 12px; }
-  .am-role-row { grid-template-columns: auto minmax(0, 1fr); }
-  .am-role-row .am-hoist, .am-role-row .am-count { grid-column: 2; }
+  :is(.am-app, .am-layer) .am-chat-head { gap: 6px; padding: 0 8px; }
+  :is(.am-app, .am-layer) .am-search kbd { display: none; }
+  :is(.am-app, .am-layer) .am-msg { padding-left: 10px; padding-right: 10px; gap: 0 10px; grid-template-columns: 32px minmax(0, 1fr); }
+  :is(.am-app, .am-layer) .am-msg .am-av.am-lg { width: 32px; height: 32px; font-size: 12px; }
+  :is(.am-app, .am-layer) .am-composer { padding: 0 10px 12px; }
+  :is(.am-app, .am-layer) .am-forum, :is(.am-app, .am-layer) .am-voice { padding-left: 12px; padding-right: 12px; }
+  :is(.am-app, .am-layer) .am-role-row { grid-template-columns: auto minmax(0, 1fr); }
+  :is(.am-app, .am-layer) .am-role-row .am-hoist, :is(.am-app, .am-layer) .am-role-row .am-count { grid-column: 2; }
 }
 @media (max-width: 640px) {
   /* No room for a side flyout: durations expand under the status instead. */
-  .am-sp-sub { position: static; width: auto; margin: 2px 0 6px 30px; box-shadow: none; }
-  .am-sp-sub::after { display: none; }
+  :is(.am-app, .am-layer) .am-sp-sub { position: static; width: auto; margin: 2px 0 6px 30px; box-shadow: none; }
+  :is(.am-app, .am-layer) .am-sp-sub::after { display: none; }
 }
-.am-drawer-scrim { display: none; }
+:is(.am-app, .am-layer) .am-drawer-scrim { display: none; }
 @keyframes am-drawer-in-right { from { transform: translateX(40px); opacity: .4; } to { transform: none; opacity: 1; } }
 @media (prefers-reduced-motion: reduce) {
-  .am-app *, .am-layer *, *::before, *::after { transition: none !important; animation: none !important; }
+  .am-app *, .am-layer *, :is(.am-app, .am-layer) *::before, :is(.am-app, .am-layer) *::after { transition: none !important; animation: none !important; }
 }
