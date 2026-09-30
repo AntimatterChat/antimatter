@@ -13,6 +13,7 @@ import {getIsRhsOpen} from 'selectors/rhs';
 import AppRail from 'fusion/apps/app_rail';
 import {IconSprite} from 'fusion/components/icon';
 import {LAYER_ID} from 'fusion/components/layer';
+import Toasts from 'fusion/components/toast';
 import MemberList from 'fusion/members/member_list';
 import ServerRail from 'fusion/rail/server_rail';
 import RightPanel from 'fusion/rhs/right_panel';
@@ -121,6 +122,7 @@ function Frame({children}: Props) {
                 className={am('layer')}
             />
             {search.isOpen && <GlobalSearch/>}
+            <Toasts/>
         </>
     );
 }
