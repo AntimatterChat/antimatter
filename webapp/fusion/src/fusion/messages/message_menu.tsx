@@ -27,6 +27,7 @@ import ForwardPostModal from 'components/forward_post_modal';
 
 import {Popover} from 'fusion/components/layer';
 import {Flyout, MenuItem, MenuSeparator} from 'fusion/components/menu';
+import {useToast} from 'fusion/shell/toast_context';
 import {am} from 'fusion/utils/class_names';
 import {openDialog} from 'fusion/utils/modals';
 import {permalinkPath} from 'fusion/utils/paths';
@@ -60,6 +61,7 @@ export default function MessageMenu({post, anchor, inThread, onClose}: Props) {
     const intl = useIntl();
     const {formatMessage} = intl;
     const dispatch = useDispatch();
+    const toast = useToast();
     const me = useSelector(getCurrentUserId);
     const team = useSelector(getCurrentTeam);
     const config = useSelector(getConfig);
@@ -123,13 +125,19 @@ export default function MessageMenu({post, anchor, inThread, onClose}: Props) {
                 <MenuItem
                     icon='follow'
                     label={post.is_following ? formatMessage({id: 'fusion.messageMenu.unfollow', defaultMessage: 'Unfollow thread'}) : formatMessage({id: 'fusion.messageMenu.follow', defaultMessage: 'Follow thread'})}
-                    onClick={run(() => dispatch(setThreadFollow(me, team.id, threadId, !post.is_following)))}
+                    onClick={run(() => {
+                        dispatch(setThreadFollow(me, team.id, threadId, !post.is_following));
+                        toast(post.is_following ? formatMessage({id: 'fusion.toast.unfollowed', defaultMessage: 'Unfollowed thread'}) : formatMessage({id: 'fusion.toast.following', defaultMessage: 'Following thread'}));
+                    })}
                 />
             )}
             <MenuItem
                 icon='inbox'
                 label={formatMessage({id: 'fusion.messageMenu.unread', defaultMessage: 'Mark as unread'})}
-                onClick={run(() => dispatch(markPostAsUnread(post)))}
+                onClick={run(() => {
+                    dispatch(markPostAsUnread(post));
+                    toast(formatMessage({id: 'fusion.toast.unread', defaultMessage: 'Marked as unread from this message'}));
+                })}
             />
             <Flyout
                 icon='clock'
@@ -141,7 +149,12 @@ export default function MessageMenu({post, anchor, inThread, onClose}: Props) {
                         key={key}
                         type='button'
                         role='menuitem'
-                        onClick={run(() => dispatch(addPostReminder(me, post.id, Math.floor(at / 1000))))}
+                        onClick={run(async () => {
+                            const result = await dispatch(addPostReminder(me, post.id, Math.floor(at / 1000)));
+                            if (!(result && 'error' in result && result.error)) {
+                                toast(formatMessage({id: 'fusion.toast.reminder', defaultMessage: 'Reminder set for {time}'}, {time: intl.formatDate(at, {weekday: 'short', hour: 'numeric', minute: '2-digit'})}));
+                            }
+                        })}
                     >
                         {{
                             '30min': formatMessage({id: 'fusion.messageMenu.remind30', defaultMessage: 'In 30 minutes'}),
@@ -155,25 +168,39 @@ export default function MessageMenu({post, anchor, inThread, onClose}: Props) {
             <MenuItem
                 icon='bookmark'
                 label={saved ? formatMessage({id: 'fusion.messageMenu.unsave', defaultMessage: 'Remove from saved'}) : formatMessage({id: 'fusion.messageMenu.save', defaultMessage: 'Save'})}
-                onClick={run(() => dispatch(saved ? unflagPost(post.id) : flagPost(post.id)))}
+                onClick={run(() => {
+                    dispatch(saved ? unflagPost(post.id) : flagPost(post.id));
+                    toast(saved ? formatMessage({id: 'fusion.toast.unsaved', defaultMessage: 'Removed from saved'}) : formatMessage({id: 'fusion.toast.saved', defaultMessage: 'Saved — find it in Saved messages'}));
+                })}
             />
             {!system && (
                 <MenuItem
                     icon='pin'
                     label={post.is_pinned ? formatMessage({id: 'fusion.messageMenu.unpin', defaultMessage: 'Unpin from channel'}) : formatMessage({id: 'fusion.messageMenu.pin', defaultMessage: 'Pin to channel'})}
-                    onClick={run(() => dispatch(post.is_pinned ? unpinPost(post.id) : pinPost(post.id)))}
+                    onClick={run(() => {
+                        dispatch(post.is_pinned ? unpinPost(post.id) : pinPost(post.id));
+                        toast(post.is_pinned ? formatMessage({id: 'fusion.toast.unpinned', defaultMessage: 'Unpinned'}) : formatMessage({id: 'fusion.toast.pinned', defaultMessage: 'Pinned to the channel'}));
+                    })}
                 />
             )}
             <MenuSeparator/>
             <MenuItem
                 icon='link'
                 label={formatMessage({id: 'fusion.messageMenu.link', defaultMessage: 'Copy link'})}
-                onClick={run(() => team && copyToClipboard(getSiteURL() + permalinkPath(team.name, post.id)))}
+                onClick={run(() => {
+                    if (team) {
+                        copyToClipboard(getSiteURL() + permalinkPath(team.name, post.id));
+                        toast(formatMessage({id: 'fusion.toast.linkCopied', defaultMessage: 'Link copied'}));
+                    }
+                })}
             />
             <MenuItem
                 icon='copy'
                 label={formatMessage({id: 'fusion.messageMenu.copy', defaultMessage: 'Copy text'})}
-                onClick={run(() => copyToClipboard(post.message))}
+                onClick={run(() => {
+                    copyToClipboard(post.message);
+                    toast(formatMessage({id: 'fusion.toast.textCopied', defaultMessage: 'Text copied'}));
+                })}
             />
             {plugins.length > 0 && (
                 <Flyout

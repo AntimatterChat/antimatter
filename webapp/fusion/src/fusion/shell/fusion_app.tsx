@@ -32,6 +32,7 @@ import {GlobalSearchProvider, useGlobalSearch} from './global_search_context';
 import {LayoutProvider, isPhoneLayout, useLayout} from './layout_context';
 import {SettingsProvider, useSettings} from './settings_context';
 import {useSwipes} from './swipes';
+import {ToastProvider} from './toast_context';
 
 import 'fusion/styles/_module.scss';
 
@@ -151,11 +152,13 @@ function Frame({children}: Props) {
 export default function FusionApp({children}: Props) {
     return (
         <LayoutProvider>
-            <GlobalSearchProvider>
-                <SettingsProvider>
-                    <Frame>{children}</Frame>
-                </SettingsProvider>
-            </GlobalSearchProvider>
+            <ToastProvider>
+                <GlobalSearchProvider>
+                    <SettingsProvider>
+                        <Frame>{children}</Frame>
+                    </SettingsProvider>
+                </GlobalSearchProvider>
+            </ToastProvider>
         </LayoutProvider>
     );
 }

@@ -26,6 +26,7 @@ import LeaveChannelModal from 'components/leave_channel_modal';
 
 import {Popover} from 'fusion/components/layer';
 import {MenuItem, MenuSeparator} from 'fusion/components/menu';
+import {useToast} from 'fusion/shell/toast_context';
 import {am} from 'fusion/utils/class_names';
 import {openDialog} from 'fusion/utils/modals';
 import {channelPath} from 'fusion/utils/paths';
@@ -46,6 +47,7 @@ type Props = {
 export default function ChannelMenu({channel, anchor, point, onClose}: Props) {
     const {formatMessage} = useIntl();
     const dispatch = useDispatch();
+    const toast = useToast();
     const [moving, setMoving] = useState(false);
     const [getUnreadCount] = useState(makeGetChannelUnreadCount);
     const userId = useSelector(getCurrentUserId);
@@ -61,12 +63,15 @@ export default function ChannelMenu({channel, anchor, point, onClose}: Props) {
         onClose();
     };
 
+    const label = channel.type === Constants.OPEN_CHANNEL || channel.type === Constants.PRIVATE_CHANNEL ? '#' + channel.display_name : channel.display_name;
+
     const canLeave = (channel.type === Constants.OPEN_CHANNEL && channel.name !== Constants.DEFAULT_CHANNEL) || channel.type === Constants.PRIVATE_CHANNEL;
     const leave = () => {
         if (channel.type === Constants.PRIVATE_CHANNEL || channel.policy_enforced) {
             dispatch(openDialog(ModalIdentifiers.LEAVE_PRIVATE_CHANNEL_MODAL, LeaveChannelModal, {channel}));
         } else {
             dispatch(leaveChannel(channel.id));
+            toast(formatMessage({id: 'fusion.toast.left', defaultMessage: 'You left {name}'}, {name: label}));
         }
     };
 
@@ -84,24 +89,36 @@ export default function ChannelMenu({channel, anchor, point, onClose}: Props) {
                 <MenuItem
                     icon='check'
                     label={formatMessage({id: 'fusion.channelMenu.markRead', defaultMessage: 'Mark as read'})}
-                    onClick={run(() => dispatch(readMultipleChannels([channel.id])))}
+                    onClick={run(() => {
+                        dispatch(readMultipleChannels([channel.id]));
+                        toast(formatMessage({id: 'fusion.toast.markedRead', defaultMessage: 'Marked {name} as read'}, {name: label}));
+                    })}
                 />
             ) : (
                 <MenuItem
                     icon='inbox'
                     label={formatMessage({id: 'fusion.channelMenu.markUnread', defaultMessage: 'Mark as unread'})}
-                    onClick={run(() => dispatch(markMostRecentPostInChannelAsUnread(channel.id)))}
+                    onClick={run(() => {
+                        dispatch(markMostRecentPostInChannelAsUnread(channel.id));
+                        toast(formatMessage({id: 'fusion.toast.markedUnread', defaultMessage: 'Marked {name} as unread'}, {name: label}));
+                    })}
                 />
             )}
             <MenuItem
                 icon='star'
                 label={favorite ? formatMessage({id: 'fusion.channelMenu.unfavorite', defaultMessage: 'Unfavorite'}) : formatMessage({id: 'fusion.channelMenu.favorite', defaultMessage: 'Favorite'})}
-                onClick={run(() => dispatch(favorite ? unfavoriteChannel(channel.id) : favoriteChannel(channel.id)))}
+                onClick={run(() => {
+                    dispatch(favorite ? unfavoriteChannel(channel.id) : favoriteChannel(channel.id));
+                    toast(favorite ? formatMessage({id: 'fusion.toast.unfavorited', defaultMessage: 'Removed from Favorites'}) : formatMessage({id: 'fusion.toast.favorited', defaultMessage: 'Added to Favorites'}));
+                })}
             />
             <MenuItem
                 icon={muted ? 'bell' : 'bell-off'}
                 label={muted ? formatMessage({id: 'fusion.channelMenu.unmute', defaultMessage: 'Unmute channel'}) : formatMessage({id: 'fusion.channelMenu.mute', defaultMessage: 'Mute channel'})}
-                onClick={run(() => dispatch(muted ? unmuteChannel(userId, channel.id) : muteChannel(userId, channel.id)))}
+                onClick={run(() => {
+                    dispatch(muted ? unmuteChannel(userId, channel.id) : muteChannel(userId, channel.id));
+                    toast(muted ? formatMessage({id: 'fusion.toast.unmuted', defaultMessage: 'Unmuted'}) : formatMessage({id: 'fusion.toast.muted', defaultMessage: 'Muted — no notifications or unread badges'}));
+                })}
             />
             <MenuItem
                 icon='folder'
@@ -119,7 +136,12 @@ export default function ChannelMenu({channel, anchor, point, onClose}: Props) {
                             role='menuitemradio'
                             aria-checked={c.id === currentCategory?.id}
                             className={am({cur: c.id === currentCategory?.id})}
-                            onClick={run(() => dispatch(addChannelToCategory(c.id, channel.id)))}
+                            onClick={run(() => {
+                                if (c.id !== currentCategory?.id) {
+                                    dispatch(addChannelToCategory(c.id, channel.id));
+                                    toast(formatMessage({id: 'fusion.toast.moved', defaultMessage: 'Moved to {category}'}, {category: c.display_name}));
+                                }
+                            })}
                         >
                             {c.display_name}
                         </button>
@@ -130,7 +152,12 @@ export default function ChannelMenu({channel, anchor, point, onClose}: Props) {
             <MenuItem
                 icon='link'
                 label={formatMessage({id: 'fusion.channelMenu.copyLink', defaultMessage: 'Copy link'})}
-                onClick={run(() => team && copyToClipboard(getSiteURL() + channelPath(team.name, channel)))}
+                onClick={run(() => {
+                    if (team) {
+                        copyToClipboard(getSiteURL() + channelPath(team.name, channel));
+                        toast(formatMessage({id: 'fusion.toast.linkCopied', defaultMessage: 'Link copied'}));
+                    }
+                })}
             />
             <MenuItem
                 icon='user-plus'

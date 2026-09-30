@@ -20,6 +20,7 @@ import Icon from 'fusion/components/icon';
 import {Popover} from 'fusion/components/layer';
 import {useDisplayName, useUserStatus} from 'fusion/hooks/users';
 import {useSettings} from 'fusion/shell/settings_context';
+import {useToast} from 'fusion/shell/toast_context';
 import {am} from 'fusion/utils/class_names';
 import {getHistory} from 'utils/browser_history';
 
@@ -89,6 +90,7 @@ export default function StatusPopover({anchor, onClose}: Props) {
     const {formatMessage} = useIntl();
     const dispatch = useDispatch();
     const settings = useSettings();
+    const toast = useToast();
     const me = useSelector(getCurrentUser);
     const team = useSelector(getCurrentTeam);
     const name = useDisplayName(me);
@@ -106,15 +108,21 @@ export default function StatusPopover({anchor, onClose}: Props) {
 
     const saveCustom = (e: React.FormEvent) => {
         e.preventDefault();
+        if (text.trim() === (custom?.text || '')) {
+            return;
+        }
         if (text.trim()) {
             dispatch(setCustomStatus({emoji: custom?.emoji || 'speech_balloon', text: text.trim(), duration, expires_at: expiresAt(duration)}));
+            toast(formatMessage({id: 'fusion.toast.customStatus', defaultMessage: 'Custom status updated'}));
         } else {
             dispatch(unsetCustomStatus());
+            toast(formatMessage({id: 'fusion.toast.customStatusCleared', defaultMessage: 'Custom status cleared'}));
         }
     };
 
     const choose = (s: string, endTime = 0) => {
         dispatch(setStatus({user_id: me.id, status: s, dnd_end_time: endTime}));
+        toast(formatMessage({id: 'fusion.toast.status', defaultMessage: 'Status set to {status}'}, {status: label(s)}));
         onClose();
     };
 
@@ -160,6 +168,7 @@ export default function StatusPopover({anchor, onClose}: Props) {
                         onClick={() => {
                             setText('');
                             dispatch(unsetCustomStatus());
+                            toast(formatMessage({id: 'fusion.toast.customStatusCleared', defaultMessage: 'Custom status cleared'}));
                         }}
                     >
                         <Icon
