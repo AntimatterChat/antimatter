@@ -5,6 +5,17 @@
 // and loads before the body renders. This must be before any dynamic imports.
 import './components/initial_loading_screen/initial_loading_screen.css';
 
+import {CURRENT_WEB_UI} from './utils/web_ui';
+import type {WebUI} from './utils/web_ui';
+
+declare global {
+    interface Window {
+
+        // The web UI running in this page, for plugins that draw differently in each one.
+        antimatterWebUI?: WebUI;
+    }
+}
+
 // Allow overriding the path used by webpack to dynamically resolve assets. This is driven by
 // an environment variable in development, or by a window variable defined in root.html in
 // production. The window variable is updated by the server after configuring SiteURL and
@@ -19,6 +30,10 @@ __webpack_public_path__ = window.publicPath;
 // in a minimum of places, as it is preferred to leverage react-router, configured to use this
 // basename accordingly.
 window.basename = window.publicPath.substr(0, window.publicPath.length - '/static/'.length);
+
+// Tell plugins which web UI is running, before any of them loads: in JavaScript, and on <html> for styles.
+window.antimatterWebUI = CURRENT_WEB_UI;
+document.documentElement.dataset.amWebUi = CURRENT_WEB_UI;
 
 import('./entry');
 
