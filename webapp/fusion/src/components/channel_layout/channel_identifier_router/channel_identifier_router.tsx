@@ -5,8 +5,7 @@ import type {History} from 'history';
 import React from 'react';
 import type {match} from 'react-router-dom';
 
-import ChannelView from 'components/channel_view/index';
-
+import FusionChannelView from 'fusion/channel/channel_view';
 import {getHistory} from 'utils/browser_history';
 import Constants from 'utils/constants';
 
@@ -65,6 +64,6 @@ export default class ChannelIdentifierRouter extends React.PureComponent<Props> 
     };
 
     render() {
-        return <ChannelView/>;
+        return <FusionChannelView/>;
     }
 }
