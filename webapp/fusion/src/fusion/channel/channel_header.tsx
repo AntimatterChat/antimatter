@@ -16,7 +16,7 @@ import Avatar from 'fusion/components/avatar';
 import Icon from 'fusion/components/icon';
 import CollectionsPopover from 'fusion/popovers/collections_popover';
 import StatusPopover from 'fusion/popovers/status_popover';
-import {useLayout} from 'fusion/shell/layout_context';
+import {isPhoneLayout, useLayout} from 'fusion/shell/layout_context';
 import ChannelIcon from 'fusion/sidebar/channel_icon';
 import {am} from 'fusion/utils/class_names';
 
@@ -152,11 +152,18 @@ export default function ChannelHeader({channel}: {channel: Channel}) {
                     <Icon name='inbox'/>
                 </button>
                 <button
-                    className={am('icon-btn', 'wide-only', {on: layout.showMembers && !rhsOpen})}
+                    className={am('icon-btn', {on: layout.showMembers && !rhsOpen})}
                     title={formatMessage({id: 'fusion.header.members', defaultMessage: 'Member list'})}
                     aria-label={formatMessage({id: 'fusion.header.membersToggle', defaultMessage: 'Toggle member list'})}
                     onClick={() => {
-                        if (rhsOpen) {
+                        // On a phone the member list lives in the right-hand drawer, with the app rail.
+                        if (isPhoneLayout()) {
+                            if (layout.rightOpen) {
+                                layout.setRightOpen(false);
+                            } else {
+                                layout.openRightDrawer();
+                            }
+                        } else if (rhsOpen) {
                             dispatch(closeRightHandSide());
                             if (!layout.showMembers) {
                                 layout.toggleMembers();

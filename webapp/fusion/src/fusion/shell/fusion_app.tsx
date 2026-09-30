@@ -1,10 +1,11 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 
-import React, {useEffect} from 'react';
+import React, {useEffect, useRef} from 'react';
 import {useDispatch, useSelector, useStore} from 'react-redux';
 
 import {fetchMyCategories} from 'mattermost-redux/actions/channel_categories';
+import {getCurrentChannelId} from 'mattermost-redux/selectors/entities/channels';
 import {getTheme} from 'mattermost-redux/selectors/entities/preferences';
 import {getCurrentTeamId} from 'mattermost-redux/selectors/entities/teams';
 
@@ -28,8 +29,9 @@ import {applyTheme} from 'utils/utils';
 import type {GlobalState} from 'types/store';
 
 import {GlobalSearchProvider, useGlobalSearch} from './global_search_context';
-import {LayoutProvider, useLayout} from './layout_context';
+import {LayoutProvider, isPhoneLayout, useLayout} from './layout_context';
 import {SettingsProvider, useSettings} from './settings_context';
+import {useSwipes} from './swipes';
 
 import 'fusion/styles/_module.scss';
 
@@ -45,6 +47,10 @@ function Frame({children}: Props) {
     const dispatch = useDispatch();
     const settings = useSettings();
     const teamId = useSelector(getCurrentTeamId);
+    const channelId = useSelector(getCurrentChannelId);
+    const appRef = useRef<HTMLDivElement>(null);
+
+    useSwipes(appRef, layout);
 
     // The sidebar's categories, including the direct messages shown in the dock.
     useEffect(() => {
@@ -86,14 +92,26 @@ function Frame({children}: Props) {
         return () => media.removeEventListener('change', onChange);
     }, [store]);
 
-    // Opening a panel on a narrow screen slides the right-hand drawer in.
+    // Opening a panel on a narrow screen slides the right-hand drawer in; closing it keeps the drawer open only
+    // when it shows the member list.
     useEffect(() => {
         if (rhsOpen) {
             layout.setRightOpen(true);
+        } else if (layout.rightOpen) {
+            layout.setRightOpen(layout.showMembers && isPhoneLayout());
         }
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [rhsOpen]);
+
+    // Switching conversations closes the right-hand drawer, unless a panel (a thread, search results…) is open.
+    useEffect(() => {
+        if (!rhsOpen) {
+            layout.setRightOpen(false);
+        }
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [channelId]);
 
     const closeDrawers = () => {
         layout.setNavOpen(false);
@@ -103,7 +121,10 @@ function Frame({children}: Props) {
     return (
         <>
             <IconSprite/>
-            <div className={am('app', {'nav-open': layout.navOpen, 'right-open': layout.rightOpen})}>
+            <div
+                ref={appRef}
+                className={am('app', {'nav-open': layout.navOpen, 'right-open': layout.rightOpen})}
+            >
                 <ServerRail/>
                 {layout.home ? <HomeSidebar/> : <TeamSidebar/>}
                 <main className={am('main')}>{children}</main>
