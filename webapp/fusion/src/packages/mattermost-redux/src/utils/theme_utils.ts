@@ -130,6 +130,10 @@ const themeTypeMap: ThemeTypeMap = {
     Quartz: 'quartz',
     Indigo: 'indigo',
     Onyx: 'onyx',
+    'Fusion System': 'fusionSystem',
+    'Fusion Dark': 'fusionDark',
+    'Fusion Light': 'fusionLight',
+    'Fusion OLED': 'fusionOled',
 };
 
 // setThemeDefaults will set defaults on the theme for any unset properties.

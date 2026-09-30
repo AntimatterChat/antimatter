@@ -17,6 +17,16 @@ import '@mattermost/compass-icons/css/compass-icons.css';
 import '@mattermost/compass-ui/styles';
 import '@mattermost/components/dist/index.esm.css';
 
+import '@fontsource/figtree/400.css';
+import '@fontsource/figtree/500.css';
+import '@fontsource/figtree/600.css';
+import '@fontsource/figtree/700.css';
+import '@fontsource/sora/500.css';
+import '@fontsource/sora/600.css';
+import '@fontsource/sora/700.css';
+import '@fontsource/jetbrains-mono/400.css';
+import '@fontsource/jetbrains-mono/500.css';
+
 declare global {
     interface Window {
         publicPath?: string;

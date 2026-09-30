@@ -54,6 +54,7 @@ import store from 'stores/redux_store';
 import {focusPost} from 'components/permalink_view/actions';
 import type {TextboxElement} from 'components/textbox';
 
+import {applyFusionTheme, resolveSystemTheme} from 'fusion/theme/fusion_theme';
 import {getHistory} from 'utils/browser_history';
 import Constants, {FileTypes, ValidationErrors, A11yCustomEventTypes, AdvancedTextEditorTextboxIds} from 'utils/constants';
 import type {A11yFocusEventDetail} from 'utils/constants';
@@ -357,7 +358,10 @@ export function toRgbValues(hexStr: string): string {
     return rgbaStr;
 }
 
-export function applyTheme(theme: Theme) {
+export function applyTheme(themeToApply: Theme) {
+    const theme = resolveSystemTheme(themeToApply);
+    applyFusionTheme(theme);
+
     DesktopApp.updateTheme({...theme, isUsingSystemTheme: false});
 
     if (theme.centerChannelColor) {

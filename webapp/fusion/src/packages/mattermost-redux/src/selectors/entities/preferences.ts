@@ -132,11 +132,15 @@ const getThemePreference = createSelector(
     },
 );
 
-export type ThemeKey = 'denim' | 'sapphire' | 'quartz' | 'indigo' | 'onyx';
+export type ThemeKey = 'denim' | 'sapphire' | 'quartz' | 'indigo' | 'onyx' | 'fusionSystem' | 'fusionDark' | 'fusionLight' | 'fusionOled';
+
+// The Fusion UI's themes, and the one used when neither the user nor the System Console picked one of them.
+export const FUSION_THEME_KEYS: ThemeKey[] = ['fusionSystem', 'fusionDark', 'fusionLight', 'fusionOled'];
+export const DEFAULT_FUSION_THEME_KEY: ThemeKey = 'fusionSystem';
 
 export type LegacyThemeType = 'Mattermost' | 'Organization' | 'Mattermost Dark' | 'Windows Dark';
 
-export type ThemeType = 'Denim' | 'Sapphire' | 'Quartz' | 'Indigo' | 'Onyx';
+export type ThemeType = 'Denim' | 'Sapphire' | 'Quartz' | 'Indigo' | 'Onyx' | 'Fusion System' | 'Fusion Dark' | 'Fusion Light' | 'Fusion OLED';
 
 export type Theme = {
     [key: string]: string | undefined;
@@ -169,15 +173,13 @@ export type Theme = {
 };
 
 const getDefaultTheme = createSelector('getDefaultTheme', getConfig, (config): Theme => {
-    if (config.DefaultTheme && config.DefaultTheme in Preferences.THEMES) {
-        const theme: Theme = Preferences.THEMES[config.DefaultTheme as ThemeKey];
-        if (theme) {
-            return theme;
-        }
+    // The default theme configured in the System Console is shared with the classic web app, so it's only used
+    // when it's one of the Fusion UI's themes.
+    if (config.DefaultTheme && FUSION_THEME_KEYS.includes(config.DefaultTheme as ThemeKey)) {
+        return Preferences.THEMES[config.DefaultTheme as ThemeKey];
     }
 
-    // If no config.DefaultTheme or value doesn't refer to a valid theme name...
-    return Preferences.THEMES.denim;
+    return Preferences.THEMES[DEFAULT_FUSION_THEME_KEY];
 });
 
 export const getTheme: (state: GlobalState) => Theme = createShallowSelector(
