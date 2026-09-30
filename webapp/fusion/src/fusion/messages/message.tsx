@@ -17,7 +17,7 @@ import {getCurrentUserId, getUser} from 'mattermost-redux/selectors/entities/use
 
 import {toggleReaction} from 'actions/post_actions';
 import {selectPost} from 'actions/views/rhs';
-import {isEmbedVisible} from 'selectors/posts';
+import {getIsPostBeingEdited, getIsPostBeingEditedInRHS, isEmbedVisible} from 'selectors/posts';
 
 import FileAttachmentListContainer from 'components/file_attachment_list';
 import MessageWithAdditionalContent from 'components/message_with_additional_content';
@@ -34,6 +34,7 @@ import {areConsecutivePostsBySameUser, isFromBot, isFromWebhook, isSystemMessage
 import type {GlobalState} from 'types/store';
 
 import Acknowledge from './acknowledge';
+import EditForm from './edit_form';
 import MessageMenu from './message_menu';
 import Reactions from './reactions';
 import ThreadSummary from './thread_summary';
@@ -92,6 +93,7 @@ export default function Message({postId, previousPostId, inThread = false, highl
     const embedVisible = useSelector((state: GlobalState) => isEmbedVisible(state, postId));
     const autotranslated = useSelector((state: GlobalState) => (post ? isMyChannelAutotranslated(state, post.channel_id) : false));
     const pluginPostTypes = useSelector((state: GlobalState) => state.plugins.postTypes);
+    const editing = useSelector((state: GlobalState) => getIsPostBeingEdited(state, postId) && getIsPostBeingEditedInRHS(state, postId) === inThread);
     const avatarRef = useRef<HTMLButtonElement>(null);
     const moreRef = useRef<HTMLButtonElement>(null);
     const reactRef = useRef<HTMLButtonElement>(null);
@@ -185,15 +187,23 @@ export default function Message({postId, previousPostId, inThread = false, highl
 
     const body = (
         <>
-            <div className={am('body')}>
-                <MessageWithAdditionalContent
+            {editing && (
+                <EditForm
                     post={post}
-                    isEmbedVisible={embedVisible}
-                    pluginPostTypes={pluginPostTypes}
-                    isRHS={inThread}
-                    isChannelAutotranslated={autotranslated}
+                    inThread={inThread}
                 />
-            </div>
+            )}
+            {!editing && (
+                <div className={am('body')}>
+                    <MessageWithAdditionalContent
+                        post={post}
+                        isEmbedVisible={embedVisible}
+                        pluginPostTypes={pluginPostTypes}
+                        isRHS={inThread}
+                        isChannelAutotranslated={autotranslated}
+                    />
+                </div>
+            )}
             {post.file_ids && post.file_ids.length > 0 && !deleted && (
                 <FileAttachmentListContainer post={post}/>
             )}

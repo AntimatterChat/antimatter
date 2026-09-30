@@ -13,7 +13,7 @@ import {isPostPriorityEnabled} from 'mattermost-redux/selectors/entities/posts';
 import {getBool} from 'mattermost-redux/selectors/entities/preferences';
 
 import {uploadFile} from 'actions/file_actions';
-import {onSubmit} from 'actions/views/create_comment';
+import {editLatestPost, onSubmit} from 'actions/views/create_comment';
 import {updateDraft} from 'actions/views/drafts';
 import {isBurnOnReadEnabled} from 'selectors/burn_on_read';
 import {makeGetDraft} from 'selectors/drafts';
@@ -118,6 +118,13 @@ export default function Composer({channelId, rootId = '', placeholder, compact =
 
     const onKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
         if (autocompleteRef.current?.handleKeyDown(e)) {
+            return;
+        }
+
+        // Up in an empty composer edits your last message, as in the classic web app.
+        if (e.key === 'ArrowUp' && !draft.message && !e.shiftKey && !e.altKey && !e.ctrlKey && !e.metaKey) {
+            e.preventDefault();
+            dispatch(editLatestPost(channelId, rootId));
             return;
         }
         if (e.key === 'Enter' && !e.nativeEvent.isComposing) {
