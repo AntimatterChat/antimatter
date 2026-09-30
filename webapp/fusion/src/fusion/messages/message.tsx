@@ -18,7 +18,7 @@ import {getCurrentUserId, getUser} from 'mattermost-redux/selectors/entities/use
 import {toggleReaction} from 'actions/post_actions';
 import {selectPost} from 'actions/views/rhs';
 import {shouldDisplayConcealedPlaceholder} from 'selectors/burn_on_read_posts';
-import {getIsPostBeingEdited, getIsPostBeingEditedInRHS, isEmbedVisible} from 'selectors/posts';
+import {getIsPostBeingEdited, getIsPostBeingEditedInRHS} from 'selectors/posts';
 
 import MessageWithAdditionalContent from 'components/message_with_additional_content';
 
@@ -36,6 +36,7 @@ import type {GlobalState} from 'types/store';
 import Acknowledge from './acknowledge';
 import {BurnCover, BurnTag} from './burn_on_read';
 import Files from './content/files';
+import MessageContent from './content/message_content';
 import EditForm from './edit_form';
 import MessageMenu from './message_menu';
 import Reactions from './reactions';
@@ -92,9 +93,7 @@ export default function Message({postId, previousPostId, inThread = false, highl
     const saved = useSelector((state: GlobalState) => isPostFlagged(state, postId));
     const priorityEnabled = useSelector(isPostPriorityEnabled);
     const crt = useSelector(isCollapsedThreadsEnabled);
-    const embedVisible = useSelector((state: GlobalState) => isEmbedVisible(state, postId));
     const autotranslated = useSelector((state: GlobalState) => (post ? isMyChannelAutotranslated(state, post.channel_id) : false));
-    const pluginPostTypes = useSelector((state: GlobalState) => state.plugins.postTypes);
     const editing = useSelector((state: GlobalState) => getIsPostBeingEdited(state, postId) && getIsPostBeingEditedInRHS(state, postId) === inThread);
     const concealed = useSelector((state: GlobalState) => shouldDisplayConcealedPlaceholder(state, postId));
     const avatarRef = useRef<HTMLButtonElement>(null);
@@ -201,12 +200,10 @@ export default function Message({postId, previousPostId, inThread = false, highl
             )}
             {!concealed && !editing && (
                 <div className={am('body')}>
-                    <MessageWithAdditionalContent
+                    <MessageContent
                         post={post}
-                        isEmbedVisible={embedVisible}
-                        pluginPostTypes={pluginPostTypes}
-                        isRHS={inThread}
-                        isChannelAutotranslated={autotranslated}
+                        inThread={inThread}
+                        autotranslated={autotranslated}
                     />
                 </div>
             )}
