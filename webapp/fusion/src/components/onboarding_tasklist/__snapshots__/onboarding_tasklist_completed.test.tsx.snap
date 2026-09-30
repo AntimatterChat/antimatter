@@ -1,0 +1,42 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`components/onboarding_tasklist/onboarding_tasklist_completed.tsx should match snapshot 1`] = `
+<div>
+  <div
+    class="CompletedWrapper-byXeYZ dkPNOr"
+  >
+    <img
+      alt="completed tasks image"
+      src="test-file-stub"
+    />
+    <h2>
+      Well done. You’ve completed all of the tasks!
+    </h2>
+    <span
+      class="completed-subtitle"
+    >
+      We hope Antimatter is more familiar now.
+    </span>
+    <button
+      class="got-it-button"
+    >
+      Got it
+    </button>
+    <div
+      class="download-apps"
+    >
+      <span>
+        Now that you’re all set up, 
+        <a
+          href="https://mattermost.com/download?utm_source=mattermost&utm_medium=in-product&utm_content=onboarding_tasklist_completed&uid=&sid=&server_version=#desktop"
+          location="onboarding_tasklist_completed"
+          rel="noopener noreferrer"
+          target="_blank"
+        >
+          download our apps.
+        </a>
+      </span>
+    </div>
+  </div>
+</div>
+`;

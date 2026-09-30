@@ -1,0 +1,56 @@
+{
+    "Root": {
+        "desc": "A component at the root of any logged-in pages. Can be used for creating modals and pop-ups that display over the whole app. Does not override any existing component.",
+        "props": {}
+    },
+    "PostTypePlugin": {
+        "desc": "The component displaying the message body of posts. For adding new components based on post type. Use in your `postTypeComponents` argument to `registerComponents` in your plugin's intialization function.",
+        "props": {
+            "post": {
+                "type": { "name": "object" },
+                "required": true,
+                "desc": "Post to be displayed"
+            },
+            "compactDisplay": {
+                "type": { "name": "bool" },
+                "required": false,
+                "defaultValue": false,
+                "desc": "Set to true if UI is in compact display mode"
+            },
+            "isRHS": {
+                "type": { "name": "bool" },
+                "required": true,
+                "defaultValue": false,
+                "desc": "Set to true if the post is in the right-hand sidebar (thread, search results, etc.)"
+            }
+        }
+    },
+    "ChannelHeaderButton": {
+        "desc": "A component on the right side of the channel header, beside buttons such as the pinned posts button.",
+        "props": {}
+    },
+    "MobileChannelHeaderButton": {
+        "desc": "Same as ChannelHeaderButton, except shown in mobile view when the screen is less than 768 pixels wide.",
+        "props": {}
+    },
+    "ChannelSettingsTab": {
+        "desc": "A channel settings tab registered via registerChannelSettingsTab. A registration is either a declarative schema (sections + onSave) where the host renders the controls and owns the save bar, or a custom component that renders the whole tab body. Both branches accept uiName, icon, and shouldRender(state, channel). The 'props' below describe what a custom tab component receives.",
+        "props": {
+            "channel": {
+                "type": { "name": "object" },
+                "required": true,
+                "desc": "The current channel being configured"
+            },
+            "setUnsaved": {
+                "type": { "name": "function" },
+                "required": true,
+                "desc": "Reports whether the custom tab currently has unsaved changes so the host can show its save bar"
+            },
+            "registerHandlers": {
+                "type": { "name": "function" },
+                "required": true,
+                "desc": "Registers { save, reset } handlers (or null to clear) for the host-owned SaveChangesPanel. The host calls save when the user clicks Save; reject the returned Promise to keep the tab dirty and surface a plugin-owned error. reset is called when the user clicks Reset."
+            }
+        }
+    }
+}

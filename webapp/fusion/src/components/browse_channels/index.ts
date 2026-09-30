@@ -1,0 +1,109 @@
+// Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
+// See LICENSE.txt for license information.
+
+import {connect} from 'react-redux';
+import {bindActionCreators} from 'redux';
+import type {Dispatch} from 'redux';
+
+import type {Channel} from '@mattermost/types/channels';
+
+import {
+    getChannels,
+    getArchivedChannels,
+    getRecommendedChannelsForUser,
+    joinChannel,
+    getChannelsMemberCount,
+    searchAllChannels,
+    getMyChannelJoinRequests,
+    withdrawMyChannelJoinRequest,
+} from 'mattermost-redux/actions/channels';
+import {RequestStatus} from 'mattermost-redux/constants';
+import {createSelector} from 'mattermost-redux/selectors/create_selector';
+import {getChannelsInCurrentTeam, getMyChannelMemberships, getChannelsMemberCount as getChannelsMemberCountSelector, getMyPendingJoinRequestsByChannel} from 'mattermost-redux/selectors/entities/channels';
+import {isDiscoverableChannelsEnabled} from 'mattermost-redux/selectors/entities/general';
+import {getCurrentTeam, getCurrentTeamId} from 'mattermost-redux/selectors/entities/teams';
+import {getCurrentUserId} from 'mattermost-redux/selectors/entities/users';
+
+import {setGlobalItem} from 'actions/storage';
+import {openModal, closeModal} from 'actions/views/modals';
+import {closeRightHandSide} from 'actions/views/rhs';
+import {isChannelAccessControlEnabled} from 'selectors/general';
+import {getIsRhsOpen, getRhsState} from 'selectors/rhs';
+import {makeGetGlobalItem} from 'selectors/storage';
+
+import Constants, {StoragePrefixes} from 'utils/constants';
+
+import type {GlobalState} from 'types/store';
+
+import BrowseChannels from './browse_channels';
+
+const getChannelsWithoutArchived = createSelector(
+    'getChannelsWithoutArchived',
+    getChannelsInCurrentTeam,
+    (channels: Channel[]) => channels && channels.filter((c) => c.delete_at === 0 && c.type !== Constants.PRIVATE_CHANNEL),
+);
+
+const getArchivedOtherChannels = createSelector(
+    'getArchivedOtherChannels',
+    getChannelsInCurrentTeam,
+    (channels: Channel[]) => channels && channels.filter((c) => c.delete_at !== 0),
+);
+
+const getPrivateChannelsSelector = createSelector(
+    'getPrivateChannelsSelector',
+    getChannelsInCurrentTeam,
+
+    // Active private channels only. Archived private channels are surfaced
+    // exclusively through `archivedChannels`; including them here would both
+    // leak them past the Hide Archived toggle and double them up alongside the
+    // archived list.
+    (channels: Channel[]) => channels && channels.filter((c) => c.delete_at === 0 && c.type === Constants.PRIVATE_CHANNEL),
+);
+
+function mapStateToProps(state: GlobalState) {
+    const team = getCurrentTeam(state);
+    const getGlobalItem = makeGetGlobalItem(StoragePrefixes.HIDE_JOINED_CHANNELS, 'false');
+    const getHideArchivedItem = makeGetGlobalItem(StoragePrefixes.HIDE_ARCHIVED_CHANNELS, 'true');
+
+    return {
+        channels: getChannelsWithoutArchived(state) || [],
+        archivedChannels: getArchivedOtherChannels(state) || [],
+        privateChannels: getPrivateChannelsSelector(state) || [],
+        currentUserId: getCurrentUserId(state),
+        teamId: getCurrentTeamId(state),
+        teamName: team?.name,
+        channelsRequestStarted: state.requests.channels.getChannels.status === RequestStatus.STARTED,
+        myChannelMemberships: getMyChannelMemberships(state) || {},
+        shouldHideJoinedChannels: getGlobalItem(state) === 'true',
+        shouldHideArchivedChannels: getHideArchivedItem(state) === 'true',
+        rhsState: getRhsState(state),
+        rhsOpen: getIsRhsOpen(state),
+        channelsMemberCount: getChannelsMemberCountSelector(state),
+        accessControlEnabled: isChannelAccessControlEnabled(state),
+
+        // Discoverable Private Channels — feed the per-row state machine.
+        discoverableFeatureEnabled: isDiscoverableChannelsEnabled(state),
+        myPendingJoinRequests: getMyPendingJoinRequestsByChannel(state),
+    };
+}
+
+function mapDispatchToProps(dispatch: Dispatch) {
+    return {
+        actions: bindActionCreators({
+            getChannels,
+            getArchivedChannels,
+            getRecommendedChannelsForUser,
+            joinChannel,
+            searchAllChannels,
+            openModal,
+            closeModal,
+            setGlobalItem,
+            closeRightHandSide,
+            getChannelsMemberCount,
+            getMyChannelJoinRequests,
+            withdrawMyChannelJoinRequest,
+        }, dispatch),
+    };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(BrowseChannels);

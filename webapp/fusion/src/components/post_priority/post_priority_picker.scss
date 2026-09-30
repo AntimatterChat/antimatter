@@ -1,0 +1,15 @@
+@use 'utils/mixins';
+
+.PostPriorityPicker {
+    width: 324px;
+
+    &__apply {
+        @include mixins.button-small;
+        @include mixins.primary-button;
+    }
+
+    &__cancel {
+        @include mixins.button-small;
+        @include mixins.tertiary-button;
+    }
+}

@@ -1,0 +1,711 @@
+// Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
+// See LICENSE.txt for license information.
+
+import React, {useCallback, useState, useEffect, useMemo, useRef} from 'react';
+import {useIntl} from 'react-intl';
+import {useDispatch, useSelector} from 'react-redux';
+
+import type {Channel, ChannelType} from '@mattermost/types/channels';
+import type {ServerError} from '@mattermost/types/errors';
+
+import {patchChannel, updateChannelPrivacy} from 'mattermost-redux/actions/channels';
+import {General} from 'mattermost-redux/constants';
+import Permissions from 'mattermost-redux/constants/permissions';
+import {areManagedCategoriesEnabled, getChannelManagedCategoryName, isChannelCategorySortingEnabled, makeGetSidebarCategoryNamesForTeam} from 'mattermost-redux/selectors/entities/channel_categories';
+import {isDiscoverableChannelsEnabled} from 'mattermost-redux/selectors/entities/general';
+import {haveIChannelPermission} from 'mattermost-redux/selectors/entities/roles';
+
+import {
+    setShowPreviewOnChannelSettingsHeaderModal,
+    setShowPreviewOnChannelSettingsPurposeModal,
+} from 'actions/views/textbox';
+import {
+    showPreviewOnChannelSettingsHeaderModal,
+    showPreviewOnChannelSettingsPurposeModal,
+} from 'selectors/views/textbox';
+
+import ConvertConfirmModal from 'components/admin_console/team_channel_settings/convert_confirm_modal';
+import CategorySelector from 'components/category_selector/category_selector';
+import ChannelNameFormField from 'components/channel_name_form_field/channel_name_form_field';
+import type {TextboxElement} from 'components/textbox';
+import Toggle from 'components/toggle';
+import AdvancedTextbox from 'components/widgets/advanced_textbox/advanced_textbox';
+import SaveChangesPanel, {type SaveChangesPanelState} from 'components/widgets/modals/components/save_changes_panel';
+import PublicPrivateSelector from 'components/widgets/public-private-selector/public-private-selector';
+
+import {isMembershipPolicyEnforced} from 'utils/channel_utils';
+import Constants from 'utils/constants';
+
+import type {GlobalState} from 'types/store';
+
+type ChannelSettingsInfoTabProps = {
+    channel: Channel;
+    onCancel?: () => void;
+    setAreThereUnsavedChanges?: (unsaved: boolean) => void;
+    showTabSwitchError?: boolean;
+};
+
+// The form seeds each field from the raw channel record and trims only when
+// building the save payload, so change detection compares the raw values. That
+// keeps an untouched channel clean on open (local value equals the stored one)
+// while still letting a user save the removal of stored leading/trailing
+// whitespace.
+function hasTextChanged(value: string, savedValue?: string): boolean {
+    return value !== (savedValue ?? '');
+}
+
+function ChannelSettingsInfoTab({
+    channel,
+    onCancel,
+    setAreThereUnsavedChanges,
+    showTabSwitchError,
+}: ChannelSettingsInfoTabProps) {
+    const {formatMessage} = useIntl();
+    const dispatch = useDispatch();
+
+    const getSidebarCategoryNamesForTeam = useRef(makeGetSidebarCategoryNamesForTeam());
+
+    const shouldShowPreviewPurpose = useSelector(showPreviewOnChannelSettingsPurposeModal);
+    const shouldShowPreviewHeader = useSelector(showPreviewOnChannelSettingsHeaderModal);
+
+    const isPrivate = channel.type === Constants.PRIVATE_CHANNEL;
+    const isDirect = channel.type === Constants.DM_CHANNEL;
+    const isGroup = channel.type === Constants.GM_CHANNEL;
+    const isDMorGroupChannel = isDirect || isGroup;
+
+    // Permissions for transforming channel type
+    const canConvertToPrivate = useSelector((state: GlobalState) => {
+        if (isDMorGroupChannel) {
+            // Group channels can be converted to private,
+            // but that is handled in a different flow.
+            return false;
+        }
+        return haveIChannelPermission(state, channel.team_id, channel.id, Permissions.CONVERT_PUBLIC_CHANNEL_TO_PRIVATE);
+    });
+
+    const canConvertToPublic = useSelector((state: GlobalState) => {
+        if (isDMorGroupChannel) {
+            return false;
+        }
+        return haveIChannelPermission(state, channel.team_id, channel.id, Permissions.CONVERT_PRIVATE_CHANNEL_TO_PUBLIC);
+    });
+
+    // Discoverable Private Channels — gated by FeatureFlagDiscoverableChannels
+    // server flag AND the per-channel manage_private_channel_discoverability
+    // permission. We surface the toggle as read-only when the FF is on but
+    // the user lacks permission, and hide it entirely when the FF is off
+    // (otherwise it would expose the existence of a feature the server
+    // refuses to honor).
+    const discoverableFeatureEnabled = useSelector(isDiscoverableChannelsEnabled);
+    const canManageDiscoverability = useSelector((state: GlobalState) => {
+        if (isDMorGroupChannel) {
+            return false;
+        }
+        return haveIChannelPermission(state, channel.team_id, channel.id, Permissions.MANAGE_PRIVATE_CHANNEL_DISCOVERABILITY);
+    });
+
+    // Permissions for managing channel (name, header, purpose)
+    const channelPropertiesPermission = isPrivate ? Permissions.MANAGE_PRIVATE_CHANNEL_PROPERTIES : Permissions.MANAGE_PUBLIC_CHANNEL_PROPERTIES;
+    const canManageChannelProperties = useSelector((state: GlobalState) => {
+        if (isDMorGroupChannel) {
+            return true;
+        }
+        return haveIChannelPermission(state, channel.team_id, channel.id, channelPropertiesPermission);
+    });
+    const canManageChannelRoles = useSelector((state: GlobalState) => haveIChannelPermission(state, channel.team_id, channel.id, Permissions.MANAGE_CHANNEL_ROLES));
+
+    const showDefaultCategorySelector = useSelector(isChannelCategorySortingEnabled);
+    const showDefaultCategoryField = showDefaultCategorySelector && !isDMorGroupChannel;
+
+    const enableManagedCategories = useSelector(areManagedCategoriesEnabled);
+    const showManagedCategoryField = enableManagedCategories && !isDMorGroupChannel;
+
+    const currentManagedCategoryName = useSelector((state: GlobalState) => getChannelManagedCategoryName(state, channel.id));
+
+    // Must stay aligned with the server gates (`setChannelMembers`, guest
+    // invite, `ChannelAccessControlled`). Read the membership action key
+    // specifically — a permission-only policy (e.g. file upload restriction)
+    // does not constrain the channel type, so the privacy toggle must stay
+    // enabled in that case.
+    const channelTypeLockedByMembershipPolicy = isMembershipPolicyEnforced(channel);
+    const channelTypeLockTooltip = channelTypeLockedByMembershipPolicy ?
+        formatMessage({
+            id: 'channel_settings.policy_enforced.cannot_change_channel_type',
+            defaultMessage: 'This channel has a membership policy applied. Remove the policy before changing between public and private.',
+        }) :
+        undefined;
+
+    const [defaultCategoryName, setDefaultCategoryName] = useState<string | undefined>(channel.default_category_name);
+    const [serverDefaultCategoryName, setServerDefaultCategoryName] = useState<string | undefined>(channel.default_category_name);
+
+    const [managedCategoryName, setManagedCategoryName] = useState(currentManagedCategoryName);
+    const [serverManagedCategoryName, setServerManagedCategoryName] = useState(currentManagedCategoryName);
+
+    useEffect(() => {
+        setDefaultCategoryName(channel.default_category_name);
+        setServerDefaultCategoryName(channel.default_category_name);
+    }, [channel.id, channel.default_category_name]);
+
+    useEffect(() => {
+        setManagedCategoryName(currentManagedCategoryName);
+        setServerManagedCategoryName(currentManagedCategoryName);
+    }, [currentManagedCategoryName]);
+
+    // Constants
+    const HEADER_MAX_LENGTH = 1024;
+
+    // Internal state variables
+    const [internalUrlError, setUrlError] = useState('');
+    const [channelNameError, setChannelNameError] = useState('');
+    const [characterLimitExceeded, setCharacterLimitExceeded] = useState(false);
+    const [showConvertConfirmModal, setShowConvertConfirmModal] = useState(false);
+
+    // Removed switchingTabsWithUnsaved state as we now use the showTabSwitchError prop directly
+
+    // The fields we allow editing
+    const [displayName, setDisplayName] = useState(channel?.display_name ?? '');
+    const [channelUrl, setChannelURL] = useState(channel?.name ?? '');
+    const [channelPurpose, setChannelPurpose] = useState(channel.purpose ?? '');
+    const [channelHeader, setChannelHeader] = useState(channel?.header ?? '');
+    const [channelType, setChannelType] = useState<ChannelType>(channel?.type as ChannelType ?? Constants.OPEN_CHANNEL as ChannelType);
+    const [discoverable, setDiscoverable] = useState<boolean>(channel?.discoverable ?? false);
+
+    // Render condition: feature flag on, the in-progress type selection is
+    // private (gating on channelType rather than channel.type so the toggle
+    // appears immediately during a Public->Private conversion, matching the
+    // New Channel modal), and the channel is not archived or shared (the
+    // server rejects discoverable patches on those anyway).
+    const showDiscoverableToggle = discoverableFeatureEnabled &&
+        !isDMorGroupChannel &&
+        channelType === Constants.PRIVATE_CHANNEL &&
+        channel.delete_at === 0 &&
+        !channel.shared;
+
+    // UI Feedback: errors, states
+    const [formError, setFormError] = useState('');
+
+    // SaveChangesPanel state
+    const [saveChangesPanelState, setSaveChangesPanelState] = useState<SaveChangesPanelState>();
+
+    // Handler for channel name validation errors
+    const handleChannelNameError = useCallback((isError: boolean, errorMessage?: string) => {
+        setChannelNameError(errorMessage || '');
+
+        // If there's an error, update the error to show in the SaveChangesPanel
+        if (isError && errorMessage) {
+            setFormError(errorMessage);
+        } else if (formError === channelNameError) {
+            // Only clear error if it's the same as the channel name error
+            setFormError('');
+        }
+    }, [channelNameError, formError, setFormError]);
+
+    const hasUnsavedChanges = useMemo(() => {
+        if (hasTextChanged(channelHeader, channel.header)) {
+            return true;
+        }
+
+        if (isDMorGroupChannel) {
+            return false;
+        }
+
+        return hasTextChanged(displayName, channel.display_name) ||
+            hasTextChanged(channelUrl, channel.name) ||
+            hasTextChanged(channelPurpose, channel.purpose) ||
+            channelType !== channel.type ||
+            (defaultCategoryName ?? '') !== (serverDefaultCategoryName ?? '') ||
+            managedCategoryName !== serverManagedCategoryName ||
+            (showDiscoverableToggle && discoverable !== Boolean(channel.discoverable));
+    }, [channel, isDMorGroupChannel, displayName, channelUrl, channelPurpose, channelHeader, channelType, defaultCategoryName, serverDefaultCategoryName, managedCategoryName, serverManagedCategoryName, discoverable, showDiscoverableToggle]);
+
+    useEffect(() => {
+        setAreThereUnsavedChanges?.(hasUnsavedChanges);
+    }, [hasUnsavedChanges, setAreThereUnsavedChanges]);
+
+    const handleURLChange = useCallback((newURL: string) => {
+        if (internalUrlError) {
+            setFormError('');
+            setSaveChangesPanelState(undefined);
+            setUrlError('');
+        }
+        setChannelURL(newURL.trim());
+    }, [internalUrlError]);
+
+    const togglePurposePreview = useCallback(() => {
+        dispatch(setShowPreviewOnChannelSettingsPurposeModal(!shouldShowPreviewPurpose));
+    }, [dispatch, shouldShowPreviewPurpose]);
+
+    const toggleHeaderPreview = useCallback(() => {
+        dispatch(setShowPreviewOnChannelSettingsHeaderModal(!shouldShowPreviewHeader));
+    }, [dispatch, shouldShowPreviewHeader]);
+
+    const discoverableTitle = formatMessage({
+        id: 'channel_settings.discoverable.title',
+        defaultMessage: 'Discoverable (Users can request to join)',
+    });
+    const discoverableDescription = formatMessage({
+        id: 'channel_settings.discoverable.description',
+        defaultMessage: 'Non-members can see this channel in Browse Channels, the channel switcher, and shared permalinks. Message contents stay hidden until they join.',
+    });
+
+    const handleDiscoverableToggle = useCallback(() => {
+        if (!canManageDiscoverability) {
+            return;
+        }
+        setDiscoverable((prev) => !prev);
+    }, [canManageDiscoverability]);
+
+    const handleChannelTypeChange = (selected: string) => {
+        // This consumer doesn't pass pluginOptions, so the selector only fires built-in channel
+        // type values (OPEN_CHANNEL / PRIVATE_CHANNEL).
+        const type = selected as ChannelType;
+        if (channelTypeLockedByMembershipPolicy) {
+            return;
+        }
+
+        // Never allow conversion from private to public, regardless of permissions
+        if (channel.type === Constants.PRIVATE_CHANNEL && type === Constants.OPEN_CHANNEL) {
+            return;
+        }
+
+        // Check if user has permission to convert from public to private
+        if (channel.type === Constants.OPEN_CHANNEL && type === Constants.PRIVATE_CHANNEL && !canConvertToPrivate) {
+            return;
+        }
+
+        setChannelType(type);
+        setFormError('');
+    };
+
+    const handleHeaderChange = useCallback((e: React.ChangeEvent<TextboxElement>) => {
+        const newValue = e.target.value;
+
+        // Update the header value
+        setChannelHeader(newValue);
+
+        // Check for character limit
+        if (newValue.trim().length > HEADER_MAX_LENGTH) {
+            setFormError(formatMessage({
+                id: 'edit_channel_header_modal.error',
+                defaultMessage: 'The text entered exceeds the character limit. The channel header is limited to {maxLength} characters.',
+            }, {
+                maxLength: HEADER_MAX_LENGTH,
+            }));
+        } else if (formError && !channelNameError) {
+            // Only clear form error if there's no channel name error
+            // This prevents clearing channel name errors when editing the header
+            setFormError('');
+        }
+    }, [HEADER_MAX_LENGTH, formError, channelNameError, setFormError, formatMessage]);
+
+    const handlePurposeChange = useCallback((e: React.ChangeEvent<TextboxElement>) => {
+        const newValue = e.target.value;
+
+        // Update the purpose value
+        setChannelPurpose(newValue);
+
+        // Check for character limit
+        if (newValue.trim().length > Constants.MAX_CHANNELPURPOSE_LENGTH) {
+            setFormError(formatMessage({
+                id: 'channel_settings.error_purpose_length',
+                defaultMessage: 'The text entered exceeds the character limit. The channel purpose is limited to {maxLength} characters.',
+            }, {
+                maxLength: Constants.MAX_CHANNELPURPOSE_LENGTH,
+            }));
+        } else if (formError && !channelNameError) {
+            // Only clear server error if there's no channel name error
+            // This prevents clearing channel name errors when editing the purpose
+            setFormError('');
+        }
+    }, [formError, channelNameError, setFormError, formatMessage]);
+
+    const handleServerError = useCallback((err: ServerError) => {
+        const errorMsg = err.message || formatMessage({id: 'channel_settings.unknown_error', defaultMessage: 'Something went wrong.'});
+        setFormError(errorMsg);
+        setSaveChangesPanelState('error');
+
+        // Check if the error is related to a URL conflict
+        if (err.message && (
+            err.message.toLowerCase().includes('url') ||
+            err.message.toLowerCase().includes('name') ||
+            err.message.toLowerCase().includes('already exists')
+        )) {
+            setUrlError(errorMsg); // Set the URL error to show in the URL input
+        }
+    }, [formatMessage]);
+
+    // Validate & Save - using useCallback to ensure it has the latest state values
+    const handleSave = useCallback(async (): Promise<boolean> => {
+        if (!channel) {
+            return false;
+        }
+
+        if (!isDMorGroupChannel && !displayName.trim()) {
+            setFormError(formatMessage({
+                id: 'channel_settings.error_display_name_required',
+                defaultMessage: 'Channel name is required',
+            }));
+            return false;
+        }
+
+        // write the code to validate if the channel is changing from public to private
+        if (channel.type === Constants.OPEN_CHANNEL && channelType === Constants.PRIVATE_CHANNEL) {
+            const {error} = await dispatch(updateChannelPrivacy(channel.id, General.PRIVATE_CHANNEL));
+            if (error) {
+                handleServerError(error as ServerError);
+                return false;
+            }
+        }
+
+        const updated: Partial<Channel> = {};
+        if (!isDMorGroupChannel && hasTextChanged(displayName, channel.display_name)) {
+            updated.display_name = displayName.trim();
+        }
+        if (!isDMorGroupChannel && hasTextChanged(channelUrl, channel.name)) {
+            updated.name = channelUrl.trim();
+        }
+        if (!isDMorGroupChannel && hasTextChanged(channelPurpose, channel.purpose)) {
+            updated.purpose = channelPurpose.trim();
+        }
+        if (hasTextChanged(channelHeader, channel.header)) {
+            updated.header = channelHeader.trim();
+        }
+        if ((defaultCategoryName ?? '') !== (serverDefaultCategoryName ?? '')) {
+            updated.default_category_name = defaultCategoryName ?? '';
+        }
+        if (managedCategoryName !== serverManagedCategoryName) {
+            updated.managed_category_name = managedCategoryName ?? '';
+        }
+
+        // Only include `discoverable` in the patch when (a) the toggle is
+        // actually rendered for this channel (private, FF on, not archived/
+        // shared) AND (b) the value has changed. We never send `discoverable`
+        // for a public channel — the server would 400 with
+        // model.channel.is_valid.discoverable.app_error.
+        if (showDiscoverableToggle && discoverable !== Boolean(channel.discoverable)) {
+            updated.discoverable = discoverable;
+        }
+
+        if (Object.keys(updated).length === 0) {
+            // Return true if no changes were made
+            return true;
+        }
+
+        const {data, error} = await dispatch(patchChannel(channel.id, updated));
+        if (error) {
+            handleServerError(error as ServerError);
+            return false;
+        }
+
+        // After every successful save, update local state to match the saved values
+        // with this, we make sure that the unsavedChanges check will return false after saving
+        if (!isDMorGroupChannel) {
+            setDisplayName(data?.display_name ?? updated.display_name ?? channel.display_name);
+            setChannelURL(data?.name ?? updated.name ?? channel.name);
+            setChannelPurpose(data?.purpose ?? updated.purpose ?? channel.purpose);
+        }
+        setChannelHeader(data?.header ?? updated.header ?? channel.header);
+        setServerDefaultCategoryName(defaultCategoryName);
+        setServerManagedCategoryName(managedCategoryName);
+        if (data && 'discoverable' in data) {
+            setDiscoverable(Boolean(data.discoverable));
+        }
+
+        return true;
+    }, [channel, displayName, channelType, isDMorGroupChannel, channelUrl, channelPurpose, channelHeader, dispatch, formatMessage, handleServerError, defaultCategoryName, serverDefaultCategoryName, managedCategoryName, serverManagedCategoryName, discoverable, showDiscoverableToggle]);
+
+    // Handle save changes panel actions
+    const handleSaveChanges = useCallback(async () => {
+        // Check if privacy is changing from public to private
+        const isPrivacyChanging = channel.type === Constants.OPEN_CHANNEL &&
+                                 channelType === Constants.PRIVATE_CHANNEL;
+
+        // If privacy is changing, show confirmation modal
+        if (isPrivacyChanging) {
+            setShowConvertConfirmModal(true);
+            return;
+        }
+
+        // Otherwise proceed with normal save
+        const success = await handleSave();
+        if (!success) {
+            setSaveChangesPanelState('error');
+            return;
+        }
+        setSaveChangesPanelState('saved');
+    }, [channel, channelType, handleSave]);
+
+    const handleClose = useCallback(() => {
+        setSaveChangesPanelState(undefined);
+    }, []);
+
+    const hideConvertConfirmModal = useCallback(() => {
+        setShowConvertConfirmModal(false);
+    }, []);
+
+    const handleCancel = useCallback(() => {
+        // First, hide the panel immediately to prevent further interactions
+        setSaveChangesPanelState(undefined);
+
+        // Then reset all form fields to their original values
+        setDisplayName(channel?.display_name ?? '');
+        setChannelURL(channel?.name ?? '');
+        setChannelPurpose(channel?.purpose ?? '');
+        setChannelHeader(channel?.header ?? '');
+        setChannelType(channel?.type as ChannelType ?? Constants.OPEN_CHANNEL as ChannelType);
+        setDefaultCategoryName(serverDefaultCategoryName);
+        setManagedCategoryName(serverManagedCategoryName);
+        setDiscoverable(Boolean(channel?.discoverable));
+
+        // Clear errors
+        setUrlError('');
+        setFormError('');
+        setCharacterLimitExceeded(false);
+        setChannelNameError('');
+
+        // If parent provided an onCancel callback, call it
+        if (onCancel) {
+            onCancel();
+        }
+    }, [channel, onCancel, serverDefaultCategoryName, serverManagedCategoryName, setFormError]);
+
+    // Calculate if there are errors
+    const hasErrors = Boolean(formError) ||
+                     characterLimitExceeded ||
+                     Boolean(channelNameError) ||
+                     Boolean(showTabSwitchError) ||
+                     Boolean(internalUrlError);
+
+    const shouldShowPanel = hasUnsavedChanges || saveChangesPanelState === 'saved';
+
+    return (
+        <div
+            className='ChannelSettingsModal__infoTab'
+            data-testid='channel-settings-info-tab'
+        >
+            {/* ConvertConfirmModal for channel privacy changes */}
+            <ConvertConfirmModal
+                show={showConvertConfirmModal}
+                onCancel={hideConvertConfirmModal}
+                onConfirm={async () => {
+                    hideConvertConfirmModal();
+                    const success = await handleSave();
+                    if (!success) {
+                        setSaveChangesPanelState('error');
+                        return;
+                    }
+                    setSaveChangesPanelState('saved');
+                }}
+                displayName={channel?.display_name || ''}
+                toPublic={false} // Always false since we're only converting from public to private
+            />
+
+            {/* Channel Name Section*/}
+            <div
+                className='ChannelSettingsModal__infoTabTitle'
+            >
+                {formatMessage({id: 'channel_settings.channel_info_tab.name', defaultMessage: 'Channel Info'})}
+            </div>
+            {!isDMorGroupChannel && (
+                <ChannelNameFormField
+                    value={displayName}
+                    name='channel-settings-name'
+                    placeholder={formatMessage({
+                        id: 'channel_settings_modal.name.placeholder',
+                        defaultMessage: 'Enter a name for your channel',
+                    })}
+                    onDisplayNameChange={(name) => {
+                        setDisplayName(name);
+                    }}
+                    onURLChange={handleURLChange}
+                    onErrorStateChange={handleChannelNameError}
+                    urlError={internalUrlError}
+                    currentUrl={channelUrl}
+                    readOnly={!canManageChannelProperties}
+                    isEditingExistingChannel={true}
+                    isDefaultChannel={channel.name === Constants.DEFAULT_CHANNEL}
+                />
+            )}
+            {/* Channel Type Section*/}
+            {!isDMorGroupChannel && (
+                <PublicPrivateSelector
+                    className='ChannelSettingsModal__typeSelector'
+                    selected={channelType}
+                    publicButtonProps={{
+                        title: formatMessage({id: 'channel_modal.type.public.title', defaultMessage: 'Public Channel'}),
+                        description: formatMessage({id: 'channel_modal.type.public.description', defaultMessage: 'Anyone can join'}),
+
+                        // Always disable public button if current channel is private, regardless of permissions
+                        disabled: channel.type === Constants.PRIVATE_CHANNEL || !canConvertToPublic || channelTypeLockedByMembershipPolicy,
+                        tooltip: channelTypeLockTooltip,
+                    }}
+                    privateButtonProps={{
+                        title: formatMessage({id: 'channel_modal.type.private.title', defaultMessage: 'Private Channel'}),
+                        description: formatMessage({id: 'channel_modal.type.private.description', defaultMessage: 'Only invited members'}),
+                        disabled: !canConvertToPrivate || channelTypeLockedByMembershipPolicy,
+                        tooltip: channelTypeLockTooltip,
+                    }}
+                    onChange={handleChannelTypeChange}
+                />
+            )}
+
+            {/* Discoverable Section — only renders for private, non-archived,
+                non-shared channels when the feature flag is on. Read-only
+                presentation when the user lacks permission so the setting is
+                still visible (transparency) but not editable. */}
+            {showDiscoverableToggle && (
+                <div className='ChannelSettingsModal__discoverableSection'>
+                    <div className='channel_banner_header'>
+                        <div className='channel_banner_header__text'>
+                            <label
+                                className='Input_legend'
+                                aria-label={discoverableTitle}
+                            >
+                                {discoverableTitle}
+                            </label>
+                            <label
+                                className='Input_subheading'
+                                aria-label={discoverableDescription}
+                            >
+                                {discoverableDescription}
+                            </label>
+                        </div>
+                        <div className='channel_banner_header__toggle'>
+                            <Toggle
+                                id='channel-settings-discoverable-toggle'
+                                overrideTestId={true}
+                                ariaLabel={discoverableTitle}
+                                size='btn-md'
+                                disabled={!canManageDiscoverability}
+                                onToggle={handleDiscoverableToggle}
+                                toggled={discoverable}
+                                tabIndex={0}
+                                toggleClassName='btn-toggle-primary'
+                            />
+                        </div>
+                    </div>
+                    {!canManageDiscoverability && (
+                        <p className='ChannelSettingsModal__discoverableReadOnly'>
+                            {formatMessage({
+                                id: 'channel_settings.discoverable.read_only',
+                                defaultMessage: 'Only channel admins can change this.',
+                            })}
+                        </p>
+                    )}
+                </div>
+            )}
+            {/* Default Sidebar Category Selector */}
+            {showDefaultCategoryField && (
+                <CategorySelector
+                    value={defaultCategoryName}
+                    onChange={setDefaultCategoryName}
+                    getOptions={getSidebarCategoryNamesForTeam.current}
+                    menuPortalTargetId='channelSettingsModal'
+                    disabled={!canManageChannelProperties}
+                    helpText={formatMessage({id: 'default_category.help_text', defaultMessage: 'Sets the default sidebar category for users when they join the channel.'})}
+                />
+            )}
+            {/* Managed Sidebar Category Selector */}
+            {showManagedCategoryField && (
+                <CategorySelector
+                    value={managedCategoryName}
+                    onChange={setManagedCategoryName}
+                    getOptions={getSidebarCategoryNamesForTeam.current}
+                    label={formatMessage({id: 'managed_category.label', defaultMessage: 'Managed category (optional)'})}
+                    placeholder={formatMessage({id: 'managed_category.placeholder', defaultMessage: 'Choose a managed category (optional)'})}
+                    menuPortalTargetId='channelSettingsModal'
+                    disabled={!canManageChannelRoles}
+                />
+            )}
+
+            {/* Purpose Section*/}
+            {!isDMorGroupChannel && (
+                <AdvancedTextbox
+                    id='channel_settings_purpose_textbox'
+                    value={channelPurpose}
+                    channelId={channel.id}
+                    onChange={handlePurposeChange}
+                    createMessage={formatMessage({
+                        id: 'channel_settings_modal.purpose.placeholder',
+                        defaultMessage: 'Enter a purpose for this channel (optional)',
+                    })}
+                    maxLength={Constants.MAX_CHANNELPURPOSE_LENGTH}
+                    preview={shouldShowPreviewPurpose}
+                    togglePreview={togglePurposePreview}
+                    useChannelMentions={false}
+                    onKeyPress={() => {}}
+                    descriptionMessage={formatMessage({
+                        id: 'channel_settings.purpose.description',
+                        defaultMessage: 'Describe how this channel should be used.',
+                    })}
+                    hasError={channelPurpose.length > Constants.MAX_CHANNELPURPOSE_LENGTH}
+                    errorMessage={channelPurpose.length > Constants.MAX_CHANNELPURPOSE_LENGTH ? formatMessage({
+                        id: 'channel_settings.error_purpose_length',
+                        defaultMessage: 'The text entered exceeds the character limit. The channel purpose is limited to {maxLength} characters.',
+                    }, {
+                        maxLength: Constants.MAX_CHANNELPURPOSE_LENGTH,
+                    }) : undefined
+                    }
+                    showCharacterCount={channelPurpose.length > Constants.MAX_CHANNELPURPOSE_LENGTH}
+                    readOnly={!canManageChannelProperties}
+                    name={formatMessage({id: 'channel_settings.purpose.label', defaultMessage: 'Channel Purpose'})}
+                />
+            )}
+
+            {/* Channel Header Section*/}
+            <AdvancedTextbox
+                id='channel_settings_header_textbox'
+                value={channelHeader}
+                channelId={channel.id}
+                onChange={handleHeaderChange}
+                createMessage={formatMessage({
+                    id: 'channel_settings_modal.header.placeholder',
+                    defaultMessage: 'Enter a header for this channel',
+                })}
+                maxLength={HEADER_MAX_LENGTH}
+                preview={shouldShowPreviewHeader}
+                togglePreview={toggleHeaderPreview}
+                useChannelMentions={false}
+                onKeyPress={() => {}}
+                descriptionMessage={formatMessage({
+                    id: 'channel_settings.purpose.header',
+                    defaultMessage: 'This is the text that will appear in the header of the channel beside the channel name. You can use markdown to include links by typing [Link Title](http://example.com).',
+                })}
+                hasError={channelHeader.length > HEADER_MAX_LENGTH}
+                errorMessage={channelHeader.length > HEADER_MAX_LENGTH ? formatMessage({
+                    id: 'edit_channel_header_modal.error',
+                    defaultMessage: 'The text entered exceeds the character limit. The channel header is limited to {maxLength} characters.',
+                }, {
+                    maxLength: HEADER_MAX_LENGTH,
+                }) : undefined
+                }
+                showCharacterCount={channelHeader.length > HEADER_MAX_LENGTH}
+                readOnly={!canManageChannelProperties}
+                name={formatMessage({id: 'channel_settings.header.label', defaultMessage: 'Channel Header'})}
+            />
+
+            {/* SaveChangesPanel for unsaved changes */}
+            {((canManageChannelProperties || canManageChannelRoles) && shouldShowPanel) && (
+                <SaveChangesPanel
+                    handleSubmit={handleSaveChanges}
+                    handleCancel={handleCancel}
+                    handleClose={handleClose}
+                    tabChangeError={hasErrors}
+                    state={hasErrors ? 'error' : saveChangesPanelState}
+                    {...(!showTabSwitchError && { // for swowTabShiwthError use the default message
+                        customErrorMessage: formatMessage({
+                            id: 'channel_settings.save_changes_panel.standard_error',
+                            defaultMessage: 'There are errors in the form above',
+                        }),
+                    })}
+                    cancelButtonText={formatMessage({
+                        id: 'channel_settings.save_changes_panel.reset',
+                        defaultMessage: 'Reset',
+                    })}
+                />
+            )}
+        </div>
+    );
+}
+
+export default ChannelSettingsInfoTab;

@@ -1,0 +1,369 @@
+// Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
+// See LICENSE.txt for license information.
+
+import type {IncomingWebhook, OutgoingWebhook, Command, OAuthApp} from '@mattermost/types/integrations';
+
+import {IntegrationTypes} from 'mattermost-redux/action_types';
+import * as IntegrationActions from 'mattermost-redux/actions/integrations';
+import {getProfilesByIds} from 'mattermost-redux/actions/users';
+import {Client4} from 'mattermost-redux/client';
+
+import * as Actions from 'actions/integration_actions';
+
+import mockStore from 'tests/test_store';
+
+jest.mock('mattermost-redux/actions/users', () => ({
+    getProfilesByIds: jest.fn(() => {
+        return {type: ''};
+    }),
+}));
+
+jest.mock('mattermost-redux/actions/integrations', () => ({
+    getIncomingHooks: jest.fn(() => {
+        return {type: 'MOCK_GET_INCOMING_HOOKS', data: []};
+    }),
+    getOutgoingHooks: jest.fn(() => {
+        return {type: 'MOCK_GET_OUTGOING_HOOKS', data: []};
+    }),
+    getCustomTeamCommands: jest.fn(() => {
+        return {type: 'MOCK_GET_COMMANDS', data: []};
+    }),
+    getOAuthApps: jest.fn(() => {
+        return {type: 'MOCK_GET_OAUTH_APPS', data: []};
+    }),
+    getOutgoingOAuthConnections: jest.fn(() => {
+        return {type: 'MOCK_GET_OUTGOING_OAUTH_CONNECTIONS', data: []};
+    }),
+    getAppsOAuthAppIDs: jest.fn(() => {
+        return {type: 'MOCK_GET_APPS_OAUTH_APP_IDS'};
+    }),
+    isIncomingWebhooksWithCount: jest.fn(() => false),
+}));
+
+jest.mock('mattermost-redux/selectors/entities/apps', () => ({
+    appsEnabled: jest.fn(() => true),
+}));
+
+jest.mock('mattermost-redux/client');
+
+jest.mock('mattermost-redux/actions/helpers', () => ({
+    forceLogoutIfNecessary: jest.fn(),
+}));
+
+jest.mock('mattermost-redux/actions/errors', () => ({
+    logError: jest.fn(() => ({type: 'MOCK_LOG_ERROR'})),
+}));
+
+interface CustomMatchers<R = unknown> {
+    arrayContainingExactly(stringArray: string[]): R;
+}
+
+type GreatExpectations = typeof expect & CustomMatchers;
+
+describe('actions/integration_actions', () => {
+    const initialState = {
+        entities: {
+            teams: {
+                currentTeamId: 'team_id1',
+                teams: {
+                    team_id1: {
+                        id: 'team_id1',
+                        name: 'team1',
+                    },
+                },
+            },
+            users: {
+                currentUserId: 'current_user_id',
+                profiles: {current_user_id: {id: 'current_user_id', username: 'current_user'}, user_id3: {id: 'user_id3', username: 'user3'}, user_id4: {id: 'user_id4', username: 'user4'}},
+            },
+            channels: {
+                currentChannelId: 'current_channel_id',
+            },
+            integrations: {},
+        },
+    };
+
+    describe('loadProfilesForIncomingHooks', () => {
+        test('load profiles for hooks including user we already have', () => {
+            const testStore = mockStore(initialState);
+            testStore.dispatch(Actions.loadProfilesForIncomingHooks([{user_id: 'current_user_id'}, {user_id: 'user_id2'}] as IncomingWebhook[]));
+            expect(getProfilesByIds).toHaveBeenCalledWith((expect as GreatExpectations).arrayContainingExactly(['user_id2']));
+        });
+
+        test('load profiles for hooks including only users we don\'t have', () => {
+            const testStore = mockStore(initialState);
+            testStore.dispatch(Actions.loadProfilesForIncomingHooks([{user_id: 'user_id1'}, {user_id: 'user_id2'}] as IncomingWebhook[]));
+            expect(getProfilesByIds).toHaveBeenCalledWith((expect as GreatExpectations).arrayContainingExactly(['user_id1', 'user_id2']));
+        });
+
+        test('load profiles for empty hooks', () => {
+            const testStore = mockStore(initialState);
+            testStore.dispatch(Actions.loadProfilesForIncomingHooks([]));
+            expect(getProfilesByIds).not.toHaveBeenCalled();
+        });
+    });
+
+    describe('loadProfilesForOutgoingHooks', () => {
+        test('load profiles for hooks including user we already have', () => {
+            const testStore = mockStore(initialState);
+            testStore.dispatch(Actions.loadProfilesForOutgoingHooks([{creator_id: 'current_user_id'}, {creator_id: 'user_id2'}] as OutgoingWebhook[]));
+            expect(getProfilesByIds).toHaveBeenCalledWith((expect as GreatExpectations).arrayContainingExactly(['user_id2']));
+        });
+
+        test('load profiles for hooks including only users we don\'t have', () => {
+            const testStore = mockStore(initialState);
+            testStore.dispatch(Actions.loadProfilesForOutgoingHooks([{creator_id: 'user_id1'}, {creator_id: 'user_id2'}] as OutgoingWebhook[]));
+            expect(getProfilesByIds).toHaveBeenCalledWith((expect as GreatExpectations).arrayContainingExactly(['user_id1', 'user_id2']));
+        });
+
+        test('load profiles for empty hooks', () => {
+            const testStore = mockStore(initialState);
+            testStore.dispatch(Actions.loadProfilesForOutgoingHooks([]));
+            expect(getProfilesByIds).not.toHaveBeenCalled();
+        });
+    });
+
+    describe('loadProfilesForCommands', () => {
+        test('load profiles for commands including user we already have', () => {
+            const testStore = mockStore(initialState);
+            testStore.dispatch(Actions.loadProfilesForCommands([{creator_id: 'current_user_id'}, {creator_id: 'user_id2'}] as Command[]));
+            expect(getProfilesByIds).toHaveBeenCalledWith((expect as GreatExpectations).arrayContainingExactly(['user_id2']));
+        });
+
+        test('load profiles for commands including only users we don\'t have', () => {
+            const testStore = mockStore(initialState);
+            testStore.dispatch(Actions.loadProfilesForCommands([{creator_id: 'user_id1'}, {creator_id: 'user_id2'}] as Command[]));
+            expect(getProfilesByIds).toHaveBeenCalledWith((expect as GreatExpectations).arrayContainingExactly(['user_id1', 'user_id2']));
+        });
+
+        test('load profiles for empty commands', () => {
+            const testStore = mockStore(initialState);
+            testStore.dispatch(Actions.loadProfilesForCommands([]));
+            expect(getProfilesByIds).not.toHaveBeenCalled();
+        });
+    });
+
+    describe('loadProfilesForOAuthApps', () => {
+        test('load profiles for apps including user we already have', () => {
+            const testStore = mockStore(initialState);
+            testStore.dispatch(Actions.loadProfilesForOAuthApps([{creator_id: 'current_user_id'}, {creator_id: 'user_id2'}] as OAuthApp[]));
+            expect(getProfilesByIds).toHaveBeenCalledWith((expect as GreatExpectations).arrayContainingExactly(['user_id2']));
+        });
+
+        test('load profiles for apps including only users we don\'t have', () => {
+            const testStore = mockStore(initialState);
+            testStore.dispatch(Actions.loadProfilesForOAuthApps([{creator_id: 'user_id1'}, {creator_id: 'user_id2'}] as OAuthApp[]));
+            expect(getProfilesByIds).toHaveBeenCalledWith((expect as GreatExpectations).arrayContainingExactly(['user_id1', 'user_id2']));
+        });
+
+        test('load profiles for empty apps', () => {
+            const testStore = mockStore(initialState);
+            testStore.dispatch(Actions.loadProfilesForOAuthApps([]));
+            expect(getProfilesByIds).not.toHaveBeenCalled();
+        });
+    });
+
+    describe('loadIncomingHooksAndProfilesForTeam', () => {
+        test('should load hooks and profiles', async () => {
+            const testStore = mockStore(initialState);
+            await testStore.dispatch(Actions.loadIncomingHooksAndProfilesForTeam('team_id1', 0, 50, false));
+
+            expect(IntegrationActions.getIncomingHooks).toHaveBeenCalledWith('team_id1', 0, 50, false);
+        });
+
+        test('should handle webhooks with count response', async () => {
+            const testStore = mockStore(initialState);
+            await testStore.dispatch(Actions.loadIncomingHooksAndProfilesForTeam('team_id1', 0, 50, true));
+
+            expect(IntegrationActions.getIncomingHooks).toHaveBeenCalledWith('team_id1', 0, 50, true);
+        });
+
+        test('should handle default parameters', async () => {
+            const testStore = mockStore(initialState);
+            await testStore.dispatch(Actions.loadIncomingHooksAndProfilesForTeam('team_id1'));
+
+            expect(IntegrationActions.getIncomingHooks).toHaveBeenCalledWith('team_id1', 0, 100, false);
+        });
+    });
+
+    describe('loadOutgoingHooksAndProfilesForTeam', () => {
+        test('should load outgoing hooks and profiles', async () => {
+            const testStore = mockStore(initialState);
+            await testStore.dispatch(Actions.loadOutgoingHooksAndProfilesForTeam('team_id1', 1, 25));
+
+            expect(IntegrationActions.getOutgoingHooks).toHaveBeenCalledWith('', 'team_id1', 1, 25);
+        });
+
+        test('should use default parameters', async () => {
+            const testStore = mockStore(initialState);
+            await testStore.dispatch(Actions.loadOutgoingHooksAndProfilesForTeam('team_id1'));
+
+            expect(IntegrationActions.getOutgoingHooks).toHaveBeenCalledWith('', 'team_id1', 0, 100);
+        });
+    });
+
+    describe('loadCommandsAndProfilesForTeam', () => {
+        test('should load commands and profiles', async () => {
+            const testStore = mockStore(initialState);
+            await testStore.dispatch(Actions.loadCommandsAndProfilesForTeam('team_id1'));
+
+            expect(IntegrationActions.getCustomTeamCommands).toHaveBeenCalledWith('team_id1');
+        });
+
+        test('should handle team commands', async () => {
+            const testStore = mockStore(initialState);
+            await testStore.dispatch(Actions.loadCommandsAndProfilesForTeam('team_id1'));
+
+            expect(IntegrationActions.getCustomTeamCommands).toHaveBeenCalledWith('team_id1');
+        });
+    });
+
+    describe('loadOAuthAppsAndProfiles', () => {
+        test('should load OAuth apps with custom parameters', async () => {
+            const testStore = mockStore(initialState);
+            await testStore.dispatch(Actions.loadOAuthAppsAndProfiles(2, 30));
+
+            expect(IntegrationActions.getOAuthApps).toHaveBeenCalledWith(2, 30);
+        });
+
+        test('should load OAuth apps with default parameters', async () => {
+            const testStore = mockStore(initialState);
+            await testStore.dispatch(Actions.loadOAuthAppsAndProfiles());
+
+            expect(IntegrationActions.getOAuthApps).toHaveBeenCalledWith(0, 100);
+        });
+
+        test('should handle OAuth apps loading', async () => {
+            const testStore = mockStore(initialState);
+            await testStore.dispatch(Actions.loadOAuthAppsAndProfiles());
+
+            expect(IntegrationActions.getOAuthApps).toHaveBeenCalledWith(0, 100);
+        });
+    });
+
+    describe('loadOutgoingOAuthConnectionsAndProfiles', () => {
+        test('should load outgoing OAuth connections', async () => {
+            const testStore = mockStore(initialState);
+            await testStore.dispatch(Actions.loadOutgoingOAuthConnectionsAndProfiles('team_id1', 1, 50));
+
+            expect(IntegrationActions.getOutgoingOAuthConnections).toHaveBeenCalledWith('team_id1', 1, 50);
+        });
+
+        test('should use default connection parameters', async () => {
+            const testStore = mockStore(initialState);
+            await testStore.dispatch(Actions.loadOutgoingOAuthConnectionsAndProfiles('team_id1'));
+
+            expect(IntegrationActions.getOutgoingOAuthConnections).toHaveBeenCalledWith('team_id1', 0, 100);
+        });
+    });
+
+    describe('loadProfilesForOutgoingOAuthConnections', () => {
+        test('load profiles for connections including user we already have', () => {
+            const testStore = mockStore(initialState);
+            testStore.dispatch(Actions.loadProfilesForOutgoingOAuthConnections([{creator_id: 'current_user_id'}, {creator_id: 'user_id2'}] as any[]));
+            expect(getProfilesByIds).toHaveBeenCalledWith((expect as GreatExpectations).arrayContainingExactly(['user_id2']));
+        });
+
+        test('load profiles for connections including only users we don\'t have', () => {
+            const testStore = mockStore(initialState);
+            testStore.dispatch(Actions.loadProfilesForOutgoingOAuthConnections([{creator_id: 'user_id1'}, {creator_id: 'user_id2'}] as any[]));
+            expect(getProfilesByIds).toHaveBeenCalledWith((expect as GreatExpectations).arrayContainingExactly(['user_id1', 'user_id2']));
+        });
+
+        test('load profiles for empty connections', () => {
+            const testStore = mockStore(initialState);
+            testStore.dispatch(Actions.loadProfilesForOutgoingOAuthConnections([]));
+            expect(getProfilesByIds).not.toHaveBeenCalled();
+        });
+    });
+
+    describe('executeDialogAction', () => {
+        const url = 'https://example.com/action';
+        const context = {key: 'value'};
+
+        test('uses the dialog channel when one is supplied', async () => {
+            (Client4.executeDialogAction as jest.Mock).mockResolvedValue({});
+
+            // currentChannelId in state is 'current_channel_id' — proves dialog wins
+            const testStore = mockStore(initialState);
+            await testStore.dispatch(Actions.executeDialogAction(url, context, 'dialog_channel_id'));
+
+            expect(Client4.executeDialogAction).toHaveBeenCalledWith(
+                url,
+                context,
+                'dialog_channel_id',
+                'team_id1',
+            );
+        });
+
+        test('falls back to getCurrentChannelId when no dialog channel is supplied', async () => {
+            (Client4.executeDialogAction as jest.Mock).mockResolvedValue({});
+
+            const testStore = mockStore(initialState);
+            await testStore.dispatch(Actions.executeDialogAction(url, context));
+
+            expect(Client4.executeDialogAction).toHaveBeenCalledWith(
+                url,
+                context,
+                'current_channel_id',
+                'team_id1',
+            );
+        });
+
+        test('falls back to getCurrentChannelId when the dialog channel is empty', async () => {
+            (Client4.executeDialogAction as jest.Mock).mockResolvedValue({});
+
+            const testStore = mockStore(initialState);
+            await testStore.dispatch(Actions.executeDialogAction(url, context, ''));
+
+            expect(Client4.executeDialogAction).toHaveBeenCalledWith(
+                url,
+                context,
+                'current_channel_id',
+                'team_id1',
+            );
+        });
+
+        test('dispatches RECEIVED_DIALOG_TRIGGER_ID when response includes trigger_id', async () => {
+            (Client4.executeDialogAction as jest.Mock).mockResolvedValue({trigger_id: 'trigger123'});
+
+            const testStore = mockStore(initialState);
+            await testStore.dispatch(Actions.executeDialogAction(url, context));
+
+            const dispatchedActions = testStore.getActions();
+            expect(dispatchedActions).toContainEqual({
+                type: IntegrationTypes.RECEIVED_DIALOG_TRIGGER_ID,
+                data: 'trigger123',
+            });
+        });
+
+        test('does not dispatch RECEIVED_DIALOG_TRIGGER_ID when response has no trigger_id', async () => {
+            (Client4.executeDialogAction as jest.Mock).mockResolvedValue({});
+
+            const testStore = mockStore(initialState);
+            await testStore.dispatch(Actions.executeDialogAction(url, context));
+
+            const dispatchedActions = testStore.getActions();
+            const triggerIdAction = dispatchedActions.find(
+                (a) => a.type === IntegrationTypes.RECEIVED_DIALOG_TRIGGER_ID,
+            );
+            expect(triggerIdAction).toBeUndefined();
+        });
+
+        test('returns {error} and does not dispatch RECEIVED_DIALOG_TRIGGER_ID on Client4 failure', async () => {
+            const networkError = new Error('network failure');
+            (Client4.executeDialogAction as jest.Mock).mockRejectedValue(networkError);
+
+            const testStore = mockStore(initialState);
+            const result = await testStore.dispatch(Actions.executeDialogAction(url, context));
+
+            expect(result.error).toBe(networkError);
+
+            const dispatchedActions = testStore.getActions();
+            const triggerIdAction = dispatchedActions.find(
+                (a) => a.type === IntegrationTypes.RECEIVED_DIALOG_TRIGGER_ID,
+            );
+            expect(triggerIdAction).toBeUndefined();
+        });
+    });
+});

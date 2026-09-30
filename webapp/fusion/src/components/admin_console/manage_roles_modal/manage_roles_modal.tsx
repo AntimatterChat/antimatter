@@ -1,0 +1,512 @@
+// Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
+// See LICENSE.txt for license information.
+
+import React from 'react';
+import {Modal} from 'react-bootstrap';
+import {FormattedMessage} from 'react-intl';
+import {Link} from 'react-router-dom';
+
+import {Button} from '@mattermost/shared/components/button';
+import type {Role} from '@mattermost/types/roles';
+import type {UserProfile} from '@mattermost/types/users';
+
+import {Client4} from 'mattermost-redux/client';
+import {General} from 'mattermost-redux/constants';
+import type {ActionResult} from 'mattermost-redux/types/actions';
+import * as UserUtils from 'mattermost-redux/utils/user_utils';
+
+import ExternalLink from 'components/external_link';
+import BotTag from 'components/widgets/tag/bot_tag';
+import Avatar from 'components/widgets/users/avatar';
+
+import {DeveloperLinks} from 'utils/constants';
+
+import {isSuccess} from 'types/actions';
+
+import {rolesStrings} from '../system_roles/strings';
+
+// Delegated (granular) administration roles that can be granted from this modal.
+// Kept in sync with the roles surfaced in the Delegated Granular Administration screen.
+export const DELEGATED_ROLE_NAMES = [
+    'system_manager',
+    'system_user_manager',
+    'system_custom_group_admin',
+    'system_shared_channel_manager',
+    'system_read_only_admin',
+];
+
+export type Props = {
+    user?: UserProfile;
+    userAccessTokensEnabled: boolean;
+    roles: Record<string, Role>;
+
+    // Delegated administration roles are an Enterprise/Enterprise Advanced feature.
+
+    // defining custom function type instead of using React.MouseEventHandler
+    // to make the event optional
+    onSuccess: (roles: string) => void;
+    onExited: () => void;
+    actions: {
+        updateUserRoles: (userId: string, roles: string) => Promise<ActionResult>;
+        loadRolesIfNeeded: (roles: Iterable<string>) => Promise<ActionResult>;
+    };
+};
+
+type State = {
+    show: boolean;
+    user?: UserProfile;
+    error: any | null;
+    hasPostAllRole: boolean;
+    hasPostAllPublicRole: boolean;
+    hasUserAccessTokenRole: boolean;
+    isSystemAdmin: boolean;
+    delegatedRoles: Record<string, boolean>;
+};
+
+function getDelegatedRolesFromRoles(roles: string): Record<string, boolean> {
+    const roleSet = new Set(roles.split(' '));
+    const delegatedRoles: Record<string, boolean> = {};
+
+    for (const name of DELEGATED_ROLE_NAMES) {
+        delegatedRoles[name] = roleSet.has(name);
+    }
+
+    return delegatedRoles;
+}
+
+function getStateFromProps(props: Props): State {
+    const roles = props.user && props.user.roles ? props.user.roles : '';
+
+    return {
+        show: true,
+        user: props.user,
+        error: null,
+        hasPostAllRole: UserUtils.hasPostAllRole(roles),
+        hasPostAllPublicRole: UserUtils.hasPostAllPublicRole(roles),
+        hasUserAccessTokenRole: UserUtils.hasUserAccessTokenRole(roles),
+        isSystemAdmin: UserUtils.isSystemAdmin(roles),
+        delegatedRoles: getDelegatedRolesFromRoles(roles),
+    };
+}
+
+export default class ManageRolesModal extends React.PureComponent<Props, State> {
+    constructor(props: Props) {
+        super(props);
+        this.state = getStateFromProps(props);
+    }
+
+    static getDerivedStateFromProps(nextProps: Props, prevState: State) {
+        if (prevState.user?.id !== nextProps.user?.id) {
+            return getStateFromProps(nextProps);
+        }
+        return null;
+    }
+
+    componentDidMount() {
+        this.props.actions.loadRolesIfNeeded(DELEGATED_ROLE_NAMES);
+    }
+
+    handleError = (error: any) => {
+        this.setState({
+            error,
+        });
+    };
+
+    handleSystemAdminChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.name === 'systemadmin') {
+            this.setState({isSystemAdmin: true});
+        } else if (e.target.name === 'systemmember') {
+            this.setState({isSystemAdmin: false});
+        }
+    };
+
+    handleUserAccessTokenChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        this.setState({
+            hasUserAccessTokenRole: e.target.checked,
+        });
+    };
+
+    handlePostAllChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        this.setState({
+            hasPostAllRole: e.target.checked,
+        });
+    };
+
+    handlePostAllPublicChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        this.setState({
+            hasPostAllPublicRole: e.target.checked,
+        });
+    };
+
+    handleDelegatedRoleChange = (roleName: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
+        const checked = e.target.checked;
+        this.setState((prevState) => ({
+            delegatedRoles: {
+                ...prevState.delegatedRoles,
+                [roleName]: checked,
+            },
+        }));
+    };
+
+    onHide = () => {
+        this.setState({show: false});
+    };
+
+    handleSave = async () => {
+        this.setState({error: null});
+
+        let roles = General.SYSTEM_USER_ROLE;
+
+        if (this.state.isSystemAdmin) {
+            roles += ' ' + General.SYSTEM_ADMIN_ROLE;
+        } else {
+            if (this.state.hasUserAccessTokenRole) {
+                roles += ' ' + General.SYSTEM_USER_ACCESS_TOKEN_ROLE;
+                if (this.state.hasPostAllRole) {
+                    roles += ' ' + General.SYSTEM_POST_ALL_ROLE;
+                } else if (this.state.hasPostAllPublicRole) {
+                    roles += ' ' + General.SYSTEM_POST_ALL_PUBLIC_ROLE;
+                }
+            }
+
+            for (const roleName of DELEGATED_ROLE_NAMES) {
+                if (this.state.delegatedRoles[roleName]) {
+                    roles += ' ' + roleName;
+                }
+            }
+        }
+
+        const result = await this.props.actions.updateUserRoles(this.props.user!.id, roles);
+
+        if (isSuccess(result)) {
+            this.props.onSuccess(roles);
+            this.onHide();
+        } else {
+            this.handleError(
+                <FormattedMessage
+                    id='admin.manage_roles.saveError'
+                    defaultMessage='Unable to save roles.'
+                />,
+            );
+        }
+    };
+
+    renderDelegatedAdminRoles = () => {
+        // System Admins already have access to all System Console areas, so the delegated roles are irrelevant.
+        if (this.state.isSystemAdmin) {
+            return null;
+        }
+
+        const availableRoles = DELEGATED_ROLE_NAMES.filter((name) => this.props.roles[name] && rolesStrings[name]);
+
+        if (availableRoles.length === 0) {
+            return null;
+        }
+
+        return (
+            <div className='manage-roles-modal__delegated-roles'>
+                <p>
+                    <strong>
+                        <FormattedMessage
+                            id='admin.manage_roles.delegatedAdminRolesTitle'
+                            defaultMessage='Delegated Administration Roles'
+                        />
+                    </strong>
+                </p>
+                <p className='light'>
+                    <FormattedMessage
+                        id='admin.manage_roles.delegatedAdminRolesDescription'
+                        defaultMessage='Grant targeted System Console access without full System Admin privileges using <link>granular administration roles</link>.'
+                        values={{
+                            link: (msg: React.ReactNode) => (
+                                <Link
+                                    to='/admin_console/user_management/system_roles'
+                                    onClick={this.onHide}
+                                >
+                                    {msg}
+                                </Link>
+                            ),
+                        }}
+                    />
+                </p>
+                {availableRoles.map((name) => (
+                    <div
+                        className='checkbox'
+                        key={name}
+                    >
+                        <label>
+                            <input
+                                type='checkbox'
+                                checked={Boolean(this.state.delegatedRoles[name])}
+                                onChange={this.handleDelegatedRoleChange(name)}
+                            />
+                            <strong>
+                                <FormattedMessage {...rolesStrings[name].name}/>
+                            </strong>
+                        </label>
+                    </div>
+                ))}
+            </div>
+        );
+    };
+
+    renderContents = () => {
+        const {user} = this.props;
+
+        if (user == null) {
+            return <div/>;
+        }
+
+        let name = UserUtils.getFullName(user);
+        if (name) {
+            name += ` (@${user.username})`;
+        } else {
+            name = `@${user.username}`;
+        }
+
+        let additionalRoles;
+        if (this.state.hasUserAccessTokenRole || this.state.isSystemAdmin || user.is_bot) {
+            additionalRoles = (
+                <div>
+                    <p>
+                        <FormattedMessage
+                            id='admin.manage_roles.additionalRoles'
+                            defaultMessage='Select additional permissions for the account. <link>Read more about roles and permissions</link>.'
+                            values={{
+                                link: (msg: React.ReactNode) => (
+                                    <ExternalLink
+                                        href={DeveloperLinks.PERSONAL_ACCESS_TOKENS}
+                                        location='manage_roles_modal'
+                                    >
+                                        {msg}
+                                    </ExternalLink>
+                                ),
+                            }}
+                        />
+                    </p>
+                    <div className='checkbox'>
+                        <label>
+                            <input
+                                type='checkbox'
+                                checked={this.state.hasPostAllRole || this.state.isSystemAdmin}
+                                disabled={this.state.isSystemAdmin}
+                                onChange={this.handlePostAllChange}
+                            />
+                            <strong>
+                                <FormattedMessage
+                                    id='admin.manage_roles.postAllRoleTitle'
+                                    defaultMessage='post:all'
+                                />
+                            </strong>
+                            <FormattedMessage
+                                id='admin.manage_roles.postAllRole'
+                                defaultMessage='Access to post to all Antimatter channels including direct messages.'
+                            />
+                        </label>
+                    </div>
+                    <div className='checkbox'>
+                        <label>
+                            <input
+                                type='checkbox'
+                                checked={this.state.hasPostAllPublicRole || this.state.hasPostAllRole || this.state.isSystemAdmin}
+                                disabled={this.state.hasPostAllRole || this.state.isSystemAdmin}
+                                onChange={this.handlePostAllPublicChange}
+                            />
+                            <strong>
+                                <FormattedMessage
+                                    id='admin.manage_roles.postAllPublicRoleTitle'
+                                    defaultMessage='post:channels'
+                                />
+                            </strong>
+                            <FormattedMessage
+                                id='admin.manage_roles.postAllPublicRole'
+                                defaultMessage='Access to post to all Antimatter public channels.'
+                            />
+                        </label>
+                    </div>
+                    <p>
+                        <FormattedMessage
+                            id='admin.manage_roles.additionalRoles_warning'
+                            defaultMessage='<strong>Note:</strong><span>The permissions granted above apply to the account as a whole, regardless of whether it is authenticated using a session cookie or a personal access token. For example, selecting post:all will allow the account to post to channels it is not a member of, even without using a personal access token.</span>'
+                            values={{
+                                strong: (text) => <strong>{text}</strong>,
+                                span: (text) => <span className='pt-2 pb-2 light'>{text}</span>,
+                            }}
+                        />
+                    </p>
+                </div>
+            );
+        }
+
+        let userAccessTokenContent;
+        if (this.props.userAccessTokensEnabled) {
+            if (user.is_bot) {
+                userAccessTokenContent = (
+                    <div>
+                        <div className='member-row--padded member-row-lone-padding'>
+                            {additionalRoles}
+                        </div>
+                    </div>
+                );
+            } else {
+                userAccessTokenContent = (
+                    <div className='manage-roles-modal__access-tokens'>
+                        <p>
+                            <strong>
+                                <FormattedMessage
+                                    id='admin.manage_roles.personalAccessTokensTitle'
+                                    defaultMessage='Personal Access Tokens'
+                                />
+                            </strong>
+                        </p>
+                        <div className='checkbox'>
+                            <label>
+                                <input
+                                    type='checkbox'
+                                    checked={this.state.hasUserAccessTokenRole || this.state.isSystemAdmin}
+                                    disabled={this.state.isSystemAdmin}
+                                    onChange={this.handleUserAccessTokenChange}
+                                />
+                                <FormattedMessage
+                                    id='admin.manage_roles.allowUserAccessTokens'
+                                    defaultMessage='Allow this account to generate <link>personal access tokens</link>.'
+                                    values={{
+                                        link: (msg: React.ReactNode) => (
+                                            <ExternalLink
+                                                href={DeveloperLinks.PERSONAL_ACCESS_TOKENS}
+                                                location='manage_roles_modal'
+                                            >
+                                                {msg}
+                                            </ExternalLink>
+                                        ),
+                                    }}
+                                />
+                                <span className='d-block pt-2 pb-2 light'>
+                                    <FormattedMessage
+                                        id='admin.manage_roles.allowUserAccessTokensDesc'
+                                        defaultMessage="Removing this permission doesn't delete existing tokens. To delete them, go to the user's Manage Tokens menu."
+                                    />
+                                </span>
+                            </label>
+                        </div>
+                        <div className='member-row--padded'>
+                            {additionalRoles}
+                        </div>
+                    </div>
+                );
+            }
+        }
+
+        let email = user.email;
+        if (user.is_bot) {
+            email = '';
+        }
+
+        return (
+            <div>
+                <div className='manage-teams__user'>
+                    <Avatar
+                        size='lg'
+                        username={user.username}
+                        url={Client4.getProfilePictureUrl(user.id, user.last_picture_update)}
+                    />
+                    <div className='manage-teams__info'>
+                        <div className='manage-teams__name'>
+                            {name}
+                            {user.is_bot && <BotTag/>}
+                        </div>
+                        <div className='manage-teams__email'>
+                            {email}
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <div className='manage-row--inner'>
+                        <div className='radio-inline'>
+                            <label>
+                                <input
+                                    name='systemadmin'
+                                    type='radio'
+                                    checked={this.state.isSystemAdmin}
+                                    onChange={this.handleSystemAdminChange}
+                                />
+                                <FormattedMessage
+                                    id='admin.manage_roles.systemAdmin'
+                                    defaultMessage='System Admin'
+                                />
+                            </label>
+                        </div>
+                        <div className='radio-inline'>
+                            <label>
+                                <input
+                                    name='systemmember'
+                                    type='radio'
+                                    checked={!this.state.isSystemAdmin}
+                                    onChange={this.handleSystemAdminChange}
+                                />
+                                <FormattedMessage
+                                    id='admin.manage_roles.systemMember'
+                                    defaultMessage='Member'
+                                />
+                            </label>
+                        </div>
+                    </div>
+                    {!user.is_bot && this.renderDelegatedAdminRoles()}
+                    {userAccessTokenContent}
+                </div>
+            </div>
+        );
+    };
+
+    render() {
+        return (
+            <Modal
+                show={this.state.show}
+                onHide={this.onHide}
+                onExited={this.props.onExited}
+                dialogClassName='a11y__modal manage-teams'
+                role='none'
+                aria-labelledby='manageRolesModalLabel'
+                id='manageRolesModal'
+            >
+                <Modal.Header closeButton={true}>
+                    <Modal.Title
+                        componentClass='h1'
+                        id='manageRolesModalLabel'
+                    >
+                        <FormattedMessage
+                            id='admin.manage_roles.manageRolesTitle'
+                            defaultMessage='Manage Roles'
+                        />
+                    </Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    {this.renderContents()}
+                    {this.state.error}
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button
+                        type='button'
+                        emphasis='tertiary'
+                        onClick={this.onHide}
+                    >
+                        <FormattedMessage
+                            id='admin.manage_roles.cancel'
+                            defaultMessage='Cancel'
+                        />
+                    </Button>
+                    <Button
+                        type='button'
+                        emphasis='primary'
+                        onClick={this.handleSave}
+                    >
+                        <FormattedMessage
+                            id='admin.manage_roles.save'
+                            defaultMessage='Save'
+                        />
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+        );
+    }
+}

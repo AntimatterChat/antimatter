@@ -1,0 +1,1422 @@
+// Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
+// See LICENSE.txt for license information.
+
+import classNames from 'classnames';
+import React, {type JSX} from 'react';
+import type {WrappedComponentProps} from 'react-intl';
+import {FormattedMessage, defineMessages, injectIntl} from 'react-intl';
+import {Link} from 'react-router-dom';
+import semver from 'semver';
+
+import type {AdminConfig} from '@mattermost/types/config';
+import type {DeepPartial} from '@mattermost/types/utilities';
+
+import PluginState from 'mattermost-redux/constants/plugins';
+import type {ActionResult} from 'mattermost-redux/types/actions';
+
+import ConfirmModal from 'components/confirm_modal';
+import ExternalLink from 'components/external_link';
+import LoadingScreen from 'components/loading_screen';
+
+import {appsPluginID} from 'utils/apps';
+import {DeveloperLinks} from 'utils/constants';
+import * as Utils from 'utils/utils';
+
+import type {PluginInstallConflict} from './plugin_upload_overwrite_review_modal';
+import PluginUploadOverwriteReviewModal from './plugin_upload_overwrite_review_modal';
+
+import BooleanSetting from '../boolean_setting';
+import OLDAdminSettings from '../old_admin_settings';
+import type {BaseProps, BaseState} from '../old_admin_settings';
+import PluginMetadataPanel, {formatPluginVersion} from '../plugin_metadata_panel/plugin_metadata_panel';
+import SettingSet from '../setting_set';
+import SettingsGroup from '../settings_group';
+import TextSetting from '../text_setting';
+
+import './plugin_management.scss';
+
+const PluginItemState = ({state}: {state: number}) => {
+    switch (state) {
+    case PluginState.PLUGIN_STATE_NOT_RUNNING:
+        return (
+            <FormattedMessage
+                id='admin.plugin.state.not_running'
+                defaultMessage='Not running'
+            />
+        );
+    case PluginState.PLUGIN_STATE_STARTING:
+        return (
+            <FormattedMessage
+                id='admin.plugin.state.starting'
+                defaultMessage='Starting'
+            />
+        );
+    case PluginState.PLUGIN_STATE_RUNNING:
+        return (
+            <FormattedMessage
+                id='admin.plugin.state.running'
+                defaultMessage='Running'
+            />
+        );
+    case PluginState.PLUGIN_STATE_FAILED_TO_START:
+        return (
+            <FormattedMessage
+                id='admin.plugin.state.failed_to_start'
+                defaultMessage='Failed to start'
+            />
+        );
+    case PluginState.PLUGIN_STATE_FAILED_TO_STAY_RUNNING:
+        return (
+            <FormattedMessage
+                id='admin.plugin.state.failed_to_stay_running'
+                defaultMessage='Crashing'
+            />
+        );
+    case PluginState.PLUGIN_STATE_STOPPING:
+        return (
+            <FormattedMessage
+                id='admin.plugin.state.stopping'
+                defaultMessage='Stopping'
+            />
+        );
+    default:
+        return (
+            <FormattedMessage
+                id='admin.plugin.state.unknown'
+                defaultMessage='Unknown'
+            />
+        );
+    }
+};
+
+const PluginItemStateDescription = ({state, error}: {state: number; error?: string}) => {
+    switch (state) {
+    case PluginState.PLUGIN_STATE_NOT_RUNNING:
+        return (
+            <div className='alert alert-info'>
+                <i className='fa fa-ban'/>
+                <FormattedMessage
+                    id='admin.plugin.state.not_running.description'
+                    defaultMessage='This plugin is not enabled.'
+                />
+            </div>
+        );
+    case PluginState.PLUGIN_STATE_STARTING:
+        return (
+            <div className='alert alert-success'>
+                <i className='fa fa-info'/>
+                <FormattedMessage
+                    id='admin.plugin.state.starting.description'
+                    defaultMessage='This plugin is starting.'
+                />
+            </div>
+        );
+    case PluginState.PLUGIN_STATE_RUNNING:
+        return (
+            <div className='alert alert-success'>
+                <i className='fa fa-check'/>
+                <FormattedMessage
+                    id='admin.plugin.state.running.description'
+                    defaultMessage='This plugin is running.'
+                />
+            </div>
+        );
+    case PluginState.PLUGIN_STATE_FAILED_TO_START: {
+        const errorMessage = error || (
+            <FormattedMessage
+                id='admin.plugin.state.failed_to_start.check_logs'
+                defaultMessage='Check your system logs for errors.'
+            />
+        );
+
+        return (
+            <div className='alert alert-warning'>
+                <i className='fa fa-warning'/>
+                <FormattedMessage
+                    id='admin.plugin.state.failed_to_start.description'
+                    defaultMessage='This plugin failed to start. {error}'
+                    values={{
+                        error: errorMessage,
+                    }}
+                />
+            </div>
+        );
+    }
+    case PluginState.PLUGIN_STATE_FAILED_TO_STAY_RUNNING:
+        return (
+            <div className='alert alert-warning'>
+                <i className='fa fa-warning'/>
+                <FormattedMessage
+                    id='admin.plugin.state.failed_to_stay_running.description'
+                    defaultMessage='This plugin crashed multiple times and is no longer running. Check your system logs for errors.'
+                />
+            </div>
+        );
+    case PluginState.PLUGIN_STATE_STOPPING:
+        return (
+            <div className='alert alert-info'>
+                <i className='fa fa-info'/>
+                <FormattedMessage
+                    id='admin.plugin.state.stopping.description'
+                    defaultMessage='This plugin is stopping.'
+                />
+            </div>
+        );
+    default:
+        return null;
+    }
+};
+
+type PluginStatus = {
+    state: number;
+    error?: string;
+    active: boolean;
+    id: string;
+    description: string;
+    version: string;
+    name: string;
+    instances: any[];
+    settings_schema?: {
+        header: string;
+        footer: string;
+        settings?: unknown[];
+        sections?: unknown[];
+    };
+};
+
+type PluginItemProps = {
+    pluginStatus: PluginStatus;
+    plugin?: {
+        homepage_url?: string;
+        release_notes_url?: string;
+        required_add_on?: string;
+    };
+    removing: boolean;
+    handleEnable: (e: any) => any;
+    handleDisable: (e: any) => any;
+    handleRemove: (e: any) => any;
+    showInstances: boolean;
+    hasSettings: boolean;
+    appsFeatureFlagEnabled: boolean;
+    isDisabled?: boolean;
+
+    configEnabled: boolean;
+};
+
+const messages = defineMessages({
+    title: {id: 'admin.plugin.management.title', defaultMessage: 'Plugin Management'},
+    enable: {id: 'admin.plugins.settings.enable', defaultMessage: 'Enable Plugins: '},
+    enableDesc: {id: 'admin.plugins.settings.enableDesc', defaultMessage: 'When true, enables plugins on your Antimatter server. Use plugins to integrate with third-party systems, extend functionality, or customize the user interface of your Antimatter server. See <link>documentation</link> to learn more.'},
+    uploadTitle: {id: 'admin.plugin.uploadTitle', defaultMessage: 'Upload Plugin: '},
+    installedTitle: {id: 'admin.plugin.installedTitle', defaultMessage: 'Installed Plugins: '},
+    installedDesc: {id: 'admin.plugin.installedDesc', defaultMessage: 'Installed plugins on your Antimatter server.'},
+    uploadDesc: {id: 'admin.plugin.uploadDesc', defaultMessage: 'Upload a plugin for your Antimatter server. See <link>documentation</link> to learn more.'},
+    uploadDisabledDesc: {id: 'admin.plugin.uploadDisabledDesc', defaultMessage: 'Enable plugin uploads in config.json. See <link>documentation</link> to learn more.'},
+    enableMarketplace: {id: 'admin.plugins.settings.enableMarketplace', defaultMessage: 'Enable Marketplace:'},
+    enableMarketplaceDesc: {id: 'admin.plugins.settings.enableMarketplaceDesc', defaultMessage: 'When true, enables System Administrators to install plugins from the <link>marketplace</link>.'},
+    enableRemoteMarketplace: {id: 'admin.plugins.settings.enableRemoteMarketplace', defaultMessage: 'Enable Remote Marketplace:'},
+    enableRemoteMarketplaceDesc: {id: 'admin.plugins.settings.enableRemoteMarketplaceDesc', defaultMessage: 'When true, marketplace fetches latest plugins from the configured Marketplace URL.'},
+    automaticPrepackagedPlugins: {id: 'admin.plugins.settings.automaticPrepackagedPlugins', defaultMessage: 'Enable Automatic Prepackaged Plugins:'},
+    automaticPrepackagedPluginsDesc: {id: 'admin.plugins.settings.automaticPrepackagedPluginsDesc', defaultMessage: 'When true, automatically installs any prepackaged plugin found to be enabled in the server configuration.'},
+    marketplaceUrl: {id: 'admin.plugins.settings.marketplaceUrl', defaultMessage: 'Marketplace URL:'},
+    marketplaceUrlDesc: {id: 'admin.plugins.settings.marketplaceUrlDesc', defaultMessage: 'URL of the marketplace server.'},
+    uploadSuccess: {id: 'admin.plugin.upload.success', defaultMessage: 'Successfully uploaded plugin: {pluginName}'},
+    uploadSuccessUpdated: {id: 'admin.plugin.upload.success_updated', defaultMessage: 'Successfully updated plugin: {pluginName}'},
+    uploadSuccessUpgraded: {id: 'admin.plugin.upload.success_upgraded', defaultMessage: 'Successfully upgraded plugin: {pluginName} ({previousVersion} → {version})'},
+    uploadSuccessDowngraded: {id: 'admin.plugin.upload.success_downgraded', defaultMessage: 'Successfully downgraded plugin: {pluginName} ({previousVersion} → {version})'},
+    uploadSuccessSame: {id: 'admin.plugin.upload.success_same', defaultMessage: 'Successfully replaced plugin: {pluginName} (same version {version})'},
+});
+
+export const searchableStrings = [
+    messages.title,
+    messages.enable,
+    messages.enableDesc,
+    messages.uploadTitle,
+    messages.installedTitle,
+    messages.installedDesc,
+    messages.uploadDesc,
+    messages.uploadDisabledDesc,
+    messages.enableMarketplace,
+    messages.enableMarketplaceDesc,
+    messages.enableRemoteMarketplace,
+    messages.enableRemoteMarketplaceDesc,
+    messages.automaticPrepackagedPlugins,
+    messages.automaticPrepackagedPluginsDesc,
+    messages.marketplaceUrl,
+    messages.marketplaceUrlDesc,
+];
+
+const PluginItem = ({
+    pluginStatus,
+    plugin,
+    removing,
+    handleEnable,
+    handleDisable,
+    handleRemove,
+    showInstances,
+    hasSettings,
+    appsFeatureFlagEnabled,
+    isDisabled,
+    configEnabled,
+}: PluginItemProps) => {
+    let activateButton: React.ReactNode;
+    const activating = pluginStatus.state === PluginState.PLUGIN_STATE_STARTING;
+    const deactivating = pluginStatus.state === PluginState.PLUGIN_STATE_STOPPING;
+
+    // Key on the config flag too, not just running state: getPluginStateOverride
+    // holds a plugin at NotRunning with Enable still true, and the control mutates
+    // the config flag.
+    if (pluginStatus.active || configEnabled) {
+        activateButton = (
+            <a
+                data-plugin-id={pluginStatus.id}
+                className={deactivating || isDisabled ? 'disabled' : ''}
+                onClick={handleDisable}
+            >
+                {deactivating ? (
+                    <FormattedMessage
+                        id='admin.plugin.disabling'
+                        defaultMessage='Disabling...'
+                    />
+                ) : (
+                    <FormattedMessage
+                        id='admin.plugin.disable'
+                        defaultMessage='Disable'
+                    />
+                )}
+            </a>
+        );
+    } else {
+        activateButton = (
+            <a
+                data-plugin-id={pluginStatus.id}
+                className={activating || isDisabled ? 'disabled' : ''}
+                onClick={handleEnable}
+            >
+                {activating ? (
+                    <FormattedMessage
+                        id='admin.plugin.enabling'
+                        defaultMessage='Enabling...'
+                    />
+                ) : (
+                    <FormattedMessage
+                        id='admin.plugin.enable'
+                        defaultMessage='Enable'
+                    />
+                )}
+            </a>
+        );
+    }
+
+    let settingsButton = null;
+    if (hasSettings) {
+        settingsButton = (
+            <span>
+                {' - '}
+                <Link
+                    to={'/admin_console/plugins/plugin_' + pluginStatus.id}
+                >
+                    <FormattedMessage
+                        id='admin.plugin.settingsButton'
+                        defaultMessage='Settings'
+                    />
+                </Link>
+            </span>
+        );
+    }
+
+    let removeButtonText;
+    if (removing) {
+        removeButtonText = (
+            <FormattedMessage
+                id='admin.plugin.removing'
+                defaultMessage='Removing...'
+            />
+        );
+    } else {
+        removeButtonText = (
+            <FormattedMessage
+                id='admin.plugin.remove'
+                defaultMessage='Remove'
+            />
+        );
+    }
+    let removeButton: React.ReactNode = (
+        <span>
+            {' - '}
+            <a
+                data-plugin-id={pluginStatus.id}
+                className={removing || isDisabled ? 'disabled' : ''}
+                onClick={handleRemove}
+            >
+                {removeButtonText}
+            </a>
+        </span>
+    );
+
+    let description;
+    if (pluginStatus.description) {
+        description = (
+            <div className='pt-2'>
+                {pluginStatus.description}
+            </div>
+        );
+    }
+
+    const notices = [];
+    if (pluginStatus.instances.some((instance) => instance.version !== pluginStatus.version)) {
+        notices.push(
+            <div
+                key='multiple-versions'
+                className='alert alert-warning'
+            >
+                <i className='fa fa-warning'/>
+                <FormattedMessage
+                    id='admin.plugin.multiple_versions_warning'
+                    defaultMessage='There are multiple versions of this plugin installed across your cluster. Re-install this plugin to ensure it works consistently.'
+                />
+            </div>,
+        );
+    }
+
+    notices.push(
+        <PluginItemStateDescription
+            key='state-description'
+            state={pluginStatus.state}
+            error={pluginStatus.error}
+        />,
+    );
+
+    const instances = pluginStatus.instances.slice();
+    instances.sort((a, b) => {
+        if (a.cluster_id < b.cluster_id) {
+            return -1;
+        } else if (a.cluster_id > b.cluster_id) {
+            return 1;
+        }
+
+        return 0;
+    });
+
+    let clusterSummary;
+    if (showInstances) {
+        clusterSummary = (
+            <div className='pt-3 pb-3'>
+                <div className='row'>
+                    <div className='col-md-6'>
+                        <strong>
+                            <FormattedMessage
+                                id='admin.plugin.cluster_instance'
+                                defaultMessage='Cluster Instance'
+                            />
+                        </strong>
+                    </div>
+                    <div className='col-md-3'>
+                        <strong>
+                            <FormattedMessage
+                                id='admin.plugin.version_title'
+                                defaultMessage='Version'
+                            />
+                        </strong>
+                    </div>
+                    <div className='col-md-3'>
+                        <strong>
+                            <FormattedMessage
+                                id='admin.plugin.state'
+                                defaultMessage='State'
+                            />
+                        </strong>
+                    </div>
+                </div>
+                {instances.map((instance) => (
+                    <div
+                        key={instance.cluster_id}
+                        className='row'
+                    >
+                        <div className='col-md-6'>
+                            {instance.cluster_id}
+                        </div>
+                        <div className='col-md-3'>
+                            {instance.version}
+                        </div>
+                        <div className='col-md-3'>
+                            <PluginItemState state={instance.state}/>
+                        </div>
+                    </div>
+                ))}
+            </div>
+        );
+    }
+
+    if (pluginStatus.id === appsPluginID && !appsFeatureFlagEnabled) {
+        activateButton = (<>{'Plugin disabled by feature flag'}</>);
+        removeButton = null;
+    }
+
+    // Plugins declaring an add-on are licensed separately by Mattermost; the server refuses to enable them.
+    if (plugin?.required_add_on) {
+        activateButton = (
+            <FormattedMessage
+                id='admin.plugin.addOn.notSupported'
+                defaultMessage='Requires a commercial Mattermost add-on'
+            />
+        );
+    }
+
+    return (
+        <div data-testid={pluginStatus.id}>
+            <PluginMetadataPanel
+                name={pluginStatus.name}
+                id={pluginStatus.id}
+                version={pluginStatus.version}
+                homepageUrl={plugin?.homepage_url}
+                releaseNotesUrl={plugin?.release_notes_url}
+            />
+            {description}
+            <div className='pt-2'>
+                {activateButton}
+                {removeButton}
+                {settingsButton}
+            </div>
+            <div>
+                {notices}
+            </div>
+            <div>
+                {clusterSummary}
+            </div>
+            <hr/>
+        </div>
+    );
+};
+
+type Props = BaseProps & {
+    config: DeepPartial<AdminConfig>;
+    pluginStatuses: Record<string, PluginStatus>;
+    plugins: any;
+    appsFeatureFlagEnabled: boolean;
+    actions: {
+        uploadPlugin: (fileData: File, force: boolean) => Promise<ActionResult>;
+        removePlugin: (pluginId: string) => Promise<ActionResult>;
+        getPlugins: () => Promise<ActionResult>;
+        getPluginStatuses: () => Promise<ActionResult>;
+        enablePlugin: (pluginId: string) => Promise<ActionResult>;
+        disablePlugin: (pluginId: string) => Promise<ActionResult>;
+        installPluginFromUrl: (url: string, force: boolean) => Promise<ActionResult>;
+    };
+} & WrappedComponentProps;
+
+type State = BaseState & {
+    loading: boolean;
+    fileSelected: boolean;
+    file: File | null;
+    pluginDownloadUrl: string;
+    serverError: JSX.Element | string | null;
+    lastMessage: string | null;
+    uploading: boolean;
+    installing: boolean;
+    overwritingUpload: boolean;
+    confirmOverwriteUploadModal: boolean;
+    overwriteUploadConflict: PluginInstallConflict | null;
+    overwritingInstall?: boolean;
+    confirmOverwriteInstallModal: boolean;
+    showRemoveModal: boolean;
+    resolveRemoveModal: string | null;
+    enable: boolean;
+    enableUploads: boolean;
+    allowInsecureDownloadUrl: boolean;
+    enableMarketplace: boolean;
+    enableRemoteMarketplace: boolean;
+    automaticPrepackagedPlugins: boolean;
+    marketplaceUrl: string;
+    requirePluginSignature: boolean;
+    removing: string | null;
+    draggingUpload: boolean;
+};
+export class PluginManagement extends OLDAdminSettings<Props, State> {
+    private fileInput: React.RefObject<HTMLInputElement | null>;
+    constructor(props: Props) {
+        super(props);
+
+        this.state = Object.assign(this.state, {
+            loading: true,
+            fileSelected: false,
+            file: null,
+            pluginDownloadUrl: '',
+            serverError: null,
+            lastMessage: null,
+            uploading: false,
+            installing: false,
+            overwritingUpload: false,
+            confirmOverwriteUploadModal: false,
+            overwriteUploadConflict: null,
+            overwritingInstall: false,
+            confirmOverwriteInstallModal: false,
+            showRemoveModal: false,
+            resolveRemoveModal: null,
+            draggingUpload: false,
+        });
+        this.fileInput = React.createRef();
+    }
+    getConfigFromState = (config: Props['config']) => {
+        if (config && config.PluginSettings) {
+            config.PluginSettings.Enable = this.state.enable;
+            config.PluginSettings.EnableUploads = this.state.enableUploads;
+            config.PluginSettings.AllowInsecureDownloadURL = this.state.allowInsecureDownloadUrl;
+            config.PluginSettings.EnableMarketplace = this.state.enableMarketplace;
+            config.PluginSettings.EnableRemoteMarketplace = this.state.enableRemoteMarketplace;
+            config.PluginSettings.AutomaticPrepackagedPlugins = this.state.automaticPrepackagedPlugins;
+            config.PluginSettings.MarketplaceURL = this.state.marketplaceUrl;
+            config.PluginSettings.RequirePluginSignature = this.state.requirePluginSignature;
+        }
+
+        return config;
+    };
+
+    getStateFromConfig(config: Props['config']) {
+        const state = {
+            enable: config?.PluginSettings?.Enable,
+            enableUploads: config?.PluginSettings?.EnableUploads,
+            allowInsecureDownloadUrl: config?.PluginSettings?.AllowInsecureDownloadURL,
+            enableMarketplace: config?.PluginSettings?.EnableMarketplace,
+            enableRemoteMarketplace: config?.PluginSettings?.EnableRemoteMarketplace,
+            automaticPrepackagedPlugins: config?.PluginSettings?.AutomaticPrepackagedPlugins,
+            marketplaceUrl: config?.PluginSettings?.MarketplaceURL,
+            requirePluginSignature: config?.PluginSettings?.RequirePluginSignature,
+        };
+
+        return state;
+    }
+
+    componentDidMount() {
+        if (this.state.enable) {
+            this.props.actions.getPluginStatuses().then(
+                () => this.setState({loading: false}),
+            );
+        }
+    }
+
+    handleChooseFileClick = () => {
+        if (!this.canUploadPlugin()) {
+            return;
+        }
+        this.fileInput.current?.click();
+    };
+
+    renderUploadDropzoneTitleText = () => {
+        if (this.state.uploading) {
+            return (
+                <FormattedMessage
+                    id='admin.plugin.uploading_file'
+                    defaultMessage='Uploading {fileName}'
+                    values={{fileName: this.state.file?.name || '...'}}
+                />
+            );
+        }
+
+        if (this.state.file) {
+            return (
+                <FormattedMessage
+                    id='admin.plugin.upload.selected_file'
+                    defaultMessage='Selected: {fileName}'
+                    values={{fileName: this.state.file.name}}
+                />
+            );
+        }
+
+        return (
+            <FormattedMessage
+                id='admin.plugin.upload.dropzone_title'
+                defaultMessage='Click or drop plugin bundle to upload'
+            />
+        );
+    };
+
+    canUploadPlugin = () => {
+        const enable = this.props.config?.PluginSettings?.Enable;
+        const requirePluginSignature = this.props.config.PluginSettings?.RequirePluginSignature;
+
+        return Boolean(this.state.enableUploads && enable && !requirePluginSignature && !this.props.isDisabled && !this.state.uploading);
+    };
+
+    handleSelectedUploadFile = (file: File) => {
+        this.setState({
+            lastMessage: null,
+            serverError: null,
+            fileSelected: true,
+            file,
+            overwriteUploadConflict: null,
+        });
+        this.helpSubmitUpload(file, false);
+    };
+
+    handleUpload = () => {
+        const element = this.fileInput.current as HTMLInputElement;
+        if (element.files && element.files.length > 0) {
+            this.handleSelectedUploadFile(element.files[0]);
+        }
+        Utils.clearFileInput(element);
+    };
+
+    pluginInstallConflictFromProps = (props?: Record<string, string>): PluginInstallConflict => {
+        return {
+            plugin_id: props?.plugin_id,
+            plugin_name: props?.plugin_name,
+            homepage_url: props?.homepage_url,
+            existing_version: props?.existing_version,
+            uploaded_version: props?.uploaded_version,
+            version_direction: (props?.version_direction as PluginInstallConflict['version_direction']) || 'unknown',
+        };
+    };
+
+    handleUploadDragEnter = (e: React.DragEvent) => {
+        if (!this.canUploadPlugin()) {
+            return;
+        }
+
+        e.preventDefault();
+        this.setState({draggingUpload: true});
+    };
+
+    handleUploadDragOver = (e: React.DragEvent) => {
+        if (!this.canUploadPlugin()) {
+            return;
+        }
+
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'copy';
+    };
+
+    handleUploadDragLeave = (e: React.DragEvent) => {
+        e.preventDefault();
+
+        const relatedTarget = e.relatedTarget || e.nativeEvent.relatedTarget;
+        if (relatedTarget instanceof Node && e.currentTarget.contains(relatedTarget)) {
+            return;
+        }
+
+        this.setState({draggingUpload: false});
+    };
+
+    handleUploadDrop = (e: React.DragEvent) => {
+        e.preventDefault();
+        this.setState({draggingUpload: false});
+
+        if (!this.canUploadPlugin()) {
+            return;
+        }
+
+        const file = e.dataTransfer.files?.[0];
+        if (file) {
+            this.handleSelectedUploadFile(file);
+        }
+    };
+
+    formatUploadOverwriteMessage = (pluginName: string | undefined, previousVersion: string | undefined, newVersion: string | undefined) => {
+        if (previousVersion && newVersion && semver.valid(previousVersion) && semver.valid(newVersion)) {
+            if (semver.gt(newVersion, previousVersion)) {
+                return this.props.intl.formatMessage(messages.uploadSuccessUpgraded, {pluginName, previousVersion: formatPluginVersion(previousVersion), version: formatPluginVersion(newVersion)});
+            }
+            if (semver.lt(newVersion, previousVersion)) {
+                return this.props.intl.formatMessage(messages.uploadSuccessDowngraded, {pluginName, previousVersion: formatPluginVersion(previousVersion), version: formatPluginVersion(newVersion)});
+            }
+            return this.props.intl.formatMessage(messages.uploadSuccessSame, {pluginName, version: formatPluginVersion(newVersion)});
+        }
+        return this.props.intl.formatMessage(messages.uploadSuccessUpdated, {pluginName});
+    };
+
+    helpSubmitUpload = async (file: File, force: boolean) => {
+        this.setState({uploading: true, overwriteUploadConflict: null, serverError: null, lastMessage: null});
+        const {data, error} = await this.props.actions.uploadPlugin(file, force);
+
+        if (error) {
+            if (error.server_error_id === 'app.plugin.install_id.app_error' && !force) {
+                this.setState({
+                    confirmOverwriteUploadModal: true,
+                    overwriteUploadConflict: this.pluginInstallConflictFromProps(error.props),
+                    uploading: false,
+                    overwritingUpload: false,
+                });
+                return;
+            }
+            this.setState({
+                file: null,
+                fileSelected: false,
+                uploading: false,
+                overwritingUpload: false,
+                overwriteUploadConflict: null,
+            });
+            if (error.server_error_id === 'app.plugin.activate.app_error') {
+                this.setState({serverError: this.props.intl.formatMessage({id: 'admin.plugin.error.activate', defaultMessage: 'Unable to upload the plugin. It may conflict with another plugin on your server.'})});
+            } else if (error.server_error_id === 'app.plugin.extract.app_error') {
+                this.setState({serverError: this.props.intl.formatMessage({id: 'admin.plugin.error.extract', defaultMessage: 'Encountered an error when extracting the plugin. Review your plugin file content and try again.'})});
+            } else {
+                this.setState({serverError: error.message});
+            }
+            this.setState({file: null, fileSelected: false});
+            return;
+        }
+
+        // Look up the version being replaced before getPlugins() refreshes the store with the new one.
+        const previousVersion = this.state.overwritingUpload && data ? this.props.plugins[data.id]?.version : undefined;
+
+        this.setState({loading: true});
+        await this.props.actions.getPlugins();
+
+        const pluginName = data?.name || file?.name;
+        const msg = this.state.overwritingUpload ? this.formatUploadOverwriteMessage(pluginName, previousVersion, data?.version) : this.props.intl.formatMessage(messages.uploadSuccess, {pluginName});
+
+        this.setState({
+            file: null,
+            fileSelected: false,
+            serverError: null,
+            lastMessage: msg,
+            overwritingUpload: false,
+            overwriteUploadConflict: null,
+            uploading: false,
+            loading: false,
+        });
+    };
+
+    handleOverwriteUploadPluginCancel = () => {
+        this.setState({
+            file: null,
+            fileSelected: false,
+            serverError: null,
+            confirmOverwriteUploadModal: false,
+            overwriteUploadConflict: null,
+            lastMessage: null,
+            uploading: false,
+            overwritingUpload: false,
+        });
+    };
+
+    handleOverwriteUploadPlugin = () => {
+        this.setState({confirmOverwriteUploadModal: false, overwriteUploadConflict: null, overwritingUpload: true});
+        if (this.state.file) {
+            this.helpSubmitUpload(this.state.file, true);
+        }
+    };
+
+    onPluginDownloadUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        this.setState({
+            pluginDownloadUrl: e.target.value,
+        });
+    };
+
+    installFromUrl = async (force: boolean) => {
+        const {pluginDownloadUrl} = this.state;
+
+        this.setState({
+            installing: true,
+            serverError: null,
+            lastMessage: null,
+        });
+        const {error} = await this.props.actions.installPluginFromUrl(pluginDownloadUrl, force);
+
+        if (error) {
+            if (error.server_error_id === 'app.plugin.install_id.app_error' && !force) {
+                this.setState({confirmOverwriteInstallModal: true, overwritingInstall: true});
+                return;
+            }
+
+            this.setState({
+                installing: false,
+            });
+
+            if (error.server_error_id === 'app.plugin.extract.app_error') {
+                this.setState({serverError: this.props.intl.formatMessage({id: 'admin.plugin.error.extract', defaultMessage: 'Encountered an error when extracting the plugin. Review your plugin file content and try again.'})});
+            } else {
+                this.setState({serverError: error.message});
+            }
+            return;
+        }
+
+        this.setState({loading: true});
+        await this.props.actions.getPlugins();
+
+        let msg = `Successfully installed plugin from ${pluginDownloadUrl}`;
+        if (this.state.overwritingInstall) {
+            msg = `Successfully updated plugin from ${pluginDownloadUrl}`;
+        }
+
+        this.setState({
+            serverError: null,
+            lastMessage: msg,
+            overwritingInstall: false,
+            installing: false,
+            loading: false,
+        });
+    };
+
+    getMarketplaceURLHelpText = (url: string, enableUploads: boolean) => {
+        return (
+            <div>
+                {
+                    url === '' && enableUploads &&
+                    <div className='alert-warning'>
+                        <i className='fa fa-warning'/>
+                        <FormattedMessage
+                            id='admin.plugins.settings.marketplaceUrlDesc.empty'
+                            defaultMessage=' Marketplace URL is a required field.'
+                        />
+                    </div>
+                }
+                {
+                    url !== '' && enableUploads &&
+                    <FormattedMessage {...messages.marketplaceUrlDesc}/>
+                }
+                {
+                    !enableUploads &&
+                    <FormattedMessage
+                        {...messages.uploadDisabledDesc}
+                        values={{
+                            link: (msg: React.ReactNode) => (
+                                <ExternalLink
+                                    href={DeveloperLinks.PLUGINS}
+                                    location='plugin_management'
+                                >
+                                    {msg}
+                                </ExternalLink>
+                            ),
+                        }}
+                    />
+                }
+            </div>
+        );
+    };
+
+    canSave = () => {
+        return this.state.marketplaceUrl !== '';
+    };
+
+    handleSubmitInstall = (e: React.SyntheticEvent) => {
+        e.preventDefault();
+        return this.installFromUrl(false);
+    };
+
+    handleOverwriteInstallPluginCancel = () => {
+        this.setState({
+            confirmOverwriteInstallModal: false,
+            installing: false,
+            serverError: null,
+            lastMessage: null,
+        });
+    };
+
+    handleOverwriteInstallPlugin = () => {
+        this.setState({confirmOverwriteInstallModal: false});
+        return this.installFromUrl(true);
+    };
+
+    showRemovePluginModal = (e: React.SyntheticEvent) => {
+        if (this.props.isDisabled) {
+            return;
+        }
+        e.preventDefault();
+        const pluginId = e.currentTarget.getAttribute('data-plugin-id');
+        this.setState({showRemoveModal: true, removing: pluginId});
+    };
+
+    handleRemovePluginCancel = () => {
+        this.setState({showRemoveModal: false, removing: null});
+    };
+
+    handleRemovePlugin = () => {
+        this.setState({showRemoveModal: false});
+        this.handleRemove();
+    };
+
+    handleRemove = async () => {
+        this.setState({lastMessage: null, serverError: null});
+        if (this.state.removing !== null) {
+            const {error} = await this.props.actions.removePlugin(this.state.removing);
+            this.setState({removing: null});
+
+            if (error) {
+                this.setState({serverError: error.message});
+            }
+        }
+    };
+
+    handleEnable = async (e: React.KeyboardEvent) => {
+        e.preventDefault();
+        if (this.props.isDisabled) {
+            return;
+        }
+        this.setState({lastMessage: null, serverError: null});
+        const pluginId = e.currentTarget.getAttribute('data-plugin-id');
+
+        if (pluginId) {
+            const {error} = await this.props.actions.enablePlugin(pluginId);
+
+            if (error) {
+                this.setState({serverError: error.message});
+            }
+        }
+    };
+
+    handleDisable = async (e: React.KeyboardEvent) => {
+        this.setState({lastMessage: null, serverError: null});
+        e.preventDefault();
+        if (this.props.isDisabled) {
+            return;
+        }
+        this.setState({lastMessage: null, serverError: null});
+        const pluginId = e.currentTarget.getAttribute('data-plugin-id');
+        if (pluginId) {
+            const {error} = await this.props.actions.disablePlugin(pluginId);
+
+            if (error) {
+                this.setState({serverError: error.message});
+            }
+        }
+    };
+
+    renderTitle() {
+        return (<FormattedMessage {...messages.title}/>);
+    }
+
+    renderOverwritePluginModal = () => {
+        return (
+            <PluginUploadOverwriteReviewModal
+                show={this.state.confirmOverwriteUploadModal}
+                conflict={this.state.overwriteUploadConflict}
+                onConfirm={this.handleOverwriteUploadPlugin}
+                onCancel={this.handleOverwriteUploadPluginCancel}
+            />
+        );
+    };
+
+    renderRemovePluginModal = (
+        show: boolean, onConfirm: (checked: boolean) => void, onCancel: (checked: boolean) => void) => {
+        const title = (
+            <FormattedMessage
+                id='admin.plugin.remove_modal.title'
+                defaultMessage='Remove plugin?'
+            />
+        );
+
+        const message = (
+            <FormattedMessage
+                id='admin.plugin.remove_modal.desc'
+                defaultMessage='Are you sure you would like to remove the plugin?'
+            />
+        );
+
+        const removeButton = (
+            <FormattedMessage
+                id='admin.plugin.remove_modal.overwrite'
+                defaultMessage='Remove'
+            />
+        );
+
+        return (
+            <ConfirmModal
+                show={show}
+                title={title}
+                message={message}
+                confirmButtonVariant='destructive'
+                confirmButtonText={removeButton}
+                onConfirm={onConfirm}
+                onCancel={onCancel}
+            />
+        );
+    };
+
+    renderEnablePluginsSetting = () => {
+        const hideEnablePlugins = this.props.config.ExperimentalSettings && this.props.config.ExperimentalSettings.RestrictSystemAdmin;
+        if (!hideEnablePlugins) {
+            return (
+                <BooleanSetting
+                    id='enable'
+                    label={<FormattedMessage {...messages.enable}/>}
+                    helpText={
+                        <FormattedMessage
+                            {...messages.enableDesc}
+                            values={{
+                                link: (msg: React.ReactNode) => (
+                                    <ExternalLink
+                                        href={DeveloperLinks.PLUGINS}
+                                        location='plugin_management'
+                                    >
+                                        {msg}
+                                    </ExternalLink>
+                                ),
+                            }}
+                        />
+                    }
+                    value={this.state.enable}
+                    onChange={this.handleChange}
+                    setByEnv={this.isSetByEnv('PluginSettings.Enable')}
+                    disabled={this.props.isDisabled}
+                />
+            );
+        }
+        return null;
+    };
+
+    renderUploadDisabledReason = (enable: boolean | undefined, enableUploads: boolean, requirePluginSignature: boolean | undefined) => {
+        if (this.props.isDisabled) {
+            return (
+                <FormattedMessage
+                    id='admin.plugin.upload.disabled_permission'
+                    defaultMessage='You need permission to manage plugins before uploading a plugin.'
+                />
+            );
+        }
+
+        if (!enable) {
+            return (
+                <FormattedMessage
+                    id='admin.plugin.upload.disabled_plugins'
+                    defaultMessage='Enable plugins before uploading a plugin.'
+                />
+            );
+        }
+
+        if (requirePluginSignature) {
+            return (
+                <FormattedMessage
+                    id='admin.plugin.upload.disabled_signature_required'
+                    defaultMessage='Plugin signatures are required. Install plugins through Marketplace instead.'
+                />
+            );
+        }
+
+        if (!enableUploads) {
+            return (
+                <FormattedMessage
+                    id='admin.plugin.upload.disabled_uploads'
+                    defaultMessage='Plugin uploads are disabled. Enable plugin uploads in config.json before uploading a plugin.'
+                />
+            );
+        }
+
+        return null;
+    };
+
+    renderSettings = () => {
+        const {enableUploads} = this.state;
+        const enable = this.props.config?.PluginSettings?.Enable;
+        const requirePluginSignature = this.props.config.PluginSettings?.RequirePluginSignature;
+        let serverError = <></>;
+        let lastMessage = <></>;
+
+        // Using props values to make sure these are set on the server and not just locally
+        const enableUploadButton = enableUploads && enable && !requirePluginSignature;
+        const uploadDisabledReason = this.renderUploadDisabledReason(enable, enableUploads, requirePluginSignature);
+        const uploadDropzoneDisabled = !enableUploadButton || this.props.isDisabled || this.state.uploading;
+
+        if (this.state.serverError) {
+            serverError = (
+                <div className='PluginManagement__uploadStatus PluginManagement__uploadStatus--error'>
+                    <i
+                        className='icon icon-alert-outline'
+                        aria-hidden={true}
+                    />
+                    <span>{this.state.serverError}</span>
+                </div>
+            );
+        }
+        if (this.state.lastMessage) {
+            lastMessage = (
+                <div className='PluginManagement__uploadStatus PluginManagement__uploadStatus--success'>
+                    <i
+                        className='icon icon-check-circle'
+                        aria-hidden={true}
+                    />
+                    <span>{this.state.lastMessage}</span>
+                </div>
+            );
+        }
+
+        let pluginsList;
+        let pluginsContainer;
+        let pluginsListContainer;
+        const plugins = Object.values(this.props.pluginStatuses);
+        if (this.state.loading) {
+            pluginsList = <LoadingScreen/>;
+        } else if (plugins.length === 0) {
+            pluginsListContainer = (
+                <FormattedMessage
+                    id='admin.plugin.no_plugins'
+                    defaultMessage='No installed plugins.'
+                />
+            );
+        } else {
+            const showInstances = plugins.some((pluginStatus) => pluginStatus.instances.length > 1);
+            plugins.sort((a, b) => {
+                const nameCompare = a.name.localeCompare(b.name);
+                if (nameCompare !== 0) {
+                    return nameCompare;
+                }
+
+                return a.id.localeCompare(b.id);
+            });
+            pluginsList = plugins.map((pluginStatus: PluginStatus) => {
+                const p = this.props.plugins[pluginStatus.id];
+                const hasSettings = Boolean(p?.settings_schema && (
+                    p.settings_schema.header ||
+                    p.settings_schema.footer ||
+                    p.settings_schema.settings?.length ||
+                    p.settings_schema.sections?.length
+                ));
+                return (
+                    <PluginItem
+                        key={pluginStatus.id}
+                        pluginStatus={pluginStatus}
+                        plugin={p}
+                        removing={this.state.removing === pluginStatus.id}
+                        handleEnable={this.handleEnable}
+                        handleDisable={this.handleDisable}
+                        handleRemove={this.showRemovePluginModal}
+                        showInstances={showInstances}
+                        hasSettings={hasSettings}
+                        appsFeatureFlagEnabled={this.props.appsFeatureFlagEnabled}
+                        isDisabled={this.props.isDisabled}
+                        configEnabled={Boolean(this.props.config.PluginSettings?.PluginStates?.[pluginStatus.id]?.Enable)}
+                    />
+                );
+            });
+
+            pluginsListContainer = (
+                <div className='alert alert-transparent'>
+                    {pluginsList}
+                </div>
+            );
+        }
+
+        if (enable) {
+            pluginsContainer = (
+                <SettingSet
+                    label={<FormattedMessage {...messages.installedTitle}/>}
+                >
+                    <p className='help-text'>
+                        <FormattedMessage {...messages.installedDesc}/>
+                    </p>
+                    <br/>
+                    {pluginsListContainer}
+                </SettingSet>
+            );
+        }
+
+        let uploadHelpText;
+
+        if (enableUploads && enable) {
+            uploadHelpText = (
+                <FormattedMessage
+                    {...messages.uploadDesc}
+                    values={{
+                        link: (msg: React.ReactNode) => (
+                            <ExternalLink
+                                href={DeveloperLinks.PLUGINS}
+                                location='plugin_management'
+                            >
+                                {msg}
+                            </ExternalLink>
+                        ),
+                    }}
+                />
+            );
+        } else if (enable && !enableUploads) {
+            uploadHelpText = (
+                <FormattedMessage
+                    {...messages.uploadDisabledDesc}
+                    values={{
+                        link: (msg: React.ReactNode) => (
+                            <ExternalLink
+                                href={DeveloperLinks.PLUGINS}
+                                location='plugin_management'
+                            >
+                                {msg}
+                            </ExternalLink>
+                        ),
+                    }}
+                />
+            );
+        } else {
+            uploadHelpText = (
+                <FormattedMessage
+                    id='admin.plugin.uploadAndPluginDisabledDesc'
+                    defaultMessage='To enable plugins, set <strong>Enable Plugins</strong> to true. See <link>documentation</link> to learn more.'
+                    values={{
+                        link: (msg: React.ReactNode) => (
+                            <ExternalLink
+                                href={DeveloperLinks.PLUGINS}
+                                location='plugin_management'
+                            >
+                                {msg}
+                            </ExternalLink>
+                        ),
+                        strong: (msg: React.ReactNode) => <strong>{msg}</strong>,
+                    }}
+                />
+            );
+        }
+
+        const overwriteUploadPluginModal = this.state.confirmOverwriteUploadModal && this.renderOverwritePluginModal();
+
+        const removePluginModal = this.state.showRemoveModal && this.renderRemovePluginModal(
+            this.state.showRemoveModal,
+            this.handleRemovePlugin,
+            this.handleRemovePluginCancel,
+        );
+
+        return (
+            <div className='admin-console__wrapper PluginManagement'>
+                <div className='admin-console__content'>
+                    <SettingsGroup
+                        id={'PluginSettings'}
+                        container={false}
+                    >
+                        {this.renderEnablePluginsSetting()}
+
+                        { !this.props.config.ExperimentalSettings?.RestrictSystemAdmin && (
+                            <>
+                                <BooleanSetting
+                                    id='requirePluginSignature'
+                                    label={
+                                        <FormattedMessage
+                                            id='admin.plugins.settings.requirePluginSignature'
+                                            defaultMessage='Require Plugin Signature:'
+                                        />
+                                    }
+                                    helpText={
+                                        <FormattedMessage
+                                            id='admin.plugins.settings.requirePluginSignatureDesc'
+                                            defaultMessage='When true, uploading plugins is disabled and may only be installed through the Marketplace. Plugins are always verified during Antimatter server startup and initialization. See <link>documentation</link> to learn more.'
+                                            values={{
+                                                link: (msg: React.ReactNode) => (
+                                                    <ExternalLink
+                                                        href={DeveloperLinks.PLUGIN_SIGNING}
+                                                        location='plugin_management'
+                                                    >
+                                                        {msg}
+                                                    </ExternalLink>
+                                                ),
+                                            }}
+                                        />
+                                    }
+                                    value={this.state.requirePluginSignature}
+                                    disabled={this.props.isDisabled || !this.state.enable}
+                                    onChange={this.handleChange}
+                                    setByEnv={this.isSetByEnv('PluginSettings.RequirePluginSignature')}
+                                />
+                                <BooleanSetting
+                                    id='automaticPrepackagedPlugins'
+                                    label={<FormattedMessage {...messages.automaticPrepackagedPlugins}/>}
+                                    helpText={<FormattedMessage {...messages.automaticPrepackagedPluginsDesc}/>}
+                                    value={this.state.automaticPrepackagedPlugins}
+                                    disabled={this.props.isDisabled || !this.state.enable}
+                                    onChange={this.handleChange}
+                                    setByEnv={this.isSetByEnv('PluginSettings.AutomaticPrepackagedPlugins')}
+                                />
+                                <SettingSet
+                                    helpText={uploadHelpText}
+                                    label={<FormattedMessage {...messages.uploadTitle}/>}
+                                >
+                                    <button
+                                        type='button'
+                                        className={classNames('PluginManagement__uploadDropzone', {
+                                            'PluginManagement__uploadDropzone--active': this.state.draggingUpload,
+                                        })}
+                                        onClick={this.handleChooseFileClick}
+                                        onDragEnter={this.handleUploadDragEnter}
+                                        onDragOver={this.handleUploadDragOver}
+                                        onDragLeave={this.handleUploadDragLeave}
+                                        onDrop={this.handleUploadDrop}
+                                        disabled={uploadDropzoneDisabled}
+                                        aria-describedby={uploadDisabledReason ? 'plugin-upload-description' : undefined}
+                                    >
+                                        <span className='PluginManagement__uploadDropzoneTitle'>
+                                            <i
+                                                className='icon icon-upload-outline'
+                                                aria-hidden={true}
+                                            />
+                                            <span className='PluginManagement__uploadDropzoneTitleText'>
+                                                {this.renderUploadDropzoneTitleText()}
+                                            </span>
+                                        </span>
+                                        {uploadDisabledReason && (
+                                            <span
+                                                className='PluginManagement__uploadDropzoneDescription'
+                                                id='plugin-upload-description'
+                                            >
+                                                {uploadDisabledReason}
+                                            </span>
+                                        )}
+                                        {this.state.uploading && (
+                                            <div
+                                                className='PluginManagement__uploadProgress'
+                                                role='progressbar'
+                                                aria-label={this.props.intl.formatMessage({id: 'admin.plugin.upload.progress', defaultMessage: 'Plugin upload progress'})}
+                                            >
+                                                <div className='PluginManagement__uploadProgressBar'/>
+                                            </div>
+                                        )}
+                                    </button>
+                                    <input
+                                        ref={this.fileInput}
+                                        className='PluginManagement__fileInput'
+                                        type='file'
+                                        accept='.tar.gz,.gz'
+                                        onChange={this.handleUpload}
+                                        disabled={uploadDropzoneDisabled}
+                                    />
+                                    {serverError}
+                                    {lastMessage}
+                                </SettingSet>
+                                <BooleanSetting
+                                    id='enableMarketplace'
+                                    label={<FormattedMessage {...messages.enableMarketplace}/>}
+                                    helpText={
+                                        <FormattedMessage
+                                            {...messages.enableMarketplaceDesc}
+                                            values={{
+                                                link: (msg: React.ReactNode) => (
+                                                    <ExternalLink
+                                                        href='https://mattermost.com/pl/default-mattermost-marketplace.html'
+                                                        location='plugin_management'
+                                                    >
+                                                        {msg}
+                                                    </ExternalLink>
+                                                ),
+                                            }}
+                                        />
+                                    }
+                                    value={this.state.enableMarketplace}
+                                    disabled={this.props.isDisabled || !this.state.enable}
+                                    onChange={this.handleChange}
+                                    setByEnv={this.isSetByEnv('PluginSettings.EnableMarketplace')}
+                                />
+                                <BooleanSetting
+                                    id='enableRemoteMarketplace'
+                                    label={<FormattedMessage {...messages.enableRemoteMarketplace}/>}
+                                    helpText={<FormattedMessage {...messages.enableRemoteMarketplaceDesc}/>}
+                                    value={this.state.enableRemoteMarketplace}
+                                    disabled={this.props.isDisabled || !this.state.enable || !this.state.enableUploads || !this.state.enableMarketplace}
+                                    onChange={this.handleChange}
+                                    setByEnv={this.isSetByEnv('PluginSettings.EnableRemoteMarketplace')}
+                                />
+                                <TextSetting
+                                    id={'marketplaceUrl'}
+                                    label={<FormattedMessage {...messages.marketplaceUrl}/>}
+                                    helpText={this.getMarketplaceURLHelpText(this.state.marketplaceUrl, this.state.enableUploads)}
+                                    value={this.state.marketplaceUrl}
+                                    disabled={this.props.isDisabled || !this.state.enable || !this.state.enableUploads || !this.state.enableMarketplace || !this.state.enableRemoteMarketplace}
+                                    onChange={this.handleChange}
+                                    setByEnv={this.isSetByEnv('PluginSettings.MarketplaceURL')}
+                                />
+                            </>
+                        )}
+                        {pluginsContainer}
+                    </SettingsGroup>
+                    {overwriteUploadPluginModal}
+                    {removePluginModal}
+                </div>
+            </div>
+        );
+    };
+}
+
+export default injectIntl(PluginManagement);

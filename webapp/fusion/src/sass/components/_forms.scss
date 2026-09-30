@@ -1,0 +1,300 @@
+@use "utils/functions";
+@use "utils/variables";
+
+@use 'sass:color';
+
+.radio,
+.checkbox {
+    &.margin-bottom--none {
+        margin-bottom: 0;
+    }
+
+    &.no-padding {
+        padding: 0;
+
+        label {
+            padding: 0;
+        }
+    }
+}
+
+.radio-setting__clear {
+    display: block;
+    padding-left: 0;
+    margin-top: 4px;
+}
+
+// Interactive dialog inline choices (radio, bool, checkbox_group).
+// Bootstrap positions checkbox/radio inputs with absolute + negative margin,
+// assuming the input precedes label text. Override for label_position support.
+.inline-choice-setting {
+    fieldset {
+        min-width: 0;
+        padding: 0;
+        border: 0;
+        margin: 0;
+    }
+
+    .checkbox,
+    .radio {
+        margin-top: 8px;
+
+        &:first-child {
+            margin-top: 0;
+        }
+
+        label {
+            display: inline-flex;
+            min-height: unset;
+            align-items: center;
+            padding-left: 0;
+            margin-bottom: 0;
+            cursor: pointer;
+            font-weight: normal;
+            gap: 8px;
+        }
+
+        input[type='checkbox'],
+        input[type='radio'] {
+            position: static;
+            width: 16px;
+            height: 16px;
+            flex-shrink: 0;
+            margin: 0;
+            float: none;
+        }
+    }
+
+    &__text {
+        line-height: 20px;
+    }
+}
+
+.checkbox-matrix {
+    width: 100%;
+    margin-top: 8px;
+    border-collapse: collapse;
+
+    th,
+    td {
+        padding: 8px 12px;
+        text-align: center;
+        vertical-align: middle;
+    }
+
+    th[scope='row'] {
+        font-weight: 600;
+        text-align: left;
+    }
+
+    &__corner {
+        border: none;
+    }
+
+    thead th {
+        font-weight: 600;
+    }
+}
+
+.form-group {
+    max-width: 100%;
+
+    .control-label {
+        overflow: hidden;
+        padding-right: 5px;
+        text-overflow: ellipsis;
+    }
+
+    .setting-list & {
+        .control-label {
+            white-space: nowrap;
+        }
+    }
+
+    &.form-group--small {
+        margin-bottom: 10px;
+    }
+
+    &.pos-rel {
+        position: relative;
+    }
+}
+
+.form-control {
+    ::placeholder {
+        color: inherit;
+    }
+
+    &.form-sm {
+        height: 32px;
+        font-size: 13px;
+    }
+}
+
+.form-legend {
+    border: none;
+    margin: 0 0 0.8rem;
+    color: inherit;
+    font-size: inherit;
+    font-weight: 600;
+}
+
+.form-horizontal {
+    .modal-intro {
+        margin: -10px 0 30px;
+    }
+
+    .form__label {
+        padding-right: 3px;
+        font-size: 1.1em;
+        font-weight: 600;
+        text-align: left;
+
+        &.light {
+            padding-top: 2px;
+            font-size: 1.05em;
+            font-style: italic;
+            font-weight: normal;
+            opacity: 0.73;
+        }
+    }
+
+    .form-control {
+        font-weight: normal;
+    }
+
+    .form-group {
+        margin-bottom: 25px;
+
+        &.less {
+            margin-bottom: 10px;
+        }
+    }
+}
+
+.has-error {
+    .control-label,
+    .radio,
+    .checkbox,
+    .radio-inline,
+    .checkbox-inline {
+        color: var(--error-text);
+    }
+
+    .form__label {
+        &.control-label {
+            color: inherit !important;
+        }
+    }
+
+    &.radio,
+    &.checkbox,
+    &.radio-inline,
+    &.checkbox-inline {
+        label {
+            color: var(--error-text);
+        }
+    }
+}
+
+.error-text {
+    color: var(--error-text);
+}
+
+.multi-select__radio {
+    label {
+        display: flex;
+        align-items: center;
+    }
+
+    input[type='radio'] {
+        width: 13px;
+        margin-top: 0;
+    }
+
+    .flex-parent {
+        display: flex;
+        align-items: center;
+    }
+
+    .icon {
+        display: flex;
+        width: 14px;
+        height: 21px;
+        align-items: center;
+        justify-content: center;
+        padding-right: 1px;
+        margin-right: 6px;
+
+        &+span {
+            margin-right: 4px;
+            font-weight: 600;
+        }
+    }
+
+    span {
+        &:last-child {
+            opacity: 0.8;
+        }
+    }
+}
+
+.app__body {
+    .form-control {
+        border-color: rgba(var(--center-channel-color-rgb), 0.16);
+        border-radius: 4px;
+        background: functions.v(center-channel-bg);
+        box-shadow: none;
+        color: functions.v(center-channel-color);
+
+        &:focus {
+            border-color: rgba(var(--button-bg-rgb), 1);
+            box-shadow: 0 0 0 1px var(--button-bg);
+        }
+
+        &[disabled],
+        &[readonly] {
+            color: var(--center-channel-color);
+        }
+
+        &.inline {
+            display: inline-block;
+            width: auto;
+        }
+
+        &::-moz-placeholder,
+        &:-moz-placeholder {
+            color: inherit !important;
+            opacity: 0.73;
+        }
+    }
+}
+
+.form-control[disabled],
+.form-control[readonly],
+fieldset[disabled] .form-control,
+.backstage-form .form-control[disabled] {
+    background-color: #f9f9f9;
+}
+
+input[type="file"]:focus,
+input[type="radio"]:focus,
+input[type="checkbox"]:focus {
+    outline: none;
+}
+
+.btn-file {
+    position: relative;
+    overflow: hidden;
+
+    .btn-file__input {
+        position: absolute;
+        top: 0;
+        right: 0;
+        padding: 0;
+        margin: 0;
+        cursor: pointer;
+        filter: alpha(opacity=0);
+        opacity: 0;
+    }
+}
