@@ -7,72 +7,64 @@ import {useSelector} from 'react-redux';
 
 import type {Channel} from '@mattermost/types/channels';
 
-import {getMyChannelMembership} from 'mattermost-redux/selectors/entities/channels';
-
+import {useCallActions} from 'fusion/calls/actions';
+import {getCallsAPI} from 'fusion/calls/calls_api';
+import {useCall, useCallsAvailable, useIsVoiceChannel, useLocalCall, useParticipants} from 'fusion/calls/hooks';
 import Icon from 'fusion/components/icon';
 import {am} from 'fusion/utils/class_names';
 
 import type {GlobalState} from 'types/store';
 
-const CALLS_STATE = 'plugins-com.mattermost.calls';
-
-type CallsState = {
-    calls?: Record<string, unknown>;
-    sessions?: Record<string, Record<string, unknown>>;
-};
-
-declare global {
-    interface Window {
-        callsClient?: {channelID: string; disconnect: () => void};
-    }
-}
-
-// CallButton is the mockup's call button, driving the Calls plugin: start a call, join the one in progress, or leave.
+// CallButton is the mockup's call button of text channels and direct messages: start a call, join the one in
+// progress, or leave it. Voice channels are always-open rooms and have none.
 export default function CallButton({channel}: {channel: Channel}) {
     const {formatMessage} = useIntl();
-    const actions = useSelector((state: GlobalState) => state.plugins.components.CallButton || []);
-    const member = useSelector((state: GlobalState) => getMyChannelMembership(state, channel.id));
-    const calls = useSelector((state: GlobalState) => (state as unknown as Record<string, CallsState>)[CALLS_STATE]);
+    const actions = useCallActions();
+    const available = useCallsAvailable();
+    const voice = useIsVoiceChannel(channel.id);
+    const enabled = useSelector((state: GlobalState) => Boolean(getCallsAPI()?.selectors.isCallsEnabled(state, channel.id)));
+    const call = useCall(channel.id);
+    const people = useParticipants(channel.id).length;
+    const local = useLocalCall();
 
-    if (!actions.length) {
+    if (!available || voice) {
         return null;
     }
-    const active = Boolean(calls?.calls?.[channel.id]);
-    const people = Object.keys(calls?.sessions?.[channel.id] || {}).length;
-    const inThis = window.callsClient?.channelID === channel.id;
-    const start = () => actions[0].action(channel, member);
 
-    if (inThis) {
+    if (local?.channelId === channel.id) {
         return (
             <button
                 className={am('icon-btn', 'call-btn', 'leave')}
-                title={formatMessage({id: 'fusion.call.leave', defaultMessage: 'Leave the call'})}
-                aria-label={formatMessage({id: 'fusion.call.leave', defaultMessage: 'Leave the call'})}
-                onClick={() => window.callsClient?.disconnect()}
+                title={formatMessage({id: 'fusion.calls.leave', defaultMessage: 'Leave the call'})}
+                aria-label={formatMessage({id: 'fusion.calls.leave', defaultMessage: 'Leave the call'})}
+                onClick={actions.leaveCall}
             >
                 <Icon name='hangup'/>
             </button>
         );
     }
-    if (active) {
+    if (call) {
         return (
             <button
                 className={am('icon-btn', 'call-btn', 'join')}
-                title={formatMessage({id: 'fusion.call.join', defaultMessage: 'Join the call'})}
-                aria-label={formatMessage({id: 'fusion.call.joinCount', defaultMessage: 'Join the call, {count} in it'}, {count: people})}
-                onClick={start}
+                title={formatMessage({id: 'fusion.calls.join', defaultMessage: 'Join the call'})}
+                aria-label={formatMessage({id: 'fusion.calls.joinCount', defaultMessage: 'Join the call, {count} in it'}, {count: people})}
+                onClick={() => actions.startOrJoinCall(channel.id)}
             >
                 <Icon name='phone'/>
-                {formatMessage({id: 'fusion.call.joinShort', defaultMessage: 'Join · {count}'}, {count: people})}
+                {formatMessage({id: 'fusion.calls.joinShort', defaultMessage: 'Join · {count}'}, {count: people})}
             </button>
         );
+    }
+    if (!enabled) {
+        return null;
     }
     return (
         <button
             className={am('icon-btn', 'call-btn', 'start')}
-            title={formatMessage({id: 'fusion.call.start', defaultMessage: 'Start a call'})}
-            aria-label={formatMessage({id: 'fusion.call.start', defaultMessage: 'Start a call'})}
-            onClick={start}
+            title={formatMessage({id: 'fusion.calls.start', defaultMessage: 'Start a call'})}
+            aria-label={formatMessage({id: 'fusion.calls.start', defaultMessage: 'Start a call'})}
+            onClick={() => actions.startOrJoinCall(channel.id)}
         >
             <Icon name='phone'/>
         </button>

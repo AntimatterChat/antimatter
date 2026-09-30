@@ -22,6 +22,7 @@ import {isEmbedVisible} from 'selectors/posts';
 import FileAttachmentListContainer from 'components/file_attachment_list';
 import MessageWithAdditionalContent from 'components/message_with_additional_content';
 
+import CallCard, {isCallPost} from 'fusion/calls/call_card';
 import Avatar from 'fusion/components/avatar';
 import Icon from 'fusion/components/icon';
 import type {IconName} from 'fusion/components/icon';
@@ -185,15 +186,17 @@ export default function Message({postId, previousPostId, inThread = false, highl
 
     const body = (
         <>
-            <div className={am('body')}>
-                <MessageWithAdditionalContent
-                    post={post}
-                    isEmbedVisible={embedVisible}
-                    pluginPostTypes={pluginPostTypes}
-                    isRHS={inThread}
-                    isChannelAutotranslated={autotranslated}
-                />
-            </div>
+            {isCallPost(post) ? <CallCard post={post}/> : (
+                <div className={am('body')}>
+                    <MessageWithAdditionalContent
+                        post={post}
+                        isEmbedVisible={embedVisible}
+                        pluginPostTypes={pluginPostTypes}
+                        isRHS={inThread}
+                        isChannelAutotranslated={autotranslated}
+                    />
+                </div>
+            )}
             {post.file_ids && post.file_ids.length > 0 && !deleted && (
                 <FileAttachmentListContainer post={post}/>
             )}
