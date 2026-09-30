@@ -1,0 +1,20 @@
+// What the mockup's message content needs to hold real Mattermost content: pictures instead of the mockup's emoji
+// placeholders, the optional parts of integration cards, and controls the mockup doesn't draw.
+
+// Files and images.
+:is(.am-app, .am-layer) .am-files { display: flex; flex-wrap: wrap; gap: 0 8px; align-items: flex-start; }
+:is(.am-app, .am-layer) .am-files .am-img-att { max-height: 320px; }
+:is(.am-app, .am-layer) .am-img-att { background: var(--am-raise); }
+:is(.am-app, .am-layer) .am-img-att img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+:is(.am-app, .am-layer) .am-img-att span { max-width: calc(100% - 16px); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+:is(.am-app, .am-layer) .am-attach { text-align: left; color: var(--am-text); min-width: 0; }
+:is(.am-app, .am-layer) .am-attach:hover { border-color: var(--am-muted); }
+:is(.am-app, .am-layer) .am-attach .am-file { flex: none; }
+:is(.am-app, .am-layer) .am-attach .am-attach-meta { display: block; min-width: 0; font-size: inherit; color: inherit; }
+:is(.am-app, .am-layer) .am-attach .am-attach-meta b { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+:is(.am-app, .am-layer) .am-attach .am-attach-meta span { display: block; }
+
+// The lightbox holds the picture at its own proportions.
+:is(.am-app, .am-layer) .am-lightbox .am-img-att.am-full { width: auto; height: auto; max-width: 92vw; max-height: 86vh; aspect-ratio: auto; background: none; border: 0; }
+:is(.am-app, .am-layer) .am-lightbox .am-img-att.am-full img { position: static; display: block; max-width: 92vw; max-height: 86vh; width: auto; height: auto; object-fit: contain; }
+:is(.am-app, .am-layer) .am-lightbox .am-lightbox-dl { position: absolute; top: 16px; right: 16px; }

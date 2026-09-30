@@ -20,7 +20,6 @@ import {selectPost} from 'actions/views/rhs';
 import {shouldDisplayConcealedPlaceholder} from 'selectors/burn_on_read_posts';
 import {getIsPostBeingEdited, getIsPostBeingEditedInRHS, isEmbedVisible} from 'selectors/posts';
 
-import FileAttachmentListContainer from 'components/file_attachment_list';
 import MessageWithAdditionalContent from 'components/message_with_additional_content';
 
 import Avatar from 'fusion/components/avatar';
@@ -36,6 +35,7 @@ import type {GlobalState} from 'types/store';
 
 import Acknowledge from './acknowledge';
 import {BurnCover, BurnTag} from './burn_on_read';
+import Files from './content/files';
 import EditForm from './edit_form';
 import MessageMenu from './message_menu';
 import Reactions from './reactions';
@@ -210,9 +210,7 @@ export default function Message({postId, previousPostId, inThread = false, highl
                     />
                 </div>
             )}
-            {post.file_ids && post.file_ids.length > 0 && !deleted && !concealed && (
-                <FileAttachmentListContainer post={post}/>
-            )}
+            {post.file_ids && post.file_ids.length > 0 && !deleted && !concealed && <Files post={post}/>}
             <Acknowledge post={post}/>
             <Reactions postId={post.id}/>
             {!inThread && crt && !post.root_id && <ThreadSummary post={post}/>}
