@@ -222,6 +222,7 @@ const initialComponents: PluginsState['components'] = {
     ChannelToast: [],
     Global: [],
     SidebarChannelLinkLabel: [],
+    SidebarChannelFooter: [],
     SidebarBrowseOrAddChannelMenu: [],
     ChannelTypeOption: [],
     ChannelIconOverride: [],

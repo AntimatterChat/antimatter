@@ -4,10 +4,13 @@
 import React from 'react';
 
 import type {ChannelType} from '@mattermost/types/channels';
+import type {DeepPartial} from '@mattermost/types/utilities';
 
 import SidebarChannel from 'components/sidebar/sidebar_channel/sidebar_channel';
 
 import {renderWithContext, screen} from 'tests/react_testing_utils';
+
+import type {GlobalState} from 'types/store';
 
 jest.mock('components/tours/onboarding_tour', () => ({
     ChannelsAndDirectMessagesTour: () => null,
@@ -145,6 +148,38 @@ describe('components/sidebar/sidebar_channel', () => {
         );
 
         expect(screen.getByRole('listitem')).toHaveClass('expanded');
+    });
+
+    describe('plugin footer', () => {
+        const Footer = ({channel}: {channel: {id: string}}) => <span>{`footer of ${channel.id}`}</span>;
+        const pluginState: DeepPartial<GlobalState> = {
+            plugins: {
+                components: {
+                    SidebarChannelFooter: [{id: 'footer', pluginId: 'plugin', component: Footer}],
+                },
+            },
+        };
+
+        test('should render plugin components below the channel link', () => {
+            renderWithContext(
+                <SidebarChannel {...baseProps}/>,
+                pluginState,
+            );
+
+            expect(screen.getByText('footer of channel_id')).toBeInTheDocument();
+        });
+
+        test('should not render plugin components when collapsed', () => {
+            renderWithContext(
+                <SidebarChannel
+                    {...baseProps}
+                    isCategoryCollapsed={true}
+                />,
+                pluginState,
+            );
+
+            expect(screen.queryByText('footer of channel_id')).not.toBeInTheDocument();
+        });
     });
 
     test('should not be collapsed if channel is current channel', () => {

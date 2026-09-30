@@ -1369,6 +1369,17 @@ export default class PluginRegistry {
     });
 
     /**
+     * Register a component to render in the LHS below a channel's link, e.g. to list the people
+     * in a call of that channel. It receives the channel as the `channel` prop and should render
+     * nothing (return null) for channels it has nothing to show for. It isn't rendered while the
+     * channel is hidden in a collapsed category.
+     * Returns a unique identifier.
+     */
+    registerSidebarChannelFooterComponent = reArg(['component'], ({component}: DPluginComponentProp) => {
+        return this.dispatchPluginComponentAction('SidebarChannelFooter', component);
+    });
+
+    /**
      * Register a component in the "Browse or Create Channels" menu in the sidebar.
      * Accepts the following:
      * - text - A string or React element to display in the menu

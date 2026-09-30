@@ -71,6 +71,7 @@ export type PluginsState = {
         Global: GlobalComponent[];
         ChannelToast: ChannelToastComponent[];
         SidebarChannelLinkLabel: SidebarChannelLinkLabelComponent[];
+        SidebarChannelFooter: SidebarChannelFooterComponent[];
         SidebarBrowseOrAddChannelMenu: SidebarBrowseOrAddChannelMenuAction[];
         ChannelTypeOption: ChannelTypeOptionComponent[];
         ChannelIconOverride: ChannelIconOverrideRegistration[];
@@ -449,6 +450,12 @@ export type BottomTeamSidebarComponent = PluginComponent & {
 };
 
 export type SidebarChannelLinkLabelComponent = PluginComponent & {
+    component: React.ComponentType<BasePluggableProps & {
+        channel: Channel;
+    }>;
+};
+
+export type SidebarChannelFooterComponent = PluginComponent & {
     component: React.ComponentType<BasePluggableProps & {
         channel: Channel;
     }>;

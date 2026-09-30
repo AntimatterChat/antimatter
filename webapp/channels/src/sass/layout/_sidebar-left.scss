@@ -1061,6 +1061,17 @@ $sidebarOpacityAnimationDuration: 0.15s;
         opacity: 0;
     }
 
+    /* grow to show what plugins render below the channel link (registerSidebarChannelFooterComponent) */
+    .SidebarChannel.expanded:has(> .SidebarChannel__footer:not(:empty)) {
+        height: auto !important;
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .SidebarChannel__footer:empty {
+        display: none;
+    }
+
     /* fade out collapsing list item */
     .SidebarChannel.animating .SidebarLink {
         transition-duration: 0.15s;
