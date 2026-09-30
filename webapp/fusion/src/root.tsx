@@ -9,10 +9,15 @@ import './components/initial_loading_screen/initial_loading_screen.css';
 // an environment variable in development, or by a window variable defined in root.html in
 // production. The window variable is updated by the server after configuring SiteURL and
 // restarting or by running the `mattermost config subpath` command.
-window.publicPath = process.env.PUBLIC_PATH || window.publicPath || '/static/'; // eslint-disable-line no-process-env
+//
+// window.publicPath is shared with the classic web app and points at the /static/ root, while the
+// Fusion UI's own assets live in its fusion/ subdirectory.
+const FUSION_ASSETS_DIR = 'fusion/';
+const assetsPath = process.env.PUBLIC_PATH || (window.publicPath || '/static/') + FUSION_ASSETS_DIR; // eslint-disable-line no-process-env
+window.publicPath = assetsPath.substr(0, assetsPath.length - FUSION_ASSETS_DIR.length);
 
 // @ts-expect-error Field used by Webpack internally
-__webpack_public_path__ = window.publicPath;
+__webpack_public_path__ = assetsPath;
 
 // Define the subpath at which Mattermost is running. Extract this from the publicPath above to
 // avoid depending on Redux state before it is even loaded. This actual global export is used

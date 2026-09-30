@@ -32,13 +32,14 @@ const STANDARD_EXCLUDE = [
     /node_modules/,
 ];
 
-let publicPath = '/static/';
+// The Fusion UI is served next to the classic web app, from its own directory under /static/.
+let publicPath = '/static/fusion/';
 
 // Allow overriding the publicPath in dev from the exported SiteURL.
 if (DEV) {
     const siteURL = process.env.MM_SERVICESETTINGS_SITEURL || '';
     if (siteURL) {
-        publicPath = path.join(new url.URL(siteURL).pathname, 'static') + '/';
+        publicPath = path.join(new url.URL(siteURL).pathname, 'static', 'fusion') + '/';
     }
 }
 
@@ -206,7 +207,7 @@ var config = {
         new WebpackPwaManifest({
             name: 'Antimatter',
             short_name: 'Antimatter',
-            start_url: '..',
+            start_url: '../..',
             description: 'Antimatter is an open source, self-hosted Slack-alternative based on Mattermost',
             background_color: '#ffffff',
             inject: true,
@@ -498,12 +499,12 @@ if (targetIsDevServer) {
                     ...proxyToServer,
                 },
             ],
-            port: 9005,
+            port: 9006,
             devMiddleware: {
                 writeToDisk: false,
             },
             historyApiFallback: {
-                index: '/static/root.html',
+                index: '/static/fusion/root.html',
             },
         },
         performance: false,

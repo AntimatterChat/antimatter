@@ -18,6 +18,11 @@ async function watchAll(useRunner) {
         {command: 'npm:run --workspace=channels', name: 'webapp', prefixColor: 'cyan'},
     ];
 
+    // Watching the Fusion UI as well roughly doubles memory usage, so it's opt-in.
+    if (process.env.WATCH_FUSION === 'true') {
+        commands.push({command: 'npm:run --workspace=fusion', name: 'fusion', prefixColor: 'magenta'});
+    }
+
     commands.push(...getPlatformCommands('run'));
 
     let runner;

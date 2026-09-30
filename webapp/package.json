@@ -102,6 +102,7 @@
   },
   "workspaces": [
     "channels",
+    "fusion",
     "platform/client",
     "platform/components",
     "platform/eslint-plugin",

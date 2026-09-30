@@ -39,6 +39,17 @@ async function buildAll() {
         return getExitCode(closeEvents);
     }
 
+    // The Fusion UI is built after the classic web app rather than alongside it to keep peak memory usage down.
+    try {
+        const {result} = concurrently([
+            {command: 'npm:build --workspace=fusion', name: 'fusion', prefixColor: 'magenta'},
+        ]);
+        await result;
+    } catch (closeEvents) {
+        console.error(chalk.inverse.bold.red('Failed to build the Fusion UI'), closeEvents);
+        return getExitCode(closeEvents);
+    }
+
     console.log('\n' + chalk.inverse.bold('Web app built!'));
     return 0;
 }
