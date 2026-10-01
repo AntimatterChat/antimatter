@@ -12,6 +12,7 @@ import {getChannel, getCurrentChannelId, isManuallyUnread} from 'mattermost-redu
 import {getConfig} from 'mattermost-redux/selectors/entities/general';
 import {getCurrentUser, shouldShowTermsOfService} from 'mattermost-redux/selectors/entities/users';
 
+import {followWebUIPreference} from 'actions/web_ui';
 import {getChannelURL} from 'selectors/urls';
 
 import {getHistory} from 'utils/browser_history';
@@ -64,6 +65,7 @@ function mapDispatchToProps(dispatch: Dispatch) {
             getChannelURLAction,
             updateApproximateViewTime,
             getCustomProfileAttributeFields,
+            followWebUIPreference,
         }, dispatch),
     };
 }

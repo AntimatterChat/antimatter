@@ -3,14 +3,16 @@
 
 import React, {useCallback, useState} from 'react';
 import {FormattedMessage} from 'react-intl';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 
 import {getConfig} from 'mattermost-redux/selectors/entities/general';
+
+import {switchWebUI} from 'actions/web_ui';
 
 import SettingItem from 'components/setting_item';
 import SettingItemMax from 'components/setting_item_max';
 
-import {CURRENT_WEB_UI, WebUIs, switchWebUI} from 'utils/web_ui';
+import {CURRENT_WEB_UI, WebUIs} from 'utils/web_ui';
 import type {WebUI} from 'utils/web_ui';
 
 type Props = {
@@ -43,8 +45,9 @@ const title = (
     />
 );
 
-// WebUISection lets users pick the web UI served to this browser, when the server allows it.
+// WebUISection lets users pick the web UI they're served, when the server allows it.
 export default function WebUISection({active, areAllSectionsInactive, updateSection}: Props) {
+    const dispatch = useDispatch();
     const allowed = useSelector(getConfig).AllowUserWebUISelection === 'true';
     const [value, setValue] = useState<WebUI>(CURRENT_WEB_UI);
 
@@ -57,8 +60,8 @@ export default function WebUISection({active, areAllSectionsInactive, updateSect
             updateSection('');
             return;
         }
-        switchWebUI(value);
-    }, [value, updateSection]);
+        dispatch(switchWebUI(value));
+    }, [value, updateSection, dispatch]);
 
     const handleUpdateSection = useCallback((section: string) => {
         setValue(CURRENT_WEB_UI);
@@ -96,7 +99,7 @@ export default function WebUISection({active, areAllSectionsInactive, updateSect
             <div className='mt-5'>
                 <FormattedMessage
                     id='user.settings.display.webUI.description'
-                    defaultMessage='Choose the interface used in this browser. The page reloads to apply the change.'
+                    defaultMessage='Choose the interface you use, in every browser you sign in from. The page reloads to apply the change.'
                 />
             </div>
         </fieldset>

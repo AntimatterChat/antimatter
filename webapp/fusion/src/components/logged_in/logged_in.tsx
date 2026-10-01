@@ -39,6 +39,7 @@ export type Props = {
         getChannelURLAction: (channelId: string, teamId: string, url: string) => void;
         updateApproximateViewTime: (channelId: string) => void;
         getCustomProfileAttributeFields: () => void;
+        followWebUIPreference: () => void;
     };
     showTermsOfService: boolean;
     location: {
@@ -71,6 +72,9 @@ export default class LoggedIn extends React.PureComponent<Props> {
 
         // Fetch custom profile attributes for authenticated user
         this.props.actions.getCustomProfileAttributeFields();
+
+        // Serve this browser the web UI the user picked, which may be another one than this page's
+        this.props.actions.followWebUIPreference();
 
         // Make sure the websockets close and reset version
         window.addEventListener('beforeunload', this.handleBeforeUnload);

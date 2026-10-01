@@ -50,6 +50,7 @@ describe('components/logged_in/LoggedIn', () => {
             getChannelURLAction: jest.fn(),
             updateApproximateViewTime: jest.fn(),
             getCustomProfileAttributeFields: jest.fn(),
+            followWebUIPreference: jest.fn(),
         },
         isCurrentChannelManuallyUnread: false,
         showTermsOfService: false,
@@ -209,5 +210,16 @@ describe('components/logged_in/LoggedIn', () => {
 
             expect(props.actions.getCustomProfileAttributeFields).toHaveBeenCalledTimes(1);
         });
+    });
+
+    it('should follow the web UI preference on mount', () => {
+        const props = {
+            ...baseProps,
+            actions: {...baseProps.actions, followWebUIPreference: jest.fn()},
+        };
+
+        renderWithContext(<LoggedIn {...props}>{children}</LoggedIn>);
+
+        expect(props.actions.followWebUIPreference).toHaveBeenCalledTimes(1);
     });
 });

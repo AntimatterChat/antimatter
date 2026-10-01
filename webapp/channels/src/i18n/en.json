@@ -3384,8 +3384,8 @@
     "description": "Help text for the setting that lets users' message drafts sync to the server, on a System Console site configuration page."
   },
   "admin.customization.allowUserWebUISelectionDesc": {
-    "defaultMessage": "When true, users can switch between the classic and Fusion interfaces in **Settings > Display > Web interface**, or by opening any page with `?webui=classic` or `?webui=fusion`. Their choice applies to the browser they made it in.",
-    "description": ""
+    "defaultMessage": "When true, users can switch between the classic and Fusion interfaces in **Settings > Display > Web interface**, or by opening any page with `?webui=classic` or `?webui=fusion`. Their choice follows them to every browser they sign in from.",
+    "description": "Help text for the setting that lets users choose their web interface, on the System Console's Customization page. Keep the markdown, the menu path and the `?webui=` examples as they are."
   },
   "admin.customization.allowUserWebUISelectionTitle": {
     "defaultMessage": "Allow Users to Choose Their Web Interface:",
@@ -29556,8 +29556,8 @@
     "description": ""
   },
   "user.settings.display.webUI.description": {
-    "defaultMessage": "Choose the interface used in this browser. The page reloads to apply the change.",
-    "description": ""
+    "defaultMessage": "Choose the interface you use, in every browser you sign in from. The page reloads to apply the change.",
+    "description": "Help text under the Classic and Fusion choices of the Web interface setting in Settings > Display."
   },
   "user.settings.display.webUI.fusion": {
     "defaultMessage": "Fusion (preview)",

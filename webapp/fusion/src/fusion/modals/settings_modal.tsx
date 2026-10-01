@@ -16,13 +16,15 @@ import type {Theme} from 'mattermost-redux/selectors/entities/preferences';
 import {getCurrentUser} from 'mattermost-redux/selectors/entities/users';
 import {isSystemAdmin} from 'mattermost-redux/utils/user_utils';
 
+import {switchWebUI} from 'actions/web_ui';
+
 import Avatar from 'fusion/components/avatar';
 import Icon from 'fusion/components/icon';
 import {Dialog} from 'fusion/components/layer';
 import {am} from 'fusion/utils/class_names';
 import {openClassicUserSettings} from 'fusion/utils/modals';
 import {getHistory} from 'utils/browser_history';
-import {CURRENT_WEB_UI, WebUIs, switchWebUI} from 'utils/web_ui';
+import {CURRENT_WEB_UI, WebUIs} from 'utils/web_ui';
 
 import type {GlobalState} from 'types/store';
 
@@ -263,11 +265,12 @@ function AppearancePane() {
 
 function InterfacePane() {
     const {formatMessage} = useIntl();
+    const dispatch = useDispatch();
     const allowed = useSelector(getConfig).AllowUserWebUISelection === 'true';
     return (
         <>
             <h2>{formatMessage({id: 'fusion.settings.interface', defaultMessage: 'Web interface'})}</h2>
-            <p className={am('lead')}>{formatMessage({id: 'fusion.settings.interfaceLead', defaultMessage: 'Antimatter has two web interfaces. Your choice applies to this browser.'})}</p>
+            <p className={am('lead')}>{formatMessage({id: 'fusion.settings.interfaceLead', defaultMessage: 'Antimatter has two web interfaces. Your choice applies to every browser you sign in from.'})}</p>
             {allowed ? (
                 <div
                     className={am('seg')}
@@ -278,7 +281,7 @@ function InterfacePane() {
                             key={ui}
                             type='button'
                             className={am({on: ui === CURRENT_WEB_UI})}
-                            onClick={() => ui !== CURRENT_WEB_UI && switchWebUI(ui)}
+                            onClick={() => ui !== CURRENT_WEB_UI && dispatch(switchWebUI(ui))}
                         >
                             {ui === WebUIs.CLASSIC ? formatMessage({id: 'fusion.settings.classic', defaultMessage: 'Classic'}) : formatMessage({id: 'fusion.settings.fusion', defaultMessage: 'Fusion (preview)'})}
                         </button>

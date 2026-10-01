@@ -2368,7 +2368,7 @@ const AdminDefinition: AdminDefinitionType = {
                             type: 'bool',
                             key: 'ServiceSettings.AllowUserWebUISelection',
                             label: defineMessage({id: 'admin.customization.allowUserWebUISelectionTitle', defaultMessage: 'Allow Users to Choose Their Web Interface:'}),
-                            help_text: defineMessage({id: 'admin.customization.allowUserWebUISelectionDesc', defaultMessage: 'When true, users can switch between the classic and Fusion interfaces in **Settings > Display > Web interface**, or by opening any page with `?webui=classic` or `?webui=fusion`. Their choice applies to the browser they made it in.'}),
+                            help_text: defineMessage({id: 'admin.customization.allowUserWebUISelectionDesc', defaultMessage: 'When true, users can switch between the classic and Fusion interfaces in **Settings > Display > Web interface**, or by opening any page with `?webui=classic` or `?webui=fusion`. Their choice follows them to every browser they sign in from.'}),
                             isDisabled: it.not(it.userHasWritePermissionOnResource(RESOURCE_KEYS.SITE.CUSTOMIZATION)),
                         },
                         {
