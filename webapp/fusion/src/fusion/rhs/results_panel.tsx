@@ -1,23 +1,25 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 
-import React from 'react';
+import React, {useRef} from 'react';
 import {useIntl} from 'react-intl';
 import {shallowEqual, useDispatch, useSelector} from 'react-redux';
 
 import type {Post} from '@mattermost/types/posts';
 
+import {getMorePostsForSearch} from 'mattermost-redux/actions/search';
 import {getAllChannels} from 'mattermost-redux/selectors/entities/channels';
 import {getCurrentTeam} from 'mattermost-redux/selectors/entities/teams';
 
 import {closeRightHandSide} from 'actions/views/rhs';
-import {getSearchTerms} from 'selectors/rhs';
+import {getSearchTeam, getSearchTerms} from 'selectors/rhs';
 
 import Icon from 'fusion/components/icon';
 import {useDisplayName, useUser} from 'fusion/hooks/users';
 import {useWhen} from 'fusion/messages/time';
 import {am} from 'fusion/utils/class_names';
 import {permalinkPath} from 'fusion/utils/paths';
+import {plainText} from 'fusion/utils/plain_text';
 import {getHistory} from 'utils/browser_history';
 import {RHSStates} from 'utils/constants';
 
@@ -39,6 +41,12 @@ function Result({post, terms}: {post: Post; terms: string}) {
     const channel = useSelector((state: GlobalState) => getAllChannels(state)[post.channel_id]);
     const team = useSelector(getCurrentTeam);
     const direct = channel && (channel.type === 'D' || channel.type === 'G');
+    let icon: 'chat' | 'lock' | 'hash' = 'hash';
+    if (direct) {
+        icon = 'chat';
+    } else if (channel?.type === 'P') {
+        icon = 'lock';
+    }
     return (
         <button
             className={am('result')}
@@ -46,13 +54,13 @@ function Result({post, terms}: {post: Post; terms: string}) {
         >
             <span className={am('where')}>
                 <Icon
-                    name={direct ? 'chat' : 'hash'}
+                    name={icon}
                     size='xs'
                 />
                 {`${channel?.display_name || ''}${post.root_id ? ' · thread' : ''} · ${when(post.create_at)}`}
             </span>
             <b>{name}</b>
-            <div>{highlight(post.message, terms)}</div>
+            <div>{highlight(plainText(post.message), terms)}</div>
         </button>
     );
 }
@@ -75,6 +83,22 @@ export default function ResultsPanel({rhsState}: {rhsState: string}) {
     });
     const posts = useSelector((state: GlobalState) => ids.map((id) => state.entities.posts.posts[id]).filter(Boolean), shallowEqual);
     const searching = useSelector((state: GlobalState) => state.entities.search.isSearchingTerm || state.views.rhs.isSearchingFlaggedPost || state.views.rhs.isSearchingPinnedPost);
+
+    // Search results and mentions come a page at a time: the next page loads near the bottom.
+    const pagedTeam = useSelector((state: GlobalState) => (rhsState === RHSStates.MENTION ? '' : getSearchTeam(state)));
+    const paged = rhsState === RHSStates.SEARCH || rhsState === RHSStates.MENTION;
+    const atEnd = useSelector((state: GlobalState) => state.entities.search.current[pagedTeam || 'ALL_TEAMS']?.isEnd ?? true);
+    const gettingMore = useSelector((state: GlobalState) => state.entities.search.isSearchGettingMore);
+    const bodyRef = useRef<HTMLDivElement>(null);
+    const onScroll = () => {
+        const body = bodyRef.current;
+        if (!paged || atEnd || gettingMore || searching || !body) {
+            return;
+        }
+        if (body.scrollHeight - body.scrollTop - body.clientHeight < 300) {
+            dispatch(getMorePostsForSearch(pagedTeam));
+        }
+    };
 
     const title = {
         [RHSStates.SEARCH]: formatMessage({id: 'fusion.results.search', defaultMessage: 'Search results'}),
@@ -99,7 +123,11 @@ export default function ResultsPanel({rhsState}: {rhsState: string}) {
                     <Icon name='x'/>
                 </button>
             </div>
-            <div className={am('rhs-body')}>
+            <div
+                ref={bodyRef}
+                className={am('rhs-body')}
+                onScroll={onScroll}
+            >
                 {searching && !posts.length && <div className={am('empty')}>{formatMessage({id: 'fusion.results.searching', defaultMessage: 'Searching…'})}</div>}
                 {!searching && !posts.length && <div className={am('empty')}>{formatMessage({id: 'fusion.results.none', defaultMessage: 'No messages match. Try another word or a filter like from: or in:.'})}</div>}
                 {posts.map((post) => (
@@ -109,6 +137,7 @@ export default function ResultsPanel({rhsState}: {rhsState: string}) {
                         terms={rhsState === RHSStates.SEARCH ? terms : ''}
                     />
                 ))}
+                {paged && gettingMore && <div className={am('empty')}>{formatMessage({id: 'fusion.results.more', defaultMessage: 'Loading more…'})}</div>}
             </div>
         </>
     );

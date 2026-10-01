@@ -12,7 +12,7 @@ import {getChannelViewPanel} from 'selectors/channel_view_panel';
 
 import {useIsVoiceChannel} from 'fusion/calls/hooks';
 import VoiceView from 'fusion/calls/voice_view';
-import Composer from 'fusion/composer/composer';
+import Composer, {DROP_FILES_EVENT} from 'fusion/composer/composer';
 import MessageList from 'fusion/messages/message_list';
 import {am} from 'fusion/utils/class_names';
 
@@ -20,6 +20,7 @@ import type {GlobalState} from 'types/store';
 
 import ChannelHeader from './channel_header';
 import ChannelViewPanel from './channel_view_panel';
+import SharedBanner from './shared_banner';
 
 // ChannelView is a conversation: header, messages and composer.
 export default function ChannelView() {
@@ -82,6 +83,7 @@ export default function ChannelView() {
     return (
         <>
             <ChannelHeader channel={channel}/>
+            <SharedBanner channel={channel}/>
             {panel && (
                 <ChannelViewPanel
                     registration={panel}
@@ -95,6 +97,17 @@ export default function ChannelView() {
                     ref={viewRef}
                     className={am('view')}
                     id='am-view'
+                    onDragOver={(e) => {
+                        if (e.dataTransfer.types.includes('Files')) {
+                            e.preventDefault();
+                        }
+                    }}
+                    onDrop={(e) => {
+                        if (e.dataTransfer.files.length && !archived && !deactivated) {
+                            e.preventDefault();
+                            window.dispatchEvent(new CustomEvent(DROP_FILES_EVENT, {detail: Array.from(e.dataTransfer.files)}));
+                        }
+                    }}
                 >
                     <MessageList
                         key={channel.id}

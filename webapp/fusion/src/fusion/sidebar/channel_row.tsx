@@ -84,7 +84,7 @@ export default function ChannelRow({channelId, collapsed}: Props) {
                     {muted && (
                         <span
                             className={am('mute-ic')}
-                            title={formatMessage({id: 'fusion.sidebar.muted', defaultMessage: 'Muted'})}
+                            title={formatMessage({id: 'fusion.sidebar.mutedTitle', defaultMessage: 'Muted until you turn it back on'})}
                         >
                             <Icon
                                 name='bell-off'
@@ -92,7 +92,7 @@ export default function ChannelRow({channelId, collapsed}: Props) {
                             />
                         </span>
                     )}
-                    {unread.mentions > 0 && <span className={am('badge')}>{unread.mentions}</span>}
+                    {unread.mentions > 0 && !muted && <span className={am('badge')}>{unread.mentions}</span>}
                 </Link>
                 <div className={am('ch-actions', {open: menu !== null})}>
                     <button

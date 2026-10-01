@@ -26,16 +26,40 @@ import {useGlobalSearch} from 'fusion/shell/global_search_context';
 import ChannelIcon from 'fusion/sidebar/channel_icon';
 import {am} from 'fusion/utils/class_names';
 import {channelPath, permalinkPath} from 'fusion/utils/paths';
+import {plainText} from 'fusion/utils/plain_text';
 import {getHistory} from 'utils/browser_history';
 
 import type {GlobalState} from 'types/store';
+
+import {addRecentSearch, getRecentSearches} from './recent_searches';
 
 type Filter = 'all' | 'messages' | 'channels' | 'people';
 type Result =
     | {kind: 'channel'; channel: Channel} |
     {kind: 'user'; user: UserProfile} |
     {kind: 'message'; post: Post} |
+    {kind: 'recent'; q: string} |
     {kind: 'all'};
+
+const STATUS_LABELS: Record<string, {id: string; defaultMessage: string}> = {
+    online: {id: 'fusion.status.online', defaultMessage: 'Online'},
+    away: {id: 'fusion.status.away', defaultMessage: 'Away'},
+    dnd: {id: 'fusion.status.dnd', defaultMessage: 'Do not disturb'},
+    offline: {id: 'fusion.status.offline', defaultMessage: 'Offline'},
+};
+
+// A person's custom status text, as the mockup's people rows show it.
+function customStatusText(user: UserProfile): string {
+    try {
+        const custom = user.props?.customStatus ? JSON.parse(user.props.customStatus as string) : null;
+        if (!custom?.text || (custom.duration !== '' && custom.expires_at && Date.parse(custom.expires_at) <= Date.now())) {
+            return '';
+        }
+        return custom.text;
+    } catch {
+        return '';
+    }
+}
 
 function Mark({text, q}: {text: string; q: string}) {
     if (!q) {
@@ -59,6 +83,7 @@ export default function GlobalSearch() {
     const channels = useSelector(getAllChannels);
     const memberships = useSelector(getMyChannelMemberships);
     const users = useSelector(getUsers);
+    const statuses = useSelector((state: GlobalState) => state.entities.users.statuses);
     const teamsById = useSelector((state: GlobalState) => (id: string) => getTeam(state, id));
     const [query, setQuery] = useState('');
     const [filter, setFilter] = useState<Filter>('all');
@@ -109,6 +134,7 @@ export default function GlobalSearch() {
         }
         groups.push(['', [{kind: 'all'}]]);
     } else {
+        groups.push([formatMessage({id: 'fusion.gs.recentSearches', defaultMessage: 'Recent searches'}), getRecentSearches().map((recentQ) => ({kind: 'recent', q: recentQ}))]);
         const recent = [...myChannels].sort((a, b) => (memberships[b.id]?.last_viewed_at || 0) - (memberships[a.id]?.last_viewed_at || 0)).slice(0, 8);
         groups.push([formatMessage({id: 'fusion.gs.recent', defaultMessage: 'Recent'}), recent.map((channel) => ({kind: 'channel', channel}))]);
     }
@@ -133,7 +159,9 @@ export default function GlobalSearch() {
                 getHistory().push(permalinkPath(team.name, r.post.id));
             }
         } else {
-            dispatch(updateSearchTerms(q));
+            const terms = r.kind === 'recent' ? r.q : q;
+            addRecentSearch(terms);
+            dispatch(updateSearchTerms(terms));
             dispatch(showSearchResults());
         }
     };
@@ -188,7 +216,7 @@ export default function GlobalSearch() {
                                 text={u.username}
                                 q={q}
                             />
-                            {u.position ? ` · ${u.position}` : ''}
+                            {[formatMessage(STATUS_LABELS[statuses[u.id]] || STATUS_LABELS.offline), customStatusText(u)].filter(Boolean).map((part) => ` · ${part}`).join('')}
                         </span>
                     </span>
                     <span className={am('kind')}>{formatMessage({id: 'fusion.gs.kindPerson', defaultMessage: 'Person'})}</span>
@@ -198,6 +226,13 @@ export default function GlobalSearch() {
         if (r.kind === 'message') {
             const author = users[r.post.user_id];
             const channel = channels[r.post.channel_id];
+            const direct = channel && (channel.type === 'D' || channel.type === 'G');
+            const where = channel ? (direct ? '' : '#') + channel.display_name : '';
+
+            // The snippet starts near the match, as the mockup's.
+            const text = plainText(r.post.message, 2000);
+            const at = text.toLowerCase().indexOf(q.toLowerCase());
+            const snippet = at > 40 ? '…' + text.slice(at - 30, at + 130) : text.slice(0, 160);
             return (
                 <>
                     <Avatar userId={r.post.user_id}/>
@@ -208,17 +243,29 @@ export default function GlobalSearch() {
                                 className={am('sub')}
                                 style={{display: 'inline'}}
                             >
-                                {` · ${channel?.display_name || ''} · ${when(r.post.create_at)}`}
+                                {' ' + formatMessage({id: 'fusion.gs.messageWhere', defaultMessage: 'in {where}'}, {where}) + (r.post.root_id ? ' · ' + formatMessage({id: 'fusion.gs.thread', defaultMessage: 'thread'}) : '') + ` · ${when(r.post.create_at)}`}
                             </span>
                         </b>
                         <span className={am('sub')}>
                             <Mark
-                                text={r.post.message.slice(0, 160)}
+                                text={snippet}
                                 q={q}
                             />
                         </span>
                     </span>
                     <span className={am('kind')}>{formatMessage({id: 'fusion.gs.kindMessage', defaultMessage: 'Message'})}</span>
+                </>
+            );
+        }
+        if (r.kind === 'recent') {
+            return (
+                <>
+                    <span className={am('gi')}><Icon name='clock'/></span>
+                    <span style={{minWidth: 0}}>
+                        <b>{r.q}</b>
+                        <span className={am('sub')}>{formatMessage({id: 'fusion.gs.recentSub', defaultMessage: 'Search again in the side panel'})}</span>
+                    </span>
+                    <span className={am('kind')}>{formatMessage({id: 'fusion.gs.kindSearch', defaultMessage: 'Search'})}</span>
                 </>
             );
         }
@@ -247,7 +294,7 @@ export default function GlobalSearch() {
                 <input
                     ref={inputRef}
                     value={query}
-                    placeholder={formatMessage({id: 'fusion.gs.placeholder', defaultMessage: 'Search messages, channels and people'})}
+                    placeholder={formatMessage({id: 'fusion.gs.placeholder', defaultMessage: 'Search messages, channels, people and more'})}
                     aria-label={formatMessage({id: 'fusion.gs.label', defaultMessage: 'Search everything'})}
                     autoComplete='off'
                     role='combobox'

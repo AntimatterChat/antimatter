@@ -12,14 +12,13 @@ import {haveICurrentTeamPermission} from 'mattermost-redux/selectors/entities/ro
 import {getMainMenuPluginComponents} from 'selectors/plugins';
 
 import {Popover} from 'fusion/components/layer';
-import {Flyout, MenuItem, MenuSeparator} from 'fusion/components/menu';
+import {Flyout, MenuHeading, MenuItem, MenuSeparator} from 'fusion/components/menu';
+import {useDialogs} from 'fusion/shell/dialogs_context';
+import {useSettings} from 'fusion/shell/settings_context';
 import {
     openBrowseChannels,
-    openClassicUserSettings,
-    openCreateCategory,
     openInvitePeople,
     openLeaveTeam,
-    openNewChannel,
     openTeamMembers,
     openTeamSettings,
 } from 'fusion/utils/modals';
@@ -36,11 +35,26 @@ type Props = {
 export default function ServerMenu({anchor, width, onClose}: Props) {
     const {formatMessage} = useIntl();
     const dispatch = useDispatch();
+    const dialogs = useDialogs();
     const config = useSelector(getConfig);
     const canManage = useSelector((state: GlobalState) => haveICurrentTeamPermission(state, Permissions.MANAGE_TEAM));
     const canAddUsers = useSelector((state: GlobalState) => haveICurrentTeamPermission(state, Permissions.ADD_USER_TO_TEAM));
     const canInviteGuests = useSelector((state: GlobalState) => haveICurrentTeamPermission(state, Permissions.INVITE_GUEST)) && config.EnableGuestAccounts === 'true';
     const pluginItems = useSelector(getMainMenuPluginComponents);
+    const plugins = useSelector((state: GlobalState) => state.plugins.plugins);
+    const settings = useSettings();
+
+    // Integrations' items, grouped under each plugin's name as in the mockup.
+    const pluginGroups: Array<[string, typeof pluginItems]> = [];
+    for (const item of pluginItems) {
+        const name = plugins[item.pluginId]?.name || formatMessage({id: 'fusion.serverMenu.otherPlugins', defaultMessage: 'Other'});
+        const group = pluginGroups.find(([n]) => n === name);
+        if (group) {
+            group[1].push(item);
+        } else {
+            pluginGroups.push([name, [item]]);
+        }
+    }
 
     const run = (action: () => void) => () => {
         action();
@@ -81,12 +95,12 @@ export default function ServerMenu({anchor, width, onClose}: Props) {
             <MenuItem
                 icon='plus'
                 label={formatMessage({id: 'fusion.serverMenu.createChannel', defaultMessage: 'Create channel'})}
-                onClick={run(() => dispatch(openNewChannel()))}
+                onClick={run(() => dialogs.createChannel())}
             />
             <MenuItem
                 icon='folder'
                 label={formatMessage({id: 'fusion.serverMenu.createCategory', defaultMessage: 'Create category'})}
-                onClick={run(() => dispatch(openCreateCategory()))}
+                onClick={run(() => dialogs.createCategory())}
             />
             <MenuItem
                 icon='compass'
@@ -97,7 +111,7 @@ export default function ServerMenu({anchor, width, onClose}: Props) {
             <MenuItem
                 icon='bell'
                 label={formatMessage({id: 'fusion.serverMenu.notifications', defaultMessage: 'Notification settings'})}
-                onClick={run(() => dispatch(openClassicUserSettings('notifications')))}
+                onClick={run(() => settings.open('notifications'))}
             />
             {pluginItems.length > 0 && (
                 <>
@@ -107,15 +121,20 @@ export default function ServerMenu({anchor, width, onClose}: Props) {
                         label={formatMessage({id: 'fusion.serverMenu.more', defaultMessage: 'More actions'})}
                         menuLabel={formatMessage({id: 'fusion.serverMenu.moreLabel', defaultMessage: 'More actions from plugins'})}
                     >
-                        {pluginItems.map((item) => (
-                            <button
-                                key={item.id}
-                                type='button'
-                                role='menuitem'
-                                onClick={run(() => item.action())}
-                            >
-                                {item.text}
-                            </button>
+                        {pluginGroups.map(([name, items]) => (
+                            <React.Fragment key={name}>
+                                {pluginGroups.length > 1 && <MenuHeading>{name}</MenuHeading>}
+                                {items.map((item) => (
+                                    <button
+                                        key={item.id}
+                                        type='button'
+                                        role='menuitem'
+                                        onClick={run(() => item.action())}
+                                    >
+                                        {item.text}
+                                    </button>
+                                ))}
+                            </React.Fragment>
                         ))}
                     </Flyout>
                 </>

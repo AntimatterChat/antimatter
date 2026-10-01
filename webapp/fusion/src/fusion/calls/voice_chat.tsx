@@ -132,7 +132,6 @@ export function VoiceChatPanel({channelId}: {channelId: string}) {
                 <Composer
                     key={channelId}
                     channelId={channelId}
-                    compact={true}
                     placeholder={formatMessage({id: 'fusion.calls.chatPlaceholder', defaultMessage: 'Message {name}'}, {name: channel.display_name})}
                 />
             )}

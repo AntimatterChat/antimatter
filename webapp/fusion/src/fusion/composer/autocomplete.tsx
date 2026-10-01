@@ -55,8 +55,14 @@ type Kind = 'mention' | 'channel' | 'emoji' | 'command';
 type Row = {term: string; item: unknown};
 
 const SPECIAL_MENTIONS = ['here', 'channel', 'all'];
+const SPECIAL_DESCRIPTIONS: Record<string, {id: string; defaultMessage: string}> = {
+    here: {id: 'fusion.ac.here', defaultMessage: 'Notifies everyone online in this channel'},
+    channel: {id: 'fusion.ac.channel', defaultMessage: 'Notifies everyone in this channel'},
+    all: {id: 'fusion.ac.all', defaultMessage: 'Notifies everyone in this channel'},
+};
 
 function RowContent({kind, row}: {kind: Kind; row: Row}) {
+    const {formatMessage} = useIntl();
     const item = row.item as Record<string, unknown>;
     if (kind === 'mention' && item && typeof item.username === 'string' && item.id) {
         const user = item as unknown as UserProfile;
@@ -65,6 +71,7 @@ function RowContent({kind, row}: {kind: Kind; row: Row}) {
                 <>
                     <span className={am('cmd-ic')}>{'@'}</span>
                     <span className={am('main')}>{`@${user.username}`}</span>
+                    <span className={am('desc')}>{formatMessage(SPECIAL_DESCRIPTIONS[user.username])}</span>
                 </>
             );
         }
@@ -76,7 +83,21 @@ function RowContent({kind, row}: {kind: Kind; row: Row}) {
                     status={true}
                 />
                 <span className={am('main')}>{`@${user.username}`}</span>
-                <span className={am('desc')}>{[user.first_name, user.last_name].filter(Boolean).join(' ') || user.nickname}</span>
+                <span className={am('desc')}>
+                    {[user.first_name, user.last_name].filter(Boolean).join(' ') || user.nickname}
+                    {user.is_bot ? ' · ' + formatMessage({id: 'fusion.ac.bot', defaultMessage: 'bot'}) : ''}
+                </span>
+            </>
+        );
+    }
+
+    // A user group (@group).
+    if (kind === 'mention' && item && typeof item.name === 'string' && typeof item.display_name === 'string') {
+        return (
+            <>
+                <span className={am('cmd-ic')}>{'@'}</span>
+                <span className={am('main')}>{`@${item.name}`}</span>
+                <span className={am('desc')}>{item.display_name}</span>
             </>
         );
     }
@@ -85,8 +106,8 @@ function RowContent({kind, row}: {kind: Kind; row: Row}) {
         return (
             <>
                 <span className={am('cmd-ic')}><ChannelIcon channel={channel}/></span>
-                <span className={am('main')}>{`~${channel.name}`}</span>
-                <span className={am('desc')}>{channel.display_name}</span>
+                <span className={am('main')}>{`~${channel.display_name || channel.name}`}</span>
+                <span className={am('desc')}>{channel.purpose || channel.header || ''}</span>
             </>
         );
     }
@@ -109,7 +130,16 @@ function RowContent({kind, row}: {kind: Kind; row: Row}) {
                 <span className={am('cmd-ic')}>{'/'}</span>
                 <span className={am('main')}>{String(item.Suggestion || item.Complete)}</span>
                 <span className={am('hint')}>{String(item.Hint || '')}</span>
-                <span className={am('desc')}>{String(item.Description || '')}</span>
+                <span className={am('desc')}>
+                    {typeof item.IconData === 'string' && (/^(data:|https?:)/).test(item.IconData) && (
+                        <img
+                            className={am('plug-ic')}
+                            src={item.IconData}
+                            alt=''
+                        />
+                    )}
+                    {String(item.Description || '')}
+                </span>
             </>
         );
     }

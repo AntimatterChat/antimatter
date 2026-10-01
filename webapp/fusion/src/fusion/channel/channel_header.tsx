@@ -15,15 +15,18 @@ import {getIsRhsOpen} from 'selectors/rhs';
 import {VoiceChatToggle} from 'fusion/calls/voice_chat';
 import Avatar from 'fusion/components/avatar';
 import Icon from 'fusion/components/icon';
+import {useUnreadMentions} from 'fusion/hooks/mentions';
 import CollectionsPopover from 'fusion/popovers/collections_popover';
 import StatusPopover from 'fusion/popovers/status_popover';
-import {useLayout} from 'fusion/shell/layout_context';
+import {addRecentSearch, getRecentSearches} from 'fusion/search/recent_searches';
+import {isPhoneLayout, useLayout} from 'fusion/shell/layout_context';
 import ChannelIcon from 'fusion/sidebar/channel_icon';
 import {am} from 'fusion/utils/class_names';
 
 import type {GlobalState} from 'types/store';
 
 import CallButton from './call_button';
+import HeaderTopic from './header_topic';
 
 const FILTERS: Array<[string, {id: string; defaultMessage: string}]> = [
     ['from:', {id: 'fusion.search.from', defaultMessage: 'a person, e.g. from:@marie'}],
@@ -46,6 +49,7 @@ export default function ChannelHeader({channel}: {channel: Channel}) {
     const layout = useLayout();
     const teammate = useSelector((state: GlobalState) => (channel.type === 'D' ? getDirectTeammate(state, channel.id) : undefined));
     const rhsOpen = useSelector(getIsRhsOpen);
+    const mentions = useUnreadMentions();
     const [query, setQuery] = useState('');
     const [searchFocused, setSearchFocused] = useState(false);
     const [collections, setCollections] = useState(false);
@@ -55,7 +59,6 @@ export default function ChannelHeader({channel}: {channel: Channel}) {
     const meRef = useRef<HTMLButtonElement>(null);
 
     const direct = channel.type === 'D' || channel.type === 'G';
-    const topic = channel.header || channel.purpose;
     const placeholder = direct ? formatMessage({id: 'fusion.header.searchConversation', defaultMessage: 'Search this conversation'}) : formatMessage({id: 'fusion.header.searchChannel', defaultMessage: 'Search #{name}'}, {name: channel.display_name});
 
     const search = (e: React.FormEvent) => {
@@ -65,6 +68,7 @@ export default function ChannelHeader({channel}: {channel: Channel}) {
             return;
         }
         const scoped = (/(^|\s)(in|from):/).test(q) ? q : `${scopeOf(channel, teammate?.username)} ${q}`;
+        addRecentSearch(q);
         dispatch(updateSearchTerms(scoped));
         dispatch(showSearchResults());
         setSearchFocused(false);
@@ -91,7 +95,7 @@ export default function ChannelHeader({channel}: {channel: Channel}) {
                 {channel.type === 'G' && <span className={am('av', 'group', 'sm')}>{channel.display_name.split(',').length}</span>}
                 {!direct && <ChannelIcon channel={channel}/>}
                 <h1>{channel.display_name}</h1>
-                {topic && <span className={am('topic')}>{topic}</span>}
+                <HeaderTopic channel={channel}/>
             </div>
             <form
                 className={am('search')}
@@ -137,6 +141,24 @@ export default function ChannelHeader({channel}: {channel: Channel}) {
                                 <span>{formatMessage(hint)}</span>
                             </button>
                         ))}
+                        {getRecentSearches().length > 0 && <h4>{formatMessage({id: 'fusion.search.recent', defaultMessage: 'Recent'})}</h4>}
+                        {getRecentSearches().map((recent) => (
+                            <button
+                                key={recent}
+                                type='button'
+                                onMouseDown={(e) => {
+                                    e.preventDefault();
+                                    setQuery(recent);
+                                    inputRef.current?.focus();
+                                }}
+                            >
+                                <Icon
+                                    name='clock'
+                                    size='xs'
+                                />
+                                <span>{recent}</span>
+                            </button>
+                        ))}
                     </div>
                 )}
             </form>
@@ -151,14 +173,22 @@ export default function ChannelHeader({channel}: {channel: Channel}) {
                     onClick={() => setCollections(!collections)}
                 >
                     <Icon name='inbox'/>
+                    {mentions > 0 && <span className={am('dot')}/>}
                 </button>
                 <VoiceChatToggle channel={channel}/>
                 <button
-                    className={am('icon-btn', 'wide-only', {on: layout.showMembers && !rhsOpen})}
+                    className={am('icon-btn', {on: layout.showMembers && !rhsOpen})}
                     title={formatMessage({id: 'fusion.header.members', defaultMessage: 'Member list'})}
                     aria-label={formatMessage({id: 'fusion.header.membersToggle', defaultMessage: 'Toggle member list'})}
                     onClick={() => {
-                        if (rhsOpen) {
+                        // On a phone the member list lives in the right-hand drawer, with the app rail.
+                        if (isPhoneLayout()) {
+                            if (layout.rightOpen) {
+                                layout.setRightOpen(false);
+                            } else {
+                                layout.openRightDrawer();
+                            }
+                        } else if (rhsOpen) {
                             dispatch(closeRightHandSide());
                             if (!layout.showMembers) {
                                 layout.toggleMembers();

@@ -9,11 +9,13 @@ import type {FileInfo} from '@mattermost/types/files';
 import type {PostPriority} from '@mattermost/types/posts';
 
 import {Posts} from 'mattermost-redux/constants';
+import {getConfig} from 'mattermost-redux/selectors/entities/general';
 import {isPostPriorityEnabled} from 'mattermost-redux/selectors/entities/posts';
 import {getBool} from 'mattermost-redux/selectors/entities/preferences';
+import {isScheduledPostsEnabled} from 'mattermost-redux/selectors/entities/scheduled_posts';
 
 import {uploadFile} from 'actions/file_actions';
-import {onSubmit} from 'actions/views/create_comment';
+import {editLatestPost, onSubmit} from 'actions/views/create_comment';
 import {updateDraft} from 'actions/views/drafts';
 import {isBurnOnReadEnabled} from 'selectors/burn_on_read';
 import {makeGetDraft} from 'selectors/drafts';
@@ -21,7 +23,10 @@ import {makeGetDraft} from 'selectors/drafts';
 import Icon from 'fusion/components/icon';
 import {Popover} from 'fusion/components/layer';
 import {MenuHeading, MenuItem, MenuSeparator} from 'fusion/components/menu';
+import {useBurnDuration} from 'fusion/messages/burn_on_read';
 import EmojiPicker from 'fusion/popovers/emoji_picker';
+import {MENTION_EVENT} from 'fusion/popovers/user_menu';
+import {useToast} from 'fusion/shell/toast_context';
 import {am} from 'fusion/utils/class_names';
 import Constants, {StoragePrefixes} from 'utils/constants';
 import {generateId} from 'utils/utils';
@@ -32,6 +37,9 @@ import type {PostDraft} from 'types/store/draft';
 import Autocomplete from './autocomplete';
 import type {AutocompleteHandle} from './autocomplete';
 import {FORMATS, applyFormat} from './formats';
+import {useShowFormatting} from './formatting_preference';
+import {SchedulePopover, ScheduledNote} from './schedule';
+import SleepNote from './sleep_note';
 
 type Props = {
     channelId: string;
@@ -39,27 +47,32 @@ type Props = {
     // Replies in a thread have a root; messages to the channel don't.
     rootId?: string;
     placeholder: string;
-
-    // The thread panel's composer keeps the formatting bar hidden, like the mockup's pop-out thread window.
-    compact?: boolean;
 };
 
 type Pending = {clientId: string; name: string; progress: number};
 
+// The conversation view sends files dropped on it to its composer with this event.
+export const DROP_FILES_EVENT = 'am-drop-files';
+
 // Composer writes messages: the mockup's compose box around the classic web app's drafts and submit logic
 // (slash commands, reactions, message priority).
-export default function Composer({channelId, rootId = '', placeholder, compact = false}: Props) {
-    const {formatMessage} = useIntl();
+export default function Composer({channelId, rootId = '', placeholder}: Props) {
+    const intl = useIntl();
+    const {formatMessage} = intl;
     const dispatch = useDispatch();
     const getDraft = useMemo(() => makeGetDraft(), []);
     const storedDraft = useSelector((state: GlobalState) => getDraft(state, channelId, rootId));
     const priorityEnabled = useSelector(isPostPriorityEnabled);
     const burnEnabled = useSelector(isBurnOnReadEnabled);
+    const schedulingEnabled = useSelector(isScheduledPostsEnabled);
+    const burnDuration = useBurnDuration();
+    const persistentMinutes = useSelector((state: GlobalState) => parseInt(getConfig(state).PersistentNotificationIntervalMinutes || '5', 10) || 5);
+    const toast = useToast();
     const ctrlSend = useSelector((state: GlobalState) => getBool(state, Constants.Preferences.CATEGORY_ADVANCED_SETTINGS, 'send_on_ctrl_enter', false));
     const [draft, setDraft] = useState<PostDraft>(storedDraft);
-    const [showFormatting, setShowFormatting] = useState(!compact);
+    const [showFormatting, setShowFormatting] = useShowFormatting();
     const [pending, setPending] = useState<Pending[]>([]);
-    const [menu, setMenu] = useState<'plus' | 'emoji' | 'priority' | 'burn' | 'more' | null>(null);
+    const [menu, setMenu] = useState<'plus' | 'emoji' | 'priority' | 'burn' | 'more' | 'schedule' | null>(null);
     const textareaRef = useRef<HTMLTextAreaElement>(null);
     const fileRef = useRef<HTMLInputElement>(null);
     const plusRef = useRef<HTMLButtonElement>(null);
@@ -116,8 +129,46 @@ export default function Composer({channelId, rootId = '', placeholder, compact =
         }
     };
 
+    // Scheduling sends the draft later instead of now (Mattermost's scheduled messages).
+    const schedule = async (at: number, sleeper?: string) => {
+        setMenu(null);
+        if (!draft.message.trim() && !draft.fileInfos.length) {
+            toast(formatMessage({id: 'fusion.toast.scheduleEmpty', defaultMessage: 'Write your message first, then schedule it'}));
+            textareaRef.current?.focus();
+            return;
+        }
+        if (pending.length) {
+            return;
+        }
+        const toSend: PostDraft = {...draft, channelId, rootId};
+        const empty: PostDraft = {message: '', fileInfos: [], uploadsInProgress: [], channelId, rootId, createAt: 0, updateAt: 0};
+        setDraft(empty);
+        clearTimeout(saveTimer.current);
+        dispatch(updateDraft(key, null, rootId, true));
+        const result = await dispatch(onSubmit(channelId, rootId, toSend, {}, {scheduled_at: at}));
+        if (result && 'error' in result && result.error) {
+            setDraft(toSend);
+            toast(formatMessage({id: 'fusion.toast.scheduleFailed', defaultMessage: 'The message could not be scheduled'}));
+            return;
+        }
+        const when = intl.formatDate(at, {weekday: 'short', hour: 'numeric', minute: '2-digit'});
+        if (sleeper) {
+            const hours = Math.max(1, Math.round((at - Date.now()) / 36e5));
+            toast(formatMessage({id: 'fusion.toast.scheduledSleeper', defaultMessage: 'Scheduled — {name} gets it at 07:00 their time (in about {hours} h)'}, {name: sleeper, hours}));
+        } else {
+            toast(formatMessage({id: 'fusion.toast.scheduled', defaultMessage: 'Scheduled for {when}'}, {when}));
+        }
+    };
+
     const onKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
         if (autocompleteRef.current?.handleKeyDown(e)) {
+            return;
+        }
+
+        // Up in an empty composer edits your last message, as in the classic web app.
+        if (e.key === 'ArrowUp' && !draft.message && !e.shiftKey && !e.altKey && !e.ctrlKey && !e.metaKey) {
+            e.preventDefault();
+            dispatch(editLatestPost(channelId, rootId));
             return;
         }
         if (e.key === 'Enter' && !e.nativeEvent.isComposing) {
@@ -140,6 +191,18 @@ export default function Composer({channelId, rootId = '', placeholder, compact =
             el?.setSelectionRange(start + text.length, start + text.length);
         });
     };
+
+    // "Mention" in a person's menu writes @username into the conversation's composer.
+    const insertRef = useRef(insert);
+    insertRef.current = insert;
+    useEffect(() => {
+        if (rootId) {
+            return undefined;
+        }
+        const onMention = (e: Event) => insertRef.current((e as CustomEvent<string>).detail);
+        window.addEventListener(MENTION_EVENT, onMention);
+        return () => window.removeEventListener(MENTION_EVENT, onMention);
+    }, [rootId]);
 
     const format = (id: string) => {
         const f = FORMATS.find((x) => x && x.id === id);
@@ -179,6 +242,18 @@ export default function Composer({channelId, rootId = '', placeholder, compact =
             }));
         });
     };
+
+    // Files dropped anywhere on the conversation go to its composer, as in the mockup.
+    const uploadRef = useRef(upload);
+    uploadRef.current = upload;
+    useEffect(() => {
+        if (rootId) {
+            return undefined;
+        }
+        const onDrop = (e: Event) => uploadRef.current((e as CustomEvent<File[]>).detail);
+        window.addEventListener(DROP_FILES_EVENT, onDrop);
+        return () => window.removeEventListener(DROP_FILES_EVENT, onDrop);
+    }, [rootId]);
 
     const priority = draft.metadata?.priority;
     const setPriority = (patch: Partial<{priority: PostPriority | ''; requested_ack: boolean; persistent_notifications: boolean}>) => {
@@ -296,6 +371,13 @@ export default function Composer({channelId, rootId = '', placeholder, compact =
                 textareaRef={textareaRef}
                 onChange={(message) => change({message})}
             />
+            {!rootId && (
+                <SleepNote
+                    channelId={channelId}
+                    onSendAt={schedulingEnabled ? schedule : undefined}
+                />
+            )}
+            {schedulingEnabled && <ScheduledNote id={rootId || channelId}/>}
             <div className={am('compose-box')}>
                 {(chips.length > 0 || files.length > 0 || uploads.length > 0) && <div className={am('opt-chips')}>{chips}{files}{uploads}</div>}
                 <div className={am('compose-row')}>
@@ -457,6 +539,13 @@ export default function Composer({channelId, rootId = '', placeholder, compact =
                         }}
                     />
                     <MenuSeparator/>
+                    {schedulingEnabled && (
+                        <MenuItem
+                            icon='clock'
+                            label={formatMessage({id: 'fusion.composer.schedule', defaultMessage: 'Schedule message'})}
+                            onClick={() => setMenu('schedule')}
+                        />
+                    )}
                     <MenuItem
                         icon='slash'
                         label={formatMessage({id: 'fusion.composer.slash', defaultMessage: 'Use a slash command'})}
@@ -467,6 +556,13 @@ export default function Composer({channelId, rootId = '', placeholder, compact =
                         }}
                     />
                 </Popover>
+            )}
+            {menu === 'schedule' && (
+                <SchedulePopover
+                    anchor={plusRef.current}
+                    onSchedule={(at) => schedule(at)}
+                    onClose={() => setMenu(null)}
+                />
             )}
             {menu === 'emoji' && (
                 <EmojiPicker
@@ -539,7 +635,7 @@ export default function Composer({channelId, rootId = '', placeholder, compact =
                     <div className={am('pp-row', {disabled: priority?.priority !== 'urgent'})}>
                         <span>
                             {formatMessage({id: 'fusion.composer.persistentTitle', defaultMessage: 'Persistent notifications'})}
-                            <small>{formatMessage({id: 'fusion.composer.persistentDesc', defaultMessage: 'Repeats until acknowledged · urgent only'})}</small>
+                            <small>{formatMessage({id: 'fusion.composer.persistentEvery', defaultMessage: 'Repeats every {minutes, plural, one {minute} other {# minutes}} until acknowledged · urgent only'}, {minutes: persistentMinutes})}</small>
                         </span>
                         <button
                             type='button'
@@ -573,7 +669,7 @@ export default function Composer({channelId, rootId = '', placeholder, compact =
                     <div className={am('pp-row')}>
                         <span>
                             {formatMessage({id: 'fusion.composer.burn', defaultMessage: 'Burn on read'})}
-                            <small>{formatMessage({id: 'fusion.composer.burnDesc', defaultMessage: 'Deleted a while after each person opens it'})}</small>
+                            <small>{formatMessage({id: 'fusion.composer.burnAfter', defaultMessage: 'Deleted {duration} after each person opens it'}, {duration: burnDuration})}</small>
                         </span>
                         <button
                             type='button'

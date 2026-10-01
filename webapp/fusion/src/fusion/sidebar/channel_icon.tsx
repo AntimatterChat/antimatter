@@ -2,6 +2,7 @@
 // See LICENSE.txt for license information.
 
 import React from 'react';
+import {useIntl} from 'react-intl';
 
 import type {IconGlyphTypes} from '@mattermost/compass-icons/IconGlyphs';
 import type {Channel} from '@mattermost/types/channels';
@@ -24,9 +25,10 @@ type Props = {
     size?: 'sm' | 'xs';
 };
 
-// ChannelIcon is the mockup's channel glyph: # for channels, with a lock for private ones, or the
+// ChannelIcon is the mockup's channel glyph: # for channels, with a lock for private ones (a globe for shared ones), or the
 // icon a plugin gives the channel (e.g. a speaker for voice channels).
 export default function ChannelIcon({channel, size}: Props) {
+    const {formatMessage} = useIntl();
     const override = useChannelIconOverrideName(channel);
     const glyph = override ? overrideGlyphs[override] : undefined;
 
@@ -48,9 +50,17 @@ export default function ChannelIcon({channel, size}: Props) {
             {channel.type === 'P' && (
                 <span
                     className={am('lock')}
-                    title='Private'
+                    title={formatMessage({id: 'fusion.channel.private', defaultMessage: 'Private'})}
                 >
                     <Icon name='lock'/>
+                </span>
+            )}
+            {channel.type !== 'P' && channel.shared && (
+                <span
+                    className={am('lock', 'shared')}
+                    title={formatMessage({id: 'fusion.channel.shared', defaultMessage: 'Shared with other servers'})}
+                >
+                    <Icon name='globe'/>
                 </span>
             )}
         </span>

@@ -16,10 +16,11 @@ import {isCollapsedThreadsEnabled} from 'mattermost-redux/selectors/entities/pre
 import {getCurrentUserId, getUser} from 'mattermost-redux/selectors/entities/users';
 
 import {toggleReaction} from 'actions/post_actions';
-import {selectPost} from 'actions/views/rhs';
-import {isEmbedVisible} from 'selectors/posts';
+import {openShowEditHistory, selectPost} from 'actions/views/rhs';
+import {shouldDisplayConcealedPlaceholder} from 'selectors/burn_on_read_posts';
+import {getIsPostBeingEdited, getIsPostBeingEditedInRHS} from 'selectors/posts';
 
-import FileAttachmentListContainer from 'components/file_attachment_list';
+import RenderEmoji from 'components/emoji/render_emoji';
 import MessageWithAdditionalContent from 'components/message_with_additional_content';
 
 import CallCard, {useCallCard} from 'fusion/calls/call_card';
@@ -28,6 +29,7 @@ import Icon from 'fusion/components/icon';
 import type {IconName} from 'fusion/components/icon';
 import {useDisplayName} from 'fusion/hooks/users';
 import EmojiPicker from 'fusion/popovers/emoji_picker';
+import {useUserMenu} from 'fusion/popovers/user_menu';
 import UserPopover from 'fusion/popovers/user_popover';
 import {am} from 'fusion/utils/class_names';
 import {areConsecutivePostsBySameUser, isFromBot, isFromWebhook, isSystemMessage} from 'utils/post_utils';
@@ -35,8 +37,15 @@ import {areConsecutivePostsBySameUser, isFromBot, isFromWebhook, isSystemMessage
 import type {GlobalState} from 'types/store';
 
 import Acknowledge from './acknowledge';
+import {BurnCover, BurnTag} from './burn_on_read';
+import Files from './content/files';
+import MessageContent from './content/message_content';
+import EditForm from './edit_form';
+import {useMentionClick} from './mention_click';
+import {useConcernsMe} from './mentions';
 import MessageMenu from './message_menu';
 import Reactions from './reactions';
+import ReplyRef from './reply_ref';
 import ThreadSummary from './thread_summary';
 import MessageTime from './time';
 
@@ -79,7 +88,8 @@ function SystemLine({post}: {post: Post}) {
 // Message is one message in the Fusion UI's conversation: the mockup's .msg row around the classic web app's
 // message body renderers (markdown, attachments, embeds, plugin post types and files).
 export default function Message({postId, previousPostId, inThread = false, highlighted = false}: Props) {
-    const {formatMessage} = useIntl();
+    const intl = useIntl();
+    const {formatMessage} = intl;
     const dispatch = useDispatch();
     const post = useSelector((state: GlobalState) => getPost(state, postId));
     const previous = useSelector((state: GlobalState) => (previousPostId ? getPost(state, previousPostId) : undefined));
@@ -90,13 +100,16 @@ export default function Message({postId, previousPostId, inThread = false, highl
     const saved = useSelector((state: GlobalState) => isPostFlagged(state, postId));
     const priorityEnabled = useSelector(isPostPriorityEnabled);
     const crt = useSelector(isCollapsedThreadsEnabled);
-    const embedVisible = useSelector((state: GlobalState) => isEmbedVisible(state, postId));
     const autotranslated = useSelector((state: GlobalState) => (post ? isMyChannelAutotranslated(state, post.channel_id) : false));
-    const pluginPostTypes = useSelector((state: GlobalState) => state.plugins.postTypes);
+    const editing = useSelector((state: GlobalState) => getIsPostBeingEdited(state, postId) && getIsPostBeingEditedInRHS(state, postId) === inThread);
+    const concealed = useSelector((state: GlobalState) => shouldDisplayConcealedPlaceholder(state, postId));
+    const concernsMe = useConcernsMe(post, inThread);
+    const [userMenu, openUserMenu] = useUserMenu();
+    const [mentionCard, onMentionClick] = useMentionClick();
     const avatarRef = useRef<HTMLButtonElement>(null);
     const moreRef = useRef<HTMLButtonElement>(null);
     const reactRef = useRef<HTMLButtonElement>(null);
-    const [popover, setPopover] = useState<'user' | 'menu' | 'react' | null>(null);
+    const [popover, setPopover] = useState<'user' | 'menu' | 'react' | 'react-more' | null>(null);
     const callCard = useCallCard(post);
 
     if (!post) {
@@ -110,12 +123,20 @@ export default function Message({postId, previousPostId, inThread = false, highl
     const webhook = isFromWebhook(post) && config.EnablePostUsernameOverride === 'true' && Boolean(post.props?.override_username);
     const bot = isFromBot(post) || Boolean(user?.is_bot);
     const priority = priorityEnabled ? post.metadata?.priority?.priority : undefined;
-    const consecutive = !inThread && Boolean(previous) && !priority && !ephemeral && areConsecutivePostsBySameUser(post, previous!) && !isSystemMessage(previous!);
+    const burn = post.type === Posts.POST_TYPES.BURN_ON_READ && post.state !== Posts.POST_DELETED;
+
+    // With collapsed reply threads off, replies show in the channel; the first of a run quotes what it replies to.
+    const replyRef = !inThread && !crt && Boolean(post.root_id) && !ephemeral && previous?.root_id !== post.root_id && previous?.id !== post.root_id;
+    const consecutive = !inThread && Boolean(previous) && !priority && !burn && !replyRef && !ephemeral && areConsecutivePostsBySameUser(post, previous!) && !isSystemMessage(previous!);
     const deleted = post.state === Posts.POST_DELETED;
     const openThread = () => dispatch(selectPost(post));
 
     const authorName = webhook ? String(post.props.override_username) : name;
-    const overrideIcon = isFromWebhook(post) && config.EnablePostIconOverride === 'true' ? (post.props?.override_icon_url as string | undefined) : undefined;
+    const iconOverride = isFromWebhook(post) && config.EnablePostIconOverride === 'true';
+    const overrideIcon = iconOverride ? (post.props?.override_icon_url as string | undefined) : undefined;
+
+    // A webhook can post with an emoji as its picture (the mockup's .hook-av).
+    const overrideEmoji = iconOverride && !overrideIcon && typeof post.props?.override_icon_emoji === 'string' ? post.props.override_icon_emoji.replace(/^:|:$/g, '') : undefined;
 
     const tools = !deleted && !ephemeral && (
         <div
@@ -135,7 +156,7 @@ export default function Message({postId, previousPostId, inThread = false, highl
                     size='sm'
                 />
             </button>
-            {!inThread && (
+            {!inThread && !burn && (
                 <button
                     title={formatMessage({id: 'fusion.message.reply', defaultMessage: 'Reply in thread'})}
                     aria-label={formatMessage({id: 'fusion.message.reply', defaultMessage: 'Reply in thread'})}
@@ -162,6 +183,7 @@ export default function Message({postId, previousPostId, inThread = false, highl
         </div>
     );
 
+    const editedTitle = formatMessage({id: 'fusion.message.editedAt', defaultMessage: 'Edited {time}'}, {time: intl.formatDate(post.edit_at, {dateStyle: 'medium', timeStyle: 'short'})});
     const tags = (
         <>
             {post.is_pinned && (
@@ -176,31 +198,55 @@ export default function Message({postId, previousPostId, inThread = false, highl
                     {formatMessage({id: 'fusion.message.saved', defaultMessage: 'Saved'})}
                 </span>
             )}
+            {post.edit_at > 0 && !deleted && (post.user_id === me ? (
+
+                // Your own edits lead to the message's edit history, as in the classic web app.
+                <button
+                    type='button'
+                    className={am('meta-tag', 'edited')}
+                    title={editedTitle + ' · ' + formatMessage({id: 'fusion.message.editHistory', defaultMessage: 'Click to see the edit history'})}
+                    onClick={() => dispatch(openShowEditHistory(post))}
+                >
+                    {formatMessage({id: 'fusion.message.edited', defaultMessage: '(edited)'})}
+                </button>
+            ) : (
+                <span
+                    className={am('meta-tag', 'edited')}
+                    title={editedTitle}
+                >
+                    {formatMessage({id: 'fusion.message.edited', defaultMessage: '(edited)'})}
+                </span>
+            ))}
             {priority && (
                 <span className={am('prio', priority)}>
                     <Icon name='flag'/>
                     {priority === 'urgent' ? formatMessage({id: 'fusion.message.urgent', defaultMessage: 'Urgent'}) : formatMessage({id: 'fusion.message.important', defaultMessage: 'Important'})}
                 </span>
             )}
+            {burn && <BurnTag post={post}/>}
         </>
     );
 
     const body = (
         <>
-            {callCard ? <CallCard post={post}/> : (
-                <div className={am('body')}>
-                    <MessageWithAdditionalContent
+            {concealed && <BurnCover post={post}/>}
+            {!concealed && editing && (
+                <EditForm post={post}/>
+            )}
+            {!concealed && !editing && callCard && <CallCard post={post}/>}
+            {!concealed && !editing && !callCard && (
+                <div
+                    className={am('body')}
+                    onClickCapture={onMentionClick}
+                >
+                    <MessageContent
                         post={post}
-                        isEmbedVisible={embedVisible}
-                        pluginPostTypes={pluginPostTypes}
-                        isRHS={inThread}
-                        isChannelAutotranslated={autotranslated}
+                        inThread={inThread}
+                        autotranslated={autotranslated}
                     />
                 </div>
             )}
-            {post.file_ids && post.file_ids.length > 0 && !deleted && (
-                <FileAttachmentListContainer post={post}/>
-            )}
+            {post.file_ids && post.file_ids.length > 0 && !deleted && !concealed && <Files post={post}/>}
             <Acknowledge post={post}/>
             <Reactions postId={post.id}/>
             {!inThread && crt && !post.root_id && <ThreadSummary post={post}/>}
@@ -222,15 +268,18 @@ export default function Message({postId, previousPostId, inThread = false, highl
                     anchor={moreRef.current}
                     inThread={inThread}
                     onClose={() => setPopover(null)}
+                    onMoreReactions={() => setPopover('react-more')}
                 />
             )}
-            {popover === 'react' && (
+            {(popover === 'react' || popover === 'react-more') && (
                 <EmojiPicker
-                    anchor={reactRef.current}
+                    anchor={popover === 'react' ? reactRef.current : moreRef.current}
                     onPick={(emojiName) => dispatch(toggleReaction(post.id, emojiName))}
                     onClose={() => setPopover(null)}
                 />
             )}
+            {userMenu}
+            {mentionCard}
         </>
     );
 
@@ -239,7 +288,8 @@ export default function Message({postId, previousPostId, inThread = false, highl
         ephemeral,
         'p-important': priority === 'important',
         'p-urgent': priority === 'urgent',
-        'menu-open': popover === 'menu' || popover === 'react',
+        'hl-me': concernsMe,
+        'menu-open': popover === 'menu' || popover === 'react' || popover === 'react-more',
         flash: highlighted,
     });
 
@@ -295,39 +345,67 @@ export default function Message({postId, previousPostId, inThread = false, highl
         );
     }
 
+    let picture;
+    if (overrideEmoji) {
+        picture = (
+            <span
+                className={am('hook-av')}
+                style={{'--am-hc': 'var(--am-raise-2)'} as React.CSSProperties}
+                aria-hidden='true'
+            >
+                <RenderEmoji
+                    emojiName={overrideEmoji}
+                    size={24}
+                />
+            </span>
+        );
+    } else if (overrideIcon) {
+        picture = (
+            <span
+                className={am('hook-av')}
+                aria-hidden='true'
+            >
+                <img
+                    src={overrideIcon}
+                    alt=''
+                />
+            </span>
+        );
+    } else {
+        picture = (
+            <button
+                ref={avatarRef}
+                aria-label={authorName}
+                onClick={() => setPopover('user')}
+                onContextMenu={(e) => openUserMenu(post.user_id, e)}
+            >
+                <Avatar
+                    userId={post.user_id}
+                    size='lg'
+                />
+            </button>
+        );
+    }
+
     return (
         <div
             className={rowClass}
             id={`post_${post.id}`}
             data-self={post.user_id === me || undefined}
         >
-            {overrideIcon ? (
-                <span
-                    className={am('hook-av')}
-                    aria-hidden='true'
-                >
-                    <img
-                        src={overrideIcon}
-                        alt=''
-                    />
-                </span>
-            ) : (
-                <button
-                    ref={avatarRef}
-                    aria-label={authorName}
-                    onClick={() => setPopover('user')}
-                >
-                    <Avatar
-                        userId={post.user_id}
-                        size='lg'
-                    />
-                </button>
+            {replyRef && (
+                <>
+                    <span/>
+                    <ReplyRef post={post}/>
+                </>
             )}
+            {picture}
             <div>
                 <div className={am('msg-head')}>
                     <button
                         className={am('author')}
                         onClick={() => setPopover('user')}
+                        onContextMenu={(e) => openUserMenu(post.user_id, e)}
                     >
                         {authorName}
                     </button>

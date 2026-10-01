@@ -12,7 +12,7 @@ import {savePreferences} from 'mattermost-redux/actions/preferences';
 import {Preferences} from 'mattermost-redux/constants';
 import {getCurrentChannelId, makeGetChannelUnreadCount} from 'mattermost-redux/selectors/entities/channels';
 import {getCurrentTeam} from 'mattermost-redux/selectors/entities/teams';
-import {getCurrentUserId} from 'mattermost-redux/selectors/entities/users';
+import {getCurrentUserId, getUser} from 'mattermost-redux/selectors/entities/users';
 import {getUserIdFromChannelName} from 'mattermost-redux/utils/channel_utils';
 
 import {leaveDirectChannel} from 'actions/views/channel';
@@ -69,6 +69,8 @@ export default function DirectRow({channel, dock, meta}: Props) {
     const active = useSelector(getCurrentChannelId) === channel.id;
     const unread = useSelector((state: GlobalState) => getUnreadCount(state, channel.id));
     const badge = unread.mentions || (unread.showUnread ? unread.messages : 0);
+    const teammateId = useTeammateId(channel);
+    const remote = useSelector((state: GlobalState) => Boolean(teammateId && getUser(state, teammateId)?.remote_id));
 
     if (!team) {
         return null;
@@ -89,7 +91,14 @@ export default function DirectRow({channel, dock, meta}: Props) {
             to={channelPath(team.name, channel)}
             className={am('dm', {active, unread: unread.showUnread})}
             aria-current={active ? 'page' : undefined}
-            onClick={() => layout.setNavOpen(false)}
+            onClick={() => {
+                layout.setNavOpen(false);
+
+                // Opened from the home list, it joins the dock and the team you were in comes back.
+                if (!dock) {
+                    layout.setHome(false);
+                }
+            }}
         >
             <DirectFace
                 channel={channel}
@@ -97,6 +106,17 @@ export default function DirectRow({channel, dock, meta}: Props) {
             />
             <span className={am('name')}>
                 {channel.display_name}
+                {remote && (
+                    <span
+                        className={am('fed-ic')}
+                        title={formatMessage({id: 'fusion.dm.remote', defaultMessage: 'On another server'})}
+                    >
+                        <Icon
+                            name='globe'
+                            size='xs'
+                        />
+                    </span>
+                )}
                 {meta && <span className={am('meta')}>{meta}</span>}
             </span>
             <DirectTalkMarker channel={channel}/>
