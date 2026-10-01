@@ -69,3 +69,58 @@ func (a *App) isValidReplyTarget(rctx request.CTX, post *model.Post, targetID st
 
 	return true
 }
+
+// populateReplyToMetadata describes, in the metadata of each of posts that is an inline reply, the message it quotes.
+// known holds posts already at hand, such as the rest of a post list; the others are read in one query.
+func (a *App) populateReplyToMetadata(rctx request.CTX, posts []*model.Post, known map[string]*model.Post) {
+	if !a.inlineRepliesEnabled() {
+		return
+	}
+
+	var missing []string
+	seen := map[string]bool{}
+	for _, post := range posts {
+		targetID := post.GetReplyToProp()
+		if targetID == "" || !model.IsValidId(targetID) || seen[targetID] {
+			continue
+		}
+		seen[targetID] = true
+		if _, ok := known[targetID]; !ok {
+			missing = append(missing, targetID)
+		}
+	}
+	if len(seen) == 0 {
+		return
+	}
+
+	fetched := map[string]*model.Post{}
+	switch len(missing) {
+	case 0:
+	case 1:
+		// A single post, such as a new reply being broadcast: read from the master, as the quoted message may be new.
+		if target, err := a.Srv().Store().Post().GetSingle(RequestContextWithMaster(rctx), missing[0], true); err == nil {
+			fetched[target.Id] = target
+		}
+	default:
+		if targets, err := a.Srv().Store().Post().GetPostsByIds(missing); err == nil {
+			for _, target := range targets {
+				fetched[target.Id] = target
+			}
+		}
+	}
+
+	for _, post := range posts {
+		targetID := post.GetReplyToProp()
+		if targetID == "" || !model.IsValidId(targetID) {
+			continue
+		}
+		target, ok := known[targetID]
+		if !ok {
+			target = fetched[targetID]
+		}
+		if post.Metadata == nil {
+			post.Metadata = &model.PostMetadata{}
+		}
+		post.Metadata.ReplyTo = model.NewPostReplyTo(post, targetID, target)
+	}
+}

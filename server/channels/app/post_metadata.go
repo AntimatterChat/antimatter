@@ -66,13 +66,19 @@ func (a *App) PreparePostListForClient(rctx request.CTX, originalList *model.Pos
 	}
 
 	withheld := make(map[string]bool)
+	shown := make([]*model.Post, 0, len(originalList.Posts))
 	for id, originalPost := range originalList.Posts {
 		post, blanked := a.preparePostForClientWithEmbedsAndImages(rctx, originalPost, &model.PreparePostForClientOpts{})
 		list.Posts[id] = post
 		if blanked {
 			withheld[id] = true
+		} else {
+			shown = append(shown, post)
 		}
 	}
+
+	// Inline replies quote messages that are often in the same list.
+	a.populateReplyToMetadata(rctx, shown, originalList.Posts)
 
 	if a.IsPostPriorityEnabled() {
 		priority, _ := a.GetPriorityForPostList(list)
@@ -202,7 +208,10 @@ func (a *App) OverrideIconURLIfEmoji(rctx request.CTX, post *model.Post) {
 }
 
 func (a *App) PreparePostForClient(rctx request.CTX, originalPost *model.Post, opts *model.PreparePostForClientOpts) *model.Post {
-	post, _ := a.preparePostForClient(rctx, originalPost, opts)
+	post, withheld := a.preparePostForClient(rctx, originalPost, opts)
+	if !withheld {
+		a.populateReplyToMetadata(rctx, []*model.Post{post}, nil)
+	}
 	return post
 }
 
@@ -299,7 +308,10 @@ func (a *App) preparePostFilesForClient(rctx request.CTX, post *model.Post, opts
 }
 
 func (a *App) PreparePostForClientWithEmbedsAndImages(rctx request.CTX, originalPost *model.Post, opts *model.PreparePostForClientOpts) *model.Post {
-	post, _ := a.preparePostForClientWithEmbedsAndImages(rctx, originalPost, opts)
+	post, withheld := a.preparePostForClientWithEmbedsAndImages(rctx, originalPost, opts)
+	if !withheld {
+		a.populateReplyToMetadata(rctx, []*model.Post{post}, nil)
+	}
 	return post
 }
 

@@ -160,3 +160,101 @@ func TestInlineReplyUpdate(t *testing.T) {
 		assert.NotContains(t, updated.GetProps(), model.PostPropsReplyTo)
 	})
 }
+
+func TestInlineReplyMetadata(t *testing.T) {
+	mainHelper.Parallel(t)
+	th := Setup(t).InitBasic(t)
+
+	// Posts as read from the database, without metadata.
+	fromStore := func(t *testing.T, id string) *model.Post {
+		t.Helper()
+		post, err := th.App.Srv().Store().Post().GetSingle(th.Context, id, true)
+		require.NoError(t, err)
+		return post
+	}
+
+	target := th.CreatePost(t, th.BasicChannel)
+	created := createInlineReply(t, th, th.BasicChannel, "", target.Id)
+	require.NotNil(t, created.Metadata.ReplyTo, "creating a reply returns it with the quoted message")
+	reply := fromStore(t, created.Id)
+
+	t.Run("describes the quoted message", func(t *testing.T) {
+		prepared := th.App.PreparePostForClient(th.Context, reply, &model.PreparePostForClientOpts{})
+		require.NotNil(t, prepared.Metadata.ReplyTo)
+		assert.Equal(t, target.Id, prepared.Metadata.ReplyTo.PostId)
+		assert.Equal(t, target.UserId, prepared.Metadata.ReplyTo.UserId)
+		assert.Equal(t, target.Message, prepared.Metadata.ReplyTo.Message)
+		assert.False(t, prepared.Metadata.ReplyTo.Deleted)
+	})
+
+	t.Run("describes the quoted message in post lists", func(t *testing.T) {
+		other := th.CreatePost(t, th.BasicChannel)
+		otherReply := fromStore(t, createInlineReply(t, th, th.BasicChannel, "", other.Id).Id)
+		plain := th.CreatePost(t, th.BasicChannel)
+
+		// One reply's message is in the list, the other's isn't.
+		list := model.NewPostList()
+		for _, post := range []*model.Post{target, reply, otherReply, plain} {
+			list.AddPost(post)
+			list.AddOrder(post.Id)
+		}
+		prepared := th.App.PreparePostListForClient(th.Context, list, nil)
+		require.NotNil(t, prepared.Posts[reply.Id].Metadata.ReplyTo)
+		assert.Equal(t, target.Message, prepared.Posts[reply.Id].Metadata.ReplyTo.Message)
+		require.NotNil(t, prepared.Posts[otherReply.Id].Metadata.ReplyTo)
+		assert.Equal(t, other.Message, prepared.Posts[otherReply.Id].Metadata.ReplyTo.Message)
+		assert.Nil(t, prepared.Posts[plain.Id].Metadata.ReplyTo)
+		assert.Nil(t, prepared.Posts[target.Id].Metadata.ReplyTo)
+
+		// With several messages to read.
+		third := th.CreatePost(t, th.BasicChannel)
+		thirdReply := fromStore(t, createInlineReply(t, th, th.BasicChannel, "", third.Id).Id)
+		list = model.NewPostList()
+		for _, post := range []*model.Post{reply, otherReply, thirdReply} {
+			list.AddPost(post)
+			list.AddOrder(post.Id)
+		}
+		prepared = th.App.PreparePostListForClient(th.Context, list, nil)
+		assert.Equal(t, target.Message, prepared.Posts[reply.Id].Metadata.ReplyTo.Message)
+		assert.Equal(t, other.Message, prepared.Posts[otherReply.Id].Metadata.ReplyTo.Message)
+		assert.Equal(t, third.Message, prepared.Posts[thirdReply.Id].Metadata.ReplyTo.Message)
+	})
+
+	t.Run("follows edits of the quoted message", func(t *testing.T) {
+		edited := target.Clone()
+		edited.Message = "edited " + model.NewId()
+		_, _, appErr := th.App.UpdatePost(th.Context, edited, nil)
+		require.Nil(t, appErr)
+
+		prepared := th.App.PreparePostForClient(th.Context, reply, &model.PreparePostForClientOpts{})
+		assert.Equal(t, edited.Message, prepared.Metadata.ReplyTo.Message)
+		assert.NotZero(t, prepared.Metadata.ReplyTo.EditAt)
+	})
+
+	t.Run("marks a deleted quoted message", func(t *testing.T) {
+		quoted := th.CreatePost(t, th.BasicChannel)
+		quotingReply := createInlineReply(t, th, th.BasicChannel, "", quoted.Id)
+		_, appErr := th.App.DeletePost(th.Context, quoted.Id, th.BasicUser.Id)
+		require.Nil(t, appErr)
+
+		prepared := th.App.PreparePostForClient(th.Context, fromStore(t, quotingReply.Id), &model.PreparePostForClientOpts{})
+		assert.Equal(t, &model.PostReplyTo{PostId: quoted.Id, Deleted: true}, prepared.Metadata.ReplyTo)
+	})
+
+	t.Run("leaves deleted replies empty", func(t *testing.T) {
+		deletedReply := createInlineReply(t, th, th.BasicChannel, "", target.Id)
+		_, appErr := th.App.DeletePost(th.Context, deletedReply.Id, th.BasicUser.Id)
+		require.Nil(t, appErr)
+
+		prepared := th.App.PreparePostForClient(th.Context, fromStore(t, deletedReply.Id), &model.PreparePostForClientOpts{})
+		assert.Nil(t, prepared.Metadata.ReplyTo)
+	})
+
+	t.Run("describes nothing when inline replies are off", func(t *testing.T) {
+		th.App.UpdateConfig(func(cfg *model.Config) { *cfg.ServiceSettings.EnableInlineReplies = false })
+		defer th.App.UpdateConfig(func(cfg *model.Config) { *cfg.ServiceSettings.EnableInlineReplies = true })
+
+		prepared := th.App.PreparePostForClient(th.Context, reply, &model.PreparePostForClientOpts{})
+		assert.Nil(t, prepared.Metadata.ReplyTo)
+	})
+}
