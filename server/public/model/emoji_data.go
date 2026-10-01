@@ -4469,5 +4469,5 @@ var SystemEmojis = map[string]string{
 	"writing_hand_medium_skin_tone":                                            "270d-1f3fd",
 	"writing_hand_medium_dark_skin_tone":                                       "270d-1f3fe",
 	"writing_hand_dark_skin_tone":                                              "270d-1f3ff",
-	"mattermost":                                                               "mattermost",
+	"antimatter":                                                               "antimatter",
 }
