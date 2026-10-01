@@ -3457,6 +3457,13 @@ const AdminDefinition: AdminDefinitionType = {
                                 },
                                 {
                                     type: 'bool',
+                                    key: 'ServiceSettings.EnableInlineReplies',
+                                    label: defineMessage({id: 'admin.customization.enableInlineRepliesTitle', defaultMessage: 'Enable inline replies:'}),
+                                    help_text: defineMessage({id: 'admin.customization.enableInlineRepliesDesc', defaultMessage: 'When true, users can reply to a specific message in the channel without starting a thread: the reply quotes the message above it, and its author is notified. Mobile apps show such replies without the quote.'}),
+                                    isDisabled: it.not(it.userHasWritePermissionOnResource(RESOURCE_KEYS.SITE.POSTS)),
+                                },
+                                {
+                                    type: 'bool',
                                     key: 'ServiceSettings.EnableSVGs',
                                     label: defineMessage({id: 'admin.customization.enableSVGsTitle', defaultMessage: 'Enable SVGs:'}),
                                     help_text: defineMessage({id: 'admin.customization.enableSVGsDesc', defaultMessage: 'Enable previews for SVG file attachments and allow them to appear in messages.\n\nEnabling SVGs is not recommended in environments where not all users are trusted.'}), // eslint-disable-line formatjs/no-multiple-whitespaces
