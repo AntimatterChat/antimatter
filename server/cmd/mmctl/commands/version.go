@@ -26,7 +26,7 @@ var (
 
 var VersionCmd = &cobra.Command{
 	Use:   "version",
-	Short: "Prints the version of mmctl.",
+	Short: "Prints the version of amctl.",
 	RunE:  versionCmdF,
 }
 

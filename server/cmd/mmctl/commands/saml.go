@@ -23,16 +23,16 @@ var SamlAuthDataResetCmd = &cobra.Command{
 	Short: "Reset AuthData field to Email",
 	Long:  "Resets the AuthData field for SAML users to their email. Run this utility after setting the 'id' SAML attribute to an empty value.",
 	Example: `  # Reset all SAML users' AuthData field to their email, including deleted users
-  $ mmctl saml auth-data-reset --include-deleted
+  $ amctl saml auth-data-reset --include-deleted
 
   # Show how many users would be affected by the reset
-  $ mmctl saml auth-data-reset --dry-run
+  $ amctl saml auth-data-reset --dry-run
 
   # Skip confirmation for resetting the AuthData
-  $ mmctl saml auth-data-reset -y
+  $ amctl saml auth-data-reset -y
 
   # Only reset the AuthData for the following SAML users
-  $ mmctl saml auth-data-reset --users userid1,userid2`,
+  $ amctl saml auth-data-reset --users userid1,userid2`,
 	RunE: withClient(samlAuthDataResetCmdF),
 }
 

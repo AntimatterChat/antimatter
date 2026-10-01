@@ -34,16 +34,16 @@ var PluginMarketplaceListCmd = &cobra.Command{
 	Short: "List marketplace plugins",
 	Long:  "Gets all plugins from the marketplace server, merging data from locally installed plugins as well as prepackaged plugins shipped with the server",
 	Example: `  # You can list all the plugins
-  $ mmctl plugin marketplace list --all
+  $ amctl plugin marketplace list --all
 
   # Pagination options can be used too
-  $ mmctl plugin marketplace list --page 2 --per-page 10
+  $ amctl plugin marketplace list --page 2 --per-page 10
 
   # Filtering will narrow down the search
-  $ mmctl plugin marketplace list --filter jit
+  $ amctl plugin marketplace list --filter jit
 
   # You can only retrieve local plugins
-  $ mmctl plugin marketplace list --local-only`,
+  $ amctl plugin marketplace list --local-only`,
 	Args: cobra.NoArgs,
 	RunE: withClient(pluginMarketplaceListCmdF),
 }

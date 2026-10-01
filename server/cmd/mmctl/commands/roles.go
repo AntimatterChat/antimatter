@@ -28,10 +28,10 @@ var RolesSystemAdminCmd = &cobra.Command{
 	Short:   "Set a user as system admin",
 	Long:    "Make some users system admins.",
 	Example: `  # You can make one user a sysadmin
-  $ mmctl roles system-admin john_doe
+  $ amctl roles system-admin john_doe
 
   # Or promote multiple users at the same time
-  $ mmctl roles system-admin john_doe jane_doe`,
+  $ amctl roles system-admin john_doe jane_doe`,
 	RunE: withClient(rolesSystemAdminCmdF),
 	Args: cobra.MinimumNArgs(1),
 }
@@ -41,18 +41,18 @@ var RolesMemberCmd = &cobra.Command{
 	Short: "Remove system admin privileges",
 	Long:  "Remove system admin privileges from some users.",
 	Example: `  # You can remove admin privileges from one user
-  $ mmctl roles member john_doe
+  $ amctl roles member john_doe
 
   # Or demote multiple users at the same time
-  $ mmctl roles member john_doe jane_doe`,
+  $ amctl roles member john_doe jane_doe`,
 	RunE: withClient(rolesMemberCmdF),
 	Args: cobra.MinimumNArgs(1),
 }
 var RolesListCmd = &cobra.Command{
 	Use:   "list",
 	Short: "List available roles",
-	Example: `  $ mmctl roles list
-  $ mmctl roles list --json`,
+	Example: `  $ amctl roles list
+  $ amctl roles list --json`,
 	RunE: withClient(rolesListCmdF),
 	Args: cobra.NoArgs,
 }

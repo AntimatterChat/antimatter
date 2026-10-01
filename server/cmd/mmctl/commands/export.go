@@ -48,10 +48,10 @@ var ExportDownloadCmd = &cobra.Command{
 	Use:   "download [exportname] [filepath]",
 	Short: "Download export files",
 	Example: `  # you can indicate the name of the export and its destination path
-  $ mmctl export download samplename sample_export.zip
+  $ amctl export download samplename sample_export.zip
 
   # or if you only indicate the name, the path would match it
-  $ mmctl export download sample_export.zip`,
+  $ amctl export download sample_export.zip`,
 	Args: cobra.MinimumNArgs(1),
 	RunE: withClient(exportDownloadCmdF),
 }

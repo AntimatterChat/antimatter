@@ -30,25 +30,25 @@ var ReportPostsCmd = &cobra.Command{
 pagination and can filter posts by time range. Results can be output in JSON format
 for further processing.`,
 	Example: `  # Get posts from a channel with default settings
-  mmctl report posts myteam:mychannel
+  amctl report posts myteam:mychannel
 
   # Get posts with JSON output
-  mmctl report posts myteam:mychannel --json
+  amctl report posts myteam:mychannel --json
 
   # Get posts sorted by update_at in descending order
-  mmctl report posts myteam:mychannel --time-field update_at --sort-direction desc
+  amctl report posts myteam:mychannel --time-field update_at --sort-direction desc
 
   # Get posts including deleted posts and metadata
-  mmctl report posts myteam:mychannel --include-deleted --include-metadata
+  amctl report posts myteam:mychannel --include-deleted --include-metadata
 
   # Get posts excluding ALL system posts
-  mmctl report posts myteam:mychannel --exclude-system-posts
+  amctl report posts myteam:mychannel --exclude-system-posts
 
   # Get more posts per page (max 1000)
-  mmctl report posts myteam:mychannel --per-page 500
+  amctl report posts myteam:mychannel --per-page 500
 
   # Resume pagination from a specific cursor (use next_cursor from previous response)
-  mmctl report posts myteam:mychannel --cursor "MTphYmMxMjM6Y3JlYXRlX2F0OmZhbHNlOmZhbHNlOmFzYzoxNjQwMDAwMzAwMDAwOnBvc3Qz"`,
+  amctl report posts myteam:mychannel --cursor "MTphYmMxMjM6Y3JlYXRlX2F0OmZhbHNlOmZhbHNlOmFzYzoxNjQwMDAwMzAwMDAwOnBvc3Qz"`,
 	Args: cobra.ExactArgs(1),
 	RunE: withClient(reportPostsCmdF),
 }

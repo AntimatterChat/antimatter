@@ -35,10 +35,10 @@ var PluginInstallURLCmd = &cobra.Command{
 	Short: "Install plugin from url",
 	Long:  "Supply one or multiple URLs to plugins compressed in a .tar.gz file. Plugins must be enabled in the server's config settings",
 	Example: `  # You can install one plugin
-  $ mmctl plugin install-url https://example.com/mattermost-plugin.tar.gz
+  $ amctl plugin install-url https://example.com/mattermost-plugin.tar.gz
 
   # Or install multiple in one go
-  $ mmctl plugin install-url https://example.com/mattermost-plugin-one.tar.gz https://example.com/mattermost-plugin-two.tar.gz`,
+  $ amctl plugin install-url https://example.com/mattermost-plugin-one.tar.gz https://example.com/mattermost-plugin-two.tar.gz`,
 	RunE: withClient(pluginInstallURLCmdF),
 	Args: cobra.MinimumNArgs(1),
 }

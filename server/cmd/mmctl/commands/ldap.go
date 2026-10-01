@@ -26,7 +26,7 @@ func newLDAPSyncCmd() *cobra.Command {
 		Use:     "sync",
 		Short:   "Synchronize now",
 		Long:    "Synchronize all LDAP users and groups now.",
-		Example: "mmctl ldap sync",
+		Example: "amctl ldap sync",
 		RunE:    withClient(ldapSyncCmdF),
 	}
 
@@ -39,10 +39,10 @@ var LdapIDMigrate = &cobra.Command{
 	Long: `Migrate LDAP "IdAttribute" to a new value. Run this utility to change the value of your ID Attribute without your users losing their accounts. After running the command you can change the ID Attribute to the new value in the System Console. For example, if your current ID Attribute was "sAMAccountName" and you wanted to change it to "objectGUID", you would:
 
 1. Wait for an off-peak time when your users won’t be impacted by a server restart.
-2. Run the command "mmctl ldap idmigrate objectGUID".
+2. Run the command "amctl ldap idmigrate objectGUID".
 3. Update the config within the System Console to the new value "objectGUID".
 4. Restart the Mattermost server.`,
-	Example: "mmctl ldap idmigrate objectGUID",
+	Example: "amctl ldap idmigrate objectGUID",
 	Args:    cobra.ExactArgs(1),
 	RunE:    withClient(ldapIDMigrateCmdF),
 }
@@ -54,7 +54,7 @@ var LdapJobCmd = &cobra.Command{
 
 var LdapJobListCmd = &cobra.Command{
 	Use:     "list",
-	Example: "mmctl ldap job list",
+	Example: "amctl ldap job list",
 	Short:   "List LDAP sync jobs",
 	// Alisases cause error in zsh. Supposedly, completion V2 will fix that: https://github.com/spf13/cobra/pull/1146
 	// https://mattermost.atlassian.net/browse/MM-57062
@@ -66,7 +66,7 @@ var LdapJobListCmd = &cobra.Command{
 
 var LdapJobShowCmd = &cobra.Command{
 	Use:               "show [ldapJobID]",
-	Example:           "mmctl ldap show f3d68qkkm7n8xgsfxwuo498rah",
+	Example:           "amctl ldap show f3d68qkkm7n8xgsfxwuo498rah",
 	Short:             "Show LDAP sync job",
 	Args:              cobra.MinimumNArgs(1),
 	ValidArgsFunction: validateArgsWithClient(ldapJobShowCompletionF),

@@ -58,16 +58,16 @@ var UserCreateCmd = &cobra.Command{
 	Short: "Create a user",
 	Long:  "Create a user",
 	Example: `  # You can create a user
-  $ mmctl user create --email user@example.com --username userexample --password Password1
+  $ amctl user create --email user@example.com --username userexample --password Password1
 
   # You can define optional fields like first name, last name and nick name too
-  $ mmctl user create --email user@example.com --username userexample --password Password1 --firstname User --lastname Example --nickname userex
+  $ amctl user create --email user@example.com --username userexample --password Password1 --firstname User --lastname Example --nickname userex
 
   # Also you can create the user as system administrator
-  $ mmctl user create --email user@example.com --username userexample --password Password1 --system-admin
+  $ amctl user create --email user@example.com --username userexample --password Password1 --system-admin
 
   # Finally you can verify user on creation if you have enough permissions
-  $ mmctl user create --email user@example.com --username userexample --password Password1 --system-admin --email-verified`,
+  $ amctl user create --email user@example.com --username userexample --password Password1 --system-admin --email-verified`,
 	RunE: withClient(userCreateCmdF),
 }
 
@@ -96,20 +96,20 @@ var ChangePasswordUserCmd = &cobra.Command{
 	Short: "Changes a user's password",
 	Long:  "Changes the password of a user by a new one provided. If the user is changing their own password, the flag --current must indicate the current password. The flag --hashed can be used to indicate that the new password has been introduced already hashed",
 	Example: `  # if you have system permissions, you can change other user's passwords
-  $ mmctl user change-password john_doe --password new-password
+  $ amctl user change-password john_doe --password new-password
 
   # if you are changing your own password, you need to provide the current one
-  $ mmctl user change-password my-username --current current-password --password new-password
+  $ amctl user change-password my-username --current current-password --password new-password
 
   # you can ommit these flags to introduce them interactively
-  $ mmctl user change-password my-username
+  $ amctl user change-password my-username
   Are you changing your own password? (YES/NO): YES
   Current password:
   New password:
 
   # if you have system permissions, you can update the password with the already hashed new
   # password. The hashing method should be the same that the server uses internally
-  $ mmctl user change-password john_doe --password HASHED_PASSWORD --hashed`,
+  $ amctl user change-password john_doe --password HASHED_PASSWORD --hashed`,
 	Args: cobra.ExactArgs(1),
 	RunE: withClient(changePasswordUserCmdF),
 }
@@ -218,13 +218,13 @@ var UserStatusCmd = &cobra.Command{
 	Short: "Get a user's status",
 	Long:  "Get a user's presence status: online, away, dnd or offline.",
 	Example: `  # You can get the status of the currently authenticated user
-  $ mmctl user status
+  $ amctl user status
 
   # You can get the status of a specific user
-  $ mmctl user status --user user@example.com
+  $ amctl user status --user user@example.com
 
   # In local mode there is no authenticated user, so the --user flag is required
-  $ mmctl --local user status --user user@example.com`,
+  $ amctl --local user status --user user@example.com`,
 	Args: cobra.NoArgs,
 	RunE: withClient(userStatusGetCmdF),
 }
@@ -234,13 +234,13 @@ var UserStatusSetCmd = &cobra.Command{
 	Short: "Set a user's status",
 	Long:  "Set a user's presence status. Allowed values are online, away, dnd and offline.",
 	Example: `  # You can set the status of the currently authenticated user
-  $ mmctl user status set away
+  $ amctl user status set away
 
   # You can set the status of a specific user
-  $ mmctl user status set --user user@example.com dnd
+  $ amctl user status set --user user@example.com dnd
 
   # You can set a "dnd" status that expires at a given time (ISO 8601)
-  $ mmctl user status set --user user@example.com --dnd-end-time 2100-01-02T15:04:05-07:00 dnd`,
+  $ amctl user status set --user user@example.com --dnd-end-time 2100-01-02T15:04:05-07:00 dnd`,
 	Args: cobra.ExactArgs(1),
 	RunE: withClient(userStatusSetCmdF),
 }
@@ -250,13 +250,13 @@ var UserConvertCmd = &cobra.Command{
 	Short: "Convert users to bots, or a bot to a user",
 	Long:  "Convert user accounts to bots or convert bots to user accounts.",
 	Example: `  # you can convert a user to a bot providing its email, id or username
-  $ mmctl user convert user@example.com --bot
+  $ amctl user convert user@example.com --bot
 
   # or multiple users in one go
-  $ mmctl user convert user@example.com anotherUser --bot
+  $ amctl user convert user@example.com anotherUser --bot
 
   # you can convert a bot to a user specifying the email and password that the user will have after conversion
-  $ mmctl user convert botusername --email new.email@email.com --password password --user`,
+  $ amctl user convert botusername --email new.email@email.com --password password --user`,
 	RunE: withClient(userConvertCmdF),
 	Args: cobra.MinimumNArgs(1),
 }
@@ -415,10 +415,10 @@ func init() {
 	MigrateAuthCmd.Flags().Bool("auto", false, "Automatically migrate all users. Assumes the usernames and emails are identical between Mattermost and SAML services. (saml only)")
 	MigrateAuthCmd.Flags().Bool("confirm", false, "Confirm you really want to proceed with auto migration. (saml only)")
 	MigrateAuthCmd.SetHelpTemplate(`Usage:
-  mmctl user migrate-auth [from_auth] [to_auth] [migration-options] [flags]
+  amctl user migrate-auth [from_auth] [to_auth] [migration-options] [flags]
 
 Examples:
-  mmctl {{.Example}}
+  amctl {{.Example}}
 
 ` + migrateAuthCmdDoc + `
 

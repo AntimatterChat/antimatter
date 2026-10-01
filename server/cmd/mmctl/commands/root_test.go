@@ -28,7 +28,7 @@ func TestRootRecover(t *testing.T) {
 
 	lines := printer.GetErrorLines()
 	assert.Equal(t, "Uh oh! Something unexpected happened :( Would you mind reporting it?", lines[0])
-	assert.True(t, strings.HasPrefix(lines[1], "https://github.com/mattermost/mattermost/issues/new?body="))
+	assert.True(t, strings.HasPrefix(lines[1], "https://github.com/AntimatterChat/antimatter/issues/new?body="))
 	assert.Equal(t, "some panic", lines[2])
 	assert.True(t, strings.HasPrefix(lines[3], "goroutine "))
 }
