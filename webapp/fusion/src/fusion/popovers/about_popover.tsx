@@ -17,9 +17,8 @@ import {am} from 'fusion/utils/class_names';
 
 import type {GlobalState} from 'types/store';
 
-// Where the source code is (AGPL §13). The server has no setting for it: this is the link the classic About dialog
-// gives for the server's open source software.
-const SOURCE_CODE_URL = 'https://github.com/mattermost/mattermost-server/blob/master/NOTICE.txt';
+// Where Antimatter's source code is (AGPL §13). The server has no setting for it.
+const SOURCE_CODE_URL = 'https://github.com/AntimatterChat/antimatter';
 
 function ExternalAnchor({href, className, children}: {href: string; className?: string; children: React.ReactNode}) {
     return (
