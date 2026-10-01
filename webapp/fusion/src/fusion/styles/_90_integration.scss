@@ -89,7 +89,7 @@ body.app__body :where(.am-app, .am-layer) a:where(:not(.am-body *, .am-rhs-class
   .sidebar--right__expand .icon-arrow-collapse { display: none; }
 }
 :is(.am-app, .am-layer) .am-rhs.am-expanded .sidebar--right__expand .icon-arrow-expand { display: none; }
-:is(.am-app, .am-layer) .am-rhs.am-expanded .sidebar--right__expand .icon-arrow-collapse { display: inline-block; }
+:is(.am-app, .am-layer) .am-rhs.am-expanded .sidebar--right__expand .icon-arrow-collapse { display: flex; }
 // Expanded panels take the room left once the conversation keeps --am-main-min, never less than a normal panel.
 @media (min-width: 1101px) {
   :is(.am-app, .am-layer) .am-rhs.am-expanded { width: clamp(380px, calc(100vw - var(--am-chrome-w) - var(--am-main-min)), 1120px); }
