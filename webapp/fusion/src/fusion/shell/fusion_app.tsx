@@ -28,6 +28,7 @@ import {applyTheme} from 'utils/utils';
 
 import type {GlobalState} from 'types/store';
 
+import {DialogsProvider} from './dialogs_context';
 import {GlobalSearchProvider, useGlobalSearch} from './global_search_context';
 import {LayoutProvider, isPhoneLayout, useLayout} from './layout_context';
 import {SettingsProvider, useSettings} from './settings_context';
@@ -153,11 +154,13 @@ export default function FusionApp({children}: Props) {
     return (
         <LayoutProvider>
             <ToastProvider>
-                <GlobalSearchProvider>
-                    <SettingsProvider>
-                        <Frame>{children}</Frame>
-                    </SettingsProvider>
-                </GlobalSearchProvider>
+                <DialogsProvider>
+                    <GlobalSearchProvider>
+                        <SettingsProvider>
+                            <Frame>{children}</Frame>
+                        </SettingsProvider>
+                    </GlobalSearchProvider>
+                </DialogsProvider>
             </ToastProvider>
         </LayoutProvider>
     );

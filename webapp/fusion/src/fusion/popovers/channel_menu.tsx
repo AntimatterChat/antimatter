@@ -26,6 +26,7 @@ import LeaveChannelModal from 'components/leave_channel_modal';
 
 import {Popover} from 'fusion/components/layer';
 import {MenuItem, MenuSeparator} from 'fusion/components/menu';
+import {useDialogs} from 'fusion/shell/dialogs_context';
 import {useToast} from 'fusion/shell/toast_context';
 import {am} from 'fusion/utils/class_names';
 import {openDialog} from 'fusion/utils/modals';
@@ -48,6 +49,7 @@ export default function ChannelMenu({channel, anchor, point, onClose}: Props) {
     const {formatMessage} = useIntl();
     const dispatch = useDispatch();
     const toast = useToast();
+    const dialogs = useDialogs();
     const [moving, setMoving] = useState(false);
     const [getUnreadCount] = useState(makeGetChannelUnreadCount);
     const userId = useSelector(getCurrentUserId);
@@ -162,7 +164,7 @@ export default function ChannelMenu({channel, anchor, point, onClose}: Props) {
             <MenuItem
                 icon='user-plus'
                 label={formatMessage({id: 'fusion.channelMenu.addMembers', defaultMessage: 'Add members'})}
-                onClick={run(() => dispatch(openDialog(ModalIdentifiers.CHANNEL_INVITE, ChannelInviteModal, {channel})))}
+                onClick={run(() => (channel.type === Constants.OPEN_CHANNEL || channel.type === Constants.PRIVATE_CHANNEL ? dialogs.addPeople(channel) : dispatch(openDialog(ModalIdentifiers.CHANNEL_INVITE, ChannelInviteModal, {channel}))))}
             />
             <MenuItem
                 icon='cog'

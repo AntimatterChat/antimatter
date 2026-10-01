@@ -13,13 +13,13 @@ import {getMainMenuPluginComponents} from 'selectors/plugins';
 
 import {Popover} from 'fusion/components/layer';
 import {Flyout, MenuItem, MenuSeparator} from 'fusion/components/menu';
+import {useDialogs} from 'fusion/shell/dialogs_context';
 import {
     openBrowseChannels,
     openClassicUserSettings,
     openCreateCategory,
     openInvitePeople,
     openLeaveTeam,
-    openNewChannel,
     openTeamMembers,
     openTeamSettings,
 } from 'fusion/utils/modals';
@@ -36,6 +36,7 @@ type Props = {
 export default function ServerMenu({anchor, width, onClose}: Props) {
     const {formatMessage} = useIntl();
     const dispatch = useDispatch();
+    const dialogs = useDialogs();
     const config = useSelector(getConfig);
     const canManage = useSelector((state: GlobalState) => haveICurrentTeamPermission(state, Permissions.MANAGE_TEAM));
     const canAddUsers = useSelector((state: GlobalState) => haveICurrentTeamPermission(state, Permissions.ADD_USER_TO_TEAM));
@@ -81,7 +82,7 @@ export default function ServerMenu({anchor, width, onClose}: Props) {
             <MenuItem
                 icon='plus'
                 label={formatMessage({id: 'fusion.serverMenu.createChannel', defaultMessage: 'Create channel'})}
-                onClick={run(() => dispatch(openNewChannel()))}
+                onClick={run(() => dialogs.createChannel())}
             />
             <MenuItem
                 icon='folder'

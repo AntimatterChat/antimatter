@@ -12,8 +12,8 @@ import {setCategoryCollapsed} from 'mattermost-redux/actions/channel_categories'
 import {makeGetFilteredChannelIdsForCategory} from 'selectors/views/channel_sidebar';
 
 import Icon from 'fusion/components/icon';
+import {useDialogs} from 'fusion/shell/dialogs_context';
 import {am} from 'fusion/utils/class_names';
-import {openNewChannel} from 'fusion/utils/modals';
 
 import type {GlobalState} from 'types/store';
 
@@ -23,6 +23,7 @@ import ChannelRow from './channel_row';
 export default function Category({category}: {category: ChannelCategory}) {
     const {formatMessage} = useIntl();
     const dispatch = useDispatch();
+    const dialogs = useDialogs();
     const getChannelIds = useMemo(() => makeGetFilteredChannelIdsForCategory(), []);
     const channelIds = useSelector((state: GlobalState) => getChannelIds(state, category));
     const collapsed = category.collapsed;
@@ -57,7 +58,9 @@ export default function Category({category}: {category: ChannelCategory}) {
                     aria-label={formatMessage({id: 'fusion.sidebar.createChannel', defaultMessage: 'Create channel'})}
                     onClick={(e) => {
                         e.stopPropagation();
-                        dispatch(openNewChannel());
+
+                        // Favorites can't hold a channel that isn't one yet: it goes to the default category.
+                        dialogs.createChannel(category.type === 'favorites' ? undefined : category.id);
                     }}
                 >
                     <Icon
