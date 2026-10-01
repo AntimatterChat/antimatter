@@ -20,6 +20,8 @@ import {updateDraft} from 'actions/views/drafts';
 import {isBurnOnReadEnabled} from 'selectors/burn_on_read';
 import {makeGetDraft} from 'selectors/drafts';
 
+import {useCreateBurnOnReadAccess} from 'components/common/hooks/useCreateBurnOnReadAccess';
+
 import Icon from 'fusion/components/icon';
 import {Popover} from 'fusion/components/layer';
 import {MenuHeading, MenuItem, MenuSeparator} from 'fusion/components/menu';
@@ -63,7 +65,11 @@ export default function Composer({channelId, rootId = '', placeholder}: Props) {
     const getDraft = useMemo(() => makeGetDraft(), []);
     const storedDraft = useSelector((state: GlobalState) => getDraft(state, channelId, rootId));
     const priorityEnabled = useSelector(isPostPriorityEnabled);
-    const burnEnabled = useSelector(isBurnOnReadEnabled);
+    const burnEnabledInConfig = useSelector(isBurnOnReadEnabled);
+
+    // Permission policies can also forbid burn-on-read messages in a channel (the server re-checks).
+    const burnAllowedByPolicy = useCreateBurnOnReadAccess(channelId);
+    const burnEnabled = burnEnabledInConfig && burnAllowedByPolicy;
     const schedulingEnabled = useSelector(isScheduledPostsEnabled);
     const burnDuration = useBurnDuration();
     const persistentMinutes = useSelector((state: GlobalState) => parseInt(getConfig(state).PersistentNotificationIntervalMinutes || '5', 10) || 5);
