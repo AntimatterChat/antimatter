@@ -18,7 +18,7 @@ endif
 
 .PHONY: run
 run: node_modules ## Runs app
-	@echo Running Mattermost Web App for development
+	@echo Running the Antimatter web app for development
 
 	npm run run
 
@@ -77,7 +77,7 @@ i18n-extract-check: node_modules ## Checks if en.json is in sync with code
 
 .PHONY: dist
 dist: node_modules ## Builds all web app packages
-	@echo Packaging Mattermost Web App
+	@echo Packaging the Antimatter web app
 
 	npm run build
 
@@ -100,10 +100,10 @@ clean: ## Clears cached; deletes node_modules and dist directories
 	npm run clean
 
 .PHONY: package
-package: node_modules dist ## Generates ./mattermost-webapp.tar.gz for use by someone customizing the web app
+package: node_modules dist ## Generates ./antimatter-webapp.tar.gz for use by someone customizing the web app
 	mkdir tmp
 	mv channels/dist tmp/client
-	tar -C tmp -czf mattermost-webapp.tar.gz client
+	tar -C tmp -czf antimatter-webapp.tar.gz client
 	mv tmp/client channels/dist
 	rmdir tmp
 
