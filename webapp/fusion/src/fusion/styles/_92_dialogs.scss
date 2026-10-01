@@ -8,3 +8,8 @@
 :is(.am-app, .am-layer) .am-type-card .am-type-ic { display: grid; place-items: center; width: 22px; height: 22px; flex: none; color: var(--am-muted); }
 :is(.am-app, .am-layer) .am-type-card .am-type-ic > * { max-width: 22px; max-height: 22px; }
 :is(.am-app, .am-layer) .am-type-card.am-on .am-type-ic { color: var(--am-matter); }
+
+// The About popover's links are real links.
+:is(.am-app, .am-layer) a.am-about-more, :is(.am-app, .am-layer) a.am-about-more:hover { color: #fff; text-decoration: none; }
+:is(.am-app, .am-layer) .am-about-links a { color: var(--am-link, var(--am-matter)); font-size: 12px; text-decoration: none; }
+:is(.am-app, .am-layer) .am-about-links a:hover { text-decoration: underline; }
