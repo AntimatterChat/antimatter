@@ -271,8 +271,9 @@ export function MentionSwitch({quoted, on, onChange}: MentionSwitchProps) {
     );
 }
 
-// jumpToMessage scrolls to a message shown in the same conversation as from and makes it flash, as the mockup does;
-// it returns false when the message isn't shown there.
+// jumpToMessage scrolls to a message shown in the same conversation as from and makes it flash, as the mockup does
+// but longer and brighter, so that it can't be missed once the smooth scroll ends; it returns false when the message
+// isn't shown there.
 export function jumpToMessage(from: HTMLElement, postId: string): boolean {
     const scope = from.closest(`.${am('rhs-body')}, .${am('msgs')}`);
     const target = scope?.querySelector<HTMLElement>(`[id="post_${postId}"]`);
@@ -280,11 +281,18 @@ export function jumpToMessage(from: HTMLElement, postId: string): boolean {
         return false;
     }
     target.scrollIntoView({block: 'center', behavior: 'smooth'});
-    const flash = am('flash');
+    const flash = am('jump-flash');
     target.classList.remove(flash);
 
     // Restart the animation when jumping to the same message again: reading the layout applies the removal.
     target.getBoundingClientRect();
     target.classList.add(flash);
+    const done = (e: AnimationEvent) => {
+        if (e.target === target) {
+            target.classList.remove(flash);
+            target.removeEventListener('animationend', done);
+        }
+    };
+    target.addEventListener('animationend', done);
     return true;
 }
