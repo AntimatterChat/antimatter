@@ -20,6 +20,7 @@ import (
 )
 
 func Run(args []string) error {
+	applyAmctlEnvAliases()
 	viper.SetEnvPrefix("mmctl")
 	viper.SetEnvKeyReplacer(strings.NewReplacer("-", "_"))
 	viper.SetDefault("local-socket-path", model.LocalModeSocketPath)
@@ -70,6 +71,17 @@ func Run(args []string) error {
 	}
 
 	return err
+}
+
+// applyAmctlEnvAliases makes each AMCTL_<NAME> environment variable set MMCTL_<NAME>, the name
+// the settings are read from, so both prefixes work and AMCTL_* wins when both are set.
+func applyAmctlEnvAliases() {
+	for _, kv := range os.Environ() {
+		name, value, _ := strings.Cut(kv, "=")
+		if suffix, ok := strings.CutPrefix(name, "AMCTL_"); ok && suffix != "" {
+			_ = os.Setenv("MMCTL_"+suffix, value)
+		}
+	}
 }
 
 func printPanic(x any) {

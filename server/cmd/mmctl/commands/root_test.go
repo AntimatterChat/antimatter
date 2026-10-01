@@ -6,6 +6,7 @@ package commands
 import (
 	"bytes"
 	"fmt"
+	"os"
 	"strings"
 	"testing"
 
@@ -21,6 +22,20 @@ func executeRawCommand(root *cobra.Command, args string) (c *cobra.Command, outp
 	RootCmd.SetArgs(strings.Split(args, " "))
 	c, err = RootCmd.ExecuteC()
 	return c, actual.String(), err
+}
+
+func TestApplyAmctlEnvAliases(t *testing.T) {
+	t.Setenv("AMCTL_LOCAL", "true")
+	t.Setenv("MMCTL_LOCAL", "false")
+	t.Setenv("MMCTL_JSON", "true")
+	t.Setenv("AMCTL_", "ignored")
+
+	applyAmctlEnvAliases()
+
+	assert.Equal(t, "true", os.Getenv("MMCTL_LOCAL"), "AMCTL_* wins over MMCTL_*")
+	assert.Equal(t, "true", os.Getenv("MMCTL_JSON"), "MMCTL_* alone keeps working")
+	_, set := os.LookupEnv("MMCTL_")
+	assert.False(t, set)
 }
 
 func TestRootRecover(t *testing.T) {
