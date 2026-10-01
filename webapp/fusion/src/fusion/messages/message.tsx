@@ -43,6 +43,7 @@ import {useMentionClick} from './mention_click';
 import {useConcernsMe} from './mentions';
 import MessageMenu from './message_menu';
 import Reactions from './reactions';
+import ReplyRef from './reply_ref';
 import ThreadSummary from './thread_summary';
 import MessageTime from './time';
 
@@ -120,7 +121,10 @@ export default function Message({postId, previousPostId, inThread = false, highl
     const bot = isFromBot(post) || Boolean(user?.is_bot);
     const priority = priorityEnabled ? post.metadata?.priority?.priority : undefined;
     const burn = post.type === Posts.POST_TYPES.BURN_ON_READ && post.state !== Posts.POST_DELETED;
-    const consecutive = !inThread && Boolean(previous) && !priority && !burn && !ephemeral && areConsecutivePostsBySameUser(post, previous!) && !isSystemMessage(previous!);
+
+    // With collapsed reply threads off, replies show in the channel; the first of a run quotes what it replies to.
+    const replyRef = !inThread && !crt && Boolean(post.root_id) && !ephemeral && previous?.root_id !== post.root_id && previous?.id !== post.root_id;
+    const consecutive = !inThread && Boolean(previous) && !priority && !burn && !replyRef && !ephemeral && areConsecutivePostsBySameUser(post, previous!) && !isSystemMessage(previous!);
     const deleted = post.state === Posts.POST_DELETED;
     const openThread = () => dispatch(selectPost(post));
 
@@ -342,6 +346,12 @@ export default function Message({postId, previousPostId, inThread = false, highl
             id={`post_${post.id}`}
             data-self={post.user_id === me || undefined}
         >
+            {replyRef && (
+                <>
+                    <span/>
+                    <ReplyRef post={post}/>
+                </>
+            )}
             {overrideIcon ? (
                 <span
                     className={am('hook-av')}
