@@ -2351,7 +2351,7 @@ const AdminDefinition: AdminDefinitionType = {
                             type: 'dropdown',
                             key: 'ServiceSettings.DefaultWebUI',
                             label: defineMessage({id: 'admin.customization.defaultWebUITitle', defaultMessage: 'Default Web Interface:'}),
-                            help_text: defineMessage({id: 'admin.customization.defaultWebUIDesc', defaultMessage: 'The web interface served to users who haven\'t picked one. Fusion is a preview of the new interface; the classic interface is served when Fusion isn\'t installed.'}),
+                            help_text: defineMessage({id: 'admin.customization.defaultWebUIDesc', defaultMessage: 'The web interface served to users who haven\'t picked one, including new users. The classic interface is served when Fusion isn\'t installed.'}),
                             options: [
                                 {
                                     value: 'classic',
@@ -2359,7 +2359,7 @@ const AdminDefinition: AdminDefinitionType = {
                                 },
                                 {
                                     value: 'fusion',
-                                    display_name: defineMessage({id: 'admin.customization.webUIFusion', defaultMessage: 'Fusion (preview)'}),
+                                    display_name: defineMessage({id: 'admin.customization.webUIFusion', defaultMessage: 'Fusion'}),
                                 },
                             ],
                             isDisabled: it.not(it.userHasWritePermissionOnResource(RESOURCE_KEYS.SITE.CUSTOMIZATION)),

@@ -33,7 +33,7 @@ const webUINames: Record<WebUI, React.ReactNode> = {
     [WebUIs.FUSION]: (
         <FormattedMessage
             id='user.settings.display.webUI.fusion'
-            defaultMessage='Fusion (preview)'
+            defaultMessage='Fusion'
         />
     ),
 };

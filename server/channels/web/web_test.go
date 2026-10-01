@@ -367,6 +367,8 @@ func TestStatic(t *testing.T) {
 
 func TestStaticFilesCaching(t *testing.T) {
 	th := Setup(t).InitPlugins()
+	// The test serves the classic web app, even where the Fusion UI is deployed.
+	th.App.UpdateConfig(func(cfg *model.Config) { *cfg.ServiceSettings.DefaultWebUI = model.WebUIClassic })
 
 	fakeMainBundleName := "main.1234ab.js"
 	fakeRootHTML := `<html>

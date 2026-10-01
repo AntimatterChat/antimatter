@@ -43,7 +43,7 @@ describe('components/user_settings/display/web_ui_section', () => {
     test('shows the current web interface', () => {
         renderWithContext(<WebUISection {...baseProps}/>, stateWithSelection(true));
         expect(screen.getByText('Web interface')).toBeInTheDocument();
-        expect(screen.getByText('Fusion (preview)')).toBeInTheDocument();
+        expect(screen.getByText('Fusion')).toBeInTheDocument();
     });
 
     test('switches the web interface on save', async () => {

@@ -283,7 +283,7 @@ function InterfacePane() {
                             className={am({on: ui === CURRENT_WEB_UI})}
                             onClick={() => ui !== CURRENT_WEB_UI && dispatch(switchWebUI(ui))}
                         >
-                            {ui === WebUIs.CLASSIC ? formatMessage({id: 'fusion.settings.classic', defaultMessage: 'Classic'}) : formatMessage({id: 'fusion.settings.fusion', defaultMessage: 'Fusion (preview)'})}
+                            {ui === WebUIs.CLASSIC ? formatMessage({id: 'fusion.settings.classic', defaultMessage: 'Classic'}) : formatMessage({id: 'fusion.settings.fusion', defaultMessage: 'Fusion'})}
                         </button>
                     ))}
                 </div>

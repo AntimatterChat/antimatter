@@ -3,8 +3,8 @@
 Antimatter ships two web UIs:
 
 - **Classic** (`webapp/channels`): the web app inherited from Mattermost.
-- **Fusion** (`webapp/fusion`): the new web UI, in preview. It started as a copy of the classic
-  web app and diverges from it.
+- **Fusion** (`webapp/fusion`): the new web UI, served by default. It started as a copy of the
+  classic web app and diverges from it.
 
 Both talk to the same server API, and both load the same web app plugins.
 
@@ -12,7 +12,7 @@ Both talk to the same server API, and both load the same web app plugins.
 
 | Setting | Env var | Default | Meaning |
 | --- | --- | --- | --- |
-| `ServiceSettings.DefaultWebUI` | `MM_SERVICESETTINGS_DEFAULTWEBUI` | `classic` | Web UI served to users who didn't pick one: `classic` or `fusion`. |
+| `ServiceSettings.DefaultWebUI` | `MM_SERVICESETTINGS_DEFAULTWEBUI` | `fusion` | Web UI served to users who didn't pick one: `classic` or `fusion`. |
 | `ServiceSettings.AllowUserWebUISelection` | `MM_SERVICESETTINGS_ALLOWUSERWEBUISELECTION` | `true` | Whether users can pick their own web UI. |
 
 Both are in **System Console > Site Configuration > Customization**.
