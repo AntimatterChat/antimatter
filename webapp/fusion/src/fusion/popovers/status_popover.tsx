@@ -9,7 +9,7 @@ import {CustomStatusDuration} from '@mattermost/types/users';
 
 import {setCustomStatus, setStatus, unsetCustomStatus} from 'mattermost-redux/actions/users';
 import {getCurrentTeam} from 'mattermost-redux/selectors/entities/teams';
-import {getCurrentUser} from 'mattermost-redux/selectors/entities/users';
+import {getCurrentUser, getDndEndTimeForUserId} from 'mattermost-redux/selectors/entities/users';
 import {isSystemAdmin} from 'mattermost-redux/utils/user_utils';
 
 import {emitUserLoggedOutEvent} from 'actions/global_actions';
@@ -38,22 +38,15 @@ const STATUSES = [
     {status: 'offline', label: {id: 'fusion.status.invisible', defaultMessage: 'Invisible'}, sub: {id: 'fusion.status.invisibleSub', defaultMessage: 'You appear offline but can still use Antimatter'}},
 ];
 
-// Do not disturb durations, as in the classic web app. The end time is in seconds; 0 means until turned off.
-function dndEnd(key: string): number {
-    const now = new Date();
-    switch (key) {
-    case '30min': return Math.floor((now.getTime() + (30 * 6e4)) / 1000);
-    case '1h': return Math.floor((now.getTime() + 36e5) / 1000);
-    case '2h': return Math.floor((now.getTime() + 72e5) / 1000);
-    case 'tomorrow': {
-        const t = new Date(now);
-        t.setDate(t.getDate() + 1);
-        t.setHours(9, 0, 0, 0);
-        return Math.floor(t.getTime() / 1000);
-    }
-    default: return 0;
-    }
-}
+// Do not disturb durations, as in the mockup. The end time is in seconds; 0 means until turned off.
+const DND_DURATIONS: Array<[string, number, {id: string; defaultMessage: string}]> = [
+    ['15min', 15 * 6e4, {id: 'fusion.status.for15', defaultMessage: 'For 15 minutes'}],
+    ['1h', 36e5, {id: 'fusion.status.for1h', defaultMessage: 'For 1 hour'}],
+    ['1d', 864e5, {id: 'fusion.status.for1d', defaultMessage: 'For 1 day'}],
+    ['1w', 7 * 864e5, {id: 'fusion.status.for1w', defaultMessage: 'For 1 week'}],
+    ['forever', 0, {id: 'fusion.status.forever', defaultMessage: 'Forever'}],
+];
+const dndEnd = (ms: number) => (ms ? Math.floor((Date.now() + ms) / 1000) : 0);
 
 const CLEAR_AFTER: Array<[CustomStatusDuration, {id: string; defaultMessage: string}]> = [
     [CustomStatusDuration.THIRTY_MINUTES, {id: 'fusion.status.clear30', defaultMessage: '30 minutes'}],
@@ -87,7 +80,8 @@ function expiresAt(duration: CustomStatusDuration): string | undefined {
 
 // StatusPopover sets your status and custom status, and leads to your settings, from your avatar.
 export default function StatusPopover({anchor, onClose}: Props) {
-    const {formatMessage} = useIntl();
+    const intl = useIntl();
+    const {formatMessage} = intl;
     const dispatch = useDispatch();
     const settings = useSettings();
     const toast = useToast();
@@ -95,6 +89,7 @@ export default function StatusPopover({anchor, onClose}: Props) {
     const team = useSelector(getCurrentTeam);
     const name = useDisplayName(me);
     const status = useUserStatus(me?.id);
+    const dndEndTime = useSelector((state: GlobalState) => (me ? getDndEndTimeForUserId(state, me.id) : 0));
     const getCustomStatus = useMemo(() => makeGetCustomStatus(), []);
     const custom = useSelector((state: GlobalState) => getCustomStatus(state, me?.id));
     const [text, setText] = useState(custom?.text || '');
@@ -142,7 +137,7 @@ export default function StatusPopover({anchor, onClose}: Props) {
                 />
                 <div>
                     <b>{name}</b>
-                    <span>{`@${me.username} · ${label(status)}`}</span>
+                    <span>{`@${me.username} · ${label(status)}${status === 'dnd' && dndEndTime > 0 ? ' · ' + formatMessage({id: 'fusion.status.until', defaultMessage: 'until {time}'}, {time: intl.formatDate(dndEndTime * 1000, {weekday: 'short', hour: 'numeric', minute: '2-digit'})}) : ''}`}</span>
                 </div>
             </div>
             <form
@@ -246,13 +241,13 @@ export default function StatusPopover({anchor, onClose}: Props) {
                                 role='menu'
                                 aria-label={formatMessage({id: 'fusion.status.dndFor', defaultMessage: 'Do not disturb for'})}
                             >
-                                {[['30min', {id: 'fusion.status.for30', defaultMessage: 'For 30 minutes'}], ['1h', {id: 'fusion.status.for1h', defaultMessage: 'For 1 hour'}], ['2h', {id: 'fusion.status.for2h', defaultMessage: 'For 2 hours'}], ['tomorrow', {id: 'fusion.status.forTomorrow', defaultMessage: 'Until tomorrow 9:00'}], ['forever', {id: 'fusion.status.forever', defaultMessage: "Don't clear"}]].map(([key, l]) => (
+                                {DND_DURATIONS.map(([key, ms, l]) => (
                                     <button
-                                        key={key as string}
+                                        key={key}
                                         role='menuitem'
-                                        onClick={() => choose('dnd', dndEnd(key as string))}
+                                        onClick={() => choose('dnd', dndEnd(ms))}
                                     >
-                                        {formatMessage(l as {id: string; defaultMessage: string})}
+                                        {formatMessage(l)}
                                     </button>
                                 ))}
                             </div>
