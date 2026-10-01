@@ -6,8 +6,12 @@ import classNames from 'classnames';
 import React, {useState} from 'react';
 import type {AnimationEvent, ReactNode} from 'react';
 import {FormattedMessage} from 'react-intl';
+import {useSelector} from 'react-redux';
 
+import Pluggable from 'plugins/pluggable';
 import Constants from 'utils/constants';
+
+import type {GlobalState} from 'types/store';
 
 import SidebarBaseChannel from './sidebar_base_channel';
 import SidebarDirectChannel from './sidebar_direct_channel';
@@ -32,6 +36,7 @@ function SidebarChannel({
     autoSortedCategoryIds,
 }: Props) {
     const [show, setShow] = useState(true);
+    const hasFooterComponents = useSelector((state: GlobalState) => Boolean(state.plugins.components.SidebarChannelFooter?.length));
     if (!channel) {
         return null;
     }
@@ -89,6 +94,19 @@ function SidebarChannel({
         );
     }
 
+    // Plugins can show something below the channel link, e.g. the people in a call
+    let footer: ReactNode;
+    if (show && hasFooterComponents && !isCollapsed()) {
+        footer = (
+            <div className='SidebarChannel__footer'>
+                <Pluggable
+                    pluggableName='SidebarChannelFooter'
+                    channel={channel}
+                />
+            </div>
+        );
+    }
+
     if (isDraggable) {
         let selectedCount: React.ReactNode;
         if (isChannelSelected && draggingState.state && draggingState.id === channel.id && multiSelectedChannelIds.length > 1) {
@@ -131,6 +149,7 @@ function SidebarChannel({
                             tabIndex={-1}
                         >
                             {component}
+                            {footer}
                             {selectedCount}
                         </li>
                     );
@@ -153,6 +172,7 @@ function SidebarChannel({
             role='listitem'
         >
             {component}
+            {footer}
         </li>
     );
 }

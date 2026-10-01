@@ -19,6 +19,7 @@ import {getCurrentRelativeTeamUrl} from 'mattermost-redux/selectors/entities/tea
 import {isFirstAdmin} from 'mattermost-redux/selectors/entities/users';
 
 import {goToLastViewedChannel} from 'actions/views/channel';
+import {getChannelViewPanel} from 'selectors/channel_view_panel';
 
 import type {GlobalState} from 'types/store';
 
@@ -48,6 +49,7 @@ function mapStateToProps(state: GlobalState) {
         canRestrictDirectMessage: config.RestrictDirectMessage === 'team' && (channel?.type === 'D' || channel?.type === 'G'),
         restrictDirectMessage: channel ? state.entities.channels.restrictedDMs[channel.id] : false,
         missingChannelRole,
+        channelViewPanel: channel ? getChannelViewPanel(state, channel.id) : null,
     };
 }
 

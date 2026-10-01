@@ -1,0 +1,13 @@
+.ChannelViewPanel {
+    display: flex;
+    overflow: hidden;
+    min-height: 0;
+    flex: 0 1 50%;
+    flex-direction: column;
+    border-bottom: 1px solid rgba(var(--center-channel-color-rgb), 0.08);
+
+    &--fill {
+        flex: 1 1 auto;
+        border-bottom: none;
+    }
+}

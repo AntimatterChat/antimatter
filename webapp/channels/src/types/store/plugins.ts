@@ -71,11 +71,13 @@ export type PluginsState = {
         Global: GlobalComponent[];
         ChannelToast: ChannelToastComponent[];
         SidebarChannelLinkLabel: SidebarChannelLinkLabelComponent[];
+        SidebarChannelFooter: SidebarChannelFooterComponent[];
         SidebarBrowseOrAddChannelMenu: SidebarBrowseOrAddChannelMenuAction[];
         ChannelTypeOption: ChannelTypeOptionComponent[];
         ChannelIconOverride: ChannelIconOverrideRegistration[];
         ChannelComposerBanner: ChannelComposerBannerComponent[];
         ChannelIntro: ChannelIntroRegistration[];
+        ChannelViewPanel: ChannelViewPanelRegistration[];
         PostHeader: PostHeaderComponent[];
         ComposerPlaceholder: ComposerPlaceholderRegistration[];
         ProductSwitcherMenuItem: ProductSwitcherMenuItemRegistration[];
@@ -454,6 +456,12 @@ export type SidebarChannelLinkLabelComponent = PluginComponent & {
     }>;
 };
 
+export type SidebarChannelFooterComponent = PluginComponent & {
+    component: React.ComponentType<BasePluggableProps & {
+        channel: Channel;
+    }>;
+};
+
 export type SidebarBrowseOrAddChannelMenuAction = PluginComponent & {
     text: PluggableText;
     action: (teamId: string) => void;
@@ -472,6 +480,19 @@ export type ChannelComposerBannerComponent = PluginComponent & {
 export type ChannelIntroRegistration = PluginComponent & {
     matcher: (state: GlobalState, channel: Channel) => boolean;
     component: React.ComponentType<{channel: Channel}>;
+};
+
+export type ChannelViewPanelProps = {
+    channel: Channel;
+
+    /** Whether the channel's messages and message box are shown below the panel. */
+    messagesVisible: boolean;
+    setMessagesVisible: (visible: boolean) => void;
+};
+
+export type ChannelViewPanelRegistration = PluginComponent & {
+    matcher: (state: GlobalState, channel: Channel) => boolean;
+    component: React.ComponentType<ChannelViewPanelProps>;
 };
 
 export type PostHeaderComponent = PluginComponent & {

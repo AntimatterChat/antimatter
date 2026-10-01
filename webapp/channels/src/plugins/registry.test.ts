@@ -341,6 +341,90 @@ describe('PluginRegistry — registerChannelIntro', () => {
     });
 });
 
+describe('PluginRegistry — registerChannelViewPanel', () => {
+    const PLUGIN_ID = 'test_plugin';
+
+    beforeEach(() => {
+        mockCurrentStore = createStore(pluginsReducer);
+    });
+
+    function getPanels() {
+        return mockCurrentStore.getState().components.ChannelViewPanel;
+    }
+
+    it('adds an entry to ChannelViewPanel with the plugin id, matcher, and component', () => {
+        const registry = new PluginRegistry(PLUGIN_ID);
+        const matcher = () => true;
+        const component = () => null;
+        const id = registry.registerChannelViewPanel({matcher, component});
+
+        const entries = getPanels();
+        expect(entries).toHaveLength(1);
+        expect(entries[0].id).toBe(id);
+        expect(entries[0].pluginId).toBe(PLUGIN_ID);
+        expect(entries[0].matcher).toBe(matcher);
+        expect(entries[0].component).toBe(component);
+    });
+
+    it('REMOVED_WEBAPP_PLUGIN sweeps entries for that plugin and leaves others intact', () => {
+        const registry = new PluginRegistry(PLUGIN_ID);
+        const otherRegistry = new PluginRegistry('other_plugin');
+
+        registry.registerChannelViewPanel({matcher: () => true, component: () => null});
+        otherRegistry.registerChannelViewPanel({matcher: () => false, component: () => null});
+
+        mockCurrentStore.dispatch({
+            type: ActionTypes.REMOVED_WEBAPP_PLUGIN,
+            data: {id: PLUGIN_ID},
+        });
+
+        const entries = getPanels();
+        expect(entries).toHaveLength(1);
+        expect(entries[0].pluginId).toBe('other_plugin');
+    });
+});
+
+describe('PluginRegistry — registerSidebarChannelFooterComponent', () => {
+    const PLUGIN_ID = 'test_plugin';
+
+    beforeEach(() => {
+        mockCurrentStore = createStore(pluginsReducer);
+    });
+
+    function getFooters() {
+        return mockCurrentStore.getState().components.SidebarChannelFooter;
+    }
+
+    it('adds an entry to SidebarChannelFooter with the plugin id and component', () => {
+        const registry = new PluginRegistry(PLUGIN_ID);
+        const component = () => null;
+        const id = registry.registerSidebarChannelFooterComponent({component});
+
+        const entries = getFooters();
+        expect(entries).toHaveLength(1);
+        expect(entries[0].id).toBe(id);
+        expect(entries[0].pluginId).toBe(PLUGIN_ID);
+        expect(entries[0].component).toBe(component);
+    });
+
+    it('REMOVED_WEBAPP_PLUGIN sweeps entries for that plugin and leaves others intact', () => {
+        const registry = new PluginRegistry(PLUGIN_ID);
+        const otherRegistry = new PluginRegistry('other_plugin');
+
+        registry.registerSidebarChannelFooterComponent({component: () => null});
+        otherRegistry.registerSidebarChannelFooterComponent({component: () => null});
+
+        mockCurrentStore.dispatch({
+            type: ActionTypes.REMOVED_WEBAPP_PLUGIN,
+            data: {id: PLUGIN_ID},
+        });
+
+        const entries = getFooters();
+        expect(entries).toHaveLength(1);
+        expect(entries[0].pluginId).toBe('other_plugin');
+    });
+});
+
 describe('PluginRegistry — registerPostHeaderComponent', () => {
     const PLUGIN_ID = 'test_plugin';
 
