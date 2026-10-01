@@ -23,7 +23,12 @@
 :is(.am-app, .am-layer) .am-ai-sug:hover { border-color: var(--am-matter); color: var(--am-text); }
 :is(.am-app, .am-layer) .am-ai-sug .am-ic { width: 14px; height: 14px; color: var(--am-matter); }
 :is(.am-app, .am-layer) .am-app-ic.am-whiteboard { color: #FB923C; }
-:is(.am-app, .am-layer) .am-rhs.am-wide { width: min(780px, 62vw); }
+// The mockup widens app panels only on request (its "Widen panel" button); plugin panels are always .am-wide here, so
+// they stay close to the normal panel's width and never squeeze the conversation below --am-main-min (App grid). The
+// panel's expand button (.am-expanded) gives the wider view. Below 1101px panels slide over the chat (Responsive).
+@media (min-width: 1101px) {
+  :is(.am-app, .am-layer) .am-rhs.am-wide { width: clamp(380px, calc(100vw - var(--am-chrome-w) - var(--am-main-min)), 440px); }
+}
 /* Shared notepad */
 :is(.am-app, .am-layer) .am-pad-wrap { display: flex; flex-direction: column; height: 100%; min-height: 0; }
 :is(.am-app, .am-layer) .am-pad-meta { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; padding: 10px 14px 8px; border-bottom: 1px solid var(--am-line); font-size: 12.5px; color: var(--am-muted); }

@@ -90,7 +90,13 @@ body.app__body :where(.am-app, .am-layer) a:where(:not(.am-body *, .am-rhs-class
 }
 :is(.am-app, .am-layer) .am-rhs.am-expanded .sidebar--right__expand .icon-arrow-expand { display: none; }
 :is(.am-app, .am-layer) .am-rhs.am-expanded .sidebar--right__expand .icon-arrow-collapse { display: inline-block; }
-:is(.am-app, .am-layer) .am-rhs.am-expanded { width: min(1120px, calc(100vw - 72px - 52px - 320px)); }
+// Expanded panels take the room left once the conversation keeps --am-main-min, never less than a normal panel.
+@media (min-width: 1101px) {
+  :is(.am-app, .am-layer) .am-rhs.am-expanded { width: clamp(380px, calc(100vw - var(--am-chrome-w) - var(--am-main-min)), 1120px); }
+}
+@media (max-width: 1100px) {
+  :is(.am-app, .am-layer) .am-rhs.am-expanded { width: min(1120px, calc(100% - 52px)); }
+}
 
 // Plugins' root components (registerRootComponent), e.g. Boards' "Link boards" dialog, are overlays: they take no room
 // in the main column, whose layout would squeeze the conversation to make room for their wrappers.
