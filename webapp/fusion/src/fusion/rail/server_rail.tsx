@@ -67,8 +67,8 @@ export default function ServerRail() {
     const canJoin = useSelector((state: GlobalState) => getJoinableTeamIds(state).length > 0);
     const canCreate = useSelector((state: GlobalState) => haveISystemPermission(state, {permission: Permissions.CREATE_TEAM}));
 
-    const dmMentions = unreadDMs.reduce((n, dm) => n + dm.mentions, 0);
-    const dmBadge = dmMentions || unreadDMs.length;
+    // As in the mockup: how many direct messages wait for you.
+    const dmBadge = unreadDMs.reduce((n, dm) => n + Math.max(dm.messages, dm.mentions), 0);
     const homeLabel = formatMessage({id: 'fusion.rail.home', defaultMessage: 'Direct messages'});
 
     const selectTeam = (team: Team) => {
