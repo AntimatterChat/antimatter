@@ -20,7 +20,7 @@ import {PostRequestTypes} from 'utils/constants';
 import type {GlobalState} from 'types/store';
 
 import Message from './message';
-import {useDayLabel} from './time';
+import MessageTime, {useDayLabel} from './time';
 
 const PAGE = 60;
 const LOAD_THRESHOLD = 600;
@@ -40,6 +40,7 @@ function CombinedActivity({id}: {id: string}) {
                     userLanguage={locale}
                 />
             </span>
+            <MessageTime timestamp={post.create_at}/>
         </div>
     );
 }
