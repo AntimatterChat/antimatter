@@ -1177,6 +1177,13 @@ func (a *App) getExplicitMentionsAndKeywords(rctx request.CTX, post *model.Post,
 			}
 		}
 
+		// Replying to someone's message inline tells them, as mentioning them would.
+		if authorID := a.inlineReplyTargetAuthor(rctx, post); authorID != "" {
+			if _, ok := profileMap[authorID]; ok {
+				mentions.addMention(authorID, KeywordMention)
+			}
+		}
+
 		// Prevent the user from mentioning themselves
 		if post.GetProp(model.PostPropsFromWebhook) != "true" {
 			mentions.removeMention(post.UserId)

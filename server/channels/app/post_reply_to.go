@@ -124,3 +124,18 @@ func (a *App) populateReplyToMetadata(rctx request.CTX, posts []*model.Post, kno
 		post.Metadata.ReplyTo = model.NewPostReplyTo(post, targetID, target)
 	}
 }
+
+// inlineReplyTargetAuthor returns the author of the message post replies to inline, for them to be notified, or ""
+// when there is no one to notify: messages posted by incoming webhooks belong to whoever set the webhook up.
+func (a *App) inlineReplyTargetAuthor(rctx request.CTX, post *model.Post) string {
+	targetID := post.GetReplyToProp()
+	if targetID == "" || !a.inlineRepliesEnabled() {
+		return ""
+	}
+
+	target, err := a.Srv().Store().Post().GetSingle(rctx, targetID, false)
+	if err != nil || target.ChannelId != post.ChannelId || target.GetProp(model.PostPropsFromWebhook) == "true" {
+		return ""
+	}
+	return target.UserId
+}

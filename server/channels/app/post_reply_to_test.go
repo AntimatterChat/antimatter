@@ -258,3 +258,49 @@ func TestInlineReplyMetadata(t *testing.T) {
 		assert.Nil(t, prepared.Metadata.ReplyTo)
 	})
 }
+
+func TestInlineReplyNotifiesQuotedAuthor(t *testing.T) {
+	mainHelper.Parallel(t)
+	th := Setup(t).InitBasic(t)
+	th.AddUserToChannel(t, th.BasicUser2, th.BasicChannel)
+
+	theirs := th.CreatePost(t, th.BasicChannel, func(post *model.Post) { post.UserId = th.BasicUser2.Id })
+	mine := th.CreatePost(t, th.BasicChannel)
+
+	notified := func(t *testing.T, reply *model.Post) []string {
+		t.Helper()
+		mentions, err := th.App.SendNotifications(th.Context, reply, th.BasicTeam, th.BasicChannel, th.BasicUser, nil, true)
+		require.NoError(t, err)
+		return mentions
+	}
+
+	t.Run("notifies the author of the quoted message", func(t *testing.T) {
+		reply := createInlineReply(t, th, th.BasicChannel, "", theirs.Id)
+		assert.Contains(t, notified(t, reply), th.BasicUser2.Id)
+	})
+
+	t.Run("doesn't notify people replying to themselves", func(t *testing.T) {
+		reply := createInlineReply(t, th, th.BasicChannel, "", mine.Id)
+		assert.Empty(t, notified(t, reply))
+	})
+
+	t.Run("doesn't notify people who left the channel", func(t *testing.T) {
+		other := th.CreateChannel(t, th.BasicTeam)
+		th.AddUserToChannel(t, th.BasicUser2, other)
+		target := th.CreatePost(t, other, func(post *model.Post) { post.UserId = th.BasicUser2.Id })
+		reply := createInlineReply(t, th, other, "", target.Id)
+		require.Nil(t, th.App.RemoveUserFromChannel(th.Context, th.BasicUser2.Id, th.SystemAdminUser.Id, other))
+
+		mentions, err := th.App.SendNotifications(th.Context, reply, th.BasicTeam, other, th.BasicUser, nil, true)
+		require.NoError(t, err)
+		assert.NotContains(t, mentions, th.BasicUser2.Id)
+	})
+
+	t.Run("doesn't notify anyone when inline replies are off", func(t *testing.T) {
+		reply := createInlineReply(t, th, th.BasicChannel, "", theirs.Id)
+		th.App.UpdateConfig(func(cfg *model.Config) { *cfg.ServiceSettings.EnableInlineReplies = false })
+		defer th.App.UpdateConfig(func(cfg *model.Config) { *cfg.ServiceSettings.EnableInlineReplies = true })
+
+		assert.NotContains(t, notified(t, reply), th.BasicUser2.Id)
+	})
+}
