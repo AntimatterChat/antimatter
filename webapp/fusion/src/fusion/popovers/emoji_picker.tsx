@@ -195,6 +195,7 @@ export default function EmojiPicker({anchor, onPick, onClose, keepOpen = false}:
                         size={26}
                     />
                 </span>
+                <span>{keepOpen ? formatMessage({id: 'fusion.picker.insert', defaultMessage: 'Insert'}) : formatMessage({id: 'fusion.picker.reactWith', defaultMessage: 'React with'})}</span>
                 <code>{`:${hovered ? nameOf(hovered) : '+1'}:`}</code>
             </div>
         </Popover>

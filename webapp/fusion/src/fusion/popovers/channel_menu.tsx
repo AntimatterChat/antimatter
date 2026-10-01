@@ -24,6 +24,7 @@ import ChannelInviteModal from 'components/channel_invite_modal';
 import ChannelSettingsModal from 'components/channel_settings_modal/channel_settings_modal';
 import LeaveChannelModal from 'components/leave_channel_modal';
 
+import Icon from 'fusion/components/icon';
 import {Popover} from 'fusion/components/layer';
 import {MenuItem, MenuSeparator} from 'fusion/components/menu';
 import {useDialogs} from 'fusion/shell/dialogs_context';
@@ -127,7 +128,12 @@ export default function ChannelMenu({channel, anchor, point, onClose}: Props) {
                 label={formatMessage({id: 'fusion.channelMenu.move', defaultMessage: 'Move to…'})}
                 onClick={() => setMoving(!moving)}
             >
-                <span className={am('end')}/>
+                <span className={am('end')}>
+                    <Icon
+                        name='chev'
+                        size='xs'
+                    />
+                </span>
             </MenuItem>
             {moving && (
                 <div className={am('sub')}>

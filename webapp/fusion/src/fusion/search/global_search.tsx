@@ -247,7 +247,7 @@ export default function GlobalSearch() {
                 <input
                     ref={inputRef}
                     value={query}
-                    placeholder={formatMessage({id: 'fusion.gs.placeholder', defaultMessage: 'Search messages, channels and people'})}
+                    placeholder={formatMessage({id: 'fusion.gs.placeholder', defaultMessage: 'Search messages, channels, people and more'})}
                     aria-label={formatMessage({id: 'fusion.gs.label', defaultMessage: 'Search everything'})}
                     autoComplete='off'
                     role='combobox'
