@@ -3,7 +3,7 @@
 
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {useIntl} from 'react-intl';
-import {useDispatch, useSelector} from 'react-redux';
+import {useDispatch, useSelector, useStore} from 'react-redux';
 
 import type {FileInfo} from '@mattermost/types/files';
 import type {PostPriority} from '@mattermost/types/posts';
@@ -26,6 +26,8 @@ import Icon from 'fusion/components/icon';
 import {Popover} from 'fusion/components/layer';
 import {MenuHeading, MenuItem, MenuSeparator} from 'fusion/components/menu';
 import {useBurnDuration} from 'fusion/messages/burn_on_read';
+import {QuotedMessage, REPLY_EVENT, replyCandidates, replyToId, useInlineRepliesEnabled, useQuoted} from 'fusion/messages/inline_reply';
+import type {ReplyEventDetail} from 'fusion/messages/inline_reply';
 import EmojiPicker from 'fusion/popovers/emoji_picker';
 import {MENTION_EVENT} from 'fusion/popovers/user_menu';
 import {useToast} from 'fusion/shell/toast_context';
@@ -62,6 +64,7 @@ export default function Composer({channelId, rootId = '', placeholder}: Props) {
     const intl = useIntl();
     const {formatMessage} = intl;
     const dispatch = useDispatch();
+    const store = useStore<GlobalState>();
     const getDraft = useMemo(() => makeGetDraft(), []);
     const storedDraft = useSelector((state: GlobalState) => getDraft(state, channelId, rootId));
     const priorityEnabled = useSelector(isPostPriorityEnabled);
@@ -75,6 +78,7 @@ export default function Composer({channelId, rootId = '', placeholder}: Props) {
     const persistentMinutes = useSelector((state: GlobalState) => parseInt(getConfig(state).PersistentNotificationIntervalMinutes || '5', 10) || 5);
     const toast = useToast();
     const ctrlSend = useSelector((state: GlobalState) => getBool(state, Constants.Preferences.CATEGORY_ADVANCED_SETTINGS, 'send_on_ctrl_enter', false));
+    const inlineReplies = useInlineRepliesEnabled();
     const [draft, setDraft] = useState<PostDraft>(storedDraft);
     const [showFormatting, setShowFormatting] = useShowFormatting();
     const [pending, setPending] = useState<Pending[]>([]);
@@ -115,6 +119,44 @@ export default function Composer({channelId, rootId = '', placeholder}: Props) {
     }, [dispatch, key, rootId]);
 
     const change = (patch: Partial<PostDraft>) => save({...draft, channelId, rootId, createAt: draft.createAt || Date.now(), ...patch});
+
+    // An inline reply quotes the message in the draft's reply_to prop, which the message is sent with.
+    const replyTo = inlineReplies ? replyToId(draft) : '';
+    const quoted = useQuoted(replyTo, undefined);
+    const setReplyTo = (postId: string) => {
+        const draftProps = {...draft.props};
+        delete draftProps.reply_to;
+        change({props: postId ? {...draftProps, reply_to: postId} : draftProps});
+    };
+
+    // "Reply" on a message of this conversation quotes it here.
+    const setReplyToRef = useRef(setReplyTo);
+    setReplyToRef.current = setReplyTo;
+    useEffect(() => {
+        const onReply = (e: Event) => {
+            const detail = (e as CustomEvent<ReplyEventDetail>).detail;
+            if (detail.channelId === channelId && detail.rootId === rootId) {
+                setReplyToRef.current(detail.postId);
+                textareaRef.current?.focus();
+            }
+        };
+        window.addEventListener(REPLY_EVENT, onReply);
+        return () => window.removeEventListener(REPLY_EVENT, onReply);
+    }, [channelId, rootId]);
+
+    // Shift+Up in an empty composer quotes the message above the one quoted (the last one at first), and Shift+Down the
+    // one below, or none past the last.
+    const moveReplyTo = (older: boolean) => {
+        const candidates = replyCandidates(store.getState(), channelId, rootId);
+        const at = replyTo ? candidates.indexOf(replyTo) : -1;
+        let next = '';
+        if (older) {
+            next = candidates[at + 1] || (at === -1 ? '' : replyTo);
+        } else if (at > 0) {
+            next = candidates[at - 1];
+        }
+        setReplyTo(next);
+    };
 
     const submit = async () => {
         const message = draft.message;
@@ -168,6 +210,18 @@ export default function Composer({channelId, rootId = '', placeholder}: Props) {
 
     const onKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
         if (autocompleteRef.current?.handleKeyDown(e)) {
+            return;
+        }
+
+        if (e.key === 'Escape' && replyTo) {
+            e.preventDefault();
+            e.stopPropagation();
+            setReplyTo('');
+            return;
+        }
+        if (inlineReplies && (e.key === 'ArrowUp' || e.key === 'ArrowDown') && e.shiftKey && !draft.message && !e.altKey && !e.ctrlKey && !e.metaKey) {
+            e.preventDefault();
+            moveReplyTo(e.key === 'ArrowUp');
             return;
         }
 
@@ -384,6 +438,25 @@ export default function Composer({channelId, rootId = '', placeholder}: Props) {
                 />
             )}
             {schedulingEnabled && <ScheduledNote id={rootId || channelId}/>}
+            {replyTo && (
+                <div className={am('replying')}>
+                    <QuotedMessage quoted={quoted}/>
+                    <button
+                        type='button'
+                        title={formatMessage({id: 'fusion.composer.cancelReply', defaultMessage: 'Cancel reply'})}
+                        aria-label={formatMessage({id: 'fusion.composer.cancelReply', defaultMessage: 'Cancel reply'})}
+                        onClick={() => {
+                            setReplyTo('');
+                            textareaRef.current?.focus();
+                        }}
+                    >
+                        <Icon
+                            name='x'
+                            size='sm'
+                        />
+                    </button>
+                </div>
+            )}
             <div className={am('compose-box')}>
                 {(chips.length > 0 || files.length > 0 || uploads.length > 0) && <div className={am('opt-chips')}>{chips}{files}{uploads}</div>}
                 <div className={am('compose-row')}>

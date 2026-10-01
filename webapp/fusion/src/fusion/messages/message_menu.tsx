@@ -40,6 +40,8 @@ import {copyToClipboard} from 'utils/utils';
 
 import type {GlobalState} from 'types/store';
 
+import {canReplyInline, replyInline, useInlineRepliesEnabled} from './inline_reply';
+
 // The quick reactions: your most used recent emoji first, then these.
 const QUICK_REACTIONS = ['+1', 'heart', 'joy', 'tada', 'eyes', 'white_check_mark'];
 const QUICK_COUNT = 6;
@@ -81,6 +83,7 @@ export default function MessageMenu({post, anchor, inThread, onClose, onMoreReac
     const canReport = useSelector((state: GlobalState) => Boolean(channel) && !isSystemMessage(post) && contentFlaggingEnabledInTeam(state, channel!.team_id));
     const pluginActions = useSelector((state: GlobalState) => state.plugins.components.PostDropdownMenu || []);
     const recent = useSelector(getRecentEmojisNames);
+    const inlineReplies = useInlineRepliesEnabled();
     const quick = [...new Set([...[...recent].reverse(), ...QUICK_REACTIONS])].slice(0, QUICK_COUNT);
 
     const run = (action: () => void) => () => {
@@ -127,9 +130,16 @@ export default function MessageMenu({post, anchor, inThread, onClose, onMoreReac
                     />
                 </button>
             </div>
-            {!inThread && !burn && (
+            {inlineReplies && canReplyInline(post) && (
                 <MenuItem
                     icon='reply'
+                    label={formatMessage({id: 'fusion.messageMenu.replyInline', defaultMessage: 'Reply'})}
+                    onClick={run(() => replyInline(post, inThread ? threadId : ''))}
+                />
+            )}
+            {!inThread && !burn && (
+                <MenuItem
+                    icon={inlineReplies ? 'thread' : 'reply'}
                     label={formatMessage({id: 'fusion.messageMenu.reply', defaultMessage: 'Reply in thread'})}
                     onClick={run(() => dispatch(selectPost(post)))}
                 />

@@ -41,6 +41,7 @@ import {getIsMobileView} from 'selectors/views/browser';
 
 import {isArchivedChannel} from 'utils/channel_utils';
 import {Locations, Preferences} from 'utils/constants';
+import {canReplyInline, isInlineRepliesEnabled} from 'utils/inline_replies';
 import * as PostUtils from 'utils/post_utils';
 import {matchUserMentionTriggersWithMessageMentions} from 'utils/post_utils';
 import {allAtMentions} from 'utils/text_formatting';
@@ -127,6 +128,12 @@ function makeMapStateToProps() {
             isMilitaryTime,
             canMove: channel && !isBoRPost ? canWrangler(state, channel.type, threadReplyCount) : false,
             canReply: !systemMessage && !isBoRPost && ownProps.location === Locations.CENTER,
+            canReplyInline: isInlineRepliesEnabled(state) && canReplyInline(post) && !isArchivedChannel(channel) && !isBoRPost && (
+                !ownProps.location ||
+                ownProps.location === Locations.CENTER ||
+                ownProps.location === Locations.RHS_ROOT ||
+                ownProps.location === Locations.RHS_COMMENT
+            ),
             canForward: !systemMessage && !isBoRPost,
             canFollowThread: !systemMessage && !isBoRPost && collapsedThreads && (
                 !ownProps.location ||

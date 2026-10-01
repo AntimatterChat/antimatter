@@ -40,6 +40,7 @@ import {
     DropOverlayIdCreatePost,
     DropOverlayIdEditPost, FileUploadOverlay,
 } from 'components/file_upload_overlay/file_upload_overlay';
+import InlineReplyIndicator from 'components/inline_reply/inline_reply_indicator';
 import RhsSuggestionList from 'components/suggestion/rhs_suggestion_list';
 import SuggestionList from 'components/suggestion/suggestion_list';
 import Textbox from 'components/textbox';
@@ -58,6 +59,8 @@ import Constants, {
     AdvancedTextEditorTextboxIds,
 } from 'utils/constants';
 import {canUploadFiles as canUploadFilesAccordingToConfig} from 'utils/file_utils';
+import {INLINE_REPLY_EVENT, getReplyToId, isInlineRepliesEnabled} from 'utils/inline_replies';
+import type {InlineReplyEventDetail} from 'utils/inline_replies';
 import type {MarkdownMode} from 'utils/markdown/apply_markdown';
 import {applyMarkdown as applyMarkdownUtil} from 'utils/markdown/apply_markdown';
 import {isErrorInvalidSlashCommand} from 'utils/post_utils';
@@ -260,6 +263,7 @@ const AdvancedTextEditor = ({
     const wysiwygEnabled = useSelector(getWysiwygEditorPreference);
     const ctrlSend = useSelector((state: GlobalState) => getBool(state, Preferences.CATEGORY_ADVANCED_SETTINGS, 'send_on_ctrl_enter'));
     const codeBlockOnCtrlEnter = useSelector((state: GlobalState) => getBool(state, Preferences.CATEGORY_ADVANCED_SETTINGS, 'code_block_ctrl_enter', true));
+    const inlineRepliesEnabled = useSelector(isInlineRepliesEnabled);
     const isDMOrGMRemote = isChannelShared && (channelType === Constants.DM_CHANNEL || channelType === Constants.GM_CHANNEL);
 
     if (draft.channelId !== channelId || draft.rootId !== rootId) {
@@ -576,7 +580,7 @@ const AdvancedTextEditor = ({
         handleSubmitWithErrorHandling();
     }, [dispatch, draft, handleSubmitWithErrorHandling, isInEditMode, isRHS, isDraftSendable]);
 
-    const [handleKeyDown, postMsgKeyPress] = useKeyHandler(
+    const [handleKeyDownWithoutReply, postMsgKeyPress] = useKeyHandler(
         draft,
         channelId,
         rootId,
@@ -595,6 +599,43 @@ const AdvancedTextEditor = ({
         isInEditMode,
         handleCancel,
     );
+
+    // An inline reply quotes the message in the draft's reply_to prop, which the message is sent with.
+    const replyToId = inlineRepliesEnabled && !isInEditMode ? getReplyToId(draft) : '';
+    const setReplyTo = useCallback((postId: string) => {
+        const draftProps = {...draft.props};
+        delete draftProps.reply_to;
+        handleDraftChange({...draft, props: postId ? {...draftProps, reply_to: postId} : draftProps}, {instant: true});
+    }, [draft, handleDraftChange]);
+
+    // "Quote reply" on a message of this conversation quotes it here.
+    const setReplyToRef = useRef(setReplyTo);
+    setReplyToRef.current = setReplyTo;
+    useEffect(() => {
+        if (isInEditMode) {
+            return undefined;
+        }
+        const onInlineReply = (e: Event) => {
+            const detail = (e as CustomEvent<InlineReplyEventDetail>).detail;
+            if (detail.channelId === channelId && detail.rootId === rootId) {
+                setReplyToRef.current(detail.postId);
+                focusTextbox(true);
+            }
+        };
+        window.addEventListener(INLINE_REPLY_EVENT, onInlineReply);
+        return () => window.removeEventListener(INLINE_REPLY_EVENT, onInlineReply);
+    }, [channelId, rootId, isInEditMode, focusTextbox]);
+
+    // Escape cancels the reply before anything else.
+    const handleKeyDown = useCallback((e: React.KeyboardEvent<TextboxElement>) => {
+        if (replyToId && e.key === 'Escape' && !e.shiftKey && !e.altKey && !e.ctrlKey && !e.metaKey) {
+            e.preventDefault();
+            e.stopPropagation();
+            setReplyTo('');
+            return;
+        }
+        handleKeyDownWithoutReply(e);
+    }, [replyToId, setReplyTo, handleKeyDownWithoutReply]);
 
     const handleSubmitWithEvent = useCallback((e: React.FormEvent) => {
         e.preventDefault();
@@ -947,6 +988,15 @@ const AdvancedTextEditor = ({
                         tabIndex={-1}
                         className='AdvancedTextEditor__cell a11y__region'
                     >
+                        {replyToId && (
+                            <InlineReplyIndicator
+                                postId={replyToId}
+                                onCancel={() => {
+                                    setReplyTo('');
+                                    focusTextbox(true);
+                                }}
+                            />
+                        )}
                         {!isInEditMode && (priorityLabels || burnOnReadLabels) && (
                             <div className='AdvancedTextEditor__labels'>
                                 <UnifiedLabelsWrapper

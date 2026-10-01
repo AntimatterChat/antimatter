@@ -7,6 +7,15 @@
         Create a new post in a channel. To create the post as a comment on
         another post, provide `root_id`.
 
+        To reply inline to a message of the channel, quoting it above the new
+        post without starting a thread, set the `reply_to` prop to that
+        message's ID. The message must be in the same channel (in the same
+        thread when `root_id` is set) and must not be deleted, a system
+        message or a burn-on-read message; other values are dropped, as is
+        the prop when `ServiceSettings.EnableInlineReplies` is false. The
+        author of the quoted message is notified as if mentioned, and the
+        post's `metadata.reply_to` describes the quoted message.
+
         ##### Permissions
 
         Must have `create_post` permission for the channel the post is being created in.
@@ -56,7 +65,9 @@
                   items:
                     type: string
                 props:
-                  description: A general JSON property bag to attach to the post
+                  description: >
+                    A general JSON property bag to attach to the post. Set
+                    `reply_to` to a message ID to reply to that message inline.
                   type: object
                 metadata:
                   description: A JSON object to add post metadata, e.g the post's priority

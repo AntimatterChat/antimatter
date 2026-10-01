@@ -17,6 +17,7 @@ import type Textbox from 'components/textbox/textbox';
 import mergeObjects from 'packages/mattermost-redux/test/merge_objects';
 import {renderWithContext, userEvent, screen, act, createEvent, fireEvent} from 'tests/react_testing_utils';
 import Constants, {Locations, PostTypes, StoragePrefixes} from 'utils/constants';
+import {replyInline} from 'utils/inline_replies';
 import {TestHelper} from 'utils/test_helper';
 
 import type {PostDraft} from 'types/store/draft';
@@ -258,6 +259,71 @@ describe('components/avanced_text_editor/advanced_text_editor', () => {
             jest.advanceTimersByTime(Constants.SAVE_DRAFT_TIMEOUT + 50);
             expect(mockedRemoveDraft).toHaveBeenCalled();
             expect(mockedUpdateDraft).not.toHaveBeenCalled();
+        });
+    });
+
+    describe('inline replies', () => {
+        const quoted = TestHelper.getPostMock({id: 'quoted_post_id', channel_id: channelId, user_id: currentUserId, message: 'the quoted message', type: '' as PostType});
+        const state = mergeObjects(initialState, {
+            entities: {
+                posts: {
+                    posts: {quoted_post_id: quoted},
+                },
+            },
+        });
+
+        it('should quote a message it is asked to and send the reply with it', async () => {
+            renderWithContext(
+                <AdvancedTextEditor
+                    {...baseProps}
+                />,
+                state,
+            );
+
+            act(() => replyInline(quoted, ''));
+            expect(screen.getByTestId('inline-reply-indicator')).toHaveTextContent('the quoted message');
+
+            const message = 'my answer';
+            const textbox = screen.getByTestId('post_textbox');
+            fireEvent.input(textbox, {target: {value: message}});
+            await act(async () => {
+                fireEvent.click(screen.getByTestId('SendMessageButton'));
+            });
+
+            expect(mockedOnSubmit).toHaveBeenCalledWith(
+                channelId,
+                '',
+                expect.objectContaining({message, props: {reply_to: quoted.id}}),
+                expect.anything(),
+                undefined,
+            );
+            expect(screen.queryByTestId('inline-reply-indicator')).not.toBeInTheDocument();
+        });
+
+        it('should leave quotes for other conversations alone', () => {
+            renderWithContext(
+                <AdvancedTextEditor
+                    {...baseProps}
+                />,
+                state,
+            );
+
+            act(() => replyInline({...quoted, channel_id: otherChannelId}, ''));
+            act(() => replyInline(quoted, 'some_root_id'));
+            expect(screen.queryByTestId('inline-reply-indicator')).not.toBeInTheDocument();
+        });
+
+        it('should stop quoting on Escape', async () => {
+            renderWithContext(
+                <AdvancedTextEditor
+                    {...baseProps}
+                />,
+                state,
+            );
+
+            act(() => replyInline(quoted, ''));
+            await userEvent.type(screen.getByTestId('post_textbox'), '{escape}');
+            expect(screen.queryByTestId('inline-reply-indicator')).not.toBeInTheDocument();
         });
     });
 

@@ -54,6 +54,9 @@ type PostMetadata struct {
 	// be loaded", so a client never renders a post as unmarked when the marking is merely
 	// missing.
 	PropertyValuesUnavailable bool `json:"property_values_unavailable,omitempty"`
+
+	// ReplyTo describes the message the post replies to inline, when it has a reply_to prop.
+	ReplyTo *PostReplyTo `json:"reply_to,omitempty"`
 }
 
 // PostTranslation represents a translation of a post in a specific language
@@ -139,6 +142,11 @@ func (p *PostMetadata) Copy() *PostMetadata {
 		}
 	}
 
+	var replyToCopy *PostReplyTo
+	if p.ReplyTo != nil {
+		replyToCopy = new(*p.ReplyTo)
+	}
+
 	return &PostMetadata{
 		Embeds:                    embedsCopy,
 		Emojis:                    emojisCopy,
@@ -151,5 +159,6 @@ func (p *PostMetadata) Copy() *PostMetadata {
 		RedactedFileCount:         p.RedactedFileCount,
 		PropertyValues:            propertyValuesCopy,
 		PropertyValuesUnavailable: p.PropertyValuesUnavailable,
+		ReplyTo:                   replyToCopy,
 	}
 }

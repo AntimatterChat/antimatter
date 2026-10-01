@@ -66,6 +66,23 @@ export type PostPriorityMetadata = {
     persistent_notifications?: boolean;
 };
 
+// PostReplyTo describes the message a post replies to inline (its reply_to prop), as the server sends it.
+export type PostReplyTo = {
+    post_id: string;
+    user_id?: string;
+
+    // The start of the quoted message's text.
+    message?: string;
+    type?: PostType;
+    create_at?: number;
+    edit_at?: number;
+    file_count?: number;
+    override_username?: string;
+
+    // Set when the quoted message was deleted or can't be shown.
+    deleted?: boolean;
+};
+
 export type PostTranslation = {
     object?: {
         message: string;
@@ -88,6 +105,7 @@ export type PostMetadata = {
     redacted_file_count?: number;
     property_values?: Array<PropertyValue<unknown>>;
     property_values_unavailable?: boolean;
+    reply_to?: PostReplyTo;
 };
 
 export type Post = {

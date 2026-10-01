@@ -111,6 +111,8 @@ const (
 	PostPropsAIGeneratedByUsername    = "ai_generated_by_username"
 	PostPropsExpireAt                 = "expire_at"
 	PostPropsReadDurationSeconds      = "read_duration"
+	// PostPropsReplyTo holds the id of the message a post replies to inline (see PostReplyTo).
+	PostPropsReplyTo = "reply_to"
 	// Shared-channel state posts (PostTypeSharedChannelState): props for client-side i18n.
 	PostPropsSharedChannelState         = "shared_channel_state"
 	PostPropsSharedChannelWorkspaceName = "workspace_name"

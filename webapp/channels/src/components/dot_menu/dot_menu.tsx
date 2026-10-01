@@ -14,6 +14,7 @@ import {
     ContentCopyIcon,
     DotsHorizontalIcon,
     EmoticonPlusOutlineIcon,
+    FormatQuoteOpenIcon,
     LinkVariantIcon,
     MarkAsUnreadIcon,
     MessageArrowRightOutlineIcon,
@@ -44,6 +45,7 @@ import ChannelPermissionGate from 'components/permissions_gates/channel_permissi
 import {createBurnOnReadDeleteModalHandlers} from 'hooks/useBurnOnReadDeleteModal';
 import {Locations, ModalIdentifiers, Constants} from 'utils/constants';
 import DelayedAction from 'utils/delayed_action';
+import {replyInline} from 'utils/inline_replies';
 import * as Keyboard from 'utils/keyboard';
 import * as PostUtils from 'utils/post_utils';
 import * as Utils from 'utils/utils';
@@ -98,6 +100,9 @@ type Props = {
     isMilitaryTime: boolean;
     canMove: boolean;
     canReply: boolean;
+
+    // Whether the post can be quoted in an inline reply from where it's shown.
+    canReplyInline?: boolean;
     canForward: boolean;
     canFollowThread: boolean;
     canPin: boolean;
@@ -391,6 +396,14 @@ export class DotMenuClass extends React.PureComponent<Props, State> {
         this.props.handleCommentClick?.(e);
     };
 
+    // Quotes the post in the composer of the conversation it's shown in: the thread's in the right-hand side, else the
+    // channel's.
+    handleReplyInline = () => {
+        const {post, location} = this.props;
+        const inThread = location === Locations.RHS_ROOT || location === Locations.RHS_COMMENT;
+        replyInline(post, inThread ? post.root_id || post.id : '');
+    };
+
     handleMenuKeydown = (event: React.KeyboardEvent<HTMLDivElement>, forceCloseMenu?: (() => void)) => {
         event.preventDefault();
 
@@ -405,6 +418,14 @@ export class DotMenuClass extends React.PureComponent<Props, State> {
             if (this.props.canReply) {
                 forceCloseMenu();
                 this.handleCommentClick(event);
+            }
+            break;
+
+            // quote reply
+        case Keyboard.isKeyPressed(event, Constants.KeyCodes.Q):
+            if (this.props.canReplyInline) {
+                forceCloseMenu();
+                this.handleReplyInline();
             }
             break;
 
@@ -604,7 +625,8 @@ export class DotMenuClass extends React.PureComponent<Props, State> {
         // 2. BoR post meeting above criteria
         const showDelete = (!isBurnOnReadPost && this.state.canDelete) || shouldShowDeleteForBoR;
 
-        const firstSectionHasItems = showReply || showForward || showReactions || showFollowPost || showMarkAsUnread || showSave || showRemind || showPin || showMove;
+        const showReplyInline = Boolean(this.props.canReplyInline);
+        const firstSectionHasItems = showReply || showReplyInline || showForward || showReactions || showFollowPost || showMarkAsUnread || showSave || showRemind || showPin || showMove;
         const secondSectionHasItems = showShowTranslation || showCopyText || showCopyLink;
         const thirdSectionHasItems = showEdit || showDelete || showFlagContent;
 
@@ -644,6 +666,21 @@ export class DotMenuClass extends React.PureComponent<Props, State> {
                         leadingElement={<ReplyOutlineIcon size={18}/>}
                         trailingElements={<ShortcutKey shortcutKey='R'/>}
                         onClick={this.handleCommentClick}
+                    />
+                }
+                {showReplyInline &&
+                    <Menu.Item
+                        id={`reply_inline_to_post_${this.props.post.id}`}
+                        data-testid={`reply_inline_to_post_${this.props.post.id}`}
+                        labels={
+                            <FormattedMessage
+                                id='post_info.replyInline'
+                                defaultMessage='Quote reply'
+                            />
+                        }
+                        leadingElement={<FormatQuoteOpenIcon size={18}/>}
+                        trailingElements={<ShortcutKey shortcutKey='Q'/>}
+                        onClick={this.handleReplyInline}
                     />
                 }
                 {showForward &&

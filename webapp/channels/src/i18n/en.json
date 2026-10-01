@@ -3539,6 +3539,14 @@
     "defaultMessage": "Enable Inline Latex Rendering:",
     "description": "Admin console setting label (toggle) on the Posts page for rendering inline LaTeX math."
   },
+  "admin.customization.enableInlineRepliesDesc": {
+    "defaultMessage": "When true, users can reply to a specific message in the channel without starting a thread: the reply quotes the message above it, and its author is notified. Mobile apps show such replies without the quote.",
+    "description": "Help text of the Enable inline replies setting in the System Console; explains what an inline reply is and that mobile apps do not show the quote."
+  },
+  "admin.customization.enableInlineRepliesTitle": {
+    "defaultMessage": "Enable inline replies:",
+    "description": "Label of the System Console setting (Site Configuration > Posts) that turns inline replies on or off: replying to one message in the channel, quoting it, without starting a thread."
+  },
   "admin.customization.enableLatexDesc": {
     "defaultMessage": "Enable rendering of Latex in code blocks. If false, Latex code will be highlighted only.\n\nEnabling Latex is not recommended in environments where not all users are trusted.",
     "description": "Admin console help text for the LaTeX code block rendering toggle on the Posts page; \\n\\n is a paragraph break."
@@ -21763,6 +21771,30 @@
     "defaultMessage": "Go to team",
     "description": "Tooltip on an inline link in a message that points to a team."
   },
+  "inline_reply.cancel": {
+    "defaultMessage": "Cancel reply",
+    "description": "Tooltip and accessibility label of the X button in the message box that stops replying inline to a quoted message."
+  },
+  "inline_reply.deleted": {
+    "defaultMessage": "Original message deleted",
+    "description": "Shown instead of the quoted text above an inline reply when the message it replied to was deleted."
+  },
+  "inline_reply.files": {
+    "defaultMessage": "{count, plural, one {# file} other {# files}}",
+    "description": "Shown instead of the quoted text above an inline reply when the quoted message has only file attachments; {count} is the number of files."
+  },
+  "inline_reply.message": {
+    "defaultMessage": "a message",
+    "description": "Shown instead of the quoted text above an inline reply when there is nothing to quote from the original message."
+  },
+  "inline_reply.replying": {
+    "defaultMessage": "Replying to: ",
+    "description": "Start of the line above an inline reply, or above the message box, when the author of the quoted message is unknown; followed by the quoted text."
+  },
+  "inline_reply.replyingTo": {
+    "defaultMessage": "Replying to {name}: ",
+    "description": "Start of the line above an inline reply, or above the message box while writing one; {name} is the author of the quoted message, followed by the quoted text."
+  },
   "inProduct_notices.adminOnlyMessage": {
     "defaultMessage": "Visible to Admins only",
     "description": "Footer note in the in-product notices modal indicating the notice is shown only to system administrators."
@@ -24794,6 +24826,10 @@
   "post_info.reply": {
     "defaultMessage": "Reply",
     "description": "Menu item in the message actions menu that opens the thread to reply; 'Reply' is a verb."
+  },
+  "post_info.replyInline": {
+    "defaultMessage": "Quote reply",
+    "description": "Menu item in the message actions menu that replies to this message in the channel, quoting it above the reply, instead of opening its thread."
   },
   "post_info.show_translation": {
     "defaultMessage": "Show translation",

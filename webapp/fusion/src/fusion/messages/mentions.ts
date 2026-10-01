@@ -6,6 +6,7 @@ import {useSelector} from 'react-redux';
 import type {Post} from '@mattermost/types/posts';
 
 import {Posts} from 'mattermost-redux/constants';
+import {getConfig} from 'mattermost-redux/selectors/entities/general';
 import {getPost} from 'mattermost-redux/selectors/entities/posts';
 import {isCollapsedThreadsEnabled} from 'mattermost-redux/selectors/entities/preferences';
 import type {UserMentionKey} from 'mattermost-redux/selectors/entities/users';
@@ -36,7 +37,7 @@ export function mentions(message: string, keys: UserMentionKey[]): boolean {
 }
 
 // useConcernsMe tells whether a message concerns you, for the mockup's .hl-me highlight: someone else's message that
-// mentions you, or, when replies show in the channel, a reply to your message.
+// mentions you or replies inline to your message, or, when replies show in the channel, a reply to your message.
 export function useConcernsMe(post: Post | undefined, inThread: boolean): boolean {
     return useSelector((state: GlobalState) => {
         if (!post || post.state === Posts.POST_DELETED || isSystemMessage(post)) {
@@ -48,6 +49,14 @@ export function useConcernsMe(post: Post | undefined, inThread: boolean): boolea
         }
         if (mentions(post.message, getCurrentUserMentionKeys(state))) {
             return true;
+        }
+        const quotedId = post.props?.reply_to;
+        if (typeof quotedId === 'string' && quotedId && getConfig(state).EnableInlineReplies !== 'false') {
+            const quoted = getPost(state, quotedId);
+            const quotedAuthor = quoted ? quoted.user_id : post.metadata?.reply_to?.user_id;
+            if (quotedAuthor === me) {
+                return true;
+            }
         }
         if (post.root_id && !inThread && !isCollapsedThreadsEnabled(state)) {
             return getPost(state, post.root_id)?.user_id === me;

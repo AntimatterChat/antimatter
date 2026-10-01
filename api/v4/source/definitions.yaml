@@ -962,6 +962,43 @@ components:
             Present and `true` when the lookup of this post's property values failed; omitted
             otherwise. It does **not** mean the post has no property values, it means they could
             not be retrieved, and `property_values` is therefore absent or incomplete.
+        reply_to:
+          type: object
+          description: >
+            The message this post replies to inline, when its `reply_to` prop is
+            set, so that clients can quote it without fetching it.
+          properties:
+            post_id:
+              type: string
+              description: The ID of the quoted message.
+            user_id:
+              type: string
+              description: The ID of the quoted message's author.
+            message:
+              type: string
+              description: The start of the quoted message's text (at most 300 characters).
+            type:
+              type: string
+              description: The quoted message's type.
+            create_at:
+              type: integer
+              format: int64
+              description: When the quoted message was posted, in milliseconds.
+            edit_at:
+              type: integer
+              format: int64
+              description: When the quoted message was last edited, in milliseconds.
+            file_count:
+              type: integer
+              description: How many files the quoted message has.
+            override_username:
+              type: string
+              description: The name an incoming webhook posted the quoted message under.
+            deleted:
+              type: boolean
+              description: >
+                `true` when the quoted message was deleted or can't be shown; only
+                `post_id` is set then.
     TeamMap:
       type: object
       description: A mapping of teamIds to teams.

@@ -83,6 +83,7 @@ export type ClientConfig = {
     EnableJoinLeaveMessageByDefault: string;
     EnableLatex: string;
     EnableInlineLatex: string;
+    EnableInlineReplies: string;
     EnableLdap: string;
     EnableLinkPreviews: string;
     EnableMarketplace: string;
@@ -359,6 +360,7 @@ export type ServiceSettings = {
     EnablePostIconOverride: boolean;
     EnableLinkPreviews: boolean;
     EnablePermalinkPreviews: boolean;
+    EnableInlineReplies: boolean;
     RestrictLinkPreviews: string;
     EnableTesting: boolean;
     EnableDeveloper: boolean;
