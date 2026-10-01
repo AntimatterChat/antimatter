@@ -9,3 +9,4 @@
 
 // The globe of people on another server, beside their name (the mockup's style="color:var(--anti)").
 :is(.am-app, .am-layer) .am-fed-ic { display: inline-grid; place-items: center; margin-left: 4px; color: var(--am-anti); vertical-align: -1px; }
+:is(.am-app, .am-layer) .am-ch-ic .am-lock.am-shared { color: var(--am-anti); }
