@@ -31,6 +31,9 @@
 
   // Apps drawing a canvas (the whiteboard) keep the wide size they had before.
   :is(.am-app, .am-layer) .am-rhs.am-wide.am-roomy:not(.am-expanded) { width: min(780px, 62vw); }
+
+  // Expanding never makes them narrower than that.
+  :is(.am-app, .am-layer) .am-rhs.am-wide.am-roomy.am-expanded { width: max(min(780px, 62vw), clamp(380px, calc(100vw - var(--am-chrome-w) - var(--am-main-min)), 1120px)); }
 }
 /* Shared notepad */
 :is(.am-app, .am-layer) .am-pad-wrap { display: flex; flex-direction: column; height: 100%; min-height: 0; }
