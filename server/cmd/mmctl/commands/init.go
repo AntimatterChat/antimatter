@@ -120,11 +120,11 @@ func withClient(fn func(c client.Client, cmd *cobra.Command, args []string) erro
 			}
 			if !valid {
 				if viper.GetBool("strict") {
-					printer.PrintError("ERROR: server version " + serverVersion + " doesn't match with mmctl version " + Version + ". Strict flag is set, so the command will not be run")
+					printer.PrintError("ERROR: server version " + serverVersion + " doesn't match with amctl version " + Version + ". Strict flag is set, so the command will not be run")
 					os.Exit(1)
 				}
 				if !viper.GetBool("suppress-warnings") {
-					printer.PrintWarning("server version " + serverVersion + " doesn't match mmctl version " + Version)
+					printer.PrintWarning("server version " + serverVersion + " doesn't match amctl version " + Version)
 				}
 			}
 		}

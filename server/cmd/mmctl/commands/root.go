@@ -34,7 +34,7 @@ func Run(args []string) error {
 	_ = RootCmd.PersistentFlags().MarkHidden("format")
 	RootCmd.PersistentFlags().Bool("json", false, "the output format will be in json format")
 	_ = viper.BindPFlag("json", RootCmd.PersistentFlags().Lookup("json"))
-	RootCmd.PersistentFlags().Bool("strict", false, "will only run commands if the mmctl version matches the server one")
+	RootCmd.PersistentFlags().Bool("strict", false, "will only run commands if the amctl version matches the server one")
 	_ = viper.BindPFlag("strict", RootCmd.PersistentFlags().Lookup("strict"))
 	RootCmd.PersistentFlags().Bool("insecure-sha1-intermediate", false, "allows to use insecure TLS protocols, such as SHA-1")
 	_ = viper.BindPFlag("insecure-sha1-intermediate", RootCmd.PersistentFlags().Lookup("insecure-sha1-intermediate"))
@@ -48,7 +48,7 @@ func Run(args []string) error {
 	_ = RootCmd.PersistentFlags().MarkHidden("no-stat")
 	RootCmd.PersistentFlags().Bool("disable-pager", false, "disables paged output")
 	_ = viper.BindPFlag("disable-pager", RootCmd.PersistentFlags().Lookup("disable-pager"))
-	RootCmd.PersistentFlags().Bool("quiet", false, "prevent mmctl to generate output for the commands")
+	RootCmd.PersistentFlags().Bool("quiet", false, "prevent amctl to generate output for the commands")
 	_ = viper.BindPFlag("quiet", RootCmd.PersistentFlags().Lookup("quiet"))
 
 	RootCmd.SetArgs(args)
@@ -73,13 +73,13 @@ func Run(args []string) error {
 }
 
 func printPanic(x any) {
-	u, err := url.Parse("https://github.com/mattermost/mattermost/issues/new")
+	u, err := url.Parse("https://github.com/AntimatterChat/antimatter/issues/new")
 	if err != nil {
 		panic(err)
 	}
 
 	q := u.Query()
-	q.Add("title", "[mmctl] [bug] panic on v"+Version)
+	q.Add("title", "[amctl] [bug] panic on v"+Version)
 	q.Add("body", "<!--- Please provide the stack trace -->\n")
 	u.RawQuery = q.Encode()
 

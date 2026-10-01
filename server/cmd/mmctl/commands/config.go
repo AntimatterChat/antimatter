@@ -109,13 +109,13 @@ var ConfigSubpathCmd = &cobra.Command{
 	Short: "Update client asset loading to use the configured subpath",
 	Long:  "Update the hard-coded production client asset paths to take into account Mattermost running on a subpath. This command needs access to the Mattermost assets directory to be able to rewrite the paths.",
 	Example: `  # you can rewrite the assets to use a subpath
-  mmctl config subpath --assets-dir /opt/mattermost/client --path /mattermost
+  amctl config subpath --assets-dir /opt/antimatter/client --path /antimatter
 
   # the subpath can have multiple steps
-  mmctl config subpath --assets-dir /opt/mattermost/client --path /my/custom/subpath
+  amctl config subpath --assets-dir /opt/antimatter/client --path /my/custom/subpath
 
   # or you can fallback to the root path passing /
-  mmctl config subpath --assets-dir /opt/mattermost/client --path /`,
+  amctl config subpath --assets-dir /opt/antimatter/client --path /`,
 	Args: cobra.NoArgs,
 	RunE: configSubpathCmdF,
 }
@@ -428,7 +428,7 @@ func configEditCmdF(c client.Client, _ *cobra.Command, _ []string) error {
 		return err
 	}
 
-	file, err := os.CreateTemp(os.TempDir(), "mmctl-*.json")
+	file, err := os.CreateTemp(os.TempDir(), "amctl-*.json")
 	if err != nil {
 		return err
 	}

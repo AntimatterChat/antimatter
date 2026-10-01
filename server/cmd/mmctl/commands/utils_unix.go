@@ -39,7 +39,7 @@ func checkValidSocket(socketPath string) error {
 	}
 	// if user id is "0", they are root and we should avoid this check
 	if strconv.FormatUint(uint64(s.Uid), 10) != cUser.Uid && cUser.Uid != "0" {
-		return fmt.Errorf("owner of the file %q must be the same user running mmctl", socketPath)
+		return fmt.Errorf("owner of the file %q must be the same user running amctl", socketPath)
 	}
 
 	return nil

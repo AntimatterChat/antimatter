@@ -37,19 +37,19 @@ var SampledataCmd = &cobra.Command{
 	Short: "Generate sample data",
 	Long:  "Generate a sample data file and store it locally, or directly import it to the remote server",
 	Example: `  # you can create a sampledata file and store it locally
-  $ mmctl sampledata --bulk sampledata-file.jsonl
+  $ amctl sampledata --bulk sampledata-file.jsonl
 
   # or you can simply print it to the stdout
-  $ mmctl sampledata --bulk -
+  $ amctl sampledata --bulk -
 
   # the amount of entities to create can be customized
-  $ mmctl sampledata -t 7 -u 20 -g 4
+  $ amctl sampledata -t 7 -u 20 -g 4
 
   # the sampledata file can be directly imported in the remote server by not specifying a --bulk flag
-  $ mmctl sampledata
+  $ amctl sampledata
 
   # and the sample users can be created with profile pictures
-  $ mmctl sampledata --profile-images ./images/profiles`,
+  $ amctl sampledata --profile-images ./images/profiles`,
 	Args: cobra.NoArgs,
 	RunE: withClient(sampledataCmdF),
 }
@@ -222,7 +222,7 @@ func sampledataCmdF(c client.Client, command *cobra.Command, args []string) erro
 	var err error
 	switch bulk {
 	case "":
-		tmpDir, err = os.MkdirTemp("", "mmctl-sampledata-")
+		tmpDir, err = os.MkdirTemp("", "amctl-sampledata-")
 		if err != nil {
 			return fmt.Errorf("unable to create temporary directory")
 		}
@@ -396,7 +396,7 @@ func sampledataCmdF(c client.Client, command *cobra.Command, args []string) erro
 	}
 
 	if bulk == "" {
-		zipPath := filepath.Join(os.TempDir(), "mmctl-sampledata.zip")
+		zipPath := filepath.Join(os.TempDir(), "amctl-sampledata.zip")
 		defer os.Remove(zipPath)
 
 		if err := zipDir(zipPath, tmpDir); err != nil {

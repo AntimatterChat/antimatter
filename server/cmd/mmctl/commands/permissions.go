@@ -45,7 +45,7 @@ var ResetCmd = &cobra.Command{
 	Short: "Reset default permissions for role (EE Only)",
 	Long:  "Reset the given role's permissions to the set that was originally released with",
 	Example: `  # Reset the permissions of the 'system_read_only_admin' role.
-  $ mmctl permissions reset system_read_only_admin`,
+  $ amctl permissions reset system_read_only_admin`,
 	Args: cobra.ExactArgs(1),
 	RunE: withClient(resetPermissionsCmdF),
 }

@@ -13,7 +13,7 @@ import (
 
 var DocsCmd = &cobra.Command{
 	Use:   "docs",
-	Short: "Generates mmctl documentation",
+	Short: "Generates amctl documentation",
 	Args:  cobra.NoArgs,
 	RunE:  docsCmdF,
 }

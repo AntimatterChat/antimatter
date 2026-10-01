@@ -305,7 +305,7 @@ func importProcessCmdF(c client.Client, command *cobra.Command, args []string) e
 
 			// in local mode, we tell the server to directly read from this file.
 			if _, err := os.Stat(importFile); errors.Is(err, os.ErrNotExist) {
-				return fmt.Errorf("file %s doesn't exist. NOTE: If this file was uploaded to the server via mmctl import upload, please omit the --bypass-upload flag to revert to old behavior.", importFile)
+				return fmt.Errorf("file %s doesn't exist. NOTE: If this file was uploaded to the server via amctl import upload, please omit the --bypass-upload flag to revert to old behavior.", importFile)
 			}
 			// If it's not an absolute path, then we make it
 			if !path.IsAbs(importFile) {
@@ -414,7 +414,7 @@ func importProcessCmdF(c client.Client, command *cobra.Command, args []string) e
 		resume := false
 		if maybeRunning {
 			fmt.Fprintf(os.Stderr, "\nAn import of '%s' is still marked in progress, with a checkpoint at %s.\n", importFile, progress)
-			fmt.Fprintln(os.Stderr, "It may still be running — checkpoints are only written between segments, so a large import can look idle for a long time. Check 'mmctl import job list' before continuing; resuming a live import duplicates its work.")
+			fmt.Fprintln(os.Stderr, "It may still be running — checkpoints are only written between segments, so a large import can look idle for a long time. Check 'amctl import job list' before continuing; resuming a live import duplicates its work.")
 			fmt.Fprintln(os.Stderr, "Resume from the checkpoint anyway? Answering no starts a fresh import from the beginning.")
 			fmt.Fprint(os.Stderr, "[y/N]: ")
 			resume = readYesNo(os.Stdin, false)
