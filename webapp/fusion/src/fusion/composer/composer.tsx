@@ -36,6 +36,7 @@ import Autocomplete from './autocomplete';
 import type {AutocompleteHandle} from './autocomplete';
 import {FORMATS, applyFormat} from './formats';
 import {SchedulePopover, ScheduledNote} from './schedule';
+import SleepNote from './sleep_note';
 
 type Props = {
     channelId: string;
@@ -124,7 +125,7 @@ export default function Composer({channelId, rootId = '', placeholder, compact =
     };
 
     // Scheduling sends the draft later instead of now (Mattermost's scheduled messages).
-    const schedule = async (at: number) => {
+    const schedule = async (at: number, sleeper?: string) => {
         setMenu(null);
         if (!draft.message.trim() && !draft.fileInfos.length) {
             toast(formatMessage({id: 'fusion.toast.scheduleEmpty', defaultMessage: 'Write your message first, then schedule it'}));
@@ -146,7 +147,12 @@ export default function Composer({channelId, rootId = '', placeholder, compact =
             return;
         }
         const when = intl.formatDate(at, {weekday: 'short', hour: 'numeric', minute: '2-digit'});
-        toast(formatMessage({id: 'fusion.toast.scheduled', defaultMessage: 'Scheduled for {when}'}, {when}));
+        if (sleeper) {
+            const hours = Math.max(1, Math.round((at - Date.now()) / 36e5));
+            toast(formatMessage({id: 'fusion.toast.scheduledSleeper', defaultMessage: 'Scheduled — {name} gets it at 07:00 their time (in about {hours} h)'}, {name: sleeper, hours}));
+        } else {
+            toast(formatMessage({id: 'fusion.toast.scheduled', defaultMessage: 'Scheduled for {when}'}, {when}));
+        }
     };
 
     const onKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -348,6 +354,12 @@ export default function Composer({channelId, rootId = '', placeholder, compact =
                 textareaRef={textareaRef}
                 onChange={(message) => change({message})}
             />
+            {!rootId && (
+                <SleepNote
+                    channelId={channelId}
+                    onSendAt={schedulingEnabled ? schedule : undefined}
+                />
+            )}
             {schedulingEnabled && <ScheduledNote id={rootId || channelId}/>}
             <div className={am('compose-box')}>
                 {(chips.length > 0 || files.length > 0 || uploads.length > 0) && <div className={am('opt-chips')}>{chips}{files}{uploads}</div>}
