@@ -22,6 +22,9 @@ export type Placement =
     // Above the anchor, left-aligned: popAbove, for the composer's menus.
     'above' |
 
+    // Above the anchor, right-aligned (below it when there's no room): openPicker, for the emoji picker.
+    'picker' |
+
     // Beside the anchor, on its left when there's room: placePop, for profile cards.
     'beside' |
 
@@ -69,6 +72,12 @@ function place(pop: HTMLElement, placement: Placement, anchor?: HTMLElement | nu
             top = r.top - h - 8;
             if (top < MARGIN) {
                 top = r.bottom + 8;
+            }
+        } else if (placement === 'picker') {
+            left = r.right - w;
+            top = r.top - h - 8;
+            if (top < MARGIN) {
+                top = Math.min(r.bottom + 8, vh - h - MARGIN);
             }
         } else if (placement === 'beside') {
             left = r.left - w - 10;

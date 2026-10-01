@@ -103,7 +103,7 @@ export default function EmojiPicker({anchor, onPick, onClose, keepOpen = false}:
     return (
         <Popover
             anchor={anchor}
-            placement='above'
+            placement='picker'
             className='picker'
             label={formatMessage({id: 'fusion.picker.label', defaultMessage: 'Emoji'})}
             onClose={onClose}
