@@ -36,31 +36,34 @@ export function mentions(message: string, keys: UserMentionKey[]): boolean {
     });
 }
 
-// useConcernsMe tells whether a message concerns you, for the mockup's .hl-me highlight: someone else's message that
-// mentions you or replies inline to your message, or, when replies show in the channel, a reply to your message.
-export function useConcernsMe(post: Post | undefined, inThread: boolean): boolean {
-    return useSelector((state: GlobalState) => {
-        if (!post || post.state === Posts.POST_DELETED || isSystemMessage(post)) {
-            return false;
-        }
-        const me = getCurrentUserId(state);
-        if (post.user_id === me) {
-            return false;
-        }
-        if (mentions(post.message, getCurrentUserMentionKeys(state))) {
+// concernsMe tells whether a message concerns you, for the mockup's .hl-me highlight: someone else's message that
+// mentions you or replies inline to your message (unless the reply was sent without notifying you), or, when replies
+// show in the channel, a reply to your message.
+export function concernsMe(state: GlobalState, post: Post | undefined, inThread: boolean): boolean {
+    if (!post || post.state === Posts.POST_DELETED || isSystemMessage(post)) {
+        return false;
+    }
+    const me = getCurrentUserId(state);
+    if (post.user_id === me) {
+        return false;
+    }
+    if (mentions(post.message, getCurrentUserMentionKeys(state))) {
+        return true;
+    }
+    const quotedId = post.props?.reply_to;
+    if (typeof quotedId === 'string' && quotedId && post.props?.reply_to_mention !== false && getConfig(state).EnableInlineReplies !== 'false') {
+        const quoted = getPost(state, quotedId);
+        const quotedAuthor = quoted ? quoted.user_id : post.metadata?.reply_to?.user_id;
+        if (quotedAuthor === me) {
             return true;
         }
-        const quotedId = post.props?.reply_to;
-        if (typeof quotedId === 'string' && quotedId && getConfig(state).EnableInlineReplies !== 'false') {
-            const quoted = getPost(state, quotedId);
-            const quotedAuthor = quoted ? quoted.user_id : post.metadata?.reply_to?.user_id;
-            if (quotedAuthor === me) {
-                return true;
-            }
-        }
-        if (post.root_id && !inThread && !isCollapsedThreadsEnabled(state)) {
-            return getPost(state, post.root_id)?.user_id === me;
-        }
-        return false;
-    });
+    }
+    if (post.root_id && !inThread && !isCollapsedThreadsEnabled(state)) {
+        return getPost(state, post.root_id)?.user_id === me;
+    }
+    return false;
+}
+
+export function useConcernsMe(post: Post | undefined, inThread: boolean): boolean {
+    return useSelector((state: GlobalState) => concernsMe(state, post, inThread));
 }

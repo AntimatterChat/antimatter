@@ -23,7 +23,7 @@ import {compassIconForName, useChannelIconOverrideName} from 'components/channel
 import AutoHeightSwitcher, {AutoHeightSlots} from 'components/common/auto_height_switcher';
 import EditPost from 'components/edit_post';
 import FileAttachmentListContainer from 'components/file_attachment_list';
-import InlineReplyQuote from 'components/inline_reply/inline_reply_quote';
+import InlineReplyQuote, {InlineReplySpine} from 'components/inline_reply/inline_reply_quote';
 import MessageWithAdditionalContent from 'components/message_with_additional_content';
 import PriorityLabel from 'components/post_priority/post_priority_label';
 import PostProfilePicture from 'components/post_profile_picture';
@@ -51,7 +51,6 @@ import {getHistory} from 'utils/browser_history';
 import {getArchiveIconComponent} from 'utils/channel_utils';
 import Constants, {A11yCustomEventTypes, AppEvents, Locations, PostTypes, ModalIdentifiers} from 'utils/constants';
 import type {A11yFocusEventDetail} from 'utils/constants';
-import {getReplyToId} from 'utils/inline_replies';
 import {isKeyPressed} from 'utils/keyboard';
 import {isChannelPopoutWindow, isPopoutWindow} from 'utils/popouts/popout_windows';
 import * as PostUtils from 'utils/post_utils';
@@ -72,6 +71,9 @@ export type Props = {
     currentUserId: string;
     compactDisplay?: boolean;
     colorizeUsernames?: boolean;
+
+    // Whether the post replies inline to another message, which it quotes.
+    isInlineReply?: boolean;
     isFlagged: boolean;
     previewCollapsed?: string;
     previewEnabled?: boolean;
@@ -571,10 +573,16 @@ function PostComponent(props: Props) {
         );
     }
 
-    // An inline reply quotes the message it answers.
+    // An inline reply quotes the message it answers above its header, joined to its picture by a spine.
     let inlineReply;
-    if (getReplyToId(post) && post.type !== Constants.PostTypes.EPHEMERAL && post.state !== Posts.POST_DELETED) {
-        inlineReply = <InlineReplyQuote post={post}/>;
+    if (props.isInlineReply && post.type !== Constants.PostTypes.EPHEMERAL && post.state !== Posts.POST_DELETED) {
+        inlineReply = (
+            <InlineReplyQuote
+                post={post}
+                compact={props.compactDisplay}
+                colorize={props.compactDisplay && props.colorizeUsernames}
+            />
+        );
     }
 
     let visibleMessage = null;
@@ -832,9 +840,11 @@ function PostComponent(props: Props) {
                     data-testid='postContent'
                 >
                     <div className='post__img'>
+                        {inlineReply && !props.compactDisplay && <InlineReplySpine/>}
                         {profilePic}
                     </div>
                     <div>
+                        {inlineReply}
                         <div
                             className='post__header'
                             ref={postHeaderRef}
@@ -917,7 +927,6 @@ function PostComponent(props: Props) {
                             }
                         </div>
                         {comment}
-                        {inlineReply}
                         <div
                             className={postClass}
                             id={isRHS ? undefined : `${post.id}_message`}
