@@ -771,6 +771,7 @@ const defaultServerConfig: AdminConfig = {
         RequirePluginSignature: false,
         MarketplaceURL: 'https://api.integrations.mattermost.com',
         SignaturePublicKeyFiles: [],
+        AllowMarketplaceToReplaceAntimatterPlugins: false,
         ChimeraOAuthProxyURL: '',
     },
     DisplaySettings: {

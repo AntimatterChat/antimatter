@@ -52,6 +52,10 @@ type Channels struct {
 	pluginConfigListenerID        string
 	pluginClusterLeaderListenerID string
 
+	// antimatterPrepackagedPlugins holds the IDs of the prepackaged plugins whose bundle is signed
+	// with the Antimatter key (see marketplaceReplaceablePlugin).
+	antimatterPrepackagedPlugins sync.Map
+
 	// guardCache caches ChannelGuards rows by ChannelId -> []*store.ChannelGuard.
 	guardCache atomic.Pointer[sync.Map]
 

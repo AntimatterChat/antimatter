@@ -654,8 +654,22 @@ func (a *App) getRemotePlugins() (map[string]*model.MarketplacePlugin, *model.Ap
 		return nil, model.NewAppError("getRemotePlugins", "app.plugin.marketplace_client.failed_to_fetch", nil, "", http.StatusInternalServerError).Wrap(err)
 	}
 
+	installed, err := pluginsEnvironment.Available()
+	if err != nil {
+		return nil, model.NewAppError("getRemotePlugins", "app.plugin.config.app_error", nil, "", http.StatusInternalServerError).Wrap(err)
+	}
+	installedIDs := make(map[string]bool, len(installed))
+	for _, bundle := range installed {
+		if bundle.Manifest != nil {
+			installedIDs[bundle.Manifest.Id] = true
+		}
+	}
+
 	for _, p := range marketplacePlugins {
 		if p.Manifest == nil {
+			continue
+		}
+		if !a.ch.marketplaceReplaceablePlugin(p.Manifest.Id, installedIDs[p.Manifest.Id]) {
 			continue
 		}
 
@@ -920,6 +934,7 @@ func (ch *Channels) processPrepackagedPlugins(prepackagedPluginsDir string) erro
 	}
 
 	pluginSignaturePathMap := ch.getPluginsFromFilePaths(fileStorePaths)
+	ch.antimatterPrepackagedPlugins.Clear()
 	plugins := make(chan *plugin.PrepackagedPlugin, len(pluginSignaturePathMap))
 
 	// Before processing any prepackaged plugins, take a snapshot of the available manifests
@@ -1192,7 +1207,8 @@ func (ch *Channels) buildPrepackagedPlugin(logger *mlog.Logger, pluginPath *plug
 	if _, err := pluginFile.Seek(0, io.SeekStart); err != nil {
 		return nil, "", errors.Wrapf(err, "Failed to seek to start of plugin file for signature verification: %s", pluginPath.bundlePath)
 	}
-	if appErr := ch.verifyPlugin(logger, pluginFile, signatureFile); appErr != nil {
+	signer, appErr := ch.verifyPluginSigner(logger, pluginFile, signatureFile)
+	if appErr != nil {
 		return nil, "", errors.Wrapf(appErr, "Prepackaged plugin signature verification failed for %s using %s", pluginPath.bundlePath, pluginPath.signaturePath)
 	}
 
@@ -1203,6 +1219,10 @@ func (ch *Channels) buildPrepackagedPlugin(logger *mlog.Logger, pluginPath *plug
 	manifest, pluginDir, appErr := extractPlugin(pluginFile, tmpDir)
 	if appErr != nil {
 		return nil, "", errors.Wrapf(appErr, "Failed to extract plugin with path %s", pluginPath.bundlePath)
+	}
+
+	if signer.isAntimatter() {
+		ch.antimatterPrepackagedPlugins.Store(manifest.Id, struct{}{})
 	}
 
 	plugin := new(plugin.PrepackagedPlugin)
