@@ -1830,7 +1830,7 @@ const AdminDefinition: AdminDefinitionType = {
                             type: 'bool',
                             key: 'LogSettings.EnableFile',
                             label: defineMessage({id: 'admin.log.fileTitle', defaultMessage: 'Output logs to file: '}),
-                            help_text: defineMessage({id: 'admin.log.fileDescription', defaultMessage: 'Typically set to true in production. When true, logged events are written to the mattermost.log file in the directory specified in the File Log Directory field. The logs are rotated at 100 MB and archived to a file in the same directory, and given a name with a datestamp and serial number. For example, mattermost.2017-03-31.001. Changing this setting requires a server restart before taking effect.'}),
+                            help_text: defineMessage({id: 'admin.log.fileDescription', defaultMessage: 'Typically set to true in production. When true, logged events are written to the antimatter.log file in the directory specified in the File Log Directory field. The logs are rotated at 100 MB and archived to a file in the same directory, and given a name with a datestamp and serial number. For example, antimatter.2017-03-31.001. Changing this setting requires a server restart before taking effect.'}),
                             isDisabled: it.not(it.userHasWritePermissionOnResource(RESOURCE_KEYS.ENVIRONMENT.LOGGING)),
                         },
                         {

@@ -1089,7 +1089,7 @@
   "admin.log.enableDiagnostics": "Bật Chẩn đoán và Báo cáo Lỗi:",
   "admin.log.enableWebhookDebugging": "Bật Webhook Debugging:",
   "admin.log.enableWebhookDebuggingDescription": "Khi đúng, hãy gửi thông báo gỡ lỗi webhook tới nhật ký máy chủ. Để xuất nội dung yêu cầu của webhook đến, hãy đặt {boldedLogLevel} thành 'DEBUG'.",
-  "admin.log.fileDescription": "Thường được đặt thành true trong production. Khi true, các sự kiện đã ghi sẽ được ghi vào tệp mattermost.log trong thư mục được chỉ định trong trường File Log Directory. Nhật ký được xoay ở 10.000 dòng và được lưu trữ vào một tệp trong cùng thư mục và được đặt tên có dấu dữ liệu và số sê-ri. Ví dụ: mattermost.2017-03-31.001. Thay đổi cài đặt này yêu cầu khởi động lại máy chủ trước khi có hiệu lực.",
+  "admin.log.fileDescription": "Thường được đặt thành true trong production. Khi true, các sự kiện đã ghi sẽ được ghi vào tệp antimatter.log trong thư mục được chỉ định trong trường File Log Directory. Nhật ký được xoay ở 10.000 dòng và được lưu trữ vào một tệp trong cùng thư mục và được đặt tên có dấu dữ liệu và số sê-ri. Ví dụ: antimatter.2017-03-31.001. Thay đổi cài đặt này yêu cầu khởi động lại máy chủ trước khi có hiệu lực.",
   "admin.log.fileJsonTitle": "Nhật ký tệp xuất dưới dạng JSON:",
   "admin.log.fileLevelDescription": "Cài đặt này xác định mức độ chi tiết mà tại đó các sự kiện nhật ký được ghi vào tệp nhật ký. LỖI: Chỉ xuất ra các thông báo lỗi. THÔNG TIN: Xuất ra các thông báo lỗi và thông tin xung quanh quá trình khởi động và khởi chạy. GỠ LỖI: In cao chi tiết cho các nhà phát triển đang giải quyết vấn đề gỡ lỗi.",
   "admin.log.fileLevelTitle": "Cấp độ nhật ký tệp:",

@@ -100,7 +100,7 @@ func TestGenerateSupportPacket(t *testing.T) {
 		expectedFileNames = append(expectedFileNames, "database_schema.yaml")
 	}
 
-	expectedFileNamesWithLogs := append(expectedFileNames, "mattermost.log")
+	expectedFileNamesWithLogs := append(expectedFileNames, "antimatter.log")
 
 	t.Run("generate Support Packet with logs", func(t *testing.T) {
 		fileDatas := th.App.GenerateSupportPacket(th.Context, &model.SupportPacketOptions{

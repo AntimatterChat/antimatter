@@ -574,7 +574,7 @@ func TestDownloadLogs(t *testing.T) {
 		require.NoError(t, err2)
 
 		require.Equal(t, "text/plain", resp.Header.Get("Content-Type"))
-		require.Contains(t, resp.Header.Get("Content-Disposition"), "attachment;filename=\"mattermost.log\"")
+		require.Contains(t, resp.Header.Get("Content-Disposition"), "attachment;filename=\"antimatter.log\"")
 
 		bodyString := string(resData)
 		for i := range 20 {

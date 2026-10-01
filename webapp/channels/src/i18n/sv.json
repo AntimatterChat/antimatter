@@ -1612,7 +1612,7 @@
   "admin.log.enableDiagnosticsDescription": "Aktivera denna funktion för att förbättra kvalitet och prestanda i Antimatter genom att skicka felrapporter och diagnostik till Mattermost Inc. Läs <link>integritetspolicyn</link> för att veta mer.",
   "admin.log.enableWebhookDebugging": "Aktiverar Webhook-debugg:",
   "admin.log.enableWebhookDebuggingDescription": "När aktiverad skrivs webhool-debuggmeddelanden till serverloggen. För att även skriva hela meddelandet i inkommande webhooks, sätt {boldedLogLevel} till 'DEBUG'.",
-  "admin.log.fileDescription": "I en produktionsmiljö bör denna vara aktiverad. När aktiverad skrivs loggar till filen mattermost.log i katalogen angiven i fältet Logfilskatalog. Loggen roteras efter 100MB rader och arkiveras i samma katalog med datumstämpel och serienummer. Exempel mattermost.2017-03-31.001. En omstart av Antimatter krävs för att förändring av denna konfiguration ska ske.",
+  "admin.log.fileDescription": "I en produktionsmiljö bör denna vara aktiverad. När aktiverad skrivs loggar till filen antimatter.log i katalogen angiven i fältet Logfilskatalog. Loggen roteras efter 100MB rader och arkiveras i samma katalog med datumstämpel och serienummer. Exempel antimatter.2017-03-31.001. En omstart av Antimatter krävs för att förändring av denna konfiguration ska ske.",
   "admin.log.fileJsonTitle": "Logga som JSON-fil:",
   "admin.log.fileLevelDescription": "Denna inställning styr hur detaljerad loggningen sker. ERROR: Endast felmeddelanden skrivs. INFO: Endast felmeddelanden och information vid uppstart och initiering. DEBUG: Detaljerad loggning för utvecklare som felsöker programfel.",
   "admin.log.fileLevelTitle": "Lognivå:",

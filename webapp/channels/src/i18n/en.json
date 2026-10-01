@@ -7876,8 +7876,8 @@
     "description": "Help text for the Enable Webhook Debugging setting; {boldedLogLevel} is the bolded name of the log level setting, and \"DEBUG\" is a literal log level value."
   },
   "admin.log.fileDescription": {
-    "defaultMessage": "Typically set to true in production. When true, logged events are written to the mattermost.log file in the directory specified in the File Log Directory field. The logs are rotated at 100 MB and archived to a file in the same directory, and given a name with a datestamp and serial number. For example, mattermost.2017-03-31.001. Changing this setting requires a server restart before taking effect.",
-    "description": "Admin console help text under the Output logs to file toggle; mattermost.log and the datestamped filename are literal examples."
+    "defaultMessage": "Typically set to true in production. When true, logged events are written to the antimatter.log file in the directory specified in the File Log Directory field. The logs are rotated at 100 MB and archived to a file in the same directory, and given a name with a datestamp and serial number. For example, antimatter.2017-03-31.001. Changing this setting requires a server restart before taking effect.",
+    "description": "Admin console help text under the Output logs to file toggle; antimatter.log and the datestamped filename are literal examples."
   },
   "admin.log.fileJsonTitle": {
     "defaultMessage": "Output file logs as JSON:",
