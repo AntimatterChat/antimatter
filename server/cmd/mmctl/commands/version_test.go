@@ -17,7 +17,7 @@ func (s *MmctlUnitTestSuite) TestVersionCmd() {
 	s.Require().Len(printer.GetErrorLines(), 0)
 	s.Require().Len(printer.GetLines(), 1)
 	line := printer.GetLines()[0]
-	s.Require().Contains(line, "mmctl:")
+	s.Require().Contains(line, "amctl:")
 	s.Require().Contains(line, "Version:")
 	s.Require().Contains(line, "BuiltDate:")
 	s.Require().Contains(line, "CommitDate:")
