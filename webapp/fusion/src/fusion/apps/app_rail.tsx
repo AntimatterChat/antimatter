@@ -17,17 +17,22 @@ import AboutPopover from 'fusion/popovers/about_popover';
 import StatusPopover from 'fusion/popovers/status_popover';
 import {am} from 'fusion/utils/class_names';
 
+import type {GlobalState} from 'types/store';
 import type {AppBarAction, ChannelHeaderButtonAction} from 'types/store/plugins';
 
 function AppIcon({component}: {component: AppBarAction | ChannelHeaderButtonAction}) {
     const channel = useSelector(getCurrentChannel);
     const member = useSelector(getMyCurrentChannelMembership);
     const active = useSelector(getActiveRhsComponent);
+    const manifestName = useSelector((state: GlobalState) => state.plugins.plugins[component.pluginId]?.name);
     const [failed, setFailed] = useState(false);
     const iconUrl = 'iconUrl' in component ? component.iconUrl : undefined;
     const icon = 'icon' in component ? component.icon : undefined;
     const rhsComponentId = 'rhsComponentId' in component ? component.rhsComponentId : undefined;
-    const label = String(('tooltipText' in component && component.tooltipText) || ('dropdownText' in component && component.dropdownText) || component.pluginId);
+
+    // Plugins may give a React element as their tooltip: the button's title needs text.
+    const text = [component.tooltipText, 'dropdownText' in component ? component.dropdownText : undefined].find((t) => typeof t === 'string' && t);
+    const label = (text as string | undefined) || manifestName || component.pluginId;
     const on = rhsComponentId ? active?.id === rhsComponentId : active?.pluginId === component.pluginId;
 
     return (
