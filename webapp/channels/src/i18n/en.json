@@ -21776,12 +21776,16 @@
     "description": "Tooltip and accessibility label of the X button in the message box that stops replying inline to a quoted message."
   },
   "inline_reply.deleted": {
-    "defaultMessage": "Original message deleted",
-    "description": "Shown instead of the quoted text above an inline reply when the message it replied to was deleted."
+    "defaultMessage": "Original message was deleted",
+    "description": "Shown instead of the quoted text above an inline reply, or above the message box, when the message it replies to was deleted."
   },
   "inline_reply.files": {
     "defaultMessage": "{count, plural, one {# file} other {# files}}",
     "description": "Shown instead of the quoted text above an inline reply when the quoted message has only file attachments; {count} is the number of files."
+  },
+  "inline_reply.jump": {
+    "defaultMessage": "Jump to the original message",
+    "description": "Tooltip of the line above an inline reply that quotes the message it replies to; clicking it scrolls to that message."
   },
   "inline_reply.mention": {
     "defaultMessage": "Mention {name}",
@@ -21811,6 +21815,14 @@
     "defaultMessage": "{name} won't be notified of your reply. Click to turn on.",
     "description": "Tooltip of the '@ Off' switch in the message box; {name} is the author of the quoted message."
   },
+  "inline_reply.quote.replying": {
+    "defaultMessage": "Replying to a message",
+    "description": "Read by screen readers before the line above an inline reply when the author of the quoted message is unknown; the quoted text follows."
+  },
+  "inline_reply.quote.replyingTo": {
+    "defaultMessage": "Replying to {name}",
+    "description": "Read by screen readers before the line above an inline reply, which shows the quoted author's picture and name; {name} is that author, and the quoted text follows."
+  },
   "inline_reply.replying": {
     "defaultMessage": "Replying to: ",
     "description": "Start of the line above an inline reply, or above the message box, when the author of the quoted message is unknown; followed by the quoted text."
@@ -21818,6 +21830,14 @@
   "inline_reply.replyingTo": {
     "defaultMessage": "Replying to {name}: ",
     "description": "Start of the line above an inline reply, or above the message box while writing one; {name} is the author of the quoted message, followed by the quoted text."
+  },
+  "inline_reply.seeFiles": {
+    "defaultMessage": "Click to see attachment",
+    "description": "Shown instead of the quoted text above an inline reply when the quoted message has only file attachments; clicking it jumps to that message."
+  },
+  "inline_reply.seeMessage": {
+    "defaultMessage": "Click to see message",
+    "description": "Shown instead of the quoted text above an inline reply when there is nothing to quote from the original message; clicking it jumps to that message."
   },
   "inProduct_notices.adminOnlyMessage": {
     "defaultMessage": "Visible to Admins only",

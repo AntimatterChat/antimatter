@@ -931,4 +931,48 @@ describe('PostComponent — PostHeader plugin component render site', () => {
         );
         expect(screen.getByTestId('post-header-plugin')).toBeInTheDocument();
     });
+
+    describe('inline replies', () => {
+        const author = TestHelper.getUserMock({id: 'author', username: 'marie'});
+        const quoted = TestHelper.getPostMock({id: 'quoted', channel_id: channel.id, user_id: author.id, message: 'the original message'});
+        const reply = TestHelper.getPostMock({id: 'reply', channel_id: channel.id, props: {reply_to: quoted.id}});
+        const state: DeepPartial<GlobalState> = {entities: {posts: {posts: {quoted}}, users: {profiles: {author}}}};
+
+        test('quotes the message above the header, joined to the picture by a spine', () => {
+            const {container} = renderWithContext(
+                <PostComponent
+                    {...baseProps}
+                    post={reply}
+                    isInlineReply={true}
+                />,
+                state,
+            );
+
+            const quote = screen.getByTestId('post-inline-reply');
+            expect(quote.nextElementSibling).toHaveClass('post__header');
+            expect(container.querySelector('.post__img > .InlineReplyQuote__spine')).toBeInTheDocument();
+        });
+
+        test('has no spine in the compact display', () => {
+            const {container} = renderWithContext(
+                <PostComponent
+                    {...baseProps}
+                    post={reply}
+                    isInlineReply={true}
+                    compactDisplay={true}
+                />,
+                state,
+            );
+
+            expect(screen.getByTestId('post-inline-reply')).toBeInTheDocument();
+            expect(container.querySelector('.InlineReplyQuote__spine')).not.toBeInTheDocument();
+        });
+
+        test('quotes nothing when the post isn\'t an inline reply', () => {
+            const {container} = renderWithContext(<PostComponent {...baseProps}/>, state);
+
+            expect(screen.queryByTestId('post-inline-reply')).not.toBeInTheDocument();
+            expect(container.querySelector('.InlineReplyQuote__spine')).not.toBeInTheDocument();
+        });
+    });
 });

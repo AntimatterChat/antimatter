@@ -13,12 +13,28 @@ import {useUser} from 'components/common/hooks/useUser';
 import UserProfile from 'components/user_profile';
 
 import {getQuotedMessage} from 'utils/inline_replies';
+import type {QuotedMessage as Quoted} from 'utils/inline_replies';
 import {stripMarkdown} from 'utils/markdown';
 import * as Utils from 'utils/utils';
 
 import type {GlobalState} from 'types/store';
 
 const SNIPPET_LENGTH = 160;
+
+// useQuoted is what to show of the message postId, which an inline reply quotes: the message, and the name of its
+// author ('' while the author isn't loaded).
+export function useQuoted(postId: string, described?: PostReplyTo): {quoted: Quoted; name: string} {
+    const quoted = useSelector((state: GlobalState) => getQuotedMessage(state, postId, described), shallowEqual);
+    const overrideAllowed = useSelector((state: GlobalState) => getConfig(state).EnablePostUsernameOverride === 'true');
+    const author = useUser(quoted.userId || '');
+    const displayName = useSelector((state: GlobalState) => (author ? Utils.getDisplayNameByUser(state, author) : ''));
+    return {quoted, name: (overrideAllowed && quoted.overrideUsername) || displayName};
+}
+
+// quotedText is the start of a quoted message's text, without its markdown, or '' when it has none.
+export function quotedText(quoted: Quoted): string {
+    return quoted.message.trim() ? stripMarkdown(Utils.replaceHtmlEntities(quoted.message)).slice(0, SNIPPET_LENGTH) : '';
+}
 
 type Props = {
     postId: string;
@@ -40,7 +56,7 @@ export default function QuotedMessage({postId, described, onClick}: Props) {
         snippet = (
             <FormattedMessage
                 id='inline_reply.deleted'
-                defaultMessage='Original message deleted'
+                defaultMessage='Original message was deleted'
             />
         );
     } else if (quoted.message.trim()) {
