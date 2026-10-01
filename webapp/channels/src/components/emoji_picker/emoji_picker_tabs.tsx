@@ -8,7 +8,7 @@ import {shallowEqual, useSelector} from 'react-redux';
 
 import type {Emoji} from '@mattermost/types/emojis';
 
-import {getEmojiPickerTabs} from 'selectors/emoji_picker_tabs';
+import {getEmojiPickerTabs, isGifPickerReplaced} from 'selectors/emoji_picker_tabs';
 
 import {makeAsyncComponent} from 'components/async_load';
 import EmojiPicker from 'components/emoji_picker';
@@ -30,7 +30,7 @@ export interface Props {
     onAddCustomEmojiClick?: () => void;
     enableGifPicker?: boolean;
 
-    /** The channel of the message box, and its thread for a reply box, for the plugin tabs. */
+    /** The channel of the message box, and its thread for a reply box. */
     channelId?: string;
     rootId?: string;
 
@@ -57,8 +57,10 @@ export default function EmojiPickerTabs(props: Props) {
     const getRootPickerNode = useCallback(() => rootPickerNodeRef.current, []);
 
     const ctx = useMemo(() => ({channelId: props.channelId || '', rootId: props.rootId || undefined}), [props.channelId, props.rootId]);
-    const showGifPicker = Boolean(props.enableGifPicker && typeof props.onGifClick != 'undefined');
+    const canShowGifPicker = Boolean(props.enableGifPicker && typeof props.onGifClick != 'undefined');
+    const gifPickerReplaced = useSelector((state: GlobalState) => canShowGifPicker && isGifPickerReplaced(state, ctx));
     const pluginTabs = useSelector((state: GlobalState) => (props.showPluginTabs ? getEmojiPickerTabs(state, ctx) : NO_PLUGIN_TABS), shallowEqual);
+    const showGifPicker = canShowGifPicker && !gifPickerReplaced;
 
     const {onEmojiClose} = props;
     const pluginTabProps = {

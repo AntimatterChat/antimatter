@@ -38,8 +38,8 @@ type UseEmojiPickerOptions = {
     onGifClick?: (gif: string) => void;
 
     /**
-     * The message box the picker belongs to: with showPluginTabs (when composing), the picker shows
-     * the plugin tabs, which can insert text with insertText.
+     * The message box the picker belongs to: hides the GIF picker where a plugin tab replaces it and,
+     * with showPluginTabs (when composing), shows the plugin tabs, which can insert text with insertText.
      */
     channelId?: string;
     rootId?: string;

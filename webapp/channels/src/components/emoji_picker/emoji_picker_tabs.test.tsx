@@ -115,4 +115,38 @@ describe('components/emoji_picker/EmojiPickerTabs', () => {
 
         expect(screen.getAllByRole('tab').map((t) => t.textContent)).toEqual(['Emojis', 'GIFs']);
     });
+
+    test('hides the GIF picker when a plugin tab replaces it', async () => {
+        renderWithContext(
+            <EmojiPickerTabs {...baseProps}/>,
+            stateWith([makeTab({id: 'gifs', label: 'GIFs', replacesGifPicker: true})]),
+        );
+
+        expect(screen.getAllByRole('tab').map((t) => t.textContent)).toEqual(['Emojis', 'GIFs']);
+        await userEvent.click(screen.getByRole('tab', {name: 'GIFs'}));
+        expect(await screen.findByText('stickers of channel/root, search ""')).toBeInTheDocument();
+        expect(screen.queryByText('giphy picker')).not.toBeInTheDocument();
+    });
+
+    test('hides the GIF picker when editing, even without the plugin tabs', () => {
+        renderWithContext(
+            <EmojiPickerTabs
+                {...baseProps}
+                showPluginTabs={false}
+            />,
+            stateWith([makeTab({replacesGifPicker: true})]),
+        );
+
+        expect(screen.getByRole('dialog', {name: 'Emoji Picker'})).toBeInTheDocument();
+        expect(screen.queryByRole('tab')).not.toBeInTheDocument();
+    });
+
+    test('keeps the GIF picker when the replacing tab does not render in this message box', () => {
+        renderWithContext(
+            <EmojiPickerTabs {...baseProps}/>,
+            stateWith([makeTab({replacesGifPicker: true, shouldRender: () => false})]),
+        );
+
+        expect(screen.getAllByRole('tab').map((t) => t.textContent)).toEqual(['Emojis', 'GIFs']);
+    });
 });
