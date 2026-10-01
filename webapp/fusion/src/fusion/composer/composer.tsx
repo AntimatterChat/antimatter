@@ -22,6 +22,7 @@ import Icon from 'fusion/components/icon';
 import {Popover} from 'fusion/components/layer';
 import {MenuHeading, MenuItem, MenuSeparator} from 'fusion/components/menu';
 import EmojiPicker from 'fusion/popovers/emoji_picker';
+import {MENTION_EVENT} from 'fusion/popovers/user_menu';
 import {am} from 'fusion/utils/class_names';
 import Constants, {StoragePrefixes} from 'utils/constants';
 import {generateId} from 'utils/utils';
@@ -147,6 +148,18 @@ export default function Composer({channelId, rootId = '', placeholder, compact =
             el?.setSelectionRange(start + text.length, start + text.length);
         });
     };
+
+    // "Mention" in a person's menu writes @username into the conversation's composer.
+    const insertRef = useRef(insert);
+    insertRef.current = insert;
+    useEffect(() => {
+        if (rootId) {
+            return undefined;
+        }
+        const onMention = (e: Event) => insertRef.current((e as CustomEvent<string>).detail);
+        window.addEventListener(MENTION_EVENT, onMention);
+        return () => window.removeEventListener(MENTION_EVENT, onMention);
+    }, [rootId]);
 
     const format = (id: string) => {
         const f = FORMATS.find((x) => x && x.id === id);

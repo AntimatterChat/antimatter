@@ -27,6 +27,7 @@ import Icon from 'fusion/components/icon';
 import type {IconName} from 'fusion/components/icon';
 import {useDisplayName} from 'fusion/hooks/users';
 import EmojiPicker from 'fusion/popovers/emoji_picker';
+import {useUserMenu} from 'fusion/popovers/user_menu';
 import UserPopover from 'fusion/popovers/user_popover';
 import {am} from 'fusion/utils/class_names';
 import {areConsecutivePostsBySameUser, isFromBot, isFromWebhook, isSystemMessage} from 'utils/post_utils';
@@ -99,6 +100,7 @@ export default function Message({postId, previousPostId, inThread = false, highl
     const editing = useSelector((state: GlobalState) => getIsPostBeingEdited(state, postId) && getIsPostBeingEditedInRHS(state, postId) === inThread);
     const concealed = useSelector((state: GlobalState) => shouldDisplayConcealedPlaceholder(state, postId));
     const concernsMe = useConcernsMe(post, inThread);
+    const [userMenu, openUserMenu] = useUserMenu();
     const avatarRef = useRef<HTMLButtonElement>(null);
     const moreRef = useRef<HTMLButtonElement>(null);
     const reactRef = useRef<HTMLButtonElement>(null);
@@ -261,6 +263,7 @@ export default function Message({postId, previousPostId, inThread = false, highl
                     onClose={() => setPopover(null)}
                 />
             )}
+            {userMenu}
         </>
     );
 
@@ -347,6 +350,7 @@ export default function Message({postId, previousPostId, inThread = false, highl
                     ref={avatarRef}
                     aria-label={authorName}
                     onClick={() => setPopover('user')}
+                    onContextMenu={(e) => openUserMenu(post.user_id, e)}
                 >
                     <Avatar
                         userId={post.user_id}
@@ -359,6 +363,7 @@ export default function Message({postId, previousPostId, inThread = false, highl
                     <button
                         className={am('author')}
                         onClick={() => setPopover('user')}
+                        onContextMenu={(e) => openUserMenu(post.user_id, e)}
                     >
                         {authorName}
                     </button>
