@@ -106,7 +106,7 @@ export default function Message({postId, previousPostId, inThread = false, highl
     const avatarRef = useRef<HTMLButtonElement>(null);
     const moreRef = useRef<HTMLButtonElement>(null);
     const reactRef = useRef<HTMLButtonElement>(null);
-    const [popover, setPopover] = useState<'user' | 'menu' | 'react' | null>(null);
+    const [popover, setPopover] = useState<'user' | 'menu' | 'react' | 'react-more' | null>(null);
 
     if (!post) {
         return null;
@@ -259,11 +259,12 @@ export default function Message({postId, previousPostId, inThread = false, highl
                     anchor={moreRef.current}
                     inThread={inThread}
                     onClose={() => setPopover(null)}
+                    onMoreReactions={() => setPopover('react-more')}
                 />
             )}
-            {popover === 'react' && (
+            {(popover === 'react' || popover === 'react-more') && (
                 <EmojiPicker
-                    anchor={reactRef.current}
+                    anchor={popover === 'react' ? reactRef.current : moreRef.current}
                     onPick={(emojiName) => dispatch(toggleReaction(post.id, emojiName))}
                     onClose={() => setPopover(null)}
                 />
@@ -279,7 +280,7 @@ export default function Message({postId, previousPostId, inThread = false, highl
         'p-important': priority === 'important',
         'p-urgent': priority === 'urgent',
         'hl-me': concernsMe,
-        'menu-open': popover === 'menu' || popover === 'react',
+        'menu-open': popover === 'menu' || popover === 'react' || popover === 'react-more',
         flash: highlighted,
     });
 
