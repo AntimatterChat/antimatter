@@ -26,7 +26,7 @@ import (
 
 var AuthCmd = &cobra.Command{
 	Use:   "auth",
-	Short: "Manages the credentials of the remote Mattermost instances",
+	Short: "Manages the credentials of the remote Antimatter instances",
 }
 
 var LoginCmd = &cobra.Command{

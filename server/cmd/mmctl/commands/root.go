@@ -115,7 +115,7 @@ var RootCmd = &cobra.Command{
 
 		perPage, err := cmd.Flags().GetInt("per-page")
 		if err == nil && perPage > MaxPageSize {
-			printer.PrintError(fmt.Sprintf("Per page value is greater than the maximum allowed. Mattermost might only return %d items.", MaxPageSize))
+			printer.PrintError(fmt.Sprintf("Per page value is greater than the maximum allowed. Antimatter might only return %d items.", MaxPageSize))
 		}
 	},
 	SilenceUsage:  true,

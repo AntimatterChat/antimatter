@@ -41,7 +41,7 @@ var LdapIDMigrate = &cobra.Command{
 1. Wait for an off-peak time when your users won’t be impacted by a server restart.
 2. Run the command "amctl ldap idmigrate objectGUID".
 3. Update the config within the System Console to the new value "objectGUID".
-4. Restart the Mattermost server.`,
+4. Restart the Antimatter server.`,
 	Example: "amctl ldap idmigrate objectGUID",
 	Args:    cobra.ExactArgs(1),
 	RunE:    withClient(ldapIDMigrateCmdF),

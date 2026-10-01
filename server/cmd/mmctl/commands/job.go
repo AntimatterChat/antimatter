@@ -88,7 +88,7 @@ func init() {
 
 	createJobCmd.Flags().StringToString("data", nil, "Comma-separated list of key=value pairs passed to the job as type-specific options")
 
-	updateJobCmd.Flags().Bool("force", false, "Setting a job status is restricted to certain statuses. You can overwrite these restrictions by using --force. This might cause unexpected behaviour on your Mattermost Server. Use this option with caution.")
+	updateJobCmd.Flags().Bool("force", false, "Setting a job status is restricted to certain statuses. You can overwrite these restrictions by using --force. This might cause unexpected behaviour on your Antimatter server. Use this option with caution.")
 
 	JobCmd.AddCommand(
 		listJobsCmd,
