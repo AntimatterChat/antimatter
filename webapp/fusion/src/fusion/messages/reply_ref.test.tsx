@@ -8,6 +8,7 @@ import type {Post} from '@mattermost/types/posts';
 import {renderWithContext, screen} from 'tests/react_testing_utils';
 import {TestHelper} from 'utils/test_helper';
 
+import {QuotedMessage} from './inline_reply';
 import ReplyRef from './reply_ref';
 
 describe('fusion/messages/ReplyRef', () => {
@@ -70,5 +71,18 @@ describe('fusion/messages/ReplyRef', () => {
         expect(container.querySelector('.am-ref-av.am-none')).not.toBeNull();
         expect(line.querySelector('.am-snip')).toHaveClass('am-gone');
         expect(line.querySelector('.am-snip')).toHaveTextContent('Original message was deleted');
+    });
+
+    test('the reply bar says who the reply is to', () => {
+        const {container} = renderWithContext(
+            <div className='am-replying'>
+                <QuotedMessage quoted={{deleted: false, userId: author.id, message: 'Is the build green?', fileCount: 0}}/>
+            </div>,
+            state({}),
+        );
+
+        expect(container.querySelector('.am-ref-label')).toHaveTextContent('Replying to');
+        expect(container.querySelector('b')).toHaveTextContent('marie');
+        expect(container.querySelector('.am-snip')).toHaveTextContent('Is the build green?');
     });
 });

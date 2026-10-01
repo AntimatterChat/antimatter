@@ -174,7 +174,7 @@ export function QuotedMessage({quoted}: {quoted: Quoted}) {
         <>
             <Icon
                 name='reply'
-                size='xs'
+                size='sm'
             />
             <span className={am('ref-label')}>{formatMessage({id: 'fusion.replyRef.replying', defaultMessage: 'Replying to'})}</span>
             {who && <b>{who}</b>}
