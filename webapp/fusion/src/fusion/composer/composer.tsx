@@ -11,6 +11,7 @@ import type {PostPriority} from '@mattermost/types/posts';
 import {Posts} from 'mattermost-redux/constants';
 import {isPostPriorityEnabled} from 'mattermost-redux/selectors/entities/posts';
 import {getBool} from 'mattermost-redux/selectors/entities/preferences';
+import {isScheduledPostsEnabled} from 'mattermost-redux/selectors/entities/scheduled_posts';
 
 import {uploadFile} from 'actions/file_actions';
 import {editLatestPost, onSubmit} from 'actions/views/create_comment';
@@ -23,6 +24,7 @@ import {Popover} from 'fusion/components/layer';
 import {MenuHeading, MenuItem, MenuSeparator} from 'fusion/components/menu';
 import EmojiPicker from 'fusion/popovers/emoji_picker';
 import {MENTION_EVENT} from 'fusion/popovers/user_menu';
+import {useToast} from 'fusion/shell/toast_context';
 import {am} from 'fusion/utils/class_names';
 import Constants, {StoragePrefixes} from 'utils/constants';
 import {generateId} from 'utils/utils';
@@ -33,6 +35,7 @@ import type {PostDraft} from 'types/store/draft';
 import Autocomplete from './autocomplete';
 import type {AutocompleteHandle} from './autocomplete';
 import {FORMATS, applyFormat} from './formats';
+import {SchedulePopover, ScheduledNote} from './schedule';
 
 type Props = {
     channelId: string;
@@ -50,17 +53,20 @@ type Pending = {clientId: string; name: string; progress: number};
 // Composer writes messages: the mockup's compose box around the classic web app's drafts and submit logic
 // (slash commands, reactions, message priority).
 export default function Composer({channelId, rootId = '', placeholder, compact = false}: Props) {
-    const {formatMessage} = useIntl();
+    const intl = useIntl();
+    const {formatMessage} = intl;
     const dispatch = useDispatch();
     const getDraft = useMemo(() => makeGetDraft(), []);
     const storedDraft = useSelector((state: GlobalState) => getDraft(state, channelId, rootId));
     const priorityEnabled = useSelector(isPostPriorityEnabled);
     const burnEnabled = useSelector(isBurnOnReadEnabled);
+    const schedulingEnabled = useSelector(isScheduledPostsEnabled);
+    const toast = useToast();
     const ctrlSend = useSelector((state: GlobalState) => getBool(state, Constants.Preferences.CATEGORY_ADVANCED_SETTINGS, 'send_on_ctrl_enter', false));
     const [draft, setDraft] = useState<PostDraft>(storedDraft);
     const [showFormatting, setShowFormatting] = useState(!compact);
     const [pending, setPending] = useState<Pending[]>([]);
-    const [menu, setMenu] = useState<'plus' | 'emoji' | 'priority' | 'burn' | 'more' | null>(null);
+    const [menu, setMenu] = useState<'plus' | 'emoji' | 'priority' | 'burn' | 'more' | 'schedule' | null>(null);
     const textareaRef = useRef<HTMLTextAreaElement>(null);
     const fileRef = useRef<HTMLInputElement>(null);
     const plusRef = useRef<HTMLButtonElement>(null);
@@ -115,6 +121,32 @@ export default function Composer({channelId, rootId = '', placeholder, compact =
         if (result && 'error' in result && result.error) {
             setDraft(toSend);
         }
+    };
+
+    // Scheduling sends the draft later instead of now (Mattermost's scheduled messages).
+    const schedule = async (at: number) => {
+        setMenu(null);
+        if (!draft.message.trim() && !draft.fileInfos.length) {
+            toast(formatMessage({id: 'fusion.toast.scheduleEmpty', defaultMessage: 'Write your message first, then schedule it'}));
+            textareaRef.current?.focus();
+            return;
+        }
+        if (pending.length) {
+            return;
+        }
+        const toSend: PostDraft = {...draft, channelId, rootId};
+        const empty: PostDraft = {message: '', fileInfos: [], uploadsInProgress: [], channelId, rootId, createAt: 0, updateAt: 0};
+        setDraft(empty);
+        clearTimeout(saveTimer.current);
+        dispatch(updateDraft(key, null, rootId, true));
+        const result = await dispatch(onSubmit(channelId, rootId, toSend, {}, {scheduled_at: at}));
+        if (result && 'error' in result && result.error) {
+            setDraft(toSend);
+            toast(formatMessage({id: 'fusion.toast.scheduleFailed', defaultMessage: 'The message could not be scheduled'}));
+            return;
+        }
+        const when = intl.formatDate(at, {weekday: 'short', hour: 'numeric', minute: '2-digit'});
+        toast(formatMessage({id: 'fusion.toast.scheduled', defaultMessage: 'Scheduled for {when}'}, {when}));
     };
 
     const onKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -316,6 +348,7 @@ export default function Composer({channelId, rootId = '', placeholder, compact =
                 textareaRef={textareaRef}
                 onChange={(message) => change({message})}
             />
+            {schedulingEnabled && <ScheduledNote id={rootId || channelId}/>}
             <div className={am('compose-box')}>
                 {(chips.length > 0 || files.length > 0 || uploads.length > 0) && <div className={am('opt-chips')}>{chips}{files}{uploads}</div>}
                 <div className={am('compose-row')}>
@@ -477,6 +510,13 @@ export default function Composer({channelId, rootId = '', placeholder, compact =
                         }}
                     />
                     <MenuSeparator/>
+                    {schedulingEnabled && (
+                        <MenuItem
+                            icon='clock'
+                            label={formatMessage({id: 'fusion.composer.schedule', defaultMessage: 'Schedule message'})}
+                            onClick={() => setMenu('schedule')}
+                        />
+                    )}
                     <MenuItem
                         icon='slash'
                         label={formatMessage({id: 'fusion.composer.slash', defaultMessage: 'Use a slash command'})}
@@ -487,6 +527,13 @@ export default function Composer({channelId, rootId = '', placeholder, compact =
                         }}
                     />
                 </Popover>
+            )}
+            {menu === 'schedule' && (
+                <SchedulePopover
+                    anchor={plusRef.current}
+                    onSchedule={(at) => schedule(at)}
+                    onClose={() => setMenu(null)}
+                />
             )}
             {menu === 'emoji' && (
                 <EmojiPicker

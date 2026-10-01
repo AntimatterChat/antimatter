@@ -1,0 +1,13 @@
+// What the Fusion composer needs beyond the mockup's styles: scheduling a message.
+
+:is(.am-app, .am-layer) .am-sched-pop { width: 280px; }
+:is(.am-app, .am-layer) .am-sched-custom { display: grid; gap: 8px; padding: 4px 8px 6px; }
+:is(.am-app, .am-layer) .am-sched-custom label { display: grid; gap: 4px; font-size: 12px; font-weight: 600; color: var(--am-muted); }
+:is(.am-app, .am-layer) .am-sched-custom input { height: 32px; padding: 0 8px; border-radius: 7px; border: 1px solid var(--am-line); background: var(--am-raise); color: var(--am-text); color-scheme: light dark; }
+:is(.am-app, .am-layer) .am-sched-custom .am-btn { justify-content: center; }
+
+// "Message scheduled for…", above the compose box, like the sleep note.
+:is(.am-app, .am-layer) .am-sched-note { display: flex; align-items: center; gap: 8px; margin: 0 0 6px; padding: 6px 10px; border-radius: 9px; background: var(--am-side); border: 1px solid var(--am-line); font-size: 13px; color: var(--am-text-2); }
+:is(.am-app, .am-layer) .am-sched-note > .am-ic { color: var(--am-anti); flex: none; }
+:is(.am-app, .am-layer) .am-sched-note > span { flex: 1; min-width: 0; }
+:is(.am-app, .am-layer) .am-sched-note a { font-weight: 600; color: var(--am-anti); }
