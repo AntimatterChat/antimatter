@@ -65,8 +65,8 @@ The Mattermost server is expected at `http://localhost:8065`. The webapp dev ser
 
   ```bash
   cd server
-  ./bin/mmctl --local user create --email cursor@example.com --username cursoradmin --password Password123! --system-admin --email-verified --disable-welcome-email
-  ./bin/mmctl --local team create --name cursorteam --display-name "Cursor Team" --email cursor@example.com
+  ./bin/amctl --local user create --email cursor@example.com --username cursoradmin --password Password123! --system-admin --email-verified --disable-welcome-email
+  ./bin/amctl --local team create --name cursorteam --display-name "Cursor Team" --email cursor@example.com
   ```
 
 - A healthy server responds at:
