@@ -1,5 +1,41 @@
 // Inline replies beyond the mockup's .reply-ref and .replying styles.
 
+// The reference line above a reply, as in Discord: a spine from the reply's picture up and right into the quoted
+// author's small picture, their name in bold and the start of their message. The spine fills the picture column of
+// the line's row, from the middle of the line down to the reply's picture.
+:is(.am-app, .am-layer) .am-msg > .am-ref-spine { position: relative; align-self: stretch; pointer-events: none; }
+:is(.am-app, .am-layer) .am-msg > .am-ref-spine::before {
+    position: absolute;
+    top: calc(50% - 2px);
+    right: -10px;
+    bottom: 0;
+    left: calc(50% - 1px);
+    border-top: 2px solid var(--am-faint);
+    border-left: 2px solid var(--am-faint);
+    border-top-left-radius: 6px;
+    content: "";
+    opacity: .7;
+}
+:is(.am-app, .am-layer) .am-reply-ref { min-height: 20px; }
+:is(.am-app, .am-layer) .am-ref-jump { gap: 5px; }
+:is(.am-app, .am-layer) .am-ref-jump > .am-ref-av { width: 16px; height: 16px; flex: none; font-size: 7px; }
+:is(.am-app, .am-layer) .am-ref-jump > .am-ref-av.am-none { background: var(--am-raise-2); color: var(--am-muted); }
+:is(.am-app, .am-layer) .am-ref-jump > .am-ref-av.am-none .am-ic { width: 10px; height: 10px; }
+:is(.am-app, .am-layer) .am-ref-jump > b { color: var(--am-text); }
+:is(.am-app, .am-layer) .am-ref-jump .am-snip.am-files { display: inline-flex; align-items: center; gap: 4px; }
+:is(.am-app, .am-layer) .am-ref-jump:hover:not(:disabled) > b { text-decoration: underline; }
+:is(.am-app, .am-layer) .am-ref-jump:hover:not(:disabled) .am-snip { color: var(--am-text); }
+
+// "Replying to Name: snippet" is the line's label for screen readers, which don't see the spine.
+:is(.am-app, .am-layer) .am-ref-sr {
+    position: absolute;
+    overflow: hidden;
+    width: 1px;
+    height: 1px;
+    clip-path: inset(50%);
+    white-space: nowrap;
+}
+
 :is(.am-app, .am-layer) .am-replying > .am-ref-label, :is(.am-app, .am-layer) .am-replying > b { flex: none; white-space: nowrap; }
 :is(.am-app, .am-layer) .am-replying > b { font-weight: 600; }
 
@@ -25,7 +61,9 @@
 :is(.am-app, .am-layer) .am-ref-jump:disabled { cursor: default; }
 :is(.am-app, .am-layer) .am-snip.am-gone { color: var(--am-muted); font-style: italic; }
 
-// Small screens keep the arrow, the name and as much of the message as fits.
+// Small screens keep the arrow, the name and as much of the message as fits; their narrower gap between the picture
+// and the message shortens the spine.
 @media (max-width: 560px) {
-    :is(.am-app, .am-layer) :is(.am-reply-ref, .am-replying) .am-ref-label { display: none; }
+    :is(.am-app, .am-layer) .am-replying .am-ref-label { display: none; }
+    :is(.am-app, .am-layer) .am-msg > .am-ref-spine::before { right: -7px; }
 }

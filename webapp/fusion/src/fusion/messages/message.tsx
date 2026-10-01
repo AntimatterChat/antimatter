@@ -133,7 +133,8 @@ export default function Message({postId, previousPostId, inThread = false, highl
     const threadReply = !inThread && !crt && Boolean(post.root_id);
     const threadRef = threadReply && !ephemeral && previous?.root_id !== post.root_id && previous?.id !== post.root_id;
 
-    // An inline reply always quotes the message it answers.
+    // An inline reply always quotes the message it answers, and starts a new group of messages: the spine joining the
+    // quote to the reply needs the reply's picture.
     const quotedId = inlineReplies && !ephemeral && !deleted ? replyToId(post) : '';
     const replyRef = threadRef || Boolean(quotedId);
     const consecutive = !inThread && Boolean(previous) && !priority && !burn && !replyRef && !ephemeral && areConsecutivePostsBySameUser(post, previous!) && !isSystemMessage(previous!);
@@ -419,7 +420,10 @@ export default function Message({postId, previousPostId, inThread = false, highl
         >
             {replyRef && (
                 <>
-                    <span/>
+                    <span
+                        className={am('ref-spine')}
+                        aria-hidden='true'
+                    />
                     <ReplyRef
                         post={post}
                         quotedId={quotedId}
