@@ -74,10 +74,29 @@ func (a *App) DeletePublicKey(name string) *model.AppError {
 }
 
 func (ch *Channels) verifyPlugin(logger *mlog.Logger, plugin, signature io.ReadSeeker) *model.AppError {
+	_, appErr := ch.verifyPluginSigner(logger, plugin, signature)
+	return appErr
+}
+
+// pluginSigner identifies the key that verified a plugin signature: a built-in key, by name, or
+// an admin-configured public key file.
+type pluginSigner struct {
+	name    string
+	builtin bool
+}
+
+// isAntimatter reports whether the plugin was signed with the Antimatter plugin signing key.
+func (s pluginSigner) isAntimatter() bool {
+	return s.builtin && s.name == antimatterPluginPublicKeyName
+}
+
+// verifyPluginSigner verifies the plugin's signature like verifyPlugin and tells which key
+// verified it.
+func (ch *Channels) verifyPluginSigner(logger *mlog.Logger, plugin, signature io.ReadSeeker) (pluginSigner, *model.AppError) {
 	// First try the hard-coded public keys (Antimatter's, then Mattermost's).
 	if name, ok := verifyPluginWithKeys(logger, builtinPluginPublicKeys, plugin, signature); ok {
 		logger.Debug("Plugin signature verified using hard-coded public key", mlog.String("public_key", name))
-		return nil
+		return pluginSigner{name: name, builtin: true}, nil
 	}
 
 	// If that fails, try any of the admin-configured public keys.
@@ -92,10 +111,10 @@ func (ch *Channels) verifyPlugin(logger *mlog.Logger, plugin, signature io.ReadS
 	}
 	if name, ok := verifyPluginWithKeys(logger, configuredKeys, plugin, signature); ok {
 		logger.Debug("Plugin signature verified using configured public key", mlog.String("public_key_path", name))
-		return nil
+		return pluginSigner{name: name}, nil
 	}
 
-	return model.NewAppError("VerifyPlugin", "api.plugin.verify_plugin.app_error", nil, "", http.StatusInternalServerError)
+	return pluginSigner{}, model.NewAppError("VerifyPlugin", "api.plugin.verify_plugin.app_error", nil, "", http.StatusInternalServerError)
 }
 
 // verifyPluginWithKeys checks the plugin's detached signature against each key in turn,
