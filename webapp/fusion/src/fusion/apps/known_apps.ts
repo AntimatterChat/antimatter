@@ -10,6 +10,9 @@ export type KnownApp = {
 
     // The mockup's icon for the app, drawn instead of the plugin's own.
     icon: IconName;
+
+    // Whether the app's right-hand panel needs the wide size (e.g. a canvas), instead of the narrow app panel.
+    widePanel?: boolean;
 };
 
 // The apps the mockup draws in the app rail, by plugin id. The plugins not listed keep their own icons.
@@ -25,7 +28,7 @@ const KNOWN_APPS: Record<string, KnownApp> = {
     'com.antimatterchat.mail': {tone: 'mail', icon: 'mail'},
     'com.antimatterchat.calendar': {tone: 'calendar', icon: 'calendar'},
     'com.antimatterchat.notes': {tone: 'notes', icon: 'pad'},
-    'com.antimatterchat.whiteboard': {tone: 'whiteboard', icon: 'draw'},
+    'com.antimatterchat.whiteboard': {tone: 'whiteboard', icon: 'draw', widePanel: true},
 };
 
 export function getKnownApp(pluginId: string): KnownApp | undefined {
