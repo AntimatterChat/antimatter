@@ -6,9 +6,9 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # Build Arguments
 ARG PUID=2000
 ARG PGID=2000
-# MM_PACKAGE build arguments controls which version of mattermost to install, defaults to latest stable enterprise
-# e.g. https://releases.mattermost.com/9.7.1/mattermost-9.7.1-linux-amd64.tar.gz
-ARG MM_PACKAGE="https://latest.mattermost.com/mattermost-enterprise-linux"
+# AM_PACKAGE is the URL of the Antimatter release archive to install (required), e.g. one built by
+# `make package-linux` (dist/antimatter-team-linux-amd64.tar.gz) and served over HTTP.
+ARG AM_PACKAGE
 
 # Install needed packages and indirect dependencies
 RUN apt-get update \
@@ -24,22 +24,23 @@ RUN apt-get update \
   tzdata \
   && rm -rf /var/lib/apt/lists/*
 
-# Set mattermost group/user and download Mattermost
-RUN mkdir -p /mattermost/data /mattermost/plugins /mattermost/client/plugins \
-  && groupadd --gid ${PGID} mattermost \
-  && useradd --uid ${PUID} --gid ${PGID} --comment "" --home-dir /mattermost mattermost \
-  && curl -L $MM_PACKAGE | tar -xvz \
-  && chown -R mattermost:mattermost /mattermost /mattermost/data /mattermost/plugins /mattermost/client/plugins
+# Set the antimatter group/user and download Antimatter
+RUN test -n "${AM_PACKAGE}" || (echo "the AM_PACKAGE build argument is required" && exit 1) \
+  && mkdir -p /antimatter/data /antimatter/plugins /antimatter/client/plugins \
+  && groupadd --gid ${PGID} antimatter \
+  && useradd --uid ${PUID} --gid ${PGID} --comment "" --home-dir /antimatter antimatter \
+  && curl -fL "${AM_PACKAGE}" | tar -xvz \
+  && chown -R antimatter:antimatter /antimatter /antimatter/data /antimatter/plugins /antimatter/client/plugins
 
 # Create PostgreSQL client SSL directory structure for ssl_mode=require
-RUN mkdir -p /mattermost/.postgresql \
-  && chmod 700 /mattermost/.postgresql
+RUN mkdir -p /antimatter/.postgresql \
+  && chmod 700 /antimatter/.postgresql
 
 # Final stage using distroless for minimal attack surface
 FROM gcr.io/distroless/base-debian12
 
 # Some ENV variables
-ENV PATH="/mattermost/bin:${PATH}"
+ENV PATH="/antimatter/bin:${PATH}"
 ENV MM_SERVICESETTINGS_ENABLELOCALMODE="true"
 ENV MM_INSTALL_TYPE="docker"
 
@@ -65,24 +66,24 @@ COPY --from=builder /usr/lib/libwv.so* /usr/lib/
 COPY --from=builder /usr/lib/libtidy.so* /usr/lib/
 COPY --from=builder /usr/lib/libfontconfig.so* /usr/lib/
 
-# Copy mattermost from builder stage
-COPY --from=builder --chown=2000:2000 /mattermost /mattermost
+# Copy antimatter from builder stage
+COPY --from=builder --chown=2000:2000 /antimatter /antimatter
 
-# Copy passwd including mattermost user
+# Copy passwd including the antimatter user
 COPY  passwd /etc/passwd
 
 # We should refrain from running as privileged user
-USER mattermost
+USER antimatter
 
-# Healthcheck to make sure container is ready - using mmctl instead of curl for distroless compatibility
+# Healthcheck to make sure container is ready - using amctl instead of curl for distroless compatibility
 HEALTHCHECK --interval=30s --timeout=10s \
-  CMD ["/mattermost/bin/mmctl", "system", "status", "--local"]
+  CMD ["/antimatter/bin/amctl", "system", "status", "--local"]
 
 # Configure entrypoint and command with proper permissions
-WORKDIR /mattermost
-CMD ["/mattermost/bin/mattermost"]
+WORKDIR /antimatter
+CMD ["/antimatter/bin/antimatter"]
 
 EXPOSE 8065 8067 8074
 
 # Declare volumes for mount point directories
-VOLUME ["/mattermost/data", "/mattermost/logs", "/mattermost/config", "/mattermost/plugins", "/mattermost/client/plugins"]
+VOLUME ["/antimatter/data", "/antimatter/logs", "/antimatter/config", "/antimatter/plugins", "/antimatter/client/plugins"]

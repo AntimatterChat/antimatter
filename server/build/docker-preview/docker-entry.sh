@@ -14,5 +14,5 @@ echo "Updating CA certificates"
 update-ca-certificates --fresh >/dev/null
 
 echo "Starting platform"
-cd mattermost
-exec ./bin/mattermost --config=config/config_docker.json
+cd antimatter
+exec ./bin/antimatter --config=config/config_docker.json
