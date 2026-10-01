@@ -11,6 +11,7 @@ import {getCurrentTeamId} from 'mattermost-redux/selectors/entities/teams';
 import {getIsRhsOpen} from 'selectors/rhs';
 
 import AppRail from 'fusion/apps/app_rail';
+import CallWindow from 'fusion/calls/call_window';
 import {IconSprite} from 'fusion/components/icon';
 import {LAYER_ID} from 'fusion/components/layer';
 import Toasts from 'fusion/components/toast';
@@ -122,6 +123,7 @@ function Frame({children}: Props) {
                 className={am('layer')}
             />
             {search.isOpen && <GlobalSearch/>}
+            <CallWindow/>
             <Toasts/>
         </>
     );

@@ -18,7 +18,7 @@ type Props = {
 };
 
 // A stable hue per user, for the initials shown until (or instead of) the profile picture.
-function hueFor(id: string) {
+export function hueFor(id: string) {
     let h = 0;
     for (let i = 0; i < id.length; i++) {
         h = ((h * 31) + id.charCodeAt(i)) % 360;

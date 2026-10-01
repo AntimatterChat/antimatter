@@ -1,0 +1,21 @@
+// What the mockup's call UI draws with placeholders and the Fusion UI shows for real: the cameras and shared screens
+// of a call, raised hands, and controls that can't be used in a call.
+
+// Camera and screen videos fill their tile (or the voice panel's preview), under its label and buttons.
+:is(.am-app, .am-layer) .am-call-video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; background: transparent; }
+:is(.am-app, .am-layer) .am-call-video.am-video-contain { object-fit: contain; background: var(--am-rail); }
+:is(.am-app, .am-layer) .am-call-video.am-mirror { transform: scaleX(-1); }
+:is(.am-app, .am-layer) .am-tile .am-label, :is(.am-app, .am-layer) .am-tile .am-icon-btn { z-index: 1; }
+:is(.am-app, .am-layer) .am-mini-screen .am-who, :is(.am-app, .am-layer) .am-mini-screen .am-pop-ic { z-index: 1; }
+
+// A raised hand, at the start of a tile's label and before the audio icon of a sidebar participant.
+:is(.am-app, .am-layer) .am-tile .am-label .am-hand, :is(.am-app, .am-layer) .am-vp .am-hand { display: inline-grid; place-items: center; }
+:is(.am-app, .am-layer) .am-tile .am-label .am-hand .am-ic, :is(.am-app, .am-layer) .am-vp .am-hand .am-ic { color: var(--am-spark); }
+
+// Camera or screen sharing turned off in this call, or someone else sharing.
+:is(.am-app, .am-layer) .am-round:disabled, :is(.am-app, .am-layer) .am-voice-conn .am-row button:disabled { opacity: .45; cursor: not-allowed; }
+:is(.am-app, .am-layer) .am-round:disabled:hover { background: var(--am-raise); }
+:is(.am-app, .am-layer) .am-voice-conn .am-row button:disabled:hover { background: var(--am-raise); color: var(--am-text-2); }
+
+// A shared screen in full screen fills it.
+:is(.am-app, .am-layer) .am-tile.am-screen:fullscreen { border-radius: 0; border: 0; }
