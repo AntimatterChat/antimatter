@@ -9,6 +9,7 @@ import {getCurrentChannelId} from 'mattermost-redux/selectors/entities/channels'
 import {getTheme} from 'mattermost-redux/selectors/entities/preferences';
 import {getCurrentTeamId} from 'mattermost-redux/selectors/entities/teams';
 
+import {closeRightHandSide} from 'actions/views/rhs';
 import {getIsRhsOpen} from 'selectors/rhs';
 
 import AppRail from 'fusion/apps/app_rail';
@@ -78,6 +79,23 @@ function Frame({children}: Props) {
         window.addEventListener('keydown', onKeyDown);
         return () => window.removeEventListener('keydown', onKeyDown);
     }, [dispatch, settings]);
+
+    // Escape closes the right-hand panel, last in the mockup's chain: popovers, dialogs, the edit form and the
+    // autocomplete take it first (they stop it or mark it handled).
+    useEffect(() => {
+        const onKeyDown = (e: KeyboardEvent) => {
+            if (e.key !== 'Escape' || e.defaultPrevented || !getIsRhsOpen(store.getState())) {
+                return;
+            }
+            const layer = Array.from(document.getElementById(LAYER_ID)?.children || []).filter((el) => !el.classList.contains('am-toast'));
+            if (layer.length || document.querySelector('.modal.show, [role="dialog"][aria-modal="true"]')) {
+                return;
+            }
+            dispatch(closeRightHandSide());
+        };
+        window.addEventListener('keydown', onKeyDown);
+        return () => window.removeEventListener('keydown', onKeyDown);
+    }, [dispatch, store]);
 
     // The page frame of the Fusion UI takes the whole window.
     useEffect(() => {
