@@ -1,26 +1,29 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 
-import React, {useState} from 'react';
+import React, {useRef, useState} from 'react';
 import {useIntl} from 'react-intl';
 import {useDispatch, useSelector} from 'react-redux';
 
-import {getDirectAndGroupChannels} from 'mattermost-redux/selectors/entities/channels';
-import {getCurrentTeam} from 'mattermost-redux/selectors/entities/teams';
+import {getDirectAndGroupChannels, getTeamsUnreadStatuses} from 'mattermost-redux/selectors/entities/channels';
+import {getCurrentTeamId} from 'mattermost-redux/selectors/entities/teams';
 import {getUser} from 'mattermost-redux/selectors/entities/users';
 
-import {showFlaggedPosts, showMentions} from 'actions/views/rhs';
-
 import Icon from 'fusion/components/icon';
-import {useLayout} from 'fusion/shell/layout_context';
+import CollectionsPopover from 'fusion/popovers/collections_popover';
+import {getUnreadDirectChannels} from 'fusion/selectors';
 import {am} from 'fusion/utils/class_names';
 import {openNewDirectMessage} from 'fusion/utils/modals';
-import {getHistory} from 'utils/browser_history';
 
 import type {GlobalState} from 'types/store';
 
 import DirectRow, {useTeammateId} from './direct_row';
 import VoicePanel from './voice_panel';
+
+// The "Find or start a conversation" field, which the home icon focuses.
+export const DM_FIND_ID = 'am-dm-find';
+
+type Collection = 'mentions' | 'threads' | 'saved';
 
 // The second line of a conversation: the person's custom status or position.
 function useDirectMeta(teammateId?: string): string {
@@ -48,10 +51,31 @@ function HomeRow({channel}: {channel: Parameters<typeof DirectRow>[0]['channel']
 export default function HomeSidebar() {
     const {formatMessage} = useIntl();
     const dispatch = useDispatch();
-    const layout = useLayout();
-    const team = useSelector(getCurrentTeam);
     const channels = useSelector(getDirectAndGroupChannels);
+    const teamId = useSelector(getCurrentTeamId);
+    const [, mentionsInTeam] = useSelector(getTeamsUnreadStatuses);
+    const unreadDMs = useSelector(getUnreadDirectChannels);
     const [query, setQuery] = useState('');
+    const [collection, setCollection] = useState<Collection | null>(null);
+    const linkRefs = useRef<Partial<Record<Collection, HTMLButtonElement | null>>>({});
+
+    // Mentions waiting for you: in the team's channels and in direct messages.
+    const mentions = (mentionsInTeam.get(teamId) || 0) + unreadDMs.reduce((n, dm) => n + dm.mentions, 0);
+    const link = (key: Collection, icon: 'at' | 'thread' | 'pin', label: string, badge = 0) => (
+        <button
+            ref={(el) => {
+                linkRefs.current[key] = el;
+            }}
+            className={am('ch', {active: collection === key})}
+            aria-haspopup='dialog'
+            aria-expanded={collection === key}
+            onClick={() => setCollection(collection === key ? null : key)}
+        >
+            <Icon name={icon}/>
+            <span className={am('name')}>{label}</span>
+            {badge > 0 && <span className={am('badge')}>{badge}</span>}
+        </button>
+    );
 
     const q = query.trim().toLowerCase();
     const list = channels.
@@ -83,6 +107,7 @@ export default function HomeSidebar() {
                     size='sm'
                 />
                 <input
+                    id={DM_FIND_ID}
                     value={query}
                     placeholder={formatMessage({id: 'fusion.home.find', defaultMessage: 'Find or start a conversation'})}
                     aria-label={formatMessage({id: 'fusion.home.find', defaultMessage: 'Find or start a conversation'})}
@@ -97,32 +122,9 @@ export default function HomeSidebar() {
             </label>
             <div className={am('chan-scroll')}>
                 <div className={am('home-links')}>
-                    <button
-                        className={am('ch')}
-                        onClick={() => dispatch(showMentions())}
-                    >
-                        <Icon name='at'/>
-                        <span className={am('name')}>{formatMessage({id: 'fusion.home.mentions', defaultMessage: 'Mentions'})}</span>
-                    </button>
-                    <button
-                        className={am('ch')}
-                        onClick={() => {
-                            if (team) {
-                                layout.setNavOpen(false);
-                                getHistory().push(`/${team.name}/threads`);
-                            }
-                        }}
-                    >
-                        <Icon name='thread'/>
-                        <span className={am('name')}>{formatMessage({id: 'fusion.home.threads', defaultMessage: 'Followed threads'})}</span>
-                    </button>
-                    <button
-                        className={am('ch')}
-                        onClick={() => dispatch(showFlaggedPosts())}
-                    >
-                        <Icon name='bookmark'/>
-                        <span className={am('name')}>{formatMessage({id: 'fusion.home.saved', defaultMessage: 'Saved messages'})}</span>
-                    </button>
+                    {link('mentions', 'at', formatMessage({id: 'fusion.home.mentions', defaultMessage: 'Mentions'}), mentions)}
+                    {link('threads', 'thread', formatMessage({id: 'fusion.home.threads', defaultMessage: 'Followed threads'}))}
+                    {link('saved', 'pin', formatMessage({id: 'fusion.home.saved', defaultMessage: 'Saved messages'}))}
                 </div>
                 <div
                     className={am('cat')}
@@ -145,6 +147,14 @@ export default function HomeSidebar() {
                 </div>
             </div>
             <VoicePanel/>
+            {collection && (
+                <CollectionsPopover
+                    anchor={linkRefs.current[collection] || null}
+                    initialTab={collection}
+                    placement='right'
+                    onClose={() => setCollection(null)}
+                />
+            )}
         </aside>
     );
 }

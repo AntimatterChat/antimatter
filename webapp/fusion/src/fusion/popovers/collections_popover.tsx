@@ -77,11 +77,14 @@ type Props = {
     anchor: HTMLElement | null;
     channel?: Channel;
     initialTab?: Tab;
+
+    // Under the header's button, or to the right of the home sidebar's links.
+    placement?: 'below' | 'right';
     onClose: () => void;
 };
 
 // CollectionsPopover gathers mentions, saved and pinned messages, and followed threads, in one panel.
-export default function CollectionsPopover({anchor, channel, initialTab = 'mentions', onClose}: Props) {
+export default function CollectionsPopover({anchor, channel, initialTab = 'mentions', placement = 'below', onClose}: Props) {
     const {formatMessage} = useIntl();
     const dispatch = useDispatch();
     const team = useSelector(getCurrentTeam);
@@ -134,7 +137,7 @@ export default function CollectionsPopover({anchor, channel, initialTab = 'menti
     return (
         <Popover
             anchor={anchor}
-            placement='below'
+            placement={placement}
             className='coll'
             label={formatMessage({id: 'fusion.collections.label', defaultMessage: 'Mentions, saved, pinned and threads'})}
             onClose={onClose}
