@@ -125,15 +125,72 @@ func TestVerifySignature(t *testing.T) {
 	})
 }
 
-func TestAntimatterPluginPublicKey(t *testing.T) {
-	keyring, err := openpgp.ReadArmoredKeyRing(bytes.NewReader(antimatterPluginPublicKey))
+func TestBuiltinPluginPublicKeys(t *testing.T) {
+	fingerprints := map[string]string{
+		"Antimatter": antimatterPluginPublicKeyFingerprint,
+	}
+	require.Len(t, builtinPluginPublicKeys, len(fingerprints))
+
+	for _, pk := range builtinPluginPublicKeys {
+		t.Run(pk.name, func(t *testing.T) {
+			keyring, err := openpgp.ReadArmoredKeyRing(bytes.NewReader(pk.key))
+			require.NoError(t, err)
+			require.Len(t, keyring, 1)
+			require.Equal(t, fingerprints[pk.name], fmt.Sprintf("%X", keyring[0].PrimaryKey.Fingerprint))
+		})
+	}
+}
+
+// TestVerifyPluginWithKeys checks that a plugin signed by any one of several trusted keys
+// verifies, whatever that key's position in the list, for armored and binary signatures.
+func TestVerifyPluginWithKeys(t *testing.T) {
+	mainHelper.Parallel(t)
+	path, _ := fileutils.FindDir("tests")
+	logger := mlog.CreateConsoleTestLogger(t)
+
+	developmentKey, err := os.ReadFile(filepath.Join(path, "development-public-key.asc"))
 	require.NoError(t, err)
-	require.Len(t, keyring, 1)
-	require.Equal(t, antimatterPluginPublicKeyFingerprint, fmt.Sprintf("%X", keyring[0].PrimaryKey.Fingerprint))
+	development := pluginPublicKey{name: "development", key: developmentKey}
+	antimatter := pluginPublicKey{name: "Antimatter", key: antimatterPluginPublicKey}
+
+	for _, signatureFilename := range []string{"testplugin.tar.gz.asc", "testplugin.tar.gz.sig"} {
+		openPluginAndSignature := func(t *testing.T) (*os.File, *os.File) {
+			t.Helper()
+			pluginFile, err := os.Open(filepath.Join(path, "testplugin.tar.gz"))
+			require.NoError(t, err)
+			t.Cleanup(func() { pluginFile.Close() })
+			signatureFile, err := os.Open(filepath.Join(path, signatureFilename))
+			require.NoError(t, err)
+			t.Cleanup(func() { signatureFile.Close() })
+			return pluginFile, signatureFile
+		}
+
+		t.Run(signatureFilename, func(t *testing.T) {
+			for _, tc := range []struct {
+				name     string
+				keys     []pluginPublicKey
+				verified bool
+			}{
+				{"signing key first", []pluginPublicKey{development, antimatter}, true},
+				{"signing key after another key", []pluginPublicKey{antimatter, development}, true},
+				{"only the built-in keys", builtinPluginPublicKeys, false},
+				{"no keys", nil, false},
+			} {
+				t.Run(tc.name, func(t *testing.T) {
+					pluginFile, signatureFile := openPluginAndSignature(t)
+					name, verified := verifyPluginWithKeys(logger, tc.keys, pluginFile, signatureFile)
+					require.Equal(t, tc.verified, verified)
+					if tc.verified {
+						require.Equal(t, development.name, name)
+					}
+				})
+			}
+		})
+	}
 }
 
 // TestVerifyPlugin covers verifyPlugin rejecting signatures from keys it doesn't trust and
-// falling back to admin-configured public keys.
+// falling back to admin-configured public keys after trying the built-in ones.
 func TestVerifyPlugin(t *testing.T) {
 	mainHelper.Parallel(t)
 	path, _ := fileutils.FindDir("tests")
@@ -150,7 +207,7 @@ func TestVerifyPlugin(t *testing.T) {
 		return pluginFile, signatureFile
 	}
 
-	t.Run("fails when the signature matches neither the hard-coded key nor an admin key", func(t *testing.T) {
+	t.Run("fails when the signature matches neither a hard-coded key nor an admin key", func(t *testing.T) {
 		th := Setup(t)
 
 		pluginFile, signatureFile := openPluginAndSignature(t)
