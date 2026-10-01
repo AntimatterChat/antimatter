@@ -12,4 +12,7 @@
   grid-template-areas: "srv side main right app";
   overflow: hidden;
   background: var(--am-main);
+  // Fixed columns (servers, sidebar, app rail) and the narrowest the conversation gets beside a plugin panel.
+  --am-chrome-w: calc(72px + 252px + 52px);
+  --am-main-min: 480px;
 }

@@ -8,9 +8,9 @@ import {Client4} from 'mattermost-redux/client';
 export {isSystemEmoji};
 
 export function getEmojiImageUrl(emoji: Emoji): string {
-    // If its the mattermost custom emoji
-    if (!isSystemEmoji(emoji) && emoji.id === 'mattermost') {
-        return Client4.getSystemEmojiImageUrl('mattermost');
+    // If its the built-in antimatter emoji
+    if (!isSystemEmoji(emoji) && emoji.id === 'antimatter') {
+        return Client4.getSystemEmojiImageUrl('antimatter');
     }
 
     if (isSystemEmoji(emoji)) {
