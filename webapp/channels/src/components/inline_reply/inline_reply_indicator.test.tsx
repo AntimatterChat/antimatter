@@ -28,7 +28,10 @@ describe('components/inline_reply/InlineReplyIndicator', () => {
             state,
         );
 
-        expect(screen.getByTestId('inline-reply-indicator')).toHaveTextContent('Replying to marie: the original message');
+        const indicator = screen.getByTestId('inline-reply-indicator');
+        expect(indicator.querySelector('.InlineReplyQuote__label')).toHaveTextContent('Replying to marie');
+        expect(indicator.querySelector('.InlineReplyQuote__name')).toHaveTextContent('marie');
+        expect(indicator.querySelector('.InlineReplyQuote__snippet')).toHaveTextContent('the original message');
         screen.getByRole('button', {name: 'Cancel reply'}).click();
         expect(onCancel).toHaveBeenCalled();
     });
