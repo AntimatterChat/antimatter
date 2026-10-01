@@ -663,7 +663,7 @@ debug-server-headless: setup-go-work start-docker ## Debug server from within an
 run-node: export MM_SERVICESETTINGS_SITEURL=http://localhost:8066
 run-node: export MM_SERVICESETTINGS_LISTENADDRESS=:8066
 run-node: export MM_SERVICESETTINGS_ENABLELOCALMODE=true
-run-node: export MM_SERVICESETTINGS_LOCALMODESOCKETLOCATION=/var/tmp/mattermost_local_node.socket
+run-node: export MM_SERVICESETTINGS_LOCALMODESOCKETLOCATION=/var/tmp/antimatter_local_node.socket
 run-node: export MM_SQLSETTINGS_DRIVERNAME=postgres
 run-node: export MM_SQLSETTINGS_DATASOURCE=postgres://mmuser:mostest_password@localhost/mattermost_node_test?sslmode=disable&sslmode=disable&connect_timeout=10&binary_parameters=yes
 

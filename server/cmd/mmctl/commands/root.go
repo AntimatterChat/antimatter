@@ -14,8 +14,6 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 
-	"github.com/mattermost/mattermost/server/public/model"
-
 	"github.com/mattermost/mattermost/server/v8/cmd/mmctl/printer"
 )
 
@@ -23,7 +21,6 @@ func Run(args []string) error {
 	applyAmctlEnvAliases()
 	viper.SetEnvPrefix("mmctl")
 	viper.SetEnvKeyReplacer(strings.NewReplacer("-", "_"))
-	viper.SetDefault("local-socket-path", model.LocalModeSocketPath)
 	viper.AutomaticEnv()
 
 	RootCmd.PersistentFlags().String("config", filepath.Join(xdgConfigHomeVar, configParent, configFileName), "path to the configuration file")

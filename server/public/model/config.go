@@ -311,7 +311,10 @@ const (
 
 	OpenidSettingsDefaultScope = "profile openid email"
 
-	LocalModeSocketPath = "/var/tmp/mattermost_local.socket"
+	LocalModeSocketPath = "/var/tmp/antimatter_local.socket"
+	// LegacyLocalModeSocketPath is the default LocalModeSocketLocation of Mattermost servers and
+	// of Antimatter before it was renamed; amctl falls back to it.
+	LegacyLocalModeSocketPath = "/var/tmp/mattermost_local.socket"
 
 	ConnectedWorkspacesSettingsDefaultMaxPostsPerSync     = 50 // a bit more than 4 typical screenfulls of posts
 	ConnectedWorkspacesSettingsDefaultMemberSyncBatchSize = 20 // optimal batch size for syncing channel members
