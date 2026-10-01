@@ -4,17 +4,20 @@
 import React from 'react';
 import {useSelector} from 'react-redux';
 
-import {getIsRhsExpanded, getIsRhsOpen, getRhsState, getSelectedPostId} from 'selectors/rhs';
+import {getIsRhsExpanded, getIsRhsOpen, getPluggableId, getRhsState, getSelectedPostId} from 'selectors/rhs';
 
 import ChannelInfoRhs from 'components/channel_info_rhs';
 import PostEditHistory from 'components/post_edit_history';
 import Search from 'components/search/index';
 
+import {getKnownApp} from 'fusion/apps/known_apps';
 import {useOpenVoiceChat, VoiceChatPanel} from 'fusion/calls/voice_chat';
 import MemberList from 'fusion/members/member_list';
 import {am} from 'fusion/utils/class_names';
 import RhsPlugin from 'plugins/rhs_plugin';
 import {RHSStates} from 'utils/constants';
+
+import type {GlobalState} from 'types/store';
 
 import ResultsPanel from './results_panel';
 import ThreadPanel from './thread_panel';
@@ -35,6 +38,7 @@ export default function RightPanel() {
     const rhsState = useSelector(getRhsState);
     const selectedPostId = useSelector(getSelectedPostId);
     const expanded = useSelector(getIsRhsExpanded);
+    const pluginId = useSelector((state: GlobalState) => state.plugins.components.RightHandSidebarComponent.find((c) => c.id === getPluggableId(state))?.pluginId);
     const voiceChat = useOpenVoiceChat();
 
     if (!open) {
@@ -43,6 +47,7 @@ export default function RightPanel() {
 
     let content: React.ReactNode = null;
     let wide = false;
+    let roomy = false;
     if (selectedPostId) {
         content = <ThreadPanel rootId={selectedPostId}/>;
     } else if (rhsState === RHSStates.SEARCH || rhsState === RHSStates.MENTION || rhsState === RHSStates.FLAG || rhsState === RHSStates.PIN) {
@@ -51,6 +56,7 @@ export default function RightPanel() {
         content = <MemberList inPanel={true}/>;
     } else if (rhsState === RHSStates.PLUGIN) {
         wide = true;
+        roomy = Boolean(pluginId && getKnownApp(pluginId)?.widePanel);
         content = <ClassicPanel><RhsPlugin/></ClassicPanel>;
     } else if (rhsState === RHSStates.CHANNEL_INFO) {
         content = <ClassicPanel><ChannelInfoRhs/></ClassicPanel>;
@@ -74,5 +80,5 @@ export default function RightPanel() {
     }
 
     // The classic expand button toggles between its expand and collapse icons on sidebar--right--expanded.
-    return <aside className={am('rhs', {wide, expanded}) + (expanded ? ' sidebar--right--expanded' : '')}>{content}</aside>;
+    return <aside className={am('rhs', {wide, roomy, expanded}) + (expanded ? ' sidebar--right--expanded' : '')}>{content}</aside>;
 }
