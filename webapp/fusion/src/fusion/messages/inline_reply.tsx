@@ -5,24 +5,30 @@ import React, {useEffect} from 'react';
 import {useIntl} from 'react-intl';
 import {useDispatch, useSelector} from 'react-redux';
 
-import type {PostReplyTo} from '@mattermost/types/posts';
+import type {Post, PostReplyTo} from '@mattermost/types/posts';
 
 import {getMissingProfilesByIds} from 'mattermost-redux/actions/users';
 import {Posts} from 'mattermost-redux/constants';
 import {getConfig} from 'mattermost-redux/selectors/entities/general';
-import {getPost} from 'mattermost-redux/selectors/entities/posts';
+import {getPost, getPostIdsInChannel} from 'mattermost-redux/selectors/entities/posts';
 import {getUser} from 'mattermost-redux/selectors/entities/users';
+import {isPostPendingOrFailed} from 'mattermost-redux/utils/post_utils';
 
 import Icon from 'fusion/components/icon';
 import {useDisplayName} from 'fusion/hooks/users';
 import {am} from 'fusion/utils/class_names';
 import {plainText} from 'fusion/utils/plain_text';
+import {isSystemMessage} from 'utils/post_utils';
 
 import type {GlobalState} from 'types/store';
 
 // Inline replies answer one message in the conversation, quoting it above the reply, without opening a thread (the
 // mockup's "Replying to" line). The reply's reply_to prop holds the quoted message's id; the server describes that
 // message in the reply's metadata.reply_to.
+
+// REPLY_EVENT asks a conversation's composer to reply to a message.
+export const REPLY_EVENT = 'am-reply-to';
+export type ReplyEventDetail = {channelId: string; rootId: string; postId: string};
 
 export function useInlineRepliesEnabled(): boolean {
     return useSelector((state: GlobalState) => getConfig(state).EnableInlineReplies !== 'false');
@@ -32,6 +38,35 @@ export function useInlineRepliesEnabled(): boolean {
 export function replyToId(post?: {props?: Record<string, unknown>}): string {
     const id = post?.props?.reply_to;
     return typeof id === 'string' ? id : '';
+}
+
+// canReplyInline tells whether a message can be quoted: the server refuses system messages, burn-on-read messages
+// and messages it doesn't have yet.
+export function canReplyInline(post: Post): boolean {
+    return !isSystemMessage(post) &&
+        post.type !== Posts.POST_TYPES.BURN_ON_READ &&
+        post.state !== Posts.POST_DELETED &&
+        !post.delete_at &&
+        !isPostPendingOrFailed(post);
+}
+
+// replyInline asks the composer of the conversation the message is shown in to quote it: the channel's composer, or
+// the thread's when rootId is set.
+export function replyInline(post: Post, rootId: string) {
+    window.dispatchEvent(new CustomEvent<ReplyEventDetail>(REPLY_EVENT, {detail: {channelId: post.channel_id, rootId, postId: post.id}}));
+}
+
+// replyCandidates lists the messages Shift+Up and Shift+Down move the quote between, newest first.
+export function replyCandidates(state: GlobalState, channelId: string, rootId: string): string[] {
+    let posts: Post[];
+    if (rootId) {
+        const thread = state.entities.posts.postsInThread[rootId] || [];
+        posts = [rootId, ...thread].map((id) => getPost(state, id)).filter((post): post is Post => Boolean(post));
+        posts.sort((a, b) => b.create_at - a.create_at);
+    } else {
+        posts = (getPostIdsInChannel(state, channelId) || []).map((id) => getPost(state, id)).filter((post): post is Post => Boolean(post));
+    }
+    return posts.filter(canReplyInline).map((post) => post.id);
 }
 
 type Quoted = {

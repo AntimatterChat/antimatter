@@ -41,7 +41,7 @@ import {BurnCover, BurnTag} from './burn_on_read';
 import Files from './content/files';
 import MessageContent from './content/message_content';
 import EditForm from './edit_form';
-import {replyToId, useInlineRepliesEnabled} from './inline_reply';
+import {canReplyInline, replyInline, replyToId, useInlineRepliesEnabled} from './inline_reply';
 import {useMentionClick} from './mention_click';
 import {useConcernsMe} from './mentions';
 import MessageMenu from './message_menu';
@@ -139,6 +139,10 @@ export default function Message({postId, previousPostId, inThread = false, highl
     const consecutive = !inThread && Boolean(previous) && !priority && !burn && !replyRef && !ephemeral && areConsecutivePostsBySameUser(post, previous!) && !isSystemMessage(previous!);
     const openThread = () => dispatch(selectPost(post));
 
+    // Replying inline quotes the message in the composer of the conversation it's shown in.
+    const canQuote = inlineReplies && canReplyInline(post);
+    const quote = () => replyInline(post, inThread ? (post.root_id || post.id) : '');
+
     const authorName = webhook ? String(post.props.override_username) : name;
     const iconOverride = isFromWebhook(post) && config.EnablePostIconOverride === 'true';
     const overrideIcon = iconOverride ? (post.props?.override_icon_url as string | undefined) : undefined;
@@ -164,6 +168,18 @@ export default function Message({postId, previousPostId, inThread = false, highl
                     size='sm'
                 />
             </button>
+            {canQuote && (
+                <button
+                    title={formatMessage({id: 'fusion.message.replyInline', defaultMessage: 'Reply'})}
+                    aria-label={formatMessage({id: 'fusion.message.replyInline', defaultMessage: 'Reply'})}
+                    onClick={quote}
+                >
+                    <Icon
+                        name='reply'
+                        size='sm'
+                    />
+                </button>
+            )}
             {!inThread && !burn && (
                 <button
                     title={formatMessage({id: 'fusion.message.reply', defaultMessage: 'Reply in thread'})}
@@ -171,7 +187,7 @@ export default function Message({postId, previousPostId, inThread = false, highl
                     onClick={openThread}
                 >
                     <Icon
-                        name='reply'
+                        name={inlineReplies ? 'thread' : 'reply'}
                         size='sm'
                     />
                 </button>
