@@ -35,7 +35,7 @@ func init() {
 }
 
 func versionCmdF(cmd *cobra.Command, args []string) error {
-	printer.PrintT("mmctl:\nVersion:\t{{.Version}}\nBuiltDate:\t{{.BuildDate}}\nCommitDate:\t{{.CommitDate}}\nGitCommit:\t{{.GitCommit}}"+
+	printer.PrintT("amctl:\nVersion:\t{{.Version}}\nBuiltDate:\t{{.BuildDate}}\nCommitDate:\t{{.CommitDate}}\nGitCommit:\t{{.GitCommit}}"+
 		"\nGitTreeState:\t{{.GitTreeState}}\nGoVersion:\t{{.GoVersion}}"+
 		"\nCompiler:\t{{.Compiler}}\nPlatform:\t{{.Platform}}", getVersionInfo())
 	return nil
