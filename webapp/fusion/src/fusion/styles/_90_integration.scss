@@ -108,9 +108,10 @@ body.app__body :where(.am-app, .am-layer) a:where(:not(.am-body *, .am-rhs-class
 // A plugin's tab of the emoji picker (registerEmojiPickerTab) may name a Fusion icon to show before its label.
 :is(.am-app, .am-layer) .am-picker-tabs button { display: inline-flex; align-items: center; gap: 5px; }
 
-// The emoji picker's link to add a custom emoji, at the end of its footer.
-:is(.am-app, .am-layer) .am-picker-foot .am-picker-add { margin-left: auto; font-size: 12.5px; font-weight: 600; color: var(--am-matter); white-space: nowrap; }
-:is(.am-app, .am-layer) .am-picker-foot .am-picker-add:hover { text-decoration: underline; }
+// The emoji tab's button to add a custom emoji, next to its search box (like the GIF and sticker tabs' add buttons).
+:is(.am-app, .am-layer) .am-picker-search.am-picker-search-row { display: flex; align-items: center; gap: 8px; }
+:is(.am-app, .am-layer) .am-picker-search-row > label { flex: 1; min-width: 0; }
+:is(.am-app, .am-layer) .am-picker-search-row > .am-icon-btn { flex: none; width: 34px; height: 34px; border: 1px solid var(--am-line); border-radius: 8px; }
 
 // Code blocks, as in Discord and Mattermost: one framed box with padding and its own scrollbar; the copy button and the
 // language show on hover. The box replaces the code theme's background so it sits in Fusion's palette.
