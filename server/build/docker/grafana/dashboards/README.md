@@ -13,3 +13,5 @@ The dashboards are modified from the version available on grafana.com since [Gra
 Upon using the dashboards within Grafana however, it immediately adds various missing fields, presumably due to some internal migration. This results in a spurious prompt to "save" the dashboard. To avoid confusion, these changes were subsequently exported and written back into the provisioned dashboards above.
 
 This entire process above will need to be repeated in the event newer versions of these dashboards are published.
+
+The dashboards query the `mattermost_*` metric names. The server also exposes each of them as `antimatter_*` (same labels and values), so the dashboards work unchanged; switching their queries to the new names is optional.

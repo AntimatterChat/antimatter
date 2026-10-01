@@ -3,7 +3,8 @@
 
 // Package metrics implements einterfaces.MetricsInterface on top of the Prometheus client
 // library. Every server instance owns its own registry which is exposed on the metrics
-// server (MetricsSettings.ListenAddress) under /metrics.
+// server (MetricsSettings.ListenAddress) under /metrics. Metrics are registered with the
+// "mattermost_" prefix and served under both that name and an "antimatter_" one.
 package metrics
 
 import (
@@ -299,7 +300,9 @@ func New(opts Options) *MetricsInterfaceImpl {
 	m.replicaLag = newReplicaLagCollector(m, opts.Config, opts.Store)
 	m.Registry.MustRegister(m.replicaLag)
 
-	m.handler = promhttp.InstrumentMetricHandler(m.Registry, promhttp.HandlerFor(m.Registry, promhttp.HandlerOpts{
+	// Every mattermost_* family is served under its antimatter_* name too.
+	gatherer := antimatterNamesGatherer{Gatherer: m.Registry}
+	m.handler = promhttp.InstrumentMetricHandler(m.Registry, promhttp.HandlerFor(gatherer, promhttp.HandlerOpts{
 		ErrorLog:      promErrorLogger{logger: logger},
 		ErrorHandling: promhttp.ContinueOnError,
 		Registry:      m.Registry,
