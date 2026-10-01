@@ -19,11 +19,11 @@ import path from 'node:path';
 import * as url from 'node:url';
 
 import chalk from 'chalk';
-import jsonCategories from 'emoji-datasource/categories.json' assert {type: 'json'};
-import jsonData from 'emoji-datasource/emoji.json' assert {type: 'json'};
+import jsonCategories from 'emoji-datasource/categories.json' with {type: 'json'};
+import jsonData from 'emoji-datasource/emoji.json' with {type: 'json'};
 import yargs from 'yargs';
 
-import additionalShortnames from './additional_shortnames.json' assert {type: 'json'};
+import additionalShortnames from './additional_shortnames.json' with {type: 'json'};
 
 const EMOJI_SIZE = 64;
 const EMOJI_SIZE_PADDED = EMOJI_SIZE + 2; // 1px per side
@@ -124,9 +124,9 @@ readMissingDirPromise.then(() => {
     }
 });
 
-// Copy mattermost emoji image
+// Copy the antimatter emoji image (the app icon)
 const webappImagesDir = path.resolve(webappRootDir, 'channels', 'src', 'images');
-endResults.push(copyFileAndPrint(path.resolve(webappImagesDir, 'icon64x64.png'), path.resolve(webappImagesDir, 'emoji/mattermost.png'), 'mattermost-emoji'));
+endResults.push(copyFileAndPrint(path.resolve(webappImagesDir, 'icon64x64.png'), path.resolve(webappImagesDir, 'emoji/antimatter.png'), 'antimatter-emoji'));
 
 const sheetSource = path.resolve(webappRootDir, `node_modules/emoji-datasource-apple/img/apple/sheets/${EMOJI_SIZE}.png`);
 const sheetAbsoluteFile = path.resolve(webappRootDir, 'channels', 'src', 'images/emoji-sheets/apple-sheet.png');
@@ -212,12 +212,12 @@ fullEmoji.forEach((emoji) => {
 
 // add built-in custom emojis
 fullEmoji.push({
-    id: 'mattermost',
-    name: 'mattermost',
+    id: 'antimatter',
+    name: 'antimatter',
     unified: '',
-    image: 'mattermost.png',
-    short_name: 'mattermost',
-    short_names: ['mattermost'],
+    image: 'antimatter.png',
+    short_name: 'antimatter',
+    short_names: ['antimatter'],
     category: 'custom',
 });
 
