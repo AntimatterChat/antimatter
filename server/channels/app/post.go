@@ -385,6 +385,7 @@ func (a *App) CreatePost(rctx request.CTX, post *model.Post, channel *model.Chan
 	}
 
 	a.sanitizeReplyToProp(rctx, post, nil)
+	sanitizeReplyToMentionProp(post)
 
 	post.Hashtags, _ = model.ParseHashtags(post.Message)
 
@@ -1090,6 +1091,7 @@ func (a *App) UpdatePost(rctx request.CTX, receivedUpdatedPost *model.Post, upda
 	}
 
 	a.sanitizeReplyToProp(rctx, newPost, oldPost)
+	sanitizeReplyToMentionProp(newPost)
 
 	if appErr = a.FillInPostProps(rctx, newPost, nil); appErr != nil {
 		return nil, false, appErr

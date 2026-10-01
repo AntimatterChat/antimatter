@@ -37,6 +37,13 @@ func (o *Post) GetReplyToProp() string {
 	return ""
 }
 
+// ReplyToMentionsAuthor tells whether an inline reply notifies the quoted message's author: it does unless its
+// reply_to_mention prop is false.
+func (o *Post) ReplyToMentionsAuthor() bool {
+	mention, ok := o.GetProp(PostPropsReplyToMention).(bool)
+	return !ok || mention
+}
+
 // NewPostReplyTo describes target, the message reply quotes. A missing or deleted target, one from another channel
 // (the reply's thread was moved) or a burn-on-read message is reported as deleted, so that its text isn't shown to
 // readers of the reply who may not see it.

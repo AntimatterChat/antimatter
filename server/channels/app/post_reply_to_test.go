@@ -12,7 +12,7 @@ import (
 	"github.com/mattermost/mattermost/server/public/model"
 )
 
-func createInlineReply(t *testing.T, th *TestHelper, channel *model.Channel, rootID string, replyTo any) *model.Post {
+func createInlineReply(t *testing.T, th *TestHelper, channel *model.Channel, rootID string, replyTo any, setters ...func(*model.Post)) *model.Post {
 	t.Helper()
 	post := &model.Post{
 		UserId:    th.BasicUser.Id,
@@ -20,7 +20,12 @@ func createInlineReply(t *testing.T, th *TestHelper, channel *model.Channel, roo
 		RootId:    rootID,
 		Message:   "reply_" + model.NewId(),
 	}
-	post.AddProp(model.PostPropsReplyTo, replyTo)
+	if replyTo != nil {
+		post.AddProp(model.PostPropsReplyTo, replyTo)
+	}
+	for _, set := range setters {
+		set(post)
+	}
 	created, _, appErr := th.App.CreatePost(th.Context, post, channel, model.CreatePostFlags{})
 	require.Nil(t, appErr)
 	return created
@@ -98,6 +103,33 @@ func TestInlineReplyCreate(t *testing.T) {
 		reply := createInlineReply(t, th, th.BasicChannel, "", target.Id)
 		assert.NotContains(t, reply.GetProps(), model.PostPropsReplyTo)
 	})
+
+	withMention := func(value any) func(*model.Post) {
+		return func(post *model.Post) { post.AddProp(model.PostPropsReplyToMention, value) }
+	}
+
+	t.Run("keeps a boolean reply_to_mention with the reference", func(t *testing.T) {
+		for _, value := range []bool{false, true} {
+			reply := createInlineReply(t, th, th.BasicChannel, "", target.Id, withMention(value))
+			assert.Equal(t, value, reply.GetProp(model.PostPropsReplyToMention))
+		}
+	})
+
+	t.Run("drops a reply_to_mention that isn't a boolean", func(t *testing.T) {
+		for _, value := range []any{"false", 0, nil} {
+			reply := createInlineReply(t, th, th.BasicChannel, "", target.Id, withMention(value))
+			assert.Equal(t, target.Id, reply.GetReplyToProp())
+			assert.NotContains(t, reply.GetProps(), model.PostPropsReplyToMention, "%v", value)
+		}
+	})
+
+	t.Run("drops reply_to_mention without a kept reference", func(t *testing.T) {
+		reply := createInlineReply(t, th, th.BasicChannel, "", nil, withMention(false))
+		assert.NotContains(t, reply.GetProps(), model.PostPropsReplyToMention)
+
+		reply = createInlineReply(t, th, th.BasicChannel, "", model.NewId(), withMention(false))
+		assert.NotContains(t, reply.GetProps(), model.PostPropsReplyToMention)
+	})
 }
 
 func TestInlineReplyUpdate(t *testing.T) {
@@ -151,6 +183,18 @@ func TestInlineReplyUpdate(t *testing.T) {
 
 		updated := edit(t, reply, nil)
 		assert.NotContains(t, updated.GetProps(), model.PostPropsReplyTo)
+	})
+
+	t.Run("drops reply_to_mention along with the reference", func(t *testing.T) {
+		reply := createInlineReply(t, th, th.BasicChannel, "", target.Id, func(post *model.Post) {
+			post.AddProp(model.PostPropsReplyToMention, false)
+		})
+
+		updated := edit(t, reply, target.Id)
+		assert.Equal(t, false, updated.GetProp(model.PostPropsReplyToMention))
+
+		updated = edit(t, updated, nil)
+		assert.NotContains(t, updated.GetProps(), model.PostPropsReplyToMention)
 	})
 
 	t.Run("doesn't let a plain post become a reply to an invalid message", func(t *testing.T) {
@@ -276,6 +320,21 @@ func TestInlineReplyNotifiesQuotedAuthor(t *testing.T) {
 
 	t.Run("notifies the author of the quoted message", func(t *testing.T) {
 		reply := createInlineReply(t, th, th.BasicChannel, "", theirs.Id)
+		assert.Contains(t, notified(t, reply), th.BasicUser2.Id)
+	})
+
+	t.Run("doesn't notify the author when the reply says not to", func(t *testing.T) {
+		reply := createInlineReply(t, th, th.BasicChannel, "", theirs.Id, func(post *model.Post) {
+			post.AddProp(model.PostPropsReplyToMention, false)
+		})
+		assert.NotContains(t, notified(t, reply), th.BasicUser2.Id)
+	})
+
+	t.Run("still notifies people mentioned in a reply that doesn't notify the author", func(t *testing.T) {
+		reply := createInlineReply(t, th, th.BasicChannel, "", theirs.Id, func(post *model.Post) {
+			post.Message = "@" + th.BasicUser2.Username + " look"
+			post.AddProp(model.PostPropsReplyToMention, false)
+		})
 		assert.Contains(t, notified(t, reply), th.BasicUser2.Id)
 	})
 
