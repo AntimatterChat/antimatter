@@ -384,6 +384,8 @@ func (a *App) CreatePost(rctx request.CTX, post *model.Post, channel *model.Chan
 		}
 	}
 
+	a.sanitizeReplyToProp(rctx, post, nil)
+
 	post.Hashtags, _ = model.ParseHashtags(post.Message)
 
 	if err = a.FillInPostProps(rctx, post, channel); err != nil {
@@ -1086,6 +1088,8 @@ func (a *App) UpdatePost(rctx request.CTX, receivedUpdatedPost *model.Post, upda
 	if newPost.EditAt == oldPost.EditAt && (!oldPost.FileIds.Equals(newPost.FileIds) || !oldPost.AttachmentsEqual(newPost)) {
 		newPost.EditAt = model.GetMillis()
 	}
+
+	a.sanitizeReplyToProp(rctx, newPost, oldPost)
 
 	if appErr = a.FillInPostProps(rctx, newPost, nil); appErr != nil {
 		return nil, false, appErr
