@@ -2011,7 +2011,6 @@ func TestSysadminManagesCPAFieldOwners(t *testing.T) {
 func TestCPALinkedFieldBlocked(t *testing.T) {
 	mainHelper.Parallel(t)
 	th := Setup(t)
-	th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterprise))
 
 	rctx := request.TestContext(t)
 	group, appErr := th.App.GetPropertyGroup(rctx, model.AccessControlPropertyGroupName)
