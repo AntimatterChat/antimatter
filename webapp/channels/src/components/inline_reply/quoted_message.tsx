@@ -10,7 +10,6 @@ import type {PostReplyTo} from '@mattermost/types/posts';
 import {getConfig} from 'mattermost-redux/selectors/entities/general';
 
 import {useUser} from 'components/common/hooks/useUser';
-import UserProfile from 'components/user_profile';
 
 import {getQuotedMessage} from 'utils/inline_replies';
 import type {QuotedMessage as Quoted} from 'utils/inline_replies';
@@ -38,20 +37,13 @@ export function quotedText(quoted: Quoted): string {
 
 type Props = {
     postId: string;
-
-    // The server's description of the quoted message, for when it isn't loaded.
-    described?: PostReplyTo;
-
-    onClick?: React.MouseEventHandler<HTMLAnchorElement>;
 };
 
-// QuotedMessage says "Replying to Name: snippet" for the message an inline reply quotes.
-export default function QuotedMessage({postId, described, onClick}: Props) {
-    const quoted = useSelector((state: GlobalState) => getQuotedMessage(state, postId, described), shallowEqual);
-    const overrideAllowed = useSelector((state: GlobalState) => getConfig(state).EnablePostUsernameOverride === 'true');
-    const author = useUser(quoted.userId || '');
+// QuotedMessage says "Replying to Name snippet" above the message box, for the message being replied to.
+export default function QuotedMessage({postId}: Props) {
+    const {quoted, name} = useQuoted(postId);
 
-    let snippet: React.ReactNode;
+    let snippet: React.ReactNode = quotedText(quoted);
     if (quoted.deleted) {
         snippet = (
             <FormattedMessage
@@ -59,9 +51,7 @@ export default function QuotedMessage({postId, described, onClick}: Props) {
                 defaultMessage='Original message was deleted'
             />
         );
-    } else if (quoted.message.trim()) {
-        snippet = stripMarkdown(Utils.replaceHtmlEntities(quoted.message)).slice(0, SNIPPET_LENGTH);
-    } else if (quoted.fileCount) {
+    } else if (!snippet && quoted.fileCount) {
         snippet = (
             <FormattedMessage
                 id='inline_reply.files'
@@ -69,7 +59,7 @@ export default function QuotedMessage({postId, described, onClick}: Props) {
                 values={{count: quoted.fileCount}}
             />
         );
-    } else {
+    } else if (!snippet) {
         snippet = (
             <FormattedMessage
                 id='inline_reply.message'
@@ -78,40 +68,23 @@ export default function QuotedMessage({postId, described, onClick}: Props) {
         );
     }
 
-    let name: React.ReactNode = null;
-    if (author || (overrideAllowed && quoted.overrideUsername)) {
-        name = (
-            <UserProfile
-                userId={author?.id ?? ''}
-                overwriteName={overrideAllowed ? quoted.overrideUsername : undefined}
-            />
-        );
-    }
-
     return (
         <span className='InlineReplyQuote__text'>
-            {name ? (
-                <FormattedMessage
-                    id='inline_reply.replyingTo'
-                    defaultMessage='Replying to {name}: '
-                    values={{name: <span className='InlineReplyQuote__name'>{name}</span>}}
-                />
-            ) : (
-                <FormattedMessage
-                    id='inline_reply.replying'
-                    defaultMessage='Replying to: '
-                />
-            )}
-            {quoted.deleted || !onClick ? (
-                <span className={quoted.deleted ? 'InlineReplyQuote__snippet InlineReplyQuote__snippet--deleted' : 'InlineReplyQuote__snippet'}>{snippet}</span>
-            ) : (
-                <a
-                    className='InlineReplyQuote__snippet theme'
-                    onClick={onClick}
-                >
-                    {snippet}
-                </a>
-            )}
+            <span className='InlineReplyQuote__label'>
+                {name ? (
+                    <FormattedMessage
+                        id='inline_reply.replyingTo'
+                        defaultMessage='Replying to {name}'
+                        values={{name: <span className='InlineReplyQuote__name'>{name}</span>}}
+                    />
+                ) : (
+                    <FormattedMessage
+                        id='inline_reply.replying'
+                        defaultMessage='Replying to'
+                    />
+                )}
+            </span>
+            <span className={quoted.deleted ? 'InlineReplyQuote__snippet InlineReplyQuote__snippet--deleted' : 'InlineReplyQuote__snippet'}>{snippet}</span>
         </span>
     );
 }
