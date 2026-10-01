@@ -3,12 +3,25 @@
 
 package app
 
-// antimatterPluginPublicKeyFingerprint identifies antimatterPluginPublicKey.
-const antimatterPluginPublicKeyFingerprint = "06C8103246770F08BBA778B9E69B05C392A69A45"
+// Fingerprints of the hard-coded plugin signing keys below.
+const (
+	antimatterPluginPublicKeyFingerprint = "06C8103246770F08BBA778B9E69B05C392A69A45"
+)
+
+// builtinPluginPublicKeys are the plugin signing keys trusted without any configuration, tried in
+// order. Admins can trust additional publishers through PluginSettings.SignaturePublicKeyFiles.
+var builtinPluginPublicKeys = []pluginPublicKey{
+	{name: "Antimatter", key: antimatterPluginPublicKey},
+}
+
+// pluginPublicKey is a named, armored or binary OpenPGP public key trusted to sign plugins.
+type pluginPublicKey struct {
+	name string
+	key  []byte
+}
 
 // antimatterPluginPublicKey is the public half of the key the Antimatter build pipeline signs
-// prepackaged plugins with. It is the only hard-coded key trusted for plugin signatures; admins
-// can trust additional publishers through PluginSettings.SignaturePublicKeyFiles.
+// prepackaged plugins with.
 var antimatterPluginPublicKey = []byte(`-----BEGIN PGP PUBLIC KEY BLOCK-----
 
 mQINBGq8BDwBEACo4xDqekUKgAl2oziJbJC8zigu69ZmU99c7X3x1BywpkMzjr8R

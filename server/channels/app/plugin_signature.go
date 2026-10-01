@@ -74,36 +74,49 @@ func (a *App) DeletePublicKey(name string) *model.AppError {
 }
 
 func (ch *Channels) verifyPlugin(logger *mlog.Logger, plugin, signature io.ReadSeeker) *model.AppError {
-	// First try verifying using the hard-coded Antimatter public key.
-	if err := verifySignature(bytes.NewReader(antimatterPluginPublicKey), plugin, signature); err == nil {
-		logger.Debug("Plugin signature verified using hard-coded public key")
+	// First try the hard-coded public keys.
+	if name, ok := verifyPluginWithKeys(logger, builtinPluginPublicKeys, plugin, signature); ok {
+		logger.Debug("Plugin signature verified using hard-coded public key", mlog.String("public_key", name))
 		return nil
 	}
 
 	// If that fails, try any of the admin-configured public keys.
-	publicKeys := ch.srv.Config().PluginSettings.SignaturePublicKeyFiles
-	for _, pk := range publicKeys {
+	var configuredKeys []pluginPublicKey
+	for _, pk := range ch.srv.Config().PluginSettings.SignaturePublicKeyFiles {
 		pkBytes, appErr := ch.srv.getPublicKey(pk)
 		if appErr != nil {
 			logger.Warn("Unable to read configured signature public key file", mlog.String("public_key_path", pk))
 			continue
 		}
-		publicKey := bytes.NewReader(pkBytes)
-		if _, err := plugin.Seek(0, io.SeekStart); err != nil {
-			logger.Warn("Unable to seek in public key reader for ", mlog.String("public_key_path", pk))
-			continue
-		}
-		if _, err := signature.Seek(0, io.SeekStart); err != nil {
-			logger.Warn("Unable to seek in signature for public key ", mlog.String("public_key_path", pk))
-			continue
-		}
-		if err := verifySignature(publicKey, plugin, signature); err == nil {
-			logger.Debug("Plugin signature verified using configured public key", mlog.String("public_key_path", pk))
-			return nil
-		}
+		configuredKeys = append(configuredKeys, pluginPublicKey{name: pk, key: pkBytes})
+	}
+	if name, ok := verifyPluginWithKeys(logger, configuredKeys, plugin, signature); ok {
+		logger.Debug("Plugin signature verified using configured public key", mlog.String("public_key_path", name))
+		return nil
 	}
 
 	return model.NewAppError("VerifyPlugin", "api.plugin.verify_plugin.app_error", nil, "", http.StatusInternalServerError)
+}
+
+// verifyPluginWithKeys checks the plugin's detached signature against each key in turn,
+// rewinding both readers before each attempt, and returns the name of the first key that
+// verifies it.
+func verifyPluginWithKeys(logger *mlog.Logger, keys []pluginPublicKey, plugin, signature io.ReadSeeker) (string, bool) {
+	for _, pk := range keys {
+		if _, err := plugin.Seek(0, io.SeekStart); err != nil {
+			logger.Warn("Unable to seek in plugin for public key", mlog.String("public_key", pk.name), mlog.Err(err))
+			continue
+		}
+		if _, err := signature.Seek(0, io.SeekStart); err != nil {
+			logger.Warn("Unable to seek in signature for public key", mlog.String("public_key", pk.name), mlog.Err(err))
+			continue
+		}
+		if err := verifySignature(bytes.NewReader(pk.key), plugin, signature); err == nil {
+			return pk.name, true
+		}
+	}
+
+	return "", false
 }
 
 func verifySignature(publicKey, message, signature io.Reader) error {
