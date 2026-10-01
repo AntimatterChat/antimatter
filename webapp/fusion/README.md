@@ -27,6 +27,23 @@ switches too, which is also a way back if one UI is broken.
 When the Fusion UI isn't deployed (no `client-fusion` directory), the classic web app is always
 served and users aren't offered a choice.
 
+### Upgrading from a version where classic was the default
+
+Fusion became the default web UI in a later version. The first time that version starts, a
+one-time migration (tracked as `WebUIDefaultFusionMigrationComplete` in the `Systems` table):
+
+- saves `classic` as the web UI preference of every existing user (active or deactivated, not
+  bots) who has none, so they stay on the interface they know. The classic web UI then shows them
+  a dismissible "new interface" tip with a **Try Fusion** button; users created afterwards get the
+  default web UI;
+- switches `ServiceSettings.DefaultWebUI` from `classic` to `fusion` in the saved configuration.
+  Config files store every setting, defaults included, so `classic` there is treated as the former
+  default rather than an admin's choice. Admins who want new users on classic can set it back
+  afterwards. A default set with `MM_SERVICESETTINGS_DEFAULTWEBUI` is left alone.
+
+Users who had already switched a browser to Fusion with the cookie before the upgrade get
+`classic` too, and switch back with the tip or in Settings.
+
 ## How it's served
 
 - Classic assets live in `client/` and are served under `/static/`.

@@ -4,7 +4,9 @@
 package app
 
 import (
+	"database/sql"
 	"encoding/json"
+	"errors"
 	"maps"
 	"sync"
 	"testing"
@@ -978,4 +980,86 @@ func TestDoAppMigrationsRunsLockedToMaster(t *testing.T) {
 	require.Equal(t, "lock", events[0], "migrations must lock to master before touching the store")
 	require.Equal(t, "unlock", events[len(events)-1], "migrations must release the lock once finished")
 	require.Contains(t, events[1:len(events)-1], "system", "migration store access must happen while locked to master")
+}
+
+func TestDoWebUIDefaultFusionMigration(t *testing.T) {
+	getWebUI := func(t *testing.T, th *TestHelper, userID string) string {
+		t.Helper()
+		pref, err := th.Store.Preference().Get(userID, model.PreferenceCategoryDisplaySettings, model.PreferenceNameWebUI)
+		if errors.Is(err, sql.ErrNoRows) {
+			return ""
+		}
+		require.NoError(t, err)
+		return pref.Value
+	}
+
+	setWebUI := func(t *testing.T, th *TestHelper, userID, webUI string) {
+		t.Helper()
+		require.NoError(t, th.Store.Preference().Save(model.Preferences{{
+			UserId:   userID,
+			Category: model.PreferenceCategoryDisplaySettings,
+			Name:     model.PreferenceNameWebUI,
+			Value:    webUI,
+		}}))
+	}
+
+	// Brings the server back to before the upgrade: the migration has run on start.
+	beforeUpgrade := func(t *testing.T, th *TestHelper) {
+		t.Helper()
+		_, err := th.Store.System().PermanentDeleteByName(webUIDefaultFusionMigrationKey)
+		require.NoError(t, err)
+		th.App.UpdateConfig(func(cfg *model.Config) { *cfg.ServiceSettings.DefaultWebUI = model.WebUIClassic })
+	}
+
+	t.Run("keeps existing users on the classic web UI and makes Fusion the default", func(t *testing.T) {
+		th := Setup(t).InitBasic(t)
+
+		// Saves preferences in several batches.
+		prevBatchSize := webUIDefaultFusionMigrationBatchSize
+		webUIDefaultFusionMigrationBatchSize = 2
+		t.Cleanup(func() { webUIDefaultFusionMigrationBatchSize = prevBatchSize })
+
+		deactivated := th.CreateUser(t)
+		_, appErr := th.App.UpdateActive(th.Context, deactivated, false)
+		require.Nil(t, appErr)
+		fusionUser := th.CreateUser(t)
+		bot := th.CreateBot(t)
+
+		beforeUpgrade(t, th)
+		setWebUI(t, th, fusionUser.Id, model.WebUIFusion)
+
+		require.NoError(t, th.Server.doWebUIDefaultFusionMigration())
+
+		assert.Equal(t, model.WebUIClassic, getWebUI(t, th, th.BasicUser.Id))
+		assert.Equal(t, model.WebUIClassic, getWebUI(t, th, th.BasicUser2.Id))
+		assert.Equal(t, model.WebUIClassic, getWebUI(t, th, th.SystemAdminUser.Id))
+		assert.Equal(t, model.WebUIClassic, getWebUI(t, th, deactivated.Id))
+		assert.Equal(t, model.WebUIFusion, getWebUI(t, th, fusionUser.Id))
+		assert.Empty(t, getWebUI(t, th, bot.UserId))
+		assert.Equal(t, model.WebUIFusion, *th.App.Config().ServiceSettings.DefaultWebUI)
+
+		_, err := th.Store.System().GetByName(webUIDefaultFusionMigrationKey)
+		require.NoError(t, err)
+
+		t.Run("runs once", func(t *testing.T) {
+			newUser := th.CreateUser(t)
+			th.App.UpdateConfig(func(cfg *model.Config) { *cfg.ServiceSettings.DefaultWebUI = model.WebUIClassic })
+
+			require.NoError(t, th.Server.doWebUIDefaultFusionMigration())
+
+			assert.Empty(t, getWebUI(t, th, newUser.Id))
+			assert.Equal(t, model.WebUIClassic, *th.App.Config().ServiceSettings.DefaultWebUI)
+		})
+	})
+
+	t.Run("keeps a default web UI set in the environment", func(t *testing.T) {
+		th := Setup(t).InitBasic(t)
+		beforeUpgrade(t, th)
+		t.Setenv("MM_SERVICESETTINGS_DEFAULTWEBUI", model.WebUIClassic)
+
+		require.NoError(t, th.Server.doWebUIDefaultFusionMigration())
+
+		assert.Equal(t, model.WebUIClassic, getWebUI(t, th, th.BasicUser.Id))
+		assert.Equal(t, model.WebUIClassic, *th.App.Config().ServiceSettings.DefaultWebUI)
+	})
 }
