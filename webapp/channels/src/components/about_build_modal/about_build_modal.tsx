@@ -56,13 +56,13 @@ export default function AboutBuildModal(props: Props) {
         <div>
             <FormattedMessage
                 id='about.teamEditionLearn'
-                defaultMessage='Join the Mattermost community at '
+                defaultMessage='Join the Antimatter community at '
             />
             <ExternalLink
                 location='about_build_modal'
-                href='https://mattermost.com/community/'
+                href='https://github.com/AntimatterChat'
             >
-                {'mattermost.com/community/'}
+                {'github.com/AntimatterChat'}
             </ExternalLink>
         </div>
     );
