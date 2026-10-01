@@ -76,7 +76,11 @@ export default function ChannelController(props: Props) {
                 <ProductNoticesModal/>
                 {enableMarkAllReadShortcut && <MarkAllAsReadToast/>}
                 {props.shouldRenderCenterChannel ? <CenterChannel/> : <LoadingScreen centered={true}/>}
-                <Pluggable pluggableName='Root'/>
+
+                {/* Plugins' root components are overlays (dialogs, watchers): kept out of the main column's layout. */}
+                <div className='am-plugin-roots'>
+                    <Pluggable pluggableName='Root'/>
+                </div>
                 <ResetStatusModal/>
             </FusionApp>
         </>

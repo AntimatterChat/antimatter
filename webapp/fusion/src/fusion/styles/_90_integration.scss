@@ -92,5 +92,9 @@ body.app__body :where(.am-app, .am-layer) a:where(:not(.am-body *, .am-rhs-class
 :is(.am-app, .am-layer) .am-rhs.am-expanded .sidebar--right__expand .icon-arrow-collapse { display: inline-block; }
 :is(.am-app, .am-layer) .am-rhs.am-expanded { width: min(1120px, calc(100vw - 72px - 52px - 320px)); }
 
+// Plugins' root components (registerRootComponent), e.g. Boards' "Link boards" dialog, are overlays: they take no room
+// in the main column, whose layout would squeeze the conversation to make room for their wrappers.
+:is(.am-app, .am-layer) .am-plugin-roots { position: absolute; top: 0; left: 0; width: 0; height: 0; }
+
 // The mockup's code blocks have no line numbers.
 :is(.am-app, .am-layer) .am-body .post-code__line-numbers { display: none; }
