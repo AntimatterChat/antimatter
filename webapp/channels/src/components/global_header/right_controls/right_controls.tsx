@@ -8,6 +8,7 @@ import type {ProductIdentifier} from '@mattermost/types/products';
 
 import {isCurrentUserGuestUser} from 'mattermost-redux/selectors/entities/users';
 
+import FusionAnnouncementTourTip from 'components/fusion_announcement_tour_tip';
 import {
     OnboardingTourSteps,
     OnboardingTourStepsForGuestUsers,
@@ -63,7 +64,7 @@ const RightControls = ({productId = null}: Props): JSX.Element => {
                 {isChannels(productId) && (
                     <>
                         <SettingsButton/>
-                        {showCustomizeTip && <CustomizeYourExperienceTour/>}
+                        {showCustomizeTip ? <CustomizeYourExperienceTour/> : <FusionAnnouncementTourTip/>}
                     </>
                 )}
                 <UserAccountMenu/>

@@ -20647,6 +20647,30 @@
     "defaultMessage": "Close",
     "description": "Accessibility label/tooltip for the close (X) button of full-screen modals such as the file preview."
   },
+  "fusion_announcement.badge": {
+    "defaultMessage": "New",
+    "description": "Badge next to the title of the tip announcing the Fusion web interface to users of the classic one, marking it as new."
+  },
+  "fusion_announcement.description": {
+    "defaultMessage": "Fusion is the new interface of Antimatter: a refreshed layout with voice channels, apps and more. Your conversations and settings stay the same.",
+    "description": "Body of the tip announcing the Fusion web interface to users of the classic one. Fusion and Antimatter are names; don't translate them."
+  },
+  "fusion_announcement.notNow": {
+    "defaultMessage": "Not now",
+    "description": "Button of the tip announcing the Fusion web interface; dismisses the tip for good without switching."
+  },
+  "fusion_announcement.switchBack": {
+    "defaultMessage": "You can switch back at any time in <b>Settings > Display > Web interface</b>.",
+    "description": "Second paragraph of the tip announcing the Fusion web interface. <b> wraps the menu path to the Web interface setting; keep it and the path's names consistent with the Settings modal."
+  },
+  "fusion_announcement.title": {
+    "defaultMessage": "A new interface is available",
+    "description": "Title of the tip, shown under the Settings button of the global header, announcing the Fusion web interface to users of the classic one."
+  },
+  "fusion_announcement.tryFusion": {
+    "defaultMessage": "Try Fusion",
+    "description": "Button of the tip announcing the Fusion web interface; switches the user to Fusion and reloads the page. Fusion is a name; don't translate it."
+  },
   "general_button.close": {
     "defaultMessage": "Close",
     "description": "Accessibility label for the close (X) button on toast notifications."
