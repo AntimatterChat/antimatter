@@ -124,8 +124,8 @@ TEMPLATES_DIR=templates
 
 # Plugins Packages
 # Prepackaged plugins are built and signed with the Antimatter plugin signing key by the
-# Antimatter image build; plugins signed by other publishers no longer verify, so none are
-# downloaded here.
+# Antimatter image build, so none are downloaded here. Bundles signed by Mattermost (from
+# plugins.releases.mattermost.com) still verify if listed.
 PLUGIN_PACKAGES ?=
 
 ALL_PACKAGES=$(TE_PACKAGES)

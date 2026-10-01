@@ -128,6 +128,7 @@ func TestVerifySignature(t *testing.T) {
 func TestBuiltinPluginPublicKeys(t *testing.T) {
 	fingerprints := map[string]string{
 		"Antimatter": antimatterPluginPublicKeyFingerprint,
+		"Mattermost": mattermostPluginPublicKeyFingerprint,
 	}
 	require.Len(t, builtinPluginPublicKeys, len(fingerprints))
 
@@ -152,6 +153,7 @@ func TestVerifyPluginWithKeys(t *testing.T) {
 	require.NoError(t, err)
 	development := pluginPublicKey{name: "development", key: developmentKey}
 	antimatter := pluginPublicKey{name: "Antimatter", key: antimatterPluginPublicKey}
+	mattermost := pluginPublicKey{name: "Mattermost", key: mattermostPluginPublicKey}
 
 	for _, signatureFilename := range []string{"testplugin.tar.gz.asc", "testplugin.tar.gz.sig"} {
 		openPluginAndSignature := func(t *testing.T) (*os.File, *os.File) {
@@ -171,8 +173,9 @@ func TestVerifyPluginWithKeys(t *testing.T) {
 				keys     []pluginPublicKey
 				verified bool
 			}{
-				{"signing key first", []pluginPublicKey{development, antimatter}, true},
-				{"signing key after another key", []pluginPublicKey{antimatter, development}, true},
+				{"signing key first", []pluginPublicKey{development, antimatter, mattermost}, true},
+				{"signing key after the built-in keys", []pluginPublicKey{antimatter, mattermost, development}, true},
+				{"signing key between the built-in keys", []pluginPublicKey{antimatter, development, mattermost}, true},
 				{"only the built-in keys", builtinPluginPublicKeys, false},
 				{"no keys", nil, false},
 			} {
