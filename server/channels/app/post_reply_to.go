@@ -46,6 +46,19 @@ func (a *App) sanitizeReplyToProp(rctx request.CTX, post, oldPost *model.Post) {
 	}
 }
 
+// sanitizeReplyToMentionProp drops a post's reply_to_mention prop unless it is a boolean on an inline reply, so that
+// it is only kept with the reply_to prop it applies to. Run it after sanitizeReplyToProp.
+func sanitizeReplyToMentionProp(post *model.Post) {
+	value, ok := post.GetProps()[model.PostPropsReplyToMention]
+	if !ok {
+		return
+	}
+	if _, isBool := value.(bool); isBool && post.GetReplyToProp() != "" {
+		return
+	}
+	post.DelProp(model.PostPropsReplyToMention)
+}
+
 // isValidReplyTarget tells whether post may quote the message targetID: an existing message of the same channel
 // (of the same thread, when post is a thread reply) that people can read and reply to.
 func (a *App) isValidReplyTarget(rctx request.CTX, post *model.Post, targetID string) bool {
@@ -126,10 +139,11 @@ func (a *App) populateReplyToMetadata(rctx request.CTX, posts []*model.Post, kno
 }
 
 // inlineReplyTargetAuthor returns the author of the message post replies to inline, for them to be notified, or ""
-// when there is no one to notify: messages posted by incoming webhooks belong to whoever set the webhook up.
+// when there is no one to notify: the reply's author chose not to (its reply_to_mention prop is false), or the quoted
+// message was posted by an incoming webhook, and belongs to whoever set the webhook up.
 func (a *App) inlineReplyTargetAuthor(rctx request.CTX, post *model.Post) string {
 	targetID := post.GetReplyToProp()
-	if targetID == "" || !a.inlineRepliesEnabled() {
+	if targetID == "" || !a.inlineRepliesEnabled() || !post.ReplyToMentionsAuthor() {
 		return ""
 	}
 

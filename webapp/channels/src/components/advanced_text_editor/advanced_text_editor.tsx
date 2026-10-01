@@ -59,7 +59,15 @@ import Constants, {
     AdvancedTextEditorTextboxIds,
 } from 'utils/constants';
 import {canUploadFiles as canUploadFilesAccordingToConfig} from 'utils/file_utils';
-import {INLINE_REPLY_EVENT, getReplyToId, isInlineRepliesEnabled} from 'utils/inline_replies';
+import {
+    INLINE_REPLY_EVENT,
+    MENTION_PREFERENCE_CATEGORY,
+    MENTION_PREFERENCE_NAME,
+    getReplyProps,
+    getReplyToId,
+    isInlineRepliesEnabled,
+    mentionsQuotedAuthor,
+} from 'utils/inline_replies';
 import type {InlineReplyEventDetail} from 'utils/inline_replies';
 import type {MarkdownMode} from 'utils/markdown/apply_markdown';
 import {applyMarkdown as applyMarkdownUtil} from 'utils/markdown/apply_markdown';
@@ -265,6 +273,7 @@ const AdvancedTextEditor = ({
     const ctrlSend = useSelector((state: GlobalState) => getBool(state, Preferences.CATEGORY_ADVANCED_SETTINGS, 'send_on_ctrl_enter'));
     const codeBlockOnCtrlEnter = useSelector((state: GlobalState) => getBool(state, Preferences.CATEGORY_ADVANCED_SETTINGS, 'code_block_ctrl_enter', true));
     const inlineRepliesEnabled = useSelector(isInlineRepliesEnabled);
+    const mentionQuotedAuthorByDefault = useSelector((state: GlobalState) => getBool(state, MENTION_PREFERENCE_CATEGORY, MENTION_PREFERENCE_NAME, true));
     const isDMOrGMRemote = isChannelShared && (channelType === Constants.DM_CHANNEL || channelType === Constants.GM_CHANNEL);
 
     if (draft.channelId !== channelId || draft.rootId !== rootId) {
@@ -601,13 +610,21 @@ const AdvancedTextEditor = ({
         handleCancel,
     );
 
-    // An inline reply quotes the message in the draft's reply_to prop, which the message is sent with.
+    // An inline reply quotes the message in the draft's reply_to prop, which the message is sent with, and notifies
+    // its author unless the reply_to_mention prop says not to: the indicator's switch, which starts as last set.
     const replyToId = inlineRepliesEnabled && !isInEditMode ? getReplyToId(draft) : '';
     const setReplyTo = useCallback((postId: string) => {
-        const draftProps = {...draft.props};
-        delete draftProps.reply_to;
-        handleDraftChange({...draft, props: postId ? {...draftProps, reply_to: postId} : draftProps}, {instant: true});
-    }, [draft, handleDraftChange]);
+        handleDraftChange({...draft, props: getReplyProps(draft.props, postId, mentionQuotedAuthorByDefault)}, {instant: true});
+    }, [draft, handleDraftChange, mentionQuotedAuthorByDefault]);
+    const setMentionQuotedAuthor = useCallback((mention: boolean) => {
+        handleDraftChange({...draft, props: getReplyProps(draft.props, replyToId, mention)}, {instant: true});
+        dispatch(savePreferences(currentUserId, [{
+            category: MENTION_PREFERENCE_CATEGORY,
+            user_id: currentUserId,
+            name: MENTION_PREFERENCE_NAME,
+            value: String(mention),
+        }]));
+    }, [draft, handleDraftChange, replyToId, dispatch, currentUserId]);
 
     // "Quote reply" on a message of this conversation quotes it here.
     const setReplyToRef = useRef(setReplyTo);
@@ -996,6 +1013,8 @@ const AdvancedTextEditor = ({
                                     setReplyTo('');
                                     focusTextbox(true);
                                 }}
+                                mention={mentionsQuotedAuthor(draft)}
+                                onMentionChange={setMentionQuotedAuthor}
                             />
                         )}
                         {!isInEditMode && (priorityLabels || burnOnReadLabels) && (

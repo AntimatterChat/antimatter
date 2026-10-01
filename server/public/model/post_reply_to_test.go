@@ -24,6 +24,20 @@ func TestPostGetReplyToProp(t *testing.T) {
 	assert.Equal(t, "", post.GetReplyToProp())
 }
 
+func TestPostReplyToMentionsAuthor(t *testing.T) {
+	post := &Post{}
+	assert.True(t, post.ReplyToMentionsAuthor())
+
+	post.AddProp(PostPropsReplyToMention, false)
+	assert.False(t, post.ReplyToMentionsAuthor())
+
+	post.AddProp(PostPropsReplyToMention, true)
+	assert.True(t, post.ReplyToMentionsAuthor())
+
+	post.AddProp(PostPropsReplyToMention, "false")
+	assert.True(t, post.ReplyToMentionsAuthor())
+}
+
 func TestNewPostReplyTo(t *testing.T) {
 	channelID := NewId()
 	reply := &Post{Id: NewId(), ChannelId: channelID}

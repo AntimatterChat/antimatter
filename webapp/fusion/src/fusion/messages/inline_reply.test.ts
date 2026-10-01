@@ -7,7 +7,7 @@ import {Posts} from 'mattermost-redux/constants';
 
 import type {GlobalState} from 'types/store';
 
-import {canReplyInline, replyCandidates, replyToId} from './inline_reply';
+import {canReplyInline, mentionsQuotedAuthor, replyCandidates, replyProps, replyToId} from './inline_reply';
 
 function post(id: string, patch: Partial<Post> = {}): Post {
     return {id, channel_id: 'channel', root_id: '', create_at: 0, type: '', props: {}, message: id, user_id: 'user', ...patch} as Post;
@@ -19,6 +19,21 @@ describe('fusion/messages/inline_reply', () => {
         expect(replyToId(post('a'))).toBe('');
         expect(replyToId(post('a', {props: {reply_to: 42}}))).toBe('');
         expect(replyToId(undefined)).toBe('');
+    });
+
+    test('mentionsQuotedAuthor is true unless reply_to_mention is false', () => {
+        expect(mentionsQuotedAuthor(post('a', {props: {reply_to: 'b'}}))).toBe(true);
+        expect(mentionsQuotedAuthor(post('a', {props: {reply_to: 'b', reply_to_mention: true}}))).toBe(true);
+        expect(mentionsQuotedAuthor(post('a', {props: {reply_to: 'b', reply_to_mention: false}}))).toBe(false);
+        expect(mentionsQuotedAuthor(undefined)).toBe(true);
+    });
+
+    test('replyProps sets the quoted message and whether its author is mentioned', () => {
+        expect(replyProps({other: 1}, 'b', true)).toEqual({other: 1, reply_to: 'b'});
+        expect(replyProps({other: 1}, 'b', false)).toEqual({other: 1, reply_to: 'b', reply_to_mention: false});
+        expect(replyProps({reply_to: 'b', reply_to_mention: false}, 'c', true)).toEqual({reply_to: 'c'});
+        expect(replyProps({other: 1, reply_to: 'b', reply_to_mention: false}, '', false)).toEqual({other: 1});
+        expect(replyProps(undefined, 'b', false)).toEqual({reply_to: 'b', reply_to_mention: false});
     });
 
     test.each([

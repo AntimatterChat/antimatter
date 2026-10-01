@@ -3,6 +3,24 @@
 :is(.am-app, .am-layer) .am-replying > .am-ref-label, :is(.am-app, .am-layer) .am-replying > b { flex: none; white-space: nowrap; }
 :is(.am-app, .am-layer) .am-replying > b { font-weight: 600; }
 
+// The reply bar's "@ On" / "@ Off" switch, a pill as in other chat apps' reply bars: lit when the quoted message's
+// author is notified.
+:is(.am-app, .am-layer) .am-replying button.am-mention-switch {
+    display: inline-flex;
+    height: 22px;
+    flex: none;
+    align-items: center;
+    padding: 0 9px;
+    border-radius: 11px;
+    background: var(--am-anti-soft);
+    color: var(--am-anti);
+    font: 700 11.5px var(--am-font-ui);
+    white-space: nowrap;
+}
+:is(.am-app, .am-layer) .am-replying button.am-mention-switch.am-off { background: var(--am-raise); color: var(--am-muted); }
+:is(.am-app, .am-layer) .am-replying button.am-mention-switch:hover { filter: brightness(1.15); }
+:is(.am-app, .am-layer) .am-replying button.am-mention-switch.am-off:hover { color: var(--am-text-2); filter: none; }
+
 // A deleted message can't be jumped to.
 :is(.am-app, .am-layer) .am-ref-jump:disabled { cursor: default; }
 :is(.am-app, .am-layer) .am-snip.am-gone { color: var(--am-muted); font-style: italic; }

@@ -113,6 +113,8 @@ const (
 	PostPropsReadDurationSeconds      = "read_duration"
 	// PostPropsReplyTo holds the id of the message a post replies to inline (see PostReplyTo).
 	PostPropsReplyTo = "reply_to"
+	// PostPropsReplyToMention, set to false on an inline reply, keeps the quoted message's author from being notified.
+	PostPropsReplyToMention = "reply_to_mention"
 	// Shared-channel state posts (PostTypeSharedChannelState): props for client-side i18n.
 	PostPropsSharedChannelState         = "shared_channel_state"
 	PostPropsSharedChannelWorkspaceName = "workspace_name"

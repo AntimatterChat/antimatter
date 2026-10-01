@@ -8,11 +8,13 @@ import {useDispatch, useSelector, useStore} from 'react-redux';
 import type {FileInfo} from '@mattermost/types/files';
 import type {PostPriority} from '@mattermost/types/posts';
 
+import {savePreferences} from 'mattermost-redux/actions/preferences';
 import {Posts} from 'mattermost-redux/constants';
 import {getConfig} from 'mattermost-redux/selectors/entities/general';
 import {isPostPriorityEnabled} from 'mattermost-redux/selectors/entities/posts';
 import {getBool} from 'mattermost-redux/selectors/entities/preferences';
 import {isScheduledPostsEnabled} from 'mattermost-redux/selectors/entities/scheduled_posts';
+import {getCurrentUserId} from 'mattermost-redux/selectors/entities/users';
 
 import {uploadFile} from 'actions/file_actions';
 import {editLatestPost, onSubmit} from 'actions/views/create_comment';
@@ -26,7 +28,19 @@ import Icon from 'fusion/components/icon';
 import {Popover} from 'fusion/components/layer';
 import {MenuHeading, MenuItem, MenuSeparator} from 'fusion/components/menu';
 import {useBurnDuration} from 'fusion/messages/burn_on_read';
-import {QuotedMessage, REPLY_EVENT, replyCandidates, replyToId, useInlineRepliesEnabled, useQuoted} from 'fusion/messages/inline_reply';
+import {
+    MENTION_PREFERENCE_CATEGORY,
+    MENTION_PREFERENCE_NAME,
+    MentionSwitch,
+    QuotedMessage,
+    REPLY_EVENT,
+    mentionsQuotedAuthor,
+    replyCandidates,
+    replyProps,
+    replyToId,
+    useInlineRepliesEnabled,
+    useQuoted,
+} from 'fusion/messages/inline_reply';
 import type {ReplyEventDetail} from 'fusion/messages/inline_reply';
 import EmojiPicker from 'fusion/popovers/emoji_picker';
 import {MENTION_EVENT} from 'fusion/popovers/user_menu';
@@ -80,6 +94,8 @@ export default function Composer({channelId, rootId = '', placeholder}: Props) {
     const toast = useToast();
     const ctrlSend = useSelector((state: GlobalState) => getBool(state, Constants.Preferences.CATEGORY_ADVANCED_SETTINGS, 'send_on_ctrl_enter', false));
     const inlineReplies = useInlineRepliesEnabled();
+    const mentionByDefault = useSelector((state: GlobalState) => getBool(state, MENTION_PREFERENCE_CATEGORY, MENTION_PREFERENCE_NAME, true));
+    const currentUserId = useSelector(getCurrentUserId);
     const [draft, setDraft] = useState<PostDraft>(storedDraft);
     const [showFormatting, setShowFormatting] = useShowFormatting();
     const [pending, setPending] = useState<Pending[]>([]);
@@ -121,13 +137,14 @@ export default function Composer({channelId, rootId = '', placeholder}: Props) {
 
     const change = (patch: Partial<PostDraft>) => save({...draft, channelId, rootId, createAt: draft.createAt || Date.now(), ...patch});
 
-    // An inline reply quotes the message in the draft's reply_to prop, which the message is sent with.
+    // An inline reply quotes the message in the draft's reply_to prop, which the message is sent with, and notifies
+    // its author unless the reply_to_mention prop says not to: the reply bar's switch, which starts as last set.
     const replyTo = inlineReplies ? replyToId(draft) : '';
     const quoted = useQuoted(replyTo, undefined);
-    const setReplyTo = (postId: string) => {
-        const draftProps = {...draft.props};
-        delete draftProps.reply_to;
-        change({props: postId ? {...draftProps, reply_to: postId} : draftProps});
+    const setReplyTo = (postId: string) => change({props: replyProps(draft.props, postId, mentionByDefault)});
+    const setMention = (on: boolean) => {
+        change({props: replyProps(draft.props, replyTo, on)});
+        dispatch(savePreferences(currentUserId, [{user_id: currentUserId, category: MENTION_PREFERENCE_CATEGORY, name: MENTION_PREFERENCE_NAME, value: String(on)}]));
     };
 
     // "Reply" on a message of this conversation quotes it here.
@@ -442,6 +459,11 @@ export default function Composer({channelId, rootId = '', placeholder}: Props) {
             {replyTo && (
                 <div className={am('replying')}>
                     <QuotedMessage quoted={quoted}/>
+                    <MentionSwitch
+                        quoted={quoted}
+                        on={mentionsQuotedAuthor(draft)}
+                        onChange={setMention}
+                    />
                     <button
                         type='button'
                         title={formatMessage({id: 'fusion.composer.cancelReply', defaultMessage: 'Cancel reply'})}

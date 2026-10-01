@@ -11,7 +11,7 @@ import {getMissingProfilesByIds} from 'mattermost-redux/actions/users';
 import {Posts} from 'mattermost-redux/constants';
 import {getConfig} from 'mattermost-redux/selectors/entities/general';
 import {getPost, getPostIdsInChannel} from 'mattermost-redux/selectors/entities/posts';
-import {getUser} from 'mattermost-redux/selectors/entities/users';
+import {getCurrentUserId, getUser} from 'mattermost-redux/selectors/entities/users';
 import {isPostPendingOrFailed} from 'mattermost-redux/utils/post_utils';
 
 import Icon from 'fusion/components/icon';
@@ -38,6 +38,29 @@ export function useInlineRepliesEnabled(): boolean {
 export function replyToId(post?: {props?: Record<string, unknown>}): string {
     const id = post?.props?.reply_to;
     return typeof id === 'string' ? id : '';
+}
+
+// A reply notifies the quoted message's author unless its reply_to_mention prop is false. The reply bar's "@" switch
+// sets it, and remembers the choice in this preference as the default of the next replies.
+export const MENTION_PREFERENCE_CATEGORY = 'inline_replies';
+export const MENTION_PREFERENCE_NAME = 'mention_quoted_author';
+
+export function mentionsQuotedAuthor(post?: {props?: Record<string, unknown>}): boolean {
+    return post?.props?.reply_to_mention !== false;
+}
+
+// replyProps are a draft's props replying to postId (to nothing when ''), notifying its author or not.
+export function replyProps(props: Record<string, unknown> | undefined, postId: string, mention: boolean): Record<string, unknown> {
+    const next = {...props};
+    delete next.reply_to;
+    delete next.reply_to_mention;
+    if (postId) {
+        next.reply_to = postId;
+        if (!mention) {
+            next.reply_to_mention = false;
+        }
+    }
+    return next;
 }
 
 // canReplyInline tells whether a message can be quoted: the server refuses system messages, burn-on-read messages
@@ -75,6 +98,9 @@ type Quoted = {
     message: string;
     fileCount: number;
     overrideUsername?: string;
+
+    // Set when the quoted message is loaded and was posted by an incoming webhook: replies don't notify anyone then.
+    fromWebhook?: boolean;
 };
 
 // useQuoted is what to show of a quoted message: the message itself when it's loaded, as it follows edits and
@@ -92,6 +118,7 @@ export function useQuoted(id: string, described?: PostReplyTo): Quoted {
             message: post.message,
             fileCount: post.file_ids?.length || post.metadata?.files?.length || 0,
             overrideUsername: fromWebhook && typeof post.props?.override_username === 'string' ? post.props.override_username : undefined,
+            fromWebhook,
         };
     }
     if (described && described.post_id === id && !described.deleted) {
@@ -146,6 +173,42 @@ export function QuotedMessage({quoted}: {quoted: Quoted}) {
             {who && <b>{who}</b>}
             <span className={am('snip', {gone: quoted.deleted})}>{snippet}</span>
         </>
+    );
+}
+
+type MentionSwitchProps = {
+    quoted: Quoted;
+    on: boolean;
+    onChange: (on: boolean) => void;
+};
+
+// MentionSwitch is the reply bar's "@ On" / "@ Off" switch, which tells whether the reply notifies the quoted
+// message's author. It isn't shown when no one would be notified: replying to yourself, to a deleted message or to a
+// webhook's message.
+export function MentionSwitch({quoted, on, onChange}: MentionSwitchProps) {
+    const {formatMessage} = useIntl();
+    const currentUserId = useSelector(getCurrentUserId);
+    const user = useSelector((state: GlobalState) => (quoted.userId ? getUser(state, quoted.userId) : undefined));
+    const name = useDisplayName(user);
+
+    if (!quoted.userId || quoted.userId === currentUserId || quoted.deleted || quoted.fromWebhook) {
+        return null;
+    }
+
+    const label = on ? formatMessage({id: 'fusion.inlineReply.mention', defaultMessage: 'Mention {name}'}, {name}) : formatMessage({id: 'fusion.inlineReply.noMention', defaultMessage: "Don't mention {name}"}, {name});
+    const tooltip = on ? formatMessage({id: 'fusion.inlineReply.mentionTip', defaultMessage: '{name} will be notified of your reply. Click to turn off.'}, {name}) : formatMessage({id: 'fusion.inlineReply.noMentionTip', defaultMessage: "{name} won't be notified of your reply. Click to turn on."}, {name});
+    const text = on ? formatMessage({id: 'fusion.inlineReply.mentionOn', defaultMessage: '@ On'}) : formatMessage({id: 'fusion.inlineReply.mentionOff', defaultMessage: '@ Off'});
+
+    return (
+        <button
+            type='button'
+            className={am('mention-switch', {off: !on})}
+            aria-label={label}
+            title={tooltip}
+            onClick={() => onChange(!on)}
+        >
+            {text}
+        </button>
     );
 }
 

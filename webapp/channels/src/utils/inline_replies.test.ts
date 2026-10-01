@@ -7,7 +7,7 @@ import {TestHelper} from 'utils/test_helper';
 
 import type {GlobalState} from 'types/store';
 
-import {canReplyInline, getQuotedMessage, getReplyToId, replyInline, INLINE_REPLY_EVENT} from './inline_replies';
+import {canReplyInline, getQuotedMessage, getReplyProps, getReplyToId, mentionsQuotedAuthor, replyInline, INLINE_REPLY_EVENT} from './inline_replies';
 
 describe('utils/inline_replies', () => {
     test('getReplyToId reads the reply_to prop', () => {
@@ -15,6 +15,21 @@ describe('utils/inline_replies', () => {
         expect(getReplyToId(TestHelper.getPostMock({props: {}}))).toBe('');
         expect(getReplyToId(TestHelper.getPostMock({props: {reply_to: 42}}))).toBe('');
         expect(getReplyToId(undefined)).toBe('');
+    });
+
+    test('mentionsQuotedAuthor is true unless reply_to_mention is false', () => {
+        expect(mentionsQuotedAuthor(TestHelper.getPostMock({props: {reply_to: 'quoted'}}))).toBe(true);
+        expect(mentionsQuotedAuthor(TestHelper.getPostMock({props: {reply_to: 'quoted', reply_to_mention: true}}))).toBe(true);
+        expect(mentionsQuotedAuthor(TestHelper.getPostMock({props: {reply_to: 'quoted', reply_to_mention: false}}))).toBe(false);
+        expect(mentionsQuotedAuthor(undefined)).toBe(true);
+    });
+
+    test('getReplyProps sets the quoted message and whether its author is mentioned', () => {
+        expect(getReplyProps({other: 1}, 'quoted', true)).toEqual({other: 1, reply_to: 'quoted'});
+        expect(getReplyProps({other: 1}, 'quoted', false)).toEqual({other: 1, reply_to: 'quoted', reply_to_mention: false});
+        expect(getReplyProps({reply_to: 'quoted', reply_to_mention: false}, 'other', true)).toEqual({reply_to: 'other'});
+        expect(getReplyProps({other: 1, reply_to: 'quoted', reply_to_mention: false}, '', false)).toEqual({other: 1});
+        expect(getReplyProps(undefined, 'quoted', false)).toEqual({reply_to: 'quoted', reply_to_mention: false});
     });
 
     test.each([
@@ -48,6 +63,7 @@ describe('utils/inline_replies', () => {
                 message: 'hello',
                 fileCount: 1,
                 overrideUsername: undefined,
+                fromWebhook: false,
             });
         });
 
@@ -69,7 +85,7 @@ describe('utils/inline_replies', () => {
 
         test('names the webhook a message was posted under', () => {
             const hook = {...quoted, props: {from_webhook: 'true', override_username: 'ci'}};
-            expect(getQuotedMessage(state({quoted: hook}), 'quoted').overrideUsername).toBe('ci');
+            expect(getQuotedMessage(state({quoted: hook}), 'quoted')).toMatchObject({overrideUsername: 'ci', fromWebhook: true});
         });
     });
 });

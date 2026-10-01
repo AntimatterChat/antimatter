@@ -21787,9 +21787,33 @@
     "defaultMessage": "{count, plural, one {# file} other {# files}}",
     "description": "Shown instead of the quoted text above an inline reply when the quoted message has only file attachments; {count} is the number of files."
   },
+  "inline_reply.mention": {
+    "defaultMessage": "Mention {name}",
+    "description": "Accessibility label of the switch in the message box, while it is on, that makes an inline reply notify the author of the quoted message; {name} is that author."
+  },
+  "inline_reply.mention.off": {
+    "defaultMessage": "@ Off",
+    "description": "Text of the switch in the message box when an inline reply will not notify the author of the quoted message; '@' stands for mentions."
+  },
+  "inline_reply.mention.on": {
+    "defaultMessage": "@ On",
+    "description": "Text of the switch in the message box when an inline reply will notify the author of the quoted message, as if they were mentioned; '@' stands for mentions."
+  },
+  "inline_reply.mention.tooltip": {
+    "defaultMessage": "{name} will be notified of your reply. Click to turn off.",
+    "description": "Tooltip of the '@ On' switch in the message box; {name} is the author of the quoted message."
+  },
   "inline_reply.message": {
     "defaultMessage": "a message",
     "description": "Shown instead of the quoted text above an inline reply when there is nothing to quote from the original message."
+  },
+  "inline_reply.noMention": {
+    "defaultMessage": "Don't mention {name}",
+    "description": "Accessibility label of the switch in the message box, while it is off, so that an inline reply doesn't notify the author of the quoted message; {name} is that author."
+  },
+  "inline_reply.noMention.tooltip": {
+    "defaultMessage": "{name} won't be notified of your reply. Click to turn on.",
+    "description": "Tooltip of the '@ Off' switch in the message box; {name} is the author of the quoted message."
   },
   "inline_reply.replying": {
     "defaultMessage": "Replying to: ",

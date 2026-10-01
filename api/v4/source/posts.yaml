@@ -13,8 +13,10 @@
         thread when `root_id` is set) and must not be deleted, a system
         message or a burn-on-read message; other values are dropped, as is
         the prop when `ServiceSettings.EnableInlineReplies` is false. The
-        author of the quoted message is notified as if mentioned, and the
-        post's `metadata.reply_to` describes the quoted message.
+        author of the quoted message is notified as if mentioned, unless the
+        `reply_to_mention` prop is `false`; that prop is dropped when it isn't
+        a boolean or when `reply_to` is. The post's `metadata.reply_to`
+        describes the quoted message.
 
         ##### Permissions
 
@@ -67,7 +69,8 @@
                 props:
                   description: >
                     A general JSON property bag to attach to the post. Set
-                    `reply_to` to a message ID to reply to that message inline.
+                    `reply_to` to a message ID to reply to that message inline,
+                    and `reply_to_mention` to `false` not to notify its author.
                   type: object
                 metadata:
                   description: A JSON object to add post metadata, e.g the post's priority
