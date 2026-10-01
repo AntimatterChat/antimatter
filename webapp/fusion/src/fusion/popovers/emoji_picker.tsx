@@ -132,7 +132,7 @@ function EmojiTab({query, onQuery, onPick: pick, onClose, keepOpen}: EmojiTabPro
 
     return (
         <>
-            <div className={am('picker-search')}>
+            <div className={am('picker-search', 'picker-search-row')}>
                 <label>
                     <Icon
                         name='search'
@@ -153,6 +153,19 @@ function EmojiTab({query, onQuery, onPick: pick, onClose, keepOpen}: EmojiTabPro
                         }}
                     />
                 </label>
+                {customEmojisEnabled && teamName && (
+                    <AnyTeamPermissionGate permissions={[Permissions.CREATE_EMOJIS]}>
+                        <Link
+                            className={am('icon-btn')}
+                            to={`/${teamName}/emoji/add`}
+                            title={formatMessage({id: 'fusion.picker.addCustomEmoji', defaultMessage: 'Add custom emoji'})}
+                            aria-label={formatMessage({id: 'fusion.picker.addCustomEmoji', defaultMessage: 'Add custom emoji'})}
+                            onClick={onClose}
+                        >
+                            <Icon name='plus'/>
+                        </Link>
+                    </AnyTeamPermissionGate>
+                )}
             </div>
             <div className={am('picker-body')}>
                 {!results && (
@@ -221,17 +234,6 @@ function EmojiTab({query, onQuery, onPick: pick, onClose, keepOpen}: EmojiTabPro
                 </span>
                 <span>{keepOpen ? formatMessage({id: 'fusion.picker.insert', defaultMessage: 'Insert'}) : formatMessage({id: 'fusion.picker.reactWith', defaultMessage: 'React with'})}</span>
                 <code>{`:${hovered ? nameOf(hovered) : '+1'}:`}</code>
-                {customEmojisEnabled && teamName && (
-                    <AnyTeamPermissionGate permissions={[Permissions.CREATE_EMOJIS]}>
-                        <Link
-                            className={am('picker-add')}
-                            to={`/${teamName}/emoji/add`}
-                            onClick={onClose}
-                        >
-                            {formatMessage({id: 'fusion.picker.addCustomEmoji', defaultMessage: 'Add custom emoji'})}
-                        </Link>
-                    </AnyTeamPermissionGate>
-                )}
             </div>
         </>
     );
