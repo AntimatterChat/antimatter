@@ -21771,6 +21771,10 @@
     "defaultMessage": "Go to team",
     "description": "Tooltip on an inline link in a message that points to a team."
   },
+  "inline_reply.cancel": {
+    "defaultMessage": "Cancel reply",
+    "description": "Tooltip and accessibility label of the X button in the message box that stops replying inline to a quoted message."
+  },
   "inline_reply.deleted": {
     "defaultMessage": "Original message deleted",
     "description": "Shown instead of the quoted text above an inline reply when the message it replied to was deleted."
@@ -24822,6 +24826,10 @@
   "post_info.reply": {
     "defaultMessage": "Reply",
     "description": "Menu item in the message actions menu that opens the thread to reply; 'Reply' is a verb."
+  },
+  "post_info.replyInline": {
+    "defaultMessage": "Quote reply",
+    "description": "Menu item in the message actions menu that replies to this message in the channel, quoting it above the reply, instead of opening its thread."
   },
   "post_info.show_translation": {
     "defaultMessage": "Show translation",

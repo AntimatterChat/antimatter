@@ -1,4 +1,4 @@
-// The quote of an inline reply, above the post.
+// The quote of an inline reply, above the post and in the message box.
 .InlineReplyQuote {
     display: flex;
     min-width: 0;
@@ -39,5 +39,35 @@
 
     a.InlineReplyQuote__snippet {
         cursor: pointer;
+    }
+}
+
+.InlineReplyIndicator {
+    display: flex;
+    align-items: center;
+    padding: 8px 12px 0 16px;
+    gap: 8px;
+
+    .InlineReplyQuote {
+        flex: 1;
+        margin: 0;
+    }
+
+    &__cancel {
+        display: flex;
+        flex: none;
+        align-items: center;
+        justify-content: center;
+        padding: 4px;
+        border: none;
+        border-radius: 4px;
+        background: transparent;
+        color: rgba(var(--center-channel-color-rgb), 0.56);
+        cursor: pointer;
+
+        &:hover {
+            background: rgba(var(--center-channel-color-rgb), 0.08);
+            color: rgba(var(--center-channel-color-rgb), 0.72);
+        }
     }
 }

@@ -7,7 +7,7 @@ import type {ChannelType} from '@mattermost/types/channels';
 import type {Post, PostType} from '@mattermost/types/posts';
 import type {DeepPartial} from '@mattermost/types/utilities';
 
-import {renderWithContext, screen, userEvent} from 'tests/react_testing_utils';
+import {renderWithContext, screen, userEvent, waitFor} from 'tests/react_testing_utils';
 import {Locations} from 'utils/constants';
 import {TestHelper} from 'utils/test_helper';
 
@@ -633,5 +633,56 @@ describe('components/dot_menu/DotMenu', () => {
 
         // Since reply option doesn't exist, keyboard shortcut should be blocked (no way to verify action wasn't called, but menu item being hidden confirms it)
         expect(replyOption).toBeNull();
+    });
+    test('should quote the post in the channel composer with Quote reply', async () => {
+        const listener = jest.fn();
+        window.addEventListener('inline-reply', listener);
+        renderWithContext(
+            <DotMenu
+                {...baseProps}
+                post={{...baseProps.post, channel_id: 'channel_id_1'}}
+                canReplyInline={true}
+            />,
+            initialState,
+        );
+
+        await userEvent.click(screen.getByTestId(`PostDotMenu-Button-${baseProps.post.id}`));
+        await userEvent.click(screen.getByTestId(`reply_inline_to_post_${baseProps.post.id}`));
+
+        // Menu items act once the menu has closed.
+        await waitFor(() => expect(listener).toHaveBeenCalledTimes(1));
+        window.removeEventListener('inline-reply', listener);
+        expect(listener.mock.calls[0][0].detail).toEqual({channelId: 'channel_id_1', rootId: '', postId: baseProps.post.id});
+    });
+
+    test('should quote the post in the thread composer from the right-hand side', async () => {
+        const listener = jest.fn();
+        window.addEventListener('inline-reply', listener);
+        renderWithContext(
+            <DotMenu
+                {...baseProps}
+                post={{...baseProps.post, channel_id: 'channel_id_1', root_id: 'root_id'}}
+                location={Locations.RHS_COMMENT}
+                canReplyInline={true}
+            />,
+            initialState,
+        );
+
+        await userEvent.click(screen.getByTestId(`PostDotMenu-Button-${baseProps.post.id}`));
+        await userEvent.click(screen.getByTestId(`reply_inline_to_post_${baseProps.post.id}`));
+
+        await waitFor(() => expect(listener).toHaveBeenCalledTimes(1));
+        window.removeEventListener('inline-reply', listener);
+        expect(listener.mock.calls[0][0].detail).toEqual({channelId: 'channel_id_1', rootId: 'root_id', postId: baseProps.post.id});
+    });
+
+    test('should not offer Quote reply when the post cannot be quoted', async () => {
+        renderWithContext(
+            <DotMenu {...baseProps}/>,
+            initialState,
+        );
+
+        await userEvent.click(screen.getByTestId(`PostDotMenu-Button-${baseProps.post.id}`));
+        expect(screen.queryByTestId(`reply_inline_to_post_${baseProps.post.id}`)).not.toBeInTheDocument();
     });
 });
