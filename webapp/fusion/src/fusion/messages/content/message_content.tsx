@@ -33,6 +33,7 @@ import type {GlobalState} from 'types/store';
 
 import Cards from './cards';
 import {InlineImage, OpenGraph, Permalink, YouTube} from './embeds';
+import {MessageLinkContext} from './message_link';
 
 type Props = {
     post: Post;
@@ -116,13 +117,15 @@ export default function MessageContent({post, inThread, autotranslated}: Props) 
     const blocks = useSelector((state: GlobalState) => getFeatureFlagValue(state, 'MmBlocksEnabled') === 'true');
 
     const text = (
-        <PostMessageView
-            post={post}
-            isRHS={inThread}
-            isChannelAutotranslated={autotranslated}
-            userLanguage={locale}
-            showPostEditedIndicator={false}
-        />
+        <MessageLinkContext.Provider value={post}>
+            <PostMessageView
+                post={post}
+                isRHS={inThread}
+                isChannelAutotranslated={autotranslated}
+                userLanguage={locale}
+                showPostEditedIndicator={false}
+            />
+        </MessageLinkContext.Provider>
     );
     if (post.state === Posts.POST_DELETED || (post.type && Object.hasOwn(pluginPostTypes, post.type))) {
         return text;

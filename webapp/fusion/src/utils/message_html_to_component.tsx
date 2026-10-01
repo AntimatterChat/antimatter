@@ -19,6 +19,8 @@ import PluginLinkTooltip from 'components/plugin_link_tooltip';
 import PostEmoji from 'components/post_emoji';
 import PostEditedIndicator from 'components/post_view/post_edited_indicator';
 
+import {MessageLink, parseMessageLink} from 'fusion/messages/content/message_link';
+
 export type Options = Partial<{
     postId: string;
     editedAt: number;
@@ -127,6 +129,20 @@ export default function messageHtmlToComponent(html: string, options: Options = 
             },
         },
     ];
+
+    // Fusion: links to messages become the mockup's message chips in Fusion messages.
+    processingInstructions.push({
+        replaceChildren: false,
+        shouldProcessNode: (node: any) => node.type === 'tag' && node.name === 'a' && typeof node.attribs.href === 'string' && Boolean(parseMessageLink(node.attribs.href)),
+        processNode: (node: any, children: any, index?: number) => (
+            <MessageLink
+                key={`message-link-${index}`}
+                attribs={convertPropsToReactStandard(node.attribs)}
+            >
+                {children}
+            </MessageLink>
+        ),
+    });
 
     processingInstructions.push({
         replaceChildren: false,
