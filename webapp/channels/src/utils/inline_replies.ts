@@ -29,6 +29,29 @@ export function getReplyToId(post?: {props?: Record<string, unknown>}): string {
     return typeof id === 'string' ? id : '';
 }
 
+// A reply notifies the quoted message's author unless its reply_to_mention prop is false. The message box's "@" switch
+// sets it, and remembers the choice in this preference as the default of the next replies.
+export const MENTION_PREFERENCE_CATEGORY = 'inline_replies';
+export const MENTION_PREFERENCE_NAME = 'mention_quoted_author';
+
+export function mentionsQuotedAuthor(post?: {props?: Record<string, unknown>}): boolean {
+    return post?.props?.reply_to_mention !== false;
+}
+
+// getReplyProps are a draft's props replying to postId (to nothing when ''), notifying its author or not.
+export function getReplyProps(props: Record<string, unknown> | undefined, postId: string, mention: boolean): Record<string, unknown> {
+    const next = {...props};
+    delete next.reply_to;
+    delete next.reply_to_mention;
+    if (postId) {
+        next.reply_to = postId;
+        if (!mention) {
+            next.reply_to_mention = false;
+        }
+    }
+    return next;
+}
+
 // canReplyInline tells whether a message can be quoted: the server refuses system messages, burn-on-read messages
 // and messages it doesn't have yet.
 export function canReplyInline(post: Post): boolean {
@@ -49,6 +72,9 @@ export type QuotedMessage = {
     message: string;
     fileCount: number;
     overrideUsername?: string;
+
+    // Set when the quoted message is loaded and was posted by an incoming webhook: replies don't notify anyone then.
+    fromWebhook?: boolean;
 };
 
 // getQuotedMessage is what to show of a quoted message: the message itself when it's loaded, as it follows edits and
@@ -59,12 +85,14 @@ export function getQuotedMessage(state: GlobalState, postId: string, described?:
         if (post.state === Posts.POST_DELETED || post.delete_at || post.type === Posts.POST_TYPES.BURN_ON_READ) {
             return {deleted: true, message: '', fileCount: 0};
         }
+        const fromWebhook = post.props?.from_webhook === 'true';
         return {
             deleted: false,
             userId: post.user_id,
             message: post.message,
             fileCount: post.file_ids?.length || post.metadata?.files?.length || 0,
-            overrideUsername: post.props?.from_webhook === 'true' && typeof post.props?.override_username === 'string' ? post.props.override_username : undefined,
+            overrideUsername: fromWebhook && typeof post.props?.override_username === 'string' ? post.props.override_username : undefined,
+            fromWebhook,
         };
     }
     if (described && described.post_id === postId && !described.deleted) {

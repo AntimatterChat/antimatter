@@ -6,6 +6,7 @@ import React from 'react';
 import type {PostType} from '@mattermost/types/posts';
 import {PostPriority} from '@mattermost/types/posts';
 
+import {savePreferences} from 'mattermost-redux/actions/preferences';
 import Permissions from 'mattermost-redux/constants/permissions';
 
 import {onSubmit} from 'actions/views/create_comment';
@@ -36,6 +37,11 @@ jest.mock('actions/views/create_comment', () => ({
     onSubmit: jest.fn(() => () => Promise.resolve({data: true})),
 }));
 
+jest.mock('mattermost-redux/actions/preferences', () => ({
+    ...jest.requireActual('mattermost-redux/actions/preferences'),
+    savePreferences: jest.fn((...args) => ({type: 'MOCK_SAVE_PREFERENCES', args})),
+}));
+
 jest.mock('utils/exec_commands.ts', () => ({
     focusAndInsertText: (element: HTMLElement, text: string) => {
         element.focus();
@@ -55,6 +61,7 @@ jest.mock('utils/exec_commands.ts', () => ({
 const mockedRemoveDraft = jest.mocked(removeDraft);
 const mockedUpdateDraft = jest.mocked(updateDraft);
 const mockedOnSubmit = jest.mocked(onSubmit);
+const mockedSavePreferences = jest.mocked(savePreferences);
 
 const currentUserId = 'current_user_id';
 const channelId = 'current_channel_id';
@@ -311,6 +318,65 @@ describe('components/avanced_text_editor/advanced_text_editor', () => {
             act(() => replyInline({...quoted, channel_id: otherChannelId}, ''));
             act(() => replyInline(quoted, 'some_root_id'));
             expect(screen.queryByTestId('inline-reply-indicator')).not.toBeInTheDocument();
+        });
+
+        it("should let the reply not notify the quoted message's author, and remember it", async () => {
+            const author = TestHelper.getUserMock({id: 'author_id', username: 'marie'});
+            const theirs = TestHelper.getPostMock({id: 'their_post_id', channel_id: channelId, user_id: author.id, message: 'their message', type: '' as PostType});
+            const preference = {category: 'inline_replies', name: 'mention_quoted_author', user_id: currentUserId, value: 'false'};
+            renderWithContext(
+                <AdvancedTextEditor
+                    {...baseProps}
+                />,
+                mergeObjects(state, {
+                    entities: {
+                        posts: {posts: {their_post_id: theirs}},
+                        users: {profiles: {author_id: author}},
+                        preferences: {myPreferences: {'inline_replies--mention_quoted_author': preference}},
+                    },
+                }),
+            );
+
+            // The switch starts as last set.
+            act(() => replyInline(theirs, ''));
+            expect(screen.getByRole('button', {name: "Don't mention marie"})).toHaveTextContent('@ Off');
+
+            await act(async () => {
+                screen.getByRole('button', {name: "Don't mention marie"}).click();
+            });
+            expect(screen.getByRole('button', {name: 'Mention marie'})).toHaveTextContent('@ On');
+            expect(mockedSavePreferences).toHaveBeenCalledWith(currentUserId, [{...preference, value: 'true'}]);
+
+            await act(async () => {
+                screen.getByRole('button', {name: 'Mention marie'}).click();
+            });
+            expect(mockedSavePreferences).toHaveBeenLastCalledWith(currentUserId, [preference]);
+
+            const message = 'my answer';
+            fireEvent.input(screen.getByTestId('post_textbox'), {target: {value: message}});
+            await act(async () => {
+                fireEvent.click(screen.getByTestId('SendMessageButton'));
+            });
+            expect(mockedOnSubmit).toHaveBeenCalledWith(
+                channelId,
+                '',
+                expect.objectContaining({message, props: {reply_to: theirs.id, reply_to_mention: false}}),
+                expect.anything(),
+                undefined,
+            );
+        });
+
+        it('should have no mention switch when quoting your own message', () => {
+            renderWithContext(
+                <AdvancedTextEditor
+                    {...baseProps}
+                />,
+                state,
+            );
+
+            act(() => replyInline(quoted, ''));
+            expect(screen.getByTestId('inline-reply-indicator')).toBeInTheDocument();
+            expect(screen.queryByText('@ On')).not.toBeInTheDocument();
         });
 
         it('should stop quoting on Escape', async () => {
