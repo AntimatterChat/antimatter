@@ -30,6 +30,7 @@ import {applyTheme} from 'utils/utils';
 import type {GlobalState} from 'types/store';
 
 import {DialogsProvider} from './dialogs_context';
+import {useFaceTips} from './face_tips';
 import {GlobalSearchProvider, useGlobalSearch} from './global_search_context';
 import {LayoutProvider, isPhoneLayout, useLayout} from './layout_context';
 import {SettingsProvider, useSettings} from './settings_context';
@@ -54,6 +55,7 @@ function Frame({children}: Props) {
     const appRef = useRef<HTMLDivElement>(null);
 
     useSwipes(appRef, layout);
+    useFaceTips();
 
     // The sidebar's categories, including the direct messages shown in the dock.
     useEffect(() => {
@@ -87,7 +89,7 @@ function Frame({children}: Props) {
             if (e.key !== 'Escape' || e.defaultPrevented || !getIsRhsOpen(store.getState())) {
                 return;
             }
-            const layer = Array.from(document.getElementById(LAYER_ID)?.children || []).filter((el) => !el.classList.contains('am-toast'));
+            const layer = Array.from(document.getElementById(LAYER_ID)?.children || []).filter((el) => !el.classList.contains('am-toast') && !el.classList.contains('am-tip'));
             if (layer.length || document.querySelector('.modal.show, [role="dialog"][aria-modal="true"]')) {
                 return;
             }
