@@ -10,6 +10,7 @@ import {getChannel, getCurrentChannelId, getMyChannelMembership, makeGetChannelU
 import {getCurrentTeam} from 'mattermost-redux/selectors/entities/teams';
 import {isChannelMuted} from 'mattermost-redux/utils/channel_utils';
 
+import {CallLiveMarker} from 'fusion/calls/markers';
 import Icon from 'fusion/components/icon';
 import ChannelMenu from 'fusion/popovers/channel_menu';
 import {useLayout} from 'fusion/shell/layout_context';
@@ -63,6 +64,7 @@ export default function ChannelRow({channelId, collapsed}: Props) {
                 >
                     <ChannelIcon channel={channel}/>
                     <span className={am('name')}>{channel.display_name}</span>
+                    <CallLiveMarker channelId={channel.id}/>
                     <Pluggable
                         pluggableName='SidebarChannelLinkLabel'
                         channel={channel}

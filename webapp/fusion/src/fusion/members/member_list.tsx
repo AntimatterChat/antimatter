@@ -16,6 +16,7 @@ import {makeGetCustomStatus} from 'selectors/views/custom_status';
 
 import ChannelInviteModal from 'components/channel_invite_modal';
 
+import {TalkNote} from 'fusion/calls/markers';
 import Avatar from 'fusion/components/avatar';
 import Icon from 'fusion/components/icon';
 import {useDisplayName} from 'fusion/hooks/users';
@@ -44,7 +45,7 @@ function Member({user, off, onOpen}: {user: UserProfile; off: boolean; onOpen: (
                     <span className={am('nm')}>{name}</span>
                     {user.is_bot && <span className={am('bot-tag')}>{'BOT'}</span>}
                 </b>
-                <span>{custom?.text || user.position || ''}</span>
+                <span><TalkNote userId={user.id}>{custom?.text || user.position || ''}</TalkNote></span>
             </span>
         </button>
     );

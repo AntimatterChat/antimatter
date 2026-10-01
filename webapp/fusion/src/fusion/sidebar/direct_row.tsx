@@ -17,6 +17,7 @@ import {getUserIdFromChannelName} from 'mattermost-redux/utils/channel_utils';
 
 import {leaveDirectChannel} from 'actions/views/channel';
 
+import {DirectTalkMarker} from 'fusion/calls/markers';
 import Avatar from 'fusion/components/avatar';
 import Icon from 'fusion/components/icon';
 import {useLayout} from 'fusion/shell/layout_context';
@@ -98,6 +99,7 @@ export default function DirectRow({channel, dock, meta}: Props) {
                 {channel.display_name}
                 {meta && <span className={am('meta')}>{meta}</span>}
             </span>
+            <DirectTalkMarker channel={channel}/>
             {badge > 0 && (
                 <span
                     className={am('badge')}
