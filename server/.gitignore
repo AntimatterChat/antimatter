@@ -129,5 +129,7 @@ docker-compose.override.yaml
 *_export.zip
 *_export-report.json
 
-# mmctl binary
+# Server and CLI binaries built in place (go build ./cmd/antimatter ./cmd/amctl)
+/antimatter
+/amctl
 /mmctl

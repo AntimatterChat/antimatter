@@ -43,7 +43,12 @@ ifeq ($(ENABLE_COVERAGE),true)
 COVERAGE_FLAG = -coverprofile=cover.out -covermode=atomic
 endif
 
-# mmctl
+# Names of the server and CLI binaries. Go names them after their package directories,
+# cmd/antimatter and cmd/amctl.
+AM_BIN_NAME ?= antimatter
+AMCTL_BIN_NAME ?= amctl
+
+# mmctl (built as amctl)
 MMCTL_BUILD_TAGS =
 MMCTL_TESTFLAGS ?= -timeout 30m
 MMCTL_PKG = github.com/mattermost/mattermost/server/v8/cmd/mmctl/commands
@@ -103,7 +108,7 @@ GO_COMPATIBILITY_TEST_VERSIONS := 1.22.7 1.23.6
 # GOOS/GOARCH of the build host, used to determine whether we're cross-compiling or not
 BUILDER_GOOS_GOARCH="$(shell $(GO) env GOOS)_$(shell $(GO) env GOARCH)"
 
-PLATFORM_FILES="./cmd/mattermost"
+PLATFORM_FILES="./cmd/antimatter"
 
 # Output paths
 DIST_ROOT=dist
@@ -117,8 +122,8 @@ DIST_PATH_FREEBSD_ARM64=$(DIST_ROOT)/freebsd_arm64/mattermost
 DIST_PATH_WIN=$(DIST_ROOT)/windows/mattermost
 
 # Packages lists
-TE_PACKAGES=$(shell $(GO) list ./public/...) $(shell $(GO) list ./... | grep -vE 'server/v8/cmd/mmctl')
-MMCTL_PACKAGES=$(shell $(GO) list ./... | grep -E 'server/v8/cmd/mmctl')
+TE_PACKAGES=$(shell $(GO) list ./public/...) $(shell $(GO) list ./... | grep -vE 'server/v8/cmd/(mmctl|amctl)')
+MMCTL_PACKAGES=$(shell $(GO) list ./... | grep -E 'server/v8/cmd/(mmctl|amctl)')
 
 TEMPLATES_DIR=templates
 
@@ -210,7 +215,7 @@ update-docker: setup-go-work stop-docker ## Updates the docker containers for lo
 
 .PHONY: run-haserver
 run-haserver:
-	@echo Starting mattermost in an HA topology '(3 node cluster)'
+	@echo Starting antimatter in an HA topology '(3 node cluster)'
 
 	docker compose -f docker-compose.yaml $(DOCKER_COMPOSE_OVERRIDE) up --remove-orphans haproxy
 
@@ -257,8 +262,8 @@ prepackaged-plugins: ## Populate the prepackaged-plugins directory.
 
 .PHONY: prepackaged-binaries
 prepackaged-binaries: ## Populate the prepackaged-binaries to the bin directory
-ifeq ($(shell test -f bin/mmctl && printf "yes"),yes)
-	@echo "MMCTL already exists in bin/mmctl, not compiling."
+ifeq ($(shell test -f bin/$(AMCTL_BIN_NAME) && printf "yes"),yes)
+	@echo "amctl already exists in bin/$(AMCTL_BIN_NAME), not compiling."
 else
 	$(MAKE) mmctl-build
 endif
@@ -536,10 +541,10 @@ inject-test-data: # add test data to the local instance.
 		make stop-server; \
 	fi
 
-	bin/mmctl config set TeamSettings.MaxUsersPerTeam 100 --local
-	bin/mmctl sampledata -u 60 --local
+	bin/$(AMCTL_BIN_NAME) config set TeamSettings.MaxUsersPerTeam 100 --local
+	bin/$(AMCTL_BIN_NAME) sampledata -u 60 --local
 
-	@echo You may need to restart the Mattermost server before using the following
+	@echo You may need to restart the Antimatter server before using the following
 	@echo ========================================================================
 	@echo Login with a system admin account username=sysadmin password=Sys@dmin-sample1
 	@echo Login with a regular account username=user-1 password=SampleUs@r-001
@@ -596,7 +601,7 @@ build-templates: ## Compile all mjml email templates
 
 .PHONY: run-server
 run-server: setup-go-work prepackaged-binaries validate-go-version start-docker client ## Starts the server.
-	@echo Running mattermost for development
+	@echo Running antimatter for development
 ifeq ($(MM_USE_PGVECTOR),true)
 	@echo With pgvector PostgreSQL support enabled
 endif
@@ -617,16 +622,16 @@ endif
 		done; \
 	fi; \
 	[ -f "$$LIBFAKETIME" ] || { echo "Error: libfaketime not found. Install it with your package manager."; exit 1; }; \
-	echo "Building mattermost..."; \
-	$(GO) build $(GOFLAGS) -ldflags '$(LDFLAGS)' -tags '$(BUILD_TAGS)' -o $(GOBIN)/mattermost-faketime $(PLATFORM_FILES); \
-	echo "Running mattermost with FAKETIME=$(FAKETIME) (libfaketime: $$LIBFAKETIME)"; \
+	echo "Building antimatter..."; \
+	$(GO) build $(GOFLAGS) -ldflags '$(LDFLAGS)' -tags '$(BUILD_TAGS)' -o $(GOBIN)/$(AM_BIN_NAME)-faketime $(PLATFORM_FILES); \
+	echo "Running antimatter with FAKETIME=$(FAKETIME) (libfaketime: $$LIBFAKETIME)"; \
 	mkdir -p $(BUILD_WEBAPP_DIR)/channels/dist/files; \
 	if [ "$$(uname)" = "Darwin" ]; then \
 		DYLD_INSERT_LIBRARIES="$$LIBFAKETIME" DYLD_FORCE_FLAT_NAMESPACE=1 FAKETIME="$(FAKETIME)" FAKETIME_NO_CACHE=1 \
-			$(GOBIN)/mattermost-faketime $(RUN_IN_BACKGROUND) \
+			$(GOBIN)/$(AM_BIN_NAME)-faketime $(RUN_IN_BACKGROUND) \
 	else \
 		LD_PRELOAD="$$LIBFAKETIME" FAKETIME="$(FAKETIME)" FAKETIME_NO_CACHE=1 \
-			$(GOBIN)/mattermost-faketime $(RUN_IN_BACKGROUND) \
+			$(GOBIN)/$(AM_BIN_NAME)-faketime $(RUN_IN_BACKGROUND) \
 	fi
 
 .PHONY: run-server-pgvector
@@ -660,20 +665,20 @@ run-node: export MM_SQLSETTINGS_DRIVERNAME=postgres
 run-node: export MM_SQLSETTINGS_DATASOURCE=postgres://mmuser:mostest_password@localhost/mattermost_node_test?sslmode=disable&sslmode=disable&connect_timeout=10&binary_parameters=yes
 
 run-node: setup-go-work start-docker ## Runs a shared channel node.
-	@echo Running mattermost node
+	@echo Running antimatter node
 
 	$(GO) run $(GOFLAGS) -ldflags '$(LDFLAGS)' -tags '$(BUILD_TAGS)' $(PLATFORM_FILES) $(RUN_IN_BACKGROUND)
 
 .PHONY: run-cli
 run-cli: setup-go-work start-docker ## Runs CLI.
-	@echo Running mattermost for development
+	@echo Running antimatter for development
 	@echo Example should be like 'make ARGS="-version" run-cli'
 
 	$(GO) run $(GOFLAGS) -ldflags '$(LDFLAGS)' -tags '$(BUILD_TAGS)' $(PLATFORM_FILES) ${ARGS}
 
 .PHONY: run-client
 run-client: client ## Runs the webapp.
-	@echo Running mattermost client for development
+	@echo Running antimatter client for development
 
 	cd $(BUILD_WEBAPP_DIR) && $(MAKE) run
 
@@ -683,7 +688,7 @@ client: ## Sets up a symlink to the compiled files generated by the web app
 
 .PHONY: run-client-fullmap
 run-client-fullmap: client ## Legacy alias to run-client
-	@echo Running mattermost client for development
+	@echo Running antimatter client for development
 
 	cd $(BUILD_WEBAPP_DIR) && $(MAKE) run
 
@@ -699,25 +704,25 @@ run-fullmap: run-server run-client ## Legacy alias to run
 
 .PHONY: stop-server
 stop-server: ## Stops the server.
-	@echo Stopping mattermost
+	@echo Stopping antimatter
 
 ifeq ($(BUILDER_GOOS_GOARCH),"windows_amd64")
 	wmic process where "Caption='go.exe' and CommandLine like '%go.exe run%'" call terminate
-	wmic process where "Caption='mattermost.exe' and CommandLine like '%go-build%'" call terminate
+	wmic process where "Caption='$(AM_BIN_NAME).exe' and CommandLine like '%go-build%'" call terminate
 else
-	@for PID in $$(ps -ef | grep "[g]o run" | grep "mattermost" | awk '{ print $$2 }'); do \
+	@for PID in $$(ps -ef | grep "[g]o run" | grep "cmd/$(AM_BIN_NAME)" | awk '{ print $$2 }'); do \
 		echo stopping go $$PID; \
 		kill $$PID; \
 	done
-	@for PID in $$(ps -ef | grep "[g]o-build" | grep "mattermost" | awk '{ print $$2 }'); do \
-		echo stopping mattermost $$PID; \
+	@for PID in $$(ps -ef | grep "[g]o-build" | grep "/$(AM_BIN_NAME)" | awk '{ print $$2 }'); do \
+		echo stopping $(AM_BIN_NAME) $$PID; \
 		kill $$PID; \
 	done
 endif
 
 .PHONY: stop-client
 stop-client: ## Stops the webapp.
-	@echo Stopping mattermost client
+	@echo Stopping antimatter client
 
 	cd $(BUILD_WEBAPP_DIR) && $(MAKE) stop
 
@@ -736,7 +741,7 @@ restart-server-pgvector: ## Restarts the server with pgvector PostgreSQL image.
 
 .PHONY: restart-haserver
 restart-haserver:
-	@echo Restarting mattermost in an HA topology
+	@echo Restarting antimatter in an HA topology
 
 	docker compose restart follower2
 	docker compose restart follower
@@ -918,13 +923,13 @@ todo: ## Display TODO and FIXME items in the source code.
 	@! ag --ignore Makefile --ignore-dir runtime '(TODO|XXX|FIXME|"FIX ME")[: ]+'
 
 .PHONY: mmctl-build
-mmctl-build: setup-go-work ## Compiles and generates the mmctl binary
-	$(GO) build $(GOFLAGS) -trimpath -ldflags '$(MMCTL_LDFLAGS)' -o bin/mmctl ./cmd/mmctl
+mmctl-build: setup-go-work ## Compiles and generates the amctl binary (bin/amctl)
+	$(GO) build $(GOFLAGS) -trimpath -ldflags '$(MMCTL_LDFLAGS)' -o bin/$(AMCTL_BIN_NAME) ./cmd/amctl
 
 .PHONY: mmctl-docs
-mmctl-docs: setup-go-work ## Generate the mmctl docs
+mmctl-docs: setup-go-work ## Generate the amctl docs
 	rm -rf ./cmd/mmctl/docs
-	cd ./cmd/mmctl && $(GO) run mmctl.go docs
+	cd ./cmd/mmctl && $(GO) run ../amctl docs
 
 ## Help documentation à la https://marmelab.com/blog/2016/02/29/auto-documented-makefile.html
 .PHONY: help

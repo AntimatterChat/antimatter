@@ -72,13 +72,13 @@ func stopProc(cmd *exec.Cmd) {
 
 func (sm *ServerManager) build(ctx context.Context) error {
 	sm.logger.Info("Building server binary with enterprise...")
-	sm.binary = filepath.Join(sm.cfg.ServerDir, "bin", "mattermost")
+	sm.binary = filepath.Join(sm.cfg.ServerDir, "bin", "antimatter")
 
 	cmd := exec.CommandContext(ctx, "go", "build",
 		"-tags", "enterprise",
 		"-ldflags", `-X "github.com/mattermost/mattermost/server/public/model.BuildEnterpriseReady=true"`,
 		"-o", sm.binary,
-		"./cmd/mattermost",
+		"./cmd/antimatter",
 	)
 	cmd.Dir = sm.cfg.ServerDir
 	cmd.Stdout = os.Stdout
