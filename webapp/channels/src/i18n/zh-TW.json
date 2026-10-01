@@ -2299,7 +2299,7 @@
   "admin.log.enableDiagnosticsDescription": "傳送錯誤報告以及診斷訊息給 Antimatter 公司，以改進 Antimatter 的效能及品質。詳情請參閱 Antimatter 的<link>隱私政策</link>。",
   "admin.log.enableWebhookDebugging": "啟用 Webhook 除錯：",
   "admin.log.enableWebhookDebuggingDescription": "啟用時，傳送 Webhook 除錯訊息至伺服器紀錄檔。設定 {boldedLogLevel} 為「DEBUG」以輸出送入 Webhook 的請求內文。",
-  "admin.log.fileDescription": "正式環境中，通常設為啟用。啟用時被記錄的事件將會被寫入至記錄檔案目錄下的 mattermost.log 檔案。記錄檔會在一萬行時交替並封存至同目錄下，以時間及序號命名該封存檔案。如：mattermost.2017-03-31.001。修改此設定後需要重新啟動伺服器以生效。",
+  "admin.log.fileDescription": "正式環境中，通常設為啟用。啟用時被記錄的事件將會被寫入至記錄檔案目錄下的 antimatter.log 檔案。記錄檔會在一萬行時交替並封存至同目錄下，以時間及序號命名該封存檔案。如：antimatter.2017-03-31.001。修改此設定後需要重新啟動伺服器以生效。",
   "admin.log.fileJsonTitle": "以 JSON 格式輸出檔案記錄：",
   "admin.log.fileLevelDescription": "決定要輸出到記錄檔的事件等級。ERROR：只輸出錯誤訊息；INFO：輸出錯誤訊息及啟動或初始化前後的訊息；DEBUG：輸出各種細節以便開發者除錯。",
   "admin.log.fileLevelTitle": "檔案記錄等級：",

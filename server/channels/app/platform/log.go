@@ -183,7 +183,7 @@ func (ps *PlatformService) GetLogsSkipSend(rctx request.CTX, page, perPage int, 
 
 func (ps *PlatformService) GetLogFile(rctx request.CTX) (*model.FileData, error) {
 	if !*ps.Config().LogSettings.EnableFile {
-		return nil, errors.New("Unable to retrieve mattermost logs because LogSettings.EnableFile is set to false")
+		return nil, errors.New("Unable to retrieve the server logs because LogSettings.EnableFile is set to false")
 	}
 
 	mattermostLog := config.GetLogFileLocation(*ps.Config().LogSettings.FileLocation)
@@ -199,7 +199,7 @@ func (ps *PlatformService) GetLogFile(rctx request.CTX) (*model.FileData, error)
 
 	mattermostLogFileData, err := os.ReadFile(mattermostLog)
 	if err != nil {
-		return nil, errors.Wrapf(err, "failed read mattermost log file at path %s", mattermostLog)
+		return nil, errors.Wrapf(err, "failed read the server log file at path %s", mattermostLog)
 	}
 
 	return &model.FileData{

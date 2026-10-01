@@ -103,7 +103,7 @@ func (ps *PlatformService) GenerateSupportPacket(rctx request.CTX, options *mode
 	}
 
 	if options != nil && options.IncludeLogs {
-		functions["mattermost log"] = ps.GetLogFile
+		functions["antimatter log"] = ps.GetLogFile
 	}
 
 	var (

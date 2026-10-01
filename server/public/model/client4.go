@@ -5581,7 +5581,7 @@ func (c *Client4) QueryLogs(ctx context.Context, page, perPage int, filter *LogF
 	return DecodeJSONFromResponse[map[string][]json.RawMessage](r)
 }
 
-// Download logs as mattermost.log file
+// Download logs as antimatter.log file
 func (c *Client4) DownloadLogs(ctx context.Context) ([]byte, *Response, error) {
 	r, err := c.doAPIGet(ctx, c.logsRoute().Join("download"), "")
 	if err != nil {

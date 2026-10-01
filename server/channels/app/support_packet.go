@@ -77,14 +77,14 @@ func (a *App) GenerateSupportPacket(rctx request.CTX, options *model.SupportPack
 			if cluster := a.Cluster(); cluster != nil && *a.Config().ClusterSettings.Enable {
 				hostname := cluster.GetMyClusterInfo().Hostname
 				for _, file := range files {
-					// When running in a cluster, the files are generated with the cluster node name as the directory, e.g. 7917b92f9e4c/mattermost.log
+					// When running in a cluster, the files are generated with the cluster node name as the directory, e.g. 7917b92f9e4c/antimatter.log
 					fileDatas = append(fileDatas, model.FileData{
 						Filename: filepath.Join(hostname, file.Filename),
 						Body:     file.Body,
 					})
 				}
 			} else {
-				// When running in standalone mode, all files are generated with the same directory name, e.g. mattermost.log.
+				// When running in standalone mode, all files are generated with the same directory name, e.g. antimatter.log.
 				fileDatas = append(fileDatas, files...)
 			}
 		}

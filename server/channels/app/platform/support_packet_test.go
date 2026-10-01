@@ -141,7 +141,7 @@ func TestGenerateSupportPacket(t *testing.T) {
 		"goroutines",
 	}
 
-	expectedFileNamesWithLogs := append(expectedFileNames, "mattermost.log")
+	expectedFileNamesWithLogs := append(expectedFileNames, "antimatter.log")
 
 	var fileDatas []model.FileData
 
@@ -176,7 +176,7 @@ func TestGenerateSupportPacket(t *testing.T) {
 		rFileNames := getFileNames(t, fileDatas)
 
 		assert.NotContains(t, rFileNames, "cpu.prof")
-		expectedWithoutCPU := []string{"diagnostics.yaml", "sanitized_config.json", "heap.prof", "goroutines", "mattermost.log"}
+		expectedWithoutCPU := []string{"diagnostics.yaml", "sanitized_config.json", "heap.prof", "goroutines", "antimatter.log"}
 		assert.ElementsMatch(t, expectedWithoutCPU, rFileNames)
 	})
 
@@ -190,7 +190,7 @@ func TestGenerateSupportPacket(t *testing.T) {
 			IncludeLogs:        true,
 		})
 		require.Error(t, err)
-		assert.Contains(t, err.Error(), "failed read mattermost log file")
+		assert.Contains(t, err.Error(), "failed read the server log file")
 		rFileNames := getFileNames(t, fileDatas)
 
 		assert.ElementsMatch(t, expectedFileNames, rFileNames)

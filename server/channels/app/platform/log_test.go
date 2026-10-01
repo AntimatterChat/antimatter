@@ -31,7 +31,7 @@ func TestGetMattermostLog(t *testing.T) {
 
 	fileData, err := th.Service.GetLogFile(th.Context)
 	assert.Nil(t, fileData)
-	assert.ErrorContains(t, err, "Unable to retrieve mattermost logs because LogSettings.EnableFile is set to false")
+	assert.ErrorContains(t, err, "Unable to retrieve the server logs because LogSettings.EnableFile is set to false")
 
 	dir, err := os.MkdirTemp("", "")
 	require.NoError(t, err)
@@ -59,7 +59,7 @@ func TestGetMattermostLog(t *testing.T) {
 
 	logLocation := config.GetLogFileLocation(dir)
 
-	// ReconfigureLogger may create mattermost.log as soon as file logging is enabled.
+	// ReconfigureLogger may create antimatter.log as soon as file logging is enabled.
 	// Flush and remove it so the next GetLogFile exercises the missing-file path.
 	th.Service.Logger().Flush()
 	err = os.Remove(logLocation)
@@ -67,10 +67,10 @@ func TestGetMattermostLog(t *testing.T) {
 		require.NoError(t, err)
 	}
 
-	// There is no mattermost.log file yet, so this fails
+	// There is no antimatter.log file yet, so this fails
 	fileData, err = th.Service.GetLogFile(th.Context)
 	assert.Nil(t, fileData)
-	assert.ErrorContains(t, err, "failed read mattermost log file at path "+logLocation)
+	assert.ErrorContains(t, err, "failed read the server log file at path "+logLocation)
 
 	// Happy path where we get a log file and no warning
 	d1 := []byte("hello\ngo\n")
@@ -80,7 +80,7 @@ func TestGetMattermostLog(t *testing.T) {
 	fileData, err = th.Service.GetLogFile(th.Context)
 	require.NoError(t, err)
 	require.NotNil(t, fileData)
-	assert.Equal(t, "mattermost.log", fileData.Filename)
+	assert.Equal(t, "antimatter.log", fileData.Filename)
 	assert.Positive(t, len(fileData.Body))
 
 	// Test path validation: FileLocation outside MM_LOG_PATH should be blocked
@@ -131,7 +131,7 @@ func TestValidateLogFilePathWithRootOverride(t *testing.T) {
 	ps.SetLogRootPathOverride(logDir)
 
 	t.Run("allows path within override root", func(t *testing.T) {
-		inRoot := path.Join(logDir, "mattermost.log")
+		inRoot := path.Join(logDir, "antimatter.log")
 		require.NoError(t, os.WriteFile(inRoot, []byte("ok"), 0644))
 		assert.NoError(t, ps.validateLogFilePath(inRoot))
 	})

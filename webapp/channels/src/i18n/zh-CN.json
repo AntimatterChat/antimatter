@@ -2301,7 +2301,7 @@
   "admin.log.enableDiagnosticsDescription": "开启此功能将发送错误报告和诊断信息到 Mattermost, Inc 以帮助提高 Antimatter 的质量和性能。阅读我们的<link>隐私政策</link>以了解更多。",
   "admin.log.enableWebhookDebugging": "启用 Webhook 调试：",
   "admin.log.enableWebhookDebuggingDescription": "当设为是时，发送 Webhook 调试消息至服务器日志。如果想同时输出传入 Webhook 请求内容，请将 {boldedLogLevel} 设置为 “DEBUG”。",
-  "admin.log.fileDescription": "通常在正式环境设为是。当设为是时，事件日志将写入到文件日志目录字段指定的目录下的 mattermost.log 文件。日志将在 100 MB 行后归档到同一目录下的一个文件并以时间和序列号为命名。例如：mattermost.2017-03-31.001。",
+  "admin.log.fileDescription": "通常在正式环境设为是。当设为是时，事件日志将写入到文件日志目录字段指定的目录下的 antimatter.log 文件。日志将在 100 MB 行后归档到同一目录下的一个文件并以时间和序列号为命名。例如：antimatter.2017-03-31.001。",
   "admin.log.fileJsonTitle": "以 JSON 输出文件日志：",
   "admin.log.fileLevelDescription": "此设置确定将日志事件写入日志文件的详细程度。 错误：仅输出错误消息。 信息：输出有关启动和初始化的错误消息和信息。 调试：为调试问题的开发人员输出大量细节。",
   "admin.log.fileLevelTitle": "文件日志级别：",
