@@ -38,6 +38,7 @@ import {BurnCover, BurnTag} from './burn_on_read';
 import Files from './content/files';
 import MessageContent from './content/message_content';
 import EditForm from './edit_form';
+import {useConcernsMe} from './mentions';
 import MessageMenu from './message_menu';
 import Reactions from './reactions';
 import ThreadSummary from './thread_summary';
@@ -97,6 +98,7 @@ export default function Message({postId, previousPostId, inThread = false, highl
     const autotranslated = useSelector((state: GlobalState) => (post ? isMyChannelAutotranslated(state, post.channel_id) : false));
     const editing = useSelector((state: GlobalState) => getIsPostBeingEdited(state, postId) && getIsPostBeingEditedInRHS(state, postId) === inThread);
     const concealed = useSelector((state: GlobalState) => shouldDisplayConcealedPlaceholder(state, postId));
+    const concernsMe = useConcernsMe(post, inThread);
     const avatarRef = useRef<HTMLButtonElement>(null);
     const moreRef = useRef<HTMLButtonElement>(null);
     const reactRef = useRef<HTMLButtonElement>(null);
@@ -267,6 +269,7 @@ export default function Message({postId, previousPostId, inThread = false, highl
         ephemeral,
         'p-important': priority === 'important',
         'p-urgent': priority === 'urgent',
+        'hl-me': concernsMe,
         'menu-open': popover === 'menu' || popover === 'react',
         flash: highlighted,
     });
