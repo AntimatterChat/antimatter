@@ -142,6 +142,22 @@ func TestAddPluginLabelToMetrics(t *testing.T) {
 				`my_metric{plugin_id="new-plugin"} 42`,
 			},
 		},
+		"mattermost metrics are also exposed under antimatter names": {
+			input: []string{
+				"# HELP mattermost_plugin_calls_sessions Active sessions",
+				"# TYPE mattermost_plugin_calls_sessions gauge",
+				"mattermost_plugin_calls_sessions 3",
+				"playbooks_plugin_runs 1",
+			},
+			pluginID: "com.mattermost.calls",
+			expected: []string{
+				"# HELP antimatter_plugin_calls_sessions Active sessions",
+				"# TYPE antimatter_plugin_calls_sessions gauge",
+				`antimatter_plugin_calls_sessions{plugin_id="com.mattermost.calls"} 3`,
+				`mattermost_plugin_calls_sessions{plugin_id="com.mattermost.calls"} 3`,
+				`playbooks_plugin_runs{plugin_id="com.mattermost.calls"} 1`,
+			},
+		},
 		"multiple metrics are sorted and separated": {
 			input:    []string{"metric_a 1", "metric_b 2"},
 			pluginID: "plug",
