@@ -11,3 +11,6 @@
 :is(.am-app, .am-layer) .am-sched-note > .am-ic { color: var(--am-anti); flex: none; }
 :is(.am-app, .am-layer) .am-sched-note > span { flex: 1; min-width: 0; }
 :is(.am-app, .am-layer) .am-sched-note a { font-weight: 600; color: var(--am-anti); }
+
+// Commands from integrations show their icon, as the mockup's .plug badge.
+:is(.am-app, .am-layer) .am-ac-pop .am-plug-ic { width: 16px; height: 16px; margin-right: 4px; border-radius: 4px; vertical-align: -3px; object-fit: contain; }
