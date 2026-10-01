@@ -69,7 +69,7 @@ describe('components/AboutBuildModal', () => {
         expect(screen.queryByText('Licensed to', {exact: false})).not.toBeInTheDocument();
         expect(screen.queryByText('Hostname: mock.localhost', {exact: false})).toBeInTheDocument();
 
-        expect(screen.getByRole('link', {name: 'server'})).toHaveAttribute('href', 'https://github.com/mattermost/mattermost-server/blob/master/NOTICE.txt');
+        expect(screen.getByRole('link', {name: 'server'})).toHaveAttribute('href', 'https://github.com/AntimatterChat/antimatter/blob/antimatter/NOTICE.txt');
         expect(screen.getByRole('link', {name: 'desktop'})).toHaveAttribute('href', 'https://github.com/mattermost/desktop/blob/master/NOTICE.txt');
         expect(screen.getByRole('link', {name: 'mobile'})).toHaveAttribute('href', 'https://github.com/mattermost/mattermost-mobile/blob/master/NOTICE.txt');
     });
@@ -90,7 +90,7 @@ describe('components/AboutBuildModal', () => {
         expect(screen.getByRole('link', {name: 'github.com/AntimatterChat'})).toHaveAttribute('href', 'https://github.com/AntimatterChat');
         expect(screen.queryByText('Hostname: server did not provide hostname', {exact: false})).toBeInTheDocument();
 
-        expect(screen.getByRole('link', {name: 'server'})).toHaveAttribute('href', 'https://github.com/mattermost/mattermost-server/blob/master/NOTICE.txt');
+        expect(screen.getByRole('link', {name: 'server'})).toHaveAttribute('href', 'https://github.com/AntimatterChat/antimatter/blob/antimatter/NOTICE.txt');
         expect(screen.getByRole('link', {name: 'desktop'})).toHaveAttribute('href', 'https://github.com/mattermost/desktop/blob/master/NOTICE.txt');
         expect(screen.getByRole('link', {name: 'mobile'})).toHaveAttribute('href', 'https://github.com/mattermost/mattermost-mobile/blob/master/NOTICE.txt');
     });

@@ -220,6 +220,8 @@ const messages = defineMessages({
     automaticPrepackagedPluginsDesc: {id: 'admin.plugins.settings.automaticPrepackagedPluginsDesc', defaultMessage: 'When true, automatically installs any prepackaged plugin found to be enabled in the server configuration.'},
     marketplaceUrl: {id: 'admin.plugins.settings.marketplaceUrl', defaultMessage: 'Marketplace URL:'},
     marketplaceUrlDesc: {id: 'admin.plugins.settings.marketplaceUrlDesc', defaultMessage: 'URL of the marketplace server.'},
+    allowMarketplaceToReplaceAntimatterPlugins: {id: 'admin.plugins.settings.allowMarketplaceToReplaceAntimatterPlugins', defaultMessage: 'Allow Marketplace Builds of Antimatter Plugins:'},
+    allowMarketplaceToReplaceAntimatterPluginsDesc: {id: 'admin.plugins.settings.allowMarketplaceToReplaceAntimatterPluginsDesc', defaultMessage: 'When false, the marketplace leaves out its own builds of the plugins Antimatter provides (such as Calls, Playbooks and Boards), so they are not offered as updates that would replace the Antimatter builds. When true, they are listed and can be installed over the Antimatter builds.'},
     uploadSuccess: {id: 'admin.plugin.upload.success', defaultMessage: 'Successfully uploaded plugin: {pluginName}'},
     uploadSuccessUpdated: {id: 'admin.plugin.upload.success_updated', defaultMessage: 'Successfully updated plugin: {pluginName}'},
     uploadSuccessUpgraded: {id: 'admin.plugin.upload.success_upgraded', defaultMessage: 'Successfully upgraded plugin: {pluginName} ({previousVersion} → {version})'},
@@ -244,6 +246,8 @@ export const searchableStrings = [
     messages.automaticPrepackagedPluginsDesc,
     messages.marketplaceUrl,
     messages.marketplaceUrlDesc,
+    messages.allowMarketplaceToReplaceAntimatterPlugins,
+    messages.allowMarketplaceToReplaceAntimatterPluginsDesc,
 ];
 
 const PluginItem = ({
@@ -528,6 +532,7 @@ type State = BaseState & {
     enableRemoteMarketplace: boolean;
     automaticPrepackagedPlugins: boolean;
     marketplaceUrl: string;
+    allowMarketplaceToReplaceAntimatterPlugins: boolean;
     requirePluginSignature: boolean;
     removing: string | null;
     draggingUpload: boolean;
@@ -566,6 +571,7 @@ export class PluginManagement extends OLDAdminSettings<Props, State> {
             config.PluginSettings.EnableRemoteMarketplace = this.state.enableRemoteMarketplace;
             config.PluginSettings.AutomaticPrepackagedPlugins = this.state.automaticPrepackagedPlugins;
             config.PluginSettings.MarketplaceURL = this.state.marketplaceUrl;
+            config.PluginSettings.AllowMarketplaceToReplaceAntimatterPlugins = this.state.allowMarketplaceToReplaceAntimatterPlugins;
             config.PluginSettings.RequirePluginSignature = this.state.requirePluginSignature;
         }
 
@@ -581,6 +587,7 @@ export class PluginManagement extends OLDAdminSettings<Props, State> {
             enableRemoteMarketplace: config?.PluginSettings?.EnableRemoteMarketplace,
             automaticPrepackagedPlugins: config?.PluginSettings?.AutomaticPrepackagedPlugins,
             marketplaceUrl: config?.PluginSettings?.MarketplaceURL,
+            allowMarketplaceToReplaceAntimatterPlugins: config?.PluginSettings?.AllowMarketplaceToReplaceAntimatterPlugins,
             requirePluginSignature: config?.PluginSettings?.RequirePluginSignature,
         };
 
@@ -1406,6 +1413,15 @@ export class PluginManagement extends OLDAdminSettings<Props, State> {
                                     disabled={this.props.isDisabled || !this.state.enable || !this.state.enableUploads || !this.state.enableMarketplace || !this.state.enableRemoteMarketplace}
                                     onChange={this.handleChange}
                                     setByEnv={this.isSetByEnv('PluginSettings.MarketplaceURL')}
+                                />
+                                <BooleanSetting
+                                    id='allowMarketplaceToReplaceAntimatterPlugins'
+                                    label={<FormattedMessage {...messages.allowMarketplaceToReplaceAntimatterPlugins}/>}
+                                    helpText={<FormattedMessage {...messages.allowMarketplaceToReplaceAntimatterPluginsDesc}/>}
+                                    value={this.state.allowMarketplaceToReplaceAntimatterPlugins}
+                                    disabled={this.props.isDisabled || !this.state.enable || !this.state.enableUploads || !this.state.enableMarketplace || !this.state.enableRemoteMarketplace}
+                                    onChange={this.handleChange}
+                                    setByEnv={this.isSetByEnv('PluginSettings.AllowMarketplaceToReplaceAntimatterPlugins')}
                                 />
                             </>
                         )}

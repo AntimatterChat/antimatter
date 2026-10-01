@@ -53,7 +53,7 @@
   },
   "about.teamEditionLearn": {
     "defaultMessage": "Join the Antimatter community at ",
-    "description": "Sentence in the About Antimatter dialog; a community URL is appended directly after it, so the trailing space matters."
+    "description": "Sentence in the About Antimatter dialog; the community's GitHub URL is appended directly after it, so the trailing space matters."
   },
   "about.teamEditionSt": {
     "defaultMessage": "All your team communication in one place, instantly searchable and accessible anywhere.",
@@ -7900,8 +7900,8 @@
     "description": "Help text for the Enable Webhook Debugging setting; {boldedLogLevel} is the bolded name of the log level setting, and \"DEBUG\" is a literal log level value."
   },
   "admin.log.fileDescription": {
-    "defaultMessage": "Typically set to true in production. When true, logged events are written to the mattermost.log file in the directory specified in the File Log Directory field. The logs are rotated at 100 MB and archived to a file in the same directory, and given a name with a datestamp and serial number. For example, mattermost.2017-03-31.001. Changing this setting requires a server restart before taking effect.",
-    "description": "Admin console help text under the Output logs to file toggle; mattermost.log and the datestamped filename are literal examples."
+    "defaultMessage": "Typically set to true in production. When true, logged events are written to the antimatter.log file in the directory specified in the File Log Directory field. The logs are rotated at 100 MB and archived to a file in the same directory, and given a name with a datestamp and serial number. For example, antimatter.2017-03-31.001. Changing this setting requires a server restart before taking effect.",
+    "description": "Admin console help text under the Output logs to file toggle; antimatter.log and the datestamped filename are literal examples."
   },
   "admin.log.fileJsonTitle": {
     "defaultMessage": "Output file logs as JSON:",
@@ -10791,6 +10791,14 @@
     "defaultMessage": "Plugin Management",
     "description": "Sidebar item and page title of the System Console > Plugins > Plugin Management page."
   },
+  "admin.plugins.settings.allowMarketplaceToReplaceAntimatterPlugins": {
+    "defaultMessage": "Allow Marketplace Builds of Antimatter Plugins:",
+    "description": "Label of the System Console Plugin Management setting that lets the marketplace offer its own builds of plugins Antimatter provides."
+  },
+  "admin.plugins.settings.allowMarketplaceToReplaceAntimatterPluginsDesc": {
+    "defaultMessage": "When false, the marketplace leaves out its own builds of the plugins Antimatter provides (such as Calls, Playbooks and Boards), so they are not offered as updates that would replace the Antimatter builds. When true, they are listed and can be installed over the Antimatter builds.",
+    "description": "Help text for the Allow Marketplace Builds of Antimatter Plugins setting in System Console Plugin Management."
+  },
   "admin.plugins.settings.automaticPrepackagedPlugins": {
     "defaultMessage": "Enable Automatic Prepackaged Plugins:",
     "description": "Setting label in System Console > Plugin Management for the toggle that automatically enables plugins prepackaged with the server; ends with a colon."
@@ -12516,7 +12524,7 @@
     "description": "Admin console label for the web server bind address text input; ends with a colon."
   },
   "admin.service.listenDescription": {
-    "defaultMessage": "The address and port to which to bind and listen. Specifying \":8065\" will bind to all network interfaces. Specifying \"127.0.0.1:8065\" will only bind to the network interface having that IP address. If you choose a port of a lower level (called \"system ports\" or \"well-known ports\", in the range of 0-1023), you must have permissions to bind to that port. On Linux you can use: \"sudo setcap cap_net_bind_service=+ep ./bin/mattermost\" to allow Antimatter to bind to well-known ports.",
+    "defaultMessage": "The address and port to which to bind and listen. Specifying \":8065\" will bind to all network interfaces. Specifying \"127.0.0.1:8065\" will only bind to the network interface having that IP address. If you choose a port of a lower level (called \"system ports\" or \"well-known ports\", in the range of 0-1023), you must have permissions to bind to that port. On Linux you can use: \"sudo setcap cap_net_bind_service=+ep ./bin/antimatter\" to allow Antimatter to bind to well-known ports.",
     "description": "Admin console help text for the Listen Address setting; quoted values like \":8065\" and the sudo command are literal and should not be translated."
   },
   "admin.service.listenExample": {
