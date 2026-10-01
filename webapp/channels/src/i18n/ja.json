@@ -2554,7 +2554,7 @@
   "admin.service.letsEncryptCertificateCacheFile": "Let's Encrypt証明書キャッシュファイル:",
   "admin.service.letsEncryptCertificateCacheFileDescription": "検索された証明書やその他のLet's Encryptサービスに関するデータはこのファイルに保存されます。",
   "admin.service.listenAddress": "接続待ちアドレス:",
-  "admin.service.listenDescription": "使用するIPアドレスとポート番号を設定します。\":8065\"と入力することで全てのインターフェイスのIPアドレスでアクセスを待ちます。\"127.0.0.1:8065\"と指定することで、一つのIPアドレスでアクセスを待ちます。\"システムポート\"や\"ウェルノウンポート\"と呼ばれる 0～1023 までの範囲のポート番号を選んだ場合、そのポートを使用する権限が必要になります。Linuxでは、Mattermostがウェルノウンポートを使用するために \"sudo setcap cap_net_bind_service=+ep ./bin/mattermost\" を利用することができます。",
+  "admin.service.listenDescription": "使用するIPアドレスとポート番号を設定します。\":8065\"と入力することで全てのインターフェイスのIPアドレスでアクセスを待ちます。\"127.0.0.1:8065\"と指定することで、一つのIPアドレスでアクセスを待ちます。\"システムポート\"や\"ウェルノウンポート\"と呼ばれる 0～1023 までの範囲のポート番号を選んだ場合、そのポートを使用する権限が必要になります。Linuxでは、Mattermostがウェルノウンポートを使用するために \"sudo setcap cap_net_bind_service=+ep ./bin/antimatter\" を利用することができます。",
   "admin.service.listenExample": "例: \":8065\"",
   "admin.service.managedResourcePaths": "リソースパスを管理する:",
   "admin.service.managedResourcePathsDescription": "別のサービスによって管理されるMattermostサーバー上のカンマ区切りのパスのリストです。詳しくは<link>公式ドキュメント</link>を確認してください。",

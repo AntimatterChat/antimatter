@@ -1804,7 +1804,7 @@
   "admin.service.letsEncryptCertificateCacheFile": "Hãy Mã hóa Tệp Cache Chứng chỉ:",
   "admin.service.letsEncryptCertificateCacheFileDescription": "Các chứng chỉ đã truy xuất và dữ liệu khác về dịch vụ Let's Encrypt sẽ được lưu trữ trong tệp này.",
   "admin.service.listenAddress": "Địa chỉ nghe:",
-  "admin.service.listenDescription": "Địa chỉ và cổng để liên kết và lắng nghe. Chỉ định \": 8065 \"sẽ liên kết với tất cả các giao diện mạng. Chỉ định \"127.0.0.1: 8065 \"sẽ chỉ liên kết với mạng giao diện có địa chỉ IP đó. Nếu bạn chọn một cổng cấp thấp hơn (được gọi là \"cổng hệ thống \"hoặc \"các cổng nổi tiếng \", trong phạm vi 0-1023), bạn phải có quyền liên kết với port. Trên Linux, bạn có thể sử dụng: \"sudo setcap cap_net_bind_service = + ep ./bin/mattermost \"để cho phép Antimatter liên kết với các cổng nổi tiếng.",
+  "admin.service.listenDescription": "Địa chỉ và cổng để liên kết và lắng nghe. Chỉ định \": 8065 \"sẽ liên kết với tất cả các giao diện mạng. Chỉ định \"127.0.0.1: 8065 \"sẽ chỉ liên kết với mạng giao diện có địa chỉ IP đó. Nếu bạn chọn một cổng cấp thấp hơn (được gọi là \"cổng hệ thống \"hoặc \"các cổng nổi tiếng \", trong phạm vi 0-1023), bạn phải có quyền liên kết với port. Trên Linux, bạn có thể sử dụng: \"sudo setcap cap_net_bind_service = + ep ./bin/antimatter \"để cho phép Antimatter liên kết với các cổng nổi tiếng.",
   "admin.service.listenExample": "Ví dụ: \": 8065\"",
   "admin.service.managedResourcePaths": "Đường dẫn tài nguyên được quản lý:",
   "admin.service.mfaDesc": "Khi đúng, người dùng có đăng nhập AD / LDAP hoặc email có thể thêm xác thực đa yếu tố vào tài khoản của họ bằng Google Authenticator.",
