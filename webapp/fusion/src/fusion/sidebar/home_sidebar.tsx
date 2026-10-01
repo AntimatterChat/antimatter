@@ -5,14 +5,22 @@ import React, {useRef, useState} from 'react';
 import {useIntl} from 'react-intl';
 import {useDispatch, useSelector} from 'react-redux';
 
+import {Client4} from 'mattermost-redux/client';
 import {getDirectAndGroupChannels} from 'mattermost-redux/selectors/entities/channels';
-import {getUser} from 'mattermost-redux/selectors/entities/users';
+import {getCurrentTeam} from 'mattermost-redux/selectors/entities/teams';
+import {getCurrentUserId, getUser, getUsers} from 'mattermost-redux/selectors/entities/users';
+import {getUserIdFromChannelName} from 'mattermost-redux/utils/channel_utils';
+
+import {openDirectChannelToUserId} from 'actions/channel_actions';
 
 import Icon from 'fusion/components/icon';
 import {useUnreadMentions} from 'fusion/hooks/mentions';
 import CollectionsPopover from 'fusion/popovers/collections_popover';
+import {useLayout} from 'fusion/shell/layout_context';
 import {am} from 'fusion/utils/class_names';
 import {openNewDirectMessage} from 'fusion/utils/modals';
+import {channelPath} from 'fusion/utils/paths';
+import {getHistory} from 'utils/browser_history';
 
 import type {GlobalState} from 'types/store';
 
@@ -59,6 +67,42 @@ export default function HomeSidebar() {
     const linkRefs = useRef<Partial<Record<Collection, HTMLButtonElement | null>>>({});
 
     const mentions = useUnreadMentions();
+    const team = useSelector(getCurrentTeam);
+    const users = useSelector(getUsers);
+    const me = useSelector(getCurrentUserId);
+    const layout = useLayout();
+
+    // Enter opens the first match, else starts a conversation with the first person matching, as in the mockup.
+    const findOrStart = async () => {
+        if (!team) {
+            return;
+        }
+        if (list.length) {
+            layout.setHome(false);
+            getHistory().push(channelPath(team.name, list[0]));
+            return;
+        }
+        if (!q) {
+            dispatch(openNewDirectMessage());
+            return;
+        }
+        try {
+            const {users} = await Client4.autocompleteUsers(q, '', '', {limit: 1});
+            const user = users.find((u) => !u.delete_at);
+            if (!user) {
+                dispatch(openNewDirectMessage());
+                return;
+            }
+            const result = await dispatch(openDirectChannelToUserId(user.id));
+            if ('data' in result && result.data) {
+                setQuery('');
+                layout.setHome(false);
+                getHistory().push(channelPath(team.name, result.data));
+            }
+        } catch {
+            dispatch(openNewDirectMessage());
+        }
+    };
     const link = (key: Collection, icon: 'at' | 'thread' | 'pin', label: string, badge = 0) => (
         <button
             ref={(el) => {
@@ -75,9 +119,10 @@ export default function HomeSidebar() {
         </button>
     );
 
-    const q = query.trim().toLowerCase();
+    const q = query.trim().toLowerCase().replace(/^@/, '');
     const list = channels.
-        filter((c) => c.delete_at === 0 && (!q || c.display_name.toLowerCase().includes(q))).
+        filter((c) => c.delete_at === 0 && (!q || c.display_name.toLowerCase().includes(q) || (c.type === 'D' && Boolean(users[c.teammate_id || getUserIdFromChannelName(me, c.name)]?.username.includes(q))))).
+
         sort((a, b) => b.last_post_at - a.last_post_at);
 
     return (
@@ -112,8 +157,9 @@ export default function HomeSidebar() {
                     autoComplete='off'
                     onChange={(e) => setQuery(e.target.value)}
                     onKeyDown={(e) => {
-                        if (e.key === 'Enter' && !list.length) {
-                            dispatch(openNewDirectMessage());
+                        if (e.key === 'Enter') {
+                            e.preventDefault();
+                            findOrStart();
                         }
                     }}
                 />
