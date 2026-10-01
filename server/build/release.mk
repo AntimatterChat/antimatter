@@ -15,12 +15,12 @@ else
 endif
 ifeq ($(FIPS_ENABLED),true)
 	@echo Verifying Build Linux amd64 for FIPS
-	$(GO) version -m $(GOBIN)/$(MM_BIN_NAME) | grep -q "GOEXPERIMENT=systemcrypto" || (echo "ERROR: FIPS mattermost binary missing GOEXPERIMENT=systemcrypto" && exit 1)
-	$(GO) version -m $(GOBIN)/$(MM_BIN_NAME) | grep "\-tags" | grep -q "requirefips" || (echo "ERROR: FIPS mattermost binary missing -tags=requirefips" && exit 1)
-	$(GO) tool nm $(GOBIN)/$(MM_BIN_NAME) | grep -qE "func_go_openssl_OpenSSL_version|_mkcgo_OpenSSL_version" || (echo "ERROR: FIPS mattermost binary missing OpenSSL integration" && exit 1)
-	$(GO) version -m $(GOBIN)/$(MMCTL_BIN_NAME) | grep -q "GOEXPERIMENT=systemcrypto" || (echo "ERROR: FIPS mmctl binary missing GOEXPERIMENT=systemcrypto" && exit 1)
-	$(GO) version -m $(GOBIN)/$(MMCTL_BIN_NAME) | grep "\-tags" | grep -q "requirefips" || (echo "ERROR: FIPS mmctl binary missing -tags=requirefips" && exit 1)
-	$(GO) tool nm $(GOBIN)/$(MMCTL_BIN_NAME) | grep -qE "func_go_openssl_OpenSSL_version|_mkcgo_OpenSSL_version" || (echo "ERROR: FIPS mmctl binary missing OpenSSL integration" && exit 1)
+	$(GO) version -m $(GOBIN)/$(AM_BIN_NAME) | grep -q "GOEXPERIMENT=systemcrypto" || (echo "ERROR: FIPS $(AM_BIN_NAME) binary missing GOEXPERIMENT=systemcrypto" && exit 1)
+	$(GO) version -m $(GOBIN)/$(AM_BIN_NAME) | grep "\-tags" | grep -q "requirefips" || (echo "ERROR: FIPS $(AM_BIN_NAME) binary missing -tags=requirefips" && exit 1)
+	$(GO) tool nm $(GOBIN)/$(AM_BIN_NAME) | grep -qE "func_go_openssl_OpenSSL_version|_mkcgo_OpenSSL_version" || (echo "ERROR: FIPS $(AM_BIN_NAME) binary missing OpenSSL integration" && exit 1)
+	$(GO) version -m $(GOBIN)/$(AMCTL_BIN_NAME) | grep -q "GOEXPERIMENT=systemcrypto" || (echo "ERROR: FIPS $(AMCTL_BIN_NAME) binary missing GOEXPERIMENT=systemcrypto" && exit 1)
+	$(GO) version -m $(GOBIN)/$(AMCTL_BIN_NAME) | grep "\-tags" | grep -q "requirefips" || (echo "ERROR: FIPS $(AMCTL_BIN_NAME) binary missing -tags=requirefips" && exit 1)
+	$(GO) tool nm $(GOBIN)/$(AMCTL_BIN_NAME) | grep -qE "func_go_openssl_OpenSSL_version|_mkcgo_OpenSSL_version" || (echo "ERROR: FIPS $(AMCTL_BIN_NAME) binary missing OpenSSL integration" && exit 1)
 endif
 
 .PHONY: build-linux-arm64
@@ -98,12 +98,12 @@ else
 endif
 ifeq ($(FIPS_ENABLED),true)
 	@echo Verifying Build Linux amd64 for FIPS
-	$(GO) version -m $(GOBIN)/mattermost | grep -q "GOEXPERIMENT=systemcrypto" || (echo "ERROR: FIPS mattermost binary missing GOEXPERIMENT=systemcrypto" && exit 1)
-	$(GO) version -m $(GOBIN)/mattermost | grep "\-tags" | grep -q "requirefips" || (echo "ERROR: FIPS mattermost binary missing -tags=requirefips" && exit 1)
-	$(GO) tool nm $(GOBIN)/mattermost | grep -qE "func_go_openssl_OpenSSL_version|_mkcgo_OpenSSL_version" || (echo "ERROR: FIPS mattermost binary missing OpenSSL integration" && exit 1)
-	$(GO) version -m $(GOBIN)/mmctl | grep -q "GOEXPERIMENT=systemcrypto" || (echo "ERROR: FIPS mmctl binary missing GOEXPERIMENT=systemcrypto" && exit 1)
-	$(GO) version -m $(GOBIN)/mmctl | grep "\-tags" | grep -q "requirefips" || (echo "ERROR: FIPS mmctl binary missing -tags=requirefips" && exit 1)
-	$(GO) tool nm $(GOBIN)/mmctl | grep -qE "func_go_openssl_OpenSSL_version|_mkcgo_OpenSSL_version" || (echo "ERROR: FIPS mmctl binary missing OpenSSL integration" && exit 1)
+	$(GO) version -m $(GOBIN)/$(AM_BIN_NAME) | grep -q "GOEXPERIMENT=systemcrypto" || (echo "ERROR: FIPS $(AM_BIN_NAME) binary missing GOEXPERIMENT=systemcrypto" && exit 1)
+	$(GO) version -m $(GOBIN)/$(AM_BIN_NAME) | grep "\-tags" | grep -q "requirefips" || (echo "ERROR: FIPS $(AM_BIN_NAME) binary missing -tags=requirefips" && exit 1)
+	$(GO) tool nm $(GOBIN)/$(AM_BIN_NAME) | grep -qE "func_go_openssl_OpenSSL_version|_mkcgo_OpenSSL_version" || (echo "ERROR: FIPS $(AM_BIN_NAME) binary missing OpenSSL integration" && exit 1)
+	$(GO) version -m $(GOBIN)/$(AMCTL_BIN_NAME) | grep -q "GOEXPERIMENT=systemcrypto" || (echo "ERROR: FIPS $(AMCTL_BIN_NAME) binary missing GOEXPERIMENT=systemcrypto" && exit 1)
+	$(GO) version -m $(GOBIN)/$(AMCTL_BIN_NAME) | grep "\-tags" | grep -q "requirefips" || (echo "ERROR: FIPS $(AMCTL_BIN_NAME) binary missing -tags=requirefips" && exit 1)
+	$(GO) tool nm $(GOBIN)/$(AMCTL_BIN_NAME) | grep -qE "func_go_openssl_OpenSSL_version|_mkcgo_OpenSSL_version" || (echo "ERROR: FIPS $(AMCTL_BIN_NAME) binary missing OpenSSL integration" && exit 1)
 endif
 ifeq ($(FIPS_ENABLED),true)
 	@echo Skipping Build Linux arm64 for FIPS
@@ -238,9 +238,9 @@ package-general:
 
 	@# Copy binaries
 ifeq ($(BUILDER_GOOS_GOARCH),"$(CURRENT_PACKAGE_ARCH)")
-	cp $(GOBIN)/$(MM_BIN_NAME) $(GOBIN)/$(MMCTL_BIN_NAME) $(DIST_PATH_GENERIC)/bin # from native bin dir, not cross-compiled
+	cp $(GOBIN)/$(AM_BIN_NAME) $(GOBIN)/$(AMCTL_BIN_NAME) $(DIST_PATH_GENERIC)/bin # from native bin dir, not cross-compiled
 else
-	cp $(GOBIN)/$(CURRENT_PACKAGE_ARCH)/$(MM_BIN_NAME) $(GOBIN)/$(CURRENT_PACKAGE_ARCH)/$(MMCTL_BIN_NAME) $(DIST_PATH_GENERIC)/bin # from cross-compiled bin dir
+	cp $(GOBIN)/$(CURRENT_PACKAGE_ARCH)/$(AM_BIN_NAME) $(GOBIN)/$(CURRENT_PACKAGE_ARCH)/$(AMCTL_BIN_NAME) $(DIST_PATH_GENERIC)/bin # from cross-compiled bin dir
 endif
 
 .PHONY: package-plugins
@@ -262,7 +262,7 @@ package-plugins: fetch-prepackaged-plugins
 
 .PHONY: package-osx-amd64
 package-osx-amd64: package-prep
-	DIST_PATH_GENERIC=$(DIST_PATH_OSX_AMD64) CURRENT_PACKAGE_ARCH=darwin_amd64 MM_BIN_NAME=mattermost MMCTL_BIN_NAME=mmctl $(MAKE) package-general
+	DIST_PATH_GENERIC=$(DIST_PATH_OSX_AMD64) CURRENT_PACKAGE_ARCH=darwin_amd64 $(MAKE) package-general
 	@# Package
 	tar -C $(DIST_PATH_OSX_AMD64)/.. -czf $(DIST_PATH)-$(BUILD_TYPE_NAME)-darwin-amd64.tar.gz mattermost ../mattermost
 	@# Cleanup
@@ -270,7 +270,7 @@ package-osx-amd64: package-prep
 
 .PHONY: package-osx-arm64
 package-osx-arm64: package-prep
-	DIST_PATH_GENERIC=$(DIST_PATH_OSX_ARM64) CURRENT_PACKAGE_ARCH=darwin_arm64 MM_BIN_NAME=mattermost MMCTL_BIN_NAME=mmctl $(MAKE) package-general
+	DIST_PATH_GENERIC=$(DIST_PATH_OSX_ARM64) CURRENT_PACKAGE_ARCH=darwin_arm64 $(MAKE) package-general
 	@# Package
 	tar -C $(DIST_PATH_OSX_ARM64)/.. -czf $(DIST_PATH)-$(BUILD_TYPE_NAME)-darwin-arm64.tar.gz mattermost ../mattermost
 	@# Cleanup
@@ -281,7 +281,7 @@ package-osx: package-osx-amd64 package-osx-arm64
 
 .PHONY: package-freebsd-amd64
 package-freebsd-amd64: package-prep
-	DIST_PATH_GENERIC=$(DIST_PATH_FREEBSD_AMD64) CURRENT_PACKAGE_ARCH=freebsd_amd64 MM_BIN_NAME=mattermost MMCTL_BIN_NAME=mmctl $(MAKE) package-general
+	DIST_PATH_GENERIC=$(DIST_PATH_FREEBSD_AMD64) CURRENT_PACKAGE_ARCH=freebsd_amd64 $(MAKE) package-general
 	@# Package
 	tar -C $(DIST_PATH_FREEBSD_AMD64)/.. -czf $(DIST_PATH)-$(BUILD_TYPE_NAME)-freebsd-amd64.tar.gz mattermost ../mattermost
 	@# Cleanup
@@ -289,7 +289,7 @@ package-freebsd-amd64: package-prep
 
 .PHONY: package-freebsd-arm64
 package-freebsd-arm64: package-prep
-	DIST_PATH_GENERIC=$(DIST_PATH_FREEBSD_ARM64) CURRENT_PACKAGE_ARCH=freebsd_arm64 MM_BIN_NAME=mattermost MMCTL_BIN_NAME=mmctl $(MAKE) package-general
+	DIST_PATH_GENERIC=$(DIST_PATH_FREEBSD_ARM64) CURRENT_PACKAGE_ARCH=freebsd_arm64 $(MAKE) package-general
 	@# Package
 	tar -C $(DIST_PATH_FREEBSD_ARM64)/.. -czf $(DIST_PATH)-$(BUILD_TYPE_NAME)-freebsd-arm64.tar.gz mattermost ../mattermost
 	@# Cleanup
@@ -301,7 +301,7 @@ package-freebsd: package-freebsd-amd64 package-freebsd-arm64
 .PHONY: package-linux-amd64
 package-linux-amd64: package-prep
 	DIST_PATH_GENERIC=$(DIST_PATH_LIN_AMD64) PLUGIN_ARCH=linux-amd64 $(MAKE) package-plugins
-	DIST_PATH_GENERIC=$(DIST_PATH_LIN_AMD64) CURRENT_PACKAGE_ARCH=linux_amd64 MM_BIN_NAME=mattermost MMCTL_BIN_NAME=mmctl $(MAKE) package-general
+	DIST_PATH_GENERIC=$(DIST_PATH_LIN_AMD64) CURRENT_PACKAGE_ARCH=linux_amd64 $(MAKE) package-general
 	@# Package
 	tar -C $(DIST_PATH_LIN_AMD64)/.. -czf $(DIST_PATH)-$(BUILD_TYPE_NAME)-linux-amd64.tar.gz mattermost ../mattermost
 	@# Cleanup
@@ -312,7 +312,7 @@ package-linux-arm64: package-prep
 ifeq ($(FIPS_ENABLED),true)
 	@echo Skipping package linux arm64 for FIPS
 else
-	DIST_PATH_GENERIC=$(DIST_PATH_LIN_ARM64) CURRENT_PACKAGE_ARCH=linux_arm64 MM_BIN_NAME=mattermost MMCTL_BIN_NAME=mmctl $(MAKE) package-general
+	DIST_PATH_GENERIC=$(DIST_PATH_LIN_ARM64) CURRENT_PACKAGE_ARCH=linux_arm64 $(MAKE) package-general
 	@# Package
 	tar -C $(DIST_PATH_LIN_ARM64)/.. -czf $(DIST_PATH)-$(BUILD_TYPE_NAME)-linux-arm64.tar.gz mattermost ../mattermost
 	@# Cleanup
@@ -324,7 +324,7 @@ package-linux: package-linux-amd64 package-linux-arm64
 
 .PHONY: package-windows
 package-windows: package-prep
-	DIST_PATH_GENERIC=$(DIST_PATH_WIN) CURRENT_PACKAGE_ARCH=windows_amd64 MM_BIN_NAME=mattermost.exe MMCTL_BIN_NAME=mmctl.exe $(MAKE) package-general
+	DIST_PATH_GENERIC=$(DIST_PATH_WIN) CURRENT_PACKAGE_ARCH=windows_amd64 AM_BIN_NAME=$(AM_BIN_NAME).exe AMCTL_BIN_NAME=$(AMCTL_BIN_NAME).exe $(MAKE) package-general
 	@# Package
 	cd $(DIST_PATH_WIN)/.. && zip -9 -r -q -l ../mattermost-$(BUILD_TYPE_NAME)-windows-amd64.zip mattermost ../mattermost && cd ../..
 	@# Cleanup
