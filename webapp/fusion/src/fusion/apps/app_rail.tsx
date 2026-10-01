@@ -20,12 +20,15 @@ import {am} from 'fusion/utils/class_names';
 import type {GlobalState} from 'types/store';
 import type {AppBarAction, ChannelHeaderButtonAction} from 'types/store/plugins';
 
+import {getKnownApp} from './known_apps';
+
 function AppIcon({component}: {component: AppBarAction | ChannelHeaderButtonAction}) {
     const channel = useSelector(getCurrentChannel);
     const member = useSelector(getMyCurrentChannelMembership);
     const active = useSelector(getActiveRhsComponent);
     const manifestName = useSelector((state: GlobalState) => state.plugins.plugins[component.pluginId]?.name);
     const [failed, setFailed] = useState(false);
+    const known = getKnownApp(component.pluginId);
     const iconUrl = 'iconUrl' in component ? component.iconUrl : undefined;
     const icon = 'icon' in component ? component.icon : undefined;
     const rhsComponentId = 'rhsComponentId' in component ? component.rhsComponentId : undefined;
@@ -35,9 +38,24 @@ function AppIcon({component}: {component: AppBarAction | ChannelHeaderButtonActi
     const label = (text as string | undefined) || manifestName || component.pluginId;
     const on = rhsComponentId ? active?.id === rhsComponentId : active?.pluginId === component.pluginId;
 
+    // The apps the mockup knows are drawn with its icons and colours.
+    let glyph: React.ReactNode = icon || <Icon name='plug'/>;
+    if (known) {
+        glyph = <Icon name={known.icon}/>;
+    } else if (iconUrl && !failed) {
+        glyph = (
+            <img
+                className={am('app-img')}
+                src={iconUrl}
+                alt=''
+                onError={() => setFailed(true)}
+            />
+        );
+    }
+
     return (
         <button
-            className={am('app-ic', {on})}
+            className={am('app-ic', known?.tone, {on})}
             title={label}
             aria-label={label}
             aria-pressed={on}
@@ -49,14 +67,7 @@ function AppIcon({component}: {component: AppBarAction | ChannelHeaderButtonActi
                 }
             }}
         >
-            {iconUrl && !failed ? (
-                <img
-                    className={am('app-img')}
-                    src={iconUrl}
-                    alt=''
-                    onError={() => setFailed(true)}
-                />
-            ) : (icon || <Icon name='plug'/>)}
+            {glyph}
         </button>
     );
 }
