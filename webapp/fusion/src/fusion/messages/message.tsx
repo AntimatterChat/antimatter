@@ -22,7 +22,7 @@ import {isEmbedVisible} from 'selectors/posts';
 import FileAttachmentListContainer from 'components/file_attachment_list';
 import MessageWithAdditionalContent from 'components/message_with_additional_content';
 
-import CallCard, {isCallPost} from 'fusion/calls/call_card';
+import CallCard, {useCallCard} from 'fusion/calls/call_card';
 import Avatar from 'fusion/components/avatar';
 import Icon from 'fusion/components/icon';
 import type {IconName} from 'fusion/components/icon';
@@ -97,6 +97,7 @@ export default function Message({postId, previousPostId, inThread = false, highl
     const moreRef = useRef<HTMLButtonElement>(null);
     const reactRef = useRef<HTMLButtonElement>(null);
     const [popover, setPopover] = useState<'user' | 'menu' | 'react' | null>(null);
+    const callCard = useCallCard(post);
 
     if (!post) {
         return null;
@@ -186,7 +187,7 @@ export default function Message({postId, previousPostId, inThread = false, highl
 
     const body = (
         <>
-            {isCallPost(post) ? <CallCard post={post}/> : (
+            {callCard ? <CallCard post={post}/> : (
                 <div className={am('body')}>
                     <MessageWithAdditionalContent
                         post={post}

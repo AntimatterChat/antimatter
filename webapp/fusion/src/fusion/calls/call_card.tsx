@@ -4,6 +4,7 @@
 import React, {useEffect, useState} from 'react';
 import {useIntl} from 'react-intl';
 import type {IntlShape} from 'react-intl';
+import {useSelector} from 'react-redux';
 
 import type {Post} from '@mattermost/types/posts';
 
@@ -12,14 +13,24 @@ import Icon from 'fusion/components/icon';
 import {useDisplayName, useUser} from 'fusion/hooks/users';
 import {am} from 'fusion/utils/class_names';
 
+import type {GlobalState} from 'types/store';
+
 import {useCallActions, useChannelLabel} from './actions';
-import {useCall, useLocalCall, useParticipants} from './hooks';
+import {useCall, useCallsAvailable, useLocalCall, useParticipants} from './hooks';
 
 // The Calls plugin's post for a call (start, end, and in direct messages the ringing outcome).
 const CALL_POST_TYPE = 'custom_calls';
 
-export function isCallPost(post: Post): boolean {
+function isCallPost(post: Post): boolean {
     return (post.type as string) === CALL_POST_TYPE;
+}
+
+// useCallCard tells whether a post is drawn as the call card: a Calls post, unless a Calls build without the API
+// still draws its own.
+export function useCallCard(post?: Post): boolean {
+    const available = useCallsAvailable();
+    const pluginCard = useSelector((state: GlobalState) => Boolean(state.plugins.postTypes[CALL_POST_TYPE]));
+    return Boolean(post && isCallPost(post) && (available || !pluginCard));
 }
 
 const MINUTE = 60 * 1000;
