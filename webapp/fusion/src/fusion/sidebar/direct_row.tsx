@@ -88,7 +88,14 @@ export default function DirectRow({channel, dock, meta}: Props) {
             to={channelPath(team.name, channel)}
             className={am('dm', {active, unread: unread.showUnread})}
             aria-current={active ? 'page' : undefined}
-            onClick={() => layout.setNavOpen(false)}
+            onClick={() => {
+                layout.setNavOpen(false);
+
+                // Opened from the home list, it joins the dock and the team you were in comes back.
+                if (!dock) {
+                    layout.setHome(false);
+                }
+            }}
         >
             <DirectFace
                 channel={channel}

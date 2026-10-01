@@ -19,6 +19,7 @@ import {getSortedMyTeams, getUnreadDirectChannels} from 'fusion/selectors';
 import {useGlobalSearch} from 'fusion/shell/global_search_context';
 import {useLayout} from 'fusion/shell/layout_context';
 import {DirectFace} from 'fusion/sidebar/direct_row';
+import {DM_FIND_ID} from 'fusion/sidebar/home_sidebar';
 import {am} from 'fusion/utils/class_names';
 import {channelPath} from 'fusion/utils/paths';
 import {getHistory} from 'utils/browser_history';
@@ -87,7 +88,12 @@ export default function ServerRail() {
                 className={am('srv', 'home', {active: layout.home, unread: dmBadge > 0 && !layout.home})}
                 title={homeLabel}
                 aria-label={homeLabel}
-                onClick={() => layout.setHome(true)}
+                onClick={() => {
+                    // Home swaps the sidebar to the conversations, ready to find one; the open chat stays.
+                    layout.setHome(true);
+                    layout.setNavOpen(true);
+                    requestAnimationFrame(() => document.getElementById(DM_FIND_ID)?.focus());
+                }}
             >
                 <svg
                     className={am('mark')}
@@ -111,7 +117,8 @@ export default function ServerRail() {
                             title={channel.display_name}
                             aria-label={channel.display_name}
                             onClick={() => {
-                                layout.setHome(true);
+                                // The conversation opens beside the team's sidebar, as in the mockup.
+                                layout.setNavOpen(false);
                                 if (currentTeam) {
                                     getHistory().push(channelPath(currentTeam.name, channel));
                                 }
