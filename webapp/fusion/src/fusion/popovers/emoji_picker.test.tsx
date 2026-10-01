@@ -13,6 +13,9 @@ import type {EmojiPickerTabProps, EmojiPickerTabRegistration} from 'types/store/
 
 import EmojiPicker from './emoji_picker';
 
+// Permissions are the gate's business: here, the user may create emoji.
+jest.mock('components/permissions_gates/any_team_permission_gate', () => ({children}: {children: React.ReactNode}) => children);
+
 function makeTab(partial: Partial<EmojiPickerTabRegistration> = {}): EmojiPickerTabRegistration {
     return {
         id: 'gifs',
@@ -138,5 +141,39 @@ describe('fusion/popovers/EmojiPicker', () => {
         expect(screen.getAllByRole('tab').map((t) => t.textContent)).toEqual(['Stickers', 'Emoji']);
         expect(screen.getByRole('tab', {name: 'Emoji'})).toHaveAttribute('aria-selected', 'true');
         expect(screen.getByRole('textbox', {name: 'Search emoji'})).toBeInTheDocument();
+    });
+
+    test('links to adding a custom emoji when custom emoji are enabled', async () => {
+        const onClose = jest.fn();
+        const state = {
+            entities: {
+                general: {config: {EnableCustomEmoji: 'true'}},
+                teams: {currentTeamId: 'team1', teams: {team1: {id: 'team1', name: 'lab'}}},
+            },
+        } as DeepPartial<GlobalState>;
+        renderWithContext(
+            <EmojiPicker
+                anchor={null}
+                onPick={jest.fn()}
+                onClose={onClose}
+            />,
+            state,
+        );
+        const link = screen.getByRole('link', {name: 'Add custom emoji'});
+        expect(link).toHaveAttribute('href', '/lab/emoji/add');
+        await userEvent.click(link);
+        expect(onClose).toHaveBeenCalled();
+    });
+
+    test('has no custom emoji link when custom emoji are off', () => {
+        renderWithContext(
+            <EmojiPicker
+                anchor={null}
+                onPick={jest.fn()}
+                onClose={jest.fn()}
+            />,
+            {entities: {teams: {currentTeamId: 'team1', teams: {team1: {id: 'team1', name: 'lab'}}}}} as DeepPartial<GlobalState>,
+        );
+        expect(screen.queryByRole('link', {name: 'Add custom emoji'})).not.toBeInTheDocument();
     });
 });

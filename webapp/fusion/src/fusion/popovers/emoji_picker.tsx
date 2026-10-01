@@ -4,9 +4,13 @@
 import React, {useEffect, useMemo, useRef, useState} from 'react';
 import {useIntl} from 'react-intl';
 import {shallowEqual, useSelector} from 'react-redux';
+import {Link} from 'react-router-dom';
 
 import type {Emoji} from '@mattermost/types/emojis';
 
+import Permissions from 'mattermost-redux/constants/permissions';
+import {getCustomEmojisEnabled} from 'mattermost-redux/selectors/entities/emojis';
+import {getCurrentTeam} from 'mattermost-redux/selectors/entities/teams';
 import {isSystemEmoji} from 'mattermost-redux/utils/emoji_utils';
 
 import {getEmojiPickerTabs} from 'selectors/emoji_picker_tabs';
@@ -14,6 +18,7 @@ import {getEmojiMap, getRecentEmojisNames, getUserSkinTone} from 'selectors/emoj
 
 import RenderEmoji from 'components/emoji/render_emoji';
 import {getFilteredEmojis, getUpdatedCategoriesAndAllEmojis} from 'components/emoji_picker/utils';
+import AnyTeamPermissionGate from 'components/permissions_gates/any_team_permission_gate';
 
 import Icon, {isIconName} from 'fusion/components/icon';
 import {Popover} from 'fusion/components/layer';
@@ -100,12 +105,15 @@ type EmojiTabProps = {
     query: string;
     onQuery: (query: string) => void;
     onPick: (emoji: Emoji) => void;
+    onClose: () => void;
     keepOpen: boolean;
 };
 
 // EmojiTab is the mockup's emoji picker: search, category rail, grid and a footer naming the emoji under the pointer.
-function EmojiTab({query, onQuery, onPick: pick, keepOpen}: EmojiTabProps) {
+function EmojiTab({query, onQuery, onPick: pick, onClose, keepOpen}: EmojiTabProps) {
     const {formatMessage} = useIntl();
+    const customEmojisEnabled = useSelector(getCustomEmojisEnabled);
+    const teamName = useSelector((state: GlobalState) => getCurrentTeam(state)?.name ?? '');
     const emojiMap = useSelector(getEmojiMap);
     const recent = useSelector(getRecentEmojisNames);
     const skinTone = useSelector(getUserSkinTone);
@@ -213,6 +221,17 @@ function EmojiTab({query, onQuery, onPick: pick, keepOpen}: EmojiTabProps) {
                 </span>
                 <span>{keepOpen ? formatMessage({id: 'fusion.picker.insert', defaultMessage: 'Insert'}) : formatMessage({id: 'fusion.picker.reactWith', defaultMessage: 'React with'})}</span>
                 <code>{`:${hovered ? nameOf(hovered) : '+1'}:`}</code>
+                {customEmojisEnabled && teamName && (
+                    <AnyTeamPermissionGate permissions={[Permissions.CREATE_EMOJIS]}>
+                        <Link
+                            className={am('picker-add')}
+                            to={`/${teamName}/emoji/add`}
+                            onClick={onClose}
+                        >
+                            {formatMessage({id: 'fusion.picker.addCustomEmoji', defaultMessage: 'Add custom emoji'})}
+                        </Link>
+                    </AnyTeamPermissionGate>
+                )}
             </div>
         </>
     );
@@ -304,6 +323,7 @@ export default function EmojiPicker({anchor, onPick, onClose, keepOpen = false, 
                     query={query}
                     onQuery={setQuery}
                     onPick={pick}
+                    onClose={onClose}
                     keepOpen={keepOpen}
                 />
             )}
