@@ -17,7 +17,6 @@ import {useDialogs} from 'fusion/shell/dialogs_context';
 import {
     openBrowseChannels,
     openClassicUserSettings,
-    openCreateCategory,
     openInvitePeople,
     openLeaveTeam,
     openTeamMembers,
@@ -87,7 +86,7 @@ export default function ServerMenu({anchor, width, onClose}: Props) {
             <MenuItem
                 icon='folder'
                 label={formatMessage({id: 'fusion.serverMenu.createCategory', defaultMessage: 'Create category'})}
-                onClick={run(() => dispatch(openCreateCategory()))}
+                onClick={run(() => dialogs.createCategory())}
             />
             <MenuItem
                 icon='compass'
