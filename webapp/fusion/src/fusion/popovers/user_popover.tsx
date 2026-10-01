@@ -24,6 +24,8 @@ import {getHistory} from 'utils/browser_history';
 
 import type {GlobalState} from 'types/store';
 
+import RoleChips from './role_chips';
+
 const STATUS_LABELS: Record<string, {id: string; defaultMessage: string}> = {
     online: {id: 'fusion.status.online', defaultMessage: 'Online'},
     away: {id: 'fusion.status.away', defaultMessage: 'Away'},
@@ -136,6 +138,7 @@ export default function UserPopover({userId, anchor, onClose}: Props) {
                         {customStatus.text}
                     </p>
                 )}
+                <RoleChips userId={userId}/>
                 <div style={{marginTop: 12}}>
                     {isMe && (
                         <div style={{display: 'grid', gap: 8}}>
