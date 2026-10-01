@@ -110,16 +110,18 @@ BUILDER_GOOS_GOARCH="$(shell $(GO) env GOOS)_$(shell $(GO) env GOARCH)"
 
 PLATFORM_FILES="./cmd/antimatter"
 
-# Output paths
+# Output paths. Release archives are named $(DIST_NAME)-<edition>-<os>-<arch> and unpack to a
+# $(DIST_NAME)/ directory.
 DIST_ROOT=dist
-DIST_PATH=$(DIST_ROOT)/mattermost
-DIST_PATH_LIN_AMD64=$(DIST_ROOT)/linux_amd64/mattermost
-DIST_PATH_LIN_ARM64=$(DIST_ROOT)/linux_arm64/mattermost
-DIST_PATH_OSX_AMD64=$(DIST_ROOT)/darwin_amd64/mattermost
-DIST_PATH_OSX_ARM64=$(DIST_ROOT)/darwin_arm64/mattermost
-DIST_PATH_FREEBSD_AMD64=$(DIST_ROOT)/freebsd_amd64/mattermost
-DIST_PATH_FREEBSD_ARM64=$(DIST_ROOT)/freebsd_arm64/mattermost
-DIST_PATH_WIN=$(DIST_ROOT)/windows/mattermost
+DIST_NAME=antimatter
+DIST_PATH=$(DIST_ROOT)/$(DIST_NAME)
+DIST_PATH_LIN_AMD64=$(DIST_ROOT)/linux_amd64/$(DIST_NAME)
+DIST_PATH_LIN_ARM64=$(DIST_ROOT)/linux_arm64/$(DIST_NAME)
+DIST_PATH_OSX_AMD64=$(DIST_ROOT)/darwin_amd64/$(DIST_NAME)
+DIST_PATH_OSX_ARM64=$(DIST_ROOT)/darwin_arm64/$(DIST_NAME)
+DIST_PATH_FREEBSD_AMD64=$(DIST_ROOT)/freebsd_amd64/$(DIST_NAME)
+DIST_PATH_FREEBSD_ARM64=$(DIST_ROOT)/freebsd_arm64/$(DIST_NAME)
+DIST_PATH_WIN=$(DIST_ROOT)/windows/$(DIST_NAME)
 
 # Packages lists
 TE_PACKAGES=$(shell $(GO) list ./public/...) $(shell $(GO) list ./... | grep -vE 'server/v8/cmd/(mmctl|amctl)')
