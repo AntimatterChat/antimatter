@@ -11,6 +11,7 @@ import SidebarChannel from 'components/sidebar/sidebar_channel/sidebar_channel';
 import {renderWithContext, screen} from 'tests/react_testing_utils';
 
 import type {GlobalState} from 'types/store';
+import type {SidebarChannelFooterComponent} from 'types/store/plugins';
 
 jest.mock('components/tours/onboarding_tour', () => ({
     ChannelsAndDirectMessagesTour: () => null,
@@ -151,7 +152,7 @@ describe('components/sidebar/sidebar_channel', () => {
     });
 
     describe('plugin footer', () => {
-        const Footer = ({channel}: {channel: {id: string}}) => <span>{`footer of ${channel.id}`}</span>;
+        const Footer: SidebarChannelFooterComponent['component'] = ({channel}) => <span>{`footer of ${channel.id}`}</span>;
         const pluginState: DeepPartial<GlobalState> = {
             plugins: {
                 components: {
