@@ -320,7 +320,7 @@ func (ch *Channels) InstallMarketplacePlugin(request *model.InstallMarketplacePl
 		logger.Debug("Found matching pre-packaged plugin", mlog.String("bundle_path", prepackagedPlugin.Path), mlog.String("signature_path", prepackagedPlugin.SignaturePath))
 	}
 
-	if *ch.cfgSvc.Config().PluginSettings.EnableRemoteMarketplace {
+	if *ch.cfgSvc.Config().PluginSettings.EnableRemoteMarketplace && ch.marketplaceReplaceablePlugin(request.Id, ch.isPluginInstalled(request.Id)) {
 		var plugin *model.BaseMarketplacePlugin
 		plugin, appErr = ch.getRemoteMarketplacePlugin(request.Id, request.Version)
 		// The plugin might only be prepackaged and not on the Marketplace.

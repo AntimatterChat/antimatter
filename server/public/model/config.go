@@ -3642,6 +3642,9 @@ type PluginSettings struct {
 	RequirePluginSignature      *bool                     `access:"plugins,write_restrictable,cloud_restrictable"`
 	MarketplaceURL              *string                   `access:"plugins,write_restrictable,cloud_restrictable"`
 	SignaturePublicKeyFiles     []string                  `access:"plugins,write_restrictable,cloud_restrictable"`
+	// AllowMarketplaceToReplaceAntimatterPlugins lists and installs the Marketplace's builds of
+	// plugins Antimatter ships its own builds of, which would replace Antimatter's.
+	AllowMarketplaceToReplaceAntimatterPlugins *bool `access:"plugins,write_restrictable,cloud_restrictable"`
 }
 
 func (s *PluginSettings) SetDefaults(ls LogSettings) {
@@ -3720,6 +3723,10 @@ func (s *PluginSettings) SetDefaults(ls LogSettings) {
 
 	if s.RequirePluginSignature == nil {
 		s.RequirePluginSignature = new(false)
+	}
+
+	if s.AllowMarketplaceToReplaceAntimatterPlugins == nil {
+		s.AllowMarketplaceToReplaceAntimatterPlugins = new(false)
 	}
 
 	if s.SignaturePublicKeyFiles == nil {

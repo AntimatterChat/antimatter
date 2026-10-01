@@ -1004,6 +1004,7 @@ export type PluginSettings = {
     RequirePluginSignature: boolean;
     MarketplaceURL: string;
     SignaturePublicKeyFiles: string[];
+    AllowMarketplaceToReplaceAntimatterPlugins: boolean;
     ChimeraOAuthProxyURL: string;
 };
 
