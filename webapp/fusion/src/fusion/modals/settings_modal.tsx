@@ -26,6 +26,8 @@ import {CURRENT_WEB_UI, WebUIs, switchWebUI} from 'utils/web_ui';
 
 import type {GlobalState} from 'types/store';
 
+import CustomThemeEditor, {useStartCustomTheme} from './custom_theme_editor';
+
 export type SettingsTab = 'account' | 'notifications' | 'appearance' | 'interface';
 
 const TABS: Array<[SettingsTab, {id: string; defaultMessage: string}]> = [
@@ -180,11 +182,12 @@ function AppearancePane() {
     const theme = useSelector(getTheme);
     const militaryTime = useSelector((state: GlobalState) => getBool(state, Preferences.CATEGORY_DISPLAY_SETTINGS, Preferences.USE_MILITARY_TIME, false));
     const custom = !THEME_CARDS.some((c) => Preferences.THEMES[c.key].type === theme.type);
+    const startCustom = useStartCustomTheme();
 
     return (
         <>
             <h2>{formatMessage({id: 'fusion.settings.appearance', defaultMessage: 'Appearance'})}</h2>
-            <p className={am('lead')}>{formatMessage({id: 'fusion.settings.appearanceLead', defaultMessage: 'Pick a theme. It follows you on every device.'})}</p>
+            <p className={am('lead')}>{formatMessage({id: 'fusion.settings.appearanceLead', defaultMessage: 'Pick a theme or build your own. It follows you on every device.'})}</p>
             <div
                 className={am('theme-grid')}
                 role='group'
@@ -225,7 +228,7 @@ function AppearancePane() {
                     type='button'
                     className={am('theme-card', {on: custom})}
                     aria-pressed={custom}
-                    onClick={() => dispatch(openClassicUserSettings('display'))}
+                    onClick={() => !custom && startCustom()}
                 >
                     <span
                         className={am('sw')}
@@ -235,9 +238,10 @@ function AppearancePane() {
                         <i style={{background: theme.sidebarBg}}/>
                         <i style={{background: theme.centerChannelBg}}/>
                     </span>
-                    {formatMessage({id: 'fusion.settings.themeCustom', defaultMessage: 'Custom…'})}
+                    {formatMessage({id: 'fusion.settings.themeCustom', defaultMessage: 'Custom'})}
                 </button>
             </div>
+            {custom && <CustomThemeEditor/>}
             <Toggle
                 title={formatMessage({id: 'fusion.settings.clock', defaultMessage: '24-hour clock'})}
                 desc={formatMessage({id: 'fusion.settings.clockDesc', defaultMessage: 'Show times as 16:00 instead of 4:00 PM.'})}
