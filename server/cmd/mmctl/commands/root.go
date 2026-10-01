@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"net/url"
 	"os"
-	"path/filepath"
 	"runtime/debug"
 	"strings"
 
@@ -23,7 +22,7 @@ func Run(args []string) error {
 	viper.SetEnvKeyReplacer(strings.NewReplacer("-", "_"))
 	viper.AutomaticEnv()
 
-	RootCmd.PersistentFlags().String("config", filepath.Join(xdgConfigHomeVar, configParent, configFileName), "path to the configuration file")
+	RootCmd.PersistentFlags().String("config", defaultConfigFilePath(configParent), "path to the configuration file")
 	_ = viper.BindPFlag("config", RootCmd.PersistentFlags().Lookup("config"))
 	RootCmd.PersistentFlags().Bool("suppress-warnings", false, "disables printing warning messages")
 	_ = viper.BindPFlag("suppress-warnings", RootCmd.PersistentFlags().Lookup("suppress-warnings"))

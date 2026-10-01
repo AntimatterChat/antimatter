@@ -42,6 +42,24 @@ func TestResolveConfigFilePath(t *testing.T) {
 		require.Equal(t, expected, p)
 	})
 
+	t.Run("should fall back to the mmctl config file if only that one exists", func(t *testing.T) {
+		tmp := t.TempDir()
+		testUser.HomeDir = tmp
+		SetUser(testUser)
+		t.Setenv("XDG_CONFIG_HOME", filepath.Join(tmp, ".config"))
+		viper.Set("config", defaultConfigFilePath(configParent))
+
+		legacy := filepath.Join(tmp, ".config", legacyConfigParent, configFileName)
+		require.NoError(t, os.MkdirAll(filepath.Dir(legacy), 0700))
+		require.NoError(t, os.WriteFile(legacy, []byte("{}"), 0600))
+		require.Equal(t, legacy, resolveConfigFilePath())
+
+		current := filepath.Join(tmp, ".config", configParent, configFileName)
+		require.NoError(t, os.MkdirAll(filepath.Dir(current), 0700))
+		require.NoError(t, os.WriteFile(current, []byte("{}"), 0600))
+		require.Equal(t, current, resolveConfigFilePath())
+	})
+
 	t.Run("should return config file location from xdg environment variable", func(t *testing.T) {
 		tmp, err := os.MkdirTemp("", "mmctl-")
 		require.NoError(t, err)

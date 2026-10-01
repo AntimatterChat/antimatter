@@ -19,10 +19,12 @@ const (
 	MethodToken    = "T"
 	MethodMFA      = "M"
 
-	userHomeVar      = "$HOME"
-	configFileName   = "config"
-	configParent     = "mmctl"
-	xdgConfigHomeVar = "$XDG_CONFIG_HOME"
+	userHomeVar    = "$HOME"
+	configFileName = "config"
+	configParent   = "amctl"
+	// legacyConfigParent is where mmctl kept the credentials; amctl keeps using a file there.
+	legacyConfigParent = "mmctl"
+	xdgConfigHomeVar   = "$XDG_CONFIG_HOME"
 )
 
 type Credentials struct {
@@ -55,11 +57,33 @@ func getDefaultConfigHomePath() string {
 	return filepath.Join(currentUser.HomeDir, ".config")
 }
 
-func resolveConfigFilePath() string {
+// defaultConfigFilePath is the default of the --config flag, in the given directory.
+func defaultConfigFilePath(parent string) string {
+	return filepath.Join(xdgConfigHomeVar, parent, configFileName)
+}
+
+func expandConfigFilePath(fpath string) string {
 	// resolve env vars if there are any
-	fpath := strings.Replace(viper.GetString("config"), userHomeVar, currentUser.HomeDir, 1)
+	fpath = strings.Replace(fpath, userHomeVar, currentUser.HomeDir, 1)
 
 	return strings.Replace(fpath, xdgConfigHomeVar, getDefaultConfigHomePath(), 1)
+}
+
+func resolveConfigFilePath() string {
+	configFlag := viper.GetString("config")
+	fpath := expandConfigFilePath(configFlag)
+
+	// With the default location, keep using the credentials file of mmctl if there is no amctl one.
+	if configFlag == defaultConfigFilePath(configParent) {
+		if _, err := os.Stat(fpath); os.IsNotExist(err) {
+			legacyPath := expandConfigFilePath(defaultConfigFilePath(legacyConfigParent))
+			if _, err := os.Stat(legacyPath); err == nil {
+				return legacyPath
+			}
+		}
+	}
+
+	return fpath
 }
 
 func ReadCredentialsList() (*CredentialsList, error) {
