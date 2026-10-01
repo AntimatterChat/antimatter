@@ -30,11 +30,14 @@ import {getHistory} from 'utils/browser_history';
 
 import type {GlobalState} from 'types/store';
 
+import {addRecentSearch, getRecentSearches} from './recent_searches';
+
 type Filter = 'all' | 'messages' | 'channels' | 'people';
 type Result =
     | {kind: 'channel'; channel: Channel} |
     {kind: 'user'; user: UserProfile} |
     {kind: 'message'; post: Post} |
+    {kind: 'recent'; q: string} |
     {kind: 'all'};
 
 function Mark({text, q}: {text: string; q: string}) {
@@ -109,6 +112,7 @@ export default function GlobalSearch() {
         }
         groups.push(['', [{kind: 'all'}]]);
     } else {
+        groups.push([formatMessage({id: 'fusion.gs.recentSearches', defaultMessage: 'Recent searches'}), getRecentSearches().map((recentQ) => ({kind: 'recent', q: recentQ}))]);
         const recent = [...myChannels].sort((a, b) => (memberships[b.id]?.last_viewed_at || 0) - (memberships[a.id]?.last_viewed_at || 0)).slice(0, 8);
         groups.push([formatMessage({id: 'fusion.gs.recent', defaultMessage: 'Recent'}), recent.map((channel) => ({kind: 'channel', channel}))]);
     }
@@ -133,7 +137,9 @@ export default function GlobalSearch() {
                 getHistory().push(permalinkPath(team.name, r.post.id));
             }
         } else {
-            dispatch(updateSearchTerms(q));
+            const terms = r.kind === 'recent' ? r.q : q;
+            addRecentSearch(terms);
+            dispatch(updateSearchTerms(terms));
             dispatch(showSearchResults());
         }
     };
@@ -219,6 +225,18 @@ export default function GlobalSearch() {
                         </span>
                     </span>
                     <span className={am('kind')}>{formatMessage({id: 'fusion.gs.kindMessage', defaultMessage: 'Message'})}</span>
+                </>
+            );
+        }
+        if (r.kind === 'recent') {
+            return (
+                <>
+                    <span className={am('gi')}><Icon name='clock'/></span>
+                    <span style={{minWidth: 0}}>
+                        <b>{r.q}</b>
+                        <span className={am('sub')}>{formatMessage({id: 'fusion.gs.recentSub', defaultMessage: 'Search again in the side panel'})}</span>
+                    </span>
+                    <span className={am('kind')}>{formatMessage({id: 'fusion.gs.kindSearch', defaultMessage: 'Search'})}</span>
                 </>
             );
         }

@@ -17,6 +17,7 @@ import Icon from 'fusion/components/icon';
 import {useUnreadMentions} from 'fusion/hooks/mentions';
 import CollectionsPopover from 'fusion/popovers/collections_popover';
 import StatusPopover from 'fusion/popovers/status_popover';
+import {addRecentSearch, getRecentSearches} from 'fusion/search/recent_searches';
 import {isPhoneLayout, useLayout} from 'fusion/shell/layout_context';
 import ChannelIcon from 'fusion/sidebar/channel_icon';
 import {am} from 'fusion/utils/class_names';
@@ -66,6 +67,7 @@ export default function ChannelHeader({channel}: {channel: Channel}) {
             return;
         }
         const scoped = (/(^|\s)(in|from):/).test(q) ? q : `${scopeOf(channel, teammate?.username)} ${q}`;
+        addRecentSearch(q);
         dispatch(updateSearchTerms(scoped));
         dispatch(showSearchResults());
         setSearchFocused(false);
@@ -136,6 +138,24 @@ export default function ChannelHeader({channel}: {channel: Channel}) {
                             >
                                 <code>{filter}</code>
                                 <span>{formatMessage(hint)}</span>
+                            </button>
+                        ))}
+                        {getRecentSearches().length > 0 && <h4>{formatMessage({id: 'fusion.search.recent', defaultMessage: 'Recent'})}</h4>}
+                        {getRecentSearches().map((recent) => (
+                            <button
+                                key={recent}
+                                type='button'
+                                onMouseDown={(e) => {
+                                    e.preventDefault();
+                                    setQuery(recent);
+                                    inputRef.current?.focus();
+                                }}
+                            >
+                                <Icon
+                                    name='clock'
+                                    size='xs'
+                                />
+                                <span>{recent}</span>
                             </button>
                         ))}
                     </div>
