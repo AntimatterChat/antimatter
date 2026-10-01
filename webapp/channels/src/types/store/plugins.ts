@@ -80,6 +80,7 @@ export type PluginsState = {
         ChannelViewPanel: ChannelViewPanelRegistration[];
         PostHeader: PostHeaderComponent[];
         ComposerPlaceholder: ComposerPlaceholderRegistration[];
+        ComposerMenuItem: ComposerMenuItemRegistration[];
         ProductSwitcherMenuItem: ProductSwitcherMenuItemRegistration[];
         FilesWillUploadHook: FilesWillUploadHook[];
         DesktopNotificationHooks: DesktopNotificationHook[];
@@ -501,6 +502,22 @@ export type PostHeaderComponent = PluginComponent & {
 
 export type ComposerPlaceholderRegistration = PluginComponent & {
     transform: (placeholder: string, channel: Channel, state: GlobalState, intl: IntlShape) => string;
+};
+
+/** Where a message box is: the channel, and the thread for a reply box. */
+export type ComposerMenuItemContext = {
+    channelId: string;
+    rootId?: string;
+};
+
+export type ComposerMenuItemRegistration = PluginComponent & {
+    text: PluggableText;
+    icon: React.ReactNode;
+
+    /** An icon of the Fusion UI's icon set (e.g. 'poll', 'sticker', 'calendar'), used instead of `icon` there. */
+    fusionIcon?: string;
+    action: (ctx: ComposerMenuItemContext) => void;
+    shouldRender: (state: GlobalState, ctx: ComposerMenuItemContext) => boolean;
 };
 
 export type ProductSwitcherMenuItemRegistration = PluginComponent & {

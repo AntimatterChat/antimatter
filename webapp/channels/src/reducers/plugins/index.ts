@@ -231,6 +231,7 @@ const initialComponents: PluginsState['components'] = {
     ChannelViewPanel: [],
     PostHeader: [],
     ComposerPlaceholder: [],
+    ComposerMenuItem: [],
     ProductSwitcherMenuItem: [],
     MessageWillBePosted: [],
     MessageWillBeUpdated: [],
