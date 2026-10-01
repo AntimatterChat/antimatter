@@ -63,7 +63,7 @@ describe('components/AboutBuildModal', () => {
         expect(screen.getByTestId('aboutModalVersionInfo')).toHaveTextContent('Build Number: 123456');
         expect(screen.getByText('Antimatter')).toBeInTheDocument();
         expect(screen.getByText('All your team communication in one place, instantly searchable and accessible anywhere.')).toBeInTheDocument();
-        expect(screen.getByRole('link', {name: 'mattermost.com/community/'})).toHaveAttribute('href', 'https://mattermost.com/community/?utm_source=mattermost&utm_medium=in-product&utm_content=about_build_modal&uid=&sid=&server_version=3.6.0');
+        expect(screen.getByRole('link', {name: 'github.com/AntimatterChat'})).toHaveAttribute('href', 'https://github.com/AntimatterChat');
         expect(screen.getByText('Build Hash: abcdef1234567890', {exact: false})).toBeInTheDocument();
         expect(screen.queryByText('EE Build Hash', {exact: false})).not.toBeInTheDocument();
         expect(screen.queryByText('Licensed to', {exact: false})).not.toBeInTheDocument();
@@ -87,7 +87,7 @@ describe('components/AboutBuildModal', () => {
         expect(screen.getByTestId('aboutModalVersionInfo')).toHaveTextContent('Server Version: dev');
         expect(screen.getByTestId('aboutModalVersionInfo')).toHaveTextContent('Database Schema Version: 77');
         expect(screen.getByTestId('aboutModalVersionInfo')).toHaveTextContent('Build Number: n/a');
-        expect(screen.getByRole('link', {name: 'mattermost.com/community/'})).toHaveAttribute('href', 'https://mattermost.com/community/?utm_source=mattermost&utm_medium=in-product&utm_content=about_build_modal&uid=&sid=&server_version=dev');
+        expect(screen.getByRole('link', {name: 'github.com/AntimatterChat'})).toHaveAttribute('href', 'https://github.com/AntimatterChat');
         expect(screen.queryByText('Hostname: server did not provide hostname', {exact: false})).toBeInTheDocument();
 
         expect(screen.getByRole('link', {name: 'server'})).toHaveAttribute('href', 'https://github.com/mattermost/mattermost-server/blob/master/NOTICE.txt');

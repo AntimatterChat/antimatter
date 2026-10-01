@@ -52,8 +52,8 @@
     "description": "Field label in the About Mattermost dialog; the server version follows the colon."
   },
   "about.teamEditionLearn": {
-    "defaultMessage": "Join the Mattermost community at ",
-    "description": "Sentence in the About Mattermost dialog for Team Edition; a community URL is appended directly after it, so the trailing space matters."
+    "defaultMessage": "Join the Antimatter community at ",
+    "description": "Sentence in the About Antimatter dialog; a community URL is appended directly after it, so the trailing space matters."
   },
   "about.teamEditionSt": {
     "defaultMessage": "All your team communication in one place, instantly searchable and accessible anywhere.",
