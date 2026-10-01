@@ -543,8 +543,6 @@ func TestScheduledPostBurnOnReadRecurrence(t *testing.T) {
 		cfg.FeatureFlags.RecurringScheduledPosts = true
 	}).InitBasic(t)
 
-	th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuProfessional))
-
 	newScheduledPost := func(repeatType string) *model.ScheduledPost {
 		scheduledPost := &model.ScheduledPost{
 			Draft: model.Draft{

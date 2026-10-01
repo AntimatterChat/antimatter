@@ -3444,9 +3444,6 @@ func TestGetChannelAccessControlAttributes(t *testing.T) {
 func TestCreateAccessControlPolicyBurnOnRead(t *testing.T) {
 	th := SetupConfig(t, maskingOffTestConfig).InitBasic(t)
 
-	ok := th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterpriseAdvanced))
-	require.True(t, ok, "SetLicense should return true")
-
 	updateTestFeatureFlags(t, th, func(cfg *model.Config) {
 		restoreABACFeatureFlagDefaults(cfg)
 		cfg.FeatureFlags.PermissionPolicies = false
