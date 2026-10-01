@@ -48,11 +48,14 @@ type Props = {
     channelId: string;
     focusedPostId?: string;
     scrollRef: React.RefObject<HTMLDivElement | null>;
+
+    // What an empty conversation says.
+    emptyText?: string;
 };
 
 // MessageList renders a channel's messages top to bottom, loading older ones while scrolling up, like the classic
 // post list but without virtualization: the mockup's plain, selectable list.
-export default function MessageList({channelId, focusedPostId, scrollRef}: Props) {
+export default function MessageList({channelId, focusedPostId, scrollRef, emptyText}: Props) {
     const {formatMessage} = useIntl();
     const dispatch = useDispatch();
     const dayLabel = useDayLabel();
@@ -169,7 +172,7 @@ export default function MessageList({channelId, focusedPostId, scrollRef}: Props
         return <div className={am('empty')}>{formatMessage({id: 'fusion.messages.loading', defaultMessage: 'Loading messages…'})}</div>;
     }
     if (!realPostIds.length && chunk?.oldest) {
-        return <div className={am('empty')}>{formatMessage({id: 'fusion.messages.empty', defaultMessage: 'No messages yet — say hello.'})}</div>;
+        return <div className={am('empty')}>{emptyText || formatMessage({id: 'fusion.messages.empty', defaultMessage: 'No messages yet — say hello.'})}</div>;
     }
 
     let previousPostId: string | undefined;

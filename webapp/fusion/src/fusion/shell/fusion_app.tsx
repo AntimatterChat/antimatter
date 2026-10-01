@@ -12,6 +12,7 @@ import {getIsRhsOpen} from 'selectors/rhs';
 
 import AppRail from 'fusion/apps/app_rail';
 import CallWindow from 'fusion/calls/call_window';
+import {useOpenVoiceChat} from 'fusion/calls/voice_chat';
 import {IconSprite} from 'fusion/components/icon';
 import {LAYER_ID} from 'fusion/components/layer';
 import Toasts from 'fusion/components/toast';
@@ -47,6 +48,7 @@ function Frame({children}: Props) {
     const dispatch = useDispatch();
     const settings = useSettings();
     const teamId = useSelector(getCurrentTeamId);
+    const voiceChat = useOpenVoiceChat();
 
     // The sidebar's categories, including the direct messages shown in the dock.
     useEffect(() => {
@@ -110,7 +112,7 @@ function Frame({children}: Props) {
                 {layout.home ? <HomeSidebar/> : <TeamSidebar/>}
                 <main className={am('main')}>{children}</main>
                 <RightPanel/>
-                {!rhsOpen && layout.showMembers && <MemberList/>}
+                {!rhsOpen && !voiceChat && layout.showMembers && <MemberList/>}
                 <AppRail/>
                 <div
                     className={am('drawer-scrim')}

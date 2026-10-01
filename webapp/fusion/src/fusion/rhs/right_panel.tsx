@@ -10,6 +10,7 @@ import ChannelInfoRhs from 'components/channel_info_rhs';
 import PostEditHistory from 'components/post_edit_history';
 import Search from 'components/search/index';
 
+import {useOpenVoiceChat, VoiceChatPanel} from 'fusion/calls/voice_chat';
 import MemberList from 'fusion/members/member_list';
 import {am} from 'fusion/utils/class_names';
 import RhsPlugin from 'plugins/rhs_plugin';
@@ -34,9 +35,10 @@ export default function RightPanel() {
     const rhsState = useSelector(getRhsState);
     const selectedPostId = useSelector(getSelectedPostId);
     const expanded = useSelector(getIsRhsExpanded);
+    const voiceChat = useOpenVoiceChat();
 
     if (!open) {
-        return null;
+        return voiceChat ? <VoiceChatPanel channelId={voiceChat}/> : null;
     }
 
     let content: React.ReactNode = null;

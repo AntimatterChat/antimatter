@@ -12,6 +12,7 @@ import {getDirectTeammate} from 'mattermost-redux/selectors/entities/channels';
 import {closeRightHandSide, showSearchResults, updateSearchTerms} from 'actions/views/rhs';
 import {getIsRhsOpen} from 'selectors/rhs';
 
+import {VoiceChatToggle} from 'fusion/calls/voice_chat';
 import Avatar from 'fusion/components/avatar';
 import Icon from 'fusion/components/icon';
 import CollectionsPopover from 'fusion/popovers/collections_popover';
@@ -151,6 +152,7 @@ export default function ChannelHeader({channel}: {channel: Channel}) {
                 >
                     <Icon name='inbox'/>
                 </button>
+                <VoiceChatToggle channel={channel}/>
                 <button
                     className={am('icon-btn', 'wide-only', {on: layout.showMembers && !rhsOpen})}
                     title={formatMessage({id: 'fusion.header.members', defaultMessage: 'Member list'})}

@@ -10,7 +10,9 @@ import {getChannel, getCurrentChannelId, getMyChannelMembership, makeGetChannelU
 import {getCurrentTeam} from 'mattermost-redux/selectors/entities/teams';
 import {isChannelMuted} from 'mattermost-redux/utils/channel_utils';
 
+import {useIsVoiceChannel} from 'fusion/calls/hooks';
 import {CallLiveMarker} from 'fusion/calls/markers';
+import VoiceChannelRow from 'fusion/calls/voice_channel_row';
 import Icon from 'fusion/components/icon';
 import ChannelMenu from 'fusion/popovers/channel_menu';
 import {useLayout} from 'fusion/shell/layout_context';
@@ -42,6 +44,16 @@ export default function ChannelRow({channelId, collapsed}: Props) {
 
     // Plugins can show something below the channel, e.g. the people in its call
     const hasFooters = useSelector((state: GlobalState) => Boolean(state.plugins.components.SidebarChannelFooter?.length));
+
+    const voice = useIsVoiceChannel(channelId);
+    if (voice) {
+        return (
+            <VoiceChannelRow
+                channelId={channelId}
+                collapsed={collapsed}
+            />
+        );
+    }
 
     if (!channel || !team || (collapsed && !active && !unread.showUnread)) {
         return null;

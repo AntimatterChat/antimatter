@@ -10,6 +10,8 @@ import {getCurrentChannel, isDeactivatedDirectChannel} from 'mattermost-redux/se
 
 import {getChannelViewPanel} from 'selectors/channel_view_panel';
 
+import {useIsVoiceChannel} from 'fusion/calls/hooks';
+import VoiceView from 'fusion/calls/voice_view';
 import Composer from 'fusion/composer/composer';
 import MessageList from 'fusion/messages/message_list';
 import {am} from 'fusion/utils/class_names';
@@ -26,6 +28,7 @@ export default function ChannelView() {
     const deactivated = useSelector((state: GlobalState) => (channel ? isDeactivatedDirectChannel(state, channel.id) : false));
     const match = useRouteMatch<{postid?: string}>();
     const viewRef = useRef<HTMLDivElement>(null);
+    const voice = useIsVoiceChannel(channel?.id);
 
     // A plugin's panel (e.g. a call) takes the place of the messages until it shows them; they're
     // hidden again on channel switch, and shown for a permalink so that it shows its post.
@@ -37,6 +40,16 @@ export default function ChannelView() {
 
     if (!channel) {
         return <div className={am('empty')}>{formatMessage({id: 'fusion.channel.loading', defaultMessage: 'Loading…'})}</div>;
+    }
+
+    // A voice channel is its call's stage, with its text chat in the right-hand panel; a permalink shows the post.
+    if (voice && !match.params.postid) {
+        return (
+            <>
+                <ChannelHeader channel={channel}/>
+                <VoiceView channel={channel}/>
+            </>
+        );
     }
 
     const direct = channel.type === 'D' || channel.type === 'G';
