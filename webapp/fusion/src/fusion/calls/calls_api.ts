@@ -9,104 +9,15 @@ import {useSyncExternalStore} from 'react';
 
 import type {GlobalState} from 'types/store';
 
-export type CallsParticipant = {
-    sessionId: string;
-    userId: string;
-    muted: boolean;
-    video: boolean;
-    screenSharing: boolean;
-    speaking: boolean;
-    raisedHand: boolean;
-    isHost: boolean;
-    isMe: boolean;
+import type {AntimatterCallsAPI, CallsCall, CallsErrorEvent, CallsParticipant, LocalCall} from './plugin_api/calls_public_api';
+import type {AntimatterVoiceChannelsAPI, VoiceParticipant} from './plugin_api/voice_channels_public_api';
+
+export type {AntimatterCallsAPI, AntimatterVoiceChannelsAPI, CallsCall, CallsErrorEvent, CallsParticipant, LocalCall, VoiceParticipant};
+
+// Not in version 1 of the API: the channels that have a call. Calls' state is read when it's missing.
+type CallsSelectorsNext = AntimatterCallsAPI['selectors'] & {
+    getCallChannelIds?(state: GlobalState): string[];
 };
-
-export type CallsCall = {
-    channelId: string;
-    id: string;
-    startAt: number;
-    ownerId: string;
-    hostId: string;
-    threadId: string;
-    title?: string;
-    recording: boolean;
-};
-
-export type LocalCall = {
-    channelId: string;
-    sessionId: string;
-    state: 'connecting' | 'connected';
-    mediaInThisWindow: boolean;
-};
-
-export type IncomingCall = {
-    channelId: string;
-    callId: string;
-    callerId: string;
-    startAt: number;
-    type: 'dm' | 'gm';
-};
-
-export type AntimatterCallsAPI = {
-    version: 1;
-    selectors: {
-        isCallsEnabled(state: GlobalState, channelId: string): boolean;
-        getCall(state: GlobalState, channelId: string): CallsCall | null;
-        getParticipants(state: GlobalState, channelId: string): CallsParticipant[];
-        getLocalCall(state: GlobalState): LocalCall | null;
-        getScreenSharingSessionId(state: GlobalState, channelId: string): string;
-        getIncomingCalls(state: GlobalState): IncomingCall[];
-        isVideoAllowed(state: GlobalState, channelId: string): boolean;
-        isScreenSharingAllowed(state: GlobalState): boolean;
-        getMyMuted(state: GlobalState): boolean;
-
-        // Not in version 1 of the contract: the channels that have a call. Read from Calls' state when missing.
-        getCallChannelIds?(state: GlobalState): string[];
-    };
-    join(channelId: string, opts?: {title?: string; switchCall?: boolean; unmuted?: boolean; video?: boolean}): Promise<void>;
-    leave(): void;
-    setMuted(muted: boolean): void;
-    setVideo(on: boolean): Promise<void>;
-    startScreenShare(): void;
-    stopScreenShare(): void;
-    setHandRaised(raised: boolean): void;
-    getLocalVideoStream(): MediaStream | null;
-    getLocalScreenStream(): MediaStream | null;
-    getRemoteVideoStreams(): Record<string, MediaStream>;
-    getRemoteScreenStream(): MediaStream | null;
-    on(event: 'change' | 'error', cb: (...args: unknown[]) => void): () => void;
-    host: {
-        mute(sessionId: string): void;
-        remove(sessionId: string): void;
-        lowerHand(sessionId: string): void;
-        stopScreen(sessionId: string): void;
-    };
-    dismissIncomingCall(channelId: string, callId: string): void;
-    openSettings(): void;
-};
-
-export type VoiceParticipant = CallsParticipant & {deafened: boolean};
-
-export type AntimatterVoiceChannelsAPI = {
-    version: 1;
-    selectors: {
-        isVoiceChannel(state: GlobalState, channelId: string): boolean;
-        getParticipants(state: GlobalState, channelId: string): VoiceParticipant[];
-        isDeafened(state: GlobalState): boolean;
-        getAutoJoin(state: GlobalState): boolean;
-    };
-    join(channelId: string, opts?: {leaveOtherCalls?: boolean}): Promise<void>;
-    autoJoin(channelId: string): void;
-    leave(): void;
-    setDeafened(deafened: boolean): void;
-};
-
-declare global {
-    interface Window {
-        antimatterCalls?: AntimatterCallsAPI;
-        antimatterVoiceChannels?: AntimatterVoiceChannelsAPI;
-    }
-}
 
 const CALLS_READY = 'antimatter-calls:ready';
 const VOICE_READY = 'antimatter-voice-channels:ready';
@@ -202,8 +113,9 @@ export function getCallChannelIds(state: GlobalState): string[] {
     if (!calls) {
         return NO_IDS;
     }
-    if (calls.selectors.getCallChannelIds) {
-        return calls.selectors.getCallChannelIds(state);
+    const selectors: CallsSelectorsNext = calls.selectors;
+    if (selectors.getCallChannelIds) {
+        return selectors.getCallChannelIds(state);
     }
     const slice = (state as unknown as Record<string, {calls?: Record<string, unknown>} | undefined>)[CALLS_STATE];
     return slice?.calls ? Object.keys(slice.calls) : NO_IDS;
