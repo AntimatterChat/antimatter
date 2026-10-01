@@ -14,6 +14,7 @@ import {getPost, getPostIdsInChannel} from 'mattermost-redux/selectors/entities/
 import {getCurrentUserId, getUser} from 'mattermost-redux/selectors/entities/users';
 import {isPostPendingOrFailed} from 'mattermost-redux/utils/post_utils';
 
+import Avatar from 'fusion/components/avatar';
 import Icon from 'fusion/components/icon';
 import {useDisplayName} from 'fusion/hooks/users';
 import {am} from 'fusion/utils/class_names';
@@ -92,7 +93,7 @@ export function replyCandidates(state: GlobalState, channelId: string, rootId: s
     return posts.filter(canReplyInline).map((post) => post.id);
 }
 
-type Quoted = {
+export type Quoted = {
     deleted: boolean;
     userId?: string;
     message: string;
@@ -135,10 +136,9 @@ export function useQuoted(id: string, described?: PostReplyTo): Quoted {
     return {deleted: Boolean(described?.deleted), message: '', fileCount: 0};
 }
 
-// QuotedMessage is the "↩ Replying to Name snippet" content of the quote line above a reply and of the composer's
-// reply bar.
-export function QuotedMessage({quoted}: {quoted: Quoted}) {
-    const {formatMessage} = useIntl();
+// useQuotedAuthor is the name to show for a quoted message's author: the webhook's name when it overrides it, else
+// the author's display name, or '' while the author isn't loaded.
+function useQuotedAuthor(quoted: Quoted): string {
     const dispatch = useDispatch();
     const user = useSelector((state: GlobalState) => (quoted.userId ? getUser(state, quoted.userId) : undefined));
     const name = useDisplayName(user);
@@ -151,10 +151,17 @@ export function QuotedMessage({quoted}: {quoted: Quoted}) {
         }
     }, [quoted.userId, user, dispatch]);
 
-    const who = (overrideAllowed && quoted.overrideUsername) || (user ? name : '');
+    return (overrideAllowed && quoted.overrideUsername) || (user ? name : '');
+}
+
+// QuotedMessage is the "↩ Replying to Name snippet" content of the composer's reply bar.
+export function QuotedMessage({quoted}: {quoted: Quoted}) {
+    const {formatMessage} = useIntl();
+    const who = useQuotedAuthor(quoted);
+
     let snippet;
     if (quoted.deleted) {
-        snippet = formatMessage({id: 'fusion.inlineReply.deleted', defaultMessage: 'Original message deleted'});
+        snippet = formatMessage({id: 'fusion.inlineReply.deleted', defaultMessage: 'Original message was deleted'});
     } else if (quoted.message.trim()) {
         snippet = plainText(quoted.message, 160);
     } else if (quoted.fileCount) {
@@ -172,6 +179,58 @@ export function QuotedMessage({quoted}: {quoted: Quoted}) {
             <span className={am('ref-label')}>{formatMessage({id: 'fusion.replyRef.replying', defaultMessage: 'Replying to'})}</span>
             {who && <b>{who}</b>}
             <span className={am('snip', {gone: quoted.deleted})}>{snippet}</span>
+        </>
+    );
+}
+
+// QuotedRef is the content of the reference line above a reply, as in Discord: the quoted author's small picture and
+// name, then the start of their message. Its label tells screen readers that the message is a reply.
+export function QuotedRef({quoted}: {quoted: Quoted}) {
+    const {formatMessage} = useIntl();
+    const who = useQuotedAuthor(quoted);
+
+    let snippet;
+    let icon;
+    if (quoted.deleted) {
+        snippet = formatMessage({id: 'fusion.inlineReply.deleted', defaultMessage: 'Original message was deleted'});
+    } else if (quoted.message.trim()) {
+        snippet = plainText(quoted.message, 160);
+    } else if (quoted.fileCount) {
+        snippet = formatMessage({id: 'fusion.inlineReply.seeFiles', defaultMessage: 'Click to see attachment'});
+        icon = (
+            <Icon
+                name='attach'
+                size='xs'
+            />
+        );
+    } else {
+        snippet = formatMessage({id: 'fusion.inlineReply.seeMessage', defaultMessage: 'Click to see message'});
+    }
+
+    return (
+        <>
+            <span className={am('ref-sr')}>
+                {who ? formatMessage({id: 'fusion.inlineReply.replyingTo', defaultMessage: 'Replying to {name}:'}, {name: who}) : formatMessage({id: 'fusion.inlineReply.replying', defaultMessage: 'Replying to:'})}
+            </span>
+            {quoted.userId && !quoted.deleted ? (
+                <Avatar
+                    userId={quoted.userId}
+                    size='xs'
+                    className={am('ref-av')}
+                />
+            ) : (
+                <span
+                    className={am('ref-av', 'none')}
+                    aria-hidden='true'
+                >
+                    <Icon name='reply'/>
+                </span>
+            )}
+            {who && <b aria-hidden='true'>{who}</b>}
+            <span className={am('snip', {gone: quoted.deleted, files: Boolean(icon)})}>
+                {icon}
+                {snippet}
+            </span>
         </>
     );
 }
