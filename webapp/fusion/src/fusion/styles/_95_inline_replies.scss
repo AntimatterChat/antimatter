@@ -1,0 +1,13 @@
+// Inline replies beyond the mockup's .reply-ref and .replying styles.
+
+:is(.am-app, .am-layer) .am-replying > .am-ref-label, :is(.am-app, .am-layer) .am-replying > b { flex: none; white-space: nowrap; }
+:is(.am-app, .am-layer) .am-replying > b { font-weight: 600; }
+
+// A deleted message can't be jumped to.
+:is(.am-app, .am-layer) .am-ref-jump:disabled { cursor: default; }
+:is(.am-app, .am-layer) .am-snip.am-gone { color: var(--am-muted); font-style: italic; }
+
+// Small screens keep the arrow, the name and as much of the message as fits.
+@media (max-width: 560px) {
+    :is(.am-app, .am-layer) :is(.am-reply-ref, .am-replying) .am-ref-label { display: none; }
+}

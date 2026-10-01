@@ -41,6 +41,7 @@ import {BurnCover, BurnTag} from './burn_on_read';
 import Files from './content/files';
 import MessageContent from './content/message_content';
 import EditForm from './edit_form';
+import {replyToId, useInlineRepliesEnabled} from './inline_reply';
 import {useMentionClick} from './mention_click';
 import {useConcernsMe} from './mentions';
 import MessageMenu from './message_menu';
@@ -111,6 +112,7 @@ export default function Message({postId, previousPostId, inThread = false, highl
     const reactRef = useRef<HTMLButtonElement>(null);
     const [popover, setPopover] = useState<'user' | 'menu' | 'react' | 'react-more' | null>(null);
     const callCard = useCallCard(post);
+    const inlineReplies = useInlineRepliesEnabled();
 
     if (!post) {
         return null;
@@ -125,10 +127,16 @@ export default function Message({postId, previousPostId, inThread = false, highl
     const priority = priorityEnabled ? post.metadata?.priority?.priority : undefined;
     const burn = post.type === Posts.POST_TYPES.BURN_ON_READ && post.state !== Posts.POST_DELETED;
 
-    // With collapsed reply threads off, replies show in the channel; the first of a run quotes what it replies to.
-    const replyRef = !inThread && !crt && Boolean(post.root_id) && !ephemeral && previous?.root_id !== post.root_id && previous?.id !== post.root_id;
-    const consecutive = !inThread && Boolean(previous) && !priority && !burn && !replyRef && !ephemeral && areConsecutivePostsBySameUser(post, previous!) && !isSystemMessage(previous!);
     const deleted = post.state === Posts.POST_DELETED;
+
+    // With collapsed reply threads off, replies show in the channel; the first of a run quotes what it replies to.
+    const threadReply = !inThread && !crt && Boolean(post.root_id);
+    const threadRef = threadReply && !ephemeral && previous?.root_id !== post.root_id && previous?.id !== post.root_id;
+
+    // An inline reply always quotes the message it answers.
+    const quotedId = inlineReplies && !ephemeral && !deleted ? replyToId(post) : '';
+    const replyRef = threadRef || Boolean(quotedId);
+    const consecutive = !inThread && Boolean(previous) && !priority && !burn && !replyRef && !ephemeral && areConsecutivePostsBySameUser(post, previous!) && !isSystemMessage(previous!);
     const openThread = () => dispatch(selectPost(post));
 
     const authorName = webhook ? String(post.props.override_username) : name;
@@ -396,7 +404,11 @@ export default function Message({postId, previousPostId, inThread = false, highl
             {replyRef && (
                 <>
                     <span/>
-                    <ReplyRef post={post}/>
+                    <ReplyRef
+                        post={post}
+                        quotedId={quotedId}
+                        threadReply={threadReply}
+                    />
                 </>
             )}
             {picture}
