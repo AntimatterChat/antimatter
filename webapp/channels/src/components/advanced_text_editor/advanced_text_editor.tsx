@@ -70,6 +70,7 @@ import type {PostDraft} from 'types/store/draft';
 import {isPostDraftEmpty} from 'types/store/draft';
 
 import AIActionsMenu from './ai_actions_menu';
+import ComposerMenu from './composer_menu';
 import DoNotDisturbWarning from './do_not_disturb_warning';
 import EditPostFooter from './edit_post_footer';
 import Footer from './footer';
@@ -1026,6 +1027,12 @@ const AdvancedTextEditor = ({
                                     disabled={showPreview}
                                 />
                                 <Separator/>
+                                {!isInEditMode && (
+                                    <ComposerMenu
+                                        channelId={channelId}
+                                        rootId={rootId}
+                                    />
+                                )}
                                 {fileUploadJSX}
                                 {emojiPicker}
                                 {sendButton}

@@ -15587,6 +15587,10 @@
     "defaultMessage": "{displayName} is Out of Office.",
     "description": "Warning shown above the message box in a direct message when the other person's status is out of office (automatic replies on). {displayName} is that person's display name. 'Out of Office' is the status name; match the translation of the 'Out of office' status in the account menu."
   },
+  "advanced_text_editor.composer_menu": {
+    "defaultMessage": "Add to message",
+    "description": "Tooltip and accessibility (aria) label of the '+' button of the message box listing what plugins can add to a message, e.g. 'Create a poll'."
+  },
   "advanced_text_editor.help_link": {
     "defaultMessage": "Help",
     "description": "Small 'Help' link below the message box that opens the messaging help page."
