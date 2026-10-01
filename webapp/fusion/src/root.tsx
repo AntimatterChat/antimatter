@@ -5,7 +5,7 @@
 // and loads before the body renders. This must be before any dynamic imports.
 import './components/initial_loading_screen/initial_loading_screen.css';
 
-import {CURRENT_WEB_UI} from './utils/web_ui';
+import {CURRENT_WEB_UI, captureRequestedWebUI} from './utils/web_ui';
 import type {WebUI} from './utils/web_ui';
 
 declare global {
@@ -39,6 +39,9 @@ window.basename = window.publicPath.substr(0, window.publicPath.length - '/stati
 // Tell plugins which web UI is running, before any of them loads: in JavaScript, and on <html> for styles.
 window.antimatterWebUI = CURRENT_WEB_UI;
 document.documentElement.dataset.amWebUi = CURRENT_WEB_UI;
+
+// Keep the web UI requested with ?webui=, to save it as the user's preference once they're signed in.
+captureRequestedWebUI();
 
 import('./entry');
 

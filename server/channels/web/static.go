@@ -5,6 +5,8 @@ package web
 
 import (
 	"bytes"
+	"database/sql"
+	"errors"
 	"fmt"
 	"html"
 	"net/http"
@@ -114,7 +116,7 @@ func root(c *Context, w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.Header().Set("Cache-Control", "no-cache, max-age=31556926, public")
-	// The page served depends on the web UI cookie.
+	// The page served depends on the web UI cookie and on the session cookie.
 	w.Header().Add("Vary", "Cookie")
 
 	clientDir := model.ClientDir
@@ -147,8 +149,11 @@ func root(c *Context, w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// selectWebUI returns the web UI to serve for this request: the one picked by the user in this browser
-// when allowed, otherwise the default one. A valid ?webui= query parameter also saves the pick.
+// selectWebUI returns the web UI to serve for this request. When users may pick their own, that's the one
+// in a valid ?webui= query parameter (which is also saved for this browser), then the one the signed-in
+// user picked (their web UI preference, which follows them across browsers), then the one picked in
+// this browser (the cookie, which also covers the pages shown before signing in), and otherwise the
+// default one.
 func selectWebUI(c *Context, w http.ResponseWriter, r *http.Request) string {
 	cfg := c.App.Srv().Config()
 	if !config.UserWebUISelectionAllowed(cfg) {
@@ -168,11 +173,37 @@ func selectWebUI(c *Context, w http.ResponseWriter, r *http.Request) string {
 		return requested
 	}
 
+	if webUI := userWebUI(c); webUI != "" {
+		return webUI
+	}
+
 	if cookie, err := r.Cookie(model.WebUICookie); err == nil && model.IsValidWebUI(cookie.Value) {
 		return cookie.Value
 	}
 
 	return config.DefaultWebUI(cfg)
+}
+
+// userWebUI returns the web UI picked by the user signed in with this request, or "" if there's
+// no such user or they didn't pick one.
+func userWebUI(c *Context) string {
+	userID := c.AppContext.Session().UserId
+	if userID == "" {
+		return ""
+	}
+
+	pref, err := c.App.Srv().Store().Preference().Get(userID, model.PreferenceCategoryDisplaySettings, model.PreferenceNameWebUI)
+	if err != nil {
+		if !errors.Is(err, sql.ErrNoRows) {
+			c.Logger.Warn("Failed to get the user's web UI preference", mlog.String("user_id", userID), mlog.Err(err))
+		}
+		return ""
+	}
+
+	if !model.IsValidWebUI(pref.Value) {
+		return ""
+	}
+	return pref.Value
 }
 
 func staticFilesHandler(handler http.Handler) http.Handler {

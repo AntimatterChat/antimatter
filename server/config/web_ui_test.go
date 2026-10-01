@@ -16,7 +16,7 @@ import (
 func TestWebUISelection(t *testing.T) {
 	cfg := &model.Config{}
 	cfg.SetDefaults()
-	require.Equal(t, model.WebUIClassic, *cfg.ServiceSettings.DefaultWebUI)
+	require.Equal(t, model.WebUIFusion, *cfg.ServiceSettings.DefaultWebUI)
 	require.True(t, *cfg.ServiceSettings.AllowUserWebUISelection)
 
 	t.Chdir(t.TempDir())

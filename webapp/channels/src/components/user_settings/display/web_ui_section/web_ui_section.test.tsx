@@ -3,14 +3,14 @@
 
 import React from 'react';
 
+import {switchWebUI} from 'actions/web_ui';
+
 import {renderWithContext, screen, userEvent} from 'tests/react_testing_utils';
-import {switchWebUI} from 'utils/web_ui';
 
 import WebUISection from './web_ui_section';
 
-jest.mock('utils/web_ui', () => ({
-    ...jest.requireActual('utils/web_ui'),
-    switchWebUI: jest.fn(),
+jest.mock('actions/web_ui', () => ({
+    switchWebUI: jest.fn(() => ({type: 'MOCK_SWITCH_WEB_UI'})),
 }));
 
 describe('components/user_settings/display/web_ui_section', () => {
@@ -56,7 +56,7 @@ describe('components/user_settings/display/web_ui_section', () => {
             stateWithSelection(true),
         );
 
-        await userEvent.click(screen.getByLabelText('Fusion (preview)'));
+        await userEvent.click(screen.getByLabelText('Fusion'));
         await userEvent.click(screen.getByText('Save'));
 
         expect(switchWebUI).toHaveBeenCalledWith('fusion');

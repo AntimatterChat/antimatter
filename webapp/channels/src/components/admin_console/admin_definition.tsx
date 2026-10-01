@@ -2351,7 +2351,7 @@ const AdminDefinition: AdminDefinitionType = {
                             type: 'dropdown',
                             key: 'ServiceSettings.DefaultWebUI',
                             label: defineMessage({id: 'admin.customization.defaultWebUITitle', defaultMessage: 'Default Web Interface:'}),
-                            help_text: defineMessage({id: 'admin.customization.defaultWebUIDesc', defaultMessage: 'The web interface served to users who haven\'t picked one. Fusion is a preview of the new interface; the classic interface is served when Fusion isn\'t installed.'}),
+                            help_text: defineMessage({id: 'admin.customization.defaultWebUIDesc', defaultMessage: 'The web interface served to users who haven\'t picked one, including new users. The classic interface is served when Fusion isn\'t installed.'}),
                             options: [
                                 {
                                     value: 'classic',
@@ -2359,7 +2359,7 @@ const AdminDefinition: AdminDefinitionType = {
                                 },
                                 {
                                     value: 'fusion',
-                                    display_name: defineMessage({id: 'admin.customization.webUIFusion', defaultMessage: 'Fusion (preview)'}),
+                                    display_name: defineMessage({id: 'admin.customization.webUIFusion', defaultMessage: 'Fusion'}),
                                 },
                             ],
                             isDisabled: it.not(it.userHasWritePermissionOnResource(RESOURCE_KEYS.SITE.CUSTOMIZATION)),
@@ -2368,7 +2368,7 @@ const AdminDefinition: AdminDefinitionType = {
                             type: 'bool',
                             key: 'ServiceSettings.AllowUserWebUISelection',
                             label: defineMessage({id: 'admin.customization.allowUserWebUISelectionTitle', defaultMessage: 'Allow Users to Choose Their Web Interface:'}),
-                            help_text: defineMessage({id: 'admin.customization.allowUserWebUISelectionDesc', defaultMessage: 'When true, users can switch between the classic and Fusion interfaces in **Settings > Display > Web interface**, or by opening any page with `?webui=classic` or `?webui=fusion`. Their choice applies to the browser they made it in.'}),
+                            help_text: defineMessage({id: 'admin.customization.allowUserWebUISelectionDesc', defaultMessage: 'When true, users can switch between the classic and Fusion interfaces in **Settings > Display > Web interface**, or by opening any page with `?webui=classic` or `?webui=fusion`. Their choice follows them to every browser they sign in from.'}),
                             isDisabled: it.not(it.userHasWritePermissionOnResource(RESOURCE_KEYS.SITE.CUSTOMIZATION)),
                         },
                         {

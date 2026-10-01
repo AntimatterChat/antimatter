@@ -3384,8 +3384,8 @@
     "description": "Help text for the setting that lets users' message drafts sync to the server, on a System Console site configuration page."
   },
   "admin.customization.allowUserWebUISelectionDesc": {
-    "defaultMessage": "When true, users can switch between the classic and Fusion interfaces in **Settings > Display > Web interface**, or by opening any page with `?webui=classic` or `?webui=fusion`. Their choice applies to the browser they made it in.",
-    "description": ""
+    "defaultMessage": "When true, users can switch between the classic and Fusion interfaces in **Settings > Display > Web interface**, or by opening any page with `?webui=classic` or `?webui=fusion`. Their choice follows them to every browser they sign in from.",
+    "description": "Help text for the setting that lets users choose their web interface, on the System Console's Customization page. Keep the markdown, the menu path and the `?webui=` examples as they are."
   },
   "admin.customization.allowUserWebUISelectionTitle": {
     "defaultMessage": "Allow Users to Choose Their Web Interface:",
@@ -3492,8 +3492,8 @@
     "description": "Label of the theme dropdown in System Console > Site Configuration > Customization. Keep the trailing colon."
   },
   "admin.customization.defaultWebUIDesc": {
-    "defaultMessage": "The web interface served to users who haven't picked one. Fusion is a preview of the new interface; the classic interface is served when Fusion isn't installed.",
-    "description": ""
+    "defaultMessage": "The web interface served to users who haven't picked one, including new users. The classic interface is served when Fusion isn't installed.",
+    "description": "Help text for the Default Web Interface dropdown on the System Console's Customization page. Classic and Fusion are the names of the two web interfaces."
   },
   "admin.customization.defaultWebUITitle": {
     "defaultMessage": "Default Web Interface:",
@@ -3680,8 +3680,8 @@
     "description": ""
   },
   "admin.customization.webUIFusion": {
-    "defaultMessage": "Fusion (preview)",
-    "description": ""
+    "defaultMessage": "Fusion",
+    "description": "Option of the Default Web Interface dropdown on the System Console's Customization page. Fusion is the name of the new web interface; don't translate it."
   },
   "admin.customProfileAttribDesc.ldap": {
     "defaultMessage": "(Optional) The attribute in the AD/LDAP server used to populate the {name} of users in Antimatter. When set, users cannot edit their {name}, since it is synchronized with the LDAP server. When left blank, users can set their {name} in <strong>Account Menu > Account Settings > Profile</strong>.",
@@ -20659,6 +20659,30 @@
     "defaultMessage": "Close",
     "description": "Accessibility label/tooltip for the close (X) button of full-screen modals such as the file preview."
   },
+  "fusion_announcement.badge": {
+    "defaultMessage": "New",
+    "description": "Badge next to the title of the tip announcing the Fusion web interface to users of the classic one, marking it as new."
+  },
+  "fusion_announcement.description": {
+    "defaultMessage": "Fusion is the new interface of Antimatter: a refreshed layout with voice channels, apps and more. Your conversations and settings stay the same.",
+    "description": "Body of the tip announcing the Fusion web interface to users of the classic one. Fusion and Antimatter are names; don't translate them."
+  },
+  "fusion_announcement.notNow": {
+    "defaultMessage": "Not now",
+    "description": "Button of the tip announcing the Fusion web interface; dismisses the tip for good without switching."
+  },
+  "fusion_announcement.switchBack": {
+    "defaultMessage": "You can switch back at any time in <b>Settings > Display > Web interface</b>.",
+    "description": "Second paragraph of the tip announcing the Fusion web interface. <b> wraps the menu path to the Web interface setting; keep it and the path's names consistent with the Settings modal."
+  },
+  "fusion_announcement.title": {
+    "defaultMessage": "A new interface is available",
+    "description": "Title of the tip, shown under the Settings button of the global header, announcing the Fusion web interface to users of the classic one."
+  },
+  "fusion_announcement.tryFusion": {
+    "defaultMessage": "Try Fusion",
+    "description": "Button of the tip announcing the Fusion web interface; switches the user to Fusion and reloads the page. Fusion is a name; don't translate it."
+  },
   "general_button.close": {
     "defaultMessage": "Close",
     "description": "Accessibility label for the close (X) button on toast notifications."
@@ -29620,12 +29644,12 @@
     "description": ""
   },
   "user.settings.display.webUI.description": {
-    "defaultMessage": "Choose the interface used in this browser. The page reloads to apply the change.",
-    "description": ""
+    "defaultMessage": "Choose the interface you use, in every browser you sign in from. The page reloads to apply the change.",
+    "description": "Help text under the Classic and Fusion choices of the Web interface setting in Settings > Display."
   },
   "user.settings.display.webUI.fusion": {
-    "defaultMessage": "Fusion (preview)",
-    "description": ""
+    "defaultMessage": "Fusion",
+    "description": "Choice of the Web interface setting in Settings > Display. Fusion is the name of the new web interface; don't translate it."
   },
   "user.settings.display.webUI.title": {
     "defaultMessage": "Web interface",

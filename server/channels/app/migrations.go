@@ -39,6 +39,7 @@ const (
 	boardsPropertyMigrationVersion                 = "v2"
 	cpaDisplayNameBackfillKey                      = "cpa_display_name_backfill_done"
 	cpaToGlobalAttributesMigrationKey              = "cpa_to_global_attributes_migration_done"
+	webUIDefaultFusionMigrationKey                 = "WebUIDefaultFusionMigrationComplete"
 
 	contentFlaggingPropertyNameFlaggedPostId       = "flagged_post_id"
 	ContentFlaggingPropertyNameStatus              = "status"
@@ -624,6 +625,110 @@ func (s *Server) doPostPriorityConfigDefaultTrueMigration() error {
 	}
 
 	return nil
+}
+
+// doWebUIDefaultFusionMigration runs once, on the first start of the version that made the Fusion web UI
+// the default one.
+//
+// Users who existed before are used to the classic web UI, so it keeps them on it: it saves classic as
+// the web UI preference of every user (active or deactivated, but not bots) who doesn't have one yet.
+// The classic web UI tells them about Fusion, and they can switch in Settings > Display > Web interface
+// at any time. Users created afterwards get the default web UI.
+//
+// It also moves ServiceSettings.DefaultWebUI from classic to Fusion in the saved configuration. Config
+// files store every setting, defaults included, so classic there is almost always the former default
+// rather than an admin's choice; admins who want new users on classic can set it back. A default web UI
+// set through the environment (MM_SERVICESETTINGS_DEFAULTWEBUI) is left alone.
+//
+// Running it again, e.g. on cluster nodes starting at the same time, is harmless: users who have a web
+// UI preference keep it.
+func (s *Server) doWebUIDefaultFusionMigration() error {
+	var nfErr *store.ErrNotFound
+	if _, err := s.Store().System().GetByName(webUIDefaultFusionMigrationKey); err == nil {
+		return nil
+	} else if !errors.As(err, &nfErr) {
+		return fmt.Errorf("could not query migration: %w", err)
+	}
+
+	kept, err := s.keepExistingUsersOnClassicWebUI()
+	if err != nil {
+		return err
+	}
+
+	if s.Config().ServiceSettings.DefaultWebUI != nil && *s.Config().ServiceSettings.DefaultWebUI == model.WebUIClassic && !s.defaultWebUISetFromEnvironment() {
+		s.platform.UpdateConfig(func(config *model.Config) {
+			config.ServiceSettings.DefaultWebUI = new(model.WebUIFusion)
+		})
+	}
+
+	mlog.Info("Kept existing users on the classic web UI now that Fusion is the default one", mlog.Int("users", kept))
+
+	if err := s.Store().System().SaveOrUpdate(&model.System{Name: webUIDefaultFusionMigrationKey, Value: "true"}); err != nil {
+		return fmt.Errorf("failed to mark the web UI default migration as completed: %w", err)
+	}
+
+	return nil
+}
+
+// webUIDefaultFusionMigrationBatchSize is the number of users whose preference
+// keepExistingUsersOnClassicWebUI saves at once.
+var webUIDefaultFusionMigrationBatchSize = 1000
+
+// keepExistingUsersOnClassicWebUI saves classic as the web UI preference of every user but bots who
+// doesn't have one, and returns how many users it saved it for.
+func (s *Server) keepExistingUsersOnClassicWebUI() (int, error) {
+	existing, err := s.Store().Preference().GetCategoryAndName(model.PreferenceCategoryDisplaySettings, model.PreferenceNameWebUI)
+	if err != nil {
+		return 0, fmt.Errorf("failed to get the users' web UI preferences: %w", err)
+	}
+	hasPreference := make(map[string]bool, len(existing))
+	for _, pref := range existing {
+		hasPreference[pref.UserId] = true
+	}
+
+	kept := 0
+	afterID := ""
+	for {
+		users, err := s.Store().User().GetAllAfter(webUIDefaultFusionMigrationBatchSize, afterID)
+		if err != nil {
+			return kept, fmt.Errorf("failed to get users: %w", err)
+		}
+		if len(users) == 0 {
+			return kept, nil
+		}
+		afterID = users[len(users)-1].Id
+
+		prefs := make(model.Preferences, 0, len(users))
+		for _, user := range users {
+			if user.IsBot || hasPreference[user.Id] {
+				continue
+			}
+			prefs = append(prefs, model.Preference{
+				UserId:   user.Id,
+				Category: model.PreferenceCategoryDisplaySettings,
+				Name:     model.PreferenceNameWebUI,
+				Value:    model.WebUIClassic,
+			})
+		}
+		if len(prefs) == 0 {
+			continue
+		}
+		if err := s.Store().Preference().Save(prefs); err != nil {
+			return kept, fmt.Errorf("failed to save the users' web UI preferences: %w", err)
+		}
+		kept += len(prefs)
+	}
+}
+
+// defaultWebUISetFromEnvironment reports whether ServiceSettings.DefaultWebUI is overridden by an
+// environment variable.
+func (s *Server) defaultWebUISetFromEnvironment() bool {
+	serviceSettings, ok := s.platform.GetEnvironmentOverrides()["ServiceSettings"].(map[string]any)
+	if !ok {
+		return false
+	}
+	_, ok = serviceSettings["DefaultWebUI"]
+	return ok
 }
 
 func (s *Server) doSetupContentFlaggingProperties() error {
@@ -1417,6 +1522,7 @@ func (s *Server) doAppMigrations() {
 		{"Boards Properties Setup", s.doSetupBoardsProperties},
 		{"Managed Category Properties Setup", s.doSetupManagedCategoryProperties},
 		{"Session Attributes Properties Setup", s.doSetupSessionAttributesProperties},
+		{"Web UI Default Fusion Migration", s.doWebUIDefaultFusionMigration},
 	}
 
 	for i := range m1 {

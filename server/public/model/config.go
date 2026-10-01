@@ -890,7 +890,7 @@ func (s *ServiceSettings) SetDefaults(isUpdate bool) {
 	}
 
 	if s.DefaultWebUI == nil {
-		s.DefaultWebUI = new(WebUIClassic)
+		s.DefaultWebUI = new(WebUIFusion)
 	}
 
 	if s.AllowUserWebUISelection == nil {

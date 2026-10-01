@@ -8,6 +8,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {CustomStatusDuration} from '@mattermost/types/users';
 
 import {setCustomStatus, setStatus, unsetCustomStatus} from 'mattermost-redux/actions/users';
+import {getConfig} from 'mattermost-redux/selectors/entities/general';
 import {getCurrentTeam} from 'mattermost-redux/selectors/entities/teams';
 import {getCurrentUser, getDndEndTimeForUserId} from 'mattermost-redux/selectors/entities/users';
 import {isSystemAdmin} from 'mattermost-redux/utils/user_utils';
@@ -87,6 +88,7 @@ export default function StatusPopover({anchor, onClose}: Props) {
     const toast = useToast();
     const me = useSelector(getCurrentUser);
     const team = useSelector(getCurrentTeam);
+    const webUISelectable = useSelector(getConfig).AllowUserWebUISelection === 'true';
     const name = useDisplayName(me);
     const status = useUserStatus(me?.id);
     const dndEndTime = useSelector((state: GlobalState) => (me ? getDndEndTimeForUserId(state, me.id) : 0));
@@ -268,6 +270,20 @@ export default function StatusPopover({anchor, onClose}: Props) {
                     />
                     {formatMessage({id: 'fusion.status.settings', defaultMessage: 'Profile & settings'})}
                 </button>
+                {webUISelectable && (
+                    <button
+                        onClick={() => {
+                            settings.open('interface');
+                            onClose();
+                        }}
+                    >
+                        <Icon
+                            name='screen'
+                            size='sm'
+                        />
+                        {formatMessage({id: 'fusion.status.webInterface', defaultMessage: 'Web interface: Fusion or classic'})}
+                    </button>
+                )}
                 {team && (
                     <button onClick={() => getHistory().push(`/${team.name}/integrations`)}>
                         <Icon
