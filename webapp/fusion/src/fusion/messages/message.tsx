@@ -224,10 +224,7 @@ export default function Message({postId, previousPostId, inThread = false, highl
         <>
             {concealed && <BurnCover post={post}/>}
             {!concealed && editing && (
-                <EditForm
-                    post={post}
-                    inThread={inThread}
-                />
+                <EditForm post={post}/>
             )}
             {!concealed && !editing && (
                 <div

@@ -10,22 +10,19 @@ import type {Post} from '@mattermost/types/posts';
 import {unsetEditingPost} from 'actions/post_actions';
 import {editPost} from 'actions/views/posts';
 
-import DeletePostModal from 'components/delete_post_modal';
-
+import {useDialogs} from 'fusion/shell/dialogs_context';
 import {am} from 'fusion/utils/class_names';
-import {openDialog} from 'fusion/utils/modals';
-import {ModalIdentifiers} from 'utils/constants';
 
 type Props = {
     post: Post;
-    inThread: boolean;
 };
 
 // EditForm replaces a message's body while it's being edited: the mockup's .edit-form. Enter saves, Shift+Enter
 // adds a line and Escape cancels; saving an empty message offers to delete it, like the classic web app.
-export default function EditForm({post, inThread}: Props) {
+export default function EditForm({post}: Props) {
     const {formatMessage} = useIntl();
     const dispatch = useDispatch();
+    const dialogs = useDialogs();
     const [value, setValue] = useState(post.message);
     const [saving, setSaving] = useState(false);
     const [error, setError] = useState('');
@@ -49,7 +46,7 @@ export default function EditForm({post, inThread}: Props) {
         const message = value.trim();
         if (!message && !post.file_ids?.length) {
             dispatch(unsetEditingPost());
-            dispatch(openDialog(ModalIdentifiers.DELETE_POST, DeletePostModal, {post, isRHS: inThread}));
+            dialogs.deleteMessage(post);
             return;
         }
         if (message === post.message.trim()) {

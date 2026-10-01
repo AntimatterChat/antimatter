@@ -5,9 +5,11 @@ import React, {createContext, useContext, useMemo, useState} from 'react';
 import {useDispatch} from 'react-redux';
 
 import type {Channel} from '@mattermost/types/channels';
+import type {Post} from '@mattermost/types/posts';
 
 import AddPeopleDialog from 'fusion/modals/add_people_dialog';
 import CreateChannelDialog from 'fusion/modals/create_channel_dialog';
+import DeleteMessageDialog from 'fusion/modals/delete_message_dialog';
 import {openInvitePeople, openNewChannel} from 'fusion/utils/modals';
 
 type Dialogs = {
@@ -20,11 +22,14 @@ type Dialogs = {
 
     // Invite people to the team (the classic invitation dialog, which also invites guests).
     invite: () => void;
+
+    // Confirm deleting a message.
+    deleteMessage: (post: Post) => void;
 };
 
-const DialogsContext = createContext<Dialogs>({createChannel: () => {}, addPeople: () => {}, invite: () => {}});
+const DialogsContext = createContext<Dialogs>({createChannel: () => {}, addPeople: () => {}, invite: () => {}, deleteMessage: () => {}});
 
-type Open = {kind: 'create'; categoryId?: string} | {kind: 'add'; channel: Channel} | null;
+type Open = {kind: 'create'; categoryId?: string} | {kind: 'add'; channel: Channel} | {kind: 'delete'; post: Post} | null;
 
 // DialogsProvider owns the Fusion UI's own dialogs that menus and buttons open, outliving the menu that opened them.
 export function DialogsProvider({children}: {children: React.ReactNode}) {
@@ -35,6 +40,7 @@ export function DialogsProvider({children}: {children: React.ReactNode}) {
         createChannel: (categoryId) => setOpen({kind: 'create', categoryId}),
         addPeople: (channel) => setOpen({kind: 'add', channel}),
         invite: () => dispatch(openInvitePeople()),
+        deleteMessage: (post) => setOpen({kind: 'delete', post}),
     }), [dispatch]);
 
     const close = () => setOpen(null);
@@ -58,6 +64,12 @@ export function DialogsProvider({children}: {children: React.ReactNode}) {
                         close();
                         value.invite();
                     }}
+                    onClose={close}
+                />
+            )}
+            {open?.kind === 'delete' && (
+                <DeleteMessageDialog
+                    post={open.post}
                     onClose={close}
                 />
             )}

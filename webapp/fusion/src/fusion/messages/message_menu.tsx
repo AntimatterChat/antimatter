@@ -21,7 +21,6 @@ import {flagPost, markPostAsUnread, pinPost, setEditingPost, toggleReaction, unf
 import {selectPost} from 'actions/views/rhs';
 import {getRecentEmojisNames} from 'selectors/emojis';
 
-import DeletePostModal from 'components/delete_post_modal';
 import RenderEmoji from 'components/emoji/render_emoji';
 import FlagPostModal from 'components/flag_message_modal/flag_post_modal';
 import ForwardPostModal from 'components/forward_post_modal';
@@ -29,6 +28,7 @@ import ForwardPostModal from 'components/forward_post_modal';
 import Icon from 'fusion/components/icon';
 import {Popover} from 'fusion/components/layer';
 import {Flyout, MenuItem, MenuSeparator} from 'fusion/components/menu';
+import {useDialogs} from 'fusion/shell/dialogs_context';
 import {useToast} from 'fusion/shell/toast_context';
 import {am} from 'fusion/utils/class_names';
 import {openDialog} from 'fusion/utils/modals';
@@ -69,6 +69,7 @@ export default function MessageMenu({post, anchor, inThread, onClose, onMoreReac
     const {formatMessage} = intl;
     const dispatch = useDispatch();
     const toast = useToast();
+    const dialogs = useDialogs();
     const me = useSelector(getCurrentUserId);
     const team = useSelector(getCurrentTeam);
     const config = useSelector(getConfig);
@@ -252,7 +253,7 @@ export default function MessageMenu({post, anchor, inThread, onClose, onMoreReac
                     icon='trash'
                     danger={true}
                     label={formatMessage({id: 'fusion.messageMenu.delete', defaultMessage: 'Delete'})}
-                    onClick={run(() => dispatch(openDialog(ModalIdentifiers.DELETE_POST, DeletePostModal, {post, isRHS: inThread})))}
+                    onClick={run(() => dialogs.deleteMessage(post))}
                 />
             )}
             {canReport && post.user_id !== me && (
