@@ -23,6 +23,7 @@ import {am} from 'fusion/utils/class_names';
 import type {GlobalState} from 'types/store';
 
 import CallButton from './call_button';
+import HeaderTopic from './header_topic';
 
 const FILTERS: Array<[string, {id: string; defaultMessage: string}]> = [
     ['from:', {id: 'fusion.search.from', defaultMessage: 'a person, e.g. from:@marie'}],
@@ -54,7 +55,6 @@ export default function ChannelHeader({channel}: {channel: Channel}) {
     const meRef = useRef<HTMLButtonElement>(null);
 
     const direct = channel.type === 'D' || channel.type === 'G';
-    const topic = channel.header || channel.purpose;
     const placeholder = direct ? formatMessage({id: 'fusion.header.searchConversation', defaultMessage: 'Search this conversation'}) : formatMessage({id: 'fusion.header.searchChannel', defaultMessage: 'Search #{name}'}, {name: channel.display_name});
 
     const search = (e: React.FormEvent) => {
@@ -90,7 +90,7 @@ export default function ChannelHeader({channel}: {channel: Channel}) {
                 {channel.type === 'G' && <span className={am('av', 'group', 'sm')}>{channel.display_name.split(',').length}</span>}
                 {!direct && <ChannelIcon channel={channel}/>}
                 <h1>{channel.display_name}</h1>
-                {topic && <span className={am('topic')}>{topic}</span>}
+                <HeaderTopic channel={channel}/>
             </div>
             <form
                 className={am('search')}

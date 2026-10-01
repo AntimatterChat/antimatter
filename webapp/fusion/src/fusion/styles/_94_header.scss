@@ -1,0 +1,8 @@
+// What the Fusion channel header needs beyond the mockup's styles: a channel header rendered as one line of markdown.
+
+:is(.am-app, .am-layer) .am-ch-title .am-topic.am-md {
+  p, .markdown__paragraph-inline { display: inline; margin: 0; }
+  a { color: var(--am-anti); }
+  code { font: 12px var(--am-font-mono); background: var(--am-raise); padding: 0 4px; border-radius: 4px; }
+  .emoticon { width: 16px; height: 16px; vertical-align: -3px; }
+}
