@@ -5,13 +5,12 @@ import React, {useRef, useState} from 'react';
 import {useIntl} from 'react-intl';
 import {useDispatch, useSelector} from 'react-redux';
 
-import {getDirectAndGroupChannels, getTeamsUnreadStatuses} from 'mattermost-redux/selectors/entities/channels';
-import {getCurrentTeamId} from 'mattermost-redux/selectors/entities/teams';
+import {getDirectAndGroupChannels} from 'mattermost-redux/selectors/entities/channels';
 import {getUser} from 'mattermost-redux/selectors/entities/users';
 
 import Icon from 'fusion/components/icon';
+import {useUnreadMentions} from 'fusion/hooks/mentions';
 import CollectionsPopover from 'fusion/popovers/collections_popover';
-import {getUnreadDirectChannels} from 'fusion/selectors';
 import {am} from 'fusion/utils/class_names';
 import {openNewDirectMessage} from 'fusion/utils/modals';
 
@@ -55,15 +54,11 @@ export default function HomeSidebar() {
     const {formatMessage} = useIntl();
     const dispatch = useDispatch();
     const channels = useSelector(getDirectAndGroupChannels);
-    const teamId = useSelector(getCurrentTeamId);
-    const [, mentionsInTeam] = useSelector(getTeamsUnreadStatuses);
-    const unreadDMs = useSelector(getUnreadDirectChannels);
     const [query, setQuery] = useState('');
     const [collection, setCollection] = useState<Collection | null>(null);
     const linkRefs = useRef<Partial<Record<Collection, HTMLButtonElement | null>>>({});
 
-    // Mentions waiting for you: in the team's channels and in direct messages.
-    const mentions = (mentionsInTeam.get(teamId) || 0) + unreadDMs.reduce((n, dm) => n + dm.mentions, 0);
+    const mentions = useUnreadMentions();
     const link = (key: Collection, icon: 'at' | 'thread' | 'pin', label: string, badge = 0) => (
         <button
             ref={(el) => {

@@ -14,6 +14,7 @@ import {getIsRhsOpen} from 'selectors/rhs';
 
 import Avatar from 'fusion/components/avatar';
 import Icon from 'fusion/components/icon';
+import {useUnreadMentions} from 'fusion/hooks/mentions';
 import CollectionsPopover from 'fusion/popovers/collections_popover';
 import StatusPopover from 'fusion/popovers/status_popover';
 import {isPhoneLayout, useLayout} from 'fusion/shell/layout_context';
@@ -46,6 +47,7 @@ export default function ChannelHeader({channel}: {channel: Channel}) {
     const layout = useLayout();
     const teammate = useSelector((state: GlobalState) => (channel.type === 'D' ? getDirectTeammate(state, channel.id) : undefined));
     const rhsOpen = useSelector(getIsRhsOpen);
+    const mentions = useUnreadMentions();
     const [query, setQuery] = useState('');
     const [searchFocused, setSearchFocused] = useState(false);
     const [collections, setCollections] = useState(false);
@@ -150,6 +152,7 @@ export default function ChannelHeader({channel}: {channel: Channel}) {
                     onClick={() => setCollections(!collections)}
                 >
                     <Icon name='inbox'/>
+                    {mentions > 0 && <span className={am('dot')}/>}
                 </button>
                 <button
                     className={am('icon-btn', {on: layout.showMembers && !rhsOpen})}
