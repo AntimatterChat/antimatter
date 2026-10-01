@@ -369,6 +369,52 @@ exports[`components/PluginManagement should match snapshot 1`] = `
               </div>
               <fieldset
                 class="form-group"
+                data-testid="allowMarketplaceToReplaceAntimatterPlugins"
+                id="allowMarketplaceToReplaceAntimatterPlugins"
+              >
+                <legend
+                  class="control-label form-legend col-sm-4"
+                >
+                  Allow Marketplace Builds of Antimatter Plugins:
+                </legend>
+                <div
+                  class="col-sm-8"
+                >
+                  <label
+                    class="Label-eJcoMl iShgPr"
+                  >
+                    <input
+                      data-testid="allowMarketplaceToReplaceAntimatterPluginstrue"
+                      id="allowMarketplaceToReplaceAntimatterPluginstrue"
+                      name="allowMarketplaceToReplaceAntimatterPlugins"
+                      type="radio"
+                      value="true"
+                    />
+                    True
+                  </label>
+                  <label
+                    class="Label-eJcoMl iShgPr"
+                  >
+                    <input
+                      checked=""
+                      data-testid="allowMarketplaceToReplaceAntimatterPluginsfalse"
+                      id="allowMarketplaceToReplaceAntimatterPluginsfalse"
+                      name="allowMarketplaceToReplaceAntimatterPlugins"
+                      type="radio"
+                      value="false"
+                    />
+                    False
+                  </label>
+                  <div
+                    class="help-text"
+                    data-testid="allowMarketplaceToReplaceAntimatterPluginshelp-text"
+                  >
+                    When false, the marketplace leaves out its own builds of the plugins Antimatter provides (such as Calls, Playbooks and Boards), so they are not offered as updates that would replace the Antimatter builds. When true, they are listed and can be installed over the Antimatter builds.
+                  </div>
+                </div>
+              </fieldset>
+              <fieldset
+                class="form-group"
               >
                 <legend
                   class="control-label form-legend col-sm-4"
@@ -783,6 +829,54 @@ exports[`components/PluginManagement should match snapshot when \`Enable Marketp
                   </div>
                 </div>
               </div>
+              <fieldset
+                class="form-group"
+                data-testid="allowMarketplaceToReplaceAntimatterPlugins"
+                id="allowMarketplaceToReplaceAntimatterPlugins"
+              >
+                <legend
+                  class="control-label form-legend col-sm-4"
+                >
+                  Allow Marketplace Builds of Antimatter Plugins:
+                </legend>
+                <div
+                  class="col-sm-8"
+                >
+                  <label
+                    class="Label-eJcoMl kxVoZJ"
+                  >
+                    <input
+                      data-testid="allowMarketplaceToReplaceAntimatterPluginstrue"
+                      disabled=""
+                      id="allowMarketplaceToReplaceAntimatterPluginstrue"
+                      name="allowMarketplaceToReplaceAntimatterPlugins"
+                      type="radio"
+                      value="true"
+                    />
+                    True
+                  </label>
+                  <label
+                    class="Label-eJcoMl kxVoZJ"
+                  >
+                    <input
+                      checked=""
+                      data-testid="allowMarketplaceToReplaceAntimatterPluginsfalse"
+                      disabled=""
+                      id="allowMarketplaceToReplaceAntimatterPluginsfalse"
+                      name="allowMarketplaceToReplaceAntimatterPlugins"
+                      type="radio"
+                      value="false"
+                    />
+                    False
+                  </label>
+                  <div
+                    class="help-text"
+                    data-testid="allowMarketplaceToReplaceAntimatterPluginshelp-text"
+                  >
+                    When false, the marketplace leaves out its own builds of the plugins Antimatter provides (such as Calls, Playbooks and Boards), so they are not offered as updates that would replace the Antimatter builds. When true, they are listed and can be installed over the Antimatter builds.
+                  </div>
+                </div>
+              </fieldset>
               <fieldset
                 class="form-group"
               >
@@ -1272,6 +1366,54 @@ exports[`components/PluginManagement should match snapshot when \`Enable Remote 
               </div>
               <fieldset
                 class="form-group"
+                data-testid="allowMarketplaceToReplaceAntimatterPlugins"
+                id="allowMarketplaceToReplaceAntimatterPlugins"
+              >
+                <legend
+                  class="control-label form-legend col-sm-4"
+                >
+                  Allow Marketplace Builds of Antimatter Plugins:
+                </legend>
+                <div
+                  class="col-sm-8"
+                >
+                  <label
+                    class="Label-eJcoMl kxVoZJ"
+                  >
+                    <input
+                      data-testid="allowMarketplaceToReplaceAntimatterPluginstrue"
+                      disabled=""
+                      id="allowMarketplaceToReplaceAntimatterPluginstrue"
+                      name="allowMarketplaceToReplaceAntimatterPlugins"
+                      type="radio"
+                      value="true"
+                    />
+                    True
+                  </label>
+                  <label
+                    class="Label-eJcoMl kxVoZJ"
+                  >
+                    <input
+                      checked=""
+                      data-testid="allowMarketplaceToReplaceAntimatterPluginsfalse"
+                      disabled=""
+                      id="allowMarketplaceToReplaceAntimatterPluginsfalse"
+                      name="allowMarketplaceToReplaceAntimatterPlugins"
+                      type="radio"
+                      value="false"
+                    />
+                    False
+                  </label>
+                  <div
+                    class="help-text"
+                    data-testid="allowMarketplaceToReplaceAntimatterPluginshelp-text"
+                  >
+                    When false, the marketplace leaves out its own builds of the plugins Antimatter provides (such as Calls, Playbooks and Boards), so they are not offered as updates that would replace the Antimatter builds. When true, they are listed and can be installed over the Antimatter builds.
+                  </div>
+                </div>
+              </fieldset>
+              <fieldset
+                class="form-group"
               >
                 <legend
                   class="control-label form-legend col-sm-4"
@@ -1694,6 +1836,52 @@ exports[`components/PluginManagement should match snapshot when \`Require Signat
               </div>
               <fieldset
                 class="form-group"
+                data-testid="allowMarketplaceToReplaceAntimatterPlugins"
+                id="allowMarketplaceToReplaceAntimatterPlugins"
+              >
+                <legend
+                  class="control-label form-legend col-sm-4"
+                >
+                  Allow Marketplace Builds of Antimatter Plugins:
+                </legend>
+                <div
+                  class="col-sm-8"
+                >
+                  <label
+                    class="Label-eJcoMl iShgPr"
+                  >
+                    <input
+                      data-testid="allowMarketplaceToReplaceAntimatterPluginstrue"
+                      id="allowMarketplaceToReplaceAntimatterPluginstrue"
+                      name="allowMarketplaceToReplaceAntimatterPlugins"
+                      type="radio"
+                      value="true"
+                    />
+                    True
+                  </label>
+                  <label
+                    class="Label-eJcoMl iShgPr"
+                  >
+                    <input
+                      checked=""
+                      data-testid="allowMarketplaceToReplaceAntimatterPluginsfalse"
+                      id="allowMarketplaceToReplaceAntimatterPluginsfalse"
+                      name="allowMarketplaceToReplaceAntimatterPlugins"
+                      type="radio"
+                      value="false"
+                    />
+                    False
+                  </label>
+                  <div
+                    class="help-text"
+                    data-testid="allowMarketplaceToReplaceAntimatterPluginshelp-text"
+                  >
+                    When false, the marketplace leaves out its own builds of the plugins Antimatter provides (such as Calls, Playbooks and Boards), so they are not offered as updates that would replace the Antimatter builds. When true, they are listed and can be installed over the Antimatter builds.
+                  </div>
+                </div>
+              </fieldset>
+              <fieldset
+                class="form-group"
               >
                 <legend
                   class="control-label form-legend col-sm-4"
@@ -2105,6 +2293,52 @@ exports[`components/PluginManagement should match snapshot, No installed plugins
                   </div>
                 </div>
               </div>
+              <fieldset
+                class="form-group"
+                data-testid="allowMarketplaceToReplaceAntimatterPlugins"
+                id="allowMarketplaceToReplaceAntimatterPlugins"
+              >
+                <legend
+                  class="control-label form-legend col-sm-4"
+                >
+                  Allow Marketplace Builds of Antimatter Plugins:
+                </legend>
+                <div
+                  class="col-sm-8"
+                >
+                  <label
+                    class="Label-eJcoMl iShgPr"
+                  >
+                    <input
+                      data-testid="allowMarketplaceToReplaceAntimatterPluginstrue"
+                      id="allowMarketplaceToReplaceAntimatterPluginstrue"
+                      name="allowMarketplaceToReplaceAntimatterPlugins"
+                      type="radio"
+                      value="true"
+                    />
+                    True
+                  </label>
+                  <label
+                    class="Label-eJcoMl iShgPr"
+                  >
+                    <input
+                      checked=""
+                      data-testid="allowMarketplaceToReplaceAntimatterPluginsfalse"
+                      id="allowMarketplaceToReplaceAntimatterPluginsfalse"
+                      name="allowMarketplaceToReplaceAntimatterPlugins"
+                      type="radio"
+                      value="false"
+                    />
+                    False
+                  </label>
+                  <div
+                    class="help-text"
+                    data-testid="allowMarketplaceToReplaceAntimatterPluginshelp-text"
+                  >
+                    When false, the marketplace leaves out its own builds of the plugins Antimatter provides (such as Calls, Playbooks and Boards), so they are not offered as updates that would replace the Antimatter builds. When true, they are listed and can be installed over the Antimatter builds.
+                  </div>
+                </div>
+              </fieldset>
               <fieldset
                 class="form-group"
               >
@@ -2519,6 +2753,52 @@ exports[`components/PluginManagement should match snapshot, allow insecure URL e
                   </div>
                 </div>
               </div>
+              <fieldset
+                class="form-group"
+                data-testid="allowMarketplaceToReplaceAntimatterPlugins"
+                id="allowMarketplaceToReplaceAntimatterPlugins"
+              >
+                <legend
+                  class="control-label form-legend col-sm-4"
+                >
+                  Allow Marketplace Builds of Antimatter Plugins:
+                </legend>
+                <div
+                  class="col-sm-8"
+                >
+                  <label
+                    class="Label-eJcoMl iShgPr"
+                  >
+                    <input
+                      data-testid="allowMarketplaceToReplaceAntimatterPluginstrue"
+                      id="allowMarketplaceToReplaceAntimatterPluginstrue"
+                      name="allowMarketplaceToReplaceAntimatterPlugins"
+                      type="radio"
+                      value="true"
+                    />
+                    True
+                  </label>
+                  <label
+                    class="Label-eJcoMl iShgPr"
+                  >
+                    <input
+                      checked=""
+                      data-testid="allowMarketplaceToReplaceAntimatterPluginsfalse"
+                      id="allowMarketplaceToReplaceAntimatterPluginsfalse"
+                      name="allowMarketplaceToReplaceAntimatterPlugins"
+                      type="radio"
+                      value="false"
+                    />
+                    False
+                  </label>
+                  <div
+                    class="help-text"
+                    data-testid="allowMarketplaceToReplaceAntimatterPluginshelp-text"
+                  >
+                    When false, the marketplace leaves out its own builds of the plugins Antimatter provides (such as Calls, Playbooks and Boards), so they are not offered as updates that would replace the Antimatter builds. When true, they are listed and can be installed over the Antimatter builds.
+                  </div>
+                </div>
+              </fieldset>
               <fieldset
                 class="form-group"
               >
@@ -2954,6 +3234,54 @@ exports[`components/PluginManagement should match snapshot, disabled 1`] = `
                   </div>
                 </div>
               </div>
+              <fieldset
+                class="form-group"
+                data-testid="allowMarketplaceToReplaceAntimatterPlugins"
+                id="allowMarketplaceToReplaceAntimatterPlugins"
+              >
+                <legend
+                  class="control-label form-legend col-sm-4"
+                >
+                  Allow Marketplace Builds of Antimatter Plugins:
+                </legend>
+                <div
+                  class="col-sm-8"
+                >
+                  <label
+                    class="Label-eJcoMl kxVoZJ"
+                  >
+                    <input
+                      data-testid="allowMarketplaceToReplaceAntimatterPluginstrue"
+                      disabled=""
+                      id="allowMarketplaceToReplaceAntimatterPluginstrue"
+                      name="allowMarketplaceToReplaceAntimatterPlugins"
+                      type="radio"
+                      value="true"
+                    />
+                    True
+                  </label>
+                  <label
+                    class="Label-eJcoMl kxVoZJ"
+                  >
+                    <input
+                      checked=""
+                      data-testid="allowMarketplaceToReplaceAntimatterPluginsfalse"
+                      disabled=""
+                      id="allowMarketplaceToReplaceAntimatterPluginsfalse"
+                      name="allowMarketplaceToReplaceAntimatterPlugins"
+                      type="radio"
+                      value="false"
+                    />
+                    False
+                  </label>
+                  <div
+                    class="help-text"
+                    data-testid="allowMarketplaceToReplaceAntimatterPluginshelp-text"
+                  >
+                    When false, the marketplace leaves out its own builds of the plugins Antimatter provides (such as Calls, Playbooks and Boards), so they are not offered as updates that would replace the Antimatter builds. When true, they are listed and can be installed over the Antimatter builds.
+                  </div>
+                </div>
+              </fieldset>
             </div>
           </div>
         </div>
@@ -3348,6 +3676,52 @@ exports[`components/PluginManagement should match snapshot, text entered into th
                   </div>
                 </div>
               </div>
+              <fieldset
+                class="form-group"
+                data-testid="allowMarketplaceToReplaceAntimatterPlugins"
+                id="allowMarketplaceToReplaceAntimatterPlugins"
+              >
+                <legend
+                  class="control-label form-legend col-sm-4"
+                >
+                  Allow Marketplace Builds of Antimatter Plugins:
+                </legend>
+                <div
+                  class="col-sm-8"
+                >
+                  <label
+                    class="Label-eJcoMl iShgPr"
+                  >
+                    <input
+                      data-testid="allowMarketplaceToReplaceAntimatterPluginstrue"
+                      id="allowMarketplaceToReplaceAntimatterPluginstrue"
+                      name="allowMarketplaceToReplaceAntimatterPlugins"
+                      type="radio"
+                      value="true"
+                    />
+                    True
+                  </label>
+                  <label
+                    class="Label-eJcoMl iShgPr"
+                  >
+                    <input
+                      checked=""
+                      data-testid="allowMarketplaceToReplaceAntimatterPluginsfalse"
+                      id="allowMarketplaceToReplaceAntimatterPluginsfalse"
+                      name="allowMarketplaceToReplaceAntimatterPlugins"
+                      type="radio"
+                      value="false"
+                    />
+                    False
+                  </label>
+                  <div
+                    class="help-text"
+                    data-testid="allowMarketplaceToReplaceAntimatterPluginshelp-text"
+                  >
+                    When false, the marketplace leaves out its own builds of the plugins Antimatter provides (such as Calls, Playbooks and Boards), so they are not offered as updates that would replace the Antimatter builds. When true, they are listed and can be installed over the Antimatter builds.
+                  </div>
+                </div>
+              </fieldset>
               <fieldset
                 class="form-group"
               >
@@ -3784,6 +4158,54 @@ exports[`components/PluginManagement should match snapshot, upload disabled 1`] 
               </div>
               <fieldset
                 class="form-group"
+                data-testid="allowMarketplaceToReplaceAntimatterPlugins"
+                id="allowMarketplaceToReplaceAntimatterPlugins"
+              >
+                <legend
+                  class="control-label form-legend col-sm-4"
+                >
+                  Allow Marketplace Builds of Antimatter Plugins:
+                </legend>
+                <div
+                  class="col-sm-8"
+                >
+                  <label
+                    class="Label-eJcoMl kxVoZJ"
+                  >
+                    <input
+                      data-testid="allowMarketplaceToReplaceAntimatterPluginstrue"
+                      disabled=""
+                      id="allowMarketplaceToReplaceAntimatterPluginstrue"
+                      name="allowMarketplaceToReplaceAntimatterPlugins"
+                      type="radio"
+                      value="true"
+                    />
+                    True
+                  </label>
+                  <label
+                    class="Label-eJcoMl kxVoZJ"
+                  >
+                    <input
+                      checked=""
+                      data-testid="allowMarketplaceToReplaceAntimatterPluginsfalse"
+                      disabled=""
+                      id="allowMarketplaceToReplaceAntimatterPluginsfalse"
+                      name="allowMarketplaceToReplaceAntimatterPlugins"
+                      type="radio"
+                      value="false"
+                    />
+                    False
+                  </label>
+                  <div
+                    class="help-text"
+                    data-testid="allowMarketplaceToReplaceAntimatterPluginshelp-text"
+                  >
+                    When false, the marketplace leaves out its own builds of the plugins Antimatter provides (such as Calls, Playbooks and Boards), so they are not offered as updates that would replace the Antimatter builds. When true, they are listed and can be installed over the Antimatter builds.
+                  </div>
+                </div>
+              </fieldset>
+              <fieldset
+                class="form-group"
               >
                 <legend
                   class="control-label form-legend col-sm-4"
@@ -4195,6 +4617,52 @@ exports[`components/PluginManagement should match snapshot, with installed plugi
                   </div>
                 </div>
               </div>
+              <fieldset
+                class="form-group"
+                data-testid="allowMarketplaceToReplaceAntimatterPlugins"
+                id="allowMarketplaceToReplaceAntimatterPlugins"
+              >
+                <legend
+                  class="control-label form-legend col-sm-4"
+                >
+                  Allow Marketplace Builds of Antimatter Plugins:
+                </legend>
+                <div
+                  class="col-sm-8"
+                >
+                  <label
+                    class="Label-eJcoMl iShgPr"
+                  >
+                    <input
+                      data-testid="allowMarketplaceToReplaceAntimatterPluginstrue"
+                      id="allowMarketplaceToReplaceAntimatterPluginstrue"
+                      name="allowMarketplaceToReplaceAntimatterPlugins"
+                      type="radio"
+                      value="true"
+                    />
+                    True
+                  </label>
+                  <label
+                    class="Label-eJcoMl iShgPr"
+                  >
+                    <input
+                      checked=""
+                      data-testid="allowMarketplaceToReplaceAntimatterPluginsfalse"
+                      id="allowMarketplaceToReplaceAntimatterPluginsfalse"
+                      name="allowMarketplaceToReplaceAntimatterPlugins"
+                      type="radio"
+                      value="false"
+                    />
+                    False
+                  </label>
+                  <div
+                    class="help-text"
+                    data-testid="allowMarketplaceToReplaceAntimatterPluginshelp-text"
+                  >
+                    When false, the marketplace leaves out its own builds of the plugins Antimatter provides (such as Calls, Playbooks and Boards), so they are not offered as updates that would replace the Antimatter builds. When true, they are listed and can be installed over the Antimatter builds.
+                  </div>
+                </div>
+              </fieldset>
               <fieldset
                 class="form-group"
               >
@@ -4893,6 +5361,52 @@ exports[`components/PluginManagement should match snapshot, with installed plugi
               </div>
               <fieldset
                 class="form-group"
+                data-testid="allowMarketplaceToReplaceAntimatterPlugins"
+                id="allowMarketplaceToReplaceAntimatterPlugins"
+              >
+                <legend
+                  class="control-label form-legend col-sm-4"
+                >
+                  Allow Marketplace Builds of Antimatter Plugins:
+                </legend>
+                <div
+                  class="col-sm-8"
+                >
+                  <label
+                    class="Label-eJcoMl iShgPr"
+                  >
+                    <input
+                      data-testid="allowMarketplaceToReplaceAntimatterPluginstrue"
+                      id="allowMarketplaceToReplaceAntimatterPluginstrue"
+                      name="allowMarketplaceToReplaceAntimatterPlugins"
+                      type="radio"
+                      value="true"
+                    />
+                    True
+                  </label>
+                  <label
+                    class="Label-eJcoMl iShgPr"
+                  >
+                    <input
+                      checked=""
+                      data-testid="allowMarketplaceToReplaceAntimatterPluginsfalse"
+                      id="allowMarketplaceToReplaceAntimatterPluginsfalse"
+                      name="allowMarketplaceToReplaceAntimatterPlugins"
+                      type="radio"
+                      value="false"
+                    />
+                    False
+                  </label>
+                  <div
+                    class="help-text"
+                    data-testid="allowMarketplaceToReplaceAntimatterPluginshelp-text"
+                  >
+                    When false, the marketplace leaves out its own builds of the plugins Antimatter provides (such as Calls, Playbooks and Boards), so they are not offered as updates that would replace the Antimatter builds. When true, they are listed and can be installed over the Antimatter builds.
+                  </div>
+                </div>
+              </fieldset>
+              <fieldset
+                class="form-group"
               >
                 <legend
                   class="control-label form-legend col-sm-4"
@@ -5385,6 +5899,52 @@ exports[`components/PluginManagement should match snapshot, with installed plugi
                   </div>
                 </div>
               </div>
+              <fieldset
+                class="form-group"
+                data-testid="allowMarketplaceToReplaceAntimatterPlugins"
+                id="allowMarketplaceToReplaceAntimatterPlugins"
+              >
+                <legend
+                  class="control-label form-legend col-sm-4"
+                >
+                  Allow Marketplace Builds of Antimatter Plugins:
+                </legend>
+                <div
+                  class="col-sm-8"
+                >
+                  <label
+                    class="Label-eJcoMl iShgPr"
+                  >
+                    <input
+                      data-testid="allowMarketplaceToReplaceAntimatterPluginstrue"
+                      id="allowMarketplaceToReplaceAntimatterPluginstrue"
+                      name="allowMarketplaceToReplaceAntimatterPlugins"
+                      type="radio"
+                      value="true"
+                    />
+                    True
+                  </label>
+                  <label
+                    class="Label-eJcoMl iShgPr"
+                  >
+                    <input
+                      checked=""
+                      data-testid="allowMarketplaceToReplaceAntimatterPluginsfalse"
+                      id="allowMarketplaceToReplaceAntimatterPluginsfalse"
+                      name="allowMarketplaceToReplaceAntimatterPlugins"
+                      type="radio"
+                      value="false"
+                    />
+                    False
+                  </label>
+                  <div
+                    class="help-text"
+                    data-testid="allowMarketplaceToReplaceAntimatterPluginshelp-text"
+                  >
+                    When false, the marketplace leaves out its own builds of the plugins Antimatter provides (such as Calls, Playbooks and Boards), so they are not offered as updates that would replace the Antimatter builds. When true, they are listed and can be installed over the Antimatter builds.
+                  </div>
+                </div>
+              </fieldset>
               <fieldset
                 class="form-group"
               >
@@ -5881,6 +6441,52 @@ exports[`components/PluginManagement should match snapshot, with installed plugi
               </div>
               <fieldset
                 class="form-group"
+                data-testid="allowMarketplaceToReplaceAntimatterPlugins"
+                id="allowMarketplaceToReplaceAntimatterPlugins"
+              >
+                <legend
+                  class="control-label form-legend col-sm-4"
+                >
+                  Allow Marketplace Builds of Antimatter Plugins:
+                </legend>
+                <div
+                  class="col-sm-8"
+                >
+                  <label
+                    class="Label-eJcoMl iShgPr"
+                  >
+                    <input
+                      data-testid="allowMarketplaceToReplaceAntimatterPluginstrue"
+                      id="allowMarketplaceToReplaceAntimatterPluginstrue"
+                      name="allowMarketplaceToReplaceAntimatterPlugins"
+                      type="radio"
+                      value="true"
+                    />
+                    True
+                  </label>
+                  <label
+                    class="Label-eJcoMl iShgPr"
+                  >
+                    <input
+                      checked=""
+                      data-testid="allowMarketplaceToReplaceAntimatterPluginsfalse"
+                      id="allowMarketplaceToReplaceAntimatterPluginsfalse"
+                      name="allowMarketplaceToReplaceAntimatterPlugins"
+                      type="radio"
+                      value="false"
+                    />
+                    False
+                  </label>
+                  <div
+                    class="help-text"
+                    data-testid="allowMarketplaceToReplaceAntimatterPluginshelp-text"
+                  >
+                    When false, the marketplace leaves out its own builds of the plugins Antimatter provides (such as Calls, Playbooks and Boards), so they are not offered as updates that would replace the Antimatter builds. When true, they are listed and can be installed over the Antimatter builds.
+                  </div>
+                </div>
+              </fieldset>
+              <fieldset
+                class="form-group"
               >
                 <legend
                   class="control-label form-legend col-sm-4"
@@ -6373,6 +6979,52 @@ exports[`components/PluginManagement should match snapshot, with installed plugi
                   </div>
                 </div>
               </div>
+              <fieldset
+                class="form-group"
+                data-testid="allowMarketplaceToReplaceAntimatterPlugins"
+                id="allowMarketplaceToReplaceAntimatterPlugins"
+              >
+                <legend
+                  class="control-label form-legend col-sm-4"
+                >
+                  Allow Marketplace Builds of Antimatter Plugins:
+                </legend>
+                <div
+                  class="col-sm-8"
+                >
+                  <label
+                    class="Label-eJcoMl iShgPr"
+                  >
+                    <input
+                      data-testid="allowMarketplaceToReplaceAntimatterPluginstrue"
+                      id="allowMarketplaceToReplaceAntimatterPluginstrue"
+                      name="allowMarketplaceToReplaceAntimatterPlugins"
+                      type="radio"
+                      value="true"
+                    />
+                    True
+                  </label>
+                  <label
+                    class="Label-eJcoMl iShgPr"
+                  >
+                    <input
+                      checked=""
+                      data-testid="allowMarketplaceToReplaceAntimatterPluginsfalse"
+                      id="allowMarketplaceToReplaceAntimatterPluginsfalse"
+                      name="allowMarketplaceToReplaceAntimatterPlugins"
+                      type="radio"
+                      value="false"
+                    />
+                    False
+                  </label>
+                  <div
+                    class="help-text"
+                    data-testid="allowMarketplaceToReplaceAntimatterPluginshelp-text"
+                  >
+                    When false, the marketplace leaves out its own builds of the plugins Antimatter provides (such as Calls, Playbooks and Boards), so they are not offered as updates that would replace the Antimatter builds. When true, they are listed and can be installed over the Antimatter builds.
+                  </div>
+                </div>
+              </fieldset>
               <fieldset
                 class="form-group"
               >
