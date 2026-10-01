@@ -9,6 +9,12 @@ Mattermost provides the following performance monitoring statistics to integrate
 
 The following is a list of custom Mattermost metrics that can be used to monitor your system's performance:
 
+<Note>
+
+Antimatter exposes every `mattermost_*` metric a second time under the `antimatter_*` prefix, with the same help text, type, labels and values (for example `mattermost_post_total` is also available as `antimatter_post_total`). Existing dashboards and alerting rules keep working unchanged; new ones can use either name. Plugin metrics named `mattermost_*` that are included through `AggregatePluginMetrics` get the same treatment.
+
+</Note>
+
 ### API metrics
 
 - `mattermost_api_time`: The total time in seconds to execute a given API handler.
