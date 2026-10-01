@@ -11,9 +11,9 @@ ARG AM_PACKAGE
 # Configure PostgreSQL
 #
 
-ENV POSTGRES_USER=mmuser
-ENV POSTGRES_PASSWORD=mostest_password
-ENV POSTGRES_DB=mattermost_test
+ENV POSTGRES_USER=antimatter
+ENV POSTGRES_PASSWORD=antimatter-preview
+ENV POSTGRES_DB=antimatter
 
 #
 # Configure Antimatter
