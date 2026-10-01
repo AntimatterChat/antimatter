@@ -21771,6 +21771,26 @@
     "defaultMessage": "Go to team",
     "description": "Tooltip on an inline link in a message that points to a team."
   },
+  "inline_reply.deleted": {
+    "defaultMessage": "Original message deleted",
+    "description": "Shown instead of the quoted text above an inline reply when the message it replied to was deleted."
+  },
+  "inline_reply.files": {
+    "defaultMessage": "{count, plural, one {# file} other {# files}}",
+    "description": "Shown instead of the quoted text above an inline reply when the quoted message has only file attachments; {count} is the number of files."
+  },
+  "inline_reply.message": {
+    "defaultMessage": "a message",
+    "description": "Shown instead of the quoted text above an inline reply when there is nothing to quote from the original message."
+  },
+  "inline_reply.replying": {
+    "defaultMessage": "Replying to: ",
+    "description": "Start of the line above an inline reply, or above the message box, when the author of the quoted message is unknown; followed by the quoted text."
+  },
+  "inline_reply.replyingTo": {
+    "defaultMessage": "Replying to {name}: ",
+    "description": "Start of the line above an inline reply, or above the message box while writing one; {name} is the author of the quoted message, followed by the quoted text."
+  },
   "inProduct_notices.adminOnlyMessage": {
     "defaultMessage": "Visible to Admins only",
     "description": "Footer note in the in-product notices modal indicating the notice is shown only to system administrators."

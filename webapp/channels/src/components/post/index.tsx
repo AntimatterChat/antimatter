@@ -39,6 +39,7 @@ import {getIsMobileView} from 'selectors/views/browser';
 
 import {isArchivedChannel} from 'utils/channel_utils';
 import {Locations, Preferences, RHSStates} from 'utils/constants';
+import {getReplyToId, isInlineRepliesEnabled} from 'utils/inline_replies';
 import {isPopoutWindow} from 'utils/popouts/popout_windows';
 import {areConsecutivePostsBySameUser, canDeletePost, getPostTranslation, shouldShowActionsMenu, shouldShowDotMenu} from 'utils/post_utils';
 import {getDisplayNameByUser} from 'utils/utils';
@@ -85,6 +86,11 @@ function isConsecutivePost(state: GlobalState, ownProps: OwnProps, locale: strin
 
     if (previousPost && post && !post.metadata?.priority?.priority) {
         consecutivePost = areConsecutivePostsBySameUser(post, previousPost);
+    }
+
+    // An inline reply shows who wrote it above the message it quotes.
+    if (post && consecutivePost && isInlineRepliesEnabled(state) && getReplyToId(post)) {
+        consecutivePost = false;
     }
 
     if (previousPost && post && consecutivePost && isMyChannelAutotranslated(state, post.channel_id)) {
