@@ -9,6 +9,7 @@ import type {FileInfo} from '@mattermost/types/files';
 import type {PostPriority} from '@mattermost/types/posts';
 
 import {Posts} from 'mattermost-redux/constants';
+import {getConfig} from 'mattermost-redux/selectors/entities/general';
 import {isPostPriorityEnabled} from 'mattermost-redux/selectors/entities/posts';
 import {getBool} from 'mattermost-redux/selectors/entities/preferences';
 import {isScheduledPostsEnabled} from 'mattermost-redux/selectors/entities/scheduled_posts';
@@ -22,6 +23,7 @@ import {makeGetDraft} from 'selectors/drafts';
 import Icon from 'fusion/components/icon';
 import {Popover} from 'fusion/components/layer';
 import {MenuHeading, MenuItem, MenuSeparator} from 'fusion/components/menu';
+import {useBurnDuration} from 'fusion/messages/burn_on_read';
 import EmojiPicker from 'fusion/popovers/emoji_picker';
 import {MENTION_EVENT} from 'fusion/popovers/user_menu';
 import {useToast} from 'fusion/shell/toast_context';
@@ -62,6 +64,8 @@ export default function Composer({channelId, rootId = '', placeholder, compact =
     const priorityEnabled = useSelector(isPostPriorityEnabled);
     const burnEnabled = useSelector(isBurnOnReadEnabled);
     const schedulingEnabled = useSelector(isScheduledPostsEnabled);
+    const burnDuration = useBurnDuration();
+    const persistentMinutes = useSelector((state: GlobalState) => parseInt(getConfig(state).PersistentNotificationIntervalMinutes || '5', 10) || 5);
     const toast = useToast();
     const ctrlSend = useSelector((state: GlobalState) => getBool(state, Constants.Preferences.CATEGORY_ADVANCED_SETTINGS, 'send_on_ctrl_enter', false));
     const [draft, setDraft] = useState<PostDraft>(storedDraft);
@@ -618,7 +622,7 @@ export default function Composer({channelId, rootId = '', placeholder, compact =
                     <div className={am('pp-row', {disabled: priority?.priority !== 'urgent'})}>
                         <span>
                             {formatMessage({id: 'fusion.composer.persistentTitle', defaultMessage: 'Persistent notifications'})}
-                            <small>{formatMessage({id: 'fusion.composer.persistentDesc', defaultMessage: 'Repeats until acknowledged · urgent only'})}</small>
+                            <small>{formatMessage({id: 'fusion.composer.persistentEvery', defaultMessage: 'Repeats every {minutes, plural, one {minute} other {# minutes}} until acknowledged · urgent only'}, {minutes: persistentMinutes})}</small>
                         </span>
                         <button
                             type='button'
@@ -652,7 +656,7 @@ export default function Composer({channelId, rootId = '', placeholder, compact =
                     <div className={am('pp-row')}>
                         <span>
                             {formatMessage({id: 'fusion.composer.burn', defaultMessage: 'Burn on read'})}
-                            <small>{formatMessage({id: 'fusion.composer.burnDesc', defaultMessage: 'Deleted a while after each person opens it'})}</small>
+                            <small>{formatMessage({id: 'fusion.composer.burnAfter', defaultMessage: 'Deleted {duration} after each person opens it'}, {duration: burnDuration})}</small>
                         </span>
                         <button
                             type='button'

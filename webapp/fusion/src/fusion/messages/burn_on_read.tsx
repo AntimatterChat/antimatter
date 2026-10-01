@@ -59,10 +59,10 @@ function useCountdown(until: number | null): string {
 }
 
 // useBurnDuration describes how long a message lives once opened: its own read_duration, else the server's setting.
-function useBurnDuration(post: Post): string {
+export function useBurnDuration(post?: Post): string {
     const {formatMessage} = useIntl();
     const config = useSelector(getConfig);
-    const ms = toNumber(post.props?.read_duration);
+    const ms = toNumber(post?.props?.read_duration);
     const seconds = ms ? Math.round(ms / 1000) : parseInt(config.BurnOnReadDurationSeconds || '600', 10);
     if (seconds < 60) {
         return formatMessage({id: 'fusion.burn.seconds', defaultMessage: '{count, plural, one {# second} other {# seconds}}'}, {count: seconds});
