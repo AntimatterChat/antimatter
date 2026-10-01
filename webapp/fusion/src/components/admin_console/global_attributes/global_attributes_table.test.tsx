@@ -1172,6 +1172,29 @@ describe('GlobalAttributesTable', () => {
             expect(edit!).not.toHaveAttribute('aria-disabled', 'true');
             expect(edit!).not.toHaveTextContent('Coming soon');
         });
+
+        it('offers View and disables Delete when the listing page is read-only', async () => {
+            getPropertyFields.mockResolvedValueOnce([makeField()]).mockResolvedValue([]);
+
+            renderWithContext(<GlobalAttributesTable disabled={true}/>, getBaseState());
+
+            // Managed rows never fetch plugin statuses, so open the menu directly
+            // rather than via openActionsMenu (which waits on that fetch).
+            await userEvent.click(await screen.findByTestId('global-attribute-actions-field-1'));
+            const menuitems = screen.getAllByRole('menuitem');
+            expect(menuitems.find((el) => el.textContent?.includes('Edit attribute'))).toBeUndefined();
+
+            const view = menuitems.find((el) => el.textContent?.includes('View attribute'));
+            expect(view).not.toHaveAttribute('aria-disabled', 'true');
+
+            const del = menuitems.find((el) => el.textContent?.includes('Delete attribute'));
+            expect(del).toHaveAttribute('aria-disabled', 'true');
+
+            await userEvent.click(view!);
+            await waitFor(() => {
+                expect(mockHistoryPush).toHaveBeenCalledWith('/admin_console/system_attributes/manage_attributes/attribute_details/field-1');
+            });
+        });
     });
 
     describe('Delete action', () => {
@@ -1556,28 +1579,27 @@ describe('GlobalAttributesTable', () => {
             expect(screen.queryByTestId('global-attribute-actions-field-1')).not.toBeInTheDocument();
         });
 
-        it('renders the ordinary dot-menu and the generic "Managed here" source when the field matches but the destination is not reachable (flag off)', async () => {
+        it('hides the Classification row when the destination is not reachable (flag off)', async () => {
             getPropertyFields.mockResolvedValueOnce([makeClassificationField()]).mockResolvedValue([]);
 
             // getBaseState() has no FeatureFlags set, so the reachability check is false.
             renderWithContext(<GlobalAttributesTable/>, getBaseState());
 
-            const trigger = await screen.findByTestId('global-attribute-actions-field-1');
-            expect(trigger).toBeInTheDocument();
-
+            await waitFor(() => expect(getPropertyFields).toHaveBeenCalled());
+            expect(screen.queryByTestId('global-attribute-name')).not.toBeInTheDocument();
             expect(screen.queryByTestId('global-attribute-classification-link-field-1')).not.toBeInTheDocument();
-            expect(screen.getByTestId('global-attribute-source')).toHaveTextContent('Managed here');
+            expect(screen.queryByTestId('global-attribute-actions-field-1')).not.toBeInTheDocument();
         });
 
-        it('renders the ordinary dot-menu when the ClassificationMarkings flag is off', async () => {
+        it('hides the Classification row when the ClassificationMarkings flag is off', async () => {
             getPropertyFields.mockResolvedValueOnce([makeClassificationField()]).mockResolvedValue([]);
 
             renderWithContext(<GlobalAttributesTable/>, getReachableState({classificationMarkingsFlagOn: false}));
 
-            const trigger = await screen.findByTestId('global-attribute-actions-field-1');
-            expect(trigger).toBeInTheDocument();
-
+            await waitFor(() => expect(getPropertyFields).toHaveBeenCalled());
+            expect(screen.queryByTestId('global-attribute-name')).not.toBeInTheDocument();
             expect(screen.queryByTestId('global-attribute-classification-link-field-1')).not.toBeInTheDocument();
+            expect(screen.queryByTestId('global-attribute-actions-field-1')).not.toBeInTheDocument();
         });
 
         it('renders the open-in-new link on mobile with its tooltip disabled', async () => {
@@ -1625,6 +1647,26 @@ describe('GlobalAttributesTable', () => {
 
             expect(screen.queryByTestId('global-attribute-classification-link-field-1')).not.toBeInTheDocument();
         });
+
+        it('treats a wrong-typed template named classification as an ordinary attribute, so it can be repaired', async () => {
+            // * An admin can create a text attribute called `classification` here, which
+            // the Classification Markings page then reports as a conflict. Deleting or
+            // renaming it in this table is the repair path that error points at, so the
+            // row must keep its Edit and Delete actions.
+            getPropertyFields.mockResolvedValueOnce([makeClassificationField({type: 'text', attrs: {}})]).mockResolvedValue([]);
+
+            renderWithContext(<GlobalAttributesTable/>, getReachableState());
+
+            expect(await screen.findByTestId('global-attribute-name')).toHaveTextContent('Classification');
+            expect(screen.queryByTestId('global-attribute-classification-subtitle-field-1')).not.toBeInTheDocument();
+            expect(screen.queryByTestId('global-attribute-classification-link-field-1')).not.toBeInTheDocument();
+            expect(screen.getByTestId('global-attribute-source')).toHaveTextContent('Managed here');
+
+            await userEvent.click(screen.getByTestId('global-attribute-actions-field-1'));
+
+            const items = (await screen.findAllByRole('menuitem')).map((el) => el.textContent);
+            expect(items).toEqual(['Edit attribute', 'Delete attribute']);
+        });
     });
 });
 
@@ -1663,23 +1705,28 @@ describe('getSourceKind', () => {
 describe('isClassificationMarkingsField', () => {
     const groupId = 'accesscontrolgroupuuid001';
 
-    it('returns true only when name, object_type, and group_id all match', () => {
-        const field = makeField({name: CLASSIFICATIONS_TEMPLATE_FIELD_NAME, object_type: CLASSIFICATIONS_TEMPLATE_OBJECT_TYPE, group_id: groupId});
+    it('returns true only when name, type, object_type, and group_id all match', () => {
+        const field = makeClassificationField({group_id: groupId});
         expect(isClassificationMarkingsField(field, groupId)).toBe(true);
     });
 
     it('returns false when the name matches but object_type does not', () => {
-        const field = makeField({name: CLASSIFICATIONS_TEMPLATE_FIELD_NAME, object_type: 'system', group_id: groupId});
+        const field = makeClassificationField({object_type: 'system', group_id: groupId});
         expect(isClassificationMarkingsField(field, groupId)).toBe(false);
     });
 
     it('returns false when the name and object_type match but group_id does not', () => {
-        const field = makeField({name: CLASSIFICATIONS_TEMPLATE_FIELD_NAME, object_type: CLASSIFICATIONS_TEMPLATE_OBJECT_TYPE, group_id: 'some-other-group'});
+        const field = makeClassificationField({group_id: 'some-other-group'});
         expect(isClassificationMarkingsField(field, groupId)).toBe(false);
     });
 
     it('returns false when object_type and group_id match but the name does not', () => {
-        const field = makeField({name: 'not_classification', object_type: CLASSIFICATIONS_TEMPLATE_OBJECT_TYPE, group_id: groupId});
+        const field = makeClassificationField({name: 'not_classification', group_id: groupId});
+        expect(isClassificationMarkingsField(field, groupId)).toBe(false);
+    });
+
+    it('returns false when only the type does not match, so it stays an ordinary attribute', () => {
+        const field = makeClassificationField({type: 'text', group_id: groupId});
         expect(isClassificationMarkingsField(field, groupId)).toBe(false);
     });
 });

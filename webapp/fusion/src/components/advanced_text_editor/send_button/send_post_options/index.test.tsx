@@ -101,7 +101,6 @@ describe('SendPostOptions', () => {
                 <SendPostOptions
                     channelId='channelId'
                     onSelect={onSelect}
-                    allowRecurring={true}
                     {...props}
                 />
                 <ModalController/>
