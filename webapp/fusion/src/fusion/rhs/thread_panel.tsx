@@ -170,7 +170,6 @@ export default function ThreadPanel({rootId}: {rootId: string}) {
                     key={rootId}
                     channelId={root.channel_id}
                     rootId={rootId}
-                    compact={true}
                     placeholder={formatMessage({id: 'fusion.thread.reply', defaultMessage: 'Reply to thread'})}
                 />
             )}

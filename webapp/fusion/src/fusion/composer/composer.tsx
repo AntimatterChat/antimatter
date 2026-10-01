@@ -37,6 +37,7 @@ import type {PostDraft} from 'types/store/draft';
 import Autocomplete from './autocomplete';
 import type {AutocompleteHandle} from './autocomplete';
 import {FORMATS, applyFormat} from './formats';
+import {useShowFormatting} from './formatting_preference';
 import {SchedulePopover, ScheduledNote} from './schedule';
 import SleepNote from './sleep_note';
 
@@ -47,15 +48,13 @@ type Props = {
     rootId?: string;
     placeholder: string;
 
-    // The thread panel's composer keeps the formatting bar hidden, like the mockup's pop-out thread window.
-    compact?: boolean;
 };
 
 type Pending = {clientId: string; name: string; progress: number};
 
 // Composer writes messages: the mockup's compose box around the classic web app's drafts and submit logic
 // (slash commands, reactions, message priority).
-export default function Composer({channelId, rootId = '', placeholder, compact = false}: Props) {
+export default function Composer({channelId, rootId = '', placeholder}: Props) {
     const intl = useIntl();
     const {formatMessage} = intl;
     const dispatch = useDispatch();
@@ -69,7 +68,7 @@ export default function Composer({channelId, rootId = '', placeholder, compact =
     const toast = useToast();
     const ctrlSend = useSelector((state: GlobalState) => getBool(state, Constants.Preferences.CATEGORY_ADVANCED_SETTINGS, 'send_on_ctrl_enter', false));
     const [draft, setDraft] = useState<PostDraft>(storedDraft);
-    const [showFormatting, setShowFormatting] = useState(!compact);
+    const [showFormatting, setShowFormatting] = useShowFormatting();
     const [pending, setPending] = useState<Pending[]>([]);
     const [menu, setMenu] = useState<'plus' | 'emoji' | 'priority' | 'burn' | 'more' | 'schedule' | null>(null);
     const textareaRef = useRef<HTMLTextAreaElement>(null);
