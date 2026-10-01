@@ -2,5 +2,5 @@
 // See LICENSE.txt for license information.
 
 export {default} from './icon';
-export {default as IconSprite} from './icon_sprite';
+export {default as IconSprite, isIconName} from './icon_sprite';
 export type {IconName} from './icon_sprite';

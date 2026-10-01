@@ -40,6 +40,7 @@ import Autocomplete from './autocomplete';
 import type {AutocompleteHandle} from './autocomplete';
 import {FORMATS, applyFormat} from './formats';
 import {useShowFormatting} from './formatting_preference';
+import PluginMenuItems from './plugin_menu_items';
 import {SchedulePopover, ScheduledNote} from './schedule';
 import SleepNote from './sleep_note';
 
@@ -543,6 +544,11 @@ export default function Composer({channelId, rootId = '', placeholder}: Props) {
                             setMenu(null);
                             fileRef.current?.click();
                         }}
+                    />
+                    <PluginMenuItems
+                        channelId={channelId}
+                        rootId={rootId}
+                        onClose={() => setMenu(null)}
                     />
                     <MenuSeparator/>
                     {schedulingEnabled && (
