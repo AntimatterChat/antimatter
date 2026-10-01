@@ -3467,7 +3467,7 @@
   "admin.service.letsEncryptCertificateCacheFile": "Let's Encrypt 憑證快取檔案：",
   "admin.service.letsEncryptCertificateCacheFileDescription": "取得的憑證以及其他關於 Let's Encrypt 服務的資料將會儲存於這個檔案。",
   "admin.service.listenAddress": "監聽位址：",
-  "admin.service.listenDescription": "綁定並監聽的位址與通訊埠。輸入「:8065」會跟所有的網路界面綁定。輸入「127.0.0.1:8065」會僅與擁有該 IP 位址的網路界面綁定。如果選取了較低的通訊埠（稱為「系統通訊埠」或「常見通訊埠」，介於 0 到 1023 之間），您必須擁有與該通訊埠綁定的權限。在 Linux 上，可以用「sudo setcap cap_net_bind_service=+ep ./bin/mattermost」來允許 Antimatter 綁定常見的通訊埠。",
+  "admin.service.listenDescription": "綁定並監聽的位址與通訊埠。輸入「:8065」會跟所有的網路界面綁定。輸入「127.0.0.1:8065」會僅與擁有該 IP 位址的網路界面綁定。如果選取了較低的通訊埠（稱為「系統通訊埠」或「常見通訊埠」，介於 0 到 1023 之間），您必須擁有與該通訊埠綁定的權限。在 Linux 上，可以用「sudo setcap cap_net_bind_service=+ep ./bin/antimatter」來允許 Antimatter 綁定常見的通訊埠。",
   "admin.service.listenExample": "如：「:8065」",
   "admin.service.managedResourcePaths": "受管理的資源路徑：",
   "admin.service.managedResourcePathsDescription": "Antimatter 伺服器上由其他服務管理的路徑的逗號分隔清單。請參閱<link>此處</link>以了解更多資訊。",

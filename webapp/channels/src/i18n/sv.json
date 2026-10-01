@@ -3469,7 +3469,7 @@
   "admin.service.letsEncryptCertificateCacheFile": "Let's Encrypt Certificate Cache Fil:",
   "admin.service.letsEncryptCertificateCacheFileDescription": "Mottagna certifikat och annan data om Let's Encrypts tjänst kommer sparas i denna fil.",
   "admin.service.listenAddress": "Lyssnaradress:",
-  "admin.service.listenDescription": "Adress och port att använda och lyssna på. Ange \":8065\" för att nyttja alla nätverksinterface. Ange \"127.0.0.1:8065\" för att endast använda det nätverksinterface som har den IP-adressen. Om du väljer en port i den lägre regionen (s.k. \"system ports\" eller \"well-known ports\", i området 0-1023), måste du ha rättighet att ansluta till den porten. I Linux kan du använda: \"sudo setcap cap_net_bind_service=+ep ./bin/mattermost\" för att tillåta Antimatter att använda och ansluta till \"well-known ports\".",
+  "admin.service.listenDescription": "Adress och port att använda och lyssna på. Ange \":8065\" för att nyttja alla nätverksinterface. Ange \"127.0.0.1:8065\" för att endast använda det nätverksinterface som har den IP-adressen. Om du väljer en port i den lägre regionen (s.k. \"system ports\" eller \"well-known ports\", i området 0-1023), måste du ha rättighet att ansluta till den porten. I Linux kan du använda: \"sudo setcap cap_net_bind_service=+ep ./bin/antimatter\" för att tillåta Antimatter att använda och ansluta till \"well-known ports\".",
   "admin.service.listenExample": "T.ex.: \":8065\"",
   "admin.service.managedResourcePaths": "Hantera sökvägar till resurser:",
   "admin.service.managedResourcePathsDescription": "En kommaseparerad lista av sökvägar på Mattermost-servern som hanteras av en annan tjänst. Läs <link>här</link> för mer information.",

@@ -3469,7 +3469,7 @@
   "admin.service.letsEncryptCertificateCacheFile": "Let's Encrypt 证书缓存文件：",
   "admin.service.letsEncryptCertificateCacheFileDescription": "从 Let's Encrypt 服务获取的证书和其他数据将存储于此文件。",
   "admin.service.listenAddress": "监听地址：",
-  "admin.service.listenDescription": "绑定和监听的地址和端口。指定“:8065”将会绑定所有网络接口。指定“127.0.0.1:8065”将只绑定拥有此 IP 的网络接口。如果您选择一个低级端口（叫作“系统端口”或“知名端口”，于 0-1023 之间），您必须要拥有权限才能绑定至此端口。在 Linux 上您可以使用：”sudo setcap cap_net_bind_service=+ep ./bin/mattermost”以允许 Antimatter 绑定至知名端口。",
+  "admin.service.listenDescription": "绑定和监听的地址和端口。指定“:8065”将会绑定所有网络接口。指定“127.0.0.1:8065”将只绑定拥有此 IP 的网络接口。如果您选择一个低级端口（叫作“系统端口”或“知名端口”，于 0-1023 之间），您必须要拥有权限才能绑定至此端口。在 Linux 上您可以使用：”sudo setcap cap_net_bind_service=+ep ./bin/antimatter”以允许 Antimatter 绑定至知名端口。",
   "admin.service.listenExample": "例如：“:8065”",
   "admin.service.managedResourcePaths": "托管资源路径：",
   "admin.service.managedResourcePathsDescription": "Antimatter 服务器上由另一服务管理的路径的列表，以逗号分隔。更多信息请参见<link>文档</link>。",
