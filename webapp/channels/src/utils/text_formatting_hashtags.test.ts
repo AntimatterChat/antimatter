@@ -147,8 +147,8 @@ describe('TextFormatting.Hashtags with default setting', () => {
             '<p>#<a class="mention-link" href="/abcd/channels/test" data-channel-mention="test">~Test Channel</a></p>',
         );
 
-        expect(TextFormatting.formatText('#:mattermost:', {}, emojiMap).trim()).toBe(
-            '<p>#<span data-emoticon="mattermost">:mattermost:</span></p>',
+        expect(TextFormatting.formatText('#:antimatter:', {}, emojiMap).trim()).toBe(
+            '<p>#<span data-emoticon="antimatter">:antimatter:</span></p>',
         );
 
         expect(TextFormatting.formatText('#test@example.com', {}, emojiMap).trim()).toBe(
