@@ -45,8 +45,12 @@
     100% { background: transparent; box-shadow: none; }
 }
 
+// The composer's reply bar sits on the message box, framed like it, so that the two read as one reply being written.
+:is(.am-app, .am-layer) .am-replying { border: 1px solid var(--am-line); border-bottom: 0; }
+:is(.am-app, .am-layer) .am-composer:focus-within .am-replying { border-color: var(--am-raise-2); }
+:is(.am-app, .am-layer) .am-replying > .am-ic { flex: none; color: var(--am-muted); }
 :is(.am-app, .am-layer) .am-replying > .am-ref-label, :is(.am-app, .am-layer) .am-replying > b { flex: none; white-space: nowrap; }
-:is(.am-app, .am-layer) .am-replying > b { font-weight: 600; }
+:is(.am-app, .am-layer) .am-replying > b { color: var(--am-text); font-weight: 700; }
 
 // The reply bar's "@ On" / "@ Off" switch, a pill as in other chat apps' reply bars: lit when the quoted message's
 // author is notified.
@@ -65,6 +69,8 @@
 :is(.am-app, .am-layer) .am-replying button.am-mention-switch.am-off { background: var(--am-raise); color: var(--am-muted); }
 :is(.am-app, .am-layer) .am-replying button.am-mention-switch:hover { filter: brightness(1.15); }
 :is(.am-app, .am-layer) .am-replying button.am-mention-switch.am-off:hover { color: var(--am-text-2); filter: none; }
+:is(.am-app, .am-layer) .am-replying > button:last-child { width: 24px; height: 24px; flex: none; border-radius: 50%; }
+:is(.am-app, .am-layer) .am-replying > button:last-child:hover { background: var(--am-hover); color: var(--am-text); }
 
 // A deleted message can't be jumped to.
 :is(.am-app, .am-layer) .am-ref-jump:disabled { cursor: default; }
