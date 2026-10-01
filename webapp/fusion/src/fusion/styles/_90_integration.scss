@@ -62,9 +62,10 @@ body.app__body #root.am-root > .am-root-main {
 :is(.am-app, .am-layer) .am-rhs .am-composer { padding: 0 14px 14px; }
 
 // The classic web app colours every link (.app__body a, and a:hover); the Fusion UI's rows that are links keep their
-// own colours. Just more specific than the classic rules, so that the Fusion rules for those rows still win.
-body.app__body :where(.am-app, .am-layer) a:where(:not(.am-body *)) { color: inherit; text-decoration: none; }
-body.app__body :where(.am-app, .am-layer) a:where(:not(.am-body *)):is(:hover, :focus) { color: inherit; text-decoration: none; }
+// own colours. Just more specific than the classic rules, so that the Fusion rules for those rows still win. The
+// links of messages and of the classic panels (plugins' panels) keep the classic link colours.
+body.app__body :where(.am-app, .am-layer) a:where(:not(.am-body *, .am-rhs-classic *)) { color: inherit; text-decoration: none; }
+body.app__body :where(.am-app, .am-layer) a:where(:not(.am-body *, .am-rhs-classic *)):is(:hover, :focus) { color: inherit; text-decoration: none; }
 :is(.am-app, .am-layer) .am-composer input[type="file"] { display: none; }
 :is(.am-app, .am-layer) .am-body .post-code code, :is(.am-app, .am-layer) .am-body .hljs { background: transparent; padding: 0; }
 
