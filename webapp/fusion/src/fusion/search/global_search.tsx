@@ -26,6 +26,7 @@ import {useGlobalSearch} from 'fusion/shell/global_search_context';
 import ChannelIcon from 'fusion/sidebar/channel_icon';
 import {am} from 'fusion/utils/class_names';
 import {channelPath, permalinkPath} from 'fusion/utils/paths';
+import {plainText} from 'fusion/utils/plain_text';
 import {getHistory} from 'utils/browser_history';
 
 import type {GlobalState} from 'types/store';
@@ -204,6 +205,13 @@ export default function GlobalSearch() {
         if (r.kind === 'message') {
             const author = users[r.post.user_id];
             const channel = channels[r.post.channel_id];
+            const direct = channel && (channel.type === 'D' || channel.type === 'G');
+            const where = channel ? (direct ? '' : '#') + channel.display_name : '';
+
+            // The snippet starts near the match, as the mockup's.
+            const text = plainText(r.post.message, 2000);
+            const at = text.toLowerCase().indexOf(q.toLowerCase());
+            const snippet = at > 40 ? '…' + text.slice(at - 30, at + 130) : text.slice(0, 160);
             return (
                 <>
                     <Avatar userId={r.post.user_id}/>
@@ -214,12 +222,12 @@ export default function GlobalSearch() {
                                 className={am('sub')}
                                 style={{display: 'inline'}}
                             >
-                                {` · ${channel?.display_name || ''} · ${when(r.post.create_at)}`}
+                                {' ' + formatMessage({id: 'fusion.gs.messageWhere', defaultMessage: 'in {where}'}, {where}) + (r.post.root_id ? ' · ' + formatMessage({id: 'fusion.gs.thread', defaultMessage: 'thread'}) : '') + ` · ${when(r.post.create_at)}`}
                             </span>
                         </b>
                         <span className={am('sub')}>
                             <Mark
-                                text={r.post.message.slice(0, 160)}
+                                text={snippet}
                                 q={q}
                             />
                         </span>
