@@ -10,7 +10,7 @@
     },
     "FileSettings": {
         "DriverName": "local",
-        "Directory": "/mm/mattermost-data",
+        "Directory": "/mm/antimatter-data",
         "PublicLinkSalt": ""
     },
     "EmailSettings": {
