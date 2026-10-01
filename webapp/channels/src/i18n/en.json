@@ -10843,6 +10843,14 @@
     "defaultMessage": "Plugin Management",
     "description": "Sidebar item and page title of the System Console > Plugins > Plugin Management page."
   },
+  "admin.plugins.settings.allowMarketplaceToReplaceAntimatterPlugins": {
+    "defaultMessage": "Allow Marketplace Builds of Antimatter Plugins:",
+    "description": "Label of the System Console Plugin Management setting that lets the marketplace offer its own builds of plugins Antimatter provides."
+  },
+  "admin.plugins.settings.allowMarketplaceToReplaceAntimatterPluginsDesc": {
+    "defaultMessage": "When false, the marketplace leaves out its own builds of the plugins Antimatter provides (such as Calls, Playbooks and Boards), so they are not offered as updates that would replace the Antimatter builds. When true, they are listed and can be installed over the Antimatter builds.",
+    "description": "Help text for the Allow Marketplace Builds of Antimatter Plugins setting in System Console Plugin Management."
+  },
   "admin.plugins.settings.automaticPrepackagedPlugins": {
     "defaultMessage": "Enable Automatic Prepackaged Plugins:",
     "description": "Setting label in System Console > Plugin Management for the toggle that automatically enables plugins prepackaged with the server; ends with a colon."
