@@ -993,6 +993,12 @@ export async function getMentionsAndStatusesForPosts(postsArrayOrMap: Post[] | P
                     }
                 });
             }
+
+            // The author of the message an inline reply quotes
+            const quotedUserId = post.metadata.reply_to?.user_id;
+            if (quotedUserId && quotedUserId !== currentUserId && !profiles[quotedUserId]) {
+                userIdsToLoad.add(quotedUserId);
+            }
         }
 
         if (!statuses[userId]) {
