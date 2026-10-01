@@ -28,6 +28,8 @@ import MemberAddPopover, {useCanAddPeople} from './member_add_popover';
 import {ROLE_COLORS, useMemberGroups, useMemberRoles} from './member_groups';
 import type {MemberRole} from './member_groups';
 
+const PER_PAGE = 100;
+
 type MemberProps = {
     user: UserProfile;
     off: boolean;
@@ -75,12 +77,15 @@ export default function MemberList({inPanel = false}: {inPanel?: boolean}) {
     const canAdd = useCanAddPeople(channel);
     const [popover, setPopover] = useState<{userId: string; anchor: HTMLElement} | null>(null);
     const [adding, setAdding] = useState(false);
+    const page = useRef(0);
+    const loading = useRef(false);
     const [userMenu, openUserMenu] = useUserMenu();
     const addRef = useRef<HTMLButtonElement>(null);
 
     useEffect(() => {
         if (channelId) {
-            dispatch(loadProfilesAndReloadChannelMembers(0, 100, channelId));
+            page.current = 0;
+            dispatch(loadProfilesAndReloadChannelMembers(0, PER_PAGE, channelId));
             dispatch(getChannelStats(channelId));
         }
     }, [channelId, dispatch]);
@@ -161,12 +166,32 @@ export default function MemberList({inPanel = false}: {inPanel?: boolean}) {
         </>
     );
 
+    // Big channels load their members a page at a time, as the list nears its end.
+    const onScroll = async (e: React.UIEvent<HTMLElement>) => {
+        const el = e.currentTarget;
+        if (loading.current || !memberCount || profiles.length >= memberCount || el.scrollHeight - el.scrollTop - el.clientHeight > 400) {
+            return;
+        }
+        loading.current = true;
+        page.current += 1;
+        await dispatch(loadProfilesAndReloadChannelMembers(page.current, PER_PAGE, channelId));
+        loading.current = false;
+    };
+
     if (inPanel) {
-        return <div className={am('rhs-body', 'members-panel')}>{list}</div>;
+        return (
+            <div
+                className={am('rhs-body', 'members-panel')}
+                onScroll={onScroll}
+            >
+                {list}
+            </div>
+        );
     }
     return (
         <aside
             className={am('members')}
+            onScroll={onScroll}
             aria-label={formatMessage({id: 'fusion.members.label', defaultMessage: 'Members'})}
         >
             {list}
