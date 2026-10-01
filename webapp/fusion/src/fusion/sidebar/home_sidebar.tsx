@@ -18,6 +18,7 @@ import {openNewDirectMessage} from 'fusion/utils/modals';
 import type {GlobalState} from 'types/store';
 
 import DirectRow, {useTeammateId} from './direct_row';
+import {useLastMessage} from './last_message';
 import VoicePanel from './voice_panel';
 
 // The "Find or start a conversation" field, which the home icon focuses.
@@ -25,7 +26,7 @@ export const DM_FIND_ID = 'am-dm-find';
 
 type Collection = 'mentions' | 'threads' | 'saved';
 
-// The second line of a conversation: the person's custom status or position.
+// The second line of a conversation without messages: the person's custom status or position.
 function useDirectMeta(teammateId?: string): string {
     return useSelector((state: GlobalState) => {
         if (!teammateId) {
@@ -38,7 +39,9 @@ function useDirectMeta(teammateId?: string): string {
 }
 
 function HomeRow({channel}: {channel: Parameters<typeof DirectRow>[0]['channel']}) {
-    const meta = useDirectMeta(useTeammateId(channel));
+    const last = useLastMessage(channel);
+    const status = useDirectMeta(useTeammateId(channel));
+    const meta = last || status;
     return (
         <DirectRow
             channel={channel}
