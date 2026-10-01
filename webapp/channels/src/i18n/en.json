@@ -21781,7 +21781,7 @@
   },
   "inline_reply.files": {
     "defaultMessage": "{count, plural, one {# file} other {# files}}",
-    "description": "Shown instead of the quoted text above an inline reply when the quoted message has only file attachments; {count} is the number of files."
+    "description": "Shown above the message box instead of the quoted text when the message being replied to has only file attachments; {count} is the number of files."
   },
   "inline_reply.jump": {
     "defaultMessage": "Jump to the original message",
@@ -21805,7 +21805,7 @@
   },
   "inline_reply.message": {
     "defaultMessage": "a message",
-    "description": "Shown instead of the quoted text above an inline reply when there is nothing to quote from the original message."
+    "description": "Shown above the message box instead of the quoted text when there is nothing to quote from the message being replied to."
   },
   "inline_reply.noMention": {
     "defaultMessage": "Don't mention {name}",
@@ -21824,12 +21824,12 @@
     "description": "Read by screen readers before the line above an inline reply, which shows the quoted author's picture and name; {name} is that author, and the quoted text follows."
   },
   "inline_reply.replying": {
-    "defaultMessage": "Replying to: ",
-    "description": "Start of the line above an inline reply, or above the message box, when the author of the quoted message is unknown; followed by the quoted text."
+    "defaultMessage": "Replying to",
+    "description": "Start of the line above the message box while writing an inline reply, when the author of the quoted message is unknown; followed by the quoted text."
   },
   "inline_reply.replyingTo": {
-    "defaultMessage": "Replying to {name}: ",
-    "description": "Start of the line above an inline reply, or above the message box while writing one; {name} is the author of the quoted message, followed by the quoted text."
+    "defaultMessage": "Replying to {name}",
+    "description": "Start of the line above the message box while writing an inline reply; {name} is the author of the quoted message, shown in bold, followed by the quoted text."
   },
   "inline_reply.seeFiles": {
     "defaultMessage": "Click to see attachment",
