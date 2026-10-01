@@ -428,6 +428,7 @@ type ServiceSettings struct {
 	GoogleDeveloperKey                     *string  `access:"site_posts,write_restrictable,cloud_restrictable"`
 	EnableLinkPreviews                     *bool    `access:"site_posts"`
 	EnablePermalinkPreviews                *bool    `access:"site_posts"`
+	EnableInlineReplies                    *bool    `access:"site_posts"`
 	RestrictLinkPreviews                   *string  `access:"site_posts"`
 	EnableTesting                          *bool    `access:"environment_developer,write_restrictable,cloud_restrictable"`
 	EnableDeveloper                        *bool    `access:"environment_developer,write_restrictable,cloud_restrictable"`
@@ -570,6 +571,12 @@ func (s *ServiceSettings) SetDefaults(isUpdate bool) {
 
 	if s.EnablePermalinkPreviews == nil {
 		s.EnablePermalinkPreviews = new(true)
+	}
+
+	// Inline replies let users reply to a specific message in the channel, quoting it above their reply,
+	// outside of threads (the post's reply_to prop).
+	if s.EnableInlineReplies == nil {
+		s.EnableInlineReplies = new(true)
 	}
 
 	if s.RestrictLinkPreviews == nil {

@@ -42,6 +42,7 @@ func GenerateClientConfig(c *model.Config, telemetryID string) map[string]string
 	props["MaximumPersonalAccessTokenLifetimeDays"] = strconv.Itoa(*c.ServiceSettings.MaximumPersonalAccessTokenLifetimeDays)
 	props["EnableLinkPreviews"] = strconv.FormatBool(*c.ServiceSettings.EnableLinkPreviews)
 	props["EnablePermalinkPreviews"] = strconv.FormatBool(*c.ServiceSettings.EnablePermalinkPreviews)
+	props["EnableInlineReplies"] = strconv.FormatBool(*c.ServiceSettings.EnableInlineReplies)
 	props["EnableTesting"] = strconv.FormatBool(*c.ServiceSettings.EnableTesting)
 	props["EnableDeveloper"] = strconv.FormatBool(*c.ServiceSettings.EnableDeveloper)
 	props["EnableClientPerformanceDebugging"] = strconv.FormatBool(*c.ServiceSettings.EnableClientPerformanceDebugging)
