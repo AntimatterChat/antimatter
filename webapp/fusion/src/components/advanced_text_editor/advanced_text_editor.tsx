@@ -473,6 +473,7 @@ const AdvancedTextEditor = ({
         isDisabled,
         showPreview,
         wysiwygEnabled ? insertWysiwygText : undefined,
+        {channelId, rootId: rootId || undefined, isComposing: !isInEditMode},
     );
     const {
         labels: priorityLabels,
