@@ -145,6 +145,8 @@ function makeActions(getState: () => GlobalState, intl: IntlShape, openDirect: (
         try {
             await calls.join(channelId, {switchCall: Boolean(local)});
         } catch {
+            // Calls refuses to join where calls are turned off.
+            showToast(formatMessage({id: 'fusion.calls.toast.disabled', defaultMessage: 'Calls are turned off in {where}'}, {where: channelLabel(getState(), channelId)}));
             return;
         }
         const where = channelLabel(getState(), channelId);

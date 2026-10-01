@@ -11,6 +11,7 @@ import {getCurrentTeamId} from 'mattermost-redux/selectors/entities/teams';
 import {getIsRhsOpen} from 'selectors/rhs';
 
 import AppRail from 'fusion/apps/app_rail';
+import CallEvents from 'fusion/calls/call_events';
 import CallWindow from 'fusion/calls/call_window';
 import {useOpenVoiceChat} from 'fusion/calls/voice_chat';
 import {IconSprite} from 'fusion/components/icon';
@@ -126,6 +127,7 @@ function Frame({children}: Props) {
             />
             {search.isOpen && <GlobalSearch/>}
             <CallWindow/>
+            <CallEvents/>
             <Toasts/>
         </>
     );
