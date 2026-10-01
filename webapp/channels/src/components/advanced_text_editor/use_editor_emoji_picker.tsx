@@ -25,11 +25,19 @@ import type {GlobalState} from 'types/store';
 
 import {IconContainer} from './formatting_bar/formatting_icon';
 
+// The message box the emoji picker belongs to. Plugin tabs of the picker show when composing.
+type MessageBox = {
+    channelId: string;
+    rootId?: string;
+    isComposing: boolean;
+};
+
 const useEditorEmojiPicker = (
     textboxId: string,
     isDisabled: boolean,
     shouldShowPreview: boolean,
     insertWysiwygText?: (text: string) => void,
+    messageBox?: MessageBox,
 ) => {
     const intl = useIntl();
 
@@ -91,6 +99,11 @@ const useEditorEmojiPicker = (
         enableGifPicker,
         onGifClick: handleGifClick,
         onEmojiClick: handleEmojiClick,
+
+        channelId: messageBox?.channelId,
+        rootId: messageBox?.rootId,
+        showPluginTabs: messageBox?.isComposing,
+        insertText: insertTextAtCaret,
 
         overrideMiddleware: [
             offset(useEmojiPickerOffset),

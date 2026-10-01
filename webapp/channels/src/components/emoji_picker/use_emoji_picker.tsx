@@ -38,6 +38,15 @@ type UseEmojiPickerOptions = {
     onGifClick?: (gif: string) => void;
 
     /**
+     * The message box the picker belongs to: with showPluginTabs (when composing), the picker shows
+     * the plugin tabs, which can insert text with insertText.
+     */
+    channelId?: string;
+    rootId?: string;
+    showPluginTabs?: boolean;
+    insertText?: (text: string) => void;
+
+    /**
      * Replaces the middleware for positioning the emoji picker in cases where we want it positioned differently.
      */
     overrideMiddleware?: UseFloatingOptions['middleware'];
@@ -57,6 +66,11 @@ export default function useEmojiPicker({
     onAddCustomEmojiClick,
     onEmojiClick,
     onGifClick,
+
+    channelId,
+    rootId,
+    showPluginTabs,
+    insertText,
 
     overrideMiddleware,
 }: UseEmojiPickerOptions): UseEmojiPickerReturn {
@@ -106,6 +120,10 @@ export default function useEmojiPicker({
             onEmojiClose={hideEmojiPicker}
             onEmojiClick={onEmojiClick}
             onGifClick={onGifClick}
+            channelId={channelId}
+            rootId={rootId}
+            showPluginTabs={showPluginTabs}
+            insertText={insertText}
         />
     );
 
