@@ -39,6 +39,7 @@ import {BurnCover, BurnTag} from './burn_on_read';
 import Files from './content/files';
 import MessageContent from './content/message_content';
 import EditForm from './edit_form';
+import {useMentionClick} from './mention_click';
 import {useConcernsMe} from './mentions';
 import MessageMenu from './message_menu';
 import Reactions from './reactions';
@@ -101,6 +102,7 @@ export default function Message({postId, previousPostId, inThread = false, highl
     const concealed = useSelector((state: GlobalState) => shouldDisplayConcealedPlaceholder(state, postId));
     const concernsMe = useConcernsMe(post, inThread);
     const [userMenu, openUserMenu] = useUserMenu();
+    const [mentionCard, onMentionClick] = useMentionClick();
     const avatarRef = useRef<HTMLButtonElement>(null);
     const moreRef = useRef<HTMLButtonElement>(null);
     const reactRef = useRef<HTMLButtonElement>(null);
@@ -224,7 +226,10 @@ export default function Message({postId, previousPostId, inThread = false, highl
                 />
             )}
             {!concealed && !editing && (
-                <div className={am('body')}>
+                <div
+                    className={am('body')}
+                    onClickCapture={onMentionClick}
+                >
                     <MessageContent
                         post={post}
                         inThread={inThread}
@@ -264,6 +269,7 @@ export default function Message({postId, previousPostId, inThread = false, highl
                 />
             )}
             {userMenu}
+            {mentionCard}
         </>
     );
 
