@@ -3,6 +3,9 @@
 
 package app
 
+// antimatterPluginPublicKeyName names antimatterPluginPublicKey in builtinPluginPublicKeys.
+const antimatterPluginPublicKeyName = "Antimatter"
+
 // Fingerprints of the hard-coded plugin signing keys below.
 const (
 	antimatterPluginPublicKeyFingerprint = "06C8103246770F08BBA778B9E69B05C392A69A45"
@@ -12,7 +15,7 @@ const (
 // builtinPluginPublicKeys are the plugin signing keys trusted without any configuration, tried in
 // order. Admins can trust additional publishers through PluginSettings.SignaturePublicKeyFiles.
 var builtinPluginPublicKeys = []pluginPublicKey{
-	{name: "Antimatter", key: antimatterPluginPublicKey},
+	{name: antimatterPluginPublicKeyName, key: antimatterPluginPublicKey},
 	{name: "Mattermost", key: mattermostPluginPublicKey},
 }
 

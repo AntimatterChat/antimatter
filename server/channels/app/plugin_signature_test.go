@@ -229,3 +229,10 @@ func TestVerifyPlugin(t *testing.T) {
 		require.Nil(t, th.App.ch.verifyPlugin(logger, pluginFile, signatureFile))
 	})
 }
+
+func TestPluginSignerIsAntimatter(t *testing.T) {
+	require.True(t, pluginSigner{name: antimatterPluginPublicKeyName, builtin: true}.isAntimatter())
+	require.False(t, pluginSigner{name: "Mattermost", builtin: true}.isAntimatter())
+	// An admin-configured key file that happens to have the same name isn't the built-in key.
+	require.False(t, pluginSigner{name: antimatterPluginPublicKeyName}.isAntimatter())
+}
