@@ -37,7 +37,7 @@ body.app__body #root.am-root > .am-root-main {
 :is(.am-app, .am-layer) .am-body {
   p, .markdown__paragraph-inline { margin: 0; }
   .post-message__text-container, .post-message__text { font-size: 15px; line-height: 1.45; color: var(--am-text); }
-  .post-code, pre { margin: 6px 0 2px; border: 1px solid var(--am-line); border-radius: 8px; background: var(--am-rail); font: 12.5px/1.55 var(--am-font-mono); }
+  pre { margin: 6px 0 2px; border: 1px solid var(--am-line); border-radius: 8px; background: var(--am-rail); font: 12.5px/1.55 var(--am-font-mono); }
   code { font: 13px var(--am-font-mono); background: var(--am-raise); padding: 1px 5px; border-radius: 4px; }
   pre code { padding: 0; background: none; }
   a { color: var(--am-anti); }
@@ -67,7 +67,7 @@ body.app__body #root.am-root > .am-root-main {
 body.app__body :where(.am-app, .am-layer) a:where(:not(.am-body *, .am-rhs-classic *)) { color: inherit; text-decoration: none; }
 body.app__body :where(.am-app, .am-layer) a:where(:not(.am-body *, .am-rhs-classic *)):is(:hover, :focus) { color: inherit; text-decoration: none; }
 :is(.am-app, .am-layer) .am-composer input[type="file"] { display: none; }
-:is(.am-app, .am-layer) .am-body .post-code code, :is(.am-app, .am-layer) .am-body .hljs { background: transparent; padding: 0; }
+:is(.am-app, .am-layer) .am-body .post-code code { background: transparent; padding: 0; }
 
 // What plugins render below a sidebar channel (registerSidebarChannelFooterComponent), e.g. the people in its call.
 :is(.am-app, .am-layer) .am-ch-footer { margin-left: 8px; }
@@ -89,7 +89,7 @@ body.app__body :where(.am-app, .am-layer) a:where(:not(.am-body *, .am-rhs-class
   .sidebar--right__expand .icon-arrow-collapse { display: none; }
 }
 :is(.am-app, .am-layer) .am-rhs.am-expanded .sidebar--right__expand .icon-arrow-expand { display: none; }
-:is(.am-app, .am-layer) .am-rhs.am-expanded .sidebar--right__expand .icon-arrow-collapse { display: inline-block; }
+:is(.am-app, .am-layer) .am-rhs.am-expanded .sidebar--right__expand .icon-arrow-collapse { display: flex; }
 // Expanded panels take the room left once the conversation keeps --am-main-min, never less than a normal panel.
 @media (min-width: 1101px) {
   :is(.am-app, .am-layer) .am-rhs.am-expanded { width: clamp(380px, calc(100vw - var(--am-chrome-w) - var(--am-main-min)), 1120px); }
@@ -111,3 +111,27 @@ body.app__body :where(.am-app, .am-layer) a:where(:not(.am-body *, .am-rhs-class
 // The emoji picker's link to add a custom emoji, at the end of its footer.
 :is(.am-app, .am-layer) .am-picker-foot .am-picker-add { margin-left: auto; font-size: 12.5px; font-weight: 600; color: var(--am-matter); white-space: nowrap; }
 :is(.am-app, .am-layer) .am-picker-foot .am-picker-add:hover { text-decoration: underline; }
+
+// Code blocks, as in Discord and Mattermost: one framed box with padding and its own scrollbar; the copy button and the
+// language show on hover. The box replaces the code theme's background so it sits in Fusion's palette.
+:is(.am-app, .am-layer) .am-body .post-code {
+  max-width: 100%;
+  margin: 6px 0 2px;
+
+  .hljs {
+    margin: 0;
+    padding: 10px 12px;
+    border: 1px solid var(--am-line);
+    border-radius: 8px;
+    background: var(--am-rail);
+    font: 13px/1.5 var(--am-font-mono);
+  }
+  code { font: inherit; }
+  .post-code__overlay { top: 6px; right: 6px; height: auto; padding: 0; gap: 4px; background: none; }
+  &:hover .post-code__overlay { top: 6px; right: 6px; padding: 0; background: none; }
+  .post-code__clipboard { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 6px; background: var(--am-raise); }
+  .post-code__clipboard:hover { background: var(--am-raise-2); }
+  .post-code__clipboard > i { margin: 0; color: var(--am-text-2); font-size: 16px; }
+  .post-code__language { height: 28px; padding: 0 8px; display: inline-flex; align-items: center; border-radius: 6px; background: var(--am-raise); color: var(--am-muted); font: 600 11px var(--am-font-ui); letter-spacing: .04em; text-transform: uppercase; }
+}
+
