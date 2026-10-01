@@ -4,6 +4,7 @@
 import React, {createContext, useCallback, useContext, useEffect, useRef, useState} from 'react';
 
 import {Layer} from 'fusion/components/layer';
+import {placeToast} from 'fusion/components/toast';
 import {am} from 'fusion/utils/class_names';
 
 // How long a toast stays, as in the mockup.
@@ -13,15 +14,15 @@ type ShowToast = (text: string) => void;
 
 const ToastContext = createContext<ShowToast>(() => {});
 
-// ToastProvider shows the mockup's toasts: one short confirmation at a time at the bottom of the screen, gone after
-// a few seconds, announced to screen readers (role="status").
+// ToastProvider shows the mockup's toasts: one short confirmation at a time under the main column's header (not over
+// the message box, as in the mockup), gone after a few seconds, announced to screen readers (role="status").
 export function ToastProvider({children}: {children: React.ReactNode}) {
-    const [toast, setToast] = useState<{text: string; key: number} | null>(null);
+    const [toast, setToast] = useState<{text: string; key: number; style?: React.CSSProperties} | null>(null);
     const timer = useRef<ReturnType<typeof setTimeout>>(undefined);
 
     const show = useCallback((text: string) => {
         clearTimeout(timer.current);
-        setToast({text, key: Date.now()});
+        setToast({text, key: Date.now(), style: placeToast()});
         timer.current = setTimeout(() => setToast(null), TOAST_MS);
     }, []);
 
@@ -35,6 +36,7 @@ export function ToastProvider({children}: {children: React.ReactNode}) {
                     <div
                         key={toast.key}
                         className={am('toast')}
+                        style={toast.style}
                         role='status'
                     >
                         {toast.text}

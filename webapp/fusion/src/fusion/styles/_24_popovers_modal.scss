@@ -120,9 +120,12 @@
 :is(.am-app, .am-layer) .am-toast {
   position: fixed;
   left: 50%;
-  bottom: 28px;
+  top: 104px;
   transform: translateX(-50%);
   z-index: 90;
+  max-width: calc(100vw - 32px);
+  width: max-content;
+  text-align: center;
   padding: 10px 16px;
   border-radius: 10px;
   background: var(--am-text);
