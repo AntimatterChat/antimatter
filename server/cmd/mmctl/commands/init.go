@@ -85,7 +85,11 @@ func getClient(ctx context.Context, cmd *cobra.Command) (*model.Client4, string,
 	}
 
 	if useLocal {
-		c, err := InitUnixClient(viper.GetString("local-socket-path"))
+		socketPath := viper.GetString("local-socket-path")
+		if socketPath == "" {
+			socketPath = defaultLocalSocketPath(model.LocalModeSocketPath, model.LegacyLocalModeSocketPath)
+		}
+		c, err := InitUnixClient(socketPath)
 		if err != nil {
 			return nil, "", true, err
 		}
@@ -248,6 +252,18 @@ func InitWebSocketClient() (*model.WebSocketClient, error) {
 		return nil, errors.Wrap(appErr, "unable to create the websockets connection")
 	}
 	return client, nil
+}
+
+// defaultLocalSocketPath returns the socket of a server listening at the default location: the
+// current one, or the legacy one if only that exists (a server whose configuration still holds
+// the default from before the rename).
+func defaultLocalSocketPath(current, legacy string) string {
+	if _, err := os.Stat(current); err != nil {
+		if _, err := os.Stat(legacy); err == nil {
+			return legacy
+		}
+	}
+	return current
 }
 
 func InitUnixClient(socketPath string) (*model.Client4, error) {

@@ -10,12 +10,33 @@ import (
 	"net"
 	"net/http"
 	"net/http/httptest"
+	"os"
+	"path/filepath"
 	"testing"
 
 	"github.com/gorilla/mux"
 	"github.com/mattermost/mattermost/server/public/model"
 	"github.com/stretchr/testify/require"
 )
+
+func TestDefaultLocalSocketPath(t *testing.T) {
+	dir := t.TempDir()
+	current := filepath.Join(dir, "antimatter_local.socket")
+	legacy := filepath.Join(dir, "mattermost_local.socket")
+	create := func(path string) {
+		t.Helper()
+		require.NoError(t, os.WriteFile(path, nil, 0600))
+	}
+
+	// Neither exists: the current path, so errors name it.
+	require.Equal(t, current, defaultLocalSocketPath(current, legacy))
+
+	create(legacy)
+	require.Equal(t, legacy, defaultLocalSocketPath(current, legacy), "falls back to the legacy socket")
+
+	create(current)
+	require.Equal(t, current, defaultLocalSocketPath(current, legacy), "prefers the current socket")
+}
 
 func TestCheckVersionMatch(t *testing.T) {
 	testCases := []struct {
