@@ -1,0 +1,46 @@
+// Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
+// See LICENSE.txt for license information.
+
+// Import loading screen CSS first to ensure it's in the main CSS bundle (with content hash)
+// and loads before the body renders. This must be before any dynamic imports.
+import './components/initial_loading_screen/initial_loading_screen.css';
+
+import {CURRENT_WEB_UI} from './utils/web_ui';
+import type {WebUI} from './utils/web_ui';
+
+declare global {
+    interface Window {
+
+        // The web UI running in this page, for plugins that draw differently in each one.
+        antimatterWebUI?: WebUI;
+    }
+}
+
+// Allow overriding the path used by webpack to dynamically resolve assets. This is driven by
+// an environment variable in development, or by a window variable defined in root.html in
+// production. The window variable is updated by the server after configuring SiteURL and
+// restarting or by running the `mattermost config subpath` command.
+//
+// window.publicPath is shared with the classic web app and points at the /static/ root, while the
+// Fusion UI's own assets live in its fusion/ subdirectory.
+const FUSION_ASSETS_DIR = 'fusion/';
+const assetsPath = process.env.PUBLIC_PATH || (window.publicPath || '/static/') + FUSION_ASSETS_DIR; // eslint-disable-line no-process-env
+window.publicPath = assetsPath.substr(0, assetsPath.length - FUSION_ASSETS_DIR.length);
+
+// @ts-expect-error Field used by Webpack internally
+__webpack_public_path__ = assetsPath;
+
+// Define the subpath at which Mattermost is running. Extract this from the publicPath above to
+// avoid depending on Redux state before it is even loaded. This actual global export is used
+// in a minimum of places, as it is preferred to leverage react-router, configured to use this
+// basename accordingly.
+window.basename = window.publicPath.substr(0, window.publicPath.length - '/static/'.length);
+
+// Tell plugins which web UI is running, before any of them loads: in JavaScript, and on <html> for styles.
+window.antimatterWebUI = CURRENT_WEB_UI;
+document.documentElement.dataset.amWebUi = CURRENT_WEB_UI;
+
+import('./entry');
+
+// This empty export forces this to be treated as a module by the TS compiler
+export {};

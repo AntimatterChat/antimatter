@@ -1,0 +1,50 @@
+.select-suggestion-container {
+    position: relative;
+    margin: 8px 8px 0 0;
+
+    &:hover {
+        &::after {
+            opacity: 0.73;
+        }
+    }
+
+    &::after {
+        position: absolute;
+        top: 8px;
+        right: 1rem;
+        display: inline-block;
+        content: '\F107';
+        font: normal normal normal 14px/1 FontAwesome;
+        font-size: 16px;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        opacity: 0.4;
+        pointer-events: none;
+        text-rendering: auto;
+        transition: opacity 0.15s ease;
+    }
+
+    .form-control {
+        max-width: 100%;
+        height: 32px;
+        padding-right: 3rem;
+        border-radius: 3px;
+        box-shadow: unset;
+        cursor: pointer;
+        font-size: 13px;
+    }
+
+    // Global `.suggestion-list--bottom { top: 0 }` targets multiline textboxes with caret alignment.
+    // Single-line selects should open below the input.
+    .suggestion-list--bottom {
+        top: 100%;
+    }
+
+    .suggestion-list__content--top {
+        border-radius: 3px 3px 3px 0;
+    }
+
+    .suggestion-list__content--bottom {
+        border-radius: 3px 0 3px 3px;
+    }
+}

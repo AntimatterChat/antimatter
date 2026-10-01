@@ -1,0 +1,63 @@
+.AdminSidebarHeader {
+    position: relative;
+    display: flex;
+    width: 100%;
+    flex-shrink: 0;
+    align-items: center;
+    padding: 14px 18px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    gap: 8px;
+    text-align: left;
+    transition: background-color 0.2s ease-in-out;
+
+    > img {
+        flex-shrink: 0;
+        margin-left: -4px;
+    }
+
+    .header__info {
+        position: relative;
+        width: 100%;
+        flex-grow: 1;
+        color: var(--sys-sidebar-text);
+
+        .header__title {
+            display: flex;
+            overflow: hidden;
+            max-width: 100%;
+            font-family: Metropolis, sans-serif;
+            font-size: 16px;
+            font-weight: 600;
+            line-height: 20px;
+            text-decoration: none;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .user__name {
+            color: rgba(var(--sys-sidebar-text-rgb), 0.75);
+            font-weight: 400;
+            line-height: 16px;
+        }
+    }
+
+    &:hover {
+        background-color: rgba(var(--sys-sidebar-text-rgb), 0.04);
+    }
+
+    &:active {
+        background-color: rgba(var(--sys-sidebar-text-rgb), 0.08);
+    }
+
+    &:focus-visible {
+        outline: 2px solid var(--sys-button-bg);
+        outline-offset: -2px;
+    }
+}
+
+// Match parent menu width for the Switch teams submenu (positioning uses Menu.SubMenu defaults).
+#adminConsoleSwitchTeamsMenu {
+    min-width: calc(var(--admin-sidebar-width) - 16px);
+}

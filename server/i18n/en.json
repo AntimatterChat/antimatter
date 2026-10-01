@@ -14642,6 +14642,11 @@
     "description": "Config validation error shown to system admins; 'DCR' means OAuth Dynamic Client Registration, and 'http://'/'https://' are literal scheme prefixes."
   },
   {
+    "id": "model.config.is_valid.default_web_ui.app_error",
+    "translation": "Invalid default web UI {{.Value}}. Must be 'classic' or 'fusion'.",
+    "description": "Configuration validation error for the default web UI (ServiceSettings.DefaultWebUI). {{.Value}} is the value entered; 'classic' and 'fusion' are literal config values; keep them in English."
+  },
+  {
     "id": "model.config.is_valid.directory.app_error",
     "translation": "Invalid Local Storage Directory. Must be a non-empty string.",
     "description": "Config validation error shown to system admins when the local file storage directory setting is empty; 'Local Storage Directory' is the setting's display name."

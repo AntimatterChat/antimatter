@@ -1,0 +1,236 @@
+// Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
+// See LICENSE.txt for license information.
+
+import React from 'react';
+import {FormattedMessage} from 'react-intl';
+import type {RouteComponentProps} from 'react-router-dom';
+
+import {Button} from '@mattermost/shared/components/button';
+
+import AdvancedCreatePost from 'components/advanced_create_post';
+import ChannelBanner from 'components/channel_banner/channel_banner';
+import ChannelBookmarks from 'components/channel_bookmarks';
+import ChannelHeader from 'components/channel_header';
+import deferComponentRender from 'components/deferComponentRender';
+import {DropOverlayIdCenterChannel, FileUploadOverlay} from 'components/file_upload_overlay/file_upload_overlay';
+import PostView from 'components/post_view';
+
+import WebSocketClient from 'client/web_websocket_client';
+
+import {ChannelComposerBanner} from './channel_composer_banner';
+import InputLoading from './input_loading';
+
+import type {PropsFromRedux} from './index';
+
+export type Props = PropsFromRedux & RouteComponentProps<{
+    postid?: string;
+}>;
+
+type State = {
+    channelId: string;
+    url: string;
+    focusedPostId?: string;
+    deferredPostView: any;
+    waitForLoader: boolean;
+};
+
+export default class ChannelView extends React.PureComponent<Props, State> {
+    public static createDeferredPostView = () => {
+        return deferComponentRender(
+            PostView,
+            <div
+                id='post-list'
+                className='a11y__region'
+                data-a11y-sort-order='1'
+                data-a11y-focus-child={true}
+                data-a11y-order-reversed={true}
+            />,
+        );
+    };
+
+    static getDerivedStateFromProps(props: Props, state: State) {
+        let updatedState = {};
+        const focusedPostId = props.match.params.postid;
+
+        if (props.match.url !== state.url && props.channelId !== state.channelId) {
+            updatedState = {deferredPostView: ChannelView.createDeferredPostView(), url: props.match.url, focusedPostId};
+        }
+
+        if (props.channelId !== state.channelId) {
+            updatedState = {...updatedState, channelId: props.channelId, focusedPostId};
+        }
+
+        if (focusedPostId && focusedPostId !== state.focusedPostId) {
+            updatedState = {...updatedState, focusedPostId};
+        }
+
+        if (Object.keys(updatedState).length) {
+            return updatedState;
+        }
+
+        return null;
+    }
+
+    channelViewRef: React.RefObject<HTMLDivElement | null>;
+
+    constructor(props: Props) {
+        super(props);
+
+        this.state = {
+            url: props.match.url,
+            channelId: props.channelId,
+            focusedPostId: props.match.params.postid,
+            deferredPostView: ChannelView.createDeferredPostView(),
+            waitForLoader: false,
+        };
+
+        this.channelViewRef = React.createRef();
+    }
+
+    onClickCloseChannel = () => {
+        this.props.goToLastViewedChannel();
+    };
+
+    onUpdateInputShowLoader = (v: boolean) => {
+        this.setState({waitForLoader: v});
+    };
+
+    componentDidUpdate(prevProps: Props) {
+        // TODO: debounce
+        if (prevProps.channelId !== this.props.channelId) {
+            WebSocketClient.updateActiveChannel(this.props.channelId);
+        }
+
+        // If we're restricting direct messages and the value is not yet set, fetch it
+        if (this.props.canRestrictDirectMessage && this.props.restrictDirectMessage === undefined) {
+            this.props.fetchIsRestrictedDM(this.props.channelId);
+        }
+    }
+
+    render() {
+        let createPost;
+        if (this.props.deactivatedChannel) {
+            createPost = (
+                <div
+                    className='post-create__container AdvancedTextEditor__ctr'
+                    id='post-create'
+                >
+                    <div
+                        className='channel-archived__message'
+                    >
+                        <FormattedMessage
+                            id='channelView.archivedChannelWithDeactivatedUser'
+                            defaultMessage='You are viewing an archived channel with a <b>deactivated user</b>. New messages cannot be posted.'
+                            values={{
+                                b: (chunks) => <b>{chunks}</b>,
+                            }}
+                        />
+                        <Button
+                            emphasis='primary'
+                            className='channel-archived__close-btn'
+                            onClick={this.onClickCloseChannel}
+                        >
+                            <FormattedMessage
+                                id='center_panel.archived.closeChannel'
+                                defaultMessage='Close Channel'
+                            />
+                        </Button>
+                    </div>
+                </div>
+            );
+        } else if (this.props.channelIsArchived) {
+            createPost = (
+                <div
+                    className='post-create__container'
+                    id='post-create'
+                >
+                    <div
+                        id='channelArchivedMessage'
+                        className='channel-archived__message'
+                    >
+                        <FormattedMessage
+                            id='channelView.archivedChannel'
+                            defaultMessage='You are viewing an <b>archived channel</b>. New messages cannot be posted.'
+                            values={{
+                                b: (chunks) => <b>{chunks}</b>,
+                            }}
+                        />
+                        <Button
+                            emphasis='primary'
+                            className='channel-archived__close-btn'
+                            onClick={this.onClickCloseChannel}
+                        >
+                            <FormattedMessage
+                                id='center_panel.archived.closeChannel'
+                                defaultMessage='Close Channel'
+                            />
+                        </Button>
+                    </div>
+                </div>
+            );
+        } else if (this.props.restrictDirectMessage) {
+            createPost = (
+                <div
+                    className='post-create__container'
+                    id='post-create'
+                >
+                    <div
+                        id='noSharedTeamMessage'
+                        className='channel-archived__message'
+                    >
+                        <FormattedMessage
+                            id='channelView.noSharedTeam'
+                            defaultMessage='You no longer have any teams in common with this user. New messages cannot be posted.'
+                        />
+                        <Button
+                            emphasis='primary'
+                            className='channel-archived__close-btn'
+                            onClick={this.onClickCloseChannel}
+                        >
+                            <FormattedMessage
+                                id='center_panel.noSharedTeam.closeChannel'
+                                defaultMessage='Close Channel'
+                            />
+                        </Button>
+                    </div>
+                </div>
+            );
+        } else if (this.props.missingChannelRole || this.state.waitForLoader) {
+            createPost = <InputLoading updateWaitForLoader={this.onUpdateInputShowLoader}/>;
+        } else {
+            createPost = (
+                <div
+                    id='post-create'
+                    data-testid='post-create'
+                    className='post-create__container AdvancedTextEditor__ctr'
+                >
+                    <ChannelComposerBanner channelId={this.props.channelId}/>
+                    <AdvancedCreatePost/>
+                </div>
+            );
+        }
+
+        const DeferredPostView = this.state.deferredPostView;
+
+        return (
+            <div
+                ref={this.channelViewRef}
+                id='app-content'
+                className='app__content'
+            >
+                <FileUploadOverlay
+                    overlayType='center'
+                    id={DropOverlayIdCenterChannel}
+                />
+                <ChannelHeader/>
+                <ChannelBanner channelId={this.props.channelId}/>
+                <ChannelBookmarks channelId={this.props.channelId}/>
+                <DeferredPostView
+                    channelId={this.props.channelId}
+                    focusedPostId={this.state.focusedPostId}
+                />
+                {createPost}
+            </div>
+        );
+    }
+}

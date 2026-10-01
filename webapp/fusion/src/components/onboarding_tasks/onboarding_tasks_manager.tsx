@@ -1,0 +1,245 @@
+// Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
+// See LICENSE.txt for license information.
+
+import React, {useCallback, useMemo} from 'react';
+import {useIntl} from 'react-intl';
+import {useDispatch, useSelector} from 'react-redux';
+import {matchPath, useLocation} from 'react-router-dom';
+
+import {isDesktopApp} from '@mattermost/shared/utils/user_agent';
+
+import {savePreferences} from 'mattermost-redux/actions/preferences';
+import {getCurrentUserId} from 'mattermost-redux/selectors/entities/common';
+import {isCurrentUserGuestUser, isCurrentUserSystemAdmin, isFirstAdmin} from 'mattermost-redux/selectors/entities/users';
+
+import {
+    openInvitationsModal,
+    setShowOnboardingCompleteProfileTour,
+    setShowOnboardingVisitConsoleTour,
+    switchToChannels,
+} from 'actions/views/onboarding_tasks';
+import {getOnboardingTaskPreferences} from 'selectors/onboarding';
+
+import Channels from 'components/common/svg_images_components/channels_svg';
+import Gears from 'components/common/svg_images_components/gears_svg';
+import Handshake from 'components/common/svg_images_components/handshake_svg';
+import Phone from 'components/common/svg_images_components/phone_svg';
+import Sunglasses from 'components/common/svg_images_components/sunglasses_svg';
+import {ELEMENT_ID_FOR_SWITCH_PRODUCT_MENU_BUTTON} from 'components/global_header/left_controls/switch_product_menu';
+import {openMenu} from 'components/menu';
+import {
+    AutoTourStatus,
+    FINISHED,
+    OnboardingTourSteps,
+    OnboardingTourStepsForGuestUsers,
+    TTNameMapToATStatusKey,
+    TutorialTourName,
+} from 'components/tours';
+import {ELEMENT_ID_FOR_USER_ACCOUNT_MENU_BUTTON} from 'components/user_account_menu/user_account_menu';
+
+import type {GlobalState} from 'types/store';
+
+import {OnboardingTaskCategory, OnboardingTaskList, OnboardingTasksName, TaskNameMapToSteps} from './constants';
+
+const useGetTaskDetails = () => {
+    const {formatMessage} = useIntl();
+    return {
+        [OnboardingTasksName.CHANNELS_TOUR]: {
+            id: 'task_learn_more_about_messaging',
+            svg: Channels,
+            message: formatMessage({
+                id: 'onboardingTask.checklist.task_learn_more_about_messaging',
+                defaultMessage: 'Take a tour of Channels.',
+            }),
+        },
+        [OnboardingTasksName.INVITE_PEOPLE]: {
+            id: 'task_invite_team_members',
+            svg: Handshake,
+            message: formatMessage({
+                id: 'onboardingTask.checklist.task_invite_team_members',
+                defaultMessage: 'Invite team members to the workspace.',
+            }),
+        },
+        [OnboardingTasksName.COMPLETE_YOUR_PROFILE]: {
+            id: 'task_complete_your_profile',
+            svg: Sunglasses,
+            message: formatMessage({
+                id: 'onboardingTask.checklist.task_complete_your_profile',
+                defaultMessage: 'Complete your profile.',
+            }),
+        },
+
+        [OnboardingTasksName.DOWNLOAD_APP]: {
+            id: 'task_download_mm_apps',
+            svg: Phone,
+            message: formatMessage({
+                id: 'onboardingTask.checklist.task_download_mm_apps',
+                defaultMessage: 'Download the Desktop and Mobile Apps.',
+            }),
+        },
+
+        [OnboardingTasksName.VISIT_SYSTEM_CONSOLE]: {
+            id: 'task_visit_system_console',
+            svg: Gears,
+            message: formatMessage({
+                id: 'onboardingTask.checklist.task_visit_system_console',
+                defaultMessage: 'Visit the System Console to configure your workspace.',
+            }),
+        },
+    };
+};
+
+export const useTasksList = () => {
+    const isUserAdmin = useSelector((state: GlobalState) => isCurrentUserSystemAdmin(state));
+    const isGuestUser = useSelector((state: GlobalState) => isCurrentUserGuestUser(state));
+    const isUserFirstAdmin = useSelector(isFirstAdmin);
+
+    const list: Record<string, string> = {...OnboardingTasksName};
+
+    if (!isUserFirstAdmin && !isUserAdmin) {
+        delete list.VISIT_SYSTEM_CONSOLE;
+    }
+
+    // invite other users is hidden for guest users
+    if (isGuestUser) {
+        delete list.INVITE_PEOPLE;
+    }
+
+    if (isDesktopApp()) {
+        delete list.DOWNLOAD_APP;
+    }
+
+    return Object.values(list);
+};
+
+export const useTasksListWithStatus = () => {
+    const dataInDb = useSelector(getOnboardingTaskPreferences);
+    const tasksList = useTasksList();
+    const getTaskDetails = useGetTaskDetails();
+    return useMemo(() =>
+        tasksList.map((task) => {
+            const status = dataInDb.find((pref) => pref.name === task)?.value;
+            return {
+                name: task,
+                status: status === FINISHED.toString(),
+                label: () => {
+                    const {id, svg, message} = getTaskDetails[task];
+                    return (
+                        <div key={id}>
+                            <picture>
+                                {React.createElement(svg, {width: 24, height: 24})}
+                            </picture>
+                            <span>{message}</span>
+                        </div>
+                    );
+                },
+            };
+        }), [dataInDb, tasksList]);
+};
+
+export const useHandleOnBoardingTaskData = () => {
+    const dispatch = useDispatch();
+    const currentUserId = useSelector(getCurrentUserId);
+    const storeSavePreferences = useCallback(
+        (taskCategory: string, taskName: string, step: number) => {
+            const preferences = [
+                {
+                    user_id: currentUserId,
+                    category: taskCategory,
+                    name: taskName,
+                    value: step.toString(),
+                },
+            ];
+            dispatch(savePreferences(currentUserId, preferences));
+        },
+        [currentUserId],
+    );
+
+    return useCallback((
+        taskName: string,
+        step: number,
+    ) => {
+        storeSavePreferences(OnboardingTaskCategory, taskName, step);
+    }, [storeSavePreferences]);
+};
+
+export const useHandleOnBoardingTaskTrigger = () => {
+    const dispatch = useDispatch();
+    const {pathname} = useLocation();
+
+    const handleSaveData = useHandleOnBoardingTaskData();
+    const currentUserId = useSelector(getCurrentUserId);
+    const isGuestUser = useSelector((state: GlobalState) => isCurrentUserGuestUser(state));
+    const inAdminConsole = matchPath(pathname, {path: '/admin_console'}) != null;
+    const inChannels = matchPath(pathname, {path: '/:team/channels/:chanelId'}) != null;
+
+    return (taskName: string) => {
+        switch (taskName) {
+        case OnboardingTasksName.CHANNELS_TOUR: {
+            handleSaveData(taskName, TaskNameMapToSteps[taskName].STARTED);
+            const tourCategory = TutorialTourName.ONBOARDING_TUTORIAL_STEP;
+            const preferences = [
+                {
+                    user_id: currentUserId,
+                    category: tourCategory,
+                    name: currentUserId,
+
+                    // use SEND_MESSAGE when user is guest (channel creation and invitation are restricted), so only message box and the configure tips are shown
+                    value: isGuestUser ? OnboardingTourStepsForGuestUsers.SEND_MESSAGE.toString() : OnboardingTourSteps.CHANNELS_AND_DIRECT_MESSAGES.toString(),
+                },
+                {
+                    user_id: currentUserId,
+                    category: tourCategory,
+                    name: TTNameMapToATStatusKey[tourCategory],
+                    value: AutoTourStatus.ENABLED.toString(),
+                },
+            ];
+            dispatch(savePreferences(currentUserId, preferences));
+            if (!inChannels) {
+                dispatch(switchToChannels());
+            }
+            break;
+        }
+        case OnboardingTasksName.COMPLETE_YOUR_PROFILE: {
+            openMenu(ELEMENT_ID_FOR_USER_ACCOUNT_MENU_BUTTON);
+            dispatch(setShowOnboardingCompleteProfileTour(true));
+            handleSaveData(taskName, TaskNameMapToSteps[taskName].STARTED);
+            if (inAdminConsole) {
+                dispatch(switchToChannels());
+            }
+            break;
+        }
+        case OnboardingTasksName.VISIT_SYSTEM_CONSOLE: {
+            openMenu(ELEMENT_ID_FOR_SWITCH_PRODUCT_MENU_BUTTON);
+            dispatch(setShowOnboardingVisitConsoleTour(true));
+            handleSaveData(taskName, TaskNameMapToSteps[taskName].STARTED);
+            break;
+        }
+        case OnboardingTasksName.INVITE_PEOPLE: {
+            localStorage.setItem(OnboardingTaskCategory, 'true');
+
+            if (inAdminConsole) {
+                dispatch(openInvitationsModal(1000));
+            } else {
+                dispatch(openInvitationsModal());
+            }
+            handleSaveData(taskName, TaskNameMapToSteps[taskName].FINISHED);
+            break;
+        }
+        case OnboardingTasksName.DOWNLOAD_APP: {
+            handleSaveData(taskName, TaskNameMapToSteps[taskName].FINISHED);
+            const preferences = [{
+                user_id: currentUserId,
+                category: OnboardingTaskCategory,
+                name: OnboardingTaskList.ONBOARDING_TASK_LIST_OPEN,
+                value: 'true',
+            }];
+            dispatch(savePreferences(currentUserId, preferences));
+            window.open('https://mattermost.com/download#desktop', '_blank', 'noopener,noreferrer');
+            break;
+        }
+        default:
+        }
+    };
+};
+

@@ -1,0 +1,106 @@
+// Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
+// See LICENSE.txt for license information.
+
+import type {ServerError} from '@mattermost/types/errors';
+import type {GetGroupsForUserParams, GetGroupsParams} from '@mattermost/types/groups';
+import type {Team} from '@mattermost/types/teams';
+
+import {fetchChannelsAndMembers} from 'mattermost-redux/actions/channels';
+import {logError} from 'mattermost-redux/actions/errors';
+import {getGroups, getAllGroupsAssociatedToChannelsInTeam, getAllGroupsAssociatedToTeam, getGroupsByUserIdPaginated} from 'mattermost-redux/actions/groups';
+import {forceLogoutIfNecessary} from 'mattermost-redux/actions/helpers';
+import {getTeamByName, selectTeam} from 'mattermost-redux/actions/teams';
+import {getIsUserStatusesConfigEnabled} from 'mattermost-redux/selectors/entities/common';
+import {getCurrentUser} from 'mattermost-redux/selectors/entities/users';
+
+import {addVisibleUsersInCurrentChannelAndSelfToStatusPoll} from 'actions/status_actions';
+import {addUserToTeam} from 'actions/team_actions';
+import LocalStorageStore from 'stores/local_storage_store';
+
+import {isSuccess} from 'types/actions';
+import type {ActionFuncAsync} from 'types/store';
+
+export function initializeTeam(team: Team): ActionFuncAsync<Team> {
+    return async (dispatch, getState) => {
+        dispatch(selectTeam(team.id));
+
+        const state = getState();
+        const currentUser = getCurrentUser(state);
+        LocalStorageStore.setPreviousTeamId(currentUser.id, team.id);
+
+        const enabledUserStatuses = getIsUserStatusesConfigEnabled(state);
+        if (enabledUserStatuses) {
+            dispatch(addVisibleUsersInCurrentChannelAndSelfToStatusPoll());
+        }
+
+        const groupsParams: GetGroupsParams = {
+            filter_allow_reference: false,
+            page: 0,
+            per_page: 60,
+            include_member_count: true,
+            include_member_ids: true,
+            include_archived: false,
+        };
+        const myGroupsParams: GetGroupsForUserParams = {
+            ...groupsParams,
+            filter_has_member: currentUser.id,
+        };
+
+        if (currentUser) {
+            dispatch(getGroupsByUserIdPaginated(myGroupsParams));
+        }
+
+        dispatch(getAllGroupsAssociatedToChannelsInTeam(team.id, true));
+
+        if (team.group_constrained) {
+            dispatch(getAllGroupsAssociatedToTeam(team.id, true));
+        } else {
+            dispatch(getGroups(groupsParams));
+        }
+
+        return {data: team};
+    };
+}
+
+export function joinTeam(teamname: string, joinedOnFirstLoad: boolean): ActionFuncAsync<Team> {
+    return async (dispatch, getState) => {
+        const state = getState();
+        const currentUser = getCurrentUser(state);
+
+        try {
+            const teamByNameResult = await dispatch(getTeamByName(teamname));
+            if (isSuccess(teamByNameResult)) {
+                const team = teamByNameResult.data;
+
+                if (currentUser && team && team.delete_at === 0) {
+                    const addUserToTeamResult = await dispatch(addUserToTeam(team.id, currentUser.id));
+                    if (isSuccess(addUserToTeamResult)) {
+                        if (joinedOnFirstLoad) {
+                            LocalStorageStore.setTeamIdJoinedOnLoad(team.id);
+                        }
+
+                        await dispatch(initializeTeam(team));
+
+                        try {
+                            await dispatch(fetchChannelsAndMembers(team.id));
+                        } catch (error) {
+                            forceLogoutIfNecessary(error as ServerError, dispatch, getState);
+                            dispatch(logError(error as ServerError));
+                            return {error: error as ServerError};
+                        }
+
+                        return {data: team};
+                    }
+                    throw addUserToTeamResult.error;
+                }
+                throw new Error('Team not found or deleted');
+            } else {
+                throw teamByNameResult.error;
+            }
+        } catch (error) {
+            forceLogoutIfNecessary(error as ServerError, dispatch, getState);
+            dispatch(logError(error as ServerError));
+            return {error: error as ServerError};
+        }
+    };
+}

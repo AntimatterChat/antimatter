@@ -463,6 +463,8 @@ type ServiceSettings struct {
 	WebsocketSecurePort                               *int    `access:"write_restrictable,cloud_restrictable"` // telemetry: none
 	WebsocketPort                                     *int    `access:"write_restrictable,cloud_restrictable"` // telemetry: none
 	WebserverMode                                     *string `access:"environment_web_server,write_restrictable,cloud_restrictable"`
+	DefaultWebUI                                      *string `access:"site_customization"`
+	AllowUserWebUISelection                           *bool   `access:"site_customization"`
 	EnableGifPicker                                   *bool   `access:"integrations_gif"`
 	GiphySdkKey                                       *string `access:"integrations_gif"`
 	EnableCustomEmoji                                 *bool   `access:"site_emoji"`
@@ -878,6 +880,14 @@ func (s *ServiceSettings) SetDefaults(isUpdate bool) {
 		s.WebserverMode = new("gzip")
 	} else if *s.WebserverMode == "regular" {
 		*s.WebserverMode = "gzip"
+	}
+
+	if s.DefaultWebUI == nil {
+		s.DefaultWebUI = new(WebUIClassic)
+	}
+
+	if s.AllowUserWebUISelection == nil {
+		s.AllowUserWebUISelection = new(true)
 	}
 
 	if s.EnableCustomEmoji == nil {
@@ -5103,6 +5113,10 @@ func (s *ServiceSettings) isValid() *AppError {
 
 	if !(*s.WebserverMode == "gzip" || *s.WebserverMode == "nogzip" || *s.WebserverMode == "disabled") {
 		return NewAppError("Config.IsValid", "model.config.is_valid.webserver_mode.app_error", map[string]any{"Value": *s.WebserverMode}, "", http.StatusBadRequest)
+	}
+
+	if !IsValidWebUI(*s.DefaultWebUI) {
+		return NewAppError("Config.IsValid", "model.config.is_valid.default_web_ui.app_error", map[string]any{"Value": *s.DefaultWebUI}, "", http.StatusBadRequest)
 	}
 
 	if appErr := validatePort(*s.WebsocketPort, true, "ServiceSettings.WebsocketPort"); appErr != nil {

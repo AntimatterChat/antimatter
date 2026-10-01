@@ -1,0 +1,106 @@
+// Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
+// See LICENSE.txt for license information.
+
+import {createIntl} from 'react-intl';
+
+import AdminDefinition from 'components/admin_console/admin_definition';
+
+import {samplePlugin1, samplePlugin2} from 'tests/helpers/admin_console_plugin_index_sample_pluings';
+
+import {generateIndex} from './admin_console_index';
+
+const esMessages = require('../i18n/es');
+
+describe('AdminConsoleIndex.generateIndex', () => {
+    it('should generate an index where I can search', () => {
+        const intl = createIntl({locale: 'en', messages: {}, defaultLocale: 'en'});
+
+        const idx = generateIndex(AdminDefinition, intl, {});
+        expect(idx.search('ldap')).toEqual([
+            'environment/session_lengths',
+            'authentication/mfa',
+            'authentication/saml',
+            'authentication/email',
+            'authentication/ldap',
+            'authentication/guest_access',
+        ]);
+        expect(idx.search('saml')).toEqual([
+            'authentication/saml',
+            'environment/session_lengths',
+            'environment/mobile_security',
+            'authentication/email',
+        ]);
+        expect(idx.search('nginx')).toEqual([
+            'environment/rate_limiting',
+        ]);
+        expect(idx.search('channel_viewed')).toEqual([
+            'environment/web_server',
+        ]);
+        expect(idx.search('hardened')).toEqual([
+            'environment/web_server',
+        ]);
+        expect(idx.search('characters')).toEqual([
+            'site_config/customization',
+            'authentication/password',
+        ]);
+        expect(idx.search('batching')).toEqual([
+            'environment/notifications',
+        ]);
+        expect(idx.search('Email Batching Buffer Size')).toEqual([
+            'environment/notifications',
+        ]);
+        expect(idx.search('subject lines')).toEqual([
+            'environment/notifications',
+        ]);
+        expect(idx.search('deactivation')).toEqual([
+            'authentication/saml',
+            'site_config/users_and_teams',
+        ]);
+        expect(idx.search('away')).toEqual([
+            'site_config/users_and_teams',
+        ]);
+        expect(idx.search('typing')).toEqual([
+            'experimental/features',
+            'site_config/posts',
+        ]);
+        expect(idx.search('caracteres')).toEqual([]);
+        expect(idx.search('notexistingword')).toEqual([]);
+    });
+
+    xit('should generate a index where I can search in other language', () => {
+        const intl = createIntl({locale: 'es', messages: esMessages, defaultLocale: 'es'});
+
+        const idx = generateIndex(AdminDefinition, intl, {});
+        expect(idx.search('ldap').sort()).toEqual([
+            'authentication/mfa',
+            'authentication/ldap',
+            'authentication/saml',
+            'authentication/email',
+            'environment/session_lengths',
+            'authentication/guest_access',
+        ].sort());
+        expect(idx.search('saml').sort()).toEqual([
+            'authentication/saml',
+            'environment/session_lengths',
+            'authentication/email',
+        ].sort());
+        expect(idx.search('nginx')).toEqual([
+            'environment/rate_limiting',
+        ]);
+        expect(idx.search('caracteres').sort()).toEqual([
+            'site_config/customization',
+            'authentication/password',
+        ].sort());
+        expect(idx.search('characters')).toEqual([]);
+        expect(idx.search('notexistingword')).toEqual([]);
+    });
+
+    it('should generate a index including the plugin settings', () => {
+        const intl = createIntl({locale: 'en', messages: {}, defaultLocale: 'en'});
+
+        const idx = generateIndex(AdminDefinition, intl, {[samplePlugin1.id]: samplePlugin1, [samplePlugin2.id]: samplePlugin2});
+
+        expect(idx.search('random')).toEqual(['plugin_Some-random-plugin', 'site_config/users_and_teams', 'site_config/public_links']);
+        expect(idx.search('autolink')).toEqual(['plugin_mattermost-autolink']);
+    });
+});

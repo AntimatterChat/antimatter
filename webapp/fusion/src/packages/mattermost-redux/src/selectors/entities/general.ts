@@ -1,0 +1,244 @@
+// Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
+// See LICENSE.txt for license information.
+
+import type {ClientConfig, FeatureFlags, ClientLicense} from '@mattermost/types/config';
+import type {UserPropertyField} from '@mattermost/types/properties_user';
+import type {GlobalState} from '@mattermost/types/store';
+
+import {General} from 'mattermost-redux/constants';
+import {createSelector} from 'mattermost-redux/selectors/create_selector';
+import {isMinimumServerVersion} from 'mattermost-redux/utils/helpers';
+
+import type {CWSAvailabilityState} from '../../reducers/entities/general';
+
+export function getConfig(state: GlobalState): Partial<ClientConfig> {
+    return state.entities.general.config;
+}
+
+/**
+ * Safely get value of a specific or known FeatureFlag
+ */
+export function getFeatureFlagValue(state: GlobalState, key: keyof FeatureFlags): string | undefined {
+    return getConfig(state)?.[`FeatureFlag${key}` as keyof Partial<ClientConfig>];
+}
+
+export function isPostAttributesEnabled(state: GlobalState): boolean {
+    return getConfig(state).FeatureFlagPostAttributes === 'true';
+}
+
+export function isPostDeliveryTrackingEnabled(state: GlobalState): boolean {
+    return getConfig(state).FeatureFlagPostDeliveryTracking === 'true';
+}
+
+// Discoverable Private Channels is gated by the FeatureFlagDiscoverableChannels
+// server flag. When the flag is off the toggle UI, request endpoints, and
+// admin queue routes are all hidden — old clients see today's behavior.
+export function isDiscoverableChannelsEnabled(state: GlobalState): boolean {
+    return getConfig(state).FeatureFlagDiscoverableChannels === 'true';
+}
+
+export function isChannelAttributesEnabled(state: GlobalState): boolean {
+    return getConfig(state).FeatureFlagChannelAttributes === 'true';
+}
+
+/**
+ * Whether required-attribute enforcement is active: hard-blocking channel
+ * creation without a value, and hiding required attribute inputs from the
+ * create-channel modal. Classification gets one courtesy exception to the
+ * latter — see new_channel_modal.tsx — but is not otherwise special-cased.
+ *
+ * Both the `ChannelAttributes` umbrella and the `ChannelAttributesRequired`
+ * sub-flag must be true. Mirrors the server-side
+ * `FeatureFlags.IsChannelAttributesRequiredEnabled()` helper.
+ */
+export function isChannelAttributesRequiredEnabled(state: GlobalState): boolean {
+    return isChannelAttributesEnabled(state) &&
+        getConfig(state).FeatureFlagChannelAttributesRequired === 'true';
+}
+
+export function isPermissionPoliciesEnabled(state: GlobalState): boolean {
+    return getConfig(state).FeatureFlagPermissionPolicies === 'true';
+}
+
+/**
+ * Whether channel-scope policies may carry permission-rule actions
+ * (file upload/download) — i.e. whether the Channel Settings →
+ * Permissions Policy tab should be exposed.
+ *
+ * The sub-flag `ChannelPermissionPolicies` AND the umbrella
+ * `PermissionPolicies` must BOTH be on. Mirrors the server-side
+ * `FeatureFlags.IsChannelPermissionPoliciesEnabled()` helper so the
+ * dependency direction is consistent across the wire. Centralizing
+ * the check here means every consumer (settings tab, save buttons,
+ * etc.) automatically picks up future changes to the dependency.
+ */
+export function isChannelPermissionPoliciesEnabled(state: GlobalState): boolean {
+    return isPermissionPoliciesEnabled(state) &&
+        getConfig(state).FeatureFlagChannelPermissionPolicies === 'true';
+}
+
+/**
+ * Whether the "Simulate access" preview UX should be exposed
+ * (System Console policy editor + Channel Settings tab).
+ *
+ * The sub-flag `PolicySimulation` AND the umbrella
+ * `PermissionPolicies` must BOTH be on. Mirrors the server-side
+ * `FeatureFlags.IsPolicySimulationEnabled()` helper. The backing
+ * `/cel/simulate_users` endpoint returns 501 when this is off, so
+ * hiding the entry points here also prevents users from seeing an
+ * "Evaluating…" button that can never resolve.
+ */
+export function isPolicySimulationEnabled(state: GlobalState): boolean {
+    return isPermissionPoliciesEnabled(state) &&
+        getConfig(state).FeatureFlagPolicySimulation === 'true';
+}
+
+export type PasswordConfig = {
+    minimumLength: number;
+    requireLowercase: boolean;
+    requireUppercase: boolean;
+    requireNumber: boolean;
+    requireSymbol: boolean;
+};
+
+export const getPasswordConfig: (state: GlobalState) => PasswordConfig = createSelector(
+    'getPasswordConfig',
+    getConfig,
+    (config) => {
+        return {
+            minimumLength: parseInt(config.PasswordMinimumLength!, 10),
+            requireLowercase: config.PasswordRequireLowercase === 'true',
+            requireUppercase: config.PasswordRequireUppercase === 'true',
+            requireNumber: config.PasswordRequireNumber === 'true',
+            requireSymbol: config.PasswordRequireSymbol === 'true',
+        };
+    },
+);
+
+export function getLicense(state: GlobalState): ClientLicense {
+    return state.entities.general.license;
+}
+
+export function isFreeEdition(state: GlobalState): boolean {
+    const license = getLicense(state);
+    return license.IsLicensed !== 'true' || license.SkuShortName === General.SKUEntry;
+}
+
+export const isCloudLicense: (state: GlobalState) => boolean = createSelector(
+    'isCloudLicense',
+    getLicense,
+    (license: ClientLicense) => license?.Cloud === 'true',
+);
+
+export function isCompatibleWithJoinViewTeamPermissions(state: GlobalState): boolean {
+    const version = state.entities.general.serverVersion;
+    return isMinimumServerVersion(version, 5, 10, 0) ||
+       (version.indexOf('dev') !== -1 && isMinimumServerVersion(version, 5, 8, 0)) ||
+       (version.match(/^5.8.\d.\d\d\d\d.*$/) !== null && isMinimumServerVersion(version, 5, 8, 0));
+}
+
+export const canUploadFilesOnMobile: (a: GlobalState) => boolean = createSelector(
+    'canUploadFilesOnMobile',
+    getConfig,
+    (config: Partial<ClientConfig>): boolean => {
+        // Defaults to true if either setting doesn't exist
+        return config.EnableFileAttachments !== 'false' && config.EnableMobileFileUpload !== 'false';
+    },
+);
+
+export const canDownloadFilesOnMobile: (a: GlobalState) => boolean = createSelector(
+    'canDownloadFilesOnMobile',
+    getConfig,
+    (config: Partial<ClientConfig>): boolean => {
+        // Defaults to true if the setting doesn't exist
+        return config.EnableMobileFileDownload !== 'false';
+    },
+);
+
+export const getAutolinkedUrlSchemes: (a: GlobalState) => string[] = createSelector(
+    'getAutolinkedUrlSchemes',
+    getConfig,
+    (config: Partial<ClientConfig>): string[] => {
+        if (!config.CustomUrlSchemes) {
+            return General.DEFAULT_AUTOLINKED_URL_SCHEMES;
+        }
+
+        return [
+            ...General.DEFAULT_AUTOLINKED_URL_SCHEMES,
+            ...config.CustomUrlSchemes.split(','),
+        ];
+    },
+);
+
+export const getManagedResourcePaths: (state: GlobalState) => string[] = createSelector(
+    'getManagedResourcePaths',
+    getConfig,
+    (config) => {
+        if (!config.ManagedResourcePaths) {
+            return [];
+        }
+
+        return config.ManagedResourcePaths.split(',').map((path) => path.trim());
+    },
+);
+
+export const getServerVersion = (state: GlobalState): string => {
+    return state.entities.general.serverVersion;
+};
+
+export function getFirstAdminVisitMarketplaceStatus(state: GlobalState): boolean {
+    return state.entities.general.firstAdminVisitMarketplaceStatus;
+}
+
+export function getFirstAdminSetupComplete(state: GlobalState): boolean {
+    return state.entities.general.firstAdminCompleteSetup;
+}
+
+export function isPerformanceDebuggingEnabled(state: GlobalState): boolean {
+    return state.entities.general.config.EnableClientPerformanceDebugging === 'true';
+}
+
+export const isMarketplaceEnabled: (state: GlobalState) => boolean = createSelector(
+    'isMarketplaceEnabled',
+    getConfig,
+    (config) => {
+        return config.PluginsEnabled === 'true' && config.EnableMarketplace === 'true';
+    },
+);
+
+export const getUsersStatusAndProfileFetchingPollInterval: (state: GlobalState) => number | null = createSelector(
+    'getUsersStatusAndProfileFetchingPollInterval',
+    getConfig,
+    (config) => {
+        const usersStatusAndProfileFetchingPollInterval = config.UsersStatusAndProfileFetchingPollIntervalMilliseconds;
+        if (usersStatusAndProfileFetchingPollInterval) {
+            return parseInt(usersStatusAndProfileFetchingPollInterval, 10);
+        }
+
+        return null;
+    },
+);
+
+export function developerModeEnabled(state: GlobalState): boolean {
+    return state.entities.general.config.EnableDeveloper === 'true';
+}
+
+export function testingEnabled(state: GlobalState): boolean {
+    return state.entities.general.config.EnableTesting === 'true';
+}
+
+export const getCustomProfileAttributes: (state: GlobalState) => UserPropertyField[] = createSelector(
+    'getCustomProfileAttributes',
+    (state) => state.entities.general.customProfileAttributes,
+    (fields) => {
+        return Object.values(fields).sort((a, b) => (a.attrs?.sort_order ?? 0) - (b.attrs?.sort_order ?? 0));
+    },
+);
+
+export function getIsCrossTeamSearchEnabled(state: GlobalState): boolean {
+    return state.entities.general.config.EnableCrossTeamSearch === 'true';
+}
+
+export function getCWSAvailability(state: GlobalState): CWSAvailabilityState {
+    return state.entities.general.cwsAvailability;
+}

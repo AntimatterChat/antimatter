@@ -206,6 +206,8 @@ package-prep: setup-go-work
 	@# Package web app
 	mkdir -p $(DIST_PATH)/client
 	cp -RL $(BUILD_WEBAPP_DIR)/channels/dist/* $(DIST_PATH)/client
+	mkdir -p $(DIST_PATH)/client-fusion
+	cp -RL $(BUILD_WEBAPP_DIR)/fusion/dist/* $(DIST_PATH)/client-fusion
 
 	@# Help files
 	cp ../LICENSE.txt $(DIST_PATH)

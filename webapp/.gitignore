@@ -7,6 +7,7 @@ node_modules
 *.tar.gz
 
 channels/dist
+fusion/dist
 playbooks/dist
 boards/dist
 platform/*/dist

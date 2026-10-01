@@ -1,0 +1,1041 @@
+// Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
+// See LICENSE.txt for license information.
+
+import React from 'react';
+
+import type {ChannelType} from '@mattermost/types/channels';
+
+import {act, renderWithContext, screen, userEvent} from 'tests/react_testing_utils';
+import {TestHelper} from 'utils/test_helper';
+
+import ChannelSettingsInfoTab from './channel_settings_info_tab';
+
+// Mock the redux actions and selectors
+jest.mock('mattermost-redux/actions/channels', () => ({
+    patchChannel: jest.fn(),
+    updateChannelPrivacy: jest.fn(),
+}));
+
+// Mock the ConvertConfirmModal component
+jest.mock('components/admin_console/team_channel_settings/convert_confirm_modal', () => {
+    return jest.fn().mockImplementation(({show, onCancel, onConfirm, displayName}) => {
+        if (!show) {
+            return null;
+        }
+        return (
+            <div data-testid='convert-confirm-modal'>
+                <div>{'Converting '}{displayName}{' to private'}</div>
+                <button onClick={onCancel}>{'Cancel'}</button>
+                <button onClick={onConfirm}>{'Yes, Convert Channel'}</button>
+            </div>
+        );
+    });
+});
+
+let mockChannelPropertiesPermission = true;
+let mockConvertToPublicPermission = true;
+let mockConvertToPrivatePermission = true;
+let mockDiscoverabilityPermission = true;
+
+jest.mock('mattermost-redux/selectors/entities/roles', () => ({
+    haveITeamPermission: jest.fn().mockReturnValue(true),
+    haveIChannelPermission: jest.fn().mockImplementation((state, teamId, channelId, permission: string) => {
+        if (permission === 'manage_private_channel_properties' || permission === 'manage_public_channel_properties') {
+            return mockChannelPropertiesPermission;
+        }
+        if (permission === 'convert_public_channel_to_private') {
+            return mockConvertToPrivatePermission;
+        }
+        if (permission === 'convert_private_channel_to_public') {
+            return mockConvertToPublicPermission;
+        }
+        if (permission === 'manage_private_channel_discoverability') {
+            return mockDiscoverabilityPermission;
+        }
+        return true;
+    }),
+    getRoles: jest.fn().mockReturnValue({}),
+}));
+
+jest.mock('selectors/views/textbox', () => ({
+    showPreviewOnChannelSettingsHeaderModal: jest.fn().mockReturnValue(false),
+    showPreviewOnChannelSettingsPurposeModal: jest.fn().mockReturnValue(false),
+}));
+
+jest.mock('actions/views/textbox', () => ({
+    setShowPreviewOnChannelSettingsHeaderModal: jest.fn(),
+    setShowPreviewOnChannelSettingsPurposeModal: jest.fn(),
+}));
+
+// Mock the isChannelAdmin function
+jest.mock('mattermost-redux/utils/user_utils', () => {
+    const original = jest.requireActual('mattermost-redux/utils/user_utils');
+    return {
+        ...original,
+        isChannelAdmin: jest.fn().mockReturnValue(false),
+    };
+});
+
+// Mock the ShowFormat component to make it easier to test
+jest.mock('components/advanced_text_editor/show_formatting/show_formatting', () => (
+    jest.fn().mockImplementation((props) => (
+        <button
+            data-testid='mock-show-format'
+            onClick={props.onClick}
+            className={props.active ? 'active' : ''}
+        >
+            {'Toggle Preview'}
+        </button>
+    ))
+));
+
+// Create a mock channel member
+const mockChannelMember = TestHelper.getChannelMembershipMock({
+    roles: 'channel_user system_admin',
+});
+
+// Mock the current user
+const mockUser = TestHelper.getUserMock({
+    id: 'user_id',
+    roles: 'system_admin',
+});
+
+jest.mock('mattermost-redux/selectors/entities/channels', () => ({
+    ...jest.requireActual('mattermost-redux/selectors/entities/channels') as typeof import('mattermost-redux/selectors/entities/channels'),
+    getChannelMember: jest.fn(() => mockChannelMember),
+}));
+
+jest.mock('mattermost-redux/selectors/entities/common', () => {
+    return {
+        ...jest.requireActual('mattermost-redux/selectors/entities/common') as typeof import('mattermost-redux/selectors/entities/users'),
+        getCurrentUser: () => mockUser,
+    };
+});
+
+// Create a mock channel for testing
+const mockChannel = TestHelper.getChannelMock({
+    id: 'channel1',
+    team_id: 'team1',
+    display_name: 'Test Channel',
+    name: 'test-channel',
+    purpose: 'Testing purpose',
+    header: 'Initial header',
+    type: 'O',
+});
+
+const mockDirectMessageChannel = TestHelper.getChannelMock({
+    id: 'dm-channel1',
+    team_id: '',
+    display_name: '',
+    name: 'current_user_id__other_user_id',
+    purpose: '',
+    header: 'DM initial header',
+    type: 'D',
+});
+
+const baseProps = {
+    channel: mockChannel,
+    setAreThereUnsavedChanges: jest.fn(),
+};
+
+describe('ChannelSettingsInfoTab', () => {
+    beforeEach(() => {
+        mockChannelPropertiesPermission = true;
+        mockConvertToPublicPermission = true;
+        mockConvertToPrivatePermission = true;
+        mockDiscoverabilityPermission = true;
+    });
+
+    it('should render with the correct initial values', () => {
+        renderWithContext(<ChannelSettingsInfoTab {...baseProps}/>);
+
+        // Check that the channel name field has the correct value.
+        expect(screen.getByRole('textbox', {name: 'Channel name'})).toHaveValue('Test Channel');
+
+        // Check that the purpose field has the correct value.
+        expect(screen.getByTestId('channel_settings_purpose_textbox')).toHaveValue('Testing purpose');
+
+        // Check that the header field has the correct value.
+        expect(screen.getByTestId('channel_settings_header_textbox')).toHaveValue('Initial header');
+
+        // Check that the public channel button is selected.
+        expect(screen.getByRole('button', {name: /Public Channel/}).classList.contains('selected')).toBe(true);
+    });
+
+    it('should show SaveChangesPanel when changes are made', async () => {
+        renderWithContext(<ChannelSettingsInfoTab {...baseProps}/>);
+
+        // Initially, SaveChangesPanel should not be visible.
+        expect(screen.queryByRole('button', {name: 'Save'})).not.toBeInTheDocument();
+
+        // Wrap the interaction in act to handle state updates properly
+        await act(async () => {
+            // Change the channel name.
+            const nameInput = screen.getByRole('textbox', {name: 'Channel name'});
+            await userEvent.clear(nameInput);
+            await userEvent.type(nameInput, 'Updated Channel Name');
+        });
+
+        // Add a small delay to ensure all state updates are processed
+        await new Promise((resolve) => setTimeout(resolve, 0));
+
+        // SaveChangesPanel should now be visible.
+        expect(screen.queryByRole('button', {name: 'Save'})).toBeInTheDocument();
+    });
+
+    it('should call patchChannel with updated values when Save is clicked (non-privacy changes)', async () => {
+        const {patchChannel} = require('mattermost-redux/actions/channels');
+        patchChannel.mockReturnValue({type: 'MOCK_ACTION', data: {}});
+
+        renderWithContext(<ChannelSettingsInfoTab {...baseProps}/>);
+
+        // Wrap all user interactions in act to handle state updates properly
+        await act(async () => {
+            // Change the channel name.
+            const nameInput = screen.getByRole('textbox', {name: 'Channel name'});
+            await userEvent.clear(nameInput);
+            await userEvent.type(nameInput, 'Updated Channel Name');
+
+            // Change the channel purpose.
+            const purposeInput = screen.getByTestId('channel_settings_purpose_textbox');
+            await userEvent.clear(purposeInput);
+            await userEvent.type(purposeInput, 'Updated purpose');
+
+            // Change the channel header.
+            const headerInput = screen.getByTestId('channel_settings_header_textbox');
+            await userEvent.clear(headerInput);
+            await userEvent.type(headerInput, 'Updated header');
+        });
+
+        // Add a small delay to ensure all state updates are processed
+        await new Promise((resolve) => setTimeout(resolve, 0));
+
+        // Click the Save button in the SaveChangesPanel.
+        await userEvent.click(screen.getByRole('button', {name: 'Save'}));
+
+        // Verify patchChannel was called with the updated values (without type change).
+        // Note: URL should remain unchanged when editing existing channels
+        expect(patchChannel).toHaveBeenCalledWith('channel1', {
+            display_name: 'Updated Channel Name',
+            purpose: 'Updated purpose',
+            header: 'Updated header',
+        });
+    });
+
+    it('should save DM header from channel settings without requiring channel name', async () => {
+        const {patchChannel} = require('mattermost-redux/actions/channels');
+        patchChannel.mockReturnValue({type: 'MOCK_ACTION', data: {}});
+
+        renderWithContext(
+            <ChannelSettingsInfoTab
+                channel={mockDirectMessageChannel}
+                setAreThereUnsavedChanges={jest.fn()}
+            />,
+        );
+
+        // DMs do not render the channel name field.
+        expect(screen.queryByRole('textbox', {name: 'Channel name'})).not.toBeInTheDocument();
+
+        const headerInput = screen.getByTestId('channel_settings_header_textbox');
+        await userEvent.clear(headerInput);
+        await userEvent.type(headerInput, 'Updated DM header');
+        await userEvent.click(screen.getByRole('button', {name: 'Save'}));
+
+        expect(patchChannel).toHaveBeenCalledWith('dm-channel1', {
+            header: 'Updated DM header',
+        });
+        expect(screen.queryByText('Channel name is required')).not.toBeInTheDocument();
+    });
+
+    it('should trim whitespace from channel fields when saving', async () => {
+        const {patchChannel} = require('mattermost-redux/actions/channels');
+        patchChannel.mockReturnValue({type: 'MOCK_ACTION', data: {}});
+
+        renderWithContext(<ChannelSettingsInfoTab {...baseProps}/>);
+
+        // Add whitespace to the channel fields
+        await act(async () => {
+            // Change the channel name with whitespace
+            const nameInput = screen.getByRole('textbox', {name: 'Channel name'});
+            await userEvent.clear(nameInput);
+            await userEvent.type(nameInput, '  Channel Name With Whitespace  ');
+
+            // Change the channel purpose with whitespace
+            const purposeInput = screen.getByTestId('channel_settings_purpose_textbox');
+            await userEvent.clear(purposeInput);
+            await userEvent.type(purposeInput, '  Purpose with whitespace  ');
+
+            // Change the channel header with whitespace
+            const headerInput = screen.getByTestId('channel_settings_header_textbox');
+            await userEvent.clear(headerInput);
+            await userEvent.type(headerInput, '  Header with whitespace  ');
+        });
+
+        // Add a small delay to ensure all state updates are processed
+        await new Promise((resolve) => setTimeout(resolve, 0));
+
+        // Click the Save button
+        await userEvent.click(screen.getByRole('button', {name: 'Save'}));
+
+        // Verify patchChannel was called with the trimmed values
+        expect(patchChannel).toHaveBeenCalledWith('channel1', {
+            display_name: 'Channel Name With Whitespace', // Whitespace should be trimmed
+            purpose: 'Purpose with whitespace', // Whitespace should be trimmed
+            header: 'Header with whitespace', // Whitespace should be trimmed
+        });
+
+        // Verify that the local state is updated with trimmed values
+        // Wait for the component to update after the save
+        await new Promise((resolve) => setTimeout(resolve, 0));
+
+        // The inputs should now have the trimmed values
+        expect(screen.getByRole('textbox', {name: 'Channel name'})).toHaveValue('Channel Name With Whitespace');
+        expect(screen.getByTestId('channel_settings_purpose_textbox')).toHaveValue('Purpose with whitespace');
+        expect(screen.getByTestId('channel_settings_header_textbox')).toHaveValue('Header with whitespace');
+    });
+
+    it('detects removing stored whitespace and saves the trimmed value', async () => {
+        const {patchChannel} = require('mattermost-redux/actions/channels');
+        patchChannel.mockReturnValue({type: 'MOCK_ACTION', data: {}});
+
+        const paddedHeaderChannel = {...mockChannel, header: 'Initial header   '};
+        renderWithContext(
+            <ChannelSettingsInfoTab
+                channel={paddedHeaderChannel}
+                setAreThereUnsavedChanges={jest.fn()}
+            />,
+        );
+
+        // The untidy stored text opens the form cleanly.
+        const headerInput = screen.getByTestId('channel_settings_header_textbox');
+        expect(headerInput).toHaveValue('Initial header   ');
+        expect(screen.queryByRole('button', {name: 'Save'})).not.toBeInTheDocument();
+
+        // Removing the stored trailing whitespace is a real edit the user can save.
+        await userEvent.clear(headerInput);
+        await userEvent.type(headerInput, 'Initial header');
+
+        expect(screen.getByRole('button', {name: 'Save'})).toBeInTheDocument();
+
+        await userEvent.click(screen.getByRole('button', {name: 'Save'}));
+
+        expect(patchChannel).toHaveBeenCalledWith('channel1', {
+            header: 'Initial header',
+        });
+    });
+
+    it('should hide SaveChangesPanel after successful save', async () => {
+        // Mock the patchChannel function to return a successful response
+        const {patchChannel} = require('mattermost-redux/actions/channels');
+        patchChannel.mockReturnValue({type: 'MOCK_ACTION', data: {}});
+
+        renderWithContext(<ChannelSettingsInfoTab {...baseProps}/>);
+
+        // Initially, SaveChangesPanel should not be visible
+        expect(screen.queryByRole('button', {name: 'Save'})).not.toBeInTheDocument();
+
+        // Make changes to the channel name
+        await act(async () => {
+            const nameInput = screen.getByRole('textbox', {name: 'Channel name'});
+            await userEvent.clear(nameInput);
+            await userEvent.type(nameInput, 'Updated Channel Name');
+        });
+
+        // SaveChangesPanel should now be visible
+        expect(screen.getByRole('button', {name: 'Save'})).toBeInTheDocument();
+
+        // Click the Save button
+        await userEvent.click(screen.getByRole('button', {name: 'Save'}));
+
+        // Add a small delay to ensure all state updates are processed
+        await new Promise((resolve) => setTimeout(resolve, 0));
+
+        // SaveChangesPanel should now be hidden after the successful save
+        expect(screen.queryByRole('button', {name: 'Save'})).not.toBeInTheDocument();
+    });
+
+    it('should reset form when Reset button is clicked', async () => {
+        renderWithContext(<ChannelSettingsInfoTab {...baseProps}/>);
+
+        // Wrap the interaction in act to handle state updates properly
+        await act(async () => {
+            // Change the channel name.
+            const nameInput = screen.getByRole('textbox', {name: 'Channel name'});
+            await userEvent.clear(nameInput);
+            await userEvent.type(nameInput, 'Updated Channel Name');
+        });
+
+        // Add a small delay to ensure all state updates are processed
+        await new Promise((resolve) => setTimeout(resolve, 0));
+
+        // SaveChangesPanel should now be visible.
+        expect(screen.queryByRole('button', {name: 'Save'})).toBeInTheDocument();
+
+        // Click the Reset button.
+        await userEvent.click(screen.getByRole('button', {name: 'Reset'}));
+
+        // Form should be reset to original values.
+        expect(screen.getByRole('textbox', {name: 'Channel name'})).toHaveValue('Test Channel');
+
+        // SaveChangesPanel should be hidden after reset.
+        expect(screen.queryByRole('button', {name: 'Save'})).not.toBeInTheDocument();
+    });
+
+    it('should show error state when save fails', async () => {
+        const {patchChannel} = require('mattermost-redux/actions/channels');
+        patchChannel.mockReturnValue({type: 'MOCK_ACTION', error: {message: 'Error saving channel'}});
+
+        renderWithContext(<ChannelSettingsInfoTab {...baseProps}/>);
+
+        // Wrap the interaction in act to handle state updates properly
+        await act(async () => {
+            // Change the channel name.
+            const nameInput = screen.getByRole('textbox', {name: 'Channel name'});
+            await userEvent.clear(nameInput);
+            await userEvent.type(nameInput, 'Updated Channel Name');
+        });
+
+        // Add a small delay to ensure all state updates are processed
+        await new Promise((resolve) => setTimeout(resolve, 0));
+
+        // Click the Save button.
+        await userEvent.click(screen.getByRole('button', {name: 'Save'}));
+
+        // SaveChangesPanel should show 'error' state.
+        const errorMessage = screen.getByText(/There are errors in the form above/);
+        const errorPanel = errorMessage.closest('.SaveChangesPanel');
+        expect(errorPanel).toHaveClass('error');
+    });
+
+    // Instead of clicking a non-existent element to trigger a channel name error,
+    // simulate an invalid input by clearing the channel name (which is required).
+    it('should show error when channel name field has an error', async () => {
+        renderWithContext(
+            <ChannelSettingsInfoTab
+                {...baseProps}
+            />,
+        );
+
+        // Wrap the interaction in act to handle state updates properly
+        await act(async () => {
+            // Clear the channel name to simulate an error.
+            const nameInput = screen.getByRole('textbox', {name: 'Channel name'});
+            await userEvent.clear(nameInput);
+            await userEvent.type(nameInput, 'Updated Channel Name');
+            await userEvent.clear(nameInput);
+            nameInput.blur();
+        });
+
+        // Add a small delay to ensure all state updates are processed
+        await new Promise((resolve) => setTimeout(resolve, 0));
+
+        // SaveChangesPanel should show error state.
+        const errorMessage = screen.getByText(/There are errors in the form above/);
+        const errorPanel = errorMessage.closest('.SaveChangesPanel');
+        expect(errorPanel).toHaveClass('error');
+    });
+
+    it('should show error when purpose exceeds character limit', async () => {
+        renderWithContext(
+            <ChannelSettingsInfoTab
+                {...baseProps}
+            />,
+        );
+
+        // Create a string that exceeds the allowed character limit
+        const longPurpose = 'a'.repeat(1025);
+
+        // Wrap the interaction in act to handle state updates properly
+        await act(async () => {
+            const purposeInput = screen.getByTestId('channel_settings_purpose_textbox');
+            await userEvent.clear(purposeInput);
+            await userEvent.type(purposeInput, longPurpose);
+        });
+
+        // Add a small delay to ensure all state updates are processed
+        await new Promise((resolve) => setTimeout(resolve, 0));
+
+        // SaveChangesPanel should show error state.
+        const errorMessage = screen.getByText(/There are errors in the form above/);
+        const errorPanel = errorMessage.closest('.SaveChangesPanel');
+        expect(errorPanel).toHaveClass('error');
+    });
+
+    it('should show error when header exceeds character limit', async () => {
+        renderWithContext(
+            <ChannelSettingsInfoTab
+                {...baseProps}
+            />,
+        );
+
+        // Create a string that exceeds the header character limit.
+        const longHeader = 'a'.repeat(1025);
+
+        // Wrap the interaction in act to handle state updates properly
+        await act(async () => {
+            const headerInput = screen.getByTestId('channel_settings_header_textbox');
+            await userEvent.clear(headerInput);
+            await userEvent.type(headerInput, longHeader);
+        });
+
+        // Add a small delay to ensure all state updates are processed
+        await new Promise((resolve) => setTimeout(resolve, 0));
+
+        // SaveChangesPanel should show error state.
+        const errorMessage = screen.getByText(/There are errors in the form above/);
+        const errorPanel = errorMessage.closest('.SaveChangesPanel');
+        expect(errorPanel).toHaveClass('error');
+    });
+
+    it('should render ChannelNameFormField and AdvancedTextbox as readOnly when user does not have permission', () => {
+        mockChannelPropertiesPermission = false;
+
+        renderWithContext(<ChannelSettingsInfoTab {...baseProps}/>);
+
+        // Check that the name input is disabled
+        const nameInput = screen.getByRole('textbox', {name: 'Channel name'});
+        expect(nameInput).toBeDisabled();
+
+        // When in readOnly mode, the preview toggle button should not be present
+        expect(screen.queryByTestId('mock-show-format')).not.toBeInTheDocument();
+    });
+
+    it('should render ChannelNameFormField and AdvancedTextbox as not readOnly when user has permission', () => {
+        mockChannelPropertiesPermission = true;
+
+        renderWithContext(<ChannelSettingsInfoTab {...baseProps}/>);
+
+        // Check that the name input is not disabled
+        const nameInput = screen.getByRole('textbox', {name: 'Channel name'});
+        expect(nameInput).not.toBeDisabled();
+
+        // When not in readOnly mode, at least one preview toggle button should be present
+        const previewButtons = screen.queryAllByTestId('mock-show-format');
+        expect(previewButtons.length).toBeGreaterThan(0);
+    });
+
+    it('should not allow channel type change when user lacks permissions', async () => {
+        // Set permissions to false
+        mockConvertToPublicPermission = false;
+        mockConvertToPrivatePermission = false;
+
+        renderWithContext(<ChannelSettingsInfoTab {...baseProps}/>);
+
+        // Private channel button should be disabled
+        const privateButton = screen.getByRole('button', {name: /Private Channel/});
+        expect(privateButton).toHaveClass('disabled');
+    });
+
+    it('should allow channel type change UI when user has permission to convert to private', async () => {
+        // Set convert permission to true
+        mockConvertToPrivatePermission = true;
+        mockConvertToPublicPermission = true;
+
+        renderWithContext(<ChannelSettingsInfoTab {...baseProps}/>);
+
+        // Private channel button should not be disabled
+        const privateButton = screen.getByRole('button', {name: /Private Channel/});
+        expect(privateButton).not.toBeDisabled();
+
+        // Should be able to change to private in the UI
+        await userEvent.click(privateButton);
+
+        // Verify the private button is now selected
+        expect(privateButton).toHaveClass('selected');
+    });
+
+    it('should never allow conversion from private to public', async () => {
+        // Set convert permission to true (even with permission, it should be prevented)
+        mockConvertToPublicPermission = true;
+
+        // Start with a private channel
+        const privateChannel = {
+            ...mockChannel,
+            type: 'P' as ChannelType,
+        };
+
+        renderWithContext(
+            <ChannelSettingsInfoTab
+                {...baseProps}
+                channel={privateChannel}
+            />,
+        );
+
+        // Public channel button should be disabled regardless of permissions
+        const publicButton = screen.getByRole('button', {name: /Public Channel/});
+        expect(publicButton).toHaveClass('disabled');
+
+        // Private button should be selected
+        const privateButton = screen.getByRole('button', {name: /Private Channel/});
+        expect(privateButton).toHaveClass('selected');
+    });
+
+    it('should disable public/private selector when channel has membership policy enforced', async () => {
+        mockConvertToPrivatePermission = true;
+        mockConvertToPublicPermission = true;
+
+        const channelWithPolicy = {
+            ...mockChannel,
+            policy_enforced: true,
+        };
+
+        renderWithContext(
+            <ChannelSettingsInfoTab
+                {...baseProps}
+                channel={channelWithPolicy}
+            />,
+        );
+
+        const publicButton = screen.getByRole('button', {name: /Public Channel/});
+        const privateButton = screen.getByRole('button', {name: /Private Channel/});
+        expect(publicButton).toHaveClass('disabled');
+        expect(privateButton).toHaveClass('disabled');
+
+        await userEvent.hover(publicButton);
+        expect(
+            await screen.findByText(/This channel has a membership policy applied/i),
+        ).toBeInTheDocument();
+    });
+
+    it('should show ConvertConfirmModal when converting from public to private', async () => {
+        mockConvertToPrivatePermission = true;
+
+        renderWithContext(<ChannelSettingsInfoTab {...baseProps}/>);
+
+        // Change to private channel
+        const privateButton = screen.getByRole('button', {name: /Private Channel/});
+        await userEvent.click(privateButton);
+
+        // Click Save button
+        await userEvent.click(screen.getByRole('button', {name: 'Save'}));
+
+        // Verify the modal is shown
+        expect(screen.getByTestId('convert-confirm-modal')).toBeInTheDocument();
+    });
+
+    it('should convert channel when confirming in ConvertConfirmModal', async () => {
+        mockConvertToPrivatePermission = true;
+
+        const {updateChannelPrivacy} = require('mattermost-redux/actions/channels');
+        updateChannelPrivacy.mockReturnValue({type: 'MOCK_ACTION', data: {}});
+
+        renderWithContext(<ChannelSettingsInfoTab {...baseProps}/>);
+
+        // Change to private channel
+        const privateButton = screen.getByRole('button', {name: /Private Channel/});
+        await userEvent.click(privateButton);
+
+        // Click Save button to show modal
+        await userEvent.click(screen.getByRole('button', {name: 'Save'}));
+
+        // Click confirm button in modal
+        await userEvent.click(screen.getByText(/Yes, Convert Channel/i));
+
+        // Verify updateChannelPrivacy was called
+        expect(updateChannelPrivacy).toHaveBeenCalledWith('channel1', 'P');
+    });
+
+    it('should not convert channel when canceling in ConvertConfirmModal', async () => {
+        mockConvertToPrivatePermission = true;
+
+        const {updateChannelPrivacy} = require('mattermost-redux/actions/channels');
+        updateChannelPrivacy.mockReturnValue({type: 'MOCK_ACTION', data: {}});
+
+        renderWithContext(<ChannelSettingsInfoTab {...baseProps}/>);
+
+        // Change to private channel
+        const privateButton = screen.getByRole('button', {name: /Private Channel/});
+        await userEvent.click(privateButton);
+
+        // Click Save button to show modal
+        await userEvent.click(screen.getByRole('button', {name: 'Save'}));
+
+        // Click cancel button in modal
+        await userEvent.click(screen.getByText(/Cancel/i));
+
+        // Verify updateChannelPrivacy was not called
+        expect(updateChannelPrivacy).not.toHaveBeenCalled();
+    });
+
+    it('should handle errors when converting channel privacy', async () => {
+        mockConvertToPrivatePermission = true;
+
+        const {updateChannelPrivacy} = require('mattermost-redux/actions/channels');
+        updateChannelPrivacy.mockReturnValue({
+            type: 'MOCK_ACTION',
+            error: {message: 'Error changing privacy'},
+        });
+
+        renderWithContext(<ChannelSettingsInfoTab {...baseProps}/>);
+
+        // Change to private channel
+        const privateButton = screen.getByRole('button', {name: /Private Channel/});
+        await userEvent.click(privateButton);
+
+        // Click Save button to show modal
+        await userEvent.click(screen.getByRole('button', {name: 'Save'}));
+
+        // Click confirm button in modal
+        await userEvent.click(screen.getByText(/Yes, Convert Channel/i));
+
+        // Verify error state is shown
+        expect(screen.getByText(/There are errors in the form above/)).toBeInTheDocument();
+    });
+
+    // ---------------------------------------------------------------
+    // Discoverable Private Channels — toggle visibility, gating, save
+    // ---------------------------------------------------------------
+
+    const privateChannel = TestHelper.getChannelMock({
+        id: 'channel1',
+        team_id: 'team1',
+        display_name: 'Private Channel',
+        name: 'private-channel',
+        purpose: 'For private things',
+        header: 'Private header',
+        type: 'P',
+    });
+
+    // Feature-flag-enabled state. The selector reads
+    // config.FeatureFlagDiscoverableChannels === 'true'.
+    const stateWithDiscoverableFlag = {
+        entities: {
+            general: {
+                config: {
+                    FeatureFlagDiscoverableChannels: 'true',
+                },
+            },
+        },
+    };
+
+    describe('Discoverable toggle', () => {
+        it('does not render on a public channel even when the feature flag is on', () => {
+            renderWithContext(<ChannelSettingsInfoTab {...baseProps}/>, stateWithDiscoverableFlag);
+            expect(screen.queryByTestId('channel-settings-discoverable-toggle')).not.toBeInTheDocument();
+        });
+
+        it('does not render when the feature flag is off, even on a private channel', () => {
+            renderWithContext(
+                <ChannelSettingsInfoTab
+                    channel={privateChannel}
+                    setAreThereUnsavedChanges={jest.fn()}
+                />,
+            );
+            expect(screen.queryByTestId('channel-settings-discoverable-toggle')).not.toBeInTheDocument();
+        });
+
+        it('renders on a private channel when the feature flag is on', () => {
+            renderWithContext(
+                <ChannelSettingsInfoTab
+                    channel={privateChannel}
+                    setAreThereUnsavedChanges={jest.fn()}
+                />,
+                stateWithDiscoverableFlag,
+            );
+            expect(screen.getByTestId('channel-settings-discoverable-toggle')).toBeInTheDocument();
+            expect(screen.getByTestId('channel-settings-discoverable-toggle')).toHaveAttribute('aria-pressed', 'false');
+        });
+
+        it('reflects the channel\'s existing discoverable value on mount', () => {
+            const alreadyDiscoverable = {...privateChannel, discoverable: true};
+            renderWithContext(
+                <ChannelSettingsInfoTab
+                    channel={alreadyDiscoverable}
+                    setAreThereUnsavedChanges={jest.fn()}
+                />,
+                stateWithDiscoverableFlag,
+            );
+            expect(screen.getByTestId('channel-settings-discoverable-toggle')).toHaveAttribute('aria-pressed', 'true');
+        });
+
+        it('disables the toggle when the user lacks manage_private_channel_discoverability', () => {
+            mockDiscoverabilityPermission = false;
+            renderWithContext(
+                <ChannelSettingsInfoTab
+                    channel={privateChannel}
+                    setAreThereUnsavedChanges={jest.fn()}
+                />,
+                stateWithDiscoverableFlag,
+            );
+            expect(screen.getByTestId('channel-settings-discoverable-toggle')).toBeDisabled();
+            expect(screen.getByText(/Only channel admins can change this/)).toBeInTheDocument();
+        });
+
+        it('includes discoverable: true in the patchChannel payload when toggled on and saved', async () => {
+            const {patchChannel} = require('mattermost-redux/actions/channels');
+            patchChannel.mockReturnValue({type: 'MOCK_ACTION', data: {discoverable: true}});
+
+            renderWithContext(
+                <ChannelSettingsInfoTab
+                    channel={privateChannel}
+                    setAreThereUnsavedChanges={jest.fn()}
+                />,
+                stateWithDiscoverableFlag,
+            );
+
+            await act(async () => {
+                await userEvent.click(screen.getByTestId('channel-settings-discoverable-toggle'));
+            });
+            await new Promise((resolve) => setTimeout(resolve, 0));
+
+            // SaveChangesPanel becomes visible only when there are unsaved changes
+            const saveButton = screen.getByRole('button', {name: 'Save'});
+            await userEvent.click(saveButton);
+
+            expect(patchChannel).toHaveBeenCalledWith('channel1', {discoverable: true});
+        });
+
+        it('omits the discoverable field from the patch when the toggle is unchanged', async () => {
+            const {patchChannel} = require('mattermost-redux/actions/channels');
+            patchChannel.mockReturnValue({type: 'MOCK_ACTION', data: {}});
+
+            renderWithContext(
+                <ChannelSettingsInfoTab
+                    channel={privateChannel}
+                    setAreThereUnsavedChanges={jest.fn()}
+                />,
+                stateWithDiscoverableFlag,
+            );
+
+            // Touch a different field so SaveChangesPanel renders, but leave
+            // the discoverable toggle alone. The patch should NOT include
+            // discoverable — only fields that changed.
+            await act(async () => {
+                const headerInput = screen.getByTestId('channel_settings_header_textbox');
+                await userEvent.clear(headerInput);
+                await userEvent.type(headerInput, 'New header text');
+            });
+            await new Promise((resolve) => setTimeout(resolve, 0));
+
+            await userEvent.click(screen.getByRole('button', {name: 'Save'}));
+
+            expect(patchChannel).toHaveBeenCalledWith('channel1', {header: 'New header text'});
+            const calls = patchChannel.mock.calls;
+            const lastPatch = calls[calls.length - 1][1];
+            expect(lastPatch).not.toHaveProperty('discoverable');
+        });
+    });
+
+    describe('URL editing', () => {
+        const defaultChannel = TestHelper.getChannelMock({
+            id: 'town-square-id',
+            team_id: 'team1',
+            display_name: 'Town Square',
+            name: 'town-square',
+            purpose: '',
+            header: '',
+            type: 'O',
+        });
+
+        it('should not offer the URL Edit button for the default channel', () => {
+            renderWithContext(
+                <ChannelSettingsInfoTab
+                    channel={defaultChannel}
+                    setAreThereUnsavedChanges={jest.fn()}
+                />,
+            );
+
+            expect(screen.getByTestId('urlInputLabel')).toHaveTextContent('town-square');
+            expect(screen.queryByRole('button', {name: 'Edit'})).not.toBeInTheDocument();
+            expect(screen.getByText('The URL of the default channel cannot be changed.')).toBeVisible();
+        });
+
+        it('should keep the default channel display name editable while the URL is locked', async () => {
+            const {patchChannel} = require('mattermost-redux/actions/channels');
+            patchChannel.mockReturnValue({type: 'MOCK_ACTION', data: {}});
+
+            renderWithContext(
+                <ChannelSettingsInfoTab
+                    channel={defaultChannel}
+                    setAreThereUnsavedChanges={jest.fn()}
+                />,
+            );
+
+            await act(async () => {
+                const nameInput = screen.getByRole('textbox', {name: 'Channel name'});
+                await userEvent.clear(nameInput);
+                await userEvent.type(nameInput, 'Company Wide');
+            });
+            await new Promise((resolve) => setTimeout(resolve, 0));
+
+            await userEvent.click(screen.getByRole('button', {name: 'Save'}));
+
+            expect(patchChannel).toHaveBeenCalledWith('town-square-id', {display_name: 'Company Wide'});
+            expect(screen.getByTestId('urlInputLabel')).toHaveTextContent('town-square');
+        });
+
+        it('should keep the default channel URL locked when the user also lacks manage permission', () => {
+            mockChannelPropertiesPermission = false;
+
+            renderWithContext(
+                <ChannelSettingsInfoTab
+                    channel={defaultChannel}
+                    setAreThereUnsavedChanges={jest.fn()}
+                />,
+            );
+
+            expect(screen.getByRole('textbox', {name: 'Channel name'})).toBeDisabled();
+            expect(screen.queryByRole('button', {name: 'Edit'})).not.toBeInTheDocument();
+            expect(screen.getByText('The URL of the default channel cannot be changed.')).toBeVisible();
+        });
+
+        it('should patch the URL for an ordinary channel', async () => {
+            const {patchChannel} = require('mattermost-redux/actions/channels');
+            patchChannel.mockReturnValue({type: 'MOCK_ACTION', data: {}});
+
+            renderWithContext(<ChannelSettingsInfoTab {...baseProps}/>);
+
+            await userEvent.click(screen.getByRole('button', {name: 'Edit'}));
+
+            await act(async () => {
+                const urlInput = screen.getByTestId('channelURLInput');
+                await userEvent.clear(urlInput);
+                await userEvent.type(urlInput, 'renamed-channel');
+            });
+            await new Promise((resolve) => setTimeout(resolve, 0));
+
+            await userEvent.click(screen.getByRole('button', {name: 'Save'}));
+
+            expect(patchChannel).toHaveBeenCalledWith('channel1', {name: 'renamed-channel'});
+        });
+    });
+
+    describe('opening the tab on a channel with untidy stored text', () => {
+        // Channels populated outside this form can carry surrounding whitespace.
+        const paddedChannel = TestHelper.getChannelMock({
+            id: 'channel1',
+            team_id: 'team1',
+            display_name: 'Padded Channel',
+            name: 'padded-channel',
+            purpose: '  Small annoyances that add up  ',
+            header: 'Runbook: [Ops guide](http://example.com)\nEscalate to @admin\n',
+            type: 'O',
+        });
+
+        it('reports no unsaved changes when purpose and header have surrounding whitespace', () => {
+            const setAreThereUnsavedChanges = jest.fn();
+            renderWithContext(
+                <ChannelSettingsInfoTab
+                    channel={paddedChannel}
+                    setAreThereUnsavedChanges={setAreThereUnsavedChanges}
+                />,
+            );
+
+            expect(screen.queryByText('You have unsaved changes')).not.toBeInTheDocument();
+            expect(setAreThereUnsavedChanges).toHaveBeenCalledWith(false);
+            expect(setAreThereUnsavedChanges).not.toHaveBeenCalledWith(true);
+        });
+
+        it('reports no unsaved changes when the channel has no purpose or header at all', () => {
+            const bareChannel = TestHelper.getChannelMock({
+                id: 'channel1',
+                team_id: 'team1',
+                display_name: 'Bare Channel',
+                name: 'bare-channel',
+                purpose: undefined as unknown as string,
+                header: undefined as unknown as string,
+                type: 'O',
+            });
+
+            const setAreThereUnsavedChanges = jest.fn();
+            renderWithContext(
+                <ChannelSettingsInfoTab
+                    channel={bareChannel}
+                    setAreThereUnsavedChanges={setAreThereUnsavedChanges}
+                />,
+            );
+
+            expect(screen.queryByText('You have unsaved changes')).not.toBeInTheDocument();
+            expect(setAreThereUnsavedChanges).toHaveBeenCalledWith(false);
+            expect(setAreThereUnsavedChanges).not.toHaveBeenCalledWith(true);
+        });
+
+        it('reports no unsaved changes on a DM whose header ends in a newline', () => {
+            const paddedDmChannel = {...mockDirectMessageChannel, header: 'DM initial header\n'};
+
+            const setAreThereUnsavedChanges = jest.fn();
+            renderWithContext(
+                <ChannelSettingsInfoTab
+                    channel={paddedDmChannel}
+                    setAreThereUnsavedChanges={setAreThereUnsavedChanges}
+                />,
+            );
+
+            expect(screen.queryByText('You have unsaved changes')).not.toBeInTheDocument();
+            expect(setAreThereUnsavedChanges).toHaveBeenCalledWith(false);
+            expect(setAreThereUnsavedChanges).not.toHaveBeenCalledWith(true);
+        });
+
+        it('stays clean when focus leaves the untouched name field', async () => {
+            renderWithContext(
+                <ChannelSettingsInfoTab
+                    channel={paddedChannel}
+                    setAreThereUnsavedChanges={jest.fn()}
+                />,
+            );
+
+            const nameInput = screen.getByRole('textbox', {name: 'Channel name'});
+            await userEvent.click(nameInput);
+            await userEvent.tab();
+
+            expect(screen.queryByText('Channel names must have at least 1 character.')).not.toBeInTheDocument();
+            expect(nameInput).toHaveValue('Padded Channel');
+            expect(screen.queryByText('You have unsaved changes')).not.toBeInTheDocument();
+        });
+
+        it('restores the stored text and clears the panel when Reset is clicked', async () => {
+            renderWithContext(
+                <ChannelSettingsInfoTab
+                    channel={paddedChannel}
+                    setAreThereUnsavedChanges={jest.fn()}
+                />,
+            );
+
+            const purposeInput = screen.getByTestId('channel_settings_purpose_textbox');
+            await userEvent.clear(purposeInput);
+            await userEvent.type(purposeInput, 'A brand new purpose');
+
+            await userEvent.click(screen.getByRole('button', {name: 'Reset'}));
+
+            expect(purposeInput).toHaveValue('  Small annoyances that add up  ');
+            expect(screen.queryByText('You have unsaved changes')).not.toBeInTheDocument();
+        });
+
+        it('detects and saves an edit made on untidy stored text', async () => {
+            const {patchChannel} = require('mattermost-redux/actions/channels');
+            patchChannel.mockReturnValue({type: 'MOCK_ACTION', data: {}});
+
+            const setAreThereUnsavedChanges = jest.fn();
+            const {rerender} = renderWithContext(
+                <ChannelSettingsInfoTab
+                    channel={paddedChannel}
+                    setAreThereUnsavedChanges={setAreThereUnsavedChanges}
+                />,
+            );
+
+            const purposeInput = screen.getByTestId('channel_settings_purpose_textbox');
+            await userEvent.clear(purposeInput);
+            await userEvent.type(purposeInput, 'A brand new purpose');
+
+            expect(screen.getByText('You have unsaved changes')).toBeInTheDocument();
+            expect(setAreThereUnsavedChanges).toHaveBeenLastCalledWith(true);
+
+            await userEvent.click(screen.getByRole('button', {name: 'Save'}));
+
+            // The untouched header keeps its stored whitespace.
+            expect(patchChannel).toHaveBeenCalledWith('channel1', {
+                purpose: 'A brand new purpose',
+            });
+
+            // Simulate the patched channel arriving back through the store.
+            rerender(
+                <ChannelSettingsInfoTab
+                    channel={{...paddedChannel, purpose: 'A brand new purpose'}}
+                    setAreThereUnsavedChanges={setAreThereUnsavedChanges}
+                />,
+            );
+            expect(setAreThereUnsavedChanges).toHaveBeenLastCalledWith(false);
+            expect(screen.queryByText('You have unsaved changes')).not.toBeInTheDocument();
+        });
+    });
+});

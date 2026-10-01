@@ -1,0 +1,141 @@
+// Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
+// See LICENSE.txt for license information.
+
+import React, {useRef, useState} from 'react';
+import {useIntl} from 'react-intl';
+import {useSelector} from 'react-redux';
+
+import {getCurrentChannel, getMyCurrentChannelMembership} from 'mattermost-redux/selectors/entities/channels';
+import {getCurrentUserId} from 'mattermost-redux/selectors/entities/users';
+
+import {getAppBarPluginComponents, getChannelHeaderPluginComponents, shouldShowAppBar} from 'selectors/plugins';
+import {getActiveRhsComponent} from 'selectors/rhs';
+
+import Avatar from 'fusion/components/avatar';
+import Icon from 'fusion/components/icon';
+import AboutPopover from 'fusion/popovers/about_popover';
+import StatusPopover from 'fusion/popovers/status_popover';
+import {am} from 'fusion/utils/class_names';
+
+import type {GlobalState} from 'types/store';
+import type {AppBarAction, ChannelHeaderButtonAction} from 'types/store/plugins';
+
+import {getKnownApp} from './known_apps';
+
+function AppIcon({component}: {component: AppBarAction | ChannelHeaderButtonAction}) {
+    const channel = useSelector(getCurrentChannel);
+    const member = useSelector(getMyCurrentChannelMembership);
+    const active = useSelector(getActiveRhsComponent);
+    const manifestName = useSelector((state: GlobalState) => state.plugins.plugins[component.pluginId]?.name);
+    const [failed, setFailed] = useState(false);
+    const known = getKnownApp(component.pluginId);
+    const iconUrl = 'iconUrl' in component ? component.iconUrl : undefined;
+    const icon = 'icon' in component ? component.icon : undefined;
+    const rhsComponentId = 'rhsComponentId' in component ? component.rhsComponentId : undefined;
+
+    // Plugins may give a React element as their tooltip: the button's title needs text.
+    const text = [component.tooltipText, 'dropdownText' in component ? component.dropdownText : undefined].find((t) => typeof t === 'string' && t);
+    const label = (text as string | undefined) || manifestName || component.pluginId;
+    const on = rhsComponentId ? active?.id === rhsComponentId : active?.pluginId === component.pluginId;
+
+    // The apps the mockup knows are drawn with its icons and colours.
+    let glyph: React.ReactNode = icon || <Icon name='plug'/>;
+    if (known) {
+        glyph = <Icon name={known.icon}/>;
+    } else if (iconUrl && !failed) {
+        glyph = (
+            <img
+                className={am('app-img')}
+                src={iconUrl}
+                alt=''
+                onError={() => setFailed(true)}
+            />
+        );
+    }
+
+    return (
+        <button
+            className={am('app-ic', known?.tone, {on})}
+            title={label}
+            aria-label={label}
+            aria-pressed={on}
+            onClick={() => {
+                if (rhsComponentId) {
+                    (component as AppBarAction & {action: () => void}).action();
+                } else {
+                    component.action?.(channel, member);
+                }
+            }}
+        >
+            {glyph}
+        </button>
+    );
+}
+
+// AppRail is the right-hand column: your avatar on top, the apps plugins add, and About at the bottom.
+export default function AppRail() {
+    const {formatMessage} = useIntl();
+    const me = useSelector(getCurrentUserId);
+    const enabled = useSelector(shouldShowAppBar);
+    const appBarComponents = useSelector(getAppBarPluginComponents);
+    const headerComponents = useSelector(getChannelHeaderPluginComponents);
+    const meRef = useRef<HTMLButtonElement>(null);
+    const aboutRef = useRef<HTMLButtonElement>(null);
+    const [open, setOpen] = useState<'status' | 'about' | null>(null);
+
+    return (
+        <div className={am('appbar')}>
+            <div className={am('me-slot')}>
+                <button
+                    ref={meRef}
+                    className={am('me-tile', 'me-btn')}
+                    aria-haspopup='dialog'
+                    aria-expanded={open === 'status'}
+                    aria-label={formatMessage({id: 'fusion.apps.me', defaultMessage: 'Your status, profile and settings'})}
+                    onClick={() => setOpen(open === 'status' ? null : 'status')}
+                >
+                    <Avatar
+                        userId={me}
+                        size='me'
+                        status={true}
+                    />
+                </button>
+            </div>
+            {enabled && [...appBarComponents, ...headerComponents].map((c) => (
+                <AppIcon
+                    key={c.id}
+                    component={c}
+                />
+            ))}
+            <span className={am('grow')}/>
+            <button
+                ref={aboutRef}
+                className={am('app-ic', 'about-btn')}
+                title={formatMessage({id: 'fusion.apps.about', defaultMessage: 'About Antimatter'})}
+                aria-label={formatMessage({id: 'fusion.apps.about', defaultMessage: 'About Antimatter'})}
+                aria-haspopup='dialog'
+                onClick={() => setOpen(open === 'about' ? null : 'about')}
+            >
+                <svg
+                    className={am('ic')}
+                    viewBox='0 0 64 64'
+                    aria-hidden='true'
+                >
+                    <use href='#am-i-mark'/>
+                </svg>
+            </button>
+            {open === 'status' && (
+                <StatusPopover
+                    anchor={meRef.current}
+                    onClose={() => setOpen(null)}
+                />
+            )}
+            {open === 'about' && (
+                <AboutPopover
+                    anchor={aboutRef.current}
+                    onClose={() => setOpen(null)}
+                />
+            )}
+        </div>
+    );
+}

@@ -9,6 +9,7 @@ export type ClientConfig = {
     AboutLink: string;
     AllowBannerDismissal: string;
     AllowCustomThemes: string;
+    AllowUserWebUISelection: string;
     AllowSyncedDrafts: string;
     AllowedThemes: string;
     AndroidAppDownloadLink: string;
@@ -41,6 +42,7 @@ export type ClientConfig = {
     DataRetentionMessageRetentionHours: string;
     DefaultClientLocale: string;
     DefaultTheme: string;
+    DefaultWebUI: string;
     DiagnosticId: string;
     DiagnosticsEnabled: string;
     DisableRefetchingOnBrowserFocus: string;
@@ -445,6 +447,8 @@ export type ServiceSettings = {
     MaximumPayloadSizeBytes: number;
     EnableAPIPostDeletion: boolean;
     EnableDesktopLandingPage: boolean;
+    DefaultWebUI: string;
+    AllowUserWebUISelection: boolean;
     MaximumURLLength: number;
     ScheduledPosts: boolean;
     EnableWebHubChannelIteration: boolean;

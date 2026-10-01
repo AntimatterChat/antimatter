@@ -1,0 +1,308 @@
+// Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
+// See LICENSE.txt for license information.
+
+import classNames from 'classnames';
+import React, {memo, useRef} from 'react';
+import {useIntl} from 'react-intl';
+
+import {CloseIcon, MenuDownIcon, MenuRightIcon} from '@mattermost/compass-icons/components';
+import {WithTooltip} from '@mattermost/shared/components/tooltip';
+import type {
+    OpenGraphMetadata,
+    OpenGraphMetadataImage,
+    Post,
+    PostImage,
+} from '@mattermost/types/posts';
+
+import AutoHeightSwitcher from 'components/common/auto_height_switcher';
+import ExternalImage from 'components/external_image';
+import ExternalLink from 'components/external_link';
+import SizeAwareImage from 'components/size_aware_image';
+
+import {PostTypes} from 'utils/constants';
+import {isSystemMessage} from 'utils/post_utils';
+import {makeUrlSafe} from 'utils/url';
+
+import {
+    OPEN_GRAPH_LARGE_IMAGE_MIN_WIDTH,
+    OPEN_GRAPH_LARGE_IMAGE_RATIO,
+    OPEN_GRAPH_MAX_IMAGE_HEIGHT,
+    OPEN_GRAPH_MAX_IMAGE_WIDTH,
+    OPEN_GRAPH_NEAREST_POINT_IMAGE,
+    OPEN_GRAPH_THUMBNAIL_SIZE,
+} from './constants';
+import {getNearestPoint} from './get_nearest_point';
+
+import './post_attachment_opengraph.scss';
+
+export type Props = {
+    postId: string;
+    link: string;
+    currentUserId?: string;
+    post: Post;
+    openGraphData?: OpenGraphMetadata;
+    enableLinkPreviews?: boolean;
+    previewEnabled?: boolean;
+    isEmbedVisible?: boolean;
+    toggleEmbedVisibility: () => void;
+    actions: {
+        editPost: (post: Post) => void;
+    };
+    isInPermalink?: boolean;
+    imageCollapsed?: boolean;
+};
+
+type ImageMetadata = Partial<OpenGraphMetadataImage> & PostImage;
+
+export function getBestImage(openGraphData?: OpenGraphMetadata, imagesMetadata?: Record<string, PostImage>) {
+    if (!openGraphData?.images?.length) {
+        return null;
+    }
+
+    // Get the dimensions from the post metadata if they weren't provided by the website as part of the OpenGraph data
+    const images = openGraphData.images.map((image: OpenGraphMetadataImage) => {
+        const imageUrl = image.secure_url || image.url;
+
+        return {
+            ...image,
+            height: image.height || imagesMetadata?.[imageUrl]?.height || -1,
+            width: image.width || imagesMetadata?.[imageUrl]?.width || -1,
+            format: image.type?.split('/')[1] || image.type || '',
+            frameCount: 0,
+        };
+    });
+
+    return getNearestPoint<ImageMetadata>(OPEN_GRAPH_NEAREST_POINT_IMAGE, images);
+}
+
+export const getIsLargeImage = (data: ImageMetadata | null) => {
+    if (!data) {
+        return false;
+    }
+
+    const {height, width} = data;
+
+    return width >= OPEN_GRAPH_LARGE_IMAGE_MIN_WIDTH && (width / height) >= OPEN_GRAPH_LARGE_IMAGE_RATIO;
+};
+
+export function getScaledImageDimensions(imageMetadata: ImageMetadata, large: boolean): Partial<PostImage> {
+    const {width = 0, height = 0} = imageMetadata;
+
+    if (width <= 0 || height <= 0) {
+        return {};
+    }
+
+    if (large) {
+        const ratio = Math.min(
+            OPEN_GRAPH_MAX_IMAGE_WIDTH / width,
+            OPEN_GRAPH_MAX_IMAGE_HEIGHT / height,
+            1,
+        );
+
+        return {
+            width: width * ratio,
+            height: height * ratio,
+        };
+    }
+
+    const ratio = Math.min(
+        OPEN_GRAPH_THUMBNAIL_SIZE / width,
+        OPEN_GRAPH_THUMBNAIL_SIZE / height,
+    );
+
+    return {
+        width: width * ratio,
+        height: height * ratio,
+    };
+}
+
+const PostAttachmentOpenGraph = ({openGraphData, post, actions, link, isInPermalink, previewEnabled, ...rest}: Props) => {
+    const {formatMessage} = useIntl();
+    const {current: bestImageData} = useRef<ImageMetadata>(getBestImage(openGraphData, post.metadata.images));
+    const isPreviewRemoved = post?.props?.[PostTypes.REMOVE_LINK_PREVIEW] === 'true';
+
+    // block of early return statements
+    if (!rest.enableLinkPreviews || !previewEnabled || isPreviewRemoved) {
+        return null;
+    }
+
+    if (!post || isSystemMessage(post)) {
+        return null;
+    }
+
+    if (!openGraphData) {
+        return null;
+    }
+
+    const handleRemovePreview = async (e: React.MouseEvent<HTMLButtonElement>) => {
+        e.preventDefault();
+
+        // prevent the button-click to trigger visiting the link
+        e.stopPropagation();
+        const props = Object.assign({}, post.props);
+        props[PostTypes.REMOVE_LINK_PREVIEW] = 'true';
+
+        const patchedPost = {
+            id: post.id,
+            props,
+        };
+
+        return actions.editPost(patchedPost as Post);
+    };
+
+    const safeLink = makeUrlSafe(openGraphData?.url || link);
+
+    return (
+        <ExternalLink
+            className='PostAttachmentOpenGraph'
+            role='link'
+            href={safeLink}
+            title={openGraphData?.title || openGraphData?.url || link}
+            location='post_attachment_opengraph'
+            data-testid='link-preview'
+            style={{
+                '--open-graph-thumbnail-size': `${OPEN_GRAPH_THUMBNAIL_SIZE}px`,
+                '--open-graph-max-image-width': `${OPEN_GRAPH_MAX_IMAGE_WIDTH}px`,
+                '--open-graph-max-image-height': `${OPEN_GRAPH_MAX_IMAGE_HEIGHT}px`,
+            } as React.CSSProperties}
+        >
+            {rest.currentUserId === post.user_id && !isInPermalink && (
+                <WithTooltip
+                    title={formatMessage({id: 'link_preview.remove_link_preview', defaultMessage: 'Remove link preview'})}
+                >
+                    <button
+                        type='button'
+                        className='remove-button style--none'
+                        aria-label='Remove'
+                        onClick={handleRemovePreview}
+                        data-testid='removeLinkPreviewButton'
+                    >
+                        <CloseIcon
+                            size={14}
+                            color={'currentColor'}
+                        />
+                    </button>
+                </WithTooltip>
+            )}
+            <PostAttachmentOpenGraphBody
+                isInPermalink={isInPermalink}
+                sitename={openGraphData?.site_name}
+                title={openGraphData?.title || openGraphData?.url || link}
+                description={openGraphData?.description}
+            />
+            <PostAttachmentOpenGraphImage
+                imageMetadata={bestImageData}
+                title={openGraphData?.title}
+                isInPermalink={isInPermalink}
+                isEmbedVisible={rest.isEmbedVisible}
+                toggleEmbedVisibility={rest.toggleEmbedVisibility}
+            />
+        </ExternalLink>
+    );
+};
+
+type BodyProps = {
+    title: string;
+    isInPermalink?: boolean;
+    sitename?: string;
+    description?: string;
+};
+
+export const PostAttachmentOpenGraphBody = memo(({title, isInPermalink, sitename = '', description = ''}: BodyProps) => {
+    return title ? (
+        <div className={classNames('PostAttachmentOpenGraph__body', {isInPermalink})}>
+            {(!isInPermalink && sitename) && <span className='sitename'>{sitename}</span>}
+            <span className='title'>{title}</span>
+            {description && <span className='description'>{description}</span>}
+        </div>
+    ) : null;
+});
+
+type ImageProps = {
+    title?: string;
+    imageMetadata?: ImageMetadata | null;
+    isInPermalink: Props['isInPermalink'];
+    isEmbedVisible: Props['isEmbedVisible'];
+    toggleEmbedVisibility: Props['toggleEmbedVisibility'];
+};
+
+export const PostAttachmentOpenGraphImage = memo(({imageMetadata, isInPermalink, toggleEmbedVisibility, isEmbedVisible = true, title = ''}: ImageProps) => {
+    const {formatMessage} = useIntl();
+
+    if (!imageMetadata || isInPermalink) {
+        return null;
+    }
+
+    const large = getIsLargeImage(imageMetadata);
+    const src = imageMetadata.secure_url || imageMetadata.url || '';
+
+    const toggleImagePreview = (e: React.MouseEvent<HTMLButtonElement>) => {
+        e.preventDefault();
+
+        // prevent the button-click to trigger visiting the link
+        e.stopPropagation();
+        toggleEmbedVisibility();
+    };
+
+    const collapsedLabel = formatMessage({id: 'link_preview.image_preview', defaultMessage: 'Show image preview'});
+    const expandedLabel = formatMessage({id: 'link_preview.hide_image_preview', defaultMessage: 'Hide image preview'});
+
+    const imageCollapseButton = (
+        <button
+            className='preview-toggle style--none'
+            onClick={toggleImagePreview}
+            aria-label={isEmbedVisible ? expandedLabel : collapsedLabel}
+        >
+            {isEmbedVisible ? (
+                <MenuDownIcon
+                    size={18}
+                    color='currentColor'
+                />
+            ) : (
+                <>
+                    <MenuRightIcon
+                        size={18}
+                        color='currentColor'
+                    />
+                    {collapsedLabel}
+                </>
+            )}
+        </button>
+    );
+
+    const imageDimensions = getScaledImageDimensions(imageMetadata, large);
+
+    const image = (
+        <ExternalImage
+            src={src}
+            imageMetadata={imageMetadata}
+        >
+            {(source) => (
+                <>
+                    <SizeAwareImage
+                        src={source}
+                        dimensions={imageDimensions}
+                        showLoader={true}
+                        alt={title}
+                        hideUtilities={true}
+                    />
+                    {large && imageCollapseButton}
+                </>
+            )}
+        </ExternalImage>
+    );
+
+    return (
+        <div className={classNames('PostAttachmentOpenGraph__image', {large, collapsed: !isEmbedVisible})}>
+            {large ? (
+                <AutoHeightSwitcher
+                    showSlot={isEmbedVisible ? 1 : 2}
+                    slot1={image}
+                    slot2={imageCollapseButton}
+                />
+            ) : image}
+        </div>
+    );
+});
+
+export default PostAttachmentOpenGraph;

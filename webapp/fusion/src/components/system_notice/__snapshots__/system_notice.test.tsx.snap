@@ -1,0 +1,572 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`components/SystemNotice should match snapshot for admin, admin notice 1`] = `
+<div>
+  <div
+    class="system-notice bg--white"
+  >
+    <div
+      class="system-notice__logo"
+    >
+      <span>
+        <svg
+          aria-label="Antimatter Logo"
+          role="img"
+          version="1.1"
+          viewBox="0 0 64 64"
+        >
+          <ellipse
+            cx="32"
+            cy="32"
+            fill="none"
+            rx="25"
+            ry="9.5"
+            stroke="#6D28D9"
+            stroke-width="4.5"
+            transform="rotate(45 32 32)"
+          />
+          <ellipse
+            cx="32"
+            cy="32"
+            fill="none"
+            rx="25"
+            ry="9.5"
+            stroke="#0891B2"
+            stroke-width="4.5"
+            transform="rotate(-45 32 32)"
+          />
+          <path
+            d="M32 20.5 Q33.9 30.1 43.5 32 Q33.9 33.9 32 43.5 Q30.1 33.9 20.5 32 Q30.1 30.1 32 20.5 Z"
+            fill="#F59E0B"
+          />
+          <circle
+            cx="14.32"
+            cy="14.32"
+            fill="#6D28D9"
+            r="5.5"
+          />
+          <circle
+            cx="49.68"
+            cy="14.32"
+            fill="#FFFFFF"
+            r="4.25"
+            stroke="#0891B2"
+            stroke-width="2.5"
+          />
+        </svg>
+      </span>
+    </div>
+    <div
+      class="system-notice__body"
+    >
+      <div
+        class="system-notice__title"
+      >
+        some title
+      </div>
+      some body
+      <div
+        class="system-notice__info"
+      >
+        <i
+          class="fa fa-eye"
+          title="Only visible to System Admins Icon"
+        />
+        Only visible to System Admins
+      </div>
+      <div
+        class="system-notice__footer"
+      >
+        <button
+          class="btn btn-primary btn-sm"
+          id="systemnotice_remindme"
+        >
+          Remind Me Later
+        </button>
+        <button
+          class="btn btn-tertiary btn-sm"
+          id="systemnotice_dontshow"
+        >
+          Don't Show Again
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`components/SystemNotice should match snapshot for admin, regular notice 1`] = `
+<div>
+  <div
+    class="system-notice bg--white"
+  >
+    <div
+      class="system-notice__logo"
+    >
+      <span>
+        <svg
+          aria-label="Antimatter Logo"
+          role="img"
+          version="1.1"
+          viewBox="0 0 64 64"
+        >
+          <ellipse
+            cx="32"
+            cy="32"
+            fill="none"
+            rx="25"
+            ry="9.5"
+            stroke="#6D28D9"
+            stroke-width="4.5"
+            transform="rotate(45 32 32)"
+          />
+          <ellipse
+            cx="32"
+            cy="32"
+            fill="none"
+            rx="25"
+            ry="9.5"
+            stroke="#0891B2"
+            stroke-width="4.5"
+            transform="rotate(-45 32 32)"
+          />
+          <path
+            d="M32 20.5 Q33.9 30.1 43.5 32 Q33.9 33.9 32 43.5 Q30.1 33.9 20.5 32 Q30.1 30.1 32 20.5 Z"
+            fill="#F59E0B"
+          />
+          <circle
+            cx="14.32"
+            cy="14.32"
+            fill="#6D28D9"
+            r="5.5"
+          />
+          <circle
+            cx="49.68"
+            cy="14.32"
+            fill="#FFFFFF"
+            r="4.25"
+            stroke="#0891B2"
+            stroke-width="2.5"
+          />
+        </svg>
+      </span>
+    </div>
+    <div
+      class="system-notice__body"
+    >
+      <div
+        class="system-notice__title"
+      >
+        some title
+      </div>
+      some body
+      <div
+        class="system-notice__footer"
+      >
+        <button
+          class="btn btn-primary btn-sm"
+          id="systemnotice_remindme"
+        >
+          Remind Me Later
+        </button>
+        <button
+          class="btn btn-tertiary btn-sm"
+          id="systemnotice_dontshow"
+        >
+          Don't Show Again
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`components/SystemNotice should match snapshot for regular user, admin and regular notice 1`] = `
+<div>
+  <div
+    class="system-notice bg--white"
+  >
+    <div
+      class="system-notice__logo"
+    >
+      <span>
+        <svg
+          aria-label="Antimatter Logo"
+          role="img"
+          version="1.1"
+          viewBox="0 0 64 64"
+        >
+          <ellipse
+            cx="32"
+            cy="32"
+            fill="none"
+            rx="25"
+            ry="9.5"
+            stroke="#6D28D9"
+            stroke-width="4.5"
+            transform="rotate(45 32 32)"
+          />
+          <ellipse
+            cx="32"
+            cy="32"
+            fill="none"
+            rx="25"
+            ry="9.5"
+            stroke="#0891B2"
+            stroke-width="4.5"
+            transform="rotate(-45 32 32)"
+          />
+          <path
+            d="M32 20.5 Q33.9 30.1 43.5 32 Q33.9 33.9 32 43.5 Q30.1 33.9 20.5 32 Q30.1 30.1 32 20.5 Z"
+            fill="#F59E0B"
+          />
+          <circle
+            cx="14.32"
+            cy="14.32"
+            fill="#6D28D9"
+            r="5.5"
+          />
+          <circle
+            cx="49.68"
+            cy="14.32"
+            fill="#FFFFFF"
+            r="4.25"
+            stroke="#0891B2"
+            stroke-width="2.5"
+          />
+        </svg>
+      </span>
+    </div>
+    <div
+      class="system-notice__body"
+    >
+      <div
+        class="system-notice__title"
+      >
+        some title2
+      </div>
+      some body2
+      <div
+        class="system-notice__footer"
+      >
+        <button
+          class="btn btn-primary btn-sm"
+          id="systemnotice_remindme"
+        >
+          Remind Me Later
+        </button>
+        <button
+          class="btn btn-tertiary btn-sm"
+          id="systemnotice_dontshow"
+        >
+          Don't Show Again
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`components/SystemNotice should match snapshot for regular user, admin notice 1`] = `<div />`;
+
+exports[`components/SystemNotice should match snapshot for regular user, dismissed notice 1`] = `<div />`;
+
+exports[`components/SystemNotice should match snapshot for regular user, dont show again notice 1`] = `<div />`;
+
+exports[`components/SystemNotice should match snapshot for regular user, no notice 1`] = `<div />`;
+
+exports[`components/SystemNotice should match snapshot for regular user, regular notice 1`] = `
+<div>
+  <div
+    class="system-notice bg--white"
+  >
+    <div
+      class="system-notice__logo"
+    >
+      <span>
+        <svg
+          aria-label="Antimatter Logo"
+          role="img"
+          version="1.1"
+          viewBox="0 0 64 64"
+        >
+          <ellipse
+            cx="32"
+            cy="32"
+            fill="none"
+            rx="25"
+            ry="9.5"
+            stroke="#6D28D9"
+            stroke-width="4.5"
+            transform="rotate(45 32 32)"
+          />
+          <ellipse
+            cx="32"
+            cy="32"
+            fill="none"
+            rx="25"
+            ry="9.5"
+            stroke="#0891B2"
+            stroke-width="4.5"
+            transform="rotate(-45 32 32)"
+          />
+          <path
+            d="M32 20.5 Q33.9 30.1 43.5 32 Q33.9 33.9 32 43.5 Q30.1 33.9 20.5 32 Q30.1 30.1 32 20.5 Z"
+            fill="#F59E0B"
+          />
+          <circle
+            cx="14.32"
+            cy="14.32"
+            fill="#6D28D9"
+            r="5.5"
+          />
+          <circle
+            cx="49.68"
+            cy="14.32"
+            fill="#FFFFFF"
+            r="4.25"
+            stroke="#0891B2"
+            stroke-width="2.5"
+          />
+        </svg>
+      </span>
+    </div>
+    <div
+      class="system-notice__body"
+    >
+      <div
+        class="system-notice__title"
+      >
+        some title
+      </div>
+      some body
+      <div
+        class="system-notice__footer"
+      >
+        <button
+          class="btn btn-primary btn-sm"
+          id="systemnotice_remindme"
+        >
+          Remind Me Later
+        </button>
+        <button
+          class="btn btn-tertiary btn-sm"
+          id="systemnotice_dontshow"
+        >
+          Don't Show Again
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`components/SystemNotice should match snapshot for show function returning false 1`] = `<div />`;
+
+exports[`components/SystemNotice should match snapshot for show function returning true 1`] = `
+<div>
+  <div
+    class="system-notice bg--white"
+  >
+    <div
+      class="system-notice__logo"
+    >
+      <span>
+        <svg
+          aria-label="Antimatter Logo"
+          role="img"
+          version="1.1"
+          viewBox="0 0 64 64"
+        >
+          <ellipse
+            cx="32"
+            cy="32"
+            fill="none"
+            rx="25"
+            ry="9.5"
+            stroke="#6D28D9"
+            stroke-width="4.5"
+            transform="rotate(45 32 32)"
+          />
+          <ellipse
+            cx="32"
+            cy="32"
+            fill="none"
+            rx="25"
+            ry="9.5"
+            stroke="#0891B2"
+            stroke-width="4.5"
+            transform="rotate(-45 32 32)"
+          />
+          <path
+            d="M32 20.5 Q33.9 30.1 43.5 32 Q33.9 33.9 32 43.5 Q30.1 33.9 20.5 32 Q30.1 30.1 32 20.5 Z"
+            fill="#F59E0B"
+          />
+          <circle
+            cx="14.32"
+            cy="14.32"
+            fill="#6D28D9"
+            r="5.5"
+          />
+          <circle
+            cx="49.68"
+            cy="14.32"
+            fill="#FFFFFF"
+            r="4.25"
+            stroke="#0891B2"
+            stroke-width="2.5"
+          />
+        </svg>
+      </span>
+    </div>
+    <div
+      class="system-notice__body"
+    >
+      <div
+        class="system-notice__title"
+      >
+        some title
+      </div>
+      some body
+      <div
+        class="system-notice__footer"
+      >
+        <button
+          class="btn btn-primary btn-sm"
+          id="systemnotice_remindme"
+        >
+          Remind Me Later
+        </button>
+        <button
+          class="btn btn-tertiary btn-sm"
+          id="systemnotice_dontshow"
+        >
+          Don't Show Again
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`components/SystemNotice should match snapshot for with allowForget equal false 1`] = `
+<div>
+  <div
+    class="system-notice bg--white"
+  >
+    <div
+      class="system-notice__logo"
+    >
+      <span>
+        <svg
+          aria-label="Antimatter Logo"
+          role="img"
+          version="1.1"
+          viewBox="0 0 64 64"
+        >
+          <ellipse
+            cx="32"
+            cy="32"
+            fill="none"
+            rx="25"
+            ry="9.5"
+            stroke="#6D28D9"
+            stroke-width="4.5"
+            transform="rotate(45 32 32)"
+          />
+          <ellipse
+            cx="32"
+            cy="32"
+            fill="none"
+            rx="25"
+            ry="9.5"
+            stroke="#0891B2"
+            stroke-width="4.5"
+            transform="rotate(-45 32 32)"
+          />
+          <path
+            d="M32 20.5 Q33.9 30.1 43.5 32 Q33.9 33.9 32 43.5 Q30.1 33.9 20.5 32 Q30.1 30.1 32 20.5 Z"
+            fill="#F59E0B"
+          />
+          <circle
+            cx="14.32"
+            cy="14.32"
+            fill="#6D28D9"
+            r="5.5"
+          />
+          <circle
+            cx="49.68"
+            cy="14.32"
+            fill="#FFFFFF"
+            r="4.25"
+            stroke="#0891B2"
+            stroke-width="2.5"
+          />
+        </svg>
+      </span>
+    </div>
+    <div
+      class="system-notice__body"
+    >
+      <div
+        class="system-notice__title"
+      >
+        some title
+      </div>
+      some body
+      <div
+        class="system-notice__footer"
+      >
+        <button
+          class="btn btn-primary btn-sm"
+          id="systemnotice_remindme"
+        >
+          Remind Me Later
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`components/SystemNotice should match snapshot when a custom icon is passed 1`] = `
+<div>
+  <div
+    class="system-notice bg--white"
+  >
+    <div
+      class="system-notice__logo"
+    >
+      <span>
+        icon
+      </span>
+    </div>
+    <div
+      class="system-notice__body"
+    >
+      <div
+        class="system-notice__title"
+      >
+        some title
+      </div>
+      some body
+      <div
+        class="system-notice__footer"
+      >
+        <button
+          class="btn btn-primary btn-sm"
+          id="systemnotice_remindme"
+        >
+          Remind Me Later
+        </button>
+        <button
+          class="btn btn-tertiary btn-sm"
+          id="systemnotice_dontshow"
+        >
+          Don't Show Again
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+`;

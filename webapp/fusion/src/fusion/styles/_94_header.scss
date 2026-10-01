@@ -1,0 +1,12 @@
+// What the Fusion channel header and conversation rows need beyond the mockup's styles.
+
+:is(.am-app, .am-layer) .am-ch-title .am-topic.am-md {
+  p, .markdown__paragraph-inline { display: inline; margin: 0; }
+  a { color: var(--am-anti); }
+  code { font: 12px var(--am-font-mono); background: var(--am-raise); padding: 0 4px; border-radius: 4px; }
+  .emoticon { width: 16px; height: 16px; vertical-align: -3px; }
+}
+
+// The globe of people on another server, beside their name (the mockup's style="color:var(--anti)").
+:is(.am-app, .am-layer) .am-fed-ic { display: inline-grid; place-items: center; margin-left: 4px; color: var(--am-anti); vertical-align: -1px; }
+:is(.am-app, .am-layer) .am-ch-ic .am-lock.am-shared { color: var(--am-anti); }

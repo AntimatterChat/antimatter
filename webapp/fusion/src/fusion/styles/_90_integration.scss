@@ -1,0 +1,100 @@
+// What the mockup doesn't cover but the Fusion UI needs to live inside the web app: the page frame, real pictures
+// and plugin icons, and panels of the classic web app hosted in the Fusion UI's slots.
+
+// Page frame: the Fusion UI fills the window under the announcement banners.
+body.app__body #root.am-root {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+}
+body.app__body #root.am-root > .am-root-main {
+  position: relative;
+  display: flex;
+  flex: 1;
+  min-height: 0;
+}
+.am-layer { height: 0; background: none; }
+:is(.am-app, .am-layer) .am-main { overflow: hidden; }
+:is(.am-app, .am-layer) .am-center { display: flex; flex: 1; flex-direction: column; min-height: 0; }
+:is(.am-app, .am-layer) .am-view { overscroll-behavior: contain; }
+
+// Profile pictures, team icons and plugin icons inside the mockup's shapes.
+:is(.am-app, .am-layer) .am-av img { width: 100%; height: 100%; border-radius: inherit; object-fit: cover; }
+:is(.am-app, .am-layer) .am-av.am-me { width: 38px; height: 38px; font-size: 14px; }
+:is(.am-app, .am-layer) .am-srv .am-srv-img { width: 100%; height: 100%; border-radius: inherit; object-fit: cover; }
+:is(.am-app, .am-layer) .am-app-ic .am-app-img { width: 22px; height: 22px; border-radius: 5px; object-fit: contain; }
+:is(.am-app, .am-layer) .am-app-ic svg:not(.am-ic) { width: 20px; height: 20px; }
+:is(.am-app, .am-layer) .am-hook-av { overflow: hidden; }
+:is(.am-app, .am-layer) .am-hook-av img { width: 100%; height: 100%; object-fit: cover; }
+:is(.am-app, .am-layer) .am-srv.am-home .am-mark { width: 40px; height: 40px; }
+
+// The "new messages" line, in the classic web app's spirit, drawn like the day separators.
+:is(.am-app, .am-layer) .am-day.am-new { color: var(--am-danger); }
+:is(.am-app, .am-layer) .am-day.am-new::before, :is(.am-app, .am-layer) .am-day.am-new::after { background: var(--am-danger); opacity: .5; }
+
+// Message bodies are rendered by the classic web app's markdown components.
+:is(.am-app, .am-layer) .am-body {
+  p, .markdown__paragraph-inline { margin: 0; }
+  .post-message__text-container, .post-message__text { font-size: 15px; line-height: 1.45; color: var(--am-text); }
+  .post-code, pre { margin: 6px 0 2px; border: 1px solid var(--am-line); border-radius: 8px; background: var(--am-rail); font: 12.5px/1.55 var(--am-font-mono); }
+  code { font: 13px var(--am-font-mono); background: var(--am-raise); padding: 1px 5px; border-radius: 4px; }
+  pre code { padding: 0; background: none; }
+  a { color: var(--am-anti); }
+  .mention-link, .mention--highlight { color: var(--am-matter); background: var(--am-matter-soft); padding: 0 3px; border-radius: 4px; font-weight: 600; }
+  .emoticon { vertical-align: -0.25em; }
+}
+:is(.am-app, .am-layer) .am-msg.am-sysline .am-body, :is(.am-app, .am-layer) .am-msg.am-sysline .am-body .post-message__text { color: var(--am-muted); font-size: 13.5px; }
+:is(.am-app, .am-layer) .am-react .emoticon, :is(.am-app, .am-layer) .am-quick-react .emoticon { vertical-align: middle; }
+
+// Panels of the classic web app (plugins, channel info, files) shown in the right-hand slot.
+:is(.am-app, .am-layer) .am-rhs-classic {
+  position: relative;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
+  background: var(--am-main);
+
+  .sidebar--right__content { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+}
+:is(.am-app, .am-layer) .am-rhs .am-members-panel { padding: 10px 8px 16px; }
+:is(.am-app, .am-layer) .am-rhs .am-composer { padding: 0 14px 14px; }
+
+// The classic web app colours every link (.app__body a, and a:hover); the Fusion UI's rows that are links keep their
+// own colours. Just more specific than the classic rules, so that the Fusion rules for those rows still win. The
+// links of messages and of the classic panels (plugins' panels) keep the classic link colours.
+body.app__body :where(.am-app, .am-layer) a:where(:not(.am-body *, .am-rhs-classic *)) { color: inherit; text-decoration: none; }
+body.app__body :where(.am-app, .am-layer) a:where(:not(.am-body *, .am-rhs-classic *)):is(:hover, :focus) { color: inherit; text-decoration: none; }
+:is(.am-app, .am-layer) .am-composer input[type="file"] { display: none; }
+:is(.am-app, .am-layer) .am-body .post-code code, :is(.am-app, .am-layer) .am-body .hljs { background: transparent; padding: 0; }
+
+// What plugins render below a sidebar channel (registerSidebarChannelFooterComponent), e.g. the people in its call.
+:is(.am-app, .am-layer) .am-ch-footer { margin-left: 8px; }
+:is(.am-app, .am-layer) .am-ch-footer:empty { display: none; }
+
+// A plugin's panel above the messages (registerChannelViewPanel), e.g. the call of a voice channel.
+:is(.am-app, .am-layer) .am-view-panel { display: flex; flex-direction: column; flex: 0 1 50%; min-height: 0; overflow: hidden; border-bottom: 1px solid var(--am-line); }
+:is(.am-app, .am-layer) .am-view-panel.am-fill { flex: 1 1 auto; border-bottom: none; }
+
+// The classic panels' headers, drawn as the mockup's panel header (.am-rhs-head).
+:is(.am-app, .am-layer) .am-rhs-classic {
+  .sidebar--right__header { height: 52px; flex: none; display: flex; align-items: center; gap: 8px; padding: 0 8px 0 16px; border-bottom: 1px solid var(--am-line); color: var(--am-text); white-space: nowrap; overflow: hidden; }
+  .sidebar--right__title { flex: 1; min-width: 0; display: flex; align-items: center; gap: 8px; padding: 0; font: 600 15px var(--am-font-display); line-height: normal; overflow: hidden; text-overflow: ellipsis; }
+  .sidebar--right__title__channel, .sidebar--right__title__subtitle { min-width: 0; margin-left: 6px; padding: 0; border: 0; background: none; font: 500 12px var(--am-font-ui); color: var(--am-muted); overflow: hidden; text-overflow: ellipsis; }
+  .sidebar--right__header .pull-right, .sidebar--right__header .controls { flex: none; display: flex; align-items: center; gap: 2px; float: none; }
+  .sidebar--right__header .btn-icon { width: 32px; height: 32px; min-width: 0; padding: 0; margin: 0; display: grid; place-items: center; border: 0; border-radius: 8px; background: none; color: var(--am-muted); font-size: 18px; }
+  .sidebar--right__header .btn-icon:hover { background: var(--am-hover); color: var(--am-text); }
+  .sidebar--right__header .btn-icon i::before { margin: 0; }
+  .sidebar--right__expand .icon-arrow-collapse { display: none; }
+}
+:is(.am-app, .am-layer) .am-rhs.am-expanded .sidebar--right__expand .icon-arrow-expand { display: none; }
+:is(.am-app, .am-layer) .am-rhs.am-expanded .sidebar--right__expand .icon-arrow-collapse { display: inline-block; }
+:is(.am-app, .am-layer) .am-rhs.am-expanded { width: min(1120px, calc(100vw - 72px - 52px - 320px)); }
+
+// Plugins' root components (registerRootComponent), e.g. Boards' "Link boards" dialog, are overlays: they take no room
+// in the main column, whose layout would squeeze the conversation to make room for their wrappers.
+:is(.am-app, .am-layer) .am-plugin-roots { position: absolute; top: 0; left: 0; width: 0; height: 0; }
+
+// The mockup's code blocks have no line numbers.
+:is(.am-app, .am-layer) .am-body .post-code__line-numbers { display: none; }
