@@ -30,6 +30,7 @@ import (
 	"github.com/mattermost/mattermost/server/public/shared/mlog"
 	"github.com/mattermost/mattermost/server/v8/channels/utils"
 	"github.com/mattermost/mattermost/server/v8/einterfaces"
+	"github.com/mattermost/mattermost/server/v8/platform/services/metrics"
 )
 
 const (
@@ -301,7 +302,8 @@ func (ps *PlatformService) wrapMetricsHandler(h http.Handler) http.Handler {
 }
 
 // addPluginLabelToMetrics adds a plugin_id label to all metrics in the Prometheus text format.
-// It parses using expfmt, mutates the label sets in-place, then re-encodes.
+// It parses using expfmt, mutates the label sets in-place, then re-encodes. Like the server's
+// own metrics, mattermost_* families are also emitted under their antimatter_* name.
 // Returns an empty string and logs a warning if any parsing or encoding error occurs.
 func addPluginLabelToMetrics(metricsText, pluginID string) string {
 	parser := expfmt.NewTextParser(prommodel.LegacyValidation)
@@ -316,9 +318,8 @@ func addPluginLabelToMetrics(metricsText, pluginID string) string {
 		Value: new(pluginID),
 	}
 
-	var result strings.Builder
-	enc := expfmt.NewEncoder(&result, expfmt.FmtText)
-	for name, family := range families {
+	labeled := make([]*dto.MetricFamily, 0, len(families))
+	for _, family := range families {
 		for _, metric := range family.Metric {
 			replaced := false
 			for _, l := range metric.Label {
@@ -332,8 +333,14 @@ func addPluginLabelToMetrics(metricsText, pluginID string) string {
 				metric.Label = append(metric.Label, pluginIDLabel)
 			}
 		}
+		labeled = append(labeled, family)
+	}
+
+	var result strings.Builder
+	enc := expfmt.NewEncoder(&result, expfmt.FmtText)
+	for _, family := range metrics.WithAntimatterNames(labeled) {
 		if encErr := enc.Encode(family); encErr != nil {
-			mlog.Warn("Failed to encode plugin metrics", mlog.String("plugin_id", pluginID), mlog.String("family", name), mlog.Err(encErr))
+			mlog.Warn("Failed to encode plugin metrics", mlog.String("plugin_id", pluginID), mlog.String("family", family.GetName()), mlog.Err(encErr))
 			return ""
 		}
 	}
