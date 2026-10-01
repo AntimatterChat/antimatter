@@ -643,6 +643,70 @@ describe('PluginRegistry — registerComposerPlaceholder', () => {
     });
 });
 
+describe('PluginRegistry — registerComposerMenuItem', () => {
+    const PLUGIN_ID = 'test_plugin';
+
+    beforeEach(() => {
+        mockCurrentStore = createStore(pluginsReducer);
+    });
+
+    function getItems() {
+        return mockCurrentStore.getState().components.ComposerMenuItem;
+    }
+
+    it('adds an entry to ComposerMenuItem with the plugin id and the given fields', () => {
+        const registry = new PluginRegistry(PLUGIN_ID);
+        const action = jest.fn();
+        const shouldRender = () => true;
+        const icon = 'poll-icon';
+        const id = registry.registerComposerMenuItem({text: 'Create a poll', icon, fusionIcon: 'poll', action, shouldRender});
+
+        const items = getItems();
+        expect(items).toHaveLength(1);
+        expect(items[0].id).toBe(id);
+        expect(items[0].pluginId).toBe(PLUGIN_ID);
+        expect(items[0].text).toBe('Create a poll');
+        expect(items[0].icon).toBe(icon);
+        expect(items[0].fusionIcon).toBe('poll');
+        expect(items[0].action).toBe(action);
+        expect(items[0].shouldRender).toBe(shouldRender);
+    });
+
+    it('shows the item everywhere when shouldRender is omitted', () => {
+        const registry = new PluginRegistry(PLUGIN_ID);
+        registry.registerComposerMenuItem({text: 'Item', icon: null, action: () => {}});
+
+        expect(getItems()[0].shouldRender({} as GlobalState, {channelId: 'channel'})).toBe(true);
+        expect(getItems()[0].fusionIcon).toBeUndefined();
+    });
+
+    it('REMOVED_WEBAPP_PLUGIN sweeps entries for that plugin and leaves others intact', () => {
+        const registry = new PluginRegistry(PLUGIN_ID);
+        const otherRegistry = new PluginRegistry('other_plugin');
+
+        registry.registerComposerMenuItem({text: 'Mine', icon: null, action: () => {}});
+        otherRegistry.registerComposerMenuItem({text: 'Other', icon: null, action: () => {}});
+
+        mockCurrentStore.dispatch({
+            type: ActionTypes.REMOVED_WEBAPP_PLUGIN,
+            data: {id: PLUGIN_ID},
+        });
+
+        const items = getItems();
+        expect(items).toHaveLength(1);
+        expect(items[0].pluginId).toBe('other_plugin');
+    });
+
+    it('unregisterComponent removes the item', () => {
+        const registry = new PluginRegistry(PLUGIN_ID);
+        const id = registry.registerComposerMenuItem({text: 'Item', icon: null, action: () => {}});
+
+        registry.unregisterComponent(id);
+
+        expect(getItems()).toHaveLength(0);
+    });
+});
+
 describe('PluginRegistry — registerProduct', () => {
     const PLUGIN_ID = 'test_plugin';
 

@@ -29,6 +29,7 @@ import {
 } from 'actions/websocket_actions';
 import {clearLoggedChannelIntroErrors} from 'selectors/channel_intro';
 import {clearLoggedChannelViewPanelErrors} from 'selectors/channel_view_panel';
+import {clearLoggedComposerMenuItemErrors} from 'selectors/composer_menu';
 import store from 'stores/redux_store';
 
 import {clearComposerPlaceholderErrors} from 'components/advanced_text_editor/composer_placeholder';
@@ -81,6 +82,7 @@ import type {
     ChannelIntroRegistration,
     ChannelViewPanelRegistration,
     ComposerPlaceholderRegistration,
+    ComposerMenuItemRegistration,
     ProductSwitcherMenuItemRegistration,
 } from 'types/store/plugins';
 
@@ -1601,6 +1603,53 @@ export default class PluginRegistry {
             id,
             pluginId: this.id,
             transform,
+        });
+        return id;
+    });
+
+    /**
+     * Register an item in the "+" menu of the message box (the menu that adds files and more to a
+     * message), e.g. "Create a poll". In the classic web app the items are listed in a "+" menu next
+     * to the attachment button, shown when at least one item is; the Fusion UI lists them in its
+     * composer's "+" menu.
+     * Accepts the following:
+     * - text - A string or React element to display in the menu item
+     * - icon - React element to use as the menu item's icon
+     * - fusionIcon - Optional id of an icon of the Fusion UI's icon set (e.g. 'poll', 'sticker',
+     *   'calendar'), shown instead of `icon` in the Fusion UI so the item matches the other ones
+     * - action - Called with {channelId, rootId} when the item is clicked; rootId is set in a
+     *   thread's reply box. The menu closes after it.
+     * - shouldRender - Optional function receiving the full Redux state and {channelId, rootId},
+     *   returning whether to show the item in that message box. A throwing shouldRender hides it.
+     * Items are listed alphabetically by pluginId, then in registration order. Cleaned up
+     * automatically when the plugin is removed.
+     * Returns a unique identifier.
+     */
+    registerComposerMenuItem = reArg(['text', 'icon', 'fusionIcon', 'action', 'shouldRender'], ({
+        text,
+        icon,
+        fusionIcon,
+        action,
+        shouldRender = defaultShouldRender,
+    }: {
+        text: ReactResolvable;
+        icon: ReactResolvable;
+        fusionIcon?: ComposerMenuItemRegistration['fusionIcon'];
+        action: ComposerMenuItemRegistration['action'];
+        shouldRender?: ComposerMenuItemRegistration['shouldRender'];
+    }) => {
+        if (this.isActive()) {
+            clearLoggedComposerMenuItemErrors(this.id);
+        }
+        const id = generateId();
+        this.dispatchPluginComponentWithData('ComposerMenuItem', {
+            id,
+            pluginId: this.id,
+            text: resolveReactElement(text),
+            icon: resolveReactElement(icon),
+            fusionIcon,
+            action,
+            shouldRender,
         });
         return id;
     });

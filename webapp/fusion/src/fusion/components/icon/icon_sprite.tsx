@@ -110,6 +110,13 @@ const SYMBOLS = [
 
 export type IconName = 'hash' | 'speaker' | 'lock' | 'forum' | 'thread' | 'search' | 'users' | 'pin' | 'bell' | 'inbox' | 'cog' | 'shield' | 'mic' | 'mic-off' | 'headphones' | 'headphones-off' | 'video' | 'screen' | 'hangup' | 'plus' | 'apps' | 'reply' | 'smile' | 'dots' | 'x' | 'chev' | 'globe' | 'export' | 'pen' | 'send' | 'compass' | 'menu' | 'board' | 'playbook' | 'check' | 'store' | 'plug' | 'chat' | 'tag' | 'clock' | 'attach' | 'follow' | 'at' | 'bold' | 'italic' | 'strike' | 'heading' | 'link' | 'code' | 'codeblock' | 'quote' | 'sparkle' | 'flag' | 'flame' | 'timer' | 'ul' | 'ol' | 'type' | 'poll' | 'upload' | 'slash' | 'star' | 'bell-off' | 'folder' | 'leave' | 'user-plus' | 'forward' | 'bookmark' | 'copy' | 'trash' | 'sticker' | 'popout' | 'expand' | 'kanban' | 'runbook' | 'ticket' | 'mail' | 'calendar' | 'pad' | 'draw' | 'cursor' | 'rect' | 'ellipse' | 'arrow' | 'text' | 'eraser' | 'undo' | 'checkbox' | 'pause' | 'moon' | 'phone' | 'pin-top' | 'fullscreen' | 'hand' | 'mark';
 
+const ICON_NAMES = new Set(Array.from(SYMBOLS.matchAll(/<symbol id="am-i-([^"]+)"/g), (m) => m[1]));
+
+// isIconName tells whether a name from outside the Fusion code (e.g. a plugin's) is one of the icons.
+export function isIconName(name: string): name is IconName {
+    return ICON_NAMES.has(name);
+}
+
 export default function IconSprite() {
     return (
         <svg
