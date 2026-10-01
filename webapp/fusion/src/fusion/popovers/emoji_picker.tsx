@@ -3,20 +3,25 @@
 
 import React, {useEffect, useMemo, useRef, useState} from 'react';
 import {useIntl} from 'react-intl';
-import {useSelector} from 'react-redux';
+import {shallowEqual, useSelector} from 'react-redux';
 
 import type {Emoji} from '@mattermost/types/emojis';
 
 import {isSystemEmoji} from 'mattermost-redux/utils/emoji_utils';
 
+import {getEmojiPickerTabs} from 'selectors/emoji_picker_tabs';
 import {getEmojiMap, getRecentEmojisNames, getUserSkinTone} from 'selectors/emojis';
 
 import RenderEmoji from 'components/emoji/render_emoji';
 import {getFilteredEmojis, getUpdatedCategoriesAndAllEmojis} from 'components/emoji_picker/utils';
 
-import Icon from 'fusion/components/icon';
+import Icon, {isIconName} from 'fusion/components/icon';
 import {Popover} from 'fusion/components/layer';
 import {am} from 'fusion/utils/class_names';
+import PluggableErrorBoundary from 'plugins/pluggable/error_boundary';
+
+import type {GlobalState} from 'types/store';
+import type {EmojiPickerTabRegistration} from 'types/store/plugins';
 
 const nameOf = (emoji: Emoji) => (isSystemEmoji(emoji) ? emoji.short_names[0] : emoji.name);
 const idOf = (emoji: Emoji) => (isSystemEmoji(emoji) ? emoji.unified.toLowerCase() : emoji.id);
@@ -65,6 +70,13 @@ function LazyGrid({emojis, onPick, onHover, root}: {emojis: Emoji[]; onPick: (e:
     );
 }
 
+// The message box a composer's picker belongs to: its picker also shows the plugins' tabs (GIFs, stickers...).
+export type PickerCompose = {
+    channelId: string;
+    rootId?: string;
+    insertText: (text: string) => void;
+};
+
 type Props = {
     anchor: HTMLElement | null;
     onPick: (emojiName: string) => void;
@@ -72,15 +84,31 @@ type Props = {
 
     // Reacting closes the picker; the composer keeps it open to insert several emoji.
     keepOpen?: boolean;
+    compose?: PickerCompose;
 };
 
-// EmojiPicker is the mockup's picker: search, category rail, grid and a footer naming the emoji under the pointer.
-export default function EmojiPicker({anchor, onPick, onClose, keepOpen = false}: Props) {
+const EMOJI_TAB = 'emoji';
+const NO_TABS: EmojiPickerTabRegistration[] = [];
+
+// The composer's picker opens on the tab used last, as in the mockup.
+let lastTab = EMOJI_TAB;
+const rememberTab = (id: string) => {
+    lastTab = id;
+};
+
+type EmojiTabProps = {
+    query: string;
+    onQuery: (query: string) => void;
+    onPick: (emoji: Emoji) => void;
+    keepOpen: boolean;
+};
+
+// EmojiTab is the mockup's emoji picker: search, category rail, grid and a footer naming the emoji under the pointer.
+function EmojiTab({query, onQuery, onPick: pick, keepOpen}: EmojiTabProps) {
     const {formatMessage} = useIntl();
     const emojiMap = useSelector(getEmojiMap);
     const recent = useSelector(getRecentEmojisNames);
     const skinTone = useSelector(getUserSkinTone);
-    const [query, setQuery] = useState('');
     const [hovered, setHovered] = useState<Emoji | null>(null);
     const scrollRef = useRef<HTMLDivElement>(null);
     const inputRef = useRef<HTMLInputElement>(null);
@@ -92,22 +120,10 @@ export default function EmojiPicker({anchor, onPick, onClose, keepOpen = false}:
         inputRef.current?.focus();
     }, []);
 
-    const pick = (emoji: Emoji) => {
-        onPick(nameOf(emoji));
-        if (!keepOpen) {
-            onClose();
-        }
-    };
     const sections = Object.values(categories).filter((c) => c.emojiIds?.length);
 
     return (
-        <Popover
-            anchor={anchor}
-            placement='picker'
-            className='picker'
-            label={formatMessage({id: 'fusion.picker.label', defaultMessage: 'Emoji'})}
-            onClose={onClose}
-        >
+        <>
             <div className={am('picker-search')}>
                 <label>
                     <Icon
@@ -120,7 +136,7 @@ export default function EmojiPicker({anchor, onPick, onClose, keepOpen = false}:
                         placeholder={formatMessage({id: 'fusion.picker.search', defaultMessage: 'Search emoji'})}
                         aria-label={formatMessage({id: 'fusion.picker.search', defaultMessage: 'Search emoji'})}
                         autoComplete='off'
-                        onChange={(e) => setQuery(e.target.value)}
+                        onChange={(e) => onQuery(e.target.value)}
                         onKeyDown={(e) => {
                             if (e.key === 'Enter' && results?.length) {
                                 e.preventDefault();
@@ -198,6 +214,99 @@ export default function EmojiPicker({anchor, onPick, onClose, keepOpen = false}:
                 <span>{keepOpen ? formatMessage({id: 'fusion.picker.insert', defaultMessage: 'Insert'}) : formatMessage({id: 'fusion.picker.reactWith', defaultMessage: 'React with'})}</span>
                 <code>{`:${hovered ? nameOf(hovered) : '+1'}:`}</code>
             </div>
+        </>
+    );
+}
+
+// EmojiPicker is the mockup's picker. The composer's has tabs when plugins add some (registerEmojiPickerTab), in
+// the mockup's order: theirs (GIFs, Stickers) then Emoji. A plugin tab renders its own search box and body.
+export default function EmojiPicker({anchor, onPick, onClose, keepOpen = false, compose}: Props) {
+    const {formatMessage} = useIntl();
+    const channelId = compose?.channelId || '';
+    const rootId = compose?.rootId || undefined;
+    const ctx = useMemo(() => ({channelId, rootId}), [channelId, rootId]);
+    const pluginTabs = useSelector((state: GlobalState) => (compose ? getEmojiPickerTabs(state, ctx) : NO_TABS), shallowEqual);
+    const [selected, setSelected] = useState(compose ? lastTab : EMOJI_TAB);
+    const [query, setQuery] = useState('');
+
+    // A tab that went away (e.g. its plugin was disabled) leaves the Emoji tab selected.
+    const pluginTab = pluginTabs.find((t) => t.id === selected);
+
+    const selectTab = (id: string) => {
+        setSelected(id);
+        rememberTab(id);
+        setQuery('');
+    };
+
+    const pick = (emoji: Emoji) => {
+        onPick(nameOf(emoji));
+        if (!keepOpen) {
+            onClose();
+        }
+    };
+
+    const tabs = [
+        ...pluginTabs.map((t) => ({id: t.id, label: t.label, icon: t.fusionIcon && isIconName(t.fusionIcon) ? t.fusionIcon : undefined})),
+        {id: EMOJI_TAB, label: formatMessage({id: 'fusion.picker.tabEmoji', defaultMessage: 'Emoji'}), icon: undefined},
+    ];
+    const current = pluginTab ? pluginTab.id : EMOJI_TAB;
+
+    return (
+        <Popover
+            anchor={anchor}
+            placement='picker'
+            className='picker'
+            label={formatMessage({id: 'fusion.picker.label', defaultMessage: 'Emoji'})}
+            onClose={onClose}
+        >
+            {pluginTabs.length > 0 && (
+                <div
+                    className={am('picker-tabs')}
+                    role='tablist'
+                >
+                    {tabs.map((t) => (
+                        <button
+                            key={t.id}
+                            type='button'
+                            role='tab'
+                            aria-selected={current === t.id}
+                            className={am({on: current === t.id})}
+                            onClick={() => selectTab(t.id)}
+                        >
+                            {t.icon && (
+                                <Icon
+                                    name={t.icon}
+                                    size='sm'
+                                />
+                            )}
+                            {t.label}
+                        </button>
+                    ))}
+                </div>
+            )}
+            {pluginTab ? (
+                <PluggableErrorBoundary
+                    key={pluginTab.id}
+                    pluginId={pluginTab.pluginId}
+                >
+                    <pluginTab.component
+                        channelId={channelId}
+                        rootId={rootId}
+                        filter={query}
+                        onFilterChange={setQuery}
+                        onSelectDone={onClose}
+                        isFusion={true}
+                        insertText={compose?.insertText}
+                    />
+                </PluggableErrorBoundary>
+            ) : (
+                <EmojiTab
+                    query={query}
+                    onQuery={setQuery}
+                    onPick={pick}
+                    keepOpen={keepOpen}
+                />
+            )}
         </Popover>
     );
 }
