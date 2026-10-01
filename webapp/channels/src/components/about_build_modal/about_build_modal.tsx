@@ -267,7 +267,7 @@ export default function AboutBuildModal(props: Props) {
                                 linkServer: (msg: React.ReactNode) => (
                                     <ExternalLink
                                         location='about_build_modal'
-                                        href='https://github.com/mattermost/mattermost-server/blob/master/NOTICE.txt'
+                                        href='https://github.com/AntimatterChat/antimatter/blob/antimatter/NOTICE.txt'
                                     >
                                         {msg}
                                     </ExternalLink>
