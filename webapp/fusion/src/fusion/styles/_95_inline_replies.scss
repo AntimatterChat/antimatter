@@ -36,6 +36,15 @@
     white-space: nowrap;
 }
 
+// The quoted message flashes when the reference line is clicked: longer and brighter than a permalink's flash, so
+// that it still shows once the smooth scroll has brought it into view.
+:is(.am-app, .am-layer) .am-msg.am-jump-flash { animation: am-jump-flash 2.2s ease-out; }
+@keyframes am-jump-flash {
+    0% { background: transparent; box-shadow: none; }
+    10%, 55% { background: var(--am-matter-soft); box-shadow: inset 2px 0 0 var(--am-matter); }
+    100% { background: transparent; box-shadow: none; }
+}
+
 :is(.am-app, .am-layer) .am-replying > .am-ref-label, :is(.am-app, .am-layer) .am-replying > b { flex: none; white-space: nowrap; }
 :is(.am-app, .am-layer) .am-replying > b { font-weight: 600; }
 
