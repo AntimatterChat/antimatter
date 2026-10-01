@@ -217,8 +217,9 @@ package-prep: setup-go-work
 
 .PHONY: fetch-prepackaged-plugins
 fetch-prepackaged-plugins:
-	@# Import the Antimatter plugin public key, ignoring errors. In FIPS mode, GPG fails to start
-	@# the gpg-agent, but still imports the key. If it really fails, it will fail validation later.
+	@# Import the Antimatter and Mattermost plugin public keys, ignoring errors. In FIPS mode, GPG
+	@# fails to start the gpg-agent, but still imports the keys. If it really fails, it will fail
+	@# validation later.
 	-gpg --import build/plugin-production-public-key.gpg
 	@# Download prepackaged plugins
 	mkdir -p tmpprepackaged

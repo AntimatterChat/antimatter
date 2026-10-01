@@ -74,7 +74,7 @@ func (a *App) DeletePublicKey(name string) *model.AppError {
 }
 
 func (ch *Channels) verifyPlugin(logger *mlog.Logger, plugin, signature io.ReadSeeker) *model.AppError {
-	// First try the hard-coded public keys.
+	// First try the hard-coded public keys (Antimatter's, then Mattermost's).
 	if name, ok := verifyPluginWithKeys(logger, builtinPluginPublicKeys, plugin, signature); ok {
 		logger.Debug("Plugin signature verified using hard-coded public key", mlog.String("public_key", name))
 		return nil
