@@ -583,6 +583,7 @@ const EditPost = ({editingPost, actions, canEditPost, config, channelId, draft, 
         enableGifPicker: config.EnableGifPicker === 'true',
         onGifClick: handleGifClick,
         onEmojiClick: handleEmojiClick,
+        channelId,
     });
 
     let emojiPickerControls = null;

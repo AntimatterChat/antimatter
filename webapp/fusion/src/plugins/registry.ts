@@ -30,6 +30,7 @@ import {
 import {clearLoggedChannelIntroErrors} from 'selectors/channel_intro';
 import {clearLoggedChannelViewPanelErrors} from 'selectors/channel_view_panel';
 import {clearLoggedComposerMenuItemErrors} from 'selectors/composer_menu';
+import {clearLoggedEmojiPickerTabErrors} from 'selectors/emoji_picker_tabs';
 import store from 'stores/redux_store';
 
 import {clearComposerPlaceholderErrors} from 'components/advanced_text_editor/composer_placeholder';
@@ -83,6 +84,7 @@ import type {
     ChannelViewPanelRegistration,
     ComposerPlaceholderRegistration,
     ComposerMenuItemRegistration,
+    EmojiPickerTabRegistration,
     ProductSwitcherMenuItemRegistration,
 } from 'types/store/plugins';
 
@@ -1650,6 +1652,71 @@ export default class PluginRegistry {
             fusionIcon,
             action,
             shouldRender,
+        });
+        return id;
+    });
+
+    /**
+     * Register a tab of the emoji picker of the message box, e.g. GIFs or stickers. The tabs show
+     * where people compose a message (not while editing one, nor in the reaction picker): in the
+     * classic web app after the Emojis and GIFs tabs of the emoji picker, in the Fusion UI before its
+     * Emoji tab, as in its mockup (GIFs, Stickers, Emoji).
+     * Accepts the following:
+     * - id - Optional unique identifier of the tab (e.g. 'com.example.gifs.stickers'); generated
+     *   when omitted
+     * - label - A string or React element naming the tab
+     * - icon - Optional React element shown before the label in the classic web app
+     * - fusionIcon - Optional id of an icon of the Fusion UI's icon set (e.g. 'sticker'), shown
+     *   before the label in the Fusion UI, whose tabs are text only otherwise
+     * - order - Optional position among the plugin tabs, lowest first (default 0); equal orders
+     *   are sorted alphabetically by pluginId, then in registration order
+     * - component - The tab's body, a React component receiving:
+     *   - channelId, rootId - The message box's channel, and its thread for a reply box
+     *   - filter, onFilterChange - The text of the picker's search box, shared with its other
+     *     tabs: the tab renders its own search box with this value and reports changes
+     *   - onSelectDone - Closes the picker; call it after posting or inserting what was picked
+     *   - isFusion - Whether the Fusion UI renders the tab, to use its markup and classes
+     *   - insertText - Inserts text at the caret of the message box
+     * - shouldRender - Optional function receiving the full Redux state and {channelId, rootId},
+     *   returning whether to show the tab in that message box. A throwing shouldRender hides it.
+     * - replacesGifPicker - Optional; when true, the core GIF picker (Giphy) of the emoji pickers
+     *   is hidden wherever shouldRender returns true, so GIFs only come from this tab. System
+     *   admins can also turn the core GIF picker off with ServiceSettings.EnableGifPicker.
+     * Cleaned up automatically when the plugin is removed.
+     * Returns a unique identifier.
+     */
+    registerEmojiPickerTab = reArg(['id', 'label', 'icon', 'fusionIcon', 'order', 'component', 'shouldRender', 'replacesGifPicker'], ({
+        id = generateId(),
+        label,
+        icon,
+        fusionIcon,
+        order = 0,
+        component,
+        shouldRender = defaultShouldRender,
+        replacesGifPicker = false,
+    }: {
+        id?: string;
+        label: ReactResolvable;
+        icon?: ReactResolvable;
+        fusionIcon?: EmojiPickerTabRegistration['fusionIcon'];
+        order?: number;
+        component: EmojiPickerTabRegistration['component'];
+        shouldRender?: EmojiPickerTabRegistration['shouldRender'];
+        replacesGifPicker?: boolean;
+    }) => {
+        if (this.isActive()) {
+            clearLoggedEmojiPickerTabErrors(this.id);
+        }
+        this.dispatchPluginComponentWithData('EmojiPickerTab', {
+            id,
+            pluginId: this.id,
+            label: resolveReactElement(label),
+            icon: icon ? resolveReactElement(icon) : undefined,
+            fusionIcon,
+            order,
+            component,
+            shouldRender,
+            replacesGifPicker: Boolean(replacesGifPicker),
         });
         return id;
     });

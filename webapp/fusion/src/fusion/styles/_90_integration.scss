@@ -104,3 +104,10 @@ body.app__body :where(.am-app, .am-layer) a:where(:not(.am-body *, .am-rhs-class
 
 // The mockup's code blocks have no line numbers.
 :is(.am-app, .am-layer) .am-body .post-code__line-numbers { display: none; }
+
+// A plugin's tab of the emoji picker (registerEmojiPickerTab) may name a Fusion icon to show before its label.
+:is(.am-app, .am-layer) .am-picker-tabs button { display: inline-flex; align-items: center; gap: 5px; }
+
+// The emoji picker's link to add a custom emoji, at the end of its footer.
+:is(.am-app, .am-layer) .am-picker-foot .am-picker-add { margin-left: auto; font-size: 12.5px; font-weight: 600; color: var(--am-matter); white-space: nowrap; }
+:is(.am-app, .am-layer) .am-picker-foot .am-picker-add:hover { text-decoration: underline; }

@@ -3524,7 +3524,7 @@
     "description": "Admin console setting label (toggle) on the Emoji page enabling the emoji picker."
   },
   "admin.customization.enableGifPickerDesc": {
-    "defaultMessage": "Allows users to select GIFs from the emoji picker.",
+    "defaultMessage": "Allows users to select GIFs from Giphy in the emoji picker. A plugin with its own GIF tab, such as the GIFs plugin, replaces it while enabled.",
     "description": "Admin console help text for the GIF picker toggle on the Integrations > GIF page."
   },
   "admin.customization.enableGifPickerTitle": {

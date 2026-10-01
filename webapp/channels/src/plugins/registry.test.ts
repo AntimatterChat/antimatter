@@ -707,6 +707,90 @@ describe('PluginRegistry — registerComposerMenuItem', () => {
     });
 });
 
+describe('PluginRegistry — registerEmojiPickerTab', () => {
+    const PLUGIN_ID = 'test_plugin';
+    const Tab = () => null;
+
+    beforeEach(() => {
+        mockCurrentStore = createStore(pluginsReducer);
+    });
+
+    function getTabs() {
+        return mockCurrentStore.getState().components.EmojiPickerTab;
+    }
+
+    it('adds an entry to EmojiPickerTab with the plugin id and the given fields', () => {
+        const registry = new PluginRegistry(PLUGIN_ID);
+        const shouldRender = () => true;
+        const icon = 'sticker-icon';
+        const id = registry.registerEmojiPickerTab({
+            id: 'test.stickers',
+            label: 'Stickers',
+            icon,
+            fusionIcon: 'sticker',
+            order: 2,
+            component: Tab,
+            shouldRender,
+            replacesGifPicker: true,
+        });
+
+        const tabs = getTabs();
+        expect(id).toBe('test.stickers');
+        expect(tabs).toHaveLength(1);
+        expect(tabs[0]).toEqual({
+            id: 'test.stickers',
+            pluginId: PLUGIN_ID,
+            label: 'Stickers',
+            icon,
+            fusionIcon: 'sticker',
+            order: 2,
+            component: Tab,
+            shouldRender,
+            replacesGifPicker: true,
+        });
+    });
+
+    it('defaults the optional fields', () => {
+        const registry = new PluginRegistry(PLUGIN_ID);
+        const id = registry.registerEmojiPickerTab({label: 'GIFs', component: Tab});
+
+        const tab = getTabs()[0];
+        expect(id).toBeTruthy();
+        expect(tab.id).toBe(id);
+        expect(tab.icon).toBeUndefined();
+        expect(tab.fusionIcon).toBeUndefined();
+        expect(tab.order).toBe(0);
+        expect(tab.replacesGifPicker).toBe(false);
+        expect(tab.shouldRender({} as GlobalState, {channelId: 'channel'})).toBe(true);
+    });
+
+    it('REMOVED_WEBAPP_PLUGIN sweeps entries for that plugin and leaves others intact', () => {
+        const registry = new PluginRegistry(PLUGIN_ID);
+        const otherRegistry = new PluginRegistry('other_plugin');
+
+        registry.registerEmojiPickerTab({label: 'Mine', component: Tab});
+        otherRegistry.registerEmojiPickerTab({label: 'Other', component: Tab});
+
+        mockCurrentStore.dispatch({
+            type: ActionTypes.REMOVED_WEBAPP_PLUGIN,
+            data: {id: PLUGIN_ID},
+        });
+
+        const tabs = getTabs();
+        expect(tabs).toHaveLength(1);
+        expect(tabs[0].pluginId).toBe('other_plugin');
+    });
+
+    it('unregisterComponent removes the tab', () => {
+        const registry = new PluginRegistry(PLUGIN_ID);
+        const id = registry.registerEmojiPickerTab({label: 'Tab', component: Tab});
+
+        registry.unregisterComponent(id);
+
+        expect(getTabs()).toHaveLength(0);
+    });
+});
+
 describe('PluginRegistry — registerProduct', () => {
     const PLUGIN_ID = 'test_plugin';
 

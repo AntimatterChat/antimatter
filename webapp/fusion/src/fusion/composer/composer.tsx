@@ -675,6 +675,7 @@ export default function Composer({channelId, rootId = '', placeholder}: Props) {
                 <EmojiPicker
                     anchor={emojiRef.current}
                     keepOpen={true}
+                    compose={{channelId, rootId, insertText: insert}}
                     onPick={(name) => insert(`:${name}: `)}
                     onClose={() => setMenu(null)}
                 />

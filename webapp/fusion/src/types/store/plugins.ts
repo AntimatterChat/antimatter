@@ -81,6 +81,7 @@ export type PluginsState = {
         PostHeader: PostHeaderComponent[];
         ComposerPlaceholder: ComposerPlaceholderRegistration[];
         ComposerMenuItem: ComposerMenuItemRegistration[];
+        EmojiPickerTab: EmojiPickerTabRegistration[];
         ProductSwitcherMenuItem: ProductSwitcherMenuItemRegistration[];
         FilesWillUploadHook: FilesWillUploadHook[];
         DesktopNotificationHooks: DesktopNotificationHook[];
@@ -518,6 +519,46 @@ export type ComposerMenuItemRegistration = PluginComponent & {
     fusionIcon?: string;
     action: (ctx: ComposerMenuItemContext) => void;
     shouldRender: (state: GlobalState, ctx: ComposerMenuItemContext) => boolean;
+};
+
+/** The message box an emoji picker tab is opened from: the channel, and the thread for a reply box. */
+export type EmojiPickerTabContext = ComposerMenuItemContext;
+
+export type EmojiPickerTabProps = {
+    channelId?: string;
+    rootId?: string;
+
+    /**
+     * The text of the picker's search box, shared with its other tabs. The tab renders its own
+     * search box with this value and reports changes with onFilterChange.
+     */
+    filter: string;
+    onFilterChange: (filter: string) => void;
+
+    /** Closes the picker: call it once the tab posted or inserted what the user picked. */
+    onSelectDone: () => void;
+
+    /** Whether the Fusion web UI renders the tab, so it can use the Fusion UI's markup and classes. */
+    isFusion: boolean;
+
+    /** Inserts text at the caret of the message box, like the emoji the user picks. */
+    insertText?: (text: string) => void;
+};
+
+export type EmojiPickerTabRegistration = PluginComponent & {
+    label: PluggableText;
+    icon?: React.ReactNode;
+
+    /** An icon of the Fusion UI's icon set (e.g. 'sticker'), shown before the label there. */
+    fusionIcon?: string;
+
+    /** Where the tab goes among the plugin tabs, lowest first. */
+    order: number;
+    component: React.ComponentType<EmojiPickerTabProps>;
+    shouldRender: (state: GlobalState, ctx: EmojiPickerTabContext) => boolean;
+
+    /** Whether the tab replaces the core GIF picker (Giphy), which is hidden while the tab shows. */
+    replacesGifPicker: boolean;
 };
 
 export type ProductSwitcherMenuItemRegistration = PluginComponent & {
