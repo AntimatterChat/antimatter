@@ -1,0 +1,54 @@
+.. _amctl_channel_list:
+
+amctl channel list
+------------------
+
+List all channels on specified teams.
+
+Synopsis
+~~~~~~~~
+
+
+List all channels on specified teams.
+Archived channels are appended with ' (archived)'.
+Private channels the user is a member of or has access to are appended with ' (private)'.
+
+::
+
+  amctl channel list [teams] [flags]
+
+Examples
+~~~~~~~~
+
+::
+
+    channel list myteam
+
+Options
+~~~~~~~
+
+::
+
+  -h, --help       help for list
+  -i, --show-ids   Show channel IDs
+
+Options inherited from parent commands
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+::
+
+      --config string                path to the configuration file (default "$XDG_CONFIG_HOME/amctl/config")
+      --disable-pager                disables paged output
+      --insecure-sha1-intermediate   allows to use insecure TLS protocols, such as SHA-1
+      --insecure-tls-version         allows to use TLS versions 1.0 and 1.1
+      --json                         the output format will be in json format
+      --local                        allows communicating with the server through a unix socket
+      --quiet                        prevent amctl to generate output for the commands
+      --strict                       will only run commands if the amctl version matches the server one
+      --suppress-warnings            disables printing warning messages
+
+SEE ALSO
+~~~~~~~~
+
+* `amctl channel <amctl_channel.rst>`_ 	 - Management of channels
+

@@ -1,0 +1,60 @@
+.. _amctl_import_process:
+
+amctl import process
+--------------------
+
+Start an import job
+
+Synopsis
+~~~~~~~~
+
+
+Start an import job
+
+::
+
+  amctl import process [importname] [flags]
+
+Examples
+~~~~~~~~
+
+::
+
+    import process 35uy6cwrqfnhdx3genrhqqznxc_import.zip
+
+Options
+~~~~~~~
+
+::
+
+      --bypass-upload                     If this is set, the file is not processed from the server, but rather directly read from the filesystem. Works only in --local mode.
+      --destination-channel-id string     Map the source channel in the export to a different channel on the destination server (by ID). Only valid for channel-scoped exports. Mutually exclusive with --destination-channel-name.
+      --destination-channel-name string   Map the source channel in the export to a different channel name on the destination server (by name). Only valid for channel-scoped exports. Mutually exclusive with --destination-channel-id.
+      --destination-team-id string        Map the source team in the export to an existing team on the destination server (by ID). Mutually exclusive with --destination-team-name.
+      --destination-team-name string      Map the source team in the export to an existing team on the destination server (by name/slug). Works with both channel-scoped and full-team exports. Mutually exclusive with --destination-team-id.
+      --extract-content                   If this is set, document attachments will be extracted and indexed during the import process. It is advised to disable it to improve performance. (default true)
+  -h, --help                              help for process
+      --imported-users string             Required for a scoped (team- or channel-scoped) export: the access posture for accounts the import creates. Use "active" when importing into a new instance these users are moving to, so they can sign in. Use "inactive" when importing into an existing instance, so accounts created from weak identity matches stay deactivated until an admin reviews them. Users deactivated on the source stay deactivated either way, and accounts that already exist on the destination are not affected. Ignored for a full-instance import.
+      --skip-preflight                    Skip SSO provider configuration checks. By default the import fails if an auth provider present in the export is not enabled on the destination. Use this flag only after reviewing the preflight error and accepting the risk.
+      --workers int                       The number of concurrent import worker goroutines. Controls database load during import. When set to 0 (default), uses the number of CPUs available. Maximum allowed is 4x the CPU count.
+
+Options inherited from parent commands
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+::
+
+      --config string                path to the configuration file (default "$XDG_CONFIG_HOME/amctl/config")
+      --disable-pager                disables paged output
+      --insecure-sha1-intermediate   allows to use insecure TLS protocols, such as SHA-1
+      --insecure-tls-version         allows to use TLS versions 1.0 and 1.1
+      --json                         the output format will be in json format
+      --local                        allows communicating with the server through a unix socket
+      --quiet                        prevent amctl to generate output for the commands
+      --strict                       will only run commands if the amctl version matches the server one
+      --suppress-warnings            disables printing warning messages
+
+SEE ALSO
+~~~~~~~~
+
+* `amctl import <amctl_import.rst>`_ 	 - Management of imports
+
