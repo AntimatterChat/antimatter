@@ -264,7 +264,7 @@ package-plugins: fetch-prepackaged-plugins
 package-osx-amd64: package-prep
 	DIST_PATH_GENERIC=$(DIST_PATH_OSX_AMD64) CURRENT_PACKAGE_ARCH=darwin_amd64 $(MAKE) package-general
 	@# Package
-	tar -C $(DIST_PATH_OSX_AMD64)/.. -czf $(DIST_PATH)-$(BUILD_TYPE_NAME)-darwin-amd64.tar.gz $(DIST_NAME) ../$(DIST_NAME)
+	tar -C $(DIST_PATH_OSX_AMD64)/.. -czf $(DIST_PATH)$(DIST_SUFFIX)-darwin-amd64.tar.gz $(DIST_NAME) ../$(DIST_NAME)
 	@# Cleanup
 	rm -rf $(DIST_ROOT)/darwin_amd64
 
@@ -272,7 +272,7 @@ package-osx-amd64: package-prep
 package-osx-arm64: package-prep
 	DIST_PATH_GENERIC=$(DIST_PATH_OSX_ARM64) CURRENT_PACKAGE_ARCH=darwin_arm64 $(MAKE) package-general
 	@# Package
-	tar -C $(DIST_PATH_OSX_ARM64)/.. -czf $(DIST_PATH)-$(BUILD_TYPE_NAME)-darwin-arm64.tar.gz $(DIST_NAME) ../$(DIST_NAME)
+	tar -C $(DIST_PATH_OSX_ARM64)/.. -czf $(DIST_PATH)$(DIST_SUFFIX)-darwin-arm64.tar.gz $(DIST_NAME) ../$(DIST_NAME)
 	@# Cleanup
 	rm -rf $(DIST_ROOT)/darwin_arm64
 
@@ -283,7 +283,7 @@ package-osx: package-osx-amd64 package-osx-arm64
 package-freebsd-amd64: package-prep
 	DIST_PATH_GENERIC=$(DIST_PATH_FREEBSD_AMD64) CURRENT_PACKAGE_ARCH=freebsd_amd64 $(MAKE) package-general
 	@# Package
-	tar -C $(DIST_PATH_FREEBSD_AMD64)/.. -czf $(DIST_PATH)-$(BUILD_TYPE_NAME)-freebsd-amd64.tar.gz $(DIST_NAME) ../$(DIST_NAME)
+	tar -C $(DIST_PATH_FREEBSD_AMD64)/.. -czf $(DIST_PATH)$(DIST_SUFFIX)-freebsd-amd64.tar.gz $(DIST_NAME) ../$(DIST_NAME)
 	@# Cleanup
 	rm -rf $(DIST_ROOT)/freebsd_amd64
 
@@ -291,7 +291,7 @@ package-freebsd-amd64: package-prep
 package-freebsd-arm64: package-prep
 	DIST_PATH_GENERIC=$(DIST_PATH_FREEBSD_ARM64) CURRENT_PACKAGE_ARCH=freebsd_arm64 $(MAKE) package-general
 	@# Package
-	tar -C $(DIST_PATH_FREEBSD_ARM64)/.. -czf $(DIST_PATH)-$(BUILD_TYPE_NAME)-freebsd-arm64.tar.gz $(DIST_NAME) ../$(DIST_NAME)
+	tar -C $(DIST_PATH_FREEBSD_ARM64)/.. -czf $(DIST_PATH)$(DIST_SUFFIX)-freebsd-arm64.tar.gz $(DIST_NAME) ../$(DIST_NAME)
 	@# Cleanup
 	rm -rf $(DIST_ROOT)/freebsd_arm64
 
@@ -303,7 +303,7 @@ package-linux-amd64: package-prep
 	DIST_PATH_GENERIC=$(DIST_PATH_LIN_AMD64) PLUGIN_ARCH=linux-amd64 $(MAKE) package-plugins
 	DIST_PATH_GENERIC=$(DIST_PATH_LIN_AMD64) CURRENT_PACKAGE_ARCH=linux_amd64 $(MAKE) package-general
 	@# Package
-	tar -C $(DIST_PATH_LIN_AMD64)/.. -czf $(DIST_PATH)-$(BUILD_TYPE_NAME)-linux-amd64.tar.gz $(DIST_NAME) ../$(DIST_NAME)
+	tar -C $(DIST_PATH_LIN_AMD64)/.. -czf $(DIST_PATH)$(DIST_SUFFIX)-linux-amd64.tar.gz $(DIST_NAME) ../$(DIST_NAME)
 	@# Cleanup
 	rm -rf $(DIST_ROOT)/linux_amd64
 
@@ -314,7 +314,7 @@ ifeq ($(FIPS_ENABLED),true)
 else
 	DIST_PATH_GENERIC=$(DIST_PATH_LIN_ARM64) CURRENT_PACKAGE_ARCH=linux_arm64 $(MAKE) package-general
 	@# Package
-	tar -C $(DIST_PATH_LIN_ARM64)/.. -czf $(DIST_PATH)-$(BUILD_TYPE_NAME)-linux-arm64.tar.gz $(DIST_NAME) ../$(DIST_NAME)
+	tar -C $(DIST_PATH_LIN_ARM64)/.. -czf $(DIST_PATH)$(DIST_SUFFIX)-linux-arm64.tar.gz $(DIST_NAME) ../$(DIST_NAME)
 	@# Cleanup
 	rm -rf $(DIST_ROOT)/linux_arm64
 endif
@@ -326,7 +326,7 @@ package-linux: package-linux-amd64 package-linux-arm64
 package-windows: package-prep
 	DIST_PATH_GENERIC=$(DIST_PATH_WIN) CURRENT_PACKAGE_ARCH=windows_amd64 AM_BIN_NAME=$(AM_BIN_NAME).exe AMCTL_BIN_NAME=$(AMCTL_BIN_NAME).exe $(MAKE) package-general
 	@# Package
-	cd $(DIST_PATH_WIN)/.. && zip -9 -r -q -l ../$(DIST_NAME)-$(BUILD_TYPE_NAME)-windows-amd64.zip $(DIST_NAME) ../$(DIST_NAME) && cd ../..
+	cd $(DIST_PATH_WIN)/.. && zip -9 -r -q -l ../$(DIST_NAME)$(DIST_SUFFIX)-windows-amd64.zip $(DIST_NAME) ../$(DIST_NAME) && cd ../..
 	@# Cleanup
 	rm -rf $(DIST_ROOT)/windows
 

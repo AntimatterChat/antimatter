@@ -61,11 +61,12 @@ MMCTL_LDFLAGS += -X "$(MMCTL_PKG).gitCommit=$(MMCTL_GIT_COMMIT)"
 MMCTL_LDFLAGS += -X "$(MMCTL_PKG).gitTreeState=$(MMCTL_GIT_TREE_STATE)"
 MMCTL_LDFLAGS += -X "$(MMCTL_PKG).commitDate=$(MMCTL_COMMIT_DATE)"
 
-BUILD_TYPE_NAME = team
+# Release archives of FIPS builds are named $(DIST_NAME)-fips-<os>-<arch>.
+DIST_SUFFIX =
 
 FIPS_ENABLED ?= false
 ifeq ($(FIPS_ENABLED),true)
-	BUILD_TYPE_NAME := $(BUILD_TYPE_NAME)-fips
+	DIST_SUFFIX := -fips
 endif
 
 # Webapp
@@ -110,7 +111,7 @@ BUILDER_GOOS_GOARCH="$(shell $(GO) env GOOS)_$(shell $(GO) env GOARCH)"
 
 PLATFORM_FILES="./cmd/antimatter"
 
-# Output paths. Release archives are named $(DIST_NAME)-<edition>-<os>-<arch> and unpack to a
+# Output paths. Release archives are named $(DIST_NAME)$(DIST_SUFFIX)-<os>-<arch> and unpack to a
 # $(DIST_NAME)/ directory.
 DIST_ROOT=dist
 DIST_NAME=antimatter

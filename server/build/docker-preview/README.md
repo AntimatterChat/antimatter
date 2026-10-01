@@ -6,9 +6,9 @@ Note: This configuration should not be used in production, as it’s using a kno
 
 ## Usage
 
-Build the image from an Antimatter release archive (`make package-linux` in `server/` writes `dist/antimatter-team-linux-amd64.tar.gz`), served at a URL Docker can fetch:
+Build the image from an Antimatter release archive (`make package-linux` in `server/` writes `dist/antimatter-linux-amd64.tar.gz`), served at a URL Docker can fetch:
 
 ```
-docker build --build-arg AM_PACKAGE=<url of antimatter-team-linux-amd64.tar.gz> -t antimatter-preview .
+docker build --build-arg AM_PACKAGE=<url of antimatter-linux-amd64.tar.gz> -t antimatter-preview .
 docker run --name antimatter-preview -d --publish 8065:8065 --add-host dockerhost:127.0.0.1 antimatter-preview
 ```

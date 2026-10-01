@@ -7,7 +7,7 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 ARG PUID=2000
 ARG PGID=2000
 # AM_PACKAGE is the URL of the Antimatter release archive to install (required), e.g. one built by
-# `make package-linux` (dist/antimatter-team-linux-amd64.tar.gz) and served over HTTP.
+# `make package-linux` (dist/antimatter-linux-amd64.tar.gz) and served over HTTP.
 ARG AM_PACKAGE
 
 # Install needed packages and indirect dependencies

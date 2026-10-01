@@ -5,7 +5,7 @@ FROM postgres:14
 RUN apt-get update && apt-get install -y ca-certificates
 
 # URL of the Antimatter release archive to install (required), e.g. one built by
-# `make package-linux` (dist/antimatter-team-linux-amd64.tar.gz) and served over HTTP.
+# `make package-linux` (dist/antimatter-linux-amd64.tar.gz) and served over HTTP.
 ARG AM_PACKAGE
 #
 # Configure PostgreSQL
