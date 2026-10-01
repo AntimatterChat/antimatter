@@ -10,7 +10,7 @@ import {getCurrentChannel, isDeactivatedDirectChannel} from 'mattermost-redux/se
 
 import {getChannelViewPanel} from 'selectors/channel_view_panel';
 
-import Composer from 'fusion/composer/composer';
+import Composer, {DROP_FILES_EVENT} from 'fusion/composer/composer';
 import MessageList from 'fusion/messages/message_list';
 import {am} from 'fusion/utils/class_names';
 
@@ -84,6 +84,17 @@ export default function ChannelView() {
                     ref={viewRef}
                     className={am('view')}
                     id='am-view'
+                    onDragOver={(e) => {
+                        if (e.dataTransfer.types.includes('Files')) {
+                            e.preventDefault();
+                        }
+                    }}
+                    onDrop={(e) => {
+                        if (e.dataTransfer.files.length && !archived && !deactivated) {
+                            e.preventDefault();
+                            window.dispatchEvent(new CustomEvent(DROP_FILES_EVENT, {detail: Array.from(e.dataTransfer.files)}));
+                        }
+                    }}
                 >
                     <MessageList
                         key={channel.id}

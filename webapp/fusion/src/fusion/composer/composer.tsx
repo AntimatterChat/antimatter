@@ -52,6 +52,9 @@ type Props = {
 
 type Pending = {clientId: string; name: string; progress: number};
 
+// The conversation view sends files dropped on it to its composer with this event.
+export const DROP_FILES_EVENT = 'am-drop-files';
+
 // Composer writes messages: the mockup's compose box around the classic web app's drafts and submit logic
 // (slash commands, reactions, message priority).
 export default function Composer({channelId, rootId = '', placeholder}: Props) {
@@ -240,6 +243,18 @@ export default function Composer({channelId, rootId = '', placeholder}: Props) {
             }));
         });
     };
+
+    // Files dropped anywhere on the conversation go to its composer, as in the mockup.
+    const uploadRef = useRef(upload);
+    uploadRef.current = upload;
+    useEffect(() => {
+        if (rootId) {
+            return undefined;
+        }
+        const onDrop = (e: Event) => uploadRef.current((e as CustomEvent<File[]>).detail);
+        window.addEventListener(DROP_FILES_EVENT, onDrop);
+        return () => window.removeEventListener(DROP_FILES_EVENT, onDrop);
+    }, [rootId]);
 
     const priority = draft.metadata?.priority;
     const setPriority = (patch: Partial<{priority: PostPriority | ''; requested_ack: boolean; persistent_notifications: boolean}>) => {
