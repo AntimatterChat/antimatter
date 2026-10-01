@@ -41,6 +41,26 @@ type Result =
     {kind: 'recent'; q: string} |
     {kind: 'all'};
 
+const STATUS_LABELS: Record<string, {id: string; defaultMessage: string}> = {
+    online: {id: 'fusion.status.online', defaultMessage: 'Online'},
+    away: {id: 'fusion.status.away', defaultMessage: 'Away'},
+    dnd: {id: 'fusion.status.dnd', defaultMessage: 'Do not disturb'},
+    offline: {id: 'fusion.status.offline', defaultMessage: 'Offline'},
+};
+
+// A person's custom status text, as the mockup's people rows show it.
+function customStatusText(user: UserProfile): string {
+    try {
+        const custom = user.props?.customStatus ? JSON.parse(user.props.customStatus as string) : null;
+        if (!custom?.text || (custom.duration !== '' && custom.expires_at && Date.parse(custom.expires_at) <= Date.now())) {
+            return '';
+        }
+        return custom.text;
+    } catch {
+        return '';
+    }
+}
+
 function Mark({text, q}: {text: string; q: string}) {
     if (!q) {
         return <>{text}</>;
@@ -63,6 +83,7 @@ export default function GlobalSearch() {
     const channels = useSelector(getAllChannels);
     const memberships = useSelector(getMyChannelMemberships);
     const users = useSelector(getUsers);
+    const statuses = useSelector((state: GlobalState) => state.entities.users.statuses);
     const teamsById = useSelector((state: GlobalState) => (id: string) => getTeam(state, id));
     const [query, setQuery] = useState('');
     const [filter, setFilter] = useState<Filter>('all');
@@ -195,7 +216,7 @@ export default function GlobalSearch() {
                                 text={u.username}
                                 q={q}
                             />
-                            {u.position ? ` · ${u.position}` : ''}
+                            {[formatMessage(STATUS_LABELS[statuses[u.id]] || STATUS_LABELS.offline), customStatusText(u)].filter(Boolean).map((part) => ` · ${part}`).join('')}
                         </span>
                     </span>
                     <span className={am('kind')}>{formatMessage({id: 'fusion.gs.kindPerson', defaultMessage: 'Person'})}</span>
