@@ -20,6 +20,7 @@ import {openShowEditHistory, selectPost} from 'actions/views/rhs';
 import {shouldDisplayConcealedPlaceholder} from 'selectors/burn_on_read_posts';
 import {getIsPostBeingEdited, getIsPostBeingEditedInRHS} from 'selectors/posts';
 
+import RenderEmoji from 'components/emoji/render_emoji';
 import MessageWithAdditionalContent from 'components/message_with_additional_content';
 
 import Avatar from 'fusion/components/avatar';
@@ -129,7 +130,11 @@ export default function Message({postId, previousPostId, inThread = false, highl
     const openThread = () => dispatch(selectPost(post));
 
     const authorName = webhook ? String(post.props.override_username) : name;
-    const overrideIcon = isFromWebhook(post) && config.EnablePostIconOverride === 'true' ? (post.props?.override_icon_url as string | undefined) : undefined;
+    const iconOverride = isFromWebhook(post) && config.EnablePostIconOverride === 'true';
+    const overrideIcon = iconOverride ? (post.props?.override_icon_url as string | undefined) : undefined;
+
+    // A webhook can post with an emoji as its picture (the mockup's .hook-av).
+    const overrideEmoji = iconOverride && !overrideIcon && typeof post.props?.override_icon_emoji === 'string' ? post.props.override_icon_emoji.replace(/^:|:$/g, '') : undefined;
 
     const tools = !deleted && !ephemeral && (
         <div
@@ -337,6 +342,48 @@ export default function Message({postId, previousPostId, inThread = false, highl
         );
     }
 
+    let picture;
+    if (overrideEmoji) {
+        picture = (
+            <span
+                className={am('hook-av')}
+                style={{'--am-hc': 'var(--am-raise-2)'} as React.CSSProperties}
+                aria-hidden='true'
+            >
+                <RenderEmoji
+                    emojiName={overrideEmoji}
+                    size={24}
+                />
+            </span>
+        );
+    } else if (overrideIcon) {
+        picture = (
+            <span
+                className={am('hook-av')}
+                aria-hidden='true'
+            >
+                <img
+                    src={overrideIcon}
+                    alt=''
+                />
+            </span>
+        );
+    } else {
+        picture = (
+            <button
+                ref={avatarRef}
+                aria-label={authorName}
+                onClick={() => setPopover('user')}
+                onContextMenu={(e) => openUserMenu(post.user_id, e)}
+            >
+                <Avatar
+                    userId={post.user_id}
+                    size='lg'
+                />
+            </button>
+        );
+    }
+
     return (
         <div
             className={rowClass}
@@ -349,29 +396,7 @@ export default function Message({postId, previousPostId, inThread = false, highl
                     <ReplyRef post={post}/>
                 </>
             )}
-            {overrideIcon ? (
-                <span
-                    className={am('hook-av')}
-                    aria-hidden='true'
-                >
-                    <img
-                        src={overrideIcon}
-                        alt=''
-                    />
-                </span>
-            ) : (
-                <button
-                    ref={avatarRef}
-                    aria-label={authorName}
-                    onClick={() => setPopover('user')}
-                    onContextMenu={(e) => openUserMenu(post.user_id, e)}
-                >
-                    <Avatar
-                        userId={post.user_id}
-                        size='lg'
-                    />
-                </button>
-            )}
+            {picture}
             <div>
                 <div className={am('msg-head')}>
                     <button
