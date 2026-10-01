@@ -58,7 +58,7 @@ var ExportDownloadCmd = &cobra.Command{
 
 var ExportGeneratePresignedURLCmd = &cobra.Command{
 	Use:   "generate-presigned-url [exportname]",
-	Short: "Generate a presigned url for an export file. This is helpful when an export is big and might have trouble downloading from the Mattermost server.",
+	Short: "Generate a presigned url for an export file. This is helpful when an export is big and might have trouble downloading from the Antimatter server.",
 	Args:  cobra.ExactArgs(1),
 	RunE:  withClient(exportGeneratePresignedURLCmdF),
 }
