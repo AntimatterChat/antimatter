@@ -17,14 +17,10 @@ import Icon from 'fusion/components/icon';
 import {useDisplayName} from 'fusion/hooks/users';
 import {am} from 'fusion/utils/class_names';
 import {permalinkPath} from 'fusion/utils/paths';
+import {plainText} from 'fusion/utils/plain_text';
 import {getHistory} from 'utils/browser_history';
 
 import type {GlobalState} from 'types/store';
-
-// A one-line plain version of a message, for the quote.
-function snippet(message: string) {
-    return message.replace(/```[\s\S]*?```/g, ' [code] ').replace(/\[([^\]]*)\]\([^)]*\)/g, '$1').replace(/[*_~`>#]/g, '').replace(/\s+/g, ' ').trim().slice(0, 160);
-}
 
 // ReplyRef is the "↩ Replying to Name snippet · Thread" line above a reply shown in the channel (collapsed reply
 // threads off): the mockup's .reply-ref, where the classic web app said "Commented on".
@@ -50,7 +46,7 @@ export default function ReplyRef({post}: {post: Post}) {
                 />
                 <span>{formatMessage({id: 'fusion.replyRef.replying', defaultMessage: 'Replying to'})}</span>
                 {root && <b>{who}</b>}
-                <span className={am('snip')}>{root ? snippet(root.message) : formatMessage({id: 'fusion.replyRef.message', defaultMessage: 'a message'})}</span>
+                <span className={am('snip')}>{root ? plainText(root.message, 160) : formatMessage({id: 'fusion.replyRef.message', defaultMessage: 'a message'})}</span>
             </button>
             <button
                 className={am('ref-thread')}
