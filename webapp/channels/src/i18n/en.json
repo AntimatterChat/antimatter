@@ -27695,6 +27695,22 @@
     "defaultMessage": "This invite link is invalid",
     "description": "Error heading shown on signup and email verification pages when the invite link is invalid."
   },
+  "signup_user_completed.invite_for_another_account.log_out": {
+    "defaultMessage": "Log out and accept the invitation",
+    "description": "Button on the signup page that logs the signed-in user out so they can accept an invitation sent to someone else."
+  },
+  "signup_user_completed.invite_for_another_account.message": {
+    "defaultMessage": "You’re logged in as {currentEmail}, but this invitation was sent to {inviteEmail}. Log out to accept it.",
+    "description": "Body shown on the signup page when a signed-in user opens an invitation sent to another email address. {currentEmail} is the signed-in user's email, {inviteEmail} the invited one."
+  },
+  "signup_user_completed.invite_for_another_account.message_no_email": {
+    "defaultMessage": "You’re logged in as {currentEmail}, but this invitation is for another account. Log out to accept it.",
+    "description": "Body shown on the signup page when a signed-in user opens an invitation meant for another account and the invited email is unknown. {currentEmail} is the signed-in user's email."
+  },
+  "signup_user_completed.invite_for_another_account.title": {
+    "defaultMessage": "This invitation is for another account",
+    "description": "Heading shown on the signup page when a signed-in user opens an invitation meant for another account."
+  },
   "signup_user_completed.no_open_server.title": {
     "defaultMessage": "This server doesn’t allow open signups",
     "description": "Error page title when a user opens the signup page but the server does not allow open registration."
