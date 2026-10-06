@@ -49,8 +49,15 @@ export default function RootRedirect(props: Props) {
         <Redirect
             to={{
                 ...props.location,
-                pathname: '/login',
+                pathname: isInviteAfterLogout(location) ? '/signup_user_complete' : '/login',
             }}
         />
     );
+}
+
+// Logging out reloads the root of the site, keeping only the query string (see store/index.ts). When
+// someone logs out to accept an invitation sent to another account (see Signup), the invitation's token
+// is in that query string: take them back to it rather than to the login page.
+function isInviteAfterLogout({pathname, search}: {pathname: string; search: string}) {
+    return pathname === '/' && new URLSearchParams(search).has('t');
 }
