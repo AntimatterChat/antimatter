@@ -71,6 +71,36 @@ describe('components/RootRedirect', () => {
         );
     });
 
+    test('should redirect to the invitation after logging out to accept it', () => {
+        const history = createMemoryHistory({initialEntries: ['/?d=%7B%7D&t=token1']});
+
+        renderWithContext(<RootRedirect {...defaultProps}/>, {}, {history});
+
+        expect(Redirect).toHaveBeenCalledWith(
+            expect.objectContaining({
+                to: expect.objectContaining({
+                    pathname: '/signup_user_complete',
+                }),
+            }),
+            undefined,
+        );
+    });
+
+    test('should redirect other pages with an invitation to /login', () => {
+        const history = createMemoryHistory({initialEntries: ['/some_page?t=token1']});
+
+        renderWithContext(<RootRedirect {...defaultProps}/>, {}, {history});
+
+        expect(Redirect).toHaveBeenCalledWith(
+            expect.objectContaining({
+                to: expect.objectContaining({
+                    pathname: '/login',
+                }),
+            }),
+            undefined,
+        );
+    });
+
     test('should call GlobalActions.redirectUserToDefaultTeam when user is logged in and not eligible for first admin onboarding', () => {
         const props = {
             ...defaultProps,

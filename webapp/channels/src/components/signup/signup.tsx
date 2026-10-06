@@ -17,10 +17,10 @@ import {createUser, loadMe} from 'mattermost-redux/actions/users';
 import {Client4} from 'mattermost-redux/client';
 import {getConfig, getPasswordConfig} from 'mattermost-redux/selectors/entities/general';
 import {getIsOnboardingFlowEnabled} from 'mattermost-redux/selectors/entities/preferences';
-import {getCurrentUserId} from 'mattermost-redux/selectors/entities/users';
+import {getCurrentUser, getCurrentUserId} from 'mattermost-redux/selectors/entities/users';
 import {isEmail} from 'mattermost-redux/utils/helpers';
 
-import {redirectUserToDefaultTeam} from 'actions/global_actions';
+import {emitUserLoggedOutEvent, redirectUserToDefaultTeam} from 'actions/global_actions';
 import {removeGlobalItem, setGlobalItem} from 'actions/storage';
 import {addUserToTeamFromInvite} from 'actions/team_actions';
 import {loginById} from 'actions/views/login';
@@ -57,6 +57,12 @@ import type {GlobalState} from 'types/store';
 import './signup.scss';
 
 const MOBILE_SCREEN_WIDTH = 1200;
+
+// Errors joining a team from an invite that mean the invite is for another account than the signed in one.
+const INVITE_FOR_ANOTHER_ACCOUNT_ERRORS = [
+    'api.user.create_user.bad_token_email_data.app_error',
+    'api.user.create_user.invalid_invitation_type.app_error',
+];
 
 type SignupProps = {
     onCustomizeHeader?: CustomizeHeaderType;
@@ -102,6 +108,7 @@ const Signup = ({onCustomizeHeader}: SignupProps) => {
         PrivacyPolicyLink,
     } = config;
     const loggedIn = Boolean(useSelector(getCurrentUserId));
+    const currentUser = useSelector(getCurrentUser);
     const onboardingFlowEnabled = useSelector(getIsOnboardingFlowEnabled);
     const usedBefore = useSelector((state: GlobalState) => (!inviteId && !loggedIn && token ? getGlobalItem(state, token, null) : undefined));
 
@@ -133,6 +140,7 @@ const Signup = ({onCustomizeHeader}: SignupProps) => {
     const [passwordError, setPasswordError] = useState('');
     const [brandImageError, setBrandImageError] = useState(false);
     const [serverError, setServerError] = useState('');
+    const [inviteForAnotherAccount, setInviteForAnotherAccount] = useState(false);
     const [teamName, setTeamName] = useState(parsedTeamName ?? '');
     const [alertBanner, setAlertBanner] = useState<AlertBannerProps | null>(null);
     const [isMobileView, setIsMobileView] = useState(false);
@@ -256,9 +264,20 @@ const Signup = ({onCustomizeHeader}: SignupProps) => {
 
         if (team) {
             history.push('/' + team.name + `/channels/${Constants.DEFAULT_CHANNEL}`);
+        } else if (error && INVITE_FOR_ANOTHER_ACCOUNT_ERRORS.includes(error.server_error_id)) {
+            // The invite was sent to someone else (or is a guest invite opened by a member): it's
+            // valid, just not for the account signed in on this browser.
+            setInviteForAnotherAccount(true);
+            setLoading(false);
         } else if (error) {
             handleInvalidInvite(error);
         }
+    };
+
+    const handleLogOutAndAcceptInvite = () => {
+        // Logging out reloads the site's root with this query string, which RootRedirect sends back here.
+        setInviteForAnotherAccount(false);
+        emitUserLoggedOutEvent(`/signup_user_complete${search}`);
     };
 
     const getInviteInfo = async (inviteId: string) => {
@@ -622,6 +641,31 @@ const Signup = ({onCustomizeHeader}: SignupProps) => {
                 <ColumnLayout
                     title={formatMessage({id: 'login.noMethods.title', defaultMessage: 'This server doesn’t have any sign-in methods enabled'})}
                     message={formatMessage({id: 'login.noMethods.subtitle', defaultMessage: 'Please contact your System Administrator to resolve this.'})}
+                />
+            );
+        }
+
+        if (inviteForAnotherAccount) {
+            return (
+                <ColumnLayout
+                    title={formatMessage({id: 'signup_user_completed.invite_for_another_account.title', defaultMessage: 'This invitation is for another account'})}
+                    message={parsedEmail ? formatMessage(
+                        {id: 'signup_user_completed.invite_for_another_account.message', defaultMessage: 'You’re logged in as {currentEmail}, but this invitation was sent to {inviteEmail}. Log out to accept it.'},
+                        {currentEmail: currentUser?.email, inviteEmail: parsedEmail},
+                    ) : formatMessage(
+                        {id: 'signup_user_completed.invite_for_another_account.message_no_email', defaultMessage: 'You’re logged in as {currentEmail}, but this invitation is for another account. Log out to accept it.'},
+                        {currentEmail: currentUser?.email},
+                    )}
+                    extraContent={(
+                        <div className='signup-body-content-button-container'>
+                            <button
+                                className='signup-body-content-button-return'
+                                onClick={handleLogOutAndAcceptInvite}
+                            >
+                                {formatMessage({id: 'signup_user_completed.invite_for_another_account.log_out', defaultMessage: 'Log out and accept the invitation'})}
+                            </button>
+                        </div>
+                    )}
                 />
             );
         }
