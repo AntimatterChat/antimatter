@@ -7,7 +7,7 @@ import type {ClientConfig} from '@mattermost/types/config';
 
 import {RequestStatus} from 'mattermost-redux/constants';
 
-import {redirectUserToDefaultTeam} from 'actions/global_actions';
+import {emitUserLoggedOutEvent, redirectUserToDefaultTeam} from 'actions/global_actions';
 
 import Signup from 'components/signup/signup';
 
@@ -51,6 +51,7 @@ jest.mock('mattermost-redux/selectors/entities/users', () => ({
 jest.mock('actions/global_actions', () => ({
     ...jest.requireActual('actions/global_actions'),
     redirectUserToDefaultTeam: jest.fn(),
+    emitUserLoggedOutEvent: jest.fn(),
 }));
 
 jest.mock('actions/team_actions', () => ({
@@ -439,6 +440,34 @@ describe('components/signup/Signup', () => {
             expect(mockHistoryPush).not.toHaveBeenCalled();
             expect(screen.getByText('This invite link is invalid')).toBeInTheDocument();
         });
+    });
+
+    it('should offer to log out when an invite for another account is opened while logged in', async () => {
+        mockLocation.search = '?d=%7B%22email%22%3A%22invited%40example.com%22%7D&t=token1';
+        mockCurrentUserId = 'user1'; // Simulate logged-in user
+        mockState.entities.users.currentUserId = 'user1';
+        mockState.entities.users.profiles.user1.email = 'admin@example.com';
+
+        mockDispatch = jest.fn().
+            mockResolvedValueOnce({}). // removeGlobalItem in useEffect
+            mockResolvedValueOnce({
+                error: {
+                    server_error_id: 'api.user.create_user.bad_token_email_data.app_error',
+                    message: 'The email address in the token does not match the one in the user data.',
+                },
+            }); // addUserToTeamFromInvite with error
+
+        renderWithContext(<Signup/>, mockState);
+
+        await waitFor(() => {
+            expect(screen.getByText('This invitation is for another account')).toBeInTheDocument();
+        });
+        expect(screen.getByText('You’re logged in as admin@example.com, but this invitation was sent to invited@example.com. Log out to accept it.')).toBeInTheDocument();
+        expect(screen.queryByText('This invite link is invalid')).not.toBeInTheDocument();
+
+        await userEvent.click(screen.getByRole('button', {name: 'Log out and accept the invitation'}));
+
+        expect(emitUserLoggedOutEvent).toHaveBeenCalledWith('/signup_user_complete?d=%7B%22email%22%3A%22invited%40example.com%22%7D&t=token1');
     });
 
     it('should show terms and privacy checkbox', async () => {
