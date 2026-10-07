@@ -1,7 +1,7 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 
-import React, {useMemo, useState} from 'react';
+import React, {useMemo, useRef, useState} from 'react';
 import {useIntl} from 'react-intl';
 import {useDispatch, useSelector} from 'react-redux';
 
@@ -15,10 +15,15 @@ import {isSystemAdmin} from 'mattermost-redux/utils/user_utils';
 import {emitUserLoggedOutEvent} from 'actions/global_actions';
 import {makeGetCustomStatus} from 'selectors/views/custom_status';
 
+import RenderEmoji from 'components/emoji/render_emoji';
+
 import Avatar from 'fusion/components/avatar';
 import Icon from 'fusion/components/icon';
 import {Popover} from 'fusion/components/layer';
+import {MenuHeading, MenuItem} from 'fusion/components/menu';
+import StatusEmoji from 'fusion/components/status_emoji';
 import {useDisplayName, useUserStatus} from 'fusion/hooks/users';
+import EmojiPicker from 'fusion/popovers/emoji_picker';
 import {useSettings} from 'fusion/shell/settings_context';
 import {useToast} from 'fusion/shell/toast_context';
 import {am} from 'fusion/utils/class_names';
@@ -93,7 +98,13 @@ export default function StatusPopover({anchor, onClose}: Props) {
     const getCustomStatus = useMemo(() => makeGetCustomStatus(), []);
     const custom = useSelector((state: GlobalState) => getCustomStatus(state, me?.id));
     const [text, setText] = useState(custom?.text || '');
+    const [emoji, setEmoji] = useState(custom?.emoji || '');
+    const [picking, setPicking] = useState(false);
+    const emojiButton = useRef<HTMLButtonElement>(null);
+    const [choosingDuration, setChoosingDuration] = useState(false);
+    const clockButton = useRef<HTMLButtonElement>(null);
     const [duration, setDuration] = useState<CustomStatusDuration>(custom?.duration || CustomStatusDuration.TODAY);
+    const durationLabel = formatMessage(CLEAR_AFTER.find(([d]) => d === duration)?.[1] || CLEAR_AFTER[3][1]);
 
     if (!me) {
         return null;
@@ -101,13 +112,13 @@ export default function StatusPopover({anchor, onClose}: Props) {
     const admin = isSystemAdmin(me.roles);
     const label = (s: string) => formatMessage(STATUSES.find((x) => x.status === s)?.label || STATUSES[3].label);
 
-    const saveCustom = (e: React.FormEvent) => {
-        e.preventDefault();
-        if (text.trim() === (custom?.text || '')) {
+    const saveCustom = (e?: React.FormEvent, withEmoji = emoji) => {
+        e?.preventDefault();
+        if (text.trim() === (custom?.text || '') && withEmoji === (custom?.emoji || '')) {
             return;
         }
-        if (text.trim()) {
-            dispatch(setCustomStatus({emoji: custom?.emoji || 'speech_balloon', text: text.trim(), duration, expires_at: expiresAt(duration)}));
+        if (text.trim() || withEmoji) {
+            dispatch(setCustomStatus({emoji: withEmoji || 'speech_balloon', text: text.trim(), duration, expires_at: expiresAt(duration)}));
             toast(formatMessage({id: 'fusion.toast.customStatus', defaultMessage: 'Custom status updated'}));
         } else {
             dispatch(unsetCustomStatus());
@@ -136,7 +147,10 @@ export default function StatusPopover({anchor, onClose}: Props) {
                     status={true}
                 />
                 <div>
-                    <b>{name}</b>
+                    <b>
+                        {name}
+                        <StatusEmoji userId={me.id}/>
+                    </b>
                     <span>{`@${me.username} · ${label(status)}${status === 'dnd' && dndEndTime > 0 ? ' · ' + formatMessage({id: 'fusion.status.until', defaultMessage: 'until {time}'}, {time: intl.formatDate(dndEndTime * 1000, {weekday: 'short', hour: 'numeric', minute: '2-digit'})}) : ''}`}</span>
                 </div>
             </div>
@@ -144,24 +158,58 @@ export default function StatusPopover({anchor, onClose}: Props) {
                 className={am('sp-custom')}
                 onSubmit={saveCustom}
             >
-                <Icon
-                    name='smile'
-                    size='sm'
-                />
+                <button
+                    ref={emojiButton}
+                    type='button'
+                    className={am('sp-emoji')}
+                    title={formatMessage({id: 'fusion.status.emoji', defaultMessage: 'Choose an emoji'})}
+                    aria-label={formatMessage({id: 'fusion.status.emoji', defaultMessage: 'Choose an emoji'})}
+                    onClick={() => setPicking(!picking)}
+                >
+                    {emoji ? (
+                        <RenderEmoji
+                            emojiName={emoji}
+                            size={18}
+                        />
+                    ) : (
+                        <Icon
+                            name='smile'
+                            size='sm'
+                        />
+                    )}
+                </button>
                 <input
                     value={text}
                     placeholder={formatMessage({id: 'fusion.status.custom', defaultMessage: 'Set a custom status'})}
                     aria-label={formatMessage({id: 'fusion.status.customLabel', defaultMessage: 'Custom status'})}
                     maxLength={100}
                     onChange={(e) => setText(e.target.value)}
-                    onBlur={saveCustom}
+                    onBlur={() => saveCustom()}
                 />
-                {custom?.text && (
+                {(text.trim() || emoji) && (
+                    <button
+                        ref={clockButton}
+                        type='button'
+                        className={am('sp-clock', {on: choosingDuration})}
+                        title={formatMessage({id: 'fusion.status.clearAfterValue', defaultMessage: 'Clear after: {duration}'}, {duration: durationLabel})}
+                        aria-label={formatMessage({id: 'fusion.status.clearAfterValue', defaultMessage: 'Clear after: {duration}'}, {duration: durationLabel})}
+                        aria-haspopup='menu'
+                        aria-expanded={choosingDuration}
+                        onClick={() => setChoosingDuration(!choosingDuration)}
+                    >
+                        <Icon
+                            name='clock'
+                            size='sm'
+                        />
+                    </button>
+                )}
+                {(custom?.text || custom?.emoji) && (
                     <button
                         type='button'
                         aria-label={formatMessage({id: 'fusion.status.clear', defaultMessage: 'Clear custom status'})}
                         onClick={() => {
                             setText('');
+                            setEmoji('');
                             dispatch(unsetCustomStatus());
                             toast(formatMessage({id: 'fusion.toast.customStatusCleared', defaultMessage: 'Custom status cleared'}));
                         }}
@@ -173,28 +221,41 @@ export default function StatusPopover({anchor, onClose}: Props) {
                     </button>
                 )}
             </form>
-            {text.trim() && (
-                <div
-                    className={am('sp-dnd')}
-                    role='group'
-                    aria-label={formatMessage({id: 'fusion.status.clearAfter', defaultMessage: 'Clear after'})}
+            {choosingDuration && (
+                <Popover
+                    anchor={clockButton.current}
+                    placement='below'
+                    className='plus-pop sp-durations'
+                    role='menu'
+                    label={formatMessage({id: 'fusion.status.clearAfter', defaultMessage: 'Clear after'})}
+                    onClose={() => setChoosingDuration(false)}
                 >
-                    <span className={am('dur-label')}>{formatMessage({id: 'fusion.status.clearAfter', defaultMessage: 'Clear after'})}</span>
+                    <MenuHeading>{formatMessage({id: 'fusion.status.clearAfter', defaultMessage: 'Clear after'})}</MenuHeading>
                     {CLEAR_AFTER.map(([d, l]) => (
-                        <button
+                        <MenuItem
                             key={d || 'never'}
-                            type='button'
-                            className={am({on: duration === d})}
-                            aria-pressed={duration === d}
+                            role='menuitemradio'
+                            checked={duration === d}
+                            label={formatMessage(l)}
                             onClick={() => {
                                 setDuration(d);
-                                dispatch(setCustomStatus({emoji: custom?.emoji || 'speech_balloon', text: text.trim(), duration: d, expires_at: expiresAt(d)}));
+                                setChoosingDuration(false);
+                                dispatch(setCustomStatus({emoji: emoji || 'speech_balloon', text: text.trim(), duration: d, expires_at: expiresAt(d)}));
                             }}
-                        >
-                            {formatMessage(l)}
-                        </button>
+                        />
                     ))}
-                </div>
+                </Popover>
+            )}
+            {picking && (
+                <EmojiPicker
+                    anchor={emojiButton.current}
+                    onPick={(name) => {
+                        setEmoji(name);
+                        setPicking(false);
+                        saveCustom(undefined, name);
+                    }}
+                    onClose={() => setPicking(false)}
+                />
             )}
             <div className={am('sp-list')}>
                 {STATUSES.map((s) => {

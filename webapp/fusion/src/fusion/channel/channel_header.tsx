@@ -21,6 +21,7 @@ import StatusPopover from 'fusion/popovers/status_popover';
 import {addRecentSearch, getRecentSearches} from 'fusion/search/recent_searches';
 import {isPhoneLayout, useLayout} from 'fusion/shell/layout_context';
 import ChannelIcon from 'fusion/sidebar/channel_icon';
+import {useConversationName} from 'fusion/sidebar/group_dm';
 import {am} from 'fusion/utils/class_names';
 
 import type {GlobalState} from 'types/store';
@@ -59,6 +60,7 @@ export default function ChannelHeader({channel}: {channel: Channel}) {
     const meRef = useRef<HTMLButtonElement>(null);
 
     const direct = channel.type === 'D' || channel.type === 'G';
+    const title = useConversationName(channel);
     const placeholder = direct ? formatMessage({id: 'fusion.header.searchConversation', defaultMessage: 'Search this conversation'}) : formatMessage({id: 'fusion.header.searchChannel', defaultMessage: 'Search #{name}'}, {name: channel.display_name});
 
     const search = (e: React.FormEvent) => {
@@ -94,7 +96,7 @@ export default function ChannelHeader({channel}: {channel: Channel}) {
                 ) : null}
                 {channel.type === 'G' && <span className={am('av', 'group', 'sm')}>{channel.display_name.split(',').length}</span>}
                 {!direct && <ChannelIcon channel={channel}/>}
-                <h1>{channel.display_name}</h1>
+                <h1>{title}</h1>
                 <HeaderTopic channel={channel}/>
             </div>
             <form

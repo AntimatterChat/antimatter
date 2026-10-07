@@ -3,6 +3,7 @@
 
 import React, {useEffect, useMemo} from 'react';
 import {useIntl} from 'react-intl';
+import type {IntlShape} from 'react-intl';
 import {useDispatch, useSelector} from 'react-redux';
 
 import type {Channel} from '@mattermost/types/channels';
@@ -11,6 +12,7 @@ import {fetchRemoteClusterInfo} from 'mattermost-redux/actions/shared_channels';
 import {getDirectTeammate} from 'mattermost-redux/selectors/entities/channels';
 import {getRemoteDisplayName} from 'mattermost-redux/selectors/entities/shared_channels';
 import {getCurrentRelativeTeamUrl} from 'mattermost-redux/selectors/entities/teams';
+import {displayLastActiveLabel, getLastActivityForUserId} from 'mattermost-redux/selectors/entities/users';
 import {getUserCurrentTimezone} from 'mattermost-redux/utils/timezone_utils';
 
 import {makeGetCustomStatus} from 'selectors/views/custom_status';
@@ -32,13 +34,31 @@ function plain(text: string) {
 
 // DirectTopic is the topic line of a direct message: the other person's local time and custom status (or the
 // conversation's header), or their server when they're on another one.
+// lastOnlineAgo says how long ago a moment was, in the largest whole unit: 6 minutes ago, 3 hours ago, 2 days ago.
+export function lastOnlineAgo(intl: IntlShape, at: number, now = Date.now()): string {
+    const minutes = Math.max(1, Math.round((now - at) / 60000));
+    if (minutes < 60) {
+        return intl.formatRelativeTime(-minutes, 'minute', {numeric: 'auto'});
+    }
+    const hours = Math.round(minutes / 60);
+    if (hours < 24) {
+        return intl.formatRelativeTime(-hours, 'hour', {numeric: 'auto'});
+    }
+    return intl.formatRelativeTime(-Math.round(hours / 24), 'day', {numeric: 'auto'});
+}
+
 function DirectTopic({channel}: {channel: Channel}) {
-    const {formatMessage, formatTime} = useIntl();
+    const intl = useIntl();
+    const {formatMessage, formatTime} = intl;
     const dispatch = useDispatch();
     const teammate = useSelector((state: GlobalState) => getDirectTeammate(state, channel.id));
     const getCustomStatus = useMemo(() => makeGetCustomStatus(), []);
     const custom = useSelector((state: GlobalState) => (teammate ? getCustomStatus(state, teammate.id) : undefined));
     const remote = useSelector((state: GlobalState) => (teammate?.remote_id ? getRemoteDisplayName(state, teammate.remote_id) : null));
+
+    // When they were last online, while they're away or offline, as the classic header says (the server and they can
+    // turn it off).
+    const lastOnline = useSelector((state: GlobalState) => (teammate && displayLastActiveLabel(state, teammate.id) ? getLastActivityForUserId(state, teammate.id) : 0));
 
     useEffect(() => {
         if (teammate?.remote_id) {
@@ -60,7 +80,8 @@ function DirectTopic({channel}: {channel: Channel}) {
         } catch {
             time = '';
         }
-        text = [time, custom?.text || channel.header].filter(Boolean).join(' · ');
+        const last = lastOnline ? formatMessage({id: 'fusion.header.lastOnline', defaultMessage: 'Last online {when}'}, {when: lastOnlineAgo(intl, lastOnline)}) : '';
+        text = [last, time, custom?.text || channel.header].filter(Boolean).join(' · ');
     }
     if (!text) {
         return null;
