@@ -6688,7 +6688,7 @@
   },
   {
     "id": "api.command_help.success",
-    "translation": "Mattermost è una piattaforma open source per la comunicazione sicura, la collaborazione e l'orchestrazione del lavoro tra strumenti e squadre.\r\nMattermost contiene due strumenti chiave:\r\n\r\n**Channels** - Rimani in contatto con la tua squadra tramite messaggi 1:1 e di gruppo.\r\n**[Playbooks](/playbooks)** - Crea e configura processi ripetibili per ottenere risultati specifici e prevedibili.\r\n\r\n[Consulta documentazione e guide]({{.HelpLink}})"
+    "translation": "Antimatter è una piattaforma open source per la comunicazione sicura, la collaborazione e l'orchestrazione del lavoro tra strumenti e squadre.\r\nAntimatter contiene due strumenti chiave:\r\n\r\n**Channels** - Rimani in contatto con la tua squadra tramite messaggi 1:1 e di gruppo.\r\n**[Playbooks](/playbooks)** - Crea e configura processi ripetibili per ottenere risultati specifici e prevedibili.\r\n\r\n[Consulta documentazione e guide]({{.HelpLink}})"
   },
   {
     "id": "api.command_invite.channel_constrained_user_denied",
@@ -6815,7 +6815,7 @@
   },
   {
     "id": "api.command_remote.invite_summary",
-    "translation": "Invia il seguente invito cifrato con AES a 256 bit all'amministratore di sistema del Mattermost esterno insieme alla password. Userà il comando slash `{{.Command}}` per accettare l'invito.\n\n```\n{{.Invitation}}\n```\n\n**Assicurati che la connessione sicura possa accedere alla tua istanza Mattermost tramite** {{.SiteURL}}"
+    "translation": "Invia il seguente invito cifrato con AES a 256 bit all'amministratore di sistema del Antimatter esterno insieme alla password. Userà il comando slash `{{.Command}}` per accettare l'invito.\n\n```\n{{.Invitation}}\n```\n\n**Assicurati che la connessione sicura possa accedere alla tua istanza Antimatter tramite** {{.SiteURL}}"
   },
   {
     "id": "api.command_remote.missing_command",
@@ -6923,7 +6923,7 @@
   },
   {
     "id": "api.config.update.elasticsearch.autocomplete_cannot_be_enabled_error",
-    "translation": "Il completamento automatico dei canali non può essere abilitato perché lo schema dell'indice dei canali non è aggiornato. Si consiglia di rigenerare l'indice dei canali. Consulta il changelog di Mattermost per maggiori informazioni"
+    "translation": "Il completamento automatico dei canali non può essere abilitato perché lo schema dell'indice dei canali non è aggiornato. Si consiglia di rigenerare l'indice dei canali. Consulta il changelog di Antimatter per maggiori informazioni"
   },
   {
     "id": "api.config.update_config.not_allowed_security.app_error",
@@ -7792,7 +7792,7 @@
   },
   {
     "id": "api.templates.guest_magic_link_body.footer.info",
-    "translation": "Hai ricevuto questa email perché qualcuno ha richiesto un link di accesso per Mattermost. Se non l'hai richiesto tu, puoi tranquillamente ignorare questa email."
+    "translation": "Hai ricevuto questa email perché qualcuno ha richiesto un link di accesso per Antimatter. Se non l'hai richiesto tu, puoi tranquillamente ignorare questa email."
   },
   {
     "id": "api.templates.guest_magic_link_body.footer.title",
@@ -7804,7 +7804,7 @@
   },
   {
     "id": "api.templates.guest_magic_link_body.title",
-    "translation": "Accedi a Mattermost"
+    "translation": "Accedi a Antimatter"
   },
   {
     "id": "api.templates.guest_magic_link_subject",
@@ -11112,7 +11112,7 @@
   },
   {
     "id": "ent.intune.login.account_not_found.app_error",
-    "translation": "Il tuo account non è ancora completamente configurato. Accedi prima a Mattermost tramite web o app desktop."
+    "translation": "Il tuo account non è ancora completamente configurato. Accedi prima a Antimatter tramite web o app desktop."
   },
   {
     "id": "ent.intune.login.extract_auth_data.app_error",
@@ -11720,7 +11720,7 @@
   },
   {
     "id": "model.config.is_valid.atmos_camo_image_proxy_removed.app_error",
-    "translation": "Il tipo di proxy immagini 'atmos/camo' è stato rimosso in Mattermost v12.0. Imposta ImageProxySettings.ImageProxyType su 'local' oppure imposta ImageProxySettings.Enable su false per disattivare il proxy immagini."
+    "translation": "Il tipo di proxy immagini 'atmos/camo' è stato rimosso in Antimatter v12.0. Imposta ImageProxySettings.ImageProxyType su 'local' oppure imposta ImageProxySettings.Enable su false per disattivare il proxy immagini."
   },
   {
     "id": "model.config.is_valid.autotranslation.agents.llm_service_id.app_error",
@@ -12608,7 +12608,7 @@
   },
   {
     "id": "oauth.gitlab.tos.error",
-    "translation": "I Termini di Servizio di GitLab sono stati aggiornati. Vai su {{.URL}} per accettarli e poi prova di nuovo ad accedere a Mattermost."
+    "translation": "I Termini di Servizio di GitLab sono stati aggiornati. Vai su {{.URL}} per accettarli e poi prova di nuovo ad accedere a Antimatter."
   },
   {
     "id": "plugin.api.update_post.mm_blocks_actions.app_error",
@@ -12776,11 +12776,11 @@
   },
   {
     "id": "api.command_remote.accept.help",
-    "translation": "Accetta un invito da un'istanza Mattermost esterna"
+    "translation": "Accetta un invito da un'istanza Antimatter esterna"
   },
   {
     "id": "api.command_remote.desc",
-    "translation": "Invita connessioni sicure per comunicare tra istanze Mattermost."
+    "translation": "Invita connessioni sicure per comunicare tra istanze Antimatter."
   },
   {
     "id": "api.command_remote.displayname.help",
@@ -12876,7 +12876,7 @@
   },
   {
     "id": "api.command_share.desc",
-    "translation": "Condivide il canale corrente con un'istanza Mattermost esterna."
+    "translation": "Condivide il canale corrente con un'istanza Antimatter esterna."
   },
   {
     "id": "api.command_share.hint",
@@ -12884,7 +12884,7 @@
   },
   {
     "id": "api.command_share.invite_remote.help",
-    "translation": "Invita un'istanza Mattermost esterna nel canale condiviso corrente"
+    "translation": "Invita un'istanza Antimatter esterna nel canale condiviso corrente"
   },
   {
     "id": "api.command_share.must_specify_valid_remote",
@@ -13032,7 +13032,7 @@
   },
   {
     "id": "api.email_batching.send_batched_email_notification.button",
-    "translation": "Apri Mattermost"
+    "translation": "Apri Antimatter"
   },
   {
     "id": "api.email_batching.send_batched_email_notification.messageButton",
@@ -13400,7 +13400,7 @@
   },
   {
     "id": "api.templates.invite_body.subTitle",
-    "translation": "Inizia a collaborare con la tua squadra su Mattermost"
+    "translation": "Inizia a collaborare con la tua squadra su Antimatter"
   },
   {
     "id": "api.templates.invite_body.title.reminder",
@@ -13408,7 +13408,7 @@
   },
   {
     "id": "api.templates.invite_body_footer.info",
-    "translation": "Mattermost è una piattaforma di messaggistica flessibile e open source che consente una collaborazione di squadra sicura."
+    "translation": "Antimatter è una piattaforma di messaggistica flessibile e open source che consente una collaborazione di squadra sicura."
   },
   {
     "id": "api.templates.invite_body_footer.learn_more",
@@ -13416,7 +13416,7 @@
   },
   {
     "id": "api.templates.invite_body_footer.title",
-    "translation": "Che cos'è Mattermost?"
+    "translation": "Che cos'è Antimatter?"
   },
   {
     "id": "api.templates.invite_body_guest.subTitle",
@@ -13808,7 +13808,7 @@
   },
   {
     "id": "app.notification.footer.infoLogin",
-    "translation": "Accedi a Mattermost"
+    "translation": "Accedi a Antimatter"
   },
   {
     "id": "app.notification.footer.title",

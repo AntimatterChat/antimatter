@@ -193,7 +193,7 @@
   },
   {
     "id": "api.admin.test_email.body",
-    "translation": "Atrodo, kad jūsų \"Mattermost\" el. paštas nustatytas teisingai!"
+    "translation": "Atrodo, kad jūsų \"Antimatter\" el. paštas nustatytas teisingai!"
   },
   {
     "id": "api.admin.test_email.missing_server",
@@ -201,7 +201,7 @@
   },
   {
     "id": "api.admin.test_email.subject",
-    "translation": "\"Mattermost\" - El. pašto nustatymų testavimas"
+    "translation": "\"Antimatter\" - El. pašto nustatymų testavimas"
   },
   {
     "id": "api.admin.test_s3.missing_s3_bucket",
@@ -553,7 +553,7 @@
   },
   {
     "id": "api.command.invite_people.desc",
-    "translation": "Siųskite kvietimą el. paštu savo \"Mattermost\" komandai"
+    "translation": "Siųskite kvietimą el. paštu savo \"Antimatter\" komandai"
   },
   {
     "id": "api.command.invite_people.email_invitations_off",
@@ -1250,7 +1250,7 @@
   },
   {
     "id": "api.command_help.desc",
-    "translation": "Rodyti Mattermost pagalbos pranešimą"
+    "translation": "Rodyti Antimatter pagalbos pranešimą"
   },
   {
     "id": "api.command_help.name",
@@ -1258,7 +1258,7 @@
   },
   {
     "id": "api.command_help.success",
-    "translation": "Mattermost – tai atvirojo kodo platforma saugiam bendravimui, bendradarbiavimui ir darbo organizavimui tarp įrankių ir komandų.\r\nMattermost sudaro du pagrindiniai įrankiai:\r\n\r\n**Channels** – palaikykite ryšį su savo komanda per asmeninius ir grupės pranešimus.\r\n**[Playbooks](/playbooks)** – kurkite ir konfigūruokite pakartojamus procesus, kad pasiektumėte konkrečių ir nuspėjamų rezultatų.\r\n\r\n[Peržiūrėti dokumentaciją ir vadovus]({{.HelpLink}})"
+    "translation": "Antimatter – tai atvirojo kodo platforma saugiam bendravimui, bendradarbiavimui ir darbo organizavimui tarp įrankių ir komandų.\r\nAntimatter sudaro du pagrindiniai įrankiai:\r\n\r\n**Channels** – palaikykite ryšį su savo komanda per asmeninius ir grupės pranešimus.\r\n**[Playbooks](/playbooks)** – kurkite ir konfigūruokite pakartojamus procesus, kad pasiektumėte konkrečių ir nuspėjamų rezultatų.\r\n\r\n[Peržiūrėti dokumentaciją ir vadovus]({{.HelpLink}})"
   },
   {
     "id": "api.command_invite.channel.app_error",
@@ -1375,7 +1375,7 @@
   },
   {
     "id": "api.command_logout.desc",
-    "translation": "Atsijungti nuo Mattermost"
+    "translation": "Atsijungti nuo Antimatter"
   },
   {
     "id": "api.command_logout.name",
@@ -1547,7 +1547,7 @@
   },
   {
     "id": "api.command_remote.accept.help",
-    "translation": "Priimti kvietimą iš išorinio Mattermost egzemplioriaus"
+    "translation": "Priimti kvietimą iš išorinio Antimatter egzemplioriaus"
   },
   {
     "id": "api.command_remote.accept_invitation",
@@ -1575,7 +1575,7 @@
   },
   {
     "id": "api.command_remote.desc",
-    "translation": "Kviesti saugius ryšius bendravimui tarp Mattermost egzempliorių."
+    "translation": "Kviesti saugius ryšius bendravimui tarp Antimatter egzempliorių."
   },
   {
     "id": "api.command_remote.displayname.help",
@@ -1623,7 +1623,7 @@
   },
   {
     "id": "api.command_remote.invite_summary",
-    "translation": "Išsiųskite toliau pateiktą AES 256 bitų šifruotą kvietimą kartu su slaptažodžiu išorinio Mattermost sistemos administratoriui. Kvietimui priimti jis naudos pasvirojo brūkšnio komandą `{{.Command}}`.\n\n```\n{{.Invitation}}\n```\n\n**Įsitikinkite, kad saugus ryšys gali pasiekti jūsų Mattermost egzempliorių adresu** {{.SiteURL}}"
+    "translation": "Išsiųskite toliau pateiktą AES 256 bitų šifruotą kvietimą kartu su slaptažodžiu išorinio Antimatter sistemos administratoriui. Kvietimui priimti jis naudos pasvirojo brūkšnio komandą `{{.Command}}`.\n\n```\n{{.Invitation}}\n```\n\n**Įsitikinkite, kad saugus ryšys gali pasiekti jūsų Antimatter egzempliorių adresu** {{.SiteURL}}"
   },
   {
     "id": "api.command_remote.missing_command",
@@ -1799,7 +1799,7 @@
   },
   {
     "id": "api.command_share.desc",
-    "translation": "Bendrina dabartinį kanalą su išoriniu Mattermost egzemplioriumi."
+    "translation": "Bendrina dabartinį kanalą su išoriniu Antimatter egzemplioriumi."
   },
   {
     "id": "api.command_share.fetch_remote.error",
@@ -1823,7 +1823,7 @@
   },
   {
     "id": "api.command_share.invite_remote.help",
-    "translation": "Pakviečia išorinį Mattermost egzempliorių į dabartinį bendrinamą kanalą"
+    "translation": "Pakviečia išorinį Antimatter egzempliorių į dabartinį bendrinamą kanalą"
   },
   {
     "id": "api.command_share.invite_remote_to_channel.error",
@@ -1967,7 +1967,7 @@
   },
   {
     "id": "api.config.update.elasticsearch.autocomplete_cannot_be_enabled_error",
-    "translation": "Kanalų automatinio užbaigimo įjungti negalima, nes kanalų indekso schema pasenusi. Rekomenduojama iš naujo sugeneruoti kanalų indeksą. Daugiau informacijos rasite Mattermost pakeitimų žurnale"
+    "translation": "Kanalų automatinio užbaigimo įjungti negalima, nes kanalų indekso schema pasenusi. Rekomenduojama iš naujo sugeneruoti kanalų indeksą. Daugiau informacijos rasite Antimatter pakeitimų žurnale"
   },
   {
     "id": "api.config.update_config.clear_siteurl.app_error",
@@ -2271,7 +2271,7 @@
   },
   {
     "id": "api.email_batching.send_batched_email_notification.button",
-    "translation": "Atverti Mattermost"
+    "translation": "Atverti Antimatter"
   },
   {
     "id": "api.email_batching.send_batched_email_notification.messageButton",
@@ -4214,7 +4214,7 @@
   },
   {
     "id": "api.templates.guest_magic_link_body.footer.info",
-    "translation": "Šis el. laiškas Jums išsiųstas, nes kažkas paprašė prisijungimo prie Mattermost nuorodos. Jei to neprašėte, galite drąsiai nepaisyti šio laiško."
+    "translation": "Šis el. laiškas Jums išsiųstas, nes kažkas paprašė prisijungimo prie Antimatter nuorodos. Jei to neprašėte, galite drąsiai nepaisyti šio laiško."
   },
   {
     "id": "api.templates.guest_magic_link_body.footer.title",
@@ -4226,7 +4226,7 @@
   },
   {
     "id": "api.templates.guest_magic_link_body.title",
-    "translation": "Prisijunkite prie Mattermost"
+    "translation": "Prisijunkite prie Antimatter"
   },
   {
     "id": "api.templates.guest_magic_link_subject",
@@ -4238,7 +4238,7 @@
   },
   {
     "id": "api.templates.invite_body.subTitle",
-    "translation": "Pradėkite bendradarbiauti su savo komanda Mattermost platformoje"
+    "translation": "Pradėkite bendradarbiauti su savo komanda Antimatter platformoje"
   },
   {
     "id": "api.templates.invite_body.title",
@@ -4250,7 +4250,7 @@
   },
   {
     "id": "api.templates.invite_body_footer.info",
-    "translation": "Mattermost yra lanksti atvirojo kodo susirašinėjimo platforma, užtikrinanti saugų komandinį bendradarbiavimą."
+    "translation": "Antimatter yra lanksti atvirojo kodo susirašinėjimo platforma, užtikrinanti saugų komandinį bendradarbiavimą."
   },
   {
     "id": "api.templates.invite_body_footer.learn_more",
@@ -4258,7 +4258,7 @@
   },
   {
     "id": "api.templates.invite_body_footer.title",
-    "translation": "Kas yra Mattermost?"
+    "translation": "Kas yra Antimatter?"
   },
   {
     "id": "api.templates.invite_body_guest.subTitle",
@@ -4382,7 +4382,7 @@
   },
   {
     "id": "api.templates.post_body.button",
-    "translation": "Atsakyti Mattermost platformoje"
+    "translation": "Atsakyti Antimatter platformoje"
   },
   {
     "id": "api.templates.questions_footer.info",
@@ -4486,7 +4486,7 @@
   },
   {
     "id": "api.templates.verify_body.info",
-    "translation": "Šis el. pašto adresas buvo panaudotas Mattermost paskyrai sukurti."
+    "translation": "Šis el. pašto adresas buvo panaudotas Antimatter paskyrai sukurti."
   },
   {
     "id": "api.templates.verify_body.info1",
@@ -4530,7 +4530,7 @@
   },
   {
     "id": "api.templates.welcome_body.info",
-    "translation": "Šis el. pašto adresas buvo panaudotas Mattermost paskyrai sukurti."
+    "translation": "Šis el. pašto adresas buvo panaudotas Antimatter paskyrai sukurti."
   },
   {
     "id": "api.templates.welcome_body.info1",
@@ -7932,7 +7932,7 @@
   },
   {
     "id": "app.notification.footer.infoLogin",
-    "translation": "Prisijungti prie Mattermost"
+    "translation": "Prisijungti prie Antimatter"
   },
   {
     "id": "app.notification.footer.title",
@@ -10986,7 +10986,7 @@
   },
   {
     "id": "ent.intune.login.account_not_found.app_error",
-    "translation": "Jūsų paskyra dar ne iki galo sukonfigūruota. Pirmiausia prisijunkite prie Mattermost per naršyklę arba darbalaukio programą."
+    "translation": "Jūsų paskyra dar ne iki galo sukonfigūruota. Pirmiausia prisijunkite prie Antimatter per naršyklę arba darbalaukio programą."
   },
   {
     "id": "ent.intune.login.extract_auth_data.app_error",
@@ -11078,7 +11078,7 @@
   },
   {
     "id": "ent.ldap.do_login.user_filtered.app_error",
-    "translation": "Jūsų AD/LDAP paskyra neturi leidimo naudotis šiuo Mattermost serveriu. Paprašykite sistemos administratoriaus patikrinti AD/LDAP naudotojų filtrą."
+    "translation": "Jūsų AD/LDAP paskyra neturi leidimo naudotis šiuo Antimatter serveriu. Paprašykite sistemos administratoriaus patikrinti AD/LDAP naudotojų filtrą."
   },
   {
     "id": "ent.ldap.do_login.user_not_registered.app_error",
@@ -12238,7 +12238,7 @@
   },
   {
     "id": "model.config.is_valid.atmos_camo_image_proxy_removed.app_error",
-    "translation": "Paveikslėlių tarpinio serverio tipas 'atmos/camo' pašalintas Mattermost v12.0 versijoje. Nustatykite ImageProxySettings.ImageProxyType į 'local' arba nustatykite ImageProxySettings.Enable į false, kad išjungtumėte paveikslėlių tarpinį serverį."
+    "translation": "Paveikslėlių tarpinio serverio tipas 'atmos/camo' pašalintas Antimatter v12.0 versijoje. Nustatykite ImageProxySettings.ImageProxyType į 'local' arba nustatykite ImageProxySettings.Enable į false, kad išjungtumėte paveikslėlių tarpinį serverį."
   },
   {
     "id": "model.config.is_valid.autotranslation.agents.llm_service_id.app_error",
@@ -14274,7 +14274,7 @@
   },
   {
     "id": "oauth.gitlab.tos.error",
-    "translation": "GitLab paslaugų teikimo sąlygos atnaujintos. Apsilankykite {{.URL}}, sutikite su jomis ir tada dar kartą bandykite prisijungti prie Mattermost."
+    "translation": "GitLab paslaugų teikimo sąlygos atnaujintos. Apsilankykite {{.URL}}, sutikite su jomis ir tada dar kartą bandykite prisijungti prie Antimatter."
   },
   {
     "id": "plugin.api.get_users_in_channel",
@@ -14502,11 +14502,11 @@
   },
   {
     "id": "web.error.unsupported_browser.no_longer_support",
-    "translation": "Mattermost šios naršyklės nebepalaiko"
+    "translation": "Antimatter šios naršyklės nebepalaiko"
   },
   {
     "id": "web.error.unsupported_browser.no_longer_support_version",
-    "translation": "Mattermost šios jūsų naršyklės versijos nebepalaiko"
+    "translation": "Antimatter šios jūsų naršyklės versijos nebepalaiko"
   },
   {
     "id": "web.error.unsupported_browser.open_system_browser.edge",

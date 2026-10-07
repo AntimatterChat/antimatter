@@ -8887,7 +8887,7 @@
   },
   {
     "id": "api.config.update.elasticsearch.autocomplete_cannot_be_enabled_error",
-    "translation": "Không thể bật tự động hoàn thành kênh vì lược đồ chỉ mục kênh đã lỗi thời. Bạn nên tạo lại chỉ mục kênh của mình. Xem changelog của Mattermost để biết thêm thông tin"
+    "translation": "Không thể bật tự động hoàn thành kênh vì lược đồ chỉ mục kênh đã lỗi thời. Bạn nên tạo lại chỉ mục kênh của mình. Xem changelog của Antimatter để biết thêm thông tin"
   },
   {
     "id": "api.context.get_session.app_error",
@@ -9643,7 +9643,7 @@
   },
   {
     "id": "api.templates.guest_magic_link_body.footer.info",
-    "translation": "Email này được gửi cho bạn vì có người đã yêu cầu liên kết đăng nhập cho Mattermost. Nếu bạn không yêu cầu điều này, bạn có thể yên tâm bỏ qua email này."
+    "translation": "Email này được gửi cho bạn vì có người đã yêu cầu liên kết đăng nhập cho Antimatter. Nếu bạn không yêu cầu điều này, bạn có thể yên tâm bỏ qua email này."
   },
   {
     "id": "api.templates.guest_magic_link_body.footer.title",
@@ -9655,7 +9655,7 @@
   },
   {
     "id": "api.templates.guest_magic_link_body.title",
-    "translation": "Đăng nhập vào Mattermost"
+    "translation": "Đăng nhập vào Antimatter"
   },
   {
     "id": "api.templates.guest_magic_link_subject",
@@ -12639,7 +12639,7 @@
   },
   {
     "id": "ent.intune.login.account_not_found.app_error",
-    "translation": "Tài khoản của bạn chưa được thiết lập đầy đủ. Vui lòng đăng nhập vào Mattermost qua trình duyệt web hoặc ứng dụng máy tính trước."
+    "translation": "Tài khoản của bạn chưa được thiết lập đầy đủ. Vui lòng đăng nhập vào Antimatter qua trình duyệt web hoặc ứng dụng máy tính trước."
   },
   {
     "id": "ent.intune.login.extract_auth_data.app_error",
@@ -13215,7 +13215,7 @@
   },
   {
     "id": "model.config.is_valid.atmos_camo_image_proxy_removed.app_error",
-    "translation": "Loại proxy hình ảnh 'atmos/camo' đã bị loại bỏ trong Mattermost v12.0. Hãy đặt ImageProxySettings.ImageProxyType thành 'local', hoặc đặt ImageProxySettings.Enable thành false để tắt proxy hình ảnh."
+    "translation": "Loại proxy hình ảnh 'atmos/camo' đã bị loại bỏ trong Antimatter v12.0. Hãy đặt ImageProxySettings.ImageProxyType thành 'local', hoặc đặt ImageProxySettings.Enable thành false để tắt proxy hình ảnh."
   },
   {
     "id": "model.config.is_valid.autotranslation.agents.llm_service_id.app_error",
@@ -13995,7 +13995,7 @@
   },
   {
     "id": "oauth.gitlab.tos.error",
-    "translation": "Điều khoản dịch vụ của GitLab đã được cập nhật. Vui lòng truy cập {{.URL}} để chấp nhận, sau đó thử đăng nhập lại vào Mattermost."
+    "translation": "Điều khoản dịch vụ của GitLab đã được cập nhật. Vui lòng truy cập {{.URL}} để chấp nhận, sau đó thử đăng nhập lại vào Antimatter."
   },
   {
     "id": "plugin.api.update_post.mm_blocks_actions.app_error",

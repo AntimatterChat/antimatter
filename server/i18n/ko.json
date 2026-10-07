@@ -7183,7 +7183,7 @@
   },
   {
     "id": "api.command_remote.invite_summary",
-    "translation": "AES-256으로 암호화된 초대를 비밀번호와 함께 외부 Antimatter 시스템 관리자에게 보냅니다. 초대를 받기 위해 `{{.Command}}` 슬래시 명령어를 사용합니다.\n\n```\n{{.Invitation}}\n```\n\n**보안 연결이 다음 링크를 통해 Mattermost에 접근할 수 있는지 확인하세요** {{.SiteURL}}"
+    "translation": "AES-256으로 암호화된 초대를 비밀번호와 함께 외부 Antimatter 시스템 관리자에게 보냅니다. 초대를 받기 위해 `{{.Command}}` 슬래시 명령어를 사용합니다.\n\n```\n{{.Invitation}}\n```\n\n**보안 연결이 다음 링크를 통해 Antimatter에 접근할 수 있는지 확인하세요** {{.SiteURL}}"
   },
   {
     "id": "api.command_marketplace.unsupported.app_error",
@@ -11147,7 +11147,7 @@
   },
   {
     "id": "api.templates.guest_magic_link_body.footer.info",
-    "translation": "누군가 Mattermost 로그인 링크를 요청하여 이 이메일이 발송되었습니다. 요청한 적이 없다면 이 이메일을 무시하셔도 됩니다."
+    "translation": "누군가 Antimatter 로그인 링크를 요청하여 이 이메일이 발송되었습니다. 요청한 적이 없다면 이 이메일을 무시하셔도 됩니다."
   },
   {
     "id": "api.templates.guest_magic_link_body.footer.title",
@@ -11159,7 +11159,7 @@
   },
   {
     "id": "api.templates.guest_magic_link_body.title",
-    "translation": "Mattermost에 로그인"
+    "translation": "Antimatter에 로그인"
   },
   {
     "id": "api.templates.guest_magic_link_subject",
@@ -13223,7 +13223,7 @@
   },
   {
     "id": "ent.intune.login.account_not_found.app_error",
-    "translation": "계정 설정이 아직 완료되지 않았습니다. 먼저 웹 또는 데스크톱 앱을 통해 Mattermost에 로그인해 주세요."
+    "translation": "계정 설정이 아직 완료되지 않았습니다. 먼저 웹 또는 데스크톱 앱을 통해 Antimatter에 로그인해 주세요."
   },
   {
     "id": "ent.intune.login.extract_auth_data.app_error",
@@ -13551,7 +13551,7 @@
   },
   {
     "id": "model.config.is_valid.atmos_camo_image_proxy_removed.app_error",
-    "translation": "'atmos/camo' 이미지 프록시 유형은 Mattermost v12.0에서 제거되었습니다. ImageProxySettings.ImageProxyType을 'local'로 설정하거나, 이미지 프록시를 사용하지 않으려면 ImageProxySettings.Enable을 false로 설정하세요."
+    "translation": "'atmos/camo' 이미지 프록시 유형은 Antimatter v12.0에서 제거되었습니다. ImageProxySettings.ImageProxyType을 'local'로 설정하거나, 이미지 프록시를 사용하지 않으려면 ImageProxySettings.Enable을 false로 설정하세요."
   },
   {
     "id": "model.config.is_valid.autotranslation.agents.llm_service_id.app_error",

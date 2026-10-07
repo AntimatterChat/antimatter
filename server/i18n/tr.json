@@ -11301,7 +11301,7 @@
   },
   {
     "id": "api.templates.guest_magic_link_body.footer.info",
-    "translation": "Bu e-posta size, birisi Mattermost için bir oturum açma bağlantısı istediğinden gönderildi. Bu isteği siz yapmadıysanız bu e-postayı güvenle yok sayabilirsiniz."
+    "translation": "Bu e-posta size, birisi Antimatter için bir oturum açma bağlantısı istediğinden gönderildi. Bu isteği siz yapmadıysanız bu e-postayı güvenle yok sayabilirsiniz."
   },
   {
     "id": "api.templates.guest_magic_link_body.footer.title",
@@ -11313,7 +11313,7 @@
   },
   {
     "id": "api.templates.guest_magic_link_body.title",
-    "translation": "Mattermost üzerinde oturum açın"
+    "translation": "Antimatter üzerinde oturum açın"
   },
   {
     "id": "api.templates.guest_magic_link_subject",
@@ -13259,7 +13259,7 @@
   },
   {
     "id": "ent.intune.login.account_not_found.app_error",
-    "translation": "Hesabınız henüz tam olarak kurulmamış. Lütfen önce web ya da masaüstü uygulaması üzerinden Mattermost oturumu açın."
+    "translation": "Hesabınız henüz tam olarak kurulmamış. Lütfen önce web ya da masaüstü uygulaması üzerinden Antimatter oturumu açın."
   },
   {
     "id": "ent.intune.login.extract_auth_data.app_error",
@@ -13587,7 +13587,7 @@
   },
   {
     "id": "model.config.is_valid.atmos_camo_image_proxy_removed.app_error",
-    "translation": "'atmos/camo' görsel vekil sunucu türü Mattermost v12.0 sürümünde kaldırıldı. ImageProxySettings.ImageProxyType ayarını 'local' olarak ayarlayın ya da görsel vekil sunucuyu kapatmak için ImageProxySettings.Enable ayarını false yapın."
+    "translation": "'atmos/camo' görsel vekil sunucu türü Antimatter v12.0 sürümünde kaldırıldı. ImageProxySettings.ImageProxyType ayarını 'local' olarak ayarlayın ya da görsel vekil sunucuyu kapatmak için ImageProxySettings.Enable ayarını false yapın."
   },
   {
     "id": "model.config.is_valid.autotranslation.agents.llm_service_id.app_error",

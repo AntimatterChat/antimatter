@@ -10375,7 +10375,7 @@
   },
   {
     "id": "api.templates.guest_magic_link_body.footer.info",
-    "translation": "您收到這封電子郵件是因為有人為 Mattermost 要求了登入連結。若這不是您提出的要求，可以放心忽略這封電子郵件。"
+    "translation": "您收到這封電子郵件是因為有人為 Antimatter 要求了登入連結。若這不是您提出的要求，可以放心忽略這封電子郵件。"
   },
   {
     "id": "api.templates.guest_magic_link_body.footer.title",
@@ -10387,7 +10387,7 @@
   },
   {
     "id": "api.templates.guest_magic_link_body.title",
-    "translation": "登入 Mattermost"
+    "translation": "登入 Antimatter"
   },
   {
     "id": "api.templates.guest_magic_link_subject",
@@ -12959,7 +12959,7 @@
   },
   {
     "id": "ent.intune.login.account_not_found.app_error",
-    "translation": "您的帳號尚未完成設定。請先透過網頁或桌面應用程式登入 Mattermost。"
+    "translation": "您的帳號尚未完成設定。請先透過網頁或桌面應用程式登入 Antimatter。"
   },
   {
     "id": "ent.intune.login.extract_auth_data.app_error",
@@ -13411,7 +13411,7 @@
   },
   {
     "id": "model.config.is_valid.atmos_camo_image_proxy_removed.app_error",
-    "translation": "「atmos/camo」圖片 Proxy 類型已在 Mattermost v12.0 中移除。請將 ImageProxySettings.ImageProxyType 設為「local」，或將 ImageProxySettings.Enable 設為 false 以停用圖片 Proxy。"
+    "translation": "「atmos/camo」圖片 Proxy 類型已在 Antimatter v12.0 中移除。請將 ImageProxySettings.ImageProxyType 設為「local」，或將 ImageProxySettings.Enable 設為 false 以停用圖片 Proxy。"
   },
   {
     "id": "model.config.is_valid.autotranslation.agents.llm_service_id.app_error",

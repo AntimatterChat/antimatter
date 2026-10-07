@@ -93,7 +93,7 @@
   },
   {
     "id": "api.admin.test_email.subject",
-    "translation": "Mattermost – Testiranje postavki e-pošte"
+    "translation": "Antimatter – Testiranje postavki e-pošte"
   },
   {
     "id": "api.admin.test_email.reenter_password",
@@ -105,7 +105,7 @@
   },
   {
     "id": "api.admin.test_email.body",
-    "translation": "Čini se da je tvoja Mattermost e-pošta pravilno postavljena!"
+    "translation": "Čini se da je tvoja Antimatter e-pošta pravilno postavljena!"
   },
   {
     "id": "api.admin.saml.not_available.app_error",
@@ -445,7 +445,7 @@
   },
   {
     "id": "api.command.invite_people.desc",
-    "translation": "Pošalji e-mail pozivnicu tvom Mattermost timu"
+    "translation": "Pošalji e-mail pozivnicu tvom Antimatter timu"
   },
   {
     "id": "api.channel.remove_member.removed",
@@ -725,7 +725,7 @@
   },
   {
     "id": "api.command_logout.desc",
-    "translation": "Odjava s Mattermosta"
+    "translation": "Odjava s Antimattera"
   },
   {
     "id": "api.command_invite.user_not_in_team.app_error",
@@ -805,7 +805,7 @@
   },
   {
     "id": "web.error.unsupported_browser.no_longer_support",
-    "translation": "Mattermost više ne podržava ovaj preglednik"
+    "translation": "Antimatter više ne podržava ovaj preglednik"
   },
   {
     "id": "system.message.name",
@@ -1813,11 +1813,11 @@
   },
   {
     "id": "api.command_help.desc",
-    "translation": "Prikaži Mattermost poruku pomoći"
+    "translation": "Prikaži Antimatter poruku pomoći"
   },
   {
     "id": "api.command_help.success",
-    "translation": "Mattermost je platforma otvorenog koda za sigurnu komunikaciju, suradnju i organizaciju rada između alata i timova.\r\nMattermost sadrži dva ključna alata:\r\n\r\n**Channels** – ostani povezan/a sa svojim timom putem izravnih i grupnih poruka.\r\n**[Playbooks](/playbooks)** – izgradi i konfiguriraj ponovljive procese za postizanje određenih i predvidljivih rezultata.\r\n\r\n[Pogledaj dokumentaciju i vodiče]({{.HelpLink}})"
+    "translation": "Antimatter je platforma otvorenog koda za sigurnu komunikaciju, suradnju i organizaciju rada između alata i timova.\r\nAntimatter sadrži dva ključna alata:\r\n\r\n**Channels** – ostani povezan/a sa svojim timom putem izravnih i grupnih poruka.\r\n**[Playbooks](/playbooks)** – izgradi i konfiguriraj ponovljive procese za postizanje određenih i predvidljivih rezultata.\r\n\r\n[Pogledaj dokumentaciju i vodiče]({{.HelpLink}})"
   },
   {
     "id": "api.command_invite.channel.app_error",
@@ -2021,7 +2021,7 @@
   },
   {
     "id": "api.command_remote.accept.help",
-    "translation": "Prihvati pozivnicu vanjske Mattermost instance"
+    "translation": "Prihvati pozivnicu vanjske Antimatter instance"
   },
   {
     "id": "api.command_remote.accept_invitation",
@@ -2049,7 +2049,7 @@
   },
   {
     "id": "api.command_remote.desc",
-    "translation": "Pozovi sigurne veze za komunikaciju između Mattermost instanci."
+    "translation": "Pozovi sigurne veze za komunikaciju između Antimatter instanci."
   },
   {
     "id": "api.command_remote.displayname.help",
@@ -2097,7 +2097,7 @@
   },
   {
     "id": "api.command_remote.invite_summary",
-    "translation": "Pošalji sljedeću pozivnicu šifriranu 256-bitnim AES-om administratoru sustava vanjske Mattermost instance zajedno s lozinkom. Za prihvaćanje pozivnice koristit će naredbu s kosom crtom `{{.Command}}`.\n\n```\n{{.Invitation}}\n```\n\n**Provjeri može li sigurna veza pristupiti tvojoj Mattermost instanci putem** {{.SiteURL}}"
+    "translation": "Pošalji sljedeću pozivnicu šifriranu 256-bitnim AES-om administratoru sustava vanjske Antimatter instance zajedno s lozinkom. Za prihvaćanje pozivnice koristit će naredbu s kosom crtom `{{.Command}}`.\n\n```\n{{.Invitation}}\n```\n\n**Provjeri može li sigurna veza pristupiti tvojoj Antimatter instanci putem** {{.SiteURL}}"
   },
   {
     "id": "api.command_remote.missing_command",
@@ -2253,7 +2253,7 @@
   },
   {
     "id": "api.command_share.desc",
-    "translation": "Dijeli trenutačni kanal s vanjskom Mattermost instancom."
+    "translation": "Dijeli trenutačni kanal s vanjskom Antimatter instancom."
   },
   {
     "id": "api.command_share.fetch_remote.error",
@@ -2277,7 +2277,7 @@
   },
   {
     "id": "api.command_share.invite_remote.help",
-    "translation": "Poziva vanjsku Mattermost instancu u trenutačni dijeljeni kanal"
+    "translation": "Poziva vanjsku Antimatter instancu u trenutačni dijeljeni kanal"
   },
   {
     "id": "api.command_share.invite_remote_to_channel.error",
@@ -2397,7 +2397,7 @@
   },
   {
     "id": "api.config.update.elasticsearch.autocomplete_cannot_be_enabled_error",
-    "translation": "Automatsko dovršavanje kanala ne može se uključiti jer je shema indeksa kanala zastarjela. Preporučuje se ponovno generiranje indeksa kanala. Za više informacija pogledaj Mattermost popis promjena"
+    "translation": "Automatsko dovršavanje kanala ne može se uključiti jer je shema indeksa kanala zastarjela. Preporučuje se ponovno generiranje indeksa kanala. Za više informacija pogledaj Antimatter popis promjena"
   },
   {
     "id": "api.config.update_config.clear_siteurl.app_error",
@@ -2697,7 +2697,7 @@
   },
   {
     "id": "api.email_batching.send_batched_email_notification.button",
-    "translation": "Otvori Mattermost"
+    "translation": "Otvori Antimatter"
   },
   {
     "id": "api.email_batching.send_batched_email_notification.messageButton",
@@ -4529,7 +4529,7 @@
   },
   {
     "id": "api.templates.guest_magic_link_body.footer.info",
-    "translation": "Ovaj e-mail ti je poslan jer je netko zatražio poveznicu za prijavu u Mattermost. Ako to nisi zatražio/la ti, slobodno zanemari ovaj e-mail."
+    "translation": "Ovaj e-mail ti je poslan jer je netko zatražio poveznicu za prijavu u Antimatter. Ako to nisi zatražio/la ti, slobodno zanemari ovaj e-mail."
   },
   {
     "id": "api.templates.guest_magic_link_body.footer.title",
@@ -4541,7 +4541,7 @@
   },
   {
     "id": "api.templates.guest_magic_link_body.title",
-    "translation": "Prijavi se u Mattermost"
+    "translation": "Prijavi se u Antimatter"
   },
   {
     "id": "api.templates.guest_magic_link_subject",
@@ -4553,7 +4553,7 @@
   },
   {
     "id": "api.templates.invite_body.subTitle",
-    "translation": "Počni surađivati sa svojim timom u Mattermostu"
+    "translation": "Počni surađivati sa svojim timom u Antimatteru"
   },
   {
     "id": "api.templates.invite_body.title",
@@ -4565,11 +4565,11 @@
   },
   {
     "id": "api.templates.invite_body_footer.info",
-    "translation": "Mattermost je fleksibilna platforma za razmjenu poruka otvorenog koda koja omogućuje sigurnu timsku suradnju."
+    "translation": "Antimatter je fleksibilna platforma za razmjenu poruka otvorenog koda koja omogućuje sigurnu timsku suradnju."
   },
   {
     "id": "api.templates.invite_body_footer.title",
-    "translation": "Što je Mattermost?"
+    "translation": "Što je Antimatter?"
   },
   {
     "id": "api.templates.invite_body_guest.subTitle",
@@ -4677,7 +4677,7 @@
   },
   {
     "id": "api.templates.post_body.button",
-    "translation": "Odgovori u Mattermostu"
+    "translation": "Odgovori u Antimatteru"
   },
   {
     "id": "api.templates.questions_footer.info",
@@ -4749,7 +4749,7 @@
   },
   {
     "id": "api.templates.verify_body.info",
-    "translation": "Ova e-mail adresa upotrijebljena je za stvaranje računa u Mattermostu."
+    "translation": "Ova e-mail adresa upotrijebljena je za stvaranje računa u Antimatteru."
   },
   {
     "id": "api.templates.verify_body.info1",
@@ -4777,7 +4777,7 @@
   },
   {
     "id": "api.templates.welcome_body.info",
-    "translation": "Ova e-mail adresa upotrijebljena je za stvaranje računa u Mattermostu."
+    "translation": "Ova e-mail adresa upotrijebljena je za stvaranje računa u Antimatteru."
   },
   {
     "id": "api.templates.welcome_body.info1",
@@ -8005,7 +8005,7 @@
   },
   {
     "id": "app.notification.footer.infoLogin",
-    "translation": "Prijavi se u Mattermost"
+    "translation": "Prijavi se u Antimatter"
   },
   {
     "id": "app.notification.footer.title",
@@ -11053,7 +11053,7 @@
   },
   {
     "id": "ent.intune.login.account_not_found.app_error",
-    "translation": "Tvoj račun još nije potpuno postavljen. Najprije se prijavi u Mattermost putem web ili desktop aplikacije."
+    "translation": "Tvoj račun još nije potpuno postavljen. Najprije se prijavi u Antimatter putem web ili desktop aplikacije."
   },
   {
     "id": "ent.intune.login.extract_auth_data.app_error",
@@ -11145,7 +11145,7 @@
   },
   {
     "id": "ent.ldap.do_login.user_filtered.app_error",
-    "translation": "Tvoj AD/LDAP račun nema dozvolu za korištenje ovog Mattermost servera. Zamoli administratora sustava da provjeri AD/LDAP filtar korisnika."
+    "translation": "Tvoj AD/LDAP račun nema dozvolu za korištenje ovog Antimatter servera. Zamoli administratora sustava da provjeri AD/LDAP filtar korisnika."
   },
   {
     "id": "ent.ldap.do_login.user_not_registered.app_error",
@@ -12293,7 +12293,7 @@
   },
   {
     "id": "model.config.is_valid.atmos_camo_image_proxy_removed.app_error",
-    "translation": "Vrsta proxyja za slike 'atmos/camo' uklonjena je u Mattermostu v12.0. Postavi ImageProxySettings.ImageProxyType na 'local' ili postavi ImageProxySettings.Enable na false da isključiš proxy za slike."
+    "translation": "Vrsta proxyja za slike 'atmos/camo' uklonjena je u Antimatteru v12.0. Postavi ImageProxySettings.ImageProxyType na 'local' ili postavi ImageProxySettings.Enable na false da isključiš proxy za slike."
   },
   {
     "id": "model.config.is_valid.autotranslation.agents.llm_service_id.app_error",
@@ -14329,7 +14329,7 @@
   },
   {
     "id": "oauth.gitlab.tos.error",
-    "translation": "GitLabovi uvjeti korištenja su ažurirani. Otvori {{.URL}} da ih prihvatiš, a zatim se ponovno pokušaj prijaviti u Mattermost."
+    "translation": "GitLabovi uvjeti korištenja su ažurirani. Otvori {{.URL}} da ih prihvatiš, a zatim se ponovno pokušaj prijaviti u Antimatter."
   },
   {
     "id": "plugin.api.get_users_in_channel",
@@ -14501,7 +14501,7 @@
   },
   {
     "id": "web.error.unsupported_browser.no_longer_support_version",
-    "translation": "Mattermost više ne podržava ovu verziju tvog preglednika"
+    "translation": "Antimatter više ne podržava ovu verziju tvog preglednika"
   },
   {
     "id": "web.error.unsupported_browser.open_system_browser.edge",

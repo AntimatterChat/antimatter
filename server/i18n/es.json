@@ -9472,7 +9472,7 @@
   },
   {
     "id": "api.templates.guest_magic_link_body.footer.info",
-    "translation": "Este correo electrónico te fue enviado porque alguien solicitó un enlace de inicio de sesión para Mattermost. Si no lo solicitaste, puedes ignorar este correo electrónico con seguridad."
+    "translation": "Este correo electrónico te fue enviado porque alguien solicitó un enlace de inicio de sesión para Antimatter. Si no lo solicitaste, puedes ignorar este correo electrónico con seguridad."
   },
   {
     "id": "api.templates.guest_magic_link_body.footer.title",
@@ -9484,7 +9484,7 @@
   },
   {
     "id": "api.templates.guest_magic_link_body.title",
-    "translation": "Inicia sesión en Mattermost"
+    "translation": "Inicia sesión en Antimatter"
   },
   {
     "id": "api.templates.guest_magic_link_subject",
@@ -12500,7 +12500,7 @@
   },
   {
     "id": "ent.intune.login.account_not_found.app_error",
-    "translation": "Tu cuenta aún no está completamente configurada. Por favor, inicia sesión en Mattermost primero desde la aplicación web o de escritorio."
+    "translation": "Tu cuenta aún no está completamente configurada. Por favor, inicia sesión en Antimatter primero desde la aplicación web o de escritorio."
   },
   {
     "id": "ent.intune.login.extract_auth_data.app_error",
@@ -13092,7 +13092,7 @@
   },
   {
     "id": "model.config.is_valid.atmos_camo_image_proxy_removed.app_error",
-    "translation": "El tipo de proxy de imagen 'atmos/camo' se eliminó en Mattermost v12.0. Establece ImageProxySettings.ImageProxyType en 'local', o establece ImageProxySettings.Enable en false para deshabilitar el proxy de imagen."
+    "translation": "El tipo de proxy de imagen 'atmos/camo' se eliminó en Antimatter v12.0. Establece ImageProxySettings.ImageProxyType en 'local', o establece ImageProxySettings.Enable en false para deshabilitar el proxy de imagen."
   },
   {
     "id": "model.config.is_valid.autotranslation.agents.llm_service_id.app_error",

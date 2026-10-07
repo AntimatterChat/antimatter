@@ -12990,7 +12990,7 @@
   },
   {
     "id": "ent.intune.login.account_not_found.app_error",
-    "translation": "Ваша учётная запись ещё не настроена полностью. Пожалуйста, сначала войдите в Mattermost через веб-приложение или приложение для компьютера."
+    "translation": "Ваша учётная запись ещё не настроена полностью. Пожалуйста, сначала войдите в Antimatter через веб-приложение или приложение для компьютера."
   },
   {
     "id": "ent.intune.login.extract_auth_data.app_error",
@@ -13442,7 +13442,7 @@
   },
   {
     "id": "model.config.is_valid.atmos_camo_image_proxy_removed.app_error",
-    "translation": "Тип прокси-сервера изображений 'atmos/camo' был удалён в Mattermost v12.0. Задайте для ImageProxySettings.ImageProxyType значение 'local' либо установите для ImageProxySettings.Enable значение false, чтобы отключить прокси-сервер изображений."
+    "translation": "Тип прокси-сервера изображений 'atmos/camo' был удалён в Antimatter v12.0. Задайте для ImageProxySettings.ImageProxyType значение 'local' либо установите для ImageProxySettings.Enable значение false, чтобы отключить прокси-сервер изображений."
   },
   {
     "id": "model.config.is_valid.autotranslation.agents.llm_service_id.app_error",

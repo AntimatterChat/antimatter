@@ -801,7 +801,7 @@
   },
   {
     "id": "ent.ldap.do_login.user_filtered.app_error",
-    "translation": "AD/LDAP tililläsi ei ole lupaa käyttää tätä Mattermost palvelua. Pyydä järjestelmänvalvojaa tarkistamaan AD/LDAP käyttäjäsuodatuksen."
+    "translation": "AD/LDAP tililläsi ei ole lupaa käyttää tätä Antimatter palvelua. Pyydä järjestelmänvalvojaa tarkistamaan AD/LDAP käyttäjäsuodatuksen."
   },
   {
     "id": "ent.ldap.do_login.unable_to_connect.app_error",
@@ -1205,7 +1205,7 @@
   },
   {
     "id": "oauth.gitlab.tos.error",
-    "translation": "GitLabin käyttöehdot ovat päivittyneet. Hyväksy ne osoitteessa {{.URL}} ja yritä sen jälkeen kirjautua Mattermostiin uudelleen."
+    "translation": "GitLabin käyttöehdot ovat päivittyneet. Hyväksy ne osoitteessa {{.URL}} ja yritä sen jälkeen kirjautua Antimatteriin uudelleen."
   },
   {
     "id": "model.websocket_client.connect_fail.app_error",
@@ -3930,7 +3930,7 @@
   },
   {
     "id": "api.command_logout.desc",
-    "translation": "Uloskirjaus Mattermostista"
+    "translation": "Uloskirjaus Antimatterista"
   },
   {
     "id": "api.command_leave.name",
@@ -4041,7 +4041,7 @@
   },
   {
     "id": "api.command_help.desc",
-    "translation": "Näytä Mattermostin ohjeviesti"
+    "translation": "Näytä Antimatterin ohjeviesti"
   },
   {
     "id": "api.command_groupmsg.permission.app_error",
@@ -4316,7 +4316,7 @@
   },
   {
     "id": "api.command.invite_people.desc",
-    "translation": "Lähetä sähköpostikutsu Mattermost-joukkueellesi"
+    "translation": "Lähetä sähköpostikutsu Antimatter-joukkueellesi"
   },
   {
     "id": "api.command.execute_command.start.app_error",
@@ -4588,7 +4588,7 @@
   },
   {
     "id": "api.admin.test_email.subject",
-    "translation": "Mattermost - Sähköpostiasetusten testaaminen"
+    "translation": "Antimatter - Sähköpostiasetusten testaaminen"
   },
   {
     "id": "api.admin.test_email.reenter_password",
@@ -4600,7 +4600,7 @@
   },
   {
     "id": "api.admin.test_email.body",
-    "translation": "Näyttää siltä, että Mattermost-sähköpostisi on määritetty oikein!"
+    "translation": "Näyttää siltä, että Antimatter-sähköpostisi on määritetty oikein!"
   },
   {
     "id": "api.admin.saml.not_available.app_error",
@@ -5384,7 +5384,7 @@
   },
   {
     "id": "api.command_help.success",
-    "translation": "Mattermost on avoimen lähdekoodin alusta turvalliseen viestintään, yhteistyöhön ja työn koordinointiin eri työkalujen ja tiimien välillä.\r\nMattermost sisältää kaksi keskeistä työkalua:\r\n\r\n**Channels** - Pidä yhteyttä tiimiisi kahdenkeskisillä ja ryhmäviesteillä.\r\n**[Playbooks](/playbooks)** - Rakenna ja määritä toistettavia prosesseja, joilla saavutat tarkat ja ennakoitavat lopputulokset.\r\n\r\n[Tutustu dokumentaatioon ja oppaisiin]({{.HelpLink}})"
+    "translation": "Antimatter on avoimen lähdekoodin alusta turvalliseen viestintään, yhteistyöhön ja työn koordinointiin eri työkalujen ja tiimien välillä.\r\nAntimatter sisältää kaksi keskeistä työkalua:\r\n\r\n**Channels** - Pidä yhteyttä tiimiisi kahdenkeskisillä ja ryhmäviesteillä.\r\n**[Playbooks](/playbooks)** - Rakenna ja määritä toistettavia prosesseja, joilla saavutat tarkat ja ennakoitavat lopputulokset.\r\n\r\n[Tutustu dokumentaatioon ja oppaisiin]({{.HelpLink}})"
   },
   {
     "id": "api.command_invite.channel_constrained_user_denied",
@@ -5464,7 +5464,7 @@
   },
   {
     "id": "api.command_remote.accept.help",
-    "translation": "Hyväksy kutsu ulkoisesta Mattermost-instanssista"
+    "translation": "Hyväksy kutsu ulkoisesta Antimatter-instanssista"
   },
   {
     "id": "api.command_remote.accept_invitation",
@@ -5492,7 +5492,7 @@
   },
   {
     "id": "api.command_remote.desc",
-    "translation": "Kutsu suojattuja yhteyksiä viestintään Mattermost-instanssien välillä."
+    "translation": "Kutsu suojattuja yhteyksiä viestintään Antimatter-instanssien välillä."
   },
   {
     "id": "api.command_remote.displayname.help",
@@ -5540,7 +5540,7 @@
   },
   {
     "id": "api.command_remote.invite_summary",
-    "translation": "Lähetä seuraava AES 256 -bittisesti salattu kutsu ulkoisen Mattermostin järjestelmänvalvojalle yhdessä salasanan kanssa. Hän hyväksyy kutsun kauttaviivakomennolla `{{.Command}}`.\n\n```\n{{.Invitation}}\n```\n\n**Varmista, että suojattu yhteys pääsee Mattermost-instanssiisi osoitteessa** {{.SiteURL}}"
+    "translation": "Lähetä seuraava AES 256 -bittisesti salattu kutsu ulkoisen Antimatterin järjestelmänvalvojalle yhdessä salasanan kanssa. Hän hyväksyy kutsun kauttaviivakomennolla `{{.Command}}`.\n\n```\n{{.Invitation}}\n```\n\n**Varmista, että suojattu yhteys pääsee Antimatter-instanssiisi osoitteessa** {{.SiteURL}}"
   },
   {
     "id": "api.command_remote.missing_command",
@@ -5656,7 +5656,7 @@
   },
   {
     "id": "api.command_share.desc",
-    "translation": "Jakaa nykyisen kanavan ulkoisen Mattermost-instanssin kanssa."
+    "translation": "Jakaa nykyisen kanavan ulkoisen Antimatter-instanssin kanssa."
   },
   {
     "id": "api.command_share.fetch_remote.error",
@@ -5676,7 +5676,7 @@
   },
   {
     "id": "api.command_share.invite_remote.help",
-    "translation": "Kutsuu ulkoisen Mattermost-instanssin nykyiseen jaettuun kanavaan"
+    "translation": "Kutsuu ulkoisen Antimatter-instanssin nykyiseen jaettuun kanavaan"
   },
   {
     "id": "api.command_share.invite_remote_to_channel.error",
@@ -5792,7 +5792,7 @@
   },
   {
     "id": "api.config.update.elasticsearch.autocomplete_cannot_be_enabled_error",
-    "translation": "Kanavien automaattista täydennystä ei voi ottaa käyttöön, koska kanavaindeksin rakenne on vanhentunut. Kanavaindeksi on suositeltavaa luoda uudelleen. Lisätietoja on Mattermostin muutoslokissa"
+    "translation": "Kanavien automaattista täydennystä ei voi ottaa käyttöön, koska kanavaindeksin rakenne on vanhentunut. Kanavaindeksi on suositeltavaa luoda uudelleen. Lisätietoja on Antimatterin muutoslokissa"
   },
   {
     "id": "api.config.update_config.clear_siteurl.app_error",
@@ -6032,7 +6032,7 @@
   },
   {
     "id": "api.email_batching.send_batched_email_notification.button",
-    "translation": "Avaa Mattermost"
+    "translation": "Avaa Antimatter"
   },
   {
     "id": "api.email_batching.send_batched_email_notification.messageButton",
@@ -7176,7 +7176,7 @@
   },
   {
     "id": "api.templates.guest_magic_link_body.footer.info",
-    "translation": "Tämä sähköposti lähetettiin sinulle, koska joku pyysi Mattermostin kirjautumislinkkiä. Jos et pyytänyt sitä, voit jättää tämän viestin huomiotta."
+    "translation": "Tämä sähköposti lähetettiin sinulle, koska joku pyysi Antimatterin kirjautumislinkkiä. Jos et pyytänyt sitä, voit jättää tämän viestin huomiotta."
   },
   {
     "id": "api.templates.guest_magic_link_body.footer.title",
@@ -7188,7 +7188,7 @@
   },
   {
     "id": "api.templates.guest_magic_link_body.title",
-    "translation": "Kirjaudu Mattermostiin"
+    "translation": "Kirjaudu Antimatteriin"
   },
   {
     "id": "api.templates.guest_magic_link_subject",
@@ -7196,7 +7196,7 @@
   },
   {
     "id": "api.templates.invite_body.subTitle",
-    "translation": "Aloita yhteistyö tiimisi kanssa Mattermostissa"
+    "translation": "Aloita yhteistyö tiimisi kanssa Antimatterissa"
   },
   {
     "id": "api.templates.invite_body.title.reminder",
@@ -7204,7 +7204,7 @@
   },
   {
     "id": "api.templates.invite_body_footer.info",
-    "translation": "Mattermost on joustava, avoimen lähdekoodin viestintäalusta, joka mahdollistaa turvallisen tiimityön."
+    "translation": "Antimatter on joustava, avoimen lähdekoodin viestintäalusta, joka mahdollistaa turvallisen tiimityön."
   },
   {
     "id": "api.templates.invite_body_footer.learn_more",
@@ -7212,7 +7212,7 @@
   },
   {
     "id": "api.templates.invite_body_footer.title",
-    "translation": "Mikä Mattermost on?"
+    "translation": "Mikä Antimatter on?"
   },
   {
     "id": "api.templates.invite_body_guest.subTitle",
@@ -9762,7 +9762,7 @@
   },
   {
     "id": "app.notification.footer.infoLogin",
-    "translation": "Kirjaudu Mattermostiin"
+    "translation": "Kirjaudu Antimatteriin"
   },
   {
     "id": "app.notification.footer.title",
@@ -12476,7 +12476,7 @@
   },
   {
     "id": "ent.intune.login.account_not_found.app_error",
-    "translation": "Tiliäsi ei ole vielä määritetty kokonaan. Kirjaudu ensin Mattermostiin selaimella tai työpöytäsovelluksella."
+    "translation": "Tiliäsi ei ole vielä määritetty kokonaan. Kirjaudu ensin Antimatteriin selaimella tai työpöytäsovelluksella."
   },
   {
     "id": "ent.intune.login.extract_auth_data.app_error",
@@ -13240,7 +13240,7 @@
   },
   {
     "id": "model.config.is_valid.atmos_camo_image_proxy_removed.app_error",
-    "translation": "Kuvavälityspalvelimen tyyppi 'atmos/camo' poistettiin Mattermostin versiossa 12.0. Aseta ImageProxySettings.ImageProxyType arvoon 'local' tai aseta ImageProxySettings.Enable arvoon false poistaaksesi kuvavälityspalvelimen käytöstä."
+    "translation": "Kuvavälityspalvelimen tyyppi 'atmos/camo' poistettiin Antimatterin versiossa 12.0. Aseta ImageProxySettings.ImageProxyType arvoon 'local' tai aseta ImageProxySettings.Enable arvoon false poistaaksesi kuvavälityspalvelimen käytöstä."
   },
   {
     "id": "model.config.is_valid.autotranslation.agents.llm_service_id.app_error",
@@ -14528,11 +14528,11 @@
   },
   {
     "id": "web.error.unsupported_browser.no_longer_support",
-    "translation": "Mattermost ei enää tue tätä selainta"
+    "translation": "Antimatter ei enää tue tätä selainta"
   },
   {
     "id": "web.error.unsupported_browser.no_longer_support_version",
-    "translation": "Mattermost ei enää tue tätä selaimesi versiota"
+    "translation": "Antimatter ei enää tue tätä selaimesi versiota"
   },
   {
     "id": "web.error.unsupported_browser.open_system_browser.edge",

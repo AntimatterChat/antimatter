@@ -10914,7 +10914,7 @@
   },
   {
     "id": "api.templates.guest_magic_link_body.footer.info",
-    "translation": "Цей лист надіслано вам, тому що хтось запросив посилання для входу в Mattermost. Якщо ви не надсилали такого запиту, можете спокійно проігнорувати цей лист."
+    "translation": "Цей лист надіслано вам, тому що хтось запросив посилання для входу в Antimatter. Якщо ви не надсилали такого запиту, можете спокійно проігнорувати цей лист."
   },
   {
     "id": "api.templates.guest_magic_link_body.footer.title",
@@ -10926,7 +10926,7 @@
   },
   {
     "id": "api.templates.guest_magic_link_body.title",
-    "translation": "Увійдіть у Mattermost"
+    "translation": "Увійдіть у Antimatter"
   },
   {
     "id": "api.templates.guest_magic_link_subject",
@@ -13206,7 +13206,7 @@
   },
   {
     "id": "ent.intune.login.account_not_found.app_error",
-    "translation": "Ваш обліковий запис ще не повністю налаштовано. Будь ласка, спочатку увійдіть у Mattermost через браузер або десктопний застосунок."
+    "translation": "Ваш обліковий запис ще не повністю налаштовано. Будь ласка, спочатку увійдіть у Antimatter через браузер або десктопний застосунок."
   },
   {
     "id": "ent.intune.login.extract_auth_data.app_error",
@@ -13554,7 +13554,7 @@
   },
   {
     "id": "model.config.is_valid.atmos_camo_image_proxy_removed.app_error",
-    "translation": "Тип проксі зображень 'atmos/camo' було вилучено в Mattermost v12.0. Встановіть для ImageProxySettings.ImageProxyType значення 'local' або встановіть для ImageProxySettings.Enable значення false, щоб вимкнути проксі зображень."
+    "translation": "Тип проксі зображень 'atmos/camo' було вилучено в Antimatter v12.0. Встановіть для ImageProxySettings.ImageProxyType значення 'local' або встановіть для ImageProxySettings.Enable значення false, щоб вимкнути проксі зображень."
   },
   {
     "id": "model.config.is_valid.autotranslation.agents.llm_service_id.app_error",

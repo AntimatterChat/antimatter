@@ -8183,7 +8183,7 @@
   },
   {
     "id": "api.command_help.success",
-    "translation": "Antimatter は、ツールやチームをまたがるセキュアなコミュニケーション、コラボレーション、オーケストレーションのためのオープンソースプラットフォームです。\nMattermostには、2つの主要なツールが含まれています:\n\n**Channels** - 1対1もしくはグループとのメッセージングによりチームを常に繋がった状態にします\n**[Playbooks](/playbooks)** - 繰り返し行われる作業をプロセス化し、予測可能な結果を残せるようにします\n\n[ドキュメントとガイドを見る]({{.HelpLink}})"
+    "translation": "Antimatter は、ツールやチームをまたがるセキュアなコミュニケーション、コラボレーション、オーケストレーションのためのオープンソースプラットフォームです。\nAntimatterには、2つの主要なツールが含まれています:\n\n**Channels** - 1対1もしくはグループとのメッセージングによりチームを常に繋がった状態にします\n**[Playbooks](/playbooks)** - 繰り返し行われる作業をプロセス化し、予測可能な結果を残せるようにします\n\n[ドキュメントとガイドを見る]({{.HelpLink}})"
   },
   {
     "id": "ent.saml.configure.certificate_parse_error.app_error",
@@ -11207,7 +11207,7 @@
   },
   {
     "id": "api.templates.guest_magic_link_body.footer.info",
-    "translation": "このメールは、どなたかがMattermostのログインリンクをリクエストしたため送信されました。心当たりがない場合は、このメールを無視してください。"
+    "translation": "このメールは、どなたかがAntimatterのログインリンクをリクエストしたため送信されました。心当たりがない場合は、このメールを無視してください。"
   },
   {
     "id": "api.templates.guest_magic_link_body.footer.title",
@@ -11219,7 +11219,7 @@
   },
   {
     "id": "api.templates.guest_magic_link_body.title",
-    "translation": "Mattermostにログイン"
+    "translation": "Antimatterにログイン"
   },
   {
     "id": "api.templates.guest_magic_link_subject",
@@ -13231,7 +13231,7 @@
   },
   {
     "id": "ent.intune.login.account_not_found.app_error",
-    "translation": "アカウントの設定がまだ完了していません。先にウェブまたはデスクトップアプリからMattermostにログインしてください。"
+    "translation": "アカウントの設定がまだ完了していません。先にウェブまたはデスクトップアプリからAntimatterにログインしてください。"
   },
   {
     "id": "ent.intune.login.extract_auth_data.app_error",
@@ -13559,7 +13559,7 @@
   },
   {
     "id": "model.config.is_valid.atmos_camo_image_proxy_removed.app_error",
-    "translation": "'atmos/camo' 画像プロキシの形式はMattermost v12.0で削除されました。ImageProxySettings.ImageProxyTypeに 'local' を設定するか、画像プロキシを無効にする場合はImageProxySettings.Enableをfalseに設定してください。"
+    "translation": "'atmos/camo' 画像プロキシの形式はAntimatter v12.0で削除されました。ImageProxySettings.ImageProxyTypeに 'local' を設定するか、画像プロキシを無効にする場合はImageProxySettings.Enableをfalseに設定してください。"
   },
   {
     "id": "model.config.is_valid.autotranslation.agents.llm_service_id.app_error",

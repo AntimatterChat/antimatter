@@ -11441,7 +11441,7 @@
   },
   {
     "id": "api.templates.guest_magic_link_body.footer.info",
-    "translation": "Det här e-postmeddelandet skickades till dig eftersom någon begärde en inloggningslänk för Mattermost. Om du inte begärde detta kan du bortse från det här e-postmeddelandet."
+    "translation": "Det här e-postmeddelandet skickades till dig eftersom någon begärde en inloggningslänk för Antimatter. Om du inte begärde detta kan du bortse från det här e-postmeddelandet."
   },
   {
     "id": "api.templates.guest_magic_link_body.subtitle",
@@ -13363,7 +13363,7 @@
   },
   {
     "id": "ent.intune.login.account_not_found.app_error",
-    "translation": "Ditt konto är inte helt uppsatt ännu. Logga in på Mattermost via webben eller skrivbordsappen först."
+    "translation": "Ditt konto är inte helt uppsatt ännu. Logga in på Antimatter via webben eller skrivbordsappen först."
   },
   {
     "id": "ent.intune.login.extract_auth_data.app_error",
@@ -13667,7 +13667,7 @@
   },
   {
     "id": "model.config.is_valid.atmos_camo_image_proxy_removed.app_error",
-    "translation": "Bildproxytypen 'atmos/camo' togs bort i Mattermost v12.0. Sätt ImageProxySettings.ImageProxyType till 'local', eller sätt ImageProxySettings.Enable till false för att avaktivera bildproxyn."
+    "translation": "Bildproxytypen 'atmos/camo' togs bort i Antimatter v12.0. Sätt ImageProxySettings.ImageProxyType till 'local', eller sätt ImageProxySettings.Enable till false för att avaktivera bildproxyn."
   },
   {
     "id": "model.config.is_valid.autotranslation.agents.llm_service_id.app_error",

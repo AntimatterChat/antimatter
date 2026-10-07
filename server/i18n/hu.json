@@ -8608,7 +8608,7 @@
   },
   {
     "id": "api.config.update.elasticsearch.autocomplete_cannot_be_enabled_error",
-    "translation": "A csatorna automatikus kiegészítése nem engedélyezhető, mert a csatornaindex sémája elavult. Javasoljuk a csatornaindex újragenerálását. További információért lásd a Mattermost változásnaplóját"
+    "translation": "A csatorna automatikus kiegészítése nem engedélyezhető, mert a csatornaindex sémája elavult. Javasoljuk a csatornaindex újragenerálását. További információért lásd a Antimatter változásnaplóját"
   },
   {
     "id": "api.context.get_session.app_error",
@@ -9372,7 +9372,7 @@
   },
   {
     "id": "api.templates.guest_magic_link_body.footer.info",
-    "translation": "Ezt az e-mailt azért kapta, mert valaki bejelentkezési linket kért a Mattermosthoz. Ha nem Ön kérte, nyugodtan figyelmen kívül hagyhatja ezt az e-mailt."
+    "translation": "Ezt az e-mailt azért kapta, mert valaki bejelentkezési linket kért a Antimatterhoz. Ha nem Ön kérte, nyugodtan figyelmen kívül hagyhatja ezt az e-mailt."
   },
   {
     "id": "api.templates.guest_magic_link_body.footer.title",
@@ -9384,7 +9384,7 @@
   },
   {
     "id": "api.templates.guest_magic_link_body.title",
-    "translation": "Bejelentkezés a Mattermostba"
+    "translation": "Bejelentkezés a Antimatterba"
   },
   {
     "id": "api.templates.guest_magic_link_subject",
@@ -12560,7 +12560,7 @@
   },
   {
     "id": "ent.intune.login.account_not_found.app_error",
-    "translation": "Fiókja még nincs teljesen beállítva. Kérjük, először jelentkezzen be a Mattermostba a webes vagy az asztali alkalmazáson keresztül."
+    "translation": "Fiókja még nincs teljesen beállítva. Kérjük, először jelentkezzen be a Antimatterba a webes vagy az asztali alkalmazáson keresztül."
   },
   {
     "id": "ent.intune.login.extract_auth_data.app_error",
@@ -13156,7 +13156,7 @@
   },
   {
     "id": "model.config.is_valid.atmos_camo_image_proxy_removed.app_error",
-    "translation": "Az 'atmos/camo' képproxy-típust eltávolították a Mattermost v12.0 verziójában. Állítsa az ImageProxySettings.ImageProxyType értékét 'local'-ra, vagy a képproxy kikapcsolásához állítsa az ImageProxySettings.Enable értékét false-ra."
+    "translation": "Az 'atmos/camo' képproxy-típust eltávolították a Antimatter v12.0 verziójában. Állítsa az ImageProxySettings.ImageProxyType értékét 'local'-ra, vagy a képproxy kikapcsolásához állítsa az ImageProxySettings.Enable értékét false-ra."
   },
   {
     "id": "model.config.is_valid.autotranslation.agents.llm_service_id.app_error",

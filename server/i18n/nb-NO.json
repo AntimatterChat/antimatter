@@ -309,7 +309,7 @@
   },
   {
     "id": "api.templates.invite_body_footer.title",
-    "translation": "Hva er Mattermost?"
+    "translation": "Hva er Antimatter?"
   },
   {
     "id": "api.templates.invite_body_guest.subTitle",
@@ -393,7 +393,7 @@
   },
   {
     "id": "api.command_logout.desc",
-    "translation": "Logg av Mattermost"
+    "translation": "Logg av Antimatter"
   },
   {
     "id": "api.command_leave.name",
@@ -478,7 +478,7 @@
   },
   {
     "id": "api.admin.test_email.subject",
-    "translation": "Mattermost - Testing av e-postinnstillinger"
+    "translation": "Antimatter - Testing av e-postinnstillinger"
   },
   {
     "id": "api.channel.channel_member_counts_by_group.license.error",
@@ -534,7 +534,7 @@
   },
   {
     "id": "api.admin.test_email.body",
-    "translation": "Det ser ut til at Mattermost e-posten din er riktig konfigurert!"
+    "translation": "Det ser ut til at Antimatter e-posten din er riktig konfigurert!"
   },
   {
     "id": "api.admin.test_email.reenter_password",
@@ -1166,7 +1166,7 @@
   },
   {
     "id": "api.command.invite_people.desc",
-    "translation": "Send en e-postinvitasjon til Mattermost-teamet ditt"
+    "translation": "Send en e-postinvitasjon til Antimatter-teamet ditt"
   },
   {
     "id": "api.command.invite_people.email_invitations_off",
@@ -1458,7 +1458,7 @@
   },
   {
     "id": "api.command_help.desc",
-    "translation": "Vis hjelpemeldingen for Mattermost"
+    "translation": "Vis hjelpemeldingen for Antimatter"
   },
   {
     "id": "api.command_help.name",
@@ -1466,7 +1466,7 @@
   },
   {
     "id": "api.command_help.success",
-    "translation": "Mattermost er en plattform med åpen kildekode for sikker kommunikasjon, samarbeid og koordinering av arbeid på tvers av verktøy og team.\r\nMattermost inneholder to sentrale verktøy:\r\n\r\n**Channels** – Hold kontakten med teamet ditt via 1:1- og gruppemeldinger.\r\n**[Playbooks](/playbooks)** – Bygg og konfigurer repeterbare prosesser for å oppnå konkrete og forutsigbare resultater.\r\n\r\n[Se dokumentasjon og veiledninger]({{.HelpLink}})"
+    "translation": "Antimatter er en plattform med åpen kildekode for sikker kommunikasjon, samarbeid og koordinering av arbeid på tvers av verktøy og team.\r\nAntimatter inneholder to sentrale verktøy:\r\n\r\n**Channels** – Hold kontakten med teamet ditt via 1:1- og gruppemeldinger.\r\n**[Playbooks](/playbooks)** – Bygg og konfigurer repeterbare prosesser for å oppnå konkrete og forutsigbare resultater.\r\n\r\n[Se dokumentasjon og veiledninger]({{.HelpLink}})"
   },
   {
     "id": "api.command_invite.channel.app_error",
@@ -1678,7 +1678,7 @@
   },
   {
     "id": "api.command_remote.accept.help",
-    "translation": "Godta en invitasjon fra en ekstern Mattermost-instans"
+    "translation": "Godta en invitasjon fra en ekstern Antimatter-instans"
   },
   {
     "id": "api.command_remote.accept_invitation",
@@ -1706,7 +1706,7 @@
   },
   {
     "id": "api.command_remote.desc",
-    "translation": "Inviter sikre tilkoblinger for kommunikasjon på tvers av Mattermost-instanser."
+    "translation": "Inviter sikre tilkoblinger for kommunikasjon på tvers av Antimatter-instanser."
   },
   {
     "id": "api.command_remote.displayname.help",
@@ -1754,7 +1754,7 @@
   },
   {
     "id": "api.command_remote.invite_summary",
-    "translation": "Send følgende AES 256-bit-krypterte invitasjon til systemadministratoren for den eksterne Mattermost-instansen sammen med passordet. Vedkommende bruker slash-kommandoen `{{.Command}}` for å godta invitasjonen.\n\n```\n{{.Invitation}}\n```\n\n**Sørg for at den sikre tilkoblingen kan nå Mattermost-instansen din via** {{.SiteURL}}"
+    "translation": "Send følgende AES 256-bit-krypterte invitasjon til systemadministratoren for den eksterne Antimatter-instansen sammen med passordet. Vedkommende bruker slash-kommandoen `{{.Command}}` for å godta invitasjonen.\n\n```\n{{.Invitation}}\n```\n\n**Sørg for at den sikre tilkoblingen kan nå Antimatter-instansen din via** {{.SiteURL}}"
   },
   {
     "id": "api.command_remote.missing_command",
@@ -1926,7 +1926,7 @@
   },
   {
     "id": "api.command_share.desc",
-    "translation": "Deler gjeldende kanal med en ekstern Mattermost-instans."
+    "translation": "Deler gjeldende kanal med en ekstern Antimatter-instans."
   },
   {
     "id": "api.command_share.fetch_remote.error",
@@ -1950,7 +1950,7 @@
   },
   {
     "id": "api.command_share.invite_remote.help",
-    "translation": "Inviterer en ekstern Mattermost-instans til den gjeldende delte kanalen"
+    "translation": "Inviterer en ekstern Antimatter-instans til den gjeldende delte kanalen"
   },
   {
     "id": "api.command_share.invite_remote_to_channel.error",
@@ -2094,7 +2094,7 @@
   },
   {
     "id": "api.config.update.elasticsearch.autocomplete_cannot_be_enabled_error",
-    "translation": "Autofullføring for kanaler kan ikke aktiveres, fordi skjemaet for kanalindeksen er utdatert. Det anbefales å generere kanalindeksen på nytt. Se Mattermost-endringsloggen for mer informasjon"
+    "translation": "Autofullføring for kanaler kan ikke aktiveres, fordi skjemaet for kanalindeksen er utdatert. Det anbefales å generere kanalindeksen på nytt. Se Antimatter-endringsloggen for mer informasjon"
   },
   {
     "id": "api.config.update_config.clear_siteurl.app_error",
@@ -2398,7 +2398,7 @@
   },
   {
     "id": "api.email_batching.send_batched_email_notification.button",
-    "translation": "Åpne Mattermost"
+    "translation": "Åpne Antimatter"
   },
   {
     "id": "api.email_batching.send_batched_email_notification.messageButton",
@@ -4310,7 +4310,7 @@
   },
   {
     "id": "api.templates.guest_magic_link_body.footer.info",
-    "translation": "Du har fått denne e-posten fordi noen har bedt om en innloggingslenke til Mattermost. Hvis det ikke var du som ba om dette, kan du trygt se bort fra denne e-posten."
+    "translation": "Du har fått denne e-posten fordi noen har bedt om en innloggingslenke til Antimatter. Hvis det ikke var du som ba om dette, kan du trygt se bort fra denne e-posten."
   },
   {
     "id": "api.templates.guest_magic_link_body.footer.title",
@@ -4322,7 +4322,7 @@
   },
   {
     "id": "api.templates.guest_magic_link_body.title",
-    "translation": "Logg inn på Mattermost"
+    "translation": "Logg inn på Antimatter"
   },
   {
     "id": "api.templates.guest_magic_link_subject",
@@ -4334,7 +4334,7 @@
   },
   {
     "id": "api.templates.invite_body.subTitle",
-    "translation": "Begynn å samarbeide med teamet ditt på Mattermost"
+    "translation": "Begynn å samarbeide med teamet ditt på Antimatter"
   },
   {
     "id": "api.templates.invite_body.title",
@@ -4346,7 +4346,7 @@
   },
   {
     "id": "api.templates.invite_body_footer.info",
-    "translation": "Mattermost er en fleksibel meldingsplattform med åpen kildekode som gjør sikkert teamsamarbeid mulig."
+    "translation": "Antimatter er en fleksibel meldingsplattform med åpen kildekode som gjør sikkert teamsamarbeid mulig."
   },
   {
     "id": "api.templates.invite_guest_subject",
@@ -4458,7 +4458,7 @@
   },
   {
     "id": "api.templates.post_body.button",
-    "translation": "Svar i Mattermost"
+    "translation": "Svar i Antimatter"
   },
   {
     "id": "api.templates.questions_footer.info",
@@ -4562,7 +4562,7 @@
   },
   {
     "id": "api.templates.verify_body.info",
-    "translation": "Denne e-postadressen ble brukt til å opprette en konto hos Mattermost."
+    "translation": "Denne e-postadressen ble brukt til å opprette en konto hos Antimatter."
   },
   {
     "id": "api.templates.verify_body.info1",
@@ -4602,7 +4602,7 @@
   },
   {
     "id": "api.templates.welcome_body.info",
-    "translation": "Denne e-postadressen ble brukt til å opprette en konto hos Mattermost."
+    "translation": "Denne e-postadressen ble brukt til å opprette en konto hos Antimatter."
   },
   {
     "id": "api.templates.welcome_body.info1",
@@ -7956,7 +7956,7 @@
   },
   {
     "id": "app.notification.footer.infoLogin",
-    "translation": "Logg inn på Mattermost"
+    "translation": "Logg inn på Antimatter"
   },
   {
     "id": "app.notification.footer.title",
@@ -10968,7 +10968,7 @@
   },
   {
     "id": "ent.intune.login.account_not_found.app_error",
-    "translation": "Kontoen din er ikke ferdig satt opp ennå. Logg inn på Mattermost via nettleseren eller skrivebordsappen først."
+    "translation": "Kontoen din er ikke ferdig satt opp ennå. Logg inn på Antimatter via nettleseren eller skrivebordsappen først."
   },
   {
     "id": "ent.intune.login.extract_auth_data.app_error",
@@ -11060,7 +11060,7 @@
   },
   {
     "id": "ent.ldap.do_login.user_filtered.app_error",
-    "translation": "AD/LDAP-kontoen din har ikke tillatelse til å bruke denne Mattermost-serveren. Be systemadministratoren om å kontrollere brukerfilteret for AD/LDAP."
+    "translation": "AD/LDAP-kontoen din har ikke tillatelse til å bruke denne Antimatter-serveren. Be systemadministratoren om å kontrollere brukerfilteret for AD/LDAP."
   },
   {
     "id": "ent.ldap.do_login.user_not_registered.app_error",
@@ -12220,7 +12220,7 @@
   },
   {
     "id": "model.config.is_valid.atmos_camo_image_proxy_removed.app_error",
-    "translation": "Bildeproxytypen 'atmos/camo' ble fjernet i Mattermost v12.0. Sett ImageProxySettings.ImageProxyType til 'local', eller sett ImageProxySettings.Enable til false for å deaktivere bildeproxyen."
+    "translation": "Bildeproxytypen 'atmos/camo' ble fjernet i Antimatter v12.0. Sett ImageProxySettings.ImageProxyType til 'local', eller sett ImageProxySettings.Enable til false for å deaktivere bildeproxyen."
   },
   {
     "id": "model.config.is_valid.autotranslation.agents.llm_service_id.app_error",
@@ -14256,7 +14256,7 @@
   },
   {
     "id": "oauth.gitlab.tos.error",
-    "translation": "GitLabs vilkår for bruk er oppdatert. Gå til {{.URL}} for å godta dem, og prøv deretter å logge inn på Mattermost igjen."
+    "translation": "GitLabs vilkår for bruk er oppdatert. Gå til {{.URL}} for å godta dem, og prøv deretter å logge inn på Antimatter igjen."
   },
   {
     "id": "plugin.api.get_users_in_channel",
@@ -14484,11 +14484,11 @@
   },
   {
     "id": "web.error.unsupported_browser.no_longer_support",
-    "translation": "Denne nettleseren støttes ikke lenger av Mattermost"
+    "translation": "Denne nettleseren støttes ikke lenger av Antimatter"
   },
   {
     "id": "web.error.unsupported_browser.no_longer_support_version",
-    "translation": "Denne versjonen av nettleseren din støttes ikke lenger av Mattermost"
+    "translation": "Denne versjonen av nettleseren din støttes ikke lenger av Antimatter"
   },
   {
     "id": "web.error.unsupported_browser.open_system_browser.edge",

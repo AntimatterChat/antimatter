@@ -13951,7 +13951,7 @@
   },
   {
     "id": "model.config.is_valid.atmos_camo_image_proxy_removed.app_error",
-    "translation": "'atmos/camo' 图像代理类型已在 Mattermost v12.0 中移除。请将 ImageProxySettings.ImageProxyType 设置为 'local'，或将 ImageProxySettings.Enable 设置为 false 以禁用图像代理。"
+    "translation": "'atmos/camo' 图像代理类型已在 Antimatter v12.0 中移除。请将 ImageProxySettings.ImageProxyType 设置为 'local'，或将 ImageProxySettings.Enable 设置为 false 以禁用图像代理。"
   },
   {
     "id": "model.config.is_valid.feature_flags.apps_enabled.app_error",

@@ -7933,7 +7933,7 @@
   },
   {
     "id": "api.command_help.success",
-    "translation": "Mattermost este o platformă open source pentru comunicare securizată, colaborare și orchestrarea muncii între instrumente și echipe.\r\nMattermost conține două instrumente cheie:\r\n\r\n**Channels** - Rămâneți conectat cu echipa dvs. prin mesaje 1:1 și de grup.\r\n**[Playbooks](/playbooks)** - Construiți și configurați procese repetabile pentru a obține rezultate specifice și previzibile.\r\n\r\n[Vizualizați documentația și ghidurile]({{.HelpLink}})"
+    "translation": "Antimatter este o platformă open source pentru comunicare securizată, colaborare și orchestrarea muncii între instrumente și echipe.\r\nAntimatter conține două instrumente cheie:\r\n\r\n**Channels** - Rămâneți conectat cu echipa dvs. prin mesaje 1:1 și de grup.\r\n**[Playbooks](/playbooks)** - Construiți și configurați procese repetabile pentru a obține rezultate specifice și previzibile.\r\n\r\n[Vizualizați documentația și ghidurile]({{.HelpLink}})"
   },
   {
     "id": "api.command_invite.channel_constrained_user_denied",
@@ -8033,7 +8033,7 @@
   },
   {
     "id": "api.command_remote.invite_summary",
-    "translation": "Trimiteți următoarea invitație criptată AES pe 256 de biți administratorului de sistem al instanței Mattermost externe, împreună cu parola. Acesta va folosi comanda slash `{{.Command}}` pentru a accepta invitația.\n\n```\n{{.Invitation}}\n```\n\n**Asigurați-vă că conexiunea securizată poate accesa instanța dvs. Mattermost prin** {{.SiteURL}}"
+    "translation": "Trimiteți următoarea invitație criptată AES pe 256 de biți administratorului de sistem al instanței Antimatter externe, împreună cu parola. Acesta va folosi comanda slash `{{.Command}}` pentru a accepta invitația.\n\n```\n{{.Invitation}}\n```\n\n**Asigurați-vă că conexiunea securizată poate accesa instanța dvs. Antimatter prin** {{.SiteURL}}"
   },
   {
     "id": "api.command_share.channel_not_shared.error",
@@ -8061,7 +8061,7 @@
   },
   {
     "id": "api.config.update.elasticsearch.autocomplete_cannot_be_enabled_error",
-    "translation": "Completarea automată a canalelor nu poate fi activată, deoarece schema indexului de canale este învechită. Se recomandă regenerarea indexului de canale. Consultați changelog-ul Mattermost pentru mai multe informații"
+    "translation": "Completarea automată a canalelor nu poate fi activată, deoarece schema indexului de canale este învechită. Se recomandă regenerarea indexului de canale. Consultați changelog-ul Antimatter pentru mai multe informații"
   },
   {
     "id": "api.config.update_config.diff.app_error",
@@ -8249,7 +8249,7 @@
   },
   {
     "id": "api.email_batching.send_batched_email_notification.button",
-    "translation": "Deschideți Mattermost"
+    "translation": "Deschideți Antimatter"
   },
   {
     "id": "api.email_batching.send_batched_email_notification.messageButton",
@@ -9025,7 +9025,7 @@
   },
   {
     "id": "api.templates.guest_magic_link_body.footer.info",
-    "translation": "Acest e-mail v-a fost trimis deoarece cineva a solicitat un link de conectare pentru Mattermost. Dacă nu ați solicitat acest lucru, puteți ignora acest e-mail în siguranță."
+    "translation": "Acest e-mail v-a fost trimis deoarece cineva a solicitat un link de conectare pentru Antimatter. Dacă nu ați solicitat acest lucru, puteți ignora acest e-mail în siguranță."
   },
   {
     "id": "api.templates.guest_magic_link_body.footer.title",
@@ -9037,7 +9037,7 @@
   },
   {
     "id": "api.templates.guest_magic_link_body.title",
-    "translation": "Conectați-vă la Mattermost"
+    "translation": "Conectați-vă la Antimatter"
   },
   {
     "id": "api.templates.guest_magic_link_subject",
@@ -10765,7 +10765,7 @@
   },
   {
     "id": "app.notification.footer.infoLogin",
-    "translation": "Conectați-vă la Mattermost"
+    "translation": "Conectați-vă la Antimatter"
   },
   {
     "id": "app.notification.footer.title",
@@ -12493,7 +12493,7 @@
   },
   {
     "id": "ent.intune.login.account_not_found.app_error",
-    "translation": "Contul dvs. nu este încă configurat complet. Conectați-vă mai întâi la Mattermost prin intermediul aplicației web sau desktop."
+    "translation": "Contul dvs. nu este încă configurat complet. Conectați-vă mai întâi la Antimatter prin intermediul aplicației web sau desktop."
   },
   {
     "id": "ent.intune.login.extract_auth_data.app_error",
@@ -13105,7 +13105,7 @@
   },
   {
     "id": "model.config.is_valid.atmos_camo_image_proxy_removed.app_error",
-    "translation": "Tipul de proxy de imagini 'atmos/camo' a fost eliminat în Mattermost v12.0. Setați ImageProxySettings.ImageProxyType la 'local' sau setați ImageProxySettings.Enable la false pentru a dezactiva proxy-ul de imagini."
+    "translation": "Tipul de proxy de imagini 'atmos/camo' a fost eliminat în Antimatter v12.0. Setați ImageProxySettings.ImageProxyType la 'local' sau setați ImageProxySettings.Enable la false pentru a dezactiva proxy-ul de imagini."
   },
   {
     "id": "model.config.is_valid.autotranslation.agents.llm_service_id.app_error",
@@ -14013,7 +14013,7 @@
   },
   {
     "id": "oauth.gitlab.tos.error",
-    "translation": "Termenii și condițiile GitLab au fost actualizați. Vă rugăm să accesați {{.URL}} pentru a-i accepta și apoi încercați să vă conectați din nou la Mattermost."
+    "translation": "Termenii și condițiile GitLab au fost actualizați. Vă rugăm să accesați {{.URL}} pentru a-i accepta și apoi încercați să vă conectați din nou la Antimatter."
   },
   {
     "id": "plugin.api.update_post.mm_blocks_actions.app_error",

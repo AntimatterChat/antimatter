@@ -9120,7 +9120,7 @@
   },
   {
     "id": "api.templates.guest_magic_link_body.footer.info",
-    "translation": "Това съобщение Ви беше изпратено, защото някой поиска връзка за влизане в Mattermost. Ако не сте поискали това, можете спокойно да игнорирате тази ел.поща."
+    "translation": "Това съобщение Ви беше изпратено, защото някой поиска връзка за влизане в Antimatter. Ако не сте поискали това, можете спокойно да игнорирате тази ел.поща."
   },
   {
     "id": "api.templates.guest_magic_link_body.footer.title",
@@ -9132,7 +9132,7 @@
   },
   {
     "id": "api.templates.guest_magic_link_body.title",
-    "translation": "Влезте в Mattermost"
+    "translation": "Влезте в Antimatter"
   },
   {
     "id": "api.templates.guest_magic_link_subject",
@@ -12484,7 +12484,7 @@
   },
   {
     "id": "ent.intune.login.account_not_found.app_error",
-    "translation": "Вашият профил все още не е напълно настроен. Моля, първо влезте в Mattermost през уеб или настолното приложение."
+    "translation": "Вашият профил все още не е напълно настроен. Моля, първо влезте в Antimatter през уеб или настолното приложение."
   },
   {
     "id": "ent.intune.login.extract_auth_data.app_error",
@@ -13096,7 +13096,7 @@
   },
   {
     "id": "model.config.is_valid.atmos_camo_image_proxy_removed.app_error",
-    "translation": "Типът прокси за изображения 'atmos/camo' беше премахнат в Mattermost v12.0. Задайте ImageProxySettings.ImageProxyType на 'local' или задайте ImageProxySettings.Enable на false, за да изключите проксито за изображения."
+    "translation": "Типът прокси за изображения 'atmos/camo' беше премахнат в Antimatter v12.0. Задайте ImageProxySettings.ImageProxyType на 'local' или задайте ImageProxySettings.Enable на false, за да изключите проксито за изображения."
   },
   {
     "id": "model.config.is_valid.autotranslation.agents.llm_service_id.app_error",
@@ -14004,7 +14004,7 @@
   },
   {
     "id": "oauth.gitlab.tos.error",
-    "translation": "Общите условия на GitLab са актуализирани. Моля, отидете на {{.URL}}, за да ги приемете, и след това опитайте да влезете в Mattermost отново."
+    "translation": "Общите условия на GitLab са актуализирани. Моля, отидете на {{.URL}}, за да ги приемете, и след това опитайте да влезете в Antimatter отново."
   },
   {
     "id": "plugin.api.update_post.mm_blocks_actions.app_error",

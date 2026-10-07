@@ -109,7 +109,7 @@
   },
   {
     "id": "oauth.gitlab.tos.error",
-    "translation": "Podmínky služby GitLab byly aktualizovány. Přejděte na {{.URL}}, abyste je přijali, a poté se pokuste znovu přihlásit do Mattermostu."
+    "translation": "Podmínky služby GitLab byly aktualizovány. Přejděte na {{.URL}}, abyste je přijali, a poté se pokuste znovu přihlásit do Antimatteru."
   },
   {
     "id": "model.utils.decode_json.app_error",
@@ -2405,7 +2405,7 @@
   },
   {
     "id": "ent.ldap.do_login.user_filtered.app_error",
-    "translation": "Váš účet AD / LDAP nemá oprávnění používat tento Mattermost server. Požádejte správce systému, aby zkontroloval uživatelský filtr AD/LDAP."
+    "translation": "Váš účet AD / LDAP nemá oprávnění používat tento Antimatter server. Požádejte správce systému, aby zkontroloval uživatelský filtr AD/LDAP."
   },
   {
     "id": "ent.ldap.do_login.unable_to_connect.app_error",
@@ -2673,7 +2673,7 @@
   },
   {
     "id": "api.templates.welcome_body.info",
-    "translation": "Tato e-mailová adresa byla použita k vytvoření účtu v Mattermostu."
+    "translation": "Tato e-mailová adresa byla použita k vytvoření účtu v Antimatteru."
   },
   {
     "id": "api.templates.welcome_body.button",
@@ -2693,7 +2693,7 @@
   },
   {
     "id": "api.templates.verify_body.info",
-    "translation": "Tato e-mailová adresa byla použita k vytvoření účtu v Mattermostu."
+    "translation": "Tato e-mailová adresa byla použita k vytvoření účtu v Antimatteru."
   },
   {
     "id": "api.templates.verify_body.button",
@@ -2753,7 +2753,7 @@
   },
   {
     "id": "api.templates.post_body.button",
-    "translation": "Odpovědět v Mattermostu"
+    "translation": "Odpovědět v Antimatteru"
   },
   {
     "id": "api.templates.password_change_subject",
@@ -3916,7 +3916,7 @@
   },
   {
     "id": "api.command_logout.desc",
-    "translation": "Odhlásit se z Mattermost"
+    "translation": "Odhlásit se z Antimatter"
   },
   {
     "id": "api.command_leave.name",
@@ -4029,7 +4029,7 @@
   },
   {
     "id": "api.command_help.desc",
-    "translation": "Zobrazit nápovědu k Mattermostu"
+    "translation": "Zobrazit nápovědu k Antimatteru"
   },
   {
     "id": "api.command_groupmsg.permission.app_error",
@@ -4454,7 +4454,7 @@
   },
   {
     "id": "api.command.invite_people.desc",
-    "translation": "Odešlete e-mailovou pozvánku do svého týmu v Mattermostu"
+    "translation": "Odešlete e-mailovou pozvánku do svého týmu v Antimatteru"
   },
   {
     "id": "api.command.execute_command.start.app_error",
@@ -4774,7 +4774,7 @@
   },
   {
     "id": "api.admin.test_email.subject",
-    "translation": "Mattermost - Testování Nastavení E-Mailu"
+    "translation": "Antimatter - Testování Nastavení E-Mailu"
   },
   {
     "id": "api.admin.test_email.reenter_password",
@@ -4786,7 +4786,7 @@
   },
   {
     "id": "api.admin.test_email.body",
-    "translation": "Zdá se, že váš e-mail pro Mattermost je nastaven správně!"
+    "translation": "Zdá se, že váš e-mail pro Antimatter je nastaven správně!"
   },
   {
     "id": "api.admin.saml.set_certificate_from_metadata.missing_content_type.app_error",
@@ -6474,7 +6474,7 @@
   },
   {
     "id": "api.command_remote.accept.help",
-    "translation": "Přijmout pozvánku z externí instance Mattermost"
+    "translation": "Přijmout pozvánku z externí instance Antimatter"
   },
   {
     "id": "api.command_remote.accept_invitation",
@@ -6530,7 +6530,7 @@
   },
   {
     "id": "api.command_remote.desc",
-    "translation": "Pozvěte zabezpečená připojení pro komunikaci mezi instancemi Mattermost."
+    "translation": "Pozvěte zabezpečená připojení pro komunikaci mezi instancemi Antimatter."
   },
   {
     "id": "api.command_marketplace.unsupported.app_error",
@@ -6554,7 +6554,7 @@
   },
   {
     "id": "web.error.unsupported_browser.no_longer_support",
-    "translation": "Tento prohlížeč již Mattermost nepodporuje"
+    "translation": "Tento prohlížeč již Antimatter nepodporuje"
   },
   {
     "id": "web.incoming_webhook.channel_locked.app_error",
@@ -6610,7 +6610,7 @@
   },
   {
     "id": "api.command_remote.invite_summary",
-    "translation": "Externímu správci systému Mattermost odešlete následující pozvánku zašifrovanou 256bitovým algoritmem AES spolu s heslem. K přijetí pozvánky použije příkaz `{{.Command}}` s lomítkem.\n\n```\n{{.Invitation}}\n```\n\n**Zajistěte, aby zabezpečené připojení mohlo přistupovat k vaší instanci Mattermostu prostřednictvím** {{.SiteURL}}"
+    "translation": "Externímu správci systému Antimatter odešlete následující pozvánku zašifrovanou 256bitovým algoritmem AES spolu s heslem. K přijetí pozvánky použije příkaz `{{.Command}}` s lomítkem.\n\n```\n{{.Invitation}}\n```\n\n**Zajistěte, aby zabezpečené připojení mohlo přistupovat k vaší instanci Antimatteru prostřednictvím** {{.SiteURL}}"
   },
   {
     "id": "api.command_remote.invite_password.hint",
@@ -6642,7 +6642,7 @@
   },
   {
     "id": "api.command_help.success",
-    "translation": "Mattermost je open source platforma pro bezpečnou komunikaci, spolupráci a orchestraci práce napříč nástroji a týmy.\nMattermost obsahuje dva klíčové nástroje:\n\n**Kanály** - Zůstaňte ve spojení se svým týmem prostřednictvím zpráv 1:1 a skupinových zpráv.\n**[Playbooks](/playbooks)** - Vytvářejte a konfigurujte opakovatelné procesy k dosažení konkrétních a předvídatelných výsledků.\n\n[Zobrazit dokumentaci a průvodce]({{.HelpLink}})"
+    "translation": "Antimatter je open source platforma pro bezpečnou komunikaci, spolupráci a orchestraci práce napříč nástroji a týmy.\nAntimatter obsahuje dva klíčové nástroje:\n\n**Kanály** - Zůstaňte ve spojení se svým týmem prostřednictvím zpráv 1:1 a skupinových zpráv.\n**[Playbooks](/playbooks)** - Vytvářejte a konfigurujte opakovatelné procesy k dosažení konkrétních a předvídatelných výsledků.\n\n[Zobrazit dokumentaci a průvodce]({{.HelpLink}})"
   },
   {
     "id": "api.command_custom_status.clear.app_error",
@@ -6830,7 +6830,7 @@
   },
   {
     "id": "api.command_share.desc",
-    "translation": "Nastaví sdílení aktuálního kanálu s externí instancí Mattermostu."
+    "translation": "Nastaví sdílení aktuálního kanálu s externí instancí Antimatteru."
   },
   {
     "id": "api.command_remote.status.help",
@@ -6902,7 +6902,7 @@
   },
   {
     "id": "api.command_share.invite_remote.help",
-    "translation": "Pozve externí instanci Mattermost do aktuálního sdíleného kanálu"
+    "translation": "Pozve externí instanci Antimatter do aktuálního sdíleného kanálu"
   },
   {
     "id": "api.command_share.missing_action",
@@ -7210,7 +7210,7 @@
   },
   {
     "id": "api.templates.invite_body_footer.info",
-    "translation": "Mattermost je flexibilní, open source platforma pro zasílání zpráv, která umožňuje bezpečnou týmovou spolupráci."
+    "translation": "Antimatter je flexibilní, open source platforma pro zasílání zpráv, která umožňuje bezpečnou týmovou spolupráci."
   },
   {
     "id": "api.templates.invite_body_footer.learn_more",
@@ -7218,7 +7218,7 @@
   },
   {
     "id": "api.templates.invite_body_footer.title",
-    "translation": "Co je Mattermost?"
+    "translation": "Co je Antimatter?"
   },
   {
     "id": "api.templates.invite_body_guest.subTitle",
@@ -7254,7 +7254,7 @@
   },
   {
     "id": "api.templates.invite_body.subTitle",
-    "translation": "Začněte spolupracovat se svým týmem na Mattermostu"
+    "translation": "Začněte spolupracovat se svým týmem na Antimatteru"
   },
   {
     "id": "api.post.send_notification_and_forget.push_comment_on_crt_thread",
@@ -7298,7 +7298,7 @@
   },
   {
     "id": "api.config.update.elasticsearch.autocomplete_cannot_be_enabled_error",
-    "translation": "Automatické doplňování kanálů nelze povolit, protože schéma indexu kanálů je zastaralé. Doporučuje se znovu generovat index kanálů. Další informace naleznete v poznámkách k verzím Mattermostu"
+    "translation": "Automatické doplňování kanálů nelze povolit, protože schéma indexu kanálů je zastaralé. Doporučuje se znovu generovat index kanálů. Další informace naleznete v poznámkách k verzím Antimatteru"
   },
   {
     "id": "api.context.invitation_expired.error",
@@ -7558,7 +7558,7 @@
   },
   {
     "id": "api.email_batching.send_batched_email_notification.button",
-    "translation": "Otevřít Mattermost"
+    "translation": "Otevřít Antimatter"
   },
   {
     "id": "api.license.request-trial.can-start-trial.error",
@@ -8058,7 +8058,7 @@
   },
   {
     "id": "app.notification.footer.infoLogin",
-    "translation": "Přihlášení do Mattermost"
+    "translation": "Přihlášení do Antimatter"
   },
   {
     "id": "app.channel.gm_conversion_set_categories.delete_all.error",
@@ -9632,7 +9632,7 @@
   },
   {
     "id": "web.error.unsupported_browser.no_longer_support_version",
-    "translation": "Tato verze vašeho prohlížeče již není Mattermostem podporována"
+    "translation": "Tato verze vašeho prohlížeče již není Antimatterem podporována"
   },
   {
     "id": "model.config.is_valid.outgoing_integrations_request_timeout.app_error",
@@ -11304,7 +11304,7 @@
   },
   {
     "id": "api.templates.guest_magic_link_body.footer.info",
-    "translation": "Tento e-mail vám byl zaslán, protože někdo požádal o přihlašovací odkaz do Mattermost. Pokud jste o něj nežádali, můžete tento e-mail bez obav ignorovat."
+    "translation": "Tento e-mail vám byl zaslán, protože někdo požádal o přihlašovací odkaz do Antimatter. Pokud jste o něj nežádali, můžete tento e-mail bez obav ignorovat."
   },
   {
     "id": "api.templates.guest_magic_link_body.footer.title",
@@ -11316,7 +11316,7 @@
   },
   {
     "id": "api.templates.guest_magic_link_body.title",
-    "translation": "Přihlášení do Mattermost"
+    "translation": "Přihlášení do Antimatter"
   },
   {
     "id": "api.templates.guest_magic_link_subject",
@@ -13586,7 +13586,7 @@
   },
   {
     "id": "ent.intune.login.account_not_found.app_error",
-    "translation": "Váš účet ještě není plně nastaven. Přihlaste se prosím nejprve do Mattermost přes web nebo desktopovou aplikaci."
+    "translation": "Váš účet ještě není plně nastaven. Přihlaste se prosím nejprve do Antimatter přes web nebo desktopovou aplikaci."
   },
   {
     "id": "ent.intune.login.extract_auth_data.app_error",
@@ -13958,7 +13958,7 @@
   },
   {
     "id": "model.config.is_valid.atmos_camo_image_proxy_removed.app_error",
-    "translation": "Typ obrázkové proxy 'atmos/camo' byl v Mattermost v12.0 odstraněn. Nastavte ImageProxySettings.ImageProxyType na 'local', nebo nastavte ImageProxySettings.Enable na false a obrázkovou proxy tím zakažte."
+    "translation": "Typ obrázkové proxy 'atmos/camo' byl v Antimatter v12.0 odstraněn. Nastavte ImageProxySettings.ImageProxyType na 'local', nebo nastavte ImageProxySettings.Enable na false a obrázkovou proxy tím zakažte."
   },
   {
     "id": "model.config.is_valid.autotranslation.agents.llm_service_id.app_error",

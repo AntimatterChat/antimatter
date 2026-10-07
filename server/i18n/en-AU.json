@@ -13763,7 +13763,7 @@
   },
   {
     "id": "model.config.is_valid.atmos_camo_image_proxy_removed.app_error",
-    "translation": "The 'atmos/camo' image proxy type was removed in Mattermost v12.0. Set ImageProxySettings.ImageProxyType to 'local', or set ImageProxySettings.Enable to false to disable the image proxy."
+    "translation": "The 'atmos/camo' image proxy type was removed in Antimatter v12.0. Set ImageProxySettings.ImageProxyType to 'local', or set ImageProxySettings.Enable to false to disable the image proxy."
   },
   {
     "id": "model.config.is_valid.azure_auth_mode.app_error",

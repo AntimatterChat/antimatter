@@ -8201,7 +8201,7 @@
   },
   {
     "id": "api.command_help.success",
-    "translation": "Mattermost یک پلتفرم متن‌باز برای ارتباط امن، همکاری و هماهنگی کار در میان ابزارها و تیم‌ها است.\r\nMattermost شامل دو ابزار کلیدی است:\r\n\r\n**Channels** - از طریق پیام‌رسانی 1:1 و گروهی با تیم خود در ارتباط بمانید.\r\n**[Playbooks](/playbooks)** - فرایندهای تکرارپذیر را برای دستیابی به نتایج مشخص و قابل پیش‌بینی بسازید و پیکربندی کنید.\r\n\r\n[مشاهده مستندات و راهنماها]({{.HelpLink}})"
+    "translation": "Antimatter یک پلتفرم متن‌باز برای ارتباط امن، همکاری و هماهنگی کار در میان ابزارها و تیم‌ها است.\r\nAntimatter شامل دو ابزار کلیدی است:\r\n\r\n**Channels** - از طریق پیام‌رسانی 1:1 و گروهی با تیم خود در ارتباط بمانید.\r\n**[Playbooks](/playbooks)** - فرایندهای تکرارپذیر را برای دستیابی به نتایج مشخص و قابل پیش‌بینی بسازید و پیکربندی کنید.\r\n\r\n[مشاهده مستندات و راهنماها]({{.HelpLink}})"
   },
   {
     "id": "api.command_invite.channel_constrained_user_denied",
@@ -8316,7 +8316,7 @@
   },
   {
     "id": "api.config.update.elasticsearch.autocomplete_cannot_be_enabled_error",
-    "translation": "تکمیل خودکار کانال را نمی‌توان فعال کرد زیرا طرح ایندکس کانال قدیمی است. توصیه می‌شود ایندکس کانال خود را دوباره ایجاد کنید. برای اطلاعات بیشتر به changelog محصول Mattermost مراجعه کنید"
+    "translation": "تکمیل خودکار کانال را نمی‌توان فعال کرد زیرا طرح ایندکس کانال قدیمی است. توصیه می‌شود ایندکس کانال خود را دوباره ایجاد کنید. برای اطلاعات بیشتر به changelog محصول Antimatter مراجعه کنید"
   },
   {
     "id": "api.config.update_config.translations.app_error",
@@ -9208,7 +9208,7 @@
   },
   {
     "id": "api.templates.guest_magic_link_body.footer.info",
-    "translation": "این ایمیل برای شما ارسال شد زیرا شخصی یک پیوند ورود برای Mattermost درخواست کرده است. اگر شما این را درخواست نکرده‌اید، می‌توانید با خیال راحت این ایمیل را نادیده بگیرید."
+    "translation": "این ایمیل برای شما ارسال شد زیرا شخصی یک پیوند ورود برای Antimatter درخواست کرده است. اگر شما این را درخواست نکرده‌اید، می‌توانید با خیال راحت این ایمیل را نادیده بگیرید."
   },
   {
     "id": "api.templates.guest_magic_link_body.footer.title",
@@ -9220,7 +9220,7 @@
   },
   {
     "id": "api.templates.guest_magic_link_body.title",
-    "translation": "ورود به Mattermost"
+    "translation": "ورود به Antimatter"
   },
   {
     "id": "api.templates.guest_magic_link_subject",
@@ -12516,7 +12516,7 @@
   },
   {
     "id": "ent.intune.login.account_not_found.app_error",
-    "translation": "حساب شما هنوز به‌طور کامل راه‌اندازی نشده است. لطفاً ابتدا از طریق وب یا برنامه دسکتاپ وارد Mattermost شوید."
+    "translation": "حساب شما هنوز به‌طور کامل راه‌اندازی نشده است. لطفاً ابتدا از طریق وب یا برنامه دسکتاپ وارد Antimatter شوید."
   },
   {
     "id": "ent.intune.login.extract_auth_data.app_error",
@@ -13124,7 +13124,7 @@
   },
   {
     "id": "model.config.is_valid.atmos_camo_image_proxy_removed.app_error",
-    "translation": "نوع پروکسی تصویر 'atmos/camo' در Mattermost v12.0 حذف شد. ImageProxySettings.ImageProxyType را روی 'local' تنظیم کنید، یا برای غیرفعال کردن پروکسی تصویر، ImageProxySettings.Enable را روی false بگذارید."
+    "translation": "نوع پروکسی تصویر 'atmos/camo' در Antimatter v12.0 حذف شد. ImageProxySettings.ImageProxyType را روی 'local' تنظیم کنید، یا برای غیرفعال کردن پروکسی تصویر، ImageProxySettings.Enable را روی false بگذارید."
   },
   {
     "id": "model.config.is_valid.autotranslation.agents.llm_service_id.app_error",
@@ -14004,7 +14004,7 @@
   },
   {
     "id": "oauth.gitlab.tos.error",
-    "translation": "شرایط خدمات GitLab به‌روز شده است. لطفاً برای پذیرش آنها به {{.URL}} بروید و سپس دوباره سعی کنید وارد Mattermost شوید."
+    "translation": "شرایط خدمات GitLab به‌روز شده است. لطفاً برای پذیرش آنها به {{.URL}} بروید و سپس دوباره سعی کنید وارد Antimatter شوید."
   },
   {
     "id": "plugin.api.update_post.mm_blocks_actions.app_error",
