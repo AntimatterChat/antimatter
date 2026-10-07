@@ -3,6 +3,7 @@
 
 import React, {
     useCallback,
+    useEffect,
     useMemo,
     useState,
     useRef,
@@ -10,7 +11,6 @@ import React, {
 import {useIntl} from 'react-intl';
 import {shallowEqual, useSelector, useDispatch} from 'react-redux';
 
-import {GenericModal} from '@mattermost/components';
 import type {Channel} from '@mattermost/types/channels';
 
 import Permissions from 'mattermost-redux/constants/permissions';
@@ -28,6 +28,9 @@ import {getChannelSettingsTabs} from 'selectors/plugins';
 import type {Tab as SidebarTab} from 'components/settings_sidebar/settings_sidebar';
 import {normalizePluginIcon} from 'components/settings_sidebar/settings_sidebar';
 
+import Icon from 'fusion/components/icon';
+import {Dialog} from 'fusion/components/layer';
+import {am} from 'fusion/utils/class_names';
 import {focusElement} from 'utils/a11y_utils';
 import Constants from 'utils/constants';
 
@@ -43,7 +46,6 @@ import ChannelSettingsPluginTab from './channel_settings_plugin_tab';
 import './channel_settings_modal.scss';
 
 // Lazy-loaded components
-const SettingsSidebar = React.lazy(() => import('components/settings_sidebar'));
 
 type ChannelSettingsModalProps = {
     channelId: string;
@@ -219,7 +221,7 @@ function ChannelSettingsModal({channelId, isOpen, onExited, focusOriginElement}:
         return [
             {
                 name: BuiltInTabIds.INFO,
-                uiName: formatMessage({id: 'channel_settings.tab.info', defaultMessage: 'Info'}),
+                uiName: formatMessage({id: 'fusion.channelSettings.overview', defaultMessage: 'Overview'}),
                 icon: 'icon icon-information-outline',
                 iconTitle: formatMessage({id: 'generic_icons.info', defaultMessage: 'Info Icon'}),
                 display: shouldShowInfoTab,
@@ -247,7 +249,7 @@ function ChannelSettingsModal({channelId, isOpen, onExited, focusOriginElement}:
             },
             {
                 name: BuiltInTabIds.ARCHIVE,
-                uiName: formatMessage({id: 'channel_settings.tab.archive', defaultMessage: 'Archive Channel'}),
+                uiName: formatMessage({id: 'fusion.channelSettings.archive', defaultMessage: 'Archive channel'}),
                 icon: 'icon icon-archive-outline',
                 iconTitle: formatMessage({id: 'generic_icons.archive', defaultMessage: 'Archive Icon'}),
                 display: shouldShowArchiveTab,
@@ -446,51 +448,82 @@ function ChannelSettingsModal({channelId, isOpen, onExited, focusOriginElement}:
         return renderBuiltInTabContent(isBuiltInTabId(activeTab) ? activeTab : BuiltInTabIds.INFO);
     };
 
-    // Renders the body: left sidebar for tabs, the content on the right
-    const renderModalBody = () => {
-        return (
-            <div
-                ref={modalBodyRef}
-                className='settings-table'
-            >
-                <div className='settings-links'>
-                    <React.Suspense fallback={null}>
-                        <SettingsSidebar
-                            tabs={tabs}
-                            pluginTabs={pluginTabs}
-                            activeTab={activeTab}
-                            updateTab={updateTab}
-                        />
-                    </React.Suspense>
-                </div>
-                <div className='settings-content minimize-settings'>
-                    {renderTabContent()}
-                </div>
-            </div>
-        );
-    };
+    // The Fusion UI shows the channel settings in its own dialog, as the user settings: the tabs on the left under the
+    // channel's name, plugin tabs under their own heading and archiving set apart at the bottom, as in Discord.
+    const navButton = (tab: SidebarTab, danger = false) => (
+        <button
+            key={tab.name}
+            type='button'
+            role='tab'
+            className={am({on: tab.name === activeTab, danger})}
+            aria-selected={tab.name === activeTab}
+            onClick={() => updateTab(tab.name)}
+        >
+            {tab.uiName}
+        </button>
+    );
+
+    // Closing the dialog has no fade-out to wait for.
+    useEffect(() => {
+        if (!show) {
+            handleExited();
+        }
+    }, [show]); // eslint-disable-line react-hooks/exhaustive-deps
+
+    if (!show) {
+        return null;
+    }
 
     const modalTitle = formatMessage({id: 'channel_settings.modal.title', defaultMessage: 'Channel Settings'});
+    const mainTabs = visibleBuiltInTabs.filter((tab) => tab.name !== BuiltInTabIds.ARCHIVE);
+    const archiveTab = visibleBuiltInTabs.find((tab) => tab.name === BuiltInTabIds.ARCHIVE);
 
     return (
-        <GenericModal
-            id='channelSettingsModal'
-            ariaLabel={modalTitle}
-            className='ChannelSettingsModal settings-modal'
-            show={show}
-            onHide={handleHide}
-            preventClose={areThereUnsavedChanges && !hasBeenWarned}
-            onExited={handleExited}
-            compassDesign={true}
-            modalHeaderText={modalTitle}
-            bodyPadding={false}
-            modalLocation={'top'}
-            enforceFocus={false}
+        <Dialog
+            label={modalTitle}
+            small={false}
+            className={am('channel-settings')}
+            onClose={handleHide}
         >
-            <div className='ChannelSettingsModal__bodyWrapper'>
-                {renderModalBody()}
+            <nav
+                role='tablist'
+                aria-orientation='vertical'
+            >
+                <h5 title={channel.display_name}>{channel.display_name}</h5>
+                {mainTabs.map((tab) => navButton(tab))}
+                {visiblePluginTabs.length > 0 && (
+                    <>
+                        <h5>{formatMessage({id: 'fusion.channelSettings.plugins', defaultMessage: 'Apps'})}</h5>
+                        {visiblePluginTabs.map((tab) => navButton(tab))}
+                    </>
+                )}
+                {archiveTab && (
+                    <>
+                        <hr/>
+                        {navButton(archiveTab, true)}
+                    </>
+                )}
+            </nav>
+            <div
+                ref={modalBodyRef}
+                className={am('pane')}
+                role='tabpanel'
+            >
+                <h2>{[...visibleBuiltInTabs, ...visiblePluginTabs].find((tab) => tab.name === activeTab)?.uiName}</h2>
+                {/* The tabs' classic styles are scoped to the classic dialog's class. */}
+                <div className='ChannelSettingsModal'>
+                    {renderTabContent()}
+                </div>
+                <button
+                    type='button'
+                    className={am('icon-btn', 'close')}
+                    aria-label={formatMessage({id: 'fusion.channelSettings.close', defaultMessage: 'Close channel settings'})}
+                    onClick={handleHide}
+                >
+                    <Icon name='x'/>
+                </button>
             </div>
-        </GenericModal>
+        </Dialog>
     );
 }
 
