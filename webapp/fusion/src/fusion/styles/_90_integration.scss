@@ -14,6 +14,9 @@ body.app__body #root.am-root > .am-root-main {
   flex: 1;
   min-height: 0;
 }
+// Pages of a team that the Fusion UI doesn't draw (integrations, custom emoji...) are shown in the classic web app's
+// page grid, without its team sidebar and app bar: they take its main area, the whole width.
+#root:not(.am-root) > .am-root-main { grid-area: main; min-width: 0; overflow: auto; }
 .am-layer { height: 0; background: none; }
 :is(.am-app, .am-layer) .am-main { overflow: hidden; }
 :is(.am-app, .am-layer) .am-center { display: flex; flex: 1; flex-direction: column; min-height: 0; }
