@@ -77,6 +77,9 @@ export type PostReplyTo = {
     create_at?: number;
     edit_at?: number;
     file_count?: number;
+
+    // How many of the quoted message's files are images.
+    image_count?: number;
     override_username?: string;
 
     // Set when the quoted message was deleted or can't be shown.

@@ -122,6 +122,7 @@ func (a *App) populateReplyToMetadata(rctx request.CTX, posts []*model.Post, kno
 		}
 	}
 
+	withFiles := map[*model.PostReplyTo]*model.Post{}
 	for _, post := range posts {
 		targetID := post.GetReplyToProp()
 		if targetID == "" || !model.IsValidId(targetID) {
@@ -135,6 +136,39 @@ func (a *App) populateReplyToMetadata(rctx request.CTX, posts []*model.Post, kno
 			post.Metadata = &model.PostMetadata{}
 		}
 		post.Metadata.ReplyTo = model.NewPostReplyTo(post, targetID, target)
+		if post.Metadata.ReplyTo.FileCount > 0 {
+			withFiles[post.Metadata.ReplyTo] = target
+		}
+	}
+	a.countReplyToImages(rctx, withFiles)
+}
+
+// countReplyToImages tells, in each description of a quoted message with files, how many of these files are images.
+// The files of all the quoted messages are read in one query.
+func (a *App) countReplyToImages(rctx request.CTX, withFiles map[*model.PostReplyTo]*model.Post) {
+	var ids []string
+	for _, target := range withFiles {
+		ids = append(ids, target.FileIds...)
+	}
+	if len(ids) == 0 {
+		return
+	}
+
+	infos, err := a.Srv().Store().FileInfo().GetByIds(ids, false, true, false)
+	if err != nil {
+		rctx.Logger().Warn("Failed to get the files of quoted messages", mlog.Err(err))
+		return
+	}
+	images := map[string]bool{}
+	for _, info := range infos {
+		images[info.Id] = info.IsImage()
+	}
+	for replyTo, target := range withFiles {
+		for _, id := range target.FileIds {
+			if images[id] {
+				replyTo.ImageCount++
+			}
+		}
 	}
 }
 

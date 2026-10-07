@@ -1,0 +1,82 @@
+// The channel settings: the classic web app's tabs in a Fusion dialog, drawn with the Fusion theme.
+
+:is(.am-app, .am-layer) .am-modal.am-channel-settings {
+  // The bar that saves changes is fixed to its dialog, as in the classic one: a transform makes the dialog its frame.
+  transform: translateZ(0);
+
+  nav h5:first-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  nav hr { margin: 10px; border: 0; border-top: 1px solid var(--am-line); }
+  nav button.am-danger { color: var(--am-danger); }
+  nav button.am-danger.am-on { background: color-mix(in srgb, var(--am-danger) 14%, transparent); }
+  .am-pane > h2 { margin-bottom: 18px; padding-right: 36px; }
+
+  // Room under the last setting for the bar that saves changes.
+  .am-pane { padding-bottom: 96px; }
+  input[type="radio"], input[type="checkbox"] { accent-color: var(--am-matter); }
+
+  .ChannelSettingsModal {
+    width: auto !important;
+    color: var(--am-text);
+    font-family: var(--am-font-ui);
+
+    // The pane's heading names the tab.
+    .ChannelSettingsModal__infoTabTitle { display: none; }
+
+    // The spacing the classic dialog gave its content area.
+    .AdvancedTextbox { position: relative; margin-top: 24px; }
+
+    // Text fields: the classic floating labels, on the Fusion field look.
+    .Input_fieldset { border: 1px solid var(--am-line); border-radius: 9px; background: var(--am-side); box-shadow: none; }
+    .Input_fieldset:hover { border-color: var(--am-muted); box-shadow: none; }
+    .Input_fieldset:focus-within { border-color: var(--am-matter); box-shadow: none; }
+    .Input_legend { color: var(--am-muted); background: var(--am-main); font-family: var(--am-font-ui); }
+    .Input_legend___focus { color: var(--am-matter); }
+    .Input, .Input_wrapper input { border: 0; outline: none; box-shadow: none; color: var(--am-text); background: transparent; font-family: var(--am-font-ui); }
+    .Input::placeholder { color: var(--am-faint); }
+    .Input___customMessage, .Input_subheading, .AdvancedTextbox__description { color: var(--am-muted); font-size: 12.5px; }
+
+    // The channel's address.
+    .url-input-label { color: var(--am-muted); font-size: 12.5px; }
+    .url-input-button, .url-input-button-label { color: var(--am-anti); }
+
+    // Public or private: the cards of Fusion's create channel dialog.
+    .public-private-selector { gap: 10px; }
+    .public-private-selector-button { border: 1px solid var(--am-line); border-radius: 10px; background: var(--am-side); box-shadow: none; color: var(--am-text); }
+    .public-private-selector-button:hover:not(.disabled) { border-color: var(--am-muted); box-shadow: none; }
+    .public-private-selector-button.selected { border-color: var(--am-matter); background: var(--am-matter-soft); box-shadow: none; }
+    .public-private-selector-button-icon { background: var(--am-raise); color: var(--am-text-2); }
+    .public-private-selector-button.selected .public-private-selector-button-icon { color: var(--am-matter); }
+    .public-private-selector-button-title { color: var(--am-text); font-family: var(--am-font-ui); }
+    .public-private-selector-button-description { color: var(--am-muted); }
+    .public-private-selector-button-icon-check { color: var(--am-matter); }
+
+    // The default category menu.
+    .CategorySelector__control { border: 0; background: transparent; box-shadow: none; }
+    .CategorySelector__single-value, .CategorySelector__input-container { color: var(--am-text); }
+    .CategorySelector__placeholder { color: var(--am-muted); }
+    .CategorySelector__menu { border: 1px solid var(--am-line); border-radius: 10px; background: var(--am-raise); box-shadow: var(--am-shadow); }
+    .CategorySelector__option { color: var(--am-text); background: none; }
+    .CategorySelector__option--is-focused { background: var(--am-hover); }
+
+    // Purpose and header, with their preview.
+    .AdvancedTextbox__label { color: var(--am-muted); background: var(--am-main); }
+    .AdvancedTextbox__label--active { color: var(--am-matter); }
+    .custom-textarea, .textbox-preview-area { border: 1px solid var(--am-line); border-radius: 9px; background: var(--am-side); box-shadow: none; color: var(--am-text); }
+    .custom-textarea:focus, .custom-textarea:focus-within { border-color: var(--am-matter); box-shadow: none; }
+
+    // Configuration: sections split by the Fusion line, titled as in the Fusion settings.
+    .ChannelSettingsModal__configurationTab__configurationDivider { border-color: var(--am-line); background: var(--am-line); }
+    .channel_banner_header__text .Input_legend { position: static; padding: 0; background: none; color: var(--am-text); font-size: 14.5px; font-weight: 600; }
+    .setting_title { color: var(--am-text-2); }
+    .btn-toggle.active { background: var(--am-matter); }
+
+    // Archiving: Fusion's danger button.
+    .ChannelSettingsModal__archiveTab { color: var(--am-text-2); }
+    .ChannelSettingsModal__archiveTab .btn-danger { border-radius: 9px; background: var(--am-danger); }
+  }
+
+  // The bar that saves or resets changes.
+  .SaveChangesPanel { border: 1px solid var(--am-line); border-radius: 12px; background: var(--am-raise); box-shadow: var(--am-shadow); color: var(--am-text); }
+  .SaveChangesPanel__save-btn { border-radius: 9px; background: var(--am-matter); color: #fff; }
+  .SaveChangesPanel__cancel-btn { border-radius: 9px; background: var(--am-raise-2); color: var(--am-text); }
+}

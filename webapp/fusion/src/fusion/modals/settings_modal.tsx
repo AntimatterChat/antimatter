@@ -5,14 +5,16 @@ import React, {useState} from 'react';
 import {useIntl} from 'react-intl';
 import {useDispatch, useSelector} from 'react-redux';
 
+import {CollapsedThreads} from '@mattermost/types/config';
 import type {UserNotifyProps} from '@mattermost/types/users';
 
 import {savePreferences, saveTheme} from 'mattermost-redux/actions/preferences';
 import {updateMe} from 'mattermost-redux/actions/users';
 import {Preferences} from 'mattermost-redux/constants';
 import {getConfig} from 'mattermost-redux/selectors/entities/general';
-import {getBool, getTheme} from 'mattermost-redux/selectors/entities/preferences';
+import {get as getPreference, getCollapsedThreadsPreference, getTheme, isCollapsedThreadsAllowed} from 'mattermost-redux/selectors/entities/preferences';
 import type {Theme} from 'mattermost-redux/selectors/entities/preferences';
+import {getCurrentTimezoneLabel} from 'mattermost-redux/selectors/entities/timezone';
 import {getCurrentUser} from 'mattermost-redux/selectors/entities/users';
 import {isSystemAdmin} from 'mattermost-redux/utils/user_utils';
 
@@ -23,20 +25,25 @@ import Icon from 'fusion/components/icon';
 import {Dialog} from 'fusion/components/layer';
 import {am} from 'fusion/utils/class_names';
 import {openClassicUserSettings} from 'fusion/utils/modals';
+import {getLanguages} from 'i18n/i18n';
 import {getHistory} from 'utils/browser_history';
+import Constants from 'utils/constants';
 import {CURRENT_WEB_UI, WebUIs} from 'utils/web_ui';
+import type {WebUI} from 'utils/web_ui';
 
 import type {GlobalState} from 'types/store';
 
 import CustomThemeEditor, {useStartCustomTheme} from './custom_theme_editor';
 
-export type SettingsTab = 'account' | 'notifications' | 'appearance' | 'interface';
+export type SettingsTab = 'account' | 'security' | 'notifications' | 'appearance' | 'messages' | 'language';
 
 const TABS: Array<[SettingsTab, {id: string; defaultMessage: string}]> = [
     ['account', {id: 'fusion.settings.account', defaultMessage: 'My account'}],
+    ['security', {id: 'fusion.settings.security', defaultMessage: 'Security'}],
     ['notifications', {id: 'fusion.settings.notifications', defaultMessage: 'Notifications'}],
     ['appearance', {id: 'fusion.settings.appearance', defaultMessage: 'Appearance'}],
-    ['interface', {id: 'fusion.settings.interface', defaultMessage: 'Web interface'}],
+    ['messages', {id: 'fusion.settings.messages', defaultMessage: 'Messages'}],
+    ['language', {id: 'fusion.settings.language', defaultMessage: 'Language & time'}],
 ];
 
 function Toggle({title, desc, on, onChange}: {title: string; desc: string; on: boolean; onChange: (on: boolean) => void}) {
@@ -56,6 +63,63 @@ function Toggle({title, desc, on, onChange}: {title: string; desc: string; on: b
             />
         </div>
     );
+}
+
+// Choice is a setting row with a few mutually exclusive options, as a segmented control.
+function Choice<T extends string>({title, desc, value, options, onChange}: {title: string; desc?: string; value: T; options: Array<[T, string]>; onChange: (value: T) => void}) {
+    return (
+        <div className={am('toggle-row', 'choice-row')}>
+            <div className={am('txt')}>
+                <b>{title}</b>
+                {desc && <span>{desc}</span>}
+            </div>
+            <div
+                className={am('seg')}
+                role='group'
+                aria-label={title}
+            >
+                {options.map(([key, label]) => (
+                    <button
+                        key={key}
+                        type='button'
+                        className={am({on: key === value})}
+                        aria-pressed={key === value}
+                        onClick={() => key !== value && onChange(key)}
+                    >
+                        {label}
+                    </button>
+                ))}
+            </div>
+        </div>
+    );
+}
+
+// Action is a setting row whose button opens where the setting is changed.
+function Action({title, desc, label, danger = false, onClick}: {title: string; desc: string; label: string; danger?: boolean; onClick: () => void}) {
+    return (
+        <div className={am('toggle-row')}>
+            <div className={am('txt')}>
+                <b>{title}</b>
+                <span>{desc}</span>
+            </div>
+            <button
+                type='button'
+                className={am('btn', {danger})}
+                onClick={onClick}
+            >
+                {label}
+            </button>
+        </div>
+    );
+}
+
+// usePreference reads one of the current user's preferences, and saves it.
+function usePreference(category: string, name: string, fallback: string): [string, (value: string) => void] {
+    const dispatch = useDispatch();
+    const me = useSelector(getCurrentUser);
+    const value = useSelector((state: GlobalState) => getPreference(state, category, name, fallback));
+    const save = (next: string) => dispatch(savePreferences(me.id, [{user_id: me.id, category, name, value: next}]));
+    return [value, save];
 }
 
 function AccountPane() {
@@ -105,7 +169,7 @@ function AccountPane() {
                     className={am('btn')}
                     onClick={() => dispatch(openClassicUserSettings('profile'))}
                 >
-                    {formatMessage({id: 'fusion.settings.moreAccount', defaultMessage: 'Picture, email, password and security…'})}
+                    {formatMessage({id: 'fusion.settings.moreAccount', defaultMessage: 'Picture, username and email…'})}
                 </button>
                 <button
                     type='button'
@@ -123,10 +187,53 @@ function AccountPane() {
     );
 }
 
+function SecurityPane() {
+    const {formatMessage} = useIntl();
+    const dispatch = useDispatch();
+    const config = useSelector(getConfig);
+    const openSecurity = () => dispatch(openClassicUserSettings('security'));
+    return (
+        <>
+            <h2>{formatMessage({id: 'fusion.settings.security', defaultMessage: 'Security'})}</h2>
+            <p className={am('lead')}>{formatMessage({id: 'fusion.settings.securityLead', defaultMessage: 'Your password, two-step sign-in and the devices you\'re signed in on.'})}</p>
+            <Action
+                title={formatMessage({id: 'fusion.settings.password', defaultMessage: 'Password'})}
+                desc={formatMessage({id: 'fusion.settings.passwordDesc', defaultMessage: 'Change the password you sign in with.'})}
+                label={formatMessage({id: 'fusion.settings.change', defaultMessage: 'Change…'})}
+                onClick={openSecurity}
+            />
+            {config.EnableMultifactorAuthentication === 'true' && (
+                <Action
+                    title={formatMessage({id: 'fusion.settings.mfa', defaultMessage: 'Multi-factor authentication'})}
+                    desc={formatMessage({id: 'fusion.settings.mfaDesc', defaultMessage: 'Ask for a code from an authenticator app when you sign in.'})}
+                    label={formatMessage({id: 'fusion.settings.manage', defaultMessage: 'Manage…'})}
+                    onClick={openSecurity}
+                />
+            )}
+            <Action
+                title={formatMessage({id: 'fusion.settings.sessions', defaultMessage: 'Where you\'re signed in'})}
+                desc={formatMessage({id: 'fusion.settings.sessionsDesc', defaultMessage: 'See the browsers and devices signed in to your account, and sign them out.'})}
+                label={formatMessage({id: 'fusion.settings.view', defaultMessage: 'View…'})}
+                onClick={openSecurity}
+            />
+            {config.EnableUserDeactivation === 'true' && (
+                <Action
+                    title={formatMessage({id: 'fusion.settings.deactivate', defaultMessage: 'Deactivate account'})}
+                    desc={formatMessage({id: 'fusion.settings.deactivateDesc', defaultMessage: 'Leave this server. An admin can reactivate your account later.'})}
+                    label={formatMessage({id: 'fusion.settings.deactivateButton', defaultMessage: 'Deactivate…'})}
+                    danger={true}
+                    onClick={() => dispatch(openClassicUserSettings('advanced'))}
+                />
+            )}
+        </>
+    );
+}
+
 function NotificationsPane() {
     const {formatMessage} = useIntl();
     const dispatch = useDispatch();
     const me = useSelector(getCurrentUser);
+    const threads = useSelector((state: GlobalState) => isCollapsedThreadsAllowed(state) && getCollapsedThreadsPreference(state) === Preferences.COLLAPSED_REPLY_THREADS_ON);
     const notifyProps = me.notify_props;
     const set = (patch: Partial<UserNotifyProps>) => dispatch(updateMe({notify_props: {...notifyProps, ...patch}}));
     return (
@@ -139,6 +246,20 @@ function NotificationsPane() {
                 on={notifyProps.desktop === 'all'}
                 onChange={(on) => set({desktop: on ? 'all' : 'mention'})}
             />
+            <Toggle
+                title={formatMessage({id: 'fusion.settings.desktopSound', defaultMessage: 'Notification sound'})}
+                desc={formatMessage({id: 'fusion.settings.desktopSoundDesc', defaultMessage: 'Play a sound with desktop notifications.'})}
+                on={notifyProps.desktop_sound !== 'false'}
+                onChange={(on) => set({desktop_sound: on ? 'true' : 'false'})}
+            />
+            {threads && (
+                <Toggle
+                    title={formatMessage({id: 'fusion.settings.threadReplies', defaultMessage: 'Replies to threads you follow'})}
+                    desc={formatMessage({id: 'fusion.settings.threadRepliesDesc', defaultMessage: 'Notify me of every reply in the threads I follow, not only mentions.'})}
+                    on={notifyProps.desktop_threads === 'all'}
+                    onChange={(on) => set({desktop_threads: on ? 'all' : 'mention'})}
+                />
+            )}
             <Toggle
                 title={formatMessage({id: 'fusion.settings.push', defaultMessage: 'Mobile push notifications'})}
                 desc={formatMessage({id: 'fusion.settings.pushDesc', defaultMessage: 'For mentions and direct messages.'})}
@@ -163,7 +284,7 @@ function NotificationsPane() {
                     className={am('btn')}
                     onClick={() => dispatch(openClassicUserSettings('notifications'))}
                 >
-                    {formatMessage({id: 'fusion.settings.moreNotifications', defaultMessage: 'Keywords, sounds and more…'})}
+                    {formatMessage({id: 'fusion.settings.moreNotifications', defaultMessage: 'Keywords, automatic replies and more…'})}
                 </button>
             </div>
         </>
@@ -180,9 +301,10 @@ const THEME_CARDS: Array<{key: keyof typeof Preferences.THEMES; name: {id: strin
 function AppearancePane() {
     const {formatMessage} = useIntl();
     const dispatch = useDispatch();
-    const me = useSelector(getCurrentUser);
+    const config = useSelector(getConfig);
     const theme = useSelector(getTheme);
-    const militaryTime = useSelector((state: GlobalState) => getBool(state, Preferences.CATEGORY_DISPLAY_SETTINGS, Preferences.USE_MILITARY_TIME, false));
+    const [militaryTime, setMilitaryTime] = usePreference(Preferences.CATEGORY_DISPLAY_SETTINGS, Preferences.USE_MILITARY_TIME, 'false');
+    const [nameFormat, setNameFormat] = usePreference(Preferences.CATEGORY_DISPLAY_SETTINGS, Preferences.NAME_NAME_FORMAT, config.TeammateNameDisplay || Preferences.DISPLAY_PREFER_USERNAME);
     const custom = !THEME_CARDS.some((c) => Preferences.THEMES[c.key].type === theme.type);
     const startCustom = useStartCustomTheme();
 
@@ -244,52 +366,135 @@ function AppearancePane() {
                 </button>
             </div>
             {custom && <CustomThemeEditor/>}
+            {config.AllowUserWebUISelection === 'true' && (
+                <Choice<WebUI>
+                    title={formatMessage({id: 'fusion.settings.interface', defaultMessage: 'Web interface'})}
+                    desc={formatMessage({id: 'fusion.settings.interfaceDesc', defaultMessage: 'Antimatter has two web interfaces. Your choice applies to every browser you sign in from.'})}
+                    value={CURRENT_WEB_UI}
+                    options={[
+                        [WebUIs.FUSION, formatMessage({id: 'fusion.settings.fusion', defaultMessage: 'Fusion'})],
+                        [WebUIs.CLASSIC, formatMessage({id: 'fusion.settings.classic', defaultMessage: 'Classic'})],
+                    ]}
+                    onChange={(ui) => dispatch(switchWebUI(ui))}
+                />
+            )}
+            {config.LockTeammateNameDisplay !== 'true' && (
+                <Choice
+                    title={formatMessage({id: 'fusion.settings.names', defaultMessage: 'Show people as'})}
+                    value={nameFormat}
+                    options={[
+                        [Preferences.DISPLAY_PREFER_USERNAME, formatMessage({id: 'fusion.settings.namesUsername', defaultMessage: 'Username'})],
+                        [Preferences.DISPLAY_PREFER_NICKNAME, formatMessage({id: 'fusion.settings.namesNickname', defaultMessage: 'Nickname'})],
+                        [Preferences.DISPLAY_PREFER_FULL_NAME, formatMessage({id: 'fusion.settings.namesFull', defaultMessage: 'Full name'})],
+                    ]}
+                    onChange={setNameFormat}
+                />
+            )}
             <Toggle
                 title={formatMessage({id: 'fusion.settings.clock', defaultMessage: '24-hour clock'})}
                 desc={formatMessage({id: 'fusion.settings.clockDesc', defaultMessage: 'Show times as 16:00 instead of 4:00 PM.'})}
-                on={militaryTime}
-                onChange={(on) => dispatch(savePreferences(me.id, [{user_id: me.id, category: Preferences.CATEGORY_DISPLAY_SETTINGS, name: Preferences.USE_MILITARY_TIME, value: String(on)}]))}
+                on={militaryTime === 'true'}
+                onChange={(on) => setMilitaryTime(String(on))}
             />
-            <div className={am('modal-actions')}>
-                <button
-                    type='button'
-                    className={am('btn')}
-                    onClick={() => dispatch(openClassicUserSettings('display'))}
-                >
-                    {formatMessage({id: 'fusion.settings.moreDisplay', defaultMessage: 'Language, time zone and more display settings…'})}
-                </button>
-            </div>
         </>
     );
 }
 
-function InterfacePane() {
+function MessagesPane() {
     const {formatMessage} = useIntl();
-    const dispatch = useDispatch();
-    const allowed = useSelector(getConfig).AllowUserWebUISelection === 'true';
+    const config = useSelector(getConfig);
+    const threadsChoice = useSelector((state: GlobalState) => isCollapsedThreadsAllowed(state) && getConfig(state).CollapsedThreads !== CollapsedThreads.ALWAYS_ON);
+    const [threads, setThreads] = usePreference(Preferences.CATEGORY_DISPLAY_SETTINGS, Preferences.COLLAPSED_REPLY_THREADS, useSelector(getCollapsedThreadsPreference));
+    const [linkPreviews, setLinkPreviews] = usePreference(Preferences.CATEGORY_DISPLAY_SETTINGS, Constants.Preferences.LINK_PREVIEW_DISPLAY, Constants.Preferences.LINK_PREVIEW_DISPLAY_DEFAULT);
+    const [emoticons, setEmoticons] = usePreference(Preferences.CATEGORY_DISPLAY_SETTINGS, Preferences.RENDER_EMOTICONS_AS_EMOJI, 'true');
+    const [joinLeave, setJoinLeave] = usePreference(Preferences.CATEGORY_ADVANCED_SETTINGS, Preferences.ADVANCED_FILTER_JOIN_LEAVE, config.EnableJoinLeaveMessageByDefault || 'true');
+    const [ctrlSend, setCtrlSend] = usePreference(Preferences.CATEGORY_ADVANCED_SETTINGS, Preferences.ADVANCED_SEND_ON_CTRL_ENTER, 'false');
+    const [syncDrafts, setSyncDrafts] = usePreference(Preferences.CATEGORY_ADVANCED_SETTINGS, Preferences.ADVANCED_SYNC_DRAFTS, 'true');
+
     return (
         <>
-            <h2>{formatMessage({id: 'fusion.settings.interface', defaultMessage: 'Web interface'})}</h2>
-            <p className={am('lead')}>{formatMessage({id: 'fusion.settings.interfaceLead', defaultMessage: 'Antimatter has two web interfaces. Your choice applies to every browser you sign in from.'})}</p>
-            {allowed ? (
-                <div
-                    className={am('seg')}
-                    role='group'
-                >
-                    {[WebUIs.CLASSIC, WebUIs.FUSION].map((ui) => (
-                        <button
-                            key={ui}
-                            type='button'
-                            className={am({on: ui === CURRENT_WEB_UI})}
-                            onClick={() => ui !== CURRENT_WEB_UI && dispatch(switchWebUI(ui))}
-                        >
-                            {ui === WebUIs.CLASSIC ? formatMessage({id: 'fusion.settings.classic', defaultMessage: 'Classic'}) : formatMessage({id: 'fusion.settings.fusion', defaultMessage: 'Fusion'})}
-                        </button>
-                    ))}
-                </div>
-            ) : (
-                <div className={am('note-box')}>{formatMessage({id: 'fusion.settings.interfaceLocked', defaultMessage: 'Your system admin chose the web interface for everyone.'})}</div>
+            <h2>{formatMessage({id: 'fusion.settings.messages', defaultMessage: 'Messages'})}</h2>
+            <p className={am('lead')}>{formatMessage({id: 'fusion.settings.messagesLead', defaultMessage: 'How conversations are shown, and how you write in them.'})}</p>
+            {threadsChoice && (
+                <Toggle
+                    title={formatMessage({id: 'fusion.settings.threads', defaultMessage: 'Keep replies in threads'})}
+                    desc={formatMessage({id: 'fusion.settings.threadsDesc', defaultMessage: 'Thread replies stay in their thread instead of the channel, and the threads you follow are listed in Threads.'})}
+                    on={threads === Preferences.COLLAPSED_REPLY_THREADS_ON}
+                    onChange={(on) => setThreads(on ? Preferences.COLLAPSED_REPLY_THREADS_ON : Preferences.COLLAPSED_REPLY_THREADS_OFF)}
+                />
             )}
+            {config.EnableLinkPreviews === 'true' && (
+                <Toggle
+                    title={formatMessage({id: 'fusion.settings.linkPreviews', defaultMessage: 'Link previews'})}
+                    desc={formatMessage({id: 'fusion.settings.linkPreviewsDesc', defaultMessage: 'Show a preview of the websites linked in messages.'})}
+                    on={linkPreviews === 'true'}
+                    onChange={(on) => setLinkPreviews(String(on))}
+                />
+            )}
+            <Toggle
+                title={formatMessage({id: 'fusion.settings.emoticons', defaultMessage: 'Turn emoticons into emoji'})}
+                desc={formatMessage({id: 'fusion.settings.emoticonsDesc', defaultMessage: 'Show :) and <3 as emoji.'})}
+                on={emoticons === 'true'}
+                onChange={(on) => setEmoticons(String(on))}
+            />
+            <Toggle
+                title={formatMessage({id: 'fusion.settings.joinLeave', defaultMessage: 'Join and leave messages'})}
+                desc={formatMessage({id: 'fusion.settings.joinLeaveDesc', defaultMessage: 'Show when people join or leave channels.'})}
+                on={joinLeave === 'true'}
+                onChange={(on) => setJoinLeave(String(on))}
+            />
+            <Toggle
+                title={formatMessage({id: 'fusion.settings.ctrlSend', defaultMessage: 'Send with Ctrl+Enter'})}
+                desc={formatMessage({id: 'fusion.settings.ctrlSendDesc', defaultMessage: 'Enter starts a new line, and Ctrl+Enter (⌘+Enter on a Mac) sends.'})}
+                on={ctrlSend === 'true'}
+                onChange={(on) => setCtrlSend(String(on))}
+            />
+            {config.AllowSyncedDrafts === 'true' && (
+                <Toggle
+                    title={formatMessage({id: 'fusion.settings.syncDrafts', defaultMessage: 'Sync drafts'})}
+                    desc={formatMessage({id: 'fusion.settings.syncDraftsDesc', defaultMessage: 'Keep the messages you haven\'t sent yet on the server, to finish them on another device.'})}
+                    on={syncDrafts === 'true'}
+                    onChange={(on) => setSyncDrafts(String(on))}
+                />
+            )}
+        </>
+    );
+}
+
+function LanguagePane() {
+    const {formatMessage} = useIntl();
+    const dispatch = useDispatch();
+    const me = useSelector(getCurrentUser);
+    const languages = useSelector(getLanguages);
+    const timezone = useSelector(getCurrentTimezoneLabel);
+    const sorted = Object.values(languages).sort((a, b) => a.order - b.order);
+
+    return (
+        <>
+            <h2>{formatMessage({id: 'fusion.settings.language', defaultMessage: 'Language & time'})}</h2>
+            <p className={am('lead')}>{formatMessage({id: 'fusion.settings.languageLead', defaultMessage: 'The language of the interface, and the time zone your times are shown in.'})}</p>
+            <label className={am('field')}>
+                <span>{formatMessage({id: 'fusion.settings.languageField', defaultMessage: 'Language'})}</span>
+                <select
+                    value={me.locale}
+                    onChange={(e) => dispatch(updateMe({locale: e.target.value}))}
+                >
+                    {sorted.map((language) => (
+                        <option
+                            key={language.value}
+                            value={language.value}
+                        >
+                            {language.name}
+                        </option>
+                    ))}
+                </select>
+            </label>
+            <Action
+                title={formatMessage({id: 'fusion.settings.timezone', defaultMessage: 'Time zone'})}
+                desc={timezone}
+                label={formatMessage({id: 'fusion.settings.change', defaultMessage: 'Change…'})}
+                onClick={() => dispatch(openClassicUserSettings('display'))}
+            />
         </>
     );
 }
@@ -307,9 +512,11 @@ export default function SettingsModal({tab, onTab, onClose}: Props) {
 
     const pane = {
         account: <AccountPane/>,
+        security: <SecurityPane/>,
         notifications: <NotificationsPane/>,
         appearance: <AppearancePane/>,
-        interface: <InterfacePane/>,
+        messages: <MessagesPane/>,
+        language: <LanguagePane/>,
     }[tab];
 
     return (
