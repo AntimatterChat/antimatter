@@ -10,7 +10,7 @@ import type {Post} from '@mattermost/types/posts';
 import type {UserProfile} from '@mattermost/types/users';
 
 import {Client4} from 'mattermost-redux/client';
-import {getAllChannels, getMyChannelMemberships} from 'mattermost-redux/selectors/entities/channels';
+import {getAllChannels, getMyChannelMemberships, makeGetChannel} from 'mattermost-redux/selectors/entities/channels';
 import {getCurrentTeam, getTeam} from 'mattermost-redux/selectors/entities/teams';
 import {getCurrentUserId, getUsers} from 'mattermost-redux/selectors/entities/users';
 import {getUserIdFromChannelName} from 'mattermost-redux/utils/channel_utils';
@@ -24,6 +24,7 @@ import {Dialog} from 'fusion/components/layer';
 import {useWhen} from 'fusion/messages/time';
 import {useGlobalSearch} from 'fusion/shell/global_search_context';
 import ChannelIcon from 'fusion/sidebar/channel_icon';
+import {useConversationName} from 'fusion/sidebar/group_dm';
 import {am} from 'fusion/utils/class_names';
 import {channelPath, permalinkPath} from 'fusion/utils/paths';
 import {plainText} from 'fusion/utils/plain_text';
@@ -73,6 +74,20 @@ function Mark({text, q}: {text: string; q: string}) {
 }
 
 // GlobalSearch is the Ctrl/⌘+K overlay: jump to a channel, a conversation or a person, or search every message.
+// ChannelTitle names a channel of the results: direct and group messages after their members (or the name given to
+// a group), which the raw channel doesn't have.
+function ChannelTitle({channel, q}: {channel: Channel; q: string}) {
+    const getChannel = useMemo(() => makeGetChannel(), []);
+    const full = useSelector((state: GlobalState) => getChannel(state, channel.id)) || channel;
+    const name = useConversationName(full);
+    return (
+        <Mark
+            text={name}
+            q={q}
+        />
+    );
+}
+
 export default function GlobalSearch() {
     const {formatMessage} = useIntl();
     const dispatch = useDispatch();
@@ -183,8 +198,8 @@ export default function GlobalSearch() {
                     )}
                     <span style={{minWidth: 0}}>
                         <b>
-                            <Mark
-                                text={c.display_name}
+                            <ChannelTitle
+                                channel={c}
                                 q={q}
                             />
                         </b>
@@ -286,6 +301,7 @@ export default function GlobalSearch() {
         <Dialog
             label={formatMessage({id: 'fusion.gs.label', defaultMessage: 'Search everything'})}
             top={true}
+            small={false}
             onClose={search.close}
             className={am('gsearch')}
         >

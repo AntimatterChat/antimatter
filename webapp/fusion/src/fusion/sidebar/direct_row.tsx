@@ -1,7 +1,7 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 
-import React, {useMemo} from 'react';
+import React, {useMemo, useState} from 'react';
 import {useIntl} from 'react-intl';
 import {useDispatch, useSelector} from 'react-redux';
 import {Link} from 'react-router-dom';
@@ -20,12 +20,15 @@ import {leaveDirectChannel} from 'actions/views/channel';
 import {DirectTalkMarker} from 'fusion/calls/markers';
 import Avatar from 'fusion/components/avatar';
 import Icon from 'fusion/components/icon';
+import StatusEmoji from 'fusion/components/status_emoji';
 import {useLayout} from 'fusion/shell/layout_context';
 import {am} from 'fusion/utils/class_names';
 import {channelPath} from 'fusion/utils/paths';
 import {getHistory} from 'utils/browser_history';
 
 import type {GlobalState} from 'types/store';
+
+import {GroupMenu, useConversationName} from './group_dm';
 
 type Props = {
     channel: Channel;
@@ -70,6 +73,8 @@ export default function DirectRow({channel, dock, meta}: Props) {
     const unread = useSelector((state: GlobalState) => getUnreadCount(state, channel.id));
     const badge = unread.mentions || (unread.showUnread ? unread.messages : 0);
     const teammateId = useTeammateId(channel);
+    const name = useConversationName(channel);
+    const [groupMenu, setGroupMenu] = useState<{x: number; y: number} | null>(null);
     const remote = useSelector((state: GlobalState) => Boolean(teammateId && getUser(state, teammateId)?.remote_id));
 
     if (!team) {
@@ -105,7 +110,8 @@ export default function DirectRow({channel, dock, meta}: Props) {
                 size={dock ? 'sm' : ''}
             />
             <span className={am('name')}>
-                {channel.display_name}
+                {name}
+                <StatusEmoji userId={teammateId}/>
                 {remote && (
                     <span
                         className={am('fed-ic')}
@@ -131,16 +137,36 @@ export default function DirectRow({channel, dock, meta}: Props) {
         </Link>
     );
 
+    // A group message's right-click menu renames it or turns it into a channel.
+    const withMenu = channel.type === 'G' ? (
+        <div
+            className={am('group-row')}
+            onContextMenu={(e) => {
+                e.preventDefault();
+                setGroupMenu({x: e.clientX, y: e.clientY});
+            }}
+        >
+            {row}
+            {groupMenu && (
+                <GroupMenu
+                    channel={channel}
+                    point={groupMenu}
+                    onClose={() => setGroupMenu(null)}
+                />
+            )}
+        </div>
+    ) : row;
+
     if (!dock) {
-        return row;
+        return withMenu;
     }
     return (
         <div className={am('dock-row')}>
-            {row}
+            {withMenu}
             <button
                 className={am('dock-x')}
                 title={formatMessage({id: 'fusion.dock.close', defaultMessage: 'Close'})}
-                aria-label={formatMessage({id: 'fusion.dock.closeLabel', defaultMessage: 'Close conversation with {name}'}, {name: channel.display_name})}
+                aria-label={formatMessage({id: 'fusion.dock.closeLabel', defaultMessage: 'Close conversation with {name}'}, {name})}
                 onClick={close}
             >
                 <Icon

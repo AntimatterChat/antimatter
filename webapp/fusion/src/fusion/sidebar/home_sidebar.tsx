@@ -175,6 +175,19 @@ export default function HomeSidebar() {
                     style={{cursor: 'default'}}
                 >
                     <span className={am('grow')}>{formatMessage({id: 'fusion.home.conversations', defaultMessage: 'Conversations'})}</span>
+                    <button
+                        type='button'
+                        className={am('add-ch')}
+                        style={{opacity: 1}}
+                        title={formatMessage({id: 'fusion.home.newGroup', defaultMessage: 'New conversation with one or more people'})}
+                        aria-label={formatMessage({id: 'fusion.home.newGroup', defaultMessage: 'New conversation with one or more people'})}
+                        onClick={() => dispatch(openNewDirectMessage())}
+                    >
+                        <Icon
+                            name='plus'
+                            size='sm'
+                        />
+                    </button>
                 </div>
                 <div className={am('dm-list')}>
                     {list.map((channel) => (

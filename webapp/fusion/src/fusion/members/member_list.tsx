@@ -18,6 +18,7 @@ import {makeGetCustomStatus} from 'selectors/views/custom_status';
 import {TalkNote} from 'fusion/calls/markers';
 import Avatar from 'fusion/components/avatar';
 import Icon from 'fusion/components/icon';
+import StatusEmoji from 'fusion/components/status_emoji';
 import {useDisplayName} from 'fusion/hooks/users';
 import {useUserMenu} from 'fusion/popovers/user_menu';
 import UserPopover from 'fusion/popovers/user_popover';
@@ -56,6 +57,7 @@ function Member({user, off, role, onOpen, onMenu}: MemberProps) {
             <span className={am('who')}>
                 <b style={role ? {color: ROLE_COLORS[role]} : undefined}>
                     <span className={am('nm')}>{name}</span>
+                    <StatusEmoji userId={user.id}/>
                     {user.is_bot && <span className={am('bot-tag')}>{'BOT'}</span>}
                 </b>
                 <span><TalkNote userId={user.id}>{custom?.text || user.position || ''}</TalkNote></span>

@@ -56,6 +56,7 @@ import type {PostDraft} from 'types/store/draft';
 
 import Autocomplete from './autocomplete';
 import type {AutocompleteHandle} from './autocomplete';
+import AwayNote from './away_note';
 import {confirmChannelWideMentions} from './confirm_mentions';
 import {FORMATS, applyFormat} from './formats';
 import {useShowFormatting} from './formatting_preference';
@@ -501,6 +502,7 @@ export default function Composer({channelId, rootId = '', placeholder}: Props) {
                 textareaRef={textareaRef}
                 onChange={(message) => change({message})}
             />
+            {!rootId && <AwayNote channelId={channelId}/>}
             {!rootId && (
                 <SleepNote
                     channelId={channelId}
