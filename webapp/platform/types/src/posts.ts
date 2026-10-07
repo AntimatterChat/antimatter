@@ -80,6 +80,10 @@ export type PostReplyTo = {
 
     // How many of the quoted message's files are images.
     image_count?: number;
+
+    // Set when the quoted message is a spoiler: its text is then left out.
+    spoiler?: boolean;
+
     override_username?: string;
 
     // Set when the quoted message was deleted or can't be shown.

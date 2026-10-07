@@ -102,6 +102,36 @@ func TestNewPostReplyTo(t *testing.T) {
 		burn.Type = PostTypeBurnOnRead
 		assert.Equal(t, deleted, NewPostReplyTo(reply, burn.Id, burn))
 	})
+
+	t.Run("leaves out a spoiler's text", func(t *testing.T) {
+		spoiler := target.Clone()
+		spoiler.AddProp(PostPropsSpoiler, true)
+		replyTo := NewPostReplyTo(reply, spoiler.Id, spoiler)
+		assert.True(t, replyTo.Spoiler)
+		assert.Empty(t, replyTo.Message)
+		assert.Equal(t, 2, replyTo.FileCount)
+	})
+}
+
+func TestPostIsSpoiler(t *testing.T) {
+	for name, tc := range map[string]struct {
+		value any
+		want  bool
+	}{
+		"unset":         {nil, false},
+		"true":          {true, true},
+		"false":         {false, false},
+		"string true":   {"true", true},
+		"another value": {"yes", false},
+	} {
+		t.Run(name, func(t *testing.T) {
+			post := &Post{}
+			if tc.value != nil {
+				post.AddProp(PostPropsSpoiler, tc.value)
+			}
+			assert.Equal(t, tc.want, post.IsSpoiler())
+		})
+	}
 }
 
 func TestPostMetadataCopy_ReplyTo(t *testing.T) {

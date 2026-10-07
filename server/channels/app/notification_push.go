@@ -957,6 +957,12 @@ func (a *App) buildFullPushNotificationMessage(rctx request.CTX, contentsConfig 
 
 	hasFiles := len(post.FileIds) > 0
 
+	// A spoiler's text and files stay hidden until its reader opens it: the notification only says it is one.
+	if post.IsSpoiler() {
+		postMessage = i18n.GetUserTranslations(user.Locale)("api.push_notification.spoiler")
+		hasFiles = false
+	}
+
 	msg.Message = a.getPushNotificationMessage(
 		contentsConfig,
 		postMessage,

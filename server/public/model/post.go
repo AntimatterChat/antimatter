@@ -115,6 +115,8 @@ const (
 	PostPropsReplyTo = "reply_to"
 	// PostPropsReplyToMention, set to false on an inline reply, keeps the quoted message's author from being notified.
 	PostPropsReplyToMention = "reply_to_mention"
+	// PostPropsSpoiler, set to true, hides a post's text and files until the reader chooses to see them (see IsSpoiler).
+	PostPropsSpoiler = "spoiler"
 	// Shared-channel state posts (PostTypeSharedChannelState): props for client-side i18n.
 	PostPropsSharedChannelState         = "shared_channel_state"
 	PostPropsSharedChannelWorkspaceName = "workspace_name"

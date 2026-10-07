@@ -24,6 +24,8 @@ import {isSystemMessage} from 'utils/post_utils';
 
 import type {GlobalState} from 'types/store';
 
+import {isSpoiler} from './spoiler';
+
 // Inline replies answer one message in the conversation, quoting it above the reply, without opening a thread (the
 // mockup's "Replying to" line). The reply's reply_to prop holds the quoted message's id; the server describes that
 // message in the reply's metadata.reply_to.
@@ -103,6 +105,9 @@ export type Quoted = {
     imageCount: number;
     overrideUsername?: string;
 
+    // Set when the quoted message is a spoiler: its text is left out then.
+    spoiler?: boolean;
+
     // Set when the quoted message is loaded and was posted by an incoming webhook: replies don't notify anyone then.
     fromWebhook?: boolean;
 };
@@ -120,10 +125,12 @@ export function useQuoted(id: string, described?: PostReplyTo): Quoted {
         }
         const fromWebhook = post.props?.from_webhook === 'true';
         const files = post.metadata?.files || [];
+        const spoiler = isSpoiler(post);
         return {
             deleted: false,
             userId: post.user_id,
-            message: post.message,
+            message: spoiler ? '' : post.message,
+            spoiler,
             type: post.type,
             fileCount: post.file_ids?.length || files.length,
             imageCount: imageCount || files.filter((file) => file.mime_type?.startsWith('image')).length,
@@ -140,6 +147,7 @@ export function useQuoted(id: string, described?: PostReplyTo): Quoted {
             fileCount: described.file_count || 0,
             imageCount: described.image_count || 0,
             overrideUsername: described.override_username,
+            spoiler: described.spoiler,
         };
     }
 
@@ -162,6 +170,9 @@ export function quotedIcon(quoted: Quoted): IconName | undefined {
     if (quoted.deleted) {
         return undefined;
     }
+    if (quoted.spoiler) {
+        return 'eye-off';
+    }
     if (quoted.type && TYPE_ICONS[quoted.type]) {
         return TYPE_ICONS[quoted.type];
     }
@@ -182,6 +193,8 @@ function QuotedSnippet({quoted, variant}: {quoted: Quoted; variant: 'ref' | 'bar
     let text;
     if (quoted.deleted) {
         text = formatMessage({id: 'fusion.inlineReply.deleted', defaultMessage: 'Original message was deleted'});
+    } else if (quoted.spoiler) {
+        text = formatMessage({id: 'fusion.inlineReply.spoiler', defaultMessage: 'Spoiler'});
     } else if (quoted.message.trim()) {
         text = plainText(quoted.message, 160);
     } else if (variant === 'bar') {

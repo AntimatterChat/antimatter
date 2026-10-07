@@ -42,6 +42,7 @@ import {
     useQuoted,
 } from 'fusion/messages/inline_reply';
 import type {ReplyEventDetail} from 'fusion/messages/inline_reply';
+import {isSpoiler, SPOILER_PROP} from 'fusion/messages/spoiler';
 import EmojiPicker from 'fusion/popovers/emoji_picker';
 import {MENTION_EVENT} from 'fusion/popovers/user_menu';
 import {useToast} from 'fusion/shell/toast_context';
@@ -343,6 +344,18 @@ export default function Composer({channelId, rootId = '', placeholder}: Props) {
     };
     const burn = draft.type === Posts.POST_TYPES.BURN_ON_READ;
 
+    // A spoiler is sent with the spoiler prop, which hides its text and files until its readers click it.
+    const spoiler = isSpoiler(draft);
+    const setSpoiler = (on: boolean) => {
+        const props = {...draft.props};
+        if (on) {
+            props[SPOILER_PROP] = true;
+        } else {
+            delete props[SPOILER_PROP];
+        }
+        change({props});
+    };
+
     const chips = [];
     if (priority?.priority) {
         chips.push(
@@ -393,6 +406,24 @@ export default function Composer({channelId, rootId = '', placeholder}: Props) {
                     type='button'
                     aria-label={formatMessage({id: 'fusion.composer.noBurn', defaultMessage: 'Turn off burn on read'})}
                     onClick={() => change({type: undefined})}
+                >
+                    <Icon name='x'/>
+                </button>
+            </span>,
+        );
+    }
+    if (spoiler) {
+        chips.push(
+            <span
+                key='spoiler'
+                className={am('opt-chip', 'spoiler')}
+            >
+                <Icon name='eye-off'/>
+                {formatMessage({id: 'fusion.composer.spoilerOn', defaultMessage: 'Spoiler'})}
+                <button
+                    type='button'
+                    aria-label={formatMessage({id: 'fusion.composer.noSpoiler', defaultMessage: 'Don\'t send as a spoiler'})}
+                    onClick={() => setSpoiler(false)}
                 >
                     <Icon name='x'/>
                 </button>
@@ -608,6 +639,16 @@ export default function Composer({channelId, rootId = '', placeholder}: Props) {
                                 <Icon name='flame'/>
                             </button>
                         )}
+                        <button
+                            type='button'
+                            className={am({on: spoiler}, 'spoiler')}
+                            title={formatMessage({id: 'fusion.composer.spoiler', defaultMessage: 'Send as a spoiler'})}
+                            aria-label={formatMessage({id: 'fusion.composer.spoiler', defaultMessage: 'Send as a spoiler'})}
+                            aria-pressed={spoiler}
+                            onClick={() => setSpoiler(!spoiler)}
+                        >
+                            <Icon name='eye-off'/>
+                        </button>
                     </div>
                 )}
             </div>
