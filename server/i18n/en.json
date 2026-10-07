@@ -4956,8 +4956,8 @@
   },
   {
     "id": "api.templates.email_footer_v2",
-    "translation": "© 2015 - {{ .CurrentYear }} Mattermost, Inc. 2100 Geng Road, Suite 210, Palo Alto, CA, 94303",
-    "description": "Legal footer at the bottom of Mattermost emails; {{.CurrentYear}} is the current year in the copyright range, and the company address should remain unchanged."
+    "translation": "© {{ .CurrentYear }}",
+    "description": "Copyright line at the bottom of emails; {{.CurrentYear}} is the current year."
   },
   {
     "id": "api.templates.email_info1",
