@@ -21,6 +21,8 @@ body.app__body #root.am-root > .am-root-main {
 
 // Profile pictures, team icons and plugin icons inside the mockup's shapes.
 :is(.am-app, .am-layer) .am-av img { width: 100%; height: 100%; border-radius: inherit; object-fit: cover; }
+// The initials' colour is for initials only: pictures keep their own background, transparent ones included.
+:is(.am-app, .am-layer) .am-av:has(> img) { background: none; }
 :is(.am-app, .am-layer) .am-av.am-me { width: 38px; height: 38px; font-size: 14px; }
 :is(.am-app, .am-layer) .am-srv .am-srv-img { width: 100%; height: 100%; border-radius: inherit; object-fit: cover; }
 :is(.am-app, .am-layer) .am-app-ic .am-app-img { width: 22px; height: 22px; border-radius: 5px; object-fit: contain; }
