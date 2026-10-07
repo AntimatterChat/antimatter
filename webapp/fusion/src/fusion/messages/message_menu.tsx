@@ -139,7 +139,7 @@ export default function MessageMenu({post, anchor, inThread, onClose, onMoreReac
             )}
             {!inThread && !burn && (
                 <MenuItem
-                    icon={inlineReplies ? 'thread' : 'reply'}
+                    icon={inlineReplies ? 'thread-reply' : 'reply'}
                     label={formatMessage({id: 'fusion.messageMenu.reply', defaultMessage: 'Reply in thread'})}
                     onClick={run(() => dispatch(selectPost(post)))}
                 />
