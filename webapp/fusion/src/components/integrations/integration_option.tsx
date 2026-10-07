@@ -14,24 +14,46 @@ type Props = {
     icon: IconName;
     title: JSX.Element;
     description: JSX.Element;
-    link: string;
+
+    /** Where the tile leads, or, for plugin entries, what clicking it does. */
+    link?: string;
+    onClick?: () => void;
 };
 
-const IntegrationOption = ({icon, title, description, link}: Props) => {
-    return (
-        <Link
-            to={link}
-            className={`integration-option integration-option--${icon}`}
-        >
+const IntegrationOption = ({icon, title, description, link, onClick}: Props) => {
+    const className = `integration-option integration-option--${icon}`;
+    const content = (
+        <>
             <span className='integration-option__image'>
                 <Icon name={icon}/>
             </span>
-            <div className='integration-option__title'>
-                {title}
-            </div>
-            <div className='integration-option__description'>
-                {description}
-            </div>
+            <span className='integration-option__text'>
+                <span className='integration-option__title'>
+                    {title}
+                </span>
+                <span className='integration-option__description'>
+                    {description}
+                </span>
+            </span>
+        </>
+    );
+    if (!link) {
+        return (
+            <button
+                type='button'
+                className={className}
+                onClick={onClick}
+            >
+                {content}
+            </button>
+        );
+    }
+    return (
+        <Link
+            to={link}
+            className={className}
+        >
+            {content}
         </Link>
     );
 };

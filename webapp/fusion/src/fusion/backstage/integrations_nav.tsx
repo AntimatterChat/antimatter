@@ -3,11 +3,14 @@
 
 import React from 'react';
 import {useIntl} from 'react-intl';
+import {shallowEqual, useSelector} from 'react-redux';
 import {NavLink} from 'react-router-dom';
 
 import type {Team} from '@mattermost/types/teams';
 
 import {Permissions} from 'mattermost-redux/constants';
+
+import {getIntegrationsOptions} from 'selectors/integrations_options';
 
 import SystemPermissionGate from 'components/permissions_gates/system_permission_gate';
 import TeamPermissionGate from 'components/permissions_gates/team_permission_gate';
@@ -53,6 +56,7 @@ export default function IntegrationsNav(props: Props) {
     const {team} = props;
     const base = `/${team.name}/integrations`;
     const teamExists = team.delete_at === 0;
+    const pluginOptions = useSelector(getIntegrationsOptions, shallowEqual);
 
     return (
         <nav
@@ -147,16 +151,32 @@ export default function IntegrationsNav(props: Props) {
                     </SystemPermissionGate>
                 </>
             )}
-            {props.enableCustomEmoji && props.canCreateOrDeleteCustomEmoji && (
-                <>
-                    <h5>{formatMessage({id: 'fusion.integrations.customization', defaultMessage: 'Customization'})}</h5>
-                    <Item
-                        to={`/${team.name}/emoji`}
-                        icon='smile'
-                        label={formatMessage({id: 'fusion.integrations.emoji', defaultMessage: 'Custom emoji'})}
-                    />
-                </>
+            {((props.enableCustomEmoji && props.canCreateOrDeleteCustomEmoji) || pluginOptions.length > 0) && (
+                <h5>{formatMessage({id: 'fusion.integrations.customization', defaultMessage: 'Customization'})}</h5>
             )}
+            {props.enableCustomEmoji && props.canCreateOrDeleteCustomEmoji && (
+                <Item
+                    to={`/${team.name}/emoji`}
+                    icon='smile'
+                    label={formatMessage({id: 'fusion.integrations.emoji', defaultMessage: 'Custom emoji'})}
+                />
+            )}
+
+            {/* Entries of plugins, such as the custom GIFs and stickers of Antimatter's GIFs plugin. */}
+            {pluginOptions.map((option) => (
+                <button
+                    key={option.id}
+                    type='button'
+                    className={am('bs-item')}
+                    onClick={option.action}
+                >
+                    <Icon
+                        name={(option.fusionIcon || 'plug') as IconName}
+                        size='sm'
+                    />
+                    <span>{option.title}</span>
+                </button>
+            ))}
         </nav>
     );
 }

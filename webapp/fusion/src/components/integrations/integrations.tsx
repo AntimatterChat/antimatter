@@ -2,17 +2,19 @@
 // See LICENSE.txt for license information.
 
 import React from 'react';
-import {FormattedMessage} from 'react-intl';
+import {FormattedMessage, defineMessages} from 'react-intl';
 
 import type {Team} from '@mattermost/types/teams';
 
 import {Permissions} from 'mattermost-redux/constants';
 
-import ExternalLink from 'components/external_link';
 import SystemPermissionGate from 'components/permissions_gates/system_permission_gate';
 import TeamPermissionGate from 'components/permissions_gates/team_permission_gate';
 
+import type {IconName} from 'fusion/components/icon';
 import * as Utils from 'utils/utils';
+
+import type {IntegrationsOptionRegistration} from 'types/store/plugins';
 
 import IntegrationOption from './integration_option';
 
@@ -23,8 +25,17 @@ type Props = {
     enableCommands: boolean;
     enableOAuthServiceProvider: boolean;
     enableOutgoingOAuthConnections: boolean;
+    enableCustomEmoji: boolean;
+    canCreateOrDeleteCustomEmoji: boolean;
+    pluginOptions: IntegrationsOptionRegistration[];
     team: Team;
 };
+
+const messages = defineMessages({
+    hooks: {id: 'integrations.section.hooks', defaultMessage: 'Webhooks and commands'},
+    apps: {id: 'integrations.section.apps', defaultMessage: 'Apps and bots'},
+    customization: {id: 'integrations.section.customization', defaultMessage: 'Customization'},
+});
 
 export default class Integrations extends React.PureComponent <Props> {
     componentDidMount() {
@@ -37,10 +48,13 @@ export default class Integrations extends React.PureComponent <Props> {
     };
 
     render() {
-        const options = [];
+        // The overview groups the integrations as its side panel does, in rows of up to three tiles.
+        const hooks = [];
+        const apps = [];
+        const customization = [];
 
         if (this.props.enableIncomingWebhooks) {
-            options.push(
+            hooks.push(
                 <TeamPermissionGate
                     teamId={this.props.team.id}
                     permissions={[Permissions.MANAGE_INCOMING_WEBHOOKS, Permissions.MANAGE_OWN_INCOMING_WEBHOOKS]}
@@ -68,7 +82,7 @@ export default class Integrations extends React.PureComponent <Props> {
         }
 
         if (this.props.enableOutgoingWebhooks) {
-            options.push(
+            hooks.push(
                 <TeamPermissionGate
                     teamId={this.props.team.id}
                     permissions={[Permissions.MANAGE_OUTGOING_WEBHOOKS, Permissions.MANAGE_OWN_OUTGOING_WEBHOOKS]}
@@ -96,7 +110,7 @@ export default class Integrations extends React.PureComponent <Props> {
         }
 
         if (this.props.enableCommands) {
-            options.push(
+            hooks.push(
                 <TeamPermissionGate
                     teamId={this.props.team.id}
                     permissions={[Permissions.MANAGE_SLASH_COMMANDS, Permissions.MANAGE_OWN_SLASH_COMMANDS]}
@@ -124,7 +138,7 @@ export default class Integrations extends React.PureComponent <Props> {
         }
 
         if (this.props.enableOAuthServiceProvider) {
-            options.push(
+            apps.push(
                 <SystemPermissionGate
                     permissions={[Permissions.MANAGE_OAUTH]}
                     key='oauth2AppsPermission'
@@ -151,7 +165,7 @@ export default class Integrations extends React.PureComponent <Props> {
         }
 
         if (this.props.enableOutgoingOAuthConnections) {
-            options.push(
+            apps.push(
                 <TeamPermissionGate
                     teamId={this.props.team.id}
                     permissions={[Permissions.MANAGE_OUTGOING_OAUTH_CONNECTIONS]}
@@ -178,7 +192,7 @@ export default class Integrations extends React.PureComponent <Props> {
             );
         }
 
-        options.push(
+        apps.push(
             <SystemPermissionGate
                 permissions={['manage_bots']}
                 key='botsPermissions'
@@ -202,6 +216,47 @@ export default class Integrations extends React.PureComponent <Props> {
             </SystemPermissionGate>,
         );
 
+        if (this.props.enableCustomEmoji && this.props.canCreateOrDeleteCustomEmoji) {
+            customization.push(
+                <IntegrationOption
+                    key='customEmoji'
+                    icon='smile'
+                    title={
+                        <FormattedMessage
+                            id='emoji_list.header'
+                            defaultMessage='Custom Emoji'
+                        />
+                    }
+                    description={
+                        <FormattedMessage
+                            id='integrations.customEmoji.description'
+                            defaultMessage='Add emoji of your own, for everyone on the server to use'
+                        />
+                    }
+                    link={'/' + this.props.team.name + '/emoji'}
+                />,
+            );
+        }
+
+        // Entries of plugins, such as the custom GIFs and stickers of Antimatter's GIFs plugin.
+        this.props.pluginOptions.forEach((option) => {
+            customization.push(
+                <IntegrationOption
+                    key={option.id}
+                    icon={(option.fusionIcon || 'plug') as IconName}
+                    title={<>{option.title}</>}
+                    description={<>{option.description}</>}
+                    onClick={option.action}
+                />,
+            );
+        });
+
+        const sections = [
+            {key: 'hooks', title: <FormattedMessage {...messages.hooks}/>, options: hooks},
+            {key: 'apps', title: <FormattedMessage {...messages.apps}/>, options: apps},
+            {key: 'customization', title: <FormattedMessage {...messages.customization}/>, options: customization},
+        ].filter((section) => section.options.length);
+
         return (
             <div className='backstage-content row'>
                 <div className='backstage-header'>
@@ -212,28 +267,17 @@ export default class Integrations extends React.PureComponent <Props> {
                         />
                     </h1>
                 </div>
-                <div className='backstage-list__help'>
-                    <FormattedMessage
-                        id='integrations.help'
-                        defaultMessage='Visit the {appDirectory} to find self-hosted, third-party apps and integrations for Antimatter.'
-                        values={{
-                            appDirectory: (
-                                <ExternalLink
-                                    href='https://mattermost.com/marketplace'
-                                    location='integrations'
-                                >
-                                    <FormattedMessage
-                                        id='integrations.help.appDirectory'
-                                        defaultMessage='App Directory'
-                                    />
-                                </ExternalLink>
-                            ),
-                        }}
-                    />
-                </div>
-                <div className='integrations-list d-flex flex-wrap'>
-                    {options}
-                </div>
+                {sections.map((section) => (
+                    <section
+                        key={section.key}
+                        className='integrations-section'
+                    >
+                        <h2>{section.title}</h2>
+                        <div className='integrations-list'>
+                            {section.options}
+                        </div>
+                    </section>
+                ))}
             </div>
         );
     }
