@@ -10,6 +10,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
 	"github.com/mattermost/mattermost/server/public/model"
@@ -408,5 +409,32 @@ func TestMailServiceConfig(t *testing.T) {
 	t.Run("use configured replyto", func(t *testing.T) {
 		mailConfig := emailService.mailServiceConfig("")
 		require.Equal(t, configuredReplyTo, mailConfig.ReplyToAddress)
+	})
+}
+
+func TestEmailChangeVerifyBodySupportEmail(t *testing.T) {
+	mainHelper.Parallel(t)
+	th := SetupWithStoreMock(t)
+
+	render := func(supportEmail string) string {
+		th.UpdateConfig(t, func(cfg *model.Config) { *cfg.SupportSettings.SupportEmail = supportEmail })
+		data := th.service.NewEmailTemplateData("en")
+		data.Props["QuestionTitle"] = "Questions?"
+		data.Props["EmailInfo1"] = "Email us anytime at "
+		body, err := th.service.templatesContainer.RenderToString("email_change_verify_body", data)
+		require.NoError(t, err)
+		return body
+	}
+
+	t.Run("names the server's support address", func(t *testing.T) {
+		body := render("help@antimatter.example")
+		assert.Contains(t, body, "mailto:help@antimatter.example")
+		assert.NotContains(t, body, "mattermost.com")
+	})
+
+	t.Run("leaves the questions out when the server has no support address", func(t *testing.T) {
+		body := render("")
+		assert.NotContains(t, body, "Questions?")
+		assert.NotContains(t, body, "mailto:")
 	})
 }
