@@ -60,7 +60,13 @@
 :is(.am-app, .am-layer) .am-msg-tools button:hover { background: var(--am-hover); color: var(--am-text); }
 
 /* Composer */
-:is(.am-app, .am-layer) .am-composer { flex: none; padding: 0 18px 16px; }
+:is(.am-app, .am-layer) .am-composer { flex: none; padding: 0 18px 16px; position: relative; }
+:is(.am-app, .am-layer) .am-typing { position: absolute; left: 30px; right: 18px; bottom: 0; height: 16px; overflow: hidden; color: var(--am-muted); font: 500 12px/16px var(--am-font-ui); white-space: nowrap; text-overflow: ellipsis; }
+:is(.am-app, .am-layer) .am-typing-dots { display: inline-flex; gap: 3px; margin-right: 6px; vertical-align: 1px; }
+:is(.am-app, .am-layer) .am-typing-dots i { width: 4px; height: 4px; border-radius: 50%; background: var(--am-text-2); animation: am-typing 1.2s infinite ease-in-out; }
+:is(.am-app, .am-layer) .am-typing-dots i:nth-child(2) { animation-delay: .15s; }
+:is(.am-app, .am-layer) .am-typing-dots i:nth-child(3) { animation-delay: .3s; }
+@keyframes am-typing { 0%, 60%, 100% { opacity: .3; transform: none; } 30% { opacity: 1; transform: translateY(-2px); } }
 :is(.am-app, .am-layer) .am-replying {
   display: flex;
   align-items: center;
@@ -170,6 +176,18 @@
 :is(.am-app, .am-layer) .am-burn-cover { display: flex; align-items: center; gap: 8px; margin-top: 2px; padding: 10px 12px; border-radius: 9px; border: 1px dashed var(--am-line); background: var(--am-side); color: var(--am-text-2); font-size: 14px; text-align: left; }
 :is(.am-app, .am-layer) .am-burn-cover:hover { border-color: #F97316; color: var(--am-text); }
 :is(.am-app, .am-layer) .am-burn-cover .am-ic { color: #F97316; }
+/* Messages being sent are dimmed; failed ones more, with Retry and Cancel in red under them. */
+:is(.am-app, .am-layer) .am-msg.am-sending .am-body { opacity: .6; }
+:is(.am-app, .am-layer) .am-msg.am-failed :is(.am-body, .am-files) { opacity: .45; }
+:is(.am-app, .am-layer) .am-failed-bar { display: flex; align-items: center; gap: 6px; margin-top: 2px; color: var(--am-danger); font-size: 12.5px; font-weight: 600; }
+:is(.am-app, .am-layer) .am-failed-bar button { padding: 1px 6px; border-radius: 5px; color: var(--am-danger); font-weight: 700; text-decoration: underline; text-underline-offset: 2px; }
+:is(.am-app, .am-layer) .am-failed-bar button:hover { background: color-mix(in srgb, var(--am-danger) 14%, transparent); }
+/* Long messages: folded under a fade, with Show more / Show less under them. */
+:is(.am-app, .am-layer) .am-body.am-folded { overflow: hidden; -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 72px), transparent); mask-image: linear-gradient(to bottom, #000 calc(100% - 72px), transparent); }
+:is(.am-app, .am-layer) .am-more-btn { display: inline-flex; align-items: center; gap: 6px; margin: 2px 0 4px; padding: 3px 8px 3px 6px; border-radius: 6px; color: var(--am-anti); font-size: 13px; font-weight: 600; }
+:is(.am-app, .am-layer) .am-more-btn:hover { background: var(--am-hover); }
+:is(.am-app, .am-layer) .am-more-btn .am-ic { transition: transform .15s ease; }
+:is(.am-app, .am-layer) .am-more-btn[aria-expanded="true"] .am-ic { transform: rotate(180deg); }
 /* Spoilers: the text and files hide behind a striped cover until clicked; the header's tag hides them again. */
 :is(.am-app, .am-layer) .am-spoiler-cover {
   display: flex;

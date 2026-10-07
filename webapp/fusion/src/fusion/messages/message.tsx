@@ -41,7 +41,9 @@ import {BurnCover, BurnTag} from './burn_on_read';
 import Files from './content/files';
 import MessageContent from './content/message_content';
 import EditForm from './edit_form';
+import FailedPost from './failed_post';
 import {canReplyInline, replyInline, replyToId, useInlineRepliesEnabled} from './inline_reply';
+import LongBody from './long_body';
 import {useMentionClick} from './mention_click';
 import {useConcernsMe} from './mentions';
 import MessageMenu from './message_menu';
@@ -278,7 +280,8 @@ export default function Message({postId, previousPostId, inThread = false, highl
             )}
             {!concealed && !spoilerHidden && !editing && callCard && <CallCard post={post}/>}
             {!concealed && !spoilerHidden && !editing && !callCard && (
-                <div
+                <LongBody
+                    postId={post.id}
                     className={am('body')}
                     onClickCapture={onMentionClick}
                 >
@@ -287,9 +290,10 @@ export default function Message({postId, previousPostId, inThread = false, highl
                         inThread={inThread}
                         autotranslated={autotranslated}
                     />
-                </div>
+                </LongBody>
             )}
             {post.file_ids && post.file_ids.length > 0 && !deleted && !concealed && !spoilerHidden && <Files post={post}/>}
+            {post.failed && <FailedPost post={post}/>}
             <Acknowledge post={post}/>
             <Reactions postId={post.id}/>
             {!inThread && crt && !post.root_id && <ThreadSummary post={post}/>}
@@ -334,6 +338,10 @@ export default function Message({postId, previousPostId, inThread = false, highl
         'hl-me': concernsMe,
         'menu-open': popover === 'menu' || popover === 'react' || popover === 'react-more',
         flash: highlighted,
+
+        // A message being sent is dimmed; one that couldn't be sent, more, with what to do under it.
+        sending: post.pending_post_id === post.id && !post.failed,
+        failed: Boolean(post.failed),
     });
 
     if (ephemeral) {
