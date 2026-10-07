@@ -621,7 +621,8 @@
         "AutomaticPrepackagedPlugins": null,
         "RequirePluginSignature": null,
         "MarketplaceURL": null,
-        "SignaturePublicKeyFiles": null
+        "SignaturePublicKeyFiles": null,
+        "AllowMarketplaceToReplaceAntimatterPlugins": null
     },
     "DisplaySettings": {
         "CustomURLSchemes": null,
@@ -711,6 +712,9 @@
         "EnforcePostsPerDay": null,
         "EnforceCooldown": null
     },
+    "IPFilteringSettings": {
+        "Rules": null
+    },
     "FeatureFlags": {
         "TestFeature": "true",
         "TestBoolFeature": false,
@@ -751,7 +755,6 @@
         "ResourceAttributesInPolicies": false,
         "MmBlocksEnabled": false,
         "ClusterGracefulDrain": false,
-        "EnableMFIPluginSignaturePublicKey": false,
         "RecurringScheduledPosts": false,
         "PostDeliveryTracking": false,
         "HealthDashboard": false

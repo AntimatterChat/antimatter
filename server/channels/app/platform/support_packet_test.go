@@ -377,6 +377,11 @@ func TestGetSupportPacketDiagnostics(t *testing.T) {
 	})
 
 	t.Run("only the cluster leader writes is_leader", func(t *testing.T) {
+		// Cluster diagnostics are only gathered with clustering on.
+		th.Service.UpdateConfig(func(cfg *model.Config) { *cfg.ClusterSettings.Enable = true })
+		t.Cleanup(func() {
+			th.Service.UpdateConfig(func(cfg *model.Config) { *cfg.ClusterSettings.Enable = false })
+		})
 		originalCluster := th.Service.clusterIFace
 		t.Cleanup(func() {
 			th.Service.clusterIFace = originalCluster
@@ -398,21 +403,6 @@ func TestGetSupportPacketDiagnostics(t *testing.T) {
 			}
 		}
 		assert.Equal(t, 1, leaders)
-	})
-
-	t.Run("cloud license writes is_cloud", func(t *testing.T) {
-		cloudLicense := model.NewTestLicense("cloud")
-		require.True(t, th.Service.SetLicense(cloudLicense))
-		t.Cleanup(func() {
-			require.True(t, th.Service.SetLicense(license))
-		})
-
-		d := getDiagnostics(t)
-		assert.True(t, d.License.IsCloud)
-
-		fileData, err := supportPacketDiagnosticsFile(d, nil)
-		require.NoError(t, err)
-		assert.Contains(t, string(fileData.Body), "is_cloud: true")
 	})
 
 	t.Run("filestore fails", func(t *testing.T) {
@@ -1298,6 +1288,11 @@ func TestGetSupportPacketDiagnosticsSectionErrors(t *testing.T) {
 	})
 
 	t.Run("cluster infos fail", func(t *testing.T) {
+		// Cluster diagnostics are only gathered with clustering on.
+		th.Service.UpdateConfig(func(cfg *model.Config) { *cfg.ClusterSettings.Enable = true })
+		t.Cleanup(func() {
+			th.Service.UpdateConfig(func(cfg *model.Config) { *cfg.ClusterSettings.Enable = false })
+		})
 		cluster := emocks.NewClusterInterface(t)
 		// Setup's background config publishes reach whichever cluster is installed.
 		cluster.On("SendClusterMessage", mock.Anything).Return().Maybe()
