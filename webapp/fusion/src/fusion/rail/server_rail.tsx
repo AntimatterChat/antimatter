@@ -15,6 +15,7 @@ import {getCurrentTeam, getCurrentTeamId, getJoinableTeamIds} from 'mattermost-r
 import {switchTeam} from 'actions/team_actions';
 
 import Icon from 'fusion/components/icon';
+import ServerMenu from 'fusion/popovers/server_menu';
 import {getLastTeamChannelName, getSortedMyTeams, getUnreadDirectChannels} from 'fusion/selectors';
 import {useGlobalSearch} from 'fusion/shell/global_search_context';
 import {useLayout} from 'fusion/shell/layout_context';
@@ -32,27 +33,43 @@ const initialsOf = (name: string) => name.split(/\s+/).map((p) => p[0] || '').sl
 function TeamButton({team, active, unread, mentions, onSelect}: {team: Team; active: boolean; unread: boolean; mentions: number; onSelect: () => void}) {
     const icon = imageURLForTeam(team);
 
+    // Right-clicking a team opens its menu, as in Discord.
+    const [menu, setMenu] = useState<{x: number; y: number} | null>(null);
+
     // An icon that doesn't load (its file is gone from the server's storage) falls back to the initials, as
     // profile pictures do, rather than showing the browser's broken image.
     const [failedIcon, setFailedIcon] = useState('');
     return (
-        <button
-            className={am('srv', {active, unread: unread && !active})}
-            title={team.display_name}
-            aria-label={team.display_name}
-            aria-current={active ? 'page' : undefined}
-            onClick={onSelect}
-        >
-            {icon && icon !== failedIcon ? (
-                <img
-                    className={am('srv-img')}
-                    src={icon}
-                    alt=''
-                    onError={() => setFailedIcon(icon)}
+        <>
+            <button
+                className={am('srv', {active, unread: unread && !active})}
+                title={team.display_name}
+                aria-label={team.display_name}
+                aria-current={active ? 'page' : undefined}
+                onClick={onSelect}
+                onContextMenu={(e) => {
+                    e.preventDefault();
+                    setMenu({x: e.clientX, y: e.clientY});
+                }}
+            >
+                {icon && icon !== failedIcon ? (
+                    <img
+                        className={am('srv-img')}
+                        src={icon}
+                        alt=''
+                        onError={() => setFailedIcon(icon)}
+                    />
+                ) : initialsOf(team.display_name)}
+                {mentions > 0 && !active && <span className={am('badge')}>{mentions}</span>}
+            </button>
+            {menu && (
+                <ServerMenu
+                    team={team}
+                    point={menu}
+                    onClose={() => setMenu(null)}
                 />
-            ) : initialsOf(team.display_name)}
-            {mentions > 0 && !active && <span className={am('badge')}>{mentions}</span>}
-        </button>
+            )}
+        </>
     );
 }
 
