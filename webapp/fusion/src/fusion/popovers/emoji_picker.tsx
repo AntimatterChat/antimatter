@@ -28,6 +28,8 @@ import PluggableErrorBoundary from 'plugins/pluggable/error_boundary';
 import type {GlobalState} from 'types/store';
 import type {EmojiPickerTabRegistration} from 'types/store/plugins';
 
+import SkinTonePicker from './skin_tone_picker';
+
 const nameOf = (emoji: Emoji) => (isSystemEmoji(emoji) ? emoji.short_names[0] : emoji.name);
 const idOf = (emoji: Emoji) => (isSystemEmoji(emoji) ? emoji.unified.toLowerCase() : emoji.id);
 
@@ -153,6 +155,7 @@ function EmojiTab({query, onQuery, onPick: pick, onClose, keepOpen}: EmojiTabPro
                         }}
                     />
                 </label>
+                <SkinTonePicker/>
                 {customEmojisEnabled && teamName && (
                     <AnyTeamPermissionGate permissions={[Permissions.CREATE_EMOJIS]}>
                         <Link

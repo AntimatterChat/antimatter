@@ -121,6 +121,12 @@ body.app__body :where(.am-app, .am-layer) a:where(:not(.am-body *, .am-rhs-class
 :is(.am-app, .am-layer) .am-picker-search.am-picker-search-row { display: flex; align-items: center; gap: 8px; }
 :is(.am-app, .am-layer) .am-picker-search-row > label { flex: 1; min-width: 0; }
 :is(.am-app, .am-layer) .am-picker-search-row > .am-icon-btn { flex: none; width: 34px; height: 34px; border: 1px solid var(--am-line); border-radius: 8px; }
+:is(.am-app, .am-layer) .am-picker-search-row .am-skin-btn { display: grid; place-items: center; }
+/* The skin tones, in place of the tone button while picking. */
+:is(.am-app, .am-layer) .am-skin-tones { display: flex; flex: none; gap: 2px; padding: 2px; border: 1px solid var(--am-line); border-radius: 8px; background: var(--am-raise); }
+:is(.am-app, .am-layer) .am-skin-tones button { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 6px; }
+:is(.am-app, .am-layer) .am-skin-tones button:hover { background: var(--am-hover); }
+:is(.am-app, .am-layer) .am-skin-tones button.am-on { background: var(--am-matter-soft); box-shadow: inset 0 0 0 1px var(--am-matter); }
 
 // Code blocks, as in Discord and Mattermost: one framed box with padding and its own scrollbar; the copy button and the
 // language show on hover. The box replaces the code theme's background so it sits in Fusion's palette.
