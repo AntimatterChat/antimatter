@@ -1,0 +1,115 @@
+// The integrations and custom emoji pages in the Fusion frame (see components/backstage/backstage_controller): the
+// Fusion side panel, and the classic pages drawn with the Fusion theme.
+
+#root:not(.am-root) > .am-root-main { position: relative; }
+
+.am-layer.am-bs-page {
+  position: absolute;
+  inset: 0;
+  height: auto;
+  display: grid;
+  grid-template: "bs-nav bs-main" minmax(0, 1fr) / 248px minmax(0, 1fr);
+  background: var(--am-main);
+  color: var(--am-text);
+  font: 15px var(--am-font-ui);
+}
+
+// The side panel, drawn as the settings dialogs' list of tabs.
+.am-bs-nav { grid-area: bs-nav; display: flex; flex-direction: column; gap: 2px; padding: 16px 10px; overflow-y: auto; background: var(--am-side); }
+.am-bs-nav h5 { margin: 16px 10px 6px; font: 700 11px var(--am-font-ui); letter-spacing: .07em; text-transform: uppercase; color: var(--am-muted); }
+.am-bs-back { display: flex; align-items: center; gap: 6px; padding: 7px 10px; border-radius: 7px; color: var(--am-text-2); font-weight: 600; text-align: left; }
+.am-bs-back .am-ic { transform: rotate(90deg); }
+.am-bs-back:hover { background: var(--am-hover); color: var(--am-text); }
+.am-bs-page .am-bs-item { display: flex; align-items: center; gap: 10px; padding: 7px 10px; border-radius: 7px; color: var(--am-text-2); font-weight: 500; text-decoration: none; }
+.am-bs-page .am-bs-item:hover { background: var(--am-hover); color: var(--am-text); text-decoration: none; }
+.am-bs-page .am-bs-item.am-on { background: var(--am-select); color: var(--am-text); }
+.am-bs-item .am-ic { flex: none; color: var(--am-muted); }
+.am-bs-item.am-on .am-ic { color: var(--am-matter); }
+
+// The page.
+// The classic class places the page in the classic page grid's main area: here it's the frame's.
+.am-bs-main.backstage-body { grid-area: bs-main; display: block; overflow-y: auto; min-width: 0; padding: 0; background: none; }
+.am-bs-page {
+  // The page column, centred, without the classic page's own margins for its sidebar.
+  .backstage-content { max-width: 980px; margin: 0 auto; padding: 32px 40px 72px; border: 0; background: none; color: var(--am-text); }
+
+  // Title, with its breadcrumb (Integrations › Incoming webhooks › Add), and the add button.
+  .backstage-header { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 18px; }
+  .backstage-header h1 { margin: 0; font: 600 22px var(--am-font-display); color: var(--am-text); }
+  .backstage-header h1 a { color: var(--am-muted); text-decoration: none; }
+  .backstage-header h1 a:hover { color: var(--am-text); }
+  .backstage-header__divider { margin: 0 8px; color: var(--am-faint); }
+  .add-link { text-decoration: none; }
+
+  // Buttons: Fusion's.
+  .btn { height: 36px; padding: 0 16px; border: 0; border-radius: 9px; background: var(--am-raise-2); box-shadow: none; color: var(--am-text); font: 600 14px var(--am-font-ui); line-height: 36px; }
+  .btn:hover { background: var(--am-raise-2); filter: brightness(1.12); }
+  .btn.btn-primary { background: var(--am-matter); color: #fff; }
+  .btn.btn-danger { background: var(--am-danger); color: #fff; }
+  .btn.btn-link, .btn.btn-tertiary, .btn.btn-quaternary { background: none; color: var(--am-anti); }
+  .btn.btn-icon { width: 32px; height: 32px; padding: 0; line-height: 32px; color: var(--am-muted); }
+  .btn.disabled, .btn:disabled { opacity: .45; }
+  a, .color--link { color: var(--am-anti); }
+  a:hover, .color--link:hover { color: var(--am-anti); text-decoration: underline; }
+
+  // Search and help text.
+  .backstage-filters { margin-bottom: 14px; }
+  .backstage-filter__search { position: relative; max-width: 360px; }
+  .backstage-filter__search .fa-search { position: absolute; top: 11px; left: 12px; color: var(--am-muted); }
+  .backstage-filter__search .form-control { padding-left: 34px; }
+  .backstage-list__help { display: block; margin-bottom: 16px; color: var(--am-muted); font-size: 14px; }
+
+  // Lists: one Fusion card per webhook, command, app or bot.
+  .backstage-list { display: grid; gap: 8px; margin: 0; padding: 0; border: 0; background: none; }
+  .backstage-list__item { padding: 14px 16px; border: 1px solid var(--am-line); border-radius: 12px; background: var(--am-side); }
+  .backstage-list__item:hover { border-color: var(--am-raise-2); }
+  .backstage-list__empty { padding: 24px; border: 1px dashed var(--am-line); border-radius: 12px; color: var(--am-muted); text-align: center; }
+  .item-details__row { margin-top: 4px; color: var(--am-text-2); font-size: 13.5px; }
+  .item-details__row:first-child { margin-top: 0; }
+  .item-details__name { color: var(--am-text); font-size: 15px; font-weight: 600; }
+  .item-details__description { color: var(--am-text-2); }
+  :is(.item-details__url, .item-details__token, .item-details__trigger, .item-details__trigger-words, .item-details__content_type) { color: var(--am-muted); }
+  :is(.item-details__url, .item-details__token, .item-details__trigger) code { padding: 1px 6px; border-radius: 5px; background: var(--am-raise); color: var(--am-text-2); font: 12.5px var(--am-font-mono); }
+  :is(.item-details__creation, .item-details__last-used) { color: var(--am-muted); font-size: 12.5px; }
+  .item-actions { color: var(--am-faint); }
+  .backstage-footer { margin-top: 12px; padding: 0; border: 0; background: none; color: var(--am-muted); font-size: 13px; }
+
+  // Overview: the kinds of integrations as Fusion cards.
+  .integrations-list { gap: 12px; }
+  .integration-option { display: grid; justify-items: center; gap: 8px; width: 220px; padding: 22px 16px; border: 1px solid var(--am-line); border-radius: 14px; background: var(--am-side); color: var(--am-text); text-align: center; text-decoration: none; }
+  .integration-option:hover { border-color: var(--am-matter); text-decoration: none; }
+  .integration-option__image { display: grid; place-items: center; width: 56px; height: 56px; border-radius: 16px; background: color-mix(in srgb, var(--am-tile) 18%, transparent); color: var(--am-tile); }
+  .integration-option__image .am-ic { width: 28px; height: 28px; }
+  .integration-option { --am-tile: var(--am-matter); }
+  .integration-option--inbox { --am-tile: var(--am-anti); }
+  .integration-option--slash { --am-tile: var(--am-spark); }
+  .integration-option--shield { --am-tile: var(--am-ok); }
+  .integration-option--link { --am-tile: var(--am-danger); }
+  .integration-option__title { color: var(--am-text); font-size: 15px; font-weight: 600; }
+  .integration-option__description { color: var(--am-muted); font-size: 13px; }
+
+  // Forms: stacked Fusion fields rather than the classic two-column grid.
+  .backstage-form { max-width: 620px; padding: 0; border: 0; background: none; }
+  .backstage-form .form-group { display: grid; gap: 6px; margin: 0 0 18px; }
+  .backstage-form .control-label { float: none; width: auto; padding: 0; color: var(--am-muted); font: 700 11px var(--am-font-ui); letter-spacing: .07em; text-align: left; text-transform: uppercase; }
+  .backstage-form :is(.col-sm-4, .col-sm-8, .col-md-5, .col-sm-offset-4) { float: none; width: auto; margin: 0; padding: 0; }
+  .form-control { height: 38px; padding: 0 12px; border: 1px solid var(--am-line); border-radius: 9px; background: var(--am-side); box-shadow: none; color: var(--am-text); font: 14px var(--am-font-ui); }
+  textarea.form-control { height: auto; min-height: 80px; padding: 8px 12px; }
+  .form-control:focus { border-color: var(--am-matter); box-shadow: none; outline: none; }
+  .form-control::placeholder { color: var(--am-faint); }
+  .form__help, .help-text { color: var(--am-muted); font-size: 12.5px; }
+  .checkbox label, .radio label { color: var(--am-text-2); }
+  input[type="checkbox"], input[type="radio"] { accent-color: var(--am-matter); }
+  .backstage-form__footer { display: flex; justify-content: flex-end; gap: 10px; padding: 18px 0 0; border-top: 1px solid var(--am-line); }
+  .has-error :is(.control-label, .help-block), .error-text, .has-error { color: var(--am-danger); }
+
+  // Custom emoji: a table on the Fusion lines.
+  .emoji-list__table { width: 100%; border: 1px solid var(--am-line); border-radius: 12px; border-collapse: separate; border-spacing: 0; overflow: hidden; background: var(--am-side); }
+  .emoji-list__table-header th { padding: 10px 14px; border-bottom: 1px solid var(--am-line); color: var(--am-muted); font: 700 11px var(--am-font-ui); letter-spacing: .07em; text-transform: uppercase; }
+  .emoji-list__table td { padding: 10px 14px; border-top: 1px solid var(--am-line); color: var(--am-text-2); }
+  .emoji-list__name { color: var(--am-text); font-weight: 600; }
+
+  // Bot accounts: their picture beside their card's text.
+  :is(.bot-list-img, .bot-img) { border-radius: 50%; }
+  .bot-details__description, .light { color: var(--am-muted); }
+}

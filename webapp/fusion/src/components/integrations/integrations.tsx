@@ -12,12 +12,6 @@ import ExternalLink from 'components/external_link';
 import SystemPermissionGate from 'components/permissions_gates/system_permission_gate';
 import TeamPermissionGate from 'components/permissions_gates/team_permission_gate';
 
-import BotAccountsIcon from 'images/bot_default_icon.png';
-import IncomingWebhookIcon from 'images/incoming_webhook.jpg';
-import OAuthIcon from 'images/oauth_icon.png';
-import OutgoingOAuthConnectionsIcon from 'images/outgoing_oauth_connection.png';
-import OutgoingWebhookIcon from 'images/outgoing_webhook.jpg';
-import SlashCommandIcon from 'images/slash_command_icon.jpg';
 import * as Utils from 'utils/utils';
 
 import IntegrationOption from './integration_option';
@@ -54,7 +48,7 @@ export default class Integrations extends React.PureComponent <Props> {
                 >
                     <IntegrationOption
                         key='incomingWebhook'
-                        image={IncomingWebhookIcon}
+                        icon='inbox'
                         title={
                             <FormattedMessage
                                 id='integrations.incomingWebhook.title'
@@ -82,7 +76,7 @@ export default class Integrations extends React.PureComponent <Props> {
                 >
                     <IntegrationOption
                         key='outgoingWebhook'
-                        image={OutgoingWebhookIcon}
+                        icon='export'
                         title={
                             <FormattedMessage
                                 id='integrations.outgoingWebhook.title'
@@ -110,7 +104,7 @@ export default class Integrations extends React.PureComponent <Props> {
                 >
                     <IntegrationOption
                         key='command'
-                        image={SlashCommandIcon}
+                        icon='slash'
                         title={
                             <FormattedMessage
                                 id='integrations.command.title'
@@ -137,7 +131,7 @@ export default class Integrations extends React.PureComponent <Props> {
                 >
                     <IntegrationOption
                         key='oauth2Apps'
-                        image={OAuthIcon}
+                        icon='shield'
                         title={
                             <FormattedMessage
                                 id='integrations.oauthApps.title'
@@ -165,7 +159,7 @@ export default class Integrations extends React.PureComponent <Props> {
                 >
                     <IntegrationOption
                         key='outgoingOAuthConnections'
-                        image={OutgoingOAuthConnectionsIcon}
+                        icon='link'
                         title={
                             <FormattedMessage
                                 id='integrations.outgoingOAuthConnections.title'
@@ -190,7 +184,7 @@ export default class Integrations extends React.PureComponent <Props> {
                 key='botsPermissions'
             >
                 <IntegrationOption
-                    image={BotAccountsIcon}
+                    icon='bot'
                     title={
                         <FormattedMessage
                             id='bots.manage.header'

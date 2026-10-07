@@ -30,10 +30,10 @@ import AddOutgoingOAuthConnection from 'components/integrations/outgoing_oauth_c
 import EditOutgoingOAuthConnection from 'components/integrations/outgoing_oauth_connections/edit_outgoing_oauth_connection';
 import InstalledOutgoingOAuthConnections from 'components/integrations/outgoing_oauth_connections/installed_outgoing_oauth_connections';
 
+import IntegrationsNav from 'fusion/backstage/integrations_nav';
+import {IconSprite} from 'fusion/components/icon';
+import {am} from 'fusion/utils/class_names';
 import Pluggable from 'plugins/pluggable';
-
-import BackstageNavbar from './components/backstage_navbar';
-import BackstageSidebar from './components/backstage_sidebar';
 
 type ExtraProps = Pick<Props, 'user' | 'team'> & {scrollToTop: () => void};
 
@@ -101,28 +101,29 @@ const BackstageController = (props: Props) => {
         user: props.user,
         scrollToTop,
     };
+
+    // The Fusion UI shows these pages in its own frame: its side panel on the left, the classic page on the right with the
+    // Fusion theme (see _97_integrations.scss). The Fusion shell isn't there: the page brings its icons, and is a layer for
+    // the Fusion styles to apply.
     return (
-        <>
-            <BackstageNavbar
+        <div className={am('layer', 'bs-page')}>
+            <IntegrationsNav
                 team={props.team}
-                siteName={props.siteName}
+                enableCustomEmoji={props.enableCustomEmoji}
+                enableIncomingWebhooks={props.enableIncomingWebhooks}
+                enableOutgoingWebhooks={props.enableOutgoingWebhooks}
+                enableCommands={props.enableCommands}
+                enableOAuthServiceProvider={props.enableOAuthServiceProvider}
+                enableOutgoingOAuthConnections={props.enableOutgoingOAuthConnections}
+                canCreateOrDeleteCustomEmoji={props.canCreateOrDeleteCustomEmoji}
+                canManageIntegrations={props.canManageIntegrations}
             />
             <div
-                className='backstage-body'
+                className={'backstage-body ' + am('bs-main')}
                 ref={listRef}
             >
+                <IconSprite/>
                 <Pluggable pluggableName='Root'/>
-                <BackstageSidebar
-                    team={props.team}
-                    enableCustomEmoji={props.enableCustomEmoji}
-                    enableIncomingWebhooks={props.enableIncomingWebhooks}
-                    enableOutgoingWebhooks={props.enableOutgoingWebhooks}
-                    enableCommands={props.enableCommands}
-                    enableOAuthServiceProvider={props.enableOAuthServiceProvider}
-                    enableOutgoingOAuthConnections={props.enableOutgoingOAuthConnections}
-                    canCreateOrDeleteCustomEmoji={props.canCreateOrDeleteCustomEmoji}
-                    canManageIntegrations={props.canManageIntegrations}
-                />
                 <Switch>
                     <BackstageRoute
                         extraProps={extraProps}
@@ -235,7 +236,7 @@ const BackstageController = (props: Props) => {
                 </Switch>
             </div>
             <BackstageGlobalStyle/>
-        </>
+        </div>
     );
 };
 
