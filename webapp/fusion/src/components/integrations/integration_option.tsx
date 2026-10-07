@@ -4,24 +4,28 @@
 import React, {type JSX} from 'react';
 import {Link} from 'react-router-dom';
 
+import Icon from 'fusion/components/icon';
+import type {IconName} from 'fusion/components/icon';
+
 type Props = {
-    image: string;
+
+    /** The Fusion UI draws each kind of integration with one of its icons, in a tile of its colour (see
+     * _97_integrations.scss), rather than the classic illustrations. */
+    icon: IconName;
     title: JSX.Element;
     description: JSX.Element;
     link: string;
 };
 
-const IntegrationOption = ({image, title, description, link}: Props) => {
+const IntegrationOption = ({icon, title, description, link}: Props) => {
     return (
         <Link
             to={link}
-            className='integration-option'
+            className={`integration-option integration-option--${icon}`}
         >
-            <img
-                alt={'integration image'}
-                className='integration-option__image'
-                src={image}
-            />
+            <span className='integration-option__image'>
+                <Icon name={icon}/>
+            </span>
             <div className='integration-option__title'>
                 {title}
             </div>
