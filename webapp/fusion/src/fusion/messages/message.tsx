@@ -194,7 +194,7 @@ export default function Message({postId, previousPostId, inThread = false, highl
                     onClick={openThread}
                 >
                     <Icon
-                        name={inlineReplies ? 'thread' : 'reply'}
+                        name={inlineReplies ? 'thread-reply' : 'reply'}
                         size='sm'
                     />
                 </button>
