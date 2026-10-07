@@ -16,6 +16,7 @@ import {isPostPendingOrFailed} from 'mattermost-redux/utils/post_utils';
 
 import Avatar from 'fusion/components/avatar';
 import Icon from 'fusion/components/icon';
+import type {IconName} from 'fusion/components/icon';
 import {useDisplayName} from 'fusion/hooks/users';
 import {am} from 'fusion/utils/class_names';
 import {plainText} from 'fusion/utils/plain_text';
@@ -97,7 +98,9 @@ export type Quoted = {
     deleted: boolean;
     userId?: string;
     message: string;
+    type?: string;
     fileCount: number;
+    imageCount: number;
     overrideUsername?: string;
 
     // Set when the quoted message is loaded and was posted by an incoming webhook: replies don't notify anyone then.
@@ -108,16 +111,22 @@ export type Quoted = {
 // deletions as they happen, else the server's description of it.
 export function useQuoted(id: string, described?: PostReplyTo): Quoted {
     const post = useSelector((state: GlobalState) => (id ? getPost(state, id) : undefined));
+
+    // The files of loaded posts are kept apart from them, in the files entities.
+    const imageCount = useSelector((state: GlobalState) => (id ? (state.entities.files.fileIdsByPostId[id] || []).filter((fileId) => state.entities.files.files[fileId]?.mime_type?.startsWith('image')).length : 0));
     if (post) {
         if (post.state === Posts.POST_DELETED || post.delete_at || post.type === Posts.POST_TYPES.BURN_ON_READ) {
-            return {deleted: true, message: '', fileCount: 0};
+            return {deleted: true, message: '', fileCount: 0, imageCount: 0};
         }
         const fromWebhook = post.props?.from_webhook === 'true';
+        const files = post.metadata?.files || [];
         return {
             deleted: false,
             userId: post.user_id,
             message: post.message,
-            fileCount: post.file_ids?.length || post.metadata?.files?.length || 0,
+            type: post.type,
+            fileCount: post.file_ids?.length || files.length,
+            imageCount: imageCount || files.filter((file) => file.mime_type?.startsWith('image')).length,
             overrideUsername: fromWebhook && typeof post.props?.override_username === 'string' ? post.props.override_username : undefined,
             fromWebhook,
         };
@@ -127,13 +136,81 @@ export function useQuoted(id: string, described?: PostReplyTo): Quoted {
             deleted: false,
             userId: described.user_id,
             message: described.message || '',
+            type: described.type,
             fileCount: described.file_count || 0,
+            imageCount: described.image_count || 0,
             overrideUsername: described.override_username,
         };
     }
 
     // Not loaded and not described: the server dropped it as deleted, or doesn't describe it yet.
-    return {deleted: Boolean(described?.deleted), message: '', fileCount: 0};
+    return {deleted: Boolean(described?.deleted), message: '', fileCount: 0, imageCount: 0};
+}
+
+// The icons of the messages plugins post, by post type.
+const TYPE_ICONS: Record<string, IconName> = {
+    custom_poll: 'poll',
+    custom_antimatter_gif: 'image',
+    custom_calls: 'phone',
+    custom_am_whiteboard: 'draw',
+    custom_antimatter_note: 'pad',
+};
+
+// quotedIcon is the icon that tells what a quoted message holds besides text, as in Discord: a poll, a GIF, a call,
+// images or other files.
+export function quotedIcon(quoted: Quoted): IconName | undefined {
+    if (quoted.deleted) {
+        return undefined;
+    }
+    if (quoted.type && TYPE_ICONS[quoted.type]) {
+        return TYPE_ICONS[quoted.type];
+    }
+    if (quoted.imageCount) {
+        return 'image';
+    }
+    return quoted.fileCount ? 'attach' : undefined;
+}
+
+// QuotedSnippet is the start of a quoted message's text, after the icon of what it holds besides text (see
+// quotedIcon). Above a reply (the "ref" variant), a message with nothing to show but files invites to open it; in the
+// composer's reply bar (the "bar" variant), it says what it holds.
+function QuotedSnippet({quoted, variant}: {quoted: Quoted; variant: 'ref' | 'bar'}) {
+    const {formatMessage} = useIntl();
+    const icon = quotedIcon(quoted);
+    const onlyImages = quoted.imageCount > 0 && quoted.imageCount === quoted.fileCount;
+
+    let text;
+    if (quoted.deleted) {
+        text = formatMessage({id: 'fusion.inlineReply.deleted', defaultMessage: 'Original message was deleted'});
+    } else if (quoted.message.trim()) {
+        text = plainText(quoted.message, 160);
+    } else if (variant === 'bar') {
+        if (onlyImages) {
+            text = formatMessage({id: 'fusion.inlineReply.images', defaultMessage: '{count, plural, one {# image} other {# images}}'}, {count: quoted.imageCount});
+        } else if (quoted.fileCount) {
+            text = formatMessage({id: 'fusion.inlineReply.files', defaultMessage: '{count, plural, one {# file} other {# files}}'}, {count: quoted.fileCount});
+        } else {
+            text = formatMessage({id: 'fusion.replyRef.message', defaultMessage: 'a message'});
+        }
+    } else if (onlyImages) {
+        text = formatMessage({id: 'fusion.inlineReply.seeImages', defaultMessage: 'Click to see {count, plural, one {image} other {images}}'}, {count: quoted.imageCount});
+    } else if (quoted.fileCount) {
+        text = formatMessage({id: 'fusion.inlineReply.seeFiles', defaultMessage: 'Click to see attachment'});
+    } else {
+        text = formatMessage({id: 'fusion.inlineReply.seeMessage', defaultMessage: 'Click to see message'});
+    }
+
+    return (
+        <span className={am('snip', {gone: quoted.deleted, files: Boolean(icon)})}>
+            {icon && (
+                <Icon
+                    name={icon}
+                    size='xs'
+                />
+            )}
+            {icon ? <span className={am('snip-text')}>{text}</span> : text}
+        </span>
+    );
 }
 
 // useQuotedAuthor is the name to show for a quoted message's author: the webhook's name when it overrides it, else
@@ -159,17 +236,6 @@ export function QuotedMessage({quoted}: {quoted: Quoted}) {
     const {formatMessage} = useIntl();
     const who = useQuotedAuthor(quoted);
 
-    let snippet;
-    if (quoted.deleted) {
-        snippet = formatMessage({id: 'fusion.inlineReply.deleted', defaultMessage: 'Original message was deleted'});
-    } else if (quoted.message.trim()) {
-        snippet = plainText(quoted.message, 160);
-    } else if (quoted.fileCount) {
-        snippet = formatMessage({id: 'fusion.inlineReply.files', defaultMessage: '{count, plural, one {# file} other {# files}}'}, {count: quoted.fileCount});
-    } else {
-        snippet = formatMessage({id: 'fusion.replyRef.message', defaultMessage: 'a message'});
-    }
-
     return (
         <>
             <Icon
@@ -178,7 +244,10 @@ export function QuotedMessage({quoted}: {quoted: Quoted}) {
             />
             <span className={am('ref-label')}>{formatMessage({id: 'fusion.replyRef.replying', defaultMessage: 'Replying to'})}</span>
             {who && <b>{who}</b>}
-            <span className={am('snip', {gone: quoted.deleted})}>{snippet}</span>
+            <QuotedSnippet
+                quoted={quoted}
+                variant='bar'
+            />
         </>
     );
 }
@@ -188,24 +257,6 @@ export function QuotedMessage({quoted}: {quoted: Quoted}) {
 export function QuotedRef({quoted}: {quoted: Quoted}) {
     const {formatMessage} = useIntl();
     const who = useQuotedAuthor(quoted);
-
-    let snippet;
-    let icon;
-    if (quoted.deleted) {
-        snippet = formatMessage({id: 'fusion.inlineReply.deleted', defaultMessage: 'Original message was deleted'});
-    } else if (quoted.message.trim()) {
-        snippet = plainText(quoted.message, 160);
-    } else if (quoted.fileCount) {
-        snippet = formatMessage({id: 'fusion.inlineReply.seeFiles', defaultMessage: 'Click to see attachment'});
-        icon = (
-            <Icon
-                name='attach'
-                size='xs'
-            />
-        );
-    } else {
-        snippet = formatMessage({id: 'fusion.inlineReply.seeMessage', defaultMessage: 'Click to see message'});
-    }
 
     return (
         <>
@@ -227,10 +278,10 @@ export function QuotedRef({quoted}: {quoted: Quoted}) {
                 </span>
             )}
             {who && <b aria-hidden='true'>{who}</b>}
-            <span className={am('snip', {gone: quoted.deleted, files: Boolean(icon)})}>
-                {icon}
-                {snippet}
-            </span>
+            <QuotedSnippet
+                quoted={quoted}
+                variant='ref'
+            />
         </>
     );
 }
