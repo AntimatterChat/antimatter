@@ -7,10 +7,11 @@ import {shallowEqual, useSelector} from 'react-redux';
 
 import type {Channel} from '@mattermost/types/channels';
 
+import {makeGetChannelIdsForCategory} from 'mattermost-redux/selectors/entities/channel_categories';
 import {makeGetChannel} from 'mattermost-redux/selectors/entities/channels';
 import {getCurrentTeam} from 'mattermost-redux/selectors/entities/teams';
 
-import {getCategoriesForCurrentTeam, makeGetFilteredChannelIdsForCategory} from 'selectors/views/channel_sidebar';
+import {getCategoriesForCurrentTeam} from 'selectors/views/channel_sidebar';
 
 import Icon from 'fusion/components/icon';
 import ServerMenu from 'fusion/popovers/server_menu';
@@ -23,6 +24,7 @@ import type {GlobalState} from 'types/store';
 import Category from './category';
 import DirectRow from './direct_row';
 import {DM_FIND_ID} from './home_sidebar';
+import UnreadCategory from './unread_category';
 import VoicePanel from './voice_panel';
 
 // The direct messages category is shown as a dock of open conversations at the bottom of the sidebar. Its chat bubble
@@ -32,7 +34,9 @@ function Dock() {
     const layout = useLayout();
     const categories = useSelector(getCategoriesForCurrentTeam);
     const dmCategory = categories.find((c) => c.type === 'direct_messages');
-    const getChannelIds = useMemo(() => makeGetFilteredChannelIdsForCategory(), []);
+
+    // All the open conversations, unread or not: the Unreads section above the categories leaves them here.
+    const getChannelIds = useMemo(() => makeGetChannelIdsForCategory(), []);
     const channelIds = useSelector((state: GlobalState) => (dmCategory ? getChannelIds(state, dmCategory) : []));
     const getChannel = useMemo(() => makeGetChannel(), []);
     const channels = useSelector((state: GlobalState) => channelIds.map((id) => getChannel(state, id)).filter(Boolean) as Channel[], shallowEqual);
@@ -112,6 +116,7 @@ export default function TeamSidebar() {
                 </button>
             </div>
             <div className={am('chan-scroll')}>
+                <UnreadCategory/>
                 {categories.filter((c) => c.type !== 'direct_messages').map((category) => (
                     <Category
                         key={category.id}
