@@ -1,7 +1,7 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 
-import React, {useCallback, useSyncExternalStore} from 'react';
+import React, {useCallback, useLayoutEffect, useRef, useState, useSyncExternalStore} from 'react';
 import {useIntl} from 'react-intl';
 
 import Icon from 'fusion/components/icon';
@@ -45,13 +45,36 @@ export function useSpoilerShown(postId: string): [boolean, (show: boolean) => vo
 
 // SpoilerVeil hides a spoiler's text and files in place until its reader clicks it, as in Discord: the text becomes
 // bars and the files are blurred, at their own size, so that showing it moves nothing around it.
+// Below this width, in pixels, the veil's label is the crossed eye alone, without "Spoiler".
+const LABEL_MIN_WIDTH = 110;
+
 export function SpoilerVeil({hidden, onShow, children}: {hidden: boolean; onShow: () => void; children: React.ReactNode}) {
     const {formatMessage} = useIntl();
+    const ref = useRef<HTMLDivElement>(null);
+    const [wide, setWide] = useState(true);
+
+    // The label fits the veil: short spoilers only get the icon.
+    useLayoutEffect(() => {
+        const el = ref.current;
+        if (!el) {
+            return undefined;
+        }
+        const measure = () => setWide(el.getBoundingClientRect().width >= LABEL_MIN_WIDTH);
+        measure();
+        if (typeof ResizeObserver === 'undefined') {
+            return undefined;
+        }
+        const observer = new ResizeObserver(measure);
+        observer.observe(el);
+        return () => observer.disconnect();
+    }, [hidden]);
+
     if (!hidden) {
         return <>{children}</>;
     }
     return (
         <div
+            ref={ref}
             className={am('spoiler-veil')}
             role='button'
             tabIndex={0}
@@ -76,6 +99,16 @@ export function SpoilerVeil({hidden, onShow, children}: {hidden: boolean; onShow
             >
                 {children}
             </div>
+            <span
+                className={am('spoiler-label')}
+                aria-hidden='true'
+            >
+                <Icon
+                    name='eye-off'
+                    size='sm'
+                />
+                {wide && formatMessage({id: 'fusion.spoiler.title', defaultMessage: 'Spoiler'})}
+            </span>
         </div>
     );
 }

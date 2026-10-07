@@ -188,16 +188,21 @@
 :is(.am-app, .am-layer) .am-more-btn:hover { background: var(--am-hover); }
 :is(.am-app, .am-layer) .am-more-btn .am-ic { transition: transform .15s ease; }
 :is(.am-app, .am-layer) .am-more-btn[aria-expanded="true"] .am-ic { transform: rotate(180deg); }
-/* Spoilers: the text turns into bars and the files blur, at their own size, until clicked; the header's tag hides them
-   again. */
-:is(.am-app, .am-layer) .am-spoiler-veil { cursor: pointer; border-radius: 6px; }
-:is(.am-app, .am-layer) .am-spoiler-veil .am-body { width: fit-content; max-width: 100%; border-radius: 5px; background: var(--am-raise-2); transition: background .15s ease; }
-:is(.am-app, .am-layer) .am-spoiler-veil .am-body, :is(.am-app, .am-layer) .am-spoiler-veil .am-body * { color: transparent !important; text-decoration-color: transparent !important; border-color: transparent !important; background-color: transparent; }
-:is(.am-app, .am-layer) .am-spoiler-veil .am-body { background: var(--am-raise-2) !important; }
+/* Spoilers: the message keeps its size under purple stripes until clicked, labelled with a crossed eye (and "Spoiler"
+   when there's room); the header's tag hides it again. */
+:is(.am-app, .am-layer) .am-spoiler-veil { position: relative; width: fit-content; max-width: 100%; cursor: pointer; border-radius: 6px; }
+:is(.am-app, .am-layer) .am-spoiler-veil > div { border-radius: 6px; }
+:is(.am-app, .am-layer) .am-spoiler-veil .am-body { min-width: 44px; min-height: 22px; border-radius: 6px; }
+:is(.am-app, .am-layer) .am-spoiler-veil .am-body, :is(.am-app, .am-layer) .am-spoiler-veil .am-body * { color: transparent !important; text-decoration-color: transparent !important; border-color: transparent !important; background-color: transparent !important; }
 :is(.am-app, .am-layer) .am-spoiler-veil .am-body :is(img, video, svg, .emoticon) { opacity: 0; }
-:is(.am-app, .am-layer) .am-spoiler-veil:hover .am-body, :is(.am-app, .am-layer) .am-spoiler-veil:focus-visible .am-body { background: color-mix(in srgb, var(--am-raise-2) 70%, var(--am-matter)) !important; }
-:is(.am-app, .am-layer) .am-spoiler-veil .am-files :is(img, video, .am-file) { filter: blur(22px) saturate(.6); }
+:is(.am-app, .am-layer) .am-spoiler-veil :is(.am-body, .am-files) {
+  background: repeating-linear-gradient(135deg, color-mix(in srgb, var(--am-matter) 42%, var(--am-raise-2)) 0 8px, color-mix(in srgb, var(--am-matter) 22%, var(--am-raise)) 8px 16px) !important;
+}
 :is(.am-app, .am-layer) .am-spoiler-veil .am-files { overflow: hidden; border-radius: 10px; }
+:is(.am-app, .am-layer) .am-spoiler-veil .am-files :is(img, video, .am-file) { opacity: 0; }
+:is(.am-app, .am-layer) .am-spoiler-veil:hover :is(.am-body, .am-files) { filter: brightness(1.15); }
+:is(.am-app, .am-layer) .am-spoiler-label { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); display: inline-flex; align-items: center; gap: 6px; padding: 2px 8px; border-radius: 999px; background: rgba(0, 0, 0, .38); color: #fff; font: 700 11px/16px var(--am-font-ui); letter-spacing: .08em; text-transform: uppercase; white-space: nowrap; pointer-events: none; }
+:is(.am-app, .am-layer) .am-spoiler-label .am-ic { width: 14px; height: 14px; }
 :is(.am-app, .am-layer) .am-spoiler-veil:focus-visible { outline: 2px solid var(--am-matter); outline-offset: 2px; }
 :is(.am-app, .am-layer) .am-meta-tag.am-spoiler { color: var(--am-matter); }
 :is(.am-app, .am-layer) button.am-meta-tag.am-spoiler { border-radius: 4px; padding: 0 3px; }
