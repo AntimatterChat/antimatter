@@ -264,6 +264,32 @@ func TestInlineReplyMetadata(t *testing.T) {
 		assert.Equal(t, third.Message, prepared.Posts[thirdReply.Id].Metadata.ReplyTo.Message)
 	})
 
+	t.Run("counts the images among the quoted message's files", func(t *testing.T) {
+		var fileIDs []string
+		for _, file := range []struct{ name, mime string }{{"photo.png", "image/png"}, {"notes.pdf", "application/pdf"}} {
+			info, err := th.App.Srv().Store().FileInfo().Save(th.Context, &model.FileInfo{
+				CreatorId: th.BasicUser.Id,
+				Name:      file.name,
+				Path:      "/data/" + file.name,
+				MimeType:  file.mime,
+			})
+			require.NoError(t, err)
+			fileIDs = append(fileIDs, info.Id)
+		}
+		withFiles, _, appErr := th.App.CreatePost(th.Context, &model.Post{UserId: th.BasicUser.Id, ChannelId: th.BasicChannel.Id, FileIds: fileIDs}, th.BasicChannel, model.CreatePostFlags{})
+		require.Nil(t, appErr)
+		filesReply := fromStore(t, createInlineReply(t, th, th.BasicChannel, "", withFiles.Id).Id)
+
+		prepared := th.App.PreparePostForClient(th.Context, filesReply, &model.PreparePostForClientOpts{})
+		require.NotNil(t, prepared.Metadata.ReplyTo)
+		assert.Equal(t, 2, prepared.Metadata.ReplyTo.FileCount)
+		assert.Equal(t, 1, prepared.Metadata.ReplyTo.ImageCount)
+
+		// A message without files has no images.
+		prepared = th.App.PreparePostForClient(th.Context, reply, &model.PreparePostForClientOpts{})
+		assert.Zero(t, prepared.Metadata.ReplyTo.ImageCount)
+	})
+
 	t.Run("follows edits of the quoted message", func(t *testing.T) {
 		edited := target.Clone()
 		edited.Message = "edited " + model.NewId()

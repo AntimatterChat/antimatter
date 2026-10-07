@@ -21,6 +21,9 @@ type PostReplyTo struct {
 	// FileCount is how many files the quoted message has, for clients to describe a message without text.
 	FileCount int `json:"file_count,omitempty"`
 
+	// ImageCount is how many of those files are images, for clients to show them as such.
+	ImageCount int `json:"image_count,omitempty"`
+
 	// OverrideUsername is the name an incoming webhook posted the quoted message under.
 	OverrideUsername string `json:"override_username,omitempty"`
 
