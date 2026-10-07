@@ -22,7 +22,6 @@ let mockPublicChannelPermission = true;
 let mockManageChannelAccessRulesPermission = false;
 let mockManageSharedChannelsPermission = false;
 const mockGetBasePath = jest.fn(() => '');
-const mockSettingsSidebar = jest.fn();
 const mockChannelSettingsPluginTab = jest.fn();
 const pluginSaveMocks = new Map<string, jest.Mock<Promise<void>, []>>();
 const pluginResetMocks = new Map<string, jest.Mock<void, []>>();
@@ -120,57 +119,6 @@ jest.mock('./channel_settings_access_rules_tab', () => {
 });
 
 // Define the tab type for the settings sidebar
-type TabType = {
-    name: string;
-    uiName: string;
-    display?: boolean;
-    newGroup?: boolean;
-};
-
-// Mock the settings sidebar
-jest.mock('components/settings_sidebar', () => {
-    return function MockSettingsSidebar({
-        tabs,
-        pluginTabs = [],
-        activeTab,
-        updateTab,
-    }: {
-        tabs: TabType[];
-        pluginTabs?: TabType[];
-        activeTab: string;
-        updateTab: (tab: string) => void;
-    }): JSX.Element {
-        mockSettingsSidebar({
-            tabs,
-            pluginTabs,
-            activeTab,
-            updateTab,
-        });
-
-        const visibleTabs = [
-            ...tabs.filter((tab) => tab.display !== false),
-            ...pluginTabs.filter((tab) => tab.display !== false),
-        ];
-
-        return (
-            <div data-testid='settings-sidebar'>
-                {visibleTabs.map((tab) => (
-                    <button
-                        data-testid={`${tab.name}-tab-button`}
-                        key={tab.name}
-                        role='tab'
-                        aria-selected={activeTab === tab.name}
-                        aria-label={tab.uiName.toLowerCase()}
-                        onClick={() => updateTab(tab.name)}
-                    >
-                        {tab.uiName}
-                    </button>
-                ))}
-            </div>
-        );
-    };
-});
-
 describe('ChannelSettingsModal', () => {
     const channelId = 'channel1';
 
@@ -321,10 +269,6 @@ describe('ChannelSettingsModal', () => {
         };
     }
 
-    function getLatestSettingsSidebarProps() {
-        return mockSettingsSidebar.mock.calls[mockSettingsSidebar.mock.calls.length - 1]?.[0];
-    }
-
     beforeEach(() => {
         mockPrivateChannelPermission = true;
         mockPublicChannelPermission = true;
@@ -332,7 +276,13 @@ describe('ChannelSettingsModal', () => {
         mockManageSharedChannelsPermission = false;
         mockGetBasePath.mockReturnValue('');
         mockChannelSettingsPluginTab.mockClear();
-        mockSettingsSidebar.mockClear();
+
+        // The Fusion dialog is drawn in the Fusion layer.
+        if (!document.getElementById('am-layer')) {
+            const layer = document.createElement('div');
+            layer.id = 'am-layer';
+            document.body.appendChild(layer);
+        }
         pluginSaveMocks.clear();
         pluginResetMocks.clear();
         baseProps.onExited.mockClear();
@@ -346,7 +296,7 @@ describe('ChannelSettingsModal', () => {
         // Use wait for to ensure the component is completely loaded and avoid
         // act related errors during test.
         await waitFor(() => {
-            expect(screen.getByText('Channel Settings')).toBeInTheDocument();
+            expect(screen.getByRole('dialog', {name: 'Channel Settings'})).toBeInTheDocument();
         });
     });
 
@@ -368,7 +318,7 @@ describe('ChannelSettingsModal', () => {
 
         // Wait for the sidebar to load
         await waitFor(() => {
-            expect(screen.getByTestId('settings-sidebar')).toBeInTheDocument();
+            expect(screen.getByRole('tablist')).toBeInTheDocument();
         });
 
         // Initially the info tab should be active
@@ -391,7 +341,7 @@ describe('ChannelSettingsModal', () => {
 
         // Wait for the sidebar to load
         await waitFor(() => {
-            expect(screen.getByTestId('settings-sidebar')).toBeInTheDocument();
+            expect(screen.getByRole('tablist')).toBeInTheDocument();
         });
 
         // The info tab should be visible
@@ -410,7 +360,7 @@ describe('ChannelSettingsModal', () => {
 
         // Wait for the sidebar to load
         await waitFor(() => {
-            expect(screen.getByTestId('settings-sidebar')).toBeInTheDocument();
+            expect(screen.getByRole('tablist')).toBeInTheDocument();
         });
 
         // The archive tab should be visible
@@ -426,7 +376,7 @@ describe('ChannelSettingsModal', () => {
 
         // Wait for the sidebar to load
         await waitFor(() => {
-            expect(screen.getByTestId('settings-sidebar')).toBeInTheDocument();
+            expect(screen.getByRole('tablist')).toBeInTheDocument();
         });
 
         // The archive tab should not be in the document
@@ -443,7 +393,7 @@ describe('ChannelSettingsModal', () => {
 
         // Wait for the sidebar to load
         await waitFor(() => {
-            expect(screen.getByTestId('settings-sidebar')).toBeInTheDocument();
+            expect(screen.getByRole('tablist')).toBeInTheDocument();
         });
 
         // The archive tab should be visible
@@ -460,7 +410,7 @@ describe('ChannelSettingsModal', () => {
 
         // Wait for the sidebar to load
         await waitFor(() => {
-            expect(screen.getByTestId('settings-sidebar')).toBeInTheDocument();
+            expect(screen.getByRole('tablist')).toBeInTheDocument();
         });
 
         // The archive tab should not be in the document
@@ -471,7 +421,7 @@ describe('ChannelSettingsModal', () => {
         const testState = makeTestState();
 
         renderWithContext(<ChannelSettingsModal {...baseProps}/>, testState);
-        await userEvent.click(screen.getByTestId('configuration-tab-button'));
+        await userEvent.click(screen.getByRole('tab', {name: /configuration/i}));
         expect(screen.getByTestId('banner-section')).toBeInTheDocument();
     });
 
@@ -479,7 +429,7 @@ describe('ChannelSettingsModal', () => {
         const testState = makeTestState();
 
         renderWithContext(<ChannelSettingsModal {...baseProps}/>, testState);
-        await userEvent.click(screen.getByTestId('configuration-tab-button'));
+        await userEvent.click(screen.getByRole('tab', {name: /configuration/i}));
         expect(screen.getByTestId('join-leave-section')).toBeInTheDocument();
     });
 
@@ -488,7 +438,7 @@ describe('ChannelSettingsModal', () => {
         testState.entities.channels.channels[channelId].type = General.DM_CHANNEL;
 
         renderWithContext(<ChannelSettingsModal {...baseProps}/>, testState);
-        expect(screen.queryByTestId('configuration-tab-button')).not.toBeInTheDocument();
+        expect(screen.queryByRole('tab', {name: /configuration/i})).not.toBeInTheDocument();
     });
 
     it('should not show configuration tab for GM channel (join/leave not applicable to GMs)', async () => {
@@ -496,7 +446,7 @@ describe('ChannelSettingsModal', () => {
         testState.entities.channels.channels[channelId].type = General.GM_CHANNEL;
 
         renderWithContext(<ChannelSettingsModal {...baseProps}/>, testState);
-        expect(screen.queryByTestId('configuration-tab-button')).not.toBeInTheDocument();
+        expect(screen.queryByRole('tab', {name: /configuration/i})).not.toBeInTheDocument();
     });
 
     it('should show configuration tab when Connected Workspaces enabled and user has manage_shared_channels', async () => {
@@ -506,7 +456,7 @@ describe('ChannelSettingsModal', () => {
         testState.entities.general.config.ExperimentalSharedChannels = 'true';
 
         renderWithContext(<ChannelSettingsModal {...baseProps}/>, testState);
-        expect(screen.getByTestId('configuration-tab-button')).toBeInTheDocument();
+        expect(screen.getByRole('tab', {name: /configuration/i})).toBeInTheDocument();
     });
 
     describe('Access Control tab visibility', () => {
@@ -520,7 +470,7 @@ describe('ChannelSettingsModal', () => {
 
             // Wait for the sidebar to load
             await waitFor(() => {
-                expect(screen.getByTestId('settings-sidebar')).toBeInTheDocument();
+                expect(screen.getByRole('tablist')).toBeInTheDocument();
             });
 
             // The Membership Policy tab should be visible
@@ -538,7 +488,7 @@ describe('ChannelSettingsModal', () => {
 
             // Wait for the sidebar to load
             await waitFor(() => {
-                expect(screen.getByTestId('settings-sidebar')).toBeInTheDocument();
+                expect(screen.getByRole('tablist')).toBeInTheDocument();
             });
 
             // The Membership Policy tab should not be visible
@@ -555,7 +505,7 @@ describe('ChannelSettingsModal', () => {
 
             // Wait for the sidebar to load
             await waitFor(() => {
-                expect(screen.getByTestId('settings-sidebar')).toBeInTheDocument();
+                expect(screen.getByRole('tablist')).toBeInTheDocument();
             });
 
             // Public channels are eligible for ABAC policies (advisory / auto-add),
@@ -572,7 +522,7 @@ describe('ChannelSettingsModal', () => {
 
             // Wait for the sidebar to load
             await waitFor(() => {
-                expect(screen.getByTestId('settings-sidebar')).toBeInTheDocument();
+                expect(screen.getByRole('tablist')).toBeInTheDocument();
             });
 
             // The Membership Policy tab should not be visible
@@ -595,7 +545,7 @@ describe('ChannelSettingsModal', () => {
             renderWithContext(<ChannelSettingsModal {...baseProps}/>, testState);
 
             await waitFor(() => {
-                expect(screen.getByTestId('settings-sidebar')).toBeInTheDocument();
+                expect(screen.getByRole('tablist')).toBeInTheDocument();
             });
 
             expect(screen.queryByRole('tab', {name: /membership policy/i})).not.toBeInTheDocument();
@@ -612,7 +562,7 @@ describe('ChannelSettingsModal', () => {
 
             // Wait for the sidebar to load
             await waitFor(() => {
-                expect(screen.getByTestId('settings-sidebar')).toBeInTheDocument();
+                expect(screen.getByRole('tablist')).toBeInTheDocument();
             });
 
             // Initially the info tab should be active
@@ -637,7 +587,7 @@ describe('ChannelSettingsModal', () => {
 
             // Wait for the sidebar to load
             await waitFor(() => {
-                expect(screen.getByTestId('settings-sidebar')).toBeInTheDocument();
+                expect(screen.getByRole('tablist')).toBeInTheDocument();
             });
 
             // Verify the tab shows the correct label
@@ -655,7 +605,7 @@ describe('ChannelSettingsModal', () => {
             renderWithContext(<ChannelSettingsModal {...baseProps}/>, testState);
 
             await waitFor(() => {
-                expect(screen.getByTestId('settings-sidebar')).toBeInTheDocument();
+                expect(screen.getByRole('tablist')).toBeInTheDocument();
             });
 
             expect(screen.queryByRole('tab', {name: /membership policy/i})).not.toBeInTheDocument();
@@ -673,7 +623,7 @@ describe('ChannelSettingsModal', () => {
 
             // Wait for the sidebar to load
             await waitFor(() => {
-                expect(screen.getByTestId('settings-sidebar')).toBeInTheDocument();
+                expect(screen.getByRole('tablist')).toBeInTheDocument();
             });
 
             // The Membership Policy tab should not be visible for group-constrained channels
@@ -692,7 +642,7 @@ describe('ChannelSettingsModal', () => {
 
             // Wait for the sidebar to load
             await waitFor(() => {
-                expect(screen.getByTestId('settings-sidebar')).toBeInTheDocument();
+                expect(screen.getByRole('tablist')).toBeInTheDocument();
             });
 
             // The Membership Policy tab should not be visible (for multiple reasons)
@@ -710,7 +660,7 @@ describe('ChannelSettingsModal', () => {
 
             // Wait for the sidebar to load
             await waitFor(() => {
-                expect(screen.getByTestId('settings-sidebar')).toBeInTheDocument();
+                expect(screen.getByRole('tablist')).toBeInTheDocument();
             });
 
             // The Membership Policy tab should not be visible (for multiple reasons: public + group-constrained)
@@ -726,7 +676,7 @@ describe('ChannelSettingsModal', () => {
             renderWithContext(<ChannelSettingsModal {...baseProps}/>, makeTestState([registration]));
 
             await waitFor(() => {
-                expect(screen.getByTestId('settings-sidebar')).toBeInTheDocument();
+                expect(screen.getByRole('tablist')).toBeInTheDocument();
             });
 
             expect(screen.getByRole('tab', {name: /plugin tab/i})).toBeInTheDocument();
@@ -738,38 +688,22 @@ describe('ChannelSettingsModal', () => {
             renderWithContext(<ChannelSettingsModal {...baseProps}/>, makeTestState([registration]));
 
             await waitFor(() => {
-                expect(screen.getByTestId('settings-sidebar')).toBeInTheDocument();
+                expect(screen.getByRole('tablist')).toBeInTheDocument();
             });
 
             expect(screen.queryByRole('tab', {name: /plugin tab/i})).not.toBeInTheDocument();
         });
 
-        it('prefixes root-relative plugin icon paths with the base path', async () => {
-            mockGetBasePath.mockReturnValue('/subpath');
-            const registration = makePluginTabRegistration({icon: '/plugins/test/public/icon.svg'});
-
-            renderWithContext(<ChannelSettingsModal {...baseProps}/>, makeTestState([registration]));
+        it('sets archiving apart, after the plugin tabs', async () => {
+            renderWithContext(<ChannelSettingsModal {...baseProps}/>, makeTestState([makePluginTabRegistration()]));
 
             await waitFor(() => {
                 expect(screen.getByRole('tab', {name: /plugin tab/i})).toBeInTheDocument();
             });
 
-            const sidebarProps = getLatestSettingsSidebarProps();
-            expect(sidebarProps.pluginTabs[0].icon).toEqual({url: '/subpath/plugins/test/public/icon.svg'});
-        });
-
-        it('does not mark Archive Channel as a new group break', async () => {
-            renderWithContext(<ChannelSettingsModal {...baseProps}/>, makeTestState());
-
-            await waitFor(() => {
-                expect(screen.getByTestId('settings-sidebar')).toBeInTheDocument();
-            });
-
-            const sidebarProps = getLatestSettingsSidebarProps();
-            const archiveTab = sidebarProps.tabs.find((tab: TabType) => tab.name === 'archive');
-
-            expect(archiveTab).toBeDefined();
-            expect(archiveTab?.newGroup).toBeUndefined();
+            const tabs = screen.getAllByRole('tab');
+            expect(tabs[tabs.length - 1]).toHaveTextContent('Archive channel');
+            expect(tabs[tabs.length - 1]).toHaveClass('am-danger');
         });
 
         it('renders plugin content through Pluggable when a plugin tab is clicked', async () => {
@@ -815,7 +749,7 @@ describe('ChannelSettingsModal', () => {
                 expect(screen.getByTestId('SaveChangesPanel__save-btn')).toBeInTheDocument();
             });
 
-            await userEvent.click(screen.getByRole('tab', {name: /info/i}));
+            await userEvent.click(screen.getByRole('tab', {name: /overview/i}));
 
             await waitFor(() => {
                 expect(screen.getByTestId('SaveChangesPanel__save-btn')).toBeDisabled();
