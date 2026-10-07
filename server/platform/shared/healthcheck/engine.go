@@ -16,7 +16,6 @@ var (
 	ReasonStatsUnavailable       = TranslationId("health.reason.stats_unavailable")
 	ReasonJobsUnavailable        = TranslationId("health.reason.jobs_unavailable")
 	ReasonPluginsUnavailable     = TranslationId("health.reason.plugins_unavailable")
-	ReasonLicenseUnavailable     = TranslationId("health.reason.license_unavailable")
 	ReasonDiagnosticsUnavailable = TranslationId("health.reason.diagnostics_unavailable")
 	ReasonCollectedAtUnknown     = TranslationId("health.reason.collected_at_unknown")
 )
