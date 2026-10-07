@@ -7107,7 +7107,7 @@
   },
   {
     "id": "api.templates.email_footer_v2",
-    "translation": "© 2015 - {{ .CurrentYear }} Mattermost, Inc. 2100 Geng Road, Suite 210, Palo Alto, CA, 94303"
+    "translation": "© {{ .CurrentYear }}"
   },
   {
     "id": "store.sql_file_info.search.disabled",
