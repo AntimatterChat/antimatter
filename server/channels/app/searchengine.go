@@ -22,7 +22,7 @@ func (a *App) TestElasticsearch(rctx request.CTX, cfg *model.Config) *model.AppE
 
 	seI := a.SearchEngine().ElasticsearchEngine
 	if seI == nil {
-		err := model.NewAppError("TestElasticsearch", "ent.elasticsearch.test_config.license.error", nil, "", http.StatusNotImplemented)
+		err := model.NewAppError("TestElasticsearch", "ent.elasticsearch.not_available.app_error", nil, "", http.StatusNotImplemented)
 		return err
 	}
 	if err := seI.TestConfig(rctx, cfg); err != nil {
@@ -39,7 +39,7 @@ func (a *App) SetSearchEngine(se *searchengine.Broker) {
 func (a *App) PurgeElasticsearchIndexes(rctx request.CTX, indexes []string) *model.AppError {
 	engine := a.SearchEngine().ElasticsearchEngine
 	if engine == nil {
-		err := model.NewAppError("PurgeElasticsearchIndexes", "ent.elasticsearch.test_config.license.error", nil, "", http.StatusNotImplemented)
+		err := model.NewAppError("PurgeElasticsearchIndexes", "ent.elasticsearch.not_available.app_error", nil, "", http.StatusNotImplemented)
 		return err
 	}
 
