@@ -23,6 +23,7 @@ import Pluggable from 'plugins/pluggable';
 import type {GlobalState} from 'types/store';
 
 import ChannelIcon from './channel_icon';
+import {isHidingMutedChannels} from './team_actions';
 
 type Props = {
     channelId: string;
@@ -39,6 +40,7 @@ export default function ChannelRow({channelId, collapsed}: Props) {
     const active = useSelector(getCurrentChannelId) === channelId;
     const unread = useSelector((state: GlobalState) => getUnreadCount(state, channelId));
     const muted = useSelector((state: GlobalState) => isChannelMuted(getMyChannelMembership(state, channelId)));
+    const hideMuted = useSelector((state: GlobalState) => Boolean(team && isHidingMutedChannels(state, team.id)));
     const menuButton = useRef<HTMLButtonElement>(null);
     const [menu, setMenu] = useState<{x: number; y: number} | 'button' | null>(null);
 
@@ -56,6 +58,11 @@ export default function ChannelRow({channelId, collapsed}: Props) {
     }
 
     if (!channel || !team || (collapsed && !active && !unread.showUnread)) {
+        return null;
+    }
+
+    // "Hide muted channels" of the team menu: muted channels show only while open or when they mention you.
+    if (muted && hideMuted && !active && !unread.mentions) {
         return null;
     }
 
