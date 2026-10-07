@@ -31,6 +31,7 @@ import {clearLoggedChannelIntroErrors} from 'selectors/channel_intro';
 import {clearLoggedChannelViewPanelErrors} from 'selectors/channel_view_panel';
 import {clearLoggedComposerMenuItemErrors} from 'selectors/composer_menu';
 import {clearLoggedEmojiPickerTabErrors} from 'selectors/emoji_picker_tabs';
+import {clearLoggedIntegrationsOptionErrors} from 'selectors/integrations_options';
 import store from 'stores/redux_store';
 
 import {clearComposerPlaceholderErrors} from 'components/advanced_text_editor/composer_placeholder';
@@ -85,6 +86,7 @@ import type {
     ComposerPlaceholderRegistration,
     ComposerMenuItemRegistration,
     EmojiPickerTabRegistration,
+    IntegrationsOptionRegistration,
     ProductSwitcherMenuItemRegistration,
 } from 'types/store/plugins';
 
@@ -1717,6 +1719,49 @@ export default class PluginRegistry {
             component,
             shouldRender,
             replacesGifPicker: Boolean(replacesGifPicker),
+        });
+        return id;
+    });
+
+    /**
+     * Register an entry of the integrations pages, shown with custom emoji: a tile of the
+     * integrations overview and an item of its side panel. Antimatter's GIFs plugin adds its
+     * custom GIFs and stickers there.
+     * Accepts the following:
+     * - title - A string or React element naming the entry
+     * - description - A string or React element saying what it does, shown on its tile
+     * - fusionIcon - Optional id of an icon of the Fusion UI's icon set (e.g. 'image', 'sticker')
+     * - action - Function called when the entry is clicked, e.g. to open a dialog
+     * - shouldRender - Optional function receiving the full Redux state, returning whether to show
+     *   the entry. A throwing shouldRender hides it.
+     * Cleaned up automatically when the plugin is removed.
+     * Returns a unique identifier.
+     */
+    registerIntegrationsOption = reArg(['title', 'description', 'fusionIcon', 'action', 'shouldRender'], ({
+        title,
+        description,
+        fusionIcon,
+        action,
+        shouldRender = defaultShouldRender,
+    }: {
+        title: ReactResolvable;
+        description: ReactResolvable;
+        fusionIcon?: string;
+        action: IntegrationsOptionRegistration['action'];
+        shouldRender?: IntegrationsOptionRegistration['shouldRender'];
+    }) => {
+        if (this.isActive()) {
+            clearLoggedIntegrationsOptionErrors(this.id);
+        }
+        const id = generateId();
+        this.dispatchPluginComponentWithData('IntegrationsOption', {
+            id,
+            pluginId: this.id,
+            title: resolveReactElement(title),
+            description: resolveReactElement(description),
+            fusionIcon,
+            action,
+            shouldRender,
         });
         return id;
     });

@@ -20,7 +20,7 @@
 .am-bs-back { display: flex; align-items: center; gap: 6px; padding: 7px 10px; border-radius: 7px; color: var(--am-text-2); font-weight: 600; text-align: left; }
 .am-bs-back .am-ic { transform: rotate(90deg); }
 .am-bs-back:hover { background: var(--am-hover); color: var(--am-text); }
-.am-bs-page .am-bs-item { display: flex; align-items: center; gap: 10px; padding: 7px 10px; border-radius: 7px; color: var(--am-text-2); font-weight: 500; text-decoration: none; }
+.am-bs-page .am-bs-item { display: flex; width: 100%; font: inherit; text-align: left; align-items: center; gap: 10px; padding: 7px 10px; border-radius: 7px; color: var(--am-text-2); font-weight: 500; text-decoration: none; }
 .am-bs-page .am-bs-item:hover { background: var(--am-hover); color: var(--am-text); text-decoration: none; }
 .am-bs-page .am-bs-item.am-on { background: var(--am-select); color: var(--am-text); }
 .am-bs-item .am-ic { flex: none; color: var(--am-muted); }
@@ -75,18 +75,28 @@
   .backstage-footer { margin-top: 12px; padding: 0; border: 0; background: none; color: var(--am-muted); font-size: 13px; }
 
   // Overview: the kinds of integrations as Fusion cards.
-  .integrations-list { gap: 12px; }
-  .integration-option { display: grid; justify-items: center; gap: 8px; width: 220px; padding: 22px 16px; border: 1px solid var(--am-line); border-radius: 14px; background: var(--am-side); color: var(--am-text); text-align: center; text-decoration: none; }
+  /* The overview: sections of up to three wide tiles, a column of them when narrow. */
+  .backstage-content { container-type: inline-size; }
+  .integrations-section { margin-bottom: 26px; }
+  .integrations-section h2 { margin: 0 0 10px; color: var(--am-muted); font: 700 11.5px var(--am-font-ui); letter-spacing: .07em; text-transform: uppercase; }
+  .integrations-section:not(:has(.integration-option)) { display: none; }
+  .integrations-list { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+  @container (max-width: 760px) { .integrations-list { grid-template-columns: minmax(0, 1fr); } }
+  .integration-option { display: flex; align-items: flex-start; gap: 14px; width: auto; min-height: 96px; padding: 16px; border: 1px solid var(--am-line); border-radius: 14px; background: var(--am-side); color: var(--am-text); font: inherit; text-align: left; text-decoration: none; }
+  .integration-option__text { display: grid; gap: 4px; min-width: 0; }
   .integration-option:hover { border-color: var(--am-matter); text-decoration: none; }
-  .integration-option__image { display: grid; place-items: center; width: 56px; height: 56px; border-radius: 16px; background: color-mix(in srgb, var(--am-tile) 18%, transparent); color: var(--am-tile); }
-  .integration-option__image .am-ic { width: 28px; height: 28px; }
+  .integration-option__image { display: grid; flex: none; place-items: center; width: 44px; height: 44px; border-radius: 12px; background: color-mix(in srgb, var(--am-tile) 18%, transparent); color: var(--am-tile); }
+  .integration-option__image .am-ic { width: 22px; height: 22px; }
   .integration-option { --am-tile: var(--am-matter); }
   .integration-option--inbox { --am-tile: var(--am-anti); }
   .integration-option--slash { --am-tile: var(--am-spark); }
   .integration-option--shield { --am-tile: var(--am-ok); }
   .integration-option--link { --am-tile: var(--am-danger); }
+  .integration-option--smile { --am-tile: var(--am-spark); }
+  .integration-option--image { --am-tile: var(--am-anti); }
+  .integration-option--sticker { --am-tile: var(--am-ok); }
   .integration-option__title { color: var(--am-text); font-size: 15px; font-weight: 600; }
-  .integration-option__description { color: var(--am-muted); font-size: 13px; }
+  .integration-option__description { color: var(--am-muted); font-size: 13px; line-height: 1.4; }
 
   // Forms: stacked Fusion fields rather than the classic two-column grid.
   .backstage-form { max-width: 620px; padding: 0; border: 0; background: none; }

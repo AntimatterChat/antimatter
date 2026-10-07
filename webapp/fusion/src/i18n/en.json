@@ -22167,6 +22167,10 @@
     "defaultMessage": "Slash Commands",
     "description": "Title of the Slash Commands tile on the team Integrations landing page."
   },
+  "integrations.customEmoji.description": {
+    "defaultMessage": "Add emoji of your own, for everyone on the server to use",
+    "description": "Description of the Custom Emoji tile of the Integrations overview."
+  },
   "integrations.copy_client_id": {
     "defaultMessage": "Copy Client Id",
     "description": "Tooltip/label of the copy-to-clipboard button next to an OAuth application's client ID."
@@ -22207,13 +22211,17 @@
     "defaultMessage": "Integrations",
     "description": "Page header of the team Integrations landing page listing available integration types."
   },
-  "integrations.help": {
-    "defaultMessage": "Visit the {appDirectory} to find self-hosted, third-party apps and integrations for Antimatter.",
-    "description": "Help text at the bottom of the Integrations landing page; {appDirectory} is replaced by a link labeled 'App Directory'."
+  "integrations.section.apps": {
+    "defaultMessage": "Apps and bots",
+    "description": "Heading of the section of the Integrations overview listing OAuth 2.0 apps, outgoing OAuth connections and bot accounts."
   },
-  "integrations.help.appDirectory": {
-    "defaultMessage": "App Directory",
-    "description": "Link text pointing to the Mattermost App Directory in the main integrations page help sentence."
+  "integrations.section.customization": {
+    "defaultMessage": "Customization",
+    "description": "Heading of the section of the Integrations overview listing custom emoji and what plugins add, such as custom GIFs and stickers."
+  },
+  "integrations.section.hooks": {
+    "defaultMessage": "Webhooks and commands",
+    "description": "Heading of the section of the Integrations overview listing incoming and outgoing webhooks and slash commands."
   },
   "integrations.incomingWebhook.description": {
     "defaultMessage": "Incoming webhooks allow external integrations to send messages",

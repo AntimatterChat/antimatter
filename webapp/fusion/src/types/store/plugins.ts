@@ -82,6 +82,7 @@ export type PluginsState = {
         ComposerPlaceholder: ComposerPlaceholderRegistration[];
         ComposerMenuItem: ComposerMenuItemRegistration[];
         EmojiPickerTab: EmojiPickerTabRegistration[];
+        IntegrationsOption: IntegrationsOptionRegistration[];
         ProductSwitcherMenuItem: ProductSwitcherMenuItemRegistration[];
         FilesWillUploadHook: FilesWillUploadHook[];
         DesktopNotificationHooks: DesktopNotificationHook[];
@@ -519,6 +520,17 @@ export type ComposerMenuItemRegistration = PluginComponent & {
     fusionIcon?: string;
     action: (ctx: ComposerMenuItemContext) => void;
     shouldRender: (state: GlobalState, ctx: ComposerMenuItemContext) => boolean;
+};
+
+/** An entry of the integrations pages, next to custom emoji (see registerIntegrationsOption). */
+export type IntegrationsOptionRegistration = PluginComponent & {
+    title: PluggableText;
+    description: PluggableText;
+
+    /** An icon of the Fusion UI's icon set (e.g. 'image', 'sticker'). */
+    fusionIcon?: string;
+    action: () => void;
+    shouldRender: (state: GlobalState) => boolean;
 };
 
 /** The message box an emoji picker tab is opened from: the channel, and the thread for a reply box. */
