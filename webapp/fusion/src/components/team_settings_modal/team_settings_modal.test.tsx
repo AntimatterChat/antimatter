@@ -23,6 +23,17 @@ describe('components/team_settings_modal', () => {
         onExited: jest.fn(),
     };
 
+    beforeEach(() => {
+        baseProps.onExited.mockClear();
+
+        // The Fusion dialog is drawn in the Fusion layer.
+        if (!document.getElementById('am-layer')) {
+            const layer = document.createElement('div');
+            layer.id = 'am-layer';
+            document.body.appendChild(layer);
+        }
+    });
+
     const baseState = {
         entities: {
             teams: {
@@ -71,7 +82,7 @@ describe('components/team_settings_modal', () => {
         );
         const modal = screen.getByRole('dialog', {name: 'Team Settings'});
         expect(modal).toBeInTheDocument();
-        const closeButton = screen.getByLabelText('Close');
+        const closeButton = screen.getByLabelText('Close team settings');
         await userEvent.click(closeButton);
 
         await waitFor(() => {
@@ -86,9 +97,9 @@ describe('components/team_settings_modal', () => {
             />,
             baseState,
         );
-        const infoButton = screen.getByRole('tab', {name: 'info'});
+        const infoButton = screen.getByRole('tab', {name: 'Overview'});
         expect(infoButton).toBeDefined();
-        const accessButton = screen.getByRole('tab', {name: 'access'});
+        const accessButton = screen.getByRole('tab', {name: 'Access'});
         expect(accessButton).toBeDefined();
     });
 
@@ -115,7 +126,7 @@ describe('components/team_settings_modal', () => {
         );
         const tabs = screen.getAllByRole('tab');
         expect(tabs.length).toEqual(1);
-        const infoButton = screen.getByRole('tab', {name: 'info'});
+        const infoButton = screen.getByRole('tab', {name: 'Overview'});
         expect(infoButton).toBeDefined();
     });
 
@@ -136,7 +147,7 @@ describe('components/team_settings_modal', () => {
         await userEvent.type(nameInput, 'Modified Team Name');
 
         // Attempt to close modal with unsaved changes
-        const closeButton = screen.getByLabelText('Close');
+        const closeButton = screen.getByLabelText('Close team settings');
         await userEvent.click(closeButton);
 
         // Verify modal remains open
@@ -163,7 +174,7 @@ describe('components/team_settings_modal', () => {
         await userEvent.clear(nameInput);
         await userEvent.type(nameInput, 'Modified Team Name');
 
-        const closeButton = screen.getByLabelText('Close');
+        const closeButton = screen.getByLabelText('Close team settings');
 
         // First close attempt triggers warning
         await userEvent.click(closeButton);
@@ -192,7 +203,7 @@ describe('components/team_settings_modal', () => {
         expect(modal).toBeInTheDocument();
 
         // Close modal with no unsaved changes
-        const closeButton = screen.getByLabelText('Close');
+        const closeButton = screen.getByLabelText('Close team settings');
         await userEvent.click(closeButton);
 
         // Verify modal closes normally
@@ -224,7 +235,7 @@ describe('components/team_settings_modal', () => {
         });
 
         // After saving, close modal - should work immediately (single click)
-        const closeButton = screen.getByLabelText('Close');
+        const closeButton = screen.getByLabelText('Close team settings');
         await userEvent.click(closeButton);
 
         // Verify modal closes successfully without warning

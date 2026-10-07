@@ -5,23 +5,22 @@ import React, {useState, useRef, useCallback, useEffect} from 'react';
 import {useIntl} from 'react-intl';
 import {useSelector} from 'react-redux';
 
-import {GenericModal} from '@mattermost/components';
-
 import {Permissions} from 'mattermost-redux/constants';
 import {haveISystemPermission, haveITeamPermission} from 'mattermost-redux/selectors/entities/roles';
-import {getCurrentTeamId} from 'mattermost-redux/selectors/entities/teams';
+import {getCurrentTeam, getCurrentTeamId} from 'mattermost-redux/selectors/entities/teams';
 
 import {isChannelAccessControlEnabled, isTeamMembershipAccessControlEnabled} from 'selectors/general';
 
 import TeamSettings from 'components/team_settings';
 
+import Icon from 'fusion/components/icon';
+import {Dialog} from 'fusion/components/layer';
+import {am} from 'fusion/utils/class_names';
 import {focusElement} from 'utils/a11y_utils';
 
 import type {GlobalState} from 'types/store';
 
 import './team_settings_modal.scss';
-
-const SettingsSidebar = React.lazy(() => import('components/settings_sidebar'));
 
 const SHOW_PANEL_ERROR_STATE_TAB_SWITCH_TIMEOUT = 3000;
 
@@ -41,6 +40,7 @@ const TeamSettingsModal = ({isOpen, onExited, focusOriginElement}: Props) => {
     const {formatMessage} = useIntl();
 
     const teamId = useSelector(getCurrentTeamId);
+    const team = useSelector(getCurrentTeam);
     const canInviteUsers = useSelector((state: GlobalState) =>
         haveITeamPermission(state, teamId, Permissions.INVITE_USER),
     );
@@ -109,7 +109,7 @@ const TeamSettingsModal = ({isOpen, onExited, focusOriginElement}: Props) => {
     const tabs = [
         {
             name: 'info',
-            uiName: formatMessage({id: 'team_settings_modal.infoTab', defaultMessage: 'Info'}),
+            uiName: formatMessage({id: 'fusion.teamSettings.overview', defaultMessage: 'Overview'}),
             icon: 'icon icon-information-outline',
             iconTitle: formatMessage({id: 'generic_icons.info', defaultMessage: 'Info Icon'}),
         },
@@ -136,49 +136,74 @@ const TeamSettingsModal = ({isOpen, onExited, focusOriginElement}: Props) => {
         },
     ];
 
-    const modalTitle = formatMessage({id: 'team_settings_modal.title', defaultMessage: 'Team Settings'});
+    // Closing the Fusion dialog has no fade-out to wait for.
+    useEffect(() => {
+        if (!show) {
+            handleExited();
+        }
+    }, [show]); // eslint-disable-line react-hooks/exhaustive-deps
 
+    if (!show) {
+        return null;
+    }
+
+    const modalTitle = formatMessage({id: 'team_settings_modal.title', defaultMessage: 'Team Settings'});
+    const visibleTabs = tabs.filter((tab) => tab.display !== false);
+
+    // The Fusion UI shows the team settings in its own dialog, as the channel settings: the tabs on the left under the
+    // team's name, the tab's name as the heading of the pane.
     return (
-        <GenericModal
-            id='teamSettingsModal'
-            ariaLabel={modalTitle}
-            className='TeamSettingsModal settings-modal'
-            show={show}
-            onHide={handleHide}
-            preventClose={areThereUnsavedChanges && !hasBeenWarned}
-            onExited={handleExited}
-            compassDesign={true}
-            modalHeaderText={modalTitle}
-            bodyPadding={false}
-            modalLocation={'top'}
-            enforceFocus={false}
+        <Dialog
+            label={modalTitle}
+            small={false}
+            className={am('team-settings')}
+            onClose={handleHide}
         >
-            <div className='TeamSettingsModal__bodyWrapper'>
-                <div
-                    ref={modalBodyRef}
-                    className='settings-table'
-                >
-                    <div className='settings-links'>
-                        <React.Suspense fallback={null}>
-                            <SettingsSidebar
-                                tabs={tabs}
-                                activeTab={activeTab}
-                                updateTab={updateTab}
-                            />
-                        </React.Suspense>
-                    </div>
-                    <div className='settings-content minimize-settings'>
-                        <TeamSettings
-                            activeTab={activeTab}
-                            areThereUnsavedChanges={areThereUnsavedChanges}
-                            setAreThereUnsavedChanges={setAreThereUnsavedChanges}
-                            showTabSwitchError={showTabSwitchError}
-                            setShowTabSwitchError={setShowTabSwitchError}
-                        />
-                    </div>
+            <nav
+                role='tablist'
+                aria-orientation='vertical'
+            >
+                <h5 title={team?.display_name}>{team?.display_name}</h5>
+                {visibleTabs.map((tab) => (
+                    <button
+                        key={tab.name}
+                        type='button'
+                        role='tab'
+                        className={am({on: tab.name === activeTab})}
+                        aria-selected={tab.name === activeTab}
+                        onClick={() => updateTab(tab.name)}
+                    >
+                        {tab.uiName}
+                    </button>
+                ))}
+            </nav>
+            <div
+                ref={modalBodyRef}
+                className={am('pane')}
+                role='tabpanel'
+            >
+                <h2>{visibleTabs.find((tab) => tab.name === activeTab)?.uiName}</h2>
+
+                {/* The tabs' classic styles are scoped to the classic dialog's class. */}
+                <div className='TeamSettingsModal'>
+                    <TeamSettings
+                        activeTab={activeTab}
+                        areThereUnsavedChanges={areThereUnsavedChanges}
+                        setAreThereUnsavedChanges={setAreThereUnsavedChanges}
+                        showTabSwitchError={showTabSwitchError}
+                        setShowTabSwitchError={setShowTabSwitchError}
+                    />
                 </div>
+                <button
+                    type='button'
+                    className={am('icon-btn', 'close')}
+                    aria-label={formatMessage({id: 'fusion.teamSettings.close', defaultMessage: 'Close team settings'})}
+                    onClick={handleHide}
+                >
+                    <Icon name='x'/>
+                </button>
             </div>
-        </GenericModal>
+        </Dialog>
     );
 };
 
