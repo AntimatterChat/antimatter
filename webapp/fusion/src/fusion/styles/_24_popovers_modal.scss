@@ -63,7 +63,7 @@
 :is(.am-app, .am-layer) .am-modal .am-close { position: absolute; top: 14px; right: 14px; }
 :is(.am-app, .am-layer) .am-field { display: grid; gap: 6px; margin-bottom: 16px; }
 :is(.am-app, .am-layer) .am-field > span { font: 700 11px var(--am-font-ui); letter-spacing: .07em; text-transform: uppercase; color: var(--am-muted); }
-:is(.am-app, .am-layer) .am-field input[type="text"], :is(.am-app, .am-layer) .am-field select {
+:is(.am-app, .am-layer) .am-field :is(input[type="text"], input[type="password"]), :is(.am-app, .am-layer) .am-field select {
   height: 38px;
   padding: 0 12px;
   border-radius: 9px;
@@ -71,7 +71,20 @@
   background: var(--am-side);
   outline: none;
 }
-:is(.am-app, .am-layer) .am-field input[type="text"]:focus, :is(.am-app, .am-layer) .am-field select:focus { border-color: var(--am-matter); }
+:is(.am-app, .am-layer) .am-field :is(input[type="text"], input[type="password"]):focus, :is(.am-app, .am-layer) .am-field select:focus { border-color: var(--am-matter); }
+:is(.am-app, .am-layer) .am-field input:disabled { color: var(--am-muted); cursor: not-allowed; }
+:is(.am-app, .am-layer) .am-field-error { margin: 0 0 12px; color: var(--am-danger); font-size: 13px; }
+// The account pane's picture, with who you are next to it.
+:is(.am-app, .am-layer) .am-pic-row { display: flex; align-items: center; gap: 18px; padding: 16px; margin-bottom: 20px; border-radius: 12px; background: var(--am-side); border: 1px solid var(--am-line); }
+:is(.am-app, .am-layer) .am-pic-who { min-width: 0; }
+:is(.am-app, .am-layer) .am-pic-name { font: 600 17px var(--am-font-display); }
+:is(.am-app, .am-layer) .am-pic-sub { color: var(--am-muted); font-size: 13px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+:is(.am-app, .am-layer) .am-pic-actions { display: flex; gap: 8px; margin-top: 10px; }
+// A form opened in place of a settings row, such as the password one.
+:is(.am-app, .am-layer) .am-sub-form { padding: 16px 16px 8px; margin: 8px 0 12px; border-radius: 12px; background: var(--am-side); border: 1px solid var(--am-line); }
+:is(.am-app, .am-layer) .am-sub-form > b { display: block; margin-bottom: 12px; font-size: 14.5px; }
+:is(.am-app, .am-layer) .am-sub-form .am-field :is(input[type="text"], input[type="password"]) { background: var(--am-main); }
+:is(.am-app, .am-layer) .am-modal .am-pane h3 { margin: 24px 0 4px; font: 600 15px var(--am-font-display); }
 :is(.am-app, .am-layer) .am-field small { color: var(--am-muted); font-size: 12.5px; }
 :is(.am-app, .am-layer) .am-seg { display: inline-flex; padding: 3px; border-radius: 10px; background: var(--am-side); border: 1px solid var(--am-line); gap: 2px; }
 :is(.am-app, .am-layer) .am-seg button { height: 32px; padding: 0 14px; border-radius: 7px; font-weight: 600; font-size: 13.5px; color: var(--am-muted); }
