@@ -51,4 +51,18 @@ export const getSortedMyTeams: (state: GlobalState) => Team[] = createSelector(
     (teams, locale, order) => filterAndSortTeamsByDisplayName(teams, locale, order),
 );
 
+// getLastTeamChannelName names the team's channel you viewed last, leaving out direct messages, which belong to no
+// team: where to go back to from them. '' when you haven't joined any of the team's channels.
+export function getLastTeamChannelName(state: GlobalState, teamId: string): string {
+    const channels = state.entities.channels.channels;
+    let last: {name: string; viewedAt: number} = {name: '', viewedAt: -1};
+    Object.values(getMyChannelMemberships(state)).forEach((member) => {
+        const channel = channels[member.channel_id];
+        if (channel && channel.team_id === teamId && channel.delete_at === 0 && member.last_viewed_at > last.viewedAt) {
+            last = {name: channel.name, viewedAt: member.last_viewed_at};
+        }
+    });
+    return last.name;
+}
+
 export {getChannelMessageCount};
