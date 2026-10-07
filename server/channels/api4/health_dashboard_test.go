@@ -18,15 +18,12 @@ import (
 	"github.com/mattermost/mattermost/server/v8/platform/shared/healthcheck"
 )
 
-// Tests in this file are not parallel: they set the license on their server.
-
 func setupHealthDashboard(t *testing.T, flagEnabled bool) *TestHelper {
 	t.Helper()
 
 	th := SetupConfig(t, func(cfg *model.Config) {
 		cfg.FeatureFlags.HealthDashboard = flagEnabled
 	})
-	th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterprise))
 
 	return th
 }
@@ -105,25 +102,7 @@ func TestHealthDashboardAccess(t *testing.T) {
 		CheckNotImplementedStatus(t, resp)
 	})
 
-	t.Run("no license", func(t *testing.T) {
-		th := setupHealthDashboard(t, true)
-		th.App.Srv().SetLicense(nil)
-
-		_, resp, err := th.SystemAdminClient.GetHealthFindings(context.Background(), model.HealthFindingFilter{})
-		require.Error(t, err)
-		CheckNotImplementedStatus(t, resp)
-	})
-
-	t.Run("license below Enterprise", func(t *testing.T) {
-		th := setupHealthDashboard(t, true)
-		th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuProfessional))
-
-		_, resp, err := th.SystemAdminClient.GetHealthFindings(context.Background(), model.HealthFindingFilter{})
-		require.Error(t, err)
-		CheckNotImplementedStatus(t, resp)
-	})
-
-	t.Run("admin with the flag and license", func(t *testing.T) {
+	t.Run("admin with the flag", func(t *testing.T) {
 		th := setupHealthDashboard(t, true)
 
 		list, resp, err := th.SystemAdminClient.GetHealthFindings(context.Background(), model.HealthFindingFilter{})
@@ -397,7 +376,6 @@ func TestMuteHealthFindingAudit(t *testing.T) {
 		cfg.ExperimentalAuditSettings.FileEnabled = new(true)
 		cfg.ExperimentalAuditSettings.FileName = new(logFile.Name())
 	})
-	th.App.Srv().SetLicense(model.NewTestLicenseSKU(model.LicenseShortSkuEnterprise))
 
 	finding := newHealthFinding("SITE_URL_HTTP", healthcheck.SurfaceProduct)
 	storeHealthFindings(t, th, finding)

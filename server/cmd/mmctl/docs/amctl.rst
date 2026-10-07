@@ -41,6 +41,7 @@ SEE ALSO
 * `amctl export <amctl_export.rst>`_ 	 - Management of exports
 * `amctl extract <amctl_extract.rst>`_ 	 - Management of content extraction job.
 * `amctl group <amctl_group.rst>`_ 	 - Management of groups
+* `amctl health <amctl_health.rst>`_ 	 - Inspect workspace health findings
 * `amctl import <amctl_import.rst>`_ 	 - Management of imports
 * `amctl integrity <amctl_integrity.rst>`_ 	 - Check database records integrity.
 * `amctl job <amctl_job.rst>`_ 	 - Management of jobs

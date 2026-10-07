@@ -64,6 +64,9 @@ func (c *threeNodeCluster) GetClusterInfos() ([]*model.ClusterInfo, error) {
 // Not parallel: it clears the latest-version cache that TestGetLatestVersion also uses.
 func TestBuildHealthSnapshotOnlyLeaderHasDiagnostics(t *testing.T) {
 	th := SetupWithClusterMock(t, &threeNodeCluster{})
+	th.App.UpdateConfig(func(cfg *model.Config) {
+		*cfg.ClusterSettings.Enable = true
+	})
 
 	err := th.App.clearLatestVersionCache()
 	require.NoError(t, err)

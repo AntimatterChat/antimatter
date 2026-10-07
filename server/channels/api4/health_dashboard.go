@@ -21,7 +21,7 @@ func (api *API) InitHealthDashboard() {
 }
 
 // requireHealthDashboard sets c.Err and returns false unless the caller may use the health
-// dashboard. Permission is checked first so a non-admin learns nothing about the flag or license.
+// dashboard. Permission is checked first so a non-admin learns nothing about the flag.
 func requireHealthDashboard(c *Context) bool {
 	if !c.App.SessionHasPermissionTo(*c.AppContext.Session(), model.PermissionManageSystem) {
 		c.SetPermissionError(model.PermissionManageSystem)
@@ -30,11 +30,6 @@ func requireHealthDashboard(c *Context) bool {
 
 	if !c.App.Config().FeatureFlags.HealthDashboard {
 		c.Err = model.NewAppError("requireHealthDashboard", "api.health_finding.feature_disabled.app_error", nil, "", http.StatusNotImplemented)
-		return false
-	}
-
-	if !model.MinimumEnterpriseLicense(c.App.Channels().License()) {
-		c.Err = model.NewAppError("requireHealthDashboard", "api.health_finding.license.app_error", nil, "", http.StatusNotImplemented)
 		return false
 	}
 

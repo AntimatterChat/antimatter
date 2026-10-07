@@ -3184,11 +3184,6 @@
     "description": "API error when a health dashboard endpoint is called while the health dashboard feature flag is off."
   },
   {
-    "id": "api.health_finding.license.app_error",
-    "translation": "The health dashboard requires an Enterprise license.",
-    "description": "API error when a health dashboard endpoint is called on a server without an Enterprise license."
-  },
-  {
     "id": "api.image.get.app_error",
     "translation": "Requested image url cannot be parsed.",
     "description": "API error from the image proxy when the requested image URL is malformed and cannot be parsed."

@@ -47,14 +47,14 @@ func NewHealthCheckService(s store.Store, logger mlog.LoggerIFace) *HealthCheckS
 }
 
 // RunHealthCheck performs one evaluation cycle and stores the resulting findings. It is a
-// no-op unless the HealthDashboard feature flag is on and the license is at least Enterprise.
+// no-op unless the HealthDashboard feature flag is on.
 // It must only be called on the cluster leader.
 func (a *App) RunHealthCheck(rctx request.CTX) error {
 	return a.runHealthCheck(rctx, NewHealthCheckService(a.Srv().Store(), a.Log()))
 }
 
 func (a *App) runHealthCheck(rctx request.CTX, svc *HealthCheckService) error {
-	if !a.Config().FeatureFlags.HealthDashboard || !model.MinimumEnterpriseLicense(a.License()) {
+	if !a.Config().FeatureFlags.HealthDashboard {
 		return nil
 	}
 

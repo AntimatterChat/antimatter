@@ -189,7 +189,7 @@ func readNodes(z *budgetedZip, root []string, byNode map[string][]string) ([]*he
 	}
 
 	if newestSeen > model.CurrentSupportPacketVersion {
-		warnings = append(warnings, fmt.Sprintf("The packet is from a newer server (Support Packet version %d, this build reads version %d). Upgrade mmctl: fields this build does not know may read as missing.", newestSeen, model.CurrentSupportPacketVersion))
+		warnings = append(warnings, fmt.Sprintf("The packet is from a newer server (Support Packet version %d, this build reads version %d). Upgrade amctl: fields this build does not know may read as missing.", newestSeen, model.CurrentSupportPacketVersion))
 	}
 
 	return nodes, warnings
