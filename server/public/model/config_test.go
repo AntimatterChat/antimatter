@@ -1393,6 +1393,33 @@ func TestConfigDefaultNPSPluginState(t *testing.T) {
 	})
 }
 
+func TestConfigDefaultAntimatterPluginStates(t *testing.T) {
+	t.Run("should enable the Antimatter plugins by default", func(t *testing.T) {
+		c1 := Config{}
+		c1.SetDefaults()
+
+		for _, id := range AntimatterPluginIds {
+			require.NotNil(t, c1.PluginSettings.PluginStates[id], id)
+			assert.True(t, c1.PluginSettings.PluginStates[id].Enable, id)
+		}
+	})
+
+	t.Run("should not re-enable an Antimatter plugin after it has been disabled", func(t *testing.T) {
+		c1 := Config{
+			PluginSettings: PluginSettings{
+				PluginStates: map[string]*PluginState{
+					"com.antimatterchat.gifs": {Enable: false},
+				},
+			},
+		}
+
+		c1.SetDefaults()
+
+		assert.False(t, c1.PluginSettings.PluginStates["com.antimatterchat.gifs"].Enable)
+		assert.True(t, c1.PluginSettings.PluginStates["com.antimatterchat.polls"].Enable)
+	})
+}
+
 func TestConfigDefaultChannelExportPluginState(t *testing.T) {
 	t.Run("should not enable ChannelExport plugin by default", func(t *testing.T) {
 		BuildEnterpriseReady = "true"

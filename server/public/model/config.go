@@ -3722,6 +3722,12 @@ func (s *PluginSettings) SetDefaults(ls LogSettings) {
 		s.PluginStates[PluginIdFocalboard] = &PluginState{Enable: true}
 	}
 
+	for _, id := range AntimatterPluginIds {
+		if s.PluginStates[id] == nil {
+			s.PluginStates[id] = &PluginState{Enable: true}
+		}
+	}
+
 	if s.EnableMarketplace == nil {
 		s.EnableMarketplace = new(PluginSettingsDefaultEnableMarketplace)
 	}
