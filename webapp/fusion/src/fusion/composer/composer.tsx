@@ -17,6 +17,7 @@ import {isScheduledPostsEnabled} from 'mattermost-redux/selectors/entities/sched
 import {getCurrentUserId} from 'mattermost-redux/selectors/entities/users';
 
 import {uploadFile} from 'actions/file_actions';
+import {emitLocalUserTypingEvent} from 'actions/global_actions';
 import {editLatestPost, onSubmit} from 'actions/views/create_comment';
 import {updateDraft} from 'actions/views/drafts';
 import {isBurnOnReadEnabled} from 'selectors/burn_on_read';
@@ -55,11 +56,13 @@ import type {PostDraft} from 'types/store/draft';
 
 import Autocomplete from './autocomplete';
 import type {AutocompleteHandle} from './autocomplete';
+import {confirmChannelWideMentions} from './confirm_mentions';
 import {FORMATS, applyFormat} from './formats';
 import {useShowFormatting} from './formatting_preference';
 import PluginMenuItems from './plugin_menu_items';
 import {SchedulePopover, ScheduledNote} from './schedule';
 import SleepNote from './sleep_note';
+import Typing from './typing';
 
 type Props = {
     channelId: string;
@@ -107,6 +110,10 @@ export default function Composer({channelId, rootId = '', placeholder}: Props) {
     const emojiRef = useRef<HTMLButtonElement>(null);
     const priorityRef = useRef<HTMLButtonElement>(null);
     const burnRef = useRef<HTMLButtonElement>(null);
+    const scheduleRef = useRef<HTMLButtonElement>(null);
+
+    // The schedule picker opens from the + menu or the toolbar's clock button, next to which it shows.
+    const [scheduleFromBar, setScheduleFromBar] = useState(false);
     const moreRef = useRef<HTMLButtonElement>(null);
     const autocompleteRef = useRef<AutocompleteHandle>(null);
     const saveTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
@@ -185,6 +192,13 @@ export default function Composer({channelId, rootId = '', placeholder}: Props) {
         if (pending.length) {
             return;
         }
+
+        // A message to a whole channel of many people (@all, @channel, @here) is confirmed first.
+        const {data: send} = await dispatch(confirmChannelWideMentions(channelId, draft.message));
+        if (!send) {
+            requestAnimationFrame(() => textareaRef.current?.focus());
+            return;
+        }
         const toSend: PostDraft = {...draft, channelId, rootId};
         const empty: PostDraft = {message: '', fileInfos: [], uploadsInProgress: [], channelId, rootId, createAt: 0, updateAt: 0};
         setDraft(empty);
@@ -205,6 +219,13 @@ export default function Composer({channelId, rootId = '', placeholder}: Props) {
             return;
         }
         if (pending.length) {
+            return;
+        }
+
+        // A message to a whole channel of many people (@all, @channel, @here) is confirmed first.
+        const {data: send} = await dispatch(confirmChannelWideMentions(channelId, draft.message));
+        if (!send) {
+            requestAnimationFrame(() => textareaRef.current?.focus());
             return;
         }
         const toSend: PostDraft = {...draft, channelId, rootId};
@@ -531,7 +552,12 @@ export default function Composer({channelId, rootId = '', placeholder}: Props) {
                         value={draft.message}
                         placeholder={placeholder}
                         aria-label={placeholder}
-                        onChange={(e) => change({message: e.target.value})}
+                        onChange={(e) => {
+                            change({message: e.target.value});
+
+                            // Others see that we're typing, as often as the server allows.
+                            emitLocalUserTypingEvent(channelId, rootId);
+                        }}
                         onKeyDown={onKeyDown}
                         onPaste={(e) => {
                             if (e.clipboardData.files.length) {
@@ -649,9 +675,29 @@ export default function Composer({channelId, rootId = '', placeholder}: Props) {
                         >
                             <Icon name='eye-off'/>
                         </button>
+                        {schedulingEnabled && (
+                            <button
+                                ref={scheduleRef}
+                                type='button'
+                                className={am({on: menu === 'schedule' && scheduleFromBar})}
+                                title={formatMessage({id: 'fusion.composer.schedule', defaultMessage: 'Schedule message'})}
+                                aria-label={formatMessage({id: 'fusion.composer.schedule', defaultMessage: 'Schedule message'})}
+                                aria-haspopup='menu'
+                                onClick={() => {
+                                    setScheduleFromBar(true);
+                                    setMenu(menu === 'schedule' ? null : 'schedule');
+                                }}
+                            >
+                                <Icon name='clock'/>
+                            </button>
+                        )}
                     </div>
                 )}
             </div>
+            <Typing
+                channelId={channelId}
+                rootId={rootId}
+            />
             <input
                 ref={fileRef}
                 type='file'
@@ -691,7 +737,10 @@ export default function Composer({channelId, rootId = '', placeholder}: Props) {
                         <MenuItem
                             icon='clock'
                             label={formatMessage({id: 'fusion.composer.schedule', defaultMessage: 'Schedule message'})}
-                            onClick={() => setMenu('schedule')}
+                            onClick={() => {
+                                setScheduleFromBar(false);
+                                setMenu('schedule');
+                            }}
                         />
                     )}
                     <MenuItem
@@ -707,7 +756,7 @@ export default function Composer({channelId, rootId = '', placeholder}: Props) {
             )}
             {menu === 'schedule' && (
                 <SchedulePopover
-                    anchor={plusRef.current}
+                    anchor={scheduleFromBar ? scheduleRef.current : plusRef.current}
                     onSchedule={(at) => schedule(at)}
                     onClose={() => setMenu(null)}
                 />

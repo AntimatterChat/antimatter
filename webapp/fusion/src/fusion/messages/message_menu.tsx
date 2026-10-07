@@ -1,7 +1,7 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 
-import React from 'react';
+import React, {useState} from 'react';
 import {useIntl} from 'react-intl';
 import {useDispatch, useSelector} from 'react-redux';
 
@@ -27,7 +27,8 @@ import ForwardPostModal from 'components/forward_post_modal';
 
 import Icon from 'fusion/components/icon';
 import {Popover} from 'fusion/components/layer';
-import {Flyout, MenuItem, MenuSeparator} from 'fusion/components/menu';
+import {Flyout, MenuHeading, MenuItem, MenuSeparator} from 'fusion/components/menu';
+import {CustomTimeForm} from 'fusion/composer/schedule';
 import {useDialogs} from 'fusion/shell/dialogs_context';
 import {useToast} from 'fusion/shell/toast_context';
 import {am} from 'fusion/utils/class_names';
@@ -90,12 +91,44 @@ export default function MessageMenu({post, anchor, inThread, onClose, onMoreReac
         action();
         onClose();
     };
+
+    // "Remind me" at a time of one's choice turns the menu into a date and time picker.
+    const [customReminder, setCustomReminder] = useState(false);
+    const remindAt = async (at: number) => {
+        const result = await dispatch(addPostReminder(me, post.id, Math.floor(at / 1000)));
+        if (!(result && 'error' in result && result.error)) {
+            toast(formatMessage({id: 'fusion.toast.reminder', defaultMessage: 'Reminder set for {time}'}, {time: intl.formatDate(at, {weekday: 'short', hour: 'numeric', minute: '2-digit'})}));
+        }
+    };
     const system = isSystemMessage(post);
 
     // Burn-on-Read messages can't be replied to or forwarded.
     const burn = post.type === Posts.POST_TYPES.BURN_ON_READ;
     const threadId = post.root_id || post.id;
     const plugins = pluginActions.filter((a) => !a.filter || a.filter(post.id));
+
+    if (customReminder) {
+        return (
+            <Popover
+                anchor={anchor}
+                placement='below'
+                className='plus-pop msg-menu sched-pop'
+                role='dialog'
+                label={formatMessage({id: 'fusion.messageMenu.remindCustomLabel', defaultMessage: 'Remind me at a custom time'})}
+                onClose={onClose}
+            >
+                <MenuHeading>{formatMessage({id: 'fusion.messageMenu.remind', defaultMessage: 'Remind me'})}</MenuHeading>
+                <CustomTimeForm
+                    label={formatMessage({id: 'fusion.messageMenu.remindWhen', defaultMessage: 'When'})}
+                    submitLabel={formatMessage({id: 'fusion.messageMenu.remindSet', defaultMessage: 'Set reminder'})}
+                    onPick={(at) => {
+                        remindAt(at);
+                        onClose();
+                    }}
+                />
+            </Popover>
+        );
+    }
 
     return (
         <Popover
@@ -179,12 +212,7 @@ export default function MessageMenu({post, anchor, inThread, onClose, onMoreReac
                         key={key}
                         type='button'
                         role='menuitem'
-                        onClick={run(async () => {
-                            const result = await dispatch(addPostReminder(me, post.id, Math.floor(at / 1000)));
-                            if (!(result && 'error' in result && result.error)) {
-                                toast(formatMessage({id: 'fusion.toast.reminder', defaultMessage: 'Reminder set for {time}'}, {time: intl.formatDate(at, {weekday: 'short', hour: 'numeric', minute: '2-digit'})}));
-                            }
-                        })}
+                        onClick={run(() => remindAt(at))}
                     >
                         {{
                             '30min': formatMessage({id: 'fusion.messageMenu.remind30', defaultMessage: 'In 30 minutes'}),
@@ -194,6 +222,13 @@ export default function MessageMenu({post, anchor, inThread, onClose, onMoreReac
                         }[key]}
                     </button>
                 ))}
+                <button
+                    type='button'
+                    role='menuitem'
+                    onClick={() => setCustomReminder(true)}
+                >
+                    {formatMessage({id: 'fusion.messageMenu.remindCustom', defaultMessage: 'Custom time…'})}
+                </button>
             </Flyout>
             <MenuItem
                 icon='bookmark'
