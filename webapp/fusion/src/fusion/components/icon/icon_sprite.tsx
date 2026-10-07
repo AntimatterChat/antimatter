@@ -72,7 +72,7 @@ const SYMBOLS = [
     '<symbol id="am-i-folder" viewBox="0 0 24 24"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></symbol>',
     '<symbol id="am-i-leave" viewBox="0 0 24 24"><path d="M14 4h4a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-4M10 16l-4-4 4-4M6 12h10"/></symbol>',
     '<symbol id="am-i-user-plus" viewBox="0 0 24 24"><circle cx="10" cy="8" r="3.5"/><path d="M4 20a6 6 0 0 1 12 0M19 8v6M16 11h6"/></symbol>',
-    '<symbol id="am-i-forward" viewBox="0 0 24 24"><path d="m14 5 6 6-6 6M20 11H9a5 5 0 0 0-5 5v3"/></symbol>',
+    '<symbol id="am-i-forward" viewBox="0 0 24 24"><path d="m14 7 6 5-6 5"/><path d="M20 12H10a6 6 0 0 0-6 6v1"/></symbol>',
     '<symbol id="am-i-bookmark" viewBox="0 0 24 24"><path d="M6 3h12v18l-6-4-6 4z"/></symbol>',
     '<symbol id="am-i-copy" viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></symbol>',
     '<symbol id="am-i-trash" viewBox="0 0 24 24"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></symbol>',
