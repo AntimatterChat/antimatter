@@ -1,19 +1,21 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 
-import React, {useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {useIntl} from 'react-intl';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {CollapsedThreads} from '@mattermost/types/config';
-import type {UserNotifyProps} from '@mattermost/types/users';
+import type {Session} from '@mattermost/types/sessions';
+import type {UserNotifyProps, UserProfile} from '@mattermost/types/users';
 
 import {savePreferences, saveTheme} from 'mattermost-redux/actions/preferences';
-import {updateMe} from 'mattermost-redux/actions/users';
-import {Preferences} from 'mattermost-redux/constants';
-import {getConfig} from 'mattermost-redux/selectors/entities/general';
+import {getMe, getSessions, revokeSession, setDefaultProfileImage, updateMe, updateUserPassword, uploadProfileImage} from 'mattermost-redux/actions/users';
+import {Permissions, Preferences} from 'mattermost-redux/constants';
+import {getConfig, getPasswordConfig} from 'mattermost-redux/selectors/entities/general';
 import {get as getPreference, getCollapsedThreadsPreference, getTheme, isCollapsedThreadsAllowed} from 'mattermost-redux/selectors/entities/preferences';
 import type {Theme} from 'mattermost-redux/selectors/entities/preferences';
+import {haveISystemPermission} from 'mattermost-redux/selectors/entities/roles';
 import {getCurrentTimezoneLabel} from 'mattermost-redux/selectors/entities/timezone';
 import {getCurrentUser} from 'mattermost-redux/selectors/entities/users';
 import {isSystemAdmin} from 'mattermost-redux/utils/user_utils';
@@ -27,7 +29,9 @@ import {am} from 'fusion/utils/class_names';
 import {openClassicUserSettings} from 'fusion/utils/modals';
 import {getLanguages} from 'i18n/i18n';
 import {getHistory} from 'utils/browser_history';
-import Constants from 'utils/constants';
+import Constants, {AcceptedProfileImageTypes, LOCK_PROFILE_FIELDS, normalizeLockProfileFieldsSetting} from 'utils/constants';
+import {isValidPassword} from 'utils/password';
+import {isValidUsername} from 'utils/utils';
 import {CURRENT_WEB_UI, WebUIs} from 'utils/web_ui';
 import type {WebUI} from 'utils/web_ui';
 
@@ -122,62 +126,193 @@ function usePreference(category: string, name: string, fallback: string): [strin
     return [value, save];
 }
 
+type ProfileField = 'name' | 'username' | 'nickname' | 'position' | 'picture';
+
+// useProfileFieldLock tells why the person can't change a field of their profile, as the classic settings do: their
+// login provider (AD/LDAP, SAML, OAuth) provides it, or the admin locked it for email accounts. '' when they can.
+function useProfileFieldLock(): (field: ProfileField) => 'provider' | 'admin' | '' {
+    const me = useSelector(getCurrentUser);
+    const config = useSelector(getConfig);
+    const canEditOtherUsers = useSelector((state: GlobalState) => haveISystemPermission(state, {permission: Permissions.EDIT_OTHER_USERS}));
+    const ldap = me.auth_service === Constants.LDAP_SERVICE;
+    const saml = me.auth_service === Constants.SAML_SERVICE;
+    const set = (name: string) => config[name as keyof typeof config] === 'true';
+
+    return (field) => {
+        const fromProvider = {
+            name: (ldap && (set('LdapFirstNameAttributeSet') || set('LdapLastNameAttributeSet'))) || (saml && (set('SamlFirstNameAttributeSet') || set('SamlLastNameAttributeSet'))) || Constants.OAUTH_SERVICES.includes(me.auth_service),
+            username: me.auth_service !== '',
+            nickname: (ldap && set('LdapNicknameAttributeSet')) || (saml && set('SamlNicknameAttributeSet')),
+            position: (ldap && set('LdapPositionAttributeSet')) || (saml && set('SamlPositionAttributeSet')),
+            picture: ldap && set('LdapPictureAttributeSet'),
+        }[field];
+        if (fromProvider) {
+            return 'provider';
+        }
+        if (me.auth_service === '' && !canEditOtherUsers) {
+            const lock = normalizeLockProfileFieldsSetting(config.LockProfileFieldsForEmailUsers);
+            if (lock === LOCK_PROFILE_FIELDS.ALL || (lock === LOCK_PROFILE_FIELDS.NAME_AND_USERNAME && (field === 'name' || field === 'username'))) {
+                return 'admin';
+            }
+        }
+        return '';
+    };
+}
+
+function ProfilePicture({me, locked}: {me: UserProfile; locked: boolean}) {
+    const {formatMessage} = useIntl();
+    const dispatch = useDispatch();
+    const maxFileSize = parseInt(useSelector(getConfig).MaxFileSize || '0', 10);
+    const fileInput = useRef<HTMLInputElement>(null);
+    const [error, setError] = useState('');
+    const [busy, setBusy] = useState(false);
+
+    const upload = async (file: File) => {
+        if (!AcceptedProfileImageTypes.includes(file.type)) {
+            setError(formatMessage({id: 'fusion.settings.pictureType', defaultMessage: 'Pick a JPEG, PNG or BMP image.'}));
+            return;
+        }
+        if (maxFileSize && file.size > maxFileSize) {
+            setError(formatMessage({id: 'fusion.settings.pictureSize', defaultMessage: 'This image is too large.'}));
+            return;
+        }
+        setError('');
+        setBusy(true);
+        const {error: err} = await dispatch(uploadProfileImage(me.id, file)) as {error?: {message: string}};
+        setBusy(false);
+        if (err) {
+            setError(err.message);
+        }
+    };
+
+    return (
+        <div className={am('pic-row')}>
+            <Avatar
+                userId={me.id}
+                size='xl'
+            />
+            <div className={am('pic-who')}>
+                <div className={am('pic-name')}>{[me.first_name, me.last_name].filter(Boolean).join(' ') || me.username}</div>
+                <div className={am('pic-sub')}>{`@${me.username} · ${me.email}`}</div>
+                {!locked && (
+                    <div className={am('pic-actions')}>
+                        <input
+                            ref={fileInput}
+                            type='file'
+                            accept={AcceptedProfileImageTypes.join(',')}
+                            style={{display: 'none'}}
+                            onChange={(e) => {
+                                const file = e.target.files?.[0];
+                                e.target.value = '';
+                                if (file) {
+                                    upload(file);
+                                }
+                            }}
+                        />
+                        <button
+                            type='button'
+                            className={am('btn')}
+                            disabled={busy}
+                            onClick={() => fileInput.current?.click()}
+                        >
+                            {formatMessage({id: 'fusion.settings.changePicture', defaultMessage: 'Change picture'})}
+                        </button>
+                        {me.last_picture_update > 0 && (
+                            <button
+                                type='button'
+                                className={am('btn')}
+                                disabled={busy}
+                                onClick={() => dispatch(setDefaultProfileImage(me.id))}
+                            >
+                                {formatMessage({id: 'fusion.settings.removePicture', defaultMessage: 'Remove'})}
+                            </button>
+                        )}
+                    </div>
+                )}
+                {error && <div className={am('field-error')}>{error}</div>}
+            </div>
+        </div>
+    );
+}
+
 function AccountPane() {
     const {formatMessage} = useIntl();
     const dispatch = useDispatch();
     const me = useSelector(getCurrentUser);
-    const [fields, setFields] = useState({first_name: me.first_name, last_name: me.last_name, nickname: me.nickname, position: me.position});
+    const lockOf = useProfileFieldLock();
+    const initial = {first_name: me.first_name, last_name: me.last_name, nickname: me.nickname, position: me.position, username: me.username};
+    const [fields, setFields] = useState(initial);
     const [saved, setSaved] = useState(false);
+    const [error, setError] = useState('');
     const dirty = Object.entries(fields).some(([k, v]) => v !== me[k as keyof typeof fields]);
-    const field = (key: keyof typeof fields, label: string) => (
-        <label className={am('field')}>
-            <span>{label}</span>
-            <input
-                type='text'
-                value={fields[key]}
-                onChange={(e) => {
-                    setSaved(false);
-                    setFields({...fields, [key]: e.target.value});
-                }}
-            />
-        </label>
-    );
+    const usernameError = fields.username === me.username ? undefined : isValidUsername(fields.username);
+
+    const lockNote = (field: ProfileField) => {
+        const lock = lockOf(field);
+        if (lock === 'provider') {
+            return formatMessage({id: 'fusion.settings.lockedByProvider', defaultMessage: 'Set by your login provider.'});
+        }
+        if (lock === 'admin') {
+            return formatMessage({id: 'fusion.settings.lockedByAdmin', defaultMessage: 'Managed by your System Admin.'});
+        }
+        return undefined;
+    };
+    const field = (key: keyof typeof fields, profileField: ProfileField, label: string, help?: string) => {
+        const note = lockNote(profileField);
+        return (
+            <label className={am('field')}>
+                <span>{label}</span>
+                <input
+                    type='text'
+                    value={fields[key]}
+                    disabled={Boolean(note)}
+                    maxLength={key === 'username' ? Constants.MAX_USERNAME_LENGTH : 64}
+                    onChange={(e) => {
+                        setSaved(false);
+                        setError('');
+                        setFields({...fields, [key]: key === 'username' ? e.target.value.toLowerCase() : e.target.value});
+                    }}
+                />
+                {(note || help) && <small>{note || help}</small>}
+            </label>
+        );
+    };
+
     return (
         <>
             <h2>{formatMessage({id: 'fusion.settings.account', defaultMessage: 'My account'})}</h2>
             <p className={am('lead')}>{formatMessage({id: 'fusion.settings.accountLead', defaultMessage: 'How you appear to others on this server.'})}</p>
-            <div style={{display: 'flex', gap: 16, alignItems: 'center', marginBottom: 18}}>
-                <Avatar
-                    userId={me.id}
-                    size='xl'
-                    status={true}
-                />
-                <div>
-                    <div style={{font: '600 18px var(--am-font-display)'}}>{[me.first_name, me.last_name].filter(Boolean).join(' ') || me.username}</div>
-                    <div style={{color: 'var(--am-muted)'}}>{`@${me.username} · ${me.email}`}</div>
-                </div>
-            </div>
+            <ProfilePicture
+                me={me}
+                locked={Boolean(lockOf('picture'))}
+            />
             <div className={am('field-row')}>
-                {field('first_name', formatMessage({id: 'fusion.settings.firstName', defaultMessage: 'First name'}))}
-                {field('last_name', formatMessage({id: 'fusion.settings.lastName', defaultMessage: 'Last name'}))}
+                {field('first_name', 'name', formatMessage({id: 'fusion.settings.firstName', defaultMessage: 'First name'}))}
+                {field('last_name', 'name', formatMessage({id: 'fusion.settings.lastName', defaultMessage: 'Last name'}))}
             </div>
-            {field('nickname', formatMessage({id: 'fusion.settings.nickname', defaultMessage: 'Nickname'}))}
-            {field('position', formatMessage({id: 'fusion.settings.position', defaultMessage: 'Position'}))}
+            {field('username', 'username', formatMessage({id: 'fusion.settings.username', defaultMessage: 'Username'}), usernameError ? formatMessage({id: 'fusion.settings.usernameRules', defaultMessage: 'Use {min} to {max} lowercase letters, numbers, periods, dashes and underscores, starting with a letter.'}, {min: Constants.MIN_USERNAME_LENGTH, max: Constants.MAX_USERNAME_LENGTH}) : undefined)}
+            {field('nickname', 'nickname', formatMessage({id: 'fusion.settings.nickname', defaultMessage: 'Nickname'}))}
+            {field('position', 'position', formatMessage({id: 'fusion.settings.position', defaultMessage: 'Position'}))}
+            {error && <p className={am('field-error')}>{error}</p>}
             <div className={am('modal-actions')}>
                 <button
                     type='button'
                     className={am('btn')}
                     onClick={() => dispatch(openClassicUserSettings('profile'))}
                 >
-                    {formatMessage({id: 'fusion.settings.moreAccount', defaultMessage: 'Picture, username and email…'})}
+                    {formatMessage({id: 'fusion.settings.changeEmail', defaultMessage: 'Change email…'})}
                 </button>
                 <button
                     type='button'
                     className={am('btn', 'primary')}
-                    disabled={!dirty}
+                    disabled={!dirty || Boolean(usernameError)}
                     onClick={async () => {
-                        await dispatch(updateMe(fields));
-                        setSaved(true);
+                        const result = await dispatch(updateMe(fields)) as {error?: {message: string}};
+                        if (result.error) {
+                            setError(result.error.message);
+                        } else {
+                            setSaved(true);
+                        }
                     }}
                 >
                     {saved ? formatMessage({id: 'fusion.settings.saved', defaultMessage: 'Saved'}) : formatMessage({id: 'fusion.settings.save', defaultMessage: 'Save'})}
@@ -187,35 +322,152 @@ function AccountPane() {
     );
 }
 
+function PasswordForm() {
+    const intl = useIntl();
+    const {formatMessage} = intl;
+    const dispatch = useDispatch();
+    const me = useSelector(getCurrentUser);
+    const passwordConfig = useSelector(getPasswordConfig);
+    const [open, setOpen] = useState(false);
+    const [current, setCurrent] = useState('');
+    const [next, setNext] = useState('');
+    const [confirm, setConfirm] = useState('');
+    const [error, setError] = useState('');
+    const [done, setDone] = useState(false);
+
+    if (!open) {
+        return (
+            <Action
+                title={formatMessage({id: 'fusion.settings.password', defaultMessage: 'Password'})}
+                desc={done ? formatMessage({id: 'fusion.settings.passwordChanged', defaultMessage: 'Your password was changed.'}) : formatMessage({id: 'fusion.settings.passwordDesc', defaultMessage: 'Change the password you sign in with.'})}
+                label={formatMessage({id: 'fusion.settings.change', defaultMessage: 'Change…'})}
+                onClick={() => {
+                    setDone(false);
+                    setOpen(true);
+                }}
+            />
+        );
+    }
+
+    const {valid, error: rules} = isValidPassword(next, passwordConfig, intl);
+    const mismatch = confirm !== '' && confirm !== next;
+    const input = (label: string, value: string, set: (v: string) => void, help?: string) => (
+        <label className={am('field')}>
+            <span>{label}</span>
+            <input
+                type='password'
+                value={value}
+                autoComplete={set === setCurrent ? 'current-password' : 'new-password'}
+                onChange={(e) => {
+                    setError('');
+                    set(e.target.value);
+                }}
+            />
+            {help && <small>{help}</small>}
+        </label>
+    );
+
+    return (
+        <div className={am('sub-form')}>
+            <b>{formatMessage({id: 'fusion.settings.password', defaultMessage: 'Password'})}</b>
+            {input(formatMessage({id: 'fusion.settings.currentPassword', defaultMessage: 'Current password'}), current, setCurrent)}
+            {input(formatMessage({id: 'fusion.settings.newPassword', defaultMessage: 'New password'}), next, setNext, next && !valid ? String(rules) : undefined)}
+            {input(formatMessage({id: 'fusion.settings.confirmPassword', defaultMessage: 'Confirm the new password'}), confirm, setConfirm, mismatch ? formatMessage({id: 'fusion.settings.passwordMismatch', defaultMessage: 'The passwords don\'t match.'}) : undefined)}
+            {error && <p className={am('field-error')}>{error}</p>}
+            <div className={am('modal-actions')}>
+                <button
+                    type='button'
+                    className={am('btn')}
+                    onClick={() => setOpen(false)}
+                >
+                    {formatMessage({id: 'fusion.settings.cancel', defaultMessage: 'Cancel'})}
+                </button>
+                <button
+                    type='button'
+                    className={am('btn', 'primary')}
+                    disabled={!current || !valid || next !== confirm}
+                    onClick={async () => {
+                        const result = await dispatch(updateUserPassword(me.id, current, next)) as {error?: {message: string}};
+                        if (result.error) {
+                            setError(result.error.message);
+                            return;
+                        }
+                        dispatch(getMe());
+                        setCurrent('');
+                        setNext('');
+                        setConfirm('');
+                        setOpen(false);
+                        setDone(true);
+                    }}
+                >
+                    {formatMessage({id: 'fusion.settings.changePassword', defaultMessage: 'Change password'})}
+                </button>
+            </div>
+        </div>
+    );
+}
+
+// Sessions lists where the person is signed in, as the classic activity log does, to sign out of any of them.
+function Sessions() {
+    const {formatMessage, formatDate} = useIntl();
+    const dispatch = useDispatch();
+    const me = useSelector(getCurrentUser);
+    const sessions = useSelector((state: GlobalState) => state.entities.users.mySessions as Session[]);
+
+    useEffect(() => {
+        dispatch(getSessions(me.id));
+    }, [dispatch, me.id]);
+
+    const signedIn = (sessions || []).filter((session) => session.props?.type !== 'UserAccessToken');
+    if (!signedIn.length) {
+        return null;
+    }
+    const describe = (session: Session) => {
+        if (session.device_id && (session.device_id.includes('apple') || session.device_id.includes('android'))) {
+            return formatMessage({id: 'fusion.settings.sessionMobile', defaultMessage: 'Mobile app'});
+        }
+        return [session.props?.browser, session.props?.os].filter(Boolean).join(' · ') || formatMessage({id: 'fusion.settings.sessionUnknown', defaultMessage: 'Unknown device'});
+    };
+
+    return (
+        <>
+            <h3>{formatMessage({id: 'fusion.settings.sessions', defaultMessage: 'Where you\'re signed in'})}</h3>
+            {signedIn.sort((a, b) => b.last_activity_at - a.last_activity_at).map((session) => (
+                <Action
+                    key={session.id}
+                    title={describe(session)}
+                    desc={formatMessage({id: 'fusion.settings.sessionActive', defaultMessage: 'Last active {when}'}, {when: formatDate(session.last_activity_at, {dateStyle: 'medium', timeStyle: 'short'})})}
+                    label={formatMessage({id: 'fusion.settings.signOut', defaultMessage: 'Sign out'})}
+                    onClick={async () => {
+                        await dispatch(revokeSession(me.id, session.id));
+                        dispatch(getSessions(me.id));
+                    }}
+                />
+            ))}
+        </>
+    );
+}
+
 function SecurityPane() {
     const {formatMessage} = useIntl();
     const dispatch = useDispatch();
     const config = useSelector(getConfig);
-    const openSecurity = () => dispatch(openClassicUserSettings('security'));
+    const me = useSelector(getCurrentUser);
     return (
         <>
             <h2>{formatMessage({id: 'fusion.settings.security', defaultMessage: 'Security'})}</h2>
             <p className={am('lead')}>{formatMessage({id: 'fusion.settings.securityLead', defaultMessage: 'Your password, two-step sign-in and the devices you\'re signed in on.'})}</p>
-            <Action
-                title={formatMessage({id: 'fusion.settings.password', defaultMessage: 'Password'})}
-                desc={formatMessage({id: 'fusion.settings.passwordDesc', defaultMessage: 'Change the password you sign in with.'})}
-                label={formatMessage({id: 'fusion.settings.change', defaultMessage: 'Change…'})}
-                onClick={openSecurity}
-            />
+            {me.auth_service === '' ? <PasswordForm/> : (
+                <div className={am('note-box')}>{formatMessage({id: 'fusion.settings.signInProvider', defaultMessage: 'You sign in through {provider}: your password is managed there.'}, {provider: me.auth_service.toUpperCase() === 'LDAP' ? 'AD/LDAP' : me.auth_service.charAt(0).toUpperCase() + me.auth_service.slice(1)})}</div>
+            )}
             {config.EnableMultifactorAuthentication === 'true' && (
                 <Action
                     title={formatMessage({id: 'fusion.settings.mfa', defaultMessage: 'Multi-factor authentication'})}
                     desc={formatMessage({id: 'fusion.settings.mfaDesc', defaultMessage: 'Ask for a code from an authenticator app when you sign in.'})}
                     label={formatMessage({id: 'fusion.settings.manage', defaultMessage: 'Manage…'})}
-                    onClick={openSecurity}
+                    onClick={() => dispatch(openClassicUserSettings('security'))}
                 />
             )}
-            <Action
-                title={formatMessage({id: 'fusion.settings.sessions', defaultMessage: 'Where you\'re signed in'})}
-                desc={formatMessage({id: 'fusion.settings.sessionsDesc', defaultMessage: 'See the browsers and devices signed in to your account, and sign them out.'})}
-                label={formatMessage({id: 'fusion.settings.view', defaultMessage: 'View…'})}
-                onClick={openSecurity}
-            />
             {config.EnableUserDeactivation === 'true' && (
                 <Action
                     title={formatMessage({id: 'fusion.settings.deactivate', defaultMessage: 'Deactivate account'})}
@@ -225,6 +477,7 @@ function SecurityPane() {
                     onClick={() => dispatch(openClassicUserSettings('advanced'))}
                 />
             )}
+            <Sessions/>
         </>
     );
 }
