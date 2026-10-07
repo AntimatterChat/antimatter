@@ -14,6 +14,9 @@ body.app__body #root.am-root > .am-root-main {
   flex: 1;
   min-height: 0;
 }
+// Pages of a team that the Fusion UI doesn't draw (integrations, custom emoji...) are shown in the classic web app's
+// page grid, without its team sidebar and app bar: they take its main area, the whole width.
+#root:not(.am-root) > .am-root-main { grid-area: main; min-width: 0; overflow: auto; }
 .am-layer { height: 0; background: none; }
 :is(.am-app, .am-layer) .am-main { overflow: hidden; }
 :is(.am-app, .am-layer) .am-center { display: flex; flex: 1; flex-direction: column; min-height: 0; }
@@ -21,6 +24,8 @@ body.app__body #root.am-root > .am-root-main {
 
 // Profile pictures, team icons and plugin icons inside the mockup's shapes.
 :is(.am-app, .am-layer) .am-av img { width: 100%; height: 100%; border-radius: inherit; object-fit: cover; }
+// The initials' colour is for initials only: pictures keep their own background, transparent ones included.
+:is(.am-app, .am-layer) .am-av:has(> img) { background: none; }
 :is(.am-app, .am-layer) .am-av.am-me { width: 38px; height: 38px; font-size: 14px; }
 :is(.am-app, .am-layer) .am-srv .am-srv-img { width: 100%; height: 100%; border-radius: inherit; object-fit: cover; }
 :is(.am-app, .am-layer) .am-app-ic .am-app-img { width: 22px; height: 22px; border-radius: 5px; object-fit: contain; }
@@ -42,7 +47,9 @@ body.app__body #root.am-root > .am-root-main {
   pre code { padding: 0; background: none; }
   a { color: var(--am-anti); }
   .mention-link, .mention--highlight { color: var(--am-matter); background: var(--am-matter-soft); padding: 0 3px; border-radius: 4px; font-weight: 600; }
-  .emoticon { vertical-align: -0.25em; }
+  // The classic emoticon is an inline-flex box: its baseline is that of the hidden :name: text, so only middle keeps it
+  // on the line.
+  .emoticon { vertical-align: middle; }
 }
 :is(.am-app, .am-layer) .am-msg.am-sysline .am-body, :is(.am-app, .am-layer) .am-msg.am-sysline .am-body .post-message__text { color: var(--am-muted); font-size: 13.5px; }
 :is(.am-app, .am-layer) .am-react .emoticon, :is(.am-app, .am-layer) .am-quick-react .emoticon { vertical-align: middle; }

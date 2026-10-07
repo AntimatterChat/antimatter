@@ -37,8 +37,9 @@ function imageSrc(file: FileInfo) {
     return file.has_preview_image && ext !== 'gif' ? getFilePreviewUrl(file.id) : getFileUrl(file.id);
 }
 
-// Files draws a message's uploads as the mockup does: images as .img-att tiles that open the lightbox, other files
-// as .attach chips (extension badge, name, "412 KB · PDF") that open the classic file preview.
+// Files draws a message's uploads as the mockup does: images as .img-att tiles that open the lightbox, with their name
+// and size in the tooltip rather than over the picture, other files as .attach chips (extension badge, name,
+// "412 KB · PDF") that open the classic file preview.
 export default function Files({post}: {post: Post}) {
     const {formatMessage, locale} = useIntl();
     const dispatch = useDispatch();
@@ -69,6 +70,7 @@ export default function Files({post}: {post: Post}) {
                             className={am('img-att')}
                             style={ratio ? {aspectRatio: ratio} : undefined}
                             aria-label={formatMessage({id: 'fusion.files.openImage', defaultMessage: 'Open image {name}'}, {name: file.name})}
+                            title={imageCaption({...image, width: undefined, height: undefined})}
                             onClick={() => openImage(image)}
                         >
                             <img
@@ -76,7 +78,6 @@ export default function Files({post}: {post: Post}) {
                                 alt=''
                                 loading='lazy'
                             />
-                            <span>{imageCaption({...image, width: undefined, height: undefined})}</span>
                         </button>
                     );
                 }

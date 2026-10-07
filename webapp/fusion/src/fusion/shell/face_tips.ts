@@ -5,10 +5,11 @@ import {useEffect} from 'react';
 
 import {LAYER_ID} from 'fusion/components/layer';
 
-// The stacked faces that name their person on hover: thread summaries, acknowledgements.
-const SCOPE = '.am-faces .am-av[data-name]';
+// The stacked faces that name their person on hover (thread summaries, acknowledgements), and the elements that give
+// their tooltip in a data-am-tip attribute (reactions).
+const SCOPE = '.am-faces .am-av[data-name], [data-am-tip]';
 
-// useFaceTips shows the mockup's .tip above a stacked face under the pointer, in the layer.
+// useFaceTips shows the mockup's .tip above a stacked face or a data-am-tip element under the pointer, in the layer.
 export function useFaceTips() {
     useEffect(() => {
         let tip: HTMLDivElement | null = null;
@@ -18,7 +19,7 @@ export function useFaceTips() {
         };
         const onOver = (e: MouseEvent) => {
             const av = (e.target as Element).closest?.<HTMLElement>(SCOPE);
-            const name = av?.dataset.name;
+            const name = av?.dataset.amTip || av?.dataset.name;
             if (!av || !name) {
                 hide();
                 return;
@@ -32,7 +33,7 @@ export function useFaceTips() {
                 return;
             }
             tip = document.createElement('div');
-            tip.className = 'am-tip';
+            tip.className = av.dataset.amTip ? 'am-tip am-tip-text' : 'am-tip';
             tip.setAttribute('role', 'tooltip');
             tip.dataset.for = name;
             tip.textContent = name;

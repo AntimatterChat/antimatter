@@ -51,9 +51,6 @@ describe('components/Root', () => {
         telemetryId: '1234ab',
         serviceEnvironment: undefined,
         siteURL: 'http://localhost:8065',
-        iosDownloadLink: undefined,
-        androidDownloadLink: undefined,
-        appDownloadLink: undefined,
         showTermsOfService: false,
         plugins: [],
         products: [],
@@ -62,7 +59,6 @@ describe('components/Root', () => {
         rhsIsOpen: false,
         rhsState: null,
         shouldShowAppBar: false,
-        enableDesktopLandingPage: true,
         actions: {
             loadConfigAndMe: jest.fn().mockImplementation(() => {
                 return Promise.resolve({
@@ -221,59 +217,6 @@ describe('components/Root', () => {
 
         await waitFor(() => {
             expect(BrowserUtils.reloadPage).toHaveBeenCalledTimes(1);
-        });
-    });
-
-    describe('showLandingPageIfNecessary', () => {
-        const landingProps = {
-            ...baseProps,
-            iosDownloadLink: 'http://iosapp.com',
-            androidDownloadLink: 'http://androidapp.com',
-            appDownloadLink: 'http://desktopapp.com',
-            ...{
-                location: {
-                    pathname: '/',
-                    search: '',
-                },
-            } as RouteComponentProps,
-        };
-
-        test('should show for normal cases', async () => {
-            renderWithContext(<Root {...landingProps}/>);
-
-            await waitFor(() => {
-                expect(landingProps.history.push).toHaveBeenCalledWith('/landing#/');
-            });
-        });
-
-        test('should not show for Desktop App login flow', async () => {
-            const props = {
-                ...landingProps,
-                ...{
-                    location: {
-                        pathname: '/login/desktop',
-                    },
-                } as RouteComponentProps,
-            };
-
-            renderWithContext(<Root {...props}/>);
-
-            await waitFor(() => {
-                expect(props.history.push).not.toHaveBeenCalled();
-            });
-        });
-
-        test('should not show when disabled', async () => {
-            const props = {
-                ...landingProps,
-                enableDesktopLandingPage: false,
-            };
-
-            renderWithContext(<Root {...props}/>);
-
-            await waitFor(() => {
-                expect(props.history.push).not.toHaveBeenCalled();
-            });
         });
     });
 });

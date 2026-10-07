@@ -1,7 +1,7 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 
-import React from 'react';
+import React, {useState} from 'react';
 import {useIntl} from 'react-intl';
 import {useDispatch, useSelector} from 'react-redux';
 
@@ -31,6 +31,10 @@ const initialsOf = (name: string) => name.split(/\s+/).map((p) => p[0] || '').sl
 
 function TeamButton({team, active, unread, mentions, onSelect}: {team: Team; active: boolean; unread: boolean; mentions: number; onSelect: () => void}) {
     const icon = imageURLForTeam(team);
+
+    // An icon that doesn't load (its file is gone from the server's storage) falls back to the initials, as
+    // profile pictures do, rather than showing the browser's broken image.
+    const [failedIcon, setFailedIcon] = useState('');
     return (
         <button
             className={am('srv', {active, unread: unread && !active})}
@@ -39,11 +43,12 @@ function TeamButton({team, active, unread, mentions, onSelect}: {team: Team; act
             aria-current={active ? 'page' : undefined}
             onClick={onSelect}
         >
-            {icon ? (
+            {icon && icon !== failedIcon ? (
                 <img
                     className={am('srv-img')}
                     src={icon}
                     alt=''
+                    onError={() => setFailedIcon(icon)}
                 />
             ) : initialsOf(team.display_name)}
             {mentions > 0 && !active && <span className={am('badge')}>{mentions}</span>}
