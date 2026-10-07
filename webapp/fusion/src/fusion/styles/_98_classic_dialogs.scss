@@ -1,0 +1,58 @@
+// The classic web app's dialogs that the Fusion UI still opens (browse channels, invite people, team members, forward,
+// keyboard shortcuts, the classic user settings...), drawn as Fusion dialogs: its frame and backdrop, headings,
+// buttons, fields and lists. They keep their classic layout and behaviour. This file is only in the Fusion bundle.
+
+body .modal-backdrop.in, body .modal-backdrop.show { background: #000; opacity: .7; }
+
+body .modal {
+  .modal-content { border: 0; border-radius: 16px; background: var(--am-main); box-shadow: var(--am-shadow); color: var(--am-text); font-family: var(--am-font-ui); }
+  .GenericModal__wrapper { border: 0; border-radius: 16px; box-shadow: none; }
+
+  // Header: the Fusion title, a plain close icon.
+  .modal-header, .GenericModal__header { border: 0; background: none; color: var(--am-text); }
+  .modal-title, .modal-header h1, .GenericModal__header h1 { color: var(--am-text); font: 600 20px var(--am-font-display); }
+  .modal-header .close, .GenericModal .close { color: var(--am-muted); opacity: 1; text-shadow: none; }
+  .modal-header .close:hover, .GenericModal .close:hover { color: var(--am-text); }
+  .modal-subtitle, .GenericModal__subtitle { color: var(--am-muted); }
+  .modal-footer { border: 0; background: none; }
+
+  // Buttons: Fusion's, the classic outline buttons as Fusion's plain ones.
+  .btn { height: 36px; padding: 0 16px; border: 0; border-radius: 9px; box-shadow: none; font: 600 14px var(--am-font-ui); }
+  .btn.btn-sm, .btn.outlineButton { height: 30px; padding: 0 12px; font-size: 13px; }
+  .btn.btn-primary, .btn.confirm:not(.btn-tertiary) { background: var(--am-matter); color: #fff; }
+  .btn.btn-primary:hover:not(:disabled, .disabled) { background: var(--am-matter); filter: brightness(1.1); }
+  .btn:is(.btn-secondary, .btn-tertiary, .outlineButton, .btn-default) { border: 0; background: var(--am-raise-2); color: var(--am-text); }
+  .btn:is(.btn-secondary, .btn-tertiary, .outlineButton, .btn-default):hover { background: var(--am-raise-2); filter: brightness(1.12); }
+  .btn.btn-danger { background: var(--am-danger); color: #fff; }
+  .btn.btn-link { background: none; color: var(--am-anti); }
+  .btn:is(:disabled, .disabled) { opacity: .45; }
+
+  // Fields: the Fusion look, with the matter colour on focus.
+  .form-control, input[type="text"].form-control, textarea.form-control, .filter-textbox {
+    border: 1px solid var(--am-line); border-radius: 9px; background: var(--am-side); box-shadow: none; color: var(--am-text); font-family: var(--am-font-ui);
+  }
+  .form-control:focus, .filter-textbox:focus { border-color: var(--am-matter); box-shadow: none; }
+  .form-control::placeholder { color: var(--am-faint); }
+  .filter-row .icon-magnify { color: var(--am-muted); }
+  .custom-textarea, .textbox-preview-area { border: 1px solid var(--am-line); border-radius: 9px; background: var(--am-side); box-shadow: none; color: var(--am-text); }
+  input[type="checkbox"], input[type="radio"] { accent-color: var(--am-matter); }
+
+  // People and channel pickers.
+  :is(.users-emails-input__control, .react-select__control, [class$="-control"]) { border: 1px solid var(--am-line); border-radius: 9px; background: var(--am-side); box-shadow: none; }
+  :is(.users-emails-input__control--is-focused, .react-select__control--is-focused) { border-color: var(--am-matter); }
+  :is(.users-emails-input__menu, .react-select__menu) { border: 1px solid var(--am-line); border-radius: 10px; background: var(--am-raise); box-shadow: var(--am-shadow); }
+  :is(.users-emails-input__placeholder, .react-select__placeholder) { color: var(--am-faint); }
+
+  // Lists of channels and people.
+  .more-modal__row { border-color: var(--am-line); border-radius: 10px; }
+  .more-modal__row:hover, .more-modal__row.clickable:hover, .more-modal__row.a11y--active { background: var(--am-hover); }
+  .more-modal__name { color: var(--am-text); font-weight: 600; }
+  .more-modal__description, .member-count, .filter-controls { color: var(--am-muted); }
+  .more-modal__dropdown, .color--link { color: var(--am-anti); }
+
+  // A message quoted in a dialog (forwarding).
+  .post-preview, .attachment--permalink .attachment__content { border-color: var(--am-line); border-radius: 10px; background: var(--am-side); }
+
+  // Keyboard shortcuts: the keys as Fusion chips.
+  .shortcut-key { border: 1px solid var(--am-line); border-radius: 5px; background: var(--am-raise); color: var(--am-text-2); }
+}

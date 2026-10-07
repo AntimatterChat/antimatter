@@ -1,6 +1,6 @@
-// The channel settings: the classic web app's tabs in a Fusion dialog, drawn with the Fusion theme.
+// The channel and team settings: the classic web app's tabs in a Fusion dialog, drawn with the Fusion theme.
 
-:is(.am-app, .am-layer) .am-modal.am-channel-settings {
+:is(.am-app, .am-layer) .am-modal:is(.am-channel-settings, .am-team-settings) {
   // The bar that saves changes is fixed to its dialog, as in the classic one: a transform makes the dialog its frame.
   transform: translateZ(0);
 
@@ -14,7 +14,7 @@
   .am-pane { padding-bottom: 96px; }
   input[type="radio"], input[type="checkbox"] { accent-color: var(--am-matter); }
 
-  .ChannelSettingsModal {
+  :is(.ChannelSettingsModal, .TeamSettingsModal) {
     width: auto !important;
     color: var(--am-text);
     font-family: var(--am-font-ui);
