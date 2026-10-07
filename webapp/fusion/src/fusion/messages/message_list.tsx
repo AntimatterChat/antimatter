@@ -200,8 +200,9 @@ export default function MessageList({channelId, focusedPostId, scrollRef, emptyT
                             key={id}
                             className={am('day', 'new')}
                             role='separator'
+                            aria-label={formatMessage({id: 'fusion.messages.unreadLabel', defaultMessage: 'Unread messages start here'})}
                         >
-                            {formatMessage({id: 'fusion.messages.new', defaultMessage: 'New messages'})}
+                            <span>{formatMessage({id: 'fusion.messages.unread', defaultMessage: 'Unread'})}</span>
                         </div>
                     );
                 }
