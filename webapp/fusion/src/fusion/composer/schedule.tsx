@@ -43,13 +43,44 @@ type Props = {
 
 // SchedulePopover picks when to send the message being written: the mockup's "Schedule message", backed by
 // Mattermost's scheduled messages.
-export function SchedulePopover({anchor, onSchedule, onClose}: Props) {
-    const intl = useIntl();
-    const {formatMessage} = intl;
+// CustomTimeForm picks a date and time to come, in your timezone: for scheduled messages and reminders.
+export function CustomTimeForm({label, submitLabel, onPick}: {label: string; submitLabel: string; onPick: (at: number) => void}) {
     const zone = useMyZone();
     const [custom, setCustom] = useState(() => DateTime.now().setZone(zone).plus({hours: 1}).startOf('hour').toFormat("yyyy-MM-dd'T'HH:mm"));
     const at = DateTime.fromISO(custom, {zone});
     const valid = at.isValid && at.toMillis() > Date.now();
+    return (
+        <form
+            className={am('sched-custom')}
+            onSubmit={(e) => {
+                e.preventDefault();
+                if (valid) {
+                    onPick(at.toMillis());
+                }
+            }}
+        >
+            <label>
+                <span>{label}</span>
+                <input
+                    type='datetime-local'
+                    value={custom}
+                    onChange={(e) => setCustom(e.target.value)}
+                />
+            </label>
+            <button
+                className={am('btn', 'primary')}
+                disabled={!valid}
+            >
+                {submitLabel}
+            </button>
+        </form>
+    );
+}
+
+export function SchedulePopover({anchor, onSchedule, onClose}: Props) {
+    const intl = useIntl();
+    const {formatMessage} = intl;
+    const zone = useMyZone();
     const when = (ms: number) => intl.formatDate(ms, {weekday: 'short', hour: 'numeric', minute: '2-digit', timeZone: zone});
 
     return (
@@ -72,30 +103,11 @@ export function SchedulePopover({anchor, onSchedule, onClose}: Props) {
                 />
             ))}
             <MenuSeparator/>
-            <form
-                className={am('sched-custom')}
-                onSubmit={(e) => {
-                    e.preventDefault();
-                    if (valid) {
-                        onSchedule(at.toMillis());
-                    }
-                }}
-            >
-                <label>
-                    <span>{formatMessage({id: 'fusion.schedule.custom', defaultMessage: 'Custom time'})}</span>
-                    <input
-                        type='datetime-local'
-                        value={custom}
-                        onChange={(e) => setCustom(e.target.value)}
-                    />
-                </label>
-                <button
-                    className={am('btn', 'primary')}
-                    disabled={!valid}
-                >
-                    {formatMessage({id: 'fusion.schedule.send', defaultMessage: 'Schedule'})}
-                </button>
-            </form>
+            <CustomTimeForm
+                label={formatMessage({id: 'fusion.schedule.custom', defaultMessage: 'Custom time'})}
+                submitLabel={formatMessage({id: 'fusion.schedule.send', defaultMessage: 'Schedule'})}
+                onPick={onSchedule}
+            />
         </Popover>
     );
 }
