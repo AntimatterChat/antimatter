@@ -316,8 +316,8 @@
   },
   {
     "id": "api.bot.teams_channels.add_message_mobile",
-    "translation": "Please add me to teams and channels you want me to interact in. To do this, use the browser or Mattermost Desktop App.",
-    "description": "Message a bot sends to a mobile user asking to be added to teams and channels; instructs them to use the browser or the Mattermost Desktop App because mobile cannot do it."
+    "translation": "Please add me to teams and channels you want me to interact in. To do this, use the browser or the desktop app.",
+    "description": "Message a bot sends to its creator asking to be added to teams and channels; instructs them to use the browser or the desktop app because the mobile app cannot do it."
   },
   {
     "id": "api.channel.add_guest.added",
