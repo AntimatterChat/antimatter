@@ -34,8 +34,11 @@ body.app__body #root.am-root > .am-root-main {
 :is(.am-app, .am-layer) .am-hook-av img { width: 100%; height: 100%; object-fit: cover; }
 
 // The "new messages" line, in the classic web app's spirit, drawn like the day separators.
-:is(.am-app, .am-layer) .am-day.am-new { color: var(--am-danger); }
-:is(.am-app, .am-layer) .am-day.am-new::before, :is(.am-app, .am-layer) .am-day.am-new::after { background: var(--am-danger); opacity: .5; }
+/* The first unread message: a red line across the list, tagged Unread at its end, as Discord's NEW bar. */
+:is(.am-app, .am-layer) .am-day.am-new { gap: 0; margin: 10px 16px 6px 20px; color: var(--am-danger); }
+:is(.am-app, .am-layer) .am-day.am-new::before { height: 1px; background: var(--am-danger); opacity: 1; }
+:is(.am-app, .am-layer) .am-day.am-new::after { display: none; }
+:is(.am-app, .am-layer) .am-day.am-new span { padding: 1px 6px 1px 5px; border-radius: 0 4px 4px 0; background: var(--am-danger); color: #fff; font: 700 10.5px/14px var(--am-font-ui); letter-spacing: .06em; text-transform: uppercase; }
 
 // Message bodies are rendered by the classic web app's markdown components.
 :is(.am-app, .am-layer) .am-body {
