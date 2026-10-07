@@ -13,7 +13,7 @@ import {savePreferences, saveTheme} from 'mattermost-redux/actions/preferences';
 import {getMe, getSessions, revokeSession, setDefaultProfileImage, updateMe, updateUserPassword, uploadProfileImage} from 'mattermost-redux/actions/users';
 import {Permissions, Preferences} from 'mattermost-redux/constants';
 import {getConfig, getPasswordConfig} from 'mattermost-redux/selectors/entities/general';
-import {get as getPreference, getCollapsedThreadsPreference, getTheme, isCollapsedThreadsAllowed} from 'mattermost-redux/selectors/entities/preferences';
+import {get as getPreference, getCollapsedThreadsPreference, getTheme, isCollapsedThreadsAllowed, shouldShowUnreadsCategory, DEFAULT_VISIBLE_DM_GM_LIMIT} from 'mattermost-redux/selectors/entities/preferences';
 import type {Theme} from 'mattermost-redux/selectors/entities/preferences';
 import {haveISystemPermission} from 'mattermost-redux/selectors/entities/roles';
 import {getCurrentTimezoneLabel} from 'mattermost-redux/selectors/entities/timezone';
@@ -557,6 +557,9 @@ function AppearancePane() {
     const config = useSelector(getConfig);
     const theme = useSelector(getTheme);
     const [militaryTime, setMilitaryTime] = usePreference(Preferences.CATEGORY_DISPLAY_SETTINGS, Preferences.USE_MILITARY_TIME, 'false');
+    const groupUnreadsByDefault = useSelector(shouldShowUnreadsCategory);
+    const [groupUnreads, setGroupUnreads] = usePreference(Preferences.CATEGORY_SIDEBAR_SETTINGS, Preferences.SHOW_UNREAD_SECTION, String(groupUnreadsByDefault));
+    const [dmLimit, setDmLimit] = usePreference(Preferences.CATEGORY_SIDEBAR_SETTINGS, Preferences.LIMIT_VISIBLE_DMS_GMS, String(DEFAULT_VISIBLE_DM_GM_LIMIT));
     const [nameFormat, setNameFormat] = usePreference(Preferences.CATEGORY_DISPLAY_SETTINGS, Preferences.NAME_NAME_FORMAT, config.TeammateNameDisplay || Preferences.DISPLAY_PREFER_USERNAME);
     const custom = !THEME_CARDS.some((c) => Preferences.THEMES[c.key].type === theme.type);
     const startCustom = useStartCustomTheme();
@@ -648,6 +651,19 @@ function AppearancePane() {
                 desc={formatMessage({id: 'fusion.settings.clockDesc', defaultMessage: 'Show times as 16:00 instead of 4:00 PM.'})}
                 on={militaryTime === 'true'}
                 onChange={(on) => setMilitaryTime(String(on))}
+            />
+            <Toggle
+                title={formatMessage({id: 'fusion.settings.groupUnreads', defaultMessage: 'Group unread channels'})}
+                desc={formatMessage({id: 'fusion.settings.groupUnreadsDesc', defaultMessage: 'Gather the channels with unread messages in an Unreads section, above the categories.'})}
+                on={groupUnreads === 'true'}
+                onChange={(on) => setGroupUnreads(String(on))}
+            />
+            <Choice
+                title={formatMessage({id: 'fusion.settings.dmLimit', defaultMessage: 'Open conversations'})}
+                desc={formatMessage({id: 'fusion.settings.dmLimitDesc', defaultMessage: 'How many direct messages the sidebar lists. Unread ones always show.'})}
+                value={dmLimit}
+                options={['5', '10', '15', '20', '40'].map((n): [string, string] => [n, n])}
+                onChange={setDmLimit}
             />
         </>
     );
