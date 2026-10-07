@@ -3,6 +3,7 @@
 
 import React from 'react';
 
+import type {FileInfo} from '@mattermost/types/files';
 import type {Post} from '@mattermost/types/posts';
 
 import {renderWithContext, screen} from 'tests/react_testing_utils';
@@ -17,21 +18,25 @@ describe('fusion/messages/ReplyRef', () => {
     const quoted = TestHelper.getPostMock({id: 'quoted', type: '', channel_id: 'channel', user_id: author.id, message: 'Is the **build** green?'});
     const reply = TestHelper.getPostMock({id: 'reply', type: '', channel_id: 'channel', user_id: me.id, message: 'Yes', props: {reply_to: quoted.id}});
 
-    const state = (posts: Record<string, Post>) => ({
+    const state = (posts: Record<string, Post>, files: Record<string, FileInfo> = {}) => ({
         entities: {
             users: {currentUserId: me.id, profiles: {me, author}},
             posts: {posts},
+            files: {
+                files,
+                fileIdsByPostId: Object.values(files).reduce<Record<string, string[]>>((byPost, file) => ({...byPost, [file.post_id!]: [...(byPost[file.post_id!] || []), file.id]}), {}),
+            },
             teams: {currentTeamId: 'team', teams: {team: TestHelper.getTeamMock({id: 'team', name: 'team'})}},
         },
     });
 
-    const renderRef = (post: Post, posts: Record<string, Post>) => renderWithContext(
+    const renderRef = (post: Post, posts: Record<string, Post>, files?: Record<string, FileInfo>) => renderWithContext(
         <ReplyRef
             post={post}
             quotedId={quoted.id}
             threadReply={false}
         />,
-        state(posts),
+        state(posts, files),
     );
 
     test('shows the quoted author\'s picture and name, and the start of their message', () => {
@@ -62,6 +67,39 @@ describe('fusion/messages/ReplyRef', () => {
         expect(snippet?.querySelector('svg')).not.toBeNull();
     });
 
+    test('shows an image icon for a quoted image', () => {
+        const image = {...quoted, message: '', file_ids: ['file']};
+        renderRef(reply, {quoted: image, reply}, {file: TestHelper.getFileInfoMock({id: 'file', post_id: quoted.id, mime_type: 'image/png'})});
+
+        const snippet = screen.getByRole('button', {name: /Replying to marie:/}).querySelector('.am-snip');
+        expect(snippet).toHaveTextContent('Click to see image');
+        expect(snippet?.querySelector('use')).toHaveAttribute('href', '#am-i-image');
+    });
+
+    test('shows an image icon next to the text of a quoted message with images the server describes', () => {
+        const described = {...reply, metadata: {...reply.metadata, reply_to: {post_id: quoted.id, user_id: author.id, message: 'The beam profile', file_count: 2, image_count: 1}}} as Post;
+        renderRef(described, {reply: described});
+
+        const snippet = screen.getByRole('button', {name: /Replying to marie:/}).querySelector('.am-snip');
+        expect(snippet).toHaveTextContent('The beam profile');
+        expect(snippet?.querySelector('use')).toHaveAttribute('href', '#am-i-image');
+    });
+
+    test('shows a poll icon for a quoted poll', () => {
+        const poll = {...quoted, type: 'custom_poll', message: 'Poll: Lunch?'} as unknown as Post;
+        renderRef(reply, {quoted: poll, reply});
+
+        const snippet = screen.getByRole('button', {name: /Replying to marie:/}).querySelector('.am-snip');
+        expect(snippet).toHaveTextContent('Poll: Lunch?');
+        expect(snippet?.querySelector('use')).toHaveAttribute('href', '#am-i-poll');
+    });
+
+    test('shows no icon for a quoted message with only text', () => {
+        renderRef(reply, {quoted, reply});
+
+        expect(screen.getByRole('button', {name: /Replying to marie:/}).querySelector('.am-snip svg')).toBeNull();
+    });
+
     test('says when the quoted message was deleted, and can\'t jump to it', () => {
         const {container} = renderRef(reply, {quoted: {...quoted, delete_at: 1}, reply});
 
@@ -76,7 +114,7 @@ describe('fusion/messages/ReplyRef', () => {
     test('the reply bar says who the reply is to', () => {
         const {container} = renderWithContext(
             <div className='am-replying'>
-                <QuotedMessage quoted={{deleted: false, userId: author.id, message: 'Is the build green?', fileCount: 0}}/>
+                <QuotedMessage quoted={{deleted: false, userId: author.id, message: 'Is the build green?', fileCount: 0, imageCount: 0}}/>
             </div>,
             state({}),
         );

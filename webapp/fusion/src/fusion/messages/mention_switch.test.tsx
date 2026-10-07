@@ -12,7 +12,7 @@ describe('fusion/messages/MentionSwitch', () => {
     const me = TestHelper.getUserMock({id: 'me', username: 'jason'});
     const author = TestHelper.getUserMock({id: 'author', username: 'marie'});
     const state = {entities: {users: {currentUserId: me.id, profiles: {me, author}}}};
-    const quoted = {deleted: false, userId: author.id, message: 'hello', fileCount: 0};
+    const quoted = {deleted: false, userId: author.id, message: 'hello', fileCount: 0, imageCount: 0};
 
     test('turns the mention of the quoted author off and on', () => {
         const onChange = jest.fn();
@@ -45,7 +45,7 @@ describe('fusion/messages/MentionSwitch', () => {
 
     test.each([
         ['your own message', {...quoted, userId: me.id}],
-        ['a deleted message', {deleted: true, message: '', fileCount: 0}],
+        ['a deleted message', {deleted: true, message: '', fileCount: 0, imageCount: 0}],
         ['a webhook message', {...quoted, fromWebhook: true}],
     ])('is not shown when replying to %s', (_, q) => {
         renderWithContext(

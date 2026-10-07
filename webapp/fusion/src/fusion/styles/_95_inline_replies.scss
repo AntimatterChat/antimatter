@@ -22,7 +22,9 @@
 :is(.am-app, .am-layer) .am-ref-jump > .am-ref-av.am-none { background: var(--am-raise-2); color: var(--am-muted); }
 :is(.am-app, .am-layer) .am-ref-jump > .am-ref-av.am-none .am-ic { width: 10px; height: 10px; }
 :is(.am-app, .am-layer) .am-ref-jump > b { color: var(--am-text); }
-:is(.am-app, .am-layer) .am-ref-jump .am-snip.am-files { display: inline-flex; align-items: center; gap: 4px; }
+:is(.am-app, .am-layer) :is(.am-ref-jump, .am-replying) .am-snip.am-files { display: inline-flex; align-items: center; gap: 4px; }
+:is(.am-app, .am-layer) :is(.am-ref-jump, .am-replying) .am-snip.am-files > .am-ic { flex: none; }
+:is(.am-app, .am-layer) .am-snip-text { min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
 :is(.am-app, .am-layer) .am-ref-jump:hover:not(:disabled) > b { text-decoration: underline; }
 :is(.am-app, .am-layer) .am-ref-jump:hover:not(:disabled) .am-snip { color: var(--am-text); }
 
