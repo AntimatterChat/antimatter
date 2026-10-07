@@ -19,7 +19,6 @@ import {getSortedMyTeams, getUnreadDirectChannels} from 'fusion/selectors';
 import {useGlobalSearch} from 'fusion/shell/global_search_context';
 import {useLayout} from 'fusion/shell/layout_context';
 import {DirectFace} from 'fusion/sidebar/direct_row';
-import {DM_FIND_ID} from 'fusion/sidebar/home_sidebar';
 import {am} from 'fusion/utils/class_names';
 import {channelPath} from 'fusion/utils/paths';
 import {getHistory} from 'utils/browser_history';
@@ -56,8 +55,9 @@ function TeamButton({team, active, unread, mentions, onSelect}: {team: Team; act
     );
 }
 
-// ServerRail is the column of teams on the far left. The mockup calls teams servers; direct messages live under
-// the home icon at the top.
+// ServerRail is the column of teams on the far left; the mockup calls teams servers. Direct messages waiting for you
+// sit at its bottom, above search, as round faces under a chat bubble so they don't read as servers. All the
+// conversations open from the chat bubble of the sidebar's dock.
 export default function ServerRail() {
     const {formatMessage} = useIntl();
     const dispatch = useDispatch();
@@ -72,9 +72,7 @@ export default function ServerRail() {
     const canJoin = useSelector((state: GlobalState) => getJoinableTeamIds(state).length > 0);
     const canCreate = useSelector((state: GlobalState) => haveISystemPermission(state, {permission: Permissions.CREATE_TEAM}));
 
-    // As in the mockup: how many direct messages wait for you.
-    const dmBadge = unreadDMs.reduce((n, dm) => n + Math.max(dm.messages, dm.mentions), 0);
-    const homeLabel = formatMessage({id: 'fusion.rail.home', defaultMessage: 'Direct messages'});
+    const waitingDMs = unreadDMs.filter((dm) => dm.channel.id !== currentChannelId).slice(0, 5);
 
     const selectTeam = (team: Team) => {
         layout.setHome(false);
@@ -89,58 +87,11 @@ export default function ServerRail() {
             className={am('servers')}
             aria-label={formatMessage({id: 'fusion.rail.label', defaultMessage: 'Teams'})}
         >
-            <button
-                className={am('srv', 'home', {active: layout.home, unread: dmBadge > 0 && !layout.home})}
-                title={homeLabel}
-                aria-label={homeLabel}
-                onClick={() => {
-                    // Home swaps the sidebar to the conversations, ready to find one; the open chat stays.
-                    layout.setHome(true);
-                    layout.setNavOpen(true);
-                    requestAnimationFrame(() => document.getElementById(DM_FIND_ID)?.focus());
-                }}
-            >
-                <svg
-                    className={am('mark')}
-                    viewBox='0 0 64 64'
-                    aria-hidden='true'
-                >
-                    <use href='#am-i-mark'/>
-                </svg>
-                {dmBadge > 0 && !layout.home && <span className={am('badge')}>{dmBadge}</span>}
-            </button>
-            {unreadDMs.filter((dm) => dm.channel.id !== currentChannelId).length > 0 && (
-                <div
-                    className={am('dm-tree')}
-                    role='group'
-                    aria-label={formatMessage({id: 'fusion.rail.unreadDMs', defaultMessage: 'Unread direct messages'})}
-                >
-                    {unreadDMs.filter((dm) => dm.channel.id !== currentChannelId).slice(0, 5).map(({channel, mentions, messages}) => (
-                        <button
-                            key={channel.id}
-                            className={am('srv', 'dm-srv')}
-                            title={channel.display_name}
-                            aria-label={channel.display_name}
-                            onClick={() => {
-                                // The conversation opens beside the team's sidebar, as in the mockup.
-                                layout.setNavOpen(false);
-                                if (currentTeam) {
-                                    getHistory().push(channelPath(currentTeam.name, channel));
-                                }
-                            }}
-                        >
-                            <DirectFace channel={channel}/>
-                            <span className={am('badge')}>{mentions || messages}</span>
-                        </button>
-                    ))}
-                </div>
-            )}
-            <span className={am('srv-sep')}/>
             {teams.map((team) => (
                 <TeamButton
                     key={team.id}
                     team={team}
-                    active={team.id === currentTeamId && !layout.home}
+                    active={team.id === currentTeamId}
                     unread={unreadTeams.has(team.id)}
                     mentions={mentionsInTeam.get(team.id) || 0}
                     onSelect={() => selectTeam(team)}
@@ -157,6 +108,41 @@ export default function ServerRail() {
                 </button>
             )}
             <span className={am('rail-grow')}/>
+            {waitingDMs.length > 0 && (
+                <div
+                    className={am('dm-dock')}
+                    role='group'
+                    aria-label={formatMessage({id: 'fusion.rail.unreadDMs', defaultMessage: 'Unread direct messages'})}
+                >
+                    <span
+                        className={am('dm-dock-head')}
+                        aria-hidden='true'
+                    >
+                        <Icon
+                            name='chat'
+                            size='sm'
+                        />
+                    </span>
+                    {waitingDMs.map(({channel, mentions, messages}) => (
+                        <button
+                            key={channel.id}
+                            className={am('srv', 'dm-srv')}
+                            title={channel.display_name}
+                            aria-label={formatMessage({id: 'fusion.rail.unreadDM', defaultMessage: '{name}, {count, plural, one {# unread message} other {# unread messages}}'}, {name: channel.display_name, count: mentions || messages})}
+                            onClick={() => {
+                                // The conversation opens beside the team's sidebar, as in the mockup.
+                                layout.setNavOpen(false);
+                                if (currentTeam) {
+                                    getHistory().push(channelPath(currentTeam.name, channel));
+                                }
+                            }}
+                        >
+                            <DirectFace channel={channel}/>
+                            <span className={am('badge')}>{mentions || messages}</span>
+                        </button>
+                    ))}
+                </div>
+            )}
             <button
                 className={am('srv', 'rail-search')}
                 title={formatMessage({id: 'fusion.rail.search', defaultMessage: 'Search everything (Ctrl K)'})}
