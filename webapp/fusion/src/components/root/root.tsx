@@ -5,14 +5,11 @@ import React, {lazy} from 'react';
 import {Route, Switch, Redirect} from 'react-router-dom';
 import type {RouteComponentProps} from 'react-router-dom';
 
-import {isAndroid, isChromebook, isDesktopApp, isIos} from '@mattermost/shared/utils/user_agent';
-
 import {setSystemEmojis} from 'mattermost-redux/actions/emojis';
 import {setUrl} from 'mattermost-redux/actions/general';
 import {Client4} from 'mattermost-redux/client';
 
 import {temporarilySetPageLoadContext} from 'actions/telemetry_actions';
-import BrowserStore from 'stores/browser_store';
 
 import {makeAsyncComponent, makeAsyncPluggableComponent} from 'components/async_load';
 import GlobalClassificationBanner from 'components/global_classification_banner';
@@ -114,63 +111,6 @@ export default class Root extends React.PureComponent<Props, State> {
 
         this.props.actions.migrateRecentEmojis();
         this.props.actions.loadRecentlyUsedCustomEmojis();
-        this.showLandingPageIfNecessary();
-    };
-
-    private showLandingPageIfNecessary = () => {
-        // Only show Landing Page if enabled
-        if (!this.props.enableDesktopLandingPage) {
-            return;
-        }
-
-        // We have nothing to redirect to if we're already on Desktop App
-        // Chromebook has no Desktop App to switch to
-        if (isDesktopApp() || isChromebook()) {
-            return;
-        }
-
-        // Nothing to link to if we've removed the Android App download link
-        if (isAndroid() && !this.props.androidDownloadLink) {
-            return;
-        }
-
-        // Nothing to link to if we've removed the iOS App download link
-        if (isIos() && !this.props.iosDownloadLink) {
-            return;
-        }
-
-        // Nothing to link to if we've removed the Desktop App download link
-        if (!this.props.appDownloadLink) {
-            return;
-        }
-
-        // Only show the landing page once
-        if (BrowserStore.hasSeenLandingPage()) {
-            return;
-        }
-
-        // We don't want to show when resetting the password
-        if (this.props.location.pathname === '/reset_password_complete') {
-            return;
-        }
-
-        // We don't want to show when we're doing Desktop App external login
-        if (this.props.location.pathname === '/login/desktop') {
-            return;
-        }
-
-        // Stop this infinitely redirecting
-        if (this.props.location.pathname.includes('/landing')) {
-            return;
-        }
-
-        // Disable for Rainforest tests
-        if (window.location.hostname?.endsWith('.test.mattermost.com')) {
-            return;
-        }
-
-        this.props.history.push('/landing#' + this.props.location.pathname + this.props.location.search);
-        BrowserStore.setLandingPageSeen(true);
     };
 
     componentDidUpdate(prevProps: Props, prevState: State) {
