@@ -170,6 +170,10 @@ export type NewChannelFormState = {
     url: string;
     purpose: string;
     type: string;
+
+    // Whether a channel of a plugin's type is public (O) or private (P), when the host asks it itself, as the Fusion
+    // web UI does for every type of channel.
+    privacy?: 'O' | 'P';
     defaultCategoryName?: string;
     managedCategoryName?: string;
     classificationId?: string;

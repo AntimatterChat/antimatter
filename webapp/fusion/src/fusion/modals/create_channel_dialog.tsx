@@ -73,7 +73,7 @@ export default function CreateChannelDialog({categoryId, onMoreOptions, onClose}
     const plugin = options.find((o) => o.id === kind);
     const type: ChannelType = isPrivate ? Constants.PRIVATE_CHANNEL as ChannelType : Constants.OPEN_CHANNEL as ChannelType;
     const url = cleanUpUrlable(name) || generateId().slice(0, 26);
-    const formState: NewChannelFormState = {teamId: team?.id || '', displayName: name.trim(), url, purpose: '', type: plugin ? plugin.id : type} as NewChannelFormState;
+    const formState: NewChannelFormState = {teamId: team?.id || '', displayName: name.trim(), url, purpose: '', type: plugin ? plugin.id : type, privacy: type} as NewChannelFormState;
 
     const done = (channel: Channel) => {
         if (category && category !== categories.find((c) => c.type === 'channels')?.id) {
@@ -206,7 +206,7 @@ export default function CreateChannelDialog({categoryId, onMoreOptions, onClose}
                         </select>
                     </label>
                 )}
-                {!plugin && (canPublic || canPrivate) && (
+                {(canPublic || canPrivate) && (
                     <div className={am('toggle-row')}>
                         <div className={am('txt')}>
                             <b>{formatMessage({id: 'fusion.createChannel.private', defaultMessage: 'Private channel'})}</b>
