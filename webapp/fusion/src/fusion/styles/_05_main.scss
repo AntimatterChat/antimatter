@@ -106,7 +106,9 @@
 :is(.am-app, .am-layer) .am-msg > button[data-user], :is(.am-app, .am-layer) .am-msg > .am-hook-av, :is(.am-app, .am-layer) .am-msg > .am-av { align-self: start; margin-top: 2px; }
 :is(.am-app, .am-layer) .am-msg:hover { background: var(--am-hover); }
 :is(.am-app, .am-layer) .am-msg.am-cont { padding-top: 1px; padding-bottom: 1px; }
-:is(.am-app, .am-layer) .am-msg.am-cont .am-gutter { font: 400 10.5px/22px var(--am-font-mono); color: transparent; text-align: right; }
+/* The time of a grouped message, on hover: on one line, like 11:09 PM, even when it's wider than the gutter (it would
+   otherwise wrap and leave a blank line under short messages). */
+:is(.am-app, .am-layer) .am-msg.am-cont .am-gutter { font: 400 10px/22px var(--am-font-mono); letter-spacing: -.02em; color: transparent; text-align: right; white-space: nowrap; margin-left: -14px; }
 :is(.am-app, .am-layer) .am-msg.am-cont:hover .am-gutter { color: var(--am-faint); }
 :is(.am-app, .am-layer) .am-msg.am-flash { animation: am-flash 1.4s ease; }
 @keyframes am-flash { 0%, 40% { background: var(--am-select); } 100% { background: transparent; } }

@@ -49,7 +49,7 @@ import {useConcernsMe} from './mentions';
 import MessageMenu from './message_menu';
 import Reactions from './reactions';
 import ReplyRef from './reply_ref';
-import {isSpoiler, SpoilerCover, SpoilerTag, useSpoilerShown} from './spoiler';
+import {isSpoiler, SpoilerTag, SpoilerVeil, useSpoilerShown} from './spoiler';
 import ThreadSummary from './thread_summary';
 import MessageTime from './time';
 
@@ -269,30 +269,31 @@ export default function Message({postId, previousPostId, inThread = false, highl
     const body = (
         <>
             {concealed && <BurnCover post={post}/>}
-            {!concealed && spoilerHidden && (
-                <SpoilerCover
-                    post={post}
-                    onShow={() => setSpoilerShown(true)}
-                />
-            )}
             {!concealed && editing && (
                 <EditForm post={post}/>
             )}
-            {!concealed && !spoilerHidden && !editing && callCard && <CallCard post={post}/>}
-            {!concealed && !spoilerHidden && !editing && !callCard && (
-                <LongBody
-                    postId={post.id}
-                    className={am('body')}
-                    onClickCapture={onMentionClick}
+            {!concealed && !editing && (
+                <SpoilerVeil
+                    hidden={spoilerHidden}
+                    onShow={() => setSpoilerShown(true)}
                 >
-                    <MessageContent
-                        post={post}
-                        inThread={inThread}
-                        autotranslated={autotranslated}
-                    />
-                </LongBody>
+                    {callCard && <CallCard post={post}/>}
+                    {!callCard && (
+                        <LongBody
+                            postId={post.id}
+                            className={am('body')}
+                            onClickCapture={onMentionClick}
+                        >
+                            <MessageContent
+                                post={post}
+                                inThread={inThread}
+                                autotranslated={autotranslated}
+                            />
+                        </LongBody>
+                    )}
+                    {post.file_ids && post.file_ids.length > 0 && !deleted && <Files post={post}/>}
+                </SpoilerVeil>
             )}
-            {post.file_ids && post.file_ids.length > 0 && !deleted && !concealed && !spoilerHidden && <Files post={post}/>}
             {post.failed && <FailedPost post={post}/>}
             <Acknowledge post={post}/>
             <Reactions postId={post.id}/>
