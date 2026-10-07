@@ -73,8 +73,9 @@
   height: 18px;
   padding: 0 5px;
   border-radius: 9px;
-  background: var(--am-spark);
-  color: #1B1238;
+  /* Red, as unread counts are everywhere. */
+  background: var(--am-danger);
+  color: #fff;
   font: 700 11px/18px var(--am-font-ui);
   text-align: center;
   box-shadow: 0 0 0 3px var(--am-rail);

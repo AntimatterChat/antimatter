@@ -4,8 +4,6 @@
 import React, {useCallback, useSyncExternalStore} from 'react';
 import {useIntl} from 'react-intl';
 
-import type {Post} from '@mattermost/types/posts';
-
 import Icon from 'fusion/components/icon';
 import {am} from 'fusion/utils/class_names';
 
@@ -45,24 +43,40 @@ export function useSpoilerShown(postId: string): [boolean, (show: boolean) => vo
     return [isShown, setShown];
 }
 
-// SpoilerCover stands in for a spoiler's text and files until its reader clicks it.
-export function SpoilerCover({post, onShow}: {post: Post; onShow: () => void}) {
+// SpoilerVeil hides a spoiler's text and files in place until its reader clicks it, as in Discord: the text becomes
+// bars and the files are blurred, at their own size, so that showing it moves nothing around it.
+export function SpoilerVeil({hidden, onShow, children}: {hidden: boolean; onShow: () => void; children: React.ReactNode}) {
     const {formatMessage} = useIntl();
-    const files = post.file_ids?.length || post.metadata?.files?.length || 0;
+    if (!hidden) {
+        return <>{children}</>;
+    }
     return (
-        <button
-            type='button'
-            className={am('spoiler-cover')}
-            onClick={onShow}
+        <div
+            className={am('spoiler-veil')}
+            role='button'
+            tabIndex={0}
+            title={formatMessage({id: 'fusion.spoiler.show', defaultMessage: 'Click to show the spoiler'})}
+            aria-label={formatMessage({id: 'fusion.spoiler.label', defaultMessage: 'Spoiler, click to show it'})}
+            onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                onShow();
+            }}
+            onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    onShow();
+                }
+            }}
         >
-            <Icon name='eye-off'/>
-            <span>
-                <b>{formatMessage({id: 'fusion.spoiler.title', defaultMessage: 'Spoiler'})}</b>
-                <small>
-                    {files ? formatMessage({id: 'fusion.spoiler.showWithFiles', defaultMessage: 'Click to show the message and its {count, plural, one {file} other {# files}}'}, {count: files}) : formatMessage({id: 'fusion.spoiler.show', defaultMessage: 'Click to show the message'})}
-                </small>
-            </span>
-        </button>
+            {/* Nothing inside can be clicked, focused or read out while hidden. */}
+            <div
+                aria-hidden='true'
+                inert={true}
+            >
+                {children}
+            </div>
+        </div>
     );
 }
 
