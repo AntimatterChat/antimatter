@@ -24,6 +24,9 @@ type PostReplyTo struct {
 	// ImageCount is how many of those files are images, for clients to show them as such.
 	ImageCount int `json:"image_count,omitempty"`
 
+	// Spoiler is set when the quoted message is a spoiler: Message is then empty, for clients to say so instead.
+	Spoiler bool `json:"spoiler,omitempty"`
+
 	// OverrideUsername is the name an incoming webhook posted the quoted message under.
 	OverrideUsername string `json:"override_username,omitempty"`
 
@@ -49,13 +52,16 @@ func (o *Post) ReplyToMentionsAuthor() bool {
 
 // NewPostReplyTo describes target, the message reply quotes. A missing or deleted target, one from another channel
 // (the reply's thread was moved) or a burn-on-read message is reported as deleted, so that its text isn't shown to
-// readers of the reply who may not see it.
+// readers of the reply who may not see it. A spoiler's text is left out too, so that the quote doesn't reveal it.
 func NewPostReplyTo(reply *Post, targetID string, target *Post) *PostReplyTo {
 	if target == nil || target.Id != targetID || target.DeleteAt != 0 || target.ChannelId != reply.ChannelId || target.Type == PostTypeBurnOnRead {
 		return &PostReplyTo{PostId: targetID, Deleted: true}
 	}
 
 	message := target.Message
+	if target.IsSpoiler() {
+		message = ""
+	}
 	if runes := []rune(message); len(runes) > PostReplyToMessageMaxRunes {
 		message = string(runes[:PostReplyToMessageMaxRunes-1]) + "…"
 	}
@@ -68,6 +74,7 @@ func NewPostReplyTo(reply *Post, targetID string, target *Post) *PostReplyTo {
 		CreateAt:  target.CreateAt,
 		EditAt:    target.EditAt,
 		FileCount: len(target.FileIds),
+		Spoiler:   target.IsSpoiler(),
 	}
 	if target.GetProp(PostPropsFromWebhook) == "true" {
 		replyTo.OverrideUsername, _ = target.GetProp(PostPropsOverrideUsername).(string)

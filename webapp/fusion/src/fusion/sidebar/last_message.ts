@@ -14,12 +14,13 @@ import {getPost, getPostIdsInChannel} from 'mattermost-redux/selectors/entities/
 import {isCollapsedThreadsEnabled} from 'mattermost-redux/selectors/entities/preferences';
 import {getCurrentUserId} from 'mattermost-redux/selectors/entities/users';
 
+import {isSpoiler} from 'fusion/messages/spoiler';
 import {plainText} from 'fusion/utils/plain_text';
 import {isSystemMessage} from 'utils/post_utils';
 
 import type {GlobalState} from 'types/store';
 
-type Last = {at: number; text: string; mine: boolean};
+type Last = {at: number; text: string; mine: boolean; spoiler?: boolean};
 
 // The last message of conversations whose messages aren't loaded, fetched once per new message. Mattermost has no
 // bulk API for it, so the home list asks a few at a time, newest conversations first.
@@ -46,6 +47,9 @@ function describe(post: Post | undefined, me: string, at: number): Last | null {
         return null;
     }
     const files = post.file_ids?.length || post.metadata?.files?.length || 0;
+    if (isSpoiler(post)) {
+        return {at, text: '', mine: post.user_id === me, spoiler: true};
+    }
     const text = plainText(post.message, 120) || (files ? '📎' : '');
     return {at, text, mine: post.user_id === me};
 }
@@ -105,8 +109,9 @@ export function useLastMessage(channel: Channel): string {
     }, [loaded, channel.id, channel.last_post_at, crt, me]);
 
     const last = loaded ? describe(loaded, me, loaded.create_at) : fetched;
-    if (!last?.text) {
+    const text = last?.spoiler ? formatMessage({id: 'fusion.home.spoiler', defaultMessage: 'Spoiler'}) : last?.text;
+    if (!last || !text) {
         return '';
     }
-    return last.mine ? formatMessage({id: 'fusion.home.you', defaultMessage: 'You: {text}'}, {text: last.text}) : last.text;
+    return last.mine ? formatMessage({id: 'fusion.home.you', defaultMessage: 'You: {text}'}, {text}) : text;
 }

@@ -47,6 +47,7 @@ import {useConcernsMe} from './mentions';
 import MessageMenu from './message_menu';
 import Reactions from './reactions';
 import ReplyRef from './reply_ref';
+import {isSpoiler, SpoilerCover, SpoilerTag, useSpoilerShown} from './spoiler';
 import ThreadSummary from './thread_summary';
 import MessageTime from './time';
 
@@ -113,6 +114,7 @@ export default function Message({postId, previousPostId, inThread = false, highl
     const [popover, setPopover] = useState<'user' | 'menu' | 'react' | 'react-more' | null>(null);
     const callCard = useCallCard(post);
     const inlineReplies = useInlineRepliesEnabled();
+    const [spoilerShown, setSpoilerShown] = useSpoilerShown(postId);
 
     if (!post) {
         return null;
@@ -128,6 +130,10 @@ export default function Message({postId, previousPostId, inThread = false, highl
     const burn = post.type === Posts.POST_TYPES.BURN_ON_READ && post.state !== Posts.POST_DELETED;
 
     const deleted = post.state === Posts.POST_DELETED;
+
+    // A spoiler's text and files stay behind a cover until clicked; its author sees them while editing it.
+    const spoiler = isSpoiler(post) && !deleted && !burn;
+    const spoilerHidden = spoiler && !spoilerShown && !editing;
 
     // With collapsed reply threads off, replies show in the channel; the first of a run quotes what it replies to.
     const threadReply = !inThread && !crt && Boolean(post.root_id);
@@ -249,17 +255,29 @@ export default function Message({postId, previousPostId, inThread = false, highl
                 </span>
             )}
             {burn && <BurnTag post={post}/>}
+            {spoiler && (
+                <SpoilerTag
+                    isShown={spoilerShown}
+                    onHide={() => setSpoilerShown(false)}
+                />
+            )}
         </>
     );
 
     const body = (
         <>
             {concealed && <BurnCover post={post}/>}
+            {!concealed && spoilerHidden && (
+                <SpoilerCover
+                    post={post}
+                    onShow={() => setSpoilerShown(true)}
+                />
+            )}
             {!concealed && editing && (
                 <EditForm post={post}/>
             )}
-            {!concealed && !editing && callCard && <CallCard post={post}/>}
-            {!concealed && !editing && !callCard && (
+            {!concealed && !spoilerHidden && !editing && callCard && <CallCard post={post}/>}
+            {!concealed && !spoilerHidden && !editing && !callCard && (
                 <div
                     className={am('body')}
                     onClickCapture={onMentionClick}
@@ -271,7 +289,7 @@ export default function Message({postId, previousPostId, inThread = false, highl
                     />
                 </div>
             )}
-            {post.file_ids && post.file_ids.length > 0 && !deleted && !concealed && <Files post={post}/>}
+            {post.file_ids && post.file_ids.length > 0 && !deleted && !concealed && !spoilerHidden && <Files post={post}/>}
             <Acknowledge post={post}/>
             <Reactions postId={post.id}/>
             {!inThread && crt && !post.root_id && <ThreadSummary post={post}/>}

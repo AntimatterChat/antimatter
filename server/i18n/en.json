@@ -4140,6 +4140,11 @@
     "description": "API error when the server fails to fetch the full content for an ID-only ('ID loaded') push notification; part of the mobile push notification privacy feature."
   },
   {
+    "id": "api.push_notification.spoiler",
+    "translation": "Sent a spoiler",
+    "description": "Push notification text for a message marked as a spoiler, whose text is hidden until opened; replaces the message text."
+  },
+  {
     "id": "api.push_notification.title.collapsed_threads",
     "translation": "Reply in {{.channelName}}",
     "description": "Title of a mobile push notification for a reply in a followed thread; {{.channelName}} is the channel's display name."
@@ -9404,6 +9409,11 @@
     "id": "app.notification.body.mention.title",
     "translation": "{{.SenderName}} mentioned you in a message",
     "description": "Title/heading of an email notification for a missed @-mention; {{.SenderName}} is the sender's display name."
+  },
+  {
+    "id": "app.notification.body.spoiler",
+    "translation": "This message is a spoiler: open it to read it.",
+    "description": "Shown in a notification email instead of a message marked as a spoiler, whose text is hidden until the reader opens it."
   },
   {
     "id": "app.notification.body.thread.title",

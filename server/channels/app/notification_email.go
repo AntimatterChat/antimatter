@@ -99,6 +99,12 @@ func (a *App) buildEmailNotification(
 	if emailNotificationContentsType == model.EmailNotificationContentsFull {
 		messageHTML = a.GetMessageForNotification(post, team.Name, a.GetSiteURL(), translateFunc)
 		messageText = post.Message
+
+		// A spoiler's text stays hidden until its reader opens it: the email only says it is one.
+		if post.IsSpoiler() {
+			messageText = translateFunc("app.notification.body.spoiler")
+			messageHTML = messageText
+		}
 	}
 
 	landingURL := a.GetSiteURL() + "/landing#/" + team.Name

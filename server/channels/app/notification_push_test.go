@@ -1939,6 +1939,23 @@ func TestPushNotificationAttachment(t *testing.T) {
 	})
 }
 
+func TestPushNotificationSpoiler(t *testing.T) {
+	mainHelper.Parallel(t)
+	th := SetupWithStoreMock(t)
+
+	post := &model.Post{
+		Message: "the butler did it",
+		FileIds: model.StringArray{model.NewId()},
+		Props:   map[string]any{model.PostPropsSpoiler: true},
+	}
+	user := &model.User{Locale: "en"}
+	ch := &model.Channel{Type: model.ChannelTypeOpen}
+
+	pn := th.App.buildFullPushNotificationMessage(th.Context, "full", post, user, ch, ch.Name, "test", false, false, "")
+	assert.Equal(t, "test: Sent a spoiler", pn.Message)
+	assert.Equal(t, "the butler did it", post.Message)
+}
+
 // Run it with | grep -v '{"level"' to prevent spamming the console.
 func BenchmarkPushNotificationThroughput(b *testing.B) {
 	th := SetupWithStoreMock(b)

@@ -25,6 +25,7 @@ import {displayUsername} from 'mattermost-redux/utils/user_utils';
 import {getChannelURL, getPermalinkURL} from 'selectors/urls';
 import {isThreadOpen} from 'selectors/views/threads';
 
+import {isSpoiler} from 'fusion/messages/spoiler';
 import {getHistory} from 'utils/browser_history';
 import Constants, {NotificationLevels, UserStatuses, IgnoreChannelMentions, DesktopSound} from 'utils/constants';
 import DesktopApp from 'utils/desktop_api';
@@ -233,7 +234,10 @@ const getNotificationBody = (state: GlobalState, post: Post, msgProps: NewPostMe
     const strippedMarkdownNotifyText = stripMarkdown(notifyText);
 
     let body = `@${username}`;
-    if (strippedMarkdownNotifyText.length === 0) {
+    if (isSpoiler(post)) {
+        // A spoiler's text stays hidden until its reader opens it (Antimatter's Fusion UI).
+        body += Utils.localizeMessage({id: 'fusion.notification.spoiler', defaultMessage: ' posted a spoiler'});
+    } else if (strippedMarkdownNotifyText.length === 0) {
         if (msgProps.image) {
             body += Utils.localizeMessage({id: 'channel_loader.uploadedImage', defaultMessage: ' uploaded an image'});
         } else if (msgProps.otherFile) {

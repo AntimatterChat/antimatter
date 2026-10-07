@@ -57,6 +57,22 @@ describe('fusion/messages/ReplyRef', () => {
         expect(screen.getByRole('button', {name: /Replying to marie:/}).querySelector('.am-snip')).toHaveTextContent('From the server');
     });
 
+    test('leaves out the text of a quoted spoiler', () => {
+        const secret = {...quoted, props: {spoiler: true}} as Post;
+        renderRef(reply, {quoted: secret, reply});
+
+        const snip = screen.getByRole('button', {name: /Replying to marie:/}).querySelector('.am-snip');
+        expect(snip).toHaveTextContent('Spoiler');
+        expect(snip).not.toHaveTextContent('build');
+    });
+
+    test('says when the server describes a quoted spoiler', () => {
+        const described = {...reply, metadata: {...reply.metadata, reply_to: {post_id: quoted.id, user_id: author.id, spoiler: true}}} as Post;
+        renderRef(described, {reply: described});
+
+        expect(screen.getByRole('button', {name: /Replying to marie:/}).querySelector('.am-snip')).toHaveTextContent('Spoiler');
+    });
+
     test('offers to see the attachments of a message without text', () => {
         const files = {...quoted, message: '', file_ids: ['file']};
         renderRef(reply, {quoted: files, reply});
