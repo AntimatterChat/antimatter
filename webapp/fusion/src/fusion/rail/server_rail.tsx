@@ -3,7 +3,7 @@
 
 import React, {useState} from 'react';
 import {useIntl} from 'react-intl';
-import {useDispatch, useSelector} from 'react-redux';
+import {useDispatch, useSelector, useStore} from 'react-redux';
 
 import type {Team} from '@mattermost/types/teams';
 
@@ -15,13 +15,14 @@ import {getCurrentTeam, getCurrentTeamId, getJoinableTeamIds} from 'mattermost-r
 import {switchTeam} from 'actions/team_actions';
 
 import Icon from 'fusion/components/icon';
-import {getSortedMyTeams, getUnreadDirectChannels} from 'fusion/selectors';
+import {getLastTeamChannelName, getSortedMyTeams, getUnreadDirectChannels} from 'fusion/selectors';
 import {useGlobalSearch} from 'fusion/shell/global_search_context';
 import {useLayout} from 'fusion/shell/layout_context';
 import {DirectFace} from 'fusion/sidebar/direct_row';
 import {am} from 'fusion/utils/class_names';
 import {channelPath} from 'fusion/utils/paths';
 import {getHistory} from 'utils/browser_history';
+import Constants from 'utils/constants';
 import {imageURLForTeam} from 'utils/utils';
 
 import type {GlobalState} from 'types/store';
@@ -69,6 +70,13 @@ export default function ServerRail() {
     const [unreadTeams, mentionsInTeam] = useSelector(getTeamsUnreadStatuses);
     const unreadDMs = useSelector(getUnreadDirectChannels);
     const currentChannelId = useSelector((state: GlobalState) => state.entities.channels.currentChannelId);
+    const store = useStore<GlobalState>();
+
+    // Direct messages belong to no team: while you're in them, no team is selected, as in Discord.
+    const inDirectMessages = useSelector((state: GlobalState) => {
+        const type = state.entities.channels.channels[currentChannelId]?.type;
+        return type === Constants.DM_CHANNEL || type === Constants.GM_CHANNEL;
+    }) || layout.home;
     const canJoin = useSelector((state: GlobalState) => getJoinableTeamIds(state).length > 0);
     const canCreate = useSelector((state: GlobalState) => haveISystemPermission(state, {permission: Permissions.CREATE_TEAM}));
 
@@ -77,7 +85,15 @@ export default function ServerRail() {
     const selectTeam = (team: Team) => {
         layout.setHome(false);
         layout.setNavOpen(true);
-        if (team.id !== currentTeamId) {
+        if (team.id === currentTeamId && !inDirectMessages) {
+            return;
+        }
+
+        // Back to the team's channel you were last in, rather than the direct message you just left.
+        const channelName = getLastTeamChannelName(store.getState(), team.id);
+        if (channelName) {
+            getHistory().push(channelPath(team.name, {name: channelName}));
+        } else {
             dispatch(switchTeam(`/${team.name}`));
         }
     };
@@ -91,7 +107,7 @@ export default function ServerRail() {
                 <TeamButton
                     key={team.id}
                     team={team}
-                    active={team.id === currentTeamId}
+                    active={team.id === currentTeamId && !inDirectMessages}
                     unread={unreadTeams.has(team.id)}
                     mentions={mentionsInTeam.get(team.id) || 0}
                     onSelect={() => selectTeam(team)}
