@@ -6,9 +6,10 @@
 :is(.am-app, .am-layer) .am-members[hidden] { display: none !important; }
 :is(.am-app, .am-layer) .am-role-head { display: flex; align-items: center; gap: 6px; margin: 16px 8px 6px; color: var(--am-muted); font: 700 11px var(--am-font-ui); letter-spacing: .07em; text-transform: uppercase; }
 :is(.am-app, .am-layer) .am-role-head:first-child { margin-top: 6px; }
-:is(.am-app, .am-layer) .am-mem-head { display: flex; align-items: center; gap: 6px; margin: 0 2px 2px 8px; color: var(--am-text-2); font: 700 12px var(--am-font-ui); }
+/* The list's title, set apart from the role groups under it by a line. */
+:is(.am-app, .am-layer) .am-mem-head { display: flex; align-items: center; gap: 6px; margin: 0 2px 4px; padding: 0 0 10px 8px; border-bottom: 1px solid var(--am-line); color: var(--am-text); font: 600 14px var(--am-font-display); }
 :is(.am-app, .am-layer) .am-mem-head span { flex: 1; }
-:is(.am-app, .am-layer) .am-mem-head + .am-role-head { margin-top: 8px; }
+:is(.am-app, .am-layer) .am-mem-head + .am-role-head { margin-top: 14px; }
 :is(.am-app, .am-layer) .am-mem-add { width: 28px; height: 28px; border-radius: 7px; }
 :is(.am-app, .am-layer) .am-mem-add-pop { width: 280px; }
 :is(.am-app, .am-layer) .am-mem-add-pop button span small { display: block; font-size: 12px; font-weight: 400; color: var(--am-muted); }
