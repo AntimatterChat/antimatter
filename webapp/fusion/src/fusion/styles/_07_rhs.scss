@@ -67,4 +67,4 @@
 :is(.am-app, .am-layer) .am-result.am-file-result .am-attach-meta span { color: var(--am-muted); font-size: 12px; }
 :is(.am-app, .am-layer) .am-file-result .am-file { flex: none; width: 36px; height: 42px; border-radius: 6px; background: var(--am-matter-soft); color: var(--am-matter); display: grid; place-items: center; font: 700 10px var(--am-font-mono); }
 :is(.am-app, .am-layer) .am-results-tabs, :is(.am-app, .am-layer) .am-file-filters { padding: 0 12px; }
-:is(.am-app, .am-layer) .am-rhs-fullpage { position: absolute; top: 14px; right: 112px; z-index: 5; }
+:is(.am-app, .am-layer) .am-rhs-classic .am-rhs-fullpage { position: absolute; top: 10px; right: 110px; z-index: 5; width: 32px; height: 32px; border-radius: 4px; }

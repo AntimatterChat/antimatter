@@ -194,3 +194,4 @@
 :is(.am-app, .am-layer) .am-about-menu button[role='menuitem'] { display: flex; align-items: center; gap: 12px; width: 100%; padding: 7px 10px; border-radius: 8px; color: var(--am-text-2); text-align: left; }
 :is(.am-app, .am-layer) .am-about-menu button[role='menuitem']:hover { background: var(--am-hover); color: var(--am-text); }
 :is(.am-app, .am-layer) .am-terms-pane { max-height: 70vh; overflow-y: auto; }
+:is(.am-app, .am-layer) .am-coll-item.am-coll-file .am-file { flex: none; width: 34px; height: 40px; border-radius: 6px; background: var(--am-matter-soft); color: var(--am-matter); display: grid; place-items: center; font: 700 10px var(--am-font-mono); }

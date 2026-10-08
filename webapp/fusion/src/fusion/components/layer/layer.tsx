@@ -22,6 +22,9 @@ export type Placement =
     // Above the anchor, left-aligned: popAbove, for the composer's menus.
     'above' |
 
+    // Under the anchor, left-aligned (above when there's no room): the channel info under its name.
+    'below-start' |
+
     // Above the anchor, right-aligned (below it when there's no room): openPicker, for the emoji picker.
     'picker' |
 
@@ -63,6 +66,12 @@ function place(pop: HTMLElement, placement: Placement, anchor?: HTMLElement | nu
         const r = anchor.getBoundingClientRect();
         if (placement === 'below') {
             left = r.right - w;
+            top = r.bottom + 4;
+            if (top + h > vh - MARGIN) {
+                top = r.top - h - 4;
+            }
+        } else if (placement === 'below-start') {
+            left = r.left;
             top = r.bottom + 4;
             if (top + h > vh - MARGIN) {
                 top = r.top - h - 4;

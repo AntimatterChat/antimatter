@@ -31,3 +31,5 @@
 :is(.am-app, .am-layer) .am-ai-note.am-busy { animation: am-ai-pulse 1.4s ease-in-out infinite; }
 :is(.am-app, .am-layer) .am-ai-note button { margin-left: auto; color: var(--am-matter); font-weight: 700; }
 @keyframes am-ai-pulse { 50% { opacity: .55; } }
+:is(.am-app, .am-layer) .am-ai-hint { margin: 2px 10px 6px; color: var(--am-muted); font-size: 12.5px; }
+:is(.am-app, .am-layer) .am-fmt-bar .am-ai-btn.am-on { background: var(--am-matter-soft); }

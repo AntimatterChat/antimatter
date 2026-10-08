@@ -446,11 +446,27 @@ export default function Message({postId, previousPostId, inThread = false, highl
                 className={rowClass}
                 id={`post_${post.id}`}
             >
-                <MessageTime
-                    timestamp={post.create_at}
-                    short={true}
-                    className={am('gutter')}
-                />
+                {spoiler ? (
+                    <button
+                        type='button'
+                        className={am('gutter', 'spoiler-gutter', {shown: spoilerShown})}
+                        title={spoilerShown ? formatMessage({id: 'fusion.spoiler.hide', defaultMessage: 'Hide the spoiler again'}) : formatMessage({id: 'fusion.spoiler.show', defaultMessage: 'Show the spoiler'})}
+                        aria-label={spoilerShown ? formatMessage({id: 'fusion.spoiler.hide', defaultMessage: 'Hide the spoiler again'}) : formatMessage({id: 'fusion.spoiler.show', defaultMessage: 'Show the spoiler'})}
+                        aria-pressed={spoilerShown}
+                        onClick={() => setSpoilerShown(!spoilerShown)}
+                    >
+                        <Icon
+                            name='eye-off'
+                            size='sm'
+                        />
+                    </button>
+                ) : (
+                    <MessageTime
+                        timestamp={post.create_at}
+                        short={true}
+                        className={am('gutter')}
+                    />
+                )}
                 <div>{body}</div>
                 {tools}
                 {popovers}

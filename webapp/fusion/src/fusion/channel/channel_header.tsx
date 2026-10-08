@@ -3,7 +3,7 @@
 
 import React, {useEffect, useRef, useState} from 'react';
 import {useIntl} from 'react-intl';
-import {useDispatch, useSelector} from 'react-redux';
+import {shallowEqual, useDispatch, useSelector} from 'react-redux';
 
 import type {Channel} from '@mattermost/types/channels';
 import type {UserProfile} from '@mattermost/types/users';
@@ -23,24 +23,26 @@ import {VoiceChatToggle} from 'fusion/calls/voice_chat';
 import Avatar from 'fusion/components/avatar';
 import Icon from 'fusion/components/icon';
 import {useUnreadMentions} from 'fusion/hooks/mentions';
-import ChannelMenu from 'fusion/popovers/channel_menu';
 import CollectionsPopover from 'fusion/popovers/collections_popover';
+import type {Tab as CollectionsTab} from 'fusion/popovers/collections_popover';
 import StatusPopover from 'fusion/popovers/status_popover';
 import {addRecentSearch, getRecentSearches} from 'fusion/search/recent_searches';
 import {isPhoneLayout, useLayout} from 'fusion/shell/layout_context';
 import ChannelIcon from 'fusion/sidebar/channel_icon';
 import {useConversationName} from 'fusion/sidebar/group_dm';
 import {am} from 'fusion/utils/class_names';
-import Pluggable from 'plugins/pluggable';
 import PluggableErrorBoundary from 'plugins/pluggable/error_boundary';
 
 import type {GlobalState} from 'types/store';
-import type {SearchButtonsComponent, SearchSuggestionsComponent} from 'types/store/plugins';
+import type {PluginComponent, SearchButtonsComponent, SearchSuggestionsComponent} from 'types/store/plugins';
 
 import CallButton, {OtherCallProviders} from './call_button';
+import ChannelInfo from './channel_info';
 import HeaderTopic from './header_topic';
 
 const NO_CHANNELS: Channel[] = [];
+const NO_ICONS: PluginComponent[] = [];
+const AGENTS_PLUGIN_IDS = ['mattermost-ai', 'com.antimatterchat.ai'];
 
 const FILTERS: Array<[string, {id: string; defaultMessage: string}]> = [
     ['from:', {id: 'fusion.search.from', defaultMessage: 'a person, e.g. from:@marie'}],
@@ -82,9 +84,13 @@ export default function ChannelHeader({channel}: {channel: Channel}) {
     const [searchFocused, setSearchFocused] = useState(false);
     const [collections, setCollections] = useState(false);
     const [status, setStatus] = useState(false);
-    const [menu, setMenu] = useState(false);
+    const [info, setInfo] = useState(false);
+    const infoRef = useRef<HTMLButtonElement>(null);
+    const [collectionsTab, setCollectionsTab] = useState<CollectionsTab>('mentions');
     const member = useSelector((state: GlobalState) => getMyChannelMembership(state, channel.id));
-    const menuRef = useRef<HTMLButtonElement>(null);
+
+    // Plugins' header icons, but Agents': what it asks about the channel is offered in its own panel.
+    const headerIcons = useSelector((state: GlobalState) => (state.plugins.components.ChannelHeaderIcon || NO_ICONS).filter((c) => !AGENTS_PLUGIN_IDS.includes(c.pluginId)), shallowEqual);
     const inputRef = useRef<HTMLInputElement>(null);
     const collectionsRef = useRef<HTMLButtonElement>(null);
     const meRef = useRef<HTMLButtonElement>(null);
@@ -171,7 +177,23 @@ export default function ChannelHeader({channel}: {channel: Channel}) {
                 ) : null}
                 {channel.type === 'G' && <span className={am('av', 'group', 'sm')}>{channel.display_name.split(',').length}</span>}
                 {!direct && <ChannelIcon channel={channel}/>}
-                <h1>{title}</h1>
+                <h1>
+                    <button
+                        ref={infoRef}
+                        type='button'
+                        className={am('title-btn', {on: info})}
+                        title={formatMessage({id: 'fusion.header.info', defaultMessage: 'About this conversation'})}
+                        aria-haspopup='dialog'
+                        aria-expanded={info}
+                        onClick={() => setInfo(!info)}
+                    >
+                        {title}
+                        <Icon
+                            name='chev'
+                            size='xs'
+                        />
+                    </button>
+                </h1>
                 {hasGuests && (
                     <span
                         className={am('guest-chip')}
@@ -392,13 +414,22 @@ export default function ChannelHeader({channel}: {channel: Channel}) {
             <div className={am('head-actions')}>
                 <CallButton channel={channel}/>
                 <OtherCallProviders channel={channel}/>
-                {member && (
+                {member && headerIcons.length > 0 && (
                     <span className={am('head-plugins')}>
-                        <Pluggable
-                            pluggableName='ChannelHeaderIcon'
-                            channel={channel}
-                            channelMember={member}
-                        />
+                        {headerIcons.map((c) => {
+                            const Component = c.component as React.ComponentType<{channel: Channel; channelMember: typeof member}>;
+                            return (
+                                <PluggableErrorBoundary
+                                    key={c.id}
+                                    pluginId={c.pluginId}
+                                >
+                                    <Component
+                                        channel={channel}
+                                        channelMember={member}
+                                    />
+                                </PluggableErrorBoundary>
+                            );
+                        })}
                     </span>
                 )}
                 <button
@@ -407,7 +438,10 @@ export default function ChannelHeader({channel}: {channel: Channel}) {
                     title={formatMessage({id: 'fusion.header.collections', defaultMessage: 'Mentions, saved, pinned and threads'})}
                     aria-label={formatMessage({id: 'fusion.header.collections', defaultMessage: 'Mentions, saved, pinned and threads'})}
                     aria-haspopup='dialog'
-                    onClick={() => setCollections(!collections)}
+                    onClick={() => {
+                        setCollectionsTab('mentions');
+                        setCollections(!collections);
+                    }}
                 >
                     <Icon name='inbox'/>
                     {mentions > 0 && <span className={am('dot')}/>}
@@ -437,35 +471,35 @@ export default function ChannelHeader({channel}: {channel: Channel}) {
                 >
                     <Icon name='users'/>
                 </button>
-                <button
-                    ref={menuRef}
-                    className={am('icon-btn', {on: menu})}
-                    title={direct ? formatMessage({id: 'fusion.header.conversationMenu', defaultMessage: 'Conversation options'}) : formatMessage({id: 'fusion.header.channelMenu', defaultMessage: 'Channel options'})}
-                    aria-label={direct ? formatMessage({id: 'fusion.header.conversationMenu', defaultMessage: 'Conversation options'}) : formatMessage({id: 'fusion.header.channelMenu', defaultMessage: 'Channel options'})}
-                    aria-haspopup='menu'
-                    aria-expanded={menu}
-                    onClick={() => setMenu(!menu)}
-                >
-                    <Icon name='dots'/>
-                </button>
                 <MeButton
                     buttonRef={meRef}
                     onClick={() => setStatus(!status)}
                 />
             </div>
+            {info && (
+                <ChannelInfo
+                    channel={channel}
+                    title={title}
+                    anchor={infoRef.current}
+                    onCollection={(tab) => {
+                        setInfo(false);
+                        setCollectionsTab(tab);
+                        setCollections(true);
+                    }}
+                    onMembers={() => {
+                        if (!layout.showMembers) {
+                            layout.toggleMembers();
+                        }
+                    }}
+                    onClose={() => setInfo(false)}
+                />
+            )}
             {collections && (
                 <CollectionsPopover
                     anchor={collectionsRef.current}
                     channel={channel}
+                    initialTab={collectionsTab}
                     onClose={() => setCollections(false)}
-                />
-            )}
-            {menu && (
-                <ChannelMenu
-                    channel={channel}
-                    anchor={menuRef.current}
-                    placement='below'
-                    onClose={() => setMenu(false)}
                 />
             )}
             {status && (

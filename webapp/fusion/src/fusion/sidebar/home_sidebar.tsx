@@ -208,7 +208,7 @@ export default function HomeSidebar() {
                             }
                         }}
                     >
-                        <Icon name='pen'/>
+                        <Icon name='pad'/>
                         <span className={am('name')}>{formatMessage({id: 'fusion.notes.name', defaultMessage: 'Notes to self'})}</span>
                     </button>
                 </div>

@@ -376,3 +376,9 @@
 :is(.am-app, .am-layer) .am-round.am-off { background: var(--am-danger); color: #fff; }
 :is(.am-app, .am-layer) .am-round.am-on { background: var(--am-anti); color: #06232A; }
 :is(.am-app, .am-layer) .am-round.am-hang { background: var(--am-danger); color: #fff; width: 64px; border-radius: 24px; }
+
+// A spoiler in a continuation message: its eye in the gutter shows it, or hides it again.
+:is(.am-app, .am-layer) .am-msg.am-cont .am-gutter.am-spoiler-gutter { display: grid; place-items: center; justify-self: end; width: 26px; height: 22px; padding: 0; border-radius: 6px; color: var(--am-matter); background: var(--am-matter-soft); }
+:is(.am-app, .am-layer) .am-msg.am-cont .am-gutter.am-spoiler-gutter:hover { background: var(--am-matter); color: #fff; }
+:is(.am-app, .am-layer) .am-msg.am-cont .am-gutter.am-spoiler-gutter.am-shown { background: transparent; }
+:is(.am-app, .am-layer) .am-msg.am-cont .am-gutter.am-spoiler-gutter.am-shown:hover { background: var(--am-matter-soft); color: var(--am-matter); }

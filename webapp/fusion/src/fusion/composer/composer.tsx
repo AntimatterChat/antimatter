@@ -776,6 +776,27 @@ export default function Composer({channelId, rootId = '', placeholder}: Props) {
                         role='toolbar'
                         aria-label={formatMessage({id: 'fusion.composer.formatting', defaultMessage: 'Formatting and message options'})}
                     >
+                        {aiAvailable && (
+                            <>
+                                <button
+                                    ref={aiRef}
+                                    type='button'
+                                    className={am('ai-btn', {on: menu === 'ai' || aiBusy})}
+                                    title={formatMessage({id: 'fusion.ai.label', defaultMessage: 'Rewrite with AI'})}
+                                    aria-label={formatMessage({id: 'fusion.ai.label', defaultMessage: 'Rewrite with AI'})}
+                                    aria-haspopup='menu'
+                                    disabled={aiBusy}
+                                    onClick={() => setMenu(menu === 'ai' ? null : 'ai')}
+                                >
+                                    <Icon
+                                        name='sparkle'
+                                        size='sm'
+                                    />
+                                    {'AI'}
+                                </button>
+                                <span className={am('fmt-sep')}/>
+                            </>
+                        )}
                         {FORMATS.map((f, i) => {
                             if (!f) {
                                 group += 1;
@@ -856,20 +877,6 @@ export default function Composer({channelId, rootId = '', placeholder}: Props) {
                                 onClick={() => setMenu(menu === 'priority' ? null : 'priority')}
                             >
                                 <Icon name='flag'/>
-                            </button>
-                        )}
-                        {(aiAvailable || aiItems.length > 0) && (
-                            <button
-                                ref={aiRef}
-                                type='button'
-                                className={am({on: menu === 'ai' || aiBusy})}
-                                title={formatMessage({id: 'fusion.ai.label', defaultMessage: 'Rewrite with AI'})}
-                                aria-label={formatMessage({id: 'fusion.ai.label', defaultMessage: 'Rewrite with AI'})}
-                                aria-haspopup='menu'
-                                disabled={aiBusy}
-                                onClick={() => setMenu(menu === 'ai' ? null : 'ai')}
-                            >
-                                <Icon name='sparkle'/>
                             </button>
                         )}
                         {burnEnabled && (
@@ -991,7 +998,6 @@ export default function Composer({channelId, rootId = '', placeholder}: Props) {
             {menu === 'ai' && (
                 <AiRewriteMenu
                     anchor={aiRef.current}
-                    rewriting={aiAvailable}
                     pluginItems={aiItems}
                     pluginProps={{draft, getSelectedText: selectedText, updateText: (message: string) => change({message}), channelId, isRHS: Boolean(rootId)}}
                     message={draft.message}

@@ -3,7 +3,7 @@
 
 import React, {useEffect, useMemo, useRef, useState} from 'react';
 import {useIntl} from 'react-intl';
-import {shallowEqual, useSelector} from 'react-redux';
+import {shallowEqual, useDispatch, useSelector} from 'react-redux';
 import {Link} from 'react-router-dom';
 
 import type {Emoji} from '@mattermost/types/emojis';
@@ -13,6 +13,7 @@ import {getCustomEmojisEnabled} from 'mattermost-redux/selectors/entities/emojis
 import {getCurrentTeam} from 'mattermost-redux/selectors/entities/teams';
 import {isSystemEmoji} from 'mattermost-redux/utils/emoji_utils';
 
+import {addRecentEmoji} from 'actions/emoji_actions';
 import {getEmojiPickerTabs} from 'selectors/emoji_picker_tabs';
 import {getEmojiMap, getRecentEmojisNames, getUserSkinTone} from 'selectors/emojis';
 
@@ -35,6 +36,8 @@ const idOf = (emoji: Emoji) => (isSystemEmoji(emoji) ? emoji.unified.toLowerCase
 
 const ROW_HEIGHT = 34;
 const PER_ROW = 8;
+
+const DEFAULT_RECENT = ['+1', 'heart', 'joy', 'tada', 'eyes', 'white_check_mark', 'pray', 'fire'];
 
 // A category's emoji grid, drawn once it scrolls into view, since there are nearly two thousand emoji.
 function LazyGrid({emojis, onPick, onHover, root}: {emojis: Emoji[]; onPick: (e: Emoji) => void; onHover: (e: Emoji) => void; root: HTMLElement | null}) {
@@ -117,7 +120,10 @@ function EmojiTab({query, onQuery, onPick: pick, onClose, keepOpen}: EmojiTabPro
     const customEmojisEnabled = useSelector(getCustomEmojisEnabled);
     const teamName = useSelector((state: GlobalState) => getCurrentTeam(state)?.name ?? '');
     const emojiMap = useSelector(getEmojiMap);
-    const recent = useSelector(getRecentEmojisNames);
+    const used = useSelector(getRecentEmojisNames);
+
+    // The "Recently used" line comes first; until anything was used, it holds the usual reactions.
+    const recent = used.length ? used : DEFAULT_RECENT;
     const skinTone = useSelector(getUserSkinTone);
     const [hovered, setHovered] = useState<Emoji | null>(null);
     const scrollRef = useRef<HTMLDivElement>(null);
@@ -246,6 +252,7 @@ function EmojiTab({query, onQuery, onPick: pick, onClose, keepOpen}: EmojiTabPro
 // the mockup's order: theirs (GIFs, Stickers) then Emoji. A plugin tab renders its own search box and body.
 export default function EmojiPicker({anchor, onPick, onClose, keepOpen = false, compose}: Props) {
     const {formatMessage} = useIntl();
+    const dispatch = useDispatch();
     const channelId = compose?.channelId || '';
     const rootId = compose?.rootId || undefined;
     const ctx = useMemo(() => ({channelId, rootId}), [channelId, rootId]);
@@ -263,6 +270,8 @@ export default function EmojiPicker({anchor, onPick, onClose, keepOpen = false, 
     };
 
     const pick = (emoji: Emoji) => {
+        // Picked emoji lead the "Recently used" line.
+        dispatch(addRecentEmoji(nameOf(emoji)));
         onPick(nameOf(emoji));
         if (!keepOpen) {
             onClose();

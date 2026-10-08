@@ -6,27 +6,37 @@ import {useIntl} from 'react-intl';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {getAgents as fetchAgents} from 'mattermost-redux/actions/agents';
+import {savePreferences} from 'mattermost-redux/actions/preferences';
 import {Client4} from 'mattermost-redux/client';
 import {getAgents} from 'mattermost-redux/selectors/entities/agents';
+import {get as getPreference} from 'mattermost-redux/selectors/entities/preferences';
+import {getCurrentUserId} from 'mattermost-redux/selectors/entities/users';
 
 import {RewriteAction} from 'components/advanced_text_editor/rewrite_action';
 import {useSelectedAgent} from 'components/common/agents';
 
+import type {IconName} from 'fusion/components/icon';
 import {Popover} from 'fusion/components/layer';
 import {MenuHeading, MenuItem, MenuSeparator} from 'fusion/components/menu';
 import {am} from 'fusion/utils/class_names';
 import PluggableErrorBoundary from 'plugins/pluggable/error_boundary';
 
+import type {GlobalState} from 'types/store';
 import type {AIActionMenuItemComponent, AIActionMenuItemProps} from 'types/store/plugins';
 
-const ACTIONS: Array<[RewriteAction, {id: string; defaultMessage: string}]> = [
-    [RewriteAction.IMPROVE_WRITING, {id: 'fusion.ai.improve', defaultMessage: 'Improve the writing'}],
-    [RewriteAction.FIX_SPELLING, {id: 'fusion.ai.spelling', defaultMessage: 'Fix spelling and grammar'}],
-    [RewriteAction.SHORTEN, {id: 'fusion.ai.shorten', defaultMessage: 'Make it shorter'}],
-    [RewriteAction.ELABORATE, {id: 'fusion.ai.elaborate', defaultMessage: 'Make it longer'}],
-    [RewriteAction.SIMPLIFY, {id: 'fusion.ai.simplify', defaultMessage: 'Simplify'}],
-    [RewriteAction.SUMMARIZE, {id: 'fusion.ai.summarize', defaultMessage: 'Summarize'}],
+// The mockup's AI actions: Mattermost's rewrite actions, and instructions for the others.
+type AiAction = {key: string; icon: IconName; label: {id: string; defaultMessage: string}; action: RewriteAction; prompt?: string};
+
+const ACTIONS: AiAction[] = [
+    {key: 'improve', icon: 'sparkle', label: {id: 'fusion.ai.improve', defaultMessage: 'Improve writing'}, action: RewriteAction.IMPROVE_WRITING},
+    {key: 'fix', icon: 'check', label: {id: 'fusion.ai.spelling', defaultMessage: 'Fix spelling & grammar'}, action: RewriteAction.FIX_SPELLING},
+    {key: 'shorter', icon: 'ul', label: {id: 'fusion.ai.shorten', defaultMessage: 'Make it shorter'}, action: RewriteAction.SHORTEN},
+    {key: 'formal', icon: 'type', label: {id: 'fusion.ai.formal', defaultMessage: 'Make it more formal'}, action: RewriteAction.CUSTOM, prompt: 'Rewrite this message in a more formal, professional tone. Keep its meaning, its language and its formatting.'},
 ];
+
+// The language last translated into, offered again.
+const CATEGORY_FUSION_AI = 'fusion_ai';
+const NAME_LANGUAGE = 'translate_to';
 
 // useAgentsAvailable says whether an AI agent can rewrite messages (the Agents plugin, with an agent).
 export function useAgentsAvailable(): boolean {
@@ -41,8 +51,6 @@ export function useAgentsAvailable(): boolean {
 type Props = {
     anchor: HTMLElement | null;
 
-    // Whether an AI agent can rewrite (the Agents plugin): else only plugins' AI items show.
-    rewriting: boolean;
     pluginItems: AIActionMenuItemComponent[];
     pluginProps: AIActionMenuItemProps;
     message: string;
@@ -53,13 +61,18 @@ type Props = {
     onClose: () => void;
 };
 
-// AiRewriteMenu has an AI agent rewrite the message being written: the classic editor's AI actions, or what to do
-// in your own words (which also writes a message from nothing).
-export default function AiRewriteMenu({anchor, rewriting, pluginItems, pluginProps, message, rootId, onRewritten, onError, onBusy, onClose}: Props) {
+// AiRewriteMenu has an AI agent rewrite the message being written, as the mockup's AI menu: improve, fix, shorten,
+// make more formal, translate; then plugins' AI items (the Agents app's custom prompts and their management).
+export default function AiRewriteMenu({anchor, pluginItems, pluginProps, message, rootId, onRewritten, onError, onBusy, onClose}: Props) {
     const {formatMessage} = useIntl();
+    const dispatch = useDispatch();
     const agents = useSelector(getAgents);
     const [agentId] = useSelectedAgent(agents);
-    const [prompt, setPrompt] = useState('');
+    const userId = useSelector(getCurrentUserId);
+    const lastLanguage = useSelector((state: GlobalState) => getPreference(state, CATEGORY_FUSION_AI, NAME_LANGUAGE, ''));
+    const [translating, setTranslating] = useState(false);
+    const [language, setLanguage] = useState(lastLanguage);
+    const hasText = Boolean(message.trim());
 
     const rewrite = async (action: RewriteAction, custom?: string) => {
         onClose();
@@ -73,6 +86,14 @@ export default function AiRewriteMenu({anchor, rewriting, pluginItems, pluginPro
             onBusy(false);
         }
     };
+    const translate = () => {
+        const to = language.trim();
+        if (!to) {
+            return;
+        }
+        dispatch(savePreferences(userId, [{user_id: userId, category: CATEGORY_FUSION_AI, name: NAME_LANGUAGE, value: to}]));
+        rewrite(RewriteAction.CUSTOM, `Translate this message into ${to}. Keep its formatting, mentions, links and emoji; only give the translation.`);
+    };
 
     return (
         <Popover
@@ -83,35 +104,43 @@ export default function AiRewriteMenu({anchor, rewriting, pluginItems, pluginPro
             label={formatMessage({id: 'fusion.ai.label', defaultMessage: 'Rewrite with AI'})}
             onClose={onClose}
         >
-            {rewriting && <MenuHeading>{formatMessage({id: 'fusion.ai.label', defaultMessage: 'Rewrite with AI'})}</MenuHeading>}
-            {rewriting && (
+            <MenuHeading>{formatMessage({id: 'fusion.ai.label', defaultMessage: 'Rewrite with AI'})}</MenuHeading>
+            {!hasText && <p className={am('ai-hint')}>{formatMessage({id: 'fusion.ai.writeFirst', defaultMessage: 'Write your message first.'})}</p>}
+            {ACTIONS.map((a) => (
+                <MenuItem
+                    key={a.key}
+                    icon={a.icon}
+                    label={formatMessage(a.label)}
+                    disabled={!hasText}
+                    onClick={() => rewrite(a.action, a.prompt)}
+                />
+            ))}
+            {!translating && (
+                <MenuItem
+                    icon='globe'
+                    label={formatMessage({id: 'fusion.ai.translate', defaultMessage: 'Translate…'})}
+                    disabled={!hasText}
+                    onClick={() => setTranslating(true)}
+                />
+            )}
+            {translating && (
                 <form
                     className={am('ai-prompt')}
                     onSubmit={(e) => {
                         e.preventDefault();
-                        if (prompt.trim()) {
-                            rewrite(RewriteAction.CUSTOM, prompt.trim());
-                        }
+                        translate();
                     }}
                 >
                     <input
                         autoFocus={true}
-                        value={prompt}
-                        placeholder={message.trim() ? formatMessage({id: 'fusion.ai.promptEdit', defaultMessage: 'How should it change?'}) : formatMessage({id: 'fusion.ai.promptWrite', defaultMessage: 'What should it say?'})}
-                        aria-label={formatMessage({id: 'fusion.ai.prompt', defaultMessage: 'Instructions for the AI'})}
-                        onChange={(e) => setPrompt(e.target.value)}
+                        value={language}
+                        placeholder={formatMessage({id: 'fusion.ai.language', defaultMessage: 'Into which language? e.g. French'})}
+                        aria-label={formatMessage({id: 'fusion.ai.languageLabel', defaultMessage: 'Language to translate into'})}
+                        onChange={(e) => setLanguage(e.target.value)}
                     />
                 </form>
             )}
-            {rewriting && message.trim() && ACTIONS.map(([action, label]) => (
-                <MenuItem
-                    key={action}
-                    icon='sparkle'
-                    label={formatMessage(label)}
-                    onClick={() => rewrite(action)}
-                />
-            ))}
-            {pluginItems.length > 0 && rewriting && <MenuSeparator/>}
+            {pluginItems.length > 0 && <MenuSeparator/>}
             {[...pluginItems].sort((a, b) => a.sortOrder - b.sortOrder).map((item) => {
                 const Component = item.component;
                 if (Component) {
