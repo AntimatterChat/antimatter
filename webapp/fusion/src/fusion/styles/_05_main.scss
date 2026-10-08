@@ -245,3 +245,4 @@
 :is(.am-app, .am-layer) .am-plugin-toasts:empty { display: none; }
 :is(.am-app, .am-layer) .am-plugin-toasts { position: sticky; top: 0; z-index: 15; }
 :is(.am-app, .am-layer) .am-day.am-new { gap: 8px; }
+:is(.am-app, .am-layer) .am-remote-tag { display: inline-grid; place-items: center; color: var(--am-muted); }

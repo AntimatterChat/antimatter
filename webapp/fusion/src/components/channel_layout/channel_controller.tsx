@@ -23,6 +23,7 @@ import {Constants} from 'utils/constants';
 
 const ProductNoticesModal = makeAsyncComponent('ProductNoticesModal', lazy(() => import('components/product_notices_modal')));
 const ResetStatusModal = makeAsyncComponent('ResetStatusModal', lazy(() => import('components/reset_status_modal')));
+const OnboardingTaskList = makeAsyncComponent('OnboardingTaskList', lazy(() => import('components/onboarding_tasklist')));
 const MarkAllAsReadToast = makeAsyncComponent('MarkAllAsReadToast', lazy(() => import('components/feature_toast/features/mark_all_as_read_toast')));
 
 const BODY_CLASS_FOR_CHANNEL = ['channel-view'];
@@ -74,6 +75,7 @@ export default function ChannelController(props: Props) {
             <FusionApp>
                 <UnreadsStatusHandler/>
                 <ProductNoticesModal/>
+                <OnboardingTaskList/>
                 {enableMarkAllReadShortcut && <MarkAllAsReadToast/>}
                 {props.shouldRenderCenterChannel ? <CenterChannel/> : <LoadingScreen centered={true}/>}
 

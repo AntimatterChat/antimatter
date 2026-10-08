@@ -39,6 +39,9 @@ export type DisplayPrefs = {
 
     /** Copy ID items in menus. */
     developer: boolean;
+
+    /** Availability dots on the pictures of messages. */
+    statusOnPosts: boolean;
 };
 
 export function getDisplayPrefs(state: GlobalState): DisplayPrefs {
@@ -52,6 +55,7 @@ export function getDisplayPrefs(state: GlobalState): DisplayPrefs {
         startFromLeftOff: get(Preferences.CATEGORY_ADVANCED_SETTINGS, Preferences.UNREAD_SCROLL_POSITION, Preferences.UNREAD_SCROLL_POSITION_START_FROM_LEFT) === Preferences.UNREAD_SCROLL_POSITION_START_FROM_LEFT,
         streamer: get(CATEGORY_FUSION_DISPLAY, STREAMER_MODE, 'false') === 'true',
         developer: get(CATEGORY_FUSION_DISPLAY, DEVELOPER_MODE, 'false') === 'true',
+        statusOnPosts: get(Preferences.CATEGORY_DISPLAY_SETTINGS, Preferences.AVAILABILITY_STATUS_ON_POSTS, Preferences.AVAILABILITY_STATUS_ON_POSTS_DEFAULT) === 'true',
     };
 }
 

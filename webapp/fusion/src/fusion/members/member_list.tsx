@@ -64,6 +64,17 @@ function Member({user, off, role, onOpen, onMenu}: MemberProps) {
             <span className={am('who')}>
                 <b style={role ? {color: ROLE_COLORS[role]} : undefined}>
                     <span className={am('nm')}>{name}</span>
+                    {user.remote_id && (
+                        <span
+                            className={am('remote-tag')}
+                            title={formatMessage({id: 'fusion.members.remote', defaultMessage: 'From another server'})}
+                        >
+                            <Icon
+                                name='globe'
+                                size='xs'
+                            />
+                        </span>
+                    )}
                     <StatusEmoji userId={user.id}/>
                     {user.is_bot && <span className={am('bot-tag')}>{'BOT'}</span>}
                     {isGuest(user.roles) && <span className={am('bot-tag', 'guest-tag')}>{formatMessage({id: 'fusion.message.guest', defaultMessage: 'GUEST'})}</span>}

@@ -6,10 +6,12 @@ import {useIntl} from 'react-intl';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {saveTheme} from 'mattermost-redux/actions/preferences';
+import {updateMe} from 'mattermost-redux/actions/users';
 import {Preferences as ReduxPreferences} from 'mattermost-redux/constants';
 import {getConfig} from 'mattermost-redux/selectors/entities/general';
 import {getTheme} from 'mattermost-redux/selectors/entities/preferences';
 import type {Theme} from 'mattermost-redux/selectors/entities/preferences';
+import {getCurrentUser} from 'mattermost-redux/selectors/entities/users';
 
 import {CATEGORY_FUSION_DISPLAY, DEVELOPER_MODE, STREAMER_MODE} from 'fusion/hooks/display';
 import {useToast} from 'fusion/shell/toast_context';
@@ -54,6 +56,9 @@ export function DisplayRows() {
     const [display, setDisplay] = usePreference(Preferences.CATEGORY_DISPLAY_SETTINGS, Preferences.MESSAGE_DISPLAY, Preferences.MESSAGE_DISPLAY_DEFAULT);
     const [colorize, setColorize] = usePreference(Preferences.CATEGORY_DISPLAY_SETTINGS, Preferences.COLORIZE_USERNAMES, Preferences.COLORIZE_USERNAMES_DEFAULT);
     const [width, setWidth] = usePreference(Preferences.CATEGORY_DISPLAY_SETTINGS, Preferences.CHANNEL_DISPLAY_MODE, Preferences.CHANNEL_DISPLAY_MODE_DEFAULT);
+    const [statusOnPosts, setStatusOnPosts] = usePreference(Preferences.CATEGORY_DISPLAY_SETTINGS, Preferences.AVAILABILITY_STATUS_ON_POSTS, Preferences.AVAILABILITY_STATUS_ON_POSTS_DEFAULT);
+    const me = useSelector(getCurrentUser);
+    const lastActiveEnabled = useSelector((state: GlobalState) => getConfig(state).EnableLastActiveTime === 'true');
     const [code, setCode] = useState('');
 
     const applyCode = () => {
@@ -86,6 +91,20 @@ export function DisplayRows() {
                 on={colorize === 'true'}
                 onChange={(on) => setColorize(String(on))}
             />
+            <Toggle
+                title={formatMessage({id: 'fusion.settings.statusOnPosts', defaultMessage: 'Availability on pictures'})}
+                desc={formatMessage({id: 'fusion.settings.statusOnPostsDesc', defaultMessage: 'Show whether people are online on their pictures in messages.'})}
+                on={statusOnPosts === 'true'}
+                onChange={(on) => setStatusOnPosts(String(on))}
+            />
+            {lastActiveEnabled && (
+                <Toggle
+                    title={formatMessage({id: 'fusion.settings.shareLastActive', defaultMessage: 'Share when you were last online'})}
+                    desc={formatMessage({id: 'fusion.settings.shareLastActiveDesc', defaultMessage: 'Others see "Last online 5 minutes ago" while you\'re away or offline.'})}
+                    on={me.props?.show_last_active !== 'false'}
+                    onChange={(on) => dispatch(updateMe({props: {...me.props, show_last_active: String(on)}}))}
+                />
+            )}
             <Choice
                 title={formatMessage({id: 'fusion.settings.channelWidth', defaultMessage: 'Message width'})}
                 value={width}

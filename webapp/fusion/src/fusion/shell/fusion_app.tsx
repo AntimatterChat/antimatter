@@ -41,6 +41,7 @@ import {useFaceTips} from './face_tips';
 import {GlobalSearchProvider, useGlobalSearch} from './global_search_context';
 import {isKeybind} from './keybinds';
 import {LayoutProvider, isPhoneLayout, useLayout} from './layout_context';
+import {useNavShortcuts} from './nav_shortcuts';
 import {SettingsProvider, useSettings} from './settings_context';
 import {useSwipes} from './swipes';
 import {ToastProvider} from './toast_context';
@@ -69,6 +70,7 @@ function Frame({children}: Props) {
     useSwipes(appRef, layout);
     useFaceTips();
     useMuteExpiry();
+    useNavShortcuts();
 
     // The sidebar's categories, including the direct messages shown in the dock.
     useEffect(() => {

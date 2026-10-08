@@ -495,6 +495,7 @@ export default function Message({postId, previousPostId, inThread = false, highl
                 <Avatar
                     userId={post.user_id}
                     size='lg'
+                    status={prefs.statusOnPosts && !bot && !webhook}
                 />
             </button>
         );
@@ -531,6 +532,17 @@ export default function Message({postId, previousPostId, inThread = false, highl
                         {authorName}
                     </button>
                     {!bot && !webhook && <StatusEmoji userId={post.user_id}/>}
+                    {user?.remote_id && (
+                        <span
+                            className={am('remote-tag')}
+                            title={formatMessage({id: 'fusion.message.remote', defaultMessage: 'From another server, through a shared channel'})}
+                        >
+                            <Icon
+                                name='globe'
+                                size='xs'
+                            />
+                        </span>
+                    )}
                     {(bot || webhook) && <span className={am('bot-tag')}>{'BOT'}</span>}
                     {!bot && !webhook && user && isGuest(user.roles) && <span className={am('bot-tag', 'guest-tag')}>{formatMessage({id: 'fusion.message.guest', defaultMessage: 'GUEST'})}</span>}
                     {webhook && <span className={am('via')}>{formatMessage({id: 'fusion.message.viaWebhook', defaultMessage: 'via webhook'})}</span>}
