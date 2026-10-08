@@ -40,3 +40,9 @@
 // Requests to join a discoverable private channel, above its members (the classic list, in Fusion's colours).
 :is(.am-app, .am-layer) .am-join-requests { margin: 4px 0 10px; padding: 8px; border-radius: 10px; background: var(--am-anti-soft); color: var(--am-text); font-size: 13px; }
 :is(.am-app, .am-layer) .am-join-requests button { color: inherit; }
+/* Members by role or by team, as each person chooses (roles only when the admins allow them). */
+:is(.am-app, .am-layer) .am-mem-grouping { display: flex; gap: 2px; margin: 8px 8px 0; padding: 3px; border-radius: 9px; background: var(--am-side); border: 1px solid var(--am-line); }
+:is(.am-app, .am-layer) .am-mem-grouping button { flex: 1; height: 26px; border-radius: 6px; color: var(--am-muted); font: 600 12.5px var(--am-font-ui); }
+:is(.am-app, .am-layer) .am-mem-grouping button:hover { color: var(--am-text-2); }
+:is(.am-app, .am-layer) .am-mem-grouping button.am-on { background: var(--am-raise-2); color: var(--am-text); }
+:is(.am-app, .am-layer) .am-role-head .am-team-tag { text-transform: none; }

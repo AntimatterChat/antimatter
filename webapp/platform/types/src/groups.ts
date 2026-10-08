@@ -24,6 +24,16 @@ export type CustomGroupPatch = {
     display_name: string;
 };
 
+/**
+ * Antimatter teams: the tag, lead and team channel of a group, and its description.
+ */
+export type GroupTeamPatch = {
+    description?: string;
+    tag?: string;
+    lead_id?: string;
+    channel_id?: string;
+};
+
 export type Group = {
     id: string;
     name: string;
@@ -41,6 +51,11 @@ export type Group = {
     channel_member_count?: number;
     channel_member_timezones_count?: number;
     member_ids?: string[];
+
+    /** Antimatter teams: a short tag shown next to members' names (at most 8 characters), a lead, and a channel. */
+    tag?: string;
+    lead_id?: string;
+    channel_id?: string;
 };
 
 /**

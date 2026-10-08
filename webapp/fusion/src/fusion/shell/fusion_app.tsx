@@ -29,6 +29,7 @@ import GlobalSearch from 'fusion/search/global_search';
 import HomeSidebar from 'fusion/sidebar/home_sidebar';
 import TeamSidebar from 'fusion/sidebar/team_sidebar';
 import {useMuteExpiry} from 'fusion/sidebar/timed_mute';
+import {useLoadTeams} from 'fusion/teams/teams';
 import {am} from 'fusion/utils/class_names';
 import {openKeyboardShortcuts} from 'fusion/utils/modals';
 import {SCHEDULED_POST_URL_SUFFIX} from 'utils/constants';
@@ -71,6 +72,7 @@ function Frame({children}: Props) {
     useFaceTips();
     useMuteExpiry();
     useNavShortcuts();
+    useLoadTeams();
 
     // The sidebar's categories, including the direct messages shown in the dock.
     useEffect(() => {

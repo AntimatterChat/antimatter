@@ -35,6 +35,7 @@ import EmojiPicker from 'fusion/popovers/emoji_picker';
 import {useUserMenu} from 'fusion/popovers/user_menu';
 import UserPopover from 'fusion/popovers/user_popover';
 import {getOneClickEmoji} from 'fusion/selectors';
+import {TeamTag} from 'fusion/teams/team_card';
 import {am} from 'fusion/utils/class_names';
 import Pluggable from 'plugins/pluggable';
 import PluggableErrorBoundary from 'plugins/pluggable/error_boundary';
@@ -569,6 +570,7 @@ export default function Message({postId, previousPostId, inThread = false, highl
                         </span>
                     )}
                     {(bot || webhook) && <span className={am('bot-tag')}>{'BOT'}</span>}
+                    {!bot && !webhook && <TeamTag user={user}/>}
                     {!bot && !webhook && user && isGuest(user.roles) && <span className={am('bot-tag', 'guest-tag')}>{formatMessage({id: 'fusion.message.guest', defaultMessage: 'GUEST'})}</span>}
                     {webhook && <span className={am('via')}>{formatMessage({id: 'fusion.message.viaWebhook', defaultMessage: 'via webhook'})}</span>}
                     <MessageTime timestamp={post.create_at}/>

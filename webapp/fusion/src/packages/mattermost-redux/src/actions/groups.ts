@@ -4,7 +4,7 @@
 import type {AnyAction} from 'redux';
 import {batchActions} from 'redux-batched-actions';
 
-import type {GroupPatch, SyncablePatch, GroupCreateWithUserIds, CustomGroupPatch, GroupSearchParams, GetGroupsParams, GetGroupsForUserParams, Group, GroupMember} from '@mattermost/types/groups';
+import type {GroupPatch, SyncablePatch, GroupCreateWithUserIds, CustomGroupPatch, GroupTeamPatch, GroupSearchParams, GetGroupsParams, GetGroupsForUserParams, Group, GroupMember} from '@mattermost/types/groups';
 import {SyncableType, GroupSource} from '@mattermost/types/groups';
 
 import {ChannelTypes, GroupTypes, UserTypes} from 'mattermost-redux/action_types';
@@ -281,7 +281,7 @@ export function getGroupsAssociatedToChannel(channelID: string, q = '', page = 0
     });
 }
 
-export function patchGroup(groupID: string, patch: GroupPatch | CustomGroupPatch) {
+export function patchGroup(groupID: string, patch: GroupPatch | CustomGroupPatch | GroupTeamPatch) {
     return bindClientFunc({
         clientFunc: Client4.patchGroup,
         onSuccess: [GroupTypes.PATCHED_GROUP],

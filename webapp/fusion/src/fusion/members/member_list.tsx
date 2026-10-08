@@ -22,9 +22,13 @@ import {TalkNote} from 'fusion/calls/markers';
 import Avatar from 'fusion/components/avatar';
 import Icon from 'fusion/components/icon';
 import StatusEmoji from 'fusion/components/status_emoji';
+import {CATEGORY_FUSION_DISPLAY, MEMBER_GROUPING} from 'fusion/hooks/display';
 import {useDisplayName} from 'fusion/hooks/users';
+import {usePreference} from 'fusion/modals/settings_controls';
 import {useUserMenu} from 'fusion/popovers/user_menu';
 import UserPopover from 'fusion/popovers/user_popover';
+import {TeamTag} from 'fusion/teams/team_card';
+import {getTeams, useRoleGroupsAllowed} from 'fusion/teams/teams';
 import {am} from 'fusion/utils/class_names';
 import {openAddToGroup} from 'fusion/utils/modals';
 
@@ -32,7 +36,7 @@ import type {GlobalState} from 'types/store';
 
 import MemberAddPopover, {useCanAddPeople} from './member_add_popover';
 import {ROLE_COLORS, useMemberGroups, useMemberRoles} from './member_groups';
-import type {MemberRole} from './member_groups';
+import type {Grouping, MemberRole} from './member_groups';
 
 const PER_PAGE = 100;
 
@@ -77,6 +81,7 @@ function Member({user, off, role, onOpen, onMenu}: MemberProps) {
                     )}
                     <StatusEmoji userId={user.id}/>
                     {user.is_bot && <span className={am('bot-tag')}>{'BOT'}</span>}
+                    <TeamTag user={user}/>
                     {isGuest(user.roles) && <span className={am('bot-tag', 'guest-tag')}>{formatMessage({id: 'fusion.message.guest', defaultMessage: 'GUEST'})}</span>}
                 </b>
                 <span><TalkNote userId={user.id}>{custom?.text || user.position || ''}</TalkNote></span>
@@ -95,7 +100,16 @@ export default function MemberList({inPanel = false}: {inPanel?: boolean}) {
     const profiles = useSelector((state: GlobalState) => getProfilesInChannel(state, channelId, {active: true}));
     const memberCount = useSelector((state: GlobalState) => getAllChannelStats(state)[channelId]?.member_count);
     const roles = useMemberRoles(profiles, channelId);
-    const groups = useMemberGroups(profiles, roles);
+
+    // People are listed by role (when the admins allow it) or by team, as each person chooses.
+    const rolesAllowed = useRoleGroupsAllowed();
+    const hasTeams = useSelector((state: GlobalState) => getTeams(state).length > 0);
+    const [chosenGrouping, setGrouping] = usePreference(CATEGORY_FUSION_DISPLAY, MEMBER_GROUPING, 'roles');
+    let grouping: Grouping = chosenGrouping === 'teams' && hasTeams ? 'teams' : 'roles';
+    if (!rolesAllowed) {
+        grouping = 'teams';
+    }
+    const groups = useMemberGroups(profiles, roles, grouping);
     const canAdd = useCanAddPeople(channel);
     const [popover, setPopover] = useState<{userId: string; anchor: HTMLElement} | null>(null);
     const [adding, setAdding] = useState(false);
@@ -163,6 +177,26 @@ export default function MemberList({inPanel = false}: {inPanel?: boolean}) {
                     </button>
                 )}
             </div>
+            {rolesAllowed && hasTeams && !direct && (
+                <div
+                    className={am('mem-grouping')}
+                    role='radiogroup'
+                    aria-label={formatMessage({id: 'fusion.members.grouping', defaultMessage: 'Group members by'})}
+                >
+                    {(['roles', 'teams'] as Grouping[]).map((g) => (
+                        <button
+                            key={g}
+                            type='button'
+                            role='radio'
+                            aria-checked={grouping === g}
+                            className={am({on: grouping === g})}
+                            onClick={() => setGrouping(g)}
+                        >
+                            {g === 'roles' ? formatMessage({id: 'fusion.members.byRole', defaultMessage: 'Roles'}) : formatMessage({id: 'fusion.members.byTeam', defaultMessage: 'Teams'})}
+                        </button>
+                    ))}
+                </div>
+            )}
             {canManageRequests && joinRequests.length > 0 && (
                 <div className={am('join-requests')}>
                     <PendingJoinRequests
@@ -180,13 +214,14 @@ export default function MemberList({inPanel = false}: {inPanel?: boolean}) {
                                 style={{background: group.color}}
                             />
                         )}
+                        {group.tag && <span className={am('team-tag', 'static')}>{group.tag}</span>}
                         {group.label}
                     </div>
                     {group.users.map((u) => (
                         <Member
                             key={u.id}
                             user={u}
-                            off={group.off}
+                            off={group.off || Boolean(group.offline?.has(u.id))}
                             role={roles[u.id]}
                             onOpen={(anchor) => setPopover({userId: u.id, anchor})}
                             onMenu={(e) => openUserMenu(u.id, e)}

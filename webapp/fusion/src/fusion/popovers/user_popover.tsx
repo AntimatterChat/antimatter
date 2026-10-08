@@ -22,6 +22,7 @@ import Icon from 'fusion/components/icon';
 import {Popover} from 'fusion/components/layer';
 import {useDisplayName, useUser, useUserStatus} from 'fusion/hooks/users';
 import {useSettings} from 'fusion/shell/settings_context';
+import {TeamTag} from 'fusion/teams/team_card';
 import {am} from 'fusion/utils/class_names';
 import {openDialog} from 'fusion/utils/modals';
 import {channelPath} from 'fusion/utils/paths';
@@ -127,6 +128,7 @@ export default function UserPopover({userId, anchor, onClose}: Props) {
                 <h4 style={{display: 'flex', alignItems: 'center', gap: 6}}>
                     {name}
                     {bot && <span className={am('bot-tag')}>{'BOT'}</span>}
+                    <TeamTag user={user}/>
                 </h4>
                 <div className={am('handle')}>{`@${user.username} · ${formatMessage(STATUS_LABELS[status] || STATUS_LABELS.offline)}`}</div>
                 {!bot && (

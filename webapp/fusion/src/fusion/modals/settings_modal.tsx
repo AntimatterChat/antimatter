@@ -1,7 +1,7 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useEffect, useMemo, useRef, useState} from 'react';
 import {useIntl} from 'react-intl';
 import {useDispatch, useSelector} from 'react-redux';
 
@@ -29,6 +29,8 @@ import Avatar from 'fusion/components/avatar';
 import Icon from 'fusion/components/icon';
 import {Dialog} from 'fusion/components/layer';
 import {useDisplayPrefs} from 'fusion/hooks/display';
+import {useToast} from 'fusion/shell/toast_context';
+import {getTeamsByUser, TEAM_BADGE_PROP} from 'fusion/teams/teams';
 import {am} from 'fusion/utils/class_names';
 import {openClassicUserSettings} from 'fusion/utils/modals';
 import {getLanguages} from 'i18n/i18n';
@@ -172,6 +174,44 @@ function ProfilePicture({me, locked}: {me: UserProfile; locked: boolean}) {
     );
 }
 
+// TeamBadgeField picks the team whose tag shows next to your name, among your teams that have one, as in the mockup.
+function TeamBadgeField() {
+    const {formatMessage} = useIntl();
+    const dispatch = useDispatch();
+    const toast = useToast();
+    const me = useSelector(getCurrentUser);
+    const allMyTeams = useSelector((state: GlobalState) => getTeamsByUser(state)[me.id]);
+    const myTeams = useMemo(() => (allMyTeams || []).filter((t) => t.tag), [allMyTeams]);
+    if (!myTeams.length) {
+        return null;
+    }
+    const chosen = myTeams.some((t) => t.id === me.props?.[TEAM_BADGE_PROP]) ? me.props[TEAM_BADGE_PROP] : '';
+    return (
+        <label className={am('field')}>
+            <span>{formatMessage({id: 'fusion.settings.teamBadge', defaultMessage: 'Team badge'})}</span>
+            <select
+                value={chosen}
+                onChange={async (e) => {
+                    const team = myTeams.find((t) => t.id === e.target.value);
+                    await dispatch(updateMe({props: {...me.props, [TEAM_BADGE_PROP]: team?.id || ''}}));
+                    toast(team ? formatMessage({id: 'fusion.toast.teamBadge', defaultMessage: 'Team badge: {tag}'}, {tag: team.tag}) : formatMessage({id: 'fusion.toast.teamBadgeHidden', defaultMessage: 'Team badge hidden'}));
+                }}
+            >
+                <option value=''>{formatMessage({id: 'fusion.settings.teamBadgeNone', defaultMessage: 'None'})}</option>
+                {myTeams.map((t) => (
+                    <option
+                        key={t.id}
+                        value={t.id}
+                    >
+                        {`${t.tag} — ${t.display_name}`}
+                    </option>
+                ))}
+            </select>
+            <small>{formatMessage({id: 'fusion.settings.teamBadgeHelp', defaultMessage: 'Shown next to your name, like a server tag. Only teams you belong to are listed.'})}</small>
+        </label>
+    );
+}
+
 function AccountPane() {
     const {formatMessage} = useIntl();
     const dispatch = useDispatch();
@@ -231,6 +271,7 @@ function AccountPane() {
             {field('username', 'username', formatMessage({id: 'fusion.settings.username', defaultMessage: 'Username'}), usernameError ? formatMessage({id: 'fusion.settings.usernameRules', defaultMessage: 'Use {min} to {max} lowercase letters, numbers, periods, dashes and underscores, starting with a letter.'}, {min: Constants.MIN_USERNAME_LENGTH, max: Constants.MAX_USERNAME_LENGTH}) : undefined)}
             {field('nickname', 'nickname', formatMessage({id: 'fusion.settings.nickname', defaultMessage: 'Nickname'}))}
             {field('position', 'position', formatMessage({id: 'fusion.settings.position', defaultMessage: 'Position'}))}
+            <TeamBadgeField/>
             {error && <p className={am('field-error')}>{error}</p>}
             <div className={am('modal-actions')}>
                 {me.auth_service === '' && !changingEmail && (

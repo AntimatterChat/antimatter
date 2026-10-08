@@ -148,6 +148,12 @@
 :is(.am-app, .am-layer) .am-team-pop .am-faces { display: flex; margin-bottom: 12px; }
 :is(.am-app, .am-layer) .am-team-pop .am-faces .am-av { margin-left: -4px; box-shadow: 0 0 0 2px var(--am-raise); }
 :is(.am-app, .am-layer) .am-team-pop .am-faces .am-av:first-child { margin-left: 0; }
+:is(.am-app, .am-layer) .am-team-pop .am-thead > div { flex: 1; min-width: 0; }
+:is(.am-app, .am-layer) .am-team-pop .am-faces .am-more-faces { display: grid; place-items: center; min-width: 28px; height: 28px; margin-left: 4px; padding: 0 6px; border-radius: 14px; background: var(--am-main); color: var(--am-muted); font: 600 11.5px var(--am-font-ui); }
+:is(.am-app, .am-layer) .am-team-pop > .am-btn { width: 100%; justify-content: center; }
+/* A team tag that only labels (in the member list's team headings) isn't a button. */
+:is(.am-app, .am-layer) .am-team-tag.am-static { cursor: default; letter-spacing: .05em; }
+:is(.am-app, .am-layer) .am-team-tag-field { flex: 0 0 120px; }
 :is(.am-app, .am-layer) .am-body { color: var(--am-text); overflow-wrap: anywhere; }
 :is(.am-app, .am-layer) .am-body p { margin: 0; }
 :is(.am-app, .am-layer) .am-body code { font: 13px var(--am-font-mono); background: var(--am-raise); padding: 1px 5px; border-radius: 4px; }

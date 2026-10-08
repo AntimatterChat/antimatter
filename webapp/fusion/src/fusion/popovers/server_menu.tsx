@@ -9,6 +9,7 @@ import type {Team} from '@mattermost/types/teams';
 
 import {Permissions} from 'mattermost-redux/constants';
 import {getConfig} from 'mattermost-redux/selectors/entities/general';
+import {isCustomGroupsEnabled} from 'mattermost-redux/selectors/entities/preferences';
 import {haveITeamPermission} from 'mattermost-redux/selectors/entities/roles';
 import {getCurrentTeam} from 'mattermost-redux/selectors/entities/teams';
 
@@ -39,6 +40,7 @@ import {
     openLeaveTeam,
     openTeamMembers,
     openTeamSettings,
+    openUserGroups,
 } from 'fusion/utils/modals';
 
 import type {GlobalState} from 'types/store';
@@ -65,6 +67,7 @@ export default function ServerMenu({team: forTeam, anchor, point, width, onClose
     const teamId = team?.id || '';
     const config = useSelector(getConfig);
     const canManage = useSelector((state: GlobalState) => haveITeamPermission(state, teamId, Permissions.MANAGE_TEAM));
+    const customGroups = useSelector(isCustomGroupsEnabled);
     const canAddUsers = useSelector((state: GlobalState) => haveITeamPermission(state, teamId, Permissions.ADD_USER_TO_TEAM));
     const canInviteGuests = useSelector((state: GlobalState) => haveITeamPermission(state, teamId, Permissions.INVITE_GUEST)) && config.EnableGuestAccounts === 'true';
     const unread = useSelector((state: GlobalState) => getUnreadChannelIdsInTeam(state, teamId).length > 0);
@@ -161,6 +164,14 @@ export default function ServerMenu({team: forTeam, anchor, point, width, onClose
                     icon='cog'
                     label={formatMessage({id: 'fusion.serverMenu.settings', defaultMessage: 'Team settings'})}
                     onClick={inTeam(() => dispatch(openTeamSettings()))}
+                />
+            )}
+            {customGroups && (
+                <MenuItem
+                    icon='tag'
+                    label={formatMessage({id: 'fusion.serverMenu.userGroups', defaultMessage: 'User groups…'})}
+                    sub={formatMessage({id: 'fusion.serverMenu.userGroupsSub', defaultMessage: 'Teams with a tag, a lead and a channel'})}
+                    onClick={run(() => dispatch(openUserGroups()))}
                 />
             )}
             <MenuItem

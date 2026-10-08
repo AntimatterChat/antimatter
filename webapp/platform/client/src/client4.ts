@@ -82,6 +82,7 @@ import type {
     GroupCreateWithUserIds,
     GroupSearchParams,
     CustomGroupPatch,
+    GroupTeamPatch,
     GetGroupsParams,
     GetGroupsForUserParams,
     GroupStats,
@@ -4499,7 +4500,7 @@ export default class Client4 {
         );
     };
 
-    patchGroup = (groupID: string, patch: GroupPatch | CustomGroupPatch) => {
+    patchGroup = (groupID: string, patch: GroupPatch | CustomGroupPatch | GroupTeamPatch) => {
         return this.doFetch<Group>(
             `${this.getGroupRoute(groupID)}/patch`,
             {method: 'put', body: JSON.stringify(patch)},

@@ -14,6 +14,9 @@ export const CATEGORY_FUSION_DISPLAY = 'fusion_display';
 export const STREAMER_MODE = 'streamer_mode';
 export const DEVELOPER_MODE = 'developer_mode';
 
+// How the member list groups people: 'roles' or 'teams'.
+export const MEMBER_GROUPING = 'member_grouping';
+
 export type DisplayPrefs = {
 
     /** Compact message display: no pictures, tighter rows (Mattermost's message display setting). */
