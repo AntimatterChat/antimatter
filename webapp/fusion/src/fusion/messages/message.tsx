@@ -14,6 +14,7 @@ import {getConfig} from 'mattermost-redux/selectors/entities/general';
 import {getPost, isPostFlagged, isPostPriorityEnabled} from 'mattermost-redux/selectors/entities/posts';
 import {isCollapsedThreadsEnabled} from 'mattermost-redux/selectors/entities/preferences';
 import {getCurrentUserId, getUser} from 'mattermost-redux/selectors/entities/users';
+import {isGuest} from 'mattermost-redux/utils/user_utils';
 
 import {toggleReaction} from 'actions/post_actions';
 import {openShowEditHistory, selectPost} from 'actions/views/rhs';
@@ -469,6 +470,7 @@ export default function Message({postId, previousPostId, inThread = false, highl
                         {authorName}
                     </button>
                     {(bot || webhook) && <span className={am('bot-tag')}>{'BOT'}</span>}
+                    {!bot && !webhook && user && isGuest(user.roles) && <span className={am('bot-tag', 'guest-tag')}>{formatMessage({id: 'fusion.message.guest', defaultMessage: 'GUEST'})}</span>}
                     {webhook && <span className={am('via')}>{formatMessage({id: 'fusion.message.viaWebhook', defaultMessage: 'via webhook'})}</span>}
                     <MessageTime timestamp={post.create_at}/>
                     {tags}

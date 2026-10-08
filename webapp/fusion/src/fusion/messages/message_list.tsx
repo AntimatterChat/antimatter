@@ -76,6 +76,18 @@ export default function MessageList({channelId, focusedPostId, scrollRef, emptyT
     const rows = useMemo(() => (items ? [...items].reverse() : []), [items]);
     const realPostIds = useMemo(() => rows.filter((id) => !isDateLine(id) && !isStartOfNewMessages(id)), [rows]);
 
+    // How many messages follow the Unread line, for the pill that jumps to it.
+    const unreadCount = useMemo(() => {
+        const at = rows.findIndex((id) => isStartOfNewMessages(id));
+        return at === -1 ? 0 : rows.slice(at + 1).filter((id) => !isDateLine(id)).length;
+    }, [rows]);
+
+    // Discord's pills: "N new messages · Jump" while the Unread line is above the view, and "N new messages" at the
+    // bottom for those that arrived while the reader was scrolled up.
+    const [unreadAbove, setUnreadAbove] = useState(false);
+    const [arrivedBelow, setArrivedBelow] = useState(0);
+    const lastSeenNewest = useRef<string | undefined>(undefined);
+
     // Load the channel's messages when it opens, around the linked message for permalinks.
     useEffect(() => {
         let cancelled = false;
@@ -128,6 +140,16 @@ export default function MessageList({channelId, focusedPostId, scrollRef, emptyT
         } else if (stick.current) {
             view.scrollTop = view.scrollHeight;
         }
+
+        // Messages that arrive at the bottom while the reader is further up are counted for the bottom pill.
+        const newest = realPostIds[realPostIds.length - 1];
+        if (lastSeenNewest.current && newest !== lastSeenNewest.current && !stick.current && opened.current === key) {
+            const added = realPostIds.length - realPostIds.indexOf(lastSeenNewest.current) - 1;
+            if (added > 0 && realPostIds.includes(lastSeenNewest.current)) {
+                setArrivedBelow((n) => n + added);
+            }
+        }
+        lastSeenNewest.current = newest;
         prevHeight.current = view.scrollHeight;
         prevFirst.current = realPostIds[0];
     }, [rows, realPostIds, channelId, focusedPostId, scrollRef]);
@@ -157,7 +179,15 @@ export default function MessageList({channelId, focusedPostId, scrollRef, emptyT
         }
         const onScroll = () => {
             const fromBottom = view.scrollHeight - view.scrollTop - view.clientHeight;
-            stick.current = fromBottom < 60 && Boolean(chunk?.recent);
+
+            // At the bottom of the latest messages, the view follows them (a linked message's view only once it has
+            // reached the latest ones).
+            stick.current = fromBottom < 60 && (Boolean(chunk?.recent) || !focusedPostId);
+            if (stick.current) {
+                setArrivedBelow(0);
+            }
+            const line = view.querySelector('.am-day.am-new');
+            setUnreadAbove(Boolean(line && line.getBoundingClientRect().bottom < view.getBoundingClientRect().top + 4));
             if (view.scrollTop < LOAD_THRESHOLD) {
                 loadOlder();
             }
@@ -166,8 +196,29 @@ export default function MessageList({channelId, focusedPostId, scrollRef, emptyT
             }
         };
         view.addEventListener('scroll', onScroll, {passive: true});
+        requestAnimationFrame(onScroll);
         return () => view.removeEventListener('scroll', onScroll);
-    }, [scrollRef, chunk, loadOlder, loadNewer]);
+    }, [scrollRef, chunk, loadOlder, loadNewer, focusedPostId]);
+
+    // Images, link previews, embeds and folded long messages finish rendering after the list: while the view is at
+    // the bottom, it stays there as they grow, so a channel opens on its latest messages.
+    const listRef = useRef<HTMLDivElement>(null);
+    const loaded = items !== undefined;
+    useEffect(() => {
+        const view = scrollRef.current;
+        const list = listRef.current;
+        if (!view || !list || typeof ResizeObserver === 'undefined') {
+            return undefined;
+        }
+        const observer = new ResizeObserver(() => {
+            if (stick.current) {
+                view.scrollTop = view.scrollHeight;
+            }
+            prevHeight.current = view.scrollHeight;
+        });
+        observer.observe(list);
+        return () => observer.disconnect();
+    }, [scrollRef, loaded]);
 
     if (!items) {
         return <div className={am('empty')}>{formatMessage({id: 'fusion.messages.loading', defaultMessage: 'Loading messages…'})}</div>;
@@ -177,8 +228,33 @@ export default function MessageList({channelId, focusedPostId, scrollRef, emptyT
     }
 
     let previousPostId: string | undefined;
+    const jumpToUnread = () => {
+        scrollRef.current?.querySelector('.am-day.am-new')?.scrollIntoView({block: 'start', behavior: 'smooth'});
+    };
+    const jumpToNewest = () => {
+        const view = scrollRef.current;
+        if (view) {
+            view.scrollTo({top: view.scrollHeight, behavior: 'smooth'});
+        }
+        setArrivedBelow(0);
+    };
+
     return (
-        <div className={am('msgs')}>
+        <div
+            ref={listRef}
+            className={am('msgs')}
+        >
+            {unreadAbove && unreadCount > 0 && (
+                <div className={am('jump', 'jump-top')}>
+                    <button
+                        type='button'
+                        onClick={jumpToUnread}
+                    >
+                        <span>{formatMessage({id: 'fusion.messages.unreadSince', defaultMessage: '{count, plural, one {# new message} other {# new messages}} since you were last here'}, {count: unreadCount})}</span>
+                        <b>{formatMessage({id: 'fusion.messages.jump', defaultMessage: 'Jump'})}</b>
+                    </button>
+                </div>
+            )}
             {loadingOlder && <div className={am('empty')}>{formatMessage({id: 'fusion.messages.older', defaultMessage: 'Loading older messages…'})}</div>}
             {rows.map((id) => {
                 if (isDateLine(id)) {
@@ -227,6 +303,20 @@ export default function MessageList({channelId, focusedPostId, scrollRef, emptyT
                 );
             })}
             {loadingNewer && <div className={am('empty')}>{formatMessage({id: 'fusion.messages.newer', defaultMessage: 'Loading newer messages…'})}</div>}
+            {arrivedBelow > 0 && (
+                <div className={am('jump', 'jump-bottom')}>
+                    <button
+                        type='button'
+                        onClick={jumpToNewest}
+                    >
+                        <span>{formatMessage({id: 'fusion.messages.arrived', defaultMessage: '{count, plural, one {# new message} other {# new messages}}'}, {count: arrivedBelow})}</span>
+                        <Icon
+                            name='chev'
+                            size='xs'
+                        />
+                    </button>
+                </div>
+            )}
         </div>
     );
 }
