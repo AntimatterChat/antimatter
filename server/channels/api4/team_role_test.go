@@ -188,3 +188,64 @@ func TestTeamRolePermissions(t *testing.T) {
 		resp.Body.Close()
 	})
 }
+
+// Roles open to all of their team are taken and left by people themselves; teams hold their onboarding.
+func TestSelfAssignedRolesAndOnboarding(t *testing.T) {
+	mainHelper.Parallel(t)
+	th := Setup(t).InitBasic(t)
+	team := th.BasicTeam
+
+	newRole := func(t *testing.T, name string, open bool) *model.Group {
+		t.Helper()
+		created, _, err := th.SystemAdminClient.CreateGroup(context.Background(), &model.Group{
+			Name: new(name + model.NewId()[:8]), DisplayName: name, Source: model.GroupSourceCustom, AllowReference: true, TeamId: team.Id,
+		})
+		require.NoError(t, err)
+		if open {
+			selfAssignable := true
+			created, _, err = th.SystemAdminClient.PatchGroup(context.Background(), created.Id, &model.GroupPatch{SelfAssignable: &selfAssignable})
+			require.NoError(t, err)
+			require.True(t, created.SelfAssignable)
+		}
+		return created
+	}
+	members := func(userIDs ...string) *model.GroupModifyMembers {
+		return &model.GroupModifyMembers{UserIds: userIDs}
+	}
+
+	t.Run("people take and leave a role open to all, for themselves only", func(t *testing.T) {
+		gamers := newRole(t, "gamers", true)
+
+		_, _, err := th.Client.UpsertGroupMembers(context.Background(), gamers.Id, members(th.BasicUser.Id))
+		require.NoError(t, err)
+		member, appErr := th.App.GetTeamMember(th.Context, team.Id, th.BasicUser.Id)
+		require.Nil(t, appErr)
+		assert.Contains(t, member.Roles, model.TeamRoleName(gamers.Id))
+
+		_, resp, err := th.Client.UpsertGroupMembers(context.Background(), gamers.Id, members(th.BasicUser2.Id))
+		require.Error(t, err)
+		CheckForbiddenStatus(t, resp)
+
+		_, _, err = th.Client.DeleteGroupMembers(context.Background(), gamers.Id, members(th.BasicUser.Id))
+		require.NoError(t, err)
+	})
+
+	t.Run("other roles stay with the admins", func(t *testing.T) {
+		closed := newRole(t, "closed", false)
+		_, resp, err := th.Client.UpsertGroupMembers(context.Background(), closed.Id, members(th.BasicUser.Id))
+		require.Error(t, err)
+		CheckForbiddenStatus(t, resp)
+	})
+
+	t.Run("a team keeps its onboarding, as JSON", func(t *testing.T) {
+		onboarding := `{"welcome":"Hi","questions":[]}`
+		patched, _, err := th.SystemAdminClient.PatchTeam(context.Background(), team.Id, &model.TeamPatch{Onboarding: &onboarding})
+		require.NoError(t, err)
+		assert.Equal(t, onboarding, patched.Onboarding)
+
+		broken := `{"welcome":`
+		_, resp, err := th.SystemAdminClient.PatchTeam(context.Background(), team.Id, &model.TeamPatch{Onboarding: &broken})
+		require.Error(t, err)
+		CheckBadRequestStatus(t, resp)
+	})
+}

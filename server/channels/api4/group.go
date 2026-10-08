@@ -1309,11 +1309,6 @@ func addGroupMembers(c *Context, w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if !c.App.SessionHasPermissionToGroup(*c.AppContext.Session(), c.Params.GroupId, model.PermissionManageCustomGroupMembers) {
-		c.SetPermissionError(model.PermissionManageCustomGroupMembers)
-		return
-	}
-
 	var newMembers *model.GroupModifyMembers
 	if err := json.NewDecoder(r.Body).Decode(&newMembers); err != nil || newMembers == nil {
 		c.SetInvalidParamWithErr("addGroupMembers", err)
@@ -1325,6 +1320,13 @@ func addGroupMembers(c *Context, w http.ResponseWriter, r *http.Request) {
 			c.SetInvalidParamWithDetails("user_id", fmt.Sprintf("UserID %s is invalid", userID))
 			return
 		}
+	}
+
+	// Antimatter: anyone in its team takes or leaves a role open to all, for themselves.
+	if !c.App.SessionCanSelfAssignRole(c.AppContext, *c.AppContext.Session(), group, newMembers.UserIds) &&
+		!c.App.SessionHasPermissionToGroup(*c.AppContext.Session(), c.Params.GroupId, model.PermissionManageCustomGroupMembers) {
+		c.SetPermissionError(model.PermissionManageCustomGroupMembers)
+		return
 	}
 
 	auditRec := c.MakeAuditRecord(model.AuditEventAddGroupMembers, model.AuditStatusFail)
@@ -1372,11 +1374,6 @@ func deleteGroupMembers(c *Context, w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if !c.App.SessionHasPermissionToGroup(*c.AppContext.Session(), c.Params.GroupId, model.PermissionManageCustomGroupMembers) {
-		c.SetPermissionError(model.PermissionManageCustomGroupMembers)
-		return
-	}
-
 	var deleteBody *model.GroupModifyMembers
 	if err := json.NewDecoder(r.Body).Decode(&deleteBody); err != nil || deleteBody == nil {
 		c.SetInvalidParamWithErr("deleteGroupMembers", err)
@@ -1388,6 +1385,13 @@ func deleteGroupMembers(c *Context, w http.ResponseWriter, r *http.Request) {
 			c.SetInvalidParamWithDetails("user_id", fmt.Sprintf("UserID %s is invalid", userID))
 			return
 		}
+	}
+
+	// Antimatter: anyone in its team takes or leaves a role open to all, for themselves.
+	if !c.App.SessionCanSelfAssignRole(c.AppContext, *c.AppContext.Session(), group, deleteBody.UserIds) &&
+		!c.App.SessionHasPermissionToGroup(*c.AppContext.Session(), c.Params.GroupId, model.PermissionManageCustomGroupMembers) {
+		c.SetPermissionError(model.PermissionManageCustomGroupMembers)
+		return
 	}
 
 	auditRec := c.MakeAuditRecord(model.AuditEventDeleteGroupMembers, model.AuditStatusFail)

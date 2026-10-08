@@ -65,6 +65,10 @@ type Group struct {
 	Icon     string `json:"icon"`
 	Position int    `json:"position"`
 	Hoist    bool   `json:"hoist"`
+
+	// SelfAssignable roles can be taken and left by anyone in their team, for themselves (Discord's self-assigned
+	// roles, and the answers of a team's onboarding questions).
+	SelfAssignable bool `json:"self_assignable"`
 }
 
 // IsRole tells whether the group is a role of a team.
@@ -163,6 +167,7 @@ type GroupPatch struct {
 	Icon           *string `json:"icon"`
 	Position       *int    `json:"position"`
 	Hoist          *bool   `json:"hoist"`
+	SelfAssignable *bool   `json:"self_assignable"`
 	// For security reasons (including preventing unintended LDAP group synchronization) do no allow a Group's RemoteId or Source field to be
 	// included in patches.
 }
@@ -265,6 +270,9 @@ func (group *Group) Patch(patch *GroupPatch) {
 	}
 	if patch.Hoist != nil {
 		group.Hoist = *patch.Hoist
+	}
+	if patch.SelfAssignable != nil {
+		group.SelfAssignable = *patch.SelfAssignable
 	}
 }
 

@@ -473,3 +473,7 @@ channels/db/migrations/postgres/1000005_antimatter_add_role_fields_to_usergroups
 channels/db/migrations/postgres/1000005_antimatter_add_role_fields_to_usergroups.up.sql
 channels/db/migrations/postgres/1000006_antimatter_create_channeloverrides.down.sql
 channels/db/migrations/postgres/1000006_antimatter_create_channeloverrides.up.sql
+channels/db/migrations/postgres/1000007_antimatter_add_selfassignable_to_usergroups.down.sql
+channels/db/migrations/postgres/1000007_antimatter_add_selfassignable_to_usergroups.up.sql
+channels/db/migrations/postgres/1000008_antimatter_add_onboarding_to_teams.down.sql
+channels/db/migrations/postgres/1000008_antimatter_add_onboarding_to_teams.up.sql

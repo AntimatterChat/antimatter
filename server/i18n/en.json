@@ -16732,6 +16732,11 @@
     "description": "API error when a team's display name is empty or too long."
   },
   {
+    "id": "model.team.is_valid.onboarding.app_error",
+    "translation": "The team's onboarding must be JSON of at most {{.Max}} characters.",
+    "description": "Validation error for a team whose onboarding (Antimatter) is too long or isn't JSON."
+  },
+  {
     "id": "model.team.is_valid.reserved.app_error",
     "translation": "This URL is unavailable. Please try another.",
     "description": "Error shown to end users creating or renaming a team when the chosen URL slug is a reserved word; asks them to pick a different one."

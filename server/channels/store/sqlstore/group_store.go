@@ -79,6 +79,7 @@ func newSqlGroupStore(sqlStore *SqlStore) store.GroupStore {
 			"UserGroups.Icon",
 			"UserGroups.Position",
 			"UserGroups.Hoist",
+			"UserGroups.SelfAssignable",
 		).
 		From("UserGroups")
 
@@ -134,9 +135,9 @@ func (s *SqlGroupStore) Create(group *model.Group) (*model.Group, error) {
 	group.UpdateAt = group.CreateAt
 
 	if _, err := s.GetMaster().NamedExec(`INSERT INTO UserGroups
-		(Id, Name, DisplayName, Description, Source, RemoteId, CreateAt, UpdateAt, DeleteAt, AllowReference, Tag, LeadId, ChannelId, TeamId, Color, Icon, Position, Hoist)
+		(Id, Name, DisplayName, Description, Source, RemoteId, CreateAt, UpdateAt, DeleteAt, AllowReference, Tag, LeadId, ChannelId, TeamId, Color, Icon, Position, Hoist, SelfAssignable)
 		VALUES
-		(:Id, :Name, :DisplayName, :Description, :Source, :RemoteId, :CreateAt, :UpdateAt, :DeleteAt, :AllowReference, :Tag, :LeadId, :ChannelId, :TeamId, :Color, :Icon, :Position, :Hoist)`, group); err != nil {
+		(:Id, :Name, :DisplayName, :Description, :Source, :RemoteId, :CreateAt, :UpdateAt, :DeleteAt, :AllowReference, :Tag, :LeadId, :ChannelId, :TeamId, :Color, :Icon, :Position, :Hoist, :SelfAssignable)`, group); err != nil {
 		if IsUniqueConstraintError(err, []string{"Name", "groups_name_key"}) {
 			return nil, errors.Wrapf(err, "Group with name %s already exists", *group.Name)
 		}
@@ -167,8 +168,8 @@ func (s *SqlGroupStore) CreateWithUserIds(g *model.GroupWithUserIds) (_ *model.G
 
 	groupInsertQuery, groupInsertArgs, err := s.getQueryBuilder().
 		Insert("UserGroups").
-		Columns("Id", "Name", "DisplayName", "Description", "Source", "RemoteId", "CreateAt", "UpdateAt", "DeleteAt", "AllowReference", "Tag", "LeadId", "ChannelId", "TeamId", "Color", "Icon", "Position", "Hoist").
-		Values(g.Id, g.Name, g.DisplayName, g.Description, g.Source, g.RemoteId, g.CreateAt, g.UpdateAt, 0, g.AllowReference, g.Tag, g.LeadId, g.ChannelId, g.TeamId, g.Color, g.Icon, g.Position, g.Hoist).
+		Columns("Id", "Name", "DisplayName", "Description", "Source", "RemoteId", "CreateAt", "UpdateAt", "DeleteAt", "AllowReference", "Tag", "LeadId", "ChannelId", "TeamId", "Color", "Icon", "Position", "Hoist", "SelfAssignable").
+		Values(g.Id, g.Name, g.DisplayName, g.Description, g.Source, g.RemoteId, g.CreateAt, g.UpdateAt, 0, g.AllowReference, g.Tag, g.LeadId, g.ChannelId, g.TeamId, g.Color, g.Icon, g.Position, g.Hoist, g.SelfAssignable).
 		ToSql()
 	if err != nil {
 		return nil, err
@@ -418,7 +419,7 @@ func (s *SqlGroupStore) Update(group *model.Group) (*model.Group, error) {
 	res, err := s.GetMaster().NamedExec(`UPDATE UserGroups
 		SET Name=:Name, DisplayName=:DisplayName, Description=:Description, Source=:Source,
 		RemoteId=:RemoteId, CreateAt=:CreateAt, UpdateAt=:UpdateAt, DeleteAt=:DeleteAt, AllowReference=:AllowReference,
-		Tag=:Tag, LeadId=:LeadId, ChannelId=:ChannelId, Color=:Color, Icon=:Icon, Position=:Position, Hoist=:Hoist
+		Tag=:Tag, LeadId=:LeadId, ChannelId=:ChannelId, Color=:Color, Icon=:Icon, Position=:Position, Hoist=:Hoist, SelfAssignable=:SelfAssignable
 		WHERE Id=:Id`, group)
 	if err != nil {
 		if IsUniqueConstraintError(err, []string{"Name", "groups_name_key"}) {
@@ -1167,6 +1168,7 @@ type group struct {
 	Icon                        string
 	Position                    int
 	Hoist                       bool
+	SelfAssignable              bool
 }
 
 func (g group) ToModel() *model.Group {
@@ -1193,6 +1195,7 @@ func (g group) ToModel() *model.Group {
 		Icon:                        g.Icon,
 		Position:                    g.Position,
 		Hoist:                       g.Hoist,
+		SelfAssignable:              g.SelfAssignable,
 	}
 }
 

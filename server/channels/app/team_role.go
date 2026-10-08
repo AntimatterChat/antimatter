@@ -173,3 +173,13 @@ func (a *App) sessionCanManageTeamRole(session model.Session, group *model.Group
 	highest := a.highestTeamRolePosition(session.UserId, group.TeamId)
 	return highest != -1 && group.Position > highest
 }
+
+// SessionCanSelfAssignRole tells whether someone is taking or leaving, for themselves only, a role open to all of its
+// team, as a member of that team.
+func (a *App) SessionCanSelfAssignRole(rctx request.CTX, session model.Session, group *model.Group, userIDs []string) bool {
+	if !group.IsRole() || !group.SelfAssignable || len(userIDs) != 1 || userIDs[0] != session.UserId {
+		return false
+	}
+	member, err := a.Srv().Store().Team().GetMember(rctx, group.TeamId, session.UserId)
+	return err == nil && member.DeleteAt == 0
+}

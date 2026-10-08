@@ -4,6 +4,7 @@
 package model
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"regexp"
@@ -22,6 +23,9 @@ const (
 	TeamNameMaxLength           = 64
 	TeamNameMinLength           = 2
 )
+
+// TeamOnboardingMaxLength bounds a team's onboarding (Antimatter), as JSON.
+const TeamOnboardingMaxLength = 16384
 
 type Team struct {
 	Id                  string  `json:"id"`
@@ -47,6 +51,10 @@ type Team struct {
 	// their team badge.
 	HideRoleColors    bool `json:"hide_role_colors"`
 	RequireTeamBadges bool `json:"require_team_badges"`
+
+	// Antimatter: the team's onboarding, as JSON (a welcome and questions whose answers give roles and channels),
+	// shown to people the first time they open the team; empty for none.
+	Onboarding string `json:"onboarding"`
 
 	// Not persisted; derived by the store via EXISTS on AccessControlPolicies(Type='team').
 	// Use HasMembershipPolicyAction for enforcement — this is a read-path signal only.
@@ -111,6 +119,7 @@ type TeamPatch struct {
 	CloudLimitsArchived *bool   `json:"cloud_limits_archived"`
 	HideRoleColors      *bool   `json:"hide_role_colors"`
 	RequireTeamBadges   *bool   `json:"require_team_badges"`
+	Onboarding          *string `json:"onboarding"`
 }
 
 func (o *TeamPatch) Auditable() map[string]any {
@@ -150,6 +159,10 @@ func (o *Team) Etag() string {
 func (o *Team) IsValid() *AppError {
 	if !IsValidId(o.Id) {
 		return NewAppError("Team.IsValid", "model.team.is_valid.id.app_error", nil, "", http.StatusBadRequest)
+	}
+
+	if len(o.Onboarding) > TeamOnboardingMaxLength || (o.Onboarding != "" && !json.Valid([]byte(o.Onboarding))) {
+		return NewAppError("Team.IsValid", "model.team.is_valid.onboarding.app_error", map[string]any{"Max": TeamOnboardingMaxLength}, "id="+o.Id, http.StatusBadRequest)
 	}
 
 	if o.CreateAt == 0 {
@@ -326,6 +339,10 @@ func (o *Team) Patch(patch *TeamPatch) {
 
 	if patch.RequireTeamBadges != nil {
 		o.RequireTeamBadges = *patch.RequireTeamBadges
+	}
+
+	if patch.Onboarding != nil {
+		o.Onboarding = *patch.Onboarding
 	}
 }
 
