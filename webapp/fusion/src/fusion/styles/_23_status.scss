@@ -66,3 +66,27 @@
 
 /* A custom end for Do not disturb, above the statuses. */
 :is(.am-app, .am-layer) .am-sp-dnd-custom { margin: 0 0 8px; padding: 10px; border-radius: 10px; background: var(--am-main); border: 1px solid var(--am-line); }
+:is(.am-app, .am-layer) .am-status-dot.am-ooo { background: var(--am-away); box-shadow: inset 0 0 0 2px var(--am-raise); border: 1.5px solid var(--am-away); }
+
+// Custom status suggestions and recents, under the custom status field while it's empty.
+:is(.am-app, .am-layer) .am-sp-suggest { margin: -2px 0 8px; padding: 2px 0 6px; border-bottom: 1px solid var(--am-line); }
+:is(.am-app, .am-layer) .am-sp-suggestion { display: flex; align-items: center; border-radius: 8px; }
+:is(.am-app, .am-layer) .am-sp-suggestion:hover { background: var(--am-hover); }
+:is(.am-app, .am-layer) .am-sp-suggestion > button:first-child { flex: 1; min-width: 0; display: flex; align-items: center; gap: 10px; padding: 6px 8px; text-align: left; color: var(--am-text-2); font-size: 13.5px; }
+:is(.am-app, .am-layer) .am-sp-suggestion:hover > button:first-child { color: var(--am-text); }
+:is(.am-app, .am-layer) .am-sp-suggestion small { color: var(--am-muted); font-size: 12px; }
+:is(.am-app, .am-layer) .am-sp-forget { width: 24px; height: 24px; margin-right: 4px; border-radius: 6px; display: grid; place-items: center; color: var(--am-muted); opacity: 0; }
+:is(.am-app, .am-layer) .am-sp-suggestion:hover .am-sp-forget, :is(.am-app, .am-layer) .am-sp-forget:focus-visible { opacity: 1; }
+:is(.am-app, .am-layer) .am-sp-forget:hover { background: var(--am-hover); color: var(--am-text); }
+:is(.am-app, .am-layer) .am-sp-offer { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; padding: 10px 12px; margin-bottom: 8px; border-radius: 10px; background: var(--am-anti-soft); color: var(--am-text-2); font-size: 13px; }
+:is(.am-app, .am-layer) .am-sp-offer span { flex: 1 1 100%; }
+:is(.am-app, .am-layer) .am-sp-offer .am-btn { height: 30px; }
+:is(.am-app, .am-layer) .am-sp-offer .am-btn:first-of-type { margin-left: auto; }
+
+// Profile card extras: custom fields, email, plugin slots, add to a channel.
+:is(.am-app, .am-layer) .am-pop .am-facts span b { font-weight: 600; color: var(--am-muted); margin-right: 2px; }
+:is(.am-app, .am-layer) .am-pop .am-facts span b::after { content: ':'; }
+:is(.am-app, .am-layer) .am-pop .am-facts a { color: var(--am-matter); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+:is(.am-app, .am-layer) .am-pop .am-plugin-attrs:empty, :is(.am-app, .am-layer) .am-pop .am-plugin-actions:empty { display: none; }
+:is(.am-app, .am-layer) .am-pop .am-plugin-actions { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+:is(.am-app, .am-layer) .am-pop .am-btn.am-pop-wide { width: 100%; justify-content: center; margin-top: 8px; }

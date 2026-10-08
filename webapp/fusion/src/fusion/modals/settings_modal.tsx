@@ -41,6 +41,7 @@ import type {GlobalState} from 'types/store';
 import CustomThemeEditor, {useStartCustomTheme} from './custom_theme_editor';
 import {AdvancedPane, DisplayRows, ReadingRows} from './display_settings';
 import NotificationsPane from './notifications_pane';
+import {AccessHistory, CustomProfileFields, DeactivateDialog, EmailChange, MfaSection, OAuthAppsSection, SignInMethod, TokensSection} from './security_extras';
 import {Action, Choice, Toggle, usePreference} from './settings_controls';
 
 export type SettingsTab = 'account' | 'security' | 'notifications' | 'appearance' | 'messages' | 'language' | 'advanced';
@@ -174,6 +175,7 @@ function AccountPane() {
     const [fields, setFields] = useState(initial);
     const [saved, setSaved] = useState(false);
     const [error, setError] = useState('');
+    const [changingEmail, setChangingEmail] = useState(false);
     const dirty = Object.entries(fields).some(([k, v]) => v !== me[k as keyof typeof fields]);
     const usernameError = fields.username === me.username ? undefined : isValidUsername(fields.username);
 
@@ -225,13 +227,15 @@ function AccountPane() {
             {field('position', 'position', formatMessage({id: 'fusion.settings.position', defaultMessage: 'Position'}))}
             {error && <p className={am('field-error')}>{error}</p>}
             <div className={am('modal-actions')}>
-                <button
-                    type='button'
-                    className={am('btn')}
-                    onClick={() => dispatch(openClassicUserSettings('profile'))}
-                >
-                    {formatMessage({id: 'fusion.settings.changeEmail', defaultMessage: 'Change email…'})}
-                </button>
+                {me.auth_service === '' && !changingEmail && (
+                    <button
+                        type='button'
+                        className={am('btn')}
+                        onClick={() => setChangingEmail(true)}
+                    >
+                        {formatMessage({id: 'fusion.settings.changeEmail', defaultMessage: 'Change email…'})}
+                    </button>
+                )}
                 <button
                     type='button'
                     className={am('btn', 'primary')}
@@ -248,6 +252,8 @@ function AccountPane() {
                     {saved ? formatMessage({id: 'fusion.settings.saved', defaultMessage: 'Saved'}) : formatMessage({id: 'fusion.settings.save', defaultMessage: 'Save'})}
                 </button>
             </div>
+            {changingEmail && <EmailChange onClose={() => setChangingEmail(false)}/>}
+            <CustomProfileFields/>
         </>
     );
 }
@@ -380,9 +386,9 @@ function Sessions() {
 
 function SecurityPane() {
     const {formatMessage} = useIntl();
-    const dispatch = useDispatch();
     const config = useSelector(getConfig);
     const me = useSelector(getCurrentUser);
+    const [deactivating, setDeactivating] = useState(false);
     return (
         <>
             <h2>{formatMessage({id: 'fusion.settings.security', defaultMessage: 'Security'})}</h2>
@@ -390,24 +396,22 @@ function SecurityPane() {
             {me.auth_service === '' ? <PasswordForm/> : (
                 <div className={am('note-box')}>{formatMessage({id: 'fusion.settings.signInProvider', defaultMessage: 'You sign in through {provider}: your password is managed there.'}, {provider: me.auth_service.toUpperCase() === 'LDAP' ? 'AD/LDAP' : me.auth_service.charAt(0).toUpperCase() + me.auth_service.slice(1)})}</div>
             )}
-            {config.EnableMultifactorAuthentication === 'true' && (
-                <Action
-                    title={formatMessage({id: 'fusion.settings.mfa', defaultMessage: 'Multi-factor authentication'})}
-                    desc={formatMessage({id: 'fusion.settings.mfaDesc', defaultMessage: 'Ask for a code from an authenticator app when you sign in.'})}
-                    label={formatMessage({id: 'fusion.settings.manage', defaultMessage: 'Manage…'})}
-                    onClick={() => dispatch(openClassicUserSettings('security'))}
-                />
-            )}
+            <SignInMethod/>
+            <MfaSection/>
             {config.EnableUserDeactivation === 'true' && (
                 <Action
                     title={formatMessage({id: 'fusion.settings.deactivate', defaultMessage: 'Deactivate account'})}
                     desc={formatMessage({id: 'fusion.settings.deactivateDesc', defaultMessage: 'Leave this server. An admin can reactivate your account later.'})}
                     label={formatMessage({id: 'fusion.settings.deactivateButton', defaultMessage: 'Deactivate…'})}
                     danger={true}
-                    onClick={() => dispatch(openClassicUserSettings('advanced'))}
+                    onClick={() => setDeactivating(true)}
                 />
             )}
+            {deactivating && <DeactivateDialog onClose={() => setDeactivating(false)}/>}
+            <TokensSection/>
+            <OAuthAppsSection/>
             <Sessions/>
+            <AccessHistory/>
         </>
     );
 }

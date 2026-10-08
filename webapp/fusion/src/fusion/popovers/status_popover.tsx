@@ -6,14 +6,16 @@ import {useIntl} from 'react-intl';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {CustomStatusDuration} from '@mattermost/types/users';
+import type {UserCustomStatus} from '@mattermost/types/users';
 
-import {setCustomStatus, setStatus, unsetCustomStatus} from 'mattermost-redux/actions/users';
+import {removeRecentCustomStatus, setCustomStatus, setStatus, unsetCustomStatus, updateMe} from 'mattermost-redux/actions/users';
+import {getConfig} from 'mattermost-redux/selectors/entities/general';
 import {getCurrentTeam} from 'mattermost-redux/selectors/entities/teams';
 import {getCurrentUser, getDndEndTimeForUserId} from 'mattermost-redux/selectors/entities/users';
 import {isSystemAdmin} from 'mattermost-redux/utils/user_utils';
 
 import {emitUserLoggedOutEvent} from 'actions/global_actions';
-import {makeGetCustomStatus} from 'selectors/views/custom_status';
+import {getRecentCustomStatuses, makeGetCustomStatus} from 'selectors/views/custom_status';
 
 import RenderEmoji from 'components/emoji/render_emoji';
 
@@ -42,6 +44,17 @@ const STATUSES = [
     {status: 'away', label: {id: 'fusion.status.away', defaultMessage: 'Away'}, sub: null},
     {status: 'dnd', label: {id: 'fusion.status.dnd', defaultMessage: 'Do not disturb'}, sub: {id: 'fusion.status.dndSub', defaultMessage: 'Mutes notifications'}},
     {status: 'offline', label: {id: 'fusion.status.invisible', defaultMessage: 'Invisible'}, sub: {id: 'fusion.status.invisibleSub', defaultMessage: 'You appear offline but can still use Antimatter'}},
+];
+const OUT_OF_OFFICE = {status: 'ooo', label: {id: 'fusion.status.ooo', defaultMessage: 'Out of office'}, sub: {id: 'fusion.status.oooSub', defaultMessage: 'Automatic replies are on'}};
+
+// Suggested custom statuses: Mattermost's, and the out of office ones that can turn on automatic replies.
+const SUGGESTIONS: Array<{emoji: string; text: {id: string; defaultMessage: string}; duration: CustomStatusDuration; away?: boolean}> = [
+    {emoji: 'calendar', text: {id: 'fusion.status.inMeeting', defaultMessage: 'In a meeting'}, duration: CustomStatusDuration.ONE_HOUR},
+    {emoji: 'hamburger', text: {id: 'fusion.status.lunch', defaultMessage: 'Out for lunch'}, duration: CustomStatusDuration.THIRTY_MINUTES},
+    {emoji: 'house', text: {id: 'fusion.status.remote', defaultMessage: 'Remote working'}, duration: CustomStatusDuration.TODAY},
+    {emoji: 'sneezing_face', text: {id: 'fusion.status.sick', defaultMessage: 'Out sick'}, duration: CustomStatusDuration.TODAY, away: true},
+    {emoji: 'door', text: {id: 'fusion.status.outOfOffice', defaultMessage: 'Out of office'}, duration: CustomStatusDuration.TODAY, away: true},
+    {emoji: 'palm_tree', text: {id: 'fusion.status.vacation', defaultMessage: 'On vacation'}, duration: CustomStatusDuration.THIS_WEEK, away: true},
 ];
 
 // Do not disturb durations, as in the mockup. The end time is in seconds; 0 means until turned off.
@@ -106,13 +119,20 @@ export default function StatusPopover({anchor, onClose}: Props) {
     const [dndCustom, setDndCustom] = useState(false);
     const clockButton = useRef<HTMLButtonElement>(null);
     const [duration, setDuration] = useState<CustomStatusDuration>(custom?.duration || CustomStatusDuration.TODAY);
-    const durationLabel = formatMessage(CLEAR_AFTER.find(([d]) => d === duration)?.[1] || CLEAR_AFTER[3][1]);
+    const [clearAt, setClearAt] = useState(custom?.duration === CustomStatusDuration.DATE_AND_TIME ? custom.expires_at : undefined);
+    const [clearCustom, setClearCustom] = useState(false);
+    const [focused, setFocused] = useState(false);
+    const [typed, setTyped] = useState(false);
+    const [offerReplies, setOfferReplies] = useState(false);
+    const recents = useSelector(getRecentCustomStatuses);
+    const autoReplies = useSelector((state: GlobalState) => getConfig(state).ExperimentalEnableAutomaticReplies === 'true');
+    const durationLabel = duration === CustomStatusDuration.DATE_AND_TIME && clearAt ? intl.formatDate(clearAt, {weekday: 'short', day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit'}) : formatMessage(CLEAR_AFTER.find(([d]) => d === duration)?.[1] || CLEAR_AFTER[3][1]);
 
     if (!me) {
         return null;
     }
     const admin = isSystemAdmin(me.roles);
-    const label = (s: string) => formatMessage(STATUSES.find((x) => x.status === s)?.label || STATUSES[3].label);
+    const label = (s: string) => formatMessage([...STATUSES, OUT_OF_OFFICE].find((x) => x.status === s)?.label || STATUSES[3].label);
 
     const saveCustom = (e?: React.FormEvent, withEmoji = emoji) => {
         e?.preventDefault();
@@ -120,12 +140,36 @@ export default function StatusPopover({anchor, onClose}: Props) {
             return;
         }
         if (text.trim() || withEmoji) {
-            dispatch(setCustomStatus({emoji: withEmoji || 'speech_balloon', text: text.trim(), duration, expires_at: expiresAt(duration)}));
+            dispatch(setCustomStatus({emoji: withEmoji || 'speech_balloon', text: text.trim(), duration, expires_at: duration === CustomStatusDuration.DATE_AND_TIME ? clearAt : expiresAt(duration)}));
             toast(formatMessage({id: 'fusion.toast.customStatus', defaultMessage: 'Custom status updated'}));
         } else {
             dispatch(unsetCustomStatus());
             toast(formatMessage({id: 'fusion.toast.customStatusCleared', defaultMessage: 'Custom status cleared'}));
         }
+    };
+
+    // applyStatus sets a suggested or recent custom status as it is, and for the out of office ones offers to turn on the
+    // automatic replies.
+    const applyStatus = (next: UserCustomStatus, away = false) => {
+        setText(next.text);
+        setEmoji(next.emoji);
+        setDuration(next.duration || CustomStatusDuration.DONT_CLEAR);
+        setFocused(false);
+        dispatch(setCustomStatus({...next, expires_at: next.duration === CustomStatusDuration.DATE_AND_TIME ? next.expires_at : expiresAt(next.duration || CustomStatusDuration.DONT_CLEAR)}));
+        toast(formatMessage({id: 'fusion.toast.customStatus', defaultMessage: 'Custom status updated'}));
+        setOfferReplies(away && autoReplies && status !== OUT_OF_OFFICE.status);
+    };
+    const turnOnReplies = () => {
+        dispatch(updateMe({notify_props: {...me.notify_props, auto_responder_active: 'true', auto_responder_message: me.notify_props.auto_responder_message || formatMessage({id: 'fusion.status.autoReplyDefault', defaultMessage: 'Hello, I\'m out of office and unable to respond to messages.'})}}));
+        toast(formatMessage({id: 'fusion.status.autoRepliesOn', defaultMessage: 'Automatic replies are on'}));
+        onClose();
+    };
+    const pickClearAt = (at: number) => {
+        const iso = new Date(at).toISOString();
+        setDuration(CustomStatusDuration.DATE_AND_TIME);
+        setClearAt(iso);
+        setClearCustom(false);
+        dispatch(setCustomStatus({emoji: emoji || 'speech_balloon', text: text.trim(), duration: CustomStatusDuration.DATE_AND_TIME, expires_at: iso}));
     };
 
     const choose = (s: string, endTime = 0) => {
@@ -137,7 +181,7 @@ export default function StatusPopover({anchor, onClose}: Props) {
     return (
         <Popover
             anchor={anchor}
-            placement={anchor?.closest('.am-appbar') ? 'beside' : 'below'}
+            placement={anchor?.closest('.am-appbar, .am-pop') ? 'beside' : 'below'}
             className='status-pop'
             label={formatMessage({id: 'fusion.status.label', defaultMessage: 'Set your status'})}
             onClose={onClose}
@@ -185,8 +229,18 @@ export default function StatusPopover({anchor, onClose}: Props) {
                     placeholder={formatMessage({id: 'fusion.status.custom', defaultMessage: 'Set a custom status'})}
                     aria-label={formatMessage({id: 'fusion.status.customLabel', defaultMessage: 'Custom status'})}
                     maxLength={100}
-                    onChange={(e) => setText(e.target.value)}
-                    onBlur={() => saveCustom()}
+                    onChange={(e) => {
+                        setText(e.target.value);
+                        setTyped(true);
+                    }}
+                    onFocus={() => {
+                        setFocused(true);
+                        setTyped(false);
+                    }}
+                    onBlur={() => {
+                        setFocused(false);
+                        saveCustom();
+                    }}
                 />
                 {(text.trim() || emoji) && (
                     <button
@@ -246,7 +300,105 @@ export default function StatusPopover({anchor, onClose}: Props) {
                             }}
                         />
                     ))}
+                    <MenuItem
+                        role='menuitemradio'
+                        checked={duration === CustomStatusDuration.DATE_AND_TIME}
+                        label={formatMessage({id: 'fusion.status.clearCustom', defaultMessage: 'Choose date and time…'})}
+                        onClick={() => {
+                            setChoosingDuration(false);
+                            setClearCustom(true);
+                        }}
+                    />
                 </Popover>
+            )}
+            {clearCustom && (
+                <div className={am('sp-dnd-custom')}>
+                    <CustomTimeForm
+                        label={formatMessage({id: 'fusion.status.clearAt', defaultMessage: 'Clear the status on'})}
+                        submitLabel={formatMessage({id: 'fusion.status.clearAtSet', defaultMessage: 'Set'})}
+                        onPick={pickClearAt}
+                    />
+                </div>
+            )}
+            {focused && (!typed || !text.trim()) && (
+                <div
+                    className={am('sp-suggest')}
+                    role='listbox'
+                    aria-label={formatMessage({id: 'fusion.status.suggestions', defaultMessage: 'Status suggestions'})}
+                    onMouseDown={(e) => e.preventDefault()}
+                >
+                    {recents.length > 0 && <MenuHeading>{formatMessage({id: 'fusion.status.recent', defaultMessage: 'Recent'})}</MenuHeading>}
+                    {recents.slice(0, 5).map((recent) => (
+                        <div
+                            key={`${recent.emoji}:${recent.text}:${recent.duration}`}
+                            className={am('sp-suggestion')}
+                        >
+                            <button
+                                type='button'
+                                role='option'
+                                aria-selected={false}
+                                onClick={() => applyStatus(recent)}
+                            >
+                                <RenderEmoji
+                                    emojiName={recent.emoji}
+                                    size={18}
+                                />
+                                <span className={am('grow')}>{recent.text}</span>
+                            </button>
+                            <button
+                                type='button'
+                                className={am('sp-forget')}
+                                aria-label={formatMessage({id: 'fusion.status.forget', defaultMessage: 'Remove from recents'})}
+                                onClick={() => dispatch(removeRecentCustomStatus(recent))}
+                            >
+                                <Icon
+                                    name='x'
+                                    size='xs'
+                                />
+                            </button>
+                        </div>
+                    ))}
+                    <MenuHeading>{formatMessage({id: 'fusion.status.suggested', defaultMessage: 'Suggestions'})}</MenuHeading>
+                    {SUGGESTIONS.filter((suggestion) => !recents.some((recent) => recent.emoji === suggestion.emoji && recent.text === formatMessage(suggestion.text))).map((suggestion) => (
+                        <div
+                            key={suggestion.text.id}
+                            className={am('sp-suggestion')}
+                        >
+                            <button
+                                type='button'
+                                role='option'
+                                aria-selected={false}
+                                onClick={() => applyStatus({emoji: suggestion.emoji, text: formatMessage(suggestion.text), duration: suggestion.duration}, suggestion.away)}
+                            >
+                                <RenderEmoji
+                                    emojiName={suggestion.emoji}
+                                    size={18}
+                                />
+                                <span className={am('grow')}>{formatMessage(suggestion.text)}</span>
+                                <small>{formatMessage(CLEAR_AFTER.find(([d]) => d === suggestion.duration)![1])}</small>
+                            </button>
+                        </div>
+                    ))}
+                </div>
+            )}
+            {offerReplies && (
+                <div className={am('sp-offer')}>
+                    <span>{formatMessage({id: 'fusion.status.offerReplies', defaultMessage: 'Also answer direct messages automatically while you\'re away?'})}</span>
+                    <button
+                        type='button'
+                        className={am('btn')}
+                        onClick={() => setOfferReplies(false)}
+                    >
+                        {formatMessage({id: 'fusion.status.offerNo', defaultMessage: 'No'})}
+                    </button>
+                    <button
+                        type='button'
+                        className={am('btn', 'primary')}
+                        onClick={turnOnReplies}
+                    >
+                        {formatMessage({id: 'fusion.status.offerYes', defaultMessage: 'Turn on'})}
+                    </button>
+                </div>
             )}
             {picking && (
                 <EmojiPicker
@@ -269,6 +421,27 @@ export default function StatusPopover({anchor, onClose}: Props) {
                 </div>
             )}
             <div className={am('sp-list')}>
+                {status === OUT_OF_OFFICE.status && (
+                    <button
+                        className={am('sp-opt', 'on')}
+                        aria-pressed={true}
+                        title={formatMessage({id: 'fusion.status.oooHint', defaultMessage: 'Choose another status to turn the automatic replies off'})}
+                        onClick={() => {
+                            settings.open('notifications');
+                            onClose();
+                        }}
+                    >
+                        <span className={am('status-dot', 'ooo')}/>
+                        <span className={am('grow')}>
+                            <b>{formatMessage(OUT_OF_OFFICE.label)}</b>
+                            <span>{formatMessage(OUT_OF_OFFICE.sub)}</span>
+                        </span>
+                        <Icon
+                            name='check'
+                            size='sm'
+                        />
+                    </button>
+                )}
                 {STATUSES.map((s) => {
                     const on = status === s.status;
                     const option = (

@@ -164,3 +164,18 @@
 :is(.am-app, .am-layer) .am-field textarea { min-height: 72px; padding: 8px 12px; border-radius: 9px; border: 1px solid var(--am-line); background: var(--am-side); outline: none; font: inherit; resize: vertical; }
 :is(.am-app, .am-layer) .am-theme-code { display: flex; gap: 8px; align-items: center; margin: 8px 0 4px; }
 :is(.am-app, .am-layer) .am-theme-code input { flex: 1; min-width: 0; height: 36px; padding: 0 10px; border-radius: 9px; border: 1px solid var(--am-line); background: var(--am-side); outline: none; font: 13px var(--am-font-mono); }
+
+// Security settings: authenticator QR code, created token, access history, sign-in providers.
+:is(.am-app, .am-layer) .am-sub-form .am-sub-hint { display: block; margin: -6px 0 10px; color: var(--am-muted); font-size: 12.5px; }
+:is(.am-app, .am-layer) .am-mfa-qr { display: flex; align-items: center; gap: 16px; margin: 4px 0 14px; }
+:is(.am-app, .am-layer) .am-mfa-qr img { width: 148px; height: 148px; border-radius: 10px; background: #fff; padding: 6px; flex: none; }
+:is(.am-app, .am-layer) .am-mfa-qr span { display: flex; flex-direction: column; gap: 6px; color: var(--am-text-2); font-size: 13px; min-width: 0; }
+:is(.am-app, .am-layer) :is(.am-mfa-qr, .am-token-created) code { font: 13px var(--am-font-mono); padding: 6px 8px; border-radius: 6px; background: var(--am-main); color: var(--am-text); word-break: break-all; user-select: all; }
+:is(.am-app, .am-layer) .am-note-box.am-token-created { align-items: center; justify-content: space-between; margin: 8px 0; }
+:is(.am-app, .am-layer) .am-note-box.am-token-created span { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+:is(.am-app, .am-layer) .am-audit-list { display: flex; flex-direction: column; max-height: 320px; overflow-y: auto; border: 1px solid var(--am-line); border-radius: 10px; margin-top: 8px; }
+:is(.am-app, .am-layer) .am-audit-row { display: grid; grid-template-columns: 150px 1fr auto; gap: 12px; padding: 7px 12px; font-size: 12.5px; color: var(--am-text-2); border-bottom: 1px solid var(--am-line); }
+:is(.am-app, .am-layer) .am-audit-row:last-child { border-bottom: 0; }
+:is(.am-app, .am-layer) .am-audit-row b { font: 500 12.5px var(--am-font-mono); color: var(--am-text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+:is(.am-app, .am-layer) .am-btn-group { display: flex; flex-wrap: wrap; gap: 6px; justify-content: flex-end; }
+:is(.am-app, .am-layer) .am-theme-code.am-token-new input { font: 13.5px var(--am-font-ui); }

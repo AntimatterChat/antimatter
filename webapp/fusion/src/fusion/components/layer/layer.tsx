@@ -112,6 +112,13 @@ export function Popover({anchor, point, placement = 'below', className, role = '
             if (ref.current?.contains(target) || anchor?.contains(target)) {
                 return;
             }
+
+            // A popover opened from this one (a submenu, a picker) comes after it in the layer: clicking in it isn't
+            // clicking away.
+            const above = (target as Element).closest?.('.am-pop');
+            if (above && ref.current && (ref.current.compareDocumentPosition(above) & Node.DOCUMENT_POSITION_FOLLOWING)) {
+                return;
+            }
             onClose();
         };
         const onKeyDown = (e: KeyboardEvent) => {

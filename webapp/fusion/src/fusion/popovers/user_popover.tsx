@@ -1,17 +1,20 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 
-import React, {useMemo} from 'react';
+import React, {useMemo, useRef, useState} from 'react';
 import {useIntl} from 'react-intl';
 import {useDispatch, useSelector} from 'react-redux';
 
-import {getCurrentTeam} from 'mattermost-redux/selectors/entities/teams';
+import {canManageAnyChannelMembersInCurrentTeam} from 'mattermost-redux/selectors/entities/channels';
+import {getCurrentTeam, getTeamMember} from 'mattermost-redux/selectors/entities/teams';
 import {getCurrentUserId, getCurrentUser} from 'mattermost-redux/selectors/entities/users';
 import {getUserCurrentTimezone} from 'mattermost-redux/utils/timezone_utils';
 import {isSystemAdmin} from 'mattermost-redux/utils/user_utils';
 
 import {openDirectChannelToUserId} from 'actions/channel_actions';
 import {makeGetCustomStatus} from 'selectors/views/custom_status';
+
+import AddUserToChannelModal from 'components/add_user_to_channel_modal';
 
 import CallUserButton, {useCanCall} from 'fusion/calls/call_user_button';
 import Avatar from 'fusion/components/avatar';
@@ -20,18 +23,24 @@ import {Popover} from 'fusion/components/layer';
 import {useDisplayName, useUser, useUserStatus} from 'fusion/hooks/users';
 import {useSettings} from 'fusion/shell/settings_context';
 import {am} from 'fusion/utils/class_names';
+import {openDialog} from 'fusion/utils/modals';
 import {channelPath} from 'fusion/utils/paths';
+import Pluggable from 'plugins/pluggable';
 import {getHistory} from 'utils/browser_history';
+import {ModalIdentifiers} from 'utils/constants';
 
 import type {GlobalState} from 'types/store';
 
+import ProfileFacts from './profile_facts';
 import RoleChips from './role_chips';
+import StatusPopover from './status_popover';
 
 const STATUS_LABELS: Record<string, {id: string; defaultMessage: string}> = {
     online: {id: 'fusion.status.online', defaultMessage: 'Online'},
     away: {id: 'fusion.status.away', defaultMessage: 'Away'},
     dnd: {id: 'fusion.status.dnd', defaultMessage: 'Do not disturb'},
     offline: {id: 'fusion.status.offline', defaultMessage: 'Offline'},
+    ooo: {id: 'fusion.status.ooo', defaultMessage: 'Out of office'},
 };
 
 // useLocalTime gives someone's current time and how far it is from yours.
@@ -78,6 +87,12 @@ export default function UserPopover({userId, anchor, onClose}: Props) {
     const customStatus = useSelector((state: GlobalState) => getCustomStatus(state, userId));
     const localTime = useLocalTime(user ? getUserCurrentTimezone(user.timezone) : undefined);
     const canCall = useCanCall(userId === me, Boolean(user?.is_bot));
+    const canAddToChannel = useSelector((state: GlobalState) => {
+        const member = team ? getTeamMember(state, team.id, userId) : undefined;
+        return userId !== me && canManageAnyChannelMembersInCurrentTeam(state) && Boolean(member) && member?.delete_at === 0;
+    });
+    const statusButton = useRef<HTMLButtonElement>(null);
+    const [settingStatus, setSettingStatus] = useState(false);
 
     if (!user) {
         return null;
@@ -113,7 +128,7 @@ export default function UserPopover({userId, anchor, onClose}: Props) {
                     {bot && <span className={am('bot-tag')}>{'BOT'}</span>}
                 </h4>
                 <div className={am('handle')}>{`@${user.username} · ${formatMessage(STATUS_LABELS[status] || STATUS_LABELS.offline)}`}</div>
-                {!bot && (user.position || localTime) && (
+                {!bot && (
                     <div className={am('facts')}>
                         {user.position && (
                             <span><Icon name='users'/>{user.position}</span>
@@ -125,6 +140,7 @@ export default function UserPopover({userId, anchor, onClose}: Props) {
                                 {isMe ? '' : ` · ${localTime.rel}`}
                             </span>
                         )}
+                        <ProfileFacts user={user}/>
                     </div>
                 )}
                 {bot && (
@@ -141,6 +157,14 @@ export default function UserPopover({userId, anchor, onClose}: Props) {
                     </p>
                 )}
                 <RoleChips userId={userId}/>
+                <div className={am('plugin-attrs')}>
+                    <Pluggable
+                        pluggableName='PopoverUserAttributes'
+                        user={user}
+                        hide={onClose}
+                        status={status}
+                    />
+                </div>
                 <div
                     className={canCall ? am('actions2') : undefined}
                     style={{marginTop: 12}}
@@ -158,7 +182,18 @@ export default function UserPopover({userId, anchor, onClose}: Props) {
                                     name='cog'
                                     size='sm'
                                 />
-                                {formatMessage({id: 'fusion.profile.settings', defaultMessage: 'User settings'})}
+                                {formatMessage({id: 'fusion.profile.editProfile', defaultMessage: 'Edit profile'})}
+                            </button>
+                            <button
+                                ref={statusButton}
+                                className={am('btn')}
+                                onClick={() => setSettingStatus(true)}
+                            >
+                                <Icon
+                                    name='smile'
+                                    size='sm'
+                                />
+                                {formatMessage({id: 'fusion.profile.setStatus', defaultMessage: 'Set a status'})}
                             </button>
                             {admin && (
                                 <button
@@ -194,6 +229,38 @@ export default function UserPopover({userId, anchor, onClose}: Props) {
                         />
                     )}
                 </div>
+                {canAddToChannel && (
+                    <button
+                        className={am('btn', 'pop-wide')}
+                        onClick={() => {
+                            dispatch(openDialog(ModalIdentifiers.ADD_USER_TO_CHANNEL, AddUserToChannelModal, {user}));
+                            onClose();
+                        }}
+                    >
+                        <Icon
+                            name='user-plus'
+                            size='sm'
+                        />
+                        {formatMessage({id: 'fusion.profile.addToChannel', defaultMessage: 'Add to a channel'})}
+                    </button>
+                )}
+                <div className={am('plugin-actions')}>
+                    <Pluggable
+                        pluggableName='PopoverUserActions'
+                        user={user}
+                        hide={onClose}
+                        status={status}
+                    />
+                </div>
+                {settingStatus && (
+                    <StatusPopover
+                        anchor={statusButton.current}
+                        onClose={() => {
+                            setSettingStatus(false);
+                            onClose();
+                        }}
+                    />
+                )}
             </div>
         </Popover>
     );
