@@ -1,7 +1,7 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 
-import React, {useEffect, useMemo} from 'react';
+import React, {useEffect, useMemo, useRef, useState} from 'react';
 import {useIntl} from 'react-intl';
 import type {IntlShape} from 'react-intl';
 import {useDispatch, useSelector} from 'react-redux';
@@ -19,6 +19,7 @@ import {makeGetCustomStatus} from 'selectors/views/custom_status';
 
 import Markdown from 'components/markdown';
 
+import {Popover} from 'fusion/components/layer';
 import {am} from 'fusion/utils/class_names';
 import Constants from 'utils/constants';
 import {handleFormattedTextClick} from 'utils/utils';
@@ -26,11 +27,6 @@ import {handleFormattedTextClick} from 'utils/utils';
 import type {GlobalState} from 'types/store';
 
 const MARKDOWN_OPTIONS = {singleline: true, mentionHighlight: false, atMentions: true};
-
-// A one-line plain version of a channel header, for its tooltip.
-function plain(text: string) {
-    return text.replace(/\[([^\]]*)\]\([^)]*\)/g, '$1').replace(/[*_~`>#]/g, '').replace(/\s+/g, ' ').trim();
-}
 
 // DirectTopic is the topic line of a direct message: the other person's local time and custom status (or the
 // conversation's header), or their server when they're on another one.
@@ -100,7 +96,6 @@ function DirectTopic({channel}: {channel: Channel}) {
 // "Group message" for a group, or a direct message's topic line.
 export default function HeaderTopic({channel}: {channel: Channel}) {
     const {formatMessage} = useIntl();
-    const teamUrl = useSelector(getCurrentRelativeTeamUrl);
 
     if (channel.type === Constants.DM_CHANNEL) {
         return <DirectTopic channel={channel}/>;
@@ -108,20 +103,70 @@ export default function HeaderTopic({channel}: {channel: Channel}) {
     if (channel.type === Constants.GM_CHANNEL && !channel.header) {
         return <span className={am('topic')}>{formatMessage({id: 'fusion.header.group', defaultMessage: 'Group message'})}</span>;
     }
+    return <ChannelTopic channel={channel}/>;
+}
+
+// ChannelTopic is a channel's header (or purpose) on one line; clicking it shows the whole header and the purpose,
+// as the classic header's popover does. Links in it open as links.
+function ChannelTopic({channel}: {channel: Channel}) {
+    const {formatMessage} = useIntl();
+    const teamUrl = useSelector(getCurrentRelativeTeamUrl);
+    const ref = useRef<HTMLSpanElement>(null);
+    const [open, setOpen] = useState(false);
     const topic = channel.header || channel.purpose;
     if (!topic) {
         return null;
     }
     return (
-        <span
-            className={am('topic', 'md')}
-            title={plain(topic)}
-            onClick={(e) => handleFormattedTextClick(e, teamUrl)}
-        >
-            <Markdown
-                message={topic}
-                options={MARKDOWN_OPTIONS}
-            />
-        </span>
+        <>
+            <span
+                ref={ref}
+                className={am('topic', 'md', 'topic-btn')}
+                role='button'
+                tabIndex={0}
+                title={formatMessage({id: 'fusion.header.showTopic', defaultMessage: 'Show the whole header'})}
+                aria-expanded={open}
+                onClick={(e) => {
+                    if ((e.target as HTMLElement).closest('a')) {
+                        handleFormattedTextClick(e, teamUrl);
+                        return;
+                    }
+                    setOpen(!open);
+                }}
+                onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        setOpen(!open);
+                    }
+                }}
+            >
+                <Markdown
+                    message={topic}
+                    options={MARKDOWN_OPTIONS}
+                />
+            </span>
+            {open && (
+                <Popover
+                    anchor={ref.current}
+                    placement='below'
+                    className='topic-pop'
+                    label={formatMessage({id: 'fusion.header.topicLabel', defaultMessage: 'About {name}'}, {name: channel.display_name})}
+                    onClose={() => setOpen(false)}
+                >
+                    {channel.header && (
+                        <section onClick={(e) => handleFormattedTextClick(e, teamUrl)}>
+                            <h5>{formatMessage({id: 'fusion.header.header', defaultMessage: 'Header'})}</h5>
+                            <Markdown message={channel.header}/>
+                        </section>
+                    )}
+                    {channel.purpose && (
+                        <section>
+                            <h5>{formatMessage({id: 'fusion.header.purpose', defaultMessage: 'Purpose'})}</h5>
+                            <p>{channel.purpose}</p>
+                        </section>
+                    )}
+                </Popover>
+            )}
+        </>
     );
 }

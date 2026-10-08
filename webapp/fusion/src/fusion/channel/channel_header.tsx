@@ -7,7 +7,7 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import type {Channel} from '@mattermost/types/channels';
 
-import {getDirectTeammate} from 'mattermost-redux/selectors/entities/channels';
+import {getAllChannelStats, getDirectTeammate} from 'mattermost-redux/selectors/entities/channels';
 
 import {closeRightHandSide, showSearchResults, updateSearchTerms} from 'actions/views/rhs';
 import {getIsRhsOpen} from 'selectors/rhs';
@@ -60,6 +60,9 @@ export default function ChannelHeader({channel}: {channel: Channel}) {
     const meRef = useRef<HTMLButtonElement>(null);
 
     const direct = channel.type === 'D' || channel.type === 'G';
+
+    // As the classic header's "This channel has guests".
+    const hasGuests = useSelector((state: GlobalState) => !direct && (getAllChannelStats(state)[channel.id]?.guest_count || 0) > 0);
     const title = useConversationName(channel);
     const placeholder = direct ? formatMessage({id: 'fusion.header.searchConversation', defaultMessage: 'Search this conversation'}) : formatMessage({id: 'fusion.header.searchChannel', defaultMessage: 'Search #{name}'}, {name: channel.display_name});
 
@@ -97,6 +100,14 @@ export default function ChannelHeader({channel}: {channel: Channel}) {
                 {channel.type === 'G' && <span className={am('av', 'group', 'sm')}>{channel.display_name.split(',').length}</span>}
                 {!direct && <ChannelIcon channel={channel}/>}
                 <h1>{title}</h1>
+                {hasGuests && (
+                    <span
+                        className={am('guest-chip')}
+                        title={formatMessage({id: 'fusion.header.guestsTitle', defaultMessage: 'Guests can read and post in this channel'})}
+                    >
+                        {formatMessage({id: 'fusion.header.guests', defaultMessage: 'Has guests'})}
+                    </span>
+                )}
                 <HeaderTopic channel={channel}/>
             </div>
             <form
