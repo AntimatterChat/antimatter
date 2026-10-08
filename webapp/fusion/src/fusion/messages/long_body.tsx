@@ -7,8 +7,10 @@ import {useIntl} from 'react-intl';
 import Icon from 'fusion/components/icon';
 import {am} from 'fusion/utils/class_names';
 
-// How tall a message's text can be before it's folded, in pixels: about twenty lines.
-export const LONG_MESSAGE_HEIGHT = 440;
+// How tall a folded message's text is, in pixels: about fourteen lines. Texts are folded from about sixteen lines,
+// so that folding always hides a fair part.
+export const LONG_MESSAGE_HEIGHT = 320;
+const FOLD_FROM = LONG_MESSAGE_HEIGHT + 50;
 
 // Texts stay unfolded for the session once shown in full, also when drawn again (scrolling, the thread view).
 const expanded = new Set<string>();
@@ -27,7 +29,7 @@ export default function LongBody({postId, className, onClickCapture, children}: 
         if (!el) {
             return undefined;
         }
-        const measure = () => setLong(el.scrollHeight > LONG_MESSAGE_HEIGHT + 60);
+        const measure = () => setLong(el.scrollHeight > FOLD_FROM);
         measure();
         if (typeof ResizeObserver === 'undefined') {
             return undefined;

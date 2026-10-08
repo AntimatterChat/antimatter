@@ -41,6 +41,8 @@ type Props = {
     autotranslated: boolean;
 };
 
+const NO_FOLD = 1_000_000;
+
 const isYouTube = (url: string) => Boolean(url.trim().match(ytRegex));
 
 // Embed is what Mattermost attached to a message's text: a plugin's embed, integration cards, a link preview, a
@@ -124,6 +126,9 @@ export default function MessageContent({post, inThread, autotranslated}: Props) 
                 isChannelAutotranslated={autotranslated}
                 userLanguage={locale}
                 showPostEditedIndicator={false}
+
+                // Fusion folds long messages itself (LongBody): no classic Show more inside.
+                maxHeight={NO_FOLD}
             />
         </MessageLinkContext.Provider>
     );
