@@ -1,27 +1,41 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 
-import React, {useRef} from 'react';
+import React, {useRef, useState} from 'react';
 import {useIntl} from 'react-intl';
 import {shallowEqual, useDispatch, useSelector} from 'react-redux';
 
+import type {FileSearchResultItem} from '@mattermost/types/files';
 import type {Post} from '@mattermost/types/posts';
 
 import {getMorePostsForSearch} from 'mattermost-redux/actions/search';
 import {getAllChannels} from 'mattermost-redux/selectors/entities/channels';
+import {getSearchFilesResults} from 'mattermost-redux/selectors/entities/files';
+import {isPostFlagged} from 'mattermost-redux/selectors/entities/posts';
 import {getCurrentTeam} from 'mattermost-redux/selectors/entities/teams';
+import {getFormattedFileSize} from 'mattermost-redux/utils/file_utils';
 
-import {closeRightHandSide} from 'actions/views/rhs';
-import {getSearchTeam, getSearchTerms} from 'selectors/rhs';
+import {flagPost, pinPost, unflagPost, unpinPost} from 'actions/post_actions';
+import {closeRightHandSide, selectPostFromRightHandSideSearch} from 'actions/views/rhs';
+import {getSearchTeam, getSearchTerms, getSearchType} from 'selectors/rhs';
+
+import useSearchResultsActions from 'components/common/hooks/use_search_results_actions';
+import FilePreviewModal from 'components/file_preview_modal';
+import type {SearchFilterType} from 'components/search/types';
 
 import Icon from 'fusion/components/icon';
 import {useDisplayName, useUser} from 'fusion/hooks/users';
+import FileMenu from 'fusion/messages/content/file_menu';
 import {useWhen} from 'fusion/messages/time';
+import {useToast} from 'fusion/shell/toast_context';
 import {am} from 'fusion/utils/class_names';
+import {openDialog} from 'fusion/utils/modals';
 import {permalinkPath} from 'fusion/utils/paths';
 import {plainText} from 'fusion/utils/plain_text';
 import {getHistory} from 'utils/browser_history';
-import {RHSStates} from 'utils/constants';
+import {ModalIdentifiers, RHSStates} from 'utils/constants';
+import {getSiteURL} from 'utils/url';
+import {copyToClipboard} from 'utils/utils';
 
 import type {GlobalState} from 'types/store';
 
@@ -35,11 +49,16 @@ function highlight(text: string, terms: string) {
 }
 
 function Result({post, terms}: {post: Post; terms: string}) {
+    const {formatMessage} = useIntl();
+    const dispatch = useDispatch();
+    const toast = useToast();
     const when = useWhen();
     const user = useUser(post.user_id);
     const name = useDisplayName(user);
     const channel = useSelector((state: GlobalState) => getAllChannels(state)[post.channel_id]);
     const team = useSelector(getCurrentTeam);
+    const saved = useSelector((state: GlobalState) => isPostFlagged(state, post.id));
+    const canPin = Boolean(channel) && channel.delete_at === 0;
     const direct = channel && (channel.type === 'D' || channel.type === 'G');
     let icon: 'chat' | 'lock' | 'hash' = 'hash';
     if (direct) {
@@ -47,21 +66,110 @@ function Result({post, terms}: {post: Post; terms: string}) {
     } else if (channel?.type === 'P') {
         icon = 'lock';
     }
-    return (
+    const jump = () => team && getHistory().push(permalinkPath(team.name, post.id));
+    const action = (label: string, iconName: 'thread' | 'bookmark' | 'pin' | 'link', onClick: () => void, on = false) => (
         <button
-            className={am('result')}
-            onClick={() => team && getHistory().push(permalinkPath(team.name, post.id))}
+            type='button'
+            className={am({on})}
+            title={label}
+            aria-label={label}
+            onClick={(e) => {
+                e.stopPropagation();
+                onClick();
+            }}
         >
-            <span className={am('where')}>
-                <Icon
-                    name={icon}
-                    size='xs'
-                />
-                {`${channel?.display_name || ''}${post.root_id ? ' · thread' : ''} · ${when(post.create_at)}`}
-            </span>
-            <b>{name}</b>
-            <div>{highlight(plainText(post.message), terms)}</div>
+            <Icon
+                name={iconName}
+                size='sm'
+            />
         </button>
+    );
+    return (
+        <div className={am('result-wrap')}>
+            <button
+                className={am('result')}
+                onClick={jump}
+            >
+                <span className={am('where')}>
+                    <Icon
+                        name={icon}
+                        size='xs'
+                    />
+                    {`${channel?.display_name || ''}${post.root_id ? ' · thread' : ''} · ${when(post.create_at)}`}
+                </span>
+                <b>{name}</b>
+                <div>{highlight(plainText(post.message), terms)}</div>
+            </button>
+            <div className={am('result-tools')}>
+                {action(formatMessage({id: 'fusion.results.openThread', defaultMessage: 'Open the thread'}), 'thread', () => dispatch(selectPostFromRightHandSideSearch(post)))}
+                {action(saved ? formatMessage({id: 'fusion.results.unsave', defaultMessage: 'Remove from saved'}) : formatMessage({id: 'fusion.results.save', defaultMessage: 'Save'}), 'bookmark', () => dispatch(saved ? unflagPost(post.id) : flagPost(post.id)), saved)}
+                {canPin && action(post.is_pinned ? formatMessage({id: 'fusion.results.unpin', defaultMessage: 'Unpin from channel'}) : formatMessage({id: 'fusion.results.pin', defaultMessage: 'Pin to channel'}), 'pin', () => dispatch(post.is_pinned ? unpinPost(post.id) : pinPost(post.id)), post.is_pinned)}
+                {action(formatMessage({id: 'fusion.results.copyLink', defaultMessage: 'Copy link'}), 'link', () => {
+                    if (team) {
+                        copyToClipboard(getSiteURL() + permalinkPath(team.name, post.id));
+                        toast(formatMessage({id: 'fusion.toast.linkCopied', defaultMessage: 'Link copied'}));
+                    }
+                })}
+            </div>
+        </div>
+    );
+}
+
+// The file types to filter file results by, as the classic search's.
+const FILE_FILTERS: Array<[SearchFilterType, {id: string; defaultMessage: string}]> = [
+    ['all', {id: 'fusion.results.fAll', defaultMessage: 'All'}],
+    ['documents', {id: 'fusion.results.fDocuments', defaultMessage: 'Documents'}],
+    ['spreadsheets', {id: 'fusion.results.fSpreadsheets', defaultMessage: 'Spreadsheets'}],
+    ['presentations', {id: 'fusion.results.fPresentations', defaultMessage: 'Presentations'}],
+    ['code', {id: 'fusion.results.fCode', defaultMessage: 'Code'}],
+    ['images', {id: 'fusion.results.fImages', defaultMessage: 'Images'}],
+    ['audio', {id: 'fusion.results.fAudio', defaultMessage: 'Audio'}],
+    ['video', {id: 'fusion.results.fVideo', defaultMessage: 'Video'}],
+];
+
+function FileResult({file}: {file: FileSearchResultItem}) {
+    const dispatch = useDispatch();
+    const when = useWhen();
+    const channel = useSelector((state: GlobalState) => getAllChannels(state)[file.channel_id]);
+    const post = useSelector((state: GlobalState) => (file.post_id ? state.entities.posts.posts[file.post_id] : undefined));
+    const [menu, setMenu] = useState<HTMLElement | null>(null);
+    const ext = (file.extension || '').toUpperCase().slice(0, 4) || 'FILE';
+    return (
+        <div className={am('result-wrap')}>
+            <button
+                type='button'
+                className={am('result', 'file-result')}
+                onClick={() => dispatch(openDialog(ModalIdentifiers.FILE_PREVIEW_MODAL, FilePreviewModal, {postId: file.post_id, fileInfos: [file], startIndex: 0}))}
+            >
+                <span className={am('file')}>{ext}</span>
+                <span className={am('attach-meta')}>
+                    <b>{file.name}</b>
+                    <span>{[getFormattedFileSize(file.size), channel?.display_name, when(file.create_at)].filter(Boolean).join(' · ')}</span>
+                </span>
+            </button>
+            {post && (
+                <div className={am('result-tools')}>
+                    <button
+                        type='button'
+                        aria-label={file.name}
+                        onClick={(e) => setMenu(e.currentTarget)}
+                    >
+                        <Icon
+                            name='dots'
+                            size='sm'
+                        />
+                    </button>
+                </div>
+            )}
+            {menu && post && (
+                <FileMenu
+                    file={file}
+                    post={post}
+                    anchor={menu}
+                    onClose={() => setMenu(null)}
+                />
+            )}
+        </div>
     );
 }
 
@@ -71,6 +179,11 @@ export default function ResultsPanel({rhsState}: {rhsState: string}) {
     const dispatch = useDispatch();
     const terms = useSelector(getSearchTerms);
     const channelId = useSelector((state: GlobalState) => state.views.rhs.selectedChannelId || state.entities.channels.currentChannelId);
+    const searchActions = useSearchResultsActions();
+    const searchType = useSelector(getSearchType);
+    const showFiles = rhsState === RHSStates.SEARCH && searchType === 'files';
+    const files = useSelector(getSearchFilesResults);
+    const filesAtEnd = useSelector((state: GlobalState) => state.entities.search.current[getSearchTeam(state) || 'ALL_TEAMS']?.isFilesEnd ?? true);
     const ids = useSelector((state: GlobalState) => {
         const search = state.entities.search;
         if (rhsState === RHSStates.FLAG) {
@@ -92,11 +205,17 @@ export default function ResultsPanel({rhsState}: {rhsState: string}) {
     const bodyRef = useRef<HTMLDivElement>(null);
     const onScroll = () => {
         const body = bodyRef.current;
-        if (!paged || atEnd || gettingMore || searching || !body) {
+        if (!paged || (atEnd && !showFiles) || gettingMore || searching || !body) {
             return;
         }
         if (body.scrollHeight - body.scrollTop - body.clientHeight < 300) {
-            dispatch(getMorePostsForSearch(pagedTeam));
+            if (showFiles) {
+                if (!filesAtEnd) {
+                    searchActions.getMoreFilesForSearch();
+                }
+            } else {
+                dispatch(getMorePostsForSearch(pagedTeam));
+            }
         }
     };
 
@@ -128,9 +247,57 @@ export default function ResultsPanel({rhsState}: {rhsState: string}) {
                 className={am('rhs-body')}
                 onScroll={onScroll}
             >
-                {searching && !posts.length && <div className={am('empty')}>{formatMessage({id: 'fusion.results.searching', defaultMessage: 'Searching…'})}</div>}
-                {!searching && !posts.length && <div className={am('empty')}>{formatMessage({id: 'fusion.results.none', defaultMessage: 'No messages match. Try another word or a filter like from: or in:.'})}</div>}
-                {posts.map((post) => (
+                {rhsState === RHSStates.SEARCH && (
+                    <div
+                        className={am('results-tabs')}
+                        role='tablist'
+                    >
+                        <button
+                            type='button'
+                            role='tab'
+                            aria-selected={!showFiles}
+                            className={am({on: !showFiles})}
+                            onClick={() => searchActions.setSearchType('messages')}
+                        >
+                            {formatMessage({id: 'fusion.results.messages', defaultMessage: 'Messages'})}
+                            <span>{posts.length}</span>
+                        </button>
+                        <button
+                            type='button'
+                            role='tab'
+                            aria-selected={showFiles}
+                            className={am({on: showFiles})}
+                            onClick={() => searchActions.setSearchType('files')}
+                        >
+                            {formatMessage({id: 'fusion.results.files', defaultMessage: 'Files'})}
+                            <span>{files.length}</span>
+                        </button>
+                    </div>
+                )}
+                {showFiles && (
+                    <div className={am('file-filters')}>
+                        {FILE_FILTERS.map(([type, label]) => (
+                            <button
+                                key={type}
+                                type='button'
+                                className={am({on: searchActions.searchFilterType === type})}
+                                onClick={() => searchActions.setSearchFilterType(type)}
+                            >
+                                {formatMessage(label)}
+                            </button>
+                        ))}
+                    </div>
+                )}
+                {showFiles && files.map((file) => (
+                    <FileResult
+                        key={file.id}
+                        file={file}
+                    />
+                ))}
+                {showFiles && !searching && !files.length && <div className={am('empty')}>{formatMessage({id: 'fusion.results.noFiles', defaultMessage: 'No files match.'})}</div>}
+                {!showFiles && searching && !posts.length && <div className={am('empty')}>{formatMessage({id: 'fusion.results.searching', defaultMessage: 'Searching…'})}</div>}
+                {!showFiles && !searching && !posts.length && <div className={am('empty')}>{formatMessage({id: 'fusion.results.none', defaultMessage: 'No messages match. Try another word or a filter like from: or in:.'})}</div>}
+                {!showFiles && posts.map((post) => (
                     <Result
                         key={post.id}
                         post={post}

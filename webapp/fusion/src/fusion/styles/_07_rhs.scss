@@ -46,3 +46,24 @@
 :is(.am-app, .am-layer) .am-result .am-where { font-size: 12px; color: var(--am-muted); display: flex; gap: 6px; align-items: center; }
 :is(.am-app, .am-layer) .am-result mark { background: var(--am-matter-soft); color: var(--am-text); border-radius: 3px; padding: 0 2px; }
 :is(.am-app, .am-layer) .am-empty { padding: 28px 18px; color: var(--am-muted); text-align: center; font-size: 14px; }
+
+// Search results: messages and files tabs, file type filters, and actions on a result.
+:is(.am-app, .am-layer) .am-results-tabs { display: flex; gap: 4px; margin: 0 0 8px; border-bottom: 1px solid var(--am-line); }
+:is(.am-app, .am-layer) .am-results-tabs button { display: inline-flex; align-items: center; gap: 6px; padding: 8px 10px; color: var(--am-muted); font-weight: 600; border-bottom: 2px solid transparent; margin-bottom: -1px; }
+:is(.am-app, .am-layer) .am-results-tabs button.am-on { color: var(--am-text); border-bottom-color: var(--am-matter); }
+:is(.am-app, .am-layer) .am-results-tabs span { padding: 0 6px; border-radius: 8px; background: var(--am-raise-2); font-size: 11.5px; }
+:is(.am-app, .am-layer) .am-file-filters { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 8px; }
+:is(.am-app, .am-layer) .am-file-filters button { padding: 3px 9px; border-radius: 12px; border: 1px solid var(--am-line); color: var(--am-text-2); font-size: 12px; }
+:is(.am-app, .am-layer) .am-file-filters button.am-on { background: var(--am-matter-soft); border-color: var(--am-matter); color: var(--am-text); }
+:is(.am-app, .am-layer) .am-result-wrap { position: relative; }
+:is(.am-app, .am-layer) .am-result-tools { position: absolute; top: 6px; right: 6px; display: none; gap: 2px; padding: 2px; border-radius: 8px; background: var(--am-raise); border: 1px solid var(--am-line); }
+:is(.am-app, .am-layer) .am-result-wrap:hover .am-result-tools, :is(.am-app, .am-layer) .am-result-tools:focus-within { display: flex; }
+:is(.am-app, .am-layer) .am-result-tools button { width: 28px; height: 28px; border-radius: 6px; display: grid; place-items: center; color: var(--am-muted); }
+:is(.am-app, .am-layer) .am-result-tools button:hover { background: var(--am-hover); color: var(--am-text); }
+:is(.am-app, .am-layer) .am-result-tools button.am-on { color: var(--am-matter); }
+:is(.am-app, .am-layer) .am-result.am-file-result { display: flex; align-items: center; gap: 10px; }
+:is(.am-app, .am-layer) .am-result.am-file-result .am-attach-meta { display: flex; flex-direction: column; min-width: 0; }
+:is(.am-app, .am-layer) .am-result.am-file-result .am-attach-meta b { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+:is(.am-app, .am-layer) .am-result.am-file-result .am-attach-meta span { color: var(--am-muted); font-size: 12px; }
+:is(.am-app, .am-layer) .am-file-result .am-file { flex: none; width: 36px; height: 42px; border-radius: 6px; background: var(--am-matter-soft); color: var(--am-matter); display: grid; place-items: center; font: 700 10px var(--am-font-mono); }
+:is(.am-app, .am-layer) .am-results-tabs, :is(.am-app, .am-layer) .am-file-filters { padding: 0 12px; }

@@ -179,3 +179,14 @@
 :is(.am-app, .am-layer) .am-audit-row b { font: 500 12.5px var(--am-font-mono); color: var(--am-text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 :is(.am-app, .am-layer) .am-btn-group { display: flex; flex-wrap: wrap; gap: 6px; justify-content: flex-end; }
 :is(.am-app, .am-layer) .am-theme-code.am-token-new input { font: 13.5px var(--am-font-ui); }
+
+// Keyboard settings: the keys of a shortcut, and recording new ones.
+:is(.am-app, .am-layer) .am-key-combo { display: inline-flex; gap: 3px; margin-right: 8px; }
+:is(.am-app, .am-layer) .am-key-combo kbd { min-width: 24px; padding: 2px 6px; border-radius: 6px; border: 1px solid var(--am-line); border-bottom-width: 2px; background: var(--am-raise); font: 600 12px var(--am-font-ui); text-align: center; color: var(--am-text); }
+:is(.am-app, .am-layer) .am-key-off { margin-right: 8px; color: var(--am-muted); font-size: 13px; }
+:is(.am-app, .am-layer) .am-key-rec { margin-right: 8px; color: var(--am-matter); font-size: 13px; animation: am-ai-pulse 1.4s ease-in-out infinite; }
+:is(.am-app, .am-layer) .am-toggle-row .am-btn + .am-btn { margin-left: 6px; }
+
+// A plugin's settings, drawn by the classic settings in Fusion's colours.
+:is(.am-app, .am-layer) .am-plugin-pane { color: var(--am-text); }
+:is(.am-app, .am-layer) .am-plugin-pane .modal-header, :is(.am-app, .am-layer) .am-plugin-pane .user-settings__header { display: none; }

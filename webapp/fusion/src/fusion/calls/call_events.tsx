@@ -3,8 +3,13 @@
 
 import {useEffect, useRef} from 'react';
 import {useIntl} from 'react-intl';
+import {useStore} from 'react-redux';
 
 import {showToast} from 'fusion/components/toast';
+import {comboOf, isKeybind} from 'fusion/shell/keybinds';
+import type {KeyAction} from 'fusion/shell/keybinds';
+
+import type {GlobalState} from 'types/store';
 
 import {useCallActions} from './actions';
 import {useCallsAPIs} from './calls_api';
@@ -14,30 +19,19 @@ import {setCallWindowOpen, useCallsUI} from './ui_state';
 
 type Shortcut = 'mute' | 'hand' | 'screen' | 'window' | 'leave';
 
-function isMac() {
-    return navigator.platform.toUpperCase().includes('MAC');
-}
+const CALL_KEYS: Array<[KeyAction, Shortcut]> = [['callMute', 'mute'], ['callHand', 'hand'], ['callScreen', 'screen'], ['callLeave', 'leave'], ['callWindow', 'window']];
 
-// The in-call shortcuts of Calls' widget, with the same keys: Ctrl (⌘ on macOS) + Shift + Space mutes, + Y raises a
-// hand, + E shares the screen, + L leaves, and + P (or Alt + P) shows the call, here in its window.
-function shortcutOf(e: KeyboardEvent): Shortcut | null {
+// The in-call shortcuts of Calls' widget, with the same keys by default (they can be changed in the settings): Ctrl
+// (⌘ on macOS) + Shift + Space mutes, + Y raises a hand, + E shares the screen, + L leaves, and + P (or Alt + P) shows
+// the call, here in its window.
+function shortcutOf(state: GlobalState, e: KeyboardEvent): Shortcut | null {
     if (!e.key || !e.code) {
         return null;
     }
-    const mod = isMac() ? 'meta+' : 'ctrl+';
-    const mappings: Record<string, Shortcut> = {
-        [mod + 'shift+ ']: 'mute',
-        [mod + 'shift+space']: 'mute',
-        [mod + 'shift+y']: 'hand',
-        [mod + 'shift+e']: 'screen',
-        [mod + 'shift+l']: 'leave',
-        [mod + 'shift+p']: 'window',
-        'alt+p': 'window',
-    };
-    const prefix = `${e.metaKey ? 'meta+' : ''}${e.ctrlKey ? 'ctrl+' : ''}${e.shiftKey ? 'shift+' : ''}${e.altKey ? 'alt+' : ''}`;
-
-    // The key first, for other keyboard layouts, then the key's place on the keyboard.
-    return mappings[prefix + e.key.toLowerCase()] || mappings[prefix + e.code.replace('Key', '').toLowerCase()] || null;
+    if (comboOf(e) === 'alt+p') {
+        return 'window';
+    }
+    return CALL_KEYS.find(([action]) => isKeybind(state, e, action))?.[1] || null;
 }
 
 // CallEvents handles what the Calls widget did besides drawing: the in-call keyboard shortcuts, and telling about
@@ -48,6 +42,7 @@ export default function CallEvents() {
     const actions = useCallActions();
     const my = useMyCall();
     const {callWindow} = useCallsUI();
+    const store = useStore<GlobalState>();
     const latest = useRef({my, callWindow});
     latest.current = {my, callWindow};
 
@@ -57,7 +52,7 @@ export default function CallEvents() {
             return undefined;
         }
         const onKeyDown = (e: KeyboardEvent) => {
-            const shortcut = shortcutOf(e);
+            const shortcut = shortcutOf(store.getState(), e);
             const current = latest.current.my;
             if (!shortcut || !current) {
                 return;
@@ -79,7 +74,7 @@ export default function CallEvents() {
         };
         document.addEventListener('keydown', onKeyDown, true);
         return () => document.removeEventListener('keydown', onKeyDown, true);
-    }, [active, actions]);
+    }, [active, actions, store]);
 
     useEffect(() => {
         if (!calls) {

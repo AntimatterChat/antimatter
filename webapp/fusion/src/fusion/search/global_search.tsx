@@ -11,12 +11,12 @@ import type {UserProfile} from '@mattermost/types/users';
 
 import {Client4} from 'mattermost-redux/client';
 import {getAllChannels, getMyChannelMemberships, makeGetChannel} from 'mattermost-redux/selectors/entities/channels';
-import {getCurrentTeam, getTeam} from 'mattermost-redux/selectors/entities/teams';
+import {getCurrentTeam, getMyTeams, getTeam} from 'mattermost-redux/selectors/entities/teams';
 import {getCurrentUserId, getUsers} from 'mattermost-redux/selectors/entities/users';
 import {getUserIdFromChannelName} from 'mattermost-redux/utils/channel_utils';
 
 import {openDirectChannelToUserId} from 'actions/channel_actions';
-import {showSearchResults, updateSearchTerms} from 'actions/views/rhs';
+import {showSearchResults, updateSearchTeam, updateSearchTerms} from 'actions/views/rhs';
 
 import Avatar from 'fusion/components/avatar';
 import Icon from 'fusion/components/icon';
@@ -105,6 +105,11 @@ export default function GlobalSearch() {
     const [selected, setSelected] = useState(0);
     const [people, setPeople] = useState<UserProfile[]>([]);
     const [messages, setMessages] = useState<Post[]>([]);
+
+    // Messages are searched in the current team, or all of yours.
+    const teamCount = useSelector((state: GlobalState) => getMyTeams(state).length);
+    const [allTeams, setAllTeams] = useState(false);
+    const searchTeamId = allTeams ? '' : team?.id || '';
     const inputRef = useRef<HTMLInputElement>(null);
 
     useEffect(() => inputRef.current?.focus(), []);
@@ -123,7 +128,7 @@ export default function GlobalSearch() {
             try {
                 const [found, posts] = await Promise.all([
                     filter === 'all' || filter === 'people' ? Client4.autocompleteUsers(q, '', '', {limit: 6}) : Promise.resolve({users: []}),
-                    filter === 'all' || filter === 'messages' ? Client4.searchPostsWithParams(team.id, {terms: q, is_or_search: false, include_deleted_channels: false, page: 0, per_page: filter === 'messages' ? 20 : 5}) : Promise.resolve({order: [], posts: {}}),
+                    filter === 'all' || filter === 'messages' ? Client4.searchPostsWithParams(searchTeamId, {terms: q, is_or_search: false, include_deleted_channels: false, page: 0, per_page: filter === 'messages' ? 20 : 5}) : Promise.resolve({order: [], posts: {}}),
                 ]);
                 setPeople(found.users.filter((u: UserProfile) => u.id !== me && !u.delete_at));
                 setMessages(posts.order.map((id: string) => (posts.posts as Record<string, Post>)[id]).filter(Boolean));
@@ -133,7 +138,7 @@ export default function GlobalSearch() {
             }
         }, 250);
         return () => clearTimeout(timer);
-    }, [q, filter, team, me]);
+    }, [q, filter, team, me, searchTeamId]);
 
     const groups: Array<[string, Result[]]> = [];
     if (q) {
@@ -176,6 +181,7 @@ export default function GlobalSearch() {
         } else {
             const terms = r.kind === 'recent' ? r.q : q;
             addRecentSearch(terms);
+            dispatch(updateSearchTeam(searchTeamId || null));
             dispatch(updateSearchTerms(terms));
             dispatch(showSearchResults());
         }
@@ -351,6 +357,17 @@ export default function GlobalSearch() {
                         }[f]}
                     </button>
                 ))}
+                {teamCount > 1 && team && (
+                    <select
+                        className={am('gs-scope')}
+                        value={allTeams ? 'all' : 'team'}
+                        aria-label={formatMessage({id: 'fusion.gs.scope', defaultMessage: 'Where to search messages'})}
+                        onChange={(e) => setAllTeams(e.target.value === 'all')}
+                    >
+                        <option value='team'>{formatMessage({id: 'fusion.gs.scopeTeam', defaultMessage: 'In {team}'}, {team: team.display_name})}</option>
+                        <option value='all'>{formatMessage({id: 'fusion.gs.scopeAll', defaultMessage: 'In all teams'})}</option>
+                    </select>
+                )}
             </div>
             <div
                 className={am('gs-results')}

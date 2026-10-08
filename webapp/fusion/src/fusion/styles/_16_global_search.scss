@@ -28,3 +28,4 @@
 :is(.am-app, .am-layer) .am-gs-row.am-all .am-gi { background: var(--am-matter-soft); color: var(--am-matter); }
 :is(.am-app, .am-layer) .am-gs-foot { display: flex; gap: 14px; flex-wrap: wrap; padding: 8px 16px; border-top: 1px solid var(--am-line); background: var(--am-side); font-size: 12px; color: var(--am-muted); }
 :is(.am-app, .am-layer) .am-gs-foot kbd { font: 500 11px var(--am-font-mono); border: 1px solid var(--am-line); border-radius: 4px; padding: 0 4px; margin-right: 3px; }
+:is(.am-app, .am-layer) .am-gs-scope { margin-left: auto; height: 28px; padding: 0 8px; border-radius: 8px; border: 1px solid var(--am-line); background: var(--am-raise); color: var(--am-text-2); font-size: 12.5px; }

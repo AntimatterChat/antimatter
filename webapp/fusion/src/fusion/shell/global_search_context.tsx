@@ -2,9 +2,11 @@
 // See LICENSE.txt for license information.
 
 import React, {createContext, useContext, useEffect, useMemo, useState} from 'react';
+import {useStore} from 'react-redux';
 
-import Constants from 'utils/constants';
-import * as Keyboard from 'utils/keyboard';
+import type {GlobalState} from 'types/store';
+
+import {isKeybind} from './keybinds';
 
 type GlobalSearch = {
     isOpen: boolean;
@@ -17,10 +19,11 @@ const GlobalSearchContext = createContext<GlobalSearch>({isOpen: false, open: ()
 // GlobalSearchProvider owns the Ctrl/⌘+K search overlay (see GlobalSearch).
 export function GlobalSearchProvider({children}: {children: React.ReactNode}) {
     const [isOpen, setOpen] = useState(false);
+    const store = useStore<GlobalState>();
 
     useEffect(() => {
         const onKeyDown = (e: KeyboardEvent) => {
-            if (Keyboard.cmdOrCtrlPressed(e) && !e.shiftKey && !e.altKey && Keyboard.isKeyPressed(e, Constants.KeyCodes.K)) {
+            if (isKeybind(store.getState(), e, 'search')) {
                 e.preventDefault();
                 e.stopPropagation();
                 setOpen((open) => !open);
@@ -30,7 +33,7 @@ export function GlobalSearchProvider({children}: {children: React.ReactNode}) {
         // Capture phase, so the classic channel switcher's own Ctrl+K handler never sees the event.
         document.addEventListener('keydown', onKeyDown, true);
         return () => document.removeEventListener('keydown', onKeyDown, true);
-    }, []);
+    }, [store]);
 
     const value = useMemo(() => ({
         isOpen,

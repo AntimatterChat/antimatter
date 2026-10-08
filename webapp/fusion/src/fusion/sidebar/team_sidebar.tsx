@@ -3,7 +3,7 @@
 
 import React, {useEffect, useMemo, useRef, useState} from 'react';
 import {useIntl} from 'react-intl';
-import {shallowEqual, useDispatch, useSelector} from 'react-redux';
+import {shallowEqual, useDispatch, useSelector, useStore} from 'react-redux';
 
 import type {Channel} from '@mattermost/types/channels';
 
@@ -17,6 +17,7 @@ import {getCategoriesForCurrentTeam, isUnreadFilterEnabled} from 'selectors/view
 import Icon from 'fusion/components/icon';
 import ServerMenu from 'fusion/popovers/server_menu';
 import {getUnreadDirectChannels} from 'fusion/selectors';
+import {isKeybind} from 'fusion/shell/keybinds';
 import {useLayout} from 'fusion/shell/layout_context';
 import {am} from 'fusion/utils/class_names';
 
@@ -94,16 +95,17 @@ export default function TeamSidebar() {
     // The unread filter (Ctrl/Cmd+Shift+U, or the team menu) lists only the unread channels, as in the classic sidebar.
     const unreadOnly = useSelector(isUnreadFilterEnabled);
     useSidebarThreads();
+    const store = useStore<GlobalState>();
     useEffect(() => {
         const onKeyDown = (e: KeyboardEvent) => {
-            if ((e.ctrlKey || e.metaKey) && e.shiftKey && !e.altKey && e.key.toLowerCase() === 'u') {
+            if (isKeybind(store.getState(), e, 'unreadFilter')) {
                 e.preventDefault();
                 dispatch(setUnreadFilterEnabled(!unreadOnly));
             }
         };
         document.addEventListener('keydown', onKeyDown);
         return () => document.removeEventListener('keydown', onKeyDown);
-    }, [dispatch, unreadOnly]);
+    }, [dispatch, unreadOnly, store]);
     const team = useSelector(getCurrentTeam);
     const categories = useSelector(getCategoriesForCurrentTeam);
     const headButton = useRef<HTMLButtonElement>(null);

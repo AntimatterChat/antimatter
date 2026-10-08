@@ -31,8 +31,7 @@ import TeamSidebar from 'fusion/sidebar/team_sidebar';
 import {useMuteExpiry} from 'fusion/sidebar/timed_mute';
 import {am} from 'fusion/utils/class_names';
 import {openKeyboardShortcuts} from 'fusion/utils/modals';
-import Constants, {SCHEDULED_POST_URL_SUFFIX} from 'utils/constants';
-import {cmdOrCtrlPressed, isKeyPressed} from 'utils/keyboard';
+import {SCHEDULED_POST_URL_SUFFIX} from 'utils/constants';
 import {applyTheme} from 'utils/utils';
 
 import type {GlobalState} from 'types/store';
@@ -40,6 +39,7 @@ import type {GlobalState} from 'types/store';
 import {DialogsProvider} from './dialogs_context';
 import {useFaceTips} from './face_tips';
 import {GlobalSearchProvider, useGlobalSearch} from './global_search_context';
+import {isKeybind} from './keybinds';
 import {LayoutProvider, isPhoneLayout, useLayout} from './layout_context';
 import {SettingsProvider, useSettings} from './settings_context';
 import {useSwipes} from './swipes';
@@ -80,20 +80,17 @@ function Frame({children}: Props) {
     // Ctrl/⌘+/ lists the keyboard shortcuts, Ctrl/⌘+Shift+A opens the settings, as in the classic web app.
     useEffect(() => {
         const onKeyDown = (e: KeyboardEvent) => {
-            if (!cmdOrCtrlPressed(e, true)) {
-                return;
-            }
-            if (isKeyPressed(e, Constants.KeyCodes.FORWARD_SLASH)) {
+            if (isKeybind(store.getState(), e, 'shortcuts')) {
                 e.preventDefault();
                 dispatch(openKeyboardShortcuts());
-            } else if (e.shiftKey && isKeyPressed(e, Constants.KeyCodes.A)) {
+            } else if (isKeybind(store.getState(), e, 'settings')) {
                 e.preventDefault();
                 settings.open('account');
             }
         };
         window.addEventListener('keydown', onKeyDown);
         return () => window.removeEventListener('keydown', onKeyDown);
-    }, [dispatch, settings]);
+    }, [dispatch, settings, store]);
 
     // Escape closes the right-hand panel, last in the mockup's chain: popovers, dialogs, the edit form and the
     // autocomplete take it first (they stop it or mark it handled).

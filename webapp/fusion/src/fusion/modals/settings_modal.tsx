@@ -21,6 +21,9 @@ import {getCurrentUser} from 'mattermost-redux/selectors/entities/users';
 import {isSystemAdmin} from 'mattermost-redux/utils/user_utils';
 
 import {switchWebUI} from 'actions/web_ui';
+import {getPluginUserSettings} from 'selectors/plugins';
+
+import PluginTab from 'components/user_settings/plugin';
 
 import Avatar from 'fusion/components/avatar';
 import Icon from 'fusion/components/icon';
@@ -36,23 +39,26 @@ import {isValidUsername} from 'utils/utils';
 import {CURRENT_WEB_UI, WebUIs} from 'utils/web_ui';
 import type {WebUI} from 'utils/web_ui';
 
+import type {PluginConfiguration} from 'types/plugins/user_settings';
 import type {GlobalState} from 'types/store';
 
 import CustomThemeEditor, {useStartCustomTheme} from './custom_theme_editor';
 import {AdvancedPane, DisplayRows, ReadingRows} from './display_settings';
+import KeyboardPane from './keyboard_pane';
 import NotificationsPane from './notifications_pane';
 import {AccessHistory, CustomProfileFields, DeactivateDialog, EmailChange, MfaSection, OAuthAppsSection, SignInMethod, TokensSection} from './security_extras';
 import {Action, Choice, Toggle, usePreference} from './settings_controls';
 
-export type SettingsTab = 'account' | 'security' | 'notifications' | 'appearance' | 'messages' | 'language' | 'advanced';
+export type SettingsTab = 'account' | 'security' | 'notifications' | 'appearance' | 'messages' | 'language' | 'keyboard' | 'advanced' | `plugin:${string}`;
 
-const TABS: Array<[SettingsTab, {id: string; defaultMessage: string}]> = [
+const TABS: Array<[Exclude<SettingsTab, `plugin:${string}`>, {id: string; defaultMessage: string}]> = [
     ['account', {id: 'fusion.settings.account', defaultMessage: 'My account'}],
     ['security', {id: 'fusion.settings.security', defaultMessage: 'Security'}],
     ['notifications', {id: 'fusion.settings.notifications', defaultMessage: 'Notifications'}],
     ['appearance', {id: 'fusion.settings.appearance', defaultMessage: 'Appearance'}],
     ['messages', {id: 'fusion.settings.messages', defaultMessage: 'Messages'}],
     ['language', {id: 'fusion.settings.language', defaultMessage: 'Language & time'}],
+    ['keyboard', {id: 'fusion.settings.keyboard', defaultMessage: 'Keyboard'}],
     ['advanced', {id: 'fusion.settings.advanced', defaultMessage: 'Advanced'}],
 ];
 
@@ -642,6 +648,26 @@ function LanguagePane() {
     );
 }
 
+// PluginPane is a plugin's settings (registerUserSettings), drawn by the classic settings' plugin tab.
+function PluginPane({settings, onClose}: {settings?: PluginConfiguration; onClose: () => void}) {
+    const {formatMessage} = useIntl();
+    const [section, setSection] = useState('');
+    if (!settings) {
+        return <p className={am('lead')}>{formatMessage({id: 'fusion.settings.pluginGone', defaultMessage: 'This plugin has no settings any more.'})}</p>;
+    }
+    return (
+        <div className={am('plugin-pane') + ' user-settings'}>
+            <PluginTab
+                activeSection={section}
+                updateSection={setSection}
+                closeModal={onClose}
+                collapseModal={() => setSection('')}
+                settings={settings}
+            />
+        </div>
+    );
+}
+
 type Props = {
     tab: SettingsTab;
     onTab: (tab: SettingsTab) => void;
@@ -653,15 +679,24 @@ export default function SettingsModal({tab, onTab, onClose}: Props) {
     const {formatMessage} = useIntl();
     const admin = useSelector((state: GlobalState) => isSystemAdmin(getCurrentUser(state)?.roles || ''));
 
-    const pane = {
+    const pluginSettings = useSelector(getPluginUserSettings);
+    const pluginId = tab.startsWith('plugin:') ? tab.slice('plugin:'.length) : '';
+    const pane = pluginId ? (
+        <PluginPane
+            key={pluginId}
+            settings={pluginSettings[pluginId]}
+            onClose={onClose}
+        />
+    ) : {
         account: <AccountPane/>,
         security: <SecurityPane/>,
         notifications: <NotificationsPane/>,
         appearance: <AppearancePane/>,
         messages: <MessagesPane/>,
         language: <LanguagePane/>,
+        keyboard: <KeyboardPane/>,
         advanced: <AdvancedPane/>,
-    }[tab];
+    }[tab as Exclude<SettingsTab, `plugin:${string}`>];
 
     return (
         <Dialog
@@ -681,6 +716,21 @@ export default function SettingsModal({tab, onTab, onClose}: Props) {
                         {formatMessage(label)}
                     </button>
                 ))}
+                {Object.values(pluginSettings).length > 0 && (
+                    <>
+                        <h5>{formatMessage({id: 'fusion.settings.plugins', defaultMessage: 'Plugins'})}</h5>
+                        {Object.values(pluginSettings).map((plugin) => (
+                            <button
+                                key={plugin.id}
+                                type='button'
+                                className={am({on: tab === `plugin:${plugin.id}`})}
+                                onClick={() => onTab(`plugin:${plugin.id}`)}
+                            >
+                                {plugin.uiName}
+                            </button>
+                        ))}
+                    </>
+                )}
                 {admin && (
                     <>
                         <h5>{formatMessage({id: 'fusion.settings.console', defaultMessage: 'System Console'})}</h5>
