@@ -12,12 +12,14 @@ import {Popover} from 'fusion/components/layer';
 import {MenuHeading, MenuItem, MenuSeparator} from 'fusion/components/menu';
 import {useDisplayName, useUser} from 'fusion/hooks/users';
 import UserPopover from 'fusion/popovers/user_popover';
+import {am} from 'fusion/utils/class_names';
 import {copyToClipboard} from 'utils/utils';
 
 import type {GlobalState} from 'types/store';
 
 import {goToChannel, useCallActions, useChannelLabel} from './actions';
 import type {VoiceParticipant} from './calls_api';
+import {canSetVolume, getUserVolume, setUserVolume} from './extras';
 import {useIsVoiceChannel, useMyCall} from './hooks';
 
 type MenuProps = {
@@ -42,6 +44,7 @@ function ParticipantMenu({participant: p, channelId, point, onProfile, onClose}:
     const admin = useSelector((state: GlobalState) => isSystemAdmin(getCurrentUser(state)?.roles || ''));
     const host = my?.call.channelId === channelId && my.isHost;
     const moderate = !p.isMe && (admin || host);
+    const [volume, setVolume] = useState(() => getUserVolume(p.userId));
 
     const run = (action: () => void) => () => {
         onClose();
@@ -87,6 +90,24 @@ function ParticipantMenu({participant: p, channelId, point, onProfile, onClose}:
                     label={formatMessage({id: 'fusion.calls.menu.copyUsername', defaultMessage: 'Copy username'})}
                     onClick={run(() => copyToClipboard(user.username))}
                 />
+            )}
+            {!p.isMe && canSetVolume() && (
+                <label className={am('vol-row')}>
+                    <span>{formatMessage({id: 'fusion.calls.menu.volume', defaultMessage: 'Volume'})}</span>
+                    <input
+                        type='range'
+                        min={0}
+                        max={100}
+                        step={5}
+                        value={Math.round(volume * 100)}
+                        onChange={(e) => {
+                            const v = Number(e.target.value) / 100;
+                            setVolume(v);
+                            setUserVolume(p, v);
+                        }}
+                    />
+                    <b>{`${Math.round(volume * 100)}%`}</b>
+                </label>
             )}
             {moderate && (
                 <>

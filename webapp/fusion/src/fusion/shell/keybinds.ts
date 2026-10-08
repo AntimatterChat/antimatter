@@ -10,7 +10,7 @@ import type {GlobalState} from 'types/store';
 export const CATEGORY_FUSION_KEYS = 'fusion_keys';
 export const NAME_KEYBINDS = 'keybinds';
 
-export type KeyAction = 'search' | 'shortcuts' | 'settings' | 'unreadFilter' | 'callMute' | 'callHand' | 'callScreen' | 'callLeave' | 'callWindow';
+export type KeyAction = 'search' | 'shortcuts' | 'settings' | 'unreadFilter' | 'callMute' | 'pushToTalk' | 'callHand' | 'callScreen' | 'callLeave' | 'callWindow';
 
 export const KEY_ACTIONS: Array<{id: KeyAction; label: {id: string; defaultMessage: string}; combo: string}> = [
     {id: 'search', label: {id: 'fusion.keys.search', defaultMessage: 'Search everything'}, combo: 'mod+k'},
@@ -18,6 +18,7 @@ export const KEY_ACTIONS: Array<{id: KeyAction; label: {id: string; defaultMessa
     {id: 'settings', label: {id: 'fusion.keys.settings', defaultMessage: 'Open the settings'}, combo: 'mod+shift+a'},
     {id: 'unreadFilter', label: {id: 'fusion.keys.unreadFilter', defaultMessage: 'Show only unread channels'}, combo: 'mod+shift+u'},
     {id: 'callMute', label: {id: 'fusion.keys.callMute', defaultMessage: 'Mute or unmute in a call'}, combo: 'mod+shift+space'},
+    {id: 'pushToTalk', label: {id: 'fusion.keys.pushToTalk', defaultMessage: 'Push to talk in a call (hold)'}, combo: ''},
     {id: 'callHand', label: {id: 'fusion.keys.callHand', defaultMessage: 'Raise or lower your hand in a call'}, combo: 'mod+shift+y'},
     {id: 'callScreen', label: {id: 'fusion.keys.callScreen', defaultMessage: 'Share your screen in a call'}, combo: 'mod+shift+e'},
     {id: 'callLeave', label: {id: 'fusion.keys.callLeave', defaultMessage: 'Leave the call'}, combo: 'mod+shift+l'},

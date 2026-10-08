@@ -1,13 +1,24 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 
-import React from 'react';
+import React, {useRef, useState} from 'react';
 import {useIntl} from 'react-intl';
+import {useDispatch} from 'react-redux';
+
+import {selectPostById} from 'actions/views/rhs';
+
+import RenderEmoji from 'components/emoji/render_emoji';
 
 import Icon from 'fusion/components/icon';
+import {Popover} from 'fusion/components/layer';
+import {MenuHeading, MenuItem} from 'fusion/components/menu';
+import {showToast} from 'fusion/components/toast';
 import {am} from 'fusion/utils/class_names';
 
 import {useCallActions} from './actions';
+import {getCallsAPI} from './calls_api';
+import {getScreenQuality, QUICK_REACTIONS, SCREEN_FRAME_RATES, SCREEN_HEIGHTS, setScreenQuality} from './extras';
+import {useCall} from './hooks';
 import type {MyCallState} from './hooks';
 import {setCallWindowOpen} from './ui_state';
 
@@ -32,6 +43,141 @@ export function useToggleLabels(my: MyCallState | null) {
     };
 }
 
+// ScreenQualityMenu picks the size and frame rate the screen is shared at, as Vencord's presets; the choice is kept.
+function ScreenQualityMenu({my, anchor, onClose}: {my: MyCallState; anchor: HTMLElement | null; onClose: () => void}) {
+    const {formatMessage} = useIntl();
+    const [quality, setQuality] = useState(getScreenQuality);
+    const share = () => {
+        setScreenQuality(quality);
+        onClose();
+        if (my.screen) {
+            // A new quality needs a new capture: the browser asks again.
+            getCallsAPI()?.stopScreenShare();
+        }
+        getCallsAPI()?.startScreenShare(quality);
+    };
+    const chip = (on: boolean, label: string, onClick: () => void) => (
+        <button
+            key={label}
+            type='button'
+            className={am('q-chip', {on})}
+            aria-pressed={on}
+            onClick={onClick}
+        >
+            {label}
+        </button>
+    );
+    return (
+        <Popover
+            anchor={anchor}
+            placement='above'
+            className='plus-pop q-pop'
+            label={formatMessage({id: 'fusion.calls.quality', defaultMessage: 'Screen sharing quality'})}
+            onClose={onClose}
+        >
+            <MenuHeading>{formatMessage({id: 'fusion.calls.resolution', defaultMessage: 'Resolution'})}</MenuHeading>
+            <div className={am('q-chips')}>
+                {SCREEN_HEIGHTS.map((h) => chip(quality.height === h, h ? `${h}p` : formatMessage({id: 'fusion.calls.source', defaultMessage: 'Source'}), () => setQuality({...quality, height: h})))}
+            </div>
+            <MenuHeading>{formatMessage({id: 'fusion.calls.frameRate', defaultMessage: 'Frame rate'})}</MenuHeading>
+            <div className={am('q-chips')}>
+                {SCREEN_FRAME_RATES.map((f) => chip(quality.frameRate === f, `${f} fps`, () => setQuality({...quality, frameRate: f})))}
+            </div>
+            <div className={am('q-foot')}>
+                <button
+                    type='button'
+                    className={am('btn', 'primary')}
+                    disabled={!my.screen && (!my.screenAllowed || my.otherSharing)}
+                    onClick={share}
+                >
+                    {my.screen ? formatMessage({id: 'fusion.calls.reshare', defaultMessage: 'Share again at this quality'}) : formatMessage({id: 'fusion.calls.shareScreen', defaultMessage: 'Share screen'})}
+                </button>
+            </div>
+        </Popover>
+    );
+}
+
+// BlurMenu blurs the background of your camera (Calls' own background blur), and sets how much.
+function BlurMenu({anchor, onClose}: {anchor: HTMLElement | null; onClose: () => void}) {
+    const {formatMessage} = useIntl();
+    const api = getCallsAPI();
+    const [blur, setBlur] = useState(() => api?.getBackgroundBlur?.() || {on: false, intensity: 50});
+    const apply = (next: typeof blur) => {
+        setBlur(next);
+        api?.setBackgroundBlur?.(next).catch(() => showToast(formatMessage({id: 'fusion.calls.blurFailed', defaultMessage: 'The background couldn\'t be blurred'})));
+    };
+    return (
+        <Popover
+            anchor={anchor}
+            placement='above'
+            className='plus-pop q-pop'
+            label={formatMessage({id: 'fusion.calls.camera', defaultMessage: 'Camera'})}
+            onClose={onClose}
+        >
+            <MenuItem
+                icon='eye-off'
+                role='menuitemcheckbox'
+                checked={blur.on}
+                label={formatMessage({id: 'fusion.calls.blur', defaultMessage: 'Blur my background'})}
+                onClick={() => apply({...blur, on: !blur.on})}
+            />
+            {blur.on && (
+                <label className={am('vol-row')}>
+                    <span>{formatMessage({id: 'fusion.calls.blurAmount', defaultMessage: 'Amount'})}</span>
+                    <input
+                        type='range'
+                        min={10}
+                        max={100}
+                        step={10}
+                        value={blur.intensity}
+                        onChange={(e) => setBlur({...blur, intensity: Number(e.target.value)})}
+                        onPointerUp={() => apply(blur)}
+                        onKeyUp={() => apply(blur)}
+                    />
+                </label>
+            )}
+            <MenuItem
+                icon='cog'
+                label={formatMessage({id: 'fusion.calls.devices', defaultMessage: 'Camera and microphone settings…'})}
+                onClick={() => {
+                    onClose();
+                    api?.openSettings();
+                }}
+            />
+        </Popover>
+    );
+}
+
+// ReactionsMenu sends a reaction to the call, shown over the stage for everyone.
+function ReactionsMenu({anchor, onClose}: {anchor: HTMLElement | null; onClose: () => void}) {
+    const {formatMessage} = useIntl();
+    return (
+        <Popover
+            anchor={anchor}
+            placement='above'
+            className='plus-pop react-pop'
+            label={formatMessage({id: 'fusion.calls.react', defaultMessage: 'React'})}
+            onClose={onClose}
+        >
+            <div className={am('quick-react')}>
+                {QUICK_REACTIONS.map(([name, unified]) => (
+                    <button
+                        key={name}
+                        type='button'
+                        aria-label={formatMessage({id: 'fusion.messageMenu.reactWith', defaultMessage: 'React with :{name}:'}, {name})}
+                        onClick={() => getCallsAPI()?.sendReaction?.(name, unified)}
+                    >
+                        <RenderEmoji
+                            emojiName={name}
+                            size={22}
+                        />
+                    </button>
+                ))}
+            </div>
+        </Popover>
+    );
+}
+
 type Props = {
     my: MyCallState;
 
@@ -45,6 +191,29 @@ export default function CallControls({my, withPopout = false}: Props) {
     const actions = useCallActions();
     const labels = useToggleLabels(my);
     const media = my.call.mediaInThisWindow;
+    const {formatMessage} = useIntl();
+    const dispatch = useDispatch();
+    const call = useCall(my.call.channelId);
+    const api = getCallsAPI();
+    const [menu, setMenu] = useState<'screen' | 'camera' | 'react' | null>(null);
+    const screenRef = useRef<HTMLButtonElement>(null);
+    const cameraRef = useRef<HTMLButtonElement>(null);
+    const reactRef = useRef<HTMLButtonElement>(null);
+    const caret = (which: 'screen' | 'camera', ref: React.RefObject<HTMLButtonElement | null>, label: string) => (
+        <button
+            ref={ref}
+            className={am('round-caret', {on: menu === which})}
+            aria-label={label}
+            aria-haspopup='menu'
+            aria-expanded={menu === which}
+            onClick={() => setMenu(menu === which ? null : which)}
+        >
+            <Icon
+                name='chev'
+                size='xs'
+            />
+        </button>
+    );
 
     return (
         <div className={am('voice-controls')}>
@@ -78,6 +247,7 @@ export default function CallControls({my, withPopout = false}: Props) {
                     >
                         <Icon name='video'/>
                     </button>
+                    {api?.setBackgroundBlur && caret('camera', cameraRef, formatMessage({id: 'fusion.calls.cameraOptions', defaultMessage: 'Camera options'}))}
                     <button
                         className={am('round', {on: my.screen})}
                         aria-label={labels.screen}
@@ -88,6 +258,7 @@ export default function CallControls({my, withPopout = false}: Props) {
                     >
                         <Icon name='screen'/>
                     </button>
+                    {caret('screen', screenRef, formatMessage({id: 'fusion.calls.quality', defaultMessage: 'Screen sharing quality'}))}
                     <button
                         className={am('round', {on: my.handRaised})}
                         aria-label={labels.hand}
@@ -97,7 +268,47 @@ export default function CallControls({my, withPopout = false}: Props) {
                     >
                         <Icon name='hand'/>
                     </button>
+                    {api?.sendReaction && (
+                        <button
+                            ref={reactRef}
+                            className={am('round', {on: menu === 'react'})}
+                            aria-label={formatMessage({id: 'fusion.calls.react', defaultMessage: 'React'})}
+                            title={formatMessage({id: 'fusion.calls.react', defaultMessage: 'React'})}
+                            onClick={() => setMenu(menu === 'react' ? null : 'react')}
+                        >
+                            <Icon name='smile'/>
+                        </button>
+                    )}
                 </>
+            )}
+            {!my.voice && call?.threadId && (
+                <button
+                    className={am('round')}
+                    aria-label={formatMessage({id: 'fusion.calls.chat', defaultMessage: 'Call chat'})}
+                    title={formatMessage({id: 'fusion.calls.chat', defaultMessage: 'Call chat'})}
+                    onClick={() => dispatch(selectPostById(call.threadId))}
+                >
+                    <Icon name='chat'/>
+                </button>
+            )}
+            {menu === 'screen' && (
+                <ScreenQualityMenu
+                    my={my}
+                    anchor={screenRef.current}
+                    onClose={() => setMenu(null)}
+                />
+            )}
+            {menu === 'camera' && (
+                <BlurMenu
+                    anchor={cameraRef.current}
+                    onClose={() => setMenu(null)}
+                />
+            )}
+            {menu === 'react' && (
+                <ReactionsMenu
+                    anchor={reactRef.current}
+                    onClose={() => setMenu(null)}
+                />
             )}
             {withPopout && (
                 <button

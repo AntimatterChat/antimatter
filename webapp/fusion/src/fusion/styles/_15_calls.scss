@@ -32,3 +32,32 @@
 :is(.am-app, .am-layer) .am-call-win .am-stage { flex: 1; min-height: 0; }
 :is(.am-app, .am-layer) .am-call-win .am-voice-controls .am-round { width: 40px; height: 40px; }
 :is(.am-app, .am-layer) .am-call-win .am-voice-controls .am-round.am-hang { width: 54px; }
+
+// A participant's volume, in their menu.
+:is(.am-app, .am-layer) .am-vol-row { display: flex; align-items: center; gap: 10px; padding: 8px 10px; color: var(--am-text-2); font-size: 13.5px; }
+:is(.am-app, .am-layer) .am-vol-row input { flex: 1; min-width: 0; accent-color: var(--am-matter); }
+:is(.am-app, .am-layer) .am-vol-row b { width: 38px; text-align: right; font: 600 12px var(--am-font-mono); color: var(--am-muted); }
+
+// The small arrows beside the camera and screen buttons, and their menus.
+:is(.am-app, .am-layer) .am-round-caret { width: 20px; height: 44px; margin-left: -10px; border-radius: 0 12px 12px 0; display: grid; place-items: center; background: var(--am-raise-2); color: var(--am-muted); }
+:is(.am-app, .am-layer) .am-round-caret:hover, :is(.am-app, .am-layer) .am-round-caret.am-on { color: var(--am-text); background: var(--am-hover); }
+:is(.am-app, .am-layer) .am-round-caret .am-ic { transform: rotate(180deg); }
+:is(.am-app, .am-layer) .am-q-pop { width: 290px; }
+:is(.am-app, .am-layer) .am-q-chips { display: flex; flex-wrap: wrap; gap: 6px; padding: 0 8px 8px; }
+:is(.am-app, .am-layer) .am-q-pop .am-q-chips button.am-q-chip { display: inline-flex; width: auto; gap: 0; padding: 4px 10px; border-radius: 14px; border: 1px solid var(--am-line); font-size: 12.5px; font-weight: 600; color: var(--am-text-2); }
+:is(.am-app, .am-layer) .am-q-pop .am-q-chips button.am-q-chip.am-on { background: var(--am-matter-soft); border-color: var(--am-matter); color: var(--am-text); }
+:is(.am-app, .am-layer) .am-q-foot { display: flex; justify-content: flex-end; padding: 6px 8px 4px; }
+:is(.am-app, .am-layer) .am-q-foot .am-btn { width: auto; }
+
+// Stage: the order of raised hands, tile tools (pin, picture in picture), a pinned tile, reactions.
+:is(.am-app, .am-layer) .am-tile .am-hand { display: inline-flex; align-items: center; gap: 2px; }
+:is(.am-app, .am-layer) .am-tile .am-hand b { font: 700 11px var(--am-font-ui); }
+:is(.am-app, .am-layer) .am-tile-tools { position: absolute; top: 8px; right: 8px; display: none; gap: 4px; }
+:is(.am-app, .am-layer) .am-tile:hover .am-tile-tools, :is(.am-app, .am-layer) .am-tile-tools:focus-within, :is(.am-app, .am-layer) .am-tile.am-pinned .am-tile-tools { display: flex; }
+:is(.am-app, .am-layer) .am-tile-tools button { width: 28px; height: 28px; border-radius: 7px; display: grid; place-items: center; background: rgba(0, 0, 0, 0.55); color: #fff; }
+:is(.am-app, .am-layer) .am-tile-tools button.am-on { background: var(--am-matter); }
+:is(.am-app, .am-layer) .am-stage-focus { flex: 1; min-height: 0; display: grid; }
+:is(.am-app, .am-layer) .am-stage { position: relative; }
+:is(.am-app, .am-layer) .am-reactions-float { position: absolute; left: 50%; top: 12px; transform: translateX(-50%); align-items: center; display: flex; flex-direction: column; gap: 6px; pointer-events: none; z-index: 4; }
+:is(.am-app, .am-layer) .am-reaction-bubble { display: inline-flex; align-items: center; gap: 6px; width: max-content; padding: 4px 10px 4px 6px; border-radius: 16px; background: rgba(0, 0, 0, 0.6); color: #fff; font-size: 12.5px; font-weight: 600; animation: am-reaction-in .25s ease; }
+@keyframes am-reaction-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }

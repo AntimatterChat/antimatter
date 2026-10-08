@@ -24,6 +24,7 @@ import type {GlobalState} from 'types/store';
 
 import {getCall, getCallsAPI, getLocalCall, getVoiceAPI, isVoiceChannel} from './calls_api';
 import type {CallsCall, VoiceParticipant} from './calls_api';
+import {getScreenQuality} from './extras';
 import type {MyCallState} from './hooks';
 
 const getChannelWithNames = makeGetChannel();
@@ -104,7 +105,8 @@ function makeActions(getState: () => GlobalState, intl: IntlShape, openDirect: (
         const moved = Boolean(local && isVoiceChannel(state, local.channelId));
         try {
             await voice.join(channelId, {leaveOtherCalls: true});
-        } catch {
+        } catch (e) {
+            showToast(formatMessage({id: 'fusion.calls.toast.joinFailed', defaultMessage: 'Couldn\'t join {name}: {error}'}, {name: channelLabel(getState(), channelId), error: (e as Error)?.message || String(e)}));
             return;
         }
         const name = channelLabel(getState(), channelId);
@@ -206,7 +208,7 @@ function makeActions(getState: () => GlobalState, intl: IntlShape, openDirect: (
         if (my.screen) {
             getCallsAPI()?.stopScreenShare();
         } else {
-            getCallsAPI()?.startScreenShare();
+            getCallsAPI()?.startScreenShare(getScreenQuality());
         }
     };
     const toggleHand = (my: MyCallState) => getCallsAPI()?.setHandRaised(!my.handRaised);

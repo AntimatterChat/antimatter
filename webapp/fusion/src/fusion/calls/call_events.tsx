@@ -12,9 +12,10 @@ import type {KeyAction} from 'fusion/shell/keybinds';
 import type {GlobalState} from 'types/store';
 
 import {useCallActions} from './actions';
-import {useCallsAPIs} from './calls_api';
+import {getCallsAPI, useCallsAPIs} from './calls_api';
 import type {CallsErrorEvent} from './calls_api';
-import {useMyCall} from './hooks';
+import {useApplyVolumes} from './extras';
+import {useMyCall, useParticipants} from './hooks';
 import {setCallWindowOpen, useCallsUI} from './ui_state';
 
 type Shortcut = 'mute' | 'hand' | 'screen' | 'window' | 'leave';
@@ -47,6 +48,47 @@ export default function CallEvents() {
     latest.current = {my, callWindow};
 
     const active = Boolean(my && my.call.state === 'connected');
+    useApplyVolumes(useParticipants(my?.call.channelId || ''));
+
+    // Push to talk: holding its key (set in the Keyboard settings) unmutes, letting it go mutes again.
+    useEffect(() => {
+        if (!active) {
+            return undefined;
+        }
+        let holding = '';
+        const onKeyDown = (e: KeyboardEvent) => {
+            const current = latest.current.my;
+            if (e.repeat || holding || !current?.call.mediaInThisWindow || !isKeybind(store.getState(), e, 'pushToTalk')) {
+                return;
+            }
+            e.preventDefault();
+            e.stopImmediatePropagation();
+            holding = e.code;
+            if (current.muted) {
+                getCallsAPI()?.setMuted(false);
+            }
+        };
+        const onKeyUp = (e: KeyboardEvent) => {
+            if (holding && e.code === holding) {
+                holding = '';
+                getCallsAPI()?.setMuted(true);
+            }
+        };
+        const onBlur = () => {
+            if (holding) {
+                holding = '';
+                getCallsAPI()?.setMuted(true);
+            }
+        };
+        document.addEventListener('keydown', onKeyDown, true);
+        document.addEventListener('keyup', onKeyUp, true);
+        window.addEventListener('blur', onBlur);
+        return () => {
+            document.removeEventListener('keydown', onKeyDown, true);
+            document.removeEventListener('keyup', onKeyUp, true);
+            window.removeEventListener('blur', onBlur);
+        };
+    }, [active, store]);
     useEffect(() => {
         if (!active) {
             return undefined;

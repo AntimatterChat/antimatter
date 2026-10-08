@@ -23,6 +23,9 @@ export type CallsParticipant = {
     // broadcast_session_state channel prop) for people outside the call.
     speaking: boolean;
     raisedHand: boolean;
+
+    // When the hand was raised (0 when it isn't), to list raised hands in order.
+    raisedHandAt: number;
     isHost: boolean;
 
     // The session of this window's call (or, with the desktop app, of its call window).
@@ -98,6 +101,30 @@ export type CallsErrorEvent =
     // Any other error of the calls client.
     {kind: 'other'; error: Error};
 
+// A reaction sent in a call, shown for a few seconds.
+export type CallsReaction = {
+    sessionId: string;
+    userId: string;
+
+    // The emoji's short name (e.g. "+1") and unicode code points (e.g. "1f44d").
+    emojiName: string;
+    unified: string;
+    timestamp: number;
+};
+
+// A screen sharing preset: the largest height sent (0 for the screen's own size) and the frame rate.
+export type CallsScreenQuality = {
+    height: number;
+    frameRate: number;
+};
+
+export type CallsBackgroundBlur = {
+    on: boolean;
+
+    // From 1 to 100.
+    intensity: number;
+};
+
 export type CallsEvent = 'change' | 'error';
 
 export type AntimatterCallsAPI = {
@@ -125,6 +152,9 @@ export type AntimatterCallsAPI = {
 
         // Whether the user's microphone is muted in their call (true when not in a call).
         getMyMuted(state: CallsGlobalState): boolean;
+
+        // The recent reactions in the call of a channel, oldest first.
+        getReactions(state: CallsGlobalState, channelId: string): CallsReaction[];
     };
 
     // Joins (or starts) the call of a channel, through the same checks as Calls' own call button.
@@ -138,10 +168,22 @@ export type AntimatterCallsAPI = {
     setMuted(muted: boolean): void;
     setVideo(on: boolean): Promise<void>;
 
-    // In the desktop app, opens Calls' screen source picker.
-    startScreenShare(): void;
+    // In the desktop app, opens Calls' screen source picker. A quality preset asks for that size and frame rate,
+    // and sends the screen at a matching bitrate.
+    startScreenShare(quality?: CallsScreenQuality): void;
     stopScreenShare(): void;
     setHandRaised(raised: boolean): void;
+
+    // Sends a reaction to the call.
+    sendReaction(emojiName: string, unified: string): void;
+
+    // How loud a participant's voice is for this user, from 0 to 1 (by session, for this call).
+    setParticipantVolume(sessionId: string, volume: number): void;
+    getParticipantVolume(sessionId: string): number;
+
+    // The camera's background blur, kept for the next calls.
+    getBackgroundBlur(): CallsBackgroundBlur;
+    setBackgroundBlur(blur: CallsBackgroundBlur): Promise<void>;
 
     // Media of the call run by this window, for tiles. The streams keep the same reference as
     // long as their track, and getRemoteVideoStreams() returns the same object while unchanged.
