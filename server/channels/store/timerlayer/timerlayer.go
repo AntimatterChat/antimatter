@@ -28,6 +28,7 @@ type TimerLayer struct {
 	ChannelGuardStore               store.ChannelGuardStore
 	ChannelJoinRequestStore         store.ChannelJoinRequestStore
 	ChannelMemberHistoryStore       store.ChannelMemberHistoryStore
+	ChannelOverrideStore            store.ChannelOverrideStore
 	ClusterDiscoveryStore           store.ClusterDiscoveryStore
 	CommandStore                    store.CommandStore
 	CommandWebhookStore             store.CommandWebhookStore
@@ -121,6 +122,10 @@ func (s *TimerLayer) ChannelJoinRequest() store.ChannelJoinRequestStore {
 
 func (s *TimerLayer) ChannelMemberHistory() store.ChannelMemberHistoryStore {
 	return s.ChannelMemberHistoryStore
+}
+
+func (s *TimerLayer) ChannelOverride() store.ChannelOverrideStore {
+	return s.ChannelOverrideStore
 }
 
 func (s *TimerLayer) ClusterDiscovery() store.ClusterDiscoveryStore {
@@ -382,6 +387,11 @@ type TimerLayerChannelJoinRequestStore struct {
 
 type TimerLayerChannelMemberHistoryStore struct {
 	store.ChannelMemberHistoryStore
+	Root *TimerLayer
+}
+
+type TimerLayerChannelOverrideStore struct {
+	store.ChannelOverrideStore
 	Root *TimerLayer
 }
 
@@ -3861,6 +3871,54 @@ func (s *TimerLayerChannelMemberHistoryStore) PermanentDeleteBatchForRetentionPo
 		s.Root.Metrics.ObserveStoreMethodDuration("ChannelMemberHistoryStore.PermanentDeleteBatchForRetentionPolicies", success, elapsed)
 	}
 	return result, resultVar1, err
+}
+
+func (s *TimerLayerChannelOverrideStore) Delete(rctx request.CTX, channelID string, targetType string, targetID string) error {
+	start := time.Now()
+
+	err := s.ChannelOverrideStore.Delete(rctx, channelID, targetType, targetID)
+
+	elapsed := float64(time.Since(start)) / float64(time.Second)
+	if s.Root.Metrics != nil {
+		success := "false"
+		if err == nil {
+			success = "true"
+		}
+		s.Root.Metrics.ObserveStoreMethodDuration("ChannelOverrideStore.Delete", success, elapsed)
+	}
+	return err
+}
+
+func (s *TimerLayerChannelOverrideStore) GetForChannel(rctx request.CTX, channelID string) ([]*model.ChannelOverride, error) {
+	start := time.Now()
+
+	result, err := s.ChannelOverrideStore.GetForChannel(rctx, channelID)
+
+	elapsed := float64(time.Since(start)) / float64(time.Second)
+	if s.Root.Metrics != nil {
+		success := "false"
+		if err == nil {
+			success = "true"
+		}
+		s.Root.Metrics.ObserveStoreMethodDuration("ChannelOverrideStore.GetForChannel", success, elapsed)
+	}
+	return result, err
+}
+
+func (s *TimerLayerChannelOverrideStore) Save(rctx request.CTX, override *model.ChannelOverride) (*model.ChannelOverride, error) {
+	start := time.Now()
+
+	result, err := s.ChannelOverrideStore.Save(rctx, override)
+
+	elapsed := float64(time.Since(start)) / float64(time.Second)
+	if s.Root.Metrics != nil {
+		success := "false"
+		if err == nil {
+			success = "true"
+		}
+		s.Root.Metrics.ObserveStoreMethodDuration("ChannelOverrideStore.Save", success, elapsed)
+	}
+	return result, err
 }
 
 func (s *TimerLayerClusterDiscoveryStore) Cleanup() error {
@@ -16133,6 +16191,7 @@ func New(childStore store.Store, metrics einterfaces.MetricsInterface) *TimerLay
 	newStore.ChannelGuardStore = &TimerLayerChannelGuardStore{ChannelGuardStore: childStore.ChannelGuard(), Root: &newStore}
 	newStore.ChannelJoinRequestStore = &TimerLayerChannelJoinRequestStore{ChannelJoinRequestStore: childStore.ChannelJoinRequest(), Root: &newStore}
 	newStore.ChannelMemberHistoryStore = &TimerLayerChannelMemberHistoryStore{ChannelMemberHistoryStore: childStore.ChannelMemberHistory(), Root: &newStore}
+	newStore.ChannelOverrideStore = &TimerLayerChannelOverrideStore{ChannelOverrideStore: childStore.ChannelOverride(), Root: &newStore}
 	newStore.ClusterDiscoveryStore = &TimerLayerClusterDiscoveryStore{ClusterDiscoveryStore: childStore.ClusterDiscovery(), Root: &newStore}
 	newStore.CommandStore = &TimerLayerCommandStore{CommandStore: childStore.Command(), Root: &newStore}
 	newStore.CommandWebhookStore = &TimerLayerCommandWebhookStore{CommandWebhookStore: childStore.CommandWebhook(), Root: &newStore}

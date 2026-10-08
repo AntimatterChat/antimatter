@@ -29,6 +29,7 @@ type RetryLayer struct {
 	ChannelGuardStore               store.ChannelGuardStore
 	ChannelJoinRequestStore         store.ChannelJoinRequestStore
 	ChannelMemberHistoryStore       store.ChannelMemberHistoryStore
+	ChannelOverrideStore            store.ChannelOverrideStore
 	ClusterDiscoveryStore           store.ClusterDiscoveryStore
 	CommandStore                    store.CommandStore
 	CommandWebhookStore             store.CommandWebhookStore
@@ -122,6 +123,10 @@ func (s *RetryLayer) ChannelJoinRequest() store.ChannelJoinRequestStore {
 
 func (s *RetryLayer) ChannelMemberHistory() store.ChannelMemberHistoryStore {
 	return s.ChannelMemberHistoryStore
+}
+
+func (s *RetryLayer) ChannelOverride() store.ChannelOverrideStore {
+	return s.ChannelOverrideStore
 }
 
 func (s *RetryLayer) ClusterDiscovery() store.ClusterDiscoveryStore {
@@ -383,6 +388,11 @@ type RetryLayerChannelJoinRequestStore struct {
 
 type RetryLayerChannelMemberHistoryStore struct {
 	store.ChannelMemberHistoryStore
+	Root *RetryLayer
+}
+
+type RetryLayerChannelOverrideStore struct {
+	store.ChannelOverrideStore
 	Root *RetryLayer
 }
 
@@ -4598,6 +4608,69 @@ func (s *RetryLayerChannelMemberHistoryStore) PermanentDeleteBatchForRetentionPo
 		if tries >= 3 {
 			err = errors.Wrap(err, "giving up after 3 consecutive repeatable transaction failures")
 			return result, resultVar1, err
+		}
+		timepkg.Sleep(100 * timepkg.Millisecond)
+	}
+
+}
+
+func (s *RetryLayerChannelOverrideStore) Delete(rctx request.CTX, channelID string, targetType string, targetID string) error {
+
+	tries := 0
+	for {
+		err := s.ChannelOverrideStore.Delete(rctx, channelID, targetType, targetID)
+		if err == nil {
+			return nil
+		}
+		if !isRepeatableError(err) {
+			return err
+		}
+		tries++
+		if tries >= 3 {
+			err = errors.Wrap(err, "giving up after 3 consecutive repeatable transaction failures")
+			return err
+		}
+		timepkg.Sleep(100 * timepkg.Millisecond)
+	}
+
+}
+
+func (s *RetryLayerChannelOverrideStore) GetForChannel(rctx request.CTX, channelID string) ([]*model.ChannelOverride, error) {
+
+	tries := 0
+	for {
+		result, err := s.ChannelOverrideStore.GetForChannel(rctx, channelID)
+		if err == nil {
+			return result, nil
+		}
+		if !isRepeatableError(err) {
+			return result, err
+		}
+		tries++
+		if tries >= 3 {
+			err = errors.Wrap(err, "giving up after 3 consecutive repeatable transaction failures")
+			return result, err
+		}
+		timepkg.Sleep(100 * timepkg.Millisecond)
+	}
+
+}
+
+func (s *RetryLayerChannelOverrideStore) Save(rctx request.CTX, override *model.ChannelOverride) (*model.ChannelOverride, error) {
+
+	tries := 0
+	for {
+		result, err := s.ChannelOverrideStore.Save(rctx, override)
+		if err == nil {
+			return result, nil
+		}
+		if !isRepeatableError(err) {
+			return result, err
+		}
+		tries++
+		if tries >= 3 {
+			err = errors.Wrap(err, "giving up after 3 consecutive repeatable transaction failures")
+			return result, err
 		}
 		timepkg.Sleep(100 * timepkg.Millisecond)
 	}
@@ -20356,6 +20429,7 @@ func New(childStore store.Store) *RetryLayer {
 	newStore.ChannelGuardStore = &RetryLayerChannelGuardStore{ChannelGuardStore: childStore.ChannelGuard(), Root: &newStore}
 	newStore.ChannelJoinRequestStore = &RetryLayerChannelJoinRequestStore{ChannelJoinRequestStore: childStore.ChannelJoinRequest(), Root: &newStore}
 	newStore.ChannelMemberHistoryStore = &RetryLayerChannelMemberHistoryStore{ChannelMemberHistoryStore: childStore.ChannelMemberHistory(), Root: &newStore}
+	newStore.ChannelOverrideStore = &RetryLayerChannelOverrideStore{ChannelOverrideStore: childStore.ChannelOverride(), Root: &newStore}
 	newStore.ClusterDiscoveryStore = &RetryLayerClusterDiscoveryStore{ClusterDiscoveryStore: childStore.ClusterDiscovery(), Root: &newStore}
 	newStore.CommandStore = &RetryLayerCommandStore{CommandStore: childStore.Command(), Root: &newStore}
 	newStore.CommandWebhookStore = &RetryLayerCommandWebhookStore{CommandWebhookStore: childStore.CommandWebhook(), Root: &newStore}

@@ -115,6 +115,9 @@ func (a *App) syncTeamRole(rctx request.CTX, group *model.Group, userIDs []strin
 			rctx.Logger().Warn("Failed to update a member's team roles for a team role", mlog.String("group_id", group.Id), mlog.String("user_id", userID), mlog.Err(appErr))
 		}
 	}
+
+	// The channels only the role sees follow too.
+	a.syncRoleGatedChannels(rctx, group, userIDs, grant)
 }
 
 // syncTeamRoleForAllMembers grants or takes back a role from all its members, when it's restored or deleted.

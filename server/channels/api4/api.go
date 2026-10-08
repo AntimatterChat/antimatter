@@ -364,6 +364,7 @@ func Init(srv *app.Server) (*API, error) {
 	api.InitBot()
 	api.InitTeam()
 	api.InitChannel()
+	api.InitChannelOverrides()
 	api.InitPost()
 	api.InitFile()
 	api.InitUpload()

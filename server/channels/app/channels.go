@@ -77,6 +77,9 @@ type Channels struct {
 	managedCategoryGroupID string
 	managedCategoryFieldID string
 
+	// Antimatter: each channel's permission overrides, cached for permission checks (see channel_override.go).
+	channelOverrides sync.Map
+
 	AccountMigration einterfaces.AccountMigrationInterface
 	Compliance       einterfaces.ComplianceInterface
 	DataRetention    einterfaces.DataRetentionInterface

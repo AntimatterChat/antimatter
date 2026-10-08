@@ -98,7 +98,7 @@ func (a *App) SessionHasPermissionToTeams(rctx request.CTX, session model.Sessio
 //
 // hasPermission: true if the user has the specified permission for the channel, otherwise false.
 // isMember: used for auditing access without membership. True if the user is a member of the channel, otherwise false.
-func (a *App) SessionHasPermissionToChannel(rctx request.CTX, session model.Session, channelID string, permission *model.Permission) (hasPermission bool, isMember bool) {
+func (a *App) sessionHasPermissionToChannelByRoles(rctx request.CTX, session model.Session, channelID string, permission *model.Permission) (hasPermission bool, isMember bool) {
 	if channelID == "" {
 		return false, false
 	}
@@ -140,7 +140,7 @@ func (a *App) SessionHasPermissionToChannel(rctx request.CTX, session model.Sess
 }
 
 // SessionHasPermissionToChannels returns true only if user has access to all channels.
-func (a *App) SessionHasPermissionToChannels(rctx request.CTX, session model.Session, channelIDs []string, permission *model.Permission) bool {
+func (a *App) sessionHasPermissionToChannelsByRoles(rctx request.CTX, session model.Session, channelIDs []string, permission *model.Permission) bool {
 	if len(channelIDs) == 0 {
 		return true
 	}
@@ -210,7 +210,7 @@ func (a *App) SessionHasPermissionToGroup(session model.Session, groupID string,
 	return a.SessionHasPermissionTo(session, permission)
 }
 
-func (a *App) SessionHasPermissionToChannelByPost(session model.Session, postID string, permission *model.Permission) bool {
+func (a *App) sessionHasPermissionToChannelByPostByRoles(session model.Session, postID string, permission *model.Permission) bool {
 	if postID == "" {
 		return false
 	}
@@ -330,7 +330,7 @@ func (a *App) HasPermissionToTeam(rctx request.CTX, askingUserId string, teamID 
 //
 // hasPermission: true if the user has the specified permission for the channel, otherwise false.
 // isMember: used for auditing access without membership. True if the user is a member of the channel, otherwise false.
-func (a *App) HasPermissionToChannel(rctx request.CTX, askingUserId string, channelID string, permission *model.Permission) (hasPermission bool, isMember bool) {
+func (a *App) hasPermissionToChannelByRoles(rctx request.CTX, askingUserId string, channelID string, permission *model.Permission) (hasPermission bool, isMember bool) {
 	if channelID == "" || askingUserId == "" {
 		return false, false
 	}
@@ -360,7 +360,7 @@ func (a *App) HasPermissionToChannel(rctx request.CTX, askingUserId string, chan
 	return a.HasPermissionTo(rctx, askingUserId, permission), isMember
 }
 
-func (a *App) HasPermissionToChannelByPost(rctx request.CTX, askingUserId string, postID string, permission *model.Permission) bool {
+func (a *App) hasPermissionToChannelByPostByRoles(rctx request.CTX, askingUserId string, postID string, permission *model.Permission) bool {
 	if channelMember, err := a.Srv().Store().Channel().GetMemberForPost(postID, askingUserId); err == nil {
 		if a.RolesGrantPermission(channelMember.GetRoles(), permission.Id) {
 			return true

@@ -62,6 +62,7 @@ type Store interface {
 	Draft() DraftStore
 	ChannelGuard() ChannelGuardStore
 	ServerCategory() ServerCategoryStore
+	ChannelOverride() ChannelOverrideStore
 	MarkSystemRanUnitTests()
 	Close()
 	LockToMaster()
@@ -1115,6 +1116,13 @@ type ChannelGuardStore interface {
 	Delete(rctx request.CTX, channelID, pluginID string) (rowsAffected int64, err error)
 	GetForChannel(rctx request.CTX, channelID string) ([]*ChannelGuard, error)
 	GetAll(rctx request.CTX) ([]*ChannelGuard, error)
+}
+
+// ChannelOverrideStore keeps the permission overrides of channels (Antimatter), for roles and people.
+type ChannelOverrideStore interface {
+	GetForChannel(rctx request.CTX, channelID string) ([]*model.ChannelOverride, error)
+	Save(rctx request.CTX, override *model.ChannelOverride) (*model.ChannelOverride, error)
+	Delete(rctx request.CTX, channelID, targetType, targetID string) error
 }
 
 // ServerCategoryStore keeps the sidebar categories admins set up for everyone in a team (Antimatter).

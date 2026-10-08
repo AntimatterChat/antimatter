@@ -89,6 +89,8 @@ const (
 	AuditEventUpdateCategoryOrderForTeamForUser = "updateCategoryOrderForTeamForUser" // update display order of the categories
 	AuditEventUpdateServerCategories            = "updateServerCategories"            // replace the categories a team admin sets up for everyone
 	AuditEventUpdateTeamRolePermissions         = "updateTeamRolePermissions"         // set what an Antimatter team role grants
+	AuditEventSaveChannelOverride               = "saveChannelOverride"               // set what a role or person may do in a channel
+	AuditEventSetChannelRoleAccess              = "setChannelRoleAccess"              // make a channel for some roles only
 )
 
 // Channels

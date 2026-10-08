@@ -220,6 +220,26 @@ func (_m *Store) ChannelMemberHistory() store.ChannelMemberHistoryStore {
 	return r0
 }
 
+// ChannelOverride provides a mock function with no fields
+func (_m *Store) ChannelOverride() store.ChannelOverrideStore {
+	ret := _m.Called()
+
+	if len(ret) == 0 {
+		panic("no return value specified for ChannelOverride")
+	}
+
+	var r0 store.ChannelOverrideStore
+	if rf, ok := ret.Get(0).(func() store.ChannelOverrideStore); ok {
+		r0 = rf()
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(store.ChannelOverrideStore)
+		}
+	}
+
+	return r0
+}
+
 // CheckIntegrity provides a mock function with no fields
 func (_m *Store) CheckIntegrity() <-chan model.IntegrityCheckResult {
 	ret := _m.Called()

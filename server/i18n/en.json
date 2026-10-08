@@ -7205,6 +7205,36 @@
     "description": "Internal API error when the server fails to close out a user's join record in the channel member history (used for compliance exports)."
   },
   {
+    "id": "app.channel_override.get.app_error",
+    "translation": "Unable to get the channel's overrides.",
+    "description": "Error when a channel's permission overrides can't be read."
+  },
+  {
+    "id": "app.channel_override.role.app_error",
+    "translation": "The role isn't one of the channel's team.",
+    "description": "Error when a channel override or role access names a group that isn't a role of the channel's team."
+  },
+  {
+    "id": "app.channel_override.save.app_error",
+    "translation": "Unable to save the channel's override.",
+    "description": "Error when a channel's permission override can't be saved."
+  },
+  {
+    "id": "app.channel_override.team_channel_only.app_error",
+    "translation": "Only channels of a team have overrides.",
+    "description": "Error when asking for overrides of a direct or group message."
+  },
+  {
+    "id": "app.channel_role_access.get.app_error",
+    "translation": "Unable to get the roles of the channel.",
+    "description": "Error when a channel's role access can't be read."
+  },
+  {
+    "id": "app.channel_role_access.private_only.app_error",
+    "translation": "Only a private channel can be for some roles only.",
+    "description": "Error when making a public channel role-gated."
+  },
+  {
     "id": "app.cloud.preview_modal_bucket_url_not_configured",
     "translation": "Preview bucket URL is not configured",
     "description": "API error returned when the Cloud preview modal content cannot be loaded because its storage bucket URL is not set; mainly seen by admins/developers."
@@ -14280,6 +14310,26 @@
     "id": "model.channel_member.is_valid.user_id.app_error",
     "translation": "Invalid user id.",
     "description": "API validation error when saving a channel membership record whose user ID is malformed."
+  },
+  {
+    "id": "model.channel_override.both.app_error",
+    "translation": "An override can't both allow and deny {{.Permission}}.",
+    "description": "Validation error for a channel override allowing and denying the same permission."
+  },
+  {
+    "id": "model.channel_override.ids.app_error",
+    "translation": "invalid channel or target for the override.",
+    "description": "Validation error for a channel override without valid ids."
+  },
+  {
+    "id": "model.channel_override.permission.app_error",
+    "translation": "An override can't change {{.Permission}}.",
+    "description": "Validation error for a channel override with a permission overrides can't change."
+  },
+  {
+    "id": "model.channel_override.target_type.app_error",
+    "translation": "An override is for a role or a person.",
+    "description": "Validation error for a channel override whose target type is neither role nor user."
   },
   {
     "id": "model.cluster.is_valid.create_at.app_error",
