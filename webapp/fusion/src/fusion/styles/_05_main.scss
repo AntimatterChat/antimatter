@@ -153,7 +153,8 @@
 :is(.am-app, .am-layer) .am-team-pop > .am-btn { width: 100%; justify-content: center; }
 /* A team tag that only labels (in the member list's team headings) isn't a button. */
 :is(.am-app, .am-layer) .am-team-tag.am-static { cursor: default; letter-spacing: .05em; }
-:is(.am-app, .am-layer) .am-team-tag-field { flex: 0 0 120px; }
+/* A team's tag is a few letters: its field takes a narrow column beside the lead. */
+:is(.am-app, .am-layer) .am-field-row:has(> .am-team-tag-field) { grid-template-columns: 120px 1fr; }
 :is(.am-app, .am-layer) .am-body { color: var(--am-text); overflow-wrap: anywhere; }
 :is(.am-app, .am-layer) .am-body p { margin: 0; }
 :is(.am-app, .am-layer) .am-body code { font: 13px var(--am-font-mono); background: var(--am-raise); padding: 1px 5px; border-radius: 4px; }

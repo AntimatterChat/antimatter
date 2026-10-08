@@ -18,5 +18,6 @@
 :is(.am-app, .am-layer) .am-dialog-head h2 { margin: 0; }
 :is(.am-app, .am-layer) .am-field textarea { min-height: 80px; resize: vertical; padding: 8px 12px; border-radius: 9px; border: 1px solid var(--am-line); background: var(--am-side); outline: none; font: inherit; }
 :is(.am-app, .am-layer) .am-field textarea:focus { border-color: var(--am-matter); }
-:is(.am-app, .am-layer) .am-field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+// Fields side by side start at the top: a help line under one mustn't push the other's control down.
+:is(.am-app, .am-layer) .am-field-row { display: grid; grid-template-columns: 1fr 1fr; align-items: start; gap: 12px; }
 :is(.am-app, .am-layer) .am-req { color: var(--am-danger); }
