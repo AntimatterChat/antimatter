@@ -10,6 +10,7 @@ import {get as getPreference, isCollapsedThreadsEnabled} from 'mattermost-redux/
 import {getMyTeams} from 'mattermost-redux/selectors/entities/teams';
 import {calculateUnreadCount} from 'mattermost-redux/utils/channel_utils';
 
+import {getOneClickReactionEmojis} from 'selectors/emojis';
 import {getCurrentLocale} from 'selectors/i18n';
 
 import {Preferences} from 'utils/constants';
@@ -64,5 +65,12 @@ export function getLastTeamChannelName(state: GlobalState, teamId: string): stri
     });
     return last.name;
 }
+
+// getOneClickEmoji names the three emoji used most recently, for the one-click reactions over messages.
+export const getOneClickEmoji: (state: GlobalState) => string[] = createSelector(
+    'fusionGetOneClickEmoji',
+    getOneClickReactionEmojis,
+    (emojis) => emojis.map((emoji) => ('short_name' in emoji ? emoji.short_name : emoji.name)),
+);
 
 export {getChannelMessageCount};

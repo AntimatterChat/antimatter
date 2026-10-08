@@ -151,3 +151,16 @@
   font-size: 14px;
   box-shadow: var(--am-shadow);
 }
+
+/* Settings: section titles, menus, and the keyword chips. */
+:is(.am-app, .am-layer) .am-modal .am-pane h3.am-set-section { margin: 26px 0 2px; color: var(--am-muted); font: 700 11px var(--am-font-ui); letter-spacing: .07em; text-transform: uppercase; }
+:is(.am-app, .am-layer) .am-select { flex: none; height: 34px; padding: 0 28px 0 10px; border-radius: 8px; border: 1px solid var(--am-line); background: var(--am-side); color: var(--am-text); font: inherit; }
+:is(.am-app, .am-layer) .am-chips-input { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; min-height: 38px; padding: 4px 8px; border-radius: 9px; border: 1px solid var(--am-line); background: var(--am-side); }
+:is(.am-app, .am-layer) .am-chips-input:focus-within { border-color: var(--am-matter); }
+:is(.am-app, .am-layer) .am-chips-input input { flex: 1; min-width: 120px; height: 28px; border: 0; outline: none; background: transparent; }
+:is(.am-app, .am-layer) .am-chip { display: inline-flex; align-items: center; gap: 4px; height: 24px; padding: 0 4px 0 9px; border-radius: 12px; background: var(--am-raise-2); font-size: 13px; }
+:is(.am-app, .am-layer) .am-chip button { display: grid; place-items: center; width: 18px; height: 18px; border-radius: 50%; color: var(--am-muted); }
+:is(.am-app, .am-layer) .am-chip button:hover { background: var(--am-hover); color: var(--am-text); }
+:is(.am-app, .am-layer) .am-field textarea { min-height: 72px; padding: 8px 12px; border-radius: 9px; border: 1px solid var(--am-line); background: var(--am-side); outline: none; font: inherit; resize: vertical; }
+:is(.am-app, .am-layer) .am-theme-code { display: flex; gap: 8px; align-items: center; margin: 8px 0 4px; }
+:is(.am-app, .am-layer) .am-theme-code input { flex: 1; min-width: 0; height: 36px; padding: 0 10px; border-radius: 9px; border: 1px solid var(--am-line); background: var(--am-side); outline: none; font: 13px var(--am-font-mono); }

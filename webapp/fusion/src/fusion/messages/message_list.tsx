@@ -14,6 +14,7 @@ import {loadLatestPosts, loadPosts, loadPostsAround, syncPostsInChannel} from 'a
 import PostMessageView from 'components/post_view/post_message_view';
 
 import Icon from 'fusion/components/icon';
+import {useDisplayPrefs} from 'fusion/hooks/display';
 import {am} from 'fusion/utils/class_names';
 import {PostRequestTypes} from 'utils/constants';
 
@@ -62,6 +63,7 @@ export default function MessageList({channelId, focusedPostId, scrollRef, emptyT
     const dayLabel = useDayLabel();
     const getChunkAround = useMemo(() => makeGetPostsChunkAroundPost(), []);
     const prepare = useMemo(() => makePreparePostIdsForPostList(), []);
+    const prefs = useDisplayPrefs();
     const [loadingOlder, setLoadingOlder] = useState(false);
     const [loadingNewer, setLoadingNewer] = useState(false);
 
@@ -128,8 +130,15 @@ export default function MessageList({channelId, focusedPostId, scrollRef, emptyT
         if (opened.current !== key) {
             opened.current = key;
             const target = focusedPostId ? document.getElementById(`post_${focusedPostId}`) : null;
+
+            // An unread conversation opens at its Unread line, or at the newest message, as the reader chose.
+            const unreadLine = !focusedPostId && prefs.startFromLeftOff ? view.querySelector('.am-day.am-new') : null;
             if (target) {
                 target.scrollIntoView({block: 'center'});
+                stick.current = false;
+            } else if (unreadLine && unreadLine.getBoundingClientRect().top - view.getBoundingClientRect().top > view.clientHeight / 3) {
+                unreadLine.scrollIntoView({block: 'start'});
+                view.scrollTop -= 8;
                 stick.current = false;
             } else {
                 view.scrollTop = view.scrollHeight;
@@ -152,7 +161,7 @@ export default function MessageList({channelId, focusedPostId, scrollRef, emptyT
         lastSeenNewest.current = newest;
         prevHeight.current = view.scrollHeight;
         prevFirst.current = realPostIds[0];
-    }, [rows, realPostIds, channelId, focusedPostId, scrollRef]);
+    }, [rows, realPostIds, channelId, focusedPostId, scrollRef, prefs.startFromLeftOff]);
 
     const loadOlder = useCallback(async () => {
         if (loadingOlder || chunk?.oldest || !realPostIds.length) {
@@ -242,7 +251,7 @@ export default function MessageList({channelId, focusedPostId, scrollRef, emptyT
     return (
         <div
             ref={listRef}
-            className={am('msgs')}
+            className={am('msgs', {compact: prefs.compact, centered: prefs.centered})}
         >
             {unreadAbove && unreadCount > 0 && (
                 <div className={am('jump', 'jump-top')}>

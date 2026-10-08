@@ -27,6 +27,7 @@ import LeaveChannelModal from 'components/leave_channel_modal';
 import Icon from 'fusion/components/icon';
 import {Popover} from 'fusion/components/layer';
 import {MenuItem, MenuSeparator} from 'fusion/components/menu';
+import CopyIdItem from 'fusion/popovers/copy_id_item';
 import {useDialogs} from 'fusion/shell/dialogs_context';
 import {useToast} from 'fusion/shell/toast_context';
 import {am} from 'fusion/utils/class_names';
@@ -188,6 +189,10 @@ export default function ChannelMenu({channel, anchor, point, onClose}: Props) {
                     />
                 </>
             )}
+            <CopyIdItem
+                id={channel.id}
+                onDone={onClose}
+            />
         </Popover>
     );
 }

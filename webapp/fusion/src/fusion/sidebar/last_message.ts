@@ -14,6 +14,7 @@ import {getPost, getPostIdsInChannel} from 'mattermost-redux/selectors/entities/
 import {isCollapsedThreadsEnabled} from 'mattermost-redux/selectors/entities/preferences';
 import {getCurrentUserId} from 'mattermost-redux/selectors/entities/users';
 
+import {useDisplayPrefs} from 'fusion/hooks/display';
 import {isSpoiler} from 'fusion/messages/spoiler';
 import {plainText} from 'fusion/utils/plain_text';
 import {isSystemMessage} from 'utils/post_utils';
@@ -59,6 +60,7 @@ export function useLastMessage(channel: Channel): string {
     const {formatMessage} = useIntl();
     const me = useSelector(getCurrentUserId);
     const crt = useSelector(isCollapsedThreadsEnabled);
+    const {streamer} = useDisplayPrefs();
 
     // From the store when the conversation's messages are loaded.
     const loaded = useSelector((state: GlobalState) => {
@@ -109,6 +111,11 @@ export function useLastMessage(channel: Channel): string {
     }, [loaded, channel.id, channel.last_post_at, crt, me]);
 
     const last = loaded ? describe(loaded, me, loaded.create_at) : fetched;
+
+    // Streamer mode keeps conversations' messages off the screen.
+    if (streamer) {
+        return '';
+    }
     const text = last?.spoiler ? formatMessage({id: 'fusion.home.spoiler', defaultMessage: 'Spoiler'}) : last?.text;
     if (!last || !text) {
         return '';

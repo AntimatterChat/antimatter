@@ -3,7 +3,7 @@
 
 import React, {useRef, useState} from 'react';
 import {useIntl} from 'react-intl';
-import {useDispatch, useSelector} from 'react-redux';
+import {shallowEqual, useDispatch, useSelector} from 'react-redux';
 
 import type {Post} from '@mattermost/types/posts';
 
@@ -28,10 +28,12 @@ import CallCard, {useCallCard} from 'fusion/calls/call_card';
 import Avatar from 'fusion/components/avatar';
 import Icon from 'fusion/components/icon';
 import type {IconName} from 'fusion/components/icon';
+import {nameColor, useDisplayPrefs} from 'fusion/hooks/display';
 import {useDisplayName} from 'fusion/hooks/users';
 import EmojiPicker from 'fusion/popovers/emoji_picker';
 import {useUserMenu} from 'fusion/popovers/user_menu';
 import UserPopover from 'fusion/popovers/user_popover';
+import {getOneClickEmoji} from 'fusion/selectors';
 import {am} from 'fusion/utils/class_names';
 import {areConsecutivePostsBySameUser, isFromBot, isFromWebhook, isSystemMessage} from 'utils/post_utils';
 
@@ -117,6 +119,8 @@ export default function Message({postId, previousPostId, inThread = false, highl
     const [popover, setPopover] = useState<'user' | 'menu' | 'react' | 'react-more' | null>(null);
     const callCard = useCallCard(post);
     const inlineReplies = useInlineRepliesEnabled();
+    const prefs = useDisplayPrefs();
+    const recentEmoji = useSelector(getOneClickEmoji, shallowEqual);
     const [spoilerShown, setSpoilerShown] = useSpoilerShown(postId);
 
     if (!post) {
@@ -166,6 +170,21 @@ export default function Message({postId, previousPostId, inThread = false, highl
             role='toolbar'
             aria-label={formatMessage({id: 'fusion.message.tools', defaultMessage: 'Message actions'})}
         >
+            {/* One-click reactions: the most recent emoji, to react without the picker. */}
+            {prefs.oneClickReactions && recentEmoji.map((emojiName) => (
+                <button
+                    key={emojiName}
+                    className={am('quick-emoji')}
+                    title={formatMessage({id: 'fusion.messageMenu.reactWith', defaultMessage: 'React with :{name}:'}, {name: emojiName})}
+                    aria-label={formatMessage({id: 'fusion.messageMenu.reactWith', defaultMessage: 'React with :{name}:'}, {name: emojiName})}
+                    onClick={() => dispatch(toggleReaction(post.id, emojiName))}
+                >
+                    <RenderEmoji
+                        emojiName={emojiName}
+                        size={16}
+                    />
+                </button>
+            ))}
             <button
                 ref={reactRef}
                 title={formatMessage({id: 'fusion.message.react', defaultMessage: 'Add reaction'})}
@@ -464,6 +483,7 @@ export default function Message({postId, previousPostId, inThread = false, highl
                 <div className={am('msg-head')}>
                     <button
                         className={am('author')}
+                        style={prefs.colorize && !webhook && !bot ? {color: nameColor(post.user_id)} : undefined}
                         onClick={() => setPopover('user')}
                         onContextMenu={(e) => openUserMenu(post.user_id, e)}
                     >

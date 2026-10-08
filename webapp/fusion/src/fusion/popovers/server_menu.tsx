@@ -18,6 +18,7 @@ import {isUnreadFilterEnabled} from 'selectors/views/channel_sidebar';
 
 import {Popover} from 'fusion/components/layer';
 import {Flyout, MenuHeading, MenuItem, MenuSeparator} from 'fusion/components/menu';
+import CopyIdItem from 'fusion/popovers/copy_id_item';
 import {useDialogs} from 'fusion/shell/dialogs_context';
 import {useSettings} from 'fusion/shell/settings_context';
 import {useToast} from 'fusion/shell/toast_context';
@@ -210,6 +211,10 @@ export default function ServerMenu({team: forTeam, anchor, point, width, onClose
                 danger={true}
                 label={formatMessage({id: 'fusion.serverMenu.leave', defaultMessage: 'Leave team'})}
                 onClick={inTeam(() => dispatch(openLeaveTeam()))}
+            />
+            <CopyIdItem
+                id={team?.id || ''}
+                onDone={onClose}
             />
         </Popover>
     );

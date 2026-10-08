@@ -18,6 +18,7 @@ import {openDirectChannelToUserId} from 'actions/channel_actions';
 import {Dialog, Popover} from 'fusion/components/layer';
 import {MenuItem, MenuSeparator} from 'fusion/components/menu';
 import {useDisplayName, useUser} from 'fusion/hooks/users';
+import CopyIdItem from 'fusion/popovers/copy_id_item';
 import {useToast} from 'fusion/shell/toast_context';
 import {am} from 'fusion/utils/class_names';
 import {channelPath} from 'fusion/utils/paths';
@@ -196,6 +197,10 @@ function UserMenu({target, onProfile, onRemoveFromTeam, onClose}: {target: Targe
                     onClick={onRemoveFromTeam}
                 />
             )}
+            <CopyIdItem
+                id={userId}
+                onDone={onClose}
+            />
         </Popover>
     );
 }

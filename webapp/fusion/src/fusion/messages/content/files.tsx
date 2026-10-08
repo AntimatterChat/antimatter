@@ -16,6 +16,7 @@ import {getFileDownloadUrl, getFilePreviewUrl, getFileUrl, getFormattedFileSize,
 import FilePreviewModal from 'components/file_preview_modal';
 
 import Icon from 'fusion/components/icon';
+import {useDisplayPrefs} from 'fusion/hooks/display';
 import {am} from 'fusion/utils/class_names';
 import {openDialog} from 'fusion/utils/modals';
 import {ModalIdentifiers} from 'utils/constants';
@@ -49,6 +50,8 @@ export default function Files({post}: {post: Post}) {
     const stored = useSelector((state: GlobalState) => getFiles(state, post.id));
     const svgs = useSelector((state: GlobalState) => getConfig(state).EnableSVGs === 'true');
     const [lightbox, openImage] = useLightbox();
+    const prefs = useDisplayPrefs();
+    const [imagesOpen, setImagesOpen] = useState<boolean | null>(null);
 
     // The menu of an attachment: from its ⋯ button (anchor) or a right-click (point).
     const [menu, setMenu] = useState<{file: FileInfo; anchor?: HTMLElement; point?: {x: number; y: number}} | null>(null);
@@ -88,12 +91,33 @@ export default function Files({post}: {post: Post}) {
         return null;
     }
 
+    // Images can be folded, one message at a time; they start folded or open as the reader chose (/expand, /collapse).
+    const imageCount = files.filter((f) => isImage(f, svgs)).length;
+    const imagesShown = imagesOpen ?? !prefs.collapsePreviews;
+
     const preview = (index: number) => dispatch(openDialog(ModalIdentifiers.FILE_PREVIEW_MODAL, FilePreviewModal, {postId: post.id, post, fileInfos: files, startIndex: index}));
 
     return (
         <div className={am('files')}>
+            {imageCount > 0 && !imagesShown && (
+                <button
+                    type='button'
+                    className={am('img-toggle', {open: imagesShown})}
+                    aria-expanded={imagesShown}
+                    onClick={() => setImagesOpen(!imagesShown)}
+                >
+                    <Icon
+                        name='chev'
+                        size='xs'
+                    />
+                    {imagesShown ? formatMessage({id: 'fusion.files.hideImages', defaultMessage: '{count, plural, one {Hide image} other {Hide # images}}'}, {count: imageCount}) : formatMessage({id: 'fusion.files.showImages', defaultMessage: '{count, plural, one {Show image} other {Show # images}}'}, {count: imageCount})}
+                </button>
+            )}
             {files.map((file, index) => {
                 const size = getFormattedFileSize(file.size);
+                if (isImage(file, svgs) && !imagesShown) {
+                    return null;
+                }
                 if (isImage(file, svgs)) {
                     const image = {src: imageSrc(file), name: file.name, size, width: file.width, height: file.height, download: getFileDownloadUrl(file.id)};
                     const ratio = file.width && file.height ? `${file.width} / ${file.height}` : undefined;
@@ -113,6 +137,29 @@ export default function Files({post}: {post: Post}) {
                                 alt=''
                                 loading='lazy'
                             />
+                            <span
+                                role='button'
+                                tabIndex={0}
+                                className={am('att-more', 'att-fold')}
+                                title={formatMessage({id: 'fusion.files.hideImages', defaultMessage: '{count, plural, one {Hide image} other {Hide # images}}'}, {count: imageCount})}
+                                aria-label={formatMessage({id: 'fusion.files.hideImages', defaultMessage: '{count, plural, one {Hide image} other {Hide # images}}'}, {count: imageCount})}
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    setImagesOpen(false);
+                                }}
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter' || e.key === ' ') {
+                                        e.preventDefault();
+                                        e.stopPropagation();
+                                        setImagesOpen(false);
+                                    }
+                                }}
+                            >
+                                <Icon
+                                    name='chev'
+                                    size='sm'
+                                />
+                            </span>
                             {moreButton(file)}
                         </button>
                     );

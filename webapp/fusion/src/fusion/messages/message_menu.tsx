@@ -29,6 +29,7 @@ import Icon from 'fusion/components/icon';
 import {Popover} from 'fusion/components/layer';
 import {Flyout, MenuHeading, MenuItem, MenuSeparator} from 'fusion/components/menu';
 import {CustomTimeForm} from 'fusion/composer/schedule';
+import CopyIdItem from 'fusion/popovers/copy_id_item';
 import {useDialogs} from 'fusion/shell/dialogs_context';
 import {useToast} from 'fusion/shell/toast_context';
 import {am} from 'fusion/utils/class_names';
@@ -309,6 +310,10 @@ export default function MessageMenu({post, anchor, inThread, onClose, onMoreReac
                     onClick={run(() => dispatch(openDialog(ModalIdentifiers.FLAG_POST, FlagPostModal, {postId: post.id})))}
                 />
             )}
+            <CopyIdItem
+                id={post.id}
+                onDone={onClose}
+            />
         </Popover>
     );
 }

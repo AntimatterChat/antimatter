@@ -1,0 +1,216 @@
+// Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
+// See LICENSE.txt for license information.
+
+import React, {useState} from 'react';
+import {useIntl} from 'react-intl';
+import {useDispatch, useSelector} from 'react-redux';
+
+import {saveTheme} from 'mattermost-redux/actions/preferences';
+import {Preferences as ReduxPreferences} from 'mattermost-redux/constants';
+import {getConfig} from 'mattermost-redux/selectors/entities/general';
+import {getTheme} from 'mattermost-redux/selectors/entities/preferences';
+import type {Theme} from 'mattermost-redux/selectors/entities/preferences';
+
+import {CATEGORY_FUSION_DISPLAY, DEVELOPER_MODE, STREAMER_MODE} from 'fusion/hooks/display';
+import {useToast} from 'fusion/shell/toast_context';
+import {am} from 'fusion/utils/class_names';
+import {Preferences} from 'utils/constants';
+import {copyToClipboard} from 'utils/utils';
+
+import {Choice, Section, Toggle, usePreference} from './settings_controls';
+
+// Theme share codes: "am1:" and the theme's colours, to pass a custom theme on as text.
+const THEME_CODE_PREFIX = 'am1:';
+
+export function themeToCode(theme: Theme): string {
+    return THEME_CODE_PREFIX + btoa(unescape(encodeURIComponent(JSON.stringify(theme))));
+}
+
+export function codeToTheme(code: string): Theme | null {
+    const text = code.trim();
+    if (!text.startsWith(THEME_CODE_PREFIX)) {
+        return null;
+    }
+    try {
+        const theme = JSON.parse(decodeURIComponent(escape(atob(text.slice(THEME_CODE_PREFIX.length)))));
+        if (!theme || typeof theme !== 'object' || typeof theme.centerChannelBg !== 'string' || typeof theme.buttonBg !== 'string') {
+            return null;
+        }
+        return {...theme, type: 'custom'} as Theme;
+    } catch {
+        return null;
+    }
+}
+
+// DisplayRows are the Appearance pane's display settings: message layout, name colours, channel width, and the theme
+// share codes.
+export function DisplayRows() {
+    const {formatMessage} = useIntl();
+    const dispatch = useDispatch();
+    const toast = useToast();
+    const theme = useSelector(getTheme);
+    const [display, setDisplay] = usePreference(Preferences.CATEGORY_DISPLAY_SETTINGS, Preferences.MESSAGE_DISPLAY, Preferences.MESSAGE_DISPLAY_DEFAULT);
+    const [colorize, setColorize] = usePreference(Preferences.CATEGORY_DISPLAY_SETTINGS, Preferences.COLORIZE_USERNAMES, Preferences.COLORIZE_USERNAMES_DEFAULT);
+    const [width, setWidth] = usePreference(Preferences.CATEGORY_DISPLAY_SETTINGS, Preferences.CHANNEL_DISPLAY_MODE, Preferences.CHANNEL_DISPLAY_MODE_DEFAULT);
+    const [code, setCode] = useState('');
+
+    const applyCode = () => {
+        const imported = codeToTheme(code);
+        if (!imported) {
+            toast(formatMessage({id: 'fusion.settings.themeCodeBad', defaultMessage: 'That isn\'t a theme code'}));
+            return;
+        }
+        dispatch(saveTheme('', imported));
+        setCode('');
+        toast(formatMessage({id: 'fusion.settings.themeCodeApplied', defaultMessage: 'Theme applied'}));
+    };
+
+    return (
+        <>
+            <Section title={formatMessage({id: 'fusion.settings.display', defaultMessage: 'Display'})}/>
+            <Choice
+                title={formatMessage({id: 'fusion.settings.messageDisplay', defaultMessage: 'Message display'})}
+                desc={formatMessage({id: 'fusion.settings.messageDisplayDesc', defaultMessage: 'Compact fits more messages: no pictures, tighter rows.'})}
+                value={display}
+                options={[
+                    [Preferences.MESSAGE_DISPLAY_CLEAN, formatMessage({id: 'fusion.settings.displayStandard', defaultMessage: 'Standard'})],
+                    [Preferences.MESSAGE_DISPLAY_COMPACT, formatMessage({id: 'fusion.settings.displayCompact', defaultMessage: 'Compact'})],
+                ]}
+                onChange={setDisplay}
+            />
+            <Toggle
+                title={formatMessage({id: 'fusion.settings.colorize', defaultMessage: 'Colour names'})}
+                desc={formatMessage({id: 'fusion.settings.colorizeDesc', defaultMessage: 'Give each person\'s name in messages a colour of their own.'})}
+                on={colorize === 'true'}
+                onChange={(on) => setColorize(String(on))}
+            />
+            <Choice
+                title={formatMessage({id: 'fusion.settings.channelWidth', defaultMessage: 'Message width'})}
+                value={width}
+                options={[
+                    [Preferences.CHANNEL_DISPLAY_MODE_FULL_SCREEN, formatMessage({id: 'fusion.settings.widthFull', defaultMessage: 'Full width'})],
+                    [Preferences.CHANNEL_DISPLAY_MODE_CENTERED, formatMessage({id: 'fusion.settings.widthCentered', defaultMessage: 'Centred'})],
+                ]}
+                onChange={setWidth}
+            />
+            <Section title={formatMessage({id: 'fusion.settings.themeCode', defaultMessage: 'Share a theme'})}/>
+            <div className={am('theme-code')}>
+                <button
+                    type='button'
+                    className={am('btn')}
+                    onClick={() => {
+                        copyToClipboard(themeToCode(theme));
+                        toast(formatMessage({id: 'fusion.settings.themeCodeCopied', defaultMessage: 'Theme code copied'}));
+                    }}
+                >
+                    {formatMessage({id: 'fusion.settings.copyThemeCode', defaultMessage: 'Copy my theme\'s code'})}
+                </button>
+                <input
+                    value={code}
+                    placeholder={formatMessage({id: 'fusion.settings.themeCodePlaceholder', defaultMessage: 'Paste a theme code (am1:…)'})}
+                    aria-label={formatMessage({id: 'fusion.settings.themeCodeLabel', defaultMessage: 'Theme code'})}
+                    onChange={(e) => setCode(e.target.value)}
+                    onKeyDown={(e) => e.key === 'Enter' && applyCode()}
+                />
+                <button
+                    type='button'
+                    className={am('btn', 'primary')}
+                    disabled={!code.trim()}
+                    onClick={applyCode}
+                >
+                    {formatMessage({id: 'fusion.settings.applyThemeCode', defaultMessage: 'Apply'})}
+                </button>
+            </div>
+        </>
+    );
+}
+
+// ReadingRows are the Messages pane's reading settings: formatting, image previews, one-click reactions, and where
+// unread channels open.
+export function ReadingRows() {
+    const {formatMessage} = useIntl();
+    const [formatting, setFormatting] = usePreference(Preferences.CATEGORY_ADVANCED_SETTINGS, 'formatting', 'true');
+    const [collapse, setCollapse] = usePreference(Preferences.CATEGORY_DISPLAY_SETTINGS, Preferences.COLLAPSE_DISPLAY, Preferences.COLLAPSE_DISPLAY_DEFAULT);
+    const [oneClick, setOneClick] = usePreference(Preferences.CATEGORY_DISPLAY_SETTINGS, Preferences.ONE_CLICK_REACTIONS_ENABLED, Preferences.ONE_CLICK_REACTIONS_ENABLED_DEFAULT);
+    const [scroll, setScroll] = usePreference(Preferences.CATEGORY_ADVANCED_SETTINGS, Preferences.UNREAD_SCROLL_POSITION, Preferences.UNREAD_SCROLL_POSITION_START_FROM_LEFT);
+
+    return (
+        <>
+            <Section title={formatMessage({id: 'fusion.settings.reading', defaultMessage: 'Reading'})}/>
+            <Choice
+                title={formatMessage({id: 'fusion.settings.scrollPosition', defaultMessage: 'Open unread conversations at'})}
+                value={scroll}
+                options={[
+                    [Preferences.UNREAD_SCROLL_POSITION_START_FROM_LEFT, formatMessage({id: 'fusion.settings.scrollLeftOff', defaultMessage: 'Where I left off'})],
+                    [Preferences.UNREAD_SCROLL_POSITION_START_FROM_NEWEST, formatMessage({id: 'fusion.settings.scrollNewest', defaultMessage: 'The newest message'})],
+                ]}
+                onChange={setScroll}
+            />
+            <Toggle
+                title={formatMessage({id: 'fusion.settings.expandImages', defaultMessage: 'Show images expanded'})}
+                desc={formatMessage({id: 'fusion.settings.expandImagesDesc', defaultMessage: 'Otherwise images start folded, to open one by one. /expand and /collapse switch this too.'})}
+                on={collapse !== 'true'}
+                onChange={(on) => setCollapse(String(!on))}
+            />
+            <Toggle
+                title={formatMessage({id: 'fusion.settings.oneClick', defaultMessage: 'One-click reactions'})}
+                desc={formatMessage({id: 'fusion.settings.oneClickDesc', defaultMessage: 'Your recent emoji in the toolbar over messages.'})}
+                on={oneClick === 'true'}
+                onChange={(on) => setOneClick(String(on))}
+            />
+            <Toggle
+                title={formatMessage({id: 'fusion.settings.formatting', defaultMessage: 'Message formatting'})}
+                desc={formatMessage({id: 'fusion.settings.formattingDesc', defaultMessage: 'Show links, emoji, bold and the rest of Markdown. Otherwise messages show as plain text.'})}
+                on={formatting !== 'false'}
+                onChange={(on) => setFormatting(String(on))}
+            />
+        </>
+    );
+}
+
+// AdvancedPane has the settings few people need: streamer mode, developer mode, and the classic performance debugging
+// switches when the server allows them.
+export function AdvancedPane() {
+    const {formatMessage} = useIntl();
+    const config = useSelector(getConfig);
+    const [streamer, setStreamer] = usePreference(CATEGORY_FUSION_DISPLAY, STREAMER_MODE, 'false');
+    const [developer, setDeveloper] = usePreference(CATEGORY_FUSION_DISPLAY, DEVELOPER_MODE, 'false');
+    const [noPlugins, setNoPlugins] = usePreference(ReduxPreferences.CATEGORY_PERFORMANCE_DEBUGGING, ReduxPreferences.NAME_DISABLE_CLIENT_PLUGINS, 'false');
+    const [noTyping, setNoTyping] = usePreference(ReduxPreferences.CATEGORY_PERFORMANCE_DEBUGGING, ReduxPreferences.NAME_DISABLE_TYPING_MESSAGES, 'false');
+
+    return (
+        <>
+            <h2>{formatMessage({id: 'fusion.settings.advanced', defaultMessage: 'Advanced'})}</h2>
+            <p className={am('lead')}>{formatMessage({id: 'fusion.settings.advancedLead', defaultMessage: 'Settings for streaming, development and troubleshooting.'})}</p>
+            <Toggle
+                title={formatMessage({id: 'fusion.settings.streamer', defaultMessage: 'Streamer mode'})}
+                desc={formatMessage({id: 'fusion.settings.streamerDesc', defaultMessage: 'Hide your email address and conversation previews, and silence desktop notifications, e.g. while sharing your screen.'})}
+                on={streamer === 'true'}
+                onChange={(on) => setStreamer(String(on))}
+            />
+            <Toggle
+                title={formatMessage({id: 'fusion.settings.developer', defaultMessage: 'Developer mode'})}
+                desc={formatMessage({id: 'fusion.settings.developerDesc', defaultMessage: 'Add Copy ID to the menus of messages, channels, teams and people, for the API and bots.'})}
+                on={developer === 'true'}
+                onChange={(on) => setDeveloper(String(on))}
+            />
+            {config.EnableClientPerformanceDebugging === 'true' && (
+                <>
+                    <Section title={formatMessage({id: 'fusion.settings.performance', defaultMessage: 'Performance debugging'})}/>
+                    <Toggle
+                        title={formatMessage({id: 'fusion.settings.noPlugins', defaultMessage: 'Turn off plugins in this browser'})}
+                        desc={formatMessage({id: 'fusion.settings.noPluginsDesc', defaultMessage: 'Takes effect after reloading the page.'})}
+                        on={noPlugins === 'true'}
+                        onChange={(on) => setNoPlugins(String(on))}
+                    />
+                    <Toggle
+                        title={formatMessage({id: 'fusion.settings.noTyping', defaultMessage: 'Don\'t send typing notices'})}
+                        desc={formatMessage({id: 'fusion.settings.noTypingDesc', defaultMessage: 'Others don\'t see when you type.'})}
+                        on={noTyping === 'true'}
+                        onChange={(on) => setNoTyping(String(on))}
+                    />
+                </>
+            )}
+        </>
+    );
+}

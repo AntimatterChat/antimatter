@@ -8,9 +8,8 @@ import type {ChannelCategory} from '@mattermost/types/channel_categories';
 
 import {setCategoryMuted, setCategorySorting} from 'mattermost-redux/actions/channel_categories';
 
-import {renderWithContext, screen, userEvent} from 'tests/react_testing_utils';
-
 import {openDeleteCategory, openRenameCategory} from 'fusion/utils/modals';
+import {renderWithContext, screen, userEvent} from 'tests/react_testing_utils';
 
 import CategoryMenu from './category_menu';
 

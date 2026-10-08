@@ -216,3 +216,12 @@
 :is(.am-app, .am-layer) .am-thread-sum .am-named { display: inline-flex; align-items: center; gap: 4px; color: var(--am-text-2); font-weight: 600; min-width: 0; max-width: 260px; }
 :is(.am-app, .am-layer) .am-thread-sum .am-named .am-ic { flex: none; }
 :is(.am-app, .am-layer) .am-thread-sum .am-named .am-nm { min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* Compact message display: no pictures, the time in the gutter of every message, tighter rows. */
+:is(.am-app, .am-layer) .am-msgs.am-compact .am-msg { padding-top: 2px; padding-bottom: 2px; }
+:is(.am-app, .am-layer) .am-msgs.am-compact .am-msg > :is(button[data-user], .am-hook-av, .am-av) { visibility: hidden; height: 0; }
+:is(.am-app, .am-layer) .am-msgs.am-compact .am-msg:not(.am-cont) { margin-top: 6px; }
+/* Centred message width. */
+:is(.am-app, .am-layer) .am-msgs.am-centered { max-width: 1000px; margin: 0 auto; }
+/* One-click reactions in the toolbar over messages. */
+:is(.am-app, .am-layer) .am-msg-tools .am-quick-emoji { display: grid; place-items: center; }

@@ -7,13 +7,13 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import {CollapsedThreads} from '@mattermost/types/config';
 import type {Session} from '@mattermost/types/sessions';
-import type {UserNotifyProps, UserProfile} from '@mattermost/types/users';
+import type {UserProfile} from '@mattermost/types/users';
 
-import {savePreferences, saveTheme} from 'mattermost-redux/actions/preferences';
+import {saveTheme} from 'mattermost-redux/actions/preferences';
 import {getMe, getSessions, revokeSession, setDefaultProfileImage, updateMe, updateUserPassword, uploadProfileImage} from 'mattermost-redux/actions/users';
 import {Permissions, Preferences} from 'mattermost-redux/constants';
 import {getConfig, getPasswordConfig} from 'mattermost-redux/selectors/entities/general';
-import {get as getPreference, getCollapsedThreadsPreference, getTheme, isCollapsedThreadsAllowed, shouldShowUnreadsCategory, DEFAULT_VISIBLE_DM_GM_LIMIT} from 'mattermost-redux/selectors/entities/preferences';
+import {getCollapsedThreadsPreference, getTheme, isCollapsedThreadsAllowed, shouldShowUnreadsCategory, DEFAULT_VISIBLE_DM_GM_LIMIT} from 'mattermost-redux/selectors/entities/preferences';
 import type {Theme} from 'mattermost-redux/selectors/entities/preferences';
 import {haveISystemPermission} from 'mattermost-redux/selectors/entities/roles';
 import {getCurrentTimezoneLabel} from 'mattermost-redux/selectors/entities/timezone';
@@ -25,6 +25,7 @@ import {switchWebUI} from 'actions/web_ui';
 import Avatar from 'fusion/components/avatar';
 import Icon from 'fusion/components/icon';
 import {Dialog} from 'fusion/components/layer';
+import {useDisplayPrefs} from 'fusion/hooks/display';
 import {am} from 'fusion/utils/class_names';
 import {openClassicUserSettings} from 'fusion/utils/modals';
 import {getLanguages} from 'i18n/i18n';
@@ -38,8 +39,11 @@ import type {WebUI} from 'utils/web_ui';
 import type {GlobalState} from 'types/store';
 
 import CustomThemeEditor, {useStartCustomTheme} from './custom_theme_editor';
+import {AdvancedPane, DisplayRows, ReadingRows} from './display_settings';
+import NotificationsPane from './notifications_pane';
+import {Action, Choice, Toggle, usePreference} from './settings_controls';
 
-export type SettingsTab = 'account' | 'security' | 'notifications' | 'appearance' | 'messages' | 'language';
+export type SettingsTab = 'account' | 'security' | 'notifications' | 'appearance' | 'messages' | 'language' | 'advanced';
 
 const TABS: Array<[SettingsTab, {id: string; defaultMessage: string}]> = [
     ['account', {id: 'fusion.settings.account', defaultMessage: 'My account'}],
@@ -48,83 +52,8 @@ const TABS: Array<[SettingsTab, {id: string; defaultMessage: string}]> = [
     ['appearance', {id: 'fusion.settings.appearance', defaultMessage: 'Appearance'}],
     ['messages', {id: 'fusion.settings.messages', defaultMessage: 'Messages'}],
     ['language', {id: 'fusion.settings.language', defaultMessage: 'Language & time'}],
+    ['advanced', {id: 'fusion.settings.advanced', defaultMessage: 'Advanced'}],
 ];
-
-function Toggle({title, desc, on, onChange}: {title: string; desc: string; on: boolean; onChange: (on: boolean) => void}) {
-    return (
-        <div className={am('toggle-row')}>
-            <div className={am('txt')}>
-                <b>{title}</b>
-                <span>{desc}</span>
-            </div>
-            <button
-                type='button'
-                className={am('switch')}
-                role='switch'
-                aria-checked={on}
-                aria-label={title}
-                onClick={() => onChange(!on)}
-            />
-        </div>
-    );
-}
-
-// Choice is a setting row with a few mutually exclusive options, as a segmented control.
-function Choice<T extends string>({title, desc, value, options, onChange}: {title: string; desc?: string; value: T; options: Array<[T, string]>; onChange: (value: T) => void}) {
-    return (
-        <div className={am('toggle-row', 'choice-row')}>
-            <div className={am('txt')}>
-                <b>{title}</b>
-                {desc && <span>{desc}</span>}
-            </div>
-            <div
-                className={am('seg')}
-                role='group'
-                aria-label={title}
-            >
-                {options.map(([key, label]) => (
-                    <button
-                        key={key}
-                        type='button'
-                        className={am({on: key === value})}
-                        aria-pressed={key === value}
-                        onClick={() => key !== value && onChange(key)}
-                    >
-                        {label}
-                    </button>
-                ))}
-            </div>
-        </div>
-    );
-}
-
-// Action is a setting row whose button opens where the setting is changed.
-function Action({title, desc, label, danger = false, onClick}: {title: string; desc: string; label: string; danger?: boolean; onClick: () => void}) {
-    return (
-        <div className={am('toggle-row')}>
-            <div className={am('txt')}>
-                <b>{title}</b>
-                <span>{desc}</span>
-            </div>
-            <button
-                type='button'
-                className={am('btn', {danger})}
-                onClick={onClick}
-            >
-                {label}
-            </button>
-        </div>
-    );
-}
-
-// usePreference reads one of the current user's preferences, and saves it.
-function usePreference(category: string, name: string, fallback: string): [string, (value: string) => void] {
-    const dispatch = useDispatch();
-    const me = useSelector(getCurrentUser);
-    const value = useSelector((state: GlobalState) => getPreference(state, category, name, fallback));
-    const save = (next: string) => dispatch(savePreferences(me.id, [{user_id: me.id, category, name, value: next}]));
-    return [value, save];
-}
 
 type ProfileField = 'name' | 'username' | 'nickname' | 'position' | 'picture';
 
@@ -160,6 +89,7 @@ function useProfileFieldLock(): (field: ProfileField) => 'provider' | 'admin' | 
 }
 
 function ProfilePicture({me, locked}: {me: UserProfile; locked: boolean}) {
+    const {streamer} = useDisplayPrefs();
     const {formatMessage} = useIntl();
     const dispatch = useDispatch();
     const maxFileSize = parseInt(useSelector(getConfig).MaxFileSize || '0', 10);
@@ -193,7 +123,7 @@ function ProfilePicture({me, locked}: {me: UserProfile; locked: boolean}) {
             />
             <div className={am('pic-who')}>
                 <div className={am('pic-name')}>{[me.first_name, me.last_name].filter(Boolean).join(' ') || me.username}</div>
-                <div className={am('pic-sub')}>{`@${me.username} · ${me.email}`}</div>
+                <div className={am('pic-sub')}>{streamer ? `@${me.username}` : `@${me.username} · ${me.email}`}</div>
                 {!locked && (
                     <div className={am('pic-actions')}>
                         <input
@@ -482,68 +412,6 @@ function SecurityPane() {
     );
 }
 
-function NotificationsPane() {
-    const {formatMessage} = useIntl();
-    const dispatch = useDispatch();
-    const me = useSelector(getCurrentUser);
-    const threads = useSelector((state: GlobalState) => isCollapsedThreadsAllowed(state) && getCollapsedThreadsPreference(state) === Preferences.COLLAPSED_REPLY_THREADS_ON);
-    const notifyProps = me.notify_props;
-    const set = (patch: Partial<UserNotifyProps>) => dispatch(updateMe({notify_props: {...notifyProps, ...patch}}));
-    return (
-        <>
-            <h2>{formatMessage({id: 'fusion.settings.notifications', defaultMessage: 'Notifications'})}</h2>
-            <p className={am('lead')}>{formatMessage({id: 'fusion.settings.notificationsLead', defaultMessage: 'Choose what reaches you on desktop, mobile and by email.'})}</p>
-            <Toggle
-                title={formatMessage({id: 'fusion.settings.desktopAll', defaultMessage: 'Desktop notifications for all activity'})}
-                desc={formatMessage({id: 'fusion.settings.desktopAllDesc', defaultMessage: 'Otherwise only mentions, direct messages and followed threads.'})}
-                on={notifyProps.desktop === 'all'}
-                onChange={(on) => set({desktop: on ? 'all' : 'mention'})}
-            />
-            <Toggle
-                title={formatMessage({id: 'fusion.settings.desktopSound', defaultMessage: 'Notification sound'})}
-                desc={formatMessage({id: 'fusion.settings.desktopSoundDesc', defaultMessage: 'Play a sound with desktop notifications.'})}
-                on={notifyProps.desktop_sound !== 'false'}
-                onChange={(on) => set({desktop_sound: on ? 'true' : 'false'})}
-            />
-            {threads && (
-                <Toggle
-                    title={formatMessage({id: 'fusion.settings.threadReplies', defaultMessage: 'Replies to threads you follow'})}
-                    desc={formatMessage({id: 'fusion.settings.threadRepliesDesc', defaultMessage: 'Notify me of every reply in the threads I follow, not only mentions.'})}
-                    on={notifyProps.desktop_threads === 'all'}
-                    onChange={(on) => set({desktop_threads: on ? 'all' : 'mention'})}
-                />
-            )}
-            <Toggle
-                title={formatMessage({id: 'fusion.settings.push', defaultMessage: 'Mobile push notifications'})}
-                desc={formatMessage({id: 'fusion.settings.pushDesc', defaultMessage: 'For mentions and direct messages.'})}
-                on={notifyProps.push !== 'none'}
-                onChange={(on) => set({push: on ? 'mention' : 'none'})}
-            />
-            <Toggle
-                title={formatMessage({id: 'fusion.settings.email', defaultMessage: 'Email notifications'})}
-                desc={formatMessage({id: 'fusion.settings.emailDesc', defaultMessage: 'When you are away or offline.'})}
-                on={notifyProps.email === 'true'}
-                onChange={(on) => set({email: on ? 'true' : 'false'})}
-            />
-            <Toggle
-                title={formatMessage({id: 'fusion.settings.channelWide', defaultMessage: 'Channel-wide mentions'})}
-                desc={formatMessage({id: 'fusion.settings.channelWideDesc', defaultMessage: 'Notify me for @channel, @all and @here.'})}
-                on={notifyProps.channel === 'true'}
-                onChange={(on) => set({channel: on ? 'true' : 'false'})}
-            />
-            <div className={am('modal-actions')}>
-                <button
-                    type='button'
-                    className={am('btn')}
-                    onClick={() => dispatch(openClassicUserSettings('notifications'))}
-                >
-                    {formatMessage({id: 'fusion.settings.moreNotifications', defaultMessage: 'Keywords, automatic replies and more…'})}
-                </button>
-            </div>
-        </>
-    );
-}
-
 const THEME_CARDS: Array<{key: keyof typeof Preferences.THEMES; name: {id: string; defaultMessage: string}; sw?: [string, string, string]; acc: string}> = [
     {key: 'fusionSystem', name: {id: 'fusion.settings.themeSystem', defaultMessage: 'System'}, acc: '#8B5CF6'},
     {key: 'fusionDark', name: {id: 'fusion.settings.themeDark', defaultMessage: 'Dark'}, sw: ['#1E1F22', '#2B2D31', '#313338'], acc: '#8B5CF6'},
@@ -622,6 +490,7 @@ function AppearancePane() {
                 </button>
             </div>
             {custom && <CustomThemeEditor/>}
+            <DisplayRows/>
             {config.AllowUserWebUISelection === 'true' && (
                 <Choice<WebUI>
                     title={formatMessage({id: 'fusion.settings.interface', defaultMessage: 'Web interface'})}
@@ -726,6 +595,7 @@ function MessagesPane() {
                     onChange={(on) => setSyncDrafts(String(on))}
                 />
             )}
+            <ReadingRows/>
         </>
     );
 }
@@ -786,6 +656,7 @@ export default function SettingsModal({tab, onTab, onClose}: Props) {
         appearance: <AppearancePane/>,
         messages: <MessagesPane/>,
         language: <LanguagePane/>,
+        advanced: <AdvancedPane/>,
     }[tab];
 
     return (

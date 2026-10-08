@@ -25,6 +25,7 @@ import {displayUsername} from 'mattermost-redux/utils/user_utils';
 import {getChannelURL, getPermalinkURL} from 'selectors/urls';
 import {isThreadOpen} from 'selectors/views/threads';
 
+import {getDisplayPrefs} from 'fusion/hooks/display';
 import {isSpoiler} from 'fusion/messages/spoiler';
 import {getHistory} from 'utils/browser_history';
 import Constants, {NotificationLevels, UserStatuses, IgnoreChannelMentions, DesktopSound} from 'utils/constants';
@@ -267,6 +268,11 @@ function shouldSkipNotification(
     const currentUserId = getCurrentUserId(state);
     if ((currentUserId === post.user_id && post.props.from_webhook !== 'true')) {
         return {status: 'not_sent', reason: 'own_post'};
+    }
+
+    // Antimatter: streamer mode silences desktop notifications (Fusion's Advanced settings).
+    if (getDisplayPrefs(state).streamer) {
+        return {status: 'not_sent', reason: 'streamer_mode'};
     }
 
     if (isSystemMessage(post) && !isUserAddedInChannel(post, currentUserId)) {
