@@ -9,6 +9,7 @@ import (
 	"net/http"
 
 	"github.com/mattermost/mattermost/server/public/model"
+	"github.com/mattermost/mattermost/server/public/shared/request"
 	"github.com/mattermost/mattermost/server/public/utils"
 	"github.com/mattermost/mattermost/server/v8/channels/store"
 )
@@ -167,6 +168,9 @@ func (a *App) CreateGroupWithUserIds(group *model.GroupWithUserIds) (*model.Grou
 		}
 	}
 
+	// Antimatter: a role's first members hold its Mattermost role in the team.
+	a.syncTeamRole(request.EmptyContext(a.Log()), newGroup, group.UserIds, true)
+
 	messageWs := model.NewWebSocketEvent(model.WebsocketEventReceivedGroup, "", "", "", nil, "")
 	count, err := a.Srv().Store().Group().GetMemberCount(newGroup.Id)
 	if err != nil {
@@ -225,6 +229,11 @@ func (a *App) UpdateGroup(group *model.Group) (*model.Group, *model.AppError) {
 }
 
 func (a *App) DeleteGroup(groupID string) (*model.Group, *model.AppError) {
+	// Antimatter: a deleted role is taken back from its members.
+	if group, gErr := a.Srv().Store().Group().Get(groupID); gErr == nil && group.IsRole() {
+		a.syncTeamRoleForAllMembers(request.EmptyContext(a.Log()), group, false)
+	}
+
 	deletedGroup, err := a.Srv().Store().Group().Delete(groupID)
 	if err != nil {
 		var nfErr *store.ErrNotFound
@@ -257,6 +266,10 @@ func (a *App) DeleteGroup(groupID string) (*model.Group, *model.AppError) {
 
 func (a *App) RestoreGroup(groupID string) (*model.Group, *model.AppError) {
 	restoredGroup, err := a.Srv().Store().Group().Restore(groupID)
+	if err == nil {
+		// Antimatter: a restored role is given back to its members.
+		a.syncTeamRoleForAllMembers(request.EmptyContext(a.Log()), restoredGroup, true)
+	}
 	if err != nil {
 		var nfErr *store.ErrNotFound
 		switch {
@@ -331,6 +344,11 @@ func (a *App) GetUsersNotInGroupPage(groupID string, page int, perPage int, view
 }
 
 func (a *App) UpsertGroupMember(groupID string, userID string) (*model.GroupMember, *model.AppError) {
+	group, roleErr := a.teamRoleForMembers(groupID, []string{userID})
+	if roleErr != nil {
+		return nil, roleErr
+	}
+
 	groupMember, err := a.Srv().Store().Group().UpsertMember(groupID, userID)
 	if err != nil {
 		var invErr *store.ErrInvalidInput
@@ -351,6 +369,9 @@ func (a *App) UpsertGroupMember(groupID string, userID string) (*model.GroupMemb
 	if appErr := a.publishGroupMemberEvent(model.WebsocketEventGroupMemberAdd, groupMember); appErr != nil {
 		return nil, appErr
 	}
+	if group != nil {
+		a.syncTeamRole(request.EmptyContext(a.Log()), group, []string{userID}, true)
+	}
 
 	return groupMember, nil
 }
@@ -369,6 +390,9 @@ func (a *App) DeleteGroupMember(groupID string, userID string) (*model.GroupMemb
 
 	if appErr := a.publishGroupMemberEvent(model.WebsocketEventGroupMemberDelete, groupMember); appErr != nil {
 		return nil, appErr
+	}
+	if group, gErr := a.Srv().Store().Group().Get(groupID); gErr == nil && group.IsRole() {
+		a.syncTeamRole(request.EmptyContext(a.Log()), group, []string{userID}, false)
 	}
 
 	return groupMember, nil
@@ -822,6 +846,11 @@ func (a *App) UserIsInAdminRoleGroup(userID, syncableID string, syncableType mod
 }
 
 func (a *App) UpsertGroupMembers(groupID string, userIDs []string) ([]*model.GroupMember, *model.AppError) {
+	group, roleErr := a.teamRoleForMembers(groupID, userIDs)
+	if roleErr != nil {
+		return nil, roleErr
+	}
+
 	members, err := a.Srv().Store().Group().UpsertMembers(groupID, userIDs)
 	if err != nil {
 		var invErr *store.ErrInvalidInput
@@ -844,8 +873,24 @@ func (a *App) UpsertGroupMembers(groupID string, userIDs []string) ([]*model.Gro
 			return nil, appErr
 		}
 	}
+	if group != nil {
+		a.syncTeamRole(request.EmptyContext(a.Log()), group, userIDs, true)
+	}
 
 	return members, nil
+}
+
+// teamRoleForMembers gives the Antimatter role a group is, after checking the people joining it are in its team; nil
+// for other groups.
+func (a *App) teamRoleForMembers(groupID string, userIDs []string) (*model.Group, *model.AppError) {
+	group, err := a.Srv().Store().Group().Get(groupID)
+	if err != nil || !group.IsRole() {
+		return nil, nil
+	}
+	if appErr := a.CheckTeamRoleMembers(request.EmptyContext(a.Log()), group, userIDs); appErr != nil {
+		return nil, appErr
+	}
+	return group, nil
 }
 
 func (a *App) DeleteGroupMembers(groupID string, userIDs []string) ([]*model.GroupMember, *model.AppError) {
@@ -871,6 +916,9 @@ func (a *App) DeleteGroupMembers(groupID string, userIDs []string) ([]*model.Gro
 		if appErr := a.publishGroupMemberEvent(model.WebsocketEventGroupMemberDelete, groupMember); appErr != nil {
 			return nil, appErr
 		}
+	}
+	if group, gErr := a.Srv().Store().Group().Get(groupID); gErr == nil && group.IsRole() {
+		a.syncTeamRole(request.EmptyContext(a.Log()), group, userIDs, false)
 	}
 
 	return members, nil

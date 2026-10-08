@@ -11882,6 +11882,26 @@
     "description": "API error when checking whether a user is a member of any of a given list of teams fails."
   },
   {
+    "id": "app.team_role.not_a_role.app_error",
+    "translation": "This group isn't a role of a team.",
+    "description": "Error when asking for the permissions of a group that isn't an Antimatter team role."
+  },
+  {
+    "id": "app.team_role.not_in_team.app_error",
+    "translation": "Only people of the team can have its roles.",
+    "description": "Error when adding someone who isn't in the team to one of its roles."
+  },
+  {
+    "id": "app.team_role.permission_not_held.app_error",
+    "translation": "You can only give a role permissions you have yourself ({{.Permission}}).",
+    "description": "Error when someone who isn't a team admin gives a role a permission they don't have."
+  },
+  {
+    "id": "app.team_role.permissions.app_error",
+    "translation": "A role can only grant team and channel permissions.",
+    "description": "Error when giving a team role a permission outside of the ones roles may grant."
+  },
+  {
     "id": "app.teams.analytics_teams_count.app_error",
     "translation": "Unable to get team count",
     "description": "Internal API error when the statistics query counting teams fails; used by the admin usage endpoint."

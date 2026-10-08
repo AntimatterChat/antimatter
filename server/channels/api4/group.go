@@ -25,6 +25,9 @@ func (api *API) InitGroup() {
 
 	// POST /api/v4/groups
 	api.BaseRoutes.Groups.Handle("", api.APISessionRequired(createGroup)).Methods(http.MethodPost)
+	// Antimatter: what a team role grants.
+	api.BaseRoutes.Groups.Handle("/{group_id:[A-Za-z0-9]+}/team_role", api.APISessionRequired(getTeamRole)).Methods(http.MethodGet)
+	api.BaseRoutes.Groups.Handle("/{group_id:[A-Za-z0-9]+}/team_role/permissions", api.APISessionRequired(updateTeamRolePermissions)).Methods(http.MethodPut)
 
 	// GET /api/v4/groups/:group_id
 	api.BaseRoutes.Groups.Handle("/{group_id:[A-Za-z0-9]+}",
@@ -174,9 +177,13 @@ func createGroup(c *Context, w http.ResponseWriter, r *http.Request) {
 			c.Err = appErr
 			return
 		}
-		if !c.App.SessionHasPermissionToTeam(*c.AppContext.Session(), group.TeamId, model.PermissionManageTeam) {
-			c.SetPermissionError(model.PermissionManageTeam)
+		if !c.App.SessionHasPermissionToTeam(*c.AppContext.Session(), group.TeamId, model.PermissionManageTeamRoles) {
+			c.SetPermissionError(model.PermissionManageTeamRoles)
 			return
+		}
+		// Those who manage roles without being team admins make them below their own highest role.
+		if lowest := c.App.LowestTeamRolePositionFor(*c.AppContext.Session(), group.TeamId); lowest > 0 && group.Position < lowest {
+			group.Position = lowest
 		}
 	} else if !c.App.SessionHasPermissionTo(*c.AppContext.Session(), model.PermissionCreateCustomGroup) {
 		c.SetPermissionError(model.PermissionCreateCustomGroup)
@@ -251,6 +258,14 @@ func patchGroup(c *Context, w http.ResponseWriter, r *http.Request) {
 	if err := json.NewDecoder(r.Body).Decode(&groupPatch); err != nil {
 		c.SetInvalidParamWithErr("group", err)
 		return
+	}
+
+	// Antimatter: a role can't be moved above its manager's own highest role.
+	if group.IsRole() && groupPatch.Position != nil {
+		if lowest := c.App.LowestTeamRolePositionFor(*c.AppContext.Session(), group.TeamId); lowest > 0 && *groupPatch.Position < lowest {
+			c.SetPermissionError(model.PermissionManageTeam)
+			return
+		}
 	}
 
 	if group.Source == model.GroupSourceCustom && groupPatch.AllowReference != nil && !*groupPatch.AllowReference {
