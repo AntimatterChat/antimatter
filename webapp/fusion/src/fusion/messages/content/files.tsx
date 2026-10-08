@@ -109,6 +109,8 @@ export default function Files({post}: {post: Post}) {
         download: getFileDownloadUrl(file.id),
         link: getSiteURL() + getFileUrl(file.id),
         onPreview: () => preview(index),
+        userId: post.user_id,
+        at: post.create_at,
     });
     const gallery = files.map((file, index) => [file, index] as const).filter(([file]) => isImage(file, svgs) && !file.archived).map(([file, index]) => toImage(file, index));
 
@@ -191,7 +193,6 @@ export default function Files({post}: {post: Post}) {
                                     size='sm'
                                 />
                             </span>
-                            {moreButton(file)}
                         </button>
                     );
                 }

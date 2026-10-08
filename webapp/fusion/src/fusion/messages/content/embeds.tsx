@@ -247,7 +247,7 @@ export function InlineImage({post, link}: {post: Post; link: string}) {
                         className={am('img-att')}
                         style={ratio ? {aspectRatio: ratio} : undefined}
                         aria-label={formatMessage({id: 'fusion.files.openImage', defaultMessage: 'Open image {name}'}, {name})}
-                        onClick={() => openImage({src, name, width: meta?.width, height: meta?.height})}
+                        onClick={() => openImage({src, name, width: meta?.width, height: meta?.height, userId: post.user_id, at: post.create_at})}
                     >
                         <img
                             src={src}

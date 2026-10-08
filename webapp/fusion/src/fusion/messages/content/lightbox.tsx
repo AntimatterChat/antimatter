@@ -4,9 +4,12 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import {useIntl} from 'react-intl';
 
+import Avatar from 'fusion/components/avatar';
 import Icon from 'fusion/components/icon';
 import type {IconName} from 'fusion/components/icon';
 import {Layer} from 'fusion/components/layer';
+import {useDisplayName, useUser} from 'fusion/hooks/users';
+import {useWhen} from 'fusion/messages/time';
 import {useToast} from 'fusion/shell/toast_context';
 import {am} from 'fusion/utils/class_names';
 import {copyToClipboard} from 'utils/utils';
@@ -26,7 +29,30 @@ export type LightboxImage = {
     // A link to it to share, and the classic file preview, for uploaded files.
     link?: string;
     onPreview?: () => void;
+
+    // Who posted it and when, shown at the top as Discord's viewer does.
+    userId?: string;
+    at?: number;
 };
+
+// LightboxAuthor is who posted the image, and when, at the top left of the viewer.
+function LightboxAuthor({userId, at}: {userId: string; at?: number}) {
+    const user = useUser(userId);
+    const name = useDisplayName(user);
+    const when = useWhen();
+    return (
+        <span className={am('lb-author')}>
+            <Avatar
+                userId={userId}
+                size='sm'
+            />
+            <span>
+                <b>{name}</b>
+                {at ? <small>{when(at)}</small> : null}
+            </span>
+        </span>
+    );
+}
 
 // imageCaption is the mockup's "name · 2.4 MB · 4032×3024".
 export function imageCaption(image: LightboxImage): string {
@@ -123,13 +149,15 @@ function Lightbox({images, start, onClose}: {images: LightboxImage[]; start: num
                     />
                 </div>
                 <div
-                    className={am('lb-bar')}
+                    className={am('lb-top')}
                     onClick={(e) => e.stopPropagation()}
                 >
-                    <span className={am('lb-caption')}>
-                        {imageCaption(image)}
-                        {many && <em>{` · ${index + 1} / ${images.length}`}</em>}
-                    </span>
+                    {image.userId ? (
+                        <LightboxAuthor
+                            userId={image.userId}
+                            at={image.at}
+                        />
+                    ) : <span className={am('grow')}/>}
                     {tool(formatMessage({id: 'fusion.lightbox.zoomOut', defaultMessage: 'Zoom out (−)'}), 'zoom-out', () => zoomBy(1 / 1.5), zoom <= 1)}
                     <span className={am('lb-zoom')}>{`${Math.round(zoom * 100)}%`}</span>
                     {tool(formatMessage({id: 'fusion.lightbox.zoomIn', defaultMessage: 'Zoom in (+)'}), 'zoom-in', () => zoomBy(1.5), zoom >= 8)}
@@ -157,6 +185,13 @@ function Lightbox({images, start, onClose}: {images: LightboxImage[]; start: num
                         image.onPreview!();
                     })}
                     {tool(formatMessage({id: 'fusion.lightbox.close', defaultMessage: 'Close image'}), 'x', onClose)}
+                </div>
+                <div
+                    className={am('lb-foot')}
+                    onClick={(e) => e.stopPropagation()}
+                >
+                    {imageCaption(image)}
+                    {many && <em>{` · ${index + 1} / ${images.length}`}</em>}
                 </div>
                 {many && (
                     <>

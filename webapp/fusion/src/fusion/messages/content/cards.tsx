@@ -291,7 +291,7 @@ function Card({post, attachment}: {post: Post; attachment: MessageAttachment}) {
                                 type='button'
                                 className={am('card-image')}
                                 aria-label={intl.formatMessage({id: 'fusion.card.openImage', defaultMessage: 'Open image'})}
-                                onClick={() => openImage({src, name: attachment.title || attachment.fallback || '', width: imageMeta?.width, height: imageMeta?.height})}
+                                onClick={() => openImage({src, name: attachment.title || attachment.fallback || '', width: imageMeta?.width, height: imageMeta?.height, userId: post.user_id, at: post.create_at})}
                             >
                                 <img
                                     src={src}

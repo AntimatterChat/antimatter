@@ -70,13 +70,17 @@
 
 // The image lightbox's stage, toolbar and arrows.
 :is(.am-app, .am-layer) .am-lightbox { padding: 0; place-items: stretch; }
-:is(.am-app, .am-layer) .am-lb-stage { position: absolute; inset: 0 0 56px; display: grid; place-items: center; overflow: auto; padding: 24px; }
+:is(.am-app, .am-layer) .am-lb-stage { position: absolute; inset: 56px 0 40px; display: grid; place-items: center; overflow: auto; padding: 16px 24px; }
 :is(.am-app, .am-layer) .am-lightbox.am-zoomed .am-lb-stage { place-items: start center; }
-:is(.am-app, .am-layer) .am-lb-stage img { max-width: 100%; max-height: calc(100vh - 104px); object-fit: contain; cursor: zoom-in; border-radius: 6px; }
+:is(.am-app, .am-layer) .am-lb-stage img { max-width: 100%; max-height: calc(100vh - 128px); object-fit: contain; cursor: zoom-in; border-radius: 6px; }
 :is(.am-app, .am-layer) .am-lightbox.am-zoomed .am-lb-stage img { cursor: zoom-out; }
-:is(.am-app, .am-layer) .am-lb-bar { position: absolute; left: 0; right: 0; bottom: 0; height: 56px; display: flex; align-items: center; gap: 4px; padding: 0 16px; background: rgba(0, 0, 0, .55); color: #fff; }
-:is(.am-app, .am-layer) .am-lb-caption { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 13px; opacity: .85; }
-:is(.am-app, .am-layer) .am-lb-caption em { font-style: normal; opacity: .7; }
+:is(.am-app, .am-layer) .am-lb-top { position: absolute; left: 0; right: 0; top: 0; height: 56px; display: flex; align-items: center; gap: 4px; padding: 0 16px; color: #fff; }
+:is(.am-app, .am-layer) .am-lb-author { flex: 1; min-width: 0; display: flex; align-items: center; gap: 10px; }
+:is(.am-app, .am-layer) .am-lb-author > span { display: flex; flex-direction: column; min-width: 0; line-height: 1.25; }
+:is(.am-app, .am-layer) .am-lb-author b { font-size: 14px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+:is(.am-app, .am-layer) .am-lb-author small { font-size: 12px; opacity: .7; }
+:is(.am-app, .am-layer) .am-lb-foot { position: absolute; left: 0; right: 0; bottom: 0; height: 40px; display: flex; align-items: center; justify-content: center; color: #fff; opacity: .75; font-size: 13px; }
+:is(.am-app, .am-layer) .am-lb-foot em { font-style: normal; opacity: .75; }
 :is(.am-app, .am-layer) .am-lb-tool { width: 34px; height: 34px; border-radius: 8px; display: grid; place-items: center; color: #fff; font-size: 18px; }
 :is(.am-app, .am-layer) .am-lb-tool:hover:not(:disabled) { background: rgba(255, 255, 255, .14); }
 :is(.am-app, .am-layer) .am-lb-tool:disabled { opacity: .35; }
