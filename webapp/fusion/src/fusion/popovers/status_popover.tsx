@@ -22,6 +22,7 @@ import Icon from 'fusion/components/icon';
 import {Popover} from 'fusion/components/layer';
 import {MenuHeading, MenuItem} from 'fusion/components/menu';
 import StatusEmoji from 'fusion/components/status_emoji';
+import {CustomTimeForm} from 'fusion/composer/schedule';
 import {useDisplayName, useUserStatus} from 'fusion/hooks/users';
 import EmojiPicker from 'fusion/popovers/emoji_picker';
 import {useSettings} from 'fusion/shell/settings_context';
@@ -102,6 +103,7 @@ export default function StatusPopover({anchor, onClose}: Props) {
     const [picking, setPicking] = useState(false);
     const emojiButton = useRef<HTMLButtonElement>(null);
     const [choosingDuration, setChoosingDuration] = useState(false);
+    const [dndCustom, setDndCustom] = useState(false);
     const clockButton = useRef<HTMLButtonElement>(null);
     const [duration, setDuration] = useState<CustomStatusDuration>(custom?.duration || CustomStatusDuration.TODAY);
     const durationLabel = formatMessage(CLEAR_AFTER.find(([d]) => d === duration)?.[1] || CLEAR_AFTER[3][1]);
@@ -257,6 +259,15 @@ export default function StatusPopover({anchor, onClose}: Props) {
                     onClose={() => setPicking(false)}
                 />
             )}
+            {dndCustom && (
+                <div className={am('sp-dnd-custom')}>
+                    <CustomTimeForm
+                        label={formatMessage({id: 'fusion.status.dndUntil', defaultMessage: 'Do not disturb until'})}
+                        submitLabel={formatMessage({id: 'fusion.status.dndSet', defaultMessage: 'Turn on'})}
+                        onPick={(at) => choose('dnd', Math.floor(at / 1000))}
+                    />
+                </div>
+            )}
             <div className={am('sp-list')}>
                 {STATUSES.map((s) => {
                     const on = status === s.status;
@@ -311,6 +322,12 @@ export default function StatusPopover({anchor, onClose}: Props) {
                                         {formatMessage(l)}
                                     </button>
                                 ))}
+                                <button
+                                    role='menuitem'
+                                    onClick={() => setDndCustom(true)}
+                                >
+                                    {formatMessage({id: 'fusion.status.dndCustom', defaultMessage: 'Until a custom time…'})}
+                                </button>
                             </div>
                         </div>
                     );
