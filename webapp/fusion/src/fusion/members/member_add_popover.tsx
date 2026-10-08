@@ -24,6 +24,10 @@ import type {GlobalState} from 'types/store';
 export function useCanAddPeople(channel?: Channel) {
     const team = useSelector(getCurrentTeam);
     const add = useSelector((state: GlobalState) => {
+        // Anyone in a group message can add people to it: Mattermost makes a new group with everyone.
+        if (channel?.type === Constants.GM_CHANNEL && !channel.delete_at) {
+            return true;
+        }
         if (!channel || !team || channel.delete_at || (channel.type !== Constants.OPEN_CHANNEL && channel.type !== Constants.PRIVATE_CHANNEL)) {
             return false;
         }

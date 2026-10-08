@@ -1,7 +1,7 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 
-import React, {useState} from 'react';
+import React, {useRef, useState} from 'react';
 import {useIntl} from 'react-intl';
 import {useDispatch, useSelector, useStore} from 'react-redux';
 
@@ -12,7 +12,7 @@ import {getTeamsUnreadStatuses} from 'mattermost-redux/selectors/entities/channe
 import {haveISystemPermission} from 'mattermost-redux/selectors/entities/roles';
 import {getCurrentTeam, getCurrentTeamId, getJoinableTeamIds} from 'mattermost-redux/selectors/entities/teams';
 
-import {switchTeam} from 'actions/team_actions';
+import {switchTeam, updateTeamsOrderForUser} from 'actions/team_actions';
 
 import Icon from 'fusion/components/icon';
 import ServerMenu from 'fusion/popovers/server_menu';
@@ -30,7 +30,11 @@ import type {GlobalState} from 'types/store';
 
 const initialsOf = (name: string) => name.split(/\s+/).map((p) => p[0] || '').slice(0, 2).join('').toUpperCase();
 
-function TeamButton({team, active, unread, mentions, onSelect}: {team: Team; active: boolean; unread: boolean; mentions: number; onSelect: () => void}) {
+type Drop = {onDragStart: () => void; onDrop: (after: boolean) => void; onDragEnd: () => void};
+
+function TeamButton({team, active, unread, mentions, onSelect, drag}: {team: Team; active: boolean; unread: boolean; mentions: number; onSelect: () => void; drag: Drop}) {
+    // Teams are reordered by dragging them in the rail, as in the classic team sidebar.
+    const [mark, setMark] = useState<'before' | 'after' | null>(null);
     const icon = imageURLForTeam(team);
 
     // Right-clicking a team opens its menu, as in Discord.
@@ -42,7 +46,35 @@ function TeamButton({team, active, unread, mentions, onSelect}: {team: Team; act
     return (
         <>
             <button
-                className={am('srv', {active, unread: unread && !active})}
+                className={am('srv', {active, unread: unread && !active, 'drop-before': mark === 'before', 'drop-after': mark === 'after'})}
+                draggable={true}
+                onDragStart={(e) => {
+                    e.dataTransfer.effectAllowed = 'move';
+                    e.dataTransfer.setData('application/x-am-team', team.id);
+                    drag.onDragStart();
+                }}
+                onDragEnd={() => {
+                    setMark(null);
+                    drag.onDragEnd();
+                }}
+                onDragOver={(e) => {
+                    if (!e.dataTransfer.types.includes('application/x-am-team')) {
+                        return;
+                    }
+                    e.preventDefault();
+                    const r = e.currentTarget.getBoundingClientRect();
+                    setMark(e.clientY > r.top + (r.height / 2) ? 'after' : 'before');
+                }}
+                onDragLeave={() => setMark(null)}
+                onDrop={(e) => {
+                    if (!e.dataTransfer.types.includes('application/x-am-team')) {
+                        return;
+                    }
+                    e.preventDefault();
+                    const r = e.currentTarget.getBoundingClientRect();
+                    setMark(null);
+                    drag.onDrop(e.clientY > r.top + (r.height / 2));
+                }}
                 title={team.display_name}
                 aria-label={team.display_name}
                 aria-current={active ? 'page' : undefined}
@@ -99,6 +131,19 @@ export default function ServerRail() {
 
     const waitingDMs = unreadDMs.filter((dm) => dm.channel.id !== currentChannelId).slice(0, 5);
 
+    // The team being dragged, to put it before or after the team it's dropped on; the order is the user's preference.
+    const dragged = useRef<string | null>(null);
+    const dropOn = (target: Team, after: boolean) => {
+        const id = dragged.current;
+        dragged.current = null;
+        if (!id || id === target.id) {
+            return;
+        }
+        const order = teams.map((t) => t.id).filter((t) => t !== id);
+        order.splice(order.indexOf(target.id) + (after ? 1 : 0), 0, id);
+        dispatch(updateTeamsOrderForUser(order));
+    };
+
     const selectTeam = (team: Team) => {
         layout.setHome(false);
         layout.setNavOpen(true);
@@ -128,6 +173,15 @@ export default function ServerRail() {
                     unread={unreadTeams.has(team.id)}
                     mentions={mentionsInTeam.get(team.id) || 0}
                     onSelect={() => selectTeam(team)}
+                    drag={{
+                        onDragStart: () => {
+                            dragged.current = team.id;
+                        },
+                        onDrop: (after) => dropOn(team, after),
+                        onDragEnd: () => {
+                            dragged.current = null;
+                        },
+                    }}
                 />
             ))}
             {(canJoin || canCreate) && (

@@ -12,7 +12,9 @@ import {getConfig} from 'mattermost-redux/selectors/entities/general';
 import {haveITeamPermission} from 'mattermost-redux/selectors/entities/roles';
 import {getCurrentTeam} from 'mattermost-redux/selectors/entities/teams';
 
+import {setUnreadFilterEnabled} from 'actions/views/channel_sidebar';
 import {getMainMenuPluginComponents} from 'selectors/plugins';
+import {isUnreadFilterEnabled} from 'selectors/views/channel_sidebar';
 
 import {Popover} from 'fusion/components/layer';
 import {Flyout, MenuHeading, MenuItem, MenuSeparator} from 'fusion/components/menu';
@@ -65,6 +67,7 @@ export default function ServerMenu({team: forTeam, anchor, point, width, onClose
     const unread = useSelector((state: GlobalState) => getUnreadChannelIdsInTeam(state, teamId).length > 0);
     const muted = useSelector((state: GlobalState) => isTeamMuted(state, teamId));
     const hidingMuted = useSelector((state: GlobalState) => isHidingMutedChannels(state, teamId));
+    const unreadOnly = useSelector(isUnreadFilterEnabled);
     const pluginItems = useSelector(getMainMenuPluginComponents);
     const plugins = useSelector((state: GlobalState) => state.plugins.plugins);
     const settings = useSettings();
@@ -119,6 +122,13 @@ export default function ServerMenu({team: forTeam, anchor, point, width, onClose
                 label={muted ? formatMessage({id: 'fusion.serverMenu.unmute', defaultMessage: 'Unmute team'}) : formatMessage({id: 'fusion.serverMenu.mute', defaultMessage: 'Mute team'})}
                 sub={muted ? undefined : formatMessage({id: 'fusion.serverMenu.muteSub', defaultMessage: 'Mutes all its categories'})}
                 onClick={run(() => dispatch(setTeamMuted(teamId, !muted)))}
+            />
+            <MenuItem
+                role='menuitemcheckbox'
+                checked={unreadOnly}
+                label={formatMessage({id: 'fusion.serverMenu.unreadOnly', defaultMessage: 'Show unread channels only'})}
+                sub='Ctrl+Shift+U'
+                onClick={run(() => dispatch(setUnreadFilterEnabled(!unreadOnly)))}
             />
             <MenuItem
                 role='menuitemcheckbox'

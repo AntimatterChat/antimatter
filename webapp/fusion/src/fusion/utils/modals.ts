@@ -42,5 +42,8 @@ export const openTeamSettings = () => openDialog(ModalIdentifiers.TEAM_SETTINGS,
 export const openTeamMembers = () => openDialog(ModalIdentifiers.TEAM_MEMBERS, TeamMembersModal, {});
 export const openLeaveTeam = () => openDialog(ModalIdentifiers.LEAVE_TEAM, LeaveTeamModal);
 export const openNewDirectMessage = () => openDialog(ModalIdentifiers.CREATE_DM_CHANNEL, MoreDirectChannels, {isExistingChannel: false});
+
+// openAddToGroup adds people to the current group message: Mattermost makes a new group with everyone.
+export const openAddToGroup = () => openDialog(ModalIdentifiers.CREATE_DM_CHANNEL, MoreDirectChannels, {isExistingChannel: true});
 export const openKeyboardShortcuts = () => openDialog(ModalIdentifiers.KEYBOARD_SHORTCUTS_MODAL, KeyboardShortcutsModal);
 export const openClassicUserSettings = (activeTab?: string) => openDialog(ModalIdentifiers.USER_SETTINGS, UserSettingsModal, {isContentProductSettings: true, activeTab});

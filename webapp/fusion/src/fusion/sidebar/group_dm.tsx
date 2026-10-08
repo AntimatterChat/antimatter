@@ -9,6 +9,7 @@ import type {Channel} from '@mattermost/types/channels';
 
 import {savePreferences} from 'mattermost-redux/actions/preferences';
 import {get as getPreference} from 'mattermost-redux/selectors/entities/preferences';
+import {getCurrentTeam} from 'mattermost-redux/selectors/entities/teams';
 import {getCurrentUserId} from 'mattermost-redux/selectors/entities/users';
 
 import ConvertGmToChannelModal from 'components/convert_gm_to_channel_modal';
@@ -16,7 +17,8 @@ import ConvertGmToChannelModal from 'components/convert_gm_to_channel_modal';
 import {Dialog, Popover} from 'fusion/components/layer';
 import {MenuItem} from 'fusion/components/menu';
 import {am} from 'fusion/utils/class_names';
-import {openDialog} from 'fusion/utils/modals';
+import {openAddToGroup, openDialog} from 'fusion/utils/modals';
+import {getHistory} from 'utils/browser_history';
 import {ModalIdentifiers} from 'utils/constants';
 
 import type {ActionFuncAsync, GlobalState} from 'types/store';
@@ -96,6 +98,7 @@ export function GroupMenu({channel, point, onClose}: {channel: Channel; point: {
     const {formatMessage} = useIntl();
     const dispatch = useDispatch();
     const [renaming, setRenaming] = useState(false);
+    const team = useSelector(getCurrentTeam);
 
     if (renaming) {
         return (
@@ -114,6 +117,19 @@ export function GroupMenu({channel, point, onClose}: {channel: Channel; point: {
             label={formatMessage({id: 'fusion.group.menu', defaultMessage: 'Group options'})}
             onClose={onClose}
         >
+            <MenuItem
+                icon='user-plus'
+                label={formatMessage({id: 'fusion.group.addPeople', defaultMessage: 'Add people…'})}
+                sub={formatMessage({id: 'fusion.group.addPeopleSub', defaultMessage: 'Starts a new group with everyone'})}
+                onClick={() => {
+                    // The dialog adds to the conversation being read: open the group first.
+                    if (team) {
+                        getHistory().push(`/${team.name}/messages/${channel.name}`);
+                    }
+                    requestAnimationFrame(() => dispatch(openAddToGroup()));
+                    onClose();
+                }}
+            />
             <MenuItem
                 icon='pen'
                 label={formatMessage({id: 'fusion.group.rename', defaultMessage: 'Rename group'})}

@@ -27,12 +27,13 @@ const getUnreadTeamChannelIds = createSelector(
 
 // UnreadCategory gathers the unread channels above the categories, when the person groups unread channels
 // separately (the "Group unread channels" setting, off by default). They leave their categories meanwhile.
-export default function UnreadCategory() {
+// With the unread filter on (Ctrl/Cmd+Shift+U), it is the only list: it then also keeps the channel being read.
+export default function UnreadCategory({filter = false}: {filter?: boolean}) {
     const {formatMessage} = useIntl();
-    const channelIds = useSelector((state: GlobalState) => (shouldShowUnreadsCategory(state) ? getUnreadTeamChannelIds(state) : NONE), shallowEqual);
+    const channelIds = useSelector((state: GlobalState) => (filter || shouldShowUnreadsCategory(state) ? getUnreadTeamChannelIds(state) : NONE), shallowEqual);
 
     if (!channelIds.length) {
-        return null;
+        return filter ? <div className={am('empty')}>{formatMessage({id: 'fusion.sidebar.noUnreads', defaultMessage: 'You\'re all caught up.'})}</div> : null;
     }
     return (
         <>
