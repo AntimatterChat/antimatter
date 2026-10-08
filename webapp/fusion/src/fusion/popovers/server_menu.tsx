@@ -68,6 +68,7 @@ export default function ServerMenu({team: forTeam, anchor, point, width, onClose
     const config = useSelector(getConfig);
     const canManage = useSelector((state: GlobalState) => haveITeamPermission(state, teamId, Permissions.MANAGE_TEAM));
     const customGroups = useSelector(isCustomGroupsEnabled);
+    const canManageRoles = useSelector((state: GlobalState) => haveITeamPermission(state, teamId, Permissions.MANAGE_TEAM_ROLES));
     const canAddUsers = useSelector((state: GlobalState) => haveITeamPermission(state, teamId, Permissions.ADD_USER_TO_TEAM));
     const canInviteGuests = useSelector((state: GlobalState) => haveITeamPermission(state, teamId, Permissions.INVITE_GUEST)) && config.EnableGuestAccounts === 'true';
     const unread = useSelector((state: GlobalState) => getUnreadChannelIdsInTeam(state, teamId).length > 0);
@@ -166,7 +167,7 @@ export default function ServerMenu({team: forTeam, anchor, point, width, onClose
                     onClick={inTeam(() => dispatch(openTeamSettings()))}
                 />
             )}
-            {canManage && customGroups && (
+            {canManageRoles && customGroups && (
                 <MenuItem
                     icon='shield'
                     label={formatMessage({id: 'fusion.serverMenu.roles', defaultMessage: 'Roles…'})}

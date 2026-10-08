@@ -4514,6 +4514,21 @@ export default class Client4 {
         );
     };
 
+    // Antimatter: the Mattermost role a team role grants, and its permissions.
+    getTeamRole = (groupID: string) => {
+        return this.doFetch<Role>(
+            `${this.getGroupRoute(groupID)}/team_role`,
+            {method: 'get'},
+        );
+    };
+
+    updateTeamRolePermissions = (groupID: string, permissions: string[]) => {
+        return this.doFetch<Role>(
+            `${this.getGroupRoute(groupID)}/team_role/permissions`,
+            {method: 'put', body: JSON.stringify({permissions})},
+        );
+    };
+
     patchGroup = (groupID: string, patch: GroupPatch | CustomGroupPatch | GroupTeamPatch) => {
         return this.doFetch<Group>(
             `${this.getGroupRoute(groupID)}/patch`,

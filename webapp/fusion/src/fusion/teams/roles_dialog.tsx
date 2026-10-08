@@ -2,7 +2,8 @@
 // See LICENSE.txt for license information.
 
 import React, {useEffect, useMemo, useState} from 'react';
-import {useIntl} from 'react-intl';
+import {defineMessage, useIntl} from 'react-intl';
+import type {MessageDescriptor} from 'react-intl';
 import {shallowEqual, useDispatch, useSelector} from 'react-redux';
 
 import type {Group} from '@mattermost/types/groups';
@@ -12,8 +13,10 @@ import {addUsersToGroup, archiveGroup, createGroupWithUserIds, patchGroup, remov
 import {patchTeam} from 'mattermost-redux/actions/teams';
 import {getMissingProfilesByIds} from 'mattermost-redux/actions/users';
 import {Client4} from 'mattermost-redux/client';
-import {getCurrentTeam} from 'mattermost-redux/selectors/entities/teams';
-import {getUser} from 'mattermost-redux/selectors/entities/users';
+import {Permissions} from 'mattermost-redux/constants';
+import {haveITeamPermission} from 'mattermost-redux/selectors/entities/roles';
+import {getCurrentTeam, getCurrentTeamId} from 'mattermost-redux/selectors/entities/teams';
+import {getCurrentUserId, getUser} from 'mattermost-redux/selectors/entities/users';
 
 import Avatar from 'fusion/components/avatar';
 import Icon from 'fusion/components/icon';
@@ -25,13 +28,26 @@ import {am} from 'fusion/utils/class_names';
 
 import type {GlobalState} from 'types/store';
 
-import {getTeamRoles} from './roles';
+import {getMemberRolesForCurrentTeam, getTeamRoles} from './roles';
 import {loadTeams} from './teams';
 
 // The colours offered for roles, as Discord's swatches; any #rrggbb colour can be typed too.
 const SWATCHES = ['#e74c3c', '#e67e22', '#f1c40f', '#2ecc71', '#1abc9c', '#3498db', '#5865f2', '#9b59b6', '#e91e63', '#95a5a6'];
 
-type Draft = {display_name: string; color: string; icon: string; hoist: boolean};
+type Draft = {display_name: string; color: string; icon: string; hoist: boolean; permissions: string[]};
+
+// What a role can grant, as Discord's permission switches: each is on when the role holds all its permissions.
+const SWITCHES: Array<{key: string; label: MessageDescriptor; desc: MessageDescriptor; permissions: string[]}> = [
+    {key: 'admin', label: defineMessage({id: 'fusion.roles.perm.admin', defaultMessage: 'Administrator'}), desc: defineMessage({id: 'fusion.roles.perm.adminDesc', defaultMessage: 'Everything the team\'s admins can do.'}), permissions: [Permissions.MANAGE_TEAM]},
+    {key: 'roles', label: defineMessage({id: 'fusion.roles.perm.roles', defaultMessage: 'Manage roles'}), desc: defineMessage({id: 'fusion.roles.perm.rolesDesc', defaultMessage: 'Make and edit the roles below their own, and give them to people.'}), permissions: [Permissions.MANAGE_TEAM_ROLES]},
+    {key: 'invite', label: defineMessage({id: 'fusion.roles.perm.invite', defaultMessage: 'Invite people'}), desc: defineMessage({id: 'fusion.roles.perm.inviteDesc', defaultMessage: 'Add people to the team.'}), permissions: [Permissions.ADD_USER_TO_TEAM]},
+    {key: 'kick', label: defineMessage({id: 'fusion.roles.perm.kick', defaultMessage: 'Remove people'}), desc: defineMessage({id: 'fusion.roles.perm.kickDesc', defaultMessage: 'Remove people from the team.'}), permissions: [Permissions.REMOVE_USER_FROM_TEAM]},
+    {key: 'public', label: defineMessage({id: 'fusion.roles.perm.public', defaultMessage: 'Create public channels'}), desc: defineMessage({id: 'fusion.roles.perm.publicDesc', defaultMessage: 'Channels anyone in the team can join.'}), permissions: [Permissions.CREATE_PUBLIC_CHANNEL]},
+    {key: 'private', label: defineMessage({id: 'fusion.roles.perm.private', defaultMessage: 'Create private channels'}), desc: defineMessage({id: 'fusion.roles.perm.privateDesc', defaultMessage: 'Channels for the people invited.'}), permissions: [Permissions.CREATE_PRIVATE_CHANNEL]},
+    {key: 'channels', label: defineMessage({id: 'fusion.roles.perm.channels', defaultMessage: 'Manage channels'}), desc: defineMessage({id: 'fusion.roles.perm.channelsDesc', defaultMessage: 'Rename, convert and archive channels, and manage their members and admins.'}), permissions: [Permissions.MANAGE_PUBLIC_CHANNEL_PROPERTIES, Permissions.MANAGE_PRIVATE_CHANNEL_PROPERTIES, Permissions.DELETE_PUBLIC_CHANNEL, Permissions.DELETE_PRIVATE_CHANNEL, Permissions.MANAGE_PUBLIC_CHANNEL_MEMBERS, Permissions.MANAGE_PRIVATE_CHANNEL_MEMBERS, Permissions.MANAGE_CHANNEL_ROLES, Permissions.CONVERT_PUBLIC_CHANNEL_TO_PRIVATE, Permissions.CONVERT_PRIVATE_CHANNEL_TO_PUBLIC]},
+    {key: 'messages', label: defineMessage({id: 'fusion.roles.perm.messages', defaultMessage: 'Manage messages'}), desc: defineMessage({id: 'fusion.roles.perm.messagesDesc', defaultMessage: 'Edit and delete other people\'s messages.'}), permissions: [Permissions.DELETE_OTHERS_POSTS, Permissions.EDIT_OTHERS_POSTS]},
+    {key: 'integrations', label: defineMessage({id: 'fusion.roles.perm.integrations', defaultMessage: 'Manage integrations'}), desc: defineMessage({id: 'fusion.roles.perm.integrationsDesc', defaultMessage: 'Webhooks and slash commands, theirs and other people\'s.'}), permissions: [Permissions.MANAGE_INCOMING_WEBHOOKS, Permissions.MANAGE_OUTGOING_WEBHOOKS, Permissions.MANAGE_SLASH_COMMANDS, Permissions.MANAGE_OTHERS_INCOMING_WEBHOOKS, Permissions.MANAGE_OTHERS_OUTGOING_WEBHOOKS, Permissions.MANAGE_OTHERS_SLASH_COMMANDS]},
+];
 
 const slug = (name: string) => name.toLowerCase().normalize('NFKD').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 40) || 'role';
 
@@ -44,6 +60,12 @@ export default function RolesDialog({onClose}: {onClose: () => void}) {
     const team = useSelector(getCurrentTeam);
     const roles = useSelector((state: GlobalState) => (team ? getTeamRoles(state, team.id) : []), shallowEqual);
     const [editing, setEditing] = useState<string | 'new' | null>(null);
+
+    // Team admins manage every role; those who may manage roles, the roles below their own highest one.
+    const admin = useSelector((state: GlobalState) => Boolean(team) && haveITeamPermission(state, team!.id, Permissions.MANAGE_TEAM));
+    const myRoles = useSelector((state: GlobalState) => getMemberRolesForCurrentTeam(state)[getCurrentUserId(state)]);
+    const managerTop = myRoles?.[0]?.position ?? Number.MAX_SAFE_INTEGER;
+    const manages = (role: Group) => admin || (role.position ?? 0) > managerTop;
 
     const refresh = () => dispatch(loadTeams());
     const fail = (result: unknown) => {
@@ -60,19 +82,30 @@ export default function RolesDialog({onClose}: {onClose: () => void}) {
             return;
         }
         const fields = {display_name: draft.display_name.trim(), color: draft.color, icon: draft.icon.trim(), hoist: draft.hoist};
+        const lowest = admin ? 0 : managerTop + 1;
         const result = role ? await dispatch(patchGroup(role.id, fields)) : await dispatch(createGroupWithUserIds({
             ...fields,
             name: `${slug(fields.display_name)}-${team.name}`.slice(0, 64),
             source: 'custom',
             allow_reference: true,
             team_id: team.id,
-            position: roles.length,
+            position: Math.max(roles.length, lowest),
             user_ids: [],
         }));
-        if (!fail(result)) {
-            refresh();
-            setEditing(null);
+        if (fail(result)) {
+            return;
         }
+        const saved = (result as {data?: Group}).data;
+        if (saved) {
+            try {
+                await Client4.updateTeamRolePermissions(saved.id, draft.permissions);
+            } catch (error) {
+                toast((error as {message?: string}).message || formatMessage({id: 'fusion.roles.failed', defaultMessage: 'The role couldn\'t be saved.'}));
+                return;
+            }
+        }
+        refresh();
+        setEditing(null);
     };
 
     // Moving a role swaps its place with its neighbour's; places are written for both, from their order here.
@@ -103,7 +136,7 @@ export default function RolesDialog({onClose}: {onClose: () => void}) {
             <div className={am('pane', 'roles-pane')}>
                 <h2>{formatMessage({id: 'fusion.roles.title', defaultMessage: 'Roles'})}</h2>
                 <p className={am('lead')}>{formatMessage({id: 'fusion.roles.lead', defaultMessage: 'Roles give members colours. Roles shown separately get their own group in the member list; the member\'s highest role sets their name colour.'})}</p>
-                {team && (
+                {team && admin && (
                     <>
                         <Toggle
                             title={formatMessage({id: 'fusion.roles.colors', defaultMessage: 'Role colours'})}
@@ -142,7 +175,7 @@ export default function RolesDialog({onClose}: {onClose: () => void}) {
                                 className={am('icon-btn')}
                                 title={formatMessage({id: 'fusion.roles.up', defaultMessage: 'Move up'})}
                                 aria-label={formatMessage({id: 'fusion.roles.up', defaultMessage: 'Move up'})}
-                                disabled={i === 0}
+                                disabled={i === 0 || !manages(role) || !manages(roles[i - 1])}
                                 onClick={() => move(i, -1)}
                             >
                                 <Icon
@@ -156,7 +189,7 @@ export default function RolesDialog({onClose}: {onClose: () => void}) {
                                 className={am('icon-btn')}
                                 title={formatMessage({id: 'fusion.roles.down', defaultMessage: 'Move down'})}
                                 aria-label={formatMessage({id: 'fusion.roles.down', defaultMessage: 'Move down'})}
-                                disabled={i === roles.length - 1}
+                                disabled={i === roles.length - 1 || !manages(role)}
                                 onClick={() => move(i, 1)}
                             >
                                 <Icon
@@ -169,6 +202,7 @@ export default function RolesDialog({onClose}: {onClose: () => void}) {
                                 className={am('icon-btn')}
                                 title={formatMessage({id: 'fusion.roles.edit', defaultMessage: 'Edit the role'})}
                                 aria-label={formatMessage({id: 'fusion.roles.edit', defaultMessage: 'Edit the role'})}
+                                disabled={!manages(role)}
                                 onClick={() => setEditing(editing === role.id ? null : role.id)}
                             >
                                 <Icon
@@ -181,6 +215,7 @@ export default function RolesDialog({onClose}: {onClose: () => void}) {
                                 className={am('icon-btn', 'danger')}
                                 title={formatMessage({id: 'fusion.roles.delete', defaultMessage: 'Delete the role'})}
                                 aria-label={formatMessage({id: 'fusion.roles.delete', defaultMessage: 'Delete the role'})}
+                                disabled={!manages(role)}
                                 onClick={() => remove(role)}
                             >
                                 <Icon
@@ -238,8 +273,24 @@ type EditorProps = {
 // RoleEditor edits a role's look and, once it exists, its members.
 function RoleEditor({role, onSave, onCancel, onMembersChanged}: EditorProps) {
     const {formatMessage} = useIntl();
-    const [draft, setDraft] = useState<Draft>({display_name: role?.display_name || '', color: role?.color || SWATCHES[5], icon: role?.icon || '', hoist: role?.hoist ?? true});
-    const set = (patch: Partial<Draft>) => setDraft({...draft, ...patch});
+    const [draft, setDraft] = useState<Draft>({display_name: role?.display_name || '', color: role?.color || SWATCHES[5], icon: role?.icon || '', hoist: role?.hoist ?? true, permissions: []});
+    const set = (patch: Partial<Draft>) => setDraft((d) => ({...d, ...patch}));
+
+    // What the role grants, as it is now; someone who isn't a team admin only hands out what they have.
+    useEffect(() => {
+        if (!role) {
+            return;
+        }
+        Client4.getTeamRole(role.id).then((r) => set({permissions: r.permissions || []})).catch(() => {});
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [role?.id]);
+    const teamId = useSelector(getCurrentTeamId);
+    const held = useSelector((state: GlobalState) => {
+        const admin = haveITeamPermission(state, teamId, Permissions.MANAGE_TEAM);
+        return Object.fromEntries(SWITCHES.map((sw) => [sw.key, admin || sw.permissions.every((p) => haveITeamPermission(state, teamId, p))]));
+    }, shallowEqual);
+    const toggle = (permissions: string[], on: boolean) => set({permissions: on ? [...new Set([...draft.permissions, ...permissions])] : draft.permissions.filter((p) => !permissions.includes(p))});
 
     return (
         <div className={am('role-editor')}>
@@ -287,6 +338,19 @@ function RoleEditor({role, onSave, onCancel, onMembersChanged}: EditorProps) {
                 on={draft.hoist}
                 onChange={(hoist) => set({hoist})}
             />
+            <div className={am('field', 'role-perms')}>
+                <span>{formatMessage({id: 'fusion.roles.permissions', defaultMessage: 'Permissions'})}</span>
+                {SWITCHES.map((sw) => (
+                    <Toggle
+                        key={sw.key}
+                        title={formatMessage(sw.label)}
+                        desc={formatMessage(sw.desc)}
+                        on={sw.permissions.every((p) => draft.permissions.includes(p))}
+                        disabled={!held[sw.key]}
+                        onChange={(on) => toggle(sw.permissions, on)}
+                    />
+                ))}
+            </div>
             {role && (
                 <RoleMembers
                     role={role}

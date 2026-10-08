@@ -14,9 +14,9 @@ import type {GlobalState} from 'types/store';
 
 // The rows the settings panes are made of.
 
-export function Toggle({title, desc, on, onChange}: {title: string; desc: string; on: boolean; onChange: (on: boolean) => void}) {
+export function Toggle({title, desc, on, onChange, disabled = false}: {title: string; desc: string; on: boolean; onChange: (on: boolean) => void; disabled?: boolean}) {
     return (
-        <div className={am('toggle-row')}>
+        <div className={am('toggle-row', {disabled})}>
             <div className={am('txt')}>
                 <b>{title}</b>
                 <span>{desc}</span>
@@ -27,6 +27,7 @@ export function Toggle({title, desc, on, onChange}: {title: string; desc: string
                 role='switch'
                 aria-checked={on}
                 aria-label={title}
+                disabled={disabled}
                 onClick={() => onChange(!on)}
             />
         </div>

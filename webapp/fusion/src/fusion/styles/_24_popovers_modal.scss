@@ -226,3 +226,6 @@
 :is(.am-app, .am-layer) .am-role-person { display: inline-flex; align-items: center; gap: 6px; padding: 3px 4px 3px 3px; border-radius: 16px; background: var(--am-raise); font-size: 13px; }
 :is(.am-app, .am-layer) .am-role-person button { display: grid; place-items: center; width: 18px; height: 18px; border-radius: 50%; color: var(--am-muted); }
 :is(.am-app, .am-layer) .am-role-person button:hover { background: var(--am-hover); color: var(--am-text); }
+:is(.am-app, .am-layer) .am-toggle-row.am-disabled { opacity: .5; }
+:is(.am-app, .am-layer) .am-toggle-row.am-disabled .am-switch { cursor: not-allowed; }
+:is(.am-app, .am-layer) .am-role-perms { margin-top: 8px; }
