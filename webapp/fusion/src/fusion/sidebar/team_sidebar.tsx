@@ -1,9 +1,9 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 
-import React, {useMemo, useRef, useState} from 'react';
+import React, {useEffect, useMemo, useRef, useState} from 'react';
 import {useIntl} from 'react-intl';
-import {shallowEqual, useSelector} from 'react-redux';
+import {shallowEqual, useDispatch, useSelector} from 'react-redux';
 
 import type {Channel} from '@mattermost/types/channels';
 
@@ -11,7 +11,8 @@ import {makeGetChannelIdsForCategory} from 'mattermost-redux/selectors/entities/
 import {makeGetChannel} from 'mattermost-redux/selectors/entities/channels';
 import {getCurrentTeam} from 'mattermost-redux/selectors/entities/teams';
 
-import {getCategoriesForCurrentTeam} from 'selectors/views/channel_sidebar';
+import {setUnreadFilterEnabled} from 'actions/views/channel_sidebar';
+import {getCategoriesForCurrentTeam, isUnreadFilterEnabled} from 'selectors/views/channel_sidebar';
 
 import Icon from 'fusion/components/icon';
 import ServerMenu from 'fusion/popovers/server_menu';
@@ -24,6 +25,7 @@ import type {GlobalState} from 'types/store';
 import Category from './category';
 import DirectRow from './direct_row';
 import {DM_FIND_ID} from './home_sidebar';
+import MoreUnreads from './more_unreads';
 import UnreadCategory from './unread_category';
 import VoicePanel from './voice_panel';
 
@@ -85,6 +87,21 @@ function Dock() {
 // TeamSidebar lists the current team's channels by category.
 export default function TeamSidebar() {
     const {formatMessage} = useIntl();
+    const dispatch = useDispatch();
+    const scrollRef = useRef<HTMLDivElement>(null);
+
+    // The unread filter (Ctrl/Cmd+Shift+U, or the team menu) lists only the unread channels, as in the classic sidebar.
+    const unreadOnly = useSelector(isUnreadFilterEnabled);
+    useEffect(() => {
+        const onKeyDown = (e: KeyboardEvent) => {
+            if ((e.ctrlKey || e.metaKey) && e.shiftKey && !e.altKey && e.key.toLowerCase() === 'u') {
+                e.preventDefault();
+                dispatch(setUnreadFilterEnabled(!unreadOnly));
+            }
+        };
+        document.addEventListener('keydown', onKeyDown);
+        return () => document.removeEventListener('keydown', onKeyDown);
+    }, [dispatch, unreadOnly]);
     const team = useSelector(getCurrentTeam);
     const categories = useSelector(getCategoriesForCurrentTeam);
     const headButton = useRef<HTMLButtonElement>(null);
@@ -115,9 +132,24 @@ export default function TeamSidebar() {
                     />
                 </button>
             </div>
-            <div className={am('chan-scroll')}>
-                <UnreadCategory/>
-                {categories.filter((c) => c.type !== 'direct_messages').map((category) => (
+            {unreadOnly && (
+                <div className={am('filter-bar')}>
+                    <span>{formatMessage({id: 'fusion.sidebar.unreadOnly', defaultMessage: 'Unread channels only'})}</span>
+                    <button
+                        type='button'
+                        onClick={() => dispatch(setUnreadFilterEnabled(false))}
+                    >
+                        {formatMessage({id: 'fusion.sidebar.showAll', defaultMessage: 'Show all'})}
+                    </button>
+                </div>
+            )}
+            <div
+                ref={scrollRef}
+                className={am('chan-scroll')}
+            >
+                <MoreUnreads scrollRef={scrollRef}/>
+                <UnreadCategory filter={unreadOnly}/>
+                {!unreadOnly && categories.filter((c) => c.type !== 'direct_messages').map((category) => (
                     <Category
                         key={category.id}
                         category={category}

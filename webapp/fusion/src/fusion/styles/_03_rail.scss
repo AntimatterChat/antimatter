@@ -67,6 +67,8 @@
 :is(.am-app, .am-layer) .am-srv.am-add.am-explore { --am-act: var(--am-anti); }
 :is(.am-app, .am-layer) .am-srv.am-add .am-ic { width: 30px; height: 30px; stroke-width: 2.2; }
 :is(.am-app, .am-layer) .am-srv.am-add:hover, :is(.am-app, .am-layer) .am-srv.am-add:focus-visible { background: var(--am-act); color: #fff; }
+:is(.am-app, .am-layer) .am-srv.am-drop-before { box-shadow: 0 -5px 0 -2px var(--am-matter); }
+:is(.am-app, .am-layer) .am-srv.am-drop-after { box-shadow: 0 5px 0 -2px var(--am-matter); }
 :is(.am-app, .am-layer) .am-srv-sep { width: 34px; height: 2px; margin-block: 2px; border-radius: 2px; background: var(--am-raise-2); flex: none; }
 :is(.am-app, .am-layer) .am-badge {
   min-width: 18px;

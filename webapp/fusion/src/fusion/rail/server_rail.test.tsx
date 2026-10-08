@@ -3,7 +3,9 @@
 
 import React from 'react';
 
-import {renderWithContext, screen, userEvent} from 'tests/react_testing_utils';
+import {updateTeamsOrderForUser} from 'actions/team_actions';
+
+import {fireEvent, renderWithContext, screen, userEvent} from 'tests/react_testing_utils';
 import {getHistory} from 'utils/browser_history';
 import {TestHelper} from 'utils/test_helper';
 
@@ -11,6 +13,7 @@ import ServerRail from './server_rail';
 
 const mockLayout = {home: false, setHome: jest.fn(), setNavOpen: jest.fn()};
 jest.mock('fusion/shell/layout_context', () => ({useLayout: () => mockLayout}));
+jest.mock('actions/team_actions', () => ({switchTeam: jest.fn(() => ({type: 'SWITCH'})), updateTeamsOrderForUser: jest.fn(() => ({type: 'ORDER'}))}));
 jest.mock('fusion/shell/global_search_context', () => ({useGlobalSearch: () => ({open: jest.fn()})}));
 
 const mockTeam = TestHelper.getTeamMock({id: 'team', name: 'antimatter', display_name: 'Antimatter'});
@@ -84,6 +87,17 @@ describe('fusion/rail/ServerRail', () => {
         mockLayout.home = false;
 
         expect(screen.getByRole('button', {name: 'Antimatter'})).not.toHaveAttribute('aria-current');
+    });
+
+    test('reorders the teams by dragging one onto another', () => {
+        render();
+        const team = screen.getByRole('button', {name: 'Antimatter'});
+        const data = {types: ['application/x-am-team'], setData: jest.fn(), effectAllowed: ''};
+        fireEvent.dragStart(team, {dataTransfer: data});
+        fireEvent.drop(team, {dataTransfer: data, clientY: 0});
+
+        // Dropping a team on itself changes nothing.
+        expect(updateTeamsOrderForUser).not.toHaveBeenCalled();
     });
 
     test('shows no group when nothing waits', () => {

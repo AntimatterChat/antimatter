@@ -10,6 +10,7 @@ import type {UserProfile} from '@mattermost/types/users';
 import {getChannelStats} from 'mattermost-redux/actions/channels';
 import {getAllChannelStats, getCurrentChannelId, getCurrentChannel} from 'mattermost-redux/selectors/entities/channels';
 import {makeGetProfilesInChannel} from 'mattermost-redux/selectors/entities/users';
+import {isGuest} from 'mattermost-redux/utils/user_utils';
 
 import {loadProfilesAndReloadChannelMembers} from 'actions/user_actions';
 import {closeRightHandSide} from 'actions/views/rhs';
@@ -23,6 +24,7 @@ import {useDisplayName} from 'fusion/hooks/users';
 import {useUserMenu} from 'fusion/popovers/user_menu';
 import UserPopover from 'fusion/popovers/user_popover';
 import {am} from 'fusion/utils/class_names';
+import {openAddToGroup} from 'fusion/utils/modals';
 
 import type {GlobalState} from 'types/store';
 
@@ -41,6 +43,7 @@ type MemberProps = {
 };
 
 function Member({user, off, role, onOpen, onMenu}: MemberProps) {
+    const {formatMessage} = useIntl();
     const name = useDisplayName(user);
     const getCustomStatus = useMemo(() => makeGetCustomStatus(), []);
     const custom = useSelector((state: GlobalState) => getCustomStatus(state, user.id));
@@ -59,6 +62,7 @@ function Member({user, off, role, onOpen, onMenu}: MemberProps) {
                     <span className={am('nm')}>{name}</span>
                     <StatusEmoji userId={user.id}/>
                     {user.is_bot && <span className={am('bot-tag')}>{'BOT'}</span>}
+                    {isGuest(user.roles) && <span className={am('bot-tag', 'guest-tag')}>{formatMessage({id: 'fusion.message.guest', defaultMessage: 'GUEST'})}</span>}
                 </b>
                 <span><TalkNote userId={user.id}>{custom?.text || user.position || ''}</TalkNote></span>
             </span>
@@ -107,7 +111,13 @@ export default function MemberList({inPanel = false}: {inPanel?: boolean}) {
                         aria-label={formatMessage({id: 'fusion.members.addLabel', defaultMessage: 'Add people or create an invite'})}
                         aria-haspopup='menu'
                         aria-expanded={adding}
-                        onClick={() => setAdding(!adding)}
+                        onClick={() => {
+                            if (channel?.type === 'G') {
+                                dispatch(openAddToGroup());
+                            } else {
+                                setAdding(!adding);
+                            }
+                        }}
                     >
                         <Icon
                             name='plus'

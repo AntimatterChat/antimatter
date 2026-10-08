@@ -60,6 +60,17 @@
 :is(.am-app, .am-layer) .am-cat.am-collapsed .am-ic { transform: rotate(-90deg); }
 :is(.am-app, .am-layer) .am-cat:hover { color: var(--am-text-2); }
 :is(.am-app, .am-layer) .am-cat .am-grow { flex: 1; text-align: left; }
+/* "More unreads": floats at the top or bottom of the channel list while unread channels are out of view there. */
+:is(.am-app, .am-layer) .am-more-unreads { position: sticky; z-index: 4; height: 0; display: flex; justify-content: center; pointer-events: none; }
+:is(.am-app, .am-layer) .am-more-unreads.am-mu-top { top: 6px; }
+:is(.am-app, .am-layer) .am-more-unreads.am-mu-bottom { top: calc(100% - 34px); }
+:is(.am-app, .am-layer) .am-more-unreads button { pointer-events: auto; display: inline-flex; align-items: center; gap: 6px; height: 26px; padding: 0 12px; border-radius: 13px; background: var(--am-matter); color: #fff; font-size: 12px; font-weight: 700; box-shadow: var(--am-shadow); }
+:is(.am-app, .am-layer) .am-more-unreads.am-mu-top .am-ic { transform: rotate(180deg); }
+/* The unread filter's bar, at the top of the sidebar while only unread channels show. */
+:is(.am-app, .am-layer) .am-filter-bar { display: flex; align-items: center; gap: 8px; margin: 8px 8px 0; padding: 6px 8px 6px 12px; border-radius: 8px; background: color-mix(in srgb, var(--am-anti) 14%, transparent); color: var(--am-text-2); font-size: 13px; }
+:is(.am-app, .am-layer) .am-filter-bar span { flex: 1; }
+:is(.am-app, .am-layer) .am-filter-bar button { padding: 2px 8px; border-radius: 6px; color: var(--am-anti); font-weight: 600; }
+:is(.am-app, .am-layer) .am-filter-bar button:hover { background: var(--am-hover); }
 /* The Unreads section has no chevron to fold it: its title lines up with the categories' names. */
 :is(.am-app, .am-layer) .am-cat.am-unreads { padding-left: 15px; color: var(--am-anti); }
 :is(.am-app, .am-layer) .am-cat.am-unreads:hover { color: var(--am-anti); }
