@@ -435,3 +435,17 @@ code {
         font-size: 1.2em;
     }
 }
+
+// Antimatter: subtext lines ("-# ") and dynamic timestamps ("<t:1700000000:R>").
+.markdown__subtext {
+    display: block;
+    color: rgba(var(--center-channel-color-rgb), 0.64);
+    font-size: 0.8em;
+}
+
+.markdown__timestamp {
+    padding: 0 3px;
+    border-radius: 4px;
+    background: rgba(var(--center-channel-color-rgb), 0.08);
+    white-space: nowrap;
+}

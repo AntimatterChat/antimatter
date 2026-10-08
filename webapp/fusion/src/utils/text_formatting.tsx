@@ -365,6 +365,7 @@ export function doFormatText(text: string, options: TextFormattingOptions, emoji
 
         output = autolinkEmails(output, tokens);
         output = autolinkHashtags(output, tokens, options.minimumHashtagLength);
+        output = formatTimestamps(output, tokens);
 
         if (!('emoticons' in options) || options.emoticons) {
             output = Emoticons.handleEmoticons(output, tokens, options.renderEmoticonsAsEmoji);
@@ -474,6 +475,48 @@ export function autolinkAtMentions(text: string, tokens: Tokens): string {
     }
 
     return output;
+}
+
+// Antimatter: dynamic timestamps, as Discord's <t:1700000000:R>, are shown in each reader's own time zone and
+// format: t short time, T long time, d short date, D long date, f date and time (the default), F with the
+// weekday, R relative ("3 hours ago"). Markdown has escaped their angle brackets by now.
+const TIMESTAMP_PATTERN = /&lt;t:(-?\d{1,13})(?::([tTdDfFR]))?&gt;/g;
+
+export function formatTimestamp(seconds: number, style = 'f', now = Date.now(), locale?: string): string {
+    const date = new Date(seconds * 1000);
+    if (isNaN(date.getTime())) {
+        return '';
+    }
+    if (style === 'R') {
+        const diff = (date.getTime() - now) / 1000;
+        const units: Array<[Intl.RelativeTimeFormatUnit, number]> = [['year', 31536000], ['month', 2592000], ['week', 604800], ['day', 86400], ['hour', 3600], ['minute', 60], ['second', 1]];
+        const [unit, size] = units.find(([, n]) => Math.abs(diff) >= n) || units[units.length - 1];
+        return new Intl.RelativeTimeFormat(locale, {numeric: 'auto'}).format(Math.round(diff / size), unit);
+    }
+    const formats: Record<string, Intl.DateTimeFormatOptions> = {
+        t: {timeStyle: 'short'},
+        T: {timeStyle: 'medium'},
+        d: {dateStyle: 'short'},
+        D: {dateStyle: 'long'},
+        f: {dateStyle: 'long', timeStyle: 'short'},
+        F: {dateStyle: 'full', timeStyle: 'short'},
+    };
+    return new Intl.DateTimeFormat(locale, formats[style] || formats.f).format(date);
+}
+
+function formatTimestamps(text: string, tokens: Tokens): string {
+    return text.replace(TIMESTAMP_PATTERN, (match: string, seconds: string, style?: string) => {
+        const shown = formatTimestamp(Number(seconds), style);
+        if (!shown) {
+            return match;
+        }
+        const alias = `$MM_TIMESTAMP${tokens.size}$`;
+        tokens.set(alias, {
+            value: `<span class="markdown__timestamp" title="${escapeHtml(formatTimestamp(Number(seconds), 'F'))}">${escapeHtml(shown)}</span>`,
+            originalText: match,
+        });
+        return alias;
+    });
 }
 
 export function allAtMentions(text: string): string[] {

@@ -187,7 +187,9 @@ export default class Renderer extends marked.Renderer {
         return output;
     }
 
-    public paragraph(text: string) {
+    public paragraph(paragraphText: string) {
+        // Antimatter: a line starting with "-# " is subtext, small and muted, as in Discord.
+        const text = paragraphText.replace(/(^|\n)-# ([^\n]+)/g, '$1<span class="markdown__subtext">$2</span>');
         if (this.formattingOptions.singleline) {
             let result;
             if (text.includes('class="markdown-inline-img"')) {
