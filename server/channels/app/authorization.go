@@ -186,6 +186,11 @@ func (a *App) SessionHasPermissionToChannels(rctx request.CTX, session model.Ses
 }
 
 func (a *App) SessionHasPermissionToGroup(session model.Session, groupID string, permission *model.Permission) bool {
+	// Antimatter: a role (a group of one team) is managed by its team's admins only; its members don't manage it.
+	if group, err := a.Srv().Store().Group().Get(groupID); err == nil && group.IsRole() {
+		return a.SessionHasPermissionToTeam(session, group.TeamId, model.PermissionManageTeam)
+	}
+
 	groupMember, err := a.Srv().Store().Group().GetMember(groupID, session.UserId)
 	// don't reject immediately on ErrNoRows error because there's further authz logic below for non-groupmembers
 	if err != nil && !errors.Is(err, sql.ErrNoRows) {

@@ -15672,6 +15672,11 @@
     "description": "API validation error when saving an Antimatter team (user group) whose team channel is not a valid ID."
   },
   {
+    "id": "model.group.color.app_error",
+    "translation": "A role colour is a hex colour like #3b82f6.",
+    "description": "API validation error when saving a role whose colour isn't a #rrggbb hex colour."
+  },
+  {
     "id": "model.group.create_at.app_error",
     "translation": "invalid create at property for group.",
     "description": "API validation error when saving a user group (LDAP or custom) whose creation timestamp property is unset; lowercase style matches sibling group errors."
@@ -15717,6 +15722,11 @@
     "description": "API validation error when saving a user group; the remote ID links an LDAP-synced group to its directory entry and is required for that source."
   },
   {
+    "id": "model.group.role.app_error",
+    "translation": "invalid role icon or position.",
+    "description": "API validation error when saving a role whose icon is too long or whose position is negative."
+  },
+  {
     "id": "model.group.source.app_error",
     "translation": "invalid source property for group.",
     "description": "API validation error when saving a user group whose source (e.g. ldap, custom) is not a recognized value."
@@ -15725,6 +15735,11 @@
     "id": "model.group.tag.app_error",
     "translation": "The team tag can be at most {{.GroupTagMaxRunes}} characters.",
     "description": "API validation error when saving an Antimatter team (user group) whose tag is too long."
+  },
+  {
+    "id": "model.group.team_id.app_error",
+    "translation": "invalid team for the role.",
+    "description": "API validation error when saving a role (a team's group) without a valid team."
   },
   {
     "id": "model.group.update_at.app_error",

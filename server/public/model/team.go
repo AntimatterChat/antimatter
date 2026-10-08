@@ -43,6 +43,11 @@ type Team struct {
 	PolicyID            *string `json:"policy_id"` // Data Retention policy — unrelated to ABAC below
 	CloudLimitsArchived bool    `json:"cloud_limits_archived"`
 
+	// Antimatter: role colours show on names unless the team turns them off, and the team can ask everyone to show
+	// their team badge.
+	HideRoleColors    bool `json:"hide_role_colors"`
+	RequireTeamBadges bool `json:"require_team_badges"`
+
 	// Not persisted; derived by the store via EXISTS on AccessControlPolicies(Type='team').
 	// Use HasMembershipPolicyAction for enforcement — this is a read-path signal only.
 	PolicyEnforced bool            `json:"policy_enforced"`
@@ -87,6 +92,8 @@ func (o *Team) Auditable() map[string]any {
 		"group_constrained":     o.GroupConstrained,
 		"policy_id":             o.PolicyID,
 		"cloud_limits_archived": o.CloudLimitsArchived,
+		"hide_role_colors":      o.HideRoleColors,
+		"require_team_badges":   o.RequireTeamBadges,
 	}
 }
 
@@ -102,6 +109,8 @@ type TeamPatch struct {
 	AllowOpenInvite     *bool   `json:"allow_open_invite"`
 	GroupConstrained    *bool   `json:"group_constrained"`
 	CloudLimitsArchived *bool   `json:"cloud_limits_archived"`
+	HideRoleColors      *bool   `json:"hide_role_colors"`
+	RequireTeamBadges   *bool   `json:"require_team_badges"`
 }
 
 func (o *TeamPatch) Auditable() map[string]any {
@@ -309,6 +318,14 @@ func (o *Team) Patch(patch *TeamPatch) {
 
 	if patch.CloudLimitsArchived != nil {
 		o.CloudLimitsArchived = *patch.CloudLimitsArchived
+	}
+
+	if patch.HideRoleColors != nil {
+		o.HideRoleColors = *patch.HideRoleColors
+	}
+
+	if patch.RequireTeamBadges != nil {
+		o.RequireTeamBadges = *patch.RequireTeamBadges
 	}
 }
 

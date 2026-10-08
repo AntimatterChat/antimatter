@@ -25,7 +25,12 @@ const (
 
 	// GroupTagMaxRunes bounds an Antimatter team's tag, the short badge shown next to its members' names.
 	GroupTagMaxRunes = 8
+
+	// GroupIconMaxLength bounds a role's icon, an emoji name.
+	GroupIconMaxLength = 64
 )
+
+var validGroupColor = regexp.MustCompile(`^#[0-9a-fA-F]{6}$`)
 
 type GroupSource string
 
@@ -51,6 +56,20 @@ type Group struct {
 	Tag       string `json:"tag"`
 	LeadId    string `json:"lead_id"`
 	ChannelId string `json:"channel_id"`
+
+	// Antimatter roles are groups of one team (TeamId set): only its admins manage them. A role has a colour for its
+	// members' names, an icon (an emoji name), a place among the team's roles (Position, 0 = highest) and may show its
+	// members apart in the member list (Hoist).
+	TeamId   string `json:"team_id"`
+	Color    string `json:"color"`
+	Icon     string `json:"icon"`
+	Position int    `json:"position"`
+	Hoist    bool   `json:"hoist"`
+}
+
+// IsRole tells whether the group is a role of a team.
+func (group *Group) IsRole() bool {
+	return group.TeamId != ""
 }
 
 func (group *Group) Auditable() map[string]any {
@@ -67,6 +86,10 @@ func (group *Group) Auditable() map[string]any {
 		"tag":             group.Tag,
 		"lead_id":         group.LeadId,
 		"channel_id":      group.ChannelId,
+		"team_id":         group.TeamId,
+		"color":           group.Color,
+		"position":        group.Position,
+		"hoist":           group.Hoist,
 	}
 }
 
@@ -86,6 +109,10 @@ func (group *Group) LogClone() any {
 		"tag":             group.Tag,
 		"lead_id":         group.LeadId,
 		"channel_id":      group.ChannelId,
+		"team_id":         group.TeamId,
+		"color":           group.Color,
+		"position":        group.Position,
+		"hoist":           group.Hoist,
 	}
 }
 
@@ -132,6 +159,10 @@ type GroupPatch struct {
 	Tag            *string `json:"tag"`
 	LeadId         *string `json:"lead_id"`
 	ChannelId      *string `json:"channel_id"`
+	Color          *string `json:"color"`
+	Icon           *string `json:"icon"`
+	Position       *int    `json:"position"`
+	Hoist          *bool   `json:"hoist"`
 	// For security reasons (including preventing unintended LDAP group synchronization) do no allow a Group's RemoteId or Source field to be
 	// included in patches.
 }
@@ -223,6 +254,18 @@ func (group *Group) Patch(patch *GroupPatch) {
 	if patch.ChannelId != nil {
 		group.ChannelId = *patch.ChannelId
 	}
+	if patch.Color != nil {
+		group.Color = *patch.Color
+	}
+	if patch.Icon != nil {
+		group.Icon = *patch.Icon
+	}
+	if patch.Position != nil {
+		group.Position = *patch.Position
+	}
+	if patch.Hoist != nil {
+		group.Hoist = *patch.Hoist
+	}
 }
 
 func (group *Group) IsValidForCreate() *AppError {
@@ -243,6 +286,15 @@ func (group *Group) IsValidForCreate() *AppError {
 	}
 	if group.ChannelId != "" && !IsValidId(group.ChannelId) {
 		return NewAppError("Group.IsValidForCreate", "model.group.channel_id.app_error", nil, "", http.StatusBadRequest)
+	}
+	if group.TeamId != "" && !IsValidId(group.TeamId) {
+		return NewAppError("Group.IsValidForCreate", "model.group.team_id.app_error", nil, "", http.StatusBadRequest)
+	}
+	if group.Color != "" && !validGroupColor.MatchString(group.Color) {
+		return NewAppError("Group.IsValidForCreate", "model.group.color.app_error", nil, "", http.StatusBadRequest)
+	}
+	if len(group.Icon) > GroupIconMaxLength || group.Position < 0 {
+		return NewAppError("Group.IsValidForCreate", "model.group.role.app_error", nil, "", http.StatusBadRequest)
 	}
 	if len(group.Description) > GroupDescriptionMaxLength {
 		return NewAppError("Group.IsValidForCreate", "model.group.description.app_error", map[string]any{"GroupDescriptionMaxLength": GroupDescriptionMaxLength}, "", http.StatusBadRequest)

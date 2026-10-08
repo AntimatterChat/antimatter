@@ -167,7 +167,18 @@ func createGroup(c *Context, w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if !c.App.SessionHasPermissionTo(*c.AppContext.Session(), model.PermissionCreateCustomGroup) {
+	// Antimatter: a role (a group of one team) is created by the team's admins; other groups need the permission to
+	// create custom groups.
+	if group.IsRole() {
+		if _, appErr := c.App.GetTeam(group.TeamId); appErr != nil {
+			c.Err = appErr
+			return
+		}
+		if !c.App.SessionHasPermissionToTeam(*c.AppContext.Session(), group.TeamId, model.PermissionManageTeam) {
+			c.SetPermissionError(model.PermissionManageTeam)
+			return
+		}
+	} else if !c.App.SessionHasPermissionTo(*c.AppContext.Session(), model.PermissionCreateCustomGroup) {
 		c.SetPermissionError(model.PermissionCreateCustomGroup)
 		return
 	}

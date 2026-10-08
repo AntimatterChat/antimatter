@@ -19,6 +19,7 @@ func TestGroupAuditable(t *testing.T) {
 		id := NewId()
 		leadId := NewId()
 		channelId := NewId()
+		teamId := NewId()
 		now := GetMillis()
 		g := Group{
 			Id:             id,
@@ -35,6 +36,10 @@ func TestGroupAuditable(t *testing.T) {
 			Tag:            "DET",
 			LeadId:         leadId,
 			ChannelId:      channelId,
+			TeamId:         teamId,
+			Color:          "#3b82f6",
+			Position:       2,
+			Hoist:          true,
 		}
 		m := g.Auditable()
 
@@ -51,6 +56,10 @@ func TestGroupAuditable(t *testing.T) {
 			"tag":             "DET",
 			"lead_id":         leadId,
 			"channel_id":      channelId,
+			"team_id":         teamId,
+			"color":           "#3b82f6",
+			"position":        2,
+			"hoist":           true,
 		}
 
 		assert.Equal(t, expected, m)
@@ -72,6 +81,7 @@ func TestGroupLogClone(t *testing.T) {
 		id := NewId()
 		leadId := NewId()
 		channelId := NewId()
+		teamId := NewId()
 		now := GetMillis()
 		g := Group{
 			Id:             id,
@@ -88,6 +98,10 @@ func TestGroupLogClone(t *testing.T) {
 			Tag:            "DET",
 			LeadId:         leadId,
 			ChannelId:      channelId,
+			TeamId:         teamId,
+			Color:          "#3b82f6",
+			Position:       2,
+			Hoist:          true,
 		}
 		l := g.LogClone()
 		m, ok := l.(map[string]any)
@@ -108,6 +122,10 @@ func TestGroupLogClone(t *testing.T) {
 			"tag":             "DET",
 			"lead_id":         leadId,
 			"channel_id":      channelId,
+			"team_id":         teamId,
+			"color":           "#3b82f6",
+			"position":        2,
+			"hoist":           true,
 		}
 
 		assert.Equal(t, expected, m)
@@ -149,5 +167,45 @@ func TestGroupTeamFields(t *testing.T) {
 		g.LeadId = ""
 		g.ChannelId = "somewhere"
 		assert.Equal(t, "model.group.channel_id.app_error", g.IsValidForCreate().Id)
+	})
+}
+
+func TestGroupRoleFields(t *testing.T) {
+	valid := func() Group {
+		return Group{DisplayName: "Moderators", Name: new("moderators"), Source: GroupSourceCustom, AllowReference: true, TeamId: NewId()}
+	}
+
+	t.Run("a group of a team is a role", func(t *testing.T) {
+		g := valid()
+		assert.True(t, g.IsRole())
+		g.TeamId = ""
+		assert.False(t, g.IsRole())
+	})
+
+	t.Run("a role colour is a hex colour", func(t *testing.T) {
+		g := valid()
+		g.Color = "#3B82f6"
+		assert.Nil(t, g.IsValidForCreate())
+		g.Color = "blue"
+		assert.Equal(t, "model.group.color.app_error", g.IsValidForCreate().Id)
+	})
+
+	t.Run("the team must be an id, the position not negative", func(t *testing.T) {
+		g := valid()
+		g.TeamId = "a-team"
+		assert.Equal(t, "model.group.team_id.app_error", g.IsValidForCreate().Id)
+		g = valid()
+		g.Position = -1
+		assert.Equal(t, "model.group.role.app_error", g.IsValidForCreate().Id)
+	})
+
+	t.Run("patch sets the role fields", func(t *testing.T) {
+		g := valid()
+		color, icon, position, hoist := "#ff0000", "shield", 3, true
+		g.Patch(&GroupPatch{Color: &color, Icon: &icon, Position: &position, Hoist: &hoist})
+		assert.Equal(t, "#ff0000", g.Color)
+		assert.Equal(t, "shield", g.Icon)
+		assert.Equal(t, 3, g.Position)
+		assert.True(t, g.Hoist)
 	})
 }
