@@ -1184,8 +1184,16 @@ func (s *Server) doSetupManagedCategoryProperties() error {
 			return s.cacheManagedCategoryIDs()
 		}
 
-		if incrementErr := s.Store().PropertyGroup().IncrementVersion(model.ManagedCategoryPropertyGroupName); incrementErr != nil {
-			return fmt.Errorf("failed to increment managed category group version: %w", incrementErr)
+		// Antimatter: only a group still at v1 moves up; one registered at v2 stays there (the properties API takes
+		// v2 groups only).
+		group, groupErr := s.Store().PropertyGroup().Get(model.ManagedCategoryPropertyGroupName)
+		if groupErr != nil {
+			return fmt.Errorf("failed to get managed category group: %w", groupErr)
+		}
+		if group.Version < model.PropertyGroupVersionV2 {
+			if incrementErr := s.Store().PropertyGroup().IncrementVersion(model.ManagedCategoryPropertyGroupName); incrementErr != nil {
+				return fmt.Errorf("failed to increment managed category group version: %w", incrementErr)
+			}
 		}
 
 		if saveErr := s.Store().System().SaveOrUpdate(&model.System{Name: managedCategorySetupDoneKey, Value: managedCategoryMigrationVersion}); saveErr != nil {
@@ -1223,7 +1231,9 @@ func (s *Server) doSetupManagedCategoryProperties() error {
 		}
 	}
 
-	if err := s.Store().System().SaveOrUpdate(&model.System{Name: managedCategorySetupDoneKey, Value: "true"}); err != nil {
+	// Antimatter: the group was registered at v2, so the setup is done at v2. Recording it as "true" made the next start
+	// take the group for a v1 one and move it to version 3, which the properties API refuses.
+	if err := s.Store().System().SaveOrUpdate(&model.System{Name: managedCategorySetupDoneKey, Value: managedCategoryMigrationVersion}); err != nil {
 		return fmt.Errorf("failed to save managed category setup done flag: %w", err)
 	}
 

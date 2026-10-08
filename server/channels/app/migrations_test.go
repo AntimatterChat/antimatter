@@ -34,10 +34,13 @@ func TestDoSetupManagedCategoryProperties(t *testing.T) {
 
 		data, sysErr := th.Store.System().GetByName(managedCategorySetupDoneKey)
 		require.NoError(t, sysErr)
-		require.NotEmpty(t, data.Value)
+		require.Equal(t, managedCategoryMigrationVersion, data.Value)
+		require.Equal(t, model.PropertyGroupVersionV2, group.Version)
 	})
 
-	t.Run("should upgrade from a pre-v2 setup by incrementing the group version and updating the system key", func(t *testing.T) {
+	// Antimatter: the legacy "true" marker next to a group already at v2 (what upstream's fresh setup used to leave)
+	// mustn't move the group to version 3, which the properties API refuses.
+	t.Run("should keep a v2 group at v2 when it finds the legacy marker, and update the system key", func(t *testing.T) {
 		th := Setup(t)
 
 		group, appErr := th.App.GetPropertyGroup(th.Context, model.ManagedCategoryPropertyGroupName)
@@ -53,7 +56,8 @@ func TestDoSetupManagedCategoryProperties(t *testing.T) {
 
 		group, appErr = th.App.GetPropertyGroup(th.Context, model.ManagedCategoryPropertyGroupName)
 		require.Nil(t, appErr)
-		require.Equal(t, initialVersion+1, group.Version)
+		require.Equal(t, model.PropertyGroupVersionV2, initialVersion)
+		require.Equal(t, initialVersion, group.Version)
 
 		data, sysErr := th.Store.System().GetByName(managedCategorySetupDoneKey)
 		require.NoError(t, sysErr)

@@ -465,3 +465,5 @@ channels/db/migrations/postgres/1000001_antimatter_add_team_fields_to_usergroups
 channels/db/migrations/postgres/1000001_antimatter_add_team_fields_to_usergroups.up.sql
 channels/db/migrations/postgres/1000002_antimatter_create_servercategories.down.sql
 channels/db/migrations/postgres/1000002_antimatter_create_servercategories.up.sql
+channels/db/migrations/postgres/1000003_antimatter_fix_managed_category_group_version.down.sql
+channels/db/migrations/postgres/1000003_antimatter_fix_managed_category_group_version.up.sql
