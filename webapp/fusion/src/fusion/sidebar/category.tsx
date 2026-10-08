@@ -21,6 +21,7 @@ import {am} from 'fusion/utils/class_names';
 import type {GlobalState} from 'types/store';
 
 import ChannelRow from './channel_row';
+import {getHiddenChannelIds} from './hidden';
 import {canDropChannel, categoryDropIndex, endSidebarDrag, getSidebarDrag, isLowerHalf, moveSidebarChannel, startSidebarDrag} from './sidebar_drag';
 
 // Where a dragged channel or category would land: before or after a channel row, or a category's header.
@@ -34,7 +35,11 @@ export default function Category({category}: {category: ChannelCategory}) {
     const store = useStore<GlobalState>();
     const dialogs = useDialogs();
     const getChannelIds = useMemo(() => makeGetFilteredChannelIdsForCategory(), []);
-    const channelIds = useSelector((state: GlobalState) => getChannelIds(state, category));
+    const allChannelIds = useSelector((state: GlobalState) => getChannelIds(state, category));
+
+    // Hidden conversations stay out until something new is said in them.
+    const hidden = useSelector(getHiddenChannelIds);
+    const channelIds = useMemo(() => (hidden.size ? allChannelIds.filter((id) => !hidden.has(id)) : allChannelIds), [allChannelIds, hidden]);
     const menuButton = useRef<HTMLButtonElement>(null);
     const [menu, setMenu] = useState<{x: number; y: number} | 'button' | null>(null);
     const [mark, setMark] = useState<DropMark>(null);

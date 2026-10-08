@@ -31,6 +31,8 @@ import type {GlobalState} from 'types/store';
 
 import DirectRow, {useTeammateId} from './direct_row';
 import {useNotesToSelf} from './group_dm';
+import {getHiddenChannelIds} from './hidden';
+import HiddenSection from './hidden_section';
 import {useLastMessage} from './last_message';
 import VoicePanel from './voice_panel';
 
@@ -75,6 +77,7 @@ export default function HomeSidebar() {
     const mentions = useUnreadMentions();
     const team = useSelector(getCurrentTeam);
     const users = useSelector(getUsers);
+    const hidden = useSelector(getHiddenChannelIds);
     const me = useSelector(getCurrentUserId);
     const layout = useLayout();
     const openNotes = useNotesToSelf();
@@ -146,10 +149,14 @@ export default function HomeSidebar() {
     );
 
     const q = query.trim().toLowerCase().replace(/^@/, '');
-    const list = channels.
+    const matches = channels.
         filter((c) => c.delete_at === 0 && (!q || c.display_name.toLowerCase().includes(q) || (c.type === 'D' && Boolean(users[c.teammate_id || getUserIdFromChannelName(me, c.name)]?.username.includes(q))))).
 
         sort((a, b) => b.last_post_at - a.last_post_at);
+
+    // Hidden conversations wait at the end until they get new messages, but a search finds them.
+    const list = q ? matches : matches.filter((c) => !hidden.has(c.id));
+    const hiddenList = q ? [] : matches.filter((c) => hidden.has(c.id));
 
     return (
         <aside
@@ -238,7 +245,16 @@ export default function HomeSidebar() {
                             channel={channel}
                         />
                     ))}
-                    {!list.length && (
+                    <HiddenSection
+                        items={hiddenList}
+                        render={(channel) => (
+                            <HomeRow
+                                key={channel.id}
+                                channel={channel}
+                            />
+                        )}
+                    />
+                    {!list.length && !hiddenList.length && (
                         <div className={am('empty')}>
                             {formatMessage({id: 'fusion.home.none', defaultMessage: 'No conversation matches “{query}”. Press Enter to start one.'}, {query})}
                         </div>

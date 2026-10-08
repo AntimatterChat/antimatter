@@ -15,6 +15,7 @@ import {am} from 'fusion/utils/class_names';
 import type {GlobalState} from 'types/store';
 
 import ChannelRow from './channel_row';
+import {getHiddenChannelIds} from './hidden';
 
 const NONE: string[] = [];
 
@@ -22,7 +23,8 @@ const NONE: string[] = [];
 const getUnreadTeamChannelIds = createSelector(
     'fusionGetUnreadTeamChannelIds',
     getUnreadChannels,
-    (channels) => channels.filter((channel) => channel.type !== 'D' && channel.type !== 'G').map((channel) => channel.id),
+    getHiddenChannelIds,
+    (channels, hidden) => channels.filter((channel) => channel.type !== 'D' && channel.type !== 'G' && !hidden.has(channel.id)).map((channel) => channel.id),
 );
 
 // UnreadCategory gathers the unread channels above the categories, when the person groups unread channels

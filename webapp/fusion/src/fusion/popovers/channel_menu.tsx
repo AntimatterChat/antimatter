@@ -41,6 +41,7 @@ import CopyIdItem from 'fusion/popovers/copy_id_item';
 import {useDialogs} from 'fusion/shell/dialogs_context';
 import {useToast} from 'fusion/shell/toast_context';
 import {RenameGroupDialog} from 'fusion/sidebar/group_dm';
+import {hideConversation, isHidden, showConversation} from 'fusion/sidebar/hidden';
 import {getMuteEnd, muteFor, MUTE_DURATIONS, unmute} from 'fusion/sidebar/timed_mute';
 import {am} from 'fusion/utils/class_names';
 import {openAddToGroup, openDialog} from 'fusion/utils/modals';
@@ -90,6 +91,7 @@ export default function ChannelMenu({channel, anchor, point, placement = 'right'
 
     // Auto-translation, once a channel admin turned it on for the channel: each reader can turn it off for them.
     const channelTranslated = useSelector((state: GlobalState) => isChannelAutotranslated(state, channel.id));
+    const hidden = useSelector((state: GlobalState) => isHidden(state, channel.id));
     const myTranslation = useSelector((state: GlobalState) => isMyChannelAutotranslated(state, channel.id));
     const languageSupported = useSelector(isUserLanguageSupportedForAutotranslation);
     const teammate = useSelector((state: GlobalState) => (channel.type === Constants.DM_CHANNEL ? getUser(state, getUserIdFromChannelName(getCurrentUserId(state), channel.name)) : undefined));
@@ -283,6 +285,23 @@ export default function ChannelMenu({channel, anchor, point, placement = 'right'
                         </button>
                     ))}
                 </div>
+            )}
+            {hidden ? (
+                <MenuItem
+                    icon='inbox'
+                    label={formatMessage({id: 'fusion.channelMenu.unhide', defaultMessage: 'Show in the sidebar'})}
+                    onClick={run(() => dispatch(showConversation(channel.id)))}
+                />
+            ) : (
+                <MenuItem
+                    icon='eye-off'
+                    label={formatMessage({id: 'fusion.channelMenu.hide', defaultMessage: 'Hide until new messages'})}
+                    sub={formatMessage({id: 'fusion.channelMenu.hideSub', defaultMessage: 'It comes back when someone writes in it'})}
+                    onClick={run(() => {
+                        dispatch(hideConversation(channel.id));
+                        toast(formatMessage({id: 'fusion.toast.hidden', defaultMessage: 'Hidden until new messages — find it under Hidden at the end of the list'}));
+                    })}
+                />
             )}
             <MenuSeparator/>
             <MenuItem

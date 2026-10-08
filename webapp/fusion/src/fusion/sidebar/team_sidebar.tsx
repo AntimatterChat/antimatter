@@ -9,7 +9,7 @@ import type {Channel} from '@mattermost/types/channels';
 
 import {makeGetChannelIdsForCategory} from 'mattermost-redux/selectors/entities/channel_categories';
 import {makeGetChannel} from 'mattermost-redux/selectors/entities/channels';
-import {getCurrentTeam} from 'mattermost-redux/selectors/entities/teams';
+import {getCurrentTeam, getCurrentTeamId} from 'mattermost-redux/selectors/entities/teams';
 
 import {setUnreadFilterEnabled} from 'actions/views/channel_sidebar';
 import {getCategoriesForCurrentTeam, isUnreadFilterEnabled} from 'selectors/views/channel_sidebar';
@@ -25,8 +25,11 @@ import Pluggable from 'plugins/pluggable';
 import type {GlobalState} from 'types/store';
 
 import Category from './category';
+import ChannelRow from './channel_row';
 import {useSidebarThreads} from './channel_threads';
 import DirectRow from './direct_row';
+import {getHiddenChannelIds} from './hidden';
+import HiddenSection from './hidden_section';
 import {DM_FIND_ID} from './home_sidebar';
 import MoreUnreads from './more_unreads';
 import UnreadCategory from './unread_category';
@@ -44,7 +47,8 @@ function Dock() {
     const getChannelIds = useMemo(() => makeGetChannelIdsForCategory(), []);
     const channelIds = useSelector((state: GlobalState) => (dmCategory ? getChannelIds(state, dmCategory) : []));
     const getChannel = useMemo(() => makeGetChannel(), []);
-    const channels = useSelector((state: GlobalState) => channelIds.map((id) => getChannel(state, id)).filter(Boolean) as Channel[], shallowEqual);
+    const hidden = useSelector(getHiddenChannelIds);
+    const channels = useSelector((state: GlobalState) => channelIds.filter((id) => !hidden.has(id)).map((id) => getChannel(state, id)).filter(Boolean) as Channel[], shallowEqual);
     const unread = useSelector(getUnreadDirectChannels).reduce((n, dm) => n + Math.max(dm.messages, dm.mentions), 0);
     const allLabel = formatMessage({id: 'fusion.dock.all', defaultMessage: 'All direct messages'});
 
@@ -109,6 +113,15 @@ export default function TeamSidebar() {
     }, [dispatch, unreadOnly, store]);
     const team = useSelector(getCurrentTeam);
     const categories = useSelector(getCategoriesForCurrentTeam);
+
+    // The team's channels hidden until they get new messages, listed folded at the end.
+    const hiddenChannels = useSelector((state: GlobalState) => {
+        const teamId = getCurrentTeamId(state);
+        return [...getHiddenChannelIds(state)].filter((id) => {
+            const channel = state.entities.channels.channels[id];
+            return channel?.team_id === teamId && channel.type !== 'D' && channel.type !== 'G';
+        });
+    }, shallowEqual);
     const headButton = useRef<HTMLButtonElement>(null);
     const [menuOpen, setMenuOpen] = useState(false);
 
@@ -163,6 +176,17 @@ export default function TeamSidebar() {
                         category={category}
                     />
                 ))}
+                {!unreadOnly && (
+                    <HiddenSection
+                        items={hiddenChannels}
+                        render={(id) => (
+                            <ChannelRow
+                                key={id}
+                                channelId={id}
+                            />
+                        )}
+                    />
+                )}
             </div>
             <Dock/>
             <VoicePanel/>
