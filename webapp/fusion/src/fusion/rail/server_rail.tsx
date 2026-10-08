@@ -34,6 +34,7 @@ import type {GlobalState} from 'types/store';
 
 import {addToFolder, isFolderOpen, railItems, removeFromFolder, setFolderOpen, useFolders} from './folders';
 import type {Folder} from './folders';
+import HistoryButtons, {showHistoryButtons} from './history_buttons';
 
 const initialsOf = (name: string) => name.split(/\s+/).map((p) => p[0] || '').slice(0, 2).join('').toUpperCase();
 
@@ -332,6 +333,7 @@ export default function ServerRail() {
             {...a11yRegion(am('servers'), 'rail')}
             aria-label={formatMessage({id: 'fusion.rail.label', defaultMessage: 'Teams'})}
         >
+            {showHistoryButtons() && <HistoryButtons/>}
             {railItems(teams, folders).map((item) => {
                 const teamButton = (team: Team) => (
                     <TeamButton

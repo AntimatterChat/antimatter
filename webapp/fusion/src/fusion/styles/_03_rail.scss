@@ -91,3 +91,10 @@
 :is(.am-app, .am-layer) .am-srv.am-folder.am-drop-in { box-shadow: 0 0 0 2px var(--am-matter); }
 :is(.am-app, .am-layer) .am-folder-faces { display: grid; grid-template-columns: repeat(2, 16px); grid-auto-rows: 16px; gap: 3px; }
 :is(.am-app, .am-layer) .am-srv-img.am-mini, :is(.am-app, .am-layer) .am-srv-initials.am-mini { width: 16px; height: 16px; border-radius: 50%; display: grid; place-items: center; background: var(--am-raise-2); color: var(--am-text-2); font: 700 7.5px var(--am-font-display); object-fit: cover; }
+/* Back and forward, at the top of the rail in the desktop app. */
+:is(.am-app, .am-layer) .am-history-btns { display: flex; gap: 2px; margin-bottom: 2px; }
+:is(.am-app, .am-layer) .am-history-btns button { display: grid; place-items: center; width: 26px; height: 24px; border-radius: 6px; color: var(--am-text-2); }
+:is(.am-app, .am-layer) .am-history-btns button:hover:not(:disabled) { background: var(--am-hover); color: var(--am-text); }
+:is(.am-app, .am-layer) .am-history-btns button:disabled { opacity: .35; cursor: default; }
+:is(.am-app, .am-layer) .am-history-btns .am-back .am-ic { transform: rotate(90deg); }
+:is(.am-app, .am-layer) .am-history-btns .am-forward .am-ic { transform: rotate(-90deg); }
