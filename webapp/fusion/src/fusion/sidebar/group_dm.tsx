@@ -12,6 +12,8 @@ import {get as getPreference} from 'mattermost-redux/selectors/entities/preferen
 import {getCurrentTeam} from 'mattermost-redux/selectors/entities/teams';
 import {getCurrentUserId} from 'mattermost-redux/selectors/entities/users';
 
+import {openDirectChannelToUserId} from 'actions/channel_actions';
+
 import ConvertGmToChannelModal from 'components/convert_gm_to_channel_modal';
 
 import {Dialog, Popover} from 'fusion/components/layer';
@@ -39,9 +41,24 @@ export function setGroupName(channelId: string, name: string): ActionFuncAsync {
 }
 
 // useConversationName is the name to show for a conversation: the one given to a group message, else its own.
-export function useConversationName(channel: Pick<Channel, 'id' | 'type' | 'display_name'>): string {
+export function useConversationName(channel: Pick<Channel, 'id' | 'type' | 'display_name'> & {name?: string}): string {
+    const {formatMessage} = useIntl();
     const custom = useSelector((state: GlobalState) => (channel.type === 'G' ? getGroupName(state, channel.id) : ''));
+    const notes = useSelector((state: GlobalState) => channel.type === 'D' && channel.name === `${getCurrentUserId(state)}__${getCurrentUserId(state)}`);
+    if (notes) {
+        return formatMessage({id: 'fusion.notes.name', defaultMessage: 'Notes to self'});
+    }
     return custom || channel.display_name;
+}
+
+// useNotesToSelf opens your conversation with yourself, Antimatter's notes to self, creating it the first time.
+export function useNotesToSelf(): () => Promise<Channel | undefined> {
+    const dispatch = useDispatch();
+    const me = useSelector(getCurrentUserId);
+    return async () => {
+        const result = await dispatch(openDirectChannelToUserId(me));
+        return 'data' in result ? result.data as Channel | undefined : undefined;
+    };
 }
 
 // RenameGroupDialog names a group message, for oneself; an empty name goes back to its members' names.

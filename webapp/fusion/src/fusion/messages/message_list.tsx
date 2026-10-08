@@ -53,11 +53,14 @@ type Props = {
 
     // What an empty conversation says.
     emptyText?: string;
+
+    // The start of the conversation, shown above its first message once there are no older ones.
+    intro?: React.ReactNode;
 };
 
 // MessageList renders a channel's messages top to bottom, loading older ones while scrolling up, like the classic
 // post list but without virtualization: the mockup's plain, selectable list.
-export default function MessageList({channelId, focusedPostId, scrollRef, emptyText}: Props) {
+export default function MessageList({channelId, focusedPostId, scrollRef, emptyText, intro}: Props) {
     const {formatMessage} = useIntl();
     const dispatch = useDispatch();
     const dayLabel = useDayLabel();
@@ -233,7 +236,7 @@ export default function MessageList({channelId, focusedPostId, scrollRef, emptyT
         return <div className={am('empty')}>{formatMessage({id: 'fusion.messages.loading', defaultMessage: 'Loading messages…'})}</div>;
     }
     if (!realPostIds.length && chunk?.oldest) {
-        return <div className={am('empty')}>{emptyText || formatMessage({id: 'fusion.messages.empty', defaultMessage: 'No messages yet — say hello.'})}</div>;
+        return intro ? <div className={am('msgs')}>{intro}</div> : <div className={am('empty')}>{emptyText || formatMessage({id: 'fusion.messages.empty', defaultMessage: 'No messages yet — say hello.'})}</div>;
     }
 
     let previousPostId: string | undefined;
@@ -265,6 +268,7 @@ export default function MessageList({channelId, focusedPostId, scrollRef, emptyT
                 </div>
             )}
             {loadingOlder && <div className={am('empty')}>{formatMessage({id: 'fusion.messages.older', defaultMessage: 'Loading older messages…'})}</div>}
+            {chunk?.oldest && intro}
             {rows.map((id) => {
                 if (isDateLine(id)) {
                     previousPostId = undefined;

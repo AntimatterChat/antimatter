@@ -25,6 +25,7 @@ import {getHistory} from 'utils/browser_history';
 import type {GlobalState} from 'types/store';
 
 import DirectRow, {useTeammateId} from './direct_row';
+import {useNotesToSelf} from './group_dm';
 import {useLastMessage} from './last_message';
 import VoicePanel from './voice_panel';
 
@@ -71,6 +72,7 @@ export default function HomeSidebar() {
     const users = useSelector(getUsers);
     const me = useSelector(getCurrentUserId);
     const layout = useLayout();
+    const openNotes = useNotesToSelf();
 
     // Enter opens the first match, else starts a conversation with the first person matching, as in the mockup.
     const findOrStart = async () => {
@@ -169,6 +171,19 @@ export default function HomeSidebar() {
                     {link('mentions', 'at', formatMessage({id: 'fusion.home.mentions', defaultMessage: 'Mentions'}), mentions)}
                     {link('threads', 'thread', formatMessage({id: 'fusion.home.threads', defaultMessage: 'Followed threads'}))}
                     {link('saved', 'pin', formatMessage({id: 'fusion.home.saved', defaultMessage: 'Saved messages'}))}
+                    <button
+                        className={am('ch')}
+                        onClick={async () => {
+                            const notes = await openNotes();
+                            if (notes && team) {
+                                layout.setHome(false);
+                                getHistory().push(channelPath(team.name, notes));
+                            }
+                        }}
+                    >
+                        <Icon name='pen'/>
+                        <span className={am('name')}>{formatMessage({id: 'fusion.notes.name', defaultMessage: 'Notes to self'})}</span>
+                    </button>
                 </div>
                 <div
                     className={am('cat')}

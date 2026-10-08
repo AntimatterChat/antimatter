@@ -27,6 +27,7 @@ import RightPanel from 'fusion/rhs/right_panel';
 import GlobalSearch from 'fusion/search/global_search';
 import HomeSidebar from 'fusion/sidebar/home_sidebar';
 import TeamSidebar from 'fusion/sidebar/team_sidebar';
+import {useMuteExpiry} from 'fusion/sidebar/timed_mute';
 import {am} from 'fusion/utils/class_names';
 import {openKeyboardShortcuts} from 'fusion/utils/modals';
 import Constants from 'utils/constants';
@@ -63,6 +64,7 @@ function Frame({children}: Props) {
 
     useSwipes(appRef, layout);
     useFaceTips();
+    useMuteExpiry();
 
     // The sidebar's categories, including the direct messages shown in the dock.
     useEffect(() => {

@@ -7,14 +7,16 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import type {UserProfile} from '@mattermost/types/users';
 
-import {getChannelStats} from 'mattermost-redux/actions/channels';
-import {getAllChannelStats, getCurrentChannelId, getCurrentChannel} from 'mattermost-redux/selectors/entities/channels';
+import {countPendingChannelJoinRequests, getChannelJoinRequests, getChannelStats} from 'mattermost-redux/actions/channels';
+import {canManageChannelJoinRequests, getAllChannelStats, getCurrentChannelId, getCurrentChannel, getPendingChannelJoinRequests} from 'mattermost-redux/selectors/entities/channels';
 import {makeGetProfilesInChannel} from 'mattermost-redux/selectors/entities/users';
 import {isGuest} from 'mattermost-redux/utils/user_utils';
 
 import {loadProfilesAndReloadChannelMembers} from 'actions/user_actions';
 import {closeRightHandSide} from 'actions/views/rhs';
 import {makeGetCustomStatus} from 'selectors/views/custom_status';
+
+import PendingJoinRequests from 'components/channel_members_rhs/pending_join_requests';
 
 import {TalkNote} from 'fusion/calls/markers';
 import Avatar from 'fusion/components/avatar';
@@ -41,6 +43,8 @@ type MemberProps = {
     onOpen: (el: HTMLElement) => void;
     onMenu: (e: React.MouseEvent<HTMLElement>) => void;
 };
+
+const NO_REQUESTS: ReturnType<typeof getPendingChannelJoinRequests> = [];
 
 function Member({user, off, role, onOpen, onMenu}: MemberProps) {
     const {formatMessage} = useIntl();
@@ -97,6 +101,16 @@ export default function MemberList({inPanel = false}: {inPanel?: boolean}) {
         }
     }, [channelId, dispatch]);
 
+    // Requests to join a discoverable private channel, for those who can let people in.
+    const canManageRequests = useSelector((state: GlobalState) => canManageChannelJoinRequests(state, channel));
+    const joinRequests = useSelector((state: GlobalState) => (canManageRequests && channelId ? getPendingChannelJoinRequests(state, channelId) : NO_REQUESTS));
+    useEffect(() => {
+        if (canManageRequests && channelId) {
+            dispatch(getChannelJoinRequests(channelId, {status: 'pending'}));
+            dispatch(countPendingChannelJoinRequests(channelId));
+        }
+    }, [canManageRequests, channelId, dispatch]);
+
     const direct = channel?.type === 'D' || channel?.type === 'G';
 
     const list = (
@@ -138,6 +152,14 @@ export default function MemberList({inPanel = false}: {inPanel?: boolean}) {
                     </button>
                 )}
             </div>
+            {canManageRequests && joinRequests.length > 0 && (
+                <div className={am('join-requests')}>
+                    <PendingJoinRequests
+                        channelId={channelId}
+                        requests={joinRequests}
+                    />
+                </div>
+            )}
             {groups.map((group) => (
                 <React.Fragment key={group.key}>
                     <div className={am('role-head')}>

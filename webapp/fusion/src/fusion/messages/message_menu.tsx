@@ -18,6 +18,7 @@ import {contentFlaggingEnabledInTeam, getCurrentTeam} from 'mattermost-redux/sel
 import {getCurrentUserId} from 'mattermost-redux/selectors/entities/users';
 
 import {flagPost, markPostAsUnread, pinPost, setEditingPost, toggleReaction, unflagPost, unpinPost} from 'actions/post_actions';
+import {forwardPost} from 'actions/views/posts';
 import {selectPost} from 'actions/views/rhs';
 import {getRecentEmojisNames} from 'selectors/emojis';
 
@@ -32,6 +33,7 @@ import {CustomTimeForm} from 'fusion/composer/schedule';
 import CopyIdItem from 'fusion/popovers/copy_id_item';
 import {useDialogs} from 'fusion/shell/dialogs_context';
 import {useToast} from 'fusion/shell/toast_context';
+import {useNotesToSelf} from 'fusion/sidebar/group_dm';
 import {am} from 'fusion/utils/class_names';
 import {openDialog} from 'fusion/utils/modals';
 import {permalinkPath} from 'fusion/utils/paths';
@@ -88,6 +90,7 @@ export default function MessageMenu({post, anchor, inThread, onClose, onMoreReac
     const inlineReplies = useInlineRepliesEnabled();
     const quick = [...new Set([...[...recent].reverse(), ...QUICK_REACTIONS])].slice(0, QUICK_COUNT);
 
+    const openNotes = useNotesToSelf();
     const run = (action: () => void) => () => {
         action();
         onClose();
@@ -183,6 +186,19 @@ export default function MessageMenu({post, anchor, inThread, onClose, onMoreReac
                     icon='forward'
                     label={formatMessage({id: 'fusion.messageMenu.forward', defaultMessage: 'Forward'})}
                     onClick={run(() => dispatch(openDialog(ModalIdentifiers.FORWARD_POST_MODAL, ForwardPostModal, {post})))}
+                />
+            )}
+            {!system && !burn && (
+                <MenuItem
+                    icon='pen'
+                    label={formatMessage({id: 'fusion.messageMenu.toNotes', defaultMessage: 'Save to notes'})}
+                    onClick={run(async () => {
+                        const notes = await openNotes();
+                        if (notes) {
+                            await dispatch(forwardPost(post, notes));
+                            toast(formatMessage({id: 'fusion.toast.savedToNotes', defaultMessage: 'Saved to your notes'}));
+                        }
+                    })}
                 />
             )}
             {crt && team && (

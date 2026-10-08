@@ -15,6 +15,8 @@ import {getCurrentTeam, getCurrentTeamId, getJoinableTeamIds} from 'mattermost-r
 import {switchTeam, updateTeamsOrderForUser} from 'actions/team_actions';
 
 import Icon from 'fusion/components/icon';
+import {Dialog, Popover} from 'fusion/components/layer';
+import {MenuItem} from 'fusion/components/menu';
 import ServerMenu from 'fusion/popovers/server_menu';
 import {getLastTeamChannelName, getSortedMyTeams, getUnreadDirectChannels} from 'fusion/selectors';
 import {useGlobalSearch} from 'fusion/shell/global_search_context';
@@ -27,6 +29,9 @@ import Constants from 'utils/constants';
 import {imageURLForTeam} from 'utils/utils';
 
 import type {GlobalState} from 'types/store';
+
+import {addToFolder, isFolderOpen, railItems, removeFromFolder, setFolderOpen, useFolders} from './folders';
+import type {Folder} from './folders';
 
 const initialsOf = (name: string) => name.split(/\s+/).map((p) => p[0] || '').slice(0, 2).join('').toUpperCase();
 
@@ -105,6 +110,141 @@ function TeamButton({team, active, unread, mentions, onSelect, drag}: {team: Tea
     );
 }
 
+function TeamFace({team, size}: {team: Team; size?: 'mini'}) {
+    const icon = imageURLForTeam(team);
+    const [failed, setFailed] = useState('');
+    if (icon && icon !== failed) {
+        return (
+            <img
+                className={am('srv-img', size)}
+                src={icon}
+                alt=''
+                onError={() => setFailed(icon)}
+            />
+        );
+    }
+    return <span className={am('srv-initials', size)}>{initialsOf(team.display_name)}</span>;
+}
+
+// FolderDialog names a server folder.
+function FolderDialog({folder, onSave, onClose}: {folder: Folder; onSave: (name: string) => void; onClose: () => void}) {
+    const {formatMessage} = useIntl();
+    const [name, setName] = useState(folder.name);
+    const title = formatMessage({id: 'fusion.rail.renameFolder', defaultMessage: 'Rename folder'});
+    return (
+        <Dialog
+            label={title}
+            onClose={onClose}
+            onSubmit={() => {
+                onSave(name.trim());
+                onClose();
+            }}
+        >
+            <div className={am('pane')}>
+                <h2>{title}</h2>
+                <label className={am('field')}>
+                    <span>{formatMessage({id: 'fusion.rail.folderName', defaultMessage: 'Name'})}</span>
+                    <input
+                        autoFocus={true}
+                        value={name}
+                        maxLength={40}
+                        onChange={(e) => setName(e.target.value)}
+                    />
+                </label>
+                <div className={am('modal-actions')}>
+                    <button
+                        type='button'
+                        className={am('btn')}
+                        onClick={onClose}
+                    >
+                        {formatMessage({id: 'fusion.settings.cancel', defaultMessage: 'Cancel'})}
+                    </button>
+                    <button className={am('btn', 'primary')}>{formatMessage({id: 'fusion.settings.save', defaultMessage: 'Save'})}</button>
+                </div>
+            </div>
+        </Dialog>
+    );
+}
+
+// FolderButton is a closed or open server folder: its teams' faces in a square when closed, a folder when open, with
+// their unread and mention counts. Teams dropped on it join it.
+function FolderButton({folder, teams, open, unread, mentions, onToggle, onDropTeam, onRename, onUngroup}: {folder: Folder; teams: Team[]; open: boolean; unread: boolean; mentions: number; onToggle: () => void; onDropTeam: () => void; onRename: () => void; onUngroup: () => void}) {
+    const {formatMessage} = useIntl();
+    const [menu, setMenu] = useState<{x: number; y: number} | null>(null);
+    const [over, setOver] = useState(false);
+    const name = folder.name || formatMessage({id: 'fusion.rail.folder', defaultMessage: 'Folder'});
+    return (
+        <>
+            <button
+                className={am('srv', 'folder', {open, unread: unread && !open, 'drop-in': over})}
+                title={`${name} · ${teams.map((t) => t.display_name).join(', ')}`}
+                aria-label={formatMessage({id: 'fusion.rail.folderLabel', defaultMessage: 'Folder {name}, {count, plural, one {# team} other {# teams}}'}, {name, count: teams.length})}
+                aria-expanded={open}
+                onClick={onToggle}
+                onContextMenu={(e) => {
+                    e.preventDefault();
+                    setMenu({x: e.clientX, y: e.clientY});
+                }}
+                onDragOver={(e) => {
+                    if (e.dataTransfer.types.includes('application/x-am-team')) {
+                        e.preventDefault();
+                        setOver(true);
+                    }
+                }}
+                onDragLeave={() => setOver(false)}
+                onDrop={(e) => {
+                    if (e.dataTransfer.types.includes('application/x-am-team')) {
+                        e.preventDefault();
+                        setOver(false);
+                        onDropTeam();
+                    }
+                }}
+            >
+                {open ? <Icon name='folder'/> : (
+                    <span className={am('folder-faces')}>
+                        {teams.slice(0, 4).map((team) => (
+                            <TeamFace
+                                key={team.id}
+                                team={team}
+                                size='mini'
+                            />
+                        ))}
+                    </span>
+                )}
+                {mentions > 0 && !open && <span className={am('badge')}>{mentions}</span>}
+            </button>
+            {menu && (
+                <Popover
+                    point={menu}
+                    placement='point'
+                    className='plus-pop'
+                    role='menu'
+                    label={name}
+                    onClose={() => setMenu(null)}
+                >
+                    <MenuItem
+                        icon='pen'
+                        label={formatMessage({id: 'fusion.rail.renameFolder', defaultMessage: 'Rename folder'})}
+                        onClick={() => {
+                            setMenu(null);
+                            onRename();
+                        }}
+                    />
+                    <MenuItem
+                        icon='x'
+                        label={formatMessage({id: 'fusion.rail.ungroup', defaultMessage: 'Remove folder'})}
+                        sub={formatMessage({id: 'fusion.rail.ungroupSub', defaultMessage: 'Its teams stay in the rail'})}
+                        onClick={() => {
+                            setMenu(null);
+                            onUngroup();
+                        }}
+                    />
+                </Popover>
+            )}
+        </>
+    );
+}
+
 // ServerRail is the column of teams on the far left; the mockup calls teams servers. Direct messages waiting for you
 // sit at its bottom, above search, as round faces under a chat bubble so they don't read as servers. All the
 // conversations open from the chat bubble of the sidebar's dock.
@@ -130,6 +270,17 @@ export default function ServerRail() {
     const canCreate = useSelector((state: GlobalState) => haveISystemPermission(state, {permission: Permissions.CREATE_TEAM}));
 
     const waitingDMs = unreadDMs.filter((dm) => dm.channel.id !== currentChannelId).slice(0, 5);
+    const [folders, saveFolders] = useFolders();
+    const [openFolders, setOpenFolders] = useState<Record<string, boolean>>({});
+    const [renaming, setRenaming] = useState<Folder | null>(null);
+    const [adding, setAdding] = useState(false);
+    const addRef = useRef<HTMLButtonElement>(null);
+    const folderOpen = (id: string) => openFolders[id] ?? isFolderOpen(id);
+    const toggleFolder = (id: string) => {
+        const open = !folderOpen(id);
+        setFolderOpen(id, open);
+        setOpenFolders({...openFolders, [id]: open});
+    };
 
     // The team being dragged, to put it before or after the team it's dropped on; the order is the user's preference.
     const dragged = useRef<string | null>(null);
@@ -142,6 +293,20 @@ export default function ServerRail() {
         const order = teams.map((t) => t.id).filter((t) => t !== id);
         order.splice(order.indexOf(target.id) + (after ? 1 : 0), 0, id);
         dispatch(updateTeamsOrderForUser(order));
+
+        // Dropped among a folder's teams, a team joins the folder; among loose teams, it leaves its folder.
+        const targetFolder = folders.find((f) => f.teamIds.includes(target.id));
+        const ownFolder = folders.find((f) => f.teamIds.includes(id));
+        if (targetFolder?.id !== ownFolder?.id) {
+            saveFolders(targetFolder ? addToFolder(folders, id, targetFolder.id) : removeFromFolder(folders, id));
+        }
+    };
+    const dropInFolder = (folder: Folder) => {
+        const id = dragged.current;
+        dragged.current = null;
+        if (id && !folder.teamIds.includes(id)) {
+            saveFolders(addToFolder(folders, id, folder.id));
+        }
     };
 
     const selectTeam = (team: Team) => {
@@ -165,34 +330,102 @@ export default function ServerRail() {
             className={am('servers')}
             aria-label={formatMessage({id: 'fusion.rail.label', defaultMessage: 'Teams'})}
         >
-            {teams.map((team) => (
-                <TeamButton
-                    key={team.id}
-                    team={team}
-                    active={team.id === currentTeamId && !inDirectMessages}
-                    unread={unreadTeams.has(team.id)}
-                    mentions={mentionsInTeam.get(team.id) || 0}
-                    onSelect={() => selectTeam(team)}
-                    drag={{
-                        onDragStart: () => {
-                            dragged.current = team.id;
-                        },
-                        onDrop: (after) => dropOn(team, after),
-                        onDragEnd: () => {
-                            dragged.current = null;
-                        },
-                    }}
+            {railItems(teams, folders).map((item) => {
+                const teamButton = (team: Team) => (
+                    <TeamButton
+                        key={team.id}
+                        team={team}
+                        active={team.id === currentTeamId && !inDirectMessages}
+                        unread={unreadTeams.has(team.id)}
+                        mentions={mentionsInTeam.get(team.id) || 0}
+                        onSelect={() => selectTeam(team)}
+                        drag={{
+                            onDragStart: () => {
+                                dragged.current = team.id;
+                            },
+                            onDrop: (after) => dropOn(team, after),
+                            onDragEnd: () => {
+                                dragged.current = null;
+                            },
+                        }}
+                    />
+                );
+                if (item.kind === 'team') {
+                    return teamButton(item.team);
+                }
+                const open = folderOpen(item.folder.id);
+                return (
+                    <div
+                        key={item.folder.id}
+                        className={am('srv-folder', {open})}
+                    >
+                        <FolderButton
+                            folder={item.folder}
+                            teams={item.teams}
+                            open={open}
+                            unread={item.teams.some((t) => unreadTeams.has(t.id))}
+                            mentions={item.teams.reduce((n, t) => n + (mentionsInTeam.get(t.id) || 0), 0)}
+                            onToggle={() => toggleFolder(item.folder.id)}
+                            onDropTeam={() => dropInFolder(item.folder)}
+                            onRename={() => setRenaming(item.folder)}
+                            onUngroup={() => saveFolders(folders.filter((f) => f.id !== item.folder.id))}
+                        />
+                        {open && item.teams.map(teamButton)}
+                    </div>
+                );
+            })}
+            {renaming && (
+                <FolderDialog
+                    folder={renaming}
+                    onSave={(name) => saveFolders(folders.map((f) => (f.id === renaming.id ? {...f, name} : f)))}
+                    onClose={() => setRenaming(null)}
                 />
-            ))}
+            )}
             {(canJoin || canCreate) && (
                 <button
-                    className={am('srv', 'add')}
-                    title={canJoin ? formatMessage({id: 'fusion.rail.join', defaultMessage: 'Join another team'}) : formatMessage({id: 'fusion.rail.create', defaultMessage: 'Create a team'})}
-                    aria-label={canJoin ? formatMessage({id: 'fusion.rail.join', defaultMessage: 'Join another team'}) : formatMessage({id: 'fusion.rail.create', defaultMessage: 'Create a team'})}
-                    onClick={() => getHistory().push(canJoin ? '/select_team' : '/create_team')}
+                    ref={addRef}
+                    className={am('srv', 'add', {active: adding})}
+                    title={formatMessage({id: 'fusion.rail.add', defaultMessage: 'Add a team'})}
+                    aria-label={formatMessage({id: 'fusion.rail.add', defaultMessage: 'Add a team'})}
+                    aria-haspopup='menu'
+                    aria-expanded={adding}
+                    onClick={() => setAdding(!adding)}
                 >
                     <Icon name='plus'/>
                 </button>
+            )}
+            {adding && (
+                <Popover
+                    anchor={addRef.current}
+                    placement='beside'
+                    className='plus-pop'
+                    role='menu'
+                    label={formatMessage({id: 'fusion.rail.add', defaultMessage: 'Add a team'})}
+                    onClose={() => setAdding(false)}
+                >
+                    {canJoin && (
+                        <MenuItem
+                            icon='compass'
+                            label={formatMessage({id: 'fusion.rail.join', defaultMessage: 'Join another team'})}
+                            sub={formatMessage({id: 'fusion.rail.joinSub', defaultMessage: 'Browse the teams open to you'})}
+                            onClick={() => {
+                                setAdding(false);
+                                getHistory().push('/select_team');
+                            }}
+                        />
+                    )}
+                    {canCreate && (
+                        <MenuItem
+                            icon='plus'
+                            label={formatMessage({id: 'fusion.rail.create', defaultMessage: 'Create a team'})}
+                            sub={formatMessage({id: 'fusion.rail.createSub', defaultMessage: 'A new space with its own channels'})}
+                            onClick={() => {
+                                setAdding(false);
+                                getHistory().push('/create_team');
+                            }}
+                        />
+                    )}
+                </Popover>
             )}
             <span className={am('rail-grow')}/>
             {waitingDMs.length > 0 && (

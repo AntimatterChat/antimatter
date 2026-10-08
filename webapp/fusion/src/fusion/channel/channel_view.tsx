@@ -7,18 +7,23 @@ import {useSelector} from 'react-redux';
 import {useRouteMatch} from 'react-router-dom';
 
 import {getCurrentChannel, isDeactivatedDirectChannel} from 'mattermost-redux/selectors/entities/channels';
+import {getCurrentUserId} from 'mattermost-redux/selectors/entities/users';
 
 import {getChannelViewPanel} from 'selectors/channel_view_panel';
+
+import ChannelBanner from 'components/channel_banner/channel_banner';
 
 import {useIsVoiceChannel} from 'fusion/calls/hooks';
 import VoiceView from 'fusion/calls/voice_view';
 import Composer, {DROP_FILES_EVENT} from 'fusion/composer/composer';
 import MessageList from 'fusion/messages/message_list';
+import {useConversationName} from 'fusion/sidebar/group_dm';
 import {am} from 'fusion/utils/class_names';
 
 import type {GlobalState} from 'types/store';
 
 import ChannelHeader from './channel_header';
+import ChannelIntro from './channel_intro';
 import ChannelViewPanel from './channel_view_panel';
 import SharedBanner from './shared_banner';
 
@@ -30,6 +35,9 @@ export default function ChannelView() {
     const match = useRouteMatch<{postid?: string}>();
     const viewRef = useRef<HTMLDivElement>(null);
     const voice = useIsVoiceChannel(channel?.id);
+    const me = useSelector(getCurrentUserId);
+    const conversationName = useConversationName(channel || {id: '', type: 'O', display_name: ''});
+    const notes = channel?.type === 'D' && channel.name === `${me}__${me}`;
 
     // A plugin's panel (e.g. a call) takes the place of the messages until it shows them; they're
     // hidden again on channel switch, and shown for a permalink so that it shows its post.
@@ -54,7 +62,12 @@ export default function ChannelView() {
     }
 
     const direct = channel.type === 'D' || channel.type === 'G';
-    const placeholder = direct ? formatMessage({id: 'fusion.channel.messageDirect', defaultMessage: 'Message {name}'}, {name: channel.display_name}) : formatMessage({id: 'fusion.channel.messageChannel', defaultMessage: 'Message #{name}'}, {name: channel.display_name});
+    let placeholder = formatMessage({id: 'fusion.channel.messageChannel', defaultMessage: 'Message #{name}'}, {name: channel.display_name});
+    if (notes) {
+        placeholder = formatMessage({id: 'fusion.channel.messageNotes', defaultMessage: 'Write a note to self'});
+    } else if (direct) {
+        placeholder = formatMessage({id: 'fusion.channel.messageDirect', defaultMessage: 'Message {name}'}, {name: conversationName});
+    }
     const archived = channel.delete_at !== 0;
     const messagesVisible = !panel || panelMessagesVisible;
 
@@ -84,6 +97,7 @@ export default function ChannelView() {
         <>
             <ChannelHeader channel={channel}/>
             <SharedBanner channel={channel}/>
+            <ChannelBanner channelId={channel.id}/>
             {panel && (
                 <ChannelViewPanel
                     registration={panel}
@@ -114,6 +128,7 @@ export default function ChannelView() {
                         channelId={channel.id}
                         focusedPostId={match.params.postid}
                         scrollRef={viewRef}
+                        intro={<ChannelIntro channel={channel}/>}
                     />
                 </div>
             )}

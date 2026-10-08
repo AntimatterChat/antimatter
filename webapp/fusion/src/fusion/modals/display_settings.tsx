@@ -17,6 +17,8 @@ import {am} from 'fusion/utils/class_names';
 import {Preferences} from 'utils/constants';
 import {copyToClipboard} from 'utils/utils';
 
+import type {GlobalState} from 'types/store';
+
 import {Choice, Section, Toggle, usePreference} from './settings_controls';
 
 // Theme share codes: "am1:" and the theme's colours, to pass a custom theme on as text.
@@ -133,6 +135,8 @@ export function ReadingRows() {
     const [collapse, setCollapse] = usePreference(Preferences.CATEGORY_DISPLAY_SETTINGS, Preferences.COLLAPSE_DISPLAY, Preferences.COLLAPSE_DISPLAY_DEFAULT);
     const [oneClick, setOneClick] = usePreference(Preferences.CATEGORY_DISPLAY_SETTINGS, Preferences.ONE_CLICK_REACTIONS_ENABLED, Preferences.ONE_CLICK_REACTIONS_ENABLED_DEFAULT);
     const [scroll, setScroll] = usePreference(Preferences.CATEGORY_ADVANCED_SETTINGS, Preferences.UNREAD_SCROLL_POSITION, Preferences.UNREAD_SCROLL_POSITION_START_FROM_LEFT);
+    const joinLeaveDefault = useSelector((state: GlobalState) => getConfig(state).EnableJoinLeaveMessageByDefault === 'true');
+    const [joinLeave, setJoinLeave] = usePreference(Preferences.CATEGORY_ADVANCED_SETTINGS, ReduxPreferences.ADVANCED_FILTER_JOIN_LEAVE, String(joinLeaveDefault));
 
     return (
         <>
@@ -157,6 +161,12 @@ export function ReadingRows() {
                 desc={formatMessage({id: 'fusion.settings.oneClickDesc', defaultMessage: 'Your recent emoji in the toolbar over messages.'})}
                 on={oneClick === 'true'}
                 onChange={(on) => setOneClick(String(on))}
+            />
+            <Toggle
+                title={formatMessage({id: 'fusion.settings.joinLeave', defaultMessage: 'Join and leave messages'})}
+                desc={formatMessage({id: 'fusion.settings.joinLeaveDesc', defaultMessage: 'Show when people join or leave channels. Channel admins can also turn them off for a whole channel in its settings.'})}
+                on={joinLeave !== 'false'}
+                onChange={(on) => setJoinLeave(String(on))}
             />
             <Toggle
                 title={formatMessage({id: 'fusion.settings.formatting', defaultMessage: 'Message formatting'})}

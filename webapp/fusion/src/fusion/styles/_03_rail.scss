@@ -82,3 +82,12 @@
   text-align: center;
   box-shadow: 0 0 0 3px var(--am-rail);
 }
+
+/* ---------- Server folders ---------- */
+:is(.am-app, .am-layer) .am-srv-folder { display: flex; flex-direction: column; align-items: center; gap: 10px; border-radius: 16px; }
+:is(.am-app, .am-layer) .am-srv-folder.am-open { padding: 0 0 8px; background: color-mix(in srgb, var(--am-matter) 14%, var(--am-raise)); }
+:is(.am-app, .am-layer) .am-srv.am-folder { background: color-mix(in srgb, var(--am-matter) 22%, var(--am-raise)); border-radius: 15px; color: var(--am-matter); }
+:is(.am-app, .am-layer) .am-srv.am-folder.am-open { background: transparent; }
+:is(.am-app, .am-layer) .am-srv.am-folder.am-drop-in { box-shadow: 0 0 0 2px var(--am-matter); }
+:is(.am-app, .am-layer) .am-folder-faces { display: grid; grid-template-columns: repeat(2, 16px); grid-auto-rows: 16px; gap: 3px; }
+:is(.am-app, .am-layer) .am-srv-img.am-mini, :is(.am-app, .am-layer) .am-srv-initials.am-mini { width: 16px; height: 16px; border-radius: 50%; display: grid; place-items: center; background: var(--am-raise-2); color: var(--am-text-2); font: 700 7.5px var(--am-font-display); object-fit: cover; }

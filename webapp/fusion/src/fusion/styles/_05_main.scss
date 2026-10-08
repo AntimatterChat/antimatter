@@ -225,3 +225,20 @@
 :is(.am-app, .am-layer) .am-msgs.am-centered { max-width: 1000px; margin: 0 auto; }
 /* One-click reactions in the toolbar over messages. */
 :is(.am-app, .am-layer) .am-msg-tools .am-quick-emoji { display: grid; place-items: center; }
+
+// The start of a conversation, above its first message.
+:is(.am-app, .am-layer) .am-intro { padding: 28px 20px 18px; margin-bottom: 8px; border-bottom: 1px solid var(--am-line); }
+:is(.am-app, .am-layer) .am-intro h2 { margin: 12px 0 6px; font: 700 26px var(--am-font-display); color: var(--am-text); }
+:is(.am-app, .am-layer) .am-intro p { margin: 0 0 6px; max-width: 680px; color: var(--am-text-2); font-size: 14.5px; }
+:is(.am-app, .am-layer) .am-intro .am-intro-purpose { color: var(--am-muted); font-style: italic; }
+:is(.am-app, .am-layer) .am-intro-icon { width: 64px; height: 64px; border-radius: 50%; display: grid; place-items: center; background: var(--am-raise); color: var(--am-text); }
+:is(.am-app, .am-layer) .am-intro-icon .am-ic { width: 32px; height: 32px; }
+:is(.am-app, .am-layer) .am-intro-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+:is(.am-app, .am-layer) .am-intro-actions .am-btn.am-on { color: var(--am-away); }
+
+// Header chips: an access policy, and the channel's attribute labels.
+:is(.am-app, .am-layer) .am-policy-chip { display: inline-flex; align-items: center; gap: 4px; }
+:is(.am-app, .am-layer) .am-ch-labels { display: inline-flex; align-items: center; min-width: 0; flex: 0 1 auto; overflow: hidden; }
+:is(.am-app, .am-layer) .am-ch-labels:empty { display: none; }
+:is(.am-app, .am-layer) .am-topic.am-topic-dnd { color: var(--am-text-2); }
+:is(.am-app, .am-layer) .am-topic .emoticon { margin-right: 4px; vertical-align: -2px; }

@@ -19,6 +19,7 @@ import {isUnreadFilterEnabled} from 'selectors/views/channel_sidebar';
 import {Popover} from 'fusion/components/layer';
 import {Flyout, MenuHeading, MenuItem, MenuSeparator} from 'fusion/components/menu';
 import CopyIdItem from 'fusion/popovers/copy_id_item';
+import {addToFolder, removeFromFolder, useFolders} from 'fusion/rail/folders';
 import {useDialogs} from 'fusion/shell/dialogs_context';
 import {useSettings} from 'fusion/shell/settings_context';
 import {useToast} from 'fusion/shell/toast_context';
@@ -72,6 +73,8 @@ export default function ServerMenu({team: forTeam, anchor, point, width, onClose
     const pluginItems = useSelector(getMainMenuPluginComponents);
     const plugins = useSelector((state: GlobalState) => state.plugins.plugins);
     const settings = useSettings();
+    const [folders, saveFolders] = useFolders();
+    const folder = folders.find((f) => f.teamIds.includes(teamId));
 
     // Integrations' items, grouped under each plugin's name as in the mockup.
     const pluginGroups: Array<[string, typeof pluginItems]> = [];
@@ -203,6 +206,41 @@ export default function ServerMenu({team: forTeam, anchor, point, width, onClose
                             </React.Fragment>
                         ))}
                     </Flyout>
+                </>
+            )}
+            {forTeam && (
+                <>
+                    <MenuSeparator/>
+                    <Flyout
+                        icon='folder'
+                        label={formatMessage({id: 'fusion.serverMenu.toFolder', defaultMessage: 'Add to folder'})}
+                        menuLabel={formatMessage({id: 'fusion.serverMenu.toFolderLabel', defaultMessage: 'Folders'})}
+                    >
+                        {folders.filter((f) => f.id !== folder?.id).map((f) => (
+                            <button
+                                key={f.id}
+                                type='button'
+                                role='menuitem'
+                                onClick={run(() => saveFolders(addToFolder(folders, teamId, f.id)))}
+                            >
+                                {f.name || formatMessage({id: 'fusion.rail.folder', defaultMessage: 'Folder'})}
+                            </button>
+                        ))}
+                        <button
+                            type='button'
+                            role='menuitem'
+                            onClick={run(() => saveFolders(addToFolder(folders, teamId, '', formatMessage({id: 'fusion.rail.newFolderName', defaultMessage: 'New folder'}))))}
+                        >
+                            {formatMessage({id: 'fusion.serverMenu.newFolder', defaultMessage: 'New folder'})}
+                        </button>
+                    </Flyout>
+                    {folder && (
+                        <MenuItem
+                            icon='x'
+                            label={formatMessage({id: 'fusion.serverMenu.outOfFolder', defaultMessage: 'Remove from {folder}'}, {folder: folder.name || formatMessage({id: 'fusion.rail.folder', defaultMessage: 'Folder'})})}
+                            onClick={run(() => saveFolders(removeFromFolder(folders, teamId)))}
+                        />
+                    )}
                 </>
             )}
             <MenuSeparator/>

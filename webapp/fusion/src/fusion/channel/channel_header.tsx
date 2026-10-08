@@ -12,10 +12,14 @@ import {getAllChannelStats, getDirectTeammate} from 'mattermost-redux/selectors/
 import {closeRightHandSide, showSearchResults, updateSearchTerms} from 'actions/views/rhs';
 import {getIsRhsOpen} from 'selectors/rhs';
 
+import ChannelAttributeLabels from 'components/channel_attributes/channel_attribute_labels';
+import {ChannelLabelSurface} from 'components/common/hooks/useChannelLabels';
+
 import {VoiceChatToggle} from 'fusion/calls/voice_chat';
 import Avatar from 'fusion/components/avatar';
 import Icon from 'fusion/components/icon';
 import {useUnreadMentions} from 'fusion/hooks/mentions';
+import ChannelMenu from 'fusion/popovers/channel_menu';
 import CollectionsPopover from 'fusion/popovers/collections_popover';
 import StatusPopover from 'fusion/popovers/status_popover';
 import {addRecentSearch, getRecentSearches} from 'fusion/search/recent_searches';
@@ -55,6 +59,8 @@ export default function ChannelHeader({channel}: {channel: Channel}) {
     const [searchFocused, setSearchFocused] = useState(false);
     const [collections, setCollections] = useState(false);
     const [status, setStatus] = useState(false);
+    const [menu, setMenu] = useState(false);
+    const menuRef = useRef<HTMLButtonElement>(null);
     const inputRef = useRef<HTMLInputElement>(null);
     const collectionsRef = useRef<HTMLButtonElement>(null);
     const meRef = useRef<HTMLButtonElement>(null);
@@ -106,6 +112,26 @@ export default function ChannelHeader({channel}: {channel: Channel}) {
                         title={formatMessage({id: 'fusion.header.guestsTitle', defaultMessage: 'Guests can read and post in this channel'})}
                     >
                         {formatMessage({id: 'fusion.header.guests', defaultMessage: 'Has guests'})}
+                    </span>
+                )}
+                {channel.policy_enforced && (
+                    <span
+                        className={am('guest-chip', 'policy-chip')}
+                        title={formatMessage({id: 'fusion.header.policyTitle', defaultMessage: 'Who can join this channel is set by an access policy'})}
+                    >
+                        <Icon
+                            name='shield'
+                            size='xs'
+                        />
+                        {formatMessage({id: 'fusion.header.policy', defaultMessage: 'Restricted'})}
+                    </span>
+                )}
+                {!direct && (
+                    <span className={am('ch-labels')}>
+                        <ChannelAttributeLabels
+                            channelId={channel.id}
+                            surface={[ChannelLabelSurface.INFO, ChannelLabelSurface.HEADER]}
+                        />
                     </span>
                 )}
                 <HeaderTopic channel={channel}/>
@@ -213,6 +239,17 @@ export default function ChannelHeader({channel}: {channel: Channel}) {
                 >
                     <Icon name='users'/>
                 </button>
+                <button
+                    ref={menuRef}
+                    className={am('icon-btn', {on: menu})}
+                    title={direct ? formatMessage({id: 'fusion.header.conversationMenu', defaultMessage: 'Conversation options'}) : formatMessage({id: 'fusion.header.channelMenu', defaultMessage: 'Channel options'})}
+                    aria-label={direct ? formatMessage({id: 'fusion.header.conversationMenu', defaultMessage: 'Conversation options'}) : formatMessage({id: 'fusion.header.channelMenu', defaultMessage: 'Channel options'})}
+                    aria-haspopup='menu'
+                    aria-expanded={menu}
+                    onClick={() => setMenu(!menu)}
+                >
+                    <Icon name='dots'/>
+                </button>
                 <MeButton
                     buttonRef={meRef}
                     onClick={() => setStatus(!status)}
@@ -223,6 +260,14 @@ export default function ChannelHeader({channel}: {channel: Channel}) {
                     anchor={collectionsRef.current}
                     channel={channel}
                     onClose={() => setCollections(false)}
+                />
+            )}
+            {menu && (
+                <ChannelMenu
+                    channel={channel}
+                    anchor={menuRef.current}
+                    placement='below'
+                    onClose={() => setMenu(false)}
                 />
             )}
             {status && (

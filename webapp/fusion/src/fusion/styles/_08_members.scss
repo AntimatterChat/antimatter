@@ -36,3 +36,7 @@
 :is(.am-app, .am-layer) .am-dm-talk .am-ic { width: 14px; height: 14px; }
 :is(.am-app, .am-layer) .am-member.am-off { opacity: .45; }
 :is(.am-app, .am-layer) .am-member .am-ic { color: var(--am-muted); }
+
+// Requests to join a discoverable private channel, above its members (the classic list, in Fusion's colours).
+:is(.am-app, .am-layer) .am-join-requests { margin: 4px 0 10px; padding: 8px; border-radius: 10px; background: var(--am-anti-soft); color: var(--am-text); font-size: 13px; }
+:is(.am-app, .am-layer) .am-join-requests button { color: inherit; }

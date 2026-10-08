@@ -12,14 +12,16 @@ import {fetchRemoteClusterInfo} from 'mattermost-redux/actions/shared_channels';
 import {getDirectTeammate} from 'mattermost-redux/selectors/entities/channels';
 import {getRemoteDisplayName} from 'mattermost-redux/selectors/entities/shared_channels';
 import {getCurrentRelativeTeamUrl} from 'mattermost-redux/selectors/entities/teams';
-import {displayLastActiveLabel, getLastActivityForUserId} from 'mattermost-redux/selectors/entities/users';
+import {displayLastActiveLabel, getCurrentUserId, getDndEndTimeForUserId, getLastActivityForUserId} from 'mattermost-redux/selectors/entities/users';
 import {getUserCurrentTimezone} from 'mattermost-redux/utils/timezone_utils';
 
 import {makeGetCustomStatus} from 'selectors/views/custom_status';
 
+import RenderEmoji from 'components/emoji/render_emoji';
 import Markdown from 'components/markdown';
 
 import {Popover} from 'fusion/components/layer';
+import {useUserStatus} from 'fusion/hooks/users';
 import {am} from 'fusion/utils/class_names';
 import Constants from 'utils/constants';
 import {handleFormattedTextClick} from 'utils/utils';
@@ -48,6 +50,9 @@ function DirectTopic({channel}: {channel: Channel}) {
     const {formatMessage, formatTime} = intl;
     const dispatch = useDispatch();
     const teammate = useSelector((state: GlobalState) => getDirectTeammate(state, channel.id));
+    const me = useSelector(getCurrentUserId);
+    const status = useUserStatus(teammate?.id);
+    const dndEnd = useSelector((state: GlobalState) => (teammate ? getDndEndTimeForUserId(state, teammate.id) : 0));
     const getCustomStatus = useMemo(() => makeGetCustomStatus(), []);
     const custom = useSelector((state: GlobalState) => (teammate ? getCustomStatus(state, teammate.id) : undefined));
     const remote = useSelector((state: GlobalState) => (teammate?.remote_id ? getRemoteDisplayName(state, teammate.remote_id) : null));
@@ -66,7 +71,9 @@ function DirectTopic({channel}: {channel: Channel}) {
         return null;
     }
     let text;
-    if (teammate.remote_id) {
+    if (teammate.id === me) {
+        text = [formatMessage({id: 'fusion.header.notes', defaultMessage: 'Only you can see these notes'}), channel.header].filter(Boolean).join(' · ');
+    } else if (teammate.remote_id) {
         text = remote ? formatMessage({id: 'fusion.header.federatedFrom', defaultMessage: 'Federated · {host}'}, {host: remote}) : formatMessage({id: 'fusion.header.federated', defaultMessage: 'Federated'});
     } else {
         const zone = teammate.is_bot ? '' : getUserCurrentTimezone(teammate.timezone);
@@ -77,16 +84,28 @@ function DirectTopic({channel}: {channel: Channel}) {
             time = '';
         }
         const last = lastOnline ? formatMessage({id: 'fusion.header.lastOnline', defaultMessage: 'Last online {when}'}, {when: lastOnlineAgo(intl, lastOnline)}) : '';
-        text = [last, time, custom?.text || channel.header].filter(Boolean).join(' · ');
+        let state = '';
+        if (status === 'dnd') {
+            state = dndEnd > 0 ? formatMessage({id: 'fusion.header.dndUntil', defaultMessage: 'Do not disturb until {time}'}, {time: intl.formatDate(dndEnd * 1000, {weekday: 'short', hour: 'numeric', minute: '2-digit'})}) : formatMessage({id: 'fusion.status.dnd', defaultMessage: 'Do not disturb'});
+        } else if (status === 'ooo') {
+            state = formatMessage({id: 'fusion.status.ooo', defaultMessage: 'Out of office'});
+        }
+        text = [state, last, time, custom?.text || channel.header].filter(Boolean).join(' · ');
     }
     if (!text) {
         return null;
     }
     return (
         <span
-            className={am('topic')}
+            className={am('topic', {'topic-dnd': status === 'dnd' || status === 'ooo'})}
             title={text}
         >
+            {custom?.emoji && teammate.id !== me && (
+                <RenderEmoji
+                    emojiName={custom.emoji}
+                    size={14}
+                />
+            )}
             {text}
         </span>
     );
