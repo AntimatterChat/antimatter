@@ -75,6 +75,9 @@ export default function ChannelMenu({channel, anchor, point, placement = 'right'
     const store = useStore<GlobalState>();
     const toast = useToast();
     const dialogs = useDialogs();
+
+    // The channel's admins and the team's set its permissions: overrides and, when private, the roles it's for.
+    const canManageAccess = useSelector((state: GlobalState) => haveITeamPermission(state, channel.team_id, Permissions.MANAGE_TEAM) || haveIChannelPermission(state, channel.team_id, channel.id, Permissions.MANAGE_CHANNEL_ROLES));
     const [sub, setSub] = useState<Sub>(null);
     const [renaming, setRenaming] = useState(false);
     const [getUnreadCount] = useState(makeGetChannelUnreadCount);
@@ -414,6 +417,14 @@ export default function ChannelMenu({channel, anchor, point, placement = 'right'
                         onClick={run(() => dispatch(openDialog(ModalIdentifiers.CHANNEL_SETTINGS, ChannelSettingsModal, {channelId: channel.id, isOpen: true})))}
                     />
                 </>
+            )}
+            {!direct && canManageAccess && (
+                <MenuItem
+                    icon='shield'
+                    label={formatMessage({id: 'fusion.channelMenu.permissions', defaultMessage: 'Permissions…'})}
+                    sub={formatMessage({id: 'fusion.channelMenu.permissionsSub', defaultMessage: 'Who sees it, and what roles can do here'})}
+                    onClick={run(() => dialogs.channelPermissions(channel))}
+                />
             )}
             {canConvert && (
                 <MenuItem

@@ -7,6 +7,7 @@ import {useDispatch} from 'react-redux';
 import type {Channel} from '@mattermost/types/channels';
 import type {Post} from '@mattermost/types/posts';
 
+import ChannelPermissionsDialog from 'fusion/channel/channel_permissions_dialog';
 import AddPeopleDialog from 'fusion/modals/add_people_dialog';
 import CreateCategoryDialog from 'fusion/modals/create_category_dialog';
 import CreateChannelDialog from 'fusion/modals/create_channel_dialog';
@@ -36,11 +37,14 @@ type Dialogs = {
 
     // Set up the team's roles (team admins).
     roles: () => void;
+
+    // A channel's permissions: overrides, and the roles a private channel is for.
+    channelPermissions: (channel: Channel) => void;
 };
 
-const DialogsContext = createContext<Dialogs>({createChannel: () => {}, addPeople: () => {}, invite: () => {}, deleteMessage: () => {}, createCategory: () => {}, renameServerCategory: () => {}, roles: () => {}});
+const DialogsContext = createContext<Dialogs>({createChannel: () => {}, addPeople: () => {}, invite: () => {}, deleteMessage: () => {}, createCategory: () => {}, renameServerCategory: () => {}, roles: () => {}, channelPermissions: () => {}});
 
-type Open = {kind: 'create'; categoryId?: string} | {kind: 'add'; channel: Channel} | {kind: 'delete'; post: Post} | {kind: 'category'; renaming?: string} | {kind: 'roles'} | null;
+type Open = {kind: 'create'; categoryId?: string} | {kind: 'add'; channel: Channel} | {kind: 'delete'; post: Post} | {kind: 'category'; renaming?: string} | {kind: 'roles'} | {kind: 'permissions'; channel: Channel} | null;
 
 // DialogsProvider owns the Fusion UI's own dialogs that menus and buttons open, outliving the menu that opened them.
 export function DialogsProvider({children}: {children: React.ReactNode}) {
@@ -55,6 +59,7 @@ export function DialogsProvider({children}: {children: React.ReactNode}) {
         createCategory: () => setOpen({kind: 'category'}),
         renameServerCategory: (name) => setOpen({kind: 'category', renaming: name}),
         roles: () => setOpen({kind: 'roles'}),
+        channelPermissions: (channel) => setOpen({kind: 'permissions', channel}),
     }), [dispatch]);
 
     const close = () => setOpen(null);
@@ -88,6 +93,12 @@ export function DialogsProvider({children}: {children: React.ReactNode}) {
                 />
             )}
             {open?.kind === 'roles' && <RolesDialog onClose={close}/>}
+            {open?.kind === 'permissions' && (
+                <ChannelPermissionsDialog
+                    channel={open.channel}
+                    onClose={close}
+                />
+            )}
             {open?.kind === 'category' && (
                 <CreateCategoryDialog
                     renaming={open.renaming}

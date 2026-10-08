@@ -12,6 +12,7 @@ import type {UserAutocomplete, AutocompleteSuggestion} from '@mattermost/types/a
 import type {Bot, BotPatch} from '@mattermost/types/bots';
 import type {ChannelBookmark, ChannelBookmarkCreate, ChannelBookmarkPatch, UpdateChannelBookmarkResponse} from '@mattermost/types/channel_bookmarks';
 import type {ChannelCategory, OrderedChannelCategories, ServerCategoriesUpdate, ServerCategory} from '@mattermost/types/channel_categories';
+import type {ChannelOverride} from '@mattermost/types/channel_overrides';
 import type {
     Channel,
     ChannelJoinRequest,
@@ -4511,6 +4512,35 @@ export default class Client4 {
         return this.doFetch<GroupSyncable>(
             `${this.getGroupRoute(groupID)}/${syncableType}s/${syncableID}/patch`,
             {method: 'put', body: JSON.stringify(patch)},
+        );
+    };
+
+    // Antimatter: what roles and people may do in a channel, and the roles a channel is for.
+    getChannelOverrides = (channelId: string) => {
+        return this.doFetch<ChannelOverride[]>(
+            `${this.getChannelRoute(channelId)}/overrides`,
+            {method: 'get'},
+        );
+    };
+
+    saveChannelOverride = (channelId: string, override: Omit<ChannelOverride, 'channel_id' | 'update_at'>) => {
+        return this.doFetch<ChannelOverride>(
+            `${this.getChannelRoute(channelId)}/overrides`,
+            {method: 'put', body: JSON.stringify(override)},
+        );
+    };
+
+    getChannelRoleAccess = (channelId: string) => {
+        return this.doFetch<{group_ids: string[]}>(
+            `${this.getChannelRoute(channelId)}/role_access`,
+            {method: 'get'},
+        );
+    };
+
+    setChannelRoleAccess = (channelId: string, groupIds: string[]) => {
+        return this.doFetch<{group_ids: string[]}>(
+            `${this.getChannelRoute(channelId)}/role_access`,
+            {method: 'put', body: JSON.stringify({group_ids: groupIds})},
         );
     };
 

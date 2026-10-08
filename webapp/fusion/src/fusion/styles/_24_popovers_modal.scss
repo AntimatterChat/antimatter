@@ -203,7 +203,7 @@
 :is(.am-app, .am-layer) .am-user-note textarea:hover { background: var(--am-hover); }
 :is(.am-app, .am-layer) .am-user-note textarea:focus { background: var(--am-hover); border-color: var(--am-line); }
 /* Roles: the team's roles in order, each with its colour, and an editor under the list. */
-:is(.am-app, .am-layer) .am-roles-pane { width: min(560px, calc(100vw - 32px)); }
+:is(.am-app, .am-layer) .am-roles-pane { width: 100%; }
 :is(.am-app, .am-layer) .am-role-list { display: grid; gap: 2px; margin: 12px 0; }
 :is(.am-app, .am-layer) .am-role-row { display: flex; align-items: center; gap: 10px; padding: 8px 6px 8px 10px; border-radius: 8px; }
 :is(.am-app, .am-layer) .am-role-row:hover { background: var(--am-hover); }
@@ -229,3 +229,17 @@
 :is(.am-app, .am-layer) .am-toggle-row.am-disabled { opacity: .5; }
 :is(.am-app, .am-layer) .am-toggle-row.am-disabled .am-switch { cursor: not-allowed; }
 :is(.am-app, .am-layer) .am-role-perms { margin-top: 8px; }
+/* A channel's permissions: who sees it, then a block per role or person, a line per permission with three states. */
+:is(.am-app, .am-layer) .am-section-title { margin: 18px 0 8px; color: var(--am-muted); font: 700 11px var(--am-font-ui); letter-spacing: .07em; text-transform: uppercase; }
+:is(.am-app, .am-layer) .am-role-access { display: grid; gap: 4px; }
+:is(.am-app, .am-layer) .am-check-row { display: flex; align-items: center; gap: 8px; padding: 4px 2px; font-size: 14px; }
+:is(.am-app, .am-layer) .am-override-row { margin-bottom: 10px; padding: 10px 12px; border: 1px solid var(--am-line); border-radius: 10px; background: var(--am-side); }
+:is(.am-app, .am-layer) .am-override-head { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+:is(.am-app, .am-layer) .am-override-head b { flex: 1; }
+:is(.am-app, .am-layer) .am-override-line { display: flex; align-items: center; gap: 8px; padding: 4px 0; font-size: 13.5px; }
+:is(.am-app, .am-layer) .am-override-line > span { flex: 1; color: var(--am-text-2); }
+:is(.am-app, .am-layer) .am-tri { display: inline-flex; gap: 2px; padding: 2px; border-radius: 8px; background: var(--am-raise); }
+:is(.am-app, .am-layer) .am-tri button { width: 28px; height: 24px; border-radius: 6px; color: var(--am-muted); font-weight: 700; }
+:is(.am-app, .am-layer) .am-tri button.am-deny.am-on { background: color-mix(in srgb, var(--am-danger) 22%, transparent); color: var(--am-danger); }
+:is(.am-app, .am-layer) .am-tri button.am-inherit.am-on { background: var(--am-raise-2); color: var(--am-text); }
+:is(.am-app, .am-layer) .am-tri button.am-allow.am-on { background: color-mix(in srgb, var(--am-ok) 22%, transparent); color: var(--am-ok); }
