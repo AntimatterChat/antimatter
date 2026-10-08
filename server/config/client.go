@@ -17,6 +17,7 @@ func GenerateClientConfig(c *model.Config, telemetryID string) map[string]string
 	props := GenerateLimitedClientConfig(c, telemetryID)
 
 	props["EnableCustomUserStatuses"] = strconv.FormatBool(*c.TeamSettings.EnableCustomUserStatuses)
+	props["MemberListRoleGroups"] = strconv.FormatBool(*c.TeamSettings.MemberListRoleGroups)
 	props["EnableLastActiveTime"] = strconv.FormatBool(*c.TeamSettings.EnableLastActiveTime)
 	props["EnableUserDeactivation"] = strconv.FormatBool(*c.TeamSettings.EnableUserDeactivation)
 	props["RestrictDirectMessage"] = *c.TeamSettings.RestrictDirectMessage

@@ -169,6 +169,7 @@ export type ClientConfig = {
     MaxFileSize: string;
     MaxPostSize: string;
     MaxNotificationsPerChannel: string;
+    MemberListRoleGroups: string;
     MinimumHashtagLength: string;
     NoAccounts: string;
     GitLabButtonText: string;
@@ -484,6 +485,7 @@ export type TeamSettings = {
     EnableLastActiveTime: boolean;
     EnableJoinLeaveMessageByDefault: boolean;
     EnableChannelCategorySorting: boolean;
+    MemberListRoleGroups: boolean;
 };
 
 export type ClientRequirements = {

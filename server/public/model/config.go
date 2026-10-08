@@ -2642,6 +2642,10 @@ type TeamSettings struct {
 	LockProfileFieldsForEmailUsers      *string  `access:"site_users_and_teams"`
 	ExperimentalPrimaryTeam             *string  `access:"experimental_features"`
 	ExperimentalDefaultChannels         []string `access:"experimental_features"`
+
+	// Antimatter: the member list can group people by their role (admins, moderators). Off, it groups them by
+	// their team (user group) and status only.
+	MemberListRoleGroups *bool `access:"site_users_and_teams"`
 }
 
 func (s *TeamSettings) SetDefaults() {
@@ -2671,6 +2675,10 @@ func (s *TeamSettings) SetDefaults() {
 
 	if s.EnableCustomUserStatuses == nil {
 		s.EnableCustomUserStatuses = new(true)
+	}
+
+	if s.MemberListRoleGroups == nil {
+		s.MemberListRoleGroups = new(true)
 	}
 
 	if s.EnableLastActiveTime == nil {

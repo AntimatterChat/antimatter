@@ -2770,6 +2770,13 @@ const AdminDefinition: AdminDefinitionType = {
                         },
                         {
                             type: 'bool',
+                            key: 'TeamSettings.MemberListRoleGroups',
+                            label: defineMessage({id: 'admin.team.memberListRoleGroupsTitle', defaultMessage: 'Group members by role: '}),
+                            help_text: defineMessage({id: 'admin.team.memberListRoleGroupsDescription', defaultMessage: 'When true, people can list the members of a channel by role (admins, moderators), next to listing them by team. When false, the member list groups people by team only.'}),
+                            isDisabled: it.not(it.userHasWritePermissionOnResource(RESOURCE_KEYS.SITE.USERS_AND_TEAMS)),
+                        },
+                        {
+                            type: 'bool',
                             key: 'TeamSettings.EnableLastActiveTime',
                             label: defineMessage({id: 'admin.team.lastActiveTimeTitle', defaultMessage: 'Enable last active time: '}),
                             help_text: defineMessage({id: 'admin.team.lastActiveTimeDescription', defaultMessage: 'When enabled, last active time allows users to see when someone was last online.'}),
