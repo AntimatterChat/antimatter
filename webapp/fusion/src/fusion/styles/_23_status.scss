@@ -63,3 +63,6 @@
 :is(.am-app, .am-layer) .am-sp-links button { display: flex; align-items: center; gap: 10px; padding: 7px 8px; border-radius: 8px; font-size: 13.5px; color: var(--am-text-2); text-align: left; }
 :is(.am-app, .am-layer) .am-sp-links button:hover { background: var(--am-hover); color: var(--am-text); }
 :is(.am-app, .am-layer) .am-sp-links .am-danger { color: var(--am-danger); }
+
+/* A custom end for Do not disturb, above the statuses. */
+:is(.am-app, .am-layer) .am-sp-dnd-custom { margin: 0 0 8px; padding: 10px; border-radius: 10px; background: var(--am-main); border: 1px solid var(--am-line); }
