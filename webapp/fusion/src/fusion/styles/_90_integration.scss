@@ -185,3 +185,5 @@ body.app__body :where(.am-app, .am-layer) a:where(:not(.am-body *, .am-rhs-class
 // The onboarding checklist's button sits above the rail's search button rather than on it.
 :is(.am-app) button[data-cy='onboarding-task-list-action-button'] { bottom: 76px !important; left: 13px !important; z-index: 30; }
 :is(.am-app, .am-layer) .am-guest-chip.am-translated-chip { background: var(--am-anti-soft); color: var(--am-anti); }
+/* The pane reached with F6 (Mattermost's accessibility regions) shows a ring inside its edges. */
+:is(.am-app, .am-layer) .a11y__region.a11y--active.a11y--focused { outline: none; box-shadow: inset 0 0 0 2px var(--am-anti); }

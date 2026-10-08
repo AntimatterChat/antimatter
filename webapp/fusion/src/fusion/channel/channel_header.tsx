@@ -30,6 +30,7 @@ import {addRecentSearch, getRecentSearches} from 'fusion/search/recent_searches'
 import {isPhoneLayout, useLayout} from 'fusion/shell/layout_context';
 import ChannelIcon from 'fusion/sidebar/channel_icon';
 import {useConversationName} from 'fusion/sidebar/group_dm';
+import {a11yRegion} from 'fusion/utils/a11y_regions';
 import {am} from 'fusion/utils/class_names';
 import PluggableErrorBoundary from 'plugins/pluggable/error_boundary';
 
@@ -160,7 +161,7 @@ export default function ChannelHeader({channel}: {channel: Channel}) {
     const channelMatches = typing?.key === 'in' ? myChannels.filter((c) => c.delete_at === 0 && c.type !== 'D' && c.type !== 'G' && (c.name.includes(typing.value) || c.display_name.toLowerCase().includes(typing.value))).slice(0, 6) : [];
 
     return (
-        <header className={am('chat-head')}>
+        <header {...a11yRegion(am('chat-head'), 'header')}>
             <div className={am('ch-title')}>
                 <button
                     className={am('icon-btn', 'menu-btn')}

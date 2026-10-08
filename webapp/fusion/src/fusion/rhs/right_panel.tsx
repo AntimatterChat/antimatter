@@ -16,6 +16,7 @@ import {getKnownApp} from 'fusion/apps/known_apps';
 import {useOpenVoiceChat, VoiceChatPanel} from 'fusion/calls/voice_chat';
 import Icon from 'fusion/components/icon';
 import MemberList from 'fusion/members/member_list';
+import {a11yRegion} from 'fusion/utils/a11y_regions';
 import {am} from 'fusion/utils/class_names';
 import RhsPlugin from 'plugins/rhs_plugin';
 import {getHistory} from 'utils/browser_history';
@@ -110,5 +111,5 @@ export default function RightPanel() {
     }
 
     // The classic expand button toggles between its expand and collapse icons on sidebar--right--expanded.
-    return <aside className={am('rhs', {wide, roomy, expanded}) + (expanded ? ' sidebar--right--expanded' : '')}>{content}</aside>;
+    return <aside {...a11yRegion(am('rhs', {wide, roomy, expanded}) + (expanded ? ' sidebar--right--expanded' : ''), 'rhs')}>{content}</aside>;
 }

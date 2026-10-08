@@ -21,6 +21,7 @@ import Icon from 'fusion/components/icon';
 import {useUnreadMentions} from 'fusion/hooks/mentions';
 import CollectionsPopover from 'fusion/popovers/collections_popover';
 import {useLayout} from 'fusion/shell/layout_context';
+import {a11yRegion} from 'fusion/utils/a11y_regions';
 import {am} from 'fusion/utils/class_names';
 import {openNewDirectMessage} from 'fusion/utils/modals';
 import {channelPath} from 'fusion/utils/paths';
@@ -160,7 +161,7 @@ export default function HomeSidebar() {
 
     return (
         <aside
-            className={am('sidebar')}
+            {...a11yRegion(am('sidebar'), 'sidebar')}
             aria-label={formatMessage({id: 'fusion.home.label', defaultMessage: 'Direct messages'})}
         >
             <div className={am('side-head')}>

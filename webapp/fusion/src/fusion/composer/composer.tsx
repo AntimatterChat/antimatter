@@ -53,6 +53,7 @@ import {isSpoiler, SPOILER_PROP} from 'fusion/messages/spoiler';
 import EmojiPicker from 'fusion/popovers/emoji_picker';
 import {MENTION_EVENT} from 'fusion/popovers/user_menu';
 import {useToast} from 'fusion/shell/toast_context';
+import {a11yRegion} from 'fusion/utils/a11y_regions';
 import {am} from 'fusion/utils/class_names';
 import PluggableErrorBoundary from 'plugins/pluggable/error_boundary';
 import Constants, {StoragePrefixes} from 'utils/constants';
@@ -638,7 +639,14 @@ export default function Composer({channelId, rootId = '', placeholder}: Props) {
     let group = 0;
     return (
         <form
-            className={am('composer')}
+            {...a11yRegion(am('composer'), 'composer')}
+
+            // Reaching the composer with F6 goes on to its text box.
+            onFocus={(e) => {
+                if (e.target === e.currentTarget) {
+                    (richRef.current || textareaRef.current)?.focus();
+                }
+            }}
             onSubmit={(e) => {
                 e.preventDefault();
                 submit();

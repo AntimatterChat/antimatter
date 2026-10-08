@@ -15,6 +15,7 @@ import PostMessageView from 'components/post_view/post_message_view';
 
 import Icon from 'fusion/components/icon';
 import {useDisplayPrefs} from 'fusion/hooks/display';
+import {a11yRegion} from 'fusion/utils/a11y_regions';
 import {am} from 'fusion/utils/class_names';
 import Pluggable from 'plugins/pluggable';
 import PluggableErrorBoundary from 'plugins/pluggable/error_boundary';
@@ -260,7 +261,7 @@ export default function MessageList({channelId, focusedPostId, scrollRef, emptyT
     return (
         <div
             ref={listRef}
-            className={am('msgs', {compact: prefs.compact, centered: prefs.centered})}
+            {...a11yRegion(am('msgs', {compact: prefs.compact, centered: prefs.centered}), 'messages')}
         >
             <div className={am('plugin-toasts')}>
                 <Pluggable pluggableName='ChannelToast'/>

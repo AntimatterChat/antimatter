@@ -22,6 +22,7 @@ import {getLastTeamChannelName, getSortedMyTeams, getUnreadDirectChannels} from 
 import {useGlobalSearch} from 'fusion/shell/global_search_context';
 import {useLayout} from 'fusion/shell/layout_context';
 import {DirectFace} from 'fusion/sidebar/direct_row';
+import {a11yRegion} from 'fusion/utils/a11y_regions';
 import {am} from 'fusion/utils/class_names';
 import {channelPath} from 'fusion/utils/paths';
 import Pluggable from 'plugins/pluggable';
@@ -328,7 +329,7 @@ export default function ServerRail() {
 
     return (
         <nav
-            className={am('servers')}
+            {...a11yRegion(am('servers'), 'rail')}
             aria-label={formatMessage({id: 'fusion.rail.label', defaultMessage: 'Teams'})}
         >
             {railItems(teams, folders).map((item) => {

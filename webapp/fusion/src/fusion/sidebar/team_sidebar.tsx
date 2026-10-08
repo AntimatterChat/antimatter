@@ -19,6 +19,7 @@ import ServerMenu from 'fusion/popovers/server_menu';
 import {getUnreadDirectChannels} from 'fusion/selectors';
 import {isKeybind} from 'fusion/shell/keybinds';
 import {useLayout} from 'fusion/shell/layout_context';
+import {a11yRegion} from 'fusion/utils/a11y_regions';
 import {am} from 'fusion/utils/class_names';
 import Pluggable from 'plugins/pluggable';
 
@@ -131,7 +132,7 @@ export default function TeamSidebar() {
 
     return (
         <aside
-            className={am('sidebar')}
+            {...a11yRegion(am('sidebar'), 'sidebar')}
             aria-label={formatMessage({id: 'fusion.sidebar.label', defaultMessage: 'Channels and direct messages'})}
         >
             <div className={am('plugin-side-head')}>

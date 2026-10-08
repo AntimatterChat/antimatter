@@ -16,6 +16,7 @@ import Icon from 'fusion/components/icon';
 import Composer from 'fusion/composer/composer';
 import MessageList from 'fusion/messages/message_list';
 import {useLayout} from 'fusion/shell/layout_context';
+import {a11yRegion} from 'fusion/utils/a11y_regions';
 import {am} from 'fusion/utils/class_names';
 
 import type {GlobalState} from 'types/store';
@@ -103,7 +104,7 @@ export function VoiceChatPanel({channelId}: {channelId: string}) {
         return null;
     }
     return (
-        <aside className={am('rhs')}>
+        <aside {...a11yRegion(am('rhs'), 'rhs')}>
             <div className={am('rhs-head')}>
                 <div className={am('grow')}>
                     <h3>{formatMessage({id: 'fusion.calls.chat', defaultMessage: 'Chat'})}</h3>
