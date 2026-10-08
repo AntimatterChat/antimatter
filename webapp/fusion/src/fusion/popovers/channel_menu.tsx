@@ -8,11 +8,11 @@ import {useDispatch, useSelector, useStore} from 'react-redux';
 import type {Channel} from '@mattermost/types/channels';
 
 import {addChannelToCategory} from 'mattermost-redux/actions/channel_categories';
-import {favoriteChannel, readMultipleChannels, unfavoriteChannel} from 'mattermost-redux/actions/channels';
+import {favoriteChannel, readMultipleChannels, setMyChannelAutotranslation, unfavoriteChannel} from 'mattermost-redux/actions/channels';
 import {savePreferences} from 'mattermost-redux/actions/preferences';
 import {Permissions, Preferences} from 'mattermost-redux/constants';
 import {getCategoryInTeamWithChannel} from 'mattermost-redux/selectors/entities/channel_categories';
-import {getCurrentChannelId, getMyChannelMembership, isFavoriteChannel, makeGetChannelUnreadCount} from 'mattermost-redux/selectors/entities/channels';
+import {getCurrentChannelId, getMyChannelMembership, isChannelAutotranslated, isFavoriteChannel, isMyChannelAutotranslated, isUserLanguageSupportedForAutotranslation, makeGetChannelUnreadCount} from 'mattermost-redux/selectors/entities/channels';
 import {haveIChannelPermission, haveITeamPermission} from 'mattermost-redux/selectors/entities/roles';
 import {getCurrentTeam} from 'mattermost-redux/selectors/entities/teams';
 import {getCurrentUser, getCurrentUserId, getUser} from 'mattermost-redux/selectors/entities/users';
@@ -28,6 +28,7 @@ import ChannelSettingsModal from 'components/channel_settings_modal/channel_sett
 import ConvertChannelModal from 'components/convert_channel_modal';
 import ConvertGmToChannelModal from 'components/convert_gm_to_channel_modal';
 import DeleteChannelModal from 'components/delete_channel_modal';
+import DisableAutotranslationModal from 'components/disable_autotranslation_modal';
 import EditChannelHeaderModal from 'components/edit_channel_header_modal';
 import LeaveChannelModal from 'components/leave_channel_modal';
 import UnarchiveChannelModal from 'components/unarchive_channel_modal';
@@ -86,6 +87,11 @@ export default function ChannelMenu({channel, anchor, point, placement = 'right'
     const categories = useSelector(getCategoriesForCurrentTeam);
     const currentCategory = useSelector((state: GlobalState) => (team ? getCategoryInTeamWithChannel(state, team.id, channel.id) : undefined));
     const pluginActions = useSelector((state: GlobalState) => state.plugins.components.ChannelHeader) || [];
+
+    // Auto-translation, once a channel admin turned it on for the channel: each reader can turn it off for them.
+    const channelTranslated = useSelector((state: GlobalState) => isChannelAutotranslated(state, channel.id));
+    const myTranslation = useSelector((state: GlobalState) => isMyChannelAutotranslated(state, channel.id));
+    const languageSupported = useSelector(isUserLanguageSupportedForAutotranslation);
     const teammate = useSelector((state: GlobalState) => (channel.type === Constants.DM_CHANNEL ? getUser(state, getUserIdFromChannelName(getCurrentUserId(state), channel.name)) : undefined));
 
     const direct = channel.type === Constants.DM_CHANNEL || channel.type === Constants.GM_CHANNEL;
@@ -220,6 +226,23 @@ export default function ChannelMenu({channel, anchor, point, placement = 'right'
                         </button>
                     ))}
                 </div>
+            )}
+            {channelTranslated && (
+                <MenuItem
+                    icon='globe'
+                    role='menuitemcheckbox'
+                    checked={myTranslation}
+                    disabled={!languageSupported}
+                    label={formatMessage({id: 'fusion.channelMenu.translate', defaultMessage: 'Translate messages'})}
+                    sub={languageSupported ? formatMessage({id: 'fusion.channelMenu.translateSub', defaultMessage: 'Into your language, by the server'}) : formatMessage({id: 'fusion.channelMenu.translateUnsupported', defaultMessage: 'Your language isn\'t supported'})}
+                    onClick={run(() => {
+                        if (myTranslation) {
+                            dispatch(openDialog(ModalIdentifiers.DISABLE_AUTOTRANSLATION_CONFIRM, DisableAutotranslationModal, {channel}));
+                        } else {
+                            dispatch(setMyChannelAutotranslation(channel.id, true));
+                        }
+                    })}
+                />
             )}
             <MenuItem
                 icon='bell'

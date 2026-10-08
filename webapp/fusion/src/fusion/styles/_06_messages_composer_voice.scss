@@ -382,3 +382,9 @@
 :is(.am-app, .am-layer) .am-msg.am-cont .am-gutter.am-spoiler-gutter:hover { background: var(--am-matter); color: #fff; }
 :is(.am-app, .am-layer) .am-msg.am-cont .am-gutter.am-spoiler-gutter.am-shown { background: transparent; }
 :is(.am-app, .am-layer) .am-msg.am-cont .am-gutter.am-spoiler-gutter.am-shown:hover { background: var(--am-matter-soft); color: var(--am-matter); }
+
+// Under a message translated for the reader: from what, and the original.
+:is(.am-app, .am-layer) .am-translation-note { display: flex; align-items: center; gap: 6px; margin-top: 2px; color: var(--am-muted); font-size: 12px; }
+:is(.am-app, .am-layer) .am-translation-note button { color: var(--am-anti); font-weight: 600; }
+:is(.am-app, .am-layer) .am-translation-note button:hover { text-decoration: underline; }
+:is(.am-app, .am-layer) .am-translation-note.am-busy { animation: am-ai-pulse 1.4s ease-in-out infinite; }

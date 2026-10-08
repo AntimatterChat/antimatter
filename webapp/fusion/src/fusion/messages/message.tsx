@@ -59,6 +59,7 @@ import ReplyRef from './reply_ref';
 import {isSpoiler, SpoilerTag, SpoilerVeil, useSpoilerShown} from './spoiler';
 import ThreadSummary from './thread_summary';
 import MessageTime from './time';
+import TranslationNote, {useShowOriginal} from './translation_note';
 
 type Props = {
     postId: string;
@@ -130,6 +131,7 @@ export default function Message({postId, previousPostId, inThread = false, highl
     const recentEmoji = useSelector(getOneClickEmoji, shallowEqual);
     const pluginActions = useSelector((state: GlobalState) => state.plugins.components.PostAction) || NO_ACTIONS;
     const [spoilerShown, setSpoilerShown] = useSpoilerShown(postId);
+    const [showOriginal, setShowOriginal] = useShowOriginal(postId);
 
     // Files the reader isn't allowed to see under the attribute-based access policies.
     const redactedFiles = useSelector((state: GlobalState) => (post && isPermissionPoliciesEnabled(state) ? post.metadata?.redacted_file_count ?? 0 : 0));
@@ -336,9 +338,16 @@ export default function Message({postId, previousPostId, inThread = false, highl
                             <MessageContent
                                 post={post}
                                 inThread={inThread}
-                                autotranslated={autotranslated}
+                                autotranslated={autotranslated && !showOriginal}
                             />
                         </LongBody>
+                    )}
+                    {autotranslated && !callCard && (
+                        <TranslationNote
+                            post={post}
+                            showOriginal={showOriginal}
+                            onToggle={() => setShowOriginal(!showOriginal)}
+                        />
                     )}
                     {post.file_ids && post.file_ids.length > 0 && !deleted && <Files post={post}/>}
                     {redactedFiles > 0 && !deleted && (

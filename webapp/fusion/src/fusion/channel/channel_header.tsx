@@ -9,7 +9,7 @@ import type {Channel} from '@mattermost/types/channels';
 import type {UserProfile} from '@mattermost/types/users';
 
 import {Client4} from 'mattermost-redux/client';
-import {getAllChannelStats, getDirectTeammate, getMyChannelMembership, getMyChannels} from 'mattermost-redux/selectors/entities/channels';
+import {getAllChannelStats, getDirectTeammate, getMyChannelMembership, getMyChannels, isMyChannelAutotranslated} from 'mattermost-redux/selectors/entities/channels';
 import {getCurrentTeam} from 'mattermost-redux/selectors/entities/teams';
 
 import {closeRightHandSide, showSearchResults, updateSearchTeam, updateSearchTerms} from 'actions/views/rhs';
@@ -88,6 +88,7 @@ export default function ChannelHeader({channel}: {channel: Channel}) {
     const infoRef = useRef<HTMLButtonElement>(null);
     const [collectionsTab, setCollectionsTab] = useState<CollectionsTab>('mentions');
     const member = useSelector((state: GlobalState) => getMyChannelMembership(state, channel.id));
+    const translated = useSelector((state: GlobalState) => isMyChannelAutotranslated(state, channel.id));
 
     // Plugins' header icons, but Agents': what it asks about the channel is offered in its own panel.
     const headerIcons = useSelector((state: GlobalState) => (state.plugins.components.ChannelHeaderIcon || NO_ICONS).filter((c) => !AGENTS_PLUGIN_IDS.includes(c.pluginId)), shallowEqual);
@@ -200,6 +201,18 @@ export default function ChannelHeader({channel}: {channel: Channel}) {
                         title={formatMessage({id: 'fusion.header.guestsTitle', defaultMessage: 'Guests can read and post in this channel'})}
                     >
                         {formatMessage({id: 'fusion.header.guests', defaultMessage: 'Has guests'})}
+                    </span>
+                )}
+                {translated && (
+                    <span
+                        className={am('guest-chip', 'policy-chip', 'translated-chip')}
+                        title={formatMessage({id: 'fusion.header.translatedTitle', defaultMessage: 'Messages here are translated into your language'})}
+                    >
+                        <Icon
+                            name='globe'
+                            size='xs'
+                        />
+                        {formatMessage({id: 'fusion.header.translated', defaultMessage: 'Translated'})}
                     </span>
                 )}
                 {channel.policy_enforced && (

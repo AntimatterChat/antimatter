@@ -184,3 +184,4 @@ body.app__body :where(.am-app, .am-layer) a:where(:not(.am-body *, .am-rhs-class
 
 // The onboarding checklist's button sits above the rail's search button rather than on it.
 :is(.am-app) button[data-cy='onboarding-task-list-action-button'] { bottom: 76px !important; left: 13px !important; z-index: 30; }
+:is(.am-app, .am-layer) .am-guest-chip.am-translated-chip { background: var(--am-anti-soft); color: var(--am-anti); }
