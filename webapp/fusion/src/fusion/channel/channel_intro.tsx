@@ -13,6 +13,9 @@ import {getDirectTeammate, getMyChannelMembership, isFavoriteChannel} from 'matt
 import {haveIChannelPermission} from 'mattermost-redux/selectors/entities/roles';
 import {getCurrentUser, getCurrentUserId} from 'mattermost-redux/selectors/entities/users';
 
+import {getChannelIntroOverride} from 'selectors/channel_intro';
+
+import ChannelIntroRenderer from 'components/channel_intro_renderer/channel_intro_renderer';
 import ChannelNotificationsModal from 'components/channel_notifications_modal';
 import EditChannelHeaderModal from 'components/edit_channel_header_modal';
 
@@ -49,6 +52,7 @@ export default function ChannelIntro({channel}: {channel: Channel}) {
     const archived = channel.delete_at !== 0;
     const canEditHeader = useSelector((state: GlobalState) => direct || haveIChannelPermission(state, channel.team_id, channel.id, isPrivate ? Permissions.MANAGE_PRIVATE_CHANNEL_PROPERTIES : Permissions.MANAGE_PUBLIC_CHANNEL_PROPERTIES));
     const notes = teammate?.id === myId;
+    const override = useSelector((state: GlobalState) => getChannelIntroOverride(state, channel.id));
 
     let art;
     let title;
@@ -95,6 +99,18 @@ export default function ChannelIntro({channel}: {channel: Channel}) {
             {label}
         </button>
     );
+
+    // A plugin can draw the intro of some channels (registerChannelIntro).
+    if (override) {
+        return (
+            <div className={am('intro', 'plugin-intro')}>
+                <ChannelIntroRenderer
+                    registration={override}
+                    channel={channel}
+                />
+            </div>
+        );
+    }
 
     return (
         <div className={am('intro')}>

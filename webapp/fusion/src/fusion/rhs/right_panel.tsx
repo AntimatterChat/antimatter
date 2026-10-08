@@ -2,8 +2,10 @@
 // See LICENSE.txt for license information.
 
 import React from 'react';
-import {useSelector} from 'react-redux';
+import {useIntl} from 'react-intl';
+import {useDispatch, useSelector} from 'react-redux';
 
+import {closeRightHandSide} from 'actions/views/rhs';
 import {getIsRhsExpanded, getIsRhsOpen, getPluggableId, getRhsState, getSelectedPostId} from 'selectors/rhs';
 
 import ChannelInfoRhs from 'components/channel_info_rhs';
@@ -12,9 +14,11 @@ import Search from 'components/search/index';
 
 import {getKnownApp} from 'fusion/apps/known_apps';
 import {useOpenVoiceChat, VoiceChatPanel} from 'fusion/calls/voice_chat';
+import Icon from 'fusion/components/icon';
 import MemberList from 'fusion/members/member_list';
 import {am} from 'fusion/utils/class_names';
 import RhsPlugin from 'plugins/rhs_plugin';
+import {getHistory} from 'utils/browser_history';
 import {RHSStates} from 'utils/constants';
 
 import type {GlobalState} from 'types/store';
@@ -38,7 +42,12 @@ export default function RightPanel() {
     const rhsState = useSelector(getRhsState);
     const selectedPostId = useSelector(getSelectedPostId);
     const expanded = useSelector(getIsRhsExpanded);
+    const {formatMessage} = useIntl();
+    const dispatch = useDispatch();
     const pluginId = useSelector((state: GlobalState) => state.plugins.components.RightHandSidebarComponent.find((c) => c.id === getPluggableId(state))?.pluginId);
+
+    // A plugin that is also a product (Boards, Playbooks) can show its panel as its full page.
+    const product = useSelector((state: GlobalState) => (pluginId ? state.plugins.components.Product?.find((p) => p.pluginId === pluginId) : undefined));
     const voiceChat = useOpenVoiceChat();
 
     if (!open) {
@@ -57,7 +66,28 @@ export default function RightPanel() {
     } else if (rhsState === RHSStates.PLUGIN) {
         wide = true;
         roomy = Boolean(pluginId && getKnownApp(pluginId)?.widePanel);
-        content = <ClassicPanel><RhsPlugin/></ClassicPanel>;
+        content = (
+            <ClassicPanel>
+                {product && (
+                    <button
+                        type='button'
+                        className={am('icon-btn', 'rhs-fullpage')}
+                        title={formatMessage({id: 'fusion.rhs.fullPage', defaultMessage: 'Open as a full page'})}
+                        aria-label={formatMessage({id: 'fusion.rhs.fullPage', defaultMessage: 'Open as a full page'})}
+                        onClick={() => {
+                            dispatch(closeRightHandSide());
+                            getHistory().push(product.baseURL);
+                        }}
+                    >
+                        <Icon
+                            name='fullscreen'
+                            size='sm'
+                        />
+                    </button>
+                )}
+                <RhsPlugin/>
+            </ClassicPanel>
+        );
     } else if (rhsState === RHSStates.CHANNEL_INFO) {
         content = <ClassicPanel><ChannelInfoRhs/></ClassicPanel>;
     } else if (rhsState === RHSStates.EDIT_HISTORY) {

@@ -1,21 +1,32 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {useIntl} from 'react-intl';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 
+import {Client4} from 'mattermost-redux/client';
 import {getConfig} from 'mattermost-redux/selectors/entities/general';
+import {getReportAProblemLink} from 'mattermost-redux/selectors/entities/report_a_problem';
 import {getCurrentUser} from 'mattermost-redux/selectors/entities/users';
 import {isSystemAdmin} from 'mattermost-redux/utils/user_utils';
 
+import {getUserGuideDropdownPluginMenuItems} from 'selectors/plugins';
+
 import ExternalLink from 'components/external_link';
+import Markdown from 'components/markdown';
 
 import Icon from 'fusion/components/icon';
-import {Popover} from 'fusion/components/layer';
+import {Dialog, Popover} from 'fusion/components/layer';
+import {MenuHeading, MenuItem} from 'fusion/components/menu';
 import {am} from 'fusion/utils/class_names';
+import {openKeyboardShortcuts} from 'fusion/utils/modals';
+import {getHistory} from 'utils/browser_history';
 
 import type {GlobalState} from 'types/store';
+import type {ProductComponent} from 'types/store/plugins';
+
+const NO_PRODUCTS: ProductComponent[] = [];
 
 // Where Antimatter's source code is (AGPL §13). The server has no setting for it.
 const SOURCE_CODE_URL = 'https://github.com/AntimatterChat/antimatter';
@@ -32,12 +43,43 @@ function ExternalAnchor({href, className, children}: {href: string; className?: 
     );
 }
 
+// TermsDialog shows the server's own terms of service, which everyone accepted on signing in.
+function TermsDialog({onClose}: {onClose: () => void}) {
+    const {formatMessage} = useIntl();
+    const [text, setText] = useState<string | null>(null);
+    useEffect(() => {
+        Client4.getTermsOfService().then((terms) => setText(terms.text)).catch(() => setText(''));
+    }, []);
+    const title = formatMessage({id: 'fusion.about.customTerms', defaultMessage: 'Terms of service'});
+    return (
+        <Dialog
+            label={title}
+            small={false}
+            onClose={onClose}
+        >
+            <div className={am('pane', 'terms-pane')}>
+                <h2>{title}</h2>
+                {text === null ? <p className={am('lead')}>{formatMessage({id: 'fusion.about.loading', defaultMessage: 'Loading…'})}</p> : <Markdown message={text}/>}
+            </div>
+        </Dialog>
+    );
+}
+
 // AboutPopover says what Antimatter is, with version details for system admins.
 export default function AboutPopover({anchor, onClose}: {anchor: HTMLElement | null; onClose: () => void}) {
     const {formatMessage} = useIntl();
     const config = useSelector(getConfig);
     const admin = useSelector((state: GlobalState) => isSystemAdmin(getCurrentUser(state)?.roles || ''));
     const year = new Date().getFullYear();
+    const dispatch = useDispatch();
+    const reportLink = useSelector(getReportAProblemLink);
+    const helpItems = useSelector(getUserGuideDropdownPluginMenuItems);
+    const products = useSelector((state: GlobalState) => state.plugins.components.Product) || NO_PRODUCTS;
+    const [termsOpen, setTermsOpen] = useState(false);
+    const run = (action: () => void) => () => {
+        action();
+        onClose();
+    };
     const build: Array<[string, string]> = [
         [formatMessage({id: 'fusion.about.server', defaultMessage: 'Server'}), config.Version || ''],
         [formatMessage({id: 'fusion.about.build', defaultMessage: 'Build'}), [config.BuildNumber, config.BuildHash?.slice(0, 7)].filter(Boolean).join(' · ')],
@@ -103,6 +145,64 @@ export default function AboutPopover({anchor, onClose}: {anchor: HTMLElement | n
                     />
                 </ExternalAnchor>
             )}
+            <div className={am('about-menu')}>
+                <MenuHeading>{formatMessage({id: 'fusion.about.help', defaultMessage: 'Help'})}</MenuHeading>
+                {config.HelpLink && (
+                    <MenuItem
+                        icon='compass'
+                        label={formatMessage({id: 'fusion.about.guide', defaultMessage: 'User guide'})}
+                        onClick={run(() => window.open(config.HelpLink, '_blank', 'noopener'))}
+                    />
+                )}
+                <MenuItem
+                    icon='type'
+                    label={formatMessage({id: 'fusion.about.shortcuts', defaultMessage: 'Keyboard shortcuts'})}
+                    onClick={run(() => dispatch(openKeyboardShortcuts()))}
+                />
+                <MenuItem
+                    icon='text'
+                    label={formatMessage({id: 'fusion.about.formatting', defaultMessage: 'Formatting help'})}
+                    onClick={run(() => window.open('/help/formatting', '_blank', 'noopener'))}
+                />
+                {reportLink && (
+                    <MenuItem
+                        icon='flag'
+                        label={formatMessage({id: 'fusion.about.report', defaultMessage: 'Report a problem'})}
+                        onClick={run(() => window.open(reportLink, '_blank', 'noopener'))}
+                    />
+                )}
+                {config.EnableCustomTermsOfService === 'true' && (
+                    <MenuItem
+                        icon='shield'
+                        label={formatMessage({id: 'fusion.about.customTerms', defaultMessage: 'Terms of service'})}
+                        onClick={() => setTermsOpen(true)}
+                    />
+                )}
+                {helpItems.map((item) => (
+                    <button
+                        key={item.id}
+                        type='button'
+                        role='menuitem'
+                        onClick={run(() => item.action?.(undefined as never))}
+                    >
+                        <Icon name='plug'/>
+                        {item.text}
+                    </button>
+                ))}
+                {products.length > 0 && <MenuHeading>{formatMessage({id: 'fusion.about.products', defaultMessage: 'Products'})}</MenuHeading>}
+                {products.map((product) => (
+                    <button
+                        key={product.id}
+                        type='button'
+                        role='menuitem'
+                        onClick={run(() => getHistory().push(product.switcherLinkURL || product.baseURL))}
+                    >
+                        <Icon name='apps'/>
+                        {product.switcherText}
+                    </button>
+                ))}
+            </div>
+            {termsOpen && <TermsDialog onClose={() => setTermsOpen(false)}/>}
             <p className={am('about-legal')}>
                 {formatMessage({id: 'fusion.about.license', defaultMessage: 'Antimatter is licensed under the GNU AGPL v3. Copyright {year} the Antimatter contributors.'}, {year})}
                 <br/>

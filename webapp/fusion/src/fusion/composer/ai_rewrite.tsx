@@ -13,8 +13,11 @@ import {RewriteAction} from 'components/advanced_text_editor/rewrite_action';
 import {useSelectedAgent} from 'components/common/agents';
 
 import {Popover} from 'fusion/components/layer';
-import {MenuHeading, MenuItem} from 'fusion/components/menu';
+import {MenuHeading, MenuItem, MenuSeparator} from 'fusion/components/menu';
 import {am} from 'fusion/utils/class_names';
+import PluggableErrorBoundary from 'plugins/pluggable/error_boundary';
+
+import type {AIActionMenuItemComponent, AIActionMenuItemProps} from 'types/store/plugins';
 
 const ACTIONS: Array<[RewriteAction, {id: string; defaultMessage: string}]> = [
     [RewriteAction.IMPROVE_WRITING, {id: 'fusion.ai.improve', defaultMessage: 'Improve the writing'}],
@@ -37,6 +40,11 @@ export function useAgentsAvailable(): boolean {
 
 type Props = {
     anchor: HTMLElement | null;
+
+    // Whether an AI agent can rewrite (the Agents plugin): else only plugins' AI items show.
+    rewriting: boolean;
+    pluginItems: AIActionMenuItemComponent[];
+    pluginProps: AIActionMenuItemProps;
     message: string;
     rootId: string;
     onRewritten: (message: string, original: string) => void;
@@ -47,7 +55,7 @@ type Props = {
 
 // AiRewriteMenu has an AI agent rewrite the message being written: the classic editor's AI actions, or what to do
 // in your own words (which also writes a message from nothing).
-export default function AiRewriteMenu({anchor, message, rootId, onRewritten, onError, onBusy, onClose}: Props) {
+export default function AiRewriteMenu({anchor, rewriting, pluginItems, pluginProps, message, rootId, onRewritten, onError, onBusy, onClose}: Props) {
     const {formatMessage} = useIntl();
     const agents = useSelector(getAgents);
     const [agentId] = useSelectedAgent(agents);
@@ -75,25 +83,27 @@ export default function AiRewriteMenu({anchor, message, rootId, onRewritten, onE
             label={formatMessage({id: 'fusion.ai.label', defaultMessage: 'Rewrite with AI'})}
             onClose={onClose}
         >
-            <MenuHeading>{formatMessage({id: 'fusion.ai.label', defaultMessage: 'Rewrite with AI'})}</MenuHeading>
-            <form
-                className={am('ai-prompt')}
-                onSubmit={(e) => {
-                    e.preventDefault();
-                    if (prompt.trim()) {
-                        rewrite(RewriteAction.CUSTOM, prompt.trim());
-                    }
-                }}
-            >
-                <input
-                    autoFocus={true}
-                    value={prompt}
-                    placeholder={message.trim() ? formatMessage({id: 'fusion.ai.promptEdit', defaultMessage: 'How should it change?'}) : formatMessage({id: 'fusion.ai.promptWrite', defaultMessage: 'What should it say?'})}
-                    aria-label={formatMessage({id: 'fusion.ai.prompt', defaultMessage: 'Instructions for the AI'})}
-                    onChange={(e) => setPrompt(e.target.value)}
-                />
-            </form>
-            {message.trim() && ACTIONS.map(([action, label]) => (
+            {rewriting && <MenuHeading>{formatMessage({id: 'fusion.ai.label', defaultMessage: 'Rewrite with AI'})}</MenuHeading>}
+            {rewriting && (
+                <form
+                    className={am('ai-prompt')}
+                    onSubmit={(e) => {
+                        e.preventDefault();
+                        if (prompt.trim()) {
+                            rewrite(RewriteAction.CUSTOM, prompt.trim());
+                        }
+                    }}
+                >
+                    <input
+                        autoFocus={true}
+                        value={prompt}
+                        placeholder={message.trim() ? formatMessage({id: 'fusion.ai.promptEdit', defaultMessage: 'How should it change?'}) : formatMessage({id: 'fusion.ai.promptWrite', defaultMessage: 'What should it say?'})}
+                        aria-label={formatMessage({id: 'fusion.ai.prompt', defaultMessage: 'Instructions for the AI'})}
+                        onChange={(e) => setPrompt(e.target.value)}
+                    />
+                </form>
+            )}
+            {rewriting && message.trim() && ACTIONS.map(([action, label]) => (
                 <MenuItem
                     key={action}
                     icon='sparkle'
@@ -101,6 +111,34 @@ export default function AiRewriteMenu({anchor, message, rootId, onRewritten, onE
                     onClick={() => rewrite(action)}
                 />
             ))}
+            {pluginItems.length > 0 && rewriting && <MenuSeparator/>}
+            {[...pluginItems].sort((a, b) => a.sortOrder - b.sortOrder).map((item) => {
+                const Component = item.component;
+                if (Component) {
+                    return (
+                        <PluggableErrorBoundary
+                            key={item.id}
+                            pluginId={item.pluginId}
+                        >
+                            <Component {...pluginProps}/>
+                        </PluggableErrorBoundary>
+                    );
+                }
+                return (
+                    <button
+                        key={item.id}
+                        type='button'
+                        role='menuitem'
+                        onClick={() => {
+                            onClose();
+                            item.action?.(pluginProps);
+                        }}
+                    >
+                        <span className={am('plugin-ic')}>{item.icon}</span>
+                        {item.text}
+                    </button>
+                );
+            })}
         </Popover>
     );
 }

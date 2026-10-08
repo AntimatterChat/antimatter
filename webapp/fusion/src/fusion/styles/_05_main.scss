@@ -242,3 +242,6 @@
 :is(.am-app, .am-layer) .am-ch-labels:empty { display: none; }
 :is(.am-app, .am-layer) .am-topic.am-topic-dnd { color: var(--am-text-2); }
 :is(.am-app, .am-layer) .am-topic .emoticon { margin-right: 4px; vertical-align: -2px; }
+:is(.am-app, .am-layer) .am-plugin-toasts:empty { display: none; }
+:is(.am-app, .am-layer) .am-plugin-toasts { position: sticky; top: 0; z-index: 15; }
+:is(.am-app, .am-layer) .am-day.am-new { gap: 8px; }

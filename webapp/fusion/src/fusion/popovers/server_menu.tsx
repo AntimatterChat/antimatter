@@ -13,7 +13,7 @@ import {haveITeamPermission} from 'mattermost-redux/selectors/entities/roles';
 import {getCurrentTeam} from 'mattermost-redux/selectors/entities/teams';
 
 import {setUnreadFilterEnabled} from 'actions/views/channel_sidebar';
-import {getMainMenuPluginComponents} from 'selectors/plugins';
+import {getMainMenuPluginComponents, getSidebarBrowseOrAddChannelMenuPluginComponents} from 'selectors/plugins';
 import {isUnreadFilterEnabled} from 'selectors/views/channel_sidebar';
 
 import {Popover} from 'fusion/components/layer';
@@ -32,6 +32,7 @@ import {
     setTeamMuted,
     withTeam,
 } from 'fusion/sidebar/team_actions';
+import {am} from 'fusion/utils/class_names';
 import {
     openBrowseChannels,
     openInvitePeople,
@@ -71,6 +72,7 @@ export default function ServerMenu({team: forTeam, anchor, point, width, onClose
     const hidingMuted = useSelector((state: GlobalState) => isHidingMutedChannels(state, teamId));
     const unreadOnly = useSelector(isUnreadFilterEnabled);
     const pluginItems = useSelector(getMainMenuPluginComponents);
+    const addChannelItems = useSelector(getSidebarBrowseOrAddChannelMenuPluginComponents);
     const plugins = useSelector((state: GlobalState) => state.plugins.plugins);
     const settings = useSettings();
     const [folders, saveFolders] = useFolders();
@@ -182,6 +184,17 @@ export default function ServerMenu({team: forTeam, anchor, point, width, onClose
                 label={formatMessage({id: 'fusion.serverMenu.browse', defaultMessage: 'Browse channels'})}
                 onClick={inTeam(() => dispatch(openBrowseChannels()))}
             />
+            {addChannelItems.map((item) => (
+                <button
+                    key={item.id}
+                    type='button'
+                    role='menuitem'
+                    onClick={inTeam(() => item.action?.(teamId))}
+                >
+                    <span className={am('plugin-ic')}>{item.icon}</span>
+                    {item.text}
+                </button>
+            ))}
             {pluginItems.length > 0 && (
                 <>
                     <MenuSeparator/>

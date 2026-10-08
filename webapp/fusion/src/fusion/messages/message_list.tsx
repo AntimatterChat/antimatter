@@ -7,7 +7,7 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import {markChannelAsRead} from 'mattermost-redux/actions/channels';
 import {getPost, getRecentPostsChunkInChannel, makeGetPostsChunkAroundPost} from 'mattermost-redux/selectors/entities/posts';
-import {getDateForDateLine, isCombinedUserActivityPost, isDateLine, isStartOfNewMessages, makeGenerateCombinedPost, makePreparePostIdsForPostList} from 'mattermost-redux/utils/post_list';
+import {getDateForDateLine, getTimestampForStartOfNewMessages, isCombinedUserActivityPost, isDateLine, isStartOfNewMessages, makeGenerateCombinedPost, makePreparePostIdsForPostList} from 'mattermost-redux/utils/post_list';
 
 import {loadLatestPosts, loadPosts, loadPostsAround, syncPostsInChannel} from 'actions/views/channel';
 
@@ -16,9 +16,14 @@ import PostMessageView from 'components/post_view/post_message_view';
 import Icon from 'fusion/components/icon';
 import {useDisplayPrefs} from 'fusion/hooks/display';
 import {am} from 'fusion/utils/class_names';
+import Pluggable from 'plugins/pluggable';
+import PluggableErrorBoundary from 'plugins/pluggable/error_boundary';
 import {PostRequestTypes} from 'utils/constants';
 
 import type {GlobalState} from 'types/store';
+import type {NewMessagesSeparatorActionComponent} from 'types/store/plugins';
+
+const NO_SEPARATOR_ACTIONS: NewMessagesSeparatorActionComponent[] = [];
 
 import Message from './message';
 import MessageTime, {useDayLabel} from './time';
@@ -67,6 +72,7 @@ export default function MessageList({channelId, focusedPostId, scrollRef, emptyT
     const getChunkAround = useMemo(() => makeGetPostsChunkAroundPost(), []);
     const prepare = useMemo(() => makePreparePostIdsForPostList(), []);
     const prefs = useDisplayPrefs();
+    const separatorActions = useSelector((state: GlobalState) => state.plugins.components.NewMessagesSeparatorAction) || NO_SEPARATOR_ACTIONS;
     const [loadingOlder, setLoadingOlder] = useState(false);
     const [loadingNewer, setLoadingNewer] = useState(false);
 
@@ -256,6 +262,9 @@ export default function MessageList({channelId, focusedPostId, scrollRef, emptyT
             ref={listRef}
             className={am('msgs', {compact: prefs.compact, centered: prefs.centered})}
         >
+            <div className={am('plugin-toasts')}>
+                <Pluggable pluggableName='ChannelToast'/>
+            </div>
             {unreadAbove && unreadCount > 0 && (
                 <div className={am('jump', 'jump-top')}>
                     <button
@@ -292,6 +301,20 @@ export default function MessageList({channelId, focusedPostId, scrollRef, emptyT
                             aria-label={formatMessage({id: 'fusion.messages.unreadLabel', defaultMessage: 'Unread messages start here'})}
                         >
                             <span>{formatMessage({id: 'fusion.messages.unread', defaultMessage: 'Unread'})}</span>
+                            {separatorActions.map((item) => {
+                                const Component = item.component;
+                                return Component ? (
+                                    <PluggableErrorBoundary
+                                        key={item.id}
+                                        pluginId={item.pluginId}
+                                    >
+                                        <Component
+                                            lastViewedAt={getTimestampForStartOfNewMessages(id)}
+                                            channelId={channelId}
+                                        />
+                                    </PluggableErrorBoundary>
+                                ) : null;
+                            })}
                         </div>
                     );
                 }

@@ -20,6 +20,7 @@ import {getUnreadDirectChannels} from 'fusion/selectors';
 import {isKeybind} from 'fusion/shell/keybinds';
 import {useLayout} from 'fusion/shell/layout_context';
 import {am} from 'fusion/utils/class_names';
+import Pluggable from 'plugins/pluggable';
 
 import type {GlobalState} from 'types/store';
 
@@ -120,6 +121,9 @@ export default function TeamSidebar() {
             className={am('sidebar')}
             aria-label={formatMessage({id: 'fusion.sidebar.label', defaultMessage: 'Channels and direct messages'})}
         >
+            <div className={am('plugin-side-head')}>
+                <Pluggable pluggableName='LeftSidebarHeader'/>
+            </div>
             <div className={am('side-head', 'menu-head')}>
                 <button
                     ref={headButton}

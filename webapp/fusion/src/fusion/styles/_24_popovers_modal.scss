@@ -190,3 +190,7 @@
 // A plugin's settings, drawn by the classic settings in Fusion's colours.
 :is(.am-app, .am-layer) .am-plugin-pane { color: var(--am-text); }
 :is(.am-app, .am-layer) .am-plugin-pane .modal-header, :is(.am-app, .am-layer) .am-plugin-pane .user-settings__header { display: none; }
+:is(.am-app, .am-layer) .am-about-menu { margin: 4px -6px 6px; padding-top: 4px; border-top: 1px solid var(--am-line); }
+:is(.am-app, .am-layer) .am-about-menu button[role='menuitem'] { display: flex; align-items: center; gap: 12px; width: 100%; padding: 7px 10px; border-radius: 8px; color: var(--am-text-2); text-align: left; }
+:is(.am-app, .am-layer) .am-about-menu button[role='menuitem']:hover { background: var(--am-hover); color: var(--am-text); }
+:is(.am-app, .am-layer) .am-terms-pane { max-height: 70vh; overflow-y: auto; }

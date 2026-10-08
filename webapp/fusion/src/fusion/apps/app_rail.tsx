@@ -5,11 +5,14 @@ import React, {useRef, useState} from 'react';
 import {useIntl} from 'react-intl';
 import {useSelector} from 'react-redux';
 
+import {getAppBarAppBindings} from 'mattermost-redux/selectors/entities/apps';
 import {getCurrentChannel, getMyCurrentChannelMembership} from 'mattermost-redux/selectors/entities/channels';
 import {getCurrentUserId} from 'mattermost-redux/selectors/entities/users';
 
 import {getAppBarPluginComponents, getChannelHeaderPluginComponents, shouldShowAppBar} from 'selectors/plugins';
 import {getActiveRhsComponent} from 'selectors/rhs';
+
+import AppBarBinding from 'components/app_bar/app_bar_binding';
 
 import Avatar from 'fusion/components/avatar';
 import Icon from 'fusion/components/icon';
@@ -78,6 +81,9 @@ export default function AppRail() {
     const me = useSelector(getCurrentUserId);
     const enabled = useSelector(shouldShowAppBar);
     const appBarComponents = useSelector(getAppBarPluginComponents);
+
+    // Apps framework bindings for the app bar, as the classic app bar shows them.
+    const appBindings = useSelector(getAppBarAppBindings);
     const headerComponents = useSelector(getChannelHeaderPluginComponents);
     const meRef = useRef<HTMLButtonElement>(null);
     const aboutRef = useRef<HTMLButtonElement>(null);
@@ -106,6 +112,14 @@ export default function AppRail() {
                     key={c.id}
                     component={c}
                 />
+            ))}
+            {enabled && appBindings.map((binding) => (
+                <span
+                    key={`${binding.app_id}_${binding.label}`}
+                    className={am('app-ic', 'app-binding')}
+                >
+                    <AppBarBinding binding={binding}/>
+                </span>
             ))}
             <span className={am('grow')}/>
             <button

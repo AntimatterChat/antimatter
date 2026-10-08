@@ -24,6 +24,7 @@ import {useLayout} from 'fusion/shell/layout_context';
 import {DirectFace} from 'fusion/sidebar/direct_row';
 import {am} from 'fusion/utils/class_names';
 import {channelPath} from 'fusion/utils/paths';
+import Pluggable from 'plugins/pluggable';
 import {getHistory} from 'utils/browser_history';
 import Constants from 'utils/constants';
 import {imageURLForTeam} from 'utils/utils';
@@ -428,6 +429,9 @@ export default function ServerRail() {
                 </Popover>
             )}
             <span className={am('rail-grow')}/>
+            <div className={am('rail-plugins')}>
+                <Pluggable pluggableName='BottomTeamSidebar'/>
+            </div>
             {waitingDMs.length > 0 && (
                 <div
                     className={am('dm-dock')}

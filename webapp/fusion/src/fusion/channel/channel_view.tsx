@@ -12,6 +12,7 @@ import {getCurrentUserId} from 'mattermost-redux/selectors/entities/users';
 import {getChannelViewPanel} from 'selectors/channel_view_panel';
 
 import ChannelBanner from 'components/channel_banner/channel_banner';
+import {ChannelComposerBanner} from 'components/channel_view/channel_composer_banner';
 
 import {useIsVoiceChannel} from 'fusion/calls/hooks';
 import VoiceView from 'fusion/calls/voice_view';
@@ -153,6 +154,7 @@ export default function ChannelView() {
                     />
                 </div>
             )}
+            {messagesVisible && !archived && <ChannelComposerBanner channelId={channel.id}/>}
             {messagesVisible && composer}
         </>
     );

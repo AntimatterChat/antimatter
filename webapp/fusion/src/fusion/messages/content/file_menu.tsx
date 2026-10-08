@@ -13,6 +13,8 @@ import {getConfig} from 'mattermost-redux/selectors/entities/general';
 import {getCurrentTeam} from 'mattermost-redux/selectors/entities/teams';
 import {getFileDownloadUrl, getFileUrl} from 'mattermost-redux/utils/file_utils';
 
+import {getFilesDropdownPluginMenuItems} from 'selectors/plugins';
+
 import {Popover} from 'fusion/components/layer';
 import {MenuItem} from 'fusion/components/menu';
 import {useToast} from 'fusion/shell/toast_context';
@@ -33,6 +35,7 @@ type Props = {
 // FileMenu is the menu of an attachment (its ⋯ button, or a right-click on it), with the classic file menu's actions:
 // download it, copy its link (its public link when the server allows them), or open its message in the channel.
 export default function FileMenu({file, post, anchor, point, onClose}: Props) {
+    const pluginItems = useSelector(getFilesDropdownPluginMenuItems);
     const {formatMessage} = useIntl();
     const dispatch = useDispatch();
     const toast = useToast();
@@ -88,6 +91,19 @@ export default function FileMenu({file, post, anchor, point, onClose}: Props) {
                     }}
                 />
             )}
+            {pluginItems.filter((item) => item.match?.(file)).map((item) => (
+                <button
+                    key={item.id}
+                    type='button'
+                    role='menuitem'
+                    onClick={() => {
+                        item.action?.(file);
+                        onClose();
+                    }}
+                >
+                    {item.text}
+                </button>
+            ))}
         </Popover>
     );
 }

@@ -25,6 +25,7 @@ import {replyToLatestPostInChannel} from 'actions/views/rhs';
 import {isBurnOnReadEnabled} from 'selectors/burn_on_read';
 import {makeGetDraft} from 'selectors/drafts';
 
+import {getComposerPlaceholder} from 'components/advanced_text_editor/composer_placeholder';
 import {useCreateBurnOnReadAccess} from 'components/common/hooks/useCreateBurnOnReadAccess';
 import Markdown from 'components/markdown';
 
@@ -51,11 +52,13 @@ import EmojiPicker from 'fusion/popovers/emoji_picker';
 import {MENTION_EVENT} from 'fusion/popovers/user_menu';
 import {useToast} from 'fusion/shell/toast_context';
 import {am} from 'fusion/utils/class_names';
+import PluggableErrorBoundary from 'plugins/pluggable/error_boundary';
 import Constants, {StoragePrefixes} from 'utils/constants';
 import {generateId} from 'utils/utils';
 
 import type {GlobalState} from 'types/store';
 import type {PostDraft} from 'types/store/draft';
+import type {AIActionMenuItemComponent, FilesWillUploadHook, FileUploadMethodAction, PostEditorActionComponent} from 'types/store/plugins';
 
 import AiRewriteMenu, {useAgentsAvailable} from './ai_rewrite';
 import Autocomplete from './autocomplete';
@@ -84,6 +87,11 @@ export const DROP_FILES_EVENT = 'am-drop-files';
 
 // Composer writes messages: the mockup's compose box around the classic web app's drafts and submit logic
 // (slash commands, reactions, message priority).
+const NO_HOOKS: FilesWillUploadHook[] = [];
+const NO_METHODS: FileUploadMethodAction[] = [];
+const NO_EDITOR_ACTIONS: PostEditorActionComponent[] = [];
+const NO_AI_ITEMS: AIActionMenuItemComponent[] = [];
+
 export default function Composer({channelId, rootId = '', placeholder}: Props) {
     const intl = useIntl();
     const {formatMessage} = intl;
@@ -108,6 +116,13 @@ export default function Composer({channelId, rootId = '', placeholder}: Props) {
     // The formatting preview shows the message as it will look, under what's being written (Ctrl/Cmd+Alt+P).
     const [previewing, setPreviewing] = useState(false);
     const requests = useRef<Record<string, XMLHttpRequest>>({});
+    const uploadHooks = useSelector((state: GlobalState) => state.plugins.components.FilesWillUploadHook) || NO_HOOKS;
+    const uploadMethods = useSelector((state: GlobalState) => state.plugins.components.FileUploadMethod) || NO_METHODS;
+    const editorActions = useSelector((state: GlobalState) => state.plugins.components.PostEditorAction) || NO_EDITOR_ACTIONS;
+    const aiItems = useSelector((state: GlobalState) => state.plugins.components.AIActionMenuItem) || NO_AI_ITEMS;
+
+    // Plugins can change the placeholder (registerComposerPlaceholder).
+    const shownPlaceholder = useSelector((state: GlobalState) => getComposerPlaceholder(state, channelId, placeholder, intl));
     const ctrlSend = useSelector((state: GlobalState) => getBool(state, Constants.Preferences.CATEGORY_ADVANCED_SETTINGS, 'send_on_ctrl_enter', false));
     const inlineReplies = useInlineRepliesEnabled();
     const mentionByDefault = useSelector((state: GlobalState) => getBool(state, MENTION_PREFERENCE_CATEGORY, MENTION_PREFERENCE_NAME, true));
@@ -285,6 +300,8 @@ export default function Composer({channelId, rootId = '', placeholder}: Props) {
         historyIndex.current = sentHistory.length;
     }, [sentHistory.length]);
 
+    const selectedText = () => ({start: textareaRef.current?.selectionStart ?? draft.message.length, end: textareaRef.current?.selectionEnd ?? draft.message.length});
+
     const onKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
         if (autocompleteRef.current?.handleKeyDown(e)) {
             return;
@@ -391,9 +408,18 @@ export default function Composer({channelId, rootId = '', placeholder}: Props) {
     };
 
     // Uploads check the server's limits first, as the classic editor: the size of each file, and the files per message.
-    const upload = (files: FileList | File[]) => {
+    const upload = (picked: FileList | File[]) => {
+        // Plugins see the files first (registerFilesWillUploadHook): they can change them, or refuse with a message.
+        let files = Array.from(picked);
+        for (const h of uploadHooks) {
+            const result = h.hook?.(files, (more: File[]) => uploadRef.current(more));
+            if (result?.message) {
+                toast(result.message);
+            }
+            files = result?.files || [];
+        }
         let room = Constants.MAX_UPLOAD_FILES - draft.fileInfos.length - pending.length;
-        Array.from(files).forEach((file) => {
+        files.forEach((file) => {
             if (maxFileSize && file.size > maxFileSize) {
                 toast(formatMessage({id: 'fusion.composer.tooBig', defaultMessage: '{name} is too big: files can be up to {size}'}, {name: file.name, size: getFormattedFileSize(maxFileSize)}));
                 return;
@@ -696,8 +722,8 @@ export default function Composer({channelId, rootId = '', placeholder}: Props) {
                         ref={textareaRef}
                         rows={1}
                         value={draft.message}
-                        placeholder={placeholder}
-                        aria-label={placeholder}
+                        placeholder={shownPlaceholder}
+                        aria-label={shownPlaceholder}
                         onChange={(e) => {
                             change({message: e.target.value});
 
@@ -803,6 +829,21 @@ export default function Composer({channelId, rootId = '', placeholder}: Props) {
                         >
                             {'?'}
                         </button>
+                        {editorActions.map((item) => {
+                            const Component = item.component as React.ComponentType<Record<string, unknown>> | undefined;
+                            return Component ? (
+                                <PluggableErrorBoundary
+                                    key={item.id}
+                                    pluginId={item.pluginId}
+                                >
+                                    <Component
+                                        draft={draft}
+                                        getSelectedText={selectedText}
+                                        updateText={(message: string) => change({message})}
+                                    />
+                                </PluggableErrorBoundary>
+                            ) : null;
+                        })}
                         <span className={am('grow')}/>
                         {priorityEnabled && !rootId && (
                             <button
@@ -817,7 +858,7 @@ export default function Composer({channelId, rootId = '', placeholder}: Props) {
                                 <Icon name='flag'/>
                             </button>
                         )}
-                        {aiAvailable && (
+                        {(aiAvailable || aiItems.length > 0) && (
                             <button
                                 ref={aiRef}
                                 type='button'
@@ -906,6 +947,20 @@ export default function Composer({channelId, rootId = '', placeholder}: Props) {
                             fileRef.current?.click();
                         }}
                     />
+                    {uploadMethods.map((method) => (
+                        <button
+                            key={method.id}
+                            type='button'
+                            role='menuitem'
+                            onClick={() => {
+                                setMenu(null);
+                                method.action?.((files: FileList | File[]) => upload(files));
+                            }}
+                        >
+                            <span className={am('plugin-ic')}>{method.icon}</span>
+                            {method.text}
+                        </button>
+                    ))}
                     <PluginMenuItems
                         channelId={channelId}
                         rootId={rootId}
@@ -936,6 +991,9 @@ export default function Composer({channelId, rootId = '', placeholder}: Props) {
             {menu === 'ai' && (
                 <AiRewriteMenu
                     anchor={aiRef.current}
+                    rewriting={aiAvailable}
+                    pluginItems={aiItems}
+                    pluginProps={{draft, getSelectedText: selectedText, updateText: (message: string) => change({message}), channelId, isRHS: Boolean(rootId)}}
                     message={draft.message}
                     rootId={rootId}
                     onRewritten={(message, original) => {

@@ -36,9 +36,12 @@ import {useUserMenu} from 'fusion/popovers/user_menu';
 import UserPopover from 'fusion/popovers/user_popover';
 import {getOneClickEmoji} from 'fusion/selectors';
 import {am} from 'fusion/utils/class_names';
+import Pluggable from 'plugins/pluggable';
+import PluggableErrorBoundary from 'plugins/pluggable/error_boundary';
 import {areConsecutivePostsBySameUser, isFromBot, isFromWebhook, isSystemMessage} from 'utils/post_utils';
 
 import type {GlobalState} from 'types/store';
+import type {PostActionComponent} from 'types/store/plugins';
 
 import Acknowledge from './acknowledge';
 import {BurnCover, BurnTag} from './burn_on_read';
@@ -95,6 +98,9 @@ function SystemLine({post}: {post: Post}) {
 
 // Message is one message in the Fusion UI's conversation: the mockup's .msg row around the classic web app's
 // message body renderers (markdown, attachments, embeds, plugin post types and files).
+
+const NO_ACTIONS: PostActionComponent[] = [];
+
 export default function Message({postId, previousPostId, inThread = false, highlighted = false}: Props) {
     const intl = useIntl();
     const {formatMessage} = intl;
@@ -122,6 +128,7 @@ export default function Message({postId, previousPostId, inThread = false, highl
     const inlineReplies = useInlineRepliesEnabled();
     const prefs = useDisplayPrefs();
     const recentEmoji = useSelector(getOneClickEmoji, shallowEqual);
+    const pluginActions = useSelector((state: GlobalState) => state.plugins.components.PostAction) || NO_ACTIONS;
     const [spoilerShown, setSpoilerShown] = useSpoilerShown(postId);
 
     // Files the reader isn't allowed to see under the attribute-based access policies.
@@ -227,6 +234,22 @@ export default function Message({postId, previousPostId, inThread = false, highl
                     />
                 </button>
             )}
+            {!burn && !post.failed && pluginActions.map((item) => {
+                const Component = item.component;
+                return Component ? (
+                    <span
+                        key={item.id}
+                        className={am('plugin-tool')}
+                    >
+                        <PluggableErrorBoundary pluginId={item.pluginId}>
+                            <Component
+                                post={post}
+                                handleDropdownOpened={() => {}}
+                            />
+                        </PluggableErrorBoundary>
+                    </span>
+                ) : null;
+            })}
             <button
                 ref={moreRef}
                 title={formatMessage({id: 'fusion.message.more', defaultMessage: 'More actions'})}
@@ -512,6 +535,10 @@ export default function Message({postId, previousPostId, inThread = false, highl
                     {!bot && !webhook && user && isGuest(user.roles) && <span className={am('bot-tag', 'guest-tag')}>{formatMessage({id: 'fusion.message.guest', defaultMessage: 'GUEST'})}</span>}
                     {webhook && <span className={am('via')}>{formatMessage({id: 'fusion.message.viaWebhook', defaultMessage: 'via webhook'})}</span>}
                     <MessageTime timestamp={post.create_at}/>
+                    <Pluggable
+                        pluggableName='PostHeader'
+                        post={post}
+                    />
                     {tags}
                 </div>
                 {body}

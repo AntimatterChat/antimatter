@@ -282,3 +282,7 @@
 :is(.am-app, .am-layer) .am-ch .am-count { margin-left: auto; padding: 0 6px; border-radius: 8px; background: var(--am-raise-2); color: var(--am-text-2); font: 600 11.5px var(--am-font-ui); }
 :is(.am-app, .am-layer) .am-ch.am-ch-thread.am-named .am-name { font-weight: 600; color: var(--am-text-2); }
 :is(.am-app, .am-layer) .am-thread-sum .am-thread-name { display: inline-flex; align-items: center; gap: 4px; color: var(--am-text); }
+:is(.am-app, .am-layer) .am-plugin-side-head:empty, :is(.am-app, .am-layer) .am-rail-plugins:empty { display: none; }
+:is(.am-app, .am-layer) .am-plugin-side-head { display: flex; gap: 6px; padding: 6px 12px 0; }
+:is(.am-app, .am-layer) .am-rail-plugins { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+:is(.am-app, .am-layer) .am-plugin-ic { display: inline-grid; place-items: center; width: 18px; margin-right: 10px; color: var(--am-muted); }

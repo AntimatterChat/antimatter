@@ -15,7 +15,7 @@ import {getCategoryInTeamWithChannel} from 'mattermost-redux/selectors/entities/
 import {getCurrentChannelId, getMyChannelMembership, isFavoriteChannel, makeGetChannelUnreadCount} from 'mattermost-redux/selectors/entities/channels';
 import {haveIChannelPermission, haveITeamPermission} from 'mattermost-redux/selectors/entities/roles';
 import {getCurrentTeam} from 'mattermost-redux/selectors/entities/teams';
-import {getCurrentUser, getCurrentUserId} from 'mattermost-redux/selectors/entities/users';
+import {getCurrentUser, getCurrentUserId, getUser} from 'mattermost-redux/selectors/entities/users';
 import {getUserIdFromChannelName, isChannelMuted} from 'mattermost-redux/utils/channel_utils';
 
 import {markMostRecentPostInChannelAsUnread} from 'actions/post_actions';
@@ -45,7 +45,9 @@ import {am} from 'fusion/utils/class_names';
 import {openAddToGroup, openDialog} from 'fusion/utils/modals';
 import {channelPath} from 'fusion/utils/paths';
 import {getHistory} from 'utils/browser_history';
+import {getChannelRoutePathAndIdentifier} from 'utils/channel_utils';
 import Constants, {ModalIdentifiers} from 'utils/constants';
+import {canPopout, getPopoutChannelTitle, popoutChannel} from 'utils/popouts/popout_windows';
 import {getSiteURL} from 'utils/url';
 import {copyToClipboard} from 'utils/utils';
 
@@ -84,6 +86,7 @@ export default function ChannelMenu({channel, anchor, point, placement = 'right'
     const categories = useSelector(getCategoriesForCurrentTeam);
     const currentCategory = useSelector((state: GlobalState) => (team ? getCategoryInTeamWithChannel(state, team.id, channel.id) : undefined));
     const pluginActions = useSelector((state: GlobalState) => state.plugins.components.ChannelHeader) || [];
+    const teammate = useSelector((state: GlobalState) => (channel.type === Constants.DM_CHANNEL ? getUser(state, getUserIdFromChannelName(getCurrentUserId(state), channel.name)) : undefined));
 
     const direct = channel.type === Constants.DM_CHANNEL || channel.type === Constants.GM_CHANNEL;
     const isPrivate = channel.type === Constants.PRIVATE_CHANNEL;
@@ -269,6 +272,16 @@ export default function ChannelMenu({channel, anchor, point, placement = 'right'
                     }
                 })}
             />
+            {canPopout() && team && (
+                <MenuItem
+                    icon='popout'
+                    label={formatMessage({id: 'fusion.channelMenu.newWindow', defaultMessage: 'Open in new window'})}
+                    onClick={run(() => {
+                        const {path, identifier} = getChannelRoutePathAndIdentifier(channel, teammate?.username);
+                        popoutChannel(formatMessage(getPopoutChannelTitle(channel.type)), team.name, path, identifier);
+                    })}
+                />
+            )}
             {canEditHeader && (
                 <MenuItem
                     icon='pen'

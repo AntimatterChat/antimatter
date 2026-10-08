@@ -1,19 +1,89 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 
-import React from 'react';
+import React, {useRef, useState} from 'react';
 import {useIntl} from 'react-intl';
 import {useSelector} from 'react-redux';
 
 import type {Channel} from '@mattermost/types/channels';
 
+import {getMyChannelMembership} from 'mattermost-redux/selectors/entities/channels';
+
 import {useCallActions} from 'fusion/calls/actions';
 import {getCallsAPI} from 'fusion/calls/calls_api';
 import {useCall, useCallsAvailable, useIsVoiceChannel, useLocalCall, useParticipants} from 'fusion/calls/hooks';
 import Icon from 'fusion/components/icon';
+import {Popover} from 'fusion/components/layer';
 import {am} from 'fusion/utils/class_names';
 
 import type {GlobalState} from 'types/store';
+import type {CallButtonAction} from 'types/store/plugins';
+
+const CALLS_PLUGIN_ID = 'com.mattermost.calls';
+const NO_PROVIDERS: CallButtonAction[] = [];
+
+// OtherCallProviders are the call buttons of plugins other than Calls (registerCallButtonAction), e.g. Zoom or Jitsi:
+// the only one shown as a button, several in a menu.
+export function OtherCallProviders({channel}: {channel: Channel}) {
+    const {formatMessage} = useIntl();
+    const providers = useSelector((state: GlobalState) => state.plugins.components.CallButton) || NO_PROVIDERS;
+    const member = useSelector((state: GlobalState) => getMyChannelMembership(state, channel.id));
+    const others = providers.filter((p) => p.pluginId !== CALLS_PLUGIN_ID);
+    const ref = useRef<HTMLButtonElement>(null);
+    const [open, setOpen] = useState(false);
+    if (!others.length || channel.delete_at !== 0) {
+        return null;
+    }
+    if (others.length === 1) {
+        return (
+            <button
+                className={am('icon-btn', 'plugin-call')}
+                onClick={() => others[0].action?.(channel, member)}
+            >
+                {others[0].button}
+            </button>
+        );
+    }
+    return (
+        <>
+            <button
+                ref={ref}
+                className={am('icon-btn', {on: open})}
+                title={formatMessage({id: 'fusion.calls.others', defaultMessage: 'Other ways to call'})}
+                aria-label={formatMessage({id: 'fusion.calls.others', defaultMessage: 'Other ways to call'})}
+                aria-haspopup='menu'
+                onClick={() => setOpen(!open)}
+            >
+                <Icon name='video'/>
+            </button>
+            {open && (
+                <Popover
+                    anchor={ref.current}
+                    placement='below'
+                    className='plus-pop'
+                    role='menu'
+                    label={formatMessage({id: 'fusion.calls.others', defaultMessage: 'Other ways to call'})}
+                    onClose={() => setOpen(false)}
+                >
+                    {others.map((p) => (
+                        <button
+                            key={p.id}
+                            type='button'
+                            role='menuitem'
+                            className={am('mi')}
+                            onClick={() => {
+                                setOpen(false);
+                                p.action?.(channel, member);
+                            }}
+                        >
+                            {p.dropdownButton || p.button}
+                        </button>
+                    ))}
+                </Popover>
+            )}
+        </>
+    );
+}
 
 // CallButton is the mockup's call button of text channels and direct messages: start a call, join the one in
 // progress, or leave it. Voice channels are always-open rooms and have none.

@@ -12,3 +12,11 @@
 :is(.am-app, .am-layer) .am-ch-ic .am-lock.am-shared { color: var(--am-anti); }
 :is(.am-app, .am-layer) .am-search-pop .am-search-date { display: flex; align-items: center; gap: 8px; padding: 6px 10px; color: var(--am-text-2); font-size: 13px; }
 :is(.am-app, .am-layer) .am-search-pop .am-search-date input { padding: 4px 6px; border-radius: 6px; border: 1px solid var(--am-line); background: var(--am-main); color: var(--am-text); color-scheme: dark light; }
+:is(.am-app, .am-layer) .am-search-scopes { display: flex; flex-wrap: wrap; gap: 6px; padding: 6px 8px; border-bottom: 1px solid var(--am-line); }
+:is(.am-app, .am-layer) .am-search-scopes > button { padding: 3px 8px; border-radius: 8px; border: 1px solid var(--am-line); }
+:is(.am-app, .am-layer) .am-search-scope-chip { display: inline-flex; align-items: center; gap: 4px; padding: 0 6px; height: 22px; border-radius: 6px; background: var(--am-matter-soft); color: var(--am-text); font-size: 12px; }
+:is(.am-app, .am-layer) .am-head-plugins { display: inline-flex; align-items: center; gap: 2px; }
+:is(.am-app, .am-layer) .am-head-plugins:empty { display: none; }
+:is(.am-app, .am-layer) .am-head-plugins :is(button, a) { width: 34px; height: 34px; margin: 0; padding: 0; border: 0; border-radius: 8px; display: grid; place-items: center; background: none; color: var(--am-muted); position: static; }
+:is(.am-app, .am-layer) .am-head-plugins :is(button, a):hover { background: var(--am-hover); color: var(--am-text); }
+:is(.am-app, .am-layer) .am-head-plugins :is(svg, i) { max-width: 18px; max-height: 18px; }

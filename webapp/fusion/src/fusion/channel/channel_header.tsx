@@ -9,10 +9,11 @@ import type {Channel} from '@mattermost/types/channels';
 import type {UserProfile} from '@mattermost/types/users';
 
 import {Client4} from 'mattermost-redux/client';
-import {getAllChannelStats, getDirectTeammate, getMyChannels} from 'mattermost-redux/selectors/entities/channels';
+import {getAllChannelStats, getDirectTeammate, getMyChannelMembership, getMyChannels} from 'mattermost-redux/selectors/entities/channels';
 import {getCurrentTeam} from 'mattermost-redux/selectors/entities/teams';
 
 import {closeRightHandSide, showSearchResults, updateSearchTeam, updateSearchTerms} from 'actions/views/rhs';
+import {getSearchBoxHints, getSearchButtons, getSearchPluginSuggestions} from 'selectors/plugins';
 import {getIsRhsOpen} from 'selectors/rhs';
 
 import ChannelAttributeLabels from 'components/channel_attributes/channel_attribute_labels';
@@ -30,10 +31,13 @@ import {isPhoneLayout, useLayout} from 'fusion/shell/layout_context';
 import ChannelIcon from 'fusion/sidebar/channel_icon';
 import {useConversationName} from 'fusion/sidebar/group_dm';
 import {am} from 'fusion/utils/class_names';
+import Pluggable from 'plugins/pluggable';
+import PluggableErrorBoundary from 'plugins/pluggable/error_boundary';
 
 import type {GlobalState} from 'types/store';
+import type {SearchButtonsComponent, SearchSuggestionsComponent} from 'types/store/plugins';
 
-import CallButton from './call_button';
+import CallButton, {OtherCallProviders} from './call_button';
 import HeaderTopic from './header_topic';
 
 const NO_CHANNELS: Channel[] = [];
@@ -79,6 +83,7 @@ export default function ChannelHeader({channel}: {channel: Channel}) {
     const [collections, setCollections] = useState(false);
     const [status, setStatus] = useState(false);
     const [menu, setMenu] = useState(false);
+    const member = useSelector((state: GlobalState) => getMyChannelMembership(state, channel.id));
     const menuRef = useRef<HTMLButtonElement>(null);
     const inputRef = useRef<HTMLInputElement>(null);
     const collectionsRef = useRef<HTMLButtonElement>(null);
@@ -95,10 +100,23 @@ export default function ChannelHeader({channel}: {channel: Channel}) {
     const placeholder = formatMessage({id: 'fusion.header.searchTeam', defaultMessage: 'Search {team}'}, {team: team?.display_name || ''});
     const here = scopeOf(channel, teammate?.username);
 
+    // Plugins can add their own search (registerSearchComponents): picked in the suggestions, it runs instead.
+    const pluginSearches = useSelector(getSearchButtons);
+    const pluginSuggestions = useSelector(getSearchPluginSuggestions);
+    const pluginHints = useSelector(getSearchBoxHints);
+    const [pluginScope, setPluginScope] = useState('');
+    const scopedPlugin = pluginSearches.find((p: SearchButtonsComponent) => p.pluginId === pluginScope);
+
     const search = (e?: React.FormEvent) => {
         e?.preventDefault();
         const q = query.trim();
         if (!q) {
+            return;
+        }
+        if (scopedPlugin) {
+            scopedPlugin.action(q);
+            setSearchFocused(false);
+            inputRef.current?.blur();
             return;
         }
         addRecentSearch(q);
@@ -194,6 +212,22 @@ export default function ChannelHeader({channel}: {channel: Channel}) {
                         name='search'
                         size='sm'
                     />
+                    {scopedPlugin && (
+                        <button
+                            type='button'
+                            className={am('search-scope-chip')}
+                            title={formatMessage({id: 'fusion.search.leaveScope', defaultMessage: 'Back to searching messages'})}
+                            onClick={() => setPluginScope('')}
+                        >
+                            <PluggableErrorBoundary pluginId={scopedPlugin.pluginId}>
+                                <scopedPlugin.component/>
+                            </PluggableErrorBoundary>
+                            <Icon
+                                name='x'
+                                size='xs'
+                            />
+                        </button>
+                    )}
                     <input
                         ref={inputRef}
                         value={query}
@@ -216,8 +250,52 @@ export default function ChannelHeader({channel}: {channel: Channel}) {
                         }}
                     />
                 </label>
-                {searchFocused && !query && (
+                {searchFocused && scopedPlugin && (
                     <div className={am('search-pop')}>
+                        {[...pluginSuggestions, ...(query ? [] : pluginHints)].filter((c: {pluginId: string}) => c.pluginId === pluginScope).map((c) => {
+                            const Component = c.component as SearchSuggestionsComponent['component'];
+                            return (
+                                <PluggableErrorBoundary
+                                    key={c.id}
+                                    pluginId={c.pluginId}
+                                >
+                                    <Component
+                                        searchTerms={query}
+                                        onChangeSearch={(value: string, pretext: string) => setQuery(query.slice(0, query.length - pretext.length) + value)}
+                                        onRunSearch={(terms: string) => {
+                                            scopedPlugin.action(terms);
+                                            setSearchFocused(false);
+                                        }}
+                                    />
+                                </PluggableErrorBoundary>
+                            );
+                        })}
+                    </div>
+                )}
+                {searchFocused && !query && !scopedPlugin && (
+                    <div className={am('search-pop')}>
+                        {pluginSearches.length > 0 && (
+                            <div className={am('search-scopes')}>
+                                {pluginSearches.map((p: SearchButtonsComponent) => {
+                                    const Button = p.component;
+                                    return (
+                                        <button
+                                            key={p.id}
+                                            type='button'
+                                            onMouseDown={(e) => {
+                                                e.preventDefault();
+                                                setPluginScope(p.pluginId);
+                                                inputRef.current?.focus();
+                                            }}
+                                        >
+                                            <PluggableErrorBoundary pluginId={p.pluginId}>
+                                                <Button/>
+                                            </PluggableErrorBoundary>
+                                        </button>
+                                    );
+                                })}
+                            </div>
+                        )}
                         <button
                             type='button'
                             onMouseDown={(e) => {
@@ -313,6 +391,16 @@ export default function ChannelHeader({channel}: {channel: Channel}) {
             </form>
             <div className={am('head-actions')}>
                 <CallButton channel={channel}/>
+                <OtherCallProviders channel={channel}/>
+                {member && (
+                    <span className={am('head-plugins')}>
+                        <Pluggable
+                            pluggableName='ChannelHeaderIcon'
+                            channel={channel}
+                            channelMember={member}
+                        />
+                    </span>
+                )}
                 <button
                     ref={collectionsRef}
                     className={am('icon-btn', {on: collections})}
