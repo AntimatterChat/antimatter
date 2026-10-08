@@ -20,11 +20,13 @@ import {useDisplayPrefs} from 'fusion/hooks/display';
 import {am} from 'fusion/utils/class_names';
 import {openDialog} from 'fusion/utils/modals';
 import {ModalIdentifiers} from 'utils/constants';
+import {getSiteURL} from 'utils/url';
 
 import type {GlobalState} from 'types/store';
 
 import FileMenu from './file_menu';
 import {imageCaption, useLightbox} from './lightbox';
+import type {LightboxImage} from './lightbox';
 
 function isImage(file: FileInfo, svgs: boolean) {
     const ext = (file.extension || '').toLowerCase();
@@ -97,6 +99,19 @@ export default function Files({post}: {post: Post}) {
 
     const preview = (index: number) => dispatch(openDialog(ModalIdentifiers.FILE_PREVIEW_MODAL, FilePreviewModal, {postId: post.id, post, fileInfos: files, startIndex: index}));
 
+    // An image opens in the lightbox, with the message's other images to go through.
+    const toImage = (file: FileInfo, index: number): LightboxImage => ({
+        src: imageSrc(file),
+        name: file.name,
+        size: getFormattedFileSize(file.size),
+        width: file.width,
+        height: file.height,
+        download: getFileDownloadUrl(file.id),
+        link: getSiteURL() + getFileUrl(file.id),
+        onPreview: () => preview(index),
+    });
+    const gallery = files.map((file, index) => [file, index] as const).filter(([file]) => isImage(file, svgs) && !file.archived).map(([file, index]) => toImage(file, index));
+
     return (
         <div className={am('files')}>
             {imageCount > 0 && !imagesShown && (
@@ -115,11 +130,27 @@ export default function Files({post}: {post: Post}) {
             )}
             {files.map((file, index) => {
                 const size = getFormattedFileSize(file.size);
-                if (isImage(file, svgs) && !imagesShown) {
+                if (isImage(file, svgs) && !imagesShown && !file.archived) {
                     return null;
                 }
+
+                // An archived file is kept as its name only: the server no longer has its content.
+                if (file.archived) {
+                    return (
+                        <div
+                            key={file.id}
+                            className={am('attach', 'archived')}
+                        >
+                            <Icon name='folder'/>
+                            <span className={am('attach-meta')}>
+                                <b>{file.name}</b>
+                                <span>{formatMessage({id: 'fusion.files.archived', defaultMessage: 'This file is archived'})}</span>
+                            </span>
+                        </div>
+                    );
+                }
                 if (isImage(file, svgs)) {
-                    const image = {src: imageSrc(file), name: file.name, size, width: file.width, height: file.height, download: getFileDownloadUrl(file.id)};
+                    const image = toImage(file, index);
                     const ratio = file.width && file.height ? `${file.width} / ${file.height}` : undefined;
                     return (
                         <button
@@ -129,7 +160,7 @@ export default function Files({post}: {post: Post}) {
                             style={ratio ? {aspectRatio: ratio} : undefined}
                             aria-label={formatMessage({id: 'fusion.files.openImage', defaultMessage: 'Open image {name}'}, {name: file.name})}
                             title={imageCaption({...image, width: undefined, height: undefined})}
-                            onClick={() => openImage(image)}
+                            onClick={() => openImage(image, gallery)}
                             onContextMenu={contextMenu(file)}
                         >
                             <img

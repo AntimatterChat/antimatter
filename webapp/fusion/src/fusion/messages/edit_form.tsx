@@ -12,6 +12,7 @@ import {editPost} from 'actions/views/posts';
 
 import {useDialogs} from 'fusion/shell/dialogs_context';
 import {am} from 'fusion/utils/class_names';
+import {allAtMentions} from 'utils/text_formatting';
 
 type Props = {
     post: Post;
@@ -27,6 +28,9 @@ export default function EditForm({post}: Props) {
     const [saving, setSaving] = useState(false);
     const [error, setError] = useState('');
     const ref = useRef<HTMLTextAreaElement>(null);
+
+    // As in the classic editor, mentions written in an edit notify no one: say so while there are some.
+    const mentions = allAtMentions(value).length > 0;
 
     useEffect(() => {
         const el = ref.current;
@@ -92,7 +96,7 @@ export default function EditForm({post}: Props) {
                     className={am('grow')}
                     role={error ? 'alert' : undefined}
                 >
-                    {error || formatMessage({id: 'fusion.edit.hint', defaultMessage: 'Enter to save · Shift+Enter for a new line · Esc to cancel'})}
+                    {error || (mentions ? formatMessage({id: 'fusion.edit.noMentionNotify', defaultMessage: 'Mentions added in an edit don\'t notify anyone.'}) : formatMessage({id: 'fusion.edit.hint', defaultMessage: 'Enter to save · Shift+Enter for a new line · Esc to cancel'}))}
                 </span>
                 <button
                     type='button'

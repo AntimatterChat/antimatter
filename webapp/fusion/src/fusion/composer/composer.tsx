@@ -15,6 +15,7 @@ import {isPostPriorityEnabled} from 'mattermost-redux/selectors/entities/posts';
 import {getBool} from 'mattermost-redux/selectors/entities/preferences';
 import {isScheduledPostsEnabled} from 'mattermost-redux/selectors/entities/scheduled_posts';
 import {getCurrentUserId} from 'mattermost-redux/selectors/entities/users';
+import {getFormattedFileSize} from 'mattermost-redux/utils/file_utils';
 
 import {uploadFile} from 'actions/file_actions';
 import {emitLocalUserTypingEvent} from 'actions/global_actions';
@@ -97,6 +98,8 @@ export default function Composer({channelId, rootId = '', placeholder}: Props) {
     const burnDuration = useBurnDuration();
     const persistentMinutes = useSelector((state: GlobalState) => parseInt(getConfig(state).PersistentNotificationIntervalMinutes || '5', 10) || 5);
     const toast = useToast();
+    const maxFileSize = useSelector((state: GlobalState) => parseInt(getConfig(state).MaxFileSize || '0', 10) || 0);
+    const requests = useRef<Record<string, XMLHttpRequest>>({});
     const ctrlSend = useSelector((state: GlobalState) => getBool(state, Constants.Preferences.CATEGORY_ADVANCED_SETTINGS, 'send_on_ctrl_enter', false));
     const inlineReplies = useInlineRepliesEnabled();
     const mentionByDefault = useSelector((state: GlobalState) => getBool(state, MENTION_PREFERENCE_CATEGORY, MENTION_PREFERENCE_NAME, true));
@@ -319,11 +322,22 @@ export default function Composer({channelId, rootId = '', placeholder}: Props) {
         });
     };
 
+    // Uploads check the server's limits first, as the classic editor: the size of each file, and the files per message.
     const upload = (files: FileList | File[]) => {
+        let room = Constants.MAX_UPLOAD_FILES - draft.fileInfos.length - pending.length;
         Array.from(files).forEach((file) => {
+            if (maxFileSize && file.size > maxFileSize) {
+                toast(formatMessage({id: 'fusion.composer.tooBig', defaultMessage: '{name} is too big: files can be up to {size}'}, {name: file.name, size: getFormattedFileSize(maxFileSize)}));
+                return;
+            }
+            if (room <= 0) {
+                toast(formatMessage({id: 'fusion.composer.tooMany', defaultMessage: 'A message can carry up to {count} files'}, {count: Constants.MAX_UPLOAD_FILES}));
+                return;
+            }
+            room -= 1;
             const clientId = generateId();
             setPending((p) => [...p, {clientId, name: file.name, progress: 0}]);
-            dispatch(uploadFile({
+            requests.current[clientId] = dispatch(uploadFile({
                 file,
                 name: file.name,
                 type: file.type,
@@ -339,9 +353,20 @@ export default function Composer({channelId, rootId = '', placeholder}: Props) {
                         return next;
                     });
                 },
-                onError: () => setPending((p) => p.filter((x) => x.clientId !== clientId)),
-            }));
+                onError: (error: string | {message?: string}) => {
+                    setPending((p) => p.filter((x) => x.clientId !== clientId));
+                    const message = typeof error === 'string' ? error : error?.message;
+                    if (message) {
+                        toast(formatMessage({id: 'fusion.composer.uploadFailed', defaultMessage: '{name} couldn\'t be uploaded: {message}'}, {name: file.name, message}));
+                    }
+                },
+            })) as unknown as XMLHttpRequest;
         });
+    };
+    const cancelUpload = (clientId: string) => {
+        requests.current[clientId]?.abort();
+        delete requests.current[clientId];
+        setPending((p) => p.filter((x) => x.clientId !== clientId));
     };
 
     // Files dropped anywhere on the conversation go to its composer, as in the mockup.
@@ -471,10 +496,18 @@ export default function Composer({channelId, rootId = '', placeholder}: Props) {
     const uploads = pending.map((p) => (
         <span
             key={p.clientId}
-            className={am('opt-chip')}
+            className={am('opt-chip', 'uploading')}
+            style={{'--am-progress': `${Math.round(p.progress)}%`} as React.CSSProperties}
         >
             <Icon name='upload'/>
             {`${p.name} · ${Math.round(p.progress)}%`}
+            <button
+                type='button'
+                aria-label={formatMessage({id: 'fusion.composer.cancelUpload', defaultMessage: 'Cancel the upload of {name}'}, {name: p.name})}
+                onClick={() => cancelUpload(p.clientId)}
+            >
+                <Icon name='x'/>
+            </button>
         </span>
     ));
 

@@ -12,19 +12,22 @@ import {setThreadFollow} from 'mattermost-redux/actions/threads';
 import {Posts} from 'mattermost-redux/constants';
 import {getChannel} from 'mattermost-redux/selectors/entities/channels';
 import {getConfig} from 'mattermost-redux/selectors/entities/general';
-import {isPostFlagged} from 'mattermost-redux/selectors/entities/posts';
+import {getPost, isPostFlagged} from 'mattermost-redux/selectors/entities/posts';
 import {isCollapsedThreadsEnabled} from 'mattermost-redux/selectors/entities/preferences';
 import {contentFlaggingEnabledInTeam, getCurrentTeam} from 'mattermost-redux/selectors/entities/teams';
+import {makeGetThreadOrSynthetic} from 'mattermost-redux/selectors/entities/threads';
 import {getCurrentUserId} from 'mattermost-redux/selectors/entities/users';
 
 import {flagPost, markPostAsUnread, pinPost, setEditingPost, toggleReaction, unflagPost, unpinPost} from 'actions/post_actions';
 import {forwardPost} from 'actions/views/posts';
 import {selectPost} from 'actions/views/rhs';
 import {getRecentEmojisNames} from 'selectors/emojis';
+import {makeCanWrangler} from 'selectors/posts';
 
 import RenderEmoji from 'components/emoji/render_emoji';
 import FlagPostModal from 'components/flag_message_modal/flag_post_modal';
 import ForwardPostModal from 'components/forward_post_modal';
+import MoveThreadModal from 'components/move_thread_modal';
 
 import Icon from 'fusion/components/icon';
 import {Popover} from 'fusion/components/layer';
@@ -91,6 +94,16 @@ export default function MessageMenu({post, anchor, inThread, onClose, onMoreReac
     const quick = [...new Set([...[...recent].reverse(), ...QUICK_REACTIONS])].slice(0, QUICK_COUNT);
 
     const openNotes = useNotesToSelf();
+    const [canWrangler] = useState(makeCanWrangler);
+    const [getThreadOrSynthetic] = useState(makeGetThreadOrSynthetic);
+    const canMove = useSelector((state: GlobalState) => {
+        const channel = getChannel(state, post.channel_id);
+        const root = getPost(state, post.root_id || post.id);
+        if (!channel || !root || post.type === Posts.POST_TYPES.BURN_ON_READ) {
+            return false;
+        }
+        return canWrangler(state, channel.type, getThreadOrSynthetic(state, root).reply_count);
+    });
     const run = (action: () => void) => () => {
         action();
         onClose();
@@ -186,6 +199,13 @@ export default function MessageMenu({post, anchor, inThread, onClose, onMoreReac
                     icon='forward'
                     label={formatMessage({id: 'fusion.messageMenu.forward', defaultMessage: 'Forward'})}
                     onClick={run(() => dispatch(openDialog(ModalIdentifiers.FORWARD_POST_MODAL, ForwardPostModal, {post})))}
+                />
+            )}
+            {!system && canMove && (
+                <MenuItem
+                    icon='forward'
+                    label={formatMessage({id: 'fusion.messageMenu.moveThread', defaultMessage: 'Move thread…'})}
+                    onClick={run(() => dispatch(openDialog(ModalIdentifiers.MOVE_THREAD_MODAL, MoveThreadModal, {post})))}
                 />
             )}
             {!system && !burn && (

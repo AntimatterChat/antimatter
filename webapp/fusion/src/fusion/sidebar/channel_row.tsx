@@ -23,6 +23,7 @@ import Pluggable from 'plugins/pluggable';
 import type {GlobalState} from 'types/store';
 
 import ChannelIcon from './channel_icon';
+import ChannelThreads from './channel_threads';
 import {isHidingMutedChannels} from './team_actions';
 
 type Props = {
@@ -123,6 +124,7 @@ export default function ChannelRow({channelId, collapsed}: Props) {
                     />
                 </div>
             )}
+            {!collapsed && <ChannelThreads channelId={channel.id}/>}
             {menu && (
                 <ChannelMenu
                     channel={channel}

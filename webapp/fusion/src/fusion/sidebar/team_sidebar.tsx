@@ -23,6 +23,7 @@ import {am} from 'fusion/utils/class_names';
 import type {GlobalState} from 'types/store';
 
 import Category from './category';
+import {useSidebarThreads} from './channel_threads';
 import DirectRow from './direct_row';
 import {DM_FIND_ID} from './home_sidebar';
 import MoreUnreads from './more_unreads';
@@ -92,6 +93,7 @@ export default function TeamSidebar() {
 
     // The unread filter (Ctrl/Cmd+Shift+U, or the team menu) lists only the unread channels, as in the classic sidebar.
     const unreadOnly = useSelector(isUnreadFilterEnabled);
+    useSidebarThreads();
     useEffect(() => {
         const onKeyDown = (e: KeyboardEvent) => {
             if ((e.ctrlKey || e.metaKey) && e.shiftKey && !e.altKey && e.key.toLowerCase() === 'u') {

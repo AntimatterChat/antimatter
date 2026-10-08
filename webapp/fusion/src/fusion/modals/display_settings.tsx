@@ -135,6 +135,8 @@ export function ReadingRows() {
     const [collapse, setCollapse] = usePreference(Preferences.CATEGORY_DISPLAY_SETTINGS, Preferences.COLLAPSE_DISPLAY, Preferences.COLLAPSE_DISPLAY_DEFAULT);
     const [oneClick, setOneClick] = usePreference(Preferences.CATEGORY_DISPLAY_SETTINGS, Preferences.ONE_CLICK_REACTIONS_ENABLED, Preferences.ONE_CLICK_REACTIONS_ENABLED_DEFAULT);
     const [scroll, setScroll] = usePreference(Preferences.CATEGORY_ADVANCED_SETTINGS, Preferences.UNREAD_SCROLL_POSITION, Preferences.UNREAD_SCROLL_POSITION_START_FROM_LEFT);
+    const previewsAllowed = useSelector((state: GlobalState) => getConfig(state).EnableLinkPreviews === 'true');
+    const [linkPreviews, setLinkPreviews] = usePreference(Preferences.CATEGORY_DISPLAY_SETTINGS, Preferences.LINK_PREVIEW_DISPLAY, Preferences.LINK_PREVIEW_DISPLAY_DEFAULT);
     const joinLeaveDefault = useSelector((state: GlobalState) => getConfig(state).EnableJoinLeaveMessageByDefault === 'true');
     const [joinLeave, setJoinLeave] = usePreference(Preferences.CATEGORY_ADVANCED_SETTINGS, ReduxPreferences.ADVANCED_FILTER_JOIN_LEAVE, String(joinLeaveDefault));
 
@@ -156,6 +158,14 @@ export function ReadingRows() {
                 on={collapse !== 'true'}
                 onChange={(on) => setCollapse(String(!on))}
             />
+            {previewsAllowed && (
+                <Toggle
+                    title={formatMessage({id: 'fusion.settings.linkPreviews', defaultMessage: 'Website link previews'})}
+                    desc={formatMessage({id: 'fusion.settings.linkPreviewsDesc', defaultMessage: 'A card with the title, description and picture of the first link in a message. The author can remove it from their message.'})}
+                    on={linkPreviews !== 'false'}
+                    onChange={(on) => setLinkPreviews(String(on))}
+                />
+            )}
             <Toggle
                 title={formatMessage({id: 'fusion.settings.oneClick', defaultMessage: 'One-click reactions'})}
                 desc={formatMessage({id: 'fusion.settings.oneClickDesc', defaultMessage: 'Your recent emoji in the toolbar over messages.'})}

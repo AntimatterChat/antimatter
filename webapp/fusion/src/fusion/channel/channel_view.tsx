@@ -15,6 +15,7 @@ import ChannelBanner from 'components/channel_banner/channel_banner';
 
 import {useIsVoiceChannel} from 'fusion/calls/hooks';
 import VoiceView from 'fusion/calls/voice_view';
+import Icon from 'fusion/components/icon';
 import Composer, {DROP_FILES_EVENT} from 'fusion/composer/composer';
 import MessageList from 'fusion/messages/message_list';
 import {useConversationName} from 'fusion/sidebar/group_dm';
@@ -34,6 +35,7 @@ export default function ChannelView() {
     const deactivated = useSelector((state: GlobalState) => (channel ? isDeactivatedDirectChannel(state, channel.id) : false));
     const match = useRouteMatch<{postid?: string}>();
     const viewRef = useRef<HTMLDivElement>(null);
+    const [dropping, setDropping] = useState(false);
     const voice = useIsVoiceChannel(channel?.id);
     const me = useSelector(getCurrentUserId);
     const conversationName = useConversationName(channel || {id: '', type: 'O', display_name: ''});
@@ -114,15 +116,34 @@ export default function ChannelView() {
                     onDragOver={(e) => {
                         if (e.dataTransfer.types.includes('Files')) {
                             e.preventDefault();
+                            if (!archived && !deactivated && !dropping) {
+                                setDropping(true);
+                            }
+                        }
+                    }}
+                    onDragLeave={(e) => {
+                        if (!e.currentTarget.contains(e.relatedTarget as Node)) {
+                            setDropping(false);
                         }
                     }}
                     onDrop={(e) => {
+                        setDropping(false);
                         if (e.dataTransfer.files.length && !archived && !deactivated) {
                             e.preventDefault();
                             window.dispatchEvent(new CustomEvent(DROP_FILES_EVENT, {detail: Array.from(e.dataTransfer.files)}));
                         }
                     }}
                 >
+                    {dropping && (
+                        <div
+                            className={am('drop-overlay')}
+                            aria-hidden='true'
+                        >
+                            <Icon name='upload'/>
+                            <b>{formatMessage({id: 'fusion.channel.dropFiles', defaultMessage: 'Drop to upload'})}</b>
+                            <span>{direct ? conversationName : `#${channel.display_name}`}</span>
+                        </div>
+                    )}
                     <MessageList
                         key={channel.id}
                         channelId={channel.id}

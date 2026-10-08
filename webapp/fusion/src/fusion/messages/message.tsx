@@ -10,7 +10,7 @@ import type {Post} from '@mattermost/types/posts';
 import {removePost} from 'mattermost-redux/actions/posts';
 import {Posts} from 'mattermost-redux/constants';
 import {isMyChannelAutotranslated} from 'mattermost-redux/selectors/entities/channels';
-import {getConfig} from 'mattermost-redux/selectors/entities/general';
+import {getConfig, isPermissionPoliciesEnabled} from 'mattermost-redux/selectors/entities/general';
 import {getPost, isPostFlagged, isPostPriorityEnabled} from 'mattermost-redux/selectors/entities/posts';
 import {isCollapsedThreadsEnabled} from 'mattermost-redux/selectors/entities/preferences';
 import {getCurrentUserId, getUser} from 'mattermost-redux/selectors/entities/users';
@@ -28,6 +28,7 @@ import CallCard, {useCallCard} from 'fusion/calls/call_card';
 import Avatar from 'fusion/components/avatar';
 import Icon from 'fusion/components/icon';
 import type {IconName} from 'fusion/components/icon';
+import StatusEmoji from 'fusion/components/status_emoji';
 import {nameColor, useDisplayPrefs} from 'fusion/hooks/display';
 import {useDisplayName} from 'fusion/hooks/users';
 import EmojiPicker from 'fusion/popovers/emoji_picker';
@@ -123,9 +124,13 @@ export default function Message({postId, previousPostId, inThread = false, highl
     const recentEmoji = useSelector(getOneClickEmoji, shallowEqual);
     const [spoilerShown, setSpoilerShown] = useSpoilerShown(postId);
 
+    // Files the reader isn't allowed to see under the attribute-based access policies.
+    const redactedFiles = useSelector((state: GlobalState) => (post && isPermissionPoliciesEnabled(state) ? post.metadata?.redacted_file_count ?? 0 : 0));
+
     if (!post) {
         return null;
     }
+
     if (isSystemMessage(post) && post.type !== Posts.POST_TYPES.EPHEMERAL) {
         return <SystemLine post={post}/>;
     }
@@ -312,6 +317,18 @@ export default function Message({postId, previousPostId, inThread = false, highl
                         </LongBody>
                     )}
                     {post.file_ids && post.file_ids.length > 0 && !deleted && <Files post={post}/>}
+                    {redactedFiles > 0 && !deleted && (
+                        <div
+                            className={am('attach', 'archived')}
+                            title={formatMessage({id: 'fusion.files.redactedWhy', defaultMessage: 'Access to files is restricted based on attributes'})}
+                        >
+                            <Icon name='lock'/>
+                            <span className={am('attach-meta')}>
+                                <b>{formatMessage({id: 'fusion.files.redacted', defaultMessage: '{count, plural, one {# file not available} other {# files not available}}'}, {count: redactedFiles})}</b>
+                                <span>{formatMessage({id: 'fusion.files.redactedWhy', defaultMessage: 'Access to files is restricted based on attributes'})}</span>
+                            </span>
+                        </div>
+                    )}
                 </SpoilerVeil>
             )}
             {post.failed && <FailedPost post={post}/>}
@@ -489,6 +506,7 @@ export default function Message({postId, previousPostId, inThread = false, highl
                     >
                         {authorName}
                     </button>
+                    {!bot && !webhook && <StatusEmoji userId={post.user_id}/>}
                     {(bot || webhook) && <span className={am('bot-tag')}>{'BOT'}</span>}
                     {!bot && !webhook && user && isGuest(user.roles) && <span className={am('bot-tag', 'guest-tag')}>{formatMessage({id: 'fusion.message.guest', defaultMessage: 'GUEST'})}</span>}
                     {webhook && <span className={am('via')}>{formatMessage({id: 'fusion.message.viaWebhook', defaultMessage: 'via webhook'})}</span>}

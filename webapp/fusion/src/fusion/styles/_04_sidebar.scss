@@ -273,3 +273,9 @@
 :is(.am-app, .am-layer) .am-av .am-st.am-away { background: var(--am-away); }
 :is(.am-app, .am-layer) .am-av .am-st.am-dnd { background: var(--am-dnd); }
 :is(.am-app, .am-layer) .am-av.am-speaking { box-shadow: 0 0 0 2px var(--am-side), 0 0 0 4px var(--am-ok); }
+
+// Threads under their channel, as Discord's: an elbow from the channel, the thread's first words, its mentions.
+:is(.am-app, .am-layer) .am-ch-threads { display: flex; flex-direction: column; margin: -1px 0 2px 18px; }
+:is(.am-app, .am-layer) .am-ch.am-ch-thread { position: relative; height: 28px; padding-left: 22px; font-size: 13px; width: calc(100% - 4px); text-align: left; }
+:is(.am-app, .am-layer) .am-thread-branch { position: absolute; left: 6px; top: -6px; width: 10px; height: 20px; border-left: 1.5px solid var(--am-line); border-bottom: 1.5px solid var(--am-line); border-bottom-left-radius: 7px; }
+:is(.am-app, .am-layer) .am-ch.am-ch-thread .am-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; min-width: 0; }
