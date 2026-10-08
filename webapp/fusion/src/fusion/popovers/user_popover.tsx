@@ -34,6 +34,7 @@ import type {GlobalState} from 'types/store';
 import ProfileFacts from './profile_facts';
 import RoleChips from './role_chips';
 import StatusPopover from './status_popover';
+import UserNote from './user_note';
 
 const STATUS_LABELS: Record<string, {id: string; defaultMessage: string}> = {
     online: {id: 'fusion.status.online', defaultMessage: 'Online'},
@@ -157,6 +158,7 @@ export default function UserPopover({userId, anchor, onClose}: Props) {
                     </p>
                 )}
                 <RoleChips userId={userId}/>
+                {!isMe && !bot && <UserNote userId={userId}/>}
                 <div className={am('plugin-attrs')}>
                     <Pluggable
                         pluggableName='PopoverUserAttributes'

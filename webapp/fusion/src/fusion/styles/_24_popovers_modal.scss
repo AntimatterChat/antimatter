@@ -195,3 +195,10 @@
 :is(.am-app, .am-layer) .am-about-menu button[role='menuitem']:hover { background: var(--am-hover); color: var(--am-text); }
 :is(.am-app, .am-layer) .am-terms-pane { max-height: 70vh; overflow-y: auto; }
 :is(.am-app, .am-layer) .am-coll-item.am-coll-file .am-file { flex: none; width: 34px; height: 40px; border-radius: 6px; background: var(--am-matter-soft); color: var(--am-matter); display: grid; place-items: center; font: 700 10px var(--am-font-mono); }
+/* A private note on someone, in their profile card: a quiet field until it's used. */
+:is(.am-app, .am-layer) .am-user-note { display: block; margin-top: 12px; }
+:is(.am-app, .am-layer) .am-user-note > span { display: flex; align-items: baseline; gap: 6px; margin-bottom: 4px; color: var(--am-muted); font: 700 11px var(--am-font-ui); letter-spacing: .06em; text-transform: uppercase; }
+:is(.am-app, .am-layer) .am-user-note small { font-weight: 500; letter-spacing: 0; text-transform: none; }
+:is(.am-app, .am-layer) .am-user-note textarea { display: block; width: 100%; min-height: 30px; max-height: 120px; resize: none; padding: 5px 8px; border: 1px solid transparent; border-radius: 6px; background: transparent; color: var(--am-text-2); font: 13px/18px var(--am-font-ui); outline: none; }
+:is(.am-app, .am-layer) .am-user-note textarea:hover { background: var(--am-hover); }
+:is(.am-app, .am-layer) .am-user-note textarea:focus { background: var(--am-hover); border-color: var(--am-line); }
