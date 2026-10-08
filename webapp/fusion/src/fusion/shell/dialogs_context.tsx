@@ -29,11 +29,14 @@ type Dialogs = {
 
     // Create a sidebar category.
     createCategory: () => void;
+
+    // Rename a server category (team admins).
+    renameServerCategory: (name: string) => void;
 };
 
-const DialogsContext = createContext<Dialogs>({createChannel: () => {}, addPeople: () => {}, invite: () => {}, deleteMessage: () => {}, createCategory: () => {}});
+const DialogsContext = createContext<Dialogs>({createChannel: () => {}, addPeople: () => {}, invite: () => {}, deleteMessage: () => {}, createCategory: () => {}, renameServerCategory: () => {}});
 
-type Open = {kind: 'create'; categoryId?: string} | {kind: 'add'; channel: Channel} | {kind: 'delete'; post: Post} | {kind: 'category'} | null;
+type Open = {kind: 'create'; categoryId?: string} | {kind: 'add'; channel: Channel} | {kind: 'delete'; post: Post} | {kind: 'category'; renaming?: string} | null;
 
 // DialogsProvider owns the Fusion UI's own dialogs that menus and buttons open, outliving the menu that opened them.
 export function DialogsProvider({children}: {children: React.ReactNode}) {
@@ -46,6 +49,7 @@ export function DialogsProvider({children}: {children: React.ReactNode}) {
         invite: () => dispatch(openInvitePeople()),
         deleteMessage: (post) => setOpen({kind: 'delete', post}),
         createCategory: () => setOpen({kind: 'category'}),
+        renameServerCategory: (name) => setOpen({kind: 'category', renaming: name}),
     }), [dispatch]);
 
     const close = () => setOpen(null);
@@ -78,7 +82,12 @@ export function DialogsProvider({children}: {children: React.ReactNode}) {
                     onClose={close}
                 />
             )}
-            {open?.kind === 'category' && <CreateCategoryDialog onClose={close}/>}
+            {open?.kind === 'category' && (
+                <CreateCategoryDialog
+                    renaming={open.renaming}
+                    onClose={close}
+                />
+            )}
         </DialogsContext.Provider>
     );
 }

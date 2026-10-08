@@ -59,7 +59,7 @@ func (a *App) UpdateServerCategories(rctx request.CTX, teamID string, update *mo
 		}
 	}
 
-	a.publishServerCategoriesUpdated(teamID)
+	a.PublishServerCategoriesUpdated(teamID)
 	return stored, nil
 }
 
@@ -109,7 +109,8 @@ func (a *App) refileChannels(rctx request.CTX, teamID string, moves map[string]s
 	return nil
 }
 
-func (a *App) publishServerCategoriesUpdated(teamID string) {
+// PublishServerCategoriesUpdated tells a team's clients to fetch its server categories and their channels again.
+func (a *App) PublishServerCategoriesUpdated(teamID string) {
 	message := model.NewWebSocketEvent(model.WebsocketEventServerCategoriesUpdated, teamID, "", "", nil, "")
 	message.Add("team_id", teamID)
 	a.Publish(message)

@@ -289,3 +289,9 @@
 /* Hidden conversations: folded at the end of the list, with their number. */
 :is(.am-app, .am-layer) .am-cat.am-hidden-cat { margin-top: 18px; }
 :is(.am-app, .am-layer) .am-cat .am-hidden-count { margin-right: 6px; font-weight: 600; letter-spacing: 0; }
+/* Server categories: set up by the team's admins for everyone, marked beside their name (a lock when locked). */
+:is(.am-app, .am-layer) .am-cat .am-server-mark { display: inline-grid; place-items: center; color: var(--am-muted); }
+:is(.am-app, .am-layer) .am-cat .am-server-mark .am-ic { width: 11px; height: 11px; transform: none; }
+/* "Move to…" groups the categories for everyone apart from the person's own. */
+:is(.am-app, .am-layer) .am-ch-menu .am-sub .am-sub-head { padding: 6px 8px 2px; color: var(--am-muted); font: 700 10.5px var(--am-font-ui); letter-spacing: .06em; text-transform: uppercase; }
+:is(.am-app, .am-layer) .am-ch-menu .am-sub .am-sub-note { padding: 4px 8px; color: var(--am-muted); font-size: 12px; }

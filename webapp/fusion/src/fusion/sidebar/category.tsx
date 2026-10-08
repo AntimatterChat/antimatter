@@ -22,7 +22,11 @@ import type {GlobalState} from 'types/store';
 
 import ChannelRow from './channel_row';
 import {getHiddenChannelIds} from './hidden';
+import {canFileChannel, fileChannel, fileChannelHere, findServerCategory, getServerCategories, isServerCategory, isTeamAdmin, SERVER_CATEGORY_PREFIX, setServerCategoryCollapsed} from './server_categories';
 import {canDropChannel, categoryDropIndex, endSidebarDrag, getSidebarDrag, isLowerHalf, moveSidebarChannel, startSidebarDrag} from './sidebar_drag';
+import type {SidebarDrag} from './sidebar_drag';
+
+type ChannelDrag = Extract<SidebarDrag, {kind: 'channel'}>;
 
 // Where a dragged channel or category would land: before or after a channel row, or a category's header.
 type DropMark = {target: string; after: boolean} | null;
@@ -44,17 +48,71 @@ export default function Category({category}: {category: ChannelCategory}) {
     const [menu, setMenu] = useState<{x: number; y: number} | 'button' | null>(null);
     const [mark, setMark] = useState<DropMark>(null);
     const collapsed = category.collapsed;
+
+    // Server categories (set up by the team's admins for everyone) fold for each person, take channels from those allowed
+    // to file them, and keep their channels when locked.
+    const server = isServerCategory(category);
+    const locked = useSelector((state: GlobalState) => Boolean(server && findServerCategory(getServerCategories(state, category.team_id), category.display_name)?.locked));
+    const canCreateHere = useSelector((state: GlobalState) => !locked || isTeamAdmin(state, category.team_id));
     const header = `category:${category.id}`;
 
     if (!channelIds.length && category.type === 'favorites') {
         return null;
     }
 
-    const toggle = () => dispatch(setCategoryCollapsed(category.id, !collapsed));
+    const toggle = () => {
+        if (server) {
+            dispatch(setServerCategoryCollapsed(category.team_id, category.display_name, !collapsed));
+        } else {
+            dispatch(setCategoryCollapsed(category.id, !collapsed));
+        }
+    };
+
+    // Where a dragged channel may go. Into a server category: filed there for everyone, by those allowed to. Out of an
+    // open one: into one of the person's own categories or favourites (theirs alone), or back to Channels, unfiled,
+    // by those allowed to. A locked server category keeps its channels.
+    const accepts = (drag: SidebarDrag | null): drag is ChannelDrag => {
+        if (drag?.kind !== 'channel') {
+            return false;
+        }
+        const state = store.getState();
+        const channel = getChannel(state, drag.channelId);
+        if (!channel) {
+            return false;
+        }
+        if (server) {
+            return !drag.directMessage && drag.categoryId !== category.id && canFileChannel(state, channel, category.display_name);
+        }
+        if (drag.categoryId.startsWith(SERVER_CATEGORY_PREFIX)) {
+            const from = findServerCategory(getServerCategories(state, category.team_id), drag.categoryId.slice(SERVER_CATEGORY_PREFIX.length));
+            if (from?.locked) {
+                return false;
+            }
+            if (category.type === 'channels') {
+                return canFileChannel(state, channel, '');
+            }
+            return category.type === 'custom' || category.type === 'favorites';
+        }
+        return canDropChannel(drag, category);
+    };
+    const place = (drag: ChannelDrag, targetId: string | null, after: boolean) => {
+        const channel = getChannel(store.getState(), drag.channelId);
+        if (!channel) {
+            return;
+        }
+        if (server) {
+            dispatch(fileChannelHere(channel, category.display_name));
+            return;
+        }
+        if (drag.categoryId.startsWith(SERVER_CATEGORY_PREFIX) && category.type === 'channels') {
+            dispatch(fileChannel(channel.id, ''));
+        }
+        dispatch(moveSidebarChannel(category.id, drag.channelId, targetId, after));
+    };
 
     // A channel dropped on another goes before or after it; on the header, first in the category.
     const overChannel = (e: React.DragEvent, channelId: string) => {
-        if (!canDropChannel(getSidebarDrag(), category)) {
+        if (!accepts(getSidebarDrag())) {
             return;
         }
         e.preventDefault();
@@ -67,13 +125,13 @@ export default function Category({category}: {category: ChannelCategory}) {
     const dropOnChannel = (e: React.DragEvent, channelId: string) => {
         const drag = getSidebarDrag();
         setMark(null);
-        if (!canDropChannel(drag, category)) {
+        if (!accepts(drag)) {
             return;
         }
         e.preventDefault();
         e.stopPropagation();
         if (drag.channelId !== channelId) {
-            dispatch(moveSidebarChannel(category.id, drag.channelId, channelId, isLowerHalf(e)));
+            place(drag, channelId, isLowerHalf(e));
         }
         endSidebarDrag();
     };
@@ -81,7 +139,7 @@ export default function Category({category}: {category: ChannelCategory}) {
     // On the header: a channel goes first in the category, a category before or after this one.
     const overHeader = (e: React.DragEvent) => {
         const drag = getSidebarDrag();
-        if (drag?.kind === 'category' ? drag.categoryId === category.id : !canDropChannel(drag, category)) {
+        if (drag?.kind === 'category' ? server || drag.categoryId === category.id : !accepts(drag)) {
             return;
         }
         e.preventDefault();
@@ -100,9 +158,9 @@ export default function Category({category}: {category: ChannelCategory}) {
             if (index !== -1) {
                 dispatch(moveCategory(category.team_id, drag.categoryId, index));
             }
-        } else if (canDropChannel(drag, category)) {
+        } else if (accepts(drag)) {
             e.preventDefault();
-            dispatch(moveSidebarChannel(category.id, drag.channelId, null, false));
+            place(drag, null, false);
         }
         endSidebarDrag();
     };
@@ -120,7 +178,7 @@ export default function Category({category}: {category: ChannelCategory}) {
                 role='button'
                 tabIndex={0}
                 aria-expanded={!collapsed}
-                draggable={true}
+                draggable={!server}
                 onClick={toggle}
                 onKeyDown={(e) => {
                     if (e.key === 'Enter' || e.key === ' ') {
@@ -146,6 +204,17 @@ export default function Category({category}: {category: ChannelCategory}) {
                     size='xs'
                 />
                 <span className={am('grow')}>{category.display_name}</span>
+                {server && (
+                    <span
+                        className={am('server-mark')}
+                        title={locked ? formatMessage({id: 'fusion.sidebar.serverLocked', defaultMessage: 'Set up for everyone by the team\'s admins. Its channels stay here.'}) : formatMessage({id: 'fusion.sidebar.serverOpen', defaultMessage: 'Set up for everyone by the team\'s admins. You can move its channels to your own categories.'})}
+                    >
+                        <Icon
+                            name={locked ? 'lock' : 'server'}
+                            size='xs'
+                        />
+                    </span>
+                )}
                 {category.muted && (
                     <Icon
                         name='bell-off'
@@ -169,22 +238,24 @@ export default function Category({category}: {category: ChannelCategory}) {
                         size='sm'
                     />
                 </button>
-                <button
-                    className={am('add-ch')}
-                    title={formatMessage({id: 'fusion.sidebar.createChannel', defaultMessage: 'Create channel'})}
-                    aria-label={formatMessage({id: 'fusion.sidebar.createChannel', defaultMessage: 'Create channel'})}
-                    onClick={(e) => {
-                        e.stopPropagation();
+                {canCreateHere && (
+                    <button
+                        className={am('add-ch')}
+                        title={formatMessage({id: 'fusion.sidebar.createChannel', defaultMessage: 'Create channel'})}
+                        aria-label={formatMessage({id: 'fusion.sidebar.createChannel', defaultMessage: 'Create channel'})}
+                        onClick={(e) => {
+                            e.stopPropagation();
 
-                        // Favorites can't hold a channel that isn't one yet: it goes to the default category.
-                        dialogs.createChannel(category.type === 'favorites' ? undefined : category.id);
-                    }}
-                >
-                    <Icon
-                        name='plus'
-                        size='sm'
-                    />
-                </button>
+                            // Favorites can't hold a channel that isn't one yet: it goes to the default category.
+                            dialogs.createChannel(category.type === 'favorites' ? undefined : category.id);
+                        }}
+                    >
+                        <Icon
+                            name='plus'
+                            size='sm'
+                        />
+                    </button>
+                )}
             </div>
             {channelIds.map((id) => (
                 <div

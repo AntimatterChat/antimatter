@@ -32,8 +32,28 @@ export type OrderedChannelCategories = {
     order: string[];
 };
 
+/**
+ * A sidebar category an admin sets up for everyone in a team (Antimatter): channels are filed in it by name, as managed
+ * categories. People can move the channels of an open category into their own; a locked one keeps them.
+ */
+export type ServerCategory = {
+    team_id: string;
+    name: string;
+    sort_order: number;
+    locked: boolean;
+    create_at: number;
+    update_at: number;
+};
+
+/** Replaces a team's server categories, in order; renames map old names to new ones. */
+export type ServerCategoriesUpdate = {
+    categories: Array<Pick<ServerCategory, 'name' | 'locked'>>;
+    renames?: Record<string, string>;
+};
+
 export type ChannelCategoriesState = {
     byId: IDMappedObjects<ChannelCategory>;
     orderByTeam: RelationOneToOne<Team, Array<ChannelCategory['id']>>;
     managedCategoryMappings: RelationOneToOne<Team, Record<Channel['id'], string>>;
+    serverCategories: RelationOneToOne<Team, ServerCategory[]>;
 };

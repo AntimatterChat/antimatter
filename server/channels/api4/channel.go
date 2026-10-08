@@ -230,6 +230,9 @@ func createChannel(c *Context, w http.ResponseWriter, r *http.Request) {
 		c.Err = appErr
 		return
 	}
+	if sc.ManagedCategoryName != "" {
+		c.App.PublishServerCategoriesUpdated(sc.TeamId)
+	}
 
 	auditRec.Success()
 	auditRec.AddEventResultState(sc)
@@ -761,6 +764,7 @@ func patchChannel(c *Context, w http.ResponseWriter, r *http.Request) {
 					return
 				}
 			}
+			c.App.PublishServerCategoriesUpdated(rchannel.TeamId)
 		}
 	}
 

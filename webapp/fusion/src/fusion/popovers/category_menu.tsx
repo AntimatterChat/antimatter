@@ -15,8 +15,10 @@ import {makeGetUnreadIdsForCategory} from 'selectors/views/channel_sidebar';
 
 import {Popover} from 'fusion/components/layer';
 import {Flyout, MenuItem, MenuSeparator} from 'fusion/components/menu';
+import {useDialogs} from 'fusion/shell/dialogs_context';
 import {useToast} from 'fusion/shell/toast_context';
-import {openCreateCategory, openDeleteCategory, openRenameCategory} from 'fusion/utils/modals';
+import {deleteServerCategory, findServerCategory, getServerCategories, isServerCategory, isTeamAdmin, moveServerCategory, setServerCategoryLocked} from 'fusion/sidebar/server_categories';
+import {openDeleteCategory, openRenameCategory} from 'fusion/utils/modals';
 
 import type {GlobalState} from 'types/store';
 
@@ -36,6 +38,15 @@ export default function CategoryMenu({category, anchor, point, onClose}: Props) 
     const getUnreadIds = useMemo(() => makeGetUnreadIdsForCategory(), []);
     const unreadIds = useSelector((state: GlobalState) => getUnreadIds(state, category));
     const custom = category.type === 'custom';
+    const dialogs = useDialogs();
+
+    // A server category (set up by the team's admins for everyone): its admins rename, lock, order and delete it.
+    const server = isServerCategory(category);
+    const name = category.display_name;
+    const admin = useSelector((state: GlobalState) => isTeamAdmin(state, category.team_id));
+    const listed = useSelector((state: GlobalState) => getServerCategories(state, category.team_id));
+    const known = server ? findServerCategory(listed, name) : undefined;
+    const at = known ? listed.indexOf(known) : -1;
 
     const run = (action: () => void) => () => {
         action();
@@ -63,37 +74,80 @@ export default function CategoryMenu({category, anchor, point, onClose}: Props) 
                     })}
                 />
             )}
-            {category.type !== 'direct_messages' && (
+            {server && admin && (
+                <>
+                    <MenuItem
+                        icon='pen'
+                        label={formatMessage({id: 'fusion.categoryMenu.renameServer', defaultMessage: 'Rename for everyone…'})}
+                        onClick={run(() => dialogs.renameServerCategory(name))}
+                    />
+                    <MenuItem
+                        icon='lock'
+                        role='menuitemcheckbox'
+                        checked={Boolean(known?.locked)}
+                        label={formatMessage({id: 'fusion.categoryMenu.lock', defaultMessage: 'Locked'})}
+                        sub={formatMessage({id: 'fusion.categoryMenu.lockSub', defaultMessage: 'Only admins file channels here, and they stay here'})}
+                        onClick={run(() => dispatch(setServerCategoryLocked(category.team_id, name, !known?.locked)))}
+                    />
+                    {at > 0 && (
+                        <MenuItem
+                            icon='chev'
+                            label={formatMessage({id: 'fusion.categoryMenu.moveUp', defaultMessage: 'Move up'})}
+                            onClick={run(() => dispatch(moveServerCategory(category.team_id, name, -1)))}
+                        />
+                    )}
+                    {at !== -1 && at < listed.length - 1 && (
+                        <MenuItem
+                            icon='chev'
+                            label={formatMessage({id: 'fusion.categoryMenu.moveDown', defaultMessage: 'Move down'})}
+                            onClick={run(() => dispatch(moveServerCategory(category.team_id, name, 1)))}
+                        />
+                    )}
+                    <MenuItem
+                        icon='trash'
+                        danger={true}
+                        label={formatMessage({id: 'fusion.categoryMenu.deleteServer', defaultMessage: 'Delete for everyone'})}
+                        sub={formatMessage({id: 'fusion.categoryMenu.deleteServerSub', defaultMessage: 'Its channels go back to everyone\'s own categories'})}
+                        onClick={run(() => {
+                            dispatch(deleteServerCategory(category.team_id, name));
+                            toast(formatMessage({id: 'fusion.toast.serverCategoryDeleted', defaultMessage: 'Deleted “{name}” for everyone'}, {name}));
+                        })}
+                    />
+                </>
+            )}
+            {!server && category.type !== 'direct_messages' && (
                 <MenuItem
                     icon={category.muted ? 'bell' : 'bell-off'}
                     label={category.muted ? formatMessage({id: 'fusion.categoryMenu.unmute', defaultMessage: 'Unmute category'}) : formatMessage({id: 'fusion.categoryMenu.mute', defaultMessage: 'Mute category'})}
                     onClick={run(() => dispatch(setCategoryMuted(category.id, !category.muted)))}
                 />
             )}
-            <Flyout
-                icon='ul'
-                label={formatMessage({id: 'fusion.categoryMenu.sort', defaultMessage: 'Sort'})}
-                menuLabel={formatMessage({id: 'fusion.categoryMenu.sortLabel', defaultMessage: 'Sort channels'})}
-            >
-                <MenuItem
-                    role='menuitemradio'
-                    checked={category.sorting === CategorySorting.Alphabetical}
-                    label={formatMessage({id: 'fusion.categoryMenu.sortAlpha', defaultMessage: 'Alphabetically'})}
-                    onClick={sortBy(CategorySorting.Alphabetical)}
-                />
-                <MenuItem
-                    role='menuitemradio'
-                    checked={category.sorting === CategorySorting.Recency}
-                    label={formatMessage({id: 'fusion.categoryMenu.sortRecent', defaultMessage: 'By recent activity'})}
-                    onClick={sortBy(CategorySorting.Recency)}
-                />
-                <MenuItem
-                    role='menuitemradio'
-                    checked={category.sorting === CategorySorting.Manual || category.sorting === CategorySorting.Default}
-                    label={formatMessage({id: 'fusion.categoryMenu.sortManual', defaultMessage: 'Manually'})}
-                    onClick={sortBy(CategorySorting.Manual)}
-                />
-            </Flyout>
+            {!server && (
+                <Flyout
+                    icon='ul'
+                    label={formatMessage({id: 'fusion.categoryMenu.sort', defaultMessage: 'Sort'})}
+                    menuLabel={formatMessage({id: 'fusion.categoryMenu.sortLabel', defaultMessage: 'Sort channels'})}
+                >
+                    <MenuItem
+                        role='menuitemradio'
+                        checked={category.sorting === CategorySorting.Alphabetical}
+                        label={formatMessage({id: 'fusion.categoryMenu.sortAlpha', defaultMessage: 'Alphabetically'})}
+                        onClick={sortBy(CategorySorting.Alphabetical)}
+                    />
+                    <MenuItem
+                        role='menuitemradio'
+                        checked={category.sorting === CategorySorting.Recency}
+                        label={formatMessage({id: 'fusion.categoryMenu.sortRecent', defaultMessage: 'By recent activity'})}
+                        onClick={sortBy(CategorySorting.Recency)}
+                    />
+                    <MenuItem
+                        role='menuitemradio'
+                        checked={category.sorting === CategorySorting.Manual || category.sorting === CategorySorting.Default}
+                        label={formatMessage({id: 'fusion.categoryMenu.sortManual', defaultMessage: 'Manually'})}
+                        onClick={sortBy(CategorySorting.Manual)}
+                    />
+                </Flyout>
+            )}
             {custom && (
                 <>
                     <MenuSeparator/>
@@ -114,7 +168,7 @@ export default function CategoryMenu({category, anchor, point, onClose}: Props) 
             <MenuItem
                 icon='folder'
                 label={formatMessage({id: 'fusion.categoryMenu.create', defaultMessage: 'Create new category'})}
-                onClick={run(() => dispatch(openCreateCategory()))}
+                onClick={run(() => dialogs.createCategory())}
             />
         </Popover>
     );

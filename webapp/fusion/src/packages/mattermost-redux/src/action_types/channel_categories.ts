@@ -17,4 +17,6 @@ export default keyMirror({
 
     MANAGED_CATEGORY_MAPPING_SET: null,
     MANAGED_CATEGORY_MAPPING_REMOVED: null,
+
+    RECEIVED_SERVER_CATEGORIES: null,
 });

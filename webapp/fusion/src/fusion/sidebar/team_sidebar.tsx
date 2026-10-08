@@ -12,7 +12,7 @@ import {makeGetChannel} from 'mattermost-redux/selectors/entities/channels';
 import {getCurrentTeam, getCurrentTeamId} from 'mattermost-redux/selectors/entities/teams';
 
 import {setUnreadFilterEnabled} from 'actions/views/channel_sidebar';
-import {getCategoriesForCurrentTeam, isUnreadFilterEnabled} from 'selectors/views/channel_sidebar';
+import {isUnreadFilterEnabled} from 'selectors/views/channel_sidebar';
 
 import Icon from 'fusion/components/icon';
 import ServerMenu from 'fusion/popovers/server_menu';
@@ -33,6 +33,7 @@ import {getHiddenChannelIds} from './hidden';
 import HiddenSection from './hidden_section';
 import {DM_FIND_ID} from './home_sidebar';
 import MoreUnreads from './more_unreads';
+import {getSidebarCategories} from './server_categories';
 import UnreadCategory from './unread_category';
 import VoicePanel from './voice_panel';
 
@@ -41,7 +42,7 @@ import VoicePanel from './voice_panel';
 function Dock() {
     const {formatMessage} = useIntl();
     const layout = useLayout();
-    const categories = useSelector(getCategoriesForCurrentTeam);
+    const categories = useSelector(getSidebarCategories);
     const dmCategory = categories.find((c) => c.type === 'direct_messages');
 
     // All the open conversations, unread or not: the Unreads section above the categories leaves them here.
@@ -113,7 +114,7 @@ export default function TeamSidebar() {
         return () => document.removeEventListener('keydown', onKeyDown);
     }, [dispatch, unreadOnly, store]);
     const team = useSelector(getCurrentTeam);
-    const categories = useSelector(getCategoriesForCurrentTeam);
+    const categories = useSelector(getSidebarCategories);
 
     // The team's channels hidden until they get new messages, listed folded at the end.
     const hiddenChannels = useSelector((state: GlobalState) => {

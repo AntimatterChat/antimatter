@@ -3,7 +3,7 @@
 
 import React, {useState} from 'react';
 import {useIntl} from 'react-intl';
-import {useDispatch, useSelector, useStore} from 'react-redux';
+import {shallowEqual, useDispatch, useSelector, useStore} from 'react-redux';
 
 import type {Channel} from '@mattermost/types/channels';
 
@@ -11,7 +11,7 @@ import {addChannelToCategory} from 'mattermost-redux/actions/channel_categories'
 import {favoriteChannel, readMultipleChannels, setMyChannelAutotranslation, unfavoriteChannel} from 'mattermost-redux/actions/channels';
 import {savePreferences} from 'mattermost-redux/actions/preferences';
 import {Permissions, Preferences} from 'mattermost-redux/constants';
-import {getCategoryInTeamWithChannel} from 'mattermost-redux/selectors/entities/channel_categories';
+import {getCategoryInTeamWithChannel, getManagedCategoryMappings} from 'mattermost-redux/selectors/entities/channel_categories';
 import {getCurrentChannelId, getMyChannelMembership, isChannelAutotranslated, isFavoriteChannel, isMyChannelAutotranslated, isUserLanguageSupportedForAutotranslation, makeGetChannelUnreadCount} from 'mattermost-redux/selectors/entities/channels';
 import {haveIChannelPermission, haveITeamPermission} from 'mattermost-redux/selectors/entities/roles';
 import {getCurrentTeam} from 'mattermost-redux/selectors/entities/teams';
@@ -42,6 +42,7 @@ import {useDialogs} from 'fusion/shell/dialogs_context';
 import {useToast} from 'fusion/shell/toast_context';
 import {RenameGroupDialog} from 'fusion/sidebar/group_dm';
 import {hideConversation, isHidden, showConversation} from 'fusion/sidebar/hidden';
+import {canFileChannel, fileChannel, fileChannelHere, findServerCategory, getServerCategories, getSidebarCategories, isServerCategory, SERVER_CATEGORY_PREFIX} from 'fusion/sidebar/server_categories';
 import {getMuteEnd, muteFor, MUTE_DURATIONS, unmute} from 'fusion/sidebar/timed_mute';
 import {am} from 'fusion/utils/class_names';
 import {openAddToGroup, openDialog} from 'fusion/utils/modals';
@@ -87,6 +88,17 @@ export default function ChannelMenu({channel, anchor, point, placement = 'right'
     const unread = useSelector((state: GlobalState) => getUnreadCount(state, channel.id)).showUnread;
     const categories = useSelector(getCategoriesForCurrentTeam);
     const currentCategory = useSelector((state: GlobalState) => (team ? getCategoryInTeamWithChannel(state, team.id, channel.id) : undefined));
+
+    // Where the channel can move: the team's categories for everyone it may be filed in, then the person's own, unless
+    // it sits in a locked category. Back to Channels unfiles it, for those allowed to.
+    const sidebar = useSelector(getSidebarCategories);
+    const shownIn = sidebar.find((c) => c.channel_ids.includes(channel.id));
+    const listed = useSelector((state: GlobalState) => getServerCategories(state, channel.team_id));
+    const filedName = useSelector((state: GlobalState) => getManagedCategoryMappings(state, channel.team_id)?.[channel.id] || '');
+    const filedLocked = Boolean(filedName && findServerCategory(listed, filedName)?.locked);
+    const serverTargets = useSelector((state: GlobalState) => listed.filter((c) => canFileChannel(state, channel, c.name)), shallowEqual);
+    const canUnfile = useSelector((state: GlobalState) => Boolean(filedName) && canFileChannel(state, channel, ''));
+    const personalTargets = filedLocked ? [] : categories.filter((c) => c.type !== 'direct_messages' && !isServerCategory(c) && !(c.type === 'channels' && filedName && !canUnfile));
     const pluginActions = useSelector((state: GlobalState) => state.plugins.components.ChannelHeader) || [];
 
     // Auto-translation, once a channel admin turned it on for the channel: each reader can turn it off for them.
@@ -267,23 +279,55 @@ export default function ChannelMenu({channel, anchor, point, placement = 'right'
             )}
             {sub === 'move' && (
                 <div className={am('sub')}>
-                    {categories.filter((c) => c.type !== 'direct_messages').map((c) => (
-                        <button
-                            key={c.id}
-                            type='button'
-                            role='menuitemradio'
-                            aria-checked={c.id === currentCategory?.id}
-                            className={am({cur: c.id === currentCategory?.id})}
-                            onClick={run(() => {
-                                if (c.id !== currentCategory?.id) {
-                                    dispatch(addChannelToCategory(c.id, channel.id));
+                    {serverTargets.length > 0 && <div className={am('sub-head')}>{formatMessage({id: 'fusion.channelMenu.moveForEveryone', defaultMessage: 'For everyone'})}</div>}
+                    {serverTargets.map((c) => {
+                        const here = shownIn?.id === SERVER_CATEGORY_PREFIX + c.name;
+                        return (
+                            <button
+                                key={c.name}
+                                type='button'
+                                role='menuitemradio'
+                                aria-checked={here}
+                                className={am({cur: here})}
+                                onClick={run(() => {
+                                    if (!here) {
+                                        dispatch(fileChannelHere(channel, c.name));
+                                        toast(formatMessage({id: 'fusion.toast.filed', defaultMessage: 'Moved to {category}, for everyone'}, {category: c.name}));
+                                    }
+                                })}
+                            >
+                                {c.name}
+                            </button>
+                        );
+                    })}
+                    {serverTargets.length > 0 && personalTargets.length > 0 && <div className={am('sub-head')}>{formatMessage({id: 'fusion.channelMenu.moveYours', defaultMessage: 'Yours'})}</div>}
+                    {personalTargets.map((c) => {
+                        const here = shownIn?.id === c.id;
+                        return (
+                            <button
+                                key={c.id}
+                                type='button'
+                                role='menuitemradio'
+                                aria-checked={here}
+                                className={am({cur: here})}
+                                onClick={run(() => {
+                                    if (here) {
+                                        return;
+                                    }
+                                    if (c.type === 'channels' && filedName) {
+                                        dispatch(fileChannel(channel.id, ''));
+                                    }
+                                    if (c.id !== currentCategory?.id) {
+                                        dispatch(addChannelToCategory(c.id, channel.id));
+                                    }
                                     toast(formatMessage({id: 'fusion.toast.moved', defaultMessage: 'Moved to {category}'}, {category: c.display_name}));
-                                }
-                            })}
-                        >
-                            {c.display_name}
-                        </button>
-                    ))}
+                                })}
+                            >
+                                {c.display_name}
+                            </button>
+                        );
+                    })}
+                    {filedLocked && <div className={am('sub-note')}>{formatMessage({id: 'fusion.channelMenu.lockedNote', defaultMessage: '{category} is locked: its channels stay there.'}, {category: filedName})}</div>}
                 </div>
             )}
             {hidden ? (

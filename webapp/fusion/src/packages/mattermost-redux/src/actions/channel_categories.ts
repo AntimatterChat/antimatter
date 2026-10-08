@@ -3,7 +3,7 @@
 
 import {batchActions} from 'redux-batched-actions';
 
-import type {OrderedChannelCategories, ChannelCategory} from '@mattermost/types/channel_categories';
+import type {OrderedChannelCategories, ChannelCategory, ServerCategoriesUpdate, ServerCategory} from '@mattermost/types/channel_categories';
 import {CategorySorting} from '@mattermost/types/channel_categories';
 import type {Channel} from '@mattermost/types/channels';
 import type {PropertyValuesUpdated} from '@mattermost/types/properties';
@@ -561,7 +561,7 @@ export function handleManagedCategoryPropertyValuesUpdated(parsedPropertyValuesU
     };
 }
 
-function fetchManagedCategories(teamId: string): ThunkActionFunc<unknown> {
+export function fetchManagedCategories(teamId: string): ThunkActionFunc<unknown> {
     return async (dispatch, getState) => {
         if (!areManagedCategoriesEnabled(getState())) {
             return {};
@@ -573,7 +573,7 @@ function fetchManagedCategories(teamId: string): ThunkActionFunc<unknown> {
             try {
                 const fields = await Client4.getPropertyFields(ManagedCategoryPropertyGroupName, 'channel', 'system');
                 if (fields.length === 0) {
-                    return {error: new Error(`No property fields found for ${ManagedCategoryPropertyGroupName}`)};
+                    throw new Error(`No property fields found for ${ManagedCategoryPropertyGroupName}`);
                 }
                 dispatch(batchActions([
                     {
@@ -589,9 +589,10 @@ function fetchManagedCategories(teamId: string): ThunkActionFunc<unknown> {
                     },
                 ]));
             } catch (error) {
+                // Antimatter: the field only serves live updates through property events; the categories themselves
+                // still load.
                 forceLogoutIfNecessary(error, dispatch, getState);
                 dispatch(logError(error));
-                return {error};
             }
         }
 
@@ -612,11 +613,55 @@ function fetchManagedCategories(teamId: string): ThunkActionFunc<unknown> {
     };
 }
 
+// fetchServerCategories gets a team's server categories (Antimatter): the managed categories in their order, open or
+// locked.
+export function fetchServerCategories(teamId: string): ActionFuncAsync<ServerCategory[]> {
+    return async (dispatch, getState) => {
+        if (!areManagedCategoriesEnabled(getState())) {
+            return {data: []};
+        }
+
+        let categories: ServerCategory[];
+        try {
+            categories = await Client4.getServerCategories(teamId);
+        } catch (error) {
+            forceLogoutIfNecessary(error, dispatch, getState);
+            dispatch(logError(error));
+            return {error};
+        }
+
+        dispatch({type: ChannelCategoryTypes.RECEIVED_SERVER_CATEGORIES, data: {team_id: teamId, categories}});
+        return {data: categories};
+    };
+}
+
+// saveServerCategories replaces a team's server categories (team admins). Renamed categories take their channels
+// along; removed ones leave them to everyone's own categories.
+export function saveServerCategories(teamId: string, update: ServerCategoriesUpdate): ActionFuncAsync<ServerCategory[]> {
+    return async (dispatch, getState) => {
+        let categories: ServerCategory[];
+        try {
+            categories = await Client4.updateServerCategories(teamId, update);
+        } catch (error) {
+            forceLogoutIfNecessary(error, dispatch, getState);
+            dispatch(logError(error));
+            return {error};
+        }
+
+        dispatch({type: ChannelCategoryTypes.RECEIVED_SERVER_CATEGORIES, data: {team_id: teamId, categories}});
+        if (update.renames && Object.keys(update.renames).length) {
+            dispatch(fetchManagedCategories(teamId));
+        }
+        return {data: categories};
+    };
+}
+
 export function fetchMyCategories(teamId: string, isWebSocket?: boolean): ThunkActionFunc<unknown> {
     return async (dispatch) => {
         const [nonManagedResult] = await Promise.all([
             dispatch(fetchNonManagedCategories(teamId, isWebSocket)),
             dispatch(fetchManagedCategories(teamId)),
+            dispatch(fetchServerCategories(teamId)),
         ]);
 
         return nonManagedResult;

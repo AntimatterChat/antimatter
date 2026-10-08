@@ -1,10 +1,11 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useEffect, useMemo, useRef, useState} from 'react';
 import {useIntl} from 'react-intl';
 import {shallowEqual, useDispatch, useSelector} from 'react-redux';
 
+import type {ServerCategory} from '@mattermost/types/channel_categories';
 import type {Channel, ChannelType} from '@mattermost/types/channels';
 import type {NewChannelFormState} from '@mattermost/types/plugins';
 
@@ -20,6 +21,7 @@ import {getCategoriesForCurrentTeam} from 'selectors/views/channel_sidebar';
 import Icon from 'fusion/components/icon';
 import {Dialog} from 'fusion/components/layer';
 import {useToast} from 'fusion/shell/toast_context';
+import {fileChannel, getServerCategories, isServerCategory, isTeamAdmin, SERVER_CATEGORY_PREFIX} from 'fusion/sidebar/server_categories';
 import {am} from 'fusion/utils/class_names';
 import Constants from 'utils/constants';
 import {cleanUpUrlable} from 'utils/url';
@@ -38,6 +40,7 @@ type Props = {
 };
 
 const TEXT = 'text';
+const NO_SERVER_CATEGORIES: ServerCategory[] = [];
 
 // CreateChannelDialog creates a channel: the mockup's "Create channel" dialog (type, name, category, private).
 // Channel types registered by plugins (registerChannelTypeOption) appear beside text channels and create through
@@ -47,7 +50,13 @@ export default function CreateChannelDialog({categoryId, onMoreOptions, onClose}
     const dispatch = useDispatch();
     const toast = useToast();
     const team = useSelector(getCurrentTeam);
-    const categories = useSelector(getCategoriesForCurrentTeam).filter((c) => c.type !== 'direct_messages' && c.type !== 'favorites');
+    const allCategories = useSelector(getCategoriesForCurrentTeam);
+    const categories = useMemo(() => allCategories.filter((c) => c.type !== 'direct_messages' && c.type !== 'favorites' && !isServerCategory(c)), [allCategories]);
+
+    // The team's categories for everyone take new channels too: the open ones, or any for its admins.
+    const admin = useSelector((state: GlobalState) => Boolean(team) && isTeamAdmin(state, team!.id));
+    const listed = useSelector((state: GlobalState) => (team ? getServerCategories(state, team.id) : NO_SERVER_CATEGORIES));
+    const serverOptions = useMemo(() => listed.filter((c) => admin || !c.locked), [listed, admin]);
     const canPublic = useSelector((state: GlobalState) => Boolean(team) && haveITeamPermission(state, team!.id, Permissions.CREATE_PUBLIC_CHANNEL));
     const canPrivate = useSelector((state: GlobalState) => Boolean(team) && haveITeamPermission(state, team!.id, Permissions.CREATE_PRIVATE_CHANNEL));
     const options = useSelector((state: GlobalState) => (state.plugins.components.ChannelTypeOption || []).filter((o) => {
@@ -75,8 +84,14 @@ export default function CreateChannelDialog({categoryId, onMoreOptions, onClose}
     const url = cleanUpUrlable(name) || generateId().slice(0, 26);
     const formState: NewChannelFormState = {teamId: team?.id || '', displayName: name.trim(), url, purpose: '', type: plugin ? plugin.id : type, privacy: type} as NewChannelFormState;
 
+    const serverName = category.startsWith(SERVER_CATEGORY_PREFIX) ? category.slice(SERVER_CATEGORY_PREFIX.length) : '';
     const done = (channel: Channel) => {
-        if (category && category !== categories.find((c) => c.type === 'channels')?.id) {
+        if (serverName) {
+            // A plugin's channel is filed once made; the others were made filed.
+            if (channel.managed_category_name !== serverName) {
+                dispatch(fileChannel(channel.id, serverName));
+            }
+        } else if (category && category !== categories.find((c) => c.type === 'channels')?.id) {
             dispatch(addChannelToCategory(category, channel.id));
         }
         dispatch(switchToChannel(channel));
@@ -111,7 +126,7 @@ export default function CreateChannelDialog({categoryId, onMoreOptions, onClose}
             setSaving(false);
             return;
         }
-        const channel = {team_id: team.id, name: url, display_name: name.trim(), purpose: '', header: '', type} as Channel;
+        const channel = {team_id: team.id, name: url, display_name: name.trim(), purpose: '', header: '', type, ...(serverName ? {managed_category_name: serverName} : {})} as Channel;
         const result = await dispatch(createChannel(channel, ''));
         setSaving(false);
         if (result && 'error' in result && result.error) {
@@ -188,21 +203,35 @@ export default function CreateChannelDialog({categoryId, onMoreOptions, onClose}
                         onChange={(e) => setName(e.target.value)}
                     />
                 </label>
-                {!plugin && categories.length > 1 && (
+                {(categories.length > 1 || serverOptions.length > 0) && (
                     <label className={am('field')}>
                         <span>{formatMessage({id: 'fusion.createChannel.category', defaultMessage: 'Category'})}</span>
                         <select
                             value={category}
                             onChange={(e) => setCategory(e.target.value)}
                         >
-                            {categories.map((c) => (
-                                <option
-                                    key={c.id}
-                                    value={c.id}
-                                >
-                                    {c.display_name}
-                                </option>
-                            ))}
+                            {serverOptions.length > 0 && (
+                                <optgroup label={formatMessage({id: 'fusion.createChannel.forEveryone', defaultMessage: 'For everyone'})}>
+                                    {serverOptions.map((c) => (
+                                        <option
+                                            key={c.name}
+                                            value={SERVER_CATEGORY_PREFIX + c.name}
+                                        >
+                                            {c.name}
+                                        </option>
+                                    ))}
+                                </optgroup>
+                            )}
+                            <optgroup label={formatMessage({id: 'fusion.createChannel.yours', defaultMessage: 'Yours'})}>
+                                {categories.map((c) => (
+                                    <option
+                                        key={c.id}
+                                        value={c.id}
+                                    >
+                                        {c.display_name}
+                                    </option>
+                                ))}
+                            </optgroup>
                         </select>
                     </label>
                 )}

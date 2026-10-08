@@ -32,6 +32,7 @@ const SYMBOLS = [
     '<symbol id="am-i-dots" viewBox="0 0 24 24"><path d="M5 12h.01M12 12h.01M19 12h.01" stroke-width="3"/></symbol>',
     '<symbol id="am-i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>',
     '<symbol id="am-i-chev" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>',
+    '<symbol id="am-i-server" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="7" rx="2"/><rect x="3" y="13" width="18" height="7" rx="2"/><path d="M7 7.5h.01M7 16.5h.01"/></symbol>',
     '<symbol id="am-i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></symbol>',
     '<symbol id="am-i-export" viewBox="0 0 24 24"><path d="M14 3h7v7M21 3l-9 9"/><path d="M19 14v5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h5"/></symbol>',
     '<symbol id="am-i-pen" viewBox="0 0 24 24"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="m13 7 4 4"/></symbol>',
@@ -113,7 +114,7 @@ const SYMBOLS = [
     '</symbol>',
 ].join('');
 
-export type IconName = 'hash' | 'speaker' | 'lock' | 'forum' | 'thread' | 'search' | 'users' | 'pin' | 'bell' | 'inbox' | 'cog' | 'shield' | 'mic' | 'mic-off' | 'headphones' | 'headphones-off' | 'video' | 'screen' | 'hangup' | 'plus' | 'apps' | 'reply' | 'smile' | 'dots' | 'x' | 'chev' | 'globe' | 'export' | 'pen' | 'send' | 'compass' | 'menu' | 'board' | 'playbook' | 'check' | 'store' | 'plug' | 'chat' | 'tag' | 'clock' | 'attach' | 'file' | 'image' | 'bot' | 'follow' | 'at' | 'bold' | 'italic' | 'strike' | 'heading' | 'link' | 'code' | 'codeblock' | 'quote' | 'sparkle' | 'flag' | 'flame' | 'timer' | 'ul' | 'ol' | 'type' | 'poll' | 'upload' | 'slash' | 'star' | 'bell-off' | 'folder' | 'leave' | 'user-plus' | 'forward' | 'bookmark' | 'copy' | 'trash' | 'sticker' | 'popout' | 'expand' | 'kanban' | 'runbook' | 'ticket' | 'mail' | 'calendar' | 'pad' | 'draw' | 'cursor' | 'rect' | 'ellipse' | 'arrow' | 'text' | 'eraser' | 'undo' | 'checkbox' | 'pause' | 'moon' | 'phone' | 'pin-top' | 'fullscreen' | 'hand' | 'mark' | 'eye-off' | 'thread-reply';
+export type IconName = 'hash' | 'speaker' | 'lock' | 'forum' | 'thread' | 'search' | 'users' | 'pin' | 'bell' | 'inbox' | 'cog' | 'shield' | 'mic' | 'mic-off' | 'headphones' | 'headphones-off' | 'video' | 'screen' | 'hangup' | 'plus' | 'apps' | 'reply' | 'smile' | 'dots' | 'x' | 'chev' | 'server' | 'globe' | 'export' | 'pen' | 'send' | 'compass' | 'menu' | 'board' | 'playbook' | 'check' | 'store' | 'plug' | 'chat' | 'tag' | 'clock' | 'attach' | 'file' | 'image' | 'bot' | 'follow' | 'at' | 'bold' | 'italic' | 'strike' | 'heading' | 'link' | 'code' | 'codeblock' | 'quote' | 'sparkle' | 'flag' | 'flame' | 'timer' | 'ul' | 'ol' | 'type' | 'poll' | 'upload' | 'slash' | 'star' | 'bell-off' | 'folder' | 'leave' | 'user-plus' | 'forward' | 'bookmark' | 'copy' | 'trash' | 'sticker' | 'popout' | 'expand' | 'kanban' | 'runbook' | 'ticket' | 'mail' | 'calendar' | 'pad' | 'draw' | 'cursor' | 'rect' | 'ellipse' | 'arrow' | 'text' | 'eraser' | 'undo' | 'checkbox' | 'pause' | 'moon' | 'phone' | 'pin-top' | 'fullscreen' | 'hand' | 'mark' | 'eye-off' | 'thread-reply';
 
 const ICON_NAMES = new Set(Array.from(SYMBOLS.matchAll(/<symbol id="am-i-([^"]+)"/g), (m) => m[1]));
 

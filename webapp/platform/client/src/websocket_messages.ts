@@ -422,6 +422,11 @@ export type PropertyValuesUpdated = BaseWebSocketMessage<WebSocketEvents.Propert
     values: JsonEncodedValue<Array<PropertyValue<unknown>>>;
 }>;
 
+// Antimatter: a team's server categories changed; clients fetch them again.
+export type ServerCategoriesUpdated = BaseWebSocketMessage<WebSocketEvents.ServerCategoriesUpdated, {
+    team_id: string;
+}>;
+
 // Emoji messages
 
 export type EmojiAdded = BaseWebSocketMessage<WebSocketEvents.EmojiAdded, {

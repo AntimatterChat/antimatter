@@ -48,7 +48,7 @@ import {
     ContentFlaggingTypes,
 } from 'mattermost-redux/action_types';
 import {fetchAppBindings, fetchRHSAppsBindings} from 'mattermost-redux/actions/apps';
-import {addChannelToInitialCategory, fetchMyCategories, handleManagedCategoryPropertyValuesUpdated, receivedCategoryOrder} from 'mattermost-redux/actions/channel_categories';
+import {addChannelToInitialCategory, fetchManagedCategories, fetchMyCategories, fetchServerCategories, handleManagedCategoryPropertyValuesUpdated, receivedCategoryOrder} from 'mattermost-redux/actions/channel_categories';
 import {
     getChannelAndMyMember,
     getChannelMember,
@@ -708,6 +708,11 @@ export function handleEvent(msg: WebSocketMessage) {
         break;
     case WebSocketEvents.PropertyValuesUpdated:
         dispatch(handlePropertyValuesUpdated(msg));
+        break;
+    case WebSocketEvents.ServerCategoriesUpdated:
+        // Antimatter: a team's server categories, or the channels filed in them, changed.
+        dispatch(fetchServerCategories(msg.data.team_id));
+        dispatch(fetchManagedCategories(msg.data.team_id));
         break;
     case WebSocketEvents.FirstAdminVisitMarketplaceStatusReceived:
         handleFirstAdminVisitMarketplaceStatusReceivedEvent(msg);

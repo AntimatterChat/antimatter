@@ -11,7 +11,7 @@ import type {Audit} from '@mattermost/types/audits';
 import type {UserAutocomplete, AutocompleteSuggestion} from '@mattermost/types/autocomplete';
 import type {Bot, BotPatch} from '@mattermost/types/bots';
 import type {ChannelBookmark, ChannelBookmarkCreate, ChannelBookmarkPatch, UpdateChannelBookmarkResponse} from '@mattermost/types/channel_bookmarks';
-import type {ChannelCategory, OrderedChannelCategories} from '@mattermost/types/channel_categories';
+import type {ChannelCategory, OrderedChannelCategories, ServerCategoriesUpdate, ServerCategory} from '@mattermost/types/channel_categories';
 import type {
     Channel,
     ChannelJoinRequest,
@@ -2340,6 +2340,20 @@ export default class Client4 {
         return this.doFetch<Record<string, string>>(
             `${this.getTeamRoute(teamId)}/channels/managed_categories`,
             {method: 'get'},
+        );
+    };
+
+    getServerCategories = (teamId: string) => {
+        return this.doFetch<ServerCategory[]>(
+            `${this.getTeamRoute(teamId)}/server_categories`,
+            {method: 'get'},
+        );
+    };
+
+    updateServerCategories = (teamId: string, update: ServerCategoriesUpdate) => {
+        return this.doFetch<ServerCategory[]>(
+            `${this.getTeamRoute(teamId)}/server_categories`,
+            {method: 'put', body: JSON.stringify(update)},
         );
     };
 

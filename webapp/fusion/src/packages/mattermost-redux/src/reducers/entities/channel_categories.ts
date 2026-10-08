@@ -3,7 +3,7 @@
 
 import {combineReducers} from 'redux';
 
-import type {ChannelCategory} from '@mattermost/types/channel_categories';
+import type {ChannelCategory, ServerCategory} from '@mattermost/types/channel_categories';
 import type {Channel} from '@mattermost/types/channels';
 import type {Team} from '@mattermost/types/teams';
 import type {IDMappedObjects, RelationOneToOne} from '@mattermost/types/utilities';
@@ -223,8 +223,34 @@ export function managedCategoryMappings(state: RelationOneToOne<Team, Record<Cha
     }
 }
 
+// serverCategories are the categories admins set up for everyone in each team (Antimatter), in order.
+export function serverCategories(state: RelationOneToOne<Team, ServerCategory[]> = {}, action: MMReduxAction) {
+    switch (action.type) {
+    case ChannelCategoryTypes.RECEIVED_SERVER_CATEGORIES:
+        return {
+            ...state,
+            [action.data.team_id]: action.data.categories,
+        };
+    case TeamTypes.LEAVE_TEAM: {
+        if (!state[action.data.id]) {
+            return state;
+        }
+
+        const nextState = {...state};
+        Reflect.deleteProperty(nextState, action.data.id);
+
+        return nextState;
+    }
+    case UserTypes.LOGOUT_SUCCESS:
+        return {};
+    default:
+        return state;
+    }
+}
+
 export default combineReducers({
     byId,
     orderByTeam,
     managedCategoryMappings,
+    serverCategories,
 });
