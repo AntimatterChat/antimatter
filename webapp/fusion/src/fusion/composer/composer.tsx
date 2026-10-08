@@ -12,7 +12,7 @@ import {savePreferences} from 'mattermost-redux/actions/preferences';
 import {Posts} from 'mattermost-redux/constants';
 import {getConfig} from 'mattermost-redux/selectors/entities/general';
 import {isPostPriorityEnabled} from 'mattermost-redux/selectors/entities/posts';
-import {getBool} from 'mattermost-redux/selectors/entities/preferences';
+import {getBool, getWysiwygEditorPreference} from 'mattermost-redux/selectors/entities/preferences';
 import {isScheduledPostsEnabled} from 'mattermost-redux/selectors/entities/scheduled_posts';
 import {getCurrentUserId} from 'mattermost-redux/selectors/entities/users';
 import {getFormattedFileSize} from 'mattermost-redux/utils/file_utils';
@@ -26,6 +26,8 @@ import {isBurnOnReadEnabled} from 'selectors/burn_on_read';
 import {makeGetDraft} from 'selectors/drafts';
 
 import {getComposerPlaceholder} from 'components/advanced_text_editor/composer_placeholder';
+import WysiwygEditor from 'components/advanced_text_editor/wysiwyg_editor/wysiwyg_editor';
+import type {WysiwygEditorHandle} from 'components/advanced_text_editor/wysiwyg_editor/wysiwyg_editor';
 import {useCreateBurnOnReadAccess} from 'components/common/hooks/useCreateBurnOnReadAccess';
 import Markdown from 'components/markdown';
 
@@ -65,7 +67,7 @@ import Autocomplete from './autocomplete';
 import type {AutocompleteHandle} from './autocomplete';
 import AwayNote from './away_note';
 import {confirmChannelWideMentions} from './confirm_mentions';
-import {FORMATS, applyFormat} from './formats';
+import {FORMATS, applyFormat, formatRich} from './formats';
 import {useShowFormatting} from './formatting_preference';
 import PluginMenuItems from './plugin_menu_items';
 import {SchedulePopover, ScheduledNote} from './schedule';
@@ -132,6 +134,11 @@ export default function Composer({channelId, rootId = '', placeholder}: Props) {
     const [pending, setPending] = useState<Pending[]>([]);
     const [menu, setMenu] = useState<'plus' | 'emoji' | 'priority' | 'burn' | 'more' | 'schedule' | 'ai' | null>(null);
     const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+    // The rich text editor (beta) shows the formatting as you write, in place of the plain text box, when chosen in
+    // the settings; the draft stays Markdown either way.
+    const richText = useSelector(getWysiwygEditorPreference);
+    const richRef = useRef<WysiwygEditorHandle>(null);
     const fileRef = useRef<HTMLInputElement>(null);
     const plusRef = useRef<HTMLButtonElement>(null);
     const emojiRef = useRef<HTMLButtonElement>(null);
@@ -369,7 +376,25 @@ export default function Composer({channelId, rootId = '', placeholder}: Props) {
         }
     };
 
+    // The rich text editor sends and edits the last message itself; these keys are the composer's.
+    const submitRef = useRef(submit);
+    submitRef.current = submit;
+    const onRichKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+        if (e.key === 'Escape' && replyTo) {
+            e.preventDefault();
+            e.stopPropagation();
+            setReplyTo('');
+        } else if ((e.ctrlKey || e.metaKey) && e.altKey && (e.key.toLowerCase() === 'p' || e.code === 'KeyP')) {
+            e.preventDefault();
+            setPreviewing(!previewing);
+        }
+    };
+
     const insert = (text: string) => {
+        if (richRef.current) {
+            richRef.current.insertText(text);
+            return;
+        }
         const el = textareaRef.current;
         const start = el?.selectionStart ?? draft.message.length;
         const end = el?.selectionEnd ?? draft.message.length;
@@ -395,6 +420,11 @@ export default function Composer({channelId, rootId = '', placeholder}: Props) {
 
     const format = (id: string) => {
         const f = FORMATS.find((x) => x && x.id === id);
+        const editor = richRef.current?.getEditor();
+        if (editor) {
+            formatRich(editor, id);
+            return;
+        }
         const el = textareaRef.current;
         if (!f || !el) {
             return;
@@ -621,14 +651,16 @@ export default function Composer({channelId, rootId = '', placeholder}: Props) {
                 }
             }}
         >
-            <Autocomplete
-                ref={autocompleteRef}
-                channelId={channelId}
-                rootId={rootId}
-                value={draft.message}
-                textareaRef={textareaRef}
-                onChange={(message) => change({message})}
-            />
+            {!richText && (
+                <Autocomplete
+                    ref={autocompleteRef}
+                    channelId={channelId}
+                    rootId={rootId}
+                    value={draft.message}
+                    textareaRef={textareaRef}
+                    onChange={(message) => change({message})}
+                />
+            )}
             {!rootId && <AwayNote channelId={channelId}/>}
             {!rootId && (
                 <SleepNote
@@ -718,26 +750,56 @@ export default function Composer({channelId, rootId = '', placeholder}: Props) {
                     >
                         <span><Icon name='plus'/></span>
                     </button>
-                    <textarea
-                        ref={textareaRef}
-                        rows={1}
-                        value={draft.message}
-                        placeholder={shownPlaceholder}
-                        aria-label={shownPlaceholder}
-                        onChange={(e) => {
-                            change({message: e.target.value});
+                    {richText && (
+                        <div
+                            className={am('rich-input')}
+                            onPaste={(e) => {
+                                if (e.clipboardData.files.length) {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    upload(e.clipboardData.files);
+                                }
+                            }}
+                        >
+                            <WysiwygEditor
+                                key={rootId || channelId}
+                                ref={richRef}
+                                value={draft.message}
+                                placeholder={shownPlaceholder}
+                                channelId={channelId}
+                                rootId={rootId}
+                                useCtrlSend={ctrlSend}
+                                onChange={(message) => {
+                                    change({message});
+                                    emitLocalUserTypingEvent(channelId, rootId);
+                                }}
+                                onSubmit={() => submitRef.current()}
+                                onKeyDown={onRichKeyDown}
+                            />
+                        </div>
+                    )}
+                    {!richText && (
+                        <textarea
+                            ref={textareaRef}
+                            rows={1}
+                            value={draft.message}
+                            placeholder={shownPlaceholder}
+                            aria-label={shownPlaceholder}
+                            onChange={(e) => {
+                                change({message: e.target.value});
 
-                            // Others see that we're typing, as often as the server allows.
-                            emitLocalUserTypingEvent(channelId, rootId);
-                        }}
-                        onKeyDown={onKeyDown}
-                        onPaste={(e) => {
-                            if (e.clipboardData.files.length) {
-                                e.preventDefault();
-                                upload(e.clipboardData.files);
-                            }
-                        }}
-                    />
+                                // Others see that we're typing, as often as the server allows.
+                                emitLocalUserTypingEvent(channelId, rootId);
+                            }}
+                            onKeyDown={onKeyDown}
+                            onPaste={(e) => {
+                                if (e.clipboardData.files.length) {
+                                    e.preventDefault();
+                                    upload(e.clipboardData.files);
+                                }
+                            }}
+                        />
+                    )}
                     <button
                         type='button'
                         className={am('icon-btn', {on: showFormatting})}
@@ -773,6 +835,9 @@ export default function Composer({channelId, rootId = '', placeholder}: Props) {
                 {showFormatting && (
                     <div
                         className={am('fmt-bar')}
+
+                        // The buttons leave the focus in the text, where the format applies and the writing goes on.
+                        onMouseDown={(e) => e.preventDefault()}
                         role='toolbar'
                         aria-label={formatMessage({id: 'fusion.composer.formatting', defaultMessage: 'Formatting and message options'})}
                     >

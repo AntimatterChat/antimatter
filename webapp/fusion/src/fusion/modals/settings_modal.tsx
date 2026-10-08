@@ -12,7 +12,7 @@ import type {UserProfile} from '@mattermost/types/users';
 import {saveTheme} from 'mattermost-redux/actions/preferences';
 import {getMe, getSessions, revokeSession, setDefaultProfileImage, updateMe, updateUserPassword, uploadProfileImage} from 'mattermost-redux/actions/users';
 import {Permissions, Preferences} from 'mattermost-redux/constants';
-import {getConfig, getPasswordConfig} from 'mattermost-redux/selectors/entities/general';
+import {getConfig, getFeatureFlagValue, getPasswordConfig} from 'mattermost-redux/selectors/entities/general';
 import {getCollapsedThreadsPreference, getTheme, isCollapsedThreadsAllowed, shouldShowUnreadsCategory, DEFAULT_VISIBLE_DM_GM_LIMIT} from 'mattermost-redux/selectors/entities/preferences';
 import type {Theme} from 'mattermost-redux/selectors/entities/preferences';
 import {haveISystemPermission} from 'mattermost-redux/selectors/entities/roles';
@@ -557,6 +557,8 @@ function MessagesPane() {
     const [emoticons, setEmoticons] = usePreference(Preferences.CATEGORY_DISPLAY_SETTINGS, Preferences.RENDER_EMOTICONS_AS_EMOJI, 'true');
     const [joinLeave, setJoinLeave] = usePreference(Preferences.CATEGORY_ADVANCED_SETTINGS, Preferences.ADVANCED_FILTER_JOIN_LEAVE, config.EnableJoinLeaveMessageByDefault || 'true');
     const [ctrlSend, setCtrlSend] = usePreference(Preferences.CATEGORY_ADVANCED_SETTINGS, Preferences.ADVANCED_SEND_ON_CTRL_ENTER, 'false');
+    const richTextAllowed = useSelector((state: GlobalState) => getFeatureFlagValue(state, 'WysiwygEditor') === 'true');
+    const [richText, setRichText] = usePreference(Preferences.CATEGORY_DISPLAY_SETTINGS, Preferences.WYSIWYG_EDITOR, Preferences.WYSIWYG_EDITOR_DEFAULT);
     const [syncDrafts, setSyncDrafts] = usePreference(Preferences.CATEGORY_ADVANCED_SETTINGS, Preferences.ADVANCED_SYNC_DRAFTS, 'true');
 
     return (
@@ -597,6 +599,14 @@ function MessagesPane() {
                 on={ctrlSend === 'true'}
                 onChange={(on) => setCtrlSend(String(on))}
             />
+            {richTextAllowed && (
+                <Toggle
+                    title={formatMessage({id: 'fusion.settings.richText', defaultMessage: 'Rich text editor (beta)'})}
+                    desc={formatMessage({id: 'fusion.settings.richTextDesc', defaultMessage: 'See bold, lists, links and code as they will look while you write, instead of their Markdown.'})}
+                    on={richText === 'true'}
+                    onChange={(on) => setRichText(String(on))}
+                />
+            )}
             {config.AllowSyncedDrafts === 'true' && (
                 <Toggle
                     title={formatMessage({id: 'fusion.settings.syncDrafts', defaultMessage: 'Sync drafts'})}

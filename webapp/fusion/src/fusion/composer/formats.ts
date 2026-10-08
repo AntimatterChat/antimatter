@@ -1,6 +1,8 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 
+import type {Editor} from '@tiptap/react';
+
 import type {IconName} from 'fusion/components/icon';
 
 // The mockup's formatting buttons: markdown inserted around the selection, or at the start of the selected lines.
@@ -38,4 +40,54 @@ export function applyFormat(value: string, start: number, end: number, format: F
     const next = value.slice(0, start) + format.before + selected + format.after + value.slice(end);
     const selStart = start + format.before.length;
     return {value: next, start: selStart, end: selStart + selected.length};
+}
+
+// formatRich applies the same formats in the rich text editor, where they show as they will look.
+export function formatRich(editor: Editor, id: string) {
+    const chain = editor.chain().focus();
+    switch (id) {
+    case 'bold':
+        chain.toggleBold().run();
+        break;
+    case 'italic':
+        chain.toggleItalic().run();
+        break;
+    case 'strike':
+        chain.toggleStrike().run();
+        break;
+    case 'heading':
+        chain.toggleHeading({level: 3}).run();
+        break;
+    case 'code':
+        chain.toggleCode().run();
+        break;
+    case 'codeblock':
+        chain.toggleCodeBlock().run();
+        break;
+    case 'quote':
+        chain.toggleBlockquote().run();
+        break;
+    case 'ul':
+        chain.toggleBulletList().run();
+        break;
+    case 'ol':
+        chain.toggleOrderedList().run();
+        break;
+    case 'link': {
+        // The selection becomes the link when it's an address, else the link's text, to fill in.
+        if (editor.isActive('link')) {
+            chain.extendMarkRange('link').unsetLink().run();
+            break;
+        }
+        const {from, to} = editor.state.selection;
+        const selected = editor.state.doc.textBetween(from, to);
+        const href = (/^https?:\/\//).test(selected) ? selected : 'https://';
+        if (from === to) {
+            chain.insertContent({type: 'text', text: 'text', marks: [{type: 'link', attrs: {href}}]}).run();
+        } else {
+            chain.setLink({href}).run();
+        }
+        break;
+    }
+    }
 }

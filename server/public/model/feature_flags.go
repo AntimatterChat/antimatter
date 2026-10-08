@@ -181,7 +181,8 @@ func (f *FeatureFlags) SetDefaults() {
 	f.EnableSyncAllUsersForRemoteCluster = false
 	f.AppsEnabled = false
 	f.NormalizeLdapDNs = false
-	f.WysiwygEditor = false
+	// Antimatter: the rich text editor can be chosen in the settings (it stays off until then).
+	f.WysiwygEditor = true
 	f.MoveThreadsEnabled = false
 	f.NotificationMonitoring = true
 	f.AttributeValueMasking = true
