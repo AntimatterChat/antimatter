@@ -6,12 +6,16 @@ import {useIntl} from 'react-intl';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {getPostThread} from 'mattermost-redux/actions/posts';
+import {getThread as fetchThread, updateThreadRead} from 'mattermost-redux/actions/threads';
 import {getChannel} from 'mattermost-redux/selectors/entities/channels';
 import {getPost, makeGetPostsForThread} from 'mattermost-redux/selectors/entities/posts';
+import {isCollapsedThreadsEnabled} from 'mattermost-redux/selectors/entities/preferences';
 import {getCurrentTeam} from 'mattermost-redux/selectors/entities/teams';
+import {getThread} from 'mattermost-redux/selectors/entities/threads';
 import {getCurrentUserId} from 'mattermost-redux/selectors/entities/users';
 
 import {closeRightHandSide, toggleRhsExpanded} from 'actions/views/rhs';
+import {markThreadAsRead, updateThreadLastOpened} from 'actions/views/threads';
 import {getIsRhsExpanded} from 'selectors/rhs';
 
 import {focusPost} from 'components/permalink_view/actions';
@@ -47,6 +51,33 @@ export default function ThreadPanel({rootId}: {rootId: string}) {
     useEffect(() => {
         dispatch(getPostThread(rootId));
     }, [rootId, dispatch]);
+
+    // With collapsed reply threads, opening a thread reads it, as in the classic thread viewer: its unread badge
+    // clears. Replies arriving while it's open are read too, unless it was marked unread by hand.
+    const threadsOn = useSelector(isCollapsedThreadsEnabled);
+    const thread = useSelector((state: GlobalState) => getThread(state, rootId));
+    const following = Boolean(root?.is_following);
+    const readFor = useRef('');
+    useEffect(() => {
+        if (!threadsOn || !team) {
+            return;
+        }
+        if (!thread) {
+            if (following) {
+                dispatch(fetchThread(me, team.id, rootId, true));
+            }
+            return;
+        }
+        if (readFor.current !== rootId) {
+            readFor.current = rootId;
+            dispatch(updateThreadLastOpened(thread.id, thread.last_viewed_at));
+            if (thread.last_viewed_at < thread.last_reply_at || thread.unread_replies > 0 || thread.unread_mentions > 0) {
+                dispatch(updateThreadRead(me, team.id, rootId, Date.now()));
+            }
+        } else if (thread.unread_replies > 0 || thread.unread_mentions > 0) {
+            dispatch(markThreadAsRead(rootId));
+        }
+    }, [threadsOn, team, thread, following, rootId, me, dispatch]);
 
     const replies = useMemo(() => posts.filter((p) => p.id !== rootId).sort((a, b) => a.create_at - b.create_at), [posts, rootId]);
     useLayoutEffect(() => {
