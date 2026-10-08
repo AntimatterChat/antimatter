@@ -76,6 +76,8 @@ func (api *API) InitChannel() {
 	api.BaseRoutes.User.Handle("/teams/{team_id:[A-Za-z0-9]+}/read", api.APISessionRequired(readAllInTeam)).Methods(http.MethodPut)
 	if api.srv.Config().FeatureFlags.ManagedChannelCategories {
 		api.BaseRoutes.ChannelsForTeam.Handle("/managed_categories", api.APISessionRequired(getManagedCategories)).Methods(http.MethodGet)
+		api.BaseRoutes.Team.Handle("/server_categories", api.APISessionRequired(getServerCategories)).Methods(http.MethodGet)
+		api.BaseRoutes.Team.Handle("/server_categories", api.APISessionRequired(updateServerCategories)).Methods(http.MethodPut)
 	}
 	api.BaseRoutes.User.Handle("/teams/{team_id:[A-Za-z0-9]+}/channels", api.APISessionRequired(getChannelsForTeamForUser)).Methods(http.MethodGet)
 	api.BaseRoutes.User.Handle("/channels", api.APISessionRequired(getChannelsForUser)).Methods(http.MethodGet)
@@ -176,6 +178,27 @@ func createChannel(c *Context, w http.ResponseWriter, r *http.Request) {
 	if channel.Type == model.ChannelTypePrivate && !c.App.SessionHasPermissionToTeam(*c.AppContext.Session(), channel.TeamId, model.PermissionCreatePrivateChannel) {
 		c.SetPermissionError(model.PermissionCreatePrivateChannel)
 		return
+	}
+
+	// Antimatter: a new channel can go straight into an open server category; a locked or new one needs a team admin.
+	if strings.TrimSpace(channel.ManagedCategoryName) != "" && c.App.Config().FeatureFlags.ManagedChannelCategories {
+		if !c.App.SessionHasPermissionToTeam(*c.AppContext.Session(), channel.TeamId, model.PermissionManageTeam) {
+			categories, appErr := c.App.GetServerCategories(c.AppContext, channel.TeamId)
+			if appErr != nil {
+				c.Err = appErr
+				return
+			}
+			if category := model.FindServerCategory(categories, channel.ManagedCategoryName); category == nil || category.Locked {
+				c.Err = model.NewAppError("createChannel", "api.channel.patch_update_channel.cannot_update_managed_category.app_error", nil, "", http.StatusForbidden)
+				return
+			}
+		}
+		name, appErr := c.App.EnsureServerCategory(c.AppContext, channel.TeamId, channel.ManagedCategoryName)
+		if appErr != nil {
+			c.Err = appErr
+			return
+		}
+		channel.ManagedCategoryName = name
 	}
 
 	if channel.Discoverable {
@@ -695,7 +718,8 @@ func patchChannel(c *Context, w http.ResponseWriter, r *http.Request) {
 
 	if updatingManagedCategory {
 		if c.App.Config().FeatureFlags.ManagedChannelCategories {
-			if ok, _ := c.App.SessionHasPermissionToChannel(c.AppContext, *c.AppContext.Session(), c.Params.ChannelId, model.PermissionManageChannelRoles); !ok {
+			// Antimatter: open server categories follow Mattermost's rule; locked or new ones need a team admin.
+			if !c.App.SessionCanFileChannel(c.AppContext, *c.AppContext.Session(), originalOldChannel, *patch.ManagedCategoryName) {
 				c.Err = model.NewAppError("patchChannel", "api.channel.patch_update_channel.cannot_update_managed_category.app_error", nil, "", http.StatusForbidden)
 				return
 			}
@@ -723,6 +747,10 @@ func patchChannel(c *Context, w http.ResponseWriter, r *http.Request) {
 		} else {
 			name := *patch.ManagedCategoryName
 			if name != "" {
+				if name, appErr = c.App.EnsureServerCategory(c.AppContext, rchannel.TeamId, name); appErr != nil {
+					c.Err = appErr
+					return
+				}
 				if appErr = c.App.SetChannelManagedCategory(c.AppContext, c.Params.ChannelId, name); appErr != nil {
 					c.Err = appErr
 					return

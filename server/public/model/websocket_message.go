@@ -118,6 +118,7 @@ const (
 	WebsocketEventPropertyFieldUpdated       WebsocketEventType = "property_field_updated"
 	WebsocketEventPropertyFieldDeleted       WebsocketEventType = "property_field_deleted"
 	WebsocketEventPropertyValuesUpdated      WebsocketEventType = "property_values_updated"
+	WebsocketEventServerCategoriesUpdated    WebsocketEventType = "server_categories_updated"
 	WebsocketEventFileDownloadRejected       WebsocketEventType = "file_download_rejected"
 	WebsocketEventFileUploadRejected         WebsocketEventType = "file_upload_rejected"
 	WebsocketEventShowToast                  WebsocketEventType = "show_toast"

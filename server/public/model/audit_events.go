@@ -87,6 +87,7 @@ const (
 	AuditEventUpdateCategoriesForTeamForUser    = "updateCategoriesForTeamForUser"    // update multiple channel categories
 	AuditEventUpdateCategoryForTeamForUser      = "updateCategoryForTeamForUser"      // update single channel category
 	AuditEventUpdateCategoryOrderForTeamForUser = "updateCategoryOrderForTeamForUser" // update display order of the categories
+	AuditEventUpdateServerCategories            = "updateServerCategories"            // replace the categories a team admin sets up for everyone
 )
 
 // Channels

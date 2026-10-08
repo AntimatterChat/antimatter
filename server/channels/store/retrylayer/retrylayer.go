@@ -65,6 +65,7 @@ type RetryLayer struct {
 	ScheduledPostStore              store.ScheduledPostStore
 	ScheduledRecapStore             store.ScheduledRecapStore
 	SchemeStore                     store.SchemeStore
+	ServerCategoryStore             store.ServerCategoryStore
 	SessionStore                    store.SessionStore
 	SessionAttributeStore           store.SessionAttributeStore
 	SharedChannelStore              store.SharedChannelStore
@@ -265,6 +266,10 @@ func (s *RetryLayer) ScheduledRecap() store.ScheduledRecapStore {
 
 func (s *RetryLayer) Scheme() store.SchemeStore {
 	return s.SchemeStore
+}
+
+func (s *RetryLayer) ServerCategory() store.ServerCategoryStore {
+	return s.ServerCategoryStore
 }
 
 func (s *RetryLayer) Session() store.SessionStore {
@@ -558,6 +563,11 @@ type RetryLayerScheduledRecapStore struct {
 
 type RetryLayerSchemeStore struct {
 	store.SchemeStore
+	Root *RetryLayer
+}
+
+type RetryLayerServerCategoryStore struct {
+	store.ServerCategoryStore
 	Root *RetryLayer
 }
 
@@ -13858,6 +13868,48 @@ func (s *RetryLayerSchemeStore) Save(scheme *model.Scheme) (*model.Scheme, error
 
 }
 
+func (s *RetryLayerServerCategoryStore) GetForTeam(rctx request.CTX, teamID string) ([]*model.ServerCategory, error) {
+
+	tries := 0
+	for {
+		result, err := s.ServerCategoryStore.GetForTeam(rctx, teamID)
+		if err == nil {
+			return result, nil
+		}
+		if !isRepeatableError(err) {
+			return result, err
+		}
+		tries++
+		if tries >= 3 {
+			err = errors.Wrap(err, "giving up after 3 consecutive repeatable transaction failures")
+			return result, err
+		}
+		timepkg.Sleep(100 * timepkg.Millisecond)
+	}
+
+}
+
+func (s *RetryLayerServerCategoryStore) ReplaceForTeam(rctx request.CTX, teamID string, categories []*model.ServerCategory) ([]*model.ServerCategory, error) {
+
+	tries := 0
+	for {
+		result, err := s.ServerCategoryStore.ReplaceForTeam(rctx, teamID, categories)
+		if err == nil {
+			return result, nil
+		}
+		if !isRepeatableError(err) {
+			return result, err
+		}
+		tries++
+		if tries >= 3 {
+			err = errors.Wrap(err, "giving up after 3 consecutive repeatable transaction failures")
+			return result, err
+		}
+		timepkg.Sleep(100 * timepkg.Millisecond)
+	}
+
+}
+
 func (s *RetryLayerSessionStore) AnalyticsSessionCount() (int64, error) {
 
 	tries := 0
@@ -20340,6 +20392,7 @@ func New(childStore store.Store) *RetryLayer {
 	newStore.ScheduledPostStore = &RetryLayerScheduledPostStore{ScheduledPostStore: childStore.ScheduledPost(), Root: &newStore}
 	newStore.ScheduledRecapStore = &RetryLayerScheduledRecapStore{ScheduledRecapStore: childStore.ScheduledRecap(), Root: &newStore}
 	newStore.SchemeStore = &RetryLayerSchemeStore{SchemeStore: childStore.Scheme(), Root: &newStore}
+	newStore.ServerCategoryStore = &RetryLayerServerCategoryStore{ServerCategoryStore: childStore.ServerCategory(), Root: &newStore}
 	newStore.SessionStore = &RetryLayerSessionStore{SessionStore: childStore.Session(), Root: &newStore}
 	newStore.SessionAttributeStore = &RetryLayerSessionAttributeStore{SessionAttributeStore: childStore.SessionAttribute(), Root: &newStore}
 	newStore.SharedChannelStore = &RetryLayerSharedChannelStore{SharedChannelStore: childStore.SharedChannel(), Root: &newStore}

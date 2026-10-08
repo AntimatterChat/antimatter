@@ -105,7 +105,8 @@ type FeatureFlags struct {
 	// Collect plugin metrics and serve them on the /metrics endpoint
 	AggregatePluginMetrics bool
 
-	// ManagedChannelCategories enables server-side managed sidebar category enforcement (Enterprise).
+	// ManagedChannelCategories enables server-side managed sidebar category enforcement. Antimatter builds its server
+	// categories on them, adding an order and an open or locked state (see ServerCategory).
 	ManagedChannelCategories bool
 
 	// Enable collection of request-provided session attributes (user agent, IP address, etc.).
@@ -217,7 +218,8 @@ func (f *FeatureFlags) SetDefaults() {
 
 	f.AggregatePluginMetrics = false
 
-	f.ManagedChannelCategories = false
+	// Antimatter: server categories (managed categories plus their order and open or locked state) are on.
+	f.ManagedChannelCategories = true
 
 	f.SessionAttributes = true
 

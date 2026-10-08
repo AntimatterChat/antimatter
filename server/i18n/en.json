@@ -11442,6 +11442,21 @@
     "description": "Low-level database error detail meaning a select (read) query failed; terse developer-facing text."
   },
   {
+    "id": "app.server_category.get.app_error",
+    "translation": "Unable to get the team's server categories.",
+    "description": "Error when the server categories (sidebar categories set up for everyone in a team) can't be read."
+  },
+  {
+    "id": "app.server_category.refile.app_error",
+    "translation": "Unable to move the channels of a renamed or removed server category.",
+    "description": "Error when channels filed in a renamed or deleted server category can't be updated."
+  },
+  {
+    "id": "app.server_category.save.app_error",
+    "translation": "Unable to save the team's server categories.",
+    "description": "Error when the server categories of a team can't be saved."
+  },
+  {
     "id": "app.session.analytics_session_count.app_error",
     "translation": "Unable to count the sessions.",
     "description": "Internal error when counting user sessions fails; used by System Console analytics and session expiry notifications."
@@ -16545,6 +16560,26 @@
     "id": "model.search_params_list.is_valid.include_deleted_channels.app_error",
     "translation": "All IncludeDeletedChannels params should have the same value.",
     "description": "API error for message search when mixed search parameters disagree on including archived channels; 'IncludeDeletedChannels' is a literal parameter name, audience is API developers."
+  },
+  {
+    "id": "model.server_category.duplicate.app_error",
+    "translation": "There's already a server category named \"{{.Name}}\".",
+    "description": "Validation error when two server categories have the same name."
+  },
+  {
+    "id": "model.server_category.name.app_error",
+    "translation": "A server category needs a name of at most {{.MaxRunes}} characters, without spaces around it.",
+    "description": "Validation error for a server category name."
+  },
+  {
+    "id": "model.server_category.team_id.app_error",
+    "translation": "Invalid team for the server category.",
+    "description": "Validation error for a server category without a valid team."
+  },
+  {
+    "id": "model.server_category.too_many.app_error",
+    "translation": "A team can have at most {{.Max}} server categories.",
+    "description": "Validation error when a team has too many server categories."
   },
   {
     "id": "model.session.is_valid.create_at.app_error",

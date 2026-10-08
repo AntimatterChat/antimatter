@@ -1255,6 +1255,26 @@ func (_m *Store) Scheme() store.SchemeStore {
 	return r0
 }
 
+// ServerCategory provides a mock function with no fields
+func (_m *Store) ServerCategory() store.ServerCategoryStore {
+	ret := _m.Called()
+
+	if len(ret) == 0 {
+		panic("no return value specified for ServerCategory")
+	}
+
+	var r0 store.ServerCategoryStore
+	if rf, ok := ret.Get(0).(func() store.ServerCategoryStore); ok {
+		r0 = rf()
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(store.ServerCategoryStore)
+		}
+	}
+
+	return r0
+}
+
 // Session provides a mock function with no fields
 func (_m *Store) Session() store.SessionStore {
 	ret := _m.Called()

@@ -804,6 +804,10 @@ func TestCreateChannelManagedCategory(t *testing.T) {
 	t.Run("should set managed category when feature is enabled", func(t *testing.T) {
 		th.App.UpdateConfig(func(cfg *model.Config) { cfg.FeatureFlags.ManagedChannelCategories = true })
 
+		// Antimatter: members file new channels in open server categories only.
+		_, appErr := th.App.UpdateServerCategories(th.Context, team.Id, &model.ServerCategoriesUpdate{Categories: []*model.ServerCategory{{Name: "Operations"}}})
+		require.Nil(t, appErr)
+
 		channel := &model.Channel{
 			DisplayName:         "Managed Enabled",
 			Name:                GenerateTestChannelName(),
@@ -9120,7 +9124,11 @@ func TestGetManagedCategories(t *testing.T) {
 
 func TestGetManagedCategoriesFeatureFlagDisabled(t *testing.T) {
 	mainHelper.Parallel(t)
-	th := Setup(t).InitBasic(t)
+
+	// Antimatter turns the flag on by default.
+	th := SetupConfig(t, func(cfg *model.Config) {
+		cfg.FeatureFlags.ManagedChannelCategories = false
+	}).InitBasic(t)
 
 	t.Run("route is not registered when feature flag is off at startup", func(t *testing.T) {
 
@@ -9191,6 +9199,10 @@ func TestPatchChannelManagedCategory(t *testing.T) {
 
 	t.Run("happy path: set and clear managed category", func(t *testing.T) {
 		enableManagedCategories()
+
+		// Antimatter: channel admins file channels in open server categories only.
+		_, appErr := th.App.UpdateServerCategories(th.Context, th.BasicTeam.Id, &model.ServerCategoriesUpdate{Categories: []*model.ServerCategory{{Name: "Operations"}}})
+		require.Nil(t, appErr)
 
 		channel := th.CreatePublicChannel(t)
 

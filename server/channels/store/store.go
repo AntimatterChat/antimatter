@@ -61,6 +61,7 @@ type Store interface {
 	SharedChannel() SharedChannelStore
 	Draft() DraftStore
 	ChannelGuard() ChannelGuardStore
+	ServerCategory() ServerCategoryStore
 	MarkSystemRanUnitTests()
 	Close()
 	LockToMaster()
@@ -1114,6 +1115,12 @@ type ChannelGuardStore interface {
 	Delete(rctx request.CTX, channelID, pluginID string) (rowsAffected int64, err error)
 	GetForChannel(rctx request.CTX, channelID string) ([]*ChannelGuard, error)
 	GetAll(rctx request.CTX) ([]*ChannelGuard, error)
+}
+
+// ServerCategoryStore keeps the sidebar categories admins set up for everyone in a team (Antimatter).
+type ServerCategoryStore interface {
+	GetForTeam(rctx request.CTX, teamID string) ([]*model.ServerCategory, error)
+	ReplaceForTeam(rctx request.CTX, teamID string, categories []*model.ServerCategory) ([]*model.ServerCategory, error)
 }
 
 type DraftStore interface {

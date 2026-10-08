@@ -64,6 +64,7 @@ type TimerLayer struct {
 	ScheduledPostStore              store.ScheduledPostStore
 	ScheduledRecapStore             store.ScheduledRecapStore
 	SchemeStore                     store.SchemeStore
+	ServerCategoryStore             store.ServerCategoryStore
 	SessionStore                    store.SessionStore
 	SessionAttributeStore           store.SessionAttributeStore
 	SharedChannelStore              store.SharedChannelStore
@@ -264,6 +265,10 @@ func (s *TimerLayer) ScheduledRecap() store.ScheduledRecapStore {
 
 func (s *TimerLayer) Scheme() store.SchemeStore {
 	return s.SchemeStore
+}
+
+func (s *TimerLayer) ServerCategory() store.ServerCategoryStore {
+	return s.ServerCategoryStore
 }
 
 func (s *TimerLayer) Session() store.SessionStore {
@@ -557,6 +562,11 @@ type TimerLayerScheduledRecapStore struct {
 
 type TimerLayerSchemeStore struct {
 	store.SchemeStore
+	Root *TimerLayer
+}
+
+type TimerLayerServerCategoryStore struct {
+	store.ServerCategoryStore
 	Root *TimerLayer
 }
 
@@ -11029,6 +11039,38 @@ func (s *TimerLayerSchemeStore) Save(scheme *model.Scheme) (*model.Scheme, error
 	return result, err
 }
 
+func (s *TimerLayerServerCategoryStore) GetForTeam(rctx request.CTX, teamID string) ([]*model.ServerCategory, error) {
+	start := time.Now()
+
+	result, err := s.ServerCategoryStore.GetForTeam(rctx, teamID)
+
+	elapsed := float64(time.Since(start)) / float64(time.Second)
+	if s.Root.Metrics != nil {
+		success := "false"
+		if err == nil {
+			success = "true"
+		}
+		s.Root.Metrics.ObserveStoreMethodDuration("ServerCategoryStore.GetForTeam", success, elapsed)
+	}
+	return result, err
+}
+
+func (s *TimerLayerServerCategoryStore) ReplaceForTeam(rctx request.CTX, teamID string, categories []*model.ServerCategory) ([]*model.ServerCategory, error) {
+	start := time.Now()
+
+	result, err := s.ServerCategoryStore.ReplaceForTeam(rctx, teamID, categories)
+
+	elapsed := float64(time.Since(start)) / float64(time.Second)
+	if s.Root.Metrics != nil {
+		success := "false"
+		if err == nil {
+			success = "true"
+		}
+		s.Root.Metrics.ObserveStoreMethodDuration("ServerCategoryStore.ReplaceForTeam", success, elapsed)
+	}
+	return result, err
+}
+
 func (s *TimerLayerSessionStore) AnalyticsSessionCount() (int64, error) {
 	start := time.Now()
 
@@ -16127,6 +16169,7 @@ func New(childStore store.Store, metrics einterfaces.MetricsInterface) *TimerLay
 	newStore.ScheduledPostStore = &TimerLayerScheduledPostStore{ScheduledPostStore: childStore.ScheduledPost(), Root: &newStore}
 	newStore.ScheduledRecapStore = &TimerLayerScheduledRecapStore{ScheduledRecapStore: childStore.ScheduledRecap(), Root: &newStore}
 	newStore.SchemeStore = &TimerLayerSchemeStore{SchemeStore: childStore.Scheme(), Root: &newStore}
+	newStore.ServerCategoryStore = &TimerLayerServerCategoryStore{ServerCategoryStore: childStore.ServerCategory(), Root: &newStore}
 	newStore.SessionStore = &TimerLayerSessionStore{SessionStore: childStore.Session(), Root: &newStore}
 	newStore.SessionAttributeStore = &TimerLayerSessionAttributeStore{SessionAttributeStore: childStore.SessionAttribute(), Root: &newStore}
 	newStore.SharedChannelStore = &TimerLayerSharedChannelStore{SharedChannelStore: childStore.SharedChannel(), Root: &newStore}
