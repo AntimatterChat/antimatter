@@ -16,11 +16,12 @@ import {getCurrentTeam} from 'mattermost-redux/selectors/entities/teams';
 import {getFormattedFileSize} from 'mattermost-redux/utils/file_utils';
 
 import {flagPost, pinPost, unflagPost, unpinPost} from 'actions/post_actions';
-import {closeRightHandSide, selectPostFromRightHandSideSearch} from 'actions/views/rhs';
-import {getSearchTeam, getSearchTerms, getSearchType} from 'selectors/rhs';
+import {closeRightHandSide, selectPostFromRightHandSideSearch, toggleRhsExpanded} from 'actions/views/rhs';
+import {getIsRhsExpanded, getSearchTeam, getSearchTerms, getSearchType} from 'selectors/rhs';
 
 import useSearchResultsActions from 'components/common/hooks/use_search_results_actions';
 import FilePreviewModal from 'components/file_preview_modal';
+import {getSearchPopoutTitle} from 'components/rhs_search_popout/title';
 import type {SearchFilterType} from 'components/search/types';
 
 import Icon from 'fusion/components/icon';
@@ -34,10 +35,12 @@ import {permalinkPath} from 'fusion/utils/paths';
 import {plainText} from 'fusion/utils/plain_text';
 import {getHistory} from 'utils/browser_history';
 import {ModalIdentifiers, RHSStates} from 'utils/constants';
+import {canPopout, popoutRhsSearch} from 'utils/popouts/popout_windows';
 import {getSiteURL} from 'utils/url';
 import {copyToClipboard} from 'utils/utils';
 
 import type {GlobalState} from 'types/store';
+import type {RhsState, SearchType} from 'types/store/rhs';
 
 function highlight(text: string, terms: string) {
     const words = terms.split(/\s+/).filter((w) => w && !w.includes(':') && w.length > 1).map((w) => w.replace(/^["@#]|"$/g, ''));
@@ -175,7 +178,8 @@ function FileResult({file}: {file: FileSearchResultItem}) {
 
 // ResultsPanel lists search results, mentions, and saved or pinned messages in the right-hand panel.
 export default function ResultsPanel({rhsState}: {rhsState: string}) {
-    const {formatMessage} = useIntl();
+    const intl = useIntl();
+    const {formatMessage} = intl;
     const dispatch = useDispatch();
     const terms = useSelector(getSearchTerms);
     const channelId = useSelector((state: GlobalState) => state.views.rhs.selectedChannelId || state.entities.channels.currentChannelId);
@@ -219,6 +223,28 @@ export default function ResultsPanel({rhsState}: {rhsState: string}) {
         }
     };
 
+    // The results can take the whole width, or a window of their own, as the classic search results.
+    const expanded = useSelector(getIsRhsExpanded);
+    const team = useSelector(getCurrentTeam);
+    const channelName = useSelector((state: GlobalState) => state.entities.channels.channels[channelId]?.name);
+    const searchTeamId = useSelector(getSearchTeam);
+    const popout = () => {
+        if (!team) {
+            return;
+        }
+        const mode = rhsState as NonNullable<RhsState>;
+        popoutRhsSearch(
+            intl.formatMessage(getSearchPopoutTitle(mode), {serverName: '{serverName}', channelName: '{channelName}', searchTerms: terms}),
+            team.name,
+            terms,
+            mode,
+            searchType as SearchType,
+            rhsState === RHSStates.PIN ? channelName : undefined,
+            searchTeamId,
+        );
+        dispatch(closeRightHandSide());
+    };
+
     const title = {
         [RHSStates.SEARCH]: formatMessage({id: 'fusion.results.search', defaultMessage: 'Search results'}),
         [RHSStates.MENTION]: formatMessage({id: 'fusion.results.mentions', defaultMessage: 'Recent mentions'}),
@@ -234,6 +260,31 @@ export default function ResultsPanel({rhsState}: {rhsState: string}) {
                     <h3>{title}</h3>
                     <span className={am('where')}>{sub}</span>
                 </div>
+                {canPopout() && team && (
+                    <button
+                        className={am('icon-btn')}
+                        title={formatMessage({id: 'fusion.results.popout', defaultMessage: 'Open in a new window'})}
+                        aria-label={formatMessage({id: 'fusion.results.popout', defaultMessage: 'Open in a new window'})}
+                        onClick={popout}
+                    >
+                        <Icon
+                            name='popout'
+                            size='sm'
+                        />
+                    </button>
+                )}
+                <button
+                    className={am('icon-btn')}
+                    aria-pressed={expanded}
+                    title={expanded ? formatMessage({id: 'fusion.thread.collapse', defaultMessage: 'Collapse the panel'}) : formatMessage({id: 'fusion.thread.expand', defaultMessage: 'Expand the panel'})}
+                    aria-label={expanded ? formatMessage({id: 'fusion.thread.collapse', defaultMessage: 'Collapse the panel'}) : formatMessage({id: 'fusion.thread.expand', defaultMessage: 'Expand the panel'})}
+                    onClick={() => dispatch(toggleRhsExpanded())}
+                >
+                    <Icon
+                        name='expand'
+                        size='sm'
+                    />
+                </button>
                 <button
                     className={am('icon-btn')}
                     aria-label={formatMessage({id: 'fusion.rhs.close', defaultMessage: 'Close'})}
