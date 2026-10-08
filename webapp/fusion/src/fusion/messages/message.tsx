@@ -192,6 +192,7 @@ export default function Message({postId, previousPostId, inThread = false, highl
             ))}
             <button
                 ref={reactRef}
+                className={am('react-btn')}
                 title={formatMessage({id: 'fusion.message.react', defaultMessage: 'Add reaction'})}
                 aria-label={formatMessage({id: 'fusion.message.react', defaultMessage: 'Add reaction'})}
                 aria-haspopup='dialog'

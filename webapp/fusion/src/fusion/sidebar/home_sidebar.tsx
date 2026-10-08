@@ -1,17 +1,21 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 
-import React, {useRef, useState} from 'react';
+import React, {useMemo, useRef, useState} from 'react';
 import {useIntl} from 'react-intl';
 import {useDispatch, useSelector} from 'react-redux';
+import {Link, useLocation} from 'react-router-dom';
 
 import {Client4} from 'mattermost-redux/client';
 import {getDirectAndGroupChannels} from 'mattermost-redux/selectors/entities/channels';
+import {getFeatureFlagValue} from 'mattermost-redux/selectors/entities/general';
+import {getScheduledPostsByTeamCount, isScheduledPostsEnabled} from 'mattermost-redux/selectors/entities/scheduled_posts';
 import {getCurrentTeam} from 'mattermost-redux/selectors/entities/teams';
 import {getCurrentUserId, getUser, getUsers} from 'mattermost-redux/selectors/entities/users';
 import {getUserIdFromChannelName} from 'mattermost-redux/utils/channel_utils';
 
 import {openDirectChannelToUserId} from 'actions/channel_actions';
+import {makeGetDraftsCount} from 'selectors/drafts';
 
 import Icon from 'fusion/components/icon';
 import {useUnreadMentions} from 'fusion/hooks/mentions';
@@ -21,6 +25,7 @@ import {am} from 'fusion/utils/class_names';
 import {openNewDirectMessage} from 'fusion/utils/modals';
 import {channelPath} from 'fusion/utils/paths';
 import {getHistory} from 'utils/browser_history';
+import {SCHEDULED_POST_URL_SUFFIX} from 'utils/constants';
 
 import type {GlobalState} from 'types/store';
 
@@ -73,6 +78,25 @@ export default function HomeSidebar() {
     const me = useSelector(getCurrentUserId);
     const layout = useLayout();
     const openNotes = useNotesToSelf();
+    const getDraftsCount = useMemo(() => makeGetDraftsCount(), []);
+    const draftCount = useSelector(getDraftsCount);
+    const scheduledEnabled = useSelector(isScheduledPostsEnabled);
+    const scheduledCount = useSelector((state: GlobalState) => (team ? getScheduledPostsByTeamCount(state, team.id, true) : 0));
+    const recapsEnabled = useSelector((state: GlobalState) => getFeatureFlagValue(state, 'EnableAIRecaps') === 'true');
+    const pathname = useLocation().pathname;
+
+    // The pages of the home: drafts, scheduled messages and AI recaps, in the main column.
+    const page = (path: string, icon: 'pen' | 'clock' | 'sparkle', label: string, count = 0) => (
+        <Link
+            to={`/${team!.name}/${path}`}
+            className={am('ch', {active: pathname.startsWith(`/${team!.name}/${path}`)})}
+            onClick={() => layout.setNavOpen(false)}
+        >
+            <Icon name={icon}/>
+            <span className={am('name')}>{label}</span>
+            {count > 0 && <span className={am('count')}>{count}</span>}
+        </Link>
+    );
 
     // Enter opens the first match, else starts a conversation with the first person matching, as in the mockup.
     const findOrStart = async () => {
@@ -171,6 +195,9 @@ export default function HomeSidebar() {
                     {link('mentions', 'at', formatMessage({id: 'fusion.home.mentions', defaultMessage: 'Mentions'}), mentions)}
                     {link('threads', 'thread', formatMessage({id: 'fusion.home.threads', defaultMessage: 'Followed threads'}))}
                     {link('saved', 'pin', formatMessage({id: 'fusion.home.saved', defaultMessage: 'Saved messages'}))}
+                    {team && page('drafts', 'pen', formatMessage({id: 'fusion.home.drafts', defaultMessage: 'Drafts'}), draftCount)}
+                    {team && scheduledEnabled && page(SCHEDULED_POST_URL_SUFFIX, 'clock', formatMessage({id: 'fusion.home.scheduled', defaultMessage: 'Scheduled'}), scheduledCount)}
+                    {team && recapsEnabled && page('recaps', 'sparkle', formatMessage({id: 'fusion.home.recaps', defaultMessage: 'Recaps'}))}
                     <button
                         className={am('ch')}
                         onClick={async () => {

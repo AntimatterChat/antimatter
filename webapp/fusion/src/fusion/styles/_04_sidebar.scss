@@ -279,3 +279,6 @@
 :is(.am-app, .am-layer) .am-ch.am-ch-thread { position: relative; height: 28px; padding-left: 22px; font-size: 13px; width: calc(100% - 4px); text-align: left; }
 :is(.am-app, .am-layer) .am-thread-branch { position: absolute; left: 6px; top: -6px; width: 10px; height: 20px; border-left: 1.5px solid var(--am-line); border-bottom: 1.5px solid var(--am-line); border-bottom-left-radius: 7px; }
 :is(.am-app, .am-layer) .am-ch.am-ch-thread .am-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; min-width: 0; }
+:is(.am-app, .am-layer) .am-ch .am-count { margin-left: auto; padding: 0 6px; border-radius: 8px; background: var(--am-raise-2); color: var(--am-text-2); font: 600 11.5px var(--am-font-ui); }
+:is(.am-app, .am-layer) .am-ch.am-ch-thread.am-named .am-name { font-weight: 600; color: var(--am-text-2); }
+:is(.am-app, .am-layer) .am-thread-sum .am-thread-name { display: inline-flex; align-items: center; gap: 4px; color: var(--am-text); }

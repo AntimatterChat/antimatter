@@ -20,6 +20,7 @@ import {getThreadPopoutTitle} from 'components/thread_popout/thread_popout';
 import Icon from 'fusion/components/icon';
 import Composer from 'fusion/composer/composer';
 import Message from 'fusion/messages/message';
+import {getThreadTitle} from 'fusion/messages/thread_title';
 import {am} from 'fusion/utils/class_names';
 import {canPopout, popoutThread} from 'utils/popouts/popout_windows';
 
@@ -79,7 +80,7 @@ export default function ThreadPanel({rootId}: {rootId: string}) {
             <div className={am('rhs-head')}>
                 <div className={am('grow')}>
                     <h3>
-                        <span className={am('tname')}>{formatMessage({id: 'fusion.thread.title', defaultMessage: 'Thread'})}</span>
+                        <span className={am('tname')}>{getThreadTitle(root) || formatMessage({id: 'fusion.thread.title', defaultMessage: 'Thread'})}</span>
                         {root.is_following && (
                             <span
                                 className={am('meta-tag')}

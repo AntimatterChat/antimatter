@@ -3,6 +3,7 @@
 
 import React, {useEffect, useRef} from 'react';
 import {useDispatch, useSelector, useStore} from 'react-redux';
+import {useRouteMatch} from 'react-router-dom';
 
 import {fetchMyCategories} from 'mattermost-redux/actions/channel_categories';
 import {getCurrentChannelId} from 'mattermost-redux/selectors/entities/channels';
@@ -30,7 +31,7 @@ import TeamSidebar from 'fusion/sidebar/team_sidebar';
 import {useMuteExpiry} from 'fusion/sidebar/timed_mute';
 import {am} from 'fusion/utils/class_names';
 import {openKeyboardShortcuts} from 'fusion/utils/modals';
-import Constants from 'utils/constants';
+import Constants, {SCHEDULED_POST_URL_SUFFIX} from 'utils/constants';
 import {cmdOrCtrlPressed, isKeyPressed} from 'utils/keyboard';
 import {applyTheme} from 'utils/utils';
 
@@ -59,6 +60,9 @@ function Frame({children}: Props) {
     const settings = useSettings();
     const teamId = useSelector(getCurrentTeamId);
     const voiceChat = useOpenVoiceChat();
+
+    // The home's pages (drafts, scheduled messages, recaps, threads) belong to no channel: no member list beside them.
+    const onPage = Boolean(useRouteMatch({path: `/:team/(drafts|${SCHEDULED_POST_URL_SUFFIX}|recaps|threads)`}));
     const channelId = useSelector(getCurrentChannelId);
     const appRef = useRef<HTMLDivElement>(null);
 
@@ -160,7 +164,7 @@ function Frame({children}: Props) {
                 {layout.home ? <HomeSidebar/> : <TeamSidebar/>}
                 <main className={am('main')}>{children}</main>
                 <RightPanel/>
-                {!rhsOpen && !voiceChat && layout.showMembers && <MemberList/>}
+                {!rhsOpen && !voiceChat && layout.showMembers && !onPage && <MemberList/>}
                 <AppRail/>
                 <div
                     className={am('drawer-scrim')}

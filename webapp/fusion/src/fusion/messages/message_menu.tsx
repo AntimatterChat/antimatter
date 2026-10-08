@@ -48,6 +48,7 @@ import {copyToClipboard} from 'utils/utils';
 import type {GlobalState} from 'types/store';
 
 import {canReplyInline, replyInline, useInlineRepliesEnabled} from './inline_reply';
+import {getThreadTitle, NameThreadDialog} from './thread_title';
 
 // The quick reactions: your most used recent emoji first, then these.
 const QUICK_REACTIONS = ['+1', 'heart', 'joy', 'tada', 'eyes', 'white_check_mark'];
@@ -111,6 +112,8 @@ export default function MessageMenu({post, anchor, inThread, onClose, onMoreReac
 
     // "Remind me" at a time of one's choice turns the menu into a date and time picker.
     const [customReminder, setCustomReminder] = useState(false);
+    const [namingThread, setNamingThread] = useState(false);
+    const canName = crt && canEdit && !post.root_id && !isSystemMessage(post) && post.type !== Posts.POST_TYPES.BURN_ON_READ;
     const remindAt = async (at: number) => {
         const result = await dispatch(addPostReminder(me, post.id, Math.floor(at / 1000)));
         if (!(result && 'error' in result && result.error)) {
@@ -123,6 +126,15 @@ export default function MessageMenu({post, anchor, inThread, onClose, onMoreReac
     const burn = post.type === Posts.POST_TYPES.BURN_ON_READ;
     const threadId = post.root_id || post.id;
     const plugins = pluginActions.filter((a) => !a.filter || a.filter(post.id));
+
+    if (namingThread) {
+        return (
+            <NameThreadDialog
+                post={post}
+                onClose={onClose}
+            />
+        );
+    }
 
     if (customReminder) {
         return (
@@ -199,6 +211,14 @@ export default function MessageMenu({post, anchor, inThread, onClose, onMoreReac
                     icon='forward'
                     label={formatMessage({id: 'fusion.messageMenu.forward', defaultMessage: 'Forward'})}
                     onClick={run(() => dispatch(openDialog(ModalIdentifiers.FORWARD_POST_MODAL, ForwardPostModal, {post})))}
+                />
+            )}
+            {canName && (
+                <MenuItem
+                    icon='thread'
+                    label={getThreadTitle(post) ? formatMessage({id: 'fusion.messageMenu.renameThread', defaultMessage: 'Rename thread…'}) : formatMessage({id: 'fusion.messageMenu.nameThread', defaultMessage: 'Name thread…'})}
+                    sub={formatMessage({id: 'fusion.messageMenu.nameThreadSub', defaultMessage: 'Make it a sub-chat of the channel'})}
+                    onClick={() => setNamingThread(true)}
                 />
             )}
             {!system && canMove && (

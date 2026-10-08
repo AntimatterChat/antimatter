@@ -21,10 +21,12 @@ import {uploadFile} from 'actions/file_actions';
 import {emitLocalUserTypingEvent} from 'actions/global_actions';
 import {editLatestPost, onSubmit} from 'actions/views/create_comment';
 import {updateDraft} from 'actions/views/drafts';
+import {replyToLatestPostInChannel} from 'actions/views/rhs';
 import {isBurnOnReadEnabled} from 'selectors/burn_on_read';
 import {makeGetDraft} from 'selectors/drafts';
 
 import {useCreateBurnOnReadAccess} from 'components/common/hooks/useCreateBurnOnReadAccess';
+import Markdown from 'components/markdown';
 
 import Icon from 'fusion/components/icon';
 import {Popover} from 'fusion/components/layer';
@@ -55,6 +57,7 @@ import {generateId} from 'utils/utils';
 import type {GlobalState} from 'types/store';
 import type {PostDraft} from 'types/store/draft';
 
+import AiRewriteMenu, {useAgentsAvailable} from './ai_rewrite';
 import Autocomplete from './autocomplete';
 import type {AutocompleteHandle} from './autocomplete';
 import AwayNote from './away_note';
@@ -99,6 +102,11 @@ export default function Composer({channelId, rootId = '', placeholder}: Props) {
     const persistentMinutes = useSelector((state: GlobalState) => parseInt(getConfig(state).PersistentNotificationIntervalMinutes || '5', 10) || 5);
     const toast = useToast();
     const maxFileSize = useSelector((state: GlobalState) => parseInt(getConfig(state).MaxFileSize || '0', 10) || 0);
+    const maxPostSize = useSelector((state: GlobalState) => parseInt(getConfig(state).MaxPostSize || '', 10) || Constants.DEFAULT_CHARACTER_LIMIT);
+    const [sendError, setSendError] = useState('');
+
+    // The formatting preview shows the message as it will look, under what's being written (Ctrl/Cmd+Alt+P).
+    const [previewing, setPreviewing] = useState(false);
     const requests = useRef<Record<string, XMLHttpRequest>>({});
     const ctrlSend = useSelector((state: GlobalState) => getBool(state, Constants.Preferences.CATEGORY_ADVANCED_SETTINGS, 'send_on_ctrl_enter', false));
     const inlineReplies = useInlineRepliesEnabled();
@@ -107,13 +115,19 @@ export default function Composer({channelId, rootId = '', placeholder}: Props) {
     const [draft, setDraft] = useState<PostDraft>(storedDraft);
     const [showFormatting, setShowFormatting] = useShowFormatting();
     const [pending, setPending] = useState<Pending[]>([]);
-    const [menu, setMenu] = useState<'plus' | 'emoji' | 'priority' | 'burn' | 'more' | 'schedule' | null>(null);
+    const [menu, setMenu] = useState<'plus' | 'emoji' | 'priority' | 'burn' | 'more' | 'schedule' | 'ai' | null>(null);
     const textareaRef = useRef<HTMLTextAreaElement>(null);
     const fileRef = useRef<HTMLInputElement>(null);
     const plusRef = useRef<HTMLButtonElement>(null);
     const emojiRef = useRef<HTMLButtonElement>(null);
     const priorityRef = useRef<HTMLButtonElement>(null);
     const burnRef = useRef<HTMLButtonElement>(null);
+
+    // AI rewriting, when an agent is there: busy while it writes, and the text before it, to undo.
+    const aiAvailable = useAgentsAvailable();
+    const aiRef = useRef<HTMLButtonElement>(null);
+    const [aiBusy, setAiBusy] = useState(false);
+    const [aiOriginal, setAiOriginal] = useState<string | null>(null);
     const scheduleRef = useRef<HTMLButtonElement>(null);
 
     // The schedule picker opens from the + menu or the toolbar's clock button, next to which it shows.
@@ -147,7 +161,12 @@ export default function Composer({channelId, rootId = '', placeholder}: Props) {
         saveTimer.current = setTimeout(() => dispatch(updateDraft(key, {...next, updateAt: Date.now()}, rootId, true)), 500);
     }, [dispatch, key, rootId]);
 
-    const change = (patch: Partial<PostDraft>) => save({...draft, channelId, rootId, createAt: draft.createAt || Date.now(), ...patch});
+    const change = (patch: Partial<PostDraft>) => {
+        if (sendError && 'message' in patch) {
+            setSendError('');
+        }
+        save({...draft, channelId, rootId, createAt: draft.createAt || Date.now(), ...patch});
+    };
 
     // An inline reply quotes the message in the draft's reply_to prop, which the message is sent with, and notifies
     // its author unless the reply_to_mention prop says not to: the reply bar's switch, which starts as last set.
@@ -196,6 +215,11 @@ export default function Composer({channelId, rootId = '', placeholder}: Props) {
         if (pending.length) {
             return;
         }
+        if (message.length > maxPostSize) {
+            setSendError(formatMessage({id: 'fusion.composer.tooLong', defaultMessage: 'This message is {over, plural, one {# character} other {# characters}} too long: the limit is {max}.'}, {over: message.length - maxPostSize, max: maxPostSize}));
+            return;
+        }
+        setSendError('');
 
         // A message to a whole channel of many people (@all, @channel, @here) is confirmed first.
         const {data: send} = await dispatch(confirmChannelWideMentions(channelId, draft.message));
@@ -211,6 +235,8 @@ export default function Composer({channelId, rootId = '', placeholder}: Props) {
         const result = await dispatch(onSubmit(channelId, rootId, toSend, {}));
         if (result && 'error' in result && result.error) {
             setDraft(toSend);
+            const error = result.error as {message?: string};
+            setSendError(error.message || formatMessage({id: 'fusion.composer.sendFailed', defaultMessage: 'The message couldn\'t be sent.'}));
         }
     };
 
@@ -252,6 +278,13 @@ export default function Composer({channelId, rootId = '', placeholder}: Props) {
         }
     };
 
+    // The messages you sent, for Ctrl/Cmd+Up and Down; a new message starts after the last one.
+    const sentHistory = useSelector((state: GlobalState) => state.entities.posts.messagesHistory.messages);
+    const historyIndex = useRef(sentHistory.length);
+    useEffect(() => {
+        historyIndex.current = sentHistory.length;
+    }, [sentHistory.length]);
+
     const onKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
         if (autocompleteRef.current?.handleKeyDown(e)) {
             return;
@@ -273,6 +306,41 @@ export default function Composer({channelId, rootId = '', placeholder}: Props) {
         if (e.key === 'ArrowUp' && !draft.message && !e.shiftKey && !e.altKey && !e.ctrlKey && !e.metaKey) {
             e.preventDefault();
             dispatch(editLatestPost(channelId, rootId));
+            return;
+        }
+
+        // Shift+Up replies to the latest message in its thread (inline replies have their own above).
+        if (e.key === 'ArrowUp' && e.shiftKey && !draft.message && !rootId && !inlineReplies && !e.altKey && !e.ctrlKey && !e.metaKey) {
+            e.preventDefault();
+            dispatch(replyToLatestPostInChannel(channelId));
+            return;
+        }
+
+        // Ctrl/Cmd+Up and Down go through the messages you sent, while the composer is empty or holds one of them.
+        const withCtrlOnly = (e.ctrlKey || e.metaKey) && !e.shiftKey && !e.altKey;
+        if (withCtrlOnly && (e.key === 'ArrowUp' || e.key === 'ArrowDown') && (!draft.message || draft.message === sentHistory[historyIndex.current])) {
+            e.preventDefault();
+            const next = historyIndex.current + (e.key === 'ArrowUp' ? -1 : 1);
+            if (next < 0 || next > sentHistory.length) {
+                return;
+            }
+            historyIndex.current = next;
+            change({message: sentHistory[next] || ''});
+            return;
+        }
+
+        if ((e.ctrlKey || e.metaKey) && e.altKey && (e.key.toLowerCase() === 'p' || e.code === 'KeyP')) {
+            e.preventDefault();
+            setPreviewing(!previewing);
+            return;
+        }
+
+        // Ctrl/Cmd+Shift+\ reacts to the latest message of the conversation.
+        if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === '\\' || e.key === '|' || e.code === 'Backslash')) {
+            e.preventDefault();
+            const scope = rootId ? textareaRef.current?.closest('.am-rhs, .am-thread') : document.getElementById('am-view');
+            const messages = scope?.querySelectorAll<HTMLElement>('.am-msg:not(.am-sysline)');
+            messages?.[messages.length - 1]?.querySelector<HTMLButtonElement>('.am-react-btn')?.click();
             return;
         }
         if (e.key === 'Enter' && !e.nativeEvent.isComposing) {
@@ -569,6 +637,49 @@ export default function Composer({channelId, rootId = '', placeholder}: Props) {
             )}
             <div className={am('compose-box')}>
                 {(chips.length > 0 || files.length > 0 || uploads.length > 0) && <div className={am('opt-chips')}>{chips}{files}{uploads}</div>}
+                {previewing && draft.message.trim() && (
+                    <div
+                        className={am('md-preview')}
+                        aria-label={formatMessage({id: 'fusion.composer.previewLabel', defaultMessage: 'Show how the message will look'})}
+                    >
+                        <Markdown message={draft.message}/>
+                    </div>
+                )}
+                {aiBusy && <div className={am('ai-note', 'busy')}>{formatMessage({id: 'fusion.ai.writing', defaultMessage: 'The AI is rewriting your message…'})}</div>}
+                {aiOriginal !== null && !aiBusy && draft.message && (
+                    <div className={am('ai-note')}>
+                        <Icon
+                            name='sparkle'
+                            size='sm'
+                        />
+                        <span>{formatMessage({id: 'fusion.ai.rewritten', defaultMessage: 'Rewritten by AI'})}</span>
+                        <button
+                            type='button'
+                            onClick={() => {
+                                change({message: aiOriginal});
+                                setAiOriginal(null);
+                            }}
+                        >
+                            {formatMessage({id: 'fusion.ai.undo', defaultMessage: 'Undo'})}
+                        </button>
+                    </div>
+                )}
+                {sendError && (
+                    <div
+                        className={am('send-error')}
+                        role='alert'
+                    >
+                        {sendError}
+                    </div>
+                )}
+                {draft.message.length > maxPostSize * 0.9 && (
+                    <span
+                        className={am('len-count', {over: draft.message.length > maxPostSize})}
+                        title={formatMessage({id: 'fusion.composer.lengthTitle', defaultMessage: 'Messages can be up to {max} characters'}, {max: maxPostSize})}
+                    >
+                        {`${draft.message.length} / ${maxPostSize}`}
+                    </span>
+                )}
                 <div className={am('compose-row')}>
                     <button
                         ref={plusRef}
@@ -673,6 +784,25 @@ export default function Composer({channelId, rootId = '', placeholder}: Props) {
                         >
                             <Icon name='dots'/>
                         </button>
+                        <button
+                            type='button'
+                            className={am({on: previewing})}
+                            title={formatMessage({id: 'fusion.composer.preview', defaultMessage: 'Preview (Ctrl+Alt+P)'})}
+                            aria-label={formatMessage({id: 'fusion.composer.previewLabel', defaultMessage: 'Show how the message will look'})}
+                            aria-pressed={previewing}
+                            onClick={() => setPreviewing(!previewing)}
+                        >
+                            <Icon name='text'/>
+                        </button>
+                        <button
+                            type='button'
+                            className={am('fmt-help')}
+                            title={formatMessage({id: 'fusion.composer.help', defaultMessage: 'Help with formatting, mentions, files and commands'})}
+                            aria-label={formatMessage({id: 'fusion.composer.help', defaultMessage: 'Help with formatting, mentions, files and commands'})}
+                            onClick={() => window.open('/help/messaging', '_blank', 'noopener')}
+                        >
+                            {'?'}
+                        </button>
                         <span className={am('grow')}/>
                         {priorityEnabled && !rootId && (
                             <button
@@ -685,6 +815,20 @@ export default function Composer({channelId, rootId = '', placeholder}: Props) {
                                 onClick={() => setMenu(menu === 'priority' ? null : 'priority')}
                             >
                                 <Icon name='flag'/>
+                            </button>
+                        )}
+                        {aiAvailable && (
+                            <button
+                                ref={aiRef}
+                                type='button'
+                                className={am({on: menu === 'ai' || aiBusy})}
+                                title={formatMessage({id: 'fusion.ai.label', defaultMessage: 'Rewrite with AI'})}
+                                aria-label={formatMessage({id: 'fusion.ai.label', defaultMessage: 'Rewrite with AI'})}
+                                aria-haspopup='menu'
+                                disabled={aiBusy}
+                                onClick={() => setMenu(menu === 'ai' ? null : 'ai')}
+                            >
+                                <Icon name='sparkle'/>
                             </button>
                         )}
                         {burnEnabled && (
@@ -788,6 +932,21 @@ export default function Composer({channelId, rootId = '', placeholder}: Props) {
                         }}
                     />
                 </Popover>
+            )}
+            {menu === 'ai' && (
+                <AiRewriteMenu
+                    anchor={aiRef.current}
+                    message={draft.message}
+                    rootId={rootId}
+                    onRewritten={(message, original) => {
+                        change({message});
+                        setAiOriginal(original);
+                        requestAnimationFrame(() => textareaRef.current?.focus());
+                    }}
+                    onError={setSendError}
+                    onBusy={setAiBusy}
+                    onClose={() => setMenu(null)}
+                />
             )}
             {menu === 'schedule' && (
                 <SchedulePopover

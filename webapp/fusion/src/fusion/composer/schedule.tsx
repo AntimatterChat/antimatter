@@ -4,17 +4,21 @@
 import {DateTime} from 'luxon';
 import React, {useState} from 'react';
 import {useIntl} from 'react-intl';
-import {shallowEqual, useSelector} from 'react-redux';
+import {shallowEqual, useDispatch, useSelector} from 'react-redux';
 import {Link} from 'react-router-dom';
 
+import {savePreferences} from 'mattermost-redux/actions/preferences';
+import {get as getPreference} from 'mattermost-redux/selectors/entities/preferences';
 import {showChannelOrThreadScheduledPostIndicator} from 'mattermost-redux/selectors/entities/scheduled_posts';
 import {getCurrentTeam} from 'mattermost-redux/selectors/entities/teams';
 import {getCurrentTimezone} from 'mattermost-redux/selectors/entities/timezone';
+import {getCurrentUserId} from 'mattermost-redux/selectors/entities/users';
 
 import Icon from 'fusion/components/icon';
 import {Popover} from 'fusion/components/layer';
 import {MenuHeading, MenuItem, MenuSeparator} from 'fusion/components/menu';
 import {am} from 'fusion/utils/class_names';
+import {scheduledPosts} from 'utils/constants';
 
 import type {GlobalState} from 'types/store';
 
@@ -80,8 +84,25 @@ export function CustomTimeForm({label, submitLabel, onPick}: {label: string; sub
 export function SchedulePopover({anchor, onSchedule, onClose}: Props) {
     const intl = useIntl();
     const {formatMessage} = intl;
+    const dispatch = useDispatch();
     const zone = useMyZone();
+    const userId = useSelector(getCurrentUserId);
     const when = (ms: number) => intl.formatDate(ms, {weekday: 'short', hour: 'numeric', minute: '2-digit', timeZone: zone});
+
+    // The custom time last used, offered again while it's to come (the classic editor's preference).
+    const recent = useSelector((state: GlobalState) => {
+        try {
+            return (JSON.parse(getPreference(state, scheduledPosts.SCHEDULED_POSTS, scheduledPosts.RECENTLY_USED_CUSTOM_TIME, '{}')) as {timestamp?: number}).timestamp || 0;
+        } catch {
+            return 0;
+        }
+    });
+    const quick = quickTimes(zone);
+    const showRecent = recent > Date.now() && !quick.some(([, ms]) => Math.abs(ms - recent) < 60000);
+    const pickCustom = (at: number) => {
+        dispatch(savePreferences(userId, [{user_id: userId, category: scheduledPosts.SCHEDULED_POSTS, name: scheduledPosts.RECENTLY_USED_CUSTOM_TIME, value: JSON.stringify({update_at: Date.now(), timestamp: at})}]));
+        onSchedule(at);
+    };
 
     return (
         <Popover
@@ -93,7 +114,15 @@ export function SchedulePopover({anchor, onSchedule, onClose}: Props) {
             onClose={onClose}
         >
             <MenuHeading>{formatMessage({id: 'fusion.schedule.label', defaultMessage: 'Schedule message'})}</MenuHeading>
-            {quickTimes(zone).map(([key, ms]) => (
+            {showRecent && (
+                <MenuItem
+                    icon='clock'
+                    label={formatMessage({id: 'fusion.schedule.recent', defaultMessage: 'Recently used custom time'})}
+                    sub={when(recent)}
+                    onClick={() => onSchedule(recent)}
+                />
+            )}
+            {quick.map(([key, ms]) => (
                 <MenuItem
                     key={key}
                     icon='clock'
@@ -106,7 +135,7 @@ export function SchedulePopover({anchor, onSchedule, onClose}: Props) {
             <CustomTimeForm
                 label={formatMessage({id: 'fusion.schedule.custom', defaultMessage: 'Custom time'})}
                 submitLabel={formatMessage({id: 'fusion.schedule.send', defaultMessage: 'Schedule'})}
-                onPick={onSchedule}
+                onPick={pickCustom}
             />
         </Popover>
     );

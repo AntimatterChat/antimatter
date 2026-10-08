@@ -14,3 +14,20 @@
 
 // Commands from integrations show their icon, as the mockup's .plug badge.
 :is(.am-app, .am-layer) .am-ac-pop .am-plug-ic { width: 16px; height: 16px; margin-right: 4px; border-radius: 4px; vertical-align: -3px; object-fit: contain; }
+
+// A message that couldn't be sent, and the length count near the limit.
+:is(.am-app, .am-layer) .am-send-error { margin: 0 12px 6px; padding: 6px 10px; border-radius: 8px; background: color-mix(in srgb, var(--am-danger) 14%, transparent); color: var(--am-danger); font-size: 13px; }
+:is(.am-app, .am-layer) .am-len-count { align-self: flex-end; margin: 0 14px 4px; font: 12px var(--am-font-mono); color: var(--am-muted); }
+:is(.am-app, .am-layer) .am-len-count.am-over { color: var(--am-danger); font-weight: 700; }
+:is(.am-app, .am-layer) .am-md-preview { margin: 0 12px 8px; padding: 8px 12px; max-height: 220px; overflow-y: auto; border-radius: 10px; border: 1px dashed var(--am-line); color: var(--am-text); font-size: 14.5px; }
+:is(.am-app, .am-layer) .am-fmt-bar .am-fmt-help { width: 28px; height: 28px; border-radius: 7px; display: grid; place-items: center; color: var(--am-muted); font: 700 14px var(--am-font-ui); text-decoration: none; }
+:is(.am-app, .am-layer) .am-fmt-bar .am-fmt-help:hover { background: var(--am-hover); color: var(--am-text); }
+
+// AI rewriting: the prompt in its menu, and the note while and after it writes.
+:is(.am-app, .am-layer) .am-ai-pop { width: 280px; }
+:is(.am-app, .am-layer) .am-ai-prompt { padding: 4px 8px 8px; }
+:is(.am-app, .am-layer) .am-ai-prompt input { width: 100%; height: 32px; padding: 0 10px; border-radius: 8px; border: 1px solid var(--am-line); background: var(--am-main); color: var(--am-text); }
+:is(.am-app, .am-layer) .am-ai-note { display: flex; align-items: center; gap: 8px; margin: 0 12px 6px; padding: 5px 10px; border-radius: 8px; background: var(--am-matter-soft); color: var(--am-text-2); font-size: 13px; }
+:is(.am-app, .am-layer) .am-ai-note.am-busy { animation: am-ai-pulse 1.4s ease-in-out infinite; }
+:is(.am-app, .am-layer) .am-ai-note button { margin-left: auto; color: var(--am-matter); font-weight: 700; }
+@keyframes am-ai-pulse { 50% { opacity: .55; } }

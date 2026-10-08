@@ -195,6 +195,7 @@ export function AdvancedPane() {
     const config = useSelector(getConfig);
     const [streamer, setStreamer] = usePreference(CATEGORY_FUSION_DISPLAY, STREAMER_MODE, 'false');
     const [developer, setDeveloper] = usePreference(CATEGORY_FUSION_DISPLAY, DEVELOPER_MODE, 'false');
+    const [syncDrafts, setSyncDrafts] = usePreference(Preferences.CATEGORY_ADVANCED_SETTINGS, ReduxPreferences.ADVANCED_SYNC_DRAFTS, 'true');
     const [noPlugins, setNoPlugins] = usePreference(ReduxPreferences.CATEGORY_PERFORMANCE_DEBUGGING, ReduxPreferences.NAME_DISABLE_CLIENT_PLUGINS, 'false');
     const [noTyping, setNoTyping] = usePreference(ReduxPreferences.CATEGORY_PERFORMANCE_DEBUGGING, ReduxPreferences.NAME_DISABLE_TYPING_MESSAGES, 'false');
 
@@ -214,6 +215,14 @@ export function AdvancedPane() {
                 on={developer === 'true'}
                 onChange={(on) => setDeveloper(String(on))}
             />
+            {config.AllowSyncedDrafts === 'true' && (
+                <Toggle
+                    title={formatMessage({id: 'fusion.settings.syncDrafts', defaultMessage: 'Sync drafts'})}
+                    desc={formatMessage({id: 'fusion.settings.syncDraftsDesc', defaultMessage: 'Keep unsent messages on the server, to find them on your other devices.'})}
+                    on={syncDrafts !== 'false'}
+                    onChange={(on) => setSyncDrafts(String(on))}
+                />
+            )}
             {config.EnableClientPerformanceDebugging === 'true' && (
                 <>
                     <Section title={formatMessage({id: 'fusion.settings.performance', defaultMessage: 'Performance debugging'})}/>

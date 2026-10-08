@@ -16,18 +16,21 @@ import {getThreads} from 'mattermost-redux/selectors/entities/threads';
 import {selectPostById} from 'actions/views/rhs';
 import {getSelectedPostId} from 'selectors/rhs';
 
+import {getThreadTitle} from 'fusion/messages/thread_title';
 import {am} from 'fusion/utils/class_names';
 import {plainText} from 'fusion/utils/plain_text';
 
 import type {GlobalState} from 'types/store';
 
-// A followed thread shows under its channel while it has unread replies, and while it's open in the right panel.
+// A followed thread shows under its channel while it has unread replies, while it's open in the right panel, and
+// always when it's named (a sub-chat): named ones first.
 function sidebarThreadIds(state: GlobalState, channelId: string): string[] {
     const selected = getSelectedPostId(state);
+    const named = (thread: UserThread) => Boolean(getThreadTitle(getPost(state, thread.id)));
     return Object.values(getThreads(state)).
-        filter((thread: UserThread) => thread.post?.channel_id === channelId && thread.is_following && (thread.unread_replies > 0 || thread.id === selected)).
-        sort((a, b) => b.last_reply_at - a.last_reply_at).
-        slice(0, 5).
+        filter((thread: UserThread) => thread.post?.channel_id === channelId && thread.is_following && (thread.unread_replies > 0 || thread.id === selected || named(thread))).
+        sort((a, b) => Number(named(b)) - Number(named(a)) || b.last_reply_at - a.last_reply_at).
+        slice(0, 8).
         map((thread) => thread.id);
 }
 
@@ -35,7 +38,9 @@ function ThreadRow({threadId}: {threadId: string}) {
     const {formatMessage} = useIntl();
     const dispatch = useDispatch();
     const thread = useSelector((state: GlobalState) => getThreads(state)[threadId]);
-    const title = useSelector((state: GlobalState) => plainText(getPost(state, threadId)?.message || '').slice(0, 80));
+    const named = useSelector((state: GlobalState) => getThreadTitle(getPost(state, threadId)));
+    const firstWords = useSelector((state: GlobalState) => plainText(getPost(state, threadId)?.message || '').slice(0, 80));
+    const title = named || firstWords;
     const open = useSelector(getSelectedPostId) === threadId;
     if (!thread) {
         return null;
@@ -44,7 +49,7 @@ function ThreadRow({threadId}: {threadId: string}) {
     return (
         <button
             type='button'
-            className={am('ch', 'ch-thread', {active: open, unread: thread.unread_replies > 0})}
+            className={am('ch', 'ch-thread', {active: open, unread: thread.unread_replies > 0, named: Boolean(named)})}
             title={name}
             aria-label={formatMessage({id: 'fusion.sidebar.threadLabel', defaultMessage: 'Thread: {name}, {count, plural, one {# new reply} other {# new replies}}'}, {name, count: thread.unread_replies})}
             onClick={() => dispatch(selectPostById(threadId))}
@@ -88,6 +93,7 @@ export function useSidebarThreads() {
     useEffect(() => {
         if (crt && teamId) {
             dispatch(getThreadsForCurrentTeam({unread: true}));
+            dispatch(getThreadsForCurrentTeam());
         }
     }, [crt, teamId, dispatch]);
 }

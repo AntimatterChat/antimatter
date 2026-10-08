@@ -11,8 +11,10 @@ import type {UserProfile} from '@mattermost/types/users';
 import {selectPost} from 'actions/views/rhs';
 
 import Avatar from 'fusion/components/avatar';
+import Icon from 'fusion/components/icon';
 import {am} from 'fusion/utils/class_names';
 
+import {getThreadTitle} from './thread_title';
 import {useWhen} from './time';
 
 // ThreadSummary sits under a message with replies: who replied, how many, when, and opens the thread.
@@ -23,8 +25,11 @@ export default function ThreadSummary({post}: {post: Post}) {
     const replies = post.reply_count || 0;
     const participants = (post.participants || []).slice(0, 3);
 
-    // Like the classic thread footer: only for threads with replies (a call post is followed by its starter)
-    if (!replies) {
+    const title = getThreadTitle(post);
+
+    // Like the classic thread footer: only for threads with replies (a call post is followed by its starter), or
+    // named ones.
+    if (!replies && !title) {
         return null;
     }
     return (
@@ -42,6 +47,15 @@ export default function ThreadSummary({post}: {post: Post}) {
                         />
                     ))}
                 </span>
+            )}
+            {title && (
+                <b className={am('thread-name')}>
+                    <Icon
+                        name='thread'
+                        size='xs'
+                    />
+                    {title}
+                </b>
             )}
             <span className={am('count')}>
                 {formatMessage({id: 'fusion.thread.replies', defaultMessage: '{count, plural, one {# reply} other {# replies}}'}, {count: replies})}

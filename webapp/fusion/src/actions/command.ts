@@ -26,7 +26,6 @@ import KeyboardShortcutsModal from 'components/keyboard_shortcuts/keyboard_short
 import LeaveChannelModal from 'components/leave_channel_modal';
 import MarketplaceModal from 'components/plugin_marketplace/marketplace_modal';
 import {AppCommandParser} from 'components/suggestion/command_provider/app_command_parser/app_command_parser';
-import UserSettingsModal from 'components/user_settings/modal';
 
 import {getHistory} from 'utils/browser_history';
 import {Constants, ModalIdentifiers} from 'utils/constants';
@@ -115,7 +114,8 @@ export function executeCommand(message: string, args: CommandArgs): ActionFuncAs
             break;
         }
         case '/settings':
-            dispatch(openModal({modalId: ModalIdentifiers.USER_SETTINGS, dialogType: UserSettingsModal, dialogProps: {isContentProductSettings: true}}));
+            // Antimatter: the Fusion UI has its own settings.
+            window.dispatchEvent(new CustomEvent('am-open-settings'));
             return {data: {frontendHandled: true}};
         case '/marketplace':
             // check if user has permissions to access the read plugins
