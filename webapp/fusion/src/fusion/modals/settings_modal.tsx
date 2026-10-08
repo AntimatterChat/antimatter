@@ -30,7 +30,7 @@ import Icon from 'fusion/components/icon';
 import {Dialog} from 'fusion/components/layer';
 import {useDisplayPrefs} from 'fusion/hooks/display';
 import {useToast} from 'fusion/shell/toast_context';
-import {getTeamsByUser, TEAM_BADGE_PROP} from 'fusion/teams/teams';
+import {badgesRequired, getTeamsByUser, TEAM_BADGE_PROP} from 'fusion/teams/teams';
 import {am} from 'fusion/utils/class_names';
 import {openClassicUserSettings} from 'fusion/utils/modals';
 import {getLanguages} from 'i18n/i18n';
@@ -182,10 +182,16 @@ function TeamBadgeField() {
     const me = useSelector(getCurrentUser);
     const allMyTeams = useSelector((state: GlobalState) => getTeamsByUser(state)[me.id]);
     const myTeams = useMemo(() => (allMyTeams || []).filter((t) => t.tag), [allMyTeams]);
+    const required = useSelector(badgesRequired);
     if (!myTeams.length) {
         return null;
     }
-    const chosen = myTeams.some((t) => t.id === me.props?.[TEAM_BADGE_PROP]) ? me.props[TEAM_BADGE_PROP] : '';
+
+    // Where the team asks everyone to show a badge, there's no "None": without a choice, the first team shows.
+    let chosen = myTeams.some((t) => t.id === me.props?.[TEAM_BADGE_PROP]) ? me.props[TEAM_BADGE_PROP] : '';
+    if (required && !chosen) {
+        chosen = myTeams[0]?.id || '';
+    }
     return (
         <label className={am('field')}>
             <span>{formatMessage({id: 'fusion.settings.teamBadge', defaultMessage: 'Team badge'})}</span>
@@ -197,7 +203,7 @@ function TeamBadgeField() {
                     toast(team ? formatMessage({id: 'fusion.toast.teamBadge', defaultMessage: 'Team badge: {tag}'}, {tag: team.tag}) : formatMessage({id: 'fusion.toast.teamBadgeHidden', defaultMessage: 'Team badge hidden'}));
                 }}
             >
-                <option value=''>{formatMessage({id: 'fusion.settings.teamBadgeNone', defaultMessage: 'None'})}</option>
+                {!required && <option value=''>{formatMessage({id: 'fusion.settings.teamBadgeNone', defaultMessage: 'None'})}</option>}
                 {myTeams.map((t) => (
                     <option
                         key={t.id}
@@ -207,7 +213,7 @@ function TeamBadgeField() {
                     </option>
                 ))}
             </select>
-            <small>{formatMessage({id: 'fusion.settings.teamBadgeHelp', defaultMessage: 'Shown next to your name, like a server tag. Only teams you belong to are listed.'})}</small>
+            <small>{required ? formatMessage({id: 'fusion.settings.teamBadgeRequired', defaultMessage: 'Shown next to your name: this team asks everyone to show one. Only teams you belong to are listed.'}) : formatMessage({id: 'fusion.settings.teamBadgeHelp', defaultMessage: 'Shown next to your name, like a server tag. Only teams you belong to are listed.'})}</small>
         </label>
     );
 }

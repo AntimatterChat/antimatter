@@ -27,6 +27,7 @@ import {useDisplayName} from 'fusion/hooks/users';
 import {usePreference} from 'fusion/modals/settings_controls';
 import {useUserMenu} from 'fusion/popovers/user_menu';
 import UserPopover from 'fusion/popovers/user_popover';
+import {useRoleColor} from 'fusion/teams/roles';
 import {TeamTag} from 'fusion/teams/team_card';
 import {getTeams, useRoleGroupsAllowed} from 'fusion/teams/teams';
 import {am} from 'fusion/utils/class_names';
@@ -53,6 +54,7 @@ const NO_REQUESTS: ReturnType<typeof getPendingChannelJoinRequests> = [];
 function Member({user, off, role, onOpen, onMenu}: MemberProps) {
     const {formatMessage} = useIntl();
     const name = useDisplayName(user);
+    const roleColor = useRoleColor(user.id);
     const getCustomStatus = useMemo(() => makeGetCustomStatus(), []);
     const custom = useSelector((state: GlobalState) => getCustomStatus(state, user.id));
     return (
@@ -66,7 +68,7 @@ function Member({user, off, role, onOpen, onMenu}: MemberProps) {
                 status={true}
             />
             <span className={am('who')}>
-                <b style={role ? {color: ROLE_COLORS[role]} : undefined}>
+                <b style={roleColor || role ? {color: roleColor || ROLE_COLORS[role]} : undefined}>
                     <span className={am('nm')}>{name}</span>
                     {user.remote_id && (
                         <span

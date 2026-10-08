@@ -26,6 +26,12 @@ describe('teams', () => {
         expect(badgeTeam(user('ada', ''), teamsByUser)).toBeUndefined();
     });
 
+    test('where badges are required, someone who chose none shows their first tagged team', () => {
+        expect(badgeTeam(user('ada'), teamsByUser, true)).toBe(det);
+        expect(badgeTeam(user('ada', 'ops'), teamsByUser, true)).toBe(ops);
+        expect(badgeTeam(user('ivo'), teamsByUser, true)).toBeUndefined();
+    });
+
     test('people are listed under their badge team, else their first team', () => {
         expect(mainTeam(user('ada', 'ops'), teamsByUser)).toBe(ops);
         expect(mainTeam(user('ada'), teamsByUser)).toBe(det);

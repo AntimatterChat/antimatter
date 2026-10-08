@@ -20,8 +20,10 @@ import CallUserButton, {useCanCall} from 'fusion/calls/call_user_button';
 import Avatar from 'fusion/components/avatar';
 import Icon from 'fusion/components/icon';
 import {Popover} from 'fusion/components/layer';
+import {useExclusiveCard} from 'fusion/components/layer/exclusive';
 import {useDisplayName, useUser, useUserStatus} from 'fusion/hooks/users';
 import {useSettings} from 'fusion/shell/settings_context';
+import {useRoleColor} from 'fusion/teams/roles';
 import {TeamTag} from 'fusion/teams/team_card';
 import {am} from 'fusion/utils/class_names';
 import {openDialog} from 'fusion/utils/modals';
@@ -93,6 +95,8 @@ export default function UserPopover({userId, anchor, onClose}: Props) {
         const member = team ? getTeamMember(state, team.id, userId) : undefined;
         return userId !== me && canManageAnyChannelMembersInCurrentTeam(state) && Boolean(member) && member?.delete_at === 0;
     });
+    const roleColor = useRoleColor(userId);
+    useExclusiveCard(onClose);
     const statusButton = useRef<HTMLButtonElement>(null);
     const [settingStatus, setSettingStatus] = useState(false);
 
@@ -125,7 +129,7 @@ export default function UserPopover({userId, anchor, onClose}: Props) {
                     size='xl'
                     status={true}
                 />
-                <h4 style={{display: 'flex', alignItems: 'center', gap: 6}}>
+                <h4 style={{display: 'flex', alignItems: 'center', gap: 6, color: roleColor}}>
                     {name}
                     {bot && <span className={am('bot-tag')}>{'BOT'}</span>}
                     <TeamTag user={user}/>

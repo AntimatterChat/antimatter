@@ -1,7 +1,7 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {useIntl} from 'react-intl';
 import {useDispatch, useSelector} from 'react-redux';
 
@@ -20,6 +20,7 @@ import {openDirectChannelToUserId} from 'actions/channel_actions';
 import Avatar from 'fusion/components/avatar';
 import Icon from 'fusion/components/icon';
 import {Popover} from 'fusion/components/layer';
+import {useExclusiveCard} from 'fusion/components/layer/exclusive';
 import type {Placement} from 'fusion/components/layer/layer';
 import {useDisplayName, useUser} from 'fusion/hooks/users';
 import {am} from 'fusion/utils/class_names';
@@ -33,49 +34,67 @@ import {useBadgeTeam} from './teams';
 
 const FACES = 10;
 
-// TeamTag is the short tag of the team someone shows next to their name, as a server tag; it opens the team's card.
+const OPEN_TEAM_CARD = 'am-open-team-card';
+
+type OpenTeamCard = {teamId: string; x: number; y: number};
+
+// TeamTag is the short tag of the team someone shows next to their name, as a server tag; it opens the team's card,
+// in place of a profile card it may sit in (one card at a time).
 export function TeamTag({user}: {user: UserProfile | undefined}) {
     const team = useBadgeTeam(user);
-    const ref = useRef<HTMLButtonElement>(null);
-    const [open, setOpen] = useState(false);
     if (!team) {
         return null;
     }
     return (
-        <>
-            <button
-                ref={ref}
-                type='button'
-                className={am('team-tag')}
-                title={team.display_name}
-                onClick={(e) => {
-                    e.stopPropagation();
-                    setOpen(!open);
-                }}
-            >
-                {team.tag}
-            </button>
-            {open && (
-                <TeamCard
-                    team={team}
-                    anchor={ref.current}
-                    onClose={() => setOpen(false)}
-                />
-            )}
-        </>
+        <button
+            type='button'
+            className={am('team-tag')}
+            title={team.display_name}
+            onClick={(e) => {
+                e.stopPropagation();
+                const rect = e.currentTarget.getBoundingClientRect();
+                window.dispatchEvent(new CustomEvent<OpenTeamCard>(OPEN_TEAM_CARD, {detail: {teamId: team.id, x: rect.left, y: rect.bottom + 6}}));
+            }}
+        >
+            {team.tag}
+        </button>
+    );
+}
+
+// TeamCardHost shows the team card a tag opened, for the whole app: the card outlives the profile card or message the
+// tag was in.
+export function TeamCardHost() {
+    const [open, setOpen] = useState<OpenTeamCard | null>(null);
+    const team = useSelector((state: GlobalState) => (open ? state.entities.groups.groups[open.teamId] : undefined));
+    useEffect(() => {
+        const onOpen = (e: Event) => setOpen((e as CustomEvent<OpenTeamCard>).detail);
+        window.addEventListener(OPEN_TEAM_CARD, onOpen);
+        return () => window.removeEventListener(OPEN_TEAM_CARD, onOpen);
+    }, []);
+    if (!open || !team) {
+        return null;
+    }
+    return (
+        <TeamCard
+            key={`${open.teamId}-${open.x}-${open.y}`}
+            team={team}
+            point={{x: open.x, y: open.y}}
+            onClose={() => setOpen(null)}
+        />
     );
 }
 
 type CardProps = {
     team: Group;
-    anchor: HTMLElement | null;
+    anchor?: HTMLElement | null;
+    point?: {x: number; y: number};
     placement?: Placement;
     onClose: () => void;
 };
 
 // TeamCard shows a team as in the mockup: its tag and name, what it does, its lead, its channel and its members, and a
 // way to reach it: its channel, else its lead. Those who may edit the team can change its tag, lead and channel here.
-export default function TeamCard({team, anchor, placement = 'below-start', onClose}: CardProps) {
+export default function TeamCard({team, anchor, point, placement = 'below-start', onClose}: CardProps) {
     const {formatMessage} = useIntl();
     const dispatch = useDispatch();
     const members = team.member_ids || [];
@@ -86,6 +105,7 @@ export default function TeamCard({team, anchor, placement = 'below-start', onClo
     const currentTeam = useSelector(getCurrentTeam);
     const canEdit = useSelector((state: GlobalState) => haveIGroupPermission(state, team.id, Permissions.EDIT_CUSTOM_GROUP));
     const [editing, setEditing] = useState(false);
+    useExclusiveCard(onClose);
 
     useEffect(() => {
         dispatch(getMissingProfilesByIds([...members.slice(0, FACES), ...(team.lead_id ? [team.lead_id] : [])]));
@@ -151,7 +171,8 @@ export default function TeamCard({team, anchor, placement = 'below-start', onClo
     return (
         <Popover
             anchor={anchor}
-            placement={placement}
+            point={point}
+            placement={point ? 'point' : placement}
             className='team-pop'
             label={team.display_name}
             onClose={onClose}

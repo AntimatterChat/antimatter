@@ -1,6 +1,7 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 
+import {useMemo} from 'react';
 import {useIntl} from 'react-intl';
 import {shallowEqual, useSelector} from 'react-redux';
 
@@ -12,6 +13,7 @@ import {getCurrentTeamId, getMembersInTeams} from 'mattermost-redux/selectors/en
 import {getStatusForUserId} from 'mattermost-redux/selectors/entities/users';
 import {isSystemAdmin} from 'mattermost-redux/utils/user_utils';
 
+import {getMemberRolesForCurrentTeam, getTeamRoles, hoistedRole} from 'fusion/teams/roles';
 import {getTeamsByUser, mainTeam} from 'fusion/teams/teams';
 
 import type {GlobalState} from 'types/store';
@@ -72,6 +74,9 @@ export function useMemberGroups(users: UserProfile[], roles: Record<string, Memb
     const {formatMessage} = useIntl();
     const statuses = useSelector((state: GlobalState) => Object.fromEntries(users.map((u) => [u.id, getStatusForUserId(state, u.id)])), shallowEqual);
     const teamsByUser = useSelector(getTeamsByUser);
+    const memberRoles = useSelector(getMemberRolesForCurrentTeam);
+    const teamRoles = useSelector((state: GlobalState) => getTeamRoles(state, getCurrentTeamId(state)));
+    const hoisted = useMemo(() => teamRoles.filter((r) => r.hoist), [teamRoles]);
     const isOnline = (u: UserProfile) => Boolean(statuses[u.id]) && statuses[u.id] !== 'offline';
 
     if (grouping === 'teams') {
@@ -105,6 +110,33 @@ export function useMemberGroups(users: UserProfile[], roles: Record<string, Memb
             {key: 'offline', label: formatMessage({id: 'fusion.members.offline', defaultMessage: 'Offline — {count}'}, {count: othersOffline.length}), users: othersOffline, off: true},
         ];
         return [...teamGroups, ...rest].filter((g) => g.users.length > 0);
+    }
+
+    // The team's roles shown apart come first, highest first, each with the online people whose highest such role it is.
+    if (hoisted.length) {
+        const online = users.filter(isOnline);
+        const byRole = new Map<string, UserProfile[]>();
+        const rest: UserProfile[] = [];
+        for (const u of online) {
+            const role = hoistedRole(memberRoles[u.id]);
+            if (role) {
+                byRole.set(role.id, [...(byRole.get(role.id) || []), u]);
+            } else {
+                rest.push(u);
+            }
+        }
+        const offline = users.filter((u) => !isOnline(u));
+        return [
+            ...hoisted.map((role) => ({
+                key: `role-${role.id}`,
+                label: formatMessage({id: 'fusion.members.role', defaultMessage: '{role} — {count}'}, {role: role.display_name, count: byRole.get(role.id)?.length || 0}),
+                color: role.color || undefined,
+                users: byRole.get(role.id) || [],
+                off: false,
+            })),
+            {key: 'online', label: formatMessage({id: 'fusion.members.online', defaultMessage: 'Online — {count}'}, {count: rest.length}), users: rest, off: false},
+            {key: 'offline', label: formatMessage({id: 'fusion.members.offline', defaultMessage: 'Offline — {count}'}, {count: offline.length}), users: offline, off: true},
+        ].filter((g) => g.users.length > 0);
     }
 
     const online = users.filter(isOnline);

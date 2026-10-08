@@ -13,12 +13,13 @@ import {isGuest, isSystemAdmin} from 'mattermost-redux/utils/user_utils';
 
 import {useUser} from 'fusion/hooks/users';
 import {ROLE_COLORS} from 'fusion/members/member_groups';
+import {useMemberRoles} from 'fusion/teams/roles';
 import {am} from 'fusion/utils/class_names';
 
 import type {GlobalState} from 'types/store';
 
-// RoleChips shows someone's Mattermost roles on their profile card, as the mockup's role chips: System Admin, Team
-// Admin, Channel Admin, Guest, Bot.
+// RoleChips shows someone's roles on their profile card, as the mockup's role chips: the team's roles, then System
+// Admin, Team Admin, Channel Admin, Guest, Bot.
 export default function RoleChips({userId}: {userId: string}) {
     const {formatMessage} = useIntl();
     const dispatch = useDispatch();
@@ -28,6 +29,7 @@ export default function RoleChips({userId}: {userId: string}) {
     const channelId = channel && (channel.type === 'O' || channel.type === 'P') ? channel.id : '';
     const teamMember = useSelector((state: GlobalState) => getMembersInTeams(state)[teamId]?.[userId]);
     const channelMember = useSelector((state: GlobalState) => (channelId ? getChannelMembersInChannels(state)[channelId]?.[userId] : undefined));
+    const displayRoles = useMemberRoles(userId);
     const inChannel = useSelector((state: GlobalState) => Boolean(channelId && state.entities.users.profilesInChannel[channelId]?.has(userId)));
 
     useEffect(() => {
@@ -45,7 +47,9 @@ export default function RoleChips({userId}: {userId: string}) {
     if (!user) {
         return null;
     }
-    const chips: Array<[string, string]> = [];
+
+    // The team's roles first, highest first, in their colour; then the Mattermost ones.
+    const chips: Array<[string, string]> = displayRoles.map((r) => [r.display_name, r.color || 'var(--am-muted)']);
     if (isSystemAdmin(user.roles || '')) {
         chips.push([formatMessage({id: 'fusion.roles.systemAdmin', defaultMessage: 'System Admin'}), ROLE_COLORS.admin]);
     }

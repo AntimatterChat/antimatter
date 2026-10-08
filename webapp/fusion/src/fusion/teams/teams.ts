@@ -10,6 +10,7 @@ import type {UserProfile} from '@mattermost/types/users';
 import {getGroups} from 'mattermost-redux/actions/groups';
 import {createSelector} from 'mattermost-redux/selectors/create_selector';
 import {getConfig} from 'mattermost-redux/selectors/entities/general';
+import {getCurrentTeam} from 'mattermost-redux/selectors/entities/teams';
 
 import type {GlobalState} from 'types/store';
 
@@ -20,12 +21,12 @@ export const TEAM_BADGE_PROP = 'team_badge';
 
 const NO_TEAMS: Group[] = [];
 
-// getTeams lists the teams (the custom groups not archived), by name.
+// getTeams lists the teams (the custom groups not archived, but for roles: groups of one Mattermost team), by name.
 export const getTeams = createSelector(
     'fusionGetTeams',
     (state: GlobalState) => state.entities.groups.groups,
     (groups): Group[] => {
-        const teams = Object.values(groups).filter((g) => g.source === 'custom' && g.delete_at === 0);
+        const teams = Object.values(groups).filter((g) => g.source === 'custom' && g.delete_at === 0 && !g.team_id);
         return teams.length ? teams.sort((a, b) => a.display_name.localeCompare(b.display_name)) : NO_TEAMS;
     },
 );
@@ -45,13 +46,19 @@ export const getTeamsByUser = createSelector(
     },
 );
 
-// badgeTeam is the team whose tag someone shows, if they chose one, still belong to it, and it has a tag.
-export function badgeTeam(user: UserProfile | undefined, teamsByUser: Record<string, Group[]>): Group | undefined {
-    const chosen = user?.props?.[TEAM_BADGE_PROP];
-    if (!user || !chosen) {
+// badgeTeam is the team whose tag someone shows, if they chose one, still belong to it, and it has a tag. Where badges
+// are required (a team setting, for example in a company), someone who chose none shows their first team's tag.
+export function badgeTeam(user: UserProfile | undefined, teamsByUser: Record<string, Group[]>, required = false): Group | undefined {
+    if (!user) {
         return undefined;
     }
-    return (teamsByUser[user.id] || []).find((t) => t.id === chosen && t.tag);
+    const tagged = (teamsByUser[user.id] || []).filter((t) => t.tag);
+    const chosen = user.props?.[TEAM_BADGE_PROP];
+    return tagged.find((t) => t.id === chosen) || (required ? tagged[0] : undefined);
+}
+
+export function badgesRequired(state: GlobalState): boolean {
+    return Boolean(getCurrentTeam(state)?.require_team_badges);
 }
 
 // mainTeam is the team someone is listed under in the member list: the one whose tag they show, else their first.
@@ -61,7 +68,7 @@ export function mainTeam(user: UserProfile, teamsByUser: Record<string, Group[]>
 }
 
 export function useBadgeTeam(user: UserProfile | undefined): Group | undefined {
-    return useSelector((state: GlobalState) => badgeTeam(user, getTeamsByUser(state)));
+    return useSelector((state: GlobalState) => badgeTeam(user, getTeamsByUser(state), badgesRequired(state)));
 }
 
 // useLoadTeams loads the teams and their members, once for the app and again when asked (after an edit).

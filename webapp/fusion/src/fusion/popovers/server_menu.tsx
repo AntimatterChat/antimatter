@@ -166,6 +166,14 @@ export default function ServerMenu({team: forTeam, anchor, point, width, onClose
                     onClick={inTeam(() => dispatch(openTeamSettings()))}
                 />
             )}
+            {canManage && customGroups && (
+                <MenuItem
+                    icon='shield'
+                    label={formatMessage({id: 'fusion.serverMenu.roles', defaultMessage: 'Roles…'})}
+                    sub={formatMessage({id: 'fusion.serverMenu.rolesSub', defaultMessage: 'Colours, groups in the member list, badges'})}
+                    onClick={inTeam(() => dialogs.roles())}
+                />
+            )}
             {customGroups && (
                 <MenuItem
                     icon='tag'

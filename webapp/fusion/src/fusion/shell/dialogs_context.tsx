@@ -11,6 +11,7 @@ import AddPeopleDialog from 'fusion/modals/add_people_dialog';
 import CreateCategoryDialog from 'fusion/modals/create_category_dialog';
 import CreateChannelDialog from 'fusion/modals/create_channel_dialog';
 import DeleteMessageDialog from 'fusion/modals/delete_message_dialog';
+import RolesDialog from 'fusion/teams/roles_dialog';
 import {openInvitePeople, openNewChannel} from 'fusion/utils/modals';
 
 type Dialogs = {
@@ -32,11 +33,14 @@ type Dialogs = {
 
     // Rename a server category (team admins).
     renameServerCategory: (name: string) => void;
+
+    // Set up the team's roles (team admins).
+    roles: () => void;
 };
 
-const DialogsContext = createContext<Dialogs>({createChannel: () => {}, addPeople: () => {}, invite: () => {}, deleteMessage: () => {}, createCategory: () => {}, renameServerCategory: () => {}});
+const DialogsContext = createContext<Dialogs>({createChannel: () => {}, addPeople: () => {}, invite: () => {}, deleteMessage: () => {}, createCategory: () => {}, renameServerCategory: () => {}, roles: () => {}});
 
-type Open = {kind: 'create'; categoryId?: string} | {kind: 'add'; channel: Channel} | {kind: 'delete'; post: Post} | {kind: 'category'; renaming?: string} | null;
+type Open = {kind: 'create'; categoryId?: string} | {kind: 'add'; channel: Channel} | {kind: 'delete'; post: Post} | {kind: 'category'; renaming?: string} | {kind: 'roles'} | null;
 
 // DialogsProvider owns the Fusion UI's own dialogs that menus and buttons open, outliving the menu that opened them.
 export function DialogsProvider({children}: {children: React.ReactNode}) {
@@ -50,6 +54,7 @@ export function DialogsProvider({children}: {children: React.ReactNode}) {
         deleteMessage: (post) => setOpen({kind: 'delete', post}),
         createCategory: () => setOpen({kind: 'category'}),
         renameServerCategory: (name) => setOpen({kind: 'category', renaming: name}),
+        roles: () => setOpen({kind: 'roles'}),
     }), [dispatch]);
 
     const close = () => setOpen(null);
@@ -82,6 +87,7 @@ export function DialogsProvider({children}: {children: React.ReactNode}) {
                     onClose={close}
                 />
             )}
+            {open?.kind === 'roles' && <RolesDialog onClose={close}/>}
             {open?.kind === 'category' && (
                 <CreateCategoryDialog
                     renaming={open.renaming}

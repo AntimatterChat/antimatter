@@ -35,6 +35,7 @@ import EmojiPicker from 'fusion/popovers/emoji_picker';
 import {useUserMenu} from 'fusion/popovers/user_menu';
 import UserPopover from 'fusion/popovers/user_popover';
 import {getOneClickEmoji} from 'fusion/selectors';
+import {useRoleColor} from 'fusion/teams/roles';
 import {TeamTag} from 'fusion/teams/team_card';
 import {am} from 'fusion/utils/class_names';
 import Pluggable from 'plugins/pluggable';
@@ -103,6 +104,17 @@ function SystemLine({post}: {post: Post}) {
 
 const NO_ACTIONS: PostActionComponent[] = [];
 
+// authorStyle colours an author's name: their role's colour, else their own colour when names are coloured.
+function authorStyle(roleColor: string | undefined, colorize: boolean, userId: string, automated: boolean): React.CSSProperties | undefined {
+    if (automated) {
+        return undefined;
+    }
+    if (roleColor) {
+        return {color: roleColor};
+    }
+    return colorize ? {color: nameColor(userId)} : undefined;
+}
+
 export default function Message({postId, previousPostId, inThread = false, highlighted = false}: Props) {
     const intl = useIntl();
     const {formatMessage} = intl;
@@ -129,6 +141,9 @@ export default function Message({postId, previousPostId, inThread = false, highl
     const callCard = useCallCard(post);
     const inlineReplies = useInlineRepliesEnabled();
     const prefs = useDisplayPrefs();
+
+    // A role colour wins over the per-person colours of coloured names.
+    const roleColor = useRoleColor(post?.user_id);
     const recentEmoji = useSelector(getOneClickEmoji, shallowEqual);
     const pluginActions = useSelector((state: GlobalState) => state.plugins.components.PostAction) || NO_ACTIONS;
     const [spoilerShown, setSpoilerShown] = useSpoilerShown(postId);
@@ -551,7 +566,7 @@ export default function Message({postId, previousPostId, inThread = false, highl
                 <div className={am('msg-head')}>
                     <button
                         className={am('author')}
-                        style={prefs.colorize && !webhook && !bot ? {color: nameColor(post.user_id)} : undefined}
+                        style={authorStyle(roleColor, prefs.colorize, post.user_id, Boolean(webhook || bot))}
                         onClick={() => setPopover('user')}
                         onContextMenu={(e) => openUserMenu(post.user_id, e)}
                     >

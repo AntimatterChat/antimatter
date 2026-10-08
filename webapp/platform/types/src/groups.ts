@@ -32,6 +32,13 @@ export type GroupTeamPatch = {
     tag?: string;
     lead_id?: string;
     channel_id?: string;
+
+    // A role's look and place.
+    display_name?: string;
+    color?: string;
+    icon?: string;
+    position?: number;
+    hoist?: boolean;
 };
 
 export type Group = {
@@ -56,6 +63,13 @@ export type Group = {
     tag?: string;
     lead_id?: string;
     channel_id?: string;
+
+    /** Antimatter roles are groups of one team: a colour for names, an icon (an emoji name), a place (0 = highest), shown apart in the member list (hoist). */
+    team_id?: string;
+    color?: string;
+    icon?: string;
+    position?: number;
+    hoist?: boolean;
 };
 
 /**
@@ -174,6 +188,13 @@ export type GroupCreateWithUserIds = {
     source: string;
     user_ids: string[];
     description?: string;
+
+    // Antimatter: a role of a team.
+    team_id?: string;
+    color?: string;
+    icon?: string;
+    position?: number;
+    hoist?: boolean;
 };
 
 export type GetGroupsParams = {

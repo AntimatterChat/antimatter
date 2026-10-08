@@ -39,6 +39,10 @@ export type Team = {
     scheme_id: string;
     group_constrained: boolean;
 
+    /** Antimatter: role colours show on names unless the team hides them; the team can ask everyone to show their team badge. */
+    hide_role_colors?: boolean;
+    require_team_badges?: boolean;
+
     /** Data Retention Policy id. Unrelated to access-control policies below. */
     policy_id?: string | null;
     last_team_icon_update?: number;
