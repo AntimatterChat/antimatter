@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"regexp"
 	"strings"
+	"unicode/utf8"
 )
 
 const (
@@ -21,6 +22,9 @@ const (
 	GroupDisplayNameMaxLength = 128
 	GroupDescriptionMaxLength = 1024
 	GroupRemoteIDMaxLength    = 48
+
+	// GroupTagMaxRunes bounds an Antimatter team's tag, the short badge shown next to its members' names.
+	GroupTagMaxRunes = 8
 )
 
 type GroupSource string
@@ -41,6 +45,12 @@ type Group struct {
 	ChannelMemberCount          *int        `db:"-" json:"channel_member_count,omitempty"`
 	ChannelMemberTimezonesCount *int        `db:"-" json:"channel_member_timezones_count,omitempty"`
 	MemberIDs                   []string    `db:"-" json:"member_ids"`
+
+	// Antimatter teams are groups with a short tag shown next to their members' names, a lead, and the team's
+	// channel. All three are optional.
+	Tag       string `json:"tag"`
+	LeadId    string `json:"lead_id"`
+	ChannelId string `json:"channel_id"`
 }
 
 func (group *Group) Auditable() map[string]any {
@@ -54,6 +64,9 @@ func (group *Group) Auditable() map[string]any {
 		"has_syncables":   group.HasSyncables,
 		"member_count":    group.GetMemberCount(),
 		"allow_reference": group.AllowReference,
+		"tag":             group.Tag,
+		"lead_id":         group.LeadId,
+		"channel_id":      group.ChannelId,
 	}
 }
 
@@ -70,6 +83,9 @@ func (group *Group) LogClone() any {
 		"has_syncables":   group.HasSyncables,
 		"member_count":    group.GetMemberCount(),
 		"allow_reference": group.AllowReference,
+		"tag":             group.Tag,
+		"lead_id":         group.LeadId,
+		"channel_id":      group.ChannelId,
 	}
 }
 
@@ -113,6 +129,9 @@ type GroupPatch struct {
 	DisplayName    *string `json:"display_name"`
 	Description    *string `json:"description"`
 	AllowReference *bool   `json:"allow_reference"`
+	Tag            *string `json:"tag"`
+	LeadId         *string `json:"lead_id"`
+	ChannelId      *string `json:"channel_id"`
 	// For security reasons (including preventing unintended LDAP group synchronization) do no allow a Group's RemoteId or Source field to be
 	// included in patches.
 }
@@ -195,6 +214,15 @@ func (group *Group) Patch(patch *GroupPatch) {
 	if patch.AllowReference != nil {
 		group.AllowReference = *patch.AllowReference
 	}
+	if patch.Tag != nil {
+		group.Tag = strings.ToUpper(strings.TrimSpace(*patch.Tag))
+	}
+	if patch.LeadId != nil {
+		group.LeadId = *patch.LeadId
+	}
+	if patch.ChannelId != nil {
+		group.ChannelId = *patch.ChannelId
+	}
 }
 
 func (group *Group) IsValidForCreate() *AppError {
@@ -207,6 +235,15 @@ func (group *Group) IsValidForCreate() *AppError {
 		return NewAppError("Group.IsValidForCreate", "model.group.display_name.app_error", map[string]any{"GroupDisplayNameMaxLength": GroupDisplayNameMaxLength}, "", http.StatusBadRequest)
 	}
 
+	if utf8.RuneCountInString(group.Tag) > GroupTagMaxRunes {
+		return NewAppError("Group.IsValidForCreate", "model.group.tag.app_error", map[string]any{"GroupTagMaxRunes": GroupTagMaxRunes}, "", http.StatusBadRequest)
+	}
+	if group.LeadId != "" && !IsValidId(group.LeadId) {
+		return NewAppError("Group.IsValidForCreate", "model.group.lead_id.app_error", nil, "", http.StatusBadRequest)
+	}
+	if group.ChannelId != "" && !IsValidId(group.ChannelId) {
+		return NewAppError("Group.IsValidForCreate", "model.group.channel_id.app_error", nil, "", http.StatusBadRequest)
+	}
 	if len(group.Description) > GroupDescriptionMaxLength {
 		return NewAppError("Group.IsValidForCreate", "model.group.description.app_error", map[string]any{"GroupDescriptionMaxLength": GroupDescriptionMaxLength}, "", http.StatusBadRequest)
 	}

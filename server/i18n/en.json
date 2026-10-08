@@ -15652,6 +15652,11 @@
     "description": "API validation error for an uploaded file's metadata record; 'user_id' is the literal field name for the uploader."
   },
   {
+    "id": "model.group.channel_id.app_error",
+    "translation": "invalid channel for the team.",
+    "description": "API validation error when saving an Antimatter team (user group) whose team channel is not a valid ID."
+  },
+  {
     "id": "model.group.create_at.app_error",
     "translation": "invalid create at property for group.",
     "description": "API validation error when saving a user group (LDAP or custom) whose creation timestamp property is unset; lowercase style matches sibling group errors."
@@ -15665,6 +15670,11 @@
     "id": "model.group.display_name.app_error",
     "translation": "invalid display name property for group.",
     "description": "API validation error when saving a user group whose display name is empty or too long."
+  },
+  {
+    "id": "model.group.lead_id.app_error",
+    "translation": "invalid lead for the team.",
+    "description": "API validation error when saving an Antimatter team (user group) whose lead is not a valid user ID."
   },
   {
     "id": "model.group.name.app_error",
@@ -15695,6 +15705,11 @@
     "id": "model.group.source.app_error",
     "translation": "invalid source property for group.",
     "description": "API validation error when saving a user group whose source (e.g. ldap, custom) is not a recognized value."
+  },
+  {
+    "id": "model.group.tag.app_error",
+    "translation": "The team tag can be at most {{.GroupTagMaxRunes}} characters.",
+    "description": "API validation error when saving an Antimatter team (user group) whose tag is too long."
   },
   {
     "id": "model.group.update_at.app_error",

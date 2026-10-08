@@ -71,6 +71,9 @@ func newSqlGroupStore(sqlStore *SqlStore) store.GroupStore {
 			"UserGroups.UpdateAt",
 			"UserGroups.DeleteAt",
 			"UserGroups.AllowReference",
+			"UserGroups.Tag",
+			"UserGroups.LeadId",
+			"UserGroups.ChannelId",
 		).
 		From("UserGroups")
 
@@ -126,9 +129,9 @@ func (s *SqlGroupStore) Create(group *model.Group) (*model.Group, error) {
 	group.UpdateAt = group.CreateAt
 
 	if _, err := s.GetMaster().NamedExec(`INSERT INTO UserGroups
-		(Id, Name, DisplayName, Description, Source, RemoteId, CreateAt, UpdateAt, DeleteAt, AllowReference)
+		(Id, Name, DisplayName, Description, Source, RemoteId, CreateAt, UpdateAt, DeleteAt, AllowReference, Tag, LeadId, ChannelId)
 		VALUES
-		(:Id, :Name, :DisplayName, :Description, :Source, :RemoteId, :CreateAt, :UpdateAt, :DeleteAt, :AllowReference)`, group); err != nil {
+		(:Id, :Name, :DisplayName, :Description, :Source, :RemoteId, :CreateAt, :UpdateAt, :DeleteAt, :AllowReference, :Tag, :LeadId, :ChannelId)`, group); err != nil {
 		if IsUniqueConstraintError(err, []string{"Name", "groups_name_key"}) {
 			return nil, errors.Wrapf(err, "Group with name %s already exists", *group.Name)
 		}
@@ -159,8 +162,8 @@ func (s *SqlGroupStore) CreateWithUserIds(g *model.GroupWithUserIds) (_ *model.G
 
 	groupInsertQuery, groupInsertArgs, err := s.getQueryBuilder().
 		Insert("UserGroups").
-		Columns("Id", "Name", "DisplayName", "Description", "Source", "RemoteId", "CreateAt", "UpdateAt", "DeleteAt", "AllowReference").
-		Values(g.Id, g.Name, g.DisplayName, g.Description, g.Source, g.RemoteId, g.CreateAt, g.UpdateAt, 0, g.AllowReference).
+		Columns("Id", "Name", "DisplayName", "Description", "Source", "RemoteId", "CreateAt", "UpdateAt", "DeleteAt", "AllowReference", "Tag", "LeadId", "ChannelId").
+		Values(g.Id, g.Name, g.DisplayName, g.Description, g.Source, g.RemoteId, g.CreateAt, g.UpdateAt, 0, g.AllowReference, g.Tag, g.LeadId, g.ChannelId).
 		ToSql()
 	if err != nil {
 		return nil, err
@@ -409,7 +412,8 @@ func (s *SqlGroupStore) Update(group *model.Group) (*model.Group, error) {
 
 	res, err := s.GetMaster().NamedExec(`UPDATE UserGroups
 		SET Name=:Name, DisplayName=:DisplayName, Description=:Description, Source=:Source,
-		RemoteId=:RemoteId, CreateAt=:CreateAt, UpdateAt=:UpdateAt, DeleteAt=:DeleteAt, AllowReference=:AllowReference
+		RemoteId=:RemoteId, CreateAt=:CreateAt, UpdateAt=:UpdateAt, DeleteAt=:DeleteAt, AllowReference=:AllowReference,
+		Tag=:Tag, LeadId=:LeadId, ChannelId=:ChannelId
 		WHERE Id=:Id`, group)
 	if err != nil {
 		if IsUniqueConstraintError(err, []string{"Name", "groups_name_key"}) {
@@ -1150,6 +1154,9 @@ type group struct {
 	AllowReference              bool
 	ChannelMemberCount          *int
 	ChannelMemberTimezonesCount *int
+	Tag                         string
+	LeadId                      string
+	ChannelId                   string
 }
 
 func (g group) ToModel() *model.Group {
@@ -1168,6 +1175,9 @@ func (g group) ToModel() *model.Group {
 		MemberCount:                 g.MemberCount,
 		ChannelMemberCount:          g.ChannelMemberCount,
 		ChannelMemberTimezonesCount: g.ChannelMemberTimezonesCount,
+		Tag:                         g.Tag,
+		LeadId:                      g.LeadId,
+		ChannelId:                   g.ChannelId,
 	}
 }
 
@@ -1209,13 +1219,15 @@ func (groups groupsWithSchemeAdmin) ToModel() []*model.GroupWithSchemeAdmin {
 
 type groupAssociatedToChannelWithSchemeAdmin struct {
 	groupWithSchemeAdmin
-	ChannelId string
+
+	// The channel the group is synced to; the group's own ChannelId is its team channel.
+	SyncableChannelId string
 }
 
 func (g groupAssociatedToChannelWithSchemeAdmin) ToModel() *model.GroupsAssociatedToChannelWithSchemeAdmin {
 	withSchemeAdmin := g.groupWithSchemeAdmin.ToModel()
 	return &model.GroupsAssociatedToChannelWithSchemeAdmin{
-		ChannelId:   g.ChannelId,
+		ChannelId:   g.SyncableChannelId,
 		SchemeAdmin: withSchemeAdmin.SchemeAdmin,
 		Group:       withSchemeAdmin.Group,
 	}
@@ -1361,7 +1373,7 @@ func (s *SqlGroupStore) groupsBySyncableBaseQuery(st model.GroupSyncableType, t 
 
 func (s *SqlGroupStore) getGroupsAssociatedToChannelsByTeam(teamID string, opts model.GroupSearchOpts) sq.SelectBuilder {
 	query := s.userGroupsSelectQuery.
-		Columns("gc.ChannelId", "gc.SchemeAdmin AS SyncableSchemeAdmin").
+		Columns("gc.ChannelId AS SyncableChannelId", "gc.SchemeAdmin AS SyncableSchemeAdmin").
 		LeftJoin(`
 			(SELECT
 				GroupChannels.GroupId, GroupChannels.ChannelId, GroupChannels.DeleteAt, GroupChannels.SchemeAdmin
@@ -1378,7 +1390,7 @@ func (s *SqlGroupStore) getGroupsAssociatedToChannelsByTeam(teamID string, opts 
 
 	if opts.IncludeMemberCount {
 		query = s.userGroupsSelectQuery.
-			Columns("gc.ChannelId", "coalesce(Members.MemberCount, 0) AS MemberCount", "gc.SchemeAdmin AS SyncableSchemeAdmin").
+			Columns("gc.ChannelId AS SyncableChannelId", "coalesce(Members.MemberCount, 0) AS MemberCount", "gc.SchemeAdmin AS SyncableSchemeAdmin").
 			LeftJoin(`
 				(SELECT
 					GroupChannels.ChannelId, GroupChannels.DeleteAt, GroupChannels.GroupId, GroupChannels.SchemeAdmin
@@ -1463,7 +1475,7 @@ func (s *SqlGroupStore) GetGroupsAssociatedToChannelsByTeam(teamId string, opts 
 	groups := map[string][]*model.GroupWithSchemeAdmin{}
 	for _, tgroup := range tgroups {
 		group := tgroup.groupWithSchemeAdmin.ToModel()
-		groups[tgroup.ChannelId] = append(groups[tgroup.ChannelId], group)
+		groups[tgroup.SyncableChannelId] = append(groups[tgroup.SyncableChannelId], group)
 	}
 
 	return groups, nil

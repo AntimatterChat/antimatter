@@ -14,6 +14,14 @@ Enforce these rules to prevent table locks and performance degradation on large 
 
 Migration files follow the convention `{sequence_number}_{description}.{up|down}.sql` and live in `db/migrations/{driver_name}/`. After creating migration files, run `make migrations-extract` to update `db/migrations/migrations.list`. Merge upstream before submitting a PR to avoid sequence number collisions.
 
+## Antimatter Migrations
+
+Antimatter's own migrations are numbered from `1000001` up, and their names start with `antimatter_`, e.g.
+`1000001_antimatter_add_team_fields_to_usergroups.up.sql`. Upstream Mattermost numbers its migrations in sequence
+(`000233`, `000234`, …), and morph keys the `db_migrations` table on the version number, so sharing that range would
+make a later upstream migration collide with ours. Morph applies whatever is missing by name and sorts by file name, so
+upstream migrations merged later still run, and ours always sort after them.
+
 ## Table Locking
 
 Never write a migration that locks an entire table. Common operations that acquire table-level locks:

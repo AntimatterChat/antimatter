@@ -1,0 +1,3 @@
+ALTER TABLE usergroups DROP COLUMN IF EXISTS channelid;
+ALTER TABLE usergroups DROP COLUMN IF EXISTS leadid;
+ALTER TABLE usergroups DROP COLUMN IF EXISTS tag;

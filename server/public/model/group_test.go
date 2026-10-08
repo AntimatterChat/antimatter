@@ -17,6 +17,8 @@ func TestGroupAuditable(t *testing.T) {
 
 	t.Run("values set", func(t *testing.T) {
 		id := NewId()
+		leadId := NewId()
+		channelId := NewId()
 		now := GetMillis()
 		g := Group{
 			Id:             id,
@@ -30,6 +32,9 @@ func TestGroupAuditable(t *testing.T) {
 			HasSyncables:   true,
 			MemberCount:    new(10),
 			AllowReference: true,
+			Tag:            "DET",
+			LeadId:         leadId,
+			ChannelId:      channelId,
 		}
 		m := g.Auditable()
 
@@ -43,6 +48,9 @@ func TestGroupAuditable(t *testing.T) {
 			"has_syncables":   true,
 			"member_count":    10,
 			"allow_reference": true,
+			"tag":             "DET",
+			"lead_id":         leadId,
+			"channel_id":      channelId,
 		}
 
 		assert.Equal(t, expected, m)
@@ -62,6 +70,8 @@ func TestGroupLogClone(t *testing.T) {
 
 	t.Run("values set", func(t *testing.T) {
 		id := NewId()
+		leadId := NewId()
+		channelId := NewId()
 		now := GetMillis()
 		g := Group{
 			Id:             id,
@@ -75,6 +85,9 @@ func TestGroupLogClone(t *testing.T) {
 			HasSyncables:   true,
 			MemberCount:    new(10),
 			AllowReference: true,
+			Tag:            "DET",
+			LeadId:         leadId,
+			ChannelId:      channelId,
 		}
 		l := g.LogClone()
 		m, ok := l.(map[string]any)
@@ -92,8 +105,49 @@ func TestGroupLogClone(t *testing.T) {
 			"has_syncables":   true,
 			"member_count":    10,
 			"allow_reference": true,
+			"tag":             "DET",
+			"lead_id":         leadId,
+			"channel_id":      channelId,
 		}
 
 		assert.Equal(t, expected, m)
+	})
+}
+
+func TestGroupTeamFields(t *testing.T) {
+	valid := func() Group {
+		return Group{DisplayName: "Detector team", Name: new("detector"), Source: GroupSourceCustom, RemoteId: new(NewId()), AllowReference: true}
+	}
+
+	t.Run("patch sets and normalizes the team fields", func(t *testing.T) {
+		g := valid()
+		lead, channel := NewId(), NewId()
+		g.Patch(&GroupPatch{Tag: new(" det "), LeadId: &lead, ChannelId: &channel})
+		assert.Equal(t, "DET", g.Tag)
+		assert.Equal(t, lead, g.LeadId)
+		assert.Equal(t, channel, g.ChannelId)
+	})
+
+	t.Run("the team fields are optional", func(t *testing.T) {
+		g := valid()
+		assert.Nil(t, g.IsValidForCreate())
+	})
+
+	t.Run("a tag is at most 8 characters", func(t *testing.T) {
+		g := valid()
+		g.Tag = "ÉQUIPE42"
+		assert.Nil(t, g.IsValidForCreate())
+		g.Tag = "TOOLONGTAG"
+		require.NotNil(t, g.IsValidForCreate())
+		assert.Equal(t, "model.group.tag.app_error", g.IsValidForCreate().Id)
+	})
+
+	t.Run("the lead and the channel must be ids", func(t *testing.T) {
+		g := valid()
+		g.LeadId = "someone"
+		assert.Equal(t, "model.group.lead_id.app_error", g.IsValidForCreate().Id)
+		g.LeadId = ""
+		g.ChannelId = "somewhere"
+		assert.Equal(t, "model.group.channel_id.app_error", g.IsValidForCreate().Id)
 	})
 }
