@@ -12,6 +12,8 @@ import {getCurrentTeamId} from 'mattermost-redux/selectors/entities/teams';
 import {closeRightHandSide} from 'actions/views/rhs';
 import {getIsRhsOpen} from 'selectors/rhs';
 
+import UnreadsStatusHandler from 'components/unreads_status_handler';
+
 import AppRail from 'fusion/apps/app_rail';
 import CallEvents from 'fusion/calls/call_events';
 import CallWindow from 'fusion/calls/call_window';
@@ -172,6 +174,9 @@ function Frame({children}: Props) {
             <CallWindow/>
             <CallEvents/>
             <Toasts/>
+
+            {/* The tab's title and icon tell about unread messages and mentions, as in the classic web app. */}
+            <UnreadsStatusHandler/>
         </>
     );
 }
