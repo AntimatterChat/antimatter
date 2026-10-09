@@ -77,6 +77,12 @@ export default function CategoryMenu({category, anchor, point, onClose}: Props) 
             {server && admin && (
                 <>
                     <MenuItem
+                        icon='shield'
+                        label={formatMessage({id: 'fusion.categoryMenu.permissions', defaultMessage: 'Permissions…'})}
+                        sub={formatMessage({id: 'fusion.categoryMenu.permissionsSub', defaultMessage: 'Its channels inherit them'})}
+                        onClick={run(() => dialogs.categoryPermissions(category.team_id, name))}
+                    />
+                    <MenuItem
                         icon='pen'
                         label={formatMessage({id: 'fusion.categoryMenu.renameServer', defaultMessage: 'Rename for everyone…'})}
                         onClick={run(() => dialogs.renameServerCategory(name))}

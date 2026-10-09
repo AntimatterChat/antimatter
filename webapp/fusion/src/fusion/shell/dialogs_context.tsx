@@ -7,6 +7,7 @@ import {useDispatch} from 'react-redux';
 import type {Channel} from '@mattermost/types/channels';
 import type {Post} from '@mattermost/types/posts';
 
+import CategoryPermissionsDialog from 'fusion/channel/category_permissions_dialog';
 import ChannelPermissionsDialog from 'fusion/channel/channel_permissions_dialog';
 import AddPeopleDialog from 'fusion/modals/add_people_dialog';
 import ConfirmDialog from 'fusion/modals/confirm_dialog';
@@ -46,6 +47,9 @@ type Dialogs = {
     // A channel's permissions: overrides, and the roles a private channel is for.
     channelPermissions: (channel: Channel) => void;
 
+    // A category for everyone's permissions, which its channels inherit (team admins).
+    categoryPermissions: (teamId: string, name: string) => void;
+
     // Take or leave the team's roles open to all.
     selfRoles: () => void;
 
@@ -59,9 +63,9 @@ type Dialogs = {
     confirm: (options: ConfirmOptions) => void;
 };
 
-const DialogsContext = createContext<Dialogs>({createChannel: () => {}, addPeople: () => {}, invite: () => {}, deleteMessage: () => {}, createCategory: () => {}, renameServerCategory: () => {}, roles: () => {}, channelPermissions: () => {}, selfRoles: () => {}, onboarding: () => {}, teamLayout: () => {}, confirm: () => {}});
+const DialogsContext = createContext<Dialogs>({createChannel: () => {}, addPeople: () => {}, invite: () => {}, deleteMessage: () => {}, createCategory: () => {}, renameServerCategory: () => {}, roles: () => {}, channelPermissions: () => {}, categoryPermissions: () => {}, selfRoles: () => {}, onboarding: () => {}, teamLayout: () => {}, confirm: () => {}});
 
-type Open = {kind: 'create'; categoryId?: string} | {kind: 'add'; channel: Channel} | {kind: 'delete'; post: Post} | {kind: 'category'; renaming?: string} | {kind: 'roles'} | {kind: 'permissions'; channel: Channel} | {kind: 'selfRoles'} | {kind: 'onboarding'} | {kind: 'layout'} | {kind: 'confirm'; options: ConfirmOptions} | null;
+type Open = {kind: 'create'; categoryId?: string} | {kind: 'add'; channel: Channel} | {kind: 'delete'; post: Post} | {kind: 'category'; renaming?: string} | {kind: 'roles'} | {kind: 'permissions'; channel: Channel} | {kind: 'selfRoles'} | {kind: 'onboarding'} | {kind: 'layout'} | {kind: 'confirm'; options: ConfirmOptions} | {kind: 'categoryPermissions'; teamId: string; name: string} | null;
 
 // DialogsProvider owns the Fusion UI's own dialogs that menus and buttons open, outliving the menu that opened them.
 export function DialogsProvider({children}: {children: React.ReactNode}) {
@@ -77,6 +81,7 @@ export function DialogsProvider({children}: {children: React.ReactNode}) {
         renameServerCategory: (name) => setOpen({kind: 'category', renaming: name}),
         roles: () => setOpen({kind: 'roles'}),
         channelPermissions: (channel) => setOpen({kind: 'permissions', channel}),
+        categoryPermissions: (teamId, name) => setOpen({kind: 'categoryPermissions', teamId, name}),
         selfRoles: () => setOpen({kind: 'selfRoles'}),
         onboarding: () => setOpen({kind: 'onboarding'}),
         teamLayout: () => setOpen({kind: 'layout'}),
@@ -117,6 +122,13 @@ export function DialogsProvider({children}: {children: React.ReactNode}) {
             {open?.kind === 'selfRoles' && <SelfRolesDialog onClose={close}/>}
             {open?.kind === 'onboarding' && <OnboardingEditor onClose={close}/>}
             {open?.kind === 'layout' && <TeamLayoutDialog onClose={close}/>}
+            {open?.kind === 'categoryPermissions' && (
+                <CategoryPermissionsDialog
+                    teamId={open.teamId}
+                    name={open.name}
+                    onClose={close}
+                />
+            )}
             {open?.kind === 'confirm' && (
                 <ConfirmDialog
                     {...open.options}

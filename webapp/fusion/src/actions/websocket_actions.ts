@@ -711,9 +711,14 @@ export function handleEvent(msg: WebSocketMessage) {
         dispatch(handlePropertyValuesUpdated(msg));
         break;
     case WebSocketEvents.ServerCategoriesUpdated:
-        // Antimatter: a team's server categories, or the channels filed in them, changed.
+        // Antimatter: a team's server categories, or the channels filed in them, changed; with them, what the
+        // channels inherit of their category's overrides.
         dispatch(fetchServerCategories(msg.data.team_id));
         dispatch(fetchManagedCategories(msg.data.team_id));
+        refetchTeamOverrides(msg.data.team_id);
+        break;
+    case WebSocketEvents.CategoryOverridesUpdated:
+        refetchTeamOverrides(msg.data.team_id);
         break;
     case WebSocketEvents.ChannelOverridesUpdated:
         // Antimatter: permission checks apply a channel's overrides, when it was opened.
@@ -2004,6 +2009,16 @@ function handleOpenDialogEvent(msg: WebSocketMessages.OpenDialog) {
             onExited: () => store.dispatch({type: IntegrationTypes.REMOVE_DIALOG, data: dialog.trigger_id}),
         },
     }));
+}
+
+// refetchTeamOverrides loads again the overrides held of a team's channels (Antimatter), as their categories' changed.
+function refetchTeamOverrides(teamId: string) {
+    const state = getState();
+    for (const channelId of Object.keys(state.entities.channels.overrides || {})) {
+        if (state.entities.channels.channels[channelId]?.team_id === teamId) {
+            dispatch(fetchChannelOverrides(channelId));
+        }
+    }
 }
 
 function handleGroupUpdatedEvent(msg: WebSocketMessages.ReceivedGroup) {

@@ -260,3 +260,12 @@
 :is(.am-app, .am-layer) .am-override-head input[type="text"] { height: 34px; padding: 0 10px; border-radius: 8px; border: 1px solid var(--am-line); background: var(--am-raise); }
 :is(.am-app, .am-layer) .am-onboarding-edit-option input[type="text"] { height: 34px; padding: 0 10px; border-radius: 8px; border: 1px solid var(--am-line); background: var(--am-raise); }
 :is(.am-app, .am-layer) .am-override-head input.am-grow { flex: 1; min-width: 0; }
+/* Overrides: adding roles and people; what a category gives a channel, beside its lines. */
+:is(.am-app, .am-layer) .am-override-add { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr); gap: 8px; align-items: start; margin-top: 8px; }
+:is(.am-app, .am-layer) .am-override-add select, :is(.am-app, .am-layer) .am-override-add input[type="text"] { width: 100%; height: 34px; padding: 0 10px; border-radius: 8px; border: 1px solid var(--am-line); background: var(--am-raise); color: var(--am-text); }
+:is(.am-app, .am-layer) .am-override-add .am-role-members { margin: 0; }
+:is(.am-app, .am-layer) .am-override-from { margin-left: 8px; color: var(--am-muted); font-size: 12px; font-weight: 500; }
+:is(.am-app, .am-layer) .am-tri button.am-from { box-shadow: inset 0 0 0 1px currentColor; }
+:is(.am-app, .am-layer) .am-tri button.am-deny.am-from { color: var(--am-danger); }
+:is(.am-app, .am-layer) .am-tri button.am-allow.am-from { color: var(--am-online, #23a55a); }
+:is(.am-app, .am-layer) .am-override-head .am-avatar { flex: none; }

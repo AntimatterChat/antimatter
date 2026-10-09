@@ -1472,11 +1472,12 @@ export function patchChannelModerations(channelId: string, patch: ChannelModerat
     });
 }
 
-// fetchChannelOverrides loads a channel's Antimatter overrides, which permission checks then apply.
+// fetchChannelOverrides loads the Antimatter overrides that apply in a channel (its category's included), which
+// permission checks then apply.
 export function fetchChannelOverrides(channelId: string) {
     return bindClientFunc({
         clientFunc: async () => {
-            const overrides = await Client4.getChannelOverrides(channelId);
+            const overrides = await Client4.getEffectiveChannelOverrides(channelId);
             return {channelId, overrides};
         },
         onSuccess: ChannelTypes.RECEIVED_CHANNEL_OVERRIDES,

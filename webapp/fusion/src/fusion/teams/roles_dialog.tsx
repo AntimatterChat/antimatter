@@ -16,12 +16,12 @@ import {Client4} from 'mattermost-redux/client';
 import {Permissions} from 'mattermost-redux/constants';
 import {haveITeamPermission} from 'mattermost-redux/selectors/entities/roles';
 import {getCurrentTeam, getCurrentTeamId} from 'mattermost-redux/selectors/entities/teams';
-import {getCurrentUserId, getUser} from 'mattermost-redux/selectors/entities/users';
+import {getCurrentUserId} from 'mattermost-redux/selectors/entities/users';
 
 import Avatar from 'fusion/components/avatar';
 import Icon from 'fusion/components/icon';
 import {Dialog} from 'fusion/components/layer';
-import {useDisplayName} from 'fusion/hooks/users';
+import PeopleSearch, {PersonName} from 'fusion/members/people_search';
 import {Toggle} from 'fusion/modals/settings_controls';
 import {useToast} from 'fusion/shell/toast_context';
 import {am} from 'fusion/utils/class_names';
@@ -407,39 +407,12 @@ function RoleMembers({role, onChanged}: {role: Group; onChanged: () => void}) {
     const {formatMessage} = useIntl();
     const dispatch = useDispatch();
     const members = useMemo(() => role.member_ids || [], [role.member_ids]);
-    const [query, setQuery] = useState('');
-    const [found, setFound] = useState<UserProfile[]>([]);
-
     useEffect(() => {
         dispatch(getMissingProfilesByIds(members));
     }, [members, dispatch]);
 
-    useEffect(() => {
-        const term = query.trim();
-        if (!term) {
-            setFound([]);
-            return undefined;
-        }
-        let stale = false;
-        const timer = setTimeout(async () => {
-            try {
-                const result = await Client4.autocompleteUsers(term, role.team_id || '', '', {limit: 8});
-                if (!stale) {
-                    setFound(result.users.filter((u) => !members.includes(u.id) && !u.delete_at));
-                }
-            } catch {
-                // Nothing found then.
-            }
-        }, 200);
-        return () => {
-            stale = true;
-            clearTimeout(timer);
-        };
-    }, [query, role.team_id, members]);
-
     const add = async (user: UserProfile) => {
         await dispatch(addUsersToGroup(role.id, [user.id]));
-        setQuery('');
         onChanged();
     };
     const remove = async (userId: string) => {
@@ -450,33 +423,12 @@ function RoleMembers({role, onChanged}: {role: Group; onChanged: () => void}) {
     return (
         <div className={am('field', 'role-members')}>
             <span>{formatMessage({id: 'fusion.roles.membersTitle', defaultMessage: 'Members'})}</span>
-            <input
-                type='text'
-                value={query}
+            <PeopleSearch
+                teamId={role.team_id || ''}
+                exclude={members}
                 placeholder={formatMessage({id: 'fusion.roles.addPeople', defaultMessage: 'Add people of the team…'})}
-                onChange={(e) => setQuery(e.target.value)}
+                onPick={add}
             />
-            {found.length > 0 && (
-                <div className={am('role-found')}>
-                    {found.map((u) => (
-                        <button
-                            key={u.id}
-                            type='button'
-                            onClick={() => add(u)}
-                        >
-                            <Avatar
-                                userId={u.id}
-                                size='sm'
-                            />
-                            <PersonName userId={u.id}/>
-                            <Icon
-                                name='plus'
-                                size='sm'
-                            />
-                        </button>
-                    ))}
-                </div>
-            )}
             <div className={am('role-people')}>
                 {members.map((id) => (
                     <span
@@ -503,9 +455,4 @@ function RoleMembers({role, onChanged}: {role: Group; onChanged: () => void}) {
             </div>
         </div>
     );
-}
-
-function PersonName({userId}: {userId: string}) {
-    const user = useSelector((state: GlobalState) => getUser(state, userId));
-    return <span className={am('nm')}>{useDisplayName(user)}</span>;
 }

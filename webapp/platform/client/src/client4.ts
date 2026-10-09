@@ -12,7 +12,7 @@ import type {UserAutocomplete, AutocompleteSuggestion} from '@mattermost/types/a
 import type {Bot, BotPatch} from '@mattermost/types/bots';
 import type {ChannelBookmark, ChannelBookmarkCreate, ChannelBookmarkPatch, UpdateChannelBookmarkResponse} from '@mattermost/types/channel_bookmarks';
 import type {ChannelCategory, OrderedChannelCategories, ServerCategoriesUpdate, ServerCategory} from '@mattermost/types/channel_categories';
-import type {ChannelOverride} from '@mattermost/types/channel_overrides';
+import type {CategoryOverride, ChannelOverride} from '@mattermost/types/channel_overrides';
 import type {
     Channel,
     ChannelJoinRequest,
@@ -4526,6 +4526,29 @@ export default class Client4 {
     saveChannelOverride = (channelId: string, override: Omit<ChannelOverride, 'channel_id' | 'update_at'>) => {
         return this.doFetch<ChannelOverride>(
             `${this.getChannelRoute(channelId)}/overrides`,
+            {method: 'put', body: JSON.stringify(override)},
+        );
+    };
+
+    // The overrides that apply in a channel, its server category's included.
+    getEffectiveChannelOverrides = (channelId: string) => {
+        return this.doFetch<ChannelOverride[]>(
+            `${this.getChannelRoute(channelId)}/overrides/effective`,
+            {method: 'get'},
+        );
+    };
+
+    // Antimatter: what roles and people may do in the channels of a team's server categories.
+    getCategoryOverrides = (teamId: string) => {
+        return this.doFetch<CategoryOverride[]>(
+            `${this.getTeamRoute(teamId)}/server_categories/overrides`,
+            {method: 'get'},
+        );
+    };
+
+    saveCategoryOverride = (teamId: string, override: Omit<CategoryOverride, 'team_id' | 'update_at'>) => {
+        return this.doFetch<CategoryOverride>(
+            `${this.getTeamRoute(teamId)}/server_categories/overrides`,
             {method: 'put', body: JSON.stringify(override)},
         );
     };

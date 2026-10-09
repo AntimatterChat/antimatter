@@ -13,3 +13,17 @@ export type ChannelOverride = {
     deny: string[];
     update_at: number;
 };
+
+/**
+ * Antimatter: an override set on a server category (category: its name, trimmed and in lower case). The channels filed
+ * in the category inherit it; a channel's own override wins over it, permission by permission.
+ */
+export type CategoryOverride = {
+    team_id: string;
+    category: string;
+    target_type: 'role' | 'user';
+    target_id: string;
+    allow: string[];
+    deny: string[];
+    update_at: number;
+};
