@@ -30,6 +30,7 @@ import HomeSidebar from 'fusion/sidebar/home_sidebar';
 import TeamSidebar from 'fusion/sidebar/team_sidebar';
 import {useMuteExpiry} from 'fusion/sidebar/timed_mute';
 import {TeamCardHost} from 'fusion/teams/team_card';
+import TeamSetupHost from 'fusion/teams/team_setup_host';
 import {useLoadTeams} from 'fusion/teams/teams';
 import {am} from 'fusion/utils/class_names';
 import {openKeyboardShortcuts} from 'fusion/utils/modals';
@@ -183,6 +184,7 @@ function Frame({children}: Props) {
             <CallEvents/>
             <Toasts/>
             <TeamCardHost/>
+            <TeamSetupHost/>
 
             {/* The tab's title and icon tell about unread messages and mentions, as in the classic web app. */}
             <UnreadsStatusHandler/>

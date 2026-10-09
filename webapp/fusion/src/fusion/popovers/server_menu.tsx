@@ -33,6 +33,7 @@ import {
     setTeamMuted,
     withTeam,
 } from 'fusion/sidebar/team_actions';
+import {getTeamRoles} from 'fusion/teams/roles';
 import {am} from 'fusion/utils/class_names';
 import {
     openBrowseChannels,
@@ -68,6 +69,7 @@ export default function ServerMenu({team: forTeam, anchor, point, width, onClose
     const config = useSelector(getConfig);
     const canManage = useSelector((state: GlobalState) => haveITeamPermission(state, teamId, Permissions.MANAGE_TEAM));
     const customGroups = useSelector(isCustomGroupsEnabled);
+    const hasOpenRoles = useSelector((state: GlobalState) => getTeamRoles(state, teamId).some((r) => r.self_assignable));
     const canManageRoles = useSelector((state: GlobalState) => haveITeamPermission(state, teamId, Permissions.MANAGE_TEAM_ROLES));
     const canAddUsers = useSelector((state: GlobalState) => haveITeamPermission(state, teamId, Permissions.ADD_USER_TO_TEAM));
     const canInviteGuests = useSelector((state: GlobalState) => haveITeamPermission(state, teamId, Permissions.INVITE_GUEST)) && config.EnableGuestAccounts === 'true';
@@ -167,13 +169,44 @@ export default function ServerMenu({team: forTeam, anchor, point, width, onClose
                     onClick={inTeam(() => dispatch(openTeamSettings()))}
                 />
             )}
-            {canManageRoles && customGroups && (
+            {hasOpenRoles && (
                 <MenuItem
-                    icon='shield'
-                    label={formatMessage({id: 'fusion.serverMenu.roles', defaultMessage: 'Roles…'})}
-                    sub={formatMessage({id: 'fusion.serverMenu.rolesSub', defaultMessage: 'Colours, groups in the member list, badges'})}
-                    onClick={inTeam(() => dialogs.roles())}
+                    icon='smile'
+                    label={formatMessage({id: 'fusion.serverMenu.selfRoles', defaultMessage: 'Your roles…'})}
+                    onClick={inTeam(() => dialogs.selfRoles())}
                 />
+            )}
+            {(canManage || canManageRoles) && customGroups && (
+                <Flyout
+                    icon='board'
+                    label={formatMessage({id: 'fusion.serverMenu.setup', defaultMessage: 'Team setup'})}
+                    menuLabel={formatMessage({id: 'fusion.serverMenu.setup', defaultMessage: 'Team setup'})}
+                >
+                    {canManageRoles && (
+                        <MenuItem
+                            icon='shield'
+                            label={formatMessage({id: 'fusion.serverMenu.roles', defaultMessage: 'Roles…'})}
+                            sub={formatMessage({id: 'fusion.serverMenu.rolesSub', defaultMessage: 'Colours, groups in the member list, badges'})}
+                            onClick={inTeam(() => dialogs.roles())}
+                        />
+                    )}
+                    {canManage && (
+                        <>
+                            <MenuItem
+                                icon='chat'
+                                label={formatMessage({id: 'fusion.serverMenu.onboarding', defaultMessage: 'Onboarding…'})}
+                                sub={formatMessage({id: 'fusion.serverMenu.onboardingSub', defaultMessage: 'Questions newcomers answer'})}
+                                onClick={inTeam(() => dialogs.onboarding())}
+                            />
+                            <MenuItem
+                                icon='board'
+                                label={formatMessage({id: 'fusion.serverMenu.layout', defaultMessage: 'Team layout…'})}
+                                sub={formatMessage({id: 'fusion.serverMenu.layoutSub', defaultMessage: 'Presets and templates'})}
+                                onClick={inTeam(() => dialogs.teamLayout())}
+                            />
+                        </>
+                    )}
+                </Flyout>
             )}
             {customGroups && (
                 <MenuItem

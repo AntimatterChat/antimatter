@@ -34,7 +34,7 @@ import {loadTeams} from './teams';
 // The colours offered for roles, as Discord's swatches; any #rrggbb colour can be typed too.
 const SWATCHES = ['#e74c3c', '#e67e22', '#f1c40f', '#2ecc71', '#1abc9c', '#3498db', '#5865f2', '#9b59b6', '#e91e63', '#95a5a6'];
 
-type Draft = {display_name: string; color: string; icon: string; hoist: boolean; permissions: string[]};
+type Draft = {display_name: string; color: string; icon: string; hoist: boolean; self_assignable: boolean; permissions: string[]};
 
 // What a role can grant, as Discord's permission switches: each is on when the role holds all its permissions.
 const SWITCHES: Array<{key: string; label: MessageDescriptor; desc: MessageDescriptor; permissions: string[]}> = [
@@ -81,7 +81,7 @@ export default function RolesDialog({onClose}: {onClose: () => void}) {
         if (!team) {
             return;
         }
-        const fields = {display_name: draft.display_name.trim(), color: draft.color, icon: draft.icon.trim(), hoist: draft.hoist};
+        const fields = {display_name: draft.display_name.trim(), color: draft.color, icon: draft.icon.trim(), hoist: draft.hoist, self_assignable: draft.self_assignable};
         const lowest = admin ? 0 : managerTop + 1;
         const result = role ? await dispatch(patchGroup(role.id, fields)) : await dispatch(createGroupWithUserIds({
             ...fields,
@@ -132,6 +132,7 @@ export default function RolesDialog({onClose}: {onClose: () => void}) {
             label={formatMessage({id: 'fusion.roles.title', defaultMessage: 'Roles'})}
             onClose={onClose}
             small={false}
+            className={am('wide')}
         >
             <div className={am('pane', 'roles-pane')}>
                 <h2>{formatMessage({id: 'fusion.roles.title', defaultMessage: 'Roles'})}</h2>
@@ -167,6 +168,7 @@ export default function RolesDialog({onClose}: {onClose: () => void}) {
                                 <span>
                                     {formatMessage({id: 'fusion.roles.members', defaultMessage: '{count, plural, one {# member} other {# members}}'}, {count: role.member_ids?.length || 0})}
                                     {role.hoist && ` · ${formatMessage({id: 'fusion.roles.shownApart', defaultMessage: 'shown separately'})}`}
+                                    {role.self_assignable && ` · ${formatMessage({id: 'fusion.roles.openToAll', defaultMessage: 'open to all'})}`}
                                     {` · @${role.name}`}
                                 </span>
                             </div>
@@ -273,7 +275,7 @@ type EditorProps = {
 // RoleEditor edits a role's look and, once it exists, its members.
 function RoleEditor({role, onSave, onCancel, onMembersChanged}: EditorProps) {
     const {formatMessage} = useIntl();
-    const [draft, setDraft] = useState<Draft>({display_name: role?.display_name || '', color: role?.color || SWATCHES[5], icon: role?.icon || '', hoist: role?.hoist ?? true, permissions: []});
+    const [draft, setDraft] = useState<Draft>({display_name: role?.display_name || '', color: role?.color || SWATCHES[5], icon: role?.icon || '', hoist: role?.hoist ?? true, self_assignable: Boolean(role?.self_assignable), permissions: []});
     const set = (patch: Partial<Draft>) => setDraft((d) => ({...d, ...patch}));
 
     // What the role grants, as it is now; someone who isn't a team admin only hands out what they have.
@@ -337,6 +339,12 @@ function RoleEditor({role, onSave, onCancel, onMembersChanged}: EditorProps) {
                 desc={formatMessage({id: 'fusion.roles.hoistDesc', defaultMessage: 'Online members with this role get their own group in the member list.'})}
                 on={draft.hoist}
                 onChange={(hoist) => set({hoist})}
+            />
+            <Toggle
+                title={formatMessage({id: 'fusion.roles.selfAssignable', defaultMessage: 'Anyone can take it'})}
+                desc={formatMessage({id: 'fusion.roles.selfAssignableDesc', defaultMessage: 'People of the team take or leave it themselves, in "Your roles" or through the onboarding.'})}
+                on={draft.self_assignable}
+                onChange={(on) => set({self_assignable: on})}
             />
             <div className={am('field', 'role-perms')}>
                 <span>{formatMessage({id: 'fusion.roles.permissions', defaultMessage: 'Permissions'})}</span>

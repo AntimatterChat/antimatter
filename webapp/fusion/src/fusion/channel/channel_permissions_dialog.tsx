@@ -107,6 +107,7 @@ export default function ChannelPermissionsDialog({channel, onClose}: {channel: C
             label={formatMessage({id: 'fusion.overrides.title', defaultMessage: 'Permissions of #{channel}'}, {channel: channel.display_name})}
             onClose={onClose}
             small={false}
+            className={am('wide')}
         >
             <div className={am('pane', 'roles-pane')}>
                 <h2>{formatMessage({id: 'fusion.overrides.title', defaultMessage: 'Permissions of #{channel}'}, {channel: channel.display_name})}</h2>

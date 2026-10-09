@@ -43,6 +43,9 @@ export type Team = {
     hide_role_colors?: boolean;
     require_team_badges?: boolean;
 
+    /** Antimatter: the team's onboarding as JSON (a welcome, and questions whose answers give roles and channels). */
+    onboarding?: string;
+
     /** Data Retention Policy id. Unrelated to access-control policies below. */
     policy_id?: string | null;
     last_team_icon_update?: number;

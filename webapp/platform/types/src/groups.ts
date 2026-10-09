@@ -39,6 +39,7 @@ export type GroupTeamPatch = {
     icon?: string;
     position?: number;
     hoist?: boolean;
+    self_assignable?: boolean;
 };
 
 export type Group = {
@@ -70,6 +71,7 @@ export type Group = {
     icon?: string;
     position?: number;
     hoist?: boolean;
+    self_assignable?: boolean;
 };
 
 /**
@@ -195,6 +197,7 @@ export type GroupCreateWithUserIds = {
     icon?: string;
     position?: number;
     hoist?: boolean;
+    self_assignable?: boolean;
 };
 
 export type GetGroupsParams = {

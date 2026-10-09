@@ -187,3 +187,5 @@ body.app__body :where(.am-app, .am-layer) a:where(:not(.am-body *, .am-rhs-class
 :is(.am-app, .am-layer) .am-guest-chip.am-translated-chip { background: var(--am-anti-soft); color: var(--am-anti); }
 /* The pane reached with F6 (Mattermost's accessibility regions) shows a ring inside its edges. */
 :is(.am-app, .am-layer) .a11y__region.a11y--active.a11y--focused { outline: none; box-shadow: inset 0 0 0 2px var(--am-anti); }
+// Mattermost's checklist waits while a team's onboarding is open: both greet newcomers, and its overlay would take the clicks.
+body:has(.am-onboarding) :is([data-cy='onboarding-task-list-overlay'], [data-cy='onboarding-task-list-overlay'] + div, button[data-cy='onboarding-task-list-action-button']) { display: none !important; }
