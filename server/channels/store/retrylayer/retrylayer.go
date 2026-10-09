@@ -44,6 +44,7 @@ type RetryLayer struct {
 	HealthFindingStore              store.HealthFindingStore
 	JobStore                        store.JobStore
 	LinkMetadataStore               store.LinkMetadataStore
+	ModerationStore                 store.ModerationStore
 	NotifyAdminStore                store.NotifyAdminStore
 	OAuthStore                      store.OAuthStore
 	OutgoingOAuthConnectionStore    store.OutgoingOAuthConnectionStore
@@ -183,6 +184,10 @@ func (s *RetryLayer) Job() store.JobStore {
 
 func (s *RetryLayer) LinkMetadata() store.LinkMetadataStore {
 	return s.LinkMetadataStore
+}
+
+func (s *RetryLayer) Moderation() store.ModerationStore {
+	return s.ModerationStore
 }
 
 func (s *RetryLayer) NotifyAdmin() store.NotifyAdminStore {
@@ -463,6 +468,11 @@ type RetryLayerJobStore struct {
 
 type RetryLayerLinkMetadataStore struct {
 	store.LinkMetadataStore
+	Root *RetryLayer
+}
+
+type RetryLayerModerationStore struct {
+	store.ModerationStore
 	Root *RetryLayer
 }
 
@@ -8093,6 +8103,111 @@ func (s *RetryLayerLinkMetadataStore) Save(linkMetadata *model.LinkMetadata) (*m
 	tries := 0
 	for {
 		result, err := s.LinkMetadataStore.Save(linkMetadata)
+		if err == nil {
+			return result, nil
+		}
+		if !isRepeatableError(err) {
+			return result, err
+		}
+		tries++
+		if tries >= 3 {
+			err = errors.Wrap(err, "giving up after 3 consecutive repeatable transaction failures")
+			return result, err
+		}
+		timepkg.Sleep(100 * timepkg.Millisecond)
+	}
+
+}
+
+func (s *RetryLayerModerationStore) CountPosts(rctx request.CTX, teamID string, userID string, since int64) (int64, error) {
+
+	tries := 0
+	for {
+		result, err := s.ModerationStore.CountPosts(rctx, teamID, userID, since)
+		if err == nil {
+			return result, nil
+		}
+		if !isRepeatableError(err) {
+			return result, err
+		}
+		tries++
+		if tries >= 3 {
+			err = errors.Wrap(err, "giving up after 3 consecutive repeatable transaction failures")
+			return result, err
+		}
+		timepkg.Sleep(100 * timepkg.Millisecond)
+	}
+
+}
+
+func (s *RetryLayerModerationStore) DeleteTimeout(rctx request.CTX, teamID string, userID string) error {
+
+	tries := 0
+	for {
+		err := s.ModerationStore.DeleteTimeout(rctx, teamID, userID)
+		if err == nil {
+			return nil
+		}
+		if !isRepeatableError(err) {
+			return err
+		}
+		tries++
+		if tries >= 3 {
+			err = errors.Wrap(err, "giving up after 3 consecutive repeatable transaction failures")
+			return err
+		}
+		timepkg.Sleep(100 * timepkg.Millisecond)
+	}
+
+}
+
+func (s *RetryLayerModerationStore) DeleteTimeoutsForTeam(rctx request.CTX, teamID string) error {
+
+	tries := 0
+	for {
+		err := s.ModerationStore.DeleteTimeoutsForTeam(rctx, teamID)
+		if err == nil {
+			return nil
+		}
+		if !isRepeatableError(err) {
+			return err
+		}
+		tries++
+		if tries >= 3 {
+			err = errors.Wrap(err, "giving up after 3 consecutive repeatable transaction failures")
+			return err
+		}
+		timepkg.Sleep(100 * timepkg.Millisecond)
+	}
+
+}
+
+func (s *RetryLayerModerationStore) GetTimeouts(rctx request.CTX, teamID string, now int64) ([]*model.MemberTimeout, error) {
+
+	tries := 0
+	for {
+		result, err := s.ModerationStore.GetTimeouts(rctx, teamID, now)
+		if err == nil {
+			return result, nil
+		}
+		if !isRepeatableError(err) {
+			return result, err
+		}
+		tries++
+		if tries >= 3 {
+			err = errors.Wrap(err, "giving up after 3 consecutive repeatable transaction failures")
+			return result, err
+		}
+		timepkg.Sleep(100 * timepkg.Millisecond)
+	}
+
+}
+
+func (s *RetryLayerModerationStore) SaveTimeout(rctx request.CTX, timeout *model.MemberTimeout) (*model.MemberTimeout, error) {
+
+	tries := 0
+	for {
+		result, err := s.ModerationStore.SaveTimeout(rctx, timeout)
 		if err == nil {
 			return result, nil
 		}
@@ -20612,6 +20727,7 @@ func New(childStore store.Store) *RetryLayer {
 	newStore.HealthFindingStore = &RetryLayerHealthFindingStore{HealthFindingStore: childStore.HealthFinding(), Root: &newStore}
 	newStore.JobStore = &RetryLayerJobStore{JobStore: childStore.Job(), Root: &newStore}
 	newStore.LinkMetadataStore = &RetryLayerLinkMetadataStore{LinkMetadataStore: childStore.LinkMetadata(), Root: &newStore}
+	newStore.ModerationStore = &RetryLayerModerationStore{ModerationStore: childStore.Moderation(), Root: &newStore}
 	newStore.NotifyAdminStore = &RetryLayerNotifyAdminStore{NotifyAdminStore: childStore.NotifyAdmin(), Root: &newStore}
 	newStore.OAuthStore = &RetryLayerOAuthStore{OAuthStore: childStore.OAuth(), Root: &newStore}
 	newStore.OutgoingOAuthConnectionStore = &RetryLayerOutgoingOAuthConnectionStore{OutgoingOAuthConnectionStore: childStore.OutgoingOAuthConnection(), Root: &newStore}

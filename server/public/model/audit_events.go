@@ -91,6 +91,7 @@ const (
 	AuditEventUpdateTeamRolePermissions         = "updateTeamRolePermissions"         // set what an Antimatter team role grants
 	AuditEventSaveChannelOverride               = "saveChannelOverride"               // set what a role or person may do in a channel
 	AuditEventSaveCategoryOverride              = "saveCategoryOverride"              // set what a role or person may do in a server category's channels
+	AuditEventSetMemberTimeout                  = "setMemberTimeout"                  // time a team's member out, or lift it
 	AuditEventSetChannelRoleAccess              = "setChannelRoleAccess"              // make a channel for some roles only
 )
 

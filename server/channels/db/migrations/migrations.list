@@ -481,3 +481,5 @@ channels/db/migrations/postgres/1000009_antimatter_add_usergroups_teamid_index.d
 channels/db/migrations/postgres/1000009_antimatter_add_usergroups_teamid_index.up.sql
 channels/db/migrations/postgres/1000010_antimatter_create_categoryoverrides.down.sql
 channels/db/migrations/postgres/1000010_antimatter_create_categoryoverrides.up.sql
+channels/db/migrations/postgres/1000011_antimatter_create_membertimeouts.down.sql
+channels/db/migrations/postgres/1000011_antimatter_create_membertimeouts.up.sql

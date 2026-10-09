@@ -1275,6 +1275,26 @@ func (_m *Store) Scheme() store.SchemeStore {
 	return r0
 }
 
+// Moderation provides a mock function with no fields
+func (_m *Store) Moderation() store.ModerationStore {
+	ret := _m.Called()
+
+	if len(ret) == 0 {
+		panic("no return value specified for Moderation")
+	}
+
+	var r0 store.ModerationStore
+	if rf, ok := ret.Get(0).(func() store.ModerationStore); ok {
+		r0 = rf()
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(store.ModerationStore)
+		}
+	}
+
+	return r0
+}
+
 // ServerCategory provides a mock function with no fields
 func (_m *Store) ServerCategory() store.ServerCategoryStore {
 	ret := _m.Called()

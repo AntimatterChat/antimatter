@@ -249,6 +249,7 @@ func (a *App) sendChannelOverridesInvalidation(channelID string) {
 func (ch *Channels) forgetAllOverrides() {
 	ch.channelOverrides.Clear()
 	ch.categoryOverrides.Clear()
+	ch.memberTimeouts.Clear()
 }
 
 // clusterInvalidateChannelOverridesHandler forgets the overrides another node changed: a channel's, or all of them.
@@ -329,7 +330,26 @@ func (a *App) userTeamRoles(rctx request.CTX, userID, teamID string) (string, bo
 }
 
 // The permission checks below answer from roles as Mattermost does, then let the channel's overrides change that
-// answer. Someone's team roles are only looked up when the channel has overrides.
+// answer, and a timeout in the channel's team take speaking away. Someone's team roles are only looked up when one of
+// them applies.
+
+// moderated changes a permission check's answer for someone in a channel by the channel's overrides and their
+// timeout; roles gives their team roles, and whether they're a team admin, whom neither affects.
+func (a *App) moderated(rctx request.CTX, channel *model.Channel, userID string, roles func() (string, bool), permissionID string, has bool) bool {
+	overrides := a.overridesFor(rctx, channel, permissionID)
+	timedOut := channel != nil && channel.TeamId != "" && isTimeoutPermission(permissionID) && a.isTimedOut(rctx, channel.TeamId, userID)
+	if len(overrides) == 0 && !timedOut {
+		return has
+	}
+	teamRoles, admin := roles()
+	if admin {
+		return has
+	}
+	if len(overrides) > 0 {
+		has = model.ApplyChannelOverrides(has, permissionID, model.TeamRoleGroupIDs(teamRoles), userID, overrides)
+	}
+	return has && !timedOut
+}
 
 func (a *App) SessionHasPermissionToChannel(rctx request.CTX, session model.Session, channelID string, permission *model.Permission) (hasPermission bool, isMember bool) {
 	has, isMember := a.sessionHasPermissionToChannelByRoles(rctx, session, channelID, permission)
@@ -340,15 +360,8 @@ func (a *App) SessionHasPermissionToChannel(rctx request.CTX, session model.Sess
 	if appErr != nil {
 		return has, isMember
 	}
-	overrides := a.overridesFor(rctx, channel, permission.Id)
-	if len(overrides) == 0 {
-		return has, isMember
-	}
-	roles, admin := a.sessionTeamRoles(session, channel.TeamId)
-	if admin {
-		return has, isMember
-	}
-	return model.ApplyChannelOverrides(has, permission.Id, model.TeamRoleGroupIDs(roles), session.UserId, overrides), isMember
+	roles := func() (string, bool) { return a.sessionTeamRoles(session, channel.TeamId) }
+	return a.moderated(rctx, channel, session.UserId, roles, permission.Id, has), isMember
 }
 
 func (a *App) SessionHasPermissionToChannels(rctx request.CTX, session model.Session, channelIDs []string, permission *model.Permission) bool {
@@ -370,15 +383,8 @@ func (a *App) SessionHasPermissionToChannelByPost(session model.Session, postID 
 	if err != nil {
 		return has
 	}
-	overrides := a.overridesFor(request.EmptyContext(a.Log()), channel, permission.Id)
-	if len(overrides) == 0 {
-		return has
-	}
-	roles, admin := a.sessionTeamRoles(session, channel.TeamId)
-	if admin {
-		return has
-	}
-	return model.ApplyChannelOverrides(has, permission.Id, model.TeamRoleGroupIDs(roles), session.UserId, overrides)
+	roles := func() (string, bool) { return a.sessionTeamRoles(session, channel.TeamId) }
+	return a.moderated(request.EmptyContext(a.Log()), channel, session.UserId, roles, permission.Id, has)
 }
 
 func (a *App) HasPermissionToChannel(rctx request.CTX, askingUserId string, channelID string, permission *model.Permission) (hasPermission bool, isMember bool) {
@@ -390,15 +396,8 @@ func (a *App) HasPermissionToChannel(rctx request.CTX, askingUserId string, chan
 	if appErr != nil {
 		return has, isMember
 	}
-	overrides := a.overridesFor(rctx, channel, permission.Id)
-	if len(overrides) == 0 {
-		return has, isMember
-	}
-	roles, admin := a.userTeamRoles(rctx, askingUserId, channel.TeamId)
-	if admin {
-		return has, isMember
-	}
-	return model.ApplyChannelOverrides(has, permission.Id, model.TeamRoleGroupIDs(roles), askingUserId, overrides), isMember
+	roles := func() (string, bool) { return a.userTeamRoles(rctx, askingUserId, channel.TeamId) }
+	return a.moderated(rctx, channel, askingUserId, roles, permission.Id, has), isMember
 }
 
 func (a *App) HasPermissionToChannelByPost(rctx request.CTX, askingUserId string, postID string, permission *model.Permission) bool {
@@ -410,15 +409,8 @@ func (a *App) HasPermissionToChannelByPost(rctx request.CTX, askingUserId string
 	if err != nil {
 		return has
 	}
-	overrides := a.overridesFor(rctx, channel, permission.Id)
-	if len(overrides) == 0 {
-		return has
-	}
-	roles, admin := a.userTeamRoles(rctx, askingUserId, channel.TeamId)
-	if admin {
-		return has
-	}
-	return model.ApplyChannelOverrides(has, permission.Id, model.TeamRoleGroupIDs(roles), askingUserId, overrides)
+	roles := func() (string, bool) { return a.userTeamRoles(rctx, askingUserId, channel.TeamId) }
+	return a.moderated(rctx, channel, askingUserId, roles, permission.Id, has)
 }
 
 // Role-gated channels: "only these roles can see it" is a private channel constrained to the roles' groups, as

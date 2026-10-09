@@ -43,6 +43,7 @@ type TimerLayer struct {
 	HealthFindingStore              store.HealthFindingStore
 	JobStore                        store.JobStore
 	LinkMetadataStore               store.LinkMetadataStore
+	ModerationStore                 store.ModerationStore
 	NotifyAdminStore                store.NotifyAdminStore
 	OAuthStore                      store.OAuthStore
 	OutgoingOAuthConnectionStore    store.OutgoingOAuthConnectionStore
@@ -182,6 +183,10 @@ func (s *TimerLayer) Job() store.JobStore {
 
 func (s *TimerLayer) LinkMetadata() store.LinkMetadataStore {
 	return s.LinkMetadataStore
+}
+
+func (s *TimerLayer) Moderation() store.ModerationStore {
+	return s.ModerationStore
 }
 
 func (s *TimerLayer) NotifyAdmin() store.NotifyAdminStore {
@@ -462,6 +467,11 @@ type TimerLayerJobStore struct {
 
 type TimerLayerLinkMetadataStore struct {
 	store.LinkMetadataStore
+	Root *TimerLayer
+}
+
+type TimerLayerModerationStore struct {
+	store.ModerationStore
 	Root *TimerLayer
 }
 
@@ -6584,6 +6594,86 @@ func (s *TimerLayerLinkMetadataStore) Save(linkMetadata *model.LinkMetadata) (*m
 			success = "true"
 		}
 		s.Root.Metrics.ObserveStoreMethodDuration("LinkMetadataStore.Save", success, elapsed)
+	}
+	return result, err
+}
+
+func (s *TimerLayerModerationStore) CountPosts(rctx request.CTX, teamID string, userID string, since int64) (int64, error) {
+	start := time.Now()
+
+	result, err := s.ModerationStore.CountPosts(rctx, teamID, userID, since)
+
+	elapsed := float64(time.Since(start)) / float64(time.Second)
+	if s.Root.Metrics != nil {
+		success := "false"
+		if err == nil {
+			success = "true"
+		}
+		s.Root.Metrics.ObserveStoreMethodDuration("ModerationStore.CountPosts", success, elapsed)
+	}
+	return result, err
+}
+
+func (s *TimerLayerModerationStore) DeleteTimeout(rctx request.CTX, teamID string, userID string) error {
+	start := time.Now()
+
+	err := s.ModerationStore.DeleteTimeout(rctx, teamID, userID)
+
+	elapsed := float64(time.Since(start)) / float64(time.Second)
+	if s.Root.Metrics != nil {
+		success := "false"
+		if err == nil {
+			success = "true"
+		}
+		s.Root.Metrics.ObserveStoreMethodDuration("ModerationStore.DeleteTimeout", success, elapsed)
+	}
+	return err
+}
+
+func (s *TimerLayerModerationStore) DeleteTimeoutsForTeam(rctx request.CTX, teamID string) error {
+	start := time.Now()
+
+	err := s.ModerationStore.DeleteTimeoutsForTeam(rctx, teamID)
+
+	elapsed := float64(time.Since(start)) / float64(time.Second)
+	if s.Root.Metrics != nil {
+		success := "false"
+		if err == nil {
+			success = "true"
+		}
+		s.Root.Metrics.ObserveStoreMethodDuration("ModerationStore.DeleteTimeoutsForTeam", success, elapsed)
+	}
+	return err
+}
+
+func (s *TimerLayerModerationStore) GetTimeouts(rctx request.CTX, teamID string, now int64) ([]*model.MemberTimeout, error) {
+	start := time.Now()
+
+	result, err := s.ModerationStore.GetTimeouts(rctx, teamID, now)
+
+	elapsed := float64(time.Since(start)) / float64(time.Second)
+	if s.Root.Metrics != nil {
+		success := "false"
+		if err == nil {
+			success = "true"
+		}
+		s.Root.Metrics.ObserveStoreMethodDuration("ModerationStore.GetTimeouts", success, elapsed)
+	}
+	return result, err
+}
+
+func (s *TimerLayerModerationStore) SaveTimeout(rctx request.CTX, timeout *model.MemberTimeout) (*model.MemberTimeout, error) {
+	start := time.Now()
+
+	result, err := s.ModerationStore.SaveTimeout(rctx, timeout)
+
+	elapsed := float64(time.Since(start)) / float64(time.Second)
+	if s.Root.Metrics != nil {
+		success := "false"
+		if err == nil {
+			success = "true"
+		}
+		s.Root.Metrics.ObserveStoreMethodDuration("ModerationStore.SaveTimeout", success, elapsed)
 	}
 	return result, err
 }
@@ -16334,6 +16424,7 @@ func New(childStore store.Store, metrics einterfaces.MetricsInterface) *TimerLay
 	newStore.HealthFindingStore = &TimerLayerHealthFindingStore{HealthFindingStore: childStore.HealthFinding(), Root: &newStore}
 	newStore.JobStore = &TimerLayerJobStore{JobStore: childStore.Job(), Root: &newStore}
 	newStore.LinkMetadataStore = &TimerLayerLinkMetadataStore{LinkMetadataStore: childStore.LinkMetadata(), Root: &newStore}
+	newStore.ModerationStore = &TimerLayerModerationStore{ModerationStore: childStore.Moderation(), Root: &newStore}
 	newStore.NotifyAdminStore = &TimerLayerNotifyAdminStore{NotifyAdminStore: childStore.NotifyAdmin(), Root: &newStore}
 	newStore.OAuthStore = &TimerLayerOAuthStore{OAuthStore: childStore.OAuth(), Root: &newStore}
 	newStore.OutgoingOAuthConnectionStore = &TimerLayerOutgoingOAuthConnectionStore{OutgoingOAuthConnectionStore: childStore.OutgoingOAuthConnection(), Root: &newStore}

@@ -9416,6 +9416,34 @@
     "description": "Low-level database error detail when counting a group's members fails; terse developer-facing text."
   },
   {
+    "id": "app.moderation.admin.app_error",
+    "translation": "The team's admins can't be moderated."
+  },
+  {
+    "id": "app.moderation.not_member.app_error",
+    "translation": "They aren't a member of this team."
+  },
+  {
+    "id": "app.moderation.posts.app_error",
+    "translation": "Unable to count their messages."
+  },
+  {
+    "id": "app.moderation.rank.app_error",
+    "translation": "You can only moderate people whose roles are below yours."
+  },
+  {
+    "id": "app.moderation.self.app_error",
+    "translation": "You can't moderate yourself."
+  },
+  {
+    "id": "app.moderation.timeouts.get.app_error",
+    "translation": "Unable to get the team's timeouts."
+  },
+  {
+    "id": "app.moderation.timeouts.save.app_error",
+    "translation": "Unable to save the timeout."
+  },
+  {
     "id": "app.notification.body.dm.subTitle",
     "translation": "While you were away, {{.SenderName}} sent you a new Direct Message.",
     "description": "Subtitle line in an email notification for a missed direct message; {{.SenderName}} is the sender's display name."
@@ -16077,6 +16105,18 @@
     "id": "model.member.is_valid.profile_username_duplicate.app_error",
     "translation": "Invitation profiles must have unique usernames",
     "description": "API error returned when two invitation profiles use the same username."
+  },
+  {
+    "id": "model.member_timeout.ids.app_error",
+    "translation": "Invalid team or user."
+  },
+  {
+    "id": "model.member_timeout.reason.app_error",
+    "translation": "A timeout's reason is at most {{.Max}} characters."
+  },
+  {
+    "id": "model.member_timeout.until.app_error",
+    "translation": "A timeout ends in the future, within {{.MaxDays}} days."
   },
   {
     "id": "model.oauth.is_valid.app_id.app_error",

@@ -121,6 +121,7 @@ const (
 	WebsocketEventServerCategoriesUpdated    WebsocketEventType = "server_categories_updated"
 	WebsocketEventChannelOverridesUpdated    WebsocketEventType = "channel_overrides_updated"
 	WebsocketEventCategoryOverridesUpdated   WebsocketEventType = "category_overrides_updated"
+	WebsocketEventMemberTimeoutsUpdated      WebsocketEventType = "member_timeouts_updated"
 	WebsocketEventFileDownloadRejected       WebsocketEventType = "file_download_rejected"
 	WebsocketEventFileUploadRejected         WebsocketEventType = "file_upload_rejected"
 	WebsocketEventShowToast                  WebsocketEventType = "show_toast"

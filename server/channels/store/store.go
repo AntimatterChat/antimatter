@@ -62,6 +62,7 @@ type Store interface {
 	Draft() DraftStore
 	ChannelGuard() ChannelGuardStore
 	ServerCategory() ServerCategoryStore
+	Moderation() ModerationStore
 	ChannelOverride() ChannelOverrideStore
 	MarkSystemRanUnitTests()
 	Close()
@@ -1131,6 +1132,15 @@ type ChannelOverrideStore interface {
 	DeleteCategory(rctx request.CTX, teamID, category string) error
 	DeleteCategoriesForTeam(rctx request.CTX, teamID string) error
 	Delete(rctx request.CTX, channelID, targetType, targetID string) error
+}
+
+// ModerationStore keeps what moderators of a team use (Antimatter): its members' timeouts, and how much they post.
+type ModerationStore interface {
+	GetTimeouts(rctx request.CTX, teamID string, now int64) ([]*model.MemberTimeout, error)
+	SaveTimeout(rctx request.CTX, timeout *model.MemberTimeout) (*model.MemberTimeout, error)
+	DeleteTimeout(rctx request.CTX, teamID, userID string) error
+	DeleteTimeoutsForTeam(rctx request.CTX, teamID string) error
+	CountPosts(rctx request.CTX, teamID, userID string, since int64) (int64, error)
 }
 
 // ServerCategoryStore keeps the sidebar categories admins set up for everyone in a team (Antimatter).

@@ -83,6 +83,9 @@ type Channels struct {
 	// Antimatter: the overrides of each team's server categories, cached.
 	categoryOverrides sync.Map
 
+	// Antimatter: each team's timeouts, cached.
+	memberTimeouts sync.Map
+
 	AccountMigration einterfaces.AccountMigrationInterface
 	Compliance       einterfaces.ComplianceInterface
 	DataRetention    einterfaces.DataRetentionInterface
