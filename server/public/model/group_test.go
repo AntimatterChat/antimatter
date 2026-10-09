@@ -38,8 +38,10 @@ func TestGroupAuditable(t *testing.T) {
 			ChannelId:      channelId,
 			TeamId:         teamId,
 			Color:          "#3b82f6",
+			Icon:           "star",
 			Position:       2,
 			Hoist:          true,
+			SelfAssignable: true,
 		}
 		m := g.Auditable()
 
@@ -58,8 +60,10 @@ func TestGroupAuditable(t *testing.T) {
 			"channel_id":      channelId,
 			"team_id":         teamId,
 			"color":           "#3b82f6",
+			"icon":            "star",
 			"position":        2,
 			"hoist":           true,
+			"self_assignable": true,
 		}
 
 		assert.Equal(t, expected, m)
@@ -100,8 +104,10 @@ func TestGroupLogClone(t *testing.T) {
 			ChannelId:      channelId,
 			TeamId:         teamId,
 			Color:          "#3b82f6",
+			Icon:           "star",
 			Position:       2,
 			Hoist:          true,
+			SelfAssignable: true,
 		}
 		l := g.LogClone()
 		m, ok := l.(map[string]any)
@@ -124,8 +130,10 @@ func TestGroupLogClone(t *testing.T) {
 			"channel_id":      channelId,
 			"team_id":         teamId,
 			"color":           "#3b82f6",
+			"icon":            "star",
 			"position":        2,
 			"hoist":           true,
+			"self_assignable": true,
 		}
 
 		assert.Equal(t, expected, m)

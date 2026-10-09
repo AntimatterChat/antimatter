@@ -1377,6 +1377,11 @@ func TestLeaveTeamPanic(t *testing.T) {
 	mockStore.On("Team").Return(&mockTeamStore)
 	mockStore.On("GetDBSchemaVersion").Return(1, nil)
 
+	// Antimatter: someone leaving a team leaves its roles; here they have none.
+	mockGroupStore := mocks.GroupStore{}
+	mockGroupStore.On("GetGroups", 0, 1000, mock.Anything, mock.Anything).Return([]*model.Group{}, nil)
+	mockStore.On("Group").Return(&mockGroupStore)
+
 	team := &model.Team{Id: "myteam"}
 	user := &model.User{Id: "userID"}
 

@@ -127,6 +127,9 @@ func (o *TeamPatch) Auditable() map[string]any {
 		"allow_open_invite":     o.AllowOpenInvite,
 		"group_constrained":     o.GroupConstrained,
 		"cloud_limits_archived": o.CloudLimitsArchived,
+		"hide_role_colors":      o.HideRoleColors,
+		"require_team_badges":   o.RequireTeamBadges,
+		"onboarding":            o.Onboarding != nil,
 	}
 }
 

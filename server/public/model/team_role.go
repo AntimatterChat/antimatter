@@ -3,7 +3,10 @@
 
 package model
 
-import "slices"
+import (
+	"slices"
+	"strings"
+)
 
 // An Antimatter role (a group of one team) grants its members a Mattermost role in that team, named after the group,
 // holding the permissions its editor's switches give. TeamRolePermissions are the permissions it may hold: team and
@@ -27,18 +30,25 @@ func TeamRolePermissions() []string {
 		PermissionConvertPrivateChannelToPublic.Id,
 		PermissionDeleteOthersPosts.Id,
 		PermissionEditOthersPosts.Id,
-		PermissionManageIncomingWebhooks.Id,
-		PermissionManageOutgoingWebhooks.Id,
-		PermissionManageSlashCommands.Id,
+		PermissionManageOwnIncomingWebhooks.Id,
+		PermissionManageOwnOutgoingWebhooks.Id,
+		PermissionManageOwnSlashCommands.Id,
 		PermissionManageOthersIncomingWebhooks.Id,
 		PermissionManageOthersOutgoingWebhooks.Id,
 		PermissionManageOthersSlashCommands.Id,
 	}
 }
 
+const teamRolePrefix = "team_role_"
+
 // TeamRoleName is the name of the Mattermost role an Antimatter role grants.
 func TeamRoleName(groupID string) string {
-	return "team_role_" + groupID
+	return teamRolePrefix + groupID
+}
+
+// IsTeamRoleName tells whether a Mattermost role is one an Antimatter role grants.
+func IsTeamRoleName(name string) bool {
+	return strings.HasPrefix(name, teamRolePrefix)
 }
 
 // AreTeamRolePermissions tells whether every permission is one a role may grant.

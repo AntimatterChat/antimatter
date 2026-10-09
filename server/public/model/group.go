@@ -28,9 +28,20 @@ const (
 
 	// GroupIconMaxLength bounds a role's icon, an emoji name.
 	GroupIconMaxLength = 64
+
+	// GroupPositionMax bounds a role's place among its team's roles.
+	GroupPositionMax = 10000
 )
 
-var validGroupColor = regexp.MustCompile(`^#[0-9a-fA-F]{6}$`)
+var (
+	validGroupColor = regexp.MustCompile(`^#[0-9a-fA-F]{6}$`)
+	validGroupIcon  = regexp.MustCompile(`^[a-z0-9_+-]*$`)
+)
+
+// NormalizeGroupTag is how a team's tag is kept: trimmed, in capitals.
+func NormalizeGroupTag(tag string) string {
+	return strings.ToUpper(strings.TrimSpace(tag))
+}
 
 type GroupSource string
 
@@ -92,8 +103,10 @@ func (group *Group) Auditable() map[string]any {
 		"channel_id":      group.ChannelId,
 		"team_id":         group.TeamId,
 		"color":           group.Color,
+		"icon":            group.Icon,
 		"position":        group.Position,
 		"hoist":           group.Hoist,
+		"self_assignable": group.SelfAssignable,
 	}
 }
 
@@ -115,8 +128,10 @@ func (group *Group) LogClone() any {
 		"channel_id":      group.ChannelId,
 		"team_id":         group.TeamId,
 		"color":           group.Color,
+		"icon":            group.Icon,
 		"position":        group.Position,
 		"hoist":           group.Hoist,
+		"self_assignable": group.SelfAssignable,
 	}
 }
 
@@ -251,7 +266,7 @@ func (group *Group) Patch(patch *GroupPatch) {
 		group.AllowReference = *patch.AllowReference
 	}
 	if patch.Tag != nil {
-		group.Tag = strings.ToUpper(strings.TrimSpace(*patch.Tag))
+		group.Tag = NormalizeGroupTag(*patch.Tag)
 	}
 	if patch.LeadId != nil {
 		group.LeadId = *patch.LeadId
@@ -301,7 +316,7 @@ func (group *Group) IsValidForCreate() *AppError {
 	if group.Color != "" && !validGroupColor.MatchString(group.Color) {
 		return NewAppError("Group.IsValidForCreate", "model.group.color.app_error", nil, "", http.StatusBadRequest)
 	}
-	if len(group.Icon) > GroupIconMaxLength || group.Position < 0 {
+	if len(group.Icon) > GroupIconMaxLength || !validGroupIcon.MatchString(group.Icon) || group.Position < 0 || group.Position > GroupPositionMax {
 		return NewAppError("Group.IsValidForCreate", "model.group.role.app_error", nil, "", http.StatusBadRequest)
 	}
 	if len(group.Description) > GroupDescriptionMaxLength {

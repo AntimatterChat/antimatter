@@ -3184,6 +3184,14 @@
     "description": "API error when the server's own Site URL is not configured and cannot be determined; needed for shared channels / secure connection operations."
   },
   {
+    "id": "api.group.channel.app_error",
+    "translation": "The team channel must be a channel of a team you can read."
+  },
+  {
+    "id": "api.group.lead.app_error",
+    "translation": "The team lead must be one of its members."
+  },
+  {
     "id": "api.image.get.app_error",
     "translation": "Requested image url cannot be parsed.",
     "description": "API error from the image proxy when the requested image URL is malformed and cannot be parsed."
@@ -4088,6 +4096,10 @@
     "id": "api.property_value.invalid_object_type.app_error",
     "translation": "The provided object type is not valid.",
     "description": "API error when a property value request specifies an unsupported object type (the kind of entity the value is attached to)."
+  },
+  {
+    "id": "api.property_value.managed_category.app_error",
+    "translation": "Channels are filed in server categories through the channel itself."
   },
   {
     "id": "api.property_value.patch.duplicate_field_id.app_error",
@@ -7223,6 +7235,10 @@
     "id": "app.channel_override.team_channel_only.app_error",
     "translation": "Only channels of a team have overrides.",
     "description": "Error when asking for overrides of a direct or group message."
+  },
+  {
+    "id": "app.channel_override.user.app_error",
+    "translation": "Overrides are for people of the channel's team."
   },
   {
     "id": "app.channel_role_access.get.app_error",
@@ -11472,6 +11488,14 @@
     "description": "Low-level database error detail meaning a select (read) query failed; terse developer-facing text."
   },
   {
+    "id": "app.server_category.conflict.app_error",
+    "translation": "The team's categories changed meanwhile. Reload them and try again."
+  },
+  {
+    "id": "app.server_category.delete.app_error",
+    "translation": "Unable to delete the team's server categories."
+  },
+  {
     "id": "app.server_category.get.app_error",
     "translation": "Unable to get the team's server categories.",
     "description": "Error when the server categories (sidebar categories set up for everyone in a team) can't be read."
@@ -11910,6 +11934,10 @@
     "id": "app.team.user_belongs_to_teams.app_error",
     "translation": "Unable to determine if the user belongs to a list of teams.",
     "description": "API error when checking whether a user is a member of any of a given list of teams fails."
+  },
+  {
+    "id": "app.team_role.deleted.app_error",
+    "translation": "This role was deleted."
   },
   {
     "id": "app.team_role.not_a_role.app_error",

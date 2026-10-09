@@ -1445,6 +1445,9 @@ func (a *App) leaveTeam(rctx request.CTX, team *model.Team, user *model.User, re
 		}
 	}
 
+	// Antimatter: someone leaving a team leaves its roles.
+	a.LeaveTeamRoles(rctx, teamMember.TeamId, teamMember.UserId)
+
 	removeErr := a.ch.srv.teamService.RemoveTeamMember(rctx, teamMember)
 	if removeErr != nil {
 		return model.NewAppError("RemoveTeamMemberFromTeam", "app.team.save_member.save.app_error", nil, "", http.StatusInternalServerError).Wrap(removeErr)
@@ -2112,6 +2115,11 @@ func (a *App) PermanentDeleteTeam(rctx request.CTX, team *model.Team) *model.App
 
 	if err := a.Srv().Store().Command().PermanentDeleteByTeam(team.Id); err != nil {
 		return model.NewAppError("PermanentDeleteTeam", "app.team.permanentdeleteteam.internal_error", nil, "", http.StatusInternalServerError).Wrap(err)
+	}
+
+	// Antimatter: the team's server categories go with it.
+	if appErr := a.DeleteServerCategoriesForTeam(rctx, team.Id); appErr != nil {
+		return appErr
 	}
 
 	if err := a.Srv().Store().Team().PermanentDelete(team.Id); err != nil {

@@ -477,3 +477,5 @@ channels/db/migrations/postgres/1000007_antimatter_add_selfassignable_to_usergro
 channels/db/migrations/postgres/1000007_antimatter_add_selfassignable_to_usergroups.up.sql
 channels/db/migrations/postgres/1000008_antimatter_add_onboarding_to_teams.down.sql
 channels/db/migrations/postgres/1000008_antimatter_add_onboarding_to_teams.up.sql
+channels/db/migrations/postgres/1000009_antimatter_add_usergroups_teamid_index.down.sql
+channels/db/migrations/postgres/1000009_antimatter_add_usergroups_teamid_index.up.sql

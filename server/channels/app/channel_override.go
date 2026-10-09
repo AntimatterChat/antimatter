@@ -19,8 +19,12 @@ import (
 // does, then the channel's overrides change that answer (model.ApplyChannelOverrides). Team and system admins aren't
 // affected. The @everyone override is the channel's moderation (its scheme), already in the first answer.
 
-// channelOverridesTTL bounds how long a node trusts its cached overrides, for changes made through another node.
+// channelOverridesTTL bounds how long a node trusts its cached overrides, should a change made through another node
+// not reach it (clusterEventInvalidateChannelOverrides).
 const channelOverridesTTL = time.Minute
+
+// clusterEventInvalidateChannelOverrides tells the other nodes a channel's overrides changed; its data is the channel.
+const clusterEventInvalidateChannelOverrides = model.ClusterEvent("inv_channel_overrides")
 
 type cachedChannelOverrides struct {
 	overrides []*model.ChannelOverride
@@ -65,10 +69,17 @@ func (a *App) SaveChannelOverride(rctx request.CTX, channel *model.Channel, over
 	if appErr := override.IsValid(); appErr != nil {
 		return nil, appErr
 	}
-	if override.TargetType == model.ChannelOverrideTargetRole {
+	switch override.TargetType {
+	case model.ChannelOverrideTargetRole:
 		group, err := a.Srv().Store().Group().Get(override.TargetId)
-		if err != nil || !group.IsRole() || group.TeamId != channel.TeamId {
+		if err != nil || !group.IsRole() || group.TeamId != channel.TeamId || group.DeleteAt != 0 {
 			return nil, model.NewAppError("SaveChannelOverride", "app.channel_override.role.app_error", nil, "", http.StatusBadRequest)
+		}
+	case model.ChannelOverrideTargetUser:
+		// A person of the channel's team: overrides don't reach outside it.
+		member, err := a.Srv().Store().Team().GetMember(rctx, channel.TeamId, override.TargetId)
+		if (err != nil || member.DeleteAt != 0) && !override.IsEmpty() {
+			return nil, model.NewAppError("SaveChannelOverride", "app.channel_override.user.app_error", nil, "", http.StatusBadRequest)
 		}
 	}
 
@@ -81,9 +92,60 @@ func (a *App) SaveChannelOverride(rctx request.CTX, channel *model.Channel, over
 	if err != nil {
 		return nil, model.NewAppError("SaveChannelOverride", "app.channel_override.save.app_error", nil, "", http.StatusInternalServerError).Wrap(err)
 	}
-	a.Channels().channelOverrides.Delete(channel.Id)
+	a.invalidateChannelOverrides(rctx, channel.Id)
 	a.publishChannelOverridesUpdated(channel)
 	return override, nil
+}
+
+// invalidateChannelOverrides forgets a channel's cached overrides here and on the other nodes, and reloads them from
+// the master database, which a replica may lag behind.
+func (a *App) invalidateChannelOverrides(rctx request.CTX, channelID string) {
+	a.Channels().channelOverrides.Delete(channelID)
+	if overrides, err := a.Srv().Store().ChannelOverride().GetForChannel(RequestContextWithMaster(rctx), channelID); err == nil {
+		a.Channels().channelOverrides.Store(channelID, cachedChannelOverrides{overrides: overrides, loadedAt: time.Now()})
+	}
+	if cluster := a.Srv().Platform().Cluster(); cluster != nil {
+		cluster.SendClusterMessage(&model.ClusterMessage{
+			Event:    clusterEventInvalidateChannelOverrides,
+			SendType: model.ClusterSendReliable,
+			Data:     []byte(channelID),
+		})
+	}
+}
+
+// clusterInvalidateChannelOverridesHandler forgets the overrides another node changed.
+func (ch *Channels) clusterInvalidateChannelOverridesHandler(msg *model.ClusterMessage) {
+	ch.channelOverrides.Delete(string(msg.Data))
+}
+
+// ChangedOverridePermissions gives the permissions an override changes from the one in place: those it allows or denies
+// anew, and those it stops allowing or denying.
+func (a *App) ChangedOverridePermissions(rctx request.CTX, channelID string, override *model.ChannelOverride) ([]string, *model.AppError) {
+	overrides, appErr := a.GetChannelOverrides(rctx, channelID)
+	if appErr != nil {
+		return nil, appErr
+	}
+	var current model.ChannelOverride
+	for _, o := range overrides {
+		if o.TargetType == override.TargetType && o.TargetId == override.TargetId {
+			current = *o
+		}
+	}
+	changed := []string{}
+	for _, pair := range [][2][]string{{current.Allow, override.Allow}, {current.Deny, override.Deny}} {
+		for _, p := range pair[0] {
+			if !slices.Contains(pair[1], p) {
+				changed = append(changed, p)
+			}
+		}
+		for _, p := range pair[1] {
+			if !slices.Contains(pair[0], p) {
+				changed = append(changed, p)
+			}
+		}
+	}
+	slices.Sort(changed)
+	return slices.Compact(changed), nil
 }
 
 func (a *App) publishChannelOverridesUpdated(channel *model.Channel) {
@@ -92,21 +154,18 @@ func (a *App) publishChannelOverridesUpdated(channel *model.Channel) {
 	a.Publish(message)
 }
 
-// applyChannelOverrides changes a permission check's answer for someone in a channel by the channel's overrides.
-// teamRoles are the person's roles in the channel's team; teamAdmin, whether overrides pass them by.
-func (a *App) applyChannelOverrides(rctx request.CTX, channel *model.Channel, userID, teamRoles string, teamAdmin bool, permissionID string, has bool) bool {
-	if teamAdmin || channel == nil || channel.TeamId == "" || !isOverridablePermission(permissionID) {
-		return has
+// overridesFor gives the overrides that may change a permission check in a channel; none for permissions overrides
+// don't touch, channels without overrides, and direct and group messages.
+func (a *App) overridesFor(rctx request.CTX, channel *model.Channel, permissionID string) []*model.ChannelOverride {
+	if channel == nil || channel.TeamId == "" || !isOverridablePermission(permissionID) {
+		return nil
 	}
 	overrides, appErr := a.GetChannelOverrides(rctx, channel.Id)
 	if appErr != nil {
 		rctx.Logger().Warn("Failed to get channel overrides", mlog.String("channel_id", channel.Id), mlog.Err(appErr))
-		return has
+		return nil
 	}
-	if len(overrides) == 0 {
-		return has
-	}
-	return model.ApplyChannelOverrides(has, permissionID, model.TeamRoleGroupIDs(teamRoles), userID, overrides)
+	return overrides
 }
 
 // sessionTeamRoles gives what overrides need of someone in a team: their team roles, and whether they're an admin
@@ -127,6 +186,9 @@ func (a *App) userTeamRoles(rctx request.CTX, userID, teamID string) (string, bo
 	return "", admin
 }
 
+// The permission checks below answer from roles as Mattermost does, then let the channel's overrides change that
+// answer. Someone's team roles are only looked up when the channel has overrides.
+
 func (a *App) SessionHasPermissionToChannel(rctx request.CTX, session model.Session, channelID string, permission *model.Permission) (hasPermission bool, isMember bool) {
 	has, isMember := a.sessionHasPermissionToChannelByRoles(rctx, session, channelID, permission)
 	if session.IsUnrestricted() || !isOverridablePermission(permission.Id) {
@@ -136,8 +198,15 @@ func (a *App) SessionHasPermissionToChannel(rctx request.CTX, session model.Sess
 	if appErr != nil {
 		return has, isMember
 	}
+	overrides := a.overridesFor(rctx, channel, permission.Id)
+	if len(overrides) == 0 {
+		return has, isMember
+	}
 	roles, admin := a.sessionTeamRoles(session, channel.TeamId)
-	return a.applyChannelOverrides(rctx, channel, session.UserId, roles, admin, permission.Id, has), isMember
+	if admin {
+		return has, isMember
+	}
+	return model.ApplyChannelOverrides(has, permission.Id, model.TeamRoleGroupIDs(roles), session.UserId, overrides), isMember
 }
 
 func (a *App) SessionHasPermissionToChannels(rctx request.CTX, session model.Session, channelIDs []string, permission *model.Permission) bool {
@@ -159,8 +228,15 @@ func (a *App) SessionHasPermissionToChannelByPost(session model.Session, postID 
 	if err != nil {
 		return has
 	}
+	overrides := a.overridesFor(request.EmptyContext(a.Log()), channel, permission.Id)
+	if len(overrides) == 0 {
+		return has
+	}
 	roles, admin := a.sessionTeamRoles(session, channel.TeamId)
-	return a.applyChannelOverrides(request.EmptyContext(a.Log()), channel, session.UserId, roles, admin, permission.Id, has)
+	if admin {
+		return has
+	}
+	return model.ApplyChannelOverrides(has, permission.Id, model.TeamRoleGroupIDs(roles), session.UserId, overrides)
 }
 
 func (a *App) HasPermissionToChannel(rctx request.CTX, askingUserId string, channelID string, permission *model.Permission) (hasPermission bool, isMember bool) {
@@ -172,8 +248,15 @@ func (a *App) HasPermissionToChannel(rctx request.CTX, askingUserId string, chan
 	if appErr != nil {
 		return has, isMember
 	}
+	overrides := a.overridesFor(rctx, channel, permission.Id)
+	if len(overrides) == 0 {
+		return has, isMember
+	}
 	roles, admin := a.userTeamRoles(rctx, askingUserId, channel.TeamId)
-	return a.applyChannelOverrides(rctx, channel, askingUserId, roles, admin, permission.Id, has), isMember
+	if admin {
+		return has, isMember
+	}
+	return model.ApplyChannelOverrides(has, permission.Id, model.TeamRoleGroupIDs(roles), askingUserId, overrides), isMember
 }
 
 func (a *App) HasPermissionToChannelByPost(rctx request.CTX, askingUserId string, postID string, permission *model.Permission) bool {
@@ -185,8 +268,15 @@ func (a *App) HasPermissionToChannelByPost(rctx request.CTX, askingUserId string
 	if err != nil {
 		return has
 	}
+	overrides := a.overridesFor(rctx, channel, permission.Id)
+	if len(overrides) == 0 {
+		return has
+	}
 	roles, admin := a.userTeamRoles(rctx, askingUserId, channel.TeamId)
-	return a.applyChannelOverrides(rctx, channel, askingUserId, roles, admin, permission.Id, has)
+	if admin {
+		return has
+	}
+	return model.ApplyChannelOverrides(has, permission.Id, model.TeamRoleGroupIDs(roles), askingUserId, overrides)
 }
 
 // Role-gated channels: "only these roles can see it" is a private channel constrained to the roles' groups, as
@@ -276,6 +366,30 @@ func (a *App) addRoleMembersToChannel(rctx request.CTX, role *model.Group, chann
 	for _, userID := range userIDs {
 		if _, appErr := a.AddChannelMember(rctx, userID, channel, ChannelMemberOpts{}); appErr != nil {
 			rctx.Logger().Warn("Failed to add a role's member to a role-gated channel", mlog.String("channel_id", channel.Id), mlog.String("user_id", userID), mlog.Err(appErr))
+		}
+	}
+}
+
+// releaseRoleGatedChannels leaves the channels a role gates to their other roles, or to anyone invited again when it
+// was their last, before the role is deleted: deleting a role doesn't empty its channels.
+func (a *App) releaseRoleGatedChannels(rctx request.CTX, role *model.Group) {
+	syncables, err := a.Srv().Store().Group().GetAllGroupSyncablesByGroupId(role.Id, model.GroupSyncableTypeChannel)
+	if err != nil {
+		rctx.Logger().Warn("Failed to get the channels of a role", mlog.String("group_id", role.Id), mlog.Err(err))
+		return
+	}
+	for _, s := range syncables {
+		channel, appErr := a.GetChannel(rctx, s.SyncableId)
+		if appErr != nil {
+			continue
+		}
+		current, appErr := a.GetChannelRoleAccess(channel)
+		if appErr != nil {
+			continue
+		}
+		remaining := slices.DeleteFunc(current, func(id string) bool { return id == role.Id })
+		if appErr := a.SetChannelRoleAccess(rctx, channel, remaining); appErr != nil {
+			rctx.Logger().Warn("Failed to release a channel of a deleted role", mlog.String("channel_id", channel.Id), mlog.String("group_id", role.Id), mlog.Err(appErr))
 		}
 	}
 }

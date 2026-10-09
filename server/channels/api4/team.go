@@ -1336,8 +1336,16 @@ func updateTeamMemberRoles(c *Context, w http.ResponseWriter, r *http.Request) {
 	defer c.LogAuditRec(auditRec)
 	model.AddEventParameterToAuditRec(auditRec, "roles", newRoles)
 
-	if !c.App.SessionHasPermissionToTeam(*c.AppContext.Session(), c.Params.TeamId, model.PermissionManageTeamRoles) {
+	// Antimatter: what Antimatter roles grant doesn't count here (SessionHasSchemePermissionToTeam), and the Antimatter
+	// roles someone holds stay as they are.
+	if !c.App.SessionHasSchemePermissionToTeam(*c.AppContext.Session(), c.Params.TeamId, model.PermissionManageTeamRoles) {
 		c.SetPermissionError(model.PermissionManageTeamRoles)
+		return
+	}
+
+	newRoles, err := c.App.KeepTeamRoles(c.AppContext, c.Params.TeamId, c.Params.UserId, newRoles)
+	if err != nil {
+		c.Err = err
 		return
 	}
 
@@ -1370,7 +1378,8 @@ func updateTeamMemberSchemeRoles(c *Context, w http.ResponseWriter, r *http.Requ
 	defer c.LogAuditRec(auditRec)
 	model.AddEventParameterAuditableToAuditRec(auditRec, "scheme_roles", &schemeRoles)
 
-	if !c.App.SessionHasPermissionToTeam(*c.AppContext.Session(), c.Params.TeamId, model.PermissionManageTeamRoles) {
+	// Antimatter: what Antimatter roles grant doesn't make anyone a team admin.
+	if !c.App.SessionHasSchemePermissionToTeam(*c.AppContext.Session(), c.Params.TeamId, model.PermissionManageTeamRoles) {
 		c.SetPermissionError(model.PermissionManageTeamRoles)
 		return
 	}

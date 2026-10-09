@@ -4,6 +4,7 @@
 package api4
 
 import (
+	"slices"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -182,7 +183,7 @@ func createGroup(c *Context, w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		// Those who manage roles without being team admins make them below their own highest role.
-		if lowest := c.App.LowestTeamRolePositionFor(*c.AppContext.Session(), group.TeamId); lowest > 0 && group.Position < lowest {
+		if lowest := c.App.LowestTeamRolePositionFor(*c.AppContext.Session(), group.TeamId); lowest >= 0 && group.Position < lowest {
 			group.Position = lowest
 		}
 	} else if !c.App.SessionHasPermissionTo(*c.AppContext.Session(), model.PermissionCreateCustomGroup) {
@@ -197,6 +198,16 @@ func createGroup(c *Context, w http.ResponseWriter, r *http.Request) {
 
 	if group.GetRemoteId() != "" {
 		c.Err = model.NewAppError("createGroup", "api.custom_groups.no_remote_id", nil, "", http.StatusBadRequest)
+		return
+	}
+
+	// Antimatter: a team's tag, lead and channel.
+	group.Tag = model.NormalizeGroupTag(group.Tag)
+	if group.LeadId != "" && !slices.Contains(group.UserIds, group.LeadId) {
+		c.Err = model.NewAppError("createGroup", "api.group.lead.app_error", nil, "", http.StatusBadRequest)
+		return
+	}
+	if !checkGroupChannel(c, group.ChannelId) {
 		return
 	}
 
@@ -262,7 +273,7 @@ func patchGroup(c *Context, w http.ResponseWriter, r *http.Request) {
 
 	// Antimatter: a role can't be moved above its manager's own highest role.
 	if group.IsRole() && groupPatch.Position != nil {
-		if lowest := c.App.LowestTeamRolePositionFor(*c.AppContext.Session(), group.TeamId); lowest > 0 && *groupPatch.Position < lowest {
+		if lowest := c.App.LowestTeamRolePositionFor(*c.AppContext.Session(), group.TeamId); lowest >= 0 && *groupPatch.Position < lowest {
 			c.SetPermissionError(model.PermissionManageTeam)
 			return
 		}
@@ -302,6 +313,15 @@ func patchGroup(c *Context, w http.ResponseWriter, r *http.Request) {
 				return
 			}
 		}
+	}
+
+	// Antimatter: a team's lead is one of its members, and its channel one the patcher can read.
+	if groupPatch.LeadId != nil && *groupPatch.LeadId != "" && !c.App.IsGroupMember(group.Id, *groupPatch.LeadId) {
+		c.Err = model.NewAppError("Api4.patchGroup", "api.group.lead.app_error", nil, "", http.StatusBadRequest)
+		return
+	}
+	if groupPatch.ChannelId != nil && !checkGroupChannel(c, *groupPatch.ChannelId) {
+		return
 	}
 
 	group.Patch(&groupPatch)
@@ -1446,4 +1466,21 @@ func configuredForGroupBySource(app *app.App, source model.GroupSource) *model.A
 	}
 
 	return nil
+}
+
+// checkGroupChannel accepts a team's channel: none, or a channel of a team the caller can read.
+func checkGroupChannel(c *Context, channelID string) bool {
+	if channelID == "" {
+		return true
+	}
+	channel, appErr := c.App.GetChannel(c.AppContext, channelID)
+	if appErr != nil || channel.TeamId == "" || channel.DeleteAt != 0 {
+		c.Err = model.NewAppError("checkGroupChannel", "api.group.channel.app_error", nil, "", http.StatusBadRequest)
+		return false
+	}
+	if ok, _ := c.App.SessionHasPermissionToReadChannel(c.AppContext, *c.AppContext.Session(), channel); !ok {
+		c.Err = model.NewAppError("checkGroupChannel", "api.group.channel.app_error", nil, "", http.StatusBadRequest)
+		return false
+	}
+	return true
 }

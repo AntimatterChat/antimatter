@@ -63,6 +63,7 @@ func (s *Server) registerClusterHandlers() {
 	s.platform.RegisterClusterMessageHandler(model.ClusterEventRemovePlugin, s.clusterRemovePluginHandler)
 	s.platform.RegisterClusterMessageHandler(model.ClusterEventPluginEvent, s.clusterPluginEventHandler)
 	s.platform.RegisterClusterMessageHandler(clusterEventInvalidateChannelGuardCache, s.Channels().clusterInvalidateGuardCacheHandler)
+	s.platform.RegisterClusterMessageHandler(clusterEventInvalidateChannelOverrides, s.Channels().clusterInvalidateChannelOverridesHandler)
 
 	s.platform.RegisterClusterHandlers()
 }

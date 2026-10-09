@@ -7,8 +7,10 @@ import (
 	"encoding/json"
 	"errors"
 	"net/http"
+	"slices"
 
 	"github.com/mattermost/mattermost/server/public/model"
+	"github.com/mattermost/mattermost/server/public/shared/mlog"
 	"github.com/mattermost/mattermost/server/public/shared/request"
 	"github.com/mattermost/mattermost/server/public/utils"
 	"github.com/mattermost/mattermost/server/v8/channels/store"
@@ -150,6 +152,10 @@ func (a *App) CreateGroupWithUserIds(group *model.GroupWithUserIds) (*model.Grou
 		appErr.Where = "CreateGroupWithUserIds"
 		return nil, appErr
 	}
+	// Antimatter: a role's first members are of its team.
+	if appErr := a.CheckTeamRoleMembers(request.EmptyContext(a.Log()), &group.Group, group.UserIds); appErr != nil {
+		return nil, appErr
+	}
 
 	newGroup, err := a.Srv().Store().Group().CreateWithUserIds(group)
 	if err != nil {
@@ -229,12 +235,17 @@ func (a *App) UpdateGroup(group *model.Group) (*model.Group, *model.AppError) {
 }
 
 func (a *App) DeleteGroup(groupID string) (*model.Group, *model.AppError) {
-	// Antimatter: a deleted role is taken back from its members.
-	if group, gErr := a.Srv().Store().Group().Get(groupID); gErr == nil && group.IsRole() {
-		a.syncTeamRoleForAllMembers(request.EmptyContext(a.Log()), group, false)
+	// Antimatter: the channels a deleted role gates are left to its other roles, or to anyone invited again.
+	role, gErr := a.Srv().Store().Group().Get(groupID)
+	if gErr == nil && role.IsRole() {
+		a.releaseRoleGatedChannels(request.EmptyContext(a.Log()), role)
 	}
 
 	deletedGroup, err := a.Srv().Store().Group().Delete(groupID)
+	// Antimatter: and the role is taken back from its members.
+	if err == nil && gErr == nil && role.IsRole() {
+		a.syncTeamRoleForAllMembers(request.EmptyContext(a.Log()), role, false)
+	}
 	if err != nil {
 		var nfErr *store.ErrNotFound
 		switch {
@@ -394,6 +405,7 @@ func (a *App) DeleteGroupMember(groupID string, userID string) (*model.GroupMemb
 	if group, gErr := a.Srv().Store().Group().Get(groupID); gErr == nil && group.IsRole() {
 		a.syncTeamRole(request.EmptyContext(a.Log()), group, []string{userID}, false)
 	}
+	a.clearGroupLead(groupID, []string{userID})
 
 	return groupMember, nil
 }
@@ -920,6 +932,7 @@ func (a *App) DeleteGroupMembers(groupID string, userIDs []string) ([]*model.Gro
 	if group, gErr := a.Srv().Store().Group().Get(groupID); gErr == nil && group.IsRole() {
 		a.syncTeamRole(request.EmptyContext(a.Log()), group, userIDs, false)
 	}
+	a.clearGroupLead(groupID, userIDs)
 
 	return members, nil
 }
@@ -933,4 +946,22 @@ func (a *App) publishGroupMemberEvent(eventName model.WebsocketEventType, groupM
 	messageWs.Add("group_member", string(groupMemberJSON))
 	a.Publish(messageWs)
 	return nil
+}
+
+// IsGroupMember tells whether someone is a member of a group.
+func (a *App) IsGroupMember(groupID, userID string) bool {
+	member, err := a.Srv().Store().Group().GetMember(groupID, userID)
+	return err == nil && member.DeleteAt == 0
+}
+
+// clearGroupLead takes the lead off an Antimatter team whose lead left it.
+func (a *App) clearGroupLead(groupID string, userIDs []string) {
+	group, err := a.Srv().Store().Group().Get(groupID)
+	if err != nil || group.LeadId == "" || !slices.Contains(userIDs, group.LeadId) {
+		return
+	}
+	group.LeadId = ""
+	if _, appErr := a.UpdateGroup(group); appErr != nil {
+		a.Log().Warn("Failed to clear the lead of a group", mlog.String("group_id", groupID), mlog.Err(appErr))
+	}
 }
