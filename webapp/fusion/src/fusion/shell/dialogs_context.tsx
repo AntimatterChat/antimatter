@@ -11,12 +11,12 @@ import CategoryPermissionsDialog from 'fusion/channel/category_permissions_dialo
 import ChannelPermissionsDialog from 'fusion/channel/channel_permissions_dialog';
 import AddPeopleDialog from 'fusion/modals/add_people_dialog';
 import ConfirmDialog from 'fusion/modals/confirm_dialog';
-import RemoveMemberDialog from 'fusion/moderation/remove_member_dialog';
-import TimeoutDialog from 'fusion/moderation/timeout_dialog';
 import type {ConfirmOptions} from 'fusion/modals/confirm_dialog';
 import CreateCategoryDialog from 'fusion/modals/create_category_dialog';
 import CreateChannelDialog from 'fusion/modals/create_channel_dialog';
 import DeleteMessageDialog from 'fusion/modals/delete_message_dialog';
+import RemoveMemberDialog from 'fusion/moderation/remove_member_dialog';
+import TimeoutDialog from 'fusion/moderation/timeout_dialog';
 import CreateTeamDialog from 'fusion/teams/create_team_dialog';
 import OnboardingEditor from 'fusion/teams/onboarding_editor';
 import RolesDialog from 'fusion/teams/roles_dialog';

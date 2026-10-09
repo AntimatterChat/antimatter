@@ -2,8 +2,8 @@
 // See LICENSE.txt for license information.
 
 import type {ChannelOverride} from '@mattermost/types/channel_overrides';
-import type {MemberTimeout} from '@mattermost/types/moderation';
 import type {GroupMembership, GroupPermissions} from '@mattermost/types/groups';
+import type {MemberTimeout} from '@mattermost/types/moderation';
 import type {Role} from '@mattermost/types/roles';
 import type {GlobalState} from '@mattermost/types/store';
 
