@@ -1,6 +1,7 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 
+import type {ChannelOverride} from '@mattermost/types/channel_overrides';
 import type {GroupMembership, GroupPermissions} from '@mattermost/types/groups';
 import type {Role} from '@mattermost/types/roles';
 import type {GlobalState} from '@mattermost/types/store';
@@ -214,6 +215,19 @@ export const haveIGroupPermission: (state: GlobalState, groupID: string, permiss
 );
 
 export function haveIChannelPermission(state: GlobalState, teamId: string | undefined, channelId: string | undefined, permission: string): boolean {
+    const has = haveIChannelPermissionByRoles(state, teamId, channelId, permission);
+
+    // Antimatter: the channel's overrides change the answer, as the server's checks do; team admins pass them by.
+    const overrides = channelId ? state.entities.channels.overrides?.[channelId] : undefined;
+    if (!overrides?.length || !teamId || !OVERRIDABLE_PERMISSIONS.has(permission) || haveITeamPermission(state, teamId, Permissions.MANAGE_TEAM)) {
+        return has;
+    }
+    const roles = (state.entities.teams.myMembers[teamId]?.roles || '').split(' ');
+    const roleIds = roles.filter((r) => r.startsWith(TEAM_ROLE_PREFIX)).map((r) => r.slice(TEAM_ROLE_PREFIX.length));
+    return applyChannelOverrides(has, permission, roleIds, getCurrentUserId(state), overrides);
+}
+
+function haveIChannelPermissionByRoles(state: GlobalState, teamId: string | undefined, channelId: string | undefined, permission: string): boolean {
     if (getMySystemPermissions(state).has(permission)) {
         return true;
     }
@@ -227,6 +241,49 @@ export function haveIChannelPermission(state: GlobalState, teamId: string | unde
     }
 
     return false;
+}
+
+// The Mattermost roles Antimatter roles grant are named after them.
+const TEAM_ROLE_PREFIX = 'team_role_';
+
+// The permissions overrides can change (the server's model.ChannelOverridePermissions).
+const OVERRIDABLE_PERMISSIONS = new Set<string>([
+    Permissions.CREATE_POST,
+    Permissions.ADD_REACTION,
+    Permissions.REMOVE_REACTION,
+    Permissions.UPLOAD_FILE,
+    Permissions.USE_CHANNEL_MENTIONS,
+    Permissions.USE_GROUP_MENTIONS,
+    Permissions.DELETE_OTHERS_POSTS,
+    Permissions.EDIT_OTHERS_POSTS,
+    Permissions.MANAGE_PUBLIC_CHANNEL_MEMBERS,
+    Permissions.MANAGE_PRIVATE_CHANNEL_MEMBERS,
+    Permissions.MANAGE_PUBLIC_CHANNEL_PROPERTIES,
+    Permissions.MANAGE_PRIVATE_CHANNEL_PROPERTIES,
+]);
+
+// applyChannelOverrides resolves a permission in a channel as Discord (and the server's model.ApplyChannelOverrides)
+// does: the overrides of someone's roles first (a deny takes it away, then an allow gives it back), then their own.
+export function applyChannelOverrides(has: boolean, permission: string, roleIds: string[], userId: string, overrides: ChannelOverride[]): boolean {
+    let result = has;
+    const ofRoles = overrides.filter((o) => o.target_type === 'role' && roleIds.includes(o.target_id));
+    if (ofRoles.some((o) => o.deny.includes(permission))) {
+        result = false;
+    }
+    if (ofRoles.some((o) => o.allow.includes(permission))) {
+        result = true;
+    }
+    for (const o of overrides) {
+        if (o.target_type === 'user' && o.target_id === userId) {
+            if (o.deny.includes(permission)) {
+                result = false;
+            }
+            if (o.allow.includes(permission)) {
+                result = true;
+            }
+        }
+    }
+    return result;
 }
 
 export function haveICurrentTeamPermission(state: GlobalState, permission: string): boolean {

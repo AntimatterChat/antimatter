@@ -1,6 +1,7 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 
+import type {ChannelOverride} from './channel_overrides';
 import type {Team} from './teams';
 import type {IDMappedObjects, RelationOneToManyUnique, RelationOneToOne} from './utilities';
 
@@ -268,6 +269,9 @@ export type ChannelsState = {
     channelsMemberCount: Record<string, number>;
     restrictedDMs: RelationOneToOne<Channel, boolean>;
     joinRequests: ChannelJoinRequestsState;
+
+    // Antimatter: the overrides of the channels whose were loaded, applied to permission checks.
+    overrides?: RelationOneToOne<Channel, ChannelOverride[]>;
 };
 
 export type ChannelModeration = {

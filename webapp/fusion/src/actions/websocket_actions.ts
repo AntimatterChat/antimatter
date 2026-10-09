@@ -59,6 +59,7 @@ import {
     fetchAllMyChannelMembers,
     fetchAllMyTeamsChannels,
     fetchChannelsAndMembers,
+    fetchChannelOverrides,
 } from 'mattermost-redux/actions/channels';
 import {clearErrors, logError} from 'mattermost-redux/actions/errors';
 import {setServerVersion, getClientConfig, getCustomProfileAttributeFields} from 'mattermost-redux/actions/general';
@@ -713,6 +714,12 @@ export function handleEvent(msg: WebSocketMessage) {
         // Antimatter: a team's server categories, or the channels filed in them, changed.
         dispatch(fetchServerCategories(msg.data.team_id));
         dispatch(fetchManagedCategories(msg.data.team_id));
+        break;
+    case WebSocketEvents.ChannelOverridesUpdated:
+        // Antimatter: permission checks apply a channel's overrides, when it was opened.
+        if (getState().entities.channels.overrides?.[msg.data.channel_id]) {
+            dispatch(fetchChannelOverrides(msg.data.channel_id));
+        }
         break;
     case WebSocketEvents.FirstAdminVisitMarketplaceStatusReceived:
         handleFirstAdminVisitMarketplaceStatusReceivedEvent(msg);

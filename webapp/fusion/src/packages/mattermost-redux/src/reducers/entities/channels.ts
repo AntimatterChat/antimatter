@@ -5,6 +5,7 @@ import isEqual from 'lodash/isEqual';
 import type {AnyAction} from 'redux';
 import {combineReducers} from 'redux';
 
+import type {ChannelOverride} from '@mattermost/types/channel_overrides';
 import type {
     Channel,
     ChannelJoinRequest,
@@ -861,6 +862,20 @@ export function channelModerations(state: any = {}, action: MMReduxAction) {
     }
 }
 
+// overrides are the Antimatter overrides of the channels whose were loaded (the ones opened).
+export function overrides(state: RelationOneToOne<Channel, ChannelOverride[]> = {}, action: MMReduxAction) {
+    switch (action.type) {
+    case ChannelTypes.RECEIVED_CHANNEL_OVERRIDES: {
+        const {channelId, overrides: list} = action.data;
+        return {...state, [channelId]: list};
+    }
+    case UserTypes.LOGOUT_SUCCESS:
+        return {};
+    default:
+        return state;
+    }
+}
+
 export function channelMemberCountsByGroup(state: any = {}, action: MMReduxAction) {
     switch (action.type) {
     case ChannelTypes.RECEIVED_CHANNEL_MEMBER_COUNTS_BY_GROUP: {
@@ -1078,9 +1093,7 @@ export function joinRequests(state: ChannelJoinRequestsState = initialJoinReques
         // Persist the row even when it wasn't tracked yet, so a re-delivered
         // terminal event finds it and becomes a terminal -> terminal no-op
         // rather than decrementing the count a second time.
-        const replaced = prev ?
-            existing.map((r) => (r.id === req.id ? req : r)) :
-            [req, ...existing];
+        const replaced = prev ? existing.map((r) => (r.id === req.id ? req : r)) : [req, ...existing];
         const myPending = {...state.myPendingByChannel};
         if (isTerminal(req.status)) {
             delete myPending[req.channel_id];
@@ -1179,4 +1192,7 @@ export default combineReducers({
 
     // Discoverable Private Channels — join requests slice
     joinRequests,
+
+    // Antimatter: channel overrides, by channel
+    overrides,
 });

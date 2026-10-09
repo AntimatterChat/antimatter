@@ -6,7 +6,9 @@ import {useIntl} from 'react-intl';
 import {useSelector} from 'react-redux';
 import {useRouteMatch} from 'react-router-dom';
 
+import {Permissions} from 'mattermost-redux/constants';
 import {getCurrentChannel, isDeactivatedDirectChannel} from 'mattermost-redux/selectors/entities/channels';
+import {haveIChannelPermission} from 'mattermost-redux/selectors/entities/roles';
 import {getCurrentUserId} from 'mattermost-redux/selectors/entities/users';
 
 import {getChannelViewPanel} from 'selectors/channel_view_panel';
@@ -34,6 +36,10 @@ export default function ChannelView() {
     const {formatMessage} = useIntl();
     const channel = useSelector(getCurrentChannel);
     const deactivated = useSelector((state: GlobalState) => (channel ? isDeactivatedDirectChannel(state, channel.id) : false));
+
+    // A team channel someone is in but can't post in: read-only by its moderation, or by an override (Antimatter).
+    const readOnly = useSelector((state: GlobalState) => Boolean(channel?.team_id) && Boolean(state.entities.channels.myMembers[channel!.id]) &&
+        !haveIChannelPermission(state, channel!.team_id, channel!.id, Permissions.CREATE_POST));
     const match = useRouteMatch<{postid?: string}>();
     const viewRef = useRef<HTMLDivElement>(null);
     const [dropping, setDropping] = useState(false);
@@ -75,14 +81,16 @@ export default function ChannelView() {
     const messagesVisible = !panel || panelMessagesVisible;
 
     let composer;
-    if (archived || deactivated) {
+    if (archived || deactivated || readOnly) {
         composer = (
             <div className={am('composer')}>
                 <div
                     className={am('note-box')}
                     style={{margin: 0}}
                 >
-                    {archived ? formatMessage({id: 'fusion.channel.archived', defaultMessage: 'You are viewing an archived channel. New messages cannot be posted.'}) : formatMessage({id: 'fusion.channel.deactivated', defaultMessage: 'You are viewing a conversation with a deactivated user. New messages cannot be posted.'})}
+                    {archived && formatMessage({id: 'fusion.channel.archived', defaultMessage: 'You are viewing an archived channel. New messages cannot be posted.'})}
+                    {!archived && deactivated && formatMessage({id: 'fusion.channel.deactivated', defaultMessage: 'You are viewing a conversation with a deactivated user. New messages cannot be posted.'})}
+                    {!archived && !deactivated && formatMessage({id: 'fusion.channel.readOnly', defaultMessage: 'You can\'t send messages in this channel.'})}
                 </div>
             </div>
         );

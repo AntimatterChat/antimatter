@@ -427,6 +427,11 @@ export type ServerCategoriesUpdated = BaseWebSocketMessage<WebSocketEvents.Serve
     team_id: string;
 }>;
 
+// Antimatter: a channel's overrides changed; clients that hold them fetch them again.
+export type ChannelOverridesUpdated = BaseWebSocketMessage<WebSocketEvents.ChannelOverridesUpdated, {
+    channel_id: string;
+}>;
+
 // Emoji messages
 
 export type EmojiAdded = BaseWebSocketMessage<WebSocketEvents.EmojiAdded, {

@@ -6,6 +6,7 @@ import {useDispatch, useSelector, useStore} from 'react-redux';
 import {useRouteMatch} from 'react-router-dom';
 
 import {fetchMyCategories} from 'mattermost-redux/actions/channel_categories';
+import {fetchChannelOverrides} from 'mattermost-redux/actions/channels';
 import {getCurrentChannelId} from 'mattermost-redux/selectors/entities/channels';
 import {getTheme} from 'mattermost-redux/selectors/entities/preferences';
 import {getCurrentTeamId} from 'mattermost-redux/selectors/entities/teams';
@@ -75,6 +76,16 @@ function Frame({children}: Props) {
     useMuteExpiry();
     useNavShortcuts();
     useLoadTeams();
+
+    // The channel's overrides (Antimatter), which permission checks apply: loaded when it's first opened, then kept
+    // up to date by the server's events.
+    useEffect(() => {
+        const state = store.getState();
+        const channel = channelId ? state.entities.channels.channels[channelId] : undefined;
+        if (channel?.team_id && !state.entities.channels.overrides?.[channelId]) {
+            dispatch(fetchChannelOverrides(channelId));
+        }
+    }, [channelId, dispatch, store]);
 
     // The sidebar's categories, including the direct messages shown in the dock.
     useEffect(() => {

@@ -68,6 +68,7 @@ export const enum WebSocketEvents {
     PropertyFieldDeleted = 'property_field_deleted',
     PropertyValuesUpdated = 'property_values_updated',
     ServerCategoriesUpdated = 'server_categories_updated',
+    ChannelOverridesUpdated = 'channel_overrides_updated',
     CloudSubscriptionChanged = 'cloud_subscription_changed',
     ThreadUpdated = 'thread_updated',
     ThreadFollowChanged = 'thread_follow_changed',
