@@ -43,6 +43,7 @@ func TestReadReplicas(t *testing.T) {
 		ps, err := New(
 			ServiceConfig{},
 			ConfigStore(configStore),
+			DisableGlobalLogger(),
 		)
 		require.NoError(t, err)
 		require.NotSame(t, ps.sqlStore.GetMaster(), ps.sqlStore.GetReplica())
@@ -56,6 +57,7 @@ func TestReadReplicas(t *testing.T) {
 		ps, err := New(
 			ServiceConfig{},
 			ConfigStore(configStore),
+			DisableGlobalLogger(),
 		)
 		require.NoError(t, err)
 		require.NotSame(t, ps.sqlStore.GetMaster(), ps.sqlStore.GetSearchReplicaX())
