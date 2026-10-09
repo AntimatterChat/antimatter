@@ -35,6 +35,33 @@ type MessageAttachment struct {
 	FooterIcon string                    `json:"footer_icon"`
 	Timestamp  any                       `json:"ts"` // This is either a string or an int64
 	Actions    []*PostAction             `json:"actions,omitempty"`
+	// Antimatter: a pipeline's stages as pills, and a small chart of recent values, as in the Fusion mockup's CI and
+	// monitoring cards.
+	Stages []*MessageAttachmentStage `json:"stages,omitempty"`
+	Chart  *MessageAttachmentChart   `json:"chart,omitempty"`
+}
+
+const (
+	MessageAttachmentStagesMax     = 20
+	MessageAttachmentStageNameMax  = 64
+	MessageAttachmentChartValueMax = 200
+	MessageAttachmentChartLabelMax = 128
+)
+
+// The states of a pipeline stage.
+var messageAttachmentStageStatuses = []string{"passed", "failed", "running", "pending", "skipped", "canceled"}
+
+// MessageAttachmentStage is one stage of a CI pipeline: build, test, deploy...
+type MessageAttachmentStage struct {
+	Name   string `json:"name"`
+	Status string `json:"status"`
+}
+
+// MessageAttachmentChart is a sparkline: values in time order, and a threshold drawn as a line (an alert's limit).
+type MessageAttachmentChart struct {
+	Values    []float64 `json:"values"`
+	Threshold *float64  `json:"threshold,omitempty"`
+	Label     string    `json:"label,omitempty"`
 }
 
 func (s *MessageAttachment) IsValid() error {
@@ -103,6 +130,26 @@ func (s *MessageAttachment) IsValid() error {
 	for i, action := range s.Actions {
 		if err := action.IsValid(); err != nil {
 			multiErr = multierror.Append(multiErr, multierror.Prefix(err, fmt.Sprintf("action at index %d is invalid:", i)))
+		}
+	}
+
+	if len(s.Stages) > MessageAttachmentStagesMax {
+		multiErr = multierror.Append(multiErr, fmt.Errorf("at most %d stages", MessageAttachmentStagesMax))
+	}
+	for i, stage := range s.Stages {
+		if stage == nil || stage.Name == "" || len(stage.Name) > MessageAttachmentStageNameMax {
+			multiErr = multierror.Append(multiErr, fmt.Errorf("stage at index %d needs a name of at most %d characters", i, MessageAttachmentStageNameMax))
+		} else if !slices.Contains(messageAttachmentStageStatuses, stage.Status) {
+			multiErr = multierror.Append(multiErr, fmt.Errorf("stage at index %d has an invalid status '%s'", i, stage.Status))
+		}
+	}
+
+	if s.Chart != nil {
+		if len(s.Chart.Values) < 2 || len(s.Chart.Values) > MessageAttachmentChartValueMax {
+			multiErr = multierror.Append(multiErr, fmt.Errorf("a chart needs 2 to %d values", MessageAttachmentChartValueMax))
+		}
+		if len(s.Chart.Label) > MessageAttachmentChartLabelMax {
+			multiErr = multierror.Append(multiErr, fmt.Errorf("chart label is longer than %d characters", MessageAttachmentChartLabelMax))
 		}
 	}
 
@@ -190,7 +237,30 @@ func (s *MessageAttachment) Equals(input *MessageAttachment) bool {
 		}
 	}
 
+	if !slices.EqualFunc(s.Stages, input.Stages, func(a, b *MessageAttachmentStage) bool {
+		return (a == nil && b == nil) || (a != nil && b != nil && *a == *b)
+	}) {
+		return false
+	}
+
+	if !s.Chart.Equals(input.Chart) {
+		return false
+	}
+
 	return s.Timestamp == input.Timestamp
+}
+
+func (c *MessageAttachmentChart) Equals(input *MessageAttachmentChart) bool {
+	if c == nil || input == nil {
+		return c == input
+	}
+	if c.Label != input.Label || !slices.Equal(c.Values, input.Values) {
+		return false
+	}
+	if c.Threshold == nil || input.Threshold == nil {
+		return c.Threshold == input.Threshold
+	}
+	return *c.Threshold == *input.Threshold
 }
 
 type MessageAttachmentField struct {

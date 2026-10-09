@@ -20,6 +20,23 @@ export type MessageAttachment = {
     footer?: string;
     footer_icon?: string;
     actions?: PostAction[];
+
+    // Antimatter: a pipeline's stages, and a small chart of recent values (checked where they are drawn).
+    stages?: MessageAttachmentStage[];
+    chart?: MessageAttachmentChart;
+};
+
+export type MessageAttachmentStageStatus = 'passed' | 'failed' | 'running' | 'pending' | 'skipped' | 'canceled';
+
+export type MessageAttachmentStage = {
+    name: string;
+    status: MessageAttachmentStageStatus;
+};
+
+export type MessageAttachmentChart = {
+    values: number[];
+    threshold?: number;
+    label?: string;
 };
 
 export function isMessageAttachmentArray(v: unknown): v is MessageAttachment[] {

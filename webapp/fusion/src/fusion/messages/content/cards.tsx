@@ -6,7 +6,7 @@ import {useIntl} from 'react-intl';
 import {useDispatch, useSelector} from 'react-redux';
 
 import type {PostAction} from '@mattermost/types/integration_actions';
-import type {MessageAttachment} from '@mattermost/types/message_attachments';
+import type {MessageAttachment, MessageAttachmentChart, MessageAttachmentStage} from '@mattermost/types/message_attachments';
 import {isMessageAttachmentArray} from '@mattermost/types/message_attachments';
 import type {Post} from '@mattermost/types/posts';
 
@@ -20,6 +20,8 @@ import ExternalLink from 'components/external_link';
 import Markdown from 'components/markdown';
 import ActionMenu from 'components/post_view/message_attachments/action_menu';
 
+import Icon from 'fusion/components/icon/icon';
+import type {IconName} from 'fusion/components/icon/icon';
 import {am} from 'fusion/utils/class_names';
 import {decodeHtmlEntities} from 'utils/markdown/decode_html_entities';
 import {isUrlSafe} from 'utils/url';
@@ -56,6 +58,119 @@ function buttonStyle(style?: string): {className: string; color?: string} {
     default:
         return {className: '', color: style && (/^#[0-9a-f]{3,6}$/i).test(style) ? style : undefined};
     }
+}
+
+// A pipeline's stages as pills, as in the mockup's CI cards. Stages of unknown states show as pending.
+const STAGE_ICONS: Record<string, IconName> = {passed: 'check', failed: 'x', running: 'clock', pending: 'clock', skipped: 'chev', canceled: 'x'};
+const STAGES_MAX = 20;
+
+function Stages({stages}: {stages: MessageAttachmentStage[]}) {
+    const {formatMessage} = useIntl();
+    const shown = stages.filter((s) => s && typeof s.name === 'string' && s.name).slice(0, STAGES_MAX);
+    if (!shown.length) {
+        return null;
+    }
+    return (
+        <div
+            className={am('card-stages')}
+            role='list'
+            aria-label={formatMessage({id: 'fusion.card.stages', defaultMessage: 'Stages'})}
+        >
+            {shown.map((stage, i) => {
+                const status = STAGE_ICONS[stage.status] ? stage.status : 'pending';
+                return (
+                    <span
+                        key={i}
+                        className={am('stage-pill', status)}
+                        role='listitem'
+                        title={`${stage.name}: ${status}`}
+                    >
+                        <Icon name={STAGE_ICONS[status]}/>
+                        {stage.name}
+                    </span>
+                );
+            })}
+        </div>
+    );
+}
+
+// sparkline gives the points of a chart drawn in a w×h box: its line, the area under it, and where the threshold
+// sits. The scale includes the threshold, with a margin, and starts at 0 for values that never go below it.
+export function sparkline(values: number[], threshold: number | undefined, w: number, h: number) {
+    const all = threshold === undefined ? values : [...values, threshold];
+    const hi = Math.max(...all);
+    const lo = Math.min(...all);
+    const pad = (hi - lo) * 0.15 || 1;
+    const max = hi + pad;
+    const min = lo >= 0 ? Math.max(0, lo - pad) : lo - pad;
+    const x = (i: number) => ((i / (values.length - 1)) * (w - 16)) + 8;
+    const y = (v: number) => h - 8 - (((v - min) / (max - min)) * (h - 16));
+    const points = values.map((v, i) => `${x(i).toFixed(1)},${y(v).toFixed(1)}`).join(' ');
+    return {
+        points,
+        area: `8,${h - 8} ${points} ${x(values.length - 1).toFixed(1)},${h - 8}`,
+        last: {x: x(values.length - 1), y: y(values[values.length - 1])},
+        threshold: threshold === undefined ? undefined : y(threshold),
+    };
+}
+
+const CHART_W = 460;
+const CHART_H = 72;
+const CHART_VALUES_MAX = 200;
+
+// Sparkline draws a chart of recent values in the card's colour, with the threshold as a dashed red line, as in the
+// mockup's monitoring cards.
+function Sparkline({chart, color}: {chart: MessageAttachmentChart; color: string}) {
+    const {formatMessage} = useIntl();
+    const values = Array.isArray(chart.values) ? chart.values.filter((v) => typeof v === 'number' && Number.isFinite(v)).slice(-CHART_VALUES_MAX) : [];
+    if (values.length < 2) {
+        return null;
+    }
+    const threshold = typeof chart.threshold === 'number' && Number.isFinite(chart.threshold) ? chart.threshold : undefined;
+    const line = sparkline(values, threshold, CHART_W, CHART_H);
+    const label = typeof chart.label === 'string' && chart.label ? chart.label : formatMessage({id: 'fusion.card.chart', defaultMessage: 'Chart'});
+    return (
+        <svg
+            className={am('card-chart')}
+            viewBox={`0 0 ${CHART_W} ${CHART_H}`}
+            preserveAspectRatio='none'
+            role='img'
+            aria-label={label}
+        >
+            <title>{label}</title>
+            <polygon
+                points={line.area}
+                style={{fill: color}}
+                fillOpacity='.14'
+            />
+            {line.threshold !== undefined && (
+                <line
+                    x1='8'
+                    x2={CHART_W - 8}
+                    y1={line.threshold}
+                    y2={line.threshold}
+                    className={am('card-threshold')}
+                    strokeWidth='1.5'
+                    strokeDasharray='5 4'
+                    vectorEffect='non-scaling-stroke'
+                />
+            )}
+            <polyline
+                points={line.points}
+                fill='none'
+                style={{stroke: color}}
+                strokeWidth='2.2'
+                strokeLinejoin='round'
+                vectorEffect='non-scaling-stroke'
+            />
+            <circle
+                cx={line.last.x}
+                cy={line.last.y}
+                r='3.5'
+                style={{fill: color}}
+            />
+        </svg>
+    );
 }
 
 function StaticSelect({post, action, disabled}: {post: Post; action: PostAction; disabled: boolean}) {
@@ -280,6 +395,13 @@ function Card({post, attachment}: {post: Post; attachment: MessageAttachment}) {
                             </div>
                         ))}
                     </dl>
+                )}
+                {Array.isArray(attachment.stages) && <Stages stages={attachment.stages}/>}
+                {attachment.chart && typeof attachment.chart === 'object' && (
+                    <Sparkline
+                        chart={attachment.chart}
+                        color={cardColor(attachment.color)}
+                    />
                 )}
                 {attachment.image_url && (
                     <ExternalImage

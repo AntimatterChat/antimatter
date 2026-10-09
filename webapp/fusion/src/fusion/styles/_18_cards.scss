@@ -17,9 +17,10 @@
 :is(.am-app, .am-layer) .am-stage-pill { display: inline-flex; align-items: center; gap: 5px; height: 24px; padding: 0 9px; border-radius: 12px; font-size: 12px; font-weight: 700; }
 :is(.am-app, .am-layer) .am-stage-pill.am-passed { background: rgba(35, 165, 90, 0.16); color: var(--am-ok); }
 :is(.am-app, .am-layer) .am-stage-pill.am-failed { background: rgba(242, 63, 67, 0.16); color: var(--am-danger); }
-:is(.am-app, .am-layer) .am-stage-pill.am-skipped, :is(.am-app, .am-layer) .am-stage-pill.am-pending { background: var(--am-raise-2); color: var(--am-muted); }
+:is(.am-app, .am-layer) .am-stage-pill.am-skipped, :is(.am-app, .am-layer) .am-stage-pill.am-pending, :is(.am-app, .am-layer) .am-stage-pill.am-canceled { background: var(--am-raise-2); color: var(--am-muted); }
 :is(.am-app, .am-layer) .am-stage-pill.am-running { background: rgba(76, 154, 255, 0.18); color: #4C9AFF; }
 :is(.am-app, .am-layer) .am-stage-pill .am-ic { width: 12px; height: 12px; stroke-width: 2.6; }
+:is(.am-app, .am-layer) .am-card-threshold { stroke: var(--am-danger); }
 :is(.am-app, .am-layer) .am-card-actions { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 2px; }
 :is(.am-app, .am-layer) .am-card-actions button { height: 30px; padding: 0 12px; border-radius: 7px; border: 1px solid var(--am-line); background: var(--am-raise); font-size: 13px; font-weight: 600; color: var(--am-text); }
 :is(.am-app, .am-layer) .am-card-actions button:hover { border-color: var(--am-muted); }
