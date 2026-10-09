@@ -440,3 +440,24 @@ describe('reducers/entities/groups', () => {
         });
     });
 });
+
+describe('reducers/entities/groups: members known', () => {
+    const role = {id: 'mods', display_name: 'Mods', member_ids: ['ada', 'bob']} as Group;
+    const stateWith = (group: Group) => reducer(undefined, {type: GroupTypes.RECEIVED_GROUP, data: group});
+
+    test('a patched copy without its members keeps those known', () => {
+        const state = reducer(stateWith(role), {type: GroupTypes.PATCHED_GROUP, data: {id: 'mods', display_name: 'Moderators'}});
+        expect(state.groups.mods).toEqual({id: 'mods', display_name: 'Moderators', member_ids: ['ada', 'bob']});
+    });
+
+    test('a copy with its members replaces them', () => {
+        const state = reducer(stateWith(role), {type: GroupTypes.PATCHED_GROUP, data: {...role, member_ids: ['cy']}});
+        expect(state.groups.mods.member_ids).toEqual(['cy']);
+    });
+
+    test('a list of groups without members keeps those known', () => {
+        const state = reducer(stateWith(role), {type: GroupTypes.RECEIVED_GROUPS, data: [{id: 'mods', display_name: 'Mods'}, {id: 'new', display_name: 'New'}]});
+        expect(state.groups.mods.member_ids).toEqual(['ada', 'bob']);
+        expect(state.groups.new.member_ids).toBeUndefined();
+    });
+});

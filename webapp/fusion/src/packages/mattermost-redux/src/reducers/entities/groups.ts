@@ -199,6 +199,15 @@ function stats(state: any = {}, action: MMReduxAction) {
     }
 }
 
+// withKnownMembers keeps the members known of a group when a new copy of it comes without them (Antimatter: roles and
+// teams show their members everywhere, and most group payloads leave them out).
+function withKnownMembers(group: Group, known: Group | undefined): Group {
+    if (group.member_ids || !known?.member_ids) {
+        return group;
+    }
+    return {...group, member_ids: known.member_ids};
+}
+
 function groups(state: Record<string, Group> = {}, action: MMReduxAction) {
     switch (action.type) {
     case GroupTypes.CREATE_GROUP_SUCCESS:
@@ -208,14 +217,14 @@ function groups(state: Record<string, Group> = {}, action: MMReduxAction) {
     case GroupTypes.RECEIVED_GROUP: {
         return {
             ...state,
-            [action.data.id]: action.data,
+            [action.data.id]: withKnownMembers(action.data, state[action.data.id]),
         };
     }
     case GroupTypes.RECEIVED_MY_GROUPS:
     case GroupTypes.RECEIVED_GROUPS: {
         const nextState = {...state};
         for (const group of action.data) {
-            nextState[group.id] = group;
+            nextState[group.id] = withKnownMembers(group, state[group.id]);
         }
         return nextState;
     }

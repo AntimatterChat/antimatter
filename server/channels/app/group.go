@@ -383,6 +383,7 @@ func (a *App) UpsertGroupMember(groupID string, userID string) (*model.GroupMemb
 	if group != nil {
 		a.syncTeamRole(request.EmptyContext(a.Log()), group, []string{userID}, true)
 	}
+	a.publishCustomGroupMembers(groupID)
 
 	return groupMember, nil
 }
@@ -406,6 +407,7 @@ func (a *App) DeleteGroupMember(groupID string, userID string) (*model.GroupMemb
 		a.syncTeamRole(request.EmptyContext(a.Log()), group, []string{userID}, false)
 	}
 	a.clearGroupLead(groupID, []string{userID})
+	a.publishCustomGroupMembers(groupID)
 
 	return groupMember, nil
 }
@@ -888,6 +890,7 @@ func (a *App) UpsertGroupMembers(groupID string, userIDs []string) ([]*model.Gro
 	if group != nil {
 		a.syncTeamRole(request.EmptyContext(a.Log()), group, userIDs, true)
 	}
+	a.publishCustomGroupMembers(groupID)
 
 	return members, nil
 }
@@ -933,6 +936,7 @@ func (a *App) DeleteGroupMembers(groupID string, userIDs []string) ([]*model.Gro
 		a.syncTeamRole(request.EmptyContext(a.Log()), group, userIDs, false)
 	}
 	a.clearGroupLead(groupID, userIDs)
+	a.publishCustomGroupMembers(groupID)
 
 	return members, nil
 }
@@ -946,6 +950,23 @@ func (a *App) publishGroupMemberEvent(eventName model.WebsocketEventType, groupM
 	messageWs.Add("group_member", string(groupMemberJSON))
 	a.Publish(messageWs)
 	return nil
+}
+
+// publishCustomGroupMembers tells everyone who's in a custom group now: Antimatter shows them all as roles and teams
+// (colours, badges, the member list), where Mattermost only told the people who joined or left.
+func (a *App) publishCustomGroupMembers(groupID string) {
+	group, appErr := a.GetGroup(groupID, &model.GetGroupOpts{IncludeMemberIDs: true}, nil)
+	if appErr != nil || group.Source != model.GroupSourceCustom {
+		return
+	}
+	group.MemberCount = new(len(group.MemberIDs))
+	groupJSON, err := json.Marshal(group)
+	if err != nil {
+		return
+	}
+	messageWs := model.NewWebSocketEvent(model.WebsocketEventReceivedGroup, "", "", "", nil, "")
+	messageWs.Add("group", string(groupJSON))
+	a.Publish(messageWs)
 }
 
 // IsGroupMember tells whether someone is a member of a group.
