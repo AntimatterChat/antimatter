@@ -94,6 +94,138 @@ func (_m *ChannelOverrideStore) Save(rctx request.CTX, override *model.ChannelOv
 	return r0, r1
 }
 
+// DeleteCategoriesForTeam provides a mock function with given fields: rctx, teamID
+func (_m *ChannelOverrideStore) DeleteCategoriesForTeam(rctx request.CTX, teamID string) error {
+	ret := _m.Called(rctx, teamID)
+
+	if len(ret) == 0 {
+		panic("no return value specified for DeleteCategoriesForTeam")
+	}
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(request.CTX, string) error); ok {
+		r0 = rf(rctx, teamID)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// DeleteCategory provides a mock function with given fields: rctx, teamID, category
+func (_m *ChannelOverrideStore) DeleteCategory(rctx request.CTX, teamID string, category string) error {
+	ret := _m.Called(rctx, teamID, category)
+
+	if len(ret) == 0 {
+		panic("no return value specified for DeleteCategory")
+	}
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(request.CTX, string, string) error); ok {
+		r0 = rf(rctx, teamID, category)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// DeleteForCategory provides a mock function with given fields: rctx, teamID, category, targetType, targetID
+func (_m *ChannelOverrideStore) DeleteForCategory(rctx request.CTX, teamID string, category string, targetType string, targetID string) error {
+	ret := _m.Called(rctx, teamID, category, targetType, targetID)
+
+	if len(ret) == 0 {
+		panic("no return value specified for DeleteForCategory")
+	}
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(request.CTX, string, string, string, string) error); ok {
+		r0 = rf(rctx, teamID, category, targetType, targetID)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// GetForCategories provides a mock function with given fields: rctx, teamID
+func (_m *ChannelOverrideStore) GetForCategories(rctx request.CTX, teamID string) ([]*model.CategoryOverride, error) {
+	ret := _m.Called(rctx, teamID)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetForCategories")
+	}
+
+	var r0 []*model.CategoryOverride
+	var r1 error
+	if rf, ok := ret.Get(0).(func(request.CTX, string) ([]*model.CategoryOverride, error)); ok {
+		return rf(rctx, teamID)
+	}
+	if rf, ok := ret.Get(0).(func(request.CTX, string) []*model.CategoryOverride); ok {
+		r0 = rf(rctx, teamID)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]*model.CategoryOverride)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(request.CTX, string) error); ok {
+		r1 = rf(rctx, teamID)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// RenameCategory provides a mock function with given fields: rctx, teamID, from, to
+func (_m *ChannelOverrideStore) RenameCategory(rctx request.CTX, teamID string, from string, to string) error {
+	ret := _m.Called(rctx, teamID, from, to)
+
+	if len(ret) == 0 {
+		panic("no return value specified for RenameCategory")
+	}
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(request.CTX, string, string, string) error); ok {
+		r0 = rf(rctx, teamID, from, to)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// SaveForCategory provides a mock function with given fields: rctx, override
+func (_m *ChannelOverrideStore) SaveForCategory(rctx request.CTX, override *model.CategoryOverride) (*model.CategoryOverride, error) {
+	ret := _m.Called(rctx, override)
+
+	if len(ret) == 0 {
+		panic("no return value specified for SaveForCategory")
+	}
+
+	var r0 *model.CategoryOverride
+	var r1 error
+	if rf, ok := ret.Get(0).(func(request.CTX, *model.CategoryOverride) (*model.CategoryOverride, error)); ok {
+		return rf(rctx, override)
+	}
+	if rf, ok := ret.Get(0).(func(request.CTX, *model.CategoryOverride) *model.CategoryOverride); ok {
+		r0 = rf(rctx, override)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*model.CategoryOverride)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(request.CTX, *model.CategoryOverride) error); ok {
+		r1 = rf(rctx, override)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // NewChannelOverrideStore creates a new instance of ChannelOverrideStore. It also registers a testing interface on the mock and a cleanup function to assert the mocks expectations.
 // The first argument is typically a *testing.T value.
 func NewChannelOverrideStore(t interface {

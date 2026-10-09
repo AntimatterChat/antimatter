@@ -1122,6 +1122,14 @@ type ChannelGuardStore interface {
 type ChannelOverrideStore interface {
 	GetForChannel(rctx request.CTX, channelID string) ([]*model.ChannelOverride, error)
 	Save(rctx request.CTX, override *model.ChannelOverride) (*model.ChannelOverride, error)
+
+	// The overrides of a team's server categories, by category key (model.CategoryOverrideKey).
+	GetForCategories(rctx request.CTX, teamID string) ([]*model.CategoryOverride, error)
+	SaveForCategory(rctx request.CTX, override *model.CategoryOverride) (*model.CategoryOverride, error)
+	DeleteForCategory(rctx request.CTX, teamID, category, targetType, targetID string) error
+	RenameCategory(rctx request.CTX, teamID, from, to string) error
+	DeleteCategory(rctx request.CTX, teamID, category string) error
+	DeleteCategoriesForTeam(rctx request.CTX, teamID string) error
 	Delete(rctx request.CTX, channelID, targetType, targetID string) error
 }
 

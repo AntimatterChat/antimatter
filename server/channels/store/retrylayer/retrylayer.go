@@ -4635,6 +4635,90 @@ func (s *RetryLayerChannelOverrideStore) Delete(rctx request.CTX, channelID stri
 
 }
 
+func (s *RetryLayerChannelOverrideStore) DeleteCategoriesForTeam(rctx request.CTX, teamID string) error {
+
+	tries := 0
+	for {
+		err := s.ChannelOverrideStore.DeleteCategoriesForTeam(rctx, teamID)
+		if err == nil {
+			return nil
+		}
+		if !isRepeatableError(err) {
+			return err
+		}
+		tries++
+		if tries >= 3 {
+			err = errors.Wrap(err, "giving up after 3 consecutive repeatable transaction failures")
+			return err
+		}
+		timepkg.Sleep(100 * timepkg.Millisecond)
+	}
+
+}
+
+func (s *RetryLayerChannelOverrideStore) DeleteCategory(rctx request.CTX, teamID string, category string) error {
+
+	tries := 0
+	for {
+		err := s.ChannelOverrideStore.DeleteCategory(rctx, teamID, category)
+		if err == nil {
+			return nil
+		}
+		if !isRepeatableError(err) {
+			return err
+		}
+		tries++
+		if tries >= 3 {
+			err = errors.Wrap(err, "giving up after 3 consecutive repeatable transaction failures")
+			return err
+		}
+		timepkg.Sleep(100 * timepkg.Millisecond)
+	}
+
+}
+
+func (s *RetryLayerChannelOverrideStore) DeleteForCategory(rctx request.CTX, teamID string, category string, targetType string, targetID string) error {
+
+	tries := 0
+	for {
+		err := s.ChannelOverrideStore.DeleteForCategory(rctx, teamID, category, targetType, targetID)
+		if err == nil {
+			return nil
+		}
+		if !isRepeatableError(err) {
+			return err
+		}
+		tries++
+		if tries >= 3 {
+			err = errors.Wrap(err, "giving up after 3 consecutive repeatable transaction failures")
+			return err
+		}
+		timepkg.Sleep(100 * timepkg.Millisecond)
+	}
+
+}
+
+func (s *RetryLayerChannelOverrideStore) GetForCategories(rctx request.CTX, teamID string) ([]*model.CategoryOverride, error) {
+
+	tries := 0
+	for {
+		result, err := s.ChannelOverrideStore.GetForCategories(rctx, teamID)
+		if err == nil {
+			return result, nil
+		}
+		if !isRepeatableError(err) {
+			return result, err
+		}
+		tries++
+		if tries >= 3 {
+			err = errors.Wrap(err, "giving up after 3 consecutive repeatable transaction failures")
+			return result, err
+		}
+		timepkg.Sleep(100 * timepkg.Millisecond)
+	}
+
+}
+
 func (s *RetryLayerChannelOverrideStore) GetForChannel(rctx request.CTX, channelID string) ([]*model.ChannelOverride, error) {
 
 	tries := 0
@@ -4656,11 +4740,53 @@ func (s *RetryLayerChannelOverrideStore) GetForChannel(rctx request.CTX, channel
 
 }
 
+func (s *RetryLayerChannelOverrideStore) RenameCategory(rctx request.CTX, teamID string, from string, to string) error {
+
+	tries := 0
+	for {
+		err := s.ChannelOverrideStore.RenameCategory(rctx, teamID, from, to)
+		if err == nil {
+			return nil
+		}
+		if !isRepeatableError(err) {
+			return err
+		}
+		tries++
+		if tries >= 3 {
+			err = errors.Wrap(err, "giving up after 3 consecutive repeatable transaction failures")
+			return err
+		}
+		timepkg.Sleep(100 * timepkg.Millisecond)
+	}
+
+}
+
 func (s *RetryLayerChannelOverrideStore) Save(rctx request.CTX, override *model.ChannelOverride) (*model.ChannelOverride, error) {
 
 	tries := 0
 	for {
 		result, err := s.ChannelOverrideStore.Save(rctx, override)
+		if err == nil {
+			return result, nil
+		}
+		if !isRepeatableError(err) {
+			return result, err
+		}
+		tries++
+		if tries >= 3 {
+			err = errors.Wrap(err, "giving up after 3 consecutive repeatable transaction failures")
+			return result, err
+		}
+		timepkg.Sleep(100 * timepkg.Millisecond)
+	}
+
+}
+
+func (s *RetryLayerChannelOverrideStore) SaveForCategory(rctx request.CTX, override *model.CategoryOverride) (*model.CategoryOverride, error) {
+
+	tries := 0
+	for {
+		result, err := s.ChannelOverrideStore.SaveForCategory(rctx, override)
 		if err == nil {
 			return result, nil
 		}

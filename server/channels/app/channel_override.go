@@ -31,6 +31,11 @@ type cachedChannelOverrides struct {
 	loadedAt  time.Time
 }
 
+type cachedCategoryOverrides struct {
+	overrides []*model.CategoryOverride
+	loadedAt  time.Time
+}
+
 var (
 	overridablePermissions     map[string]bool
 	overridablePermissionsOnce sync.Once
@@ -46,20 +51,146 @@ func isOverridablePermission(permissionID string) bool {
 	return overridablePermissions[permissionID]
 }
 
-// GetChannelOverrides gives a channel's overrides, from the cache when fresh.
+// GetChannelOverrides gives a channel's own overrides, as set on it.
 func (a *App) GetChannelOverrides(rctx request.CTX, channelID string) ([]*model.ChannelOverride, *model.AppError) {
-	if cached, ok := a.Channels().channelOverrides.Load(channelID); ok {
+	overrides, err := a.Srv().Store().ChannelOverride().GetForChannel(rctx, channelID)
+	if err != nil {
+		return nil, model.NewAppError("GetChannelOverrides", "app.channel_override.get.app_error", nil, "", http.StatusInternalServerError).Wrap(err)
+	}
+	return overrides, nil
+}
+
+// GetEffectiveChannelOverrides gives the overrides that apply in a channel: those of its server category, with the
+// channel's own on top (model.EffectiveChannelOverrides). From the cache when fresh.
+func (a *App) GetEffectiveChannelOverrides(rctx request.CTX, channel *model.Channel) ([]*model.ChannelOverride, *model.AppError) {
+	if cached, ok := a.Channels().channelOverrides.Load(channel.Id); ok {
 		entry := cached.(cachedChannelOverrides)
 		if time.Since(entry.loadedAt) < channelOverridesTTL {
 			return entry.overrides, nil
 		}
 	}
-	overrides, err := a.Srv().Store().ChannelOverride().GetForChannel(rctx, channelID)
-	if err != nil {
-		return nil, model.NewAppError("GetChannelOverrides", "app.channel_override.get.app_error", nil, "", http.StatusInternalServerError).Wrap(err)
+	own, appErr := a.GetChannelOverrides(rctx, channel.Id)
+	if appErr != nil {
+		return nil, appErr
 	}
-	a.Channels().channelOverrides.Store(channelID, cachedChannelOverrides{overrides: overrides, loadedAt: time.Now()})
+	var inherited []*model.CategoryOverride
+	if a.Config().FeatureFlags.ManagedChannelCategories && channel.TeamId != "" {
+		name, appErr := a.GetChannelServerCategory(rctx, channel.Id)
+		if appErr != nil {
+			return nil, appErr
+		}
+		if name != "" {
+			all, appErr := a.GetCategoryOverrides(rctx, channel.TeamId)
+			if appErr != nil {
+				return nil, appErr
+			}
+			key := model.CategoryOverrideKey(name)
+			for _, o := range all {
+				if o.Category == key {
+					inherited = append(inherited, o)
+				}
+			}
+		}
+	}
+	overrides := model.EffectiveChannelOverrides(channel.Id, inherited, own)
+	a.Channels().channelOverrides.Store(channel.Id, cachedChannelOverrides{overrides: overrides, loadedAt: time.Now()})
 	return overrides, nil
+}
+
+// GetCategoryOverrides gives the overrides of a team's server categories, from the cache when fresh.
+func (a *App) GetCategoryOverrides(rctx request.CTX, teamID string) ([]*model.CategoryOverride, *model.AppError) {
+	if cached, ok := a.Channels().categoryOverrides.Load(teamID); ok {
+		entry := cached.(cachedCategoryOverrides)
+		if time.Since(entry.loadedAt) < channelOverridesTTL {
+			return entry.overrides, nil
+		}
+	}
+	overrides, err := a.Srv().Store().ChannelOverride().GetForCategories(rctx, teamID)
+	if err != nil {
+		return nil, model.NewAppError("GetCategoryOverrides", "app.channel_override.get.app_error", nil, "", http.StatusInternalServerError).Wrap(err)
+	}
+	a.Channels().categoryOverrides.Store(teamID, cachedCategoryOverrides{overrides: overrides, loadedAt: time.Now()})
+	return overrides, nil
+}
+
+// SaveCategoryOverride sets the override of a role or person on one of a team's server categories; an empty one is
+// removed. The channels filed in the category inherit it.
+func (a *App) SaveCategoryOverride(rctx request.CTX, teamID string, override *model.CategoryOverride) (*model.CategoryOverride, *model.AppError) {
+	categories, appErr := a.GetServerCategories(rctx, teamID)
+	if appErr != nil {
+		return nil, appErr
+	}
+	category := model.FindServerCategory(categories, override.Category)
+	if category == nil {
+		return nil, model.NewAppError("SaveCategoryOverride", "app.category_override.category.app_error", nil, "", http.StatusBadRequest)
+	}
+	override.TeamId = teamID
+	override.Category = model.CategoryOverrideKey(category.Name)
+	if appErr := override.IsValid(); appErr != nil {
+		return nil, appErr
+	}
+	if appErr := a.checkOverrideTarget(rctx, teamID, override.TargetType, override.TargetId, override.IsEmpty()); appErr != nil {
+		return nil, appErr
+	}
+
+	var err error
+	if override.IsEmpty() {
+		err = a.Srv().Store().ChannelOverride().DeleteForCategory(rctx, teamID, override.Category, override.TargetType, override.TargetId)
+	} else {
+		override, err = a.Srv().Store().ChannelOverride().SaveForCategory(rctx, override)
+	}
+	if err != nil {
+		return nil, model.NewAppError("SaveCategoryOverride", "app.channel_override.save.app_error", nil, "", http.StatusInternalServerError).Wrap(err)
+	}
+	a.invalidateAllChannelOverrides()
+	a.publishCategoryOverridesUpdated(teamID)
+	return override, nil
+}
+
+// renameCategoryOverrides follows a team's server categories being renamed and removed: the overrides go along with
+// a renamed category, and with a removed one.
+func (a *App) renameCategoryOverrides(rctx request.CTX, teamID string, moves map[string]string) {
+	changed := false
+	for from, to := range moves {
+		var err error
+		if to == "" {
+			err = a.Srv().Store().ChannelOverride().DeleteCategory(rctx, teamID, from)
+		} else {
+			err = a.Srv().Store().ChannelOverride().RenameCategory(rctx, teamID, from, model.CategoryOverrideKey(to))
+		}
+		if err != nil {
+			rctx.Logger().Warn("Failed to move the overrides of a server category", mlog.String("team_id", teamID), mlog.String("from", from), mlog.String("to", to), mlog.Err(err))
+		}
+		changed = changed || from != model.CategoryOverrideKey(to)
+	}
+	if changed {
+		a.invalidateAllChannelOverrides()
+		a.publishCategoryOverridesUpdated(teamID)
+	}
+}
+
+// checkOverrideTarget accepts the role or person an override is for: a live role of the team, or one of its people.
+// A person who left can still have their override removed.
+func (a *App) checkOverrideTarget(rctx request.CTX, teamID, targetType, targetID string, removing bool) *model.AppError {
+	switch targetType {
+	case model.ChannelOverrideTargetRole:
+		group, err := a.Srv().Store().Group().Get(targetID)
+		if err != nil || !group.IsRole() || group.TeamId != teamID || (group.DeleteAt != 0 && !removing) {
+			return model.NewAppError("checkOverrideTarget", "app.channel_override.role.app_error", nil, "", http.StatusBadRequest)
+		}
+	case model.ChannelOverrideTargetUser:
+		member, err := a.Srv().Store().Team().GetMember(rctx, teamID, targetID)
+		if (err != nil || member.DeleteAt != 0) && !removing {
+			return model.NewAppError("checkOverrideTarget", "app.channel_override.user.app_error", nil, "", http.StatusBadRequest)
+		}
+	}
+	return nil
+}
+
+func (a *App) publishCategoryOverridesUpdated(teamID string) {
+	message := model.NewWebSocketEvent(model.WebsocketEventCategoryOverridesUpdated, teamID, "", "", nil, "")
+	message.Add("team_id", teamID)
+	a.Publish(message)
 }
 
 // SaveChannelOverride sets the override of a role or person in a channel; an empty one is removed. A role must be
@@ -69,18 +200,9 @@ func (a *App) SaveChannelOverride(rctx request.CTX, channel *model.Channel, over
 	if appErr := override.IsValid(); appErr != nil {
 		return nil, appErr
 	}
-	switch override.TargetType {
-	case model.ChannelOverrideTargetRole:
-		group, err := a.Srv().Store().Group().Get(override.TargetId)
-		if err != nil || !group.IsRole() || group.TeamId != channel.TeamId || group.DeleteAt != 0 {
-			return nil, model.NewAppError("SaveChannelOverride", "app.channel_override.role.app_error", nil, "", http.StatusBadRequest)
-		}
-	case model.ChannelOverrideTargetUser:
-		// A person of the channel's team: overrides don't reach outside it.
-		member, err := a.Srv().Store().Team().GetMember(rctx, channel.TeamId, override.TargetId)
-		if (err != nil || member.DeleteAt != 0) && !override.IsEmpty() {
-			return nil, model.NewAppError("SaveChannelOverride", "app.channel_override.user.app_error", nil, "", http.StatusBadRequest)
-		}
+	// A role or person of the channel's team: overrides don't reach outside it.
+	if appErr := a.checkOverrideTarget(rctx, channel.TeamId, override.TargetType, override.TargetId, override.IsEmpty()); appErr != nil {
+		return nil, appErr
 	}
 
 	var err error
@@ -101,9 +223,20 @@ func (a *App) SaveChannelOverride(rctx request.CTX, channel *model.Channel, over
 // the master database, which a replica may lag behind.
 func (a *App) invalidateChannelOverrides(rctx request.CTX, channelID string) {
 	a.Channels().channelOverrides.Delete(channelID)
-	if overrides, err := a.Srv().Store().ChannelOverride().GetForChannel(RequestContextWithMaster(rctx), channelID); err == nil {
-		a.Channels().channelOverrides.Store(channelID, cachedChannelOverrides{overrides: overrides, loadedAt: time.Now()})
+	if channel, appErr := a.GetChannel(rctx, channelID); appErr == nil {
+		_, _ = a.GetEffectiveChannelOverrides(RequestContextWithMaster(rctx), channel)
 	}
+	a.sendChannelOverridesInvalidation(channelID)
+}
+
+// invalidateAllChannelOverrides forgets every cached override here and on the other nodes, as a category's change
+// reaches all its channels.
+func (a *App) invalidateAllChannelOverrides() {
+	a.Channels().forgetAllOverrides()
+	a.sendChannelOverridesInvalidation("")
+}
+
+func (a *App) sendChannelOverridesInvalidation(channelID string) {
 	if cluster := a.Srv().Platform().Cluster(); cluster != nil {
 		cluster.SendClusterMessage(&model.ClusterMessage{
 			Event:    clusterEventInvalidateChannelOverrides,
@@ -113,8 +246,17 @@ func (a *App) invalidateChannelOverrides(rctx request.CTX, channelID string) {
 	}
 }
 
-// clusterInvalidateChannelOverridesHandler forgets the overrides another node changed.
+func (ch *Channels) forgetAllOverrides() {
+	ch.channelOverrides.Clear()
+	ch.categoryOverrides.Clear()
+}
+
+// clusterInvalidateChannelOverridesHandler forgets the overrides another node changed: a channel's, or all of them.
 func (ch *Channels) clusterInvalidateChannelOverridesHandler(msg *model.ClusterMessage) {
+	if len(msg.Data) == 0 {
+		ch.forgetAllOverrides()
+		return
+	}
 	ch.channelOverrides.Delete(string(msg.Data))
 }
 
@@ -160,7 +302,7 @@ func (a *App) overridesFor(rctx request.CTX, channel *model.Channel, permissionI
 	if channel == nil || channel.TeamId == "" || !isOverridablePermission(permissionID) {
 		return nil
 	}
-	overrides, appErr := a.GetChannelOverrides(rctx, channel.Id)
+	overrides, appErr := a.GetEffectiveChannelOverrides(rctx, channel)
 	if appErr != nil {
 		rctx.Logger().Warn("Failed to get channel overrides", mlog.String("channel_id", channel.Id), mlog.Err(appErr))
 		return nil

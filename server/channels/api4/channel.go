@@ -78,6 +78,8 @@ func (api *API) InitChannel() {
 		api.BaseRoutes.ChannelsForTeam.Handle("/managed_categories", api.APISessionRequired(getManagedCategories)).Methods(http.MethodGet)
 		api.BaseRoutes.Team.Handle("/server_categories", api.APISessionRequired(getServerCategories)).Methods(http.MethodGet)
 		api.BaseRoutes.Team.Handle("/server_categories", api.APISessionRequired(updateServerCategories)).Methods(http.MethodPut)
+		api.BaseRoutes.Team.Handle("/server_categories/overrides", api.APISessionRequired(getCategoryOverrides)).Methods(http.MethodGet)
+		api.BaseRoutes.Team.Handle("/server_categories/overrides", api.APISessionRequired(saveCategoryOverride)).Methods(http.MethodPut)
 	}
 	api.BaseRoutes.User.Handle("/teams/{team_id:[A-Za-z0-9]+}/channels", api.APISessionRequired(getChannelsForTeamForUser)).Methods(http.MethodGet)
 	api.BaseRoutes.User.Handle("/channels", api.APISessionRequired(getChannelsForUser)).Methods(http.MethodGet)

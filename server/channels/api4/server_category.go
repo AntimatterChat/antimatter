@@ -67,3 +67,53 @@ func updateServerCategories(c *Context, w http.ResponseWriter, r *http.Request) 
 		c.Logger.Warn("Error while writing response", mlog.Err(err))
 	}
 }
+
+// getCategoryOverrides lists the overrides of a team's server categories, for its members.
+func getCategoryOverrides(c *Context, w http.ResponseWriter, r *http.Request) {
+	c.RequireTeamId()
+	if c.Err != nil {
+		return
+	}
+	if !c.App.SessionHasPermissionToTeam(*c.AppContext.Session(), c.Params.TeamId, model.PermissionViewTeam) {
+		c.SetPermissionError(model.PermissionViewTeam)
+		return
+	}
+	overrides, appErr := c.App.GetCategoryOverrides(c.AppContext, c.Params.TeamId)
+	if appErr != nil {
+		c.Err = appErr
+		return
+	}
+	writeJSON(c, w, overrides)
+}
+
+// saveCategoryOverride sets what a role or person may do in the channels of a server category; team admins only, as
+// they keep the categories.
+func saveCategoryOverride(c *Context, w http.ResponseWriter, r *http.Request) {
+	c.RequireTeamId()
+	if c.Err != nil {
+		return
+	}
+	var override model.CategoryOverride
+	if err := json.NewDecoder(r.Body).Decode(&override); err != nil {
+		c.SetInvalidParamWithErr("override", err)
+		return
+	}
+
+	auditRec := c.MakeAuditRecord(model.AuditEventSaveCategoryOverride, model.AuditStatusFail)
+	defer c.LogAuditRec(auditRec)
+	model.AddEventParameterToAuditRec(auditRec, "team_id", c.Params.TeamId)
+	model.AddEventParameterToAuditRec(auditRec, "category", override.Category)
+	model.AddEventParameterToAuditRec(auditRec, "target_id", override.TargetId)
+
+	if !c.App.SessionHasPermissionToTeam(*c.AppContext.Session(), c.Params.TeamId, model.PermissionManageTeam) {
+		c.SetPermissionError(model.PermissionManageTeam)
+		return
+	}
+	saved, appErr := c.App.SaveCategoryOverride(c.AppContext, c.Params.TeamId, &override)
+	if appErr != nil {
+		c.Err = appErr
+		return
+	}
+	auditRec.Success()
+	writeJSON(c, w, saved)
+}

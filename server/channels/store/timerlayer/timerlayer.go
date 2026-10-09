@@ -3889,6 +3889,70 @@ func (s *TimerLayerChannelOverrideStore) Delete(rctx request.CTX, channelID stri
 	return err
 }
 
+func (s *TimerLayerChannelOverrideStore) DeleteCategoriesForTeam(rctx request.CTX, teamID string) error {
+	start := time.Now()
+
+	err := s.ChannelOverrideStore.DeleteCategoriesForTeam(rctx, teamID)
+
+	elapsed := float64(time.Since(start)) / float64(time.Second)
+	if s.Root.Metrics != nil {
+		success := "false"
+		if err == nil {
+			success = "true"
+		}
+		s.Root.Metrics.ObserveStoreMethodDuration("ChannelOverrideStore.DeleteCategoriesForTeam", success, elapsed)
+	}
+	return err
+}
+
+func (s *TimerLayerChannelOverrideStore) DeleteCategory(rctx request.CTX, teamID string, category string) error {
+	start := time.Now()
+
+	err := s.ChannelOverrideStore.DeleteCategory(rctx, teamID, category)
+
+	elapsed := float64(time.Since(start)) / float64(time.Second)
+	if s.Root.Metrics != nil {
+		success := "false"
+		if err == nil {
+			success = "true"
+		}
+		s.Root.Metrics.ObserveStoreMethodDuration("ChannelOverrideStore.DeleteCategory", success, elapsed)
+	}
+	return err
+}
+
+func (s *TimerLayerChannelOverrideStore) DeleteForCategory(rctx request.CTX, teamID string, category string, targetType string, targetID string) error {
+	start := time.Now()
+
+	err := s.ChannelOverrideStore.DeleteForCategory(rctx, teamID, category, targetType, targetID)
+
+	elapsed := float64(time.Since(start)) / float64(time.Second)
+	if s.Root.Metrics != nil {
+		success := "false"
+		if err == nil {
+			success = "true"
+		}
+		s.Root.Metrics.ObserveStoreMethodDuration("ChannelOverrideStore.DeleteForCategory", success, elapsed)
+	}
+	return err
+}
+
+func (s *TimerLayerChannelOverrideStore) GetForCategories(rctx request.CTX, teamID string) ([]*model.CategoryOverride, error) {
+	start := time.Now()
+
+	result, err := s.ChannelOverrideStore.GetForCategories(rctx, teamID)
+
+	elapsed := float64(time.Since(start)) / float64(time.Second)
+	if s.Root.Metrics != nil {
+		success := "false"
+		if err == nil {
+			success = "true"
+		}
+		s.Root.Metrics.ObserveStoreMethodDuration("ChannelOverrideStore.GetForCategories", success, elapsed)
+	}
+	return result, err
+}
+
 func (s *TimerLayerChannelOverrideStore) GetForChannel(rctx request.CTX, channelID string) ([]*model.ChannelOverride, error) {
 	start := time.Now()
 
@@ -3905,6 +3969,22 @@ func (s *TimerLayerChannelOverrideStore) GetForChannel(rctx request.CTX, channel
 	return result, err
 }
 
+func (s *TimerLayerChannelOverrideStore) RenameCategory(rctx request.CTX, teamID string, from string, to string) error {
+	start := time.Now()
+
+	err := s.ChannelOverrideStore.RenameCategory(rctx, teamID, from, to)
+
+	elapsed := float64(time.Since(start)) / float64(time.Second)
+	if s.Root.Metrics != nil {
+		success := "false"
+		if err == nil {
+			success = "true"
+		}
+		s.Root.Metrics.ObserveStoreMethodDuration("ChannelOverrideStore.RenameCategory", success, elapsed)
+	}
+	return err
+}
+
 func (s *TimerLayerChannelOverrideStore) Save(rctx request.CTX, override *model.ChannelOverride) (*model.ChannelOverride, error) {
 	start := time.Now()
 
@@ -3917,6 +3997,22 @@ func (s *TimerLayerChannelOverrideStore) Save(rctx request.CTX, override *model.
 			success = "true"
 		}
 		s.Root.Metrics.ObserveStoreMethodDuration("ChannelOverrideStore.Save", success, elapsed)
+	}
+	return result, err
+}
+
+func (s *TimerLayerChannelOverrideStore) SaveForCategory(rctx request.CTX, override *model.CategoryOverride) (*model.CategoryOverride, error) {
+	start := time.Now()
+
+	result, err := s.ChannelOverrideStore.SaveForCategory(rctx, override)
+
+	elapsed := float64(time.Since(start)) / float64(time.Second)
+	if s.Root.Metrics != nil {
+		success := "false"
+		if err == nil {
+			success = "true"
+		}
+		s.Root.Metrics.ObserveStoreMethodDuration("ChannelOverrideStore.SaveForCategory", success, elapsed)
 	}
 	return result, err
 }

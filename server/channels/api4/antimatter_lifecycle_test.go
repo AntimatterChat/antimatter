@@ -178,7 +178,6 @@ func TestAntimatterLifecycles(t *testing.T) {
 		require.Error(t, err)
 	})
 
-
 	createRole := func(t *testing.T, fields model.Group, userIDs ...string) *model.Group {
 		t.Helper()
 		fields.Name = new(fields.DisplayName + model.NewId()[:8])

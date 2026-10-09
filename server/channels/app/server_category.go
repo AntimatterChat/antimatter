@@ -66,6 +66,8 @@ func (a *App) UpdateServerCategories(rctx request.CTX, teamID string, update *mo
 		}
 	}
 	if len(moves) > 0 {
+		// The categories' overrides go with them first: the channels refiled then inherit them.
+		a.renameCategoryOverrides(rctx, teamID, moves)
 		if appErr := a.refileChannels(rctx, teamID, moves); appErr != nil {
 			return nil, appErr
 		}
@@ -194,6 +196,9 @@ func (a *App) EnsureServerCategory(rctx request.CTX, teamID, name string) (strin
 
 // DeleteServerCategoriesForTeam removes a team's server categories, as the team goes.
 func (a *App) DeleteServerCategoriesForTeam(rctx request.CTX, teamID string) *model.AppError {
+	if err := a.Srv().Store().ChannelOverride().DeleteCategoriesForTeam(rctx, teamID); err != nil {
+		return model.NewAppError("DeleteServerCategoriesForTeam", "app.server_category.delete.app_error", nil, "", http.StatusInternalServerError).Wrap(err)
+	}
 	if err := a.Srv().Store().ServerCategory().DeleteForTeam(rctx, teamID); err != nil {
 		return model.NewAppError("DeleteServerCategoriesForTeam", "app.server_category.delete.app_error", nil, "", http.StatusInternalServerError).Wrap(err)
 	}

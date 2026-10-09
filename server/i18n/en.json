@@ -6617,6 +6617,10 @@
     "description": "Internal error when updating the read receipt record while burning a burn-on-read post fails."
   },
   {
+    "id": "app.category_override.category.app_error",
+    "translation": "That category isn't one of the team's categories for everyone."
+  },
+  {
     "id": "app.channel.add_member.deleted_user.app_error",
     "translation": "Unable to add the user as a member of the channel.",
     "description": "API error returned when a user could not be added as a channel member (e.g. the account is deactivated)."

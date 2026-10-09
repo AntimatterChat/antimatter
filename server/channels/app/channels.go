@@ -80,6 +80,9 @@ type Channels struct {
 	// Antimatter: each channel's permission overrides, cached for permission checks (see channel_override.go).
 	channelOverrides sync.Map
 
+	// Antimatter: the overrides of each team's server categories, cached.
+	categoryOverrides sync.Map
+
 	AccountMigration einterfaces.AccountMigrationInterface
 	Compliance       einterfaces.ComplianceInterface
 	DataRetention    einterfaces.DataRetentionInterface

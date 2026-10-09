@@ -16,6 +16,7 @@ import (
 func (api *API) InitChannelOverrides() {
 	api.BaseRoutes.Channel.Handle("/overrides", api.APISessionRequired(getChannelOverrides)).Methods(http.MethodGet)
 	api.BaseRoutes.Channel.Handle("/overrides", api.APISessionRequired(saveChannelOverride)).Methods(http.MethodPut)
+	api.BaseRoutes.Channel.Handle("/overrides/effective", api.APISessionRequired(getEffectiveChannelOverrides)).Methods(http.MethodGet)
 	api.BaseRoutes.Channel.Handle("/role_access", api.APISessionRequired(getChannelRoleAccess)).Methods(http.MethodGet)
 	api.BaseRoutes.Channel.Handle("/role_access", api.APISessionRequired(setChannelRoleAccess)).Methods(http.MethodPut)
 }
@@ -112,6 +113,21 @@ func saveChannelOverride(c *Context, w http.ResponseWriter, r *http.Request) {
 	}
 	auditRec.Success()
 	writeJSON(c, w, saved)
+}
+
+// getEffectiveChannelOverrides gives the overrides that apply in a channel, its category's included: what clients
+// apply to their permission checks.
+func getEffectiveChannelOverrides(c *Context, w http.ResponseWriter, r *http.Request) {
+	channel := channelForOverrides(c)
+	if channel == nil {
+		return
+	}
+	overrides, appErr := c.App.GetEffectiveChannelOverrides(c.AppContext, channel)
+	if appErr != nil {
+		c.Err = appErr
+		return
+	}
+	writeJSON(c, w, overrides)
 }
 
 type channelRoleAccess struct {

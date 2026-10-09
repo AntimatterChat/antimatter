@@ -110,3 +110,69 @@ func TeamRoleGroupIDs(teamRoles string) []string {
 	}
 	return ids
 }
+
+// CategoryOverrideCategoryMaxLength bounds a category override's category: a server category's name, as compared
+// (CategoryOverrideKey).
+const CategoryOverrideCategoryMaxLength = 255
+
+// CategoryOverride is an override set on a server category (Antimatter), as Discord's category permissions: the
+// channels filed in it inherit it, unless they have their own override for the same role or person.
+type CategoryOverride struct {
+	TeamId     string   `json:"team_id"`
+	Category   string   `json:"category"`
+	TargetType string   `json:"target_type"`
+	TargetId   string   `json:"target_id"`
+	Allow      []string `json:"allow"`
+	Deny       []string `json:"deny"`
+	UpdateAt   int64    `json:"update_at"`
+}
+
+// CategoryOverrideKey is how a category override names its category: the server category's name, trimmed and in
+// lower case, as names compare.
+func CategoryOverrideKey(name string) string {
+	return strings.ToLower(strings.TrimSpace(name))
+}
+
+// AsChannelOverride is the override a channel of the category inherits.
+func (o *CategoryOverride) AsChannelOverride(channelID string) *ChannelOverride {
+	return &ChannelOverride{ChannelId: channelID, TargetType: o.TargetType, TargetId: o.TargetId, Allow: o.Allow, Deny: o.Deny, UpdateAt: o.UpdateAt}
+}
+
+func (o *CategoryOverride) IsValid() *AppError {
+	if !IsValidId(o.TeamId) || o.Category == "" || len(o.Category) > CategoryOverrideCategoryMaxLength {
+		return NewAppError("CategoryOverride.IsValid", "model.channel_override.ids.app_error", nil, "", http.StatusBadRequest)
+	}
+	// The same rules as a channel's.
+	return o.AsChannelOverride(o.TeamId).IsValid()
+}
+
+func (o *CategoryOverride) IsEmpty() bool {
+	return len(o.Allow) == 0 && len(o.Deny) == 0
+}
+
+// EffectiveChannelOverrides are the overrides that apply in a channel: those of its server category, then the
+// channel's own on top, permission by permission: what the channel allows or denies for a role or person wins over
+// what its category says of the same permission; the rest of the category's stands.
+func EffectiveChannelOverrides(channelID string, category []*CategoryOverride, own []*ChannelOverride) []*ChannelOverride {
+	effective := make([]*ChannelOverride, 0, len(category)+len(own))
+	for _, c := range category {
+		inherited := c.AsChannelOverride(channelID)
+		inherited.Allow = slices.Clone(c.Allow)
+		inherited.Deny = slices.Clone(c.Deny)
+		effective = append(effective, inherited)
+	}
+	for _, o := range own {
+		at := slices.IndexFunc(effective, func(e *ChannelOverride) bool { return e.TargetType == o.TargetType && e.TargetId == o.TargetId })
+		if at < 0 {
+			effective = append(effective, o)
+			continue
+		}
+		merged := effective[at]
+		merged.Allow = slices.DeleteFunc(merged.Allow, func(p string) bool { return slices.Contains(o.Deny, p) || slices.Contains(o.Allow, p) })
+		merged.Deny = slices.DeleteFunc(merged.Deny, func(p string) bool { return slices.Contains(o.Allow, p) || slices.Contains(o.Deny, p) })
+		merged.Allow = append(merged.Allow, o.Allow...)
+		merged.Deny = append(merged.Deny, o.Deny...)
+		merged.UpdateAt = max(merged.UpdateAt, o.UpdateAt)
+	}
+	return effective
+}

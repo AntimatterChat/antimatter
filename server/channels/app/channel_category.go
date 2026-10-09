@@ -313,6 +313,8 @@ func (a *App) SetChannelManagedCategory(rctx request.CTX, channelID, categoryNam
 		return model.NewAppError("SetChannelManagedCategory", "app.managed_category.set.app_error", nil, "", http.StatusInternalServerError).Wrap(appErr)
 	}
 
+	// Antimatter: the channel now inherits its new category's overrides.
+	a.invalidateChannelOverrides(rctx, channelID)
 	return nil
 }
 
@@ -334,6 +336,8 @@ func (a *App) ClearChannelManagedCategory(rctx request.CTX, channelID string) *m
 		return model.NewAppError("ClearChannelManagedCategory", "app.managed_category.clear.app_error", nil, "", http.StatusInternalServerError).Wrap(appErr)
 	}
 
+	// Antimatter: and no longer inherits its category's overrides.
+	a.invalidateChannelOverrides(rctx, channelID)
 	return nil
 }
 
