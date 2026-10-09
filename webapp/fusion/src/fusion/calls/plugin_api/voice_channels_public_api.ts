@@ -62,6 +62,10 @@ export type AntimatterVoiceChannelsAPI = {
     // Deafens the user: disables the call's audio and mutes them; undeafening unmutes them if
     // deafening muted them. Other participants see it. Only for calls run by this window.
     setDeafened(deafened: boolean): void;
+
+    // Learns whether channels the user isn't in are voice channels (the plugin knows those they're in), for a list of
+    // channels to browse, say: the selectors then answer for them. Optional: older versions lack it.
+    load?(channelIds: string[]): Promise<void>;
 };
 
 declare global {

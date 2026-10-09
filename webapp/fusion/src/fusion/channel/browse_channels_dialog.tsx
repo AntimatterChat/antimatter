@@ -14,9 +14,11 @@ import {isDiscoverableChannelsEnabled} from 'mattermost-redux/selectors/entities
 import {getCurrentTeam} from 'mattermost-redux/selectors/entities/teams';
 import {getCurrentUserId} from 'mattermost-redux/selectors/entities/users';
 
+import {getVoiceAPI} from 'fusion/calls/calls_api';
 import Icon from 'fusion/components/icon';
 import {Dialog} from 'fusion/components/layer';
 import {useToast} from 'fusion/shell/toast_context';
+import ChannelIcon from 'fusion/sidebar/channel_icon';
 import {am} from 'fusion/utils/class_names';
 import {getHistory} from 'utils/browser_history';
 import Constants from 'utils/constants';
@@ -125,6 +127,14 @@ export default function BrowseChannelsDialog({onClose}: {onClose: () => void}) {
     const isMember = (id: string) => Boolean(memberships[id]);
     const source = found ?? [...teamChannels, ...extra];
     const list = useMemo(() => browseList(source, filter, isMember, hideJoined), [source, filter, memberships, hideJoined]); // eslint-disable-line react-hooks/exhaustive-deps
+
+    // Which of the channels listed that the person isn't in are voice channels: the voice plugin knows the others.
+    const notJoined = useMemo(() => list.filter((c) => !memberships[c.id] && c.delete_at === 0).map((c) => c.id).sort().join(','), [list, memberships]);
+    useEffect(() => {
+        if (notJoined) {
+            getVoiceAPI()?.load?.(notJoined.split(',')).catch(() => {});
+        }
+    }, [notJoined]);
 
     // Member counts of the channels listed.
     const missingCounts = useMemo(() => list.filter((c) => memberCounts[c.id] === undefined).map((c) => c.id).sort().join(','), [list, memberCounts]);
@@ -238,12 +248,6 @@ export default function BrowseChannelsDialog({onClose}: {onClose: () => void}) {
                         const member = isMember(c.id);
                         const requestable = isRequestable(c, member);
                         const archived = c.delete_at !== 0;
-                        let icon: 'hash' | 'lock' | 'folder' = 'hash';
-                        if (archived) {
-                            icon = 'folder';
-                        } else if (c.type === Constants.PRIVATE_CHANNEL) {
-                            icon = 'lock';
-                        }
                         return (
                             <div
                                 key={c.id}
@@ -256,7 +260,7 @@ export default function BrowseChannelsDialog({onClose}: {onClose: () => void}) {
                                     disabled={requestable}
                                     onClick={() => open(c)}
                                 >
-                                    <Icon name={icon}/>
+                                    {archived ? <Icon name='folder'/> : <ChannelIcon channel={c}/>}
                                     <span className={am('grow')}>
                                         <b>{c.display_name}</b>
                                         <small>

@@ -90,7 +90,7 @@ describe('BrowseChannelsDialog', () => {
 
     test('joining a channel opens it', async () => {
         const join = jest.spyOn(Client4, 'addToChannel').mockResolvedValue({channel_id: 'dev', user_id: 'me', roles: 'channel_user'} as never);
-        jest.spyOn(Client4, 'getChannel').mockResolvedValue(dev);
+        jest.spyOn(Client4, 'getChannel').mockResolvedValue(dev as never);
         jest.spyOn(Client4, 'getChannelMember').mockResolvedValue({channel_id: 'dev', user_id: 'me'} as never);
         const push = jest.spyOn(getHistory(), 'push').mockImplementation(() => undefined);
         const onClose = render();
@@ -115,5 +115,13 @@ describe('BrowseChannelsDialog', () => {
         await userEvent.click(screen.getByRole('checkbox', {name: 'Hide joined'}));
         expect(screen.queryByText('General')).not.toBeInTheDocument();
         expect(screen.getByText('Dev')).toBeInTheDocument();
+    });
+
+    test('asks the voice plugin about the channels not joined, for their icons', async () => {
+        const load = jest.fn(() => Promise.resolve());
+        window.antimatterVoiceChannels = {version: 1, selectors: {isVoiceChannel: () => false, getParticipants: () => [], isDeafened: () => false, getAutoJoin: () => false}, join: jest.fn(), autoJoin: jest.fn(), leave: jest.fn(), setDeafened: jest.fn(), load} as never;
+        render();
+        await waitFor(() => expect(load).toHaveBeenCalledWith(['dev']));
+        delete window.antimatterVoiceChannels;
     });
 });
