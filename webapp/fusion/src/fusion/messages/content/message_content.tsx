@@ -110,6 +110,12 @@ function Embed({post, embed}: {post: Post; embed: PostEmbed}) {
     }
 }
 
+// usesBlockRenderer tells whether a message is made of Mattermost's newer blocks (mm_blocks, blocks or cards), drawn by
+// their own renderer. Upstream's renderer also takes classic attachments, which Fusion draws as its own cards instead.
+export function usesBlockRenderer(props: Record<string, unknown> | undefined): boolean {
+    return Boolean(props) && ['mm_blocks', 'blocks', 'cards'].some((key) => hasInteractiveMessageProps({[key]: props![key]}));
+}
+
 // MessageContent is a message's body: its text, rendered by the classic markdown renderer (or by a plugin for its
 // own message types), then what is attached to it.
 export default function MessageContent({post, inThread, autotranslated}: Props) {
@@ -137,7 +143,7 @@ export default function MessageContent({post, inThread, autotranslated}: Props) 
     }
 
     // Mattermost's newer interactive messages and Apps bindings keep their own renderers.
-    if (blocks && hasInteractiveMessageProps(post.props as Record<string, unknown>)) {
+    if (blocks && usesBlockRenderer(post.props as Record<string, unknown>)) {
         return (
             <>
                 {text}
