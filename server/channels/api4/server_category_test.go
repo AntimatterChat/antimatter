@@ -136,6 +136,7 @@ func TestServerCategories(t *testing.T) {
 		resp, err := put(th.SystemAdminClient, &model.ServerCategoriesUpdate{
 			Categories: []*model.ServerCategory{{Name: "Rules", Locked: true}, {Name: "Open space"}},
 			Renames:    map[string]string{"Community": "Open space"},
+			Removed:    []string{"Projects"},
 		})
 		require.NoError(t, err)
 		resp.Body.Close()
@@ -168,5 +169,65 @@ func TestServerCategories(t *testing.T) {
 		_, resp, err = create("Somewhere new")
 		require.Error(t, err)
 		CheckForbiddenStatus(t, resp)
+	})
+
+	t.Run("a list made from an older one is refused, and changes nothing", func(t *testing.T) {
+		before := get(t, th.Client)
+		resp, err := put(th.SystemAdminClient, &model.ServerCategoriesUpdate{Categories: []*model.ServerCategory{{Name: "Rules"}}})
+		require.Error(t, err)
+		assert.Equal(t, http.StatusConflict, resp.StatusCode)
+		assert.Equal(t, before, get(t, th.Client))
+	})
+
+	t.Run("names match ignoring case when channels follow a rename", func(t *testing.T) {
+		shouty := th.CreatePublicChannel(t)
+		require.Nil(t, th.App.SetChannelManagedCategory(th.Context, shouty.Id, "OPEN SPACE"))
+
+		resp, err := put(th.SystemAdminClient, &model.ServerCategoriesUpdate{
+			Categories: []*model.ServerCategory{{Name: "Rules", Locked: true}, {Name: "Hangout"}},
+			Renames:    map[string]string{"Open space": "Hangout"},
+		})
+		require.NoError(t, err)
+		resp.Body.Close()
+		assert.Equal(t, "Hangout", mappings(t)[shouty.Id])
+	})
+
+	t.Run("a category filed under but missing from the list can be renamed and removed", func(t *testing.T) {
+		kept := th.CreatePublicChannel(t)
+		require.Nil(t, th.App.SetChannelManagedCategory(th.Context, kept.Id, "Legacy"))
+		gone := th.CreatePublicChannel(t)
+		require.Nil(t, th.App.SetChannelManagedCategory(th.Context, gone.Id, "Old stuff"))
+
+		resp, err := put(th.SystemAdminClient, &model.ServerCategoriesUpdate{
+			Categories: []*model.ServerCategory{{Name: "Rules", Locked: true}, {Name: "Hangout"}, {Name: "Archive"}},
+			Renames:    map[string]string{"legacy": "Archive"},
+			Removed:    []string{"old STUFF"},
+		})
+		require.NoError(t, err)
+		resp.Body.Close()
+
+		m := mappings(t)
+		assert.Equal(t, "Archive", m[kept.Id])
+		_, filed := m[gone.Id]
+		assert.False(t, filed)
+	})
+
+	t.Run("a channel that can't be made adds no category", func(t *testing.T) {
+		taken := th.CreatePublicChannel(t)
+		_, _, err := th.SystemAdminClient.CreateChannel(context.Background(), &model.Channel{
+			DisplayName: "Clash", Name: taken.Name, Type: model.ChannelTypeOpen, TeamId: team.Id, ManagedCategoryName: "Ghost",
+		})
+		require.Error(t, err)
+		for _, c := range get(t, th.Client) {
+			assert.NotEqual(t, "Ghost", c.Name)
+		}
+	})
+
+	t.Run("channels aren't filed through the properties API", func(t *testing.T) {
+		channel := th.CreatePublicChannel(t)
+		body := []map[string]any{{"field_id": model.NewId(), "value": "Rules"}}
+		resp, err := th.Client.DoAPIPatchJSON(context.Background(), "/properties/groups/"+model.ManagedCategoryPropertyGroupName+"/channel/values/"+channel.Id, body)
+		require.Error(t, err)
+		assert.Equal(t, http.StatusForbidden, resp.StatusCode)
 	})
 }

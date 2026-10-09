@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"errors"
 	"net/http"
+	"slices"
 	"strings"
 
 	"github.com/mattermost/mattermost/server/public/model"
@@ -28,29 +29,40 @@ func (a *App) GetServerCategories(rctx request.CTX, teamID string) ([]*model.Ser
 }
 
 // UpdateServerCategories replaces a team's server categories. The channels filed under a renamed category follow its
-// new name; those of a category left out are unfiled, back in everyone's own categories.
+// new name; those of a removed category are unfiled, back in everyone's own categories. Names match ignoring case,
+// and a category filed under but missing from the list can be renamed or removed too.
 func (a *App) UpdateServerCategories(rctx request.CTX, teamID string, update *model.ServerCategoriesUpdate) ([]*model.ServerCategory, *model.AppError) {
 	if appErr := update.IsValid(teamID); appErr != nil {
 		return nil, appErr
 	}
 
-	previous, appErr := a.GetServerCategories(rctx, teamID)
-	if appErr != nil {
-		return nil, appErr
+	removed := slices.Clone(update.Removed)
+	for from := range update.Renames {
+		removed = append(removed, from)
 	}
-
-	stored, err := a.Srv().Store().ServerCategory().ReplaceForTeam(rctx, teamID, update.Categories)
+	previous, stored, err := a.Srv().Store().ServerCategory().ReplaceForTeam(rctx, teamID, update.Categories, removed)
 	if err != nil {
+		var conflict *store.ErrConflict
+		if errors.As(err, &conflict) {
+			return nil, model.NewAppError("UpdateServerCategories", "app.server_category.conflict.app_error", nil, "", http.StatusConflict).Wrap(err)
+		}
 		return nil, model.NewAppError("UpdateServerCategories", "app.server_category.save.app_error", nil, "", http.StatusInternalServerError).Wrap(err)
 	}
 
-	// Where the channels of each previous category go: a new name, or nowhere ("").
+	// Where the channels filed under each name go: a new name, or nowhere ("").
 	moves := map[string]string{}
+	for from, to := range update.Renames {
+		if c := model.FindServerCategory(stored, to); c != nil {
+			moves[categoryKey(from)] = c.Name
+		}
+	}
+	gone := slices.Clone(update.Removed)
 	for _, c := range previous {
-		if renamed, ok := update.Renames[c.Name]; ok && model.FindServerCategory(stored, renamed) != nil {
-			moves[c.Name] = model.FindServerCategory(stored, renamed).Name
-		} else if model.FindServerCategory(stored, c.Name) == nil {
-			moves[c.Name] = ""
+		gone = append(gone, c.Name)
+	}
+	for _, name := range gone {
+		if _, ok := moves[categoryKey(name)]; !ok && model.FindServerCategory(stored, name) == nil {
+			moves[categoryKey(name)] = ""
 		}
 	}
 	if len(moves) > 0 {
@@ -63,8 +75,13 @@ func (a *App) UpdateServerCategories(rctx request.CTX, teamID string, update *mo
 	return stored, nil
 }
 
-// refileChannels moves the team's channels filed under the categories named in moves to their new category, or
-// unfiles them.
+// categoryKey is how category names compare: trimmed, ignoring case.
+func categoryKey(name string) string {
+	return strings.ToLower(strings.TrimSpace(name))
+}
+
+// refileChannels moves the team's channels filed under the categories named in moves (by categoryKey) to their new
+// category, or unfiles them.
 func (a *App) refileChannels(rctx request.CTX, teamID string, moves map[string]string) *model.AppError {
 	channels, err := a.Srv().Store().Channel().GetTeamChannels(teamID)
 	var nfErr *store.ErrNotFound
@@ -93,8 +110,8 @@ func (a *App) refileChannels(rctx request.CTX, teamID string, moves map[string]s
 		if json.Unmarshal(v.Value, &name) != nil {
 			continue
 		}
-		to, ok := moves[name]
-		if !ok {
+		to, ok := moves[categoryKey(name)]
+		if !ok || to == name {
 			continue
 		}
 		if to == "" {
@@ -165,17 +182,20 @@ func (a *App) SessionCanFileChannel(rctx request.CTX, session model.Session, cha
 // EnsureServerCategory adds a category to the end of the team's list, open, when a channel is filed under a name the
 // list doesn't have yet. It gives back the name as the list spells it.
 func (a *App) EnsureServerCategory(rctx request.CTX, teamID, name string) (string, *model.AppError) {
-	name = strings.TrimSpace(name)
-	categories, appErr := a.GetServerCategories(rctx, teamID)
-	if appErr != nil {
-		return "", appErr
+	category, added, err := a.Srv().Store().ServerCategory().AddForTeam(rctx, teamID, strings.TrimSpace(name))
+	if err != nil {
+		return "", model.NewAppError("EnsureServerCategory", "app.server_category.save.app_error", nil, "", http.StatusInternalServerError).Wrap(err)
 	}
-	if c := model.FindServerCategory(categories, name); c != nil {
-		return c.Name, nil
+	if added {
+		a.PublishServerCategoriesUpdated(teamID)
 	}
-	categories = append(categories, &model.ServerCategory{TeamId: teamID, Name: name})
-	if _, appErr := a.UpdateServerCategories(rctx, teamID, &model.ServerCategoriesUpdate{Categories: categories}); appErr != nil {
-		return "", appErr
+	return category.Name, nil
+}
+
+// DeleteServerCategoriesForTeam removes a team's server categories, as the team goes.
+func (a *App) DeleteServerCategoriesForTeam(rctx request.CTX, teamID string) *model.AppError {
+	if err := a.Srv().Store().ServerCategory().DeleteForTeam(rctx, teamID); err != nil {
+		return model.NewAppError("DeleteServerCategoriesForTeam", "app.server_category.delete.app_error", nil, "", http.StatusInternalServerError).Wrap(err)
 	}
-	return name, nil
+	return nil
 }

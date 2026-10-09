@@ -180,25 +180,26 @@ func createChannel(c *Context, w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Antimatter: a new channel can go straight into an open server category; a locked or new one needs a team admin.
+	// Antimatter: a new channel can go straight into an open server category; a locked or new one needs a team admin,
+	// and a new one joins the list once the channel is made.
+	newServerCategory := false
 	if strings.TrimSpace(channel.ManagedCategoryName) != "" && c.App.Config().FeatureFlags.ManagedChannelCategories {
-		if !c.App.SessionHasPermissionToTeam(*c.AppContext.Session(), channel.TeamId, model.PermissionManageTeam) {
-			categories, appErr := c.App.GetServerCategories(c.AppContext, channel.TeamId)
-			if appErr != nil {
-				c.Err = appErr
-				return
-			}
-			if category := model.FindServerCategory(categories, channel.ManagedCategoryName); category == nil || category.Locked {
-				c.Err = model.NewAppError("createChannel", "api.channel.patch_update_channel.cannot_update_managed_category.app_error", nil, "", http.StatusForbidden)
-				return
-			}
-		}
-		name, appErr := c.App.EnsureServerCategory(c.AppContext, channel.TeamId, channel.ManagedCategoryName)
+		categories, appErr := c.App.GetServerCategories(c.AppContext, channel.TeamId)
 		if appErr != nil {
 			c.Err = appErr
 			return
 		}
-		channel.ManagedCategoryName = name
+		category := model.FindServerCategory(categories, channel.ManagedCategoryName)
+		if (category == nil || category.Locked) && !c.App.SessionHasPermissionToTeam(*c.AppContext.Session(), channel.TeamId, model.PermissionManageTeam) {
+			c.Err = model.NewAppError("createChannel", "api.channel.patch_update_channel.cannot_update_managed_category.app_error", nil, "", http.StatusForbidden)
+			return
+		}
+		if category != nil {
+			channel.ManagedCategoryName = category.Name
+		} else {
+			channel.ManagedCategoryName = strings.TrimSpace(channel.ManagedCategoryName)
+			newServerCategory = true
+		}
 	}
 
 	if channel.Discoverable {
@@ -229,6 +230,11 @@ func createChannel(c *Context, w http.ResponseWriter, r *http.Request) {
 	if appErr != nil {
 		c.Err = appErr
 		return
+	}
+	if newServerCategory {
+		if _, appErr := c.App.EnsureServerCategory(c.AppContext, sc.TeamId, sc.ManagedCategoryName); appErr != nil {
+			c.Logger.Warn("Failed to add the server category of a new channel", mlog.String("channel_id", sc.Id), mlog.Err(appErr))
+		}
 	}
 	if sc.ManagedCategoryName != "" {
 		c.App.PublishServerCategoriesUpdated(sc.TeamId)

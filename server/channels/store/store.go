@@ -1128,7 +1128,9 @@ type ChannelOverrideStore interface {
 // ServerCategoryStore keeps the sidebar categories admins set up for everyone in a team (Antimatter).
 type ServerCategoryStore interface {
 	GetForTeam(rctx request.CTX, teamID string) ([]*model.ServerCategory, error)
-	ReplaceForTeam(rctx request.CTX, teamID string, categories []*model.ServerCategory) ([]*model.ServerCategory, error)
+	ReplaceForTeam(rctx request.CTX, teamID string, categories []*model.ServerCategory, removed []string) ([]*model.ServerCategory, []*model.ServerCategory, error)
+	AddForTeam(rctx request.CTX, teamID string, name string) (*model.ServerCategory, bool, error)
+	DeleteForTeam(rctx request.CTX, teamID string) error
 }
 
 type DraftStore interface {

@@ -13941,6 +13941,48 @@ func (s *RetryLayerSchemeStore) Save(scheme *model.Scheme) (*model.Scheme, error
 
 }
 
+func (s *RetryLayerServerCategoryStore) AddForTeam(rctx request.CTX, teamID string, name string) (*model.ServerCategory, bool, error) {
+
+	tries := 0
+	for {
+		result, resultVar1, err := s.ServerCategoryStore.AddForTeam(rctx, teamID, name)
+		if err == nil {
+			return result, resultVar1, nil
+		}
+		if !isRepeatableError(err) {
+			return result, resultVar1, err
+		}
+		tries++
+		if tries >= 3 {
+			err = errors.Wrap(err, "giving up after 3 consecutive repeatable transaction failures")
+			return result, resultVar1, err
+		}
+		timepkg.Sleep(100 * timepkg.Millisecond)
+	}
+
+}
+
+func (s *RetryLayerServerCategoryStore) DeleteForTeam(rctx request.CTX, teamID string) error {
+
+	tries := 0
+	for {
+		err := s.ServerCategoryStore.DeleteForTeam(rctx, teamID)
+		if err == nil {
+			return nil
+		}
+		if !isRepeatableError(err) {
+			return err
+		}
+		tries++
+		if tries >= 3 {
+			err = errors.Wrap(err, "giving up after 3 consecutive repeatable transaction failures")
+			return err
+		}
+		timepkg.Sleep(100 * timepkg.Millisecond)
+	}
+
+}
+
 func (s *RetryLayerServerCategoryStore) GetForTeam(rctx request.CTX, teamID string) ([]*model.ServerCategory, error) {
 
 	tries := 0
@@ -13962,21 +14004,21 @@ func (s *RetryLayerServerCategoryStore) GetForTeam(rctx request.CTX, teamID stri
 
 }
 
-func (s *RetryLayerServerCategoryStore) ReplaceForTeam(rctx request.CTX, teamID string, categories []*model.ServerCategory) ([]*model.ServerCategory, error) {
+func (s *RetryLayerServerCategoryStore) ReplaceForTeam(rctx request.CTX, teamID string, categories []*model.ServerCategory, removed []string) ([]*model.ServerCategory, []*model.ServerCategory, error) {
 
 	tries := 0
 	for {
-		result, err := s.ServerCategoryStore.ReplaceForTeam(rctx, teamID, categories)
+		result, resultVar1, err := s.ServerCategoryStore.ReplaceForTeam(rctx, teamID, categories, removed)
 		if err == nil {
-			return result, nil
+			return result, resultVar1, nil
 		}
 		if !isRepeatableError(err) {
-			return result, err
+			return result, resultVar1, err
 		}
 		tries++
 		if tries >= 3 {
 			err = errors.Wrap(err, "giving up after 3 consecutive repeatable transaction failures")
-			return result, err
+			return result, resultVar1, err
 		}
 		timepkg.Sleep(100 * timepkg.Millisecond)
 	}

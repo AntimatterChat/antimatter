@@ -46,34 +46,98 @@ func (_m *ServerCategoryStore) GetForTeam(rctx request.CTX, teamID string) ([]*m
 	return r0, r1
 }
 
-// ReplaceForTeam provides a mock function with given fields: rctx, teamID, categories
-func (_m *ServerCategoryStore) ReplaceForTeam(rctx request.CTX, teamID string, categories []*model.ServerCategory) ([]*model.ServerCategory, error) {
-	ret := _m.Called(rctx, teamID, categories)
+// ReplaceForTeam provides a mock function with given fields: rctx, teamID, categories, removed
+func (_m *ServerCategoryStore) ReplaceForTeam(rctx request.CTX, teamID string, categories []*model.ServerCategory, removed []string) ([]*model.ServerCategory, []*model.ServerCategory, error) {
+	ret := _m.Called(rctx, teamID, categories, removed)
 
 	if len(ret) == 0 {
 		panic("no return value specified for ReplaceForTeam")
 	}
 
 	var r0 []*model.ServerCategory
-	var r1 error
-	if rf, ok := ret.Get(0).(func(request.CTX, string, []*model.ServerCategory) ([]*model.ServerCategory, error)); ok {
-		return rf(rctx, teamID, categories)
+	var r1 []*model.ServerCategory
+	var r2 error
+	if rf, ok := ret.Get(0).(func(request.CTX, string, []*model.ServerCategory, []string) ([]*model.ServerCategory, []*model.ServerCategory, error)); ok {
+		return rf(rctx, teamID, categories, removed)
 	}
-	if rf, ok := ret.Get(0).(func(request.CTX, string, []*model.ServerCategory) []*model.ServerCategory); ok {
-		r0 = rf(rctx, teamID, categories)
+	if rf, ok := ret.Get(0).(func(request.CTX, string, []*model.ServerCategory, []string) []*model.ServerCategory); ok {
+		r0 = rf(rctx, teamID, categories, removed)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).([]*model.ServerCategory)
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(request.CTX, string, []*model.ServerCategory) error); ok {
-		r1 = rf(rctx, teamID, categories)
+	if rf, ok := ret.Get(1).(func(request.CTX, string, []*model.ServerCategory, []string) []*model.ServerCategory); ok {
+		r1 = rf(rctx, teamID, categories, removed)
 	} else {
-		r1 = ret.Error(1)
+		if ret.Get(1) != nil {
+			r1 = ret.Get(1).([]*model.ServerCategory)
+		}
 	}
 
-	return r0, r1
+	if rf, ok := ret.Get(2).(func(request.CTX, string, []*model.ServerCategory, []string) error); ok {
+		r2 = rf(rctx, teamID, categories, removed)
+	} else {
+		r2 = ret.Error(2)
+	}
+
+	return r0, r1, r2
+}
+
+// AddForTeam provides a mock function with given fields: rctx, teamID, name
+func (_m *ServerCategoryStore) AddForTeam(rctx request.CTX, teamID string, name string) (*model.ServerCategory, bool, error) {
+	ret := _m.Called(rctx, teamID, name)
+
+	if len(ret) == 0 {
+		panic("no return value specified for AddForTeam")
+	}
+
+	var r0 *model.ServerCategory
+	var r1 bool
+	var r2 error
+	if rf, ok := ret.Get(0).(func(request.CTX, string, string) (*model.ServerCategory, bool, error)); ok {
+		return rf(rctx, teamID, name)
+	}
+	if rf, ok := ret.Get(0).(func(request.CTX, string, string) *model.ServerCategory); ok {
+		r0 = rf(rctx, teamID, name)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*model.ServerCategory)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(request.CTX, string, string) bool); ok {
+		r1 = rf(rctx, teamID, name)
+	} else {
+		r1 = ret.Get(1).(bool)
+	}
+
+	if rf, ok := ret.Get(2).(func(request.CTX, string, string) error); ok {
+		r2 = rf(rctx, teamID, name)
+	} else {
+		r2 = ret.Error(2)
+	}
+
+	return r0, r1, r2
+}
+
+// DeleteForTeam provides a mock function with given fields: rctx, teamID
+func (_m *ServerCategoryStore) DeleteForTeam(rctx request.CTX, teamID string) error {
+	ret := _m.Called(rctx, teamID)
+
+	if len(ret) == 0 {
+		panic("no return value specified for DeleteForTeam")
+	}
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(request.CTX, string) error); ok {
+		r0 = rf(rctx, teamID)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
 }
 
 // NewServerCategoryStore creates a new instance of ServerCategoryStore. It also registers a testing interface on the mock and a cleanup function to assert the mocks expectations.

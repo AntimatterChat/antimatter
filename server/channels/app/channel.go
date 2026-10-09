@@ -3928,6 +3928,16 @@ func (a *App) MoveChannel(rctx request.CTX, team *model.Team, channel *model.Cha
 		return model.NewAppError("MoveChannel", "app.channel.sidebar_categories.app_error", nil, "", http.StatusInternalServerError).Wrap(nErr)
 	}
 
+	// Antimatter: a channel leaves its old team's server category; the new team's admins file it.
+	if a.Config().FeatureFlags.ManagedChannelCategories {
+		if name, appErr := a.GetChannelServerCategory(rctx, channel.Id); appErr == nil && name != "" {
+			if appErr := a.ClearChannelManagedCategory(rctx, channel.Id); appErr != nil {
+				rctx.Logger().Warn("Failed to unfile a moved channel", mlog.String("channel_id", channel.Id), mlog.Err(appErr))
+			}
+			a.PublishServerCategoriesUpdated(channel.TeamId)
+		}
+	}
+
 	channel.TeamId = team.Id
 	if _, err := a.Srv().Store().Channel().Update(rctx, channel); err != nil {
 		var appErr *model.AppError

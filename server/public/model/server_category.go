@@ -27,10 +27,12 @@ type ServerCategory struct {
 }
 
 // ServerCategoriesUpdate replaces a team's server categories, in order. Renames maps old names to new ones, so that the
-// channels filed under an old name follow it; the channels of a category left out are unfiled.
+// channels filed under an old name follow it; Removed names the categories removed, whose channels are unfiled. A
+// category the list leaves out must be renamed or removed: otherwise the list is out of date and refused.
 type ServerCategoriesUpdate struct {
 	Categories []*ServerCategory `json:"categories"`
 	Renames    map[string]string `json:"renames,omitempty"`
+	Removed    []string          `json:"removed,omitempty"`
 }
 
 func (c *ServerCategory) IsValid() *AppError {
@@ -46,7 +48,7 @@ func (c *ServerCategory) IsValid() *AppError {
 // IsValid checks the update for a team: valid categories, no name twice (ignoring case), and at most
 // ServerCategoriesMaxPerTeam of them.
 func (u *ServerCategoriesUpdate) IsValid(teamID string) *AppError {
-	if len(u.Categories) > ServerCategoriesMaxPerTeam {
+	if len(u.Categories) > ServerCategoriesMaxPerTeam || len(u.Removed) > ServerCategoriesMaxPerTeam || len(u.Renames) > ServerCategoriesMaxPerTeam {
 		return NewAppError("ServerCategoriesUpdate.IsValid", "model.server_category.too_many.app_error", map[string]any{"Max": ServerCategoriesMaxPerTeam}, "", http.StatusBadRequest)
 	}
 	seen := make(map[string]bool, len(u.Categories))

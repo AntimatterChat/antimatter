@@ -11097,6 +11097,38 @@ func (s *TimerLayerSchemeStore) Save(scheme *model.Scheme) (*model.Scheme, error
 	return result, err
 }
 
+func (s *TimerLayerServerCategoryStore) AddForTeam(rctx request.CTX, teamID string, name string) (*model.ServerCategory, bool, error) {
+	start := time.Now()
+
+	result, resultVar1, err := s.ServerCategoryStore.AddForTeam(rctx, teamID, name)
+
+	elapsed := float64(time.Since(start)) / float64(time.Second)
+	if s.Root.Metrics != nil {
+		success := "false"
+		if err == nil {
+			success = "true"
+		}
+		s.Root.Metrics.ObserveStoreMethodDuration("ServerCategoryStore.AddForTeam", success, elapsed)
+	}
+	return result, resultVar1, err
+}
+
+func (s *TimerLayerServerCategoryStore) DeleteForTeam(rctx request.CTX, teamID string) error {
+	start := time.Now()
+
+	err := s.ServerCategoryStore.DeleteForTeam(rctx, teamID)
+
+	elapsed := float64(time.Since(start)) / float64(time.Second)
+	if s.Root.Metrics != nil {
+		success := "false"
+		if err == nil {
+			success = "true"
+		}
+		s.Root.Metrics.ObserveStoreMethodDuration("ServerCategoryStore.DeleteForTeam", success, elapsed)
+	}
+	return err
+}
+
 func (s *TimerLayerServerCategoryStore) GetForTeam(rctx request.CTX, teamID string) ([]*model.ServerCategory, error) {
 	start := time.Now()
 
@@ -11113,10 +11145,10 @@ func (s *TimerLayerServerCategoryStore) GetForTeam(rctx request.CTX, teamID stri
 	return result, err
 }
 
-func (s *TimerLayerServerCategoryStore) ReplaceForTeam(rctx request.CTX, teamID string, categories []*model.ServerCategory) ([]*model.ServerCategory, error) {
+func (s *TimerLayerServerCategoryStore) ReplaceForTeam(rctx request.CTX, teamID string, categories []*model.ServerCategory, removed []string) ([]*model.ServerCategory, []*model.ServerCategory, error) {
 	start := time.Now()
 
-	result, err := s.ServerCategoryStore.ReplaceForTeam(rctx, teamID, categories)
+	result, resultVar1, err := s.ServerCategoryStore.ReplaceForTeam(rctx, teamID, categories, removed)
 
 	elapsed := float64(time.Since(start)) / float64(time.Second)
 	if s.Root.Metrics != nil {
@@ -11126,7 +11158,7 @@ func (s *TimerLayerServerCategoryStore) ReplaceForTeam(rctx request.CTX, teamID 
 		}
 		s.Root.Metrics.ObserveStoreMethodDuration("ServerCategoryStore.ReplaceForTeam", success, elapsed)
 	}
-	return result, err
+	return result, resultVar1, err
 }
 
 func (s *TimerLayerSessionStore) AnalyticsSessionCount() (int64, error) {

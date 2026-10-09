@@ -774,6 +774,12 @@ func patchPropertyValuesCore(c *Context, w http.ResponseWriter, r *http.Request,
 	if c.Err != nil {
 		return
 	}
+	// Antimatter: channels are filed in server categories through the channel, which checks who may file where
+	// (locked categories); the managed categories' values aren't written directly.
+	if group.Name == model.ManagedCategoryPropertyGroupName {
+		c.Err = model.NewAppError("patchPropertyValues", "api.property_value.managed_category.app_error", nil, "", http.StatusForbidden)
+		return
+	}
 
 	var items []model.PropertyValuePatchItem
 	if err := json.NewDecoder(r.Body).Decode(&items); err != nil {
