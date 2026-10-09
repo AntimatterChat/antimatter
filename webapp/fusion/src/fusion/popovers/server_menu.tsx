@@ -136,6 +136,7 @@ export default function ServerMenu({team: forTeam, anchor, point, width, onClose
                 onClick={run(() => dispatch(setTeamMuted(teamId, !muted)))}
             />
             <MenuItem
+                icon='inbox'
                 role='menuitemcheckbox'
                 checked={unreadOnly}
                 label={formatMessage({id: 'fusion.serverMenu.unreadOnly', defaultMessage: 'Show unread channels only'})}
@@ -143,6 +144,7 @@ export default function ServerMenu({team: forTeam, anchor, point, width, onClose
                 onClick={run(() => dispatch(setUnreadFilterEnabled(!unreadOnly)))}
             />
             <MenuItem
+                icon='eye-off'
                 role='menuitemcheckbox'
                 checked={hidingMuted}
                 label={formatMessage({id: 'fusion.serverMenu.hideMuted', defaultMessage: 'Hide muted channels'})}
