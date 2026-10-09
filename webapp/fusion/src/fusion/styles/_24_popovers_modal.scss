@@ -282,3 +282,18 @@
 :is(.am-app, .am-layer) .am-cover-btn { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; background: rgba(0, 0, 0, .45); color: #fff; }
 :is(.am-app, .am-layer) .am-cover-btn:hover { background: rgba(0, 0, 0, .65); }
 :is(.am-app, .am-layer) .am-cover-btn:focus-visible { outline: 2px solid #fff; outline-offset: 1px; }
+/* Browse channels: search, kinds and hiding the joined ones, then the channels. */
+:is(.am-app, .am-layer) .am-pane.am-browse { display: flex; flex-direction: column; min-height: 0; }
+:is(.am-app, .am-layer) .am-browse-search { display: flex; align-items: center; gap: 8px; height: 40px; padding: 0 12px; margin: 8px 0 10px; border: 1px solid var(--am-line); border-radius: 10px; background: var(--am-raise); color: var(--am-muted); }
+:is(.am-app, .am-layer) .am-browse-search input { flex: 1; min-width: 0; border: 0; background: transparent; color: var(--am-text); font-size: 14px; outline: none; }
+:is(.am-app, .am-layer) .am-browse-bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 8px; }
+:is(.am-app, .am-layer) .am-browse-filters { display: flex; flex-wrap: wrap; gap: 6px; }
+:is(.am-app, .am-layer) .am-browse-list { flex: 1; min-height: 200px; max-height: 52vh; overflow-y: auto; margin: 0 -8px; }
+:is(.am-app, .am-layer) .am-browse-row { display: flex; align-items: center; gap: 8px; padding: 4px 8px; border-radius: 8px; }
+:is(.am-app, .am-layer) .am-browse-row:hover { background: var(--am-hover); }
+:is(.am-app, .am-layer) .am-browse-open { flex: 1; min-width: 0; display: flex; align-items: center; gap: 10px; padding: 6px 0; text-align: left; color: var(--am-text-2); }
+:is(.am-app, .am-layer) .am-browse-open:disabled { cursor: default; }
+:is(.am-app, .am-layer) .am-browse-open .am-grow { display: grid; min-width: 0; }
+:is(.am-app, .am-layer) .am-browse-open b { color: var(--am-text); font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+:is(.am-app, .am-layer) .am-browse-open small { color: var(--am-muted); font-size: 12.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+:is(.am-app, .am-layer) .am-browse-joined { color: var(--am-muted); font-size: 12.5px; font-weight: 600; padding: 0 8px; }

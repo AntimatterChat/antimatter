@@ -36,7 +36,6 @@ import {
 import {getTeamRoles} from 'fusion/teams/roles';
 import {am} from 'fusion/utils/class_names';
 import {
-    openBrowseChannels,
     openInvitePeople,
     openLeaveTeam,
     openTeamMembers,
@@ -119,6 +118,12 @@ export default function ServerMenu({team: forTeam, anchor, point, width, onClose
             onClose={onClose}
             style={width ? {width} : undefined}
         >
+            <MenuItem
+                icon='compass'
+                label={formatMessage({id: 'fusion.serverMenu.browse', defaultMessage: 'Browse channels'})}
+                onClick={inTeam(() => dialogs.browseChannels())}
+            />
+            <MenuSeparator/>
             {unread && (
                 <MenuItem
                     icon='check'
@@ -233,11 +238,6 @@ export default function ServerMenu({team: forTeam, anchor, point, width, onClose
                 icon='folder'
                 label={formatMessage({id: 'fusion.serverMenu.createCategory', defaultMessage: 'Create category'})}
                 onClick={inTeam(() => dialogs.createCategory())}
-            />
-            <MenuItem
-                icon='compass'
-                label={formatMessage({id: 'fusion.serverMenu.browse', defaultMessage: 'Browse channels'})}
-                onClick={inTeam(() => dispatch(openBrowseChannels()))}
             />
             {addChannelItems.map((item) => (
                 <button

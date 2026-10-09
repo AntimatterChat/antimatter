@@ -7,6 +7,7 @@ import {useDispatch} from 'react-redux';
 import type {Channel} from '@mattermost/types/channels';
 import type {Post} from '@mattermost/types/posts';
 
+import BrowseChannelsDialog from 'fusion/channel/browse_channels_dialog';
 import CategoryPermissionsDialog from 'fusion/channel/category_permissions_dialog';
 import ChannelPermissionsDialog from 'fusion/channel/channel_permissions_dialog';
 import AddPeopleDialog from 'fusion/modals/add_people_dialog';
@@ -65,6 +66,9 @@ type Dialogs = {
     // Make a new team.
     createTeam: () => void;
 
+    // Find the team's channels and join them.
+    browseChannels: () => void;
+
     // Moderation: time someone out of the team, remove them from it (with confirmation).
     timeOut: (userId: string) => void;
     removeFromTeam: (userId: string) => void;
@@ -73,9 +77,9 @@ type Dialogs = {
     confirm: (options: ConfirmOptions) => void;
 };
 
-const DialogsContext = createContext<Dialogs>({createChannel: () => {}, addPeople: () => {}, invite: () => {}, deleteMessage: () => {}, createCategory: () => {}, renameServerCategory: () => {}, roles: () => {}, channelPermissions: () => {}, categoryPermissions: () => {}, selfRoles: () => {}, onboarding: () => {}, teamLayout: () => {}, confirm: () => {}, createTeam: () => {}, timeOut: () => {}, removeFromTeam: () => {}});
+const DialogsContext = createContext<Dialogs>({createChannel: () => {}, addPeople: () => {}, invite: () => {}, deleteMessage: () => {}, createCategory: () => {}, renameServerCategory: () => {}, roles: () => {}, channelPermissions: () => {}, categoryPermissions: () => {}, selfRoles: () => {}, onboarding: () => {}, teamLayout: () => {}, confirm: () => {}, createTeam: () => {}, timeOut: () => {}, removeFromTeam: () => {}, browseChannels: () => {}});
 
-type Open = {kind: 'create'; categoryId?: string} | {kind: 'add'; channel: Channel} | {kind: 'delete'; post: Post} | {kind: 'category'; renaming?: string} | {kind: 'roles'} | {kind: 'permissions'; channel: Channel} | {kind: 'selfRoles'} | {kind: 'onboarding'} | {kind: 'layout'} | {kind: 'confirm'; options: ConfirmOptions} | {kind: 'categoryPermissions'; teamId: string; name: string} | {kind: 'createTeam'} | {kind: 'timeOut'; userId: string} | {kind: 'removeFromTeam'; userId: string} | null;
+type Open = {kind: 'create'; categoryId?: string} | {kind: 'add'; channel: Channel} | {kind: 'delete'; post: Post} | {kind: 'category'; renaming?: string} | {kind: 'roles'} | {kind: 'permissions'; channel: Channel} | {kind: 'selfRoles'} | {kind: 'onboarding'} | {kind: 'layout'} | {kind: 'confirm'; options: ConfirmOptions} | {kind: 'categoryPermissions'; teamId: string; name: string} | {kind: 'createTeam'} | {kind: 'timeOut'; userId: string} | {kind: 'removeFromTeam'; userId: string} | {kind: 'browse'} | null;
 
 // DialogsProvider owns the Fusion UI's own dialogs that menus and buttons open, outliving the menu that opened them.
 export function DialogsProvider({children}: {children: React.ReactNode}) {
@@ -97,6 +101,7 @@ export function DialogsProvider({children}: {children: React.ReactNode}) {
         teamLayout: () => setOpen({kind: 'layout'}),
         confirm: (options) => setOpen({kind: 'confirm', options}),
         createTeam: () => setOpen({kind: 'createTeam'}),
+        browseChannels: () => setOpen({kind: 'browse'}),
         timeOut: (userId) => setOpen({kind: 'timeOut', userId}),
         removeFromTeam: (userId) => setOpen({kind: 'removeFromTeam', userId}),
     }), [dispatch]);
@@ -136,6 +141,7 @@ export function DialogsProvider({children}: {children: React.ReactNode}) {
             {open?.kind === 'onboarding' && <OnboardingEditor onClose={close}/>}
             {open?.kind === 'layout' && <TeamLayoutDialog onClose={close}/>}
             {open?.kind === 'createTeam' && <CreateTeamDialog onClose={close}/>}
+            {open?.kind === 'browse' && <BrowseChannelsDialog onClose={close}/>}
             {open?.kind === 'timeOut' && (
                 <TimeoutDialog
                     userId={open.userId}

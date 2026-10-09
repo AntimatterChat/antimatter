@@ -21,7 +21,6 @@ import type {ThunkActionFunc} from 'types/store';
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const openDialog = (modalId: string, dialogType: React.ElementType<any>, dialogProps?: Record<string, unknown>) => openModal({modalId, dialogType, dialogProps} as ModalData<unknown>);
 
-const BrowseChannels = makeAsyncComponent('FusionBrowseChannels', lazy(() => import('components/browse_channels')));
 const DeleteCategoryModal = makeAsyncComponent('FusionDeleteCategoryModal', lazy(() => import('components/delete_category_modal')));
 const EditCategoryModal = makeAsyncComponent('FusionEditCategoryModal', lazy(() => import('components/edit_category_modal')));
 const InvitationModal = makeAsyncComponent('FusionInvitationModal', lazy(() => import('components/invitation_modal')));
@@ -34,7 +33,6 @@ const TeamMembersModal = makeAsyncComponent('FusionTeamMembersModal', lazy(() =>
 const TeamSettingsModal = makeAsyncComponent('FusionTeamSettingsModal', lazy(() => import('components/team_settings_modal')));
 const UserSettingsModal = makeAsyncComponent('FusionUserSettingsModal', lazy(() => import('components/user_settings/modal')));
 
-export const openBrowseChannels = () => openDialog(ModalIdentifiers.MORE_CHANNELS, BrowseChannels);
 export const openNewChannel = () => openDialog(ModalIdentifiers.NEW_CHANNEL_MODAL, NewChannelModal);
 export const openCreateCategory = () => openDialog(ModalIdentifiers.EDIT_CATEGORY, EditCategoryModal, {});
 export const openRenameCategory = (category: ChannelCategory) => openDialog(ModalIdentifiers.EDIT_CATEGORY, EditCategoryModal, {categoryId: category.id, initialCategoryName: category.display_name});
