@@ -864,6 +864,9 @@ export const RHSStates = {
     CHANNEL_INFO: 'channel-info',
     CHANNEL_MEMBERS: 'channel-members',
     EDIT_HISTORY: 'edit-history',
+
+    // Antimatter: the mod view of someone, for a team's moderators.
+    MOD_VIEW: 'mod-view',
 };
 
 export const UploadStatuses = {

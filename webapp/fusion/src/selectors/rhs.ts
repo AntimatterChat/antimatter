@@ -124,6 +124,11 @@ export function getRhsState(state: GlobalState): RhsState {
     return state.views.rhs.rhsState;
 }
 
+// getModViewUserId is whose mod view the right-hand side shows (Antimatter).
+export function getModViewUserId(state: GlobalState): string {
+    return state.views.rhs.modViewUserId;
+}
+
 export function getPreviousRhsState(state: GlobalState): RhsState {
     if (state.views.rhs.previousRhsStates === null || state.views.rhs.previousRhsStates.length === 0) {
         return null;

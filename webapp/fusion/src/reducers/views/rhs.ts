@@ -423,7 +423,20 @@ function shouldFocusRHS(state = false, action: MMAction) {
     }
 }
 
+// modViewUserId is whose mod view the right-hand side shows (Antimatter).
+function modViewUserId(state = '', action: MMAction) {
+    switch (action.type) {
+    case ActionTypes.UPDATE_RHS_STATE:
+        return action.state === RHSStates.MOD_VIEW ? action.userId || '' : '';
+    case UserTypes.LOGOUT_SUCCESS:
+        return '';
+    default:
+        return state;
+    }
+}
+
 export default combineReducers({
+    modViewUserId,
     selectedPostId,
     selectedPostFocussedAt,
     selectedPostCardId,

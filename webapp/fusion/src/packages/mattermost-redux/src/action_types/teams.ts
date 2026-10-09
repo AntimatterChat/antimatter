@@ -41,6 +41,7 @@ export default keyMirror({
     RECEIVED_MEMBER_IN_TEAM: null,
     REMOVE_MEMBER_FROM_TEAM: null,
     RECEIVED_TEAM_STATS: null,
+    RECEIVED_TEAM_TIMEOUTS: null,
     RECEIVED_MY_TEAM_UNREADS: null,
     LEAVE_TEAM: null,
     UPDATED_TEAM_SCHEME: null,

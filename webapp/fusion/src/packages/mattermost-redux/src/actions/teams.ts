@@ -660,6 +660,17 @@ export function getTeamInviteInfo(inviteId: string) {
     });
 }
 
+// fetchTeamTimeouts loads who's timed out in a team (Antimatter), which permission checks then apply.
+export function fetchTeamTimeouts(teamId: string) {
+    return bindClientFunc({
+        clientFunc: async () => {
+            const timeouts = await Client4.getTeamTimeouts(teamId);
+            return {teamId, timeouts};
+        },
+        onSuccess: TeamTypes.RECEIVED_TEAM_TIMEOUTS,
+    });
+}
+
 export function checkIfTeamExists(teamName: string): ActionFuncAsync<boolean> {
     return async (dispatch, getState) => {
         let data;

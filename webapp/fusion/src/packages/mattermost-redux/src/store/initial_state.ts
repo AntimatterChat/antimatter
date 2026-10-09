@@ -55,6 +55,7 @@ const state: GlobalState = {
             groupsAssociatedToTeam: {},
             totalCount: 0,
             contentFlaggingStatus: {},
+            timeouts: {},
         },
         channels: {
             currentChannelId: '',

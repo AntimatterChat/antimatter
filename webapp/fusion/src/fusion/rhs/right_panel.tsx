@@ -16,6 +16,7 @@ import {getKnownApp} from 'fusion/apps/known_apps';
 import {useOpenVoiceChat, VoiceChatPanel} from 'fusion/calls/voice_chat';
 import Icon from 'fusion/components/icon';
 import MemberList from 'fusion/members/member_list';
+import ModViewPanel from 'fusion/moderation/mod_view';
 import {a11yRegion} from 'fusion/utils/a11y_regions';
 import {am} from 'fusion/utils/class_names';
 import RhsPlugin from 'plugins/rhs_plugin';
@@ -64,6 +65,8 @@ export default function RightPanel() {
         content = <ResultsPanel rhsState={rhsState}/>;
     } else if (rhsState === RHSStates.CHANNEL_MEMBERS) {
         content = <MemberList inPanel={true}/>;
+    } else if (rhsState === RHSStates.MOD_VIEW) {
+        content = <ModViewPanel/>;
     } else if (rhsState === RHSStates.PLUGIN) {
         wide = true;
         roomy = Boolean(pluginId && getKnownApp(pluginId)?.widePanel);

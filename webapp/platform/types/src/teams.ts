@@ -4,6 +4,7 @@
 import type {ServerError} from './errors';
 import type {UserProfile} from './users';
 import type {RelationOneToOne} from './utilities';
+import type {MemberTimeout} from './moderation';
 
 export type TeamMembership = TeamUnread & {
     user_id: string;
@@ -90,6 +91,9 @@ export type TeamsState = {
     groupsAssociatedToTeam: any;
     totalCount: number;
     contentFlaggingStatus: Record<Team['id'], boolean>;
+
+    // Antimatter: who's timed out in each team whose timeouts were loaded.
+    timeouts?: RelationOneToOne<Team, MemberTimeout[]>;
 };
 
 export type TeamUnread = {

@@ -67,3 +67,41 @@ describe('haveIChannelPermission with overrides', () => {
         expect(haveIChannelPermission(stateWith([person('me', ['read_channel'], [])]), 'team', 'dev', 'read_channel')).toBe(false);
     });
 });
+
+describe('haveIChannelPermission with timeouts', () => {
+    const stateWith = (until: number, admin = false, overrides: ChannelOverride[] = []) => ({
+        entities: {
+            general: {serverVersion: ''},
+            users: {currentUserId: 'me', profiles: {me: {id: 'me', roles: 'system_user'}}},
+            teams: {
+                currentTeamId: 'team',
+                myMembers: {team: {team_id: 'team', user_id: 'me', roles: admin ? 'team_user team_admin' : 'team_user'}},
+                timeouts: {team: [{team_id: 'team', user_id: 'me', until, reason: '', created_by: 'mod', create_at: 0}]},
+            },
+            channels: {currentChannelId: 'dev', myMembers: {dev: {channel_id: 'dev', user_id: 'me', roles: 'channel_user'}}, roles: {dev: new Set(['channel_user'])}, overrides: {dev: overrides}},
+            roles: {
+                roles: {
+                    system_user: {name: 'system_user', permissions: []},
+                    team_user: {name: 'team_user', permissions: []},
+                    team_admin: {name: 'team_admin', permissions: [Permissions.MANAGE_TEAM]},
+                    channel_user: {name: 'channel_user', permissions: [Permissions.CREATE_POST, Permissions.READ_CHANNEL]},
+                },
+            },
+        },
+    }) as unknown as GlobalState;
+    const inAnHour = Date.now() + 3600000;
+
+    test('a timeout takes speaking away in the team\'s channels', () => {
+        expect(haveIChannelPermission(stateWith(inAnHour), 'team', 'dev', Permissions.CREATE_POST)).toBe(false);
+        expect(haveIChannelPermission(stateWith(inAnHour), 'team', 'dev', Permissions.READ_CHANNEL)).toBe(true);
+    });
+
+    test('an ended timeout takes nothing', () => {
+        expect(haveIChannelPermission(stateWith(Date.now() - 1), 'team', 'dev', Permissions.CREATE_POST)).toBe(true);
+    });
+
+    test('an override doesn\'t lift it; team admins pass it by', () => {
+        expect(haveIChannelPermission(stateWith(inAnHour, false, [person('me', [Permissions.CREATE_POST], [])]), 'team', 'dev', Permissions.CREATE_POST)).toBe(false);
+        expect(haveIChannelPermission(stateWith(inAnHour, true), 'team', 'dev', Permissions.CREATE_POST)).toBe(true);
+    });
+});

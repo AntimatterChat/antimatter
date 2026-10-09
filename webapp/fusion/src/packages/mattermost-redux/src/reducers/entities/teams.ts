@@ -4,6 +4,7 @@
 import type {AnyAction} from 'redux';
 import {combineReducers} from 'redux';
 
+import type {MemberTimeout} from '@mattermost/types/moderation';
 import type {Team, TeamMembership, TeamUnread} from '@mattermost/types/teams';
 import type {UserProfile} from '@mattermost/types/users';
 import type {RelationOneToOne, IDMappedObjects} from '@mattermost/types/utilities';
@@ -507,6 +508,18 @@ function contentFlaggingStatus(state = {}, action: MMReduxAction) {
     }
 }
 
+// timeouts are who's timed out in each team whose timeouts were loaded (Antimatter).
+export function timeouts(state: RelationOneToOne<Team, MemberTimeout[]> = {}, action: MMReduxAction) {
+    switch (action.type) {
+    case TeamTypes.RECEIVED_TEAM_TIMEOUTS:
+        return {...state, [action.data.teamId]: action.data.timeouts};
+    case UserTypes.LOGOUT_SUCCESS:
+        return {};
+    default:
+        return state;
+    }
+}
+
 export default combineReducers({
 
     // the current selected team
@@ -529,4 +542,7 @@ export default combineReducers({
     totalCount,
 
     contentFlaggingStatus,
+
+    // Antimatter: timeouts, by team
+    timeouts,
 });

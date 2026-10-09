@@ -11,6 +11,7 @@ import {ActionTypes, RHSStates} from 'utils/constants';
 
 describe('Reducers.RHS', () => {
     const initialState = {
+        modViewUserId: '',
         filesSearchExtFilter: [],
         selectedPostId: '',
         selectedPostFocussedAt: 0,
@@ -578,6 +579,7 @@ describe('Reducers.RHS', () => {
 
         expect(nextState).toEqual({
             ...initialState,
+            modViewUserId: '',
             filesSearchExtFilter: ['pdf', 'png'],
         });
     });
@@ -625,6 +627,7 @@ describe('Reducers.RHS', () => {
 
     test('SUPPRESS_RHS', () => {
         const state = {
+            modViewUserId: '',
             filesSearchExtFilter: ['png'],
             selectedPostId: 'post_id',
             selectedPostFocussedAt: 400,

@@ -13,6 +13,7 @@ import type {Bot, BotPatch} from '@mattermost/types/bots';
 import type {ChannelBookmark, ChannelBookmarkCreate, ChannelBookmarkPatch, UpdateChannelBookmarkResponse} from '@mattermost/types/channel_bookmarks';
 import type {ChannelCategory, OrderedChannelCategories, ServerCategoriesUpdate, ServerCategory} from '@mattermost/types/channel_categories';
 import type {CategoryOverride, ChannelOverride} from '@mattermost/types/channel_overrides';
+import type {MemberModeration, MemberTimeout} from '@mattermost/types/moderation';
 import type {
     Channel,
     ChannelJoinRequest,
@@ -4534,6 +4535,28 @@ export default class Client4 {
     getEffectiveChannelOverrides = (channelId: string) => {
         return this.doFetch<ChannelOverride[]>(
             `${this.getChannelRoute(channelId)}/overrides/effective`,
+            {method: 'get'},
+        );
+    };
+
+    // Antimatter: who's timed out in a team; timing someone out (until 0 lifts it); the mod view of a member.
+    getTeamTimeouts = (teamId: string) => {
+        return this.doFetch<MemberTimeout[]>(
+            `${this.getTeamRoute(teamId)}/timeouts`,
+            {method: 'get'},
+        );
+    };
+
+    setMemberTimeout = (teamId: string, userId: string, until: number, reason = '') => {
+        return this.doFetch<MemberTimeout | StatusOK>(
+            `${this.getTeamMemberRoute(teamId, userId)}/timeout`,
+            {method: 'put', body: JSON.stringify({until, reason})},
+        );
+    };
+
+    getMemberModeration = (teamId: string, userId: string) => {
+        return this.doFetch<MemberModeration>(
+            `${this.getTeamMemberRoute(teamId, userId)}/moderation`,
             {method: 'get'},
         );
     };

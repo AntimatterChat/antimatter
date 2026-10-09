@@ -276,3 +276,9 @@
 :is(.am-app, .am-layer) .am-field-note { display: block; margin-top: 6px; }
 :is(.am-app, .am-layer) .am-field-note.am-bad { color: var(--am-danger); }
 .am-app.am-solo { position: fixed; inset: 0; display: block; background: var(--am-main); }
+/* A profile card's banner, with the mod view and the person's menu at its top right, as Discord's. */
+:is(.am-app, .am-layer) .am-pop .am-cover { position: relative; }
+:is(.am-app, .am-layer) .am-cover-actions { position: absolute; top: 8px; right: 8px; display: flex; gap: 6px; }
+:is(.am-app, .am-layer) .am-cover-btn { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; background: rgba(0, 0, 0, .45); color: #fff; }
+:is(.am-app, .am-layer) .am-cover-btn:hover { background: rgba(0, 0, 0, .65); }
+:is(.am-app, .am-layer) .am-cover-btn:focus-visible { outline: 2px solid #fff; outline-offset: 1px; }

@@ -2,6 +2,7 @@
 // See LICENSE.txt for license information.
 
 import type {ChannelOverride} from '@mattermost/types/channel_overrides';
+import type {MemberTimeout} from '@mattermost/types/moderation';
 import type {GroupMembership, GroupPermissions} from '@mattermost/types/groups';
 import type {Role} from '@mattermost/types/roles';
 import type {GlobalState} from '@mattermost/types/store';
@@ -217,14 +218,41 @@ export const haveIGroupPermission: (state: GlobalState, groupID: string, permiss
 export function haveIChannelPermission(state: GlobalState, teamId: string | undefined, channelId: string | undefined, permission: string): boolean {
     const has = haveIChannelPermissionByRoles(state, teamId, channelId, permission);
 
-    // Antimatter: the channel's overrides change the answer, as the server's checks do; team admins pass them by.
-    const overrides = channelId ? state.entities.channels.overrides?.[channelId] : undefined;
-    if (!overrides?.length || !teamId || !OVERRIDABLE_PERMISSIONS.has(permission) || haveITeamPermission(state, teamId, Permissions.MANAGE_TEAM)) {
+    // Antimatter: the channel's overrides change the answer, then a timeout in its team takes speaking away, as the
+    // server's checks do; team admins pass both by.
+    if (!teamId || !OVERRIDABLE_PERMISSIONS.has(permission)) {
         return has;
     }
-    const roles = (state.entities.teams.myMembers[teamId]?.roles || '').split(' ');
-    const roleIds = roles.filter((r) => r.startsWith(TEAM_ROLE_PREFIX)).map((r) => r.slice(TEAM_ROLE_PREFIX.length));
-    return applyChannelOverrides(has, permission, roleIds, getCurrentUserId(state), overrides);
+    const overrides = channelId ? state.entities.channels.overrides?.[channelId] : undefined;
+    const timedOut = TIMEOUT_PERMISSIONS.has(permission) && isTimedOut(state, teamId, getCurrentUserId(state));
+    if ((!overrides?.length && !timedOut) || haveITeamPermission(state, teamId, Permissions.MANAGE_TEAM)) {
+        return has;
+    }
+    let result = has;
+    if (overrides?.length) {
+        const roles = (state.entities.teams.myMembers[teamId]?.roles || '').split(' ');
+        const roleIds = roles.filter((r) => r.startsWith(TEAM_ROLE_PREFIX)).map((r) => r.slice(TEAM_ROLE_PREFIX.length));
+        result = applyChannelOverrides(has, permission, roleIds, getCurrentUserId(state), overrides);
+    }
+    return result && !timedOut;
+}
+
+// The permissions a timeout takes away (the server's model.MemberTimeoutPermissions).
+const TIMEOUT_PERMISSIONS = new Set<string>([
+    Permissions.CREATE_POST,
+    Permissions.ADD_REACTION,
+    Permissions.UPLOAD_FILE,
+    Permissions.USE_CHANNEL_MENTIONS,
+    Permissions.USE_GROUP_MENTIONS,
+]);
+
+// getMemberTimeout is someone's timeout in a team (Antimatter), while it holds.
+export function getMemberTimeout(state: GlobalState, teamId: string, userId: string, now = Date.now()): MemberTimeout | undefined {
+    return state.entities.teams.timeouts?.[teamId]?.find((t) => t.user_id === userId && t.until > now);
+}
+
+export function isTimedOut(state: GlobalState, teamId: string, userId: string): boolean {
+    return Boolean(getMemberTimeout(state, teamId, userId));
 }
 
 function haveIChannelPermissionByRoles(state: GlobalState, teamId: string | undefined, channelId: string | undefined, permission: string): boolean {

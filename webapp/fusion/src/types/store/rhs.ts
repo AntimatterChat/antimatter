@@ -23,6 +23,9 @@ export type FakePost = {
 };
 
 export type RhsViewState = {
+
+    // Antimatter: whose mod view shows (RHSStates.MOD_VIEW).
+    modViewUserId: string;
     selectedPostId: Post['id'];
     selectedPostFocussedAt: number;
     selectedPostCardId: Post['id'];

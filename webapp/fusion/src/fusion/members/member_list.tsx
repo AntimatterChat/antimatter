@@ -9,6 +9,8 @@ import type {UserProfile} from '@mattermost/types/users';
 
 import {countPendingChannelJoinRequests, getChannelJoinRequests, getChannelStats} from 'mattermost-redux/actions/channels';
 import {canManageChannelJoinRequests, getAllChannelStats, getCurrentChannelId, getCurrentChannel, getPendingChannelJoinRequests} from 'mattermost-redux/selectors/entities/channels';
+import {isTimedOut} from 'mattermost-redux/selectors/entities/roles';
+import {getCurrentTeamId} from 'mattermost-redux/selectors/entities/teams';
 import {makeGetProfilesInChannel} from 'mattermost-redux/selectors/entities/users';
 import {isGuest} from 'mattermost-redux/utils/user_utils';
 
@@ -57,6 +59,7 @@ function Member({user, off, role, onOpen, onMenu}: MemberProps) {
     const roleColor = useRoleColor(user.id);
     const getCustomStatus = useMemo(() => makeGetCustomStatus(), []);
     const custom = useSelector((state: GlobalState) => getCustomStatus(state, user.id));
+    const timedOut = useSelector((state: GlobalState) => isTimedOut(state, getCurrentTeamId(state), user.id));
     return (
         <button
             className={am('member', {off})}
@@ -82,6 +85,17 @@ function Member({user, off, role, onOpen, onMenu}: MemberProps) {
                         </span>
                     )}
                     <StatusEmoji userId={user.id}/>
+                    {timedOut && (
+                        <span
+                            className={am('timeout-tag')}
+                            title={formatMessage({id: 'fusion.members.timedOut', defaultMessage: 'Timed out'})}
+                        >
+                            <Icon
+                                name='timer'
+                                size='xs'
+                            />
+                        </span>
+                    )}
                     {user.is_bot && <span className={am('bot-tag')}>{'BOT'}</span>}
                     <TeamTag
                         user={user}

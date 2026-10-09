@@ -437,6 +437,11 @@ export type CategoryOverridesUpdated = BaseWebSocketMessage<WebSocketEvents.Cate
     team_id: string;
 }>;
 
+// Antimatter: who's timed out in a team changed; its members' clients fetch its timeouts again.
+export type MemberTimeoutsUpdated = BaseWebSocketMessage<WebSocketEvents.MemberTimeoutsUpdated, {
+    team_id: string;
+}>;
+
 // Emoji messages
 
 export type EmojiAdded = BaseWebSocketMessage<WebSocketEvents.EmojiAdded, {

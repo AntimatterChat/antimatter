@@ -8,7 +8,7 @@ import {useRouteMatch} from 'react-router-dom';
 
 import {Permissions} from 'mattermost-redux/constants';
 import {getCurrentChannel, isDeactivatedDirectChannel} from 'mattermost-redux/selectors/entities/channels';
-import {haveIChannelPermission} from 'mattermost-redux/selectors/entities/roles';
+import {getMemberTimeout, haveIChannelPermission} from 'mattermost-redux/selectors/entities/roles';
 import {getCurrentUserId} from 'mattermost-redux/selectors/entities/users';
 
 import {getChannelViewPanel} from 'selectors/channel_view_panel';
@@ -33,11 +33,21 @@ import SharedBanner from './shared_banner';
 
 // ChannelView is a conversation: header, messages and composer.
 export default function ChannelView() {
-    const {formatMessage} = useIntl();
+    const {formatMessage, formatTime} = useIntl();
     const channel = useSelector(getCurrentChannel);
     const deactivated = useSelector((state: GlobalState) => (channel ? isDeactivatedDirectChannel(state, channel.id) : false));
 
-    // A team channel someone is in but can't post in: read-only by its moderation, or by an override (Antimatter).
+    // A team channel someone is in but can't post in: read-only by its moderation, or by an override, or they're timed
+    // out of the team (Antimatter). A timeout shows until it ends, when the composer comes back.
+    const timeout = useSelector((state: GlobalState) => (channel?.team_id ? getMemberTimeout(state, channel.team_id, getCurrentUserId(state)) : undefined));
+    const [, rerender] = useState(0);
+    useEffect(() => {
+        if (!timeout) {
+            return undefined;
+        }
+        const timer = setTimeout(() => rerender((n) => n + 1), Math.max(0, timeout.until - Date.now()) + 500);
+        return () => clearTimeout(timer);
+    }, [timeout]);
     const readOnly = useSelector((state: GlobalState) => Boolean(channel?.team_id) && Boolean(state.entities.channels.myMembers[channel!.id]) &&
         !haveIChannelPermission(state, channel!.team_id, channel!.id, Permissions.CREATE_POST));
     const match = useRouteMatch<{postid?: string}>();
@@ -90,7 +100,8 @@ export default function ChannelView() {
                 >
                     {archived && formatMessage({id: 'fusion.channel.archived', defaultMessage: 'You are viewing an archived channel. New messages cannot be posted.'})}
                     {!archived && deactivated && formatMessage({id: 'fusion.channel.deactivated', defaultMessage: 'You are viewing a conversation with a deactivated user. New messages cannot be posted.'})}
-                    {!archived && !deactivated && formatMessage({id: 'fusion.channel.readOnly', defaultMessage: 'You can\'t send messages in this channel.'})}
+                    {!archived && !deactivated && timeout && formatMessage({id: 'fusion.channel.timedOut', defaultMessage: 'You\'re timed out until {time}: you can read, but not send messages or react.'}, {time: formatTime(timeout.until)})}
+                    {!archived && !deactivated && !timeout && formatMessage({id: 'fusion.channel.readOnly', defaultMessage: 'You can\'t send messages in this channel.'})}
                 </div>
             </div>
         );

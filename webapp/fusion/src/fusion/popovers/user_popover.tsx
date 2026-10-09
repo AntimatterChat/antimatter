@@ -6,6 +6,7 @@ import {useIntl} from 'react-intl';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {canManageAnyChannelMembersInCurrentTeam} from 'mattermost-redux/selectors/entities/channels';
+import {getMemberTimeout} from 'mattermost-redux/selectors/entities/roles';
 import {getCurrentTeam, getTeamMember} from 'mattermost-redux/selectors/entities/teams';
 import {getCurrentUserId, getCurrentUser} from 'mattermost-redux/selectors/entities/users';
 import {getUserCurrentTimezone} from 'mattermost-redux/utils/timezone_utils';
@@ -22,6 +23,7 @@ import Icon from 'fusion/components/icon';
 import {Popover} from 'fusion/components/layer';
 import {useExclusiveCard} from 'fusion/components/layer/exclusive';
 import {useDisplayName, useUser, useUserStatus} from 'fusion/hooks/users';
+import {canModerateTeam, openModView} from 'fusion/moderation/moderation';
 import {useSettings} from 'fusion/shell/settings_context';
 import {useRoleColor} from 'fusion/teams/roles';
 import {TeamTag} from 'fusion/teams/team_card';
@@ -37,9 +39,10 @@ import type {GlobalState} from 'types/store';
 import ProfileFacts from './profile_facts';
 import RoleChips from './role_chips';
 import StatusPopover from './status_popover';
+import {UserMenu} from './user_menu';
 import UserNote from './user_note';
 
-const STATUS_LABELS: Record<string, {id: string; defaultMessage: string}> = {
+export const STATUS_LABELS: Record<string, {id: string; defaultMessage: string}> = {
     online: {id: 'fusion.status.online', defaultMessage: 'Online'},
     away: {id: 'fusion.status.away', defaultMessage: 'Away'},
     dnd: {id: 'fusion.status.dnd', defaultMessage: 'Do not disturb'},
@@ -99,6 +102,11 @@ export default function UserPopover({userId, anchor, onClose}: Props) {
     useExclusiveCard(onClose);
     const statusButton = useRef<HTMLButtonElement>(null);
     const [settingStatus, setSettingStatus] = useState(false);
+    const moreButton = useRef<HTMLButtonElement>(null);
+    const [more, setMore] = useState(false);
+    const canModerate = useSelector((state: GlobalState) => Boolean(team) && canModerateTeam(state, team!.id));
+    const timeout = useSelector((state: GlobalState) => (team ? getMemberTimeout(state, team.id, userId) : undefined));
+    const {formatTime, formatDate} = useIntl();
 
     if (!user) {
         return null;
@@ -122,7 +130,43 @@ export default function UserPopover({userId, anchor, onClose}: Props) {
             label={name}
             onClose={onClose}
         >
-            <div className={am('cover')}/>
+            <div className={am('cover')}>
+                {/* On the banner, top right, as Discord's: the mod view for moderators, and the person's menu. */}
+                <div className={am('cover-actions')}>
+                    {canModerate && !isMe && (
+                        <button
+                            type='button'
+                            className={am('cover-btn')}
+                            title={formatMessage({id: 'fusion.profile.modView', defaultMessage: 'Mod view'})}
+                            aria-label={formatMessage({id: 'fusion.profile.modView', defaultMessage: 'Mod view'})}
+                            onClick={() => {
+                                dispatch(openModView(userId));
+                                onClose();
+                            }}
+                        >
+                            <Icon
+                                name='shield'
+                                size='sm'
+                            />
+                        </button>
+                    )}
+                    <button
+                        ref={moreButton}
+                        type='button'
+                        className={am('cover-btn')}
+                        title={formatMessage({id: 'fusion.profile.more', defaultMessage: 'More'})}
+                        aria-label={formatMessage({id: 'fusion.profile.moreFor', defaultMessage: 'Options for {name}'}, {name})}
+                        aria-haspopup='menu'
+                        aria-expanded={more}
+                        onClick={() => setMore(!more)}
+                    >
+                        <Icon
+                            name='dots'
+                            size='sm'
+                        />
+                    </button>
+                </div>
+            </div>
             <div className={am('pbody')}>
                 <Avatar
                     userId={userId}
@@ -154,6 +198,18 @@ export default function UserPopover({userId, anchor, onClose}: Props) {
                     <div className={am('facts')}>
                         <span><Icon name='plug'/>{user.bot_description || formatMessage({id: 'fusion.profile.bot', defaultMessage: 'Integration · posts on behalf of an app'})}</span>
                     </div>
+                )}
+                {timeout && (
+                    <p
+                        className={am('note', 'timed-out')}
+                        role='status'
+                    >
+                        <Icon
+                            name='timer'
+                            size='sm'
+                        />
+                        {formatMessage({id: 'fusion.profile.timedOut', defaultMessage: 'Timed out until {time}, {date}'}, {time: formatTime(timeout.until), date: formatDate(timeout.until, {month: 'short', day: 'numeric'})})}
+                    </p>
                 )}
                 {customStatus?.text && (
                     <p
@@ -260,6 +316,20 @@ export default function UserPopover({userId, anchor, onClose}: Props) {
                         status={status}
                     />
                 </div>
+                {more && moreButton.current && (
+                    <UserMenu
+                        target={{userId,
+                            anchor: moreButton.current,
+                            point: (() => {
+                                const rect = moreButton.current.getBoundingClientRect();
+                                return {x: rect.right, y: rect.bottom + 4};
+                            })()}}
+                        onClose={() => {
+                            setMore(false);
+                            onClose();
+                        }}
+                    />
+                )}
                 {settingStatus && (
                     <StatusPopover
                         anchor={statusButton.current}

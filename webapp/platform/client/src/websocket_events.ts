@@ -70,6 +70,7 @@ export const enum WebSocketEvents {
     ServerCategoriesUpdated = 'server_categories_updated',
     ChannelOverridesUpdated = 'channel_overrides_updated',
     CategoryOverridesUpdated = 'category_overrides_updated',
+    MemberTimeoutsUpdated = 'member_timeouts_updated',
     CloudSubscriptionChanged = 'cloud_subscription_changed',
     ThreadUpdated = 'thread_updated',
     ThreadFollowChanged = 'thread_follow_changed',

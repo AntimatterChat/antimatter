@@ -720,6 +720,10 @@ export function handleEvent(msg: WebSocketMessage) {
     case WebSocketEvents.CategoryOverridesUpdated:
         refetchTeamOverrides(msg.data.team_id);
         break;
+    case WebSocketEvents.MemberTimeoutsUpdated:
+        // Antimatter: who's timed out in a team changed.
+        dispatch(TeamActions.fetchTeamTimeouts(msg.data.team_id));
+        break;
     case WebSocketEvents.ChannelOverridesUpdated:
         // Antimatter: permission checks apply a channel's overrides, when it was opened.
         if (getState().entities.channels.overrides?.[msg.data.channel_id]) {

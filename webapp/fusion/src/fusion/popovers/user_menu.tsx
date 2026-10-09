@@ -6,21 +6,21 @@ import {useIntl} from 'react-intl';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {removeChannelMember} from 'mattermost-redux/actions/channels';
-import {removeUserFromTeam} from 'mattermost-redux/actions/teams';
 import {Permissions} from 'mattermost-redux/constants';
 import {getCurrentChannel} from 'mattermost-redux/selectors/entities/channels';
-import {haveIChannelPermission, haveITeamPermission} from 'mattermost-redux/selectors/entities/roles';
+import {haveIChannelPermission, haveITeamPermission, getMemberTimeout} from 'mattermost-redux/selectors/entities/roles';
 import {getCurrentTeam} from 'mattermost-redux/selectors/entities/teams';
 import {getCurrentUserId} from 'mattermost-redux/selectors/entities/users';
 
 import {openDirectChannelToUserId} from 'actions/channel_actions';
 
-import {Dialog, Popover} from 'fusion/components/layer';
+import {Popover} from 'fusion/components/layer';
 import {MenuItem, MenuSeparator} from 'fusion/components/menu';
 import {useDisplayName, useUser} from 'fusion/hooks/users';
+import {canModerateTeam, openModView, timeOutMember} from 'fusion/moderation/moderation';
 import CopyIdItem from 'fusion/popovers/copy_id_item';
+import {useDialogs} from 'fusion/shell/dialogs_context';
 import {useToast} from 'fusion/shell/toast_context';
-import {am} from 'fusion/utils/class_names';
 import {channelPath} from 'fusion/utils/paths';
 import {getHistory} from 'utils/browser_history';
 import Constants from 'utils/constants';
@@ -37,70 +37,12 @@ export function insertMention(username: string) {
     window.dispatchEvent(new CustomEvent(MENTION_EVENT, {detail: `@${username} `}));
 }
 
-type Target = {userId: string; anchor: HTMLElement; point: {x: number; y: number}};
+export type Target = {userId: string; anchor: HTMLElement; point: {x: number; y: number}};
 
-// ConfirmRemove asks before removing someone from the team: the mockup's moderation dialog, without the reason
-// (Mattermost doesn't keep one).
-function ConfirmRemove({userId, onClose}: {userId: string; onClose: () => void}) {
-    const {formatMessage} = useIntl();
-    const dispatch = useDispatch();
-    const toast = useToast();
-    const user = useUser(userId);
-    const name = useDisplayName(user);
-    const team = useSelector(getCurrentTeam);
-    const [error, setError] = useState('');
-
-    const remove = async () => {
-        if (!team) {
-            return;
-        }
-        const result = await dispatch(removeUserFromTeam(team.id, userId));
-        if (result && 'error' in result && result.error) {
-            setError((result.error as {message?: string}).message || formatMessage({id: 'fusion.userMenu.removeFailed', defaultMessage: 'Could not remove {name}.'}, {name}));
-            return;
-        }
-        toast(formatMessage({id: 'fusion.toast.removedFromTeam', defaultMessage: '{name} was removed from {team}'}, {name, team: team.display_name}));
-        onClose();
-    };
-
-    return (
-        <Dialog
-            label={formatMessage({id: 'fusion.userMenu.removeTitle', defaultMessage: 'Remove {name} from {team}?'}, {name, team: team?.display_name})}
-            onClose={onClose}
-            onSubmit={remove}
-        >
-            <div className={am('pane')}>
-                <h2>{formatMessage({id: 'fusion.userMenu.removeTitle', defaultMessage: 'Remove {name} from {team}?'}, {name, team: team?.display_name})}</h2>
-                <p className={am('lead')}>{formatMessage({id: 'fusion.userMenu.removeLead', defaultMessage: '{name} leaves every channel of the team, but can rejoin with a new invite.'}, {name})}</p>
-                {error && (
-                    <p
-                        className={am('lead')}
-                        role='alert'
-                        style={{color: 'var(--am-danger)'}}
-                    >
-                        {error}
-                    </p>
-                )}
-                <div className={am('modal-actions')}>
-                    <button
-                        type='button'
-                        className={am('btn')}
-                        onClick={onClose}
-                    >
-                        {formatMessage({id: 'fusion.userMenu.cancel', defaultMessage: 'Cancel'})}
-                    </button>
-                    <button className={am('btn', 'danger')}>
-                        {formatMessage({id: 'fusion.userMenu.remove', defaultMessage: 'Remove'})}
-                    </button>
-                </div>
-            </div>
-        </Dialog>
-    );
-}
-
-// UserMenu is the right-click menu of a person (avatar, name, member row): the mockup's userMenu, with Mattermost's
-// moderation (remove from the channel or the team) for those allowed to.
-function UserMenu({target, onProfile, onRemoveFromTeam, onClose}: {target: Target; onProfile: () => void; onRemoveFromTeam: () => void; onClose: () => void}) {
+// UserMenu is the menu of a person: right-click on their avatar, name or member row, or "⋯" on their profile card.
+// The mockup's userMenu, with moderation for those allowed to: the mod view, timeouts, and removing them from the
+// channel or the team.
+export function UserMenu({target, onProfile, onClose}: {target: Target; onProfile?: () => void; onClose: () => void}) {
     const {formatMessage} = useIntl();
     const dispatch = useDispatch();
     const toast = useToast();
@@ -119,6 +61,9 @@ function UserMenu({target, onProfile, onRemoveFromTeam, onClose}: {target: Targe
         return haveIChannelPermission(state, team.id, channel.id, permission);
     });
     const canRemoveFromTeam = useSelector((state: GlobalState) => Boolean(team) && haveITeamPermission(state, team!.id, Permissions.REMOVE_USER_FROM_TEAM));
+    const canModerate = useSelector((state: GlobalState) => Boolean(team) && canModerateTeam(state, team!.id));
+    const timedOut = useSelector((state: GlobalState) => Boolean(team) && Boolean(getMemberTimeout(state, team!.id, userId)));
+    const dialogs = useDialogs();
 
     if (!user) {
         return null;
@@ -145,7 +90,15 @@ function UserMenu({target, onProfile, onRemoveFromTeam, onClose}: {target: Targe
         }
     };
 
-    const moderation = !isMe && ((canRemoveFromChannel && inChannel) || canRemoveFromTeam);
+    const liftTimeout = async () => {
+        if (!team) {
+            return;
+        }
+        const result = await dispatch(timeOutMember(team.id, userId, 0));
+        toast('error' in result && result.error ? ((result.error as {message?: string}).message || formatMessage({id: 'fusion.timeout.liftFailed', defaultMessage: 'The timeout couldn\'t be lifted.'})) : formatMessage({id: 'fusion.timeout.lifted', defaultMessage: '{name}\'s timeout is lifted'}, {name}));
+    };
+
+    const moderation = !isMe && ((canRemoveFromChannel && inChannel) || canRemoveFromTeam || canModerate);
     return (
         <Popover
             point={target.point}
@@ -155,11 +108,13 @@ function UserMenu({target, onProfile, onRemoveFromTeam, onClose}: {target: Targe
             label={name}
             onClose={onClose}
         >
-            <MenuItem
-                icon='users'
-                label={formatMessage({id: 'fusion.userMenu.profile', defaultMessage: 'Profile'})}
-                onClick={onProfile}
-            />
+            {onProfile && (
+                <MenuItem
+                    icon='users'
+                    label={formatMessage({id: 'fusion.userMenu.profile', defaultMessage: 'Profile'})}
+                    onClick={onProfile}
+                />
+            )}
             {!isMe && (
                 <MenuItem
                     icon='chat'
@@ -181,6 +136,28 @@ function UserMenu({target, onProfile, onRemoveFromTeam, onClose}: {target: Targe
                 })}
             />
             {moderation && <MenuSeparator/>}
+            {moderation && canModerate && (
+                <MenuItem
+                    icon='shield'
+                    label={formatMessage({id: 'fusion.userMenu.modView', defaultMessage: 'Mod view'})}
+                    onClick={run(() => dispatch(openModView(userId)))}
+                />
+            )}
+            {moderation && canRemoveFromTeam && !timedOut && (
+                <MenuItem
+                    icon='timer'
+                    danger={true}
+                    label={formatMessage({id: 'fusion.userMenu.timeOut', defaultMessage: 'Time out…'})}
+                    onClick={run(() => dialogs.timeOut(userId))}
+                />
+            )}
+            {moderation && canRemoveFromTeam && timedOut && (
+                <MenuItem
+                    icon='timer'
+                    label={formatMessage({id: 'fusion.userMenu.liftTimeout', defaultMessage: 'Remove timeout'})}
+                    onClick={run(liftTimeout)}
+                />
+            )}
             {moderation && canRemoveFromChannel && inChannel && (
                 <MenuItem
                     icon='leave'
@@ -193,8 +170,8 @@ function UserMenu({target, onProfile, onRemoveFromTeam, onClose}: {target: Targe
                 <MenuItem
                     icon='shield'
                     danger={true}
-                    label={formatMessage({id: 'fusion.userMenu.removeTeam', defaultMessage: 'Remove from team'})}
-                    onClick={onRemoveFromTeam}
+                    label={formatMessage({id: 'fusion.userMenu.removeTeam', defaultMessage: 'Remove from team…'})}
+                    onClick={run(() => dialogs.removeFromTeam(userId))}
                 />
             )}
             <CopyIdItem
@@ -209,7 +186,7 @@ function UserMenu({target, onProfile, onRemoveFromTeam, onClose}: {target: Targe
 // leads to) to render, and the context menu handler to put on the elements that stand for that person.
 export function useUserMenu(): [React.ReactNode, (userId: string, e: React.MouseEvent<HTMLElement>) => void] {
     const [target, setTarget] = useState<Target | null>(null);
-    const [mode, setMode] = useState<'menu' | 'profile' | 'remove'>('menu');
+    const [mode, setMode] = useState<'menu' | 'profile'>('menu');
     const close = useCallback(() => setTarget(null), []);
 
     const open = useCallback((userId: string, e: React.MouseEvent<HTMLElement>) => {
@@ -224,7 +201,6 @@ export function useUserMenu(): [React.ReactNode, (userId: string, e: React.Mouse
             <UserMenu
                 target={target}
                 onProfile={() => setMode('profile')}
-                onRemoveFromTeam={() => setMode('remove')}
                 onClose={close}
             />
         );
@@ -233,13 +209,6 @@ export function useUserMenu(): [React.ReactNode, (userId: string, e: React.Mouse
             <UserPopover
                 userId={target.userId}
                 anchor={target.anchor}
-                onClose={close}
-            />
-        );
-    } else if (target && mode === 'remove') {
-        node = (
-            <ConfirmRemove
-                userId={target.userId}
                 onClose={close}
             />
         );
