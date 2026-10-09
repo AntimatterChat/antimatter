@@ -9,6 +9,8 @@ import type {Post} from '@mattermost/types/posts';
 
 import ChannelPermissionsDialog from 'fusion/channel/channel_permissions_dialog';
 import AddPeopleDialog from 'fusion/modals/add_people_dialog';
+import ConfirmDialog from 'fusion/modals/confirm_dialog';
+import type {ConfirmOptions} from 'fusion/modals/confirm_dialog';
 import CreateCategoryDialog from 'fusion/modals/create_category_dialog';
 import CreateChannelDialog from 'fusion/modals/create_channel_dialog';
 import DeleteMessageDialog from 'fusion/modals/delete_message_dialog';
@@ -52,11 +54,14 @@ type Dialogs = {
 
     // Set the team up from a preset or template, or export it (team admins).
     teamLayout: () => void;
+
+    // Ask before doing something that can't be undone.
+    confirm: (options: ConfirmOptions) => void;
 };
 
-const DialogsContext = createContext<Dialogs>({createChannel: () => {}, addPeople: () => {}, invite: () => {}, deleteMessage: () => {}, createCategory: () => {}, renameServerCategory: () => {}, roles: () => {}, channelPermissions: () => {}, selfRoles: () => {}, onboarding: () => {}, teamLayout: () => {}});
+const DialogsContext = createContext<Dialogs>({createChannel: () => {}, addPeople: () => {}, invite: () => {}, deleteMessage: () => {}, createCategory: () => {}, renameServerCategory: () => {}, roles: () => {}, channelPermissions: () => {}, selfRoles: () => {}, onboarding: () => {}, teamLayout: () => {}, confirm: () => {}});
 
-type Open = {kind: 'create'; categoryId?: string} | {kind: 'add'; channel: Channel} | {kind: 'delete'; post: Post} | {kind: 'category'; renaming?: string} | {kind: 'roles'} | {kind: 'permissions'; channel: Channel} | {kind: 'selfRoles'} | {kind: 'onboarding'} | {kind: 'layout'} | null;
+type Open = {kind: 'create'; categoryId?: string} | {kind: 'add'; channel: Channel} | {kind: 'delete'; post: Post} | {kind: 'category'; renaming?: string} | {kind: 'roles'} | {kind: 'permissions'; channel: Channel} | {kind: 'selfRoles'} | {kind: 'onboarding'} | {kind: 'layout'} | {kind: 'confirm'; options: ConfirmOptions} | null;
 
 // DialogsProvider owns the Fusion UI's own dialogs that menus and buttons open, outliving the menu that opened them.
 export function DialogsProvider({children}: {children: React.ReactNode}) {
@@ -75,6 +80,7 @@ export function DialogsProvider({children}: {children: React.ReactNode}) {
         selfRoles: () => setOpen({kind: 'selfRoles'}),
         onboarding: () => setOpen({kind: 'onboarding'}),
         teamLayout: () => setOpen({kind: 'layout'}),
+        confirm: (options) => setOpen({kind: 'confirm', options}),
     }), [dispatch]);
 
     const close = () => setOpen(null);
@@ -111,6 +117,12 @@ export function DialogsProvider({children}: {children: React.ReactNode}) {
             {open?.kind === 'selfRoles' && <SelfRolesDialog onClose={close}/>}
             {open?.kind === 'onboarding' && <OnboardingEditor onClose={close}/>}
             {open?.kind === 'layout' && <TeamLayoutDialog onClose={close}/>}
+            {open?.kind === 'confirm' && (
+                <ConfirmDialog
+                    {...open.options}
+                    onClose={close}
+                />
+            )}
             {open?.kind === 'permissions' && (
                 <ChannelPermissionsDialog
                     channel={open.channel}

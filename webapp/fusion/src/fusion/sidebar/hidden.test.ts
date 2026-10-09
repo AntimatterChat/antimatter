@@ -27,3 +27,24 @@ describe('hiddenSince', () => {
         expect(hiddenSince(preferences, channels).size).toBe(0);
     });
 });
+
+jest.mock('mattermost-redux/actions/preferences', () => ({
+    ...jest.requireActual('mattermost-redux/actions/preferences'),
+    savePreferences: (userId: string, preferences: unknown[]) => ({type: 'SAVE', userId, preferences}),
+}));
+
+describe('hideConversation', () => {
+    test('keeps the time of the last message by the server\'s clock, not this device\'s', async () => {
+        const {hideConversation} = jest.requireActual('./hidden');
+        const saved: unknown[] = [];
+        const state = {entities: {users: {currentUserId: 'me'}, channels: {channels: {dm: {id: 'dm', last_post_at: 1000}}}}};
+        const dispatch = jest.fn((action: unknown) => {
+            saved.push(action);
+            return Promise.resolve({data: true});
+        });
+        jest.spyOn(Date, 'now').mockReturnValue(999999);
+        await hideConversation('dm')(dispatch, () => state, undefined);
+        expect(JSON.stringify(saved)).toContain('"value":"1000"');
+        jest.restoreAllMocks();
+    });
+});

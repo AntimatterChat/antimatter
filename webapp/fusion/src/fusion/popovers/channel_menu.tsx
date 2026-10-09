@@ -101,7 +101,9 @@ export default function ChannelMenu({channel, anchor, point, placement = 'right'
     const filedLocked = Boolean(filedName && findServerCategory(listed, filedName)?.locked);
     const serverTargets = useSelector((state: GlobalState) => listed.filter((c) => canFileChannel(state, channel, c.name)), shallowEqual);
     const canUnfile = useSelector((state: GlobalState) => Boolean(filedName) && canFileChannel(state, channel, ''));
-    const personalTargets = filedLocked ? [] : categories.filter((c) => c.type !== 'direct_messages' && !isServerCategory(c) && !(c.type === 'channels' && filedName && !canUnfile));
+
+    // Out of a locked category, only back to Channels, for those who may unfile it (team admins).
+    const personalTargets = filedLocked ? categories.filter((c) => c.type === 'channels' && canUnfile) : categories.filter((c) => c.type !== 'direct_messages' && !isServerCategory(c) && !(c.type === 'channels' && filedName && !canUnfile));
     const pluginActions = useSelector((state: GlobalState) => state.plugins.components.ChannelHeader) || [];
 
     // Auto-translation, once a channel admin turned it on for the channel: each reader can turn it off for them.
@@ -292,9 +294,14 @@ export default function ChannelMenu({channel, anchor, point, placement = 'right'
                                 role='menuitemradio'
                                 aria-checked={here}
                                 className={am({cur: here})}
-                                onClick={run(() => {
-                                    if (!here) {
-                                        dispatch(fileChannelHere(channel, c.name));
+                                onClick={run(async () => {
+                                    if (here) {
+                                        return;
+                                    }
+                                    const result = await dispatch(fileChannelHere(channel, c.name));
+                                    if ('error' in result && result.error) {
+                                        toast((result.error as {message?: string}).message || formatMessage({id: 'fusion.toast.fileFailed', defaultMessage: 'The channel couldn\'t be moved.'}));
+                                    } else {
                                         toast(formatMessage({id: 'fusion.toast.filed', defaultMessage: 'Moved to {category}, for everyone'}, {category: c.name}));
                                     }
                                 })}

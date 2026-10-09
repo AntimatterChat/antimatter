@@ -209,7 +209,7 @@ export default function Composer({channelId, rootId = '', placeholder}: Props) {
             const detail = (e as CustomEvent<ReplyEventDetail>).detail;
             if (detail.channelId === channelId && detail.rootId === rootId) {
                 setReplyToRef.current(detail.postId);
-                textareaRef.current?.focus();
+                (richRef.current || textareaRef.current)?.focus();
             }
         };
         window.addEventListener(REPLY_EVENT, onReply);
@@ -691,7 +691,7 @@ export default function Composer({channelId, rootId = '', placeholder}: Props) {
                         aria-label={formatMessage({id: 'fusion.composer.cancelReply', defaultMessage: 'Cancel reply'})}
                         onClick={() => {
                             setReplyTo('');
-                            textareaRef.current?.focus();
+                            (richRef.current || textareaRef.current)?.focus();
                         }}
                     >
                         <Icon

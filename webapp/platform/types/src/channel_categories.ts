@@ -49,6 +49,9 @@ export type ServerCategory = {
 export type ServerCategoriesUpdate = {
     categories: Array<Pick<ServerCategory, 'name' | 'locked'>>;
     renames?: Record<string, string>;
+
+    // The categories removed: one the list leaves out must be removed or renamed, else the list is out of date (409).
+    removed?: string[];
 };
 
 export type ChannelCategoriesState = {

@@ -48,9 +48,20 @@ export default function TeamLayoutDialog({onClose, first = false}: {onClose: () 
             return;
         }
         setBusy(true);
-        await dispatch(applyTemplate(team.id, template));
-        setBusy(false);
-        toast(formatMessage({id: 'fusion.layout.applied', defaultMessage: '{team} is set up'}, {team: team.display_name}));
+        let failed = 0;
+        try {
+            const result = await dispatch(applyTemplate(team.id, template));
+            failed = 'data' in result && result.data ? result.data.failed : 1;
+        } catch {
+            failed = 1;
+        } finally {
+            setBusy(false);
+        }
+        if (failed) {
+            toast(formatMessage({id: 'fusion.layout.partly', defaultMessage: '{team} is set up, but {count, plural, one {# step} other {# steps}} failed'}, {team: team.display_name, count: failed}));
+        } else {
+            toast(formatMessage({id: 'fusion.layout.applied', defaultMessage: '{team} is set up'}, {team: team.display_name}));
+        }
         onClose();
     };
 
@@ -79,7 +90,7 @@ export default function TeamLayoutDialog({onClose, first = false}: {onClose: () 
             toast(formatMessage({id: 'fusion.layout.notTemplate', defaultMessage: 'That file isn\'t a team template'}));
             return;
         }
-        apply(template);
+        await apply(template);
     };
 
     return (

@@ -83,7 +83,10 @@ function Member({user, off, role, onOpen, onMenu}: MemberProps) {
                     )}
                     <StatusEmoji userId={user.id}/>
                     {user.is_bot && <span className={am('bot-tag')}>{'BOT'}</span>}
-                    <TeamTag user={user}/>
+                    <TeamTag
+                        user={user}
+                        label={true}
+                    />
                     {isGuest(user.roles) && <span className={am('bot-tag', 'guest-tag')}>{formatMessage({id: 'fusion.message.guest', defaultMessage: 'GUEST'})}</span>}
                 </b>
                 <span><TalkNote userId={user.id}>{custom?.text || user.position || ''}</TalkNote></span>

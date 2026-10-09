@@ -49,7 +49,11 @@ export function findServerCategory(categories: ServerCategory[], name: string): 
 }
 
 function getCollapsedServerCategories(state: GlobalState, teamId: string): string[] {
-    const value = getPreference(state, CATEGORY_SERVER_COLLAPSED, teamId, '');
+    return parseCollapsed(getPreference(state, CATEGORY_SERVER_COLLAPSED, teamId, ''));
+}
+
+// parseCollapsed reads the names of the folded server categories from their preference.
+function parseCollapsed(value: string): string[] {
     if (!value) {
         return NO_COLLAPSED;
     }
@@ -138,11 +142,13 @@ export const getSidebarCategories: (state: GlobalState) => ChannelCategory[] = c
     getPersonalCategoriesForCurrentTeam,
     (state: GlobalState) => getManagedCategoryMappings(state, getCurrentTeamId(state)),
     (state: GlobalState) => getServerCategories(state, getCurrentTeamId(state)),
-    (state: GlobalState) => getCollapsedServerCategories(state, getCurrentTeamId(state)),
+
+    // The preference as stored: parsed below, so that an unchanged one keeps the layout.
+    (state: GlobalState) => getPreference(state, CATEGORY_SERVER_COLLAPSED, getCurrentTeamId(state), ''),
     getCurrentUserId,
     getCurrentTeamId,
     (state: GlobalState) => isTeamAdmin(state, getCurrentTeamId(state)),
-    (personal, mappings, serverCategories, collapsed, userId, teamId, admin) => layoutSidebar(personal, mappings || {}, serverCategories, collapsed, userId, teamId, admin),
+    (personal, mappings, serverCategories, collapsed, userId, teamId, admin) => layoutSidebar(personal, mappings || {}, serverCategories, parseCollapsed(collapsed), userId, teamId, admin),
 );
 
 // setServerCategoryCollapsed folds or unfolds a server category for its person.
@@ -208,9 +214,9 @@ export function fileChannelHere(channel: Pick<Channel, 'id' | 'team_id'>, name: 
     };
 }
 
-// The admins' edits of the list: each sends the whole list, in order.
-function save(teamId: string, categories: Array<Pick<ServerCategory, 'name' | 'locked'>>, renames?: Record<string, string>): ActionFuncAsync<ServerCategory[]> {
-    return saveServerCategories(teamId, {categories: categories.map(({name, locked}) => ({name, locked})), renames});
+// The admins' edits of the list: each sends the whole list, in order, with what it renames or removes.
+function save(teamId: string, categories: Array<Pick<ServerCategory, 'name' | 'locked'>>, changes: {renames?: Record<string, string>; removed?: string[]} = {}): ActionFuncAsync<ServerCategory[]> {
+    return saveServerCategories(teamId, {categories: categories.map(({name, locked}) => ({name, locked})), ...changes});
 }
 
 export function addServerCategory(teamId: string, name: string, locked: boolean): ActionFuncAsync<ServerCategory[]> {
@@ -222,7 +228,7 @@ export function renameServerCategory(teamId: string, from: string, to: string): 
         const categories = getServerCategories(getState(), teamId);
         const known = findServerCategory(categories, from);
         const list = known ? categories.map((c) => (c === known ? {...c, name: to.trim()} : c)) : [...categories, {name: to.trim(), locked: false}];
-        return dispatch(save(teamId, list, {[known?.name || from]: to.trim()}));
+        return dispatch(save(teamId, list, {renames: {[known?.name || from]: to.trim()}}));
     };
 }
 
@@ -248,7 +254,11 @@ export function moveServerCategory(teamId: string, name: string, by: -1 | 1): Ac
     };
 }
 
-// deleteServerCategory removes a category: its channels go back to everyone's own categories.
+// deleteServerCategory removes a category, listed or only filed under: its channels go back to everyone's own
+// categories.
 export function deleteServerCategory(teamId: string, name: string): ActionFuncAsync<ServerCategory[]> {
-    return (dispatch, getState) => dispatch(save(teamId, getServerCategories(getState(), teamId).filter((c) => c.name !== name)));
+    return (dispatch, getState) => {
+        const known = findServerCategory(getServerCategories(getState(), teamId), name);
+        return dispatch(save(teamId, getServerCategories(getState(), teamId).filter((c) => c !== known), {removed: [known?.name || name]}));
+    };
 }

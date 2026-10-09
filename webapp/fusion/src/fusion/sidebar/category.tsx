@@ -86,7 +86,7 @@ export default function Category({category}: {category: ChannelCategory}) {
         if (drag.categoryId.startsWith(SERVER_CATEGORY_PREFIX)) {
             const from = findServerCategory(getServerCategories(state, category.team_id), drag.categoryId.slice(SERVER_CATEGORY_PREFIX.length));
             if (from?.locked) {
-                return false;
+                return category.type === 'channels' && canFileChannel(state, channel, '');
             }
             if (category.type === 'channels') {
                 return canFileChannel(state, channel, '');

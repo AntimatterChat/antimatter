@@ -50,11 +50,14 @@ export function isHidden(state: GlobalState, channelId: string): boolean {
     return getHiddenChannelIds(state).has(channelId);
 }
 
-// hideConversation hides a conversation from the sidebar until its next message.
+// hideConversation hides a conversation from the sidebar until its next message. It keeps the time of the last one by
+// the server's clock, which the next is compared with: this device's clock may be off.
 export function hideConversation(channelId: string): ActionFuncAsync {
     return async (dispatch, getState) => {
-        const userId = getCurrentUserId(getState());
-        await dispatch(savePreferences(userId, [{user_id: userId, category: CATEGORY_HIDDEN, name: channelId, value: String(Date.now())}]));
+        const state = getState();
+        const userId = getCurrentUserId(state);
+        const lastPostAt = state.entities.channels.channels[channelId]?.last_post_at || 0;
+        await dispatch(savePreferences(userId, [{user_id: userId, category: CATEGORY_HIDDEN, name: channelId, value: String(lastPostAt)}]));
         return {data: true};
     };
 }

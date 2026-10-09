@@ -1,10 +1,10 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 
-import type {ChannelCategory} from '@mattermost/types/channel_categories';
+import type {ChannelCategory, ServerCategory} from '@mattermost/types/channel_categories';
 import type {DeepPartial, IDMappedObjects} from '@mattermost/types/utilities';
 
-import {ChannelCategoryTypes, ChannelTypes, TeamTypes} from 'mattermost-redux/action_types';
+import {ChannelCategoryTypes, ChannelTypes, TeamTypes, UserTypes} from 'mattermost-redux/action_types';
 import {CategoryTypes} from 'mattermost-redux/constants/channel_categories';
 
 import * as Reducers from './channel_categories';
@@ -235,5 +235,31 @@ describe('managedCategoryMappings', () => {
         );
 
         expect(state).toBe(initialState);
+    });
+});
+
+describe('serverCategories', () => {
+    const rules = {name: 'Rules', locked: true} as ServerCategory;
+    const community = {name: 'Community', locked: false} as ServerCategory;
+
+    test('keeps each team\'s list as received, in order', () => {
+        let state = Reducers.serverCategories({}, {type: ChannelCategoryTypes.RECEIVED_SERVER_CATEGORIES, data: {team_id: 'team1', categories: [rules, community]}});
+        state = Reducers.serverCategories(state, {type: ChannelCategoryTypes.RECEIVED_SERVER_CATEGORIES, data: {team_id: 'team2', categories: [community]}});
+        expect(state).toEqual({team1: [rules, community], team2: [community]});
+    });
+
+    test('a new list replaces the old one', () => {
+        const state = Reducers.serverCategories({team1: [rules, community]}, {type: ChannelCategoryTypes.RECEIVED_SERVER_CATEGORIES, data: {team_id: 'team1', categories: []}});
+        expect(state).toEqual({team1: []});
+    });
+
+    test('leaving a team forgets its list', () => {
+        const before = {team1: [rules], team2: [community]};
+        expect(Reducers.serverCategories(before, {type: TeamTypes.LEAVE_TEAM, data: {id: 'team1'}})).toEqual({team2: [community]});
+        expect(Reducers.serverCategories(before, {type: TeamTypes.LEAVE_TEAM, data: {id: 'team3'}})).toBe(before);
+    });
+
+    test('logging out forgets everything', () => {
+        expect(Reducers.serverCategories({team1: [rules]}, {type: UserTypes.LOGOUT_SUCCESS})).toEqual({});
     });
 });

@@ -15,6 +15,7 @@ const mockConstructorError: {current: Error | null} = {current: null};
 const mockChainCalls: {current: string[]} = {current: []};
 const mockSetNodeThrows: {current: boolean} = {current: false};
 const mockRunReturnsFalse: {current: boolean} = {current: false};
+const mockSetContentCalls: {current: unknown[][]} = {current: []};
 
 jest.mock('@tiptap/react', () => {
     const ReactMock = require('react') as typeof import('react');
@@ -27,6 +28,7 @@ jest.mock('@tiptap/react', () => {
                 isEmpty: true,
                 commands: {
                     clearContent: () => undefined,
+                    setContent: (...args: unknown[]) => mockSetContentCalls.current.push(args),
                     focus: () => undefined,
                     blur: () => undefined,
                     insertContent: () => undefined,
@@ -109,11 +111,24 @@ describe('WysiwygEditor', () => {
         mockChainCalls.current = [];
         mockSetNodeThrows.current = false;
         mockRunReturnsFalse.current = false;
+        mockSetContentCalls.current = [];
         jest.clearAllMocks();
     });
 
     afterEach(() => {
         jest.useRealTimers();
+    });
+
+    test('a draft changed from elsewhere shows in the editor, without echoing back', () => {
+        const {rerender} = renderWithContext(<WysiwygEditor {...baseProps}/>);
+        rerender(
+            <WysiwygEditor
+                {...baseProps}
+                value='**restored**'
+            />,
+        );
+        expect(mockSetContentCalls.current).toEqual([['**restored**', {contentType: 'markdown', emitUpdate: false}]]);
+        expect(baseProps.onChange).not.toHaveBeenCalled();
     });
 
     test('markdown mode (default) registers the Markdown extension', () => {

@@ -14967,8 +14967,14 @@
     "defaultMessage": "Max Users Per Team:",
     "description": "Admin console number setting name under Site Configuration > Users and Teams; label ends with a colon before the input field."
   },
-  "admin.team.memberListRoleGroupsDescription": "When true, people can list the members of a channel by role (admins, moderators), next to listing them by team. When false, the member list groups people by team only.",
-  "admin.team.memberListRoleGroupsTitle": "Group members by role: ",
+  "admin.team.memberListRoleGroupsDescription": {
+    "defaultMessage": "When true, people can list the members of a channel by role (admins, moderators), next to listing them by team. When false, the member list groups people by team only.",
+    "description": "Admin console help text under Site Configuration > Users and Teams, for the setting that lets the member list group people by role."
+  },
+  "admin.team.memberListRoleGroupsTitle": {
+    "defaultMessage": "Group members by role: ",
+    "description": "Admin console boolean setting name under Site Configuration > Users and Teams; label ends with a colon before the true/false choice."
+  },
   "admin.team.noBrandImage": {
     "defaultMessage": "No brand image uploaded",
     "description": "Text shown in the custom brand image admin setting when no image has been uploaded yet."

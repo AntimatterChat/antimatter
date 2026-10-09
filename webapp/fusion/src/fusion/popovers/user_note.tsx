@@ -1,7 +1,7 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {useIntl} from 'react-intl';
 import {useDispatch, useSelector} from 'react-redux';
 
@@ -17,7 +17,8 @@ import type {GlobalState} from 'types/store';
 export const CATEGORY_USER_NOTE = 'fusion_user_note';
 export const USER_NOTE_MAX = 500;
 
-// UserNote is the note's field in a profile card, saved when it loses the focus.
+// UserNote is the note's field in a profile card, saved when it loses the focus, and when the card closes (by Escape
+// or a click elsewhere, which take the card away before the field hears of it).
 export default function UserNote({userId}: {userId: string}) {
     const {formatMessage} = useIntl();
     const dispatch = useDispatch();
@@ -26,17 +27,24 @@ export default function UserNote({userId}: {userId: string}) {
     const [text, setText] = useState(saved);
     useEffect(() => setText(saved), [saved]);
 
+    // What save reads, current even from the unmount cleanup.
+    const latest = useRef({text, saved});
+    latest.current = {text, saved};
+
     const save = () => {
-        const value = text.trim();
-        if (value === saved) {
+        const value = latest.current.text.trim();
+        const was = latest.current.saved;
+        if (value === was) {
             return;
         }
+        latest.current.saved = value;
         if (value) {
             dispatch(savePreferences(me, [{user_id: me, category: CATEGORY_USER_NOTE, name: userId, value}]));
         } else {
-            dispatch(deletePreferences(me, [{user_id: me, category: CATEGORY_USER_NOTE, name: userId, value: saved}]));
+            dispatch(deletePreferences(me, [{user_id: me, category: CATEGORY_USER_NOTE, name: userId, value: was}]));
         }
     };
+    useEffect(() => save, []); // eslint-disable-line react-hooks/exhaustive-deps
 
     const label = formatMessage({id: 'fusion.profile.note', defaultMessage: 'Note'});
     return (
@@ -62,8 +70,6 @@ export default function UserNote({userId}: {userId: string}) {
                     if (e.key === 'Enter' && !e.shiftKey) {
                         e.preventDefault();
                         e.currentTarget.blur();
-                    } else if (e.key === 'Escape') {
-                        save();
                     }
                 }}
             />

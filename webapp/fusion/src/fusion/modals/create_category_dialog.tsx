@@ -6,6 +6,7 @@ import {useIntl} from 'react-intl';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {createCategory} from 'mattermost-redux/actions/channel_categories';
+import {areManagedCategoriesEnabled} from 'mattermost-redux/selectors/entities/channel_categories';
 import {getCurrentTeamId} from 'mattermost-redux/selectors/entities/teams';
 
 import {Dialog} from 'fusion/components/layer';
@@ -30,7 +31,9 @@ export default function CreateCategoryDialog({onClose, renaming}: Props) {
     const dispatch = useDispatch();
     const toast = useToast();
     const teamId = useSelector(getCurrentTeamId);
-    const admin = useSelector((state: GlobalState) => isTeamAdmin(state, teamId));
+
+    // Categories for everyone are managed categories: without them, a team admin's are their own too.
+    const admin = useSelector((state: GlobalState) => isTeamAdmin(state, teamId) && areManagedCategoriesEnabled(state));
     const [name, setName] = useState(renaming || '');
     const [forEveryone, setForEveryone] = useState(false);
     const [locked, setLocked] = useState(false);

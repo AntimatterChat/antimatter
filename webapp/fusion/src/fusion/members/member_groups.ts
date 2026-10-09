@@ -13,7 +13,7 @@ import {getCurrentTeamId, getMembersInTeams} from 'mattermost-redux/selectors/en
 import {getStatusForUserId} from 'mattermost-redux/selectors/entities/users';
 import {isSystemAdmin} from 'mattermost-redux/utils/user_utils';
 
-import {getMemberRolesForCurrentTeam, getTeamRoles, hoistedRole} from 'fusion/teams/roles';
+import {getMemberRolesForCurrentTeam, getTeamRoles, hoistedRole, roleColorsShown} from 'fusion/teams/roles';
 import {getTeamsByUser, mainTeam} from 'fusion/teams/teams';
 
 import type {GlobalState} from 'types/store';
@@ -77,6 +77,7 @@ export function useMemberGroups(users: UserProfile[], roles: Record<string, Memb
     const memberRoles = useSelector(getMemberRolesForCurrentTeam);
     const teamRoles = useSelector((state: GlobalState) => getTeamRoles(state, getCurrentTeamId(state)));
     const hoisted = useMemo(() => teamRoles.filter((r) => r.hoist), [teamRoles]);
+    const colorsShown = useSelector(roleColorsShown);
     const isOnline = (u: UserProfile) => Boolean(statuses[u.id]) && statuses[u.id] !== 'offline';
 
     if (grouping === 'teams') {
@@ -130,7 +131,7 @@ export function useMemberGroups(users: UserProfile[], roles: Record<string, Memb
             ...hoisted.map((role) => ({
                 key: `role-${role.id}`,
                 label: formatMessage({id: 'fusion.members.role', defaultMessage: '{role} — {count}'}, {role: role.display_name, count: byRole.get(role.id)?.length || 0}),
-                color: role.color || undefined,
+                color: (colorsShown && role.color) || undefined,
                 users: byRole.get(role.id) || [],
                 off: false,
             })),

@@ -12,7 +12,7 @@ import {createSelector} from 'mattermost-redux/selectors/create_selector';
 import {getConfig} from 'mattermost-redux/selectors/entities/general';
 import {getCurrentTeam} from 'mattermost-redux/selectors/entities/teams';
 
-import type {GlobalState} from 'types/store';
+import type {ActionFuncAsync, GlobalState} from 'types/store';
 
 // Antimatter teams, as in the mockup: Mattermost's custom user groups, with a short tag shown next to their members'
 // names, a lead and a team channel. Each person picks the team whose tag they show, in their profile; it's kept in their
@@ -71,9 +71,22 @@ export function useBadgeTeam(user: UserProfile | undefined): Group | undefined {
     return useSelector((state: GlobalState) => badgeTeam(user, getTeamsByUser(state), badgesRequired(state)));
 }
 
-// useLoadTeams loads the teams and their members, once for the app and again when asked (after an edit).
-export function loadTeams() {
-    return getGroups({group_source: 'custom', include_member_ids: true, per_page: 200} as Parameters<typeof getGroups>[0]);
+const TEAMS_PAGE = 200;
+
+// loadTeams loads the teams and roles (custom groups) and their members, page after page.
+export function loadTeams(): ActionFuncAsync<boolean> {
+    return async (dispatch) => {
+        for (let page = 0; ; page++) {
+            // eslint-disable-next-line no-await-in-loop
+            const result = await dispatch(getGroups({group_source: 'custom', include_member_ids: true, page, per_page: TEAMS_PAGE} as Parameters<typeof getGroups>[0]));
+            if ('error' in result && result.error) {
+                return {error: result.error};
+            }
+            if (!('data' in result) || !Array.isArray(result.data) || result.data.length < TEAMS_PAGE) {
+                return {data: true};
+            }
+        }
+    };
 }
 
 export function useLoadTeams() {

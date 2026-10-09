@@ -52,7 +52,7 @@ function buildEmojiDecorations(doc: PMNode): DecorationSet {
         }
         const matcher = emojiRegex();
         let match;
-        // eslint-disable-next-line no-cond-assign
+
         while ((match = matcher.exec(node.text)) !== null) {
             const from = pos + match.index;
             const to = from + match[0].length;
@@ -176,7 +176,10 @@ const WysiwygEditor = forwardRef<WysiwygEditorHandle, Props>(({
 
     const editorRef = useRef<Editor | null>(null);
 
+    // What the editor last gave its owner: a value that differs came from elsewhere (Antimatter).
+    const lastEmittedRef = useRef(value);
     const debouncedOnChange = useDebounce((md: string) => {
+        lastEmittedRef.current = md;
         onChangeRef.current(md);
     }, SERIALIZE_DEBOUNCE_MS);
 
@@ -529,8 +532,16 @@ const WysiwygEditor = forwardRef<WysiwygEditorHandle, Props>(({
 
         if (value === '' && prev !== '' && !editor.isEmpty) {
             editor.commands.clearContent();
+            lastEmittedRef.current = '';
+            return;
         }
-    }, [value, editor]);
+
+        // Antimatter: a draft changed from elsewhere (a failed send restored, a rewrite, a plugin) shows in the editor.
+        if (!jsonMode && value !== '' && value !== prev && value !== lastEmittedRef.current) {
+            lastEmittedRef.current = value;
+            editor.commands.setContent(value, {contentType: 'markdown', emitUpdate: false});
+        }
+    }, [value, editor, jsonMode]);
 
     useEffect(() => {
         if (editor && !editor.isDestroyed) {

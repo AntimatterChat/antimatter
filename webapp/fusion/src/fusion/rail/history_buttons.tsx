@@ -19,10 +19,24 @@ export default function HistoryButtons() {
     const [canGoBack, setCanGoBack] = useState(true);
     const [canGoForward, setCanGoForward] = useState(true);
 
-    useEffect(() => DesktopApp.onBrowserHistoryStatusUpdated((back, forward) => {
-        setCanGoBack(back);
-        setCanGoForward(forward);
-    }), []);
+    // The app tells of changes; what's possible on first showing is asked for.
+    useEffect(() => {
+        let gone = false;
+        DesktopApp.getBrowserHistoryStatus().then((status) => {
+            if (!gone) {
+                setCanGoBack(status.canGoBack);
+                setCanGoForward(status.canGoForward);
+            }
+        }).catch(() => {});
+        const stop = DesktopApp.onBrowserHistoryStatusUpdated((back, forward) => {
+            setCanGoBack(back);
+            setCanGoForward(forward);
+        });
+        return () => {
+            gone = true;
+            stop?.();
+        };
+    }, []);
 
     const refresh = async () => {
         const status = await DesktopApp.getBrowserHistoryStatus();

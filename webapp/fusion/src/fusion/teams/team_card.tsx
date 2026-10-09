@@ -40,10 +40,21 @@ type OpenTeamCard = {teamId: string; x: number; y: number};
 
 // TeamTag is the short tag of the team someone shows next to their name, as a server tag; it opens the team's card,
 // in place of a profile card it may sit in (one card at a time).
-export function TeamTag({user}: {user: UserProfile | undefined}) {
+// A tag inside something clickable (a member row) is a plain label: buttons don't nest.
+export function TeamTag({user, label = false}: {user: UserProfile | undefined; label?: boolean}) {
     const team = useBadgeTeam(user);
     if (!team) {
         return null;
+    }
+    if (label) {
+        return (
+            <span
+                className={am('team-tag')}
+                title={team.display_name}
+            >
+                {team.tag}
+            </span>
+        );
     }
     return (
         <button

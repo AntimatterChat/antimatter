@@ -108,10 +108,20 @@ export default function CategoryMenu({category, anchor, point, onClose}: Props) 
                         danger={true}
                         label={formatMessage({id: 'fusion.categoryMenu.deleteServer', defaultMessage: 'Delete for everyone'})}
                         sub={formatMessage({id: 'fusion.categoryMenu.deleteServerSub', defaultMessage: 'Its channels go back to everyone\'s own categories'})}
-                        onClick={run(() => {
-                            dispatch(deleteServerCategory(category.team_id, name));
-                            toast(formatMessage({id: 'fusion.toast.serverCategoryDeleted', defaultMessage: 'Deleted “{name}” for everyone'}, {name}));
-                        })}
+                        onClick={run(() => dialogs.confirm({
+                            title: formatMessage({id: 'fusion.categoryMenu.deleteServerTitle', defaultMessage: 'Delete “{name}” for everyone?'}, {name}),
+                            message: formatMessage({id: 'fusion.categoryMenu.deleteServerMessage', defaultMessage: 'Everyone in the team loses this category; its channels go back to their own categories.'}),
+                            confirmLabel: formatMessage({id: 'fusion.categoryMenu.deleteServerConfirm', defaultMessage: 'Delete for everyone'}),
+                            danger: true,
+                            onConfirm: async () => {
+                                const result = await dispatch(deleteServerCategory(category.team_id, name));
+                                if ('error' in result && result.error) {
+                                    toast((result.error as {message?: string}).message || formatMessage({id: 'fusion.toast.serverCategoryFailed', defaultMessage: 'The categories couldn\'t be saved.'}));
+                                } else {
+                                    toast(formatMessage({id: 'fusion.toast.serverCategoryDeleted', defaultMessage: 'Deleted “{name}” for everyone'}, {name}));
+                                }
+                            },
+                        }))}
                     />
                 </>
             )}

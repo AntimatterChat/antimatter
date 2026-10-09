@@ -1,6 +1,7 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 
+import type {ServerCategory} from '@mattermost/types/channel_categories';
 import type {Channel} from '@mattermost/types/channels';
 
 import {saveServerCategories} from 'mattermost-redux/actions/channel_categories';
@@ -12,7 +13,7 @@ import {getManagedCategoryMappings} from 'mattermost-redux/selectors/entities/ch
 import {getMyChannels} from 'mattermost-redux/selectors/entities/channels';
 import {getTeam} from 'mattermost-redux/selectors/entities/teams';
 
-import {fileChannel, getServerCategories} from 'fusion/sidebar/server_categories';
+import {fileChannel, findServerCategory, getServerCategories} from 'fusion/sidebar/server_categories';
 
 import type {ActionFuncAsync, GlobalState} from 'types/store';
 
@@ -67,7 +68,9 @@ export function exportTemplate(teamId: string): ActionFuncAsync<TeamTemplate> {
         const byId = new Map(channels.map((c) => [c.id, c]));
         const mappings = getManagedCategoryMappings(state, teamId) || {};
         const roles = getTeamRoles(state, teamId);
-        const permissions = await Promise.all(roles.map((r) => Client4.getTeamRole(r.id).then((role) => role.permissions).catch(() => [] as string[])));
+
+        // A role whose permissions can't be read is exported without them: applying it leaves them as they are.
+        const permissions = await Promise.all(roles.map((r) => Client4.getTeamRole(r.id).then((role) => role.permissions).catch(() => undefined)));
         return {
             data: {
                 version: 1,
@@ -84,26 +87,58 @@ export function exportTemplate(teamId: string): ActionFuncAsync<TeamTemplate> {
     };
 }
 
-// parseTemplate reads a template file, or undefined when it isn't one.
+// parseTemplate reads a template file, or undefined when it isn't one. It keeps what's well formed of each entry and
+// drops the entries it can't use.
 export function parseTemplate(json: string): TeamTemplate | undefined {
+    let raw;
     try {
-        const raw = JSON.parse(json);
-        if (raw?.version !== 1 || !Array.isArray(raw.server_categories) || !Array.isArray(raw.channels) || !Array.isArray(raw.roles)) {
-            return undefined;
-        }
-        return raw as TeamTemplate;
+        raw = JSON.parse(json);
     } catch {
         return undefined;
     }
+    if (raw?.version !== 1 || !Array.isArray(raw.server_categories) || !Array.isArray(raw.channels) || !Array.isArray(raw.roles)) {
+        return undefined;
+    }
+    const text = (v: unknown) => (typeof v === 'string' ? v.trim() : '');
+    const strings = (v: unknown) => (Array.isArray(v) ? v.filter((x): x is string => typeof x === 'string') : []);
+    const objects = (v: unknown[]) => v.filter((x): x is Record<string, unknown> => Boolean(x) && typeof x === 'object');
+    return {
+        version: 1,
+        server_categories: objects(raw.server_categories).
+            map((c) => ({name: text(c.name), locked: c.locked === true, channels: strings(c.channels)})).
+            filter((c) => c.name),
+        channels: objects(raw.channels).
+            map((c) => ({name: text(c.name), display_name: text(c.display_name), type: c.type === 'P' ? 'P' as const : 'O' as const, purpose: text(c.purpose) || undefined, header: text(c.header) || undefined})).
+            filter((c) => (/^[a-z0-9]+([a-z0-9_-]*[a-z0-9]+)*$/).test(c.name) && c.display_name),
+        roles: objects(raw.roles).
+            map((r) => ({
+                display_name: text(r.display_name),
+                color: (/^#[0-9a-fA-F]{6}$/).test(text(r.color)) ? text(r.color) : undefined,
+                hoist: r.hoist === true,
+                self_assignable: r.self_assignable === true,
+                permissions: Array.isArray(r.permissions) ? strings(r.permissions) : undefined,
+            })).
+            filter((r) => r.display_name),
+        onboarding: typeof raw.onboarding === 'string' ? raw.onboarding : undefined,
+    };
 }
 
 // applyTemplate sets a team up from a template: the channels it lacks, the roles it lacks (and the looks and
-// permissions of those it has), its server categories with their channels filed in, and its onboarding.
-export function applyTemplate(teamId: string, template: TeamTemplate): ActionFuncAsync {
+// permissions of those it has), its server categories with their channels filed in, and its onboarding. It goes on
+// past what fails, and gives back how many steps did.
+export function applyTemplate(teamId: string, template: TeamTemplate): ActionFuncAsync<{failed: number}> {
     return async (dispatch, getState) => {
+        let failed = 0;
+        const failedIf = (result: unknown) => {
+            if (!result || (typeof result === 'object' && 'error' in result && result.error)) {
+                failed += 1;
+            }
+            return result;
+        };
         const byName = new Map<string, Channel>(getMyChannels(getState()).filter((c) => c.team_id === teamId).map((c) => [c.name, c]));
         const created = await Promise.all(template.channels.filter((c) => !byName.has(c.name)).map((c) => dispatch(createChannel({team_id: teamId, name: c.name, display_name: c.display_name, type: c.type, purpose: c.purpose || '', header: c.header || ''} as Channel, ''))));
         for (const result of created) {
+            failedIf(result);
             if ('data' in result && result.data) {
                 byName.set(result.data.name, result.data);
             }
@@ -113,7 +148,7 @@ export function applyTemplate(teamId: string, template: TeamTemplate): ActionFun
         await Promise.all(template.roles.map(async (r, i) => {
             const fields = {display_name: r.display_name, color: r.color || '', hoist: Boolean(r.hoist), self_assignable: Boolean(r.self_assignable)};
             const known = existing.find((e) => e.display_name.toLowerCase() === r.display_name.toLowerCase());
-            const result = known ? await dispatch(patchGroup(known.id, fields)) : await dispatch(createGroupWithUserIds({
+            const result = failedIf(known ? await dispatch(patchGroup(known.id, fields)) : await dispatch(createGroupWithUserIds({
                 ...fields,
                 name: `${r.display_name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}-${teamId.slice(0, 8)}`,
                 source: 'custom',
@@ -121,24 +156,26 @@ export function applyTemplate(teamId: string, template: TeamTemplate): ActionFun
                 team_id: teamId,
                 position: existing.length + i,
                 user_ids: [],
-            }));
-            const id = known?.id || ('data' in result ? result.data?.id : undefined);
+            }))) as {data?: {id: string}};
+            const id = known?.id || result.data?.id;
             if (id && r.permissions) {
-                await Client4.updateTeamRolePermissions(id, r.permissions).catch(() => null);
+                await Client4.updateTeamRolePermissions(id, r.permissions).catch(() => failedIf(null));
             }
         }));
 
-        await dispatch(saveServerCategories(teamId, {categories: template.server_categories.map(({name, locked}) => ({name, locked}))}));
+        const listed = template.server_categories.map(({name, locked}) => ({name, locked}));
+        const removed = getServerCategories(getState(), teamId).map((c) => c.name).filter((name) => !findServerCategory(listed as ServerCategory[], name));
+        failedIf(await dispatch(saveServerCategories(teamId, {categories: listed, removed})));
         await Promise.all(template.server_categories.flatMap((category) => category.channels.
             map((name) => byName.get(name)).
             filter((channel): channel is Channel => Boolean(channel)).
-            map((channel) => dispatch(fileChannel(channel.id, category.name)))));
+            map((channel) => dispatch(fileChannel(channel.id, category.name)).then(failedIf))));
 
         if (template.onboarding !== undefined) {
-            await dispatch(patchTeam({id: teamId, onboarding: template.onboarding}));
+            failedIf(await dispatch(patchTeam({id: teamId, onboarding: template.onboarding})));
         }
         dispatch(loadTeams());
-        return {data: true};
+        return {data: {failed}};
     };
 }
 

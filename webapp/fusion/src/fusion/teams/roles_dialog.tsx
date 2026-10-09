@@ -34,7 +34,9 @@ import {loadTeams} from './teams';
 // The colours offered for roles, as Discord's swatches; any #rrggbb colour can be typed too.
 const SWATCHES = ['#e74c3c', '#e67e22', '#f1c40f', '#2ecc71', '#1abc9c', '#3498db', '#5865f2', '#9b59b6', '#e91e63', '#95a5a6'];
 
-type Draft = {display_name: string; color: string; icon: string; hoist: boolean; self_assignable: boolean; permissions: string[]};
+// permissions is undefined while a role's permissions aren't known (loading, or failed to load); they're only saved
+// when a switch changed them.
+type Draft = {display_name: string; color: string; icon: string; hoist: boolean; self_assignable: boolean; permissions?: string[]; permissionsChanged?: boolean};
 
 // What a role can grant, as Discord's permission switches: each is on when the role holds all its permissions.
 const SWITCHES: Array<{key: string; label: MessageDescriptor; desc: MessageDescriptor; permissions: string[]}> = [
@@ -63,9 +65,12 @@ export default function RolesDialog({onClose}: {onClose: () => void}) {
 
     // Team admins manage every role; those who may manage roles, the roles below their own highest one.
     const admin = useSelector((state: GlobalState) => Boolean(team) && haveITeamPermission(state, team!.id, Permissions.MANAGE_TEAM));
+
+    // Roles anyone can take don't rank, as on the server.
     const myRoles = useSelector((state: GlobalState) => getMemberRolesForCurrentTeam(state)[getCurrentUserId(state)]);
-    const managerTop = myRoles?.[0]?.position ?? Number.MAX_SAFE_INTEGER;
-    const manages = (role: Group) => admin || (role.position ?? 0) > managerTop;
+    const managerTop = myRoles?.find((r) => !r.self_assignable)?.position;
+    const manages = (role: Group) => admin || (managerTop !== undefined && (role.position ?? 0) > managerTop);
+    const nextPosition = roles.reduce((next, r) => Math.max(next, (r.position ?? 0) + 1), 0);
 
     const refresh = () => dispatch(loadTeams());
     const fail = (result: unknown) => {
@@ -82,21 +87,21 @@ export default function RolesDialog({onClose}: {onClose: () => void}) {
             return;
         }
         const fields = {display_name: draft.display_name.trim(), color: draft.color, icon: draft.icon.trim(), hoist: draft.hoist, self_assignable: draft.self_assignable};
-        const lowest = admin ? 0 : managerTop + 1;
+        const lowest = admin || managerTop === undefined ? 0 : managerTop + 1;
         const result = role ? await dispatch(patchGroup(role.id, fields)) : await dispatch(createGroupWithUserIds({
             ...fields,
             name: `${slug(fields.display_name)}-${team.name}`.slice(0, 64),
             source: 'custom',
             allow_reference: true,
             team_id: team.id,
-            position: Math.max(roles.length, lowest),
+            position: Math.max(nextPosition, lowest),
             user_ids: [],
         }));
         if (fail(result)) {
             return;
         }
         const saved = (result as {data?: Group}).data;
-        if (saved) {
+        if (saved && draft.permissions && draft.permissionsChanged) {
             try {
                 await Client4.updateTeamRolePermissions(saved.id, draft.permissions);
             } catch (error) {
@@ -108,14 +113,21 @@ export default function RolesDialog({onClose}: {onClose: () => void}) {
         setEditing(null);
     };
 
-    // Moving a role swaps its place with its neighbour's; places are written for both, from their order here.
+    // Moving a role swaps it with its neighbour. Team admins renumber the roles 0..n in their new order, which mends
+    // gaps and ties; others swap the two places (moving the role past a tie).
     const move = async (at: number, by: -1 | 1) => {
         const to = at + by;
         if (to < 0 || to >= roles.length) {
             return;
         }
-        await dispatch(patchGroup(roles[at].id, {position: to}));
-        await dispatch(patchGroup(roles[to].id, {position: at}));
+        const order = [...roles];
+        [order[at], order[to]] = [order[to], order[at]];
+        const places: Array<[Group, number]> = admin ? order.map((r, i) => [r, i]) : [[roles[at], roles[to].position ?? 0], [roles[to], roles[at].position ?? 0]];
+        if (!admin && places[0][1] === places[1][1]) {
+            places[0][1] += by;
+        }
+        const results = await Promise.all(places.filter(([role, position]) => role.position !== position).map(([role, position]) => dispatch(patchGroup(role.id, {position}))));
+        results.some(fail);
         refresh();
     };
 
@@ -275,7 +287,8 @@ type EditorProps = {
 // RoleEditor edits a role's look and, once it exists, its members.
 function RoleEditor({role, onSave, onCancel, onMembersChanged}: EditorProps) {
     const {formatMessage} = useIntl();
-    const [draft, setDraft] = useState<Draft>({display_name: role?.display_name || '', color: role?.color || SWATCHES[5], icon: role?.icon || '', hoist: role?.hoist ?? true, self_assignable: Boolean(role?.self_assignable), permissions: []});
+    const [draft, setDraft] = useState<Draft>({display_name: role?.display_name || '', color: role?.color || SWATCHES[5], icon: role?.icon || '', hoist: role?.hoist ?? true, self_assignable: Boolean(role?.self_assignable), permissions: role ? undefined : []});
+    const [loadFailed, setLoadFailed] = useState(false);
     const set = (patch: Partial<Draft>) => setDraft((d) => ({...d, ...patch}));
 
     // What the role grants, as it is now; someone who isn't a team admin only hands out what they have.
@@ -283,7 +296,7 @@ function RoleEditor({role, onSave, onCancel, onMembersChanged}: EditorProps) {
         if (!role) {
             return;
         }
-        Client4.getTeamRole(role.id).then((r) => set({permissions: r.permissions || []})).catch(() => {});
+        Client4.getTeamRole(role.id).then((r) => set({permissions: r.permissions || []})).catch(() => setLoadFailed(true));
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [role?.id]);
@@ -292,7 +305,9 @@ function RoleEditor({role, onSave, onCancel, onMembersChanged}: EditorProps) {
         const admin = haveITeamPermission(state, teamId, Permissions.MANAGE_TEAM);
         return Object.fromEntries(SWITCHES.map((sw) => [sw.key, admin || sw.permissions.every((p) => haveITeamPermission(state, teamId, p))]));
     }, shallowEqual);
-    const toggle = (permissions: string[], on: boolean) => set({permissions: on ? [...new Set([...draft.permissions, ...permissions])] : draft.permissions.filter((p) => !permissions.includes(p))});
+    const current = draft.permissions || [];
+    const toggle = (permissions: string[], on: boolean) => set({permissions: on ? [...new Set([...current, ...permissions])] : current.filter((p) => !permissions.includes(p)), permissionsChanged: true});
+    const loading = !draft.permissions && !loadFailed;
 
     return (
         <div className={am('role-editor')}>
@@ -348,13 +363,14 @@ function RoleEditor({role, onSave, onCancel, onMembersChanged}: EditorProps) {
             />
             <div className={am('field', 'role-perms')}>
                 <span>{formatMessage({id: 'fusion.roles.permissions', defaultMessage: 'Permissions'})}</span>
+                {loadFailed && <p className={am('lead')}>{formatMessage({id: 'fusion.roles.permissionsFailed', defaultMessage: 'The role\'s permissions couldn\'t be loaded: saving leaves them as they are.'})}</p>}
                 {SWITCHES.map((sw) => (
                     <Toggle
                         key={sw.key}
                         title={formatMessage(sw.label)}
                         desc={formatMessage(sw.desc)}
-                        on={sw.permissions.every((p) => draft.permissions.includes(p))}
-                        disabled={!held[sw.key]}
+                        on={sw.permissions.every((p) => current.includes(p))}
+                        disabled={!held[sw.key] || !draft.permissions}
                         onChange={(on) => toggle(sw.permissions, on)}
                     />
                 ))}
@@ -376,7 +392,7 @@ function RoleEditor({role, onSave, onCancel, onMembersChanged}: EditorProps) {
                 <button
                     type='button'
                     className={am('btn', 'primary')}
-                    disabled={!draft.display_name.trim() || !(/^#[0-9a-fA-F]{6}$/).test(draft.color)}
+                    disabled={loading || !draft.display_name.trim() || !(/^#[0-9a-fA-F]{6}$/).test(draft.color)}
                     onClick={() => onSave(draft)}
                 >
                     {role ? formatMessage({id: 'fusion.roles.save', defaultMessage: 'Save'}) : formatMessage({id: 'fusion.roles.createIt', defaultMessage: 'Create role'})}

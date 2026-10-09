@@ -645,11 +645,16 @@ export function saveServerCategories(teamId: string, update: ServerCategoriesUpd
         } catch (error) {
             forceLogoutIfNecessary(error, dispatch, getState);
             dispatch(logError(error));
+
+            // Another admin changed the list meanwhile: show theirs, to edit again from.
+            if ((error as {status_code?: number}).status_code === 409) {
+                dispatch(fetchServerCategories(teamId));
+            }
             return {error};
         }
 
         dispatch({type: ChannelCategoryTypes.RECEIVED_SERVER_CATEGORIES, data: {team_id: teamId, categories}});
-        if (update.renames && Object.keys(update.renames).length) {
+        if ((update.renames && Object.keys(update.renames).length) || update.removed?.length) {
             dispatch(fetchManagedCategories(teamId));
         }
         return {data: categories};
