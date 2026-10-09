@@ -19,6 +19,7 @@ import {Dialog, Popover} from 'fusion/components/layer';
 import {MenuItem} from 'fusion/components/menu';
 import ServerMenu from 'fusion/popovers/server_menu';
 import {getLastTeamChannelName, getSortedMyTeams, getUnreadDirectChannels} from 'fusion/selectors';
+import {useDialogs} from 'fusion/shell/dialogs_context';
 import {useGlobalSearch} from 'fusion/shell/global_search_context';
 import {useLayout} from 'fusion/shell/layout_context';
 import {DirectFace} from 'fusion/sidebar/direct_row';
@@ -271,6 +272,7 @@ export default function ServerRail() {
     }) || layout.home;
     const canJoin = useSelector((state: GlobalState) => getJoinableTeamIds(state).length > 0);
     const canCreate = useSelector((state: GlobalState) => haveISystemPermission(state, {permission: Permissions.CREATE_TEAM}));
+    const dialogs = useDialogs();
 
     const waitingDMs = unreadDMs.filter((dm) => dm.channel.id !== currentChannelId).slice(0, 5);
     const [folders, saveFolders] = useFolders();
@@ -425,7 +427,7 @@ export default function ServerRail() {
                             sub={formatMessage({id: 'fusion.rail.createSub', defaultMessage: 'A new space with its own channels'})}
                             onClick={() => {
                                 setAdding(false);
-                                getHistory().push('/create_team');
+                                dialogs.createTeam();
                             }}
                         />
                     )}

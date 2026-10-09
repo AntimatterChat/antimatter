@@ -60,7 +60,9 @@ const LinkingLandingPage = makeAsyncComponent('LinkingLandingPage', lazy(() => i
 const AdminConsole = makeAsyncComponent('AdminConsole', lazy(() => import('components/admin_console')));
 const SelectTeam = makeAsyncComponent('SelectTeam', lazy(() => import('components/select_team')));
 const Authorize = makeAsyncComponent('Authorize', lazy(() => import('components/authorize')));
-const CreateTeam = makeAsyncComponent('CreateTeam', lazy(() => import('components/create_team')));
+
+// Antimatter: the Fusion UI makes teams in its own dialog.
+const CreateTeam = makeAsyncComponent('CreateTeam', lazy(() => import('fusion/teams/create_team_page')));
 const Mfa = makeAsyncComponent('Mfa', lazy(() => import('components/mfa/mfa_controller')));
 const PreparingWorkspace = makeAsyncComponent('PreparingWorkspace', lazy(() => import('components/preparing_workspace')));
 const LaunchingWorkspace = makeAsyncComponent('LaunchingWorkspace', lazy(() => import('components/preparing_workspace/launching_workspace')));
@@ -317,7 +319,7 @@ export default class Root extends React.PureComponent<Props, State> {
                         path={'/oauth/authorize'}
                         component={Authorize}
                     />
-                    <LoggedInHFTRoute
+                    <LoggedInRoute
                         path={'/create_team'}
                         component={CreateTeam}
                     />
