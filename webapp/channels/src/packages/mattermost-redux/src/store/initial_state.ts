@@ -196,6 +196,7 @@ const state: GlobalState = {
             byId: {},
             orderByTeam: {},
             managedCategoryMappings: {},
+            serverCategories: {},
         },
         apps: {
             main: {
