@@ -72,7 +72,7 @@ const WEEKDAYS = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'frida
 // words); the rest takes a capital too.
 const cap = (word: string) => `[${word[0].toUpperCase()}${word[0]}]${word.slice(1)}`;
 const DAY = `(?:${cap('today')}|${cap('tonight')}|${cap('tomorrow')}|(?:${cap('next')}\\s)?(?:${WEEKDAYS.map(cap).join('|')}))`;
-const TIME12 = '\\d{1,2}(?::[0-5]\\d)?\\s?[aApP]\\.?[mM]\\.?(?!\\w)';
+const TIME12 = '\\d{1,2}(?::[0-5]\\d)?\\s?(?:[aApP][mM](?!\\w)|[aApP]\\.[mM]\\.)';
 const TIME24 = '(?:[01]?\\d|2[0-3])[:h][0-5]\\d(?!:\\d|\\w)';
 const TIME = `(?:${TIME12}|${TIME24}|${cap('noon')}(?!\\w)|${cap('midnight')}(?!\\w))`;
 const BARE = '\\d{1,2}(?::[0-5]\\d)?';

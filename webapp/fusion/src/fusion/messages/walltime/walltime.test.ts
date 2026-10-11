@@ -13,6 +13,8 @@ describe('walltime', () => {
     test.each([
         ['Let\'s meet at 3pm', '3pm', '2026-10-09T19:00:00Z'],
         ['call at 3:30 p.m. EST then', '3:30 p.m. EST', '2026-10-09T19:30:00Z'],
+        ['See you at 9am.', '9am', '2026-10-09T13:00:00Z'],
+        ['See you at 9 a.m.', '9 a.m.', '2026-10-09T13:00:00Z'],
         ['standup 9:15 sharp', '9:15', '2026-10-09T13:15:00Z'],
         ['tomorrow at 15:30 CET works', 'tomorrow at 15:30 CET', '2026-10-10T13:30:00Z'],
         ['Monday 9:00 is fine', 'Monday 9:00', '2026-10-12T13:00:00Z'],

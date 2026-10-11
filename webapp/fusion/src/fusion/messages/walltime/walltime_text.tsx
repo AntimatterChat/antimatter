@@ -43,11 +43,11 @@ export default function WalltimeText({start, end, zone, explicit, children}: Pro
         return <>{children}</>;
     }
 
-    // The dates show when the time isn't today for the reader, or isn't on the same date where it was written.
+    // The reader's date shows when the time isn't today for them; the written one when it isn't the reader's.
     const localDay = wallDay(reader, start);
-    const withDate = localDay !== wallDay(reader, Date.now()) || localDay !== wallDay(zone, start);
-    const local = formatWalltime({start, end}, reader, {locale: intl.locale, hour12, withDate});
-    const written = formatWalltime({start, end}, zone, {locale: intl.locale, hour12, withDate});
+    const otherDay = localDay !== wallDay(zone, start);
+    const local = formatWalltime({start, end}, reader, {locale: intl.locale, hour12, withDate: otherDay || localDay !== wallDay(reader, Date.now())});
+    const written = formatWalltime({start, end}, zone, {locale: intl.locale, hour12, withDate: otherDay});
     const tip = intl.formatMessage({id: 'fusion.walltime.tip', defaultMessage: '{local} your time · {written} as written'}, {local, written});
     return (
         <time

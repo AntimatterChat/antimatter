@@ -2,5 +2,5 @@
 // See LICENSE.txt for license information.
 
 // Walltimes: the times written in messages, highlighted with a clock, the reader's own time in their tooltip.
-:is(.am-app, .am-layer) .am-walltime { padding: 0 4px 0 3px; border-radius: 4px; background: var(--am-anti-soft); color: var(--am-anti); cursor: default; font-weight: 600; white-space: nowrap; }
+:is(.am-app, .am-layer) .am-walltime { padding: 0 3px; border-radius: 4px; background: var(--am-anti-soft); color: var(--am-anti); cursor: default; font-weight: 600; white-space: nowrap; }
 :is(.am-app, .am-layer) .am-walltime > .am-ic { margin-right: 3px; vertical-align: -2px; }
