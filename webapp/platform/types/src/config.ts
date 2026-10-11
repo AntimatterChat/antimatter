@@ -795,13 +795,20 @@ export type AutoTranslationSettings = {
     Enable: boolean;
     TargetLanguages: string[];
     Workers: number;
-    Provider: '' | 'libretranslate' | 'agents';
+    Provider: '' | 'libretranslate' | 'agents' | 'openai';
     LibreTranslate: {
         URL: string;
         APIKey: string;
     };
     Agents?: {
         LLMServiceID: string;
+    };
+
+    // Antimatter: an OpenAI-compatible API (a translation model or an LLM), reached directly.
+    OpenAI?: {
+        URL: string;
+        APIKey: string;
+        Model: string;
     };
     TimeoutMs: number;
     RestrictDMAndGM: boolean;

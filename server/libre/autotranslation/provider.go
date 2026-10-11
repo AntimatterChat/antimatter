@@ -64,6 +64,17 @@ func newProvider(h host, cfg *model.Config) (provider, error) {
 			return nil, errNoProvider
 		}
 		return newAgentsProvider(h, model.SafeDereference(settings.Agents.LLMServiceID)), nil
+	case providerOpenAI:
+		if settings.OpenAI == nil || model.SafeDereference(settings.OpenAI.URL) == "" || model.SafeDereference(settings.OpenAI.Model) == "" {
+			return nil, errNoProvider
+		}
+		return newOpenAIProvider(
+			h.HTTPClient(),
+			model.SafeDereference(settings.OpenAI.URL),
+			model.SafeDereference(settings.OpenAI.APIKey),
+			model.SafeDereference(settings.OpenAI.Model),
+			timeout,
+		), nil
 	default:
 		return nil, errNoProvider
 	}

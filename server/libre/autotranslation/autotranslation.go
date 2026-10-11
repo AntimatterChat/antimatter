@@ -83,6 +83,10 @@ func featureAvailable(cfg *model.Config) (bool, string) {
 		if settings.Agents == nil || model.SafeDereference(settings.Agents.LLMServiceID) == "" {
 			return false, "Agents LLM service not configured"
 		}
+	case providerOpenAI:
+		if settings.OpenAI == nil || model.SafeDereference(settings.OpenAI.URL) == "" || model.SafeDereference(settings.OpenAI.Model) == "" {
+			return false, "OpenAI-compatible API URL or model not configured"
+		}
 	default:
 		return false, "no supported provider configured"
 	}

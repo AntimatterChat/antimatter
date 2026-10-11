@@ -25,6 +25,7 @@ import * as I18n from 'i18n/i18n';
 import AgentsSettings from './agents_settings';
 import AutoTranslationInfo from './auto_translation_info';
 import LibreTranslateSettings from './libreTranslate_settings';
+import OpenAISettings from './openai_settings';
 
 import type {SystemConsoleCustomSettingsComponentProps} from '../schema_admin_settings';
 import type {SearchableStrings} from '../types';
@@ -211,6 +212,7 @@ export default function AutoTranslation(props: SystemConsoleCustomSettingsCompon
                                 disabled={props.disabled || props.setByEnv}
                             >
                                 <option value='libretranslate'>{'LibreTranslate'}</option>
+                                <option value='openai'>{'OpenAI-compatible API'}</option>
                                 <option value='agents'>{'Mattermost Agents'}</option>
                             </select>
                             {showAgentsError && (
@@ -245,6 +247,12 @@ export default function AutoTranslation(props: SystemConsoleCustomSettingsCompon
                 }
                 {autoTranslationSettings.Provider === 'libretranslate' &&
                 <LibreTranslateSettings
+                    {...props}
+                    onChange={handleChange}
+                />
+                }
+                {autoTranslationSettings.Provider === 'openai' &&
+                <OpenAISettings
                     {...props}
                     onChange={handleChange}
                 />

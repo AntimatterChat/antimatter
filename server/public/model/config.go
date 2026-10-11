@@ -2997,6 +2997,27 @@ type AutoTranslationSettings struct {
 	TimeoutMs       *int                            `access:"site_localization,cloud_restrictable"`
 	LibreTranslate  *LibreTranslateProviderSettings `access:"site_localization,cloud_restrictable"`
 	Agents          *AgentsProviderSettings         `access:"site_localization,cloud_restrictable"`
+	OpenAI          *OpenAIProviderSettings         `access:"site_localization,cloud_restrictable"`
+}
+
+// OpenAIProviderSettings configures the translation provider for an OpenAI-compatible API: a translation model or a
+// general LLM, reached directly.
+type OpenAIProviderSettings struct {
+	URL    *string `access:"site_localization,cloud_restrictable"` // Base URL of the API, e.g. https://llm.example.com/v1
+	APIKey *string `access:"site_localization,cloud_restrictable"` // Bearer token, if the API needs one
+	Model  *string `access:"site_localization,cloud_restrictable"` // Model name, as the API lists it
+}
+
+func (s *OpenAIProviderSettings) SetDefaults() {
+	if s.URL == nil {
+		s.URL = new("")
+	}
+	if s.APIKey == nil {
+		s.APIKey = new("")
+	}
+	if s.Model == nil {
+		s.Model = new("")
+	}
 }
 
 // LibreTranslateProviderSettings configures the LibreTranslate translation provider.
@@ -3039,6 +3060,11 @@ func (s *AutoTranslationSettings) SetDefaults() {
 		s.Agents = &AgentsProviderSettings{}
 	}
 	s.Agents.SetDefaults()
+
+	if s.OpenAI == nil {
+		s.OpenAI = &OpenAIProviderSettings{}
+	}
+	s.OpenAI.SetDefaults()
 
 	if s.RestrictDMAndGM == nil {
 		s.RestrictDMAndGM = new(false)
@@ -5492,6 +5518,13 @@ func (s *AutoTranslationSettings) isValid() *AppError {
 		if s.Agents == nil || s.Agents.LLMServiceID == nil || *s.Agents.LLMServiceID == "" {
 			return NewAppError("Config.IsValid", "model.config.is_valid.autotranslation.agents.llm_service_id.app_error", nil, "", http.StatusBadRequest)
 		}
+	case "openai":
+		if s.OpenAI == nil || s.OpenAI.URL == nil || !IsValidHTTPURL(*s.OpenAI.URL) {
+			return NewAppError("Config.IsValid", "model.config.is_valid.autotranslation.openai.url.app_error", nil, "", http.StatusBadRequest)
+		}
+		if s.OpenAI.Model == nil || *s.OpenAI.Model == "" {
+			return NewAppError("Config.IsValid", "model.config.is_valid.autotranslation.openai.model.app_error", nil, "", http.StatusBadRequest)
+		}
 	default:
 		return NewAppError("Config.IsValid", "model.config.is_valid.autotranslation.provider.unsupported.app_error", nil, "", http.StatusBadRequest)
 	}
@@ -5733,6 +5766,12 @@ func (o *Config) Sanitize(pluginManifests []*Manifest, opts *SanitizeOptions) {
 
 	if o.CacheSettings.RedisPassword != nil {
 		*o.CacheSettings.RedisPassword = FakeSetting
+	}
+
+	if o.AutoTranslationSettings.OpenAI != nil &&
+		o.AutoTranslationSettings.OpenAI.APIKey != nil &&
+		*o.AutoTranslationSettings.OpenAI.APIKey != "" {
+		*o.AutoTranslationSettings.OpenAI.APIKey = FakeSetting
 	}
 
 	if o.AutoTranslationSettings.LibreTranslate != nil &&

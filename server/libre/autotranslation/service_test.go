@@ -54,6 +54,14 @@ func TestFeatureAvailability(t *testing.T) {
 	ok, _ = featureAvailable(cfg)
 	assert.True(t, ok)
 
+	cfg = newTestConfig(providerOpenAI, "")
+	ok, _ = featureAvailable(cfg)
+	assert.False(t, ok, "the OpenAI-compatible provider needs a URL and a model")
+	cfg.AutoTranslationSettings.OpenAI.URL = model.NewPointer("http://llm.example.com/v1")
+	cfg.AutoTranslationSettings.OpenAI.Model = model.NewPointer("hy-mt")
+	ok, _ = featureAvailable(cfg)
+	assert.True(t, ok)
+
 	cfg.AutoTranslationSettings.Enable = model.NewPointer(false)
 	ok, _ = featureAvailable(cfg)
 	assert.False(t, ok)

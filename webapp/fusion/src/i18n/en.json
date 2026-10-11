@@ -13351,6 +13351,42 @@
     "defaultMessage": "LibreTranslate API Endpoint:",
     "description": "Setting label (with trailing colon) for the LibreTranslate server URL input on the System Console Localization page."
   },
+  "admin.site.localization.autoTranslationProviderOpenAIAPIKeyDescription": {
+    "defaultMessage": "Sent as a bearer token. Leave it blank if the API needs none.",
+    "description": "Help text under the API key field of the OpenAI-compatible translation provider."
+  },
+  "admin.site.localization.autoTranslationProviderOpenAIAPIKeyExample": {
+    "defaultMessage": "Enter the API key",
+    "description": "Placeholder of the API key field of the OpenAI-compatible translation provider."
+  },
+  "admin.site.localization.autoTranslationProviderOpenAIAPIKeyTitle": {
+    "defaultMessage": "API key:",
+    "description": "Label of the API key field of the OpenAI-compatible translation provider."
+  },
+  "admin.site.localization.autoTranslationProviderOpenAIModelDescription": {
+    "defaultMessage": "The model as the API names it. A dedicated translation model (such as HY-MT) is fast and accurate; a general LLM works too.",
+    "description": "Help text under the model field of the OpenAI-compatible translation provider."
+  },
+  "admin.site.localization.autoTranslationProviderOpenAIModelExample": {
+    "defaultMessage": "e.g.: \"tencent/HY-MT1.5-1.8B\"",
+    "description": "Placeholder of the model field of the OpenAI-compatible translation provider; the model name is not translated."
+  },
+  "admin.site.localization.autoTranslationProviderOpenAIModelTitle": {
+    "defaultMessage": "Model:",
+    "description": "Label of the model field of the OpenAI-compatible translation provider."
+  },
+  "admin.site.localization.autoTranslationProviderOpenAIURLDescription": {
+    "defaultMessage": "The base URL of an OpenAI-compatible API, up to and including /v1: messages are sent to its chat completions endpoint.",
+    "description": "Help text under the URL field of the OpenAI-compatible translation provider."
+  },
+  "admin.site.localization.autoTranslationProviderOpenAIURLExample": {
+    "defaultMessage": "e.g.: \"https://llm.yourdomain.com/v1\"",
+    "description": "Placeholder of the URL field of the OpenAI-compatible translation provider."
+  },
+  "admin.site.localization.autoTranslationProviderOpenAIURLTitle": {
+    "defaultMessage": "API base URL:",
+    "description": "Label of the URL field of the OpenAI-compatible translation provider."
+  },
   "admin.site.localization.autoTranslationProviderTitle": {
     "defaultMessage": "Translation provider",
     "description": "Setting label for the translation provider dropdown on the System Console Localization page."

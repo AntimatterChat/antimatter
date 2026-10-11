@@ -119,6 +119,12 @@ func Desanitize(actual, target *model.Config) {
 		target.AutoTranslationSettings.LibreTranslate.APIKey = actual.AutoTranslationSettings.LibreTranslate.APIKey
 	}
 
+	if target.AutoTranslationSettings.OpenAI != nil &&
+		target.AutoTranslationSettings.OpenAI.APIKey != nil &&
+		*target.AutoTranslationSettings.OpenAI.APIKey == model.FakeSetting {
+		target.AutoTranslationSettings.OpenAI.APIKey = actual.AutoTranslationSettings.OpenAI.APIKey
+	}
+
 	for id, settings := range target.PluginSettings.Plugins {
 		for k, v := range settings {
 			if v == model.FakeSetting {

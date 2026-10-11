@@ -14787,6 +14787,16 @@
     "description": "Config validation error shown to system admins saving automatic translation settings; 'LibreTranslate' is a product name and 'http://'/'https://' are literal scheme prefixes."
   },
   {
+    "id": "model.config.is_valid.autotranslation.openai.model.app_error",
+    "translation": "Invalid autotranslation configuration: the OpenAI-compatible API needs a model name.",
+    "description": "Config validation error shown to system admins when the OpenAI-compatible translation provider has no model."
+  },
+  {
+    "id": "model.config.is_valid.autotranslation.openai.url.app_error",
+    "translation": "Invalid autotranslation configuration: the OpenAI-compatible API needs a valid URL.",
+    "description": "Config validation error shown to system admins when the OpenAI-compatible translation provider has no valid URL."
+  },
+  {
     "id": "model.config.is_valid.autotranslation.provider.app_error",
     "translation": "Invalid autotranslation provider, must not be empty.",
     "description": "Config validation error shown to system admins when automatic translation is enabled but no translation provider is configured."
