@@ -67,6 +67,14 @@
 :is(.am-app, .am-layer) .am-result.am-file-result .am-attach-meta span { color: var(--am-muted); font-size: 12px; }
 :is(.am-app, .am-layer) .am-file-result .am-file { flex: none; width: 36px; height: 42px; border-radius: 6px; background: var(--am-matter-soft); color: var(--am-matter); display: grid; place-items: center; font: 700 10px var(--am-font-mono); }
 :is(.am-app, .am-layer) .am-results-tabs, :is(.am-app, .am-layer) .am-file-filters { padding: 0 12px; }
+// An app's panel: its icon before its title, in its colour, as in the app rail; the apps' own title icons give way.
+:is(.am-app, .am-layer) .am-rhs-app-ic { position: absolute; top: 15px; left: 16px; z-index: 5; display: grid; place-items: center; width: 22px; height: 22px; color: var(--am-text-2); pointer-events: none; }
+:is(.am-app, .am-layer) .am-rhs-app-ic .am-ic, :is(.am-app, .am-layer) .am-rhs-app-ic .am-app-img, :is(.am-app, .am-layer) .am-rhs-app-ic svg { width: 20px; height: 20px; }
+:is(.am-app, .am-layer) .am-rhs-classic:has(.am-rhs-app-ic) .sidebar--right__title { padding-left: 30px; }
+:is(.am-app, .am-layer) .am-rhs-classic:has(.am-rhs-app-ic) .sidebar--right__title :is(.boards-rhs-header-logo, .PlaybooksProductIcon, [class*="IconAIContainer"]) { display: none; }
+:is(.am-app, .am-layer) .am-rhs-classic .sidebar--right__title > div { display: flex; align-items: center; gap: 8px; min-width: 0; }
+// The full page button sits between a product's title and the header's buttons: the title leaves it room.
+:is(.am-app, .am-layer) .am-rhs-classic:has(.am-rhs-fullpage) .sidebar--right__title { margin-right: 34px; }
 :is(.am-app, .am-layer) .am-rhs-classic .am-rhs-fullpage { position: absolute; top: 10px; right: 110px; z-index: 5; width: 32px; height: 32px; border-radius: 4px; }
 /* The mod view (Antimatter), as Discord's: who, a timeout, a summary, roles, notable permissions, actions. */
 :is(.am-app, .am-layer) .am-mod-view { display: flex; flex-direction: column; min-height: 0; height: 100%; }

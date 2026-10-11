@@ -7,13 +7,13 @@
 :is(.am-app, .am-layer) .am-app-ic { width: 38px; height: 38px; border-radius: 10px; display: grid; place-items: center; color: var(--am-muted); position: relative; }
 :is(.am-app, .am-layer) .am-app-ic:hover { background: var(--am-hover); color: var(--am-text); }
 :is(.am-app, .am-layer) .am-app-ic.am-on { background: var(--am-select); color: var(--am-text); }
-:is(.am-app, .am-layer) .am-app-ic.am-boards { color: #F472B6; }
-:is(.am-app, .am-layer) .am-app-ic.am-playbooks { color: #60A5FA; }
-:is(.am-app, .am-layer) .am-app-ic.am-jira { color: #4C9AFF; }
-:is(.am-app, .am-layer) .am-app-ic.am-mail { color: #2DD4BF; }
-:is(.am-app, .am-layer) .am-app-ic.am-calendar { color: #FB7185; }
-:is(.am-app, .am-layer) .am-app-ic.am-notes { color: #A3E635; }
-:is(.am-app, .am-layer) .am-app-ic.am-ai { color: var(--am-matter); }
+:is(.am-app, .am-layer) :is(.am-app-ic, .am-rhs-app-ic).am-boards { color: #F472B6; }
+:is(.am-app, .am-layer) :is(.am-app-ic, .am-rhs-app-ic).am-playbooks { color: #60A5FA; }
+:is(.am-app, .am-layer) :is(.am-app-ic, .am-rhs-app-ic).am-jira { color: #4C9AFF; }
+:is(.am-app, .am-layer) :is(.am-app-ic, .am-rhs-app-ic).am-mail { color: #2DD4BF; }
+:is(.am-app, .am-layer) :is(.am-app-ic, .am-rhs-app-ic).am-calendar { color: #FB7185; }
+:is(.am-app, .am-layer) :is(.am-app-ic, .am-rhs-app-ic).am-notes { color: #A3E635; }
+:is(.am-app, .am-layer) :is(.am-app-ic, .am-rhs-app-ic).am-ai { color: var(--am-matter); }
 :is(.am-app, .am-layer) .am-ai-welcome { display: grid; justify-items: center; gap: 8px; padding: 24px 18px 8px; text-align: center; color: var(--am-text-2); font-size: 14px; }
 :is(.am-app, .am-layer) .am-ai-welcome .am-av { width: 52px; height: 52px; }
 :is(.am-app, .am-layer) .am-ai-welcome b { font: 600 16px var(--am-font-display); color: var(--am-text); }
@@ -22,7 +22,7 @@
 :is(.am-app, .am-layer) .am-ai-sug { flex: none; display: inline-flex; align-items: center; gap: 6px; height: 30px; padding: 0 11px; border-radius: 15px; border: 1px solid var(--am-line); background: var(--am-side); font-size: 12.5px; font-weight: 600; color: var(--am-text-2); }
 :is(.am-app, .am-layer) .am-ai-sug:hover { border-color: var(--am-matter); color: var(--am-text); }
 :is(.am-app, .am-layer) .am-ai-sug .am-ic { width: 14px; height: 14px; color: var(--am-matter); }
-:is(.am-app, .am-layer) .am-app-ic.am-whiteboard { color: #FB923C; }
+:is(.am-app, .am-layer) :is(.am-app-ic, .am-rhs-app-ic).am-whiteboard { color: #FB923C; }
 // The mockup widens app panels only on request (its "Widen panel" button); plugin panels are always .am-wide here, so
 // they stay close to the normal panel's width and never squeeze the conversation below --am-main-min (App grid). The
 // panel's expand button (.am-expanded) gives the wider view. Below 1101px panels slide over the chat (Responsive).

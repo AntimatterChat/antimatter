@@ -12,6 +12,7 @@ import ChannelInfoRhs from 'components/channel_info_rhs';
 import PostEditHistory from 'components/post_edit_history';
 import Search from 'components/search/index';
 
+import {PanelAppIcon} from 'fusion/apps/app_rail';
 import {getKnownApp} from 'fusion/apps/known_apps';
 import {useOpenVoiceChat, VoiceChatPanel} from 'fusion/calls/voice_chat';
 import Icon from 'fusion/components/icon';
@@ -72,6 +73,7 @@ export default function RightPanel() {
         roomy = Boolean(pluginId && getKnownApp(pluginId)?.widePanel);
         content = (
             <ClassicPanel>
+                {pluginId && <PanelAppIcon pluginId={pluginId}/>}
                 {product && (
                     <button
                         type='button'

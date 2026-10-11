@@ -1,0 +1,4 @@
+// The pages of products (Playbooks, Boards) open outside the Fusion UI's frame, without its styles: they bring its
+// tokens (the theme sets which apply) and the products' fixes.
+@use '00_tokens' as tokens;
+@use '99_products' as products;

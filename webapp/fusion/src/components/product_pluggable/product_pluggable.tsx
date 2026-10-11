@@ -10,6 +10,8 @@ import webSocketClient from 'client/web_websocket_client';
 
 import type {ProductComponent} from 'types/store/plugins';
 
+import 'fusion/styles/products_page.scss';
+
 const Pluggable = makeAsyncPluggableComponent();
 
 type Props = {

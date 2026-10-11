@@ -25,28 +25,19 @@ import type {AppBarAction, ChannelHeaderButtonAction} from 'types/store/plugins'
 
 import {getKnownApp} from './known_apps';
 
-function AppIcon({component}: {component: AppBarAction | ChannelHeaderButtonAction}) {
-    const channel = useSelector(getCurrentChannel);
-    const member = useSelector(getMyCurrentChannelMembership);
-    const active = useSelector(getActiveRhsComponent);
-    const manifestName = useSelector((state: GlobalState) => state.plugins.plugins[component.pluginId]?.name);
+type AppComponent = AppBarAction | ChannelHeaderButtonAction;
+
+// AppGlyph is an app's icon: the mockup's, in its colour, for the apps it knows; else the plugin's own.
+function AppGlyph({component}: {component: AppComponent}) {
     const [failed, setFailed] = useState(false);
     const known = getKnownApp(component.pluginId);
     const iconUrl = 'iconUrl' in component ? component.iconUrl : undefined;
     const icon = 'icon' in component ? component.icon : undefined;
-    const rhsComponentId = 'rhsComponentId' in component ? component.rhsComponentId : undefined;
-
-    // Plugins may give a React element as their tooltip: the button's title needs text.
-    const text = [component.tooltipText, 'dropdownText' in component ? component.dropdownText : undefined].find((t) => typeof t === 'string' && t);
-    const label = (text as string | undefined) || manifestName || component.pluginId;
-    const on = rhsComponentId ? active?.id === rhsComponentId : active?.pluginId === component.pluginId;
-
-    // The apps the mockup knows are drawn with its icons and colours.
-    let glyph: React.ReactNode = icon || <Icon name='plug'/>;
     if (known) {
-        glyph = <Icon name={known.icon}/>;
-    } else if (iconUrl && !failed) {
-        glyph = (
+        return <Icon name={known.icon}/>;
+    }
+    if (iconUrl && !failed) {
+        return (
             <img
                 className={am('app-img')}
                 src={iconUrl}
@@ -55,6 +46,39 @@ function AppIcon({component}: {component: AppBarAction | ChannelHeaderButtonActi
             />
         );
     }
+    return <>{icon || <Icon name='plug'/>}</>;
+}
+
+// PanelAppIcon is the icon of the app whose panel is open, before the panel's title, as in the app rail.
+export function PanelAppIcon({pluginId}: {pluginId: string}) {
+    const appBarComponents = useSelector(getAppBarPluginComponents);
+    const headerComponents = useSelector(getChannelHeaderPluginComponents);
+    const component = [...appBarComponents, ...headerComponents].find((c) => c.pluginId === pluginId);
+    if (!component) {
+        return null;
+    }
+    return (
+        <span
+            className={am('rhs-app-ic', getKnownApp(pluginId)?.tone)}
+            aria-hidden='true'
+        >
+            <AppGlyph component={component}/>
+        </span>
+    );
+}
+
+function AppIcon({component}: {component: AppComponent}) {
+    const channel = useSelector(getCurrentChannel);
+    const member = useSelector(getMyCurrentChannelMembership);
+    const active = useSelector(getActiveRhsComponent);
+    const manifestName = useSelector((state: GlobalState) => state.plugins.plugins[component.pluginId]?.name);
+    const known = getKnownApp(component.pluginId);
+    const rhsComponentId = 'rhsComponentId' in component ? component.rhsComponentId : undefined;
+
+    // Plugins may give a React element as their tooltip: the button's title needs text.
+    const text = [component.tooltipText, 'dropdownText' in component ? component.dropdownText : undefined].find((t) => typeof t === 'string' && t);
+    const label = (text as string | undefined) || manifestName || component.pluginId;
+    const on = rhsComponentId ? active?.id === rhsComponentId : active?.pluginId === component.pluginId;
 
     return (
         <button
@@ -70,7 +94,7 @@ function AppIcon({component}: {component: AppBarAction | ChannelHeaderButtonActi
                 }
             }}
         >
-            {glyph}
+            <AppGlyph component={component}/>
         </button>
     );
 }
