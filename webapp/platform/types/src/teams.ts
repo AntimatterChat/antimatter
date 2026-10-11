@@ -47,6 +47,9 @@ export type Team = {
     /** Antimatter: the team's onboarding as JSON (a welcome, and questions whose answers give roles and channels). */
     onboarding?: string;
 
+    /** Antimatter: the team's autolinks as JSON (patterns of its messages turned into links when they're posted). */
+    autolinks?: string;
+
     /** Data Retention Policy id. Unrelated to access-control policies below. */
     policy_id?: string | null;
     last_team_icon_update?: number;

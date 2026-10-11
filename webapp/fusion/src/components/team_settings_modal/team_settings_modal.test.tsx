@@ -243,4 +243,18 @@ describe('components/team_settings_modal', () => {
             expect(baseProps.onExited).toHaveBeenCalled();
         });
     });
+    test('shows the Autolinks tab to those who manage the team', async () => {
+        const state = {
+            ...baseState,
+            entities: {...baseState.entities, roles: {roles: {team_user: {permissions: [Permissions.INVITE_USER, Permissions.MANAGE_TEAM]}}}},
+        };
+        renderWithContext(<TeamSettingsModal {...baseProps}/>, state);
+        await userEvent.click(screen.getByRole('tab', {name: 'Autolinks'}));
+        expect(screen.getByRole('button', {name: 'Add an autolink'})).toBeInTheDocument();
+    });
+
+    test('hides the Autolinks tab from the others', () => {
+        renderWithContext(<TeamSettingsModal {...baseProps}/>, baseState);
+        expect(screen.queryByRole('tab', {name: 'Autolinks'})).not.toBeInTheDocument();
+    });
 });

@@ -4561,6 +4561,14 @@ export default class Client4 {
         );
     };
 
+    // Antimatter: what a team's autolinks (as edited, not saved) make of a text; refuses invalid autolinks.
+    previewTeamAutolinks = (teamId: string, autolinks: unknown, text: string) => {
+        return this.doFetch<{text: string}>(
+            `${this.getTeamRoute(teamId)}/autolinks/preview`,
+            {method: 'post', body: JSON.stringify({autolinks, text})},
+        );
+    };
+
     // Antimatter: what roles and people may do in the channels of a team's server categories.
     getCategoryOverrides = (teamId: string) => {
         return this.doFetch<CategoryOverride[]>(

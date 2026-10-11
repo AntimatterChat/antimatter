@@ -1,0 +1,17 @@
+// Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
+// See LICENSE.txt for license information.
+
+// The Autolinks tab of the team settings.
+:is(.am-app, .am-layer) .am-autolinks .am-toggle-row { margin-bottom: 12px; }
+:is(.am-app, .am-layer) .am-autolink-row.am-off { opacity: .6; }
+:is(.am-app, .am-layer) .am-autolink-fields { display: grid; gap: 0 12px; grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr); }
+@media (max-width: 720px) {
+    :is(.am-app, .am-layer) .am-autolink-fields { grid-template-columns: minmax(0, 1fr); }
+}
+:is(.am-app, .am-layer) .am-autolink-fields .am-field { margin-bottom: 8px; }
+:is(.am-app, .am-layer) .am-mono { font-family: var(--am-font-mono); font-size: 13px; }
+:is(.am-app, .am-layer) .am-autolink-options { display: flex; flex-wrap: wrap; margin-bottom: 8px; gap: 4px 18px; }
+:is(.am-app, .am-layer) .am-autolink-add { margin: 4px 0 18px; }
+:is(.am-app, .am-layer) .am-autolink-preview { padding: 10px 12px; border: 1px dashed var(--am-line); border-radius: 10px; margin: -8px 0 14px; color: var(--am-text); font-size: 14px; overflow-wrap: anywhere; }
+:is(.am-app, .am-layer) .am-autolink-preview p { margin: 0; }
+:is(.am-app, .am-layer) .am-autolink-preview a { color: var(--am-anti); }

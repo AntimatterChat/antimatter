@@ -15,6 +15,7 @@ import TeamSettings from 'components/team_settings';
 
 import Icon from 'fusion/components/icon';
 import {Dialog} from 'fusion/components/layer';
+import AutolinksSettings from 'fusion/teams/autolinks_settings';
 import {am} from 'fusion/utils/class_names';
 import {focusElement} from 'utils/a11y_utils';
 
@@ -53,6 +54,7 @@ const TeamSettingsModal = ({isOpen, onExited, focusOriginElement}: Props) => {
         haveITeamPermission(state, teamId, Permissions.MANAGE_TEAM_ACCESS_RULES),
     );
     const canManageTeamAccessRules = isSystemAdmin || hasTeamAccessRulesPermission;
+    const canManageTeam = useSelector((state: GlobalState) => haveITeamPermission(state, teamId, Permissions.MANAGE_TEAM));
 
     useEffect(() => {
         setShow(isOpen);
@@ -134,6 +136,13 @@ const TeamSettingsModal = ({isOpen, onExited, focusOriginElement}: Props) => {
             iconTitle: formatMessage({id: 'generic_icons.access_rules', defaultMessage: 'Membership Policy Icon'}),
             display: abacEnabled && canManageTeamAccessRules,
         },
+        {
+            name: 'autolinks',
+            uiName: formatMessage({id: 'fusion.teamSettings.autolinks', defaultMessage: 'Autolinks'}),
+            icon: 'icon icon-link-variant',
+            iconTitle: formatMessage({id: 'fusion.teamSettings.autolinks', defaultMessage: 'Autolinks'}),
+            display: canManageTeam,
+        },
     ];
 
     // Closing the Fusion dialog has no fade-out to wait for.
@@ -184,16 +193,21 @@ const TeamSettingsModal = ({isOpen, onExited, focusOriginElement}: Props) => {
             >
                 <h2>{visibleTabs.find((tab) => tab.name === activeTab)?.uiName}</h2>
 
-                {/* The tabs' classic styles are scoped to the classic dialog's class. */}
-                <div className='TeamSettingsModal'>
-                    <TeamSettings
-                        activeTab={activeTab}
-                        areThereUnsavedChanges={areThereUnsavedChanges}
-                        setAreThereUnsavedChanges={setAreThereUnsavedChanges}
-                        showTabSwitchError={showTabSwitchError}
-                        setShowTabSwitchError={setShowTabSwitchError}
-                    />
-                </div>
+                {activeTab === 'autolinks' ? (
+                    <AutolinksSettings setUnsaved={setAreThereUnsavedChanges}/>
+                ) : (
+
+                    // The tabs' classic styles are scoped to the classic dialog's class.
+                    <div className='TeamSettingsModal'>
+                        <TeamSettings
+                            activeTab={activeTab}
+                            areThereUnsavedChanges={areThereUnsavedChanges}
+                            setAreThereUnsavedChanges={setAreThereUnsavedChanges}
+                            showTabSwitchError={showTabSwitchError}
+                            setShowTabSwitchError={setShowTabSwitchError}
+                        />
+                    </div>
+                )}
                 <button
                     type='button'
                     className={am('icon-btn', 'close')}
