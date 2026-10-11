@@ -5,10 +5,10 @@ package platform
 
 import (
 	"encoding/json"
-	"os"
 	"time"
 
 	"github.com/mattermost/mattermost/server/public/shared/mlog"
+	"github.com/mattermost/mattermost/server/public/utils"
 	"github.com/mattermost/mattermost/server/v8/channels/app/featureflag"
 )
 
@@ -67,10 +67,10 @@ func (ps *PlatformService) startFeatureFlagUpdateJob() error {
 	attributes := map[string]any{}
 
 	// if we are part of a cloud installation, add its installation and group id
-	if installationId := os.Getenv("MM_CLOUD_INSTALLATION_ID"); installationId != "" {
+	if installationId := utils.GetServerEnv("CLOUD_INSTALLATION_ID"); installationId != "" {
 		attributes["installation_id"] = installationId
 	}
-	if groupId := os.Getenv("MM_CLOUD_GROUP_ID"); groupId != "" {
+	if groupId := utils.GetServerEnv("CLOUD_GROUP_ID"); groupId != "" {
 		attributes["group_id"] = groupId
 	}
 

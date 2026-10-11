@@ -24,12 +24,14 @@ import (
 	"github.com/mattermost/mattermost/server/public/model"
 	"github.com/mattermost/mattermost/server/public/shared/mlog"
 	"github.com/mattermost/mattermost/server/public/shared/request"
+	putils "github.com/mattermost/mattermost/server/public/utils"
 	"github.com/mattermost/mattermost/server/v8/channels/utils"
 	"github.com/mattermost/mattermost/server/v8/platform/shared/mail"
 )
 
 const (
-	envVarInstallType = "MM_INSTALL_TYPE"
+	// envVarInstallType is read from AM_INSTALL_TYPE, or MM_INSTALL_TYPE.
+	envVarInstallType = "INSTALL_TYPE"
 	unknownDataPoint  = "unknown"
 )
 
@@ -205,7 +207,7 @@ func (ps *PlatformService) GetSupportPacketDiagnostics(rctx request.CTX) (*model
 	d.Server.GoVersion = runtime.Version()
 	installationType := ps.installTypeOverride
 	if installationType == "" {
-		installationType = os.Getenv(envVarInstallType)
+		installationType = putils.GetServerEnv(envVarInstallType)
 	}
 	if installationType == "" {
 		installationType = unknownDataPoint

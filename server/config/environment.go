@@ -11,19 +11,42 @@ import (
 	"strings"
 
 	"github.com/mattermost/mattermost/server/public/model"
+	"github.com/mattermost/mattermost/server/public/utils"
 )
 
+// GetEnvironment returns the server's environment variables, with upper-cased names. AM_*
+// variables are returned under their MM_* name (see normalizeEnvironment), so callers only
+// need to look up MM_ keys.
 func GetEnvironment() map[string]string {
 	mmenv := make(map[string]string)
 	for _, env := range os.Environ() {
 		kv := strings.SplitN(env, "=", 2)
 		key := strings.ToUpper(kv[0])
-		if strings.HasPrefix(key, "MM") {
+		if strings.HasPrefix(key, "MM") || strings.HasPrefix(key, utils.EnvPrefix) {
 			mmenv[key] = kv[1]
 		}
 	}
 
-	return mmenv
+	return normalizeEnvironment(mmenv)
+}
+
+// normalizeEnvironment returns a copy of env where each AM_<NAME> key is renamed to
+// MM_<NAME>, so AM_SQLSETTINGS_DATASOURCE and MM_SQLSETTINGS_DATASOURCE set the same
+// setting. When both are present, the AM_ value wins.
+func normalizeEnvironment(env map[string]string) map[string]string {
+	normalized := make(map[string]string, len(env))
+	for key, value := range env {
+		if !strings.HasPrefix(key, utils.EnvPrefix) {
+			normalized[key] = value
+		}
+	}
+	for key, value := range env {
+		if name, ok := strings.CutPrefix(key, utils.EnvPrefix); ok {
+			normalized[utils.LegacyEnvPrefix+name] = value
+		}
+	}
+
+	return normalized
 }
 
 func applyEnvKey(key, value string, rValueSubject reflect.Value) {
@@ -90,18 +113,19 @@ func applyEnvironmentMap(inputConfig *model.Config, env map[string]string) *mode
 	appliedConfig := inputConfig.Clone()
 
 	rvalConfig := reflect.ValueOf(appliedConfig).Elem()
-	for envKey, envValue := range env {
-		applyEnvKey(strings.TrimPrefix(envKey, "MM_"), envValue, rvalConfig)
+	for envKey, envValue := range normalizeEnvironment(env) {
+		applyEnvKey(strings.TrimPrefix(envKey, utils.LegacyEnvPrefix), envValue, rvalConfig)
 	}
 
 	return appliedConfig
 }
 
 // generateEnvironmentMap creates a map[string]any containing true at the leaves mirroring the
-// configuration structure so the client can know which env variables are overridden
+// configuration structure so the client can know which env variables are overridden. A setting
+// counts as overridden whether it was set through its AM_ or its MM_ variable.
 func generateEnvironmentMap(env map[string]string, filter func(reflect.StructField) bool) map[string]any {
 	rType := reflect.TypeFor[model.Config]()
-	return generateEnvironmentMapWithBaseKey(env, rType, "MM", filter)
+	return generateEnvironmentMapWithBaseKey(normalizeEnvironment(env), rType, "MM", filter)
 }
 
 func generateEnvironmentMapWithBaseKey(env map[string]string, rType reflect.Type, base string, filter func(reflect.StructField) bool) map[string]any {

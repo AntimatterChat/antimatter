@@ -6,13 +6,13 @@ package app
 import (
 	"errors"
 	"net/http"
-	"os"
 	"strconv"
 	"strings"
 
 	"github.com/mattermost/mattermost/server/public/model"
 	"github.com/mattermost/mattermost/server/public/shared/mlog"
 	"github.com/mattermost/mattermost/server/public/shared/request"
+	"github.com/mattermost/mattermost/server/public/utils"
 	"github.com/mattermost/mattermost/server/v8/channels/store"
 )
 
@@ -128,7 +128,7 @@ func (a *App) CanNotifyAdmin(rctx request.CTX, trial bool) bool {
 
 	coolOffPeriodDaysEnv := a.Srv().notifyAdminCoolOffDaysOverride
 	if coolOffPeriodDaysEnv == "" {
-		coolOffPeriodDaysEnv = os.Getenv("MM_NOTIFY_ADMIN_COOL_OFF_DAYS")
+		coolOffPeriodDaysEnv = utils.GetServerEnv("NOTIFY_ADMIN_COOL_OFF_DAYS")
 	}
 	coolOffPeriodDays, parseError := strconv.ParseFloat(coolOffPeriodDaysEnv, 64)
 	if parseError != nil {

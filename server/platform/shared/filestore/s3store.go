@@ -26,6 +26,7 @@ import (
 	"github.com/pkg/errors"
 
 	"github.com/mattermost/mattermost/server/public/shared/mlog"
+	"github.com/mattermost/mattermost/server/public/utils"
 )
 
 // S3FileBackend contains all necessary information to communicate with
@@ -80,7 +81,7 @@ func getContentType(ext string) string {
 
 // NewS3FileBackend returns an instance of an S3FileBackend and determine if we are in Mattermost cloud or not.
 func NewS3FileBackend(settings FileBackendSettings) (*S3FileBackend, error) {
-	return newS3FileBackend(settings, os.Getenv("MM_CLOUD_FILESTORE_BIFROST") != "")
+	return newS3FileBackend(settings, utils.GetServerEnv("CLOUD_FILESTORE_BIFROST") != "")
 }
 
 // NewS3FileBackendWithoutBifrost returns an instance of an S3FileBackend that will not use bifrost.

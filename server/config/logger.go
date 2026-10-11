@@ -189,11 +189,11 @@ func GetLogFileLocation(fileLocation string) string {
 // GetLogRootPath returns the root directory for all log files.
 // This is used for security validation to prevent arbitrary file reads via advanced logging.
 // The logging root is determined by:
-// 1. MM_LOG_PATH environment variable (if set and non-empty)
+// 1. AM_LOG_PATH (or MM_LOG_PATH) environment variable (if set and non-empty)
 // 2. The default "logs" directory (found relative to the binary)
 func GetLogRootPath() string {
 	// Check environment variable
-	if envPath := os.Getenv("MM_LOG_PATH"); envPath != "" {
+	if envPath := utils.GetServerEnv("LOG_PATH"); envPath != "" {
 		absPath, err := filepath.Abs(envPath)
 		if err == nil {
 			return absPath
@@ -211,7 +211,7 @@ func GetLogRootPath() string {
 
 // ValidateLogFilePath validates that a log file path is within the logging root directory.
 // This prevents arbitrary file read/write vulnerabilities in logging configuration.
-// The logging root is determined by MM_LOG_PATH environment variable or the configured log directory.
+// The logging root is determined by the AM_LOG_PATH (or MM_LOG_PATH) environment variable or the configured log directory.
 func ValidateLogFilePath(filePath string, loggingRoot string) error {
 	// Resolve file path to absolute
 	absPath, err := filepath.Abs(filePath)
@@ -288,7 +288,7 @@ func validateAdvancedLoggingConfig(loggingJSON json.RawMessage, configName strin
 		}
 
 		if err := ValidateLogFilePath(fileOption.Filename, loggingRoot); err != nil {
-			mlog.Error("Log file path in logging config is outside logging root directory. This configuration will cause server startup to fail in a future version. To fix, set MM_LOG_PATH environment variable to a parent directory containing all log paths, or move log files to the configured logging root.",
+			mlog.Error("Log file path in logging config is outside logging root directory. This configuration will cause server startup to fail in a future version. To fix, set AM_LOG_PATH environment variable to a parent directory containing all log paths, or move log files to the configured logging root.",
 				mlog.String("config_section", configName),
 				mlog.String("target", targetName),
 				mlog.String("path", fileOption.Filename),

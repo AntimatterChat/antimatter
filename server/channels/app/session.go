@@ -9,13 +9,13 @@ import (
 	"errors"
 	"math"
 	"net/http"
-	"os"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/mattermost/mattermost/server/public/model"
 	"github.com/mattermost/mattermost/server/public/shared/mlog"
 	"github.com/mattermost/mattermost/server/public/shared/request"
+	"github.com/mattermost/mattermost/server/public/utils"
 	"github.com/mattermost/mattermost/server/v8/channels/app/platform"
 	"github.com/mattermost/mattermost/server/v8/channels/app/users"
 	"github.com/mattermost/mattermost/server/v8/channels/store"
@@ -55,7 +55,7 @@ func (a *App) CreateSession(rctx request.CTX, session *model.Session) (*model.Se
 }
 
 func (a *App) GetCloudSession(token string) (*model.Session, *model.AppError) {
-	apiKey := os.Getenv("MM_CLOUD_API_KEY")
+	apiKey := utils.GetServerEnv("CLOUD_API_KEY")
 	if apiKey != "" && subtle.ConstantTimeCompare([]byte(apiKey), []byte(token)) == 1 {
 		// Need a bare-bones session object for later checks
 		session := &model.Session{

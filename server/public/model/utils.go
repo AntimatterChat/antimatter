@@ -15,7 +15,6 @@ import (
 	"net"
 	"net/mail"
 	"net/url"
-	"os"
 	"regexp"
 	"slices"
 	"strings"
@@ -28,6 +27,7 @@ import (
 
 	"github.com/mattermost/mattermost/server/public/shared/i18n"
 	"github.com/mattermost/mattermost/server/public/shared/mlog"
+	"github.com/mattermost/mattermost/server/public/utils"
 )
 
 const (
@@ -906,7 +906,7 @@ func filterBlocklist(r rune) rune {
 }
 
 func IsCloud() bool {
-	return os.Getenv("MM_CLOUD_INSTALLATION_ID") != ""
+	return utils.GetServerEnv("CLOUD_INSTALLATION_ID") != ""
 }
 
 func SliceToMapKey(s ...string) map[string]any {

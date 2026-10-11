@@ -8,7 +8,6 @@ import (
 	"errors"
 	"fmt"
 	"maps"
-	"os"
 	"reflect"
 
 	"github.com/hashicorp/go-multierror"
@@ -638,7 +637,7 @@ func (s *Server) doPostPriorityConfigDefaultTrueMigration() error {
 // It also moves ServiceSettings.DefaultWebUI from classic to Fusion in the saved configuration. Config
 // files store every setting, defaults included, so classic there is almost always the former default
 // rather than an admin's choice; admins who want new users on classic can set it back. A default web UI
-// set through the environment (MM_SERVICESETTINGS_DEFAULTWEBUI) is left alone.
+// set through the environment (AM_ or MM_SERVICESETTINGS_DEFAULTWEBUI) is left alone.
 //
 // Running it again, e.g. on cluster nodes starting at the same time, is harmless: users who have a web
 // UI preference keep it.
@@ -1337,7 +1336,7 @@ func (s *Server) cacheManagedCategoryIDs() error {
 
 func (s *Server) doCloudS3PathMigrations(rctx request.CTX) error {
 	// This migration is only applicable for cloud environments
-	if os.Getenv("MM_CLOUD_FILESTORE_BIFROST") == "" {
+	if utils.GetServerEnv("CLOUD_FILESTORE_BIFROST") == "" {
 		return nil
 	}
 

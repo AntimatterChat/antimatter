@@ -4,8 +4,9 @@
 package model
 
 import (
-	"os"
 	"strings"
+
+	"github.com/mattermost/mattermost/server/public/utils"
 )
 
 const (
@@ -26,15 +27,15 @@ const (
 // deciding which public key is used to validate enterprise licenses, which telemetry keys are
 // active, and which Stripe keys are in use.
 //
-// To configure an environment other than default, set MM_SERVICEENVIRONMENT before
-// starting the application. Production builds default to ServiceEnvironmentProduction, and
+// To configure an environment other than default, set AM_SERVICEENVIRONMENT (or
+// MM_SERVICEENVIRONMENT) before starting the application. Production builds default to ServiceEnvironmentProduction, and
 // non-production builds default to ServiceEnvironmentDev.
 //
 // Note that this configuration is explicitly not part of the model.Config data structure, as it
 // should never be persisted to the config store nor accidentally configured in any other way than
-// the MM_SERVICEENVIRONMENT variable.
+// the AM_SERVICEENVIRONMENT (or MM_SERVICEENVIRONMENT) variable.
 func GetServiceEnvironment() string {
-	externalServiceEnvironment := strings.TrimSpace(strings.ToLower(os.Getenv("MM_SERVICEENVIRONMENT")))
+	externalServiceEnvironment := strings.TrimSpace(strings.ToLower(utils.GetServerEnv("SERVICEENVIRONMENT")))
 
 	switch externalServiceEnvironment {
 	case ServiceEnvironmentProduction, ServiceEnvironmentTest, ServiceEnvironmentDev:

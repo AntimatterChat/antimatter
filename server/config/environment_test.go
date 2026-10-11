@@ -200,3 +200,68 @@ func TestRemoveEnvOverrides(t *testing.T) {
 		})
 	}
 }
+
+func TestAMEnvironmentPrefix(t *testing.T) {
+	t.Run("AM_ alone sets the setting", func(t *testing.T) {
+		cfg := applyEnvironmentMap(defaultConfig(), map[string]string{
+			"AM_SQLSETTINGS_DATASOURCE": "postgres://am",
+		})
+		require.Equal(t, "postgres://am", *cfg.SqlSettings.DataSource)
+	})
+
+	t.Run("MM_ alone still sets the setting", func(t *testing.T) {
+		cfg := applyEnvironmentMap(defaultConfig(), map[string]string{
+			"MM_SQLSETTINGS_DATASOURCE": "postgres://mm",
+		})
+		require.Equal(t, "postgres://mm", *cfg.SqlSettings.DataSource)
+	})
+
+	t.Run("AM_ wins when both are set", func(t *testing.T) {
+		// Run it a few times, since map iteration order is random.
+		for range 20 {
+			cfg := applyEnvironmentMap(defaultConfig(), map[string]string{
+				"MM_SQLSETTINGS_DATASOURCE": "postgres://mm",
+				"AM_SQLSETTINGS_DATASOURCE": "postgres://am",
+			})
+			require.Equal(t, "postgres://am", *cfg.SqlSettings.DataSource)
+		}
+	})
+
+	t.Run("feature flags", func(t *testing.T) {
+		cfg := applyEnvironmentMap(defaultConfig(), map[string]string{
+			"AM_FEATUREFLAGS_TESTFEATURE": "fromam",
+		})
+		require.Equal(t, "fromam", cfg.FeatureFlags.TestFeature)
+	})
+
+	t.Run("overridden map reports either prefix", func(t *testing.T) {
+		envMap := generateEnvironmentMap(map[string]string{
+			"AM_SQLSETTINGS_DATASOURCE":        "postgres://am",
+			"MM_SERVICESETTINGS_SITEURL":       "https://mm.example.com",
+			"AM_SERVICESETTINGS_LISTENADDRESS": ":8066",
+			"MM_SERVICESETTINGS_LISTENADDRESS": ":8065",
+		}, nil)
+		require.Equal(t, map[string]any{
+			"SqlSettings": map[string]any{
+				"DataSource": true,
+			},
+			"ServiceSettings": map[string]any{
+				"SiteURL":       true,
+				"ListenAddress": true,
+			},
+		}, envMap)
+	})
+
+	t.Run("GetEnvironment returns AM_ variables under their MM_ name", func(t *testing.T) {
+		t.Setenv("AM_CONFIG", "postgres://am")
+		t.Setenv("MM_CONFIG", "postgres://mm")
+		t.Setenv("AM_SERVICESETTINGS_SITEURL", "https://am.example.com")
+		t.Setenv("AMQP_URL", "amqp://unrelated")
+
+		env := GetEnvironment()
+		require.Equal(t, "postgres://am", env["MM_CONFIG"])
+		require.Equal(t, "https://am.example.com", env["MM_SERVICESETTINGS_SITEURL"])
+		require.NotContains(t, env, "AM_CONFIG")
+		require.NotContains(t, env, "AMQP_URL")
+	})
+}

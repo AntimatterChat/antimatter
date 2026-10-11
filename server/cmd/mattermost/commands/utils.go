@@ -15,9 +15,11 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/mattermost/mattermost/server/public/model"
+	"github.com/mattermost/mattermost/server/public/utils"
 )
 
-const CustomDefaultsEnvVar = "MM_CUSTOM_DEFAULTS_PATH"
+// CustomDefaultsEnvVar is read from AM_CUSTOM_DEFAULTS_PATH, or MM_CUSTOM_DEFAULTS_PATH.
+const CustomDefaultsEnvVar = "CUSTOM_DEFAULTS_PATH"
 
 // printStringMap takes a reflect.Value and prints it out alphabetically based on key values, which must be strings.
 // This is done recursively if it's a map, and uses the given tab settings.
@@ -56,7 +58,7 @@ func printStringMap(value reflect.Value, tabVal int) string {
 func getConfigDSN(command *cobra.Command, env map[string]string) string {
 	configDSN, _ := command.Flags().GetString("config")
 
-	// Config not supplied in flag, check env
+	// Config not supplied in flag, check env (GetEnvironment returns AM_CONFIG as MM_CONFIG)
 	if configDSN == "" {
 		configDSN = env["MM_CONFIG"]
 	}
@@ -70,7 +72,7 @@ func getConfigDSN(command *cobra.Command, env map[string]string) string {
 }
 
 func loadCustomDefaults() (*model.Config, error) {
-	customDefaultsPath := os.Getenv(CustomDefaultsEnvVar)
+	customDefaultsPath := utils.GetServerEnv(CustomDefaultsEnvVar)
 	if customDefaultsPath == "" {
 		return nil, nil
 	}

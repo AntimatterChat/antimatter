@@ -34,13 +34,13 @@ Exits 0 once the database accepts a ping. Exits non-zero on timeout or fatal err
 
 Intended for use as a readiness probe (e.g. a Kubernetes init container).
 Resolves the DSN exactly like 'mattermost db migrate' / 'mattermost db init':
-the --config flag, then MM_CONFIG, then config.json (which is then loaded as
+the --config flag, then AM_CONFIG (or MM_CONFIG), then config.json (which is then loaded as
 a config store and SqlSettings.DataSource is used).`,
 	Example: `  # Database DSN passed via --config (preferred for readiness probes)
   $ mattermost db ping --config postgres://mmuser:mostest_password@localhost/mattermost --timeout 2m
 
-  # Or via MM_CONFIG
-  $ MM_CONFIG=postgres://localhost/mattermost mattermost db ping`,
+  # Or via AM_CONFIG (MM_CONFIG also works)
+  $ AM_CONFIG=postgres://localhost/mattermost mattermost db ping`,
 	Args: cobra.NoArgs,
 	RunE: dbPingCmdF,
 }
@@ -139,7 +139,7 @@ func resolvePingDataSource(command *cobra.Command) (string, error) {
 
 	sqlSettings := cfgStore.Get().SqlSettings
 	if sqlSettings.DataSource == nil || *sqlSettings.DataSource == "" {
-		return "", errors.New("no database DSN configured: set --config or MM_CONFIG to a postgres:// URL, or ensure SqlSettings.DataSource is set in your configuration")
+		return "", errors.New("no database DSN configured: set --config or AM_CONFIG to a postgres:// URL, or ensure SqlSettings.DataSource is set in your configuration")
 	}
 	if !config.IsDatabaseDSN(*sqlSettings.DataSource) {
 		// Defensive: the loaded config has a non-postgres DataSource. Mattermost is postgres-only.

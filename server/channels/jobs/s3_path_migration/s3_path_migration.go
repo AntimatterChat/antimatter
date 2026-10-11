@@ -6,12 +6,12 @@ package s3_path_migration
 import (
 	"errors"
 	"net/http"
-	"os"
 	"strconv"
 	"time"
 
 	"github.com/mattermost/mattermost/server/public/model"
 	"github.com/mattermost/mattermost/server/public/shared/mlog"
+	"github.com/mattermost/mattermost/server/public/utils"
 	"github.com/mattermost/mattermost/server/v8/channels/jobs"
 	"github.com/mattermost/mattermost/server/v8/channels/store"
 	"github.com/mattermost/mattermost/server/v8/platform/shared/filestore"
@@ -84,7 +84,7 @@ func (worker *S3PathMigrationWorker) JobChannel() chan<- model.Job {
 }
 
 func (worker *S3PathMigrationWorker) IsEnabled(_ *model.Config) bool {
-	return os.Getenv("MM_CLOUD_FILESTORE_BIFROST") != ""
+	return utils.GetServerEnv("CLOUD_FILESTORE_BIFROST") != ""
 }
 
 func (worker *S3PathMigrationWorker) getJobMetadata(job *model.Job, key string) (int, *model.AppError) {

@@ -10,7 +10,6 @@ import (
 	"io"
 	"mime/multipart"
 	"net/http"
-	"os"
 	"os/user"
 	"strings"
 
@@ -150,7 +149,7 @@ func (s *Server) configureAudit(adt *audit.Audit) error {
 	}
 
 	// Append additional config from env var; any target name collisions will be overwritten.
-	additionalJSON := strings.TrimSpace(os.Getenv("MM_EXPERIMENTALAUDITSETTINGS_ADDITIONAL"))
+	additionalJSON := strings.TrimSpace(utils.GetServerEnv("EXPERIMENTALAUDITSETTINGS_ADDITIONAL"))
 	if additionalJSON != "" {
 		cfgAdditional := make(mlog.LoggerConfiguration)
 		if err := json.Unmarshal([]byte(additionalJSON), &cfgAdditional); err != nil {
