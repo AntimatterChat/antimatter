@@ -407,3 +407,7 @@
 :is(.am-app, .am-layer) .am-translation-note button { color: var(--am-anti); font-weight: 600; }
 :is(.am-app, .am-layer) .am-translation-note button:hover { text-decoration: underline; }
 :is(.am-app, .am-layer) .am-translation-note.am-busy { animation: am-ai-pulse 1.4s ease-in-out infinite; }
+
+// Each paragraph of a message takes the direction of its own text, so a message mixing languages reads right in
+// both directions (and English in a right-to-left UI starts at the left).
+:is(.am-app, .am-layer) .am-body :is(p, li, h1, h2, h3, h4, h5, h6, blockquote, td, th) { unicode-bidi: plaintext; text-align: start; }

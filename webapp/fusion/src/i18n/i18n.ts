@@ -178,3 +178,10 @@ export function getLanguageInfo(locale: string) {
 export function isLanguageAvailable(state: GlobalState, locale: string) {
     return Boolean(getLanguages(state)[locale]);
 }
+
+// The languages written right to left.
+const RTL_LANGUAGES = ['ar', 'fa', 'he', 'ur'];
+
+export function isRTL(locale: string): boolean {
+    return RTL_LANGUAGES.includes(locale.split('-')[0].toLowerCase());
+}

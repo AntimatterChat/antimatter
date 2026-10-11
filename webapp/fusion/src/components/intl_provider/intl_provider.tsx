@@ -53,6 +53,10 @@ export default class IntlProvider extends React.PureComponent<Props> {
     handleLocaleChange = (locale: string) => {
         Client4.setAcceptLanguage(locale);
 
+        // The whole page follows the language's direction: the layout mirrors for right-to-left languages.
+        document.documentElement.lang = locale;
+        document.documentElement.dir = I18n.isRTL(locale) ? 'rtl' : 'ltr';
+
         this.loadTranslationsIfNecessary(locale);
     };
 

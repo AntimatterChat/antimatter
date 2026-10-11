@@ -141,6 +141,7 @@ function ChannelTopic({channel}: {channel: Channel}) {
             <span
                 ref={ref}
                 className={am('topic', 'md', 'topic-btn')}
+                dir='auto'
                 role='button'
                 tabIndex={0}
                 title={formatMessage({id: 'fusion.header.showTopic', defaultMessage: 'Show the whole header'})}

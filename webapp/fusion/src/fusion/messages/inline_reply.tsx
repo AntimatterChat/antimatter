@@ -214,7 +214,10 @@ function QuotedSnippet({quoted, variant}: {quoted: Quoted; variant: 'ref' | 'bar
     }
 
     return (
-        <span className={am('snip', {gone: quoted.deleted, files: Boolean(icon)})}>
+        <span
+            className={am('snip', {gone: quoted.deleted, files: Boolean(icon)})}
+            dir='auto'
+        >
             {icon && (
                 <Icon
                     name={icon}

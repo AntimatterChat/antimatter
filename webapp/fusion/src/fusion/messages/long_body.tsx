@@ -54,6 +54,9 @@ export default function LongBody({postId, className, onClickCapture, children}: 
             <div
                 ref={ref}
                 className={className + ' ' + am({folded})}
+
+                // Each message is written in its own direction, whatever the UI's (e.g. English in Persian).
+                dir='auto'
                 style={folded ? {maxHeight: LONG_MESSAGE_HEIGHT} : undefined}
                 onClickCapture={onClickCapture}
             >

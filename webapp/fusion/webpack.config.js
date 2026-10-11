@@ -90,6 +90,17 @@ var config = {
                     {
                         loader: 'css-loader',
                     },
+
+                    // Right-to-left languages: every rule with a direction (margins, paddings, positions, borders,
+                    // alignments...) gets its mirror for [dir="rtl"], which the page has in those languages.
+                    {
+                        loader: 'postcss-loader',
+                        options: {
+                            postcssOptions: {
+                                plugins: [['postcss-rtlcss', {mode: 'override'}]],
+                            },
+                        },
+                    },
                 ],
             },
             {
