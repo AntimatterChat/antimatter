@@ -13,3 +13,14 @@
 :is(.am-app, .am-layer) a.am-about-more, :is(.am-app, .am-layer) a.am-about-more:hover { color: #fff; text-decoration: none; }
 :is(.am-app, .am-layer) .am-about-links a { color: var(--am-link, var(--am-matter)); font-size: 12px; text-decoration: none; }
 :is(.am-app, .am-layer) .am-about-links a:hover { text-decoration: underline; }
+
+// Help: the classic help pages in a dialog, a tab per page, in the Fusion UI's font and colours.
+:is(.am-app, .am-layer) .am-modal.am-help-dialog { display: flex; overflow: hidden; width: min(880px, calc(100vw - 32px)); height: min(82vh, 780px); flex-direction: column; padding: 0; }
+:is(.am-app, .am-layer) .am-help-head { display: flex; align-items: center; padding: 12px 12px 12px 16px; border-bottom: 1px solid var(--am-line); gap: 8px; }
+:is(.am-app, .am-layer) .am-help-head .am-seg { flex: 1; flex-wrap: wrap; }
+:is(.am-app, .am-layer) .am-help-head .am-seg button { flex: 1; padding: 0 10px; }
+:is(.am-app, .am-layer) .am-help-body { min-height: 0; flex: 1; overflow-y: auto; }
+:is(.am-app, .am-layer) .am-help-body .Help { max-width: none; min-height: 0; padding: 20px 28px 8px; margin: 0; background: none; color: var(--am-text); font-family: var(--am-font-ui); }
+:is(.am-app, .am-layer) .am-help-body .Help h1, :is(.am-app, .am-layer) .am-help-body .Help h2, :is(.am-app, .am-layer) .am-help-body .Help h3 { color: var(--am-text); font-family: var(--am-font-display); }
+:is(.am-app, .am-layer) .am-help-body .Help a { color: var(--am-anti); }
+:is(.am-app, .am-layer) .am-help-body .Help :is(table, th, td) { border-color: var(--am-line); }

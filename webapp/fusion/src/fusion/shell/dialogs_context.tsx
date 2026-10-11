@@ -12,6 +12,8 @@ import CategoryPermissionsDialog from 'fusion/channel/category_permissions_dialo
 import ChannelPermissionsDialog from 'fusion/channel/channel_permissions_dialog';
 import AddPeopleDialog from 'fusion/modals/add_people_dialog';
 import ConfirmDialog from 'fusion/modals/confirm_dialog';
+import HelpDialog from 'fusion/modals/help_dialog';
+import type {HelpPage} from 'fusion/modals/help_dialog';
 import type {ConfirmOptions} from 'fusion/modals/confirm_dialog';
 import CreateCategoryDialog from 'fusion/modals/create_category_dialog';
 import CreateChannelDialog from 'fusion/modals/create_channel_dialog';
@@ -75,11 +77,14 @@ type Dialogs = {
 
     // Ask before doing something that can't be undone.
     confirm: (options: ConfirmOptions) => void;
+
+    // The help pages, in a dialog.
+    help: (page?: HelpPage) => void;
 };
 
-const DialogsContext = createContext<Dialogs>({createChannel: () => {}, addPeople: () => {}, invite: () => {}, deleteMessage: () => {}, createCategory: () => {}, renameServerCategory: () => {}, roles: () => {}, channelPermissions: () => {}, categoryPermissions: () => {}, selfRoles: () => {}, onboarding: () => {}, teamLayout: () => {}, confirm: () => {}, createTeam: () => {}, timeOut: () => {}, removeFromTeam: () => {}, browseChannels: () => {}});
+const DialogsContext = createContext<Dialogs>({createChannel: () => {}, addPeople: () => {}, invite: () => {}, deleteMessage: () => {}, createCategory: () => {}, renameServerCategory: () => {}, roles: () => {}, channelPermissions: () => {}, categoryPermissions: () => {}, selfRoles: () => {}, onboarding: () => {}, teamLayout: () => {}, confirm: () => {}, help: () => {}, createTeam: () => {}, timeOut: () => {}, removeFromTeam: () => {}, browseChannels: () => {}});
 
-type Open = {kind: 'create'; categoryId?: string} | {kind: 'add'; channel: Channel} | {kind: 'delete'; post: Post} | {kind: 'category'; renaming?: string} | {kind: 'roles'} | {kind: 'permissions'; channel: Channel} | {kind: 'selfRoles'} | {kind: 'onboarding'} | {kind: 'layout'} | {kind: 'confirm'; options: ConfirmOptions} | {kind: 'categoryPermissions'; teamId: string; name: string} | {kind: 'createTeam'} | {kind: 'timeOut'; userId: string} | {kind: 'removeFromTeam'; userId: string} | {kind: 'browse'} | null;
+type Open = {kind: 'create'; categoryId?: string} | {kind: 'add'; channel: Channel} | {kind: 'delete'; post: Post} | {kind: 'category'; renaming?: string} | {kind: 'roles'} | {kind: 'permissions'; channel: Channel} | {kind: 'selfRoles'} | {kind: 'onboarding'} | {kind: 'layout'} | {kind: 'confirm'; options: ConfirmOptions} | {kind: 'help'; page?: HelpPage} | {kind: 'categoryPermissions'; teamId: string; name: string} | {kind: 'createTeam'} | {kind: 'timeOut'; userId: string} | {kind: 'removeFromTeam'; userId: string} | {kind: 'browse'} | null;
 
 // DialogsProvider owns the Fusion UI's own dialogs that menus and buttons open, outliving the menu that opened them.
 export function DialogsProvider({children}: {children: React.ReactNode}) {
@@ -100,6 +105,7 @@ export function DialogsProvider({children}: {children: React.ReactNode}) {
         onboarding: () => setOpen({kind: 'onboarding'}),
         teamLayout: () => setOpen({kind: 'layout'}),
         confirm: (options) => setOpen({kind: 'confirm', options}),
+        help: (page) => setOpen({kind: 'help', page}),
         createTeam: () => setOpen({kind: 'createTeam'}),
         browseChannels: () => setOpen({kind: 'browse'}),
         timeOut: (userId) => setOpen({kind: 'timeOut', userId}),
@@ -158,6 +164,12 @@ export function DialogsProvider({children}: {children: React.ReactNode}) {
                 <CategoryPermissionsDialog
                     teamId={open.teamId}
                     name={open.name}
+                    onClose={close}
+                />
+            )}
+            {open?.kind === 'help' && (
+                <HelpDialog
+                    page={open.page}
                     onClose={close}
                 />
             )}

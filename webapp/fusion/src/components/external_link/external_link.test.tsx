@@ -27,7 +27,7 @@ describe('components/external_link', () => {
         renderWithContext(
             <ExternalLink
                 location='test'
-                href='https://mattermost.com'
+                href='https://antimatter.example'
             >
                 {'Click Me'}
             </ExternalLink>,
@@ -39,67 +39,7 @@ describe('components/external_link', () => {
         expect(linkElement).toBeInTheDocument();
         expect(linkElement).toHaveAttribute('target', '_blank');
         expect(linkElement).toHaveAttribute('rel', 'noopener noreferrer');
-        expect(linkElement).toHaveAttribute('href', expect.stringContaining('https://mattermost.com'));
-    });
-
-    it('should attach parameters', () => {
-        const state = {
-            ...initialState,
-            entities: {
-                ...initialState.entities,
-                general: {
-                    ...initialState?.entities?.general,
-                    config: {
-                        DiagnosticsEnabled: 'true',
-                    },
-                },
-            },
-        };
-        renderWithContext(
-            <ExternalLink
-                location='test'
-                href='https://mattermost.com'
-            >
-                {'Click Me'}
-            </ExternalLink>,
-            state,
-        );
-
-        const linkElement = screen.getByRole('link', {name: 'Click Me'});
-
-        expect(linkElement).toHaveAttribute(
-            'href',
-            expect.stringMatching('utm_source=mattermost&utm_medium=in-product&utm_content=test&uid=currentUserId&sid='),
-        );
-    });
-
-    it('should preserve query params that already exist in the href', () => {
-        const state = {
-            ...initialState,
-            entities: {
-                ...initialState.entities,
-                general: {
-                    ...initialState?.entities?.general,
-                    config: {
-                        DiagnosticsEnabled: 'true',
-                    },
-                },
-            },
-        };
-        renderWithContext(
-            <ExternalLink
-                location='test'
-                href='https://mattermost.com?test=true'
-            >
-                {'Click Me'}
-            </ExternalLink>,
-            state,
-        );
-
-        expect(screen.queryByText('Click Me')).toHaveAttribute(
-            'href',
-            'https://mattermost.com/?utm_source=mattermost&utm_medium=in-product&utm_content=test&uid=currentUserId&sid=&server_version=&test=true',
-        );
+        expect(linkElement).toHaveAttribute('href', expect.stringContaining('https://antimatter.example'));
     });
 
     it("should not attach parameters if href isn't *.mattermost.com enabled", () => {
@@ -166,32 +106,19 @@ describe('components/external_link', () => {
         );
     });
 
-    it('renders href correctly when url contains anchor by setting anchor at the end', () => {
-        const state = {
-            ...initialState,
-            entities: {
-                ...initialState.entities,
-                general: {
-                    ...initialState?.entities?.general,
-                    config: {
-                        DiagnosticsEnabled: 'true',
-                    },
-                },
-            },
-        };
+
+    it('shows links to mattermost.com as text', () => {
         renderWithContext(
             <ExternalLink
                 location='test'
-                href='https://mattermost.com#desktop'
+                href='https://docs.mattermost.com/guide'
             >
-                {'Click Me'}
+                {'Read the guide'}
             </ExternalLink>,
-            state,
+            initialState,
         );
 
-        expect(screen.queryByText('Click Me')).toHaveAttribute(
-            'href',
-            'https://mattermost.com/?utm_source=mattermost&utm_medium=in-product&utm_content=test&uid=currentUserId&sid=&server_version=#desktop',
-        );
+        expect(screen.getByText('Read the guide')).toBeInTheDocument();
+        expect(screen.queryByRole('link')).toBeNull();
     });
 });

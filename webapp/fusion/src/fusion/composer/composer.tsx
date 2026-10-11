@@ -52,6 +52,7 @@ import type {ReplyEventDetail} from 'fusion/messages/inline_reply';
 import {isSpoiler, SPOILER_PROP} from 'fusion/messages/spoiler';
 import EmojiPicker from 'fusion/popovers/emoji_picker';
 import {MENTION_EVENT} from 'fusion/popovers/user_menu';
+import {useDialogs} from 'fusion/shell/dialogs_context';
 import {useToast} from 'fusion/shell/toast_context';
 import {a11yRegion} from 'fusion/utils/a11y_regions';
 import {am} from 'fusion/utils/class_names';
@@ -98,6 +99,7 @@ const NO_AI_ITEMS: AIActionMenuItemComponent[] = [];
 export default function Composer({channelId, rootId = '', placeholder}: Props) {
     const intl = useIntl();
     const {formatMessage} = intl;
+    const dialogs = useDialogs();
     const dispatch = useDispatch();
     const store = useStore<GlobalState>();
     const getDraft = useMemo(() => makeGetDraft(), []);
@@ -919,7 +921,7 @@ export default function Composer({channelId, rootId = '', placeholder}: Props) {
                             className={am('fmt-help')}
                             title={formatMessage({id: 'fusion.composer.help', defaultMessage: 'Help with formatting, mentions, files and commands'})}
                             aria-label={formatMessage({id: 'fusion.composer.help', defaultMessage: 'Help with formatting, mentions, files and commands'})}
-                            onClick={() => window.open('/help/messaging', '_blank', 'noopener')}
+                            onClick={() => dialogs.help('messaging')}
                         >
                             {'?'}
                         </button>

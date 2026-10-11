@@ -8,6 +8,8 @@ import React, {forwardRef} from 'react';
 import type {ExternalLinkQueryParams} from 'components/common/hooks/use_external_link';
 import {useExternalLink} from 'components/common/hooks/use_external_link';
 
+import {isMattermostURL} from 'utils/mattermost_links';
+
 type Props = React.AnchorHTMLAttributes<HTMLAnchorElement> & {
     href: string;
     target?: string;
@@ -26,6 +28,11 @@ const ExternalLink = forwardRef<HTMLAnchorElement, Props>((props, ref) => {
             props.onClick(e);
         }
     };
+
+    // Antimatter: no links to mattermost.com; their text stays.
+    if (isMattermostURL(href)) {
+        return <span className={props.className}>{props.children}</span>;
+    }
 
     return (
         <a

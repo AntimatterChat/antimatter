@@ -19,6 +19,7 @@ import Markdown from 'components/markdown';
 import Icon from 'fusion/components/icon';
 import {Dialog, Popover} from 'fusion/components/layer';
 import {MenuHeading, MenuItem} from 'fusion/components/menu';
+import {useDialogs} from 'fusion/shell/dialogs_context';
 import {am} from 'fusion/utils/class_names';
 import {openKeyboardShortcuts} from 'fusion/utils/modals';
 import {getHistory} from 'utils/browser_history';
@@ -68,6 +69,7 @@ function TermsDialog({onClose}: {onClose: () => void}) {
 // AboutPopover says what Antimatter is, with version details for system admins.
 export default function AboutPopover({anchor, onClose}: {anchor: HTMLElement | null; onClose: () => void}) {
     const {formatMessage} = useIntl();
+    const dialogs = useDialogs();
     const config = useSelector(getConfig);
     const admin = useSelector((state: GlobalState) => isSystemAdmin(getCurrentUser(state)?.roles || ''));
     const year = new Date().getFullYear();
@@ -162,7 +164,7 @@ export default function AboutPopover({anchor, onClose}: {anchor: HTMLElement | n
                 <MenuItem
                     icon='text'
                     label={formatMessage({id: 'fusion.about.formatting', defaultMessage: 'Formatting help'})}
-                    onClick={run(() => window.open('/help/formatting', '_blank', 'noopener'))}
+                    onClick={run(() => dialogs.help('formatting'))}
                 />
                 {reportLink && (
                     <MenuItem
