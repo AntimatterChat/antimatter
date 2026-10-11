@@ -63,7 +63,12 @@ export default function Reactions({postId}: {postId: string}) {
         if (unnamed > 0) {
             listed.push(formatMessage({id: 'fusion.reactions.others', defaultMessage: '{count, plural, one {# other} other {# others}}'}, {count: unnamed}));
         }
-        return formatMessage({id: 'fusion.reactions.reactedBy', defaultMessage: '{names} reacted with :{name}:'}, {names: intl.formatList(listed, {type: 'conjunction'}), name: g.name});
+        if (g.mine && g.userIds.length === 1) {
+            return formatMessage({id: 'fusion.reactions.youReacted', defaultMessage: 'You reacted with :{name}:'}, {name: g.name});
+        }
+
+        // The count lets languages make the verb agree with the people named.
+        return formatMessage({id: 'fusion.reactions.reactedByCount', defaultMessage: '{count, plural, one {{names} reacted with :{name}:} other {{names} reacted with :{name}:}}'}, {count: g.userIds.length, names: intl.formatList(listed, {type: 'conjunction'}), name: g.name});
     };
 
     // Who reacted is only needed on hover: load the people who aren't then.

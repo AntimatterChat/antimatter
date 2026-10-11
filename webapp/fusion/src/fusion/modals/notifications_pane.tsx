@@ -248,7 +248,7 @@ export default function NotificationsPane() {
             <Section title={formatMessage({id: 'fusion.settings.mentions', defaultMessage: 'What counts as a mention'})}/>
             <Toggle
                 title={firstNameTitle}
-                desc={formatMessage({id: 'fusion.settings.firstNameDesc', defaultMessage: 'Your username always does.'})}
+                desc={formatMessage({id: 'fusion.settings.firstNameDesc', defaultMessage: 'Your username always counts as a mention.'})}
                 on={notify.first_name === 'true'}
                 onChange={(on) => set({first_name: on ? 'true' : 'false'})}
             />

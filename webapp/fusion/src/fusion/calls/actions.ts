@@ -63,15 +63,16 @@ export function firstName(state: GlobalState, userId: string): string {
     return user?.first_name || displayUsername(user, getTeammateNameDisplaySetting(state));
 }
 
-// callLabel names a call as the mockup's callLabel: “Title”, your call, or Kenji's call.
-export function callLabel(state: GlobalState, call: CallsCall, intl: IntlShape): string {
+// joinedMessage tells that the user joined a call, named as the mockup's callLabel: “Title”, your call, or Kenji's
+// call (whole sentences, which languages with grammatical cases need).
+function joinedMessage(state: GlobalState, call: CallsCall, where: string, intl: IntlShape): string {
     if (call.title) {
-        return intl.formatMessage({id: 'fusion.calls.label.title', defaultMessage: '“{title}”'}, {title: call.title});
+        return intl.formatMessage({id: 'fusion.calls.toast.joinedTitled', defaultMessage: 'Joined “{title}” in {where}'}, {title: call.title, where});
     }
     if (call.ownerId === getCurrentUserId(state)) {
-        return intl.formatMessage({id: 'fusion.calls.label.yours', defaultMessage: 'your call'});
+        return intl.formatMessage({id: 'fusion.calls.toast.joinedYours', defaultMessage: 'Joined your call in {where}'}, {where});
     }
-    return intl.formatMessage({id: 'fusion.calls.label.someones', defaultMessage: '{name}\'s call'}, {name: firstName(state, call.ownerId)});
+    return intl.formatMessage({id: 'fusion.calls.toast.joinedSomeones', defaultMessage: 'Joined {name}’s call in {where}'}, {name: firstName(state, call.ownerId), where});
 }
 
 // The team to show a channel in: its own, or the current one for direct messages.
@@ -153,7 +154,7 @@ function makeActions(getState: () => GlobalState, intl: IntlShape, openDirect: (
         }
         const where = channelLabel(getState(), channelId);
         if (existing) {
-            showToast(formatMessage({id: 'fusion.calls.toast.joined', defaultMessage: 'Joined {call} in {where}'}, {call: callLabel(getState(), existing, intl), where}));
+            showToast(joinedMessage(getState(), existing, where, intl));
         } else {
             showToast(formatMessage({id: 'fusion.calls.toast.started', defaultMessage: 'Call started in {where}'}, {where}));
         }
