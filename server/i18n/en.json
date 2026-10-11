@@ -10514,6 +10514,18 @@
     "description": "API error returned when a message search query fails on the server."
   },
   {
+    "id": "app.post.speech.disabled.app_error",
+    "translation": "Reading messages aloud is turned off."
+  },
+  {
+    "id": "app.post.speech.empty.app_error",
+    "translation": "This message has no text to read aloud."
+  },
+  {
+    "id": "app.post.speech.failed.app_error",
+    "translation": "The message couldn't be read aloud."
+  },
+  {
     "id": "app.post.update.app_error",
     "translation": "Unable to update the Post.",
     "description": "API error when saving edits to a post ('Post' = chat message) fails."
@@ -15730,6 +15742,14 @@
     "id": "model.config.is_valid.teammate_name_display.app_error",
     "translation": "Invalid teammate display. Must be 'full_name', 'nickname_full_name' or 'username'.",
     "description": "Config validation error shown to system admins; 'full_name', 'nickname_full_name', and 'username' are literal option values for how teammate names are displayed."
+  },
+  {
+    "id": "model.config.is_valid.text_to_speech.model.app_error",
+    "translation": "The text-to-speech model is required."
+  },
+  {
+    "id": "model.config.is_valid.text_to_speech.url.app_error",
+    "translation": "The text-to-speech API URL must be a valid http or https URL."
   },
   {
     "id": "model.config.is_valid.time_between_user_typing.app_error",

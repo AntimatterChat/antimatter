@@ -48,6 +48,7 @@ import {copyToClipboard} from 'utils/utils';
 import type {GlobalState} from 'types/store';
 
 import {canReplyInline, replyInline, useInlineRepliesEnabled} from './inline_reply';
+import {readAloud, stopReading, useReadingPostId} from './read_aloud';
 import {getThreadTitle, NameThreadDialog} from './thread_title';
 
 // The quick reactions: your most used recent emoji first, then these.
@@ -92,6 +93,8 @@ export default function MessageMenu({post, anchor, inThread, onClose, onMoreReac
     const pluginActions = useSelector((state: GlobalState) => state.plugins.components.PostDropdownMenu || []);
     const recent = useSelector(getRecentEmojisNames);
     const inlineReplies = useInlineRepliesEnabled();
+    const readingPostId = useReadingPostId();
+    const canReadAloud = config.EnableTextToSpeech === 'true' && Boolean(post.message.trim());
     const quick = [...new Set([...[...recent].reverse(), ...QUICK_REACTIONS])].slice(0, QUICK_COUNT);
 
     const openNotes = useNotesToSelf();
@@ -248,6 +251,19 @@ export default function MessageMenu({post, anchor, inThread, onClose, onMoreReac
                     onClick={run(() => {
                         dispatch(setThreadFollow(me, team.id, threadId, !post.is_following));
                         toast(post.is_following ? formatMessage({id: 'fusion.toast.unfollowed', defaultMessage: 'Unfollowed thread'}) : formatMessage({id: 'fusion.toast.following', defaultMessage: 'Following thread'}));
+                    })}
+                />
+            )}
+            {canReadAloud && !burn && (
+                <MenuItem
+                    icon='speaker'
+                    label={readingPostId === post.id ? formatMessage({id: 'fusion.messageMenu.stopReading', defaultMessage: 'Stop reading'}) : formatMessage({id: 'fusion.messageMenu.readAloud', defaultMessage: 'Read aloud'})}
+                    onClick={run(() => {
+                        if (readingPostId === post.id) {
+                            stopReading();
+                            return;
+                        }
+                        readAloud(post.id).catch(() => toast(formatMessage({id: 'fusion.toast.readAloudFailed', defaultMessage: 'The message couldn\'t be read aloud'})));
                     })}
                 />
             )}

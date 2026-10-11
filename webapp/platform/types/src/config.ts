@@ -255,6 +255,7 @@ export type ClientConfig = {
     // Auto Translation Settings
     AutoTranslationLanguages: string;
     EnableAutoTranslation: string;
+    EnableTextToSpeech: string;
     RestrictDMAndGMAutotranslation: string;
 };
 
@@ -791,6 +792,14 @@ export type LocalizationSettings = {
     AvailableLocales: string;
 };
 
+export type TextToSpeechSettings = {
+    Enable: boolean;
+    URL: string;
+    APIKey: string;
+    Model: string;
+    Voice: string;
+};
+
 export type AutoTranslationSettings = {
     Enable: boolean;
     TargetLanguages: string[];
@@ -1172,6 +1181,7 @@ export type AdminConfig = {
     AccessControlSettings: AccessControlSettings;
     ContentFlaggingSettings: ContentFlaggingSettings;
     AutoTranslationSettings: AutoTranslationSettings;
+    TextToSpeechSettings: TextToSpeechSettings;
     AIRecapSettings: AIRecapSettings;
     IPFilteringSettings: IPFilteringSettings;
     MobileEphemeralModeSettings: MobileEphemeralModeSettings;

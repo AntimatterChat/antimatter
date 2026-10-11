@@ -2988,6 +2988,47 @@ func (s *LocalizationSettings) SetDefaults() {
 	}
 }
 
+// TextToSpeechSettings configure reading messages aloud, by an OpenAI-compatible text-to-speech API
+// (/v1/audio/speech).
+type TextToSpeechSettings struct {
+	Enable *bool   `access:"integrations_integration_management"`
+	URL    *string `access:"integrations_integration_management"` // Base URL of the API, e.g. https://tts.example.com/v1
+	APIKey *string `access:"integrations_integration_management"` // Bearer token, if the API needs one
+	Model  *string `access:"integrations_integration_management"` // Model name, as the API lists it
+	Voice  *string `access:"integrations_integration_management"` // Voice, as the model names them
+}
+
+func (s *TextToSpeechSettings) SetDefaults() {
+	if s.Enable == nil {
+		s.Enable = NewPointer(false)
+	}
+	if s.URL == nil {
+		s.URL = NewPointer("")
+	}
+	if s.APIKey == nil {
+		s.APIKey = NewPointer("")
+	}
+	if s.Model == nil {
+		s.Model = NewPointer("")
+	}
+	if s.Voice == nil {
+		s.Voice = NewPointer("")
+	}
+}
+
+func (s *TextToSpeechSettings) isValid() *AppError {
+	if !*s.Enable {
+		return nil
+	}
+	if !IsValidHTTPURL(*s.URL) {
+		return NewAppError("Config.IsValid", "model.config.is_valid.text_to_speech.url.app_error", nil, "", http.StatusBadRequest)
+	}
+	if strings.TrimSpace(*s.Model) == "" {
+		return NewAppError("Config.IsValid", "model.config.is_valid.text_to_speech.model.app_error", nil, "", http.StatusBadRequest)
+	}
+	return nil
+}
+
 type AutoTranslationSettings struct {
 	Enable          *bool                           `access:"site_localization,cloud_restrictable"`
 	RestrictDMAndGM *bool                           `access:"site_localization,cloud_restrictable"`
@@ -4363,6 +4404,7 @@ type Config struct {
 	ContentFlaggingSettings     ContentFlaggingSettings
 	DeliveryTrackingSettings    DeliveryTrackingSettings
 	AutoTranslationSettings     AutoTranslationSettings
+	TextToSpeechSettings        TextToSpeechSettings
 	AIRecapSettings             AIRecapSettings
 	IPFilteringSettings         IPFilteringSettings
 }
@@ -4460,6 +4502,7 @@ func (o *Config) SetDefaults() {
 	o.ComplianceSettings.SetDefaults()
 	o.LocalizationSettings.SetDefaults()
 	o.AutoTranslationSettings.SetDefaults()
+	o.TextToSpeechSettings.SetDefaults()
 	o.ElasticsearchSettings.SetDefaults()
 	o.NativeAppSettings.SetDefaults()
 	o.IntuneSettings.SetDefaults()
@@ -4608,6 +4651,10 @@ func (o *Config) IsValid() *AppError {
 	}
 
 	if appErr := o.AutoTranslationSettings.isValid(); appErr != nil {
+		return appErr
+	}
+
+	if appErr := o.TextToSpeechSettings.isValid(); appErr != nil {
 		return appErr
 	}
 
@@ -5766,6 +5813,10 @@ func (o *Config) Sanitize(pluginManifests []*Manifest, opts *SanitizeOptions) {
 
 	if o.CacheSettings.RedisPassword != nil {
 		*o.CacheSettings.RedisPassword = FakeSetting
+	}
+
+	if o.TextToSpeechSettings.APIKey != nil && *o.TextToSpeechSettings.APIKey != "" {
+		*o.TextToSpeechSettings.APIKey = FakeSetting
 	}
 
 	if o.AutoTranslationSettings.OpenAI != nil &&

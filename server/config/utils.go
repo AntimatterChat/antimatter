@@ -125,6 +125,10 @@ func Desanitize(actual, target *model.Config) {
 		target.AutoTranslationSettings.OpenAI.APIKey = actual.AutoTranslationSettings.OpenAI.APIKey
 	}
 
+	if target.TextToSpeechSettings.APIKey != nil && *target.TextToSpeechSettings.APIKey == model.FakeSetting {
+		target.TextToSpeechSettings.APIKey = actual.TextToSpeechSettings.APIKey
+	}
+
 	for id, settings := range target.PluginSettings.Plugins {
 		for k, v := range settings {
 			if v == model.FakeSetting {
