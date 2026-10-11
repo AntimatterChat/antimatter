@@ -20,6 +20,7 @@ import {getCallsAPI} from './calls_api';
 import {getScreenQuality, QUICK_REACTIONS, SCREEN_FRAME_RATES, SCREEN_HEIGHTS, setScreenQuality} from './extras';
 import {useCall} from './hooks';
 import type {MyCallState} from './hooks';
+import {TranscriptionControls} from './transcription';
 import {openCallPopout, useCallsUI} from './ui_state';
 
 // useToggleLabels gives the labels shared by the voice panel's buttons and the round controls.
@@ -290,6 +291,10 @@ export default function CallControls({my, withPopout = false}: Props) {
                     >
                         <Icon name='hand'/>
                     </button>
+                    <TranscriptionControls
+                        channelId={my.call.channelId}
+                        isHost={my.isHost}
+                    />
                     {api?.sendReaction && (
                         <button
                             ref={reactRef}

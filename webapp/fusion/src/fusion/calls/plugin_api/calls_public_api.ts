@@ -125,6 +125,25 @@ export type CallsBackgroundBlur = {
     intensity: number;
 };
 
+// The transcription of a call, by a speech-to-text API from the participants' audio.
+export type CallsTranscription = {
+    running: boolean;
+
+    // When it started (0 when it isn't running).
+    startAt: number;
+
+    // Whether its live captions are shown.
+    liveCaptions: boolean;
+};
+
+// What a participant says, as live captions: shown for a few seconds, until they say more.
+export type CallsCaption = {
+    sessionId: string;
+    userId: string;
+    text: string;
+    captionId: string;
+};
+
 export type CallsEvent = 'change' | 'error';
 
 export type AntimatterCallsAPI = {
@@ -155,6 +174,13 @@ export type AntimatterCallsAPI = {
 
         // The recent reactions in the call of a channel, oldest first.
         getReactions(state: CallsGlobalState, channelId: string): CallsReaction[];
+
+        // Whether the host can transcribe calls (by a speech-to-text API, from the participants' audio).
+        isTranscriptionAvailable(state: CallsGlobalState): boolean;
+        getTranscription(state: CallsGlobalState, channelId: string): CallsTranscription;
+
+        // The captions shown now in the call of a channel, by session.
+        getLiveCaptions(state: CallsGlobalState, channelId: string): CallsCaption[];
     };
 
     // Joins (or starts) the call of a channel, through the same checks as Calls' own call button.
@@ -210,6 +236,11 @@ export type AntimatterCallsAPI = {
         lowerHand(sessionId: string): void;
         stopScreen(sessionId: string): void;
     };
+
+    // Starts or stops the transcription of the call of this window (host only). While it runs, each participant's
+    // app sends what they say to be transcribed; the transcript is posted in the call's thread when it stops.
+    startTranscription(): Promise<void>;
+    stopTranscription(): Promise<void>;
 
     dismissIncomingCall(channelId: string, callId: string): void;
 

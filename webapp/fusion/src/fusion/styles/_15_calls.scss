@@ -59,6 +59,14 @@
 :is(.am-app, .am-layer) .am-reactions-float { position: absolute; left: 50%; top: 12px; transform: translateX(-50%); align-items: center; display: flex; flex-direction: column; gap: 6px; pointer-events: none; z-index: 4; }
 :is(.am-app, .am-layer) .am-reaction-bubble { display: inline-flex; align-items: center; gap: 6px; width: max-content; padding: 4px 10px 4px 6px; border-radius: 16px; background: rgba(0, 0, 0, 0.6); color: #fff; font-size: 12.5px; font-weight: 600; animation: am-reaction-in .25s ease; }
 @keyframes am-reaction-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+
+// Transcriptions: the badge telling everyone, and the live captions over the bottom of the stage.
+:is(.am-app, .am-layer) .am-transcribing { position: absolute; top: 12px; left: 12px; z-index: 4; display: inline-flex; align-items: center; gap: 7px; padding: 4px 10px; border-radius: 14px; background: rgba(0, 0, 0, 0.6); color: #fff; font-size: 12px; font-weight: 600; pointer-events: auto; }
+:is(.am-app, .am-layer) .am-transcribing i { width: 8px; height: 8px; border-radius: 50%; background: #f04438; animation: am-pulse 1.6s ease-in-out infinite; }
+@keyframes am-pulse { 50% { opacity: 0.35; } }
+:is(.am-app, .am-layer) .am-captions { position: absolute; left: 50%; bottom: 52px; transform: translateX(-50%); z-index: 4; width: min(720px, calc(100% - 32px)); display: flex; flex-direction: column; gap: 4px; pointer-events: none; }
+:is(.am-app, .am-layer) .am-caption { align-self: center; max-width: 100%; padding: 5px 12px; border-radius: 8px; background: rgba(0, 0, 0, 0.72); color: #fff; font-size: 15px; line-height: 1.4; text-align: center; animation: am-reaction-in .2s ease; }
+:is(.am-app, .am-layer) .am-caption-name { margin-inline-end: 8px; color: rgba(255, 255, 255, 0.7); font-weight: 600; }
 // The call in a browser window of its own (CallPopout): its stage and controls, the whole window.
 .am-app.am-call-popout { display: flex; height: 100vh; }
 :is(.am-app, .am-layer) .am-call-pop-body { display: flex; flex: 1; flex-direction: column; min-width: 0; padding: 12px; gap: 12px; }

@@ -18,6 +18,7 @@ import type {VoiceParticipant} from './calls_api';
 import {raisedHandOrder, useRecentReactions} from './extras';
 import {useCallMedia, useIsVoiceChannel, useLocalCall, useParticipants} from './hooks';
 import {useParticipantMenu} from './participant_menu';
+import {TranscriptionOverlay} from './transcription';
 
 // FakeScreen is the mockup's drawing of a shared screen, shown until (or where) the real one can't be.
 export function FakeScreen({lines = 12, tree = 5}: {lines?: number; tree?: number}) {
@@ -269,7 +270,12 @@ export default function Stage({channelId, fullscreen = false}: Props) {
     const withMedia = local?.channelId === channelId && local.mediaInThisWindow;
     const [pinnedId, setPinnedId] = useState('');
     const hands = raisedHandOrder(participants);
-    const reactions = <Reactions channelId={channelId}/>;
+    const reactions = (
+        <>
+            <Reactions channelId={channelId}/>
+            <TranscriptionOverlay channelId={channelId}/>
+        </>
+    );
 
     if (!participants.length) {
         return (
