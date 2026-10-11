@@ -47,8 +47,8 @@
   align-items: center;
   gap: 3px;
   width: 100%;
-  min-height: 20px;
-  margin: 22px 0 6px;
+  min-height: 24px;
+  margin: 20px 0 4px;
   padding: 0 4px 0 0;
   color: var(--am-muted);
   font: 700 11.5px var(--am-font-ui);
@@ -78,8 +78,11 @@
 :is(.am-app, .am-layer) .am-cat.am-unreads:hover { color: var(--am-anti); }
 // The category's buttons show on hover only, and take no room until then: its marks (locked, set up by the admins,
 // muted) stay at the end of the line.
-:is(.am-app, .am-layer) .am-cat .am-add-ch { display: none; }
-:is(.am-app, .am-layer) .am-cat:hover .am-add-ch, :is(.am-app, .am-layer) .am-cat:focus-within .am-add-ch, :is(.am-app, .am-layer) .am-cat .am-add-ch.am-open { display: grid; place-items: center; }
+:is(.am-app, .am-layer) .am-cat :is(.am-add-ch, .am-cat-act) { display: none; }
+:is(.am-app, .am-layer) .am-cat:hover :is(.am-add-ch, .am-cat-act), :is(.am-app, .am-layer) .am-cat:is(:focus-visible, :has(:focus-visible)) :is(.am-add-ch, .am-cat-act), :is(.am-app, .am-layer) .am-cat :is(.am-add-ch, .am-cat-act).am-open { display: grid; place-items: center; }
+// The category's ⋯ is the channels' ⋯: same size, colour and hover.
+:is(.am-app, .am-layer) .am-cat .am-cat-act { margin-right: -2px; }
+:is(.am-app, .am-layer) .am-cat .am-cat-act .am-ic { width: 16px; height: 16px; stroke-width: 1.8; transform: none; }
 :is(.am-app, .am-layer) .am-cat > .am-ic:not(:first-child), :is(.am-app, .am-layer) .am-cat .am-server-mark { margin-right: 4px; }
 /* Drag and drop: a line where the dragged channel or category would land. */
 :is(.am-app, .am-layer) .am-drag-row { border-radius: 6px; }
@@ -105,15 +108,17 @@
 :is(.am-app, .am-layer) .am-ch-ic .am-ic { width: 18px; height: 18px; }
 :is(.am-app, .am-layer) .am-ch-row { position: relative; }
 :is(.am-app, .am-layer) .am-ch-actions { position: absolute; right: 6px; top: 16px; transform: translateY(-50%); display: none; gap: 2px; }
-:is(.am-app, .am-layer) .am-ch-row:hover .am-ch-actions, :is(.am-app, .am-layer) .am-ch-actions:focus-within, :is(.am-app, .am-layer) .am-ch-actions.am-open { display: flex; }
-:is(.am-app, .am-layer) .am-ch-row:hover > .am-ch, :is(.am-app, .am-layer) .am-ch-row:focus-within > .am-ch { padding-right: 62px; }
-:is(.am-app, .am-layer) .am-ch-row.am-one-act:hover > .am-ch, :is(.am-app, .am-layer) .am-ch-row.am-one-act:focus-within > .am-ch { padding-right: 34px; }
+// The row's buttons show on hover, or when the keyboard is on the row (not after a click: focus stays where it was
+// clicked, and the buttons would stay).
+:is(.am-app, .am-layer) .am-ch-row:hover .am-ch-actions, :is(.am-app, .am-layer) .am-ch-row:has(:focus-visible) .am-ch-actions, :is(.am-app, .am-layer) .am-ch-actions.am-open { display: flex; }
+:is(.am-app, .am-layer) .am-ch-row:hover > .am-ch, :is(.am-app, .am-layer) .am-ch-row:has(:focus-visible) > .am-ch { padding-right: 62px; }
+:is(.am-app, .am-layer) .am-ch-row.am-one-act:hover > .am-ch, :is(.am-app, .am-layer) .am-ch-row.am-one-act:has(:focus-visible) > .am-ch { padding-right: 34px; }
 /* Connected voice channel: its text-chat button stays visible; the ⋯ still waits for hover. */
 :is(.am-app, .am-layer) .am-ch-row.am-connected .am-ch-actions { display: flex; }
 :is(.am-app, .am-layer) .am-ch-row.am-connected > .am-ch { padding-right: 34px; }
-:is(.am-app, .am-layer) .am-ch-row.am-connected:hover > .am-ch, :is(.am-app, .am-layer) .am-ch-row.am-connected:focus-within > .am-ch { padding-right: 62px; }
-:is(.am-app, .am-layer) .am-ch-row.am-connected:not(:hover):not(:focus-within) .am-ch-actions:not(.am-open) [data-act="ch-menu"] { display: none; }
-:is(.am-app, .am-layer) .am-ch-row:hover > .am-ch .am-badge, :is(.am-app, .am-layer) .am-ch-row:focus-within > .am-ch .am-badge { display: none; }
+:is(.am-app, .am-layer) .am-ch-row.am-connected:hover > .am-ch, :is(.am-app, .am-layer) .am-ch-row.am-connected:has(:focus-visible) > .am-ch { padding-right: 62px; }
+:is(.am-app, .am-layer) .am-ch-row.am-connected:not(:hover):not(:has(:focus-visible)) .am-ch-actions:not(.am-open) [data-act="ch-menu"] { display: none; }
+:is(.am-app, .am-layer) .am-ch-row:hover > .am-ch .am-badge, :is(.am-app, .am-layer) .am-ch-row:has(:focus-visible) > .am-ch .am-badge { display: none; }
 :is(.am-app, .am-layer) .am-ch-act { width: 24px; height: 24px; border-radius: 5px; display: grid; place-items: center; color: var(--am-muted); }
 :is(.am-app, .am-layer) .am-ch-act:hover, :is(.am-app, .am-layer) .am-ch-actions.am-open .am-ch-act[aria-expanded="true"] { background: var(--am-raise-2); color: var(--am-text); }
 :is(.am-app, .am-layer) .am-ch-act .am-ic { width: 16px; height: 16px; }
@@ -303,3 +308,6 @@
 /* "Move to…" groups the categories for everyone apart from the person's own. */
 :is(.am-app, .am-layer) .am-ch-menu .am-sub .am-sub-head { padding: 6px 8px 2px; color: var(--am-muted); font: 700 10.5px var(--am-font-ui); letter-spacing: .06em; text-transform: uppercase; }
 :is(.am-app, .am-layer) .am-ch-menu .am-sub .am-sub-note { padding: 4px 8px; color: var(--am-muted); font-size: 12px; }
+// A tooltip on the right of what it names (the left rail's teams and conversations), its arrow pointing left.
+:is(.am-app, .am-layer) .am-tip.am-tip-right { max-width: 280px; white-space: nowrap; }
+:is(.am-app, .am-layer) .am-tip.am-tip-right::after { top: 50%; left: auto; right: 100%; margin: -5px 0 0; border-top-color: transparent; border-right-color: #111214; }

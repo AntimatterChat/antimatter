@@ -15,7 +15,6 @@ import {makeGetFilteredChannelIdsForCategory} from 'selectors/views/channel_side
 
 import Icon from 'fusion/components/icon';
 import CategoryMenu from 'fusion/popovers/category_menu';
-import {useDialogs} from 'fusion/shell/dialogs_context';
 import {am} from 'fusion/utils/class_names';
 
 import type {GlobalState} from 'types/store';
@@ -37,7 +36,6 @@ export default function Category({category}: {category: ChannelCategory}) {
     const {formatMessage} = useIntl();
     const dispatch = useDispatch();
     const store = useStore<GlobalState>();
-    const dialogs = useDialogs();
     const getChannelIds = useMemo(() => makeGetFilteredChannelIdsForCategory(), []);
     const allChannelIds = useSelector((state: GlobalState) => getChannelIds(state, category));
 
@@ -223,7 +221,7 @@ export default function Category({category}: {category: ChannelCategory}) {
                 )}
                 <button
                     ref={menuButton}
-                    className={am('add-ch', {open: menu !== null})}
+                    className={am('ch-act', 'cat-act', {open: menu !== null})}
                     title={formatMessage({id: 'fusion.sidebar.categoryOptions', defaultMessage: 'Category options'})}
                     aria-label={formatMessage({id: 'fusion.sidebar.categoryOptionsFor', defaultMessage: 'Category options for {name}'}, {name: category.display_name})}
                     aria-haspopup='menu'
@@ -233,29 +231,8 @@ export default function Category({category}: {category: ChannelCategory}) {
                         setMenu(menu ? null : 'button');
                     }}
                 >
-                    <Icon
-                        name='dots'
-                        size='sm'
-                    />
+                    <Icon name='dots'/>
                 </button>
-                {canCreateHere && (
-                    <button
-                        className={am('add-ch')}
-                        title={formatMessage({id: 'fusion.sidebar.createChannel', defaultMessage: 'Create channel'})}
-                        aria-label={formatMessage({id: 'fusion.sidebar.createChannel', defaultMessage: 'Create channel'})}
-                        onClick={(e) => {
-                            e.stopPropagation();
-
-                            // Favorites can't hold a channel that isn't one yet: it goes to the default category.
-                            dialogs.createChannel(category.type === 'favorites' ? undefined : category.id);
-                        }}
-                    >
-                        <Icon
-                            name='plus'
-                            size='sm'
-                        />
-                    </button>
-                )}
             </div>
             {channelIds.map((id) => (
                 <div
@@ -285,6 +262,7 @@ export default function Category({category}: {category: ChannelCategory}) {
                     category={category}
                     anchor={menu === 'button' ? menuButton.current : null}
                     point={menu === 'button' ? undefined : menu}
+                    canCreate={canCreateHere}
                     onClose={() => setMenu(null)}
                 />
             )}

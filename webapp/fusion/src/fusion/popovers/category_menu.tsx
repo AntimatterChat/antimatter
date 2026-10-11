@@ -27,11 +27,14 @@ type Props = {
     anchor?: HTMLElement | null;
     point?: {x: number; y: number};
     onClose: () => void;
+
+    // Whether channels can be created in it, its menu's first item.
+    canCreate?: boolean;
 };
 
 // CategoryMenu is the ⋯ menu of a sidebar category (also its right-click menu), with what the classic sidebar's
 // category menu offers.
-export default function CategoryMenu({category, anchor, point, onClose}: Props) {
+export default function CategoryMenu({category, anchor, point, onClose, canCreate = false}: Props) {
     const {formatMessage} = useIntl();
     const dispatch = useDispatch();
     const toast = useToast();
@@ -64,6 +67,18 @@ export default function CategoryMenu({category, anchor, point, onClose}: Props) 
             label={formatMessage({id: 'fusion.categoryMenu.label', defaultMessage: 'Options for {name}'}, {name: category.display_name})}
             onClose={onClose}
         >
+            {canCreate && (
+                <>
+                    <MenuItem
+                        icon='plus'
+                        label={formatMessage({id: 'fusion.sidebar.createChannel', defaultMessage: 'Create channel'})}
+
+                        // Favorites can't hold a channel that isn't one yet: it goes to the default category.
+                        onClick={run(() => dialogs.createChannel(category.type === 'favorites' ? undefined : category.id))}
+                    />
+                    <MenuSeparator/>
+                </>
+            )}
             {unreadIds.length > 0 && (
                 <MenuItem
                     icon='check'

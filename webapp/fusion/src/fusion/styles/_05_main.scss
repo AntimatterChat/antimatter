@@ -145,10 +145,10 @@
 :is(.am-app, .am-layer) .am-team-pop .am-sub { font-size: 12.5px; color: var(--am-muted); }
 :is(.am-app, .am-layer) .am-team-pop p { margin: 10px 0; font-size: 13.5px; color: var(--am-text-2); }
 // The team's facts, then its people, then the way to its channel: apart, as the card's other popovers' facts aren't.
-:is(.am-app, .am-layer) .am-pop.am-team-pop .am-facts { display: grid; gap: 6px; margin: 10px 0 14px; font-size: 13px; color: var(--am-text-2); }
+:is(.am-app, .am-layer) .am-pop.am-team-pop .am-facts { display: grid; gap: 5px; margin: 10px 0 8px; font-size: 13px; color: var(--am-text-2); }
 :is(.am-app, .am-layer) .am-team-pop .am-facts span { display: flex; align-items: center; gap: 8px; }
 :is(.am-app, .am-layer) .am-team-pop .am-facts .am-ic { width: 14px; height: 14px; color: var(--am-muted); }
-:is(.am-app, .am-layer) .am-team-pop .am-faces { display: flex; margin-bottom: 14px; }
+:is(.am-app, .am-layer) .am-team-pop .am-faces { display: flex; margin-bottom: 12px; }
 :is(.am-app, .am-layer) .am-team-pop .am-faces .am-av { margin-left: -4px; box-shadow: 0 0 0 2px var(--am-raise); }
 :is(.am-app, .am-layer) .am-team-pop .am-faces .am-av:first-child { margin-left: 0; }
 :is(.am-app, .am-layer) .am-team-pop .am-thead > div { flex: 1; min-width: 0; }
@@ -234,7 +234,7 @@
 /* Centred message width. */
 :is(.am-app, .am-layer) .am-msgs.am-centered { max-width: 1000px; margin: 0 auto; }
 /* One-click reactions in the toolbar over messages. */
-:is(.am-app, .am-layer) .am-msg-tools .am-quick-emoji { display: grid; place-items: center; }
+:is(.am-app, .am-layer) .am-msg-tools .am-quick-emoji { display: grid; place-items: center; width: 26px; }
 
 // The start of a conversation, above its first message.
 :is(.am-app, .am-layer) .am-intro { padding: 28px 20px 18px; margin-bottom: 8px; border-bottom: 1px solid var(--am-line); }

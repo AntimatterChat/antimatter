@@ -84,7 +84,8 @@ function TeamButton({team, active, unread, mentions, onSelect, drag}: {team: Tea
                     setMark(null);
                     drag.onDrop(e.clientY > r.top + (r.height / 2));
                 }}
-                title={team.display_name}
+                data-am-tip={team.display_name}
+                data-am-tip-side='right'
                 aria-label={team.display_name}
                 aria-current={active ? 'page' : undefined}
                 onClick={onSelect}
@@ -181,7 +182,8 @@ function FolderButton({folder, teams, open, unread, mentions, onToggle, onDropTe
         <>
             <button
                 className={am('srv', 'folder', {open, unread: unread && !open, 'drop-in': over})}
-                title={`${name} · ${teams.map((t) => t.display_name).join(', ')}`}
+                data-am-tip={`${name} · ${teams.map((t) => t.display_name).join(', ')}`}
+                data-am-tip-side='right'
                 aria-label={formatMessage({id: 'fusion.rail.folderLabel', defaultMessage: 'Folder {name}, {count, plural, one {# team} other {# teams}}'}, {name, count: teams.length})}
                 aria-expanded={open}
                 onClick={onToggle}
@@ -391,7 +393,8 @@ export default function ServerRail() {
                 <button
                     ref={addRef}
                     className={am('srv', 'add', {active: adding})}
-                    title={formatMessage({id: 'fusion.rail.add', defaultMessage: 'Add a team'})}
+                    data-am-tip={formatMessage({id: 'fusion.rail.add', defaultMessage: 'Add a team'})}
+                    data-am-tip-side='right'
                     aria-label={formatMessage({id: 'fusion.rail.add', defaultMessage: 'Add a team'})}
                     aria-haspopup='menu'
                     aria-expanded={adding}
@@ -456,7 +459,8 @@ export default function ServerRail() {
                         <button
                             key={channel.id}
                             className={am('srv', 'dm-srv')}
-                            title={channel.display_name}
+                            data-am-tip={channel.display_name}
+                            data-am-tip-side='right'
                             aria-label={formatMessage({id: 'fusion.rail.unreadDM', defaultMessage: '{name}, {count, plural, one {# unread message} other {# unread messages}}'}, {name: channel.display_name, count: mentions || messages})}
                             onClick={() => {
                                 // The conversation opens beside the team's sidebar, as in the mockup.
@@ -474,7 +478,8 @@ export default function ServerRail() {
             )}
             <button
                 className={am('srv', 'rail-search')}
-                title={formatMessage({id: 'fusion.rail.search', defaultMessage: 'Search everything (Ctrl K)'})}
+                data-am-tip={formatMessage({id: 'fusion.rail.search', defaultMessage: 'Search everything (Ctrl K)'})}
+                data-am-tip-side='right'
                 aria-label={formatMessage({id: 'fusion.rail.searchLabel', defaultMessage: 'Search everything'})}
                 onClick={globalSearch.open}
             >

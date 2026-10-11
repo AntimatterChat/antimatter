@@ -6,7 +6,8 @@ import {useEffect} from 'react';
 import {LAYER_ID} from 'fusion/components/layer';
 
 // The stacked faces that name their person on hover (thread summaries, acknowledgements), and the elements that give
-// their tooltip in a data-am-tip attribute (reactions).
+// their tooltip in a data-am-tip attribute (reactions, the left rail), above them or, with data-am-tip-side="right",
+// on their right, centred.
 const SCOPE = '.am-faces .am-av[data-name], [data-am-tip]';
 
 // useFaceTips shows the mockup's .tip above a stacked face or a data-am-tip element under the pointer, in the layer.
@@ -33,12 +34,18 @@ export function useFaceTips() {
                 return;
             }
             tip = document.createElement('div');
-            tip.className = av.dataset.amTip ? 'am-tip am-tip-text' : 'am-tip';
+            const right = av.dataset.amTipSide === 'right';
+            tip.className = (av.dataset.amTip ? 'am-tip am-tip-text' : 'am-tip') + (right ? ' am-tip-right' : '');
             tip.setAttribute('role', 'tooltip');
             tip.dataset.for = name;
             tip.textContent = name;
             layer.appendChild(tip);
             const r = av.getBoundingClientRect();
+            if (right) {
+                tip.style.left = (r.right + 10) + 'px';
+                tip.style.top = ((r.top + (r.height / 2)) - (tip.offsetHeight / 2)) + 'px';
+                return;
+            }
             tip.style.left = Math.max(8, Math.min((r.left + (r.width / 2)) - (tip.offsetWidth / 2), window.innerWidth - tip.offsetWidth - 8)) + 'px';
             tip.style.top = (r.top - tip.offsetHeight - 8) + 'px';
         };

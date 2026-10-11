@@ -34,8 +34,8 @@ export type Placement =
     // To the right of the anchor, top-aligned: the channel menu.
     'right' |
 
-    // To the left of the anchor's toolbar (or of the anchor), top-aligned, so that it leaves the button that opened it
-    // in view: a message's menu, as Discord's.
+    // To the left of the anchor, top-aligned with its toolbar (or with it): a message's menu, over the toolbar's other
+    // buttons (which it repeats) but not the one that opened it.
     'left' |
 
     // At a point, for context menus.
@@ -94,9 +94,9 @@ function place(pop: HTMLElement, placement: Placement, anchor?: HTMLElement | nu
             }
         } else if (placement === 'left') {
             const bar = (anchor.closest('[role="toolbar"]') as HTMLElement | null)?.getBoundingClientRect() || r;
-            left = bar.left - w - 6;
+            left = r.left - w - 4;
             if (left < MARGIN) {
-                left = bar.right + 6;
+                left = r.right + 4;
             }
             top = bar.top;
         } else if (placement === 'beside') {
