@@ -50,8 +50,6 @@
 :is(.am-app, .am-layer) .am-q-foot .am-btn { width: auto; }
 
 // Stage: the order of raised hands, tile tools (pin, picture in picture), a pinned tile, reactions.
-:is(.am-app, .am-layer) .am-tile .am-hand { display: inline-flex; align-items: center; gap: 2px; }
-:is(.am-app, .am-layer) .am-tile .am-hand b { font: 700 11px var(--am-font-ui); }
 :is(.am-app, .am-layer) .am-tile-tools { position: absolute; top: 8px; right: 8px; display: none; gap: 4px; }
 :is(.am-app, .am-layer) .am-tile:hover .am-tile-tools, :is(.am-app, .am-layer) .am-tile-tools:focus-within, :is(.am-app, .am-layer) .am-tile.am-pinned .am-tile-tools { display: flex; }
 :is(.am-app, .am-layer) .am-tile-tools button { width: 28px; height: 28px; border-radius: 7px; display: grid; place-items: center; background: rgba(0, 0, 0, 0.55); color: #fff; }

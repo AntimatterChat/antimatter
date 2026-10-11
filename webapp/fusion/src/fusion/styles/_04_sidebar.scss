@@ -47,6 +47,7 @@
   align-items: center;
   gap: 3px;
   width: 100%;
+  min-height: 20px;
   margin: 22px 0 6px;
   padding: 0 4px 0 0;
   color: var(--am-muted);
@@ -57,7 +58,8 @@
 :is(.am-app, .am-layer) .am-cat:first-child { margin-top: 8px; }
 :is(.am-app, .am-layer) .am-cat .am-ic { width: 12px; height: 12px; stroke-width: 2.4; }
 :is(.am-app, .am-layer) .am-cat .am-ic { transition: transform .15s ease; }
-:is(.am-app, .am-layer) .am-cat.am-collapsed .am-ic { transform: rotate(-90deg); }
+// Only the chevron turns when the category folds.
+:is(.am-app, .am-layer) .am-cat.am-collapsed > .am-ic:first-child { transform: rotate(-90deg); }
 :is(.am-app, .am-layer) .am-cat:hover { color: var(--am-text-2); }
 :is(.am-app, .am-layer) .am-cat .am-grow { flex: 1; text-align: left; }
 /* "More unreads": floats at the top or bottom of the channel list while unread channels are out of view there. */
@@ -74,9 +76,11 @@
 /* The Unreads section has no chevron to fold it: its title lines up with the categories' names. */
 :is(.am-app, .am-layer) .am-cat.am-unreads { padding-left: 15px; color: var(--am-anti); }
 :is(.am-app, .am-layer) .am-cat.am-unreads:hover { color: var(--am-anti); }
-:is(.am-app, .am-layer) .am-cat .am-add-ch { opacity: 0; }
-:is(.am-app, .am-layer) .am-cat:hover .am-add-ch { opacity: 1; }
-:is(.am-app, .am-layer) .am-cat .am-add-ch.am-open, :is(.am-app, .am-layer) .am-cat .am-add-ch:focus-visible { opacity: 1; }
+// The category's buttons show on hover only, and take no room until then: its marks (locked, set up by the admins,
+// muted) stay at the end of the line.
+:is(.am-app, .am-layer) .am-cat .am-add-ch { display: none; }
+:is(.am-app, .am-layer) .am-cat:hover .am-add-ch, :is(.am-app, .am-layer) .am-cat:focus-within .am-add-ch, :is(.am-app, .am-layer) .am-cat .am-add-ch.am-open { display: grid; place-items: center; }
+:is(.am-app, .am-layer) .am-cat > .am-ic:not(:first-child), :is(.am-app, .am-layer) .am-cat .am-server-mark { margin-right: 4px; }
 /* Drag and drop: a line where the dragged channel or category would land. */
 :is(.am-app, .am-layer) .am-drag-row { border-radius: 6px; }
 :is(.am-app, .am-layer) .am-drag-row:empty { display: none; }
@@ -203,9 +207,13 @@
 :is(.am-app, .am-layer) .am-dock-all { position: relative; width: 26px; height: 22px; border-radius: 6px; }
 :is(.am-app, .am-layer) .am-dock-all:hover { background: var(--am-hover); }
 :is(.am-app, .am-layer) .am-dock-all .am-badge { position: absolute; right: -8px; top: -7px; min-width: 16px; height: 16px; padding: 0 4px; font-size: 10px; line-height: 16px; box-shadow: 0 0 0 2px var(--am-side); }
-:is(.am-app, .am-layer) .am-dock-list { overflow-y: auto; padding: 0 10px 10px 8px; display: grid; gap: 2px; }
+// One column as wide as the list: long names are cut, never widen it.
+:is(.am-app, .am-layer) .am-dock-list { overflow-y: auto; padding: 0 10px 10px 8px; display: grid; grid-template-columns: minmax(0, 1fr); gap: 2px; }
 :is(.am-app, .am-layer) .am-dock-row { position: relative; }
-:is(.am-app, .am-layer) .am-dock-row .am-dm { padding-right: 30px; min-height: 32px; padding-top: 3px; padding-bottom: 3px; }
+// The unread count ends where the channels' do; the close button takes its place on hover.
+:is(.am-app, .am-layer) .am-dock-row .am-dm { min-height: 32px; padding-top: 3px; padding-bottom: 3px; }
+:is(.am-app, .am-layer) .am-dock-row:hover .am-dm, :is(.am-app, .am-layer) .am-dock-row:focus-within .am-dm { padding-right: 30px; }
+:is(.am-app, .am-layer) .am-dock-row:hover .am-dm .am-badge, :is(.am-app, .am-layer) .am-dock-row:focus-within .am-dm .am-badge { display: none; }
 :is(.am-app, .am-layer) .am-dock-x { position: absolute; right: 6px; top: 50%; transform: translateY(-50%); width: 22px; height: 22px; border-radius: 5px; display: none; place-items: center; color: var(--am-muted); }
 :is(.am-app, .am-layer) .am-dock-row:hover .am-dock-x, :is(.am-app, .am-layer) .am-dock-x:focus-visible { display: grid; }
 :is(.am-app, .am-layer) .am-dock-x:hover { color: var(--am-text); background: var(--am-hover); }
@@ -276,7 +284,7 @@
 
 // Threads under their channel, as Discord's: an elbow from the channel, the thread's first words, its mentions.
 :is(.am-app, .am-layer) .am-ch-threads { display: flex; flex-direction: column; margin: -1px 0 2px 18px; }
-:is(.am-app, .am-layer) .am-ch.am-ch-thread { position: relative; height: 28px; padding-left: 22px; font-size: 13px; width: calc(100% - 4px); text-align: left; }
+:is(.am-app, .am-layer) .am-ch.am-ch-thread { position: relative; height: 28px; padding-left: 22px; font-size: 13px; text-align: left; }
 :is(.am-app, .am-layer) .am-thread-branch { position: absolute; left: 6px; top: -6px; width: 10px; height: 20px; border-left: 1.5px solid var(--am-line); border-bottom: 1.5px solid var(--am-line); border-bottom-left-radius: 7px; }
 :is(.am-app, .am-layer) .am-ch.am-ch-thread .am-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; min-width: 0; }
 :is(.am-app, .am-layer) .am-ch .am-count { margin-left: auto; padding: 0 6px; border-radius: 8px; background: var(--am-raise-2); color: var(--am-text-2); font: 600 11.5px var(--am-font-ui); }

@@ -7,12 +7,14 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import {removeChannelMember} from 'mattermost-redux/actions/channels';
 import {Permissions} from 'mattermost-redux/constants';
-import {getCurrentChannel} from 'mattermost-redux/selectors/entities/channels';
+import {canManageAnyChannelMembersInCurrentTeam, getCurrentChannel} from 'mattermost-redux/selectors/entities/channels';
 import {haveIChannelPermission, haveITeamPermission, getMemberTimeout} from 'mattermost-redux/selectors/entities/roles';
-import {getCurrentTeam} from 'mattermost-redux/selectors/entities/teams';
+import {getCurrentTeam, getTeamMember} from 'mattermost-redux/selectors/entities/teams';
 import {getCurrentUserId} from 'mattermost-redux/selectors/entities/users';
 
 import {openDirectChannelToUserId} from 'actions/channel_actions';
+
+import AddUserToChannelModal from 'components/add_user_to_channel_modal';
 
 import {Popover} from 'fusion/components/layer';
 import {MenuItem, MenuSeparator} from 'fusion/components/menu';
@@ -21,9 +23,10 @@ import {canModerateTeam, openModView, timeOutMember} from 'fusion/moderation/mod
 import CopyIdItem from 'fusion/popovers/copy_id_item';
 import {useDialogs} from 'fusion/shell/dialogs_context';
 import {useToast} from 'fusion/shell/toast_context';
+import {openDialog} from 'fusion/utils/modals';
 import {channelPath} from 'fusion/utils/paths';
 import {getHistory} from 'utils/browser_history';
-import Constants from 'utils/constants';
+import Constants, {ModalIdentifiers} from 'utils/constants';
 import {copyToClipboard} from 'utils/utils';
 
 import type {GlobalState} from 'types/store';
@@ -52,6 +55,10 @@ export function UserMenu({target, onProfile, onClose}: {target: Target; onProfil
     const me = useSelector(getCurrentUserId);
     const team = useSelector(getCurrentTeam);
     const channel = useSelector(getCurrentChannel);
+    const canAddToChannel = useSelector((state: GlobalState) => {
+        const member = team ? getTeamMember(state, team.id, userId) : undefined;
+        return userId !== me && canManageAnyChannelMembersInCurrentTeam(state) && Boolean(member) && member?.delete_at === 0;
+    });
     const inChannel = useSelector((state: GlobalState) => Boolean(channel && state.entities.users.profilesInChannel[channel.id]?.has(userId)));
     const canRemoveFromChannel = useSelector((state: GlobalState) => {
         if (!channel || !team || (channel.type !== Constants.OPEN_CHANNEL && channel.type !== Constants.PRIVATE_CHANNEL) || channel.name === Constants.DEFAULT_CHANNEL || channel.delete_at) {
@@ -120,6 +127,13 @@ export function UserMenu({target, onProfile, onClose}: {target: Target; onProfil
                     icon='chat'
                     label={formatMessage({id: 'fusion.userMenu.message', defaultMessage: 'Message'})}
                     onClick={run(message)}
+                />
+            )}
+            {canAddToChannel && user && (
+                <MenuItem
+                    icon='user-plus'
+                    label={formatMessage({id: 'fusion.profile.addToChannel', defaultMessage: 'Add to a channel'})}
+                    onClick={run(() => dispatch(openDialog(ModalIdentifiers.ADD_USER_TO_CHANNEL, AddUserToChannelModal, {user})))}
                 />
             )}
             <MenuItem

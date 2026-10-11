@@ -140,7 +140,7 @@ export default function MessageMenu({post, anchor, inThread, onClose, onMoreReac
         return (
             <Popover
                 anchor={anchor}
-                placement='below'
+                placement='left'
                 className='plus-pop msg-menu sched-pop'
                 role='dialog'
                 label={formatMessage({id: 'fusion.messageMenu.remindCustomLabel', defaultMessage: 'Remind me at a custom time'})}
@@ -162,7 +162,7 @@ export default function MessageMenu({post, anchor, inThread, onClose, onMoreReac
     return (
         <Popover
             anchor={anchor}
-            placement='below'
+            placement='left'
             className='plus-pop msg-menu'
             role='menu'
             label={formatMessage({id: 'fusion.messageMenu.label', defaultMessage: 'Message actions'})}

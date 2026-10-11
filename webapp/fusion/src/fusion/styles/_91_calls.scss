@@ -8,9 +8,12 @@
 :is(.am-app, .am-layer) .am-tile .am-label, :is(.am-app, .am-layer) .am-tile .am-icon-btn { z-index: 1; }
 :is(.am-app, .am-layer) .am-mini-screen .am-who, :is(.am-app, .am-layer) .am-mini-screen .am-pop-ic { z-index: 1; }
 
-// A raised hand, at the start of a tile's label and before the audio icon of a sidebar participant.
-:is(.am-app, .am-layer) .am-tile .am-label .am-hand, :is(.am-app, .am-layer) .am-vp .am-hand { display: inline-grid; place-items: center; }
-:is(.am-app, .am-layer) .am-tile .am-label .am-hand .am-ic, :is(.am-app, .am-layer) .am-vp .am-hand .am-ic { color: var(--am-spark); }
+// A raised hand: a badge in a tile's top corner (with its place in the queue), before the audio icon of a sidebar
+// participant.
+:is(.am-app, .am-layer) .am-tile .am-tile-hand { position: absolute; top: 8px; left: 8px; z-index: 1; display: inline-flex; align-items: center; gap: 3px; height: 24px; padding: 0 8px 0 6px; border-radius: 12px; background: var(--am-spark); color: #1E1F22; font: 700 12px var(--am-font-ui); box-shadow: 0 2px 8px rgba(0, 0, 0, .3); }
+:is(.am-app, .am-layer) .am-tile .am-tile-hand .am-ic { width: 15px; height: 15px; }
+:is(.am-app, .am-layer) .am-vp .am-hand { display: inline-grid; place-items: center; }
+:is(.am-app, .am-layer) .am-vp .am-hand .am-ic { color: var(--am-spark); }
 
 // Camera or screen sharing turned off in this call, or someone else sharing.
 :is(.am-app, .am-layer) .am-round:disabled, :is(.am-app, .am-layer) .am-voice-conn .am-row button:disabled { opacity: .45; cursor: not-allowed; }

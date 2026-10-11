@@ -66,11 +66,19 @@ export function getLastTeamChannelName(state: GlobalState, teamId: string): stri
     return last.name;
 }
 
-// getOneClickEmoji names the three emoji used most recently, for the one-click reactions over messages.
+// The one-click reactions of someone who hasn't reacted yet, completed by them as they react.
+export const DEFAULT_ONE_CLICK_EMOJI = ['+1', 'heart', 'joy'];
+
+// getOneClickEmoji names the three emoji used most, for the one-click reactions over messages: the defaults fill in
+// for those not used yet.
 export const getOneClickEmoji: (state: GlobalState) => string[] = createSelector(
     'fusionGetOneClickEmoji',
     getOneClickReactionEmojis,
-    (emojis) => emojis.map((emoji) => ('short_name' in emoji ? emoji.short_name : emoji.name)),
+    (emojis) => {
+        const names = emojis.map((emoji) => ('short_name' in emoji ? emoji.short_name : emoji.name));
+        const aliases = new Set(emojis.flatMap((emoji) => ('short_names' in emoji ? emoji.short_names : [emoji.name])));
+        return [...names, ...DEFAULT_ONE_CLICK_EMOJI.filter((name) => !aliases.has(name))].slice(0, 3);
+    },
 );
 
 export {getChannelMessageCount};

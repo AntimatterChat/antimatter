@@ -114,6 +114,8 @@
 @keyframes am-flash { 0%, 40% { background: var(--am-select); } 100% { background: transparent; } }
 :is(.am-app, .am-layer) .am-msg-head { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
 :is(.am-app, .am-layer) .am-author { font-weight: 700; }
+// The status emoji keeps close to the name it belongs to, closer than the head's other items.
+:is(.am-app, .am-layer) .am-msg-head .am-status-emoji { margin-left: -4px; }
 :is(.am-app, .am-layer) .am-author:hover { text-decoration: underline; }
 :is(.am-app, .am-layer) .am-time { font: 400 11.5px var(--am-font-mono); color: var(--am-faint); }
 :is(.am-app, .am-layer) .am-role-tag { font: 600 10.5px var(--am-font-ui); padding: 1px 6px; border-radius: 4px; background: var(--am-raise); color: var(--am-text-2); }
@@ -142,10 +144,11 @@
 :is(.am-app, .am-layer) .am-team-pop h4 { margin: 0; font: 600 16px var(--am-font-display); }
 :is(.am-app, .am-layer) .am-team-pop .am-sub { font-size: 12.5px; color: var(--am-muted); }
 :is(.am-app, .am-layer) .am-team-pop p { margin: 10px 0; font-size: 13.5px; color: var(--am-text-2); }
-:is(.am-app, .am-layer) .am-team-pop .am-facts { display: grid; gap: 4px; margin-bottom: 12px; font-size: 13px; color: var(--am-text-2); }
+// The team's facts, then its people, then the way to its channel: apart, as the card's other popovers' facts aren't.
+:is(.am-app, .am-layer) .am-pop.am-team-pop .am-facts { display: grid; gap: 6px; margin: 10px 0 14px; font-size: 13px; color: var(--am-text-2); }
 :is(.am-app, .am-layer) .am-team-pop .am-facts span { display: flex; align-items: center; gap: 8px; }
 :is(.am-app, .am-layer) .am-team-pop .am-facts .am-ic { width: 14px; height: 14px; color: var(--am-muted); }
-:is(.am-app, .am-layer) .am-team-pop .am-faces { display: flex; margin-bottom: 12px; }
+:is(.am-app, .am-layer) .am-team-pop .am-faces { display: flex; margin-bottom: 14px; }
 :is(.am-app, .am-layer) .am-team-pop .am-faces .am-av { margin-left: -4px; box-shadow: 0 0 0 2px var(--am-raise); }
 :is(.am-app, .am-layer) .am-team-pop .am-faces .am-av:first-child { margin-left: 0; }
 :is(.am-app, .am-layer) .am-team-pop .am-thead > div { flex: 1; min-width: 0; }

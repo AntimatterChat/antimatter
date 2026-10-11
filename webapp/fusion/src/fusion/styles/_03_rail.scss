@@ -56,7 +56,7 @@
 :is(.am-app, .am-layer) .am-srv .am-fed .am-ic { width: 12px; height: 12px; }
 /* Direct messages waiting for you sit at the bottom, above search: smaller round faces under a chat bubble, apart
    from the servers, that don't change shape on hover as servers do. */
-:is(.am-app, .am-layer) .am-dm-dock { display: grid; justify-items: center; gap: 10px; padding-top: 10px; border-top: 2px solid var(--am-raise-2); width: 34px; flex: none; }
+:is(.am-app, .am-layer) .am-dm-dock { display: grid; justify-items: center; gap: 16px; padding-top: 10px; border-top: 2px solid var(--am-raise-2); width: 34px; flex: none; }
 :is(.am-app, .am-layer) .am-dm-dock-head { display: grid; place-items: center; width: 22px; height: 18px; color: var(--am-muted); }
 :is(.am-app, .am-layer) .am-srv.am-dm-srv { width: 38px; height: 38px; background: none; border-radius: 50%; }
 :is(.am-app, .am-layer) .am-srv.am-dm-srv::before { display: none; }

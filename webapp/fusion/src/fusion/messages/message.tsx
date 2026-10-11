@@ -200,7 +200,7 @@ export default function Message({postId, previousPostId, inThread = false, highl
             role='toolbar'
             aria-label={formatMessage({id: 'fusion.message.tools', defaultMessage: 'Message actions'})}
         >
-            {/* One-click reactions: the most recent emoji, to react without the picker. */}
+            {/* One-click reactions: the emoji used most, to react without the picker, as Discord's. */}
             {prefs.oneClickReactions && recentEmoji.map((emojiName) => (
                 <button
                     key={emojiName}
@@ -215,6 +215,12 @@ export default function Message({postId, previousPostId, inThread = false, highl
                     />
                 </button>
             ))}
+            {prefs.oneClickReactions && recentEmoji.length > 0 && (
+                <span
+                    className={am('tools-sep')}
+                    role='separator'
+                />
+            )}
             <button
                 ref={reactRef}
                 className={am('react-btn')}
@@ -228,6 +234,20 @@ export default function Message({postId, previousPostId, inThread = false, highl
                     size='sm'
                 />
             </button>
+            {spoiler && (
+                <button
+                    className={am({on: spoilerShown})}
+                    title={formatMessage({id: 'fusion.message.spoilerTool', defaultMessage: 'Spoiler: show or hide'})}
+                    aria-label={formatMessage({id: 'fusion.message.spoilerTool', defaultMessage: 'Spoiler: show or hide'})}
+                    aria-pressed={spoilerShown}
+                    onClick={() => setSpoilerShown(!spoilerShown)}
+                >
+                    <Icon
+                        name={spoilerShown ? 'eye-off' : 'eye'}
+                        size='sm'
+                    />
+                </button>
+            )}
             {canQuote && (
                 <button
                     title={formatMessage({id: 'fusion.message.replyInline', defaultMessage: 'Reply'})}
@@ -471,27 +491,11 @@ export default function Message({postId, previousPostId, inThread = false, highl
                 className={rowClass}
                 id={`post_${post.id}`}
             >
-                {spoiler ? (
-                    <button
-                        type='button'
-                        className={am('gutter', 'spoiler-gutter', {shown: spoilerShown})}
-                        title={spoilerShown ? formatMessage({id: 'fusion.spoiler.hide', defaultMessage: 'Hide the spoiler again'}) : formatMessage({id: 'fusion.spoiler.show', defaultMessage: 'Show the spoiler'})}
-                        aria-label={spoilerShown ? formatMessage({id: 'fusion.spoiler.hide', defaultMessage: 'Hide the spoiler again'}) : formatMessage({id: 'fusion.spoiler.show', defaultMessage: 'Show the spoiler'})}
-                        aria-pressed={spoilerShown}
-                        onClick={() => setSpoilerShown(!spoilerShown)}
-                    >
-                        <Icon
-                            name='eye-off'
-                            size='sm'
-                        />
-                    </button>
-                ) : (
-                    <MessageTime
-                        timestamp={post.create_at}
-                        short={true}
-                        className={am('gutter')}
-                    />
-                )}
+                <MessageTime
+                    timestamp={post.create_at}
+                    short={true}
+                    className={am('gutter')}
+                />
                 <div>{body}</div>
                 {tools}
                 {popovers}

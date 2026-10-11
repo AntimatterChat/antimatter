@@ -77,7 +77,7 @@ export default function ProfileFacts({user}: {user: UserProfile}) {
         }
     }
     if (lastOnline) {
-        lines.push({key: 'last', icon: 'clock', text: intl.formatMessage({id: 'fusion.header.lastOnline', defaultMessage: 'Last online {when}'}, {when: lastOnlineAgo(intl, lastOnline)})});
+        lines.push({key: 'last', icon: 'history', text: intl.formatMessage({id: 'fusion.header.lastOnline', defaultMessage: 'Last online {when}'}, {when: lastOnlineAgo(intl, lastOnline)})});
     }
     if (!lines.length) {
         return null;

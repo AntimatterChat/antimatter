@@ -89,16 +89,20 @@ function Tile({participant: p, stream, media, onContextMenu, handOrder, pinned, 
                     size='xl'
                 />
             )}
+            {/* A raised hand: a badge in the tile's corner, with its place in the queue, apart from the name. */}
+            {p.raisedHand && (
+                <span
+                    className={am('tile-hand')}
+                    title={handOrder > 0 ? formatMessage({id: 'fusion.calls.handRaisedOrder', defaultMessage: 'Hand raised, {order, selectordinal, one {#st} two {#nd} few {#rd} other {#th}} in line'}, {order: handOrder}) : formatMessage({id: 'fusion.calls.handRaised', defaultMessage: 'Hand raised'})}
+                >
+                    <Icon
+                        name='hand'
+                        size='sm'
+                    />
+                    {handOrder > 0 && <b>{handOrder}</b>}
+                </span>
+            )}
             <span className={am('label')}>
-                {p.raisedHand && (
-                    <span
-                        className={am('hand')}
-                        title={formatMessage({id: 'fusion.calls.handRaised', defaultMessage: 'Hand raised'})}
-                    >
-                        <Icon name='hand'/>
-                        {handOrder > 0 && <b>{handOrder}</b>}
-                    </span>
-                )}
                 {audio}
                 {p.isMe ? formatMessage({id: 'fusion.calls.you', defaultMessage: '{name} (you)'}, {name}) : name}
             </span>

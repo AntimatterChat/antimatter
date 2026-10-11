@@ -58,6 +58,8 @@
 :is(.am-app, .am-layer) .am-msg:hover .am-msg-tools, :is(.am-app, .am-layer) .am-msg:focus-within .am-msg-tools { display: flex; }
 :is(.am-app, .am-layer) .am-msg-tools button { width: 30px; height: 28px; border-radius: 6px; display: grid; place-items: center; color: var(--am-muted); }
 :is(.am-app, .am-layer) .am-msg-tools button:hover { background: var(--am-hover); color: var(--am-text); }
+:is(.am-app, .am-layer) .am-msg-tools button.am-on { color: var(--am-matter); }
+:is(.am-app, .am-layer) .am-msg-tools .am-tools-sep { align-self: center; width: 1px; height: 18px; margin: 0 3px; background: var(--am-line); }
 
 /* Composer */
 :is(.am-app, .am-layer) .am-composer { flex: none; padding: 0 18px 16px; position: relative; }
@@ -396,10 +398,6 @@
 :is(.am-app, .am-layer) .am-round.am-hang { background: var(--am-danger); color: #fff; width: 64px; border-radius: 24px; }
 
 // A spoiler in a continuation message: its eye in the gutter shows it, or hides it again.
-:is(.am-app, .am-layer) .am-msg.am-cont .am-gutter.am-spoiler-gutter { display: grid; place-items: center; justify-self: end; width: 26px; height: 22px; padding: 0; border-radius: 6px; color: var(--am-matter); background: var(--am-matter-soft); }
-:is(.am-app, .am-layer) .am-msg.am-cont .am-gutter.am-spoiler-gutter:hover { background: var(--am-matter); color: #fff; }
-:is(.am-app, .am-layer) .am-msg.am-cont .am-gutter.am-spoiler-gutter.am-shown { background: transparent; }
-:is(.am-app, .am-layer) .am-msg.am-cont .am-gutter.am-spoiler-gutter.am-shown:hover { background: var(--am-matter-soft); color: var(--am-matter); }
 
 // Under a message translated for the reader: from what, and the original.
 :is(.am-app, .am-layer) .am-translation-note { display: flex; align-items: center; gap: 6px; margin-top: 2px; color: var(--am-muted); font-size: 12px; }

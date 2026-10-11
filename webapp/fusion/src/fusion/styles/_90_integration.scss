@@ -80,8 +80,9 @@ body.app__body #root.am-root > .am-root-main {
   a { color: var(--am-anti); }
   .mention-link, .mention--highlight { color: var(--am-matter); background: var(--am-matter-soft); padding: 0 3px; border-radius: 4px; font-weight: 600; }
   // The classic emoticon is an inline-flex box: its baseline is that of the hidden :name: text, so only middle keeps it
-  // on the line.
-  .emoticon { vertical-align: middle; }
+  // on the line; middle centres it on the lower-case letters, a little low next to capitals: it's raised to centre on
+  // the text.
+  .emoticon { position: relative; top: -.13em; vertical-align: middle; }
 }
 :is(.am-app, .am-layer) .am-msg.am-sysline .am-body, :is(.am-app, .am-layer) .am-msg.am-sysline .am-body .post-message__text { color: var(--am-muted); font-size: 13.5px; }
 :is(.am-app, .am-layer) .am-react .emoticon, :is(.am-app, .am-layer) .am-quick-react .emoticon { vertical-align: middle; }
