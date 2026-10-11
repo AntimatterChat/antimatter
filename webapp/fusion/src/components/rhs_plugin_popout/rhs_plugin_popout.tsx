@@ -9,6 +9,7 @@ import {useParams} from 'react-router-dom';
 import LoadingScreen from 'components/loading_screen';
 import SearchResultsHeader from 'components/search_results_header';
 
+import {PanelAppIcon} from 'fusion/apps/app_rail';
 import Pluggable from 'plugins/pluggable';
 import usePopoutTitle from 'utils/popouts/use_popout_title';
 
@@ -47,6 +48,7 @@ export default function RhsPluginPopout() {
 
     return (
         <>
+            <PanelAppIcon pluginId={pluginId}/>
             <SearchResultsHeader>
                 {title}
             </SearchResultsHeader>

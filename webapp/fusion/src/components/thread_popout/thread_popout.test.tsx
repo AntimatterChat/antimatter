@@ -11,28 +11,19 @@ import ThreadPopout from './thread_popout';
 
 // Remove usePost mock since we'll use Redux state instead
 
-jest.mock('components/threading/global_threads/thread_pane', () => ({
-    __esModule: true,
-    default: ({children, thread}: {children: React.ReactNode; thread: unknown}) => (
-        <div
-            data-testid='thread-pane'
-            data-thread-id={(thread as {id?: string})?.id}
-        >
-            {children}
-        </div>
-    ),
+jest.mock('fusion/shell/fusion_app', () => ({
+    FusionPopout: ({children}: {children: React.ReactNode}) => <div data-testid='fusion-popout'>{children}</div>,
 }));
 
-jest.mock('components/threading/thread_viewer', () => ({
+jest.mock('fusion/rhs/thread_panel', () => ({
     __esModule: true,
-    default: ({rootPostId, useRelativeTimestamp, isThreadView}: {rootPostId: string; useRelativeTimestamp: boolean; isThreadView: boolean}) => (
+    default: ({rootId, inWindow}: {rootId: string; inWindow: boolean}) => (
         <div
-            data-testid='thread-viewer'
-            data-root-post-id={rootPostId}
-            data-use-relative-timestamp={useRelativeTimestamp?.toString()}
-            data-is-thread-view={isThreadView?.toString()}
+            data-testid='thread-panel'
+            data-root-id={rootId}
+            data-in-window={String(inWindow)}
         >
-            {'Thread Viewer'}
+            {'Thread'}
         </div>
     ),
 }));
@@ -160,7 +151,7 @@ describe('ThreadPopout', () => {
         expect(container.firstChild).toBeNull();
     });
 
-    it('should pass correct props to ThreadPane', () => {
+    it('should show the thread in the Fusion UI\'s frame, as a window', () => {
         renderWithContext(
             <MemoryRouter initialEntries={['/_popout/thread/test-team/post-123']}>
                 <Route
@@ -171,25 +162,10 @@ describe('ThreadPopout', () => {
             baseState,
         );
 
-        const threadPane = screen.getByTestId('thread-pane');
-        expect(threadPane).toHaveAttribute('data-thread-id', 'post-123');
-    });
-
-    it('should pass correct props to ThreadViewer', () => {
-        renderWithContext(
-            <MemoryRouter initialEntries={['/_popout/thread/test-team/post-123']}>
-                <Route
-                    path='/_popout/thread/:team/:postId'
-                    component={ThreadPopout}
-                />
-            </MemoryRouter>,
-            baseState,
-        );
-
-        const threadViewer = screen.getByTestId('thread-viewer');
-        expect(threadViewer).toHaveAttribute('data-root-post-id', 'post-123');
-        expect(threadViewer).toHaveAttribute('data-use-relative-timestamp', 'true');
-        expect(threadViewer).toHaveAttribute('data-is-thread-view', 'true');
+        const panel = screen.getByTestId('thread-panel');
+        expect(screen.getByTestId('fusion-popout')).toContainElement(panel);
+        expect(panel).toHaveAttribute('data-root-id', 'post-123');
+        expect(panel).toHaveAttribute('data-in-window', 'true');
     });
 
     it('should handle missing post gracefully', () => {
@@ -232,7 +208,7 @@ describe('ThreadPopout', () => {
                 baseState,
             );
 
-            expect(screen.getByTestId('thread-pane')).toBeInTheDocument();
+            expect(screen.getByTestId('thread-panel')).toBeInTheDocument();
             expect(focusHandler).toBeDefined();
 
             if (focusHandler) {
@@ -265,7 +241,7 @@ describe('ThreadPopout', () => {
                 baseState,
             );
 
-            expect(screen.getByTestId('thread-pane')).toBeInTheDocument();
+            expect(screen.getByTestId('thread-panel')).toBeInTheDocument();
             expect(blurHandler).toBeDefined();
 
             if (blurHandler) {

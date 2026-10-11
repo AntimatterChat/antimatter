@@ -33,7 +33,8 @@ import type {GlobalState} from 'types/store';
 import ThreadMenu from './thread_menu';
 
 // ThreadPanel shows a thread in the right-hand panel: the first message, its replies, and a composer.
-export default function ThreadPanel({rootId}: {rootId: string}) {
+// inWindow draws it as a window of its own (a popout): without the buttons that open, size or close the panel.
+export default function ThreadPanel({rootId, inWindow = false}: {rootId: string; inWindow?: boolean}) {
     const intl = useIntl();
     const {formatMessage} = intl;
     const dispatch = useDispatch();
@@ -135,7 +136,7 @@ export default function ThreadPanel({rootId}: {rootId: string}) {
                 >
                     <Icon name='dots'/>
                 </button>
-                {canPopout() && (
+                {!inWindow && canPopout() && (
                     <button
                         className={am('icon-btn')}
                         title={formatMessage({id: 'fusion.thread.popout', defaultMessage: 'Open in a new window'})}
@@ -148,26 +149,30 @@ export default function ThreadPanel({rootId}: {rootId: string}) {
                         />
                     </button>
                 )}
-                <button
-                    className={am('icon-btn')}
-                    aria-pressed={expanded}
-                    title={expanded ? formatMessage({id: 'fusion.thread.collapse', defaultMessage: 'Collapse the panel'}) : formatMessage({id: 'fusion.thread.expand', defaultMessage: 'Expand the panel'})}
-                    aria-label={expanded ? formatMessage({id: 'fusion.thread.collapse', defaultMessage: 'Collapse the panel'}) : formatMessage({id: 'fusion.thread.expand', defaultMessage: 'Expand the panel'})}
-                    onClick={() => dispatch(toggleRhsExpanded())}
-                >
-                    <Icon
-                        name='expand'
-                        size='sm'
-                    />
-                </button>
-                <button
-                    className={am('icon-btn')}
-                    title={formatMessage({id: 'fusion.rhs.close', defaultMessage: 'Close'})}
-                    aria-label={formatMessage({id: 'fusion.thread.close', defaultMessage: 'Close thread'})}
-                    onClick={() => dispatch(closeRightHandSide())}
-                >
-                    <Icon name='x'/>
-                </button>
+                {!inWindow && (
+                    <button
+                        className={am('icon-btn')}
+                        aria-pressed={expanded}
+                        title={expanded ? formatMessage({id: 'fusion.thread.collapse', defaultMessage: 'Collapse the panel'}) : formatMessage({id: 'fusion.thread.expand', defaultMessage: 'Expand the panel'})}
+                        aria-label={expanded ? formatMessage({id: 'fusion.thread.collapse', defaultMessage: 'Collapse the panel'}) : formatMessage({id: 'fusion.thread.expand', defaultMessage: 'Expand the panel'})}
+                        onClick={() => dispatch(toggleRhsExpanded())}
+                    >
+                        <Icon
+                            name='expand'
+                            size='sm'
+                        />
+                    </button>
+                )}
+                {!inWindow && (
+                    <button
+                        className={am('icon-btn')}
+                        title={formatMessage({id: 'fusion.rhs.close', defaultMessage: 'Close'})}
+                        aria-label={formatMessage({id: 'fusion.thread.close', defaultMessage: 'Close thread'})}
+                        onClick={() => dispatch(closeRightHandSide())}
+                    >
+                        <Icon name='x'/>
+                    </button>
+                )}
                 {menu && (
                     <ThreadMenu
                         root={root}

@@ -1,7 +1,6 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 
-import classNames from 'classnames';
 import React, {useEffect} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {useParams} from 'react-router-dom';
@@ -14,14 +13,12 @@ import {fetchTeamScheduledPosts} from 'mattermost-redux/actions/scheduled_posts'
 import {selectTeam} from 'mattermost-redux/actions/teams';
 import {getCurrentChannel} from 'mattermost-redux/selectors/entities/channels';
 
-import {getIsRhsOpen} from 'selectors/rhs';
-
 import ChannelIdentifierRouter from 'components/channel_layout/channel_identifier_router';
 import {useTeamByName} from 'components/common/hooks/use_team';
 import LoadingScreen from 'components/loading_screen';
-import SidebarRight from 'components/sidebar_right';
 import UnreadsStatusHandler from 'components/unreads_status_handler';
 
+import {FusionPopout} from 'fusion/shell/fusion_app';
 import {getPopoutChannelTitle} from 'utils/popouts/popout_windows';
 import usePopoutFocus from 'utils/popouts/use_popout_focus';
 import usePopoutTitle from 'utils/popouts/use_popout_title';
@@ -37,8 +34,6 @@ export default function ChannelPopout() {
 
     const channel = useSelector(getCurrentChannel);
     const channelId = channel?.id;
-
-    const rhsOpen = useSelector(getIsRhsOpen);
 
     usePopoutTitle(getPopoutChannelTitle(channel?.type));
     usePopoutFocus(channelId);
@@ -62,24 +57,13 @@ export default function ChannelPopout() {
         return <LoadingScreen/>;
     }
 
+    // The conversation in the Fusion UI's frame, without its rails and sidebar.
     return (
         <>
             {isDesktopApp() && <UnreadsStatusHandler/>}
-            <div className={classNames('main-wrapper', 'channel-popout', {'rhs-open': rhsOpen})}>
-                <div
-                    id='channel_view'
-                    className='channel-view'
-                >
-                    <div className='container-fluid channel-view-inner'>
-                        <div className='inner-wrap channel__wrap'>
-                            <div className='row main'>
-                                <ChannelIdentifierRouter key={postid || 'channel'}/>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <SidebarRight/>
-            </div>
+            <FusionPopout>
+                <ChannelIdentifierRouter key={postid || 'channel'}/>
+            </FusionPopout>
         </>
     );
 }

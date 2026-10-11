@@ -16,3 +16,23 @@
   --am-chrome-w: calc(72px + 252px + 52px);
   --am-main-min: 480px;
 }
+// A conversation or a thread in a window of its own: no rails, no sidebar.
+.am-app.am-popout {
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas: "main right";
+  --am-chrome-w: 0px;
+}
+// The right-hand panel slides over a narrow popout's conversation from its edge: there's no app rail.
+.am-app.am-popout .am-rhs { right: 0; }
+// No drawers in a popout: their buttons (the sidebar's, the app rail's) go.
+.am-app.am-popout :is(.am-ch-title .am-menu-btn, .am-head-actions .am-me-btn) { display: none; }
+// A thread in a window of its own: the right-hand panel's column, the whole window wide.
+.am-app.am-popout .am-thread-window { display: flex; flex-direction: column; height: 100%; min-height: 0; }
+.am-app.am-popout .am-thread-window .am-msg { padding-right: 18px; padding-left: 18px; }
+.am-app.am-popout .am-thread-window .am-composer { padding: 0 18px 16px; }
+.am-app.am-popout .am-thread-window > :not(.am-rhs-body) { flex: none; }
+// A panel (search results, an app) in a window of its own: the whole window, without the buttons that size, pop out
+// or close the panel.
+.am-app.am-popout .am-rhs-window { height: 100%; }
+.am-app.am-popout .am-rhs-window .sidebar-right__body { display: flex; flex: 1; flex-direction: column; min-height: 0; }
+.am-app.am-popout .am-rhs-window .sidebar--right__header :is(.sidebar--right__expand, .sidebar--right__close, .PopoutButton) { display: none; }

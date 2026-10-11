@@ -180,6 +180,24 @@ export default function Composer({channelId, rootId = '', placeholder}: Props) {
     }, []);
     useEffect(grow, [draft.message, grow]);
 
+    // Its height follows its width too: a window opened or resized after it was measured (a popout) wraps the text
+    // differently.
+    useEffect(() => {
+        const el = textareaRef.current;
+        if (!el || typeof ResizeObserver === 'undefined') {
+            return undefined;
+        }
+        let width = el.clientWidth;
+        const observer = new ResizeObserver(() => {
+            if (el.clientWidth !== width) {
+                width = el.clientWidth;
+                grow();
+            }
+        });
+        observer.observe(el);
+        return () => observer.disconnect();
+    }, [grow]);
+
     const save = useCallback((next: PostDraft) => {
         setDraft(next);
         clearTimeout(saveTimer.current);

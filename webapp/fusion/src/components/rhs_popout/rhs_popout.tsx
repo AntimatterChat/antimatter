@@ -14,6 +14,8 @@ import RhsPluginPopout from 'components/rhs_plugin_popout';
 import RhsSearchPopout from 'components/rhs_search_popout';
 import UnreadsStatusHandler from 'components/unreads_status_handler';
 
+import {FusionPopout} from 'fusion/shell/fusion_app';
+
 import type {GlobalState} from 'types/store';
 
 import './rhs_popout.scss';
@@ -50,22 +52,26 @@ export default function RhsPopout() {
     return (
         <>
             <UnreadsStatusHandler/>
-            <div className='main-wrapper rhs-popout'>
-                <div className='sidebar--right'>
-                    <div className='sidebar-right__body'>
-                        <Switch>
-                            <Route
-                                path={`${match.path}/search`}
-                                component={RhsSearchPopout}
-                            />
-                            <Route
-                                path={`${match.path}/plugin/:pluginId`}
-                                component={RhsPluginPopout}
-                            />
-                        </Switch>
+
+            {/* The panel in the Fusion UI's frame, as its right-hand panel shows it, the whole window wide. */}
+            <FusionPopout panel={false}>
+                <div className='am-rhs-classic am-rhs-window'>
+                    <div className='sidebar--right__content'>
+                        <div className='sidebar-right__body'>
+                            <Switch>
+                                <Route
+                                    path={`${match.path}/search`}
+                                    component={RhsSearchPopout}
+                                />
+                                <Route
+                                    path={`${match.path}/plugin/:pluginId`}
+                                    component={RhsPluginPopout}
+                                />
+                            </Switch>
+                        </div>
                     </div>
                 </div>
-            </div>
+            </FusionPopout>
         </>
     );
 }

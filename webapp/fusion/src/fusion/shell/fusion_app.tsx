@@ -223,3 +223,56 @@ export default function FusionApp({children}: Props) {
         </LayoutProvider>
     );
 }
+
+// PopoutFrame is the Fusion UI in a window of its own (a conversation or a thread opened in a new window): the
+// conversation and its right-hand panel, without the rails and the sidebar.
+function PopoutFrame({children, panel}: Props & {panel: boolean}) {
+    const store = useStore<GlobalState>();
+    useFaceTips();
+
+    useEffect(() => {
+        const root = document.getElementById('root');
+        root?.classList.add('am-root');
+        return () => root?.classList.remove('am-root');
+    }, []);
+
+    useEffect(() => {
+        const media = window.matchMedia('(prefers-color-scheme: light)');
+        const onChange = () => applyTheme(getTheme(store.getState()));
+        media.addEventListener('change', onChange);
+        return () => media.removeEventListener('change', onChange);
+    }, [store]);
+
+    return (
+        <>
+            <IconSprite/>
+            <div className={am('app', 'popout')}>
+                <main className={am('main')}>{children}</main>
+                {panel && <RightPanel/>}
+            </div>
+            <div
+                id={LAYER_ID}
+                className={am('layer')}
+            />
+            <Toasts/>
+            <TeamCardHost/>
+        </>
+    );
+}
+
+// FusionPopout is the Fusion UI's frame in a popout window; panel shows the right-hand panel beside its content.
+export function FusionPopout({children, panel = true}: Props & {panel?: boolean}) {
+    return (
+        <LayoutProvider>
+            <ToastProvider>
+                <DialogsProvider>
+                    <GlobalSearchProvider>
+                        <SettingsProvider>
+                            <PopoutFrame panel={panel}>{children}</PopoutFrame>
+                        </SettingsProvider>
+                    </GlobalSearchProvider>
+                </DialogsProvider>
+            </ToastProvider>
+        </LayoutProvider>
+    );
+}

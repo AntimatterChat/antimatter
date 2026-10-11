@@ -44,9 +44,8 @@ jest.mock('components/channel_layout/channel_identifier_router', () => ({
     __esModule: true,
     default: () => <div data-testid='channel-identifier-router'>{'ChannelIdentifierRouter'}</div>,
 }));
-jest.mock('components/sidebar_right', () => ({
-    __esModule: true,
-    default: () => <div data-testid='sidebar-right'>{'SidebarRight'}</div>,
+jest.mock('fusion/shell/fusion_app', () => ({
+    FusionPopout: ({children}: {children: React.ReactNode}) => <div data-testid='fusion-popout'>{children}</div>,
 }));
 jest.mock('components/unreads_status_handler', () => ({
     __esModule: true,
@@ -105,12 +104,11 @@ describe('ChannelPopout', () => {
         expect(screen.getByTestId('loading-screen')).toBeInTheDocument();
     });
 
-    test('should render ChannelIdentifierRouter and SidebarRight when team is resolved', () => {
+    test('should render ChannelIdentifierRouter in the Fusion UI\'s frame when team is resolved', () => {
         jest.mocked(useTeamByName).mockReturnValue(team);
         renderPopout('/_popout/channel/test-team/channels/town-square');
 
-        expect(screen.getByTestId('channel-identifier-router')).toBeInTheDocument();
-        expect(screen.getByTestId('sidebar-right')).toBeInTheDocument();
+        expect(screen.getByTestId('fusion-popout')).toContainElement(screen.getByTestId('channel-identifier-router'));
     });
 
     test('should dispatch team bootstrapping actions when team is resolved', async () => {
@@ -132,26 +130,6 @@ describe('ChannelPopout', () => {
         await waitFor(() => {
             expect(jest.mocked(getChannelStats)).toHaveBeenCalledWith('channel_id');
         });
-    });
-
-    test('should apply rhs-open class when RHS is open', () => {
-        jest.mocked(useTeamByName).mockReturnValue(team);
-        const stateWithRhsOpen = {
-            ...baseState,
-            views: {rhs: {isSidebarOpen: true}},
-        };
-
-        renderWithContext(
-            <MemoryRouter initialEntries={['/_popout/channel/test-team/channels/town-square']}>
-                <Route path='/_popout/channel/:team/:path(channels|messages)/:identifier/:postid?'>
-                    <ChannelPopout/>
-                </Route>
-            </MemoryRouter>,
-            stateWithRhsOpen,
-        );
-
-        const mainWrapper = screen.getByTestId('channel-identifier-router').closest('.main-wrapper');
-        expect(mainWrapper).toHaveClass('rhs-open');
     });
 });
 

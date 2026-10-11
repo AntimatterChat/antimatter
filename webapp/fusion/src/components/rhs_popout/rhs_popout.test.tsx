@@ -33,6 +33,9 @@ jest.mock('components/unreads_status_handler', () => ({
     default: () => <div data-testid='unreads-status-handler'>{'UnreadsStatusHandler'}</div>,
 }));
 
+jest.mock('fusion/shell/fusion_app', () => ({
+    FusionPopout: ({children}: {children: React.ReactNode}) => <div data-testid='fusion-popout'>{children}</div>,
+}));
 jest.mock('components/rhs_plugin_popout', () => ({
     __esModule: true,
     default: () => <div data-testid='rhs-plugin-popout'>{'RHS Plugin Popout'}</div>,
@@ -102,9 +105,7 @@ describe('RhsPopout', () => {
         const {container} = renderPopout('/_popout/rhs/team1/search?q=test');
 
         expect(container.querySelector('[data-testid="unreads-status-handler"]')).toBeInTheDocument();
-        expect(container.querySelector('.main-wrapper.rhs-popout')).toBeInTheDocument();
-        expect(container.querySelector('.sidebar--right')).toBeInTheDocument();
-        expect(container.querySelector('.sidebar-right__body')).toBeInTheDocument();
+        expect(screen.getByTestId('fusion-popout')).toContainElement(container.querySelector('.am-rhs-classic.am-rhs-window .sidebar-right__body'));
     });
 
     it('should render RhsSearchPopout for search route', () => {
