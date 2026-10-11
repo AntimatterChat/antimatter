@@ -25,6 +25,7 @@ import {getSiteURL} from 'utils/url';
 import type {GlobalState} from 'types/store';
 
 import FileMenu from './file_menu';
+import {imageTileStyle} from './image_tile';
 import {imageCaption, useLightbox} from './lightbox';
 import type {LightboxImage} from './lightbox';
 
@@ -153,13 +154,12 @@ export default function Files({post}: {post: Post}) {
                 }
                 if (isImage(file, svgs)) {
                     const image = toImage(file, index);
-                    const ratio = file.width && file.height ? `${file.width} / ${file.height}` : undefined;
                     return (
                         <button
                             key={file.id}
                             type='button'
                             className={am('img-att')}
-                            style={ratio ? {aspectRatio: ratio} : undefined}
+                            style={imageTileStyle(file.width, file.height)}
                             aria-label={formatMessage({id: 'fusion.files.openImage', defaultMessage: 'Open image {name}'}, {name: file.name})}
                             title={imageCaption({...image, width: undefined, height: undefined})}
                             onClick={() => openImage(image, gallery)}

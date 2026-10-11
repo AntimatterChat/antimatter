@@ -33,6 +33,7 @@ import {getVideoId, handleYoutubeTime} from 'utils/youtube';
 
 import type {GlobalState} from 'types/store';
 
+import {imageTileStyle} from './image_tile';
 import {imageCaption, useLightbox} from './lightbox';
 
 // OpenGraph is a link preview: the mockup's .og card (site, title, two lines of description, thumbnail).
@@ -233,7 +234,6 @@ export function InlineImage({post, link}: {post: Post; link: string}) {
     const [lightbox, openImage] = useLightbox();
     const meta = post.metadata?.images?.[link];
     const name = decodeURIComponent(link.split(/[?#]/)[0].split('/').pop() || '') || link;
-    const ratio = meta && meta.width > 0 && meta.height > 0 ? `${meta.width} / ${meta.height}` : undefined;
 
     return (
         <ExternalImage
@@ -245,7 +245,7 @@ export function InlineImage({post, link}: {post: Post; link: string}) {
                     <button
                         type='button'
                         className={am('img-att')}
-                        style={ratio ? {aspectRatio: ratio} : undefined}
+                        style={imageTileStyle(meta?.width, meta?.height)}
                         aria-label={formatMessage({id: 'fusion.files.openImage', defaultMessage: 'Open image {name}'}, {name})}
                         onClick={() => openImage({src, name, width: meta?.width, height: meta?.height, userId: post.user_id, at: post.create_at})}
                     >
