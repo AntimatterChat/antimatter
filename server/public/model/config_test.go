@@ -4572,3 +4572,24 @@ func TestElasticsearchSettingsIsValid(t *testing.T) {
 		})
 	}
 }
+
+func TestSupportSettingsMattermostLinks(t *testing.T) {
+	t.Run("the former Mattermost defaults become Antimatter's", func(t *testing.T) {
+		s := SupportSettings{
+			TermsOfServiceLink: new("https://mattermost.com/pl/terms-of-use/"),
+			AboutLink:          new("https://mattermost.com/pl/about-mattermost"),
+			HelpLink:           new("https://mattermost.com/pl/help/"),
+		}
+		s.SetDefaults()
+		require.Equal(t, SupportSettingsDefaultTermsOfServiceLink, *s.TermsOfServiceLink)
+		require.Equal(t, SupportSettingsDefaultAboutLink, *s.AboutLink)
+		require.Equal(t, SupportSettingsDefaultHelpLink, *s.HelpLink)
+		require.Equal(t, SupportSettingsDefaultPrivacyPolicyLink, *s.PrivacyPolicyLink)
+	})
+
+	t.Run("links an administrator set are kept", func(t *testing.T) {
+		s := SupportSettings{HelpLink: new("https://wiki.example.com/chat")}
+		s.SetDefaults()
+		require.Equal(t, "https://wiki.example.com/chat", *s.HelpLink)
+	})
+}

@@ -171,11 +171,11 @@ const (
 
 	EmailSettingsDefaultFeedbackOrganization = ""
 
-	SupportSettingsDefaultTermsOfServiceLink = "https://mattermost.com/pl/terms-of-use/"
-	SupportSettingsDefaultPrivacyPolicyLink  = "https://mattermost.com/pl/privacy-policy/"
-	SupportSettingsDefaultAboutLink          = "https://mattermost.com/pl/about-mattermost"
-	SupportSettingsDefaultHelpLink           = "https://mattermost.com/pl/help/"
-	SupportSettingsDefaultReportAProblemLink = "https://mattermost.com/pl/report-a-bug"
+	SupportSettingsDefaultTermsOfServiceLink = "https://antimatter.chat/terms.html"
+	SupportSettingsDefaultPrivacyPolicyLink  = "https://antimatter.chat/privacy.html"
+	SupportSettingsDefaultAboutLink          = "https://antimatter.chat/about.html"
+	SupportSettingsDefaultHelpLink           = "https://antimatter.chat/help.html"
+	SupportSettingsDefaultReportAProblemLink = "https://antimatter.chat/help.html#report"
 	SupportSettingsDefaultSupportEmail       = ""
 	SupportSettingsDefaultReAcceptancePeriod = 365
 
@@ -2421,6 +2421,16 @@ type SupportSettings struct {
 	EnableAskCommunityLink                 *bool   `access:"site_customization"`
 }
 
+// mattermostSupportLinks are the links that were the defaults before Antimatter had its own pages: a server still on
+// them gets Antimatter's.
+var mattermostSupportLinks = map[string]string{
+	"https://mattermost.com/pl/terms-of-use/":    SupportSettingsDefaultTermsOfServiceLink,
+	"https://mattermost.com/pl/privacy-policy/":  SupportSettingsDefaultPrivacyPolicyLink,
+	"https://mattermost.com/pl/about-mattermost": SupportSettingsDefaultAboutLink,
+	"https://mattermost.com/pl/help/":            SupportSettingsDefaultHelpLink,
+	"https://mattermost.com/pl/report-a-bug":     SupportSettingsDefaultReportAProblemLink,
+}
+
 func (s *SupportSettings) SetDefaults() {
 	if !isSafeLink(s.TermsOfServiceLink) {
 		*s.TermsOfServiceLink = SupportSettingsDefaultTermsOfServiceLink
@@ -2460,6 +2470,12 @@ func (s *SupportSettings) SetDefaults() {
 
 	if s.ReportAProblemLink == nil {
 		s.ReportAProblemLink = new(SupportSettingsDefaultReportAProblemLink)
+	}
+
+	for _, link := range []*string{s.TermsOfServiceLink, s.PrivacyPolicyLink, s.AboutLink, s.HelpLink, s.ReportAProblemLink} {
+		if antimatter, ok := mattermostSupportLinks[*link]; ok {
+			*link = antimatter
+		}
 	}
 
 	if s.ReportAProblemType == nil {
