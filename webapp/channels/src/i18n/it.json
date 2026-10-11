@@ -3452,7 +3452,7 @@
   "admin.sql.traceTitle": "Log Statement SQL: ",
   "admin.support.aboutDesc": "L'URL del collegamento \"Informazioni\" nelle pagine di accesso a Antimatter. Se vuoto il collegamento viene nascosto agli utenti.",
   "admin.support.aboutTitle": "Informazioni sul collegamento:",
-  "admin.support.enableAskCommunityDesc": "Se vero, il collegamento \"Chiedi alla community\" appare nell'interfaccia utente di Antimatter e nel menu Aiuto, consentendo agli utenti di unirsi alla community di Mattermost per fare domande e aiutare gli altri a risolvere i problemi. Se falso, il collegamento viene nascosto agli utenti.",
+  "admin.support.enableAskCommunityDesc": "Se vero, il collegamento \"Chiedi alla community\" appare nell'interfaccia utente di Antimatter e nel menu Aiuto, consentendo agli utenti di unirsi alla community di Antimatter per fare domande e aiutare gli altri a risolvere i problemi. Se falso, il collegamento viene nascosto agli utenti.",
   "admin.support.enableAskCommunityTitle": "Attiva il collegamento Chiedi alla community:",
   "admin.support.enableTermsOfServiceHelp": "Se vero, i nuovi utenti devono accettare i termini di servizio prima di accedere a qualsiasi squadra Antimatter da desktop, web o mobile. Gli utenti esistenti devono accettarli dopo l'accesso o un aggiornamento della pagina. Per aggiornare il collegamento ai termini di servizio visualizzato nelle pagine di creazione dell'account e di accesso, vai in <a>Configurazione sito > Personalizzazione</a>",
   "admin.support.enableTermsOfServiceTitle": "Abilita l'uso dei termini di servizio personalizzati:",
