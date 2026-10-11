@@ -3,22 +3,30 @@
 // #root, replace them.
 @use '00_tokens' as tokens;
 
-:is(html, body):has(#adminConsoleWrapper) { background: var(--am-ground); }
+:is(html, body):has(#adminConsoleWrapper) { background: var(--am-main); }
+
+// One flat surface, like the Fusion settings dialog: the page in the main colour, the sidebar beside it; in light
+// mode a neutral off-white sidebar rather than the app's lavender.
+:root { --am-console-side: var(--am-side); }
+:root[data-am-theme="light"] { --am-console-side: #f6f6f8; }
+@media (prefers-color-scheme: light) {
+  :root[data-am-theme="system"] { --am-console-side: #f6f6f8; }
+}
 
 #root.console__root {
-  background: var(--am-ground);
+  background: var(--am-main);
   color: var(--am-text);
   font-family: var(--am-font-ui);
 
   a { color: var(--am-anti); }
 
   // The bar above the sidebar, with the way back to the app.
-  .backstage-navbar { border-color: var(--am-line); background: var(--am-side); }
+  .backstage-navbar { border-color: var(--am-line); background: var(--am-console-side); }
   .backstage-navbar__back, .backstage-navbar__back .fa { color: var(--am-text-2); }
   .backstage-navbar__back:hover { color: var(--am-text); text-decoration: none; }
 
   // The sidebar.
-  .admin-sidebar { border-right: 1px solid var(--am-line); background: var(--am-side); }
+  .admin-sidebar { border-right: 1px solid var(--am-line); background: var(--am-console-side); }
   .admin-sidebar .AdminSidebarHeader, .admin-sidebar .header__title { color: var(--am-text); font-family: var(--am-font-display); }
   .admin-sidebar .AdminSidebarHeader:hover { background: var(--am-hover); }
   .admin-sidebar .user__name { color: var(--am-muted); }
@@ -31,6 +39,11 @@
   }
   .admin-sidebar .filter-container .filter:focus { border-color: var(--am-matter); box-shadow: 0 0 0 3px var(--am-matter-soft); }
   .admin-sidebar .filter-container .filter::placeholder, .admin-sidebar .search__icon { color: var(--am-muted); }
+  // The search field sits on the sidebar, without the classic dark shadow under it, and its icon above the field.
+  .admin-sidebar .filter-container { background: var(--am-console-side); box-shadow: none; }
+  .admin-sidebar .search__icon { z-index: 1; }
+  .admin-sidebar .search__icon :is(i, svg, path) { color: var(--am-muted); fill: currentColor; }
+  .admin-sidebar .filter-container .filter:focus { outline: none; border-color: var(--am-matter); box-shadow: 0 0 0 3px var(--am-matter-soft); }
   .admin-sidebar .category-title, .admin-sidebar .category-title--active {
     color: var(--am-muted);
     font: 700 11px var(--am-font-ui);
@@ -52,17 +65,20 @@
     font-family: var(--am-font-display);
   }
   .admin-console__content { color: var(--am-text); }
-  .wrapper--fixed > .admin-console__wrapper { background: var(--am-ground); }
+  .wrapper--fixed > .admin-console__wrapper { background: var(--am-main); }
   .admin-console-save { border-top: 1px solid var(--am-line); background: var(--am-main); box-shadow: none; }
   .admin-console-save .error-message { color: var(--am-danger); }
 
-  // Panels and cards.
-  :is(.AdminPanel, .admin-console__content > form, .admin-console__content .card, .AdminPanelWithButton, .AdminPanelTogglable) {
-    border: 1px solid var(--am-line);
-    border-radius: 12px;
-    background: var(--am-main);
+  // Panels: no blocks on the page, sections apart with a line.
+  :is(.admin-console__content > form, .admin-console__content .card) { border: 0; background: transparent; box-shadow: none; }
+  :is(.AdminPanel, .AdminPanelWithButton, .AdminPanelTogglable) {
+    border: 0;
+    border-top: 1px solid var(--am-line);
+    border-radius: 0;
+    background: transparent;
     box-shadow: none;
   }
+  .admin-console__content .form-group + .form-group, .admin-console__content fieldset.form-group + .form-group { border-top: 1px solid var(--am-line); padding-top: 16px; }
   .AdminPanel__header, .AdminPanel .header { border-color: var(--am-line); }
   .AdminPanel__title, .AdminPanel h3 { color: var(--am-text); font-family: var(--am-font-display); }
   .AdminPanel__subtitle { color: var(--am-muted); }
@@ -74,7 +90,7 @@
   :is(.form-control, input.form-control, select.form-control, textarea.form-control) {
     border: 1px solid var(--am-line);
     border-radius: 9px;
-    background: var(--am-side);
+    background: var(--am-console-side);
     color: var(--am-text);
     box-shadow: none;
   }
@@ -110,13 +126,13 @@
 
   // Lists and tables (users, teams, channels...).
   table { color: var(--am-text); }
-  :is(thead th, .DataGrid_header) { border-color: var(--am-line); background: var(--am-side); color: var(--am-muted); }
+  :is(thead th, .DataGrid_header) { border-color: var(--am-line); background: var(--am-console-side); color: var(--am-muted); }
   :is(tbody tr, .DataGrid_row) { border-color: var(--am-line); }
   :is(tbody tr:hover, .DataGrid_row:hover) { background: var(--am-hover); }
   .DataGrid, .DataGrid_rows { border-color: var(--am-line); background: var(--am-main); }
 
   // The statistics' cards.
-  .total-count { border: 1px solid var(--am-line); border-radius: 12px; background: var(--am-main); box-shadow: none; color: var(--am-text); }
+  .total-count { border: 1px solid var(--am-line); border-radius: 12px; background: var(--am-console-side); box-shadow: none; color: var(--am-text); }
   .total-count .title, .total-count .title span { color: var(--am-muted); }
   .total-count .content, .total-count i { color: var(--am-text-2); }
 
