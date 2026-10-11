@@ -59,3 +59,7 @@
 :is(.am-app, .am-layer) .am-reactions-float { position: absolute; left: 50%; top: 12px; transform: translateX(-50%); align-items: center; display: flex; flex-direction: column; gap: 6px; pointer-events: none; z-index: 4; }
 :is(.am-app, .am-layer) .am-reaction-bubble { display: inline-flex; align-items: center; gap: 6px; width: max-content; padding: 4px 10px 4px 6px; border-radius: 16px; background: rgba(0, 0, 0, 0.6); color: #fff; font-size: 12.5px; font-weight: 600; animation: am-reaction-in .25s ease; }
 @keyframes am-reaction-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+// The call in a browser window of its own (CallPopout): its stage and controls, the whole window.
+.am-app.am-call-popout { display: flex; height: 100vh; }
+:is(.am-app, .am-layer) .am-call-pop-body { display: flex; flex: 1; flex-direction: column; min-width: 0; padding: 12px; gap: 12px; }
+:is(.am-app, .am-layer) .am-call-pop-body .am-stage { flex: 1; min-height: 0; }

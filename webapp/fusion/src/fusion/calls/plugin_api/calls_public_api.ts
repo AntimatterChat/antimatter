@@ -169,8 +169,9 @@ export type AntimatterCallsAPI = {
     setVideo(on: boolean): Promise<void>;
 
     // In the desktop app, opens Calls' screen source picker. A quality preset asks for that size and frame rate,
-    // and sends the screen at a matching bitrate.
-    startScreenShare(quality?: CallsScreenQuality): void;
+    // and sends the screen at a matching bitrate; a surface opens the browser's picker on that kind of source (a
+    // window or a tab leaves whole screens out).
+    startScreenShare(quality?: CallsScreenQuality, surface?: 'monitor' | 'window' | 'browser'): void;
     stopScreenShare(): void;
     setHandRaised(raised: boolean): void;
 

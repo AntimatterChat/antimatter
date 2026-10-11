@@ -11,7 +11,7 @@ import RenderEmoji from 'components/emoji/render_emoji';
 
 import Icon from 'fusion/components/icon';
 import {Popover} from 'fusion/components/layer';
-import {MenuHeading, MenuItem} from 'fusion/components/menu';
+import {MenuHeading, MenuItem, MenuSeparator} from 'fusion/components/menu';
 import {showToast} from 'fusion/components/toast';
 import {am} from 'fusion/utils/class_names';
 
@@ -20,7 +20,7 @@ import {getCallsAPI} from './calls_api';
 import {getScreenQuality, QUICK_REACTIONS, SCREEN_FRAME_RATES, SCREEN_HEIGHTS, setScreenQuality} from './extras';
 import {useCall} from './hooks';
 import type {MyCallState} from './hooks';
-import {setCallWindowOpen} from './ui_state';
+import {openCallPopout, useCallsUI} from './ui_state';
 
 // useToggleLabels gives the labels shared by the voice panel's buttons and the round controls.
 export function useToggleLabels(my: MyCallState | null) {
@@ -43,18 +43,19 @@ export function useToggleLabels(my: MyCallState | null) {
     };
 }
 
-// ScreenQualityMenu picks the size and frame rate the screen is shared at, as Vencord's presets; the choice is kept.
-function ScreenQualityMenu({my, anchor, onClose}: {my: MyCallState; anchor: HTMLElement | null; onClose: () => void}) {
+type ScreenSurface = 'monitor' | 'window' | 'browser';
+
+// ScreenShareMenu shares the screen: what (the whole screen, a window or a browser tab, which the browser's picker
+// opens on), at which size and frame rate (Vencord's presets; the choice is kept). The desktop app has its own picker.
+export function ScreenShareMenu({anchor, placement = 'above', onClose}: {anchor: HTMLElement | null; placement?: 'above' | 'below'; onClose: () => void}) {
     const {formatMessage} = useIntl();
     const [quality, setQuality] = useState(getScreenQuality);
-    const share = () => {
+
+    // Sharing must start right from the click: the browser asks only after a user's action.
+    const share = (surface?: ScreenSurface) => {
         setScreenQuality(quality);
         onClose();
-        if (my.screen) {
-            // A new quality needs a new capture: the browser asks again.
-            getCallsAPI()?.stopScreenShare();
-        }
-        getCallsAPI()?.startScreenShare(quality);
+        getCallsAPI()?.startScreenShare(quality, surface);
     };
     const chip = (on: boolean, label: string, onClick: () => void) => (
         <button
@@ -67,14 +68,43 @@ function ScreenQualityMenu({my, anchor, onClose}: {my: MyCallState; anchor: HTML
             {label}
         </button>
     );
+    const desktop = Boolean((window as {desktop?: unknown}).desktop);
     return (
         <Popover
             anchor={anchor}
-            placement='above'
+            placement={placement}
             className='plus-pop q-pop'
-            label={formatMessage({id: 'fusion.calls.quality', defaultMessage: 'Screen sharing quality'})}
+            role='menu'
+            label={formatMessage({id: 'fusion.calls.shareWhat', defaultMessage: 'Share your screen'})}
             onClose={onClose}
         >
+            <MenuHeading>{formatMessage({id: 'fusion.calls.shareWhat', defaultMessage: 'Share your screen'})}</MenuHeading>
+            {desktop ? (
+                <MenuItem
+                    icon='screen'
+                    label={formatMessage({id: 'fusion.calls.shareSource', defaultMessage: 'Choose a screen or a window…'})}
+                    onClick={() => share()}
+                />
+            ) : (
+                <>
+                    <MenuItem
+                        icon='screen'
+                        label={formatMessage({id: 'fusion.calls.shareMonitor', defaultMessage: 'A whole screen'})}
+                        onClick={() => share('monitor')}
+                    />
+                    <MenuItem
+                        icon='rect'
+                        label={formatMessage({id: 'fusion.calls.shareWindow', defaultMessage: 'A window'})}
+                        onClick={() => share('window')}
+                    />
+                    <MenuItem
+                        icon='globe'
+                        label={formatMessage({id: 'fusion.calls.shareTab', defaultMessage: 'A browser tab'})}
+                        onClick={() => share('browser')}
+                    />
+                </>
+            )}
+            <MenuSeparator/>
             <MenuHeading>{formatMessage({id: 'fusion.calls.resolution', defaultMessage: 'Resolution'})}</MenuHeading>
             <div className={am('q-chips')}>
                 {SCREEN_HEIGHTS.map((h) => chip(quality.height === h, h ? `${h}p` : formatMessage({id: 'fusion.calls.source', defaultMessage: 'Source'}), () => setQuality({...quality, height: h})))}
@@ -82,16 +112,6 @@ function ScreenQualityMenu({my, anchor, onClose}: {my: MyCallState; anchor: HTML
             <MenuHeading>{formatMessage({id: 'fusion.calls.frameRate', defaultMessage: 'Frame rate'})}</MenuHeading>
             <div className={am('q-chips')}>
                 {SCREEN_FRAME_RATES.map((f) => chip(quality.frameRate === f, `${f} fps`, () => setQuality({...quality, frameRate: f})))}
-            </div>
-            <div className={am('q-foot')}>
-                <button
-                    type='button'
-                    className={am('btn', 'primary')}
-                    disabled={!my.screen && (!my.screenAllowed || my.otherSharing)}
-                    onClick={share}
-                >
-                    {my.screen ? formatMessage({id: 'fusion.calls.reshare', defaultMessage: 'Share again at this quality'}) : formatMessage({id: 'fusion.calls.shareScreen', defaultMessage: 'Share screen'})}
-                </button>
             </div>
         </Popover>
     );
@@ -188,6 +208,7 @@ type Props = {
 // CallControls is the mockup's row of round call controls, under the stage. Deafen exists in voice channels only;
 // when the call runs in another window (the desktop app's), only leaving can be done from here.
 export default function CallControls({my, withPopout = false}: Props) {
+    const {callPopout} = useCallsUI();
     const actions = useCallActions();
     const labels = useToggleLabels(my);
     const media = my.call.mediaInThisWindow;
@@ -199,7 +220,7 @@ export default function CallControls({my, withPopout = false}: Props) {
     const screenRef = useRef<HTMLButtonElement>(null);
     const cameraRef = useRef<HTMLButtonElement>(null);
     const reactRef = useRef<HTMLButtonElement>(null);
-    const caret = (which: 'screen' | 'camera', ref: React.RefObject<HTMLButtonElement | null>, label: string) => (
+    const caret = (which: 'camera', ref: React.RefObject<HTMLButtonElement | null>, label: string) => (
         <button
             ref={ref}
             className={am('round-caret', {on: menu === which})}
@@ -249,16 +270,17 @@ export default function CallControls({my, withPopout = false}: Props) {
                     </button>
                     {api?.setBackgroundBlur && caret('camera', cameraRef, formatMessage({id: 'fusion.calls.cameraOptions', defaultMessage: 'Camera options'}))}
                     <button
-                        className={am('round', {on: my.screen})}
-                        aria-label={labels.screen}
+                        ref={screenRef}
+                        className={am('round', {on: my.screen || menu === 'screen'})}
+                        aria-label={my.screen ? formatMessage({id: 'fusion.calls.stopSharing', defaultMessage: 'Stop sharing'}) : labels.screen}
                         aria-pressed={my.screen}
+                        aria-haspopup={my.screen ? undefined : 'menu'}
                         title={my.screen || (my.screenAllowed && !my.otherSharing) ? undefined : labels.screen}
                         disabled={!my.screen && (!my.screenAllowed || my.otherSharing)}
-                        onClick={() => actions.toggleScreen(my)}
+                        onClick={() => (my.screen ? actions.toggleScreen(my) : setMenu(menu === 'screen' ? null : 'screen'))}
                     >
                         <Icon name='screen'/>
                     </button>
-                    {caret('screen', screenRef, formatMessage({id: 'fusion.calls.quality', defaultMessage: 'Screen sharing quality'}))}
                     <button
                         className={am('round', {on: my.handRaised})}
                         aria-label={labels.hand}
@@ -292,8 +314,7 @@ export default function CallControls({my, withPopout = false}: Props) {
                 </button>
             )}
             {menu === 'screen' && (
-                <ScreenQualityMenu
-                    my={my}
+                <ScreenShareMenu
                     anchor={screenRef.current}
                     onClose={() => setMenu(null)}
                 />
@@ -310,12 +331,12 @@ export default function CallControls({my, withPopout = false}: Props) {
                     onClose={() => setMenu(null)}
                 />
             )}
-            {withPopout && (
+            {withPopout && !callPopout && (
                 <button
                     className={am('round')}
                     title={labels.popout}
                     aria-label={labels.popoutLabel}
-                    onClick={() => setCallWindowOpen(true)}
+                    onClick={openCallPopout}
                 >
                     <Icon name='popout'/>
                 </button>

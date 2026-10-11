@@ -19,6 +19,7 @@ import UnreadsStatusHandler from 'components/unreads_status_handler';
 
 import AppRail from 'fusion/apps/app_rail';
 import CallEvents from 'fusion/calls/call_events';
+import CallPopout from 'fusion/calls/call_popout';
 import CallWindow from 'fusion/calls/call_window';
 import {useOpenVoiceChat} from 'fusion/calls/voice_chat';
 import {IconSprite} from 'fusion/components/icon';
@@ -195,6 +196,7 @@ function Frame({children}: Props) {
             />
             {search.isOpen && <GlobalSearch/>}
             <CallWindow/>
+            <CallPopout/>
             <CallEvents/>
             <Toasts/>
             <TeamCardHost/>

@@ -1,7 +1,7 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 
-import React, {useEffect, useLayoutEffect, useRef, useState} from 'react';
+import React, {createContext, useContext, useEffect, useLayoutEffect, useRef, useState} from 'react';
 import ReactDOM from 'react-dom';
 
 import {am} from 'fusion/utils/class_names';
@@ -9,8 +9,12 @@ import {am} from 'fusion/utils/class_names';
 export const LAYER_ID = 'am-layer';
 
 // Layer renders popovers, menus and dialogs above the app, like the mockup's #layer.
+// LayerRoot is the layer of another window the Fusion UI draws in (the call's window), for its popovers.
+export const LayerRoot = createContext<HTMLElement | null>(null);
+
 export function Layer({children}: {children: React.ReactNode}) {
-    const root = document.getElementById(LAYER_ID);
+    const own = useContext(LayerRoot);
+    const root = own || document.getElementById(LAYER_ID);
     return root ? ReactDOM.createPortal(children, root) : null;
 }
 
@@ -59,8 +63,11 @@ const clamp = (v: number, size: number, max: number) => Math.max(MARGIN, Math.mi
 function place(pop: HTMLElement, placement: Placement, anchor?: HTMLElement | null, point?: {x: number; y: number}) {
     const w = pop.offsetWidth;
     const h = pop.offsetHeight;
-    const vw = window.innerWidth;
-    const vh = window.innerHeight;
+
+    // The window it's in: the call's window has its own
+    const view = pop.ownerDocument.defaultView || window;
+    const vw = view.innerWidth;
+    const vh = view.innerHeight;
     let left = 0;
     let top = 0;
     if (placement === 'point' || !anchor) {
@@ -147,11 +154,12 @@ export function Popover({anchor, point, placement = 'below', className, role = '
                 onClose();
             }
         };
-        document.addEventListener('pointerdown', onPointerDown, true);
-        document.addEventListener('keydown', onKeyDown, true);
+        const doc = ref.current?.ownerDocument || document;
+        doc.addEventListener('pointerdown', onPointerDown, true);
+        doc.addEventListener('keydown', onKeyDown, true);
         return () => {
-            document.removeEventListener('pointerdown', onPointerDown, true);
-            document.removeEventListener('keydown', onKeyDown, true);
+            doc.removeEventListener('pointerdown', onPointerDown, true);
+            doc.removeEventListener('keydown', onKeyDown, true);
         };
     }, [anchor, onClose]);
 

@@ -11,9 +11,12 @@ type CallsUIState = {
 
     // The voice channel whose text chat is open in the right-hand panel.
     voiceChat: string | null;
+
+    // The browser window the call is shown in, when popped out (see CallPopout).
+    callPopout: Window | null;
 };
 
-let state: CallsUIState = {callWindow: false, voiceChat: null};
+let state: CallsUIState = {callWindow: false, voiceChat: null, callPopout: null};
 const listeners = new Set<() => void>();
 
 function update(changes: Partial<CallsUIState>) {
@@ -35,6 +38,30 @@ export function useCallsUI(): CallsUIState {
 export function setCallWindowOpen(open: boolean) {
     if (state.callWindow !== open) {
         update({callWindow: open});
+    }
+}
+
+// openCallPopout shows the call in a window of its own: opened right from the click (browsers block windows opened
+// later), or the one already open brought forward. Where windows are blocked, the floating window shows it instead.
+export function openCallPopout() {
+    if (state.callPopout && !state.callPopout.closed) {
+        state.callPopout.focus();
+        return;
+    }
+    const win = window.open('', 'antimatter-call', 'popup,width=960,height=640');
+    if (!win) {
+        setCallWindowOpen(true);
+        return;
+    }
+    update({callPopout: win, callWindow: false});
+}
+
+export function closeCallPopout() {
+    if (state.callPopout) {
+        if (!state.callPopout.closed) {
+            state.callPopout.close();
+        }
+        update({callPopout: null});
     }
 }
 

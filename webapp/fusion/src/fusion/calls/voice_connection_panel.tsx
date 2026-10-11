@@ -1,7 +1,7 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 
-import React from 'react';
+import React, {useRef, useState} from 'react';
 import {useIntl} from 'react-intl';
 import {useSelector, useStore} from 'react-redux';
 
@@ -18,10 +18,10 @@ import type {GlobalState} from 'types/store';
 import {goToChannel, useCallActions, useChannelLabel} from './actions';
 import CallVideo from './call_video';
 import type {VoiceParticipant} from './calls_api';
-import {useToggleLabels} from './controls';
+import {ScreenShareMenu, useToggleLabels} from './controls';
 import {useCallMedia, useMyCall, useParticipants} from './hooks';
 import {FakeScreen} from './stage';
-import {setCallWindowOpen} from './ui_state';
+import {openCallPopout} from './ui_state';
 
 // Where the call is: its team, or "Direct message".
 function useWhere(channelId: string): string {
@@ -45,7 +45,7 @@ function MiniScreen({sharer, stream}: {sharer: VoiceParticipant; stream: MediaSt
         <button
             className={am('mini-screen')}
             aria-label={formatMessage({id: 'fusion.calls.miniScreenLabel', defaultMessage: '{name} is sharing their screen — open the call in a new window'}, {name})}
-            onClick={() => setCallWindowOpen(true)}
+            onClick={openCallPopout}
         >
             {stream ? (
                 <CallVideo
@@ -80,6 +80,8 @@ export default function VoiceConnectionPanel() {
     const label = useChannelLabel(channelId);
     const where = useWhere(channelId);
     const labels = useToggleLabels(my);
+    const shareRef = useRef<HTMLButtonElement>(null);
+    const [sharing, setSharing] = useState(false);
 
     if (!my) {
         return null;
@@ -128,7 +130,7 @@ export default function VoiceConnectionPanel() {
                     className={am('icon-btn')}
                     title={labels.popout}
                     aria-label={labels.popoutLabel}
-                    onClick={() => setCallWindowOpen(true)}
+                    onClick={openCallPopout}
                 >
                     <Icon
                         name='popout'
@@ -190,12 +192,14 @@ export default function VoiceConnectionPanel() {
                         />
                     </button>
                     <button
-                        className={am({on: my.screen})}
+                        ref={shareRef}
+                        className={am({on: my.screen || sharing})}
                         aria-pressed={my.screen}
-                        title={labels.screen}
-                        aria-label={labels.screen}
+                        aria-haspopup={my.screen ? undefined : 'menu'}
+                        title={my.screen ? formatMessage({id: 'fusion.calls.stopSharing', defaultMessage: 'Stop sharing'}) : labels.screen}
+                        aria-label={my.screen ? formatMessage({id: 'fusion.calls.stopSharing', defaultMessage: 'Stop sharing'}) : labels.screen}
                         disabled={!my.screen && (!my.screenAllowed || my.otherSharing)}
-                        onClick={() => actions.toggleScreen(my)}
+                        onClick={() => (my.screen ? actions.toggleScreen(my) : setSharing(!sharing))}
                     >
                         <Icon
                             name='screen'
@@ -203,6 +207,12 @@ export default function VoiceConnectionPanel() {
                         />
                     </button>
                 </div>
+            )}
+            {sharing && (
+                <ScreenShareMenu
+                    anchor={shareRef.current}
+                    onClose={() => setSharing(false)}
+                />
             )}
         </div>
     );
