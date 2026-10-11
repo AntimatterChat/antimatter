@@ -20340,7 +20340,7 @@
     "description": "Product name used as link text on the OAuth error page; usually left untranslated."
   },
   "error.oauth_missing_code.office365": {
-    "defaultMessage": "For {link} make sure the administrator of your Microsoft organization has enabled the Mattermost app.",
+    "defaultMessage": "For {link} make sure the administrator of your Microsoft organization has enabled the app registered for this server.",
     "description": "Line on the OAuth missing-code error page; {link} is replaced with the linked product name 'Entra ID'."
   },
   "error.oauth_missing_code.office365.link": {
@@ -23244,7 +23244,7 @@
     "description": "Browser tab title on the login page after a session expiry; {siteName} is the server name; the leading '*' is an unread marker and should be kept."
   },
   "login.subtitle": {
-    "defaultMessage": "Collaborate with your team in real-time",
+    "defaultMessage": "Welcome back. Pick up where you left off.",
     "description": "Marketing subtitle displayed alongside the login form on the login page."
   },
   "login.terms_rejected": {
@@ -27756,7 +27756,7 @@
     "description": "Link at the top of the signup page taking existing users to the login page; 'Log in' is a verb phrase."
   },
   "signup_user_completed.subtitle": {
-    "defaultMessage": "Create your Antimatter account to start collaborating with your team",
+    "defaultMessage": "Create your account and join the conversation.",
     "description": "Subtitle under the signup page heading."
   },
   "signup_user_completed.title": {

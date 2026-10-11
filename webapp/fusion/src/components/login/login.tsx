@@ -863,7 +863,7 @@ const Login = ({onCustomizeHeader}: LoginProps) => {
 
         return (
             <p className='login-body-message-subtitle'>
-                {formatMessage({id: 'login.subtitle', defaultMessage: 'Collaborate with your team in real-time'})}
+                {formatMessage({id: 'login.subtitle', defaultMessage: 'Welcome back. Pick up where you left off.'})}
             </p>
         );
     };

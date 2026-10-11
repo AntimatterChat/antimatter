@@ -93,7 +93,7 @@ exports[`components/error_page/ErrorMessage should match snapshot, oauth_missing
       <span>
         Entra ID
       </span>
-       make sure the administrator of your Microsoft organization has enabled the Mattermost app.
+       make sure the administrator of your Microsoft organization has enabled the app registered for this server.
     </p>
     <p>
       For 

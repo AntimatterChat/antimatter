@@ -30,6 +30,8 @@ import type {AdminDefinitionSubSection, AdminDefinitionSection} from './types';
 
 import type {PropsFromRedux} from './index';
 
+import 'fusion/styles/admin.scss';
+
 export type Props = PropsFromRedux & RouteComponentProps;
 
 // not every page in the system console will need the config, but the vast majority will

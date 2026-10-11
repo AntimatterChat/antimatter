@@ -427,7 +427,7 @@ const Signup = ({onCustomizeHeader}: SignupProps) => {
             <p className='signup-body-message-subtitle'>
                 {formatMessage({
                     id: 'signup_user_completed.subtitle',
-                    defaultMessage: 'Create your Antimatter account to start collaborating with your team',
+                    defaultMessage: 'Create your account and join the conversation.',
                 })}
             </p>
         );

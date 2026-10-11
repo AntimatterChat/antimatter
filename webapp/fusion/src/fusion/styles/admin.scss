@@ -1,0 +1,125 @@
+// The System Console in the Fusion look: the classic console's components, restyled with the Fusion tokens in
+// the system's light or dark mode. Its own styles hardcode light backgrounds; these rules, under the console's
+// #root, replace them.
+@use '00_tokens' as tokens;
+
+:is(html, body):has(#adminConsoleWrapper) { background: var(--am-ground); }
+
+#root.console__root {
+  background: var(--am-ground);
+  color: var(--am-text);
+  font-family: var(--am-font-ui);
+
+  a { color: var(--am-anti); }
+
+  // The bar above the sidebar, with the way back to the app.
+  .backstage-navbar { border-color: var(--am-line); background: var(--am-side); }
+  .backstage-navbar__back, .backstage-navbar__back .fa { color: var(--am-text-2); }
+  .backstage-navbar__back:hover { color: var(--am-text); text-decoration: none; }
+
+  // The sidebar.
+  .admin-sidebar { border-right: 1px solid var(--am-line); background: var(--am-side); }
+  .admin-sidebar .AdminSidebarHeader, .admin-sidebar .header__title { color: var(--am-text); font-family: var(--am-font-display); }
+  .admin-sidebar .AdminSidebarHeader:hover { background: var(--am-hover); }
+  .admin-sidebar .user__name { color: var(--am-muted); }
+  .admin-sidebar .filter-container .filter {
+    border: 1px solid var(--am-line);
+    border-radius: 9px;
+    background: var(--am-main);
+    color: var(--am-text);
+    box-shadow: none;
+  }
+  .admin-sidebar .filter-container .filter:focus { border-color: var(--am-matter); box-shadow: 0 0 0 3px var(--am-matter-soft); }
+  .admin-sidebar .filter-container .filter::placeholder, .admin-sidebar .search__icon { color: var(--am-muted); }
+  .admin-sidebar .category-title, .admin-sidebar .category-title--active {
+    color: var(--am-muted);
+    font: 700 11px var(--am-font-ui);
+    letter-spacing: .07em;
+  }
+  .admin-sidebar .category-icon { color: var(--am-faint); }
+  .admin-sidebar .sidebar-section-title { border-radius: 7px; margin: 1px 8px; color: var(--am-text-2); }
+  .admin-sidebar .sidebar-section-title:hover { background: var(--am-hover); color: var(--am-text); }
+  .admin-sidebar .sidebar-section-title--active,
+  .admin-sidebar .sidebar-section-title--active:hover { background: var(--am-select); color: var(--am-text); font-weight: 600; }
+  .admin-sidebar .sidebar-section-title--active::before { display: none; }
+
+  // The page: its title bar, its content and its save bar.
+  .admin-console__wrapper, .admin-console, .wrapper--fixed { background: transparent; }
+  .admin-console__header {
+    border-bottom: 1px solid var(--am-line);
+    background: var(--am-main);
+    color: var(--am-text);
+    font-family: var(--am-font-display);
+  }
+  .admin-console__content { color: var(--am-text); }
+  .wrapper--fixed > .admin-console__wrapper { background: var(--am-ground); }
+  .admin-console-save { border-top: 1px solid var(--am-line); background: var(--am-main); box-shadow: none; }
+  .admin-console-save .error-message { color: var(--am-danger); }
+
+  // Panels and cards.
+  :is(.AdminPanel, .admin-console__content > form, .admin-console__content .card, .AdminPanelWithButton, .AdminPanelTogglable) {
+    border: 1px solid var(--am-line);
+    border-radius: 12px;
+    background: var(--am-main);
+    box-shadow: none;
+  }
+  .AdminPanel__header, .AdminPanel .header { border-color: var(--am-line); }
+  .AdminPanel__title, .AdminPanel h3 { color: var(--am-text); font-family: var(--am-font-display); }
+  .AdminPanel__subtitle { color: var(--am-muted); }
+
+  // Settings: labels, help texts and fields.
+  :is(.control-label, .form-legend, legend) { color: var(--am-text); font-weight: 600; }
+  .help-text, .help-text p { color: var(--am-muted); }
+  .help-text code, .admin-console__content code { border: 0; border-radius: 5px; background: var(--am-raise); color: var(--am-text); }
+  :is(.form-control, input.form-control, select.form-control, textarea.form-control) {
+    border: 1px solid var(--am-line);
+    border-radius: 9px;
+    background: var(--am-side);
+    color: var(--am-text);
+    box-shadow: none;
+  }
+  :is(.form-control):focus { border-color: var(--am-matter); box-shadow: 0 0 0 3px var(--am-matter-soft); }
+  .form-control[disabled], .form-control:disabled { background: var(--am-raise); color: var(--am-faint); }
+  input[type="checkbox"] { accent-color: var(--am-matter); }
+  // Radio buttons drawn in the theme's colours (the browser's own are white in dark mode).
+  input[type="radio"] {
+    display: inline-grid;
+    width: 16px;
+    height: 16px;
+    margin: 0 6px 0 0;
+    border: 1.5px solid var(--am-muted);
+    border-radius: 50%;
+    appearance: none;
+    background: transparent;
+    place-content: center;
+    vertical-align: -3px;
+  }
+  input[type="radio"]:checked { border-color: var(--am-matter); }
+  input[type="radio"]:checked::before { width: 8px; height: 8px; border-radius: 50%; background: var(--am-matter); content: ""; }
+  input[type="radio"]:disabled { opacity: .45; }
+
+  // Buttons.
+  .btn { border-radius: 10px; font-weight: 600; box-shadow: none; }
+  .btn.btn-primary { background: var(--am-matter); color: #fff; }
+  .btn.btn-primary:hover:not(:disabled) { background: var(--am-matter); filter: brightness(1.1); }
+  .btn.btn-primary:disabled, .btn.btn-primary.disabled { background: var(--am-raise); color: var(--am-faint); opacity: 1; }
+  .btn.btn-tertiary { background: var(--am-matter-soft); color: var(--am-matter); }
+  .btn.btn-tertiary:disabled { background: var(--am-raise); color: var(--am-faint); }
+  .btn.btn-secondary, .btn.btn-default { border: 1px solid var(--am-line); background: var(--am-raise); color: var(--am-text); }
+  .btn.btn-danger { background: var(--am-danger); color: #fff; }
+
+  // Lists and tables (users, teams, channels...).
+  table { color: var(--am-text); }
+  :is(thead th, .DataGrid_header) { border-color: var(--am-line); background: var(--am-side); color: var(--am-muted); }
+  :is(tbody tr, .DataGrid_row) { border-color: var(--am-line); }
+  :is(tbody tr:hover, .DataGrid_row:hover) { background: var(--am-hover); }
+  .DataGrid, .DataGrid_rows { border-color: var(--am-line); background: var(--am-main); }
+
+  // The statistics' cards.
+  .total-count { border: 1px solid var(--am-line); border-radius: 12px; background: var(--am-main); box-shadow: none; color: var(--am-text); }
+  .total-count .title, .total-count .title span { color: var(--am-muted); }
+  .total-count .content, .total-count i { color: var(--am-text-2); }
+
+  // Banners.
+  .banner, .alert { border-radius: 10px; }
+}

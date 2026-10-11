@@ -129,7 +129,7 @@ const ErrorMessage: React.FC<Props> = ({type, message, service, isGuest}: Props)
                     <p>
                         <FormattedMessage
                             id='error.oauth_missing_code.office365'
-                            defaultMessage='For {link} make sure the administrator of your Microsoft organization has enabled the Mattermost app.'
+                            defaultMessage='For {link} make sure the administrator of your Microsoft organization has enabled the app registered for this server.'
                             values={{
                                 link: (
                                     <ErrorLink
