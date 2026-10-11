@@ -16,7 +16,8 @@ import {
 import {getBool} from 'mattermost-redux/selectors/entities/preferences';
 import {getCurrentTeam} from 'mattermost-redux/selectors/entities/teams';
 import {getCurrentTimezone} from 'mattermost-redux/selectors/entities/timezone';
-import {getCurrentUserMentionKeys, getHighlightWithoutNotificationKeys} from 'mattermost-redux/selectors/entities/users';
+import {getCurrentUserMentionKeys, getHighlightWithoutNotificationKeys, getUser} from 'mattermost-redux/selectors/entities/users';
+import {getUserCurrentTimezone} from 'mattermost-redux/utils/timezone_utils';
 
 import {canManageMembers} from 'utils/channel_utils';
 import {Preferences} from 'utils/constants';
@@ -64,6 +65,7 @@ function makeMapStateToProps() {
     return (state: GlobalState, ownProps: OwnProps) => {
         const channel = getChannel(state, ownProps.channelId);
         const currentTeam = getCurrentTeam(state);
+        const author = ownProps.post ? getUser(state, ownProps.post.user_id) : undefined;
 
         return {
             channel,
@@ -76,6 +78,7 @@ function makeMapStateToProps() {
             isMilitaryTime: getBool(state, Preferences.CATEGORY_DISPLAY_SETTINGS, Preferences.USE_MILITARY_TIME, false),
             timezone: getCurrentTimezone(state),
             hideGuestTags: getConfig(state).HideGuestTags === 'true',
+            authorTimezone: author?.timezone ? getUserCurrentTimezone(author.timezone) || undefined : undefined,
             renderEmoticonsAsEmoji: getBool(state, Preferences.CATEGORY_DISPLAY_SETTINGS, Preferences.RENDER_EMOTICONS_AS_EMOJI, Preferences.RENDER_EMOTICONS_AS_EMOJI_DEFAULT === 'true'),
         };
     };

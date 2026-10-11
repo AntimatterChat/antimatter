@@ -9,6 +9,7 @@ import {isRecordOf} from '@mattermost/types/utilities';
 
 import type {HighlightWithoutNotificationKey} from 'mattermost-redux/selectors/entities/users';
 
+import {findWalltimes} from 'fusion/messages/walltime/walltime';
 import {formatWithRenderer} from 'utils/markdown';
 
 import Constants from './constants';
@@ -206,6 +207,12 @@ export interface TextFormattingOptionsBase {
      * Whether or not to render text emoticons (:D) as emojis
      */
     renderEmoticonsAsEmoji: boolean;
+
+    /**
+     * Antimatter: walltimes, the times written in a message, read in the time zone they give, or else in its author's
+     * zone (when known), on the day it was posted.
+     */
+    walltime: {zone?: string; postedAt: number};
 }
 
 export type TextFormattingOptions = Partial<TextFormattingOptionsBase>;
@@ -366,6 +373,9 @@ export function doFormatText(text: string, options: TextFormattingOptions, emoji
         output = autolinkEmails(output, tokens);
         output = autolinkHashtags(output, tokens, options.minimumHashtagLength);
         output = formatTimestamps(output, tokens);
+        if (options.walltime) {
+            output = formatWalltimes(output, tokens, options.walltime);
+        }
 
         if (!('emoticons' in options) || options.emoticons) {
             output = Emoticons.handleEmoticons(output, tokens, options.renderEmoticonsAsEmoji);
@@ -517,6 +527,23 @@ function formatTimestamps(text: string, tokens: Tokens): string {
         });
         return alias;
     });
+}
+
+// Walltimes become spans that messageHtmlToComponent turns into WalltimeText, which knows the reader's time zone.
+function formatWalltimes(text: string, tokens: Tokens, {zone, postedAt}: {zone?: string; postedAt: number}): string {
+    let output = text;
+    const found = findWalltimes(text, zone, postedAt);
+    for (let i = found.length - 1; i >= 0; i--) {
+        const walltime = found[i];
+        const alias = `$MM_WALLTIME${tokens.size}$`;
+        const range = walltime.end ? `${walltime.start}-${walltime.end}` : String(walltime.start);
+        tokens.set(alias, {
+            value: `<span data-walltime="${range}" data-walltime-zone="${escapeHtml(walltime.zone)}"${walltime.explicit ? ' data-walltime-explicit="true"' : ''}>${walltime.text}</span>`,
+            originalText: walltime.text,
+        });
+        output = output.slice(0, walltime.index) + alias + output.slice(walltime.index + walltime.text.length);
+    }
+    return output;
 }
 
 export function allAtMentions(text: string): string[] {

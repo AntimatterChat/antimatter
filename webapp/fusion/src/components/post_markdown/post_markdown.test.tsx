@@ -45,6 +45,7 @@ describe('components/PostMarkdown', () => {
         isUserCanManageMembers: false,
         dispatch: jest.fn(),
         renderEmoticonsAsEmoji: true,
+        authorTimezone: undefined,
     };
 
     const state = {entities: {

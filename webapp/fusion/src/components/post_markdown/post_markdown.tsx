@@ -64,13 +64,16 @@ export default class PostMarkdown extends React.PureComponent<Props> {
     };
 
     getOptions = memoize(
-        (options?: TextFormattingOptions, disableGroupHighlight?: boolean, mentionHighlight?: boolean, editedAt?: number, renderEmoticonsAsEmoji?: boolean) => {
+        (options?: TextFormattingOptions, disableGroupHighlight?: boolean, mentionHighlight?: boolean, editedAt?: number, renderEmoticonsAsEmoji?: boolean, postedAt?: number, authorTimezone?: string) => {
             return {
                 ...options,
                 disableGroupHighlight,
                 mentionHighlight,
                 editedAt,
                 renderEmoticonsAsEmoji,
+
+                // Antimatter: the times written in a message, read in its author's time zone on the day it was posted.
+                walltime: postedAt ? {zone: authorTimezone, postedAt} : undefined,
             };
         });
 
@@ -142,6 +145,8 @@ export default class PostMarkdown extends React.PureComponent<Props> {
             mentionHighlight,
             this.props.post?.edit_at,
             this.props?.renderEmoticonsAsEmoji,
+            this.props.post?.create_at,
+            this.props.authorTimezone,
         );
 
         return (

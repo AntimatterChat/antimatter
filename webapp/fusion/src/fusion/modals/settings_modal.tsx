@@ -29,6 +29,7 @@ import Avatar from 'fusion/components/avatar';
 import Icon from 'fusion/components/icon';
 import {Dialog} from 'fusion/components/layer';
 import {useDisplayPrefs} from 'fusion/hooks/display';
+import {WALLTIME_PREFERENCE} from 'fusion/messages/walltime/walltime_text';
 import {useToast} from 'fusion/shell/toast_context';
 import {badgesRequired, getTeamsByUser, TEAM_BADGE_PROP} from 'fusion/teams/teams';
 import {am} from 'fusion/utils/class_names';
@@ -602,6 +603,7 @@ function MessagesPane() {
     const [threads, setThreads] = usePreference(Preferences.CATEGORY_DISPLAY_SETTINGS, Preferences.COLLAPSED_REPLY_THREADS, useSelector(getCollapsedThreadsPreference));
     const [linkPreviews, setLinkPreviews] = usePreference(Preferences.CATEGORY_DISPLAY_SETTINGS, Constants.Preferences.LINK_PREVIEW_DISPLAY, Constants.Preferences.LINK_PREVIEW_DISPLAY_DEFAULT);
     const [emoticons, setEmoticons] = usePreference(Preferences.CATEGORY_DISPLAY_SETTINGS, Preferences.RENDER_EMOTICONS_AS_EMOJI, 'true');
+    const [walltime, setWalltime] = usePreference(Preferences.CATEGORY_DISPLAY_SETTINGS, WALLTIME_PREFERENCE, 'true');
     const [joinLeave, setJoinLeave] = usePreference(Preferences.CATEGORY_ADVANCED_SETTINGS, Preferences.ADVANCED_FILTER_JOIN_LEAVE, config.EnableJoinLeaveMessageByDefault || 'true');
     const [ctrlSend, setCtrlSend] = usePreference(Preferences.CATEGORY_ADVANCED_SETTINGS, Preferences.ADVANCED_SEND_ON_CTRL_ENTER, 'false');
     const richTextAllowed = useSelector((state: GlobalState) => getFeatureFlagValue(state, 'WysiwygEditor') === 'true');
@@ -633,6 +635,12 @@ function MessagesPane() {
                 desc={formatMessage({id: 'fusion.settings.emoticonsDesc', defaultMessage: 'Show :) and <3 as emoji.'})}
                 on={emoticons === 'true'}
                 onChange={(on) => setEmoticons(String(on))}
+            />
+            <Toggle
+                title={formatMessage({id: 'fusion.settings.walltime', defaultMessage: 'Times in your time zone'})}
+                desc={formatMessage({id: 'fusion.settings.walltimeDesc', defaultMessage: 'Highlight the times written in messages from other time zones, with your own time when you point at them.'})}
+                on={walltime === 'true'}
+                onChange={(on) => setWalltime(String(on))}
             />
             <Toggle
                 title={formatMessage({id: 'fusion.settings.joinLeave', defaultMessage: 'Join and leave messages'})}

@@ -21,6 +21,7 @@ import PostEmoji from 'components/post_emoji';
 import PostEditedIndicator from 'components/post_view/post_edited_indicator';
 
 import {MessageLink, parseMessageLink} from 'fusion/messages/content/message_link';
+import WalltimeText from 'fusion/messages/walltime/walltime_text';
 
 export type Options = Partial<{
     postId: string;
@@ -303,6 +304,26 @@ export default function messageHtmlToComponent(html: string, options: Options = 
             },
         });
     }
+
+    // Antimatter: walltimes (utils/text_formatting).
+    processingInstructions.push({
+        replaceChildren: false,
+        shouldProcessNode: (node: any) => node.attribs && node.attribs['data-walltime'],
+        processNode: (node: any, children: any, index?: number) => {
+            const [start, end] = String(node.attribs['data-walltime']).split('-').map(Number);
+            return (
+                <WalltimeText
+                    key={index}
+                    start={start}
+                    end={end || undefined}
+                    zone={node.attribs['data-walltime-zone']}
+                    explicit={node.attribs['data-walltime-explicit'] === 'true'}
+                >
+                    {children}
+                </WalltimeText>
+            );
+        },
+    });
 
     if (!('latex' in options) || options.latex) {
         processingInstructions.push({

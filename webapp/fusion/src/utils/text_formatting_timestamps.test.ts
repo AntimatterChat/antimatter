@@ -25,4 +25,13 @@ describe('Antimatter markdown extensions', () => {
         expect(html).toContain('<span class="markdown__subtext">small print</span>');
         expect(formatText('a -# b', {}, emojiMap)).not.toContain('markdown__subtext');
     });
+
+    test('walltimes become spans, outside code and only with a walltime option', () => {
+        const walltime = {zone: 'America/New_York', postedAt: Date.UTC(2026, 9, 9, 14, 0)};
+        const html = formatText('Sync at **3pm**, not `4pm`, then 10-11am PT', {walltime}, emojiMap);
+        expect(html).toContain(`<span data-walltime="${Date.UTC(2026, 9, 9, 19, 0)}" data-walltime-zone="America/New_York">3pm</span>`);
+        expect(html).toContain(`<span data-walltime="${Date.UTC(2026, 9, 9, 17, 0)}-${Date.UTC(2026, 9, 9, 18, 0)}" data-walltime-zone="America/Los_Angeles" data-walltime-explicit="true">10-11am PT</span>`);
+        expect(html).toContain('<code>4pm</code>');
+        expect(formatText('Sync at 3pm', {}, emojiMap)).not.toContain('data-walltime');
+    });
 });
