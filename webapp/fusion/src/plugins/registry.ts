@@ -1661,8 +1661,9 @@ export default class PluginRegistry {
     /**
      * Register a tab of the emoji picker of the message box, e.g. GIFs or stickers. The tabs show
      * where people compose a message (not while editing one, nor in the reaction picker): in the
-     * classic web app after the Emojis and GIFs tabs of the emoji picker, in the Fusion UI before its
-     * Emoji tab, as in its mockup (GIFs, Stickers, Emoji).
+     * classic web app after the Emojis and GIFs tabs of the emoji picker; in the Fusion UI before its
+     * Emoji tab, as in its mockup (GIFs, Stickers, Emoji), or after it for an order of 10 or more
+     * (e.g. Memes).
      * Accepts the following:
      * - id - Optional unique identifier of the tab (e.g. 'com.example.gifs.stickers'); generated
      *   when omitted
@@ -1671,7 +1672,8 @@ export default class PluginRegistry {
      * - fusionIcon - Optional id of an icon of the Fusion UI's icon set (e.g. 'sticker'), shown
      *   before the label in the Fusion UI, whose tabs are text only otherwise
      * - order - Optional position among the plugin tabs, lowest first (default 0); equal orders
-     *   are sorted alphabetically by pluginId, then in registration order
+     *   are sorted alphabetically by pluginId, then in registration order. In the Fusion UI, the
+     *   Emoji tab sits at 10: tabs of a lower order come before it, the others after
      * - component - The tab's body, a React component receiving:
      *   - channelId, rootId - The message box's channel, and its thread for a reply box
      *   - filter, onFilterChange - The text of the picker's search box, shared with its other

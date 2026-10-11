@@ -127,6 +127,20 @@ describe('fusion/popovers/EmojiPicker', () => {
         expect(screen.getByRole('tab', {name: 'GIFs'})).toHaveAttribute('aria-selected', 'true');
     });
 
+    test('puts the plugin tabs of order 10 or more after Emoji', () => {
+        renderWithContext(
+            <EmojiPicker
+                anchor={null}
+                onPick={jest.fn()}
+                onClose={jest.fn()}
+                compose={{channelId: 'channel', insertText: jest.fn()}}
+            />,
+            stateWith([makeTab({id: 'memes', label: 'Memes', order: 20}), ...tabs]),
+        );
+
+        expect(screen.getAllByRole('tab').map((t) => t.textContent)).toEqual(['GIFs', 'Stickers', 'Emoji', 'Memes']);
+    });
+
     test('falls back to the Emoji tab when the last tab is gone', () => {
         renderWithContext(
             <EmojiPicker

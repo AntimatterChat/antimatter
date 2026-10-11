@@ -98,6 +98,10 @@ type Props = {
 };
 
 const EMOJI_TAB = 'emoji';
+
+// The order of the Emoji tab among the plugins' tabs: theirs before 10 come first (GIFs, Stickers), the others after
+// (Memes), as in the mockup's picker.
+export const EMOJI_TAB_ORDER = 10;
 const NO_TABS: EmojiPickerTabRegistration[] = [];
 
 // The composer's picker opens on the tab used last, as in the mockup.
@@ -249,7 +253,8 @@ function EmojiTab({query, onQuery, onPick: pick, onClose, keepOpen}: EmojiTabPro
 }
 
 // EmojiPicker is the mockup's picker. The composer's has tabs when plugins add some (registerEmojiPickerTab), in
-// the mockup's order: theirs (GIFs, Stickers) then Emoji. A plugin tab renders its own search box and body.
+// the mockup's order: theirs (GIFs, Stickers), Emoji, then theirs of order 10 or more (Memes). A plugin tab renders
+// its own search box and body.
 export default function EmojiPicker({anchor, onPick, onClose, keepOpen = false, compose}: Props) {
     const {formatMessage} = useIntl();
     const dispatch = useDispatch();
@@ -278,9 +283,11 @@ export default function EmojiPicker({anchor, onPick, onClose, keepOpen = false, 
         }
     };
 
+    const asTab = (t: typeof pluginTabs[number]) => ({id: t.id, label: t.label, icon: t.fusionIcon && isIconName(t.fusionIcon) ? t.fusionIcon : undefined});
     const tabs = [
-        ...pluginTabs.map((t) => ({id: t.id, label: t.label, icon: t.fusionIcon && isIconName(t.fusionIcon) ? t.fusionIcon : undefined})),
+        ...pluginTabs.filter((t) => t.order < EMOJI_TAB_ORDER).map(asTab),
         {id: EMOJI_TAB, label: formatMessage({id: 'fusion.picker.tabEmoji', defaultMessage: 'Emoji'}), icon: undefined},
+        ...pluginTabs.filter((t) => t.order >= EMOJI_TAB_ORDER).map(asTab),
     ];
     const current = pluginTab ? pluginTab.id : EMOJI_TAB;
 
