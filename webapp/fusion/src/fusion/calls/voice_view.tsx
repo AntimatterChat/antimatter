@@ -46,7 +46,7 @@ export default function VoiceView({channel}: {channel: Channel}) {
                                 name='speaker'
                                 size='sm'
                             />
-                            {count ? formatMessage({id: 'fusion.calls.joinVoiceCount', defaultMessage: 'Join voice · {count} in the call'}, {count}) : formatMessage({id: 'fusion.calls.joinVoice', defaultMessage: 'Join voice'})}
+                            {count ? formatMessage({id: 'fusion.calls.joinVoicePeople', defaultMessage: '{count, plural, one {Join voice · # person in the call} other {Join voice · # people in the call}}'}, {count}) : formatMessage({id: 'fusion.calls.joinVoice', defaultMessage: 'Join voice'})}
                         </button>
                     </div>
                 )}

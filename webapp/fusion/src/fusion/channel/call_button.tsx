@@ -118,7 +118,7 @@ export default function CallButton({channel}: {channel: Channel}) {
             <button
                 className={am('icon-btn', 'call-btn', 'join')}
                 title={formatMessage({id: 'fusion.calls.join', defaultMessage: 'Join the call'})}
-                aria-label={formatMessage({id: 'fusion.calls.joinCount', defaultMessage: 'Join the call, {count} in it'}, {count: people})}
+                aria-label={formatMessage({id: 'fusion.calls.joinPeople', defaultMessage: '{count, plural, one {Join the call, # person in it} other {Join the call, # people in it}}'}, {count: people})}
                 onClick={() => actions.startOrJoinCall(channel.id)}
             >
                 <Icon name='phone'/>

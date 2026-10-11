@@ -91,7 +91,7 @@ export default function AddPeopleDialog({channel, onInvite, onClose}: Props) {
             return;
         }
         const names = [...picked.values()].map((u) => displayUsername(u, nameDisplay));
-        toast(formatMessage({id: 'fusion.toast.added', defaultMessage: 'Added {names} to {where}'}, {names: names.join(', '), where}));
+        toast(formatMessage({id: 'fusion.toast.addedCount', defaultMessage: '{count, plural, one {Added {names} to {where}} other {Added {names} to {where}}}'}, {count: names.length, names: names.join(', '), where}));
         onClose();
     };
 

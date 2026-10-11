@@ -125,7 +125,7 @@ export default function NotificationsPane() {
             <Section title={formatMessage({id: 'fusion.settings.desktop', defaultMessage: 'Desktop and browser'})}/>
             <Choice
                 title={formatMessage({id: 'fusion.settings.desktopLevel', defaultMessage: 'Notify me about'})}
-                desc={formatMessage({id: 'fusion.settings.desktopLevelDesc', defaultMessage: 'Direct messages and mentions count as mentions.'})}
+                desc={formatMessage({id: 'fusion.settings.desktopLevelDesc', defaultMessage: 'Direct and group messages count as mentions.'})}
                 value={level(notify.desktop, 'mention')}
                 options={levels}
                 onChange={(v) => set({desktop: v})}
