@@ -426,7 +426,10 @@ if (DEV) {
 } else {
     // Production mode configuration
     config.mode = 'production';
-    config.devtool = 'source-map';
+
+    // Source maps take much of the build's memory: FUSION_NO_SOURCE_MAPS=1 leaves them out, for builds on small
+    // machines that only serve a test server.
+    config.devtool = process.env.FUSION_NO_SOURCE_MAPS ? false : 'source-map';
 
     // Optimize SVGs from src/ at module-build time so vendor SVG fonts (e.g. font-awesome)
     // are never passed to svgo. Vendor SVGs get content-hashed names at emit time, making
