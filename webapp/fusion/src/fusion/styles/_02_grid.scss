@@ -34,5 +34,4 @@
 // A panel (search results, an app) in a window of its own: the whole window, without the buttons that size, pop out
 // or close the panel.
 .am-app.am-popout .am-rhs-window { height: 100%; }
-.am-app.am-popout .am-rhs-window .sidebar-right__body { display: flex; flex: 1; flex-direction: column; min-height: 0; }
 .am-app.am-popout .am-rhs-window .sidebar--right__header :is(.sidebar--right__expand, .sidebar--right__close, .PopoutButton) { display: none; }

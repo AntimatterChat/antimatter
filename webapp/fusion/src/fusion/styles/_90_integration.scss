@@ -97,6 +97,10 @@ body.app__body #root.am-root > .am-root-main {
   background: var(--am-main);
 
   .sidebar--right__content { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+  // The classic web app sizes the panel's body only under its own .sidebar--right: without this, the body is as tall
+  // as its content, and the panels that size themselves to it (the Agents panel's conversation, a virtualized list)
+  // get no height at all and show nothing.
+  .sidebar-right__body { flex: 1; min-height: 0; display: flex; flex-direction: column; }
 }
 :is(.am-app, .am-layer) .am-rhs .am-members-panel { padding: 10px 8px 16px; }
 :is(.am-app, .am-layer) .am-rhs .am-composer { padding: 0 14px 14px; }
