@@ -41,6 +41,19 @@ const TABS: Array<[Tab, IconName, {id: string; defaultMessage: string}, {id: str
     ['threads', 'thread', {id: 'fusion.collections.threads', defaultMessage: 'Threads'}, {id: 'fusion.collections.threadsDesc', defaultMessage: 'Threads you follow'}],
 ];
 
+// The descriptions in a conversation, where every tab only lists what's in it.
+const HERE: Partial<Record<Tab, {id: string; defaultMessage: string}>> = {
+    mentions: {id: 'fusion.collections.mentionsHereDesc', defaultMessage: 'Messages that mention you in this conversation'},
+    saved: {id: 'fusion.collections.savedHereDesc', defaultMessage: 'Messages you saved from this conversation'},
+    threads: {id: 'fusion.collections.threadsHereDesc', defaultMessage: 'Threads you follow in this conversation'},
+};
+
+const EMPTY_HERE: Partial<Record<Tab, {id: string; defaultMessage: string}>> = {
+    mentions: {id: 'fusion.collections.noMentionsHere', defaultMessage: 'No one has mentioned you here yet.'},
+    saved: {id: 'fusion.collections.noSavedHere', defaultMessage: 'Nothing saved from this conversation yet. Save messages from their ⋯ menu.'},
+    threads: {id: 'fusion.collections.noThreadsHere', defaultMessage: 'You follow no thread here yet.'},
+};
+
 const EMPTY: Record<Tab, {id: string; defaultMessage: string}> = {
     mentions: {id: 'fusion.collections.noMentions', defaultMessage: 'No one has mentioned you yet.'},
     saved: {id: 'fusion.collections.noSaved', defaultMessage: 'Save messages from their ⋯ menu to find them here.'},
@@ -111,7 +124,9 @@ type Props = {
     onClose: () => void;
 };
 
-// CollectionsPopover gathers mentions, saved and pinned messages, and followed threads, in one panel.
+// CollectionsPopover gathers mentions, saved and pinned messages, files and followed threads, in one panel. Opened
+// from a conversation, every tab lists what's in that conversation; from the home, mentions, saved messages and
+// threads are the whole team's.
 export default function CollectionsPopover({anchor, channel, initialTab = 'mentions', placement = 'below', onClose}: Props) {
     const {formatMessage} = useIntl();
     const dispatch = useDispatch();
@@ -133,9 +148,14 @@ export default function CollectionsPopover({anchor, channel, initialTab = 'menti
             try {
                 if (tab === 'mentions') {
                     const terms = mentionKeys.filter(({key}) => !['@channel', '@all', '@here'].includes(key)).map(({key}) => key).join(' ');
-                    set(fromPostList(await Client4.searchPostsWithParams(team.id, {terms, is_or_search: true, include_deleted_channels: false, page: 0, per_page: 30})));
+
+                    // In a conversation, searched there; the filter on the results also covers direct messages, whose
+                    // names "in:" may not find.
+                    const where = channel ? ` in:${channel.name}` : '';
+                    const found = fromPostList(await Client4.searchPostsWithParams(team.id, {terms: terms + where, is_or_search: true, include_deleted_channels: false, page: 0, per_page: 30}));
+                    set(channel ? found.filter((i) => i.post.channel_id === channel.id) : found);
                 } else if (tab === 'saved') {
-                    set(fromPostList(await Client4.getFlaggedPosts(userId, '', '', 0, 30)));
+                    set(fromPostList(await Client4.getFlaggedPosts(userId, channel?.id || '', '', 0, 30)));
                 } else if (tab === 'pinned') {
                     set(channel ? fromPostList(await Client4.getPinnedPosts(channel.id)) : []);
                 } else if (tab === 'files') {
@@ -147,8 +167,11 @@ export default function CollectionsPopover({anchor, channel, initialTab = 'menti
                     const infos = found.file_infos as unknown as Record<string, FileInfo>;
                     set(found.order.map((id: string) => infos[id]).filter(Boolean).map((file: FileInfo) => ({post: {id: file.post_id} as Post, file})));
                 } else {
-                    const threads = await Client4.getUserThreads(userId, team.id, {perPage: 30, extended: false});
-                    set(threads.threads.map((t) => ({post: t.post as Post, replies: t.reply_count, lastReplyAt: t.last_reply_at})));
+                    // The team's followed threads, then, in a conversation, those started there.
+                    const threads = await Client4.getUserThreads(userId, team.id, {perPage: channel ? 200 : 30, extended: false});
+                    set(threads.threads.
+                        filter((t) => !channel || (t.post as Post).channel_id === channel.id).
+                        map((t) => ({post: t.post as Post, replies: t.reply_count, lastReplyAt: t.last_reply_at})));
                 }
             } catch {
                 set([]);
@@ -205,11 +228,11 @@ export default function CollectionsPopover({anchor, channel, initialTab = 'menti
             <div className={am('coll-main')}>
                 <div className={am('coll-head')}>
                     <h3>{formatMessage(label)}</h3>
-                    <p>{formatMessage(desc)}</p>
+                    <p>{formatMessage((channel && HERE[tab]) || desc)}</p>
                 </div>
                 <div className={am('coll-list')}>
                     {!list && <div className={am('empty')}>{formatMessage({id: 'fusion.collections.loading', defaultMessage: 'Loading…'})}</div>}
-                    {list && !list.length && <div className={am('empty')}>{formatMessage(EMPTY[tab])}</div>}
+                    {list && !list.length && <div className={am('empty')}>{formatMessage((channel && EMPTY_HERE[tab]) || EMPTY[tab])}</div>}
                     {list?.map((item) => (item.file ? (
                         <FileRow
                             key={item.file.id}

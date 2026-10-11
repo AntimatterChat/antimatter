@@ -449,8 +449,8 @@ export default function ChannelHeader({channel}: {channel: Channel}) {
                 <button
                     ref={collectionsRef}
                     className={am('icon-btn', {on: collections})}
-                    title={formatMessage({id: 'fusion.header.collections', defaultMessage: 'Mentions, saved, pinned and threads'})}
-                    aria-label={formatMessage({id: 'fusion.header.collections', defaultMessage: 'Mentions, saved, pinned and threads'})}
+                    title={formatMessage({id: 'fusion.header.collections', defaultMessage: 'Mentions, saved, pinned, files and threads here'})}
+                    aria-label={formatMessage({id: 'fusion.header.collections', defaultMessage: 'Mentions, saved, pinned, files and threads here'})}
                     aria-haspopup='dialog'
                     onClick={() => {
                         setCollectionsTab('mentions');
