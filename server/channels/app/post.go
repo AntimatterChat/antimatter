@@ -406,6 +406,9 @@ func (a *App) CreatePost(rctx request.CTX, post *model.Post, channel *model.Chan
 		}
 	}
 
+	// Antimatter: the team's autolinks, before plugins see the message.
+	a.applyTeamAutolinks(rctx, post, channel, false)
+
 	pluginContext := pluginContext(rctx)
 
 	var willBePostedPluginIDs []string
@@ -1099,6 +1102,11 @@ func (a *App) UpdatePost(rctx request.CTX, receivedUpdatedPost *model.Post, upda
 
 	if receivedUpdatedPost.IsRemote() {
 		oldPost.RemoteId = new(*receivedUpdatedPost.RemoteId)
+	}
+
+	// Antimatter: the team's autolinks, when the team applies them to edits.
+	if newPost.Message != oldPost.Message {
+		a.applyTeamAutolinks(rctx, newPost, nil, true)
 	}
 
 	if newPost.Type != model.PostTypeBurnOnRead {

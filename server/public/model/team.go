@@ -56,6 +56,10 @@ type Team struct {
 	// shown to people the first time they open the team; empty for none.
 	Onboarding string `json:"onboarding"`
 
+	// Antimatter: the team's autolinks, as JSON (TeamAutolinks): patterns of its messages turned into links when
+	// they're posted; empty for none.
+	Autolinks string `json:"autolinks"`
+
 	// Not persisted; derived by the store via EXISTS on AccessControlPolicies(Type='team').
 	// Use HasMembershipPolicyAction for enforcement — this is a read-path signal only.
 	PolicyEnforced bool            `json:"policy_enforced"`
@@ -120,6 +124,7 @@ type TeamPatch struct {
 	HideRoleColors      *bool   `json:"hide_role_colors"`
 	RequireTeamBadges   *bool   `json:"require_team_badges"`
 	Onboarding          *string `json:"onboarding"`
+	Autolinks           *string `json:"autolinks"`
 }
 
 func (o *TeamPatch) Auditable() map[string]any {
@@ -130,6 +135,7 @@ func (o *TeamPatch) Auditable() map[string]any {
 		"hide_role_colors":      o.HideRoleColors,
 		"require_team_badges":   o.RequireTeamBadges,
 		"onboarding":            o.Onboarding != nil,
+		"autolinks":             o.Autolinks != nil,
 	}
 }
 
@@ -166,6 +172,15 @@ func (o *Team) IsValid() *AppError {
 
 	if len(o.Onboarding) > TeamOnboardingMaxLength || (o.Onboarding != "" && !json.Valid([]byte(o.Onboarding))) {
 		return NewAppError("Team.IsValid", "model.team.is_valid.onboarding.app_error", map[string]any{"Max": TeamOnboardingMaxLength}, "id="+o.Id, http.StatusBadRequest)
+	}
+
+	if len(o.Autolinks) > TeamAutolinksMaxLength {
+		return NewAppError("Team.IsValid", "model.team.is_valid.autolinks.app_error", nil, "id="+o.Id+": too long", http.StatusBadRequest)
+	}
+	if links, err := ParseTeamAutolinks(o.Autolinks); err != nil {
+		return NewAppError("Team.IsValid", "model.team.is_valid.autolinks.app_error", nil, "id="+o.Id, http.StatusBadRequest).Wrap(err)
+	} else if appErr := links.IsValid(); appErr != nil {
+		return appErr
 	}
 
 	if o.CreateAt == 0 {
@@ -346,6 +361,10 @@ func (o *Team) Patch(patch *TeamPatch) {
 
 	if patch.Onboarding != nil {
 		o.Onboarding = *patch.Onboarding
+	}
+
+	if patch.Autolinks != nil {
+		o.Autolinks = *patch.Autolinks
 	}
 }
 

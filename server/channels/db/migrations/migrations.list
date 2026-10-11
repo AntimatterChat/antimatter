@@ -485,3 +485,5 @@ channels/db/migrations/postgres/1000010_antimatter_create_categoryoverrides.down
 channels/db/migrations/postgres/1000010_antimatter_create_categoryoverrides.up.sql
 channels/db/migrations/postgres/1000011_antimatter_create_membertimeouts.down.sql
 channels/db/migrations/postgres/1000011_antimatter_create_membertimeouts.up.sql
+channels/db/migrations/postgres/1000012_antimatter_add_autolinks_to_teams.down.sql
+channels/db/migrations/postgres/1000012_antimatter_add_autolinks_to_teams.up.sql

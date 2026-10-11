@@ -235,6 +235,7 @@ func prefixedTeamSliceColumns(isSelect bool, prefix string) []string {
 		prefix + ".HideRoleColors",
 		prefix + ".RequireTeamBadges",
 		prefix + ".Onboarding",
+		prefix + ".Autolinks",
 	}
 
 	if isSelect {
@@ -297,10 +298,10 @@ func (s SqlTeamStore) Save(team *model.Team) (*model.Team, error) {
 
 	if _, err := s.GetMaster().NamedExec(`INSERT INTO Teams
 		(Id, CreateAt, UpdateAt, DeleteAt, DisplayName, Name, Description, Email, Type, CompanyName, AllowedDomains,
-		InviteId, AllowOpenInvite, LastTeamIconUpdate, SchemeId, GroupConstrained, CloudLimitsArchived, HideRoleColors, RequireTeamBadges, Onboarding)
+		InviteId, AllowOpenInvite, LastTeamIconUpdate, SchemeId, GroupConstrained, CloudLimitsArchived, HideRoleColors, RequireTeamBadges, Onboarding, Autolinks)
 		VALUES
 		(:Id, :CreateAt, :UpdateAt, :DeleteAt, :DisplayName, :Name, :Description, :Email, :Type, :CompanyName, :AllowedDomains,
-		:InviteId, :AllowOpenInvite, :LastTeamIconUpdate, :SchemeId, :GroupConstrained, :CloudLimitsArchived, :HideRoleColors, :RequireTeamBadges, :Onboarding)`, team); err != nil {
+		:InviteId, :AllowOpenInvite, :LastTeamIconUpdate, :SchemeId, :GroupConstrained, :CloudLimitsArchived, :HideRoleColors, :RequireTeamBadges, :Onboarding, :Autolinks)`, team); err != nil {
 		if IsUniqueConstraintError(err, []string{"Name", "teams_name_key"}) {
 			return nil, store.NewErrInvalidInput("Team", "id", team.Id)
 		}
@@ -339,7 +340,7 @@ func (s SqlTeamStore) Update(team *model.Team) (*model.Team, error) {
 				Description=:Description, Email=:Email, Type=:Type, CompanyName=:CompanyName, AllowedDomains=:AllowedDomains,
 				InviteId=:InviteId, AllowOpenInvite=:AllowOpenInvite, LastTeamIconUpdate=:LastTeamIconUpdate,
 				SchemeId=:SchemeId, GroupConstrained=:GroupConstrained, CloudLimitsArchived=:CloudLimitsArchived,
-				HideRoleColors=:HideRoleColors, RequireTeamBadges=:RequireTeamBadges, Onboarding=:Onboarding
+				HideRoleColors=:HideRoleColors, RequireTeamBadges=:RequireTeamBadges, Onboarding=:Onboarding, Autolinks=:Autolinks
 			WHERE Id=:Id`, team)
 	if err != nil {
 		return nil, errors.Wrapf(err, "failed to update Team with id=%s", team.Id)

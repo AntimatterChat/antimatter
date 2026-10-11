@@ -16899,6 +16899,11 @@
     "description": "API error when a login session record's UserId field is malformed; 'UserId' is the field name and can stay untranslated."
   },
   {
+    "id": "model.team.is_valid.autolinks.app_error",
+    "translation": "Invalid autolinks.",
+    "description": "Error when a team's autolink rules (patterns of messages turned into links) are malformed, too many or too long; the details name the rule."
+  },
+  {
     "id": "model.team.is_valid.characters.app_error",
     "translation": "Name must be 2 or more lowercase alphanumeric characters.",
     "description": "API error when a team's URL name violates format rules; 'Name' here is the team's URL slug, and the constraint text (lowercase alphanumeric) should be kept precise."

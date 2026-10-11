@@ -1,0 +1,1 @@
+ALTER TABLE teams ADD COLUMN IF NOT EXISTS autolinks text NOT NULL DEFAULT '';
