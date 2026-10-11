@@ -54,7 +54,9 @@ export default function Category({category}: {category: ChannelCategory}) {
     const canCreateHere = useSelector((state: GlobalState) => !locked || isTeamAdmin(state, category.team_id));
     const header = `category:${category.id}`;
 
-    if (!channelIds.length && category.type === 'favorites') {
+    // Favorites, the default channels category and the admins' categories show only with channels in them; the
+    // categories people make themselves stay, empty, until they remove them.
+    if (!channelIds.length && (category.type === 'favorites' || category.type === 'channels' || server)) {
         return null;
     }
 

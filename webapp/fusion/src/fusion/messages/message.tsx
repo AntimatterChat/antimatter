@@ -345,10 +345,7 @@ export default function Message({postId, previousPostId, inThread = false, highl
             )}
             {burn && <BurnTag post={post}/>}
             {spoiler && (
-                <SpoilerTag
-                    isShown={spoilerShown}
-                    onHide={() => setSpoilerShown(false)}
-                />
+                <SpoilerTag/>
             )}
         </>
     );

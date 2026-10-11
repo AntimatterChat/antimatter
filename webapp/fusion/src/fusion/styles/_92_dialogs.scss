@@ -24,3 +24,9 @@
 :is(.am-app, .am-layer) .am-help-body .Help h1, :is(.am-app, .am-layer) .am-help-body .Help h2, :is(.am-app, .am-layer) .am-help-body .Help h3 { color: var(--am-text); font-family: var(--am-font-display); }
 :is(.am-app, .am-layer) .am-help-body .Help a { color: var(--am-anti); }
 :is(.am-app, .am-layer) .am-help-body .Help :is(table, th, td) { border-color: var(--am-line); }
+:is(.am-app, .am-layer) .am-help-body .Help .Help__commands-example { border-color: var(--am-line); background: var(--am-side); box-shadow: none; }
+:is(.am-app, .am-layer) .am-help-body .Help .Help__command-icon { background: var(--am-raise-2); color: var(--am-text-2); }
+:is(.am-app, .am-layer) .am-help-body .Help :is(.Help__command-name, .Help__commands-header) { color: var(--am-text); }
+:is(.am-app, .am-layer) .am-help-body .Help .Help__command-desc { color: var(--am-muted); }
+// The tabs already lead to the other pages.
+:is(.am-app, .am-layer) .am-help-body .Help .Help__learn-more { display: none; }

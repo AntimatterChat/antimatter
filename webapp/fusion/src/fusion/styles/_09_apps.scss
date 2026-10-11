@@ -27,7 +27,8 @@
 // they stay close to the normal panel's width and never squeeze the conversation below --am-main-min (App grid). The
 // panel's expand button (.am-expanded) gives the wider view. Below 1101px panels slide over the chat (Responsive).
 @media (min-width: 1101px) {
-  :is(.am-app, .am-layer) .am-rhs.am-wide { width: clamp(380px, calc(100vw - var(--am-chrome-w) - var(--am-main-min)), 440px); }
+  // A little wider than the mockup's (by an icon button's width), for the apps' toolbars.
+  :is(.am-app, .am-layer) .am-rhs.am-wide { width: clamp(414px, calc(100vw - var(--am-chrome-w) - var(--am-main-min)), 474px); }
 
   // Apps drawing a canvas (the whiteboard) keep the wide size they had before.
   :is(.am-app, .am-layer) .am-rhs.am-wide.am-roomy:not(.am-expanded) { width: min(780px, 62vw); }

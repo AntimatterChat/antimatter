@@ -114,27 +114,13 @@ export function SpoilerVeil({hidden, onShow, children}: {hidden: boolean; onShow
 }
 
 // SpoilerTag marks a spoiler in its message's header; once shown, it hides it again.
-export function SpoilerTag({isShown, onHide}: {isShown: boolean; onHide: () => void}) {
+// SpoilerTag says a message is a spoiler, beside its time: showing and hiding it is done from the message's tools.
+export function SpoilerTag() {
     const {formatMessage} = useIntl();
-    const label = formatMessage({id: 'fusion.spoiler.title', defaultMessage: 'Spoiler'});
-    if (!isShown) {
-        return (
-            <span className={am('meta-tag', 'spoiler')}>
-                <Icon name='eye-off'/>
-                {label}
-            </span>
-        );
-    }
     return (
-        <button
-            type='button'
-            className={am('meta-tag', 'spoiler')}
-            title={formatMessage({id: 'fusion.spoiler.hide', defaultMessage: 'Hide the spoiler again'})}
-            aria-label={formatMessage({id: 'fusion.spoiler.hide', defaultMessage: 'Hide the spoiler again'})}
-            onClick={onHide}
-        >
+        <span className={am('meta-tag', 'spoiler')}>
             <Icon name='eye-off'/>
-            {label}
-        </button>
+            {formatMessage({id: 'fusion.spoiler.title', defaultMessage: 'Spoiler'})}
+        </span>
     );
 }

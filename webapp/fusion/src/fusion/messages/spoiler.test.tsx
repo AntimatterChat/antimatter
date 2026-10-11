@@ -35,19 +35,21 @@ describe('fusion/messages/spoiler', () => {
         expect(isSpoiler(undefined)).toBe(false);
     });
 
-    test('hides the text until clicked, then hides it again from the tag', async () => {
+    test('hides the text until clicked, then hides it again from the message tools', async () => {
         render();
 
         // The text stays in place, at its size, but can't be read out or reached until shown.
         const veil = screen.getByRole('button', {name: 'Spoiler, click to show it'});
         expect(veil.firstElementChild).toHaveAttribute('aria-hidden', 'true');
-        expect(screen.queryByRole('button', {name: 'Hide the spoiler again'})).not.toBeInTheDocument();
+        expect(screen.getByRole('button', {name: 'Spoiler: show or hide'})).toHaveAttribute('aria-pressed', 'false');
 
         await userEvent.click(veil);
         expect(screen.queryByRole('button', {name: 'Spoiler, click to show it'})).not.toBeInTheDocument();
         expect(screen.getByText('The butler did it')).toBeVisible();
 
-        await userEvent.click(screen.getByRole('button', {name: 'Hide the spoiler again'}));
+        // The tag beside the time only says it's a spoiler
+        expect(screen.queryByRole('button', {name: 'Hide the spoiler again'})).not.toBeInTheDocument();
+        await userEvent.click(screen.getByRole('button', {name: 'Spoiler: show or hide'}));
         expect(screen.getByRole('button', {name: 'Spoiler, click to show it'})).toBeInTheDocument();
     });
 

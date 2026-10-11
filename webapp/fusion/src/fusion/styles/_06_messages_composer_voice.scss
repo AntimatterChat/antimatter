@@ -55,7 +55,9 @@
   box-shadow: var(--am-shadow);
   z-index: 5;
 }
-:is(.am-app, .am-layer) .am-msg:hover .am-msg-tools, :is(.am-app, .am-layer) .am-msg:focus-within .am-msg-tools { display: flex; }
+// A message's tools show on hover, or when the keyboard is on it (not after a click: focus stays on the clicked tool,
+// and the tools would stay over the message).
+:is(.am-app, .am-layer) .am-msg:hover .am-msg-tools, :is(.am-app, .am-layer) .am-msg:has(:focus-visible) .am-msg-tools { display: flex; }
 :is(.am-app, .am-layer) .am-msg-tools button { width: 28px; height: 28px; border-radius: 6px; display: grid; place-items: center; color: var(--am-muted); }
 :is(.am-app, .am-layer) .am-msg-tools button:hover { background: var(--am-hover); color: var(--am-text); }
 :is(.am-app, .am-layer) .am-msg-tools button.am-on { color: var(--am-matter); }
@@ -190,8 +192,9 @@
 :is(.am-app, .am-layer) .am-msg.am-hl-me:hover { background: rgba(240, 178, 50, 0.14); }
 :is(.am-app, .am-layer) .am-msg.am-hl-me.am-p-important { box-shadow: inset 3px 0 0 var(--am-spark); }
 :is(.am-app, .am-layer) .am-msg.am-hl-me.am-p-urgent { box-shadow: inset 3px 0 0 var(--am-danger); }
-:is(.am-app, .am-layer) .am-meta-tag { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; color: var(--am-muted); }
-:is(.am-app, .am-layer) .am-meta-tag .am-ic { width: 12px; height: 12px; }
+// A tag beside a message's time: on its baseline, its icon centred on its text.
+:is(.am-app, .am-layer) .am-meta-tag { display: inline-block; font-size: 12px; color: var(--am-muted); }
+:is(.am-app, .am-layer) .am-meta-tag .am-ic { width: 12px; height: 12px; margin-right: 4px; vertical-align: -1px; }
 :is(.am-app, .am-layer) .am-meta-tag.am-burn { color: #F97316; }
 :is(.am-app, .am-layer) .am-burn-cover { display: flex; align-items: center; gap: 8px; margin-top: 2px; padding: 10px 12px; border-radius: 9px; border: 1px dashed var(--am-line); background: var(--am-side); color: var(--am-text-2); font-size: 14px; text-align: left; }
 :is(.am-app, .am-layer) .am-burn-cover:hover { border-color: #F97316; color: var(--am-text); }

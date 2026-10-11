@@ -29,6 +29,8 @@
 :is(.am-app, .am-layer) .am-member:hover { background: var(--am-hover); }
 :is(.am-app, .am-layer) .am-member .am-who { min-width: 0; flex: 1; }
 :is(.am-app, .am-layer) .am-member .am-who b { display: flex; align-items: center; gap: 5px; min-width: 0; font-weight: 600; font-size: 14px; white-space: nowrap; }
+// The status emoji keeps close to the name, as in messages.
+:is(.am-app, .am-layer) .am-member .am-who b .am-status-emoji { margin-left: -1px; }
 :is(.am-app, .am-layer) .am-member .am-who b .am-nm { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
 :is(.am-app, .am-layer) .am-member .am-who > span { display: block; font-size: 12px; color: var(--am-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 :is(.am-app, .am-layer) .am-member .am-talk .am-ic { color: var(--am-ok); vertical-align: -2px; }

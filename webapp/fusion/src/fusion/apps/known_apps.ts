@@ -28,7 +28,7 @@ const KNOWN_APPS: Record<string, KnownApp> = {
     'com.antimatterchat.mail': {tone: 'mail', icon: 'mail'},
     'com.antimatterchat.calendar': {tone: 'calendar', icon: 'calendar'},
     'com.antimatterchat.notes': {tone: 'notes', icon: 'pad'},
-    'com.antimatterchat.whiteboard': {tone: 'whiteboard', icon: 'draw', widePanel: true},
+    'com.antimatterchat.whiteboard': {tone: 'whiteboard', icon: 'draw'},
 };
 
 export function getKnownApp(pluginId: string): KnownApp | undefined {

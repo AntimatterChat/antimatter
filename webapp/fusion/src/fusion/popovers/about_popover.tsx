@@ -149,13 +149,11 @@ export default function AboutPopover({anchor, onClose}: {anchor: HTMLElement | n
             )}
             <div className={am('about-menu')}>
                 <MenuHeading>{formatMessage({id: 'fusion.about.help', defaultMessage: 'Help'})}</MenuHeading>
-                {config.HelpLink && (
-                    <MenuItem
-                        icon='compass'
-                        label={formatMessage({id: 'fusion.about.guide', defaultMessage: 'User guide'})}
-                        onClick={run(() => window.open(config.HelpLink, '_blank', 'noopener'))}
-                    />
-                )}
+                <MenuItem
+                    icon='compass'
+                    label={formatMessage({id: 'fusion.about.guide', defaultMessage: 'User guide'})}
+                    onClick={run(() => dialogs.help('messaging'))}
+                />
                 <MenuItem
                     icon='type'
                     label={formatMessage({id: 'fusion.about.shortcuts', defaultMessage: 'Keyboard shortcuts'})}
