@@ -552,11 +552,11 @@ function AppearancePane() {
             {config.AllowUserWebUISelection === 'true' && (
                 <Choice<WebUI>
                     title={formatMessage({id: 'fusion.settings.interface', defaultMessage: 'Web interface'})}
-                    desc={formatMessage({id: 'fusion.settings.interfaceDesc', defaultMessage: 'Antimatter has two web interfaces. Your choice applies to every browser you sign in from.'})}
+                    desc={formatMessage({id: 'fusion.settings.interfaceDesc', defaultMessage: 'Fusion is Antimatter\'s interface. The classic one is kept for compatibility, for those who still need it. Your choice applies to every browser you sign in from.'})}
                     value={CURRENT_WEB_UI}
                     options={[
                         [WebUIs.FUSION, formatMessage({id: 'fusion.settings.fusion', defaultMessage: 'Fusion'})],
-                        [WebUIs.CLASSIC, formatMessage({id: 'fusion.settings.classic', defaultMessage: 'Classic'})],
+                        [WebUIs.CLASSIC, formatMessage({id: 'fusion.settings.classic', defaultMessage: 'Classic (legacy)'})],
                     ]}
                     onChange={(ui) => dispatch(switchWebUI(ui))}
                 />

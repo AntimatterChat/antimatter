@@ -56,7 +56,7 @@ describe('components/user_settings/display/web_ui_section', () => {
             stateWithSelection(true),
         );
 
-        await userEvent.click(screen.getByLabelText('Classic'));
+        await userEvent.click(screen.getByLabelText('Classic (legacy)'));
         await userEvent.click(screen.getByText('Save'));
 
         expect(switchWebUI).toHaveBeenCalledWith('classic');

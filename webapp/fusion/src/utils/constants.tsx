@@ -901,8 +901,8 @@ export const DraggingStateTypes = {
 };
 
 export const AboutLinks = {
-    TERMS_OF_SERVICE: 'https://mattermost.com/pl/terms-of-use/',
-    PRIVACY_POLICY: 'https://mattermost.com/pl/privacy-policy/',
+    TERMS_OF_SERVICE: 'https://antimatter.chat/terms.html',
+    PRIVACY_POLICY: 'https://antimatter.chat/privacy.html',
 };
 
 export const CloudLinks = {

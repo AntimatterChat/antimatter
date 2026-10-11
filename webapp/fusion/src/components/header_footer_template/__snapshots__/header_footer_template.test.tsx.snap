@@ -3,8 +3,56 @@
 exports[`components/HeaderFooterTemplate should match snapshot with about link 1`] = `
 <div>
   <div
-    class="inner-wrap"
+    class="inner-wrap am-auth"
   >
+    <a
+      aria-label="Antimatter"
+      class="am-auth-top"
+      href="/"
+    >
+      <span
+        class="am-auth-brand"
+      >
+        <svg
+          aria-hidden="true"
+          viewBox="0 0 64 64"
+        >
+          <ellipse
+            class="am-auth-orbit-1"
+            cx="32"
+            cy="32"
+            rx="25"
+            ry="9.5"
+            transform="rotate(45 32 32)"
+          />
+          <ellipse
+            class="am-auth-orbit-2"
+            cx="32"
+            cy="32"
+            rx="25"
+            ry="9.5"
+            transform="rotate(-45 32 32)"
+          />
+          <path
+            class="am-auth-spark"
+            d="M32 20.5Q33.9 30.1 43.5 32Q33.9 33.9 32 43.5Q30.1 33.9 20.5 32Q30.1 30.1 32 20.5Z"
+          />
+          <circle
+            class="am-auth-matter"
+            cx="14.32"
+            cy="14.32"
+            r="5.5"
+          />
+          <circle
+            class="am-auth-anti"
+            cx="49.68"
+            cy="14.32"
+            r="4.25"
+          />
+        </svg>
+        Antimatter
+      </span>
+    </a>
     <div
       class="row content"
     />
@@ -32,7 +80,7 @@ exports[`components/HeaderFooterTemplate should match snapshot with about link 1
             class="pull-right footer-link copyright"
             id="copyright"
           >
-            © 2015-2017 Mattermost, Inc.
+            © 2017 Antimatter contributors
           </span>
           <span
             class="pull-right"
@@ -58,8 +106,56 @@ exports[`components/HeaderFooterTemplate should match snapshot with about link 1
 exports[`components/HeaderFooterTemplate should match snapshot with all links 1`] = `
 <div>
   <div
-    class="inner-wrap"
+    class="inner-wrap am-auth"
   >
+    <a
+      aria-label="Antimatter"
+      class="am-auth-top"
+      href="/"
+    >
+      <span
+        class="am-auth-brand"
+      >
+        <svg
+          aria-hidden="true"
+          viewBox="0 0 64 64"
+        >
+          <ellipse
+            class="am-auth-orbit-1"
+            cx="32"
+            cy="32"
+            rx="25"
+            ry="9.5"
+            transform="rotate(45 32 32)"
+          />
+          <ellipse
+            class="am-auth-orbit-2"
+            cx="32"
+            cy="32"
+            rx="25"
+            ry="9.5"
+            transform="rotate(-45 32 32)"
+          />
+          <path
+            class="am-auth-spark"
+            d="M32 20.5Q33.9 30.1 43.5 32Q33.9 33.9 32 43.5Q30.1 33.9 20.5 32Q30.1 30.1 32 20.5Z"
+          />
+          <circle
+            class="am-auth-matter"
+            cx="14.32"
+            cy="14.32"
+            r="5.5"
+          />
+          <circle
+            class="am-auth-anti"
+            cx="49.68"
+            cy="14.32"
+            r="4.25"
+          />
+        </svg>
+        Antimatter
+      </span>
+    </a>
     <div
       class="row content"
     />
@@ -87,7 +183,7 @@ exports[`components/HeaderFooterTemplate should match snapshot with all links 1`
             class="pull-right footer-link copyright"
             id="copyright"
           >
-            © 2015-2017 Mattermost, Inc.
+            © 2017 Antimatter contributors
           </span>
           <span
             class="pull-right"
@@ -143,8 +239,56 @@ exports[`components/HeaderFooterTemplate should match snapshot with all links 1`
 exports[`components/HeaderFooterTemplate should match snapshot with children 1`] = `
 <div>
   <div
-    class="inner-wrap"
+    class="inner-wrap am-auth"
   >
+    <a
+      aria-label="Antimatter"
+      class="am-auth-top"
+      href="/"
+    >
+      <span
+        class="am-auth-brand"
+      >
+        <svg
+          aria-hidden="true"
+          viewBox="0 0 64 64"
+        >
+          <ellipse
+            class="am-auth-orbit-1"
+            cx="32"
+            cy="32"
+            rx="25"
+            ry="9.5"
+            transform="rotate(45 32 32)"
+          />
+          <ellipse
+            class="am-auth-orbit-2"
+            cx="32"
+            cy="32"
+            rx="25"
+            ry="9.5"
+            transform="rotate(-45 32 32)"
+          />
+          <path
+            class="am-auth-spark"
+            d="M32 20.5Q33.9 30.1 43.5 32Q33.9 33.9 32 43.5Q30.1 33.9 20.5 32Q30.1 30.1 32 20.5Z"
+          />
+          <circle
+            class="am-auth-matter"
+            cx="14.32"
+            cy="14.32"
+            r="5.5"
+          />
+          <circle
+            class="am-auth-anti"
+            cx="49.68"
+            cy="14.32"
+            r="4.25"
+          />
+        </svg>
+        Antimatter
+      </span>
+    </a>
     <div
       class="row content"
     >
@@ -176,7 +320,7 @@ exports[`components/HeaderFooterTemplate should match snapshot with children 1`]
             class="pull-right footer-link copyright"
             id="copyright"
           >
-            © 2015-2017 Mattermost, Inc.
+            © 2017 Antimatter contributors
           </span>
           <span
             class="pull-right"
@@ -191,8 +335,56 @@ exports[`components/HeaderFooterTemplate should match snapshot with children 1`]
 exports[`components/HeaderFooterTemplate should match snapshot with help link 1`] = `
 <div>
   <div
-    class="inner-wrap"
+    class="inner-wrap am-auth"
   >
+    <a
+      aria-label="Antimatter"
+      class="am-auth-top"
+      href="/"
+    >
+      <span
+        class="am-auth-brand"
+      >
+        <svg
+          aria-hidden="true"
+          viewBox="0 0 64 64"
+        >
+          <ellipse
+            class="am-auth-orbit-1"
+            cx="32"
+            cy="32"
+            rx="25"
+            ry="9.5"
+            transform="rotate(45 32 32)"
+          />
+          <ellipse
+            class="am-auth-orbit-2"
+            cx="32"
+            cy="32"
+            rx="25"
+            ry="9.5"
+            transform="rotate(-45 32 32)"
+          />
+          <path
+            class="am-auth-spark"
+            d="M32 20.5Q33.9 30.1 43.5 32Q33.9 33.9 32 43.5Q30.1 33.9 20.5 32Q30.1 30.1 32 20.5Z"
+          />
+          <circle
+            class="am-auth-matter"
+            cx="14.32"
+            cy="14.32"
+            r="5.5"
+          />
+          <circle
+            class="am-auth-anti"
+            cx="49.68"
+            cy="14.32"
+            r="4.25"
+          />
+        </svg>
+        Antimatter
+      </span>
+    </a>
     <div
       class="row content"
     />
@@ -220,7 +412,7 @@ exports[`components/HeaderFooterTemplate should match snapshot with help link 1`
             class="pull-right footer-link copyright"
             id="copyright"
           >
-            © 2015-2017 Mattermost, Inc.
+            © 2017 Antimatter contributors
           </span>
           <span
             class="pull-right"
@@ -246,8 +438,56 @@ exports[`components/HeaderFooterTemplate should match snapshot with help link 1`
 exports[`components/HeaderFooterTemplate should match snapshot with privacy policy link 1`] = `
 <div>
   <div
-    class="inner-wrap"
+    class="inner-wrap am-auth"
   >
+    <a
+      aria-label="Antimatter"
+      class="am-auth-top"
+      href="/"
+    >
+      <span
+        class="am-auth-brand"
+      >
+        <svg
+          aria-hidden="true"
+          viewBox="0 0 64 64"
+        >
+          <ellipse
+            class="am-auth-orbit-1"
+            cx="32"
+            cy="32"
+            rx="25"
+            ry="9.5"
+            transform="rotate(45 32 32)"
+          />
+          <ellipse
+            class="am-auth-orbit-2"
+            cx="32"
+            cy="32"
+            rx="25"
+            ry="9.5"
+            transform="rotate(-45 32 32)"
+          />
+          <path
+            class="am-auth-spark"
+            d="M32 20.5Q33.9 30.1 43.5 32Q33.9 33.9 32 43.5Q30.1 33.9 20.5 32Q30.1 30.1 32 20.5Z"
+          />
+          <circle
+            class="am-auth-matter"
+            cx="14.32"
+            cy="14.32"
+            r="5.5"
+          />
+          <circle
+            class="am-auth-anti"
+            cx="49.68"
+            cy="14.32"
+            r="4.25"
+          />
+        </svg>
+        Antimatter
+      </span>
+    </a>
     <div
       class="row content"
     />
@@ -275,7 +515,7 @@ exports[`components/HeaderFooterTemplate should match snapshot with privacy poli
             class="pull-right footer-link copyright"
             id="copyright"
           >
-            © 2015-2017 Mattermost, Inc.
+            © 2017 Antimatter contributors
           </span>
           <span
             class="pull-right"
@@ -301,8 +541,56 @@ exports[`components/HeaderFooterTemplate should match snapshot with privacy poli
 exports[`components/HeaderFooterTemplate should match snapshot with term of service link 1`] = `
 <div>
   <div
-    class="inner-wrap"
+    class="inner-wrap am-auth"
   >
+    <a
+      aria-label="Antimatter"
+      class="am-auth-top"
+      href="/"
+    >
+      <span
+        class="am-auth-brand"
+      >
+        <svg
+          aria-hidden="true"
+          viewBox="0 0 64 64"
+        >
+          <ellipse
+            class="am-auth-orbit-1"
+            cx="32"
+            cy="32"
+            rx="25"
+            ry="9.5"
+            transform="rotate(45 32 32)"
+          />
+          <ellipse
+            class="am-auth-orbit-2"
+            cx="32"
+            cy="32"
+            rx="25"
+            ry="9.5"
+            transform="rotate(-45 32 32)"
+          />
+          <path
+            class="am-auth-spark"
+            d="M32 20.5Q33.9 30.1 43.5 32Q33.9 33.9 32 43.5Q30.1 33.9 20.5 32Q30.1 30.1 32 20.5Z"
+          />
+          <circle
+            class="am-auth-matter"
+            cx="14.32"
+            cy="14.32"
+            r="5.5"
+          />
+          <circle
+            class="am-auth-anti"
+            cx="49.68"
+            cy="14.32"
+            r="4.25"
+          />
+        </svg>
+        Antimatter
+      </span>
+    </a>
     <div
       class="row content"
     />
@@ -330,7 +618,7 @@ exports[`components/HeaderFooterTemplate should match snapshot with term of serv
             class="pull-right footer-link copyright"
             id="copyright"
           >
-            © 2015-2017 Mattermost, Inc.
+            © 2017 Antimatter contributors
           </span>
           <span
             class="pull-right"
@@ -356,8 +644,56 @@ exports[`components/HeaderFooterTemplate should match snapshot with term of serv
 exports[`components/HeaderFooterTemplate should match snapshot without children 1`] = `
 <div>
   <div
-    class="inner-wrap"
+    class="inner-wrap am-auth"
   >
+    <a
+      aria-label="Antimatter"
+      class="am-auth-top"
+      href="/"
+    >
+      <span
+        class="am-auth-brand"
+      >
+        <svg
+          aria-hidden="true"
+          viewBox="0 0 64 64"
+        >
+          <ellipse
+            class="am-auth-orbit-1"
+            cx="32"
+            cy="32"
+            rx="25"
+            ry="9.5"
+            transform="rotate(45 32 32)"
+          />
+          <ellipse
+            class="am-auth-orbit-2"
+            cx="32"
+            cy="32"
+            rx="25"
+            ry="9.5"
+            transform="rotate(-45 32 32)"
+          />
+          <path
+            class="am-auth-spark"
+            d="M32 20.5Q33.9 30.1 43.5 32Q33.9 33.9 32 43.5Q30.1 33.9 20.5 32Q30.1 30.1 32 20.5Z"
+          />
+          <circle
+            class="am-auth-matter"
+            cx="14.32"
+            cy="14.32"
+            r="5.5"
+          />
+          <circle
+            class="am-auth-anti"
+            cx="49.68"
+            cy="14.32"
+            r="4.25"
+          />
+        </svg>
+        Antimatter
+      </span>
+    </a>
     <div
       class="row content"
     />
@@ -385,7 +721,7 @@ exports[`components/HeaderFooterTemplate should match snapshot without children 
             class="pull-right footer-link copyright"
             id="copyright"
           >
-            © 2015-2017 Mattermost, Inc.
+            © 2017 Antimatter contributors
           </span>
           <span
             class="pull-right"
@@ -400,8 +736,56 @@ exports[`components/HeaderFooterTemplate should match snapshot without children 
 exports[`components/HeaderFooterTemplate should set classes on body and #root on mount and unset on unmount 1`] = `
 <div>
   <div
-    class="inner-wrap"
+    class="inner-wrap am-auth"
   >
+    <a
+      aria-label="Antimatter"
+      class="am-auth-top"
+      href="/"
+    >
+      <span
+        class="am-auth-brand"
+      >
+        <svg
+          aria-hidden="true"
+          viewBox="0 0 64 64"
+        >
+          <ellipse
+            class="am-auth-orbit-1"
+            cx="32"
+            cy="32"
+            rx="25"
+            ry="9.5"
+            transform="rotate(45 32 32)"
+          />
+          <ellipse
+            class="am-auth-orbit-2"
+            cx="32"
+            cy="32"
+            rx="25"
+            ry="9.5"
+            transform="rotate(-45 32 32)"
+          />
+          <path
+            class="am-auth-spark"
+            d="M32 20.5Q33.9 30.1 43.5 32Q33.9 33.9 32 43.5Q30.1 33.9 20.5 32Q30.1 30.1 32 20.5Z"
+          />
+          <circle
+            class="am-auth-matter"
+            cx="14.32"
+            cy="14.32"
+            r="5.5"
+          />
+          <circle
+            class="am-auth-anti"
+            cx="49.68"
+            cy="14.32"
+            r="4.25"
+          />
+        </svg>
+        Antimatter
+      </span>
+    </a>
     <div
       class="row content"
     />
@@ -429,7 +813,7 @@ exports[`components/HeaderFooterTemplate should set classes on body and #root on
             class="pull-right footer-link copyright"
             id="copyright"
           >
-            © 2015-2017 Mattermost, Inc.
+            © 2017 Antimatter contributors
           </span>
           <span
             class="pull-right"

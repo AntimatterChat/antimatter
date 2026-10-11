@@ -4,10 +4,14 @@
 import React, {useEffect} from 'react';
 import {useIntl} from 'react-intl';
 import {useSelector} from 'react-redux';
+import {Link} from 'react-router-dom';
 
 import {getConfig} from 'mattermost-redux/selectors/entities/general';
 
 import ExternalLink from 'components/external_link';
+import {Brand} from 'components/header_footer_route/header';
+
+import 'fusion/styles/auth.scss';
 
 type Props = {
     children?: React.ReactNode | readonly React.ReactNode[];
@@ -97,7 +101,14 @@ const HeaderFooterNotLoggedIn = (props: Props) => {
     }
 
     return (
-        <div className='inner-wrap'>
+        <div className='inner-wrap am-auth'>
+            <Link
+                className='am-auth-top'
+                to='/'
+                aria-label={config.SiteName || 'Antimatter'}
+            >
+                {config.SiteName && config.SiteName !== 'Antimatter' ? config.SiteName : <Brand/>}
+            </Link>
             <div className='row content'>
                 {props.children}
             </div>
@@ -119,7 +130,7 @@ const HeaderFooterNotLoggedIn = (props: Props) => {
                             id='copyright'
                             className='pull-right footer-link copyright'
                         >
-                            {`© 2015-${new Date().getFullYear()} Mattermost, Inc.`}
+                            {`© ${new Date().getFullYear()} Antimatter contributors`}
                         </span>
                         <span className='pull-right'>
                             {content}

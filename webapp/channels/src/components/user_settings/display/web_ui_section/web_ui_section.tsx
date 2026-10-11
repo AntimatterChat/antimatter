@@ -27,7 +27,7 @@ const webUINames: Record<WebUI, React.ReactNode> = {
     [WebUIs.CLASSIC]: (
         <FormattedMessage
             id='user.settings.display.webUI.classic'
-            defaultMessage='Classic'
+            defaultMessage='Classic (legacy)'
         />
     ),
     [WebUIs.FUSION]: (
@@ -77,7 +77,7 @@ export default function WebUISection({active, areAllSectionsInactive, updateSect
             <legend className='form-legend hidden-label'>
                 {title}
             </legend>
-            {Object.values(WebUIs).map((webUI) => (
+            {[WebUIs.FUSION, WebUIs.CLASSIC].map((webUI) => (
                 <div
                     className='radio'
                     key={webUI}
@@ -99,7 +99,7 @@ export default function WebUISection({active, areAllSectionsInactive, updateSect
             <div className='mt-5'>
                 <FormattedMessage
                     id='user.settings.display.webUI.description'
-                    defaultMessage='Choose the interface you use, in every browser you sign in from. The page reloads to apply the change.'
+                    defaultMessage="Fusion is Antimatter's interface; the classic one is kept for compatibility. Your choice applies to every browser you sign in from, and the page reloads to apply it."
                 />
             </div>
         </fieldset>

@@ -167,7 +167,7 @@ const ErrorMessage: React.FC<Props> = ({type, message, service, isGuest}: Props)
                             values={{
                                 link: (
                                     <ErrorLink
-                                        url={'https://forum.mattermost.com/c/trouble-shoot'}
+                                        url={'https://antimatter.chat/help.html'}
                                         message={defineMessage({
                                             id: 'error.oauth_missing_code.forum.link',
                                             defaultMessage: 'Troubleshooting forum',

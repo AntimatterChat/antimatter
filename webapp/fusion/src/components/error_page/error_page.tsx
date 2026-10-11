@@ -6,6 +6,7 @@ import React from 'react';
 import {FormattedMessage} from 'react-intl';
 import {Link} from 'react-router-dom';
 
+import {Brand} from 'components/header_footer_route/header';
 import {useAppBodyClass, useUserTheme} from 'components/theme_provider';
 import WarningIcon from 'components/widgets/icons/fa_warning_icon';
 
@@ -13,6 +14,8 @@ import {ErrorPageTypes, Constants} from 'utils/constants';
 
 import ErrorMessage from './error_message';
 import ErrorTitle from './error_title';
+
+import 'fusion/styles/auth.scss';
 
 type Location = {
     search: string;
@@ -133,7 +136,14 @@ export default class ErrorPage extends React.PureComponent<Props> {
         }
 
         const errorPage = (
-            <div className='container-fluid'>
+            <div className='container-fluid am-auth am-auth-error'>
+                <Link
+                    className='am-auth-top'
+                    to='/'
+                    aria-label={this.props.siteName}
+                >
+                    <Brand/>
+                </Link>
                 <div className='error__container'>
                     <div className='error__icon'>
                         <WarningIcon/>

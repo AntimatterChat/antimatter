@@ -83,44 +83,29 @@ exports[`components/error_page/ErrorMessage should match snapshot, oauth_missing
     </p>
     <p>
       For 
-      <a
-        href="https://docs.mattermost.com/deployment/sso-google.html?utm_source=mattermost&utm_medium=in-product&utm_content=error_link&uid=user-id-123&sid=telemetry-id-456&server_version=9.0.0"
-        location="error_link"
-        rel="noopener noreferrer"
-        target="_blank"
-      >
+      <span>
         Google Apps
-      </a>
+      </span>
        make sure your administrator enabled the Google+ API.
     </p>
     <p>
       For 
-      <a
-        href="https://docs.mattermost.com/deployment/sso-office.html?utm_source=mattermost&utm_medium=in-product&utm_content=error_link&uid=user-id-123&sid=telemetry-id-456&server_version=9.0.0"
-        location="error_link"
-        rel="noopener noreferrer"
-        target="_blank"
-      >
+      <span>
         Entra ID
-      </a>
+      </span>
        make sure the administrator of your Microsoft organization has enabled the Mattermost app.
     </p>
     <p>
       For 
-      <a
-        href="https://docs.mattermost.com/deployment/sso-gitlab.html?utm_source=mattermost&utm_medium=in-product&utm_content=error_link&uid=user-id-123&sid=telemetry-id-456&server_version=9.0.0"
-        location="error_link"
-        rel="noopener noreferrer"
-        target="_blank"
-      >
+      <span>
         GitLab
-      </a>
+      </span>
        please make sure you followed the setup instructions.
     </p>
     <p>
       If you reviewed the above and are still having trouble with configuration, you may post in our 
       <a
-        href="https://forum.mattermost.com/c/trouble-shoot?utm_source=mattermost&utm_medium=in-product&utm_content=error_link&uid=user-id-123&sid=telemetry-id-456&server_version=9.0.0"
+        href="https://antimatter.chat/help.html"
         location="error_link"
         rel="noopener noreferrer"
         target="_blank"

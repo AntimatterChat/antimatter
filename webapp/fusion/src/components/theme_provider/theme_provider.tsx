@@ -24,7 +24,9 @@ export default function ThemeProvider({children}: {children: React.ReactNode}) {
             return getTheme(state);
         }
 
-        return Preferences.THEMES.denim;
+        // The pages outside the app (logging in, signing up, the System Console) follow the system's light or dark
+        // mode in the Fusion colours, where the classic web app shows them in Denim.
+        return Preferences.THEMES.fusionSystem;
     });
 
     useEffect(() => {

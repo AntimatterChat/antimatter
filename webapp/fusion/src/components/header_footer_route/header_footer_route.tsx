@@ -8,6 +8,7 @@ import AnnouncementBar from 'components/announcement_bar';
 
 import type {HeaderProps} from './header';
 
+import 'fusion/styles/auth.scss';
 import './header_footer_route.scss';
 
 const Header = React.lazy(() => import('./header'));
@@ -37,7 +38,7 @@ export const HFRoute = ({path, component}: HFRouteProps) => {
                     <React.Suspense fallback={null}>
                         <AnnouncementBar/>
                     </React.Suspense>
-                    <div className='header-footer-route'>
+                    <div className='header-footer-route am-auth'>
                         <div className='header-footer-route-container'>
                             <React.Suspense fallback={null}>
                                 <Header {...headerProps}/>
