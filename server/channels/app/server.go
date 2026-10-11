@@ -902,7 +902,43 @@ func stripPort(hostport string) string {
 	return net.JoinHostPort(host, "443")
 }
 
+// ensureFileStorage checks the file storage settings, and creates the bucket (or the container) when the storage
+// works but it doesn't exist yet.
+func (s *Server) ensureFileStorage() {
+	err := s.FileBackend().TestConnection()
+	if err != nil {
+		var noBucket *filestore.FileBackendNoBucketError
+		if errors.As(err, &noBucket) {
+			// Each backend exposes its own provisioning entry point, so
+			// dispatch by capability rather than concrete type. New
+			// backends opt in by implementing this interface; backends
+			// that do not are reported with the original error so the
+			// missing-bucket condition surfaces in logs instead of being
+			// silently swallowed.
+			type bucketMaker interface {
+				MakeBucket() error
+			}
+			type containerMaker interface {
+				MakeContainer() error
+			}
+			switch b := s.FileBackend().(type) {
+			case bucketMaker:
+				err = b.MakeBucket()
+			case containerMaker:
+				err = b.MakeContainer()
+			}
+		}
+		if err != nil {
+			mlog.Error("Problem with file storage settings", mlog.Err(err))
+		}
+	}
+}
+
 func (s *Server) Start() error {
+	// The file storage first: the plugins that start with channels store files (their bots' pictures, for one), and
+	// on a new server with S3 storage the bucket doesn't exist yet.
+	s.ensureFileStorage()
+
 	// Start inter-cluster services first so shared channels APIs are
 	// available when plugins activate during channels startup.
 	if err := s.startInterClusterServices(); err != nil {
@@ -944,33 +980,7 @@ func (s *Server) Start() error {
 		}
 	}
 
-	err := s.FileBackend().TestConnection()
-	if err != nil {
-		var noBucket *filestore.FileBackendNoBucketError
-		if errors.As(err, &noBucket) {
-			// Each backend exposes its own provisioning entry point, so
-			// dispatch by capability rather than concrete type. New
-			// backends opt in by implementing this interface; backends
-			// that do not are reported with the original error so the
-			// missing-bucket condition surfaces in logs instead of being
-			// silently swallowed.
-			type bucketMaker interface {
-				MakeBucket() error
-			}
-			type containerMaker interface {
-				MakeContainer() error
-			}
-			switch b := s.FileBackend().(type) {
-			case bucketMaker:
-				err = b.MakeBucket()
-			case containerMaker:
-				err = b.MakeContainer()
-			}
-		}
-		if err != nil {
-			mlog.Error("Problem with file storage settings", mlog.Err(err))
-		}
-	}
+	var err error
 
 	s.revertHostedPushNotificationServer()
 
