@@ -4399,17 +4399,17 @@
     "defaultMessage": "Enable sign-in with username:",
     "description": "Admin console setting label (toggle) on the Authentication > Email page allowing login with username and password."
   },
-  "admin.email.easHelp": {
-    "defaultMessage": "Learn more about compiling and deploying your own mobile apps from an <link>Enterprise App Store</link>.",
-    "description": "Help text on the Push Notification Server admin page; <link></link> wraps the words for the Enterprise App Store documentation hyperlink."
+  "admin.email.mattermostPushServer": {
+    "defaultMessage": "This is a push notification service run by Mattermost, Inc.: it only delivers notifications to Mattermost's own mobile apps, not to the Antimatter app.",
+    "description": "Warning under the push notification server URL on the Push Notification Server admin page when the URL is a service of Mattermost, Inc. (the company whose open source project Antimatter is based on); keep 'Mattermost, Inc.' and 'Antimatter' as they are."
   },
-  "admin.email.mtpns": {
-    "defaultMessage": "Use TPNS connection to send notifications to iOS and Android apps",
-    "description": "Radio option on the Push Notification Server admin page; TPNS (Test Push Notification Service) is an acronym to keep."
+  "admin.email.ownPushProxy": {
+    "defaultMessage": "Send push notifications through your own push proxy",
+    "description": "Option on the Push Notification Server admin page to send mobile push notifications through a push proxy the administrator runs; a 'push proxy' is the service that forwards notifications to Apple and Google."
   },
-  "admin.email.mtpnsHelp": {
-    "defaultMessage": "Download <linkIOS>Mattermost iOS app</linkIOS> from iTunes. Download <linkAndroid>Mattermost Android app</linkAndroid> from Google Play. Learn more about the <linkHPNS>Mattermost Hosted Push Notification Service</linkHPNS>.",
-    "description": "Help text under the push notification server setting when using the Mattermost Test Push Notification Service; <linkIOS>, <linkAndroid> and <linkHPNS> wrap link texts."
+  "admin.email.ownPushProxyHelp": {
+    "defaultMessage": "The address of your Antimatter push proxy, which delivers notifications to the Antimatter apps for iOS and Android. <link>Learn how to set it up</link>.",
+    "description": "Help text under the push notification server URL on the Push Notification Server admin page; <link> wraps 'Learn how to set it up', a link to the setup guide."
   },
   "admin.email.pushOff": {
     "defaultMessage": "Do not send push notifications",
@@ -4419,9 +4419,9 @@
     "defaultMessage": "Please see <link>documentation on push notifications</link> to learn more about setup options.",
     "description": "Help text under the push notification server setting when push notifications are disabled; <link> wraps 'documentation on push notifications'."
   },
-  "admin.email.pushServerEx": {
-    "defaultMessage": "E.g.: \"https://push-test.mattermost.com\"",
-    "description": "Placeholder in the Push Notification Server URL input showing an example URL."
+  "admin.email.pushServerExample": {
+    "defaultMessage": "E.g.: \"https://push.example.com\"",
+    "description": "Placeholder in the Push Notification Server URL input showing an example URL; keep the URL as it is."
   },
   "admin.email.pushServerTitle": {
     "defaultMessage": "Push Notification Server:",
@@ -4438,10 +4438,6 @@
   "admin.email.requireVerificationTitle": {
     "defaultMessage": "Require Email Verification: ",
     "description": "Admin console setting label (toggle) on the Authentication > Email page requiring email verification before login; note the trailing space before the control."
-  },
-  "admin.email.selfPush": {
-    "defaultMessage": "Manually enter Push Notification Service location",
-    "description": "Radio option on the Push Notification Server admin page for entering a custom push service URL manually."
   },
   "admin.environment.fileStorage": {
     "defaultMessage": "File Storage",

@@ -9,7 +9,7 @@ import type {AdminConfig, EmailSettings} from '@mattermost/types/config';
 
 import ExternalLink from 'components/external_link';
 
-import {Constants, DocLinks} from 'utils/constants';
+import {DocLinks} from 'utils/constants';
 
 import DropdownSetting from './dropdown_setting';
 import OLDAdminSettings from './old_admin_settings';
@@ -28,7 +28,6 @@ type State = BaseState & {
 };
 
 const PUSH_NOTIFICATIONS_OFF = 'off';
-const PUSH_NOTIFICATIONS_MTPNS = 'mtpns';
 const PUSH_NOTIFICATIONS_CUSTOM = 'custom';
 
 const DROPDOWN_ID_SERVER_TYPE = 'pushNotificationServerType';
@@ -45,22 +44,22 @@ export const searchableStrings = [
     messages.pushServerTitle,
 ];
 
-export class PushSettings extends OLDAdminSettings<Props, State> {
-    handleDropdownChange = (id: string, value: string) => {
-        if (id === DROPDOWN_ID_SERVER_TYPE) {
-            if (value === PUSH_NOTIFICATIONS_MTPNS) {
-                this.setState({
-                    pushNotificationServer: Constants.MTPNS,
-                });
-            } else if (value === PUSH_NOTIFICATIONS_CUSTOM &&
-                this.state.pushNotificationServerType === PUSH_NOTIFICATIONS_MTPNS) {
-                this.setState({
-                    pushNotificationServer: '',
-                });
-            }
-        }
+// Push notification services run by Mattermost, Inc. (their test and hosted services) only deliver
+// to Mattermost's own mobile apps, not to the Antimatter app.
+export function isMattermostPushServer(url: string) {
+    try {
+        const host = new URL(url.trim()).hostname.toLowerCase();
+        return host === 'mattermost.com' || host.endsWith('.mattermost.com');
+    } catch {
+        return false;
+    }
+}
 
-        this.handleChange(id, value);
+export class PushSettings extends OLDAdminSettings<Props, State> {
+    // Push notifications go through a push proxy the administrator runs: it needs an address.
+    canSave = () => {
+        return this.state.pushNotificationServerType === PUSH_NOTIFICATIONS_OFF ||
+            this.state.pushNotificationServer.trim() !== '';
     };
 
     getConfigFromState = (config: Props['config']) => {
@@ -72,16 +71,12 @@ export class PushSettings extends OLDAdminSettings<Props, State> {
     };
 
     getStateFromConfig(config: Props['config']) {
+        // Without a push notification server nothing is sent: that's the default, shown as off.
+        // Any configured server is kept as it is, Mattermost's included.
+        const pushNotificationServer = config.EmailSettings.PushNotificationServer ?? '';
         let pushNotificationServerType: EmailSettings['PushNotificationServerType'] = PUSH_NOTIFICATIONS_CUSTOM;
-        if (!config.EmailSettings.SendPushNotifications) {
+        if (!config.EmailSettings.SendPushNotifications || !pushNotificationServer.trim()) {
             pushNotificationServerType = PUSH_NOTIFICATIONS_OFF;
-        } else if (config.EmailSettings.PushNotificationServer === Constants.MTPNS) {
-            pushNotificationServerType = PUSH_NOTIFICATIONS_MTPNS;
-        }
-
-        let pushNotificationServer = config.EmailSettings.PushNotificationServer;
-        if (pushNotificationServerType === PUSH_NOTIFICATIONS_MTPNS) {
-            pushNotificationServer = Constants.MTPNS;
         }
 
         const maxNotificationsPerChannel = config.TeamSettings.MaxNotificationsPerChannel;
@@ -107,8 +102,16 @@ export class PushSettings extends OLDAdminSettings<Props, State> {
     renderSettings = () => {
         const pushNotificationServerTypes = [];
         pushNotificationServerTypes.push({value: PUSH_NOTIFICATIONS_OFF, text: this.props.intl.formatMessage({id: 'admin.email.pushOff', defaultMessage: 'Do not send push notifications'})});
-        pushNotificationServerTypes.push({value: PUSH_NOTIFICATIONS_MTPNS, text: this.props.intl.formatMessage({id: 'admin.email.mtpns', defaultMessage: 'Use TPNS connection to send notifications to iOS and Android apps'})});
-        pushNotificationServerTypes.push({value: PUSH_NOTIFICATIONS_CUSTOM, text: this.props.intl.formatMessage({id: 'admin.email.selfPush', defaultMessage: 'Manually enter Push Notification Service location'})});
+        pushNotificationServerTypes.push({value: PUSH_NOTIFICATIONS_CUSTOM, text: this.props.intl.formatMessage({id: 'admin.email.ownPushProxy', defaultMessage: 'Send push notifications through your own push proxy'})});
+
+        const setupLink = (msg: React.ReactNode) => (
+            <ExternalLink
+                href={DocLinks.SETUP_PUSH_NOTIFICATIONS}
+                location='push_settings'
+            >
+                {msg}
+            </ExternalLink>
+        );
 
         let sendHelpText = null;
         let pushServerHelpText = null;
@@ -117,67 +120,27 @@ export class PushSettings extends OLDAdminSettings<Props, State> {
                 <FormattedMessage
                     id='admin.email.pushOffHelp'
                     defaultMessage='Please see <link>documentation on push notifications</link> to learn more about setup options.'
-                    values={{
-                        link: (msg) => (
-                            <ExternalLink
-                                href={DocLinks.SETUP_PUSH_NOTIFICATIONS}
-                                location='push_settings'
-                            >
-                                {msg}
-                            </ExternalLink>
-                        ),
-                    }}
-                />
-            );
-        } else if (this.state.pushNotificationServerType === PUSH_NOTIFICATIONS_MTPNS) {
-            pushServerHelpText = (
-                <FormattedMessage
-                    id='admin.email.mtpnsHelp'
-                    defaultMessage='Download <linkIOS>Mattermost iOS app</linkIOS> from iTunes. Download <linkAndroid>Mattermost Android app</linkAndroid> from Google Play. Learn more about the <linkHPNS>Mattermost Hosted Push Notification Service</linkHPNS>.'
-                    values={{
-                        linkIOS: (msg) => (
-                            <ExternalLink
-                                href='https://mattermost.com/pl/ios-app/'
-                                location='push_settings'
-                            >
-                                {msg}
-                            </ExternalLink>
-                        ),
-                        linkAndroid: (msg) => (
-                            <ExternalLink
-                                href='https://mattermost.com/pl/android-app/'
-                                location='push_settings'
-                            >
-                                {msg}
-                            </ExternalLink>
-                        ),
-                        linkHPNS: (msg) => (
-                            <ExternalLink
-                                href={DocLinks.SETUP_PUSH_NOTIFICATIONS}
-                                location='push_settings'
-                            >
-                                {msg}
-                            </ExternalLink>
-                        ),
-                    }}
+                    values={{link: setupLink}}
                 />
             );
         } else {
             pushServerHelpText = (
-                <FormattedMessage
-                    id='admin.email.easHelp'
-                    defaultMessage='Learn more about compiling and deploying your own mobile apps from an <link>Enterprise App Store</link>.'
-                    values={{
-                        link: (msg) => (
-                            <ExternalLink
-                                href='https://docs.mattermost.com/'
-                                location='push_settings'
-                            >
-                                {msg}
-                            </ExternalLink>
-                        ),
-                    }}
-                />
+                <>
+                    <FormattedMessage
+                        id='admin.email.ownPushProxyHelp'
+                        defaultMessage='The address of your Antimatter push proxy, which delivers notifications to the Antimatter apps for iOS and Android. <link>Learn how to set it up</link>.'
+                        values={{link: setupLink}}
+                    />
+                    {isMattermostPushServer(this.state.pushNotificationServer) && (
+                        <>
+                            {' '}
+                            <FormattedMessage
+                                id='admin.email.mattermostPushServer'
+                                defaultMessage="This is a push notification service run by Mattermost, Inc.: it only delivers notifications to Mattermost's own mobile apps, not to the Antimatter app."
+                            />
+                        </>
+                    )}
+                </>
             );
         }
 
@@ -188,7 +151,7 @@ export class PushSettings extends OLDAdminSettings<Props, State> {
                     values={pushNotificationServerTypes}
                     label={<FormattedMessage {...messages.pushTitle}/>}
                     value={this.state.pushNotificationServerType}
-                    onChange={this.handleDropdownChange}
+                    onChange={this.handleChange}
                     helpText={sendHelpText}
                     setByEnv={this.isPushNotificationServerSetByEnv()}
                     disabled={this.props.isDisabled}
@@ -196,7 +159,7 @@ export class PushSettings extends OLDAdminSettings<Props, State> {
                 <TextSetting
                     id='pushNotificationServer'
                     label={<FormattedMessage {...messages.pushServerTitle}/>}
-                    placeholder={defineMessage({id: 'admin.email.pushServerEx', defaultMessage: 'E.g.: "https://push-test.mattermost.com"'})}
+                    placeholder={defineMessage({id: 'admin.email.pushServerExample', defaultMessage: 'E.g.: "https://push.example.com"'})}
                     helpText={pushServerHelpText}
                     value={this.state.pushNotificationServer}
                     onChange={this.handleChange}

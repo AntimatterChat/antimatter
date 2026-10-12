@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
-exports[`components/PushSettings should match snapshot, TPNS selected 1`] = `
+exports[`components/PushSettings should match snapshot, no push notification server (the default) 1`] = `
 <div>
   <form
     class="form-horizontal"
@@ -45,20 +45,26 @@ exports[`components/PushSettings should match snapshot, TPNS selected 1`] = `
                   Do not send push notifications
                 </option>
                 <option
-                  value="mtpns"
-                >
-                  Use TPNS connection to send notifications to iOS and Android apps
-                </option>
-                <option
                   value="custom"
                 >
-                  Manually enter Push Notification Service location
+                  Send push notifications through your own push proxy
                 </option>
               </select>
               <div
                 class="help-text"
                 data-testid="pushNotificationServerTypehelp-text"
-              />
+              >
+                Please see 
+                <a
+                  href="https://github.com/AntimatterChat/push-proxy#self-hosting"
+                  location="push_settings"
+                  rel="noopener noreferrer"
+                  target="_blank"
+                >
+                  documentation on push notifications
+                </a>
+                 to learn more about setup options.
+              </div>
             </div>
           </div>
           <div
@@ -81,43 +87,14 @@ exports[`components/PushSettings should match snapshot, TPNS selected 1`] = `
                 disabled=""
                 id="pushNotificationServer"
                 maxlength="-1"
-                placeholder="E.g.: \\"https://push-test.mattermost.com\\""
+                placeholder="E.g.: \\"https://push.example.com\\""
                 type="text"
-                value="https://push-test.mattermost.com"
+                value=""
               />
               <div
                 class="help-text"
                 data-testid="pushNotificationServerhelp-text"
-              >
-                Download 
-                <a
-                  href="https://mattermost.com/pl/ios-app/?utm_source=mattermost&utm_medium=in-product&utm_content=push_settings&uid=&sid=&server_version="
-                  location="push_settings"
-                  rel="noopener noreferrer"
-                  target="_blank"
-                >
-                  Mattermost iOS app
-                </a>
-                 from iTunes. Download 
-                <a
-                  href="https://mattermost.com/pl/android-app/?utm_source=mattermost&utm_medium=in-product&utm_content=push_settings&uid=&sid=&server_version="
-                  location="push_settings"
-                  rel="noopener noreferrer"
-                  target="_blank"
-                >
-                  Mattermost Android app
-                </a>
-                 from Google Play. Learn more about the 
-                <a
-                  href="https://mattermost.com/pl/setup-push-notifications?utm_source=mattermost&utm_medium=in-product&utm_content=push_settings&uid=&sid=&server_version="
-                  location="push_settings"
-                  rel="noopener noreferrer"
-                  target="_blank"
-                >
-                  Mattermost Hosted Push Notification Service
-                </a>
-                .
-              </div>
+              />
             </div>
           </div>
           <div
@@ -159,6 +136,7 @@ exports[`components/PushSettings should match snapshot, TPNS selected 1`] = `
         <button
           class="btn btn-primary"
           data-testid="saveSetting"
+          disabled=""
           id="saveSetting"
           type="submit"
         >
@@ -175,7 +153,7 @@ exports[`components/PushSettings should match snapshot, TPNS selected 1`] = `
 </div>
 `;
 
-exports[`components/PushSettings should match snapshot, custom push server 1`] = `
+exports[`components/PushSettings should match snapshot, own push proxy 1`] = `
 <div>
   <form
     class="form-horizontal"
@@ -220,14 +198,9 @@ exports[`components/PushSettings should match snapshot, custom push server 1`] =
                   Do not send push notifications
                 </option>
                 <option
-                  value="mtpns"
-                >
-                  Use TPNS connection to send notifications to iOS and Android apps
-                </option>
-                <option
                   value="custom"
                 >
-                  Manually enter Push Notification Service location
+                  Send push notifications through your own push proxy
                 </option>
               </select>
               <div
@@ -255,22 +228,22 @@ exports[`components/PushSettings should match snapshot, custom push server 1`] =
                 data-testid="pushNotificationServerinput"
                 id="pushNotificationServer"
                 maxlength="-1"
-                placeholder="E.g.: \\"https://push-test.mattermost.com\\""
+                placeholder="E.g.: \\"https://push.example.com\\""
                 type="text"
-                value="https://global.push.mattermost.com"
+                value="https://push.example.com"
               />
               <div
                 class="help-text"
                 data-testid="pushNotificationServerhelp-text"
               >
-                Learn more about compiling and deploying your own mobile apps from an 
+                The address of your Antimatter push proxy, which delivers notifications to the Antimatter apps for iOS and Android. 
                 <a
-                  href="https://docs.mattermost.com/?utm_source=mattermost&utm_medium=in-product&utm_content=push_settings&uid=&sid=&server_version="
+                  href="https://github.com/AntimatterChat/push-proxy#self-hosting"
                   location="push_settings"
                   rel="noopener noreferrer"
                   target="_blank"
                 >
-                  Enterprise App Store
+                  Learn how to set it up
                 </a>
                 .
               </div>
