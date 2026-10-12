@@ -1,7 +1,7 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 
-import React, {useLayoutEffect, useRef, useState} from 'react';
+import React, {useCallback, useLayoutEffect, useRef, useState} from 'react';
 
 import Icon from 'fusion/components/icon';
 import type {IconName} from 'fusion/components/icon';
@@ -66,21 +66,38 @@ type FlyoutProps = {
     children: React.ReactNode;
 };
 
-// Flyout is a submenu opened on hover or focus, towards the side of the screen with room.
+// The submenu's width (see .am-fly-menu) and its gap to the menu.
+const FLY_WIDTH = 230 + 4;
+
+// Flyout is a submenu opened on hover or focus, towards the side of the screen with room, and upwards when it would
+// run past the bottom of the window. Where it goes is decided as it opens: the menu holding it may still move after
+// it mounts (a popover placing itself near the right edge, say).
 export function Flyout({icon, label, menuLabel, children}: FlyoutProps) {
     const ref = useRef<HTMLDivElement>(null);
+    const menuRef = useRef<HTMLDivElement>(null);
     const [side, setSide] = useState<'left' | 'right'>('right');
-    useLayoutEffect(() => {
-        const pop = ref.current?.closest('.am-pop');
-        if (pop) {
-            const r = pop.getBoundingClientRect();
-            setSide(r.right + 240 > window.innerWidth ? 'left' : 'right');
+    const [up, setUp] = useState(false);
+    const place = useCallback(() => {
+        const r = ref.current?.getBoundingClientRect();
+        if (!r) {
+            return;
         }
+        const roomRight = window.innerWidth - r.right;
+        setSide(roomRight >= FLY_WIDTH + 8 || roomRight >= r.left ? 'right' : 'left');
+
+        // Its height is known once shown (on hover or focus, by CSS): measure it on the next frame.
+        requestAnimationFrame(() => {
+            const height = menuRef.current?.offsetHeight ?? 0;
+            setUp(height > 0 && r.top + height > window.innerHeight - 8);
+        });
     }, []);
+    useLayoutEffect(place, [place]);
     return (
         <div
             ref={ref}
-            className={am('fly', side)}
+            className={am('fly', side, {up})}
+            onMouseEnter={place}
+            onFocus={place}
         >
             <button
                 type='button'
@@ -97,6 +114,7 @@ export function Flyout({icon, label, menuLabel, children}: FlyoutProps) {
                 </span>
             </button>
             <div
+                ref={menuRef}
                 className={am('fly-menu')}
                 role='menu'
                 aria-label={menuLabel}

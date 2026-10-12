@@ -18,6 +18,7 @@
 }
 :is(.am-app, .am-layer) .am-fly.am-left > .am-fly-menu { right: calc(100% + 4px); }
 :is(.am-app, .am-layer) .am-fly.am-right > .am-fly-menu { left: calc(100% + 4px); }
+:is(.am-app, .am-layer) .am-fly.am-up > .am-fly-menu { top: auto; bottom: -6px; }
 :is(.am-app, .am-layer) .am-fly-menu::after { content: ""; position: absolute; top: 0; bottom: 0; width: 8px; }
 :is(.am-app, .am-layer) .am-fly.am-left > .am-fly-menu::after { left: 100%; }
 :is(.am-app, .am-layer) .am-fly.am-right > .am-fly-menu::after { right: 100%; }
