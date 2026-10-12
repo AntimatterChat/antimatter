@@ -4,11 +4,16 @@
 import React, {useEffect, useState} from 'react';
 import {useIntl} from 'react-intl';
 import type {IntlShape} from 'react-intl';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 
+import type {Channel} from '@mattermost/types/channels';
 import type {OnTopPost} from '@mattermost/types/posts';
 
+import {fetchIsRestrictedDM} from 'mattermost-redux/actions/channels';
+import {Permissions} from 'mattermost-redux/constants';
+import {getConfig} from 'mattermost-redux/selectors/entities/general';
 import {getOnTopEntry, isOnTopActive} from 'mattermost-redux/selectors/entities/on_top_posts';
+import {haveIChannelPermission} from 'mattermost-redux/selectors/entities/roles';
 
 import Icon from 'fusion/components/icon';
 import {am} from 'fusion/utils/class_names';
@@ -80,6 +85,42 @@ export function durationLabel(intl: IntlShape, duration: OnTopDuration): string 
     default:
         return intl.formatMessage({id: 'fusion.ontop.duration.forever', defaultMessage: 'Until removed'});
     }
+}
+
+// isRestrictedDMUnknown tells whether a direct or group message might be restricted (direct messages only between people
+// sharing a team) without knowing yet whether it is.
+function isRestrictedDMUnknown(state: GlobalState, channel: Channel): boolean {
+    return (channel.type === 'D' || channel.type === 'G') && getConfig(state).RestrictDirectMessage === 'team' &&
+        state.entities.channels.restrictedDMs?.[channel.id] === undefined;
+}
+
+// canChangeOnTop tells whether one may put messages on top of a channel and take them off, as the server does: not in
+// an archived channel or a restricted direct message (nor while it's not known whether it's restricted), and in a
+// team channel only where one may post (its moderation, overrides, a timeout and membership apply).
+export function canChangeOnTop(state: GlobalState, channel: Channel | undefined): boolean {
+    if (!channel || channel.delete_at !== 0) {
+        return false;
+    }
+    if (channel.type === 'D' || channel.type === 'G') {
+        if (isRestrictedDMUnknown(state, channel)) {
+            return false;
+        }
+        return !state.entities.channels.restrictedDMs?.[channel.id];
+    }
+    return haveIChannelPermission(state, channel.team_id, channel.id, Permissions.CREATE_POST);
+}
+
+// useCanChangeOnTop is canChangeOnTop, finding out first whether a direct message is restricted when it's not known.
+export function useCanChangeOnTop(channel: Channel | undefined): boolean {
+    const dispatch = useDispatch();
+    const unknown = useSelector((state: GlobalState) => Boolean(channel) && isRestrictedDMUnknown(state, channel!));
+    const channelId = channel?.id;
+    useEffect(() => {
+        if (unknown && channelId) {
+            dispatch(fetchIsRestrictedDM(channelId));
+        }
+    }, [unknown, channelId, dispatch]);
+    return useSelector((state: GlobalState) => canChangeOnTop(state, channel));
 }
 
 // useNow is the time, again every half minute, and when a deadline comes (the next expiry), so that what's shown

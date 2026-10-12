@@ -16,6 +16,7 @@ import type {
     ChannelMemberCountsByGroup,
     ServerChannel,
     ChannelsState,
+    OnTopLoading,
 } from '@mattermost/types/channels';
 import type {Group} from '@mattermost/types/groups';
 import type {OnTopPost} from '@mattermost/types/posts';
@@ -31,6 +32,8 @@ import {AdminTypes, ChannelTypes, UserTypes, SchemeTypes, GroupTypes, PostTypes}
 import {General} from 'mattermost-redux/constants';
 import {MarkUnread} from 'mattermost-redux/constants/channels';
 import {channelListToMap, splitRoles} from 'mattermost-redux/utils/channel_utils';
+import {applyOnTopChange} from 'mattermost-redux/utils/on_top_utils';
+import type {OnTopChange} from 'mattermost-redux/utils/on_top_utils';
 
 import messageCounts from './channels/message_counts';
 
@@ -877,6 +880,8 @@ export function overrides(state: RelationOneToOne<Channel, ChannelOverride[]> = 
     }
 }
 
+const NO_ON_TOP: OnTopPost[] = [];
+
 // onTop are the messages on top of the channels whose were loaded (Antimatter), the latest put there first. Expired
 // ones stay until loaded again; selectors leave them out.
 export function onTop(state: RelationOneToOne<Channel, OnTopPost[]> = {}, action: MMReduxAction) {
@@ -885,19 +890,53 @@ export function onTop(state: RelationOneToOne<Channel, OnTopPost[]> = {}, action
         const {channelId, onTop: list} = action.data;
         return {...state, [channelId]: list};
     }
-    case ChannelTypes.POST_PUT_ON_TOP: {
-        const entry: OnTopPost = action.data;
-        const others = (state[entry.channel_id] || []).filter((o) => o.post_id !== entry.post_id);
-        const list = [entry, ...others].sort((a, b) => b.create_at - a.create_at);
-        return {...state, [entry.channel_id]: list};
-    }
+    case ChannelTypes.POST_PUT_ON_TOP:
     case ChannelTypes.POST_REMOVED_FROM_TOP: {
-        const {channel_id: channelId, post_id: postId} = action.data;
-        const list = state[channelId];
-        if (!list?.some((o) => o.post_id === postId)) {
+        const change = action as OnTopChange;
+        const channelId = change.data.channel_id;
+        const list = state[channelId] || NO_ON_TOP;
+        const changed = applyOnTopChange(list, change);
+        return changed === list ? state : {...state, [channelId]: changed};
+    }
+    case UserTypes.LOGOUT_SUCCESS:
+        return {};
+    default:
+        return state;
+    }
+}
+
+// onTopLoading follows the loads of what's on top of a channel under way (Antimatter), with the changes the websocket
+// brought meanwhile: a load's response may be older than them, so they're applied over it (see fetchOnTopPosts).
+export function onTopLoading(state: RelationOneToOne<Channel, OnTopLoading> = {}, action: MMReduxAction) {
+    switch (action.type) {
+    case ChannelTypes.REQUEST_ON_TOP_POSTS: {
+        const {channelId} = action.data;
+        const current = state[channelId];
+        return {...state, [channelId]: {loads: (current?.loads || 0) + 1, changes: current?.changes || []}};
+    }
+    case ChannelTypes.POST_PUT_ON_TOP:
+    case ChannelTypes.POST_REMOVED_FROM_TOP: {
+        const change = action as OnTopChange;
+        const channelId = change.data.channel_id;
+        const current = state[channelId];
+        if (!current) {
             return state;
         }
-        return {...state, [channelId]: list.filter((o) => o.post_id !== postId)};
+        return {...state, [channelId]: {...current, changes: [...current.changes, change]}};
+    }
+    case ChannelTypes.RECEIVED_ON_TOP_POSTS:
+    case ChannelTypes.RECEIVED_ON_TOP_POSTS_FAILED: {
+        const {channelId} = action.data;
+        const current = state[channelId];
+        if (!current) {
+            return state;
+        }
+        if (current.loads <= 1) {
+            const rest = {...state};
+            Reflect.deleteProperty(rest, channelId);
+            return rest;
+        }
+        return {...state, [channelId]: {...current, loads: current.loads - 1}};
     }
     case UserTypes.LOGOUT_SUCCESS:
         return {};
@@ -1226,6 +1265,7 @@ export default combineReducers({
     // Antimatter: channel overrides, by channel
     overrides,
 
-    // Antimatter: messages on top, by channel
+    // Antimatter: messages on top, by channel, and their loads under way
     onTop,
+    onTopLoading,
 });

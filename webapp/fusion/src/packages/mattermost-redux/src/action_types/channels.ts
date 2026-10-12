@@ -79,7 +79,9 @@ export default keyMirror({
     RECEIVED_CHANNEL_OVERRIDES: null,
 
     // Antimatter: messages put on top of a channel.
+    REQUEST_ON_TOP_POSTS: null,
     RECEIVED_ON_TOP_POSTS: null,
+    RECEIVED_ON_TOP_POSTS_FAILED: null,
     POST_PUT_ON_TOP: null,
     POST_REMOVED_FROM_TOP: null,
 

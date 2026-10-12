@@ -23,6 +23,7 @@ import type {
 } from '@mattermost/types/channels';
 import type {OptsSignalExt} from '@mattermost/types/client4';
 import type {ServerError} from '@mattermost/types/errors';
+import type {OnTopPost} from '@mattermost/types/posts';
 import type {PreferenceType} from '@mattermost/types/preferences';
 
 import {ChannelTypes, PreferenceTypes, UserTypes} from 'mattermost-redux/action_types';
@@ -39,6 +40,8 @@ import {
 import {getCurrentTeamId} from 'mattermost-redux/selectors/entities/teams';
 import type {GetStateFunc, ActionFunc, ActionFuncAsync} from 'mattermost-redux/types/actions';
 import {DelayedDataLoader} from 'mattermost-redux/utils/data_loader';
+import {applyOnTopChange} from 'mattermost-redux/utils/on_top_utils';
+import type {OnTopChange} from 'mattermost-redux/utils/on_top_utils';
 
 import {addChannelToInitialCategory, addChannelToCategory} from './channel_categories';
 import {logError} from './errors';
@@ -1484,15 +1487,25 @@ export function fetchChannelOverrides(channelId: string) {
     });
 }
 
-// fetchOnTopPosts loads the messages on top of a channel (Antimatter).
-export function fetchOnTopPosts(channelId: string) {
-    return bindClientFunc({
-        clientFunc: async () => {
-            const onTop = await Client4.getOnTopPosts(channelId);
-            return {channelId, onTop};
-        },
-        onSuccess: ChannelTypes.RECEIVED_ON_TOP_POSTS,
-    });
+// fetchOnTopPosts loads the messages on top of a channel (Antimatter). The websocket's changes that come while it
+// loads may be newer than the response, so they're applied over it rather than lost.
+export function fetchOnTopPosts(channelId: string): ActionFuncAsync<OnTopPost[]> {
+    return async (dispatch, getState) => {
+        dispatch({type: ChannelTypes.REQUEST_ON_TOP_POSTS, data: {channelId}});
+        let list: OnTopPost[];
+        try {
+            list = await Client4.getOnTopPosts(channelId);
+        } catch (error) {
+            forceLogoutIfNecessary(error, dispatch, getState);
+            dispatch({type: ChannelTypes.RECEIVED_ON_TOP_POSTS_FAILED, data: {channelId}});
+            dispatch(logError(error));
+            return {error};
+        }
+        const changes = (getState().entities.channels.onTopLoading?.[channelId]?.changes || []) as OnTopChange[];
+        const onTop = changes.reduce(applyOnTopChange, list);
+        dispatch({type: ChannelTypes.RECEIVED_ON_TOP_POSTS, data: {channelId, onTop}});
+        return {data: onTop};
+    };
 }
 
 // putPostOnTop puts a message on top of its channel for a duration in milliseconds, or until removed (0).

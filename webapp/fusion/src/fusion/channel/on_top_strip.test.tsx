@@ -6,6 +6,7 @@ import React from 'react';
 import {PostPriority} from '@mattermost/types/posts';
 import type {OnTopPost, Post} from '@mattermost/types/posts';
 
+import {ChannelTypes} from 'mattermost-redux/action_types';
 import {Client4} from 'mattermost-redux/client';
 
 import {act, renderWithContext, screen, userEvent, waitFor} from 'tests/react_testing_utils';
@@ -36,12 +37,17 @@ describe('fusion/channel/OnTopStrip', () => {
     };
     const list = [entry('first', 3, later), entry('second', 2, 0, 'marie'), entry('third', 1)];
 
-    const state = (onTop: OnTopPost[], postsById: Record<string, Post> = posts) => ({
+    const state = (onTop: OnTopPost[], postsById: Record<string, Post> = posts, channelPermissions = ['create_post']) => ({
         entities: {
-            users: {currentUserId: me.id, profiles: {me, marie}},
+            users: {currentUserId: me.id, profiles: {me: {...me, roles: 'system_user'}, marie}},
             posts: {posts: postsById},
-            channels: {onTop: {ch: onTop}, channels: {ch: channel}},
-            teams: {currentTeamId: 'team', teams: {team: TestHelper.getTeamMock({id: 'team', name: 'team'})}},
+            channels: {onTop: {ch: onTop}, channels: {ch: channel}, myMembers: {ch: {channel_id: 'ch', user_id: 'me', roles: 'channel_user'}}, roles: {ch: new Set(['channel_user'])}},
+            teams: {currentTeamId: 'team', teams: {team: TestHelper.getTeamMock({id: 'team', name: 'team'})}, myMembers: {team: {team_id: 'team', user_id: 'me', roles: 'team_user'}}},
+            roles: {roles: {
+                system_user: {name: 'system_user', permissions: []},
+                team_user: {name: 'team_user', permissions: []},
+                channel_user: {name: 'channel_user', permissions: channelPermissions},
+            }},
             general: {config: {PostPriority: 'true'}},
         },
     });
@@ -73,6 +79,7 @@ describe('fusion/channel/OnTopStrip', () => {
         expect(region).toHaveTextContent('put on top by you');
         expect(region).toHaveTextContent(/(59|60)m left|1h 0m left/);
         expect(region).toHaveTextContent('1/3');
+        expect(screen.getByText('1/3')).toHaveAttribute('aria-live', 'polite');
         expect(region).not.toHaveClass('am-urgent');
     });
 
@@ -114,6 +121,32 @@ describe('fusion/channel/OnTopStrip', () => {
         expect(remove).toHaveBeenCalledWith('first');
         await waitFor(() => expect(screen.getByRole('region', {name: 'On top of this channel'})).toHaveTextContent('Firmware 0.9.3 is out'));
         expect(screen.getByRole('region', {name: 'On top of this channel'})).toHaveTextContent('1/2');
+    });
+
+    test('has no remove button where the server would refuse it', async () => {
+        renderWithContext(<OnTopStrip channel={channel}/>, state(list, posts, []));
+        await screen.findByRole('region', {name: 'On top of this channel'});
+        expect(screen.queryByRole('button', {name: 'Remove from top'})).not.toBeInTheDocument();
+    });
+
+    test('has no remove button in an archived channel', async () => {
+        renderWithContext(<OnTopStrip channel={{...channel, delete_at: 5}}/>, state(list));
+        await screen.findByRole('region', {name: 'On top of this channel'});
+        expect(screen.queryByRole('button', {name: 'Remove from top'})).not.toBeInTheDocument();
+    });
+
+    test('loads again the messages whose loading failed', async () => {
+        const fetch = jest.spyOn(Client4, 'getPostsByIds').mockRejectedValueOnce(new Error('offline')).mockResolvedValue([]);
+        const {store} = renderWithContext(<OnTopStrip channel={channel}/>, state(list, {first: posts.first}));
+        await waitFor(() => expect(fetch).toHaveBeenCalledTimes(1));
+        await act(async () => {});
+
+        // What's on top changes, and the strip looks again for what's missing.
+        await act(async () => {
+            store.dispatch({type: ChannelTypes.POST_PUT_ON_TOP, data: entry('fourth', 4)});
+        });
+        await waitFor(() => expect(fetch).toHaveBeenCalledTimes(2));
+        expect(fetch).toHaveBeenLastCalledWith(expect.arrayContaining(['second', 'third']));
     });
 
     test('loads the messages on top that aren\'t loaded', async () => {

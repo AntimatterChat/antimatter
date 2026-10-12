@@ -71,6 +71,7 @@ const state: GlobalState = {
             channelModerations: {},
             overrides: {},
             onTop: {},
+            onTopLoading: {},
             channelMemberCountsByGroup: {},
             messageCounts: {},
             channelsMemberCount: {},

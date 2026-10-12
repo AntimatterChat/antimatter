@@ -50,7 +50,7 @@ import {copyToClipboard} from 'utils/utils';
 import type {GlobalState} from 'types/store';
 
 import {canReplyInline, replyInline, useInlineRepliesEnabled} from './inline_reply';
-import {ON_TOP_DURATIONS, durationLabel} from './on_top';
+import {ON_TOP_DURATIONS, durationLabel, useCanChangeOnTop} from './on_top';
 import type {OnTopDuration} from './on_top';
 import {readAloud, stopReading, useReadingPostId} from './read_aloud';
 import {getThreadTitle, NameThreadDialog} from './thread_title';
@@ -129,9 +129,10 @@ export default function MessageMenu({post, anchor, inThread, onClose, onMoreReac
     };
     const system = isSystemMessage(post);
 
-    // Putting the message on top of its channel, as pinning it: not in an archived channel, nor system or burn-on-read
-    // messages.
+    // Putting the message on top of its channel, where the server allows it (not in an archived channel nor a
+    // restricted direct message, and where one may post), nor system or burn-on-read messages.
     const onTop = useSelector((state: GlobalState) => getOnTopEntry(state, post.channel_id, post.id));
+    const canOnTop = useCanChangeOnTop(channel);
     const putOnTop = async (duration: OnTopDuration, ms: number) => {
         const result = await dispatch(putPostOnTop(post.id, ms));
         if (result && 'error' in result && result.error) {
@@ -349,7 +350,7 @@ export default function MessageMenu({post, anchor, inThread, onClose, onMoreReac
                     })}
                 />
             )}
-            {!system && !burn && channel && channel.delete_at === 0 && (
+            {!system && !burn && canOnTop && (
                 <Flyout
                     icon='pin-top'
                     label={onTop ? formatMessage({id: 'fusion.ontop.change', defaultMessage: 'On top · change'}) : formatMessage({id: 'fusion.ontop.put', defaultMessage: 'Put on top'})}

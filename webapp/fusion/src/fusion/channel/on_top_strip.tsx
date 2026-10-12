@@ -21,7 +21,7 @@ import Icon from 'fusion/components/icon';
 import {useDisplayName} from 'fusion/hooks/users';
 import MessageContent from 'fusion/messages/content/message_content';
 import {jumpToMessage} from 'fusion/messages/inline_reply';
-import {activeOnTop, nextExpiry, timeLeft, useNow} from 'fusion/messages/on_top';
+import {activeOnTop, nextExpiry, timeLeft, useCanChangeOnTop, useNow} from 'fusion/messages/on_top';
 import {useToast} from 'fusion/shell/toast_context';
 import {useRoleColor} from 'fusion/teams/roles';
 import {am} from 'fusion/utils/class_names';
@@ -59,6 +59,7 @@ export default function OnTopStrip({channel}: {channel: Channel}) {
     const shown = onTopShown(list, posts, now);
     const [index, setIndex] = useState(0);
     const [open, setOpen] = useState(false);
+    const canRemove = useCanChangeOnTop(channel);
 
     // What's on top is loaded on opening the channel; the websocket keeps it up to date.
     useEffect(() => {
@@ -67,13 +68,17 @@ export default function OnTopStrip({channel}: {channel: Channel}) {
         setOpen(false);
     }, [channel.id, dispatch]);
 
-    // The messages on top that aren't loaded yet are fetched, once.
+    // The messages on top that aren't loaded yet are fetched, once; again later if that failed.
     const asked = useRef(new Set<string>());
     useEffect(() => {
         const missing = activeOnTop(list, Date.now()).map((o) => o.post_id).filter((id) => !posts[id] && !asked.current.has(id));
         if (missing.length) {
             missing.forEach((id) => asked.current.add(id));
-            dispatch(getPostsByIds(missing));
+            Promise.resolve(dispatch(getPostsByIds(missing))).then((result) => {
+                if (result && 'error' in result && result.error) {
+                    missing.forEach((id) => asked.current.delete(id));
+                }
+            });
         }
     }, [list, posts, dispatch]);
 
@@ -110,7 +115,7 @@ export default function OnTopStrip({channel}: {channel: Channel}) {
             position={shown.length > 1 ? {current, count: shown.length, go} : undefined}
             open={open}
             setOpen={setOpen}
-            canRemove={channel.delete_at === 0}
+            canRemove={canRemove}
             onRemove={remove}
         />
     );
@@ -247,7 +252,12 @@ function OnTopBanner({entry, post, now, position, open, setOpen, canRemove, onRe
                                 size='xs'
                             />
                         </button>
-                        <span className={am('nav')}>{`${position.current + 1}/${position.count}`}</span>
+                        <span
+                            className={am('nav')}
+                            aria-live='polite'
+                        >
+                            {formatMessage({id: 'fusion.ontop.position', defaultMessage: '{current}/{count}'}, {current: position.current + 1, count: position.count})}
+                        </span>
                         <button
                             type='button'
                             className={am('icon-btn')}

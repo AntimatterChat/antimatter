@@ -276,6 +276,15 @@ export type ChannelsState = {
 
     // Antimatter: the messages on top of the channels whose were loaded, the latest put there first.
     onTop?: RelationOneToOne<Channel, OnTopPost[]>;
+
+    // Antimatter: the loads of what's on top of a channel under way, with the changes the websocket brought meanwhile.
+    onTopLoading?: RelationOneToOne<Channel, OnTopLoading>;
+};
+
+// OnTopLoading is a channel's loads of what's on top under way, and the messages put on top or taken off meanwhile.
+export type OnTopLoading = {
+    loads: number;
+    changes: Array<{type: string; data: OnTopPost | {channel_id: string; post_id: string}}>;
 };
 
 export type ChannelModeration = {
