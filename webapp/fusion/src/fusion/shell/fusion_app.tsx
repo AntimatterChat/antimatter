@@ -59,7 +59,6 @@ import {useNavShortcuts} from './nav_shortcuts';
 import {SettingsProvider, useSettings} from './settings_context';
 import SignInWarnings from './sign_in_warnings';
 import {useSwipes} from './swipes';
-import {ToastProvider} from './toast_context';
 import {useVisualViewport} from './viewport';
 
 import 'fusion/styles/_module.scss';
@@ -91,15 +90,13 @@ function useFusionPage() {
 function FusionProviders({children}: Props) {
     return (
         <LayoutProvider>
-            <ToastProvider>
-                <DialogsProvider>
-                    <GlobalSearchProvider>
-                        <SettingsProvider>
-                            {children}
-                        </SettingsProvider>
-                    </GlobalSearchProvider>
-                </DialogsProvider>
-            </ToastProvider>
+            <DialogsProvider>
+                <GlobalSearchProvider>
+                    <SettingsProvider>
+                        {children}
+                    </SettingsProvider>
+                </GlobalSearchProvider>
+            </DialogsProvider>
         </LayoutProvider>
     );
 }

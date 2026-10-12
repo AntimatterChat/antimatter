@@ -8,7 +8,7 @@ import type {Channel} from '@mattermost/types/channels';
 import {Client4} from 'mattermost-redux/client';
 
 import {LAYER_ID} from 'fusion/components/layer';
-import {ToastProvider} from 'fusion/shell/toast_context';
+import Toasts from 'fusion/components/toast';
 import {renderWithContext, screen, userEvent, waitFor} from 'tests/react_testing_utils';
 
 import ChannelExportDialog, {REVOKE_DELAY, dayTime, dayValue, download, exportRange} from './channel_export_dialog';
@@ -92,12 +92,13 @@ describe('ChannelExportDialog', () => {
     const render = () => {
         const onClose = jest.fn();
         renderWithContext(
-            <ToastProvider>
+            <>
                 <ChannelExportDialog
                     channel={channel}
                     onClose={onClose}
                 />
-            </ToastProvider>,
+                <Toasts/>
+            </>,
         );
         return onClose;
     };
@@ -179,7 +180,12 @@ describe('ChannelExportDialog', () => {
                 />
             ) : null;
         }
-        renderWithContext(<ToastProvider><Harness/></ToastProvider>);
+        renderWithContext(
+            <>
+                <Harness/>
+                <Toasts/>
+            </>,
+        );
 
         await userEvent.click(screen.getByRole('button', {name: 'Export'}));
         await waitFor(() => expect(exportChannel).toHaveBeenCalled());
