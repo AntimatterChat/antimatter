@@ -1152,9 +1152,12 @@ type ModerationStore interface {
 type OnTopPostStore interface {
 	GetForChannel(rctx request.CTX, channelID string, now int64) ([]*model.OnTopPost, error)
 	Get(rctx request.CTX, postID string) (*model.OnTopPost, error)
-	Save(rctx request.CTX, onTop *model.OnTopPost) (*model.OnTopPost, error)
+	// Save forgets the channel's stale messages on top, then puts this one there, unless the channel already has
+	// maxPerChannel others (ErrLimitExceeded), atomically.
+	Save(rctx request.CTX, onTop *model.OnTopPost, maxPerChannel int) (*model.OnTopPost, error)
+	// Delete takes a message off the top; ErrNotFound when it wasn't there.
 	Delete(rctx request.CTX, postID string) error
-	DeleteExpired(rctx request.CTX, channelID string, now int64) (int64, error)
+	DeleteForChannel(rctx request.CTX, channelID string) error
 }
 
 // ServerCategoryStore keeps the sidebar categories admins set up for everyone in a team (Antimatter).

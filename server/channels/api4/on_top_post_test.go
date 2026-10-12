@@ -5,6 +5,7 @@ package api4
 
 import (
 	"context"
+	"encoding/json"
 	"testing"
 	"time"
 
@@ -114,5 +115,60 @@ func TestOnTopPosts(t *testing.T) {
 		list, _, err := th.Client.GetOnTopPosts(ctx, th.BasicPrivateChannel.Id)
 		require.NoError(t, err)
 		assert.Len(t, list, 1, "still on top")
+	})
+
+	// Putting a message on top, or taking it off, takes posting in the channel too.
+	expectRefused := func(t *testing.T, client *model.Client4, channelID, postID string) {
+		t.Helper()
+		list, _, err := client.GetOnTopPosts(ctx, channelID)
+		require.NoError(t, err, "they still see what's on top")
+		require.Len(t, list, 1)
+
+		_, resp, err := client.PutPostOnTop(ctx, postID, 0)
+		require.Error(t, err)
+		CheckForbiddenStatus(t, resp)
+		resp, err = client.RemovePostFromTop(ctx, postID)
+		require.Error(t, err)
+		CheckForbiddenStatus(t, resp)
+
+		list, _, err = th.Client.GetOnTopPosts(ctx, channelID)
+		require.NoError(t, err)
+		assert.Len(t, list, 1, "still on top")
+	}
+	loggedIn := func(t *testing.T, user *model.User) *model.Client4 {
+		t.Helper()
+		client := th.CreateClient()
+		_, _, err := client.Login(ctx, user.Email, user.Password)
+		require.NoError(t, err)
+		return client
+	}
+
+	t.Run("those who aren't members of a public channel can't change what's on top", func(t *testing.T) {
+		channel := th.CreatePublicChannel(t)
+		post := th.CreatePostWithClient(t, th.Client, channel)
+		_, _, err := th.Client.PutPostOnTop(ctx, post.Id, 0)
+		require.NoError(t, err)
+
+		outsider := th.CreateUser(t)
+		th.LinkUserToTeam(t, outsider, th.BasicTeam)
+		expectRefused(t, loggedIn(t, outsider), channel.Id, post.Id)
+	})
+
+	t.Run("members who may not post in the channel can't change what's on top", func(t *testing.T) {
+		channel := th.CreatePublicChannel(t)
+		post := th.CreatePostWithClient(t, th.Client, channel)
+		_, _, err := th.Client.PutPostOnTop(ctx, post.Id, 0)
+		require.NoError(t, err)
+
+		muted := th.CreateUser(t)
+		th.LinkUserToTeam(t, muted, th.BasicTeam)
+		th.AddUserToChannel(t, muted, channel)
+		body, err := json.Marshal(model.ChannelOverride{TargetType: model.ChannelOverrideTargetUser, TargetId: muted.Id, Deny: []string{model.PermissionCreatePost.Id}})
+		require.NoError(t, err)
+		resp, err := th.SystemAdminClient.DoAPIPut(ctx, "/channels/"+channel.Id+"/overrides", string(body))
+		require.NoError(t, err)
+		resp.Body.Close()
+
+		expectRefused(t, loggedIn(t, muted), channel.Id, post.Id)
 	})
 }

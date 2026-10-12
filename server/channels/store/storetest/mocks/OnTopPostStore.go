@@ -34,32 +34,22 @@ func (_m *OnTopPostStore) Delete(rctx request.CTX, postID string) error {
 	return r0
 }
 
-// DeleteExpired provides a mock function with given fields: rctx, channelID, now
-func (_m *OnTopPostStore) DeleteExpired(rctx request.CTX, channelID string, now int64) (int64, error) {
-	ret := _m.Called(rctx, channelID, now)
+// DeleteForChannel provides a mock function with given fields: rctx, channelID
+func (_m *OnTopPostStore) DeleteForChannel(rctx request.CTX, channelID string) error {
+	ret := _m.Called(rctx, channelID)
 
 	if len(ret) == 0 {
-		panic("no return value specified for DeleteExpired")
+		panic("no return value specified for DeleteForChannel")
 	}
 
-	var r0 int64
-	var r1 error
-	if rf, ok := ret.Get(0).(func(request.CTX, string, int64) (int64, error)); ok {
-		return rf(rctx, channelID, now)
-	}
-	if rf, ok := ret.Get(0).(func(request.CTX, string, int64) int64); ok {
-		r0 = rf(rctx, channelID, now)
+	var r0 error
+	if rf, ok := ret.Get(0).(func(request.CTX, string) error); ok {
+		r0 = rf(rctx, channelID)
 	} else {
-		r0 = ret.Get(0).(int64)
+		r0 = ret.Error(0)
 	}
 
-	if rf, ok := ret.Get(1).(func(request.CTX, string, int64) error); ok {
-		r1 = rf(rctx, channelID, now)
-	} else {
-		r1 = ret.Error(1)
-	}
-
-	return r0, r1
+	return r0
 }
 
 // Get provides a mock function with given fields: rctx, postID
@@ -122,9 +112,9 @@ func (_m *OnTopPostStore) GetForChannel(rctx request.CTX, channelID string, now 
 	return r0, r1
 }
 
-// Save provides a mock function with given fields: rctx, onTop
-func (_m *OnTopPostStore) Save(rctx request.CTX, onTop *model.OnTopPost) (*model.OnTopPost, error) {
-	ret := _m.Called(rctx, onTop)
+// Save provides a mock function with given fields: rctx, onTop, maxPerChannel
+func (_m *OnTopPostStore) Save(rctx request.CTX, onTop *model.OnTopPost, maxPerChannel int) (*model.OnTopPost, error) {
+	ret := _m.Called(rctx, onTop, maxPerChannel)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Save")
@@ -132,19 +122,19 @@ func (_m *OnTopPostStore) Save(rctx request.CTX, onTop *model.OnTopPost) (*model
 
 	var r0 *model.OnTopPost
 	var r1 error
-	if rf, ok := ret.Get(0).(func(request.CTX, *model.OnTopPost) (*model.OnTopPost, error)); ok {
-		return rf(rctx, onTop)
+	if rf, ok := ret.Get(0).(func(request.CTX, *model.OnTopPost, int) (*model.OnTopPost, error)); ok {
+		return rf(rctx, onTop, maxPerChannel)
 	}
-	if rf, ok := ret.Get(0).(func(request.CTX, *model.OnTopPost) *model.OnTopPost); ok {
-		r0 = rf(rctx, onTop)
+	if rf, ok := ret.Get(0).(func(request.CTX, *model.OnTopPost, int) *model.OnTopPost); ok {
+		r0 = rf(rctx, onTop, maxPerChannel)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(*model.OnTopPost)
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(request.CTX, *model.OnTopPost) error); ok {
-		r1 = rf(rctx, onTop)
+	if rf, ok := ret.Get(1).(func(request.CTX, *model.OnTopPost, int) error); ok {
+		r1 = rf(rctx, onTop, maxPerChannel)
 	} else {
 		r1 = ret.Error(1)
 	}

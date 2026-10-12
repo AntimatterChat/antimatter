@@ -8822,21 +8822,21 @@ func (s *RetryLayerOnTopPostStore) Delete(rctx request.CTX, postID string) error
 
 }
 
-func (s *RetryLayerOnTopPostStore) DeleteExpired(rctx request.CTX, channelID string, now int64) (int64, error) {
+func (s *RetryLayerOnTopPostStore) DeleteForChannel(rctx request.CTX, channelID string) error {
 
 	tries := 0
 	for {
-		result, err := s.OnTopPostStore.DeleteExpired(rctx, channelID, now)
+		err := s.OnTopPostStore.DeleteForChannel(rctx, channelID)
 		if err == nil {
-			return result, nil
+			return nil
 		}
 		if !isRepeatableError(err) {
-			return result, err
+			return err
 		}
 		tries++
 		if tries >= 3 {
 			err = errors.Wrap(err, "giving up after 3 consecutive repeatable transaction failures")
-			return result, err
+			return err
 		}
 		timepkg.Sleep(100 * timepkg.Millisecond)
 	}
@@ -8885,11 +8885,11 @@ func (s *RetryLayerOnTopPostStore) GetForChannel(rctx request.CTX, channelID str
 
 }
 
-func (s *RetryLayerOnTopPostStore) Save(rctx request.CTX, onTop *model.OnTopPost) (*model.OnTopPost, error) {
+func (s *RetryLayerOnTopPostStore) Save(rctx request.CTX, onTop *model.OnTopPost, maxPerChannel int) (*model.OnTopPost, error) {
 
 	tries := 0
 	for {
-		result, err := s.OnTopPostStore.Save(rctx, onTop)
+		result, err := s.OnTopPostStore.Save(rctx, onTop, maxPerChannel)
 		if err == nil {
 			return result, nil
 		}

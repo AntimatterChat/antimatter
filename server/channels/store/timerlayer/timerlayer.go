@@ -7136,10 +7136,10 @@ func (s *TimerLayerOnTopPostStore) Delete(rctx request.CTX, postID string) error
 	return err
 }
 
-func (s *TimerLayerOnTopPostStore) DeleteExpired(rctx request.CTX, channelID string, now int64) (int64, error) {
+func (s *TimerLayerOnTopPostStore) DeleteForChannel(rctx request.CTX, channelID string) error {
 	start := time.Now()
 
-	result, err := s.OnTopPostStore.DeleteExpired(rctx, channelID, now)
+	err := s.OnTopPostStore.DeleteForChannel(rctx, channelID)
 
 	elapsed := float64(time.Since(start)) / float64(time.Second)
 	if s.Root.Metrics != nil {
@@ -7147,9 +7147,9 @@ func (s *TimerLayerOnTopPostStore) DeleteExpired(rctx request.CTX, channelID str
 		if err == nil {
 			success = "true"
 		}
-		s.Root.Metrics.ObserveStoreMethodDuration("OnTopPostStore.DeleteExpired", success, elapsed)
+		s.Root.Metrics.ObserveStoreMethodDuration("OnTopPostStore.DeleteForChannel", success, elapsed)
 	}
-	return result, err
+	return err
 }
 
 func (s *TimerLayerOnTopPostStore) Get(rctx request.CTX, postID string) (*model.OnTopPost, error) {
@@ -7184,10 +7184,10 @@ func (s *TimerLayerOnTopPostStore) GetForChannel(rctx request.CTX, channelID str
 	return result, err
 }
 
-func (s *TimerLayerOnTopPostStore) Save(rctx request.CTX, onTop *model.OnTopPost) (*model.OnTopPost, error) {
+func (s *TimerLayerOnTopPostStore) Save(rctx request.CTX, onTop *model.OnTopPost, maxPerChannel int) (*model.OnTopPost, error) {
 	start := time.Now()
 
-	result, err := s.OnTopPostStore.Save(rctx, onTop)
+	result, err := s.OnTopPostStore.Save(rctx, onTop, maxPerChannel)
 
 	elapsed := float64(time.Since(start)) / float64(time.Second)
 	if s.Root.Metrics != nil {

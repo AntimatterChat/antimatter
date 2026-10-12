@@ -3834,6 +3834,11 @@ func (a *App) PermanentDeleteChannel(rctx request.CTX, channel *model.Channel) *
 		return model.NewAppError("PermanentDeleteChannel", "app.post_persistent_notification.delete_by_channel.app_error", nil, "", http.StatusInternalServerError).Wrap(err)
 	}
 
+	// Antimatter: the messages on top of the channel go with it.
+	if err := a.Srv().Store().OnTopPost().DeleteForChannel(rctx, channel.Id); err != nil {
+		return model.NewAppError("PermanentDeleteChannel", "app.on_top_post.delete.app_error", nil, "", http.StatusInternalServerError).Wrap(err)
+	}
+
 	deleteAt := model.GetMillis()
 
 	if nErr := a.Srv().Store().Channel().PermanentDelete(rctx, channel.Id); nErr != nil {

@@ -8,10 +8,11 @@ import (
 	"net/http"
 
 	"github.com/mattermost/mattermost/server/public/model"
+	"github.com/mattermost/mattermost/server/v8/channels/app"
 )
 
 // Antimatter: messages put on top of a channel, for a while or until removed. Who may read the channel sees them;
-// who may pin its messages puts them there and takes them off.
+// who may pin its messages and post in it puts them there and takes them off.
 
 func (api *API) InitOnTopPosts() {
 	api.BaseRoutes.Channel.Handle("/on_top", api.APISessionRequired(getOnTopPosts)).Methods(http.MethodGet)
@@ -42,8 +43,9 @@ func getOnTopPosts(c *Context, w http.ResponseWriter, r *http.Request) {
 	writeJSON(c, w, onTop)
 }
 
-// onTopPostAndChannel gives the post of the request and its channel, when the session may pin it: as pinning, those
-// who may read the channel.
+// onTopPostAndChannel gives the post of the request and its channel, when the session may put it on top: those who
+// may read the channel, as for pinning, and post in it, so that the channel's moderation (read-only channels,
+// overrides), timeouts and membership apply.
 func onTopPostAndChannel(c *Context, auditRec *model.AuditRecord) (*model.Post, *model.Channel) {
 	post, appErr := c.App.GetSinglePost(c.AppContext, c.Params.PostId, false)
 	if appErr != nil {
@@ -59,6 +61,10 @@ func onTopPostAndChannel(c *Context, auditRec *model.AuditRecord) (*model.Post, 
 	}
 	if ok, _ := c.App.SessionHasPermissionToReadChannel(c.AppContext, *c.AppContext.Session(), channel); !ok {
 		c.SetPermissionError(model.PermissionReadChannelContent)
+		return nil, nil
+	}
+	if ok, _ := c.App.SessionHasPermissionToChannel(c.AppContext, *c.AppContext.Session(), channel.Id, model.PermissionCreatePost); !ok {
+		c.SetPermissionError(model.PermissionCreatePost)
 		return nil, nil
 	}
 	return post, channel
@@ -78,7 +84,7 @@ func putPostOnTop(c *Context, w http.ResponseWriter, r *http.Request) {
 	}
 
 	auditRec := c.MakeAuditRecord(model.AuditEventPutPostOnTop, model.AuditStatusFail)
-	defer c.LogAuditRec(auditRec)
+	defer c.LogAuditRecWithLevel(auditRec, app.LevelContent)
 	model.AddEventParameterToAuditRec(auditRec, "post_id", c.Params.PostId)
 	model.AddEventParameterToAuditRec(auditRec, "duration", request.Duration)
 
@@ -104,7 +110,7 @@ func removePostFromTop(c *Context, w http.ResponseWriter, r *http.Request) {
 	}
 
 	auditRec := c.MakeAuditRecord(model.AuditEventRemovePostFromTop, model.AuditStatusFail)
-	defer c.LogAuditRec(auditRec)
+	defer c.LogAuditRecWithLevel(auditRec, app.LevelContent)
 	model.AddEventParameterToAuditRec(auditRec, "post_id", c.Params.PostId)
 
 	post, channel := onTopPostAndChannel(c, auditRec)

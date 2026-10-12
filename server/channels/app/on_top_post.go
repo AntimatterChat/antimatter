@@ -14,8 +14,8 @@ import (
 )
 
 // Antimatter: messages put on top of a channel. Several can be there at once, each for a while or until removed;
-// who may pin a message to the channel may put it on top or take it off. Expired ones are left out when read, and
-// forgotten the next time a message of the channel is put on top.
+// who may pin a message to the channel and post in it may put it on top or take it off. Expired or deleted ones are
+// left out when read, and forgotten the next time a message of the channel is put on top.
 
 // GetOnTopPosts gives the messages on top of a channel, the latest put there first.
 func (a *App) GetOnTopPosts(rctx request.CTX, channelID string) ([]*model.OnTopPost, *model.AppError) {
@@ -56,30 +56,17 @@ func (a *App) PutPostOnTop(rctx request.CTX, post *model.Post, channel *model.Ch
 	}
 
 	now := model.GetMillis()
-	if _, err := a.Srv().Store().OnTopPost().DeleteExpired(rctx, channel.Id, now); err != nil {
-		rctx.Logger().Warn("Failed to forget the expired messages on top of a channel", mlog.String("channel_id", channel.Id), mlog.Err(err))
-	}
-	current, appErr := a.GetOnTopPosts(RequestContextWithMaster(rctx), channel.Id)
-	if appErr != nil {
-		return nil, appErr
-	}
-	already := false
-	for _, o := range current {
-		if o.PostId == post.Id {
-			already = true
-			break
-		}
-	}
-	if !already && len(current) >= model.OnTopPostsMaxPerChannel {
-		return nil, model.NewAppError("PutPostOnTop", "app.on_top_post.too_many.app_error", map[string]any{"Max": model.OnTopPostsMaxPerChannel}, "", http.StatusBadRequest)
-	}
-
 	onTop := &model.OnTopPost{PostId: post.Id, ChannelId: channel.Id, CreatedBy: userID, CreateAt: now}
 	if duration > 0 {
 		onTop.ExpiresAt = now + duration
 	}
-	onTop, err := a.Srv().Store().OnTopPost().Save(rctx, onTop)
+	// The store forgets the stale ones, counts and saves at once, so that concurrent puts keep to the limit.
+	onTop, err := a.Srv().Store().OnTopPost().Save(rctx, onTop, model.OnTopPostsMaxPerChannel)
 	if err != nil {
+		var limitErr *store.ErrLimitExceeded
+		if errors.As(err, &limitErr) {
+			return nil, model.NewAppError("PutPostOnTop", "app.on_top_post.too_many.app_error", map[string]any{"Max": model.OnTopPostsMaxPerChannel}, "", http.StatusBadRequest).Wrap(err)
+		}
 		return nil, model.NewAppError("PutPostOnTop", "app.on_top_post.save.app_error", nil, "", http.StatusInternalServerError).Wrap(err)
 	}
 
@@ -94,14 +81,11 @@ func (a *App) RemovePostFromTop(rctx request.CTX, post *model.Post, channel *mod
 	if appErr := a.checkCanPutOnTop(rctx, post, channel); appErr != nil {
 		return appErr
 	}
-	if _, err := a.Srv().Store().OnTopPost().Get(rctx, post.Id); err != nil {
+	if err := a.Srv().Store().OnTopPost().Delete(rctx, post.Id); err != nil {
 		var nfErr *store.ErrNotFound
 		if errors.As(err, &nfErr) {
 			return model.NewAppError("RemovePostFromTop", "app.on_top_post.not_on_top.app_error", nil, "", http.StatusNotFound).Wrap(err)
 		}
-		return model.NewAppError("RemovePostFromTop", "app.on_top_post.get.app_error", nil, "", http.StatusInternalServerError).Wrap(err)
-	}
-	if err := a.Srv().Store().OnTopPost().Delete(rctx, post.Id); err != nil {
 		return model.NewAppError("RemovePostFromTop", "app.on_top_post.delete.app_error", nil, "", http.StatusInternalServerError).Wrap(err)
 	}
 	a.publishRemovedFromTop(post.Id, channel.Id)
@@ -117,11 +101,11 @@ func (a *App) publishRemovedFromTop(postID, channelID string) {
 
 // removeDeletedPostFromTop takes a deleted message off the top of its channel, if it was there.
 func (a *App) removeDeletedPostFromTop(rctx request.CTX, post *model.Post) {
-	if _, err := a.Srv().Store().OnTopPost().Get(rctx, post.Id); err != nil {
-		return
-	}
 	if err := a.Srv().Store().OnTopPost().Delete(rctx, post.Id); err != nil {
-		rctx.Logger().Warn("Failed to take a deleted message off the top of its channel", mlog.String("post_id", post.Id), mlog.Err(err))
+		var nfErr *store.ErrNotFound
+		if !errors.As(err, &nfErr) {
+			rctx.Logger().Warn("Failed to take a deleted message off the top of its channel", mlog.String("post_id", post.Id), mlog.Err(err))
+		}
 		return
 	}
 	a.publishRemovedFromTop(post.Id, post.ChannelId)
