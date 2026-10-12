@@ -181,7 +181,7 @@ export default function MemberList({inPanel = false}: {inPanel?: boolean}) {
                                     onClick={() => setGrouping(g)}
                                 >
                                     <Icon
-                                        name={g === 'roles' ? 'shield' : 'tag'}
+                                        name={g === 'roles' ? 'ribbon' : 'users'}
                                         size='sm'
                                     />
                                 </button>
