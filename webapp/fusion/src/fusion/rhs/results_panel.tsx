@@ -103,7 +103,7 @@ function Result({post, terms}: {post: Post; terms: string}) {
                         name={icon}
                         size='xs'
                     />
-                    {`${channel?.display_name || ''}${post.root_id ? ' · thread' : ''} · ${when(post.create_at)}`}
+                    {[channel?.display_name, post.root_id && formatMessage({id: 'fusion.results.inThread', defaultMessage: 'thread'}), when(post.create_at)].filter(Boolean).join(' · ')}
                 </span>
                 <b>{name}</b>
                 <div>{highlight(plainText(post.message), terms)}</div>

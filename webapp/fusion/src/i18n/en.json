@@ -22395,6 +22395,10 @@
     "defaultMessage": "Waiting for you",
     "description": "On an agent's reply (Antimatter): status of a tool call that waits for the reader to confirm or decline it."
   },
+  "fusion.ai.button": {
+    "defaultMessage": "AI",
+    "description": "Short label of the composer's button that opens the Rewrite with AI menu"
+  },
   "fusion.ai.failed": {
     "defaultMessage": "The AI couldn't rewrite the message",
     "description": ""
@@ -26599,6 +26603,14 @@
     "defaultMessage": "Another action uses these keys too",
     "description": ""
   },
+  "fusion.keys.enter": {
+    "defaultMessage": "Enter",
+    "description": "Name of the Enter key, shown as a keyboard hint in the global search"
+  },
+  "fusion.keys.esc": {
+    "defaultMessage": "Esc",
+    "description": "Short name of the Escape key, shown as a keyboard hint in the global search"
+  },
   "fusion.keys.off": {
     "defaultMessage": "Off",
     "description": ""
@@ -28230,6 +28242,10 @@
   "fusion.results.files": {
     "defaultMessage": "Files",
     "description": ""
+  },
+  "fusion.results.inThread": {
+    "defaultMessage": "thread",
+    "description": "Lower-case word in a search result's details line (channel · thread · time) when the message is a reply in a thread"
   },
   "fusion.results.mentions": {
     "defaultMessage": "Recent mentions",

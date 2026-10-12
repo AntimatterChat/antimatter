@@ -923,7 +923,7 @@ function MessageBox({channelId, rootId = '', placeholder, afterSubmit}: Props) {
                                         name='sparkle'
                                         size='sm'
                                     />
-                                    {'AI'}
+                                    {formatMessage({id: 'fusion.ai.button', defaultMessage: 'AI'})}
                                 </button>
                                 <span className={am('fmt-sep')}/>
                             </>

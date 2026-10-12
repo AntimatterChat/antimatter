@@ -1,7 +1,7 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 
-import React, {useEffect, useMemo, useRef, useState} from 'react';
+import React, {useEffect, useId, useMemo, useRef, useState} from 'react';
 import {useIntl} from 'react-intl';
 import {useDispatch, useSelector} from 'react-redux';
 
@@ -103,6 +103,7 @@ export default function GlobalSearch() {
     const [query, setQuery] = useState('');
     const [filter, setFilter] = useState<Filter>('all');
     const [selected, setSelected] = useState(0);
+    const listId = useId();
     const [people, setPeople] = useState<UserProfile[]>([]);
     const [messages, setMessages] = useState<Post[]>([]);
 
@@ -297,7 +298,7 @@ export default function GlobalSearch() {
                     <b>{formatMessage({id: 'fusion.gs.all', defaultMessage: 'Search all messages for “{q}”'}, {q})}</b>
                     <span className={am('sub')}>{formatMessage({id: 'fusion.gs.allSub', defaultMessage: 'See every match in the side panel'})}</span>
                 </span>
-                <span className={am('kind')}>{'Enter'}</span>
+                <span className={am('kind')}>{formatMessage({id: 'fusion.keys.enter', defaultMessage: 'Enter'})}</span>
             </>
         );
     };
@@ -321,6 +322,8 @@ export default function GlobalSearch() {
                     autoComplete='off'
                     role='combobox'
                     aria-expanded='true'
+                    aria-controls={listId}
+                    aria-activedescendant={flat[sel] ? `${listId}-${sel}` : undefined}
                     onChange={(e) => {
                         setQuery(e.target.value);
                         setSelected(0);
@@ -336,7 +339,7 @@ export default function GlobalSearch() {
                         }
                     }}
                 />
-                <kbd>{'Esc'}</kbd>
+                <kbd>{formatMessage({id: 'fusion.keys.esc', defaultMessage: 'Esc'})}</kbd>
             </label>
             <div
                 className={am('gs-filters')}
@@ -347,6 +350,7 @@ export default function GlobalSearch() {
                         key={f}
                         type='button'
                         className={am({on: filter === f})}
+                        aria-pressed={filter === f}
                         onClick={() => setFilter(f)}
                     >
                         {{
@@ -370,6 +374,7 @@ export default function GlobalSearch() {
                 )}
             </div>
             <div
+                id={listId}
                 className={am('gs-results')}
                 role='listbox'
             >
@@ -381,6 +386,7 @@ export default function GlobalSearch() {
                             return (
                                 <button
                                     key={i}
+                                    id={`${listId}-${i}`}
                                     type='button'
                                     className={am('gs-row', {sel: i === sel, all: r.kind === 'all'})}
                                     role='option'
@@ -398,8 +404,8 @@ export default function GlobalSearch() {
             </div>
             <div className={am('gs-foot')}>
                 <span><kbd>{'↑'}</kbd><kbd>{'↓'}</kbd>{formatMessage({id: 'fusion.gs.navigate', defaultMessage: 'navigate'})}</span>
-                <span><kbd>{'Enter'}</kbd>{formatMessage({id: 'fusion.gs.open', defaultMessage: 'open'})}</span>
-                <span><kbd>{'Esc'}</kbd>{formatMessage({id: 'fusion.gs.close', defaultMessage: 'close'})}</span>
+                <span><kbd>{formatMessage({id: 'fusion.keys.enter', defaultMessage: 'Enter'})}</kbd>{formatMessage({id: 'fusion.gs.open', defaultMessage: 'open'})}</span>
+                <span><kbd>{formatMessage({id: 'fusion.keys.esc', defaultMessage: 'Esc'})}</kbd>{formatMessage({id: 'fusion.gs.close', defaultMessage: 'close'})}</span>
             </div>
         </Dialog>
     );
