@@ -1,7 +1,7 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 
-import React from 'react';
+import React, {useRef} from 'react';
 import {useIntl} from 'react-intl';
 import {useDispatch, useSelector} from 'react-redux';
 
@@ -26,6 +26,7 @@ import {RHSStates} from 'utils/constants';
 
 import type {GlobalState} from 'types/store';
 
+import {PanelResizeHandle, RestoreWidthButton, usePanelWidth} from './panel_width';
 import ResultsPanel from './results_panel';
 import ThreadPanel from './thread_panel';
 
@@ -53,6 +54,12 @@ export default function RightPanel() {
     const product = useSelector((state: GlobalState) => (pluginId ? state.plugins.components.Product?.find((p) => p.pluginId === pluginId) : undefined));
     const voiceChat = useOpenVoiceChat();
 
+    // An app's panel is resizable (see usePanelWidth); the other panels keep their widths.
+    const panelRef = useRef<HTMLElement>(null);
+    const isApp = open && !selectedPostId && rhsState === RHSStates.PLUGIN;
+    const roomyApp = Boolean(pluginId && getKnownApp(pluginId)?.widePanel);
+    const panelWidth = usePanelWidth(panelRef, isApp, roomyApp ? 'roomy' : 'wide');
+
     if (!open) {
         return voiceChat ? <VoiceChatPanel channelId={voiceChat}/> : null;
     }
@@ -70,27 +77,33 @@ export default function RightPanel() {
         content = <ModViewPanel/>;
     } else if (rhsState === RHSStates.PLUGIN) {
         wide = true;
-        roomy = Boolean(pluginId && getKnownApp(pluginId)?.widePanel);
+        roomy = roomyApp;
         content = (
             <ClassicPanel>
                 {pluginId && <PanelAppIcon pluginId={pluginId}/>}
-                {product && (
-                    <button
-                        type='button'
-                        className={am('icon-btn', 'rhs-fullpage')}
-                        title={formatMessage({id: 'fusion.rhs.fullPage', defaultMessage: 'Open as a full page'})}
-                        aria-label={formatMessage({id: 'fusion.rhs.fullPage', defaultMessage: 'Open as a full page'})}
-                        onClick={() => {
-                            dispatch(closeRightHandSide());
-                            getHistory().push(product.baseURL);
-                        }}
-                    >
-                        <Icon
-                            name='fullscreen'
-                            size='sm'
-                        />
-                    </button>
-                )}
+                <div className={am('rhs-tools')}>
+                    <RestoreWidthButton
+                        sized={panelWidth.width !== null && panelWidth.bounds !== null}
+                        onRestore={panelWidth.reset}
+                    />
+                    {product && (
+                        <button
+                            type='button'
+                            className={am('icon-btn', 'rhs-fullpage')}
+                            title={formatMessage({id: 'fusion.rhs.fullPage', defaultMessage: 'Open as a full page'})}
+                            aria-label={formatMessage({id: 'fusion.rhs.fullPage', defaultMessage: 'Open as a full page'})}
+                            onClick={() => {
+                                dispatch(closeRightHandSide());
+                                getHistory().push(product.baseURL);
+                            }}
+                        >
+                            <Icon
+                                name='fullscreen'
+                                size='sm'
+                            />
+                        </button>
+                    )}
+                </div>
                 <RhsPlugin/>
             </ClassicPanel>
         );
@@ -115,6 +128,18 @@ export default function RightPanel() {
         return null;
     }
 
-    // The classic expand button toggles between its expand and collapse icons on sidebar--right--expanded.
-    return <aside {...a11yRegion(am('rhs', {wide, roomy, expanded}) + (expanded ? ' sidebar--right--expanded' : ''), 'rhs')}>{content}</aside>;
+    // An app's panel has no expand button: its user drags its edge instead, and its "expanded" state only tells
+    // plugins it's wider than its default. The classic expand button of the other panels toggles between its expand
+    // and collapse icons on sidebar--right--expanded.
+    const sized = wide && panelWidth.width !== null;
+    return (
+        <aside
+            ref={panelRef}
+            {...a11yRegion(am('rhs', {wide, roomy, sized, expanded: expanded && !wide, resizing: wide && panelWidth.dragging}) + (expanded ? ' sidebar--right--expanded' : ''), 'rhs')}
+            style={sized ? {'--am-rhs-w': `${panelWidth.width}px`} as React.CSSProperties : undefined}
+        >
+            {wide && <PanelResizeHandle panel={panelWidth}/>}
+            {content}
+        </aside>
+    );
 }

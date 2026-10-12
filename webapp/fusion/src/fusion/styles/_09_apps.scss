@@ -24,17 +24,36 @@
 :is(.am-app, .am-layer) .am-ai-sug .am-ic { width: 14px; height: 14px; color: var(--am-matter); }
 :is(.am-app, .am-layer) :is(.am-app-ic, .am-rhs-app-ic).am-whiteboard { color: #FB923C; }
 // The mockup widens app panels only on request (its "Widen panel" button); plugin panels are always .am-wide here, so
-// they stay close to the normal panel's width and never squeeze the conversation below --am-main-min (App grid). The
-// panel's expand button (.am-expanded) gives the wider view. Below 1101px panels slide over the chat (Responsive).
+// they stay close to the normal panel's width and never squeeze the conversation below --am-main-min (App grid). Their
+// users widen them by dragging their left edge (.am-rhs-resize, see rhs/panel_width.tsx): min-width is the default
+// width, max-width leaves the conversation --am-main-resize-min, and .am-sized takes the width they chose. Below 1101px
+// panels slide over the chat (Responsive) and keep their size.
 @media (min-width: 1101px) {
   // A little wider than the mockup's (by an icon button's width), for the apps' toolbars.
-  :is(.am-app, .am-layer) .am-rhs.am-wide { width: clamp(414px, calc(100vw - var(--am-chrome-w) - var(--am-main-min)), 474px); }
+  :is(.am-app, .am-layer) .am-rhs.am-wide {
+    --am-rhs-default-w: clamp(414px, calc(100vw - var(--am-chrome-w) - var(--am-main-min)), 474px);
+    position: relative;
+    width: var(--am-rhs-default-w);
+    min-width: var(--am-rhs-default-w);
+    max-width: max(var(--am-rhs-default-w), calc(100vw - var(--am-chrome-w) - var(--am-main-resize-min)));
+  }
 
   // Apps drawing a canvas (the whiteboard) keep the wide size they had before.
-  :is(.am-app, .am-layer) .am-rhs.am-wide.am-roomy:not(.am-expanded) { width: min(780px, 62vw); }
+  :is(.am-app, .am-layer) .am-rhs.am-wide.am-roomy { --am-rhs-default-w: min(780px, 62vw); }
 
-  // Expanding never makes them narrower than that.
-  :is(.am-app, .am-layer) .am-rhs.am-wide.am-roomy.am-expanded { width: max(min(780px, 62vw), clamp(380px, calc(100vw - var(--am-chrome-w) - var(--am-main-min)), 1120px)); }
+  :is(.am-app, .am-layer) .am-rhs.am-wide.am-sized { width: var(--am-rhs-w); }
+}
+
+// The resize handle: the panel's left edge, a line in the accent colour on hover, focus and while dragging.
+:is(.am-app, .am-layer) .am-rhs-resize { display: none; }
+@media (min-width: 1101px) {
+  :is(.am-app, .am-layer) .am-rhs-resize { display: block; position: absolute; top: 0; bottom: 0; left: -4px; z-index: 20; width: 8px; cursor: col-resize; touch-action: none; outline: none; }
+  :is(.am-app, .am-layer) .am-rhs-resize::after { content: ''; position: absolute; top: 0; bottom: 0; left: 3px; width: 2px; background: transparent; transition: background-color .12s ease .1s; }
+  :is(.am-app, .am-layer) .am-rhs-resize:is(:hover, :focus-visible, .am-dragging)::after { background: var(--am-matter); }
+  :is(.am-app, .am-layer) .am-rhs.am-resizing { user-select: none; }
+
+  // While dragging, the app's content (a canvas, an iframe) never takes the pointer from the handle.
+  :is(.am-app, .am-layer) .am-rhs.am-resizing .am-rhs-classic { pointer-events: none; }
 }
 /* Shared notepad */
 :is(.am-app, .am-layer) .am-pad-wrap { display: flex; flex-direction: column; height: 100%; min-height: 0; }

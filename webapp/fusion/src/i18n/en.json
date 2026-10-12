@@ -24471,6 +24471,14 @@
     "defaultMessage": "Open as a full page",
     "description": ""
   },
+  "fusion.rhs.resize": {
+    "defaultMessage": "Resize the panel",
+    "description": "Label of the draggable left edge of an app's right-hand panel (Notes, Whiteboard…); the arrow keys resize it, Home restores its default width."
+  },
+  "fusion.rhs.restoreWidth": {
+    "defaultMessage": "Restore default width",
+    "description": "Button in an app panel's header, shown once the user resized the panel, that gives it back its default width."
+  },
   "fusion.roles.addPeople": {
     "defaultMessage": "Add people of the community…",
     "description": ""
