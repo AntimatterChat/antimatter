@@ -186,7 +186,8 @@ export default function Category({category}: {category: ChannelCategory}) {
                 draggable={!server}
                 onClick={toggle}
                 onKeyDown={(e) => {
-                    if (e.key === 'Enter' || e.key === ' ') {
+                    // Enter or Space on the header folds it; on its options button, they open the menu.
+                    if ((e.key === 'Enter' || e.key === ' ') && e.target === e.currentTarget) {
                         e.preventDefault();
                         toggle();
                     }

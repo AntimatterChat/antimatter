@@ -10,7 +10,9 @@ import type {IntlShape} from 'react-intl';
 
 import type {ChannelCategory} from '@mattermost/types/channel_categories';
 
-import {renderWithContext, screen} from 'tests/react_testing_utils';
+import {setCategoryCollapsed} from 'mattermost-redux/actions/channel_categories';
+
+import {fireEvent, renderWithContext, screen} from 'tests/react_testing_utils';
 
 import Category from './category';
 
@@ -24,6 +26,10 @@ const speakFrench = () => jest.spyOn(intlModule, 'useIntl').mockReturnValue(crea
 // The category's channels, the same list every time, as the memoised selector gives it.
 const mockChannelIds = ['ops'];
 jest.mock('selectors/views/channel_sidebar', () => ({makeGetFilteredChannelIdsForCategory: () => () => mockChannelIds}));
+jest.mock('mattermost-redux/actions/channel_categories', () => ({
+    ...jest.requireActual('mattermost-redux/actions/channel_categories'),
+    setCategoryCollapsed: jest.fn(() => ({type: 'MOCK_SET_CATEGORY_COLLAPSED'})),
+}));
 jest.mock('./channel_row', () => ({__esModule: true, default: ({channelId}: {channelId: string}) => <div>{channelId}</div>}));
 
 const staff = {id: 'managed_staff', team_id: 'team', user_id: 'me', type: 'managed', display_name: 'Staff', sorting: 'manual', channel_ids: ['ops'], muted: false, collapsed: false} as unknown as ChannelCategory;
@@ -100,5 +106,41 @@ describe('fusion/sidebar/Category: names in the user\'s language', () => {
             expect(screen.getByText('Work')).toBeInTheDocument();
             expect(screen.getByRole('button', {name: 'Options de la catégorie Work'})).toBeInTheDocument();
         });
+    });
+});
+
+describe('fusion/sidebar/Category: keys', () => {
+    const mine = {id: 'custom_ops', team_id: 'team', user_id: 'me', type: 'custom', display_name: 'Ops', sorting: 'manual', channel_ids: ['ops'], muted: false, collapsed: false} as unknown as ChannelCategory;
+    const render = () => renderWithContext(
+        <Category category={mine}/>,
+        {
+            entities: {
+                users: {currentUserId: 'me'},
+                teams: {currentTeamId: 'team'},
+                channelCategories: {serverCategories: {}},
+            },
+        } as never,
+    );
+
+    beforeEach(() => {
+        (setCategoryCollapsed as jest.Mock).mockClear();
+    });
+
+    test('Enter or Space on the header folds the category', () => {
+        const {container} = render();
+        const header = container.querySelector('.am-cat') as HTMLElement;
+
+        fireEvent.keyDown(header, {key: 'Enter'});
+        fireEvent.keyDown(header, {key: ' '});
+        expect(setCategoryCollapsed).toHaveBeenCalledTimes(2);
+        expect(setCategoryCollapsed).toHaveBeenCalledWith('custom_ops', true);
+    });
+
+    test('Enter on the options button inside the header is the button\'s, not the header\'s', () => {
+        render();
+
+        fireEvent.keyDown(screen.getByRole('button', {name: 'Category options for Ops'}), {key: 'Enter'});
+        fireEvent.keyDown(screen.getByRole('button', {name: 'Category options for Ops'}), {key: ' '});
+        expect(setCategoryCollapsed).not.toHaveBeenCalled();
     });
 });

@@ -154,7 +154,8 @@ function ChannelTopic({channel}: {channel: Channel}) {
                     setOpen(!open);
                 }}
                 onKeyDown={(e) => {
-                    if (e.key === 'Enter' || e.key === ' ') {
+                    // Not on a link of the header, which Enter follows.
+                    if ((e.key === 'Enter' || e.key === ' ') && e.target === e.currentTarget) {
                         e.preventDefault();
                         setOpen(!open);
                     }
