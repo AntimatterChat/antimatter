@@ -1,11 +1,12 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {useIntl} from 'react-intl';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {saveTheme} from 'mattermost-redux/actions/preferences';
+import type {Theme} from 'mattermost-redux/selectors/entities/preferences';
 import {getTheme} from 'mattermost-redux/selectors/entities/preferences';
 
 import {useToast} from 'fusion/shell/toast_context';
@@ -45,19 +46,30 @@ export default function CustomThemeEditor() {
     const [tokens, setTokens] = useState<CustomTokens>(currentTokens);
     const [code, setCode] = useState(() => themeCode(tokens));
     const timer = useRef<ReturnType<typeof setTimeout>>(undefined);
+    const unsaved = useRef<Theme | null>(null);
     const themeRef = useRef(theme);
     themeRef.current = theme;
 
-    useEffect(() => () => clearTimeout(timer.current), []);
+    const saveNow = useCallback(() => {
+        clearTimeout(timer.current);
+        if (unsaved.current) {
+            dispatch(saveTheme('', unsaved.current));
+            unsaved.current = null;
+        }
+    }, [dispatch]);
+
+    // Closing the settings while picking saves what was picked.
+    useEffect(() => saveNow, [saveNow]);
 
     // Colours apply at once and are saved (to every device) once the picking stops.
-    const change = (next: CustomTokens, saveNow = false) => {
+    const change = (next: CustomTokens, immediately = false) => {
         setTokens(next);
         setCode(themeCode(next));
         const nextTheme = themeFromTokens(next, themeRef.current);
         applyTheme(nextTheme);
+        unsaved.current = nextTheme;
         clearTimeout(timer.current);
-        timer.current = setTimeout(() => dispatch(saveTheme('', nextTheme)), saveNow ? 0 : SAVE_DELAY);
+        timer.current = setTimeout(saveNow, immediately ? 0 : SAVE_DELAY);
     };
 
     const importCode = () => {
