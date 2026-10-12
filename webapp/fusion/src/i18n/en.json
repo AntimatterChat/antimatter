@@ -21591,6 +21591,42 @@
     "defaultMessage": "Source",
     "description": ""
   },
+  "fusion.calls.sources.audio": {
+    "defaultMessage": "Also share the computer's sound",
+    "description": ""
+  },
+  "fusion.calls.sources.cancel": {
+    "defaultMessage": "Cancel",
+    "description": ""
+  },
+  "fusion.calls.sources.close": {
+    "defaultMessage": "Close",
+    "description": ""
+  },
+  "fusion.calls.sources.failed": {
+    "defaultMessage": "The screens and windows to share couldn't be listed",
+    "description": ""
+  },
+  "fusion.calls.sources.loading": {
+    "defaultMessage": "Looking for screens and windows…",
+    "description": ""
+  },
+  "fusion.calls.sources.screens": {
+    "defaultMessage": "Screens",
+    "description": ""
+  },
+  "fusion.calls.sources.share": {
+    "defaultMessage": "Share",
+    "description": ""
+  },
+  "fusion.calls.sources.title": {
+    "defaultMessage": "Choose what to share",
+    "description": ""
+  },
+  "fusion.calls.sources.windows": {
+    "defaultMessage": "Windows",
+    "description": ""
+  },
   "fusion.calls.start": {
     "defaultMessage": "Start a call",
     "description": ""

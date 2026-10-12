@@ -21,6 +21,7 @@ import AppRail from 'fusion/apps/app_rail';
 import CallEvents from 'fusion/calls/call_events';
 import CallPopout from 'fusion/calls/call_popout';
 import CallWindow from 'fusion/calls/call_window';
+import {ScreenSourcePicker} from 'fusion/calls/screen_sources';
 import {useOpenVoiceChat} from 'fusion/calls/voice_chat';
 import {IconSprite} from 'fusion/components/icon';
 import {LAYER_ID} from 'fusion/components/layer';
@@ -197,6 +198,7 @@ function Frame({children}: Props) {
             {search.isOpen && <GlobalSearch/>}
             <CallWindow/>
             <CallPopout/>
+            <ScreenSourcePicker/>
             <CallEvents/>
             <Toasts/>
             <TeamCardHost/>

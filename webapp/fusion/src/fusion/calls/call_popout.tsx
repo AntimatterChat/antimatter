@@ -12,6 +12,7 @@ import {am} from 'fusion/utils/class_names';
 import {useChannelLabel} from './actions';
 import CallControls from './controls';
 import {useMyCall} from './hooks';
+import {ScreenSourcePicker} from './screen_sources';
 import Stage from './stage';
 import {closeCallPopout, useCallsUI} from './ui_state';
 
@@ -78,6 +79,7 @@ export default function CallPopout() {
                 <Stage channelId={my.call.channelId}/>
                 <CallControls my={my}/>
             </div>
+            <ScreenSourcePicker inPopout={true}/>
         </LayerRoot.Provider>,
         target.root,
     );

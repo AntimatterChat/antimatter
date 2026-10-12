@@ -27,6 +27,7 @@ import type {CallsCall, VoiceParticipant} from './calls_api';
 import {getScreenQuality, getScreenSurface} from './extras';
 import type {MyCallState} from './hooks';
 import {screenPicker} from './screen_picker';
+import {startScreenShare} from './screen_sources';
 
 const getChannelWithNames = makeGetChannel();
 
@@ -212,7 +213,7 @@ function makeActions(getState: () => GlobalState, intl: IntlShape, openDirect: (
         if (my.screen) {
             getCallsAPI()?.stopScreenShare();
         } else {
-            getCallsAPI()?.startScreenShare(getScreenQuality(), screenPicker() === 'surfaces' ? getScreenSurface() : undefined);
+            startScreenShare(getScreenQuality(), screenPicker() === 'surfaces' ? getScreenSurface() : undefined);
         }
     };
     const toggleHand = (my: MyCallState) => getCallsAPI()?.setHandRaised(!my.handRaised);

@@ -22,3 +22,23 @@
 
 // A shared screen in full screen fills it.
 :is(.am-app, .am-layer) .am-tile.am-screen:fullscreen { border-radius: 0; border: 0; }
+
+// The desktop app's screen and window picker: thumbnails in a grid that fits the dialog (scrolling when there are
+// many), each kept whole in a 16:9 frame however wide or tall the window, names cut short.
+:is(.am-app, .am-layer) .am-modal.am-src-dialog { display: flex; width: min(860px, 100%); height: auto; max-height: min(680px, 100%); flex-direction: column; }
+:is(.am-app, .am-layer) .am-src-top { display: flex; flex: none; align-items: center; padding: 18px 16px 10px 24px; gap: 12px; }
+:is(.am-app, .am-layer) .am-src-top h2 { min-width: 0; flex: 1; margin: 0; font: 600 20px var(--am-font-display); }
+:is(.am-app, .am-layer) .am-src-body { min-height: 0; flex: 1; padding: 0 24px 16px; overflow-y: auto; }
+:is(.am-app, .am-layer) .am-src-head { margin: 12px 0 8px; color: var(--am-muted); font: 700 11px var(--am-font-ui); letter-spacing: .07em; text-transform: uppercase; }
+:is(.am-app, .am-layer) .am-src-grid { display: grid; gap: 12px; grid-template-columns: repeat(auto-fill, minmax(min(176px, 100%), 1fr)); }
+:is(.am-app, .am-layer) .am-src { display: flex; min-width: 0; flex-direction: column; padding: 8px; border: 1px solid var(--am-line); border-radius: 12px; background: var(--am-side); color: var(--am-text-2); gap: 8px; text-align: left; }
+:is(.am-app, .am-layer) .am-src:hover { border-color: var(--am-muted); color: var(--am-text); }
+:is(.am-app, .am-layer) .am-src.am-on { border-color: var(--am-matter); background: var(--am-matter-soft); color: var(--am-text); }
+:is(.am-app, .am-layer) .am-src:focus-visible { outline: 2px solid var(--am-matter); outline-offset: 2px; }
+:is(.am-app, .am-layer) .am-src-thumb { position: relative; display: block; overflow: hidden; border-radius: 8px; aspect-ratio: 16 / 9; background: var(--am-rail); }
+:is(.am-app, .am-layer) .am-src-thumb img { position: absolute; display: block; width: 100%; height: 100%; inset: 0; object-fit: contain; }
+:is(.am-app, .am-layer) .am-src-name { overflow: hidden; padding: 0 2px; font-size: 13px; font-weight: 500; text-overflow: ellipsis; white-space: nowrap; }
+:is(.am-app, .am-layer) .am-src-loading { padding: 48px 0; margin: 0; color: var(--am-muted); text-align: center; }
+:is(.am-app, .am-layer) .am-src-foot { display: flex; flex: none; flex-wrap: wrap; align-items: center; padding: 14px 16px 16px 24px; border-top: 1px solid var(--am-line); gap: 10px; }
+:is(.am-app, .am-layer) .am-src-foot .am-grow { flex: 1; }
+:is(.am-app, .am-layer) .am-src-audio { display: flex; align-items: center; color: var(--am-text-2); cursor: pointer; font-size: 13.5px; gap: 10px; }

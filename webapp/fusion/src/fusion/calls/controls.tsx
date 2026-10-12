@@ -22,6 +22,7 @@ import {useCall} from './hooks';
 import type {MyCallState} from './hooks';
 import {screenPicker} from './screen_picker';
 import type {ScreenSurface} from './screen_picker';
+import {startScreenShare} from './screen_sources';
 import {TranscriptionControls} from './transcription';
 import {openCallPopout, useCallsUI} from './ui_state';
 
@@ -74,7 +75,7 @@ export function ScreenShareMenu({anchor, placement = 'above', onClose}: {anchor:
         setScreenQuality(quality);
         setScreenSurface(surface);
         onClose();
-        getCallsAPI()?.startScreenShare(quality, surface);
+        startScreenShare(quality, surface);
     };
     return (
         <Popover

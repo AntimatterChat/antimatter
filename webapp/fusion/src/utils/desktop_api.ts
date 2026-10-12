@@ -3,7 +3,7 @@
 
 import semver from 'semver';
 
-import type {DesktopAPI, PopoutViewProps, Theme, SessionAttributeField} from '@mattermost/desktop-api';
+import type {DesktopAPI, DesktopCaptureSource, DesktopSourcesOptions, PopoutViewProps, Theme, SessionAttributeField} from '@mattermost/desktop-api';
 import {isDesktopApp} from '@mattermost/shared/utils/user_agent';
 
 declare global {
@@ -153,6 +153,15 @@ export class DesktopAppAPI {
 
     getDarkMode = () => {
         return window.desktopAPI?.getDarkMode?.() ?? Promise.resolve(false);
+    };
+
+    // The screens and windows the desktop app can share, with their thumbnails.
+    canGetDesktopSources = () => {
+        return Boolean(window.desktopAPI?.getDesktopSources);
+    };
+
+    getDesktopSources = (opts: DesktopSourcesOptions): Promise<DesktopCaptureSource[]> => {
+        return window.desktopAPI?.getDesktopSources?.(opts) ?? Promise.resolve([]);
     };
 
     /**
