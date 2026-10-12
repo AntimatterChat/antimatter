@@ -9,6 +9,7 @@ import {bindActionCreators} from 'redux';
 import * as GlobalActions from 'actions/global_actions';
 
 import testConfigureStore from 'packages/mattermost-redux/test/test_store';
+import {initializePlugins} from 'plugins';
 import {renderWithContext, waitFor} from 'tests/react_testing_utils';
 import * as BrowserUtils from 'utils/browser_utils';
 import {StoragePrefixes} from 'utils/constants';
@@ -42,6 +43,11 @@ jest.mock('utils/browser_utils', () => ({
 
 jest.mock('actions/global_actions', () => ({
     redirectUserToDefaultTeam: jest.fn(),
+}));
+
+jest.mock('plugins', () => ({
+    ...jest.requireActual('plugins'),
+    initializePlugins: jest.fn(() => Promise.resolve()),
 }));
 
 jest.mock('mattermost-redux/actions/general', () => ({
@@ -84,6 +90,7 @@ describe('components/Root', () => {
         },
         dispatch: store.dispatch,
         permalinkRedirectTeamName: 'myTeam',
+        currentUserId: '',
         ...{
             location: {
                 pathname: '/',
@@ -114,6 +121,7 @@ describe('components/Root', () => {
 
         // Reset the reloadPage mock after each test
         (BrowserUtils.reloadPage as jest.Mock).mockClear();
+        (initializePlugins as jest.Mock).mockClear();
     });
 
     afterAll(() => {
@@ -282,6 +290,57 @@ describe('components/Root', () => {
 
         await findByTestId('product-page');
         expect(history.location.pathname).toBe('/playbooks/runs/abcdefghijklmnopqrstuvwxyz');
+    });
+
+    test('should not load plugins before sign-in', async () => {
+        const props = {
+            ...baseProps,
+            location: {pathname: '/login'} as RouteComponentProps['location'],
+        };
+
+        renderWithContext(<Root {...props}/>);
+
+        await waitFor(() => {
+            expect(props.actions.initializeProducts).toHaveBeenCalled();
+        });
+        expect(initializePlugins).not.toHaveBeenCalled();
+    });
+
+    test('should load plugins once the user signs in', async () => {
+        const props = {
+            ...baseProps,
+            actions: {...baseProps.actions, initializeProducts: jest.fn()},
+            location: {pathname: '/login'} as RouteComponentProps['location'],
+        };
+
+        const {rerender} = renderWithContext(<Root {...props}/>);
+        await waitFor(() => {
+            expect(props.actions.initializeProducts).toHaveBeenCalled();
+        });
+
+        rerender(<Root {...{...props, currentUserId: 'user1'}}/>);
+        rerender(<Root {...{...props, currentUserId: 'user1', noAccounts: true}}/>);
+
+        await waitFor(() => {
+            expect(initializePlugins).toHaveBeenCalledTimes(1);
+        });
+    });
+
+    test('should load plugins for a signed-in user or a public plugin page', async () => {
+        for (const props of [
+            {...baseProps, currentUserId: 'user1'},
+            {...baseProps, location: {pathname: '/boards/public/abc'} as RouteComponentProps['location']},
+            {...baseProps, location: {pathname: '/plug/oauth'} as RouteComponentProps['location']},
+        ]) {
+            (initializePlugins as jest.Mock).mockClear();
+            const {unmount} = renderWithContext(<Root {...props}/>);
+
+            // eslint-disable-next-line no-await-in-loop
+            await waitFor(() => {
+                expect(initializePlugins).toHaveBeenCalledTimes(1);
+            });
+            unmount();
+        }
     });
 
     test('should reload on focus after getting signal login event from another tab', async () => {

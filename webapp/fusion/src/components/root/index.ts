@@ -54,6 +54,7 @@ function mapStateToProps(state: GlobalState) {
         serviceEnvironment: config.ServiceEnvironment,
         siteURL: config.SiteURL,
         permalinkRedirectTeamName: permalinkRedirectTeam ? permalinkRedirectTeam.name : '',
+        currentUserId: userId,
         showTermsOfService,
         plugins,
         products,

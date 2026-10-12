@@ -84,9 +84,18 @@ export type Props = PropsFromRedux & RouteComponentProps;
 
 interface State {
     shouldMountAppRoutes?: boolean;
+
+    // Plugins are loading after sign-in. The routes they register (products, /plug/ pages) don't
+    // exist yet, so the page routes wait rather than send a deep link to the wrong page.
+    arePluginsLoading?: boolean;
 }
 
+// Plugin pages a signed-out visitor may open: a product's public page or a plugin's custom route.
+const SIGNED_OUT_PLUGIN_PAGE = /^\/(plug\/|[^/]+\/public(\/|$))/;
+
 export default class Root extends React.PureComponent<Props, State> {
+    private pluginsInitialized = false;
+
     // The constructor adds a bunch of event listeners,
     // so we do need this.
     constructor(props: Props) {
@@ -104,10 +113,20 @@ export default class Root extends React.PureComponent<Props, State> {
         };
     }
 
+    initializePlugins = () => {
+        this.pluginsInitialized = true;
+        return initializePlugins();
+    };
+
     onConfigLoaded = () => {
+        // Plugins call their own APIs as they initialize. Before sign-in these calls fail with 401
+        // and the plugins stay without their data afterwards, so plugins wait for sign-in (see
+        // componentDidUpdate), unless the page is one of theirs.
+        const loadPlugins = Boolean(this.props.currentUserId) || SIGNED_OUT_PLUGIN_PAGE.test(this.props.location.pathname);
+
         Promise.all([
             this.props.actions.initializeProducts(),
-            initializePlugins(),
+            loadPlugins && this.initializePlugins(),
         ]).then(() => {
             this.setState({shouldMountAppRoutes: true});
         });
@@ -117,6 +136,11 @@ export default class Root extends React.PureComponent<Props, State> {
     };
 
     componentDidUpdate(prevProps: Props, prevState: State) {
+        if (this.state.shouldMountAppRoutes && !this.pluginsInitialized && this.props.currentUserId && !prevProps.currentUserId) {
+            this.setState({arePluginsLoading: true});
+            this.initializePlugins().finally(() => this.setState({arePluginsLoading: false}));
+        }
+
         if (this.props.location.pathname === '/') {
             if (this.props.noAccounts) {
                 prevProps.history.push('/signup_user_complete');
@@ -370,7 +394,7 @@ export default class Root extends React.PureComponent<Props, State> {
                         {!fusionFrame && <GlobalHeader/>}
                         {!fusionFrame && <TeamSidebar/>}
                         <div className={fusionFrame ? 'am-root-main' : 'main-wrapper'}>
-                            <Switch>
+                            {!this.state.arePluginsLoading && <Switch>
                                 {this.props.products?.filter((product) => Boolean(product.publicComponent)).map((product) => (
                                     <Route
                                         key={`${product.id}-public`}
@@ -426,7 +450,7 @@ export default class Root extends React.PureComponent<Props, State> {
                                     component={TeamController}
                                 />
                                 <RootRedirect/>
-                            </Switch>
+                            </Switch>}
                             {!fusionFrame && <SidebarRight/>}
                         </div>
                         <GlobalClassificationBanner position='bottom'/>
