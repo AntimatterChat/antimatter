@@ -6,6 +6,7 @@ import {useIntl} from 'react-intl';
 import {useDispatch, useSelector, useStore} from 'react-redux';
 
 import type {FileInfo} from '@mattermost/types/files';
+import type {SchedulingInfo} from '@mattermost/types/schedule_post';
 
 import {savePreferences} from 'mattermost-redux/actions/preferences';
 import {getConfig} from 'mattermost-redux/selectors/entities/general';
@@ -321,6 +322,28 @@ function MessageBox({channelId, rootId = '', placeholder, afterSubmit}: Props) {
         leaveMode();
     };
 
+    // sendDraft sends the draft, now or at a scheduled time, once a message to a whole channel of many people (@all,
+    // @channel, @here) is confirmed. The composer empties at once, the draft goes (on the server too, or it would come
+    // back from there), and the composer gets it back if sending fails.
+    const sendDraft = async ({after, schedulingInfo}: {after?: Props['afterSubmit']; schedulingInfo?: SchedulingInfo} = {}): Promise<{sent: boolean; error?: {message?: string}}> => {
+        const {data: confirmed} = await dispatch(confirmChannelWideMentions(channelId, draft.message));
+        if (!confirmed) {
+            requestAnimationFrame(() => textareaRef.current?.focus());
+            return {sent: false};
+        }
+        const toSend: PostDraft = {...draft, channelId, rootId};
+        const empty: PostDraft = {message: '', fileInfos: [], uploadsInProgress: [], channelId, rootId, createAt: 0, updateAt: 0};
+        setDraft(empty);
+        cancelSave();
+        dispatch(removeDraft(key, channelId, rootId));
+        const result = await dispatch(onSubmit(channelId, rootId, toSend, after ? {afterSubmit: after} : {}, schedulingInfo));
+        if (result && 'error' in result && result.error) {
+            setDraft(toSend);
+            return {sent: false, error: result.error as {message?: string}};
+        }
+        return {sent: true};
+    };
+
     const submit = async () => {
         if (mode) {
             await submitMode();
@@ -338,24 +361,8 @@ function MessageBox({channelId, rootId = '', placeholder, afterSubmit}: Props) {
             return;
         }
         setSendError('');
-
-        // A message to a whole channel of many people (@all, @channel, @here) is confirmed first.
-        const {data: send} = await dispatch(confirmChannelWideMentions(channelId, draft.message));
-        if (!send) {
-            requestAnimationFrame(() => textareaRef.current?.focus());
-            return;
-        }
-        const toSend: PostDraft = {...draft, channelId, rootId};
-        const empty: PostDraft = {message: '', fileInfos: [], uploadsInProgress: [], channelId, rootId, createAt: 0, updateAt: 0};
-        setDraft(empty);
-        cancelSave();
-
-        // Sent: the draft goes, on the server too, or it would come back from there.
-        dispatch(removeDraft(key, channelId, rootId));
-        const result = await dispatch(onSubmit(channelId, rootId, toSend, afterSubmit ? {afterSubmit} : {}));
-        if (result && 'error' in result && result.error) {
-            setDraft(toSend);
-            const error = result.error as {message?: string};
+        const {error} = await sendDraft({after: afterSubmit});
+        if (error) {
             setSendError(error.message || formatMessage({id: 'fusion.composer.sendFailed', defaultMessage: 'The message couldn\'t be sent.'}));
         }
     };
@@ -371,24 +378,11 @@ function MessageBox({channelId, rootId = '', placeholder, afterSubmit}: Props) {
         if (pending.length) {
             return;
         }
-
-        // A message to a whole channel of many people (@all, @channel, @here) is confirmed first.
-        const {data: send} = await dispatch(confirmChannelWideMentions(channelId, draft.message));
-        if (!send) {
-            requestAnimationFrame(() => textareaRef.current?.focus());
-            return;
-        }
-        const toSend: PostDraft = {...draft, channelId, rootId};
-        const empty: PostDraft = {message: '', fileInfos: [], uploadsInProgress: [], channelId, rootId, createAt: 0, updateAt: 0};
-        setDraft(empty);
-        cancelSave();
-
-        // Sent: the draft goes, on the server too, or it would come back from there.
-        dispatch(removeDraft(key, channelId, rootId));
-        const result = await dispatch(onSubmit(channelId, rootId, toSend, {}, {scheduled_at: at}));
-        if (result && 'error' in result && result.error) {
-            setDraft(toSend);
+        const {sent, error} = await sendDraft({schedulingInfo: {scheduled_at: at}});
+        if (error) {
             toast(formatMessage({id: 'fusion.toast.scheduleFailed', defaultMessage: 'The message could not be scheduled'}));
+        }
+        if (!sent) {
             return;
         }
         const when = intl.formatDate(at, {weekday: 'short', hour: 'numeric', minute: '2-digit'});
