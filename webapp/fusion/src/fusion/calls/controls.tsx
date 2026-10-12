@@ -17,9 +17,11 @@ import {am} from 'fusion/utils/class_names';
 
 import {useCallActions} from './actions';
 import {getCallsAPI} from './calls_api';
-import {getScreenQuality, QUICK_REACTIONS, SCREEN_FRAME_RATES, SCREEN_HEIGHTS, setScreenQuality} from './extras';
+import {BLUR_INTENSITIES, blurPreset, getScreenQuality, QUICK_REACTIONS, SCREEN_FRAME_RATES, SCREEN_HEIGHTS, setScreenQuality} from './extras';
 import {useCall} from './hooks';
 import type {MyCallState} from './hooks';
+import {screenPicker} from './screen_picker';
+import type {ScreenSurface} from './screen_picker';
 import {TranscriptionControls} from './transcription';
 import {openCallPopout, useCallsUI} from './ui_state';
 
@@ -44,23 +46,10 @@ export function useToggleLabels(my: MyCallState | null) {
     };
 }
 
-type ScreenSurface = 'monitor' | 'window' | 'browser';
-
-// ScreenShareMenu shares the screen: what (the whole screen, a window or a browser tab, which the browser's picker
-// opens on), at which size and frame rate (Vencord's presets; the choice is kept). The desktop app has its own picker.
-export function ScreenShareMenu({anchor, placement = 'above', onClose}: {anchor: HTMLElement | null; placement?: 'above' | 'below'; onClose: () => void}) {
-    const {formatMessage} = useIntl();
-    const [quality, setQuality] = useState(getScreenQuality);
-
-    // Sharing must start right from the click: the browser asks only after a user's action.
-    const share = (surface?: ScreenSurface) => {
-        setScreenQuality(quality);
-        onClose();
-        getCallsAPI()?.startScreenShare(quality, surface);
-    };
-    const chip = (on: boolean, label: string, onClick: () => void) => (
+// Chip is a preset of a menu (a resolution, a frame rate, a blur), the chosen one highlighted.
+function Chip({on, label, onClick}: {on: boolean; label: string; onClick: () => void}) {
+    return (
         <button
-            key={label}
             type='button'
             className={am('q-chip', {on})}
             aria-pressed={on}
@@ -69,7 +58,22 @@ export function ScreenShareMenu({anchor, placement = 'above', onClose}: {anchor:
             {label}
         </button>
     );
-    const desktop = Boolean((window as {desktop?: unknown}).desktop);
+}
+
+// ScreenShareMenu shares the screen: what, and at which size and frame rate (Vencord's presets; the choice is kept).
+// What is offered follows the picker that opens (see screenPicker): Chromium opens its picker on a whole screen, a
+// window or a browser tab; Firefox, Safari and the desktop app show their own picker, whatever is asked for.
+export function ScreenShareMenu({anchor, placement = 'above', onClose}: {anchor: HTMLElement | null; placement?: 'above' | 'below'; onClose: () => void}) {
+    const {formatMessage} = useIntl();
+    const [quality, setQuality] = useState(getScreenQuality);
+    const [picker] = useState(() => screenPicker());
+
+    // Sharing must start right from the click: the browser asks only after a user's action.
+    const share = (surface?: ScreenSurface) => {
+        setScreenQuality(quality);
+        onClose();
+        getCallsAPI()?.startScreenShare(quality, surface);
+    };
     return (
         <Popover
             anchor={anchor}
@@ -80,13 +84,7 @@ export function ScreenShareMenu({anchor, placement = 'above', onClose}: {anchor:
             onClose={onClose}
         >
             <MenuHeading>{formatMessage({id: 'fusion.calls.shareWhat', defaultMessage: 'Share your screen'})}</MenuHeading>
-            {desktop ? (
-                <MenuItem
-                    icon='screen'
-                    label={formatMessage({id: 'fusion.calls.shareSource', defaultMessage: 'Choose a screen or a window…'})}
-                    onClick={() => share()}
-                />
-            ) : (
+            {picker === 'surfaces' ? (
                 <>
                     <MenuItem
                         icon='screen'
@@ -104,22 +102,43 @@ export function ScreenShareMenu({anchor, placement = 'above', onClose}: {anchor:
                         onClick={() => share('browser')}
                     />
                 </>
+            ) : (
+                <MenuItem
+                    icon='screen'
+                    label={formatMessage({id: 'fusion.calls.shareSource', defaultMessage: 'Choose a screen or a window…'})}
+                    onClick={() => share()}
+                />
             )}
             <MenuSeparator/>
             <MenuHeading>{formatMessage({id: 'fusion.calls.resolution', defaultMessage: 'Resolution'})}</MenuHeading>
             <div className={am('q-chips')}>
-                {SCREEN_HEIGHTS.map((h) => chip(quality.height === h, h ? `${h}p` : formatMessage({id: 'fusion.calls.source', defaultMessage: 'Source'}), () => setQuality({...quality, height: h})))}
+                {SCREEN_HEIGHTS.map((h) => (
+                    <Chip
+                        key={h}
+                        on={quality.height === h}
+                        label={h ? `${h}p` : formatMessage({id: 'fusion.calls.source', defaultMessage: 'Source'})}
+                        onClick={() => setQuality({...quality, height: h})}
+                    />
+                ))}
             </div>
             <MenuHeading>{formatMessage({id: 'fusion.calls.frameRate', defaultMessage: 'Frame rate'})}</MenuHeading>
             <div className={am('q-chips')}>
-                {SCREEN_FRAME_RATES.map((f) => chip(quality.frameRate === f, `${f} fps`, () => setQuality({...quality, frameRate: f})))}
+                {SCREEN_FRAME_RATES.map((f) => (
+                    <Chip
+                        key={f}
+                        on={quality.frameRate === f}
+                        label={`${f} fps`}
+                        onClick={() => setQuality({...quality, frameRate: f})}
+                    />
+                ))}
             </div>
         </Popover>
     );
 }
 
-// BlurMenu blurs the background of your camera (Calls' own background blur), and sets how much.
-function BlurMenu({anchor, onClose}: {anchor: HTMLElement | null; onClose: () => void}) {
+// CameraMenu sets the camera up, as the share menu does the screen: Calls' background blur and how strong (presets;
+// Calls keeps them for the next calls), and the devices in the Calls settings.
+export function CameraMenu({anchor, onClose}: {anchor: HTMLElement | null; onClose: () => void}) {
     const {formatMessage} = useIntl();
     const api = getCallsAPI();
     const [blur, setBlur] = useState(() => api?.getBackgroundBlur?.() || {on: false, intensity: 50});
@@ -127,36 +146,47 @@ function BlurMenu({anchor, onClose}: {anchor: HTMLElement | null; onClose: () =>
         setBlur(next);
         api?.setBackgroundBlur?.(next).catch(() => showToast(formatMessage({id: 'fusion.calls.blurFailed', defaultMessage: 'The background couldn\'t be blurred'})));
     };
+    const preset = blurPreset(blur.intensity);
+    const presetLabels: Record<number, string> = {
+        25: formatMessage({id: 'fusion.calls.blurLight', defaultMessage: 'Light'}),
+        50: formatMessage({id: 'fusion.calls.blurMedium', defaultMessage: 'Medium'}),
+        100: formatMessage({id: 'fusion.calls.blurStrong', defaultMessage: 'Strong'}),
+    };
     return (
         <Popover
             anchor={anchor}
             placement='above'
             className='plus-pop q-pop'
-            label={formatMessage({id: 'fusion.calls.camera', defaultMessage: 'Camera'})}
+            role='menu'
+            label={formatMessage({id: 'fusion.calls.cameraOptions', defaultMessage: 'Camera options'})}
             onClose={onClose}
         >
-            <MenuItem
-                icon='eye-off'
-                role='menuitemcheckbox'
-                checked={blur.on}
-                label={formatMessage({id: 'fusion.calls.blur', defaultMessage: 'Blur my background'})}
-                onClick={() => apply({...blur, on: !blur.on})}
-            />
-            {blur.on && (
-                <label className={am('vol-row')}>
-                    <span>{formatMessage({id: 'fusion.calls.blurAmount', defaultMessage: 'Amount'})}</span>
-                    <input
-                        type='range'
-                        min={10}
-                        max={100}
-                        step={10}
-                        value={blur.intensity}
-                        onChange={(e) => setBlur({...blur, intensity: Number(e.target.value)})}
-                        onPointerUp={() => apply(blur)}
-                        onKeyUp={() => apply(blur)}
-                    />
-                </label>
+            <MenuHeading>{formatMessage({id: 'fusion.calls.camera', defaultMessage: 'Camera'})}</MenuHeading>
+            {api?.setBackgroundBlur && (
+                <MenuItem
+                    icon='eye-off'
+                    role='menuitemcheckbox'
+                    checked={blur.on}
+                    label={formatMessage({id: 'fusion.calls.blur', defaultMessage: 'Blur my background'})}
+                    onClick={() => apply({on: !blur.on, intensity: preset})}
+                />
             )}
+            {api?.setBackgroundBlur && blur.on && (
+                <>
+                    <MenuHeading>{formatMessage({id: 'fusion.calls.blurAmount', defaultMessage: 'Amount'})}</MenuHeading>
+                    <div className={am('q-chips')}>
+                        {BLUR_INTENSITIES.map((i) => (
+                            <Chip
+                                key={i}
+                                on={preset === i}
+                                label={presetLabels[i]}
+                                onClick={() => apply({on: true, intensity: i})}
+                            />
+                        ))}
+                    </div>
+                </>
+            )}
+            <MenuSeparator/>
             <MenuItem
                 icon='cog'
                 label={formatMessage({id: 'fusion.calls.devices', defaultMessage: 'Camera and microphone settings…'})}
@@ -269,7 +299,7 @@ export default function CallControls({my, withPopout = false}: Props) {
                     >
                         <Icon name='video'/>
                     </button>
-                    {api?.setBackgroundBlur && caret('camera', cameraRef, formatMessage({id: 'fusion.calls.cameraOptions', defaultMessage: 'Camera options'}))}
+                    {api && caret('camera', cameraRef, formatMessage({id: 'fusion.calls.cameraOptions', defaultMessage: 'Camera options'}))}
                     <button
                         ref={screenRef}
                         className={am('round', {on: my.screen || menu === 'screen'})}
@@ -325,7 +355,7 @@ export default function CallControls({my, withPopout = false}: Props) {
                 />
             )}
             {menu === 'camera' && (
-                <BlurMenu
+                <CameraMenu
                     anchor={cameraRef.current}
                     onClose={() => setMenu(null)}
                 />

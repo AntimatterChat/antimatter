@@ -82,6 +82,14 @@ export function setScreenQuality(quality: CallsScreenQuality) {
     writeStored(SCREEN_KEY, quality);
 }
 
+// Background blur presets: light, medium (Calls' default) and strong, as intensities from 1 to 100.
+export const BLUR_INTENSITIES = [25, 50, 100];
+
+// blurPreset gives the preset closest to an intensity (one set with an older slider shows as its nearest).
+export function blurPreset(intensity: number): number {
+    return BLUR_INTENSITIES.reduce((best, i) => (Math.abs(i - intensity) < Math.abs(best - intensity) ? i : best));
+}
+
 // Reactions: the quick ones of Calls, with their code points.
 export const QUICK_REACTIONS: Array<[string, string]> = [['+1', '1f44d'], ['clap', '1f44f'], ['joy', '1f602'], ['heart', '2764-fe0f'], ['tada', '1f389'], ['open_mouth', '1f62e']];
 

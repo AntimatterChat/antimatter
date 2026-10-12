@@ -21215,6 +21215,18 @@
     "defaultMessage": "The background couldn't be blurred",
     "description": ""
   },
+  "fusion.calls.blurLight": {
+    "defaultMessage": "Light",
+    "description": "A preset of the camera background blur, in the camera menu of a call: a light blur."
+  },
+  "fusion.calls.blurMedium": {
+    "defaultMessage": "Medium",
+    "description": "A preset of the camera background blur, in the camera menu of a call: a medium blur."
+  },
+  "fusion.calls.blurStrong": {
+    "defaultMessage": "Strong",
+    "description": "A preset of the camera background blur, in the camera menu of a call: a strong blur."
+  },
   "fusion.calls.call": {
     "defaultMessage": "Call",
     "description": ""
