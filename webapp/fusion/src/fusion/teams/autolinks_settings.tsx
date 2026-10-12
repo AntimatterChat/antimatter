@@ -34,7 +34,7 @@ export default function AutolinksSettings({setUnsaved}: Props) {
     const team = useSelector(getCurrentTeam);
     const [saved, setSaved] = useState(team?.autolinks || '');
     const [draft, setDraft] = useState<Autolinks>(() => parseAutolinks(team?.autolinks));
-    const [sample, setSample] = useState(PRESETS[0].example);
+    const [sample, setSample] = useState(() => formatMessage(PRESETS[0].example));
     const [preview, setPreview] = useState('');
     const [error, setError] = useState('');
     const [busy, setBusy] = useState(false);
@@ -227,12 +227,12 @@ export default function AutolinksSettings({setUnsaved}: Props) {
                                 type='button'
                                 className={am('chip-pick')}
                                 onClick={() => {
-                                    setDraft({...draft, links: [...draft.links, newAutolink(p)]});
-                                    setSample(p.example);
+                                    setDraft({...draft, links: [...draft.links, newAutolink(p, formatMessage(p.name))]});
+                                    setSample(formatMessage(p.example));
                                     setAdding(false);
                                 }}
                             >
-                                {p.name}
+                                {formatMessage(p.name)}
                             </button>
                         ))}
                         <button

@@ -22,7 +22,7 @@ describe('autolinks', () => {
     });
 
     test('serializes without editor keys, false options nor blank rules', () => {
-        const link = {...newAutolink(PRESETS[0]), channels: [], process_bot_posts: false};
+        const link = {...newAutolink(PRESETS[0], 'Issue keys'), channels: [], process_bot_posts: false};
         const blank = newAutolink();
         const raw = serializeAutolinks({links: [link, blank]});
         expect(JSON.parse(raw)).toEqual({links: [{name: 'Issue keys', pattern: '(PROJ-\\d+)', template: '[$1](https://issues.example.com/browse/$1)'}]});

@@ -1,6 +1,9 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 
+import {defineMessages} from 'react-intl';
+import type {MessageDescriptor} from 'react-intl';
+
 import {Client4} from 'mattermost-redux/client';
 
 // A team's autolinks (server/public/model/team_autolink.go): patterns of its messages that the server turns into
@@ -65,25 +68,39 @@ export function serializeAutolinks(autolinks: Autolinks): string {
 
 export type Preset = {
     id: string;
-    name: string;
+    name: MessageDescriptor;
     pattern: string;
     template: string;
     word_match?: boolean;
-    example: string;
+
+    // A message the preset links, to try it on.
+    example: MessageDescriptor;
 };
+
+const presetMessages = defineMessages({
+    issues: {id: 'fusion.autolinks.preset.issues', defaultMessage: 'Issue keys'},
+    issuesExample: {id: 'fusion.autolinks.preset.issuesExample', defaultMessage: 'Fixed in PROJ-123.'},
+    pulls: {id: 'fusion.autolinks.preset.pulls', defaultMessage: 'Pull requests'},
+    pullsExample: {id: 'fusion.autolinks.preset.pullsExample', defaultMessage: 'Merged #42 this morning.'},
+    merge: {id: 'fusion.autolinks.preset.merge', defaultMessage: 'Merge requests'},
+    mergeExample: {id: 'fusion.autolinks.preset.mergeExample', defaultMessage: 'Review !615 please'},
+    cve: {id: 'fusion.autolinks.preset.cve', defaultMessage: 'CVE identifiers'},
+    cveExample: {id: 'fusion.autolinks.preset.cveExample', defaultMessage: 'Patched CVE-2026-12345.'},
+});
 
 // Presets to start from: the address and the project key are the team's to fill in.
 export const PRESETS: Preset[] = [
-    {id: 'issues', name: 'Issue keys', pattern: '(PROJ-\\d+)', template: '[$1](https://issues.example.com/browse/$1)', example: 'Fixed in PROJ-123.'},
-    {id: 'pulls', name: 'Pull requests', pattern: '#(\\d+)', template: '[#$1](https://github.com/org/repo/pull/$1)', example: 'Merged #42 this morning.'},
-    {id: 'merge', name: 'Merge requests', pattern: '!(\\d+)', template: '[!$1](https://gitlab.example.com/group/project/-/merge_requests/$1)', example: 'Review !615 please'},
-    {id: 'cve', name: 'CVE identifiers', pattern: 'CVE-\\d{4}-\\d{4,}', template: '[$0](https://www.cve.org/CVERecord?id=$0)', word_match: true, example: 'Patched CVE-2026-12345.'},
+    {id: 'issues', name: presetMessages.issues, pattern: '(PROJ-\\d+)', template: '[$1](https://issues.example.com/browse/$1)', example: presetMessages.issuesExample},
+    {id: 'pulls', name: presetMessages.pulls, pattern: '#(\\d+)', template: '[#$1](https://github.com/org/repo/pull/$1)', example: presetMessages.pullsExample},
+    {id: 'merge', name: presetMessages.merge, pattern: '!(\\d+)', template: '[!$1](https://gitlab.example.com/group/project/-/merge_requests/$1)', example: presetMessages.mergeExample},
+    {id: 'cve', name: presetMessages.cve, pattern: 'CVE-\\d{4}-\\d{4,}', template: '[$0](https://www.cve.org/CVERecord?id=$0)', word_match: true, example: presetMessages.cveExample},
 ];
 
-export function newAutolink(preset?: Preset): Autolink {
+// newAutolink makes a rule for the editor, blank or from a preset (named in the user's language).
+export function newAutolink(preset?: Preset, name = ''): Autolink {
     return {
         key: newKey(),
-        name: preset?.name || '',
+        name,
         pattern: preset?.pattern || '',
         template: preset?.template || '',
         word_match: preset?.word_match,

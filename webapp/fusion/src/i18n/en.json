@@ -23099,6 +23099,38 @@
     "defaultMessage": "Pattern",
     "description": ""
   },
+  "fusion.autolinks.preset.cve": {
+    "defaultMessage": "CVE identifiers",
+    "description": "Name of the autolink preset that links CVE identifiers such as CVE-2026-12345 (community settings, Autolinks); also the new rule's name"
+  },
+  "fusion.autolinks.preset.cveExample": {
+    "defaultMessage": "Patched CVE-2026-12345.",
+    "description": "Sample message the CVE autolink preset is tried on in the preview; keep CVE-2026-12345 as it is"
+  },
+  "fusion.autolinks.preset.issues": {
+    "defaultMessage": "Issue keys",
+    "description": "Name of the autolink preset that links issue keys such as PROJ-123 (community settings, Autolinks); also the new rule's name"
+  },
+  "fusion.autolinks.preset.issuesExample": {
+    "defaultMessage": "Fixed in PROJ-123.",
+    "description": "Sample message the issue-keys autolink preset is tried on in the preview; keep PROJ-123 as it is"
+  },
+  "fusion.autolinks.preset.merge": {
+    "defaultMessage": "Merge requests",
+    "description": "Name of the autolink preset that links merge request numbers such as !615 (community settings, Autolinks); also the new rule's name"
+  },
+  "fusion.autolinks.preset.mergeExample": {
+    "defaultMessage": "Review !615 please",
+    "description": "Sample message the merge-request autolink preset is tried on in the preview; keep !615 as it is"
+  },
+  "fusion.autolinks.preset.pulls": {
+    "defaultMessage": "Pull requests",
+    "description": "Name of the autolink preset that links pull request numbers such as #42 (community settings, Autolinks); also the new rule's name"
+  },
+  "fusion.autolinks.preset.pullsExample": {
+    "defaultMessage": "Merged #42 this morning.",
+    "description": "Sample message the pull-request autolink preset is tried on in the preview; keep #42 as it is"
+  },
   "fusion.autolinks.remove": {
     "defaultMessage": "Remove the autolink",
     "description": ""
