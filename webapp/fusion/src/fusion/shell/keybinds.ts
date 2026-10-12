@@ -52,18 +52,31 @@ export function comboOf(e: Pick<KeyboardEvent, 'key' | 'code' | 'ctrlKey' | 'met
     return [(e.ctrlKey || e.metaKey) && 'mod', e.altKey && 'alt', e.shiftKey && 'shift', keyOf(e)].filter(Boolean).join('+');
 }
 
-export function getKeybinds(state: GlobalState): Record<KeyAction, string> {
-    let saved: Partial<Record<KeyAction, string>> = {};
+// getSavedKeybinds is the preference that keeps the shortcuts changed in the settings.
+export function getSavedKeybinds(state: GlobalState): string {
+    return getPreference(state, CATEGORY_FUSION_KEYS, NAME_KEYBINDS, '{}');
+}
+
+// parseKeybinds reads the changed shortcuts from their preference.
+export function parseKeybinds(saved: string): Partial<Record<KeyAction, string>> {
     try {
-        saved = JSON.parse(getPreference(state, CATEGORY_FUSION_KEYS, NAME_KEYBINDS, '{}')) || {};
+        return JSON.parse(saved) || {};
     } catch {
-        saved = {};
+        return {};
     }
+}
+
+// withDefaults gives every action its shortcut: the changed one, else its default.
+export function withDefaults(saved: Partial<Record<KeyAction, string>>): Record<KeyAction, string> {
     const binds = {} as Record<KeyAction, string>;
     for (const action of KEY_ACTIONS) {
         binds[action.id] = typeof saved[action.id] === 'string' ? saved[action.id]! : action.combo;
     }
     return binds;
+}
+
+export function getKeybinds(state: GlobalState): Record<KeyAction, string> {
+    return withDefaults(parseKeybinds(getSavedKeybinds(state)));
 }
 
 // isKeybind tells whether a key press is the shortcut of an action ('' turns a shortcut off).

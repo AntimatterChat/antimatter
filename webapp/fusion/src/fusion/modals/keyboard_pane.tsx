@@ -1,19 +1,17 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import {useIntl} from 'react-intl';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {savePreferences} from 'mattermost-redux/actions/preferences';
 import {getCurrentUserId} from 'mattermost-redux/selectors/entities/users';
 
-import {CATEGORY_FUSION_KEYS, KEY_ACTIONS, NAME_KEYBINDS, comboLabel, comboOf, getKeybinds} from 'fusion/shell/keybinds';
+import {CATEGORY_FUSION_KEYS, KEY_ACTIONS, NAME_KEYBINDS, comboLabel, comboOf, getSavedKeybinds, parseKeybinds, withDefaults} from 'fusion/shell/keybinds';
 import type {KeyAction} from 'fusion/shell/keybinds';
 import {am} from 'fusion/utils/class_names';
 import {openKeyboardShortcuts} from 'fusion/utils/modals';
-
-import type {GlobalState} from 'types/store';
 
 function Combo({combo}: {combo: string}) {
     const {formatMessage} = useIntl();
@@ -33,18 +31,12 @@ export default function KeyboardPane() {
     const {formatMessage} = useIntl();
     const dispatch = useDispatch();
     const userId = useSelector(getCurrentUserId);
-    const binds = useSelector(getKeybinds);
+    const saved = useSelector(getSavedKeybinds);
+    const custom = useMemo(() => parseKeybinds(saved), [saved]);
+    const binds = useMemo(() => withDefaults(custom), [custom]);
     const [recording, setRecording] = useState<KeyAction | null>(null);
 
-    const save = (next: Record<string, string>) => dispatch(savePreferences(userId, [{user_id: userId, category: CATEGORY_FUSION_KEYS, name: NAME_KEYBINDS, value: JSON.stringify(next)}]));
-    const custom = useSelector((state: GlobalState) => {
-        const saved = state.entities.preferences.myPreferences[`${CATEGORY_FUSION_KEYS}--${NAME_KEYBINDS}`]?.value;
-        try {
-            return (saved ? JSON.parse(saved) : {}) as Record<string, string>;
-        } catch {
-            return {};
-        }
-    });
+    const save = (next: Partial<Record<KeyAction, string>>) => dispatch(savePreferences(userId, [{user_id: userId, category: CATEGORY_FUSION_KEYS, name: NAME_KEYBINDS, value: JSON.stringify(next)}]));
 
     useEffect(() => {
         if (!recording) {
