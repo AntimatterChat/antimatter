@@ -87,6 +87,146 @@ func TestTeamRoles(t *testing.T) {
 	})
 }
 
+// Antimatter teams belong to one community (Mattermost team), managed by those who manage its roles.
+func TestCommunityTeams(t *testing.T) {
+	mainHelper.Parallel(t)
+	th := Setup(t).InitBasic(t)
+	community := th.BasicTeam
+
+	newTeam := func(name, communityID string) *model.Group {
+		return &model.Group{
+			Name:           new(name + model.NewId()[:8]),
+			DisplayName:    name,
+			Source:         model.GroupSourceCustom,
+			AllowReference: true,
+			IsTeam:         true,
+			TeamId:         communityID,
+			Tag:            "OPS",
+		}
+	}
+
+	t.Run("those who manage the community's roles create its teams, members don't", func(t *testing.T) {
+		created, _, err := th.SystemAdminClient.CreateGroup(context.Background(), newTeam("ops", community.Id))
+		require.NoError(t, err)
+		assert.True(t, created.IsTeam)
+		assert.Equal(t, community.Id, created.TeamId)
+		assert.False(t, created.IsRole(), "a team isn't a role")
+
+		_, resp, err := th.Client.CreateGroup(context.Background(), newTeam("rebels", community.Id))
+		require.Error(t, err)
+		CheckForbiddenStatus(t, resp)
+
+		// A team is not a role: it grants nothing.
+		httpResp, err := th.SystemAdminClient.DoAPIGet(context.Background(), "/groups/"+created.Id+"/team_role", "")
+		require.Error(t, err)
+		assert.Equal(t, http.StatusBadRequest, httpResp.StatusCode)
+	})
+
+	t.Run("a team needs a community", func(t *testing.T) {
+		_, resp, err := th.SystemAdminClient.CreateGroup(context.Background(), newTeam("nowhere", ""))
+		require.Error(t, err)
+		CheckBadRequestStatus(t, resp)
+
+		// Mattermost's own custom groups stay of the whole server.
+		plain := newTeam("plain", "")
+		plain.IsTeam = false
+		created, _, err := th.Client.CreateGroup(context.Background(), plain)
+		require.NoError(t, err)
+		assert.False(t, created.IsTeam)
+		assert.False(t, created.BelongsToTeam())
+	})
+
+	t.Run("the community's admins edit its teams, their members don't", func(t *testing.T) {
+		created, _, err := th.SystemAdminClient.CreateGroup(context.Background(), newTeam("crew", community.Id))
+		require.NoError(t, err)
+		_, _, err = th.SystemAdminClient.UpsertGroupMembers(context.Background(), created.Id, &model.GroupModifyMembers{UserIds: []string{th.BasicUser2.Id}})
+		require.NoError(t, err)
+
+		description := "on call"
+		client2 := th.CreateClient()
+		_, _, err = client2.Login(context.Background(), th.BasicUser2.Email, th.BasicUser2.Password)
+		require.NoError(t, err)
+		_, resp, err := client2.PatchGroup(context.Background(), created.Id, &model.GroupPatch{Description: &description})
+		require.Error(t, err)
+		CheckForbiddenStatus(t, resp)
+
+		_, appErr := th.App.UpdateTeamMemberSchemeRoles(th.Context, community.Id, th.BasicUser.Id, false, true, true)
+		require.Nil(t, appErr)
+		defer func() {
+			_, appErr = th.App.UpdateTeamMemberSchemeRoles(th.Context, community.Id, th.BasicUser.Id, false, true, false)
+			require.Nil(t, appErr)
+		}()
+		patched, _, err := th.Client.PatchGroup(context.Background(), created.Id, &model.GroupPatch{Description: &description})
+		require.NoError(t, err)
+		assert.Equal(t, "on call", patched.Description)
+		assert.True(t, patched.IsTeam, "patching keeps a team a team")
+		assert.Equal(t, community.Id, patched.TeamId, "and in its community")
+	})
+
+	t.Run("a team's members, lead and channel are of its community", func(t *testing.T) {
+		outsider := th.CreateUser(t)
+		_, resp, err := createGroupWithUsers(t, th.SystemAdminClient, &model.GroupWithUserIds{Group: *newTeam("strangers", community.Id), UserIds: []string{outsider.Id}})
+		require.Error(t, err)
+		assert.Equal(t, http.StatusBadRequest, resp.StatusCode)
+
+		created, _, err := th.SystemAdminClient.CreateGroup(context.Background(), newTeam("homebodies", community.Id))
+		require.NoError(t, err)
+		_, resp2, err := th.SystemAdminClient.UpsertGroupMembers(context.Background(), created.Id, &model.GroupModifyMembers{UserIds: []string{outsider.Id}})
+		require.Error(t, err)
+		CheckBadRequestStatus(t, resp2)
+
+		other := th.CreateTeam(t)
+		elsewhere := th.CreateChannelWithClientAndTeam(t, th.SystemAdminClient, model.ChannelTypeOpen, other.Id)
+		_, resp2, err = th.SystemAdminClient.PatchGroup(context.Background(), created.Id, &model.GroupPatch{ChannelId: &elsewhere.Id})
+		require.Error(t, err)
+		CheckBadRequestStatus(t, resp2)
+		_, _, err = th.SystemAdminClient.PatchGroup(context.Background(), created.Id, &model.GroupPatch{ChannelId: &th.BasicChannel.Id})
+		require.NoError(t, err)
+	})
+
+	t.Run("someone who leaves the community leaves its teams", func(t *testing.T) {
+		user := th.CreateUser(t)
+		th.LinkUserToTeam(t, user, community)
+		created, _, err := createGroupWithUsers(t, th.SystemAdminClient, &model.GroupWithUserIds{Group: *newTeam("movers", community.Id), UserIds: []string{user.Id}})
+		require.NoError(t, err)
+
+		_, err = th.SystemAdminClient.RemoveTeamMember(context.Background(), community.Id, user.Id)
+		require.NoError(t, err)
+		assert.False(t, th.App.IsGroupMember(created.Id, user.Id))
+	})
+
+	t.Run("a community's teams are listed apart from its roles and other communities' teams", func(t *testing.T) {
+		other := th.CreateTeam(t)
+		mine, _, err := th.SystemAdminClient.CreateGroup(context.Background(), newTeam("listed", community.Id))
+		require.NoError(t, err)
+		theirs, _, err := th.SystemAdminClient.CreateGroup(context.Background(), newTeam("theirs", other.Id))
+		require.NoError(t, err)
+		role, _, err := th.SystemAdminClient.CreateGroup(context.Background(), &model.Group{Name: new("mods" + model.NewId()[:8]), DisplayName: "mods", Source: model.GroupSourceCustom, AllowReference: true, TeamId: community.Id})
+		require.NoError(t, err)
+
+		groups, _, err := th.Client.GetGroups(context.Background(), model.GroupSearchOpts{Source: model.GroupSourceCustom, FilterTeamId: community.Id, FilterIsTeam: model.NewPointer(true), PageOpts: &model.PageOpts{Page: 0, PerPage: 200}})
+		require.NoError(t, err)
+		ids := make([]string, 0, len(groups))
+		for _, g := range groups {
+			ids = append(ids, g.Id)
+			assert.True(t, g.IsTeam)
+			assert.Equal(t, community.Id, g.TeamId)
+		}
+		assert.Contains(t, ids, mine.Id)
+		assert.NotContains(t, ids, theirs.Id)
+		assert.NotContains(t, ids, role.Id)
+
+		roles, _, err := th.Client.GetGroups(context.Background(), model.GroupSearchOpts{Source: model.GroupSourceCustom, FilterTeamId: community.Id, FilterIsTeam: model.NewPointer(false), PageOpts: &model.PageOpts{Page: 0, PerPage: 200}})
+		require.NoError(t, err)
+		roleIDs := make([]string, 0, len(roles))
+		for _, g := range roles {
+			roleIDs = append(roleIDs, g.Id)
+		}
+		assert.Contains(t, roleIDs, role.Id)
+		assert.NotContains(t, roleIDs, mine.Id)
+	})
+}
+
 // Antimatter roles grant permissions in their team, through a Mattermost role their members hold.
 func TestTeamRolePermissions(t *testing.T) {
 	mainHelper.Parallel(t)

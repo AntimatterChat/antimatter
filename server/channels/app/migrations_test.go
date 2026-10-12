@@ -1067,3 +1067,44 @@ func TestDoWebUIDefaultFusionMigration(t *testing.T) {
 		assert.Equal(t, model.WebUIClassic, *th.App.Config().ServiceSettings.DefaultWebUI)
 	})
 }
+
+func TestTeamsInCommunitiesMigration(t *testing.T) {
+	mainHelper.Parallel(t)
+	th := Setup(t).InitBasic(t)
+
+	// A team from before teams belonged to a community: a custom group of no team.
+	serverWide := func(t *testing.T, channelID string) *model.Group {
+		t.Helper()
+		group, err := th.Store.Group().Create(&model.Group{Name: new("crew" + model.NewId()[:8]), DisplayName: "crew", Source: model.GroupSourceCustom, AllowReference: true, Tag: "CRW", ChannelId: channelID})
+		require.NoError(t, err)
+		return group
+	}
+	get := func(t *testing.T, id string) *model.Group {
+		t.Helper()
+		group, err := th.Store.Group().Get(id)
+		require.NoError(t, err)
+		return group
+	}
+
+	_, err := th.Store.System().PermanentDeleteByName(teamsInCommunitiesMigrationKey)
+	require.NoError(t, err)
+	group := serverWide(t, th.BasicChannel.Id)
+	role, err := th.Store.Group().Create(&model.Group{Name: new("mods" + model.NewId()[:8]), DisplayName: "mods", Source: model.GroupSourceCustom, AllowReference: true, TeamId: th.BasicTeam.Id})
+	require.NoError(t, err)
+
+	require.NoError(t, th.Server.doTeamsInCommunitiesMigration())
+
+	moved := get(t, group.Id)
+	assert.True(t, moved.IsTeam)
+	assert.Equal(t, th.BasicTeam.Id, moved.TeamId, "a team goes to its channel's community")
+	assert.True(t, get(t, role.Id).IsRole(), "roles stay roles")
+	_, err = th.Store.System().GetByName(teamsInCommunitiesMigrationKey)
+	require.NoError(t, err)
+
+	t.Run("runs once: custom groups made afterwards stay Mattermost's own", func(t *testing.T) {
+		later := serverWide(t, "")
+		require.NoError(t, th.Server.doTeamsInCommunitiesMigration())
+		assert.False(t, get(t, later.Id).IsTeam)
+		assert.Empty(t, get(t, later.Id).TeamId)
+	})
+}

@@ -75,19 +75,23 @@ func (a *App) SetTeamRolePermissions(rctx request.CTX, session model.Session, gr
 	return role, nil
 }
 
-// CheckTeamRoleMembers refuses people who aren't in the role's team (a role is for its team's members), and anyone
-// joining a deleted role.
+// CheckTeamRoleMembers refuses people who aren't in the team of a role or an Antimatter team (both are for their
+// team's members), and anyone joining a deleted one.
 func (a *App) CheckTeamRoleMembers(rctx request.CTX, group *model.Group, userIDs []string) *model.AppError {
-	if !group.IsRole() {
+	if !group.BelongsToTeam() {
 		return nil
 	}
+	deletedErr, notInTeamErr := "app.team_role.deleted.app_error", "app.team_role.not_in_team.app_error"
+	if group.IsTeam {
+		deletedErr, notInTeamErr = "app.group_team.deleted.app_error", "app.group_team.not_in_team.app_error"
+	}
 	if group.DeleteAt != 0 && len(userIDs) > 0 {
-		return model.NewAppError("CheckTeamRoleMembers", "app.team_role.deleted.app_error", nil, "", http.StatusBadRequest)
+		return model.NewAppError("CheckTeamRoleMembers", deletedErr, nil, "", http.StatusBadRequest)
 	}
 	for _, userID := range userIDs {
 		member, err := a.Srv().Store().Team().GetMember(rctx, group.TeamId, userID)
 		if err != nil || member.DeleteAt != 0 {
-			return model.NewAppError("CheckTeamRoleMembers", "app.team_role.not_in_team.app_error", nil, "user_id="+userID, http.StatusBadRequest)
+			return model.NewAppError("CheckTeamRoleMembers", notInTeamErr, nil, "user_id="+userID, http.StatusBadRequest)
 		}
 	}
 	return nil
@@ -153,7 +157,7 @@ func (a *App) highestTeamRolePosition(userID, teamID string) int {
 	}
 	highest := -1
 	for _, g := range groups {
-		if g.TeamId == teamID && g.DeleteAt == 0 && !g.SelfAssignable && (highest == -1 || g.Position < highest) {
+		if g.TeamId == teamID && g.IsRole() && g.DeleteAt == 0 && !g.SelfAssignable && (highest == -1 || g.Position < highest) {
 			highest = g.Position
 		}
 	}
@@ -180,7 +184,7 @@ func (a *App) nextTeamRolePosition(teamID string) int {
 	}
 	next := 0
 	for _, g := range groups {
-		if g.TeamId == teamID && g.DeleteAt == 0 && g.Position >= next {
+		if g.TeamId == teamID && g.IsRole() && g.DeleteAt == 0 && g.Position >= next {
 			next = min(g.Position+1, model.GroupPositionMax)
 		}
 	}
@@ -188,13 +192,17 @@ func (a *App) nextTeamRolePosition(teamID string) int {
 }
 
 // sessionCanManageTeamRole tells whether someone may manage an Antimatter role: its team's admins, or those who may
-// manage the team's roles, for roles below their own highest one (Discord's hierarchy).
+// manage the team's roles, for roles below their own highest one (Discord's hierarchy). An Antimatter team of the
+// team has no place among its roles: those who may manage the roles manage all its teams.
 func (a *App) sessionCanManageTeamRole(session model.Session, group *model.Group) bool {
 	if a.SessionHasPermissionToTeam(session, group.TeamId, model.PermissionManageTeam) {
 		return true
 	}
 	if !a.SessionHasPermissionToTeam(session, group.TeamId, model.PermissionManageTeamRoles) {
 		return false
+	}
+	if group.IsTeam {
+		return true
 	}
 	highest := a.highestTeamRolePosition(session.UserId, group.TeamId)
 	return highest != -1 && group.Position > highest
@@ -245,7 +253,8 @@ func (a *App) KeepTeamRoles(rctx request.CTX, teamID, userID, roles string) (str
 	return strings.Join(kept, " "), nil
 }
 
-// LeaveTeamRoles takes someone out of a team's roles when they leave the team: coming back doesn't bring them back.
+// LeaveTeamRoles takes someone out of a team's roles and Antimatter teams when they leave the team: coming back doesn't
+// bring them back.
 func (a *App) LeaveTeamRoles(rctx request.CTX, teamID, userID string) {
 	groups, err := a.Srv().Store().Group().GetGroups(0, 1000, model.GroupSearchOpts{FilterHasMember: userID, Source: model.GroupSourceCustom}, nil)
 	if err != nil {

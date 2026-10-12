@@ -5302,6 +5302,22 @@ func (s *TimerLayerGroupStore) AdminRoleGroupsForSyncableMember(userID string, s
 	return result, err
 }
 
+func (s *TimerLayerGroupStore) AssignServerWideTeams() (int64, error) {
+	start := time.Now()
+
+	result, err := s.GroupStore.AssignServerWideTeams()
+
+	elapsed := float64(time.Since(start)) / float64(time.Second)
+	if s.Root.Metrics != nil {
+		success := "false"
+		if err == nil {
+			success = "true"
+		}
+		s.Root.Metrics.ObserveStoreMethodDuration("GroupStore.AssignServerWideTeams", success, elapsed)
+	}
+	return result, err
+}
+
 func (s *TimerLayerGroupStore) ChannelMembersMinusGroupMembers(channelID string, groupIDs []string, page int, perPage int) ([]*model.UserWithGroups, error) {
 	start := time.Now()
 

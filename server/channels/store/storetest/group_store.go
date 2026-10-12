@@ -99,6 +99,9 @@ func TestGroupStore(t *testing.T, rctx request.CTX, ss store.Store) {
 
 	t.Run("DistinctGroupMemberCountForSource", func(t *testing.T) { groupTestDistinctGroupMemberCountForSource(t, rctx, ss) })
 	t.Run("GroupCountBySource", func(t *testing.T) { groupTestGroupCountBySource(t, rctx, ss) })
+
+	// Last: it moves every custom group of no team, those of the tests above too.
+	t.Run("AssignServerWideTeams", func(t *testing.T) { groupTestAssignServerWideTeams(t, rctx, ss) })
 }
 
 func testGroupStoreCreate(t *testing.T, rctx request.CTX, ss store.Store) {
@@ -6129,4 +6132,139 @@ func testGroupStoreToModelChannelAssociations(t *testing.T, rctx request.CTX, ss
 	require.Equal(t, group.Id, result[channel2.Id][0].Id)
 	require.NotNil(t, result[channel2.Id][0].SchemeAdmin)
 	require.False(t, *result[channel2.Id][0].SchemeAdmin)
+}
+
+// Antimatter: the teams of the whole server (custom groups of no team) each get a community.
+func groupTestAssignServerWideTeams(t *testing.T, rctx request.CTX, ss store.Store) {
+	newCommunity := func() *model.Team {
+		team, err := ss.Team().Save(&model.Team{
+			DisplayName: "Community",
+			Name:        "z-z-" + model.NewId() + "a",
+			Email:       MakeEmail(),
+			Type:        model.TeamOpen,
+		})
+		require.NoError(t, err)
+		return team
+	}
+	newUser := func(teams ...*model.Team) *model.User {
+		user, err := ss.User().Save(rctx, &model.User{Email: MakeEmail(), Username: model.NewUsername()})
+		require.NoError(t, err)
+		for _, team := range teams {
+			_, err = ss.Team().SaveMember(rctx, &model.TeamMember{TeamId: team.Id, UserId: user.Id}, -1)
+			require.NoError(t, err)
+		}
+		return user
+	}
+	newGroup := func(edit func(g *model.Group), members ...*model.User) *model.Group {
+		g := &model.Group{Name: new(model.NewId()), DisplayName: "group", Source: model.GroupSourceCustom, AllowReference: true}
+		edit(g)
+		group, err := ss.Group().Create(g)
+		require.NoError(t, err)
+		for _, user := range members {
+			_, err = ss.Group().UpsertMember(group.Id, user.Id)
+			require.NoError(t, err)
+		}
+		return group
+	}
+	get := func(id string) *model.Group {
+		group, err := ss.Group().Get(id)
+		require.NoError(t, err)
+		return group
+	}
+
+	labs, community, closed := newCommunity(), newCommunity(), newCommunity()
+	closed.DeleteAt = model.GetMillis()
+	_, err := ss.Team().Update(closed)
+	require.NoError(t, err)
+	channel, err := ss.Channel().Save(rctx, &model.Channel{TeamId: community.Id, DisplayName: "Crew", Name: model.NewId(), Type: model.ChannelTypeOpen}, 9999)
+	require.NoError(t, err)
+	closedChannel, err := ss.Channel().Save(rctx, &model.Channel{TeamId: closed.Id, DisplayName: "Old", Name: model.NewId(), Type: model.ChannelTypeOpen}, 9999)
+	require.NoError(t, err)
+
+	a, b, c, d := newUser(labs), newUser(labs, community), newUser(community), newUser(labs)
+	gone1, gone2, gone3 := newUser(closed), newUser(closed), newUser(closed)
+
+	// Its channel's community wins over its members'.
+	byChannel := newGroup(func(g *model.Group) { g.ChannelId = channel.Id }, a, b)
+	// Else the community most of its members are in; members of an archived community don't count.
+	byMembers := newGroup(func(g *model.Group) { g.Tag = "OPS" }, a, b, c, d, gone1, gone2, gone3)
+	archivedChannel := newGroup(func(g *model.Group) { g.ChannelId = closedChannel.Id }, c)
+	// Else the oldest community.
+	empty := newGroup(func(g *model.Group) {})
+	archived := newGroup(func(g *model.Group) {})
+	_, err = ss.Group().Delete(archived.Id)
+	require.NoError(t, err)
+
+	// Roles, teams that have a community and LDAP groups stay as they are.
+	role := newGroup(func(g *model.Group) { g.TeamId = labs.Id })
+	team := newGroup(func(g *model.Group) { g.TeamId = community.Id; g.IsTeam = true })
+	ldap, err := ss.Group().Create(&model.Group{Name: new(model.NewId()), DisplayName: "ldap", Source: model.GroupSourceLdap, RemoteId: new(model.NewId())})
+	require.NoError(t, err)
+
+	moved, err := ss.Group().AssignServerWideTeams()
+	require.NoError(t, err)
+	assert.GreaterOrEqual(t, moved, int64(5))
+
+	teams, err := ss.Team().GetAll()
+	require.NoError(t, err)
+	var oldest *model.Team
+	for _, t := range teams {
+		if t.DeleteAt == 0 && (oldest == nil || t.CreateAt < oldest.CreateAt || (t.CreateAt == oldest.CreateAt && t.Id < oldest.Id)) {
+			oldest = t
+		}
+	}
+	require.NotNil(t, oldest)
+
+	for _, want := range []struct {
+		group     *model.Group
+		community string
+	}{
+		{byChannel, community.Id},
+		{byMembers, labs.Id},
+		{archivedChannel, community.Id},
+		{empty, oldest.Id},
+		{archived, oldest.Id},
+	} {
+		group := get(want.group.Id)
+		assert.True(t, group.IsTeam, group.Id)
+		assert.False(t, group.IsRole(), group.Id)
+		assert.Equal(t, want.community, group.TeamId, group.Id)
+	}
+	assert.NotZero(t, get(archived.Id).DeleteAt, "an archived team stays archived")
+
+	assert.True(t, get(role.Id).IsRole())
+	assert.Equal(t, labs.Id, get(role.Id).TeamId)
+	assert.Equal(t, community.Id, get(team.Id).TeamId)
+	assert.False(t, get(ldap.Id).IsTeam)
+	assert.Empty(t, get(ldap.Id).TeamId)
+
+	// Once done, there's nothing left to move.
+	moved, err = ss.Group().AssignServerWideTeams()
+	require.NoError(t, err)
+	assert.Zero(t, moved)
+
+	// A community's teams are listed apart from its roles.
+	isTeam := true
+	listed, err := ss.Group().GetGroups(0, 100, model.GroupSearchOpts{FilterTeamId: community.Id, FilterIsTeam: &isTeam}, nil)
+	require.NoError(t, err)
+	ids := make([]string, 0, len(listed))
+	for _, g := range listed {
+		ids = append(ids, g.Id)
+	}
+	want := []string{byChannel.Id, archivedChannel.Id, team.Id}
+	if oldest.Id == community.Id {
+		want = append(want, empty.Id)
+	}
+	assert.Subset(t, ids, want)
+	assert.NotContains(t, ids, byMembers.Id)
+	assert.NotContains(t, ids, role.Id)
+	for _, g := range listed {
+		assert.True(t, g.IsTeam)
+		assert.Equal(t, community.Id, g.TeamId)
+	}
+	isTeam = false
+	listed, err = ss.Group().GetGroups(0, 100, model.GroupSearchOpts{FilterTeamId: labs.Id, FilterIsTeam: &isTeam}, nil)
+	require.NoError(t, err)
+	require.Len(t, listed, 1)
+	assert.Equal(t, role.Id, listed[0].Id)
 }

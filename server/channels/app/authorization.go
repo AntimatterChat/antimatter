@@ -186,9 +186,9 @@ func (a *App) sessionHasPermissionToChannelsByRoles(rctx request.CTX, session mo
 }
 
 func (a *App) SessionHasPermissionToGroup(session model.Session, groupID string, permission *model.Permission) bool {
-	// Antimatter: a role (a group of one team) is managed by its team's admins, or by those who may manage the team's
-	// roles for roles below their own; its members don't manage it.
-	if group, err := a.Srv().Store().Group().Get(groupID); err == nil && group.IsRole() {
+	// Antimatter: a role or a team (groups of one team) is managed by its team's admins, or by those who may manage
+	// the team's roles (for roles, those below their own); its members don't manage it.
+	if group, err := a.Srv().Store().Group().Get(groupID); err == nil && group.BelongsToTeam() {
 		return a.sessionCanManageTeamRole(session, group)
 	}
 

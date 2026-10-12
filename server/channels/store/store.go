@@ -1048,6 +1048,10 @@ type GroupStore interface {
 	DeleteMembers(groupID string, userIDs []string) ([]*model.GroupMember, error)
 
 	GetMember(groupID string, userID string) (*model.GroupMember, error)
+
+	// AssignServerWideTeams gives each Antimatter team still of the whole server (a custom group of no team, from
+	// before teams belonged to one community) a community, and returns how many it moved (Antimatter).
+	AssignServerWideTeams() (int64, error)
 }
 
 type LinkMetadataStore interface {

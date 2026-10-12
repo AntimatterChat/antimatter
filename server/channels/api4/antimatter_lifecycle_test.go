@@ -338,8 +338,10 @@ func TestAntimatterLifecycles(t *testing.T) {
 
 	t.Run("a team's lead is one of its members, and its channel one of a team", func(t *testing.T) {
 		member, stranger := th.CreateUser(t), th.CreateUser(t)
+		th.LinkUserToTeam(t, member, team)
+		th.LinkUserToTeam(t, stranger, team)
 		group, _, err := createGroupWithUsers(t, th.SystemAdminClient, &model.GroupWithUserIds{
-			Group:   model.Group{Name: new("crew" + model.NewId()[:8]), DisplayName: "crew", Source: model.GroupSourceCustom, AllowReference: true, Tag: " det "},
+			Group:   model.Group{Name: new("crew" + model.NewId()[:8]), DisplayName: "crew", Source: model.GroupSourceCustom, AllowReference: true, Tag: " det ", IsTeam: true, TeamId: team.Id},
 			UserIds: []string{member.Id},
 		})
 		require.NoError(t, err)

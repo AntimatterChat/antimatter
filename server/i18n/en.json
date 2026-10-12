@@ -3188,6 +3188,11 @@
     "translation": "The team channel must be a channel of a team you can read."
   },
   {
+    "id": "api.group.channel_community.app_error",
+    "translation": "The team channel must be a channel of the team's community.",
+    "description": "Error when an Antimatter team's channel is in another community (Mattermost team) than the team."
+  },
+  {
     "id": "api.group.lead.app_error",
     "translation": "The team lead must be one of its members."
   },
@@ -8394,6 +8399,16 @@
     "id": "app.group.username_conflict",
     "translation": "user with username \"{{.Username}}\" already exists.",
     "description": "API error returned when a group operation conflicts with an existing account; {{.Username}} is the already-taken username."
+  },
+  {
+    "id": "app.group_team.deleted.app_error",
+    "translation": "This team was archived.",
+    "description": "Error when adding someone to an archived Antimatter team."
+  },
+  {
+    "id": "app.group_team.not_in_team.app_error",
+    "translation": "Only members of the community can join its teams.",
+    "description": "Error when adding someone who isn't in the community (Mattermost team) to one of its Antimatter teams."
   },
   {
     "id": "app.health_finding.get.app_error",
@@ -15990,6 +16005,11 @@
     "id": "model.group.display_name.app_error",
     "translation": "invalid display name property for group.",
     "description": "API validation error when saving a user group whose display name is empty or too long."
+  },
+  {
+    "id": "model.group.is_team.app_error",
+    "translation": "A team must belong to a community.",
+    "description": "Error when an Antimatter team is created without a community (Mattermost team)."
   },
   {
     "id": "model.group.lead_id.app_error",

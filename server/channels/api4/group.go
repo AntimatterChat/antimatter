@@ -171,9 +171,13 @@ func createGroup(c *Context, w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Antimatter: a role (a group of one team) is created by the team's admins; other groups need the permission to
-	// create custom groups.
-	if group.IsRole() {
+	// Antimatter: a role or a team (groups of one team) is created by those who manage the team's roles; other groups
+	// need the permission to create custom groups.
+	if group.IsTeam && group.TeamId == "" {
+		c.Err = model.NewAppError("createGroup", "model.group.is_team.app_error", nil, "", http.StatusBadRequest)
+		return
+	}
+	if group.BelongsToTeam() {
 		if _, appErr := c.App.GetTeam(group.TeamId); appErr != nil {
 			c.Err = appErr
 			return
@@ -183,8 +187,10 @@ func createGroup(c *Context, w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		// Those who manage roles without being team admins make them below their own highest role.
-		if lowest := c.App.LowestTeamRolePositionFor(*c.AppContext.Session(), group.TeamId); lowest >= 0 && group.Position < lowest {
-			group.Position = lowest
+		if group.IsRole() {
+			if lowest := c.App.LowestTeamRolePositionFor(*c.AppContext.Session(), group.TeamId); lowest >= 0 && group.Position < lowest {
+				group.Position = lowest
+			}
 		}
 	} else if !c.App.SessionHasPermissionTo(*c.AppContext.Session(), model.PermissionCreateCustomGroup) {
 		c.SetPermissionError(model.PermissionCreateCustomGroup)
@@ -207,7 +213,7 @@ func createGroup(c *Context, w http.ResponseWriter, r *http.Request) {
 		c.Err = model.NewAppError("createGroup", "api.group.lead.app_error", nil, "", http.StatusBadRequest)
 		return
 	}
-	if !checkGroupChannel(c, group.ChannelId) {
+	if !checkGroupChannel(c, group.ChannelId, &group.Group) {
 		return
 	}
 
@@ -320,7 +326,7 @@ func patchGroup(c *Context, w http.ResponseWriter, r *http.Request) {
 		c.Err = model.NewAppError("Api4.patchGroup", "api.group.lead.app_error", nil, "", http.StatusBadRequest)
 		return
 	}
-	if groupPatch.ChannelId != nil && !checkGroupChannel(c, *groupPatch.ChannelId) {
+	if groupPatch.ChannelId != nil && !checkGroupChannel(c, *groupPatch.ChannelId, group) {
 		return
 	}
 
@@ -1078,6 +1084,20 @@ func getGroups(c *Context, w http.ResponseWriter, r *http.Request) {
 
 	filterAllowReference := c.Params.FilterAllowReference || !c.App.SessionHasPermissionTo(*c.AppContext.Session(), model.PermissionSysconsoleReadUserManagementGroups)
 
+	// Antimatter: the groups of one team (its roles and teams), and only its teams or only the other groups.
+	var filterTeamID string
+	if id := r.URL.Query().Get("in_team_id"); id != "" {
+		if !model.IsValidId(id) {
+			c.SetInvalidURLParam("in_team_id")
+			return
+		}
+		filterTeamID = id
+	}
+	var filterIsTeam *bool
+	if isTeam := r.URL.Query().Get("is_team"); isTeam != "" {
+		filterIsTeam = model.NewPointer(isTeam == "true")
+	}
+
 	opts := model.GroupSearchOpts{
 		Q:                         c.Params.Q,
 		IncludeMemberCount:        c.Params.IncludeMemberCount,
@@ -1090,6 +1110,8 @@ func getGroups(c *Context, w http.ResponseWriter, r *http.Request) {
 		IncludeMemberIDs:          c.Params.IncludeMemberIDs,
 		IncludeArchived:           includeArchived,
 		OnlySyncableSources:       onlySyncableSources,
+		FilterTeamId:              filterTeamID,
+		FilterIsTeam:              filterIsTeam,
 	}
 
 	if teamID != "" {
@@ -1468,14 +1490,19 @@ func configuredForGroupBySource(app *app.App, source model.GroupSource) *model.A
 	return nil
 }
 
-// checkGroupChannel accepts a team's channel: none, or a channel of a team the caller can read.
-func checkGroupChannel(c *Context, channelID string) bool {
+// checkGroupChannel accepts a team's channel: none, or a channel of a team the caller can read; for an Antimatter team
+// of one community, a channel of that community.
+func checkGroupChannel(c *Context, channelID string, group *model.Group) bool {
 	if channelID == "" {
 		return true
 	}
 	channel, appErr := c.App.GetChannel(c.AppContext, channelID)
 	if appErr != nil || channel.TeamId == "" || channel.DeleteAt != 0 {
 		c.Err = model.NewAppError("checkGroupChannel", "api.group.channel.app_error", nil, "", http.StatusBadRequest)
+		return false
+	}
+	if group.IsTeam && channel.TeamId != group.TeamId {
+		c.Err = model.NewAppError("checkGroupChannel", "api.group.channel_community.app_error", nil, "", http.StatusBadRequest)
 		return false
 	}
 	if ok, _ := c.App.SessionHasPermissionToReadChannel(c.AppContext, *c.AppContext.Session(), channel); !ok {

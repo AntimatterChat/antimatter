@@ -62,15 +62,17 @@ type Group struct {
 	ChannelMemberTimezonesCount *int        `db:"-" json:"channel_member_timezones_count,omitempty"`
 	MemberIDs                   []string    `db:"-" json:"member_ids"`
 
-	// Antimatter teams are groups with a short tag shown next to their members' names, a lead, and the team's
-	// channel. All three are optional.
+	// Antimatter teams are groups of one Mattermost team (a community in the Fusion UI: TeamId set) marked IsTeam,
+	// with a short tag shown next to their members' names, a lead, and the team's channel. All three are optional.
+	// Those who manage the community's roles manage its teams.
+	IsTeam    bool   `json:"is_team"`
 	Tag       string `json:"tag"`
 	LeadId    string `json:"lead_id"`
 	ChannelId string `json:"channel_id"`
 
-	// Antimatter roles are groups of one team (TeamId set): only its admins manage them. A role has a colour for its
-	// members' names, an icon (an emoji name), a place among the team's roles (Position, 0 = highest) and may show its
-	// members apart in the member list (Hoist).
+	// Antimatter roles are the other groups of one team (TeamId set, not IsTeam): only its admins manage them. A role
+	// has a colour for its members' names, an icon (an emoji name), a place among the team's roles (Position,
+	// 0 = highest) and may show its members apart in the member list (Hoist).
 	TeamId   string `json:"team_id"`
 	Color    string `json:"color"`
 	Icon     string `json:"icon"`
@@ -84,6 +86,12 @@ type Group struct {
 
 // IsRole tells whether the group is a role of a team.
 func (group *Group) IsRole() bool {
+	return group.TeamId != "" && !group.IsTeam
+}
+
+// BelongsToTeam tells whether the group is a role or an Antimatter team, of one Mattermost team. Other groups are
+// Mattermost's own custom groups, of the whole server.
+func (group *Group) BelongsToTeam() bool {
 	return group.TeamId != ""
 }
 
@@ -98,6 +106,7 @@ func (group *Group) Auditable() map[string]any {
 		"has_syncables":   group.HasSyncables,
 		"member_count":    group.GetMemberCount(),
 		"allow_reference": group.AllowReference,
+		"is_team":         group.IsTeam,
 		"tag":             group.Tag,
 		"lead_id":         group.LeadId,
 		"channel_id":      group.ChannelId,
@@ -123,6 +132,7 @@ func (group *Group) LogClone() any {
 		"has_syncables":   group.HasSyncables,
 		"member_count":    group.GetMemberCount(),
 		"allow_reference": group.AllowReference,
+		"is_team":         group.IsTeam,
 		"tag":             group.Tag,
 		"lead_id":         group.LeadId,
 		"channel_id":      group.ChannelId,
@@ -212,6 +222,11 @@ type GroupSearchOpts struct {
 	// FilterHasMember filters the groups to the intersect of the
 	// set returned by the query and those that have the given user as a member.
 	FilterHasMember string
+
+	// Antimatter: FilterTeamId keeps the groups of one Mattermost team (its roles and teams), and FilterIsTeam, when
+	// set, keeps only the Antimatter teams (true) or only the other groups (false).
+	FilterTeamId string
+	FilterIsTeam *bool
 
 	IncludeChannelMemberCount string
 	IncludeTimezones          bool
@@ -312,6 +327,9 @@ func (group *Group) IsValidForCreate() *AppError {
 	}
 	if group.TeamId != "" && !IsValidId(group.TeamId) {
 		return NewAppError("Group.IsValidForCreate", "model.group.team_id.app_error", nil, "", http.StatusBadRequest)
+	}
+	if group.IsTeam && group.TeamId == "" {
+		return NewAppError("Group.IsValidForCreate", "model.group.is_team.app_error", nil, "", http.StatusBadRequest)
 	}
 	if group.Color != "" && !validGroupColor.MatchString(group.Color) {
 		return NewAppError("Group.IsValidForCreate", "model.group.color.app_error", nil, "", http.StatusBadRequest)

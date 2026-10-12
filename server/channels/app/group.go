@@ -152,7 +152,7 @@ func (a *App) CreateGroupWithUserIds(group *model.GroupWithUserIds) (*model.Grou
 		appErr.Where = "CreateGroupWithUserIds"
 		return nil, appErr
 	}
-	// Antimatter: a role's first members are of its team.
+	// Antimatter: the first members of a role or an Antimatter team are of its team.
 	if appErr := a.CheckTeamRoleMembers(request.EmptyContext(a.Log()), &group.Group, group.UserIds); appErr != nil {
 		return nil, appErr
 	}
@@ -895,15 +895,18 @@ func (a *App) UpsertGroupMembers(groupID string, userIDs []string) ([]*model.Gro
 	return members, nil
 }
 
-// teamRoleForMembers gives the Antimatter role a group is, after checking the people joining it are in its team; nil
-// for other groups.
+// teamRoleForMembers gives the Antimatter role a group is, after checking the people joining it are in its team (as
+// for an Antimatter team); nil for other groups.
 func (a *App) teamRoleForMembers(groupID string, userIDs []string) (*model.Group, *model.AppError) {
 	group, err := a.Srv().Store().Group().Get(groupID)
-	if err != nil || !group.IsRole() {
+	if err != nil || !group.BelongsToTeam() {
 		return nil, nil
 	}
 	if appErr := a.CheckTeamRoleMembers(request.EmptyContext(a.Log()), group, userIDs); appErr != nil {
 		return nil, appErr
+	}
+	if !group.IsRole() {
+		return nil, nil
 	}
 	return group, nil
 }

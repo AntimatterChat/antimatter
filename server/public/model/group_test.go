@@ -1,6 +1,7 @@
 package model
 
 import (
+	"encoding/json"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -55,6 +56,7 @@ func TestGroupAuditable(t *testing.T) {
 			"has_syncables":   true,
 			"member_count":    10,
 			"allow_reference": true,
+			"is_team":         false,
 			"tag":             "DET",
 			"lead_id":         leadId,
 			"channel_id":      channelId,
@@ -125,6 +127,7 @@ func TestGroupLogClone(t *testing.T) {
 			"has_syncables":   true,
 			"member_count":    10,
 			"allow_reference": true,
+			"is_team":         false,
 			"tag":             "DET",
 			"lead_id":         leadId,
 			"channel_id":      channelId,
@@ -186,8 +189,27 @@ func TestGroupRoleFields(t *testing.T) {
 	t.Run("a group of a team is a role", func(t *testing.T) {
 		g := valid()
 		assert.True(t, g.IsRole())
+		assert.True(t, g.BelongsToTeam())
 		g.TeamId = ""
 		assert.False(t, g.IsRole())
+		assert.False(t, g.BelongsToTeam())
+	})
+
+	t.Run("a team of a community isn't a role, and needs its community", func(t *testing.T) {
+		g := valid()
+		g.IsTeam = true
+		assert.False(t, g.IsRole())
+		assert.True(t, g.BelongsToTeam())
+		assert.Nil(t, g.IsValidForCreate())
+		g.TeamId = ""
+		assert.Equal(t, "model.group.is_team.app_error", g.IsValidForCreate().Id)
+	})
+
+	t.Run("old clients' JSON still makes roles", func(t *testing.T) {
+		var g Group
+		require.NoError(t, json.Unmarshal([]byte(`{"team_id":"`+NewId()+`"}`), &g))
+		assert.True(t, g.IsRole())
+		assert.False(t, g.IsTeam)
 	})
 
 	t.Run("a role colour is a hex colour", func(t *testing.T) {

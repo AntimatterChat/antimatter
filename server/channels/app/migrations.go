@@ -39,6 +39,7 @@ const (
 	cpaDisplayNameBackfillKey                      = "cpa_display_name_backfill_done"
 	cpaToGlobalAttributesMigrationKey              = "cpa_to_global_attributes_migration_done"
 	webUIDefaultFusionMigrationKey                 = "WebUIDefaultFusionMigrationComplete"
+	teamsInCommunitiesMigrationKey                 = "AntimatterTeamsInCommunitiesMigrationComplete"
 
 	contentFlaggingPropertyNameFlaggedPostId       = "flagged_post_id"
 	ContentFlaggingPropertyNameStatus              = "status"
@@ -664,6 +665,37 @@ func (s *Server) doWebUIDefaultFusionMigration() error {
 
 	if err := s.Store().System().SaveOrUpdate(&model.System{Name: webUIDefaultFusionMigrationKey, Value: "true"}); err != nil {
 		return fmt.Errorf("failed to mark the web UI default migration as completed: %w", err)
+	}
+
+	return nil
+}
+
+// doTeamsInCommunitiesMigration runs once, on the first start of the version that made Antimatter teams belong to one
+// community (Mattermost team), as roles do.
+//
+// Teams were the custom groups of no team, and served the whole server. Each one becomes a team of one community: the
+// community of its team channel, else the one most of its members are in, else the oldest community. Custom groups
+// made afterwards without a community stay Mattermost's own custom groups.
+//
+// Running it again before it's marked done is harmless: the teams it moved already have a community.
+func (s *Server) doTeamsInCommunitiesMigration() error {
+	var nfErr *store.ErrNotFound
+	if _, err := s.Store().System().GetByName(teamsInCommunitiesMigrationKey); err == nil {
+		return nil
+	} else if !errors.As(err, &nfErr) {
+		return fmt.Errorf("could not query migration: %w", err)
+	}
+
+	moved, err := s.Store().Group().AssignServerWideTeams()
+	if err != nil {
+		return err
+	}
+	if moved > 0 {
+		mlog.Info("Gave each team a community", mlog.Int("teams", moved))
+	}
+
+	if err := s.Store().System().SaveOrUpdate(&model.System{Name: teamsInCommunitiesMigrationKey, Value: "true"}); err != nil {
+		return fmt.Errorf("failed to mark the teams in communities migration as completed: %w", err)
 	}
 
 	return nil
@@ -1532,6 +1564,7 @@ func (s *Server) doAppMigrations() {
 		{"Managed Category Properties Setup", s.doSetupManagedCategoryProperties},
 		{"Session Attributes Properties Setup", s.doSetupSessionAttributesProperties},
 		{"Web UI Default Fusion Migration", s.doWebUIDefaultFusionMigration},
+		{"Antimatter Teams In Communities Migration", s.doTeamsInCommunitiesMigration},
 	}
 
 	for i := range m1 {

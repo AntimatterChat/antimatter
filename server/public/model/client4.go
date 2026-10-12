@@ -5390,6 +5390,12 @@ func (c *Client4) GetGroups(ctx context.Context, opts GroupSearchOpts) ([]*Group
 	values.Set("include_archived", fmt.Sprintf("%v", opts.IncludeArchived))
 	values.Set("filter_archived", fmt.Sprintf("%v", opts.FilterArchived))
 	values.Set("only_syncable_sources", fmt.Sprintf("%v", opts.OnlySyncableSources))
+	if opts.FilterTeamId != "" {
+		values.Set("in_team_id", opts.FilterTeamId)
+	}
+	if opts.FilterIsTeam != nil {
+		values.Set("is_team", fmt.Sprintf("%v", *opts.FilterIsTeam))
+	}
 	if opts.Since > 0 {
 		values.Set("since", fmt.Sprintf("%v", opts.Since))
 	}

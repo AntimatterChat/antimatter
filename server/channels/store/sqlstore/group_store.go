@@ -71,6 +71,7 @@ func newSqlGroupStore(sqlStore *SqlStore) store.GroupStore {
 			"UserGroups.UpdateAt",
 			"UserGroups.DeleteAt",
 			"UserGroups.AllowReference",
+			"UserGroups.IsTeam",
 			"UserGroups.Tag",
 			"UserGroups.LeadId",
 			"UserGroups.ChannelId",
@@ -135,9 +136,9 @@ func (s *SqlGroupStore) Create(group *model.Group) (*model.Group, error) {
 	group.UpdateAt = group.CreateAt
 
 	if _, err := s.GetMaster().NamedExec(`INSERT INTO UserGroups
-		(Id, Name, DisplayName, Description, Source, RemoteId, CreateAt, UpdateAt, DeleteAt, AllowReference, Tag, LeadId, ChannelId, TeamId, Color, Icon, Position, Hoist, SelfAssignable)
+		(Id, Name, DisplayName, Description, Source, RemoteId, CreateAt, UpdateAt, DeleteAt, AllowReference, IsTeam, Tag, LeadId, ChannelId, TeamId, Color, Icon, Position, Hoist, SelfAssignable)
 		VALUES
-		(:Id, :Name, :DisplayName, :Description, :Source, :RemoteId, :CreateAt, :UpdateAt, :DeleteAt, :AllowReference, :Tag, :LeadId, :ChannelId, :TeamId, :Color, :Icon, :Position, :Hoist, :SelfAssignable)`, group); err != nil {
+		(:Id, :Name, :DisplayName, :Description, :Source, :RemoteId, :CreateAt, :UpdateAt, :DeleteAt, :AllowReference, :IsTeam, :Tag, :LeadId, :ChannelId, :TeamId, :Color, :Icon, :Position, :Hoist, :SelfAssignable)`, group); err != nil {
 		if IsUniqueConstraintError(err, []string{"Name", "groups_name_key"}) {
 			return nil, errors.Wrapf(err, "Group with name %s already exists", *group.Name)
 		}
@@ -168,8 +169,8 @@ func (s *SqlGroupStore) CreateWithUserIds(g *model.GroupWithUserIds) (_ *model.G
 
 	groupInsertQuery, groupInsertArgs, err := s.getQueryBuilder().
 		Insert("UserGroups").
-		Columns("Id", "Name", "DisplayName", "Description", "Source", "RemoteId", "CreateAt", "UpdateAt", "DeleteAt", "AllowReference", "Tag", "LeadId", "ChannelId", "TeamId", "Color", "Icon", "Position", "Hoist", "SelfAssignable").
-		Values(g.Id, g.Name, g.DisplayName, g.Description, g.Source, g.RemoteId, g.CreateAt, g.UpdateAt, 0, g.AllowReference, g.Tag, g.LeadId, g.ChannelId, g.TeamId, g.Color, g.Icon, g.Position, g.Hoist, g.SelfAssignable).
+		Columns("Id", "Name", "DisplayName", "Description", "Source", "RemoteId", "CreateAt", "UpdateAt", "DeleteAt", "AllowReference", "IsTeam", "Tag", "LeadId", "ChannelId", "TeamId", "Color", "Icon", "Position", "Hoist", "SelfAssignable").
+		Values(g.Id, g.Name, g.DisplayName, g.Description, g.Source, g.RemoteId, g.CreateAt, g.UpdateAt, 0, g.AllowReference, g.IsTeam, g.Tag, g.LeadId, g.ChannelId, g.TeamId, g.Color, g.Icon, g.Position, g.Hoist, g.SelfAssignable).
 		ToSql()
 	if err != nil {
 		return nil, err
@@ -1160,6 +1161,7 @@ type group struct {
 	AllowReference              bool
 	ChannelMemberCount          *int
 	ChannelMemberTimezonesCount *int
+	IsTeam                      bool
 	Tag                         string
 	LeadId                      string
 	ChannelId                   string
@@ -1187,6 +1189,7 @@ func (g group) ToModel() *model.Group {
 		MemberCount:                 g.MemberCount,
 		ChannelMemberCount:          g.ChannelMemberCount,
 		ChannelMemberTimezonesCount: g.ChannelMemberTimezonesCount,
+		IsTeam:                      g.IsTeam,
 		Tag:                         g.Tag,
 		LeadId:                      g.LeadId,
 		ChannelId:                   g.ChannelId,
@@ -1562,6 +1565,13 @@ func (s *SqlGroupStore) GetGroups(page, perPage int, opts model.GroupSearchOpts,
 			Where("GroupMembers.DeleteAt = 0")
 	}
 
+	if opts.FilterTeamId != "" {
+		groupsQuery = groupsQuery.Where(sq.Eq{"UserGroups.TeamId": opts.FilterTeamId})
+	}
+	if opts.FilterIsTeam != nil {
+		groupsQuery = groupsQuery.Where(sq.Eq{"UserGroups.IsTeam": *opts.FilterIsTeam})
+	}
+
 	if opts.Since > 0 {
 		groupsQuery = groupsQuery.Where(sq.Gt{
 			"UserGroups.UpdateAt": opts.Since,
@@ -1878,6 +1888,36 @@ func (s *SqlGroupStore) PermittedSyncableAdmins(syncableID string, syncableType 
 	}
 
 	return userIDs, nil
+}
+
+// AssignServerWideTeams makes each custom group of no team an Antimatter team of one community: the community of its
+// team channel; else the one most of its members belong to (the oldest on a tie); else the oldest community. Archived
+// groups move too, so that restoring one brings it back as a team. Archived communities are skipped; without any
+// community left, the groups stay as they are.
+func (s *SqlGroupStore) AssignServerWideTeams() (int64, error) {
+	res, err := s.GetMaster().Exec(`UPDATE UserGroups SET IsTeam = true, TeamId = moved.TeamId, UpdateAt = ?
+		FROM (
+			SELECT g.Id, COALESCE(
+				(SELECT Channels.TeamId FROM Channels
+					JOIN Teams ON Teams.Id = Channels.TeamId AND Teams.DeleteAt = 0
+					WHERE Channels.Id = g.ChannelId),
+				(SELECT TeamMembers.TeamId FROM GroupMembers
+					JOIN TeamMembers ON TeamMembers.UserId = GroupMembers.UserId AND TeamMembers.DeleteAt = 0
+					JOIN Teams ON Teams.Id = TeamMembers.TeamId AND Teams.DeleteAt = 0
+					WHERE GroupMembers.GroupId = g.Id AND GroupMembers.DeleteAt = 0
+					GROUP BY TeamMembers.TeamId, Teams.CreateAt
+					ORDER BY COUNT(*) DESC, Teams.CreateAt, TeamMembers.TeamId
+					LIMIT 1),
+				(SELECT Teams.Id FROM Teams WHERE Teams.DeleteAt = 0 ORDER BY Teams.CreateAt, Teams.Id LIMIT 1)
+			) AS TeamId
+			FROM UserGroups g
+			WHERE g.Source = ? AND g.TeamId = ''
+		) AS moved
+		WHERE UserGroups.Id = moved.Id AND moved.TeamId IS NOT NULL`, model.GetMillis(), model.GroupSourceCustom)
+	if err != nil {
+		return 0, errors.Wrap(err, "failed to assign the server-wide teams to communities")
+	}
+	return res.RowsAffected()
 }
 
 func (s *SqlGroupStore) GroupCount() (int64, error) {
