@@ -152,15 +152,23 @@ export default function ChannelHeader({channel}: {channel: Channel}) {
             setPeople([]);
             return undefined;
         }
+        let stale = false;
         const timer = setTimeout(async () => {
             try {
                 const {users} = await Client4.autocompleteUsers(typing.value, team?.id || '', '', {limit: 6});
-                setPeople(users);
+                if (!stale) {
+                    setPeople(users);
+                }
             } catch {
-                setPeople([]);
+                if (!stale) {
+                    setPeople([]);
+                }
             }
         }, 150);
-        return () => clearTimeout(timer);
+        return () => {
+            stale = true;
+            clearTimeout(timer);
+        };
     }, [typing?.key, typing?.value, team?.id]);
     const complete = (value: string) => {
         setQuery(query.replace(/(\S*)$/, (token) => token.slice(0, token.indexOf(':') + 1) + value) + ' ');

@@ -125,20 +125,31 @@ export default function GlobalSearch() {
             setMessages([]);
             return undefined;
         }
+
+        // An answer to an earlier query, slower than the latest one, is dropped.
+        let stale = false;
         const timer = setTimeout(async () => {
             try {
                 const [found, posts] = await Promise.all([
                     filter === 'all' || filter === 'people' ? Client4.autocompleteUsers(q, '', '', {limit: 6}) : Promise.resolve({users: []}),
                     filter === 'all' || filter === 'messages' ? Client4.searchPostsWithParams(searchTeamId, {terms: q, is_or_search: false, include_deleted_channels: false, page: 0, per_page: filter === 'messages' ? 20 : 5}) : Promise.resolve({order: [], posts: {}}),
                 ]);
+                if (stale) {
+                    return;
+                }
                 setPeople(found.users.filter((u: UserProfile) => u.id !== me && !u.delete_at));
                 setMessages(posts.order.map((id: string) => (posts.posts as Record<string, Post>)[id]).filter(Boolean));
             } catch {
-                setPeople([]);
-                setMessages([]);
+                if (!stale) {
+                    setPeople([]);
+                    setMessages([]);
+                }
             }
         }, 250);
-        return () => clearTimeout(timer);
+        return () => {
+            stale = true;
+            clearTimeout(timer);
+        };
     }, [q, filter, team, me, searchTeamId]);
 
     const groups: Array<[string, Result[]]> = [];
