@@ -230,6 +230,10 @@ func (s *Service) getProvider() (provider, error) {
 	}
 	connectionID, modelName := cfg.AutoTranslationConnection()
 	key += "\x00" + connectionID + "\x00" + modelName
+	if settings.OpenAI != nil {
+		key += "\x00" + model.SafeDereference(settings.OpenAI.URL) + "\x00" + model.SafeDereference(settings.OpenAI.APIKey) +
+			"\x00" + model.SafeDereference(settings.OpenAI.Model)
+	}
 
 	s.provMu.Lock()
 	defer s.provMu.Unlock()

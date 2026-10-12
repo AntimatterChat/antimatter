@@ -282,3 +282,34 @@ func TestNewProviderUsesTheConnection(t *testing.T) {
 	assert.Equal(t, "openai", prov.(*connectionProvider).connectionID)
 	assert.Equal(t, providerAgents, prov.Name())
 }
+
+func TestGetProviderFollowsOpenAISettings(t *testing.T) {
+	env := newTestEnv(t, providerOpenAI, "")
+	set := func(change func(*model.OpenAIProviderSettings)) {
+		cfg := env.h.Config().Clone()
+		change(cfg.AutoTranslationSettings.OpenAI)
+		env.h.setConfig(cfg)
+	}
+	set(func(s *model.OpenAIProviderSettings) {
+		s.URL, s.APIKey, s.Model = model.NewPointer("https://llm.example/v1"), model.NewPointer("one"), model.NewPointer("m1")
+	})
+	first, err := env.svc.getProvider()
+	require.NoError(t, err)
+	again, err := env.svc.getProvider()
+	require.NoError(t, err)
+	assert.Same(t, first, again, "built once for the same settings")
+
+	// A new key, address or model takes effect without a restart.
+	previous := first
+	for _, change := range []func(*model.OpenAIProviderSettings){
+		func(s *model.OpenAIProviderSettings) { s.APIKey = model.NewPointer("two") },
+		func(s *model.OpenAIProviderSettings) { s.URL = model.NewPointer("https://other.example/v1") },
+		func(s *model.OpenAIProviderSettings) { s.Model = model.NewPointer("m2") },
+	} {
+		set(change)
+		next, err := env.svc.getProvider()
+		require.NoError(t, err)
+		assert.NotSame(t, previous, next)
+		previous = next
+	}
+}
