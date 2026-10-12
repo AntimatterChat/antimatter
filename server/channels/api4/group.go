@@ -746,7 +746,9 @@ func verifySchemeAdminAssignmentPermission(c *Context, syncableType model.GroupS
 
 	switch syncableType {
 	case model.GroupSyncableTypeTeam:
-		if !c.App.SessionHasPermissionToTeam(*c.AppContext.Session(), syncableID, model.PermissionManageTeamRoles) {
+		// Without what Antimatter roles grant: "manage team roles" from a role is about those roles, under their
+		// hierarchy, and mustn't make a group's members team admins.
+		if !c.App.SessionHasSchemePermissionToTeam(*c.AppContext.Session(), syncableID, model.PermissionManageTeamRoles) {
 			return model.MakePermissionError(c.AppContext.Session(), []*model.Permission{model.PermissionManageTeamRoles})
 		}
 	case model.GroupSyncableTypeChannel:

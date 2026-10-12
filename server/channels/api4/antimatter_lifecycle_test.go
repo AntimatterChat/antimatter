@@ -214,6 +214,14 @@ func TestAntimatterLifecycles(t *testing.T) {
 		resp, err = client.UpdateTeamMemberRoles(context.Background(), team.Id, manager.Id, model.TeamUserRoleId+" "+model.TeamRoleName(other.Id))
 		require.Error(t, err, "nor take another role's Mattermost role directly")
 		CheckForbiddenStatus(t, resp)
+		// Nor make the members of a synced LDAP group the team's admins.
+		ldap, appErr := th.App.CreateGroup(&model.Group{Name: new("ldap" + model.NewId()[:8]), DisplayName: "ldap", Source: model.GroupSourceLdap, RemoteId: new(model.NewId()), AllowReference: true})
+		require.Nil(t, appErr)
+		_, _, err = th.SystemAdminClient.LinkGroupSyncable(context.Background(), ldap.Id, team.Id, model.GroupSyncableTypeTeam, &model.GroupSyncablePatch{AutoAdd: new(true)})
+		require.NoError(t, err)
+		_, resp, err = client.PatchGroupSyncable(context.Background(), ldap.Id, team.Id, model.GroupSyncableTypeTeam, &model.GroupSyncablePatch{SchemeAdmin: new(true)})
+		require.Error(t, err, "nor make a synced group's members team admins")
+		CheckForbiddenStatus(t, resp)
 	})
 
 	t.Run("setting someone's team roles keeps the Antimatter roles they hold, and only those", func(t *testing.T) {
