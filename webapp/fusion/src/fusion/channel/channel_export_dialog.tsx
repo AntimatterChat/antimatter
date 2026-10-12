@@ -1,7 +1,7 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 
-import React, {useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {defineMessage, useIntl} from 'react-intl';
 import type {MessageDescriptor} from 'react-intl';
 
@@ -52,17 +52,24 @@ export function exportRange(range: Range, from: string, to: string, now = Date.n
     }
 }
 
-function download(blob: Blob, filename: string) {
+// How long the file's object URL is kept after the download starts: browsers may read it after the click returns.
+export const REVOKE_DELAY = 10000;
+
+// download saves the file: a link to it, in the document (as some browsers want), clicked.
+export function download(blob: Blob, filename: string) {
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
     link.download = filename;
+    link.style.display = 'none';
+    document.body.appendChild(link);
     link.click();
-    URL.revokeObjectURL(url);
+    link.remove();
+    setTimeout(() => URL.revokeObjectURL(url), REVOKE_DELAY);
 }
 
 // ChannelExportDialog downloads a channel's messages as a CSV file: all of them, the last 30 days' or those of a
-// range of days.
+// range of days. Closing it cancels the export under way.
 export default function ChannelExportDialog({channel, onClose}: {channel: Channel; onClose: () => void}) {
     const {formatMessage} = useIntl();
     const toast = useToast();
@@ -71,6 +78,10 @@ export default function ChannelExportDialog({channel, onClose}: {channel: Channe
     const [to, setTo] = useState(() => dayValue(Date.now()));
     const [busy, setBusy] = useState(false);
     const [error, setError] = useState('');
+
+    // The export under way, aborted when the dialog closes.
+    const request = useRef<AbortController | null>(null);
+    useEffect(() => () => request.current?.abort(), []);
 
     const direct = channel.type === Constants.DM_CHANNEL || channel.type === Constants.GM_CHANNEL;
     const name = direct ? channel.display_name : '#' + channel.display_name;
@@ -83,14 +94,23 @@ export default function ChannelExportDialog({channel, onClose}: {channel: Channe
         }
         setBusy(true);
         setError('');
+        const controller = new AbortController();
+        request.current = controller;
+        let file;
         try {
-            const {blob, filename} = await Client4.exportChannel(channel.id, {since: since || undefined, until: until || undefined});
-            download(blob, filename);
+            file = await Client4.exportChannel(channel.id, {since: since || undefined, until: until || undefined, signal: controller.signal});
         } catch (err) {
-            setBusy(false);
-            setError((err as {message?: string}).message || formatMessage({id: 'fusion.channelExport.failed', defaultMessage: 'The channel couldn\'t be exported.'}));
+            if (!controller.signal.aborted) {
+                setBusy(false);
+                setError((err as {message?: string}).message || formatMessage({id: 'fusion.channelExport.failed', defaultMessage: 'The channel couldn\'t be exported.'}));
+            }
             return;
         }
+        if (controller.signal.aborted) {
+            // The dialog was closed meanwhile: the export was canceled.
+            return;
+        }
+        download(file.blob, file.filename);
         toast(formatMessage({id: 'fusion.channelExport.done', defaultMessage: '{name} exported'}, {name}));
         onClose();
     };

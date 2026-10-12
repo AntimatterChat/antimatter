@@ -2128,11 +2128,12 @@ export default class Client4 {
     };
 
     // Antimatter: the channel's messages created between since and until (milliseconds; left out, a bound is open),
-    // as a CSV file, with the name the server gives it.
-    exportChannel = async (channelId: string, options: {since?: number; until?: number} = {}): Promise<{blob: Blob; filename: string}> => {
+    // as a CSV file, with the name the server gives it. It's a POST (the server refuses a GET, which a link or an
+    // image could make); signal cancels it.
+    exportChannel = async (channelId: string, options: {since?: number; until?: number; signal?: AbortSignal} = {}): Promise<{blob: Blob; filename: string}> => {
         const {data, headers} = await this.doFetchWithResponse<Blob>(
             `${this.getChannelRoute(channelId)}/export${buildQueryString({format: 'csv', since: options.since, until: options.until})}`,
-            {method: 'get'},
+            {method: 'post', signal: options.signal},
         );
 
         return {

@@ -1,16 +1,17 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 
-import React from 'react';
+import React, {useState} from 'react';
 
 import type {Channel} from '@mattermost/types/channels';
 
 import {Client4} from 'mattermost-redux/client';
 
 import {LAYER_ID} from 'fusion/components/layer';
+import {ToastProvider} from 'fusion/shell/toast_context';
 import {renderWithContext, screen, userEvent, waitFor} from 'tests/react_testing_utils';
 
-import ChannelExportDialog, {dayTime, dayValue, exportRange} from './channel_export_dialog';
+import ChannelExportDialog, {REVOKE_DELAY, dayTime, dayValue, download, exportRange} from './channel_export_dialog';
 
 const channel = {id: 'lab', name: 'lab', display_name: 'Lab', team_id: 'team', type: 'O', delete_at: 0} as Channel;
 
@@ -39,6 +40,36 @@ describe('export ranges', () => {
     });
 });
 
+describe('download', () => {
+    afterEach(() => {
+        jest.useRealTimers();
+        jest.restoreAllMocks();
+    });
+
+    test('clicks a link to the file in the document, and revokes its URL later', () => {
+        jest.useFakeTimers();
+        window.URL.createObjectURL = jest.fn().mockReturnValue('blob:export');
+        window.URL.revokeObjectURL = jest.fn();
+        let inDocument = false;
+        const click = jest.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(function(this: HTMLAnchorElement) {
+            inDocument = document.body.contains(this);
+        });
+
+        download(new Blob(['Post Id\n']), 'lab.csv');
+
+        expect(click).toHaveBeenCalledTimes(1);
+        const link = click.mock.instances[0] as unknown as HTMLAnchorElement;
+        expect(link.download).toBe('lab.csv');
+        expect(link.href).toBe('blob:export');
+        expect(inDocument).toBe(true);
+        expect(document.body.contains(link)).toBe(false);
+
+        expect(window.URL.revokeObjectURL).not.toHaveBeenCalled();
+        jest.advanceTimersByTime(REVOKE_DELAY);
+        expect(window.URL.revokeObjectURL).toHaveBeenCalledWith('blob:export');
+    });
+});
+
 describe('ChannelExportDialog', () => {
     let exportChannel: jest.SpyInstance;
     let click: jest.SpyInstance;
@@ -61,10 +92,12 @@ describe('ChannelExportDialog', () => {
     const render = () => {
         const onClose = jest.fn();
         renderWithContext(
-            <ChannelExportDialog
-                channel={channel}
-                onClose={onClose}
-            />,
+            <ToastProvider>
+                <ChannelExportDialog
+                    channel={channel}
+                    onClose={onClose}
+                />
+            </ToastProvider>,
         );
         return onClose;
     };
@@ -78,9 +111,10 @@ describe('ChannelExportDialog', () => {
         await userEvent.click(screen.getByRole('button', {name: 'Export'}));
 
         await waitFor(() => expect(onClose).toHaveBeenCalled());
-        expect(exportChannel).toHaveBeenCalledWith('lab', {since: undefined, until: undefined});
+        expect(exportChannel).toHaveBeenCalledWith('lab', {since: undefined, until: undefined, signal: expect.any(AbortSignal)});
         expect(click).toHaveBeenCalled();
         expect((click.mock.instances[0] as unknown as HTMLAnchorElement).download).toBe('lab-2026-10-12.csv');
+        expect(screen.getByRole('status')).toHaveTextContent('#Lab exported');
     });
 
     test('the last 30 days', async () => {
@@ -115,6 +149,7 @@ describe('ChannelExportDialog', () => {
         await waitFor(() => expect(exportChannel).toHaveBeenCalledWith('lab', {
             since: new Date(2026, 9, 5).getTime(),
             until: new Date(2026, 9, 8).getTime() - 1,
+            signal: expect.any(AbortSignal),
         }));
     });
 
@@ -127,5 +162,38 @@ describe('ChannelExportDialog', () => {
         expect(onClose).not.toHaveBeenCalled();
         expect(click).not.toHaveBeenCalled();
         expect(screen.getByRole('button', {name: 'Export'})).toBeEnabled();
+    });
+
+    test('closing the dialog cancels the export: no download, no toast', async () => {
+        let finish: (file: {blob: Blob; filename: string}) => void = () => {};
+        exportChannel.mockImplementation(() => new Promise((resolve) => {
+            finish = resolve;
+        }));
+
+        function Harness() {
+            const [open, setOpen] = useState(true);
+            return open ? (
+                <ChannelExportDialog
+                    channel={channel}
+                    onClose={() => setOpen(false)}
+                />
+            ) : null;
+        }
+        renderWithContext(<ToastProvider><Harness/></ToastProvider>);
+
+        await userEvent.click(screen.getByRole('button', {name: 'Export'}));
+        await waitFor(() => expect(exportChannel).toHaveBeenCalled());
+        const {signal} = exportChannel.mock.calls[0][1];
+        expect(signal.aborted).toBe(false);
+
+        await userEvent.click(screen.getByRole('button', {name: 'Cancel'}));
+        expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+        expect(signal.aborted).toBe(true);
+
+        // Even if the answer comes anyway, it's ignored.
+        finish({blob: new Blob(['Post Id\n']), filename: 'lab-2026-10-12.csv'});
+        await new Promise((resolve) => setTimeout(resolve, 0));
+        expect(click).not.toHaveBeenCalled();
+        expect(screen.queryByRole('status')).not.toBeInTheDocument();
     });
 });
