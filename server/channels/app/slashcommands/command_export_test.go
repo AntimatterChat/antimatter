@@ -6,6 +6,9 @@ package slashcommands
 import (
 	"fmt"
 	"io"
+	"math"
+	"os"
+	"path/filepath"
 	"strings"
 	"testing"
 	"time"
@@ -26,15 +29,20 @@ func TestExportCommand(t *testing.T) {
 	// The exporter (libre/messageexport's, tested there) is faked: it records what it's asked for.
 	var asked []app.ChannelExportParams
 	tooLarge := false
-	app.RegisterChannelExporter(func(_ request.CTX, _ store.Store, params app.ChannelExportParams, w io.Writer) (int, error) {
+	previous := app.ChannelExportExporter()
+	app.RegisterChannelExporter(func(_ request.CTX, _ store.Store, params app.ChannelExportParams, open func() (io.Writer, error)) (int, error) {
 		asked = append(asked, params)
 		if tooLarge {
 			return 0, app.ErrChannelExportTooLarge
 		}
-		_, err := fmt.Fprintf(w, "Post Id\n%s\n", params.ChannelID)
+		w, err := open()
+		if err != nil {
+			return 0, err
+		}
+		_, err = fmt.Fprintf(w, "Post Id\n%s\n", params.ChannelID)
 		return 1, err
 	})
-	t.Cleanup(func() { app.RegisterChannelExporter(nil) })
+	t.Cleanup(func() { app.RegisterChannelExporter(previous) })
 
 	run := func(userID, channelID, message string) string {
 		resp := (&ExportProvider{}).DoCommand(th.App, th.Context, &model.CommandArgs{
@@ -47,8 +55,16 @@ func TestExportCommand(t *testing.T) {
 	}
 
 	t.Run("sends the export in a direct message from the system bot", func(t *testing.T) {
+		tempFiles := func() []string {
+			files, err := filepath.Glob(filepath.Join(os.TempDir(), "channel-export-*.csv"))
+			require.NoError(t, err)
+			return files
+		}
+		before := tempFiles()
+
 		assert.Equal(t, "api.command_export.sent", run(th.BasicUser.Id, th.BasicChannel.Id, ""))
 		assert.Equal(t, int64(0), asked[len(asked)-1].Since)
+		assert.ElementsMatch(t, before, tempFiles(), "the temporary file is removed")
 
 		bot, appErr := th.App.GetSystemBot(th.Context)
 		require.Nil(t, appErr)
@@ -76,9 +92,17 @@ func TestExportCommand(t *testing.T) {
 		since := asked[len(asked)-1].Since
 		assert.InDelta(t, model.GetMillis()-(30*24*time.Hour).Milliseconds(), since, float64(time.Minute.Milliseconds()))
 
+		// More days than there are since 1970: all the messages.
+		for _, days := range []string{"1000000", "106751991167", "9223372036854775807"} {
+			assert.Equal(t, "api.command_export.sent", run(th.BasicUser.Id, th.BasicChannel.Id, days), days)
+			assert.Zero(t, asked[len(asked)-1].Since, days)
+		}
+
 		calls := len(asked)
 		assert.Equal(t, "api.command_export.days.app_error", run(th.BasicUser.Id, th.BasicChannel.Id, "lots"))
 		assert.Equal(t, "api.command_export.days.app_error", run(th.BasicUser.Id, th.BasicChannel.Id, "-2"))
+		assert.Equal(t, "api.command_export.days.app_error", run(th.BasicUser.Id, th.BasicChannel.Id, "0"))
+		assert.Equal(t, "api.command_export.days.app_error", run(th.BasicUser.Id, th.BasicChannel.Id, "99999999999999999999"))
 		assert.Len(t, asked, calls)
 	})
 
@@ -94,4 +118,14 @@ func TestExportCommand(t *testing.T) {
 		assert.Equal(t, "app.channel_export.permission.app_error", run(th.BasicUser2.Id, private.Id, ""))
 		assert.Len(t, asked, calls)
 	})
+}
+
+func TestExportSince(t *testing.T) {
+	day := (24 * time.Hour).Milliseconds()
+	now := int64(1791773226806)
+	assert.Equal(t, now-day, exportSince(1, now))
+	assert.Equal(t, now-30*day, exportSince(30, now))
+	assert.Equal(t, now-(now/day)*day, exportSince(int(now/day), now))
+	assert.Zero(t, exportSince(int(now/day)+1, now))
+	assert.Zero(t, exportSince(math.MaxInt, now))
 }

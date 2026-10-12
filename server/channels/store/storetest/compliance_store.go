@@ -59,7 +59,8 @@ func TestComplianceStore(t *testing.T, rctx request.CTX, ss store.Store) {
 	t.Run("MessageDeleteExportMessage", func(t *testing.T) { testDeleteExportMessage(t, rctx, ss) })
 	t.Run("MessageDeleteAfterExportMessage", func(t *testing.T) { testDeleteAfterExportMessage(t, rctx, ss) })
 	t.Run("MessageExport_UntilUpdateAt", func(t *testing.T) { testMessageExportUntilUpdateAt(t, rctx, ss) })
-	t.Run("MessageExport_OneChannel", func(t *testing.T) { testMessageExportOneChannel(t, rctx, ss) })
+	t.Run("ChannelExport", func(t *testing.T) { testChannelExport(t, rctx, ss) })
+	t.Run("ChannelExport_ChangesBetweenPages", func(t *testing.T) { testChannelExportChangesBetweenPages(t, rctx, ss) })
 }
 
 func testComplianceStore(t *testing.T, rctx request.CTX, ss store.Store) {
@@ -1285,76 +1286,4 @@ func testMessageExportUntilUpdateAt(t *testing.T, rctx request.CTX, ss store.Sto
 	})
 	require.NoError(t, err)
 	require.Equal(t, 5, int(count))
-}
-
-// testMessageExportOneChannel covers the cursor's filters used by Antimatter's
-// channel export: one channel, a creation time range, without deleted posts.
-func testMessageExportOneChannel(t *testing.T, rctx request.CTX, ss store.Store) {
-	defer cleanupStoreState(t, rctx, ss)
-
-	team, err := ss.Team().Save(&model.Team{
-		DisplayName: "DisplayName",
-		Name:        model.NewRandomTeamName(),
-		Email:       MakeEmail(),
-		Type:        model.TeamOpen,
-	})
-	require.NoError(t, err)
-	user, err := ss.User().Save(rctx, &model.User{Email: MakeEmail(), Username: model.NewUsername()})
-	require.NoError(t, err)
-
-	channel, err := ss.Channel().Save(rctx, &model.Channel{TeamId: team.Id, Name: model.NewId(), DisplayName: "Exported", Type: model.ChannelTypeOpen}, -1)
-	require.NoError(t, err)
-	other, err := ss.Channel().Save(rctx, &model.Channel{TeamId: team.Id, Name: model.NewId(), DisplayName: "Other", Type: model.ChannelTypeOpen}, -1)
-	require.NoError(t, err)
-
-	start := model.GetMillis()
-	save := func(channelID string, offset int64, deleteAt int64) *model.Post {
-		post, err := ss.Post().Save(rctx, &model.Post{
-			ChannelId: channelID,
-			UserId:    user.Id,
-			CreateAt:  start + offset,
-			UpdateAt:  start + offset,
-			Message:   model.NewId(),
-		})
-		require.NoError(t, err)
-		if deleteAt > 0 {
-			require.NoError(t, ss.Post().Delete(rctx, post.Id, deleteAt, user.Id))
-		}
-		return post
-	}
-	before := save(channel.Id, 0, 0)
-	first := save(channel.Id, 10, 0)
-	save(channel.Id, 20, start+25)
-	last := save(channel.Id, 30, 0)
-	save(channel.Id, 40, 0)
-	save(other.Id, 20, 0)
-
-	ids := func(cursor model.MessageExportCursor) []string {
-		messages, _, err := ss.Compliance().MessageExport(rctx, cursor, 100)
-		require.NoError(t, err)
-		var list []string
-		for _, m := range messages {
-			list = append(list, *m.PostId)
-		}
-		return list
-	}
-
-	// The channel's posts created in the range, without the deleted one.
-	got := ids(model.MessageExportCursor{
-		LastPostUpdateAt: start + 10,
-		ChannelId:        channel.Id,
-		SinceCreateAt:    start + 10,
-		UntilCreateAt:    start + 30,
-		ExcludeDeleted:   true,
-	})
-	assert.ElementsMatch(t, []string{first.Id, last.Id}, got)
-
-	// With the deleted one.
-	got = ids(model.MessageExportCursor{LastPostUpdateAt: start + 10, ChannelId: channel.Id, SinceCreateAt: start + 10, UntilCreateAt: start + 30})
-	assert.Len(t, got, 3)
-
-	// Open bounds: all the channel's posts, and none of the other channel's.
-	got = ids(model.MessageExportCursor{ChannelId: channel.Id, ExcludeDeleted: true})
-	assert.Len(t, got, 4)
-	assert.Contains(t, got, before.Id)
 }

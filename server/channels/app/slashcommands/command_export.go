@@ -4,6 +4,8 @@
 package slashcommands
 
 import (
+	"io"
+	"os"
 	"strconv"
 	"strings"
 	"time"
@@ -54,10 +56,23 @@ func (*ExportProvider) DoCommand(a *app.App, rctx request.CTX, args *model.Comma
 		if err != nil || days <= 0 {
 			return ephemeral(args.T("api.command_export.days.app_error"))
 		}
-		opts.Since = model.GetMillis() - int64(days)*(24*time.Hour).Milliseconds()
+		opts.Since = exportSince(days, model.GetMillis())
 	}
 
-	file, appErr := a.ExportChannel(rctx, args.UserId, args.ChannelId, opts)
+	// The file is written to a temporary file (in the server's temporary directory), then sent from there.
+	tmp, err := os.CreateTemp("", "channel-export-*.csv")
+	if err != nil {
+		rctx.Logger().Warn("Unable to create the channel export's temporary file", mlog.Err(err))
+		return ephemeral(args.T("api.command_export.send.app_error"))
+	}
+	defer func() {
+		_ = tmp.Close()
+		_ = os.Remove(tmp.Name())
+	}()
+
+	file, appErr := a.ExportChannel(rctx, args.UserId, args.ChannelId, opts, func(*app.ChannelExportFile) (io.Writer, error) {
+		return tmp, nil
+	})
 	if appErr != nil {
 		if appErr.Id == "app.channel_export.too_large.app_error" {
 			return ephemeral(args.T("api.command_export.too_large.app_error", map[string]any{"Max": model.ChannelExportMaxPosts}))
@@ -66,13 +81,32 @@ func (*ExportProvider) DoCommand(a *app.App, rctx request.CTX, args *model.Comma
 		return ephemeral(appErr.Message)
 	}
 
+	size, err := tmp.Seek(0, io.SeekCurrent)
+	if err == nil {
+		_, err = tmp.Seek(0, io.SeekStart)
+	}
+	if err != nil {
+		rctx.Logger().Warn("Unable to read the channel export's temporary file", mlog.Err(err))
+		return ephemeral(args.T("api.command_export.send.app_error"))
+	}
+
 	channel, appErr := a.GetChannel(rctx, args.ChannelId)
 	if appErr != nil {
 		return ephemeral(args.T("api.command_export.send.app_error"))
 	}
-	if _, appErr := a.SendChannelExportToUser(rctx, args.UserId, channel, file); appErr != nil {
+	if _, appErr := a.SendChannelExportToUser(rctx, args.UserId, channel, file, tmp, size); appErr != nil {
 		rctx.Logger().Warn("Unable to send the channel export", mlog.String("channel_id", args.ChannelId), mlog.Err(appErr))
 		return ephemeral(args.T("api.command_export.send.app_error"))
 	}
 	return ephemeral(args.T("api.command_export.sent", map[string]any{"Bot": model.BotSystemBotUsername}))
+}
+
+// exportSince is the start of the last days (> 0) at now, in milliseconds: 0, so all the messages, when they go
+// back further than 1970.
+func exportSince(days int, now int64) int64 {
+	day := (24 * time.Hour).Milliseconds()
+	if int64(days) > now/day {
+		return 0
+	}
+	return now - int64(days)*day
 }

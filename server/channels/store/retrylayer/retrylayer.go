@@ -5207,6 +5207,48 @@ func (s *RetryLayerCommandWebhookStore) TryUse(id string, limit int) error {
 
 }
 
+func (s *RetryLayerComplianceStore) ChannelExportCount(rctx request.CTX, filter model.ChannelExportFilter, limit int) (int, error) {
+
+	tries := 0
+	for {
+		result, err := s.ComplianceStore.ChannelExportCount(rctx, filter, limit)
+		if err == nil {
+			return result, nil
+		}
+		if !isRepeatableError(err) {
+			return result, err
+		}
+		tries++
+		if tries >= 3 {
+			err = errors.Wrap(err, "giving up after 3 consecutive repeatable transaction failures")
+			return result, err
+		}
+		timepkg.Sleep(100 * timepkg.Millisecond)
+	}
+
+}
+
+func (s *RetryLayerComplianceStore) ChannelExportPosts(rctx request.CTX, filter model.ChannelExportFilter, cursor model.ChannelExportCursor, limit int) ([]*model.ChannelExportPost, error) {
+
+	tries := 0
+	for {
+		result, err := s.ComplianceStore.ChannelExportPosts(rctx, filter, cursor, limit)
+		if err == nil {
+			return result, nil
+		}
+		if !isRepeatableError(err) {
+			return result, err
+		}
+		tries++
+		if tries >= 3 {
+			err = errors.Wrap(err, "giving up after 3 consecutive repeatable transaction failures")
+			return result, err
+		}
+		timepkg.Sleep(100 * timepkg.Millisecond)
+	}
+
+}
+
 func (s *RetryLayerComplianceStore) ComplianceExport(compliance *model.Compliance, cursor model.ComplianceExportCursor, limit int) ([]*model.CompliancePost, model.ComplianceExportCursor, error) {
 
 	tries := 0

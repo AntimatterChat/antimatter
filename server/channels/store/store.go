@@ -625,6 +625,13 @@ type ComplianceStore interface {
 	GetAll(offset, limit int) (model.Compliances, error)
 	ComplianceExport(compliance *model.Compliance, cursor model.ComplianceExportCursor, limit int) ([]*model.CompliancePost, model.ComplianceExportCursor, error)
 	MessageExport(rctx request.CTX, cursor model.MessageExportCursor, limit int) ([]*model.MessageExport, model.MessageExportCursor, error)
+
+	// ChannelExportCount counts the posts of Antimatter's channel export, up to limit (0 for no limit): counting
+	// stops there, which keeps refusing a too large export cheap.
+	ChannelExportCount(rctx request.CTX, filter model.ChannelExportFilter, limit int) (int, error)
+	// ChannelExportPosts returns a page of the posts of Antimatter's channel export, by creation time and id, after
+	// the cursor.
+	ChannelExportPosts(rctx request.CTX, filter model.ChannelExportFilter, cursor model.ChannelExportCursor, limit int) ([]*model.ChannelExportPost, error)
 }
 
 type OAuthStore interface {

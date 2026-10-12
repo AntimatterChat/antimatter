@@ -15,6 +15,64 @@ type ComplianceStore struct {
 	mock.Mock
 }
 
+// ChannelExportCount provides a mock function with given fields: rctx, filter, limit
+func (_m *ComplianceStore) ChannelExportCount(rctx request.CTX, filter model.ChannelExportFilter, limit int) (int, error) {
+	ret := _m.Called(rctx, filter, limit)
+
+	if len(ret) == 0 {
+		panic("no return value specified for ChannelExportCount")
+	}
+
+	var r0 int
+	var r1 error
+	if rf, ok := ret.Get(0).(func(request.CTX, model.ChannelExportFilter, int) (int, error)); ok {
+		return rf(rctx, filter, limit)
+	}
+	if rf, ok := ret.Get(0).(func(request.CTX, model.ChannelExportFilter, int) int); ok {
+		r0 = rf(rctx, filter, limit)
+	} else {
+		r0 = ret.Get(0).(int)
+	}
+
+	if rf, ok := ret.Get(1).(func(request.CTX, model.ChannelExportFilter, int) error); ok {
+		r1 = rf(rctx, filter, limit)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// ChannelExportPosts provides a mock function with given fields: rctx, filter, cursor, limit
+func (_m *ComplianceStore) ChannelExportPosts(rctx request.CTX, filter model.ChannelExportFilter, cursor model.ChannelExportCursor, limit int) ([]*model.ChannelExportPost, error) {
+	ret := _m.Called(rctx, filter, cursor, limit)
+
+	if len(ret) == 0 {
+		panic("no return value specified for ChannelExportPosts")
+	}
+
+	var r0 []*model.ChannelExportPost
+	var r1 error
+	if rf, ok := ret.Get(0).(func(request.CTX, model.ChannelExportFilter, model.ChannelExportCursor, int) ([]*model.ChannelExportPost, error)); ok {
+		return rf(rctx, filter, cursor, limit)
+	}
+	if rf, ok := ret.Get(0).(func(request.CTX, model.ChannelExportFilter, model.ChannelExportCursor, int) []*model.ChannelExportPost); ok {
+		r0 = rf(rctx, filter, cursor, limit)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]*model.ChannelExportPost)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(request.CTX, model.ChannelExportFilter, model.ChannelExportCursor, int) error); ok {
+		r1 = rf(rctx, filter, cursor, limit)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // ComplianceExport provides a mock function with given fields: compliance, cursor, limit
 func (_m *ComplianceStore) ComplianceExport(compliance *model.Compliance, cursor model.ComplianceExportCursor, limit int) ([]*model.CompliancePost, model.ComplianceExportCursor, error) {
 	ret := _m.Called(compliance, cursor, limit)

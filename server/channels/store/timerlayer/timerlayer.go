@@ -4340,6 +4340,38 @@ func (s *TimerLayerCommandWebhookStore) TryUse(id string, limit int) error {
 	return err
 }
 
+func (s *TimerLayerComplianceStore) ChannelExportCount(rctx request.CTX, filter model.ChannelExportFilter, limit int) (int, error) {
+	start := time.Now()
+
+	result, err := s.ComplianceStore.ChannelExportCount(rctx, filter, limit)
+
+	elapsed := float64(time.Since(start)) / float64(time.Second)
+	if s.Root.Metrics != nil {
+		success := "false"
+		if err == nil {
+			success = "true"
+		}
+		s.Root.Metrics.ObserveStoreMethodDuration("ComplianceStore.ChannelExportCount", success, elapsed)
+	}
+	return result, err
+}
+
+func (s *TimerLayerComplianceStore) ChannelExportPosts(rctx request.CTX, filter model.ChannelExportFilter, cursor model.ChannelExportCursor, limit int) ([]*model.ChannelExportPost, error) {
+	start := time.Now()
+
+	result, err := s.ComplianceStore.ChannelExportPosts(rctx, filter, cursor, limit)
+
+	elapsed := float64(time.Since(start)) / float64(time.Second)
+	if s.Root.Metrics != nil {
+		success := "false"
+		if err == nil {
+			success = "true"
+		}
+		s.Root.Metrics.ObserveStoreMethodDuration("ComplianceStore.ChannelExportPosts", success, elapsed)
+	}
+	return result, err
+}
+
 func (s *TimerLayerComplianceStore) ComplianceExport(compliance *model.Compliance, cursor model.ComplianceExportCursor, limit int) ([]*model.CompliancePost, model.ComplianceExportCursor, error) {
 	start := time.Now()
 

@@ -7241,6 +7241,11 @@
     "description": "Error when someone who is not a channel, team or system admin exports a channel while the system admins restrict channel exports to admins."
   },
   {
+    "id": "app.channel_export.busy.app_error",
+    "translation": "Another export is running. Try again in a moment.",
+    "description": "Error when a channel export is asked for while the server already runs as many channel exports as it allows at once."
+  },
+  {
     "id": "app.channel_export.failed.app_error",
     "translation": "The channel couldn't be exported.",
     "description": "Error when building a channel's export (a CSV file of its messages) fails on the server."

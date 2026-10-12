@@ -2976,7 +2976,7 @@ func (c *Client4) GetChannelStats(ctx context.Context, channelId string, etag st
 }
 
 // ExportChannel downloads the CSV export of a channel's messages created between since and until (milliseconds; 0
-// leaves a bound open).
+// leaves a bound open). It's a POST.
 func (c *Client4) ExportChannel(ctx context.Context, channelId string, since, until int64) ([]byte, *Response, error) {
 	values := url.Values{}
 	values.Set("format", ChannelExportFormatCSV)
@@ -2986,7 +2986,7 @@ func (c *Client4) ExportChannel(ctx context.Context, channelId string, since, un
 	if until > 0 {
 		values.Set("until", strconv.FormatInt(until, 10))
 	}
-	r, err := c.doAPIGetWithQuery(ctx, c.channelRoute(channelId).Join("export"), values, "")
+	r, err := c.doAPIPostWithQuery(ctx, c.channelRoute(channelId).Join("export"), values, "")
 	if err != nil {
 		return nil, BuildResponse(r), err
 	}

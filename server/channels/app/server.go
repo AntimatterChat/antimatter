@@ -154,6 +154,9 @@ type Server struct {
 
 	// notifyAdminCoolOffDaysOverride overrides MM_NOTIFY_ADMIN_COOL_OFF_DAYS.
 	notifyAdminCoolOffDaysOverride string
+
+	// channelExports holds a slot per channel export running (Antimatter): channelExportConcurrency at most.
+	channelExports chan struct{}
 }
 
 // SetNotifyAdminCoolOffDaysOverride sets the cool-off period override for admin notifications.
@@ -187,6 +190,8 @@ func NewServer(options ...Option) (*Server, error) {
 		RootRouter:  rootRouter,
 		LocalRouter: localRouter,
 		timezones:   timezones.New(),
+
+		channelExports: make(chan struct{}, channelExportConcurrency),
 	}
 
 	for _, option := range options {
