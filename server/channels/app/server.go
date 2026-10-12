@@ -123,8 +123,6 @@ type Server struct {
 	openGraphDataCache      cache.Cache
 	clusterLeaderListenerId string
 
-	pushNotificationServerClusterLeaderListenerId string
-
 	platform         *platform.PlatformService
 	platformOptions  []platform.Option
 	telemetryService *telemetry.TelemetryService
@@ -570,12 +568,6 @@ func NewServer(options ...Option) (*Server, error) {
 
 	s.platform.EnableLoggingMetrics()
 
-	// Move push off the unsupported Mattermost-hosted push notification service, and let a
-	// newly-elected cluster leader do so if this node was not the leader at startup.
-	s.pushNotificationServerClusterLeaderListenerId = s.AddClusterLeaderChangedListener(func() {
-		s.revertHostedPushNotificationServer()
-	})
-
 	// if enabled - perform initial product notices fetch
 	if *s.platform.Config().AnnouncementSettings.AdminNoticesEnabled || *s.platform.Config().AnnouncementSettings.UserNoticesEnabled {
 		s.platform.Go(func() {
@@ -778,7 +770,6 @@ func (s *Server) Shutdown() {
 	defer sentry.Flush(2 * time.Second)
 
 	s.RemoveClusterLeaderChangedListener(s.clusterLeaderListenerId)
-	s.RemoveClusterLeaderChangedListener(s.pushNotificationServerClusterLeaderListenerId)
 
 	var err error
 	s.serviceMux.RLock()
@@ -989,8 +980,6 @@ func (s *Server) Start() error {
 	}
 
 	var err error
-
-	s.revertHostedPushNotificationServer()
 
 	s.checkPushNotificationServerURL()
 
@@ -1284,10 +1273,17 @@ func (a *App) OriginChecker() func(*http.Request) bool {
 	}
 }
 
+// checkPushNotificationServerURL logs a warning at startup about push notification server
+// settings that can't work as expected. It never changes the setting.
 func (s *Server) checkPushNotificationServerURL() {
-	notificationServer := *s.platform.Config().EmailSettings.PushNotificationServer
+	emailSettings := s.platform.Config().EmailSettings
+	notificationServer := *emailSettings.PushNotificationServer
 	if strings.HasPrefix(notificationServer, "http://") {
 		mlog.Warn("Your push notification server is configured with HTTP. For improved security, update to HTTPS in your configuration.")
+	}
+	if *emailSettings.SendPushNotifications && model.IsMattermostPushServer(notificationServer) {
+		mlog.Warn("The push notification server is a service run by Mattermost, Inc. It only delivers notifications to Mattermost's own mobile apps, not to the Antimatter app. Run your own push proxy and set it in System Console > Environment > Push Notification Server.",
+			mlog.String("push_notification_server", notificationServer))
 	}
 }
 

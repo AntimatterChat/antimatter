@@ -1695,6 +1695,51 @@ func TestSendTestPushNotification(t *testing.T) {
 	assert.Equal(t, model.PushTypeTest, handler.notifications()[1].Type)
 }
 
+func TestCanSendPushNotifications(t *testing.T) {
+	mainHelper.Parallel(t)
+	th := Setup(t)
+
+	testCases := []struct {
+		name     string
+		enabled  bool
+		server   string
+		expected bool
+	}{
+		{name: "turned off", enabled: false, server: "https://push.example.com", expected: false},
+		{name: "no push notification server (the default)", enabled: true, server: model.DefaultPushNotificationServer, expected: false},
+		{name: "blank push notification server", enabled: true, server: "  ", expected: false},
+		{name: "own push proxy", enabled: true, server: "https://push.example.com", expected: true},
+		{name: "Mattermost's test service is kept", enabled: true, server: model.GenericNotificationServer, expected: true},
+		{name: "Mattermost's hosted service refuses this server", enabled: true, server: model.MHPNSGlobal, expected: false},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			th.App.UpdateConfig(func(cfg *model.Config) {
+				*cfg.EmailSettings.SendPushNotifications = tc.enabled
+				*cfg.EmailSettings.PushNotificationServer = tc.server
+			})
+
+			assert.Equal(t, tc.expected, th.App.canSendPushNotifications())
+			// The setting is never rewritten.
+			assert.Equal(t, tc.server, *th.App.Config().EmailSettings.PushNotificationServer)
+		})
+	}
+}
+
+func TestSendTestPushNotificationWithoutPushServer(t *testing.T) {
+	mainHelper.Parallel(t)
+	th := Setup(t)
+
+	th.App.UpdateConfig(func(cfg *model.Config) {
+		*cfg.EmailSettings.SendPushNotifications = true
+		*cfg.EmailSettings.PushNotificationServer = ""
+	})
+
+	// The mobile app reads "false" as "this server can't send notifications".
+	assert.Equal(t, "false", th.App.SendTestPushNotification(th.Context, "android_rn:id"))
+}
+
 func TestSendAckToPushProxy(t *testing.T) {
 	mainHelper.Parallel(t)
 	th := SetupWithStoreMock(t)

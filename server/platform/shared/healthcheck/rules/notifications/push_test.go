@@ -88,8 +88,22 @@ func TestPushRules(t *testing.T) {
 			},
 		},
 		{
-			name:     "https production proxy",
+			name:     "https own push proxy",
+			snapshot: pushSnapshot(true, "https://push.example.com"),
+			want:     map[string]pushWant{"PUSH_EMPTY_URL": resolved, "PUSH_BAD_SCHEME": resolved, "PUSH_TEST_PROXY": resolved},
+		},
+		{
+			name:     "https Mattermost hosted service",
 			snapshot: pushSnapshot(true, "https://push.mattermost.com"),
+			want: map[string]pushWant{
+				"PUSH_EMPTY_URL":  resolved,
+				"PUSH_BAD_SCHEME": resolved,
+				"PUSH_TEST_PROXY": {state: healthcheck.StateFiring, messageID: "health.rule.push_test_proxy.message", url: "https://push.mattermost.com"},
+			},
+		},
+		{
+			name:     "Mattermost service while push is off",
+			snapshot: pushSnapshot(false, "https://push-test.mattermost.com"),
 			want:     map[string]pushWant{"PUSH_EMPTY_URL": resolved, "PUSH_BAD_SCHEME": resolved, "PUSH_TEST_PROXY": resolved},
 		},
 		{

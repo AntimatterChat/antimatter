@@ -80,3 +80,29 @@ func TestIsMHPNSEndpoint(t *testing.T) {
 		})
 	}
 }
+
+func TestIsMattermostPushServer(t *testing.T) {
+	tests := []struct {
+		name     string
+		url      string
+		expected bool
+	}{
+		{name: "test service", url: GenericNotificationServer, expected: true},
+		{name: "hosted global endpoint", url: MHPNSGlobal, expected: true},
+		{name: "hosted legacy endpoint", url: MHPNSLegacyDE, expected: true},
+		{name: "case, port and path", url: "HTTPS://Push-Test.Mattermost.com:443/", expected: true},
+		{name: "http scheme", url: "http://push.mattermost.com", expected: true},
+		{name: "own push proxy", url: "https://push.example.com", expected: false},
+		{name: "compose service", url: "http://push-proxy:8066", expected: false},
+		{name: "lookalike host", url: "https://push.mattermost.com.example.com", expected: false},
+		{name: "lookalike suffix", url: "https://notmattermost.com", expected: false},
+		{name: "host only in query", url: "https://push.example.com/?ref=push.mattermost.com", expected: false},
+		{name: "empty", url: "", expected: false},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			require.Equal(t, tc.expected, IsMattermostPushServer(tc.url))
+		})
+	}
+}

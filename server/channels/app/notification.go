@@ -29,15 +29,25 @@ func (a *App) canSendPushNotifications() bool {
 		return false
 	}
 
+	// Push notifications go through a push proxy the administrator runs; without one there is
+	// nowhere to send them.
+	pushServer := *a.Config().EmailSettings.PushNotificationServer
+	if strings.TrimSpace(pushServer) == "" {
+		a.Log().LogM(mlog.MlvlNotificationDebug, "Push notifications are disabled - no push notification server",
+			mlog.String("status", model.NotificationStatusNotSent),
+			mlog.String("reason", "push_server_not_configured"),
+		)
+		return false
+	}
+
 	// The Mattermost-hosted push notification service is a paid offering that does not deliver
 	// for this server; operators must run their own push proxy.
-	pushServer := *a.Config().EmailSettings.PushNotificationServer
 	if model.IsMHPNSEndpoint(pushServer) {
 		a.Log().LogM(mlog.MlvlNotificationWarn, "Push notifications are disabled - hosted push notification service unsupported",
 			mlog.String("status", model.NotificationStatusNotSent),
 			mlog.String("reason", "push_disabled_hosted_service"),
 		)
-		mlog.Warn("Push notifications have been disabled because the Mattermost-hosted push notification service is not supported. Go to System Console > Environment > Push Notification Server to use your own push proxy")
+		mlog.Warn("Push notifications have been disabled because Mattermost's hosted push notification service does not deliver for Antimatter. Go to System Console > Environment > Push Notification Server to use your own push proxy")
 		return false
 	}
 

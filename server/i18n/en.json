@@ -13914,7 +13914,7 @@
   {
     "id": "health.rule.push_bad_scheme.remediation",
     "translation": "Prefix PushNotificationServer with https:// and verify reachability from the app node.",
-    "description": "Health dashboard fix-it step for a push notification server URL that does not use https://; 'PushNotificationServer' is a config setting name and 'app node' is the Mattermost application server."
+    "description": "Health dashboard fix-it step for a push notification server URL that does not use https://; 'PushNotificationServer' is a config setting name and 'app node' is the Antimatter application server."
   },
   {
     "id": "health.rule.push_bad_scheme.title",
@@ -13923,33 +13923,33 @@
   },
   {
     "id": "health.rule.push_empty_url.message",
-    "translation": "Every push attempt will fail with 'unsupported protocol scheme'.",
-    "description": "Health dashboard finding detail when push notifications are enabled but no push server URL is set; 'unsupported protocol scheme' is the literal error the server reports and should not be translated."
+    "translation": "No push notification server is set, so no push notifications are sent to the mobile apps.",
+    "description": "Health dashboard finding detail when push notifications are enabled but no push notification server URL is set, which is the default."
   },
   {
     "id": "health.rule.push_empty_url.remediation",
-    "translation": "Point PushNotificationServer to https://push.mattermost.com or a self-hosted push proxy.",
-    "description": "Health dashboard fix-it step for a blank push notification server URL; https://push.mattermost.com is Mattermost's hosted push service. 'PushNotificationServer' is a config setting name and should not be translated."
+    "translation": "Run your own Antimatter push proxy and set PushNotificationServer to its URL, or turn push notifications off.",
+    "description": "Health dashboard fix-it step for a blank push notification server URL; 'push proxy' is the service that forwards notifications to Apple and Google. 'PushNotificationServer' is a config setting name and should not be translated."
   },
   {
     "id": "health.rule.push_empty_url.title",
-    "translation": "Push notifications enabled but PushNotificationServer is blank",
+    "translation": "Push notifications are on but no PushNotificationServer is set",
     "description": "Health dashboard finding title when push notifications are turned on but the push notification server URL is empty; 'PushNotificationServer' is a config setting name and should not be translated."
   },
   {
     "id": "health.rule.push_test_proxy.message",
-    "translation": "push-test.mattermost.com is the Mattermost test push proxy. It has no SLA, limited throughput, and is not intended for production use. Mobile push delivery will be unreliable for anything beyond small-scale testing.",
-    "description": "Health dashboard finding detail when the push notification server is push-test.mattermost.com, Mattermost's test push proxy that is not meant for production; 'SLA' means service level agreement."
+    "translation": "{{.url}} is a push notification service run by Mattermost, Inc. It only delivers notifications to Mattermost's own mobile apps, so users of the Antimatter app receive none.",
+    "description": "Health dashboard finding detail when the push notification server is a service run by Mattermost, Inc. (their test or hosted push service), which does not deliver to the Antimatter mobile app; {{.url}} is the configured URL."
   },
   {
     "id": "health.rule.push_test_proxy.remediation",
-    "translation": "Switch to https://push.mattermost.com (Mattermost's production Hosted Push Notification Service) or to a self-hosted push proxy.",
-    "description": "Health dashboard fix-it step for a server using the test push proxy; 'Hosted Push Notification Service' is the name of Mattermost's push service."
+    "translation": "Run your own Antimatter push proxy and point PushNotificationServer to it.",
+    "description": "Health dashboard fix-it step for a server using a push notification service run by Mattermost, Inc.; 'PushNotificationServer' is a config setting name and should not be translated."
   },
   {
     "id": "health.rule.push_test_proxy.title",
-    "translation": "PushNotificationServer points at push-test.mattermost.com",
-    "description": "Health dashboard finding title when the push notification server is Mattermost's test push proxy; 'PushNotificationServer' is a config setting name and should not be translated."
+    "translation": "PushNotificationServer points at a Mattermost push service",
+    "description": "Health dashboard finding title when the push notification server is a service run by Mattermost, Inc.; 'Mattermost' is the name of that company and 'PushNotificationServer' is a config setting name, neither should be translated."
   },
   {
     "id": "health.rule.site_url_empty.message",

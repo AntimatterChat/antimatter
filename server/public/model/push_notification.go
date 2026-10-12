@@ -4,6 +4,7 @@
 package model
 
 import (
+	"net/url"
 	"slices"
 	"strings"
 )
@@ -57,6 +58,19 @@ func IsMHPNSEndpoint(url string) bool {
 		MHPNSEU,
 		MHPNSAP,
 	}, url)
+}
+
+// IsMattermostPushServer reports whether the given push notification server URL points at a
+// service run by Mattermost, Inc.: the hosted production service (any of the MHPNS endpoints) or
+// the test service (GenericNotificationServer). Those services only deliver notifications to
+// Mattermost's own mobile apps.
+func IsMattermostPushServer(rawURL string) bool {
+	u, err := url.Parse(strings.TrimSpace(rawURL))
+	if err != nil {
+		return false
+	}
+	host := strings.ToLower(u.Hostname())
+	return host == "mattermost.com" || strings.HasSuffix(host, ".mattermost.com")
 }
 
 // PushSubType allows for passing additional message type information

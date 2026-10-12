@@ -1393,6 +1393,24 @@ func TestConfigDefaultNPSPluginState(t *testing.T) {
 	})
 }
 
+func TestConfigDefaultPushNotificationServer(t *testing.T) {
+	t.Run("a new configuration has no push notification server", func(t *testing.T) {
+		c := Config{}
+		c.SetDefaults()
+
+		assert.Equal(t, "", *c.EmailSettings.PushNotificationServer)
+	})
+
+	t.Run("an existing configuration keeps its push notification server", func(t *testing.T) {
+		for _, server := range []string{GenericNotificationServer, MHPNSGlobal, "https://push.example.com"} {
+			c := Config{EmailSettings: EmailSettings{PushNotificationServer: NewPointer(server)}}
+			c.SetDefaults()
+
+			assert.Equal(t, server, *c.EmailSettings.PushNotificationServer)
+		}
+	})
+}
+
 func TestConfigDefaultAntimatterPluginStates(t *testing.T) {
 	t.Run("should enable the Antimatter plugins by default", func(t *testing.T) {
 		c1 := Config{}

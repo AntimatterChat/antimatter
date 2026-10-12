@@ -73,10 +73,17 @@ const (
 
 	GenericNoChannelNotification = "generic_no_channel"
 	GenericNotification          = "generic"
-	GenericNotificationServer    = "https://push-test.mattermost.com"
-	MmSupportAdvisorAddress      = "support-advisor@mattermost.com"
-	FullNotification             = "full"
-	IdLoadedNotification         = "id_loaded"
+	// GenericNotificationServer is Mattermost's test push notification service (TPNS). It only
+	// delivers notifications to Mattermost's own mobile apps, not to the Antimatter app, and is
+	// no longer the default: push notifications are off until an administrator sets the URL of
+	// their own push proxy. Existing configurations that use it keep it. Kept for compatibility;
+	// see IsMattermostPushServer.
+	GenericNotificationServer = "https://push-test.mattermost.com"
+	// DefaultPushNotificationServer is the default EmailSettings.PushNotificationServer: none.
+	DefaultPushNotificationServer = ""
+	MmSupportAdvisorAddress       = "support-advisor@mattermost.com"
+	FullNotification              = "full"
+	IdLoadedNotification          = "id_loaded"
 
 	DirectMessageAny  = "any"
 	DirectMessageTeam = "team"
@@ -2309,12 +2316,10 @@ func (s *EmailSettings) SetDefaults(isUpdate bool) {
 		s.SendPushNotifications = new(!isUpdate)
 	}
 
+	// Push notifications need a push proxy holding the mobile app's credentials, which the
+	// administrator runs: none is set by default, and nothing is sent until one is.
 	if s.PushNotificationServer == nil {
-		if isUpdate {
-			s.PushNotificationServer = new("")
-		} else {
-			s.PushNotificationServer = new(GenericNotificationServer)
-		}
+		s.PushNotificationServer = new(DefaultPushNotificationServer)
 	}
 
 	if s.PushNotificationContents == nil {

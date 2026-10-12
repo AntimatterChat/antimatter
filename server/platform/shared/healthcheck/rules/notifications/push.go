@@ -19,13 +19,15 @@ func init() {
 const (
 	pushSubject     = "EmailSettings.PushNotificationServer"
 	pushConsolePath = "/admin_console/environment/push_notification_server"
-	pushDocsURL     = "https://mattermost.com/pl/setup-push-notifications"
+	pushDocsURL     = "https://github.com/AntimatterChat/push-proxy#self-hosting"
 )
 
+// pushEmptyURL is informational: no push notification server is the default (push notifications
+// need a push proxy the administrator runs), and nothing is sent without one.
 var pushEmptyURL = healthcheck.Rule{
 	Code:     "PUSH_EMPTY_URL",
 	Area:     model.AreaNotifications,
-	Severity: healthcheck.SeverityCritical,
+	Severity: healthcheck.SeverityInfo,
 	RuleText: model.RuleText{
 		TitleID:       healthcheck.TranslationId("health.rule.push_empty_url.title"),
 		RemediationID: healthcheck.TranslationId("health.rule.push_empty_url.remediation"),
@@ -56,6 +58,8 @@ var pushBadScheme = healthcheck.Rule{
 	Eval:           evalPushBadScheme,
 }
 
+// pushTestProxy keeps its upstream code, under which mutes are stored, but fires for every push
+// notification service run by Mattermost, Inc.: none of them delivers to the Antimatter app.
 var pushTestProxy = healthcheck.Rule{
 	Code:     "PUSH_TEST_PROXY",
 	Area:     model.AreaNotifications,
@@ -88,9 +92,11 @@ func hasScheme(server, scheme string) bool {
 	return strings.HasPrefix(strings.ToLower(server), scheme)
 }
 
-func isTestProxy(server string) bool {
+// isMattermostPushService reports an https URL of a push notification service run by
+// Mattermost, Inc. (an http one is reported by the scheme rule only).
+func isMattermostPushService(server string) bool {
 	u, err := url.Parse(server)
-	return err == nil && u.Scheme == "https" && strings.EqualFold(u.Hostname(), "push-test.mattermost.com")
+	return err == nil && strings.EqualFold(u.Scheme, "https") && model.IsMattermostPushServer(server)
 }
 
 func evalPushEmptyURL(s *healthcheck.Snapshot) []healthcheck.Result {
@@ -124,7 +130,7 @@ func evalPushTestProxy(s *healthcheck.Snapshot) []healthcheck.Result {
 	switch {
 	case !ok:
 		return []healthcheck.Result{healthcheck.Unknown(healthcheck.ReasonConfigUnavailable)}
-	case enabled && isTestProxy(server):
+	case enabled && isMattermostPushService(server):
 		return []healthcheck.Result{healthcheck.Firing(healthcheck.TranslationId("health.rule.push_test_proxy.message")).WithDetail("url", server)}
 	default:
 		return []healthcheck.Result{healthcheck.Resolved()}

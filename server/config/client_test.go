@@ -568,6 +568,43 @@ func TestGetClientConfig(t *testing.T) {
 			},
 			nil,
 		},
+		{
+			"push notifications without a push notification server (the default)",
+			&model.Config{},
+			"",
+			map[string]string{
+				"SendPushNotifications": "false",
+			},
+			nil,
+		},
+		{
+			"push notifications with a push notification server",
+			&model.Config{
+				EmailSettings: model.EmailSettings{
+					SendPushNotifications:  new(true),
+					PushNotificationServer: new("https://push.example.com"),
+				},
+			},
+			"",
+			map[string]string{
+				"SendPushNotifications": "true",
+			},
+			nil,
+		},
+		{
+			"push notifications turned off with a push notification server",
+			&model.Config{
+				EmailSettings: model.EmailSettings{
+					SendPushNotifications:  new(false),
+					PushNotificationServer: new("https://push.example.com"),
+				},
+			},
+			"",
+			map[string]string{
+				"SendPushNotifications": "false",
+			},
+			nil,
+		},
 	}
 
 	for _, testCase := range testCases {
