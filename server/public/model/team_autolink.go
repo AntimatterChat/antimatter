@@ -201,11 +201,38 @@ func isWordByte(c byte) bool {
 
 // Replace replaces the rule's matches in a text.
 func (c *CompiledAutolink) Replace(text string) string {
+	out, _ := c.ReplaceWithin(text, -1)
+	return out
+}
+
+// ReplaceWithin replaces the rule's matches in a text, unless the result grows past limit bytes (a negative limit
+// is none): then it gives the text back as it was, and false. A template can be much longer than what it matches,
+// and a message goes through every rule in turn, so without a bound a few rules could make a message of gigabytes.
+func (c *CompiledAutolink) ReplaceWithin(text string, limit int) (string, bool) {
 	if c == nil || c.re == nil {
-		return text
+		return text, true
 	}
+	tooLong := func(n int) bool { return limit >= 0 && n > limit }
 	if c.canReplaceAll {
-		return c.re.ReplaceAllString(text, c.template)
+		if limit < 0 {
+			return c.re.ReplaceAllString(text, c.template), true
+		}
+		// ReplaceAllString, match by match, to stop as soon as the result is too long.
+		var out []byte
+		last := 0
+		for _, match := range c.re.FindAllStringSubmatchIndex(text, -1) {
+			out = append(out, text[last:match[0]]...)
+			out = c.re.ExpandString(out, c.template, text, match)
+			last = match[1]
+			if tooLong(len(out)) {
+				return text, false
+			}
+		}
+		out = append(out, text[last:]...)
+		if tooLong(len(out)) {
+			return text, false
+		}
+		return string(out), true
 	}
 
 	in := []byte(text)
@@ -227,8 +254,15 @@ func (c *CompiledAutolink) Replace(text string) string {
 		out = append(out, in[:match[0]]...)
 		out = c.re.Expand(out, []byte(c.template), in, match)
 		in = in[match[1]:]
+		if tooLong(len(out) + len(in)) {
+			return text, false
+		}
 	}
-	return string(append(out, in...))
+	out = append(out, in...)
+	if tooLong(len(out)) {
+		return text, false
+	}
+	return string(out), true
 }
 
 // AppliesTo tells whether the rule applies in a channel.

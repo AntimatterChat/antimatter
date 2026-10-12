@@ -63,6 +63,7 @@ func ApplyAutolinks(message string, links []*model.CompiledAutolink, channelID s
 	}
 	offset := 0
 	result := message
+	tooLong := false
 	markdown.Inspect(message, func(node any) bool {
 		if node == nil {
 			return false
@@ -88,11 +89,18 @@ func ApplyAutolinks(message string, links []*model.CompiledAutolink, channelID s
 		}
 		original := message[start:end]
 		processed := original
+		// This part may grow by what's left under the longest message the server stores (none left for a message
+		// already past it: a negative limit would be no limit at all).
+		limit := max(0, model.PostMessageMaxBytesV2-(len(result)-len(original)))
 		for _, link := range links {
 			if !link.AppliesTo(channelID) || (isBot && !link.Rule.ProcessBotPosts) {
 				continue
 			}
-			processed = link.Replace(processed)
+			var ok bool
+			if processed, ok = link.ReplaceWithin(processed, limit); !ok {
+				tooLong = true
+				return false
+			}
 		}
 		if processed != original {
 			result = result[:start+offset] + processed + result[end+offset:]
@@ -100,6 +108,10 @@ func ApplyAutolinks(message string, links []*model.CompiledAutolink, channelID s
 		}
 		return true
 	})
+	if tooLong {
+		// The autolinks would make the message longer than any post may be: it stays as written.
+		return message
+	}
 	return result
 }
 
