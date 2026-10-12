@@ -6907,6 +6907,10 @@
     "defaultMessage": "Integration Management",
     "description": "Page title of the Integration Management settings page in the System Console integrations section."
   },
+  "admin.integrations.textToSpeech": {
+    "defaultMessage": "Text to speech",
+    "description": ""
+  },
   "admin.intune.authServiceDescription": {
     "defaultMessage": "Select how users authenticate into Antimatter.\n* **OpenID Connect** – Use when users sign in to Antimatter via Microsoft 365 / Entra ID using OIDC.\n* **SAML 2.0** – Use when users authenticate via a SAML provider that ultimately maps to Microsoft Entra ID.\nChoose the option that matches how your organization already authenticates users into Antimatter on other clients.",
     "description": "Admin console help text under the Auth Provider dropdown in the Microsoft Intune section of Mobile Security; contains markdown bullets and bold, and OpenID Connect / SAML 2.0 are protocol names."
@@ -13255,6 +13259,10 @@
     "defaultMessage": "Team Statistics",
     "description": "Navigation item in the System Console sidebar under Reporting; opens the per-team statistics page; compact space."
   },
+  "admin.sidebar.textToSpeech": {
+    "defaultMessage": "Text to speech",
+    "description": ""
+  },
   "admin.sidebar.userManagement": {
     "defaultMessage": "User Management",
     "description": "Category heading in the System Console left navigation sidebar, grouping user, team, and permission pages; compact space."
@@ -15047,6 +15055,14 @@
     "defaultMessage": "Any member of the team",
     "description": "Dropdown option for the 'Enable users to open Direct Message channels with:' setting; grammatically completes that label."
   },
+  "admin.team.restrictChannelExportDescription": {
+    "defaultMessage": "When true, only channel, team and system admins can export the messages of a channel to a CSV file. When false, everyone who can read a channel can export it.",
+    "description": ""
+  },
+  "admin.team.restrictChannelExportTitle": {
+    "defaultMessage": "Restrict channel export to admins: ",
+    "description": ""
+  },
   "admin.team.restrictDirectMessage": {
     "defaultMessage": "Enable users to open Direct Message channels with:",
     "description": "Admin console dropdown setting name under Site Configuration > Users and Teams; the options complete the sentence ('Any user on the Mattermost server' / 'Any member of the team')."
@@ -15126,6 +15142,58 @@
   "admin.teamChannelSettings.usersToBeRemovedModal.title": {
     "defaultMessage": "<b>{total, number} {total, plural, one {User} other {Users}}</b> To Be Removed",
     "description": "Title of the modal listing users who will be removed by group sync; {total} is the user count with plural forms, and <b></b> wraps the bolded count portion."
+  },
+  "admin.textToSpeech.apiKeyDesc": {
+    "defaultMessage": "Sent as a bearer token. Leave it blank if the API needs none.",
+    "description": ""
+  },
+  "admin.textToSpeech.apiKeyTitle": {
+    "defaultMessage": "API key:",
+    "description": ""
+  },
+  "admin.textToSpeech.enableDesc": {
+    "defaultMessage": "Adds \"Read aloud\" to the menu of messages: their text is read by an OpenAI-compatible text-to-speech API (its /audio/speech endpoint).",
+    "description": ""
+  },
+  "admin.textToSpeech.enableTitle": {
+    "defaultMessage": "Read messages aloud:",
+    "description": ""
+  },
+  "admin.textToSpeech.modelDesc": {
+    "defaultMessage": "The model as the API names it.",
+    "description": ""
+  },
+  "admin.textToSpeech.modelExample": {
+    "defaultMessage": "e.g.: \"tts-1\"",
+    "description": ""
+  },
+  "admin.textToSpeech.modelTitle": {
+    "defaultMessage": "Model:",
+    "description": ""
+  },
+  "admin.textToSpeech.urlDesc": {
+    "defaultMessage": "The base URL of the API, up to and including /v1.",
+    "description": ""
+  },
+  "admin.textToSpeech.urlExample": {
+    "defaultMessage": "e.g.: \"https://tts.yourdomain.com/v1\"",
+    "description": ""
+  },
+  "admin.textToSpeech.urlTitle": {
+    "defaultMessage": "API base URL:",
+    "description": ""
+  },
+  "admin.textToSpeech.voiceDesc": {
+    "defaultMessage": "One of the model's voices. Leave it blank for the model's default.",
+    "description": ""
+  },
+  "admin.textToSpeech.voiceExample": {
+    "defaultMessage": "e.g.: \"alloy\"",
+    "description": ""
+  },
+  "admin.textToSpeech.voiceTitle": {
+    "defaultMessage": "Voice:",
+    "description": ""
   },
   "admin.true": {
     "defaultMessage": "True",
@@ -18647,17 +18715,9 @@
     "defaultMessage": "There has been errors while sharing the channel with some workspaces. Please try again.",
     "description": "Error on the Configuration tab when sharing the channel with some remote workspaces failed."
   },
-  "channel_settings.tab.archive": {
-    "defaultMessage": "Archive Channel",
-    "description": "Tab name in the Channel Settings modal sidebar for archiving the channel; compact."
-  },
   "channel_settings.tab.configuration": {
     "defaultMessage": "Configuration",
     "description": "Tab name in the Channel Settings modal sidebar for banner/translation/classification options; compact."
-  },
-  "channel_settings.tab.info": {
-    "defaultMessage": "Info",
-    "description": "Tab name in the Channel Settings modal sidebar for the name/purpose/header form; compact."
   },
   "channel_settings.tab.membership_policy": {
     "defaultMessage": "Membership Policy",
@@ -20699,6 +20759,5886 @@
     "defaultMessage": "Close",
     "description": "Accessibility label/tooltip for the close (X) button of full-screen modals such as the file preview."
   },
+  "fusion.about.adminOnly": {
+    "defaultMessage": "Version details are only shown to system admins.",
+    "description": ""
+  },
+  "fusion.about.basedOn": {
+    "defaultMessage": "Based on Mattermost. Copyright 2015 – {year} Mattermost, Inc. All rights reserved.",
+    "description": ""
+  },
+  "fusion.about.build": {
+    "defaultMessage": "Build",
+    "description": ""
+  },
+  "fusion.about.customTerms": {
+    "defaultMessage": "Terms of service",
+    "description": ""
+  },
+  "fusion.about.database": {
+    "defaultMessage": "Database",
+    "description": ""
+  },
+  "fusion.about.date": {
+    "defaultMessage": "Build date",
+    "description": ""
+  },
+  "fusion.about.formatting": {
+    "defaultMessage": "Formatting help",
+    "description": ""
+  },
+  "fusion.about.guide": {
+    "defaultMessage": "User guide",
+    "description": ""
+  },
+  "fusion.about.help": {
+    "defaultMessage": "Help",
+    "description": ""
+  },
+  "fusion.about.label": {
+    "defaultMessage": "About Antimatter",
+    "description": ""
+  },
+  "fusion.about.learnMore": {
+    "defaultMessage": "Learn more about Antimatter",
+    "description": ""
+  },
+  "fusion.about.license": {
+    "defaultMessage": "Antimatter is licensed under the GNU AGPL v3. Copyright {year} the Antimatter contributors.",
+    "description": ""
+  },
+  "fusion.about.loading": {
+    "defaultMessage": "Loading…",
+    "description": ""
+  },
+  "fusion.about.privacy": {
+    "defaultMessage": "Privacy policy",
+    "description": ""
+  },
+  "fusion.about.products": {
+    "defaultMessage": "Products",
+    "description": ""
+  },
+  "fusion.about.report": {
+    "defaultMessage": "Report a problem",
+    "description": ""
+  },
+  "fusion.about.server": {
+    "defaultMessage": "Server",
+    "description": ""
+  },
+  "fusion.about.shortcuts": {
+    "defaultMessage": "Keyboard shortcuts",
+    "description": ""
+  },
+  "fusion.about.source": {
+    "defaultMessage": "Source code",
+    "description": ""
+  },
+  "fusion.about.tagline": {
+    "defaultMessage": "Chat, voice and threads for your team or community. Free software.",
+    "description": ""
+  },
+  "fusion.about.terms": {
+    "defaultMessage": "Terms of use",
+    "description": ""
+  },
+  "fusion.ac.bot": {
+    "defaultMessage": "bot",
+    "description": ""
+  },
+  "fusion.ac.channels": {
+    "defaultMessage": "Channels",
+    "description": ""
+  },
+  "fusion.ac.commands": {
+    "defaultMessage": "Commands",
+    "description": ""
+  },
+  "fusion.ac.emoji": {
+    "defaultMessage": "Emoji",
+    "description": ""
+  },
+  "fusion.ac.people": {
+    "defaultMessage": "People",
+    "description": ""
+  },
+  "fusion.ack.do": {
+    "defaultMessage": "Acknowledge",
+    "description": ""
+  },
+  "fusion.ack.done": {
+    "defaultMessage": "Acknowledged",
+    "description": ""
+  },
+  "fusion.addPeople.add": {
+    "defaultMessage": "Add",
+    "description": ""
+  },
+  "fusion.addPeople.addCount": {
+    "defaultMessage": "Add {count}",
+    "description": ""
+  },
+  "fusion.addPeople.cancel": {
+    "defaultMessage": "Cancel",
+    "description": ""
+  },
+  "fusion.addPeople.everyone": {
+    "defaultMessage": "Everyone in the community is already here.",
+    "description": ""
+  },
+  "fusion.addPeople.failed": {
+    "defaultMessage": "Could not add them. Try again.",
+    "description": ""
+  },
+  "fusion.addPeople.invite": {
+    "defaultMessage": "Invite someone new",
+    "description": ""
+  },
+  "fusion.addPeople.lead": {
+    "defaultMessage": "They'll see the channel history and get notified.",
+    "description": ""
+  },
+  "fusion.addPeople.leadPrivate": {
+    "defaultMessage": "They'll see the channel history and get notified. It's a private channel: only members can see it.",
+    "description": ""
+  },
+  "fusion.addPeople.loading": {
+    "defaultMessage": "Loading…",
+    "description": ""
+  },
+  "fusion.addPeople.noMatch": {
+    "defaultMessage": "No one matches “{query}”.",
+    "description": ""
+  },
+  "fusion.addPeople.people": {
+    "defaultMessage": "People",
+    "description": ""
+  },
+  "fusion.addPeople.search": {
+    "defaultMessage": "Search by name or @username",
+    "description": ""
+  },
+  "fusion.addPeople.searchLabel": {
+    "defaultMessage": "Search people",
+    "description": ""
+  },
+  "fusion.addPeople.title": {
+    "defaultMessage": "Add people to {where}",
+    "description": ""
+  },
+  "fusion.addPeople.useInvite": {
+    "defaultMessage": "Use “Invite someone new” to bring people in.",
+    "description": ""
+  },
+  "fusion.ai.failed": {
+    "defaultMessage": "The AI couldn't rewrite the message",
+    "description": ""
+  },
+  "fusion.ai.label": {
+    "defaultMessage": "Rewrite with AI",
+    "description": ""
+  },
+  "fusion.ai.language": {
+    "defaultMessage": "Into which language? e.g. French",
+    "description": ""
+  },
+  "fusion.ai.languageLabel": {
+    "defaultMessage": "Language to translate into",
+    "description": ""
+  },
+  "fusion.ai.rewritten": {
+    "defaultMessage": "Rewritten by AI",
+    "description": ""
+  },
+  "fusion.ai.translate": {
+    "defaultMessage": "Translate…",
+    "description": ""
+  },
+  "fusion.ai.undo": {
+    "defaultMessage": "Undo",
+    "description": ""
+  },
+  "fusion.ai.writeFirst": {
+    "defaultMessage": "Write your message first.",
+    "description": ""
+  },
+  "fusion.ai.writing": {
+    "defaultMessage": "The AI is rewriting your message…",
+    "description": ""
+  },
+  "fusion.apps.about": {
+    "defaultMessage": "About Antimatter",
+    "description": ""
+  },
+  "fusion.apps.me": {
+    "defaultMessage": "Your status, profile and settings",
+    "description": ""
+  },
+  "fusion.autolinks.add": {
+    "defaultMessage": "Add an autolink",
+    "description": ""
+  },
+  "fusion.autolinks.allChannels": {
+    "defaultMessage": "All channels",
+    "description": ""
+  },
+  "fusion.autolinks.blank": {
+    "defaultMessage": "Blank",
+    "description": ""
+  },
+  "fusion.autolinks.bots": {
+    "defaultMessage": "Bots' messages too",
+    "description": ""
+  },
+  "fusion.autolinks.enabled": {
+    "defaultMessage": "On",
+    "description": ""
+  },
+  "fusion.autolinks.failed": {
+    "defaultMessage": "The autolinks couldn't be saved.",
+    "description": ""
+  },
+  "fusion.autolinks.lead": {
+    "defaultMessage": "Turn patterns of the messages posted here into links, like issue keys or pull request numbers. A pattern is a regular expression; in the link, $0 is the text it matched and $1, $2… its groups. Code, links and images are left alone.",
+    "description": ""
+  },
+  "fusion.autolinks.name": {
+    "defaultMessage": "Name, e.g. Jira issues",
+    "description": ""
+  },
+  "fusion.autolinks.nameLabel": {
+    "defaultMessage": "Name of autolink {n}",
+    "description": ""
+  },
+  "fusion.autolinks.none": {
+    "defaultMessage": "No autolinks yet.",
+    "description": ""
+  },
+  "fusion.autolinks.onEdit": {
+    "defaultMessage": "Link edited messages too",
+    "description": ""
+  },
+  "fusion.autolinks.onEditDesc": {
+    "defaultMessage": "Otherwise, only new messages are linked.",
+    "description": ""
+  },
+  "fusion.autolinks.pattern": {
+    "defaultMessage": "Pattern",
+    "description": ""
+  },
+  "fusion.autolinks.remove": {
+    "defaultMessage": "Remove the autolink",
+    "description": ""
+  },
+  "fusion.autolinks.reset": {
+    "defaultMessage": "Undo changes",
+    "description": ""
+  },
+  "fusion.autolinks.save": {
+    "defaultMessage": "Save",
+    "description": ""
+  },
+  "fusion.autolinks.saved": {
+    "defaultMessage": "Autolinks saved: they apply to new messages",
+    "description": ""
+  },
+  "fusion.autolinks.template": {
+    "defaultMessage": "Becomes",
+    "description": ""
+  },
+  "fusion.autolinks.try": {
+    "defaultMessage": "Try a message",
+    "description": ""
+  },
+  "fusion.autolinks.wordMatch": {
+    "defaultMessage": "Whole words only",
+    "description": ""
+  },
+  "fusion.away.dnd": {
+    "defaultMessage": "{names} {count, plural, one {has} other {have}} Do Not Disturb on, so won't be notified.",
+    "description": ""
+  },
+  "fusion.away.dndUntil": {
+    "defaultMessage": "{name} has Do Not Disturb on until {time}, so won't be notified.",
+    "description": ""
+  },
+  "fusion.away.ooo": {
+    "defaultMessage": "{names} {count, plural, one {is} other {are}} out of office.",
+    "description": ""
+  },
+  "fusion.browse.all": {
+    "defaultMessage": "All",
+    "description": ""
+  },
+  "fusion.browse.archived": {
+    "defaultMessage": "Archived",
+    "description": ""
+  },
+  "fusion.browse.ask": {
+    "defaultMessage": "Ask to join",
+    "description": ""
+  },
+  "fusion.browse.hideJoined": {
+    "defaultMessage": "Hide joined",
+    "description": ""
+  },
+  "fusion.browse.isArchived": {
+    "defaultMessage": "Archived",
+    "description": ""
+  },
+  "fusion.browse.join": {
+    "defaultMessage": "Join",
+    "description": ""
+  },
+  "fusion.browse.joined": {
+    "defaultMessage": "Joined",
+    "description": ""
+  },
+  "fusion.browse.joinFailed": {
+    "defaultMessage": "Couldn't join #{channel}",
+    "description": ""
+  },
+  "fusion.browse.kind": {
+    "defaultMessage": "Kind of channels",
+    "description": ""
+  },
+  "fusion.browse.list": {
+    "defaultMessage": "Channels",
+    "description": ""
+  },
+  "fusion.browse.members": {
+    "defaultMessage": "{count, plural, one {# member} other {# members}}",
+    "description": ""
+  },
+  "fusion.browse.noMatch": {
+    "defaultMessage": "No channel matches “{query}”.",
+    "description": ""
+  },
+  "fusion.browse.none": {
+    "defaultMessage": "No channels here.",
+    "description": ""
+  },
+  "fusion.browse.private": {
+    "defaultMessage": "Private",
+    "description": ""
+  },
+  "fusion.browse.public": {
+    "defaultMessage": "Public",
+    "description": ""
+  },
+  "fusion.browse.requestable": {
+    "defaultMessage": "Ask to join",
+    "description": ""
+  },
+  "fusion.browse.requested": {
+    "defaultMessage": "Requested",
+    "description": ""
+  },
+  "fusion.browse.requestFailed": {
+    "defaultMessage": "The request couldn't be sent.",
+    "description": ""
+  },
+  "fusion.browse.search": {
+    "defaultMessage": "Search channels",
+    "description": ""
+  },
+  "fusion.browse.title": {
+    "defaultMessage": "Browse channels",
+    "description": ""
+  },
+  "fusion.browse.withdrawTitle": {
+    "defaultMessage": "Withdraw your request",
+    "description": ""
+  },
+  "fusion.burn.burning": {
+    "defaultMessage": "Burning… {left}",
+    "description": ""
+  },
+  "fusion.burn.burnNow": {
+    "defaultMessage": "Click to burn it now",
+    "description": ""
+  },
+  "fusion.burn.cover": {
+    "defaultMessage": "Click to read — this message burns {duration} after you open it",
+    "description": ""
+  },
+  "fusion.burn.failed": {
+    "defaultMessage": "The message could not be opened. Try again.",
+    "description": ""
+  },
+  "fusion.burn.forbidden": {
+    "defaultMessage": "You don't have permission to read this message.",
+    "description": ""
+  },
+  "fusion.burn.gone": {
+    "defaultMessage": "This message is no longer available.",
+    "description": ""
+  },
+  "fusion.burn.hours": {
+    "defaultMessage": "{count, plural, one {# hour} other {# hours}}",
+    "description": ""
+  },
+  "fusion.burn.minutes": {
+    "defaultMessage": "{count, plural, one {# minute} other {# minutes}}",
+    "description": ""
+  },
+  "fusion.burn.readBy": {
+    "defaultMessage": "Read by {count} of {total}",
+    "description": ""
+  },
+  "fusion.burn.seconds": {
+    "defaultMessage": "{count, plural, one {# second} other {# seconds}}",
+    "description": ""
+  },
+  "fusion.burn.senderTitle": {
+    "defaultMessage": "Click to delete the message for everyone",
+    "description": ""
+  },
+  "fusion.burn.tag": {
+    "defaultMessage": "Burn on read",
+    "description": ""
+  },
+  "fusion.burn.tagTitle": {
+    "defaultMessage": "This message is deleted after it is read",
+    "description": ""
+  },
+  "fusion.calls.blur": {
+    "defaultMessage": "Blur my background",
+    "description": ""
+  },
+  "fusion.calls.blurAmount": {
+    "defaultMessage": "Amount",
+    "description": ""
+  },
+  "fusion.calls.blurFailed": {
+    "defaultMessage": "The background couldn't be blurred",
+    "description": ""
+  },
+  "fusion.calls.call": {
+    "defaultMessage": "Call",
+    "description": ""
+  },
+  "fusion.calls.callConnected": {
+    "defaultMessage": "Call connected",
+    "description": ""
+  },
+  "fusion.calls.callConnection": {
+    "defaultMessage": "Call connection",
+    "description": ""
+  },
+  "fusion.calls.camera": {
+    "defaultMessage": "Camera",
+    "description": ""
+  },
+  "fusion.calls.cameraNotAllowed": {
+    "defaultMessage": "Cameras are turned off in this call",
+    "description": ""
+  },
+  "fusion.calls.cameraOptions": {
+    "defaultMessage": "Camera options",
+    "description": ""
+  },
+  "fusion.calls.card.callIn": {
+    "defaultMessage": "A call in {where}",
+    "description": ""
+  },
+  "fusion.calls.card.canceled": {
+    "defaultMessage": "Canceled",
+    "description": ""
+  },
+  "fusion.calls.card.declined": {
+    "defaultMessage": "Declined",
+    "description": ""
+  },
+  "fusion.calls.card.ended": {
+    "defaultMessage": "Call ended",
+    "description": ""
+  },
+  "fusion.calls.card.join": {
+    "defaultMessage": "Join",
+    "description": ""
+  },
+  "fusion.calls.card.lasted": {
+    "defaultMessage": "Lasted {duration}",
+    "description": ""
+  },
+  "fusion.calls.card.leave": {
+    "defaultMessage": "Leave",
+    "description": ""
+  },
+  "fusion.calls.card.noAnswer": {
+    "defaultMessage": "No answer",
+    "description": ""
+  },
+  "fusion.calls.card.sub": {
+    "defaultMessage": "Started by {name} · {since} · {count, plural, one {# person} other {# people}}",
+    "description": ""
+  },
+  "fusion.calls.chat": {
+    "defaultMessage": "Chat",
+    "description": ""
+  },
+  "fusion.calls.chatEmpty": {
+    "defaultMessage": "No messages yet. The text chat lives alongside the call.",
+    "description": ""
+  },
+  "fusion.calls.chatPlaceholder": {
+    "defaultMessage": "Message {name}",
+    "description": ""
+  },
+  "fusion.calls.closeChat": {
+    "defaultMessage": "Close chat",
+    "description": ""
+  },
+  "fusion.calls.connecting": {
+    "defaultMessage": "Connecting…",
+    "description": ""
+  },
+  "fusion.calls.deafen": {
+    "defaultMessage": "Deafen",
+    "description": ""
+  },
+  "fusion.calls.devices": {
+    "defaultMessage": "Camera and microphone settings…",
+    "description": ""
+  },
+  "fusion.calls.directMessage": {
+    "defaultMessage": "Direct message",
+    "description": ""
+  },
+  "fusion.calls.disconnect": {
+    "defaultMessage": "Disconnect",
+    "description": ""
+  },
+  "fusion.calls.emptyRoom": {
+    "defaultMessage": "This room is always open. Join and others will see you in the sidebar.",
+    "description": ""
+  },
+  "fusion.calls.error.cameraMissing": {
+    "defaultMessage": "No camera found",
+    "description": ""
+  },
+  "fusion.calls.error.cameraPermissions": {
+    "defaultMessage": "Allow access to your camera to turn it on",
+    "description": ""
+  },
+  "fusion.calls.error.defaultDevice": {
+    "defaultMessage": "the default device",
+    "description": ""
+  },
+  "fusion.calls.error.deviceFallback": {
+    "defaultMessage": "Now using {device}",
+    "description": ""
+  },
+  "fusion.calls.error.micMissing": {
+    "defaultMessage": "No microphone found: others can't hear you",
+    "description": ""
+  },
+  "fusion.calls.error.micPermissions": {
+    "defaultMessage": "Allow access to your microphone to talk in the call",
+    "description": ""
+  },
+  "fusion.calls.error.quality": {
+    "defaultMessage": "Your connection is weak: others may hear you poorly",
+    "description": ""
+  },
+  "fusion.calls.error.screenShare": {
+    "defaultMessage": "Your screen wasn't shared",
+    "description": ""
+  },
+  "fusion.calls.frameRate": {
+    "defaultMessage": "Frame rate",
+    "description": ""
+  },
+  "fusion.calls.fullscreen": {
+    "defaultMessage": "Full screen",
+    "description": ""
+  },
+  "fusion.calls.handRaised": {
+    "defaultMessage": "Hand raised",
+    "description": ""
+  },
+  "fusion.calls.handRaisedOrder": {
+    "defaultMessage": "Hand raised, {order, selectordinal, one {#st} two {#nd} few {#rd} other {#th}} in line",
+    "description": ""
+  },
+  "fusion.calls.hideCaptions": {
+    "defaultMessage": "Hide live captions",
+    "description": ""
+  },
+  "fusion.calls.hours": {
+    "defaultMessage": "{hours}h {minutes}m",
+    "description": ""
+  },
+  "fusion.calls.inCallIn": {
+    "defaultMessage": "In a call in {where}",
+    "description": ""
+  },
+  "fusion.calls.inVoiceChannel": {
+    "defaultMessage": "In voice channel {where}",
+    "description": ""
+  },
+  "fusion.calls.isInCall": {
+    "defaultMessage": "{name} is in a call",
+    "description": ""
+  },
+  "fusion.calls.isInVoice": {
+    "defaultMessage": "{name} is in {where}",
+    "description": ""
+  },
+  "fusion.calls.isSharing": {
+    "defaultMessage": "{name} is sharing",
+    "description": ""
+  },
+  "fusion.calls.join": {
+    "defaultMessage": "Join the call",
+    "description": ""
+  },
+  "fusion.calls.joinPeople": {
+    "defaultMessage": "{count, plural, one {Join the call, # person in it} other {Join the call, # people in it}}",
+    "description": ""
+  },
+  "fusion.calls.joinShort": {
+    "defaultMessage": "Join · {count}",
+    "description": ""
+  },
+  "fusion.calls.joinVoice": {
+    "defaultMessage": "Join voice",
+    "description": ""
+  },
+  "fusion.calls.joinVoicePeople": {
+    "defaultMessage": "{count, plural, one {Join voice · # person in the call} other {Join voice · # people in the call}}",
+    "description": ""
+  },
+  "fusion.calls.leave": {
+    "defaultMessage": "Leave the call",
+    "description": ""
+  },
+  "fusion.calls.live": {
+    "defaultMessage": "LIVE",
+    "description": ""
+  },
+  "fusion.calls.liveTitle": {
+    "defaultMessage": "{calls, plural, one {# call} other {# calls}} · {people, plural, one {# person} other {# people}}",
+    "description": ""
+  },
+  "fusion.calls.lowerHand": {
+    "defaultMessage": "Lower hand",
+    "description": ""
+  },
+  "fusion.calls.menu.call": {
+    "defaultMessage": "Call",
+    "description": ""
+  },
+  "fusion.calls.menu.copyUsername": {
+    "defaultMessage": "Copy username",
+    "description": ""
+  },
+  "fusion.calls.menu.in": {
+    "defaultMessage": "In {where}",
+    "description": ""
+  },
+  "fusion.calls.menu.kick": {
+    "defaultMessage": "Kick from voice channel",
+    "description": ""
+  },
+  "fusion.calls.menu.lowerHand": {
+    "defaultMessage": "Lower hand",
+    "description": ""
+  },
+  "fusion.calls.menu.message": {
+    "defaultMessage": "Message",
+    "description": ""
+  },
+  "fusion.calls.menu.mute": {
+    "defaultMessage": "Mute",
+    "description": ""
+  },
+  "fusion.calls.menu.profile": {
+    "defaultMessage": "Profile",
+    "description": ""
+  },
+  "fusion.calls.menu.remove": {
+    "defaultMessage": "Remove from call",
+    "description": ""
+  },
+  "fusion.calls.menu.stopScreen": {
+    "defaultMessage": "Stop screen share",
+    "description": ""
+  },
+  "fusion.calls.menu.volume": {
+    "defaultMessage": "Volume",
+    "description": ""
+  },
+  "fusion.calls.miniScreenLabel": {
+    "defaultMessage": "{name} is sharing their screen — open the call in a new window",
+    "description": ""
+  },
+  "fusion.calls.minutes": {
+    "defaultMessage": "{minutes} min",
+    "description": ""
+  },
+  "fusion.calls.mute": {
+    "defaultMessage": "Mute",
+    "description": ""
+  },
+  "fusion.calls.noFullscreen": {
+    "defaultMessage": "Full screen is not available here",
+    "description": ""
+  },
+  "fusion.calls.noPip": {
+    "defaultMessage": "Picture in picture is not available here",
+    "description": ""
+  },
+  "fusion.calls.openTextChat": {
+    "defaultMessage": "Open text chat",
+    "description": ""
+  },
+  "fusion.calls.openTextChatFor": {
+    "defaultMessage": "Open text chat for {name}",
+    "description": ""
+  },
+  "fusion.calls.others": {
+    "defaultMessage": "Other ways to call",
+    "description": ""
+  },
+  "fusion.calls.pin": {
+    "defaultMessage": "Pin to the stage",
+    "description": ""
+  },
+  "fusion.calls.pip": {
+    "defaultMessage": "Picture in picture",
+    "description": ""
+  },
+  "fusion.calls.popout": {
+    "defaultMessage": "Open in a new window",
+    "description": ""
+  },
+  "fusion.calls.popoutLabel": {
+    "defaultMessage": "Open the call in a new window",
+    "description": ""
+  },
+  "fusion.calls.raiseHand": {
+    "defaultMessage": "Raise hand",
+    "description": ""
+  },
+  "fusion.calls.react": {
+    "defaultMessage": "React",
+    "description": ""
+  },
+  "fusion.calls.resolution": {
+    "defaultMessage": "Resolution",
+    "description": ""
+  },
+  "fusion.calls.screenNotAllowed": {
+    "defaultMessage": "Screen sharing is turned off",
+    "description": ""
+  },
+  "fusion.calls.screenOf": {
+    "defaultMessage": "{name}'s screen",
+    "description": ""
+  },
+  "fusion.calls.shareMonitor": {
+    "defaultMessage": "A whole screen",
+    "description": ""
+  },
+  "fusion.calls.shareScreen": {
+    "defaultMessage": "Share screen",
+    "description": ""
+  },
+  "fusion.calls.shareSource": {
+    "defaultMessage": "Choose a screen or a window…",
+    "description": ""
+  },
+  "fusion.calls.shareTab": {
+    "defaultMessage": "A browser tab",
+    "description": ""
+  },
+  "fusion.calls.shareWhat": {
+    "defaultMessage": "Share your screen",
+    "description": ""
+  },
+  "fusion.calls.shareWindow": {
+    "defaultMessage": "A window",
+    "description": ""
+  },
+  "fusion.calls.showCaptions": {
+    "defaultMessage": "Show live captions",
+    "description": ""
+  },
+  "fusion.calls.someoneSharing": {
+    "defaultMessage": "Someone else is sharing their screen",
+    "description": ""
+  },
+  "fusion.calls.source": {
+    "defaultMessage": "Source",
+    "description": ""
+  },
+  "fusion.calls.start": {
+    "defaultMessage": "Start a call",
+    "description": ""
+  },
+  "fusion.calls.stopSharing": {
+    "defaultMessage": "Stop sharing",
+    "description": ""
+  },
+  "fusion.calls.stopTranscribing": {
+    "defaultMessage": "Stop transcribing",
+    "description": ""
+  },
+  "fusion.calls.textChat": {
+    "defaultMessage": "Text chat",
+    "description": ""
+  },
+  "fusion.calls.toast.connected": {
+    "defaultMessage": "Connected to {name}",
+    "description": ""
+  },
+  "fusion.calls.toast.disabled": {
+    "defaultMessage": "Calls are turned off in {where}",
+    "description": ""
+  },
+  "fusion.calls.toast.disconnected": {
+    "defaultMessage": "Disconnected from {name}",
+    "description": ""
+  },
+  "fusion.calls.toast.hostMuted": {
+    "defaultMessage": "Muted {name} in {where}",
+    "description": ""
+  },
+  "fusion.calls.toast.joinedSomeones": {
+    "defaultMessage": "Joined {name}’s call in {where}",
+    "description": ""
+  },
+  "fusion.calls.toast.joinedTitled": {
+    "defaultMessage": "Joined “{title}” in {where}",
+    "description": ""
+  },
+  "fusion.calls.toast.joinedYours": {
+    "defaultMessage": "Joined your call in {where}",
+    "description": ""
+  },
+  "fusion.calls.toast.joinFailed": {
+    "defaultMessage": "Couldn't join {name}: {error}",
+    "description": ""
+  },
+  "fusion.calls.toast.kicked": {
+    "defaultMessage": "Disconnected {name} from {where}",
+    "description": ""
+  },
+  "fusion.calls.toast.left": {
+    "defaultMessage": "Left the call in {where}",
+    "description": ""
+  },
+  "fusion.calls.toast.moved": {
+    "defaultMessage": "Moved to {name}",
+    "description": ""
+  },
+  "fusion.calls.toast.removed": {
+    "defaultMessage": "Removed {name} from the call",
+    "description": ""
+  },
+  "fusion.calls.toast.started": {
+    "defaultMessage": "Call started in {where}",
+    "description": ""
+  },
+  "fusion.calls.transcribe": {
+    "defaultMessage": "Transcribe the call",
+    "description": ""
+  },
+  "fusion.calls.transcribing": {
+    "defaultMessage": "Transcribing",
+    "description": ""
+  },
+  "fusion.calls.transcribingTip": {
+    "defaultMessage": "What everyone says is transcribed; the transcript is posted in the call's thread when it stops.",
+    "description": ""
+  },
+  "fusion.calls.transcriptionFailed": {
+    "defaultMessage": "The transcription couldn't be changed",
+    "description": ""
+  },
+  "fusion.calls.transcriptionStarted": {
+    "defaultMessage": "Transcription started",
+    "description": ""
+  },
+  "fusion.calls.transcriptionStopped": {
+    "defaultMessage": "Transcription stopped: the transcript will be posted in the call's thread",
+    "description": ""
+  },
+  "fusion.calls.unmute": {
+    "defaultMessage": "Unmute",
+    "description": ""
+  },
+  "fusion.calls.unpin": {
+    "defaultMessage": "Unpin",
+    "description": ""
+  },
+  "fusion.calls.voiceConnected": {
+    "defaultMessage": "Voice connected",
+    "description": ""
+  },
+  "fusion.calls.voiceConnection": {
+    "defaultMessage": "Voice connection",
+    "description": ""
+  },
+  "fusion.calls.window": {
+    "defaultMessage": "Call window",
+    "description": ""
+  },
+  "fusion.calls.windowBack": {
+    "defaultMessage": "Back to the sidebar",
+    "description": ""
+  },
+  "fusion.calls.windowClose": {
+    "defaultMessage": "Close the call window",
+    "description": ""
+  },
+  "fusion.calls.windowTitle": {
+    "defaultMessage": "Call · {where}",
+    "description": ""
+  },
+  "fusion.calls.you": {
+    "defaultMessage": "{name} (you)",
+    "description": ""
+  },
+  "fusion.calls.youAreConnected": {
+    "defaultMessage": "You are connected",
+    "description": ""
+  },
+  "fusion.calls.youAreSharing": {
+    "defaultMessage": "You are sharing",
+    "description": ""
+  },
+  "fusion.card.chart": {
+    "defaultMessage": "Chart",
+    "description": ""
+  },
+  "fusion.card.failed": {
+    "defaultMessage": "The action failed.",
+    "description": ""
+  },
+  "fusion.card.openImage": {
+    "defaultMessage": "Open image",
+    "description": ""
+  },
+  "fusion.card.stages": {
+    "defaultMessage": "Stages",
+    "description": ""
+  },
+  "fusion.category.cancel": {
+    "defaultMessage": "Cancel",
+    "description": ""
+  },
+  "fusion.category.everyoneLead": {
+    "defaultMessage": "Everyone in the community sees it above their own categories. Members put their channels in it unless it's locked.",
+    "description": ""
+  },
+  "fusion.category.failed": {
+    "defaultMessage": "The category could not be created.",
+    "description": ""
+  },
+  "fusion.category.forEveryone": {
+    "defaultMessage": "For everyone",
+    "description": ""
+  },
+  "fusion.category.forEveryoneDesc": {
+    "defaultMessage": "A category of the community, set up by its admins, rather than one of yours.",
+    "description": ""
+  },
+  "fusion.category.lead": {
+    "defaultMessage": "Group channels in the sidebar. Only you see your categories.",
+    "description": ""
+  },
+  "fusion.category.locked": {
+    "defaultMessage": "Locked",
+    "description": ""
+  },
+  "fusion.category.lockedDesc": {
+    "defaultMessage": "Only admins put channels in it, and its channels stay there for everyone.",
+    "description": ""
+  },
+  "fusion.category.name": {
+    "defaultMessage": "Name",
+    "description": ""
+  },
+  "fusion.category.placeholder": {
+    "defaultMessage": "e.g. Experiments",
+    "description": ""
+  },
+  "fusion.category.rename": {
+    "defaultMessage": "Rename",
+    "description": ""
+  },
+  "fusion.category.renameLead": {
+    "defaultMessage": "Everyone sees the new name; its channels stay in it.",
+    "description": ""
+  },
+  "fusion.category.renameTitle": {
+    "defaultMessage": "Rename category",
+    "description": ""
+  },
+  "fusion.category.title": {
+    "defaultMessage": "Create category",
+    "description": ""
+  },
+  "fusion.categoryMenu.create": {
+    "defaultMessage": "Create new category",
+    "description": ""
+  },
+  "fusion.categoryMenu.delete": {
+    "defaultMessage": "Delete category",
+    "description": ""
+  },
+  "fusion.categoryMenu.deleteServer": {
+    "defaultMessage": "Delete for everyone",
+    "description": ""
+  },
+  "fusion.categoryMenu.deleteServerConfirm": {
+    "defaultMessage": "Delete for everyone",
+    "description": ""
+  },
+  "fusion.categoryMenu.deleteServerMessage": {
+    "defaultMessage": "Everyone in the community loses this category; its channels go back to their own categories.",
+    "description": ""
+  },
+  "fusion.categoryMenu.deleteServerSub": {
+    "defaultMessage": "Its channels go back to everyone's own categories",
+    "description": ""
+  },
+  "fusion.categoryMenu.deleteServerTitle": {
+    "defaultMessage": "Delete “{name}” for everyone?",
+    "description": ""
+  },
+  "fusion.categoryMenu.label": {
+    "defaultMessage": "Options for {name}",
+    "description": ""
+  },
+  "fusion.categoryMenu.lock": {
+    "defaultMessage": "Locked",
+    "description": ""
+  },
+  "fusion.categoryMenu.lockSub": {
+    "defaultMessage": "Only admins file channels here, and they stay here",
+    "description": ""
+  },
+  "fusion.categoryMenu.markRead": {
+    "defaultMessage": "Mark category as read",
+    "description": ""
+  },
+  "fusion.categoryMenu.moveDown": {
+    "defaultMessage": "Move down",
+    "description": ""
+  },
+  "fusion.categoryMenu.moveUp": {
+    "defaultMessage": "Move up",
+    "description": ""
+  },
+  "fusion.categoryMenu.mute": {
+    "defaultMessage": "Mute category",
+    "description": ""
+  },
+  "fusion.categoryMenu.permissions": {
+    "defaultMessage": "Permissions…",
+    "description": ""
+  },
+  "fusion.categoryMenu.permissionsSub": {
+    "defaultMessage": "Its channels inherit them",
+    "description": ""
+  },
+  "fusion.categoryMenu.rename": {
+    "defaultMessage": "Rename category",
+    "description": ""
+  },
+  "fusion.categoryMenu.renameServer": {
+    "defaultMessage": "Rename for everyone…",
+    "description": ""
+  },
+  "fusion.categoryMenu.sort": {
+    "defaultMessage": "Sort",
+    "description": ""
+  },
+  "fusion.categoryMenu.sortAlpha": {
+    "defaultMessage": "Alphabetically",
+    "description": ""
+  },
+  "fusion.categoryMenu.sortLabel": {
+    "defaultMessage": "Sort channels",
+    "description": ""
+  },
+  "fusion.categoryMenu.sortManual": {
+    "defaultMessage": "Manually",
+    "description": ""
+  },
+  "fusion.categoryMenu.sortRecent": {
+    "defaultMessage": "By recent activity",
+    "description": ""
+  },
+  "fusion.categoryMenu.unmute": {
+    "defaultMessage": "Unmute category",
+    "description": ""
+  },
+  "fusion.categoryOverrides.lead": {
+    "defaultMessage": "What roles and people may do in the channels of this category, on top of, or less than, what they have elsewhere. A channel can still set its own, which wins.",
+    "description": ""
+  },
+  "fusion.categoryOverrides.loadFailed": {
+    "defaultMessage": "The category's permissions couldn't be loaded. Close this and try again.",
+    "description": ""
+  },
+  "fusion.categoryOverrides.title": {
+    "defaultMessage": "Permissions of {category}",
+    "description": ""
+  },
+  "fusion.channel.archived": {
+    "defaultMessage": "You are viewing an archived channel. New messages cannot be posted.",
+    "description": ""
+  },
+  "fusion.channel.deactivated": {
+    "defaultMessage": "You are viewing a conversation with a deactivated user. New messages cannot be posted.",
+    "description": ""
+  },
+  "fusion.channel.dropFiles": {
+    "defaultMessage": "Drop to upload",
+    "description": ""
+  },
+  "fusion.channel.loading": {
+    "defaultMessage": "Loading…",
+    "description": ""
+  },
+  "fusion.channel.messageChannel": {
+    "defaultMessage": "Message #{name}",
+    "description": ""
+  },
+  "fusion.channel.messageDirect": {
+    "defaultMessage": "Message {name}",
+    "description": ""
+  },
+  "fusion.channel.messageNotes": {
+    "defaultMessage": "Write a note to self",
+    "description": ""
+  },
+  "fusion.channel.private": {
+    "defaultMessage": "Private",
+    "description": ""
+  },
+  "fusion.channel.readOnly": {
+    "defaultMessage": "You can't send messages in this channel.",
+    "description": ""
+  },
+  "fusion.channel.shared": {
+    "defaultMessage": "Shared with other servers",
+    "description": ""
+  },
+  "fusion.channel.timedOut": {
+    "defaultMessage": "You're timed out until {time}: you can read, but not send messages or react.",
+    "description": ""
+  },
+  "fusion.channelExport.allTime": {
+    "defaultMessage": "All time",
+    "description": ""
+  },
+  "fusion.channelExport.backwards": {
+    "defaultMessage": "The first day is after the last one.",
+    "description": ""
+  },
+  "fusion.channelExport.cancel": {
+    "defaultMessage": "Cancel",
+    "description": ""
+  },
+  "fusion.channelExport.csv": {
+    "defaultMessage": "CSV",
+    "description": ""
+  },
+  "fusion.channelExport.custom": {
+    "defaultMessage": "Custom",
+    "description": ""
+  },
+  "fusion.channelExport.done": {
+    "defaultMessage": "{name} exported",
+    "description": ""
+  },
+  "fusion.channelExport.exporting": {
+    "defaultMessage": "Exporting…",
+    "description": ""
+  },
+  "fusion.channelExport.failed": {
+    "defaultMessage": "The channel couldn't be exported.",
+    "description": ""
+  },
+  "fusion.channelExport.format": {
+    "defaultMessage": "Format",
+    "description": ""
+  },
+  "fusion.channelExport.from": {
+    "defaultMessage": "From",
+    "description": ""
+  },
+  "fusion.channelExport.lastMonth": {
+    "defaultMessage": "Last 30 days",
+    "description": ""
+  },
+  "fusion.channelExport.lead": {
+    "defaultMessage": "Download the messages as a file you can open in a spreadsheet: who wrote them, when, and their replies. Attachments are listed by name. Deleted messages aren't included.",
+    "description": ""
+  },
+  "fusion.channelExport.menu": {
+    "defaultMessage": "Export channel…",
+    "description": ""
+  },
+  "fusion.channelExport.menuConversation": {
+    "defaultMessage": "Export conversation…",
+    "description": ""
+  },
+  "fusion.channelExport.range": {
+    "defaultMessage": "Messages",
+    "description": ""
+  },
+  "fusion.channelExport.submit": {
+    "defaultMessage": "Export",
+    "description": ""
+  },
+  "fusion.channelExport.title": {
+    "defaultMessage": "Export {name}",
+    "description": ""
+  },
+  "fusion.channelExport.to": {
+    "defaultMessage": "To",
+    "description": ""
+  },
+  "fusion.channelMenu.addMembers": {
+    "defaultMessage": "Add members",
+    "description": ""
+  },
+  "fusion.channelMenu.archive": {
+    "defaultMessage": "Archive channel…",
+    "description": ""
+  },
+  "fusion.channelMenu.close": {
+    "defaultMessage": "Close channel",
+    "description": ""
+  },
+  "fusion.channelMenu.closeConversation": {
+    "defaultMessage": "Close conversation",
+    "description": ""
+  },
+  "fusion.channelMenu.convert": {
+    "defaultMessage": "Convert to private channel…",
+    "description": ""
+  },
+  "fusion.channelMenu.copyLink": {
+    "defaultMessage": "Copy link",
+    "description": ""
+  },
+  "fusion.channelMenu.editHeader": {
+    "defaultMessage": "Edit header",
+    "description": ""
+  },
+  "fusion.channelMenu.favorite": {
+    "defaultMessage": "Favorite",
+    "description": ""
+  },
+  "fusion.channelMenu.hide": {
+    "defaultMessage": "Hide until new messages",
+    "description": ""
+  },
+  "fusion.channelMenu.hideSub": {
+    "defaultMessage": "It comes back when someone writes in it",
+    "description": ""
+  },
+  "fusion.channelMenu.label": {
+    "defaultMessage": "Options for {name}",
+    "description": ""
+  },
+  "fusion.channelMenu.leave": {
+    "defaultMessage": "Leave channel",
+    "description": ""
+  },
+  "fusion.channelMenu.lockedNote": {
+    "defaultMessage": "{category} is locked: its channels stay there.",
+    "description": ""
+  },
+  "fusion.channelMenu.markRead": {
+    "defaultMessage": "Mark as read",
+    "description": ""
+  },
+  "fusion.channelMenu.markUnread": {
+    "defaultMessage": "Mark as unread",
+    "description": ""
+  },
+  "fusion.channelMenu.move": {
+    "defaultMessage": "Move to…",
+    "description": ""
+  },
+  "fusion.channelMenu.moveForEveryone": {
+    "defaultMessage": "For everyone",
+    "description": ""
+  },
+  "fusion.channelMenu.moveYours": {
+    "defaultMessage": "Yours",
+    "description": ""
+  },
+  "fusion.channelMenu.mute": {
+    "defaultMessage": "Mute channel",
+    "description": ""
+  },
+  "fusion.channelMenu.muteConversation": {
+    "defaultMessage": "Mute conversation",
+    "description": ""
+  },
+  "fusion.channelMenu.mutedUntil": {
+    "defaultMessage": "Muted until {time}",
+    "description": ""
+  },
+  "fusion.channelMenu.newWindow": {
+    "defaultMessage": "Open in new window",
+    "description": ""
+  },
+  "fusion.channelMenu.notifications": {
+    "defaultMessage": "Notification preferences…",
+    "description": ""
+  },
+  "fusion.channelMenu.permissions": {
+    "defaultMessage": "Permissions…",
+    "description": ""
+  },
+  "fusion.channelMenu.permissionsSub": {
+    "defaultMessage": "Who sees it, and what roles can do here",
+    "description": ""
+  },
+  "fusion.channelMenu.settings": {
+    "defaultMessage": "Channel settings",
+    "description": ""
+  },
+  "fusion.channelMenu.translate": {
+    "defaultMessage": "Translate messages",
+    "description": ""
+  },
+  "fusion.channelMenu.translateSub": {
+    "defaultMessage": "Into your language, by the server",
+    "description": ""
+  },
+  "fusion.channelMenu.translateUnsupported": {
+    "defaultMessage": "Your language isn't supported",
+    "description": ""
+  },
+  "fusion.channelMenu.unarchive": {
+    "defaultMessage": "Unarchive channel",
+    "description": ""
+  },
+  "fusion.channelMenu.unfavorite": {
+    "defaultMessage": "Unfavorite",
+    "description": ""
+  },
+  "fusion.channelMenu.unhide": {
+    "defaultMessage": "Show in the sidebar",
+    "description": ""
+  },
+  "fusion.channelMenu.unmute": {
+    "defaultMessage": "Unmute channel",
+    "description": ""
+  },
+  "fusion.channelMenu.unmuteConversation": {
+    "defaultMessage": "Unmute conversation",
+    "description": ""
+  },
+  "fusion.channelSettings.archive": {
+    "defaultMessage": "Archive channel",
+    "description": ""
+  },
+  "fusion.channelSettings.close": {
+    "defaultMessage": "Close channel settings",
+    "description": ""
+  },
+  "fusion.channelSettings.overview": {
+    "defaultMessage": "Overview",
+    "description": ""
+  },
+  "fusion.channelSettings.plugins": {
+    "defaultMessage": "Apps",
+    "description": ""
+  },
+  "fusion.collections.label": {
+    "defaultMessage": "Mentions, saved, pinned and threads",
+    "description": ""
+  },
+  "fusion.collections.last": {
+    "defaultMessage": "last reply {when}",
+    "description": ""
+  },
+  "fusion.collections.loading": {
+    "defaultMessage": "Loading…",
+    "description": ""
+  },
+  "fusion.collections.replies": {
+    "defaultMessage": "{count, plural, one {# reply} other {# replies}}",
+    "description": ""
+  },
+  "fusion.collections.scope": {
+    "defaultMessage": "Show items from",
+    "description": ""
+  },
+  "fusion.collections.scopeAll": {
+    "defaultMessage": "The whole community",
+    "description": ""
+  },
+  "fusion.collections.scopeHere": {
+    "defaultMessage": "This conversation",
+    "description": ""
+  },
+  "fusion.collections.threadIn": {
+    "defaultMessage": "Thread · {where}",
+    "description": ""
+  },
+  "fusion.composer.ackRequested": {
+    "defaultMessage": "Acknowledgement requested",
+    "description": ""
+  },
+  "fusion.composer.burn": {
+    "defaultMessage": "Burn on read",
+    "description": ""
+  },
+  "fusion.composer.burnAfter": {
+    "defaultMessage": "Deleted {duration} after each person opens it",
+    "description": ""
+  },
+  "fusion.composer.burns": {
+    "defaultMessage": "Burns on read",
+    "description": ""
+  },
+  "fusion.composer.cancelReply": {
+    "defaultMessage": "Cancel reply",
+    "description": ""
+  },
+  "fusion.composer.cancelUpload": {
+    "defaultMessage": "Cancel the upload of {name}",
+    "description": ""
+  },
+  "fusion.composer.done": {
+    "defaultMessage": "Done",
+    "description": ""
+  },
+  "fusion.composer.emoji": {
+    "defaultMessage": "Emoji",
+    "description": ""
+  },
+  "fusion.composer.formatting": {
+    "defaultMessage": "Formatting and message options",
+    "description": ""
+  },
+  "fusion.composer.help": {
+    "defaultMessage": "Help with formatting, mentions, files and commands",
+    "description": ""
+  },
+  "fusion.composer.hideFormatting": {
+    "defaultMessage": "Hide formatting",
+    "description": ""
+  },
+  "fusion.composer.important": {
+    "defaultMessage": "Important",
+    "description": ""
+  },
+  "fusion.composer.lengthTitle": {
+    "defaultMessage": "Messages can be up to {max} characters",
+    "description": ""
+  },
+  "fusion.composer.moreFormatting": {
+    "defaultMessage": "More formatting",
+    "description": ""
+  },
+  "fusion.composer.noBurn": {
+    "defaultMessage": "Turn off burn on read",
+    "description": ""
+  },
+  "fusion.composer.noSpoiler": {
+    "defaultMessage": "Don't send as a spoiler",
+    "description": ""
+  },
+  "fusion.composer.persistent": {
+    "defaultMessage": " · persistent",
+    "description": ""
+  },
+  "fusion.composer.persistentEvery": {
+    "defaultMessage": "Repeats every {minutes, plural, one {minute} other {# minutes}} until acknowledged · urgent only",
+    "description": ""
+  },
+  "fusion.composer.persistentTitle": {
+    "defaultMessage": "Persistent notifications",
+    "description": ""
+  },
+  "fusion.composer.plus": {
+    "defaultMessage": "Add a file and more",
+    "description": ""
+  },
+  "fusion.composer.plusMenu": {
+    "defaultMessage": "Add to message",
+    "description": ""
+  },
+  "fusion.composer.preview": {
+    "defaultMessage": "Preview (Ctrl+Alt+P)",
+    "description": ""
+  },
+  "fusion.composer.previewLabel": {
+    "defaultMessage": "Show how the message will look",
+    "description": ""
+  },
+  "fusion.composer.priority": {
+    "defaultMessage": "Message priority",
+    "description": ""
+  },
+  "fusion.composer.removeAck": {
+    "defaultMessage": "Remove acknowledgement",
+    "description": ""
+  },
+  "fusion.composer.removeFile": {
+    "defaultMessage": "Remove {name}",
+    "description": ""
+  },
+  "fusion.composer.removePriority": {
+    "defaultMessage": "Remove priority",
+    "description": ""
+  },
+  "fusion.composer.requestAck": {
+    "defaultMessage": "Request acknowledgement",
+    "description": ""
+  },
+  "fusion.composer.requestAckDesc": {
+    "defaultMessage": "Recipients confirm they have read it",
+    "description": ""
+  },
+  "fusion.composer.schedule": {
+    "defaultMessage": "Schedule message",
+    "description": ""
+  },
+  "fusion.composer.send": {
+    "defaultMessage": "Send",
+    "description": ""
+  },
+  "fusion.composer.sendFailed": {
+    "defaultMessage": "The message couldn't be sent.",
+    "description": ""
+  },
+  "fusion.composer.showFormatting": {
+    "defaultMessage": "Show formatting",
+    "description": ""
+  },
+  "fusion.composer.slash": {
+    "defaultMessage": "Use a slash command",
+    "description": ""
+  },
+  "fusion.composer.spoiler": {
+    "defaultMessage": "Send as a spoiler",
+    "description": ""
+  },
+  "fusion.composer.spoilerOn": {
+    "defaultMessage": "Spoiler",
+    "description": ""
+  },
+  "fusion.composer.standard": {
+    "defaultMessage": "Standard",
+    "description": ""
+  },
+  "fusion.composer.tooBig": {
+    "defaultMessage": "{name} is too big: files can be up to {size}",
+    "description": ""
+  },
+  "fusion.composer.tooLong": {
+    "defaultMessage": "This message is {over, plural, one {# character} other {# characters}} too long: the limit is {max}.",
+    "description": ""
+  },
+  "fusion.composer.tooMany": {
+    "defaultMessage": "A message can carry up to {count} files",
+    "description": ""
+  },
+  "fusion.composer.upload": {
+    "defaultMessage": "Upload a file",
+    "description": ""
+  },
+  "fusion.composer.uploadFailed": {
+    "defaultMessage": "{name} couldn't be uploaded: {message}",
+    "description": ""
+  },
+  "fusion.composer.urgent": {
+    "defaultMessage": "Urgent",
+    "description": ""
+  },
+  "fusion.composer.withAck": {
+    "defaultMessage": " · acknowledgement",
+    "description": ""
+  },
+  "fusion.confirm.cancel": {
+    "defaultMessage": "Cancel",
+    "description": ""
+  },
+  "fusion.createChannel.cancel": {
+    "defaultMessage": "Cancel",
+    "description": ""
+  },
+  "fusion.createChannel.category": {
+    "defaultMessage": "Category",
+    "description": ""
+  },
+  "fusion.createChannel.failed": {
+    "defaultMessage": "Something went wrong. Please try again.",
+    "description": ""
+  },
+  "fusion.createChannel.forEveryone": {
+    "defaultMessage": "Community categories",
+    "description": ""
+  },
+  "fusion.createChannel.lead": {
+    "defaultMessage": "In {team}.",
+    "description": ""
+  },
+  "fusion.createChannel.more": {
+    "defaultMessage": "More options…",
+    "description": ""
+  },
+  "fusion.createChannel.name": {
+    "defaultMessage": "Name",
+    "description": ""
+  },
+  "fusion.createChannel.namePlaceholder": {
+    "defaultMessage": "e.g. beam-schedule",
+    "description": ""
+  },
+  "fusion.createChannel.noName": {
+    "defaultMessage": "Give the channel a name",
+    "description": ""
+  },
+  "fusion.createChannel.private": {
+    "defaultMessage": "Private channel",
+    "description": ""
+  },
+  "fusion.createChannel.privateDesc": {
+    "defaultMessage": "Only invited members can see and join it.",
+    "description": ""
+  },
+  "fusion.createChannel.text": {
+    "defaultMessage": "Text",
+    "description": ""
+  },
+  "fusion.createChannel.textDesc": {
+    "defaultMessage": "Messages, files and threads",
+    "description": ""
+  },
+  "fusion.createChannel.title": {
+    "defaultMessage": "Create channel",
+    "description": ""
+  },
+  "fusion.createChannel.type": {
+    "defaultMessage": "Channel type",
+    "description": ""
+  },
+  "fusion.createChannel.yours": {
+    "defaultMessage": "Your categories",
+    "description": ""
+  },
+  "fusion.createTeam.cancel": {
+    "defaultMessage": "Cancel",
+    "description": ""
+  },
+  "fusion.createTeam.create": {
+    "defaultMessage": "Create community",
+    "description": ""
+  },
+  "fusion.createTeam.failed": {
+    "defaultMessage": "The community couldn't be created.",
+    "description": ""
+  },
+  "fusion.createTeam.lead": {
+    "defaultMessage": "A community has its own channels and people. You can set it up from a preset once it's made.",
+    "description": ""
+  },
+  "fusion.createTeam.name": {
+    "defaultMessage": "Name",
+    "description": ""
+  },
+  "fusion.createTeam.namePlaceholder": {
+    "defaultMessage": "e.g. Detector physics",
+    "description": ""
+  },
+  "fusion.createTeam.open": {
+    "defaultMessage": "Anyone on the server can join",
+    "description": ""
+  },
+  "fusion.createTeam.openDesc": {
+    "defaultMessage": "Otherwise people join by invitation only.",
+    "description": ""
+  },
+  "fusion.createTeam.title": {
+    "defaultMessage": "Create a community",
+    "description": ""
+  },
+  "fusion.createTeam.url": {
+    "defaultMessage": "Address",
+    "description": ""
+  },
+  "fusion.createTeam.urlFormat": {
+    "defaultMessage": "Lower case letters, numbers and dashes; it starts with a letter and doesn't end with a dash.",
+    "description": ""
+  },
+  "fusion.createTeam.urlLength": {
+    "defaultMessage": "Between {min} and {max} characters.",
+    "description": ""
+  },
+  "fusion.createTeam.urlNote": {
+    "defaultMessage": "Where the community is found; it can't change later.",
+    "description": ""
+  },
+  "fusion.createTeam.urlReserved": {
+    "defaultMessage": "It can't start with a reserved word.",
+    "description": ""
+  },
+  "fusion.createTeam.urlTaken": {
+    "defaultMessage": "That address is taken.",
+    "description": ""
+  },
+  "fusion.delete.cancel": {
+    "defaultMessage": "Cancel",
+    "description": ""
+  },
+  "fusion.delete.delete": {
+    "defaultMessage": "Delete",
+    "description": ""
+  },
+  "fusion.delete.failed": {
+    "defaultMessage": "The message could not be deleted.",
+    "description": ""
+  },
+  "fusion.delete.files": {
+    "defaultMessage": "{count, plural, one {# file} other {# files}}",
+    "description": ""
+  },
+  "fusion.delete.lead": {
+    "defaultMessage": "This removes it for everyone. It can't be undone.",
+    "description": ""
+  },
+  "fusion.delete.replies": {
+    "defaultMessage": "Its {count, plural, one {reply goes} other {# replies go}} with it.",
+    "description": ""
+  },
+  "fusion.delete.title": {
+    "defaultMessage": "Delete message?",
+    "description": ""
+  },
+  "fusion.dm.remote": {
+    "defaultMessage": "On another server",
+    "description": ""
+  },
+  "fusion.dock.all": {
+    "defaultMessage": "All direct messages",
+    "description": ""
+  },
+  "fusion.dock.allUnread": {
+    "defaultMessage": "{label}, {count, plural, one {# unread message} other {# unread messages}}",
+    "description": ""
+  },
+  "fusion.dock.close": {
+    "defaultMessage": "Close",
+    "description": ""
+  },
+  "fusion.dock.closeLabel": {
+    "defaultMessage": "Close conversation with {name}",
+    "description": ""
+  },
+  "fusion.dock.label": {
+    "defaultMessage": "Open conversations",
+    "description": ""
+  },
+  "fusion.dock.title": {
+    "defaultMessage": "Open conversations",
+    "description": ""
+  },
+  "fusion.edit.cancel": {
+    "defaultMessage": "Cancel",
+    "description": ""
+  },
+  "fusion.edit.failed": {
+    "defaultMessage": "The message could not be saved.",
+    "description": ""
+  },
+  "fusion.edit.hint": {
+    "defaultMessage": "Enter to save · Shift+Enter for a new line · Esc to cancel",
+    "description": ""
+  },
+  "fusion.edit.label": {
+    "defaultMessage": "Edit message",
+    "description": ""
+  },
+  "fusion.edit.noMentionNotify": {
+    "defaultMessage": "Mentions added in an edit don't notify anyone.",
+    "description": ""
+  },
+  "fusion.edit.save": {
+    "defaultMessage": "Save",
+    "description": ""
+  },
+  "fusion.embed.jump": {
+    "defaultMessage": "Jump",
+    "description": ""
+  },
+  "fusion.embed.permalinkWhere": {
+    "defaultMessage": "in {where} · {time}",
+    "description": ""
+  },
+  "fusion.embed.play": {
+    "defaultMessage": "Play {title}",
+    "description": ""
+  },
+  "fusion.embed.removePreview": {
+    "defaultMessage": "Remove link preview",
+    "description": ""
+  },
+  "fusion.embed.show": {
+    "defaultMessage": "Show preview",
+    "description": ""
+  },
+  "fusion.files.archived": {
+    "defaultMessage": "This file is archived",
+    "description": ""
+  },
+  "fusion.files.copyLink": {
+    "defaultMessage": "Copy link",
+    "description": ""
+  },
+  "fusion.files.copyPublicLink": {
+    "defaultMessage": "Copy public link",
+    "description": ""
+  },
+  "fusion.files.download": {
+    "defaultMessage": "Download",
+    "description": ""
+  },
+  "fusion.files.file": {
+    "defaultMessage": "FILE",
+    "description": ""
+  },
+  "fusion.files.hideImages": {
+    "defaultMessage": "{count, plural, one {Hide image} other {Hide # images}}",
+    "description": ""
+  },
+  "fusion.files.linkCopied": {
+    "defaultMessage": "Link copied",
+    "description": ""
+  },
+  "fusion.files.menu": {
+    "defaultMessage": "Options for {name}",
+    "description": ""
+  },
+  "fusion.files.more": {
+    "defaultMessage": "More actions",
+    "description": ""
+  },
+  "fusion.files.open": {
+    "defaultMessage": "Open {name}",
+    "description": ""
+  },
+  "fusion.files.openImage": {
+    "defaultMessage": "Open image {name}",
+    "description": ""
+  },
+  "fusion.files.openInChannel": {
+    "defaultMessage": "Open in channel",
+    "description": ""
+  },
+  "fusion.files.redacted": {
+    "defaultMessage": "{count, plural, one {# file not available} other {# files not available}}",
+    "description": ""
+  },
+  "fusion.files.redactedWhy": {
+    "defaultMessage": "Access to files is restricted based on attributes",
+    "description": ""
+  },
+  "fusion.files.showImages": {
+    "defaultMessage": "{count, plural, one {Show image} other {Show # images}}",
+    "description": ""
+  },
+  "fusion.group.addPeople": {
+    "defaultMessage": "Add people…",
+    "description": ""
+  },
+  "fusion.group.addPeopleSub": {
+    "defaultMessage": "Starts a new group with everyone",
+    "description": ""
+  },
+  "fusion.group.cancel": {
+    "defaultMessage": "Cancel",
+    "description": ""
+  },
+  "fusion.group.convert": {
+    "defaultMessage": "Convert to private channel",
+    "description": ""
+  },
+  "fusion.group.menu": {
+    "defaultMessage": "Group options",
+    "description": ""
+  },
+  "fusion.group.name": {
+    "defaultMessage": "Name",
+    "description": ""
+  },
+  "fusion.group.rename": {
+    "defaultMessage": "Rename group",
+    "description": ""
+  },
+  "fusion.group.renameLead": {
+    "defaultMessage": "Only you see this name. Leave it empty to show the members' names again.",
+    "description": ""
+  },
+  "fusion.group.renameTitle": {
+    "defaultMessage": "Rename group",
+    "description": ""
+  },
+  "fusion.group.save": {
+    "defaultMessage": "Save",
+    "description": ""
+  },
+  "fusion.gs.all": {
+    "defaultMessage": "Search all messages for “{q}”",
+    "description": ""
+  },
+  "fusion.gs.allSub": {
+    "defaultMessage": "See every match in the side panel",
+    "description": ""
+  },
+  "fusion.gs.channels": {
+    "defaultMessage": "Channels & conversations",
+    "description": ""
+  },
+  "fusion.gs.close": {
+    "defaultMessage": "close",
+    "description": ""
+  },
+  "fusion.gs.direct": {
+    "defaultMessage": "Direct message",
+    "description": ""
+  },
+  "fusion.gs.fAll": {
+    "defaultMessage": "All",
+    "description": ""
+  },
+  "fusion.gs.fChannels": {
+    "defaultMessage": "Channels",
+    "description": ""
+  },
+  "fusion.gs.fMessages": {
+    "defaultMessage": "Messages",
+    "description": ""
+  },
+  "fusion.gs.fPeople": {
+    "defaultMessage": "People",
+    "description": ""
+  },
+  "fusion.gs.kindChannel": {
+    "defaultMessage": "Channel",
+    "description": ""
+  },
+  "fusion.gs.kindDM": {
+    "defaultMessage": "DM",
+    "description": ""
+  },
+  "fusion.gs.kindMessage": {
+    "defaultMessage": "Message",
+    "description": ""
+  },
+  "fusion.gs.kindPerson": {
+    "defaultMessage": "Person",
+    "description": ""
+  },
+  "fusion.gs.kindSearch": {
+    "defaultMessage": "Search",
+    "description": ""
+  },
+  "fusion.gs.label": {
+    "defaultMessage": "Search everything",
+    "description": ""
+  },
+  "fusion.gs.messages": {
+    "defaultMessage": "Messages",
+    "description": ""
+  },
+  "fusion.gs.messageWhere": {
+    "defaultMessage": "in {where}",
+    "description": ""
+  },
+  "fusion.gs.navigate": {
+    "defaultMessage": "navigate",
+    "description": ""
+  },
+  "fusion.gs.open": {
+    "defaultMessage": "open",
+    "description": ""
+  },
+  "fusion.gs.people": {
+    "defaultMessage": "People",
+    "description": ""
+  },
+  "fusion.gs.placeholder": {
+    "defaultMessage": "Search messages, channels, people and more",
+    "description": ""
+  },
+  "fusion.gs.recent": {
+    "defaultMessage": "Recent",
+    "description": ""
+  },
+  "fusion.gs.recentSearches": {
+    "defaultMessage": "Recent searches",
+    "description": ""
+  },
+  "fusion.gs.recentSub": {
+    "defaultMessage": "Search again in the side panel",
+    "description": ""
+  },
+  "fusion.gs.scope": {
+    "defaultMessage": "Where to search messages",
+    "description": ""
+  },
+  "fusion.gs.scopeAll": {
+    "defaultMessage": "In all communities",
+    "description": ""
+  },
+  "fusion.gs.scopeTeam": {
+    "defaultMessage": "In {team}",
+    "description": ""
+  },
+  "fusion.gs.start": {
+    "defaultMessage": "Start typing to search.",
+    "description": ""
+  },
+  "fusion.gs.thread": {
+    "defaultMessage": "thread",
+    "description": ""
+  },
+  "fusion.header.collections": {
+    "defaultMessage": "Mentions, saved, pinned, files and threads here",
+    "description": ""
+  },
+  "fusion.header.dndUntil": {
+    "defaultMessage": "Do not disturb until {time}",
+    "description": ""
+  },
+  "fusion.header.federated": {
+    "defaultMessage": "Federated",
+    "description": ""
+  },
+  "fusion.header.federatedFrom": {
+    "defaultMessage": "Federated · {host}",
+    "description": ""
+  },
+  "fusion.header.group": {
+    "defaultMessage": "Group message",
+    "description": ""
+  },
+  "fusion.header.guests": {
+    "defaultMessage": "Has guests",
+    "description": ""
+  },
+  "fusion.header.guestsTitle": {
+    "defaultMessage": "Guests can read and post in this channel",
+    "description": ""
+  },
+  "fusion.header.header": {
+    "defaultMessage": "Header",
+    "description": ""
+  },
+  "fusion.header.info": {
+    "defaultMessage": "About this conversation",
+    "description": ""
+  },
+  "fusion.header.lastOnline": {
+    "defaultMessage": "Last online {when}",
+    "description": ""
+  },
+  "fusion.header.localTime": {
+    "defaultMessage": "{time} local time",
+    "description": ""
+  },
+  "fusion.header.me": {
+    "defaultMessage": "Your status, profile and settings",
+    "description": ""
+  },
+  "fusion.header.members": {
+    "defaultMessage": "Member list",
+    "description": ""
+  },
+  "fusion.header.membersToggle": {
+    "defaultMessage": "Toggle member list",
+    "description": ""
+  },
+  "fusion.header.nav": {
+    "defaultMessage": "Open navigation",
+    "description": ""
+  },
+  "fusion.header.notes": {
+    "defaultMessage": "Only you can see these notes",
+    "description": ""
+  },
+  "fusion.header.policy": {
+    "defaultMessage": "Restricted",
+    "description": ""
+  },
+  "fusion.header.policyTitle": {
+    "defaultMessage": "Who can join this channel is set by an access policy",
+    "description": ""
+  },
+  "fusion.header.purpose": {
+    "defaultMessage": "Purpose",
+    "description": ""
+  },
+  "fusion.header.searchLabel": {
+    "defaultMessage": "Search messages",
+    "description": ""
+  },
+  "fusion.header.searchTeam": {
+    "defaultMessage": "Search {team}",
+    "description": ""
+  },
+  "fusion.header.showTopic": {
+    "defaultMessage": "Show the whole header",
+    "description": ""
+  },
+  "fusion.header.topicLabel": {
+    "defaultMessage": "About {name}",
+    "description": ""
+  },
+  "fusion.header.translated": {
+    "defaultMessage": "Translated",
+    "description": ""
+  },
+  "fusion.header.translatedTitle": {
+    "defaultMessage": "Messages here are translated into your language",
+    "description": ""
+  },
+  "fusion.help.close": {
+    "defaultMessage": "Close",
+    "description": ""
+  },
+  "fusion.help.title": {
+    "defaultMessage": "Help",
+    "description": ""
+  },
+  "fusion.history.back": {
+    "defaultMessage": "Back",
+    "description": ""
+  },
+  "fusion.history.forward": {
+    "defaultMessage": "Forward",
+    "description": ""
+  },
+  "fusion.home.conversations": {
+    "defaultMessage": "Conversations",
+    "description": ""
+  },
+  "fusion.home.drafts": {
+    "defaultMessage": "Drafts",
+    "description": ""
+  },
+  "fusion.home.find": {
+    "defaultMessage": "Find or start a conversation",
+    "description": ""
+  },
+  "fusion.home.label": {
+    "defaultMessage": "Direct messages",
+    "description": ""
+  },
+  "fusion.home.mentions": {
+    "defaultMessage": "Mentions",
+    "description": ""
+  },
+  "fusion.home.new": {
+    "defaultMessage": "New message",
+    "description": ""
+  },
+  "fusion.home.newGroup": {
+    "defaultMessage": "New conversation with one or more people",
+    "description": ""
+  },
+  "fusion.home.newLabel": {
+    "defaultMessage": "New direct message",
+    "description": ""
+  },
+  "fusion.home.none": {
+    "defaultMessage": "No conversation matches “{query}”. Press Enter to start one.",
+    "description": ""
+  },
+  "fusion.home.recaps": {
+    "defaultMessage": "Recaps",
+    "description": ""
+  },
+  "fusion.home.saved": {
+    "defaultMessage": "Saved messages",
+    "description": ""
+  },
+  "fusion.home.scheduled": {
+    "defaultMessage": "Scheduled",
+    "description": ""
+  },
+  "fusion.home.spoiler": {
+    "defaultMessage": "Spoiler",
+    "description": ""
+  },
+  "fusion.home.threads": {
+    "defaultMessage": "Followed threads",
+    "description": ""
+  },
+  "fusion.home.title": {
+    "defaultMessage": "Direct messages",
+    "description": ""
+  },
+  "fusion.home.you": {
+    "defaultMessage": "You: {text}",
+    "description": ""
+  },
+  "fusion.info.add": {
+    "defaultMessage": "Add people",
+    "description": ""
+  },
+  "fusion.info.copyLink": {
+    "defaultMessage": "Copy link",
+    "description": ""
+  },
+  "fusion.info.created": {
+    "defaultMessage": "Created by {name} on {date}",
+    "description": ""
+  },
+  "fusion.info.favorite": {
+    "defaultMessage": "Favorite",
+    "description": ""
+  },
+  "fusion.info.favorited": {
+    "defaultMessage": "Favorited",
+    "description": ""
+  },
+  "fusion.info.files": {
+    "defaultMessage": "Files",
+    "description": ""
+  },
+  "fusion.info.label": {
+    "defaultMessage": "About {name}",
+    "description": ""
+  },
+  "fusion.info.members": {
+    "defaultMessage": "Members",
+    "description": ""
+  },
+  "fusion.info.mute": {
+    "defaultMessage": "Mute",
+    "description": ""
+  },
+  "fusion.info.muted": {
+    "defaultMessage": "Muted",
+    "description": ""
+  },
+  "fusion.info.pinned": {
+    "defaultMessage": "Pinned messages",
+    "description": ""
+  },
+  "fusion.info.settings": {
+    "defaultMessage": "Settings",
+    "description": ""
+  },
+  "fusion.inlineReply.deleted": {
+    "defaultMessage": "Original message was deleted",
+    "description": ""
+  },
+  "fusion.inlineReply.files": {
+    "defaultMessage": "{count, plural, one {# file} other {# files}}",
+    "description": ""
+  },
+  "fusion.inlineReply.images": {
+    "defaultMessage": "{count, plural, one {# image} other {# images}}",
+    "description": ""
+  },
+  "fusion.inlineReply.mention": {
+    "defaultMessage": "Mention {name}",
+    "description": ""
+  },
+  "fusion.inlineReply.mentionOff": {
+    "defaultMessage": "@ Off",
+    "description": ""
+  },
+  "fusion.inlineReply.mentionOn": {
+    "defaultMessage": "@ On",
+    "description": ""
+  },
+  "fusion.inlineReply.mentionTip": {
+    "defaultMessage": "{name} will be notified of your reply. Click to turn off.",
+    "description": ""
+  },
+  "fusion.inlineReply.noMention": {
+    "defaultMessage": "Don't mention {name}",
+    "description": ""
+  },
+  "fusion.inlineReply.noMentionTip": {
+    "defaultMessage": "{name} won't be notified of your reply. Click to turn on.",
+    "description": ""
+  },
+  "fusion.inlineReply.replying": {
+    "defaultMessage": "Replying to:",
+    "description": ""
+  },
+  "fusion.inlineReply.replyingTo": {
+    "defaultMessage": "Replying to {name}:",
+    "description": ""
+  },
+  "fusion.inlineReply.seeFiles": {
+    "defaultMessage": "Click to see attachment",
+    "description": ""
+  },
+  "fusion.inlineReply.seeImages": {
+    "defaultMessage": "Click to see {count, plural, one {image} other {images}}",
+    "description": ""
+  },
+  "fusion.inlineReply.seeMessage": {
+    "defaultMessage": "Click to see message",
+    "description": ""
+  },
+  "fusion.inlineReply.spoiler": {
+    "defaultMessage": "Spoiler",
+    "description": ""
+  },
+  "fusion.integrations.back": {
+    "defaultMessage": "Back to {team}",
+    "description": ""
+  },
+  "fusion.integrations.backHome": {
+    "defaultMessage": "Back",
+    "description": ""
+  },
+  "fusion.integrations.bots": {
+    "defaultMessage": "Bot accounts",
+    "description": ""
+  },
+  "fusion.integrations.commands": {
+    "defaultMessage": "Slash commands",
+    "description": ""
+  },
+  "fusion.integrations.customization": {
+    "defaultMessage": "Customization",
+    "description": ""
+  },
+  "fusion.integrations.emoji": {
+    "defaultMessage": "Custom emoji",
+    "description": ""
+  },
+  "fusion.integrations.incoming": {
+    "defaultMessage": "Incoming webhooks",
+    "description": ""
+  },
+  "fusion.integrations.nav": {
+    "defaultMessage": "Integrations",
+    "description": ""
+  },
+  "fusion.integrations.oauthApps": {
+    "defaultMessage": "OAuth 2.0 apps",
+    "description": ""
+  },
+  "fusion.integrations.oauthConnections": {
+    "defaultMessage": "Outgoing OAuth connections",
+    "description": ""
+  },
+  "fusion.integrations.outgoing": {
+    "defaultMessage": "Outgoing webhooks",
+    "description": ""
+  },
+  "fusion.integrations.overview": {
+    "defaultMessage": "Overview",
+    "description": ""
+  },
+  "fusion.integrations.title": {
+    "defaultMessage": "Integrations",
+    "description": ""
+  },
+  "fusion.intro.addMembers": {
+    "defaultMessage": "Add members",
+    "description": ""
+  },
+  "fusion.intro.channel": {
+    "defaultMessage": "This is the start of the #{name} channel.",
+    "description": ""
+  },
+  "fusion.intro.channelBy": {
+    "defaultMessage": "This is the start of the #{name} channel, created by {creator} on {date}.",
+    "description": ""
+  },
+  "fusion.intro.direct": {
+    "defaultMessage": "This is the start of your conversation with @{username}. Only the two of you can see it.",
+    "description": ""
+  },
+  "fusion.intro.favorite": {
+    "defaultMessage": "Add to favorites",
+    "description": ""
+  },
+  "fusion.intro.favorited": {
+    "defaultMessage": "Favorite",
+    "description": ""
+  },
+  "fusion.intro.group": {
+    "defaultMessage": "This is the start of your group conversation with {names}. Only its members can see it.",
+    "description": ""
+  },
+  "fusion.intro.notes": {
+    "defaultMessage": "Your space for notes, reminders and drafts: only you can see it. Keep a message here with “Save to notes” in its menu.",
+    "description": ""
+  },
+  "fusion.intro.notifications": {
+    "defaultMessage": "Notifications",
+    "description": ""
+  },
+  "fusion.intro.setHeader": {
+    "defaultMessage": "Set a header",
+    "description": ""
+  },
+  "fusion.intro.townSquare": {
+    "defaultMessage": "This is the start of #{name}, the channel everyone in the community is in. Post here what everyone should see.",
+    "description": ""
+  },
+  "fusion.intro.welcome": {
+    "defaultMessage": "Welcome to #{name}",
+    "description": ""
+  },
+  "fusion.keys.all": {
+    "defaultMessage": "All keyboard shortcuts…",
+    "description": ""
+  },
+  "fusion.keys.change": {
+    "defaultMessage": "Change",
+    "description": ""
+  },
+  "fusion.keys.clash": {
+    "defaultMessage": "Another action uses these keys too",
+    "description": ""
+  },
+  "fusion.keys.off": {
+    "defaultMessage": "Off",
+    "description": ""
+  },
+  "fusion.keys.press": {
+    "defaultMessage": "Press the keys…",
+    "description": ""
+  },
+  "fusion.keys.reset": {
+    "defaultMessage": "Reset",
+    "description": ""
+  },
+  "fusion.keys.resetTitle": {
+    "defaultMessage": "Back to {combo}",
+    "description": ""
+  },
+  "fusion.layout.applied": {
+    "defaultMessage": "{team} is set up",
+    "description": ""
+  },
+  "fusion.layout.apply": {
+    "defaultMessage": "Apply",
+    "description": ""
+  },
+  "fusion.layout.community": {
+    "defaultMessage": "Community",
+    "description": ""
+  },
+  "fusion.layout.communityDesc": {
+    "defaultMessage": "Like Discord: categories the admins keep, and a Moderators role. To stop members creating channels, change the community's permissions in the System Console.",
+    "description": ""
+  },
+  "fusion.layout.export": {
+    "defaultMessage": "Export as a template",
+    "description": ""
+  },
+  "fusion.layout.firstTitle": {
+    "defaultMessage": "Set up {team}",
+    "description": ""
+  },
+  "fusion.layout.hybrid": {
+    "defaultMessage": "Hybrid (recommended)",
+    "description": ""
+  },
+  "fusion.layout.hybridDesc": {
+    "defaultMessage": "Curated categories for everyone, an open Community one where members file their channels, and a Moderators role.",
+    "description": ""
+  },
+  "fusion.layout.import": {
+    "defaultMessage": "Apply a template…",
+    "description": ""
+  },
+  "fusion.layout.later": {
+    "defaultMessage": "Not now",
+    "description": ""
+  },
+  "fusion.layout.lead": {
+    "defaultMessage": "Start from a preset, or from a template exported from another community. Applying it only removes the community categories it doesn't include.",
+    "description": ""
+  },
+  "fusion.layout.notTemplate": {
+    "defaultMessage": "That file isn't a community template",
+    "description": ""
+  },
+  "fusion.layout.partly": {
+    "defaultMessage": "{team} is set up, but {count, plural, one {# step} other {# steps}} failed",
+    "description": ""
+  },
+  "fusion.layout.title": {
+    "defaultMessage": "Community layout",
+    "description": ""
+  },
+  "fusion.layout.workplace": {
+    "defaultMessage": "Workplace",
+    "description": ""
+  },
+  "fusion.layout.workplaceDesc": {
+    "defaultMessage": "Like Mattermost: everyone keeps their own categories. Removes the categories for everyone; roles stay.",
+    "description": ""
+  },
+  "fusion.lightbox.close": {
+    "defaultMessage": "Close image",
+    "description": ""
+  },
+  "fusion.lightbox.copyLink": {
+    "defaultMessage": "Copy link",
+    "description": ""
+  },
+  "fusion.lightbox.download": {
+    "defaultMessage": "Download",
+    "description": ""
+  },
+  "fusion.lightbox.label": {
+    "defaultMessage": "Image",
+    "description": ""
+  },
+  "fusion.lightbox.next": {
+    "defaultMessage": "Next image",
+    "description": ""
+  },
+  "fusion.lightbox.preview": {
+    "defaultMessage": "Open in the file preview",
+    "description": ""
+  },
+  "fusion.lightbox.previous": {
+    "defaultMessage": "Previous image",
+    "description": ""
+  },
+  "fusion.lightbox.zoomIn": {
+    "defaultMessage": "Zoom in (+)",
+    "description": ""
+  },
+  "fusion.lightbox.zoomOut": {
+    "defaultMessage": "Zoom out (−)",
+    "description": ""
+  },
+  "fusion.members.add": {
+    "defaultMessage": "Add people or invite",
+    "description": ""
+  },
+  "fusion.members.addLabel": {
+    "defaultMessage": "Add people or create an invite",
+    "description": ""
+  },
+  "fusion.members.addMenu": {
+    "defaultMessage": "Add people",
+    "description": ""
+  },
+  "fusion.members.addToChannel": {
+    "defaultMessage": "Add people to {where}",
+    "description": ""
+  },
+  "fusion.members.addToChannelSub": {
+    "defaultMessage": "Members of {team}",
+    "description": ""
+  },
+  "fusion.members.admins": {
+    "defaultMessage": "Admin — {count}",
+    "description": ""
+  },
+  "fusion.members.byRole": {
+    "defaultMessage": "Roles",
+    "description": ""
+  },
+  "fusion.members.byTeam": {
+    "defaultMessage": "Teams",
+    "description": ""
+  },
+  "fusion.members.grouping": {
+    "defaultMessage": "Group members by",
+    "description": ""
+  },
+  "fusion.members.invite": {
+    "defaultMessage": "Invite to {team}",
+    "description": ""
+  },
+  "fusion.members.inviteSub": {
+    "defaultMessage": "Create an invite link or send emails",
+    "description": ""
+  },
+  "fusion.members.label": {
+    "defaultMessage": "Members",
+    "description": ""
+  },
+  "fusion.members.mods": {
+    "defaultMessage": "Moderators — {count}",
+    "description": ""
+  },
+  "fusion.members.offline": {
+    "defaultMessage": "Offline — {count}",
+    "description": ""
+  },
+  "fusion.members.online": {
+    "defaultMessage": "Online — {count}",
+    "description": ""
+  },
+  "fusion.members.remote": {
+    "defaultMessage": "From another server",
+    "description": ""
+  },
+  "fusion.members.role": {
+    "defaultMessage": "{role} — {count}",
+    "description": ""
+  },
+  "fusion.members.team": {
+    "defaultMessage": "{team} — {count}",
+    "description": ""
+  },
+  "fusion.members.timedOut": {
+    "defaultMessage": "Timed out",
+    "description": ""
+  },
+  "fusion.members.title": {
+    "defaultMessage": "{count, plural, one {# member} other {# members}}",
+    "description": ""
+  },
+  "fusion.menu.copyId": {
+    "defaultMessage": "Copy ID",
+    "description": ""
+  },
+  "fusion.message.cancelFailed": {
+    "defaultMessage": "Discard",
+    "description": ""
+  },
+  "fusion.message.dismiss": {
+    "defaultMessage": "Dismiss",
+    "description": ""
+  },
+  "fusion.message.edited": {
+    "defaultMessage": "(edited)",
+    "description": ""
+  },
+  "fusion.message.editedAt": {
+    "defaultMessage": "Edited {time}",
+    "description": ""
+  },
+  "fusion.message.editHistory": {
+    "defaultMessage": "Click to see the edit history",
+    "description": ""
+  },
+  "fusion.message.failed": {
+    "defaultMessage": "Not sent",
+    "description": ""
+  },
+  "fusion.message.guest": {
+    "defaultMessage": "GUEST",
+    "description": ""
+  },
+  "fusion.message.important": {
+    "defaultMessage": "Important",
+    "description": ""
+  },
+  "fusion.message.more": {
+    "defaultMessage": "More actions",
+    "description": ""
+  },
+  "fusion.message.onlyYou": {
+    "defaultMessage": "Only visible to you",
+    "description": ""
+  },
+  "fusion.message.pinned": {
+    "defaultMessage": "Pinned",
+    "description": ""
+  },
+  "fusion.message.react": {
+    "defaultMessage": "Add reaction",
+    "description": ""
+  },
+  "fusion.message.remote": {
+    "defaultMessage": "From another server, through a shared channel",
+    "description": ""
+  },
+  "fusion.message.reply": {
+    "defaultMessage": "Reply in thread",
+    "description": ""
+  },
+  "fusion.message.replyInline": {
+    "defaultMessage": "Reply",
+    "description": ""
+  },
+  "fusion.message.retry": {
+    "defaultMessage": "Retry",
+    "description": ""
+  },
+  "fusion.message.saved": {
+    "defaultMessage": "Saved",
+    "description": ""
+  },
+  "fusion.message.showLess": {
+    "defaultMessage": "Show less",
+    "description": ""
+  },
+  "fusion.message.showMore": {
+    "defaultMessage": "Show more",
+    "description": ""
+  },
+  "fusion.message.spoilerTool": {
+    "defaultMessage": "Spoiler: show or hide",
+    "description": ""
+  },
+  "fusion.message.tools": {
+    "defaultMessage": "Message actions",
+    "description": ""
+  },
+  "fusion.message.urgent": {
+    "defaultMessage": "Urgent",
+    "description": ""
+  },
+  "fusion.message.viaWebhook": {
+    "defaultMessage": "via webhook",
+    "description": ""
+  },
+  "fusion.messageMenu.copy": {
+    "defaultMessage": "Copy text",
+    "description": ""
+  },
+  "fusion.messageMenu.delete": {
+    "defaultMessage": "Delete",
+    "description": ""
+  },
+  "fusion.messageMenu.edit": {
+    "defaultMessage": "Edit",
+    "description": ""
+  },
+  "fusion.messageMenu.follow": {
+    "defaultMessage": "Follow thread",
+    "description": ""
+  },
+  "fusion.messageMenu.forward": {
+    "defaultMessage": "Forward",
+    "description": ""
+  },
+  "fusion.messageMenu.label": {
+    "defaultMessage": "Message actions",
+    "description": ""
+  },
+  "fusion.messageMenu.link": {
+    "defaultMessage": "Copy link",
+    "description": ""
+  },
+  "fusion.messageMenu.moreReactions": {
+    "defaultMessage": "More reactions",
+    "description": ""
+  },
+  "fusion.messageMenu.moveThread": {
+    "defaultMessage": "Move thread…",
+    "description": ""
+  },
+  "fusion.messageMenu.nameThread": {
+    "defaultMessage": "Name thread…",
+    "description": ""
+  },
+  "fusion.messageMenu.nameThreadSub": {
+    "defaultMessage": "Make it a sub-chat of the channel",
+    "description": ""
+  },
+  "fusion.messageMenu.pin": {
+    "defaultMessage": "Pin to channel",
+    "description": ""
+  },
+  "fusion.messageMenu.plugins": {
+    "defaultMessage": "Message actions",
+    "description": ""
+  },
+  "fusion.messageMenu.pluginsLabel": {
+    "defaultMessage": "Message actions from integrations",
+    "description": ""
+  },
+  "fusion.messageMenu.reactWith": {
+    "defaultMessage": "React with :{name}:",
+    "description": ""
+  },
+  "fusion.messageMenu.readAloud": {
+    "defaultMessage": "Read aloud",
+    "description": ""
+  },
+  "fusion.messageMenu.remind": {
+    "defaultMessage": "Remind me",
+    "description": ""
+  },
+  "fusion.messageMenu.remind1h": {
+    "defaultMessage": "In 1 hour",
+    "description": ""
+  },
+  "fusion.messageMenu.remind2h": {
+    "defaultMessage": "In 2 hours",
+    "description": ""
+  },
+  "fusion.messageMenu.remind30": {
+    "defaultMessage": "In 30 minutes",
+    "description": ""
+  },
+  "fusion.messageMenu.remindCustom": {
+    "defaultMessage": "Custom time…",
+    "description": ""
+  },
+  "fusion.messageMenu.remindCustomLabel": {
+    "defaultMessage": "Remind me at a custom time",
+    "description": ""
+  },
+  "fusion.messageMenu.remindSet": {
+    "defaultMessage": "Set reminder",
+    "description": ""
+  },
+  "fusion.messageMenu.remindTomorrow": {
+    "defaultMessage": "Tomorrow at 9:00",
+    "description": ""
+  },
+  "fusion.messageMenu.remindWhen": {
+    "defaultMessage": "When",
+    "description": ""
+  },
+  "fusion.messageMenu.renameThread": {
+    "defaultMessage": "Rename thread…",
+    "description": ""
+  },
+  "fusion.messageMenu.reply": {
+    "defaultMessage": "Reply in thread",
+    "description": ""
+  },
+  "fusion.messageMenu.replyInline": {
+    "defaultMessage": "Reply",
+    "description": ""
+  },
+  "fusion.messageMenu.report": {
+    "defaultMessage": "Report message",
+    "description": ""
+  },
+  "fusion.messageMenu.save": {
+    "defaultMessage": "Save",
+    "description": ""
+  },
+  "fusion.messageMenu.stopReading": {
+    "defaultMessage": "Stop reading",
+    "description": ""
+  },
+  "fusion.messageMenu.toNotes": {
+    "defaultMessage": "Save to notes",
+    "description": ""
+  },
+  "fusion.messageMenu.unfollow": {
+    "defaultMessage": "Unfollow thread",
+    "description": ""
+  },
+  "fusion.messageMenu.unpin": {
+    "defaultMessage": "Unpin from channel",
+    "description": ""
+  },
+  "fusion.messageMenu.unread": {
+    "defaultMessage": "Mark as unread",
+    "description": ""
+  },
+  "fusion.messageMenu.unsave": {
+    "defaultMessage": "Remove from saved",
+    "description": ""
+  },
+  "fusion.messages.arrived": {
+    "defaultMessage": "{count, plural, one {# new message} other {# new messages}}",
+    "description": ""
+  },
+  "fusion.messages.empty": {
+    "defaultMessage": "No messages yet — say hello.",
+    "description": ""
+  },
+  "fusion.messages.jump": {
+    "defaultMessage": "Jump",
+    "description": ""
+  },
+  "fusion.messages.loading": {
+    "defaultMessage": "Loading messages…",
+    "description": ""
+  },
+  "fusion.messages.newer": {
+    "defaultMessage": "Loading newer messages…",
+    "description": ""
+  },
+  "fusion.messages.older": {
+    "defaultMessage": "Loading older messages…",
+    "description": ""
+  },
+  "fusion.messages.unread": {
+    "defaultMessage": "Unread",
+    "description": ""
+  },
+  "fusion.messages.unreadLabel": {
+    "defaultMessage": "Unread messages start here",
+    "description": ""
+  },
+  "fusion.messages.unreadSince": {
+    "defaultMessage": "{count, plural, one {# new message} other {# new messages}} since you were last here",
+    "description": ""
+  },
+  "fusion.modView.actions": {
+    "defaultMessage": "Actions",
+    "description": ""
+  },
+  "fusion.modView.addRole": {
+    "defaultMessage": "Add a role",
+    "description": ""
+  },
+  "fusion.modView.adminNote": {
+    "defaultMessage": "Admins can't be timed out or removed here.",
+    "description": ""
+  },
+  "fusion.modView.close": {
+    "defaultMessage": "Close the mod view",
+    "description": ""
+  },
+  "fusion.modView.created": {
+    "defaultMessage": "Account created",
+    "description": ""
+  },
+  "fusion.modView.deactivate": {
+    "defaultMessage": "Deactivate account",
+    "description": ""
+  },
+  "fusion.modView.deactivateFailed": {
+    "defaultMessage": "The account couldn't be deactivated.",
+    "description": ""
+  },
+  "fusion.modView.deactivateMessage": {
+    "defaultMessage": "They're signed out everywhere and can't sign in again until a system admin reactivates their account. Their messages stay.",
+    "description": ""
+  },
+  "fusion.modView.deactivateTitle": {
+    "defaultMessage": "Deactivate {name}?",
+    "description": ""
+  },
+  "fusion.modView.email": {
+    "defaultMessage": "Email",
+    "description": ""
+  },
+  "fusion.modView.infoFailed": {
+    "defaultMessage": "Some of their details couldn't be loaded.",
+    "description": ""
+  },
+  "fusion.modView.joined": {
+    "defaultMessage": "Member since",
+    "description": ""
+  },
+  "fusion.modView.lift": {
+    "defaultMessage": "Remove timeout",
+    "description": ""
+  },
+  "fusion.modView.message": {
+    "defaultMessage": "Message",
+    "description": ""
+  },
+  "fusion.modView.messageCounts": {
+    "defaultMessage": "{day} in the last day · {week} in the last week",
+    "description": ""
+  },
+  "fusion.modView.messages": {
+    "defaultMessage": "Messages in the community",
+    "description": ""
+  },
+  "fusion.modView.noPerms": {
+    "defaultMessage": "Nothing beyond a member's",
+    "description": ""
+  },
+  "fusion.modView.noRoles": {
+    "defaultMessage": "No roles",
+    "description": ""
+  },
+  "fusion.modView.perm.channels": {
+    "defaultMessage": "Manage channels",
+    "description": ""
+  },
+  "fusion.modView.perm.everyone": {
+    "defaultMessage": "Mention @channel and @all",
+    "description": ""
+  },
+  "fusion.modView.perm.members": {
+    "defaultMessage": "Manage channel members",
+    "description": ""
+  },
+  "fusion.modView.perm.messages": {
+    "defaultMessage": "Manage messages",
+    "description": ""
+  },
+  "fusion.modView.perm.remove": {
+    "defaultMessage": "Remove and time out members",
+    "description": ""
+  },
+  "fusion.modView.perm.roles": {
+    "defaultMessage": "Manage roles",
+    "description": ""
+  },
+  "fusion.modView.perm.team": {
+    "defaultMessage": "Manage the community",
+    "description": ""
+  },
+  "fusion.modView.permissions": {
+    "defaultMessage": "Notable permissions",
+    "description": ""
+  },
+  "fusion.modView.remove": {
+    "defaultMessage": "Remove from community",
+    "description": ""
+  },
+  "fusion.modView.removeRole": {
+    "defaultMessage": "Remove the role {role}",
+    "description": ""
+  },
+  "fusion.modView.roleFailed": {
+    "defaultMessage": "The role couldn't be changed.",
+    "description": ""
+  },
+  "fusion.modView.roles": {
+    "defaultMessage": "Roles",
+    "description": ""
+  },
+  "fusion.modView.seeMessages": {
+    "defaultMessage": "See them",
+    "description": ""
+  },
+  "fusion.modView.summary": {
+    "defaultMessage": "Summary",
+    "description": ""
+  },
+  "fusion.modView.systemAdmin": {
+    "defaultMessage": "System admin: every permission",
+    "description": ""
+  },
+  "fusion.modView.timedOut": {
+    "defaultMessage": "Timed out until {time}, {date}",
+    "description": ""
+  },
+  "fusion.modView.timeOut": {
+    "defaultMessage": "Time out",
+    "description": ""
+  },
+  "fusion.modView.title": {
+    "defaultMessage": "Mod view",
+    "description": ""
+  },
+  "fusion.msgLink.message": {
+    "defaultMessage": "Message",
+    "description": ""
+  },
+  "fusion.msgLink.title": {
+    "defaultMessage": "Jump to {who}'s message in {where}",
+    "description": ""
+  },
+  "fusion.msgLink.titleNoAuthor": {
+    "defaultMessage": "Jump to the message",
+    "description": ""
+  },
+  "fusion.msgLink.unknown": {
+    "defaultMessage": "Unknown message",
+    "description": ""
+  },
+  "fusion.notes.name": {
+    "defaultMessage": "Notes to self",
+    "description": ""
+  },
+  "fusion.notification.spoiler": {
+    "defaultMessage": " posted a spoiler",
+    "description": ""
+  },
+  "fusion.onboarding.addAnswer": {
+    "defaultMessage": "Add an answer",
+    "description": ""
+  },
+  "fusion.onboarding.addQuestion": {
+    "defaultMessage": "Add a question",
+    "description": ""
+  },
+  "fusion.onboarding.answer": {
+    "defaultMessage": "Answer",
+    "description": ""
+  },
+  "fusion.onboarding.done": {
+    "defaultMessage": "Done",
+    "description": ""
+  },
+  "fusion.onboarding.editLead": {
+    "defaultMessage": "Newcomers see it the first time they open the community. Their answers give them roles open to all and public channels.",
+    "description": ""
+  },
+  "fusion.onboarding.editTitle": {
+    "defaultMessage": "Onboarding",
+    "description": ""
+  },
+  "fusion.onboarding.failed": {
+    "defaultMessage": "The onboarding couldn't be saved.",
+    "description": ""
+  },
+  "fusion.onboarding.multiple": {
+    "defaultMessage": "Several answers",
+    "description": ""
+  },
+  "fusion.onboarding.noOpenRoles": {
+    "defaultMessage": "Answers can give roles that anyone can take: mark some so in Roles.",
+    "description": ""
+  },
+  "fusion.onboarding.question": {
+    "defaultMessage": "Question, e.g. What brings you here?",
+    "description": ""
+  },
+  "fusion.onboarding.removeQuestion": {
+    "defaultMessage": "Remove the question",
+    "description": ""
+  },
+  "fusion.onboarding.save": {
+    "defaultMessage": "Save",
+    "description": ""
+  },
+  "fusion.onboarding.saved": {
+    "defaultMessage": "Onboarding saved: newcomers see it the first time they open the community",
+    "description": ""
+  },
+  "fusion.onboarding.skip": {
+    "defaultMessage": "Skip",
+    "description": ""
+  },
+  "fusion.onboarding.title": {
+    "defaultMessage": "Welcome to {team}",
+    "description": ""
+  },
+  "fusion.onboarding.welcome": {
+    "defaultMessage": "Welcome",
+    "description": ""
+  },
+  "fusion.ontop.by": {
+    "defaultMessage": "· put on top by {name}",
+    "description": ""
+  },
+  "fusion.ontop.byYou": {
+    "defaultMessage": "· put on top by you",
+    "description": ""
+  },
+  "fusion.ontop.change": {
+    "defaultMessage": "On top · change",
+    "description": ""
+  },
+  "fusion.ontop.duration.1d": {
+    "defaultMessage": "For 1 day",
+    "description": ""
+  },
+  "fusion.ontop.duration.1h": {
+    "defaultMessage": "For 1 hour",
+    "description": ""
+  },
+  "fusion.ontop.duration.1w": {
+    "defaultMessage": "For 1 week",
+    "description": ""
+  },
+  "fusion.ontop.duration.4h": {
+    "defaultMessage": "For 4 hours",
+    "description": ""
+  },
+  "fusion.ontop.duration.forever": {
+    "defaultMessage": "Until removed",
+    "description": ""
+  },
+  "fusion.ontop.failed": {
+    "defaultMessage": "The message couldn't be put on top",
+    "description": ""
+  },
+  "fusion.ontop.jump": {
+    "defaultMessage": "Jump",
+    "description": ""
+  },
+  "fusion.ontop.jumpTitle": {
+    "defaultMessage": "Jump to the message",
+    "description": ""
+  },
+  "fusion.ontop.left.days": {
+    "defaultMessage": "{days}d {hours}h left",
+    "description": ""
+  },
+  "fusion.ontop.left.forever": {
+    "defaultMessage": "until removed",
+    "description": ""
+  },
+  "fusion.ontop.left.hours": {
+    "defaultMessage": "{hours}h {minutes}m left",
+    "description": ""
+  },
+  "fusion.ontop.left.minutes": {
+    "defaultMessage": "{minutes}m left",
+    "description": ""
+  },
+  "fusion.ontop.menuLabel": {
+    "defaultMessage": "Keep on top of the channel",
+    "description": ""
+  },
+  "fusion.ontop.next": {
+    "defaultMessage": "Next",
+    "description": ""
+  },
+  "fusion.ontop.position": {
+    "defaultMessage": "{current}/{count}",
+    "description": ""
+  },
+  "fusion.ontop.previous": {
+    "defaultMessage": "Previous",
+    "description": ""
+  },
+  "fusion.ontop.put": {
+    "defaultMessage": "Put on top",
+    "description": ""
+  },
+  "fusion.ontop.region": {
+    "defaultMessage": "On top of this channel",
+    "description": ""
+  },
+  "fusion.ontop.remove": {
+    "defaultMessage": "Remove from top",
+    "description": ""
+  },
+  "fusion.ontop.removeFailed": {
+    "defaultMessage": "The message couldn't be taken off the top",
+    "description": ""
+  },
+  "fusion.ontop.showLess": {
+    "defaultMessage": "Show less",
+    "description": ""
+  },
+  "fusion.ontop.showMore": {
+    "defaultMessage": "Show more",
+    "description": ""
+  },
+  "fusion.ontop.tag": {
+    "defaultMessage": "On top · {left}",
+    "description": ""
+  },
+  "fusion.ontop.tagTitle": {
+    "defaultMessage": "On top of the channel",
+    "description": ""
+  },
+  "fusion.ontop.toast.put": {
+    "defaultMessage": "{direct, select, yes {On top of the conversation} other {On top of #{name}}} {duration, select, hour {for 1 hour} fourHours {for 4 hours} day {for 1 day} week {for 1 week} other {until removed}}",
+    "description": ""
+  },
+  "fusion.ontop.toast.removed": {
+    "defaultMessage": "Removed from the top of the channel",
+    "description": ""
+  },
+  "fusion.overrides.addPerson": {
+    "defaultMessage": "Add a person…",
+    "description": ""
+  },
+  "fusion.overrides.addRole": {
+    "defaultMessage": "Add a role",
+    "description": ""
+  },
+  "fusion.overrides.allow": {
+    "defaultMessage": "Allowed here",
+    "description": ""
+  },
+  "fusion.overrides.alsoCategory": {
+    "defaultMessage": "also set on the category",
+    "description": ""
+  },
+  "fusion.overrides.categoryAllows": {
+    "defaultMessage": "allowed by the category",
+    "description": ""
+  },
+  "fusion.overrides.categoryDenies": {
+    "defaultMessage": "denied by the category",
+    "description": ""
+  },
+  "fusion.overrides.channelMentions": {
+    "defaultMessage": "Mention @channel, @all and @here",
+    "description": ""
+  },
+  "fusion.overrides.deny": {
+    "defaultMessage": "Denied here",
+    "description": ""
+  },
+  "fusion.overrides.done": {
+    "defaultMessage": "Done",
+    "description": ""
+  },
+  "fusion.overrides.failed": {
+    "defaultMessage": "The permissions couldn't be saved.",
+    "description": ""
+  },
+  "fusion.overrides.files": {
+    "defaultMessage": "Attach files",
+    "description": ""
+  },
+  "fusion.overrides.fromCategory": {
+    "defaultMessage": "from the category",
+    "description": ""
+  },
+  "fusion.overrides.groupMentions": {
+    "defaultMessage": "Mention groups and roles",
+    "description": ""
+  },
+  "fusion.overrides.inherit": {
+    "defaultMessage": "As elsewhere",
+    "description": ""
+  },
+  "fusion.overrides.inheritsFrom": {
+    "defaultMessage": "It inherits the permissions of the category {category}; what's set here wins.",
+    "description": ""
+  },
+  "fusion.overrides.invited": {
+    "defaultMessage": "Anyone invited can join. Pick roles to limit it to the people who have them.",
+    "description": ""
+  },
+  "fusion.overrides.lead": {
+    "defaultMessage": "Here, roles and people can be allowed more, or less, than they have elsewhere. A person's own setting wins over their roles'; the community's admins aren't affected.",
+    "description": ""
+  },
+  "fusion.overrides.loadFailed": {
+    "defaultMessage": "The channel's permissions couldn't be loaded. Close this and try again.",
+    "description": ""
+  },
+  "fusion.overrides.members": {
+    "defaultMessage": "Manage members",
+    "description": ""
+  },
+  "fusion.overrides.messages": {
+    "defaultMessage": "Manage messages",
+    "description": ""
+  },
+  "fusion.overrides.noRoles": {
+    "defaultMessage": "The community has no roles yet.",
+    "description": ""
+  },
+  "fusion.overrides.post": {
+    "defaultMessage": "Send messages",
+    "description": ""
+  },
+  "fusion.overrides.public": {
+    "defaultMessage": "Everyone in the community: it's public. Make it private to keep it for some roles.",
+    "description": ""
+  },
+  "fusion.overrides.react": {
+    "defaultMessage": "Add reactions",
+    "description": ""
+  },
+  "fusion.overrides.remove": {
+    "defaultMessage": "Remove",
+    "description": ""
+  },
+  "fusion.overrides.reset": {
+    "defaultMessage": "As the category",
+    "description": ""
+  },
+  "fusion.overrides.rolesOnly": {
+    "defaultMessage": "Only people with these roles: they join it, and others leave.",
+    "description": ""
+  },
+  "fusion.overrides.settings": {
+    "defaultMessage": "Manage the channel",
+    "description": ""
+  },
+  "fusion.overrides.title": {
+    "defaultMessage": "Permissions of #{channel}",
+    "description": ""
+  },
+  "fusion.overrides.what": {
+    "defaultMessage": "What they can do here",
+    "description": ""
+  },
+  "fusion.overrides.whoSees": {
+    "defaultMessage": "Who can see it",
+    "description": ""
+  },
+  "fusion.picker.addCustomEmoji": {
+    "defaultMessage": "Add custom emoji",
+    "description": ""
+  },
+  "fusion.picker.categories": {
+    "defaultMessage": "Emoji categories",
+    "description": ""
+  },
+  "fusion.picker.insert": {
+    "defaultMessage": "Insert",
+    "description": ""
+  },
+  "fusion.picker.label": {
+    "defaultMessage": "Emoji",
+    "description": ""
+  },
+  "fusion.picker.none": {
+    "defaultMessage": "No emoji match.",
+    "description": ""
+  },
+  "fusion.picker.reactWith": {
+    "defaultMessage": "React with",
+    "description": ""
+  },
+  "fusion.picker.results": {
+    "defaultMessage": "Search results",
+    "description": ""
+  },
+  "fusion.picker.search": {
+    "defaultMessage": "Search emoji",
+    "description": ""
+  },
+  "fusion.picker.skinTone": {
+    "defaultMessage": "Skin tone: {tone}",
+    "description": ""
+  },
+  "fusion.picker.skinTones": {
+    "defaultMessage": "Skin tones",
+    "description": ""
+  },
+  "fusion.picker.tabEmoji": {
+    "defaultMessage": "Emoji",
+    "description": ""
+  },
+  "fusion.profile.addToChannel": {
+    "defaultMessage": "Add to a channel",
+    "description": ""
+  },
+  "fusion.profile.bot": {
+    "defaultMessage": "Integration · posts on behalf of an app",
+    "description": ""
+  },
+  "fusion.profile.console": {
+    "defaultMessage": "System Console",
+    "description": ""
+  },
+  "fusion.profile.editProfile": {
+    "defaultMessage": "Edit profile",
+    "description": ""
+  },
+  "fusion.profile.localTime": {
+    "defaultMessage": "{time} local time",
+    "description": ""
+  },
+  "fusion.profile.message": {
+    "defaultMessage": "Message",
+    "description": ""
+  },
+  "fusion.profile.modView": {
+    "defaultMessage": "Mod view",
+    "description": ""
+  },
+  "fusion.profile.more": {
+    "defaultMessage": "More",
+    "description": ""
+  },
+  "fusion.profile.moreFor": {
+    "defaultMessage": "Options for {name}",
+    "description": ""
+  },
+  "fusion.profile.note": {
+    "defaultMessage": "Note",
+    "description": ""
+  },
+  "fusion.profile.notePlaceholder": {
+    "defaultMessage": "Click to add a note",
+    "description": ""
+  },
+  "fusion.profile.notePrivate": {
+    "defaultMessage": "only you see it",
+    "description": ""
+  },
+  "fusion.profile.sameTime": {
+    "defaultMessage": "same time as you",
+    "description": ""
+  },
+  "fusion.profile.setStatus": {
+    "defaultMessage": "Set a status",
+    "description": ""
+  },
+  "fusion.profile.timeDiff": {
+    "defaultMessage": "{hours}h {ahead, select, true {ahead of} other {behind}} you",
+    "description": ""
+  },
+  "fusion.profile.timedOut": {
+    "defaultMessage": "Timed out until {time}, {date}",
+    "description": ""
+  },
+  "fusion.rail.add": {
+    "defaultMessage": "Add a community",
+    "description": ""
+  },
+  "fusion.rail.create": {
+    "defaultMessage": "Create a community",
+    "description": ""
+  },
+  "fusion.rail.createSub": {
+    "defaultMessage": "A new space with its own channels",
+    "description": ""
+  },
+  "fusion.rail.folder": {
+    "defaultMessage": "Folder",
+    "description": ""
+  },
+  "fusion.rail.folderLabel": {
+    "defaultMessage": "Folder {name}, {count, plural, one {# community} other {# communities}}",
+    "description": ""
+  },
+  "fusion.rail.folderName": {
+    "defaultMessage": "Name",
+    "description": ""
+  },
+  "fusion.rail.join": {
+    "defaultMessage": "Join another community",
+    "description": ""
+  },
+  "fusion.rail.joinSub": {
+    "defaultMessage": "Browse the communities open to you",
+    "description": ""
+  },
+  "fusion.rail.label": {
+    "defaultMessage": "Communities",
+    "description": ""
+  },
+  "fusion.rail.newFolderName": {
+    "defaultMessage": "New folder",
+    "description": ""
+  },
+  "fusion.rail.renameFolder": {
+    "defaultMessage": "Rename folder",
+    "description": ""
+  },
+  "fusion.rail.search": {
+    "defaultMessage": "Search everything (Ctrl K)",
+    "description": ""
+  },
+  "fusion.rail.searchLabel": {
+    "defaultMessage": "Search everything",
+    "description": ""
+  },
+  "fusion.rail.ungroup": {
+    "defaultMessage": "Remove folder",
+    "description": ""
+  },
+  "fusion.rail.ungroupSub": {
+    "defaultMessage": "Its communities stay in the rail",
+    "description": ""
+  },
+  "fusion.rail.unreadDM": {
+    "defaultMessage": "{name}, {count, plural, one {# unread message} other {# unread messages}}",
+    "description": ""
+  },
+  "fusion.rail.unreadDMs": {
+    "defaultMessage": "Unread direct messages",
+    "description": ""
+  },
+  "fusion.reactions.label": {
+    "defaultMessage": ":{name}: {count}, {mine, select, true {remove your reaction} other {react}}",
+    "description": ""
+  },
+  "fusion.reactions.others": {
+    "defaultMessage": "{count, plural, one {# other} other {# others}}",
+    "description": ""
+  },
+  "fusion.reactions.reactedByCount": {
+    "defaultMessage": "{count, plural, one {{names} reacted with :{name}:} other {{names} reacted with :{name}:}}",
+    "description": ""
+  },
+  "fusion.reactions.you": {
+    "defaultMessage": "You",
+    "description": ""
+  },
+  "fusion.reactions.youReacted": {
+    "defaultMessage": "You reacted with :{name}:",
+    "description": ""
+  },
+  "fusion.replyRef.jump": {
+    "defaultMessage": "Jump to the original message",
+    "description": ""
+  },
+  "fusion.replyRef.message": {
+    "defaultMessage": "a message",
+    "description": ""
+  },
+  "fusion.replyRef.replying": {
+    "defaultMessage": "Replying to",
+    "description": ""
+  },
+  "fusion.replyRef.thread": {
+    "defaultMessage": "Thread",
+    "description": ""
+  },
+  "fusion.replyRef.threadTitle": {
+    "defaultMessage": "Open the conversation as a thread",
+    "description": ""
+  },
+  "fusion.results.copyLink": {
+    "defaultMessage": "Copy link",
+    "description": ""
+  },
+  "fusion.results.count": {
+    "defaultMessage": "{count, plural, one {# match} other {# matches}}",
+    "description": ""
+  },
+  "fusion.results.countOnly": {
+    "defaultMessage": "{count, plural, one {# message} other {# messages}}",
+    "description": ""
+  },
+  "fusion.results.files": {
+    "defaultMessage": "Files",
+    "description": ""
+  },
+  "fusion.results.mentions": {
+    "defaultMessage": "Recent mentions",
+    "description": ""
+  },
+  "fusion.results.messages": {
+    "defaultMessage": "Messages",
+    "description": ""
+  },
+  "fusion.results.more": {
+    "defaultMessage": "Loading more…",
+    "description": ""
+  },
+  "fusion.results.noFiles": {
+    "defaultMessage": "No files match.",
+    "description": ""
+  },
+  "fusion.results.none": {
+    "defaultMessage": "No messages match. Try another word or a filter like from: or in:.",
+    "description": ""
+  },
+  "fusion.results.openThread": {
+    "defaultMessage": "Open the thread",
+    "description": ""
+  },
+  "fusion.results.pin": {
+    "defaultMessage": "Pin to channel",
+    "description": ""
+  },
+  "fusion.results.pinned": {
+    "defaultMessage": "Pinned messages",
+    "description": ""
+  },
+  "fusion.results.popout": {
+    "defaultMessage": "Open in a new window",
+    "description": ""
+  },
+  "fusion.results.save": {
+    "defaultMessage": "Save",
+    "description": ""
+  },
+  "fusion.results.saved": {
+    "defaultMessage": "Saved messages",
+    "description": ""
+  },
+  "fusion.results.search": {
+    "defaultMessage": "Search results",
+    "description": ""
+  },
+  "fusion.results.searching": {
+    "defaultMessage": "Searching…",
+    "description": ""
+  },
+  "fusion.results.unpin": {
+    "defaultMessage": "Unpin from channel",
+    "description": ""
+  },
+  "fusion.results.unsave": {
+    "defaultMessage": "Remove from saved",
+    "description": ""
+  },
+  "fusion.rhs.close": {
+    "defaultMessage": "Close",
+    "description": ""
+  },
+  "fusion.rhs.fullPage": {
+    "defaultMessage": "Open as a full page",
+    "description": ""
+  },
+  "fusion.roles.addPeople": {
+    "defaultMessage": "Add people of the community…",
+    "description": ""
+  },
+  "fusion.roles.badges": {
+    "defaultMessage": "Everyone shows a team badge",
+    "description": ""
+  },
+  "fusion.roles.badgesDesc": {
+    "defaultMessage": "For example in a company: in this community, people who chose no badge show the tag of their first team here.",
+    "description": ""
+  },
+  "fusion.roles.bot": {
+    "defaultMessage": "Bot",
+    "description": ""
+  },
+  "fusion.roles.cancel": {
+    "defaultMessage": "Cancel",
+    "description": ""
+  },
+  "fusion.roles.channelAdmin": {
+    "defaultMessage": "Channel Admin",
+    "description": ""
+  },
+  "fusion.roles.color": {
+    "defaultMessage": "Colour",
+    "description": ""
+  },
+  "fusion.roles.colors": {
+    "defaultMessage": "Role colours",
+    "description": ""
+  },
+  "fusion.roles.colorsDesc": {
+    "defaultMessage": "Names take the colour of their highest role, over everyone's coloured names.",
+    "description": ""
+  },
+  "fusion.roles.create": {
+    "defaultMessage": "Create role",
+    "description": ""
+  },
+  "fusion.roles.createIt": {
+    "defaultMessage": "Create role",
+    "description": ""
+  },
+  "fusion.roles.delete": {
+    "defaultMessage": "Delete the role",
+    "description": ""
+  },
+  "fusion.roles.deleted": {
+    "defaultMessage": "Deleted the role {role}",
+    "description": ""
+  },
+  "fusion.roles.done": {
+    "defaultMessage": "Done",
+    "description": ""
+  },
+  "fusion.roles.down": {
+    "defaultMessage": "Move down",
+    "description": ""
+  },
+  "fusion.roles.edit": {
+    "defaultMessage": "Edit the role",
+    "description": ""
+  },
+  "fusion.roles.failed": {
+    "defaultMessage": "The role couldn't be saved.",
+    "description": ""
+  },
+  "fusion.roles.guest": {
+    "defaultMessage": "Guest",
+    "description": ""
+  },
+  "fusion.roles.hex": {
+    "defaultMessage": "Colour code",
+    "description": ""
+  },
+  "fusion.roles.hoist": {
+    "defaultMessage": "Show members separately",
+    "description": ""
+  },
+  "fusion.roles.hoistDesc": {
+    "defaultMessage": "Online members with this role get their own group in the member list.",
+    "description": ""
+  },
+  "fusion.roles.lead": {
+    "defaultMessage": "Roles give members colours. Roles shown separately get their own group in the member list; the member's highest role sets their name colour.",
+    "description": ""
+  },
+  "fusion.roles.members": {
+    "defaultMessage": "{count, plural, one {# member} other {# members}}",
+    "description": ""
+  },
+  "fusion.roles.membersTitle": {
+    "defaultMessage": "Members",
+    "description": ""
+  },
+  "fusion.roles.name": {
+    "defaultMessage": "Name",
+    "description": ""
+  },
+  "fusion.roles.namePlaceholder": {
+    "defaultMessage": "e.g. Moderators",
+    "description": ""
+  },
+  "fusion.roles.none": {
+    "defaultMessage": "No roles yet.",
+    "description": ""
+  },
+  "fusion.roles.openToAll": {
+    "defaultMessage": "open to all",
+    "description": ""
+  },
+  "fusion.roles.perm.admin": {
+    "defaultMessage": "Administrator",
+    "description": ""
+  },
+  "fusion.roles.perm.adminDesc": {
+    "defaultMessage": "Everything the community's admins can do.",
+    "description": ""
+  },
+  "fusion.roles.perm.channels": {
+    "defaultMessage": "Manage channels",
+    "description": ""
+  },
+  "fusion.roles.perm.channelsDesc": {
+    "defaultMessage": "Rename, convert and archive channels, and manage their members and admins.",
+    "description": ""
+  },
+  "fusion.roles.perm.integrations": {
+    "defaultMessage": "Manage integrations",
+    "description": ""
+  },
+  "fusion.roles.perm.integrationsDesc": {
+    "defaultMessage": "Webhooks and slash commands, theirs and other people's.",
+    "description": ""
+  },
+  "fusion.roles.perm.invite": {
+    "defaultMessage": "Invite people",
+    "description": ""
+  },
+  "fusion.roles.perm.inviteDesc": {
+    "defaultMessage": "Add people to the community.",
+    "description": ""
+  },
+  "fusion.roles.perm.kick": {
+    "defaultMessage": "Remove people",
+    "description": ""
+  },
+  "fusion.roles.perm.kickDesc": {
+    "defaultMessage": "Remove people from the community.",
+    "description": ""
+  },
+  "fusion.roles.perm.messages": {
+    "defaultMessage": "Manage messages",
+    "description": ""
+  },
+  "fusion.roles.perm.messagesDesc": {
+    "defaultMessage": "Edit and delete other people's messages.",
+    "description": ""
+  },
+  "fusion.roles.perm.private": {
+    "defaultMessage": "Create private channels",
+    "description": ""
+  },
+  "fusion.roles.perm.privateDesc": {
+    "defaultMessage": "Channels for the people invited.",
+    "description": ""
+  },
+  "fusion.roles.perm.public": {
+    "defaultMessage": "Create public channels",
+    "description": ""
+  },
+  "fusion.roles.perm.publicDesc": {
+    "defaultMessage": "Channels anyone in the community can join.",
+    "description": ""
+  },
+  "fusion.roles.perm.roles": {
+    "defaultMessage": "Manage roles",
+    "description": ""
+  },
+  "fusion.roles.perm.rolesDesc": {
+    "defaultMessage": "Make and edit the roles below their own, and give them to people.",
+    "description": ""
+  },
+  "fusion.roles.permissions": {
+    "defaultMessage": "Permissions",
+    "description": ""
+  },
+  "fusion.roles.permissionsFailed": {
+    "defaultMessage": "The role's permissions couldn't be loaded: saving leaves them as they are.",
+    "description": ""
+  },
+  "fusion.roles.removePerson": {
+    "defaultMessage": "Remove from the role",
+    "description": ""
+  },
+  "fusion.roles.save": {
+    "defaultMessage": "Save",
+    "description": ""
+  },
+  "fusion.roles.selfAssignable": {
+    "defaultMessage": "Anyone can take it",
+    "description": ""
+  },
+  "fusion.roles.selfAssignableDesc": {
+    "defaultMessage": "People of the community take or leave it themselves, in \"Your roles\" or through the onboarding.",
+    "description": ""
+  },
+  "fusion.roles.shownApart": {
+    "defaultMessage": "shown separately",
+    "description": ""
+  },
+  "fusion.roles.systemAdmin": {
+    "defaultMessage": "System Admin",
+    "description": ""
+  },
+  "fusion.roles.teamAdmin": {
+    "defaultMessage": "Community Admin",
+    "description": ""
+  },
+  "fusion.roles.title": {
+    "defaultMessage": "Roles",
+    "description": ""
+  },
+  "fusion.roles.up": {
+    "defaultMessage": "Move up",
+    "description": ""
+  },
+  "fusion.schedule.custom": {
+    "defaultMessage": "Custom time",
+    "description": ""
+  },
+  "fusion.schedule.label": {
+    "defaultMessage": "Schedule message",
+    "description": ""
+  },
+  "fusion.schedule.many": {
+    "defaultMessage": "{count} scheduled messages in this conversation.",
+    "description": ""
+  },
+  "fusion.schedule.monday": {
+    "defaultMessage": "Monday at 9:00",
+    "description": ""
+  },
+  "fusion.schedule.one": {
+    "defaultMessage": "Message scheduled for {time}.",
+    "description": ""
+  },
+  "fusion.schedule.recent": {
+    "defaultMessage": "Recently used custom time",
+    "description": ""
+  },
+  "fusion.schedule.seeAll": {
+    "defaultMessage": "See all",
+    "description": ""
+  },
+  "fusion.schedule.send": {
+    "defaultMessage": "Schedule",
+    "description": ""
+  },
+  "fusion.schedule.tomorrow": {
+    "defaultMessage": "Tomorrow at 9:00",
+    "description": ""
+  },
+  "fusion.search.filters": {
+    "defaultMessage": "Filters",
+    "description": ""
+  },
+  "fusion.search.inThisChannel": {
+    "defaultMessage": "Search in #{name}",
+    "description": ""
+  },
+  "fusion.search.inThisConversation": {
+    "defaultMessage": "Search in this conversation",
+    "description": ""
+  },
+  "fusion.search.leaveScope": {
+    "defaultMessage": "Back to searching messages",
+    "description": ""
+  },
+  "fusion.search.pickDay": {
+    "defaultMessage": "Pick a day",
+    "description": ""
+  },
+  "fusion.search.recent": {
+    "defaultMessage": "Recent",
+    "description": ""
+  },
+  "fusion.selfRoles.done": {
+    "defaultMessage": "Done",
+    "description": ""
+  },
+  "fusion.selfRoles.failed": {
+    "defaultMessage": "The role couldn't be changed.",
+    "description": ""
+  },
+  "fusion.selfRoles.lead": {
+    "defaultMessage": "Roles anyone in the community can take: they colour your name, and may let you do more.",
+    "description": ""
+  },
+  "fusion.selfRoles.none": {
+    "defaultMessage": "The community has no roles open to all.",
+    "description": ""
+  },
+  "fusion.selfRoles.title": {
+    "defaultMessage": "Your roles",
+    "description": ""
+  },
+  "fusion.serverMenu.browse": {
+    "defaultMessage": "Browse channels",
+    "description": ""
+  },
+  "fusion.serverMenu.createCategory": {
+    "defaultMessage": "Create category",
+    "description": ""
+  },
+  "fusion.serverMenu.createChannel": {
+    "defaultMessage": "Create channel",
+    "description": ""
+  },
+  "fusion.serverMenu.hideMuted": {
+    "defaultMessage": "Hide muted channels",
+    "description": ""
+  },
+  "fusion.serverMenu.invite": {
+    "defaultMessage": "Invite people",
+    "description": ""
+  },
+  "fusion.serverMenu.label": {
+    "defaultMessage": "Community menu",
+    "description": ""
+  },
+  "fusion.serverMenu.labelFor": {
+    "defaultMessage": "{team} menu",
+    "description": ""
+  },
+  "fusion.serverMenu.layout": {
+    "defaultMessage": "Community layout…",
+    "description": ""
+  },
+  "fusion.serverMenu.layoutSub": {
+    "defaultMessage": "Presets and templates",
+    "description": ""
+  },
+  "fusion.serverMenu.leave": {
+    "defaultMessage": "Leave community",
+    "description": ""
+  },
+  "fusion.serverMenu.manageMembers": {
+    "defaultMessage": "Manage members",
+    "description": ""
+  },
+  "fusion.serverMenu.markRead": {
+    "defaultMessage": "Mark all as read",
+    "description": ""
+  },
+  "fusion.serverMenu.more": {
+    "defaultMessage": "More actions",
+    "description": ""
+  },
+  "fusion.serverMenu.moreLabel": {
+    "defaultMessage": "More actions from plugins",
+    "description": ""
+  },
+  "fusion.serverMenu.mute": {
+    "defaultMessage": "Mute community",
+    "description": ""
+  },
+  "fusion.serverMenu.muteSub": {
+    "defaultMessage": "Mutes all its categories",
+    "description": ""
+  },
+  "fusion.serverMenu.newFolder": {
+    "defaultMessage": "New folder",
+    "description": ""
+  },
+  "fusion.serverMenu.notifications": {
+    "defaultMessage": "Notification settings",
+    "description": ""
+  },
+  "fusion.serverMenu.onboarding": {
+    "defaultMessage": "Onboarding…",
+    "description": ""
+  },
+  "fusion.serverMenu.onboardingSub": {
+    "defaultMessage": "Questions newcomers answer",
+    "description": ""
+  },
+  "fusion.serverMenu.otherPlugins": {
+    "defaultMessage": "Other",
+    "description": ""
+  },
+  "fusion.serverMenu.outOfFolder": {
+    "defaultMessage": "Remove from {folder}",
+    "description": ""
+  },
+  "fusion.serverMenu.roles": {
+    "defaultMessage": "Roles…",
+    "description": ""
+  },
+  "fusion.serverMenu.rolesSub": {
+    "defaultMessage": "Colours, groups in the member list, badges",
+    "description": ""
+  },
+  "fusion.serverMenu.selfRoles": {
+    "defaultMessage": "Your roles…",
+    "description": ""
+  },
+  "fusion.serverMenu.settings": {
+    "defaultMessage": "Community settings",
+    "description": ""
+  },
+  "fusion.serverMenu.setup": {
+    "defaultMessage": "Organise the community",
+    "description": ""
+  },
+  "fusion.serverMenu.toFolder": {
+    "defaultMessage": "Add to folder",
+    "description": ""
+  },
+  "fusion.serverMenu.toFolderLabel": {
+    "defaultMessage": "Folders",
+    "description": ""
+  },
+  "fusion.serverMenu.unmute": {
+    "defaultMessage": "Unmute community",
+    "description": ""
+  },
+  "fusion.serverMenu.unreadOnly": {
+    "defaultMessage": "Show unread channels only",
+    "description": ""
+  },
+  "fusion.serverMenu.userGroups": {
+    "defaultMessage": "Teams…",
+    "description": ""
+  },
+  "fusion.serverMenu.userGroupsSub": {
+    "defaultMessage": "Teams with a tag, a lead and a channel",
+    "description": ""
+  },
+  "fusion.serverMenu.viewMembers": {
+    "defaultMessage": "View members",
+    "description": ""
+  },
+  "fusion.settings.accessHistory": {
+    "defaultMessage": "Access history",
+    "description": ""
+  },
+  "fusion.settings.accessHistoryDesc": {
+    "defaultMessage": "Recent sign-ins and changes to your account, with where they came from.",
+    "description": ""
+  },
+  "fusion.settings.account": {
+    "defaultMessage": "My account",
+    "description": ""
+  },
+  "fusion.settings.accountLead": {
+    "defaultMessage": "How you appear to others on this server.",
+    "description": ""
+  },
+  "fusion.settings.advanced": {
+    "defaultMessage": "Advanced",
+    "description": ""
+  },
+  "fusion.settings.advancedLead": {
+    "defaultMessage": "Settings for streaming, development and troubleshooting.",
+    "description": ""
+  },
+  "fusion.settings.appearance": {
+    "defaultMessage": "Appearance",
+    "description": ""
+  },
+  "fusion.settings.appearanceLead": {
+    "defaultMessage": "Pick a theme or build your own. It follows you on every device.",
+    "description": ""
+  },
+  "fusion.settings.applyThemeCode": {
+    "defaultMessage": "Apply",
+    "description": ""
+  },
+  "fusion.settings.autoFollow": {
+    "defaultMessage": "Follow threads I'm mentioned in by @channel",
+    "description": ""
+  },
+  "fusion.settings.autoFollowDesc": {
+    "defaultMessage": "Channel-wide mentions in a thread make you follow it.",
+    "description": ""
+  },
+  "fusion.settings.autoReply": {
+    "defaultMessage": "Automatic reply",
+    "description": ""
+  },
+  "fusion.settings.autoReplyDesc": {
+    "defaultMessage": "Sets you out of office, and answers each direct message with the text below.",
+    "description": ""
+  },
+  "fusion.settings.autoReplyMessage": {
+    "defaultMessage": "Message",
+    "description": ""
+  },
+  "fusion.settings.autoReplyOn": {
+    "defaultMessage": "Reply to direct messages automatically",
+    "description": ""
+  },
+  "fusion.settings.autoReplyPlaceholder": {
+    "defaultMessage": "Hello, I'm out of office and unable to respond to messages.",
+    "description": ""
+  },
+  "fusion.settings.callSound": {
+    "defaultMessage": "Incoming call ring",
+    "description": ""
+  },
+  "fusion.settings.callSoundDesc": {
+    "defaultMessage": "Ring when someone calls you in a direct message.",
+    "description": ""
+  },
+  "fusion.settings.cancel": {
+    "defaultMessage": "Cancel",
+    "description": ""
+  },
+  "fusion.settings.change": {
+    "defaultMessage": "Change…",
+    "description": ""
+  },
+  "fusion.settings.changeEmail": {
+    "defaultMessage": "Change email…",
+    "description": ""
+  },
+  "fusion.settings.changeEmailButton": {
+    "defaultMessage": "Change email",
+    "description": ""
+  },
+  "fusion.settings.changeEmailTitle": {
+    "defaultMessage": "Change your email",
+    "description": ""
+  },
+  "fusion.settings.changePassword": {
+    "defaultMessage": "Change password",
+    "description": ""
+  },
+  "fusion.settings.changePicture": {
+    "defaultMessage": "Change picture",
+    "description": ""
+  },
+  "fusion.settings.channelWide": {
+    "defaultMessage": "Channel-wide mentions",
+    "description": ""
+  },
+  "fusion.settings.channelWideDesc": {
+    "defaultMessage": "Notify me for @channel, @all and @here.",
+    "description": ""
+  },
+  "fusion.settings.channelWidth": {
+    "defaultMessage": "Message width",
+    "description": ""
+  },
+  "fusion.settings.classic": {
+    "defaultMessage": "Classic (legacy)",
+    "description": ""
+  },
+  "fusion.settings.clock": {
+    "defaultMessage": "24-hour clock",
+    "description": ""
+  },
+  "fusion.settings.clockDesc": {
+    "defaultMessage": "Show times as 16:00 instead of 4:00 PM.",
+    "description": ""
+  },
+  "fusion.settings.close": {
+    "defaultMessage": "Close settings",
+    "description": ""
+  },
+  "fusion.settings.colorize": {
+    "defaultMessage": "Colour names",
+    "description": ""
+  },
+  "fusion.settings.colorizeDesc": {
+    "defaultMessage": "Give each person's name in messages a colour of their own.",
+    "description": ""
+  },
+  "fusion.settings.confirmPassword": {
+    "defaultMessage": "Confirm the new password",
+    "description": ""
+  },
+  "fusion.settings.console": {
+    "defaultMessage": "System Console",
+    "description": ""
+  },
+  "fusion.settings.copy": {
+    "defaultMessage": "Copy",
+    "description": ""
+  },
+  "fusion.settings.copyThemeCode": {
+    "defaultMessage": "Copy my theme's code",
+    "description": ""
+  },
+  "fusion.settings.ctrlSend": {
+    "defaultMessage": "Send with Ctrl+Enter",
+    "description": ""
+  },
+  "fusion.settings.ctrlSendDesc": {
+    "defaultMessage": "Enter starts a new line, and Ctrl+Enter (⌘+Enter on a Mac) sends.",
+    "description": ""
+  },
+  "fusion.settings.currentEmail": {
+    "defaultMessage": "Now: {email}",
+    "description": ""
+  },
+  "fusion.settings.currentPassword": {
+    "defaultMessage": "Current password",
+    "description": ""
+  },
+  "fusion.settings.deactivate": {
+    "defaultMessage": "Deactivate account",
+    "description": ""
+  },
+  "fusion.settings.deactivateButton": {
+    "defaultMessage": "Deactivate…",
+    "description": ""
+  },
+  "fusion.settings.deactivateDesc": {
+    "defaultMessage": "Leave this server. An admin can reactivate your account later.",
+    "description": ""
+  },
+  "fusion.settings.deactivateLead": {
+    "defaultMessage": "You'll be signed out and won't be able to sign in again. Your messages stay. An admin can reactivate your account.",
+    "description": ""
+  },
+  "fusion.settings.deactivateTitle": {
+    "defaultMessage": "Deactivate your account?",
+    "description": ""
+  },
+  "fusion.settings.deauthorize": {
+    "defaultMessage": "Remove access",
+    "description": ""
+  },
+  "fusion.settings.desktop": {
+    "defaultMessage": "Desktop and browser",
+    "description": ""
+  },
+  "fusion.settings.desktopLevel": {
+    "defaultMessage": "Notify me about",
+    "description": ""
+  },
+  "fusion.settings.desktopLevelDesc": {
+    "defaultMessage": "Direct and group messages count as mentions.",
+    "description": ""
+  },
+  "fusion.settings.desktopSound": {
+    "defaultMessage": "Notification sound",
+    "description": ""
+  },
+  "fusion.settings.desktopSoundDesc": {
+    "defaultMessage": "Play a sound with desktop notifications.",
+    "description": ""
+  },
+  "fusion.settings.developer": {
+    "defaultMessage": "Developer mode",
+    "description": ""
+  },
+  "fusion.settings.developerDesc": {
+    "defaultMessage": "Add Copy ID to the menus of messages, channels, communities and people, for the API and bots.",
+    "description": ""
+  },
+  "fusion.settings.display": {
+    "defaultMessage": "Display",
+    "description": ""
+  },
+  "fusion.settings.displayCompact": {
+    "defaultMessage": "Compact",
+    "description": ""
+  },
+  "fusion.settings.displayStandard": {
+    "defaultMessage": "Standard",
+    "description": ""
+  },
+  "fusion.settings.dmLimit": {
+    "defaultMessage": "Open conversations",
+    "description": ""
+  },
+  "fusion.settings.dmLimitDesc": {
+    "defaultMessage": "How many direct messages the sidebar lists. Unread ones always show.",
+    "description": ""
+  },
+  "fusion.settings.email": {
+    "defaultMessage": "Email notifications",
+    "description": ""
+  },
+  "fusion.settings.email15": {
+    "defaultMessage": "Every 15 minutes",
+    "description": ""
+  },
+  "fusion.settings.emailChanged": {
+    "defaultMessage": "Email changed",
+    "description": ""
+  },
+  "fusion.settings.emailDesc": {
+    "defaultMessage": "For mentions and direct messages, when you are away or offline.",
+    "description": ""
+  },
+  "fusion.settings.emailHour": {
+    "defaultMessage": "Every hour",
+    "description": ""
+  },
+  "fusion.settings.emailInterval": {
+    "defaultMessage": "Send them",
+    "description": ""
+  },
+  "fusion.settings.emailNow": {
+    "defaultMessage": "Right away",
+    "description": ""
+  },
+  "fusion.settings.emailSection": {
+    "defaultMessage": "Email",
+    "description": ""
+  },
+  "fusion.settings.emailVerify": {
+    "defaultMessage": "Check {email} to confirm the change",
+    "description": ""
+  },
+  "fusion.settings.emailVerifyNote": {
+    "defaultMessage": "You'll get a message at the new address to confirm it.",
+    "description": ""
+  },
+  "fusion.settings.emoticons": {
+    "defaultMessage": "Turn emoticons into emoji",
+    "description": ""
+  },
+  "fusion.settings.emoticonsDesc": {
+    "defaultMessage": "Show :) and <3 as emoji.",
+    "description": ""
+  },
+  "fusion.settings.expandImages": {
+    "defaultMessage": "Show images expanded",
+    "description": ""
+  },
+  "fusion.settings.expandImagesDesc": {
+    "defaultMessage": "Otherwise images start folded, to open one by one. /expand and /collapse switch this too.",
+    "description": ""
+  },
+  "fusion.settings.fieldNone": {
+    "defaultMessage": "—",
+    "description": ""
+  },
+  "fusion.settings.firstName": {
+    "defaultMessage": "First name",
+    "description": ""
+  },
+  "fusion.settings.firstNameDesc": {
+    "defaultMessage": "Your username always counts as a mention.",
+    "description": ""
+  },
+  "fusion.settings.firstNameIs": {
+    "defaultMessage": "My first name, “{name}”",
+    "description": ""
+  },
+  "fusion.settings.formatting": {
+    "defaultMessage": "Message formatting",
+    "description": ""
+  },
+  "fusion.settings.formattingDesc": {
+    "defaultMessage": "Show links, emoji, bold and the rest of Markdown. Otherwise messages show as plain text.",
+    "description": ""
+  },
+  "fusion.settings.fusion": {
+    "defaultMessage": "Fusion",
+    "description": ""
+  },
+  "fusion.settings.groupUnreads": {
+    "defaultMessage": "Group unread channels",
+    "description": ""
+  },
+  "fusion.settings.groupUnreadsDesc": {
+    "defaultMessage": "Gather the channels with unread messages in an Unreads section, above the categories.",
+    "description": ""
+  },
+  "fusion.settings.highlightKeys": {
+    "defaultMessage": "Keywords that only highlight",
+    "description": ""
+  },
+  "fusion.settings.highlightKeysDesc": {
+    "defaultMessage": "Highlighted in messages, without notifying you.",
+    "description": ""
+  },
+  "fusion.settings.interface": {
+    "defaultMessage": "Web interface",
+    "description": ""
+  },
+  "fusion.settings.interfaceDesc": {
+    "defaultMessage": "Fusion is Antimatter's interface. The classic one is kept for compatibility, for those who still need it. Your choice applies to every browser you sign in from.",
+    "description": ""
+  },
+  "fusion.settings.joinLeave": {
+    "defaultMessage": "Join and leave messages",
+    "description": ""
+  },
+  "fusion.settings.joinLeaveDesc": {
+    "defaultMessage": "Show when people join or leave channels.",
+    "description": ""
+  },
+  "fusion.settings.keyboard": {
+    "defaultMessage": "Keyboard",
+    "description": ""
+  },
+  "fusion.settings.keyboardLead": {
+    "defaultMessage": "Change the shortcuts of Antimatter's own actions. Click Change, then press the new keys; Backspace turns a shortcut off.",
+    "description": ""
+  },
+  "fusion.settings.keywords": {
+    "defaultMessage": "Keywords that notify me",
+    "description": ""
+  },
+  "fusion.settings.keywordsDesc": {
+    "defaultMessage": "Not case-sensitive. A message with one of these notifies you like a mention.",
+    "description": ""
+  },
+  "fusion.settings.keywordsPlaceholder": {
+    "defaultMessage": "Type a word, then Enter",
+    "description": ""
+  },
+  "fusion.settings.label": {
+    "defaultMessage": "Settings",
+    "description": ""
+  },
+  "fusion.settings.language": {
+    "defaultMessage": "Language & time",
+    "description": ""
+  },
+  "fusion.settings.languageField": {
+    "defaultMessage": "Language",
+    "description": ""
+  },
+  "fusion.settings.languageLead": {
+    "defaultMessage": "The language of the interface, and the time zone your times are shown in.",
+    "description": ""
+  },
+  "fusion.settings.lastName": {
+    "defaultMessage": "Last name",
+    "description": ""
+  },
+  "fusion.settings.levelAll": {
+    "defaultMessage": "All",
+    "description": ""
+  },
+  "fusion.settings.levelMentions": {
+    "defaultMessage": "Mentions",
+    "description": ""
+  },
+  "fusion.settings.levelNone": {
+    "defaultMessage": "Nothing",
+    "description": ""
+  },
+  "fusion.settings.linkPreviews": {
+    "defaultMessage": "Link previews",
+    "description": ""
+  },
+  "fusion.settings.linkPreviewsDesc": {
+    "defaultMessage": "Show a preview of the websites linked in messages.",
+    "description": ""
+  },
+  "fusion.settings.lockedByAdmin": {
+    "defaultMessage": "Managed by your System Admin.",
+    "description": ""
+  },
+  "fusion.settings.lockedByIntegration": {
+    "defaultMessage": "Managed by an integration.",
+    "description": ""
+  },
+  "fusion.settings.lockedByProvider": {
+    "defaultMessage": "Set by your login provider.",
+    "description": ""
+  },
+  "fusion.settings.lockedClassic": {
+    "defaultMessage": "Edit this one in the classic settings.",
+    "description": ""
+  },
+  "fusion.settings.mentions": {
+    "defaultMessage": "What counts as a mention",
+    "description": ""
+  },
+  "fusion.settings.messageDisplay": {
+    "defaultMessage": "Message display",
+    "description": ""
+  },
+  "fusion.settings.messageDisplayDesc": {
+    "defaultMessage": "Compact fits more messages: no pictures, tighter rows.",
+    "description": ""
+  },
+  "fusion.settings.messages": {
+    "defaultMessage": "Messages",
+    "description": ""
+  },
+  "fusion.settings.messagesLead": {
+    "defaultMessage": "How conversations are shown, and how you write in them.",
+    "description": ""
+  },
+  "fusion.settings.messageSound": {
+    "defaultMessage": "Message sound",
+    "description": ""
+  },
+  "fusion.settings.mfa": {
+    "defaultMessage": "Multi-factor authentication",
+    "description": ""
+  },
+  "fusion.settings.mfaActivate": {
+    "defaultMessage": "Turn on",
+    "description": ""
+  },
+  "fusion.settings.mfaActive": {
+    "defaultMessage": "On: signing in asks for a code from your authenticator app.",
+    "description": ""
+  },
+  "fusion.settings.mfaCode": {
+    "defaultMessage": "Code from the app",
+    "description": ""
+  },
+  "fusion.settings.mfaDesc": {
+    "defaultMessage": "Ask for a code from an authenticator app when you sign in.",
+    "description": ""
+  },
+  "fusion.settings.mfaOff": {
+    "defaultMessage": "Multi-factor authentication is off",
+    "description": ""
+  },
+  "fusion.settings.mfaOn": {
+    "defaultMessage": "Multi-factor authentication is on",
+    "description": ""
+  },
+  "fusion.settings.mfaQr": {
+    "defaultMessage": "QR code for the authenticator app",
+    "description": ""
+  },
+  "fusion.settings.mfaRemove": {
+    "defaultMessage": "Remove multi-factor authentication",
+    "description": ""
+  },
+  "fusion.settings.mfaRemoveDesc": {
+    "defaultMessage": "Sign in with your password only.",
+    "description": ""
+  },
+  "fusion.settings.mfaReset": {
+    "defaultMessage": "Set up again…",
+    "description": ""
+  },
+  "fusion.settings.mfaSecret": {
+    "defaultMessage": "Or type this key:",
+    "description": ""
+  },
+  "fusion.settings.mfaSetup": {
+    "defaultMessage": "Set up multi-factor authentication",
+    "description": ""
+  },
+  "fusion.settings.mfaSetupLead": {
+    "defaultMessage": "Scan this code with an authenticator app (such as Aegis, Google Authenticator or 1Password), then enter the code it shows.",
+    "description": ""
+  },
+  "fusion.settings.mfaStart": {
+    "defaultMessage": "Set up…",
+    "description": ""
+  },
+  "fusion.settings.mobile": {
+    "defaultMessage": "Mobile",
+    "description": ""
+  },
+  "fusion.settings.names": {
+    "defaultMessage": "Show people as",
+    "description": ""
+  },
+  "fusion.settings.namesFull": {
+    "defaultMessage": "Full name",
+    "description": ""
+  },
+  "fusion.settings.namesNickname": {
+    "defaultMessage": "Nickname",
+    "description": ""
+  },
+  "fusion.settings.namesUsername": {
+    "defaultMessage": "Username",
+    "description": ""
+  },
+  "fusion.settings.newEmail": {
+    "defaultMessage": "New email",
+    "description": ""
+  },
+  "fusion.settings.newPassword": {
+    "defaultMessage": "New password",
+    "description": ""
+  },
+  "fusion.settings.nickname": {
+    "defaultMessage": "Nickname",
+    "description": ""
+  },
+  "fusion.settings.noAccessHistory": {
+    "defaultMessage": "Nothing recorded yet.",
+    "description": ""
+  },
+  "fusion.settings.noPlugins": {
+    "defaultMessage": "Turn off plugins in this browser",
+    "description": ""
+  },
+  "fusion.settings.noPluginsDesc": {
+    "defaultMessage": "Takes effect after reloading the page.",
+    "description": ""
+  },
+  "fusion.settings.notifications": {
+    "defaultMessage": "Notifications",
+    "description": ""
+  },
+  "fusion.settings.notificationsLead": {
+    "defaultMessage": "Choose what reaches you on desktop, mobile and by email.",
+    "description": ""
+  },
+  "fusion.settings.noTyping": {
+    "defaultMessage": "Don't send typing notices",
+    "description": ""
+  },
+  "fusion.settings.noTypingDesc": {
+    "defaultMessage": "Others don't see when you type.",
+    "description": ""
+  },
+  "fusion.settings.oauthApps": {
+    "defaultMessage": "Apps you authorized",
+    "description": ""
+  },
+  "fusion.settings.oneClick": {
+    "defaultMessage": "One-click reactions",
+    "description": ""
+  },
+  "fusion.settings.oneClickDesc": {
+    "defaultMessage": "Your recent emoji in the toolbar over messages.",
+    "description": ""
+  },
+  "fusion.settings.openConsole": {
+    "defaultMessage": "Open the System Console",
+    "description": ""
+  },
+  "fusion.settings.password": {
+    "defaultMessage": "Password",
+    "description": ""
+  },
+  "fusion.settings.passwordChanged": {
+    "defaultMessage": "Your password was changed.",
+    "description": ""
+  },
+  "fusion.settings.passwordDesc": {
+    "defaultMessage": "Change the password you sign in with.",
+    "description": ""
+  },
+  "fusion.settings.passwordMismatch": {
+    "defaultMessage": "The passwords don't match.",
+    "description": ""
+  },
+  "fusion.settings.performance": {
+    "defaultMessage": "Performance debugging",
+    "description": ""
+  },
+  "fusion.settings.pictureSize": {
+    "defaultMessage": "This image is too large.",
+    "description": ""
+  },
+  "fusion.settings.pictureType": {
+    "defaultMessage": "Pick a JPEG, PNG or BMP image.",
+    "description": ""
+  },
+  "fusion.settings.playSound": {
+    "defaultMessage": "Play",
+    "description": ""
+  },
+  "fusion.settings.pluginGone": {
+    "defaultMessage": "This plugin has no settings any more.",
+    "description": ""
+  },
+  "fusion.settings.plugins": {
+    "defaultMessage": "Plugins",
+    "description": ""
+  },
+  "fusion.settings.position": {
+    "defaultMessage": "Position",
+    "description": ""
+  },
+  "fusion.settings.profileFields": {
+    "defaultMessage": "Profile details",
+    "description": ""
+  },
+  "fusion.settings.pushAway": {
+    "defaultMessage": "Away or offline",
+    "description": ""
+  },
+  "fusion.settings.pushLevel": {
+    "defaultMessage": "Push notifications about",
+    "description": ""
+  },
+  "fusion.settings.pushOffline": {
+    "defaultMessage": "Offline",
+    "description": ""
+  },
+  "fusion.settings.pushOnline": {
+    "defaultMessage": "Online, away or offline",
+    "description": ""
+  },
+  "fusion.settings.pushStatus": {
+    "defaultMessage": "Send them when I'm",
+    "description": ""
+  },
+  "fusion.settings.pushStatusDesc": {
+    "defaultMessage": "Your status on the desktop or web app.",
+    "description": ""
+  },
+  "fusion.settings.pushThreads": {
+    "defaultMessage": "Replies to threads you follow",
+    "description": ""
+  },
+  "fusion.settings.pushThreadsDesc": {
+    "defaultMessage": "On mobile too, for every reply.",
+    "description": ""
+  },
+  "fusion.settings.reading": {
+    "defaultMessage": "Reading",
+    "description": ""
+  },
+  "fusion.settings.remove": {
+    "defaultMessage": "Remove",
+    "description": ""
+  },
+  "fusion.settings.removeKeyword": {
+    "defaultMessage": "Remove {word}",
+    "description": ""
+  },
+  "fusion.settings.removePicture": {
+    "defaultMessage": "Remove",
+    "description": ""
+  },
+  "fusion.settings.revoke": {
+    "defaultMessage": "Revoke",
+    "description": ""
+  },
+  "fusion.settings.richText": {
+    "defaultMessage": "Rich text editor (beta)",
+    "description": ""
+  },
+  "fusion.settings.richTextDesc": {
+    "defaultMessage": "See bold, lists, links and code as they will look while you write, instead of their Markdown.",
+    "description": ""
+  },
+  "fusion.settings.ringSound": {
+    "defaultMessage": "Ring",
+    "description": ""
+  },
+  "fusion.settings.save": {
+    "defaultMessage": "Save",
+    "description": ""
+  },
+  "fusion.settings.saved": {
+    "defaultMessage": "Saved",
+    "description": ""
+  },
+  "fusion.settings.scrollLeftOff": {
+    "defaultMessage": "Where I left off",
+    "description": ""
+  },
+  "fusion.settings.scrollNewest": {
+    "defaultMessage": "The newest message",
+    "description": ""
+  },
+  "fusion.settings.scrollPosition": {
+    "defaultMessage": "Open unread conversations at",
+    "description": ""
+  },
+  "fusion.settings.security": {
+    "defaultMessage": "Security",
+    "description": ""
+  },
+  "fusion.settings.securityLead": {
+    "defaultMessage": "Your password, multi-factor authentication and the devices you're signed in on.",
+    "description": ""
+  },
+  "fusion.settings.sessionActive": {
+    "defaultMessage": "Last active {when}",
+    "description": ""
+  },
+  "fusion.settings.sessionMobile": {
+    "defaultMessage": "Mobile app",
+    "description": ""
+  },
+  "fusion.settings.sessions": {
+    "defaultMessage": "Where you're signed in",
+    "description": ""
+  },
+  "fusion.settings.sessionUnknown": {
+    "defaultMessage": "Unknown device",
+    "description": ""
+  },
+  "fusion.settings.shareLastActive": {
+    "defaultMessage": "Share when you were last online",
+    "description": ""
+  },
+  "fusion.settings.shareLastActiveDesc": {
+    "defaultMessage": "Others see \"Last online 5 minutes ago\" while you're away or offline.",
+    "description": ""
+  },
+  "fusion.settings.show": {
+    "defaultMessage": "Show",
+    "description": ""
+  },
+  "fusion.settings.signInMethod": {
+    "defaultMessage": "Sign-in method",
+    "description": ""
+  },
+  "fusion.settings.signInProvider": {
+    "defaultMessage": "You sign in through {provider}: your password is managed there.",
+    "description": ""
+  },
+  "fusion.settings.signInSwitchEmail": {
+    "defaultMessage": "Sign in with your email and a password instead of your login provider.",
+    "description": ""
+  },
+  "fusion.settings.signInSwitchProvider": {
+    "defaultMessage": "Sign in through a login provider instead of your password.",
+    "description": ""
+  },
+  "fusion.settings.signInUseEmail": {
+    "defaultMessage": "Use email…",
+    "description": ""
+  },
+  "fusion.settings.signOut": {
+    "defaultMessage": "Sign out",
+    "description": ""
+  },
+  "fusion.settings.statusOnPosts": {
+    "defaultMessage": "Availability on pictures",
+    "description": ""
+  },
+  "fusion.settings.statusOnPostsDesc": {
+    "defaultMessage": "Show whether people are online on their pictures in messages.",
+    "description": ""
+  },
+  "fusion.settings.streamer": {
+    "defaultMessage": "Streamer mode",
+    "description": ""
+  },
+  "fusion.settings.streamerDesc": {
+    "defaultMessage": "Hide your email address and conversation previews, and silence desktop notifications, e.g. while sharing your screen.",
+    "description": ""
+  },
+  "fusion.settings.syncDrafts": {
+    "defaultMessage": "Sync drafts",
+    "description": ""
+  },
+  "fusion.settings.syncDraftsDesc": {
+    "defaultMessage": "Keep the messages you haven't sent yet on the server, to finish them on another device.",
+    "description": ""
+  },
+  "fusion.settings.teamBadge": {
+    "defaultMessage": "Team badge",
+    "description": ""
+  },
+  "fusion.settings.teamBadgeHelp": {
+    "defaultMessage": "Shown next to your name in this community, like a server tag. Only its teams you belong to are listed; each community keeps its own badge.",
+    "description": ""
+  },
+  "fusion.settings.teamBadgeNone": {
+    "defaultMessage": "None",
+    "description": ""
+  },
+  "fusion.settings.teamBadgeRequired": {
+    "defaultMessage": "Shown next to your name in this community, which asks everyone to show one. Only its teams you belong to are listed; each community keeps its own badge.",
+    "description": ""
+  },
+  "fusion.settings.testFailed": {
+    "defaultMessage": "The test notification couldn't be sent",
+    "description": ""
+  },
+  "fusion.settings.testNotification": {
+    "defaultMessage": "Send a test notification",
+    "description": ""
+  },
+  "fusion.settings.testSent": {
+    "defaultMessage": "Test notification sent: check your desktop and devices",
+    "description": ""
+  },
+  "fusion.settings.theme": {
+    "defaultMessage": "Theme",
+    "description": ""
+  },
+  "fusion.settings.themeCode": {
+    "defaultMessage": "Share a theme",
+    "description": ""
+  },
+  "fusion.settings.themeCodeApplied": {
+    "defaultMessage": "Theme applied",
+    "description": ""
+  },
+  "fusion.settings.themeCodeBad": {
+    "defaultMessage": "That isn't a theme code",
+    "description": ""
+  },
+  "fusion.settings.themeCodeCopied": {
+    "defaultMessage": "Theme code copied",
+    "description": ""
+  },
+  "fusion.settings.themeCodeLabel": {
+    "defaultMessage": "Theme code",
+    "description": ""
+  },
+  "fusion.settings.themeCodePlaceholder": {
+    "defaultMessage": "Paste a theme code (am1:…)",
+    "description": ""
+  },
+  "fusion.settings.themeCustom": {
+    "defaultMessage": "Custom",
+    "description": ""
+  },
+  "fusion.settings.threadReplies": {
+    "defaultMessage": "Replies to threads you follow",
+    "description": ""
+  },
+  "fusion.settings.threadRepliesDesc": {
+    "defaultMessage": "Notify me of every reply in the threads I follow, not only mentions.",
+    "description": ""
+  },
+  "fusion.settings.threads": {
+    "defaultMessage": "Keep replies in threads",
+    "description": ""
+  },
+  "fusion.settings.threadsDesc": {
+    "defaultMessage": "Thread replies stay in their thread instead of the channel, and the threads you follow are listed in Threads.",
+    "description": ""
+  },
+  "fusion.settings.timezone": {
+    "defaultMessage": "Time zone",
+    "description": ""
+  },
+  "fusion.settings.tokenActive": {
+    "defaultMessage": "Active · ID {id}",
+    "description": ""
+  },
+  "fusion.settings.tokenCopied": {
+    "defaultMessage": "Token copied",
+    "description": ""
+  },
+  "fusion.settings.tokenCreate": {
+    "defaultMessage": "Create token",
+    "description": ""
+  },
+  "fusion.settings.tokenCreated": {
+    "defaultMessage": "Copy this token now: it won't be shown again.",
+    "description": ""
+  },
+  "fusion.settings.tokenDescription": {
+    "defaultMessage": "What the new token is for",
+    "description": ""
+  },
+  "fusion.settings.tokenOff": {
+    "defaultMessage": "Turned off · ID {id}",
+    "description": ""
+  },
+  "fusion.settings.tokens": {
+    "defaultMessage": "Personal access tokens",
+    "description": ""
+  },
+  "fusion.settings.user": {
+    "defaultMessage": "User settings",
+    "description": ""
+  },
+  "fusion.settings.username": {
+    "defaultMessage": "Username",
+    "description": ""
+  },
+  "fusion.settings.usernameRules": {
+    "defaultMessage": "Use {min} to {max} lowercase letters, numbers, periods, dashes and underscores, starting with a letter.",
+    "description": ""
+  },
+  "fusion.settings.walltime": {
+    "defaultMessage": "Times in your time zone",
+    "description": ""
+  },
+  "fusion.settings.walltimeDesc": {
+    "defaultMessage": "Highlight the times written in messages from other time zones, with your own time when you point at them.",
+    "description": ""
+  },
+  "fusion.settings.widthCentered": {
+    "defaultMessage": "Centred",
+    "description": ""
+  },
+  "fusion.settings.widthFull": {
+    "defaultMessage": "Full width",
+    "description": ""
+  },
+  "fusion.shared.banner": {
+    "defaultMessage": "Shared channel with <b>{hosts}</b>. Messages are synced both ways; members from both servers can take part.",
+    "description": ""
+  },
+  "fusion.shared.bannerUnknown": {
+    "defaultMessage": "Shared channel. Messages are synced with other servers; their members can take part.",
+    "description": ""
+  },
+  "fusion.sidebar.categoryOptions": {
+    "defaultMessage": "Category options",
+    "description": ""
+  },
+  "fusion.sidebar.categoryOptionsFor": {
+    "defaultMessage": "Category options for {name}",
+    "description": ""
+  },
+  "fusion.sidebar.channelOptions": {
+    "defaultMessage": "Channel options",
+    "description": ""
+  },
+  "fusion.sidebar.channelOptionsFor": {
+    "defaultMessage": "Channel options for {name}",
+    "description": ""
+  },
+  "fusion.sidebar.createChannel": {
+    "defaultMessage": "Create channel",
+    "description": ""
+  },
+  "fusion.sidebar.hidden": {
+    "defaultMessage": "Hidden",
+    "description": ""
+  },
+  "fusion.sidebar.hiddenTitle": {
+    "defaultMessage": "Conversations hidden until they get new messages",
+    "description": ""
+  },
+  "fusion.sidebar.label": {
+    "defaultMessage": "Channels and direct messages",
+    "description": ""
+  },
+  "fusion.sidebar.moreUnreads": {
+    "defaultMessage": "More unreads",
+    "description": ""
+  },
+  "fusion.sidebar.muted": {
+    "defaultMessage": "Muted",
+    "description": ""
+  },
+  "fusion.sidebar.mutedTitle": {
+    "defaultMessage": "Muted until you turn it back on",
+    "description": ""
+  },
+  "fusion.sidebar.noUnreads": {
+    "defaultMessage": "You're all caught up.",
+    "description": ""
+  },
+  "fusion.sidebar.serverLocked": {
+    "defaultMessage": "Set up for everyone by the community's admins. Its channels stay here.",
+    "description": ""
+  },
+  "fusion.sidebar.serverOpen": {
+    "defaultMessage": "Set up for everyone by the community's admins. You can move its channels to your own categories.",
+    "description": ""
+  },
+  "fusion.sidebar.showAll": {
+    "defaultMessage": "Show all",
+    "description": ""
+  },
+  "fusion.sidebar.teamMenu": {
+    "defaultMessage": "{team} menu",
+    "description": ""
+  },
+  "fusion.sidebar.threadLabel": {
+    "defaultMessage": "Thread: {name}, {count, plural, one {# new reply} other {# new replies}}",
+    "description": ""
+  },
+  "fusion.sidebar.threadUntitled": {
+    "defaultMessage": "Thread",
+    "description": ""
+  },
+  "fusion.sidebar.unreadOnly": {
+    "defaultMessage": "Unread channels only",
+    "description": ""
+  },
+  "fusion.sidebar.unreads": {
+    "defaultMessage": "Unreads",
+    "description": ""
+  },
+  "fusion.sleep.dismiss": {
+    "defaultMessage": "Dismiss",
+    "description": ""
+  },
+  "fusion.sleep.later": {
+    "defaultMessage": "Send at 07:00 their time",
+    "description": ""
+  },
+  "fusion.sleep.many": {
+    "defaultMessage": "It's night for {names} — they may be asleep.",
+    "description": ""
+  },
+  "fusion.sleep.one": {
+    "defaultMessage": "It's <b>{time}</b> for {name} — they may be asleep.",
+    "description": ""
+  },
+  "fusion.spoiler.label": {
+    "defaultMessage": "Spoiler, click to show it",
+    "description": ""
+  },
+  "fusion.spoiler.show": {
+    "defaultMessage": "Click to show the spoiler",
+    "description": ""
+  },
+  "fusion.spoiler.title": {
+    "defaultMessage": "Spoiler",
+    "description": ""
+  },
+  "fusion.status.autoRepliesOn": {
+    "defaultMessage": "Automatic replies are on",
+    "description": ""
+  },
+  "fusion.status.autoReplyDefault": {
+    "defaultMessage": "Hello, I'm out of office and unable to respond to messages.",
+    "description": ""
+  },
+  "fusion.status.clear": {
+    "defaultMessage": "Clear custom status",
+    "description": ""
+  },
+  "fusion.status.clearAfter": {
+    "defaultMessage": "Clear after",
+    "description": ""
+  },
+  "fusion.status.clearAfterValue": {
+    "defaultMessage": "Clear after: {duration}",
+    "description": ""
+  },
+  "fusion.status.clearAt": {
+    "defaultMessage": "Clear the status on",
+    "description": ""
+  },
+  "fusion.status.clearAtSet": {
+    "defaultMessage": "Set",
+    "description": ""
+  },
+  "fusion.status.clearCustom": {
+    "defaultMessage": "Choose date and time…",
+    "description": ""
+  },
+  "fusion.status.console": {
+    "defaultMessage": "System Console",
+    "description": ""
+  },
+  "fusion.status.custom": {
+    "defaultMessage": "Set a custom status",
+    "description": ""
+  },
+  "fusion.status.customLabel": {
+    "defaultMessage": "Custom status",
+    "description": ""
+  },
+  "fusion.status.dnd": {
+    "defaultMessage": "Do not disturb",
+    "description": ""
+  },
+  "fusion.status.dndCustom": {
+    "defaultMessage": "Until a custom time…",
+    "description": ""
+  },
+  "fusion.status.dndFor": {
+    "defaultMessage": "Do not disturb for",
+    "description": ""
+  },
+  "fusion.status.dndSet": {
+    "defaultMessage": "Turn on",
+    "description": ""
+  },
+  "fusion.status.dndUntil": {
+    "defaultMessage": "Do not disturb until",
+    "description": ""
+  },
+  "fusion.status.emoji": {
+    "defaultMessage": "Choose an emoji",
+    "description": ""
+  },
+  "fusion.status.forget": {
+    "defaultMessage": "Remove from recents",
+    "description": ""
+  },
+  "fusion.status.integrations": {
+    "defaultMessage": "Integrations",
+    "description": ""
+  },
+  "fusion.status.label": {
+    "defaultMessage": "Set your status",
+    "description": ""
+  },
+  "fusion.status.logout": {
+    "defaultMessage": "Log out",
+    "description": ""
+  },
+  "fusion.status.offerNo": {
+    "defaultMessage": "No",
+    "description": ""
+  },
+  "fusion.status.offerReplies": {
+    "defaultMessage": "Also answer direct messages automatically while you're away?",
+    "description": ""
+  },
+  "fusion.status.offerYes": {
+    "defaultMessage": "Turn on",
+    "description": ""
+  },
+  "fusion.status.ooo": {
+    "defaultMessage": "Out of office",
+    "description": ""
+  },
+  "fusion.status.oooHint": {
+    "defaultMessage": "Choose another status to turn the automatic replies off",
+    "description": ""
+  },
+  "fusion.status.recent": {
+    "defaultMessage": "Recent",
+    "description": ""
+  },
+  "fusion.status.settings": {
+    "defaultMessage": "Profile & settings",
+    "description": ""
+  },
+  "fusion.status.suggested": {
+    "defaultMessage": "Suggestions",
+    "description": ""
+  },
+  "fusion.status.suggestions": {
+    "defaultMessage": "Status suggestions",
+    "description": ""
+  },
+  "fusion.status.until": {
+    "defaultMessage": "until {time}",
+    "description": ""
+  },
+  "fusion.teams.cancel": {
+    "defaultMessage": "Cancel",
+    "description": ""
+  },
+  "fusion.teams.channel": {
+    "defaultMessage": "Channel: #{channel}",
+    "description": ""
+  },
+  "fusion.teams.channelLabel": {
+    "defaultMessage": "Team channel",
+    "description": ""
+  },
+  "fusion.teams.description": {
+    "defaultMessage": "What the team does",
+    "description": ""
+  },
+  "fusion.teams.edit": {
+    "defaultMessage": "Edit the team",
+    "description": ""
+  },
+  "fusion.teams.editLead": {
+    "defaultMessage": "Members can show the team's tag next to their name. The card lists the lead and links the team's channel.",
+    "description": ""
+  },
+  "fusion.teams.editTitle": {
+    "defaultMessage": "Edit {team}",
+    "description": ""
+  },
+  "fusion.teams.jump": {
+    "defaultMessage": "Jump to #{channel}",
+    "description": ""
+  },
+  "fusion.teams.lead": {
+    "defaultMessage": "Lead: {name}",
+    "description": ""
+  },
+  "fusion.teams.leadLabel": {
+    "defaultMessage": "Lead",
+    "description": ""
+  },
+  "fusion.teams.members": {
+    "defaultMessage": "{count, plural, one {# member} other {# members}}",
+    "description": ""
+  },
+  "fusion.teams.messageLead": {
+    "defaultMessage": "Message {name}, the lead",
+    "description": ""
+  },
+  "fusion.teams.noChannel": {
+    "defaultMessage": "No team channel yet",
+    "description": ""
+  },
+  "fusion.teams.noChannelOption": {
+    "defaultMessage": "No team channel",
+    "description": ""
+  },
+  "fusion.teams.noLead": {
+    "defaultMessage": "No lead",
+    "description": ""
+  },
+  "fusion.teams.otherChannel": {
+    "defaultMessage": "The current channel (you aren't in it)",
+    "description": ""
+  },
+  "fusion.teams.save": {
+    "defaultMessage": "Save",
+    "description": ""
+  },
+  "fusion.teams.saveFailed": {
+    "defaultMessage": "The team couldn't be saved.",
+    "description": ""
+  },
+  "fusion.teams.tag": {
+    "defaultMessage": "Tag",
+    "description": ""
+  },
+  "fusion.teams.tagHelp": {
+    "defaultMessage": "Up to {max} characters",
+    "description": ""
+  },
+  "fusion.teams.tagPlaceholder": {
+    "defaultMessage": "e.g. DET",
+    "description": ""
+  },
+  "fusion.teams.team": {
+    "defaultMessage": "Team",
+    "description": ""
+  },
+  "fusion.teamSettings.autolinks": {
+    "defaultMessage": "Autolinks",
+    "description": ""
+  },
+  "fusion.teamSettings.close": {
+    "defaultMessage": "Close team settings",
+    "description": ""
+  },
+  "fusion.teamSettings.overview": {
+    "defaultMessage": "Overview",
+    "description": ""
+  },
+  "fusion.theme.code": {
+    "defaultMessage": "Theme code",
+    "description": ""
+  },
+  "fusion.theme.codeHint": {
+    "defaultMessage": "Share this code, or paste one from someone else and choose Import.",
+    "description": ""
+  },
+  "fusion.theme.copy": {
+    "defaultMessage": "Copy",
+    "description": ""
+  },
+  "fusion.theme.custom": {
+    "defaultMessage": "Custom colours",
+    "description": ""
+  },
+  "fusion.theme.import": {
+    "defaultMessage": "Import",
+    "description": ""
+  },
+  "fusion.theme.reset": {
+    "defaultMessage": "Start from Antimatter",
+    "description": ""
+  },
+  "fusion.thread.close": {
+    "defaultMessage": "Close thread",
+    "description": ""
+  },
+  "fusion.thread.collapse": {
+    "defaultMessage": "Collapse the panel",
+    "description": ""
+  },
+  "fusion.thread.expand": {
+    "defaultMessage": "Expand the panel",
+    "description": ""
+  },
+  "fusion.thread.following": {
+    "defaultMessage": "Following",
+    "description": ""
+  },
+  "fusion.thread.inDirect": {
+    "defaultMessage": "Direct message · {name}",
+    "description": ""
+  },
+  "fusion.thread.lastReply": {
+    "defaultMessage": "Last reply {when}",
+    "description": ""
+  },
+  "fusion.thread.loading": {
+    "defaultMessage": "Loading…",
+    "description": ""
+  },
+  "fusion.thread.name": {
+    "defaultMessage": "Name",
+    "description": ""
+  },
+  "fusion.thread.nameLead": {
+    "defaultMessage": "A named thread is a sub-chat of its channel: its followers see it under the channel in their sidebar.",
+    "description": ""
+  },
+  "fusion.thread.namePlaceholder": {
+    "defaultMessage": "e.g. Release 2.1",
+    "description": ""
+  },
+  "fusion.thread.nameTitle": {
+    "defaultMessage": "Name this thread",
+    "description": ""
+  },
+  "fusion.thread.popout": {
+    "defaultMessage": "Open in a new window",
+    "description": ""
+  },
+  "fusion.thread.replies": {
+    "defaultMessage": "{count, plural, one {# reply} other {# replies}}",
+    "description": ""
+  },
+  "fusion.thread.reply": {
+    "defaultMessage": "Reply to thread",
+    "description": ""
+  },
+  "fusion.thread.title": {
+    "defaultMessage": "Thread",
+    "description": ""
+  },
+  "fusion.threadMenu.label": {
+    "defaultMessage": "Thread actions",
+    "description": ""
+  },
+  "fusion.threadMenu.more": {
+    "defaultMessage": "More actions",
+    "description": ""
+  },
+  "fusion.threadMenu.moreLabel": {
+    "defaultMessage": "More thread actions",
+    "description": ""
+  },
+  "fusion.time.dayAt": {
+    "defaultMessage": "{day} at {time}",
+    "description": ""
+  },
+  "fusion.time.today": {
+    "defaultMessage": "Today",
+    "description": ""
+  },
+  "fusion.time.yesterday": {
+    "defaultMessage": "Yesterday",
+    "description": ""
+  },
+  "fusion.time.yesterdayAt": {
+    "defaultMessage": "Yesterday at {time}",
+    "description": ""
+  },
+  "fusion.timeout.10m": {
+    "defaultMessage": "10 minutes",
+    "description": ""
+  },
+  "fusion.timeout.1d": {
+    "defaultMessage": "1 day",
+    "description": ""
+  },
+  "fusion.timeout.1h": {
+    "defaultMessage": "1 hour",
+    "description": ""
+  },
+  "fusion.timeout.1m": {
+    "defaultMessage": "60 seconds",
+    "description": ""
+  },
+  "fusion.timeout.1w": {
+    "defaultMessage": "1 week",
+    "description": ""
+  },
+  "fusion.timeout.5m": {
+    "defaultMessage": "5 minutes",
+    "description": ""
+  },
+  "fusion.timeout.cancel": {
+    "defaultMessage": "Cancel",
+    "description": ""
+  },
+  "fusion.timeout.done": {
+    "defaultMessage": "{name} is timed out",
+    "description": ""
+  },
+  "fusion.timeout.duration": {
+    "defaultMessage": "Duration",
+    "description": ""
+  },
+  "fusion.timeout.failed": {
+    "defaultMessage": "The timeout couldn't be set.",
+    "description": ""
+  },
+  "fusion.timeout.lead": {
+    "defaultMessage": "They can read the community's channels, but not send messages, react, attach files or mention, until the timeout ends. Direct messages stay open.",
+    "description": ""
+  },
+  "fusion.timeout.lifted": {
+    "defaultMessage": "{name}'s timeout is lifted",
+    "description": ""
+  },
+  "fusion.timeout.liftFailed": {
+    "defaultMessage": "The timeout couldn't be lifted.",
+    "description": ""
+  },
+  "fusion.timeout.reason": {
+    "defaultMessage": "Reason (optional)",
+    "description": ""
+  },
+  "fusion.timeout.submit": {
+    "defaultMessage": "Time out",
+    "description": ""
+  },
+  "fusion.timeout.title": {
+    "defaultMessage": "Time out {name}",
+    "description": ""
+  },
+  "fusion.toast.addedCount": {
+    "defaultMessage": "{count, plural, one {Added {names} to {where}} other {Added {names} to {where}}}",
+    "description": ""
+  },
+  "fusion.toast.badThemeCode": {
+    "defaultMessage": "That is not a theme code. It starts with am1: followed by nine colours.",
+    "description": ""
+  },
+  "fusion.toast.categoryCreated": {
+    "defaultMessage": "Category “{name}” created",
+    "description": ""
+  },
+  "fusion.toast.categoryRenamed": {
+    "defaultMessage": "Renamed to “{name}” for everyone",
+    "description": ""
+  },
+  "fusion.toast.copiedUser": {
+    "defaultMessage": "Copied @{username}",
+    "description": ""
+  },
+  "fusion.toast.created": {
+    "defaultMessage": "Created {name}",
+    "description": ""
+  },
+  "fusion.toast.customStatus": {
+    "defaultMessage": "Custom status updated",
+    "description": ""
+  },
+  "fusion.toast.customStatusCleared": {
+    "defaultMessage": "Custom status cleared",
+    "description": ""
+  },
+  "fusion.toast.deleted": {
+    "defaultMessage": "Message deleted",
+    "description": ""
+  },
+  "fusion.toast.favorited": {
+    "defaultMessage": "Added to Favorites",
+    "description": ""
+  },
+  "fusion.toast.filed": {
+    "defaultMessage": "Moved to {category}, for everyone",
+    "description": ""
+  },
+  "fusion.toast.fileFailed": {
+    "defaultMessage": "The channel couldn't be moved.",
+    "description": ""
+  },
+  "fusion.toast.following": {
+    "defaultMessage": "Following thread",
+    "description": ""
+  },
+  "fusion.toast.hidden": {
+    "defaultMessage": "Hidden until new messages — find it under Hidden at the end of the list",
+    "description": ""
+  },
+  "fusion.toast.idCopied": {
+    "defaultMessage": "ID copied",
+    "description": ""
+  },
+  "fusion.toast.left": {
+    "defaultMessage": "You left {name}",
+    "description": ""
+  },
+  "fusion.toast.linkCopied": {
+    "defaultMessage": "Link copied",
+    "description": ""
+  },
+  "fusion.toast.markedRead": {
+    "defaultMessage": "Marked {name} as read",
+    "description": ""
+  },
+  "fusion.toast.markedUnread": {
+    "defaultMessage": "Marked {name} as unread",
+    "description": ""
+  },
+  "fusion.toast.moved": {
+    "defaultMessage": "Moved to {category}",
+    "description": ""
+  },
+  "fusion.toast.muted": {
+    "defaultMessage": "Muted — no notifications or unread badges",
+    "description": ""
+  },
+  "fusion.toast.pinned": {
+    "defaultMessage": "Pinned to the channel",
+    "description": ""
+  },
+  "fusion.toast.readAloudFailed": {
+    "defaultMessage": "The message couldn't be read aloud",
+    "description": ""
+  },
+  "fusion.toast.reminder": {
+    "defaultMessage": "Reminder set for {time}",
+    "description": ""
+  },
+  "fusion.toast.removedFromChannel": {
+    "defaultMessage": "{name} was removed from {channel}",
+    "description": ""
+  },
+  "fusion.toast.removedFromTeam": {
+    "defaultMessage": "{name} was removed from {team}",
+    "description": ""
+  },
+  "fusion.toast.saved": {
+    "defaultMessage": "Saved — find it in Saved messages",
+    "description": ""
+  },
+  "fusion.toast.savedToNotes": {
+    "defaultMessage": "Saved to your notes",
+    "description": ""
+  },
+  "fusion.toast.scheduled": {
+    "defaultMessage": "Scheduled for {when}",
+    "description": ""
+  },
+  "fusion.toast.scheduledSleeper": {
+    "defaultMessage": "Scheduled — {name} gets it at 07:00 their time (in about {hours} h)",
+    "description": ""
+  },
+  "fusion.toast.scheduleEmpty": {
+    "defaultMessage": "Write your message first, then schedule it",
+    "description": ""
+  },
+  "fusion.toast.scheduleFailed": {
+    "defaultMessage": "The message could not be scheduled",
+    "description": ""
+  },
+  "fusion.toast.serverCategoryCreated": {
+    "defaultMessage": "Category “{name}” created for everyone",
+    "description": ""
+  },
+  "fusion.toast.serverCategoryDeleted": {
+    "defaultMessage": "Deleted “{name}” for everyone",
+    "description": ""
+  },
+  "fusion.toast.serverCategoryFailed": {
+    "defaultMessage": "The categories couldn't be saved.",
+    "description": ""
+  },
+  "fusion.toast.status": {
+    "defaultMessage": "Status set to {status}",
+    "description": ""
+  },
+  "fusion.toast.teamBadge": {
+    "defaultMessage": "Team badge: {tag}",
+    "description": ""
+  },
+  "fusion.toast.teamBadgeHidden": {
+    "defaultMessage": "Team badge hidden",
+    "description": ""
+  },
+  "fusion.toast.textCopied": {
+    "defaultMessage": "Text copied",
+    "description": ""
+  },
+  "fusion.toast.themeCopied": {
+    "defaultMessage": "Theme code copied",
+    "description": ""
+  },
+  "fusion.toast.themeImported": {
+    "defaultMessage": "Theme imported",
+    "description": ""
+  },
+  "fusion.toast.threadUnread": {
+    "defaultMessage": "Thread marked as unread",
+    "description": ""
+  },
+  "fusion.toast.unfavorited": {
+    "defaultMessage": "Removed from Favorites",
+    "description": ""
+  },
+  "fusion.toast.unfollowed": {
+    "defaultMessage": "Unfollowed thread",
+    "description": ""
+  },
+  "fusion.toast.unmuted": {
+    "defaultMessage": "Unmuted",
+    "description": ""
+  },
+  "fusion.toast.unpinned": {
+    "defaultMessage": "Unpinned",
+    "description": ""
+  },
+  "fusion.toast.unread": {
+    "defaultMessage": "Marked as unread from this message",
+    "description": ""
+  },
+  "fusion.toast.unsaved": {
+    "defaultMessage": "Removed from saved",
+    "description": ""
+  },
+  "fusion.translation.original": {
+    "defaultMessage": "Original message",
+    "description": ""
+  },
+  "fusion.translation.processing": {
+    "defaultMessage": "Translating…",
+    "description": ""
+  },
+  "fusion.translation.showOriginal": {
+    "defaultMessage": "Show the original",
+    "description": ""
+  },
+  "fusion.translation.showTranslation": {
+    "defaultMessage": "Show the translation",
+    "description": ""
+  },
+  "fusion.translation.translated": {
+    "defaultMessage": "Translated{from, select, none {} other { from {from}}}",
+    "description": ""
+  },
+  "fusion.typing.many": {
+    "defaultMessage": "Several people are typing…",
+    "description": ""
+  },
+  "fusion.typing.some": {
+    "defaultMessage": "{names} {count, plural, one {is} other {are}} typing…",
+    "description": ""
+  },
+  "fusion.userMenu.cancel": {
+    "defaultMessage": "Cancel",
+    "description": ""
+  },
+  "fusion.userMenu.copy": {
+    "defaultMessage": "Copy username",
+    "description": ""
+  },
+  "fusion.userMenu.liftTimeout": {
+    "defaultMessage": "Remove timeout",
+    "description": ""
+  },
+  "fusion.userMenu.mention": {
+    "defaultMessage": "Mention",
+    "description": ""
+  },
+  "fusion.userMenu.message": {
+    "defaultMessage": "Message",
+    "description": ""
+  },
+  "fusion.userMenu.modView": {
+    "defaultMessage": "Mod view",
+    "description": ""
+  },
+  "fusion.userMenu.profile": {
+    "defaultMessage": "Profile",
+    "description": ""
+  },
+  "fusion.userMenu.remove": {
+    "defaultMessage": "Remove",
+    "description": ""
+  },
+  "fusion.userMenu.removeChannel": {
+    "defaultMessage": "Remove from channel",
+    "description": ""
+  },
+  "fusion.userMenu.removeFailed": {
+    "defaultMessage": "Could not remove {name}.",
+    "description": ""
+  },
+  "fusion.userMenu.removeLead": {
+    "defaultMessage": "{name} leaves every channel of the community, but can rejoin with a new invite.",
+    "description": ""
+  },
+  "fusion.userMenu.removeTeam": {
+    "defaultMessage": "Remove from community…",
+    "description": ""
+  },
+  "fusion.userMenu.removeTitle": {
+    "defaultMessage": "Remove {name} from {team}?",
+    "description": ""
+  },
+  "fusion.userMenu.timeOut": {
+    "defaultMessage": "Time out…",
+    "description": ""
+  },
+  "fusion.walltime.tip": {
+    "defaultMessage": "{local} your time · {written} as written",
+    "description": ""
+  },
   "general_button.close": {
     "defaultMessage": "Close",
     "description": "Accessibility label for the close (X) button on toast notifications."
@@ -22211,10 +28151,6 @@
     "defaultMessage": "Slash Commands",
     "description": "Title of the Slash Commands tile on the team Integrations landing page."
   },
-  "integrations.customEmoji.description": {
-    "defaultMessage": "Add emoji of your own, for everyone on the server to use",
-    "description": "Description of the Custom Emoji tile of the Integrations overview."
-  },
   "integrations.copy_client_id": {
     "defaultMessage": "Copy Client Id",
     "description": "Tooltip/label of the copy-to-clipboard button next to an OAuth application's client ID."
@@ -22235,6 +28171,10 @@
     "defaultMessage": "Copy Username",
     "description": "Tooltip/label of the copy-to-clipboard button next to the stored username on the outgoing OAuth connection confirmation page."
   },
+  "integrations.customEmoji.description": {
+    "defaultMessage": "Add emoji of your own, for everyone on the server to use",
+    "description": "Description of the Custom Emoji tile of the Integrations overview."
+  },
   "integrations.delete.confirm.button": {
     "defaultMessage": "Yes, delete it",
     "description": "Confirm button in the delete integration confirmation modal."
@@ -22254,18 +28194,6 @@
   "integrations.header": {
     "defaultMessage": "Integrations",
     "description": "Page header of the team Integrations landing page listing available integration types."
-  },
-  "integrations.section.apps": {
-    "defaultMessage": "Apps and bots",
-    "description": "Heading of the section of the Integrations overview listing OAuth 2.0 apps, outgoing OAuth connections and bot accounts."
-  },
-  "integrations.section.customization": {
-    "defaultMessage": "Customization",
-    "description": "Heading of the section of the Integrations overview listing custom emoji and what plugins add, such as custom GIFs and stickers."
-  },
-  "integrations.section.hooks": {
-    "defaultMessage": "Webhooks and commands",
-    "description": "Heading of the section of the Integrations overview listing incoming and outgoing webhooks and slash commands."
   },
   "integrations.incomingWebhook.description": {
     "defaultMessage": "Incoming webhooks allow external integrations to send messages",
@@ -22298,6 +28226,18 @@
   "integrations.outgoingWebhook.title": {
     "defaultMessage": "Outgoing Webhooks",
     "description": "Title of the Outgoing Webhooks tile on the team Integrations landing page."
+  },
+  "integrations.section.apps": {
+    "defaultMessage": "Apps and bots",
+    "description": "Heading of the section of the Integrations overview listing OAuth 2.0 apps, outgoing OAuth connections and bot accounts."
+  },
+  "integrations.section.customization": {
+    "defaultMessage": "Customization",
+    "description": "Heading of the section of the Integrations overview listing custom emoji and what plugins add, such as custom GIFs and stickers."
+  },
+  "integrations.section.hooks": {
+    "defaultMessage": "Webhooks and commands",
+    "description": "Heading of the section of the Integrations overview listing incoming and outgoing webhooks and slash commands."
   },
   "integrations.successful": {
     "defaultMessage": "Setup Successful",
@@ -28142,10 +34082,6 @@
   "team_settings_modal.accessTab": {
     "defaultMessage": "Access",
     "description": "Sidebar tab name in the team settings dialog for access/invitation settings; compact space, noun."
-  },
-  "team_settings_modal.infoTab": {
-    "defaultMessage": "Info",
-    "description": "Sidebar tab name in the team settings dialog for the team's name, description, and icon; compact space."
   },
   "team_settings_modal.teamMembershipTab": {
     "defaultMessage": "Team Membership",

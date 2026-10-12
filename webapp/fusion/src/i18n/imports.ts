@@ -5,24 +5,41 @@
 
 /* eslint-disable */
 
+import ar from './ar.json';
 import bg from './bg.json';
+import bn from './bn.json';
+import ca from './ca.json';
+import cs from './cs.json';
+import da from './da.json';
 import de from './de.json';
+import el from './el.json';
 import enAU from './en-AU.json';
 import es from './es.json';
 import fa from './fa.json';
+import fi from './fi.json';
+import fil from './fil.json';
 import fr from './fr.json';
+import he from './he.json';
+import hi from './hi.json';
 import hu from './hu.json';
+import id from './id.json';
 import it from './it.json';
 import ja from './ja.json';
 import ko from './ko.json';
+import ms from './ms.json';
+import nbNO from './nb-NO.json';
 import nl from './nl.json';
 import pl from './pl.json';
+import pt from './pt.json';
 import ptBR from './pt-BR.json';
 import ro from './ro.json';
 import ru from './ru.json';
 import sv from './sv.json';
+import ta from './ta.json';
+import th from './th.json';
 import tr from './tr.json';
 import uk from './uk.json';
+import ur from './ur.json';
 import vi from './vi.json';
 import zhCN from './zh-CN.json';
 import zhTW from './zh-TW.json';
@@ -32,24 +49,41 @@ import zhTW from './zh-TW.json';
 export const langFiles: {
     [langID: string]: string;
 } = {
+    ar: ar as unknown as string,
     bg: bg as unknown as string,
+    bn: bn as unknown as string,
+    ca: ca as unknown as string,
+    cs: cs as unknown as string,
+    da: da as unknown as string,
     de: de as unknown as string,
+    el: el as unknown as string,
     'en-AU': enAU as unknown as string,
     es: es as unknown as string,
     fa: fa as unknown as string,
+    fi: fi as unknown as string,
+    fil: fil as unknown as string,
     fr: fr as unknown as string,
+    he: he as unknown as string,
+    hi: hi as unknown as string,
     hu: hu as unknown as string,
+    id: id as unknown as string,
     it: it as unknown as string,
     ja: ja as unknown as string,
     ko: ko as unknown as string,
+    ms: ms as unknown as string,
+    'nb-NO': nbNO as unknown as string,
     nl: nl as unknown as string,
     pl: pl as unknown as string,
+    pt: pt as unknown as string,
     'pt-BR': ptBR as unknown as string,
     ro: ro as unknown as string,
     ru: ru as unknown as string,
     sv: sv as unknown as string,
+    ta: ta as unknown as string,
+    th: th as unknown as string,
     tr: tr as unknown as string,
     uk: uk as unknown as string,
+    ur: ur as unknown as string,
     vi: vi as unknown as string,
     'zh-CN': zhCN as unknown as string,
     'zh-TW': zhTW as unknown as string

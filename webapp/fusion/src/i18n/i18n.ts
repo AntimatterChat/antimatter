@@ -152,6 +152,108 @@ export const languages = {
         order: 21,
         url: langFiles.ja,
     },
+    ca: {
+        value: 'ca',
+        name: 'Català',
+        order: 22,
+        url: langFiles.ca,
+    },
+    cs: {
+        value: 'cs',
+        name: 'Čeština',
+        order: 23,
+        url: langFiles.cs,
+    },
+    da: {
+        value: 'da',
+        name: 'Dansk',
+        order: 24,
+        url: langFiles.da,
+    },
+    fi: {
+        value: 'fi',
+        name: 'Suomi',
+        order: 25,
+        url: langFiles.fi,
+    },
+    fil: {
+        value: 'fil',
+        name: 'Filipino',
+        order: 26,
+        url: langFiles.fil,
+    },
+    id: {
+        value: 'id',
+        name: 'Bahasa Indonesia',
+        order: 27,
+        url: langFiles.id,
+    },
+    ms: {
+        value: 'ms',
+        name: 'Bahasa Melayu',
+        order: 28,
+        url: langFiles.ms,
+    },
+    'nb-NO': {
+        value: 'nb-NO',
+        name: 'Norsk (bokmål)',
+        order: 29,
+        url: langFiles['nb-NO'],
+    },
+    pt: {
+        value: 'pt',
+        name: 'Português (Portugal)',
+        order: 30,
+        url: langFiles.pt,
+    },
+    el: {
+        value: 'el',
+        name: 'Ελληνικά',
+        order: 31,
+        url: langFiles.el,
+    },
+    he: {
+        value: 'he',
+        name: 'עברית',
+        order: 32,
+        url: langFiles.he,
+    },
+    ar: {
+        value: 'ar',
+        name: 'العربية',
+        order: 33,
+        url: langFiles.ar,
+    },
+    ur: {
+        value: 'ur',
+        name: 'اردو',
+        order: 34,
+        url: langFiles.ur,
+    },
+    hi: {
+        value: 'hi',
+        name: 'हिन्दी',
+        order: 35,
+        url: langFiles.hi,
+    },
+    bn: {
+        value: 'bn',
+        name: 'বাংলা',
+        order: 36,
+        url: langFiles.bn,
+    },
+    ta: {
+        value: 'ta',
+        name: 'தமிழ்',
+        order: 37,
+        url: langFiles.ta,
+    },
+    th: {
+        value: 'th',
+        name: 'ไทย',
+        order: 38,
+        url: langFiles.th,
+    },
 };
 
 export function getAllLanguages(): Record<string, Language> {
