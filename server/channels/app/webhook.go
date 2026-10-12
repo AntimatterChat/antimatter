@@ -1100,6 +1100,21 @@ func (a *App) HandleIncomingWebhook(rctx request.CTX, hookID string, req *model.
 		return model.NewAppError("HandleIncomingWebhook", "web.incoming_webhook.permissions.app_error", map[string]any{"user": hook.UserId, "channel": channel.Id}, "", http.StatusForbidden)
 	}
 
+	// The hook speaks as its owner: not while they're timed out, nor where they're a member a channel override keeps
+	// from posting. In a public channel they haven't joined it still posts, as upstream.
+	if channel.TeamId != "" {
+		silenced := a.isTimedOut(rctx, channel.TeamId, hook.UserId)
+		if !silenced {
+			if _, err := a.Srv().Store().Channel().GetMember(rctx, channel.Id, hook.UserId); err == nil {
+				canPost, _ := a.HasPermissionToChannel(rctx, hook.UserId, channel.Id, model.PermissionCreatePost)
+				silenced = !canPost
+			}
+		}
+		if silenced {
+			return model.NewAppError("HandleIncomingWebhook", "web.incoming_webhook.permissions.app_error", map[string]any{"user": hook.UserId, "channel": channel.Id}, "", http.StatusForbidden)
+		}
+	}
+
 	if scopeErr := a.checkIncomingWebhookDirectChannelTeamScope(rctx, hook, channel); scopeErr != nil {
 		return scopeErr
 	}

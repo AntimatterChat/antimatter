@@ -102,6 +102,31 @@ func TestModeration(t *testing.T) {
 		require.Error(t, post(client, th.BasicChannel.Id))
 	})
 
+	t.Run("a timed-out member's incoming webhooks don't speak for them either", func(t *testing.T) {
+		th.App.UpdateConfig(func(cfg *model.Config) { cfg.ServiceSettings.EnableIncomingWebhooks = new(true) })
+		user, _ := member(t)
+		hook, appErr := th.App.CreateIncomingWebhookForChannel(user.Id, th.BasicChannel, &model.IncomingWebhook{ChannelId: th.BasicChannel.Id})
+		require.Nil(t, appErr)
+		send := func() *model.AppError {
+			return th.App.HandleIncomingWebhook(th.Context, hook.Id, &model.IncomingWebhookRequest{Text: "hello"})
+		}
+		require.Nil(t, send())
+
+		_, err := timeOut(t, th.SystemAdminClient, user.Id, inAnHour(), "")
+		require.NoError(t, err)
+		require.NotNil(t, send(), "not while they're timed out")
+		_, err = timeOut(t, th.SystemAdminClient, user.Id, 0, "")
+		require.NoError(t, err)
+		require.Nil(t, send())
+
+		// Nor where an override keeps them from posting.
+		data, _ := json.Marshal(model.ChannelOverride{TargetType: model.ChannelOverrideTargetUser, TargetId: user.Id, Deny: []string{model.PermissionCreatePost.Id}})
+		resp, err := th.SystemAdminClient.DoAPIPut(context.Background(), "/channels/"+th.BasicChannel.Id+"/overrides", string(data))
+		require.NoError(t, err)
+		resp.Body.Close()
+		require.NotNil(t, send(), "not where an override denies posting")
+	})
+
 	t.Run("the team's members see who's timed out; its moderators, the mod view", func(t *testing.T) {
 		user, client := member(t)
 		require.NoError(t, post(client, th.BasicChannel.Id))
