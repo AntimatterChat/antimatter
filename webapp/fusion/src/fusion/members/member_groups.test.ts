@@ -54,10 +54,11 @@ describe('useMemberGroups', () => {
         expect(groupsOf([nobody]).map(([key]) => key)).toEqual(['online', 'offline']);
     });
 
-    test('by team: each team in name order, online members first, then the others', () => {
-        const ops = group('ops', {display_name: 'Ops', tag: 'OPS', member_ids: ['dee', 'cy']});
-        const det = group('det', {display_name: 'Detector', tag: 'DET', member_ids: ['ada']});
-        expect(groupsOf([ops, det], 'teams')).toEqual([
+    test('by team: each team of the community in name order, online members first, then the others', () => {
+        const ops = group('ops', {display_name: 'Ops', tag: 'OPS', team_id: 'team', is_team: true, member_ids: ['dee', 'cy']});
+        const det = group('det', {display_name: 'Detector', tag: 'DET', team_id: 'team', is_team: true, member_ids: ['ada']});
+        const elsewhere = group('elsewhere', {display_name: 'Elsewhere', team_id: 'other', is_team: true, member_ids: ['bob']});
+        expect(groupsOf([ops, det, elsewhere], 'teams')).toEqual([
             ['team-det', ['ada']],
             ['team-ops', ['cy', 'dee']],
             ['online', ['bob', 'eve']],

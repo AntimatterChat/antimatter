@@ -48,6 +48,7 @@ describe('component/add_user_to_group_multiselect', () => {
         actions: {
             getProfiles: jest.fn().mockImplementation(() => Promise.resolve()),
             getProfilesNotInGroup: jest.fn().mockImplementation(() => Promise.resolve()),
+            getProfilesInTeam: jest.fn().mockImplementation(() => Promise.resolve()),
             loadStatusesForProfilesList: jest.fn().mockImplementation(() => Promise.resolve()),
             searchProfiles: jest.fn(),
         },

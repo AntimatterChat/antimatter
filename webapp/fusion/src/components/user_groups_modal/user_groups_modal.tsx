@@ -26,6 +26,11 @@ import UserGroupsList from './user_groups_list';
 
 const GROUPS_PER_PAGE = 60;
 
+// Antimatter: of a community, only its teams are fetched.
+function communityTeams(communityId?: string): Pick<GetGroupsParams, 'in_team_id' | 'is_team'> {
+    return communityId ? {in_team_id: communityId, is_team: true} : {};
+}
+
 export type Props = {
     onExited: () => void;
     groups: Group[];
@@ -35,6 +40,9 @@ export type Props = {
     currentUserId: string;
     backButtonAction: () => void;
     canCreateCustomGroups: boolean;
+
+    // Antimatter: the community whose teams are listed and created.
+    communityId?: string;
     actions: {
         getGroups: (
             opts: GetGroupsParams,
@@ -85,6 +93,7 @@ const UserGroupsModal = (props: Props) => {
             page,
             per_page: GROUPS_PER_PAGE,
             include_member_count: true,
+            ...communityTeams(props.communityId),
         };
         let data: ActionResult<Group[]> = {data: []};
 
@@ -110,7 +119,7 @@ const UserGroupsModal = (props: Props) => {
         }
         setLoading(false);
         setSelectedFilter(groupType);
-    }, [props.actions.getGroups, props.actions.getGroupsByUserIdPaginated, props.currentUserId]);
+    }, [props.actions.getGroups, props.actions.getGroupsByUserIdPaginated, props.currentUserId, props.communityId]);
 
     useEffect(() => {
         getGroups(0, 'all');
@@ -138,6 +147,7 @@ const UserGroupsModal = (props: Props) => {
                     per_page: GROUPS_PER_PAGE,
                     include_archived: true,
                     include_member_count: true,
+                    ...communityTeams(props.communityId),
                 };
                 if (selectedFilter === 'all') {
                     await props.actions.searchGroups(params);
@@ -191,10 +201,11 @@ const UserGroupsModal = (props: Props) => {
             dialogType: CreateUserGroupsModal,
             dialogProps: {
                 backButtonCallback: props.backButtonAction,
+                communityId: props.communityId,
             },
         });
         props.onExited();
-    }, [props.actions.openModal, props.backButtonAction, props.onExited]);
+    }, [props.actions.openModal, props.backButtonAction, props.onExited, props.communityId]);
 
     return (
         <GenericModal

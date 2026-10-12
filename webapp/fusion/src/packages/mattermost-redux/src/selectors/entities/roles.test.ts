@@ -283,4 +283,31 @@ describe('Selectors.Roles', () => {
             [group6.id]: {can_delete: false, can_manage_members: false, can_restore: true},
         });
     });
+
+    it('lets those who manage a community\'s roles manage its teams, whatever their custom group permissions', () => {
+        const managed = {...TestHelper.fakeGroup('managed', 'custom'), allow_reference: true, is_team: true, team_id: team2.id};
+        const elsewhere = {...TestHelper.fakeGroup('elsewhere', 'custom'), allow_reference: true, is_team: true, team_id: team1.id};
+        const archived = {...managed, id: 'archived', delete_at: 1000};
+        const teamState = deepFreezeAndThrowOnMutation({
+            entities: {
+                users: {currentUserId: user.id, profiles},
+                teams: {currentTeamId: team1.id, myMembers: myTeamMembers},
+                channels: {currentChannelId: channel1.id, channels, roles: channelsRoles},
+                groups: {groups: {managed, elsewhere, archived}, myGroups: []},
+                roles: {roles: {...roles, test_team2_role1: {permissions: ['team2_role1', Permissions.MANAGE_TEAM_ROLES]}}},
+            },
+        });
+
+        expect(Selectors.haveIGroupPermission(teamState, managed.id, Permissions.EDIT_CUSTOM_GROUP)).toEqual(true);
+        expect(Selectors.haveIGroupPermission(teamState, managed.id, Permissions.RESTORE_CUSTOM_GROUP)).toEqual(false);
+        expect(Selectors.haveIGroupPermission(teamState, elsewhere.id, Permissions.EDIT_CUSTOM_GROUP)).toEqual(false);
+        expect(Selectors.haveIGroupPermission(teamState, archived.id, Permissions.RESTORE_CUSTOM_GROUP)).toEqual(true);
+        expect(Selectors.haveIGroupPermission(teamState, archived.id, Permissions.EDIT_CUSTOM_GROUP)).toEqual(false);
+
+        expect(Selectors.getGroupListPermissions(teamState)).toEqual({
+            [managed.id]: {can_delete: true, can_manage_members: true, can_restore: false},
+            [elsewhere.id]: {can_delete: false, can_manage_members: false, can_restore: false},
+            [archived.id]: {can_delete: false, can_manage_members: false, can_restore: true},
+        });
+    });
 });

@@ -33,6 +33,9 @@ export type Props = {
     // Used if we are adding new members to an existing group
     groupId?: string;
 
+    // Antimatter: only people of this community, for one of its teams
+    teamId?: string;
+
     // onSubmitCallback takes an array of UserProfiles and should set usersToAdd in state of parent component
     onSubmitCallback: (userProfiles?: UserProfile[]) => Promise<void>;
     addUserCallback?: (userProfiles: UserProfile[]) => void;
@@ -57,6 +60,7 @@ export type Props = {
     actions: {
         getProfiles: (page?: number, perPage?: number) => Promise<ActionResult>;
         getProfilesNotInGroup: (groupId: string, page?: number, perPage?: number) => Promise<ActionResult>;
+        getProfilesInTeam: (teamId: string, page: number, perPage?: number) => Promise<ActionResult>;
         loadStatusesForProfilesList: (users: UserProfile[]) => void;
         searchProfiles: (term: string, options: any) => Promise<ActionResult>;
     };
@@ -102,16 +106,25 @@ export class AddUserToGroupMultiSelect extends React.PureComponent<Props, State>
         this.setState({values});
     };
 
-    public componentDidMount(): void {
+    // loadProfiles loads a page of the people who can be picked: those not in the group yet, else everyone; for a team
+    // of a community, its people.
+    private loadProfiles = (page?: number, perPage?: number): Promise<unknown> => {
+        const loads: Array<Promise<ActionResult>> = [];
         if (this.props.groupId) {
-            this.props.actions.getProfilesNotInGroup(this.props.groupId).then(() => {
-                this.setUsersLoadingState(false);
-            });
-        } else {
-            this.props.actions.getProfiles().then(() => {
-                this.setUsersLoadingState(false);
-            });
+            loads.push(this.props.actions.getProfilesNotInGroup(this.props.groupId, page, perPage));
+        } else if (!this.props.teamId) {
+            loads.push(this.props.actions.getProfiles(page, perPage));
         }
+        if (this.props.teamId) {
+            loads.push(this.props.actions.getProfilesInTeam(this.props.teamId, page ?? 0, perPage ?? USERS_PER_PAGE));
+        }
+        return Promise.all(loads);
+    };
+
+    public componentDidMount(): void {
+        this.loadProfiles().then(() => {
+            this.setUsersLoadingState(false);
+        });
 
         this.props.actions.loadStatusesForProfilesList(this.props.profiles);
     }
@@ -133,15 +146,9 @@ export class AddUserToGroupMultiSelect extends React.PureComponent<Props, State>
     private handlePageChange = (page: number, prevPage: number): void => {
         if (page > prevPage) {
             this.setUsersLoadingState(true);
-            if (this.props.groupId) {
-                this.props.actions.getProfilesNotInGroup(this.props.groupId, page + 1, USERS_PER_PAGE).then(() => {
-                    this.setUsersLoadingState(false);
-                });
-            } else {
-                this.props.actions.getProfiles(page + 1, USERS_PER_PAGE).then(() => {
-                    this.setUsersLoadingState(false);
-                });
-            }
+            this.loadProfiles(page + 1, USERS_PER_PAGE).then(() => {
+                this.setUsersLoadingState(false);
+            });
         }
     };
 
@@ -164,7 +171,7 @@ export class AddUserToGroupMultiSelect extends React.PureComponent<Props, State>
             this.setUsersLoadingState(true);
             this.searchTimeoutId = window.setTimeout(
                 async () => {
-                    await this.props.actions.searchProfiles(term, this.props.searchOptions);
+                    await this.props.actions.searchProfiles(term, this.props.teamId ? {...this.props.searchOptions, team_id: this.props.teamId} : this.props.searchOptions);
                     this.setUsersLoadingState(false);
                 },
                 Constants.SEARCH_TIMEOUT_MILLISECONDS,

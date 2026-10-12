@@ -159,7 +159,7 @@ export default function RolesDialog({onClose}: {onClose: () => void}) {
                         />
                         <Toggle
                             title={formatMessage({id: 'fusion.roles.badges', defaultMessage: 'Everyone shows a team badge'})}
-                            desc={formatMessage({id: 'fusion.roles.badgesDesc', defaultMessage: 'For example in a company: people who chose no badge show their first team\'s.'})}
+                            desc={formatMessage({id: 'fusion.roles.badgesDesc', defaultMessage: 'For example in a company: in this community, people who chose no badge show the tag of their first team here.'})}
                             on={Boolean(team.require_team_badges)}
                             onChange={(on) => dispatch(patchTeam({id: team.id, require_team_badges: on}))}
                         />

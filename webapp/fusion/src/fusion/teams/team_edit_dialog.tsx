@@ -40,12 +40,15 @@ export default function TeamEditDialog({team, onClose}: {team: Group; onClose: (
     const members = useMemo(() => (team.member_ids || []).
         map((id, i) => ({id, name: displayUsername(users[i], nameSetting) || id})).
         sort((a, b) => a.name.localeCompare(b.name)), [team.member_ids, users, nameSetting]);
-    const teamId = useSelector(getCurrentTeamId);
+
+    // The team's channel is one of its community's.
+    const currentTeamId = useSelector(getCurrentTeamId);
+    const communityId = team.team_id || currentTeamId;
     const myChannels = useSelector(getMyChannels);
     const channels = useMemo(() => myChannels.
-        filter((c) => (c.type === 'O' || c.type === 'P') && c.delete_at === 0 && c.team_id === teamId).
+        filter((c) => (c.type === 'O' || c.type === 'P') && c.delete_at === 0 && c.team_id === communityId).
         map((c) => ({id: c.id, name: c.display_name})).
-        sort((a, b) => a.name.localeCompare(b.name)), [myChannels, teamId]);
+        sort((a, b) => a.name.localeCompare(b.name)), [myChannels, communityId]);
 
     const save = async (e: React.FormEvent) => {
         e.preventDefault();

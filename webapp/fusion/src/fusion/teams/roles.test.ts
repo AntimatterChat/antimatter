@@ -26,12 +26,14 @@ describe('roles', () => {
         group('deleted', {delete_at: 1, member_ids: ['ada']}),
         group('ldap', {source: 'ldap', member_ids: ['ada']}),
         group('det', {team_id: '', member_ids: ['ada']}),
+        group('crew', {is_team: true, member_ids: ['ada']}),
     ];
     const state = stateWith(groups);
 
     test('a role is a group of one team', () => {
         expect(isRole(mods)).toBe(true);
         expect(isRole(group('det', {team_id: ''}))).toBe(false);
+        expect(isRole(group('crew', {is_team: true}))).toBe(false);
     });
 
     test('a team has its live custom roles, highest first', () => {

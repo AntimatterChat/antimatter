@@ -16,6 +16,7 @@ import {getConfig, getFeatureFlagValue, getPasswordConfig} from 'mattermost-redu
 import {getCollapsedThreadsPreference, getTheme, isCollapsedThreadsAllowed, shouldShowUnreadsCategory, DEFAULT_VISIBLE_DM_GM_LIMIT} from 'mattermost-redux/selectors/entities/preferences';
 import type {Theme} from 'mattermost-redux/selectors/entities/preferences';
 import {haveISystemPermission} from 'mattermost-redux/selectors/entities/roles';
+import {getCurrentTeamId} from 'mattermost-redux/selectors/entities/teams';
 import {getCurrentTimezoneLabel} from 'mattermost-redux/selectors/entities/timezone';
 import {getCurrentUser} from 'mattermost-redux/selectors/entities/users';
 import {isSystemAdmin} from 'mattermost-redux/utils/user_utils';
@@ -31,7 +32,7 @@ import {Dialog} from 'fusion/components/layer';
 import {useDisplayPrefs} from 'fusion/hooks/display';
 import {WALLTIME_PREFERENCE} from 'fusion/messages/walltime/walltime_text';
 import {useToast} from 'fusion/shell/toast_context';
-import {badgesRequired, getTeamsByUser, TEAM_BADGE_PROP} from 'fusion/teams/teams';
+import {badgeChoice, badgesRequired, getTeamsByUser, TEAM_BADGE_PROP, withBadgeChoice} from 'fusion/teams/teams';
 import {am} from 'fusion/utils/class_names';
 import {openClassicUserSettings} from 'fusion/utils/modals';
 import {getLanguages} from 'i18n/i18n';
@@ -175,21 +176,25 @@ function ProfilePicture({me, locked}: {me: UserProfile; locked: boolean}) {
     );
 }
 
-// TeamBadgeField picks the team whose tag shows next to your name, among your teams that have one, as in the mockup.
+// TeamBadgeField picks the team whose tag shows next to your name in the current community, among your teams of that
+// community that have one, as in the mockup. Each community keeps its own choice.
 function TeamBadgeField() {
     const {formatMessage} = useIntl();
     const dispatch = useDispatch();
     const toast = useToast();
     const me = useSelector(getCurrentUser);
+    const communityId = useSelector(getCurrentTeamId);
     const allMyTeams = useSelector((state: GlobalState) => getTeamsByUser(state)[me.id]);
     const myTeams = useMemo(() => (allMyTeams || []).filter((t) => t.tag), [allMyTeams]);
     const required = useSelector(badgesRequired);
+    const groups = useSelector((state: GlobalState) => state.entities.groups.groups);
     if (!myTeams.length) {
         return null;
     }
 
-    // Where the team asks everyone to show a badge, there's no "None": without a choice, the first team shows.
-    let chosen = myTeams.some((t) => t.id === me.props?.[TEAM_BADGE_PROP]) ? me.props[TEAM_BADGE_PROP] : '';
+    // Where the community asks everyone to show a badge, there's no "None": without a choice, the first team shows.
+    const choice = badgeChoice(me, communityId);
+    let chosen = myTeams.some((t) => t.id === choice) ? choice! : '';
     if (required && !chosen) {
         chosen = myTeams[0]?.id || '';
     }
@@ -200,7 +205,8 @@ function TeamBadgeField() {
                 value={chosen}
                 onChange={async (e) => {
                     const team = myTeams.find((t) => t.id === e.target.value);
-                    await dispatch(updateMe({props: {...me.props, [TEAM_BADGE_PROP]: team?.id || ''}}));
+                    const badges = withBadgeChoice(me.props?.[TEAM_BADGE_PROP], communityId, team?.id || '', (id) => groups[id]?.team_id);
+                    await dispatch(updateMe({props: {...me.props, [TEAM_BADGE_PROP]: badges}}));
                     toast(team ? formatMessage({id: 'fusion.toast.teamBadge', defaultMessage: 'Team badge: {tag}'}, {tag: team.tag}) : formatMessage({id: 'fusion.toast.teamBadgeHidden', defaultMessage: 'Team badge hidden'}));
                 }}
             >
@@ -214,7 +220,7 @@ function TeamBadgeField() {
                     </option>
                 ))}
             </select>
-            <small>{required ? formatMessage({id: 'fusion.settings.teamBadgeRequired', defaultMessage: 'Shown next to your name: this community asks everyone to show one. Only teams you belong to are listed.'}) : formatMessage({id: 'fusion.settings.teamBadgeHelp', defaultMessage: 'Shown next to your name, like a server tag. Only teams you belong to are listed.'})}</small>
+            <small>{required ? formatMessage({id: 'fusion.settings.teamBadgeRequired', defaultMessage: 'Shown next to your name in this community, which asks everyone to show one. Only its teams you belong to are listed; each community keeps its own badge.'}) : formatMessage({id: 'fusion.settings.teamBadgeHelp', defaultMessage: 'Shown next to your name in this community, like a server tag. Only its teams you belong to are listed; each community keeps its own badge.'})}</small>
         </label>
     );
 }

@@ -60,12 +60,13 @@ export type Group = {
     channel_member_timezones_count?: number;
     member_ids?: string[];
 
-    /** Antimatter teams: a short tag shown next to members' names (at most 8 characters), a lead, and a channel. */
+    /** Antimatter teams are groups of one team (a community in Fusion, team_id) with is_team set: a short tag shown next to members' names (at most 8 characters), a lead, and a channel. */
+    is_team?: boolean;
     tag?: string;
     lead_id?: string;
     channel_id?: string;
 
-    /** Antimatter roles are groups of one team: a colour for names, an icon (an emoji name), a place (0 = highest), shown apart in the member list (hoist). */
+    /** Antimatter roles are the other groups of one team: a colour for names, an icon (an emoji name), a place (0 = highest), shown apart in the member list (hoist). */
     team_id?: string;
     color?: string;
     icon?: string;
@@ -191,8 +192,12 @@ export type GroupCreateWithUserIds = {
     user_ids: string[];
     description?: string;
 
-    // Antimatter: a role of a team.
+    // Antimatter: a role of a team, or a team of a community (is_team, with its tag, lead and channel).
     team_id?: string;
+    is_team?: boolean;
+    tag?: string;
+    lead_id?: string;
+    channel_id?: string;
     color?: string;
     icon?: string;
     position?: number;
@@ -208,6 +213,10 @@ export type GetGroupsParams = {
     include_archived?: boolean;
     filter_archived?: boolean;
     include_member_ids?: boolean;
+
+    // Antimatter: the groups of one team (its roles and teams), and only its teams (true) or only the other groups.
+    in_team_id?: string;
+    is_team?: boolean;
 };
 
 export type GetGroupsForUserParams = GetGroupsParams & {

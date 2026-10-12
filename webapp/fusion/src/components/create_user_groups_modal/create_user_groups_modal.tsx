@@ -23,6 +23,9 @@ import './create_user_groups_modal.scss';
 export type Props = {
     onExited: () => void;
     backButtonCallback?: () => void;
+
+    // Antimatter: the community the new group is a team of.
+    communityId?: string;
     actions: {
         createGroupWithUserIds: (group: GroupCreateWithUserIds) => Promise<ActionResult>;
         openModal: <P>(modalData: ModalData<P>) => void;
@@ -174,7 +177,7 @@ export class CreateUserGroupsModal extends React.PureComponent<Props, State> {
             return;
         }
 
-        const group = {
+        const group: GroupCreateWithUserIds = {
             name: mention,
             display_name: this.state.name,
             allow_reference: true,
@@ -183,6 +186,10 @@ export class CreateUserGroupsModal extends React.PureComponent<Props, State> {
                 return user.id;
             }),
         };
+        if (this.props.communityId) {
+            group.team_id = this.props.communityId;
+            group.is_team = true;
+        }
 
         const data = await this.props.actions.createGroupWithUserIds(group);
 
@@ -319,6 +326,7 @@ export class CreateUserGroupsModal extends React.PureComponent<Props, State> {
                                     backButtonText={defineMessage({id: 'multiselect.cancelButton', defaultMessage: 'Cancel'})}
                                     backButtonClick={this.doHide}
                                     saving={this.state.saving}
+                                    teamId={this.props.communityId}
                                 />
                             </div>
                         </fieldset>

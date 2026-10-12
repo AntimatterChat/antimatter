@@ -220,7 +220,7 @@ export default function ServerMenu({team: forTeam, anchor, point, width, onClose
                     icon='tag'
                     label={formatMessage({id: 'fusion.serverMenu.userGroups', defaultMessage: 'Teams…'})}
                     sub={formatMessage({id: 'fusion.serverMenu.userGroupsSub', defaultMessage: 'Teams with a tag, a lead and a channel'})}
-                    onClick={run(() => dispatch(openUserGroups()))}
+                    onClick={inTeam(() => dispatch(openUserGroups(teamId)))}
                 />
             )}
             <MenuItem

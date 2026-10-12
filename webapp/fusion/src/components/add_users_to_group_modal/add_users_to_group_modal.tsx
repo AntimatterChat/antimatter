@@ -153,6 +153,7 @@ const AddUsersToGroupModal = (props: Props) => {
                                     addUserCallback={addUserCallback}
                                     deleteUserCallback={deleteUserCallback}
                                     groupId={props.groupId}
+                                    teamId={props.group?.is_team ? props.group.team_id : undefined}
                                     searchOptions={searchOptions}
                                     buttonSubmitText={defineMessage({id: 'multiselect.addPeopleToGroup', defaultMessage: 'Add People'})}
                                     buttonSubmitLoadingText={defineMessage({id: 'multiselect.adding', defaultMessage: 'Adding...'})}

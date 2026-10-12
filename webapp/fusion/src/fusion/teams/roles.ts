@@ -16,8 +16,9 @@ import type {GlobalState} from 'types/store';
 
 const NO_ROLES: Group[] = [];
 
+// isRole tells a role from the community's teams (groups of one team too, marked is_team).
 export function isRole(group: Group): boolean {
-    return Boolean(group.team_id);
+    return Boolean(group.team_id) && !group.is_team;
 }
 
 export function byPosition(a: Group, b: Group): number {
@@ -31,8 +32,8 @@ export const getRolesByTeam = createSelector(
     (groups): Record<string, Group[]> => {
         const byTeam: Record<string, Group[]> = {};
         for (const group of Object.values(groups)) {
-            if (group.source === 'custom' && group.delete_at === 0 && group.team_id) {
-                (byTeam[group.team_id] ||= []).push(group);
+            if (group.source === 'custom' && group.delete_at === 0 && isRole(group)) {
+                (byTeam[group.team_id!] ||= []).push(group);
             }
         }
         for (const roles of Object.values(byTeam)) {

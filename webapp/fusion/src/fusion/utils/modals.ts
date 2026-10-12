@@ -46,10 +46,11 @@ export const openNewDirectMessage = () => openDialog(ModalIdentifiers.CREATE_DM_
 // openAddToGroup adds people to the current group message: Mattermost makes a new group with everyone.
 export const openAddToGroup = () => openDialog(ModalIdentifiers.CREATE_DM_CHANNEL, MoreDirectChannels, {isExistingChannel: true});
 
-// openUserGroups opens Mattermost's user groups, the Antimatter teams: its dialogs come back to it with Back.
-export function openUserGroups(): ThunkActionFunc<void> {
+// openUserGroups opens Mattermost's user groups as a community's Antimatter teams: it lists and creates that
+// community's teams. Its dialogs come back to it with Back.
+export function openUserGroups(communityId: string): ThunkActionFunc<void> {
     return (dispatch) => {
-        const open = () => dispatch(openDialog(ModalIdentifiers.USER_GROUPS, UserGroupsModal, {backButtonAction: open}));
+        const open = () => dispatch(openDialog(ModalIdentifiers.USER_GROUPS, UserGroupsModal, {backButtonAction: open, communityId}));
         open();
     };
 }

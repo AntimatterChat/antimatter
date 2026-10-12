@@ -9,7 +9,7 @@ import type {Post} from '@mattermost/types/posts';
 
 import {removePost} from 'mattermost-redux/actions/posts';
 import {Posts} from 'mattermost-redux/constants';
-import {isMyChannelAutotranslated} from 'mattermost-redux/selectors/entities/channels';
+import {getChannel, isMyChannelAutotranslated} from 'mattermost-redux/selectors/entities/channels';
 import {getConfig, isPermissionPoliciesEnabled} from 'mattermost-redux/selectors/entities/general';
 import {getPost, isPostFlagged, isPostPriorityEnabled} from 'mattermost-redux/selectors/entities/posts';
 import {isCollapsedThreadsEnabled} from 'mattermost-redux/selectors/entities/preferences';
@@ -129,6 +129,10 @@ export default function Message({postId, previousPostId, inThread = false, highl
     const priorityEnabled = useSelector(isPostPriorityEnabled);
     const crt = useSelector(isCollapsedThreadsEnabled);
     const autotranslated = useSelector((state: GlobalState) => (post ? isMyChannelAutotranslated(state, post.channel_id) : false));
+
+    // Teams belong to one community: the author shows their badge of the conversation's community (the current one for
+    // direct messages).
+    const communityId = useSelector((state: GlobalState) => (post ? getChannel(state, post.channel_id)?.team_id : undefined)) || undefined;
     const editing = useSelector((state: GlobalState) => getIsPostBeingEdited(state, postId) && getIsPostBeingEditedInRHS(state, postId) === inThread);
     const concealed = useSelector((state: GlobalState) => shouldDisplayConcealedPlaceholder(state, postId));
     const concernsMe = useConcernsMe(post, inThread);
@@ -586,7 +590,12 @@ export default function Message({postId, previousPostId, inThread = false, highl
                         </span>
                     )}
                     {(bot || webhook) && <span className={am('bot-tag')}>{'BOT'}</span>}
-                    {!bot && !webhook && <TeamTag user={user}/>}
+                    {!bot && !webhook && (
+                        <TeamTag
+                            user={user}
+                            communityId={communityId}
+                        />
+                    )}
                     {!bot && !webhook && user && isGuest(user.roles) && <span className={am('bot-tag', 'guest-tag')}>{formatMessage({id: 'fusion.message.guest', defaultMessage: 'GUEST'})}</span>}
                     {webhook && <span className={am('via')}>{formatMessage({id: 'fusion.message.viaWebhook', defaultMessage: 'via webhook'})}</span>}
                     <MessageTime timestamp={post.create_at}/>

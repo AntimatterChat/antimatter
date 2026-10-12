@@ -59,8 +59,8 @@ export const getMyGroupRoles: (state: GlobalState) => Record<string, Set<string>
 /**
  * Returns a map of permissions, keyed by group id, for all groups that are mentionable and not deleted.
  */
-export const getGroupListPermissions: (state: GlobalState) => Record<string, GroupPermissions> = createSelector(
-    'getGroupListPermissions',
+const getGroupListPermissionsByRoles: (state: GlobalState) => Record<string, GroupPermissions> = createSelector(
+    'getGroupListPermissionsByRoles',
     getMyGroupRoles,
     getRoles,
     getMySystemPermissions,
@@ -175,6 +175,35 @@ export const getMyPermissionsByChannel = createSelector(
     },
 );
 
+// getGroupListPermissions tells what I may do to each group of the list. Antimatter teams (groups of one community,
+// marked is_team) are managed by those who manage the community's roles, as on the server.
+export const getGroupListPermissions: (state: GlobalState) => Record<string, GroupPermissions> = createSelector(
+    'getGroupListPermissions',
+    getGroupListPermissionsByRoles,
+    getMySystemPermissions,
+    getMyPermissionsByTeam,
+    (state) => state.entities.groups.groups,
+    (byRoles, systemPermissions, byTeam, allGroups) => {
+        let permissionsMap = byRoles;
+        for (const g of Object.values(allGroups)) {
+            if (!g.is_team || !g.team_id || !byRoles[g.id]) {
+                continue;
+            }
+            const has = (permission: string) => systemPermissions.has(permission) || Boolean(byTeam[g.team_id!]?.has(permission));
+            const manages = has(Permissions.MANAGE_TEAM) || has(Permissions.MANAGE_TEAM_ROLES);
+            if (permissionsMap === byRoles) {
+                permissionsMap = {...byRoles};
+            }
+            permissionsMap[g.id] = {
+                can_delete: manages && g.delete_at === 0,
+                can_manage_members: manages && g.delete_at === 0,
+                can_restore: manages && g.delete_at !== 0,
+            };
+        }
+        return permissionsMap;
+    },
+);
+
 export function haveITeamPermission(state: GlobalState, teamId: string | undefined, permission: string) {
     if (getMySystemPermissions(state).has(permission)) {
         return true;
@@ -186,7 +215,20 @@ export function haveITeamPermission(state: GlobalState, teamId: string | undefin
     return getMyPermissionsByTeam(state)[teamId]?.has(permission);
 }
 
-export const haveIGroupPermission: (state: GlobalState, groupID: string, permission: string) => boolean = createSelector(
+// haveIGroupPermission tells whether I may do something to a group. Antimatter teams (groups of one community, marked
+// is_team) are managed by those who manage the community's roles, as on the server; their members don't manage them.
+export function haveIGroupPermission(state: GlobalState, groupID: string, permission: string): boolean {
+    const group = state.entities.groups.groups[groupID];
+    if (group?.is_team && group.team_id) {
+        if ((permission === Permissions.RESTORE_CUSTOM_GROUP) !== (group.delete_at !== 0)) {
+            return false;
+        }
+        return haveITeamPermission(state, group.team_id, Permissions.MANAGE_TEAM) || haveITeamPermission(state, group.team_id, Permissions.MANAGE_TEAM_ROLES);
+    }
+    return haveIGroupPermissionByRoles(state, groupID, permission);
+}
+
+const haveIGroupPermissionByRoles: (state: GlobalState, groupID: string, permission: string) => boolean = createSelector(
     'haveIGroupPermission',
     getMySystemPermissions,
     getMyPermissionsByGroup,

@@ -68,11 +68,13 @@ export function useMemberRoles(users: UserProfile[], channelId: string): Record<
 }
 
 // useMemberGroups splits a conversation's members as the mockup's member list does: the online admins, then the
-// online moderators, then everyone else online, then everyone offline. By team, each team lists its members, those
-// online first, under the team someone shows the tag of (else their first team); then the others, online and offline.
+// online moderators, then everyone else online, then everyone offline. By team (the current community's teams), each
+// team lists its members, those online first, under the team someone shows the tag of (else their first team); then
+// the others, online and offline.
 export function useMemberGroups(users: UserProfile[], roles: Record<string, MemberRole>, grouping: Grouping = 'roles'): MemberGroup[] {
     const {formatMessage} = useIntl();
     const statuses = useSelector((state: GlobalState) => Object.fromEntries(users.map((u) => [u.id, getStatusForUserId(state, u.id)])), shallowEqual);
+    const communityId = useSelector(getCurrentTeamId);
     const teamsByUser = useSelector(getTeamsByUser);
     const memberRoles = useSelector(getMemberRolesForCurrentTeam);
     const teamRoles = useSelector((state: GlobalState) => getTeamRoles(state, getCurrentTeamId(state)));
@@ -84,7 +86,7 @@ export function useMemberGroups(users: UserProfile[], roles: Record<string, Memb
         const byTeam = new Map<string, {team: Group; users: UserProfile[]}>();
         const others: UserProfile[] = [];
         for (const u of users) {
-            const team = mainTeam(u, teamsByUser);
+            const team = mainTeam(u, teamsByUser, communityId);
             if (team) {
                 const entry = byTeam.get(team.id) || {team, users: []};
                 entry.users.push(u);
