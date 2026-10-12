@@ -11,6 +11,7 @@ import (
 	"path/filepath"
 	"slices"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/mattermost/mattermost/server/v8/platform/shared/filestore"
@@ -119,8 +120,10 @@ func downloadJob(c *Context, w http.ResponseWriter, r *http.Request) {
 	// We have a base directory, we're using that as the exported filename:
 	fileName += ".zip"
 
+	// Only a directory inside the compliance export directory: whoever may create export jobs sets the job's data,
+	// and could otherwise have any directory of the file store zipped for them.
 	cleanedExportDir := filepath.Clean(exportDir)
-	if !filepath.IsLocal(cleanedExportDir) {
+	if !filepath.IsLocal(cleanedExportDir) || !strings.HasPrefix(filepath.ToSlash(cleanedExportDir), model.ComplianceExportPath+"/") {
 		c.Err = model.NewAppError("unableToDownloadJob", "api.job.unable_to_download_job", nil,
 			"job.Data did not include export_dir, export_dir was malformed, or jobId.zip wasn't found",
 			http.StatusNotFound)

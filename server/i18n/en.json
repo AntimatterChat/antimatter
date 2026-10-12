@@ -14415,6 +14415,11 @@
     "description": "Error status of the compliance message export job when computing per-channel export data fails; admin audience."
   },
   {
+    "id": "ent.message_export.export_dir.app_error",
+    "translation": "The export directory must be inside the compliance export directory.",
+    "description": "Error status of the compliance message export job when the directory given in the job's data is outside the export directory of the file store; admin audience."
+  },
+  {
     "id": "ent.message_export.job_data_conversion.app_error",
     "translation": "Failed to convert a value from the job's data field.",
     "description": "Error status of the compliance message export job when a stored job parameter cannot be parsed; admin audience."

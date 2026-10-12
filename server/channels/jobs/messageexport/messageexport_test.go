@@ -450,6 +450,18 @@ func TestInitStateStartTime(t *testing.T) {
 		assert.Equal(t, model.ComplianceExportTypeCsv, s.exportType)
 	})
 
+	t.Run("only directories inside the export directory", func(t *testing.T) {
+		for _, dir := range []string{"../escape", "export/../../escape", "/etc/escape", "export", "exports/x", "elsewhere"} {
+			job := &model.Job{Id: model.NewId(), Data: model.StringMap{shared.JobDataExportDir: dir}}
+			_, err := j.initState(rctx, st, cfg, job)
+			require.Error(t, err, dir)
+		}
+		job := &model.Job{Id: model.NewId(), Data: model.StringMap{shared.JobDataExportDir: "export/a/../b"}}
+		s, err := j.initState(rctx, st, cfg, job)
+		require.NoError(t, err)
+		assert.Equal(t, "export/a/../b", s.exportDir, "a path that stays inside is kept as given")
+	})
+
 	t.Run("batch start only", func(t *testing.T) {
 		job := &model.Job{Id: model.NewId(), Data: model.StringMap{shared.JobDataBatchStartTime: "250", shared.JobDataJobEndTime: "400"}}
 		s, err := j.initState(rctx, st, cfg, job)

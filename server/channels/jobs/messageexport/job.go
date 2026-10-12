@@ -9,7 +9,9 @@ import (
 	"fmt"
 	"net/http"
 	"path"
+	"path/filepath"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/mattermost/mattermost/server/public/model"
@@ -126,6 +128,12 @@ func getInt64(data model.StringMap, key string) (int64, bool, *model.AppError) {
 		return 0, false, conversionError(key, value, err)
 	}
 	return n, true, nil
+}
+
+// isExportDir tells whether a directory asked for is one inside the compliance export directory of the file store.
+func isExportDir(dir string) bool {
+	cleaned := path.Clean(dir)
+	return filepath.IsLocal(cleaned) && strings.HasPrefix(cleaned, model.ComplianceExportPath+"/")
 }
 
 func validExportType(t string) bool {
@@ -276,6 +284,10 @@ func (j *Job) initState(rctx request.CTX, st store.Store, cfg *model.Config, job
 	if s.exportDir == "" {
 		s.exportDir = path.Join(model.ComplianceExportPath,
 			fmt.Sprintf("%s-%d-%d", now.Format(model.ComplianceExportDirectoryFormat), s.jobStart, s.jobEnd))
+	} else if !isExportDir(s.exportDir) {
+		// Whoever may create export jobs could otherwise write the batches anywhere in the file store.
+		return nil, model.NewAppError("MessageExportJob", "ent.message_export.export_dir.app_error", nil,
+			fmt.Sprintf("export_dir=%q", s.exportDir), http.StatusBadRequest)
 	}
 
 	for key, dst := range map[string]*int64{

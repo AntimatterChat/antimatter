@@ -835,6 +835,29 @@ func TestDownloadJob(t *testing.T) {
 	require.Error(t, err)
 	require.EqualError(t, err, "Unable to download this job")
 	CheckNotFoundStatus(t, resp)
+
+	// Nor a directory of the file store outside the compliance export directory, which whoever creates the job could
+	// otherwise have zipped for them: its files are there, but aren't served.
+	outside := "users" + model.NewId()
+	filePath = filepath.Join(*th.App.Config().FileSettings.Directory, outside, "secret.txt")
+	require.NoError(t, os.MkdirAll(filepath.Dir(filePath), 0770))
+	_, createErr = os.Create(filePath)
+	require.NoError(t, createErr)
+	for _, dir := range []string{outside, "export/../" + outside, "exports"} {
+		job = &model.Job{
+			Id:     model.NewId(),
+			Type:   model.JobTypeMessageExport,
+			Data:   map[string]string{"export_type": "csv", "is_downloadable": "true", "export_dir": dir},
+			Status: model.JobStatusSuccess,
+		}
+		_, err = th.App.Srv().Store().Job().Save(job)
+		require.NoError(t, err)
+		_, resp, err = th.SystemAdminClient.DownloadJob(context.Background(), job.Id)
+		require.Error(t, err, dir)
+		CheckNotFoundStatus(t, resp)
+		_, delErr := th.App.Srv().Store().Job().Delete(job.Id)
+		require.NoError(t, delErr)
+	}
 }
 
 func TestCancelJob(t *testing.T) {
