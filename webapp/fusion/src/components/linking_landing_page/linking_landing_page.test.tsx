@@ -18,7 +18,7 @@ jest.mock('utils/browser_utils', () => ({
 const siteUrl = 'http://localhost:8065';
 const landingPath = '/landing#/team-name/channels/town-square';
 const redirectUrl = `${siteUrl}/team-name/channels/town-square`;
-const nativeUrl = 'mattermost://localhost:8065/team-name/channels/town-square';
+const nativeUrl = 'antimatter://localhost:8065/team-name/channels/town-square';
 
 describe('components/LinkingLandingPage', () => {
     const baseProps = {
