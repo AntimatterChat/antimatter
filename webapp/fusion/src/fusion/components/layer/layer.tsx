@@ -192,11 +192,12 @@ function useEscape(onEscape: () => void, ref: React.RefObject<HTMLElement>) {
 // opened it), unless the focus has gone somewhere else since.
 function useReturnFocus(ref: React.RefObject<HTMLElement>) {
     useEffect(() => {
-        const doc = ref.current?.ownerDocument || document;
+        const layer = ref.current;
+        const doc = layer?.ownerDocument || document;
         const opener = doc.activeElement as HTMLElement | null;
         return () => {
             const now = doc.activeElement;
-            if (opener?.isConnected && (!now || now === doc.body || ref.current?.contains(now))) {
+            if (opener?.isConnected && (!now || now === doc.body || layer?.contains(now))) {
                 opener.focus({preventScroll: true});
             }
         };
