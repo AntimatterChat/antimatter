@@ -980,6 +980,11 @@
     "description": "API error returned when trying to assign a scheme-managed role directly to a channel member; 'Scheme' is the Mattermost permissions scheme feature."
   },
   {
+    "id": "api.channel.update_channel_member_roles.team_role.app_error",
+    "translation": "A community's roles can't be given in a channel: people have them by being the role's members.",
+    "description": "API error when a community role (an Antimatter role of the community) is set as a channel member's role; the role's permissions only come with its membership."
+  },
+  {
     "id": "api.channel.update_channel_member_roles.unset_user_scheme.app_error",
     "translation": "Invalid channel member update: A channel member always has a user scheme.",
     "description": "API error returned when a role update would leave a channel member without the base user scheme role, which is invalid."

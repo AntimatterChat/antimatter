@@ -5262,6 +5262,32 @@ func TestUpdateChannelRoles(t *testing.T) {
 	CheckForbiddenStatus(t, resp)
 }
 
+func TestUpdateChannelMemberRolesRejectsTeamRoles(t *testing.T) {
+	mainHelper.Parallel(t)
+	th := Setup(t).InitBasic(t)
+
+	// A team role allowed to delete others' messages; the channel's creator, a channel admin, isn't in it.
+	role, _, err := th.SystemAdminClient.CreateGroup(context.Background(), &model.Group{Name: new("mods" + model.NewId()[:8]), DisplayName: "mods", Source: model.GroupSourceCustom, AllowReference: true, TeamId: th.BasicTeam.Id})
+	require.NoError(t, err)
+	data, err := json.Marshal(map[string][]string{"permissions": {model.PermissionDeleteOthersPosts.Id}})
+	require.NoError(t, err)
+	resp, err := th.SystemAdminClient.DoAPIPut(context.Background(), "/groups/"+role.Id+"/team_role/permissions", string(data))
+	require.NoError(t, err)
+	resp.Body.Close()
+
+	channel := th.CreatePublicChannel(t)
+	for _, userID := range []string{th.BasicUser.Id, th.BasicUser2.Id} {
+		if userID == th.BasicUser2.Id {
+			_, appErr := th.App.AddUserToChannel(th.Context, th.BasicUser2, channel, false)
+			require.Nil(t, appErr)
+		}
+		rolesResp, err := th.Client.UpdateChannelRoles(context.Background(), channel.Id, userID, "channel_user channel_admin "+model.TeamRoleName(role.Id))
+		require.Error(t, err)
+		CheckBadRequestStatus(t, rolesResp)
+		CheckErrorID(t, err, "api.channel.update_channel_member_roles.team_role.app_error")
+	}
+}
+
 func TestUpdateChannelMemberRolesRejectsNonChannelScopedRoles(t *testing.T) {
 	mainHelper.Parallel(t)
 	th := Setup(t).InitBasic(t)

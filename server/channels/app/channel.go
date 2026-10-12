@@ -1567,6 +1567,12 @@ func (a *App) updateChannelMemberRolesInternal(rctx request.CTX, channelID strin
 				err = model.NewAppError("UpdateChannelMemberRoles", "api.channel.update_channel_member_roles.scheme_role.app_error", nil, "role_name="+roleName, http.StatusBadRequest)
 				return nil, err
 			}
+			// An Antimatter team role's permissions come with the role's membership, under its hierarchy: set on a
+			// channel member, it would let any channel admin hand out (or take) another role's permissions there.
+			if model.IsTeamRoleName(roleName) {
+				err = model.NewAppError("UpdateChannelMemberRoles", "api.channel.update_channel_member_roles.team_role.app_error", nil, "role_name="+roleName, http.StatusBadRequest)
+				return nil, err
+			}
 			newExplicitRoles = append(newExplicitRoles, roleName)
 		} else {
 			// The role is scheme-managed, so need to check if it is part of the scheme for this channel or not.
