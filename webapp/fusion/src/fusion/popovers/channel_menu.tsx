@@ -13,6 +13,7 @@ import {savePreferences} from 'mattermost-redux/actions/preferences';
 import {Permissions, Preferences} from 'mattermost-redux/constants';
 import {getCategoryInTeamWithChannel, getManagedCategoryMappings} from 'mattermost-redux/selectors/entities/channel_categories';
 import {getCurrentChannelId, getMyChannelMembership, isChannelAutotranslated, isFavoriteChannel, isMyChannelAutotranslated, isUserLanguageSupportedForAutotranslation, makeGetChannelUnreadCount} from 'mattermost-redux/selectors/entities/channels';
+import {getConfig} from 'mattermost-redux/selectors/entities/general';
 import {haveIChannelPermission, haveITeamPermission} from 'mattermost-redux/selectors/entities/roles';
 import {getCurrentTeam} from 'mattermost-redux/selectors/entities/teams';
 import {getCurrentUser, getCurrentUserId, getUser} from 'mattermost-redux/selectors/entities/users';
@@ -78,6 +79,9 @@ export default function ChannelMenu({channel, anchor, point, placement = 'right'
 
     // The channel's admins and the team's set its permissions: overrides and, when private, the roles it's for.
     const canManageAccess = useSelector((state: GlobalState) => haveITeamPermission(state, channel.team_id, Permissions.MANAGE_TEAM) || haveIChannelPermission(state, channel.team_id, channel.id, Permissions.MANAGE_CHANNEL_ROLES));
+
+    // Everyone who reads a channel can export its messages, unless the system admins keep that to admins.
+    const canExport = useSelector((state: GlobalState) => getConfig(state).RestrictChannelExportToAdmins !== 'true') || canManageAccess;
     const [sub, setSub] = useState<Sub>(null);
     const [renaming, setRenaming] = useState(false);
     const [getUnreadCount] = useState(makeGetChannelUnreadCount);
@@ -376,6 +380,13 @@ export default function ChannelMenu({channel, anchor, point, placement = 'right'
                         const {path, identifier} = getChannelRoutePathAndIdentifier(channel, teammate?.username);
                         popoutChannel(formatMessage(getPopoutChannelTitle(channel.type)), team.name, path, identifier);
                     })}
+                />
+            )}
+            {canExport && (
+                <MenuItem
+                    icon='file'
+                    label={direct ? formatMessage({id: 'fusion.channelExport.menuConversation', defaultMessage: 'Export conversation…'}) : formatMessage({id: 'fusion.channelExport.menu', defaultMessage: 'Export channel…'})}
+                    onClick={run(() => dialogs.exportChannel(channel))}
                 />
             )}
             {canEditHeader && (

@@ -15115,6 +15115,14 @@
     "defaultMessage": "Any member of the team",
     "description": "Dropdown option for the 'Enable users to open Direct Message channels with:' setting; grammatically completes that label."
   },
+  "admin.team.restrictChannelExportDescription": {
+    "defaultMessage": "When true, only channel, team and system admins can export the messages of a channel to a CSV file. When false, everyone who can read a channel can export it.",
+    "description": "Admin console help text under Site Configuration > Users and Teams, for the setting that limits who can export a channel's messages (from the channel menu or with /export)."
+  },
+  "admin.team.restrictChannelExportTitle": {
+    "defaultMessage": "Restrict channel export to admins: ",
+    "description": "Admin console boolean setting name under Site Configuration > Users and Teams; label ends with a colon before the true/false choice."
+  },
   "admin.team.restrictDirectMessage": {
     "defaultMessage": "Enable users to open Direct Message channels with:",
     "description": "Admin console dropdown setting name under Site Configuration > Users and Teams; the options complete the sentence ('Any user on the Mattermost server' / 'Any member of the team')."

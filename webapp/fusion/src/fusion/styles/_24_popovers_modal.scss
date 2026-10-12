@@ -65,7 +65,7 @@
 :is(.am-app, .am-layer) .am-modal .am-close { position: absolute; top: 14px; right: 14px; }
 :is(.am-app, .am-layer) .am-field { display: grid; gap: 6px; margin-bottom: 16px; }
 :is(.am-app, .am-layer) .am-field > span { font: 700 11px var(--am-font-ui); letter-spacing: .07em; text-transform: uppercase; color: var(--am-muted); }
-:is(.am-app, .am-layer) .am-field :is(input[type="text"], input[type="password"]), :is(.am-app, .am-layer) .am-field select {
+:is(.am-app, .am-layer) .am-field :is(input[type="text"], input[type="password"], input[type="date"]), :is(.am-app, .am-layer) .am-field select {
   height: 38px;
   padding: 0 12px;
   border-radius: 9px;
@@ -73,9 +73,11 @@
   background: var(--am-side);
   outline: none;
 }
-:is(.am-app, .am-layer) .am-field :is(input[type="text"], input[type="password"]):focus, :is(.am-app, .am-layer) .am-field select:focus { border-color: var(--am-matter); }
+:is(.am-app, .am-layer) .am-field :is(input[type="text"], input[type="password"], input[type="date"]):focus, :is(.am-app, .am-layer) .am-field select:focus { border-color: var(--am-matter); }
 :is(.am-app, .am-layer) .am-field input:disabled { color: var(--am-muted); cursor: not-allowed; }
 :is(.am-app, .am-layer) .am-field-error { margin: 0 0 12px; color: var(--am-danger); font-size: 13px; }
+// The channel export's range of days: the first and the last, side by side.
+:is(.am-app, .am-layer) .am-export-range { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 // The account pane's picture, with who you are next to it.
 :is(.am-app, .am-layer) .am-pic-row { display: flex; align-items: center; gap: 18px; padding: 16px; margin-bottom: 20px; border-radius: 12px; background: var(--am-side); border: 1px solid var(--am-line); }
 :is(.am-app, .am-layer) .am-pic-who { min-width: 0; }

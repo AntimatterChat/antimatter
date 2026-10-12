@@ -2777,6 +2777,13 @@ const AdminDefinition: AdminDefinitionType = {
                         },
                         {
                             type: 'bool',
+                            key: 'TeamSettings.RestrictChannelExportToAdmins',
+                            label: defineMessage({id: 'admin.team.restrictChannelExportTitle', defaultMessage: 'Restrict channel export to admins: '}),
+                            help_text: defineMessage({id: 'admin.team.restrictChannelExportDescription', defaultMessage: 'When true, only channel, team and system admins can export the messages of a channel to a CSV file. When false, everyone who can read a channel can export it.'}),
+                            isDisabled: it.not(it.userHasWritePermissionOnResource(RESOURCE_KEYS.SITE.USERS_AND_TEAMS)),
+                        },
+                        {
+                            type: 'bool',
                             key: 'TeamSettings.EnableLastActiveTime',
                             label: defineMessage({id: 'admin.team.lastActiveTimeTitle', defaultMessage: 'Enable last active time: '}),
                             help_text: defineMessage({id: 'admin.team.lastActiveTimeDescription', defaultMessage: 'When enabled, last active time allows users to see when someone was last online.'}),

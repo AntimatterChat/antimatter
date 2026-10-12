@@ -9,6 +9,7 @@ import type {Post} from '@mattermost/types/posts';
 
 import BrowseChannelsDialog from 'fusion/channel/browse_channels_dialog';
 import CategoryPermissionsDialog from 'fusion/channel/category_permissions_dialog';
+import ChannelExportDialog from 'fusion/channel/channel_export_dialog';
 import ChannelPermissionsDialog from 'fusion/channel/channel_permissions_dialog';
 import AddPeopleDialog from 'fusion/modals/add_people_dialog';
 import ConfirmDialog from 'fusion/modals/confirm_dialog';
@@ -53,6 +54,9 @@ type Dialogs = {
     // A channel's permissions: overrides, and the roles a private channel is for.
     channelPermissions: (channel: Channel) => void;
 
+    // Download a channel's messages as a CSV file.
+    exportChannel: (channel: Channel) => void;
+
     // A category for everyone's permissions, which its channels inherit (team admins).
     categoryPermissions: (teamId: string, name: string) => void;
 
@@ -82,9 +86,9 @@ type Dialogs = {
     help: (page?: HelpPage) => void;
 };
 
-const DialogsContext = createContext<Dialogs>({createChannel: () => {}, addPeople: () => {}, invite: () => {}, deleteMessage: () => {}, createCategory: () => {}, renameServerCategory: () => {}, roles: () => {}, channelPermissions: () => {}, categoryPermissions: () => {}, selfRoles: () => {}, onboarding: () => {}, teamLayout: () => {}, confirm: () => {}, help: () => {}, createTeam: () => {}, timeOut: () => {}, removeFromTeam: () => {}, browseChannels: () => {}});
+const DialogsContext = createContext<Dialogs>({createChannel: () => {}, addPeople: () => {}, invite: () => {}, deleteMessage: () => {}, createCategory: () => {}, renameServerCategory: () => {}, roles: () => {}, channelPermissions: () => {}, exportChannel: () => {}, categoryPermissions: () => {}, selfRoles: () => {}, onboarding: () => {}, teamLayout: () => {}, confirm: () => {}, help: () => {}, createTeam: () => {}, timeOut: () => {}, removeFromTeam: () => {}, browseChannels: () => {}});
 
-type Open = {kind: 'create'; categoryId?: string} | {kind: 'add'; channel: Channel} | {kind: 'delete'; post: Post} | {kind: 'category'; renaming?: string} | {kind: 'roles'} | {kind: 'permissions'; channel: Channel} | {kind: 'selfRoles'} | {kind: 'onboarding'} | {kind: 'layout'} | {kind: 'confirm'; options: ConfirmOptions} | {kind: 'help'; page?: HelpPage} | {kind: 'categoryPermissions'; teamId: string; name: string} | {kind: 'createTeam'} | {kind: 'timeOut'; userId: string} | {kind: 'removeFromTeam'; userId: string} | {kind: 'browse'} | null;
+type Open = {kind: 'create'; categoryId?: string} | {kind: 'add'; channel: Channel} | {kind: 'delete'; post: Post} | {kind: 'category'; renaming?: string} | {kind: 'roles'} | {kind: 'permissions'; channel: Channel} | {kind: 'export'; channel: Channel} | {kind: 'selfRoles'} | {kind: 'onboarding'} | {kind: 'layout'} | {kind: 'confirm'; options: ConfirmOptions} | {kind: 'help'; page?: HelpPage} | {kind: 'categoryPermissions'; teamId: string; name: string} | {kind: 'createTeam'} | {kind: 'timeOut'; userId: string} | {kind: 'removeFromTeam'; userId: string} | {kind: 'browse'} | null;
 
 // DialogsProvider owns the Fusion UI's own dialogs that menus and buttons open, outliving the menu that opened them.
 export function DialogsProvider({children}: {children: React.ReactNode}) {
@@ -100,6 +104,7 @@ export function DialogsProvider({children}: {children: React.ReactNode}) {
         renameServerCategory: (name) => setOpen({kind: 'category', renaming: name}),
         roles: () => setOpen({kind: 'roles'}),
         channelPermissions: (channel) => setOpen({kind: 'permissions', channel}),
+        exportChannel: (channel) => setOpen({kind: 'export', channel}),
         categoryPermissions: (teamId, name) => setOpen({kind: 'categoryPermissions', teamId, name}),
         selfRoles: () => setOpen({kind: 'selfRoles'}),
         onboarding: () => setOpen({kind: 'onboarding'}),
@@ -181,6 +186,12 @@ export function DialogsProvider({children}: {children: React.ReactNode}) {
             )}
             {open?.kind === 'permissions' && (
                 <ChannelPermissionsDialog
+                    channel={open.channel}
+                    onClose={close}
+                />
+            )}
+            {open?.kind === 'export' && (
+                <ChannelExportDialog
                     channel={open.channel}
                     onClose={close}
                 />

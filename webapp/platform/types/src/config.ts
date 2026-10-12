@@ -190,6 +190,7 @@ export type ClientConfig = {
     ReportAProblemMail: string;
     AllowDownloadLogs: string;
     RequireEmailVerification: string;
+    RestrictChannelExportToAdmins: string;
     RestrictDirectMessage: string;
     RunJobs: string;
     SamlFirstNameAttributeSet: string;
@@ -487,6 +488,7 @@ export type TeamSettings = {
     EnableJoinLeaveMessageByDefault: boolean;
     EnableChannelCategorySorting: boolean;
     MemberListRoleGroups: boolean;
+    RestrictChannelExportToAdmins: boolean;
 };
 
 export type ClientRequirements = {
