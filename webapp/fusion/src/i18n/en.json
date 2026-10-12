@@ -21555,6 +21555,10 @@
     "defaultMessage": "A whole screen",
     "description": ""
   },
+  "fusion.calls.shareOptions": {
+    "defaultMessage": "Screen share options",
+    "description": ""
+  },
   "fusion.calls.shareScreen": {
     "defaultMessage": "Share screen",
     "description": ""

@@ -17,7 +17,7 @@ import {am} from 'fusion/utils/class_names';
 
 import {useCallActions} from './actions';
 import {getCallsAPI} from './calls_api';
-import {BLUR_INTENSITIES, blurPreset, getScreenQuality, QUICK_REACTIONS, SCREEN_FRAME_RATES, SCREEN_HEIGHTS, setScreenQuality} from './extras';
+import {BLUR_INTENSITIES, blurPreset, getScreenQuality, QUICK_REACTIONS, SCREEN_FRAME_RATES, SCREEN_HEIGHTS, setScreenQuality, setScreenSurface} from './extras';
 import {useCall} from './hooks';
 import type {MyCallState} from './hooks';
 import {screenPicker} from './screen_picker';
@@ -68,9 +68,11 @@ export function ScreenShareMenu({anchor, placement = 'above', onClose}: {anchor:
     const [quality, setQuality] = useState(getScreenQuality);
     const [picker] = useState(() => screenPicker());
 
-    // Sharing must start right from the click: the browser asks only after a user's action.
+    // Sharing must start right from the click: the browser asks only after a user's action. The choice is kept for the
+    // share button.
     const share = (surface?: ScreenSurface) => {
         setScreenQuality(quality);
+        setScreenSurface(surface);
         onClose();
         getCallsAPI()?.startScreenShare(quality, surface);
     };
@@ -248,14 +250,17 @@ export default function CallControls({my, withPopout = false}: Props) {
     const call = useCall(my.call.channelId);
     const api = getCallsAPI();
     const [menu, setMenu] = useState<'screen' | 'camera' | 'react' | null>(null);
-    const screenRef = useRef<HTMLButtonElement>(null);
-    const cameraRef = useRef<HTMLButtonElement>(null);
+    const screenRef = useRef<HTMLSpanElement>(null);
+    const cameraRef = useRef<HTMLSpanElement>(null);
     const reactRef = useRef<HTMLButtonElement>(null);
-    const caret = (which: 'camera', ref: React.RefObject<HTMLButtonElement | null>, label: string) => (
+
+    // The options of a button open from a small badge on its top-right corner; the menu is placed by the button and
+    // its badge together, so that clicking either isn't clicking away from it.
+    const badge = (which: 'camera' | 'screen', label: string) => (
         <button
-            ref={ref}
-            className={am('round-caret', {on: menu === which})}
+            className={am('round-badge', {on: menu === which})}
             aria-label={label}
+            title={label}
             aria-haspopup='menu'
             aria-expanded={menu === which}
             onClick={() => setMenu(menu === which ? null : which)}
@@ -266,6 +271,7 @@ export default function CallControls({my, withPopout = false}: Props) {
             />
         </button>
     );
+    const sharable = my.screenAllowed && !my.otherSharing;
 
     return (
         <div className={am('voice-controls')}>
@@ -289,29 +295,46 @@ export default function CallControls({my, withPopout = false}: Props) {
                             <Icon name={my.deafened ? 'headphones-off' : 'headphones'}/>
                         </button>
                     )}
-                    <button
-                        className={am('round', {on: my.video})}
-                        aria-label={labels.video}
-                        aria-pressed={my.video}
-                        title={my.videoAllowed ? undefined : labels.video}
-                        disabled={!my.videoAllowed && !my.video}
-                        onClick={() => actions.toggleVideo(my)}
+                    <span
+                        ref={cameraRef}
+                        className={am('round-wrap')}
                     >
-                        <Icon name='video'/>
-                    </button>
-                    {api && caret('camera', cameraRef, formatMessage({id: 'fusion.calls.cameraOptions', defaultMessage: 'Camera options'}))}
-                    <button
+                        <button
+                            className={am('round', {on: my.video})}
+                            aria-label={labels.video}
+                            aria-pressed={my.video}
+                            title={my.videoAllowed ? undefined : labels.video}
+                            disabled={!my.videoAllowed && !my.video}
+                            onClick={() => {
+                                setMenu(null);
+                                actions.toggleVideo(my);
+                            }}
+                        >
+                            <Icon name='video'/>
+                        </button>
+                        {api && badge('camera', formatMessage({id: 'fusion.calls.cameraOptions', defaultMessage: 'Camera options'}))}
+                    </span>
+                    <span
                         ref={screenRef}
-                        className={am('round', {on: my.screen || menu === 'screen'})}
-                        aria-label={my.screen ? formatMessage({id: 'fusion.calls.stopSharing', defaultMessage: 'Stop sharing'}) : labels.screen}
-                        aria-pressed={my.screen}
-                        aria-haspopup={my.screen ? undefined : 'menu'}
-                        title={my.screen || (my.screenAllowed && !my.otherSharing) ? undefined : labels.screen}
-                        disabled={!my.screen && (!my.screenAllowed || my.otherSharing)}
-                        onClick={() => (my.screen ? actions.toggleScreen(my) : setMenu(menu === 'screen' ? null : 'screen'))}
+                        className={am('round-wrap')}
                     >
-                        <Icon name='screen'/>
-                    </button>
+                        <button
+                            className={am('round', {on: my.screen})}
+                            aria-label={my.screen ? formatMessage({id: 'fusion.calls.stopSharing', defaultMessage: 'Stop sharing'}) : labels.screen}
+                            aria-pressed={my.screen}
+                            title={my.screen || sharable ? undefined : labels.screen}
+                            disabled={!my.screen && !sharable}
+                            onClick={() => {
+                                setMenu(null);
+                                actions.toggleScreen(my);
+                            }}
+                        >
+                            <Icon name='screen'/>
+                        </button>
+
+                        {/* What, at which size and frame rate: for the next share, so not while sharing. */}
+                        {api && !my.screen && sharable && badge('screen', formatMessage({id: 'fusion.calls.shareOptions', defaultMessage: 'Screen share options'}))}
+                    </span>
                     <button
                         className={am('round', {on: my.handRaised})}
                         aria-label={labels.hand}

@@ -24,8 +24,9 @@ import type {GlobalState} from 'types/store';
 
 import {getCall, getCallsAPI, getLocalCall, getVoiceAPI, isVoiceChannel} from './calls_api';
 import type {CallsCall, VoiceParticipant} from './calls_api';
-import {getScreenQuality} from './extras';
+import {getScreenQuality, getScreenSurface} from './extras';
 import type {MyCallState} from './hooks';
+import {screenPicker} from './screen_picker';
 
 const getChannelWithNames = makeGetChannel();
 
@@ -205,11 +206,13 @@ function makeActions(getState: () => GlobalState, intl: IntlShape, openDirect: (
             // Calls reports camera errors itself.
         });
     };
+
+    // Sharing again asks for the size, the frame rate and the kind of source chosen last in the share menu.
     const toggleScreen = (my: MyCallState) => {
         if (my.screen) {
             getCallsAPI()?.stopScreenShare();
         } else {
-            getCallsAPI()?.startScreenShare(getScreenQuality());
+            getCallsAPI()?.startScreenShare(getScreenQuality(), screenPicker() === 'surfaces' ? getScreenSurface() : undefined);
         }
     };
     const toggleHand = (my: MyCallState) => getCallsAPI()?.setHandRaised(!my.handRaised);

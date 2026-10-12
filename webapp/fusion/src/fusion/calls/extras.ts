@@ -9,6 +9,7 @@ import type {GlobalState} from 'types/store';
 import {getCallsAPI} from './calls_api';
 import type {VoiceParticipant} from './calls_api';
 import type {CallsReaction, CallsScreenQuality} from './plugin_api/calls_public_api';
+import type {ScreenSurface} from './screen_picker';
 
 // These settings are personal to this browser, as a headset's volume is.
 function readStored<T>(key: string, fallback: T): T {
@@ -80,6 +81,20 @@ export function getScreenQuality(): CallsScreenQuality {
 
 export function setScreenQuality(quality: CallsScreenQuality) {
     writeStored(SCREEN_KEY, quality);
+}
+
+// The kind of source last chosen in the share menu (a whole screen, a window, a tab), which the share button asks for
+// again; none before the first choice, or with a picker that shows every kind anyway.
+const SURFACE_KEY = 'am-screen-surface';
+const SURFACES: ScreenSurface[] = ['monitor', 'window', 'browser'];
+
+export function getScreenSurface(): ScreenSurface | undefined {
+    const s = readStored<ScreenSurface | null>(SURFACE_KEY, null);
+    return s && SURFACES.includes(s) ? s : undefined;
+}
+
+export function setScreenSurface(surface: ScreenSurface | undefined) {
+    writeStored(SURFACE_KEY, surface ?? null);
 }
 
 // Background blur presets: light, medium (Calls' default) and strong, as intensities from 1 to 100.

@@ -38,12 +38,14 @@
 :is(.am-app, .am-layer) .am-vol-row input { flex: 1; min-width: 0; accent-color: var(--am-matter); }
 :is(.am-app, .am-layer) .am-vol-row b { width: 38px; text-align: right; font: 600 12px var(--am-font-mono); color: var(--am-muted); }
 
-// The small arrow beside the camera button, and the call's menus (sharing the screen, the camera).
-// The arrow is a narrow pill of the same height and colour as the button it opens the menu of, close beside it.
-:is(.am-app, .am-layer) .am-round-caret { display: grid; width: 22px; height: 48px; border-radius: 11px; margin-left: -6px; background: var(--am-raise); color: var(--am-muted); place-items: center; }
-:is(.am-app, .am-layer) .am-round-caret:hover, :is(.am-app, .am-layer) .am-round-caret.am-on { background: var(--am-raise-2); color: var(--am-text); }
-:is(.am-app, .am-layer) .am-call-win .am-voice-controls .am-round-caret { height: 40px; }
-:is(.am-app, .am-layer) .am-round-caret .am-ic { transform: rotate(180deg); }
+// A button with options (the camera, sharing the screen) and the small badge on its top-right corner that opens them,
+// ringed with the background so that it reads as apart from the button; then the call's menus.
+:is(.am-app, .am-layer) .am-round-wrap { position: relative; display: flex; flex: none; }
+:is(.am-app, .am-layer) .am-round-badge { position: absolute; top: -3px; right: -3px; z-index: 1; display: grid; place-items: center; width: 18px; height: 18px; padding: 0; border-radius: 50%; background: var(--am-raise-2); color: var(--am-text-2); box-shadow: 0 0 0 2px var(--am-main); }
+:is(.am-app, .am-layer) .am-round-badge:hover, :is(.am-app, .am-layer) .am-round-badge.am-on { background: var(--am-matter); color: #fff; }
+:is(.am-app, .am-layer) .am-round-badge:focus-visible { outline: 2px solid var(--am-matter); outline-offset: 2px; }
+:is(.am-app, .am-layer) .am-round-badge .am-ic { width: 12px; height: 12px; stroke-width: 2.6; transform: rotate(180deg); }
+:is(.am-app, .am-layer) .am-call-win .am-voice-controls .am-round-badge { top: -4px; right: -4px; }
 :is(.am-app, .am-layer) .am-q-pop { width: 290px; }
 :is(.am-app, .am-layer) .am-q-chips { display: flex; flex-wrap: wrap; gap: 6px; padding: 0 8px 8px; }
 :is(.am-app, .am-layer) .am-q-pop .am-q-chips button.am-q-chip { display: inline-flex; width: auto; gap: 0; padding: 4px 10px; border-radius: 14px; border: 1px solid var(--am-line); font-size: 12.5px; font-weight: 600; color: var(--am-text-2); }
