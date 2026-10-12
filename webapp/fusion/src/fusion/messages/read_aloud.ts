@@ -12,7 +12,11 @@ let reading: {postId: string; audio: HTMLAudioElement; url: string} | null = nul
 const listeners = new Set<() => void>();
 const notify = () => listeners.forEach((cb) => cb());
 
+// Counts the requests to read or stop: a speech that arrives after a newer request is dropped.
+let lastRequest = 0;
+
 export function stopReading() {
+    lastRequest++;
     if (reading) {
         reading.audio.pause();
         URL.revokeObjectURL(reading.url);
@@ -24,11 +28,16 @@ export function stopReading() {
 // readAloud reads a message aloud, stopping the one being read.
 export async function readAloud(postId: string): Promise<void> {
     stopReading();
+    const request = lastRequest;
     const res = await fetch(`${Client4.getPostRoute(postId)}/speech`, Client4.getOptions({method: 'get'}));
     if (!res.ok) {
         throw new Error(`status ${res.status}`);
     }
-    const url = URL.createObjectURL(await res.blob());
+    const blob = await res.blob();
+    if (request !== lastRequest) {
+        return;
+    }
+    const url = URL.createObjectURL(blob);
     const audio = new Audio(url);
     reading = {postId, audio, url};
     audio.addEventListener('ended', () => {
@@ -37,7 +46,14 @@ export async function readAloud(postId: string): Promise<void> {
         }
     });
     notify();
-    await audio.play();
+    try {
+        await audio.play();
+    } catch (err) {
+        if (reading?.audio === audio) {
+            stopReading();
+        }
+        throw err;
+    }
 }
 
 // useReadingPostId is the message being read aloud, if any.
