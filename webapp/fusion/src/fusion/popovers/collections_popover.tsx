@@ -64,6 +64,8 @@ const EMPTY: Record<Tab, {id: string; defaultMessage: string}> = {
 
 type Item = {post: Post; replies?: number; lastReplyAt?: number; file?: FileInfo};
 
+const NO_ITEMS: Record<Tab, Item[] | undefined> = {mentions: undefined, saved: undefined, pinned: undefined, files: undefined, threads: undefined};
+
 // FileRow is a file shared in the conversation: it opens in the file preview.
 function FileRow({file, onOpen}: {file: FileInfo; onOpen: () => void}) {
     const when = useWhen();
@@ -127,7 +129,7 @@ type Props = {
 // CollectionsPopover gathers mentions, saved and pinned messages, files and followed threads, in one panel. Opened
 // from a conversation, every tab lists what's in that conversation; from the home, mentions, saved messages and
 // threads are the whole team's.
-export default function CollectionsPopover({anchor, channel, initialTab = 'mentions', placement = 'below', onClose}: Props) {
+export default function CollectionsPopover({anchor, channel: conversation, initialTab = 'mentions', placement = 'below', onClose}: Props) {
     const {formatMessage} = useIntl();
     const dispatch = useDispatch();
     const team = useSelector(getCurrentTeam);
@@ -135,7 +137,23 @@ export default function CollectionsPopover({anchor, channel, initialTab = 'menti
     const mentionKeys = useSelector(getCurrentUserMentionKeys);
     const channels = useSelector(getAllChannels);
     const [tab, setTab] = useState<Tab>(initialTab);
-    const [items, setItems] = useState<Record<Tab, Item[] | undefined>>({mentions: undefined, saved: undefined, pinned: undefined, files: undefined, threads: undefined});
+    const [items, setItems] = useState<Record<Tab, Item[] | undefined>>(NO_ITEMS);
+
+    // Opened from a conversation, the panel lists that conversation's items, or the whole community's on demand.
+    // Pinned messages and files only exist within a conversation.
+    const [scope, setScope] = useState<'here' | 'all'>('here');
+    const channel = scope === 'here' ? conversation : undefined;
+    const tabs = conversation && scope === 'all' ? TABS.filter(([k]) => k !== 'pinned' && k !== 'files') : TABS;
+    const changeScope = (next: 'here' | 'all') => {
+        if (next === scope) {
+            return;
+        }
+        setScope(next);
+        setItems(NO_ITEMS);
+        if (next === 'all' && (tab === 'pinned' || tab === 'files')) {
+            setTab('mentions');
+        }
+    };
 
     useEffect(() => {
         if (!team || items[tab]) {
@@ -155,7 +173,7 @@ export default function CollectionsPopover({anchor, channel, initialTab = 'menti
                     const found = fromPostList(await Client4.searchPostsWithParams(team.id, {terms: terms + where, is_or_search: true, include_deleted_channels: false, page: 0, per_page: 30}));
                     set(channel ? found.filter((i) => i.post.channel_id === channel.id) : found);
                 } else if (tab === 'saved') {
-                    set(fromPostList(await Client4.getFlaggedPosts(userId, channel?.id || '', '', 0, 30)));
+                    set(fromPostList(await Client4.getFlaggedPosts(userId, channel?.id || '', channel ? '' : team.id, 0, 30)));
                 } else if (tab === 'pinned') {
                     set(channel ? fromPostList(await Client4.getPinnedPosts(channel.id)) : []);
                 } else if (tab === 'files') {
@@ -208,7 +226,7 @@ export default function CollectionsPopover({anchor, channel, initialTab = 'menti
                 role='tablist'
                 aria-orientation='vertical'
             >
-                {TABS.map(([k, icon, l]) => (
+                {tabs.map(([k, icon, l]) => (
                     <button
                         key={k}
                         role='tab'
@@ -228,6 +246,31 @@ export default function CollectionsPopover({anchor, channel, initialTab = 'menti
             <div className={am('coll-main')}>
                 <div className={am('coll-head')}>
                     <h3>{formatMessage(label)}</h3>
+                    {conversation && (
+                        <span
+                            className={am('coll-scope')}
+                            role='radiogroup'
+                            aria-label={formatMessage({id: 'fusion.collections.scope', defaultMessage: 'Show items from'})}
+                        >
+                            {([['here', 'hash', formatMessage({id: 'fusion.collections.scopeHere', defaultMessage: 'This conversation'})], ['all', 'globe', formatMessage({id: 'fusion.collections.scopeAll', defaultMessage: 'The whole community'})]] as const).map(([k, icon, l]) => (
+                                <button
+                                    key={k}
+                                    type='button'
+                                    role='radio'
+                                    aria-checked={scope === k}
+                                    aria-label={l}
+                                    title={l}
+                                    className={am('icon-btn', {on: scope === k})}
+                                    onClick={() => changeScope(k)}
+                                >
+                                    <Icon
+                                        name={icon}
+                                        size='sm'
+                                    />
+                                </button>
+                            ))}
+                        </span>
+                    )}
                     <p>{formatMessage((channel && HERE[tab]) || desc)}</p>
                 </div>
                 <div className={am('coll-list')}>

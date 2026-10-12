@@ -7,7 +7,7 @@
   height: 52px;
   flex: none;
   display: grid;
-  grid-template-columns: minmax(96px, 1fr) minmax(0, 400px) auto;
+  grid-template-columns: minmax(96px, 1fr) auto auto;
   align-items: center;
   gap: 12px;
   padding: 0 14px;
@@ -18,7 +18,10 @@
 :is(.am-app, .am-layer) .am-ch-title h1 { margin: 0; flex: 0 1 auto; min-width: 3ch; max-width: 70%; font: 600 16px var(--am-font-display); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 :is(.am-app, .am-layer) .am-ch-title .am-crumb { color: var(--am-muted); font-weight: 500; }
 :is(.am-app, .am-layer) .am-ch-title .am-topic { flex: 1 1 0; color: var(--am-muted); font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; padding-left: 10px; border-left: 1px solid var(--am-line); }
-:is(.am-app, .am-layer) .am-search { position: relative; }
+:is(.am-app, .am-layer) .am-search { position: relative; width: 220px; max-width: 100%; transition: width .2s ease; }
+// Narrow while unused, so the channel's description keeps its room; wide while searching.
+:is(.am-app, .am-layer) .am-search:is(:focus-within, :has(input:not(:placeholder-shown))) { width: min(400px, 42vw); }
+@media (prefers-reduced-motion: reduce) { :is(.am-app, .am-layer) .am-search { transition: none; } }
 :is(.am-app, .am-layer) .am-search label {
   display: flex;
   align-items: center;

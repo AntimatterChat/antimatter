@@ -160,7 +160,35 @@ export default function MemberList({inPanel = false}: {inPanel?: boolean}) {
     const list = (
         <>
             <div className={am('mem-head')}>
-                <span>{formatMessage({id: 'fusion.members.title', defaultMessage: 'Members — {count}'}, {count: Math.max(memberCount ?? 0, profiles.length)})}</span>
+                <span>{formatMessage({id: 'fusion.members.title', defaultMessage: '{count, plural, one {# member} other {# members}}'}, {count: Math.max(memberCount ?? 0, profiles.length)})}</span>
+                {rolesAllowed && hasTeams && !direct && (
+                    <span
+                        className={am('mem-grouping')}
+                        role='radiogroup'
+                        aria-label={formatMessage({id: 'fusion.members.grouping', defaultMessage: 'Group members by'})}
+                    >
+                        {(['roles', 'teams'] as Grouping[]).map((g) => {
+                            const label = g === 'roles' ? formatMessage({id: 'fusion.members.byRole', defaultMessage: 'Roles'}) : formatMessage({id: 'fusion.members.byTeam', defaultMessage: 'Teams'});
+                            return (
+                                <button
+                                    key={g}
+                                    type='button'
+                                    role='radio'
+                                    aria-checked={grouping === g}
+                                    aria-label={label}
+                                    title={label}
+                                    className={am('icon-btn', {on: grouping === g})}
+                                    onClick={() => setGrouping(g)}
+                                >
+                                    <Icon
+                                        name={g === 'roles' ? 'shield' : 'tag'}
+                                        size='sm'
+                                    />
+                                </button>
+                            );
+                        })}
+                    </span>
+                )}
                 {!direct && (canAdd.add || canAdd.invite) && (
                     <button
                         ref={addRef}
@@ -196,26 +224,6 @@ export default function MemberList({inPanel = false}: {inPanel?: boolean}) {
                     </button>
                 )}
             </div>
-            {rolesAllowed && hasTeams && !direct && (
-                <div
-                    className={am('mem-grouping')}
-                    role='radiogroup'
-                    aria-label={formatMessage({id: 'fusion.members.grouping', defaultMessage: 'Group members by'})}
-                >
-                    {(['roles', 'teams'] as Grouping[]).map((g) => (
-                        <button
-                            key={g}
-                            type='button'
-                            role='radio'
-                            aria-checked={grouping === g}
-                            className={am({on: grouping === g})}
-                            onClick={() => setGrouping(g)}
-                        >
-                            {g === 'roles' ? formatMessage({id: 'fusion.members.byRole', defaultMessage: 'Roles'}) : formatMessage({id: 'fusion.members.byTeam', defaultMessage: 'Teams'})}
-                        </button>
-                    ))}
-                </div>
-            )}
             {canManageRequests && joinRequests.length > 0 && (
                 <div className={am('join-requests')}>
                     <PendingJoinRequests

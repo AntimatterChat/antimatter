@@ -8,7 +8,12 @@
 :is(.am-app, .am-layer) .am-role-head:first-child { margin-top: 6px; }
 /* The list's title, set apart from the role groups under it by a line. */
 :is(.am-app, .am-layer) .am-mem-head { display: flex; align-items: center; gap: 6px; margin: 0 2px 4px; padding: 0 0 10px 8px; border-bottom: 1px solid var(--am-line); color: var(--am-text); font: 600 14px var(--am-font-display); }
-:is(.am-app, .am-layer) .am-mem-head span { flex: 1; }
+:is(.am-app, .am-layer) .am-mem-head > span:first-child { flex: 1; }
+// Group the list by roles or by teams: two small icon buttons beside the count.
+:is(.am-app, .am-layer) .am-mem-grouping { display: flex; gap: 2px; padding: 2px; border-radius: 8px; background: var(--am-side); border: 1px solid var(--am-line); }
+:is(.am-app, .am-layer) .am-mem-grouping .am-icon-btn { width: 24px; height: 24px; border-radius: 6px; color: var(--am-muted); }
+:is(.am-app, .am-layer) .am-mem-grouping .am-icon-btn:hover { color: var(--am-text-2); }
+:is(.am-app, .am-layer) .am-mem-grouping .am-icon-btn.am-on { background: var(--am-raise-2); color: var(--am-text); }
 :is(.am-app, .am-layer) .am-mem-head + .am-role-head { margin-top: 14px; }
 :is(.am-app, .am-layer) .am-mem-add { width: 28px; height: 28px; border-radius: 7px; }
 :is(.am-app, .am-layer) .am-mem-add-pop { width: 280px; }
@@ -43,8 +48,4 @@
 :is(.am-app, .am-layer) .am-join-requests { margin: 4px 0 10px; padding: 8px; border-radius: 10px; background: var(--am-anti-soft); color: var(--am-text); font-size: 13px; }
 :is(.am-app, .am-layer) .am-join-requests button { color: inherit; }
 /* Members by role or by team, as each person chooses (roles only when the admins allow them). */
-:is(.am-app, .am-layer) .am-mem-grouping { display: flex; gap: 2px; margin: 8px 8px 0; padding: 3px; border-radius: 9px; background: var(--am-side); border: 1px solid var(--am-line); }
-:is(.am-app, .am-layer) .am-mem-grouping button { flex: 1; height: 26px; border-radius: 6px; color: var(--am-muted); font: 600 12.5px var(--am-font-ui); }
-:is(.am-app, .am-layer) .am-mem-grouping button:hover { color: var(--am-text-2); }
-:is(.am-app, .am-layer) .am-mem-grouping button.am-on { background: var(--am-raise-2); color: var(--am-text); }
 :is(.am-app, .am-layer) .am-role-head .am-team-tag { text-transform: none; }
