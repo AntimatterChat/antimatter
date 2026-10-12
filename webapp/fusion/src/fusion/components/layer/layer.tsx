@@ -163,7 +163,7 @@ function place(pop: HTMLElement, placement: Placement, anchor?: HTMLElement | nu
 const escapeStacks = new WeakMap<Document, Array<{current: () => void}>>();
 
 // useEscape calls onEscape when Escape is pressed while this layer is the newest of its window.
-function useEscape(onEscape: () => void, ref: React.RefObject<HTMLElement>) {
+function useEscape(onEscape: () => void, ref: React.RefObject<HTMLElement | null>) {
     const handler = useRef(onEscape);
     handler.current = onEscape;
     useEffect(() => {
@@ -190,7 +190,7 @@ function useEscape(onEscape: () => void, ref: React.RefObject<HTMLElement>) {
 
 // useReturnFocus gives the focus back, when the layer closes, to what had it when the layer opened (the button that
 // opened it), unless the focus has gone somewhere else since.
-function useReturnFocus(ref: React.RefObject<HTMLElement>) {
+function useReturnFocus(ref: React.RefObject<HTMLElement | null>) {
     useEffect(() => {
         const layer = ref.current;
         const doc = layer?.ownerDocument || document;
