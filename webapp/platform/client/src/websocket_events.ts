@@ -71,6 +71,8 @@ export const enum WebSocketEvents {
     ChannelOverridesUpdated = 'channel_overrides_updated',
     CategoryOverridesUpdated = 'category_overrides_updated',
     MemberTimeoutsUpdated = 'member_timeouts_updated',
+    PostPutOnTop = 'post_put_on_top',
+    PostRemovedFromTop = 'post_removed_from_top',
     CloudSubscriptionChanged = 'cloud_subscription_changed',
     ThreadUpdated = 'thread_updated',
     ThreadFollowChanged = 'thread_follow_changed',

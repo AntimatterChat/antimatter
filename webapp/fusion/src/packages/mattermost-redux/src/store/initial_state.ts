@@ -70,6 +70,7 @@ const state: GlobalState = {
             manuallyUnread: {},
             channelModerations: {},
             overrides: {},
+            onTop: {},
             channelMemberCountsByGroup: {},
             messageCounts: {},
             channelsMemberCount: {},

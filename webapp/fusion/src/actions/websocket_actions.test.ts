@@ -12,7 +12,7 @@ import type {DeepPartial} from '@mattermost/types/utilities';
 
 import {ChannelTypes, JobTypes, PostTypes, RenderPermissionTypes, TeamTypes} from 'mattermost-redux/action_types';
 import {fetchMyCategories} from 'mattermost-redux/actions/channel_categories';
-import {fetchAllMyTeamsChannels, getChannelMember} from 'mattermost-redux/actions/channels';
+import {fetchAllMyTeamsChannels, fetchOnTopPosts, getChannelMember} from 'mattermost-redux/actions/channels';
 import {getCustomProfileAttributeFields} from 'mattermost-redux/actions/general';
 import {getGroup} from 'mattermost-redux/actions/groups';
 import {getJobsByType} from 'mattermost-redux/actions/jobs';
@@ -111,6 +111,7 @@ jest.mock('mattermost-redux/actions/channels', () => ({
     getChannelMember: jest.fn(() => ({type: 'GET_CHANNEL_MEMBER'})),
     fetchAllMyChannelMembers: jest.fn(() => ({type: 'FETCH_ALL_MY_CHANNEL_MEMBERS'})),
     fetchAllMyTeamsChannels: jest.fn(),
+    fetchOnTopPosts: jest.fn(() => ({type: 'FETCH_ON_TOP_POSTS'})),
 }));
 
 jest.mock('actions/post_actions', () => ({
@@ -941,6 +942,36 @@ describe('reconnect', () => {
     test('should reload custom profile attribute fields on reconnect', () => {
         reconnect();
         expect(getCustomProfileAttributeFields).toHaveBeenCalled();
+    });
+
+    test('should reload what\'s on top of the current channel on reconnect', () => {
+        reconnect();
+        expect(fetchOnTopPosts).toHaveBeenCalledWith('otherChannel');
+    });
+});
+
+describe('messages put on top of a channel', () => {
+    beforeEach(() => {
+        jest.mocked(store.dispatch).mockClear();
+    });
+
+    test('a message put on top is added', () => {
+        const onTop = {post_id: 'post', channel_id: 'channel', created_by: 'user', create_at: 1, expires_at: 0};
+        handleEvent(wsMessage<WebSocketMessages.PostPutOnTop>({
+            event: WebSocketEvents.PostPutOnTop,
+            data: {on_top: onTop},
+            broadcast: {channel_id: 'channel'},
+        }));
+        expect(store.dispatch).toHaveBeenCalledWith({type: ChannelTypes.POST_PUT_ON_TOP, data: onTop});
+    });
+
+    test('a message taken off the top is removed', () => {
+        handleEvent(wsMessage<WebSocketMessages.PostRemovedFromTop>({
+            event: WebSocketEvents.PostRemovedFromTop,
+            data: {post_id: 'post', channel_id: 'channel'},
+            broadcast: {channel_id: 'channel'},
+        }));
+        expect(store.dispatch).toHaveBeenCalledWith({type: ChannelTypes.POST_REMOVED_FROM_TOP, data: {channel_id: 'channel', post_id: 'post'}});
     });
 });
 

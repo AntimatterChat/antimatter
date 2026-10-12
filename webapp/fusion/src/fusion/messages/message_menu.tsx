@@ -7,11 +7,13 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import type {Post} from '@mattermost/types/posts';
 
+import {putPostOnTop, removePostFromTop} from 'mattermost-redux/actions/channels';
 import {addPostReminder} from 'mattermost-redux/actions/posts';
 import {setThreadFollow} from 'mattermost-redux/actions/threads';
 import {Posts} from 'mattermost-redux/constants';
 import {getChannel} from 'mattermost-redux/selectors/entities/channels';
 import {getConfig} from 'mattermost-redux/selectors/entities/general';
+import {getOnTopEntry} from 'mattermost-redux/selectors/entities/on_top_posts';
 import {getPost, isPostFlagged} from 'mattermost-redux/selectors/entities/posts';
 import {isCollapsedThreadsEnabled} from 'mattermost-redux/selectors/entities/preferences';
 import {contentFlaggingEnabledInTeam, getCurrentTeam} from 'mattermost-redux/selectors/entities/teams';
@@ -48,6 +50,8 @@ import {copyToClipboard} from 'utils/utils';
 import type {GlobalState} from 'types/store';
 
 import {canReplyInline, replyInline, useInlineRepliesEnabled} from './inline_reply';
+import {ON_TOP_DURATIONS, durationLabel} from './on_top';
+import type {OnTopDuration} from './on_top';
 import {readAloud, stopReading, useReadingPostId} from './read_aloud';
 import {getThreadTitle, NameThreadDialog} from './thread_title';
 
@@ -124,6 +128,30 @@ export default function MessageMenu({post, anchor, inThread, onClose, onMoreReac
         }
     };
     const system = isSystemMessage(post);
+
+    // Putting the message on top of its channel, as pinning it: not in an archived channel, nor system or burn-on-read
+    // messages.
+    const onTop = useSelector((state: GlobalState) => getOnTopEntry(state, post.channel_id, post.id));
+    const putOnTop = async (duration: OnTopDuration, ms: number) => {
+        const result = await dispatch(putPostOnTop(post.id, ms));
+        if (result && 'error' in result && result.error) {
+            toast((result.error as {message?: string}).message || formatMessage({id: 'fusion.ontop.failed', defaultMessage: 'The message couldn\'t be put on top'}));
+            return;
+        }
+        const direct = channel?.type === 'D' || channel?.type === 'G';
+        toast(formatMessage(
+            {id: 'fusion.ontop.toast.put', defaultMessage: '{direct, select, yes {On top of the conversation} other {On top of #{name}}} {duration, select, hour {for 1 hour} fourHours {for 4 hours} day {for 1 day} week {for 1 week} other {until removed}}'},
+            {direct: direct ? 'yes' : 'no', name: channel?.display_name || '', duration: {'1h': 'hour', '4h': 'fourHours', '1d': 'day', '1w': 'week', forever: 'forever'}[duration]},
+        ));
+    };
+    const takeOffTop = async () => {
+        const result = await dispatch(removePostFromTop(post.channel_id, post.id));
+        if (result && 'error' in result && result.error) {
+            toast((result.error as {message?: string}).message || formatMessage({id: 'fusion.ontop.removeFailed', defaultMessage: 'The message couldn\'t be taken off the top'}));
+            return;
+        }
+        toast(formatMessage({id: 'fusion.ontop.toast.removed', defaultMessage: 'Removed from the top of the channel'}));
+    };
 
     // Burn-on-Read messages can't be replied to or forwarded.
     const burn = post.type === Posts.POST_TYPES.BURN_ON_READ;
@@ -320,6 +348,33 @@ export default function MessageMenu({post, anchor, inThread, onClose, onMoreReac
                         toast(post.is_pinned ? formatMessage({id: 'fusion.toast.unpinned', defaultMessage: 'Unpinned'}) : formatMessage({id: 'fusion.toast.pinned', defaultMessage: 'Pinned to the channel'}));
                     })}
                 />
+            )}
+            {!system && !burn && channel && channel.delete_at === 0 && (
+                <Flyout
+                    icon='pin-top'
+                    label={onTop ? formatMessage({id: 'fusion.ontop.change', defaultMessage: 'On top · change'}) : formatMessage({id: 'fusion.ontop.put', defaultMessage: 'Put on top'})}
+                    menuLabel={formatMessage({id: 'fusion.ontop.menuLabel', defaultMessage: 'Keep on top of the channel'})}
+                >
+                    {ON_TOP_DURATIONS.map(([key, ms]) => (
+                        <button
+                            key={key}
+                            type='button'
+                            role='menuitem'
+                            onClick={run(() => putOnTop(key, ms))}
+                        >
+                            {durationLabel(intl, key)}
+                        </button>
+                    ))}
+                    {onTop && (
+                        <button
+                            type='button'
+                            role='menuitem'
+                            onClick={run(takeOffTop)}
+                        >
+                            {formatMessage({id: 'fusion.ontop.remove', defaultMessage: 'Remove from top'})}
+                        </button>
+                    )}
+                </Flyout>
             )}
             <MenuSeparator/>
             <MenuItem

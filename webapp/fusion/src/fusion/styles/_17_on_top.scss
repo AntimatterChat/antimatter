@@ -22,3 +22,7 @@
 :is(.am-app, .am-layer) .am-ot-actions .am-jump { height: 28px; padding: 0 10px; border-radius: 7px; font-size: 12.5px; font-weight: 600; color: var(--am-text-2); background: var(--am-raise); }
 :is(.am-app, .am-layer) .am-ot-actions .am-jump:hover { color: var(--am-text); background: var(--am-raise-2); }
 :is(.am-app, .am-layer) .am-meta-tag.am-ontop-tag { color: var(--am-matter); }
+
+/* Fusion: the strip shows a message's rich content (text, then its cards or images): about five lines until opened. */
+:is(.am-app, .am-layer) .am-ontop:not(.am-open) .am-ot-rich { max-height: 108px; }
+:is(.am-app, .am-layer) .am-ontop .am-ot-meta .am-bot-tag { margin: 0; }

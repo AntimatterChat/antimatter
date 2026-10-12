@@ -116,7 +116,7 @@ import type {
     PluginsResponse,
     PluginStatus,
 } from '@mattermost/types/plugins';
-import type {Post, PostList, PostSearchResults, PostsUsageResponse, TeamsUsageResponse, PaginatedPostList, FilesUsageResponse, PostAcknowledgement, PostAnalytics, PostInfo} from '@mattermost/types/posts';
+import type {OnTopPost, Post, PostList, PostSearchResults, PostsUsageResponse, TeamsUsageResponse, PaginatedPostList, FilesUsageResponse, PostAcknowledgement, PostAnalytics, PostInfo} from '@mattermost/types/posts';
 import type {PreferenceType} from '@mattermost/types/preferences';
 import type {ProductNotices} from '@mattermost/types/product_notices';
 import type {NameMappedPropertyFields, PropertyField, PropertyFieldOptionPage, PropertyValue} from '@mattermost/types/properties';
@@ -2858,6 +2858,29 @@ export default class Client4 {
         return this.doFetch<StatusOK>(
             `${this.getPostRoute(postId)}/unpin`,
             {method: 'post'},
+        );
+    };
+
+    // Antimatter: the messages on top of a channel, the latest put there first; putting one there for a duration in
+    // milliseconds (0 for until removed), and taking it off.
+    getOnTopPosts = (channelId: string) => {
+        return this.doFetch<OnTopPost[]>(
+            `${this.getChannelRoute(channelId)}/on_top`,
+            {method: 'get'},
+        );
+    };
+
+    putPostOnTop = (postId: string, duration: number) => {
+        return this.doFetch<OnTopPost>(
+            `${this.getPostRoute(postId)}/on_top`,
+            {method: 'put', body: JSON.stringify({duration})},
+        );
+    };
+
+    removePostFromTop = (postId: string) => {
+        return this.doFetch<StatusOK>(
+            `${this.getPostRoute(postId)}/on_top`,
+            {method: 'delete'},
         );
     };
 

@@ -56,6 +56,7 @@ import LongBody from './long_body';
 import {useMentionClick} from './mention_click';
 import {useConcernsMe} from './mentions';
 import MessageMenu from './message_menu';
+import {OnTopTag} from './on_top';
 import Reactions from './reactions';
 import ReplyRef from './reply_ref';
 import {isSpoiler, SpoilerTag, SpoilerVeil, useSpoilerShown} from './spoiler';
@@ -310,6 +311,12 @@ export default function Message({postId, previousPostId, inThread = false, highl
     const editedTitle = formatMessage({id: 'fusion.message.editedAt', defaultMessage: 'Edited {time}'}, {time: intl.formatDate(post.edit_at, {dateStyle: 'medium', timeStyle: 'short'})});
     const tags = (
         <>
+            {!deleted && (
+                <OnTopTag
+                    channelId={post.channel_id}
+                    postId={post.id}
+                />
+            )}
             {post.is_pinned && (
                 <span className={am('meta-tag', 'pin')}>
                     <Icon name='pin'/>

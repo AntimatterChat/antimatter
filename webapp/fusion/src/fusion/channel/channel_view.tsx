@@ -29,6 +29,7 @@ import type {GlobalState} from 'types/store';
 import ChannelHeader from './channel_header';
 import ChannelIntro from './channel_intro';
 import ChannelViewPanel from './channel_view_panel';
+import OnTopStrip from './on_top_strip';
 import SharedBanner from './shared_banner';
 
 // ChannelView is a conversation: header, messages and composer.
@@ -120,6 +121,7 @@ export default function ChannelView() {
             <ChannelHeader channel={channel}/>
             <SharedBanner channel={channel}/>
             <ChannelBanner channelId={channel.id}/>
+            <OnTopStrip channel={channel}/>
             {panel && (
                 <ChannelViewPanel
                     registration={panel}

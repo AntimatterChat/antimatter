@@ -18,6 +18,7 @@ import type {
     ChannelsState,
 } from '@mattermost/types/channels';
 import type {Group} from '@mattermost/types/groups';
+import type {OnTopPost} from '@mattermost/types/posts';
 import type {Team} from '@mattermost/types/teams';
 import type {
     RelationOneToManyUnique,
@@ -876,6 +877,35 @@ export function overrides(state: RelationOneToOne<Channel, ChannelOverride[]> = 
     }
 }
 
+// onTop are the messages on top of the channels whose were loaded (Antimatter), the latest put there first. Expired
+// ones stay until loaded again; selectors leave them out.
+export function onTop(state: RelationOneToOne<Channel, OnTopPost[]> = {}, action: MMReduxAction) {
+    switch (action.type) {
+    case ChannelTypes.RECEIVED_ON_TOP_POSTS: {
+        const {channelId, onTop: list} = action.data;
+        return {...state, [channelId]: list};
+    }
+    case ChannelTypes.POST_PUT_ON_TOP: {
+        const entry: OnTopPost = action.data;
+        const others = (state[entry.channel_id] || []).filter((o) => o.post_id !== entry.post_id);
+        const list = [entry, ...others].sort((a, b) => b.create_at - a.create_at);
+        return {...state, [entry.channel_id]: list};
+    }
+    case ChannelTypes.POST_REMOVED_FROM_TOP: {
+        const {channel_id: channelId, post_id: postId} = action.data;
+        const list = state[channelId];
+        if (!list?.some((o) => o.post_id === postId)) {
+            return state;
+        }
+        return {...state, [channelId]: list.filter((o) => o.post_id !== postId)};
+    }
+    case UserTypes.LOGOUT_SUCCESS:
+        return {};
+    default:
+        return state;
+    }
+}
+
 export function channelMemberCountsByGroup(state: any = {}, action: MMReduxAction) {
     switch (action.type) {
     case ChannelTypes.RECEIVED_CHANNEL_MEMBER_COUNTS_BY_GROUP: {
@@ -1195,4 +1225,7 @@ export default combineReducers({
 
     // Antimatter: channel overrides, by channel
     overrides,
+
+    // Antimatter: messages on top, by channel
+    onTop,
 });

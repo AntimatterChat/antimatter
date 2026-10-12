@@ -12,7 +12,7 @@ import type {Group, GroupMember as GroupMemberType} from '@mattermost/types/grou
 import type {OpenDialogRequest} from '@mattermost/types/integrations';
 import type {Job} from '@mattermost/types/jobs';
 import type {PluginManifest} from '@mattermost/types/plugins';
-import type {Post, PostAcknowledgement as PostAcknowledgementType} from '@mattermost/types/posts';
+import type {OnTopPost, Post, PostAcknowledgement as PostAcknowledgementType} from '@mattermost/types/posts';
 import type {PreferenceType} from '@mattermost/types/preferences';
 import type {PropertyField, PropertyValue} from '@mattermost/types/properties';
 import type {Reaction} from '@mattermost/types/reactions';
@@ -440,6 +440,16 @@ export type CategoryOverridesUpdated = BaseWebSocketMessage<WebSocketEvents.Cate
 // Antimatter: who's timed out in a team changed; its members' clients fetch its timeouts again.
 export type MemberTimeoutsUpdated = BaseWebSocketMessage<WebSocketEvents.MemberTimeoutsUpdated, {
     team_id: string;
+}>;
+
+// Antimatter: a message was put on top of its channel (or again, with a new time), or taken off it.
+export type PostPutOnTop = BaseWebSocketMessage<WebSocketEvents.PostPutOnTop, {
+    on_top: OnTopPost;
+}>;
+
+export type PostRemovedFromTop = BaseWebSocketMessage<WebSocketEvents.PostRemovedFromTop, {
+    post_id: string;
+    channel_id: string;
 }>;
 
 // Emoji messages

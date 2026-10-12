@@ -87,6 +87,8 @@ export type WebSocketMessage = (
     Messages.ChannelOverridesUpdated |
     Messages.CategoryOverridesUpdated |
     Messages.MemberTimeoutsUpdated |
+    Messages.PostPutOnTop |
+    Messages.PostRemovedFromTop |
 
     Messages.EmojiAdded |
 

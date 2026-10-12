@@ -2,6 +2,7 @@
 // See LICENSE.txt for license information.
 
 import type {ChannelOverride} from './channel_overrides';
+import type {OnTopPost} from './posts';
 import type {Team} from './teams';
 import type {IDMappedObjects, RelationOneToManyUnique, RelationOneToOne} from './utilities';
 
@@ -272,6 +273,9 @@ export type ChannelsState = {
 
     // Antimatter: the overrides of the channels whose were loaded, applied to permission checks.
     overrides?: RelationOneToOne<Channel, ChannelOverride[]>;
+
+    // Antimatter: the messages on top of the channels whose were loaded, the latest put there first.
+    onTop?: RelationOneToOne<Channel, OnTopPost[]>;
 };
 
 export type ChannelModeration = {

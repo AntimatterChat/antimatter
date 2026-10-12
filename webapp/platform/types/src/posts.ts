@@ -54,6 +54,18 @@ export type PostImage = {
     width: number;
 };
 
+/**
+ * Antimatter: a message put on top of its channel, shown above its messages until it expires (expires_at, 0 for until
+ * removed) or someone removes it.
+ */
+export type OnTopPost = {
+    post_id: string;
+    channel_id: string;
+    created_by: string;
+    create_at: number;
+    expires_at: number;
+};
+
 export type PostAcknowledgement = {
     post_id: Post['id'];
     user_id: UserProfile['id'];

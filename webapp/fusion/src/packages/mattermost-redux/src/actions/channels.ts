@@ -1484,6 +1484,36 @@ export function fetchChannelOverrides(channelId: string) {
     });
 }
 
+// fetchOnTopPosts loads the messages on top of a channel (Antimatter).
+export function fetchOnTopPosts(channelId: string) {
+    return bindClientFunc({
+        clientFunc: async () => {
+            const onTop = await Client4.getOnTopPosts(channelId);
+            return {channelId, onTop};
+        },
+        onSuccess: ChannelTypes.RECEIVED_ON_TOP_POSTS,
+    });
+}
+
+// putPostOnTop puts a message on top of its channel for a duration in milliseconds, or until removed (0).
+export function putPostOnTop(postId: string, duration: number) {
+    return bindClientFunc({
+        clientFunc: () => Client4.putPostOnTop(postId, duration),
+        onSuccess: ChannelTypes.POST_PUT_ON_TOP,
+    });
+}
+
+// removePostFromTop takes a message off the top of its channel.
+export function removePostFromTop(channelId: string, postId: string) {
+    return bindClientFunc({
+        clientFunc: async () => {
+            await Client4.removePostFromTop(postId);
+            return {channel_id: channelId, post_id: postId};
+        },
+        onSuccess: ChannelTypes.POST_REMOVED_FROM_TOP,
+    });
+}
+
 export function getChannelMemberCountsByGroup(channelId: string) {
     return bindClientFunc({
         clientFunc: async () => {

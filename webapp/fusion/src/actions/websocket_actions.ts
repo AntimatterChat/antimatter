@@ -60,6 +60,7 @@ import {
     fetchAllMyTeamsChannels,
     fetchChannelsAndMembers,
     fetchChannelOverrides,
+    fetchOnTopPosts,
 } from 'mattermost-redux/actions/channels';
 import {clearErrors, logError} from 'mattermost-redux/actions/errors';
 import {setServerVersion, getClientConfig, getCustomProfileAttributeFields} from 'mattermost-redux/actions/general';
@@ -310,6 +311,11 @@ export function reconnect() {
             // if network timed-out the first time when loading a channel
             // we can request for getPosts again when socket is connected
             dispatch(getPosts(currentChannelId));
+        }
+
+        // Antimatter: what's on top of the channel may have changed meanwhile.
+        if (currentChannelId) {
+            dispatch(fetchOnTopPosts(currentChannelId));
         }
 
         const enabledUserStatuses = getIsUserStatusesConfigEnabled(state);
@@ -723,6 +729,13 @@ export function handleEvent(msg: WebSocketMessage) {
     case WebSocketEvents.MemberTimeoutsUpdated:
         // Antimatter: who's timed out in a team changed.
         dispatch(TeamActions.fetchTeamTimeouts(msg.data.team_id));
+        break;
+    case WebSocketEvents.PostPutOnTop:
+        // Antimatter: a message was put on top of its channel, or again with a new time.
+        dispatch({type: ChannelTypes.POST_PUT_ON_TOP, data: msg.data.on_top});
+        break;
+    case WebSocketEvents.PostRemovedFromTop:
+        dispatch({type: ChannelTypes.POST_REMOVED_FROM_TOP, data: {channel_id: msg.data.channel_id, post_id: msg.data.post_id}});
         break;
     case WebSocketEvents.ChannelOverridesUpdated:
         // Antimatter: permission checks apply a channel's overrides, when it was opened.

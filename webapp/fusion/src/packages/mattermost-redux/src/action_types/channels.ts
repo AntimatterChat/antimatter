@@ -78,6 +78,11 @@ export default keyMirror({
     RECEIVED_CHANNEL_MODERATIONS: null,
     RECEIVED_CHANNEL_OVERRIDES: null,
 
+    // Antimatter: messages put on top of a channel.
+    RECEIVED_ON_TOP_POSTS: null,
+    POST_PUT_ON_TOP: null,
+    POST_REMOVED_FROM_TOP: null,
+
     RECEIVED_CHANNEL_MEMBER_COUNTS_BY_GROUP: null,
     RECEIVED_CHANNEL_MEMBER_COUNTS_FROM_GROUPS_LIST: null,
 
