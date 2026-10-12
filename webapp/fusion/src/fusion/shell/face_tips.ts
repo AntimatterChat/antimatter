@@ -39,6 +39,11 @@ export function useFaceTips() {
             tip.setAttribute('role', 'tooltip');
             tip.dataset.for = name;
             tip.textContent = name;
+
+            // Laid out at the corner before it's measured: wherever it lands first (the layer sits at the window's
+            // right edge), its text would wrap narrower than it ends up, and the centring be off by the difference.
+            tip.style.left = '0px';
+            tip.style.top = '0px';
             layer.appendChild(tip);
             const r = av.getBoundingClientRect();
             if (right) {
