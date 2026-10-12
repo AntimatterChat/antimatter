@@ -73,6 +73,14 @@ type Props = {
     highlighted?: boolean;
 };
 
+// The plugin action whose menu is open, after one opens or closes its own.
+function nextPluginMenu(current: string | null, id: string, open: boolean): string | null {
+    if (open) {
+        return id;
+    }
+    return current === id ? null : current;
+}
+
 function SystemLine({post}: {post: Post}) {
     const pluginPostTypes = useSelector((state: GlobalState) => state.plugins.postTypes);
     let icon: IconName = 'bell';
@@ -143,6 +151,10 @@ export default function Message({postId, previousPostId, inThread = false, highl
     const moreRef = useRef<HTMLButtonElement>(null);
     const reactRef = useRef<HTMLButtonElement>(null);
     const [popover, setPopover] = useState<'user' | 'menu' | 'react' | 'react-more' | null>(null);
+
+    // The plugin action (the Agents' AI menu, say) whose own dropdown is open: the toolbar stays shown meanwhile, or
+    // its menu loses its anchor as soon as the pointer leaves the message for the menu.
+    const [pluginMenu, setPluginMenu] = useState<string | null>(null);
     const callCard = useCallCard(post);
     const inlineReplies = useInlineRepliesEnabled();
     const prefs = useDisplayPrefs();
@@ -287,7 +299,7 @@ export default function Message({postId, previousPostId, inThread = false, highl
                         <PluggableErrorBoundary pluginId={item.pluginId}>
                             <Component
                                 post={post}
-                                handleDropdownOpened={() => {}}
+                                handleDropdownOpened={(open: boolean) => setPluginMenu((current) => nextPluginMenu(current, item.id, open))}
                             />
                         </PluggableErrorBoundary>
                     </span>
@@ -451,7 +463,7 @@ export default function Message({postId, previousPostId, inThread = false, highl
         'p-important': priority === 'important',
         'p-urgent': priority === 'urgent',
         'hl-me': concernsMe,
-        'menu-open': popover === 'menu' || popover === 'react' || popover === 'react-more',
+        'menu-open': popover === 'menu' || popover === 'react' || popover === 'react-more' || pluginMenu !== null,
         flash: highlighted,
 
         // A message being sent is dimmed; one that couldn't be sent, more, with what to do under it.
