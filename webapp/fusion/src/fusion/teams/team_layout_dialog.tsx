@@ -102,7 +102,7 @@ export default function TeamLayoutDialog({onClose, first = false}: {onClose: () 
         >
             <div className={am('pane', 'roles-pane')}>
                 <h2>{first ? formatMessage({id: 'fusion.layout.firstTitle', defaultMessage: 'Set up {team}'}, {team: team?.display_name}) : formatMessage({id: 'fusion.layout.title', defaultMessage: 'Team layout'})}</h2>
-                <p className={am('lead')}>{formatMessage({id: 'fusion.layout.lead', defaultMessage: 'Start from a preset, or a template exported from another team. Nothing is deleted but categories for everyone the layout doesn\'t have.'})}</p>
+                <p className={am('lead')}>{formatMessage({id: 'fusion.layout.lead', defaultMessage: 'Start from a preset, or from a template exported from another team. Applying it only removes the team categories it doesn\'t include.'})}</p>
                 <div
                     className={am('presets')}
                     role='radiogroup'

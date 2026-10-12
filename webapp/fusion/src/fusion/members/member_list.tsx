@@ -211,7 +211,7 @@ export default function MemberList({inPanel = false}: {inPanel?: boolean}) {
                             className={am({on: grouping === g})}
                             onClick={() => setGrouping(g)}
                         >
-                            {g === 'roles' ? formatMessage({id: 'fusion.members.byRole', defaultMessage: 'Roles'}) : formatMessage({id: 'fusion.members.byTeam', defaultMessage: 'Teams'})}
+                            {g === 'roles' ? formatMessage({id: 'fusion.members.byRole', defaultMessage: 'Roles'}) : formatMessage({id: 'fusion.members.byTeam', defaultMessage: 'Groups'})}
                         </button>
                     ))}
                 </div>

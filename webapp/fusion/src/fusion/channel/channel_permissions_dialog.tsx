@@ -102,7 +102,7 @@ export default function ChannelPermissionsDialog({channel, onClose}: {channel: C
                 <h3 className={am('section-title')}>{formatMessage({id: 'fusion.overrides.whoSees', defaultMessage: 'Who can see it'})}</h3>
                 {isPrivate ? (
                     <div className={am('role-access')}>
-                        <p className={am('lead')}>{access.length ? formatMessage({id: 'fusion.overrides.rolesOnly', defaultMessage: 'Only people with these roles: they join it, and others leave.'}) : formatMessage({id: 'fusion.overrides.invited', defaultMessage: 'People invited. Choose roles to keep it for them only.'})}</p>
+                        <p className={am('lead')}>{access.length ? formatMessage({id: 'fusion.overrides.rolesOnly', defaultMessage: 'Only people with these roles: they join it, and others leave.'}) : formatMessage({id: 'fusion.overrides.invited', defaultMessage: 'Anyone invited can join. Pick roles to limit it to the people who have them.'})}</p>
                         {roles.map((role) => (
                             <label
                                 key={role.id}

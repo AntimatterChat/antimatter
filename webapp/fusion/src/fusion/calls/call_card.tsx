@@ -109,7 +109,7 @@ export default function CallCard({post}: {post: Post}) {
         <div className={am('call-card')}>
             <span className={am('ph')}><Icon name='phone'/></span>
             <span className={am('grow')}>
-                <b>{title || formatMessage({id: 'fusion.calls.card.callIn', defaultMessage: 'Call in {where}'}, {where})}</b>
+                <b>{title || formatMessage({id: 'fusion.calls.card.callIn', defaultMessage: 'A call in {where}'}, {where})}</b>
                 <span className={am('sub')}>
                     {formatMessage(
                         {id: 'fusion.calls.card.sub', defaultMessage: 'Started by {name} · {since} · {count, plural, one {# person} other {# people}}'},
