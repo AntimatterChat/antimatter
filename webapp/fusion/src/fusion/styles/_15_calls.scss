@@ -52,6 +52,9 @@
 :is(.am-app, .am-layer) .am-q-pop .am-q-chips button.am-q-chip.am-on { background: var(--am-matter-soft); border-color: var(--am-matter); color: var(--am-text); }
 :is(.am-app, .am-layer) .am-q-foot { display: flex; justify-content: flex-end; padding: 6px 8px 4px; }
 :is(.am-app, .am-layer) .am-q-foot .am-btn { width: auto; }
+// The call's reactions: one row of emoji, centred over their button, without the separator it has in a message's menu.
+:is(.am-app, .am-layer) .am-plus-pop.am-react-pop { width: auto; padding: 4px; }
+:is(.am-app, .am-layer) .am-react-pop .am-quick-react { padding: 0; margin: 0; border-bottom: 0; }
 
 // Stage: the order of raised hands, tile tools (pin, picture in picture), a pinned tile, reactions.
 :is(.am-app, .am-layer) .am-tile-tools { position: absolute; top: 8px; right: 8px; display: none; gap: 4px; }

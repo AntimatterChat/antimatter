@@ -207,7 +207,7 @@ function ReactionsMenu({anchor, onClose}: {anchor: HTMLElement | null; onClose: 
     return (
         <Popover
             anchor={anchor}
-            placement='above'
+            placement='above-center'
             className='plus-pop react-pop'
             label={formatMessage({id: 'fusion.calls.react', defaultMessage: 'React'})}
             onClose={onClose}

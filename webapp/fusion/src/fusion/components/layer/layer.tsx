@@ -26,6 +26,9 @@ export type Placement =
     // Above the anchor, left-aligned: popAbove, for the composer's menus.
     'above' |
 
+    // Above the anchor, centred on it (below it when there's no room): a call's reactions, over their button.
+    'above-center' |
+
     // Under the anchor, left-aligned (above when there's no room): the channel info under its name.
     'below-start' |
 
@@ -87,8 +90,8 @@ function place(pop: HTMLElement, placement: Placement, anchor?: HTMLElement | nu
             if (top + h > vh - MARGIN) {
                 top = r.top - h - 4;
             }
-        } else if (placement === 'above') {
-            left = r.left;
+        } else if (placement === 'above' || placement === 'above-center') {
+            left = placement === 'above' ? r.left : r.left + ((r.width - w) / 2);
             top = r.top - h - 8;
             if (top < MARGIN) {
                 top = r.bottom + 8;
