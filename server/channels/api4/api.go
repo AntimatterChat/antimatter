@@ -371,6 +371,7 @@ func Init(srv *app.Server) (*API, error) {
 	api.InitChannel()
 	api.InitChannelOverrides()
 	api.InitModeration()
+	api.InitOnTopPosts()
 	api.InitPost()
 	api.InitFile()
 	api.InitUpload()

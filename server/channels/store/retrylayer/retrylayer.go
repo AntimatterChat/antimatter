@@ -47,6 +47,7 @@ type RetryLayer struct {
 	ModerationStore                 store.ModerationStore
 	NotifyAdminStore                store.NotifyAdminStore
 	OAuthStore                      store.OAuthStore
+	OnTopPostStore                  store.OnTopPostStore
 	OutgoingOAuthConnectionStore    store.OutgoingOAuthConnectionStore
 	PluginStore                     store.PluginStore
 	PostStore                       store.PostStore
@@ -196,6 +197,10 @@ func (s *RetryLayer) NotifyAdmin() store.NotifyAdminStore {
 
 func (s *RetryLayer) OAuth() store.OAuthStore {
 	return s.OAuthStore
+}
+
+func (s *RetryLayer) OnTopPost() store.OnTopPostStore {
+	return s.OnTopPostStore
 }
 
 func (s *RetryLayer) OutgoingOAuthConnection() store.OutgoingOAuthConnectionStore {
@@ -483,6 +488,11 @@ type RetryLayerNotifyAdminStore struct {
 
 type RetryLayerOAuthStore struct {
 	store.OAuthStore
+	Root *RetryLayer
+}
+
+type RetryLayerOnTopPostStore struct {
+	store.OnTopPostStore
 	Root *RetryLayer
 }
 
@@ -8775,6 +8785,111 @@ func (s *RetryLayerOAuthStore) UpdateApp(app *model.OAuthApp) (*model.OAuthApp, 
 	tries := 0
 	for {
 		result, err := s.OAuthStore.UpdateApp(app)
+		if err == nil {
+			return result, nil
+		}
+		if !isRepeatableError(err) {
+			return result, err
+		}
+		tries++
+		if tries >= 3 {
+			err = errors.Wrap(err, "giving up after 3 consecutive repeatable transaction failures")
+			return result, err
+		}
+		timepkg.Sleep(100 * timepkg.Millisecond)
+	}
+
+}
+
+func (s *RetryLayerOnTopPostStore) Delete(rctx request.CTX, postID string) error {
+
+	tries := 0
+	for {
+		err := s.OnTopPostStore.Delete(rctx, postID)
+		if err == nil {
+			return nil
+		}
+		if !isRepeatableError(err) {
+			return err
+		}
+		tries++
+		if tries >= 3 {
+			err = errors.Wrap(err, "giving up after 3 consecutive repeatable transaction failures")
+			return err
+		}
+		timepkg.Sleep(100 * timepkg.Millisecond)
+	}
+
+}
+
+func (s *RetryLayerOnTopPostStore) DeleteExpired(rctx request.CTX, channelID string, now int64) (int64, error) {
+
+	tries := 0
+	for {
+		result, err := s.OnTopPostStore.DeleteExpired(rctx, channelID, now)
+		if err == nil {
+			return result, nil
+		}
+		if !isRepeatableError(err) {
+			return result, err
+		}
+		tries++
+		if tries >= 3 {
+			err = errors.Wrap(err, "giving up after 3 consecutive repeatable transaction failures")
+			return result, err
+		}
+		timepkg.Sleep(100 * timepkg.Millisecond)
+	}
+
+}
+
+func (s *RetryLayerOnTopPostStore) Get(rctx request.CTX, postID string) (*model.OnTopPost, error) {
+
+	tries := 0
+	for {
+		result, err := s.OnTopPostStore.Get(rctx, postID)
+		if err == nil {
+			return result, nil
+		}
+		if !isRepeatableError(err) {
+			return result, err
+		}
+		tries++
+		if tries >= 3 {
+			err = errors.Wrap(err, "giving up after 3 consecutive repeatable transaction failures")
+			return result, err
+		}
+		timepkg.Sleep(100 * timepkg.Millisecond)
+	}
+
+}
+
+func (s *RetryLayerOnTopPostStore) GetForChannel(rctx request.CTX, channelID string, now int64) ([]*model.OnTopPost, error) {
+
+	tries := 0
+	for {
+		result, err := s.OnTopPostStore.GetForChannel(rctx, channelID, now)
+		if err == nil {
+			return result, nil
+		}
+		if !isRepeatableError(err) {
+			return result, err
+		}
+		tries++
+		if tries >= 3 {
+			err = errors.Wrap(err, "giving up after 3 consecutive repeatable transaction failures")
+			return result, err
+		}
+		timepkg.Sleep(100 * timepkg.Millisecond)
+	}
+
+}
+
+func (s *RetryLayerOnTopPostStore) Save(rctx request.CTX, onTop *model.OnTopPost) (*model.OnTopPost, error) {
+
+	tries := 0
+	for {
+		result, err := s.OnTopPostStore.Save(rctx, onTop)
 		if err == nil {
 			return result, nil
 		}
@@ -20751,6 +20866,7 @@ func New(childStore store.Store) *RetryLayer {
 	newStore.ModerationStore = &RetryLayerModerationStore{ModerationStore: childStore.Moderation(), Root: &newStore}
 	newStore.NotifyAdminStore = &RetryLayerNotifyAdminStore{NotifyAdminStore: childStore.NotifyAdmin(), Root: &newStore}
 	newStore.OAuthStore = &RetryLayerOAuthStore{OAuthStore: childStore.OAuth(), Root: &newStore}
+	newStore.OnTopPostStore = &RetryLayerOnTopPostStore{OnTopPostStore: childStore.OnTopPost(), Root: &newStore}
 	newStore.OutgoingOAuthConnectionStore = &RetryLayerOutgoingOAuthConnectionStore{OutgoingOAuthConnectionStore: childStore.OutgoingOAuthConnection(), Root: &newStore}
 	newStore.PluginStore = &RetryLayerPluginStore{PluginStore: childStore.Plugin(), Root: &newStore}
 	newStore.PostStore = &RetryLayerPostStore{PostStore: childStore.Post(), Root: &newStore}

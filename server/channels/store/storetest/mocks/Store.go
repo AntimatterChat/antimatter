@@ -1295,6 +1295,26 @@ func (_m *Store) Moderation() store.ModerationStore {
 	return r0
 }
 
+// OnTopPost provides a mock function with no fields
+func (_m *Store) OnTopPost() store.OnTopPostStore {
+	ret := _m.Called()
+
+	if len(ret) == 0 {
+		panic("no return value specified for OnTopPost")
+	}
+
+	var r0 store.OnTopPostStore
+	if rf, ok := ret.Get(0).(func() store.OnTopPostStore); ok {
+		r0 = rf()
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(store.OnTopPostStore)
+		}
+	}
+
+	return r0
+}
+
 // ServerCategory provides a mock function with no fields
 func (_m *Store) ServerCategory() store.ServerCategoryStore {
 	ret := _m.Called()

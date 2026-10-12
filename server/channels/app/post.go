@@ -3552,6 +3552,11 @@ func (a *App) CleanUpAfterPostDeletion(rctx request.CTX, post *model.Post, delet
 		a.deleteFlaggedPosts(rctx, post.Id)
 	})
 
+	// Antimatter: a deleted message leaves the top of its channel.
+	a.Srv().Go(func() {
+		a.removeDeletedPostFromTop(rctx, post)
+	})
+
 	pluginPost := post.ForPlugin()
 	pluginContext := pluginContext(rctx)
 	trackPluginDelivery := a.deliveryTrackingEnabled()

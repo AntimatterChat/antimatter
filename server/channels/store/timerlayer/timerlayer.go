@@ -46,6 +46,7 @@ type TimerLayer struct {
 	ModerationStore                 store.ModerationStore
 	NotifyAdminStore                store.NotifyAdminStore
 	OAuthStore                      store.OAuthStore
+	OnTopPostStore                  store.OnTopPostStore
 	OutgoingOAuthConnectionStore    store.OutgoingOAuthConnectionStore
 	PluginStore                     store.PluginStore
 	PostStore                       store.PostStore
@@ -195,6 +196,10 @@ func (s *TimerLayer) NotifyAdmin() store.NotifyAdminStore {
 
 func (s *TimerLayer) OAuth() store.OAuthStore {
 	return s.OAuthStore
+}
+
+func (s *TimerLayer) OnTopPost() store.OnTopPostStore {
+	return s.OnTopPostStore
 }
 
 func (s *TimerLayer) OutgoingOAuthConnection() store.OutgoingOAuthConnectionStore {
@@ -482,6 +487,11 @@ type TimerLayerNotifyAdminStore struct {
 
 type TimerLayerOAuthStore struct {
 	store.OAuthStore
+	Root *TimerLayer
+}
+
+type TimerLayerOnTopPostStore struct {
+	store.OnTopPostStore
 	Root *TimerLayer
 }
 
@@ -7106,6 +7116,86 @@ func (s *TimerLayerOAuthStore) UpdateApp(app *model.OAuthApp) (*model.OAuthApp, 
 			success = "true"
 		}
 		s.Root.Metrics.ObserveStoreMethodDuration("OAuthStore.UpdateApp", success, elapsed)
+	}
+	return result, err
+}
+
+func (s *TimerLayerOnTopPostStore) Delete(rctx request.CTX, postID string) error {
+	start := time.Now()
+
+	err := s.OnTopPostStore.Delete(rctx, postID)
+
+	elapsed := float64(time.Since(start)) / float64(time.Second)
+	if s.Root.Metrics != nil {
+		success := "false"
+		if err == nil {
+			success = "true"
+		}
+		s.Root.Metrics.ObserveStoreMethodDuration("OnTopPostStore.Delete", success, elapsed)
+	}
+	return err
+}
+
+func (s *TimerLayerOnTopPostStore) DeleteExpired(rctx request.CTX, channelID string, now int64) (int64, error) {
+	start := time.Now()
+
+	result, err := s.OnTopPostStore.DeleteExpired(rctx, channelID, now)
+
+	elapsed := float64(time.Since(start)) / float64(time.Second)
+	if s.Root.Metrics != nil {
+		success := "false"
+		if err == nil {
+			success = "true"
+		}
+		s.Root.Metrics.ObserveStoreMethodDuration("OnTopPostStore.DeleteExpired", success, elapsed)
+	}
+	return result, err
+}
+
+func (s *TimerLayerOnTopPostStore) Get(rctx request.CTX, postID string) (*model.OnTopPost, error) {
+	start := time.Now()
+
+	result, err := s.OnTopPostStore.Get(rctx, postID)
+
+	elapsed := float64(time.Since(start)) / float64(time.Second)
+	if s.Root.Metrics != nil {
+		success := "false"
+		if err == nil {
+			success = "true"
+		}
+		s.Root.Metrics.ObserveStoreMethodDuration("OnTopPostStore.Get", success, elapsed)
+	}
+	return result, err
+}
+
+func (s *TimerLayerOnTopPostStore) GetForChannel(rctx request.CTX, channelID string, now int64) ([]*model.OnTopPost, error) {
+	start := time.Now()
+
+	result, err := s.OnTopPostStore.GetForChannel(rctx, channelID, now)
+
+	elapsed := float64(time.Since(start)) / float64(time.Second)
+	if s.Root.Metrics != nil {
+		success := "false"
+		if err == nil {
+			success = "true"
+		}
+		s.Root.Metrics.ObserveStoreMethodDuration("OnTopPostStore.GetForChannel", success, elapsed)
+	}
+	return result, err
+}
+
+func (s *TimerLayerOnTopPostStore) Save(rctx request.CTX, onTop *model.OnTopPost) (*model.OnTopPost, error) {
+	start := time.Now()
+
+	result, err := s.OnTopPostStore.Save(rctx, onTop)
+
+	elapsed := float64(time.Since(start)) / float64(time.Second)
+	if s.Root.Metrics != nil {
+		success := "false"
+		if err == nil {
+			success = "true"
+		}
+		s.Root.Metrics.ObserveStoreMethodDuration("OnTopPostStore.Save", success, elapsed)
 	}
 	return result, err
 }
@@ -16443,6 +16533,7 @@ func New(childStore store.Store, metrics einterfaces.MetricsInterface) *TimerLay
 	newStore.ModerationStore = &TimerLayerModerationStore{ModerationStore: childStore.Moderation(), Root: &newStore}
 	newStore.NotifyAdminStore = &TimerLayerNotifyAdminStore{NotifyAdminStore: childStore.NotifyAdmin(), Root: &newStore}
 	newStore.OAuthStore = &TimerLayerOAuthStore{OAuthStore: childStore.OAuth(), Root: &newStore}
+	newStore.OnTopPostStore = &TimerLayerOnTopPostStore{OnTopPostStore: childStore.OnTopPost(), Root: &newStore}
 	newStore.OutgoingOAuthConnectionStore = &TimerLayerOutgoingOAuthConnectionStore{OutgoingOAuthConnectionStore: childStore.OutgoingOAuthConnection(), Root: &newStore}
 	newStore.PluginStore = &TimerLayerPluginStore{PluginStore: childStore.Plugin(), Root: &newStore}
 	newStore.PostStore = &TimerLayerPostStore{PostStore: childStore.Post(), Root: &newStore}

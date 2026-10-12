@@ -63,6 +63,7 @@ type Store interface {
 	ChannelGuard() ChannelGuardStore
 	ServerCategory() ServerCategoryStore
 	Moderation() ModerationStore
+	OnTopPost() OnTopPostStore
 	ChannelOverride() ChannelOverrideStore
 	MarkSystemRanUnitTests()
 	Close()
@@ -1145,6 +1146,15 @@ type ModerationStore interface {
 	DeleteTimeout(rctx request.CTX, teamID, userID string) error
 	DeleteTimeoutsForTeam(rctx request.CTX, teamID string) error
 	CountPosts(rctx request.CTX, teamID, userID string, since int64) (int64, error)
+}
+
+// OnTopPostStore keeps the messages put on top of their channels (Antimatter), each until it expires or is removed.
+type OnTopPostStore interface {
+	GetForChannel(rctx request.CTX, channelID string, now int64) ([]*model.OnTopPost, error)
+	Get(rctx request.CTX, postID string) (*model.OnTopPost, error)
+	Save(rctx request.CTX, onTop *model.OnTopPost) (*model.OnTopPost, error)
+	Delete(rctx request.CTX, postID string) error
+	DeleteExpired(rctx request.CTX, channelID string, now int64) (int64, error)
 }
 
 // ServerCategoryStore keeps the sidebar categories admins set up for everyone in a team (Antimatter).

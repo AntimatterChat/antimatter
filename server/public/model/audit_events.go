@@ -92,6 +92,8 @@ const (
 	AuditEventSaveChannelOverride               = "saveChannelOverride"               // set what a role or person may do in a channel
 	AuditEventSaveCategoryOverride              = "saveCategoryOverride"              // set what a role or person may do in a server category's channels
 	AuditEventSetMemberTimeout                  = "setMemberTimeout"                  // time a team's member out, or lift it
+	AuditEventPutPostOnTop                      = "putPostOnTop"                      // keep a message on top of its channel for a while
+	AuditEventRemovePostFromTop                 = "removePostFromTop"                 // take a message off the top of its channel
 	AuditEventSetChannelRoleAccess              = "setChannelRoleAccess"              // make a channel for some roles only
 )
 

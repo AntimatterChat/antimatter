@@ -9709,6 +9709,38 @@
     "description": "API error when writing changes to a registered OAuth application fails; 'app' means OAuth application."
   },
   {
+    "id": "app.on_top_post.archived_channel.app_error",
+    "translation": "Messages can't be put on top of an archived channel."
+  },
+  {
+    "id": "app.on_top_post.delete.app_error",
+    "translation": "Unable to take the message off the top of the channel."
+  },
+  {
+    "id": "app.on_top_post.get.app_error",
+    "translation": "Unable to get the messages on top of the channel."
+  },
+  {
+    "id": "app.on_top_post.not_on_top.app_error",
+    "translation": "This message isn't on top of its channel."
+  },
+  {
+    "id": "app.on_top_post.post_type.app_error",
+    "translation": "This kind of message can't be put on top."
+  },
+  {
+    "id": "app.on_top_post.restricted_dm.app_error",
+    "translation": "Messages can't be put on top of this conversation."
+  },
+  {
+    "id": "app.on_top_post.save.app_error",
+    "translation": "Unable to put the message on top of the channel."
+  },
+  {
+    "id": "app.on_top_post.too_many.app_error",
+    "translation": "A channel can keep up to {{.Max}} messages on top. Remove one first."
+  },
+  {
     "id": "app.pap.access_control.channel_default",
     "translation": "Membership policies cannot be applied to team default channels.",
     "description": "API error when an attribute-based membership policy is applied to a team's default channel (e.g. Town Square), which is not allowed; 'pap' = Policy Administration Point, admin-facing."
@@ -16382,6 +16414,10 @@
     "id": "model.oauth.validate_grant.public_client_secret.app_error",
     "translation": "Public clients must not provide a client secret.",
     "description": "API error returned when a public OAuth client incorrectly sends a client secret during token exchange; audience is app developers."
+  },
+  {
+    "id": "model.on_top_post.duration.app_error",
+    "translation": "A message can stay on top for up to {{.MaxDays}} days, or until removed."
   },
   {
     "id": "model.outgoing_hook.icon_url.app_error",

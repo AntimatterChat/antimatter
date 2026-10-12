@@ -107,6 +107,7 @@ type SqlStoreStores struct {
 	channelGuard               store.ChannelGuardStore
 	serverCategory             store.ServerCategoryStore
 	moderation                 store.ModerationStore
+	onTopPost                  store.OnTopPostStore
 	channelOverride            store.ChannelOverrideStore
 	scheduledPost              store.ScheduledPostStore
 	view                       store.ViewStore
@@ -303,6 +304,7 @@ func New(settings model.SqlSettings, logger mlog.LoggerIFace, metrics einterface
 	store.stores.channelGuard = newSqlChannelGuardStore(store)
 	store.stores.serverCategory = newSqlServerCategoryStore(store)
 	store.stores.moderation = newSqlModerationStore(store)
+	store.stores.onTopPost = newSqlOnTopPostStore(store)
 	store.stores.channelOverride = newSqlChannelOverrideStore(store)
 	store.stores.scheduledPost = newScheduledPostStore(store)
 	store.stores.view = newSqlViewStore(store)
@@ -932,6 +934,10 @@ func (ss *SqlStore) ServerCategory() store.ServerCategoryStore {
 
 func (ss *SqlStore) Moderation() store.ModerationStore {
 	return ss.stores.moderation
+}
+
+func (ss *SqlStore) OnTopPost() store.OnTopPostStore {
+	return ss.stores.onTopPost
 }
 
 func (ss *SqlStore) ChannelOverride() store.ChannelOverrideStore {

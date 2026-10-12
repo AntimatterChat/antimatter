@@ -3628,6 +3628,37 @@ func (c *Client4) UnpinPost(ctx context.Context, postId string) (*Response, erro
 	return BuildResponse(r), nil
 }
 
+// GetOnTopPosts gets the messages on top of a channel (Antimatter), the latest put there first.
+func (c *Client4) GetOnTopPosts(ctx context.Context, channelId string) ([]*OnTopPost, *Response, error) {
+	r, err := c.doAPIGet(ctx, c.channelRoute(channelId).Join("on_top"), "")
+	if err != nil {
+		return nil, BuildResponse(r), err
+	}
+	defer closeBody(r)
+	return DecodeJSONFromResponse[[]*OnTopPost](r)
+}
+
+// PutPostOnTop puts a message on top of its channel (Antimatter) for a duration in milliseconds, or until removed
+// (0); putting it there again sets a new time.
+func (c *Client4) PutPostOnTop(ctx context.Context, postId string, duration int64) (*OnTopPost, *Response, error) {
+	r, err := c.doAPIPutJSON(ctx, c.postRoute(postId).Join("on_top"), &OnTopPostRequest{Duration: duration})
+	if err != nil {
+		return nil, BuildResponse(r), err
+	}
+	defer closeBody(r)
+	return DecodeJSONFromResponse[*OnTopPost](r)
+}
+
+// RemovePostFromTop takes a message off the top of its channel (Antimatter).
+func (c *Client4) RemovePostFromTop(ctx context.Context, postId string) (*Response, error) {
+	r, err := c.doAPIDelete(ctx, c.postRoute(postId).Join("on_top"))
+	if err != nil {
+		return BuildResponse(r), err
+	}
+	defer closeBody(r)
+	return BuildResponse(r), nil
+}
+
 // GetPost gets a single post.
 func (c *Client4) GetPost(ctx context.Context, postId string, etag string) (*Post, *Response, error) {
 	r, err := c.doAPIGet(ctx, c.postRoute(postId), etag)
