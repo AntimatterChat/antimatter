@@ -191,7 +191,7 @@ export default function ServerMenu({team: forTeam, anchor, point, width, onClose
                 >
                     {canManageRoles && (
                         <MenuItem
-                            icon='shield'
+                            icon='rank'
                             label={formatMessage({id: 'fusion.serverMenu.roles', defaultMessage: 'Roles…'})}
                             sub={formatMessage({id: 'fusion.serverMenu.rolesSub', defaultMessage: 'Colours, groups in the member list, badges'})}
                             onClick={inTeam(() => dialogs.roles())}
