@@ -30,7 +30,7 @@ describe('fusion/messages/FailedPost', () => {
     test('drops the message', async () => {
         renderWithContext(<FailedPost post={post}/>);
 
-        await userEvent.click(screen.getByRole('button', {name: 'Cancel'}));
+        await userEvent.click(screen.getByRole('button', {name: 'Discard'}));
         expect(removePost).toHaveBeenCalledWith(post);
     });
 });

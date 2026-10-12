@@ -106,7 +106,7 @@ function Row({item, channels, thread, onOpen}: {item: Item; channels: Record<str
                 {thread && (
                     <span className={am('where')}>
                         {formatMessage({id: 'fusion.collections.replies', defaultMessage: '{count, plural, one {# reply} other {# replies}}'}, {count: item.replies || 0})}
-                        {item.lastReplyAt ? ` · ${formatMessage({id: 'fusion.collections.last', defaultMessage: 'last {when}'}, {when: when(item.lastReplyAt)})}` : ''}
+                        {item.lastReplyAt ? ` · ${formatMessage({id: 'fusion.collections.last', defaultMessage: 'last reply {when}'}, {when: when(item.lastReplyAt)})}` : ''}
                     </span>
                 )}
             </span>

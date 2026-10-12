@@ -46,7 +46,7 @@ export default function FailedPost({post}: {post: Post}) {
                 type='button'
                 onClick={() => dispatch(removePost(post))}
             >
-                {formatMessage({id: 'fusion.message.cancelFailed', defaultMessage: 'Cancel'})}
+                {formatMessage({id: 'fusion.message.cancelFailed', defaultMessage: 'Discard'})}
             </button>
         </div>
     );

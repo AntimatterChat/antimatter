@@ -186,8 +186,8 @@ export default function ServerMenu({team: forTeam, anchor, point, width, onClose
             {(canManage || canManageRoles) && customGroups && (
                 <Flyout
                     icon='board'
-                    label={formatMessage({id: 'fusion.serverMenu.setup', defaultMessage: 'Team setup'})}
-                    menuLabel={formatMessage({id: 'fusion.serverMenu.setup', defaultMessage: 'Team setup'})}
+                    label={formatMessage({id: 'fusion.serverMenu.setup', defaultMessage: 'Organise the team'})}
+                    menuLabel={formatMessage({id: 'fusion.serverMenu.setup', defaultMessage: 'Organise the team'})}
                 >
                     {canManageRoles && (
                         <MenuItem
@@ -219,7 +219,7 @@ export default function ServerMenu({team: forTeam, anchor, point, width, onClose
                 <MenuItem
                     icon='tag'
                     label={formatMessage({id: 'fusion.serverMenu.userGroups', defaultMessage: 'User groups…'})}
-                    sub={formatMessage({id: 'fusion.serverMenu.userGroupsSub', defaultMessage: 'Teams with a tag, a lead and a channel'})}
+                    sub={formatMessage({id: 'fusion.serverMenu.userGroupsSub', defaultMessage: 'Groups with a tag, a lead and a channel'})}
                     onClick={run(() => dispatch(openUserGroups()))}
                 />
             )}

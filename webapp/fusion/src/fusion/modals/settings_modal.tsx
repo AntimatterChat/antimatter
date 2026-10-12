@@ -446,7 +446,7 @@ function SecurityPane() {
     return (
         <>
             <h2>{formatMessage({id: 'fusion.settings.security', defaultMessage: 'Security'})}</h2>
-            <p className={am('lead')}>{formatMessage({id: 'fusion.settings.securityLead', defaultMessage: 'Your password, two-step sign-in and the devices you\'re signed in on.'})}</p>
+            <p className={am('lead')}>{formatMessage({id: 'fusion.settings.securityLead', defaultMessage: 'Your password, multi-factor authentication and the devices you\'re signed in on.'})}</p>
             {me.auth_service === '' ? <PasswordForm/> : (
                 <div className={am('note-box')}>{formatMessage({id: 'fusion.settings.signInProvider', defaultMessage: 'You sign in through {provider}: your password is managed there.'}, {provider: me.auth_service.toUpperCase() === 'LDAP' ? 'AD/LDAP' : me.auth_service.charAt(0).toUpperCase() + me.auth_service.slice(1)})}</div>
             )}
