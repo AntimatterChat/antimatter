@@ -68,6 +68,42 @@ type Props = {
     children: React.ReactNode;
 };
 
+// useFusionPage makes the page the Fusion UI's: its frame takes the whole window, and the Fusion System theme follows
+// the operating system's light or dark mode, even when it changes.
+function useFusionPage() {
+    const store = useStore<GlobalState>();
+
+    useEffect(() => {
+        const root = document.getElementById('root');
+        root?.classList.add('am-root');
+        return () => root?.classList.remove('am-root');
+    }, []);
+
+    useEffect(() => {
+        const media = window.matchMedia('(prefers-color-scheme: light)');
+        const onChange = () => applyTheme(getTheme(store.getState()));
+        media.addEventListener('change', onChange);
+        return () => media.removeEventListener('change', onChange);
+    }, [store]);
+}
+
+// FusionProviders gives the Fusion UI's contexts to a frame.
+function FusionProviders({children}: Props) {
+    return (
+        <LayoutProvider>
+            <ToastProvider>
+                <DialogsProvider>
+                    <GlobalSearchProvider>
+                        <SettingsProvider>
+                            {children}
+                        </SettingsProvider>
+                    </GlobalSearchProvider>
+                </DialogsProvider>
+            </ToastProvider>
+        </LayoutProvider>
+    );
+}
+
 function Frame({children}: Props) {
     const layout = useLayout();
     const search = useGlobalSearch();
@@ -86,6 +122,7 @@ function Frame({children}: Props) {
     const channelId = useSelector(getCurrentChannelId);
     const appRef = useRef<HTMLDivElement>(null);
 
+    useFusionPage();
     useSwipes(appRef, layout);
     useLongPress();
     useVisualViewport();
@@ -151,21 +188,6 @@ function Frame({children}: Props) {
         window.addEventListener('keydown', onKeyDown);
         return () => window.removeEventListener('keydown', onKeyDown);
     }, [dispatch, store]);
-
-    // The page frame of the Fusion UI takes the whole window.
-    useEffect(() => {
-        const root = document.getElementById('root');
-        root?.classList.add('am-root');
-        return () => root?.classList.remove('am-root');
-    }, []);
-
-    // Fusion System follows the operating system's light or dark mode, even when it changes.
-    useEffect(() => {
-        const media = window.matchMedia('(prefers-color-scheme: light)');
-        const onChange = () => applyTheme(getTheme(store.getState()));
-        media.addEventListener('change', onChange);
-        return () => media.removeEventListener('change', onChange);
-    }, [store]);
 
     // Opening a panel on a narrow screen slides the right-hand drawer in; closing it keeps the drawer open only
     // when it shows the member list. On a phone, where the panel took the whole screen, its back button goes back to
@@ -253,39 +275,18 @@ function Frame({children}: Props) {
 // member list, and app rail.
 export default function FusionApp({children}: Props) {
     return (
-        <LayoutProvider>
-            <ToastProvider>
-                <DialogsProvider>
-                    <GlobalSearchProvider>
-                        <SettingsProvider>
-                            <Frame>{children}</Frame>
-                        </SettingsProvider>
-                    </GlobalSearchProvider>
-                </DialogsProvider>
-            </ToastProvider>
-        </LayoutProvider>
+        <FusionProviders>
+            <Frame>{children}</Frame>
+        </FusionProviders>
     );
 }
 
 // PopoutFrame is the Fusion UI in a window of its own (a conversation or a thread opened in a new window): the
 // conversation and its right-hand panel, without the rails and the sidebar.
 function PopoutFrame({children, panel}: Props & {panel: boolean}) {
-    const store = useStore<GlobalState>();
+    useFusionPage();
     useFaceTips();
     useDisplayModes();
-
-    useEffect(() => {
-        const root = document.getElementById('root');
-        root?.classList.add('am-root');
-        return () => root?.classList.remove('am-root');
-    }, []);
-
-    useEffect(() => {
-        const media = window.matchMedia('(prefers-color-scheme: light)');
-        const onChange = () => applyTheme(getTheme(store.getState()));
-        media.addEventListener('change', onChange);
-        return () => media.removeEventListener('change', onChange);
-    }, [store]);
 
     return (
         <>
@@ -307,16 +308,8 @@ function PopoutFrame({children, panel}: Props & {panel: boolean}) {
 // FusionPopout is the Fusion UI's frame in a popout window; panel shows the right-hand panel beside its content.
 export function FusionPopout({children, panel = true}: Props & {panel?: boolean}) {
     return (
-        <LayoutProvider>
-            <ToastProvider>
-                <DialogsProvider>
-                    <GlobalSearchProvider>
-                        <SettingsProvider>
-                            <PopoutFrame panel={panel}>{children}</PopoutFrame>
-                        </SettingsProvider>
-                    </GlobalSearchProvider>
-                </DialogsProvider>
-            </ToastProvider>
-        </LayoutProvider>
+        <FusionProviders>
+            <PopoutFrame panel={panel}>{children}</PopoutFrame>
+        </FusionProviders>
     );
 }
