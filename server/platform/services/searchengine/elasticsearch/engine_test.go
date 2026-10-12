@@ -385,6 +385,13 @@ func TestByQueryOperations(t *testing.T) {
 	require.Nil(t, e.DeletePost(&model.Post{Id: "p-no-date"}))
 	deletes = f.requestsTo("/_delete_by_query")
 	assert.JSONEq(t, `{"query":{"ids":{"values":["p-no-date"]}}}`, string(deletes[len(deletes)-1].Body))
+
+	require.Nil(t, e.DeletePostsByIds([]string{"r1", "r2"}))
+	deletes = f.requestsTo("/_delete_by_query")
+	assert.JSONEq(t, `{"query":{"ids":{"values":["r1","r2"]}}}`, string(deletes[len(deletes)-1].Body), "in one request")
+	count := len(deletes)
+	require.Nil(t, e.DeletePostsByIds(nil))
+	assert.Len(t, f.requestsTo("/_delete_by_query"), count, "nothing to delete, no request")
 }
 
 func TestNotStartedErrors(t *testing.T) {

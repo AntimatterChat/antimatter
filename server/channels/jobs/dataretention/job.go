@@ -313,6 +313,7 @@ func (r *run) deletePostsDependencies() error {
 			if err := r.deleteFilesForPosts(row.Ids); err != nil {
 				return err
 			}
+			r.deletePostsFromSearch(row.Ids)
 			// This also removes the RetentionIdsForDeletion row.
 			deleted, err := r.store.Reaction().DeleteOrphanedRowsByIds(row)
 			if err != nil {
@@ -514,6 +515,33 @@ func (r *run) filterPinned(candidates []*model.FileInfo, kept map[string]struct{
 		out = append(out, info)
 	}
 	return out, nil
+}
+
+// deletePostsFromSearch takes deleted posts out of the active search engines. The global policy also drops whole
+// daily indexes (deleteSearchIndexes), but the channel and team policies delete posts here and there.
+func (r *run) deletePostsFromSearch(ids []string) {
+	if len(ids) == 0 || r.j.deps.SearchEngines == nil {
+		return
+	}
+	for _, engine := range r.j.deps.SearchEngines() {
+		if engine == nil || !engine.IsActive() {
+			continue
+		}
+		if batch, ok := engine.(interface {
+			DeletePostsByIds(ids []string) *model.AppError
+		}); ok {
+			if appErr := batch.DeletePostsByIds(ids); appErr != nil {
+				r.warn("Unable to delete posts from the search index", mlog.String("engine", engine.GetName()), mlog.Err(appErr))
+			}
+			continue
+		}
+		for _, id := range ids {
+			if appErr := engine.DeletePost(&model.Post{Id: id}); appErr != nil {
+				r.warn("Unable to delete a post from the search index", mlog.String("engine", engine.GetName()), mlog.Err(appErr))
+				break
+			}
+		}
+	}
 }
 
 // deleteSearchIndexes lets the active search engines drop the indexes which

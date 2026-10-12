@@ -19,6 +19,8 @@ import (
 	"github.com/mattermost/mattermost/server/public/shared/mlog"
 	"github.com/mattermost/mattermost/server/v8/channels/store"
 	"github.com/mattermost/mattermost/server/v8/channels/store/storetest"
+	"github.com/mattermost/mattermost/server/v8/platform/services/searchengine"
+	searchmocks "github.com/mattermost/mattermost/server/v8/platform/services/searchengine/mocks"
 	"github.com/mattermost/mattermost/server/v8/platform/shared/filestore"
 )
 
@@ -208,11 +210,18 @@ func TestRetentionJobExecute(t *testing.T) {
 	s.PostStore.On("ClearCaches").Return().Once()
 	s.FileInfoStore.On("ClearCaches").Return().Once()
 
+	// The deleted posts leave the search index too.
+	engine := &batchEngine{SearchEngineInterface: &searchmocks.SearchEngineInterface{}}
+	engine.On("IsActive").Return(true)
+	engine.On("GetName").Return("test").Maybe()
+	engine.On("DataRetentionDeleteIndexes", mock.Anything, mock.Anything).Return(nil)
+
 	var pluginCalled bool
 	j := NewJob(JobDeps{
-		Store:       func() store.Store { return s },
-		Config:      func() *model.Config { return cfg },
-		FileBackend: func() filestore.FileBackend { return backend },
+		Store:         func() store.Store { return s },
+		Config:        func() *model.Config { return cfg },
+		FileBackend:   func() filestore.FileBackend { return backend },
+		SearchEngines: func() []searchengine.SearchEngineInterface { return []searchengine.SearchEngineInterface{engine} },
 		RunPluginsDataRetention: func(nowMillis, batchSize int64) (int64, error) {
 			pluginCalled = true
 			assert.Equal(t, now, nowMillis)
@@ -226,6 +235,7 @@ func TestRetentionJobExecute(t *testing.T) {
 	require.NoError(t, j.execute(context.Background(), mlog.CreateConsoleTestLogger(t), job))
 
 	s.AssertExpectations(t)
+	assert.Equal(t, [][]string{{"p1", "p2"}}, engine.deleted)
 	assert.True(t, pluginCalled)
 	assert.Equal(t, "13", job.Data[JobDataPostsDeleted])
 	assert.Equal(t, "4", job.Data[JobDataReactionsDeleted])
@@ -246,6 +256,35 @@ func TestRetentionJobExecute(t *testing.T) {
 		require.NoError(t, err)
 		assert.Equal(t, shouldExist, exists, path)
 	}
+}
+
+// batchEngine is a search engine that deletes posts by their IDs in one request.
+type batchEngine struct {
+	*searchmocks.SearchEngineInterface
+	deleted [][]string
+}
+
+func (e *batchEngine) DeletePostsByIds(ids []string) *model.AppError {
+	e.deleted = append(e.deleted, ids)
+	return nil
+}
+
+func TestDeletePostsFromSearch(t *testing.T) {
+	// Engines without the batch deletion get the posts one by one.
+	engine := &searchmocks.SearchEngineInterface{}
+	engine.On("IsActive").Return(true)
+	engine.On("DeletePost", &model.Post{Id: "p1"}).Return(nil).Once()
+	engine.On("DeletePost", &model.Post{Id: "p2"}).Return(nil).Once()
+	inactive := &searchmocks.SearchEngineInterface{}
+	inactive.On("IsActive").Return(false)
+
+	j := NewJob(JobDeps{SearchEngines: func() []searchengine.SearchEngineInterface {
+		return []searchengine.SearchEngineInterface{engine, inactive}
+	}})
+	r := &run{j: j, logger: mlog.CreateConsoleTestLogger(t), counters: map[string]int64{}}
+	r.deletePostsFromSearch([]string{"p1", "p2"})
+	engine.AssertExpectations(t)
+	inactive.AssertExpectations(t)
 }
 
 func TestRetentionJobCanceled(t *testing.T) {

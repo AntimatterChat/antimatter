@@ -191,6 +191,16 @@ func (e *Engine) DeletePost(post *model.Post) *model.AppError {
 	return e.write("Engine.DeletePost", "ent.elasticsearch.delete_post.error", BulkAction{Op: opDelete, Index: index, ID: post.Id})
 }
 
+// DeletePostsByIds removes posts from the index in one request, whatever day's index they're in: the data retention
+// job uses it for the posts its channel and team policies delete.
+func (e *Engine) DeletePostsByIds(ids []string) *model.AppError {
+	if len(ids) == 0 {
+		return nil
+	}
+	return e.deleteByQuery("Engine.DeletePostsByIds", "ent.elasticsearch.delete_post.error", namesFor(e.config()).postsPattern(),
+		map[string]any{"ids": map[string]any{"values": ids}}, nil)
+}
+
 func (e *Engine) DeleteChannelPosts(rctx request.CTX, channelID string) *model.AppError {
 	return e.deleteByQuery("Engine.DeleteChannelPosts", "ent.elasticsearch.delete_channel_posts.error",
 		namesFor(e.config()).postsPattern(), termQuery("channel_id", channelID), nil)
