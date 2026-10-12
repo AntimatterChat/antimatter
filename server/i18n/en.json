@@ -12163,9 +12163,17 @@
     "description": "API error wrapping an internal failure while permanently deleting a team."
   },
   {
+    "id": "app.team.remove_member.admin.app_error",
+    "translation": "Only the team's admins can remove another admin from the team."
+  },
+  {
     "id": "app.team.remove_member.app_error",
     "translation": "Unable to remove the team member.",
     "description": "API error when removing a member from a team fails."
+  },
+  {
+    "id": "app.team.remove_member.rank.app_error",
+    "translation": "You can only remove people whose roles are below yours."
   },
   {
     "id": "app.team.rename_team.name_occupied",

@@ -111,6 +111,27 @@ func (a *App) CheckCanModerateMember(rctx request.CTX, session model.Session, te
 	return nil
 }
 
+// CheckCanRemoveTeamMember tells whether a session may remove someone else from a team. Team and system admins
+// (manage_team) may remove anyone, as upstream. Others hold remove_user_from_team through the team's scheme or a team
+// role, and may only remove people below them: never a team admin, nor someone whose highest team role ranks the
+// same as or above their own.
+func (a *App) CheckCanRemoveTeamMember(rctx request.CTX, session model.Session, teamID, userID string) *model.AppError {
+	if a.SessionHasPermissionToTeam(session, teamID, model.PermissionManageTeam) {
+		return nil
+	}
+	if !a.SessionHasPermissionToTeam(session, teamID, model.PermissionRemoveUserFromTeam) {
+		return model.MakePermissionError(&session, []*model.Permission{model.PermissionRemoveUserFromTeam})
+	}
+	if a.HasPermissionToTeam(rctx, userID, teamID, model.PermissionManageTeam) {
+		return model.NewAppError("CheckCanRemoveTeamMember", "app.team.remove_member.admin.app_error", nil, "", http.StatusForbidden)
+	}
+	mine, theirs := a.highestTeamRolePosition(session.UserId, teamID), a.highestTeamRolePosition(userID, teamID)
+	if theirs != -1 && (mine == -1 || theirs <= mine) {
+		return model.NewAppError("CheckCanRemoveTeamMember", "app.team.remove_member.rank.app_error", nil, "", http.StatusForbidden)
+	}
+	return nil
+}
+
 // SetMemberTimeout times someone of a team out until a time, or lifts their timeout (until 0).
 func (a *App) SetMemberTimeout(rctx request.CTX, session model.Session, teamID, userID string, request *model.MemberTimeoutRequest) (*model.MemberTimeout, *model.AppError) {
 	if appErr := a.CheckCanModerateMember(rctx, session, teamID, userID); appErr != nil {

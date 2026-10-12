@@ -1230,8 +1230,8 @@ func removeTeamMember(c *Context, w http.ResponseWriter, r *http.Request) {
 	defer c.LogAuditRec(auditRec)
 
 	if c.AppContext.Session().UserId != c.Params.UserId {
-		if !c.App.SessionHasPermissionToTeam(*c.AppContext.Session(), c.Params.TeamId, model.PermissionRemoveUserFromTeam) {
-			c.SetPermissionError(model.PermissionRemoveUserFromTeam)
+		if appErr := c.App.CheckCanRemoveTeamMember(c.AppContext, *c.AppContext.Session(), c.Params.TeamId, c.Params.UserId); appErr != nil {
+			c.Err = appErr
 			return
 		}
 	}

@@ -185,4 +185,32 @@ func TestModeration(t *testing.T) {
 		require.NoError(t, err, "they get the mod view")
 		resp.Body.Close()
 	})
+
+	t.Run("those who may remove members only remove those below their own highest role", func(t *testing.T) {
+		mod, modClient := member(t)
+		newRole(t, 1, []string{model.PermissionRemoveUserFromTeam.Id}, mod.Id)
+		plain, _ := member(t)
+		above, _ := member(t)
+		newRole(t, 0, nil, above.Id)
+		peer, _ := member(t)
+		newRole(t, 1, nil, peer.Id)
+		admin, _ := member(t)
+		_, err := th.SystemAdminClient.UpdateTeamMemberRoles(context.Background(), team.Id, admin.Id, model.TeamUserRoleId+" "+model.TeamAdminRoleId)
+		require.NoError(t, err)
+
+		_, err = modClient.RemoveTeamMember(context.Background(), team.Id, plain.Id)
+		require.NoError(t, err, "someone without roles")
+		for name, user := range map[string]*model.User{"someone above": above, "someone at the same place": peer, "a team admin": admin} {
+			resp, err := modClient.RemoveTeamMember(context.Background(), team.Id, user.Id)
+			require.Error(t, err, name)
+			assert.Equal(t, http.StatusForbidden, resp.StatusCode, name)
+			_, _, err = th.SystemAdminClient.GetTeamMember(context.Background(), team.Id, user.Id, "")
+			require.NoError(t, err, "%s is still in the team", name)
+		}
+
+		_, err = th.SystemAdminClient.RemoveTeamMember(context.Background(), team.Id, above.Id)
+		require.NoError(t, err, "admins remove anyone")
+		_, err = th.SystemAdminClient.RemoveTeamMember(context.Background(), team.Id, admin.Id)
+		require.NoError(t, err, "admins remove other admins")
+	})
 }
