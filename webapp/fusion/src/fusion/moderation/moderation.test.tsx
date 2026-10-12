@@ -67,7 +67,7 @@ describe('ModViewPanel', () => {
         expect(screen.getByRole('heading', {name: 'Mod view'})).toBeInTheDocument();
         expect(screen.getByText('Account created')).toBeInTheDocument();
         expect(screen.getByRole('button', {name: 'Time out'})).toBeInTheDocument();
-        expect(screen.getByRole('button', {name: 'Remove from team'})).toBeInTheDocument();
+        expect(screen.getByRole('button', {name: 'Remove from community'})).toBeInTheDocument();
         expect(screen.queryByRole('button', {name: 'Deactivate account'})).not.toBeInTheDocument();
     });
 

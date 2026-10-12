@@ -214,7 +214,7 @@ function TeamBadgeField() {
                     </option>
                 ))}
             </select>
-            <small>{required ? formatMessage({id: 'fusion.settings.teamBadgeRequired', defaultMessage: 'Shown next to your name: this team asks everyone to show one. Only teams you belong to are listed.'}) : formatMessage({id: 'fusion.settings.teamBadgeHelp', defaultMessage: 'Shown next to your name, like a server tag. Only teams you belong to are listed.'})}</small>
+            <small>{required ? formatMessage({id: 'fusion.settings.teamBadgeRequired', defaultMessage: 'Shown next to your name: this community asks everyone to show one. Only teams you belong to are listed.'}) : formatMessage({id: 'fusion.settings.teamBadgeHelp', defaultMessage: 'Shown next to your name, like a server tag. Only teams you belong to are listed.'})}</small>
         </label>
     );
 }

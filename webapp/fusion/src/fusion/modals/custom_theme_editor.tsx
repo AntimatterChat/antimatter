@@ -15,7 +15,7 @@ import {am} from 'fusion/utils/class_names';
 import {applyTheme, copyToClipboard} from 'utils/utils';
 
 const LABELS: Record<CustomToken, {id: string; defaultMessage: string}> = {
-    rail: {id: 'fusion.theme.rail', defaultMessage: 'Team rail'},
+    rail: {id: 'fusion.theme.rail', defaultMessage: 'Community rail'},
     side: {id: 'fusion.theme.side', defaultMessage: 'Sidebars'},
     main: {id: 'fusion.theme.main', defaultMessage: 'Chat area'},
     raise: {id: 'fusion.theme.raise', defaultMessage: 'Inputs & cards'},

@@ -78,7 +78,7 @@ export default function ChannelIntro({channel}: {channel: Channel}) {
         );
         title = formatMessage({id: 'fusion.intro.welcome', defaultMessage: 'Welcome to #{name}'}, {name: channel.display_name});
         if (channel.name === Constants.DEFAULT_CHANNEL) {
-            lead = formatMessage({id: 'fusion.intro.townSquare', defaultMessage: 'This is the start of #{name}, the channel everyone on the team is in. Post here what everyone should see.'}, {name: channel.display_name});
+            lead = formatMessage({id: 'fusion.intro.townSquare', defaultMessage: 'This is the start of #{name}, the channel everyone in the community is in. Post here what everyone should see.'}, {name: channel.display_name});
         } else if (creator) {
             lead = formatMessage({id: 'fusion.intro.channelBy', defaultMessage: 'This is the start of the #{name} channel, created by {creator} on {date}.'}, {name: channel.display_name, creator: creatorName, date: intl.formatDate(channel.create_at, {dateStyle: 'long'})});
         } else {

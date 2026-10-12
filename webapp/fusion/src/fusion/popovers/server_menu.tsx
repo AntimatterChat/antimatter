@@ -114,7 +114,7 @@ export default function ServerMenu({team: forTeam, anchor, point, width, onClose
             placement={point ? 'point' : 'below'}
             className='plus-pop server-menu'
             role='menu'
-            label={forTeam ? formatMessage({id: 'fusion.serverMenu.labelFor', defaultMessage: '{team} menu'}, {team: forTeam.display_name}) : formatMessage({id: 'fusion.serverMenu.label', defaultMessage: 'Team menu'})}
+            label={forTeam ? formatMessage({id: 'fusion.serverMenu.labelFor', defaultMessage: '{team} menu'}, {team: forTeam.display_name}) : formatMessage({id: 'fusion.serverMenu.label', defaultMessage: 'Community menu'})}
             onClose={onClose}
             style={width ? {width} : undefined}
         >
@@ -136,7 +136,7 @@ export default function ServerMenu({team: forTeam, anchor, point, width, onClose
             )}
             <MenuItem
                 icon={muted ? 'bell' : 'bell-off'}
-                label={muted ? formatMessage({id: 'fusion.serverMenu.unmute', defaultMessage: 'Unmute team'}) : formatMessage({id: 'fusion.serverMenu.mute', defaultMessage: 'Mute team'})}
+                label={muted ? formatMessage({id: 'fusion.serverMenu.unmute', defaultMessage: 'Unmute community'}) : formatMessage({id: 'fusion.serverMenu.mute', defaultMessage: 'Mute community'})}
                 sub={muted ? undefined : formatMessage({id: 'fusion.serverMenu.muteSub', defaultMessage: 'Mutes all its categories'})}
                 onClick={run(() => dispatch(setTeamMuted(teamId, !muted)))}
             />
@@ -172,7 +172,7 @@ export default function ServerMenu({team: forTeam, anchor, point, width, onClose
             {canManage && (
                 <MenuItem
                     icon='cog'
-                    label={formatMessage({id: 'fusion.serverMenu.settings', defaultMessage: 'Team settings'})}
+                    label={formatMessage({id: 'fusion.serverMenu.settings', defaultMessage: 'Community settings'})}
                     onClick={inTeam(() => dispatch(openTeamSettings()))}
                 />
             )}
@@ -186,8 +186,8 @@ export default function ServerMenu({team: forTeam, anchor, point, width, onClose
             {(canManage || canManageRoles) && customGroups && (
                 <Flyout
                     icon='board'
-                    label={formatMessage({id: 'fusion.serverMenu.setup', defaultMessage: 'Organise the team'})}
-                    menuLabel={formatMessage({id: 'fusion.serverMenu.setup', defaultMessage: 'Organise the team'})}
+                    label={formatMessage({id: 'fusion.serverMenu.setup', defaultMessage: 'Organise the community'})}
+                    menuLabel={formatMessage({id: 'fusion.serverMenu.setup', defaultMessage: 'Organise the community'})}
                 >
                     {canManageRoles && (
                         <MenuItem
@@ -207,7 +207,7 @@ export default function ServerMenu({team: forTeam, anchor, point, width, onClose
                             />
                             <MenuItem
                                 icon='board'
-                                label={formatMessage({id: 'fusion.serverMenu.layout', defaultMessage: 'Team layout…'})}
+                                label={formatMessage({id: 'fusion.serverMenu.layout', defaultMessage: 'Community layout…'})}
                                 sub={formatMessage({id: 'fusion.serverMenu.layoutSub', defaultMessage: 'Presets and templates'})}
                                 onClick={inTeam(() => dialogs.teamLayout())}
                             />
@@ -218,8 +218,8 @@ export default function ServerMenu({team: forTeam, anchor, point, width, onClose
             {customGroups && (
                 <MenuItem
                     icon='tag'
-                    label={formatMessage({id: 'fusion.serverMenu.userGroups', defaultMessage: 'User groups…'})}
-                    sub={formatMessage({id: 'fusion.serverMenu.userGroupsSub', defaultMessage: 'Groups with a tag, a lead and a channel'})}
+                    label={formatMessage({id: 'fusion.serverMenu.userGroups', defaultMessage: 'Teams…'})}
+                    sub={formatMessage({id: 'fusion.serverMenu.userGroupsSub', defaultMessage: 'Teams with a tag, a lead and a channel'})}
                     onClick={run(() => dispatch(openUserGroups()))}
                 />
             )}
@@ -315,7 +315,7 @@ export default function ServerMenu({team: forTeam, anchor, point, width, onClose
             <MenuItem
                 icon='leave'
                 danger={true}
-                label={formatMessage({id: 'fusion.serverMenu.leave', defaultMessage: 'Leave team'})}
+                label={formatMessage({id: 'fusion.serverMenu.leave', defaultMessage: 'Leave community'})}
                 onClick={inTeam(() => dispatch(openLeaveTeam()))}
             />
             <CopyIdItem

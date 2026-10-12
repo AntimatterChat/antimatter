@@ -101,7 +101,7 @@ export default function AddPeopleDialog({channel, onInvite, onClose}: Props) {
     } else if (people.length === 0) {
         list = (
             <p className={am('pick-empty')}>
-                {query.trim() ? formatMessage({id: 'fusion.addPeople.noMatch', defaultMessage: 'No one matches “{query}”.'}, {query: query.trim()}) : formatMessage({id: 'fusion.addPeople.everyone', defaultMessage: 'Everyone in the team is already here.'})}
+                {query.trim() ? formatMessage({id: 'fusion.addPeople.noMatch', defaultMessage: 'No one matches “{query}”.'}, {query: query.trim()}) : formatMessage({id: 'fusion.addPeople.everyone', defaultMessage: 'Everyone in the community is already here.'})}
                 {canInvite && ' ' + formatMessage({id: 'fusion.addPeople.useInvite', defaultMessage: 'Use “Invite someone new” to bring people in.'})}
             </p>
         );

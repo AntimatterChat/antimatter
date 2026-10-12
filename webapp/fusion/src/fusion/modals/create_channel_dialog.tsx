@@ -211,7 +211,7 @@ export default function CreateChannelDialog({categoryId, onMoreOptions, onClose}
                             onChange={(e) => setCategory(e.target.value)}
                         >
                             {serverOptions.length > 0 && (
-                                <optgroup label={formatMessage({id: 'fusion.createChannel.forEveryone', defaultMessage: 'Team categories'})}>
+                                <optgroup label={formatMessage({id: 'fusion.createChannel.forEveryone', defaultMessage: 'Community categories'})}>
                                     {serverOptions.map((c) => (
                                         <option
                                             key={c.name}

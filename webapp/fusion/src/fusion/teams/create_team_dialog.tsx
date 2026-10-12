@@ -94,7 +94,7 @@ export default function CreateTeamDialog({onClose}: {onClose: () => void}) {
         const result = await dispatch(createTeam({display_name: name.trim(), name: url, type: open ? 'O' : 'I', allow_open_invite: open} as Team));
         setBusy(false);
         if ('error' in result && result.error) {
-            setError((result.error as {message?: string}).message || formatMessage({id: 'fusion.createTeam.failed', defaultMessage: 'The team couldn\'t be created.'}));
+            setError((result.error as {message?: string}).message || formatMessage({id: 'fusion.createTeam.failed', defaultMessage: 'The community couldn\'t be created.'}));
             return;
         }
         onClose();
@@ -103,13 +103,13 @@ export default function CreateTeamDialog({onClose}: {onClose: () => void}) {
 
     return (
         <Dialog
-            label={formatMessage({id: 'fusion.createTeam.title', defaultMessage: 'Create a team'})}
+            label={formatMessage({id: 'fusion.createTeam.title', defaultMessage: 'Create a community'})}
             onClose={onClose}
             onSubmit={submit}
         >
             <div className={am('pane')}>
-                <h2>{formatMessage({id: 'fusion.createTeam.title', defaultMessage: 'Create a team'})}</h2>
-                <p className={am('lead')}>{formatMessage({id: 'fusion.createTeam.lead', defaultMessage: 'A team has its own channels and people. You can set it up from a preset once it\'s made.'})}</p>
+                <h2>{formatMessage({id: 'fusion.createTeam.title', defaultMessage: 'Create a community'})}</h2>
+                <p className={am('lead')}>{formatMessage({id: 'fusion.createTeam.lead', defaultMessage: 'A community has its own channels and people. You can set it up from a preset once it\'s made.'})}</p>
                 <label className={am('field')}>
                     <span>{formatMessage({id: 'fusion.createTeam.name', defaultMessage: 'Name'})}</span>
                     <input
@@ -142,7 +142,7 @@ export default function CreateTeamDialog({onClose}: {onClose: () => void}) {
                         id='am-create-team-url-note'
                         className={am('field-note', {bad: Boolean(problem)})}
                     >
-                        {problem ? problems[problem] : formatMessage({id: 'fusion.createTeam.urlNote', defaultMessage: 'Where the team is found; it can\'t change later.'})}
+                        {problem ? problems[problem] : formatMessage({id: 'fusion.createTeam.urlNote', defaultMessage: 'Where the community is found; it can\'t change later.'})}
                     </small>
                 </label>
                 <Toggle
@@ -172,7 +172,7 @@ export default function CreateTeamDialog({onClose}: {onClose: () => void}) {
                         className={am('btn', 'primary')}
                         disabled={!canCreate}
                     >
-                        {formatMessage({id: 'fusion.createTeam.create', defaultMessage: 'Create team'})}
+                        {formatMessage({id: 'fusion.createTeam.create', defaultMessage: 'Create community'})}
                     </button>
                 </div>
             </div>

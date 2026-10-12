@@ -184,7 +184,7 @@ export function UserMenu({target, onProfile, onClose}: {target: Target; onProfil
                 <MenuItem
                     icon='shield'
                     danger={true}
-                    label={formatMessage({id: 'fusion.userMenu.removeTeam', defaultMessage: 'Remove from team…'})}
+                    label={formatMessage({id: 'fusion.userMenu.removeTeam', defaultMessage: 'Remove from community…'})}
                     onClick={run(() => dialogs.removeFromTeam(userId))}
                 />
             )}

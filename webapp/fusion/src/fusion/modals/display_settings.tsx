@@ -230,7 +230,7 @@ export function AdvancedPane() {
             />
             <Toggle
                 title={formatMessage({id: 'fusion.settings.developer', defaultMessage: 'Developer mode'})}
-                desc={formatMessage({id: 'fusion.settings.developerDesc', defaultMessage: 'Add Copy ID to the menus of messages, channels, teams and people, for the API and bots.'})}
+                desc={formatMessage({id: 'fusion.settings.developerDesc', defaultMessage: 'Add Copy ID to the menus of messages, channels, communities and people, for the API and bots.'})}
                 on={developer === 'true'}
                 onChange={(on) => setDeveloper(String(on))}
             />

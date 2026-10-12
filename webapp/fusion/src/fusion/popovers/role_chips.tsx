@@ -54,7 +54,7 @@ export default function RoleChips({userId}: {userId: string}) {
         chips.push([formatMessage({id: 'fusion.roles.systemAdmin', defaultMessage: 'System Admin'}), ROLE_COLORS.admin]);
     }
     if (teamMember?.scheme_admin) {
-        chips.push([formatMessage({id: 'fusion.roles.teamAdmin', defaultMessage: 'Team Admin'}), ROLE_COLORS.mod]);
+        chips.push([formatMessage({id: 'fusion.roles.teamAdmin', defaultMessage: 'Community Admin'}), ROLE_COLORS.mod]);
     }
     if (channelMember?.scheme_admin) {
         chips.push([formatMessage({id: 'fusion.roles.channelAdmin', defaultMessage: 'Channel Admin'}), ROLE_COLORS.mod]);

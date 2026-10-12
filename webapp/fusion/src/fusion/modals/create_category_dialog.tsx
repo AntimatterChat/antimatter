@@ -74,7 +74,7 @@ export default function CreateCategoryDialog({onClose, renaming}: Props) {
     if (renaming) {
         lead = formatMessage({id: 'fusion.category.renameLead', defaultMessage: 'Everyone sees the new name; its channels stay in it.'});
     } else if (forEveryone) {
-        lead = formatMessage({id: 'fusion.category.everyoneLead', defaultMessage: 'Everyone in the team sees it above their own categories. Members put their channels in it unless it\'s locked.'});
+        lead = formatMessage({id: 'fusion.category.everyoneLead', defaultMessage: 'Everyone in the community sees it above their own categories. Members put their channels in it unless it\'s locked.'});
     }
     return (
         <Dialog
@@ -100,7 +100,7 @@ export default function CreateCategoryDialog({onClose, renaming}: Props) {
                 {admin && !renaming && (
                     <Toggle
                         title={formatMessage({id: 'fusion.category.forEveryone', defaultMessage: 'For everyone'})}
-                        desc={formatMessage({id: 'fusion.category.forEveryoneDesc', defaultMessage: 'A category of the team, set up by its admins, rather than one of yours.'})}
+                        desc={formatMessage({id: 'fusion.category.forEveryoneDesc', defaultMessage: 'A category of the community, set up by its admins, rather than one of yours.'})}
                         on={forEveryone}
                         onChange={setForEveryone}
                     />

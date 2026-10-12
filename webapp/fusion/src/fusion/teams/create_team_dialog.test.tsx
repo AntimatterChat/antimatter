@@ -58,7 +58,7 @@ describe('CreateTeamDialog', () => {
         expect(screen.getByRole('textbox', {name: 'Address'})).toHaveValue('detector-physics');
 
         await waitFor(() => expect(checkIfTeamExists).toHaveBeenCalledWith('detector-physics'));
-        await userEvent.click(screen.getByRole('button', {name: 'Create team'}));
+        await userEvent.click(screen.getByRole('button', {name: 'Create community'}));
 
         await waitFor(() => expect(onClose).toHaveBeenCalled());
         expect(createTeam).toHaveBeenCalledWith(expect.objectContaining({display_name: 'Detector Physics', name: 'detector-physics', type: 'O', allow_open_invite: true}));
@@ -71,12 +71,12 @@ describe('CreateTeamDialog', () => {
         await userEvent.clear(screen.getByRole('textbox', {name: 'Address'}));
         await userEvent.type(screen.getByRole('textbox', {name: 'Address'}), 'taken');
         expect(await screen.findByText('That address is taken.')).toBeInTheDocument();
-        expect(screen.getByRole('button', {name: 'Create team'})).toBeDisabled();
+        expect(screen.getByRole('button', {name: 'Create community'})).toBeDisabled();
 
         await userEvent.clear(screen.getByRole('textbox', {name: 'Address'}));
         await userEvent.type(screen.getByRole('textbox', {name: 'Address'}), '9lives');
         expect(screen.getByText(/Lower case letters, numbers and dashes/)).toBeInTheDocument();
-        expect(screen.getByRole('button', {name: 'Create team'})).toBeDisabled();
+        expect(screen.getByRole('button', {name: 'Create community'})).toBeDisabled();
     });
 
     test('an invitation-only team', async () => {
@@ -84,8 +84,8 @@ describe('CreateTeamDialog', () => {
         render();
         await userEvent.type(screen.getByRole('textbox', {name: 'Name'}), 'Secret lab');
         await userEvent.click(screen.getByRole('switch'));
-        await waitFor(() => expect(screen.getByRole('button', {name: 'Create team'})).toBeEnabled());
-        await userEvent.click(screen.getByRole('button', {name: 'Create team'}));
+        await waitFor(() => expect(screen.getByRole('button', {name: 'Create community'})).toBeEnabled());
+        await userEvent.click(screen.getByRole('button', {name: 'Create community'}));
         await waitFor(() => expect(createTeam).toHaveBeenCalledWith(expect.objectContaining({type: 'I', allow_open_invite: false})));
     });
 });

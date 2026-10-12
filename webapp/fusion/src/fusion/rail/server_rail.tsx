@@ -184,7 +184,7 @@ function FolderButton({folder, teams, open, unread, mentions, onToggle, onDropTe
                 className={am('srv', 'folder', {open, unread: unread && !open, 'drop-in': over})}
                 data-am-tip={`${name} · ${teams.map((t) => t.display_name).join(', ')}`}
                 data-am-tip-side='right'
-                aria-label={formatMessage({id: 'fusion.rail.folderLabel', defaultMessage: 'Folder {name}, {count, plural, one {# team} other {# teams}}'}, {name, count: teams.length})}
+                aria-label={formatMessage({id: 'fusion.rail.folderLabel', defaultMessage: 'Folder {name}, {count, plural, one {# community} other {# communities}}'}, {name, count: teams.length})}
                 aria-expanded={open}
                 onClick={onToggle}
                 onContextMenu={(e) => {
@@ -239,7 +239,7 @@ function FolderButton({folder, teams, open, unread, mentions, onToggle, onDropTe
                     <MenuItem
                         icon='x'
                         label={formatMessage({id: 'fusion.rail.ungroup', defaultMessage: 'Remove folder'})}
-                        sub={formatMessage({id: 'fusion.rail.ungroupSub', defaultMessage: 'Its teams stay in the rail'})}
+                        sub={formatMessage({id: 'fusion.rail.ungroupSub', defaultMessage: 'Its communities stay in the rail'})}
                         onClick={() => {
                             setMenu(null);
                             onUngroup();
@@ -335,7 +335,7 @@ export default function ServerRail() {
     return (
         <nav
             {...a11yRegion(am('servers'), 'rail')}
-            aria-label={formatMessage({id: 'fusion.rail.label', defaultMessage: 'Teams'})}
+            aria-label={formatMessage({id: 'fusion.rail.label', defaultMessage: 'Communities'})}
         >
             {showHistoryButtons() && <HistoryButtons/>}
             {railItems(teams, folders).map((item) => {
@@ -393,9 +393,9 @@ export default function ServerRail() {
                 <button
                     ref={addRef}
                     className={am('srv', 'add', {active: adding})}
-                    data-am-tip={formatMessage({id: 'fusion.rail.add', defaultMessage: 'Add a team'})}
+                    data-am-tip={formatMessage({id: 'fusion.rail.add', defaultMessage: 'Add a community'})}
                     data-am-tip-side='right'
-                    aria-label={formatMessage({id: 'fusion.rail.add', defaultMessage: 'Add a team'})}
+                    aria-label={formatMessage({id: 'fusion.rail.add', defaultMessage: 'Add a community'})}
                     aria-haspopup='menu'
                     aria-expanded={adding}
                     onClick={() => setAdding(!adding)}
@@ -409,14 +409,14 @@ export default function ServerRail() {
                     placement='beside'
                     className='plus-pop'
                     role='menu'
-                    label={formatMessage({id: 'fusion.rail.add', defaultMessage: 'Add a team'})}
+                    label={formatMessage({id: 'fusion.rail.add', defaultMessage: 'Add a community'})}
                     onClose={() => setAdding(false)}
                 >
                     {canJoin && (
                         <MenuItem
                             icon='compass'
-                            label={formatMessage({id: 'fusion.rail.join', defaultMessage: 'Join another team'})}
-                            sub={formatMessage({id: 'fusion.rail.joinSub', defaultMessage: 'Browse the teams open to you'})}
+                            label={formatMessage({id: 'fusion.rail.join', defaultMessage: 'Join another community'})}
+                            sub={formatMessage({id: 'fusion.rail.joinSub', defaultMessage: 'Browse the communities open to you'})}
                             onClick={() => {
                                 setAdding(false);
                                 getHistory().push('/select_team');
@@ -426,7 +426,7 @@ export default function ServerRail() {
                     {canCreate && (
                         <MenuItem
                             icon='plus'
-                            label={formatMessage({id: 'fusion.rail.create', defaultMessage: 'Create a team'})}
+                            label={formatMessage({id: 'fusion.rail.create', defaultMessage: 'Create a community'})}
                             sub={formatMessage({id: 'fusion.rail.createSub', defaultMessage: 'A new space with its own channels'})}
                             onClick={() => {
                                 setAdding(false);

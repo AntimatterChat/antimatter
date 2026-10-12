@@ -49,7 +49,7 @@ export default function TimeoutDialog({userId, onClose}: {userId: string; onClos
         >
             <div className={am('pane')}>
                 <h2>{formatMessage({id: 'fusion.timeout.title', defaultMessage: 'Time out {name}'}, {name})}</h2>
-                <p className={am('lead')}>{formatMessage({id: 'fusion.timeout.lead', defaultMessage: 'They can read the team\'s channels, but not send messages, react, attach files or mention, until the timeout ends. Direct messages stay open.'})}</p>
+                <p className={am('lead')}>{formatMessage({id: 'fusion.timeout.lead', defaultMessage: 'They can read the community\'s channels, but not send messages, react, attach files or mention, until the timeout ends. Direct messages stay open.'})}</p>
                 <div
                     className={am('timeout-durations')}
                     role='radiogroup'

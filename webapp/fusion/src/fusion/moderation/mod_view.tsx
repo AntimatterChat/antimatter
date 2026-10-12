@@ -42,7 +42,7 @@ import {canModerateTeam, timeOutMember} from './moderation';
 
 // The permissions worth a moderator's glance, as Discord's mod view lists them.
 const NOTABLE: Array<{permission: string; label: MessageDescriptor}> = [
-    {permission: Permissions.MANAGE_TEAM, label: defineMessage({id: 'fusion.modView.perm.team', defaultMessage: 'Manage the team'})},
+    {permission: Permissions.MANAGE_TEAM, label: defineMessage({id: 'fusion.modView.perm.team', defaultMessage: 'Manage the community'})},
     {permission: Permissions.MANAGE_TEAM_ROLES, label: defineMessage({id: 'fusion.modView.perm.roles', defaultMessage: 'Manage roles'})},
     {permission: Permissions.REMOVE_USER_FROM_TEAM, label: defineMessage({id: 'fusion.modView.perm.remove', defaultMessage: 'Remove and time out members'})},
     {permission: Permissions.DELETE_OTHERS_POSTS, label: defineMessage({id: 'fusion.modView.perm.messages', defaultMessage: 'Manage messages'})},
@@ -222,7 +222,7 @@ export default function ModViewPanel() {
                     <dd>{info ? date(info.joined_at) : '…'}</dd>
                     <dt>{formatMessage({id: 'fusion.modView.created', defaultMessage: 'Account created'})}</dt>
                     <dd>{date(user.create_at)}</dd>
-                    <dt>{formatMessage({id: 'fusion.modView.messages', defaultMessage: 'Messages in the team'})}</dt>
+                    <dt>{formatMessage({id: 'fusion.modView.messages', defaultMessage: 'Messages in the community'})}</dt>
                     <dd>
                         {info ? formatMessage({id: 'fusion.modView.messageCounts', defaultMessage: '{day} in the last day · {week} in the last week'}, {day: info.posts_last_day, week: info.posts_last_week}) : '…'}
                         <button
@@ -333,7 +333,7 @@ export default function ModViewPanel() {
                                 name='leave'
                                 size='sm'
                             />
-                            {formatMessage({id: 'fusion.modView.remove', defaultMessage: 'Remove from team'})}
+                            {formatMessage({id: 'fusion.modView.remove', defaultMessage: 'Remove from community'})}
                         </button>
                     )}
                     {systemAdmin && !isMe && !isSystemAdmin(user.roles || '') && user.delete_at === 0 && (

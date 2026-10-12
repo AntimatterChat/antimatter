@@ -90,7 +90,7 @@ export default function ChannelPermissionsDialog({channel, onClose}: {channel: C
         >
             <div className={am('pane', 'roles-pane')}>
                 <h2>{formatMessage({id: 'fusion.overrides.title', defaultMessage: 'Permissions of #{channel}'}, {channel: channel.display_name})}</h2>
-                <p className={am('lead')}>{formatMessage({id: 'fusion.overrides.lead', defaultMessage: 'Here, roles and people can be allowed more, or less, than they have elsewhere. A person\'s own setting wins over their roles\'; the team\'s admins aren\'t affected.'})}</p>
+                <p className={am('lead')}>{formatMessage({id: 'fusion.overrides.lead', defaultMessage: 'Here, roles and people can be allowed more, or less, than they have elsewhere. A person\'s own setting wins over their roles\'; the community\'s admins aren\'t affected.'})}</p>
                 {list.loadFailed && (
                     <p
                         className={am('lead')}
@@ -121,10 +121,10 @@ export default function ChannelPermissionsDialog({channel, onClose}: {channel: C
                                 {role.display_name}
                             </label>
                         ))}
-                        {!roles.length && <p className={am('lead')}>{formatMessage({id: 'fusion.overrides.noRoles', defaultMessage: 'The team has no roles yet.'})}</p>}
+                        {!roles.length && <p className={am('lead')}>{formatMessage({id: 'fusion.overrides.noRoles', defaultMessage: 'The community has no roles yet.'})}</p>}
                     </div>
                 ) : (
-                    <p className={am('lead')}>{formatMessage({id: 'fusion.overrides.public', defaultMessage: 'Everyone in the team: it\'s public. Make it private to keep it for some roles.'})}</p>
+                    <p className={am('lead')}>{formatMessage({id: 'fusion.overrides.public', defaultMessage: 'Everyone in the community: it\'s public. Make it private to keep it for some roles.'})}</p>
                 )}
                 <h3 className={am('section-title')}>{formatMessage({id: 'fusion.overrides.what', defaultMessage: 'What they can do here'})}</h3>
                 {inherited.length > 0 && <p className={am('lead')}>{formatMessage({id: 'fusion.overrides.inheritsFrom', defaultMessage: 'It inherits the permissions of the category {category}; what\'s set here wins.'}, {category})}</p>}

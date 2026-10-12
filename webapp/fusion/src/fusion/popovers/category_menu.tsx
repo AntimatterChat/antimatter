@@ -131,7 +131,7 @@ export default function CategoryMenu({category, anchor, point, onClose, canCreat
                         sub={formatMessage({id: 'fusion.categoryMenu.deleteServerSub', defaultMessage: 'Its channels go back to everyone\'s own categories'})}
                         onClick={run(() => dialogs.confirm({
                             title: formatMessage({id: 'fusion.categoryMenu.deleteServerTitle', defaultMessage: 'Delete “{name}” for everyone?'}, {name}),
-                            message: formatMessage({id: 'fusion.categoryMenu.deleteServerMessage', defaultMessage: 'Everyone in the team loses this category; its channels go back to their own categories.'}),
+                            message: formatMessage({id: 'fusion.categoryMenu.deleteServerMessage', defaultMessage: 'Everyone in the community loses this category; its channels go back to their own categories.'}),
                             confirmLabel: formatMessage({id: 'fusion.categoryMenu.deleteServerConfirm', defaultMessage: 'Delete for everyone'}),
                             danger: true,
                             onConfirm: async () => {

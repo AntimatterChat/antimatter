@@ -113,7 +113,7 @@ export default function AboutPopover({anchor, onClose}: {anchor: HTMLElement | n
                 </svg>
                 <div>
                     <h3>{'Antimatter'}</h3>
-                    <p>{formatMessage({id: 'fusion.about.tagline', defaultMessage: 'Chat, voice and threads for your team. Free software.'})}</p>
+                    <p>{formatMessage({id: 'fusion.about.tagline', defaultMessage: 'Chat, voice and threads for your team or community. Free software.'})}</p>
                 </div>
             </div>
             {admin && (

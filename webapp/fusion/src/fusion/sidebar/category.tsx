@@ -207,7 +207,7 @@ export default function Category({category}: {category: ChannelCategory}) {
                 {server && (
                     <span
                         className={am('server-mark')}
-                        title={locked ? formatMessage({id: 'fusion.sidebar.serverLocked', defaultMessage: 'Set up for everyone by the team\'s admins. Its channels stay here.'}) : formatMessage({id: 'fusion.sidebar.serverOpen', defaultMessage: 'Set up for everyone by the team\'s admins. You can move its channels to your own categories.'})}
+                        title={locked ? formatMessage({id: 'fusion.sidebar.serverLocked', defaultMessage: 'Set up for everyone by the community\'s admins. Its channels stay here.'}) : formatMessage({id: 'fusion.sidebar.serverOpen', defaultMessage: 'Set up for everyone by the community\'s admins. You can move its channels to your own categories.'})}
                     >
                         <Icon
                             name={locked ? 'lock' : 'server'}

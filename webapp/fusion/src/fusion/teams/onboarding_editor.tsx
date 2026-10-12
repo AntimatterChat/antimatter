@@ -57,7 +57,7 @@ export default function OnboardingEditor({onClose}: {onClose: () => void}) {
 
         // Its author has seen it.
         dispatch(savePreferences(me, [{user_id: me, category: CATEGORY_ONBOARDED, name: team.id, value: 'true'}]));
-        toast(formatMessage({id: 'fusion.onboarding.saved', defaultMessage: 'Onboarding saved: newcomers see it the first time they open the team'}));
+        toast(formatMessage({id: 'fusion.onboarding.saved', defaultMessage: 'Onboarding saved: newcomers see it the first time they open the community'}));
         onClose();
     };
 
@@ -70,7 +70,7 @@ export default function OnboardingEditor({onClose}: {onClose: () => void}) {
         >
             <div className={am('pane', 'roles-pane')}>
                 <h2>{formatMessage({id: 'fusion.onboarding.editTitle', defaultMessage: 'Onboarding'})}</h2>
-                <p className={am('lead')}>{formatMessage({id: 'fusion.onboarding.editLead', defaultMessage: 'Newcomers see it the first time they open the team. Their answers give them roles open to all and public channels.'})}</p>
+                <p className={am('lead')}>{formatMessage({id: 'fusion.onboarding.editLead', defaultMessage: 'Newcomers see it the first time they open the community. Their answers give them roles open to all and public channels.'})}</p>
                 <label className={am('field')}>
                     <span>{formatMessage({id: 'fusion.onboarding.welcome', defaultMessage: 'Welcome'})}</span>
                     <textarea

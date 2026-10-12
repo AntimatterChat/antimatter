@@ -365,7 +365,7 @@ export default function GlobalSearch() {
                         onChange={(e) => setAllTeams(e.target.value === 'all')}
                     >
                         <option value='team'>{formatMessage({id: 'fusion.gs.scopeTeam', defaultMessage: 'In {team}'}, {team: team.display_name})}</option>
-                        <option value='all'>{formatMessage({id: 'fusion.gs.scopeAll', defaultMessage: 'In all teams'})}</option>
+                        <option value='all'>{formatMessage({id: 'fusion.gs.scopeAll', defaultMessage: 'In all communities'})}</option>
                     </select>
                 )}
             </div>

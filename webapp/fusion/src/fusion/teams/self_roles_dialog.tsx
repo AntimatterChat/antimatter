@@ -43,7 +43,7 @@ export default function SelfRolesDialog({onClose}: {onClose: () => void}) {
         >
             <div className={am('pane')}>
                 <h2>{formatMessage({id: 'fusion.selfRoles.title', defaultMessage: 'Your roles'})}</h2>
-                <p className={am('lead')}>{formatMessage({id: 'fusion.selfRoles.lead', defaultMessage: 'Roles anyone in the team can take: they colour your name, and may let you do more.'})}</p>
+                <p className={am('lead')}>{formatMessage({id: 'fusion.selfRoles.lead', defaultMessage: 'Roles anyone in the community can take: they colour your name, and may let you do more.'})}</p>
                 {roles.map((r) => (
                     <Toggle
                         key={r.id}
@@ -53,7 +53,7 @@ export default function SelfRolesDialog({onClose}: {onClose: () => void}) {
                         onChange={(on) => set(r.id, on)}
                     />
                 ))}
-                {!roles.length && <p className={am('lead')}>{formatMessage({id: 'fusion.selfRoles.none', defaultMessage: 'The team has no roles open to all.'})}</p>}
+                {!roles.length && <p className={am('lead')}>{formatMessage({id: 'fusion.selfRoles.none', defaultMessage: 'The community has no roles open to all.'})}</p>}
                 <div className={am('modal-actions')}>
                     <button
                         type='button'

@@ -45,7 +45,7 @@ export default function RemoveMemberDialog({userId, onClose}: {userId: string; o
         >
             <div className={am('pane')}>
                 <h2>{formatMessage({id: 'fusion.userMenu.removeTitle', defaultMessage: 'Remove {name} from {team}?'}, {name, team: team?.display_name})}</h2>
-                <p className={am('lead')}>{formatMessage({id: 'fusion.userMenu.removeLead', defaultMessage: '{name} leaves every channel of the team, but can rejoin with a new invite.'}, {name})}</p>
+                <p className={am('lead')}>{formatMessage({id: 'fusion.userMenu.removeLead', defaultMessage: '{name} leaves every channel of the community, but can rejoin with a new invite.'}, {name})}</p>
                 {error && (
                     <p
                         className={am('lead')}

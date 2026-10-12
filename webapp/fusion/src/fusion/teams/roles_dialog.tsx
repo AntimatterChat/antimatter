@@ -40,11 +40,11 @@ type Draft = {display_name: string; color: string; icon: string; hoist: boolean;
 
 // What a role can grant, as Discord's permission switches: each is on when the role holds all its permissions.
 const SWITCHES: Array<{key: string; label: MessageDescriptor; desc: MessageDescriptor; permissions: string[]}> = [
-    {key: 'admin', label: defineMessage({id: 'fusion.roles.perm.admin', defaultMessage: 'Administrator'}), desc: defineMessage({id: 'fusion.roles.perm.adminDesc', defaultMessage: 'Everything the team\'s admins can do.'}), permissions: [Permissions.MANAGE_TEAM]},
+    {key: 'admin', label: defineMessage({id: 'fusion.roles.perm.admin', defaultMessage: 'Administrator'}), desc: defineMessage({id: 'fusion.roles.perm.adminDesc', defaultMessage: 'Everything the community\'s admins can do.'}), permissions: [Permissions.MANAGE_TEAM]},
     {key: 'roles', label: defineMessage({id: 'fusion.roles.perm.roles', defaultMessage: 'Manage roles'}), desc: defineMessage({id: 'fusion.roles.perm.rolesDesc', defaultMessage: 'Make and edit the roles below their own, and give them to people.'}), permissions: [Permissions.MANAGE_TEAM_ROLES]},
-    {key: 'invite', label: defineMessage({id: 'fusion.roles.perm.invite', defaultMessage: 'Invite people'}), desc: defineMessage({id: 'fusion.roles.perm.inviteDesc', defaultMessage: 'Add people to the team.'}), permissions: [Permissions.ADD_USER_TO_TEAM]},
-    {key: 'kick', label: defineMessage({id: 'fusion.roles.perm.kick', defaultMessage: 'Remove people'}), desc: defineMessage({id: 'fusion.roles.perm.kickDesc', defaultMessage: 'Remove people from the team.'}), permissions: [Permissions.REMOVE_USER_FROM_TEAM]},
-    {key: 'public', label: defineMessage({id: 'fusion.roles.perm.public', defaultMessage: 'Create public channels'}), desc: defineMessage({id: 'fusion.roles.perm.publicDesc', defaultMessage: 'Channels anyone in the team can join.'}), permissions: [Permissions.CREATE_PUBLIC_CHANNEL]},
+    {key: 'invite', label: defineMessage({id: 'fusion.roles.perm.invite', defaultMessage: 'Invite people'}), desc: defineMessage({id: 'fusion.roles.perm.inviteDesc', defaultMessage: 'Add people to the community.'}), permissions: [Permissions.ADD_USER_TO_TEAM]},
+    {key: 'kick', label: defineMessage({id: 'fusion.roles.perm.kick', defaultMessage: 'Remove people'}), desc: defineMessage({id: 'fusion.roles.perm.kickDesc', defaultMessage: 'Remove people from the community.'}), permissions: [Permissions.REMOVE_USER_FROM_TEAM]},
+    {key: 'public', label: defineMessage({id: 'fusion.roles.perm.public', defaultMessage: 'Create public channels'}), desc: defineMessage({id: 'fusion.roles.perm.publicDesc', defaultMessage: 'Channels anyone in the community can join.'}), permissions: [Permissions.CREATE_PUBLIC_CHANNEL]},
     {key: 'private', label: defineMessage({id: 'fusion.roles.perm.private', defaultMessage: 'Create private channels'}), desc: defineMessage({id: 'fusion.roles.perm.privateDesc', defaultMessage: 'Channels for the people invited.'}), permissions: [Permissions.CREATE_PRIVATE_CHANNEL]},
     {key: 'channels', label: defineMessage({id: 'fusion.roles.perm.channels', defaultMessage: 'Manage channels'}), desc: defineMessage({id: 'fusion.roles.perm.channelsDesc', defaultMessage: 'Rename, convert and archive channels, and manage their members and admins.'}), permissions: [Permissions.MANAGE_PUBLIC_CHANNEL_PROPERTIES, Permissions.MANAGE_PRIVATE_CHANNEL_PROPERTIES, Permissions.DELETE_PUBLIC_CHANNEL, Permissions.DELETE_PRIVATE_CHANNEL, Permissions.MANAGE_PUBLIC_CHANNEL_MEMBERS, Permissions.MANAGE_PRIVATE_CHANNEL_MEMBERS, Permissions.MANAGE_CHANNEL_ROLES, Permissions.CONVERT_PUBLIC_CHANNEL_TO_PRIVATE, Permissions.CONVERT_PRIVATE_CHANNEL_TO_PUBLIC]},
     {key: 'messages', label: defineMessage({id: 'fusion.roles.perm.messages', defaultMessage: 'Manage messages'}), desc: defineMessage({id: 'fusion.roles.perm.messagesDesc', defaultMessage: 'Edit and delete other people\'s messages.'}), permissions: [Permissions.DELETE_OTHERS_POSTS, Permissions.EDIT_OTHERS_POSTS]},
@@ -357,7 +357,7 @@ function RoleEditor({role, onSave, onCancel, onMembersChanged}: EditorProps) {
             />
             <Toggle
                 title={formatMessage({id: 'fusion.roles.selfAssignable', defaultMessage: 'Anyone can take it'})}
-                desc={formatMessage({id: 'fusion.roles.selfAssignableDesc', defaultMessage: 'People of the team take or leave it themselves, in "Your roles" or through the onboarding.'})}
+                desc={formatMessage({id: 'fusion.roles.selfAssignableDesc', defaultMessage: 'People of the community take or leave it themselves, in "Your roles" or through the onboarding.'})}
                 on={draft.self_assignable}
                 onChange={(on) => set({self_assignable: on})}
             />
@@ -426,7 +426,7 @@ function RoleMembers({role, onChanged}: {role: Group; onChanged: () => void}) {
             <PeopleSearch
                 teamId={role.team_id || ''}
                 exclude={members}
-                placeholder={formatMessage({id: 'fusion.roles.addPeople', defaultMessage: 'Add people of the team…'})}
+                placeholder={formatMessage({id: 'fusion.roles.addPeople', defaultMessage: 'Add people of the community…'})}
                 onPick={add}
             />
             <div className={am('role-people')}>

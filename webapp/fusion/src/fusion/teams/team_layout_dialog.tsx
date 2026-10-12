@@ -24,7 +24,7 @@ const PRESET_TEXT: Array<{preset: Preset; title: MessageDescriptor; desc: Messag
     {
         preset: 'community',
         title: defineMessage({id: 'fusion.layout.community', defaultMessage: 'Community'}),
-        desc: defineMessage({id: 'fusion.layout.communityDesc', defaultMessage: 'Like Discord: categories the admins keep, and a Moderators role. To stop members creating channels, change the team\'s permissions in the System Console.'}),
+        desc: defineMessage({id: 'fusion.layout.communityDesc', defaultMessage: 'Like Discord: categories the admins keep, and a Moderators role. To stop members creating channels, change the community\'s permissions in the System Console.'}),
     },
     {
         preset: 'workplace',
@@ -87,7 +87,7 @@ export default function TeamLayoutDialog({onClose, first = false}: {onClose: () 
         }
         const template = parseTemplate(await file.text());
         if (!template) {
-            toast(formatMessage({id: 'fusion.layout.notTemplate', defaultMessage: 'That file isn\'t a team template'}));
+            toast(formatMessage({id: 'fusion.layout.notTemplate', defaultMessage: 'That file isn\'t a community template'}));
             return;
         }
         await apply(template);
@@ -95,14 +95,14 @@ export default function TeamLayoutDialog({onClose, first = false}: {onClose: () 
 
     return (
         <Dialog
-            label={formatMessage({id: 'fusion.layout.title', defaultMessage: 'Team layout'})}
+            label={formatMessage({id: 'fusion.layout.title', defaultMessage: 'Community layout'})}
             onClose={onClose}
             small={false}
             className={am('wide')}
         >
             <div className={am('pane', 'roles-pane')}>
-                <h2>{first ? formatMessage({id: 'fusion.layout.firstTitle', defaultMessage: 'Set up {team}'}, {team: team?.display_name}) : formatMessage({id: 'fusion.layout.title', defaultMessage: 'Team layout'})}</h2>
-                <p className={am('lead')}>{formatMessage({id: 'fusion.layout.lead', defaultMessage: 'Start from a preset, or from a template exported from another team. Applying it only removes the team categories it doesn\'t include.'})}</p>
+                <h2>{first ? formatMessage({id: 'fusion.layout.firstTitle', defaultMessage: 'Set up {team}'}, {team: team?.display_name}) : formatMessage({id: 'fusion.layout.title', defaultMessage: 'Community layout'})}</h2>
+                <p className={am('lead')}>{formatMessage({id: 'fusion.layout.lead', defaultMessage: 'Start from a preset, or from a template exported from another community. Applying it only removes the community categories it doesn\'t include.'})}</p>
                 <div
                     className={am('presets')}
                     role='radiogroup'
