@@ -397,7 +397,8 @@
 }
 :is(.am-app, .am-layer) .am-round:hover { background: var(--am-raise-2); }
 :is(.am-app, .am-layer) .am-round.am-off { background: var(--am-danger); color: #fff; }
-:is(.am-app, .am-layer) .am-round.am-on { background: var(--am-anti); color: #06232A; }
+/* Turned on (camera, screen, hand, captions...): the app's accent, as Fusion's other "on" states. */
+:is(.am-app, .am-layer) .am-round.am-on { background: var(--am-matter); color: #fff; }
 :is(.am-app, .am-layer) .am-round.am-hang { background: var(--am-danger); color: #fff; width: 64px; border-radius: 24px; }
 
 // A spoiler in a continuation message: its eye in the gutter shows it, or hides it again.

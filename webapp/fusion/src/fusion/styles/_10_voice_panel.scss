@@ -13,4 +13,4 @@
 :is(.am-app, .am-layer) .am-voice-conn .am-row button.am-off { background: rgba(242, 63, 67, 0.16); color: var(--am-danger); }
 :is(.am-app, .am-layer) .am-voice-conn .am-row button { height: 32px; border-radius: 8px; background: var(--am-raise); display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 13px; font-weight: 600; color: var(--am-text-2); }
 :is(.am-app, .am-layer) .am-voice-conn .am-row button:hover { background: var(--am-raise-2); color: var(--am-text); }
-:is(.am-app, .am-layer) .am-voice-conn .am-row button.am-on { background: var(--am-anti-soft); color: var(--am-anti); }
+:is(.am-app, .am-layer) .am-voice-conn .am-row button.am-on { background: var(--am-matter-soft); color: var(--am-matter); }
