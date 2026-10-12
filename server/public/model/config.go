@@ -2662,6 +2662,10 @@ type TeamSettings struct {
 	// Antimatter: the member list can group people by their role (admins, moderators). Off, it groups them by
 	// their team (user group) and status only.
 	MemberListRoleGroups *bool `access:"site_users_and_teams"`
+
+	// Antimatter: only channel, team and system admins can export a channel's messages. Off, everyone who can read a
+	// channel can.
+	RestrictChannelExportToAdmins *bool `access:"site_users_and_teams"`
 }
 
 func (s *TeamSettings) SetDefaults() {
@@ -2695,6 +2699,10 @@ func (s *TeamSettings) SetDefaults() {
 
 	if s.MemberListRoleGroups == nil {
 		s.MemberListRoleGroups = new(true)
+	}
+
+	if s.RestrictChannelExportToAdmins == nil {
+		s.RestrictChannelExportToAdmins = new(false)
 	}
 
 	if s.EnableLastActiveTime == nil {

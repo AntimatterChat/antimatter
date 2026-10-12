@@ -100,6 +100,7 @@ func (api *API) InitChannel() {
 	api.BaseRoutes.Channel.Handle("/restore", api.APISessionRequired(restoreChannel)).Methods(http.MethodPost)
 	api.BaseRoutes.Channel.Handle("", api.APISessionRequired(deleteChannel)).Methods(http.MethodDelete)
 	api.BaseRoutes.Channel.Handle("/stats", api.APISessionRequired(getChannelStats)).Methods(http.MethodGet)
+	api.BaseRoutes.Channel.Handle("/export", api.APISessionRequired(exportChannel)).Methods(http.MethodGet)
 	api.BaseRoutes.Channel.Handle("/pinned", api.APISessionRequired(getPinnedPosts)).Methods(http.MethodGet)
 	api.BaseRoutes.Channel.Handle("/timezones", api.APISessionRequired(getChannelMembersTimezones)).Methods(http.MethodGet)
 	api.BaseRoutes.Channel.Handle("/members_minus_group_members", api.APISessionRequired(channelMembersMinusGroupMembers)).Methods(http.MethodGet)

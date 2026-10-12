@@ -359,6 +359,18 @@ func (s SqlComplianceStore) MessageExport(rctx request.CTX, cursor model.Message
 	if cursor.UntilUpdateAt > 0 {
 		builder = builder.Where(sq.LtOrEq{"Posts.UpdateAt": cursor.UntilUpdateAt})
 	}
+	if cursor.ChannelId != "" {
+		builder = builder.Where(sq.Eq{"Posts.ChannelId": cursor.ChannelId})
+	}
+	if cursor.SinceCreateAt > 0 {
+		builder = builder.Where(sq.GtOrEq{"Posts.CreateAt": cursor.SinceCreateAt})
+	}
+	if cursor.UntilCreateAt > 0 {
+		builder = builder.Where(sq.LtOrEq{"Posts.CreateAt": cursor.UntilCreateAt})
+	}
+	if cursor.ExcludeDeleted {
+		builder = builder.Where(sq.Eq{"Posts.DeleteAt": 0})
+	}
 
 	cposts := []*model.MessageExport{}
 	if err := s.GetReplica().SelectBuilderCtx(rctx.Context(), &cposts, builder); err != nil {

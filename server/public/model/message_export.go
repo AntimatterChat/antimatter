@@ -39,6 +39,14 @@ type MessageExportCursor struct {
 	LastPostUpdateAt int64
 	LastPostId       string
 	UntilUpdateAt    int64
+
+	// Antimatter's channel export narrows the posts down to one channel's,
+	// created in [SinceCreateAt, UntilCreateAt] (0 leaves a bound open), and
+	// can leave out the deleted ones (and so the edit history).
+	ChannelId      string
+	SinceCreateAt  int64
+	UntilCreateAt  int64
+	ExcludeDeleted bool
 }
 
 // PreviewID returns the value of the post's previewed_post prop, if present, or an empty string.

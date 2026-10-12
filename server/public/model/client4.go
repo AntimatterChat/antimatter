@@ -2975,6 +2975,25 @@ func (c *Client4) GetChannelStats(ctx context.Context, channelId string, etag st
 	return DecodeJSONFromResponse[*ChannelStats](r)
 }
 
+// ExportChannel downloads the CSV export of a channel's messages created between since and until (milliseconds; 0
+// leaves a bound open).
+func (c *Client4) ExportChannel(ctx context.Context, channelId string, since, until int64) ([]byte, *Response, error) {
+	values := url.Values{}
+	values.Set("format", ChannelExportFormatCSV)
+	if since > 0 {
+		values.Set("since", strconv.FormatInt(since, 10))
+	}
+	if until > 0 {
+		values.Set("until", strconv.FormatInt(until, 10))
+	}
+	r, err := c.doAPIGetWithQuery(ctx, c.channelRoute(channelId).Join("export"), values, "")
+	if err != nil {
+		return nil, BuildResponse(r), err
+	}
+	defer closeBody(r)
+	return ReadBytesFromResponse(r)
+}
+
 // GetChannelsMemberCount get channel member count for a given array of channel ids
 func (c *Client4) GetChannelsMemberCount(ctx context.Context, channelIDs []string) (map[string]int64, *Response, error) {
 	r, err := c.doAPIPostJSON(ctx, c.channelsRoute().Join("stats", "member_count"), channelIDs)

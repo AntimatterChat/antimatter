@@ -1410,6 +1410,41 @@
     "description": "Ephemeral error shown when the /expand or /collapse slash command fails to save the preference; the raw error text is appended directly after this sentence."
   },
   {
+    "id": "api.command_export.days.app_error",
+    "translation": "Give a number of days, like /export 30, or nothing to export all the messages.",
+    "description": "Ephemeral error of the /export slash command when its argument is not a positive number of days; /export 30 is the command, not to translate."
+  },
+  {
+    "id": "api.command_export.desc",
+    "translation": "Export this channel's messages to a CSV file.",
+    "description": "Autocomplete description of the /export slash command, which exports the messages of the current channel to a CSV file sent in a direct message."
+  },
+  {
+    "id": "api.command_export.hint",
+    "translation": "[days]",
+    "description": "Autocomplete hint of the /export slash command: an optional number of days to export, counting back from now; keep the square brackets."
+  },
+  {
+    "id": "api.command_export.name",
+    "translation": "export",
+    "description": "Display name of the /export slash command; the command's trigger word, usually left untranslated."
+  },
+  {
+    "id": "api.command_export.send.app_error",
+    "translation": "The export couldn't be sent to you. Try again later.",
+    "description": "Ephemeral error of the /export slash command when the CSV file could not be posted in the user's direct messages with the system bot."
+  },
+  {
+    "id": "api.command_export.sent",
+    "translation": "The export is on its way: @{{.Bot}} sends it to you in a direct message.",
+    "description": "Ephemeral reply of the /export slash command; {{.Bot}} is the username of the system bot that sends the CSV file in a direct message."
+  },
+  {
+    "id": "api.command_export.too_large.app_error",
+    "translation": "There are more than {{.Max}} messages to export. Export fewer days, like /export 30.",
+    "description": "Ephemeral error of the /export slash command when the channel has too many messages in the range; {{.Max}} is the maximum number of messages; /export 30 is the command, not to translate."
+  },
+  {
     "id": "api.command_exportlink.desc",
     "translation": "Generate a link to download a export.",
     "description": "Autocomplete description for the /exportlink slash command (system admins only), which generates a download link for a compliance export file; 'export' is a noun."
@@ -7199,6 +7234,57 @@
     "id": "app.channel.user_belongs_to_channels.app_error",
     "translation": "Unable to determine if the user belongs to a list of channels.",
     "description": "API error when checking whether a user is a member of any of a given list of channels fails."
+  },
+  {
+    "id": "app.channel_export.admins_only.app_error",
+    "translation": "Only admins can export the messages of a channel on this server.",
+    "description": "Error when someone who is not a channel, team or system admin exports a channel while the system admins restrict channel exports to admins."
+  },
+  {
+    "id": "app.channel_export.failed.app_error",
+    "translation": "The channel couldn't be exported.",
+    "description": "Error when building a channel's export (a CSV file of its messages) fails on the server."
+  },
+  {
+    "id": "app.channel_export.format.app_error",
+    "translation": "Channels can't be exported as {{.Format}}. Use csv.",
+    "description": "Error when a channel export asks for an unsupported file format; {{.Format}} is the requested format; csv is the format's name, not to translate."
+  },
+  {
+    "id": "app.channel_export.permission.app_error",
+    "translation": "You can only export the channels you can read.",
+    "description": "Error when someone exports a channel they cannot read."
+  },
+  {
+    "id": "app.channel_export.range.app_error",
+    "translation": "The date range of the export isn't valid.",
+    "description": "Error when a channel export's start is after its end, or one of them is negative."
+  },
+  {
+    "id": "app.channel_export.sent",
+    "translation": {
+      "one": "Here's the export of ~{{.Channel}}: {{.Count}} message.",
+      "other": "Here's the export of ~{{.Channel}}: {{.Count}} messages."
+    },
+    "description": "Message of the system bot with a channel's export (a CSV file) attached, in a direct message to the person who ran /export; ~{{.Channel}} is the channel's name, shown as a link; {{.Count}} is the number of messages in the file."
+  },
+  {
+    "id": "app.channel_export.sent_conversation",
+    "translation": {
+      "one": "Here's the export of the conversation: {{.Count}} message.",
+      "other": "Here's the export of the conversation: {{.Count}} messages."
+    },
+    "description": "Message of the system bot with the export (a CSV file) of a direct or group message conversation attached, sent to the person who ran /export; {{.Count}} is the number of messages in the file."
+  },
+  {
+    "id": "app.channel_export.too_large.app_error",
+    "translation": "There are more than {{.Max}} messages to export. Choose a shorter date range.",
+    "description": "Error when a channel has too many messages in the date range of an export; {{.Max}} is the maximum number of messages in one export."
+  },
+  {
+    "id": "app.channel_export.unavailable.app_error",
+    "translation": "Channel export isn't available on this server.",
+    "description": "Error when the server was built without the channel exporter."
   },
   {
     "id": "app.channel_guard.invalid_channel.app_error",

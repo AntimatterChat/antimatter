@@ -228,6 +228,7 @@ const (
 const (
 	AuditEventBulkExport               = "bulkExport"               // bulk export data to a file
 	AuditEventDeleteExport             = "deleteExport"             // delete exported file
+	AuditEventExportChannel            = "exportChannel"            // export a channel's messages (Antimatter)
 	AuditEventGeneratePresignURLExport = "generatePresignURLExport" // generate presigned URL to download the exported file
 	AuditEventScheduleExport           = "scheduleExport"           // schedule export job
 )

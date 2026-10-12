@@ -44,6 +44,7 @@ func init() {
 	app.RegisterMessageExportInterface(func(a *app.App) einterfaces.MessageExportInterface {
 		return &MessageExport{deps: func() Deps { return serverDeps(a.Srv()) }}
 	})
+	app.RegisterChannelExporter(ExportChannelCSV)
 }
 
 func serverDeps(s *app.Server) Deps {
