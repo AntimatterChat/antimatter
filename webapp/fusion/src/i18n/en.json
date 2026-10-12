@@ -26587,6 +26587,26 @@
     "defaultMessage": "Copy username",
     "description": ""
   },
+  "fusion.userMenu.invite": {
+    "defaultMessage": "Invite to a community",
+    "description": ""
+  },
+  "fusion.userMenu.inviteAlready": {
+    "defaultMessage": "{name} is already in {community}",
+    "description": ""
+  },
+  "fusion.userMenu.invited": {
+    "defaultMessage": "{name} was added to {community}",
+    "description": ""
+  },
+  "fusion.userMenu.inviteFailed": {
+    "defaultMessage": "{name} couldn't be added to {community}",
+    "description": ""
+  },
+  "fusion.userMenu.inviteMenu": {
+    "defaultMessage": "Communities",
+    "description": ""
+  },
   "fusion.userMenu.liftTimeout": {
     "defaultMessage": "Remove timeout",
     "description": ""

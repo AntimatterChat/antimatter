@@ -3,13 +3,17 @@
 
 import React, {useCallback, useState} from 'react';
 import {useIntl} from 'react-intl';
-import {useDispatch, useSelector} from 'react-redux';
+import {shallowEqual, useDispatch, useSelector} from 'react-redux';
+
+import type {Team} from '@mattermost/types/teams';
 
 import {removeChannelMember} from 'mattermost-redux/actions/channels';
+import {addUserToTeam} from 'mattermost-redux/actions/teams';
+import {Client4} from 'mattermost-redux/client';
 import {Permissions} from 'mattermost-redux/constants';
 import {canManageAnyChannelMembersInCurrentTeam, getCurrentChannel} from 'mattermost-redux/selectors/entities/channels';
 import {haveIChannelPermission, haveITeamPermission, getMemberTimeout} from 'mattermost-redux/selectors/entities/roles';
-import {getCurrentTeam, getTeamMember} from 'mattermost-redux/selectors/entities/teams';
+import {getCurrentTeam, getMyTeams, getTeamMember} from 'mattermost-redux/selectors/entities/teams';
 import {getCurrentUserId} from 'mattermost-redux/selectors/entities/users';
 
 import {openDirectChannelToUserId} from 'actions/channel_actions';
@@ -17,7 +21,7 @@ import {openDirectChannelToUserId} from 'actions/channel_actions';
 import AddUserToChannelModal from 'components/add_user_to_channel_modal';
 
 import {Popover} from 'fusion/components/layer';
-import {MenuItem, MenuSeparator} from 'fusion/components/menu';
+import {Flyout, MenuItem, MenuSeparator} from 'fusion/components/menu';
 import {useDisplayName, useUser} from 'fusion/hooks/users';
 import {canModerateTeam, openModView, timeOutMember} from 'fusion/moderation/moderation';
 import CopyIdItem from 'fusion/popovers/copy_id_item';
@@ -72,10 +76,40 @@ export function UserMenu({target, onProfile, onClose}: {target: Target; onProfil
     const timedOut = useSelector((state: GlobalState) => Boolean(team) && Boolean(getMemberTimeout(state, team!.id, userId)));
     const dialogs = useDialogs();
 
+    // The other communities this person could be invited to: those you're in and may add people to, where they aren't
+    // known to be a member (archived communities and those synced to LDAP groups take nobody by hand).
+    const inviteTargets = useSelector((state: GlobalState) => {
+        if (userId === me) {
+            return [];
+        }
+        return getMyTeams(state).filter((t) => {
+            const member = getTeamMember(state, t.id, userId);
+            return t.id !== team?.id && !t.delete_at && !t.group_constrained && !(member && member.delete_at === 0) &&
+                haveITeamPermission(state, t.id, Permissions.ADD_USER_TO_TEAM);
+        });
+    }, shallowEqual);
+
     if (!user) {
         return null;
     }
     const isMe = userId === me;
+    const inviteTo = async (target: Team) => {
+        const community = target.display_name;
+        try {
+            // Asking first tells an invitation from someone already there, whom adding again would silently keep.
+            await Client4.getTeamMember(target.id, userId);
+            toast(formatMessage({id: 'fusion.userMenu.inviteAlready', defaultMessage: '{name} is already in {community}'}, {name, community}));
+            return;
+        } catch {
+            // Not a member: add them below.
+        }
+        const result = await dispatch(addUserToTeam(target.id, userId));
+        if ('error' in result && result.error) {
+            toast((result.error as {message?: string}).message || formatMessage({id: 'fusion.userMenu.inviteFailed', defaultMessage: '{name} couldn\'t be added to {community}'}, {name, community}));
+            return;
+        }
+        toast(formatMessage({id: 'fusion.userMenu.invited', defaultMessage: '{name} was added to {community}'}, {name, community}));
+    };
     const run = (action: () => void) => () => {
         onClose();
         action();
@@ -135,6 +169,21 @@ export function UserMenu({target, onProfile, onClose}: {target: Target; onProfil
                     label={formatMessage({id: 'fusion.profile.addToChannel', defaultMessage: 'Add to a channel'})}
                     onClick={run(() => dispatch(openDialog(ModalIdentifiers.ADD_USER_TO_CHANNEL, AddUserToChannelModal, {user})))}
                 />
+            )}
+            {inviteTargets.length > 0 && (
+                <Flyout
+                    icon='users'
+                    label={formatMessage({id: 'fusion.userMenu.invite', defaultMessage: 'Invite to a community'})}
+                    menuLabel={formatMessage({id: 'fusion.userMenu.inviteMenu', defaultMessage: 'Communities'})}
+                >
+                    {inviteTargets.map((t) => (
+                        <MenuItem
+                            key={t.id}
+                            label={t.display_name}
+                            onClick={run(() => inviteTo(t))}
+                        />
+                    ))}
+                </Flyout>
             )}
             <MenuItem
                 icon='at'
