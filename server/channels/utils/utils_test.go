@@ -54,150 +54,38 @@ func TestStringSliceDiff(t *testing.T) {
 }
 
 func TestGetIPAddress(t *testing.T) {
-	t.Run("Single IP in the X-Forwarded-For", func(t *testing.T) {
-		httpRequest1 := http.Request{
-			Header: http.Header{
-				"X-Forwarded-For": []string{"10.0.0.1"},
-				"X-Real-Ip":       []string{"10.1.0.1"},
-			},
-			RemoteAddr: "10.2.0.1:12345",
-		}
-
-		assert.Equal(t, "10.0.0.1", GetIPAddress(&httpRequest1, []string{"X-Forwarded-For"}))
-	})
-
-	t.Run("Multiple IPs in the X-Forwarded-For", func(t *testing.T) {
-		httpRequest2 := http.Request{
-			Header: http.Header{
-				"X-Forwarded-For": []string{"10.0.0.1,  10.0.0.2, 10.0.0.3"},
-				"X-Real-Ip":       []string{"10.1.0.1"},
-			},
-			RemoteAddr: "10.2.0.1:12345",
-		}
-
-		assert.Equal(t, "10.0.0.1", GetIPAddress(&httpRequest2, []string{"X-Forwarded-For"}))
-	})
-
-	t.Run("Empty X-Forwarded-For", func(t *testing.T) {
-		httpRequest3 := http.Request{
-			Header: http.Header{
-				"X-Forwarded-For": []string{""},
-				"X-Real-Ip":       []string{"10.1.0.1"},
-			},
-			RemoteAddr: "10.2.0.1:12345",
-		}
-
-		assert.Equal(t, "10.1.0.1", GetIPAddress(&httpRequest3, []string{"X-Forwarded-For", "X-Real-Ip"}))
-	})
-
-	t.Run("Without an X-Forwarded-For", func(t *testing.T) {
-		httpRequest4 := http.Request{
-			Header: http.Header{
-				"X-Real-Ip": []string{"10.1.0.1"},
-			},
-			RemoteAddr: "10.2.0.1:12345",
-		}
-
-		assert.Equal(t, "10.1.0.1", GetIPAddress(&httpRequest4, []string{"X-Forwarded-For", "X-Real-Ip"}))
-	})
-
-	t.Run("Without any headers", func(t *testing.T) {
-		httpRequest5 := http.Request{
-			RemoteAddr: "10.2.0.1:12345",
-		}
-
-		assert.Equal(t, "10.2.0.1", GetIPAddress(&httpRequest5, []string{"X-Forwarded-For", "X-Real-Ip"}))
-	})
-
-	t.Run("Two headers, but both untrusted", func(t *testing.T) {
-		httpRequest6 := http.Request{
-			Header: http.Header{
-				"X-Forwarded-For": []string{"10.3.0.1"},
-				"X-Real-Ip":       []string{"10.1.0.1"},
-			},
-			RemoteAddr: "10.2.0.1:12345",
-		}
-
-		assert.Equal(t, "10.2.0.1", GetIPAddress(&httpRequest6, nil))
-	})
-
-	t.Run("Two headers, but only X-Real-Ip trusted", func(t *testing.T) {
-		httpRequest7 := http.Request{
-			Header: http.Header{
-				"X-Forwarded-For": []string{"10.3.0.1"},
-				"X-Real-Ip":       []string{"10.1.0.1"},
-			},
-			RemoteAddr: "10.2.0.1:12345",
-		}
-
-		assert.Equal(t, "10.1.0.1", GetIPAddress(&httpRequest7, []string{"X-Real-Ip"}))
-	})
-
-	t.Run("X-Forwarded-For, comma separated, untrusted", func(t *testing.T) {
-		httpRequest8 := http.Request{
-			Header: http.Header{
-				"X-Forwarded-For": []string{"10.3.0.1, 10.1.0.1"},
-			},
-			RemoteAddr: "10.2.0.1:12345",
-		}
-
-		assert.Equal(t, "10.2.0.1", GetIPAddress(&httpRequest8, nil))
-	})
-
-	t.Run("X-Forwarded-For, comma separated, untrusted", func(t *testing.T) {
-		httpRequest9 := http.Request{
-			Header: http.Header{
-				"X-Forwarded-For": []string{"10.3.0.1, 10.1.0.1"},
-			},
-			RemoteAddr: "10.2.0.1:12345",
-		}
-
-		assert.Equal(t, "10.3.0.1", GetIPAddress(&httpRequest9, []string{"X-Forwarded-For"}))
-	})
-
-	t.Run("Two headers, both allowed, first one in trusted used", func(t *testing.T) {
-		httpRequest10 := http.Request{
-			Header: http.Header{
-				"X-Forwarded-For": []string{"10.3.0.1"},
-				"X-Real-Ip":       []string{"10.1.0.1"},
-			},
-			RemoteAddr: "10.2.0.1:12345",
-		}
-
-		assert.Equal(t, "10.1.0.1", GetIPAddress(&httpRequest10, []string{"X-Real-Ip", "X-Forwarded-For"}))
-	})
-
-	t.Run("Multiple IPs in the X-Forwarded-For with no spaces", func(t *testing.T) {
-		httpRequest11 := http.Request{
-			Header: http.Header{
-				"X-Forwarded-For": []string{"10.0.0.1,10.0.0.2,10.0.0.3"},
-				"X-Real-Ip":       []string{"10.1.0.1"},
-			},
-			RemoteAddr: "10.2.0.1:12345",
-		}
-
-		assert.Equal(t, "10.0.0.1", GetIPAddress(&httpRequest11, []string{"X-Forwarded-For"}))
-	})
-
-	t.Run("Make sure that the parsed value from headers only accept IP Addresses", func(t *testing.T) {
-		httpRequest12 := http.Request{
-			Header: http.Header{
-				"X-Forwarded-For": []string{"127.0.0.1"},
-			},
-			RemoteAddr: "10.2.0.1:12345",
-		}
-
-		assert.Equal(t, "127.0.0.1", GetIPAddress(&httpRequest12, []string{"X-Forwarded-For"}))
-
-		httpRequest13 := http.Request{
-			Header: http.Header{
-				"X-Forwarded-For": []string{"localhost"},
-			},
-			RemoteAddr: "10.2.0.1:12345",
-		}
-
-		assert.Equal(t, "10.2.0.1", GetIPAddress(&httpRequest13, []string{"X-Forwarded-For"}))
-	})
+	xff := []string{"X-Forwarded-For"}
+	both := []string{"X-Forwarded-For", "X-Real-Ip"}
+	for _, tc := range []struct {
+		name    string
+		headers map[string]string
+		remote  string
+		trusted []string // headers honoured
+		proxies []string // trusted proxies
+		want    string
+	}{
+		{name: "no headers configured: the connection's address", headers: map[string]string{"X-Forwarded-For": "10.0.0.1"}, remote: "10.2.0.1:12345", want: "10.2.0.1"},
+		{name: "a single proxy's address", headers: map[string]string{"X-Forwarded-For": "10.0.0.1"}, remote: "10.2.0.1:12345", trusted: xff, want: "10.0.0.1"},
+		{name: "a forged address on the left is ignored", headers: map[string]string{"X-Forwarded-For": "1.2.3.4, 10.0.0.1"}, remote: "10.2.0.1:12345", trusted: xff, want: "10.0.0.1"},
+		{name: "no spaces between addresses", headers: map[string]string{"X-Forwarded-For": "10.0.0.1,10.0.0.2,10.0.0.3"}, remote: "10.2.0.1:12345", trusted: xff, want: "10.0.0.3"},
+		{name: "the first header present wins", headers: map[string]string{"X-Real-Ip": "10.1.0.1"}, remote: "10.2.0.1:12345", trusted: both, want: "10.1.0.1"},
+		{name: "headers not configured are ignored", headers: map[string]string{"X-Forwarded-For": "10.3.0.1", "X-Real-Ip": "10.1.0.1"}, remote: "10.2.0.1:12345", trusted: []string{"X-Real-Ip"}, want: "10.1.0.1"},
+		{name: "values that aren't addresses are skipped", headers: map[string]string{"X-Forwarded-For": "10.0.0.1, localhost"}, remote: "10.2.0.1:12345", trusted: xff, want: "10.0.0.1"},
+		{name: "nothing usable: the connection's address", headers: map[string]string{"X-Forwarded-For": "localhost"}, remote: "10.2.0.1:12345", trusted: xff, want: "10.2.0.1"},
+		{name: "trusted proxies are skipped from the right", headers: map[string]string{"X-Forwarded-For": "1.2.3.4, 203.0.113.9, 172.16.0.5"}, remote: "10.2.0.1:12345", trusted: xff, proxies: []string{"10.0.0.0/8", "172.16.0.0/12"}, want: "203.0.113.9"},
+		{name: "a CDN and a proxy", headers: map[string]string{"X-Forwarded-For": "203.0.113.9, 198.51.100.7"}, remote: "10.2.0.1:12345", trusted: xff, proxies: []string{"10.2.0.1", "198.51.100.0/24"}, want: "203.0.113.9"},
+		{name: "headers from an untrusted peer are ignored", headers: map[string]string{"X-Forwarded-For": "203.0.113.9"}, remote: "192.0.2.50:12345", trusted: xff, proxies: []string{"10.0.0.0/8"}, want: "192.0.2.50"},
+		{name: "only trusted proxies: the left-most", headers: map[string]string{"X-Forwarded-For": "10.0.0.7, 10.0.0.8"}, remote: "10.2.0.1:12345", trusted: xff, proxies: []string{"10.0.0.0/8"}, want: "10.0.0.7"},
+		{name: "IPv6", headers: map[string]string{"X-Forwarded-For": "2001:db8::1, fd00::2"}, remote: "[fd00::1]:12345", trusted: xff, proxies: []string{"fd00::/8"}, want: "2001:db8::1"},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			r := &http.Request{Header: http.Header{}, RemoteAddr: tc.remote}
+			for k, v := range tc.headers {
+				r.Header.Set(k, v)
+			}
+			assert.Equal(t, tc.want, GetIPAddress(r, tc.trusted, tc.proxies))
+		})
+	}
 }
 
 func TestRemoveStringFromSlice(t *testing.T) {

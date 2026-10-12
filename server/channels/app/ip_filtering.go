@@ -17,7 +17,18 @@ import (
 // ClientIPAddress returns the address of the client that sent r, honouring the
 // configured trusted proxy headers.
 func (s *Server) ClientIPAddress(r *http.Request) string {
-	return utils.GetIPAddress(r, s.platform.Config().ServiceSettings.TrustedProxyIPHeader)
+	return utils.GetIPAddress(r, s.platform.Config().ServiceSettings.TrustedProxyIPHeader, s.platform.Config().ServiceSettings.TrustedProxyIPs)
+}
+
+// warnUntrustedProxyHeader warns when proxy headers are honoured without a list of trusted proxies: the right-most
+// address of the header is then taken as the client's, which is only right behind a single proxy. Behind several
+// (a CDN and a load balancer, say), it is the outer proxy's address, and IP filtering and rate limits see that.
+func (s *Server) warnUntrustedProxyHeader() {
+	settings := s.platform.Config().ServiceSettings
+	if len(settings.TrustedProxyIPHeader) > 0 && len(settings.TrustedProxyIPs) == 0 {
+		s.Log().Warn("ServiceSettings.TrustedProxyIPHeader is set without ServiceSettings.TrustedProxyIPs: the right-most address of the header is taken as the client's, which is only right behind a single proxy. List your proxies' addresses or ranges in TrustedProxyIPs.",
+			mlog.Array("trusted_proxy_ip_header", settings.TrustedProxyIPHeader))
+	}
 }
 
 // updateIPFilter puts the IP filtering rules of cfg in force.

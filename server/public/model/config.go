@@ -410,6 +410,7 @@ type ServiceSettings struct {
 	LetsEncryptCertificateCacheFile        *string  `access:"environment_web_server,write_restrictable,cloud_restrictable"` // telemetry: none
 	Forward80To443                         *bool    `access:"environment_web_server,write_restrictable,cloud_restrictable"`
 	TrustedProxyIPHeader                   []string `access:"write_restrictable,cloud_restrictable"` // telemetry: none
+	TrustedProxyIPs                        []string `access:"write_restrictable,cloud_restrictable"` // telemetry: none
 	ReadTimeout                            *int     `access:"environment_web_server,write_restrictable,cloud_restrictable"`
 	WriteTimeout                           *int     `access:"environment_web_server,write_restrictable,cloud_restrictable"`
 	IdleTimeout                            *int     `access:"write_restrictable,cloud_restrictable"`
@@ -721,6 +722,10 @@ func (s *ServiceSettings) SetDefaults(isUpdate bool) {
 
 	if s.TrustedProxyIPHeader == nil {
 		s.TrustedProxyIPHeader = []string{}
+	}
+
+	if s.TrustedProxyIPs == nil {
+		s.TrustedProxyIPs = []string{}
 	}
 
 	if s.TimeBetweenUserTypingUpdatesMilliseconds == nil {
@@ -5205,6 +5210,13 @@ func (s *SamlSettings) isValid() *AppError {
 }
 
 func (s *ServiceSettings) isValid() *AppError {
+	for _, proxy := range s.TrustedProxyIPs {
+		proxy = strings.TrimSpace(proxy)
+		if _, _, err := net.ParseCIDR(proxy); err != nil && net.ParseIP(proxy) == nil {
+			return NewAppError("Config.IsValid", "model.config.is_valid.trusted_proxy_ips.app_error", map[string]any{"Value": proxy}, "", http.StatusBadRequest)
+		}
+	}
+
 	if *s.SiteURL == "" && *s.AllowCookiesForSubdomains {
 		return NewAppError("Config.IsValid", "model.config.is_valid.allow_cookies_for_subdomains.app_error", nil, "", http.StatusBadRequest)
 	}

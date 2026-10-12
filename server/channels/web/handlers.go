@@ -196,7 +196,7 @@ func (h Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	c.AppContext = request.NewContext(
 		context.Background(),
 		requestID,
-		utils.GetIPAddress(r, c.App.Config().ServiceSettings.TrustedProxyIPHeader),
+		utils.GetIPAddress(r, c.App.Config().ServiceSettings.TrustedProxyIPHeader, c.App.Config().ServiceSettings.TrustedProxyIPs),
 		r.Header.Get("X-Forwarded-For"),
 		r.URL.Path,
 		r.UserAgent(),

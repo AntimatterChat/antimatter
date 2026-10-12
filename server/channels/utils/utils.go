@@ -91,26 +91,88 @@ func RemoveElementFromSliceAtIndex[S ~[]E, E any](slice S, index int) S {
 	return slices.Delete(slice, index, index+1)
 }
 
-func GetIPAddress(r *http.Request, trustedProxyIPHeader []string) string {
-	address := ""
+// GetIPAddress returns the address of the client that sent r.
+//
+// Without trusted proxy headers it is the connection's remote address. With them, the first header present gives a
+// list of addresses, which every proxy on the way extends on the right with the address it received the request
+// from: the client's own entries, on the left, can be anything it likes. So the list is read from the right, past
+// the addresses of trusted proxies, and the first other address is the client. When trustedProxies lists some
+// (addresses or CIDR ranges), the headers only count for requests coming from one of them. Without it, the
+// right-most address is taken, which is right behind a single proxy.
+func GetIPAddress(r *http.Request, trustedProxyIPHeader []string, trustedProxies []string) string {
+	remote, _, err := net.SplitHostPort(r.RemoteAddr)
+	if err != nil {
+		remote = r.RemoteAddr
+	}
+	if len(trustedProxyIPHeader) == 0 {
+		return remote
+	}
+
+	proxies := parseTrustedProxies(trustedProxies)
+	if len(proxies) > 0 && !isTrustedProxy(net.ParseIP(remote), proxies) {
+		return remote
+	}
 
 	for _, proxyHeader := range trustedProxyIPHeader {
 		header := r.Header.Get(proxyHeader)
-		if header != "" {
-			addresses := strings.Split(header, ",")
-			if len(addresses) > 0 {
-				address = strings.TrimSpace(addresses[0])
+		if header == "" {
+			continue
+		}
+		addresses := strings.Split(header, ",")
+		leftmost := ""
+		for i := len(addresses) - 1; i >= 0; i-- {
+			address := strings.TrimSpace(addresses[i])
+			ip := net.ParseIP(address)
+			if ip == nil {
+				continue
+			}
+			leftmost = address
+			if !isTrustedProxy(ip, proxies) {
+				return address
 			}
 		}
-
-		if address != "" && net.ParseIP(address) != nil {
-			return address
+		// Every address is a trusted proxy's: the left-most one is as close to the client as we know.
+		if leftmost != "" {
+			return leftmost
 		}
 	}
 
-	host, _, _ := net.SplitHostPort(r.RemoteAddr)
+	return remote
+}
 
-	return host
+// parseTrustedProxies reads a list of trusted proxies' addresses and CIDR ranges, skipping invalid entries
+// (the configuration refuses them).
+func parseTrustedProxies(entries []string) []*net.IPNet {
+	var nets []*net.IPNet
+	for _, entry := range entries {
+		entry = strings.TrimSpace(entry)
+		if !strings.Contains(entry, "/") {
+			if ip := net.ParseIP(entry); ip != nil {
+				bits := 128
+				if ip.To4() != nil {
+					ip, bits = ip.To4(), 32
+				}
+				nets = append(nets, &net.IPNet{IP: ip, Mask: net.CIDRMask(bits, bits)})
+			}
+			continue
+		}
+		if _, n, err := net.ParseCIDR(entry); err == nil {
+			nets = append(nets, n)
+		}
+	}
+	return nets
+}
+
+func isTrustedProxy(ip net.IP, proxies []*net.IPNet) bool {
+	if ip == nil {
+		return false
+	}
+	for _, n := range proxies {
+		if n.Contains(ip) {
+			return true
+		}
+	}
+	return false
 }
 
 func GetHostnameFromSiteURL(siteURL string) string {

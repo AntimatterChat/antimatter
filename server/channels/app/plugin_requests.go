@@ -162,7 +162,7 @@ func (ch *Channels) servePluginRequest(w http.ResponseWriter, r *http.Request, h
 
 	context := &plugin.Context{
 		RequestId:      model.NewId(),
-		IPAddress:      utils.GetIPAddress(r, ch.cfgSvc.Config().ServiceSettings.TrustedProxyIPHeader),
+		IPAddress:      utils.GetIPAddress(r, ch.cfgSvc.Config().ServiceSettings.TrustedProxyIPHeader, ch.cfgSvc.Config().ServiceSettings.TrustedProxyIPs),
 		AcceptLanguage: r.Header.Get("Accept-Language"),
 		UserAgent:      r.UserAgent(),
 		ConnectionId:   r.Header.Get(model.ConnectionId),
@@ -213,7 +213,7 @@ func (ch *Channels) servePluginRequest(w http.ResponseWriter, r *http.Request, h
 			mlog.String("path", r.URL.Path),
 			mlog.String("method", r.Method),
 			mlog.String("request_id", context.RequestId),
-			mlog.String("ip_addr", utils.GetIPAddress(r, app.Config().ServiceSettings.TrustedProxyIPHeader)),
+			mlog.String("ip_addr", utils.GetIPAddress(r, app.Config().ServiceSettings.TrustedProxyIPHeader, app.Config().ServiceSettings.TrustedProxyIPs)),
 		),
 	).WithPath(r.URL.Path)
 

@@ -145,7 +145,7 @@ func TestRateLimitingVaryByUser(t *testing.T) {
 		VaryByRemoteAddr: new(false),
 		VaryByUser:       new(true),
 		VaryByHeader:     "",
-	}, nil)
+	}, nil, nil)
 	require.NoError(t, err)
 	th.App.Srv().RateLimiter = rl
 

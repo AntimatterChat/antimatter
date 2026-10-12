@@ -16010,6 +16010,10 @@
     "description": "Config validation error shown to system admins when a value in the TLS cipher override list is not a supported cipher name; points to documentation."
   },
   {
+    "id": "model.config.is_valid.trusted_proxy_ips.app_error",
+    "translation": "Invalid trusted proxy \"{{.Value}}\": use an IP address or a CIDR range."
+  },
+  {
     "id": "model.config.is_valid.user_status_away_timeout.app_error",
     "translation": "Invalid value for user status away timeout. Must be a positive number.",
     "description": "Config validation error shown to system admins for the inactivity timeout after which users are shown as Away; must be a positive number."

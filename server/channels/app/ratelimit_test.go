@@ -32,11 +32,11 @@ func genRateLimitSettings(useAuth, useIP bool, header string) *model.RateLimitSe
 func TestNewRateLimiterSuccess(t *testing.T) {
 	mainHelper.Parallel(t)
 	settings := genRateLimitSettings(false, false, "")
-	rateLimiter, err := NewRateLimiter(settings, nil)
+	rateLimiter, err := NewRateLimiter(settings, nil, nil)
 	require.NotNil(t, rateLimiter)
 	require.NoError(t, err)
 
-	rateLimiter, err = NewRateLimiter(settings, []string{"X-Forwarded-For"})
+	rateLimiter, err = NewRateLimiter(settings, []string{"X-Forwarded-For"}, nil)
 	require.NotNil(t, rateLimiter)
 	require.NoError(t, err)
 }
@@ -45,11 +45,11 @@ func TestNewRateLimiterFailure(t *testing.T) {
 	mainHelper.Parallel(t)
 	invalidSettings := genRateLimitSettings(false, false, "")
 	invalidSettings.MaxBurst = new(-100)
-	rateLimiter, err := NewRateLimiter(invalidSettings, nil)
+	rateLimiter, err := NewRateLimiter(invalidSettings, nil, nil)
 	require.Nil(t, rateLimiter)
 	require.Error(t, err)
 
-	rateLimiter, err = NewRateLimiter(invalidSettings, []string{"X-Forwarded-For", "X-Real-Ip"})
+	rateLimiter, err = NewRateLimiter(invalidSettings, []string{"X-Forwarded-For", "X-Real-Ip"}, nil)
 	require.Nil(t, rateLimiter)
 	require.Error(t, err)
 }
@@ -88,7 +88,7 @@ func TestGenerateKey(t *testing.T) {
 			req.Header.Set(tc.header, tc.headerResult)
 		}
 
-		rateLimiter, _ := NewRateLimiter(genRateLimitSettings(tc.useAuth, tc.useIP, tc.header), nil)
+		rateLimiter, _ := NewRateLimiter(genRateLimitSettings(tc.useAuth, tc.useIP, tc.header), nil, nil)
 
 		key := rateLimiter.GenerateKey(req)
 
@@ -102,11 +102,11 @@ func TestGenerateKey_TrustedHeader(t *testing.T) {
 	req.RemoteAddr = "10.10.10.5:80"
 	req.Header.Set("X-Forwarded-For", "10.6.3.1, 10.5.1.2")
 
-	rateLimiter, _ := NewRateLimiter(genRateLimitSettings(true, true, ""), []string{"X-Forwarded-For"})
+	rateLimiter, _ := NewRateLimiter(genRateLimitSettings(true, true, ""), []string{"X-Forwarded-For"}, nil)
 	key := rateLimiter.GenerateKey(req)
 	require.Equal(t, "10.6.3.1", key, "Wrong key on test with allowed trusted proxy header")
 
-	rateLimiter, _ = NewRateLimiter(genRateLimitSettings(true, true, ""), nil)
+	rateLimiter, _ = NewRateLimiter(genRateLimitSettings(true, true, ""), nil, nil)
 	key = rateLimiter.GenerateKey(req)
 	require.Equal(t, "10.10.10.5", key, "Wrong key on test without allowed trusted proxy header")
 }
@@ -128,7 +128,7 @@ func TestRateLimitWriter(t *testing.T) {
 
 	// PerSec=1, MaxBurst=2 → effective limit of 3 (burst + 1)
 	settings := genRateLimitSettingsWithBurst(false, false, "", 1, 2)
-	rl, err := NewRateLimiter(settings, nil)
+	rl, err := NewRateLimiter(settings, nil, nil)
 	require.NoError(t, err)
 
 	t.Run("requests within burst succeed", func(t *testing.T) {
@@ -171,7 +171,7 @@ func TestUserIdRateLimit(t *testing.T) {
 	t.Run("useAuth true rate limits by userId", func(t *testing.T) {
 		// PerSec=1, MaxBurst=1 → effective limit of 2
 		settings := genRateLimitSettingsWithBurst(true, false, "", 1, 1)
-		rl, err := NewRateLimiter(settings, nil)
+		rl, err := NewRateLimiter(settings, nil, nil)
 		require.NoError(t, err)
 
 		for i := range 2 {
@@ -194,7 +194,7 @@ func TestUserIdRateLimit(t *testing.T) {
 
 	t.Run("useAuth false never rate limits", func(t *testing.T) {
 		settings := genRateLimitSettingsWithBurst(false, false, "", 1, 0)
-		rl, err := NewRateLimiter(settings, nil)
+		rl, err := NewRateLimiter(settings, nil, nil)
 		require.NoError(t, err)
 
 		for i := range 5 {
@@ -210,7 +210,7 @@ func TestRateLimitHandler(t *testing.T) {
 
 	// PerSec=1, MaxBurst=1, VaryByRemoteAddr=true → effective limit of 2
 	settings := genRateLimitSettingsWithBurst(false, true, "", 1, 1)
-	rl, err := NewRateLimiter(settings, nil)
+	rl, err := NewRateLimiter(settings, nil, nil)
 	require.NoError(t, err)
 
 	var handlerCalled bool

@@ -116,7 +116,7 @@ func (a *App) ProcessSessionAttributesRequest(rctx request.CTX, r *http.Request)
 		case model.SessionAttributesPropertyFieldUserAgentBrowserVersion:
 			v = getBrowserVersion(ua, uaStr)
 		case model.SessionAttributesPropertyFieldIPAddress:
-			v = utils.GetIPAddress(r, a.Config().ServiceSettings.TrustedProxyIPHeader)
+			v = utils.GetIPAddress(r, a.Config().ServiceSettings.TrustedProxyIPHeader, a.Config().ServiceSettings.TrustedProxyIPs)
 		}
 		if v == "" || !validatedSessionAttributeField(fieldsByName, name, platform, v) {
 			continue

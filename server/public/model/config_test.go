@@ -4593,3 +4593,19 @@ func TestSupportSettingsMattermostLinks(t *testing.T) {
 		require.Equal(t, "https://wiki.example.com/chat", *s.HelpLink)
 	})
 }
+
+func TestTrustedProxyIPsValidation(t *testing.T) {
+	cfg := &Config{}
+	cfg.SetDefaults()
+	assert.Empty(t, cfg.ServiceSettings.TrustedProxyIPs)
+
+	cfg.ServiceSettings.TrustedProxyIPs = []string{"10.0.0.1", "172.16.0.0/12", " fd00::/8 "}
+	require.Nil(t, cfg.ServiceSettings.isValid())
+
+	for _, bad := range []string{"proxy.example.com", "10.0.0.0/33", ""} {
+		cfg.ServiceSettings.TrustedProxyIPs = []string{bad}
+		appErr := cfg.ServiceSettings.isValid()
+		require.NotNil(t, appErr, bad)
+		assert.Equal(t, "model.config.is_valid.trusted_proxy_ips.app_error", appErr.Id)
+	}
+}

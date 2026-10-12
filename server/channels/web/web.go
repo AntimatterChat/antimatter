@@ -80,7 +80,7 @@ func CheckDesktopAppCompatibility(agentString string, minVersion *string) bool {
 
 func Handle404(a *app.App, w http.ResponseWriter, r *http.Request) {
 	err := model.NewAppError("Handle404", "api.context.404.app_error", nil, "", http.StatusNotFound)
-	ipAddress := utils.GetIPAddress(r, a.Config().ServiceSettings.TrustedProxyIPHeader)
+	ipAddress := utils.GetIPAddress(r, a.Config().ServiceSettings.TrustedProxyIPHeader, a.Config().ServiceSettings.TrustedProxyIPs)
 	mlog.Debug("not found handler triggered", mlog.String("path", r.URL.Path), mlog.Int("code", 404), mlog.String("ip", ipAddress))
 	if IsAPICall(a, r) {
 		w.Header().Set("Content-Type", "application/json")

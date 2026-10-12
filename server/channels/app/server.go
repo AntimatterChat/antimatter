@@ -945,6 +945,7 @@ func (s *Server) Start() error {
 	// The file storage first: the plugins that start with channels store files (their bots' pictures, for one), and
 	// on a new server with S3 storage the bucket doesn't exist yet.
 	s.ensureFileStorage()
+	s.warnUntrustedProxyHeader()
 
 	// Start inter-cluster services first so shared channels APIs are
 	// available when plugins activate during channels startup.
@@ -1037,7 +1038,7 @@ func (s *Server) Start() error {
 	if *s.platform.Config().RateLimitSettings.Enable {
 		mlog.Info("RateLimiter is enabled")
 
-		rateLimiter, err2 := NewRateLimiter(&s.platform.Config().RateLimitSettings, s.platform.Config().ServiceSettings.TrustedProxyIPHeader)
+		rateLimiter, err2 := NewRateLimiter(&s.platform.Config().RateLimitSettings, s.platform.Config().ServiceSettings.TrustedProxyIPHeader, s.platform.Config().ServiceSettings.TrustedProxyIPs)
 		if err2 != nil {
 			return err2
 		}

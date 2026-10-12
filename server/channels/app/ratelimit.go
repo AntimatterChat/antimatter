@@ -26,9 +26,10 @@ type RateLimiter struct {
 	useIP                bool
 	header               string
 	trustedProxyIPHeader []string
+	trustedProxyIPs      []string
 }
 
-func NewRateLimiter(settings *model.RateLimitSettings, trustedProxyIPHeader []string) (*RateLimiter, error) {
+func NewRateLimiter(settings *model.RateLimitSettings, trustedProxyIPHeader, trustedProxyIPs []string) (*RateLimiter, error) {
 	store, err := memstore.NewCtx(*settings.MemoryStoreSize)
 	if err != nil {
 		return nil, errors.Wrap(err, i18n.T("api.server.start_server.rate_limiting_memory_store"))
@@ -50,6 +51,7 @@ func NewRateLimiter(settings *model.RateLimitSettings, trustedProxyIPHeader []st
 		useIP:                *settings.VaryByRemoteAddr,
 		header:               settings.VaryByHeader,
 		trustedProxyIPHeader: trustedProxyIPHeader,
+		trustedProxyIPs:      trustedProxyIPs,
 	}, nil
 }
 
@@ -61,10 +63,10 @@ func (rl *RateLimiter) GenerateKey(r *http.Request) string {
 		if tokenLocation != TokenLocationNotFound {
 			key += token
 		} else if rl.useIP { // If we don't find an authentication token and IP based is enabled, fall back to IP
-			key += utils.GetIPAddress(r, rl.trustedProxyIPHeader)
+			key += utils.GetIPAddress(r, rl.trustedProxyIPHeader, rl.trustedProxyIPs)
 		}
 	} else if rl.useIP { // Only if Auth based is not enabed do we use a plain IP based
-		key += utils.GetIPAddress(r, rl.trustedProxyIPHeader)
+		key += utils.GetIPAddress(r, rl.trustedProxyIPHeader, rl.trustedProxyIPs)
 	}
 
 	// Note that most of the time the user won't have to set this because the utils.GetIPAddress above tries the
