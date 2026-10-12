@@ -129,3 +129,20 @@ func TestSelectWebUI(t *testing.T) {
 		assert.Equal(t, model.WebUIFusion, serve(request{query: "?webui=classic", loggedIn: true, cookie: model.WebUIClassic}).Body.String())
 	})
 }
+
+func TestStaticMissingClientDirectory(t *testing.T) {
+	// Without a client-fusion directory, /static/fusion/ must not fall back to the working directory, where
+	// config.json and the logs live.
+	_, err := os.Stat(model.FusionClientDir)
+	require.True(t, os.IsNotExist(err), "the test needs no %s directory", model.FusionClientDir)
+	th := Setup(t)
+
+	for _, name := range []string{"go.mod", "config/config.json"} {
+		_, err := os.Stat(name)
+		require.NoError(t, err, "the test server's working directory should hold %s", name)
+		req := httptest.NewRequest(http.MethodGet, "/static/fusion/"+name, nil)
+		res := httptest.NewRecorder()
+		th.Web.MainRouter.ServeHTTP(res, req)
+		assert.Equal(t, http.StatusNotFound, res.Code, name)
+	}
+}

@@ -40,17 +40,24 @@ func (w *Web) InitStatic() {
 			}
 		}
 
-		staticDir, _ := fileutils.FindDir(model.ClientDir)
-		mlog.Debug("Using client directory", mlog.String("client_dir", staticDir))
-
 		subpath, _ := utils.GetSubpathFromConfig(w.srv.Config())
 
-		staticHandler := staticFilesHandler(http.StripPrefix(path.Join(subpath, "static"), http.FileServer(http.Dir(staticDir))))
+		// FindDir falls back to the working directory when a client directory is missing, and serving that would
+		// expose config.json and the logs: a missing directory serves nothing instead.
+		staticHandler := http.NotFoundHandler()
+		if staticDir, found := fileutils.FindDir(model.ClientDir); found {
+			mlog.Debug("Using client directory", mlog.String("client_dir", staticDir))
+			staticHandler = staticFilesHandler(http.StripPrefix(path.Join(subpath, "static"), http.FileServer(http.Dir(staticDir))))
+		} else {
+			mlog.Warn("Client directory not found, the classic web app won't be served", mlog.String("client_dir", model.ClientDir))
+		}
 		pluginHandler := staticFilesHandler(http.StripPrefix(path.Join(subpath, "static", "plugins"), http.FileServer(http.Dir(*w.srv.Config().PluginSettings.ClientDirectory))))
 
 		// The Fusion UI is optional: without its directory, its assets are simply not found.
-		fusionDir, _ := fileutils.FindDir(model.FusionClientDir)
-		fusionHandler := staticFilesHandler(http.StripPrefix(path.Join(subpath, "static", "fusion"), http.FileServer(http.Dir(fusionDir))))
+		fusionHandler := http.NotFoundHandler()
+		if fusionDir, found := fileutils.FindDir(model.FusionClientDir); found {
+			fusionHandler = staticFilesHandler(http.StripPrefix(path.Join(subpath, "static", "fusion"), http.FileServer(http.Dir(fusionDir))))
+		}
 
 		if *w.srv.Config().ServiceSettings.WebserverMode == "gzip" {
 			staticHandler = gzhttp.GzipHandler(staticHandler)
