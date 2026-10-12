@@ -38,7 +38,7 @@ export default function VoiceView({channel}: {channel: Channel}) {
                 ) : (
                     <div className={am('voice-controls')}>
                         <button
-                            className={am('btn', 'anti')}
+                            className={am('btn', 'primary')}
                             style={{height: 44, padding: '0 22px'}}
                             onClick={() => actions.joinVoice(channel.id)}
                         >

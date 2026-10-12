@@ -301,7 +301,6 @@
 :is(.am-app, .am-layer) .am-btn:hover { background: var(--am-raise-2); }
 :is(.am-app, .am-layer) .am-btn.am-primary { background: var(--am-matter); color: #fff; }
 :is(.am-app, .am-layer) .am-btn.am-primary:hover { filter: brightness(1.1); }
-:is(.am-app, .am-layer) .am-btn.am-anti { background: var(--am-anti); color: #06232A; }
 :is(.am-app, .am-layer) .am-btn.am-danger { background: var(--am-danger); color: #fff; }
 :is(.am-app, .am-layer) .am-btn:disabled { opacity: .45; filter: none; cursor: not-allowed; }
 :is(.am-app, .am-layer) .am-tags { display: flex; gap: 8px; flex-wrap: wrap; }
