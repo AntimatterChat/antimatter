@@ -13045,7 +13045,7 @@
   },
   {
     "id": "model.config.is_valid.webserver_mode.app_error",
-    "translation": "Μη έγκυρη λειτουργία web server {{.Value}}. Πρέπει να είναι 'gzip', 'nogzip' ή 'disabled'."
+    "translation": "Μη έγκυρη λειτουργία web server {{.Value}}. Πρέπει να είναι 'gzip', 'uncompressed' ή 'disabled'."
   },
   {
     "id": "model.config.is_valid.webserver_security.app_error",

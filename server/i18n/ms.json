@@ -13045,7 +13045,7 @@
   },
   {
     "id": "model.config.is_valid.webserver_mode.app_error",
-    "translation": "Mod pelayan web {{.Value}} tidak sah. Mesti 'gzip', 'nogzip', atau 'disabled'."
+    "translation": "Mod pelayan web {{.Value}} tidak sah. Mesti 'gzip', 'uncompressed', atau 'disabled'."
   },
   {
     "id": "model.config.is_valid.webserver_security.app_error",

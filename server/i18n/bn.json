@@ -13045,7 +13045,7 @@
   },
   {
     "id": "model.config.is_valid.webserver_mode.app_error",
-    "translation": "ওয়েবসার্ভার মোড {{.Value}}টি বৈধ নয়। এটি 'gzip', 'nogzip' বা 'disabled' হতে হবে।"
+    "translation": "ওয়েবসার্ভার মোড {{.Value}}টি বৈধ নয়। এটি 'gzip', 'uncompressed' বা 'disabled' হতে হবে।"
   },
   {
     "id": "model.config.is_valid.webserver_security.app_error",

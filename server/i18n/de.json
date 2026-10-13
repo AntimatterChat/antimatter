@@ -13768,7 +13768,7 @@
   },
   {
     "id": "model.config.is_valid.webserver_mode.app_error",
-    "translation": "Ungültiger Webserver-Modus {{.Value}}. Muss 'gzip', 'nogzip' oder 'disabled' sein."
+    "translation": "Ungültiger Webserver-Modus {{.Value}}. Muss 'gzip', 'uncompressed' oder 'disabled' sein."
   },
   {
     "id": "model.config.is_valid.webserver_security.app_error",

@@ -13045,7 +13045,7 @@
   },
   {
     "id": "model.config.is_valid.webserver_mode.app_error",
-    "translation": "webserver mode {{.Value}} ไม่ถูกต้อง ต้องเป็น 'gzip', 'nogzip' หรือ 'disabled'"
+    "translation": "webserver mode {{.Value}} ไม่ถูกต้อง ต้องเป็น 'gzip', 'uncompressed' หรือ 'disabled'"
   },
   {
     "id": "model.config.is_valid.webserver_security.app_error",

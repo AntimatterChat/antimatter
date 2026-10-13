@@ -13045,7 +13045,7 @@
   },
   {
     "id": "model.config.is_valid.webserver_mode.app_error",
-    "translation": "Hindi wasto ang mode ng webserver {{.Value}}. Dapat ito ay 'gzip', 'nogzip', o 'disabled'."
+    "translation": "Hindi wasto ang mode ng webserver {{.Value}}. Dapat ito ay 'gzip', 'uncompressed', o 'disabled'."
   },
   {
     "id": "model.config.is_valid.webserver_security.app_error",

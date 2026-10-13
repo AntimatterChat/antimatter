@@ -13045,7 +13045,7 @@
   },
   {
     "id": "model.config.is_valid.webserver_mode.app_error",
-    "translation": "Mode del servidor web {{.Value}} no vàlid. Ha de ser 'gzip', 'nogzip' o 'disabled'."
+    "translation": "Mode del servidor web {{.Value}} no vàlid. Ha de ser 'gzip', 'uncompressed' o 'disabled'."
   },
   {
     "id": "model.config.is_valid.webserver_security.app_error",

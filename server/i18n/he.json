@@ -13045,7 +13045,7 @@
   },
   {
     "id": "model.config.is_valid.webserver_mode.app_error",
-    "translation": "מצב שרת אינטרנט לא תקין {{.Value}}. חייב להיות 'gzip', 'nogzip' או 'disabled'."
+    "translation": "מצב שרת אינטרנט לא תקין {{.Value}}. חייב להיות 'gzip', 'uncompressed' או 'disabled'."
   },
   {
     "id": "model.config.is_valid.webserver_security.app_error",

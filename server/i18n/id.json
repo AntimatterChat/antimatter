@@ -13045,7 +13045,7 @@
   },
   {
     "id": "model.config.is_valid.webserver_mode.app_error",
-    "translation": "Mode webserver {{.Value}} tidak valid. Harus 'gzip', 'nogzip', atau 'disabled'."
+    "translation": "Mode webserver {{.Value}} tidak valid. Harus 'gzip', 'uncompressed', atau 'disabled'."
   },
   {
     "id": "model.config.is_valid.webserver_security.app_error",

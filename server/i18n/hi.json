@@ -13045,7 +13045,7 @@
   },
   {
     "id": "model.config.is_valid.webserver_mode.app_error",
-    "translation": "अमान्य वेबसर्वर मोड {{.Value}}। यह 'gzip', 'nogzip' या 'disabled' होना चाहिए।"
+    "translation": "अमान्य वेबसर्वर मोड {{.Value}}। यह 'gzip', 'uncompressed' या 'disabled' होना चाहिए।"
   },
   {
     "id": "model.config.is_valid.webserver_security.app_error",

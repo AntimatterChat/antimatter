@@ -13045,7 +13045,7 @@
   },
   {
     "id": "model.config.is_valid.webserver_mode.app_error",
-    "translation": "ویب سرور موڈ {{.Value}} درست نہیں۔ یہ 'gzip', 'nogzip' یا 'disabled' ہونا چاہیے۔"
+    "translation": "ویب سرور موڈ {{.Value}} درست نہیں۔ یہ 'gzip', 'uncompressed' یا 'disabled' ہونا چاہیے۔"
   },
   {
     "id": "model.config.is_valid.webserver_security.app_error",

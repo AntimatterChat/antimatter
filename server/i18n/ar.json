@@ -13045,7 +13045,7 @@
   },
   {
     "id": "model.config.is_valid.webserver_mode.app_error",
-    "translation": "وضع خادم الويب {{.Value}} غير صالح. يجب أن يكون 'gzip' أو 'nogzip' أو 'disabled'."
+    "translation": "وضع خادم الويب {{.Value}} غير صالح. يجب أن يكون 'gzip' أو 'uncompressed' أو 'disabled'."
   },
   {
     "id": "model.config.is_valid.webserver_security.app_error",

@@ -13045,7 +13045,7 @@
   },
   {
     "id": "model.config.is_valid.webserver_mode.app_error",
-    "translation": "தவறான வலை சேவையக முறை {{.Value}}. 'gzip', 'nogzip' அல்லது 'disabled' ஆக இருக்க வேண்டும்."
+    "translation": "தவறான வலை சேவையக முறை {{.Value}}. 'gzip', 'uncompressed' அல்லது 'disabled' ஆக இருக்க வேண்டும்."
   },
   {
     "id": "model.config.is_valid.webserver_security.app_error",

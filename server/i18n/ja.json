@@ -13583,7 +13583,7 @@
   },
   {
     "id": "model.config.is_valid.webserver_mode.app_error",
-    "translation": "Webサーバーモード {{.Value}} が不正です。'gzip'、'nogzip'、'disabled' のいずれかである必要があります。"
+    "translation": "Webサーバーモード {{.Value}} が不正です。'gzip'、'uncompressed'、'disabled' のいずれかである必要があります。"
   },
   {
     "id": "model.config.is_valid.webserver_security.app_error",

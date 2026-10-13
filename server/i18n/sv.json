@@ -13768,7 +13768,7 @@
   },
   {
     "id": "model.config.is_valid.webserver_mode.app_error",
-    "translation": "Ogiltigt webbserverläge {{.Value}}. Måste vara 'gzip', 'nogzip' eller 'disabled'."
+    "translation": "Ogiltigt webbserverläge {{.Value}}. Måste vara 'gzip', 'uncompressed' eller 'disabled'."
   },
   {
     "id": "model.config.is_valid.webserver_security.app_error",
