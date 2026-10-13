@@ -52,6 +52,7 @@ import type {GlobalState} from 'types/store';
 import {canReplyInline, replyInline, useInlineRepliesEnabled} from './inline_reply';
 import {ON_TOP_DURATIONS, durationLabel, useCanChangeOnTop} from './on_top';
 import type {OnTopDuration} from './on_top';
+import PluginMenuActions from './plugin_menu_actions';
 import {readAloud, stopReading, useReadingPostId} from './read_aloud';
 import {getThreadTitle, NameThreadDialog} from './thread_title';
 
@@ -94,7 +95,6 @@ export default function MessageMenu({post, anchor, inThread, onClose, onMoreReac
     const canEdit = useSelector((state: GlobalState) => canEditPost(state, post, config, channel, me));
     const canDelete = useSelector((state: GlobalState) => canDeletePost(state, post, channel));
     const canReport = useSelector((state: GlobalState) => Boolean(channel) && !isSystemMessage(post) && contentFlaggingEnabledInTeam(state, channel!.team_id));
-    const pluginActions = useSelector((state: GlobalState) => state.plugins.components.PostDropdownMenu || []);
     const recent = useSelector(getRecentEmojisNames);
     const inlineReplies = useInlineRepliesEnabled();
     const readingPostId = useReadingPostId();
@@ -157,7 +157,6 @@ export default function MessageMenu({post, anchor, inThread, onClose, onMoreReac
     // Burn-on-Read messages can't be replied to or forwarded.
     const burn = post.type === Posts.POST_TYPES.BURN_ON_READ;
     const threadId = post.root_id || post.id;
-    const plugins = pluginActions.filter((a) => !a.filter || a.filter(post.id));
 
     if (namingThread) {
         return (
@@ -396,24 +395,12 @@ export default function MessageMenu({post, anchor, inThread, onClose, onMoreReac
                     toast(formatMessage({id: 'fusion.toast.textCopied', defaultMessage: 'Text copied'}));
                 })}
             />
-            {plugins.length > 0 && (
-                <Flyout
-                    icon='plug'
-                    label={formatMessage({id: 'fusion.messageMenu.plugins', defaultMessage: 'Message actions'})}
-                    menuLabel={formatMessage({id: 'fusion.messageMenu.pluginsLabel', defaultMessage: 'Message actions from integrations'})}
-                >
-                    {plugins.map((action) => (
-                        <button
-                            key={action.id}
-                            type='button'
-                            role='menuitem'
-                            onClick={run(() => action.action(post.id))}
-                        >
-                            {action.text}
-                        </button>
-                    ))}
-                </Flyout>
-            )}
+            <PluginMenuActions
+                postId={post.id}
+                label={formatMessage({id: 'fusion.messageMenu.plugins', defaultMessage: 'Message actions'})}
+                menuLabel={formatMessage({id: 'fusion.messageMenu.pluginsLabel', defaultMessage: 'Message actions from integrations'})}
+                run={run}
+            />
             {(canEdit || canDelete || (canReport && post.user_id !== me)) && <MenuSeparator/>}
             {canEdit && (
                 <MenuItem

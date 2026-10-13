@@ -16,7 +16,8 @@ import {markPostAsUnread} from 'actions/post_actions';
 import {manuallyMarkThreadAsUnread} from 'actions/views/threads';
 
 import {Popover} from 'fusion/components/layer';
-import {Flyout, MenuItem, MenuSeparator} from 'fusion/components/menu';
+import {MenuItem, MenuSeparator} from 'fusion/components/menu';
+import PluginMenuActions from 'fusion/messages/plugin_menu_actions';
 import {useToast} from 'fusion/shell/toast_context';
 import {permalinkPath} from 'fusion/utils/paths';
 import {getSiteURL} from 'utils/url';
@@ -95,27 +96,13 @@ export default function ThreadMenu({root, lastReplyAt, anchor, onClose}: Props) 
                 label={formatMessage({id: 'fusion.messageMenu.unread', defaultMessage: 'Mark as unread'})}
                 onClick={run(markUnread)}
             />
-            {plugins.length > 0 && (
-                <>
-                    <MenuSeparator/>
-                    <Flyout
-                        icon='plug'
-                        label={formatMessage({id: 'fusion.threadMenu.more', defaultMessage: 'More actions'})}
-                        menuLabel={formatMessage({id: 'fusion.threadMenu.moreLabel', defaultMessage: 'More thread actions'})}
-                    >
-                        {plugins.map((action) => (
-                            <button
-                                key={action.id}
-                                type='button'
-                                role='menuitem'
-                                onClick={run(() => action.action(root.id))}
-                            >
-                                {action.text}
-                            </button>
-                        ))}
-                    </Flyout>
-                </>
-            )}
+            {plugins.length > 0 && <MenuSeparator/>}
+            <PluginMenuActions
+                postId={root.id}
+                label={formatMessage({id: 'fusion.threadMenu.more', defaultMessage: 'More actions'})}
+                menuLabel={formatMessage({id: 'fusion.threadMenu.moreLabel', defaultMessage: 'More thread actions'})}
+                run={run}
+            />
         </Popover>
     );
 }
