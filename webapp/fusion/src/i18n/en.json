@@ -22571,6 +22571,14 @@
     "defaultMessage": "Cancel",
     "description": ""
   },
+  "fusion.customEmoji.changeImage": {
+    "defaultMessage": "Change image…",
+    "description": ""
+  },
+  "fusion.customEmoji.chooseImage": {
+    "defaultMessage": "Choose an image…",
+    "description": ""
+  },
   "fusion.customEmoji.close": {
     "defaultMessage": "Close",
     "description": ""

@@ -180,12 +180,15 @@ function AddEmoji({onClose}: {onClose: () => void}) {
                     )}
                 </div>
                 <div className={am('emoji-add-fields')}>
-                    <label className={am('field')}>
+                    <div className={am('field')}>
                         <span>{formatMessage({id: 'fusion.customEmoji.image', defaultMessage: 'Image'})}</span>
+
+                        {/* The browser's own file input can't take the dialog's look: a button opens it. */}
                         <input
                             ref={fileRef}
                             type='file'
                             accept={ACCEPT}
+                            hidden={true}
                             onChange={(e) => {
                                 const f = e.target.files?.[0] || null;
                                 setFile(f);
@@ -196,7 +199,21 @@ function AddEmoji({onClose}: {onClose: () => void}) {
                                 }
                             }}
                         />
-                    </label>
+                        <div className={am('emoji-add-file')}>
+                            <button
+                                type='button'
+                                className={am('btn')}
+                                onClick={() => fileRef.current?.click()}
+                            >
+                                <Icon
+                                    name='image'
+                                    size='sm'
+                                />
+                                {file ? formatMessage({id: 'fusion.customEmoji.changeImage', defaultMessage: 'Change image…'}) : formatMessage({id: 'fusion.customEmoji.chooseImage', defaultMessage: 'Choose an image…'})}
+                            </button>
+                            {file && <span className={am('emoji-add-filename')}>{file.name}</span>}
+                        </div>
+                    </div>
                     <label className={am('field')}>
                         <span>{formatMessage({id: 'fusion.customEmoji.name', defaultMessage: 'Name'})}</span>
                         <input

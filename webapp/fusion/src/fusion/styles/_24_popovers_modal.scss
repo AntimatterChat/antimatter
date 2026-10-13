@@ -309,7 +309,9 @@
 :is(.am-app, .am-layer) .am-emoji-add-preview { flex: none; width: 72px; height: 72px; margin-top: 20px; border-radius: 12px; border: 1px dashed color-mix(in srgb, var(--am-muted) 50%, transparent); background: var(--am-side); display: grid; place-items: center; color: var(--am-muted); }
 :is(.am-app, .am-layer) .am-emoji-add-preview img { max-width: 56px; max-height: 56px; object-fit: contain; }
 :is(.am-app, .am-layer) .am-emoji-add-fields { flex: 1; min-width: 0; }
-:is(.am-app, .am-layer) .am-emoji-add-fields input[type="file"] { max-width: 100%; color: var(--am-text-2); }
+:is(.am-app, .am-layer) .am-emoji-add-file { display: flex; align-items: center; gap: 10px; min-width: 0; }
+:is(.am-app, .am-layer) .am-emoji-add-file .am-btn { display: inline-flex; align-items: center; gap: 6px; flex: none; }
+:is(.am-app, .am-layer) .am-emoji-add-filename { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--am-text-2); font-size: 13px; }
 :is(.am-app, .am-layer) .am-emoji-add-error { color: var(--am-danger); }
 :is(.am-app, .am-layer) .am-emoji-add-done { color: var(--am-ok); }
 :is(.am-app, .am-layer) .am-emoji-list-search { display: flex; align-items: center; gap: 8px; height: 36px; padding: 0 10px; border-radius: 8px; border: 1px solid var(--am-line); background: var(--am-side); color: var(--am-muted); }
