@@ -72,10 +72,13 @@ type Props = {
     userId: string;
     anchor: HTMLElement | null;
     onClose: () => void;
+
+    // Elements that toggle the card besides its anchor (see Popover).
+    toggles?: Array<HTMLElement | null>;
 };
 
 // UserPopover is someone's profile card.
-export default function UserPopover({userId, anchor, onClose}: Props) {
+export default function UserPopover({userId, anchor, onClose, toggles}: Props) {
     const {formatMessage} = useIntl();
     const dispatch = useDispatch();
     const settings = useSettings();
@@ -116,6 +119,7 @@ export default function UserPopover({userId, anchor, onClose}: Props) {
     return (
         <Popover
             anchor={anchor}
+            toggles={toggles}
             placement='beside'
             className=''
             label={name}

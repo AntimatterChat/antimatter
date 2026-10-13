@@ -58,6 +58,11 @@ type PopoverProps = {
     onClose: () => void;
     children: React.ReactNode;
     style?: React.CSSProperties;
+
+    // Elements other than the anchor that open and close the popover themselves (a message's author name, for its
+    // avatar's profile card): pressing them isn't a click elsewhere, or the popover would close and their click
+    // reopen it at once.
+    toggles?: Array<HTMLElement | null>;
 };
 
 const MARGIN = 8;
@@ -125,9 +130,11 @@ function place(pop: HTMLElement, placement: Placement, anchor?: HTMLElement | nu
 }
 
 // Popover is a floating .am-pop: placed next to its anchor, closed by Escape or a click elsewhere.
-export function Popover({anchor, point, placement = 'below', className, role = 'dialog', label, onClose, children, style}: PopoverProps) {
+export function Popover({anchor, point, placement = 'below', className, role = 'dialog', label, onClose, children, style, toggles}: PopoverProps) {
     const ref = useRef<HTMLDivElement>(null);
     const [, setPlaced] = useState(false);
+    const togglesRef = useRef(toggles);
+    togglesRef.current = toggles;
 
     useLayoutEffect(() => {
         if (ref.current) {
@@ -139,7 +146,7 @@ export function Popover({anchor, point, placement = 'below', className, role = '
     useEffect(() => {
         const onPointerDown = (e: PointerEvent) => {
             const target = e.target as Node;
-            if (ref.current?.contains(target) || anchor?.contains(target)) {
+            if (ref.current?.contains(target) || anchor?.contains(target) || togglesRef.current?.some((t) => t?.contains(target))) {
                 return;
             }
 

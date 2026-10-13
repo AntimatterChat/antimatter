@@ -145,9 +145,10 @@ export default function Message({postId, previousPostId, inThread = false, highl
     const editing = useSelector((state: GlobalState) => getIsPostBeingEdited(state, postId) && getIsPostBeingEditedInRHS(state, postId) === inThread);
     const concealed = useSelector((state: GlobalState) => shouldDisplayConcealedPlaceholder(state, postId));
     const concernsMe = useConcernsMe(post, inThread);
-    const [userMenu, openUserMenu] = useUserMenu();
+    const [userMenu, openUserMenu, closeUserMenu] = useUserMenu();
     const [mentionCard, onMentionClick] = useMentionClick();
     const avatarRef = useRef<HTMLButtonElement>(null);
+    const nameRef = useRef<HTMLButtonElement>(null);
     const moreRef = useRef<HTMLButtonElement>(null);
     const reactRef = useRef<HTMLButtonElement>(null);
     const [popover, setPopover] = useState<'user' | 'menu' | 'react' | 'react-more' | null>(null);
@@ -199,6 +200,15 @@ export default function Message({postId, previousPostId, inThread = false, highl
     const replyRef = threadRef || Boolean(quotedId);
     const consecutive = !inThread && Boolean(previous) && !priority && !burn && !replyRef && !ephemeral && areConsecutivePostsBySameUser(post, previous!) && !isSystemMessage(previous!);
     const openThread = () => dispatch(selectPost(post));
+
+    // The avatar and the name open and close the profile card; a click while the person's menu is open only closes it.
+    const toggleProfile = () => {
+        if (userMenu) {
+            closeUserMenu();
+            return;
+        }
+        setPopover((open) => (open === 'user' ? null : 'user'));
+    };
 
     // Replying inline quotes the message in the composer of the conversation it's shown in.
     const canQuote = inlineReplies && canReplyInline(post);
@@ -433,6 +443,7 @@ export default function Message({postId, previousPostId, inThread = false, highl
                 <UserPopover
                     userId={post.user_id}
                     anchor={avatarRef.current}
+                    toggles={[nameRef.current]}
                     onClose={() => setPopover(null)}
                 />
             )}
@@ -554,7 +565,7 @@ export default function Message({postId, previousPostId, inThread = false, highl
             <button
                 ref={avatarRef}
                 aria-label={authorName}
-                onClick={() => setPopover((open) => (open === 'user' ? null : 'user'))}
+                onClick={toggleProfile}
                 onContextMenu={(e) => openUserMenu(post.user_id, e)}
             >
                 <Avatar
@@ -589,9 +600,10 @@ export default function Message({postId, previousPostId, inThread = false, highl
             <div>
                 <div className={am('msg-head')}>
                     <button
+                        ref={nameRef}
                         className={am('author')}
                         style={authorStyle(roleColor, prefs.colorize, post.user_id, Boolean(webhook || bot))}
-                        onClick={() => setPopover((open) => (open === 'user' ? null : 'user'))}
+                        onClick={toggleProfile}
                         onContextMenu={(e) => openUserMenu(post.user_id, e)}
                     >
                         {authorName}
