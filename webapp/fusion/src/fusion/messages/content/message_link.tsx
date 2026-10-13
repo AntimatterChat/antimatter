@@ -11,6 +11,7 @@ import {getPost as fetchPost} from 'mattermost-redux/actions/posts';
 import {getDirectChannel} from 'mattermost-redux/selectors/entities/channels';
 import {getPost} from 'mattermost-redux/selectors/entities/posts';
 import {getTeammateNameDisplaySetting} from 'mattermost-redux/selectors/entities/preferences';
+import {getCurrentTeam, getTeamByName} from 'mattermost-redux/selectors/entities/teams';
 import {getUser} from 'mattermost-redux/selectors/entities/users';
 import {displayUsername} from 'mattermost-redux/utils/user_utils';
 
@@ -48,6 +49,8 @@ function Chip({team, postId, host}: {team: string; postId: string; host: Post}) 
     const channel = useSelector((state: GlobalState) => (post ? getDirectChannel(state, post.channel_id) : undefined));
     const author = useSelector((state: GlobalState) => (post ? getUser(state, post.user_id) : undefined));
     const nameDisplay = useSelector(getTeammateNameDisplaySetting);
+    const currentTeam = useSelector((state: GlobalState) => getCurrentTeam(state)?.name);
+    const linkTeam = useSelector((state: GlobalState) => getTeamByName(state, team));
     const [missing, setMissing] = useState(false);
 
     // The message's own preview (when it's the first link of the message) knows where it is, even unloaded.
@@ -84,17 +87,30 @@ function Chip({team, postId, host}: {team: string; postId: string; host: Post}) 
     }
     const who = author ? displayUsername(author, nameDisplay) : '';
 
+    // A message of another community starts with that community's name, as Discord does for other servers.
+    const community = !direct && currentTeam && team.toLowerCase() !== currentTeam.toLowerCase() ? (linkTeam?.display_name || team) : '';
+    let where = direct ? label : '#' + label;
+    if (community) {
+        where = community + ' › ' + where;
+    }
+
     return (
         <button
             type='button'
             className={am('msg-link')}
-            title={who ? formatMessage({id: 'fusion.msgLink.title', defaultMessage: "Jump to {who}'s message in {where}"}, {who, where: direct ? label : '#' + label}) : formatMessage({id: 'fusion.msgLink.titleNoAuthor', defaultMessage: 'Jump to the message'})}
+            title={who ? formatMessage({id: 'fusion.msgLink.title', defaultMessage: "Jump to {who}'s message in {where}"}, {who, where}) : formatMessage({id: 'fusion.msgLink.titleNoAuthor', defaultMessage: 'Jump to the message'})}
             onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
                 getHistory().push(permalinkPath(team, postId));
             }}
         >
+            {community && (
+                <>
+                    <span className={am('community')}>{community}</span>
+                    <span className={am('sep')}>{'›'}</span>
+                </>
+            )}
             {!direct && name && <Icon name='hash'/>}
             {label || formatMessage({id: 'fusion.msgLink.message', defaultMessage: 'Message'})}
             <span className={am('sep')}>{'›'}</span>

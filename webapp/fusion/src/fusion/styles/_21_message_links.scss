@@ -7,3 +7,4 @@
 :is(.am-app, .am-layer) .am-msg-link .am-ic { width: 1em; height: 1em; stroke-width: 2.2; }
 :is(.am-app, .am-layer) .am-msg-link .am-sep { opacity: .7; }
 :is(.am-app, .am-layer) .am-msg-link.am-missing { background: var(--am-raise-2); color: var(--am-muted); }
+:is(.am-app, .am-layer) .am-msg-link .am-community { max-width: 16em; overflow: hidden; text-overflow: ellipsis; }
