@@ -94,6 +94,7 @@ var tReservedDomains = []struct {
 	{"spin-punch-admin", false},
 	{"playbooks", true},
 	{"boards", true},
+	{"kanban", true},
 }
 
 func TestReservedTeamName(t *testing.T) {

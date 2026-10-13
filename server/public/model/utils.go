@@ -704,6 +704,7 @@ var reservedName = []string{
 	"post",
 	"signup",
 	"boards",
+	"kanban",
 	"playbooks",
 }
 
