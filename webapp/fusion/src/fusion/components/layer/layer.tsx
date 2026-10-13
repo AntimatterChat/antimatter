@@ -6,6 +6,7 @@ import ReactDOM from 'react-dom';
 import {useIntl} from 'react-intl';
 
 import Icon from 'fusion/components/icon';
+import {isTouch, useIsPhone} from 'fusion/hooks/media';
 import {am} from 'fusion/utils/class_names';
 
 export const LAYER_ID = 'am-layer';
@@ -65,6 +66,9 @@ type PopoverProps = {
     // avatar's profile card): pressing them isn't a click elsewhere, or the popover would close and their click
     // reopen it at once.
     toggles?: Array<HTMLElement | null>;
+
+    // On a phone a popover is a sheet from the bottom of the screen, over a scrim; false keeps it beside its anchor.
+    sheet?: boolean;
 };
 
 const MARGIN = 8;
@@ -131,19 +135,30 @@ function place(pop: HTMLElement, placement: Placement, anchor?: HTMLElement | nu
     pop.style.top = clamp(top, h, vh) + 'px';
 }
 
-// Popover is a floating .am-pop: placed next to its anchor, closed by Escape or a click elsewhere.
-export function Popover({anchor, point, placement = 'below', className, role = 'dialog', label, onClose, children, style, toggles}: PopoverProps) {
+// Popover is a floating .am-pop: placed next to its anchor, closed by Escape or a click elsewhere. On a phone it's a
+// sheet (.am-sheet) from the bottom of the screen instead, the whole width, as menus are in phone apps.
+export function Popover({anchor, point, placement = 'below', className, role = 'dialog', label, onClose, children, style, toggles, sheet: canSheet = true}: PopoverProps) {
     const ref = useRef<HTMLDivElement>(null);
     const [, setPlaced] = useState(false);
     const togglesRef = useRef(toggles);
     togglesRef.current = toggles;
+    const sheet = useIsPhone() && canSheet;
 
     useLayoutEffect(() => {
-        if (ref.current) {
+        if (ref.current && !sheet) {
             place(ref.current, placement, anchor, point);
             setPlaced(true);
         }
     });
+
+    // On a touch screen a sheet doesn't bring the keyboard up by itself (over half the screen, for a search the
+    // picker doesn't need): its field is a tap away. The fields focused themselves as they mounted, before this.
+    useEffect(() => {
+        const focused = ref.current?.ownerDocument.activeElement;
+        if (sheet && isTouch() && focused instanceof HTMLElement && ref.current?.contains(focused) && focused.matches('input, textarea')) {
+            focused.blur();
+        }
+    }, [sheet]);
 
     useEffect(() => {
         const onPointerDown = (e: PointerEvent) => {
@@ -152,9 +167,9 @@ export function Popover({anchor, point, placement = 'below', className, role = '
                 return;
             }
 
-            // A popover opened from this one (a submenu, a picker) comes after it in the layer: clicking in it isn't
-            // clicking away.
-            const above = (target as Element).closest?.('.am-pop');
+            // A popover opened from this one (a submenu, a picker) comes after it in the layer: clicking in it, or on
+            // the scrim of its sheet, isn't clicking away.
+            const above = (target as Element).closest?.('.am-pop, .am-sheet-scrim');
             if (above && ref.current && (ref.current.compareDocumentPosition(above) & Node.DOCUMENT_POSITION_FOLLOWING)) {
                 return;
             }
@@ -177,12 +192,18 @@ export function Popover({anchor, point, placement = 'below', className, role = '
 
     return (
         <Layer>
+            {sheet && (
+                <div
+                    className={am('sheet-scrim')}
+                    aria-hidden='true'
+                />
+            )}
             <div
                 ref={ref}
-                className={am('pop', className)}
+                className={am('pop', className, {sheet})}
                 role={role}
                 aria-label={label}
-                style={{left: -9999, top: -9999, ...style}}
+                style={sheet ? style : {left: -9999, top: -9999, ...style}}
             >
                 {children}
             </div>

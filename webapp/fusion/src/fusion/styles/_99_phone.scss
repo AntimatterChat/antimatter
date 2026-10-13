@@ -53,6 +53,56 @@ body.app__body #root.am-root {
     :is(.am-app, .am-layer) .am-mem-head { padding-left: 0; margin-left: 0; }
     :is(.am-app, .am-layer) .am-mem-head > .am-sheet-back + span { flex: 1; }
     :is(.am-app, .am-layer) .am-mem-head .am-icon-btn.am-mem-add { width: 40px; height: 40px; }
+
+    // Popovers and menus are sheets from the bottom of the screen, the whole width, over a scrim (see Popover).
+    :is(.am-app, .am-layer) .am-sheet-scrim { position: fixed; z-index: 75; animation: am-sheet-fade .16s ease; background: rgba(0, 0, 0, 0.5); inset: 0; }
+    :is(.am-app, .am-layer) .am-pop.am-sheet {
+        width: auto !important;
+        min-width: 0 !important;
+        max-width: none !important;
+        max-height: calc(var(--am-vvh, 100dvh) - 56px - env(safe-area-inset-top));
+        padding-bottom: calc(6px + env(safe-area-inset-bottom));
+        border-width: 1px 0 0;
+        border-radius: 16px 16px 0 0;
+        animation: am-sheet-up .2s ease;
+        box-shadow: 0 -10px 32px rgba(0, 0, 0, 0.35);
+        inset: auto 0 0 !important;
+        overflow-x: hidden;
+        overflow-y: auto;
+        overscroll-behavior: contain;
+    }
+    :is(.am-app, .am-layer) .am-pop.am-sheet.am-plus-pop { padding: 8px 8px calc(8px + env(safe-area-inset-bottom)); }
+    :is(.am-app, .am-layer) .am-pop.am-sheet :is(button[role^="menuitem"], .am-fly > button) { min-height: 44px; font-size: 15px; }
+    // A menu's submenus open under their item rather than beside it.
+    :is(.am-app, .am-layer) .am-sheet .am-fly-menu { position: static; width: auto; padding: 0; border: 0; margin: 0 0 4px 30px; background: none; box-shadow: none; }
+    :is(.am-app, .am-layer) .am-sheet .am-fly-menu::after { display: none; }
+    :is(.am-app, .am-layer) .am-sheet .am-fly > button .am-end .am-ic { transform: none; }
+    :is(.am-app, .am-layer) .am-sheet .am-fly:is(:hover, :focus-within) > button .am-end .am-ic { transform: rotate(180deg); }
+    :is(.am-app, .am-layer) .am-sheet .am-quick-react { justify-content: space-between; }
+    :is(.am-app, .am-layer) .am-sheet .am-quick-react button { max-width: 52px; height: 44px; flex: 1; font-size: 22px; }
+
+    // Dialogs are sheets from the bottom, the whole width, under a strip of the scrim to tap them closed (most have no
+    // close button). The settings, with their own close button, take the whole screen.
+    :is(.am-app, .am-layer) :is(.am-scrim, .am-scrim.am-top) { padding: 0; place-items: stretch; }
+    :is(.am-app, .am-layer) .am-scrim > .am-modal { width: 100% !important; max-width: none !important; height: auto !important; max-height: calc(100% - 48px - env(safe-area-inset-top)) !important; align-self: end; padding-bottom: env(safe-area-inset-bottom); border: 0; border-radius: 16px 16px 0 0; animation: am-sheet-up .2s ease; overflow-y: auto; }
+    :is(.am-app, .am-layer) .am-scrim > .am-modal:has(> nav) { overflow: hidden; height: 100% !important; max-height: none !important; align-self: stretch; padding-top: env(safe-area-inset-top); border-radius: 0; animation: none; }
+    :is(.am-app, .am-layer) .am-scrim > .am-modal.am-gsearch { height: 100% !important; }
+    :is(.am-app, .am-layer) .am-modal .am-pane { padding: 18px 16px; }
+    :is(.am-app, .am-layer) .am-modal .am-close { top: calc(8px + env(safe-area-inset-top)); right: 8px; width: 40px; height: 40px; }
+    :is(.am-app, .am-layer) .am-modal-actions { flex-wrap: wrap; }
+    :is(.am-app, .am-layer) .am-browse-list { max-height: none; }
+
+    // The classic web app's dialogs too.
+    body .modal { padding: 0 !important; }
+    body .modal .modal-dialog { width: 100% !important; max-width: none !important; min-height: 100%; margin: 0 !important; }
+    body .modal .modal-content, body .modal .GenericModal__wrapper { min-height: 100dvh; border-radius: 0; }
+    body .modal .modal-content { padding-top: env(safe-area-inset-top); padding-bottom: env(safe-area-inset-bottom); }
+    body .modal .modal-info-tab-content { flex-direction: column; gap: 16px; }
+
+    // Floating windows (a thread or an AI answer kept aside, a call) take the whole screen and stay put.
+    :is(.am-app, .am-layer) .am-float-win { width: auto !important; height: auto !important; padding: env(safe-area-inset-top) 0 env(safe-area-inset-bottom); border: 0; border-radius: 0; inset: 0 !important; }
+    :is(.am-app, .am-layer) .am-float-bar { height: 48px; cursor: default; }
+    :is(.am-app, .am-layer) .am-float-bar .am-icon-btn { width: 40px; height: 40px; }
 }
 
 // A phone held sideways has little height: lower headers.
@@ -60,3 +110,6 @@ body.app__body #root.am-root {
     :is(.am-app, .am-layer) :is(.am-chat-head, .am-rhs-head) { height: 44px; }
     .am-app .am-rhs > .am-sheet-back { top: 2px; }
 }
+
+@keyframes am-sheet-up { from { opacity: .5; transform: translateY(40px); } to { opacity: 1; transform: none; } }
+@keyframes am-sheet-fade { from { opacity: 0; } to { opacity: 1; } }
