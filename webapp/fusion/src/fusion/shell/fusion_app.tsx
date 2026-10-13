@@ -49,6 +49,7 @@ import {useFaceTips} from './face_tips';
 import {GlobalSearchProvider, useGlobalSearch} from './global_search_context';
 import {isKeybind} from './keybinds';
 import {LayoutProvider, isPhoneLayout, useLayout} from './layout_context';
+import {useLongPress} from './long_press';
 import {useNavShortcuts} from './nav_shortcuts';
 import {SettingsProvider, useSettings} from './settings_context';
 import {useSwipes} from './swipes';
@@ -77,6 +78,7 @@ function Frame({children}: Props) {
     const appRef = useRef<HTMLDivElement>(null);
 
     useSwipes(appRef, layout);
+    useLongPress();
     useVisualViewport();
     useFaceTips();
     useMuteExpiry();

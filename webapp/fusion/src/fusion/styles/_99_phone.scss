@@ -103,12 +103,39 @@ body.app__body #root.am-root {
     :is(.am-app, .am-layer) .am-float-win { width: auto !important; height: auto !important; padding: env(safe-area-inset-top) 0 env(safe-area-inset-bottom); border: 0; border-radius: 0; inset: 0 !important; }
     :is(.am-app, .am-layer) .am-float-bar { height: 48px; cursor: default; }
     :is(.am-app, .am-layer) .am-float-bar .am-icon-btn { width: 40px; height: 40px; }
+
+    // Composer: the width of the screen, buttons a finger can hit, and the formatting bar on one line that scrolls.
+    :is(.am-app, .am-layer) .am-composer, :is(.am-app, .am-layer) .am-rhs .am-composer { padding: 0 6px 6px; }
+    :is(.am-app, .am-layer) .am-compose-box { padding: 4px; }
+    :is(.am-app, .am-layer) .am-compose-row :is(.am-icon-btn, .am-plus-btn) { width: 40px; height: 40px; }
+    :is(.am-app, .am-layer) .am-fmt-bar { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; }
+    :is(.am-app, .am-layer) .am-fmt-bar > * { flex: none; }
+    :is(.am-app, .am-layer) .am-fmt-bar button { width: 40px; height: 40px; }
+    :is(.am-app, .am-layer) .am-typing { left: 14px; }
 }
 
 // A phone held sideways has little height: lower headers.
 @media (max-width: 960px) and (max-height: 500px) {
     :is(.am-app, .am-layer) :is(.am-chat-head, .am-rhs-head) { height: 44px; }
     .am-app .am-rhs > .am-sheet-back { top: 2px; }
+}
+
+/* ---------- Touch screens ---------- */
+@media #{$touch} {
+    // No hover toolbar on messages: it would stay over the message tapped last. A long press opens the message's menu
+    // instead (see shell/long_press.ts), and selects no text nor calls up the browser's callout.
+    :is(.am-app, .am-layer) .am-msg .am-msg-tools { display: none !important; }
+    :is(.am-app, .am-layer) .am-msg:not(.am-menu-open, .am-hl-me):hover { background-color: transparent; }
+    :is(.am-app, .am-layer) .am-msg { -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; }
+    :is(.am-app, .am-layer) .am-msg :is(input, textarea, [contenteditable="true"]) { -webkit-user-select: text; user-select: text; }
+
+    // What a mouse finds on hover is always there.
+    :is(.am-app, .am-layer) .am-att-more { display: grid; }
+
+    // Text of 16px at least in fields: iOS zooms into smaller text when it's focused.
+    :is(.am-app, .am-layer) :is(input:not([type="checkbox"], [type="radio"], [type="range"], [type="color"]), textarea, select),
+    :is(.am-app, .am-layer) .am-rich-input .WysiwygEditor .ProseMirror,
+    body .modal :is(input:not([type="checkbox"], [type="radio"], [type="range"], [type="color"]), textarea, select) { font-size: 16px; }
 }
 
 @keyframes am-sheet-up { from { opacity: .5; transform: translateY(40px); } to { opacity: 1; transform: none; } }

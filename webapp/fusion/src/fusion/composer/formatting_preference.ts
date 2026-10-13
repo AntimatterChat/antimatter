@@ -3,16 +3,20 @@
 
 import {useEffect, useState} from 'react';
 
+import {isPhone} from 'fusion/hooks/media';
+
 // Whether composers show the formatting bar: one choice for every composer, kept in this browser, as the mockup's
-// state.showFormatting ("am-formatting" in localStorage).
+// state.showFormatting ("am-formatting" in localStorage). Until it's chosen, phones don't: their composer keeps to one
+// line, and the Aa button shows the bar.
 const KEY = 'am-formatting';
 const EVENT = 'am-formatting-change';
 
 function read(): boolean {
     try {
-        return localStorage.getItem(KEY) !== 'false';
+        const saved = localStorage.getItem(KEY);
+        return saved === null ? !isPhone() : saved !== 'false';
     } catch {
-        return true;
+        return !isPhone();
     }
 }
 
