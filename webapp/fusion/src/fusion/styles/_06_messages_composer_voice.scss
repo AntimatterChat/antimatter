@@ -279,6 +279,7 @@
 :is(.am-app, .am-layer) .am-compose-box input { flex: 1; min-width: 0; border: 0; outline: none; background: transparent; padding: 6px 4px; font-size: 15px; }
 :is(.am-app, .am-layer) .am-compose-box input::placeholder { color: var(--am-muted); }
 :is(.am-app, .am-layer) .am-send-btn { background: var(--am-matter); color: #fff; }
+:is(.am-app, .am-layer) .am-send-btn .am-ic { width: 21px; height: 21px; }
 :is(.am-app, .am-layer) .am-send-btn:hover { background: var(--am-matter); color: #fff; filter: brightness(1.1); }
 
 /* Forum */

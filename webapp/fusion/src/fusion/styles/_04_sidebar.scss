@@ -195,7 +195,9 @@
 :is(.am-app, .am-layer) .am-dm-find input { flex: 1; min-width: 0; border: 0; outline: none; background: transparent; font-size: 13.5px; }
 :is(.am-app, .am-layer) .am-dm-find input::placeholder { color: var(--am-muted); }
 :is(.am-app, .am-layer) .am-home-links { display: grid; gap: 1px; padding: 4px 8px; }
-:is(.am-app, .am-layer) .am-dock { flex: none; max-height: 30%; display: flex; flex-direction: column; border-top: 1px solid var(--am-line); background: var(--am-side); }
+// The conversations dock is set apart from the channels above it: --am-line barely shows on the sidebar in dark themes,
+// so a muted-based rule and a shadow, the channels scrolling under it.
+:is(.am-app, .am-layer) .am-dock { flex: none; max-height: 30%; display: flex; flex-direction: column; border-top: 2px solid color-mix(in srgb, var(--am-muted) 38%, transparent); box-shadow: 0 -10px 14px -12px rgba(0, 0, 0, .45); background: color-mix(in srgb, var(--am-side) 90%, var(--am-raise)); position: relative; }
 :is(.am-app, .am-layer) .am-dock-head {
   display: flex;
   align-items: center;
