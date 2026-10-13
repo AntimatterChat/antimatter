@@ -26027,6 +26027,10 @@
     "defaultMessage": "Shared channel. Messages are synced with other servers; their members can take part.",
     "description": ""
   },
+  "fusion.sheet.back": {
+    "defaultMessage": "Back",
+    "description": ""
+  },
   "fusion.sidebar.categoryOptions": {
     "defaultMessage": "Category options",
     "description": ""

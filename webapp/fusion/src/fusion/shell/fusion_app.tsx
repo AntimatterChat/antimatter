@@ -26,6 +26,7 @@ import {useOpenVoiceChat} from 'fusion/calls/voice_chat';
 import {IconSprite} from 'fusion/components/icon';
 import {LAYER_ID} from 'fusion/components/layer';
 import Toasts from 'fusion/components/toast';
+import {isPhone} from 'fusion/hooks/media';
 import MemberList from 'fusion/members/member_list';
 import ServerRail from 'fusion/rail/server_rail';
 import RightPanel from 'fusion/rhs/right_panel';
@@ -52,6 +53,7 @@ import {useNavShortcuts} from './nav_shortcuts';
 import {SettingsProvider, useSettings} from './settings_context';
 import {useSwipes} from './swipes';
 import {ToastProvider} from './toast_context';
+import {useVisualViewport} from './viewport';
 
 import 'fusion/styles/_module.scss';
 
@@ -75,6 +77,7 @@ function Frame({children}: Props) {
     const appRef = useRef<HTMLDivElement>(null);
 
     useSwipes(appRef, layout);
+    useVisualViewport();
     useFaceTips();
     useMuteExpiry();
     useNavShortcuts();
@@ -147,16 +150,27 @@ function Frame({children}: Props) {
     }, [store]);
 
     // Opening a panel on a narrow screen slides the right-hand drawer in; closing it keeps the drawer open only
-    // when it shows the member list.
+    // when it shows the member list. On a phone, where the panel took the whole screen, its back button goes back to
+    // the conversation.
     useEffect(() => {
         if (rhsOpen) {
             layout.setRightOpen(true);
         } else if (layout.rightOpen) {
-            layout.setRightOpen(layout.showMembers && isPhoneLayout());
+            layout.setRightOpen(layout.showMembers && isPhoneLayout() && !isPhone());
         }
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [rhsOpen]);
+
+    // Closing the right-hand drawer (a swipe, a tap beside it) closes the panel in it: left open out of sight, it
+    // would keep the next thread opened from sliding the drawer in.
+    const wasRightOpen = useRef(layout.rightOpen);
+    useEffect(() => {
+        if (wasRightOpen.current && !layout.rightOpen && isPhoneLayout() && getIsRhsOpen(store.getState())) {
+            dispatch(closeRightHandSide());
+        }
+        wasRightOpen.current = layout.rightOpen;
+    }, [layout.rightOpen, dispatch, store]);
 
     // Switching conversations closes the right-hand drawer, unless a panel (a thread, search results…) is open.
     useEffect(() => {

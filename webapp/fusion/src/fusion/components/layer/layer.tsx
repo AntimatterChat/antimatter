@@ -3,7 +3,9 @@
 
 import React, {createContext, useContext, useEffect, useLayoutEffect, useRef, useState} from 'react';
 import ReactDOM from 'react-dom';
+import {useIntl} from 'react-intl';
 
+import Icon from 'fusion/components/icon';
 import {am} from 'fusion/utils/class_names';
 
 export const LAYER_ID = 'am-layer';
@@ -185,6 +187,23 @@ export function Popover({anchor, point, placement = 'below', className, role = '
                 {children}
             </div>
         </Layer>
+    );
+}
+
+// SheetBack is the back button of a panel shown as a full-screen sheet on a phone (a thread, an app, the member list):
+// it takes the place of the panel's close button, at the start of its header.
+export function SheetBack({onBack}: {onBack: () => void}) {
+    const {formatMessage} = useIntl();
+    return (
+        <button
+            type='button'
+            className={am('icon-btn', 'sheet-back')}
+            title={formatMessage({id: 'fusion.sheet.back', defaultMessage: 'Back'})}
+            aria-label={formatMessage({id: 'fusion.sheet.back', defaultMessage: 'Back'})}
+            onClick={onBack}
+        >
+            <Icon name='chev'/>
+        </button>
     );
 }
 

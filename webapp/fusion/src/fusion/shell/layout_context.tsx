@@ -6,8 +6,10 @@ import {useSelector} from 'react-redux';
 
 import {getIsRhsOpen} from 'selectors/rhs';
 
+import {isCompact} from 'fusion/hooks/media';
+
 // Phone layout: the navigation and the right-hand drawer slide over the chat (see styles/_25_responsive.scss).
-export const isPhoneLayout = () => window.matchMedia('(max-width: 860px)').matches;
+export const isPhoneLayout = isCompact;
 
 // Layout state of the Fusion UI that only matters on this screen (the right-hand panel lives in the store's
 // views.rhs, like in the classic web app).

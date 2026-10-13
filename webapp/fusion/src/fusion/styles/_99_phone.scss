@@ -1,0 +1,50 @@
+// Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
+// See LICENSE.txt for license information.
+
+// The Fusion UI on phones and touch screens: one pane at a time, sheets instead of popovers, and fingers instead of a
+// mouse. The drawers themselves (navigation, member list and app rail) are in _25_responsive.scss. Last of the styles,
+// so that its rules win over the desktop ones.
+@use 'breakpoints' as *;
+
+/* ---------- Frame ---------- */
+// The Fusion UI takes the visual viewport (above the on-screen keyboard on iOS: see shell/viewport.ts), inside the
+// screen's safe areas (notches, rounded corners, the home bar), and never scrolls sideways.
+body.app__body #root.am-root {
+    overflow: hidden;
+    height: var(--am-vvh, 100dvh);
+    box-sizing: border-box;
+    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+    background: var(--am-ground);
+    transform: var(--am-vv-shift, none);
+}
+#root:not(.am-root) { padding-right: env(safe-area-inset-right); padding-left: env(safe-area-inset-left); }
+
+/* ---------- Phone: one pane at a time ---------- */
+@media #{$phone} {
+    // The navigation drawer leaves a strip of the conversation to tap it closed (it slides 340px away: see swipes.ts).
+    // Its rows are a finger high.
+    :is(.am-app, .am-layer) .am-sidebar { width: min(268px, calc(100% - 72px - 48px)); }
+    :is(.am-app, .am-layer) .am-sidebar :is(.am-ch, .am-vp) { min-height: 40px; }
+    :is(.am-app, .am-layer) .am-sidebar .am-dm, :is(.am-app, .am-layer) .am-dock-row .am-dm { min-height: 44px; }
+
+    // Panels (a thread, results, an app, the member list) take the whole screen, over the app rail. A back button at
+    // the start of their header takes the place of the buttons that size, pop out or close them.
+    .am-app .am-rhs { z-index: 37; width: auto !important; max-width: none !important; border-left: 0; box-shadow: none; inset: 0 !important; }
+    .am-app .am-members { right: 52px; left: 0; width: auto; padding-top: 6px; }
+    :is(.am-app, .am-layer) .am-sheet-back { width: 40px; height: 40px; flex: none; color: var(--am-text-2); }
+    :is(.am-app, .am-layer) .am-sheet-back .am-ic { transform: rotate(90deg); }
+    .am-app .am-rhs > .am-sheet-back { position: absolute; z-index: 2; top: 6px; left: 4px; }
+    .am-app .am-rhs:has(> .am-sheet-back) :is(.am-rhs-head, .sidebar--right__header) { padding-left: 48px; }
+    .am-app .am-rhs:has(> .am-sheet-back) .am-rhs-head > .am-icon-btn:not([aria-haspopup]) { display: none; }
+    .am-app .am-rhs:has(> .am-sheet-back) :is(.sidebar--right__expand, .sidebar--right__close, .PopoutButton, .am-rhs-tools) { display: none !important; }
+    .am-app .am-rhs .am-rhs-head .am-icon-btn { width: 40px; height: 40px; }
+    :is(.am-app, .am-layer) .am-mem-head { padding-left: 0; margin-left: 0; }
+    :is(.am-app, .am-layer) .am-mem-head > .am-sheet-back + span { flex: 1; }
+    :is(.am-app, .am-layer) .am-mem-head .am-icon-btn.am-mem-add { width: 40px; height: 40px; }
+}
+
+// A phone held sideways has little height: lower headers.
+@media (max-width: 960px) and (max-height: 500px) {
+    :is(.am-app, .am-layer) :is(.am-chat-head, .am-rhs-head) { height: 44px; }
+    .am-app .am-rhs > .am-sheet-back { top: 2px; }
+}

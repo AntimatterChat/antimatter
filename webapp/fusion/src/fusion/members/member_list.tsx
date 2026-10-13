@@ -23,12 +23,15 @@ import PendingJoinRequests from 'components/channel_members_rhs/pending_join_req
 import {TalkNote} from 'fusion/calls/markers';
 import Avatar from 'fusion/components/avatar';
 import Icon from 'fusion/components/icon';
+import {SheetBack} from 'fusion/components/layer';
 import StatusEmoji from 'fusion/components/status_emoji';
 import {CATEGORY_FUSION_DISPLAY, MEMBER_GROUPING} from 'fusion/hooks/display';
+import {useIsPhone} from 'fusion/hooks/media';
 import {useDisplayName} from 'fusion/hooks/users';
 import {usePreference} from 'fusion/modals/settings_controls';
 import {useUserMenu} from 'fusion/popovers/user_menu';
 import UserPopover from 'fusion/popovers/user_popover';
+import {useLayout} from 'fusion/shell/layout_context';
 import {useRoleColor} from 'fusion/teams/roles';
 import {TeamTag} from 'fusion/teams/team_card';
 import {getTeams, useRoleGroupsAllowed} from 'fusion/teams/teams';
@@ -136,6 +139,8 @@ export default function MemberList({inPanel = false}: {inPanel?: boolean}) {
     const loading = useRef(false);
     const [userMenu, openUserMenu, closeUserMenu] = useUserMenu();
     const addRef = useRef<HTMLButtonElement>(null);
+    const layout = useLayout();
+    const phone = useIsPhone();
 
     useEffect(() => {
         if (channelId) {
@@ -160,6 +165,8 @@ export default function MemberList({inPanel = false}: {inPanel?: boolean}) {
     const list = (
         <>
             <div className={am('mem-head')}>
+                {/* On a phone the list takes the whole screen: back to the conversation. */}
+                {phone && <SheetBack onBack={() => (inPanel ? dispatch(closeRightHandSide()) : layout.setRightOpen(false))}/>}
                 <span>{formatMessage({id: 'fusion.members.title', defaultMessage: '{count, plural, one {# member} other {# members}}'}, {count: Math.max(memberCount ?? 0, profiles.length)})}</span>
                 {rolesAllowed && hasTeams && !direct && (
                     <span
@@ -211,7 +218,7 @@ export default function MemberList({inPanel = false}: {inPanel?: boolean}) {
                         />
                     </button>
                 )}
-                {inPanel && (
+                {inPanel && !phone && (
                     <button
                         className={am('icon-btn', 'mem-add')}
                         aria-label={formatMessage({id: 'fusion.rhs.close', defaultMessage: 'Close'})}
