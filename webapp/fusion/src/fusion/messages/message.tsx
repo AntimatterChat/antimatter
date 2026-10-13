@@ -554,7 +554,7 @@ export default function Message({postId, previousPostId, inThread = false, highl
             <button
                 ref={avatarRef}
                 aria-label={authorName}
-                onClick={() => setPopover('user')}
+                onClick={() => setPopover((open) => (open === 'user' ? null : 'user'))}
                 onContextMenu={(e) => openUserMenu(post.user_id, e)}
             >
                 <Avatar
@@ -591,7 +591,7 @@ export default function Message({postId, previousPostId, inThread = false, highl
                     <button
                         className={am('author')}
                         style={authorStyle(roleColor, prefs.colorize, post.user_id, Boolean(webhook || bot))}
-                        onClick={() => setPopover('user')}
+                        onClick={() => setPopover((open) => (open === 'user' ? null : 'user'))}
                         onContextMenu={(e) => openUserMenu(post.user_id, e)}
                     >
                         {authorName}

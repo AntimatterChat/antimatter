@@ -31,7 +31,7 @@ export function useMentionClick(): [React.ReactNode, (e: React.MouseEvent) => vo
         // The classic mention's own popover never sees the click.
         e.preventDefault();
         e.stopPropagation();
-        setTarget({userId: user.id, anchor: trigger});
+        setTarget((open) => (open?.anchor === trigger ? null : {userId: user.id, anchor: trigger}));
     }, [store]);
 
     const node = target ? (

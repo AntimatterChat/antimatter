@@ -246,16 +246,19 @@ export function UserMenu({target, onProfile, onClose}: {target: Target; onProfil
 }
 
 // useUserMenu gives a component a person's right-click menu: the menu (and the profile card or confirmation it
-// leads to) to render, and the context menu handler to put on the elements that stand for that person.
-export function useUserMenu(): [React.ReactNode, (userId: string, e: React.MouseEvent<HTMLElement>) => void] {
+// leads to) to render, the context menu handler to put on the elements that stand for that person, and a way to close
+// it. Right-clicking the same element again closes it.
+export function useUserMenu(): [React.ReactNode, (userId: string, e: React.MouseEvent<HTMLElement>) => void, () => void] {
     const [target, setTarget] = useState<Target | null>(null);
     const [mode, setMode] = useState<'menu' | 'profile'>('menu');
     const close = useCallback(() => setTarget(null), []);
 
     const open = useCallback((userId: string, e: React.MouseEvent<HTMLElement>) => {
         e.preventDefault();
+        const anchor = e.currentTarget;
+        const point = {x: e.clientX, y: e.clientY};
         setMode('menu');
-        setTarget({userId, anchor: e.currentTarget, point: {x: e.clientX, y: e.clientY}});
+        setTarget((open) => (open?.anchor === anchor ? null : {userId, anchor, point}));
     }, []);
 
     let node: React.ReactNode = null;
@@ -276,5 +279,5 @@ export function useUserMenu(): [React.ReactNode, (userId: string, e: React.Mouse
             />
         );
     }
-    return [node, open];
+    return [node, open, close];
 }

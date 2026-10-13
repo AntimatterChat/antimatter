@@ -134,7 +134,7 @@ export default function MemberList({inPanel = false}: {inPanel?: boolean}) {
     const [adding, setAdding] = useState(false);
     const page = useRef(0);
     const loading = useRef(false);
-    const [userMenu, openUserMenu] = useUserMenu();
+    const [userMenu, openUserMenu, closeUserMenu] = useUserMenu();
     const addRef = useRef<HTMLButtonElement>(null);
 
     useEffect(() => {
@@ -250,7 +250,14 @@ export default function MemberList({inPanel = false}: {inPanel?: boolean}) {
                             user={u}
                             off={group.off || Boolean(group.offline?.has(u.id))}
                             role={roles[u.id]}
-                            onOpen={(anchor) => setPopover({userId: u.id, anchor})}
+                            onOpen={(anchor) => {
+                                // A click while their menu is open only closes it.
+                                if (userMenu) {
+                                    closeUserMenu();
+                                    return;
+                                }
+                                setPopover((open) => (open?.userId === u.id ? null : {userId: u.id, anchor}));
+                            }}
                             onMenu={(e) => openUserMenu(u.id, e)}
                         />
                     ))}
