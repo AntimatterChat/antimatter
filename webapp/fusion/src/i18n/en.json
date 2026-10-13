@@ -22547,6 +22547,118 @@
     "defaultMessage": "That address is taken.",
     "description": ""
   },
+  "fusion.customEmoji.add": {
+    "defaultMessage": "Add emoji",
+    "description": ""
+  },
+  "fusion.customEmoji.added": {
+    "defaultMessage": ":{name}: is ready to use.",
+    "description": ""
+  },
+  "fusion.customEmoji.adding": {
+    "defaultMessage": "Adding…",
+    "description": ""
+  },
+  "fusion.customEmoji.addTab": {
+    "defaultMessage": "Add",
+    "description": ""
+  },
+  "fusion.customEmoji.allTab": {
+    "defaultMessage": "All custom emoji",
+    "description": ""
+  },
+  "fusion.customEmoji.cancel": {
+    "defaultMessage": "Cancel",
+    "description": ""
+  },
+  "fusion.customEmoji.close": {
+    "defaultMessage": "Close",
+    "description": ""
+  },
+  "fusion.customEmoji.confirmDelete": {
+    "defaultMessage": "Delete",
+    "description": ""
+  },
+  "fusion.customEmoji.delete": {
+    "defaultMessage": "Delete :{name}:",
+    "description": ""
+  },
+  "fusion.customEmoji.deleteFailed": {
+    "defaultMessage": "The emoji couldn't be deleted.",
+    "description": ""
+  },
+  "fusion.customEmoji.done": {
+    "defaultMessage": "Done",
+    "description": ""
+  },
+  "fusion.customEmoji.failed": {
+    "defaultMessage": "The emoji couldn't be added.",
+    "description": ""
+  },
+  "fusion.customEmoji.image": {
+    "defaultMessage": "Image",
+    "description": ""
+  },
+  "fusion.customEmoji.imageRequired": {
+    "defaultMessage": "Choose an image.",
+    "description": ""
+  },
+  "fusion.customEmoji.keep": {
+    "defaultMessage": "Keep",
+    "description": ""
+  },
+  "fusion.customEmoji.lead": {
+    "defaultMessage": "Everyone on the server can use it in messages and reactions, as :name:. PNG, GIF (animated too), JPEG or WebP, 1 MB at most; it shows at 22 pixels high.",
+    "description": ""
+  },
+  "fusion.customEmoji.more": {
+    "defaultMessage": "Show more",
+    "description": ""
+  },
+  "fusion.customEmoji.name": {
+    "defaultMessage": "Name",
+    "description": ""
+  },
+  "fusion.customEmoji.nameInvalid": {
+    "defaultMessage": "A name can only have lowercase letters, numbers, and - + _",
+    "description": ""
+  },
+  "fusion.customEmoji.namePlaceholder": {
+    "defaultMessage": "e.g. party_parrot",
+    "description": ""
+  },
+  "fusion.customEmoji.nameRequired": {
+    "defaultMessage": "Give the emoji a name.",
+    "description": ""
+  },
+  "fusion.customEmoji.nameSystem": {
+    "defaultMessage": "An emoji already has this name.",
+    "description": ""
+  },
+  "fusion.customEmoji.nameTaken": {
+    "defaultMessage": "A custom emoji already has this name.",
+    "description": ""
+  },
+  "fusion.customEmoji.noMatch": {
+    "defaultMessage": "No custom emoji matches.",
+    "description": ""
+  },
+  "fusion.customEmoji.none": {
+    "defaultMessage": "No custom emoji yet.",
+    "description": ""
+  },
+  "fusion.customEmoji.search": {
+    "defaultMessage": "Search custom emoji",
+    "description": ""
+  },
+  "fusion.customEmoji.title": {
+    "defaultMessage": "Custom emoji",
+    "description": ""
+  },
+  "fusion.customEmoji.tooLarge": {
+    "defaultMessage": "The image must be 1 MB at most.",
+    "description": ""
+  },
   "fusion.delete.cancel": {
     "defaultMessage": "Cancel",
     "description": ""
@@ -23169,10 +23281,6 @@
   },
   "fusion.integrations.customization": {
     "defaultMessage": "Customization",
-    "description": ""
-  },
-  "fusion.integrations.emoji": {
-    "defaultMessage": "Custom emoji",
     "description": ""
   },
   "fusion.integrations.incoming": {

@@ -302,3 +302,23 @@
 :is(.am-app, .am-layer) .am-browse-joined { color: var(--am-muted); font-size: 12.5px; font-weight: 600; padding: 0 8px; }
 :is(.am-app, .am-layer) .am-browse-open .am-ch-ic .am-lock { background: var(--am-main); }
 :is(.am-app, .am-layer) .am-browse-row:hover .am-browse-open .am-ch-ic .am-lock { background: transparent; }
+
+/* Custom emoji dialog (fusion/modals/custom_emoji_dialog.tsx) */
+:is(.am-app, .am-layer) .am-emoji-admin .am-seg { margin-bottom: 16px; }
+:is(.am-app, .am-layer) .am-emoji-add-row { display: flex; gap: 16px; align-items: flex-start; }
+:is(.am-app, .am-layer) .am-emoji-add-preview { flex: none; width: 72px; height: 72px; margin-top: 20px; border-radius: 12px; border: 1px dashed color-mix(in srgb, var(--am-muted) 50%, transparent); background: var(--am-side); display: grid; place-items: center; color: var(--am-muted); }
+:is(.am-app, .am-layer) .am-emoji-add-preview img { max-width: 56px; max-height: 56px; object-fit: contain; }
+:is(.am-app, .am-layer) .am-emoji-add-fields { flex: 1; min-width: 0; }
+:is(.am-app, .am-layer) .am-emoji-add-fields input[type="file"] { max-width: 100%; color: var(--am-text-2); }
+:is(.am-app, .am-layer) .am-emoji-add-error { color: var(--am-danger); }
+:is(.am-app, .am-layer) .am-emoji-add-done { color: var(--am-ok); }
+:is(.am-app, .am-layer) .am-emoji-list-search { display: flex; align-items: center; gap: 8px; height: 36px; padding: 0 10px; border-radius: 8px; border: 1px solid var(--am-line); background: var(--am-side); color: var(--am-muted); }
+:is(.am-app, .am-layer) .am-emoji-list-search input { flex: 1; min-width: 0; border: 0; outline: none; background: transparent; color: var(--am-text); font-size: 14px; }
+:is(.am-app, .am-layer) .am-emoji-rows { list-style: none; margin: 10px 0; padding: 0; max-height: min(50vh, 420px); overflow-y: auto; }
+:is(.am-app, .am-layer) .am-emoji-rows li { display: flex; align-items: center; gap: 10px; min-height: 40px; padding: 4px 8px; border-radius: 8px; }
+:is(.am-app, .am-layer) .am-emoji-rows li:hover { background: var(--am-hover); }
+:is(.am-app, .am-layer) .am-emoji-rows img { flex: none; width: 28px; height: 28px; object-fit: contain; }
+:is(.am-app, .am-layer) .am-emoji-row-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 600; }
+:is(.am-app, .am-layer) .am-emoji-row-by { flex: none; max-width: 40%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--am-muted); font-size: 12.5px; }
+:is(.am-app, .am-layer) .am-emoji-row-confirm { display: flex; gap: 6px; }
+:is(.am-app, .am-layer) .am-emoji-row-confirm .am-btn { height: 28px; padding: 0 10px; font-size: 12.5px; }

@@ -31,6 +31,7 @@ const MoreDirectChannels = makeAsyncComponent('FusionMoreDirectChannels', lazy((
 const NewChannelModal = makeAsyncComponent('FusionNewChannelModal', lazy(() => import('components/new_channel_modal/new_channel_modal')));
 const TeamMembersModal = makeAsyncComponent('FusionTeamMembersModal', lazy(() => import('components/team_members_modal')));
 const TeamSettingsModal = makeAsyncComponent('FusionTeamSettingsModal', lazy(() => import('components/team_settings_modal')));
+const CustomEmojiDialog = makeAsyncComponent('FusionCustomEmojiDialog', lazy(() => import('fusion/modals/custom_emoji_dialog')));
 const UserSettingsModal = makeAsyncComponent('FusionUserSettingsModal', lazy(() => import('components/user_settings/modal')));
 
 export const openNewChannel = () => openDialog(ModalIdentifiers.NEW_CHANNEL_MODAL, NewChannelModal);
@@ -57,3 +58,7 @@ export function openUserGroups(communityId: string): ThunkActionFunc<void> {
 
 export const openKeyboardShortcuts = () => openDialog(ModalIdentifiers.KEYBOARD_SHORTCUTS_MODAL, KeyboardShortcutsModal);
 export const openClassicUserSettings = (activeTab?: string) => openDialog(ModalIdentifiers.USER_SETTINGS, UserSettingsModal, {isContentProductSettings: true, activeTab});
+
+// openCustomEmoji opens the Fusion dialog adding custom emoji (or, on 'all', listing them), which replaced the classic
+// backstage pages.
+export const openCustomEmoji = (tab: 'add' | 'all' = 'add') => openDialog('fusion_custom_emoji', CustomEmojiDialog, {tab});

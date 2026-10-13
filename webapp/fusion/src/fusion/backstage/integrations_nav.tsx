@@ -151,15 +151,8 @@ export default function IntegrationsNav(props: Props) {
                     </SystemPermissionGate>
                 </>
             )}
-            {((props.enableCustomEmoji && props.canCreateOrDeleteCustomEmoji) || pluginOptions.length > 0) && (
+            {pluginOptions.length > 0 && (
                 <h5>{formatMessage({id: 'fusion.integrations.customization', defaultMessage: 'Customization'})}</h5>
-            )}
-            {props.enableCustomEmoji && props.canCreateOrDeleteCustomEmoji && (
-                <Item
-                    to={`/${team.name}/emoji`}
-                    icon='smile'
-                    label={formatMessage({id: 'fusion.integrations.emoji', defaultMessage: 'Custom emoji'})}
-                />
             )}
 
             {/* Entries of plugins, such as the custom GIFs and stickers of Antimatter's GIFs plugin. */}

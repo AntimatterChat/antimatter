@@ -4,7 +4,6 @@
 import React, {useEffect, useMemo, useRef, useState} from 'react';
 import {useIntl} from 'react-intl';
 import {shallowEqual, useDispatch, useSelector} from 'react-redux';
-import {Link} from 'react-router-dom';
 
 import type {Emoji} from '@mattermost/types/emojis';
 
@@ -24,6 +23,7 @@ import AnyTeamPermissionGate from 'components/permissions_gates/any_team_permiss
 import Icon, {isIconName} from 'fusion/components/icon';
 import {Popover} from 'fusion/components/layer';
 import {am} from 'fusion/utils/class_names';
+import {openCustomEmoji} from 'fusion/utils/modals';
 import PluggableErrorBoundary from 'plugins/pluggable/error_boundary';
 
 import type {GlobalState} from 'types/store';
@@ -121,6 +121,7 @@ type EmojiTabProps = {
 // EmojiTab is the mockup's emoji picker: search, category rail, grid and a footer naming the emoji under the pointer.
 function EmojiTab({query, onQuery, onPick: pick, onClose, keepOpen}: EmojiTabProps) {
     const {formatMessage} = useIntl();
+    const dispatch = useDispatch();
     const customEmojisEnabled = useSelector(getCustomEmojisEnabled);
     const teamName = useSelector((state: GlobalState) => getCurrentTeam(state)?.name ?? '');
     const emojiMap = useSelector(getEmojiMap);
@@ -168,15 +169,18 @@ function EmojiTab({query, onQuery, onPick: pick, onClose, keepOpen}: EmojiTabPro
                 <SkinTonePicker/>
                 {customEmojisEnabled && teamName && (
                     <AnyTeamPermissionGate permissions={[Permissions.CREATE_EMOJIS]}>
-                        <Link
+                        <button
+                            type='button'
                             className={am('icon-btn')}
-                            to={`/${teamName}/emoji/add`}
                             title={formatMessage({id: 'fusion.picker.addCustomEmoji', defaultMessage: 'Add custom emoji'})}
                             aria-label={formatMessage({id: 'fusion.picker.addCustomEmoji', defaultMessage: 'Add custom emoji'})}
-                            onClick={onClose}
+                            onClick={() => {
+                                onClose();
+                                dispatch(openCustomEmoji());
+                            }}
                         >
                             <Icon name='plus'/>
-                        </Link>
+                        </button>
                     </AnyTeamPermissionGate>
                 )}
             </div>
