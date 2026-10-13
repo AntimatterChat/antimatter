@@ -15,13 +15,12 @@ import {am} from 'fusion/utils/class_names';
 
 import type {GlobalState} from 'types/store';
 
-import {goToChannel, useCallActions, useChannelLabel} from './actions';
+import {goToChannel, showCall, useCallActions, useChannelLabel} from './actions';
 import CallVideo from './call_video';
 import type {VoiceParticipant} from './calls_api';
-import {ScreenShareMenu, useToggleLabels} from './controls';
+import {muteIcon, ScreenShareMenu, useToggleLabels} from './controls';
 import {useCallMedia, useMyCall, useParticipants} from './hooks';
 import {FakeScreen} from './stage';
-import {openCallPopout} from './ui_state';
 
 // Where the call is: its team, or "Direct message".
 function useWhere(channelId: string): string {
@@ -36,7 +35,7 @@ function useWhere(channelId: string): string {
     return team ?? formatMessage({id: 'fusion.calls.directMessage', defaultMessage: 'Direct message'});
 }
 
-function MiniScreen({sharer, stream}: {sharer: VoiceParticipant; stream: MediaStream | null}) {
+function MiniScreen({sharer, stream, onShow}: {sharer: VoiceParticipant; stream: MediaStream | null; onShow: () => void}) {
     const {formatMessage} = useIntl();
     const user = useUser(sharer.userId);
     const name = useDisplayName(user);
@@ -44,8 +43,8 @@ function MiniScreen({sharer, stream}: {sharer: VoiceParticipant; stream: MediaSt
     return (
         <button
             className={am('mini-screen')}
-            aria-label={formatMessage({id: 'fusion.calls.miniScreenLabel', defaultMessage: '{name} is sharing their screen — open the call in a new window'}, {name})}
-            onClick={openCallPopout}
+            aria-label={formatMessage({id: 'fusion.calls.miniScreenShow', defaultMessage: '{name} is sharing their screen — show the call'}, {name})}
+            onClick={onShow}
         >
             {stream ? (
                 <CallVideo
@@ -61,7 +60,7 @@ function MiniScreen({sharer, stream}: {sharer: VoiceParticipant; stream: MediaSt
             <span className={am('who')}>
                 {sharer.isMe ? formatMessage({id: 'fusion.calls.youAreSharing', defaultMessage: 'You are sharing'}) : formatMessage({id: 'fusion.calls.isSharing', defaultMessage: '{name} is sharing'}, {name: first})}
             </span>
-            <span className={am('pop-ic')}><Icon name='popout'/></span>
+            <span className={am('pop-ic')}><Icon name='expand'/></span>
         </button>
     );
 }
@@ -87,6 +86,11 @@ export default function VoiceConnectionPanel() {
         return null;
     }
 
+    // The call shows in the main view, as a voice channel's; a window of its own opens from there.
+    const show = () => {
+        layout.setNavOpen(false);
+        showCall(store.getState(), channelId);
+    };
     const sharer = participants.find((p) => p.screenSharing);
     let status;
     if (my.call.state === 'connecting') {
@@ -106,6 +110,7 @@ export default function VoiceConnectionPanel() {
                 <MiniScreen
                     sharer={sharer}
                     stream={media.screen}
+                    onShow={show}
                 />
             )}
             <div className={am('top')}>
@@ -128,12 +133,12 @@ export default function VoiceConnectionPanel() {
                 </div>
                 <button
                     className={am('icon-btn')}
-                    title={labels.popout}
-                    aria-label={labels.popoutLabel}
-                    onClick={openCallPopout}
+                    title={labels.show}
+                    aria-label={labels.show}
+                    onClick={show}
                 >
                     <Icon
-                        name='popout'
+                        name='expand'
                         size='sm'
                     />
                 </button>
@@ -160,7 +165,7 @@ export default function VoiceConnectionPanel() {
                         onClick={() => actions.toggleMute(my)}
                     >
                         <Icon
-                            name={my.muted ? 'mic-off' : 'mic'}
+                            name={muteIcon(my)}
                             size='sm'
                         />
                     </button>

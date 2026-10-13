@@ -14,6 +14,7 @@ import {getCurrentTeam, getCurrentTeamId} from 'mattermost-redux/selectors/entit
 import {setUnreadFilterEnabled} from 'actions/views/channel_sidebar';
 import {isUnreadFilterEnabled} from 'selectors/views/channel_sidebar';
 
+import {useCallsOnTop} from 'fusion/calls/calls_on_top';
 import Icon from 'fusion/components/icon';
 import ServerMenu from 'fusion/popovers/server_menu';
 import {getUnreadDirectChannels} from 'fusion/selectors';
@@ -50,7 +51,10 @@ function Dock() {
     const channelIds = useSelector((state: GlobalState) => (dmCategory ? getChannelIds(state, dmCategory) : []));
     const getChannel = useMemo(() => makeGetChannel(), []);
     const hidden = useSelector(getHiddenChannelIds);
-    const channels = useSelector((state: GlobalState) => channelIds.filter((id) => !hidden.has(id)).map((id) => getChannel(state, id)).filter(Boolean) as Channel[], shallowEqual);
+    const open = useSelector((state: GlobalState) => channelIds.filter((id) => !hidden.has(id)).map((id) => getChannel(state, id)).filter(Boolean) as Channel[], shallowEqual);
+
+    // A conversation with a call in progress stays on top while it lasts.
+    const channels = useCallsOnTop(open);
     const unread = useSelector(getUnreadDirectChannels).reduce((n, dm) => n + Math.max(dm.messages, dm.mentions), 0);
     const allLabel = formatMessage({id: 'fusion.dock.all', defaultMessage: 'All direct messages'});
 

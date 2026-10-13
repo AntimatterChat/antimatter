@@ -21203,6 +21203,42 @@
     "defaultMessage": "This message is deleted after it is read",
     "description": ""
   },
+  "fusion.calls.askUnmute.label": {
+    "defaultMessage": "{name} asks you to unmute",
+    "description": ""
+  },
+  "fusion.calls.askUnmute.notNow": {
+    "defaultMessage": "Not now",
+    "description": ""
+  },
+  "fusion.calls.askUnmute.sub": {
+    "defaultMessage": "You are muted in {where}",
+    "description": ""
+  },
+  "fusion.calls.askUnmute.title": {
+    "defaultMessage": "{name} asks you to unmute",
+    "description": ""
+  },
+  "fusion.calls.askUnmute.unmute": {
+    "defaultMessage": "Unmute",
+    "description": ""
+  },
+  "fusion.calls.banner.join": {
+    "defaultMessage": "Join call",
+    "description": ""
+  },
+  "fusion.calls.banner.people": {
+    "defaultMessage": "{count, plural, =0 {Nobody in it yet} one {# person in it} other {# people in it}}",
+    "description": ""
+  },
+  "fusion.calls.banner.started": {
+    "defaultMessage": "{name} started a call",
+    "description": ""
+  },
+  "fusion.calls.banner.titled": {
+    "defaultMessage": "“{title}” is in progress",
+    "description": ""
+  },
   "fusion.calls.blur": {
     "defaultMessage": "Blur my background",
     "description": ""
@@ -21323,6 +21359,18 @@
     "defaultMessage": "Disconnect",
     "description": ""
   },
+  "fusion.calls.dmCallJoined": {
+    "defaultMessage": "You are in this call · {count, plural, one {# person} other {# people}}",
+    "description": ""
+  },
+  "fusion.calls.dmCallLive": {
+    "defaultMessage": "Call in progress · {count, plural, one {# person} other {# people}}",
+    "description": ""
+  },
+  "fusion.calls.dmInCall": {
+    "defaultMessage": "In call",
+    "description": ""
+  },
   "fusion.calls.emptyRoom": {
     "defaultMessage": "This room is always open. Join and others will see you in the sidebar.",
     "description": ""
@@ -21387,6 +21435,34 @@
     "defaultMessage": "In a call in {where}",
     "description": ""
   },
+  "fusion.calls.incoming.decline": {
+    "defaultMessage": "Decline",
+    "description": ""
+  },
+  "fusion.calls.incoming.dm": {
+    "defaultMessage": "is calling you",
+    "description": ""
+  },
+  "fusion.calls.incoming.dmLabel": {
+    "defaultMessage": "{name} is calling you",
+    "description": ""
+  },
+  "fusion.calls.incoming.gm": {
+    "defaultMessage": "{name} is calling the group",
+    "description": ""
+  },
+  "fusion.calls.incoming.gmLabel": {
+    "defaultMessage": "{name} is calling {group}",
+    "description": ""
+  },
+  "fusion.calls.incoming.join": {
+    "defaultMessage": "Join",
+    "description": ""
+  },
+  "fusion.calls.incoming.muteRing": {
+    "defaultMessage": "Mute the ring",
+    "description": ""
+  },
   "fusion.calls.inVoiceChannel": {
     "defaultMessage": "In voice channel {where}",
     "description": ""
@@ -21439,6 +21515,10 @@
     "defaultMessage": "Lower hand",
     "description": ""
   },
+  "fusion.calls.menu.askUnmute": {
+    "defaultMessage": "Ask to unmute",
+    "description": ""
+  },
   "fusion.calls.menu.call": {
     "defaultMessage": "Call",
     "description": ""
@@ -21455,12 +21535,24 @@
     "defaultMessage": "Kick from voice channel",
     "description": ""
   },
+  "fusion.calls.menu.liftModMute": {
+    "defaultMessage": "Allow to unmute",
+    "description": ""
+  },
   "fusion.calls.menu.lowerHand": {
     "defaultMessage": "Lower hand",
     "description": ""
   },
   "fusion.calls.menu.message": {
     "defaultMessage": "Message",
+    "description": ""
+  },
+  "fusion.calls.menu.modMute": {
+    "defaultMessage": "Mute for this call",
+    "description": ""
+  },
+  "fusion.calls.menu.modMuteSub": {
+    "defaultMessage": "Until you allow it, also if they rejoin",
     "description": ""
   },
   "fusion.calls.menu.mute": {
@@ -21483,12 +21575,24 @@
     "defaultMessage": "Volume",
     "description": ""
   },
-  "fusion.calls.miniScreenLabel": {
-    "defaultMessage": "{name} is sharing their screen — open the call in a new window",
+  "fusion.calls.messagesBeside": {
+    "defaultMessage": "Messages beside the call",
+    "description": ""
+  },
+  "fusion.calls.miniScreenShow": {
+    "defaultMessage": "{name} is sharing their screen — show the call",
     "description": ""
   },
   "fusion.calls.minutes": {
     "defaultMessage": "{minutes} min",
+    "description": ""
+  },
+  "fusion.calls.modMuted": {
+    "defaultMessage": "Muted by a moderator",
+    "description": ""
+  },
+  "fusion.calls.modMutedYou": {
+    "defaultMessage": "A moderator muted you",
     "description": ""
   },
   "fusion.calls.mute": {
@@ -21579,8 +21683,20 @@
     "defaultMessage": "A window",
     "description": ""
   },
+  "fusion.calls.showCall": {
+    "defaultMessage": "Show the call",
+    "description": ""
+  },
   "fusion.calls.showCaptions": {
     "defaultMessage": "Show live captions",
+    "description": ""
+  },
+  "fusion.calls.showMessages": {
+    "defaultMessage": "Show the messages",
+    "description": ""
+  },
+  "fusion.calls.showVoice": {
+    "defaultMessage": "Show the voice channel",
     "description": ""
   },
   "fusion.calls.someoneSharing": {
@@ -21643,6 +21759,18 @@
     "defaultMessage": "Text chat",
     "description": ""
   },
+  "fusion.calls.toast.asked": {
+    "defaultMessage": "Asked {name} to unmute",
+    "description": ""
+  },
+  "fusion.calls.toast.askedRecently": {
+    "defaultMessage": "{name} was asked a moment ago: wait a little",
+    "description": ""
+  },
+  "fusion.calls.toast.askFailed": {
+    "defaultMessage": "Couldn't ask {name} to unmute",
+    "description": ""
+  },
   "fusion.calls.toast.connected": {
     "defaultMessage": "Connected to {name}",
     "description": ""
@@ -21683,6 +21811,26 @@
     "defaultMessage": "Left the call in {where}",
     "description": ""
   },
+  "fusion.calls.toast.modMuted": {
+    "defaultMessage": "Muted {name} for this call: they can't unmute until you allow it",
+    "description": ""
+  },
+  "fusion.calls.toast.modMutedCantUnmute": {
+    "defaultMessage": "A moderator muted you: you can unmute once they allow it",
+    "description": ""
+  },
+  "fusion.calls.toast.modMuteFailed": {
+    "defaultMessage": "Couldn't change {name}'s mute",
+    "description": ""
+  },
+  "fusion.calls.toast.modMuteForbidden": {
+    "defaultMessage": "You can't mute {name}",
+    "description": ""
+  },
+  "fusion.calls.toast.modUnmuted": {
+    "defaultMessage": "{name} can unmute again",
+    "description": ""
+  },
   "fusion.calls.toast.moved": {
     "defaultMessage": "Moved to {name}",
     "description": ""
@@ -21693,6 +21841,14 @@
   },
   "fusion.calls.toast.started": {
     "defaultMessage": "Call started in {where}",
+    "description": ""
+  },
+  "fusion.calls.toast.youModMuted": {
+    "defaultMessage": "A moderator muted you in {where}: you can unmute once they allow it",
+    "description": ""
+  },
+  "fusion.calls.toast.youModUnmuted": {
+    "defaultMessage": "A moderator allowed you to unmute in {where}",
     "description": ""
   },
   "fusion.calls.transcribe": {

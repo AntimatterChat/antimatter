@@ -4,6 +4,14 @@
 import {useEffect, useMemo, useState} from 'react';
 import {shallowEqual, useSelector} from 'react-redux';
 
+import {Permissions} from 'mattermost-redux/constants';
+import {getChannel} from 'mattermost-redux/selectors/entities/channels';
+import {haveIChannelPermission, haveITeamPermission} from 'mattermost-redux/selectors/entities/roles';
+import {getCurrentUser, getCurrentUserId} from 'mattermost-redux/selectors/entities/users';
+import {isSystemAdmin} from 'mattermost-redux/utils/user_utils';
+
+import {canModerateTeam} from 'fusion/moderation/moderation';
+
 import type {GlobalState} from 'types/store';
 
 import {
@@ -60,6 +68,9 @@ export type MyCallState = {
     handRaised: boolean;
     isHost: boolean;
 
+    // A moderator muted them: they can't unmute until it's lifted.
+    modMuted: boolean;
+
     // Someone else shares their screen: there's one screen share per call.
     otherSharing: boolean;
     videoAllowed: boolean;
@@ -102,6 +113,7 @@ export function useMyCall(): MyCallState | null {
             screen,
             handRaised: Boolean(me?.raisedHand),
             isHost: Boolean(me?.isHost),
+            modMuted: Boolean(me?.modMuted),
             otherSharing: Boolean(flags.sharingSession) && !screen,
             videoAllowed: flags.videoAllowed,
             screenAllowed: flags.screenAllowed,
@@ -211,4 +223,30 @@ export function useUserTalk(userId?: string): Talk | null {
         const [, kind, channelId] = line.split(' ');
         return {kind: kind as Talk['kind'], channelId};
     }, [line]);
+}
+
+// canModerateCall tells whether the user may moderate the call of a channel, as Calls checks it: its host, system
+// admins, the channel's admins, the community's admins, and in voice channels the community's moderators. Calls
+// also keeps anyone from muting someone above them.
+export function canModerateCall(state: GlobalState, channelId: string): boolean {
+    const channel = getChannel(state, channelId);
+    if (!channel) {
+        return false;
+    }
+    if (isSystemAdmin(getCurrentUser(state)?.roles || '') || getCall(state, channelId)?.hostId === getCurrentUserId(state)) {
+        return true;
+    }
+    if (haveIChannelPermission(state, channel.team_id, channel.id, Permissions.MANAGE_CHANNEL_ROLES)) {
+        return true;
+    }
+    if (!channel.team_id) {
+        return false;
+    }
+    return haveITeamPermission(state, channel.team_id, Permissions.MANAGE_TEAM) ||
+        (isVoiceChannel(state, channelId) && canModerateTeam(state, channel.team_id));
+}
+
+export function useCanModerateCall(channelId: string): boolean {
+    useCallsAPIs();
+    return useSelector((state: GlobalState) => canModerateCall(state, channelId));
 }

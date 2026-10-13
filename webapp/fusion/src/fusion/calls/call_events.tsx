@@ -11,12 +11,12 @@ import type {KeyAction} from 'fusion/shell/keybinds';
 
 import type {GlobalState} from 'types/store';
 
-import {useCallActions} from './actions';
+import {channelLabel, useCallActions} from './actions';
 import {getCallsAPI, useCallsAPIs} from './calls_api';
 import type {CallsErrorEvent} from './calls_api';
 import {useApplyVolumes} from './extras';
 import {useMyCall, useParticipants} from './hooks';
-import {setCallWindowOpen, useCallsUI} from './ui_state';
+import {setCallView, setCallWindowOpen, setVoiceChat, useCallsUI} from './ui_state';
 
 type Shortcut = 'mute' | 'hand' | 'screen' | 'window' | 'leave';
 
@@ -42,7 +42,7 @@ export default function CallEvents() {
     const {calls} = useCallsAPIs();
     const actions = useCallActions();
     const my = useMyCall();
-    const {callWindow} = useCallsUI();
+    const {callWindow, callView, voiceChat} = useCallsUI();
     const store = useStore<GlobalState>();
     const latest = useRef({my, callWindow});
     latest.current = {my, callWindow};
@@ -58,7 +58,7 @@ export default function CallEvents() {
         let holding = '';
         const onKeyDown = (e: KeyboardEvent) => {
             const current = latest.current.my;
-            if (e.repeat || holding || !current?.call.mediaInThisWindow || !isKeybind(store.getState(), e, 'pushToTalk')) {
+            if (e.repeat || holding || !current?.call.mediaInThisWindow || current.modMuted || !isKeybind(store.getState(), e, 'pushToTalk')) {
                 return;
             }
             e.preventDefault();
@@ -118,6 +118,47 @@ export default function CallEvents() {
         return () => document.removeEventListener('keydown', onKeyDown, true);
     }, [active, actions, store]);
 
+    // A conversation's call view goes with the call: once it's left (or another joined), the conversation shows its
+    // messages again, and the right-hand panel that showed them beside the call closes.
+    const viewed = useRef(false);
+    const callChannelId = my?.call.channelId;
+    useEffect(() => {
+        if (!callView) {
+            viewed.current = false;
+            return;
+        }
+        if (callChannelId === callView) {
+            viewed.current = true;
+            return;
+        }
+        if (viewed.current || callChannelId) {
+            viewed.current = false;
+            setCallView(null);
+            if (voiceChat === callView) {
+                setVoiceChat(null);
+            }
+        }
+    }, [callView, callChannelId, voiceChat]);
+
+    // A moderator muting the user, or lifting it, is told: they can't unmute until then.
+    const modMuted = Boolean(my?.modMuted);
+    const wasModMuted = useRef(modMuted);
+    useEffect(() => {
+        if (modMuted === wasModMuted.current) {
+            return;
+        }
+        wasModMuted.current = modMuted;
+        if (!callChannelId) {
+            return;
+        }
+        const where = channelLabel(store.getState(), callChannelId);
+        if (modMuted) {
+            showToast(formatMessage({id: 'fusion.calls.toast.youModMuted', defaultMessage: 'A moderator muted you in {where}: you can unmute once they allow it'}, {where}));
+        } else {
+            showToast(formatMessage({id: 'fusion.calls.toast.youModUnmuted', defaultMessage: 'A moderator allowed you to unmute in {where}'}, {where}));
+        }
+    }, [modMuted, callChannelId, store, formatMessage]);
+
     useEffect(() => {
         if (!calls) {
             return undefined;
@@ -145,6 +186,9 @@ export default function CallEvents() {
                 break;
             case 'degraded-quality':
                 text = formatMessage({id: 'fusion.calls.error.quality', defaultMessage: 'Your connection is weak: others may hear you poorly'});
+                break;
+            case 'mod-muted':
+                text = formatMessage({id: 'fusion.calls.toast.modMutedCantUnmute', defaultMessage: 'A moderator muted you: you can unmute once they allow it'});
                 break;
             }
 

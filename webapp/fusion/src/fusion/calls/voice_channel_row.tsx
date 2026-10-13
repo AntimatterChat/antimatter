@@ -33,9 +33,22 @@ function VoicePerson({participant: p, onContextMenu}: {participant: VoicePartici
     const {formatMessage} = useIntl();
     const name = useDisplayName(useUser(p.userId));
 
-    // After LIVE and the camera, one audio icon: deafened beats muted.
+    // After LIVE and the camera, one audio icon: a moderator mute beats deafened, which beats muted.
     let audio = null;
-    if (p.deafened) {
+    if (p.modMuted) {
+        audio = (
+            <span
+                className={am('mod-muted')}
+                title={formatMessage({id: 'fusion.calls.modMuted', defaultMessage: 'Muted by a moderator'})}
+                aria-label={formatMessage({id: 'fusion.calls.modMuted', defaultMessage: 'Muted by a moderator'})}
+            >
+                <Icon
+                    name='mic-lock'
+                    size='xs'
+                />
+            </span>
+        );
+    } else if (p.deafened) {
         audio = (
             <Icon
                 name='headphones-off'
@@ -108,9 +121,10 @@ type Props = {
     collapsed?: boolean;
 };
 
-// VoiceChannelRow is a voice channel in the sidebar, the mockup's voice row: opening it joins the room (as the voice
-// channels plugin is set to), its chat button opens its text chat without joining, and the people in it are listed
-// underneath, even when its category is collapsed.
+// VoiceChannelRow is a voice channel in the sidebar, the mockup's voice row: clicking it joins the room without
+// leaving the channel you're in (as the voice channels plugin is set to), clicking it again shows the room, its chat
+// button opens its text chat without joining, and the people in it are listed underneath, even when its category is
+// collapsed.
 export default function VoiceChannelRow({channelId, collapsed}: Props) {
     const {formatMessage} = useIntl();
     const layout = useLayout();
@@ -147,9 +161,14 @@ export default function VoiceChannelRow({channelId, collapsed}: Props) {
                     className={am('ch', 'ch-voice', {active, unread: unread.showUnread && !muted, connected, live, muted})}
                     aria-current={active ? 'page' : undefined}
                     title={connected ? formatMessage({id: 'fusion.calls.youAreConnected', defaultMessage: 'You are connected'}) : undefined}
-                    onClick={() => {
+                    onClick={(e) => {
+                        // A click joins and leaves you where you are; once in it, a click shows it. A new tab or
+                        // window opens it as any link.
+                        if (e.button === 0 && !e.metaKey && !e.ctrlKey && !e.shiftKey && !e.altKey && actions.openVoiceFromSidebar(channelId)) {
+                            e.preventDefault();
+                            return;
+                        }
                         layout.setNavOpen(false);
-                        actions.autoJoinVoice(channelId);
                     }}
                 >
                     <ChannelIcon channel={channel}/>

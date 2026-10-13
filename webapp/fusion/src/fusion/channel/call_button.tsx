@@ -3,15 +3,17 @@
 
 import React, {useRef, useState} from 'react';
 import {useIntl} from 'react-intl';
-import {useSelector} from 'react-redux';
+import {useSelector, useStore} from 'react-redux';
 
 import type {Channel} from '@mattermost/types/channels';
 
 import {getMyChannelMembership} from 'mattermost-redux/selectors/entities/channels';
 
-import {useCallActions} from 'fusion/calls/actions';
+import {showCall, useCallActions} from 'fusion/calls/actions';
 import {getCallsAPI} from 'fusion/calls/calls_api';
 import {useCall, useCallsAvailable, useIsVoiceChannel, useLocalCall, useParticipants} from 'fusion/calls/hooks';
+import {setCallView, useCallsUI} from 'fusion/calls/ui_state';
+import {useOpenVoiceChat, useVoiceChatActions} from 'fusion/calls/voice_chat';
 import Icon from 'fusion/components/icon';
 import {Popover} from 'fusion/components/layer';
 import {am} from 'fusion/utils/class_names';
@@ -96,21 +98,47 @@ export default function CallButton({channel}: {channel: Channel}) {
     const call = useCall(channel.id);
     const people = useParticipants(channel.id).length;
     const local = useLocalCall();
+    const store = useStore<GlobalState>();
+    const {callView} = useCallsUI();
+    const chatOpen = useOpenVoiceChat() === channel.id;
+    const chat = useVoiceChatActions();
 
     if (!available || voice) {
         return null;
     }
 
+    // In the call: show it in place of the messages, or the messages again, and leave it.
     if (local?.channelId === channel.id) {
+        const showing = callView === channel.id;
+        const label = showing ? formatMessage({id: 'fusion.calls.showMessages', defaultMessage: 'Show the messages'}) : formatMessage({id: 'fusion.calls.showCall', defaultMessage: 'Show the call'});
         return (
-            <button
-                className={am('icon-btn', 'call-btn', 'leave')}
-                title={formatMessage({id: 'fusion.calls.leave', defaultMessage: 'Leave the call'})}
-                aria-label={formatMessage({id: 'fusion.calls.leave', defaultMessage: 'Leave the call'})}
-                onClick={actions.leaveCall}
-            >
-                <Icon name='hangup'/>
-            </button>
+            <>
+                <button
+                    className={am('icon-btn')}
+                    title={label}
+                    aria-label={label}
+                    onClick={() => {
+                        if (!showing) {
+                            showCall(store.getState(), channel.id);
+                            return;
+                        }
+                        setCallView(null);
+                        if (chatOpen) {
+                            chat.close();
+                        }
+                    }}
+                >
+                    <Icon name={showing ? 'forum' : 'expand'}/>
+                </button>
+                <button
+                    className={am('icon-btn', 'call-btn', 'leave')}
+                    title={formatMessage({id: 'fusion.calls.leave', defaultMessage: 'Leave the call'})}
+                    aria-label={formatMessage({id: 'fusion.calls.leave', defaultMessage: 'Leave the call'})}
+                    onClick={actions.leaveCall}
+                >
+                    <Icon name='hangup'/>
+                </button>
+            </>
         );
     }
     if (call) {

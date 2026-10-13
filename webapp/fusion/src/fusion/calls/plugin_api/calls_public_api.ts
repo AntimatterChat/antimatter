@@ -30,6 +30,22 @@ export type CallsParticipant = {
 
     // The session of this window's call (or, with the desktop app, of its call window).
     isMe: boolean;
+
+    // A moderator muted them for the call: they can't unmute until it's lifted.
+    modMuted: boolean;
+};
+
+// Someone muted by a moderator in the call of a channel, and by whom.
+export type CallsModMute = {
+    userId: string;
+    byUserId: string;
+};
+
+// A moderator asks the user to unmute in their call.
+export type CallsUnmuteRequest = {
+    channelId: string;
+    sessionId: string;
+    byUserId: string;
 };
 
 export type CallsCall = {
@@ -63,6 +79,9 @@ export type CallsIncomingCall = {
     callerId: string;
     startAt: number;
     type: 'dm' | 'gm';
+
+    // The ring is playing for it.
+    ringing: boolean;
 };
 
 export type CallsJoinOptions = {
@@ -97,6 +116,9 @@ export type CallsErrorEvent =
 
     // The call ended because of an error (Calls shows the error modal).
     {kind: 'call-error'; error: Error} |
+
+    // The user can't unmute: a moderator muted them for the call.
+    {kind: 'mod-muted'} |
 
     // Any other error of the calls client.
     {kind: 'other'; error: Error};
@@ -157,7 +179,7 @@ export type CallsCaption = {
     captionId: string;
 };
 
-export type CallsEvent = 'change' | 'error';
+export type CallsEvent = 'change' | 'error' | 'unmute-request';
 
 export type AntimatterCallsAPI = {
     version: 1;
@@ -194,6 +216,9 @@ export type AntimatterCallsAPI = {
 
         // The captions shown now in the call of a channel, by session.
         getLiveCaptions(state: CallsGlobalState, channelId: string): CallsCaption[];
+
+        // Who a moderator muted in the call of a channel.
+        getModMutes(state: CallsGlobalState, channelId: string): CallsModMute[];
     };
 
     // Joins (or starts) the call of a channel, through the same checks as Calls' own call button.
@@ -242,16 +267,31 @@ export type AntimatterCallsAPI = {
 
     // 'change' fires when the call of this window starts connecting, connects or closes, when
     // its local or remote video or screen streams change, and on mute, hand and device changes:
-    // re-read the getters then. 'error' gets a CallsErrorEvent. Returns the unsubscribe function.
+    // re-read the getters then. 'error' gets a CallsErrorEvent. 'unmute-request' fires when a
+    // moderator asks the user, muted in the call of this window, to unmute. Returns the
+    // unsubscribe function.
     on(event: 'change', cb: () => void): () => void;
     on(event: 'error', cb: (event: CallsErrorEvent) => void): () => void;
+    on(event: 'unmute-request', cb: (request: CallsUnmuteRequest) => void): () => void;
 
-    // Host controls on the call of this window (or of the desktop app's call window).
+    // Host controls on the call of this window (or of the desktop app's call window), or on the call of the given
+    // channel, for the call's moderators.
     host: {
-        mute(sessionId: string): void;
-        remove(sessionId: string): void;
-        lowerHand(sessionId: string): void;
-        stopScreen(sessionId: string): void;
+        mute(sessionId: string, channelId?: string): void;
+        remove(sessionId: string, channelId?: string): void;
+        lowerHand(sessionId: string, channelId?: string): void;
+        stopScreen(sessionId: string, channelId?: string): void;
+    };
+
+    // Moderation of a channel's call (its host, channel and community admins, system admins). They reject with an
+    // Error carrying the HTTP status (e.g. 429 when asked again too soon, 403 when not allowed).
+    moderation: {
+
+        // Mutes someone for the call, until lifted: they can't unmute, also after leaving and joining again.
+        setModMuted(channelId: string, userId: string, muted: boolean): Promise<void>;
+
+        // Asks a muted participant to unmute themselves.
+        askToUnmute(channelId: string, sessionId: string): Promise<void>;
     };
 
     // Starts or stops the transcription of the call of this window (host only). While it runs, each participant's
@@ -260,6 +300,9 @@ export type AntimatterCallsAPI = {
     stopTranscription(): Promise<void>;
 
     dismissIncomingCall(channelId: string, callId: string): void;
+
+    // Stops the ring of an incoming call, keeping it.
+    stopRinging(callId: string): void;
 
     // Opens the Calls tab of the user settings (audio, video and screen sharing devices).
     openSettings(): void;

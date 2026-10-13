@@ -9,10 +9,23 @@ import {useSyncExternalStore} from 'react';
 
 import type {GlobalState} from 'types/store';
 
-import type {AntimatterCallsAPI, CallsCall, CallsErrorEvent, CallsParticipant, LocalCall} from './plugin_api/calls_public_api';
-import type {AntimatterVoiceChannelsAPI, VoiceParticipant} from './plugin_api/voice_channels_public_api';
+import type {
+    AntimatterCallsAPI,
+    CallsCall,
+    CallsErrorEvent,
+    CallsIncomingCall,
+    CallsModMute,
+    CallsParticipant,
+    CallsUnmuteRequest,
+    LocalCall,
+} from './plugin_api/calls_public_api';
+import type {AntimatterVoiceChannelsAPI, VoiceParticipant as VoicePluginParticipant} from './plugin_api/voice_channels_public_api';
 
-export type {AntimatterCallsAPI, AntimatterVoiceChannelsAPI, CallsCall, CallsErrorEvent, CallsParticipant, LocalCall, VoiceParticipant};
+export type {AntimatterCallsAPI, AntimatterVoiceChannelsAPI, CallsCall, CallsErrorEvent, CallsIncomingCall, CallsModMute, CallsParticipant, CallsUnmuteRequest, LocalCall};
+
+// Someone in a call or a voice channel, as the call UI shows them: deafened in voice channels, and whether a
+// moderator muted them (which Calls knows, not the voice channels plugin).
+export type VoiceParticipant = VoicePluginParticipant & {modMuted: boolean};
 
 // Not in version 1 of the API: the channels that have a call. Calls' state is read when it's missing.
 type CallsSelectorsNext = AntimatterCallsAPI['selectors'] & {
@@ -63,6 +76,7 @@ export function useCallsAPIs(): APIs {
 // Selectors that read nothing when a plugin is absent; the arrays are constant so that they compare equal.
 const NO_PARTICIPANTS: VoiceParticipant[] = [];
 const NO_IDS: string[] = [];
+const NO_MOD_MUTES: CallsModMute[] = [];
 
 export function isVoiceChannel(state: GlobalState, channelId: string): boolean {
     const voice = getVoiceAPI();
@@ -78,33 +92,42 @@ export function getLocalCall(state: GlobalState): LocalCall | null {
     return getCallsAPI()?.selectors.getLocalCall(state) || null;
 }
 
-const toVoice = new WeakMap<CallsParticipant[], VoiceParticipant[]>();
+// getModMutes lists who a moderator muted in a channel's call (older Calls versions have no moderator mute).
+export function getModMutes(state: GlobalState, channelId: string): CallsModMute[] {
+    const calls = getCallsAPI();
+    return (calls && channelId && calls.selectors.getModMutes?.(state, channelId)) || NO_MOD_MUTES;
+}
 
-// getParticipants lists the people in a channel's call, with whether they are deafened in voice channels.
+const converted = new WeakMap<object, {mutes: CallsModMute[]; result: VoiceParticipant[]}>();
+
+// getParticipants lists the people in a channel's call, with whether they are deafened in voice channels and muted by
+// a moderator.
 export function getParticipants(state: GlobalState, channelId: string): VoiceParticipant[] {
     if (!channelId) {
         return NO_PARTICIPANTS;
     }
     const voice = getVoiceAPI();
-    if (voice && voice.selectors.isVoiceChannel(state, channelId)) {
-        return voice.selectors.getParticipants(state, channelId) || NO_PARTICIPANTS;
-    }
     const calls = getCallsAPI();
-    if (!calls) {
-        return NO_PARTICIPANTS;
+    let list: Array<VoicePluginParticipant | CallsParticipant> | undefined;
+    if (voice && voice.selectors.isVoiceChannel(state, channelId)) {
+        list = voice.selectors.getParticipants(state, channelId);
+    } else if (calls) {
+        list = calls.selectors.getParticipants(state, channelId);
     }
-    const list = calls.selectors.getParticipants(state, channelId);
     if (!list?.length) {
         return NO_PARTICIPANTS;
     }
+    const mutes = getModMutes(state, channelId);
 
-    // Calls keeps the array stable while it is unchanged, so the converted one can be too.
-    let converted = toVoice.get(list);
-    if (!converted) {
-        converted = list.map((p) => ({...p, deafened: false}));
-        toVoice.set(list, converted);
+    // The plugins keep their arrays stable while unchanged, so the converted one can be too.
+    const cached = converted.get(list);
+    if (cached && cached.mutes === mutes) {
+        return cached.result;
     }
-    return converted;
+    const muted = new Set(mutes.map((m) => m.userId));
+    const result = list.map((p) => ({...p, deafened: 'deafened' in p ? p.deafened : false, modMuted: muted.has(p.userId)}));
+    converted.set(list, {mutes, result});
+    return result;
 }
 
 // getCallChannelIds lists the channels with a call that this client knows about.
@@ -133,7 +156,7 @@ export function participantsEqual(a: VoiceParticipant[], b: VoiceParticipant[]):
         const q = b[i];
         return p.sessionId === q.sessionId && p.userId === q.userId && p.muted === q.muted && p.deafened === q.deafened &&
             p.video === q.video && p.screenSharing === q.screenSharing && p.speaking === q.speaking &&
-            p.raisedHand === q.raisedHand && p.isHost === q.isHost && p.isMe === q.isMe;
+            p.raisedHand === q.raisedHand && p.isHost === q.isHost && p.isMe === q.isMe && p.modMuted === q.modMuted;
     });
 }
 

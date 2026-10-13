@@ -28,6 +28,7 @@ import {getScreenQuality, getScreenSurface} from './extras';
 import type {MyCallState} from './hooks';
 import {screenPicker} from './screen_picker';
 import {startScreenShare} from './screen_sources';
+import {setCallView, setCallWindowOpen} from './ui_state';
 
 const getChannelWithNames = makeGetChannel();
 
@@ -92,6 +93,21 @@ export function goToChannel(state: GlobalState, channelId: string) {
     }
 }
 
+// showCall shows a call in the main view: a voice channel's own view, or a conversation's call in place of its
+// messages, with the same stage and controls. Popping it out to a window of its own is done from there.
+export function showCall(state: GlobalState, channelId: string) {
+    setCallWindowOpen(false);
+    if (!isVoiceChannel(state, channelId)) {
+        setCallView(channelId);
+    }
+    goToChannel(state, channelId);
+}
+
+// The HTTP status a moderation request failed with, if any.
+function statusOf(e: unknown): number {
+    return (e as {status?: number})?.status || 0;
+}
+
 export type CallActions = ReturnType<typeof makeActions>;
 
 function makeActions(getState: () => GlobalState, intl: IntlShape, openDirect: (userId: string) => Promise<Channel | undefined>) {
@@ -120,18 +136,18 @@ function makeActions(getState: () => GlobalState, intl: IntlShape, openDirect: (
         }
     };
 
-    // Opening a voice channel from the sidebar joins it, when the voice channels plugin is set to.
-    const autoJoinVoice = (channelId: string) => {
+    // Clicking a voice channel in the sidebar joins it and leaves you where you are, as in Discord, when the voice
+    // channels plugin is set to join on open; clicking it again (once in it), or without auto-join, shows its view.
+    // Tells whether it joined.
+    const openVoiceFromSidebar = (channelId: string): boolean => {
         const voice = getVoiceAPI();
         const state = getState();
-        const local = getLocalCall(state);
-        if (!voice || local?.channelId === channelId || !voice.selectors.isVoiceChannel(state, channelId)) {
-            return;
+        if (!voice || getLocalCall(state)?.channelId === channelId || !voice.selectors.isVoiceChannel(state, channelId) ||
+            !voice.selectors.getAutoJoin(state)) {
+            return false;
         }
-        voice.autoJoin(channelId);
-        if (voice.selectors.getAutoJoin(state) && local && isVoiceChannel(state, local.channelId)) {
-            showToast(formatMessage({id: 'fusion.calls.toast.moved', defaultMessage: 'Moved to {name}'}, {name: channelLabel(state, channelId)}));
-        }
+        joinVoice(channelId);
+        return true;
     };
 
     // startOrJoinCall joins the call in progress in a channel, or starts one (Mattermost has one call per channel).
@@ -159,6 +175,14 @@ function makeActions(getState: () => GlobalState, intl: IntlShape, openDirect: (
             showToast(joinedMessage(getState(), existing, where, intl));
         } else {
             showToast(formatMessage({id: 'fusion.calls.toast.started', defaultMessage: 'Call started in {where}'}, {where}));
+        }
+    };
+
+    // joinAndShowCall joins a conversation's call and shows it in the main view, from its card or its banner.
+    const joinAndShowCall = async (channelId: string) => {
+        await startOrJoinCall(channelId);
+        if (getLocalCall(getState())?.channelId === channelId) {
+            showCall(getState(), channelId);
         }
     };
 
@@ -192,6 +216,10 @@ function makeActions(getState: () => GlobalState, intl: IntlShape, openDirect: (
     // They're called straight from click handlers: screen sharing needs the user's gesture.
     const toggleMute = (my: MyCallState) => {
         const calls = getCallsAPI();
+        if (my.muted && my.modMuted) {
+            showToast(formatMessage({id: 'fusion.calls.toast.modMutedCantUnmute', defaultMessage: 'A moderator muted you: you can unmute once they allow it'}));
+            return;
+        }
         if (my.muted) {
             if (my.deafened) {
                 getVoiceAPI()?.setDeafened(false);
@@ -218,15 +246,16 @@ function makeActions(getState: () => GlobalState, intl: IntlShape, openDirect: (
     };
     const toggleHand = (my: MyCallState) => getCallsAPI()?.setHandRaised(!my.handRaised);
 
-    // Host controls, for the call's host and admins.
+    // Host controls, for the call's host and moderators (see useCanModerateCall); they act on the call of the
+    // channel, which moderators needn't be in.
     const hostMute = (p: VoiceParticipant, channelId: string) => {
         const state = getState();
-        getCallsAPI()?.host.mute(p.sessionId);
+        getCallsAPI()?.host.mute(p.sessionId, channelId);
         showToast(formatMessage({id: 'fusion.calls.toast.hostMuted', defaultMessage: 'Muted {name} in {where}'}, {name: firstName(state, p.userId), where: channelLabel(state, channelId)}));
     };
     const hostRemove = (p: VoiceParticipant, channelId: string) => {
         const state = getState();
-        getCallsAPI()?.host.remove(p.sessionId);
+        getCallsAPI()?.host.remove(p.sessionId, channelId);
         const name = firstName(state, p.userId);
         if (isVoiceChannel(state, channelId)) {
             showToast(formatMessage({id: 'fusion.calls.toast.kicked', defaultMessage: 'Disconnected {name} from {where}'}, {name, where: channelLabel(state, channelId)}));
@@ -234,14 +263,51 @@ function makeActions(getState: () => GlobalState, intl: IntlShape, openDirect: (
             showToast(formatMessage({id: 'fusion.calls.toast.removed', defaultMessage: 'Removed {name} from the call'}, {name}));
         }
     };
-    const hostLowerHand = (p: VoiceParticipant) => getCallsAPI()?.host.lowerHand(p.sessionId);
-    const hostStopScreen = (p: VoiceParticipant) => getCallsAPI()?.host.stopScreen(p.sessionId);
+    const hostLowerHand = (p: VoiceParticipant, channelId: string) => getCallsAPI()?.host.lowerHand(p.sessionId, channelId);
+    const hostStopScreen = (p: VoiceParticipant, channelId: string) => getCallsAPI()?.host.stopScreen(p.sessionId, channelId);
+
+    // A moderator mute keeps someone muted for the call, also when they leave and come back, until lifted.
+    const modMute = async (p: VoiceParticipant, channelId: string, muted: boolean) => {
+        const moderation = getCallsAPI()?.moderation;
+        if (!moderation) {
+            return;
+        }
+        const name = firstName(getState(), p.userId);
+        try {
+            await moderation.setModMuted(channelId, p.userId, muted);
+        } catch (e) {
+            showToast(statusOf(e) === 403 ? formatMessage({id: 'fusion.calls.toast.modMuteForbidden', defaultMessage: 'You can\'t mute {name}'}, {name}) : formatMessage({id: 'fusion.calls.toast.modMuteFailed', defaultMessage: 'Couldn\'t change {name}\'s mute'}, {name}));
+            return;
+        }
+        if (muted) {
+            showToast(formatMessage({id: 'fusion.calls.toast.modMuted', defaultMessage: 'Muted {name} for this call: they can\'t unmute until you allow it'}, {name}));
+        } else {
+            showToast(formatMessage({id: 'fusion.calls.toast.modUnmuted', defaultMessage: '{name} can unmute again'}, {name}));
+        }
+    };
+
+    // Asking to unmute prompts someone muted to unmute themselves; it can't be asked again right away.
+    const askToUnmute = async (p: VoiceParticipant, channelId: string) => {
+        const moderation = getCallsAPI()?.moderation;
+        if (!moderation) {
+            return;
+        }
+        const name = firstName(getState(), p.userId);
+        try {
+            await moderation.askToUnmute(channelId, p.sessionId);
+        } catch (e) {
+            showToast(statusOf(e) === 429 ? formatMessage({id: 'fusion.calls.toast.askedRecently', defaultMessage: '{name} was asked a moment ago: wait a little'}, {name}) : formatMessage({id: 'fusion.calls.toast.askFailed', defaultMessage: 'Couldn\'t ask {name} to unmute'}, {name}));
+            return;
+        }
+        showToast(formatMessage({id: 'fusion.calls.toast.asked', defaultMessage: 'Asked {name} to unmute'}, {name}));
+    };
 
     return {
         openDirect,
         joinVoice,
-        autoJoinVoice,
+        openVoiceFromSidebar,
         startOrJoinCall,
+        joinAndShowCall,
         leaveCall,
         callUser,
         toggleMute,
@@ -253,6 +319,8 @@ function makeActions(getState: () => GlobalState, intl: IntlShape, openDirect: (
         hostRemove,
         hostLowerHand,
         hostStopScreen,
+        modMute,
+        askToUnmute,
     };
 }
 

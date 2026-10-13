@@ -35,16 +35,29 @@ export function useToggleLabels(my: MyCallState | null) {
     } else if (my?.otherSharing) {
         screen = formatMessage({id: 'fusion.calls.someoneSharing', defaultMessage: 'Someone else is sharing their screen'});
     }
+    let muteLabel = my?.muted ? formatMessage({id: 'fusion.calls.unmute', defaultMessage: 'Unmute'}) : formatMessage({id: 'fusion.calls.mute', defaultMessage: 'Mute'});
+    if (my?.modMuted) {
+        muteLabel = formatMessage({id: 'fusion.calls.modMutedYou', defaultMessage: 'A moderator muted you'});
+    }
     return {
-        mute: my?.muted ? formatMessage({id: 'fusion.calls.unmute', defaultMessage: 'Unmute'}) : formatMessage({id: 'fusion.calls.mute', defaultMessage: 'Mute'}),
+        mute: muteLabel,
         deafen: formatMessage({id: 'fusion.calls.deafen', defaultMessage: 'Deafen'}),
         video: my?.videoAllowed === false ? formatMessage({id: 'fusion.calls.cameraNotAllowed', defaultMessage: 'Cameras are turned off in this call'}) : formatMessage({id: 'fusion.calls.camera', defaultMessage: 'Camera'}),
         screen,
         hand: my?.handRaised ? formatMessage({id: 'fusion.calls.lowerHand', defaultMessage: 'Lower hand'}) : formatMessage({id: 'fusion.calls.raiseHand', defaultMessage: 'Raise hand'}),
         popout: formatMessage({id: 'fusion.calls.popout', defaultMessage: 'Open in a new window'}),
         popoutLabel: formatMessage({id: 'fusion.calls.popoutLabel', defaultMessage: 'Open the call in a new window'}),
+        show: my?.voice ? formatMessage({id: 'fusion.calls.showVoice', defaultMessage: 'Show the voice channel'}) : formatMessage({id: 'fusion.calls.showCall', defaultMessage: 'Show the call'}),
         disconnect: formatMessage({id: 'fusion.calls.disconnect', defaultMessage: 'Disconnect'}),
     };
+}
+
+// muteIcon is the microphone of the mute buttons: locked when a moderator muted the user.
+export function muteIcon(my: MyCallState): 'mic' | 'mic-off' | 'mic-lock' {
+    if (my.modMuted) {
+        return 'mic-lock';
+    }
+    return my.muted ? 'mic-off' : 'mic';
 }
 
 // Chip is a preset of a menu (a resolution, a frame rate, a blur), the chosen one highlighted.
@@ -282,9 +295,10 @@ export default function CallControls({my, withPopout = false}: Props) {
                         className={am('round', {off: my.muted})}
                         aria-label={labels.mute}
                         aria-pressed={my.muted}
+                        title={my.modMuted ? labels.mute : undefined}
                         onClick={() => actions.toggleMute(my)}
                     >
-                        <Icon name={my.muted ? 'mic-off' : 'mic'}/>
+                        <Icon name={muteIcon(my)}/>
                     </button>
                     {my.voice && (
                         <button

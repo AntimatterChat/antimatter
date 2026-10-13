@@ -22,7 +22,7 @@ import {am} from 'fusion/utils/class_names';
 import type {GlobalState} from 'types/store';
 
 import {goToChannel} from './actions';
-import {useIsVoiceChannel} from './hooks';
+import {useIsVoiceChannel, useLocalCall} from './hooks';
 import {setVoiceChat, useCallsUI} from './ui_state';
 
 // useOpenVoiceChat is the voice channel whose text chat shows in the right-hand panel, if any: the current channel's,
@@ -70,21 +70,25 @@ export function useVoiceChatActions() {
     }), [dispatch, store, layout]);
 }
 
-// VoiceChatToggle is the header's "Text chat" button of a voice channel, which has no composer of its own.
+// VoiceChatToggle is the header's "Text chat" button of a voice channel, which has no composer of its own, and of a
+// conversation whose call is shown in place of its messages.
 export function VoiceChatToggle({channel}: {channel: Channel}) {
     const {formatMessage} = useIntl();
     const voice = useIsVoiceChannel(channel.id);
+    const {callView} = useCallsUI();
+    const inCall = useLocalCall()?.channelId === channel.id;
     const on = useOpenVoiceChat() === channel.id;
     const chat = useVoiceChatActions();
 
-    if (!voice) {
+    if (!voice && !(callView === channel.id && inCall)) {
         return null;
     }
+    const label = voice ? formatMessage({id: 'fusion.calls.textChat', defaultMessage: 'Text chat'}) : formatMessage({id: 'fusion.calls.messagesBeside', defaultMessage: 'Messages beside the call'});
     return (
         <button
             className={am('icon-btn', {on})}
-            title={formatMessage({id: 'fusion.calls.textChat', defaultMessage: 'Text chat'})}
-            aria-label={formatMessage({id: 'fusion.calls.textChat', defaultMessage: 'Text chat'})}
+            title={label}
+            aria-label={label}
             aria-pressed={on}
             onClick={() => (on ? chat.close() : chat.open(channel.id))}
         >

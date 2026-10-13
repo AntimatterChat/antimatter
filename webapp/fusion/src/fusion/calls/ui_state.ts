@@ -14,9 +14,12 @@ type CallsUIState = {
 
     // The browser window the call is shown in, when popped out (see CallPopout).
     callPopout: Window | null;
+
+    // The channel whose call takes the main view instead of its messages, as a voice channel's does (see CallView).
+    callView: string | null;
 };
 
-let state: CallsUIState = {callWindow: false, voiceChat: null, callPopout: null};
+let state: CallsUIState = {callWindow: false, voiceChat: null, callPopout: null, callView: null};
 const listeners = new Set<() => void>();
 
 function update(changes: Partial<CallsUIState>) {
@@ -68,5 +71,11 @@ export function closeCallPopout() {
 export function setVoiceChat(channelId: string | null) {
     if (state.voiceChat !== channelId) {
         update({voiceChat: channelId});
+    }
+}
+
+export function setCallView(channelId: string | null) {
+    if (state.callView !== channelId) {
+        update({callView: channelId});
     }
 }

@@ -152,6 +152,7 @@ describe('fusion/calls/controls CallControls', () => {
         screen: false,
         handRaised: false,
         isHost: false,
+        modMuted: false,
         otherSharing: false,
         videoAllowed: true,
         screenAllowed: true,
@@ -212,5 +213,19 @@ describe('fusion/calls/controls CallControls', () => {
 
         expect(screen.getByRole('button', {name: 'Someone else is sharing their screen'})).toBeDisabled();
         expect(screen.queryByRole('button', {name: 'Screen share options'})).not.toBeInTheDocument();
+    });
+
+    test('muted by a moderator, the microphone shows locked and says why', async () => {
+        mockCalls();
+        const my = myCall({muted: true, modMuted: true});
+        renderWithContext(<CallControls my={my}/>);
+
+        const mute = screen.getByRole('button', {name: 'A moderator muted you'});
+        expect(mute).toHaveAttribute('title', 'A moderator muted you');
+        expect(mute.querySelector('use')).toHaveAttribute('href', '#am-i-mic-lock');
+
+        // Clicking tells them (see toggleMute) rather than unmuting.
+        await userEvent.click(mute);
+        expect(mockActions.toggleMute).toHaveBeenCalledWith(my);
     });
 });

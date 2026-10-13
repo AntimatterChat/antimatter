@@ -17,6 +17,7 @@ import {getUserIdFromChannelName} from 'mattermost-redux/utils/channel_utils';
 import {openDirectChannelToUserId} from 'actions/channel_actions';
 import {makeGetDraftsCount} from 'selectors/drafts';
 
+import {useCallsOnTop} from 'fusion/calls/calls_on_top';
 import Icon from 'fusion/components/icon';
 import {useUnreadMentions} from 'fusion/hooks/mentions';
 import CollectionsPopover from 'fusion/popovers/collections_popover';
@@ -155,9 +156,12 @@ export default function HomeSidebar() {
 
         sort((a, b) => b.last_post_at - a.last_post_at);
 
-    // Hidden conversations wait at the end until they get new messages, but a search finds them.
-    const list = q ? matches : matches.filter((c) => !hidden.has(c.id));
-    const hiddenList = q ? [] : matches.filter((c) => hidden.has(c.id));
+    // Hidden conversations wait at the end until they get new messages, but a search finds them. A conversation
+    // with a call in progress stays on top while it lasts.
+    const visible = q ? matches : matches.filter((c) => !hidden.has(c.id));
+    const onTop = useCallsOnTop(visible);
+    const list = q ? visible : onTop;
+    const hiddenList = q ? [] : matches.filter((c) => hidden.has(c.id) && !list.includes(c));
 
     return (
         <aside

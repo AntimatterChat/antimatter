@@ -16,7 +16,7 @@ import {am} from 'fusion/utils/class_names';
 import type {GlobalState} from 'types/store';
 
 import {channelLabel, firstName, useChannelLabel} from './actions';
-import {useCall, useIsVoiceChannel, useParticipants, useTalkingMap, useUserTalk} from './hooks';
+import {useCall, useIsVoiceChannel, useLocalCall, useParticipants, useTalkingMap, useUserTalk} from './hooks';
 
 // CallLiveMarker is the mockup's green phone after the name of a sidebar channel with a call in progress. It counts
 // calls, of which Mattermost has at most one per channel.
@@ -88,6 +88,32 @@ export function DirectTalkMarker({channel}: {channel: Channel}) {
                 name={call ? 'phone' : 'speaker'}
                 size='xs'
             />
+        </span>
+    );
+}
+
+// DirectCallMarker is what a conversation in the direct messages shows of calls: a live "In call" badge while a call
+// is in progress in it (the conversation then stays on top, see useCallsOnTop), else where its people are talking.
+export function DirectCallMarker({channel}: {channel: Channel}) {
+    const {formatMessage} = useIntl();
+    const call = useCall(channel.id);
+    const people = useParticipants(channel.id).length;
+    const joined = useLocalCall()?.channelId === channel.id;
+    if (!call) {
+        return <DirectTalkMarker channel={channel}/>;
+    }
+    const title = joined ? formatMessage({id: 'fusion.calls.dmCallJoined', defaultMessage: 'You are in this call · {count, plural, one {# person} other {# people}}'}, {count: people}) : formatMessage({id: 'fusion.calls.dmCallLive', defaultMessage: 'Call in progress · {count, plural, one {# person} other {# people}}'}, {count: people});
+    return (
+        <span
+            className={am('dm-call', {joined})}
+            title={title}
+            aria-label={title}
+        >
+            <Icon
+                name='phone'
+                size='xs'
+            />
+            {formatMessage({id: 'fusion.calls.dmInCall', defaultMessage: 'In call'})}
         </span>
     );
 }

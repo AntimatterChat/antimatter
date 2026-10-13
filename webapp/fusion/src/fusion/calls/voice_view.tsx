@@ -15,7 +15,8 @@ import {useMyCall, useParticipants} from './hooks';
 import Stage from './stage';
 
 // VoiceView is a voice channel's main view, the mockup's voiceHTML: the room's stage, with your controls once you're
-// in it or a button to join it. Its text chat opens in the right-hand panel (see VoiceChatToggle).
+// in it or a button to join it. Its text chat opens in the right-hand panel (see VoiceChatToggle). A conversation's
+// call is shown the same way once you're in it (see showCall), its messages then in the right-hand panel.
 export default function VoiceView({channel}: {channel: Channel}) {
     const {formatMessage} = useIntl();
     const actions = useCallActions();

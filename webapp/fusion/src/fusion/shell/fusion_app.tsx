@@ -20,6 +20,7 @@ import UnreadsStatusHandler from 'components/unreads_status_handler';
 import AppRail from 'fusion/apps/app_rail';
 import CallEvents from 'fusion/calls/call_events';
 import CallPopout from 'fusion/calls/call_popout';
+import CallPrompts from 'fusion/calls/call_prompts';
 import CallWindow from 'fusion/calls/call_window';
 import {ScreenSourcePicker} from 'fusion/calls/screen_sources';
 import {useOpenVoiceChat} from 'fusion/calls/voice_chat';
@@ -214,6 +215,7 @@ function Frame({children}: Props) {
             {search.isOpen && <GlobalSearch/>}
             <CallWindow/>
             <CallPopout/>
+            <CallPrompts/>
             <ScreenSourcePicker/>
             <CallEvents/>
             <Toasts/>

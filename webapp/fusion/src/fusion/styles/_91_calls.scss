@@ -42,3 +42,50 @@
 :is(.am-app, .am-layer) .am-src-foot { display: flex; flex: none; flex-wrap: wrap; align-items: center; padding: 14px 16px 16px 24px; border-top: 1px solid var(--am-line); gap: 10px; }
 :is(.am-app, .am-layer) .am-src-foot .am-grow { flex: 1; }
 :is(.am-app, .am-layer) .am-src-audio { display: flex; align-items: center; color: var(--am-text-2); cursor: pointer; font-size: 13.5px; gap: 10px; }
+
+// The call's cards over the whole UI (CallPrompts): an incoming call, a request to unmute. In the top right corner,
+// under the header, above the floating windows.
+.am-layer .am-call-prompts { position: fixed; top: 60px; right: 16px; z-index: 80; display: flex; flex-direction: column; gap: 8px; width: min(340px, calc(100vw - 32px)); pointer-events: none; }
+.am-layer .am-call-prompt { display: grid; gap: 12px; padding: 14px; border: 1px solid var(--am-line); border-radius: 14px; background: var(--am-main); box-shadow: var(--am-shadow); pointer-events: auto; animation: am-reaction-in .2s ease; }
+.am-layer .am-call-prompt.am-incoming { border-color: color-mix(in srgb, var(--am-ok) 45%, var(--am-line)); }
+.am-layer .am-call-prompt-top { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.am-layer .am-call-prompt-top .am-grow { flex: 1; min-width: 0; }
+.am-layer .am-call-prompt-top b { display: block; overflow: hidden; font-size: 15px; text-overflow: ellipsis; white-space: nowrap; }
+.am-layer .am-call-prompt-top .am-sub { display: flex; align-items: center; gap: 5px; color: var(--am-muted); font-size: 12.5px; }
+.am-layer .am-call-prompt.am-incoming .am-sub .am-ic { color: var(--am-ok); }
+.am-layer .am-call-prompt-actions { display: flex; justify-content: flex-end; gap: 8px; }
+.am-layer .am-call-prompt-actions .am-btn { height: 34px; padding: 0 14px; font-size: 13.5px; }
+.am-layer .am-call-prompt-actions .am-btn.am-accept { background: var(--am-ok); }
+.am-layer .am-call-prompt-actions .am-btn.am-decline { background: rgba(242, 63, 67, 0.16); color: var(--am-danger); }
+.am-layer .am-call-prompt-actions .am-btn.am-decline:hover { background: rgba(242, 63, 67, 0.26); }
+
+// The caller's face rings while the call does.
+.am-layer .am-ring-av { position: relative; flex: none; display: grid; border-radius: 50%; }
+.am-layer .am-ring-av.am-ringing::after { content: ""; position: absolute; inset: -4px; border: 2px solid var(--am-ok); border-radius: 50%; animation: am-ring 1.4s ease-out infinite; }
+.am-layer .am-ring-more { position: absolute; right: -6px; bottom: -4px; padding: 0 5px; border-radius: 9px; background: var(--am-raise-2); color: var(--am-text); font: 700 10.5px/17px var(--am-font-ui); box-shadow: 0 0 0 2px var(--am-main); }
+@keyframes am-ring { from { opacity: .9; transform: scale(1); } to { opacity: 0; transform: scale(1.35); } }
+
+// A call in progress in a conversation you're not in: the banner under its header.
+:is(.am-app, .am-layer) .am-call-banner { flex: none; display: flex; align-items: center; gap: 12px; margin: 8px 16px 0; padding: 10px 12px; border: 1px solid color-mix(in srgb, var(--am-ok) 40%, var(--am-line)); border-radius: 12px; background: color-mix(in srgb, var(--am-ok) 8%, var(--am-main)); }
+:is(.am-app, .am-layer) .am-call-banner .am-ph { flex: none; display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; background: rgba(35, 165, 90, 0.18); color: var(--am-ok); }
+:is(.am-app, .am-layer) .am-call-banner .am-grow { flex: 1; min-width: 0; }
+:is(.am-app, .am-layer) .am-call-banner b { display: block; overflow: hidden; font-size: 14px; text-overflow: ellipsis; white-space: nowrap; }
+:is(.am-app, .am-layer) .am-call-banner .am-sub { color: var(--am-muted); font-size: 12.5px; }
+:is(.am-app, .am-layer) .am-call-banner .am-call-timer { font-variant-numeric: tabular-nums; }
+:is(.am-app, .am-layer) .am-call-banner .am-faces { display: flex; }
+:is(.am-app, .am-layer) .am-call-banner .am-faces .am-av { margin-left: -6px; box-shadow: 0 0 0 2px var(--am-main); }
+:is(.am-app, .am-layer) .am-call-banner .am-faces .am-av:first-child { margin-left: 0; }
+:is(.am-app, .am-layer) .am-call-banner .am-btn { flex: none; height: 32px; padding: 0 12px; font-size: 13px; background: var(--am-ok); }
+@media (max-width: 600px) {
+  :is(.am-app, .am-layer) .am-call-banner .am-faces { display: none; }
+}
+
+// A conversation with a call in progress, on top of the direct messages: a live "In call" badge.
+:is(.am-app, .am-layer) .am-dm-call { flex: none; display: inline-flex; align-items: center; gap: 4px; height: 18px; padding: 0 7px 0 6px; border-radius: 9px; background: rgba(35, 165, 90, 0.18); color: var(--am-ok); font: 700 11px var(--am-font-ui); white-space: nowrap; }
+:is(.am-app, .am-layer) .am-dm-call .am-ic { width: 12px; height: 12px; animation: am-pulse 1.6s ease-in-out infinite; }
+:is(.am-app, .am-layer) .am-dm-call.am-joined { background: var(--am-ok); color: #fff; }
+:is(.am-app, .am-layer) .am-dm-call.am-joined .am-ic { animation: none; }
+
+// Muted by a moderator: the locked microphone of a tile's label and of a sidebar participant.
+:is(.am-app, .am-layer) .am-mod-muted { display: inline-grid; place-items: center; color: var(--am-danger); }
+:is(.am-app, .am-layer) .am-tile .am-label .am-mod-muted .am-ic { color: #ff8a8d; }

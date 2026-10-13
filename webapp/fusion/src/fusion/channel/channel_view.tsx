@@ -16,7 +16,9 @@ import {getChannelViewPanel} from 'selectors/channel_view_panel';
 import ChannelBanner from 'components/channel_banner/channel_banner';
 import {ChannelComposerBanner} from 'components/channel_view/channel_composer_banner';
 
-import {useIsVoiceChannel} from 'fusion/calls/hooks';
+import CallBanner from 'fusion/calls/call_banner';
+import {useIsVoiceChannel, useLocalCall} from 'fusion/calls/hooks';
+import {useCallsUI} from 'fusion/calls/ui_state';
 import VoiceView from 'fusion/calls/voice_view';
 import Icon from 'fusion/components/icon';
 import Composer, {DROP_FILES_EVENT} from 'fusion/composer/composer';
@@ -55,6 +57,8 @@ export default function ChannelView() {
     const viewRef = useRef<HTMLDivElement>(null);
     const [dropping, setDropping] = useState(false);
     const voice = useIsVoiceChannel(channel?.id);
+    const {callView} = useCallsUI();
+    const inCallHere = useLocalCall()?.channelId === channel?.id;
     const me = useSelector(getCurrentUserId);
     const conversationName = useConversationName(channel || {id: '', type: 'O', display_name: ''});
     const notes = channel?.type === 'D' && channel.name === `${me}__${me}`;
@@ -71,8 +75,9 @@ export default function ChannelView() {
         return <div className={am('empty')}>{formatMessage({id: 'fusion.channel.loading', defaultMessage: 'Loading…'})}</div>;
     }
 
-    // A voice channel is its call's stage, with its text chat in the right-hand panel; a permalink shows the post.
-    if (voice && !match.params.postid) {
+    // A voice channel is its call's stage, with its text chat in the right-hand panel; so is a conversation whose
+    // call is shown (from the call panel, or once joined from its card). A permalink shows the post.
+    if ((voice || (callView === channel.id && inCallHere)) && !match.params.postid) {
         return (
             <>
                 <ChannelHeader channel={channel}/>
@@ -119,6 +124,7 @@ export default function ChannelView() {
     return (
         <>
             <ChannelHeader channel={channel}/>
+            <CallBanner channel={channel}/>
             <SharedBanner channel={channel}/>
             <ChannelBanner channelId={channel.id}/>
             <OnTopStrip channel={channel}/>

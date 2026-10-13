@@ -63,8 +63,19 @@ function Tile({participant: p, stream, media, onContextMenu, handOrder, pinned, 
     const cam = p.video && media;
     const ref = useRef<HTMLDivElement>(null);
 
+    // A moderator mute shows over deafen and mute: it's the one they can't undo.
     let audio = null;
-    if (p.deafened) {
+    if (p.modMuted) {
+        audio = (
+            <span
+                className={am('mod-muted')}
+                title={formatMessage({id: 'fusion.calls.modMuted', defaultMessage: 'Muted by a moderator'})}
+                aria-label={formatMessage({id: 'fusion.calls.modMuted', defaultMessage: 'Muted by a moderator'})}
+            >
+                <Icon name='mic-lock'/>
+            </span>
+        );
+    } else if (p.deafened) {
         audio = <Icon name='headphones-off'/>;
     } else if (p.muted) {
         audio = <Icon name='mic-off'/>;

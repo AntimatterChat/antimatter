@@ -3,10 +3,7 @@
 
 import React, {useCallback, useState} from 'react';
 import {useIntl} from 'react-intl';
-import {useSelector, useStore} from 'react-redux';
-
-import {getCurrentUser} from 'mattermost-redux/selectors/entities/users';
-import {isSystemAdmin} from 'mattermost-redux/utils/user_utils';
+import {useStore} from 'react-redux';
 
 import {Popover} from 'fusion/components/layer';
 import {MenuHeading, MenuItem, MenuSeparator} from 'fusion/components/menu';
@@ -18,9 +15,10 @@ import {copyToClipboard} from 'utils/utils';
 import type {GlobalState} from 'types/store';
 
 import {goToChannel, useCallActions, useChannelLabel} from './actions';
+import {getCallsAPI} from './calls_api';
 import type {VoiceParticipant} from './calls_api';
 import {canSetVolume, getUserVolume, setUserVolume} from './extras';
-import {useIsVoiceChannel, useMyCall} from './hooks';
+import {useCanModerateCall, useIsVoiceChannel} from './hooks';
 
 type MenuProps = {
     participant: VoiceParticipant;
@@ -31,7 +29,8 @@ type MenuProps = {
 };
 
 // ParticipantMenu is the mockup's user context menu for someone in a call: profile, message, call, copy their
-// username, and for the call's host (or an admin) the host controls Calls offers.
+// username, and for the call's host and moderators the host controls Calls offers, asking them to unmute, and a
+// moderator mute, which they can't lift themselves.
 function ParticipantMenu({participant: p, channelId, point, onProfile, onClose}: MenuProps) {
     const {formatMessage} = useIntl();
     const store = useStore<GlobalState>();
@@ -40,10 +39,8 @@ function ParticipantMenu({participant: p, channelId, point, onProfile, onClose}:
     const name = useDisplayName(user);
     const where = useChannelLabel(channelId);
     const voice = useIsVoiceChannel(channelId);
-    const my = useMyCall();
-    const admin = useSelector((state: GlobalState) => isSystemAdmin(getCurrentUser(state)?.roles || ''));
-    const host = my?.call.channelId === channelId && my.isHost;
-    const moderate = !p.isMe && (admin || host);
+    const moderate = useCanModerateCall(channelId) && !p.isMe;
+    const moderation = Boolean(getCallsAPI()?.moderation);
     const [volume, setVolume] = useState(() => getUserVolume(p.userId));
 
     const run = (action: () => void) => () => {
@@ -113,24 +110,41 @@ function ParticipantMenu({participant: p, channelId, point, onProfile, onClose}:
                 <>
                     <MenuSeparator/>
                     <MenuHeading>{formatMessage({id: 'fusion.calls.menu.in', defaultMessage: 'In {where}'}, {where})}</MenuHeading>
-                    <MenuItem
-                        icon='mic-off'
-                        label={formatMessage({id: 'fusion.calls.menu.mute', defaultMessage: 'Mute'})}
-                        disabled={p.muted}
-                        onClick={run(() => actions.hostMute(p, channelId))}
-                    />
+                    {p.muted ? (
+                        moderation && !p.modMuted && (
+                            <MenuItem
+                                icon='mic'
+                                label={formatMessage({id: 'fusion.calls.menu.askUnmute', defaultMessage: 'Ask to unmute'})}
+                                onClick={run(() => actions.askToUnmute(p, channelId))}
+                            />
+                        )
+                    ) : (
+                        <MenuItem
+                            icon='mic-off'
+                            label={formatMessage({id: 'fusion.calls.menu.mute', defaultMessage: 'Mute'})}
+                            onClick={run(() => actions.hostMute(p, channelId))}
+                        />
+                    )}
+                    {moderation && (
+                        <MenuItem
+                            icon='mic-lock'
+                            label={p.modMuted ? formatMessage({id: 'fusion.calls.menu.liftModMute', defaultMessage: 'Allow to unmute'}) : formatMessage({id: 'fusion.calls.menu.modMute', defaultMessage: 'Mute for this call'})}
+                            sub={p.modMuted ? undefined : formatMessage({id: 'fusion.calls.menu.modMuteSub', defaultMessage: 'Until you allow it, also if they rejoin'})}
+                            onClick={run(() => actions.modMute(p, channelId, !p.modMuted))}
+                        />
+                    )}
                     {p.raisedHand && (
                         <MenuItem
                             icon='hand'
                             label={formatMessage({id: 'fusion.calls.menu.lowerHand', defaultMessage: 'Lower hand'})}
-                            onClick={run(() => actions.hostLowerHand(p))}
+                            onClick={run(() => actions.hostLowerHand(p, channelId))}
                         />
                     )}
                     {p.screenSharing && (
                         <MenuItem
                             icon='screen'
                             label={formatMessage({id: 'fusion.calls.menu.stopScreen', defaultMessage: 'Stop screen share'})}
-                            onClick={run(() => actions.hostStopScreen(p))}
+                            onClick={run(() => actions.hostStopScreen(p, channelId))}
                         />
                     )}
                     <MenuItem
