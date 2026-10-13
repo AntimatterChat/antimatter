@@ -22987,6 +22987,10 @@
     "defaultMessage": "Mentions, saved, pinned, files and threads here",
     "description": ""
   },
+  "fusion.header.collectionsShort": {
+    "defaultMessage": "Mentions, saved, pinned and files",
+    "description": ""
+  },
   "fusion.header.dndUntil": {
     "defaultMessage": "Do not disturb until {time}",
     "description": ""
@@ -23035,8 +23039,16 @@
     "defaultMessage": "Member list",
     "description": ""
   },
+  "fusion.header.membersAndApps": {
+    "defaultMessage": "Members and apps",
+    "description": ""
+  },
   "fusion.header.membersToggle": {
     "defaultMessage": "Toggle member list",
+    "description": ""
+  },
+  "fusion.header.more": {
+    "defaultMessage": "More",
     "description": ""
   },
   "fusion.header.nav": {
@@ -23069,6 +23081,10 @@
   },
   "fusion.header.showTopic": {
     "defaultMessage": "Show the whole header",
+    "description": ""
+  },
+  "fusion.header.statusAndSettings": {
+    "defaultMessage": "Your status, profile and settings",
     "description": ""
   },
   "fusion.header.topicLabel": {

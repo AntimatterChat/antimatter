@@ -27,6 +27,18 @@ body.app__body #root.am-root {
     :is(.am-app, .am-layer) .am-sidebar :is(.am-ch, .am-vp) { min-height: 40px; }
     :is(.am-app, .am-layer) .am-sidebar .am-dm, :is(.am-app, .am-layer) .am-dock-row .am-dm { min-height: 44px; }
 
+    // Header: the conversation's name, the search and the call. The other actions are in its "More" menu.
+    :is(.am-app, .am-layer) .am-chat-head { padding: 0 4px; gap: 2px; }
+    :is(.am-app, .am-layer) .am-ch-title { gap: 2px; }
+    :is(.am-app, .am-layer) .am-head-actions { gap: 0; }
+    :is(.am-app, .am-layer) .am-head-actions :is(.am-head-collections, .am-head-members, .am-me-btn) { display: none; }
+    :is(.am-app, .am-layer) .am-chat-head :is(.am-icon-btn, .am-search) { width: 40px; height: 40px; }
+    :is(.am-app, .am-layer) .am-chat-head .am-search label { height: 40px; }
+    :is(.am-app, .am-layer) .am-chat-head .am-search:is(:focus-within, :has(input:not(:placeholder-shown))) { top: 6px; right: 4px; left: 4px; width: auto; height: auto; }
+    :is(.am-app, .am-layer) .am-chat-head .am-title-btn { min-height: 40px; }
+    :is(.am-app, .am-layer) .am-head-more-menu .am-head-plugins { display: flex; flex-wrap: wrap; padding: 4px 4px 8px; border-bottom: 1px solid var(--am-line); margin-bottom: 4px; gap: 4px; }
+    :is(.am-app, .am-layer) .am-head-more-menu .am-count { min-width: 20px; padding: 0 6px; border-radius: 10px; margin-left: auto; background: var(--am-danger); color: #fff; font-size: 12px; font-weight: 700; text-align: center; }
+
     // Panels (a thread, results, an app, the member list) take the whole screen, over the app rail. A back button at
     // the start of their header takes the place of the buttons that size, pop out or close them.
     .am-app .am-rhs { z-index: 37; width: auto !important; max-width: none !important; border-left: 0; box-shadow: none; inset: 0 !important; }

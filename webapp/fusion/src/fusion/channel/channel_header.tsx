@@ -22,6 +22,9 @@ import {ChannelLabelSurface} from 'components/common/hooks/useChannelLabels';
 import {VoiceChatToggle} from 'fusion/calls/voice_chat';
 import Avatar from 'fusion/components/avatar';
 import Icon from 'fusion/components/icon';
+import {Popover} from 'fusion/components/layer';
+import {MenuItem} from 'fusion/components/menu';
+import {useIsPhone} from 'fusion/hooks/media';
 import {useUnreadMentions} from 'fusion/hooks/mentions';
 import CollectionsPopover from 'fusion/popovers/collections_popover';
 import type {Tab as CollectionsTab} from 'fusion/popovers/collections_popover';
@@ -96,6 +99,11 @@ export default function ChannelHeader({channel}: {channel: Channel}) {
     const inputRef = useRef<HTMLInputElement>(null);
     const collectionsRef = useRef<HTMLButtonElement>(null);
     const meRef = useRef<HTMLButtonElement>(null);
+
+    // On a phone the header keeps the search and the call; the other actions are in its "More" menu.
+    const phone = useIsPhone();
+    const moreRef = useRef<HTMLButtonElement>(null);
+    const [more, setMore] = useState(false);
 
     const direct = channel.type === 'D' || channel.type === 'G';
 
@@ -428,7 +436,7 @@ export default function ChannelHeader({channel}: {channel: Channel}) {
             <div className={am('head-actions')}>
                 <CallButton channel={channel}/>
                 <OtherCallProviders channel={channel}/>
-                {member && headerIcons.length > 0 && (
+                {member && headerIcons.length > 0 && !phone && (
                     <span className={am('head-plugins')}>
                         {headerIcons.map((c) => {
                             const Component = c.component as React.ComponentType<{channel: Channel; channelMember: typeof member}>;
@@ -448,7 +456,7 @@ export default function ChannelHeader({channel}: {channel: Channel}) {
                 )}
                 <button
                     ref={collectionsRef}
-                    className={am('icon-btn', {on: collections})}
+                    className={am('icon-btn', 'head-collections', {on: collections})}
                     title={formatMessage({id: 'fusion.header.collections', defaultMessage: 'Mentions, saved, pinned, files and threads here'})}
                     aria-label={formatMessage({id: 'fusion.header.collections', defaultMessage: 'Mentions, saved, pinned, files and threads here'})}
                     aria-haspopup='dialog'
@@ -462,7 +470,7 @@ export default function ChannelHeader({channel}: {channel: Channel}) {
                 </button>
                 <VoiceChatToggle channel={channel}/>
                 <button
-                    className={am('icon-btn', {on: layout.showMembers && !rhsOpen})}
+                    className={am('icon-btn', 'head-members', {on: layout.showMembers && !rhsOpen})}
                     title={formatMessage({id: 'fusion.header.members', defaultMessage: 'Member list'})}
                     aria-label={formatMessage({id: 'fusion.header.membersToggle', defaultMessage: 'Toggle member list'})}
                     onClick={() => {
@@ -489,7 +497,76 @@ export default function ChannelHeader({channel}: {channel: Channel}) {
                     buttonRef={meRef}
                     onClick={() => setStatus(!status)}
                 />
+                {phone && (
+                    <button
+                        ref={moreRef}
+                        className={am('icon-btn', 'head-more', {on: more})}
+                        title={formatMessage({id: 'fusion.header.more', defaultMessage: 'More'})}
+                        aria-label={formatMessage({id: 'fusion.header.more', defaultMessage: 'More'})}
+                        aria-haspopup='menu'
+                        aria-expanded={more}
+                        onClick={() => setMore(!more)}
+                    >
+                        <Icon name='dots'/>
+                        {mentions > 0 && <span className={am('dot')}/>}
+                    </button>
+                )}
             </div>
+            {more && (
+                <Popover
+                    anchor={moreRef.current}
+                    className='plus-pop head-more-menu'
+                    role='menu'
+                    label={formatMessage({id: 'fusion.header.more', defaultMessage: 'More'})}
+                    onClose={() => setMore(false)}
+                >
+                    {member && headerIcons.length > 0 && (
+                        <span className={am('head-plugins')}>
+                            {headerIcons.map((c) => {
+                                const Component = c.component as React.ComponentType<{channel: Channel; channelMember: typeof member}>;
+                                return (
+                                    <PluggableErrorBoundary
+                                        key={c.id}
+                                        pluginId={c.pluginId}
+                                    >
+                                        <Component
+                                            channel={channel}
+                                            channelMember={member}
+                                        />
+                                    </PluggableErrorBoundary>
+                                );
+                            })}
+                        </span>
+                    )}
+                    <MenuItem
+                        icon='users'
+                        label={formatMessage({id: 'fusion.header.membersAndApps', defaultMessage: 'Members and apps'})}
+                        onClick={() => {
+                            setMore(false);
+                            layout.openRightDrawer();
+                        }}
+                    />
+                    <MenuItem
+                        icon='inbox'
+                        label={formatMessage({id: 'fusion.header.collectionsShort', defaultMessage: 'Mentions, saved, pinned and files'})}
+                        onClick={() => {
+                            setMore(false);
+                            setCollectionsTab('mentions');
+                            setCollections(true);
+                        }}
+                    >
+                        {mentions > 0 && <span className={am('end', 'count')}>{mentions}</span>}
+                    </MenuItem>
+                    <MenuItem
+                        icon='cog'
+                        label={formatMessage({id: 'fusion.header.statusAndSettings', defaultMessage: 'Your status, profile and settings'})}
+                        onClick={() => {
+                            setMore(false);
+                            setStatus(true);
+                        }}
+                    />
+                </Popover>
+            )}
             {info && (
                 <ChannelInfo
                     channel={channel}
