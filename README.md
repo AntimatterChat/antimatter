@@ -6,7 +6,8 @@ It is a fully open source fork of [Mattermost](https://github.com/mattermost/mat
 feature is available without a license key, and it works with the Mattermost mobile and desktop
 apps.
 
-- Source code and issues: [github.com/AntimatterChat](https://github.com/AntimatterChat)
+- Source code: [github.com/AntimatterChat](https://github.com/AntimatterChat)
+- Bug reports, feature requests and questions: [AntimatterChat/community](https://github.com/AntimatterChat/community)
 - Server: [github.com/AntimatterChat/antimatter](https://github.com/AntimatterChat/antimatter)
 - Docker image with the bundled plugins:
   [github.com/AntimatterChat/antimatter-docker](https://github.com/AntimatterChat/antimatter-docker)
@@ -32,6 +33,16 @@ itself, with `ServiceSettings.EnableLocalMode`).
 The server is written in Go (`server/`) and the web app in React (`webapp/`). `make build` and
 `make package-linux` in `server/` build the server and its release archives; see
 [CONTRIBUTING.md](CONTRIBUTING.md) for a development setup.
+
+## Feedback and support
+
+Found a bug in the Antimatter server or its web apps, or missing a feature? Please [open an
+issue](https://github.com/AntimatterChat/community/issues/new/choose) in the [Antimatter community
+repository](https://github.com/AntimatterChat/community), where the feedback for every part of
+Antimatter is gathered. Questions and ideas are welcome in its
+[Discussions](https://github.com/AntimatterChat/community/discussions). Please report security
+problems privately, as explained in the [security
+policy](https://github.com/AntimatterChat/.github/blob/main/SECURITY.md).
 
 ## License
 

@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Report a bug or ask for a feature
+    url: https://github.com/AntimatterChat/community/issues/new/choose
+    about: All Antimatter bugs and feature requests live in the community repository, whatever part of Antimatter they're about.
+  - name: Ask a question or share an idea
+    url: https://github.com/AntimatterChat/community/discussions
+    about: Help, ideas and general talk happen in the community Discussions.
+  - name: Report a security problem
+    url: https://github.com/AntimatterChat/.github/blob/main/SECURITY.md
+    about: Please report vulnerabilities privately, never in a public issue.
