@@ -42,6 +42,7 @@ const (
 	CustomProfileAttributesVisibilityHidden  = PropertyFieldVisibilityHidden
 	CustomProfileAttributesVisibilityWhenSet = PropertyFieldVisibilityWhenSet
 	CustomProfileAttributesVisibilityAlways  = PropertyFieldVisibilityAlways
+	CustomProfileAttributesVisibilityAdmin   = PropertyFieldVisibilityAdmin
 	CustomProfileAttributesVisibilityDefault = CustomProfileAttributesVisibilityWhenSet
 
 	// CPA options

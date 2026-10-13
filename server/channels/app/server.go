@@ -272,6 +272,8 @@ func NewServer(options ...Option) (*Server, error) {
 		{Name: model.ContentFlaggingGroupName, Version: model.PropertyGroupVersionV1},
 		{Name: model.BoardsPropertyGroupName, Version: model.PropertyGroupVersionV2},
 		{Name: model.PostAttributesPropertyGroupName, Version: model.PropertyGroupVersionV2, SchemaVersion: model.PostAttributesPropertyGroupSchemaVersion},
+		// Antimatter: the user attributes a community's admins define for its members.
+		{Name: model.CommunityAttributesPropertyGroupName, Version: model.PropertyGroupVersionV2},
 	}); err != nil {
 		return nil, errors.Wrap(err, "failed to register builtin property groups")
 	}

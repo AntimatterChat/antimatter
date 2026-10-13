@@ -150,6 +150,10 @@ const (
 	PropertyFieldVisibilityHidden  = "hidden"
 	PropertyFieldVisibilityWhenSet = "when_set"
 	PropertyFieldVisibilityAlways  = "always"
+	// PropertyFieldVisibilityAdmin (Antimatter) shows a user attribute to the
+	// admins of its scope and to the user it describes; its values are
+	// withheld from everyone else. See IsPropertyFieldValueRestricted.
+	PropertyFieldVisibilityAdmin = "admin"
 )
 
 // Valid value types for text property fields.
@@ -167,11 +171,25 @@ func IsValidPropertyFieldVisibility(v string) bool {
 	switch v {
 	case PropertyFieldVisibilityHidden,
 		PropertyFieldVisibilityWhenSet,
-		PropertyFieldVisibilityAlways:
+		PropertyFieldVisibilityAlways,
+		PropertyFieldVisibilityAdmin:
 		return true
 	default:
 		return false
 	}
+}
+
+// IsPropertyFieldValueRestricted (Antimatter) tells whether a user attribute's
+// values are kept from those who are neither the user they describe nor an
+// admin of the attribute's scope: hidden and admin-only attributes. Hidden ones
+// are for integrations and access policies, so nobody else needs to read them.
+func IsPropertyFieldValueRestricted(field *PropertyField) bool {
+	if field == nil || field.Attrs == nil {
+		return false
+	}
+	v, _ := field.Attrs[PropertyFieldAttrVisibility].(string)
+	v = strings.TrimSpace(v)
+	return v == PropertyFieldVisibilityHidden || v == PropertyFieldVisibilityAdmin
 }
 
 // IsValidPropertyFieldValueType reports whether the given string is a known value type.
@@ -223,7 +241,7 @@ func ValidatePropertyFieldVisibility(field *PropertyField) error {
 	}
 
 	if !IsValidPropertyFieldVisibility(v) {
-		return fmt.Errorf("invalid visibility %q: must be one of hidden, when_set, always", v)
+		return fmt.Errorf("invalid visibility %q: must be one of hidden, when_set, always, admin", v)
 	}
 
 	return nil

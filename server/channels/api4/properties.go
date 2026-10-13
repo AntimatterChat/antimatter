@@ -53,7 +53,9 @@ func getV2Group(c *Context, callerName string) *model.PropertyGroup {
 		c.Err = appErr
 		return nil
 	}
-	if !group.IsPSAv2() {
+	// Antimatter: community attributes have their own routes, which check who may see and set each value
+	// (InitCommunityAttributes); the generic ones don't know their rules.
+	if !group.IsPSAv2() || group.Name == model.CommunityAttributesPropertyGroupName {
 		c.Err = model.NewAppError(callerName, "api.property.v2_group_not_found.app_error", nil, "", http.StatusNotFound)
 		return nil
 	}
@@ -727,6 +729,13 @@ func getPropertyValuesCore(c *Context, w http.ResponseWriter, r *http.Request, o
 	if err != nil {
 		c.Err = err
 		return
+	}
+	if objectType == model.PropertyFieldObjectTypeUser {
+		values, err = c.App.WithholdRestrictedUserAttributeValues(rctx, *c.AppContext.Session(), group.ID, targetID, values)
+		if err != nil {
+			c.Err = err
+			return
+		}
 	}
 
 	auditRec.Success()

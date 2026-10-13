@@ -7466,6 +7466,51 @@
     "description": "API error when a slash-command response webhook is expired or has exceeded its usage limit."
   },
   {
+    "id": "app.community_attributes.invalid.app_error",
+    "translation": "This attribute is invalid: check its {{.Reason}}.",
+    "description": "API error returned when a community admin defines a member attribute with an invalid name, kind, visibility or choices; Reason names the faulty part (an English attribute key such as name, type or options)."
+  },
+  {
+    "id": "app.community_attributes.not_found.app_error",
+    "translation": "This attribute doesn't exist in this community.",
+    "description": "API error returned when a community member attribute that doesn't exist, or belongs to another community, is edited or given a value."
+  },
+  {
+    "id": "app.community_attributes.not_member.app_error",
+    "translation": "This person isn't a member of the community.",
+    "description": "API error returned when setting the community attributes of someone who isn't a member of the community."
+  },
+  {
+    "id": "app.community_attributes.too_many.app_error",
+    "translation": "A community can have up to {{.Max}} attributes.",
+    "description": "API error returned when a community admin adds a member attribute beyond the limit."
+  },
+  {
+    "id": "app.community_attributes.too_many_users.app_error",
+    "translation": "Ask for the attributes of up to {{.Max}} people at a time.",
+    "description": "API error returned when a client asks for the community attribute values of too many people in one request."
+  },
+  {
+    "id": "app.community_attributes.type_change.app_error",
+    "translation": "An attribute's kind can't be changed: delete it and add a new one.",
+    "description": "API error returned when a community admin tries to change the kind (text, choice, date...) of an existing member attribute."
+  },
+  {
+    "id": "app.community_attributes.values.count.app_error",
+    "translation": "Set between 1 and {{.Max}} attribute values at a time.",
+    "description": "API error returned when a request setting a member's community attribute values has none, or too many."
+  },
+  {
+    "id": "app.community_attributes.values.forbidden.app_error",
+    "translation": "You can't set this attribute for this person.",
+    "description": "API error returned when someone sets a community attribute they may not: someone else's, or one only the community admins set."
+  },
+  {
+    "id": "app.community_attributes.values.invalid.app_error",
+    "translation": "This value doesn't fit the attribute {{.Name}}.",
+    "description": "API error returned when a community attribute value has the wrong shape: an unknown choice, an invalid email, URL, phone number or date, an unknown person, or a text too long."
+  },
+  {
     "id": "app.compile_csv_chunks.header_error",
     "translation": "Failed to write CSV headers.",
     "description": "Error from the user-report export job when writing the header row of the CSV file fails; surfaces in job status/logs."

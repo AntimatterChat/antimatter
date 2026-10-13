@@ -122,6 +122,7 @@ const (
 	WebsocketEventChannelOverridesUpdated    WebsocketEventType = "channel_overrides_updated"
 	WebsocketEventCategoryOverridesUpdated   WebsocketEventType = "category_overrides_updated"
 	WebsocketEventMemberTimeoutsUpdated      WebsocketEventType = "member_timeouts_updated"
+	WebsocketEventCommunityAttributesUpdated WebsocketEventType = "community_attributes_updated"
 	WebsocketEventPostPutOnTop               WebsocketEventType = "post_put_on_top"
 	WebsocketEventPostRemovedFromTop         WebsocketEventType = "post_removed_from_top"
 	WebsocketEventFileDownloadRejected       WebsocketEventType = "file_download_rejected"

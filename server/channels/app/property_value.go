@@ -352,7 +352,11 @@ func (a *App) UpsertPropertyValues(rctx request.CTX, values []*model.PropertyVal
 			broadcastValues := make([]model.PropertyValue, len(result))
 			for i, v := range result {
 				broadcastValues[i] = *v
-				broadcastValues[i].Value = model.BroadcastValue(fieldByID[v.FieldID], v.Value)
+				if objectType == model.PropertyFieldObjectTypeUser {
+					broadcastValues[i].Value = model.BroadcastUserAttributeValue(fieldByID[v.FieldID], v.Value)
+				} else {
+					broadcastValues[i].Value = model.BroadcastValue(fieldByID[v.FieldID], v.Value)
+				}
 			}
 			valuesJSON, jsonErr := json.Marshal(broadcastValues)
 			if jsonErr != nil {

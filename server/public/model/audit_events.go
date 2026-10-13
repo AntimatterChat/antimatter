@@ -95,6 +95,10 @@ const (
 	AuditEventPutPostOnTop                      = "putPostOnTop"                      // keep a message on top of its channel for a while
 	AuditEventRemovePostFromTop                 = "removePostFromTop"                 // take a message off the top of its channel
 	AuditEventSetChannelRoleAccess              = "setChannelRoleAccess"              // make a channel for some roles only
+	AuditEventCreateCommunityAttribute          = "createCommunityAttribute"          // define a user attribute for a team's members
+	AuditEventPatchCommunityAttribute           = "patchCommunityAttribute"           // change a team's user attribute
+	AuditEventDeleteCommunityAttribute          = "deleteCommunityAttribute"          // delete a team's user attribute
+	AuditEventPatchCommunityAttributeValues     = "patchCommunityAttributeValues"     // set a team member's attribute values
 )
 
 // Channels

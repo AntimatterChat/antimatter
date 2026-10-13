@@ -294,3 +294,14 @@ func BroadcastValue(field *PropertyField, value json.RawMessage) json.RawMessage
 	}
 	return json.RawMessage(PropertyValueWithheldJSON)
 }
+
+// BroadcastUserAttributeValue (Antimatter) is BroadcastValue for a user
+// attribute: a hidden or admin-only attribute's value is withheld as well,
+// since a broadcast goes to everyone. Clients refetch it, and get it if they
+// may see it.
+func BroadcastUserAttributeValue(field *PropertyField, value json.RawMessage) json.RawMessage {
+	if IsPropertyFieldValueRestricted(field) {
+		return json.RawMessage(PropertyValueWithheldJSON)
+	}
+	return BroadcastValue(field, value)
+}

@@ -441,7 +441,7 @@ func cpaPatchValues(c *Context, w http.ResponseWriter, r *http.Request, userID s
 	// back over HTTP, and that caller is allowed to see them.
 	broadcastResults := make(map[string]json.RawMessage, len(upserted))
 	for _, value := range upserted {
-		broadcastResults[value.FieldID] = model.BroadcastValue(fieldByID[value.FieldID], value.Value)
+		broadcastResults[value.FieldID] = model.BroadcastUserAttributeValue(fieldByID[value.FieldID], value.Value)
 	}
 	message := model.NewWebSocketEvent(model.WebsocketEventCPAValuesUpdated, "", "", "", nil, "")
 	message.Add("user_id", userID)
@@ -498,6 +498,11 @@ func listCPAValues(c *Context, w http.ResponseWriter, r *http.Request) {
 		// Single-target search: at most one value per (target, field), so the field cap bounds the page.
 		PerPage: model.AccessControlGroupFieldLimit + 5,
 	})
+	if appErr != nil {
+		c.Err = appErr
+		return
+	}
+	values, appErr = c.App.WithholdRestrictedUserAttributeValues(rctx, *c.AppContext.Session(), group.ID, c.Params.UserId, values)
 	if appErr != nil {
 		c.Err = appErr
 		return
