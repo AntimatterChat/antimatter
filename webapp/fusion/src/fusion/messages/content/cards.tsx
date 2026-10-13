@@ -326,7 +326,9 @@ function Card({post, attachment}: {post: Post; attachment: MessageAttachment}) {
         );
     }
 
-    const fields = (attachment.fields || []).filter((f) => f && (f.title || f.value !== undefined));
+    // A field shows when it has a title or a value: a title with an empty value still shows, an empty field doesn't.
+    const fieldValue = (value: unknown) => (value === undefined || value === null ? '' : String(value));
+    const fields = (attachment.fields || []).filter((f) => f && (f.title || fieldValue(f.value)));
     const imageMeta = attachment.image_url ? secureGetFromRecord(images, attachment.image_url) : undefined;
     const footer = [attachment.footer, intl.formatTime(post.create_at, {hour: 'numeric', minute: '2-digit'})].filter(Boolean).join(' · ');
 
@@ -386,12 +388,14 @@ function Card({post, attachment}: {post: Post; attachment: MessageAttachment}) {
                                 className={am({wide: !field.short})}
                             >
                                 <dt>{field.title}</dt>
-                                <dd>
-                                    <Markdown
-                                        message={String(field.value ?? '')}
-                                        postId={post.id}
-                                    />
-                                </dd>
+                                {fieldValue(field.value) && (
+                                    <dd>
+                                        <Markdown
+                                            message={fieldValue(field.value)}
+                                            postId={post.id}
+                                        />
+                                    </dd>
+                                )}
                             </div>
                         ))}
                     </dl>

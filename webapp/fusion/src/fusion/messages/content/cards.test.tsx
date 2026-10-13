@@ -44,6 +44,16 @@ describe('Cards', () => {
         expect(screen.queryByRole('img')).not.toBeInTheDocument();
     });
 
+    test('shows a field with a title and an empty value, and drops an empty field', () => {
+        renderWithContext(
+            <Cards post={post({fields: [{title: 'Owner', value: ''}, {title: '', value: ''}, {title: 'Build', value: 4821}]})}/>,
+        );
+        const terms = screen.getAllByRole('term');
+        expect(terms.map((t) => t.textContent)).toEqual(['Owner', 'Build']);
+        expect(screen.getAllByRole('definition')).toHaveLength(1);
+        expect(screen.getByRole('definition')).toHaveTextContent('4821');
+    });
+
     test('scales a chart to include its threshold', () => {
         const line = sparkline([1, 2, 3], 10, 100, 50);
         const ys = line.points.split(' ').map((p) => Number(p.split(',')[1]));
