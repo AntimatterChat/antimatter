@@ -3480,6 +3480,7 @@ type ElasticsearchSettings struct {
 	Trace                                       *string `access:"environment_elasticsearch,write_restrictable,cloud_restrictable"`
 	IgnoredPurgeIndexes                         *string `access:"environment_elasticsearch,write_restrictable,cloud_restrictable"` // telemetry: none
 	EnableSearchPublicChannelsWithoutMembership *bool   `access:"environment_elasticsearch,write_restrictable,cloud_restrictable"`
+	EnableFileIndexing                          *bool   `access:"environment_elasticsearch,write_restrictable,cloud_restrictable"`
 }
 
 func (s *ElasticsearchSettings) SetDefaults() {
@@ -3597,6 +3598,10 @@ func (s *ElasticsearchSettings) SetDefaults() {
 
 	if s.EnableSearchPublicChannelsWithoutMembership == nil {
 		s.EnableSearchPublicChannelsWithoutMembership = new(true)
+	}
+
+	if s.EnableFileIndexing == nil {
+		s.EnableFileIndexing = new(true)
 	}
 }
 
