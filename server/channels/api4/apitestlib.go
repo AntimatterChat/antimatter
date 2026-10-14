@@ -199,6 +199,9 @@ func setupTestHelper(tb testing.TB, dbStore store.Store, sqlSettings *model.SqlS
 
 		*cfg.TeamSettings.EnableOpenServer = true
 
+		// Antimatter: tests choose the channels people are in; those of all-channels communities set it.
+		*cfg.TeamSettings.AllChannelsMembershipForNewTeams = false
+
 		*cfg.ServiceSettings.ListenAddress = "localhost:0"
 	})
 

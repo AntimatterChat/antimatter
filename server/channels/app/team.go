@@ -278,14 +278,16 @@ func (a *App) PatchTeam(teamID string, patch *model.TeamPatch) (*model.Team, *mo
 		}
 	}
 
-	// Antimatter: the default channel is one of the community's public channels.
-	var newDefaultChannel bool
-	if patch.DefaultChannelId != nil {
+	// Antimatter: the default channel is one of the community's public channels; turning on all-channels membership
+	// fills its channels.
+	var wasAllChannels, newDefaultChannel bool
+	if patch.DefaultChannelId != nil || patch.AllChannelsMembership != nil {
 		existing, appErr := a.GetTeam(teamID)
 		if appErr != nil {
 			return nil, appErr
 		}
-		if *patch.DefaultChannelId != existing.DefaultChannelId {
+		wasAllChannels = existing.AllChannelsMembership
+		if patch.DefaultChannelId != nil && *patch.DefaultChannelId != existing.DefaultChannelId {
 			if appErr := a.checkDefaultChannelChoice(teamID, *patch.DefaultChannelId); appErr != nil {
 				return nil, appErr
 			}
@@ -317,6 +319,9 @@ func (a *App) PatchTeam(teamID string, patch *model.TeamPatch) (*model.Team, *mo
 		return nil, appErr
 	}
 
+	if team.AllChannelsMembership && !wasAllChannels {
+		a.FillCommunityChannelsInBackground(request.EmptyContext(a.Log()), team)
+	}
 	if newDefaultChannel {
 		a.FillDefaultChannelInBackground(request.EmptyContext(a.Log()), team)
 	}

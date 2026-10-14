@@ -16,6 +16,7 @@ import TeamSettings from 'components/team_settings';
 import Icon from 'fusion/components/icon';
 import {Dialog} from 'fusion/components/layer';
 import AutolinksSettings from 'fusion/teams/autolinks_settings';
+import ChannelsSettings from 'fusion/teams/channels_settings';
 import {am} from 'fusion/utils/class_names';
 import {focusElement} from 'utils/a11y_utils';
 
@@ -137,6 +138,13 @@ const TeamSettingsModal = ({isOpen, onExited, focusOriginElement}: Props) => {
             display: abacEnabled && canManageTeamAccessRules,
         },
         {
+            name: 'channels',
+            uiName: formatMessage({id: 'fusion.teamSettings.channels', defaultMessage: 'Channels'}),
+            icon: 'icon icon-globe',
+            iconTitle: formatMessage({id: 'fusion.teamSettings.channels', defaultMessage: 'Channels'}),
+            display: canManageTeam,
+        },
+        {
             name: 'autolinks',
             uiName: formatMessage({id: 'fusion.teamSettings.autolinks', defaultMessage: 'Autolinks'}),
             icon: 'icon icon-link-variant',
@@ -193,9 +201,9 @@ const TeamSettingsModal = ({isOpen, onExited, focusOriginElement}: Props) => {
             >
                 <h2>{visibleTabs.find((tab) => tab.name === activeTab)?.uiName}</h2>
 
-                {activeTab === 'autolinks' ? (
-                    <AutolinksSettings setUnsaved={setAreThereUnsavedChanges}/>
-                ) : (
+                {activeTab === 'channels' && <ChannelsSettings/>}
+                {activeTab === 'autolinks' && <AutolinksSettings setUnsaved={setAreThereUnsavedChanges}/>}
+                {activeTab !== 'channels' && activeTab !== 'autolinks' && (
 
                     // The tabs' classic styles are scoped to the classic dialog's class.
                     <div className='TeamSettingsModal'>

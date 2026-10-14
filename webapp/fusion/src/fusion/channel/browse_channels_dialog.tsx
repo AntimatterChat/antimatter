@@ -15,6 +15,7 @@ import {getCurrentTeam} from 'mattermost-redux/selectors/entities/teams';
 import {getCurrentUserId} from 'mattermost-redux/selectors/entities/users';
 
 import {getVoiceAPI} from 'fusion/calls/calls_api';
+import {isAllChannelsCommunity} from 'fusion/channel/community_channels';
 import Icon from 'fusion/components/icon';
 import {Dialog} from 'fusion/components/layer';
 import {useToast} from 'fusion/shell/toast_context';
@@ -22,6 +23,8 @@ import ChannelIcon from 'fusion/sidebar/channel_icon';
 import {am} from 'fusion/utils/class_names';
 import {getHistory} from 'utils/browser_history';
 import Constants from 'utils/constants';
+
+import type {GlobalState} from 'types/store';
 
 export type BrowseFilter = 'all' | 'public' | 'private' | 'archived' | 'requestable';
 
@@ -77,8 +80,12 @@ export default function BrowseChannelsDialog({onClose}: {onClose: () => void}) {
     const memberCounts = useSelector(selectMemberCounts);
     const pending = useSelector(getMyPendingJoinRequestsByChannel);
     const discoverable = useSelector(isDiscoverableChannelsEnabled);
+
+    // In a community that has everyone in all its channels, those joined are all of them: what's left to find is
+    // archived, or asked for.
+    const allChannels = useSelector((state: GlobalState) => Boolean(team) && isAllChannelsCommunity(state, team!.id));
     const [filter, setFilter] = useState<BrowseFilter>('all');
-    const [hideJoined, setHideJoined] = useState(false);
+    const [hideJoined, setHideJoined] = useState(allChannels);
     const [query, setQuery] = useState('');
     const [found, setFound] = useState<Channel[] | null>(null);
     const [extra, setExtra] = useState<Channel[]>([]);
@@ -197,6 +204,7 @@ export default function BrowseChannelsDialog({onClose}: {onClose: () => void}) {
         >
             <div className={am('pane', 'browse')}>
                 <h2>{formatMessage({id: 'fusion.browse.title', defaultMessage: 'Browse channels'})}</h2>
+                {allChannels && <p className={am('lead')}>{formatMessage({id: 'fusion.browse.allChannels', defaultMessage: 'Everyone in {community} is in all the channels they may see. Find its archived channels here, and the private ones you can ask to join.'}, {community: team?.display_name})}</p>}
                 <div className={am('browse-search')}>
                     <Icon
                         name='search'

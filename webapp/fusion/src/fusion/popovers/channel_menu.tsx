@@ -10,6 +10,7 @@ import type {Channel} from '@mattermost/types/channels';
 import {addChannelToCategory} from 'mattermost-redux/actions/channel_categories';
 import {favoriteChannel, readMultipleChannels, setMyChannelAutotranslation, unfavoriteChannel} from 'mattermost-redux/actions/channels';
 import {savePreferences} from 'mattermost-redux/actions/preferences';
+import {patchTeam} from 'mattermost-redux/actions/teams';
 import {Permissions, Preferences} from 'mattermost-redux/constants';
 import {getCategoryInTeamWithChannel, getManagedCategoryMappings} from 'mattermost-redux/selectors/entities/channel_categories';
 import {getCurrentChannelId, getMyChannelMembership, isChannelAutotranslated, isFavoriteChannel, isMyChannelAutotranslated, isUserLanguageSupportedForAutotranslation, makeGetChannelUnreadCount} from 'mattermost-redux/selectors/entities/channels';
@@ -34,6 +35,7 @@ import EditChannelHeaderModal from 'components/edit_channel_header_modal';
 import LeaveChannelModal from 'components/leave_channel_modal';
 import UnarchiveChannelModal from 'components/unarchive_channel_modal';
 
+import {isAllChannelsCommunity, isCommunityChannelFor, isDefaultChannel, isFirstDefaultChannel} from 'fusion/channel/community_channels';
 import Icon from 'fusion/components/icon';
 import {Popover} from 'fusion/components/layer';
 import type {Placement} from 'fusion/components/layer';
@@ -120,15 +122,22 @@ export default function ChannelMenu({channel, anchor, point, placement = 'right'
     const direct = channel.type === Constants.DM_CHANNEL || channel.type === Constants.GM_CHANNEL;
     const isPrivate = channel.type === Constants.PRIVATE_CHANNEL;
     const archived = channel.delete_at !== 0;
-    const isDefault = channel.name === Constants.DEFAULT_CHANNEL;
+
+    // The community's default channel can't be left nor made private; it and the channels every community starts
+    // with are archived by the community's admins only. In a community that has everyone in all its channels, people
+    // mute channels rather than leave them.
+    const isDefault = useSelector((state: GlobalState) => isDefaultChannel(state, channel));
+    const firstDefault = useSelector((state: GlobalState) => isFirstDefaultChannel(state, channel));
+    const stays = useSelector((state: GlobalState) => isCommunityChannelFor(state, channel, getCurrentUserId(state)));
+    const everyoneIn = useSelector((state: GlobalState) => channel.type === Constants.OPEN_CHANNEL && isAllChannelsCommunity(state, channel.team_id));
     const may = useSelector((state: GlobalState) => ({
         archive: haveIChannelPermission(state, channel.team_id, channel.id, isPrivate ? Permissions.DELETE_PRIVATE_CHANNEL : Permissions.DELETE_PUBLIC_CHANNEL),
         unarchive: haveITeamPermission(state, channel.team_id, Permissions.MANAGE_TEAM),
         convert: haveIChannelPermission(state, channel.team_id, channel.id, Permissions.CONVERT_PUBLIC_CHANNEL_TO_PRIVATE),
         editHeader: haveIChannelPermission(state, channel.team_id, channel.id, isPrivate ? Permissions.MANAGE_PRIVATE_CHANNEL_PROPERTIES : Permissions.MANAGE_PUBLIC_CHANNEL_PROPERTIES),
     }), (a, b) => a.archive === b.archive && a.unarchive === b.unarchive && a.convert === b.convert && a.editHeader === b.editHeader);
-    const canArchive = !direct && !archived && !isDefault && may.archive;
-    const canUnarchive = !direct && archived && !isDefault && may.unarchive;
+    const canArchive = !direct && !archived && may.archive && (!firstDefault || may.unarchive);
+    const canUnarchive = !direct && archived && may.unarchive;
     const canConvert = channel.type === Constants.OPEN_CHANNEL && !archived && !isDefault && may.convert;
     const canEditHeader = !archived && (direct || may.editHeader);
 
@@ -139,7 +148,7 @@ export default function ChannelMenu({channel, anchor, point, placement = 'right'
 
     const label = direct ? channel.display_name : '#' + channel.display_name;
 
-    const canLeave = (channel.type === Constants.OPEN_CHANNEL && !isDefault) || isPrivate;
+    const canLeave = ((channel.type === Constants.OPEN_CHANNEL && !isDefault) || isPrivate) && !stays;
     const leave = () => {
         if (isPrivate || channel.policy_enforced) {
             dispatch(openDialog(ModalIdentifiers.LEAVE_PRIVATE_CHANNEL_MODAL, LeaveChannelModal, {channel}));
@@ -424,11 +433,13 @@ export default function ChannelMenu({channel, anchor, point, placement = 'right'
             )}
             {!direct && !archived && (
                 <>
-                    <MenuItem
-                        icon='user-plus'
-                        label={formatMessage({id: 'fusion.channelMenu.addMembers', defaultMessage: 'Add members'})}
-                        onClick={run(() => (channel.type === Constants.OPEN_CHANNEL || isPrivate ? dialogs.addPeople(channel) : dispatch(openDialog(ModalIdentifiers.CHANNEL_INVITE, ChannelInviteModal, {channel}))))}
-                    />
+                    {!everyoneIn && (
+                        <MenuItem
+                            icon='user-plus'
+                            label={formatMessage({id: 'fusion.channelMenu.addMembers', defaultMessage: 'Add members'})}
+                            onClick={run(() => (channel.type === Constants.OPEN_CHANNEL || isPrivate ? dialogs.addPeople(channel) : dispatch(openDialog(ModalIdentifiers.CHANNEL_INVITE, ChannelInviteModal, {channel}))))}
+                        />
+                    )}
                     <MenuItem
                         icon='cog'
                         label={formatMessage({id: 'fusion.channelMenu.settings', defaultMessage: 'Channel settings'})}
@@ -442,6 +453,21 @@ export default function ChannelMenu({channel, anchor, point, placement = 'right'
                     label={formatMessage({id: 'fusion.channelMenu.permissions', defaultMessage: 'Permissions…'})}
                     sub={formatMessage({id: 'fusion.channelMenu.permissionsSub', defaultMessage: 'Who sees it, and what roles can do here'})}
                     onClick={run(() => dialogs.channelPermissions(channel))}
+                />
+            )}
+            {channel.type === Constants.OPEN_CHANNEL && !archived && !isDefault && may.unarchive && (
+                <MenuItem
+                    icon='flag'
+                    label={formatMessage({id: 'fusion.channelMenu.makeDefault', defaultMessage: 'Make it the default channel'})}
+                    sub={formatMessage({id: 'fusion.channelMenu.makeDefaultSub', defaultMessage: 'Newcomers land here, and everyone is in it'})}
+                    onClick={run(async () => {
+                        const result = await dispatch(patchTeam({id: channel.team_id, default_channel_id: channel.id}));
+                        if ('error' in result && result.error) {
+                            toast((result.error as {message?: string}).message || formatMessage({id: 'fusion.teamChannels.failed', defaultMessage: 'The setting couldn\'t be saved.'}));
+                        } else {
+                            toast(formatMessage({id: 'fusion.toast.madeDefault', defaultMessage: '{name} is the default channel'}, {name: label}));
+                        }
+                    })}
                 />
             )}
             {canConvert && (
@@ -459,7 +485,7 @@ export default function ChannelMenu({channel, anchor, point, placement = 'right'
                     onClick={run(() => action.action?.(channel.id))}
                 />
             ))}
-            {(direct || archived || canLeave || canArchive || canUnarchive) && <MenuSeparator/>}
+            {(direct || archived || canLeave || (stays && !muted) || canArchive || canUnarchive) && <MenuSeparator/>}
             {canUnarchive && (
                 <MenuItem
                     icon='folder'
@@ -480,6 +506,17 @@ export default function ChannelMenu({channel, anchor, point, placement = 'right'
                     danger={true}
                     label={formatMessage({id: 'fusion.channelMenu.leave', defaultMessage: 'Leave channel'})}
                     onClick={run(leave)}
+                />
+            )}
+            {stays && !muted && (
+                <MenuItem
+                    icon='bell-off'
+                    label={formatMessage({id: 'fusion.channelMenu.muteInstead', defaultMessage: 'Mute channel'})}
+                    sub={formatMessage({id: 'fusion.channelMenu.muteInsteadSub', defaultMessage: 'Everyone in {community} is in all its channels'}, {community: team?.display_name || ''})}
+                    onClick={run(() => {
+                        dispatch(muteFor(channel.id, 0));
+                        toast(formatMessage({id: 'fusion.toast.muted', defaultMessage: 'Muted — no notifications or unread badges'}));
+                    })}
                 />
             )}
             {canArchive && (

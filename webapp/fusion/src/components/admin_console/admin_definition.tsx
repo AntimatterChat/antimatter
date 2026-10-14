@@ -2791,6 +2791,13 @@ const AdminDefinition: AdminDefinitionType = {
                         },
                         {
                             type: 'bool',
+                            key: 'TeamSettings.AllChannelsMembershipForNewTeams',
+                            label: defineMessage({id: 'admin.team.allChannelsMembershipTitle', defaultMessage: 'New communities put everyone in every channel: '}),
+                            help_text: defineMessage({id: 'admin.team.allChannelsMembershipDescription', defaultMessage: 'When true, communities created from now on have their members in all the channels they may see, as in Discord: they mute channels instead of leaving them. Each community can turn this off in its settings. Existing communities are not changed.'}),
+                            isDisabled: it.not(it.userHasWritePermissionOnResource(RESOURCE_KEYS.SITE.USERS_AND_TEAMS)),
+                        },
+                        {
+                            type: 'bool',
                             key: 'TeamSettings.EnableLastActiveTime',
                             label: defineMessage({id: 'admin.team.lastActiveTimeTitle', defaultMessage: 'Enable last active time: '}),
                             help_text: defineMessage({id: 'admin.team.lastActiveTimeDescription', defaultMessage: 'When enabled, last active time allows users to see when someone was last online.'}),

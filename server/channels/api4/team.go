@@ -105,6 +105,10 @@ func createTeam(c *Context, w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Antimatter: new communities have everyone in all their channels, unless the server says otherwise.
+	team.AllChannelsMembership = *c.App.Config().TeamSettings.AllChannelsMembershipForNewTeams
+	team.DefaultChannelId = ""
+
 	rteam, err := c.App.CreateTeamWithUser(c.AppContext, &team, c.AppContext.Session().UserId)
 	if err != nil {
 		c.Err = err

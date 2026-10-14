@@ -22,6 +22,7 @@ import {openDirectChannelToUserId} from 'actions/channel_actions';
 import AddUserToChannelModal from 'components/add_user_to_channel_modal';
 
 import EditAttributesItem from 'fusion/attributes/edit_attributes_item';
+import {isCommunityChannelFor, isDefaultChannel} from 'fusion/channel/community_channels';
 import {Popover} from 'fusion/components/layer';
 import {Flyout, MenuItem, MenuSeparator} from 'fusion/components/menu';
 import {useDisplayName, useUser} from 'fusion/hooks/users';
@@ -68,7 +69,7 @@ export function UserMenu({target, onProfile, onClose}: {target: Target; onProfil
     });
     const inChannel = useSelector((state: GlobalState) => Boolean(channel && state.entities.users.profilesInChannel[channel.id]?.has(userId)));
     const canRemoveFromChannel = useSelector((state: GlobalState) => {
-        if (!channel || !team || (channel.type !== Constants.OPEN_CHANNEL && channel.type !== Constants.PRIVATE_CHANNEL) || channel.name === Constants.DEFAULT_CHANNEL || channel.delete_at) {
+        if (!channel || !team || (channel.type !== Constants.OPEN_CHANNEL && channel.type !== Constants.PRIVATE_CHANNEL) || isDefaultChannel(state, channel) || isCommunityChannelFor(state, channel, userId) || channel.delete_at) {
             return false;
         }
         const permission = channel.type === Constants.OPEN_CHANNEL ? Permissions.MANAGE_PUBLIC_CHANNEL_MEMBERS : Permissions.MANAGE_PRIVATE_CHANNEL_MEMBERS;

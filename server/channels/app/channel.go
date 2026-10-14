@@ -128,6 +128,9 @@ func (a *App) JoinDefaultChannels(rctx request.CTX, teamID string, user *model.U
 		a.Publish(message)
 	}
 
+	// Antimatter: in a community that has everyone in all its channels, all of them.
+	a.joinCommunityChannels(rctx, team, user)
+
 	if nErr != nil {
 		var appErr *model.AppError
 		var cErr *store.ErrConflict
@@ -376,6 +379,9 @@ func (a *App) CreateChannel(rctx request.CTX, channel *model.Channel, addMember 
 	if sc.IsSpace() {
 		return sc, nil
 	}
+
+	// Antimatter: in a community that has everyone in all its channels, they all come.
+	a.FillCommunityChannelInBackground(rctx, sc)
 
 	a.Srv().Go(func() {
 		pluginContext := pluginContext(rctx)
@@ -1024,6 +1030,11 @@ func (a *App) UpdateChannelPrivacy(rctx request.CTX, oldChannel *model.Channel, 
 	messageWs.Add("channel_type", string(channel.Type))
 	a.Publish(messageWs)
 
+	// Antimatter: a channel made public gets all its community, when it has everyone in all its channels.
+	if channel.Type == model.ChannelTypeOpen {
+		a.FillCommunityChannelInBackground(rctx, channel)
+	}
+
 	return channel, nil
 }
 
@@ -1095,6 +1106,9 @@ func (a *App) RestoreChannel(rctx request.CTX, channel *model.Channel, userID st
 	}
 	message.Add("channel_id", channel.Id)
 	a.Publish(message)
+
+	// Antimatter: in a community that has everyone in all its channels, those who weren't in it come back.
+	a.FillCommunityChannelInBackground(rctx, channel)
 
 	var user *model.User
 	if userID != "" {
@@ -2948,6 +2962,11 @@ func (a *App) LeaveChannel(rctx request.CTX, channelID string, userID string) *m
 		return err
 	}
 
+	// Antimatter: nobody leaves the channels their community has everyone in.
+	if err := a.checkAllChannelsLeave(rctx, channel, userID, userID); err != nil {
+		return err
+	}
+
 	isDefault := a.isDefaultChannel(rctx, channel)
 	if err := a.removeUserFromChannel(rctx, userID, userID, channel); err != nil {
 		return err
@@ -3198,6 +3217,12 @@ func (a *App) removeUserFromChannel(rctx request.CTX, userIDToRemove string, rem
 
 func (a *App) RemoveUserFromChannel(rctx request.CTX, userIDToRemove string, removerUserId string, channel *model.Channel) *model.AppError {
 	var err *model.AppError
+
+	// Antimatter: nor is anyone removed from them, but by the server's own syncs. (Moving a channel to another
+	// community still takes out those who aren't in it.)
+	if err = a.checkAllChannelsLeave(rctx, channel, userIDToRemove, removerUserId); err != nil {
+		return err
+	}
 
 	if err = a.removeUserFromChannel(rctx, userIDToRemove, removerUserId, channel); err != nil {
 		return err

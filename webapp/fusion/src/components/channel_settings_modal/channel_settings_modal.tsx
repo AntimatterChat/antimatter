@@ -16,7 +16,7 @@ import type {Channel} from '@mattermost/types/channels';
 import Permissions from 'mattermost-redux/constants/permissions';
 import {getChannel} from 'mattermost-redux/selectors/entities/channels';
 import {getConfig, isChannelPermissionPoliciesEnabled} from 'mattermost-redux/selectors/entities/general';
-import {haveIChannelPermission, haveISystemPermission} from 'mattermost-redux/selectors/entities/roles';
+import {haveIChannelPermission, haveISystemPermission, haveITeamPermission} from 'mattermost-redux/selectors/entities/roles';
 
 import {
     setShowPreviewOnChannelSettingsHeaderModal,
@@ -28,6 +28,7 @@ import {getChannelSettingsTabs} from 'selectors/plugins';
 import type {Tab as SidebarTab} from 'components/settings_sidebar/settings_sidebar';
 import {normalizePluginIcon} from 'components/settings_sidebar/settings_sidebar';
 
+import {isFirstDefaultChannel} from 'fusion/channel/community_channels';
 import Icon from 'fusion/components/icon';
 import {Dialog} from 'fusion/components/layer';
 import {am} from 'fusion/utils/class_names';
@@ -195,7 +196,9 @@ function ChannelSettingsModal({channelId, isOpen, onExited, focusOriginElement}:
     // as the Membership Policy tab.
     const shouldShowPermissionsPolicyTab = shouldShowAccessRulesTab && channelPermissionPoliciesEnabled;
 
-    const shouldShowArchiveTab = channel.name !== Constants.DEFAULT_CHANNEL &&
+    // Antimatter: the default channels can be archived too, by the community's admins.
+    const mayArchiveDefault = useSelector((state: GlobalState) => !isFirstDefaultChannel(state, channel) || haveITeamPermission(state, channel.team_id, Permissions.MANAGE_TEAM));
+    const shouldShowArchiveTab = mayArchiveDefault &&
         ((channel.type === Constants.PRIVATE_CHANNEL && canArchivePrivateChannels) ||
         (channel.type === Constants.OPEN_CHANNEL && canArchivePublicChannels));
 

@@ -2676,6 +2676,10 @@ type TeamSettings struct {
 	// Antimatter: only channel, team and system admins can export a channel's messages. Off, everyone who can read a
 	// channel can.
 	RestrictChannelExportToAdmins *bool `access:"site_users_and_teams"`
+
+	// Antimatter: communities created from now on have everyone in all their channels (Team.AllChannelsMembership,
+	// which each community can turn off). Existing communities keep theirs.
+	AllChannelsMembershipForNewTeams *bool `access:"site_users_and_teams"`
 }
 
 func (s *TeamSettings) SetDefaults() {
@@ -2713,6 +2717,10 @@ func (s *TeamSettings) SetDefaults() {
 
 	if s.RestrictChannelExportToAdmins == nil {
 		s.RestrictChannelExportToAdmins = new(false)
+	}
+
+	if s.AllChannelsMembershipForNewTeams == nil {
+		s.AllChannelsMembershipForNewTeams = new(true)
 	}
 
 	if s.EnableLastActiveTime == nil {

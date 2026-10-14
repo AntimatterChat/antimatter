@@ -19,6 +19,7 @@ import ChannelIntroRenderer from 'components/channel_intro_renderer/channel_intr
 import ChannelNotificationsModal from 'components/channel_notifications_modal';
 import EditChannelHeaderModal from 'components/edit_channel_header_modal';
 
+import {isAllChannelsCommunity, isDefaultChannel} from 'fusion/channel/community_channels';
 import Avatar from 'fusion/components/avatar';
 import Icon from 'fusion/components/icon';
 import type {IconName} from 'fusion/components/icon';
@@ -53,6 +54,10 @@ export default function ChannelIntro({channel}: {channel: Channel}) {
     const canEditHeader = useSelector((state: GlobalState) => direct || haveIChannelPermission(state, channel.team_id, channel.id, isPrivate ? Permissions.MANAGE_PRIVATE_CHANNEL_PROPERTIES : Permissions.MANAGE_PUBLIC_CHANNEL_PROPERTIES));
     const notes = teammate?.id === myId;
     const override = useSelector((state: GlobalState) => getChannelIntroOverride(state, channel.id));
+    const isDefault = useSelector((state: GlobalState) => isDefaultChannel(state, channel));
+
+    // Everyone is in a public channel of a community that has everyone in all its channels: nobody to add.
+    const everyoneIn = useSelector((state: GlobalState) => channel.type === Constants.OPEN_CHANNEL && isAllChannelsCommunity(state, channel.team_id));
 
     let art;
     let title;
@@ -77,7 +82,7 @@ export default function ChannelIntro({channel}: {channel: Channel}) {
             </span>
         );
         title = formatMessage({id: 'fusion.intro.welcome', defaultMessage: 'Welcome to #{name}'}, {name: channel.display_name});
-        if (channel.name === Constants.DEFAULT_CHANNEL) {
+        if (isDefault) {
             lead = formatMessage({id: 'fusion.intro.townSquare', defaultMessage: 'This is the start of #{name}, the channel everyone in the community is in. Post here what everyone should see.'}, {name: channel.display_name});
         } else if (creator) {
             lead = formatMessage({id: 'fusion.intro.channelBy', defaultMessage: 'This is the start of the #{name} channel, created by {creator} on {date}.'}, {name: channel.display_name, creator: creatorName, date: intl.formatDate(channel.create_at, {dateStyle: 'long'})});
@@ -120,7 +125,7 @@ export default function ChannelIntro({channel}: {channel: Channel}) {
             {channel.purpose && !direct && <p className={am('intro-purpose')}>{channel.purpose}</p>}
             {!archived && (
                 <div className={am('intro-actions')}>
-                    {!direct && action('user-plus', formatMessage({id: 'fusion.intro.addMembers', defaultMessage: 'Add members'}), () => dialogs.addPeople(channel))}
+                    {!direct && !everyoneIn && action('user-plus', formatMessage({id: 'fusion.intro.addMembers', defaultMessage: 'Add members'}), () => dialogs.addPeople(channel))}
                     {canEditHeader && !channel.header && action('pen', formatMessage({id: 'fusion.intro.setHeader', defaultMessage: 'Set a header'}), () => dispatch(openDialog(ModalIdentifiers.EDIT_CHANNEL_HEADER, EditChannelHeaderModal, {channel})))}
                     {!notes && action('bell', formatMessage({id: 'fusion.intro.notifications', defaultMessage: 'Notifications'}), () => dispatch(openDialog(ModalIdentifiers.CHANNEL_NOTIFICATIONS, ChannelNotificationsModal, {channel, currentUser: me})))}
                     {action('star', favorite ? formatMessage({id: 'fusion.intro.favorited', defaultMessage: 'Favorite'}) : formatMessage({id: 'fusion.intro.favorite', defaultMessage: 'Add to favorites'}), () => dispatch(favorite ? unfavoriteChannel(channel.id) : favoriteChannel(channel.id)), favorite)}

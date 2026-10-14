@@ -655,6 +655,11 @@
     "description": "System message posted in a channel when a user joins; %v is the user's username."
   },
   {
+    "id": "api.channel.leave.all_channels.app_error",
+    "translation": "Everyone in this community is in all of its channels: mute this channel rather than leave it.",
+    "description": "Error when someone tries to leave a channel of a community that has everyone in all its channels (Antimatter); they can mute it instead."
+  },
+  {
     "id": "api.channel.leave.default.app_error",
     "translation": "Unable to leave the default channel {{.Channel}}.",
     "description": "Ephemeral error when a user tries to leave the team's default channel via the /leave slash command; {{.Channel}} is the default channel's name (e.g. Town Square)."
@@ -793,6 +798,11 @@
     "id": "api.channel.post_user_add_remove_message_and_forget.error",
     "translation": "Failed to post join/leave message",
     "description": "API error returned when a system message announcing a user joining or leaving a channel or team could not be posted."
+  },
+  {
+    "id": "api.channel.remove.all_channels.app_error",
+    "translation": "Everyone in this community is in all of its channels, so they can't be removed from this one. Remove them from the community, time them out, or change the channel's permissions instead.",
+    "description": "Error when someone tries to remove another member from a channel of a community that has everyone in all its channels (Antimatter)."
   },
   {
     "id": "api.channel.remove.default.app_error",
@@ -6679,6 +6689,11 @@
     "id": "app.channel.add_user.to.channel.rejected_by_plugin",
     "translation": "Adding channel member rejected by plugin: {{.Reason}}",
     "description": "API error returned when a plugin blocks adding a member to a channel; {{.Reason}} is the explanation supplied by the plugin."
+  },
+  {
+    "id": "app.channel.all_channels.groups.app_error",
+    "translation": "Unable to check the roles that give access to this channel.",
+    "description": "Internal error while checking whether someone is in a role-gated channel through its roles, for a community that has everyone in all its channels (Antimatter)."
   },
   {
     "id": "app.channel.analytics_type_count.app_error",

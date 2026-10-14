@@ -490,6 +490,7 @@ export type TeamSettings = {
     EnableChannelCategorySorting: boolean;
     MemberListRoleGroups: boolean;
     RestrictChannelExportToAdmins: boolean;
+    AllChannelsMembershipForNewTeams: boolean;
 };
 
 export type ClientRequirements = {

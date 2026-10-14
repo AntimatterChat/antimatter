@@ -14859,6 +14859,14 @@
     "defaultMessage": "Teams",
     "description": "Used both as the Teams page title in the System Console and as the 'Teams' filter group name in admin channel lists; plural noun."
   },
+  "admin.team.allChannelsMembershipDescription": {
+    "defaultMessage": "When true, communities created from now on have their members in all the channels they may see, as in Discord: they mute channels instead of leaving them. Each community can turn this off in its settings. Existing communities are not changed.",
+    "description": "Help text of the System Console setting deciding whether new communities have all their members in every channel (Antimatter)."
+  },
+  "admin.team.allChannelsMembershipTitle": {
+    "defaultMessage": "New communities put everyone in every channel: ",
+    "description": "Label of the System Console setting deciding whether new communities have all their members in every channel; a colon and the toggle follow."
+  },
   "admin.team.brandDesc": {
     "defaultMessage": "Enable custom branding to show an image of your choice, uploaded below, and some help text, written below, on the login page.",
     "description": "Admin console help text for the 'Enable Custom Branding' toggle; 'below' refers to the image upload and text fields following it on the page."
@@ -21223,6 +21231,10 @@
     "defaultMessage": "All",
     "description": ""
   },
+  "fusion.browse.allChannels": {
+    "defaultMessage": "Everyone in {community} is in all the channels they may see. Find its archived channels here, and the private ones you can ask to join.",
+    "description": "Note atop Browse channels in a community whose members are in all its channels; {community} is its name."
+  },
   "fusion.browse.archived": {
     "defaultMessage": "Archived",
     "description": ""
@@ -22423,6 +22435,14 @@
     "defaultMessage": "{category} is locked: its channels stay there.",
     "description": ""
   },
+  "fusion.channelMenu.makeDefault": {
+    "defaultMessage": "Make it the default channel",
+    "description": "Channel menu item (community admins) making this channel the community's default channel, where newcomers land."
+  },
+  "fusion.channelMenu.makeDefaultSub": {
+    "defaultMessage": "Newcomers land here, and everyone is in it",
+    "description": "Explanation under 'Make it the default channel' in the channel menu."
+  },
   "fusion.channelMenu.markRead": {
     "defaultMessage": "Mark as read",
     "description": ""
@@ -22454,6 +22474,14 @@
   "fusion.channelMenu.mutedUntil": {
     "defaultMessage": "Muted until {time}",
     "description": ""
+  },
+  "fusion.channelMenu.muteInstead": {
+    "defaultMessage": "Mute channel",
+    "description": "Channel menu item shown instead of 'Leave channel' in a community whose members are in all its channels: mutes the channel."
+  },
+  "fusion.channelMenu.muteInsteadSub": {
+    "defaultMessage": "Everyone in {community} is in all its channels",
+    "description": "Explanation under 'Mute channel' when the channel can't be left; {community} is the community's name."
   },
   "fusion.channelMenu.newWindow": {
     "defaultMessage": "Open in new window",
@@ -25619,6 +25647,10 @@
     "defaultMessage": "Browse channels",
     "description": ""
   },
+  "fusion.serverMenu.browseAllSub": {
+    "defaultMessage": "You're in every channel: archived ones, and those to ask for",
+    "description": "Explanation under 'Browse channels' in a community whose members are already in all its channels."
+  },
   "fusion.serverMenu.createCategory": {
     "defaultMessage": "Create category",
     "description": ""
@@ -26943,6 +26975,50 @@
     "defaultMessage": "until {time}",
     "description": ""
   },
+  "fusion.teamChannels.all": {
+    "defaultMessage": "Members are in every channel",
+    "description": "Title of the community setting putting every member in all the channels they may see, as in Discord."
+  },
+  "fusion.teamChannels.allDesc": {
+    "defaultMessage": "As in Discord: everyone in the community is in all its public channels, and in the private channels their roles open. They mute channels instead of leaving them, and nobody is removed from one: moderate through the community (removal, timeouts) or the channel's permissions. Guests and bots are only in the channels they're added to. Turning it on adds everyone to those channels (communities created before this setting existed keep their channels until you turn it on); turning it off keeps everyone where they are, free to leave.",
+    "description": "Description of the community setting putting every member in all the channels they may see."
+  },
+  "fusion.teamChannels.allOff": {
+    "defaultMessage": "Members can leave channels again",
+    "description": "Toast after turning off the community setting putting every member in all channels."
+  },
+  "fusion.teamChannels.allOn": {
+    "defaultMessage": "Everyone is being added to the channels they may see",
+    "description": "Toast after turning on the community setting putting every member in all channels."
+  },
+  "fusion.teamChannels.default": {
+    "defaultMessage": "Default channel",
+    "description": "Title of the community setting choosing its default channel."
+  },
+  "fusion.teamChannels.defaultDesc": {
+    "defaultMessage": "Where newcomers land, and where the community's join and leave messages go. Everyone is in it and can't leave it. Archive it and people land in the first channel they're in.",
+    "description": "Description of the community setting choosing its default channel, where newcomers land."
+  },
+  "fusion.teamChannels.defaultGone": {
+    "defaultMessage": "An archived channel",
+    "description": "Choice shown when the chosen default channel is archived or not found."
+  },
+  "fusion.teamChannels.defaultNone": {
+    "defaultMessage": "None: the first channel each person is in",
+    "description": "Choice of no default channel when the community has no Town Square: people land in their first channel."
+  },
+  "fusion.teamChannels.defaultSaved": {
+    "defaultMessage": "Default channel saved",
+    "description": "Toast after choosing the community's default channel."
+  },
+  "fusion.teamChannels.defaultTownSquare": {
+    "defaultMessage": "#{channel} (the first channel)",
+    "description": "Choice of no explicit default channel: Town Square is used; {channel} is its name."
+  },
+  "fusion.teamChannels.failed": {
+    "defaultMessage": "The setting couldn't be saved.",
+    "description": "Toast when a community channel setting couldn't be saved and the server gave no reason."
+  },
   "fusion.teams.cancel": {
     "defaultMessage": "Cancel",
     "description": ""
@@ -27034,6 +27110,10 @@
   "fusion.teamSettings.autolinks": {
     "defaultMessage": "Autolinks",
     "description": ""
+  },
+  "fusion.teamSettings.channels": {
+    "defaultMessage": "Channels",
+    "description": "Tab of the community settings holding its channel settings (everyone in every channel, default channel)."
   },
   "fusion.teamSettings.close": {
     "defaultMessage": "Close team settings",
@@ -27286,6 +27366,10 @@
   "fusion.toast.linkCopied": {
     "defaultMessage": "Link copied",
     "description": ""
+  },
+  "fusion.toast.madeDefault": {
+    "defaultMessage": "{name} is the default channel",
+    "description": "Toast after making a channel the community's default channel; {name} is the channel, with its #."
   },
   "fusion.toast.markedRead": {
     "defaultMessage": "Marked {name} as read",

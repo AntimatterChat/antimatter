@@ -19,6 +19,7 @@ import {getMainMenuPluginComponents, getSidebarBrowseOrAddChannelMenuPluginCompo
 import {isUnreadFilterEnabled} from 'selectors/views/channel_sidebar';
 
 import {openCommunityAttributes} from 'fusion/attributes/edit_attributes_item';
+import {isAllChannelsCommunity} from 'fusion/channel/community_channels';
 import {Popover} from 'fusion/components/layer';
 import {Flyout, MenuHeading, MenuItem, MenuSeparator} from 'fusion/components/menu';
 import CopyIdItem from 'fusion/popovers/copy_id_item';
@@ -83,6 +84,7 @@ export default function ServerMenu({team: forTeam, anchor, point, width, onClose
     const addChannelItems = useSelector(getSidebarBrowseOrAddChannelMenuPluginComponents);
     const plugins = useSelector((state: GlobalState) => state.plugins.plugins);
     const settings = useSettings();
+    const allChannels = useSelector((state: GlobalState) => isAllChannelsCommunity(state, teamId));
     const [folders, saveFolders] = useFolders();
     const myTeams = useSelector(getSortedMyTeams);
     const items = railItems(myTeams, folders);
@@ -128,6 +130,7 @@ export default function ServerMenu({team: forTeam, anchor, point, width, onClose
             <MenuItem
                 icon='compass'
                 label={formatMessage({id: 'fusion.serverMenu.browse', defaultMessage: 'Browse channels'})}
+                sub={allChannels ? formatMessage({id: 'fusion.serverMenu.browseAllSub', defaultMessage: 'You\'re in every channel: archived ones, and those to ask for'}) : undefined}
                 onClick={inTeam(() => dialogs.browseChannels())}
             />
             <MenuSeparator/>
