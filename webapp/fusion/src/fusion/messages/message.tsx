@@ -34,6 +34,8 @@ import {useDisplayName} from 'fusion/hooks/users';
 import EmojiPicker from 'fusion/popovers/emoji_picker';
 import {useUserMenu} from 'fusion/popovers/user_menu';
 import UserPopover from 'fusion/popovers/user_popover';
+import {useBlockLevel, useRevealed} from 'fusion/privacy/blocking';
+import FoldedMessage from 'fusion/privacy/folded_message';
 import {getOneClickEmoji} from 'fusion/selectors';
 import {useRoleColor} from 'fusion/teams/roles';
 import {TeamTag} from 'fusion/teams/team_card';
@@ -170,12 +172,26 @@ export default function Message({postId, previousPostId, inThread = false, highl
     // Files the reader isn't allowed to see under the attribute-based access policies.
     const redactedFiles = useSelector((state: GlobalState) => (post && isPermissionPoliciesEnabled(state) ? post.metadata?.redacted_file_count ?? 0 : 0));
 
+    // The messages of someone you ignore or block are folded, until you show them.
+    const blockLevel = useBlockLevel(post && post.user_id !== me ? post.user_id : '');
+    const [revealed, reveal] = useRevealed(postId);
+
     if (!post) {
         return null;
     }
 
     if (isSystemMessage(post) && post.type !== Posts.POST_TYPES.EPHEMERAL) {
         return <SystemLine post={post}/>;
+    }
+
+    if (blockLevel && !revealed && post.type !== Posts.POST_TYPES.EPHEMERAL) {
+        return (
+            <FoldedMessage
+                post={post}
+                level={blockLevel}
+                onShow={reveal}
+            />
+        );
     }
 
     const ephemeral = post.type === Posts.POST_TYPES.EPHEMERAL;

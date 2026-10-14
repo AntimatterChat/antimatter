@@ -13,6 +13,7 @@ import {calculateUnreadCount} from 'mattermost-redux/utils/channel_utils';
 import {getOneClickReactionEmojis} from 'selectors/emojis';
 import {getCurrentLocale} from 'selectors/i18n';
 
+import {getHiddenDirectIds} from 'fusion/privacy/blocking';
 import {Preferences} from 'utils/constants';
 import {filterAndSortTeamsByDisplayName} from 'utils/team_utils';
 
@@ -25,15 +26,17 @@ export type UnreadDirectChannel = {
 };
 
 // getUnreadDirectChannels lists the direct and group messages with unread messages, most recent first: they hang
-// off the home icon of the team rail.
+// off the home icon of the team rail. Message requests and conversations with people you block aren't among them.
 export const getUnreadDirectChannels: (state: GlobalState) => UnreadDirectChannel[] = createSelector(
     'fusionGetUnreadDirectChannels',
     getDirectAndGroupChannels,
     getMyChannelMemberships,
     (state: GlobalState) => state.entities.channels.messageCounts,
     isCollapsedThreadsEnabled,
-    (channels, memberships, messageCounts, crt) => {
+    getHiddenDirectIds,
+    (channels, memberships, messageCounts, crt, hidden) => {
         return channels.
+            filter((channel) => !hidden.has(channel.id)).
             map((channel) => {
                 const unread = calculateUnreadCount(messageCounts[channel.id], memberships[channel.id], crt);
                 return {channel, mentions: unread.mentions, messages: unread.messages, show: unread.showUnread};

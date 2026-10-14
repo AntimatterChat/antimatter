@@ -3,7 +3,7 @@
 
 import React, {useEffect, useRef, useState} from 'react';
 import {useIntl} from 'react-intl';
-import {useSelector} from 'react-redux';
+import {shallowEqual, useSelector} from 'react-redux';
 
 import {getChannel} from 'mattermost-redux/selectors/entities/channels';
 
@@ -11,6 +11,7 @@ import Avatar from 'fusion/components/avatar';
 import Icon from 'fusion/components/icon';
 import {Layer} from 'fusion/components/layer';
 import {useDisplayName, useUser} from 'fusion/hooks/users';
+import {getBlockLevel, isChannelMessageRequest} from 'fusion/privacy/blocking';
 import {useConversationName} from 'fusion/sidebar/group_dm';
 import {am} from 'fusion/utils/class_names';
 
@@ -132,11 +133,14 @@ function IncomingCallCard({call, onDone}: {call: CallsIncomingCall; onDone: (cal
 export function IncomingCalls() {
     const {calls} = useCallsAPIs();
     const incoming = useSelector((state: GlobalState) => calls?.selectors.getIncomingCalls(state) || NO_CALLS);
+
+    // No card for a call from someone you ignore or block, nor in a direct message waiting as a message request.
+    const silenced = useSelector((state: GlobalState) => incoming.filter((c) => getBlockLevel(state, c.callerId) !== '' || isChannelMessageRequest(state, c.channelId)).map((c) => c.callId), shallowEqual);
     const local = useLocalCall();
     const [done, setDone] = useState<Set<string>>(() => new Set());
     const onDone = useRef((callId: string) => setDone((d) => new Set(d).add(callId))).current;
 
-    const call = pickIncomingCall(incoming, local?.channelId, done);
+    const call = pickIncomingCall(silenced.length ? incoming.filter((c) => !silenced.includes(c.callId)) : incoming, local?.channelId, done);
     if (!call) {
         return null;
     }

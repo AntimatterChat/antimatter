@@ -2762,6 +2762,13 @@ const AdminDefinition: AdminDefinitionType = {
                         },
                         {
                             type: 'bool',
+                            key: 'PrivacySettings.EnableUserBlocking',
+                            label: defineMessage({id: 'admin.privacy.enableUserBlockingTitle', defaultMessage: 'Enable ignoring, blocking and message requests:'}),
+                            help_text: defineMessage({id: 'admin.privacy.enableUserBlockingDescription', defaultMessage: 'When true, people can ignore and block each other, and choose to get direct messages from people they don\'t know as message requests, which don\'t notify them until accepted. Turn off for workplaces where colleagues must always be reachable: nothing of it is enforced then, but the lists and choices people made are kept for when it\'s turned back on.'}),
+                            isDisabled: it.not(it.userHasWritePermissionOnResource(RESOURCE_KEYS.SITE.USERS_AND_TEAMS)),
+                        },
+                        {
+                            type: 'bool',
                             key: 'TeamSettings.EnableCustomUserStatuses',
                             label: defineMessage({id: 'admin.team.customUserStatusesTitle', defaultMessage: 'Enable Custom Statuses: '}),
                             help_text: defineMessage({id: 'admin.team.customUserStatusesDescription', defaultMessage: 'When true, users can set a descriptive status message and status emoji visible to all users.'}),

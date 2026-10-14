@@ -21,6 +21,7 @@ import CreateChannelDialog from 'fusion/modals/create_channel_dialog';
 import DeleteMessageDialog from 'fusion/modals/delete_message_dialog';
 import RemoveMemberDialog from 'fusion/moderation/remove_member_dialog';
 import TimeoutDialog from 'fusion/moderation/timeout_dialog';
+import BlockPromptDialog from 'fusion/privacy/block_prompt';
 import CreateTeamDialog from 'fusion/teams/create_team_dialog';
 import OnboardingEditor from 'fusion/teams/onboarding_editor';
 import RolesDialog from 'fusion/teams/roles_dialog';
@@ -84,11 +85,14 @@ type Dialogs = {
 
     // The help pages, in a dialog.
     help: (page?: HelpPage) => void;
+
+    // Offer to block someone whose message requests you keep ignoring.
+    blockPrompt: (userId: string) => void;
 };
 
-const DialogsContext = createContext<Dialogs>({createChannel: () => {}, addPeople: () => {}, invite: () => {}, deleteMessage: () => {}, createCategory: () => {}, renameServerCategory: () => {}, roles: () => {}, channelPermissions: () => {}, exportChannel: () => {}, categoryPermissions: () => {}, selfRoles: () => {}, onboarding: () => {}, teamLayout: () => {}, confirm: () => {}, help: () => {}, createTeam: () => {}, timeOut: () => {}, removeFromTeam: () => {}, browseChannels: () => {}});
+const DialogsContext = createContext<Dialogs>({createChannel: () => {}, addPeople: () => {}, invite: () => {}, deleteMessage: () => {}, createCategory: () => {}, renameServerCategory: () => {}, roles: () => {}, channelPermissions: () => {}, exportChannel: () => {}, categoryPermissions: () => {}, selfRoles: () => {}, onboarding: () => {}, teamLayout: () => {}, confirm: () => {}, help: () => {}, createTeam: () => {}, timeOut: () => {}, removeFromTeam: () => {}, browseChannels: () => {}, blockPrompt: () => {}});
 
-type Open = {kind: 'create'; categoryId?: string} | {kind: 'add'; channel: Channel} | {kind: 'delete'; post: Post} | {kind: 'category'; renaming?: string} | {kind: 'roles'} | {kind: 'permissions'; channel: Channel} | {kind: 'export'; channel: Channel} | {kind: 'selfRoles'} | {kind: 'onboarding'} | {kind: 'layout'} | {kind: 'confirm'; options: ConfirmOptions} | {kind: 'help'; page?: HelpPage} | {kind: 'categoryPermissions'; teamId: string; name: string} | {kind: 'createTeam'} | {kind: 'timeOut'; userId: string} | {kind: 'removeFromTeam'; userId: string} | {kind: 'browse'} | null;
+type Open = {kind: 'create'; categoryId?: string} | {kind: 'add'; channel: Channel} | {kind: 'delete'; post: Post} | {kind: 'category'; renaming?: string} | {kind: 'roles'} | {kind: 'permissions'; channel: Channel} | {kind: 'export'; channel: Channel} | {kind: 'selfRoles'} | {kind: 'onboarding'} | {kind: 'layout'} | {kind: 'confirm'; options: ConfirmOptions} | {kind: 'help'; page?: HelpPage} | {kind: 'categoryPermissions'; teamId: string; name: string} | {kind: 'createTeam'} | {kind: 'timeOut'; userId: string} | {kind: 'removeFromTeam'; userId: string} | {kind: 'browse'} | {kind: 'blockPrompt'; userId: string} | null;
 
 // DialogsProvider owns the Fusion UI's own dialogs that menus and buttons open, outliving the menu that opened them.
 export function DialogsProvider({children}: {children: React.ReactNode}) {
@@ -115,6 +119,7 @@ export function DialogsProvider({children}: {children: React.ReactNode}) {
         browseChannels: () => setOpen({kind: 'browse'}),
         timeOut: (userId) => setOpen({kind: 'timeOut', userId}),
         removeFromTeam: (userId) => setOpen({kind: 'removeFromTeam', userId}),
+        blockPrompt: (userId) => setOpen({kind: 'blockPrompt', userId}),
     }), [dispatch]);
 
     const close = () => setOpen(null);
@@ -155,6 +160,12 @@ export function DialogsProvider({children}: {children: React.ReactNode}) {
             {open?.kind === 'browse' && <BrowseChannelsDialog onClose={close}/>}
             {open?.kind === 'timeOut' && (
                 <TimeoutDialog
+                    userId={open.userId}
+                    onClose={close}
+                />
+            )}
+            {open?.kind === 'blockPrompt' && (
+                <BlockPromptDialog
                     userId={open.userId}
                     onClose={close}
                 />

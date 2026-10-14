@@ -13,6 +13,7 @@ import type {DeepPartial} from '@mattermost/types/utilities';
 
 import {General, RequestStatus} from 'mattermost-redux/constants';
 import configureServiceStore from 'mattermost-redux/store';
+import {setMessageRequestsEnabled} from 'mattermost-redux/utils/channel_utils';
 
 import {actionOnGlobalItemsWithPrefix, cleanLocalStorage} from 'actions/storage';
 import {clearUserCookie} from 'actions/views/cookie';
@@ -40,6 +41,12 @@ export default function configureStore(preloadedState?: DeepPartial<GlobalState>
         appReducers: reducers,
         preloadedState,
     });
+
+    // Antimatter: direct messages wait as message requests, out of the unread counts, while the server enforces
+    // them (EnableUserBlocking).
+    const syncMessageRequests = () => setMessageRequestsEnabled(store.getState().entities.general.config.EnableUserBlocking !== 'false');
+    syncMessageRequests();
+    store.subscribe(syncMessageRequests);
 
     localForage.ready().then(() => {
         const persistor: Persistor = persistStore(store, null, () => {

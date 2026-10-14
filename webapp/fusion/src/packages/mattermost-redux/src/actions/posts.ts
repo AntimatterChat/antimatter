@@ -303,6 +303,10 @@ export function createPost(
                     id: pendingPostId,
                     failed: true,
                     update_at: Date.now(),
+
+                    // Antimatter: a message refused for good, to someone who blocked you or whom you block, says
+                    // why instead of offering to send it again.
+                    ...(error.server_error_id?.startsWith('app.user_block.') ? {failed_reason: error.message} : {}),
                 };
                 actions = [{type: PostTypes.CREATE_POST_FAILURE, error}];
 

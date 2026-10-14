@@ -21,6 +21,8 @@ import {useCallsOnTop} from 'fusion/calls/calls_on_top';
 import Icon from 'fusion/components/icon';
 import {useUnreadMentions} from 'fusion/hooks/mentions';
 import CollectionsPopover from 'fusion/popovers/collections_popover';
+import {getHiddenDirectIds} from 'fusion/privacy/blocking';
+import {RequestsSection} from 'fusion/privacy/message_requests';
 import {useLayout} from 'fusion/shell/layout_context';
 import {a11yRegion} from 'fusion/utils/a11y_regions';
 import {am} from 'fusion/utils/class_names';
@@ -80,6 +82,9 @@ export default function HomeSidebar() {
     const team = useSelector(getCurrentTeam);
     const users = useSelector(getUsers);
     const hidden = useSelector(getHiddenChannelIds);
+
+    // Message requests are listed apart, and conversations with people you block left out; a search finds them.
+    const requestsAndBlocked = useSelector(getHiddenDirectIds);
     const me = useSelector(getCurrentUserId);
     const layout = useLayout();
     const openNotes = useNotesToSelf();
@@ -152,7 +157,7 @@ export default function HomeSidebar() {
 
     const q = query.trim().toLowerCase().replace(/^@/, '');
     const matches = channels.
-        filter((c) => c.delete_at === 0 && (!q || c.display_name.toLowerCase().includes(q) || (c.type === 'D' && Boolean(users[c.teammate_id || getUserIdFromChannelName(me, c.name)]?.username.includes(q))))).
+        filter((c) => c.delete_at === 0 && (Boolean(q) || !requestsAndBlocked.has(c.id)) && (!q || c.display_name.toLowerCase().includes(q) || (c.type === 'D' && Boolean(users[c.teammate_id || getUserIdFromChannelName(me, c.name)]?.username.includes(q))))).
 
         sort((a, b) => b.last_post_at - a.last_post_at);
 
@@ -244,6 +249,7 @@ export default function HomeSidebar() {
                     </button>
                 </div>
                 <div className={am('dm-list')}>
+                    {!q && <RequestsSection/>}
                     {list.map((channel) => (
                         <HomeRow
                             key={channel.id}

@@ -11067,6 +11067,14 @@
     "defaultMessage": "User Typing Timeout (milliseconds):",
     "description": "Label of the numeric field in System Console > Site Configuration > Posts that sets the typing-event interval. Keep the trailing colon and the unit in parentheses."
   },
+  "admin.privacy.enableUserBlockingDescription": {
+    "defaultMessage": "When true, people can ignore and block each other, and choose to get direct messages from people they don't know as message requests, which don't notify them until accepted. Turn off for workplaces where colleagues must always be reachable: nothing of it is enforced then, but the lists and choices people made are kept for when it's turned back on.",
+    "description": "System Console help text of the setting that turns ignoring, blocking and message requests on or off for the whole server."
+  },
+  "admin.privacy.enableUserBlockingTitle": {
+    "defaultMessage": "Enable ignoring, blocking and message requests:",
+    "description": "System Console, Users and Teams: label of the setting that lets people ignore and block each other and get message requests."
+  },
   "admin.privacy.showEmailDescription": {
     "defaultMessage": "When false, hides the email address of members from everyone except System Administrators and the System Roles with read/write access to Compliance, Billing, or User Management.",
     "description": "Admin console help text for the 'Show Email Address' toggle in privacy settings, explaining behavior when it is disabled."
@@ -21067,6 +21075,70 @@
     "defaultMessage": "{names} {count, plural, one {is} other {are}} out of office.",
     "description": ""
   },
+  "fusion.block.blocked": {
+    "defaultMessage": "{name} is blocked",
+    "description": "Toast after blocking someone. {name} is their display name."
+  },
+  "fusion.block.confirm": {
+    "defaultMessage": "Block",
+    "description": "Button of the confirmation dialog that blocks someone."
+  },
+  "fusion.block.confirmText": {
+    "defaultMessage": "They won't be able to message you or start a group message with you, and you won't be notified of anything they write. Their messages in the channels you share are folded. They aren't told.",
+    "description": "Text of the confirmation dialog shown before blocking someone: what blocking does."
+  },
+  "fusion.block.confirmTitle": {
+    "defaultMessage": "Block {name}?",
+    "description": "Title of the confirmation dialog shown before blocking someone. {name} is their display name."
+  },
+  "fusion.block.failed": {
+    "defaultMessage": "That didn't work. Try again.",
+    "description": "Toast when ignoring, blocking or acting on a message request failed."
+  },
+  "fusion.block.ignored": {
+    "defaultMessage": "You ignore {name}: no more notifications from them",
+    "description": "Toast after ignoring someone: their messages no longer notify you. {name} is their display name."
+  },
+  "fusion.block.unblocked": {
+    "defaultMessage": "{name} is unblocked",
+    "description": "Toast after unblocking someone. {name} is their display name."
+  },
+  "fusion.block.unignored": {
+    "defaultMessage": "You no longer ignore {name}",
+    "description": "Toast after stopping ignoring someone. {name} is their display name."
+  },
+  "fusion.blocked.text": {
+    "defaultMessage": "Neither of you can write here until you unblock them.",
+    "description": "In a direct message with someone you blocked, in place of the message box: why nobody can write."
+  },
+  "fusion.blocked.title": {
+    "defaultMessage": "You blocked {name}",
+    "description": "In a direct message with someone you blocked, in place of the message box. {name} is their display name."
+  },
+  "fusion.blocked.unblock": {
+    "defaultMessage": "Unblock",
+    "description": "Button in a direct message with someone you blocked, which unblocks them."
+  },
+  "fusion.blockPrompt.block": {
+    "defaultMessage": "Block",
+    "description": "Button of the dialog offering to block someone whose message requests you keep ignoring."
+  },
+  "fusion.blockPrompt.never": {
+    "defaultMessage": "Don't ask again for this person",
+    "description": "Button of the dialog offering to block someone: never offer it again for this person."
+  },
+  "fusion.blockPrompt.notNow": {
+    "defaultMessage": "Not now",
+    "description": "Button of the dialog offering to block someone: close it without blocking."
+  },
+  "fusion.blockPrompt.text": {
+    "defaultMessage": "You keep ignoring {name}'s messages. Block them? They won't be able to message you any more, and they won't be told.",
+    "description": "Text of the dialog offering to block someone after you ignored several of their message requests. {name} is their display name."
+  },
+  "fusion.blockPrompt.title": {
+    "defaultMessage": "Block {name}?",
+    "description": "Title of the dialog offering to block someone whose message requests you keep ignoring. {name} is their display name."
+  },
   "fusion.browse.all": {
     "defaultMessage": "All",
     "description": ""
@@ -22983,6 +23055,18 @@
     "defaultMessage": "{count, plural, one {Show image} other {Show # images}}",
     "description": ""
   },
+  "fusion.folded.blocked": {
+    "defaultMessage": "Message from someone you blocked",
+    "description": "One-line placeholder standing for a message written by someone you blocked, folded until clicked."
+  },
+  "fusion.folded.ignored": {
+    "defaultMessage": "Message from someone you ignore",
+    "description": "One-line placeholder standing for a message written by someone you ignore, folded until clicked."
+  },
+  "fusion.folded.show": {
+    "defaultMessage": "Show",
+    "description": "Link after a folded message of someone you ignore or block, which shows the message."
+  },
   "fusion.group.addPeople": {
     "defaultMessage": "Add people…",
     "description": ""
@@ -24539,6 +24623,74 @@
     "defaultMessage": "Emoji",
     "description": ""
   },
+  "fusion.privacy.asAbove": {
+    "defaultMessage": "As above ({choice})",
+    "description": "Option for a community in the Privacy settings: use the choice made for all communities. {choice} is that choice, e.g. \"Ask me first\"."
+  },
+  "fusion.privacy.ask": {
+    "defaultMessage": "Ask me first",
+    "description": "Option for direct messages from people you do not talk with yet: they wait as message requests."
+  },
+  "fusion.privacy.blocked": {
+    "defaultMessage": "Blocked",
+    "description": "Privacy settings: heading of the list of people you blocked."
+  },
+  "fusion.privacy.blockedLead": {
+    "defaultMessage": "They can't message you or start a group message with you, nothing they write notifies you, and their messages are folded.",
+    "description": "Privacy settings: what blocking someone does, under the heading of the people you blocked."
+  },
+  "fusion.privacy.directMessages": {
+    "defaultMessage": "Direct messages",
+    "description": "Privacy settings: heading of the choices about direct messages."
+  },
+  "fusion.privacy.dmDesc": {
+    "defaultMessage": "Asked first, their messages wait among your message requests, without notifying you, until you accept them. Bots and system admins always get through.",
+    "description": "Privacy settings: explains the choice of accepting direct messages from everyone or asking first (message requests)."
+  },
+  "fusion.privacy.dmTitle": {
+    "defaultMessage": "From people you don't talk with yet",
+    "description": "Privacy settings: label of the choice about direct messages from people you have no conversation with yet."
+  },
+  "fusion.privacy.everyone": {
+    "defaultMessage": "Accept from everyone",
+    "description": "Option for direct messages from people you do not talk with yet: they reach you directly."
+  },
+  "fusion.privacy.ignored": {
+    "defaultMessage": "Ignored",
+    "description": "Privacy settings: heading of the list of people you ignore."
+  },
+  "fusion.privacy.ignoredLead": {
+    "defaultMessage": "Nothing they write notifies you, their direct messages wait among your message requests, and their messages are folded.",
+    "description": "Privacy settings: what ignoring someone does, under the heading of the people you ignore."
+  },
+  "fusion.privacy.lead": {
+    "defaultMessage": "Who can message you directly, and the people you ignore or block. Nobody is told what you choose here.",
+    "description": "Privacy settings: introduction under the pane title."
+  },
+  "fusion.privacy.noneBlocked": {
+    "defaultMessage": "You haven't blocked anyone.",
+    "description": "Privacy settings: shown when you blocked nobody."
+  },
+  "fusion.privacy.noneIgnored": {
+    "defaultMessage": "You aren't ignoring anyone.",
+    "description": "Privacy settings: shown when you ignore nobody."
+  },
+  "fusion.privacy.perCommunity": {
+    "defaultMessage": "In each community",
+    "description": "Privacy settings: heading of the direct message choice made for each community (a community is a Mattermost team)."
+  },
+  "fusion.privacy.perCommunityLead": {
+    "defaultMessage": "Someone gets through when a community you share with them accepts them. With no community in common, the choice above decides.",
+    "description": "Privacy settings: explains how the per-community choices combine for someone you share several communities with."
+  },
+  "fusion.privacy.unblock": {
+    "defaultMessage": "Unblock",
+    "description": "Privacy settings: button next to someone you blocked, which unblocks them."
+  },
+  "fusion.privacy.unignore": {
+    "defaultMessage": "Stop ignoring",
+    "description": "Privacy settings: button next to someone you ignore, which stops ignoring them."
+  },
   "fusion.profile.addToChannel": {
     "defaultMessage": "Add to a channel",
     "description": ""
@@ -24710,6 +24862,50 @@
   "fusion.replyRef.threadTitle": {
     "defaultMessage": "Open the conversation as a thread",
     "description": ""
+  },
+  "fusion.requests.accept": {
+    "defaultMessage": "Accept",
+    "description": "Button of a message request: accept it, so that it becomes a normal conversation."
+  },
+  "fusion.requests.accepted": {
+    "defaultMessage": "You can now talk with {name}",
+    "description": "Toast after accepting a message request. {name} is the sender's display name."
+  },
+  "fusion.requests.barIgnored": {
+    "defaultMessage": "You ignore {name}. Accepting stops ignoring them, and their messages notify you again.",
+    "description": "In a message request from someone you ignore, in place of the message box: accepting stops ignoring them. {name} is their display name."
+  },
+  "fusion.requests.barText": {
+    "defaultMessage": "Accept to reply. Until then their messages don't notify you, and they aren't told whether you read, ignore or block them.",
+    "description": "In a message request, in place of the message box: what accepting does, and that the sender is told nothing."
+  },
+  "fusion.requests.barTitle": {
+    "defaultMessage": "Message request from {name}",
+    "description": "In a message request, in place of the message box. {name} is the sender's display name."
+  },
+  "fusion.requests.block": {
+    "defaultMessage": "Block",
+    "description": "Button of a message request: block its sender."
+  },
+  "fusion.requests.dismissed": {
+    "defaultMessage": "Request from {name} ignored",
+    "description": "Toast after ignoring (hiding) a message request. {name} is the sender's display name."
+  },
+  "fusion.requests.ignore": {
+    "defaultMessage": "Ignore",
+    "description": "Button or tooltip of a message request: ignore it, which hides it until the sender writes again."
+  },
+  "fusion.requests.ignoreLabel": {
+    "defaultMessage": "Ignore the request from {name}",
+    "description": "Screen reader label of the button that ignores a message request in the sidebar. {name} is the sender's display name."
+  },
+  "fusion.requests.label": {
+    "defaultMessage": "Message requests",
+    "description": "Sidebar of direct messages: heading of the message requests (direct messages from people you do not talk with yet), with their count."
+  },
+  "fusion.requests.title": {
+    "defaultMessage": "Direct messages from people you don't talk with yet. They don't notify you until you accept them.",
+    "description": "Tooltip of the message requests heading in the sidebar of direct messages."
   },
   "fusion.results.copyLink": {
     "defaultMessage": "Copy link",
@@ -25883,6 +26079,10 @@
     "defaultMessage": "Position",
     "description": ""
   },
+  "fusion.settings.privacy": {
+    "defaultMessage": "Privacy & safety",
+    "description": "Settings: name of the pane about direct messages from people you do not know and the people you ignore or block."
+  },
   "fusion.settings.profileFields": {
     "defaultMessage": "Profile details",
     "description": ""
@@ -26931,6 +27131,10 @@
     "defaultMessage": "{names} {count, plural, one {is} other {are}} typing…",
     "description": ""
   },
+  "fusion.userMenu.block": {
+    "defaultMessage": "Block…",
+    "description": "Menu of a person: block them (opens a confirmation)."
+  },
   "fusion.userMenu.cancel": {
     "defaultMessage": "Cancel",
     "description": ""
@@ -26938,6 +27142,10 @@
   "fusion.userMenu.copy": {
     "defaultMessage": "Copy username",
     "description": ""
+  },
+  "fusion.userMenu.ignore": {
+    "defaultMessage": "Ignore",
+    "description": "Menu of a person: ignore them (no notifications from them, their messages folded)."
   },
   "fusion.userMenu.invite": {
     "defaultMessage": "Invite to a community",
@@ -26970,6 +27178,10 @@
   "fusion.userMenu.message": {
     "defaultMessage": "Message",
     "description": ""
+  },
+  "fusion.userMenu.messageFailed": {
+    "defaultMessage": "You can't message {name}.",
+    "description": "Toast when a direct message with someone could not be opened, because they blocked you or you blocked them. {name} is their display name."
   },
   "fusion.userMenu.modView": {
     "defaultMessage": "Mod view",
@@ -27006,6 +27218,14 @@
   "fusion.userMenu.timeOut": {
     "defaultMessage": "Time out…",
     "description": ""
+  },
+  "fusion.userMenu.unblock": {
+    "defaultMessage": "Unblock",
+    "description": "Menu of a person you blocked: unblock them."
+  },
+  "fusion.userMenu.unignore": {
+    "defaultMessage": "Stop ignoring",
+    "description": "Menu of a person you ignore: stop ignoring them."
   },
   "fusion.walltime.tip": {
     "defaultMessage": "{local} your time · {written} as written",

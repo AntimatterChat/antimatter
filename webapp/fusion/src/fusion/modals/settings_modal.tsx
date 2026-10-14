@@ -31,6 +31,8 @@ import Icon from 'fusion/components/icon';
 import {Dialog} from 'fusion/components/layer';
 import {useDisplayPrefs} from 'fusion/hooks/display';
 import {WALLTIME_PREFERENCE} from 'fusion/messages/walltime/walltime_text';
+import {isUserBlockingEnabled} from 'fusion/privacy/blocking';
+import PrivacyPane from 'fusion/privacy/privacy_pane';
 import {useToast} from 'fusion/shell/toast_context';
 import {badgeChoice, badgesRequired, getTeamsByUser, TEAM_BADGE_PROP, withBadgeChoice} from 'fusion/teams/teams';
 import {am} from 'fusion/utils/class_names';
@@ -53,11 +55,12 @@ import NotificationsPane from './notifications_pane';
 import {AccessHistory, CustomProfileFields, DeactivateDialog, EmailChange, MfaSection, OAuthAppsSection, SignInMethod, TokensSection} from './security_extras';
 import {Action, Choice, Toggle, usePreference} from './settings_controls';
 
-export type SettingsTab = 'account' | 'security' | 'notifications' | 'appearance' | 'messages' | 'language' | 'keyboard' | 'advanced' | `plugin:${string}`;
+export type SettingsTab = 'account' | 'security' | 'privacy' | 'notifications' | 'appearance' | 'messages' | 'language' | 'keyboard' | 'advanced' | `plugin:${string}`;
 
 const TABS: Array<[Exclude<SettingsTab, `plugin:${string}`>, {id: string; defaultMessage: string}]> = [
     ['account', {id: 'fusion.settings.account', defaultMessage: 'My account'}],
     ['security', {id: 'fusion.settings.security', defaultMessage: 'Security'}],
+    ['privacy', {id: 'fusion.settings.privacy', defaultMessage: 'Privacy & safety'}],
     ['notifications', {id: 'fusion.settings.notifications', defaultMessage: 'Notifications'}],
     ['appearance', {id: 'fusion.settings.appearance', defaultMessage: 'Appearance'}],
     ['messages', {id: 'fusion.settings.messages', defaultMessage: 'Messages'}],
@@ -750,6 +753,9 @@ export default function SettingsModal({tab, onTab, onClose}: Props) {
     const {formatMessage} = useIntl();
     const admin = useSelector((state: GlobalState) => isSystemAdmin(getCurrentUser(state)?.roles || ''));
 
+    // Privacy & safety only while the admin lets people ignore and block each other.
+    const blocking = useSelector(isUserBlockingEnabled);
+
     const pluginSettings = useSelector(getPluginUserSettings);
     const pluginId = tab.startsWith('plugin:') ? tab.slice('plugin:'.length) : '';
     const pane = pluginId ? (
@@ -761,6 +767,7 @@ export default function SettingsModal({tab, onTab, onClose}: Props) {
     ) : {
         account: <AccountPane/>,
         security: <SecurityPane/>,
+        privacy: <PrivacyPane/>,
         notifications: <NotificationsPane/>,
         appearance: <AppearancePane/>,
         messages: <MessagesPane/>,
@@ -777,7 +784,7 @@ export default function SettingsModal({tab, onTab, onClose}: Props) {
         >
             <nav>
                 <h5>{formatMessage({id: 'fusion.settings.user', defaultMessage: 'User settings'})}</h5>
-                {TABS.map(([key, label]) => (
+                {TABS.filter(([key]) => key !== 'privacy' || blocking).map(([key, label]) => (
                     <button
                         key={key}
                         type='button'

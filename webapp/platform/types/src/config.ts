@@ -62,6 +62,7 @@ export type ClientConfig = {
     EnableCustomEmoji: string;
     EnableCustomGroups: string;
     EnableCustomUserStatuses: string;
+    EnableUserBlocking: string;
     EnableUserStatuses: string;
     EnableLastActiveTime: string;
     EnableChannelCategorySorting: string;
@@ -680,6 +681,7 @@ export type PrivacySettings = {
     ShowEmailAddress: boolean;
     ShowFullName: boolean;
     UseAnonymousURLs: boolean;
+    EnableUserBlocking: boolean;
 };
 
 export type SupportSettings = {

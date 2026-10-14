@@ -15,6 +15,7 @@ import {canManageAnyChannelMembersInCurrentTeam, getCurrentChannel} from 'matter
 import {haveIChannelPermission, haveITeamPermission, getMemberTimeout} from 'mattermost-redux/selectors/entities/roles';
 import {getCurrentTeam, getMyTeams, getTeamMember} from 'mattermost-redux/selectors/entities/teams';
 import {getCurrentUserId} from 'mattermost-redux/selectors/entities/users';
+import {isSystemAdmin} from 'mattermost-redux/utils/user_utils';
 
 import {openDirectChannelToUserId} from 'actions/channel_actions';
 
@@ -25,6 +26,7 @@ import {Flyout, MenuItem, MenuSeparator} from 'fusion/components/menu';
 import {useDisplayName, useUser} from 'fusion/hooks/users';
 import {canModerateTeam, openModView, timeOutMember} from 'fusion/moderation/moderation';
 import CopyIdItem from 'fusion/popovers/copy_id_item';
+import {useBlockActions} from 'fusion/privacy/message_requests';
 import {useDialogs} from 'fusion/shell/dialogs_context';
 import {useToast} from 'fusion/shell/toast_context';
 import {openDialog} from 'fusion/utils/modals';
@@ -75,6 +77,7 @@ export function UserMenu({target, onProfile, onClose}: {target: Target; onProfil
     const canModerate = useSelector((state: GlobalState) => Boolean(team) && canModerateTeam(state, team!.id));
     const timedOut = useSelector((state: GlobalState) => Boolean(team) && Boolean(getMemberTimeout(state, team!.id, userId)));
     const dialogs = useDialogs();
+    const blocking = useBlockActions(userId);
 
     // The other communities this person could be invited to: those you're in and may add people to, where they aren't
     // known to be a member (archived communities and those synced to LDAP groups take nobody by hand).
@@ -119,6 +122,9 @@ export function UserMenu({target, onProfile, onClose}: {target: Target; onProfil
         const result = await dispatch(openDirectChannelToUserId(userId));
         if ('data' in result && result.data && team) {
             getHistory().push(channelPath(team.name, result.data));
+        } else if ('error' in result && result.error) {
+            // Someone who blocked you, or whom you block.
+            toast((result.error as {message?: string}).message || formatMessage({id: 'fusion.userMenu.messageFailed', defaultMessage: 'You can\'t message {name}.'}, {name}));
         }
     };
     const removeFromChannel = async () => {
@@ -198,6 +204,25 @@ export function UserMenu({target, onProfile, onClose}: {target: Target; onProfil
                     toast(formatMessage({id: 'fusion.toast.copiedUser', defaultMessage: 'Copied @{username}'}, {username: user.username}));
                 })}
             />
+            {/* Ignoring and blocking, as in Discord, unless the admin turned them off. System admins can be ignored,
+                but not blocked: they always reach people. */}
+            {!isMe && blocking.enabled && <MenuSeparator/>}
+            {!isMe && blocking.enabled && (
+                <MenuItem
+                    icon={blocking.level === 'ignore' ? 'eye' : 'eye-off'}
+                    label={blocking.level === 'ignore' ? formatMessage({id: 'fusion.userMenu.unignore', defaultMessage: 'Stop ignoring'}) : formatMessage({id: 'fusion.userMenu.ignore', defaultMessage: 'Ignore'})}
+                    disabled={blocking.level === 'block'}
+                    onClick={run(() => blocking.toggleIgnore())}
+                />
+            )}
+            {!isMe && blocking.enabled && !isSystemAdmin(user.roles) && (
+                <MenuItem
+                    icon='ban'
+                    danger={blocking.level !== 'block'}
+                    label={blocking.level === 'block' ? formatMessage({id: 'fusion.userMenu.unblock', defaultMessage: 'Unblock'}) : formatMessage({id: 'fusion.userMenu.block', defaultMessage: 'Block…'})}
+                    onClick={run(() => blocking.toggleBlock())}
+                />
+            )}
             {moderation && <MenuSeparator/>}
             {moderation && canModerate && (
                 <MenuItem

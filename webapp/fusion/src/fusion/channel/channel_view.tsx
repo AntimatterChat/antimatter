@@ -7,9 +7,10 @@ import {useSelector} from 'react-redux';
 import {useRouteMatch} from 'react-router-dom';
 
 import {Permissions} from 'mattermost-redux/constants';
-import {getCurrentChannel, isDeactivatedDirectChannel} from 'mattermost-redux/selectors/entities/channels';
+import {getChannelMessageCount, getCurrentChannel, isDeactivatedDirectChannel} from 'mattermost-redux/selectors/entities/channels';
 import {getMemberTimeout, haveIChannelPermission} from 'mattermost-redux/selectors/entities/roles';
 import {getCurrentUserId} from 'mattermost-redux/selectors/entities/users';
+import {getUserIdFromChannelName} from 'mattermost-redux/utils/channel_utils';
 
 import {getChannelViewPanel} from 'selectors/channel_view_panel';
 
@@ -23,6 +24,8 @@ import VoiceView from 'fusion/calls/voice_view';
 import Icon from 'fusion/components/icon';
 import Composer, {DROP_FILES_EVENT} from 'fusion/composer/composer';
 import MessageList from 'fusion/messages/message_list';
+import {getBlockLevel, isChannelMessageRequest} from 'fusion/privacy/blocking';
+import {BlockedNote, RequestBar} from 'fusion/privacy/message_requests';
 import {useConversationName} from 'fusion/sidebar/group_dm';
 import {am} from 'fusion/utils/class_names';
 
@@ -62,6 +65,12 @@ export default function ChannelView() {
     const me = useSelector(getCurrentUserId);
     const conversationName = useConversationName(channel || {id: '', type: 'O', display_name: ''});
     const notes = channel?.type === 'D' && channel.name === `${me}__${me}`;
+
+    // A direct message waiting as a message request, or with someone you block, has no message box. One without
+    // messages yet has: writing first in it accepts it.
+    const teammateId = channel?.type === 'D' && !notes ? getUserIdFromChannelName(me, channel.name) : '';
+    const request = useSelector((state: GlobalState) => Boolean(teammateId) && (getChannelMessageCount(state, channel!.id)?.total ?? 0) > 0 && isChannelMessageRequest(state, channel!.id));
+    const blocked = useSelector((state: GlobalState) => Boolean(teammateId) && getBlockLevel(state, teammateId) === 'block');
 
     // A plugin's panel (e.g. a call) takes the place of the messages until it shows them; they're
     // hidden again on channel switch, and shown for a permalink so that it shows its post.
@@ -110,6 +119,15 @@ export default function ChannelView() {
                     {!archived && !deactivated && !timeout && formatMessage({id: 'fusion.channel.readOnly', defaultMessage: 'You can\'t send messages in this channel.'})}
                 </div>
             </div>
+        );
+    } else if (blocked) {
+        composer = <BlockedNote userId={teammateId}/>;
+    } else if (request) {
+        composer = (
+            <RequestBar
+                channel={channel}
+                userId={teammateId}
+            />
         );
     } else {
         composer = (

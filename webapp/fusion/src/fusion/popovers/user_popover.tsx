@@ -22,6 +22,7 @@ import {useExclusiveCard} from 'fusion/components/layer/exclusive';
 import {useDisplayName, useUser, useUserStatus} from 'fusion/hooks/users';
 import {canModerateTeam, openModView} from 'fusion/moderation/moderation';
 import {useSettings} from 'fusion/shell/settings_context';
+import {useToast} from 'fusion/shell/toast_context';
 import {useRoleColor} from 'fusion/teams/roles';
 import {TeamTag} from 'fusion/teams/team_card';
 import {am} from 'fusion/utils/class_names';
@@ -82,6 +83,7 @@ export default function UserPopover({userId, anchor, onClose, toggles}: Props) {
     const {formatMessage} = useIntl();
     const dispatch = useDispatch();
     const settings = useSettings();
+    const toast = useToast();
     const user = useUser(userId);
     const name = useDisplayName(user);
     const status = useUserStatus(userId);
@@ -112,6 +114,9 @@ export default function UserPopover({userId, anchor, onClose, toggles}: Props) {
         const result = await dispatch(openDirectChannelToUserId(userId));
         if ('data' in result && result.data && team) {
             getHistory().push(channelPath(team.name, result.data));
+        } else if ('error' in result && result.error) {
+            // Someone who blocked you, or whom you block.
+            toast((result.error as {message?: string}).message || formatMessage({id: 'fusion.userMenu.messageFailed', defaultMessage: 'You can\'t message {name}.'}, {name}));
         }
         onClose();
     };

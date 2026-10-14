@@ -18,7 +18,7 @@ import {
 } from 'mattermost-redux/selectors/entities/preferences';
 import {getAllUserMentionKeys} from 'mattermost-redux/selectors/entities/search';
 import {getCurrentUserId, getCurrentUser, getStatusForUserId, getUser} from 'mattermost-redux/selectors/entities/users';
-import {isChannelMuted} from 'mattermost-redux/utils/channel_utils';
+import {isChannelMuted, isMessageRequest} from 'mattermost-redux/utils/channel_utils';
 import {ensureString, isNotificationSuppressed, isSystemMessage, isUserAddedInChannel} from 'mattermost-redux/utils/post_utils';
 import {displayUsername} from 'mattermost-redux/utils/user_utils';
 
@@ -27,6 +27,7 @@ import {isThreadOpen} from 'selectors/views/threads';
 
 import {getDisplayPrefs} from 'fusion/hooks/display';
 import {isSpoiler} from 'fusion/messages/spoiler';
+import {getBlockLevel} from 'fusion/privacy/blocking';
 import {getHistory} from 'utils/browser_history';
 import Constants, {NotificationLevels, UserStatuses, IgnoreChannelMentions, DesktopSound} from 'utils/constants';
 import DesktopApp from 'utils/desktop_api';
@@ -285,6 +286,12 @@ function shouldSkipNotification(
 
     if (!member) {
         return {status: 'error', reason: 'no_member'};
+    }
+
+    // Antimatter: nothing notifies from someone you ignore or block, nor in a direct message waiting as a message
+    // request.
+    if (getBlockLevel(state, post.user_id) || isMessageRequest(member)) {
+        return {status: 'not_sent', reason: 'ignored_or_request'};
     }
 
     if (skipChecks) {

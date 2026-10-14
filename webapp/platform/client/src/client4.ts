@@ -2899,6 +2899,15 @@ export default class Client4 {
         );
     };
 
+    // Antimatter: act on a direct message of yours that waits as a message request: accept it, ignore it (dismiss),
+    // or put it back among the requests (request). It answers with your channel member.
+    updateMessageRequest = (channelId: string, action: 'accept' | 'dismiss' | 'request') => {
+        return this.doFetch<ChannelMembership>(
+            `${this.getChannelRoute(channelId)}/message_request`,
+            {method: 'post', body: JSON.stringify({action})},
+        );
+    };
+
     getPostInfo = (postId: string) => {
         return this.doFetch<PostInfo>(
             `${this.getPostRoute(postId)}/info`,

@@ -11139,6 +11139,14 @@
     "defaultMessage": "User Typing Timeout (milliseconds):",
     "description": "Label of the numeric field in System Console > Site Configuration > Posts that sets the typing-event interval. Keep the trailing colon and the unit in parentheses."
   },
+  "admin.privacy.enableUserBlockingDescription": {
+    "defaultMessage": "When true, people can ignore and block each other, and choose to get direct messages from people they don't know as message requests, which don't notify them until accepted. Turn off for workplaces where colleagues must always be reachable: nothing of it is enforced then, but the lists and choices people made are kept for when it's turned back on.",
+    "description": "System Console help text of the setting that turns ignoring, blocking and message requests on or off for the whole server."
+  },
+  "admin.privacy.enableUserBlockingTitle": {
+    "defaultMessage": "Enable ignoring, blocking and message requests:",
+    "description": "System Console, Users and Teams: label of the setting that lets people ignore and block each other and get message requests."
+  },
   "admin.privacy.showEmailDescription": {
     "defaultMessage": "When false, hides the email address of members from everyone except System Administrators and the System Roles with read/write access to Compliance, Billing, or User Management.",
     "description": "Admin console help text for the 'Show Email Address' toggle in privacy settings, explaining behavior when it is disabled."

@@ -67,6 +67,7 @@ import {
     isChannelMuted,
     isDefault,
     isDirectChannel,
+    isMessageRequest,
     newCompleteDirectChannelInfo,
     sortChannelsByDisplayName,
 } from 'mattermost-redux/utils/channel_utils';
@@ -648,7 +649,7 @@ export const getUnreadStatus: (state: GlobalState) => BasicUnreadStatus = create
                 return counts;
             }
 
-            if (isChannelMuted(membership)) {
+            if (isChannelMuted(membership) || isMessageRequest(membership)) {
                 return counts;
             }
 
@@ -835,7 +836,7 @@ export const getUnreadStatusInCurrentTeam: (state: GlobalState) => BasicUnreadSt
         } = channels.reduce((counts, channel) => {
             const m = myMembers[channel.id];
 
-            if (!m || channel.id === currentChannelId) {
+            if (!m || channel.id === currentChannelId || isMessageRequest(m)) {
                 return counts;
             }
 

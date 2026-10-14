@@ -366,6 +366,28 @@ export function channelListToMap(channelList: Channel[]): IDMappedObjects<Channe
     return channels;
 }
 
+// Antimatter: a direct message waiting as a message request (or one ignored) neither notifies nor counts as unread
+// anywhere, until it's accepted. Only while the server enforces message requests (EnableUserBlocking), which the
+// Fusion UI tells here as its config arrives: turned off, requests are plain direct messages again.
+let messageRequestsEnabled = false;
+
+export function setMessageRequestsEnabled(enabled: boolean) {
+    messageRequestsEnabled = enabled;
+}
+
+export function areMessageRequestsEnabled(): boolean {
+    return messageRequestsEnabled;
+}
+
+// Where a direct message stands for you as a message request, and how many times you ignored its requests: notify
+// props only you see.
+export type MessageRequestProps = {dm_request?: 'accepted' | 'pending' | 'dismissed'; dm_request_dismissals?: string};
+
+export function isMessageRequest(member: ChannelMembership | undefined): boolean {
+    const state = (member?.notify_props as MessageRequestProps | undefined)?.dm_request;
+    return messageRequestsEnabled && (state === 'pending' || state === 'dismissed');
+}
+
 // calculateUnreadCount returns an object containing the number of unread mentions/mesasges in a channel and whether
 // or not that channel would be shown as unread in the sidebar.
 export function calculateUnreadCount(
@@ -373,7 +395,7 @@ export function calculateUnreadCount(
     member: ChannelMembership | undefined,
     crtEnabled: boolean,
 ): {showUnread: boolean; mentions: number; messages: number; hasUrgent: boolean} {
-    if (!member || !messageCount) {
+    if (!member || !messageCount || isMessageRequest(member)) {
         return {
             showUnread: false,
             hasUrgent: false,

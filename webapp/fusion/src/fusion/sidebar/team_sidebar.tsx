@@ -17,6 +17,7 @@ import {isUnreadFilterEnabled} from 'selectors/views/channel_sidebar';
 import {useCallsOnTop} from 'fusion/calls/calls_on_top';
 import Icon from 'fusion/components/icon';
 import ServerMenu from 'fusion/popovers/server_menu';
+import {getHiddenDirectIds} from 'fusion/privacy/blocking';
 import {getUnreadDirectChannels} from 'fusion/selectors';
 import {isKeybind} from 'fusion/shell/keybinds';
 import {useLayout} from 'fusion/shell/layout_context';
@@ -51,7 +52,8 @@ function Dock() {
     const channelIds = useSelector((state: GlobalState) => (dmCategory ? getChannelIds(state, dmCategory) : []));
     const getChannel = useMemo(() => makeGetChannel(), []);
     const hidden = useSelector(getHiddenChannelIds);
-    const open = useSelector((state: GlobalState) => channelIds.filter((id) => !hidden.has(id)).map((id) => getChannel(state, id)).filter(Boolean) as Channel[], shallowEqual);
+    const requestsAndBlocked = useSelector(getHiddenDirectIds);
+    const open = useSelector((state: GlobalState) => channelIds.filter((id) => !hidden.has(id) && !requestsAndBlocked.has(id)).map((id) => getChannel(state, id)).filter(Boolean) as Channel[], shallowEqual);
 
     // A conversation with a call in progress stays on top while it lasts.
     const channels = useCallsOnTop(open);

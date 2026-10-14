@@ -1,0 +1,17 @@
+// Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
+// See LICENSE.txt for license information.
+
+// Ignoring, blocking and message requests. The message requests head the home list, as a folding category with
+// their count; a request's bar takes the place of the message box.
+:is(.am-app, .am-layer) .am-cat.am-requests-cat .am-badge { margin-right: 6px; }
+:is(.am-app, .am-layer) .am-composer .am-note-box.am-request-bar { margin: 0; align-items: center; flex-wrap: wrap; }
+:is(.am-app, .am-layer) .am-request-bar > .am-grow { flex: 1 1 240px; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+:is(.am-app, .am-layer) .am-request-bar b { color: var(--am-text); }
+:is(.am-app, .am-layer) .am-request-actions { display: flex; flex-wrap: wrap; gap: 8px; flex: none; }
+
+// The folded message of someone you ignore or block: a system-like line, its "Show" a link.
+:is(.am-app, .am-layer) .am-msg.am-folded .am-folded-show { padding: 0; color: var(--am-anti); font-weight: 600; }
+:is(.am-app, .am-layer) .am-msg.am-folded .am-folded-show:hover { text-decoration: underline; }
+
+// The people you block or ignore, in the Privacy & safety settings.
+:is(.am-app, .am-layer) .am-person-row .am-av { flex: none; }

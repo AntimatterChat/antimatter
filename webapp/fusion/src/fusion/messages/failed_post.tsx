@@ -16,7 +16,7 @@ import {am} from 'fusion/utils/class_names';
 
 // FailedPost says that a message couldn't be sent, under it, with what the classic web app offers: send it again, or
 // drop it.
-export default function FailedPost({post}: {post: Post}) {
+export default function FailedPost({post}: {post: Post & {failed_reason?: string}}) {
     const {formatMessage} = useIntl();
     const dispatch = useDispatch();
 
@@ -25,6 +25,28 @@ export default function FailedPost({post}: {post: Post}) {
         Reflect.deleteProperty(again, 'id');
         dispatch(createPost(again, []));
     };
+
+    // Refused for good (someone who blocked you): why, and nothing to retry.
+    if (post.failed_reason) {
+        return (
+            <div
+                className={am('failed-bar')}
+                role='alert'
+            >
+                <Icon
+                    name='x'
+                    size='xs'
+                />
+                <span>{post.failed_reason}</span>
+                <button
+                    type='button'
+                    onClick={() => dispatch(removePost(post))}
+                >
+                    {formatMessage({id: 'fusion.message.cancelFailed', defaultMessage: 'Discard'})}
+                </button>
+            </div>
+        );
+    }
 
     return (
         <div
