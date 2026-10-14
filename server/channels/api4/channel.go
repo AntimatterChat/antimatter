@@ -6,6 +6,7 @@ package api4
 import (
 	"encoding/json"
 	"net/http"
+	"slices"
 	"strconv"
 	"strings"
 
@@ -562,7 +563,7 @@ func updateChannelPrivacy(c *Context, w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	if channel.Name == model.DefaultChannelName && model.ChannelType(privacy) == model.ChannelTypePrivate {
+	if model.ChannelType(privacy) == model.ChannelTypePrivate && c.App.IsDefaultChannel(c.AppContext, channel) {
 		c.Err = model.NewAppError("updateChannelPrivacy", "api.channel.update_channel_privacy.default_channel_error", nil, "", http.StatusBadRequest)
 		return
 	}
@@ -1962,6 +1963,14 @@ func deleteChannel(c *Context, w http.ResponseWriter, r *http.Request) {
 			c.SetPermissionError(model.PermissionDeletePrivateChannel)
 			return
 		}
+	}
+
+	// Antimatter: the default channels (Town Square, Off-Topic, the one the community chose) are the community's: its
+	// admins archive and delete them.
+	if channel.TeamId != "" && (slices.Contains(c.App.DefaultChannelNames(c.AppContext), channel.Name) || c.App.IsDefaultChannel(c.AppContext, channel)) &&
+		!c.App.SessionHasPermissionToTeam(*c.AppContext.Session(), channel.TeamId, model.PermissionManageTeam) {
+		c.SetPermissionError(model.PermissionManageTeam)
+		return
 	}
 
 	if c.Params.Permanent {

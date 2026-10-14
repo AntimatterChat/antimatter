@@ -247,9 +247,58 @@ func prefixedTeamSliceColumns(isSelect bool, prefix string) []string {
 		// PolicyIsActive is the deprecated alias for PolicyAutoAdd; both report
 		// whether the team's policy auto-adds members.
 		columns = append(columns, autoAdd+" AS PolicyIsActive")
+
+		// Antimatter: the community settings kept in Systems (see teamSettingKeys).
+		columns = append(columns,
+			fmt.Sprintf("COALESCE((SELECT sy.Value FROM Systems sy WHERE sy.Name = '%s' || %s.Id), '') = 'true' AS AllChannelsMembership", teamAllChannelsKeyPrefix, prefix),
+			fmt.Sprintf("COALESCE((SELECT sy.Value FROM Systems sy WHERE sy.Name = '%s' || %s.Id), '') AS DefaultChannelId", teamDefaultChannelKeyPrefix, prefix),
+		)
 	}
 
 	return columns
+}
+
+// Antimatter: two community settings, AllChannelsMembership and DefaultChannelId, are kept in the Systems table, one
+// row each per team that sets them, rather than in new Teams columns: no schema migration. Selecting teams reads them
+// back into the team (prefixedTeamSliceColumns); saving a team writes them (saveTeamSettings).
+const (
+	teamAllChannelsKeyPrefix    = "AmTeamAllChannels_"
+	teamDefaultChannelKeyPrefix = "AmTeamDefaultChannel_"
+)
+
+// teamSettingKeys gives each setting of a team its Systems row, with the value it stores; "" deletes the row.
+func teamSettingKeys(team *model.Team) map[string]string {
+	allChannels := ""
+	if team.AllChannelsMembership {
+		allChannels = "true"
+	}
+	return map[string]string{
+		teamAllChannelsKeyPrefix + team.Id:    allChannels,
+		teamDefaultChannelKeyPrefix + team.Id: team.DefaultChannelId,
+	}
+}
+
+// saveTeamSettings writes the settings of a team that changed since old (nil for a new team).
+func (s SqlTeamStore) saveTeamSettings(team, old *model.Team) error {
+	var before map[string]string
+	if old != nil {
+		before = teamSettingKeys(old)
+	}
+	for name, value := range teamSettingKeys(team) {
+		if old != nil && before[name] == value {
+			continue
+		}
+		var err error
+		if value == "" {
+			_, err = s.GetMaster().Exec("DELETE FROM Systems WHERE Name = ?", name)
+		} else {
+			_, err = s.GetMaster().Exec("INSERT INTO Systems (Name, Value) VALUES (?, ?) ON CONFLICT (Name) DO UPDATE SET Value = EXCLUDED.Value", name, value)
+		}
+		if err != nil {
+			return errors.Wrapf(err, "failed to save the setting %s", name)
+		}
+	}
+	return nil
 }
 
 // teamPolicyEnforcedExpr matches teams governed by an access control policy,
@@ -307,6 +356,9 @@ func (s SqlTeamStore) Save(team *model.Team) (*model.Team, error) {
 		}
 		return nil, errors.Wrapf(err, "failed to save Team with id=%s", team.Id)
 	}
+	if err := s.saveTeamSettings(team, nil); err != nil {
+		return nil, err
+	}
 	return team, nil
 }
 
@@ -352,6 +404,10 @@ func (s SqlTeamStore) Update(team *model.Team) (*model.Team, error) {
 	}
 	if count > 1 {
 		return nil, errors.Wrapf(err, "multiple Teams updated with id=%s", team.Id)
+	}
+
+	if err := s.saveTeamSettings(team, &oldTeam); err != nil {
+		return nil, err
 	}
 
 	return team, nil
@@ -760,6 +816,9 @@ func (s SqlTeamStore) PermanentDelete(teamId string) error {
 	}
 	if _, err = s.GetMaster().Exec(sql, args...); err != nil {
 		return errors.Wrapf(err, "failed to delete Team with id=%s", teamId)
+	}
+	if _, err = s.GetMaster().Exec("DELETE FROM Systems WHERE Name IN (?, ?)", teamAllChannelsKeyPrefix+teamId, teamDefaultChannelKeyPrefix+teamId); err != nil {
+		return errors.Wrapf(err, "failed to delete the settings of Team with id=%s", teamId)
 	}
 	return nil
 }

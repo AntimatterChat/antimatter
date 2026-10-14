@@ -60,6 +60,14 @@ type Team struct {
 	// they're posted; empty for none.
 	Autolinks string `json:"autolinks"`
 
+	// Antimatter: with AllChannelsMembership, everyone in the community is in every channel they may see, as in
+	// Discord: its public channels, and the private ones their roles open. They mute channels rather than leave them.
+	AllChannelsMembership bool `json:"all_channels_membership"`
+
+	// Antimatter: DefaultChannelId is the community's default channel, a public one: where newcomers land and the
+	// community's join and leave messages go. Empty for Town Square while there is one (DefaultChannelName).
+	DefaultChannelId string `json:"default_channel_id"`
+
 	// Not persisted; derived by the store via EXISTS on AccessControlPolicies(Type='team').
 	// Use HasMembershipPolicyAction for enforcement — this is a read-path signal only.
 	PolicyEnforced bool            `json:"policy_enforced"`
@@ -93,19 +101,21 @@ func (o *Team) HasMembershipPolicyAction() bool {
 
 func (o *Team) Auditable() map[string]any {
 	return map[string]any{
-		"id":                    o.Id,
-		"create_at":             o.CreateAt,
-		"update_at":             o.UpdateAt,
-		"delete_at":             o.DeleteAt,
-		"type":                  o.Type,
-		"invite_id":             o.InviteId,
-		"allow_open_invite":     o.AllowOpenInvite,
-		"scheme_id":             o.SchemeId,
-		"group_constrained":     o.GroupConstrained,
-		"policy_id":             o.PolicyID,
-		"cloud_limits_archived": o.CloudLimitsArchived,
-		"hide_role_colors":      o.HideRoleColors,
-		"require_team_badges":   o.RequireTeamBadges,
+		"id":                      o.Id,
+		"create_at":               o.CreateAt,
+		"update_at":               o.UpdateAt,
+		"delete_at":               o.DeleteAt,
+		"type":                    o.Type,
+		"invite_id":               o.InviteId,
+		"allow_open_invite":       o.AllowOpenInvite,
+		"scheme_id":               o.SchemeId,
+		"group_constrained":       o.GroupConstrained,
+		"policy_id":               o.PolicyID,
+		"cloud_limits_archived":   o.CloudLimitsArchived,
+		"hide_role_colors":        o.HideRoleColors,
+		"require_team_badges":     o.RequireTeamBadges,
+		"all_channels_membership": o.AllChannelsMembership,
+		"default_channel_id":      o.DefaultChannelId,
 	}
 }
 
@@ -125,17 +135,22 @@ type TeamPatch struct {
 	RequireTeamBadges   *bool   `json:"require_team_badges"`
 	Onboarding          *string `json:"onboarding"`
 	Autolinks           *string `json:"autolinks"`
+
+	AllChannelsMembership *bool   `json:"all_channels_membership"`
+	DefaultChannelId      *string `json:"default_channel_id"`
 }
 
 func (o *TeamPatch) Auditable() map[string]any {
 	return map[string]any{
-		"allow_open_invite":     o.AllowOpenInvite,
-		"group_constrained":     o.GroupConstrained,
-		"cloud_limits_archived": o.CloudLimitsArchived,
-		"hide_role_colors":      o.HideRoleColors,
-		"require_team_badges":   o.RequireTeamBadges,
-		"onboarding":            o.Onboarding != nil,
-		"autolinks":             o.Autolinks != nil,
+		"allow_open_invite":       o.AllowOpenInvite,
+		"group_constrained":       o.GroupConstrained,
+		"cloud_limits_archived":   o.CloudLimitsArchived,
+		"hide_role_colors":        o.HideRoleColors,
+		"require_team_badges":     o.RequireTeamBadges,
+		"onboarding":              o.Onboarding != nil,
+		"autolinks":               o.Autolinks != nil,
+		"all_channels_membership": o.AllChannelsMembership,
+		"default_channel_id":      o.DefaultChannelId,
 	}
 }
 
@@ -168,6 +183,10 @@ func (o *Team) Etag() string {
 func (o *Team) IsValid() *AppError {
 	if !IsValidId(o.Id) {
 		return NewAppError("Team.IsValid", "model.team.is_valid.id.app_error", nil, "", http.StatusBadRequest)
+	}
+
+	if o.DefaultChannelId != "" && !IsValidId(o.DefaultChannelId) {
+		return NewAppError("Team.IsValid", "model.team.is_valid.default_channel.app_error", nil, "id="+o.Id, http.StatusBadRequest)
 	}
 
 	if len(o.Onboarding) > TeamOnboardingMaxLength || (o.Onboarding != "" && !json.Valid([]byte(o.Onboarding))) {
@@ -365,6 +384,14 @@ func (o *Team) Patch(patch *TeamPatch) {
 
 	if patch.Autolinks != nil {
 		o.Autolinks = *patch.Autolinks
+	}
+
+	if patch.AllChannelsMembership != nil {
+		o.AllChannelsMembership = *patch.AllChannelsMembership
+	}
+
+	if patch.DefaultChannelId != nil {
+		o.DefaultChannelId = *patch.DefaultChannelId
 	}
 }
 

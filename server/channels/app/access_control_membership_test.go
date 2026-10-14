@@ -484,7 +484,9 @@ func TestLeaveTeamPolicyDrivenAudit(t *testing.T) {
 		require.False(t, hasJobID)
 	})
 
-	t.Run("deferred parent stays failed when default-channel lookup errors after a cascade", func(t *testing.T) {
+	// Antimatter: a community may have no default channel (archived or deleted), and leaving it no longer fails then,
+	// so this leave, which used to fail on the missing Town Square, succeeds with its cascade linked to it.
+	t.Run("deferred parent succeeds when the team has no default channel, after a cascade", func(t *testing.T) {
 		th.App.UpdateConfig(func(cfg *model.Config) {
 			*cfg.ServiceSettings.ExperimentalEnableDefaultChannelLeaveJoinMessages = true
 		})
@@ -523,14 +525,14 @@ func TestLeaveTeamPolicyDrivenAudit(t *testing.T) {
 		})
 		require.NoError(t, nErr)
 
-		jobID := "job-leave-fail-parent-" + model.NewId()
+		jobID := "job-leave-no-default-channel-" + model.NewId()
 		appErr := th.App.leaveTeam(th.Context, team, user, "", &accessControlSyncContext{jobID: jobID, policyRevision: 5})
-		require.NotNil(t, appErr)
+		require.Nil(t, appErr)
 
 		all := auditsForJob(readAudits(), jobID)
 		parent := auditsNamed(all, model.AuditEventTeamMembershipRemoved)
 		require.Len(t, parent, 1)
-		require.Equal(t, model.AuditStatusFail, auditStatus(parent[0]))
+		require.Equal(t, model.AuditStatusSuccess, auditStatus(parent[0]))
 		parentEventID, _ := auditParams(parent[0])["event_id"].(string)
 		require.NotEmpty(t, parentEventID)
 

@@ -139,7 +139,7 @@ func doCommand(a *app.App, rctx request.CTX, args *model.CommandArgs, message st
 			text = args.T("api.command_remove.group_constrained_user_denied")
 		} else {
 			text = args.T(err.Id, map[string]any{
-				"Channel": model.DefaultChannelName,
+				"Channel": channel.DisplayName,
 			})
 		}
 		return &model.CommandResponse{

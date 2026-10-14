@@ -48,7 +48,7 @@ import {
     haveICurrentChannelPermission,
     haveITeamPermission,
 } from 'mattermost-redux/selectors/entities/roles';
-import {getCurrentTeamId, getMyTeams} from 'mattermost-redux/selectors/entities/teams';
+import {getCurrentTeamId, getMyTeams, getTeams} from 'mattermost-redux/selectors/entities/teams';
 import {
     getCurrentUserId,
     getStatusForUserId,
@@ -1265,15 +1265,25 @@ export const getChannelsWithUserProfiles: (state: GlobalState) => Array<{
     },
 );
 
+// Antimatter: a team's default channel is the public channel it chose (default_channel_id), else Town Square; either
+// can be archived or deleted, and the team then has none.
 export const getDefaultChannelForTeams: (state: GlobalState) => RelationOneToOne<Team, Channel> = createSelector(
     'getDefaultChannelForTeams',
     getAllChannels,
-    (channels: IDMappedObjects<Channel>): RelationOneToOne<Team, Channel> => {
+    getTeams,
+    (channels: IDMappedObjects<Channel>, teams: IDMappedObjects<Team>): RelationOneToOne<Team, Channel> => {
         const result: RelationOneToOne<Team, Channel> = {};
+        const open = (channel?: Channel) => Boolean(channel && (!channel.type || channel.type === General.OPEN_CHANNEL) && !channel.delete_at);
 
         for (const channel of Object.keys(channels).map((key) => channels[key])) {
-            if (channel && channel.name === General.DEFAULT_CHANNEL) {
+            if (channel && channel.name === General.DEFAULT_CHANNEL && open(channel) && !teams[channel.team_id]?.default_channel_id) {
                 result[channel.team_id] = channel;
+            }
+        }
+        for (const team of Object.values(teams)) {
+            const chosen = team?.default_channel_id ? channels[team.default_channel_id] : undefined;
+            if (chosen && chosen.team_id === team.id && open(chosen)) {
+                result[team.id] = chosen;
             }
         }
 
@@ -1293,7 +1303,7 @@ export const getMyFirstChannelForTeams: (state: GlobalState) => RelationOneToOne
 
         for (const team of myTeams) {
         // Get a sorted array of all channels in the team that the current user is a member of
-            const teamChannels = Object.values(allChannels).filter((channel: Channel) => channel && channel.team_id === team.id && Boolean(myChannelMemberships[channel.id])).sort(sortChannelsByDisplayName.bind(null, locale));
+            const teamChannels = Object.values(allChannels).filter((channel: Channel) => channel && channel.team_id === team.id && !channel.delete_at && Boolean(myChannelMemberships[channel.id])).sort(sortChannelsByDisplayName.bind(null, locale));
 
             if (teamChannels.length === 0) {
                 continue;
@@ -1320,10 +1330,12 @@ export const getRedirectChannelNameForTeam = (state: GlobalState, teamId: string
     const myChannelMemberships = getMyChannelMemberships(state);
     const iAmMemberOfTheTeamDefaultChannel = Boolean(defaultChannelForTeam && myChannelMemberships[defaultChannelForTeam.id]);
 
-    if (iAmMemberOfTheTeamDefaultChannel || canIJoinPublicChannelsInTeam) {
-        return General.DEFAULT_CHANNEL;
+    if (defaultChannelForTeam && (iAmMemberOfTheTeamDefaultChannel || canIJoinPublicChannelsInTeam)) {
+        return defaultChannelForTeam.name;
     }
 
+    // Antimatter: without a default channel known here (archived, deleted, or not loaded yet), the first channel I'm in;
+    // Town Square as before when there's none.
     const myFirstChannelForTeam = getMyFirstChannelForTeams(state)[teamId];
 
     return (myFirstChannelForTeam && myFirstChannelForTeam.name) || General.DEFAULT_CHANNEL;

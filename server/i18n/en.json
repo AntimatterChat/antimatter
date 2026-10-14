@@ -12003,6 +12003,11 @@
     "description": "API error when invalidating the cached team member data fails after a team change."
   },
   {
+    "id": "app.team.default_channel.app_error",
+    "translation": "The default channel must be a public channel of this community.",
+    "description": "Error when a community's default channel (where newcomers land) is set to a channel that isn't one of its public, unarchived channels (Antimatter)."
+  },
+  {
     "id": "app.team.get.find.app_error",
     "translation": "Unable to find the existing team.",
     "description": "API error when the requested team does not exist in the database."
@@ -17179,6 +17184,11 @@
     "id": "model.team.is_valid.create_at.app_error",
     "translation": "Create at must be a valid time.",
     "description": "API error when a team record's creation timestamp is unset; 'Create at' names the CreateAt field."
+  },
+  {
+    "id": "model.team.is_valid.default_channel.app_error",
+    "translation": "Invalid default channel.",
+    "description": "Validation error when a team's default channel id isn't a valid id (Antimatter)."
   },
   {
     "id": "model.team.is_valid.description.app_error",

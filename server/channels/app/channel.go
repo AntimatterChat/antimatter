@@ -72,14 +72,31 @@ func (a *App) JoinDefaultChannels(rctx request.CTX, teamID string, user *model.U
 		}
 	}
 
+	// Antimatter: the default channels can be archived or deleted, and the community can choose its default channel.
+	team, teamErr := a.GetTeam(teamID)
+	if teamErr != nil {
+		return teamErr
+	}
+	var defaultChannels []*model.Channel
+	if chosen := a.GetDefaultChannelForTeam(rctx, team); chosen != nil {
+		defaultChannels = append(defaultChannels, chosen)
+	}
 	for _, channelName := range a.DefaultChannelNames(rctx) {
-		channel, channelErr := a.Srv().Store().Channel().GetByName(teamID, channelName, true)
+		channel, channelErr := a.Srv().Store().Channel().GetByName(teamID, channelName, false)
 		if channelErr != nil {
-			rctx.Logger().Warn("No default channel with this name", mlog.String("channel_name", channelName), mlog.String("team_id", teamID), mlog.Err(channelErr))
+			rctx.Logger().Debug("No default channel with this name", mlog.String("channel_name", channelName), mlog.String("team_id", teamID), mlog.Err(channelErr))
 			continue
 		}
+		if !slices.ContainsFunc(defaultChannels, func(c *model.Channel) bool { return c.Id == channel.Id }) {
+			defaultChannels = append(defaultChannels, channel)
+		}
+	}
 
+	for _, channel := range defaultChannels {
 		if channel.Type != model.ChannelTypeOpen {
+			continue
+		}
+		if _, memberErr := a.Srv().Store().Channel().GetMember(rctx, channel.Id, user.Id); memberErr == nil {
 			continue
 		}
 
@@ -130,7 +147,7 @@ func (a *App) JoinDefaultChannels(rctx request.CTX, teamID string, user *model.U
 }
 
 func (a *App) postJoinMessageForDefaultChannel(rctx request.CTX, user *model.User, requestor *model.User, channel *model.Channel) *model.AppError {
-	if channel.Name == model.DefaultChannelName {
+	if a.isDefaultChannel(rctx, channel) {
 		if requestor == nil {
 			if err := a.postJoinTeamMessage(rctx, user, channel); err != nil {
 				return err
@@ -1806,10 +1823,8 @@ func (a *App) DeleteChannel(rctx request.CTX, channel *model.Channel, userID str
 		return err
 	}
 
-	if channel.Name == model.DefaultChannelName {
-		err := model.NewAppError("deleteChannel", "api.channel.delete_channel.cannot.app_error", map[string]any{"Channel": model.DefaultChannelName}, "", http.StatusBadRequest)
-		return err
-	}
+	// Antimatter: the default channels can be archived, by the community's admins (see the API): the community then
+	// lands people elsewhere (GetDefaultChannelForTeam).
 
 	// Space backing channels are internal; plugin ChannelWillBeArchived hooks are skipped.
 	if !channel.IsSpace() {
@@ -2933,11 +2948,12 @@ func (a *App) LeaveChannel(rctx request.CTX, channelID string, userID string) *m
 		return err
 	}
 
+	isDefault := a.isDefaultChannel(rctx, channel)
 	if err := a.removeUserFromChannel(rctx, userID, userID, channel); err != nil {
 		return err
 	}
 
-	if channel.Name == model.DefaultChannelName && !*a.Config().ServiceSettings.ExperimentalEnableDefaultChannelLeaveJoinMessages {
+	if isDefault && !*a.Config().ServiceSettings.ExperimentalEnableDefaultChannelLeaveJoinMessages {
 		return nil
 	}
 
@@ -3080,10 +3096,9 @@ func (a *App) removeUserFromChannel(rctx request.CTX, userIDToRemove string, rem
 	}
 	isGuest := user.IsGuest()
 
-	if channel.Name == model.DefaultChannelName {
-		if !isGuest {
-			return model.NewAppError("RemoveUserFromChannel", "api.channel.remove.default.app_error", map[string]any{"Channel": model.DefaultChannelName}, "", http.StatusBadRequest)
-		}
+	// Everyone stays in their community's default channel (Town Square unless it chose another).
+	if !isGuest && a.isDefaultChannel(rctx, channel) {
+		return model.NewAppError("RemoveUserFromChannel", "api.channel.remove.default.app_error", map[string]any{"Channel": channel.DisplayName}, "", http.StatusBadRequest)
 	}
 
 	if channel.IsGroupConstrained() && userIDToRemove != removerUserId && !user.IsBot {

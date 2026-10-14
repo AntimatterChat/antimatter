@@ -50,6 +50,12 @@ export type Team = {
     /** Antimatter: the team's autolinks as JSON (patterns of its messages turned into links when they're posted). */
     autolinks?: string;
 
+    /** Antimatter: everyone in the community is in every channel they may see, and mutes channels rather than leaving them. */
+    all_channels_membership?: boolean;
+
+    /** Antimatter: the community's default channel (where newcomers land); empty for Town Square while there is one. */
+    default_channel_id?: string;
+
     /** Data Retention Policy id. Unrelated to access-control policies below. */
     policy_id?: string | null;
     last_team_icon_update?: number;

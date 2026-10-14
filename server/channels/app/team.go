@@ -278,6 +278,21 @@ func (a *App) PatchTeam(teamID string, patch *model.TeamPatch) (*model.Team, *mo
 		}
 	}
 
+	// Antimatter: the default channel is one of the community's public channels.
+	var newDefaultChannel bool
+	if patch.DefaultChannelId != nil {
+		existing, appErr := a.GetTeam(teamID)
+		if appErr != nil {
+			return nil, appErr
+		}
+		if *patch.DefaultChannelId != existing.DefaultChannelId {
+			if appErr := a.checkDefaultChannelChoice(teamID, *patch.DefaultChannelId); appErr != nil {
+				return nil, appErr
+			}
+			newDefaultChannel = *patch.DefaultChannelId != ""
+		}
+	}
+
 	team, err := a.ch.srv.teamService.PatchTeam(teamID, patch)
 	if err != nil {
 		var invErr *store.ErrInvalidInput
@@ -300,6 +315,10 @@ func (a *App) PatchTeam(teamID string, patch *model.TeamPatch) (*model.Team, *mo
 
 	if appErr := a.sendTeamEvent(team, model.WebsocketEventUpdateTeam); appErr != nil {
 		return nil, appErr
+	}
+
+	if newDefaultChannel {
+		a.FillDefaultChannelInBackground(request.EmptyContext(a.Log()), team)
 	}
 
 	return team, nil
@@ -1422,25 +1441,17 @@ func (a *App) leaveTeam(rctx request.CTX, team *model.Team, user *model.User, re
 		}
 	}
 
+	// Antimatter: in the community's default channel, when it has one (it can be archived or deleted).
 	if *a.Config().ServiceSettings.ExperimentalEnableDefaultChannelLeaveJoinMessages {
-		channel, cErr := a.Srv().Store().Channel().GetByName(team.Id, model.DefaultChannelName, false)
-		if cErr != nil {
-			var nfErr *store.ErrNotFound
-			switch {
-			case errors.As(cErr, &nfErr):
-				return model.NewAppError("LeaveTeam", "app.channel.get_by_name.missing.app_error", nil, "", http.StatusNotFound).Wrap(cErr)
-			default:
-				return model.NewAppError("LeaveTeam", "app.channel.get_by_name.existing.app_error", nil, "", http.StatusInternalServerError).Wrap(cErr)
-			}
-		}
-
-		if requestorId == user.Id {
-			if err = a.postLeaveTeamMessage(rctx, user, channel); err != nil {
-				rctx.Logger().Warn("Failed to post join/leave message", mlog.Err(err))
-			}
-		} else {
-			if err = a.postRemoveFromTeamMessage(rctx, user, channel); err != nil {
-				rctx.Logger().Warn("Failed to post join/leave message", mlog.Err(err))
+		if channel := a.GetDefaultChannelForTeam(rctx, team); channel != nil {
+			if requestorId == user.Id {
+				if err = a.postLeaveTeamMessage(rctx, user, channel); err != nil {
+					rctx.Logger().Warn("Failed to post join/leave message", mlog.Err(err))
+				}
+			} else {
+				if err = a.postRemoveFromTeamMessage(rctx, user, channel); err != nil {
+					rctx.Logger().Warn("Failed to post join/leave message", mlog.Err(err))
+				}
 			}
 		}
 	}

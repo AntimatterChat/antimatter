@@ -3944,12 +3944,21 @@ func TestDeleteChannel(t *testing.T) {
 		_, err = client.DeleteChannel(context.Background(), publicChannel3.Id)
 		require.NoError(t, err)
 
-		// default channel cannot be deleted.
+		// Antimatter: the default channel can be archived, by the community's admins only (see TestDeleteDefaultChannels).
 		defaultChannel, appErr := th.App.GetChannelByName(th.Context, model.DefaultChannelName, team.Id, false)
 		require.Nil(t, appErr)
-		resp, err = client.DeleteChannel(context.Background(), defaultChannel.Id)
-		require.Error(t, err)
-		CheckBadRequestStatus(t, resp)
+		if client == th.Client {
+			resp, err = client.DeleteChannel(context.Background(), defaultChannel.Id)
+			require.Error(t, err)
+			CheckForbiddenStatus(t, resp)
+		} else {
+			_, err = client.DeleteChannel(context.Background(), defaultChannel.Id)
+			require.NoError(t, err)
+			defaultChannel, appErr = th.App.GetChannel(th.Context, defaultChannel.Id)
+			require.Nil(t, appErr)
+			_, appErr = th.App.RestoreChannel(th.Context, defaultChannel, "")
+			require.Nil(t, appErr)
+		}
 
 		// check system admin can delete a channel without any appropriate team or channel membership.
 		sdTeam := th.CreateTeamWithClient(t, c)

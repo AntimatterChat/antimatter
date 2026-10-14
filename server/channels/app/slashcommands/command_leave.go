@@ -46,10 +46,14 @@ func (*LeaveProvider) DoCommand(a *app.App, rctx request.CTX, args *model.Comman
 		return &model.CommandResponse{Text: args.T("api.command_leave.fail.app_error"), ResponseType: model.CommandResponseTypeEphemeral}
 	}
 
+	isDefault := a.IsDefaultChannel(rctx, channel)
 	err = a.LeaveChannel(rctx, args.ChannelId, args.UserId)
 	if err != nil {
-		if channel.Name == model.DefaultChannelName {
-			return &model.CommandResponse{Text: args.T("api.channel.leave.default.app_error", map[string]any{"Channel": model.DefaultChannelName}), ResponseType: model.CommandResponseTypeEphemeral}
+		if isDefault {
+			return &model.CommandResponse{Text: args.T("api.channel.leave.default.app_error", map[string]any{"Channel": channel.DisplayName}), ResponseType: model.CommandResponseTypeEphemeral}
+		}
+		if err.Id == "api.channel.leave.all_channels.app_error" {
+			return &model.CommandResponse{Text: args.T(err.Id), ResponseType: model.CommandResponseTypeEphemeral}
 		}
 		return &model.CommandResponse{Text: args.T("api.command_leave.fail.app_error"), ResponseType: model.CommandResponseTypeEphemeral}
 	}
@@ -76,5 +80,9 @@ func (*LeaveProvider) DoCommand(a *app.App, rctx request.CTX, args *model.Comman
 		return &model.CommandResponse{GotoLocation: args.SiteURL + "/" + team.Name + "/channels/" + channel.Name}
 	}
 
-	return &model.CommandResponse{GotoLocation: args.SiteURL + "/" + team.Name + "/channels/" + model.DefaultChannelName}
+	// Back to the community's default channel; without one, to the community, which opens the first channel there.
+	if defaultChannel := a.GetDefaultChannelForTeam(rctx, team); defaultChannel != nil {
+		return &model.CommandResponse{GotoLocation: args.SiteURL + "/" + team.Name + "/channels/" + defaultChannel.Name}
+	}
+	return &model.CommandResponse{GotoLocation: args.SiteURL + "/" + team.Name}
 }

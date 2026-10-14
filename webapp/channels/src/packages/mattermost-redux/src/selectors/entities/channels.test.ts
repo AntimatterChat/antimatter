@@ -1443,6 +1443,13 @@ describe('Selectors.Channels.getRedirectChannelNameForTeam', () => {
             ...testState,
             entities: {
                 ...testState.entities,
+                channels: {
+                    ...testState.entities.channels,
+                    channels: {
+                        ...testState.entities.channels.channels,
+                        'town-square-team1': {...TestHelper.fakeChannelWithId(team1.id), id: 'town-square-team1', name: 'town-square', type: General.OPEN_CHANNEL},
+                    },
+                },
                 roles: {
                     roles: {
                         system_user: {permissions: ['join_public_channels']},
@@ -1536,6 +1543,13 @@ describe('Selectors.Channels.getRedirectChannelNameForTeam', () => {
             ...testState,
             entities: {
                 ...testState.entities,
+                channels: {
+                    ...testState.entities.channels,
+                    channels: {
+                        ...testState.entities.channels.channels,
+                        'town-square-team2': {...TestHelper.fakeChannelWithId(team2.id), id: 'town-square-team2', name: 'town-square', type: General.OPEN_CHANNEL},
+                    },
+                },
                 roles: {
                     roles: {
                         system_user: {permissions: ['join_public_channels']},
@@ -1585,6 +1599,42 @@ describe('Selectors.Channels.getRedirectChannelNameForTeam', () => {
             },
         };
         expect(Selectors.getRedirectChannelNameForTeam(modifiedState, team2.id)).toEqual(General.DEFAULT_CHANNEL);
+    });
+});
+
+describe('Selectors.Channels.getRedirectChannelNameForTeam with default channels that can go (Antimatter)', () => {
+    const team = {...TestHelper.fakeTeamWithId(), default_channel_id: ''};
+    const user = TestHelper.fakeUserWithId();
+    const townSquare = {...TestHelper.fakeChannelWithId(team.id), name: 'town-square', display_name: 'Town Square', type: General.OPEN_CHANNEL};
+    const lobby = {...TestHelper.fakeChannelWithId(team.id), name: 'lobby', display_name: 'Lobby', type: General.OPEN_CHANNEL};
+    const zebra = {...TestHelper.fakeChannelWithId(team.id), name: 'zebra', display_name: 'Zebra', type: General.OPEN_CHANNEL};
+    const state = (teamPatch: object, channels: Channel[]) => deepFreezeAndThrowOnMutation({
+        entities: {
+            teams: {teams: {[team.id]: {...team, ...teamPatch}}, myMembers: {[team.id]: {}}},
+            channels: {
+                channels: Object.fromEntries(channels.map((c) => [c.id, c])),
+                myMembers: Object.fromEntries(channels.map((c) => [c.id, {channel_id: c.id}])),
+            },
+            users: {currentUserId: user.id, profiles: {[user.id]: user}},
+            roles: {roles: {system_user: {permissions: ['join_public_channels']}}},
+            general: {serverVersion: '5.12.0'},
+        },
+    });
+
+    it('lands in the channel the team chose', () => {
+        expect(Selectors.getRedirectChannelNameForTeam(state({default_channel_id: zebra.id}, [townSquare, lobby, zebra]), team.id)).toEqual('zebra');
+    });
+
+    it('lands in the first channel when Town Square is archived', () => {
+        expect(Selectors.getRedirectChannelNameForTeam(state({}, [{...townSquare, delete_at: 1}, zebra, lobby]), team.id)).toEqual('lobby');
+    });
+
+    it('lands in the first channel when the chosen one is archived, rather than in Town Square', () => {
+        expect(Selectors.getRedirectChannelNameForTeam(state({default_channel_id: zebra.id}, [{...zebra, delete_at: 1}, townSquare, lobby]), team.id)).toEqual('lobby');
+    });
+
+    it('lands in the first channel when Town Square is gone', () => {
+        expect(Selectors.getRedirectChannelNameForTeam(state({}, [zebra, lobby]), team.id)).toEqual('lobby');
     });
 });
 
