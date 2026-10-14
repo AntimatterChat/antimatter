@@ -3,6 +3,8 @@
 
 import React from 'react';
 
+import {savePreferences} from 'mattermost-redux/actions/preferences';
+
 import {updateTeamsOrderForUser} from 'actions/team_actions';
 
 import {fireEvent, renderWithContext, screen, userEvent} from 'tests/react_testing_utils';
@@ -15,11 +17,14 @@ const mockLayout = {home: false, setHome: jest.fn(), setNavOpen: jest.fn()};
 jest.mock('fusion/shell/layout_context', () => ({useLayout: () => mockLayout}));
 jest.mock('actions/team_actions', () => ({switchTeam: jest.fn(() => ({type: 'SWITCH'})), updateTeamsOrderForUser: jest.fn(() => ({type: 'ORDER'}))}));
 jest.mock('fusion/shell/global_search_context', () => ({useGlobalSearch: () => ({open: jest.fn()})}));
+jest.mock('mattermost-redux/actions/preferences', () => ({savePreferences: jest.fn(() => ({type: 'PREFS'}))}));
 
 const mockTeam = TestHelper.getTeamMock({id: 'team', name: 'antimatter', display_name: 'Antimatter'});
 const alice = TestHelper.getChannelMock({id: 'alice-dm', type: 'G', display_name: 'alice, bob'});
 const bob = TestHelper.getChannelMock({id: 'bob-dm', type: 'G', display_name: 'bob, carol'});
-const mockTeams = [mockTeam];
+const otherTeam = TestHelper.getTeamMock({id: 'other', name: 'other', display_name: 'Other'});
+const thirdTeam = TestHelper.getTeamMock({id: 'third', name: 'third', display_name: 'Third'});
+let mockTeams = [mockTeam];
 let mockUnread = [{channel: alice, mentions: 0, messages: 3}, {channel: bob, mentions: 2, messages: 5}];
 jest.mock('fusion/selectors', () => ({
     getSortedMyTeams: () => mockTeams,
@@ -28,18 +33,21 @@ jest.mock('fusion/selectors', () => ({
 }));
 
 describe('fusion/rail/ServerRail', () => {
-    const render = (currentChannelId = 'town-square') => renderWithContext(
+    const render = (currentChannelId = 'town-square', folders?: string) => renderWithContext(
         <ServerRail/>,
         {
             entities: {
-                teams: {currentTeamId: mockTeam.id, teams: {[mockTeam.id]: mockTeam}, myMembers: {[mockTeam.id]: {team_id: mockTeam.id}}},
+                teams: {currentTeamId: mockTeam.id, teams: Object.fromEntries(mockTeams.map((t) => [t.id, t])), myMembers: Object.fromEntries(mockTeams.map((t) => [t.id, {team_id: t.id}]))},
                 channels: {currentChannelId, channels: {[alice.id]: alice, [bob.id]: bob, 'town-square': TestHelper.getChannelMock({id: 'town-square', type: 'O'})}},
+                users: {currentUserId: 'me'},
+                preferences: {myPreferences: folders ? {'fusion_rail--folders': {user_id: 'me', category: 'fusion_rail', name: 'folders', value: folders}} : {}},
             },
         } as never,
     );
 
     beforeEach(() => {
         jest.clearAllMocks();
+        mockTeams = [mockTeam];
         mockUnread = [{channel: alice, mentions: 0, messages: 3}, {channel: bob, mentions: 2, messages: 5}];
     });
 
@@ -98,6 +106,41 @@ describe('fusion/rail/ServerRail', () => {
 
         // Dropping a team on itself changes nothing.
         expect(updateTeamsOrderForUser).not.toHaveBeenCalled();
+    });
+
+    test('dropping a team on the middle of another makes a folder of the two', () => {
+        mockTeams = [mockTeam, otherTeam];
+        render();
+        jest.spyOn(Element.prototype, 'getBoundingClientRect').mockReturnValue({top: 0, height: 40, bottom: 40, left: 0, right: 46, width: 46, x: 0, y: 0, toJSON: () => ({})});
+        const data = {types: ['application/x-am-team'], setData: jest.fn(), effectAllowed: ''};
+        fireEvent.dragStart(screen.getByRole('button', {name: 'Other'}), {dataTransfer: data});
+        fireEvent.drop(screen.getByRole('button', {name: 'Antimatter'}), {dataTransfer: data, clientY: 20});
+
+        expect(updateTeamsOrderForUser).toHaveBeenCalledWith(['team', 'other']);
+        const saved = (savePreferences as jest.Mock).mock.calls[0][1][0];
+        expect(saved).toMatchObject({category: 'fusion_rail', name: 'folders'});
+        expect(JSON.parse(saved.value)).toEqual([expect.objectContaining({teamIds: ['team', 'other']})]);
+        jest.restoreAllMocks();
+    });
+
+    test('a folder shows its name on hover, and opens in place', async () => {
+        mockTeams = [mockTeam, otherTeam, thirdTeam];
+        render('town-square', JSON.stringify([{id: 'f1', name: 'Work', color: '#3ba55c', teamIds: ['team', 'third']}]));
+
+        const folder = screen.getByRole('button', {name: 'Folder Work, 2 communities'});
+        expect(folder).toHaveAttribute('data-am-tip', 'Work');
+        expect(folder).toHaveAttribute('aria-expanded', 'false');
+        expect(screen.queryByRole('button', {name: 'Third'})).not.toBeInTheDocument();
+
+        await userEvent.click(folder);
+        expect(folder).toHaveAttribute('aria-expanded', 'true');
+        expect(screen.getByRole('group', {name: 'Work'})).toContainElement(screen.getByRole('button', {name: 'Third'}));
+    });
+
+    test('an unnamed folder is called after its communities', () => {
+        mockTeams = [mockTeam, otherTeam];
+        render('town-square', JSON.stringify([{id: 'f1', name: '', teamIds: ['team', 'other']}]));
+        expect(screen.getByRole('button', {name: /^Folder Antimatter, Other/})).toHaveAttribute('data-am-tip', 'Antimatter, Other');
     });
 
     test('shows no group when nothing waits', () => {

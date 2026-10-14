@@ -23,6 +23,7 @@ import {useDialogs} from 'fusion/shell/dialogs_context';
 import {useGlobalSearch} from 'fusion/shell/global_search_context';
 import {useLayout} from 'fusion/shell/layout_context';
 import {DirectFace} from 'fusion/sidebar/direct_row';
+import {markTeamAsRead} from 'fusion/sidebar/team_actions';
 import {a11yRegion} from 'fusion/utils/a11y_regions';
 import {am} from 'fusion/utils/class_names';
 import {channelPath} from 'fusion/utils/paths';
@@ -33,17 +34,41 @@ import {imageURLForTeam} from 'utils/utils';
 
 import type {GlobalState} from 'types/store';
 
-import {addToFolder, isFolderOpen, railItems, removeFromFolder, setFolderOpen, useFolders} from './folders';
+import {addToFolder, FOLDER_COLORS, folderOfTeam, isFolderOpen, makeFolder, placeAfter, railItems, removeFromFolder, setFolderOpen, useFolders} from './folders';
 import type {Folder} from './folders';
 import HistoryButtons, {showHistoryButtons} from './history_buttons';
 
 const initialsOf = (name: string) => name.split(/\s+/).map((p) => p[0] || '').slice(0, 2).join('').toUpperCase();
 
-type Drop = {onDragStart: () => void; onDrop: (after: boolean) => void; onDragEnd: () => void};
+// Where a dragged team lands on another: before it, after it, or on it (together in a folder, as in Discord).
+export type DropZone = 'before' | 'after' | 'into';
+
+type Drop = {onDragStart: () => void; onDrop: (zone: DropZone) => void; onDragEnd: () => void};
+
+// dropZone tells where on a team the pointer is: its top and bottom quarters put the dragged team before or after it,
+// its middle puts them together.
+export function dropZone(e: React.DragEvent<HTMLElement>): DropZone {
+    const r = e.currentTarget.getBoundingClientRect();
+    const y = (e.clientY - r.top) / (r.height || 1);
+    if (y < 0.25) {
+        return 'before';
+    }
+    return y > 0.75 ? 'after' : 'into';
+}
+
+// menuPoint is where a context menu opens: at the pointer, or beside the element when opened from the keyboard.
+function menuPoint(e: React.MouseEvent<HTMLElement>): {x: number; y: number} {
+    if (e.clientX || e.clientY) {
+        return {x: e.clientX, y: e.clientY};
+    }
+    const r = e.currentTarget.getBoundingClientRect();
+    return {x: r.right, y: r.top + (r.height / 2)};
+}
 
 function TeamButton({team, active, unread, mentions, onSelect, drag}: {team: Team; active: boolean; unread: boolean; mentions: number; onSelect: () => void; drag: Drop}) {
-    // Teams are reordered by dragging them in the rail, as in the classic team sidebar.
-    const [mark, setMark] = useState<'before' | 'after' | null>(null);
+    // Teams are reordered by dragging them in the rail, as in the classic team sidebar, and dropped on each other to
+    // make a folder.
+    const [mark, setMark] = useState<DropZone | null>(null);
     const icon = imageURLForTeam(team);
 
     // Right-clicking a team opens its menu, as in Discord.
@@ -55,7 +80,7 @@ function TeamButton({team, active, unread, mentions, onSelect, drag}: {team: Tea
     return (
         <>
             <button
-                className={am('srv', {active, unread: unread && !active, 'drop-before': mark === 'before', 'drop-after': mark === 'after'})}
+                className={am('srv', {active, unread: unread && !active, 'drop-before': mark === 'before', 'drop-after': mark === 'after', 'drop-in': mark === 'into'})}
                 draggable={true}
                 onDragStart={(e) => {
                     e.dataTransfer.effectAllowed = 'move';
@@ -71,8 +96,7 @@ function TeamButton({team, active, unread, mentions, onSelect, drag}: {team: Tea
                         return;
                     }
                     e.preventDefault();
-                    const r = e.currentTarget.getBoundingClientRect();
-                    setMark(e.clientY > r.top + (r.height / 2) ? 'after' : 'before');
+                    setMark(dropZone(e));
                 }}
                 onDragLeave={() => setMark(null)}
                 onDrop={(e) => {
@@ -80,9 +104,8 @@ function TeamButton({team, active, unread, mentions, onSelect, drag}: {team: Tea
                         return;
                     }
                     e.preventDefault();
-                    const r = e.currentTarget.getBoundingClientRect();
                     setMark(null);
-                    drag.onDrop(e.clientY > r.top + (r.height / 2));
+                    drag.onDrop(dropZone(e));
                 }}
                 data-am-tip={team.display_name}
                 data-am-tip-side='right'
@@ -91,7 +114,7 @@ function TeamButton({team, active, unread, mentions, onSelect, drag}: {team: Tea
                 onClick={onSelect}
                 onContextMenu={(e) => {
                     e.preventDefault();
-                    setMenu({x: e.clientX, y: e.clientY});
+                    setMenu(menuPoint(e));
                 }}
             >
                 {icon && icon !== failedIcon ? (
@@ -131,17 +154,24 @@ function TeamFace({team, size}: {team: Team; size?: 'mini'}) {
     return <span className={am('srv-initials', size)}>{initialsOf(team.display_name)}</span>;
 }
 
-// FolderDialog names a server folder.
-function FolderDialog({folder, onSave, onClose}: {folder: Folder; onSave: (name: string) => void; onClose: () => void}) {
+// folderLabel is what a folder is called: its name, or its teams' names, as Discord's.
+function folderLabel(folder: Folder, teams: Team[]): string {
+    return folder.name || teams.map((t) => t.display_name).join(', ');
+}
+
+// FolderDialog sets a server folder's name and colour.
+function FolderDialog({folder, onSave, onClose}: {folder: Folder; onSave: (name: string, color: string) => void; onClose: () => void}) {
     const {formatMessage} = useIntl();
     const [name, setName] = useState(folder.name);
-    const title = formatMessage({id: 'fusion.rail.renameFolder', defaultMessage: 'Rename folder'});
+    const [color, setColor] = useState(folder.color || '');
+    const title = formatMessage({id: 'fusion.rail.folderSettings', defaultMessage: 'Folder settings'});
+    const colorLabel = formatMessage({id: 'fusion.rail.folderColor', defaultMessage: 'Colour'});
     return (
         <Dialog
             label={title}
             onClose={onClose}
             onSubmit={() => {
-                onSave(name.trim());
+                onSave(name.trim(), color);
                 onClose();
             }}
         >
@@ -153,9 +183,39 @@ function FolderDialog({folder, onSave, onClose}: {folder: Folder; onSave: (name:
                         autoFocus={true}
                         value={name}
                         maxLength={40}
+                        placeholder={formatMessage({id: 'fusion.rail.folderNamePlaceholder', defaultMessage: 'Shown when you point at the folder'})}
                         onChange={(e) => setName(e.target.value)}
                     />
                 </label>
+                <div className={am('field')}>
+                    <span>{colorLabel}</span>
+                    <div
+                        className={am('swatches')}
+                        role='radiogroup'
+                        aria-label={colorLabel}
+                    >
+                        <button
+                            type='button'
+                            role='radio'
+                            aria-checked={!color}
+                            aria-label={formatMessage({id: 'fusion.rail.folderColorTheme', defaultMessage: 'The theme\'s'})}
+                            className={am('swatch', 'theme', {on: !color})}
+                            onClick={() => setColor('')}
+                        />
+                        {FOLDER_COLORS.map((c) => (
+                            <button
+                                key={c}
+                                type='button'
+                                role='radio'
+                                aria-checked={color === c}
+                                aria-label={c}
+                                className={am('swatch', {on: color === c})}
+                                style={{background: c}}
+                                onClick={() => setColor(c)}
+                            />
+                        ))}
+                    </div>
+                </div>
                 <div className={am('modal-actions')}>
                     <button
                         type='button'
@@ -171,25 +231,32 @@ function FolderDialog({folder, onSave, onClose}: {folder: Folder; onSave: (name:
     );
 }
 
+// folderStyle gives a folder its colour, for the rail's styles.
+function folderStyle(folder: Folder): React.CSSProperties | undefined {
+    return folder.color ? {'--am-folder': folder.color} as React.CSSProperties : undefined;
+}
+
 // FolderButton is a closed or open server folder: its teams' faces in a square when closed, a folder when open, with
-// their unread and mention counts. Teams dropped on it join it.
-function FolderButton({folder, teams, open, unread, mentions, onToggle, onDropTeam, onRename, onUngroup}: {folder: Folder; teams: Team[]; open: boolean; unread: boolean; mentions: number; onToggle: () => void; onDropTeam: () => void; onRename: () => void; onUngroup: () => void}) {
+// their unread and mention counts. Teams dropped on it join it. Its name shows on hover, as the bubbles of the direct
+// messages do.
+function FolderButton({folder, teams, open, unread, mentions, onToggle, onDropTeam, onSettings, onMarkRead, onUngroup}: {folder: Folder; teams: Team[]; open: boolean; unread: boolean; mentions: number; onToggle: () => void; onDropTeam: () => void; onSettings: () => void; onMarkRead?: () => void; onUngroup: () => void}) {
     const {formatMessage} = useIntl();
     const [menu, setMenu] = useState<{x: number; y: number} | null>(null);
     const [over, setOver] = useState(false);
-    const name = folder.name || formatMessage({id: 'fusion.rail.folder', defaultMessage: 'Folder'});
+    const name = folderLabel(folder, teams);
     return (
         <>
             <button
                 className={am('srv', 'folder', {open, unread: unread && !open, 'drop-in': over})}
-                data-am-tip={`${name} · ${teams.map((t) => t.display_name).join(', ')}`}
+                style={folderStyle(folder)}
+                data-am-tip={name}
                 data-am-tip-side='right'
                 aria-label={formatMessage({id: 'fusion.rail.folderLabel', defaultMessage: 'Folder {name}, {count, plural, one {# community} other {# communities}}'}, {name, count: teams.length})}
                 aria-expanded={open}
                 onClick={onToggle}
                 onContextMenu={(e) => {
                     e.preventDefault();
-                    setMenu({x: e.clientX, y: e.clientY});
+                    setMenu(menuPoint(e));
                 }}
                 onDragOver={(e) => {
                     if (e.dataTransfer.types.includes('application/x-am-team')) {
@@ -228,12 +295,23 @@ function FolderButton({folder, teams, open, unread, mentions, onToggle, onDropTe
                     label={name}
                     onClose={() => setMenu(null)}
                 >
+                    {onMarkRead && (
+                        <MenuItem
+                            icon='check'
+                            label={formatMessage({id: 'fusion.rail.folderMarkRead', defaultMessage: 'Mark folder as read'})}
+                            onClick={() => {
+                                setMenu(null);
+                                onMarkRead();
+                            }}
+                        />
+                    )}
                     <MenuItem
                         icon='pen'
-                        label={formatMessage({id: 'fusion.rail.renameFolder', defaultMessage: 'Rename folder'})}
+                        label={formatMessage({id: 'fusion.rail.folderSettings', defaultMessage: 'Folder settings'})}
+                        sub={formatMessage({id: 'fusion.rail.folderSettingsSub', defaultMessage: 'Name and colour'})}
                         onClick={() => {
                             setMenu(null);
-                            onRename();
+                            onSettings();
                         }}
                     />
                     <MenuItem
@@ -279,7 +357,7 @@ export default function ServerRail() {
     const waitingDMs = unreadDMs.filter((dm) => dm.channel.id !== currentChannelId).slice(0, 5);
     const [folders, saveFolders] = useFolders();
     const [openFolders, setOpenFolders] = useState<Record<string, boolean>>({});
-    const [renaming, setRenaming] = useState<Folder | null>(null);
+    const [editing, setEditing] = useState<Folder | null>(null);
     const [adding, setAdding] = useState(false);
     const addRef = useRef<HTMLButtonElement>(null);
     const folderOpen = (id: string) => openFolders[id] ?? isFolderOpen(id);
@@ -289,21 +367,38 @@ export default function ServerRail() {
         setOpenFolders({...openFolders, [id]: open});
     };
 
-    // The team being dragged, to put it before or after the team it's dropped on; the order is the user's preference.
+    // The team being dragged: dropped before or after another team, it moves there (the order is the user's
+    // preference); dropped on it, the two make a folder, as in Discord.
     const dragged = useRef<string | null>(null);
-    const dropOn = (target: Team, after: boolean) => {
+    const order = teams.map((t) => t.id);
+    const lastOf = (folder: Folder, except: string) => order.filter((id) => id !== except && folder.teamIds.includes(id)).pop();
+    const dropOn = (target: Team, zone: DropZone) => {
         const id = dragged.current;
         dragged.current = null;
         if (!id || id === target.id) {
             return;
         }
-        const order = teams.map((t) => t.id).filter((t) => t !== id);
-        order.splice(order.indexOf(target.id) + (after ? 1 : 0), 0, id);
-        dispatch(updateTeamsOrderForUser(order));
+        const targetFolder = folderOfTeam(teams, folders, target.id);
+        const ownFolder = folderOfTeam(teams, folders, id);
+        if (zone === 'into') {
+            if (targetFolder && targetFolder.id === ownFolder?.id) {
+                return;
+            }
+
+            // The new folder stays where the team dropped on was, the dragged team after it (or after the last of
+            // the folder's teams).
+            const next = makeFolder(folders, target.id, id);
+            const folder = next.find((f) => f.teamIds.includes(id));
+            const after = folder ? lastOf(folder, id) : target.id;
+            dispatch(updateTeamsOrderForUser(placeAfter(order, id, after || target.id)));
+            saveFolders(next);
+            return;
+        }
+        const rest = order.filter((t) => t !== id);
+        rest.splice(rest.indexOf(target.id) + (zone === 'after' ? 1 : 0), 0, id);
+        dispatch(updateTeamsOrderForUser(rest));
 
         // Dropped among a folder's teams, a team joins the folder; among loose teams, it leaves its folder.
-        const targetFolder = folders.find((f) => f.teamIds.includes(target.id));
-        const ownFolder = folders.find((f) => f.teamIds.includes(id));
         if (targetFolder?.id !== ownFolder?.id) {
             saveFolders(targetFolder ? addToFolder(folders, id, targetFolder.id) : removeFromFolder(folders, id));
         }
@@ -311,9 +406,14 @@ export default function ServerRail() {
     const dropInFolder = (folder: Folder) => {
         const id = dragged.current;
         dragged.current = null;
-        if (id && !folder.teamIds.includes(id)) {
-            saveFolders(addToFolder(folders, id, folder.id));
+        if (!id || folderOfTeam(teams, folders, id)?.id === folder.id) {
+            return;
         }
+        const after = lastOf(folder, id);
+        if (after) {
+            dispatch(updateTeamsOrderForUser(placeAfter(order, id, after)));
+        }
+        saveFolders(addToFolder(folders, id, folder.id));
     };
 
     const selectTeam = (team: Team) => {
@@ -351,7 +451,7 @@ export default function ServerRail() {
                             onDragStart: () => {
                                 dragged.current = team.id;
                             },
-                            onDrop: (after) => dropOn(team, after),
+                            onDrop: (zone) => dropOn(team, zone),
                             onDragEnd: () => {
                                 dragged.current = null;
                             },
@@ -366,6 +466,9 @@ export default function ServerRail() {
                     <div
                         key={item.folder.id}
                         className={am('srv-folder', {open})}
+                        style={folderStyle(item.folder)}
+                        role='group'
+                        aria-label={folderLabel(item.folder, item.teams)}
                     >
                         <FolderButton
                             folder={item.folder}
@@ -375,18 +478,19 @@ export default function ServerRail() {
                             mentions={item.teams.reduce((n, t) => n + (mentionsInTeam.get(t.id) || 0), 0)}
                             onToggle={() => toggleFolder(item.folder.id)}
                             onDropTeam={() => dropInFolder(item.folder)}
-                            onRename={() => setRenaming(item.folder)}
+                            onSettings={() => setEditing(item.folder)}
+                            onMarkRead={item.teams.some((t) => unreadTeams.has(t.id)) ? () => item.teams.forEach((t) => dispatch(markTeamAsRead(t.id))) : undefined}
                             onUngroup={() => saveFolders(folders.filter((f) => f.id !== item.folder.id))}
                         />
                         {open && item.teams.map(teamButton)}
                     </div>
                 );
             })}
-            {renaming && (
+            {editing && (
                 <FolderDialog
-                    folder={renaming}
-                    onSave={(name) => saveFolders(folders.map((f) => (f.id === renaming.id ? {...f, name} : f)))}
-                    onClose={() => setRenaming(null)}
+                    folder={editing}
+                    onSave={(name, color) => saveFolders(folders.map((f) => (f.id === editing.id ? {...f, name, color: color || undefined} : f)))}
+                    onClose={() => setEditing(null)}
                 />
             )}
             {(canJoin || canCreate) && (

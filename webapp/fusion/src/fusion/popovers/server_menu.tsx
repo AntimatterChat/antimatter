@@ -13,6 +13,7 @@ import {isCustomGroupsEnabled} from 'mattermost-redux/selectors/entities/prefere
 import {haveITeamPermission} from 'mattermost-redux/selectors/entities/roles';
 import {getCurrentTeam} from 'mattermost-redux/selectors/entities/teams';
 
+import {updateTeamsOrderForUser} from 'actions/team_actions';
 import {setUnreadFilterEnabled} from 'actions/views/channel_sidebar';
 import {getMainMenuPluginComponents, getSidebarBrowseOrAddChannelMenuPluginComponents} from 'selectors/plugins';
 import {isUnreadFilterEnabled} from 'selectors/views/channel_sidebar';
@@ -21,7 +22,8 @@ import {openCommunityAttributes} from 'fusion/attributes/edit_attributes_item';
 import {Popover} from 'fusion/components/layer';
 import {Flyout, MenuHeading, MenuItem, MenuSeparator} from 'fusion/components/menu';
 import CopyIdItem from 'fusion/popovers/copy_id_item';
-import {addToFolder, removeFromFolder, useFolders} from 'fusion/rail/folders';
+import {addToFolder, folderOfTeam, makeFolder, placeAfter, railItems, removeFromFolder, useFolders} from 'fusion/rail/folders';
+import {getSortedMyTeams} from 'fusion/selectors';
 import {useDialogs} from 'fusion/shell/dialogs_context';
 import {useSettings} from 'fusion/shell/settings_context';
 import {useToast} from 'fusion/shell/toast_context';
@@ -82,7 +84,11 @@ export default function ServerMenu({team: forTeam, anchor, point, width, onClose
     const plugins = useSelector((state: GlobalState) => state.plugins.plugins);
     const settings = useSettings();
     const [folders, saveFolders] = useFolders();
-    const folder = folders.find((f) => f.teamIds.includes(teamId));
+    const myTeams = useSelector(getSortedMyTeams);
+    const items = railItems(myTeams, folders);
+    const folder = folderOfTeam(myTeams, folders, teamId);
+    const otherFolders = items.flatMap((item) => (item.kind === 'folder' && item.folder.id !== folder?.id ? [item] : []));
+    const looseTeams = items.flatMap((item) => (item.kind === 'team' && item.team.id !== teamId ? [item.team] : []));
 
     // Integrations' items, grouped under each plugin's name as in the mockup.
     const pluginGroups: Array<[string, typeof pluginItems]> = [];
@@ -291,23 +297,38 @@ export default function ServerMenu({team: forTeam, anchor, point, width, onClose
                         label={formatMessage({id: 'fusion.serverMenu.toFolder', defaultMessage: 'Add to folder'})}
                         menuLabel={formatMessage({id: 'fusion.serverMenu.toFolderLabel', defaultMessage: 'Folders'})}
                     >
-                        {folders.filter((f) => f.id !== folder?.id).map((f) => (
+                        {otherFolders.map(({folder: f, teams: inFolder}) => (
                             <button
                                 key={f.id}
                                 type='button'
                                 role='menuitem'
-                                onClick={run(() => saveFolders(addToFolder(folders, teamId, f.id)))}
+                                onClick={run(() => {
+                                    const last = inFolder[inFolder.length - 1];
+                                    if (last) {
+                                        dispatch(updateTeamsOrderForUser(placeAfter(myTeams.map((t) => t.id), teamId, last.id)));
+                                    }
+                                    saveFolders(addToFolder(folders, teamId, f.id));
+                                })}
                             >
-                                {f.name || formatMessage({id: 'fusion.rail.folder', defaultMessage: 'Folder'})}
+                                {f.name || inFolder.map((t) => t.display_name).join(', ')}
                             </button>
                         ))}
-                        <button
-                            type='button'
-                            role='menuitem'
-                            onClick={run(() => saveFolders(addToFolder(folders, teamId, '', formatMessage({id: 'fusion.rail.newFolderName', defaultMessage: 'New folder'}))))}
-                        >
-                            {formatMessage({id: 'fusion.serverMenu.newFolder', defaultMessage: 'New folder'})}
-                        </button>
+
+                        {/* As dropping it on another community in the rail: the two make a folder. */}
+                        {looseTeams.length > 0 && <MenuHeading>{formatMessage({id: 'fusion.serverMenu.newFolderWith', defaultMessage: 'New folder with'})}</MenuHeading>}
+                        {looseTeams.map((other) => (
+                            <button
+                                key={other.id}
+                                type='button'
+                                role='menuitem'
+                                onClick={run(() => {
+                                    dispatch(updateTeamsOrderForUser(placeAfter(myTeams.map((t) => t.id), teamId, other.id)));
+                                    saveFolders(makeFolder(folders, other.id, teamId));
+                                })}
+                            >
+                                {other.display_name}
+                            </button>
+                        ))}
                     </Flyout>
                     {folder && (
                         <MenuItem

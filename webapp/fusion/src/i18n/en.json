@@ -25055,13 +25055,37 @@
     "defaultMessage": "Folder",
     "description": ""
   },
+  "fusion.rail.folderColor": {
+    "defaultMessage": "Colour",
+    "description": "Label of the colour choices in the community folder settings dialog."
+  },
+  "fusion.rail.folderColorTheme": {
+    "defaultMessage": "The theme's",
+    "description": "Accessible name of the colour swatch that uses the theme's accent colour for a community folder."
+  },
   "fusion.rail.folderLabel": {
     "defaultMessage": "Folder {name}, {count, plural, one {# community} other {# communities}}",
     "description": ""
   },
+  "fusion.rail.folderMarkRead": {
+    "defaultMessage": "Mark folder as read",
+    "description": "Menu item of a community folder in the left rail: marks all its communities as read."
+  },
   "fusion.rail.folderName": {
     "defaultMessage": "Name",
     "description": ""
+  },
+  "fusion.rail.folderNamePlaceholder": {
+    "defaultMessage": "Shown when you point at the folder",
+    "description": "Placeholder of a community folder's name field: the name shows in a tooltip when pointing at the folder."
+  },
+  "fusion.rail.folderSettings": {
+    "defaultMessage": "Folder settings",
+    "description": "Menu item and dialog title: a community folder's name and colour in the left rail."
+  },
+  "fusion.rail.folderSettingsSub": {
+    "defaultMessage": "Name and colour",
+    "description": "Explanation under 'Folder settings' in a community folder's menu."
   },
   "fusion.rail.join": {
     "defaultMessage": "Join another community",
@@ -25073,14 +25097,6 @@
   },
   "fusion.rail.label": {
     "defaultMessage": "Communities",
-    "description": ""
-  },
-  "fusion.rail.newFolderName": {
-    "defaultMessage": "New folder",
-    "description": ""
-  },
-  "fusion.rail.renameFolder": {
-    "defaultMessage": "Rename folder",
     "description": ""
   },
   "fusion.rail.search": {
@@ -25663,9 +25679,9 @@
     "defaultMessage": "Mutes all its categories",
     "description": ""
   },
-  "fusion.serverMenu.newFolder": {
-    "defaultMessage": "New folder",
-    "description": ""
+  "fusion.serverMenu.newFolderWith": {
+    "defaultMessage": "New folder with",
+    "description": "Heading in a community's 'Add to folder' submenu, before the communities it can make a new folder with."
   },
   "fusion.serverMenu.notifications": {
     "defaultMessage": "Notification settings",
