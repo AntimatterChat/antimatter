@@ -2,6 +2,7 @@
 // the system's light or dark mode. Its own styles hardcode light backgrounds; these rules, under the console's
 // #root, replace them.
 @use '00_tokens' as tokens;
+@use 'breakpoints' as *;
 
 :is(html, body):has(#adminConsoleWrapper) { background: var(--am-main); }
 
@@ -138,4 +139,27 @@
 
   // Banners.
   .banner, .alert { border-radius: 10px; }
+}
+
+// On a phone the console is one column: the sidebar over the page, its list of sections short and scrolling, the page
+// the whole width.
+@media #{$phone} {
+  #root.console__root {
+    grid-template:
+      "classification-banner" min-content
+      "announcement" min-content
+      "admin-announcement" min-content
+      "header" min-content
+      "lhs" min-content
+      "center" minmax(0, 1fr)
+      "classification-banner-bottom" min-content
+      "footer" min-content / minmax(0, 1fr);
+    height: 100dvh;
+  }
+  #root.console__root .admin-sidebar { width: auto; max-height: 36dvh; border-right: 0; border-bottom: 1px solid var(--am-line); }
+  #root.console__root .admin-sidebar .AdminSidebarHeader { height: 48px; }
+  #root.console__root .admin-sidebar .simplebar-scrollable-y { min-height: 0; flex: 1; }
+  #root.console__root .admin-sidebar .sidebar-section-title { min-height: 40px; }
+  #root.console__root .admin-console__header { height: auto; min-height: 48px; padding: 8px 16px; }
+  #root.console__root .admin-console__wrapper .admin-console__content { padding: 16px; }
 }
