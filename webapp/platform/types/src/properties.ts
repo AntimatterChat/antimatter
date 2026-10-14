@@ -18,7 +18,9 @@ export type FieldType = (
     'graph'
 );
 
-export type FieldVisibility = 'always' | 'hidden' | 'when_set';
+// Antimatter: 'admin' shows a user attribute to the admins and to the user it describes only; the server withholds its
+// values from everyone else (as it does a hidden one's).
+export type FieldVisibility = 'always' | 'hidden' | 'when_set' | 'admin';
 export type FieldValueType =
     'email' |
     'url' |

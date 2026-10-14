@@ -89,3 +89,16 @@ export type UserPropertyField = PropertyField & {
 };
 
 export type UserPropertyFieldPatch = Partial<Pick<UserPropertyField, 'name' | 'attrs' | 'type'>>;
+
+// Antimatter: a user attribute a community's admins define for its members (a property field scoped to the
+// community). member_list marks the one the member list shows under people's names.
+export type CommunityAttributeField = Omit<UserPropertyField, 'group_id' | 'attrs'> & {
+    group_id: string;
+    attrs: UserPropertyField['attrs'] & {member_list?: boolean};
+};
+
+export type CommunityAttributeFieldPatch = Partial<Pick<CommunityAttributeField, 'name' | 'type'>> & {attrs?: Partial<CommunityAttributeField['attrs']>};
+
+// A user attribute's value: an option's ID, or a text, date (YYYY-MM-DD) or user ID; a list of them for multiple
+// choices and people.
+export type UserAttributeValue = string | string[];

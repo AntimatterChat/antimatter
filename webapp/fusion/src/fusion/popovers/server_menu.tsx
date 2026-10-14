@@ -17,6 +17,7 @@ import {setUnreadFilterEnabled} from 'actions/views/channel_sidebar';
 import {getMainMenuPluginComponents, getSidebarBrowseOrAddChannelMenuPluginComponents} from 'selectors/plugins';
 import {isUnreadFilterEnabled} from 'selectors/views/channel_sidebar';
 
+import {openCommunityAttributes} from 'fusion/attributes/edit_attributes_item';
 import {Popover} from 'fusion/components/layer';
 import {Flyout, MenuHeading, MenuItem, MenuSeparator} from 'fusion/components/menu';
 import CopyIdItem from 'fusion/popovers/copy_id_item';
@@ -210,6 +211,12 @@ export default function ServerMenu({team: forTeam, anchor, point, width, onClose
                                 label={formatMessage({id: 'fusion.serverMenu.layout', defaultMessage: 'Community layout…'})}
                                 sub={formatMessage({id: 'fusion.serverMenu.layoutSub', defaultMessage: 'Presets and templates'})}
                                 onClick={inTeam(() => dialogs.teamLayout())}
+                            />
+                            <MenuItem
+                                icon='tag'
+                                label={formatMessage({id: 'fusion.serverMenu.attributes', defaultMessage: 'Member attributes…'})}
+                                sub={formatMessage({id: 'fusion.serverMenu.attributesSub', defaultMessage: 'Company, site… on profiles'})}
+                                onClick={run(() => dispatch(openCommunityAttributes(teamId, toast)))}
                             />
                         </>
                     )}

@@ -23,7 +23,7 @@ import './attribute_applies_to_item.scss';
 const BODY_ID = 'attribute-applies-to-user-panel';
 
 // Display order: Always | When set | Hidden.
-const PROFILE_DISPLAY_VALUES: FieldVisibility[] = ['always', 'when_set', 'hidden'];
+const PROFILE_DISPLAY_VALUES: FieldVisibility[] = ['always', 'when_set', 'admin', 'hidden'];
 
 // What the Managed-by indicator names, one per source. The icon is the same
 // rotating-arrows glyph the Definition block's "Synced with" chips carry.
@@ -202,6 +202,11 @@ function AttributeAppliesToUserItem({
                                 </button>
                             ))}
                         </div>
+                        {(visibility === 'admin' || visibility === 'hidden') && (
+                            <div className='AttributeAppliesToItem__helpText'>
+                                <FormattedMessage {...messages.profileDisplayRestrictedHelp}/>
+                            </div>
+                        )}
                     </div>
                     <div className='AttributeAppliesToItem__row'>
                         <span className='AttributeAppliesToItem__label'>
@@ -252,6 +257,10 @@ const messages = defineMessages({
         id: 'admin.global_attributes.attribute_details.applies_to.item.user.profile_display.label',
         defaultMessage: 'Profile display',
     },
+    profileDisplayRestrictedHelp: {
+        id: 'admin.global_attributes.attribute_details.applies_to.item.user.profile_display.restricted_help',
+        defaultMessage: 'Only admins and the user see the value. Admins only shows it on their profile to them; Hidden shows it nowhere.',
+    },
     whoCanSetLabel: {
         id: 'admin.global_attributes.attribute_details.applies_to.item.user.who_can_set.label',
         defaultMessage: 'Who can set the value',
@@ -278,6 +287,10 @@ const profileDisplayValueMessages: Record<FieldVisibility, MessageDescriptor> = 
     when_set: {
         id: 'admin.global_attributes.attribute_details.applies_to.item.user.profile_display.when_set.label',
         defaultMessage: 'When set',
+    },
+    admin: {
+        id: 'admin.global_attributes.attribute_details.applies_to.item.user.profile_display.admin.label',
+        defaultMessage: 'Admins only',
     },
     hidden: {
         id: 'admin.global_attributes.attribute_details.applies_to.item.user.profile_display.hidden.label',

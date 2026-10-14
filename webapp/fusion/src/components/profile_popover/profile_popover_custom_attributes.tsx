@@ -54,7 +54,8 @@ const ProfilePopoverCustomAttributes = ({
             // Check if the attribute has a value
             const hasValue = userProfile.custom_profile_attributes[attribute.id]?.length > 0;
 
-            if (!hasValue && visibility === 'when_set') {
+            // Antimatter: an admin-only one reaches only those who may see it, when set.
+            if (!hasValue && (visibility === 'when_set' || visibility === 'admin')) {
                 return null;
             } else if (visibility === 'when_set' && (attribute.type === 'multiselect' || attribute.type === 'select' || attribute.type === 'rank')) {
                 const attributeValue = userProfile.custom_profile_attributes[attribute.id];

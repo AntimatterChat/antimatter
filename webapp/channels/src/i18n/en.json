@@ -5315,6 +5315,10 @@
     "defaultMessage": "Managed by",
     "description": "Field label in the Users row of an attribute's 'Applies to' section (System Console > Attribute Management > attribute details), next to a locked field naming the external sync source (e.g. AD/LDAP)."
   },
+  "admin.global_attributes.attribute_details.applies_to.item.user.profile_display.admin.label": {
+    "defaultMessage": "Admins only",
+    "description": "Segmented-button option for 'Profile display' in the Users row of an attribute's 'Applies to' section: only admins and the user see the attribute's value; the server withholds it from everyone else."
+  },
   "admin.global_attributes.attribute_details.applies_to.item.user.profile_display.always.label": {
     "defaultMessage": "Always",
     "description": "Segmented-button option for 'Profile display' in the Users row of an attribute's 'Applies to' section: the attribute is always shown on user profiles, even when empty."
@@ -5326,6 +5330,10 @@
   "admin.global_attributes.attribute_details.applies_to.item.user.profile_display.label": {
     "defaultMessage": "Profile display",
     "description": "Field label (noun phrase) for the segmented control (Always / When set / Hidden) that controls whether the attribute is shown on user profiles. In the Users row of an attribute's 'Applies to' section in the System Console."
+  },
+  "admin.global_attributes.attribute_details.applies_to.item.user.profile_display.restricted_help": {
+    "defaultMessage": "Only admins and the user see the value. Admins only shows it on their profile to them; Hidden shows it nowhere.",
+    "description": "Help text under the 'Profile display' control in the Users row of an attribute's 'Applies to' section, shown when 'Admins only' or 'Hidden' is chosen."
   },
   "admin.global_attributes.attribute_details.applies_to.item.user.profile_display.when_set.label": {
     "defaultMessage": "When set",

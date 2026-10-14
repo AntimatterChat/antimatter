@@ -120,7 +120,7 @@ import type {OnTopPost, Post, PostList, PostSearchResults, PostsUsageResponse, T
 import type {PreferenceType} from '@mattermost/types/preferences';
 import type {ProductNotices} from '@mattermost/types/product_notices';
 import type {NameMappedPropertyFields, PropertyField, PropertyFieldOptionPage, PropertyValue} from '@mattermost/types/properties';
-import type {UserPropertyField, UserPropertyFieldPatch} from '@mattermost/types/properties_user';
+import type {CommunityAttributeField, CommunityAttributeFieldPatch, UserAttributeValue, UserPropertyField, UserPropertyFieldPatch} from '@mattermost/types/properties_user';
 import type {Reaction} from '@mattermost/types/reactions';
 import type {Recap, CreateRecapRequest, ScheduledRecap, ScheduledRecapInput, RecapLimitStatus} from '@mattermost/types/recaps';
 import type {RemoteCluster, RemoteClusterAcceptInvite, RemoteClusterPatch, RemoteClusterWithPassword} from '@mattermost/types/remote_clusters';
@@ -4605,6 +4605,50 @@ export default class Client4 {
         return this.doFetch<MemberModeration>(
             `${this.getTeamMemberRoute(teamId, userId)}/moderation`,
             {method: 'get'},
+        );
+    };
+
+    // Antimatter: a team's user attributes, which its admins define, and its members' values of them, as the caller
+    // may see them (hidden and admin-only ones are for the admins and the member only). An empty value clears one.
+    getCommunityAttributes = (teamId: string) => {
+        return this.doFetch<CommunityAttributeField[]>(
+            `${this.getTeamRoute(teamId)}/user_attributes/fields`,
+            {method: 'get'},
+        );
+    };
+
+    createCommunityAttribute = (teamId: string, field: CommunityAttributeFieldPatch) => {
+        return this.doFetch<CommunityAttributeField>(
+            `${this.getTeamRoute(teamId)}/user_attributes/fields`,
+            {method: 'post', body: JSON.stringify(field)},
+        );
+    };
+
+    patchCommunityAttribute = (teamId: string, fieldId: string, patch: CommunityAttributeFieldPatch) => {
+        return this.doFetch<CommunityAttributeField>(
+            `${this.getTeamRoute(teamId)}/user_attributes/fields/${fieldId}`,
+            {method: 'patch', body: JSON.stringify(patch)},
+        );
+    };
+
+    deleteCommunityAttribute = (teamId: string, fieldId: string) => {
+        return this.doFetch<StatusOK>(
+            `${this.getTeamRoute(teamId)}/user_attributes/fields/${fieldId}`,
+            {method: 'delete'},
+        );
+    };
+
+    getCommunityAttributeValues = (teamId: string, userIds: string[]) => {
+        return this.doFetch<Record<string, Record<string, UserAttributeValue>>>(
+            `${this.getTeamRoute(teamId)}/user_attributes/values/search`,
+            {method: 'post', body: JSON.stringify({user_ids: userIds})},
+        );
+    };
+
+    patchCommunityAttributeValues = (teamId: string, userId: string, values: Record<string, UserAttributeValue | null>) => {
+        return this.doFetch<Record<string, UserAttributeValue>>(
+            `${this.getTeamMemberRoute(teamId, userId)}/user_attributes`,
+            {method: 'patch', body: JSON.stringify(values)},
         );
     };
 

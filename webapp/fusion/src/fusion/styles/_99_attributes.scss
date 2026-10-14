@@ -1,0 +1,13 @@
+// Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
+// See LICENSE.txt for license information.
+
+// User attributes: a person's attributes dialog, and the community's (its choices, the delete confirmation).
+:is(.am-app, .am-layer) .am-attr-pane { max-height: min(80vh, 760px); overflow-y: auto; }
+:is(.am-app, .am-layer) .am-attr-choices { display: flex; flex-wrap: wrap; gap: 6px; }
+:is(.am-app, .am-layer) .am-attr-choices .am-onboarding-option { padding: 5px 12px; font-size: 13px; }
+:is(.am-app, .am-layer) .am-attr-people { display: grid; gap: 6px; }
+:is(.am-app, .am-layer) .am-attr-readonly { padding: 7px 0; color: var(--am-text-2); font-size: 14px; }
+:is(.am-app, .am-layer) .am-attr-options { display: grid; gap: 6px; justify-items: start; }
+:is(.am-app, .am-layer) .am-attr-option { display: flex; align-items: center; gap: 6px; width: 100%; }
+:is(.am-app, .am-layer) .am-attr-option input { flex: 1; }
+:is(.am-app, .am-layer) .am-attr-confirm { color: var(--am-danger); font-size: 13px; }

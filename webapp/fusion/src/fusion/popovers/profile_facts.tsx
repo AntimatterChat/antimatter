@@ -10,10 +10,13 @@ import type {UserProfile} from '@mattermost/types/users';
 
 import {getCustomProfileAttributeValues} from 'mattermost-redux/actions/users';
 import {getCustomProfileAttributes} from 'mattermost-redux/selectors/entities/general';
+import {getCurrentTeamId} from 'mattermost-redux/selectors/entities/teams';
 import {displayLastActiveLabel, getLastActivityForUserId} from 'mattermost-redux/selectors/entities/users';
 
 import ExternalLink from 'components/external_link';
 
+import {AttributeValue, attributeValueText, isEmptyValue} from 'fusion/attributes/attribute_inputs';
+import {useCommunityAttributes, useMemberAttributeValues} from 'fusion/attributes/community_attributes';
 import {lastOnlineAgo} from 'fusion/channel/header_topic';
 import Icon from 'fusion/components/icon';
 import type {IconName} from 'fusion/components/icon';
@@ -33,7 +36,7 @@ export function attributeText(field: UserPropertyField, value: string | string[]
 
 const VALUE_ICONS: Record<string, IconName> = {email: 'mail', phone: 'phone', url: 'link'};
 
-function attributeHref(field: UserPropertyField, text: string): string | undefined {
+function attributeHref(field: {attrs?: {value_type?: string}}, text: string): string | undefined {
     switch (field.attrs?.value_type) {
     case 'email': return `mailto:${text}`;
     case 'phone': return `tel:${text.replace(/[^\d+]/g, '')}`;
@@ -43,7 +46,8 @@ function attributeHref(field: UserPropertyField, text: string): string | undefin
 }
 
 // ProfileFacts are the extra lines of someone's profile card: their email when the server shares it, the custom
-// profile fields the admins defined, and when they were last online.
+// profile fields the admins defined (the server's, then the current community's), and when they were last online.
+// The server only sends admin-only values to the admins and the person themselves; those lines show a lock.
 export default function ProfileFacts({user}: {user: UserProfile}) {
     const intl = useIntl();
     const dispatch = useDispatch();
@@ -51,6 +55,9 @@ export default function ProfileFacts({user}: {user: UserProfile}) {
     const fields = useSelector(getCustomProfileAttributes);
     const lastOnline = useSelector((state: GlobalState) => (displayLastActiveLabel(state, user.id) ? getLastActivityForUserId(state, user.id) : 0));
     const values = user.custom_profile_attributes;
+    const teamId = useSelector(getCurrentTeamId);
+    const communityFields = useCommunityAttributes(user.is_bot ? undefined : teamId);
+    const communityValues = useMemberAttributeValues(user.is_bot ? undefined : teamId, user.id);
 
     useEffect(() => {
         if (!user.is_bot && fields.length && !values) {
@@ -59,7 +66,8 @@ export default function ProfileFacts({user}: {user: UserProfile}) {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [user.id, fields.length, Boolean(values)]);
 
-    const lines: Array<{key: string; icon: IconName; label?: string; text: string; href?: string}> = [];
+    const lines: Array<{key: string; icon: IconName; label?: string; text: string; href?: string; node?: React.ReactNode}> = [];
+    const adminOnly = intl.formatMessage({id: 'fusion.profile.adminOnly', defaultMessage: 'Only admins and they see this'});
     if (user.email && !user.is_bot && !streamer) {
         lines.push({key: 'email', icon: 'mail', text: user.email, href: `mailto:${user.email}`});
     }
@@ -73,7 +81,33 @@ export default function ProfileFacts({user}: {user: UserProfile}) {
             if (!text && visibility === 'when_set') {
                 continue;
             }
-            lines.push({key: field.id, icon: VALUE_ICONS[field.attrs?.value_type || ''] || 'tag', label: getUserPropertyFieldLabel(field), text: text || '—', href: text ? attributeHref(field, text) : undefined});
+            const restricted = visibility === 'admin';
+            lines.push({key: field.id, icon: restricted ? 'lock' : VALUE_ICONS[field.attrs?.value_type || ''] || 'tag', label: restricted ? `${getUserPropertyFieldLabel(field)} · ${adminOnly}` : getUserPropertyFieldLabel(field), text: text || '—', href: text ? attributeHref(field, text) : undefined});
+        }
+    }
+    if (communityFields && communityValues && !user.is_bot && !streamer) {
+        for (const field of communityFields) {
+            const visibility = field.attrs?.visibility || 'when_set';
+            const value = communityValues[field.id];
+            if (visibility === 'hidden' || (isEmptyValue(value) && visibility !== 'always')) {
+                continue;
+            }
+            const people = field.type === 'user' || field.type === 'multiuser';
+            const text = people || isEmptyValue(value) ? '' : attributeValueText(intl, field, value);
+            const restricted = visibility === 'admin';
+            lines.push({
+                key: field.id,
+                icon: restricted ? 'lock' : VALUE_ICONS[field.attrs?.value_type || ''] || 'tag',
+                label: restricted ? `${field.name} · ${adminOnly}` : field.name,
+                text: text || '—',
+                href: text ? attributeHref(field, text) : undefined,
+                node: people && !isEmptyValue(value) ? (
+                    <AttributeValue
+                        field={field}
+                        value={value}
+                    />
+                ) : undefined,
+            });
         }
     }
     if (lastOnline) {
@@ -91,7 +125,8 @@ export default function ProfileFacts({user}: {user: UserProfile}) {
                 >
                     <Icon name={line.icon}/>
                     {line.label && <b>{line.label}</b>}
-                    {line.href?.startsWith('http') && (
+                    {line.node}
+                    {!line.node && line.href?.startsWith('http') && (
                         <ExternalLink
                             href={line.href}
                             location='fusion_profile'
@@ -99,8 +134,8 @@ export default function ProfileFacts({user}: {user: UserProfile}) {
                             {line.text}
                         </ExternalLink>
                     )}
-                    {line.href && !line.href.startsWith('http') && <a href={line.href}>{line.text}</a>}
-                    {!line.href && line.text}
+                    {!line.node && line.href && !line.href.startsWith('http') && <a href={line.href}>{line.text}</a>}
+                    {!line.node && !line.href && line.text}
                 </span>
             ))}
         </>

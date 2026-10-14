@@ -554,7 +554,7 @@ function AttributeDetails({disabled = false}: Props): JSX.Element {
                 // create. A non-template user field is itself that Users field.
                 const userField = field.object_type === 'user' ? field : linkedByType.user;
                 const rawVisibility = userField?.attrs?.visibility;
-                const loadedVisibility: FieldVisibility = rawVisibility === 'always' || rawVisibility === 'when_set' || rawVisibility === 'hidden' ? rawVisibility : 'when_set';
+                const loadedVisibility: FieldVisibility = rawVisibility === 'always' || rawVisibility === 'when_set' || rawVisibility === 'admin' || rawVisibility === 'hidden' ? rawVisibility : 'when_set';
                 const loadedManaged: UserManagedValue = userField?.attrs?.managed === 'admin' ? 'admin' : '';
                 setUserVisibility(loadedVisibility);
                 setUserManaged(loadedManaged);

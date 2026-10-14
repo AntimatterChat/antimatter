@@ -5303,6 +5303,10 @@
     "defaultMessage": "Managed by",
     "description": "Field label in the Users row of an attribute's 'Applies to' section (System Console > Attribute Management > attribute details), next to a locked field naming the external sync source (e.g. AD/LDAP)."
   },
+  "admin.global_attributes.attribute_details.applies_to.item.user.profile_display.admin.label": {
+    "defaultMessage": "Admins only",
+    "description": "Segmented-button option for 'Profile display' in the Users row of an attribute's 'Applies to' section: only admins and the user see the attribute's value; the server withholds it from everyone else."
+  },
   "admin.global_attributes.attribute_details.applies_to.item.user.profile_display.always.label": {
     "defaultMessage": "Always",
     "description": "Segmented-button option for 'Profile display' in the Users row of an attribute's 'Applies to' section: the attribute is always shown on user profiles, even when empty."
@@ -5314,6 +5318,10 @@
   "admin.global_attributes.attribute_details.applies_to.item.user.profile_display.label": {
     "defaultMessage": "Profile display",
     "description": "Field label (noun phrase) for the segmented control (Always / When set / Hidden) that controls whether the attribute is shown on user profiles. In the Users row of an attribute's 'Applies to' section in the System Console."
+  },
+  "admin.global_attributes.attribute_details.applies_to.item.user.profile_display.restricted_help": {
+    "defaultMessage": "Only admins and the user see the value. Admins only shows it on their profile to them; Hidden shows it nowhere.",
+    "description": "Help text under the 'Profile display' control in the Users row of an attribute's 'Applies to' section, shown when 'Admins only' or 'Hidden' is chosen."
   },
   "admin.global_attributes.attribute_details.applies_to.item.user.profile_display.when_set.label": {
     "defaultMessage": "When set",
@@ -20983,6 +20991,78 @@
     "defaultMessage": "Your status, profile and settings",
     "description": ""
   },
+  "fusion.attributes.adminOnlyNote": {
+    "defaultMessage": "Only admins and {name} see it.",
+    "description": ""
+  },
+  "fusion.attributes.cancel": {
+    "defaultMessage": "Cancel",
+    "description": ""
+  },
+  "fusion.attributes.communitySection": {
+    "defaultMessage": "In {community}",
+    "description": ""
+  },
+  "fusion.attributes.dialogLead": {
+    "defaultMessage": "Details about them that admins keep up to date, such as where they work or for whom. They show on their profile.",
+    "description": ""
+  },
+  "fusion.attributes.dialogTitle": {
+    "defaultMessage": "{name}'s attributes",
+    "description": ""
+  },
+  "fusion.attributes.edit": {
+    "defaultMessage": "Edit attributes…",
+    "description": ""
+  },
+  "fusion.attributes.findPerson": {
+    "defaultMessage": "Find someone…",
+    "description": ""
+  },
+  "fusion.attributes.hiddenNote": {
+    "defaultMessage": "Not shown on profiles.",
+    "description": ""
+  },
+  "fusion.attributes.lockedByIntegration": {
+    "defaultMessage": "Managed by an integration.",
+    "description": ""
+  },
+  "fusion.attributes.lockedByProvider": {
+    "defaultMessage": "Set by their login provider.",
+    "description": ""
+  },
+  "fusion.attributes.lockedCommunity": {
+    "defaultMessage": "Set by the community's admins.",
+    "description": ""
+  },
+  "fusion.attributes.lockedConsole": {
+    "defaultMessage": "Set it in the System Console.",
+    "description": ""
+  },
+  "fusion.attributes.none": {
+    "defaultMessage": "—",
+    "description": ""
+  },
+  "fusion.attributes.removePerson": {
+    "defaultMessage": "Remove",
+    "description": ""
+  },
+  "fusion.attributes.save": {
+    "defaultMessage": "Save",
+    "description": ""
+  },
+  "fusion.attributes.saved": {
+    "defaultMessage": "Saved {name}'s attributes",
+    "description": ""
+  },
+  "fusion.attributes.saveFailed": {
+    "defaultMessage": "The attributes couldn't be saved.",
+    "description": ""
+  },
+  "fusion.attributes.serverSection": {
+    "defaultMessage": "Everywhere on the server",
+    "description": ""
+  },
   "fusion.autolinks.add": {
     "defaultMessage": "Add an autolink",
     "description": ""
@@ -22475,6 +22555,194 @@
     "defaultMessage": "Thread · {where}",
     "description": ""
   },
+  "fusion.communityAttributes.addOption": {
+    "defaultMessage": "Add a choice",
+    "description": ""
+  },
+  "fusion.communityAttributes.adminsOnly": {
+    "defaultMessage": "admins only",
+    "description": ""
+  },
+  "fusion.communityAttributes.byAdmins": {
+    "defaultMessage": "set by admins",
+    "description": ""
+  },
+  "fusion.communityAttributes.byMembers": {
+    "defaultMessage": "set by members",
+    "description": ""
+  },
+  "fusion.communityAttributes.cancel": {
+    "defaultMessage": "Cancel",
+    "description": ""
+  },
+  "fusion.communityAttributes.create": {
+    "defaultMessage": "Add attribute",
+    "description": ""
+  },
+  "fusion.communityAttributes.createIt": {
+    "defaultMessage": "Add attribute",
+    "description": ""
+  },
+  "fusion.communityAttributes.delete": {
+    "defaultMessage": "Delete the attribute",
+    "description": ""
+  },
+  "fusion.communityAttributes.deleteConfirm": {
+    "defaultMessage": "Delete it and everyone's values?",
+    "description": ""
+  },
+  "fusion.communityAttributes.deleted": {
+    "defaultMessage": "Deleted the attribute {name}",
+    "description": ""
+  },
+  "fusion.communityAttributes.deleteIt": {
+    "defaultMessage": "Delete",
+    "description": ""
+  },
+  "fusion.communityAttributes.done": {
+    "defaultMessage": "Done",
+    "description": ""
+  },
+  "fusion.communityAttributes.down": {
+    "defaultMessage": "Move down",
+    "description": ""
+  },
+  "fusion.communityAttributes.edit": {
+    "defaultMessage": "Edit the attribute",
+    "description": ""
+  },
+  "fusion.communityAttributes.failed": {
+    "defaultMessage": "The attribute couldn't be saved.",
+    "description": ""
+  },
+  "fusion.communityAttributes.hidden": {
+    "defaultMessage": "hidden",
+    "description": ""
+  },
+  "fusion.communityAttributes.inList": {
+    "defaultMessage": "in the member list",
+    "description": ""
+  },
+  "fusion.communityAttributes.kind": {
+    "defaultMessage": "Kind",
+    "description": ""
+  },
+  "fusion.communityAttributes.kind.date": {
+    "defaultMessage": "Date",
+    "description": ""
+  },
+  "fusion.communityAttributes.kind.email": {
+    "defaultMessage": "Email",
+    "description": ""
+  },
+  "fusion.communityAttributes.kind.multiselect": {
+    "defaultMessage": "Several choices",
+    "description": ""
+  },
+  "fusion.communityAttributes.kind.multiuser": {
+    "defaultMessage": "People",
+    "description": ""
+  },
+  "fusion.communityAttributes.kind.phone": {
+    "defaultMessage": "Phone number",
+    "description": ""
+  },
+  "fusion.communityAttributes.kind.select": {
+    "defaultMessage": "Choice",
+    "description": ""
+  },
+  "fusion.communityAttributes.kind.text": {
+    "defaultMessage": "Text",
+    "description": ""
+  },
+  "fusion.communityAttributes.kind.url": {
+    "defaultMessage": "Link",
+    "description": ""
+  },
+  "fusion.communityAttributes.kind.user": {
+    "defaultMessage": "Person",
+    "description": ""
+  },
+  "fusion.communityAttributes.lead": {
+    "defaultMessage": "Details about the members of {community}, such as who they work for or where: shown on their profiles in this community only. Set them from a member's menu, \"Edit attributes…\".",
+    "description": ""
+  },
+  "fusion.communityAttributes.memberList": {
+    "defaultMessage": "Show in the member list",
+    "description": ""
+  },
+  "fusion.communityAttributes.memberListDesc": {
+    "defaultMessage": "Under people's names, in place of their position, and to filter the list by.",
+    "description": ""
+  },
+  "fusion.communityAttributes.name": {
+    "defaultMessage": "Name",
+    "description": ""
+  },
+  "fusion.communityAttributes.namePlaceholder": {
+    "defaultMessage": "e.g. Company",
+    "description": ""
+  },
+  "fusion.communityAttributes.none": {
+    "defaultMessage": "No attributes yet. Add one, such as \"Company\" or \"Location\".",
+    "description": ""
+  },
+  "fusion.communityAttributes.optionLabel": {
+    "defaultMessage": "Choice {n}",
+    "description": ""
+  },
+  "fusion.communityAttributes.options": {
+    "defaultMessage": "Choices",
+    "description": ""
+  },
+  "fusion.communityAttributes.removeOption": {
+    "defaultMessage": "Remove the choice",
+    "description": ""
+  },
+  "fusion.communityAttributes.save": {
+    "defaultMessage": "Save",
+    "description": ""
+  },
+  "fusion.communityAttributes.setBy": {
+    "defaultMessage": "Who sets it",
+    "description": ""
+  },
+  "fusion.communityAttributes.setByAdmins": {
+    "defaultMessage": "Admins",
+    "description": ""
+  },
+  "fusion.communityAttributes.setByMembers": {
+    "defaultMessage": "Each member",
+    "description": ""
+  },
+  "fusion.communityAttributes.shownAdmins": {
+    "defaultMessage": "Admins",
+    "description": ""
+  },
+  "fusion.communityAttributes.shownEveryone": {
+    "defaultMessage": "Everyone",
+    "description": ""
+  },
+  "fusion.communityAttributes.shownNobody": {
+    "defaultMessage": "Hidden",
+    "description": ""
+  },
+  "fusion.communityAttributes.shownTo": {
+    "defaultMessage": "Who sees it",
+    "description": ""
+  },
+  "fusion.communityAttributes.shownToDesc": {
+    "defaultMessage": "Admins and the member always see it. Hidden ones are not shown on profiles.",
+    "description": ""
+  },
+  "fusion.communityAttributes.title": {
+    "defaultMessage": "Member attributes",
+    "description": ""
+  },
+  "fusion.communityAttributes.up": {
+    "defaultMessage": "Move up",
+    "description": ""
+  },
   "fusion.composer.ackRequested": {
     "defaultMessage": "Acknowledgement requested",
     "description": ""
@@ -23787,6 +24055,14 @@
     "defaultMessage": "Teams",
     "description": ""
   },
+  "fusion.members.filterAll": {
+    "defaultMessage": "Everyone",
+    "description": ""
+  },
+  "fusion.members.filterBy": {
+    "defaultMessage": "Filter by {attribute}",
+    "description": ""
+  },
   "fusion.members.grouping": {
     "defaultMessage": "Group members by",
     "description": ""
@@ -24699,6 +24975,10 @@
     "defaultMessage": "Add to a channel",
     "description": ""
   },
+  "fusion.profile.adminOnly": {
+    "defaultMessage": "Only admins and they see this",
+    "description": ""
+  },
   "fusion.profile.bot": {
     "defaultMessage": "Integration · posts on behalf of an app",
     "description": ""
@@ -25309,6 +25589,14 @@
   },
   "fusion.selfRoles.title": {
     "defaultMessage": "Your roles",
+    "description": ""
+  },
+  "fusion.serverMenu.attributes": {
+    "defaultMessage": "Member attributes…",
+    "description": ""
+  },
+  "fusion.serverMenu.attributesSub": {
+    "defaultMessage": "Company, site… on profiles",
     "description": ""
   },
   "fusion.serverMenu.browse": {

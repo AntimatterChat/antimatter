@@ -20,6 +20,7 @@ import {makeGetCustomStatus} from 'selectors/views/custom_status';
 
 import PendingJoinRequests from 'components/channel_members_rhs/pending_join_requests';
 
+import {useMemberListAttribute} from 'fusion/attributes/member_list_attribute';
 import {TalkNote} from 'fusion/calls/markers';
 import Avatar from 'fusion/components/avatar';
 import Icon from 'fusion/components/icon';
@@ -50,13 +51,16 @@ type MemberProps = {
     user: UserProfile;
     off: boolean;
     role: MemberRole;
+
+    // The community attribute shown in the member list, as Company.
+    attribute?: string;
     onOpen: (el: HTMLElement) => void;
     onMenu: (e: React.MouseEvent<HTMLElement>) => void;
 };
 
 const NO_REQUESTS: ReturnType<typeof getPendingChannelJoinRequests> = [];
 
-function Member({user, off, role, onOpen, onMenu}: MemberProps) {
+function Member({user, off, role, attribute, onOpen, onMenu}: MemberProps) {
     const {formatMessage} = useIntl();
     const name = useDisplayName(user);
     const roleColor = useRoleColor(user.id);
@@ -106,7 +110,7 @@ function Member({user, off, role, onOpen, onMenu}: MemberProps) {
                     />
                     {isGuest(user.roles) && <span className={am('bot-tag', 'guest-tag')}>{formatMessage({id: 'fusion.message.guest', defaultMessage: 'GUEST'})}</span>}
                 </b>
-                <span><TalkNote userId={user.id}>{custom?.text || user.position || ''}</TalkNote></span>
+                <span><TalkNote userId={user.id}>{custom?.text || attribute || user.position || ''}</TalkNote></span>
             </span>
         </button>
     );
@@ -131,7 +135,10 @@ export default function MemberList({inPanel = false}: {inPanel?: boolean}) {
     if (!rolesAllowed) {
         grouping = 'teams';
     }
-    const groups = useMemberGroups(profiles, roles, grouping);
+    const allGroups = useMemberGroups(profiles, roles, grouping);
+    const teamId = useSelector(getCurrentTeamId);
+    const listAttribute = useMemberListAttribute(channel?.type === 'D' || channel?.type === 'G' ? undefined : teamId, profiles);
+    const groups = allGroups.map((g) => ({...g, users: g.users.filter((u) => listAttribute.shown(u.id))})).filter((g) => g.users.length);
     const canAdd = useCanAddPeople(channel);
     const [popover, setPopover] = useState<{userId: string; anchor: HTMLElement} | null>(null);
     const [adding, setAdding] = useState(false);
@@ -196,6 +203,7 @@ export default function MemberList({inPanel = false}: {inPanel?: boolean}) {
                         })}
                     </span>
                 )}
+                {listAttribute.filter}
                 {!direct && (canAdd.add || canAdd.invite) && (
                     <button
                         ref={addRef}
@@ -257,6 +265,7 @@ export default function MemberList({inPanel = false}: {inPanel?: boolean}) {
                             user={u}
                             off={group.off || Boolean(group.offline?.has(u.id))}
                             role={roles[u.id]}
+                            attribute={listAttribute.textOf(u.id)}
                             onOpen={(anchor) => {
                                 // A click while their menu is open only closes it.
                                 if (userMenu) {

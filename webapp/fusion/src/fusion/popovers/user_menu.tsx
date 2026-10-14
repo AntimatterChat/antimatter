@@ -21,6 +21,7 @@ import {openDirectChannelToUserId} from 'actions/channel_actions';
 
 import AddUserToChannelModal from 'components/add_user_to_channel_modal';
 
+import EditAttributesItem from 'fusion/attributes/edit_attributes_item';
 import {Popover} from 'fusion/components/layer';
 import {Flyout, MenuItem, MenuSeparator} from 'fusion/components/menu';
 import {useDisplayName, useUser} from 'fusion/hooks/users';
@@ -203,6 +204,10 @@ export function UserMenu({target, onProfile, onClose}: {target: Target; onProfil
                     copyToClipboard('@' + user.username);
                     toast(formatMessage({id: 'fusion.toast.copiedUser', defaultMessage: 'Copied @{username}'}, {username: user.username}));
                 })}
+            />
+            <EditAttributesItem
+                userId={userId}
+                onDone={onClose}
             />
             {/* Ignoring and blocking, as in Discord, unless the admin turned them off. System admins can be ignored,
                 but not blocked: they always reach people. */}
