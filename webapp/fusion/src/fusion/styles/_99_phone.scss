@@ -19,6 +19,12 @@ body.app__body #root.am-root {
 }
 #root:not(.am-root) { padding-right: env(safe-area-inset-right); padding-left: env(safe-area-inset-left); }
 
+/* ---------- Compact: drawers ---------- */
+@media #{$compact} {
+    // The app rail in the right-hand drawer keeps its width: the member list leaves it 52px.
+    .am-app.am-right-open .am-appbar { width: 52px; }
+}
+
 /* ---------- Phone: one pane at a time ---------- */
 @media #{$phone} {
     // The navigation drawer leaves a strip of the conversation to tap it closed (it slides 340px away: see swipes.ts).
@@ -47,6 +53,7 @@ body.app__body #root.am-root {
     :is(.am-app, .am-layer) .am-sheet-back .am-ic { transform: rotate(90deg); }
     .am-app .am-rhs > .am-sheet-back { position: absolute; z-index: 2; top: 6px; left: 4px; }
     .am-app .am-rhs:has(> .am-sheet-back) :is(.am-rhs-head, .sidebar--right__header) { padding-left: 48px; }
+    .am-app .am-rhs:has(> .am-sheet-back) .am-rhs-app-ic { left: 52px; }
     .am-app .am-rhs:has(> .am-sheet-back) .am-rhs-head > .am-icon-btn:not([aria-haspopup]) { display: none; }
     .am-app .am-rhs:has(> .am-sheet-back) :is(.sidebar--right__expand, .sidebar--right__close, .PopoutButton, .am-rhs-tools) { display: none !important; }
     .am-app .am-rhs .am-rhs-head .am-icon-btn { width: 40px; height: 40px; }
@@ -114,10 +121,12 @@ body.app__body #root.am-root {
     :is(.am-app, .am-layer) .am-typing { left: 14px; }
 }
 
-// A phone held sideways has little height: lower headers.
+// A phone held sideways has little height: lower headers, and sheets and dialogs no wider than a menu needs.
 @media (max-width: 960px) and (max-height: 500px) {
     :is(.am-app, .am-layer) :is(.am-chat-head, .am-rhs-head) { height: 44px; }
     .am-app .am-rhs > .am-sheet-back { top: 2px; }
+    :is(.am-app, .am-layer) .am-pop.am-sheet { max-width: 560px !important; margin: 0 auto; }
+    :is(.am-app, .am-layer) .am-scrim > .am-modal:not(:has(> nav)) { max-width: 640px !important; justify-self: center; }
 }
 
 /* ---------- Touch screens ---------- */

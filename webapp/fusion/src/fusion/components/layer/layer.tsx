@@ -72,9 +72,19 @@ type PopoverProps = {
 };
 
 const MARGIN = 8;
+
+// Where the last press happened: a popover whose anchor isn't shown (a message's toolbar on a touch screen, opened by
+// a long press) opens there instead.
+let lastPress: {x: number; y: number} | undefined;
+if (typeof document !== 'undefined') {
+    document.addEventListener('pointerdown', (e) => {
+        lastPress = {x: e.clientX, y: e.clientY};
+    }, true);
+}
+
 const clamp = (v: number, size: number, max: number) => Math.max(MARGIN, Math.min(v, max - size - MARGIN));
 
-function place(pop: HTMLElement, placement: Placement, anchor?: HTMLElement | null, point?: {x: number; y: number}) {
+function place(pop: HTMLElement, placement: Placement, anchor?: HTMLElement | null, point?: {x: number; y: number}, pressed?: {x: number; y: number}) {
     const w = pop.offsetWidth;
     const h = pop.offsetHeight;
 
@@ -84,9 +94,11 @@ function place(pop: HTMLElement, placement: Placement, anchor?: HTMLElement | nu
     const vh = view.innerHeight;
     let left = 0;
     let top = 0;
-    if (placement === 'point' || !anchor) {
-        left = point?.x ?? vw / 2;
-        top = point?.y ?? vh / 3;
+    const hidden = anchor ? !anchor.getClientRects().length : false;
+    const at = hidden && !point ? pressed : point;
+    if (placement === 'point' || !anchor || hidden) {
+        left = at?.x ?? vw / 2;
+        top = at?.y ?? vh / 3;
     } else {
         const r = anchor.getBoundingClientRect();
         if (placement === 'below') {
@@ -144,9 +156,12 @@ export function Popover({anchor, point, placement = 'below', className, role = '
     togglesRef.current = toggles;
     const sheet = useIsPhone() && canSheet;
 
+    // The press that opened it, for an anchor that isn't shown: taken once, as the popover follows its anchor.
+    const pressed = useRef(lastPress);
+
     useLayoutEffect(() => {
         if (ref.current && !sheet) {
-            place(ref.current, placement, anchor, point);
+            place(ref.current, placement, anchor, point, pressed.current);
             setPlaced(true);
         }
     });
