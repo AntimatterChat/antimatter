@@ -1619,6 +1619,12 @@ func (api *PluginAPI) GetUploadSession(uploadID string) (*model.UploadSession, e
 }
 
 func (api *PluginAPI) SendPushNotification(notification *model.PushNotification, userID string) *model.AppError {
+	// Antimatter: nothing reaches someone from a person they ignore or block, or in a direct message waiting as a
+	// message request, such as the ringing of a call.
+	if api.app.notificationSilenced(api.ctx, userID, notification.SenderId, notification.ChannelId) {
+		return nil
+	}
+
 	// Ignoring skipSessionId because it's only used internally to clear push notifications
 	return api.app.sendPushNotificationToAllSessions(api.ctx, notification, userID, "")
 }

@@ -9547,6 +9547,21 @@
     "description": "Low-level database error detail when counting a group's members fails; terse developer-facing text."
   },
   {
+    "id": "app.message_request.action.app_error",
+    "translation": "Unknown action on a message request.",
+    "description": "Error returned when the action asked on a message request is none of accept, dismiss (ignore) or request."
+  },
+  {
+    "id": "app.message_request.disabled.app_error",
+    "translation": "Blocking and message requests are turned off on this server.",
+    "description": "Error returned when acting on a message request (accept, ignore) while the system admin has turned off blocking and message requests."
+  },
+  {
+    "id": "app.message_request.not_direct.app_error",
+    "translation": "Only direct messages can be message requests.",
+    "description": "Error returned when acting on a message request for a channel that isn't a direct message between two people."
+  },
+  {
     "id": "app.moderation.admin.app_error",
     "translation": "The team's admins can't be moderated."
   },
@@ -12705,6 +12720,21 @@
     "id": "app.user_access_token.update_token_enable.app_error",
     "translation": "Unable to enable the access token.",
     "description": "API error returned when re-enabling a disabled personal access token fails."
+  },
+  {
+    "id": "app.user_block.blocked.app_error",
+    "translation": "You can't message this person.",
+    "description": "Error shown to someone who tries to start a direct message with, or post in a direct message to, a person who blocked them. Deliberately neutral: it must not say that they were blocked."
+  },
+  {
+    "id": "app.user_block.group_blocked.app_error",
+    "translation": "You can't start a group message with some of these people.",
+    "description": "Error shown when someone tries to start a group message that includes a person who blocked them. Deliberately neutral: it must not say who blocked them."
+  },
+  {
+    "id": "app.user_block.you_blocked.app_error",
+    "translation": "You blocked this person. Unblock them to message them.",
+    "description": "Error shown when someone tries to start or post in a direct message with a person they blocked themselves."
   },
   {
     "id": "app.user_terms_of_service.delete.app_error",
@@ -16811,6 +16841,11 @@
     "description": "API error when saving a user preference whose category identifier is empty or too long; 'category' groups related preference settings."
   },
   {
+    "id": "model.preference.is_valid.dm_privacy.app_error",
+    "translation": "Invalid choice for direct messages from people you don't know.",
+    "description": "Error returned when saving the preference of whom one accepts direct messages from (everyone, or ask first as message requests) with an invalid community or value."
+  },
+  {
     "id": "model.preference.is_valid.id.app_error",
     "translation": "Invalid user id.",
     "description": "API error when saving a user preference whose owning user ID is malformed."
@@ -16829,6 +16864,11 @@
     "id": "model.preference.is_valid.theme.app_error",
     "translation": "Invalid theme.",
     "description": "API error when a user's saved color theme preference contains invalid theme JSON."
+  },
+  {
+    "id": "model.preference.is_valid.user_block.app_error",
+    "translation": "Invalid ignored or blocked person.",
+    "description": "Error returned when saving a preference that ignores or blocks someone with an invalid user, oneself, or a level other than ignore or block."
   },
   {
     "id": "model.preference.is_valid.value.app_error",

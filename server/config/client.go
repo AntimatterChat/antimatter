@@ -80,6 +80,7 @@ func GenerateClientConfig(c *model.Config, telemetryID string) map[string]string
 	props["ShowEmailAddress"] = strconv.FormatBool(*c.PrivacySettings.ShowEmailAddress)
 	props["ShowFullName"] = strconv.FormatBool(*c.PrivacySettings.ShowFullName)
 	props["UseAnonymousURLs"] = strconv.FormatBool(*c.PrivacySettings.UseAnonymousURLs)
+	props["EnableUserBlocking"] = strconv.FormatBool(*c.PrivacySettings.EnableUserBlocking)
 
 	props["EnableFileAttachments"] = strconv.FormatBool(*c.FileSettings.EnableFileAttachments)
 	props["EnablePublicLink"] = strconv.FormatBool(*c.FileSettings.EnablePublicLink)

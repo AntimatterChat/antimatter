@@ -41,6 +41,12 @@ func (a *App) SendAutoResponseIfNecessary(rctx request.CTX, channel *model.Chann
 		return false, aErr
 	}
 
+	// Antimatter: an automatic reply would tell who's ignored, blocked or waiting as a message request that their
+	// message arrived, and would accept the request.
+	if receiverId != sender.Id && receiver.NotifyProps[model.AutoResponderActiveNotifyProp] == "true" && a.notificationSilenced(rctx, receiverId, sender.Id, channel.Id) {
+		return false, nil
+	}
+
 	autoResponded, err := a.checkIfRespondedToday(post.CreateAt, post.ChannelId, receiverId)
 	if err != nil {
 		return false, model.NewAppError("SendAutoResponseIfNecessary", "app.user.send_auto_response.app_error", nil, "", http.StatusInternalServerError).Wrap(err)

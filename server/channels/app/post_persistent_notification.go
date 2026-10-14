@@ -6,6 +6,7 @@ package app
 import (
 	"maps"
 	"net/http"
+	"slices"
 	"time"
 
 	"github.com/mattermost/mattermost/server/public/model"
@@ -321,6 +322,24 @@ func (a *App) sendPersistentNotifications(post *model.Post, channel *model.Chann
 		if id != post.UserId && v > GMMention {
 			mentionedUsersList = append(mentionedUsersList, id)
 		}
+	}
+
+	// Antimatter: those who ignore or block the author aren't reminded, nor the recipient of a message request.
+	if a.UserBlockingEnabled() {
+		ignoring, err := a.usersIgnoring(post.UserId)
+		if err != nil {
+			return errors.Wrap(err, "failed to get who ignores the author")
+		}
+		mentionedUsersList = slices.DeleteFunc(mentionedUsersList, func(id string) bool {
+			if ignoring[id] != "" {
+				return true
+			}
+			if channel.Type != model.ChannelTypeDirect {
+				return false
+			}
+			member, appErr := a.GetChannelMember(request.EmptyContext(a.Log()), channel.Id, id)
+			return appErr == nil && model.IsDMRequestWaiting(member.NotifyProps)
+		})
 	}
 
 	sender := profileMap[post.UserId]

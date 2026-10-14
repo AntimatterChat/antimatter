@@ -2389,6 +2389,12 @@ type PrivacySettings struct {
 	ShowEmailAddress *bool `access:"site_users_and_teams"`
 	ShowFullName     *bool `access:"site_users_and_teams"`
 	UseAnonymousURLs *bool `access:"site_users_and_teams"`
+
+	// Antimatter: people can ignore and block each other, and choose to get direct messages from people they don't
+	// know as message requests. Off (AM_PRIVACYSETTINGS_ENABLEUSERBLOCKING=false), for workplaces where colleagues
+	// must always be reachable, none of it is enforced, but the lists and choices people made are kept for when it's
+	// turned back on.
+	EnableUserBlocking *bool `access:"site_users_and_teams"`
 }
 
 func (s *PrivacySettings) setDefaults() {
@@ -2402,6 +2408,10 @@ func (s *PrivacySettings) setDefaults() {
 
 	if s.UseAnonymousURLs == nil {
 		s.UseAnonymousURLs = new(false)
+	}
+
+	if s.EnableUserBlocking == nil {
+		s.EnableUserBlocking = new(true)
 	}
 }
 

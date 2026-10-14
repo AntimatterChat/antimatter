@@ -6,6 +6,7 @@ package model
 import (
 	"encoding/json"
 	"fmt"
+	"maps"
 	"net/http"
 	"strings"
 	"unicode/utf8"
@@ -99,10 +100,30 @@ const sanitizedTimestamp int64 = -1
 // SanitizeForCurrentUser hides another user's private timestamp fields by
 // marking them with the sanitized sentinel, which MarshalJSON then omits from
 // API responses. The requester's own values are left untouched.
+//
+// Antimatter: it also leaves out the notify props only their member may see,
+// such as whether a direct message waits as a message request: the sender of
+// a request isn't told.
 func (o *ChannelMember) SanitizeForCurrentUser(currentUserId string) {
 	if o.UserId != currentUserId {
 		o.LastViewedAt = sanitizedTimestamp
 		o.LastUpdateAt = sanitizedTimestamp
+		o.removePrivateNotifyProps()
+	}
+}
+
+// removePrivateNotifyProps drops the notify props only the member may see, on
+// a copy: the map may be shared with a cache.
+func (o *ChannelMember) removePrivateNotifyProps() {
+	for _, key := range privateChannelMemberNotifyProps {
+		if _, ok := o.NotifyProps[key]; ok {
+			props := maps.Clone(o.NotifyProps)
+			for _, private := range privateChannelMemberNotifyProps {
+				delete(props, private)
+			}
+			o.NotifyProps = props
+			return
+		}
 	}
 }
 

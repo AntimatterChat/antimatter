@@ -443,6 +443,11 @@ func (a *App) GetOrCreateDirectChannel(rctx request.CTX, userID, otherUserID str
 		}
 	}
 
+	// Antimatter: someone blocked can't start a direct message with who blocked them, nor the other way around.
+	if appErr := a.checkUserBlocks(rctx, userID, otherUserID); appErr != nil {
+		return nil, appErr
+	}
+
 	channel, err := a.createDirectChannel(rctx, userID, otherUserID, channelOptions...)
 	if err != nil {
 		if err.Id == store.ChannelExistsError {
@@ -451,6 +456,7 @@ func (a *App) GetOrCreateDirectChannel(rctx request.CTX, userID, otherUserID str
 		return nil, err
 	}
 
+	a.startDirectChannelRequest(rctx, channel, userID, otherUserID)
 	a.handleCreationEvent(rctx, userID, otherUserID, channel)
 	return channel, nil
 }
@@ -473,6 +479,7 @@ func (a *App) getOrCreateDirectChannelWithUser(rctx request.CTX, user, otherUser
 		return nil, err
 	}
 
+	a.startDirectChannelRequest(rctx, channel, user.Id, otherUser.Id)
 	a.handleCreationEvent(rctx, user.Id, otherUser.Id, channel)
 	return channel, nil
 }
@@ -599,6 +606,16 @@ func (a *App) createDirectChannelWithUser(rctx request.CTX, user, otherUser *mod
 }
 
 func (a *App) CreateGroupChannel(rctx request.CTX, userIDs []string, creatorId string, channelOptions ...model.ChannelOption) (*model.Channel, *model.AppError) {
+	// Antimatter: someone blocked can't start a group message with who blocked them. One that exists already is
+	// only opened.
+	if a.UserBlockingEnabled() && creatorId != "" {
+		if existing, nErr := a.Srv().Store().Channel().GetByName("", model.GetGroupNameFromUserIds(userIDs), true); nErr != nil || existing == nil {
+			if appErr := a.checkGroupMessageBlocks(rctx, creatorId, userIDs); appErr != nil {
+				return nil, appErr
+			}
+		}
+	}
+
 	channel, err := a.createGroupChannel(rctx, userIDs, creatorId, channelOptions...)
 	if err != nil {
 		if err.Id == store.ChannelExistsError {

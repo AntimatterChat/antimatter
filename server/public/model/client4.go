@@ -3657,6 +3657,18 @@ func (c *Client4) GetOnTopPosts(ctx context.Context, channelId string) ([]*OnTop
 	return DecodeJSONFromResponse[[]*OnTopPost](r)
 }
 
+// UpdateMessageRequest acts on a direct message of the current user that waits as a message request (Antimatter):
+// MessageRequestActionAccept, MessageRequestActionDismiss or MessageRequestActionRequest. It returns their channel
+// member.
+func (c *Client4) UpdateMessageRequest(ctx context.Context, channelId, action string) (*ChannelMember, *Response, error) {
+	r, err := c.doAPIPostJSON(ctx, c.channelRoute(channelId).Join("message_request"), &MessageRequestAction{Action: action})
+	if err != nil {
+		return nil, BuildResponse(r), err
+	}
+	defer closeBody(r)
+	return DecodeJSONFromResponse[*ChannelMember](r)
+}
+
 // PutPostOnTop puts a message on top of its channel (Antimatter) for a duration in milliseconds, or until removed
 // (0); putting it there again sets a new time.
 func (c *Client4) PutPostOnTop(ctx context.Context, postId string, duration int64) (*OnTopPost, *Response, error) {

@@ -134,6 +134,18 @@ func (a *App) SendNotifications(rctx request.CTX, post *model.Post, team *model.
 	}
 	channelMemberNotifyPropsMap := cmnResult.Data
 
+	// Antimatter: those who ignore or block the author get no notification from them, nor does the recipient of a
+	// direct message waiting as a message request; writing in a direct message also moves it in or out of the requests.
+	var silenced model.StringSet
+	if a.UserBlockingEnabled() && post.UserId != "" {
+		ignoring, err := a.usersIgnoring(post.UserId)
+		if err != nil {
+			rctx.Logger().Warn("Failed to get who ignores the author of a post", mlog.String("post_id", post.Id), mlog.Err(err))
+		}
+		channelMemberNotifyPropsMap = a.updateDMRequestsForPost(rctx, post, channel, sender, ignoring, channelMemberNotifyPropsMap)
+		silenced = silencedRecipients(post, channel, ignoring, channelMemberNotifyPropsMap)
+	}
+
 	followers := make(model.StringSet, 0)
 	if tchan != nil {
 		tResult := <-tchan
@@ -244,6 +256,11 @@ func (a *App) SendNotifications(rctx request.CTX, post *model.Post, team *model.
 				}
 			}
 		}
+
+		for id := range silenced {
+			delete(mentions.Mentions, id)
+		}
+		allActivityPushUserIds = slices.DeleteFunc(allActivityPushUserIds, silenced.Has)
 
 		mentionedUsersList = make(model.StringArray, 0, len(mentions.Mentions))
 		mentionAutofollowChans := []chan *model.AppError{}
@@ -394,6 +411,10 @@ func (a *App) SendNotifications(rctx request.CTX, post *model.Post, team *model.
 				}
 
 				if post.GetProp(model.PostPropsFromWebhook) != "true" && uid == post.UserId {
+					continue
+				}
+
+				if silenced.Has(uid) {
 					continue
 				}
 

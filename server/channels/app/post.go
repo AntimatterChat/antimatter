@@ -174,6 +174,13 @@ func (a *App) CreatePost(rctx request.CTX, post *model.Post, channel *model.Chan
 		return nil, false, model.NewAppError("CreatePost", "app.post.create_post.shared_dm_or_gm.app_error", nil, "", http.StatusBadRequest)
 	}
 
+	// Antimatter: nobody posts in a direct message with someone who blocks them, or whom they block.
+	if channel.Type == model.ChannelTypeDirect && !post.IsSystemMessage() {
+		if err = a.checkUserBlocks(rctx, post.UserId, channel.GetOtherUserIdForDM(post.UserId)); err != nil {
+			return nil, false, err
+		}
+	}
+
 	// Validate burn-on-read restrictions (self-DMs, DMs with bots)
 	err = PostBurnOnReadCheckWithApp("App.CreatePost", a, rctx, post.UserId, post.ChannelId, post.Type, channel)
 	if err != nil {
