@@ -379,8 +379,8 @@ export default function CallControls({my, withPopout = false}: Props) {
             {!my.voice && call?.threadId && (
                 <button
                     className={am('round')}
-                    aria-label={formatMessage({id: 'fusion.calls.chat', defaultMessage: 'Call chat'})}
-                    title={formatMessage({id: 'fusion.calls.chat', defaultMessage: 'Call chat'})}
+                    aria-label={formatMessage({id: 'fusion.calls.callChat', defaultMessage: 'Call chat'})}
+                    title={formatMessage({id: 'fusion.calls.callChat', defaultMessage: 'Call chat'})}
                     onClick={() => dispatch(selectPostById(call.threadId))}
                 >
                     <Icon name='chat'/>

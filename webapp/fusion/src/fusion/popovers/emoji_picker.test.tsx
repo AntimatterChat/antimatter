@@ -157,7 +157,7 @@ describe('fusion/popovers/EmojiPicker', () => {
         expect(screen.getByRole('textbox', {name: 'Search emoji'})).toBeInTheDocument();
     });
 
-    test('links to adding a custom emoji when custom emoji are enabled', async () => {
+    test('opens the custom emoji dialog when custom emoji are enabled', async () => {
         const onClose = jest.fn();
         const state = {
             entities: {
@@ -173,13 +173,11 @@ describe('fusion/popovers/EmojiPicker', () => {
             />,
             state,
         );
-        const link = screen.getByRole('link', {name: 'Add custom emoji'});
-        expect(link).toHaveAttribute('href', '/lab/emoji/add');
-        await userEvent.click(link);
+        await userEvent.click(screen.getByRole('button', {name: 'Add custom emoji'}));
         expect(onClose).toHaveBeenCalled();
     });
 
-    test('has no custom emoji link when custom emoji are off', () => {
+    test('has no custom emoji button when custom emoji are off', () => {
         renderWithContext(
             <EmojiPicker
                 anchor={null}
@@ -188,6 +186,6 @@ describe('fusion/popovers/EmojiPicker', () => {
             />,
             {entities: {teams: {currentTeamId: 'team1', teams: {team1: {id: 'team1', name: 'lab'}}}}} as DeepPartial<GlobalState>,
         );
-        expect(screen.queryByRole('link', {name: 'Add custom emoji'})).not.toBeInTheDocument();
+        expect(screen.queryByRole('button', {name: 'Add custom emoji'})).not.toBeInTheDocument();
     });
 });

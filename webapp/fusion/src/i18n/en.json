@@ -21339,6 +21339,10 @@
     "defaultMessage": "Call",
     "description": ""
   },
+  "fusion.calls.callChat": {
+    "defaultMessage": "Call chat",
+    "description": ""
+  },
   "fusion.calls.callConnected": {
     "defaultMessage": "Call connected",
     "description": ""
