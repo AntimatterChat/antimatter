@@ -129,7 +129,7 @@ function ParticipantMenu({participant: p, channelId, point, onProfile, onClose}:
                         <MenuItem
                             icon='mic-lock'
                             label={p.modMuted ? formatMessage({id: 'fusion.calls.menu.liftModMute', defaultMessage: 'Allow to unmute'}) : formatMessage({id: 'fusion.calls.menu.modMute', defaultMessage: 'Mute for this call'})}
-                            sub={p.modMuted ? undefined : formatMessage({id: 'fusion.calls.menu.modMuteSub', defaultMessage: 'Until you allow it, also if they rejoin'})}
+                            sub={p.modMuted ? undefined : formatMessage({id: 'fusion.calls.menu.modMuteSub', defaultMessage: 'They stay muted until you allow it, even if they rejoin'})}
                             onClick={run(() => actions.modMute(p, channelId, !p.modMuted))}
                         />
                     )}

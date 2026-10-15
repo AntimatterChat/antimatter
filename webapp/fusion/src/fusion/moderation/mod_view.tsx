@@ -292,7 +292,7 @@ export default function ModViewPanel() {
                 <ul className={am('mod-perms')}>
                     {isSystemAdmin(user.roles || '') && <li><b>{formatMessage({id: 'fusion.modView.systemAdmin', defaultMessage: 'System admin: every permission'})}</b></li>}
                     {notable.map((n) => <li key={n.permission}>{formatMessage(n.label)}</li>)}
-                    {!notable.length && <li className={am('muted')}>{formatMessage({id: 'fusion.modView.noPerms', defaultMessage: 'Nothing beyond a member\'s'})}</li>}
+                    {!notable.length && <li className={am('muted')}>{formatMessage({id: 'fusion.modView.noPerms', defaultMessage: 'No permissions beyond a member\'s'})}</li>}
                 </ul>
 
                 <h3 className={am('section-title')}>{formatMessage({id: 'fusion.modView.actions', defaultMessage: 'Actions'})}</h3>

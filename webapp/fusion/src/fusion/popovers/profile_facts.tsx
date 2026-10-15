@@ -67,7 +67,7 @@ export default function ProfileFacts({user}: {user: UserProfile}) {
     }, [user.id, fields.length, Boolean(values)]);
 
     const lines: Array<{key: string; icon: IconName; label?: string; text: string; href?: string; node?: React.ReactNode}> = [];
-    const adminOnly = intl.formatMessage({id: 'fusion.profile.adminOnly', defaultMessage: 'Only admins and they see this'});
+    const adminOnly = intl.formatMessage({id: 'fusion.profile.adminOnly', defaultMessage: 'Only admins and this person see this'});
     if (user.email && !user.is_bot && !streamer) {
         lines.push({key: 'email', icon: 'mail', text: user.email, href: `mailto:${user.email}`});
     }

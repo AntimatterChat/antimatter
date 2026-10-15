@@ -21720,7 +21720,7 @@
     "description": ""
   },
   "fusion.calls.menu.modMuteSub": {
-    "defaultMessage": "Until you allow it, also if they rejoin",
+    "defaultMessage": "They stay muted until you allow it, even if they rejoin",
     "description": ""
   },
   "fusion.calls.menu.mute": {
@@ -24480,7 +24480,7 @@
     "description": ""
   },
   "fusion.modView.noPerms": {
-    "defaultMessage": "Nothing beyond a member's",
+    "defaultMessage": "No permissions beyond a member's",
     "description": ""
   },
   "fusion.modView.noRoles": {
@@ -25004,7 +25004,7 @@
     "description": ""
   },
   "fusion.profile.adminOnly": {
-    "defaultMessage": "Only admins and they see this",
+    "defaultMessage": "Only admins and this person see this",
     "description": ""
   },
   "fusion.profile.bot": {
@@ -25088,7 +25088,7 @@
     "description": "Label of the colour choices in the community folder settings dialog."
   },
   "fusion.rail.folderColorTheme": {
-    "defaultMessage": "The theme's",
+    "defaultMessage": "Theme colour",
     "description": "Accessible name of the colour swatch that uses the theme's accent colour for a community folder."
   },
   "fusion.rail.folderLabel": {

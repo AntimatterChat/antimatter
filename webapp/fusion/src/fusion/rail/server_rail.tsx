@@ -198,7 +198,7 @@ function FolderDialog({folder, onSave, onClose}: {folder: Folder; onSave: (name:
                             type='button'
                             role='radio'
                             aria-checked={!color}
-                            aria-label={formatMessage({id: 'fusion.rail.folderColorTheme', defaultMessage: 'The theme\'s'})}
+                            aria-label={formatMessage({id: 'fusion.rail.folderColorTheme', defaultMessage: 'Theme colour'})}
                             className={am('swatch', 'theme', {on: !color})}
                             onClick={() => setColor('')}
                         />
