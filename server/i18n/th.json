@@ -3204,10 +3204,6 @@
     "translation": "ไม่สามารถอัปเดตข้อความในข้อความส่วนตัวท่ีมีกำกนได้"
   },
   {
-    "id": "api.post.update_post.find.app_error",
-    "translation": "ไม่พบข้อความหรือคอมเม้นต์ท่ีถิงอัปเดต"
-  },
-  {
     "id": "api.post.update_post.permissions_details.app_error",
     "translation": "ถิงลบแล้ว id={{.PostId}}"
   },

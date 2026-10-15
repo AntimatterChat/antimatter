@@ -3204,10 +3204,6 @@
     "translation": "Δεν είναι δυνατή η ενημέρωση αναρτησης σε κανάλι άμεσου μηνύματος με περιορισμούς."
   },
   {
-    "id": "api.post.update_post.find.app_error",
-    "translation": "Δεν ήταν δυνατή η εύρεση της υπάρχουσας αναρτησης ή σχολίου για ενημέρωση."
-  },
-  {
     "id": "api.post.update_post.permissions_details.app_error",
     "translation": "Έχει ήδη διαγραφεί id={{.PostId}}."
   },

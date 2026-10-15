@@ -3204,10 +3204,6 @@
     "translation": "Tidak dapat kemas kini hantaran dalam saluran Mesej Terus yang terhad."
   },
   {
-    "id": "api.post.update_post.find.app_error",
-    "translation": "Tidak dapat mencari hantaran atau komen sedia ada untuk dikemas kini."
-  },
-  {
     "id": "api.post.update_post.permissions_details.app_error",
     "translation": "Sudah dipadam id={{.PostId}}."
   },

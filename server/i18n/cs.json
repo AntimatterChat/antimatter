@@ -3413,10 +3413,6 @@
     "translation": "Nelze upravit zprávu v chráněném kanálu přímých zpráv."
   },
   {
-    "id": "api.post.update_post.find.app_error",
-    "translation": "Nelze najít existující příspěvek, nebo komentář k aktualizaci."
-  },
-  {
     "id": "api.post.update_post.permissions_details.app_error",
     "translation": "{{.PostId}} byl již smazán."
   },

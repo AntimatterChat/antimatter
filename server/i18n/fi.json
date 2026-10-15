@@ -3403,10 +3403,6 @@
     "translation": "Viestiä ei voi päivittää rajoitetulla suoraviestikanavalla."
   },
   {
-    "id": "api.post.update_post.find.app_error",
-    "translation": "Ei löydetty viestiä tai kommentia päivitettäväksi."
-  },
-  {
     "id": "api.post.update_post.permissions_details.app_error",
     "translation": "Id={{.PostId}} on jo poistettu."
   },

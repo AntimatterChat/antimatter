@@ -3403,10 +3403,6 @@
     "translation": "Det går inte att uppdatera inlägg i en begränsad kanal för direktmeddelanden."
   },
   {
-    "id": "api.post.update_post.find.app_error",
-    "translation": "Vi kunde inte hitta det ursprungliga inlägget eller kommentaren att uppdatera."
-  },
-  {
     "id": "api.post.update_post.permissions_details.app_error",
     "translation": "Redan raderat id={{.PostId}}."
   },

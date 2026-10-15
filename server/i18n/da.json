@@ -3403,10 +3403,6 @@
     "translation": "Kan ikke opdatere indlæg i en begrænset direktbesked-kanal."
   },
   {
-    "id": "api.post.update_post.find.app_error",
-    "translation": "Det eksisterende indlæg eller kommentar til opdatering kunne ikke findes."
-  },
-  {
     "id": "api.post.update_post.permissions_details.app_error",
     "translation": "Allerede slettet id={{.PostId}}."
   },

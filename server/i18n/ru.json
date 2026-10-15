@@ -3413,10 +3413,6 @@
     "translation": "Невозможно обновить сообщение в ограниченном канале личных сообщений."
   },
   {
-    "id": "api.post.update_post.find.app_error",
-    "translation": "Не удалось найти существующее сообщение или комментарий для обновления."
-  },
-  {
     "id": "api.post.update_post.permissions_details.app_error",
     "translation": "Уже удален id={{.PostId}}."
   },

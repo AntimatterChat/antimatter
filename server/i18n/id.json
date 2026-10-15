@@ -3204,10 +3204,6 @@
     "translation": "Tidak dapat memperbarui pesan di kanal Pesan Langsung yang dibatasi."
   },
   {
-    "id": "api.post.update_post.find.app_error",
-    "translation": "Tidak dapat menemukan pesan atau komentar yang ada untuk diperbarui."
-  },
-  {
     "id": "api.post.update_post.permissions_details.app_error",
     "translation": "Sudah dihapus id={{.PostId}}."
   },

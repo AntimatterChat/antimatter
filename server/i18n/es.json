@@ -3403,10 +3403,6 @@
     "translation": "No se puede actualizar un mensaje en un canal de mensajes directos restringido."
   },
   {
-    "id": "api.post.update_post.find.app_error",
-    "translation": "No pudimos encontrar el mensaje o comentario para actualizarlo."
-  },
-  {
     "id": "api.post.update_post.permissions_details.app_error",
     "translation": "Ya fue eliminado el id={{.PostId}}."
   },

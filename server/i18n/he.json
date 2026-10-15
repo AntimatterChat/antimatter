@@ -3204,10 +3204,6 @@
     "translation": "לא ניתן לעדכן פוסט בערוץ הודעות ישירות מוגבל."
   },
   {
-    "id": "api.post.update_post.find.app_error",
-    "translation": "לא ניתן למצוא את הפוסט או ההערה הקיימים לעדכון."
-  },
-  {
     "id": "api.post.update_post.permissions_details.app_error",
     "translation": "כבר נמחק id={{.PostId}}."
   },

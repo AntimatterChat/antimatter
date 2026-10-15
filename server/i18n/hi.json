@@ -3204,10 +3204,6 @@
     "translation": "प्रतिबंधित डायरेक्ट मैसेज चैनल में पोस्ट अपडेट नहीं की जा सकती।"
   },
   {
-    "id": "api.post.update_post.find.app_error",
-    "translation": "अपडेट करने के लिए मौजूदा पोस्ट या टिप्पणी खोजने में असमर्थ।"
-  },
-  {
     "id": "api.post.update_post.permissions_details.app_error",
     "translation": "पहले से ही हटा दिया गया id={{.PostId}}।"
   },

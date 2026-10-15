@@ -3403,10 +3403,6 @@
     "translation": "Kan ikke oppdatere innlegg i en begrenset direktemeldingskanal."
   },
   {
-    "id": "api.post.update_post.find.app_error",
-    "translation": "Finner ikke det eksisterende innlegget eller kommentaren som skal oppdateres."
-  },
-  {
     "id": "api.post.update_post.permissions_details.app_error",
     "translation": "Allerede slettet id={{.PostId}}."
   },

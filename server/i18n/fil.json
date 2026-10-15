@@ -3204,10 +3204,6 @@
     "translation": "Hindi ma-update ang post sa restricted direct message channel."
   },
   {
-    "id": "api.post.update_post.find.app_error",
-    "translation": "Hindi makahanap ng umiiral na post o comment na ma-update."
-  },
-  {
     "id": "api.post.update_post.permissions_details.app_error",
     "translation": "Tinanggal na ang id={{.PostId}}."
   },

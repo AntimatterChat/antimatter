@@ -3403,10 +3403,6 @@
     "translation": "Kan bericht in beperkt kanaal met directe berichten niet bijwerken."
   },
   {
-    "id": "api.post.update_post.find.app_error",
-    "translation": "We kunnen geen bestaand bericht of commentaar vinden om bij te werken."
-  },
-  {
     "id": "api.post.update_post.permissions_details.app_error",
     "translation": "Is reeds verwijderd id={{.PostId}}."
   },

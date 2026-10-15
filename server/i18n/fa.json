@@ -3403,10 +3403,6 @@
     "translation": "نمی‌توان پست را در کانال پیام مستقیم محدودشده به‌روزرسانی کرد."
   },
   {
-    "id": "api.post.update_post.find.app_error",
-    "translation": "یافتن پست یا نظر موجود برای به روزرسانی امکان پذیر نیست."
-  },
-  {
     "id": "api.post.update_post.permissions_details.app_error",
     "translation": "شناسه قبلاً حذف شده است = {{.PostId}}."
   },

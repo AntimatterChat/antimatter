@@ -3204,10 +3204,6 @@
     "translation": "வரையறுபபட்ட நேரடி சேனலிலுள்ள பதிவை புதுப்பிக்க முடியாது."
   },
   {
-    "id": "api.post.update_post.find.app_error",
-    "translation": "புதுப்பிக்க வேண்டிய பதிவு அல்லது கருத்தைக் கண்டறிய முடியவில்லை."
-  },
-  {
     "id": "api.post.update_post.permissions_details.app_error",
     "translation": "ஏற்கனவே நீக்குபபட்டது id={{.PostId}}."
   },

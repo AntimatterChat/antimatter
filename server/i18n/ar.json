@@ -3204,10 +3204,6 @@
     "translation": "لا يمكن تحديث منشور في قناة رسائل مباشرة مقيدة."
   },
   {
-    "id": "api.post.update_post.find.app_error",
-    "translation": "تعذّر العثور على المنشور أو التعليق الموجود للتحديث."
-  },
-  {
     "id": "api.post.update_post.permissions_details.app_error",
     "translation": "تم حذف id={{.PostId}} بالفعل."
   },

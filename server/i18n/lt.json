@@ -3281,10 +3281,6 @@
     "translation": "Negalima atnaujinti pranešimo apribotame tiesioginių pranešimų kanale."
   },
   {
-    "id": "api.post.update_post.find.app_error",
-    "translation": "Nepavyko rasti atnaujinamo pranešimo ar komentaro."
-  },
-  {
     "id": "api.post.update_post.permissions_details.app_error",
     "translation": "Jau ištrinta, id={{.PostId}}."
   },

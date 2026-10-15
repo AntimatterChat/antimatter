@@ -3204,10 +3204,6 @@
     "translation": "সীমাবদ্ধ ডাইরেক্ট মেসেজ চ্যানেলে পোস্ট আপডেট করা সম্ভব নয়।"
   },
   {
-    "id": "api.post.update_post.find.app_error",
-    "translation": "আপডেট করার জন্য বিদ্যমান পোস্ট বা কমেন্ট খুঁজে পাওয়া যায়নি।"
-  },
-  {
     "id": "api.post.update_post.permissions_details.app_error",
     "translation": "ইতিমধ্যে মুছে ফেলা হয়েছে id={{.PostId}}।"
   },

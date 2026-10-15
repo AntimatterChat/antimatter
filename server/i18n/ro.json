@@ -3408,10 +3408,6 @@
     "translation": "Nu se poate actualiza postarea într-un canal de mesaje directe restricționat."
   },
   {
-    "id": "api.post.update_post.find.app_error",
-    "translation": "Imposibil de găsit postul sau comentariul existent pentru actualizare."
-  },
-  {
     "id": "api.post.update_post.permissions_details.app_error",
     "translation": "Deja sters id={{.PostId}}."
   },

@@ -3403,10 +3403,6 @@
     "translation": "Korlátozott közvetlen üzenet csatornában nem frissíthető bejegyzés."
   },
   {
-    "id": "api.post.update_post.find.app_error",
-    "translation": "Nem található a létező bejegyzés vagy frissítendő hozzászólás."
-  },
-  {
     "id": "api.post.update_post.permissions_details.app_error",
     "translation": "Már törölt azonosító={{.PostId}}."
   },

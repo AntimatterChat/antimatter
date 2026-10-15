@@ -3640,10 +3640,6 @@
     "translation": "Nije moguće ažurirati objavu u ograničenom kanalu izravnih poruka."
   },
   {
-    "id": "api.post.update_post.find.app_error",
-    "translation": "Nije moguće pronaći postojeću objavu ili komentar za ažuriranje."
-  },
-  {
     "id": "api.post.update_post.permissions_details.app_error",
     "translation": "Već izbrisano, id={{.PostId}}."
   },

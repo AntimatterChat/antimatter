@@ -3403,10 +3403,6 @@
     "translation": "Kann den Beitrag in einem eingeschränktem Direktnachrichtenkanal nicht aktualisieren."
   },
   {
-    "id": "api.post.update_post.find.app_error",
-    "translation": "Die bestehende Nachricht oder der bestehende Kommentar konnte nicht zur Aktualisierung gefunden werden."
-  },
-  {
     "id": "api.post.update_post.permissions_details.app_error",
     "translation": "{{.PostId}} wurde bereits gelöscht."
   },

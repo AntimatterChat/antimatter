@@ -3398,10 +3398,6 @@
     "translation": "Không thể cập nhật bài đăng trong kênh tin nhắn trực tiếp bị hạn chế."
   },
   {
-    "id": "api.post.update_post.find.app_error",
-    "translation": "Chúng tôi không thể tìm thấy kênh."
-  },
-  {
     "id": "api.post.update_post.permissions_details.app_error",
     "translation": "Đã xoá id={{.PostId}}"
   },

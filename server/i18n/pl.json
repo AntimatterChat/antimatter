@@ -3413,10 +3413,6 @@
     "translation": "Nie można zaktualizować postu w kanale wiadomości bezpośrednich z ograniczeniami."
   },
   {
-    "id": "api.post.update_post.find.app_error",
-    "translation": "Nie udało się odnaleźć istniejącej wiadomości lub komentarza do zaktualizowania."
-  },
-  {
     "id": "api.post.update_post.permissions_details.app_error",
     "translation": "Już skasowana id={{.PostId}}."
   },

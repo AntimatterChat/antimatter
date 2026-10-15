@@ -3403,10 +3403,6 @@
     "translation": "Не може да се актуализира публикация в ограничен канал за директни съобщения."
   },
   {
-    "id": "api.post.update_post.find.app_error",
-    "translation": "Не може да се намери съществуващата публикация или коментар за обновяване."
-  },
-  {
     "id": "api.post.update_post.permissions_details.app_error",
     "translation": "Вече изтрит id={{.PostId}}."
   },

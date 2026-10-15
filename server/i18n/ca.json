@@ -3204,10 +3204,6 @@
     "translation": "No es pot actualitzar el missatge en un canal de missatge directe restringit."
   },
   {
-    "id": "api.post.update_post.find.app_error",
-    "translation": "No s'ha pogut trobar el missatge o comentari existent per actualitzar-lo."
-  },
-  {
     "id": "api.post.update_post.permissions_details.app_error",
     "translation": "Ja s'ha eliminat id={{.PostId}}."
   },

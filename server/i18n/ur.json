@@ -3204,10 +3204,6 @@
     "translation": "محدود براہِ راست پیغام چینل میں پوسٹ کو اپڈیٹ نہیں کیا جا سکتا۔"
   },
   {
-    "id": "api.post.update_post.find.app_error",
-    "translation": "اپڈیٹ کرنے کے لیے موجودہ پوسٹ یا تبصرہ تلاش نہیں کیا جا سکا۔"
-  },
-  {
     "id": "api.post.update_post.permissions_details.app_error",
     "translation": "پہلے سے حذف شدہ id={{.PostId}}۔"
   },
