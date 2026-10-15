@@ -340,9 +340,11 @@ export default class Root extends React.PureComponent<Props, State> {
                         to={`/${this.props.permalinkRedirectTeamName}/pl/:postid`}
                     />
                     {/* The Kanban plugin (once Boards) lives at /kanban: links to /boards still open it. */}
-                    <Redirect
-                        from={'/boards/:subpath*'}
-                        to={'/kanban/:subpath*'}
+                    <Route
+                        path={'/boards'}
+                        render={({location}) => (
+                            <Redirect to={{...location, pathname: location.pathname.replace(/^\/boards/, '/kanban')}}/>
+                        )}
                     />
                     <Route
                         path={'/_popout'}
