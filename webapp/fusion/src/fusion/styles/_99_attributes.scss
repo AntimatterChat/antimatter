@@ -11,3 +11,4 @@
 :is(.am-app, .am-layer) .am-attr-option { display: flex; align-items: center; gap: 6px; width: 100%; }
 :is(.am-app, .am-layer) .am-attr-option input { flex: 1; }
 :is(.am-app, .am-layer) .am-attr-confirm { color: var(--am-danger); font-size: 13px; }
+:is(.am-app, .am-layer) .am-modal .am-attr-pane h3.am-set-section { margin: 18px 0 10px; }

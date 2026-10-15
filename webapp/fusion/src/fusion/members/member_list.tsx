@@ -135,10 +135,10 @@ export default function MemberList({inPanel = false}: {inPanel?: boolean}) {
     if (!rolesAllowed) {
         grouping = 'teams';
     }
-    const allGroups = useMemberGroups(profiles, roles, grouping);
     const teamId = useSelector(getCurrentTeamId);
     const listAttribute = useMemberListAttribute(channel?.type === 'D' || channel?.type === 'G' ? undefined : teamId, profiles);
-    const groups = allGroups.map((g) => ({...g, users: g.users.filter((u) => listAttribute.shown(u.id))})).filter((g) => g.users.length);
+    const shownProfiles = listAttribute.filtering ? profiles.filter((u) => listAttribute.shown(u.id)) : profiles;
+    const groups = useMemberGroups(shownProfiles, roles, grouping);
     const canAdd = useCanAddPeople(channel);
     const [popover, setPopover] = useState<{userId: string; anchor: HTMLElement} | null>(null);
     const [adding, setAdding] = useState(false);

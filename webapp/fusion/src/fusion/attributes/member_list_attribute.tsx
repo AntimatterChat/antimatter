@@ -20,7 +20,8 @@ export type MemberListAttribute = {
     // The listed attribute's value of someone, as text ('' when none).
     textOf: (userId: string) => string;
 
-    // Whether someone is shown under the filter chosen.
+    // Whether a filter is on, and whether someone is shown under it.
+    filtering: boolean;
     shown: (userId: string) => boolean;
 
     // The filter button, when the attribute can filter the list.
@@ -111,5 +112,5 @@ export function useMemberListAttribute(teamId: string | undefined, profiles: Use
             </>
         );
     }
-    return {textOf, shown, filter};
+    return {textOf, filtering: active, shown, filter};
 }
