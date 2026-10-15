@@ -1,0 +1,10 @@
+{
+  "admin.global_attributes.attribute_details.applies_to.item.user.profile_display.admin.label": "நிர்வாகிகள்கு மட்டும்",
+  "admin.global_attributes.attribute_details.applies_to.item.user.profile_display.always.label": "எப்போதும்",
+  "admin.global_attributes.attribute_details.applies_to.item.user.profile_display.hidden.label": "மறைப்பட்டது",
+  "admin.global_attributes.attribute_details.applies_to.item.user.profile_display.label": "சுயவிவரம் காட்டல்",
+  "admin.global_attributes.attribute_details.applies_to.item.user.profile_display.restricted_help": "நிர்வாகிகளும் பயனர்தான் மட்டும் மதிப்பை பார்க்க முடிக். ‘நிர்வாகிகள்கு மட்டும்’ தேர்ந்தால், அது பயனரின் சுயவிவரத்தில் மட்டும் காணும்; ‘மறைப்பட்டது’ தேர்ந்தால் எங்கும் காணாது.",
+  "admin.global_attributes.attribute_details.applies_to.item.user.profile_display.when_set.label": "அமைப்படும்போது",
+  "admin.privacy.enableUserBlockingDescription": "உண்மை எனில், மக்கள்தம்மை மறக்கவும், தடைப்படவும் முடிக், அறியாத மக்களிடமிருந்து நேரடி செய்திகளை ‘செய்தி கோரிக்கை’ என பெறவும் முடிக்; அது ஏற்படும் வரை அறிவிப்பு இலாகாது. எப்போதும் அணுக முடிய வேணும் என்கிற பணியிடங்களுக்கு இதை அணைக்கவும்; அப்போது இது எதுவும் விதிப்படாது, ஆனாலும் மக்கள் தேர்ந்த பட்டியல்களும் விருப்பங்களும் மீண்டும் இயக்கப்படும்போது வைக்கப்படும்.",
+  "admin.privacy.enableUserBlockingTitle": "மறக்கல், தடைப்பு மற்றும் செய்தி கோரிக்கைகளை இயக்கு:"
+}

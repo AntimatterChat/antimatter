@@ -1,0 +1,10 @@
+{
+  "admin.global_attributes.attribute_details.applies_to.item.user.profile_display.admin.label": "Pentadbir sahaja",
+  "admin.global_attributes.attribute_details.applies_to.item.user.profile_display.always.label": "Sentiasa",
+  "admin.global_attributes.attribute_details.applies_to.item.user.profile_display.hidden.label": "Disembunyikan",
+  "admin.global_attributes.attribute_details.applies_to.item.user.profile_display.label": "Paparan profil",
+  "admin.global_attributes.attribute_details.applies_to.item.user.profile_display.restricted_help": "Hanya pentadbir dan pengguna tersebut dapat melihat nilai. Pilihan ‘Pentadbir sahaja’ memaparkannya pada profil mereka sahaja; ‘Disembunyikan’ tidak memaparkannya di mana-mana.",
+  "admin.global_attributes.attribute_details.applies_to.item.user.profile_display.when_set.label": "Apabila ditetapkan",
+  "admin.privacy.enableUserBlockingDescription": "Apabila diaktifkan, pengguna boleh mengabaikan dan menyekat satu sama lain, serta memilih untuk menerima mesej terus daripada orang yang tidak dikenali sebagai permintaan mesej, yang tidak akan memberi pemberitahuan sehingga diluluskan. Matikan untuk tempat kerja di mana rakan sekerja mesti sentiasa boleh dihubungi: tiada penguatkuasaan dilakukan, tetapi senarai dan pilihan yang dibuat oleh pengguna akan disimpan untuk apabila ciri ini diaktifkan semula.",
+  "admin.privacy.enableUserBlockingTitle": "Aktifkan pengabaian, penyekatan dan permintaan mesej:"
+}

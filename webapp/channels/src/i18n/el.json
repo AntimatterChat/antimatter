@@ -1,0 +1,10 @@
+{
+  "admin.global_attributes.attribute_details.applies_to.item.user.profile_display.admin.label": "Μόνο διαχειριστές",
+  "admin.global_attributes.attribute_details.applies_to.item.user.profile_display.always.label": "Πάντα",
+  "admin.global_attributes.attribute_details.applies_to.item.user.profile_display.hidden.label": "Κρυφό",
+  "admin.global_attributes.attribute_details.applies_to.item.user.profile_display.label": "Εμφάνιση στο προφίλ",
+  "admin.global_attributes.attribute_details.applies_to.item.user.profile_display.restricted_help": "Μόνο οι διαχειριστές και ο χρήστης βλέπουν την τιμή. Η επιλογή «Μόνο διαχειριστές» την εμφανίζει στο προφίλ μόνο σε αυτούς· η επιλογή «Κρυφό» δεν την εμφανίζει πουθενά.",
+  "admin.global_attributes.attribute_details.applies_to.item.user.profile_display.when_set.label": "Όταν οριστεί",
+  "admin.privacy.enableUserBlockingDescription": "Όταν είναι ενεργοποιημένο, οι χρήστες μπορούν να αγνοούν και να μπλοκάρουν ο ένας τον άλλον και να λαμβάνουν άμεσα μηνύματα από άγνωστους χρήστες ως αιτήματα μηνυμάτων, τα οποία δεν τους ειδοποιούν μέχρι να τα αποδεχτούν. Απενεργοποιήστε το σε περιβάλλοντα εργασίας όπου οι συνάδελφοι πρέπει να είναι πάντα προσβάσιμοι: τότε δεν επιβάλλεται τίποτα από τα παραπάνω, αλλά οι λίστες και οι επιλογές που έχουν κάνει οι χρήστες διατηρούνται για όταν ξαναενεργοποιηθεί.",
+  "admin.privacy.enableUserBlockingTitle": "Ενεργοποίηση αγνοήσεων, μπλοκ και αιτημάτων μηνυμάτων:"
+}

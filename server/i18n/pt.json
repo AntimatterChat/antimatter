@@ -1,63 +1,87 @@
 [
   {
-    "id": "api.admin.add_certificate.open.app_error",
-    "translation": "Não foi possível abrir o ficheiro do certificado."
-  },
-  {
-    "id": "api.admin.add_certificate.no_file.app_error",
-    "translation": "Nenhum ficheiro de 'certificado' no pedido."
-  },
-  {
-    "id": "September",
-    "translation": "Setembro"
-  },
-  {
-    "id": "October",
-    "translation": "Outubro"
-  },
-  {
-    "id": "November",
-    "translation": "Novembro"
-  },
-  {
-    "id": "May",
-    "translation": "Maio"
-  },
-  {
-    "id": "March",
-    "translation": "Março"
-  },
-  {
-    "id": "June",
-    "translation": "Junho"
-  },
-  {
-    "id": "July",
-    "translation": "Julho"
-  },
-  {
-    "id": "January",
-    "translation": "Janeiro"
-  },
-  {
-    "id": "February",
-    "translation": "Fevereiro"
-  },
-  {
-    "id": "December",
-    "translation": "Dezembro"
+    "id": "April",
+    "translation": "Abril"
   },
   {
     "id": "August",
     "translation": "Agosto"
   },
   {
-    "id": "April",
-    "translation": "Abril"
+    "id": "December",
+    "translation": "Dezembro"
   },
   {
-    "id": "api.admin.add_certificate.saving.app_error",
-    "translation": "Não foi possível guardar o ficheiro do certificado."
+    "id": "February",
+    "translation": "Fevereiro"
+  },
+  {
+    "id": "January",
+    "translation": "Janeiro"
+  },
+  {
+    "id": "July",
+    "translation": "Julho"
+  },
+  {
+    "id": "June",
+    "translation": "Junho"
+  },
+  {
+    "id": "March",
+    "translation": "Março"
+  },
+  {
+    "id": "May",
+    "translation": "Maio"
+  },
+  {
+    "id": "November",
+    "translation": "Novembro"
+  },
+  {
+    "id": "October",
+    "translation": "Outubro"
+  },
+  {
+    "id": "September",
+    "translation": "Setembro"
+  },
+  {
+    "id": "api.access_control.assign.team_group_constrained",
+    "translation": "Não é possível aplicar uma política de associação a uma equipa sincronizada por grupos."
+  },
+  {
+    "id": "api.access_control.decision.unsupported_resource_type.app_error",
+    "translation": "As decisões de controlo de acesso no momento da apresentação não são suportadas para o tipo de recurso \"{{.Type}}\"."
+  },
+  {
+    "id": "api.access_control_policy.channel_permission_policies.feature_disabled",
+    "translation": "A funcionalidade das políticas de permissão ao nível do canal não está ativada."
+  },
+  {
+    "id": "api.access_control_policy.get_channels.limit.app_error",
+    "translation": "O limite de obter canais não é válido."
+  },
+  {
+    "id": "api.access_control_policy.get_fields.limit.app_error",
+    "translation": "O limite de obter campos não é válido."
+  },
+  {
+    "id": "api.access_control_policy.permission_policies.feature_disabled",
+    "translation": "A funcionalidade das políticas de permissão não está ativada."
+  },
+  {
+    "id": "api.access_control_policy.policy_simulation.feature_disabled",
+    "translation": "A funcionalidade de simulação de política não está ativada."
+  },
+  {
+    "id": "api.access_control_policy.simulate.users_out_of_scope.app_error",
+    "translation": "Todos os utilizadores na simulação devem ser membros da equipa ou canal do pedido."
+  },
+  {
+    "id": "api.access_control_policy.team_membership.feature_disabled",
+    "translation": "A funcionalidade de controlo de acesso à associação à equipa não está ativada."
   },
   {
     "id": "api.acknowledgement.delete.archived_channel.app_error",
@@ -72,28 +96,40 @@
     "translation": "Não pode guardar uma confirmação num canal arquivado."
   },
   {
-    "id": "api.admin.add_certificate.array.app_error",
-    "translation": "Nenhum ficheiro sob 'certificado' no pedido."
-  },
-  {
-    "id": "api.admin.add_certificate.parseform.app_error",
-    "translation": "Erro ao analisar o pedido de multiformulário"
-  },
-  {
     "id": "api.admin.add_certificate.app_error",
     "translation": "Falha ao adicionar o certificado."
+  },
+  {
+    "id": "api.admin.add_certificate.array.app_error",
+    "translation": "Nenhum ficheiro sob 'certificado' no pedido."
   },
   {
     "id": "api.admin.add_certificate.multiple_files.app_error",
     "translation": "Demasiados ficheiros sob 'certificado' no pedido."
   },
   {
-    "id": "api.admin.file_read_error",
-    "translation": "Erro ao ler o ficheiro de registo."
+    "id": "api.admin.add_certificate.no_file.app_error",
+    "translation": "Nenhum ficheiro de 'certificado' no pedido."
+  },
+  {
+    "id": "api.admin.add_certificate.open.app_error",
+    "translation": "Não foi possível abrir o ficheiro do certificado."
+  },
+  {
+    "id": "api.admin.add_certificate.parseform.app_error",
+    "translation": "Erro ao analisar o pedido de multiformulário"
+  },
+  {
+    "id": "api.admin.add_certificate.saving.app_error",
+    "translation": "Não foi possível guardar o ficheiro do certificado."
   },
   {
     "id": "api.admin.delete_brand_image.storage.not_found",
     "translation": "Não é possível eliminar a imagem da marca, não encontrada."
+  },
+  {
+    "id": "api.admin.file_read_error",
+    "translation": "Erro ao ler o ficheiro de registo."
   },
   {
     "id": "api.admin.get_brand_image.storage.app_error",
@@ -112,60 +148,12 @@
     "translation": "Ocorreu um erro quando eliminava o certificado."
   },
   {
-    "id": "api.access_control_policy.get_channels.limit.app_error",
-    "translation": "O limite de obter canais não é válido."
-  },
-  {
-    "id": "api.access_control_policy.get_fields.limit.app_error",
-    "translation": "O limite de obter campos não é válido."
-  },
-  {
-    "id": "api.channel.guest_join_channel.post_and_forget",
-    "translation": "%v juntou-se ao canal como convidado."
-  },
-  {
-    "id": "api.channel.leave.default.app_error",
-    "translation": "Não consigo sair do canal {{.Channel}} predefinido."
-  },
-  {
-    "id": "api.channel.join_channel.permissions.app_error",
-    "translation": "Não tem as permissões apropriadas."
-  },
-  {
-    "id": "api.channel.join_channel.post_and_forget",
-    "translation": "%v juntou-se ao canal."
-  },
-  {
-    "id": "api.admin.saml.set_certificate_from_metadata.missing_content_type.app_error",
-    "translation": "Tipo de conteúdo em falta."
-  },
-  {
-    "id": "api.admin.syncables_error",
-    "translation": "não foi possível adicionar o utilizador às equipas-grupos e canais-grupo"
-  },
-  {
-    "id": "api.admin.saml.failure_parse_idp_certificate.app_error",
-    "translation": "Falha encontrada quando analisava a informação dos metadados recebida do Provedor de Identidade para um certificado."
-  },
-  {
     "id": "api.admin.saml.failure_get_metadata_from_idp.app_error",
     "translation": "Falha ao obter os metadados do URL do Provedor de Identidade."
   },
   {
-    "id": "api.admin.saml.set_certificate_from_metadata.invalid_body.app_error",
-    "translation": "Texto de certificado inválido."
-  },
-  {
-    "id": "api.admin.saml.set_certificate_from_metadata.invalid_content_type.app_error",
-    "translation": "Tipo de conteúdo inválido."
-  },
-  {
-    "id": "api.admin.test_email.body",
-    "translation": "Parece que o seu e-mail Antimatter está configurado corretamente!"
-  },
-  {
-    "id": "api.back_to_app",
-    "translation": "Voltar para {{.SiteName}}"
+    "id": "api.admin.saml.failure_parse_idp_certificate.app_error",
+    "translation": "Falha encontrada quando analisava a informação dos metadados recebida do Provedor de Identidade para um certificado."
   },
   {
     "id": "api.admin.saml.failure_reset_authdata_to_email.app_error",
@@ -184,385 +172,6 @@
     "translation": "Nodo dos Descritores de Chave do Provedor de Identidade em falta no XML."
   },
   {
-    "id": "api.channel.post_update_channel_displayname_message_and_forget.updated_from",
-    "translation": "%s atualizou o nome a exibir do canal de: %s para: %s"
-  },
-  {
-    "id": "api.channel.restore_channel.unarchived",
-    "translation": "{{.Username}} desarquivou o canal."
-  },
-  {
-    "id": "api.channel.update_channel.deleted.app_error",
-    "translation": "O canal foi arquivado ou eliminado."
-  },
-  {
-    "id": "api.command.invite_people.hint",
-    "translation": "[name@domain.com ...]"
-  },
-  {
-    "id": "api.command_channel_header.name",
-    "translation": "cabeçalho"
-  },
-  {
-    "id": "api.command_channel_purpose.hint",
-    "translation": "[texto]"
-  },
-  {
-    "id": "api.channel.leave.direct.app_error",
-    "translation": "Não consigo sair de um canal de mensagem direta."
-  },
-  {
-    "id": "api.channel.leave.left",
-    "translation": "%v saiu do canal."
-  },
-  {
-    "id": "api.channel.patch_channel_moderations.license.error",
-    "translation": "A sua licença não suporta a moderação de canais"
-  },
-  {
-    "id": "api.command_channel_header.hint",
-    "translation": "[texto]"
-  },
-  {
-    "id": "api.command.invite_people.no_email",
-    "translation": "Por favor, especifique um ou mais endereços de correio eletrónico válido"
-  },
-  {
-    "id": "api.command_away.name",
-    "translation": "ausente"
-  },
-  {
-    "id": "api.channel.post_update_channel_header_message_and_forget.updated_from",
-    "translation": "%s atualizou o cabeçalho do canal de: %s para: %s"
-  },
-  {
-    "id": "api.channel.post_update_channel_header_message_and_forget.updated_to",
-    "translation": "%s atualizou o cabeçalho do canal para: %s"
-  },
-  {
-    "id": "api.channel.remove_member.removed",
-    "translation": "%v removido do canal."
-  },
-  {
-    "id": "api.channel.update_channel_scheme.license.error",
-    "translation": "A sua licença não suporta a atualização do esquema de um canal"
-  },
-  {
-    "id": "api.cloud.license_error",
-    "translation": "A sua licença não suporta os pedidos da nuvem."
-  },
-  {
-    "id": "api.command.disabled.app_error",
-    "translation": "Os comandos foram desativados pelo administrador do sistema."
-  },
-  {
-    "id": "api.channel.move_channel.type.invalid",
-    "translation": "Não é possível mover os canais de mensagem direta ou grupo"
-  },
-  {
-    "id": "api.channel.patch_channel_moderations.cache_invalidation.error",
-    "translation": "Erro ao invalidar a cache"
-  },
-  {
-    "id": "api.channel.patch_update_channel.forbidden.app_error",
-    "translation": "Não foi possível atualizar o canal."
-  },
-  {
-    "id": "api.channel.patch_update_channel.update_direct_or_group_messages_not_allowed.app_error",
-    "translation": "Não tem permissão para atualizar o nome, nome a exibir, e a finalidade das mensagens diretas ou grupo."
-  },
-  {
-    "id": "api.channel.post_update_channel_header_message_and_forget.removed",
-    "translation": "%s removeu o cabeçalho do canal (era: %s)"
-  },
-  {
-    "id": "api.command_channel_remove.channel.app_error",
-    "translation": "Erro ao recuperar o canal atual."
-  },
-  {
-    "id": "api.command_channel_rename.hint",
-    "translation": "[texto]"
-  },
-  {
-    "id": "api.command_custom_status.clear.success",
-    "translation": "O seu estado foi limpo."
-  },
-  {
-    "id": "api.command_custom_status.hint",
-    "translation": "[:emoji_name:] [status_message] ou limpar"
-  },
-  {
-    "id": "api.command_custom_status.desc",
-    "translation": "Definir ou limpar o seu estado"
-  },
-  {
-    "id": "api.command_help.desc",
-    "translation": "Mostrar a mensagem da ajuda de Antimatter"
-  },
-  {
-    "id": "api.command_groupmsg.permission.app_error",
-    "translation": "Não tem as permissões apropriadas para criar uma nova mensagem de grupo."
-  },
-  {
-    "id": "api.command_help.name",
-    "translation": "ajuda"
-  },
-  {
-    "id": "api.command_help.success",
-    "translation": "Antimatter é uma plataforma de código aberto para uma comunicação segura, colaboração, e orquestração do trabalho entre ferramentas e equipas.\nAntimatter contém duas ferramentas chave:\n\n**Canais** - Mantenha-se ligado com a sua equipa através de 1:1 e mensagem de grupo.\n**[Manuais](/playbooks)** - Crie e configure processos repetíveis para alcançar resultados específicos e previsíveis.\n\n[Veja a documentação e guias]({{.HelpLink}})"
-  },
-  {
-    "id": "api.command_invite.permission.app_error",
-    "translation": "Não tem permissões suficientes para adicionar {{.User}} no {{.Channel}}."
-  },
-  {
-    "id": "api.command_invite.success",
-    "translation": "{{.User}} adicionado ao canal {{.Channel}}."
-  },
-  {
-    "id": "api.command_msg.name",
-    "translation": "mensagem"
-  },
-  {
-    "id": "api.command_mute.hint",
-    "translation": "~[canal]"
-  },
-  {
-    "id": "api.command_remote.hint",
-    "translation": "[ação]"
-  },
-  {
-    "id": "api.command_remote.name.help",
-    "translation": "Nome da ligação segura"
-  },
-  {
-    "id": "api.command_remote.name.hint",
-    "translation": "Um nome único para a ligação segura"
-  },
-  {
-    "id": "api.command_remote.remote_add_remove.help",
-    "translation": "Adicionar/remover ligações seguras. Ações disponíveis: {{.Actions}}"
-  },
-  {
-    "id": "api.command_remote.remote_table_header",
-    "translation": "| Ligação segura | Nome a exibir | Id. da ligação | URL do Site | Equipa Predefinida | Convite aceite | On-line | Último ping | Eliminado |"
-  },
-  {
-    "id": "api.command_remote.remotes_not_found",
-    "translation": "Sem ligações seguras."
-  },
-  {
-    "id": "api.command_remote.remove_remote.error",
-    "translation": "Não foi possível remover a ligação segura: {{.Error}}"
-  },
-  {
-    "id": "api.command_remote.remove.help",
-    "translation": "Remove uma ligação segura"
-  },
-  {
-    "id": "api.command_remove.name",
-    "translation": "remover"
-  },
-  {
-    "id": "api.command_channel_rename.channel.app_error",
-    "translation": "Erro para recuperar o canal atual."
-  },
-  {
-    "id": "api.command_channel_rename.desc",
-    "translation": "Renomear o canal"
-  },
-  {
-    "id": "api.command_channel_rename.name",
-    "translation": "renomear"
-  },
-  {
-    "id": "api.command_channel_rename.too_short.app_error",
-    "translation": "O nome do canal deve ter {{.Length}} ou mais carateres."
-  },
-  {
-    "id": "api.command_invite.desc",
-    "translation": "Convide um utilizador para um canal"
-  },
-  {
-    "id": "api.command_invite.hint",
-    "translation": "@[nomedeutilizador]... ~[canal]..."
-  },
-  {
-    "id": "api.command_join.desc",
-    "translation": "Junte-se ao canal aberto"
-  },
-  {
-    "id": "api.command_leave.desc",
-    "translation": "Sair do canal atual"
-  },
-  {
-    "id": "api.command_logout.desc",
-    "translation": "Terminar Sessão do Antimatter"
-  },
-  {
-    "id": "api.command_search.hint",
-    "translation": "[texto]"
-  },
-  {
-    "id": "api.command_search.name",
-    "translation": "procurar"
-  },
-  {
-    "id": "api.command_channel_rename.permission.app_error",
-    "translation": "Não tem as permissões apropriadas para renomear o canal."
-  },
-  {
-    "id": "api.command_groupmsg.invalid_user.app_error",
-    "translation": {
-      "one": "Não foi possível encontrar o utilizador: {{.Users}}",
-      "other": "Não foi possível encontrar os utilizadores: {{.Users}}"
-    }
-  },
-  {
-    "id": "api.command_invite.missing_message.app_error",
-    "translation": "Nome de utilizador e/ou canal em falta."
-  },
-  {
-    "id": "api.command_leave.name",
-    "translation": "sair"
-  },
-  {
-    "id": "api.command_logout.name",
-    "translation": "terminar sessão"
-  },
-  {
-    "id": "api.command_mute.name",
-    "translation": "silenciar"
-  },
-  {
-    "id": "api.command_code.name",
-    "translation": "código"
-  },
-  {
-    "id": "api.command_custom_status.app_error",
-    "translation": "Erro ao definir o estado."
-  },
-  {
-    "id": "api.command_custom_status.clear.app_error",
-    "translation": "Erro ao limpar o estado."
-  },
-  {
-    "id": "api.command_collapse.name",
-    "translation": "ocultar"
-  },
-  {
-    "id": "api.command_collapse.success",
-    "translation": "As hiperligações de imagem agora são ocultadas por predefinição"
-  },
-  {
-    "id": "api.command_custom_status.name",
-    "translation": "estado"
-  },
-  {
-    "id": "api.command_expand.success",
-    "translation": "As hiperligações de imagem agora expandem por predefinição"
-  },
-  {
-    "id": "api.command_exportlink.desc",
-    "translation": "Gerar uma hiperligação para transferir uma exportação."
-  },
-  {
-    "id": "api.command_expand.name",
-    "translation": "expandir"
-  },
-  {
-    "id": "api.command_groupmsg.name",
-    "translation": "mensagem"
-  },
-  {
-    "id": "api.command_invite.channel.app_error",
-    "translation": "Erro para recuperar o canal atual."
-  },
-  {
-    "id": "api.command_invite.name",
-    "translation": "convidar"
-  },
-  {
-    "id": "api.command_invite.successOverflow",
-    "translation": "{{.FirstUser}} e {{.Others}} adicionados ao canal {{.Channel}}."
-  },
-  {
-    "id": "api.command_join.fail.app_error",
-    "translation": "Ocorreu um erro enquanto aderia ao canal."
-  },
-  {
-    "id": "api.command_settings.unsupported.app_error",
-    "translation": "O comando das definições não é suportado no seu dispositivo."
-  },
-  {
-    "id": "api.command_search.unsupported.app_error",
-    "translation": "O comando de procura não é suportado no seu dispositivo."
-  },
-  {
-    "id": "api.command_settings.desc",
-    "translation": "Abrir a janela das Definições"
-  },
-  {
-    "id": "api.command_settings.name",
-    "translation": "definições"
-  },
-  {
-    "id": "api.command_remove.hint",
-    "translation": "@[nomedeutilizador]"
-  },
-  {
-    "id": "api.command_share.hint",
-    "translation": "[ação]"
-  },
-  {
-    "id": "api.command_groupmsg.hint",
-    "translation": "@[username1],@[username2] 'mensagem'"
-  },
-  {
-    "id": "api.command_code.hint",
-    "translation": "[texto]"
-  },
-  {
-    "id": "api.command_channel_rename.too_long.app_error",
-    "translation": "O nome do canal deve ter {{.Length}} ou menos carateres."
-  },
-  {
-    "id": "api.command_channel_rename.update_channel.app_error",
-    "translation": "Erro ao atualizar o canal atual."
-  },
-  {
-    "id": "api.command_kick.name",
-    "translation": "expulsar"
-  },
-  {
-    "id": "api.command_me.name",
-    "translation": "eu"
-  },
-  {
-    "id": "api.command_open.name",
-    "translation": "abrir"
-  },
-  {
-    "id": "api.command_invite_people.permission.app_error",
-    "translation": "Não tem permissão para convidar novos utilizadores para este servidor."
-  },
-  {
-    "id": "api.command_join.hint",
-    "translation": "~[canal]"
-  },
-  {
-    "id": "api.command_join.name",
-    "translation": "aderir"
-  },
-  {
-    "id": "api.command_me.hint",
-    "translation": "[mensagem}"
-  },
-  {
-    "id": "api.command_remote.name",
-    "translation": "ligação segura"
-  },
-  {
     "id": "api.admin.saml.invalid_xml_missing_ssoservices.app_error",
     "translation": "Nodo de Serviços SSO do Provedor de Identidade em falta no XML."
   },
@@ -573,6 +182,30 @@
   {
     "id": "api.admin.saml.not_available.app_error",
     "translation": "SAML 2.0 não está configurado ou suportado neste servidor."
+  },
+  {
+    "id": "api.admin.saml.set_certificate_from_metadata.invalid_body.app_error",
+    "translation": "Texto de certificado inválido."
+  },
+  {
+    "id": "api.admin.saml.set_certificate_from_metadata.invalid_content_type.app_error",
+    "translation": "Tipo de conteúdo inválido."
+  },
+  {
+    "id": "api.admin.saml.set_certificate_from_metadata.missing_content_type.app_error",
+    "translation": "Tipo de conteúdo em falta."
+  },
+  {
+    "id": "api.admin.syncables_error",
+    "translation": "não foi possível adicionar o utilizador às equipas-grupos e canais-grupo"
+  },
+  {
+    "id": "api.admin.test_azure.missing_azure_field",
+    "translation": "Falta uma definição do Azure Blob Storage ou a definição é inválida."
+  },
+  {
+    "id": "api.admin.test_email.body",
+    "translation": "Parece que o seu e-mail Antimatter está configurado corretamente!"
   },
   {
     "id": "api.admin.test_email.missing_server",
@@ -587,8 +220,20 @@
     "translation": "Antimatter - Testar Definições de E-mail"
   },
   {
+    "id": "api.admin.test_s3.missing_s3_bucket",
+    "translation": "O S3 Bucket é obrigatório"
+  },
+  {
+    "id": "api.admin.upload_brand_image.array.app_error",
+    "translation": "Matriz vazia em 'image' no pedido."
+  },
+  {
     "id": "api.admin.upload_brand_image.no_file.app_error",
     "translation": "Nenhum ficheiro sob a 'imagem' no pedido."
+  },
+  {
+    "id": "api.admin.upload_brand_image.parse.app_error",
+    "translation": "Não foi possível analisar o formulário de várias partes."
   },
   {
     "id": "api.admin.upload_brand_image.storage.app_error",
@@ -597,6 +242,14 @@
   {
     "id": "api.admin.upload_brand_image.too_large.app_error",
     "translation": "Não é possível enviar o ficheiro. O ficheiro é muito grande."
+  },
+  {
+    "id": "api.ai_bridge_test_helper.disabled.app_error",
+    "translation": "O auxiliar de teste do bridge está desativado."
+  },
+  {
+    "id": "api.back_to_app",
+    "translation": "Voltar para {{.SiteName}}"
   },
   {
     "id": "api.bot.create_disabled",
@@ -623,12 +276,12 @@
     "translation": "A associação ao canal foi negada para os seguintes utilizadores por causa das restrições de grupo: {{ .UserIDs }}"
   },
   {
-    "id": "api.channel.add_user.to.channel.failed.app_error",
-    "translation": "Não foi possível adicionar o utilizador ao canal."
+    "id": "api.channel.add_user.to.channel.abac_subject_build_failed.app_error",
+    "translation": "Não foi possível criar o sujeito de controlo de acesso para o utilizador."
   },
   {
-    "id": "api.admin.upload_brand_image.parse.app_error",
-    "translation": "Não foi possível analisar o formulário de várias partes."
+    "id": "api.channel.add_user.to.channel.failed.app_error",
+    "translation": "Não foi possível adicionar o utilizador ao canal."
   },
   {
     "id": "api.channel.add_user.to.channel.failed.deleted.app_error",
@@ -641,6 +294,14 @@
   {
     "id": "api.channel.add_user_to_channel.type.app_error",
     "translation": "Não é possível adicionar o utilizador a este tipo de canal."
+  },
+  {
+    "id": "api.channel.board_channel.app_error",
+    "translation": "Os canais de quadro não podem ser acedidos através dos pontos finais /channels. Utilize antes a API /boards."
+  },
+  {
+    "id": "api.channel.bookmark.board.readonly.app_error",
+    "translation": "Os marcadores de quadro são geridos pela funcionalidade de quadros e não podem ser criados, atualizados ou eliminados através da API de marcadores."
   },
   {
     "id": "api.channel.bookmark.channel_bookmark.license.error",
@@ -723,6 +384,14 @@
     "translation": "A sua licença não suporta grupos"
   },
   {
+    "id": "api.channel.create_channel.attribute_no_permission.app_error",
+    "translation": "Não tem permissão para definir um dos atributos de canal submetidos."
+  },
+  {
+    "id": "api.channel.create_channel.attributes_feature_disabled.app_error",
+    "translation": "Os atributos de canal não estão ativados neste servidor."
+  },
+  {
     "id": "api.channel.create_channel.direct_channel.app_error",
     "translation": "Deve utilizar o serviço de API createDirectChannel para a criação do canal de mensagem direta."
   },
@@ -735,12 +404,20 @@
     "translation": "Não pode ser criado um canal direto entre estes utilizadores porque eles não partilham uma equipa em comum."
   },
   {
+    "id": "api.channel.create_channel.invalid_attribute.app_error",
+    "translation": "Um dos atributos de canal submetidos não é válido para este canal."
+  },
+  {
     "id": "api.channel.create_channel.max_channel_limit.app_error",
     "translation": "Não é possível criar mais do que {{.MaxChannelsPerTeam}} canais para a equipa atual."
   },
   {
     "id": "api.channel.create_channel.missing_display_name.error",
     "translation": "display_name está em falta no corpo do pedido"
+  },
+  {
+    "id": "api.channel.create_channel.missing_required_attributes.app_error",
+    "translation": "Faltam atributos obrigatórios a este canal."
   },
   {
     "id": "api.channel.create_channel.missing_team_id.error",
@@ -787,85 +464,6 @@
     "translation": "Não é possível eliminar os canais de mensagens de grupo ou direto"
   },
   {
-    "id": "api.channel.get_channel_moderations.license.error",
-    "translation": "A sua licença não suporta a moderação de canal"
-  },
-  {
-    "id": "api.channel.gm_to_channel_conversion.not_allowed_for_user.request_error",
-    "translation": "O utilizador não está autorizado para converter a mensagem de grupo para canal privado"
-  },
-  {
-    "id": "api.channel.group_message.converted.to_private_channel",
-    "translation": "{{.ConvertedByUsername}} criou este canal a partir de uma mensagem de grupo com {{.GMMembers}}."
-  },
-  {
-    "id": "api.channel.patch_update_channel.restricted_dm.app_error",
-    "translation": "Não é possível atualizar um canal de mensagem direta restrito."
-  },
-  {
-    "id": "api.channel.post_channel_privacy_message.error",
-    "translation": "Não foi possível publicar a mensagem de atualização da privacidade do canal."
-  },
-  {
-    "id": "api.channel.post_update_channel_displayname_message_and_forget.create_post.error",
-    "translation": "Não foi possível publicar a mensagem de atualização displayname"
-  },
-  {
-    "id": "api.command_invite.user_already_in_channel.app_error",
-    "translation": {
-      "one": "{{.User}} já está no canal.",
-      "other": "{{.User}} já estão no canal."
-    }
-  },
-  {
-    "id": "api.email_batching.send_batched_email_notification.subject",
-    "translation": {
-      "one": "[{{.SiteName}}] Nova notificação de {{.Day}} de {{.Month}} de {{.Year}}",
-      "other": "[{{.SiteName}}] Novas notificações de {{.Day}} de {{.Month}} de {{.Year}}"
-    }
-  },
-  {
-    "id": "api.post.get_message_for_notification.files_sent",
-    "translation": {
-      "one": "{{.Count}} ficheiro enviado: {{.Filenames}}",
-      "other": "{{.Count}} ficheiros enviados: {{.Filenames}}"
-    }
-  },
-  {
-    "id": "api.post.get_message_for_notification.images_sent",
-    "translation": {
-      "one": "{{.Count}} imagem enviada: {{.Filenames}}",
-      "other": "{{.Count}} imagens enviadas: {{.Filenames}}"
-    }
-  },
-  {
-    "id": "app.scheduled_post.failed_message_detail",
-    "translation": {
-      "one": "- {{.Count}} no canal {{.ChannelName}}. Motivo: {{.ErrorReason}}",
-      "other": "- {{.Count}} no canal {{.ChannelName}}. Motivo: {{.ErrorReason}}"
-    }
-  },
-  {
-    "id": "api.access_control_policy.channel_permission_policies.feature_disabled",
-    "translation": "A funcionalidade das políticas de permissão ao nível do canal não está ativada."
-  },
-  {
-    "id": "api.access_control_policy.permission_policies.feature_disabled",
-    "translation": "A funcionalidade das políticas de permissão não está ativada."
-  },
-  {
-    "id": "api.access_control_policy.policy_simulation.feature_disabled",
-    "translation": "A funcionalidade de simulação de política não está ativada."
-  },
-  {
-    "id": "api.access_control_policy.simulate.users_out_of_scope.app_error",
-    "translation": "Todos os utilizadores na simulação devem ser membros da equipa ou canal do pedido."
-  },
-  {
-    "id": "api.channel.add_user.to.channel.abac_subject_build_failed.app_error",
-    "translation": "Não foi possível criar o sujeito de controlo de acesso para o utilizador."
-  },
-  {
     "id": "api.channel.discoverable_join_request.already_member.app_error",
     "translation": "Já é um membro deste canal."
   },
@@ -876,162 +474,6 @@
   {
     "id": "api.channel.discoverable_join_request.discoverable_requires_approval.app_error",
     "translation": "Este canal requer aprovação do administrador para aderir. Por favor, envie um pedido através do modal \"Explorar Canais\"."
-  },
-  {
-    "id": "api.oauth.close_browser",
-    "translation": "Pode fechar agora este separador de navegador."
-  },
-  {
-    "id": "web.error.unsupported_browser.browser_get_latest.chrome",
-    "translation": "Obtenha o navegador Chrome mais recente"
-  },
-  {
-    "id": "web.error.unsupported_browser.browser_get_latest.firefox",
-    "translation": "Obtenha o navegador Firefox mais recente"
-  },
-  {
-    "id": "web.error.unsupported_browser.browser_get_latest.safari",
-    "translation": "Obtenha o navegador Safari mais recente"
-  },
-  {
-    "id": "web.error.unsupported_browser.browser_title.chrome",
-    "translation": "Google Chrome"
-  },
-  {
-    "id": "web.error.unsupported_browser.browser_title.edge",
-    "translation": "Microsoft Edge"
-  },
-  {
-    "id": "web.error.unsupported_browser.browser_title.firefox",
-    "translation": "Firefox"
-  },
-  {
-    "id": "web.error.unsupported_browser.browser_title.safari",
-    "translation": "Safari"
-  },
-  {
-    "id": "web.error.unsupported_browser.download",
-    "translation": "Transferir a App"
-  },
-  {
-    "id": "web.error.unsupported_browser.download_app_or_upgrade_browser",
-    "translation": "Transfira a aplicação Mattermost ou utilize um navegador suportado para uma melhor experiência."
-  },
-  {
-    "id": "web.error.unsupported_browser.download_the_app",
-    "translation": "Transferir a App"
-  },
-  {
-    "id": "web.error.unsupported_browser.install_guide.mac",
-    "translation": "Guia de Instalação"
-  },
-  {
-    "id": "web.error.unsupported_browser.install_guide.windows",
-    "translation": "Guia de Instalação"
-  },
-  {
-    "id": "web.error.unsupported_browser.learn_more",
-    "translation": "Saiba mais sobre os navegadores suportados."
-  },
-  {
-    "id": "web.error.unsupported_browser.min_browser_version.chrome",
-    "translation": "Versão 146+"
-  },
-  {
-    "id": "web.error.unsupported_browser.min_browser_version.edge",
-    "translation": "Versão 146+"
-  },
-  {
-    "id": "web.error.unsupported_browser.min_browser_version.firefox",
-    "translation": "Versão 140+"
-  },
-  {
-    "id": "web.error.unsupported_browser.min_browser_version.safari",
-    "translation": "Versão 26.2+"
-  },
-  {
-    "id": "web.error.unsupported_browser.min_os_version.mac",
-    "translation": "macOS 14+"
-  },
-  {
-    "id": "web.error.unsupported_browser.min_os_version.windows",
-    "translation": "Windows 11+"
-  },
-  {
-    "id": "web.error.unsupported_browser.no_longer_support",
-    "translation": "Este navegador já não é suportado pela Antimatter"
-  },
-  {
-    "id": "web.error.unsupported_browser.no_longer_support_version",
-    "translation": "Esta versão do seu navagedor já não é suportada pela Antimatter"
-  },
-  {
-    "id": "web.error.unsupported_browser.open_system_browser.edge",
-    "translation": "Abrir Edge"
-  },
-  {
-    "id": "web.error.unsupported_browser.system_browser_make_default",
-    "translation": "Tornar predefinição"
-  },
-  {
-    "id": "web.error.unsupported_browser.system_browser_or",
-    "translation": "ou"
-  },
-  {
-    "id": "web.error.unsupported_desktop_app.message",
-    "translation": "A sua {{.SiteName}} versão da Aplicação de PC ({{.CurrentVersion}}) é inferior à versão mínima necessária ({{.MinimumVersion}}). Por favor, atualize a sua aplicação ou abra {{.SiteName}} num navegador da Web para continuar."
-  },
-  {
-    "id": "api.access_control.assign.team_group_constrained",
-    "translation": "Não é possível aplicar uma política de associação a uma equipa sincronizada por grupos."
-  },
-  {
-    "id": "api.access_control.decision.unsupported_resource_type.app_error",
-    "translation": "As decisões de controlo de acesso no momento da apresentação não são suportadas para o tipo de recurso \"{{.Type}}\"."
-  },
-  {
-    "id": "api.access_control_policy.team_membership.feature_disabled",
-    "translation": "A funcionalidade de controlo de acesso à associação à equipa não está ativada."
-  },
-  {
-    "id": "api.admin.test_azure.missing_azure_field",
-    "translation": "Falta uma definição do Azure Blob Storage ou a definição é inválida."
-  },
-  {
-    "id": "api.admin.test_s3.missing_s3_bucket",
-    "translation": "O S3 Bucket é obrigatório"
-  },
-  {
-    "id": "api.admin.upload_brand_image.array.app_error",
-    "translation": "Matriz vazia em 'image' no pedido."
-  },
-  {
-    "id": "api.ai_bridge_test_helper.disabled.app_error",
-    "translation": "O auxiliar de teste do bridge está desativado."
-  },
-  {
-    "id": "api.channel.board_channel.app_error",
-    "translation": "Os canais de quadro não podem ser acedidos através dos pontos finais /channels. Utilize antes a API /boards."
-  },
-  {
-    "id": "api.channel.bookmark.board.readonly.app_error",
-    "translation": "Os marcadores de quadro são geridos pela funcionalidade de quadros e não podem ser criados, atualizados ou eliminados através da API de marcadores."
-  },
-  {
-    "id": "api.channel.create_channel.attribute_no_permission.app_error",
-    "translation": "Não tem permissão para definir um dos atributos de canal submetidos."
-  },
-  {
-    "id": "api.channel.create_channel.attributes_feature_disabled.app_error",
-    "translation": "Os atributos de canal não estão ativados neste servidor."
-  },
-  {
-    "id": "api.channel.create_channel.invalid_attribute.app_error",
-    "translation": "Um dos atributos de canal submetidos não é válido para este canal."
-  },
-  {
-    "id": "api.channel.create_channel.missing_required_attributes.app_error",
-    "translation": "Faltam atributos obrigatórios a este canal."
   },
   {
     "id": "api.channel.discoverable_join_request.duplicate.app_error",
@@ -1074,6 +516,58 @@
     "translation": "O ID do canal não corresponde ao ID do canal da mensagem sinalizada."
   },
   {
+    "id": "api.channel.get_channel_moderations.license.error",
+    "translation": "A sua licença não suporta a moderação de canal"
+  },
+  {
+    "id": "api.channel.gm_to_channel_conversion.not_allowed_for_user.request_error",
+    "translation": "O utilizador não está autorizado para converter a mensagem de grupo para canal privado"
+  },
+  {
+    "id": "api.channel.group_message.converted.to_private_channel",
+    "translation": "{{.ConvertedByUsername}} criou este canal a partir de uma mensagem de grupo com {{.GMMembers}}."
+  },
+  {
+    "id": "api.channel.guest_join_channel.post_and_forget",
+    "translation": "%v juntou-se ao canal como convidado."
+  },
+  {
+    "id": "api.channel.join_channel.permissions.app_error",
+    "translation": "Não tem as permissões apropriadas."
+  },
+  {
+    "id": "api.channel.join_channel.post_and_forget",
+    "translation": "%v juntou-se ao canal."
+  },
+  {
+    "id": "api.channel.leave.all_channels.app_error",
+    "translation": "Todos os membros desta comunidade estão em todos os canais: silencie este canal em vez de sair dele."
+  },
+  {
+    "id": "api.channel.leave.default.app_error",
+    "translation": "Não consigo sair do canal {{.Channel}} predefinido."
+  },
+  {
+    "id": "api.channel.leave.direct.app_error",
+    "translation": "Não consigo sair de um canal de mensagem direta."
+  },
+  {
+    "id": "api.channel.leave.left",
+    "translation": "%v saiu do canal."
+  },
+  {
+    "id": "api.channel.move_channel.type.invalid",
+    "translation": "Não é possível mover os canais de mensagem direta ou grupo"
+  },
+  {
+    "id": "api.channel.patch_channel_moderations.cache_invalidation.error",
+    "translation": "Erro ao invalidar a cache"
+  },
+  {
+    "id": "api.channel.patch_channel_moderations.license.error",
+    "translation": "A sua licença não suporta a moderação de canais"
+  },
+  {
     "id": "api.channel.patch_channel_moderations_for_channel.restricted_permission.app_error",
     "translation": "Não é possível adicionar uma permissão que está restringida pelo esquema de permissões da equipa ou do sistema."
   },
@@ -1090,12 +584,28 @@
     "translation": "A funcionalidade de tradução automática não está disponível."
   },
   {
+    "id": "api.channel.patch_update_channel.forbidden.app_error",
+    "translation": "Não foi possível atualizar o canal."
+  },
+  {
     "id": "api.channel.patch_update_channel.group_constrained_not_allowed.app_error",
     "translation": "Não tem permissão para definir group_constrained neste tipo de canal."
   },
   {
     "id": "api.channel.patch_update_channel.no_changes.app_error",
     "translation": "Não há alterações no patch."
+  },
+  {
+    "id": "api.channel.patch_update_channel.restricted_dm.app_error",
+    "translation": "Não é possível atualizar um canal de mensagem direta restrito."
+  },
+  {
+    "id": "api.channel.patch_update_channel.update_direct_or_group_messages_not_allowed.app_error",
+    "translation": "Não tem permissão para atualizar o nome, nome a exibir, e a finalidade das mensagens diretas ou grupo."
+  },
+  {
+    "id": "api.channel.post_channel_privacy_message.error",
+    "translation": "Não foi possível publicar a mensagem de atualização da privacidade do canal."
   },
   {
     "id": "api.channel.post_update_channel_autotranslation_message.create_post.error",
@@ -1114,20 +624,44 @@
     "translation": "Não foi possível obter o utilizador ao atualizar o estado da Tradução automática"
   },
   {
+    "id": "api.channel.post_update_channel_displayname_message_and_forget.create_post.error",
+    "translation": "Não foi possível publicar a mensagem de atualização displayname"
+  },
+  {
     "id": "api.channel.post_update_channel_displayname_message_and_forget.retrieve_user.error",
     "translation": "Não foi possível obter o utilizador ao atualizar o campo DisplayName do canal"
+  },
+  {
+    "id": "api.channel.post_update_channel_displayname_message_and_forget.updated_from",
+    "translation": "%s atualizou o nome a exibir do canal de: %s para: %s"
   },
   {
     "id": "api.channel.post_update_channel_header_message_and_forget.post.error",
     "translation": "Não foi possível publicar a mensagem de atualização do cabeçalho do canal"
   },
   {
+    "id": "api.channel.post_update_channel_header_message_and_forget.removed",
+    "translation": "%s removeu o cabeçalho do canal (era: %s)"
+  },
+  {
     "id": "api.channel.post_update_channel_header_message_and_forget.retrieve_user.error",
     "translation": "Não foi possível obter o utilizador ao atualizar o cabeçalho do canal"
   },
   {
+    "id": "api.channel.post_update_channel_header_message_and_forget.updated_from",
+    "translation": "%s atualizou o cabeçalho do canal de: %s para: %s"
+  },
+  {
+    "id": "api.channel.post_update_channel_header_message_and_forget.updated_to",
+    "translation": "%s atualizou o cabeçalho do canal para: %s"
+  },
+  {
     "id": "api.channel.post_user_add_remove_message_and_forget.error",
     "translation": "Não foi possível publicar a mensagem de entrada/saída"
+  },
+  {
+    "id": "api.channel.remove.all_channels.app_error",
+    "translation": "Todos os membros desta comunidade estão em todos os canais, pelo que não podem ser removidos deste. Remova-os da comunidade, aplique-lhes uma suspensão ou altere as permissões do canal."
   },
   {
     "id": "api.channel.remove.default.app_error",
@@ -1140,6 +674,10 @@
   {
     "id": "api.channel.remove_member.group_constrained.app_error",
     "translation": "Não é possível remover um utilizador de um canal restringido por grupos."
+  },
+  {
+    "id": "api.channel.remove_member.removed",
+    "translation": "%v removido do canal."
   },
   {
     "id": "api.channel.remove_members.denied",
@@ -1162,6 +700,10 @@
     "translation": "Não é possível desarquivar o canal. O canal não está arquivado."
   },
   {
+    "id": "api.channel.restore_channel.unarchived",
+    "translation": "{{.Username}} desarquivou o canal."
+  },
+  {
     "id": "api.channel.set_members.group_constrained.app_error",
     "translation": "Não é possível definir os membros de um canal restringido por grupos."
   },
@@ -1180,6 +722,10 @@
   {
     "id": "api.channel.update_channel.banner_info.channel_type.not_allowed",
     "translation": "A faixa do canal só pode ser configurada em canais Públicos e Privados."
+  },
+  {
+    "id": "api.channel.update_channel.deleted.app_error",
+    "translation": "O canal foi arquivado ou eliminado."
   },
   {
     "id": "api.channel.update_channel.not_allowed.app_error",
@@ -1242,6 +788,10 @@
     "translation": "O canal predefinido não pode ser tornado privado."
   },
   {
+    "id": "api.channel.update_channel_scheme.license.error",
+    "translation": "A sua licença não suporta a atualização do esquema de um canal"
+  },
+  {
     "id": "api.channel.update_channel_scheme.scheme_scope.error",
     "translation": "Não é possível definir o esquema para o canal porque o esquema fornecido não é um esquema de canal."
   },
@@ -1260,6 +810,14 @@
   {
     "id": "api.cloud.cws_webhook_event_missing_error",
     "translation": "O evento do webhook não foi processado. Ou está em falta ou não é válido."
+  },
+  {
+    "id": "api.cloud.license_error",
+    "translation": "A sua licença não suporta os pedidos da nuvem."
+  },
+  {
+    "id": "api.cloud.not_available.app_error",
+    "translation": "Os serviços em nuvem não estão disponíveis neste servidor."
   },
   {
     "id": "api.cloud.notify_admin_to_upgrade_error.already_notified",
@@ -1284,6 +842,10 @@
   {
     "id": "api.command.command_post.forbidden.app_error",
     "translation": "O utilizador especificado não é membro do canal especificado."
+  },
+  {
+    "id": "api.command.disabled.app_error",
+    "translation": "Os comandos foram desativados pelo administrador do sistema."
   },
   {
     "id": "api.command.duplicate_trigger.app_error",
@@ -1350,12 +912,20 @@
     "translation": "Ocorreu um erro ao enviar o(s) convite(s) por e-mail"
   },
   {
+    "id": "api.command.invite_people.hint",
+    "translation": "[name@domain.com ...]"
+  },
+  {
     "id": "api.command.invite_people.invite_off",
     "translation": "A criação de utilizadores foi desativada neste servidor; não foi enviado nenhum convite"
   },
   {
     "id": "api.command.invite_people.name",
     "translation": "convidar_pessoas"
+  },
+  {
+    "id": "api.command.invite_people.no_email",
+    "translation": "Por favor, especifique um ou mais endereços de correio eletrónico válido"
   },
   {
     "id": "api.command.invite_people.sent",
@@ -1374,6 +944,10 @@
     "translation": "Definir o seu estado como ausente"
   },
   {
+    "id": "api.command_away.name",
+    "translation": "ausente"
+  },
+  {
     "id": "api.command_away.success",
     "translation": "Está agora ausente"
   },
@@ -1386,8 +960,16 @@
     "translation": "Editar o cabeçalho do canal"
   },
   {
+    "id": "api.command_channel_header.hint",
+    "translation": "[texto]"
+  },
+  {
     "id": "api.command_channel_header.message.app_error",
     "translation": "É necessário fornecer texto com o comando /header."
+  },
+  {
+    "id": "api.command_channel_header.name",
+    "translation": "cabeçalho"
   },
   {
     "id": "api.command_channel_header.permission.app_error",
@@ -1414,6 +996,10 @@
     "translation": "Não é possível definir a finalidade de canais de mensagem direta. Utilize antes /header para definir o cabeçalho."
   },
   {
+    "id": "api.command_channel_purpose.hint",
+    "translation": "[texto]"
+  },
+  {
     "id": "api.command_channel_purpose.message.app_error",
     "translation": "É necessário fornecer uma mensagem com o comando /purpose."
   },
@@ -1434,24 +1020,100 @@
     "translation": "O texto introduzido excede o limite de carateres. A finalidade do canal está limitada a {{.MaxLength}} carateres."
   },
   {
+    "id": "api.command_channel_remove.channel.app_error",
+    "translation": "Erro ao recuperar o canal atual."
+  },
+  {
+    "id": "api.command_channel_rename.channel.app_error",
+    "translation": "Erro para recuperar o canal atual."
+  },
+  {
+    "id": "api.command_channel_rename.desc",
+    "translation": "Renomear o canal"
+  },
+  {
     "id": "api.command_channel_rename.direct_group.app_error",
     "translation": "Não é possível mudar o nome de canais de mensagem direta."
+  },
+  {
+    "id": "api.command_channel_rename.hint",
+    "translation": "[texto]"
   },
   {
     "id": "api.command_channel_rename.message.app_error",
     "translation": "É necessário fornecer uma mensagem com o comando /rename."
   },
   {
+    "id": "api.command_channel_rename.name",
+    "translation": "renomear"
+  },
+  {
+    "id": "api.command_channel_rename.permission.app_error",
+    "translation": "Não tem as permissões apropriadas para renomear o canal."
+  },
+  {
+    "id": "api.command_channel_rename.too_long.app_error",
+    "translation": "O nome do canal deve ter {{.Length}} ou menos carateres."
+  },
+  {
+    "id": "api.command_channel_rename.too_short.app_error",
+    "translation": "O nome do canal deve ter {{.Length}} ou mais carateres."
+  },
+  {
+    "id": "api.command_channel_rename.update_channel.app_error",
+    "translation": "Erro ao atualizar o canal atual."
+  },
+  {
     "id": "api.command_code.desc",
     "translation": "Mostrar o texto como um bloco de código"
+  },
+  {
+    "id": "api.command_code.hint",
+    "translation": "[texto]"
   },
   {
     "id": "api.command_code.message.app_error",
     "translation": "É necessário fornecer uma mensagem com o comando /code."
   },
   {
+    "id": "api.command_code.name",
+    "translation": "código"
+  },
+  {
     "id": "api.command_collapse.desc",
     "translation": "Ativar a ocultação automática das pré-visualizações de imagens"
+  },
+  {
+    "id": "api.command_collapse.name",
+    "translation": "ocultar"
+  },
+  {
+    "id": "api.command_collapse.success",
+    "translation": "As hiperligações de imagem agora são ocultadas por predefinição"
+  },
+  {
+    "id": "api.command_custom_status.app_error",
+    "translation": "Erro ao definir o estado."
+  },
+  {
+    "id": "api.command_custom_status.clear.app_error",
+    "translation": "Erro ao limpar o estado."
+  },
+  {
+    "id": "api.command_custom_status.clear.success",
+    "translation": "O seu estado foi limpo."
+  },
+  {
+    "id": "api.command_custom_status.desc",
+    "translation": "Definir ou limpar o seu estado"
+  },
+  {
+    "id": "api.command_custom_status.hint",
+    "translation": "[:emoji_name:] [status_message] ou limpar"
+  },
+  {
+    "id": "api.command_custom_status.name",
+    "translation": "estado"
   },
   {
     "id": "api.command_custom_status.success",
@@ -1498,8 +1160,48 @@
     "translation": "Desativar a ocultação automática das pré-visualizações de imagens"
   },
   {
+    "id": "api.command_expand.name",
+    "translation": "expandir"
+  },
+  {
+    "id": "api.command_expand.success",
+    "translation": "As hiperligações de imagem agora expandem por predefinição"
+  },
+  {
     "id": "api.command_expand_collapse.fail.app_error",
     "translation": "Ocorreu um erro ao expandir as pré-visualizações."
+  },
+  {
+    "id": "api.command_export.days.app_error",
+    "translation": "Indique um número de dias, como /export 30, ou deixe em branco para exportar todas as mensagens."
+  },
+  {
+    "id": "api.command_export.desc",
+    "translation": "Exporta as mensagens deste canal para um ficheiro CSV."
+  },
+  {
+    "id": "api.command_export.hint",
+    "translation": "[dias]"
+  },
+  {
+    "id": "api.command_export.name",
+    "translation": "export"
+  },
+  {
+    "id": "api.command_export.send.app_error",
+    "translation": "Não foi possível enviar a exportação. Tente novamente mais tarde."
+  },
+  {
+    "id": "api.command_export.sent",
+    "translation": "A exportação está a caminho: @{{.Bot}} vai enviá-la numa mensagem direta."
+  },
+  {
+    "id": "api.command_export.too_large.app_error",
+    "translation": "Há mais de {{.Max}} mensagens para exportar. Exporte menos dias, como /export 30."
+  },
+  {
+    "id": "api.command_exportlink.desc",
+    "translation": "Gerar uma hiperligação para transferir uma exportação."
   },
   {
     "id": "api.command_exportlink.driver.app_error",
@@ -1550,12 +1252,47 @@
     "translation": "Ocorreu um erro ao criar a mensagem de grupo."
   },
   {
+    "id": "api.command_groupmsg.hint",
+    "translation": "@[username1],@[username2] 'mensagem'"
+  },
+  {
+    "id": "api.command_groupmsg.invalid_user.app_error",
+    "translation": {
+      "one": "Não foi possível encontrar o utilizador: {{.Users}}",
+      "other": "Não foi possível encontrar os utilizadores: {{.Users}}"
+    }
+  },
+  {
     "id": "api.command_groupmsg.max_users.app_error",
     "translation": "As mensagens de grupo estão limitadas a um máximo de {{.MaxUsers}} utilizadores."
   },
   {
     "id": "api.command_groupmsg.min_users.app_error",
     "translation": "As mensagens de grupo estão limitadas a um mínimo de {{.MinUsers}} utilizadores."
+  },
+  {
+    "id": "api.command_groupmsg.name",
+    "translation": "mensagem"
+  },
+  {
+    "id": "api.command_groupmsg.permission.app_error",
+    "translation": "Não tem as permissões apropriadas para criar uma nova mensagem de grupo."
+  },
+  {
+    "id": "api.command_help.desc",
+    "translation": "Mostrar a mensagem da ajuda de Antimatter"
+  },
+  {
+    "id": "api.command_help.name",
+    "translation": "ajuda"
+  },
+  {
+    "id": "api.command_help.success",
+    "translation": "Antimatter é uma plataforma de código aberto para uma comunicação segura, colaboração, e orquestração do trabalho entre ferramentas e equipas.\nAntimatter contém duas ferramentas chave:\n\n**Canais** - Mantenha-se ligado com a sua equipa através de 1:1 e mensagem de grupo.\n**[Manuais](/playbooks)** - Crie e configure processos repetíveis para alcançar resultados específicos e previsíveis.\n\n[Veja a documentação e guias]({{.HelpLink}})"
+  },
+  {
+    "id": "api.command_invite.channel.app_error",
+    "translation": "Erro para recuperar o canal atual."
   },
   {
     "id": "api.command_invite.channel.error",
@@ -1566,6 +1303,10 @@
     "translation": "Este canal é gerido por grupos.  Este utilizador não faz parte de um grupo sincronizado com este canal."
   },
   {
+    "id": "api.command_invite.desc",
+    "translation": "Convide um utilizador para um canal"
+  },
+  {
     "id": "api.command_invite.directchannel.app_error",
     "translation": "Não pode adicionar alguém a um canal de mensagem direta."
   },
@@ -1574,12 +1315,43 @@
     "translation": "Ocorreu um erro ao juntar-se ao canal."
   },
   {
+    "id": "api.command_invite.hint",
+    "translation": "@[nomedeutilizador]... ~[canal]..."
+  },
+  {
+    "id": "api.command_invite.missing_message.app_error",
+    "translation": "Nome de utilizador e/ou canal em falta."
+  },
+  {
     "id": "api.command_invite.missing_user.app_error",
     "translation": "Não foi possível encontrar o utilizador {{.User}}. Pode ter sido desativado pelo Administrador do Sistema."
   },
   {
+    "id": "api.command_invite.name",
+    "translation": "convidar"
+  },
+  {
+    "id": "api.command_invite.permission.app_error",
+    "translation": "Não tem permissões suficientes para adicionar {{.User}} no {{.Channel}}."
+  },
+  {
     "id": "api.command_invite.private_channel.app_error",
     "translation": "Não foi possível encontrar o canal {{.Channel}}. Por favor, utilize o [identificador do canal](https://docs.mattermost.com/messaging/managing-channels.html#naming-a-channel) para identificar os canais."
+  },
+  {
+    "id": "api.command_invite.success",
+    "translation": "{{.User}} adicionado ao canal {{.Channel}}."
+  },
+  {
+    "id": "api.command_invite.successOverflow",
+    "translation": "{{.FirstUser}} e {{.Others}} adicionados ao canal {{.Channel}}."
+  },
+  {
+    "id": "api.command_invite.user_already_in_channel.app_error",
+    "translation": {
+      "one": "{{.User}} já está no canal.",
+      "other": "{{.User}} já estão no canal."
+    }
   },
   {
     "id": "api.command_invite.user_already_in_channel.overflow",
@@ -1594,6 +1366,22 @@
     "translation": "Pode adicionar {{.FirstUser}} e outros {{.Others}} a este canal assim que forem membros da equipa **{{.Team}}**."
   },
   {
+    "id": "api.command_invite_people.permission.app_error",
+    "translation": "Não tem permissão para convidar novos utilizadores para este servidor."
+  },
+  {
+    "id": "api.command_join.desc",
+    "translation": "Junte-se ao canal aberto"
+  },
+  {
+    "id": "api.command_join.fail.app_error",
+    "translation": "Ocorreu um erro enquanto aderia ao canal."
+  },
+  {
+    "id": "api.command_join.hint",
+    "translation": "~[canal]"
+  },
+  {
     "id": "api.command_join.list.app_error",
     "translation": "Ocorreu um erro ao listar os canais."
   },
@@ -1602,8 +1390,32 @@
     "translation": "Não foi possível encontrar o canal."
   },
   {
+    "id": "api.command_join.name",
+    "translation": "aderir"
+  },
+  {
+    "id": "api.command_kick.name",
+    "translation": "expulsar"
+  },
+  {
+    "id": "api.command_leave.desc",
+    "translation": "Sair do canal atual"
+  },
+  {
     "id": "api.command_leave.fail.app_error",
     "translation": "Ocorreu um erro ao sair do canal."
+  },
+  {
+    "id": "api.command_leave.name",
+    "translation": "sair"
+  },
+  {
+    "id": "api.command_logout.desc",
+    "translation": "Terminar Sessão do Antimatter"
+  },
+  {
+    "id": "api.command_logout.name",
+    "translation": "terminar sessão"
   },
   {
     "id": "api.command_marketplace.desc",
@@ -1620,6 +1432,14 @@
   {
     "id": "api.command_me.desc",
     "translation": "Fazer uma ação"
+  },
+  {
+    "id": "api.command_me.hint",
+    "translation": "[mensagem}"
+  },
+  {
+    "id": "api.command_me.name",
+    "translation": "eu"
   },
   {
     "id": "api.command_mobile_logs.cross_user_unavailable.app_error",
@@ -1690,6 +1510,10 @@
     "translation": "Não foi possível encontrar o utilizador."
   },
   {
+    "id": "api.command_msg.name",
+    "translation": "mensagem"
+  },
+  {
     "id": "api.command_msg.permission.app_error",
     "translation": "Não tem as permissões apropriadas para enviar uma mensagem direta a este utilizador."
   },
@@ -1700,6 +1524,14 @@
   {
     "id": "api.command_mute.error",
     "translation": "Não foi possível encontrar o canal {{.Channel}}. Por favor, utilize o [identificador do canal](https://docs.mattermost.com/messaging/managing-channels.html#naming-a-channel) para identificar os canais."
+  },
+  {
+    "id": "api.command_mute.hint",
+    "translation": "~[canal]"
+  },
+  {
+    "id": "api.command_mute.name",
+    "translation": "silenciar"
   },
   {
     "id": "api.command_mute.no_channel.error",
@@ -1744,6 +1576,10 @@
   {
     "id": "api.command_online.success",
     "translation": "Está agora online"
+  },
+  {
+    "id": "api.command_open.name",
+    "translation": "abrir"
   },
   {
     "id": "api.command_remote.accept.help",
@@ -1794,6 +1630,10 @@
     "translation": "Não foi possível obter as ligações seguras: {{.Error}}"
   },
   {
+    "id": "api.command_remote.hint",
+    "translation": "[ação]"
+  },
+  {
     "id": "api.command_remote.invitation.help",
     "translation": "Convite de uma ligação segura"
   },
@@ -1830,8 +1670,40 @@
     "translation": "`{{.Arg}}` em falta ou vazio"
   },
   {
+    "id": "api.command_remote.name",
+    "translation": "ligação segura"
+  },
+  {
+    "id": "api.command_remote.name.help",
+    "translation": "Nome da ligação segura"
+  },
+  {
+    "id": "api.command_remote.name.hint",
+    "translation": "Um nome único para a ligação segura"
+  },
+  {
     "id": "api.command_remote.permission_required",
     "translation": "Precisa da permissão `{{.Permission}}` para gerir ligações seguras."
+  },
+  {
+    "id": "api.command_remote.remote_add_remove.help",
+    "translation": "Adicionar/remover ligações seguras. Ações disponíveis: {{.Actions}}"
+  },
+  {
+    "id": "api.command_remote.remote_table_header",
+    "translation": "| Ligação segura | Nome a exibir | Id. da ligação | URL do Site | Equipa Predefinida | Convite aceite | On-line | Último ping | Eliminado |"
+  },
+  {
+    "id": "api.command_remote.remotes_not_found",
+    "translation": "Sem ligações seguras."
+  },
+  {
+    "id": "api.command_remote.remove.help",
+    "translation": "Remove uma ligação segura"
+  },
+  {
+    "id": "api.command_remote.remove_remote.error",
+    "translation": "Não foi possível remover a ligação segura: {{.Error}}"
   },
   {
     "id": "api.command_remote.remove_remote_id.help",
@@ -1870,12 +1742,20 @@
     "translation": "Não pode remover este utilizador do canal porque é membro dos grupos associados a este canal. Para o remover deste canal, tem de ser removido dos grupos associados."
   },
   {
+    "id": "api.command_remove.hint",
+    "translation": "@[nomedeutilizador]"
+  },
+  {
     "id": "api.command_remove.message.app_error",
     "translation": "É necessário fornecer uma mensagem com o comando /remove ou /kick."
   },
   {
     "id": "api.command_remove.missing.app_error",
     "translation": "Não foi possível encontrar o utilizador. Pode ter sido desativado pelo Administrador do Sistema."
+  },
+  {
+    "id": "api.command_remove.name",
+    "translation": "remover"
   },
   {
     "id": "api.command_remove.permission.app_error",
@@ -1888,6 +1768,30 @@
   {
     "id": "api.command_search.desc",
     "translation": "Procurar texto nas mensagens"
+  },
+  {
+    "id": "api.command_search.hint",
+    "translation": "[texto]"
+  },
+  {
+    "id": "api.command_search.name",
+    "translation": "procurar"
+  },
+  {
+    "id": "api.command_search.unsupported.app_error",
+    "translation": "O comando de procura não é suportado no seu dispositivo."
+  },
+  {
+    "id": "api.command_settings.desc",
+    "translation": "Abrir a janela das Definições"
+  },
+  {
+    "id": "api.command_settings.name",
+    "translation": "definições"
+  },
+  {
+    "id": "api.command_settings.unsupported.app_error",
+    "translation": "O comando das definições não é suportado no seu dispositivo."
   },
   {
     "id": "api.command_share.available_actions",
@@ -1940,6 +1844,10 @@
   {
     "id": "api.command_share.fetch_remote_status.error",
     "translation": "Não foi possível obter o estado das ligações seguras: {{.Error}}."
+  },
+  {
+    "id": "api.command_share.hint",
+    "translation": "[ação]"
   },
   {
     "id": "api.command_share.invalid_value.error",
@@ -2410,6 +2318,13 @@
     "translation": "Veja abaixo um resumo das suas novas mensagens."
   },
   {
+    "id": "api.email_batching.send_batched_email_notification.subject",
+    "translation": {
+      "one": "[{{.SiteName}}] Nova notificação de {{.Day}} de {{.Month}} de {{.Year}}",
+      "other": "[{{.SiteName}}] Novas notificações de {{.Day}} de {{.Month}} de {{.Year}}"
+    }
+  },
+  {
     "id": "api.email_batching.send_batched_email_notification.time",
     "translation": "{{.Hour}}:{{.Minute}} {{.TimeZone}}"
   },
@@ -2742,6 +2657,22 @@
     "translation": "Não foi possível obter o URL do site da instância"
   },
   {
+    "id": "api.group.channel.app_error",
+    "translation": "O canal da equipa tem de ser um canal de uma equipa que possa ler."
+  },
+  {
+    "id": "api.group.channel_community.app_error",
+    "translation": "O canal da equipa tem de ser um canal da comunidade da equipa."
+  },
+  {
+    "id": "api.group.lead.app_error",
+    "translation": "O líder da equipa tem de ser um dos seus membros."
+  },
+  {
+    "id": "api.health_finding.feature_disabled.app_error",
+    "translation": "O painel de estado não está ativado."
+  },
+  {
     "id": "api.image.get.app_error",
     "translation": "Não é possível analisar o URL da imagem pedida."
   },
@@ -2968,6 +2899,10 @@
   {
     "id": "api.oauth.click_redirect",
     "translation": "Se não for redirecionado automaticamente, por favor clique na <a href='{{.Link}}'>ligação</a>"
+  },
+  {
+    "id": "api.oauth.close_browser",
+    "translation": "Pode fechar agora este separador de navegador."
   },
   {
     "id": "api.oauth.get_access_token.bad_client_id.app_error",
@@ -3274,6 +3209,20 @@
     "translation": "Não é possível obter os metadados da ligação para o permalink de uma mensagem de destruição após leitura."
   },
   {
+    "id": "api.post.get_message_for_notification.files_sent",
+    "translation": {
+      "one": "{{.Count}} ficheiro enviado: {{.Filenames}}",
+      "other": "{{.Count}} ficheiros enviados: {{.Filenames}}"
+    }
+  },
+  {
+    "id": "api.post.get_message_for_notification.images_sent",
+    "translation": {
+      "one": "{{.Count}} imagem enviada: {{.Filenames}}",
+      "other": "{{.Count}} imagens enviadas: {{.Filenames}}"
+    }
+  },
+  {
     "id": "api.post.get_posts_for_reporting.channel_not_found",
     "translation": "Canal não encontrado"
   },
@@ -3550,6 +3499,10 @@
     "translation": "O tipo de objeto indicado não é válido."
   },
   {
+    "id": "api.property_value.managed_category.app_error",
+    "translation": "Os canais são classificados nas categorias do servidor através do próprio canal."
+  },
+  {
     "id": "api.property_value.patch.duplicate_field_id.app_error",
     "translation": "O pedido contém Ids. de campo duplicados."
   },
@@ -3592,6 +3545,10 @@
   {
     "id": "api.push_notification.id_loaded.fetch.app_error",
     "translation": "Ocorreu um erro ao obter a notificação push carregada por Id."
+  },
+  {
+    "id": "api.push_notification.spoiler",
+    "translation": "Enviou um spoiler"
   },
   {
     "id": "api.push_notification.title.collapsed_threads",
@@ -4104,6 +4061,10 @@
   {
     "id": "api.team.set_team_icon.parse.app_error",
     "translation": "Não foi possível analisar o formulário multipart."
+  },
+  {
+    "id": "api.team.set_team_icon.seek.app_error",
+    "translation": "Não foi possível avançar para o início do ficheiro."
   },
   {
     "id": "api.team.set_team_icon.storage.app_error",
@@ -5726,12 +5687,20 @@
     "translation": "Ocorreu um erro ao atualizar o recibo de leitura."
   },
   {
+    "id": "app.category_override.category.app_error",
+    "translation": "Essa categoria não é uma das categorias da equipa para todos."
+  },
+  {
     "id": "app.channel.add_member.deleted_user.app_error",
     "translation": "Não é possível adicionar o utilizador como membro do canal."
   },
   {
     "id": "app.channel.add_user.to.channel.rejected_by_plugin",
     "translation": "Adição de membro ao canal rejeitada pelo plugin: {{.Reason}}"
+  },
+  {
+    "id": "app.channel.all_channels.groups.app_error",
+    "translation": "Não foi possível verificar as funções que dão acesso a este canal."
   },
   {
     "id": "app.channel.analytics_type_count.app_error",
@@ -6178,6 +6147,38 @@
     "translation": "Não é possível determinar se o utilizador pertence a uma lista de canais."
   },
   {
+    "id": "app.channel_export.admins_only.app_error",
+    "translation": "Apenas administradores podem exportar as mensagens de um canal neste servidor."
+  },
+  {
+    "id": "app.channel_export.busy.app_error",
+    "translation": "Outra exportação está em curso. Tente novamente em instantes."
+  },
+  {
+    "id": "app.channel_export.failed.app_error",
+    "translation": "Não foi possível exportar o canal."
+  },
+  {
+    "id": "app.channel_export.format.app_error",
+    "translation": "Os canais não podem ser exportados como {{.Format}}. Use csv."
+  },
+  {
+    "id": "app.channel_export.permission.app_error",
+    "translation": "Só pode exportar os canais que pode ler."
+  },
+  {
+    "id": "app.channel_export.range.app_error",
+    "translation": "O intervalo de datas da exportação não é válido."
+  },
+  {
+    "id": "app.channel_export.too_large.app_error",
+    "translation": "Há mais de {{.Max}} mensagens para exportar. Escolha um intervalo de datas mais curto."
+  },
+  {
+    "id": "app.channel_export.unavailable.app_error",
+    "translation": "A exportação de canais não está disponível neste servidor."
+  },
+  {
     "id": "app.channel_guard.invalid_channel.app_error",
     "translation": "O Id. do canal não é um identificador de canal válido."
   },
@@ -6204,6 +6205,34 @@
   {
     "id": "app.channel_member_history.log_leave_event.internal_error",
     "translation": "Não foi possível registar o histórico de membros do canal. Não foi possível atualizar o registo de adesão existente"
+  },
+  {
+    "id": "app.channel_override.get.app_error",
+    "translation": "Não foi possível obter as substituições do canal."
+  },
+  {
+    "id": "app.channel_override.role.app_error",
+    "translation": "O papel não é um dos da equipa do canal."
+  },
+  {
+    "id": "app.channel_override.save.app_error",
+    "translation": "Não foi possível guardar a substituição do canal."
+  },
+  {
+    "id": "app.channel_override.team_channel_only.app_error",
+    "translation": "Apenas os canais de uma equipa têm substituições."
+  },
+  {
+    "id": "app.channel_override.user.app_error",
+    "translation": "As substituições destinam-se às pessoas da equipa do canal."
+  },
+  {
+    "id": "app.channel_role_access.get.app_error",
+    "translation": "Não foi possível obter os papéis do canal."
+  },
+  {
+    "id": "app.channel_role_access.private_only.app_error",
+    "translation": "Apenas um canal privado pode ser limitado a alguns papéis."
   },
   {
     "id": "app.cloud.preview_modal_bucket_url_not_configured",
@@ -6304,6 +6333,42 @@
   {
     "id": "app.command_webhook.try_use.invalid",
     "translation": "Webhook inválido."
+  },
+  {
+    "id": "app.community_attributes.invalid.app_error",
+    "translation": "Este atributo é inválido: verifique o {{.Reason}}."
+  },
+  {
+    "id": "app.community_attributes.not_found.app_error",
+    "translation": "Este atributo não existe nesta comunidade."
+  },
+  {
+    "id": "app.community_attributes.not_member.app_error",
+    "translation": "Esta pessoa não é membro da comunidade."
+  },
+  {
+    "id": "app.community_attributes.too_many.app_error",
+    "translation": "Uma comunidade pode ter até {{.Max}} atributos."
+  },
+  {
+    "id": "app.community_attributes.too_many_users.app_error",
+    "translation": "Peça os atributos de até {{.Max}} pessoas de cada vez."
+  },
+  {
+    "id": "app.community_attributes.type_change.app_error",
+    "translation": "O tipo de um atributo não pode ser alterado: elimine-o e adicione um novo."
+  },
+  {
+    "id": "app.community_attributes.values.count.app_error",
+    "translation": "Defina entre 1 e {{.Max}} valores de atributo de cada vez."
+  },
+  {
+    "id": "app.community_attributes.values.forbidden.app_error",
+    "translation": "Não pode definir este atributo para esta pessoa."
+  },
+  {
+    "id": "app.community_attributes.values.invalid.app_error",
+    "translation": "Este valor não corresponde ao atributo {{.Name}}."
   },
   {
     "id": "app.compile_csv_chunks.header_error",
@@ -7140,6 +7205,26 @@
     "translation": "já existe um utilizador com o nome de utilizador \"{{.Username}}\"."
   },
   {
+    "id": "app.group_team.deleted.app_error",
+    "translation": "Esta equipa foi arquivada."
+  },
+  {
+    "id": "app.group_team.not_in_team.app_error",
+    "translation": "Apenas membros da comunidade podem entrar nas suas equipas."
+  },
+  {
+    "id": "app.health_finding.get.app_error",
+    "translation": "Não foi possível obter o resultado do estado."
+  },
+  {
+    "id": "app.health_finding.get.not_found.app_error",
+    "translation": "Resultado do estado não encontrado."
+  },
+  {
+    "id": "app.health_finding.get_all.app_error",
+    "translation": "Não foi possível obter os resultados do estado."
+  },
+  {
     "id": "app.health_finding.mute.app_error",
     "translation": "Não é possível silenciar o resultado da verificação de estado."
   },
@@ -7872,6 +7957,10 @@
     "translation": "erro de inserção"
   },
   {
+    "id": "app.ip_filtering.apply.lockout.app_error",
+    "translation": "Estas regras bloqueariam o seu próprio endereço ({{.IP}}), pelo que já não conseguiria aceder ao servidor. Adicione uma regra de permissão que o cubra ou remova a regra de bloqueio que o corresponde."
+  },
+  {
     "id": "app.job.download_export_results_not_enabled",
     "translation": "DownloadExportResults em config.json está definido como false. Por favor, defina-o como true para transferir os resultados desta tarefa."
   },
@@ -7972,6 +8061,46 @@
     "translation": "erro ao obter a contagem de membros"
   },
   {
+    "id": "app.message_request.action.app_error",
+    "translation": "Ação desconhecida numa solicitação de mensagem."
+  },
+  {
+    "id": "app.message_request.disabled.app_error",
+    "translation": "O bloqueio e as solicitações de mensagem estão desativados neste servidor."
+  },
+  {
+    "id": "app.message_request.not_direct.app_error",
+    "translation": "Apenas mensagens diretas podem ser solicitações de mensagem."
+  },
+  {
+    "id": "app.moderation.admin.app_error",
+    "translation": "Os administradores da equipa não podem ser moderados."
+  },
+  {
+    "id": "app.moderation.not_member.app_error",
+    "translation": "Não é membro desta equipa."
+  },
+  {
+    "id": "app.moderation.posts.app_error",
+    "translation": "Não foi possível contar as suas mensagens."
+  },
+  {
+    "id": "app.moderation.rank.app_error",
+    "translation": "Só pode moderar pessoas cujos papéis estão abaixo do seu."
+  },
+  {
+    "id": "app.moderation.self.app_error",
+    "translation": "Não pode moderar a si próprio."
+  },
+  {
+    "id": "app.moderation.timeouts.get.app_error",
+    "translation": "Não foi possível obter os bloqueios temporários da equipa."
+  },
+  {
+    "id": "app.moderation.timeouts.save.app_error",
+    "translation": "Não foi possível guardar o tempo limite."
+  },
+  {
     "id": "app.notification.body.dm.subTitle",
     "translation": "Enquanto esteve ausente, {{.SenderName}} enviou-lhe uma nova mensagem direta."
   },
@@ -7998,6 +8127,10 @@
   {
     "id": "app.notification.body.mention.title",
     "translation": "{{.SenderName}} mencionou-o numa mensagem"
+  },
+  {
+    "id": "app.notification.body.spoiler",
+    "translation": "Esta mensagem contém um spoiler: abra-a para a ler."
   },
   {
     "id": "app.notification.body.thread.title",
@@ -8146,6 +8279,38 @@
   {
     "id": "app.oauth.update_app.updating.app_error",
     "translation": "Ocorreu um erro ao atualizar a aplicação."
+  },
+  {
+    "id": "app.on_top_post.archived_channel.app_error",
+    "translation": "Não é possível fixar mensagens no topo de um canal arquivado."
+  },
+  {
+    "id": "app.on_top_post.delete.app_error",
+    "translation": "Não foi possível remover a mensagem do topo do canal."
+  },
+  {
+    "id": "app.on_top_post.get.app_error",
+    "translation": "Não foi possível obter as mensagens no topo do canal."
+  },
+  {
+    "id": "app.on_top_post.not_on_top.app_error",
+    "translation": "Esta mensagem não está no topo do seu canal."
+  },
+  {
+    "id": "app.on_top_post.post_type.app_error",
+    "translation": "Este tipo de mensagem não pode ser fixado no topo."
+  },
+  {
+    "id": "app.on_top_post.restricted_dm.app_error",
+    "translation": "Não é possível fixar mensagens no topo desta conversa."
+  },
+  {
+    "id": "app.on_top_post.save.app_error",
+    "translation": "Não foi possível fixar a mensagem no topo do canal."
+  },
+  {
+    "id": "app.on_top_post.too_many.app_error",
+    "translation": "Um canal pode manter até {{.Max}} mensagens no topo. Remova uma primeiro."
   },
   {
     "id": "app.pap.access_control.channel_default",
@@ -8420,6 +8585,10 @@
     "translation": "Este plugin requer o complemento {{.AddOn}}, que a sua licença não inclui."
   },
   {
+    "id": "app.plugin.addon_not_supported.app_error",
+    "translation": "Este plugin requer o add-on comercial {{.AddOn}}, que o Antimatter não disponibiliza."
+  },
+  {
     "id": "app.plugin.cluster.save_config.app_error",
     "translation": "A configuração de plugins no seu ficheiro config.json tem de ser atualizada manualmente quando se utiliza ReadOnlyConfig com o clustering ativado."
   },
@@ -8550,6 +8719,10 @@
   {
     "id": "app.plugin.remove_bundle.app_error",
     "translation": "Não é possível remover o pacote do plugin do armazenamento de ficheiros."
+  },
+  {
+    "id": "app.plugin.request_trial_license.not_supported.app_error",
+    "translation": "As licenças de teste não são suportadas: todas as funcionalidades já estão disponíveis neste servidor."
   },
   {
     "id": "app.plugin.restart.app_error",
@@ -8818,6 +8991,18 @@
   {
     "id": "app.post.search.app_error",
     "translation": "Erro ao procurar mensagens"
+  },
+  {
+    "id": "app.post.speech.disabled.app_error",
+    "translation": "A leitura de mensagens em voz alta está desativada."
+  },
+  {
+    "id": "app.post.speech.empty.app_error",
+    "translation": "Esta mensagem não tem texto para ser lido em voz alta."
+  },
+  {
+    "id": "app.post.speech.failed.app_error",
+    "translation": "Não foi possível ler a mensagem em voz alta."
   },
   {
     "id": "app.post.update.app_error",
@@ -9532,6 +9717,13 @@
     "translation": "O utilizador não existe"
   },
   {
+    "id": "app.scheduled_post.failed_message_detail",
+    "translation": {
+      "one": "- {{.Count}} no canal {{.ChannelName}}. Motivo: {{.ErrorReason}}",
+      "other": "- {{.Count}} no canal {{.ChannelName}}. Motivo: {{.ErrorReason}}"
+    }
+  },
+  {
     "id": "app.scheduled_post.failed_messages",
     "translation": {
       "one": "Não foi possível enviar {{.Count}} mensagem agendada.",
@@ -9645,6 +9837,26 @@
   {
     "id": "app.select_error",
     "translation": "erro de seleção"
+  },
+  {
+    "id": "app.server_category.conflict.app_error",
+    "translation": "As categorias do servidor da equipa foram alteradas entretanto. Recarregue-as e tente novamente."
+  },
+  {
+    "id": "app.server_category.delete.app_error",
+    "translation": "Não foi possível eliminar as categorias do servidor da equipa."
+  },
+  {
+    "id": "app.server_category.get.app_error",
+    "translation": "Não foi possível obter as categorias do servidor da equipa."
+  },
+  {
+    "id": "app.server_category.refile.app_error",
+    "translation": "Não foi possível mover os canais de uma categoria do servidor renomeada ou removida."
+  },
+  {
+    "id": "app.server_category.save.app_error",
+    "translation": "Não foi possível guardar as categorias do servidor da equipa."
   },
   {
     "id": "app.session.analytics_session_count.app_error",
@@ -9827,6 +10039,10 @@
     "translation": "Erro ao limpar a cache de membros da equipa"
   },
   {
+    "id": "app.team.default_channel.app_error",
+    "translation": "O canal predefinido deve ser um canal público desta comunidade."
+  },
+  {
     "id": "app.team.get.find.app_error",
     "translation": "Não é possível encontrar a equipa existente."
   },
@@ -9985,6 +10201,26 @@
   {
     "id": "app.team.user_belongs_to_teams.app_error",
     "translation": "Não é possível determinar se o utilizador pertence a uma lista de equipas."
+  },
+  {
+    "id": "app.team_role.deleted.app_error",
+    "translation": "Esta função foi eliminada."
+  },
+  {
+    "id": "app.team_role.not_a_role.app_error",
+    "translation": "Este grupo não é uma função de uma equipa."
+  },
+  {
+    "id": "app.team_role.not_in_team.app_error",
+    "translation": "Apenas as pessoas da equipa podem ter as suas funções."
+  },
+  {
+    "id": "app.team_role.permission_not_held.app_error",
+    "translation": "Só pode atribuir a uma função permissões que tenha si mesmo ({{.Permission}})."
+  },
+  {
+    "id": "app.team_role.permissions.app_error",
+    "translation": "Uma função só pode atribuir permissões de equipa e de canal."
   },
   {
     "id": "app.teams.analytics_teams_count.app_error",
@@ -10431,6 +10667,18 @@
     "translation": "Não é possível ativar o código de acesso."
   },
   {
+    "id": "app.user_block.blocked.app_error",
+    "translation": "Não pode enviar mensagens a esta pessoa."
+  },
+  {
+    "id": "app.user_block.group_blocked.app_error",
+    "translation": "Não pode iniciar uma mensagem de grupo com algumas destas pessoas."
+  },
+  {
+    "id": "app.user_block.you_blocked.app_error",
+    "translation": "Bloqueou esta pessoa. Desbloqueie-a para lhe enviar mensagens."
+  },
+  {
     "id": "app.user_terms_of_service.delete.app_error",
     "translation": "Não é possível eliminar os termos de serviço."
   },
@@ -10791,6 +11039,10 @@
     "translation": "A política é inválida."
   },
   {
+    "id": "ent.data_retention.policies.not_found",
+    "translation": "Política de retenção não encontrada."
+  },
+  {
     "id": "ent.data_retention.run_failed.error",
     "translation": "A tarefa de retenção de dados falhou."
   },
@@ -10965,6 +11217,10 @@
   {
     "id": "ent.elasticsearch.indexer.index_batch.nothing_left_to_index.error",
     "translation": "Tentativa de indexar um novo lote quando todas as entidades já estão concluídas"
+  },
+  {
+    "id": "ent.elasticsearch.not_available.app_error",
+    "translation": "O Elasticsearch não está disponível neste servidor."
   },
   {
     "id": "ent.elasticsearch.not_started.error",
@@ -11185,6 +11441,10 @@
   {
     "id": "ent.ldap.save_user.username_exists.ldap_app_error",
     "translation": "Já existe uma conta com esse nome de utilizador. Por favor, contacte o seu Administrador."
+  },
+  {
+    "id": "ent.ldap.switch_to_ldap.already_attached.app_error",
+    "translation": "Esta conta AD/LDAP já está associada a outra conta do Antimatter."
   },
   {
     "id": "ent.ldap.syncronize.get_all.app_error",
@@ -11497,6 +11757,98 @@
   {
     "id": "groups.unsupported_syncable_type",
     "translation": "Tipo de sincronizável não suportado '{{.Value}}'."
+  },
+  {
+    "id": "health.reason.collected_at_unknown",
+    "translation": "Hora de recolha desconhecida."
+  },
+  {
+    "id": "health.reason.config_unavailable",
+    "translation": "Secção de configuração indisponível."
+  },
+  {
+    "id": "health.reason.diagnostics_unavailable",
+    "translation": "Diagnósticos do servidor indisponíveis."
+  },
+  {
+    "id": "health.reason.jobs_unavailable",
+    "translation": "Histórico de tarefas indisponível."
+  },
+  {
+    "id": "health.reason.plugins_unavailable",
+    "translation": "Lista de plugins indisponível."
+  },
+  {
+    "id": "health.reason.rule_panicked",
+    "translation": "A regra falhou de forma inesperada e não pôde ser avaliada."
+  },
+  {
+    "id": "health.reason.stats_unavailable",
+    "translation": "Estatísticas de utilização indisponíveis."
+  },
+  {
+    "id": "health.rule.push_bad_scheme.message.http",
+    "translation": "O PushNotificationServer {{.url}} usa http://, pelo que as notificações push são enviadas em texto claro."
+  },
+  {
+    "id": "health.rule.push_bad_scheme.message.missing",
+    "translation": "O PushNotificationServer {{.url}} tem um esquema inválido. Os utilizadores móveis não receberão notificações."
+  },
+  {
+    "id": "health.rule.push_bad_scheme.remediation",
+    "translation": "Anteceda o PushNotificationServer com https:// e verifique a acessibilidade a partir do nó da aplicação."
+  },
+  {
+    "id": "health.rule.push_bad_scheme.title",
+    "translation": "O PushNotificationServer não usa https://"
+  },
+  {
+    "id": "health.rule.push_empty_url.message",
+    "translation": "Todas as tentativas de push falharão com 'esquema de protocolo não suportado'."
+  },
+  {
+    "id": "health.rule.push_empty_url.remediation",
+    "translation": "Aponte o PushNotificationServer para https://push.mattermost.com ou para um proxy de push autoalojado."
+  },
+  {
+    "id": "health.rule.push_empty_url.title",
+    "translation": "Notificações push ativadas, mas o PushNotificationServer está vazio"
+  },
+  {
+    "id": "health.rule.push_test_proxy.message",
+    "translation": "O push-test.mattermost.com é o proxy de push de teste do Mattermost. Não tem SLA, tem largura de banda limitada e não está destinado a uso em produção. A entrega de push móvel será pouco fiável para qualquer coisa além de testes em pequena escala."
+  },
+  {
+    "id": "health.rule.push_test_proxy.remediation",
+    "translation": "Mude para https://push.mattermost.com (o Serviço de Notificações Push Hospedado em Produção do Mattermost) ou para um proxy de push autoalojado."
+  },
+  {
+    "id": "health.rule.push_test_proxy.title",
+    "translation": "O PushNotificationServer aponta para push-test.mattermost.com"
+  },
+  {
+    "id": "health.rule.site_url_empty.message",
+    "translation": "O SiteURL é obrigatório para URLs de webhook, callbacks de OAuth, cargas de push móvel e ligações de e-mail. As integrações estão avariadas enquanto estiver vazio."
+  },
+  {
+    "id": "health.rule.site_url_empty.remediation",
+    "translation": "Defina o SiteURL para a URL HTTPS pública do servidor."
+  },
+  {
+    "id": "health.rule.site_url_empty.title",
+    "translation": "ServiceSettings.SiteURL está vazio"
+  },
+  {
+    "id": "health.rule.site_url_http.message",
+    "translation": "O SiteURL é {{.url}}. Os cookies de sessão e os tokens de autenticação são transmitidos em texto claro."
+  },
+  {
+    "id": "health.rule.site_url_http.remediation",
+    "translation": "Sirva via HTTPS e atualize o SiteURL em conformidade."
+  },
+  {
+    "id": "health.rule.site_url_http.title",
+    "translation": "O SiteURL usa http:// (e não https)"
   },
   {
     "id": "humanize.list_join",
@@ -12127,6 +12479,22 @@
     "translation": "Id. de utilizador inválido."
   },
   {
+    "id": "model.channel_override.both.app_error",
+    "translation": "Uma substituição não pode permitir e negar {{.Permission}} ao mesmo tempo."
+  },
+  {
+    "id": "model.channel_override.ids.app_error",
+    "translation": "Canal ou destino inválido para a substituição."
+  },
+  {
+    "id": "model.channel_override.permission.app_error",
+    "translation": "Uma substituição não pode alterar {{.Permission}}."
+  },
+  {
+    "id": "model.channel_override.target_type.app_error",
+    "translation": "Uma substituição destina-se a um papel ou a uma pessoa."
+  },
+  {
     "id": "model.cluster.is_valid.create_at.app_error",
     "translation": "CreateAt deve estar definido."
   },
@@ -12331,6 +12699,14 @@
     "translation": "O URL do LibreTranslate deve ser um URL válido e começar por http:// ou https://."
   },
   {
+    "id": "model.config.is_valid.autotranslation.openai.model.app_error",
+    "translation": "Configuração de autotradução inválida: a API compatível com OpenAI requer um nome de modelo."
+  },
+  {
+    "id": "model.config.is_valid.autotranslation.openai.url.app_error",
+    "translation": "Configuração de autotradução inválida: a API compatível com OpenAI requer uma URL válida."
+  },
+  {
     "id": "model.config.is_valid.autotranslation.provider.app_error",
     "translation": "Fornecedor de tradução automática inválido; não pode estar vazio."
   },
@@ -12441,6 +12817,10 @@
   {
     "id": "model.config.is_valid.dcr_redirect_uri_allowlist.app_error",
     "translation": "A lista de URIs de redirecionamento permitidos para DCR contém um padrão inválido. Cada padrão deve ser um URI válido com esquema e anfitrião (por exemplo, https://example.com/** ou cursor://app/callback) e não pode estar vazio nem conter apenas espaços."
+  },
+  {
+    "id": "model.config.is_valid.default_web_ui.app_error",
+    "translation": "Interface web predefinida {{.Value}} inválida. Deve ser 'classic' ou 'fusion'."
   },
   {
     "id": "model.config.is_valid.directory.app_error",
@@ -13075,6 +13455,14 @@
     "translation": "Exibição do nome dos colegas de equipa inválida. Deve ser 'full_name', 'nickname_full_name' ou 'username'."
   },
   {
+    "id": "model.config.is_valid.text_to_speech.model.app_error",
+    "translation": "O modelo de texto para fala é obrigatório."
+  },
+  {
+    "id": "model.config.is_valid.text_to_speech.url.app_error",
+    "translation": "O URL da API de texto para fala deve ser um URL http ou https válido."
+  },
+  {
     "id": "model.config.is_valid.time_between_user_typing.app_error",
     "translation": "O tempo entre atualizações de \"utilizador a escrever\" não deve ser definido para menos de 1000 milissegundos."
   },
@@ -13247,6 +13635,14 @@
     "translation": "Valor inválido para user_id."
   },
   {
+    "id": "model.group.channel_id.app_error",
+    "translation": "Canal inválido para a equipa."
+  },
+  {
+    "id": "model.group.color.app_error",
+    "translation": "A cor de um papel é uma cor hexadecimal, como #3b82f6."
+  },
+  {
     "id": "model.group.create_at.app_error",
     "translation": "propriedade create at inválida para o grupo."
   },
@@ -13257,6 +13653,14 @@
   {
     "id": "model.group.display_name.app_error",
     "translation": "propriedade de nome a exibir inválida para o grupo."
+  },
+  {
+    "id": "model.group.is_team.app_error",
+    "translation": "Uma equipa deve pertencer a uma comunidade."
+  },
+  {
+    "id": "model.group.lead_id.app_error",
+    "translation": "Líder inválido para a equipa."
   },
   {
     "id": "model.group.name.app_error",
@@ -13279,8 +13683,20 @@
     "translation": "propriedade de id remoto inválida para o grupo."
   },
   {
+    "id": "model.group.role.app_error",
+    "translation": "Ícone ou posição do papel inválidos."
+  },
+  {
     "id": "model.group.source.app_error",
     "translation": "propriedade de origem inválida para o grupo."
+  },
+  {
+    "id": "model.group.tag.app_error",
+    "translation": "A etiqueta da equipa pode ter no máximo {{.GroupTagMaxRunes}} caracteres."
+  },
+  {
+    "id": "model.group.team_id.app_error",
+    "translation": "Equipa inválida para o papel."
   },
   {
     "id": "model.group.update_at.app_error",
@@ -13361,6 +13777,18 @@
   {
     "id": "model.incoming_hook.username.app_error",
     "translation": "Nome de utilizador inválido."
+  },
+  {
+    "id": "model.ip_filtering.is_valid.action.app_error",
+    "translation": "Ação de filtragem de IP \"{{.Action}}\" inválida. Utilize \"allow\" ou \"deny\"."
+  },
+  {
+    "id": "model.ip_filtering.is_valid.cidr_block.app_error",
+    "translation": "Intervalo de filtragem de IP \"{{.CIDRBlock}}\" inválido. Utilize um endereço IPv4 ou IPv6, ou um intervalo em notação CIDR, como 192.0.2.0/24."
+  },
+  {
+    "id": "model.ip_filtering.is_valid.description.app_error",
+    "translation": "As descrições das regras de filtragem de IP podem ter no máximo {{.Max}} caracteres."
   },
   {
     "id": "model.job.is_valid.create_at.app_error",
@@ -13459,6 +13887,18 @@
     "translation": "Os perfis de convite devem ter nomes de utilizador únicos"
   },
   {
+    "id": "model.member_timeout.ids.app_error",
+    "translation": "Equipa ou utilizador inválido."
+  },
+  {
+    "id": "model.member_timeout.reason.app_error",
+    "translation": "O motivo de uma suspensão pode ter no máximo {{.Max}} caracteres."
+  },
+  {
+    "id": "model.member_timeout.until.app_error",
+    "translation": "Uma suspensão termina no futuro, dentro de {{.MaxDays}} dias."
+  },
+  {
     "id": "model.oauth.is_valid.app_id.app_error",
     "translation": "Id. de aplicação inválido."
   },
@@ -13517,6 +13957,10 @@
   {
     "id": "model.oauth.validate_grant.public_client_secret.app_error",
     "translation": "Os clientes públicos não devem fornecer um segredo de cliente."
+  },
+  {
+    "id": "model.on_top_post.duration.app_error",
+    "translation": "Uma mensagem pode permanecer no topo por até {{.MaxDays}} dias, ou até ser removida."
   },
   {
     "id": "model.outgoing_hook.icon_url.app_error",
@@ -13759,6 +14203,10 @@
     "translation": "Categoria inválida."
   },
   {
+    "id": "model.preference.is_valid.dm_privacy.app_error",
+    "translation": "Opção inválida para mensagens diretas de pessoas que não conhece."
+  },
+  {
     "id": "model.preference.is_valid.id.app_error",
     "translation": "Id. de utilizador inválido."
   },
@@ -13773,6 +14221,10 @@
   {
     "id": "model.preference.is_valid.theme.app_error",
     "translation": "Tema inválido."
+  },
+  {
+    "id": "model.preference.is_valid.user_block.app_error",
+    "translation": "Pessoa ignorada ou bloqueada inválida."
   },
   {
     "id": "model.preference.is_valid.value.app_error",
@@ -13939,6 +14391,22 @@
     "translation": "Todos os parâmetros IncludeDeletedChannels devem ter o mesmo valor."
   },
   {
+    "id": "model.server_category.duplicate.app_error",
+    "translation": "Já existe uma categoria de servidor com o nome \"{{.Name}}\"."
+  },
+  {
+    "id": "model.server_category.name.app_error",
+    "translation": "Uma categoria de servidor precisa de um nome com no máximo {{.MaxRunes}} caracteres, sem espaços à volta."
+  },
+  {
+    "id": "model.server_category.team_id.app_error",
+    "translation": "Equipa inválida para a categoria de servidor."
+  },
+  {
+    "id": "model.server_category.too_many.app_error",
+    "translation": "Uma equipa pode ter no máximo {{.Max}} categorias de servidor."
+  },
+  {
     "id": "model.session.is_valid.create_at.app_error",
     "translation": "Campo CreateAt inválido para a sessão."
   },
@@ -13955,6 +14423,10 @@
     "translation": "Campo UserId inválido para a sessão."
   },
   {
+    "id": "model.team.is_valid.autolinks.app_error",
+    "translation": "Ligações automáticas inválidas."
+  },
+  {
     "id": "model.team.is_valid.characters.app_error",
     "translation": "O nome deve ter 2 ou mais carateres alfanuméricos minúsculos."
   },
@@ -13965,6 +14437,10 @@
   {
     "id": "model.team.is_valid.create_at.app_error",
     "translation": "Create at deve ser uma hora válida."
+  },
+  {
+    "id": "model.team.is_valid.default_channel.app_error",
+    "translation": "Canal predefinido inválido."
   },
   {
     "id": "model.team.is_valid.description.app_error",
@@ -13989,6 +14465,10 @@
   {
     "id": "model.team.is_valid.name.app_error",
     "translation": "Nome inválido."
+  },
+  {
+    "id": "model.team.is_valid.onboarding.app_error",
+    "translation": "A integração da equipa deve ser JSON com no máximo {{.Max}} caracteres."
   },
   {
     "id": "model.team.is_valid.reserved.app_error",
@@ -14507,6 +14987,102 @@
     "translation": "Não é possível interpretar os dados recebidos para o webhook {{.hook_id}}."
   },
   {
+    "id": "web.error.unsupported_browser.browser_get_latest.chrome",
+    "translation": "Obtenha o navegador Chrome mais recente"
+  },
+  {
+    "id": "web.error.unsupported_browser.browser_get_latest.firefox",
+    "translation": "Obtenha o navegador Firefox mais recente"
+  },
+  {
+    "id": "web.error.unsupported_browser.browser_get_latest.safari",
+    "translation": "Obtenha o navegador Safari mais recente"
+  },
+  {
+    "id": "web.error.unsupported_browser.browser_title.chrome",
+    "translation": "Google Chrome"
+  },
+  {
+    "id": "web.error.unsupported_browser.browser_title.edge",
+    "translation": "Microsoft Edge"
+  },
+  {
+    "id": "web.error.unsupported_browser.browser_title.firefox",
+    "translation": "Firefox"
+  },
+  {
+    "id": "web.error.unsupported_browser.browser_title.safari",
+    "translation": "Safari"
+  },
+  {
+    "id": "web.error.unsupported_browser.download",
+    "translation": "Transferir a App"
+  },
+  {
+    "id": "web.error.unsupported_browser.download_app_or_upgrade_browser",
+    "translation": "Transfira a aplicação Mattermost ou utilize um navegador suportado para uma melhor experiência."
+  },
+  {
+    "id": "web.error.unsupported_browser.download_the_app",
+    "translation": "Transferir a App"
+  },
+  {
+    "id": "web.error.unsupported_browser.install_guide.mac",
+    "translation": "Guia de Instalação"
+  },
+  {
+    "id": "web.error.unsupported_browser.install_guide.windows",
+    "translation": "Guia de Instalação"
+  },
+  {
+    "id": "web.error.unsupported_browser.learn_more",
+    "translation": "Saiba mais sobre os navegadores suportados."
+  },
+  {
+    "id": "web.error.unsupported_browser.min_browser_version.chrome",
+    "translation": "Versão 146+"
+  },
+  {
+    "id": "web.error.unsupported_browser.min_browser_version.edge",
+    "translation": "Versão 146+"
+  },
+  {
+    "id": "web.error.unsupported_browser.min_browser_version.firefox",
+    "translation": "Versão 140+"
+  },
+  {
+    "id": "web.error.unsupported_browser.min_browser_version.safari",
+    "translation": "Versão 26.2+"
+  },
+  {
+    "id": "web.error.unsupported_browser.min_os_version.mac",
+    "translation": "macOS 14+"
+  },
+  {
+    "id": "web.error.unsupported_browser.min_os_version.windows",
+    "translation": "Windows 11+"
+  },
+  {
+    "id": "web.error.unsupported_browser.no_longer_support",
+    "translation": "Este navegador já não é suportado pela Antimatter"
+  },
+  {
+    "id": "web.error.unsupported_browser.no_longer_support_version",
+    "translation": "Esta versão do seu navagedor já não é suportada pela Antimatter"
+  },
+  {
+    "id": "web.error.unsupported_browser.open_system_browser.edge",
+    "translation": "Abrir Edge"
+  },
+  {
+    "id": "web.error.unsupported_browser.system_browser_make_default",
+    "translation": "Tornar predefinição"
+  },
+  {
+    "id": "web.error.unsupported_browser.system_browser_or",
+    "translation": "ou"
+  },
+  {
     "id": "web.error.unsupported_desktop_app.assistance",
     "translation": "Contacte o seu administrador do sistema se precisar de mais assistência."
   },
@@ -14529,6 +15105,10 @@
   {
     "id": "web.error.unsupported_desktop_app.footer_terms",
     "translation": "Termos"
+  },
+  {
+    "id": "web.error.unsupported_desktop_app.message",
+    "translation": "A sua {{.SiteName}} versão da Aplicação de PC ({{.CurrentVersion}}) é inferior à versão mínima necessária ({{.MinimumVersion}}). Por favor, atualize a sua aplicação ou abra {{.SiteName}} num navegador da Web para continuar."
   },
   {
     "id": "web.error.unsupported_desktop_app.title",

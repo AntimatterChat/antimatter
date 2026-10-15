@@ -1,0 +1,10 @@
+{
+  "admin.global_attributes.attribute_details.applies_to.item.user.profile_display.admin.label": "Hanya Admin",
+  "admin.global_attributes.attribute_details.applies_to.item.user.profile_display.always.label": "Selalu",
+  "admin.global_attributes.attribute_details.applies_to.item.user.profile_display.hidden.label": "Disembunyikan",
+  "admin.global_attributes.attribute_details.applies_to.item.user.profile_display.label": "Tampilan Profil",
+  "admin.global_attributes.attribute_details.applies_to.item.user.profile_display.restricted_help": "Hanya admin dan pengguna yang dapat melihat nilainya. Opsi Hanya Admin menampilkannya di profil mereka; Opsi Disembunyikan tidak menampilkannya di mana pun.",
+  "admin.global_attributes.attribute_details.applies_to.item.user.profile_display.when_set.label": "Saat Diisi",
+  "admin.privacy.enableUserBlockingDescription": "Jika diaktifkan, pengguna dapat mengabaikan dan memblokir satu sama lain, serta memilih untuk menerima Pesan Langsung dari orang yang tidak mereka kenal sebagai permintaan pesan, yang tidak akan memberi notifikasi hingga diterima. Matikan untuk lingkungan kerja di mana rekan kerja harus selalu dapat dihubungi: tidak ada yang dipaksakan saat ini, tetapi daftar dan pilihan yang dibuat pengguna akan disimpan untuk saat fitur ini diaktifkan kembali.",
+  "admin.privacy.enableUserBlockingTitle": "Aktifkan pengabaian, pemblokiran, dan permintaan pesan:"
+}

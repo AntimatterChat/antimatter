@@ -1,0 +1,10 @@
+{
+  "admin.global_attributes.attribute_details.applies_to.item.user.profile_display.admin.label": "للمديرين فقط",
+  "admin.global_attributes.attribute_details.applies_to.item.user.profile_display.always.label": "دائمًا",
+  "admin.global_attributes.attribute_details.applies_to.item.user.profile_display.hidden.label": "مخفي",
+  "admin.global_attributes.attribute_details.applies_to.item.user.profile_display.label": "العرض في الملف الشخصي",
+  "admin.global_attributes.attribute_details.applies_to.item.user.profile_display.restricted_help": "يرى القيمة المديرون والمستخدم نفسه فقط. يعرض «للمديرين فقط» القيمة في ملف المستخدم الشخصي له؛ أما «مخفي» فيخفيها في كل مكان.",
+  "admin.global_attributes.attribute_details.applies_to.item.user.profile_display.when_set.label": "عند التعيين",
+  "admin.privacy.enableUserBlockingDescription": "عند تفعيله، يمكن للأشخاص تجاهل بعضهم البعض وحظرهم، واختيار استلام الرسائل المباشرة من أشخاص لا يعرفونهم كطلبات رسائل، والتي لا تُرسل إشعارات حتى يتم قبولها. عطّل هذا الخيار في أماكن العمل التي يجب أن يكون فيها الزملاء متاحين دائمًا؛ في هذه الحالة لا يُفرض أي شيء، لكن تُحفظ القوائم والخيارات التي اتخذها الأشخاص عند إعادة تفعيله.",
+  "admin.privacy.enableUserBlockingTitle": "تفعيل التجاهل والحظر وطلبات الرسائل:"
+}

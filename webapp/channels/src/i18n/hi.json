@@ -1,0 +1,10 @@
+{
+  "admin.global_attributes.attribute_details.applies_to.item.user.profile_display.admin.label": "केवल एडमिन",
+  "admin.global_attributes.attribute_details.applies_to.item.user.profile_display.always.label": "हमेशा",
+  "admin.global_attributes.attribute_details.applies_to.item.user.profile_display.hidden.label": "छिपा हुआ",
+  "admin.global_attributes.attribute_details.applies_to.item.user.profile_display.label": "प्रोफ़ाइल प्रदर्शन",
+  "admin.global_attributes.attribute_details.applies_to.item.user.profile_display.restricted_help": "केवल एडमिन और उपयोगकर्ता ही मान देख सकते हैं। 'केवल एडमिन' इसे उनके प्रोफ़ाइल पर उन्हें दिखाता है; 'छिपा हुआ' इसे कहीं नहीं दिखाता।",
+  "admin.global_attributes.attribute_details.applies_to.item.user.profile_display.when_set.label": "जब सेट किया जाए",
+  "admin.privacy.enableUserBlockingDescription": "जब सच (true) हो, तो लोग एक-दूसरे को अनदेखा और ब्लॉक कर सकते हैं, और उन लोगों से डायरेक्ट मैसेज प्राप्त करने का विकल्प चुन सकते हैं जिन्हें वे नहीं जानते, जिन्हें मैसेज रिक्वेस्ट के रूप में प्राप्त किया जाता है, और स्वीकार किए जाने तक सूचना नहीं मिलती। उन कार्यस्थलों के लिए बंद करें जहाँ सहकर्मी हमेशा संपर्क में रहने चाहिए: तब इसमें से कुछ भी लागू नहीं होता, लेकिन जब इसे वापस चालू किया जाता है, तब लोगों द्वारा बनाई गई सूचियां और विकल्प सुरक्षित रहते हैं।",
+  "admin.privacy.enableUserBlockingTitle": "अनदेखा करना, ब्लॉकिंग और मैसेज रिक्वेस्ट सक्षम करें:"
+}

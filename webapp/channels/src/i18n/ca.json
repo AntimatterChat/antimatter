@@ -1,0 +1,10 @@
+{
+  "admin.global_attributes.attribute_details.applies_to.item.user.profile_display.admin.label": "Només administradors",
+  "admin.global_attributes.attribute_details.applies_to.item.user.profile_display.always.label": "Sempre",
+  "admin.global_attributes.attribute_details.applies_to.item.user.profile_display.hidden.label": "Amagat",
+  "admin.global_attributes.attribute_details.applies_to.item.user.profile_display.label": "Mostra al perfil",
+  "admin.global_attributes.attribute_details.applies_to.item.user.profile_display.restricted_help": "Només els administradors i l’usuari veuen el valor. «Només administradors» el mostra al seu perfil només a ells; «Amagat» no el mostra enlloc.",
+  "admin.global_attributes.attribute_details.applies_to.item.user.profile_display.when_set.label": "Quan està establert",
+  "admin.privacy.enableUserBlockingDescription": "Quan està activat, les persones poden ignorar-se i bloquejar-se mútuament, i triar rebre missatges directes de persones desconegudes com a sol·licituds de missatge, que no les notifiquen fins que s’accepten. Desactiva-ho en espais de treball on els companys han de ser sempre contactables: en aquest cas no s’aplica cap restricció, però es conserven les llistes i les opcions que les persones van triar per quan es torni a activar.",
+  "admin.privacy.enableUserBlockingTitle": "Activa ignorar, bloquejar i sol·licituds de missatge:"
+}

@@ -1,0 +1,10 @@
+{
+  "admin.global_attributes.attribute_details.applies_to.item.user.profile_display.admin.label": "শুধুমাত্র অ্যাডমিন",
+  "admin.global_attributes.attribute_details.applies_to.item.user.profile_display.always.label": "সর্বদা",
+  "admin.global_attributes.attribute_details.applies_to.item.user.profile_display.hidden.label": "লুকানো",
+  "admin.global_attributes.attribute_details.applies_to.item.user.profile_display.label": "প্রোফাইল প্রদর্শন",
+  "admin.global_attributes.attribute_details.applies_to.item.user.profile_display.restricted_help": "শুধুমাত্র অ্যাডমিন এবং ব্যবহারকারী মানটি দেখতে পান। ‘শুধুমাত্র অ্যাডমিন’ অপশনটি শুধুমাত্র তাদের নিজস্ব প্রোফাইলে দেখায়; ‘লুকানো’ অপশনটি কোথাও দেখায় না।",
+  "admin.global_attributes.attribute_details.applies_to.item.user.profile_display.when_set.label": "সেট করা হলে",
+  "admin.privacy.enableUserBlockingDescription": "সত্য হলে, ব্যবহারকারীরা একে অপরকে উপেক্ষা এবং ব্লক করতে পারেন, এবং অপরিচিত ব্যক্তিদের ডাইরেক্ট মেসেজ ‘মেসেজ রিকোয়েস্ট’ হিসেবে পেতে বেছে নিতে পারেন, যা গ্রহণ করা পর্যন্ত নোটিফিকেশন পাঠায় না। এমন কর্মক্ষেত্রে বন্ধ রাখুন যেখানে সর্বদা সহকর্মীদের কাছে পৌঁছানো আবশ্যক: তখন এটি বাধ্যতামূলক নয়, তবে পরে চালু করার জন্য তালিকা এবং বেছে নেওয়া অপশনগুলো সংরক্ষিত থাকে।",
+  "admin.privacy.enableUserBlockingTitle": "উপেক্ষা, ব্লক এবং মেসেজ রিকোয়েস্ট সক্রিয় করুন:"
+}

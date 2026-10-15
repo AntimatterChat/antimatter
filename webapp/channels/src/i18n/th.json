@@ -1,0 +1,10 @@
+{
+  "admin.global_attributes.attribute_details.applies_to.item.user.profile_display.admin.label": "ผู้ดูลำดับระบบเท่านั้่น",
+  "admin.global_attributes.attribute_details.applies_to.item.user.profile_display.always.label": "เสมอ",
+  "admin.global_attributes.attribute_details.applies_to.item.user.profile_display.hidden.label": "ซ่อน",
+  "admin.global_attributes.attribute_details.applies_to.item.user.profile_display.label": "การแสดงผลโปรไฟล์",
+  "admin.global_attributes.attribute_details.applies_to.item.user.profile_display.restricted_help": "เฉพาะผู้ดูลำดับระบบและผ้้ใช้คนนั้้นเท่านั้้นท่ีจะเห็นค่า ผู้ดูลำดับระบบจะเห็นค่าในโปรไฟล์ของเขาเท่านั้้น ส่วน Hidden จะไม่แสดงค่าท่ีใดเลย",
+  "admin.global_attributes.attribute_details.applies_to.item.user.profile_display.when_set.label": "เมื่อกำหนดค่า",
+  "admin.privacy.enableUserBlockingDescription": "เมื่อกำหนดเป็น true ผู้ใช้สามารถเพิกเฉยและบล็อกผู้ใช้คนอื่นได้ รวมถึงเลือกให้ได้รับข้อความส่วนตัวจากคนท่ีไม่รู้จักในรูปข้อความท่ีตองการ (message request) ท่ีไม่จะแจ้งเตือนจนกว่าจะยอมรับ ปิดการต้งค่าน้ีสำหรับพื้่นท่ีทำงานท่ีตองการให้อีกฝ่ายสามารถติดต่อได้อีกเสมอ: เมื่อกำหนดเป็น false ระบบจะไม่บังคับใช้องค์ประกอบเหล่าน้ี แต่จะเก็บรายการและตัวเลือกท่ีผู้ใช้เคยทำไว้สำหรับเมื่อกลับมาเปิดใหม้",
+  "admin.privacy.enableUserBlockingTitle": "เปิดใช้งานการเพิกเฉย การบล็อก และคำขอข้อความ:"
+}
