@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"reflect"
 	"regexp"
+	"slices"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -136,4 +137,99 @@ func TestDefaultConfigPhonesNoHome(t *testing.T) {
 		// The push server is kept as the admin set it (the System Console shows a warning), but nothing is sent to it.
 		assert.True(t, IsMattermostPushServer(*old.EmailSettings.PushNotificationServer))
 	})
+}
+
+// TestAntimatterSettingDefaults pins the defaults of Antimatter's own settings that bear on security and privacy.
+func TestAntimatterSettingDefaults(t *testing.T) {
+	cfg := &Config{}
+	cfg.SetDefaults()
+
+	// No proxy header is trusted until the admin names one: otherwise anyone could forge their address.
+	assert.Empty(t, cfg.ServiceSettings.TrustedProxyIPHeader)
+	assert.Empty(t, cfg.ServiceSettings.TrustedProxyIPs)
+	assert.True(t, *cfg.PrivacySettings.EnableUserBlocking, "people can block and ignore others")
+	assert.Equal(t, WebUIFusion, *cfg.ServiceSettings.DefaultWebUI)
+	assert.True(t, *cfg.ServiceSettings.AllowUserWebUISelection)
+	assert.True(t, *cfg.TeamSettings.AllChannelsMembershipForNewTeams)
+	assert.False(t, *cfg.TeamSettings.RestrictChannelExportToAdmins)
+	assert.True(t, *cfg.TeamSettings.MemberListRoleGroups)
+	assert.False(t, *cfg.TextToSpeechSettings.Enable, "no text to speech service until the admin sets one")
+	assert.Empty(t, *cfg.TextToSpeechSettings.URL)
+	assert.Empty(t, *cfg.AutoTranslationSettings.OpenAI.URL, "no translation service until the admin sets one")
+}
+
+// secretField names settings that hold a secret.
+var secretField = regexp.MustCompile(`(?i)(secret|password|passwd|apikey|api_key|token|privatekey|salt|signingkey|accesskey$|sdkkey|developerkey|splitkey|datasource)`)
+
+// notSecret are settings whose name looks like a secret's but that hold none.
+var notSecret = []string{
+	"Config.ServiceSettings.EnableUserAccessTokens",
+	"Config.ServiceSettings.TLSKeyFile",
+	"Config.ServiceSettings.TrustedProxyIPHeader",
+	"Config.GitLabSettings.TokenEndpoint",
+	"Config.GoogleSettings.TokenEndpoint",
+	"Config.Office365Settings.TokenEndpoint",
+	"Config.OpenIdSettings.TokenEndpoint",
+	"Config.SamlSettings.PrivateKeyFile",
+	"Config.SamlSettings.PublicCertificateFile",
+	"Config.ElasticsearchSettings.ClientKey",
+	"Config.SupportSettings.ForgotPasswordLink",
+	"Config.LdapSettings.PrivateKeyFile",
+}
+
+// TestSanitizeHidesEverySecret fills every setting whose name says it holds a secret, Antimatter's included (the text
+// to speech and translation API keys), and checks the configuration the System Console and support packets get shows
+// none of them.
+func TestSanitizeHidesEverySecret(t *testing.T) {
+	cfg := &Config{}
+	cfg.SetDefaults()
+	*cfg.SqlSettings.DriverName = DatabaseDriverPostgres
+
+	const secret = "s3cr3t-value"
+	var filled []string
+	var walk func(path string, v reflect.Value, fill bool)
+	walk = func(path string, v reflect.Value, fill bool) {
+		switch v.Kind() {
+		case reflect.Pointer:
+			if !v.IsNil() {
+				walk(path, v.Elem(), fill)
+			}
+		case reflect.Struct:
+			for i := 0; i < v.NumField(); i++ {
+				if v.Type().Field(i).IsExported() {
+					walk(path+"."+v.Type().Field(i).Name, v.Field(i), fill)
+				}
+			}
+		case reflect.Slice:
+			if v.Type().Elem().Kind() == reflect.String && secretField.MatchString(path) && !slices.Contains(notSecret, path) {
+				if fill {
+					v.Set(reflect.ValueOf([]string{secret}))
+					filled = append(filled, path)
+					return
+				}
+				for i := 0; i < v.Len(); i++ {
+					assert.NotEqual(t, secret, v.Index(i).String(), "%s isn't sanitized", path)
+				}
+			}
+		case reflect.String:
+			if !secretField.MatchString(path) || slices.Contains(notSecret, path) {
+				return
+			}
+			if fill {
+				v.SetString(secret)
+				filled = append(filled, path)
+				return
+			}
+			assert.NotContains(t, v.String(), secret, "%s isn't sanitized", path)
+		}
+	}
+	walk("Config", reflect.ValueOf(cfg), true)
+	require.Contains(t, filled, "Config.TextToSpeechSettings.APIKey")
+	require.Contains(t, filled, "Config.AutoTranslationSettings.OpenAI.APIKey")
+	require.Contains(t, filled, "Config.SqlSettings.DataSource")
+
+	t.Logf("secrets checked: %v", filled)
+
+	cfg.Sanitize(nil, nil)
+	walk("Config", reflect.ValueOf(cfg), false)
 }
