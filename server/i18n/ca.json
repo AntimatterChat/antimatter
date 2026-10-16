@@ -9680,8 +9680,16 @@
     "translation": "No s'ha pogut suprimir l'equip."
   },
   {
+    "id": "app.team.remove_member.admin.app_error",
+    "translation": "Només els administradors de l'equip poden eliminar un altre administrador de l'equip."
+  },
+  {
     "id": "app.team.remove_member.app_error",
     "translation": "No s'ha pogut eliminar el membre de l'equip."
+  },
+  {
+    "id": "app.team.remove_member.rank.app_error",
+    "translation": "Només pots eliminar persones amb rols inferiors al teu."
   },
   {
     "id": "app.team.rename_team.name_occupied",

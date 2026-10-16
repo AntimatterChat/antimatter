@@ -10155,8 +10155,16 @@
     "translation": "Takım silinemedi."
   },
   {
+    "id": "app.team.remove_member.admin.app_error",
+    "translation": "Takımdan başka bir yöneticiyi yalnızca takımın yöneticileri kaldırabilir."
+  },
+  {
     "id": "app.team.remove_member.app_error",
     "translation": "Takım üyesi silinemedi."
+  },
+  {
+    "id": "app.team.remove_member.rank.app_error",
+    "translation": "Yalnızca sizin rolünüzden düşük rollere sahip kişileri kaldırabilirsiniz."
   },
   {
     "id": "app.team.rename_team.name_occupied",

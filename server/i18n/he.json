@@ -9680,8 +9680,16 @@
     "translation": "לא ניתן למחוק את הצוות."
   },
   {
+    "id": "app.team.remove_member.admin.app_error",
+    "translation": "רק מנהלי הצוות יכולים להסיר מנהל אחר מהצוות."
+  },
+  {
     "id": "app.team.remove_member.app_error",
     "translation": "לא ניתן להסיר את חבר הצוות."
+  },
+  {
+    "id": "app.team.remove_member.rank.app_error",
+    "translation": "ניתן להסיר רק אנשים שדירוגם נמוך משלך."
   },
   {
     "id": "app.team.rename_team.name_occupied",

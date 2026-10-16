@@ -10173,8 +10173,16 @@
     "translation": "Nemohu smazat tým."
   },
   {
+    "id": "app.team.remove_member.admin.app_error",
+    "translation": "Z týmu může odstranit jiného administrátora pouze administrátor týmu."
+  },
+  {
     "id": "app.team.remove_member.app_error",
     "translation": "Nepodařilo se odstranit člena týmu."
+  },
+  {
+    "id": "app.team.remove_member.rank.app_error",
+    "translation": "Můžete odstranit pouze osoby, jejichž role jsou nižší než vaše."
   },
   {
     "id": "app.team.rename_team.name_occupied",

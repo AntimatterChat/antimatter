@@ -10146,8 +10146,16 @@
     "translation": "無法刪除團隊。"
   },
   {
+    "id": "app.team.remove_member.admin.app_error",
+    "translation": "只有團隊管理員才能將其他管理員移出團隊。"
+  },
+  {
     "id": "app.team.remove_member.app_error",
     "translation": "無法移除團隊成員。"
+  },
+  {
+    "id": "app.team.remove_member.rank.app_error",
+    "translation": "您只能移除角色低於您的成員。"
   },
   {
     "id": "app.team.rename_team.name_occupied",

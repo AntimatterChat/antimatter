@@ -9680,8 +9680,16 @@
     "translation": "টিম মুছে ফেলা যায়নি।"
   },
   {
+    "id": "app.team.remove_member.admin.app_error",
+    "translation": "টিমের অন্য একজন অ্যাডমিনকে সরানোর অনুমাত কেবল টিমের অ্যাডমিনদের আছে।"
+  },
+  {
     "id": "app.team.remove_member.app_error",
     "translation": "টিম সদস্যকে সরানো যায়নি।"
+  },
+  {
+    "id": "app.team.remove_member.rank.app_error",
+    "translation": "আপনি কেবল তাদের সরাতে পারেন যাদের রোল আপনার চেয়ে নিচের।"
   },
   {
     "id": "app.team.rename_team.name_occupied",

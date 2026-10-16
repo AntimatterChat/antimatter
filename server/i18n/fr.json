@@ -10155,8 +10155,16 @@
     "translation": "Impossible de supprimer le jeton."
   },
   {
+    "id": "app.team.remove_member.admin.app_error",
+    "translation": "Seuls les admins de l'équipe peuvent retirer un autre admin de l'équipe."
+  },
+  {
     "id": "app.team.remove_member.app_error",
     "translation": "Impossible de supprimer le membre d'équipe."
+  },
+  {
+    "id": "app.team.remove_member.rank.app_error",
+    "translation": "Vous ne pouvez retirer que des membres dont les rôles sont inférieurs aux vôtres."
   },
   {
     "id": "app.team.rename_team.name_occupied",

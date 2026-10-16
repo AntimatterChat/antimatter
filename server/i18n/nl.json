@@ -10155,8 +10155,16 @@
     "translation": "Team kan niet worden verwijderd."
   },
   {
+    "id": "app.team.remove_member.admin.app_error",
+    "translation": "Alleen de beheerders van het team kunnen een andere beheerder uit het team verwijderen."
+  },
+  {
     "id": "app.team.remove_member.app_error",
     "translation": "Kan het teamlid niet verwijderen."
+  },
+  {
+    "id": "app.team.remove_member.rank.app_error",
+    "translation": "Je kunt alleen personen verwijderen met een lagere rol dan de jouwe."
   },
   {
     "id": "app.team.rename_team.name_occupied",

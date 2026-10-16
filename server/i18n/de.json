@@ -10155,8 +10155,16 @@
     "translation": "Konnte Token nicht löschen."
   },
   {
+    "id": "app.team.remove_member.admin.app_error",
+    "translation": "Nur die Administratoren des Teams können einen anderen Administrator aus dem Team entfernen."
+  },
+  {
     "id": "app.team.remove_member.app_error",
     "translation": "Konnte das Teammitglied nicht entfernen."
+  },
+  {
+    "id": "app.team.remove_member.rank.app_error",
+    "translation": "Sie können nur Personen entfernen, deren Rollen unter Ihrer eigenen liegen."
   },
   {
     "id": "app.team.rename_team.name_occupied",

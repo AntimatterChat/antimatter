@@ -10058,8 +10058,16 @@
     "translation": "トークンを削除できませんでした。"
   },
   {
+    "id": "app.team.remove_member.admin.app_error",
+    "translation": "チームの管理者のみが、他の管理者をチームから削除できます。"
+  },
+  {
     "id": "app.team.remove_member.app_error",
     "translation": "チームメンバーを削除できませんでした。"
+  },
+  {
+    "id": "app.team.remove_member.rank.app_error",
+    "translation": "自分の役職より下の役職を持つメンバーのみを削除できます。"
   },
   {
     "id": "app.team.rename_team.name_occupied",

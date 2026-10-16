@@ -9680,8 +9680,16 @@
     "translation": "Tidak dapat menghapus tim."
   },
   {
+    "id": "app.team.remove_member.admin.app_error",
+    "translation": "Hanya admin tim yang dapat menghapus admin lain dari tim."
+  },
+  {
     "id": "app.team.remove_member.app_error",
     "translation": "Tidak dapat menghapus anggota tim."
+  },
+  {
+    "id": "app.team.remove_member.rank.app_error",
+    "translation": "Anda hanya dapat menghapus orang yang perannya di bawah peran Anda."
   },
   {
     "id": "app.team.rename_team.name_occupied",

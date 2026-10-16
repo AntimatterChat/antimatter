@@ -10146,8 +10146,16 @@
     "translation": "Không thể xóa nhóm."
   },
   {
+    "id": "app.team.remove_member.admin.app_error",
+    "translation": "Chỉ quản trị viên của nhóm mới có thể xóa một quản trị viên khác khỏi nhóm."
+  },
+  {
     "id": "app.team.remove_member.app_error",
     "translation": "Không thể loại bỏ thành viên nhóm."
+  },
+  {
+    "id": "app.team.remove_member.rank.app_error",
+    "translation": "Bạn chỉ có thể xóa những người có vai trò thấp hơn vai trò của bạn."
   },
   {
     "id": "app.team.rename_team.name_occupied",

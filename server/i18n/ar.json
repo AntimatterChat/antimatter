@@ -9680,8 +9680,16 @@
     "translation": "تعذّر حذف الفريق."
   },
   {
+    "id": "app.team.remove_member.admin.app_error",
+    "translation": "لا يمكن إلا لمديري الفريق إزالة مدير آخر من الفريق."
+  },
+  {
     "id": "app.team.remove_member.app_error",
     "translation": "تعذّر إزالة عضو الفريق."
+  },
+  {
+    "id": "app.team.remove_member.rank.app_error",
+    "translation": "يمكنك إزالة الأشخاص الذين تقل أدوارهم عن دورك فقط."
   },
   {
     "id": "app.team.rename_team.name_occupied",

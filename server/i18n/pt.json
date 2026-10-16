@@ -10155,8 +10155,16 @@
     "translation": "Não é possível eliminar a equipa."
   },
   {
+    "id": "app.team.remove_member.admin.app_error",
+    "translation": "Apenas os administradores da equipa podem remover outro administrador da equipa."
+  },
+  {
     "id": "app.team.remove_member.app_error",
     "translation": "Não é possível remover o membro da equipa."
+  },
+  {
+    "id": "app.team.remove_member.rank.app_error",
+    "translation": "Pode apenas remover pessoas com papéis inferiores aos seus."
   },
   {
     "id": "app.team.rename_team.name_occupied",

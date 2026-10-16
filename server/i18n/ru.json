@@ -10173,8 +10173,16 @@
     "translation": "Невозможно удалить команду."
   },
   {
+    "id": "app.team.remove_member.admin.app_error",
+    "translation": "Только администраторы рабочей области могут удалять других администраторов из рабочей области."
+  },
+  {
     "id": "app.team.remove_member.app_error",
     "translation": "Не получилось удалить участника команды."
+  },
+  {
+    "id": "app.team.remove_member.rank.app_error",
+    "translation": "Вы можете удалять только тех, чья роль ниже вашей."
   },
   {
     "id": "app.team.rename_team.name_occupied",

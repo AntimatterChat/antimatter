@@ -10164,8 +10164,16 @@
     "translation": "Imposibil de șters token."
   },
   {
+    "id": "app.team.remove_member.admin.app_error",
+    "translation": "Doar administratorii spațiului de lucru pot elimina un alt administrator din spațiu."
+  },
+  {
     "id": "app.team.remove_member.app_error",
     "translation": "Imposibil de actualizat membru al echipei."
+  },
+  {
+    "id": "app.team.remove_member.rank.app_error",
+    "translation": "Poți elimina doar persoanele cu roluri inferioare rolului tău."
   },
   {
     "id": "app.team.rename_team.name_occupied",

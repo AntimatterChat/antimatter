@@ -9680,8 +9680,16 @@
     "translation": "Hindi mabura ang team."
   },
   {
+    "id": "app.team.remove_member.admin.app_error",
+    "translation": "Ang mga admin ng team lamang ang maaaring alisin ang ibang admin mula sa team."
+  },
+  {
     "id": "app.team.remove_member.app_error",
     "translation": "Hindi mabura ang miyembro ng team."
+  },
+  {
+    "id": "app.team.remove_member.rank.app_error",
+    "translation": "Maaari mo lamang alisin ang mga taong mas mababa ang role kaysa sa iyong sarili."
   },
   {
     "id": "app.team.rename_team.name_occupied",

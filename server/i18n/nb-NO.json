@@ -10155,8 +10155,16 @@
     "translation": "Kan ikke slette teamet."
   },
   {
+    "id": "app.team.remove_member.admin.app_error",
+    "translation": "Kun teamets administratorer kan fjerne en annen administrator fra teamet."
+  },
+  {
     "id": "app.team.remove_member.app_error",
     "translation": "Kan ikke fjerne teammedlemmet."
+  },
+  {
+    "id": "app.team.remove_member.rank.app_error",
+    "translation": "Du kan bare fjerne personer som har en lavere rolle enn din."
   },
   {
     "id": "app.team.rename_team.name_occupied",

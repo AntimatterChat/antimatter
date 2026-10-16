@@ -10155,8 +10155,16 @@
     "translation": "Impossibile eliminare il token"
   },
   {
+    "id": "app.team.remove_member.admin.app_error",
+    "translation": "Solo gli amministratori del team possono rimuovere un altro amministratore dal team."
+  },
+  {
     "id": "app.team.remove_member.app_error",
     "translation": "Impossibile rimuovere il membro dalla squadra"
+  },
+  {
+    "id": "app.team.remove_member.rank.app_error",
+    "translation": "Puoi rimuovere solo persone con ruoli inferiori al tuo."
   },
   {
     "id": "app.team.rename_team.name_occupied",

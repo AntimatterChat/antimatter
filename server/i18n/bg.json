@@ -10155,8 +10155,16 @@
     "translation": "Екипът не може да бъде изтрит."
   },
   {
+    "id": "app.team.remove_member.admin.app_error",
+    "translation": "Само администраторите на екипа могат да премахнат друг администратор от екипа."
+  },
+  {
     "id": "app.team.remove_member.app_error",
     "translation": "Неуспешно премахване член на екипа."
+  },
+  {
+    "id": "app.team.remove_member.rank.app_error",
+    "translation": "Можете да премахвате само хора, чиито роли са по-ниски от вашата."
   },
   {
     "id": "app.team.rename_team.name_occupied",

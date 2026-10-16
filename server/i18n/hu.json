@@ -10155,8 +10155,16 @@
     "translation": "Nem sikerült törölni a csapatot."
   },
   {
+    "id": "app.team.remove_member.admin.app_error",
+    "translation": "Csak a csapat adminisztrátorai távolíthatnak el másik adminisztrátort a csapatból."
+  },
+  {
     "id": "app.team.remove_member.app_error",
     "translation": "Nem sikerült eltávolítani a csapattagot."
+  },
+  {
+    "id": "app.team.remove_member.rank.app_error",
+    "translation": "Csak azokat a felhasználókat távolíthatod el, akiknek a szerepe alacsonyabb a tiednél."
   },
   {
     "id": "app.team.rename_team.name_occupied",

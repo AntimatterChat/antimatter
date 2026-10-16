@@ -10155,8 +10155,16 @@
     "translation": "تیم حذف نشد."
   },
   {
+    "id": "app.team.remove_member.admin.app_error",
+    "translation": "فقط مدیران تیم می‌توانند یک مدیر دیگر را از تیم حذف کنند."
+  },
+  {
     "id": "app.team.remove_member.app_error",
     "translation": "حذف عضو تیم امکان پذیر نیست."
+  },
+  {
+    "id": "app.team.remove_member.rank.app_error",
+    "translation": "شما فقط می‌توانید افرادی را که نقش‌هایشان پایین‌تر از نقش شماست، حذف کنید."
   },
   {
     "id": "app.team.rename_team.name_occupied",

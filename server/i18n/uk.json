@@ -10173,8 +10173,16 @@
     "translation": "Команда не може бути видалена."
   },
   {
+    "id": "app.team.remove_member.admin.app_error",
+    "translation": "Тільки адміністратори команди можуть видалити іншого адміністратора з команди."
+  },
+  {
     "id": "app.team.remove_member.app_error",
     "translation": "Не вдалося видалити учасника команди."
+  },
+  {
+    "id": "app.team.remove_member.rank.app_error",
+    "translation": "Ви можете видалити лише тих, чиї ролі нижчі за вашу."
   },
   {
     "id": "app.team.rename_team.name_occupied",

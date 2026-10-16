@@ -10155,8 +10155,16 @@
     "translation": "Tiimiä ei voitu poistaa."
   },
   {
+    "id": "app.team.remove_member.admin.app_error",
+    "translation": "Vain tiimin ylläpitäjät voivat poistaa toisen ylläpitäjän tiimistä."
+  },
+  {
     "id": "app.team.remove_member.app_error",
     "translation": "Tiimin jäsentä ei voitu poistaa."
+  },
+  {
+    "id": "app.team.remove_member.rank.app_error",
+    "translation": "Voit poistaa vain henkilöitä, joiden rooli on alempi kuin sinun."
   },
   {
     "id": "app.team.rename_team.name_occupied",

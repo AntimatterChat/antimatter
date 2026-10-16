@@ -10155,8 +10155,16 @@
     "translation": "Kan inte radera team."
   },
   {
+    "id": "app.team.remove_member.admin.app_error",
+    "translation": "Endast teamets administratörer kan ta bort en annan administratör från teamet."
+  },
+  {
     "id": "app.team.remove_member.app_error",
     "translation": "Kunde inte radera teammedlemmen."
+  },
+  {
+    "id": "app.team.remove_member.rank.app_error",
+    "translation": "Du kan endast ta bort personer med roller som är lägre än din egen."
   },
   {
     "id": "app.team.rename_team.name_occupied",
