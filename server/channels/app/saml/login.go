@@ -19,7 +19,6 @@ import (
 	"github.com/mattermost/mattermost/server/public/model"
 	"github.com/mattermost/mattermost/server/public/shared/mlog"
 	"github.com/mattermost/mattermost/server/public/shared/request"
-	"github.com/mattermost/mattermost/server/v8/channels/app"
 )
 
 // samlProfile is the user information extracted from a validated assertion.
@@ -324,7 +323,7 @@ func (s *Service) loginUser(rctx request.CTX, ss *model.SamlSettings, p *samlPro
 	for i, candidate := range candidates {
 		found, appErr := s.b.GetUserByAuth(candidate)
 		if appErr != nil {
-			if appErr.Id == app.MissingAuthAccountError {
+			if appErr.Id == MissingAuthAccountErrorID {
 				continue
 			}
 			return nil, appErr

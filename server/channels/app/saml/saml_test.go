@@ -23,7 +23,6 @@ import (
 
 	"github.com/mattermost/mattermost/server/public/model"
 	"github.com/mattermost/mattermost/server/public/shared/request"
-	"github.com/mattermost/mattermost/server/v8/channels/app"
 	"github.com/mattermost/mattermost/server/v8/einterfaces/mocks"
 )
 
@@ -39,11 +38,11 @@ func newTestEnv(t *testing.T) *testEnv {
 	b := newFakeBackend()
 	idp := validKeyPair(t, "idp")
 	sp := validKeyPair(t, "sp")
-	b.files[app.SamlIdpCertificateName] = idp.certPEM
-	b.files[app.SamlPublicCertificateName] = sp.certPEM
-	b.files[app.SamlPrivateKeyName] = sp.keyPEM
-	*b.cfg.SamlSettings.PublicCertificateFile = app.SamlPublicCertificateName
-	*b.cfg.SamlSettings.PrivateKeyFile = app.SamlPrivateKeyName
+	b.files[testIdpCertificateName] = idp.certPEM
+	b.files[testPublicCertificateName] = sp.certPEM
+	b.files[testPrivateKeyName] = sp.keyPEM
+	*b.cfg.SamlSettings.PublicCertificateFile = testPublicCertificateName
+	*b.cfg.SamlSettings.PrivateKeyFile = testPrivateKeyName
 	return &testEnv{t: t, b: b, s: newService(b), idp: idp, sp: sp}
 }
 
@@ -74,7 +73,7 @@ func TestConfigureSP(t *testing.T) {
 	t.Run("disabled", func(t *testing.T) {
 		e := newTestEnv(t)
 		*e.b.cfg.SamlSettings.Enable = false
-		delete(e.b.files, app.SamlIdpCertificateName)
+		delete(e.b.files, testIdpCertificateName)
 		require.NoError(t, e.s.ConfigureSP(e.rctx()))
 
 		_, appErr := e.s.BuildRequest(e.rctx(), "")
@@ -89,7 +88,7 @@ func TestConfigureSP(t *testing.T) {
 
 	t.Run("missing idp certificate", func(t *testing.T) {
 		e := newTestEnv(t)
-		delete(e.b.files, app.SamlIdpCertificateName)
+		delete(e.b.files, testIdpCertificateName)
 		err := e.s.ConfigureSP(e.rctx())
 		require.Error(t, err)
 		assert.Equal(t, "ent.saml.configure.certificate_parse_error.app_error", err.(*model.AppError).Id)
@@ -97,14 +96,14 @@ func TestConfigureSP(t *testing.T) {
 
 	t.Run("invalid idp certificate", func(t *testing.T) {
 		e := newTestEnv(t)
-		e.b.files[app.SamlIdpCertificateName] = []byte("garbage")
+		e.b.files[testIdpCertificateName] = []byte("garbage")
 		require.Error(t, e.s.ConfigureSP(e.rctx()))
 	})
 
 	t.Run("encryption with mismatched key", func(t *testing.T) {
 		e := newTestEnv(t)
 		*e.b.cfg.SamlSettings.Encrypt = true
-		e.b.files[app.SamlPrivateKeyName] = validKeyPair(t, "other").keyPEM
+		e.b.files[testPrivateKeyName] = validKeyPair(t, "other").keyPEM
 		err := e.s.ConfigureSP(e.rctx())
 		require.Error(t, err)
 		assert.Equal(t, "ent.saml.configure.load_private_key.app_error", err.(*model.AppError).Id)
@@ -113,7 +112,7 @@ func TestConfigureSP(t *testing.T) {
 	t.Run("encryption with missing key", func(t *testing.T) {
 		e := newTestEnv(t)
 		*e.b.cfg.SamlSettings.Encrypt = true
-		delete(e.b.files, app.SamlPrivateKeyName)
+		delete(e.b.files, testPrivateKeyName)
 		err := e.s.ConfigureSP(e.rctx())
 		require.Error(t, err)
 		assert.Equal(t, "ent.saml.configure.load_private_key.app_error", err.(*model.AppError).Id)
@@ -124,7 +123,7 @@ func TestConfigureSP(t *testing.T) {
 		require.NoError(t, e.s.ConfigureSP(e.rctx()))
 
 		newIdP := validKeyPair(t, "idp2")
-		e.b.files[app.SamlIdpCertificateName] = newIdP.certPEM
+		e.b.files[testIdpCertificateName] = newIdP.certPEM
 
 		_, appErr := e.login(defaultResponseOptions(newIdP, defaultAttrs()), nil)
 		require.Nil(t, appErr)
@@ -203,7 +202,7 @@ func TestBuildRequest(t *testing.T) {
 	t.Run("signing without key", func(t *testing.T) {
 		e := newTestEnv(t)
 		*e.b.cfg.SamlSettings.SignRequest = true
-		delete(e.b.files, app.SamlPrivateKeyName)
+		delete(e.b.files, testPrivateKeyName)
 		_, appErr := e.s.BuildRequest(e.rctx(), "")
 		require.NotNil(t, appErr)
 		assert.Equal(t, "ent.saml.configure.encryption_not_enabled.app_error", appErr.Id)
@@ -237,7 +236,7 @@ func TestGetMetadata(t *testing.T) {
 		e := newTestEnv(t)
 		*e.b.cfg.SamlSettings.Enable = false
 		*e.b.cfg.SamlSettings.IdpURL = ""
-		delete(e.b.files, app.SamlIdpCertificateName)
+		delete(e.b.files, testIdpCertificateName)
 		md, appErr := e.s.GetMetadata(e.rctx())
 		require.Nil(t, appErr)
 		assert.NotContains(t, md, "KeyDescriptor")
@@ -409,7 +408,7 @@ func TestDoLoginSignatureVariants(t *testing.T) {
 	t.Run("multiple idp certificates (rollover)", func(t *testing.T) {
 		e := newTestEnv(t)
 		next := validKeyPair(t, "idp-next")
-		e.b.files[app.SamlIdpCertificateName] = append(append([]byte{}, e.idp.certPEM...), next.certPEM...)
+		e.b.files[testIdpCertificateName] = append(append([]byte{}, e.idp.certPEM...), next.certPEM...)
 		_, appErr := e.login(defaultResponseOptions(next, defaultAttrs()), nil)
 		require.Nil(t, appErr)
 	})
@@ -650,7 +649,7 @@ func TestCheckProviderAttributes(t *testing.T) {
 
 func TestDiagnostic(t *testing.T) {
 	e := newTestEnv(t)
-	d := &Diagnostic{files: e.b, siteURL: func() string { return testSiteURL }}
+	d := NewDiagnostic(e.b, func() string { return testSiteURL })
 
 	t.Run("ok", func(t *testing.T) {
 		require.NoError(t, d.RunSupportPacketTest(e.rctx(), e.b.cfg.SamlSettings))

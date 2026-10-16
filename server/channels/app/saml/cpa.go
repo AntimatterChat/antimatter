@@ -12,7 +12,6 @@ import (
 
 	"github.com/mattermost/mattermost/server/public/model"
 	"github.com/mattermost/mattermost/server/public/shared/request"
-	"github.com/mattermost/mattermost/server/v8/channels/app"
 )
 
 // syncCustomProfileAttributes copies the SAML attributes mapped on custom
@@ -22,7 +21,7 @@ import (
 // absent from the assertion clears the value, so that revoked attributes do not
 // linger (they may drive access control policies).
 func (s *Service) syncCustomProfileAttributes(rctx request.CTX, user *model.User, info *saml2.AssertionInfo) *model.AppError {
-	rctx = app.RequestContextWithCallerID(rctx, model.CallerIDSAMLSync)
+	rctx = rctx.WithContext(model.WithCallerID(rctx.Context(), model.CallerIDSAMLSync))
 
 	group, appErr := s.b.GetPropertyGroup(rctx, model.AccessControlPropertyGroupName)
 	if appErr != nil {

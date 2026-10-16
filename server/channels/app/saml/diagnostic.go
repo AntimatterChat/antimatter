@@ -22,12 +22,18 @@ import (
 // their validity period, and an authentication request can be built (and signed
 // when request signing is enabled).
 type Diagnostic struct {
-	files   configFileSource
+	files   ConfigFileSource
 	siteURL func() string
 	now     func() time.Time
 }
 
 var _ einterfaces.SamlDiagnosticInterface = (*Diagnostic)(nil)
+
+// NewDiagnostic creates the SAML diagnostics of the support packet. siteURL
+// returns the configured site URL.
+func NewDiagnostic(files ConfigFileSource, siteURL func() string) *Diagnostic {
+	return &Diagnostic{files: files, siteURL: siteURL}
+}
 
 func (d *Diagnostic) RunSupportPacketTest(rctx request.CTX, settings model.SamlSettings) error {
 	settings.SetDefaults()

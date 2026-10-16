@@ -17,8 +17,6 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/mattermost/mattermost/server/public/model"
-	"github.com/mattermost/mattermost/server/v8/channels/app"
-	"github.com/mattermost/mattermost/server/v8/einterfaces"
 	"github.com/mattermost/mattermost/server/v8/einterfaces/mocks"
 )
 
@@ -75,18 +73,13 @@ func TestSamlCallbackIncludesSrvParameter(t *testing.T) {
 	})
 }
 
-// registerFakeSamlInterface installs a mocked SamlInterface before the server is created,
-// mirroring the pattern in channels/app/enterprise_test.go. Must be called before Setup(t).
-func registerFakeSamlInterface(t *testing.T) *mocks.SamlInterface {
+// setFakeSamlInterface replaces the server's SAML service with a mock.
+func setFakeSamlInterface(t *testing.T, th *TestHelper) *mocks.SamlInterface {
 	t.Helper()
 
 	fakeSaml := &mocks.SamlInterface{}
 	fakeSaml.On("ConfigureSP", mock.Anything).Return(nil)
-
-	app.RegisterSamlInterface(func(a *app.App) einterfaces.SamlInterface {
-		return fakeSaml
-	})
-	t.Cleanup(func() { app.RegisterSamlInterface(nil) })
+	th.App.Channels().Saml = fakeSaml
 
 	return fakeSaml
 }
@@ -110,8 +103,8 @@ func postCompleteSaml(t *testing.T, th *TestHelper, samlResponse, relayState str
 // forged team_id/invite_id attack) as well as arbitrary tampered/malformed strings, since
 // RelayState must now carry a valid HMAC signature produced by the server.
 func TestCompleteSamlRelayStateRejectsForgedRelayState(t *testing.T) {
-	fakeSaml := registerFakeSamlInterface(t)
 	th := Setup(t)
+	fakeSaml := setFakeSamlInterface(t, th)
 
 	t.Run("legacy base64-encoded relayProps blob is rejected", func(t *testing.T) {
 		forgedRelayProps := map[string]string{
@@ -159,8 +152,8 @@ func TestCompleteSamlRelayStateRejectsForgedRelayState(t *testing.T) {
 // signs relayProps into an opaque RelayState, and completeSaml verifies the signature and
 // recovers the original relayProps.
 func TestCompleteSamlRelayStateSignedRoundTrip(t *testing.T) {
-	fakeSaml := registerFakeSamlInterface(t)
 	th := Setup(t).InitBasic(t)
+	fakeSaml := setFakeSamlInterface(t, th)
 
 	var capturedRelayState string
 	fakeSaml.On("BuildRequest", mock.Anything, mock.AnythingOfType("string")).

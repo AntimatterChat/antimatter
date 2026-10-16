@@ -17,23 +17,12 @@ import (
 	"github.com/mattermost/mattermost/server/public/model"
 	"github.com/mattermost/mattermost/server/public/shared/mlog"
 	"github.com/mattermost/mattermost/server/public/shared/request"
-	"github.com/mattermost/mattermost/server/v8/channels/app"
-	"github.com/mattermost/mattermost/server/v8/channels/app/platform"
 	"github.com/mattermost/mattermost/server/v8/einterfaces"
 )
 
-func init() {
-	app.RegisterSamlInterface(func(a *app.App) einterfaces.SamlInterface {
-		return newService(&appBackend{a: a})
-	})
-	platform.RegisterSamlDiagnosticInterface(func(ps *platform.PlatformService) einterfaces.SamlDiagnosticInterface {
-		return &Diagnostic{files: ps, siteURL: func() string { return model.SafeDereference(ps.Config().ServiceSettings.SiteURL) }}
-	})
-}
-
 // Service implements einterfaces.SamlInterface.
 type Service struct {
-	b backend
+	b Backend
 
 	mu            sync.Mutex
 	sp            *saml2.SAMLServiceProvider
@@ -44,7 +33,12 @@ type Service struct {
 
 var _ einterfaces.SamlInterface = (*Service)(nil)
 
-func newService(b backend) *Service {
+// New creates the SAML service on top of the given backend.
+func New(b Backend) *Service {
+	return newService(b)
+}
+
+func newService(b Backend) *Service {
 	return &Service{
 		b:      b,
 		replay: newReplayCache(defaultReplayCacheSize),

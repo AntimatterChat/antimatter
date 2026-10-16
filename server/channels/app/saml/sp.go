@@ -29,9 +29,9 @@ import (
 // web layer (server/channels/web/saml.go).
 const samlLoginPath = "/login/sso/saml"
 
-// configFileSource gives access to the files stored alongside the
+// ConfigFileSource gives access to the files stored alongside the
 // configuration (uploaded SAML certificates and keys).
-type configFileSource interface {
+type ConfigFileSource interface {
 	GetConfigFile(name string) ([]byte, error)
 }
 
@@ -67,8 +67,8 @@ func needsSPKeyPair(s *model.SamlSettings) bool {
 }
 
 // loadInputs reads the certificate files referenced by the settings through the
-// configuration store (see app.writeSamlFile).
-func loadInputs(files configFileSource, settings *model.SamlSettings, siteURL string) *spInputs {
+// configuration store (see writeSamlFile in the app layer).
+func loadInputs(files ConfigFileSource, settings *model.SamlSettings, siteURL string) *spInputs {
 	in := &spInputs{
 		settings: *settings,
 		siteURL:  siteURL,

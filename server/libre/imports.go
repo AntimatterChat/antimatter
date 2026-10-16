@@ -14,7 +14,6 @@ import (
 	_ "github.com/mattermost/mattermost/server/v8/channels/app/oauthproviders/openid"
 	_ "github.com/mattermost/mattermost/server/v8/channels/app/outgoingoauth"
 	_ "github.com/mattermost/mattermost/server/v8/channels/app/pushproxy"
-	_ "github.com/mattermost/mattermost/server/v8/channels/app/saml"
 	_ "github.com/mattermost/mattermost/server/v8/channels/jobs/compliance"
 	_ "github.com/mattermost/mattermost/server/v8/channels/jobs/dataretention"
 	_ "github.com/mattermost/mattermost/server/v8/channels/jobs/messageexport"

@@ -22,6 +22,7 @@ import (
 	"github.com/mattermost/mattermost/server/public/shared/request"
 	"github.com/mattermost/mattermost/server/v8/channels/app/imaging"
 	"github.com/mattermost/mattermost/server/v8/channels/app/ldap"
+	"github.com/mattermost/mattermost/server/v8/channels/app/saml"
 	"github.com/mattermost/mattermost/server/v8/config"
 	"github.com/mattermost/mattermost/server/v8/einterfaces"
 	"github.com/mattermost/mattermost/server/v8/platform/services/imageproxy"
@@ -157,18 +158,16 @@ func NewChannels(s *Server) (*Channels, error) {
 	if notificationInterface != nil {
 		ch.Notification = notificationInterface(New(ServerConnector(ch)))
 	}
-	if samlInterface != nil {
-		ch.Saml = samlInterface(New(ServerConnector(ch)))
+	ch.Saml = saml.New(&samlBackend{a: New(ServerConnector(ch))})
+	if err := ch.Saml.ConfigureSP(request.EmptyContext(s.Log())); err != nil {
+		s.Log().Error("An error occurred while configuring SAML Service Provider", mlog.Err(err))
+	}
+
+	ch.AddConfigListener(func(_, _ *model.Config) {
 		if err := ch.Saml.ConfigureSP(request.EmptyContext(s.Log())); err != nil {
 			s.Log().Error("An error occurred while configuring SAML Service Provider", mlog.Err(err))
 		}
-
-		ch.AddConfigListener(func(_, _ *model.Config) {
-			if err := ch.Saml.ConfigureSP(request.EmptyContext(s.Log())); err != nil {
-				s.Log().Error("An error occurred while configuring SAML Service Provider", mlog.Err(err))
-			}
-		})
-	}
+	})
 
 	if intuneInterface != nil {
 		ch.Intune = intuneInterface(New(ServerConnector(ch)))

@@ -62,12 +62,6 @@ func RegisterCloudInterface(f func(*Server) einterfaces.CloudInterface) {
 	cloudInterface = f
 }
 
-var samlInterface func(*App) einterfaces.SamlInterface
-
-func RegisterSamlInterface(f func(*App) einterfaces.SamlInterface) {
-	samlInterface = f
-}
-
 var notificationInterface func(*App) einterfaces.NotificationInterface
 
 func RegisterNotificationInterface(f func(*App) einterfaces.NotificationInterface) {

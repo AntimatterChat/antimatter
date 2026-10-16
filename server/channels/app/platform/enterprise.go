@@ -14,12 +14,6 @@ func RegisterElasticsearchInterface(f func(*PlatformService) searchengine.Search
 	elasticsearchInterface = f
 }
 
-var samlDiagnosticInterface func(*PlatformService) einterfaces.SamlDiagnosticInterface
-
-func RegisterSamlDiagnosticInterface(f func(*PlatformService) einterfaces.SamlDiagnosticInterface) {
-	samlDiagnosticInterface = f
-}
-
 var accessControlServiceInterface func(*PlatformService) einterfaces.AccessControlServiceInterface
 
 func RegisterAccessControlServiceInterface(f func(*PlatformService) einterfaces.AccessControlServiceInterface) {

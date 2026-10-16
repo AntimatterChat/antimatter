@@ -22,6 +22,7 @@ import (
 	"github.com/mattermost/mattermost/server/public/shared/mlog"
 	"github.com/mattermost/mattermost/server/v8/channels/app/featureflag"
 	"github.com/mattermost/mattermost/server/v8/channels/app/ldap"
+	"github.com/mattermost/mattermost/server/v8/channels/app/saml"
 	"github.com/mattermost/mattermost/server/v8/channels/jobs"
 	"github.com/mattermost/mattermost/server/v8/channels/store"
 	"github.com/mattermost/mattermost/server/v8/channels/store/localcachelayer"
@@ -497,9 +498,7 @@ func (ps *PlatformService) initEnterprise() {
 
 	ps.ldapDiagnostic = ldap.NewDiagnostic(ps)
 
-	if samlDiagnosticInterface != nil {
-		ps.samlDiagnostic = samlDiagnosticInterface(ps)
-	}
+	ps.samlDiagnostic = saml.NewDiagnostic(ps, func() string { return model.SafeDereference(ps.Config().ServiceSettings.SiteURL) })
 
 	if accessControlServiceInterface != nil {
 		ps.pdpService = accessControlServiceInterface(ps)

@@ -30,7 +30,6 @@ import (
 
 	"github.com/mattermost/mattermost/server/public/model"
 	"github.com/mattermost/mattermost/server/public/shared/request"
-	"github.com/mattermost/mattermost/server/v8/channels/app"
 	"github.com/mattermost/mattermost/server/v8/einterfaces"
 )
 
@@ -40,6 +39,12 @@ const (
 	testSPID    = "https://mm.example.com/sp"
 	testIdPID   = "https://idp.example.com/issuer"
 	testIdPURL  = "https://idp.example.com/sso"
+
+	// The names of the certificate files in the configuration store
+	// (app.SamlIdpCertificateName, ...).
+	testIdpCertificateName    = "saml-idp.crt"
+	testPublicCertificateName = "saml-public.crt"
+	testPrivateKeyName        = "saml-private.key"
 )
 
 type keyPair struct {
@@ -107,7 +112,7 @@ func newFakeBackend() *fakeBackend {
 	*ss.IdpDescriptorURL = testIdPID
 	*ss.ServiceProviderIdentifier = testSPID
 	*ss.AssertionConsumerServiceURL = testACSURL
-	*ss.IdpCertificateFile = app.SamlIdpCertificateName
+	*ss.IdpCertificateFile = testIdpCertificateName
 	*ss.EmailAttribute = "mail"
 	*ss.UsernameAttribute = "uid"
 	*ss.IdAttribute = "objectId"
@@ -131,7 +136,7 @@ func newFakeBackend() *fakeBackend {
 }
 
 func notFound(where string) *model.AppError {
-	return model.NewAppError(where, app.MissingAccountError, nil, "", http.StatusNotFound)
+	return model.NewAppError(where, MissingAccountErrorID, nil, "", http.StatusNotFound)
 }
 
 func copyUser(u *model.User) *model.User {
@@ -159,7 +164,7 @@ func (f *fakeBackend) GetUserByAuth(authData string) (*model.User, *model.AppErr
 			return copyUser(u), nil
 		}
 	}
-	return nil, model.NewAppError("GetUserByAuth", app.MissingAuthAccountError, nil, "", http.StatusBadRequest)
+	return nil, model.NewAppError("GetUserByAuth", MissingAuthAccountErrorID, nil, "", http.StatusBadRequest)
 }
 
 func (f *fakeBackend) GetUserByEmail(email string) (*model.User, *model.AppError) {
