@@ -5,6 +5,7 @@ package localcachelayer
 
 import (
 	"bytes"
+	"errors"
 	"strings"
 
 	"github.com/mattermost/mattermost/server/public/model"
@@ -293,6 +294,13 @@ func (s LocalCacheChannelStore) GetMany(ids []string, allowFromCache bool) (mode
 
 	channels, err := s.ChannelStore.GetMany(channelsToQuery, allowFromCache)
 	if err != nil {
+		// The SQL store returns the channels it finds and fails only when it finds none. Keep that
+		// behaviour when some of them came from the cache: ids it doesn't return (missing, or of a type
+		// it excludes, such as boards and spaces) are left out instead of failing the whole lookup.
+		var nfErr *store.ErrNotFound
+		if errors.As(err, &nfErr) && len(foundChannels) > 0 {
+			return foundChannels, nil
+		}
 		return nil, err
 	}
 

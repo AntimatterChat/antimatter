@@ -13,6 +13,7 @@ import (
 	"github.com/mattermost/mattermost/server/public/plugin/plugintest/mock"
 	"github.com/mattermost/mattermost/server/public/shared/mlog"
 	"github.com/mattermost/mattermost/server/public/shared/request"
+	"github.com/mattermost/mattermost/server/v8/channels/store"
 	"github.com/mattermost/mattermost/server/v8/channels/store/storetest"
 	"github.com/mattermost/mattermost/server/v8/channels/store/storetest/mocks"
 	cmocks "github.com/mattermost/mattermost/server/v8/platform/services/cache/mocks"
@@ -489,6 +490,40 @@ func TestChannelStoreGetManyCache(t *testing.T) {
 		require.NoError(t, err)
 		assert.ElementsMatch(t, model.ChannelList{&fakeChannel}, channels)
 		mockStore.Channel().(*mocks.ChannelStore).AssertNumberOfCalls(t, "GetMany", 1)
+	})
+}
+
+func TestChannelStoreGetManyCachePartialNotFound(t *testing.T) {
+	logger := mlog.CreateConsoleTestLogger(t)
+
+	// Boards and spaces are filtered out by the SQL store, which fails only when it finds nothing. A cached
+	// channel requested together with such ids must still be returned (getChannelsMemberCount relied on it).
+	t.Run("cached channel plus ids the store doesn't return", func(t *testing.T) {
+		mockStore := getMockStore(t)
+		mockStore.Channel().(*mocks.ChannelStore).On("GetMany", []string{"board1"}, true).
+			Return(nil, store.NewErrNotFound("Channel", "ids=[board1]"))
+		cachedStore, err := NewLocalCacheLayer(mockStore, nil, nil, getMockCacheProvider(), logger)
+		require.NoError(t, err)
+
+		fakeChannel := model.Channel{Id: "channel1", Name: "channel1-name"}
+		_, err = cachedStore.Channel().GetMany([]string{fakeChannel.Id}, true)
+		require.NoError(t, err)
+
+		channels, err := cachedStore.Channel().GetMany([]string{fakeChannel.Id, "board1"}, true)
+		require.NoError(t, err)
+		assert.ElementsMatch(t, model.ChannelList{&fakeChannel}, channels)
+	})
+
+	t.Run("nothing found anywhere is still not found", func(t *testing.T) {
+		mockStore := getMockStore(t)
+		mockStore.Channel().(*mocks.ChannelStore).On("GetMany", []string{"board1"}, true).
+			Return(nil, store.NewErrNotFound("Channel", "ids=[board1]"))
+		cachedStore, err := NewLocalCacheLayer(mockStore, nil, nil, getMockCacheProvider(), logger)
+		require.NoError(t, err)
+
+		_, err = cachedStore.Channel().GetMany([]string{"board1"}, true)
+		var nfErr *store.ErrNotFound
+		require.ErrorAs(t, err, &nfErr)
 	})
 }
 
