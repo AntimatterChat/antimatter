@@ -4457,7 +4457,7 @@
   "channel_join_request.review.error.not_pending": "Aquesta sol·licitud ja no està pendent.",
   "channel_loader.posted": " ha publicat un missatge",
   "channel_loader.postedImage": " ha publicat una imatge",
-  "channel_loader.socketError": "Comproveu la connexió, Antimatter no és accessible. Si el problema persisteix, demaneu a l'administrador que [comprovi el port WebSocket](!https://docs.mattermost.com/install/troubleshooting.html#please-check-connection-mattermost-unreachable-if-issue-persists-ask-administrator-to-check-websocket-port).",
+  "channel_loader.socketError": "Comproveu la connexió, Antimatter no és accessible. Si el problema persisteix, demaneu a l'administrador que [comprovi el port WebSocket](!https://antimatter.chat/docs/admins/https.html#nginx).",
   "channel_loader.someone": "Algu",
   "channel_loader.title": "Publicat",
   "channel_loader.unknown_error": "Hem rebut un codi d'estat inesperat del servidor.",

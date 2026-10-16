@@ -4819,7 +4819,7 @@
   "channel_join_request.review.error.not_pending": "Ovaj zahtjev više nije na čekanju.",
   "channel_loader.posted": " je objavio/la poruku",
   "channel_loader.postedImage": " je objavio/la sliku",
-  "channel_loader.socketError": "Provjeri vezu, Antimatter nije dostupan. Ako se problem nastavi, zamoli administratora da [provjeri WebSocket priključak](!https://docs.mattermost.com/install/troubleshooting.html#please-check-connection-mattermost-unreachable-if-issue-persists-ask-administrator-to-check-websocket-port).",
+  "channel_loader.socketError": "Provjeri vezu, Antimatter nije dostupan. Ako se problem nastavi, zamoli administratora da [provjeri WebSocket priključak](!https://antimatter.chat/docs/admins/https.html#nginx).",
   "channel_loader.someone": "Netko",
   "channel_loader.title": "Objavljeno",
   "channel_loader.unknown_error": "Primili smo neočekivani kôd stanja od servera.",

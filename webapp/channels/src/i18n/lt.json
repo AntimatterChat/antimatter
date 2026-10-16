@@ -4819,7 +4819,7 @@
   "channel_join_request.review.error.not_pending": "Ši užklausa nebelaukia sprendimo.",
   "channel_loader.posted": "Paskelbta",
   "channel_loader.postedImage": " paskelbė paveikslėlį",
-  "channel_loader.socketError": "Patikrinkite ryšį, Antimatter nepasiekiamas. Jei problema išlieka, paprašykite administratoriaus [patikrinti WebSocket prievadą](!https://docs.mattermost.com/install/troubleshooting.html#please-check-connection-mattermost-unreachable-if-issue-persists-ask-administrator- Norėdami patikrinti žiniatinklio lizdą).",
+  "channel_loader.socketError": "Patikrinkite ryšį, Antimatter nepasiekiamas. Jei problema išlieka, paprašykite administratoriaus [patikrinti WebSocket prievadą](!https://antimatter.chat/docs/admins/https.html#nginx Norėdami patikrinti žiniatinklio lizdą).",
   "channel_loader.someone": "Kažkas",
   "channel_loader.title": "Paskelbta",
   "channel_loader.unknown_error": "Iš serverio gavome netikėtą būsenos kodą.",

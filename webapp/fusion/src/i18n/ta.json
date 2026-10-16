@@ -4458,7 +4458,7 @@
   "channel_join_request.review.error.not_pending": "இந்த கோரிக்கை இப்போது நிலுவையில் இல்லை.",
   "channel_loader.posted": " செய்தி அனுப்பியுள்ளார்",
   "channel_loader.postedImage": " படம் அனுப்பியுள்ளார்",
-  "channel_loader.socketError": "இணைப்பைச் சரிபார்க்கவும், Antimatter-ஐ அணுக முடியவில்லை. பிரச்சினை தொடர்ந்தால், நிர்வாகியிடம் [WebSocket துறையைச் சரிபார்க்கக் கோருங்கள்](!https://docs.mattermost.com/install/troubleshooting.html#please-check-connection-mattermost-unreachable-if-issue-persists-ask-administrator-to-check-websocket-port).",
+  "channel_loader.socketError": "இணைப்பைச் சரிபார்க்கவும், Antimatter-ஐ அணுக முடியவில்லை. பிரச்சினை தொடர்ந்தால், நிர்வாகியிடம் [WebSocket துறையைச் சரிபார்க்கக் கோருங்கள்](!https://antimatter.chat/docs/admins/https.html#nginx).",
   "channel_loader.someone": "யாரேனும்",
   "channel_loader.title": "அனுப்பப்பட்டது",
   "channel_loader.unknown_error": "சர்வரிடமிருந்து எதிர்பாராத நிலை குறியீடு பெறப்பட்டது.",

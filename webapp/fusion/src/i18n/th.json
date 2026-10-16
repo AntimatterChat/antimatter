@@ -4458,7 +4458,7 @@
   "channel_join_request.review.error.not_pending": "คำขอนี้ไม่อยู่ในสถานะรออนุมัติอีกต่อไป",
   "channel_loader.posted": " โพสต์ข้อมความ",
   "channel_loader.postedImage": " โพสต์รูปภาพ",
-  "channel_loader.socketError": "กรุณาตรวจสอบการเชื่อมต่อ ไม่สามารถเข้าถึง Antimatter ได้ หากปัญหายังคงอยู่ ให้ถามผู้ดูแลระบบให้ [ตรวจสอบพอร์ต WebSocket](!https://docs.mattermost.com/install/troubleshooting.html#please-check-connection-mattermost-unreachable-if-issue-persists-ask-administrator-to-check-websocket-port)",
+  "channel_loader.socketError": "กรุณาตรวจสอบการเชื่อมต่อ ไม่สามารถเข้าถึง Antimatter ได้ หากปัญหายังคงอยู่ ให้ถามผู้ดูแลระบบให้ [ตรวจสอบพอร์ต WebSocket](!https://antimatter.chat/docs/admins/https.html#nginx)",
   "channel_loader.someone": "ใครบางคน",
   "channel_loader.title": "โพสต์",
   "channel_loader.unknown_error": "เราได้รับรหัสสถานะที่ไม่คาดคิดจากเซิร์ฟเวอร์",

@@ -784,7 +784,7 @@ defineMessages({
     },
     socketError: {
         id: 'channel_loader.socketError',
-        defaultMessage: 'Please check connection, Antimatter unreachable. If issue persists, ask administrator to [check WebSocket port](!https://docs.mattermost.com/install/troubleshooting.html#please-check-connection-mattermost-unreachable-if-issue-persists-ask-administrator-to-check-websocket-port).',
+        defaultMessage: 'Please check connection, Antimatter unreachable. If issue persists, ask administrator to [check WebSocket port](!https://antimatter.chat/docs/admins/https.html#nginx).',
     },
 });
 

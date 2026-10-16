@@ -4458,7 +4458,7 @@
   "channel_join_request.review.error.not_pending": "یہ درخواست اب زیر التوا نہیں ہے۔",
   "channel_loader.posted": " نے پیغام بھیجا",
   "channel_loader.postedImage": " نے تصویر بھیجی",
-  "channel_loader.socketError": "براہ کرم کنکشن چیک کریں، Antimatter تک رسائی ممکن نہیں۔ اگر مسئلہ برقرار رہے تو ایڈمن سے [WebSocket پورٹ چیک کرنے](!https://docs.mattermost.com/install/troubleshooting.html#please-check-connection-mattermost-unreachable-if-issue-persists-ask-administrator-to-check-websocket-port) کو کہیں۔",
+  "channel_loader.socketError": "براہ کرم کنکشن چیک کریں، Antimatter تک رسائی ممکن نہیں۔ اگر مسئلہ برقرار رہے تو ایڈمن سے [WebSocket پورٹ چیک کرنے](!https://antimatter.chat/docs/admins/https.html#nginx) کو کہیں۔",
   "channel_loader.someone": "کوئی",
   "channel_loader.title": "بھیجا گیا",
   "channel_loader.unknown_error": "ہمیں سرور سے غیر متوقع اسٹیٹس کوڈ ملا۔",

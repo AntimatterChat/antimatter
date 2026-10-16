@@ -4694,7 +4694,7 @@
   "channel_join_request.review.error.not_pending": "Esta solicitud ya no está pendiente.",
   "channel_loader.posted": "Publicó",
   "channel_loader.postedImage": " publicó una imagen",
-  "channel_loader.socketError": "Por favor, revisa tu conexión, Antimatter inalcanzable. Si el problema persiste, solicite al administrador [revisar el puerto del WebSocket](https://docs.mattermost.com/install/troubleshooting.html#please-check-connection-mattermost-unreachable-if-issue-persists-ask-administrator-to-check-websocket-port).",
+  "channel_loader.socketError": "Por favor, revisa tu conexión, Antimatter inalcanzable. Si el problema persiste, solicite al administrador [revisar el puerto del WebSocket](https://antimatter.chat/docs/admins/https.html#nginx).",
   "channel_loader.someone": "Alguien",
   "channel_loader.title": "Publicado",
   "channel_loader.unknown_error": "Hemos recibido un código de estado inesperado del servidor.",

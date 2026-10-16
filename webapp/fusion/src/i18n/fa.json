@@ -4629,7 +4629,7 @@
   "channel_join_request.review.error.not_pending": "این درخواست دیگر در انتظار نیست.",
   "channel_loader.posted": "ارسال شده",
   "channel_loader.postedImage": " یک تصویر ارسال کرد",
-  "channel_loader.socketError": "لطفاً اتصال را بررسی کنید، Antimatter غیر قابل دسترس است. اگر مشکل همچنان ادامه داشت، از سرپرست بخواهید [درگاه WebSocket را بررسی کند](!https://docs.mattermost.com/install/troubleshooting.html#please-check-connection-mattermost-unreachable-if-issue-persists-ask-administrator-to-check-websocket-port).",
+  "channel_loader.socketError": "لطفاً اتصال را بررسی کنید، Antimatter غیر قابل دسترس است. اگر مشکل همچنان ادامه داشت، از سرپرست بخواهید [درگاه WebSocket را بررسی کند](!https://antimatter.chat/docs/admins/https.html#nginx).",
   "channel_loader.someone": "کسی",
   "channel_loader.title": "ارسال شد",
   "channel_loader.unknown_error": "ما یک کد وضعیت غیرمنتظره از سرور دریافت کردیم.",

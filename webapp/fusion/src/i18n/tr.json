@@ -4824,7 +4824,7 @@
   "channel_join_request.review.error.not_pending": "Bu istek artık beklemiyor.",
   "channel_loader.posted": " bir ileti gönderdi",
   "channel_loader.postedImage": " bir görsel gönderdi",
-  "channel_loader.socketError": "Lütfen bağlantınızı denetleyin, Antimatter uygulamasına erişilemiyor. Sorun sürerse yöneticinizden [WebSocket bağlantı noktasını denetlemesini isteyin](!https://docs.mattermost.com/install/troubleshooting.html#please-check-connection-mattermost-unreachable-if-issue-persists-ask-administrator-to-check-websocket-port).",
+  "channel_loader.socketError": "Lütfen bağlantınızı denetleyin, Antimatter uygulamasına erişilemiyor. Sorun sürerse yöneticinizden [WebSocket bağlantı noktasını denetlemesini isteyin](!https://antimatter.chat/docs/admins/https.html#nginx).",
   "channel_loader.someone": "Biri",
   "channel_loader.title": "Gönderildi",
   "channel_loader.unknown_error": "Sunucudan beklenmeyen bir durum kodu alındı.",

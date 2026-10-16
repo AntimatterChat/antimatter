@@ -4457,7 +4457,7 @@
   "channel_join_request.review.error.not_pending": "لم يعد هذا الطلب معلقاً.",
   "channel_loader.posted": " نشر رسالة",
   "channel_loader.postedImage": " نشر صورة",
-  "channel_loader.socketError": "يرجى التحقق من الاتصال، Antimatter غير قابل للوصول. إذا استمرت المشكلة، اطلب من المدير [التحقق من منفذ WebSocket](!https://docs.mattermost.com/install/troubleshooting.html#please-check-connection-mattermost-unreachable-if-issue-persists-ask-administrator-to-check-websocket-port).",
+  "channel_loader.socketError": "يرجى التحقق من الاتصال، Antimatter غير قابل للوصول. إذا استمرت المشكلة، اطلب من المدير [التحقق من منفذ WebSocket](!https://antimatter.chat/docs/admins/https.html#nginx).",
   "channel_loader.someone": "شخص ما",
   "channel_loader.title": "نُشر",
   "channel_loader.unknown_error": "استلمنا رمز حالة غير متوقع من الخادم.",

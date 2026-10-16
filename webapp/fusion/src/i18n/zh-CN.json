@@ -4877,7 +4877,7 @@
   "channel_join_request.review.error.not_pending": "此请求不再处于待处理状态。",
   "channel_loader.posted": " 发布了一条消息",
   "channel_loader.postedImage": " 上传了个图片",
-  "channel_loader.socketError": "请检查连接，无法连接 Antimatter。如果仍有问题，请让管理员[检查 WebSocket 端口](!https://docs.mattermost.com/install/troubleshooting.html#please-check-connection-mattermost-unreachable-if-issue-persists-ask-administrator-to-check-websocket-port)。",
+  "channel_loader.socketError": "请检查连接，无法连接 Antimatter。如果仍有问题，请让管理员[检查 WebSocket 端口](!https://antimatter.chat/docs/admins/https.html#nginx)。",
   "channel_loader.someone": "某人",
   "channel_loader.title": "已发布",
   "channel_loader.unknown_error": "我们从服务器上接收到一个异常状态码。",

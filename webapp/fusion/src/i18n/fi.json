@@ -4458,7 +4458,7 @@
   "channel_join_request.review.error.not_pending": "Tämä pyyntö ei ole enää odottamassa.",
   "channel_loader.posted": " lähetti viestin",
   "channel_loader.postedImage": " lähetti kuvan",
-  "channel_loader.socketError": "Tarkista yhteys, Antimatteria ei voi tavoittaa. Jos ongelma jatkuu, pyydä ylläpitäjää [tarkistamaan WebSocket-portin](!https://docs.mattermost.com/install/troubleshooting.html#please-check-connection-mattermost-unreachable-if-issue-persists-ask-administrator-to-check-websocket-port).",
+  "channel_loader.socketError": "Tarkista yhteys, Antimatteria ei voi tavoittaa. Jos ongelma jatkuu, pyydä ylläpitäjää [tarkistamaan WebSocket-portin](!https://antimatter.chat/docs/admins/https.html#nginx).",
   "channel_loader.someone": "Joku",
   "channel_loader.title": "Lähetetty",
   "channel_loader.unknown_error": "Palvelin palautti odottamattoman tilakoodin.",

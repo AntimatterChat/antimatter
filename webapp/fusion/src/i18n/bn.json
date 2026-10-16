@@ -4458,7 +4458,7 @@
   "channel_join_request.review.error.not_pending": "এই অনুরোধটি আর অপেক্ষমাণ নয়।",
   "channel_loader.posted": " একটি ম্যাসেজ পোস্ট করেছেন",
   "channel_loader.postedImage": " একটি ছবি পোস্ট করেছেন",
-  "channel_loader.socketError": "অনুগ্রহ করে সংযোগ পরীক্ষা করুন, Antimatter-এর সাথে সংযোগ স্থাপন করা যাচ্ছে না। সমস্যাটি টিকে থাকলে, অ্যাডমিনকে [WebSocket পোর্ট পরীক্ষা করতে](!https://docs.mattermost.com/install/troubleshooting.html#please-check-connection-mattermost-unreachable-if-issue-persists-ask-administrator-to-check-websocket-port) বলুন।",
+  "channel_loader.socketError": "অনুগ্রহ করে সংযোগ পরীক্ষা করুন, Antimatter-এর সাথে সংযোগ স্থাপন করা যাচ্ছে না। সমস্যাটি টিকে থাকলে, অ্যাডমিনকে [WebSocket পোর্ট পরীক্ষা করতে](!https://antimatter.chat/docs/admins/https.html#nginx) বলুন।",
   "channel_loader.someone": "কেউ",
   "channel_loader.title": "পোস্ট করা হয়েছে",
   "channel_loader.unknown_error": "আমরা সার্ভার থেকে একটি অপ্রত্যাশিত স্ট্যাটাস কোড পেয়েছি।",

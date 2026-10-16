@@ -4457,7 +4457,7 @@
   "channel_join_request.review.error.not_pending": "הבקשה אינה ממתינה עוד.",
   "channel_loader.posted": " פרסם הודעה",
   "channel_loader.postedImage": " פרסם תמונה",
-  "channel_loader.socketError": "בדוק את החיבור, Antimatter אינו נגיש. אם הבעיה נמשכת, בקש ממנהל לבדוק את [פורט ה-WebSocket](!https://docs.mattermost.com/install/troubleshooting.html#please-check-connection-mattermost-unreachable-if-issue-persists-ask-administrator-to-check-websocket-port).",
+  "channel_loader.socketError": "בדוק את החיבור, Antimatter אינו נגיש. אם הבעיה נמשכת, בקש ממנהל לבדוק את [פורט ה-WebSocket](!https://antimatter.chat/docs/admins/https.html#nginx).",
   "channel_loader.someone": "מישהו",
   "channel_loader.title": "פורסם",
   "channel_loader.unknown_error": "קיבלנו קוד סטטוס בלתי צפוי מהשרת.",

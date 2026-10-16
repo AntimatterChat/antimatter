@@ -4458,7 +4458,7 @@
   "channel_join_request.review.error.not_pending": "यह अनुरोध अब लंबित नहीं है।",
   "channel_loader.posted": " ने एक संदेश पोस्ट किया",
   "channel_loader.postedImage": " ने एक इमेज पोस्ट की",
-  "channel_loader.socketError": "कृपया कनेक्शन की जाँच करें, Antimatter तक पहुँच नहीं पा रहा है। यदि समस्या बनी रहती है, तो प्रशासक से [WebSocket पोर्ट की जाँच करने](!https://docs.mattermost.com/install/troubleshooting.html#please-check-connection-mattermost-unreachable-if-issue-persists-ask-administrator-to-check-websocket-port) के लिए कहें।",
+  "channel_loader.socketError": "कृपया कनेक्शन की जाँच करें, Antimatter तक पहुँच नहीं पा रहा है। यदि समस्या बनी रहती है, तो प्रशासक से [WebSocket पोर्ट की जाँच करने](!https://antimatter.chat/docs/admins/https.html#nginx) के लिए कहें।",
   "channel_loader.someone": "कोई",
   "channel_loader.title": "पोस्ट किया गया",
   "channel_loader.unknown_error": "हमने सर्वर से एक अप्रत्याशित स्थिति कोड प्राप्त किया।",

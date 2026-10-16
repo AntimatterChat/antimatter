@@ -4596,7 +4596,7 @@
   "channel_join_request.review.error.not_pending": "Ez a kérelem már nem függőben lévő.",
   "channel_loader.posted": "Közzétett",
   "channel_loader.postedImage": " közzétett egy képet",
-  "channel_loader.socketError": "Kérjük, ellenőrizze a kapcsolatot, a Antimatter elérhetetlen. Ha a probléma továbbra is fennáll, kérje meg az adminisztrátort, hogy [ellenőrizze a WebSocket portot](!https://docs.mattermost.com/install/troubleshooting.html#please-check-connection-mattermost-unreachable-if-issue-persists-ask-administrator-to-check-websocket-port).",
+  "channel_loader.socketError": "Kérjük, ellenőrizze a kapcsolatot, a Antimatter elérhetetlen. Ha a probléma továbbra is fennáll, kérje meg az adminisztrátort, hogy [ellenőrizze a WebSocket portot](!https://antimatter.chat/docs/admins/https.html#nginx).",
   "channel_loader.someone": "Valaki",
   "channel_loader.title": "Közzétéve",
   "channel_loader.unknown_error": "Váratlan állapotkódot kaptunk a szervertől.",

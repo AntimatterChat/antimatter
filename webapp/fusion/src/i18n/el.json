@@ -4458,7 +4458,7 @@
   "channel_join_request.review.error.not_pending": "Αυτή η αίτηση δεν είναι πλέον εκκρεμής.",
   "channel_loader.posted": " δημοσίευσε μήνυμα",
   "channel_loader.postedImage": " δημοσίευσε εικόνα",
-  "channel_loader.socketError": "Ελέγξτε τη σύνδεση, το Antimatter δεν είναι προσβάσιμο. Αν το πρόβλημα επιμένει, ζητήστε από τον διαχειριστή να [ελέγξει την θύρα WebSocket](!https://docs.mattermost.com/install/troubleshooting.html#please-check-connection-mattermost-unreachable-if-issue-persists-ask-administrator-to-check-websocket-port).",
+  "channel_loader.socketError": "Ελέγξτε τη σύνδεση, το Antimatter δεν είναι προσβάσιμο. Αν το πρόβλημα επιμένει, ζητήστε από τον διαχειριστή να [ελέγξει την θύρα WebSocket](!https://antimatter.chat/docs/admins/https.html#nginx).",
   "channel_loader.someone": "Κάποιος",
   "channel_loader.title": "Δημοσίευση",
   "channel_loader.unknown_error": "Λαβαμε έναν απρόμενο κώδικα κατάστασης από τον διακομιστή.",

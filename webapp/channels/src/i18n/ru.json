@@ -4761,7 +4761,7 @@
   "channel_join_request.review.error.not_pending": "Этот запрос уже не ожидает рассмотрения.",
   "channel_loader.posted": "Опубликовано",
   "channel_loader.postedImage": " загрузил изображение",
-  "channel_loader.socketError": "Пожалуйста, проверьте соединение, Antimatter недоступен. Если проблема не устранена, попросите администратора [проверить порт WebSocket](!https://docs.mattermost.com/install/troubleshooting.html#please-check-connection-mattermost-unreachable-if-issue-persists-ask-administrator-to-check-websocket-port).",
+  "channel_loader.socketError": "Пожалуйста, проверьте соединение, Antimatter недоступен. Если проблема не устранена, попросите администратора [проверить порт WebSocket](!https://antimatter.chat/docs/admins/https.html#nginx).",
   "channel_loader.someone": "Кто-то",
   "channel_loader.title": "Опубликовано",
   "channel_loader.unknown_error": "Мы получили неожиданный код состояния от сервера.",

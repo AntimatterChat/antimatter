@@ -4458,7 +4458,7 @@
   "channel_join_request.review.error.not_pending": "Permohonan ini tidak lagi tertangguh.",
   "channel_loader.posted": " telah menghantar mesej",
   "channel_loader.postedImage": " telah menghantar imej",
-  "channel_loader.socketError": "Sila semak sambungan, Antimatter tidak dapat dicapai. Jika masalah berterusan, minta pentadbir untuk [semak port WebSocket](!https://docs.mattermost.com/install/troubleshooting.html#please-check-connection-mattermost-unreachable-if-issue-persists-ask-administrator-to-check-websocket-port).",
+  "channel_loader.socketError": "Sila semak sambungan, Antimatter tidak dapat dicapai. Jika masalah berterusan, minta pentadbir untuk [semak port WebSocket](!https://antimatter.chat/docs/admins/https.html#nginx).",
   "channel_loader.someone": "Seseorang",
   "channel_loader.title": "Dihantar",
   "channel_loader.unknown_error": "Kami menerima kod status yang tidak dijangka daripada pelayan.",
