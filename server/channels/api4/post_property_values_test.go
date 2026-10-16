@@ -114,11 +114,24 @@ func TestGetPostWithPropertyGroups(t *testing.T) {
 			CheckNotFoundStatus(t, resp)
 		})
 
-		t.Run("session_attributes stays gated", func(t *testing.T) {
+		// Antimatter gates session attributes on the feature flag only (upstream also required a licence).
+		t.Run("session_attributes stays gated by its feature flag", func(t *testing.T) {
+			th.App.UpdateConfig(func(cfg *model.Config) { cfg.FeatureFlags.SessionAttributes = false })
+			t.Cleanup(func() {
+				th.App.UpdateConfig(func(cfg *model.Config) { cfg.FeatureFlags.SessionAttributes = true })
+			})
 			_, resp, err := th.Client.GetPostWithOptions(context.Background(), th.BasicPost.Id, "",
 				model.GetPostOptions{PropertyGroup: model.SessionAttributesPropertyGroupName})
 			require.Error(t, err)
 			CheckNotImplementedStatus(t, resp)
+		})
+
+		t.Run("session_attributes is accepted with its feature flag on", func(t *testing.T) {
+			th.App.UpdateConfig(func(cfg *model.Config) { cfg.FeatureFlags.SessionAttributes = true })
+			_, resp, err := th.Client.GetPostWithOptions(context.Background(), th.BasicPost.Id, "",
+				model.GetPostOptions{PropertyGroup: model.SessionAttributesPropertyGroupName})
+			require.NoError(t, err)
+			CheckOKStatus(t, resp)
 		})
 	})
 
