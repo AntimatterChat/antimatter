@@ -11822,27 +11822,27 @@
   },
   {
     "id": "health.rule.push_empty_url.message",
-    "translation": "Кожна спроба надсилання сповіщень завершиться помилкою «непідтримуваний протокол»."
+    "translation": "Сервер сповіщень не налаштовано, тому сповіщення не надсилаються в мобільні застосунки."
   },
   {
     "id": "health.rule.push_empty_url.remediation",
-    "translation": "Вкажіть у PushNotificationServer https://push.mattermost.com або власний проксі-сервер для сповіщень."
+    "translation": "Запустіть власний проксі-сервер сповіщень Antimatter і встановіть PushNotificationServer на його URL, або вимкніть сповіщення."
   },
   {
     "id": "health.rule.push_empty_url.title",
-    "translation": "Сповіщення увімкнено, але PushNotificationServer порожній"
+    "translation": "Сповіщення увімкнено, але PushNotificationServer не налаштовано"
   },
   {
     "id": "health.rule.push_test_proxy.message",
-    "translation": "push-test.mattermost.com — це тестовий проксі-сервер Mattermost. Він не має SLA, має обмежену пропускну здатність і не призначений для використання у виробництві. Надійність доставки сповіщень на мобільні пристрої буде низькою для будь-яких сценаріїв, крім невеликих тестів."
+    "translation": "{{.url}} — це сервіс сповіщень, який працює від імені Mattermost, Inc. Він надсилає сповіщення лише в мобільні застосунки Mattermost, тому користувачі застосунку Antimatter їх не отримують."
   },
   {
     "id": "health.rule.push_test_proxy.remediation",
-    "translation": "Перейдіть на https://push.mattermost.com (виробнича хостингова служба сповіщень Mattermost) або на власний проксі-сервер для сповіщень."
+    "translation": "Запустіть власний проксі-сервер сповіщень Antimatter і вкажіть його в PushNotificationServer."
   },
   {
     "id": "health.rule.push_test_proxy.title",
-    "translation": "PushNotificationServer вказує на push-test.mattermost.com"
+    "translation": "PushNotificationServer вказує на сервіс сповіщень Mattermost"
   },
   {
     "id": "health.rule.site_url_empty.message",
@@ -13499,6 +13499,10 @@
   {
     "id": "model.config.is_valid.tls_overwrite_cipher.app_error",
     "translation": "Передано невірне значення для шифру перезапису TLS - будь ласка, зверніться до документації для отримання правильних значень."
+  },
+  {
+    "id": "model.config.is_valid.trusted_proxy_ips.app_error",
+    "translation": "Некоректний довірений проксі «{{.Value}}»: використовуйте IP-адресу або діапазон CIDR."
   },
   {
     "id": "model.config.is_valid.user_status_away_timeout.app_error",

@@ -11804,27 +11804,27 @@
   },
   {
     "id": "health.rule.push_empty_url.message",
-    "translation": "Toute tentative de notification push échouera avec l'erreur « protocole non pris en charge »."
+    "translation": "Aucun serveur de notifications push n'est défini, donc aucune notification push n'est envoyée aux applications mobiles."
   },
   {
     "id": "health.rule.push_empty_url.remediation",
-    "translation": "Configurer PushNotificationServer sur https://push.mattermost.com ou un proxy de push auto-hébergé."
+    "translation": "Exécutez votre propre proxy push Antimatter et définissez PushNotificationServer sur son URL, ou désactivez les notifications push."
   },
   {
     "id": "health.rule.push_empty_url.title",
-    "translation": "Notifications push activées, mais PushNotificationServer est vide"
+    "translation": "Les notifications push sont activées, mais aucun PushNotificationServer n'est défini"
   },
   {
     "id": "health.rule.push_test_proxy.message",
-    "translation": "push-test.mattermost.com est le proxy de test de notifications push de Mattermost. Il ne dispose d’aucun SLA, son débit est limité et il n’est pas destiné à une utilisation en production. La livraison des notifications push sur mobile ne sera pas fiable au-delà de tests à petite échelle."
+    "translation": "{{.url}} est un service de notifications push exploité par Mattermost, Inc. Il ne livre des notifications qu'aux applications mobiles de Mattermost, de sorte que les utilisateurs de l'application Antimatter n'en reçoivent aucune."
   },
   {
     "id": "health.rule.push_test_proxy.remediation",
-    "translation": "Passer à https://push.mattermost.com (le service de notifications push hébergé par Mattermost) ou à un proxy push auto-hébergé."
+    "translation": "Exécutez votre propre proxy push Antimatter et pointez PushNotificationServer vers celui-ci."
   },
   {
     "id": "health.rule.push_test_proxy.title",
-    "translation": "PushNotificationServer pointe vers push-test.mattermost.com"
+    "translation": "PushNotificationServer pointe vers un service push de Mattermost"
   },
   {
     "id": "health.rule.site_url_empty.message",
@@ -13481,6 +13481,10 @@
   {
     "id": "model.config.is_valid.tls_overwrite_cipher.app_error",
     "translation": "Valeur invalide définie comme redéfinition de chiffrement TLS. Consultez la documentation pour connaître les valeurs acceptées."
+  },
+  {
+    "id": "model.config.is_valid.trusted_proxy_ips.app_error",
+    "translation": "Proxy de confiance « {{.Value}} » invalide : utilisez une adresse IP ou une plage CIDR."
   },
   {
     "id": "model.config.is_valid.user_status_away_timeout.app_error",

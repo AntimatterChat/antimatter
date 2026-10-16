@@ -11804,27 +11804,27 @@
   },
   {
     "id": "health.rule.push_empty_url.message",
-    "translation": "Varje försök att skicka push-aviseringar kommer att misslyckas med 'unsupported protocol scheme'."
+    "translation": "Ingen server för push-aviseringar är angiven, så inga push-aviseringar skickas till mobilapparna."
   },
   {
     "id": "health.rule.push_empty_url.remediation",
-    "translation": "Peaka PushNotificationServer mot https://push.mattermost.com eller en självhostad push-proxy."
+    "translation": "Kör din egen Antimatter-push-proxy och ange PushNotificationServer till dess URL, eller stäng av push-aviseringar."
   },
   {
     "id": "health.rule.push_empty_url.title",
-    "translation": "Push-aviseringar är aktiverade men PushNotificationServer är tom"
+    "translation": "Push-aviseringar är aktiverade, men ingen PushNotificationServer är angiven"
   },
   {
     "id": "health.rule.push_test_proxy.message",
-    "translation": "push-test.mattermost.com är Mattermosts test-proxy för push-aviseringar. Den har ingen SLA, begränsad genomströmning och är inte avsedd för produktionsanvändning. Leverans av push-aviseringar till mobila enheter kommer att vara opålitlig för allt utöver småskalig testning."
+    "translation": "{{.url}} är en push-aviseringstjänst som drivs av Mattermost, Inc. Den levererar bara aviseringar till Mattermosts egna mobilappar, så användare av Antimatter-appen får inga."
   },
   {
     "id": "health.rule.push_test_proxy.remediation",
-    "translation": "Byt till https://push.mattermost.com (Mattermosts produktionsbaserade Hosted Push Notification Service) eller till en självhostad push-proxy."
+    "translation": "Kör din egen Antimatter-push-proxy och peka PushNotificationServer mot den."
   },
   {
     "id": "health.rule.push_test_proxy.title",
-    "translation": "PushNotificationServer pekar mot push-test.mattermost.com"
+    "translation": "PushNotificationServer pekar mot en Mattermost-push-tjänst"
   },
   {
     "id": "health.rule.site_url_empty.message",
@@ -13481,6 +13481,10 @@
   {
     "id": "model.config.is_valid.tls_overwrite_cipher.app_error",
     "translation": "Ogiltigt värde angavs för TLS \"overwrite cipher\". Kontrollera dokumentationen för giltiga värden."
+  },
+  {
+    "id": "model.config.is_valid.trusted_proxy_ips.app_error",
+    "translation": "Ogiltig betrodd proxy \"{{.Value}}\": använd en IP-adress eller ett CIDR-intervall."
   },
   {
     "id": "model.config.is_valid.user_status_away_timeout.app_error",

@@ -1,4 +1,8 @@
 {
+  "admin.email.mattermostPushServer": "Πρόκειται για μια υπηρεσία ειδοποιήσεων push που διαχειρίζεται η Mattermost, Inc.: αποστέλλει ειδοποιήσεις μόνο στις δικές της κινητές εφαρμογές Mattermost, όχι στην εφαρμογή Antimatter.",
+  "admin.email.ownPushProxy": "Αποστολή ειδοποιήσεων push μέσω δικής σας proxy push",
+  "admin.email.ownPushProxyHelp": "Η διεύθυνση της proxy push του Antimatter, η οποία αποστέλλει ειδοποιήσεις στις εφαρμογές Antimatter για iOS και Android. <link>Μάθετε πώς να τη ρυθμίσετε</link>.",
+  "admin.email.pushServerExample": "Π.χ.: \"https://push.example.com\"",
   "admin.global_attributes.attribute_details.applies_to.item.user.profile_display.admin.label": "Μόνο διαχειριστές",
   "admin.global_attributes.attribute_details.applies_to.item.user.profile_display.always.label": "Πάντα",
   "admin.global_attributes.attribute_details.applies_to.item.user.profile_display.hidden.label": "Κρυφό",

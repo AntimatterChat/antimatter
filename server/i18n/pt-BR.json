@@ -11804,27 +11804,27 @@
   },
   {
     "id": "health.rule.push_empty_url.message",
-    "translation": "Todas as tentativas de push falharão com 'esquema de protocolo não suportado'."
+    "translation": "Nenhum servidor de notificações push está configurado, portanto, nenhuma notificação push é enviada aos aplicativos móveis."
   },
   {
     "id": "health.rule.push_empty_url.remediation",
-    "translation": "Aponte PushNotificationServer para https://push.mattermost.com ou para um proxy de push auto-hospedado."
+    "translation": "Execute seu próprio proxy de push do Antimatter e defina PushNotificationServer para sua URL, ou desative as notificações push."
   },
   {
     "id": "health.rule.push_empty_url.title",
-    "translation": "Notificações push habilitadas, mas PushNotificationServer está vazio"
+    "translation": "As notificações push estão ativadas, mas nenhum PushNotificationServer está configurado"
   },
   {
     "id": "health.rule.push_test_proxy.message",
-    "translation": "push-test.mattermost.com é o proxy de push de teste do Mattermost. Não possui SLA, tem throughput limitado e não é destinado ao uso em produção. A entrega de push móvel será pouco confiável para qualquer coisa além de testes em pequena escala."
+    "translation": "{{.url}} é um serviço de notificações push operado pela Mattermost, Inc. Ele entrega notificações apenas para os aplicativos móveis próprios da Mattermost, de modo que os usuários do aplicativo Antimatter não recebem nenhuma."
   },
   {
     "id": "health.rule.push_test_proxy.remediation",
-    "translation": "Mude para https://push.mattermost.com (o Serviço de Notificação Push Hospedado de produção do Mattermost) ou para um proxy de push auto-hospedado."
+    "translation": "Execute seu próprio proxy de push do Antimatter e aponte PushNotificationServer para ele."
   },
   {
     "id": "health.rule.push_test_proxy.title",
-    "translation": "PushNotificationServer aponta para push-test.mattermost.com"
+    "translation": "PushNotificationServer aponta para um serviço de push da Mattermost"
   },
   {
     "id": "health.rule.site_url_empty.message",
@@ -13481,6 +13481,10 @@
   {
     "id": "model.config.is_valid.tls_overwrite_cipher.app_error",
     "translation": "Valor inválido passado para a cifra de substituição TLS - Consulte a documentação para obter valores válidos."
+  },
+  {
+    "id": "model.config.is_valid.trusted_proxy_ips.app_error",
+    "translation": "Proxy confiável \"{{.Value}}\" inválido: use um endereço IP ou uma faixa CIDR."
   },
   {
     "id": "model.config.is_valid.user_status_away_timeout.app_error",

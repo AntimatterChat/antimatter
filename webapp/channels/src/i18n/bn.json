@@ -1,4 +1,8 @@
 {
+  "admin.email.mattermostPushServer": "এটি Mattermost, Inc. দ্বারা পরিচালিত একটি পুশ নোটিফিকেশন সার্ভিস: এটি শুধুমাত্র Mattermost-এর নিজস্ব মোবাইল অ্যাপসে নোটিফিকেশন পাঠায়, Antimatter অ্যাপে নয়।",
+  "admin.email.ownPushProxy": "আপনার নিজস্ব পুশ প্রক্সির মাধ্যমে পুশ নোটিফিকেশন পাঠান",
+  "admin.email.ownPushProxyHelp": "আপনার Antimatter পুশ প্রক্সির ঠিকানা, যা iOS এবং Android-এর Antimatter অ্যাপসে নোটিফিকেশন পাঠায়। <link>কীভাবে সেটআপ করবেন তা জানুন</link>।",
+  "admin.email.pushServerExample": "যেমন: \"https://push.example.com\"",
   "admin.global_attributes.attribute_details.applies_to.item.user.profile_display.admin.label": "শুধুমাত্র অ্যাডমিন",
   "admin.global_attributes.attribute_details.applies_to.item.user.profile_display.always.label": "সর্বদা",
   "admin.global_attributes.attribute_details.applies_to.item.user.profile_display.hidden.label": "লুকানো",

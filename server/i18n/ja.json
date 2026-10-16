@@ -11619,27 +11619,27 @@
   },
   {
     "id": "health.rule.push_empty_url.message",
-    "translation": "すべてのプッシュ試行が 'unsupported protocol scheme' で失敗します。"
+    "translation": "プッシュ通知サーバーが設定されていないため、モバイルアプリにはプッシュ通知が送信されません。"
   },
   {
     "id": "health.rule.push_empty_url.remediation",
-    "translation": "PushNotificationServer を https://push.mattermost.com またはセルフホストされたプッシュプロキシに設定してください。"
+    "translation": "独自のAntimatterプッシュプロキシを実行してPushNotificationServerにそのURLを設定するか、プッシュ通知を無効にしてください。"
   },
   {
     "id": "health.rule.push_empty_url.title",
-    "translation": "プッシュ通知は有効ですが、PushNotificationServer が空です"
+    "translation": "プッシュ通知は有効ですが、PushNotificationServerが設定されていません"
   },
   {
     "id": "health.rule.push_test_proxy.message",
-    "translation": "push-test.mattermost.com は Mattermost のテスト用プッシュプロキシです。SLAがなく、スループットに制限があり、本番環境での使用を意図していません。小規模なテストを超える範囲では、モバイルへのプッシュ配信は信頼性が低くなります。"
+    "translation": "{{.url}}はMattermost, Inc.が提供するプッシュ通知サービスです。Mattermostの自社モバイルアプリへのみ通知を配信するため、Antimatterアプリのユーザーには通知が届きません。"
   },
   {
     "id": "health.rule.push_test_proxy.remediation",
-    "translation": "https://push.mattermost.com (Mattermost の本番環境 Hosted Push Notification Service) またはセルフホストされたプッシュプロキシに切り替えてください。"
+    "translation": "独自のAntimatterプッシュプロキシを実行し、PushNotificationServerをそこに設定してください。"
   },
   {
     "id": "health.rule.push_test_proxy.title",
-    "translation": "PushNotificationServer が push-test.mattermost.com を指しています"
+    "translation": "PushNotificationServerがMattermostのプッシュサービスに設定されています"
   },
   {
     "id": "health.rule.site_url_empty.message",
@@ -13296,6 +13296,10 @@
   {
     "id": "model.config.is_valid.tls_overwrite_cipher.app_error",
     "translation": "TLS上書き暗号に対する不正な値 - 正常な値についての文書を参照してください。"
+  },
+  {
+    "id": "model.config.is_valid.trusted_proxy_ips.app_error",
+    "translation": "信頼できるプロキシ \"{{.Value}}\" が無効です。IPアドレスまたはCIDR範囲を使用してください。"
   },
   {
     "id": "model.config.is_valid.user_status_away_timeout.app_error",

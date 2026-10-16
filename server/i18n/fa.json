@@ -11804,27 +11804,27 @@
   },
   {
     "id": "health.rule.push_empty_url.message",
-    "translation": "هر تلاش برای ارسال push با خطای 'unsupported protocol scheme' شکست خواهد خورد."
+    "translation": "سرور اعلان‌های push تنظیم نشده است، بنابراین هیچ اعلان push‌ای به اپلیکیشن‌های موبایل ارسال نمی‌شود."
   },
   {
     "id": "health.rule.push_empty_url.remediation",
-    "translation": "PushNotificationServer را به https://push.mattermost.com یا یک push proxy خودمیزبان (self-hosted) متصل کنید."
+    "translation": "یک proxy اعلان push مخصوص Antimatter را اجرا کنید و PushNotificationServer را به آدرس آن تنظیم کنید، یا اعلان‌های push را غیرفعال کنید."
   },
   {
     "id": "health.rule.push_empty_url.title",
-    "translation": "اعلان‌های push فعال است اما PushNotificationServer خالی است"
+    "translation": "اعلان‌های push فعال است، اما PushNotificationServer تنظیم نشده است"
   },
   {
     "id": "health.rule.push_test_proxy.message",
-    "translation": "push-test.mattermost.com یک push proxy آزمایشی Mattermost است. این سرویس هیچ SLA ندارد، ظرفیت محدودی دارد و برای استفاده در محیط تولید (production) طراحی نشده است. تحویل push در موبایل برای هر چیزی فراتر از آزمایش‌های مقیاس کوچک، غیرقابل اعتماد خواهد بود."
+    "translation": "{{.url}} یک سرویس اعلان push متعلق به Mattermost, Inc. است. این سرویس فقط اعلان‌ها را به اپلیکیشن‌های موبایل خود Mattermost ارسال می‌کند، بنابراین کاربران اپلیکیشن Antimatter هیچ اعلانی دریافت نمی‌کنند."
   },
   {
     "id": "health.rule.push_test_proxy.remediation",
-    "translation": "به https://push.mattermost.com (سرویس اعلان push میزبانی‌شده تولیدی Mattermost) یا به یک push proxy خودمیزبان (self-hosted) تغییر دهید."
+    "translation": "یک proxy اعلان push مخصوص Antimatter را اجرا کنید و PushNotificationServer را به آن اشاره کنید."
   },
   {
     "id": "health.rule.push_test_proxy.title",
-    "translation": "PushNotificationServer به push-test.mattermost.com اشاره دارد"
+    "translation": "PushNotificationServer به یک سرویس اعلان Mattermost اشاره دارد"
   },
   {
     "id": "health.rule.site_url_empty.message",
@@ -13481,6 +13481,10 @@
   {
     "id": "model.config.is_valid.tls_overwrite_cipher.app_error",
     "translation": "مقدار نامعتبر برای رمزگذاری مجدد TLS تصویب شده است - لطفاً به اسناد مربوط به مقادیر معتبر مراجعه کنید."
+  },
+  {
+    "id": "model.config.is_valid.trusted_proxy_ips.app_error",
+    "translation": "پروکسی مورد اعتماد «{{.Value}}» نامعتبر است: از یک آدرس IP یا یک محدوده CIDR استفاده کنید."
   },
   {
     "id": "model.config.is_valid.user_status_away_timeout.app_error",

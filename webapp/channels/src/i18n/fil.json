@@ -1,4 +1,8 @@
 {
+  "admin.email.mattermostPushServer": "Ito ay isang push notification service na pinapatakbo ng Mattermost, Inc.: ito ay nagpapadala lamang ng mga notisikasyon sa mga mobile app ng Mattermost, hindi sa Antimatter app.",
+  "admin.email.ownPushProxy": "Magpadala ng mga push notification sa pamamagitan ng sarili mong push proxy",
+  "admin.email.ownPushProxyHelp": "Ang address ng iyong Antimatter push proxy, na nagpapadala ng mga notisikasyon sa mga Antimatter app para sa iOS at Android. <link>Alamin kung paano ito itatag</link>.",
+  "admin.email.pushServerExample": "Hal.: \"https://push.example.com\"",
   "admin.global_attributes.attribute_details.applies_to.item.user.profile_display.admin.label": "Admins lamang",
   "admin.global_attributes.attribute_details.applies_to.item.user.profile_display.always.label": "Palaging",
   "admin.global_attributes.attribute_details.applies_to.item.user.profile_display.hidden.label": "Nakatago",

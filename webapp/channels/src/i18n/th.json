@@ -1,4 +1,8 @@
 {
+  "admin.email.mattermostPushServer": "นี่คือบริการการแจ้งเตือนท่ี Mattermost, Inc. เปิดให้ใช้: ให้งานเพีงแต่กัับแอปสื้บบนมือถือของ Mattermost เอง ไม่ได่ให้งานกัับแอป Antimatter",
+  "admin.email.ownPushProxy": "ส่่งการแจ้งเตือนผาน push proxy ของคุณเอง",
+  "admin.email.ownPushProxyHelp": "ท่ีอยู้ของ Antimatter push proxy ของคุณ ท่ีให้งานการแจ้งเตือนกัับแอป Antimatter สำหรบั iOS และ Android <link>เรีียนว่่าจะตั้้งค่าอย่างไร</link>",
+  "admin.email.pushServerExample": "เชน: \"https://push.example.com\"",
   "admin.global_attributes.attribute_details.applies_to.item.user.profile_display.admin.label": "ผู้ดูลำดับระบบเท่านั้่น",
   "admin.global_attributes.attribute_details.applies_to.item.user.profile_display.always.label": "เสมอ",
   "admin.global_attributes.attribute_details.applies_to.item.user.profile_display.hidden.label": "ซ่อน",

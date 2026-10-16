@@ -1,4 +1,8 @@
 {
+  "admin.email.mattermostPushServer": "هذه خدمة إشعارات فورية تشغّلها شركة Mattermost, Inc.: فهي تُرسل الإشعارات إلى تطبيقات Mattermost الخاصة فقط، وليس إلى تطبيق Antimatter.",
+  "admin.email.ownPushProxy": "إرسال الإشعارات الفورية عبر وكيل الإشعارات الخاص بك",
+  "admin.email.ownPushProxyHelp": "عنوان وكيل الإشعارات الخاص بـ Antimatter، والذي يُرسل الإشعارات إلى تطبيقات Antimatter لنظامي iOS وAndroid. <link>تعرّف على كيفية إعداده</link>.",
+  "admin.email.pushServerExample": "مثال: \"https://push.example.com\"",
   "admin.global_attributes.attribute_details.applies_to.item.user.profile_display.admin.label": "للمديرين فقط",
   "admin.global_attributes.attribute_details.applies_to.item.user.profile_display.always.label": "دائمًا",
   "admin.global_attributes.attribute_details.applies_to.item.user.profile_display.hidden.label": "مخفي",

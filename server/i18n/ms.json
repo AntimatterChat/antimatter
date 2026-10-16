@@ -11089,27 +11089,27 @@
   },
   {
     "id": "health.rule.push_empty_url.message",
-    "translation": "Setiap cubaan push akan gagal dengan 'unsupported protocol scheme'."
+    "translation": "Tiada pelayan pemberitahuan push ditetapkan, jadi tiada pemberitahuan push dihantar ke aplikasi mudah alih."
   },
   {
     "id": "health.rule.push_empty_url.remediation",
-    "translation": "Arahkan PushNotificationServer ke https://push.mattermost.com atau proksi push yang dihoskan sendiri."
+    "translation": "Laksanakan proksi push Antimatter anda sendiri dan tetapkan PushNotificationServer ke URL-nya, atau matikan pemberitahuan push."
   },
   {
     "id": "health.rule.push_empty_url.title",
-    "translation": "Pemberitahuan push didayakan tetapi PushNotificationServer kosong"
+    "translation": "Pemberitahuan push dihidupkan tetapi PushNotificationServer tidak ditetapkan"
   },
   {
     "id": "health.rule.push_test_proxy.message",
-    "translation": "push-test.mattermost.com ialah proksi push ujian Mattermost. Ia tiada SLA, throughput terhad, dan tidak dimaksudkan untuk penggunaan pengeluaran. Penghantaran push mudah alih tidak boleh dipercayai untuk apa-apa selain ujian berskala kecil."
+    "translation": "{{.url}} ialah perkhidmatan pemberitahuan push yang dikendalikan oleh Mattermost, Inc. Ia hanya menghantar pemberitahuan ke aplikasi mudah alih Mattermost sendiri, jadi pengguna aplikasi Antimatter tidak menerima sebarang pemberitahuan."
   },
   {
     "id": "health.rule.push_test_proxy.remediation",
-    "translation": "Tukar ke https://push.mattermost.com (Perkhidmatan Pemberitahuan Push Berhos Pengeluaran Mattermost) atau ke proksi push yang dihoskan sendiri."
+    "translation": "Laksanakan proksi push Antimatter anda sendiri dan arahkan PushNotificationServer kepadanya."
   },
   {
     "id": "health.rule.push_test_proxy.title",
-    "translation": "PushNotificationServer menunjuk ke push-test.mattermost.com"
+    "translation": "PushNotificationServer menunjuk ke perkhidmatan push Mattermost"
   },
   {
     "id": "health.rule.site_url_empty.message",
@@ -12758,6 +12758,10 @@
   {
     "id": "model.config.is_valid.tls_overwrite_cipher.app_error",
     "translation": "Nilai tidak sah yang diluluskan untuk pemeteraian tulis semula TLS - Sila rujuk dokumentasi untuk nilai yang sah."
+  },
+  {
+    "id": "model.config.is_valid.trusted_proxy_ips.app_error",
+    "translation": "Proksi dipercayai \"{{.Value}}\" tidak sah: gunakan alamat IP atau julat CIDR."
   },
   {
     "id": "model.config.is_valid.user_status_away_timeout.app_error",

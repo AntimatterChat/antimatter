@@ -11822,27 +11822,27 @@
   },
   {
     "id": "health.rule.push_empty_url.message",
-    "translation": "Każda próba wysłania powiadomienia push zakończy się błędem „unsupported protocol scheme”."
+    "translation": "Nie skonfigurowano serwera powiadomień push, więc powiadomienia push nie są wysyłane do aplikacji mobilnych."
   },
   {
     "id": "health.rule.push_empty_url.remediation",
-    "translation": "Ustaw PushNotificationServer na https://push.mattermost.com lub na własny proxy push."
+    "translation": "Uruchom własny proxy push Antimatter i ustaw PushNotificationServer na jego adres URL lub wyłącz powiadomienia push."
   },
   {
     "id": "health.rule.push_empty_url.title",
-    "translation": "Powiadomienia push są włączone, ale PushNotificationServer jest pusty"
+    "translation": "Powiadomienia push są włączone, ale nie ustawiono PushNotificationServer"
   },
   {
     "id": "health.rule.push_test_proxy.message",
-    "translation": "push-test.mattermost.com to testowy proxy push Mattermost. Nie ma SLA, ma ograniczoną przepustowość i nie jest przeznaczony do użycia produkcyjnego. Dostarczanie powiadomień push na urządzenia mobilne będzie nieprzewidywalne w przypadku czegokolwiek poza testami na małą skalę."
+    "translation": "{{.url}} to usługa powiadomień push prowadzona przez Mattermost, Inc. Dostarcza ona powiadomienia wyłącznie do własnych aplikacji mobilnych Mattermost, więc użytkownicy aplikacji Antimatter ich nie otrzymują."
   },
   {
     "id": "health.rule.push_test_proxy.remediation",
-    "translation": "Przełącz się na https://push.mattermost.com (produkcyjna usługa Hosted Push Notification Service od Mattermost) lub na własny proxy push."
+    "translation": "Uruchom własny proxy push Antimatter i wskaż go w PushNotificationServer."
   },
   {
     "id": "health.rule.push_test_proxy.title",
-    "translation": "PushNotificationServer wskazuje na push-test.mattermost.com"
+    "translation": "PushNotificationServer wskazuje na usługę push Mattermost"
   },
   {
     "id": "health.rule.site_url_empty.message",
@@ -13499,6 +13499,10 @@
   {
     "id": "model.config.is_valid.tls_overwrite_cipher.app_error",
     "translation": "Wprowadzono niepoprawną wartość dla szyfru nadpisującego TLS - Sprawdź prawidłowe wartości w dokumentacji."
+  },
+  {
+    "id": "model.config.is_valid.trusted_proxy_ips.app_error",
+    "translation": "Nieprawidłowy zaufany proxy „{{.Value}}”: użyj adresu IP lub zakresu CIDR."
   },
   {
     "id": "model.config.is_valid.user_status_away_timeout.app_error",

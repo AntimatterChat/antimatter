@@ -11804,27 +11804,27 @@
   },
   {
     "id": "health.rule.push_empty_url.message",
-    "translation": "Всяка опит за изпращане на известие ще се провали с 'неподдържан протоколов режим'."
+    "translation": "Не е зададен сървър за push известия, така че няма да се изпращат push известия до мобилните приложения."
   },
   {
     "id": "health.rule.push_empty_url.remediation",
-    "translation": "Посочете PushNotificationServer към https://push.mattermost.com или към самостойно хостингуван push прокси."
+    "translation": "Пуснете собствен Antimatter push прокси и задайте PushNotificationServer на неговия URL, или изключете push известията."
   },
   {
     "id": "health.rule.push_empty_url.title",
-    "translation": "Известието за пуш са активирани, но PushNotificationServer е празен"
+    "translation": "Push известията са включени, но не е зададен PushNotificationServer"
   },
   {
     "id": "health.rule.push_test_proxy.message",
-    "translation": "push-test.mattermost.com е тестовият push прокси на Mattermost. Няма SLA, има ограничен пропускателен капацитет и не е предназначен за продуктивна употреба. Доставянето на мобилни push известия ще бъде ненадеждно за всичко, което надхвърля малкомащабно тестване."
+    "translation": "{{.url}} е услуга за push известия, управлявана от Mattermost, Inc. Тя доставя известия само до мобилните приложения на Mattermost, така че потребителите на Antimatter приложението няма да получат такива."
   },
   {
     "id": "health.rule.push_test_proxy.remediation",
-    "translation": "Превключете към https://push.mattermost.com (продуктивният хостинг-услуга за пуш известия на Mattermost) или към собствен пуш прокси."
+    "translation": "Пуснете собствен Antimatter push прокси и насочете PushNotificationServer към него."
   },
   {
     "id": "health.rule.push_test_proxy.title",
-    "translation": "PushNotificationServer сочи към push-test.mattermost.com"
+    "translation": "PushNotificationServer сочи към услуга за push известия на Mattermost"
   },
   {
     "id": "health.rule.site_url_empty.message",
@@ -13481,6 +13481,10 @@
   {
     "id": "model.config.is_valid.tls_overwrite_cipher.app_error",
     "translation": "Невалидна стойност, предадена за шифър за презапис на TLS - Моля, вижте документацията за валидни стойности."
+  },
+  {
+    "id": "model.config.is_valid.trusted_proxy_ips.app_error",
+    "translation": "Невалиден доверен прокси \"{{.Value}}\": използвайте IP адрес или CIDR обхват."
   },
   {
     "id": "model.config.is_valid.user_status_away_timeout.app_error",

@@ -1,4 +1,8 @@
 {
+  "admin.email.mattermostPushServer": "یہ Mattermost, Inc. کے زیرِ انتظام ایک پش نوٹیفیکیشن سروس ہے: یہ صرف Mattermost کے اپنے موبائل ایپس کو اطلاعات بھیجتی ہے، Antimatter ایپ کو نہیں۔",
+  "admin.email.ownPushProxy": "اپنے پش پروکسی کے ذریعے پش نوٹیفیکیشنز بھیجیں",
+  "admin.email.ownPushProxyHelp": "آپ کے Antimatter پش پروکسی کا پتہ، جو iOS اور Android کے Antimatter ایپس کو اطلاعات بھیجتا ہے۔ <link>اسے کیسے سیٹ اپ کریں، جانیں</link>۔",
+  "admin.email.pushServerExample": "مثلاً: \"https://push.example.com\"",
   "admin.global_attributes.attribute_details.applies_to.item.user.profile_display.admin.label": "صرف ایڈمنز",
   "admin.global_attributes.attribute_details.applies_to.item.user.profile_display.always.label": "ہمیشہ",
   "admin.global_attributes.attribute_details.applies_to.item.user.profile_display.hidden.label": "چھپا ہوا",

@@ -11804,27 +11804,27 @@
   },
   {
     "id": "health.rule.push_empty_url.message",
-    "translation": "Alle forsøk på push vil feile med 'unsupported protocol scheme'."
+    "translation": "Ingen push-varselsjener er satt, så ingen push-varsler sendes til mobilappene."
   },
   {
     "id": "health.rule.push_empty_url.remediation",
-    "translation": "Pek PushNotificationServer mot https://push.mattermost.com eller en selvhostet push-proxy."
+    "translation": "Kjør din egen Antimatter push-proxy og sett PushNotificationServer til URL-en, eller slå av push-varsler."
   },
   {
     "id": "health.rule.push_empty_url.title",
-    "translation": "Push-varsler er aktivert, men PushNotificationServer er tom"
+    "translation": "Push-varsler er på, men ingen PushNotificationServer er satt"
   },
   {
     "id": "health.rule.push_test_proxy.message",
-    "translation": "push-test.mattermost.com er Mattermosts test-push-proxy. Den har ingen SLA, begrenset kapasitet og er ikke ment for produksjonsbruk. Levering av push-varsler til mobil vil være upålitelig for noe utover småskala testing."
+    "translation": "{{.url}} er en push-varseltjeneste drevet av Mattermost, Inc. Den leverer bare varsler til Mattermosts egne mobilapper, så brukere av Antimatter-appen mottar ingen."
   },
   {
     "id": "health.rule.push_test_proxy.remediation",
-    "translation": "Bytt til https://push.mattermost.com (Mattermosts produksjonstjeneste for hostet push-varsling) eller til en selvhostet push-proxy."
+    "translation": "Kjør din egen Antimatter push-proxy og peker PushNotificationServer mot den."
   },
   {
     "id": "health.rule.push_test_proxy.title",
-    "translation": "PushNotificationServer peker mot push-test.mattermost.com"
+    "translation": "PushNotificationServer peker mot en Mattermost push-tjeneste"
   },
   {
     "id": "health.rule.site_url_empty.message",
@@ -13481,6 +13481,10 @@
   {
     "id": "model.config.is_valid.tls_overwrite_cipher.app_error",
     "translation": "Ugyldig verdi angitt for overstyring av TLS-chiffer – se dokumentasjonen for gyldige verdier."
+  },
+  {
+    "id": "model.config.is_valid.trusted_proxy_ips.app_error",
+    "translation": "Ugyldig tillitet proxy «{{.Value}}»: bruk en IP-adresse eller et CIDR-område."
   },
   {
     "id": "model.config.is_valid.user_status_away_timeout.app_error",

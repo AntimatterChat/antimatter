@@ -11804,27 +11804,27 @@
   },
   {
     "id": "health.rule.push_empty_url.message",
-    "translation": "Kaikki push-yritykset epäonnistuvat virheellä 'unsupported protocol scheme'."
+    "translation": "Push-ilmoituspalvelinta ei ole määritetty, joten push-ilmoituksia ei lähetetä mobiilisovelluksiin."
   },
   {
     "id": "health.rule.push_empty_url.remediation",
-    "translation": "Määritä PushNotificationServer osoitteeksi https://push.mattermost.com tai itsenäisesti isännöity push-välityspalvelin."
+    "translation": "Aja oma Antimatter-push-välityspalvelin ja aseta PushNotificationServer-asetus osoittamaan sen URL:iin, tai poista push-ilmoitukset käytöstä."
   },
   {
     "id": "health.rule.push_empty_url.title",
-    "translation": "Push-ilmoitukset ovat käytössä, mutta PushNotificationServer on tyhjä"
+    "translation": "Push-ilmoitukset ovat käytössä, mutta PushNotificationServer-asetusta ei ole määritetty"
   },
   {
     "id": "health.rule.push_test_proxy.message",
-    "translation": "push-test.mattermost.com on Mattermostin testipush-välityspalvelin. Sillä ei ole SLA:ta, sen läpäisykyky on rajattu ja sitä ei ole tarkoitettu tuotantokäyttöön. Mobiilipushin toimittaminen ei ole luotettavaa pienimuotoista testauksen ulkopuolella."
+    "translation": "{{.url}} on Mattermost, Inc.:n ylläpitämä push-ilmoituspalvelu. Se toimittaa ilmoituksia vain Mattermostin omiin mobiilisovelluksiin, joten Antimatter-sovelluksen käyttäjät eivät vastaanota ilmoituksia."
   },
   {
     "id": "health.rule.push_test_proxy.remediation",
-    "translation": "Vaihda osoitteeseen https://push.mattermost.com (Mattermostin tuotantoympäristön Hosted Push Notification Service) tai oman isännöimäsi push-välityspalveluun."
+    "translation": "Aja oma Antimatter-push-välityspalvelin ja osoita PushNotificationServer-asetus siihen."
   },
   {
     "id": "health.rule.push_test_proxy.title",
-    "translation": "PushNotificationServer osoittaa push-test.mattermost.comiin"
+    "translation": "PushNotificationServer osoittaa Mattermostin push-palveluun"
   },
   {
     "id": "health.rule.site_url_empty.message",
@@ -13481,6 +13481,10 @@
   {
     "id": "model.config.is_valid.tls_overwrite_cipher.app_error",
     "translation": "Virheellinen arvo TLS ylikirjoitus cipherille - Lue dokumentaatiosta sallitut arvot"
+  },
+  {
+    "id": "model.config.is_valid.trusted_proxy_ips.app_error",
+    "translation": "Virheellinen luotettu välityspalvelin \"{{.Value}}\": käytä IP-osoitetta tai CIDR-alue."
   },
   {
     "id": "model.config.is_valid.user_status_away_timeout.app_error",

@@ -1,4 +1,8 @@
 {
+  "admin.email.mattermostPushServer": "Això és un servei de notificacions push operat per Mattermost, Inc.: només envia notificacions a les pròpies aplicacions mòbils de Mattermost, no a l'aplicació d'Antimatter.",
+  "admin.email.ownPushProxy": "Envia notificacions push a través del teu propi proxy de notificacions",
+  "admin.email.ownPushProxyHelp": "L'adreça del teu proxy de notificacions d'Antimatter, que envia notificacions a les aplicacions d'Antimatter per a iOS i Android. <link>Aprèn com configurar-lo</link>.",
+  "admin.email.pushServerExample": "P. ex.: \"https://push.example.com\"",
   "admin.global_attributes.attribute_details.applies_to.item.user.profile_display.admin.label": "Només administradors",
   "admin.global_attributes.attribute_details.applies_to.item.user.profile_display.always.label": "Sempre",
   "admin.global_attributes.attribute_details.applies_to.item.user.profile_display.hidden.label": "Amagat",

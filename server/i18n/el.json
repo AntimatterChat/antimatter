@@ -11089,27 +11089,27 @@
   },
   {
     "id": "health.rule.push_empty_url.message",
-    "translation": "Κάθε προσπάθεια αποστολής push θα αποτύχει με «unsupported protocol scheme»."
+    "translation": "Δεν έχει οριστεί διακομιστής για push ειδοποιήσεις, οπότε δεν αποστέλλονται push ειδοποιήσεις στις κινητές εφαρμογές."
   },
   {
     "id": "health.rule.push_empty_url.remediation",
-    "translation": "Καθορίστε το PushNotificationServer στο https://push.mattermost.com ή σε έναν push proxy που φιλοξενείται από εσάς."
+    "translation": "Εκτελέστε ένα δικό σας proxy push για το Antimatter και ορίστε το PushNotificationServer στην URL του, ή απενεργοποιήστε τις push ειδοποιήσεις."
   },
   {
     "id": "health.rule.push_empty_url.title",
-    "translation": "Ενεργοποιημένες push ειδοποιήσεις, αλλά το PushNotificationServer είναι κενό"
+    "translation": "Οι push ειδοποιήσεις είναι ενεργοποιημένες, αλλά δεν έχει οριστεί PushNotificationServer"
   },
   {
     "id": "health.rule.push_test_proxy.message",
-    "translation": "Το push-test.mattermost.com είναι το proxy δοκιμής push του Mattermost. Δεν διαθέτει SLA, έχει περιορισμένη απόδοση και δεν προορίζεται για χρήση σε παραγωγή. Η παράδοση push σε κινητά θα είναι αναξιόπιστη πέρα από δοκιμές μικρής κλίμακας."
+    "translation": "Το {{.url}} είναι μια υπηρεσία push ειδοποιήσεων που εκτελείται από τη Mattermost, Inc. Παρέχει ειδοποιήσεις μόνο στις δικές της κινητές εφαρμογές, οπότε οι χρήστες της εφαρμογής Antimatter δεν λαμβάνουν καμία."
   },
   {
     "id": "health.rule.push_test_proxy.remediation",
-    "translation": "Μεταβείτε στο https://push.mattermost.com (η παραγωγική Υπηρεσία φιλοξενούμενων Push Ειδοποιήσεων του Mattermost) ή σε έναν push proxy που φιλοξενείται από εσάς."
+    "translation": "Εκτελέστε ένα δικό σας proxy push για το Antimatter και κατευθύνετε το PushNotificationServer σε αυτό."
   },
   {
     "id": "health.rule.push_test_proxy.title",
-    "translation": "Το PushNotificationServer δείχνει στο push-test.mattermost.com"
+    "translation": "Το PushNotificationServer κατευθύνεται σε μια υπηρεσία push της Mattermost"
   },
   {
     "id": "health.rule.site_url_empty.message",
@@ -12758,6 +12758,10 @@
   {
     "id": "model.config.is_valid.tls_overwrite_cipher.app_error",
     "translation": "Μη έγκυρη τιμή που μεταδόθηκε για την υπερέγγραψη κρυπτογράφησης TLS - Παρακαλώ ανατρέξτε στη τεκμηρίωση για έγκυρες τιμές."
+  },
+  {
+    "id": "model.config.is_valid.trusted_proxy_ips.app_error",
+    "translation": "Μη έγκυρο trusted proxy «{{.Value}}»: χρησιμοποιήστε μια διεύθυνση IP ή ένα εύρος CIDR."
   },
   {
     "id": "model.config.is_valid.user_status_away_timeout.app_error",

@@ -11804,27 +11804,27 @@
   },
   {
     "id": "health.rule.push_empty_url.message",
-    "translation": "Her anlık bildirim denemesi 'desteklenmeyen protokol şeması' hatasıyla başarısız olacak."
+    "translation": "Push bildirim sunucusu yapılandırılmadığından mobil uygulamalara push bildirimi gönderilmez."
   },
   {
     "id": "health.rule.push_empty_url.remediation",
-    "translation": "PushNotificationServer'ı https://push.mattermost.com veya kendi barındırdığınız bir anlık bildirim vekiline yönlendirin."
+    "translation": "Kendi Antimatter push vekil sunucunuzu çalıştırın ve PushNotificationServer değerini bu sunucunun URL'sine ayarlayın veya push bildirimlerini kapatın."
   },
   {
     "id": "health.rule.push_empty_url.title",
-    "translation": "Anlık bildirimler etkin ancak PushNotificationServer boş"
+    "translation": "Push bildirimleri açık ancak PushNotificationServer yapılandırılmamış"
   },
   {
     "id": "health.rule.push_test_proxy.message",
-    "translation": "push-test.mattermost.com, Mattermost'un test anlık bildirim vekilidir. SLA'si yoktur, sınırlı bir aktarım kapasitesine sahiptir ve üretim kullanımı için tasarlanmamıştır. Küçük ölçekli testlerin ötesinde mobil anlık bildirim teslimatı güvenilir olmayacaktır."
+    "translation": "{{.url}}, Mattermost, Inc. tarafından işletilen bir push bildirim hizmetidir. Bildirimleri yalnızca Mattermost'un kendi mobil uygulamalarına iletir; bu nedenle Antimatter uygulaması kullanıcıları hiçbir bildirim almaz."
   },
   {
     "id": "health.rule.push_test_proxy.remediation",
-    "translation": "https://push.mattermost.com (Mattermost'un üretim Barındırılan Anlık Bildirim Hizmeti) veya kendi barındırdığınız bir anlık bildirim vekiline geçin."
+    "translation": "Kendi Antimatter push vekil sunucunuzu çalıştırın ve PushNotificationServer değerini bu sunucuya yönlendirin."
   },
   {
     "id": "health.rule.push_test_proxy.title",
-    "translation": "PushNotificationServer push-test.mattermost.com adresine işaret ediyor"
+    "translation": "PushNotificationServer, bir Mattermost push hizmetine işaret ediyor"
   },
   {
     "id": "health.rule.site_url_empty.message",
@@ -13481,6 +13481,10 @@
   {
     "id": "model.config.is_valid.tls_overwrite_cipher.app_error",
     "translation": "TLS için kullanılacak şifreleyici için aktarılan değer geçersiz - Lütfen geçerli değerlerin neler olduğunu öğrenmek için belgelere bakın."
+  },
+  {
+    "id": "model.config.is_valid.trusted_proxy_ips.app_error",
+    "translation": "Geçersiz güvenilir vekil sunucu \"{{.Value}}\": IP adresi veya CIDR aralığı kullanın."
   },
   {
     "id": "model.config.is_valid.user_status_away_timeout.app_error",

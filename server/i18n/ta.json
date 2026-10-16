@@ -11089,27 +11089,27 @@
   },
   {
     "id": "health.rule.push_empty_url.message",
-    "translation": "ஒவ்வொரு push முயற்சியும் 'unsupported protocol scheme' என தோல்வியடையும்."
+    "translation": "புஷ் அறிவிப்பு சர்வர் அமைக்கப்படவில்லை, எனவே மொபைல் ஆப்ஸ்களுக்கு புஷ் அறிவிப்புகள் அனுப்பப்படாது."
   },
   {
     "id": "health.rule.push_empty_url.remediation",
-    "translation": "PushNotificationServer-ஐ https://push.mattermost.com-க்கு அல்லது self-hosted push proxy-க்கு இணைக்கவும்."
+    "translation": "உங்கள் சொந்த Antimatter புஷ் ப்ராக்சியை இயக்கி, PushNotificationServer-ஐ அதன் URL-க்கு அமைக்கவும், அல்லது புஷ் அறிவிப்புகளை அணைக்கவும்."
   },
   {
     "id": "health.rule.push_empty_url.title",
-    "translation": "Push அறிவிப்புகள் இயக்கப்பட்டுள்ளன, ஆனால் PushNotificationServer காலியாக உள்ளது"
+    "translation": "புஷ் அறிவிப்புகள் இயக்கப்பட்டுள்ளன, ஆனால் PushNotificationServer அமைக்கப்படவில்லை"
   },
   {
     "id": "health.rule.push_test_proxy.message",
-    "translation": "push-test.mattermost.com என்பது Mattermost-இன் test push proxy. இதற்கு SLA இல்லை, throughput மட்டுப்படுத்தப்பட்டது, மேலும் production பயன்பாட்டிற்கு இது பொருந்தாது. சிறிய அளவிலான testing-க்கு அப்பால் mobile push delivery நம்பகமானதாக இருக்காது."
+    "translation": "{{.url}} என்பது Mattermost, Inc. இயக்கும் புஷ் அறிவிப்பு சேவை. இது Mattermost-இன் சொந்த மொபைல் ஆப்ஸ்களுக்கு மட்டுமே அறிவிப்புகளை வழங்குகிறது, எனவே Antimatter ஆப் பயனர்கள் எந்த அறிவிப்புகளையும் பெற மாட்டார்கள்."
   },
   {
     "id": "health.rule.push_test_proxy.remediation",
-    "translation": "https://push.mattermost.com-க்கு (Mattermost-இன் production Hosted Push Notification Service) அல்லது self-hosted push proxy-க்கு மாற்றுங்கள்."
+    "translation": "உங்கள் சொந்த Antimatter புஷ் ப்ராக்சியை இயக்கி, PushNotificationServer-ஐ அதை நோக்கி அமைக்கவும்."
   },
   {
     "id": "health.rule.push_test_proxy.title",
-    "translation": "PushNotificationServer push-test.mattermost.com-ஐ சுட்டிக்காட்டுகிறது"
+    "translation": "PushNotificationServer Mattermost புஷ் சேவைக்கு குறிப்பிடுகிறது"
   },
   {
     "id": "health.rule.site_url_empty.message",
@@ -12758,6 +12758,10 @@
   {
     "id": "model.config.is_valid.tls_overwrite_cipher.app_error",
     "translation": "TLS மீள் எழுத்து (overwrite cipher) க்கான மதிப்பு தவறானது - சரியான மதிப்புகளுக்கு ஆவணங்களைக் காணவும்."
+  },
+  {
+    "id": "model.config.is_valid.trusted_proxy_ips.app_error",
+    "translation": "தவறான நம்பகமான ப்ராக்ஸி \"{{.Value}}\": IP முகவரி அல்லது CIDR வரம்பைப் பயன்படுத்தவும்."
   },
   {
     "id": "model.config.is_valid.user_status_away_timeout.app_error",

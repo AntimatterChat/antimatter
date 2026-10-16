@@ -11089,27 +11089,27 @@
   },
   {
     "id": "health.rule.push_empty_url.message",
-    "translation": "ستفشل كل محاولة إرسال إشعارات مع خطأ 'مخطط بروتوكول غير مدعوم'."
+    "translation": "لم يتم تعيين خادم إشعارات الدفع، لذا لن تُرسل أي إشعارات دفع إلى تطبيقات الهاتف المحمول."
   },
   {
     "id": "health.rule.push_empty_url.remediation",
-    "translation": "وجّه PushNotificationServer إلى https://push.mattermost.com أو إلى وكيل إرسال إشعارات مضاف إلى خادمك."
+    "translation": "شغّل وكيل دفع خاصًا بـ Antimatter وقم بتعيين PushNotificationServer إلى عنوان URL الخاص به، أو عطّل إشعارات الدفع."
   },
   {
     "id": "health.rule.push_empty_url.title",
-    "translation": "إشعارات الإرسال مفعّلة لكن PushNotificationServer فارغ"
+    "translation": "إشعارات الدفع مفعّلة، لكن لم يتم تعيين PushNotificationServer"
   },
   {
     "id": "health.rule.push_test_proxy.message",
-    "translation": "push-test.mattermost.com هو وكيل اختبار الإرسال الخاص بـ Mattermost. لا يملك اتفاقية مستوى خدمة، وقدرته محدودة، وهو غير مخصص للاستخدام في بيئة الإنتاج. لن يكون تسليم الإشعارات عبر الهاتف المحمول موثوقاً لأي شيء يتجاوز الاختبار على نطاق صغير."
+    "translation": "{{.url}} هو خدمة إشعارات الدفع التي تشغّلها Mattermost, Inc. وهي تُسلّم الإشعارات فقط إلى تطبيقات Mattermost الخاصة، لذا لن يستلم مستخدمو تطبيق Antimatter أي إشعارات."
   },
   {
     "id": "health.rule.push_test_proxy.remediation",
-    "translation": "انتقل إلى https://push.mattermost.com (خدمة Mattermost للإشعارات المضافة عبر الإنترنت) أو إلى وكيل إرسال مضاف إلى خادمك."
+    "translation": "شغّل وكيل دفع خاصًا بـ Antimatter وأشرِ PushNotificationServer إليه."
   },
   {
     "id": "health.rule.push_test_proxy.title",
-    "translation": "يشير PushNotificationServer إلى push-test.mattermost.com"
+    "translation": "PushNotificationServer يشير إلى خدمة دفع من Mattermost"
   },
   {
     "id": "health.rule.site_url_empty.message",
@@ -12758,6 +12758,10 @@
   {
     "id": "model.config.is_valid.tls_overwrite_cipher.app_error",
     "translation": "قيمة غير صالحة تم تمريرها لتجاوز تشفير TLS - يرجى الرجوع إلى التوثيق لمعرفة القيم الصالحة."
+  },
+  {
+    "id": "model.config.is_valid.trusted_proxy_ips.app_error",
+    "translation": "وكيل موثوق غير صالح \"{{.Value}}\": استخدم عنوان IP أو نطاق CIDR."
   },
   {
     "id": "model.config.is_valid.user_status_away_timeout.app_error",

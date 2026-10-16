@@ -11795,27 +11795,27 @@
   },
   {
     "id": "health.rule.push_empty_url.message",
-    "translation": "Mọi nỗ lực đẩy sẽ thất bại với lỗi 'lược đồ giao thức không được hỗ trợ'."
+    "translation": "Chưa thiết lập máy chủ thông báo đẩy, do đó không có thông báo đẩy nào được gửi đến ứng dụng di động."
   },
   {
     "id": "health.rule.push_empty_url.remediation",
-    "translation": "Chỉ định PushNotificationServer đến https://push.mattermost.com hoặc một proxy đẩy tự lưu trữ."
+    "translation": "Chạy proxy thông báo đẩy Antimatter của riêng bạn và đặt PushNotificationServer thành URL của nó, hoặc tắt thông báo đẩy."
   },
   {
     "id": "health.rule.push_empty_url.title",
-    "translation": "Thông báo đẩy được bật nhưng PushNotificationServer trống"
+    "translation": "Thông báo đẩy đang bật nhưng chưa thiết lập PushNotificationServer"
   },
   {
     "id": "health.rule.push_test_proxy.message",
-    "translation": "push-test.mattermost.com là proxy đẩy kiểm tra của Mattermost. Nó không có SLA, thông lượng hạn chế và không dành cho sử dụng trong môi trường sản xuất. Việc phân phối thông báo đẩy trên thiết bị di động sẽ không đáng tin cậy cho bất kỳ mục đích nào vượt quá kiểm tra quy mô nhỏ."
+    "translation": "{{.url}} là dịch vụ thông báo đẩy do Mattermost, Inc. vận hành. Nó chỉ gửi thông báo đến các ứng dụng di động của chính Mattermost, do đó người dùng ứng dụng Antimatter sẽ không nhận được thông báo nào."
   },
   {
     "id": "health.rule.push_test_proxy.remediation",
-    "translation": "Chuyển sang https://push.mattermost.com (Dịch vụ Thông báo đẩy có chủ của Mattermost trong môi trường sản xuất) hoặc sang một proxy đẩy tự lưu trữ."
+    "translation": "Chạy proxy thông báo đẩy Antimatter của riêng bạn và trỏ PushNotificationServer đến đó."
   },
   {
     "id": "health.rule.push_test_proxy.title",
-    "translation": "PushNotificationServer trỏ đến push-test.mattermost.com"
+    "translation": "PushNotificationServer trỏ đến dịch vụ thông báo đẩy của Mattermost"
   },
   {
     "id": "health.rule.site_url_empty.message",
@@ -13472,6 +13472,10 @@
   {
     "id": "model.config.is_valid.tls_overwrite_cipher.app_error",
     "translation": "Giá trị không hợp lệ được truyền cho mật mã ghi đè TLS - Vui lòng tham khảo tài liệu để biết giá trị hợp lệ"
+  },
+  {
+    "id": "model.config.is_valid.trusted_proxy_ips.app_error",
+    "translation": "Proxy đáng tin cậy \"{{.Value}}\" không hợp lệ: hãy sử dụng địa chỉ IP hoặc dải CIDR."
   },
   {
     "id": "model.config.is_valid.user_status_away_timeout.app_error",

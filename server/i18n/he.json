@@ -256,6 +256,10 @@
     "translation": "אנא הוסיפו אותי לצוותים ולערוצים שבהם אתם רוצים שאני אפעל. כדי לעשות זאת, השתמשו בדפדפן או באפליקציית שולחן העבודה."
   },
   {
+    "id": "api.channel.add_guest.added",
+    "translation": "%v נוסף/ה לערוץ כאורח/ת על ידי %v."
+  },
+  {
     "id": "api.channel.add_member.added",
     "translation": "%v נוסף/ה לערוץ על ידי %v."
   },
@@ -11085,27 +11089,27 @@
   },
   {
     "id": "health.rule.push_empty_url.message",
-    "translation": "כל ניסיון לשליחת התראות ייכשל עם 'unsupported protocol scheme'."
+    "translation": "לא הוגדר שרת התראות דחיפה, ולכן לא נשלחות התראות דחיפה לאפליקציות המובייל."
   },
   {
     "id": "health.rule.push_empty_url.remediation",
-    "translation": "כוון את PushNotificationServer ל-https://push.mattermost.com או לפרוקסי התראות עצמאי."
+    "translation": "הריצו פרוקסי דחיפה של Antimatter משלכם והגדירו את PushNotificationServer לכתובת ה-URL שלו, או כבו את ההתראות הדחיפה."
   },
   {
     "id": "health.rule.push_empty_url.title",
-    "translation": "התראות push מופעלות, אך PushNotificationServer ריק"
+    "translation": "ההתראות הדחיפה מופעלות, אך לא הוגדר PushNotificationServer"
   },
   {
     "id": "health.rule.push_test_proxy.message",
-    "translation": "push-test.mattermost.com הוא פרוקסי push לבדיקות של Mattermost. אין לו SLA, קיבולתו מוגבלת, והוא אינו מיועד לשימוש בייצור. אספקת התראות push למובייל לא תהיה אמינה מעבר לבדיקות בקנה מידה קטן."
+    "translation": "{{.url}} הוא שירות התראות דחיפה שמופעל על ידי Mattermost, Inc. הוא משדר התראות רק לאפליקציות המובייל של Mattermost, ולכן משתמשים באפליקציית Antimatter לא יקבלו התראות."
   },
   {
     "id": "health.rule.push_test_proxy.remediation",
-    "translation": "עבור ל-https://push.mattermost.com (שירות התראות push מנוהל של Mattermost) או לפרוקסי push עצמאי."
+    "translation": "הריצו פרוקסי דחיפה של Antimatter משלכם והכוונו את PushNotificationServer אליו."
   },
   {
     "id": "health.rule.push_test_proxy.title",
-    "translation": "PushNotificationServer מצביע על push-test.mattermost.com"
+    "translation": "PushNotificationServer מצביע על שירות דחיפה של Mattermost"
   },
   {
     "id": "health.rule.site_url_empty.message",
@@ -12754,6 +12758,10 @@
   {
     "id": "model.config.is_valid.tls_overwrite_cipher.app_error",
     "translation": "ערך לא תקין הועבר עבור הצפנת TLS - יש להתייחס למסמכים עבור ערכים תקינים."
+  },
+  {
+    "id": "model.config.is_valid.trusted_proxy_ips.app_error",
+    "translation": "פרוקסי אמין לא תקין: \"{{.Value}}\"; השתמשו בכתובת IP או בטווח CIDR."
   },
   {
     "id": "model.config.is_valid.user_status_away_timeout.app_error",

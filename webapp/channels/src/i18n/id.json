@@ -1,4 +1,8 @@
 {
+  "admin.email.mattermostPushServer": "Ini adalah layanan notifikasi push yang dijalankan oleh Mattermost, Inc.: layanan ini hanya mengirim notifikasi ke aplikasi seluler Mattermost, bukan ke aplikasi Antimatter.",
+  "admin.email.ownPushProxy": "Kirim notifikasi push melalui proxy push Anda sendiri",
+  "admin.email.ownPushProxyHelp": "Alamat proxy push Antimatter Anda, yang mengirim notifikasi ke aplikasi Antimatter untuk iOS dan Android. <link>Pelajari cara mengaturnya</link>.",
+  "admin.email.pushServerExample": "Contoh: \"https://push.example.com\"",
   "admin.global_attributes.attribute_details.applies_to.item.user.profile_display.admin.label": "Hanya Admin",
   "admin.global_attributes.attribute_details.applies_to.item.user.profile_display.always.label": "Selalu",
   "admin.global_attributes.attribute_details.applies_to.item.user.profile_display.hidden.label": "Disembunyikan",

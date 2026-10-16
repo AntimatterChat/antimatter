@@ -1,4 +1,8 @@
 {
+  "admin.email.mattermostPushServer": "இது Mattermost, Inc. நிறுவனத்தால் இயக்கப்படும் அறிவிப்பு சேவையாகும்: இது Mattermost-இன் சொந்த மொபைல் ஆப்ஸ்களுக்கு மட்டும் அறிவிப்புகளை அனுப்பும், Antimatter ஆப்ஸ்களுக்கு இல்லை.",
+  "admin.email.ownPushProxy": "உங்கள் சொந்த push proxy மூலம் push notifications அனுப்பு",
+  "admin.email.ownPushProxyHelp": "iOS மற்றும் Android ஆகியவற்றிற்கான Antimatter ஆப்ஸ்களுக்கு அறிவிப்புகளை அனுப்பும் உங்கள் Antimatter push proxy-இன் முகவரி. <link>இதை எப்படி அமைப்பது என்பதை அறிக</link>.",
+  "admin.email.pushServerExample": "எ.கா.: \"https://push.example.com\"",
   "admin.global_attributes.attribute_details.applies_to.item.user.profile_display.admin.label": "நிர்வாகிகள்கு மட்டும்",
   "admin.global_attributes.attribute_details.applies_to.item.user.profile_display.always.label": "எப்போதும்",
   "admin.global_attributes.attribute_details.applies_to.item.user.profile_display.hidden.label": "மறைப்பட்டது",

@@ -11089,27 +11089,27 @@
   },
   {
     "id": "health.rule.push_empty_url.message",
-    "translation": "প্রতিটি পুশ চেষ্টা 'unsupported protocol scheme' এর সাথে ব্যর্থ হবে।"
+    "translation": "কোনো পুশ নোটিফিকেশন সার্ভার সেট করা নেই, তাই মোবাইল অ্যাপে কোনো পুশ নোটিফিকেশন পাঠানো হয় না।"
   },
   {
     "id": "health.rule.push_empty_url.remediation",
-    "translation": "PushNotificationServer-কে https://push.mattermost.com-এর দিকে নির্দেশ করুন বা একটি সেলফ-হোস্টেড পুশ প্রক্সি ব্যবহার করুন।"
+    "translation": "নিজস্ব Antimatter পুশ প্রক্সি চালান এবং PushNotificationServer-এর URL সেট করুন, অথবা পুশ নোটিফিকেশন বন্ধ করুন।"
   },
   {
     "id": "health.rule.push_empty_url.title",
-    "translation": "পুশ নোটিফিকেশনসমূহ সক্রিয় কিন্তু PushNotificationServer খালি"
+    "translation": "পুশ নোটিফিকেশন চালু আছে কিন্তু PushNotificationServer সেট করা নেই"
   },
   {
     "id": "health.rule.push_test_proxy.message",
-    "translation": "push-test.mattermost.com হলো Mattermost-এর টেস্ট পুশ প্রক্সি। এতে কোনো SLA নেই, সীমিত থ্রুপুট রয়েছে এবং এটি প্রোডাকশন ব্যবহারের জন্য উদ্দেশ্যপ্রণোদিত নয়। ছোট পরিসরের পরীক্ষার বাইরে মোবাইল পুশ ডেলিভারি নির্ভরযোগ্য হবে না।"
+    "translation": "{{.url}} হলো Mattermost, Inc. দ্বারা পরিচালিত একটি পুশ নোটিফিকেশন সার্ভিস। এটি শুধুমাত্র Mattermost-এর নিজস্ব মোবাইল অ্যাপে নোটিফিকেশন পাঠায়, তাই Antimatter অ্যাপের ব্যবহারকারীরা কোনো নোটিফিকেশন পায় না।"
   },
   {
     "id": "health.rule.push_test_proxy.remediation",
-    "translation": "https://push.mattermost.com-এ (Mattermost-এর প্রোডাকশন হোস্টেড পুশ নোটিফিকেশন সার্ভিস) বা একটি সেলফ-হোস্টেড পুশ প্রক্সিতে পরিবর্তন করুন।"
+    "translation": "নিজস্ব Antimatter পুশ প্রক্সি চালান এবং PushNotificationServer-কে সেখানে নির্দেশ করুন।"
   },
   {
     "id": "health.rule.push_test_proxy.title",
-    "translation": "PushNotificationServer push-test.mattermost.com-এর দিকে নির্দেশিত"
+    "translation": "PushNotificationServer Mattermost পুশ সার্ভিসে নির্দেশিত"
   },
   {
     "id": "health.rule.site_url_empty.message",
@@ -12758,6 +12758,10 @@
   {
     "id": "model.config.is_valid.tls_overwrite_cipher.app_error",
     "translation": "TLS ওভাররাইট সাইফারের জন্য পাঠানো মানটি বৈধ নয় - বৈধ মানগুলোর জন্য দয়া করে ডকুমেন্টেশনে দেখুন।"
+  },
+  {
+    "id": "model.config.is_valid.trusted_proxy_ips.app_error",
+    "translation": "অবৈধ ট্রাস্টেড প্রক্সি \"{{.Value}}\": IP ঠিকানা বা CIDR রেঞ্জ ব্যবহার করুন।"
   },
   {
     "id": "model.config.is_valid.user_status_away_timeout.app_error",

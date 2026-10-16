@@ -11804,27 +11804,27 @@
   },
   {
     "id": "health.rule.push_empty_url.message",
-    "translation": "Ogni tentativo di push fallirà con 'schema di protocollo non supportato'."
+    "translation": "Nessun server di notifica push è configurato, quindi non vengono inviate notifiche push alle app mobili."
   },
   {
     "id": "health.rule.push_empty_url.remediation",
-    "translation": "Imposta PushNotificationServer su https://push.mattermost.com o su un proxy push self-hosted."
+    "translation": "Esegui un tuo proxy push di Antimatter e imposta PushNotificationServer sul relativo URL, oppure disattiva le notifiche push."
   },
   {
     "id": "health.rule.push_empty_url.title",
-    "translation": "Notifiche push abilitate ma PushNotificationServer è vuoto"
+    "translation": "Le notifiche push sono attive, ma PushNotificationServer non è configurato"
   },
   {
     "id": "health.rule.push_test_proxy.message",
-    "translation": "push-test.mattermost.com è il proxy push di test di Mattermost. Non ha SLA, ha una capacità limitata e non è destinato all'uso in produzione. La consegna delle notifiche push mobili non sarà affidabile per qualsiasi uso oltre a test su piccola scala."
+    "translation": "{{.url}} è un servizio di notifica push gestito da Mattermost, Inc. Consegna le notifiche solo alle app mobili di Mattermost, quindi gli utenti dell'app Antimatter non ne ricevono alcuna."
   },
   {
     "id": "health.rule.push_test_proxy.remediation",
-    "translation": "Passa a https://push.mattermost.com (il servizio di notifica push ospitato in produzione di Mattermost) o a un proxy push self-hosted."
+    "translation": "Esegui un tuo proxy push di Antimatter e punta PushNotificationServer verso di esso."
   },
   {
     "id": "health.rule.push_test_proxy.title",
-    "translation": "PushNotificationServer punta a push-test.mattermost.com"
+    "translation": "PushNotificationServer punta a un servizio push di Mattermost"
   },
   {
     "id": "health.rule.site_url_empty.message",
@@ -13481,6 +13481,10 @@
   {
     "id": "model.config.is_valid.tls_overwrite_cipher.app_error",
     "translation": "Sovrascrittura cifratura TLS non valida - Vedere la documentazione per i valori consentiti."
+  },
+  {
+    "id": "model.config.is_valid.trusted_proxy_ips.app_error",
+    "translation": "Proxy di fiducia non valido \"{{.Value}}\": usa un indirizzo IP o un intervallo CIDR."
   },
   {
     "id": "model.config.is_valid.user_status_away_timeout.app_error",

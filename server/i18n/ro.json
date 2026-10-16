@@ -11813,27 +11813,27 @@
   },
   {
     "id": "health.rule.push_empty_url.message",
-    "translation": "Fiecare încercare de push va eșua cu 'schemă de protocol nesuportată'."
+    "translation": "Nu este configurat niciun server de notificări push, astfel încât nu se trimită notificări push către aplicațiile mobile."
   },
   {
     "id": "health.rule.push_empty_url.remediation",
-    "translation": "Indicați PushNotificationServer către https://push.mattermost.com sau către un proxy push auto-găzduit."
+    "translation": "Rulează propriul tău proxy push Antimatter și setează PushNotificationServer la URL-ul acestuia, sau dezactivează notificările push."
   },
   {
     "id": "health.rule.push_empty_url.title",
-    "translation": "Notificările push sunt activate, dar PushNotificationServer este gol"
+    "translation": "Notificările push sunt activate, dar nu este configurat niciun PushNotificationServer"
   },
   {
     "id": "health.rule.push_test_proxy.message",
-    "translation": "push-test.mattermost.com este proxy-ul de test push al Mattermost. Nu are SLA, are o lățime de bandă limitată și nu este destinat utilizării în producție. Livrarea notificărilor push pe mobil va fi neregulată pentru orice dincolo de testele la scară mică."
+    "translation": "{{.url}} este un serviciu de notificări push operat de Mattermost, Inc. Trimite notificări doar către aplicațiile mobile proprii Mattermost, astfel încât utilizatorii aplicației Antimatter nu primesc nicio notificare."
   },
   {
     "id": "health.rule.push_test_proxy.remediation",
-    "translation": "Treceți la https://push.mattermost.com (Serviciul de notificări push găzduit în producție al Mattermost) sau la un proxy push auto-găzduit."
+    "translation": "Rulează propriul tău proxy push Antimatter și indică PushNotificationServer către acesta."
   },
   {
     "id": "health.rule.push_test_proxy.title",
-    "translation": "PushNotificationServer indică către push-test.mattermost.com"
+    "translation": "PushNotificationServer indică către un serviciu push Mattermost"
   },
   {
     "id": "health.rule.site_url_empty.message",
@@ -13490,6 +13490,10 @@
   {
     "id": "model.config.is_valid.tls_overwrite_cipher.app_error",
     "translation": "Valoare nevalidă transmisă pentru cifrul de suprascriere TLS - Consultați documentația pentru valori valide."
+  },
+  {
+    "id": "model.config.is_valid.trusted_proxy_ips.app_error",
+    "translation": "Proxy de încredere „{{.Value}}” invalid: folosește o adresă IP sau o gamă CIDR."
   },
   {
     "id": "model.config.is_valid.user_status_away_timeout.app_error",

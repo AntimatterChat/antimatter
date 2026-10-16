@@ -11089,27 +11089,27 @@
   },
   {
     "id": "health.rule.push_empty_url.message",
-    "translation": "ہر پش کی کوشش 'unsupported protocol scheme' کے ساتھ ناکام ہو جائے گی۔"
+    "translation": "کوئی پش نوٹیفیکیشن سرور سیٹ نہیں ہے، اس لیے موبائل ایپس کو کوئی پش نوٹیفیکیشنز نہیں بھیجی جاتی۔"
   },
   {
     "id": "health.rule.push_empty_url.remediation",
-    "translation": "PushNotificationServer کو https://push.mattermost.com یا کسی خود میزبان پش پروکسی پر مقرر کریں۔"
+    "translation": "اپنا اپنا Antimatter پش پروکسی چلائیں اور PushNotificationServer کو اس کے URL پر سیٹ کریں، یا پش نوٹیفیکیشنز بند کر دیں۔"
   },
   {
     "id": "health.rule.push_empty_url.title",
-    "translation": "پش اطلاعات فعال ہیں لیکن PushNotificationServer خالی ہے"
+    "translation": "پش نوٹیفیکیشنز آن ہیں لیکن PushNotificationServer سیٹ نہیں ہے"
   },
   {
     "id": "health.rule.push_test_proxy.message",
-    "translation": "push-test.mattermost.com Mattermost کا ٹیسٹ پش پروکسی ہے۔ اس کی کوئی SLA نہیں ہے، محدود تھروپٹ ہے، اور یہ پروڈکشن استعمال کے لیے نہیں ہے۔ چھوٹے پیمانے کے ٹیسٹنگ کے علاوہ موبائل پش ڈیلیوری غیر مستحکم ہوگی۔"
+    "translation": "{{.url}} Mattermost, Inc. کے ذریعے چلایا جانے والا ایک پش نوٹیفیکیشن سروس ہے۔ یہ صرف Mattermost کی اپنی موبائل ایپس کو نوٹیفیکیشنز ڈیلیور کرتا ہے، اس لیے Antimatter ایپ کے صارفین کو کوئی نوٹیفیکیشن نہیں ملتی۔"
   },
   {
     "id": "health.rule.push_test_proxy.remediation",
-    "translation": "https://push.mattermost.com (Mattermost کی پروڈکشن Hosted Push Notification Service) یا کسی خود میزبان پش پروکسی پر سوئچ کریں۔"
+    "translation": "اپنا اپنا Antimatter پش پروکسی چلائیں اور PushNotificationServer کو اس کی طرف اشارہ کریں۔"
   },
   {
     "id": "health.rule.push_test_proxy.title",
-    "translation": "PushNotificationServer push-test.mattermost.com کی طرف اشارہ کر رہا ہے"
+    "translation": "PushNotificationServer Mattermost پش سروس کی طرف اشارہ کر رہا ہے"
   },
   {
     "id": "health.rule.site_url_empty.message",
@@ -12758,6 +12758,10 @@
   {
     "id": "model.config.is_valid.tls_overwrite_cipher.app_error",
     "translation": "TLS اوور رائٹ سائفر کے لیے دی گئی قدر درست نہیں - درست قدروں کے لیے دستاویزات کا حوالہ دیں۔"
+  },
+  {
+    "id": "model.config.is_valid.trusted_proxy_ips.app_error",
+    "translation": "غلط ٹرسٹڈ پروکسی \"{{.Value}}\": IP ایڈریس یا CIDR رینج استعمال کریں۔"
   },
   {
     "id": "model.config.is_valid.user_status_away_timeout.app_error",

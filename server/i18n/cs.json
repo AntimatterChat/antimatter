@@ -11822,27 +11822,27 @@
   },
   {
     "id": "health.rule.push_empty_url.message",
-    "translation": "Každý pokus o push notifikaci selže chybou „nepodporovaný protokol“."
+    "translation": "Není nastaven žádný server pro push oznámení, proto se do mobilních aplikací neposílají žádná push oznámení."
   },
   {
     "id": "health.rule.push_empty_url.remediation",
-    "translation": "Nastavte PushNotificationServer na https://push.mattermost.com nebo na vlastní push proxy."
+    "translation": "Spusťte vlastní Antimatter push proxy a nastavte PushNotificationServer na jeho URL, nebo vypněte push oznámení."
   },
   {
     "id": "health.rule.push_empty_url.title",
-    "translation": "Oznámení v pozadí jsou zapnutá, ale PushNotificationServer je prázdný"
+    "translation": "Push oznámení jsou zapnutá, ale PushNotificationServer není nastaven"
   },
   {
     "id": "health.rule.push_test_proxy.message",
-    "translation": "push-test.mattermost.com je testovací push proxy od Mattermost. Nemá SLA, má omezenou kapacitu a není určen pro produkční použití. Dodávání mobilních push notifikací bude nespolehlivé pro cokoliv jiného než malé testy."
+    "translation": "{{.url}} je služba pro push oznámení provozovaná společností Mattermost, Inc. Oznámení doručuje pouze do mobilních aplikací Mattermost, uživatelé aplikace Antimatter je tedy nedostanou."
   },
   {
     "id": "health.rule.push_test_proxy.remediation",
-    "translation": "Přepněte na https://push.mattermost.com (produkční služba Mattermost pro hostované push oznámení) nebo na vlastní push proxy."
+    "translation": "Spusťte vlastní Antimatter push proxy a nastavte PushNotificationServer na něj."
   },
   {
     "id": "health.rule.push_test_proxy.title",
-    "translation": "PushNotificationServer ukazuje na push-test.mattermost.com"
+    "translation": "PushNotificationServer ukazuje na službu Mattermost pro push oznámení"
   },
   {
     "id": "health.rule.site_url_empty.message",
@@ -13499,6 +13499,10 @@
   {
     "id": "model.config.is_valid.tls_overwrite_cipher.app_error",
     "translation": "Neplatná hodnota pro přepsání šifry TLS – prosím, odkazujte se na dokumentaci pro platné hodnoty."
+  },
+  {
+    "id": "model.config.is_valid.trusted_proxy_ips.app_error",
+    "translation": "Neplatný důvěryhodný proxy „{{.Value}}“: použijte IP adresu nebo CIDR rozsah."
   },
   {
     "id": "model.config.is_valid.user_status_away_timeout.app_error",

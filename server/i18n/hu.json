@@ -11804,27 +11804,27 @@
   },
   {
     "id": "health.rule.push_empty_url.message",
-    "translation": "Minden push-értesítés-küldési kísérlet „nem támogatott protokoll” hibaüzenettel fog sikertelenül lezárulni."
+    "translation": "Nincs beállítva push értesítési szerver, ezért nem küldődnek push értesítések a mobilalkalmazásokba."
   },
   {
     "id": "health.rule.push_empty_url.remediation",
-    "translation": "A PushNotificationServer-t állítsa be a https://push.mattermost.com címre, vagy egy saját üzemeltetésű push proxy-ra."
+    "translation": "Futtass saját Antimatter push proxyt, és állítsd be a PushNotificationServer értékét a proxy URL-jére, vagy kapcsold ki a push értesítéseket."
   },
   {
     "id": "health.rule.push_empty_url.title",
-    "translation": "A push-értesítések engedélyezve vannak, de a PushNotificationServer mező üres"
+    "translation": "A push értesítések be vannak kapcsolva, de nincs beállítva PushNotificationServer"
   },
   {
     "id": "health.rule.push_test_proxy.message",
-    "translation": "A push-test.mattermost.com a Mattermost teszt push proxy-ja. Nincs SLA, korlátozott a sávszélessége, és nem alkalmas éles használatra. Nagyobb méretű rendszerek esetén a mobilos push-értesítések kézbesítése nem lesz megbízható."
+    "translation": "A(z) {{.url}} a Mattermost, Inc. által üzemeltetett push értesítési szolgáltatás. Kizárólag a Mattermost saját mobilalkalmazásaihoz juttatja el az értesítéseket, ezért az Antimatter alkalmazás felhasználói nem kapnak értesítést."
   },
   {
     "id": "health.rule.push_test_proxy.remediation",
-    "translation": "Váltson át a https://push.mattermost.com címre (a Mattermost éles Hosted Push Notification Service szolgáltatása), vagy használjon saját üzemeltetésű push proxy-t."
+    "translation": "Futtass saját Antimatter push proxyt, és állítsd be a PushNotificationServer értékét erre a proxyra."
   },
   {
     "id": "health.rule.push_test_proxy.title",
-    "translation": "A PushNotificationServer a push-test.mattermost.com címre mutat"
+    "translation": "A PushNotificationServer egy Mattermost push szolgáltatásra mutat"
   },
   {
     "id": "health.rule.site_url_empty.message",
@@ -13481,6 +13481,10 @@
   {
     "id": "model.config.is_valid.tls_overwrite_cipher.app_error",
     "translation": "A TLS titkosítás felülírása érvénytelen értéket kapott - Az érvényes értékeket a dokumentációban találja meg."
+  },
+  {
+    "id": "model.config.is_valid.trusted_proxy_ips.app_error",
+    "translation": "Érvénytelen megbízható proxy: \"{{.Value}}\". Használj IP-címet vagy CIDR-tartományt."
   },
   {
     "id": "model.config.is_valid.user_status_away_timeout.app_error",

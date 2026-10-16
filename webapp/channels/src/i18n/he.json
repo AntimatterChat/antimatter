@@ -1,4 +1,8 @@
 {
+  "admin.email.mattermostPushServer": "זהו שירות התראות דחופות (Push) של Mattermost, Inc.: הוא משדר התראות רק לאפליקציות המובייל של Mattermost, ולא לאפליקציית Antimatter.",
+  "admin.email.ownPushProxy": "שליחת התראות דחופות דרך שירות התקדמות (Push Proxy) פרטי",
+  "admin.email.ownPushProxyHelp": "כתובת שירות ההתקדמות (Push Proxy) של Antimatter, המשדר התראות לאפליקציות Antimatter ל-iOS ול-Android. <link>למד כיצד להגדיר אותו</link>.",
+  "admin.email.pushServerExample": "לדוגמה: \"https://push.example.com\"",
   "admin.global_attributes.attribute_details.applies_to.item.user.profile_display.admin.label": "מנהלים בלבד",
   "admin.global_attributes.attribute_details.applies_to.item.user.profile_display.always.label": "תמיד",
   "admin.global_attributes.attribute_details.applies_to.item.user.profile_display.hidden.label": "מוסתר",

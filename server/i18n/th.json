@@ -11089,27 +11089,27 @@
   },
   {
     "id": "health.rule.push_empty_url.message",
-    "translation": "การพยายามส่ง push ทุกครังจะล้มเหลวด้วย 'unsupported protocol scheme'"
+    "translation": "ยังไม่ได้ตั่งค่าเซิร์ฟเวอร์การแจ้งเตือนแบบพุช (Push Notification) ทำให้ไม่มีการแจ้งเตือนส่งไปให้อุปกรณ์มือถือ"
   },
   {
     "id": "health.rule.push_empty_url.remediation",
-    "translation": "ตัง PushNotificationServer ให้ชี้ไป https://push.mattermost.com หรือ push proxy ที่โฮสต์เอง"
+    "translation": "รัน Antimatter push proxy ของคุณเองแล้วตั่งค่า PushNotificationServer ให้ชี้ไปท่ URL ของมัน หรือปิดการแจ้งเตือนแบบพุช"
   },
   {
     "id": "health.rule.push_empty_url.title",
-    "translation": "เปิดการแจ้งเตือนแบบ push แล้ว แต่ PushNotificationServer ว่าง"
+    "translation": "เปิดการแจ้งเตือนแบบพุชไว้แต่ยังไม่ได้ตั่งค่า PushNotificationServer"
   },
   {
     "id": "health.rule.push_test_proxy.message",
-    "translation": "push-test.mattermost.com คือ push proxy ทดสอบของ Mattermost ไม่มี SLA, throughput จำกัด และไม่ได้ออกแบบมาสำหรบั production การส่ง push บนมือถือจะไม่ถิงในกรณีนอกเหนือจากการทดสอบขนาดเล็ก"
+    "translation": "{{.url}} เป็นบริการการแจ้งเตือนแบบพุชท่ดำเนินการโดย Mattermost, Inc. ส่งการแจ้งเตือนไปให้อุปกรณ์มือถือของ Mattermost เองเท่านั้ ผู้ใช้แอป Antimatter จึงไม่ไดร้บการแจ้งเตือน"
   },
   {
     "id": "health.rule.push_test_proxy.remediation",
-    "translation": "สลับไป https://push.mattermost.com (Hosted Push Notification Service สำหรบั production ของ Mattermost) หรือ push proxy ที่โฮสต์เอง"
+    "translation": "รัน Antimatter push proxy ของคุณเองแล้วชี้ PushNotificationServer ไปท่ proxy นั้น"
   },
   {
     "id": "health.rule.push_test_proxy.title",
-    "translation": "PushNotificationServer ชี้ไป push-test.mattermost.com"
+    "translation": "PushNotificationServer ชี้ไปท่บริการการแจ้งเตือนแบบพุชของ Mattermost"
   },
   {
     "id": "health.rule.site_url_empty.message",
@@ -12758,6 +12758,10 @@
   {
     "id": "model.config.is_valid.tls_overwrite_cipher.app_error",
     "translation": "ค่าที่ส่งมาสำหรับ TLS overwrite cipher ไม่ถูกต้อง - กรุณาอ้างอิงเอกสารสำหรับค่าที่ถูกต้อง"
+  },
+  {
+    "id": "model.config.is_valid.trusted_proxy_ips.app_error",
+    "translation": "IP ของ proxy ท่ไว้วางใจไม่ถุกต้อง \"{{.Value}}\": ใช้ท่ IP address หรือ CIDR range"
   },
   {
     "id": "model.config.is_valid.user_status_away_timeout.app_error",

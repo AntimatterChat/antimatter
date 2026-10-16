@@ -11804,27 +11804,27 @@
   },
   {
     "id": "health.rule.push_empty_url.message",
-    "translation": "Alle push-forsøg vil fejle med 'unsupported protocol scheme'."
+    "translation": "Der er ikke indstillet en push-notifikationsserver, så der sendes ingen push-notifikationer til mobilapps."
   },
   {
     "id": "health.rule.push_empty_url.remediation",
-    "translation": "Angiv https://push.mattermost.com eller en selvhostet push-proxy for PushNotificationServer."
+    "translation": "Kør din egen Antimatter push-proxy og indstil PushNotificationServer til dens URL, eller slå push-notifikationer fra."
   },
   {
     "id": "health.rule.push_empty_url.title",
-    "translation": "Push-notifikationer er aktiveret, men PushNotificationServer er tom"
+    "translation": "Push-notifikationer er slået til, men der er ikke indstillet en PushNotificationServer"
   },
   {
     "id": "health.rule.push_test_proxy.message",
-    "translation": "push-test.mattermost.com er Mattermosts test-push-proxy. Den har ingen SLA, begrænset gennemstrømning og er ikke beregnet til produktionsbrug. Mobil-push-levering vil være upålidelig for alt ud over test i lille skala."
+    "translation": "{{.url}} er en push-notifikationstjeneste drevet af Mattermost, Inc. Den leverer kun notifikationer til Mattermosts egne mobilapps, så brugere af Antimatter-appen modtager ingen."
   },
   {
     "id": "health.rule.push_test_proxy.remediation",
-    "translation": "Skift til https://push.mattermost.com (Mattermosts produktions Hosted Push Notification Service) eller til en selvhostet push-proxy."
+    "translation": "Kør din egen Antimatter push-proxy og peger PushNotificationServer mod den."
   },
   {
     "id": "health.rule.push_test_proxy.title",
-    "translation": "PushNotificationServer peger på push-test.mattermost.com"
+    "translation": "PushNotificationServer peger mod en Mattermost push-tjeneste"
   },
   {
     "id": "health.rule.site_url_empty.message",
@@ -13481,6 +13481,10 @@
   {
     "id": "model.config.is_valid.tls_overwrite_cipher.app_error",
     "translation": "Ugyldig værdi angivet for TLS overwrite cipher – se dokumentationen for gyldige værdier."
+  },
+  {
+    "id": "model.config.is_valid.trusted_proxy_ips.app_error",
+    "translation": "Ugyldig betroet proxy \"{{.Value}}\": brug en IP-adresse eller et CIDR-område."
   },
   {
     "id": "model.config.is_valid.user_status_away_timeout.app_error",

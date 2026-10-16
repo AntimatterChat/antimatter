@@ -11795,27 +11795,27 @@
   },
   {
     "id": "health.rule.push_empty_url.message",
-    "translation": "每次推送尝试都会因“不支持的协议方案”而失败。"
+    "translation": "未设置推送通知服务器，因此不会向移动应用发送推送通知。"
   },
   {
     "id": "health.rule.push_empty_url.remediation",
-    "translation": "将 PushNotificationServer 指向 https://push.mattermost.com 或自托管的推送代理。"
+    "translation": "运行您自己的 Antimatter 推送代理，并将 PushNotificationServer 设置为其 URL，或者关闭推送通知。"
   },
   {
     "id": "health.rule.push_empty_url.title",
-    "translation": "已启用推送通知，但 PushNotificationServer 为空"
+    "translation": "已开启推送通知，但未设置 PushNotificationServer"
   },
   {
     "id": "health.rule.push_test_proxy.message",
-    "translation": "push-test.mattermost.com 是 Mattermost 的测试推送代理。它没有 SLA，吞吐量有限，且不用于生产环境。除小规模测试外，移动推送投递将不可靠。"
+    "translation": "{{.url}} 是由 Mattermost, Inc. 运营的推送通知服务。它仅向 Mattermost 自己的移动应用发送通知，因此 Antimatter 应用的用户将收不到任何通知。"
   },
   {
     "id": "health.rule.push_test_proxy.remediation",
-    "translation": "切换到 https://push.mattermost.com（Mattermost 的生产托管推送通知服务）或自托管的推送代理。"
+    "translation": "运行您自己的 Antimatter 推送代理，并将 PushNotificationServer 指向该代理。"
   },
   {
     "id": "health.rule.push_test_proxy.title",
-    "translation": "PushNotificationServer 指向 push-test.mattermost.com"
+    "translation": "PushNotificationServer 指向 Mattermost 推送服务"
   },
   {
     "id": "health.rule.site_url_empty.message",
@@ -13472,6 +13472,10 @@
   {
     "id": "model.config.is_valid.tls_overwrite_cipher.app_error",
     "translation": "TLS 覆盖加密套件值无效。请参阅文档了解有效值。"
+  },
+  {
+    "id": "model.config.is_valid.trusted_proxy_ips.app_error",
+    "translation": "无效的受信任代理 \"{{.Value}}\"：请使用 IP 地址或 CIDR 范围。"
   },
   {
     "id": "model.config.is_valid.user_status_away_timeout.app_error",

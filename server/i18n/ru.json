@@ -11822,27 +11822,27 @@
   },
   {
     "id": "health.rule.push_empty_url.message",
-    "translation": "Каждая попытка отправки push-уведомления завершится ошибкой «unsupported protocol scheme»."
+    "translation": "Сервер push-уведомлений не настроен, поэтому push-уведомления не отправляются в мобильные приложения."
   },
   {
     "id": "health.rule.push_empty_url.remediation",
-    "translation": "Настройте PushNotificationServer на https://push.mattermost.com или на собственный прокси-сервер для push-уведомлений."
+    "translation": "Запустите собственный push-прокси Antimatter и задайте его URL в параметре PushNotificationServer или отключите push-уведомления."
   },
   {
     "id": "health.rule.push_empty_url.title",
-    "translation": "Уведомления на устройства включены, но поле PushNotificationServer пустое"
+    "translation": "Push-уведомления включены, но параметр PushNotificationServer не задан"
   },
   {
     "id": "health.rule.push_test_proxy.message",
-    "translation": "push-test.mattermost.com — это тестовый прокси для push-уведомлений Mattermost. Он не имеет SLA, имеет ограниченную пропускную способность и не предназначен для использования в продуктивной среде. Доставка push-уведомлений на мобильных устройствах будет ненадёжной для задач, выходящих за рамки тестирования в малых масштабах."
+    "translation": "{{.url}} — это сервис push-уведомлений, предоставляемый Mattermost, Inc. Он доставляет уведомления только в собственные мобильные приложения Mattermost, поэтому пользователи приложения Antimatter их не получают."
   },
   {
     "id": "health.rule.push_test_proxy.remediation",
-    "translation": "Переключитесь на https://push.mattermost.com (продукционный сервис Mattermost для хостинга push-уведомлений) или на собственный push-прокси."
+    "translation": "Запустите собственный push-прокси Antimatter и укажите его в параметре PushNotificationServer."
   },
   {
     "id": "health.rule.push_test_proxy.title",
-    "translation": "PushNotificationServer указывает на push-test.mattermost.com"
+    "translation": "Параметр PushNotificationServer указывает на сервис push-уведомлений Mattermost"
   },
   {
     "id": "health.rule.site_url_empty.message",
@@ -13499,6 +13499,10 @@
   {
     "id": "model.config.is_valid.tls_overwrite_cipher.app_error",
     "translation": "Передано недопустимое значение для шифра перезаписи TLS - действительные значения см. в документации."
+  },
+  {
+    "id": "model.config.is_valid.trusted_proxy_ips.app_error",
+    "translation": "Недопустимый доверенный прокси «{{.Value}}»: используйте IP-адрес или диапазон CIDR."
   },
   {
     "id": "model.config.is_valid.user_status_away_timeout.app_error",

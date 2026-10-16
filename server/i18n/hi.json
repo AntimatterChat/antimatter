@@ -11089,27 +11089,27 @@
   },
   {
     "id": "health.rule.push_empty_url.message",
-    "translation": "हर पुश प्रयास 'unsupported protocol scheme' के साथ विफल होगा।"
+    "translation": "कोई पुश नोटिफिकेशन सर्वर सेट नहीं है, इसलिए मोबाइल ऐप्स पर कोई पुश नोटिफिकेशन नहीं भेजे जाते।"
   },
   {
     "id": "health.rule.push_empty_url.remediation",
-    "translation": "PushNotificationServer को https://push.mattermost.com या किसी self-hosted push proxy पर निर्देशित करें।"
+    "translation": "अपना अपना Antimatter पुश प्रॉक्सी चलाएं और PushNotificationServer को उसके URL पर सेट करें, या पुश नोटिफिकेशन बंद कर दें।"
   },
   {
     "id": "health.rule.push_empty_url.title",
-    "translation": "पुश सूचनाएं सक्षम हैं, लेकिन PushNotificationServer खाली है"
+    "translation": "पुश नोटिफिकेशन चालू हैं, लेकिन PushNotificationServer सेट नहीं है"
   },
   {
     "id": "health.rule.push_test_proxy.message",
-    "translation": "push-test.mattermost.com Mattermost का टेस्ट पुश प्रॉक्सी है। इसमें कोई SLA नहीं है, सीमित throughput है, और इसका उपयोग उत्पादन (production) के लिए नहीं है। छोटे पैमाने के परीक्षण के अलावा मोबाइल पुश डिलीवरी विश्वसनीय नहीं होगी।"
+    "translation": "{{.url}} Mattermost, Inc. द्वारा संचालित पुश नोटिफिकेशन सेवा है। यह नोटिफिकेशन केवल Mattermost के अपने मोबाइल ऐप्स तक ही पहुँचाती है, इसलिए Antimatter ऐप के उपयोगकर्ता कोई नोटिफिकेशन नहीं पाते।"
   },
   {
     "id": "health.rule.push_test_proxy.remediation",
-    "translation": "https://push.mattermost.com (Mattermost का production Hosted Push Notification Service) या किसी self-hosted push proxy पर स्विच करें।"
+    "translation": "अपना अपना Antimatter पुश प्रॉक्सी चलाएं और PushNotificationServer को उसकी ओर इंगित करें।"
   },
   {
     "id": "health.rule.push_test_proxy.title",
-    "translation": "PushNotificationServer push-test.mattermost.com पर निर्देशित है"
+    "translation": "PushNotificationServer Mattermost पुश सेवा की ओर इंगित कर रहा है"
   },
   {
     "id": "health.rule.site_url_empty.message",
@@ -12758,6 +12758,10 @@
   {
     "id": "model.config.is_valid.tls_overwrite_cipher.app_error",
     "translation": "TLS ओवरराइट साइफर के लिए अमान्य मान पारित किया गया - मान्य मानों के लिए कृपया दस्तावेज़ीकरण का संदर्भ लें।"
+  },
+  {
+    "id": "model.config.is_valid.trusted_proxy_ips.app_error",
+    "translation": "अमान्य ट्रस्टेड प्रॉक्सी \"{{.Value}}\": IP पता या CIDR रेंज का उपयोग करें।"
   },
   {
     "id": "model.config.is_valid.user_status_away_timeout.app_error",

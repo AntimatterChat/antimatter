@@ -11089,27 +11089,27 @@
   },
   {
     "id": "health.rule.push_empty_url.message",
-    "translation": "Bawat pagtataya ng push ay mababagsak dahil sa 'unsupported protocol scheme'."
+    "translation": "Walang nakatalagang push notification server, kaya hindi ipinapadala ang mga push notification sa mga mobile app."
   },
   {
     "id": "health.rule.push_empty_url.remediation",
-    "translation": "Ituro ang PushNotificationServer sa https://push.mattermost.com o sa isang self-hosted push proxy."
+    "translation": "Paggamitan ang sarili mong Antimatter push proxy at itakda ang PushNotificationServer sa URL nito, o patayin ang mga push notification."
   },
   {
     "id": "health.rule.push_empty_url.title",
-    "translation": "Naka-enable ang push notifications ngunit walang laman ang PushNotificationServer"
+    "translation": "Naka-on ang mga push notification ngunit walang nakatalagang PushNotificationServer"
   },
   {
     "id": "health.rule.push_test_proxy.message",
-    "translation": "Ang push-test.mattermost.com ay ang test push proxy ng Mattermost. Walang SLA, limitado ang throughput, at hindi ito para sa production use. Hindi magiging reliable ang mobile push delivery kung higit sa maliliit na testing."
+    "translation": "Ang {{.url}} ay isang push notification service na pinapatakbo ng Mattermost, Inc. Ipinapadala lamang nito ang mga notisikasyon sa mga sariling mobile app ng Mattermost, kaya hindi natatanggap ng mga user ng Antimatter app ang anumang notisikasyon."
   },
   {
     "id": "health.rule.push_test_proxy.remediation",
-    "translation": "Palitan ito ng https://push.mattermost.com (production Hosted Push Notification Service ng Mattermost) o ng isang self-hosted push proxy."
+    "translation": "Paggamitan ang sarili mong Antimatter push proxy at ituro ang PushNotificationServer dito."
   },
   {
     "id": "health.rule.push_test_proxy.title",
-    "translation": "Nakapunta sa push-test.mattermost.com ang PushNotificationServer"
+    "translation": "Ang PushNotificationServer ay tumutukoy sa isang Mattermost push service"
   },
   {
     "id": "health.rule.site_url_empty.message",
@@ -12758,6 +12758,10 @@
   {
     "id": "model.config.is_valid.tls_overwrite_cipher.app_error",
     "translation": "Hindi wasto ang value na ipinasa para sa TLS overwrite cipher - Pakinggan ang dokumentasyon para sa mga valid na value."
+  },
+  {
+    "id": "model.config.is_valid.trusted_proxy_ips.app_error",
+    "translation": "Hindi wasto ang trusted proxy \"{{.Value}}\": gamitin ang IP address o CIDR range."
   },
   {
     "id": "model.config.is_valid.user_status_away_timeout.app_error",

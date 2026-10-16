@@ -11804,27 +11804,27 @@
   },
   {
     "id": "health.rule.push_empty_url.message",
-    "translation": "Elke pushpoging zal mislukken met 'unsupported protocol scheme'."
+    "translation": "Er is geen pushmeldingsserver geconfigureerd, dus er worden geen pushmeldingen verzonden naar de mobiele apps."
   },
   {
     "id": "health.rule.push_empty_url.remediation",
-    "translation": "Wijs PushNotificationServer naar https://push.mattermost.com of een zelfgehoste push-proxy."
+    "translation": "Voer uw eigen Antimatter push-proxy uit en stel PushNotificationServer in op de URL ervan, of schakel pushmeldingen uit."
   },
   {
     "id": "health.rule.push_empty_url.title",
-    "translation": "Pushmeldingen ingeschakeld, maar PushNotificationServer is leeg"
+    "translation": "Pushmeldingen zijn ingeschakeld, maar er is geen PushNotificationServer geconfigureerd"
   },
   {
     "id": "health.rule.push_test_proxy.message",
-    "translation": "push-test.mattermost.com is de Mattermost-testpush-proxy. Er is geen SLA, de doorvoer is beperkt en het is niet bedoeld voor productiegoed. Mobiele pushlevering is onbetrouwbaar voor alles groter dan kleine tests."
+    "translation": "{{.url}} is een pushmeldingservice van Mattermost, Inc. Deze levert alleen meldingen door naar de eigen mobiele apps van Mattermost, zodat gebruikers van de Antimatter-app geen meldingen ontvangen."
   },
   {
     "id": "health.rule.push_test_proxy.remediation",
-    "translation": "Schakel over naar https://push.mattermost.com (de productie-Hosted Push Notification Service van Mattermost) of naar een zelfgehoste push-proxy."
+    "translation": "Voer uw eigen Antimatter push-proxy uit en wijs PushNotificationServer daarop."
   },
   {
     "id": "health.rule.push_test_proxy.title",
-    "translation": "PushNotificationServer wijst naar push-test.mattermost.com"
+    "translation": "PushNotificationServer wijst naar een Mattermost-pushservice"
   },
   {
     "id": "health.rule.site_url_empty.message",
@@ -13481,6 +13481,10 @@
   {
     "id": "model.config.is_valid.tls_overwrite_cipher.app_error",
     "translation": "Ongeldige waarde doorgegeven voor TLS-codering overschrijven cipher -Raadpleeg de documentatie voor geldige waarden."
+  },
+  {
+    "id": "model.config.is_valid.trusted_proxy_ips.app_error",
+    "translation": "Ongeldige vertrouwde proxy \"{{.Value}}\": gebruik een IP-adres of een CIDR-bereik."
   },
   {
     "id": "model.config.is_valid.user_status_away_timeout.app_error",
