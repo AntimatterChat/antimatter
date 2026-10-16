@@ -133,15 +133,16 @@ describe('components/admin_console/admin_navbar_dropdown', () => {
         expect(screen.getByText('Team Two')).toBeInTheDocument();
     });
 
-    test('should render Administrator\'s Guide as an external link', () => {
+    test('should not link the Administrator\'s Guide and the forum to mattermost.com', () => {
         renderDropdown({[team1.id]: team1});
 
-        const item = screen.getByRole('menuitem', {name: "Administrator's Guide"});
-
-        expect(item.tagName).toBe('A');
-        expect(item).toHaveAttribute('href', expect.stringContaining('https://docs.mattermost.com/guides/administration.html'));
-        expect(item).toHaveAttribute('target', '_blank');
-        expect(item).toHaveAttribute('rel', 'noopener noreferrer');
+        // Antimatter shows the links to mattermost.com as text.
+        for (const name of ["Administrator's Guide", 'Troubleshooting Forum']) {
+            const item = screen.getByRole('menuitem', {name});
+            expect(item.tagName).toBe('SPAN');
+            expect(item).not.toHaveAttribute('href');
+        }
+        expect(screen.queryAllByRole('link').filter((link) => link.getAttribute('href')?.includes('mattermost.com'))).toHaveLength(0);
     });
 
     test('should open Commercial Support modal', async () => {

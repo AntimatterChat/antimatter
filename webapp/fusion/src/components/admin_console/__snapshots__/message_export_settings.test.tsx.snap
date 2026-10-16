@@ -64,14 +64,9 @@ exports[`components/MessageExportSettings should match snapshot, disabled, actia
                 data-testid="enableComplianceExporthelp-text"
               >
                 When true, Antimatter will export all messages that were posted in the last 24 hours. The export task is scheduled to run once per day. See 
-                <a
-                  href="https://mattermost.com/pl/compliance-export?utm_source=mattermost&utm_medium=in-product&utm_content=message_export_settings&uid=&sid=&server_version="
-                  location="message_export_settings"
-                  rel="noopener noreferrer"
-                  target="_blank"
-                >
+                <span>
                   the documentation
-                </a>
+                </span>
                  to learn more.
               </div>
             </div>
@@ -304,14 +299,9 @@ exports[`components/MessageExportSettings should match snapshot, disabled, globa
                 data-testid="enableComplianceExporthelp-text"
               >
                 When true, Antimatter will export all messages that were posted in the last 24 hours. The export task is scheduled to run once per day. See 
-                <a
-                  href="https://mattermost.com/pl/compliance-export?utm_source=mattermost&utm_medium=in-product&utm_content=message_export_settings&uid=&sid=&server_version="
-                  location="message_export_settings"
-                  rel="noopener noreferrer"
-                  target="_blank"
-                >
+                <span>
                   the documentation
-                </a>
+                </span>
                  to learn more.
               </div>
             </div>
@@ -750,14 +740,9 @@ exports[`components/MessageExportSettings should match snapshot, enabled, actian
                 data-testid="enableComplianceExporthelp-text"
               >
                 When true, Antimatter will export all messages that were posted in the last 24 hours. The export task is scheduled to run once per day. See 
-                <a
-                  href="https://mattermost.com/pl/compliance-export?utm_source=mattermost&utm_medium=in-product&utm_content=message_export_settings&uid=&sid=&server_version="
-                  location="message_export_settings"
-                  rel="noopener noreferrer"
-                  target="_blank"
-                >
+                <span>
                   the documentation
-                </a>
+                </span>
                  to learn more.
               </div>
             </div>
@@ -987,14 +972,9 @@ exports[`components/MessageExportSettings should match snapshot, enabled, global
                 data-testid="enableComplianceExporthelp-text"
               >
                 When true, Antimatter will export all messages that were posted in the last 24 hours. The export task is scheduled to run once per day. See 
-                <a
-                  href="https://mattermost.com/pl/compliance-export?utm_source=mattermost&utm_medium=in-product&utm_content=message_export_settings&uid=&sid=&server_version="
-                  location="message_export_settings"
-                  rel="noopener noreferrer"
-                  target="_blank"
-                >
+                <span>
                   the documentation
-                </a>
+                </span>
                  to learn more.
               </div>
             </div>
@@ -1423,14 +1403,9 @@ exports[`components/MessageExportSettings should match snapshot, enabled, global
                 data-testid="enableComplianceExporthelp-text"
               >
                 When true, Antimatter will export all messages that were posted in the last 24 hours. The export task is scheduled to run once per day. See 
-                <a
-                  href="https://mattermost.com/pl/compliance-export?utm_source=mattermost&utm_medium=in-product&utm_content=message_export_settings&uid=&sid=&server_version="
-                  location="message_export_settings"
-                  rel="noopener noreferrer"
-                  target="_blank"
-                >
+                <span>
                   the documentation
-                </a>
+                </span>
                  to learn more.
               </div>
             </div>

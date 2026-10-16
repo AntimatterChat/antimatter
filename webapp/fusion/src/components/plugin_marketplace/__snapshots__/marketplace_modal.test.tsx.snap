@@ -256,12 +256,8 @@ exports[`components/marketplace/ hides search and shows web marketplace banner 1
           <section
             class="WebMarketplaceBannerRoot-gZFWXe gSAhuj WebMarketplaceBanner"
           >
-            <a
+            <span
               class="ExternalBannerLink-iPYFKS jAjFfs"
-              href="https://mattermost.com/marketplace?utm_source=mattermost&utm_medium=in-product&utm_content=marketplace_modal&uid=user1&sid=&server_version="
-              location="marketplace_modal"
-              rel="noopener noreferrer"
-              target="_blank"
             >
               <div
                 class="Title-gYlSGh tzosk"
@@ -301,7 +297,7 @@ exports[`components/marketplace/ hides search and shows web marketplace banner 1
                   src="test-file-stub"
                 />
               </div>
-            </a>
+            </span>
           </section>
         </div>
       </div>
@@ -408,12 +404,8 @@ exports[`components/marketplace/ should render default 1`] = `
           <section
             class="WebMarketplaceBannerRoot-gZFWXe gSAhuj WebMarketplaceBanner"
           >
-            <a
+            <span
               class="ExternalBannerLink-iPYFKS jAjFfs"
-              href="https://mattermost.com/marketplace?utm_source=mattermost&utm_medium=in-product&utm_content=marketplace_modal&uid=user1&sid=&server_version="
-              location="marketplace_modal"
-              rel="noopener noreferrer"
-              target="_blank"
             >
               <div
                 class="Title-gYlSGh tzosk"
@@ -453,7 +445,7 @@ exports[`components/marketplace/ should render default 1`] = `
                   src="test-file-stub"
                 />
               </div>
-            </a>
+            </span>
           </section>
         </div>
       </div>
@@ -602,12 +594,8 @@ exports[`components/marketplace/ should render with error banner 1`] = `
           <section
             class="WebMarketplaceBannerRoot-gZFWXe gSAhuj WebMarketplaceBanner"
           >
-            <a
+            <span
               class="ExternalBannerLink-iPYFKS jAjFfs"
-              href="https://mattermost.com/marketplace?utm_source=mattermost&utm_medium=in-product&utm_content=marketplace_modal&uid=user1&sid=&server_version="
-              location="marketplace_modal"
-              rel="noopener noreferrer"
-              target="_blank"
             >
               <div
                 class="Title-gYlSGh tzosk"
@@ -647,7 +635,7 @@ exports[`components/marketplace/ should render with error banner 1`] = `
                   src="test-file-stub"
                 />
               </div>
-            </a>
+            </span>
           </section>
         </div>
       </div>
@@ -780,12 +768,8 @@ exports[`components/marketplace/ should render with no plugins available 1`] = `
           <section
             class="WebMarketplaceBannerRoot-gZFWXe gSAhuj WebMarketplaceBanner"
           >
-            <a
+            <span
               class="ExternalBannerLink-iPYFKS jAjFfs"
-              href="https://mattermost.com/marketplace?utm_source=mattermost&utm_medium=in-product&utm_content=marketplace_modal&uid=user1&sid=&server_version="
-              location="marketplace_modal"
-              rel="noopener noreferrer"
-              target="_blank"
             >
               <div
                 class="Title-gYlSGh tzosk"
@@ -825,7 +809,7 @@ exports[`components/marketplace/ should render with no plugins available 1`] = `
                   src="test-file-stub"
                 />
               </div>
-            </a>
+            </span>
           </section>
         </div>
       </div>
@@ -1000,12 +984,8 @@ exports[`components/marketplace/ should render with plugins available 1`] = `
           <section
             class="WebMarketplaceBannerRoot-gZFWXe gSAhuj WebMarketplaceBanner"
           >
-            <a
+            <span
               class="ExternalBannerLink-iPYFKS jAjFfs"
-              href="https://mattermost.com/marketplace?utm_source=mattermost&utm_medium=in-product&utm_content=marketplace_modal&uid=user1&sid=&server_version="
-              location="marketplace_modal"
-              rel="noopener noreferrer"
-              target="_blank"
             >
               <div
                 class="Title-gYlSGh tzosk"
@@ -1045,7 +1025,7 @@ exports[`components/marketplace/ should render with plugins available 1`] = `
                   src="test-file-stub"
                 />
               </div>
-            </a>
+            </span>
           </section>
         </div>
       </div>
@@ -1310,12 +1290,8 @@ exports[`components/marketplace/ should render with plugins installed 1`] = `
           <section
             class="WebMarketplaceBannerRoot-gZFWXe gSAhuj WebMarketplaceBanner"
           >
-            <a
+            <span
               class="ExternalBannerLink-iPYFKS jAjFfs"
-              href="https://mattermost.com/marketplace?utm_source=mattermost&utm_medium=in-product&utm_content=marketplace_modal&uid=user1&sid=&server_version="
-              location="marketplace_modal"
-              rel="noopener noreferrer"
-              target="_blank"
             >
               <div
                 class="Title-gYlSGh tzosk"
@@ -1355,7 +1331,7 @@ exports[`components/marketplace/ should render with plugins installed 1`] = `
                   src="test-file-stub"
                 />
               </div>
-            </a>
+            </span>
           </section>
         </div>
       </div>

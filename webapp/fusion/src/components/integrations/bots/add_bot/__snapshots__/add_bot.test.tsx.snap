@@ -182,14 +182,9 @@ exports[`components/integrations/bots/AddBot blank 1`] = `
             class="col-md-5 col-sm-8 col-sm-offset-4"
           >
             Select additional permissions for the account. 
-            <a
-              href="https://mattermost.com/pl/personal-access-tokens?utm_source=mattermost&utm_medium=in-product&utm_content=add_bot&uid=&sid=&server_version="
-              location="add_bot"
-              rel="noopener noreferrer"
-              target="_blank"
-            >
+            <span>
               Read more about roles and permissions
-            </a>
+            </span>
             .
           </div>
         </div>

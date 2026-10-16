@@ -54,12 +54,8 @@ Object {
             <div
               class="userSettingDesktopHeaderInfo"
             >
-              <a
+              <span
                 class="btn btn-link"
-                href="https://mattermost.com/pl/about-notifications?utm_source=mattermost&utm_medium=in-product&utm_content=user_settings_notifications&uid=&sid=&server_version="
-                location="user_settings_notifications"
-                rel="noopener noreferrer"
-                target="_blank"
               >
                 <svg
                   class="circular-border"
@@ -77,7 +73,7 @@ Object {
                 <span>
                   Learn more about notifications
                 </span>
-              </a>
+              </span>
             </div>
           </div>
           <div
@@ -407,12 +403,8 @@ Object {
           <div
             class="userSettingDesktopHeaderInfo"
           >
-            <a
+            <span
               class="btn btn-link"
-              href="https://mattermost.com/pl/about-notifications?utm_source=mattermost&utm_medium=in-product&utm_content=user_settings_notifications&uid=&sid=&server_version="
-              location="user_settings_notifications"
-              rel="noopener noreferrer"
-              target="_blank"
             >
               <svg
                 class="circular-border"
@@ -430,7 +422,7 @@ Object {
               <span>
                 Learn more about notifications
               </span>
-            </a>
+            </span>
           </div>
         </div>
         <div

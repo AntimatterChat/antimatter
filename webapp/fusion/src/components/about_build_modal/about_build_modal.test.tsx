@@ -122,6 +122,11 @@ describe('components/AboutBuildModal', () => {
     });
 
     test('should show default tos and privacy policy links and not the config links', () => {
+        config = {
+            ...config,
+            TermsOfServiceLink: 'https://example.com/terms',
+            PrivacyPolicyLink: 'https://example.com/privacy',
+        };
         const state = {
             entities: {
                 general: {
@@ -141,9 +146,10 @@ describe('components/AboutBuildModal', () => {
             state,
         );
 
-        expect(screen.getByRole('link', {name: 'Terms of Use'})).toHaveAttribute('href', `${AboutLinks.TERMS_OF_SERVICE}?utm_source=mattermost&utm_medium=in-product&utm_content=about_build_modal&uid=currentUserId&sid=&server_version=3.6.0`);
+        // Antimatter's own pages get no tracking parameters: those are only added to mattermost.com links.
+        expect(screen.getByRole('link', {name: 'Terms of Use'})).toHaveAttribute('href', AboutLinks.TERMS_OF_SERVICE);
 
-        expect(screen.getByRole('link', {name: 'Privacy Policy'})).toHaveAttribute('href', `${AboutLinks.PRIVACY_POLICY}?utm_source=mattermost&utm_medium=in-product&utm_content=about_build_modal&uid=currentUserId&sid=&server_version=3.6.0`);
+        expect(screen.getByRole('link', {name: 'Privacy Policy'})).toHaveAttribute('href', AboutLinks.PRIVACY_POLICY);
 
         expect(screen.getByRole('link', {name: 'Terms of Use'})).not.toHaveAttribute('href', config?.TermsOfServiceLink);
         expect(screen.getByRole('link', {name: 'Privacy Policy'})).not.toHaveAttribute('href', config?.PrivacyPolicyLink);

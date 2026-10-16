@@ -117,14 +117,9 @@ exports[`components/integrations/EditCommand should have match renderExtra 1`] =
               class="form__help"
             >
               Reserved: 
-              <a
-                href="https://mattermost.com/pl/custom-slash-commands?utm_source=mattermost&utm_medium=in-product&utm_content=abstract_command&uid=&sid=&server_version="
-                location="abstract_command"
-                rel="noopener noreferrer"
-                target="_blank"
-              >
+              <span>
                 See built-in slash commands
-              </a>
+              </span>
             </div>
           </div>
         </div>
@@ -196,7 +191,7 @@ exports[`components/integrations/EditCommand should have match renderExtra 1`] =
             <div
               class="form__help"
             >
-              Specify the type of request, either POST or GET, sent to the endpoint that Mattermost hits to reach your application.
+              Specify the type of request, either POST or GET, sent to the endpoint that Antimatter hits to reach your application.
             </div>
           </div>
         </div>
@@ -223,7 +218,7 @@ exports[`components/integrations/EditCommand should have match renderExtra 1`] =
             <div
               class="form__help"
             >
-              (Optional) Specify the name to use when posting responses for this slash command. Usernames can be up to 22 characters, and contain lowercase letters, numbers, and the symbols "-", "_", and ".". If left blank, your Mattermost username is used.
+              (Optional) Specify the name to use when posting responses for this slash command. Usernames can be up to 22 characters, and contain lowercase letters, numbers, and the symbols "-", "_", and ".". If left blank, your Antimatter username is used.
             </div>
           </div>
         </div>
@@ -472,14 +467,9 @@ exports[`components/integrations/EditCommand should match snapshot 1`] = `
               class="form__help"
             >
               Reserved: 
-              <a
-                href="https://mattermost.com/pl/custom-slash-commands?utm_source=mattermost&utm_medium=in-product&utm_content=abstract_command&uid=&sid=&server_version="
-                location="abstract_command"
-                rel="noopener noreferrer"
-                target="_blank"
-              >
+              <span>
                 See built-in slash commands
-              </a>
+              </span>
             </div>
           </div>
         </div>
@@ -551,7 +541,7 @@ exports[`components/integrations/EditCommand should match snapshot 1`] = `
             <div
               class="form__help"
             >
-              Specify the type of request, either POST or GET, sent to the endpoint that Mattermost hits to reach your application.
+              Specify the type of request, either POST or GET, sent to the endpoint that Antimatter hits to reach your application.
             </div>
           </div>
         </div>
@@ -578,7 +568,7 @@ exports[`components/integrations/EditCommand should match snapshot 1`] = `
             <div
               class="form__help"
             >
-              (Optional) Specify the name to use when posting responses for this slash command. Usernames can be up to 22 characters, and contain lowercase letters, numbers, and the symbols "-", "_", and ".". If left blank, your Mattermost username is used.
+              (Optional) Specify the name to use when posting responses for this slash command. Usernames can be up to 22 characters, and contain lowercase letters, numbers, and the symbols "-", "_", and ".". If left blank, your Antimatter username is used.
             </div>
           </div>
         </div>

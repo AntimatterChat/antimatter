@@ -27,14 +27,9 @@ exports[`components/onboarding_tasklist/onboarding_tasklist_completed.tsx should
     >
       <span>
         Now that you’re all set up, 
-        <a
-          href="https://mattermost.com/download?utm_source=mattermost&utm_medium=in-product&utm_content=onboarding_tasklist_completed&uid=&sid=&server_version=#desktop"
-          location="onboarding_tasklist_completed"
-          rel="noopener noreferrer"
-          target="_blank"
-        >
+        <span>
           download our apps.
-        </a>
+        </span>
       </span>
     </div>
   </div>

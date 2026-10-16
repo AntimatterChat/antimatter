@@ -16,7 +16,7 @@ exports[`components/widgets/users/Avatars should fetch missing users 1`] = `
         class="Avatar Avatar-xl"
         loading="lazy"
         src="/api/v4/users/1/image?_=1620680333191"
-        style="background: rgb(240, 240, 241);"
+        style="background: rgb(63, 65, 70);"
         tabindex="-1"
       />
     </button>
@@ -31,7 +31,7 @@ exports[`components/widgets/users/Avatars should fetch missing users 1`] = `
         class="Avatar Avatar-xl"
         loading="lazy"
         src="/api/v4/users/6/image?_=0"
-        style="background: rgb(240, 240, 241);"
+        style="background: rgb(63, 65, 70);"
         tabindex="-1"
       />
     </button>
@@ -46,14 +46,14 @@ exports[`components/widgets/users/Avatars should fetch missing users 1`] = `
         class="Avatar Avatar-xl"
         loading="lazy"
         src="/api/v4/users/7/image?_=0"
-        style="background: rgb(240, 240, 241);"
+        style="background: rgb(63, 65, 70);"
         tabindex="-1"
       />
     </button>
     <div
       class="Avatar Avatar-xl Avatar-plain"
       data-content="+3"
-      style="background: rgb(240, 240, 241);"
+      style="background: rgb(63, 65, 70);"
       tabindex="0"
     />
   </div>
@@ -76,7 +76,7 @@ exports[`components/widgets/users/Avatars should properly count overflow 1`] = `
         class="Avatar Avatar-xl"
         loading="lazy"
         src="/api/v4/users/1/image?_=1620680333191"
-        style="background: rgb(240, 240, 241);"
+        style="background: rgb(63, 65, 70);"
         tabindex="-1"
       />
     </button>
@@ -91,7 +91,7 @@ exports[`components/widgets/users/Avatars should properly count overflow 1`] = `
         class="Avatar Avatar-xl"
         loading="lazy"
         src="/api/v4/users/2/image?_=1620680333191"
-        style="background: rgb(240, 240, 241);"
+        style="background: rgb(63, 65, 70);"
         tabindex="-1"
       />
     </button>
@@ -106,14 +106,14 @@ exports[`components/widgets/users/Avatars should properly count overflow 1`] = `
         class="Avatar Avatar-xl"
         loading="lazy"
         src="/api/v4/users/3/image?_=1620680333191"
-        style="background: rgb(240, 240, 241);"
+        style="background: rgb(63, 65, 70);"
         tabindex="-1"
       />
     </button>
     <div
       class="Avatar Avatar-xl Avatar-plain"
       data-content="+2"
-      style="background: rgb(240, 240, 241);"
+      style="background: rgb(63, 65, 70);"
       tabindex="0"
     />
   </div>
@@ -136,7 +136,7 @@ exports[`components/widgets/users/Avatars should support userIds 1`] = `
         class="Avatar Avatar-xl"
         loading="lazy"
         src="/api/v4/users/1/image?_=1620680333191"
-        style="background: rgb(240, 240, 241);"
+        style="background: rgb(63, 65, 70);"
         tabindex="-1"
       />
     </button>
@@ -151,7 +151,7 @@ exports[`components/widgets/users/Avatars should support userIds 1`] = `
         class="Avatar Avatar-xl"
         loading="lazy"
         src="/api/v4/users/2/image?_=1620680333191"
-        style="background: rgb(240, 240, 241);"
+        style="background: rgb(63, 65, 70);"
         tabindex="-1"
       />
     </button>
@@ -166,7 +166,7 @@ exports[`components/widgets/users/Avatars should support userIds 1`] = `
         class="Avatar Avatar-xl"
         loading="lazy"
         src="/api/v4/users/3/image?_=1620680333191"
-        style="background: rgb(240, 240, 241);"
+        style="background: rgb(63, 65, 70);"
         tabindex="-1"
       />
     </button>

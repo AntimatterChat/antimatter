@@ -286,12 +286,8 @@ exports[`components/SearchHint should match snapshot, without searchType 1`] = `
       class="search-hint_text-container"
     >
       What are you searching for?
-      <a
+      <span
         class="search-hint_learn-search"
-        href="https://mattermost.com/pl/mattermost-academy-search-training?utm_source=mattermost&utm_medium=in-product&utm_content=search_hint&uid=currentUserId&sid=&server_version="
-        location="search_hint"
-        rel="noopener noreferrer"
-        target="_blank"
       >
         <span>
           Learn about search
@@ -299,7 +295,7 @@ exports[`components/SearchHint should match snapshot, without searchType 1`] = `
         <i
           class="icon icon-lightbulb-outline"
         />
-      </a>
+      </span>
     </div>
     <div
       class="button-container"
