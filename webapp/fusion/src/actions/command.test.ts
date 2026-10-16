@@ -14,7 +14,6 @@ import * as Teams from 'mattermost-redux/selectors/entities/teams';
 
 import * as GlobalActions from 'actions/global_actions';
 
-
 import mockStore from 'tests/test_store';
 import {ActionTypes, Constants, ModalIdentifiers} from 'utils/constants';
 import * as Utils from 'utils/utils';
