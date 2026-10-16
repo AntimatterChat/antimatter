@@ -6,6 +6,7 @@ package testutils
 import (
 	"net"
 	"os"
+	"sync"
 	"testing"
 	"time"
 )
@@ -46,11 +47,14 @@ func RedisEndpoint() string {
 	return serviceEndpoint("CI_REDIS_HOST", defaultHost, "CI_REDIS_PORT", "6379")
 }
 
+// redisReachable is checked once per test binary: every test server setup asks.
+var redisReachable = sync.OnceValue(func() bool { return ServiceReachable(RedisEndpoint()) })
+
 // UseRedisCache tells whether the tests should use the Redis test service as the cache: when it's reachable,
 // or when AM_TEST_REQUIRE_SERVICES=1 (a missing Redis then fails the test instead of falling back to the
 // in-memory cache).
 func UseRedisCache() bool {
-	return os.Getenv(RequireServicesEnv) == "1" || ServiceReachable(RedisEndpoint())
+	return os.Getenv(RequireServicesEnv) == "1" || redisReachable()
 }
 
 // SkipUnlessServiceReachable skips the test when nothing listens on endpoint, or fails it when
