@@ -27,7 +27,9 @@ test.describe('a member without admin rights', () => {
         await author.click({button: 'right'});
         const menu = page.getByRole('menu', {name});
         await expect(menu.getByRole('menuitem', {name: 'Message'})).toBeVisible();
-        for (const item of ['Mod view', 'Time out…', 'Remove from channel', 'Remove from community…']) {
+        // "Remove from channel" follows the channel's permissions, which by default let its members manage its
+        // members; the community-wide moderation needs a moderator's permissions.
+        for (const item of ['Mod view', 'Time out…', 'Remove from community…']) {
             await expect(menu.getByRole('menuitem', {name: item})).toHaveCount(0);
         }
 
