@@ -188,4 +188,39 @@ describe('fusion/popovers/EmojiPicker', () => {
         );
         expect(screen.queryByRole('button', {name: 'Add custom emoji'})).not.toBeInTheDocument();
     });
+
+    // The search ranks recently used emoji first: it must get their ids, not their names (an unknown id crashed the
+    // whole app on the first letter typed).
+    test('searches emoji, recently used ones first', async () => {
+        // The grids draw at once here.
+        const lazy = window.IntersectionObserver;
+        window.IntersectionObserver = class {
+            constructor(private callback: IntersectionObserverCallback) {}
+            observe() {
+                this.callback([{isIntersecting: true} as IntersectionObserverEntry], this as unknown as IntersectionObserver);
+            }
+            disconnect() {}
+        } as unknown as typeof IntersectionObserver;
+        const onPick = jest.fn();
+        renderWithContext(
+            <EmojiPicker
+                anchor={null}
+                onPick={onPick}
+                onClose={jest.fn()}
+            />,
+            {} as DeepPartial<GlobalState>,
+        );
+
+        await userEvent.type(screen.getByRole('textbox', {name: 'Search emoji'}), 'ta');
+
+        expect(screen.getByRole('heading', {name: 'Search results'})).toBeInTheDocument();
+        const results = screen.getAllByRole('button', {name: /ta/});
+
+        // :tada: is one of the usual reactions shown as recently used until anything is.
+        expect(results[0]).toHaveAccessibleName('tada');
+        await userEvent.click(results[0]);
+        expect(onPick).toHaveBeenCalledWith('tada');
+
+        window.IntersectionObserver = lazy;
+    });
 });

@@ -135,7 +135,10 @@ function EmojiTab({query, onQuery, onPick: pick, onClose, keepOpen}: EmojiTabPro
     const inputRef = useRef<HTMLInputElement>(null);
 
     const [categories, allEmojis] = useMemo(() => getUpdatedCategoriesAndAllEmojis(emojiMap, recent, skinTone, {}), [emojiMap, recent, skinTone]);
-    const results = useMemo(() => (query.trim() ? getFilteredEmojis(allEmojis, query.trim(), recent, skinTone) : null), [allEmojis, query, recent, skinTone]);
+
+    // The search ranks the recently used emoji first by their ids (as allEmojis has them), not by their names.
+    const recentIds = categories.recent?.emojiIds;
+    const results = useMemo(() => (query.trim() ? getFilteredEmojis(allEmojis, query.trim(), recentIds ?? [], skinTone) : null), [allEmojis, query, recentIds, skinTone]);
 
     useEffect(() => {
         inputRef.current?.focus();
