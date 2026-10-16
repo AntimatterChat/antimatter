@@ -133,6 +133,13 @@ func doCommand(a *app.App, rctx request.CTX, args *model.CommandArgs, message st
 		}
 	}
 
+	if appErr := a.CanRemoveChannelMember(rctx, args.UserId, channel, userProfile.Id); appErr != nil {
+		return &model.CommandResponse{
+			Text:         args.T("api.command_remove.permission.app_error"),
+			ResponseType: model.CommandResponseTypeEphemeral,
+		}
+	}
+
 	if err = a.RemoveUserFromChannel(rctx, userProfile.Id, args.UserId, channel); err != nil {
 		var text string
 		if err.Id == "api.channel.remove_members.denied" {

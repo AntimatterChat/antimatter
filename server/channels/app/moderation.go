@@ -132,6 +132,38 @@ func (a *App) CheckCanRemoveTeamMember(rctx request.CTX, session model.Session, 
 	return nil
 }
 
+// CanRemoveChannelMember tells whether removerID may remove userID from a channel. Upstream only asks for
+// manage_public/private_channel_members, which every channel member holds by default, so any member could remove
+// anyone, admins included. Antimatter also asks for one of: the channel's admins (manage_channel_roles), the
+// community's admins (manage_team), or a moderator who may remove that person from the community (remove_user_from_team
+// and a higher role, as for removal from the community). Leaving a channel yourself needs none of this.
+func (a *App) CanRemoveChannelMember(rctx request.CTX, removerID string, channel *model.Channel, userID string) *model.AppError {
+	if removerID == userID {
+		return nil
+	}
+	perm := model.PermissionManagePublicChannelMembers
+	if channel.Type == model.ChannelTypePrivate {
+		perm = model.PermissionManagePrivateChannelMembers
+	}
+	if ok, _ := a.HasPermissionToChannel(rctx, removerID, channel.Id, perm); !ok {
+		return model.NewAppError("CanRemoveChannelMember", "api.context.permissions.app_error", nil, "", http.StatusForbidden)
+	}
+	if a.HasPermissionToTeam(rctx, removerID, channel.TeamId, model.PermissionManageTeam) {
+		return nil
+	}
+	if ok, _ := a.HasPermissionToChannel(rctx, removerID, channel.Id, model.PermissionManageChannelRoles); ok {
+		return nil
+	}
+	if a.HasPermissionToTeam(rctx, removerID, channel.TeamId, model.PermissionRemoveUserFromTeam) &&
+		!a.HasPermissionToTeam(rctx, userID, channel.TeamId, model.PermissionManageTeam) {
+		mine, theirs := a.highestTeamRolePosition(removerID, channel.TeamId), a.highestTeamRolePosition(userID, channel.TeamId)
+		if theirs == -1 || (mine != -1 && theirs > mine) {
+			return nil
+		}
+	}
+	return model.NewAppError("CanRemoveChannelMember", "app.channel.remove_member.moderator.app_error", nil, "", http.StatusForbidden)
+}
+
 // SetMemberTimeout times someone of a team out until a time, or lifts their timeout (until 0).
 func (a *App) SetMemberTimeout(rctx request.CTX, session model.Session, teamID, userID string, request *model.MemberTimeoutRequest) (*model.MemberTimeout, *model.AppError) {
 	if appErr := a.CheckCanModerateMember(rctx, session, teamID, userID); appErr != nil {

@@ -184,14 +184,32 @@ describe('fusion/popovers/UserMenu', () => {
         expect(screen.queryByRole('menuitem', {name: 'Time out…'})).not.toBeInTheDocument();
     });
 
-    test('nobody is removed from the default channel', () => {
+    test('a member who may manage the channel\'s members still doesn\'t remove others from it', () => {
         mockPerms = new Set(['c1:manage_public_channel_members']);
+        render('sofia');
+        expect(screen.queryByRole('menuitem', {name: 'Remove from channel'})).not.toBeInTheDocument();
+    });
+
+    test('the channel\'s admins remove others from a channel', () => {
+        mockPerms = new Set(['c1:manage_public_channel_members', 'c1:manage_channel_roles']);
+        render('sofia');
+        expect(screen.getByRole('menuitem', {name: 'Remove from channel'})).toBeInTheDocument();
+    });
+
+    test('the community\'s admins remove others from a channel', () => {
+        mockPerms = new Set(['c1:manage_public_channel_members', 't1:manage_team']);
+        render('sofia');
+        expect(screen.getByRole('menuitem', {name: 'Remove from channel'})).toBeInTheDocument();
+    });
+
+    test('nobody is removed from the default channel', () => {
+        mockPerms = new Set(['c1:manage_public_channel_members', 'c1:manage_channel_roles']);
         render('sofia', state({channelName: 'town-square'}));
         expect(screen.queryByRole('menuitem', {name: 'Remove from channel'})).not.toBeInTheDocument();
     });
 
     test('nobody is removed from a channel of a community that has everyone in every channel', () => {
-        mockPerms = new Set(['c1:manage_public_channel_members']);
+        mockPerms = new Set(['c1:manage_public_channel_members', 'c1:manage_channel_roles']);
         render('sofia', state({allChannels: true}));
         expect(screen.queryByRole('menuitem', {name: 'Remove from channel'})).not.toBeInTheDocument();
     });

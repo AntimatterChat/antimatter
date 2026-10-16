@@ -3024,6 +3024,12 @@ func removeChannelMember(c *Context, w http.ResponseWriter, r *http.Request) {
 				return
 			}
 		}
+
+		// Only the channel's admins, the community's admins and moderators remove others (see CanRemoveChannelMember).
+		if appErr := c.App.CanRemoveChannelMember(c.AppContext, c.AppContext.Session().UserId, channel, c.Params.UserId); appErr != nil {
+			c.Err = appErr
+			return
+		}
 	}
 
 	if err = c.App.RemoveUserFromChannel(c.AppContext, c.Params.UserId, c.AppContext.Session().UserId, channel); err != nil {

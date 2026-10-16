@@ -213,4 +213,62 @@ func TestModeration(t *testing.T) {
 		_, err = th.SystemAdminClient.RemoveTeamMember(context.Background(), team.Id, admin.Id)
 		require.NoError(t, err, "admins remove other admins")
 	})
+	t.Run("only the channel's admins, the community's admins and moderators remove others from a channel", func(t *testing.T) {
+		channel := th.BasicChannel
+		inChannel := func(t *testing.T, userID string) bool {
+			t.Helper()
+			_, _, err := th.SystemAdminClient.GetChannelMember(context.Background(), channel.Id, userID, "")
+			return err == nil
+		}
+
+		// A member holds manage_public_channel_members by default, but doesn't remove others.
+		_, plainClient := member(t)
+		other, _ := member(t)
+		resp, err := plainClient.RemoveUserFromChannel(context.Background(), channel.Id, other.Id)
+		require.Error(t, err)
+		assert.Equal(t, http.StatusForbidden, resp.StatusCode)
+		assert.True(t, inChannel(t, other.Id))
+
+		// Nor with /kick.
+		_, _, err = plainClient.ExecuteCommand(context.Background(), channel.Id, "/kick @"+other.Username)
+		require.NoError(t, err)
+		assert.True(t, inChannel(t, other.Id), "/kick by a member removes nobody")
+
+		// Leaving needs nothing.
+		leaver, leaverClient := member(t)
+		_, err = leaverClient.RemoveUserFromChannel(context.Background(), channel.Id, leaver.Id)
+		require.NoError(t, err)
+		assert.False(t, inChannel(t, leaver.Id))
+
+		// The channel's admins remove others.
+		chanAdmin, chanAdminClient := member(t)
+		_, err = th.SystemAdminClient.UpdateChannelRoles(context.Background(), channel.Id, chanAdmin.Id, model.ChannelUserRoleId+" "+model.ChannelAdminRoleId)
+		require.NoError(t, err)
+		_, err = chanAdminClient.RemoveUserFromChannel(context.Background(), channel.Id, other.Id)
+		require.NoError(t, err)
+		assert.False(t, inChannel(t, other.Id))
+
+		// So do the community's admins.
+		teamAdmin, teamAdminClient := member(t)
+		_, err = th.SystemAdminClient.UpdateTeamMemberRoles(context.Background(), team.Id, teamAdmin.Id, model.TeamUserRoleId+" "+model.TeamAdminRoleId)
+		require.NoError(t, err)
+		target, _ := member(t)
+		_, err = teamAdminClient.RemoveUserFromChannel(context.Background(), channel.Id, target.Id)
+		require.NoError(t, err)
+
+		// A moderator removes people below them, not above, nor a community admin.
+		mod, modClient := member(t)
+		newRole(t, 1, []string{model.PermissionRemoveUserFromTeam.Id}, mod.Id)
+		below, _ := member(t)
+		_, err = modClient.RemoveUserFromChannel(context.Background(), channel.Id, below.Id)
+		require.NoError(t, err, "someone without roles")
+		above, _ := member(t)
+		newRole(t, 0, nil, above.Id)
+		for name, user := range map[string]*model.User{"someone above": above, "a community admin": teamAdmin} {
+			resp, removeErr := modClient.RemoveUserFromChannel(context.Background(), channel.Id, user.Id)
+			require.Error(t, removeErr, name)
+			assert.Equal(t, http.StatusForbidden, resp.StatusCode, name)
+			assert.True(t, inChannel(t, user.Id), "%s is still in the channel", name)
+		}
+	})
 }

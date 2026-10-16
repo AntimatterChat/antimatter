@@ -7141,6 +7141,11 @@
     "description": "API error returned when removing a member from a channel fails due to a server error."
   },
   {
+    "id": "app.channel.remove_member.moderator.app_error",
+    "translation": "Only the channel's admins and the community's admins and moderators can remove people from a channel.",
+    "description": "Error when a member who isn't a channel admin, community admin or moderator (or who ranks below the person) tries to remove someone else from a channel."
+  },
+  {
     "id": "app.channel.reset_all_channel_schemes.app_error",
     "translation": "We could not reset the channel schemes.",
     "description": "Internal error (admin permissions reset operation) when clearing all channels' permissions scheme assignments fails."

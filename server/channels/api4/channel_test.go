@@ -6145,10 +6145,25 @@ func TestRemoveChannelMember(t *testing.T) {
 	_, _, appErr := th.App.AddUserToTeam(th.Context, team.Id, bot.UserId, "")
 	require.Nil(t, appErr)
 
-	_, err := client.RemoveUserFromChannel(context.Background(), th.BasicChannel.Id, th.BasicUser2.Id)
+	// In Antimatter only the channel's admins, the community's admins and moderators remove others: a plain member
+	// is refused, so BasicUser acts as an admin of the basic channels.
+	resp, err := th.CreateClient().RemoveUserFromChannel(context.Background(), th.BasicChannel.Id, th.BasicUser2.Id)
+	require.Error(t, err, "logged out")
+	CheckUnauthorizedStatus(t, resp)
+	th.LoginBasic2(t)
+	resp, err = client.RemoveUserFromChannel(context.Background(), th.BasicChannel.Id, th.BasicUser.Id)
+	require.Error(t, err, "a plain member doesn't remove others")
+	CheckForbiddenStatus(t, resp)
+	th.LoginBasic(t)
+	for _, channel := range []*model.Channel{th.BasicChannel, th.BasicChannel2} {
+		_, err = th.SystemAdminClient.UpdateChannelRoles(context.Background(), channel.Id, user1.Id, model.ChannelUserRoleId+" "+model.ChannelAdminRoleId)
+		require.NoError(t, err)
+	}
+
+	_, err = client.RemoveUserFromChannel(context.Background(), th.BasicChannel.Id, th.BasicUser2.Id)
 	require.NoError(t, err)
 
-	resp, err := client.RemoveUserFromChannel(context.Background(), th.BasicChannel.Id, "junk")
+	resp, err = client.RemoveUserFromChannel(context.Background(), th.BasicChannel.Id, "junk")
 	require.Error(t, err)
 	CheckBadRequestStatus(t, resp)
 
@@ -6216,6 +6231,9 @@ func TestRemoveChannelMember(t *testing.T) {
 			ChannelId: th.BasicChannel.Id,
 		})
 
+		// Removing someone else takes a channel admin (see CanRemoveChannelMember).
+		_, err = th.SystemAdminClient.UpdateChannelRoles(context.Background(), th.BasicChannel2.Id, th.BasicUser2.Id, model.ChannelUserRoleId+" "+model.ChannelAdminRoleId)
+		require.NoError(t, err)
 		_, err2 = client.RemoveUserFromChannel(context.Background(), th.BasicChannel2.Id, th.BasicUser.Id)
 		require.NoError(t, err2)
 		requirePost(&model.Post{

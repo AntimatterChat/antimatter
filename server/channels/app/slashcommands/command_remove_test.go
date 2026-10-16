@@ -51,7 +51,8 @@ func TestRemoveProviderDoCommand(t *testing.T) {
 	actual := rp.DoCommand(th.App, th.Context, args, targetUser.Username).Text
 	assert.Equal(t, "api.command_remove.permission.app_error", actual)
 
-	// Try a public channel *with* permission.
+	// A plain member of a public channel doesn't remove others (only its admins, the community's admins and
+	// moderators do).
 	_, err = th.App.AddUserToChannel(th.Context, th.BasicUser, publicChannel, false)
 	require.Nil(t, err)
 	args = &model.CommandArgs{
@@ -59,6 +60,13 @@ func TestRemoveProviderDoCommand(t *testing.T) {
 		ChannelId: publicChannel.Id,
 		UserId:    th.BasicUser.Id,
 	}
+
+	actual = rp.DoCommand(th.App, th.Context, args, targetUser.Username).Text
+	assert.Equal(t, "api.command_remove.permission.app_error", actual)
+
+	// Try a public channel *with* permission: as a channel admin.
+	_, err = th.App.UpdateChannelMemberRoles(th.Context, publicChannel.Id, th.BasicUser.Id, model.ChannelUserRoleId+" "+model.ChannelAdminRoleId)
+	require.Nil(t, err)
 
 	actual = rp.DoCommand(th.App, th.Context, args, targetUser.Username).Text
 	assert.Equal(t, "", actual)
@@ -73,8 +81,10 @@ func TestRemoveProviderDoCommand(t *testing.T) {
 	actual = rp.DoCommand(th.App, th.Context, args, targetUser.Username).Text
 	assert.Equal(t, "api.command_remove.permission.app_error", actual)
 
-	// Try a private channel *with* permission.
+	// Try a private channel *with* permission: as a channel admin.
 	_, err = th.App.AddUserToChannel(th.Context, th.BasicUser, privateChannel, false)
+	require.Nil(t, err)
+	_, err = th.App.UpdateChannelMemberRoles(th.Context, privateChannel.Id, th.BasicUser.Id, model.ChannelUserRoleId+" "+model.ChannelAdminRoleId)
 	require.Nil(t, err)
 	args = &model.CommandArgs{
 		T:         func(s string, args ...any) string { return s },

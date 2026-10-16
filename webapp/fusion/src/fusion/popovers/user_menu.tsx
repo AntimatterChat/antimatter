@@ -73,7 +73,15 @@ export function UserMenu({target, onProfile, onClose}: {target: Target; onProfil
             return false;
         }
         const permission = channel.type === Constants.OPEN_CHANNEL ? Permissions.MANAGE_PUBLIC_CHANNEL_MEMBERS : Permissions.MANAGE_PRIVATE_CHANNEL_MEMBERS;
-        return haveIChannelPermission(state, team.id, channel.id, permission);
+        if (!haveIChannelPermission(state, team.id, channel.id, permission)) {
+            return false;
+        }
+
+        // As the server: only the channel's admins, the community's admins and its moderators remove others; the
+        // server also checks that a moderator ranks above the person.
+        return haveIChannelPermission(state, team.id, channel.id, Permissions.MANAGE_CHANNEL_ROLES) ||
+            haveITeamPermission(state, team.id, Permissions.MANAGE_TEAM) ||
+            haveITeamPermission(state, team.id, Permissions.REMOVE_USER_FROM_TEAM);
     });
     const canRemoveFromTeam = useSelector((state: GlobalState) => Boolean(team) && haveITeamPermission(state, team!.id, Permissions.REMOVE_USER_FROM_TEAM));
     const canModerate = useSelector((state: GlobalState) => Boolean(team) && canModerateTeam(state, team!.id));
