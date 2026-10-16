@@ -8,7 +8,6 @@ import (
 	"math"
 	"net/http"
 	"slices"
-	"sort"
 	"strings"
 
 	celast "github.com/google/cel-go/common/ast"
@@ -535,7 +534,7 @@ func displayAttributes(ec *evalContext, subject *model.Subject) map[string]strin
 	for n := range attrs {
 		names = append(names, n)
 	}
-	sort.Strings(names)
+	slices.Sort(names)
 	out := make(map[string]string, len(attrs))
 	for _, n := range names {
 		out[n] = displayValue(ec, attrs[n])

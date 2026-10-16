@@ -97,9 +97,9 @@ func (p *openAIProvider) complete(ctx context.Context, prompt string) (string, e
 		return "", err
 	}
 	send := func() (*http.Response, error) {
-		req, err := http.NewRequestWithContext(ctx, http.MethodPost, p.baseURL+"/chat/completions", bytes.NewReader(body))
-		if err != nil {
-			return nil, err
+		req, reqErr := http.NewRequestWithContext(ctx, http.MethodPost, p.baseURL+"/chat/completions", bytes.NewReader(body))
+		if reqErr != nil {
+			return nil, reqErr
 		}
 		req.Header.Set("Content-Type", "application/json")
 		req.Header.Set("Accept", "application/json")

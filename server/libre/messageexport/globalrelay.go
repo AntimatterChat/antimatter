@@ -268,7 +268,7 @@ func (r *exportRun) buildGlobalRelayEML(b *batch, c *channel) (*globalRelayEML, 
 	m.AddAlternativeString(gomail.TypeTextHTML, html.String())
 
 	// Attachments, unless the message would exceed the size limit.
-	var size int64 = int64(len(text) + html.Len())
+	size := int64(len(text) + html.Len())
 	var files []*model.FileInfo
 	for _, p := range c.posts {
 		for _, info := range p.files {

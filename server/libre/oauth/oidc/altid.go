@@ -4,6 +4,7 @@
 package oidc
 
 import (
+	"slices"
 	"strings"
 	"sync"
 	"time"
@@ -94,10 +95,8 @@ func SameUser(dbUser, oauthUser *model.User, alt *AltIDCache) bool {
 		return true
 	}
 	if alt != nil {
-		for _, id := range alt.Get(oauthAuth) {
-			if dbAuth == id {
-				return true
-			}
+		if slices.Contains(alt.Get(oauthAuth), dbAuth) {
+			return true
 		}
 	}
 	return false

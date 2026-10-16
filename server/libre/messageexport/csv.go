@@ -5,10 +5,11 @@ package messageexport
 
 import (
 	"archive/zip"
+	"cmp"
 	"encoding/csv"
 	"fmt"
 	"path"
-	"sort"
+	"slices"
 	"strconv"
 
 	"github.com/mattermost/mattermost/server/public/model"
@@ -141,14 +142,8 @@ func csvRows(b *batch) []csvRow {
 		}
 	}
 
-	sort.SliceStable(rows, func(i, j int) bool {
-		if rows[i].time != rows[j].time {
-			return rows[i].time < rows[j].time
-		}
-		if rows[i].order != rows[j].order {
-			return rows[i].order < rows[j].order
-		}
-		return rows[i].seq < rows[j].seq
+	slices.SortStableFunc(rows, func(a, b csvRow) int {
+		return cmp.Or(cmp.Compare(a.time, b.time), cmp.Compare(a.order, b.order), cmp.Compare(a.seq, b.seq))
 	})
 	return rows
 }

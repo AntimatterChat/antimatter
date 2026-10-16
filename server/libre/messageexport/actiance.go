@@ -5,9 +5,10 @@ package messageexport
 
 import (
 	"archive/zip"
+	"cmp"
 	"encoding/xml"
 	"io"
-	"sort"
+	"slices"
 
 	"github.com/mattermost/mattermost/server/v8/libre/messageexport/shared"
 )
@@ -137,11 +138,8 @@ func actianceConversationElements(b *batch, c *channel) []any {
 
 	var out []any
 	for _, group := range [][]timedElement{entered, body, left} {
-		sort.SliceStable(group, func(i, j int) bool {
-			if group[i].time != group[j].time {
-				return group[i].time < group[j].time
-			}
-			return group[i].seq < group[j].seq
+		slices.SortStableFunc(group, func(a, b timedElement) int {
+			return cmp.Or(cmp.Compare(a.time, b.time), cmp.Compare(a.seq, b.seq))
 		})
 		for _, e := range group {
 			out = append(out, e.value)

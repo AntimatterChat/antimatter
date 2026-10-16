@@ -6,6 +6,7 @@ package accesscontrol
 import (
 	"errors"
 	"fmt"
+	"maps"
 	"net/http"
 	"slices"
 	"strings"
@@ -36,16 +37,12 @@ func clonePolicy(p *model.AccessControlPolicy) *model.AccessControlPolicy {
 		c.Rules[i].Actions = slices.Clone(r.Actions)
 		if r.Metadata != nil {
 			c.Rules[i].Metadata = make(map[string]any, len(r.Metadata))
-			for k, v := range r.Metadata {
-				c.Rules[i].Metadata[k] = v
-			}
+			maps.Copy(c.Rules[i].Metadata, r.Metadata)
 		}
 	}
 	if p.Props != nil {
 		c.Props = make(map[string]any, len(p.Props))
-		for k, v := range p.Props {
-			c.Props[k] = v
-		}
+		maps.Copy(c.Props, p.Props)
 	}
 	return &c
 }
@@ -447,9 +444,9 @@ func (s *Service) buildQuery(rctx request.CTX, expression, resourceID string, ex
 		if resourceID == "" {
 			return "", nil, model.NewAppError(where, "app.pap.simulate.channel_required_for_resource", nil, "", http.StatusBadRequest)
 		}
-		raw, err := s.resourceAttributes(rctx, cat, resourceID)
-		if err != nil {
-			return "", nil, model.NewAppError(where, "app.pap.query_expression.app_error", nil, "", http.StatusInternalServerError).Wrap(err)
+		raw, attrErr := s.resourceAttributes(rctx, cat, resourceID)
+		if attrErr != nil {
+			return "", nil, model.NewAppError(where, "app.pap.query_expression.app_error", nil, "", http.StatusInternalServerError).Wrap(attrErr)
 		}
 		b.resource = raw
 		b.hasResource = true

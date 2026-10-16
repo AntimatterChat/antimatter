@@ -5,7 +5,7 @@ package autotranslation
 
 import (
 	"errors"
-	"sort"
+	"slices"
 	"time"
 
 	"github.com/mattermost/mattermost/server/public/model"
@@ -198,7 +198,7 @@ func (s *Service) recoverObject(rctx request.CTX, objectType, objectID string, r
 	if len(langs) == 0 {
 		return
 	}
-	sort.Strings(langs)
+	slices.Sort(langs)
 
 	_, locales, err := s.destinationLanguages(channelID)
 	if err != nil {

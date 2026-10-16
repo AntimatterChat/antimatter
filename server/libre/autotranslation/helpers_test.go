@@ -4,8 +4,9 @@
 package autotranslation
 
 import (
+	"cmp"
 	"net/http"
-	"sort"
+	"slices"
 	"sync"
 	"testing"
 
@@ -145,12 +146,7 @@ func (m *memATStore) put(t *model.Translation) {
 }
 
 func (m *memATStore) isMember(userID, channelID string) bool {
-	for _, u := range m.channelUsers[channelID] {
-		if u == userID {
-			return true
-		}
-	}
-	return false
+	return slices.Contains(m.channelUsers[channelID], userID)
 }
 
 func (m *memATStore) IsUserEnabled(userID, channelID string) (bool, error) {
@@ -182,7 +178,7 @@ func (m *memATStore) GetActiveDestinationLanguages(channelID, excludeUserID stri
 			out = append(out, l)
 		}
 	}
-	sort.Strings(out)
+	slices.Sort(out)
 	return out, nil
 }
 
@@ -244,7 +240,7 @@ func (m *memATStore) GetByStateOlderThan(state model.TranslationState, olderThan
 			out = append(out, c)
 		}
 	}
-	sort.Slice(out, func(i, j int) bool { return out[i].UpdateAt < out[j].UpdateAt })
+	slices.SortFunc(out, func(a, b *model.Translation) int { return cmp.Compare(a.UpdateAt, b.UpdateAt) })
 	if len(out) > limit {
 		out = out[:limit]
 	}

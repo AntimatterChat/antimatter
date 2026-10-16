@@ -279,9 +279,9 @@ func (r *indexerRun) init() *model.AppError {
 		return model.NewAppError("IndexerWorker", "ent.elasticsearch.indexer.do_job.parse_start_time.error", params, "", http.StatusBadRequest).Wrap(err)
 	}
 	if !ok {
-		oldest, err := r.worker.store.Post().GetOldestEntityCreationTime()
-		if err != nil {
-			return model.NewAppError("IndexerWorker", "ent.elasticsearch.indexer.do_job.get_oldest_entity.error", nil, "", http.StatusInternalServerError).Wrap(err)
+		oldest, oldestErr := r.worker.store.Post().GetOldestEntityCreationTime()
+		if oldestErr != nil {
+			return model.NewAppError("IndexerWorker", "ent.elasticsearch.indexer.do_job.get_oldest_entity.error", nil, "", http.StatusInternalServerError).Wrap(oldestErr)
 		}
 		// Batches start strictly after the cursor.
 		start = max(oldest-1, 0)

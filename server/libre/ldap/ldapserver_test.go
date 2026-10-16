@@ -52,12 +52,10 @@ func (srv *testLDAPServer) serve() {
 		if err != nil {
 			return
 		}
-		srv.wg.Add(1)
-		go func() {
-			defer srv.wg.Done()
+		srv.wg.Go(func() {
 			defer conn.Close()
 			srv.handle(conn)
-		}()
+		})
 	}
 }
 
@@ -94,7 +92,7 @@ func (srv *testLDAPServer) handle(conn net.Conn) {
 			if err := fc.Bind(name, password); err != nil {
 				code = ldap.LDAPResultInvalidCredentials
 			}
-			conn.Write(envelope(id, ldapResult(1, code)).Bytes())
+			_, _ = conn.Write(envelope(id, ldapResult(1, code)).Bytes())
 		case 2: // unbind
 			return
 		case 3: // search
@@ -109,7 +107,7 @@ func (srv *testLDAPServer) handle(conn net.Conn) {
 			}
 			filter, err := ldap.DecompileFilter(op.Children[6])
 			if err != nil {
-				conn.Write(envelope(id, ldapResult(5, ldap.LDAPResultProtocolError)).Bytes())
+				_, _ = conn.Write(envelope(id, ldapResult(5, ldap.LDAPResultProtocolError)).Bytes())
 				continue
 			}
 			scope, _ := op.Children[1].Value.(int64)
@@ -125,7 +123,7 @@ func (srv *testLDAPServer) handle(conn net.Conn) {
 				if errors.As(err, &ldapErr) {
 					code = int64(ldapErr.ResultCode)
 				}
-				conn.Write(envelope(id, ldapResult(5, code)).Bytes())
+				_, _ = conn.Write(envelope(id, ldapResult(5, code)).Bytes())
 				continue
 			}
 			for _, e := range res.Entries {
@@ -143,11 +141,11 @@ func (srv *testLDAPServer) handle(conn net.Conn) {
 					attributes.AppendChild(attr)
 				}
 				entry.AppendChild(attributes)
-				conn.Write(envelope(id, entry).Bytes())
+				_, _ = conn.Write(envelope(id, entry).Bytes())
 			}
-			conn.Write(envelope(id, ldapResult(5, 0)).Bytes())
+			_, _ = conn.Write(envelope(id, ldapResult(5, 0)).Bytes())
 		default:
-			conn.Write(envelope(id, ldapResult(op.Tag+1, ldap.LDAPResultUnwillingToPerform)).Bytes())
+			_, _ = conn.Write(envelope(id, ldapResult(op.Tag+1, ldap.LDAPResultUnwillingToPerform)).Bytes())
 		}
 	}
 }

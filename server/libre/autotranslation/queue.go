@@ -5,7 +5,7 @@ package autotranslation
 
 import (
 	"errors"
-	"sort"
+	"slices"
 	"sync"
 	"time"
 
@@ -189,7 +189,7 @@ func (p *workerPool) enqueue(t *task) error {
 	if len(langs) == 0 {
 		return nil
 	}
-	sort.Strings(langs)
+	slices.Sort(langs)
 	t.langs = langs
 
 	select {

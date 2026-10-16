@@ -52,8 +52,8 @@ func TestGetGlobalPolicy(t *testing.T) {
 	require.Nil(t, appErr)
 	assert.True(t, policy.MessageDeletionEnabled)
 	assert.True(t, policy.FileDeletionEnabled)
-	assert.Equal(t, int64(1_000_000_000_000-48*msPerHour), policy.MessageRetentionCutoff)
-	assert.Equal(t, int64(1_000_000_000_000-72*msPerHour), policy.FileRetentionCutoff)
+	assert.Equal(t, 1_000_000_000_000-48*msPerHour, policy.MessageRetentionCutoff)
+	assert.Equal(t, 1_000_000_000_000-72*msPerHour, policy.FileRetentionCutoff)
 }
 
 func TestCreatePolicy(t *testing.T) {

@@ -7,7 +7,7 @@ package accountmigration
 
 import (
 	"net/http"
-	"sort"
+	"slices"
 	"strings"
 
 	"github.com/mattermost/mattermost/server/public/model"
@@ -105,7 +105,7 @@ func (m *AccountMigration) MigrateToLdap(rctx request.CTX, fromAuthService strin
 		for k := range duplicates {
 			dups = append(dups, k)
 		}
-		sort.Strings(dups)
+		slices.Sort(dups)
 		if !force {
 			return model.NewAppError("MigrateToLdap", "ent.migration.migratetoldap.duplicate_field", nil, "duplicates: "+strings.Join(dups, ", "), http.StatusBadRequest)
 		}

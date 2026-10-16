@@ -93,7 +93,7 @@ func (e *Engine) sendBulk(ctx context.Context, c *client, actions []BulkAction) 
 		if a.Op == opIndex && !seen[a.Index] {
 			seen[a.Index] = true
 			if err := e.ensureIndex(ctx, c, a.Index); err != nil {
-				return nil, fmt.Errorf("failed to create index %s: %w", a.Index, err)
+				return nil, fmt.Errorf("failed to create the index %s: %w", a.Index, err)
 			}
 		}
 	}

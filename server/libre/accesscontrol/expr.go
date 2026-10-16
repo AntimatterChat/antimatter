@@ -4,6 +4,7 @@
 package accesscontrol
 
 import (
+	"slices"
 	"strings"
 
 	celast "github.com/google/cel-go/common/ast"
@@ -146,10 +147,8 @@ func callOf(e celast.Expr, fns ...string) (celast.CallExpr, bool) {
 	if len(fns) == 0 {
 		return call, true
 	}
-	for _, fn := range fns {
-		if call.FunctionName() == fn {
-			return call, true
-		}
+	if slices.Contains(fns, call.FunctionName()) {
+		return call, true
 	}
 	return nil, false
 }
@@ -255,22 +254,6 @@ func referencesScope(e celast.Expr, scope string) bool {
 		}
 	}
 	return false
-}
-
-// referencesVariable reports whether the expression mentions the identifier at all.
-func referencesVariable(e celast.Expr, ident string) bool {
-	found := false
-	walk(e, func(n celast.Expr) bool {
-		if found {
-			return false
-		}
-		if n.Kind() == celast.IdentKind && n.AsIdent() == ident {
-			found = true
-			return false
-		}
-		return true
-	})
-	return found
 }
 
 // ---------------------------------------------------------------------------

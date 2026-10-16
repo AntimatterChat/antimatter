@@ -4,9 +4,10 @@
 package messageexport
 
 import (
+	"cmp"
 	"errors"
 	"fmt"
-	"sort"
+	"slices"
 
 	"github.com/mattermost/mattermost/server/public/model"
 	"github.com/mattermost/mattermost/server/v8/channels/store"
@@ -221,7 +222,7 @@ func (c *channel) events(b *batch) []channelEvent {
 			}
 		}
 	}
-	sort.SliceStable(events, func(i, j int) bool { return events[i].Time < events[j].Time })
+	slices.SortStableFunc(events, func(a, b channelEvent) int { return cmp.Compare(a.Time, b.Time) })
 	return events
 }
 
@@ -283,7 +284,7 @@ func (bb *batchBuilder) build(number int, start, end int64, messages []*model.Me
 	for id := range channels {
 		ids = append(ids, id)
 	}
-	sort.Strings(ids)
+	slices.Sort(ids)
 	for _, id := range ids {
 		b.channels = append(b.channels, channels[id])
 	}
@@ -435,14 +436,11 @@ func (bb *batchBuilder) addParticipants(b *batch) error {
 
 	for _, c := range b.channels {
 		for _, p := range byChannel[c.ID] {
-			sort.Slice(p.Intervals, func(i, j int) bool { return p.Intervals[i].JoinTime < p.Intervals[j].JoinTime })
+			slices.SortFunc(p.Intervals, func(a, b membership) int { return cmp.Compare(a.JoinTime, b.JoinTime) })
 			c.participants = append(c.participants, p)
 		}
-		sort.Slice(c.participants, func(i, j int) bool {
-			if c.participants[i].Username != c.participants[j].Username {
-				return c.participants[i].Username < c.participants[j].Username
-			}
-			return c.participants[i].UserID < c.participants[j].UserID
+		slices.SortFunc(c.participants, func(a, b *participant) int {
+			return cmp.Or(cmp.Compare(a.Username, b.Username), cmp.Compare(a.UserID, b.UserID))
 		})
 	}
 	return nil

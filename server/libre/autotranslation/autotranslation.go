@@ -17,7 +17,7 @@ import (
 	"context"
 	"errors"
 	"net/http"
-	"sort"
+	"slices"
 	"sync"
 	"time"
 
@@ -352,6 +352,6 @@ func (s *Service) destinationLanguages(channelID string) ([]string, map[string][
 	for l := range byLang {
 		langs = append(langs, l)
 	}
-	sort.Strings(langs)
+	slices.Sort(langs)
 	return langs, byLang, nil
 }

@@ -27,7 +27,7 @@ func TestSynchronizeUsers(t *testing.T) {
 	gone := ldapAccount(env, "gone", "gone@example.com")
 	carol := ldapAccount(env, "carol", "carol@example.com") // filtered out
 	back := ldapAccount(env, "back", "back@example.com")
-	env.b.SetUserActive(env.b.rctx(), back, false)
+	require.NoError(t, env.b.SetUserActive(env.b.rctx(), back, false))
 	addPerson(env.dir, "back", "back@example.com", "Back", "Again")
 
 	stats, appErr := env.l.Synchronize(env.b.rctx(), syncOptions{})
@@ -128,7 +128,7 @@ func TestSynchronizeGroups(t *testing.T) {
 	devs := env.b.linkGroup("g-devs", "old name")
 	all := env.b.linkGroup("g-all", "Everyone")
 	removed := env.b.linkGroup("g-removed", "Removed")
-	env.b.AddGroupMembers(devs.Id, []string{bob.Id})
+	require.NoError(t, env.b.AddGroupMembers(devs.Id, []string{bob.Id}))
 
 	env.b.lastSyncOK = &model.Job{StartAt: 1234}
 	stats, appErr := env.l.Synchronize(env.b.rctx(), syncOptions{ReAddRemovedMembers: true})

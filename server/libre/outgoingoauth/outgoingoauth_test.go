@@ -137,28 +137,28 @@ func TestCRUD(t *testing.T) {
 	assert.Equal(t, http.StatusNotFound, appErr.StatusCode)
 
 	t.Run("duplicated audience", func(t *testing.T) {
-		_, appErr := s.SaveConnection(rctx, newConn("two", "https://API.example.com/"))
-		require.NotNil(t, appErr)
-		assert.Equal(t, "ent.outgoing_oauth_connections.save_connection.audience_duplicated", appErr.Id)
+		_, subErr := s.SaveConnection(rctx, newConn("two", "https://API.example.com/"))
+		require.NotNil(t, subErr)
+		assert.Equal(t, "ent.outgoing_oauth_connections.save_connection.audience_duplicated", subErr.Id)
 	})
 
 	t.Run("invalid audience", func(t *testing.T) {
-		_, appErr := s.SaveConnection(rctx, newConn("two", "ftp://files.example.com"))
-		require.NotNil(t, appErr)
-		assert.Equal(t, "ent.outgoing_oauth_connections.save_connection.audience_invalid", appErr.Id)
+		_, subErr := s.SaveConnection(rctx, newConn("two", "ftp://files.example.com"))
+		require.NotNil(t, subErr)
+		assert.Equal(t, "ent.outgoing_oauth_connections.save_connection.audience_invalid", subErr.Id)
 	})
 
 	t.Run("invalid connection", func(t *testing.T) {
 		c := newConn("", "https://other.example.com")
-		_, appErr := s.SaveConnection(rctx, c)
-		require.NotNil(t, appErr)
-		assert.Equal(t, http.StatusBadRequest, appErr.StatusCode)
+		_, subErr := s.SaveConnection(rctx, c)
+		require.NotNil(t, subErr)
+		assert.Equal(t, http.StatusBadRequest, subErr.StatusCode)
 	})
 
 	t.Run("update keeps its own audience", func(t *testing.T) {
 		got.Name = "renamed"
-		updated, appErr := s.UpdateConnection(rctx, got)
-		require.Nil(t, appErr)
+		updated, subErr := s.UpdateConnection(rctx, got)
+		require.Nil(t, subErr)
 		assert.Equal(t, "renamed", updated.Name)
 	})
 
@@ -167,10 +167,10 @@ func TestCRUD(t *testing.T) {
 		c.GrantType = model.OutgoingOAuthConnectionGrantTypePassword
 		c.CredentialsUsername = model.NewPointer("user")
 		c.CredentialsPassword = model.NewPointer("pass")
-		saved, appErr := s.SaveConnection(rctx, c)
-		require.Nil(t, appErr)
-		stored, appErr := s.GetConnection(rctx, saved.Id)
-		require.Nil(t, appErr)
+		pwd, subErr := s.SaveConnection(rctx, c)
+		require.Nil(t, subErr)
+		stored, subErr := s.GetConnection(rctx, pwd.Id)
+		require.Nil(t, subErr)
 		require.NotNil(t, stored.CredentialsPassword)
 		assert.Equal(t, "pass", *stored.CredentialsPassword)
 	})
@@ -199,8 +199,8 @@ func TestGetConnectionForAudience(t *testing.T) {
 	require.Nil(t, appErr)
 	// Enough connections to require paging.
 	for i := range listPageSize + 5 {
-		_, appErr := s.SaveConnection(rctx, newConn("filler", "https://filler"+model.NewId()+".example.com/"+string(rune('a'+i%26))))
-		require.Nil(t, appErr)
+		_, fillErr := s.SaveConnection(rctx, newConn("filler", "https://filler"+model.NewId()+".example.com/"+string(rune('a'+i%26))))
+		require.Nil(t, fillErr)
 	}
 	last, appErr := s.SaveConnection(rctx, newConn("last", "http://localhost:8080/cmd"))
 	require.Nil(t, appErr)

@@ -151,7 +151,7 @@ func isManualJob(job *model.Job) bool {
 // previousJobPosition returns the position (batch_start_time/id) reached by
 // the most recent successful, non manual, export job other than currentID.
 func (j *Job) previousJobPosition(rctx request.CTX, st store.Store, currentID string) (int64, string, bool, error) {
-	for page := 0; page < previousJobsMaxPages; page++ {
+	for page := range previousJobsMaxPages {
 		list, err := st.Job().GetAllByTypePage(rctx, model.JobTypeMessageExport, page*previousJobsPageSize, previousJobsPageSize)
 		if err != nil {
 			return 0, "", false, fmt.Errorf("failed to get the previous export jobs: %w", err)
@@ -239,9 +239,9 @@ func (j *Job) initState(rctx request.CTX, st store.Store, cfg *model.Config, job
 	if s.jobStart, ok, appErr = getInt64(job.Data, shared.JobDataJobStartTime); appErr != nil {
 		return nil, appErr
 	} else if !ok {
-		batchStart, hasBatchStart, appErr := getInt64(job.Data, shared.JobDataBatchStartTime)
-		if appErr != nil {
-			return nil, appErr
+		batchStart, hasBatchStart, batchErr := getInt64(job.Data, shared.JobDataBatchStartTime)
+		if batchErr != nil {
+			return nil, batchErr
 		}
 		if hasBatchStart {
 			s.jobStart = batchStart
@@ -263,8 +263,8 @@ func (j *Job) initState(rctx request.CTX, st store.Store, cfg *model.Config, job
 	job.Data[shared.JobDataJobStartId] = jobStartID
 
 	s.position = model.MessageExportCursor{LastPostUpdateAt: s.jobStart, LastPostId: jobStartID, UntilUpdateAt: s.jobEnd}
-	if batchStart, hasBatchStart, appErr := getInt64(job.Data, shared.JobDataBatchStartTime); appErr != nil {
-		return nil, appErr
+	if batchStart, hasBatchStart, batchErr := getInt64(job.Data, shared.JobDataBatchStartTime); batchErr != nil {
+		return nil, batchErr
 	} else if hasBatchStart {
 		// Resuming an interrupted job, or a job created with an explicit
 		// batch start.
@@ -283,9 +283,9 @@ func (j *Job) initState(rctx request.CTX, st store.Store, cfg *model.Config, job
 		shared.JobDataFilesExported:    &s.files,
 		shared.JobDataWarningCount:     &s.warnings,
 	} {
-		v, _, appErr := getInt64(job.Data, key)
-		if appErr != nil {
-			return nil, appErr
+		v, _, countErr := getInt64(job.Data, key)
+		if countErr != nil {
+			return nil, countErr
 		}
 		*dst = v
 	}
@@ -375,9 +375,9 @@ func (j *Job) execute(ctx context.Context, logger mlog.LoggerIFace, job *model.J
 			}
 			// No more posts, but channel membership changes may still have
 			// happened in the remaining window.
-			active, err := st.ChannelMemberHistory().GetChannelsWithActivityDuring(batchStart, batchEnd)
-			if err != nil {
-				return false, model.NewAppError("MessageExportJob", "ent.message_export.calculate_channel_exports.app_error", nil, "", http.StatusInternalServerError).Wrap(err)
+			active, activityErr := st.ChannelMemberHistory().GetChannelsWithActivityDuring(batchStart, batchEnd)
+			if activityErr != nil {
+				return false, model.NewAppError("MessageExportJob", "ent.message_export.calculate_channel_exports.app_error", nil, "", http.StatusInternalServerError).Wrap(activityErr)
 			}
 			if len(active) == 0 {
 				break

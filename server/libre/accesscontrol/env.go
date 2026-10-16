@@ -136,7 +136,7 @@ func toStringSlice(val ref.Val) ([]string, error) {
 			return nil, fmt.Errorf("invalid list size")
 		}
 		out := make([]string, 0, int(size))
-		for i := types.Int(0); i < size; i++ {
+		for i := range size {
 			elem := v.Get(i)
 			switch e := elem.(type) {
 			case types.String:

@@ -75,9 +75,9 @@ func newExportFixture(t *testing.T, exportType string) *exportFixture {
 	p1 := messageExport("p1", "c1", model.ChannelTypeOpen, "u1", "alice", 110, 110, "hello world")
 	p1.PostFileIds = model.StringArray{"f1"}
 	p2 := messageExport("p2", "c1", model.ChannelTypeOpen, "u2", "bob", 120, 160, "edited =1+1")
-	p2.PostEditAt = ptr(int64(160))
+	p2.PostEditAt = new(int64(160))
 	p3 := messageExport("p3", "d1", model.ChannelTypeDirect, "u2", "bob", 170, 170, "hi alice")
-	p3.ChannelDisplayName = ptr("Direct Message")
+	p3.ChannelDisplayName = new("Direct Message")
 
 	ms := f.store.Store
 	ms.ComplianceStore.On("MessageExport", mock.Anything, model.MessageExportCursor{LastPostUpdateAt: testExportFrom, UntilUpdateAt: testJobEnd}, 2).
@@ -98,7 +98,7 @@ func newExportFixture(t *testing.T, exportType string) *exportFixture {
 	ms.ChannelMemberHistoryStore.On("GetUsersInChannelDuring", testExportFrom, int64(160), mock.Anything).Return([]*model.ChannelMemberHistoryResult{
 		{ChannelId: "c1", UserId: "u1", JoinTime: 50, UserEmail: "alice@example.com", Username: "alice"},
 		{ChannelId: "c1", UserId: "u2", JoinTime: 105, UserEmail: "bob@example.com", Username: "bob"},
-		{ChannelId: "c3", UserId: "u1", JoinTime: 20, LeaveTime: ptr(int64(130)), UserEmail: "alice@example.com", Username: "alice"},
+		{ChannelId: "c3", UserId: "u1", JoinTime: 20, LeaveTime: new(int64(130)), UserEmail: "alice@example.com", Username: "alice"},
 	}, nil)
 	ms.ChannelMemberHistoryStore.On("GetUsersInChannelDuring", int64(160), testJobEnd, mock.Anything).Return([]*model.ChannelMemberHistoryResult{
 		{ChannelId: "d1", UserId: "u1", JoinTime: 10, UserEmail: "alice@example.com", Username: "alice"},
@@ -635,18 +635,18 @@ func TestUpdatedType(t *testing.T) {
 	assert.Equal(t, "", id)
 
 	p = base()
-	p.PostUpdateAt = ptr(int64(20))
+	p.PostUpdateAt = new(int64(20))
 	typ, _ = p.updatedType()
 	assert.Equal(t, UpdatedTypeUpdatedNoMsgChange, typ)
 
 	p = base()
-	p.PostDeleteAt = ptr(int64(30))
+	p.PostDeleteAt = new(int64(30))
 	typ, _ = p.updatedType()
 	assert.Equal(t, UpdatedTypeDeleted, typ)
 
 	p = base()
-	p.PostDeleteAt = ptr(int64(30))
-	p.PostOriginalId = ptr("new")
+	p.PostDeleteAt = new(int64(30))
+	p.PostOriginalId = new("new")
 	typ, id = p.updatedType()
 	assert.Equal(t, UpdatedTypeEditedOriginalMsg, typ)
 	assert.Equal(t, "new", id)

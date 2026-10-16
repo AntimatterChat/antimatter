@@ -6,9 +6,11 @@ package messageexport
 import (
 	"archive/zip"
 	"bytes"
+	"cmp"
 	"context"
 	"io"
-	"sort"
+	"maps"
+	"slices"
 	"sync"
 	"testing"
 
@@ -35,9 +37,7 @@ func newFakeJobStore() *fakeJobStore {
 func copyJob(j *model.Job) *model.Job {
 	c := *j
 	c.Data = model.StringMap{}
-	for k, v := range j.Data {
-		c.Data[k] = v
-	}
+	maps.Copy(c.Data, j.Data)
 	return &c
 }
 
@@ -100,7 +100,7 @@ func (s *fakeJobStore) GetAllByTypePage(_ request.CTX, jobType string, offset in
 			list = append(list, copyJob(j))
 		}
 	}
-	sort.Slice(list, func(i, k int) bool { return list[i].CreateAt > list[k].CreateAt })
+	slices.SortFunc(list, func(a, b *model.Job) int { return cmp.Compare(b.CreateAt, a.CreateAt) })
 	if offset >= len(list) {
 		return []*model.Job{}, nil
 	}
@@ -202,33 +202,31 @@ func (f *fakeSender) Close() error {
 	return nil
 }
 
-func ptr[T any](v T) *T { return &v }
-
 func messageExport(id, channelID string, channelType model.ChannelType, userID, username string, createAt, updateAt int64, message string) *model.MessageExport {
 	m := &model.MessageExport{
-		ChannelId:          ptr(channelID),
-		ChannelName:        ptr("name-" + channelID),
-		ChannelDisplayName: ptr("Display " + channelID),
-		ChannelType:        ptr(channelType),
-		UserId:             ptr(userID),
-		UserEmail:          ptr(username + "@example.com"),
-		Username:           ptr(username),
-		PostId:             ptr(id),
-		PostCreateAt:       ptr(createAt),
-		PostUpdateAt:       ptr(updateAt),
-		PostDeleteAt:       ptr(int64(0)),
-		PostEditAt:         ptr(int64(0)),
-		PostMessage:        ptr(message),
-		PostType:           ptr(""),
-		PostRootId:         ptr(""),
-		PostProps:          ptr("{}"),
-		PostOriginalId:     ptr(""),
+		ChannelId:          new(channelID),
+		ChannelName:        new("name-" + channelID),
+		ChannelDisplayName: new("Display " + channelID),
+		ChannelType:        new(channelType),
+		UserId:             new(userID),
+		UserEmail:          new(username + "@example.com"),
+		Username:           new(username),
+		PostId:             new(id),
+		PostCreateAt:       new(createAt),
+		PostUpdateAt:       new(updateAt),
+		PostDeleteAt:       new(int64(0)),
+		PostEditAt:         new(int64(0)),
+		PostMessage:        new(message),
+		PostType:           new(""),
+		PostRootId:         new(""),
+		PostProps:          new("{}"),
+		PostOriginalId:     new(""),
 		PostFileIds:        model.StringArray{},
 	}
 	if channelType == model.ChannelTypeOpen || channelType == model.ChannelTypePrivate {
-		m.TeamId = ptr("team1")
-		m.TeamName = ptr("team-one")
-		m.TeamDisplayName = ptr("Team One")
+		m.TeamId = new("team1")
+		m.TeamName = new("team-one")
+		m.TeamDisplayName = new("Team One")
 	}
 	return m
 }

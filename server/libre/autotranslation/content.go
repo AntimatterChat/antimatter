@@ -8,7 +8,7 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"net/http"
-	"sort"
+	"slices"
 	"strings"
 
 	"github.com/mattermost/mattermost/server/public/model"
@@ -205,7 +205,7 @@ func collectStrings(obj map[string]any, prefix []string, depth int, c *sourceCon
 	for k := range obj {
 		keys = append(keys, k)
 	}
-	sort.Strings(keys)
+	slices.Sort(keys)
 
 	for _, k := range keys {
 		if skipKey(k) {

@@ -8,6 +8,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"maps"
 	"net/http"
 	"net/url"
 	"strconv"
@@ -138,9 +139,7 @@ func (e *Engine) deleteByQuery(where, errorID, target string, query map[string]a
 	ctx, cancel := context.WithTimeout(context.Background(), byQueryTimeout)
 	defer cancel()
 	q := byQueryParams()
-	for k, v := range params {
-		q[k] = v
-	}
+	maps.Copy(q, params)
 	if _, err := c.runTask(ctx, http.MethodPost, "/"+target+"/_delete_by_query", q, map[string]any{"query": query}); err != nil {
 		return model.NewAppError(where, errorID, e.backendParams(), "", http.StatusInternalServerError).Wrap(err)
 	}

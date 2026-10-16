@@ -192,7 +192,7 @@ func (sy *syncer) resolvePolicies(rctx request.CTX, data model.StringMap, policy
 	if policyType == model.AccessControlPolicyTypeChannel {
 		if ids := strings.TrimSpace(data["channel_ids"]); ids != "" {
 			var out []*model.AccessControlPolicy
-			for _, id := range strings.Split(ids, ",") {
+			for id := range strings.SplitSeq(ids, ",") {
 				id = strings.TrimSpace(id)
 				if !model.IsValidId(id) {
 					continue

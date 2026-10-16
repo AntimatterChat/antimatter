@@ -83,10 +83,7 @@ func (s *syncScheduler) NextScheduleTime(cfg *model.Config, now time.Time, _ boo
 }
 
 func nextSyncTime(cfg *model.Config, now time.Time, lastSuccessfulJob *model.Job) *time.Time {
-	interval := time.Duration(model.SafeDereference(cfg.LdapSettings.SyncIntervalMinutes)) * time.Minute
-	if interval < time.Minute {
-		interval = time.Minute
-	}
+	interval := max(time.Duration(model.SafeDereference(cfg.LdapSettings.SyncIntervalMinutes))*time.Minute, time.Minute)
 	next := now.Add(interval)
 	if lastSuccessfulJob != nil && lastSuccessfulJob.StartAt > 0 {
 		next = time.UnixMilli(lastSuccessfulJob.StartAt).Add(interval)

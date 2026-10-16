@@ -4,9 +4,10 @@
 package autotranslation
 
 import (
+	"cmp"
 	"fmt"
 	"regexp"
-	"sort"
+	"slices"
 	"strconv"
 	"strings"
 )
@@ -90,7 +91,7 @@ func maskText(text string) maskedText {
 	if len(spans) == 0 {
 		return maskedText{Text: text}
 	}
-	sort.Slice(spans, func(i, j int) bool { return spans[i].start < spans[j].start })
+	slices.SortFunc(spans, func(a, b span) int { return cmp.Compare(a.start, b.start) })
 
 	var b strings.Builder
 	masks := make([]string, 0, len(spans))

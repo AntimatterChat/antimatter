@@ -8,6 +8,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"io"
+	"maps"
 	"net/http"
 	"net/http/httptest"
 	"slices"
@@ -153,9 +154,7 @@ func (f *fakeCluster) handle(w http.ResponseWriter, r *http.Request) {
 			f.indexes[req.Dest.Index] = map[string]json.RawMessage{}
 		}
 		for _, src := range req.Source.Index {
-			for id, doc := range f.indexes[src] {
-				f.indexes[req.Dest.Index][id] = doc
-			}
+			maps.Copy(f.indexes[req.Dest.Index], f.indexes[src])
 		}
 		f.reply(w, http.StatusOK, map[string]any{"task": "node:1"})
 	case parts[0] == "_aliases":

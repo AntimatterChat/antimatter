@@ -328,9 +328,9 @@ func (l *Ldap) syncGroups(rctx request.CTX, ss *session, userIDsByDN map[string]
 	all := available
 	if s.GroupFilter != "" {
 		// Nested groups may not be selected by the configured group filter.
-		nested, err := fetchGroups(ss, s.anyGroupFilter(), true)
-		if err != nil {
-			return nil, model.NewAppError("Ldap.syncGroups", "ent.ldap.syncronize.get_all_groups.app_error", nil, "", http.StatusInternalServerError).Wrap(err)
+		nested, nestedErr := fetchGroups(ss, s.anyGroupFilter(), true)
+		if nestedErr != nil {
+			return nil, model.NewAppError("Ldap.syncGroups", "ent.ldap.syncronize.get_all_groups.app_error", nil, "", http.StatusInternalServerError).Wrap(nestedErr)
 		}
 		all = append(slices.Clone(available), nested...)
 	}

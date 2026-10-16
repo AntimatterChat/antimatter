@@ -8,7 +8,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
-	"sort"
+	"slices"
 	"time"
 
 	"github.com/mattermost/mattermost/server/public/model"
@@ -342,7 +342,7 @@ func (s *Service) publish(t *task, tr *model.Translation) {
 
 	keys := []string{tr.Lang}
 	keys = append(keys, t.locales[tr.Lang]...)
-	sort.Strings(keys)
+	slices.Sort(keys)
 	translations := make(map[string]any, len(keys))
 	for _, k := range keys {
 		translations[k] = entry

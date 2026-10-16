@@ -4,8 +4,9 @@
 package ldap
 
 import (
+	"cmp"
 	"net/http"
-	"sort"
+	"slices"
 	"strings"
 
 	"github.com/mattermost/ldap"
@@ -169,8 +170,8 @@ func (l *Ldap) GetAllGroupsPage(rctx request.CTX, page int, perPage int, opts mo
 		result = append(result, g)
 	}
 
-	sort.SliceStable(result, func(i, j int) bool {
-		return strings.ToLower(result[i].DisplayName) < strings.ToLower(result[j].DisplayName)
+	slices.SortStableFunc(result, func(a, b *model.Group) int {
+		return cmp.Compare(strings.ToLower(a.DisplayName), strings.ToLower(b.DisplayName))
 	})
 
 	total := len(result)

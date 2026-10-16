@@ -6,6 +6,7 @@ package jobs
 import (
 	"context"
 	"encoding/json"
+	"maps"
 	"sync"
 	"testing"
 	"time"
@@ -78,9 +79,7 @@ func (s *fakeJobServer) ClaimJob(job *model.Job) (*model.Job, *model.AppError) {
 
 func copyData(data model.StringMap) model.StringMap {
 	out := model.StringMap{}
-	for k, v := range data {
-		out[k] = v
-	}
+	maps.Copy(out, data)
 	return out
 }
 

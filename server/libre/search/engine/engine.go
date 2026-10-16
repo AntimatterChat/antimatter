@@ -217,7 +217,7 @@ func (e *Engine) Start(ctx context.Context) *model.AppError {
 	for _, name := range []string{names.channels(), names.users(), names.files()} {
 		if err := e.ensureIndex(ctx, c, name); err != nil {
 			c.close()
-			return model.NewAppError("Engine.Start", "ent.elasticsearch.create_client.connect_failed", e.backendParams(), "failed to create index "+name, http.StatusInternalServerError).Wrap(err)
+			return model.NewAppError("Engine.Start", "ent.elasticsearch.create_client.connect_failed", e.backendParams(), "failed to create the index "+name, http.StatusInternalServerError).Wrap(err)
 		}
 	}
 
