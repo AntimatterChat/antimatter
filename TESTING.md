@@ -84,7 +84,7 @@ third-party service, account or token.
 | --- | --- | --- |
 | **Antimatter lint** | push to `main`, pull requests | policy violations, golangci-lint, `make vet`, the plugin API checker, server translations (`make i18n-verify`), eslint, stylelint, tsc, `en.json` out of sync with the code, actionlint, yamllint errors |
 | **Antimatter tests** | push to `main`, pull requests | a failing Go or jest test that isn't on the known-failures list, a package that doesn't build |
-| **Antimatter security** | push to `main`, pull requests, Mondays | CodeQL alerts (Security tab), a vulnerable function the server calls (govulncheck), a secret (gitleaks), a pull request adding a high or critical vulnerability (dependency review) |
+| **Antimatter security** | push to `main`, pull requests, Mondays | CodeQL alerts (Security tab), a vulnerable function the server calls (govulncheck; advisories without a fix can be listed, with their reason, in `scripts/antimatter/vuln-allowlist.txt`), a secret (gitleaks), a pull request adding a high or critical vulnerability (dependency review) |
 | **Antimatter Fusion e2e** | push to `main`, pull requests touching the server, the web app or the suite, Mondays | a failing Playwright test |
 | **Antimatter reports** | Mondays, on demand | nothing: it's a report |
 

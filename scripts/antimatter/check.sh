@@ -176,7 +176,8 @@ scan_vulns() {
     (cd "$ROOT/webapp" && npm audit --package-lock-only --omit=dev --json > "$REPORT_DIR/npm-audit-prod.json" 2>/dev/null || true)
     python3 "$HERE/vuln_report.py" --out "$REPORT_DIR" "${gv[@]}" --osv "$REPORT_DIR/osv-scanner.json" \
         --npm-audit "all dependencies=$REPORT_DIR/npm-audit.json" \
-        --npm-audit "shipped (no dev dependencies)=$REPORT_DIR/npm-audit-prod.json" --fail-on-called
+        --npm-audit "shipped (no dev dependencies)=$REPORT_DIR/npm-audit-prod.json" --fail-on-called \
+        --allowlist "$HERE/vuln-allowlist.txt"
 }
 
 scan_secrets() {

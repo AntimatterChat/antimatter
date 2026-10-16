@@ -3,13 +3,16 @@
 
     scripts/antimatter/vuln_report.py --out DIR [--govulncheck LABEL=file.json ...] [--osv file.json]
                                       [--npm-audit LABEL=file.json ...] [--fail-on-called]
+                                      [--allowlist vuln-allowlist.txt]
 
 Inputs are the JSON outputs of `govulncheck -format json`, `osv-scanner scan source --format json` and
 `npm audit --json`. Writes DIR/vulnerabilities.md (also appended to the GitHub job summary) and
 DIR/vulnerabilities.json.
 
 --fail-on-called exits 1 when govulncheck found a vulnerability in code the server actually calls (the
-high-signal case; other findings are reported but don't fail the job).
+high-signal case; other findings are reported but don't fail the job). Vulnerabilities in the --allowlist
+(scripts/antimatter/vuln-allowlist.txt: those without a fix, each with its reason) are reported, with the
+reason, but don't fail it; an entry that no longer matches anything is reported as stale.
 """
 
 import argparse
@@ -66,6 +69,22 @@ def govulncheck(path):
     return sorted(rows, key=lambda r: ({"called": 0, "imported": 1, "module": 2}[r["level"]], r["id"]))
 
 
+def read_allowlist(path):
+    """Reads "<vulnerability ID> <reason>" lines; blank lines and # comments are skipped."""
+    allowed = {}
+    if not path:
+        return allowed
+    for raw in open(path, encoding="utf-8"):
+        line = raw.strip()
+        if not line or line.startswith("#"):
+            continue
+        vid, _, reason = line.partition(" ")
+        if not reason.strip():
+            raise SystemExit(f"{path}: {vid} has no reason; every allowlisted vulnerability needs one")
+        allowed[vid] = reason.strip()
+    return allowed
+
+
 def osv_scanner(path):
     data = json.load(open(path, encoding="utf-8"))
     rows = []
@@ -100,11 +119,14 @@ def main():
     parser.add_argument("--osv")
     parser.add_argument("--npm-audit", action="append", default=[])
     parser.add_argument("--fail-on-called", action="store_true")
+    parser.add_argument("--allowlist")
     args = parser.parse_args()
 
+    allowed = read_allowlist(args.allowlist)
     md = ["## Dependency vulnerabilities", ""]
     result = {}
     called_total = 0
+    allowed_seen = set()
 
     for spec in args.govulncheck:
         label, _, path = spec.partition("=")
@@ -112,16 +134,25 @@ def main():
             md.append(f"**govulncheck ({label}) didn't produce a result.**\n")
             continue
         rows = govulncheck(path)
+        for r in rows:
+            if r["id"] in allowed:
+                allowed_seen.add(r["id"])
+                # Only advisories without a fix may be allowlisted: one with a fixed version is updated instead.
+                if not r["fixed"]:
+                    r["allowlisted"] = allowed[r["id"]]
         result[f"govulncheck:{label}"] = rows
-        called = [r for r in rows if r["level"] == "called"]
+        called = [r for r in rows if r["level"] == "called" and "allowlisted" not in r]
+        called_allowed = sum(1 for r in rows if r["level"] == "called" and "allowlisted" in r)
         called_total += len(called)
         md += [f"### govulncheck: {label}", "",
-               f"{len(called)} vulnerabilities in code the server calls, "
+               f"{len(called)} vulnerabilities in code the server calls"
+               + (f" (and {called_allowed} allowlisted)" if called_allowed else "") + ", "
                f"{sum(1 for r in rows if r['level'] == 'imported')} in imported packages whose vulnerable code "
                f"isn't called, {sum(1 for r in rows if r['level'] == 'module')} in required modules only.", ""]
         if rows:
             md += ["| ID | Reach | Module | Version | Fixed in | Summary |", "| --- | --- | --- | --- | --- | --- |"]
-            md += [f"| [{r['id']}](https://pkg.go.dev/vuln/{r['id']}) | {r['level']} | `{r['module']}` | "
+            md += [f"| [{r['id']}](https://pkg.go.dev/vuln/{r['id']}) | {r['level']}"
+                   f"{' (allowlisted)' if 'allowlisted' in r else ''} | `{r['module']}` | "
                    f"{r['version']} | {r['fixed'] or 'no fix'} | {amlib.md_escape(r['summary'][:120])} |"
                    for r in rows]
             md.append("")
@@ -156,6 +187,16 @@ def main():
                    f"{'yes' if r['fix'] else 'no'} | {amlib.md_escape('; '.join(r['titles']))[:150]} |"
                    for r in serious]
             md.append("")
+
+    if allowed and args.govulncheck:
+        md += ["### Allowlisted vulnerabilities", "",
+               "Reported without failing the job (`scripts/antimatter/vuln-allowlist.txt`):", ""]
+        md += [f"- [{vid}](https://pkg.go.dev/vuln/{vid}): {amlib.md_escape(reason)}"
+               + ("" if vid in allowed_seen else " **Stale: govulncheck no longer reports it; remove the entry.**")
+               + (" **It has a fix now: update the module (the entry is ignored).**"
+                  if any(r["id"] == vid and r["fixed"] for rows in result.values() for r in rows) else "")
+               for vid, reason in sorted(allowed.items())]
+        md.append("")
 
     if args.fail_on_called and called_total:
         md.append(f"**{called_total} vulnerabilit{'y is' if called_total == 1 else 'ies are'} reachable from the "

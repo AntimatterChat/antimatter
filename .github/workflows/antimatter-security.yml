@@ -99,6 +99,7 @@ jobs:
       - name: Report (fails when a vulnerable function is called)
         run: |
           python3 scripts/antimatter/vuln_report.py --out vuln-report --fail-on-called \
+            --allowlist scripts/antimatter/vuln-allowlist.txt \
             --govulncheck "server=$RUNNER_TEMP/govulncheck-server.json" \
             --govulncheck "server/public=$RUNNER_TEMP/govulncheck-public.json"
       - name: Upload the report

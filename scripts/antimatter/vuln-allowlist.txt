@@ -1,0 +1,13 @@
+# Vulnerabilities govulncheck reports in code the server calls that can't be fixed by an update (no fixed
+# version exists). The Antimatter security workflow reports them, with the reason below, without failing.
+#
+# Format: <vulnerability ID> <reason>
+#
+# Only for advisories without a fix: anything a module update fixes is updated instead. Every entry says why the
+# code is still there and what would remove it; vuln_report.py flags entries that no longer match anything.
+
+# golang.org/x/crypto/openpgp is deprecated and unmaintained (no fixed version will come). The server calls it
+# for one thing: checking the detached signatures of plugins against the configured public keys
+# (channels/app/plugin_signature.go, Mattermost's code), not to encrypt or sign anything. The fix is to move
+# that check to a maintained OpenPGP library (github.com/ProtonMail/go-crypto/openpgp has the same API).
+GO-2026-5932 x/crypto/openpgp is unmaintained (no fix exists); the server only uses it to verify plugin signatures (channels/app/plugin_signature.go). Remove once that check moves to a maintained OpenPGP library such as github.com/ProtonMail/go-crypto.

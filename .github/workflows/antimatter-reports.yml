@@ -62,6 +62,7 @@ jobs:
           (cd webapp && npm audit --package-lock-only --json > ../report/npm-audit.json) || true
           (cd webapp && npm audit --package-lock-only --omit=dev --json > ../report/npm-audit-prod.json) || true
           python3 scripts/antimatter/vuln_report.py --out report \
+            --allowlist scripts/antimatter/vuln-allowlist.txt \
             --govulncheck "server=report/govulncheck-server.json" \
             --govulncheck "server/public=report/govulncheck-public.json" \
             --osv report/osv-scanner.json \
