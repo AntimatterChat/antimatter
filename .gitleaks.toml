@@ -1,0 +1,40 @@
+# gitleaks configuration for Antimatter (scripts/antimatter/check.sh security, antimatter-security.yml).
+# It extends gitleaks' default rules and only skips paths that hold no real credentials: dependencies, build
+# output, and test fixtures whose keys are made up for the tests.
+title = "Antimatter gitleaks config"
+
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Dependencies, build output and test fixtures"
+paths = [
+  '''(^|/)node_modules/''',
+  '''(^|/)(dist|lib|build)/.*\.(js|map)$''',
+  '''(^|/)\.git/''',
+  '''(^|/)\.am-reports/''',
+  '''(^|/)package-lock\.json$''',
+  '''(^|/)go\.sum$''',
+  '''_test\.go$''',
+  '''\.test\.[jt]sx?$''',
+  '''(^|/)(tests?|testdata|testlib|fixtures|__snapshots__|__mocks__)/''',
+  '''^e2e-tests/''',
+  '''^server/tests/''',
+  '''^server/build/docker/''',
+  '''^docs/''',
+  # The REST API reference: example tokens in curl samples.
+  '''^api/v4/source/''',
+]
+
+# Known false positives, matched on the whole line.
+regexTarget = "line"
+regexes = [
+  # A setting name, not a Vault token.
+  '''ExportAmazonS3PathPrefix''',
+  # Example SMTP password shown as a placeholder in the System Console.
+  '''jcuS8PuvcpGhpgHhlcpT1Mx42pnqMxQY''',
+  # GIPHY's public SDK test key from upstream (a documented test key, not a secret).
+  '''ServiceSettingsDefaultGiphySdkKeyTest''',
+  # MinIO key of the throwaway test services.
+  '''MINIO_KMS_SECRET_KEY: my-minio-key:''',
+]

@@ -1,0 +1,51 @@
+# Services the server's Go tests talk to, published on localhost. Used by CI (antimatter-tests.yml) and by
+# `scripts/antimatter/check.sh services up` locally. The ports can be moved with AM_TEST_*_PORT.
+name: am-test-services
+
+services:
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: mmuser
+      POSTGRES_PASSWORD: mostest_password
+      POSTGRES_DB: mattermost_test
+    command: >-
+      postgres -c max_connections=500 -c fsync=off -c full_page_writes=off -c synchronous_commit=off
+      -c default_text_search_config=pg_catalog.english
+    tmpfs:
+      - /var/lib/postgresql/data
+    volumes:
+      - ../../server/build/docker/postgres_node_database.sql:/docker-entrypoint-initdb.d/postgres_node_database.sql:ro
+    ports:
+      - "127.0.0.1:${AM_TEST_PG_PORT:-5432}:5432"
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "mmuser", "-d", "mattermost_test"]
+      interval: 3s
+      timeout: 5s
+      retries: 20
+
+  minio:
+    image: cgr.dev/chainguard/minio:latest
+    command: server /data
+    environment:
+      MINIO_ROOT_USER: minioaccesskey
+      MINIO_ROOT_PASSWORD: miniosecretkey
+      MINIO_KMS_SECRET_KEY: my-minio-key:OSMM+vkKUTCvQs9YL/CVMIMt43HFhkUpqJxTmGl6rYw=
+    ports:
+      - "127.0.0.1:${AM_TEST_MINIO_PORT:-9000}:9000"
+
+  inbucket:
+    image: inbucket/inbucket:3.1.1
+    environment:
+      INBUCKET_WEB_ADDR: "0.0.0.0:9001"
+      INBUCKET_POP3_ADDR: "0.0.0.0:10110"
+      INBUCKET_SMTP_ADDR: "0.0.0.0:10025"
+    ports:
+      - "127.0.0.1:${AM_TEST_INBUCKET_PORT:-9001}:9001"
+      - "127.0.0.1:${AM_TEST_SMTP_PORT:-10025}:10025"
+
+  azurite:
+    image: mcr.microsoft.com/azure-storage/azurite:3.34.0
+    command: azurite-blob --blobHost 0.0.0.0 --blobPort 10000 --skipApiVersionCheck
+    ports:
+      - "127.0.0.1:${AM_TEST_AZURITE_PORT:-10000}:10000"
