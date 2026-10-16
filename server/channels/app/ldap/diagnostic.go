@@ -20,22 +20,28 @@ import (
 // diagnostics.
 const maxDiagnosticSamples = 5
 
-// diagnosticPlatform is the subset of the platform service used by the
+// DiagnosticPlatform is the subset of the platform service used by the
 // diagnostics.
-type diagnosticPlatform interface {
+type DiagnosticPlatform interface {
 	Config() *model.Config
 	GetConfigFile(name string) ([]byte, error)
 }
 
 // Diagnostic implements einterfaces.LdapDiagnosticInterface.
 type Diagnostic struct {
-	p    diagnosticPlatform
+	p    DiagnosticPlatform
 	dial Dialer
 }
 
 var _ einterfaces.LdapDiagnosticInterface = (*Diagnostic)(nil)
 
-func newDiagnostic(p diagnosticPlatform, dial Dialer) *Diagnostic {
+// NewDiagnostic creates the AD/LDAP diagnostics of the support packet and the
+// System Console.
+func NewDiagnostic(p DiagnosticPlatform) *Diagnostic {
+	return newDiagnostic(p, nil)
+}
+
+func newDiagnostic(p DiagnosticPlatform, dial Dialer) *Diagnostic {
 	if dial == nil {
 		dial = dialLDAP
 	}

@@ -50,18 +50,6 @@ func RegisterJobsElasticsearchIndexerInterface(f func(*Server) ejobs.IndexerJobI
 	jobsElasticsearchIndexerInterface = f
 }
 
-var jobsLdapSyncInterface func(*App) ejobs.LdapSyncInterface
-
-func RegisterJobsLdapSyncInterface(f func(*App) ejobs.LdapSyncInterface) {
-	jobsLdapSyncInterface = f
-}
-
-var ldapInterface func(*App) einterfaces.LdapInterface
-
-func RegisterLdapInterface(f func(*App) einterfaces.LdapInterface) {
-	ldapInterface = f
-}
-
 var messageExportInterface func(*App) einterfaces.MessageExportInterface
 
 func RegisterMessageExportInterface(f func(*App) einterfaces.MessageExportInterface) {

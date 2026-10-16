@@ -30,7 +30,7 @@ const userPropAdminFilter = "ldap_admin_filter"
 
 // Ldap implements einterfaces.LdapInterface.
 type Ldap struct {
-	b    backend
+	b    Backend
 	dial Dialer
 
 	// pictures remembers the hash of the last profile picture copied from the
@@ -43,7 +43,12 @@ type Ldap struct {
 
 var _ einterfaces.LdapInterface = (*Ldap)(nil)
 
-func newLdap(b backend, dial Dialer) *Ldap {
+// New creates the AD/LDAP service on top of the given backend.
+func New(b Backend) *Ldap {
+	return newLdap(b, nil)
+}
+
+func newLdap(b Backend, dial Dialer) *Ldap {
 	if dial == nil {
 		dial = dialLDAP
 	}

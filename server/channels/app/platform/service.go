@@ -21,6 +21,7 @@ import (
 	"github.com/mattermost/mattermost/server/public/shared/markdown"
 	"github.com/mattermost/mattermost/server/public/shared/mlog"
 	"github.com/mattermost/mattermost/server/v8/channels/app/featureflag"
+	"github.com/mattermost/mattermost/server/v8/channels/app/ldap"
 	"github.com/mattermost/mattermost/server/v8/channels/jobs"
 	"github.com/mattermost/mattermost/server/v8/channels/store"
 	"github.com/mattermost/mattermost/server/v8/channels/store/localcachelayer"
@@ -494,9 +495,7 @@ func (ps *PlatformService) initEnterprise() {
 		ps.SearchEngine.RegisterElasticsearchEngine(elasticsearchInterface(ps))
 	}
 
-	if ldapDiagnosticInterface != nil {
-		ps.ldapDiagnostic = ldapDiagnosticInterface(ps)
-	}
+	ps.ldapDiagnostic = ldap.NewDiagnostic(ps)
 
 	if samlDiagnosticInterface != nil {
 		ps.samlDiagnostic = samlDiagnosticInterface(ps)

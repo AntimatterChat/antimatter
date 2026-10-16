@@ -21,6 +21,7 @@ import (
 	"github.com/mattermost/mattermost/server/public/shared/mlog"
 	"github.com/mattermost/mattermost/server/public/shared/request"
 	"github.com/mattermost/mattermost/server/v8/channels/app/imaging"
+	"github.com/mattermost/mattermost/server/v8/channels/app/ldap"
 	"github.com/mattermost/mattermost/server/v8/config"
 	"github.com/mattermost/mattermost/server/v8/einterfaces"
 	"github.com/mattermost/mattermost/server/v8/platform/services/imageproxy"
@@ -152,9 +153,7 @@ func NewChannels(s *Server) (*Channels, error) {
 	if accountMigrationInterface != nil {
 		ch.AccountMigration = accountMigrationInterface(New(ServerConnector(ch)))
 	}
-	if ldapInterface != nil {
-		ch.Ldap = ldapInterface(New(ServerConnector(ch)))
-	}
+	ch.Ldap = ldap.New(&ldapBackend{a: New(ServerConnector(ch))})
 	if notificationInterface != nil {
 		ch.Notification = notificationInterface(New(ServerConnector(ch)))
 	}

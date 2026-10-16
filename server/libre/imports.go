@@ -9,7 +9,6 @@ import (
 	_ "github.com/mattermost/mattermost/server/v8/channels/app/accountmigration"
 	_ "github.com/mattermost/mattermost/server/v8/channels/app/autotranslation"
 	_ "github.com/mattermost/mattermost/server/v8/channels/app/intune"
-	_ "github.com/mattermost/mattermost/server/v8/channels/app/ldap"
 	_ "github.com/mattermost/mattermost/server/v8/channels/app/oauthproviders/google"
 	_ "github.com/mattermost/mattermost/server/v8/channels/app/oauthproviders/office365"
 	_ "github.com/mattermost/mattermost/server/v8/channels/app/oauthproviders/openid"

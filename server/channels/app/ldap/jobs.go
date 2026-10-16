@@ -11,25 +11,34 @@ import (
 	"github.com/mattermost/mattermost/server/public/model"
 	"github.com/mattermost/mattermost/server/public/shared/mlog"
 	"github.com/mattermost/mattermost/server/public/shared/request"
-	"github.com/mattermost/mattermost/server/v8/channels/app"
 	"github.com/mattermost/mattermost/server/v8/channels/jobs"
+	"github.com/mattermost/mattermost/server/v8/einterfaces"
 	ejobs "github.com/mattermost/mattermost/server/v8/einterfaces/jobs"
 )
 
 // syncJob implements ejobs.LdapSyncInterface.
 type syncJob struct {
-	a *app.App
+	b         Backend
+	current   func() einterfaces.LdapInterface
+	jobServer func() *jobs.JobServer
 }
 
 var _ ejobs.LdapSyncInterface = (*syncJob)(nil)
 
+// NewSyncJob creates the AD/LDAP synchronization job. current returns the
+// server's LDAP service, which runs the synchronization when it is this
+// implementation; otherwise (a mock in tests) a dedicated instance on b does.
+func NewSyncJob(b Backend, current func() einterfaces.LdapInterface, jobServer func() *jobs.JobServer) ejobs.LdapSyncInterface {
+	return &syncJob{b: b, current: current, jobServer: jobServer}
+}
+
 // impl returns the LDAP implementation registered on the server, falling back
 // to a dedicated instance.
 func (j *syncJob) impl() *Ldap {
-	if l, ok := j.a.Ldap().(*Ldap); ok && l != nil {
+	if l, ok := j.current().(*Ldap); ok && l != nil {
 		return l
 	}
-	return newLdap(&appBackend{a: j.a}, nil)
+	return newLdap(j.b, nil)
 }
 
 func syncEnabled(cfg *model.Config) bool {
@@ -37,7 +46,7 @@ func syncEnabled(cfg *model.Config) bool {
 }
 
 func (j *syncJob) MakeWorker() model.Worker {
-	jobServer := j.a.Srv().Jobs
+	jobServer := j.jobServer()
 	execute := func(logger mlog.LoggerIFace, job *model.Job) error {
 		defer jobServer.HandleJobPanic(logger, job)
 
@@ -45,7 +54,7 @@ func (j *syncJob) MakeWorker() model.Worker {
 		rctx := request.EmptyContext(logger)
 
 		opts := syncOptions{
-			ReAddRemovedMembers: model.SafeDereference(j.a.Config().LdapSettings.ReAddRemovedMembers),
+			ReAddRemovedMembers: model.SafeDereference(j.b.Config().LdapSettings.ReAddRemovedMembers),
 		}
 		if v, ok := job.Data[jobDataIncludeRemovedMembers]; ok {
 			opts.ReAddRemovedMembers = v == "true"
@@ -65,13 +74,13 @@ func (j *syncJob) MakeWorker() model.Worker {
 }
 
 func (j *syncJob) MakeScheduler() ejobs.Scheduler {
-	return &syncScheduler{a: j.a}
+	return &syncScheduler{jobServer: j.jobServer}
 }
 
 // syncScheduler schedules a synchronization every
 // LdapSettings.SyncIntervalMinutes.
 type syncScheduler struct {
-	a *app.App
+	jobServer func() *jobs.JobServer
 }
 
 func (s *syncScheduler) Enabled(cfg *model.Config) bool {
@@ -98,7 +107,7 @@ func (s *syncScheduler) ScheduleJob(rctx request.CTX, _ *model.Config, pendingJo
 	if pendingJobs {
 		return nil, nil
 	}
-	jobServer := s.a.Srv().Jobs
+	jobServer := s.jobServer()
 	if jobServer == nil {
 		return nil, model.NewAppError("syncScheduler.ScheduleJob", "app.job.save.app_error", nil, "", http.StatusInternalServerError).Wrap(errors.New("job server not available"))
 	}

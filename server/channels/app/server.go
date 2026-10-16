@@ -29,6 +29,7 @@ import (
 	"github.com/mattermost/mattermost/server/public/shared/request"
 	"github.com/mattermost/mattermost/server/public/shared/timezones"
 	"github.com/mattermost/mattermost/server/v8/channels/app/email"
+	"github.com/mattermost/mattermost/server/v8/channels/app/ldap"
 	"github.com/mattermost/mattermost/server/v8/channels/app/platform"
 	"github.com/mattermost/mattermost/server/v8/channels/app/properties"
 	"github.com/mattermost/mattermost/server/v8/channels/app/teams"
@@ -1390,10 +1391,9 @@ func (s *Server) initJobs() {
 		s.Jobs.RegisterJobType(model.JobTypeElasticsearchPostIndexing, builder.MakeWorker(), nil)
 	}
 
-	if jobsLdapSyncInterface != nil {
-		builder := jobsLdapSyncInterface(New(ServerConnector(s.Channels())))
-		s.Jobs.RegisterJobType(model.JobTypeLdapSync, builder.MakeWorker(), builder.MakeScheduler())
-	}
+	ldapApp := New(ServerConnector(s.Channels()))
+	ldapSync := ldap.NewSyncJob(&ldapBackend{a: ldapApp}, ldapApp.Ldap, func() *jobs.JobServer { return s.Jobs })
+	s.Jobs.RegisterJobType(model.JobTypeLdapSync, ldapSync.MakeWorker(), ldapSync.MakeScheduler())
 
 	if jobsAccessControlSyncJobInterface != nil {
 		builder := jobsAccessControlSyncJobInterface(s)
