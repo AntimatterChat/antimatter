@@ -641,6 +641,7 @@ func TestGetMarketplacePlugins(t *testing.T) {
 	th.TestForSystemAdminAndLocal(t, func(t *testing.T, client *model.Client4) {
 		th.App.UpdateConfig(func(cfg *model.Config) {
 			*cfg.PluginSettings.EnableMarketplace = true
+			*cfg.PluginSettings.EnableRemoteMarketplace = true // off by default in Antimatter
 			*cfg.PluginSettings.MarketplaceURL = "invalid.com"
 		})
 
@@ -653,6 +654,7 @@ func TestGetMarketplacePlugins(t *testing.T) {
 	t.Run("no permission", func(t *testing.T) {
 		th.App.UpdateConfig(func(cfg *model.Config) {
 			*cfg.PluginSettings.EnableMarketplace = true
+			*cfg.PluginSettings.EnableRemoteMarketplace = true // off by default in Antimatter
 			*cfg.PluginSettings.MarketplaceURL = "invalid.com"
 		})
 
@@ -674,6 +676,7 @@ func TestGetMarketplacePlugins(t *testing.T) {
 
 		th.App.UpdateConfig(func(cfg *model.Config) {
 			*cfg.PluginSettings.EnableMarketplace = true
+			*cfg.PluginSettings.EnableRemoteMarketplace = true // off by default in Antimatter
 			*cfg.PluginSettings.MarketplaceURL = testServer.URL
 		})
 
@@ -700,6 +703,7 @@ func TestGetMarketplacePlugins(t *testing.T) {
 
 		th.App.UpdateConfig(func(cfg *model.Config) {
 			*cfg.PluginSettings.EnableMarketplace = true
+			*cfg.PluginSettings.EnableRemoteMarketplace = true // off by default in Antimatter
 			*cfg.PluginSettings.MarketplaceURL = testServer.URL
 		})
 
@@ -725,6 +729,7 @@ func TestGetMarketplacePlugins(t *testing.T) {
 
 		th.App.UpdateConfig(func(cfg *model.Config) {
 			*cfg.PluginSettings.EnableMarketplace = true
+			*cfg.PluginSettings.EnableRemoteMarketplace = true // off by default in Antimatter
 			*cfg.PluginSettings.MarketplaceURL = testServer.URL
 		})
 
@@ -750,6 +755,7 @@ func TestGetMarketplacePlugins(t *testing.T) {
 
 		th.App.UpdateConfig(func(cfg *model.Config) {
 			*cfg.PluginSettings.EnableMarketplace = true
+			*cfg.PluginSettings.EnableRemoteMarketplace = true // off by default in Antimatter
 			*cfg.PluginSettings.MarketplaceURL = testServer.URL
 		})
 
@@ -804,6 +810,7 @@ func TestGetInstalledMarketplacePlugins(t *testing.T) {
 			*cfg.PluginSettings.Enable = true
 			*cfg.PluginSettings.EnableUploads = true
 			*cfg.PluginSettings.EnableMarketplace = true
+			*cfg.PluginSettings.EnableRemoteMarketplace = true // off by default in Antimatter
 			*cfg.PluginSettings.MarketplaceURL = testServer.URL
 		})
 
@@ -856,6 +863,7 @@ func TestGetInstalledMarketplacePlugins(t *testing.T) {
 			*cfg.PluginSettings.Enable = true
 			*cfg.PluginSettings.EnableUploads = true
 			*cfg.PluginSettings.EnableMarketplace = true
+			*cfg.PluginSettings.EnableRemoteMarketplace = true // off by default in Antimatter
 		})
 
 		manifest, _, err := th.SystemAdminClient.UploadPlugin(context.Background(), bytes.NewReader(tarData))
@@ -949,6 +957,7 @@ func TestSearchGetMarketplacePlugins(t *testing.T) {
 			*cfg.PluginSettings.Enable = true
 			*cfg.PluginSettings.EnableUploads = true
 			*cfg.PluginSettings.EnableMarketplace = true
+			*cfg.PluginSettings.EnableRemoteMarketplace = true // off by default in Antimatter
 			*cfg.PluginSettings.MarketplaceURL = testServer.URL
 		})
 
