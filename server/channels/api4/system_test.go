@@ -107,6 +107,44 @@ func TestGetPing(t *testing.T) {
 		var respMap map[string]any
 		err = json.NewDecoder(resp.Body).Decode(&respMap)
 		require.NoError(t, err)
+		// Antimatter has no default push proxy (it never uses Mattermost's), so nothing can be delivered.
+		assert.Equal(t, "false", respMap["CanReceiveNotifications"])
+	}, "ping and test push notification without a push proxy")
+
+	th.TestForAllClients(t, func(t *testing.T, client *model.Client4) {
+		platforms := make(chan string, 1)
+		pushProxy := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			var msg model.PushNotification
+			if r.URL.Path == model.APIURLSuffixV1+"/send_push" && json.NewDecoder(r.Body).Decode(&msg) == nil {
+				select {
+				case platforms <- msg.Platform:
+				default:
+				}
+			}
+			// What the push proxy answers for a platform it has no credentials for.
+			_ = json.NewEncoder(w).Encode(model.NewErrorPushResponse("unknown platform"))
+		}))
+		defer pushProxy.Close()
+		th.App.UpdateConfig(func(cfg *model.Config) {
+			*cfg.EmailSettings.SendPushNotifications = true
+			*cfg.EmailSettings.PushNotificationServer = pushProxy.URL
+		})
+		defer func() {
+			require.NoError(t, th.App.ReloadConfig())
+		}()
+
+		resp, err := client.DoAPIGet(context.Background(), "/system/ping?device_id=platform:id", "")
+		require.NoError(t, err)
+		require.Equal(t, http.StatusOK, resp.StatusCode)
+		var respMap map[string]any
+		err = json.NewDecoder(resp.Body).Decode(&respMap)
+		require.NoError(t, err)
+		select {
+		case platform := <-platforms:
+			assert.Equal(t, "platform", platform)
+		default:
+			assert.Fail(t, "the test notification should reach the configured push proxy")
+		}
 		assert.Equal(t, "unknown", respMap["CanReceiveNotifications"]) // Unrecognized platform
 	}, "ping and test push notification")
 }
