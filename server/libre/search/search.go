@@ -10,14 +10,14 @@ import (
 	"github.com/mattermost/mattermost/server/v8/channels/app"
 	"github.com/mattermost/mattermost/server/v8/channels/app/platform"
 	ejobs "github.com/mattermost/mattermost/server/v8/einterfaces/jobs"
-	"github.com/mattermost/mattermost/server/v8/libre/search/engine"
-	"github.com/mattermost/mattermost/server/v8/libre/search/jobs"
 	"github.com/mattermost/mattermost/server/v8/platform/services/searchengine"
+	"github.com/mattermost/mattermost/server/v8/platform/services/searchengine/elasticsearch"
+	"github.com/mattermost/mattermost/server/v8/platform/services/searchengine/elasticsearch/jobs"
 )
 
 func init() {
 	platform.RegisterElasticsearchInterface(func(ps *platform.PlatformService) searchengine.SearchEngineInterface {
-		return engine.New(ps.Config(), ps.Log, ps.GetConfigFile)
+		return elasticsearch.New(ps.Config(), ps.Log, ps.GetConfigFile)
 	})
 	app.RegisterJobsElasticsearchIndexerInterface(func(s *app.Server) ejobs.IndexerJobInterface {
 		return &indexerJob{server: s}
@@ -28,12 +28,12 @@ func init() {
 }
 
 // searchEngine returns the running engine of the server, if any.
-func searchEngine(s *app.Server) *engine.Engine {
+func searchEngine(s *app.Server) *elasticsearch.Engine {
 	broker := s.Platform().SearchEngine
 	if broker == nil {
 		return nil
 	}
-	e, _ := broker.ElasticsearchEngine.(*engine.Engine)
+	e, _ := broker.ElasticsearchEngine.(*elasticsearch.Engine)
 	return e
 }
 

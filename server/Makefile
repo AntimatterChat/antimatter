@@ -335,7 +335,7 @@ filestore-mocks: setup-go-work install-mockery ## Creates mock files.
 
 .PHONY: ldap-mocks
 ldap-mocks: setup-go-work install-mockery ## Creates mock files for ldap.
-	$(GOBIN)/mockery --dir libre/ldap --all --inpackage --note 'Regenerate this file using `make ldap-mocks`.'
+	$(GOBIN)/mockery --dir channels/app/ldap --all --inpackage --note 'Regenerate this file using `make ldap-mocks`.'
 
 .PHONY: plugin-mocks
 plugin-mocks: setup-go-work install-mockery ## Creates mock files for plugins.
@@ -482,7 +482,7 @@ ifneq ($(IS_CI),true)
   endif
 endif
 
-ES_PACKAGES=$(shell $(GO) list ./libre/search/...)
+ES_PACKAGES=$(shell $(GO) list ./platform/services/searchengine/elasticsearch/...)
 
 .PHONY: test-server-elasticsearch
 test-server-elasticsearch: export GOTESTSUM_FORMAT := $(GOTESTSUM_FORMAT)
@@ -492,7 +492,7 @@ test-server-elasticsearch: start-docker gotestsum ## Runs Elasticsearch tests.
 	@echo Running only Elasticsearch tests
 	$(GOBIN)/gotestsum --rerun-fails=3 --packages="$(ES_PACKAGES)" -- $(GOFLAGS) -timeout=20m
 
-OS_PACKAGES=$(shell $(GO) list ./libre/search/...)
+OS_PACKAGES=$(shell $(GO) list ./platform/services/searchengine/elasticsearch/...)
 
 .PHONY: test-server-opensearch
 test-server-opensearch: export GOTESTSUM_FORMAT := $(GOTESTSUM_FORMAT)
