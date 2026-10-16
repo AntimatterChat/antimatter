@@ -122,10 +122,12 @@ describe('components/AboutBuildModal', () => {
     });
 
     test('should show default tos and privacy policy links and not the config links', () => {
+        // Links of the server's own, which the dialog ignores.
+        const custom = {...config, TermsOfServiceLink: 'https://example.com/terms', PrivacyPolicyLink: 'https://example.com/privacy'};
         const state = {
             entities: {
                 general: {
-                    config,
+                    config: custom,
                 },
                 users: {
                     currentUserId: 'currentUserId',
@@ -134,19 +136,20 @@ describe('components/AboutBuildModal', () => {
         };
         renderWithContext(
             <AboutBuildModal
-                config={config}
+                config={custom}
                 socketStatus={socketStatus}
                 onExited={jest.fn()}
             />,
             state,
         );
 
-        expect(screen.getByRole('link', {name: 'Terms of Use'})).toHaveAttribute('href', `${AboutLinks.TERMS_OF_SERVICE}?utm_source=mattermost&utm_medium=in-product&utm_content=about_build_modal&uid=currentUserId&sid=&server_version=3.6.0`);
+        // Antimatter's own links carry no tracking parameters.
+        expect(screen.getByRole('link', {name: 'Terms of Use'})).toHaveAttribute('href', AboutLinks.TERMS_OF_SERVICE);
 
-        expect(screen.getByRole('link', {name: 'Privacy Policy'})).toHaveAttribute('href', `${AboutLinks.PRIVACY_POLICY}?utm_source=mattermost&utm_medium=in-product&utm_content=about_build_modal&uid=currentUserId&sid=&server_version=3.6.0`);
+        expect(screen.getByRole('link', {name: 'Privacy Policy'})).toHaveAttribute('href', AboutLinks.PRIVACY_POLICY);
 
-        expect(screen.getByRole('link', {name: 'Terms of Use'})).not.toHaveAttribute('href', config?.TermsOfServiceLink);
-        expect(screen.getByRole('link', {name: 'Privacy Policy'})).not.toHaveAttribute('href', config?.PrivacyPolicyLink);
+        expect(screen.getByRole('link', {name: 'Terms of Use'})).not.toHaveAttribute('href', custom.TermsOfServiceLink);
+        expect(screen.getByRole('link', {name: 'Privacy Policy'})).not.toHaveAttribute('href', custom.PrivacyPolicyLink);
     });
 
     test('should show FIPS indicator when IsFipsEnabled is true', () => {
