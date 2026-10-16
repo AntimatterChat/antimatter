@@ -36,6 +36,7 @@ import (
 	"github.com/mattermost/mattermost/server/v8/platform/services/cluster"
 	"github.com/mattermost/mattermost/server/v8/platform/services/metrics"
 	"github.com/mattermost/mattermost/server/v8/platform/services/searchengine"
+	"github.com/mattermost/mattermost/server/v8/platform/services/searchengine/elasticsearch"
 	"github.com/mattermost/mattermost/server/v8/platform/shared/filestore"
 )
 
@@ -492,9 +493,7 @@ func (ps *PlatformService) initEnterprise() {
 		ps.clusterIFace = cluster.New(&clusterHost{ps: ps})
 	}
 
-	if elasticsearchInterface != nil {
-		ps.SearchEngine.RegisterElasticsearchEngine(elasticsearchInterface(ps))
-	}
+	ps.SearchEngine.RegisterElasticsearchEngine(elasticsearch.New(ps.Config(), ps.Log, ps.GetConfigFile))
 
 	ps.ldapDiagnostic = ldap.NewDiagnostic(ps)
 

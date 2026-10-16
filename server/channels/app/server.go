@@ -71,6 +71,7 @@ import (
 	"github.com/mattermost/mattermost/server/v8/platform/services/cache"
 	"github.com/mattermost/mattermost/server/v8/platform/services/ipfiltering"
 	"github.com/mattermost/mattermost/server/v8/platform/services/remotecluster"
+	esjobs "github.com/mattermost/mattermost/server/v8/platform/services/searchengine/elasticsearch/jobs"
 	"github.com/mattermost/mattermost/server/v8/platform/services/sharedchannel"
 	"github.com/mattermost/mattermost/server/v8/platform/services/telemetry"
 	"github.com/mattermost/mattermost/server/v8/platform/shared/filestore"
@@ -1385,15 +1386,8 @@ func (s *Server) initJobs() {
 		s.Jobs.RegisterJobType(model.JobTypeMessageExport, builder.MakeWorker(), builder.MakeScheduler())
 	}
 
-	if jobsElasticsearchAggregatorInterface != nil {
-		builder := jobsElasticsearchAggregatorInterface(s)
-		s.Jobs.RegisterJobType(model.JobTypeElasticsearchPostAggregation, builder.MakeWorker(), builder.MakeScheduler())
-	}
-
-	if jobsElasticsearchIndexerInterface != nil {
-		builder := jobsElasticsearchIndexerInterface(s)
-		s.Jobs.RegisterJobType(model.JobTypeElasticsearchPostIndexing, builder.MakeWorker(), nil)
-	}
+	s.Jobs.RegisterJobType(model.JobTypeElasticsearchPostAggregation, s.newElasticsearchAggregatorWorker(), esjobs.NewAggregatorScheduler(s.Jobs))
+	s.Jobs.RegisterJobType(model.JobTypeElasticsearchPostIndexing, s.newElasticsearchIndexerWorker(), nil)
 
 	ldapApp := New(ServerConnector(s.Channels()))
 	ldapSync := ldap.NewSyncJob(&ldapBackend{a: ldapApp}, ldapApp.Ldap, func() *jobs.JobServer { return s.Jobs })

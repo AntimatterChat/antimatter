@@ -12,5 +12,4 @@ import (
 	_ "github.com/mattermost/mattermost/server/v8/channels/jobs/dataretention"
 	_ "github.com/mattermost/mattermost/server/v8/channels/jobs/messageexport"
 	_ "github.com/mattermost/mattermost/server/v8/libre/notification"
-	_ "github.com/mattermost/mattermost/server/v8/libre/search"
 )
