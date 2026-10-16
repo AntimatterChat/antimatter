@@ -203,22 +203,37 @@ func TestGetHealthFindingsRendering(t *testing.T) {
 		assert.Equal(t, finding.MessageID, rendered.MessageID)
 	})
 
-	t.Run("untranslated locale falls back to English", func(t *testing.T) {
-		english, _, err := th.SystemAdminClient.GetHealthFindings(context.Background(), model.HealthFindingFilter{})
-		require.NoError(t, err)
-
+	findingsIn := func(t *testing.T, locale string) *model.HealthFindingList {
+		t.Helper()
 		client := th.CreateClient()
 		client.SetToken(th.SystemAdminClient.AuthToken)
-		client.HTTPHeader = map[string]string{"Accept-Language": "fr"}
-		french, resp, err := client.GetHealthFindings(context.Background(), model.HealthFindingFilter{})
+		client.HTTPHeader = map[string]string{"Accept-Language": locale}
+		list, resp, err := client.GetHealthFindings(context.Background(), model.HealthFindingFilter{})
 		require.NoError(t, err)
 		CheckOKStatus(t, resp)
+		require.Len(t, list.Findings, 1)
+		return list
+	}
 
-		require.Len(t, french.Findings, 1)
-		require.Len(t, english.Findings, 1)
-		assert.Equal(t, english.Findings[0].Title, french.Findings[0].Title)
-		assert.Equal(t, english.Findings[0].Message, french.Findings[0].Message)
-		assert.Equal(t, english.Findings[0].Remediation, french.Findings[0].Remediation)
+	t.Run("translated locale is rendered in that language", func(t *testing.T) {
+		english := findingsIn(t, "en")
+		french := findingsIn(t, "fr")
+
+		assert.NotEmpty(t, french.Findings[0].Title)
+		assert.NotEqual(t, english.Findings[0].Title, french.Findings[0].Title)
+		assert.NotEqual(t, english.Findings[0].Message, french.Findings[0].Message)
+		assert.NotEqual(t, english.Findings[0].Remediation, french.Findings[0].Remediation)
+	})
+
+	t.Run("untranslated locale falls back to English", func(t *testing.T) {
+		english := findingsIn(t, "en")
+		// Croatian is a supported locale whose catalog has no health dashboard strings yet (fr, de and the
+		// other Antimatter-translated catalogs do).
+		croatian := findingsIn(t, "hr")
+
+		assert.Equal(t, english.Findings[0].Title, croatian.Findings[0].Title)
+		assert.Equal(t, english.Findings[0].Message, croatian.Findings[0].Message)
+		assert.Equal(t, english.Findings[0].Remediation, croatian.Findings[0].Remediation)
 	})
 }
 
