@@ -20,6 +20,7 @@ import (
 	"github.com/mattermost/mattermost/server/public/plugin"
 	"github.com/mattermost/mattermost/server/public/shared/markdown"
 	"github.com/mattermost/mattermost/server/public/shared/mlog"
+	"github.com/mattermost/mattermost/server/v8/channels/app/accesscontrol"
 	"github.com/mattermost/mattermost/server/v8/channels/app/featureflag"
 	"github.com/mattermost/mattermost/server/v8/channels/app/ldap"
 	"github.com/mattermost/mattermost/server/v8/channels/app/saml"
@@ -499,9 +500,13 @@ func (ps *PlatformService) initEnterprise() {
 
 	ps.samlDiagnostic = saml.NewDiagnostic(ps, func() string { return model.SafeDereference(ps.Config().ServiceSettings.SiteURL) })
 
-	if accessControlServiceInterface != nil {
-		ps.pdpService = accessControlServiceInterface(ps)
-	}
+	// The platform layer only keeps a decision point; the store is attached
+	// after this, hence the lazy accessor.
+	ps.pdpService = accesscontrol.New(accesscontrol.Backend{
+		Store:  func() store.Store { return ps.Store },
+		Config: ps.Config,
+		Logger: ps.Log,
+	})
 }
 
 func (ps *PlatformService) TotalWebsocketConnections() int {

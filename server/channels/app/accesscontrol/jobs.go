@@ -14,7 +14,6 @@ import (
 	"github.com/mattermost/mattermost/server/public/model"
 	"github.com/mattermost/mattermost/server/public/shared/mlog"
 	"github.com/mattermost/mattermost/server/public/shared/request"
-	"github.com/mattermost/mattermost/server/v8/channels/app"
 	"github.com/mattermost/mattermost/server/v8/channels/jobs"
 	"github.com/mattermost/mattermost/server/v8/channels/store"
 	"github.com/mattermost/mattermost/server/v8/einterfaces"
@@ -26,9 +25,9 @@ const (
 	defaultSyncJobInterval = time.Hour
 )
 
-// membershipSyncer is the part of the app the sync jobs drive. *app.App
+// MembershipSyncer is the part of the app the sync jobs drive. *app.App
 // satisfies it; tests use a fake.
-type membershipSyncer interface {
+type MembershipSyncer interface {
 	GetChannel(rctx request.CTX, channelID string) (*model.Channel, *model.AppError)
 	GetTeam(teamID string) (*model.Team, *model.AppError)
 	AddChannelMemberByAccessPolicy(rctx request.CTX, channel *model.Channel, userID, jobID string, policyRevision int) *model.AppError
@@ -41,7 +40,7 @@ type membershipSyncer interface {
 type syncer struct {
 	store  store.Store
 	acs    einterfaces.AccessControlServiceInterface
-	app    membershipSyncer
+	app    MembershipSyncer
 	logger mlog.LoggerIFace
 
 	removed int
@@ -66,14 +65,31 @@ func syncInterval(cfg *model.Config) time.Duration {
 	return defaultSyncJobInterval
 }
 
+// SyncJobDeps holds what the membership sync jobs need from the server.
+type SyncJobDeps struct {
+	JobServer *jobs.JobServer
+	Config    func() *model.Config
+	Store     func() store.Store
+	// AccessControl returns the server's access control service.
+	AccessControl func() einterfaces.AccessControlServiceInterface
+	// Members returns the app the jobs add and remove members with.
+	Members func() MembershipSyncer
+}
+
 // syncJob implements ejobs.AccessControlSyncJobInterface for both the channel
 // and the team membership sync.
 type syncJob struct {
-	srv  *app.Server
+	deps SyncJobDeps
 	team bool
 }
 
 var _ ejobs.AccessControlSyncJobInterface = (*syncJob)(nil)
+
+// NewSyncJob creates the channel membership sync job, or with team set the
+// team membership sync job.
+func NewSyncJob(deps SyncJobDeps, team bool) ejobs.AccessControlSyncJobInterface {
+	return &syncJob{deps: deps, team: team}
+}
 
 func (j *syncJob) jobType() string {
 	if j.team {
@@ -95,30 +111,30 @@ func (j *syncJob) MakeWorker() model.Worker {
 	if j.team {
 		name = "AccessControlTeamSync"
 	}
-	return jobs.NewSimpleWorker(name, j.srv.Jobs, j.execute, j.enabled)
+	return jobs.NewSimpleWorker(name, j.deps.JobServer, j.execute, j.enabled)
 }
 
 // MakeScheduler implements ejobs.AccessControlSyncJobInterface.
 func (j *syncJob) MakeScheduler() ejobs.Scheduler {
-	return jobs.NewPeriodicScheduler(j.srv.Jobs, j.jobType(), syncInterval(j.srv.Config()), j.enabled)
+	return jobs.NewPeriodicScheduler(j.deps.JobServer, j.jobType(), syncInterval(j.deps.Config()), j.enabled)
 }
 
 func (j *syncJob) execute(logger mlog.LoggerIFace, job *model.Job) error {
-	acs := j.srv.Channels().AccessControl
+	acs := j.deps.AccessControl()
 	if acs == nil {
 		return model.NewAppError("AccessControlSync", "ent.access_control.sync_job.app_error", nil, "access control service is not available", http.StatusNotImplemented)
 	}
 	rctx := request.EmptyContext(logger)
-	if st := j.srv.Store(); st != nil {
+	if st := j.deps.Store(); st != nil {
 		if err := st.Attributes().RefreshAttributes(); err != nil {
 			logger.Warn("Failed to refresh attribute views before membership sync", mlog.Err(err))
 		}
 	}
 
 	sy := &syncer{
-		store:  j.srv.Store(),
+		store:  j.deps.Store(),
 		acs:    acs,
-		app:    app.New(app.ServerConnector(j.srv.Channels())),
+		app:    j.deps.Members(),
 		logger: logger,
 	}
 

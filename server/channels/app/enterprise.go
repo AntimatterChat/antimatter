@@ -5,7 +5,6 @@ package app
 
 import (
 	"github.com/mattermost/mattermost/server/v8/einterfaces"
-	ejobs "github.com/mattermost/mattermost/server/v8/einterfaces/jobs"
 )
 
 var cloudInterface func(*Server) einterfaces.CloudInterface
@@ -18,24 +17,6 @@ var notificationInterface func(*App) einterfaces.NotificationInterface
 
 func RegisterNotificationInterface(f func(*App) einterfaces.NotificationInterface) {
 	notificationInterface = f
-}
-
-var accessControlServiceInterface func(*App) einterfaces.AccessControlServiceInterface
-
-func RegisterAccessControlServiceInterface(f func(*App) einterfaces.AccessControlServiceInterface) {
-	accessControlServiceInterface = f
-}
-
-var jobsAccessControlSyncJobInterface func(*Server) ejobs.AccessControlSyncJobInterface
-
-func RegisterJobsAccessControlSyncJobInterface(f func(*Server) ejobs.AccessControlSyncJobInterface) {
-	jobsAccessControlSyncJobInterface = f
-}
-
-var jobsAccessControlTeamSyncJobInterface func(*Server) ejobs.AccessControlSyncJobInterface
-
-func RegisterJobsAccessControlTeamSyncJobInterface(f func(*Server) ejobs.AccessControlSyncJobInterface) {
-	jobsAccessControlTeamSyncJobInterface = f
 }
 
 var pushProxyInterface func(*App) einterfaces.PushProxyInterface

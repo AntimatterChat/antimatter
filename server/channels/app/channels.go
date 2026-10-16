@@ -20,6 +20,7 @@ import (
 	"github.com/mattermost/mattermost/server/public/plugin"
 	"github.com/mattermost/mattermost/server/public/shared/mlog"
 	"github.com/mattermost/mattermost/server/public/shared/request"
+	"github.com/mattermost/mattermost/server/v8/channels/app/accesscontrol"
 	"github.com/mattermost/mattermost/server/v8/channels/app/accountmigration"
 	"github.com/mattermost/mattermost/server/v8/channels/app/imaging"
 	"github.com/mattermost/mattermost/server/v8/channels/app/intune"
@@ -212,14 +213,14 @@ func NewChannels(s *Server) (*Channels, error) {
 		})
 	}
 
-	if accessControlServiceInterface != nil {
-		app := New(ServerConnector(ch))
-		ch.AccessControl = accessControlServiceInterface(app)
-
-		appErr := ch.AccessControl.Init(request.EmptyContext(s.Log()))
-		if appErr != nil && appErr.StatusCode != http.StatusNotImplemented {
-			s.Log().Error("An error occurred while initializing Access Control", mlog.Err(appErr))
-		}
+	accessControlApp := New(ServerConnector(ch))
+	ch.AccessControl = accesscontrol.New(accesscontrol.Backend{
+		Store:  func() store.Store { return accessControlApp.Srv().Store() },
+		Config: accessControlApp.Config,
+		Logger: func() mlog.LoggerIFace { return accessControlApp.Log() },
+	})
+	if appErr := ch.AccessControl.Init(request.EmptyContext(s.Log())); appErr != nil && appErr.StatusCode != http.StatusNotImplemented {
+		s.Log().Error("An error occurred while initializing Access Control", mlog.Err(appErr))
 	}
 
 	var imgErr error

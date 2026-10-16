@@ -28,6 +28,7 @@ import (
 	"github.com/mattermost/mattermost/server/public/shared/mlog"
 	"github.com/mattermost/mattermost/server/public/shared/request"
 	"github.com/mattermost/mattermost/server/public/shared/timezones"
+	"github.com/mattermost/mattermost/server/v8/channels/app/accesscontrol"
 	"github.com/mattermost/mattermost/server/v8/channels/app/email"
 	"github.com/mattermost/mattermost/server/v8/channels/app/ldap"
 	"github.com/mattermost/mattermost/server/v8/channels/app/outgoingoauth"
@@ -1394,15 +1395,11 @@ func (s *Server) initJobs() {
 	ldapSync := ldap.NewSyncJob(&ldapBackend{a: ldapApp}, ldapApp.Ldap, func() *jobs.JobServer { return s.Jobs })
 	s.Jobs.RegisterJobType(model.JobTypeLdapSync, ldapSync.MakeWorker(), ldapSync.MakeScheduler())
 
-	if jobsAccessControlSyncJobInterface != nil {
-		builder := jobsAccessControlSyncJobInterface(s)
-		s.Jobs.RegisterJobType(model.JobTypeAccessControlSync, builder.MakeWorker(), builder.MakeScheduler())
-	}
+	accessControlSync := accesscontrol.NewSyncJob(s.accessControlSyncJobDeps(), false)
+	s.Jobs.RegisterJobType(model.JobTypeAccessControlSync, accessControlSync.MakeWorker(), accessControlSync.MakeScheduler())
 
-	if jobsAccessControlTeamSyncJobInterface != nil {
-		builder := jobsAccessControlTeamSyncJobInterface(s)
-		s.Jobs.RegisterJobType(model.JobTypeAccessControlTeamSync, builder.MakeWorker(), builder.MakeScheduler())
-	}
+	accessControlTeamSync := accesscontrol.NewSyncJob(s.accessControlSyncJobDeps(), true)
+	s.Jobs.RegisterJobType(model.JobTypeAccessControlTeamSync, accessControlTeamSync.MakeWorker(), accessControlTeamSync.MakeScheduler())
 
 	if pushProxyInterface != nil {
 		builder := pushProxyInterface(New(ServerConnector(s.Channels())))
