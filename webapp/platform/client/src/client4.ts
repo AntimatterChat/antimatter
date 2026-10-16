@@ -13,7 +13,6 @@ import type {Bot, BotPatch} from '@mattermost/types/bots';
 import type {ChannelBookmark, ChannelBookmarkCreate, ChannelBookmarkPatch, UpdateChannelBookmarkResponse} from '@mattermost/types/channel_bookmarks';
 import type {ChannelCategory, OrderedChannelCategories, ServerCategoriesUpdate, ServerCategory} from '@mattermost/types/channel_categories';
 import type {CategoryOverride, ChannelOverride} from '@mattermost/types/channel_overrides';
-import type {MemberModeration, MemberTimeout} from '@mattermost/types/moderation';
 import type {
     Channel,
     ChannelJoinRequest,
@@ -110,6 +109,7 @@ import type {
     MarketplacePlugin,
 } from '@mattermost/types/marketplace';
 import type {MfaSecret} from '@mattermost/types/mfa';
+import type {MemberModeration, MemberTimeout} from '@mattermost/types/moderation';
 import type {
     ClientPluginManifest,
     PluginManifest,

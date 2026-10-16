@@ -3,7 +3,7 @@
 
 import React from 'react';
 
-import type {ChannelType} from '@mattermost/types/channels';
+import type {Channel, ChannelType} from '@mattermost/types/channels';
 import type {DeepPartial} from '@mattermost/types/utilities';
 
 import SidebarChannel from 'components/sidebar/sidebar_channel/sidebar_channel';
@@ -152,7 +152,7 @@ describe('components/sidebar/sidebar_channel', () => {
     });
 
     describe('plugin footer', () => {
-        const Footer: SidebarChannelFooterComponent['component'] = ({channel}) => <span>{`footer of ${channel.id}`}</span>;
+        const Footer: SidebarChannelFooterComponent['component'] = ({channel}: {channel: Channel}) => <span>{`footer of ${channel.id}`}</span>;
         const pluginState: DeepPartial<GlobalState> = {
             plugins: {
                 components: {

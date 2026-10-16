@@ -232,6 +232,7 @@ const Preferences = {
             mentionHighlightLink: '#a4f4f4',
             codeTheme: 'monokai',
         },
+
         // The Fusion UI's themes, from its mockup. Fusion System follows the operating system's light or dark mode.
         fusionSystem: {
             type: 'Fusion System',

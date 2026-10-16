@@ -106,7 +106,6 @@ describe('components/external_link', () => {
         );
     });
 
-
     it('shows links to mattermost.com as text', () => {
         renderWithContext(
             <ExternalLink

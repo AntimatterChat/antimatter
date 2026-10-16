@@ -2,9 +2,9 @@
 // See LICENSE.txt for license information.
 
 import type {ServerError} from './errors';
+import type {MemberTimeout} from './moderation';
 import type {UserProfile} from './users';
 import type {RelationOneToOne} from './utilities';
-import type {MemberTimeout} from './moderation';
 
 export type TeamMembership = TeamUnread & {
     user_id: string;

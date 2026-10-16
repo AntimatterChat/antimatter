@@ -74,6 +74,7 @@ export default class LinkingLandingPage extends PureComponent<Props, State> {
         super(props);
 
         const finalLocation = safeRedirect(window.location.href);
+
         // The desktop and mobile apps open antimatter:// links (and still accept mattermost:// ones).
         const nativeLocation = finalLocation.replace(/^(https|http)/, 'antimatter');
 
