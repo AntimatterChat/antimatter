@@ -8,7 +8,11 @@ test('the composer\'s emoji picker searches and inserts an emoji', async ({fusio
     await fusion.main.getByRole('button', {name: 'Emoji', exact: true}).click();
     const picker = page.getByRole('dialog', {name: 'Emoji'});
     await expect(picker).toBeVisible();
-    await expect(picker.getByRole('tab', {name: 'Emoji'})).toHaveAttribute('aria-selected', 'true');
+
+    // The picker has tabs when plugins add some (GIFs, stickers): it opens on Emoji. A server without them has none.
+    if (await picker.getByRole('tablist').count() > 0) {
+        await expect(picker.getByRole('tab', {name: 'Emoji'})).toHaveAttribute('aria-selected', 'true');
+    }
 
     await picker.getByRole('textbox', {name: 'Search emoji'}).fill('tada');
     await expect(picker.getByRole('heading', {name: 'Search results'})).toBeVisible();
