@@ -40,7 +40,7 @@ import TeamAnalytics from 'components/analytics/team_analytics';
 import {searchableStrings as teamAnalyticsSearchableStrings} from 'components/analytics/team_analytics/team_analytics';
 import ExternalLink from 'components/external_link';
 
-import {AboutLinks, CacheTypes, Constants, DeveloperLinks, DocLinks} from 'utils/constants';
+import {CacheTypes, Constants, DeveloperLinks, DocLinks} from 'utils/constants';
 import {ID_PATH_PATTERN} from 'utils/path';
 import {getSiteURL} from 'utils/url';
 
@@ -1562,13 +1562,6 @@ const AdminDefinition: AdminDefinitionType = {
                             },
                             isDisabled: it.not(it.userHasWritePermissionOnResource(RESOURCE_KEYS.ENVIRONMENT.SMTP)),
                         },
-                        {
-                            type: 'bool',
-                            key: 'ServiceSettings.EnableSecurityFixAlert',
-                            label: defineMessage({id: 'admin.environment.smtp.enableSecurityFixAlert.title', defaultMessage: 'Enable Security Alerts:'}),
-                            help_text: defineMessage({id: 'admin.environment.smtp.enableSecurityFixAlert.description', defaultMessage: 'When true, System Administrators are notified by email if a relevant security fix alert has been announced in the last 12 hours. Requires email to be enabled.'}),
-                            isDisabled: it.not(it.userHasWritePermissionOnResource(RESOURCE_KEYS.ENVIRONMENT.SMTP)),
-                        },
                     ],
                 },
             },
@@ -1878,27 +1871,6 @@ const AdminDefinition: AdminDefinitionType = {
                                         />
                                     </strong>
                                 ),
-                            },
-                            isDisabled: it.not(it.userHasWritePermissionOnResource(RESOURCE_KEYS.ENVIRONMENT.LOGGING)),
-                        },
-                        {
-                            type: 'bool',
-                            key: 'LogSettings.EnableDiagnostics',
-                            label: defineMessage({id: 'admin.log.enableDiagnostics', defaultMessage: 'Enable Diagnostics and Error Reporting:'}),
-                            help_text: defineMessage({id: 'admin.log.enableDiagnosticsDescription', defaultMessage: 'Enable this feature to improve the quality and performance of Antimatter by sending error reporting and diagnostic information to Mattermost, Inc. Read our <link>privacy policy</link> to learn more.'}), // eslint-disable-line formatjs/enforce-placeholders -- placeholders provided
-                            help_text_markdown: false,
-                            help_text_values: {
-                                link: (msg: string) => (
-                                    <ExternalLink
-                                        location='admin_console'
-                                        href={AboutLinks.PRIVACY_POLICY}
-                                    >
-                                        {msg}
-                                    </ExternalLink>
-                                ),
-                            },
-                            onConfigSave: (displayVal) => {
-                                return displayVal;
                             },
                             isDisabled: it.not(it.userHasWritePermissionOnResource(RESOURCE_KEYS.ENVIRONMENT.LOGGING)),
                         },
@@ -3875,7 +3847,7 @@ const AdminDefinition: AdminDefinitionType = {
             notices: {
                 url: 'site_config/notices',
                 title: defineMessage({id: 'admin.sidebar.notices', defaultMessage: 'Notices'}),
-                isHidden: it.not(it.userHasReadPermissionOnResource(RESOURCE_KEYS.SITE.NOTICES)),
+                isHidden: true, // Notices came from Mattermost, Inc.; Antimatter doesn't fetch them.
                 schema: {
                     id: 'NoticesSettings',
                     name: defineMessage({id: 'admin.site.notices', defaultMessage: 'Notices'}),

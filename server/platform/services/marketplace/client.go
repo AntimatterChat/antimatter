@@ -24,6 +24,10 @@ type Client struct {
 
 // NewClient creates a client to the marketplace server at the given address.
 func NewClient(address string, httpService httpservice.HTTPService) (*Client, error) {
+	if address == "" || model.IsMattermostServiceURL(address) {
+		return nil, errors.New("no app marketplace is configured: Antimatter doesn't use Mattermost's")
+	}
+
 	var httpClient *http.Client
 	addressURL, err := url.Parse(address)
 	if err != nil {

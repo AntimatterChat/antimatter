@@ -65,6 +65,13 @@ func IsMHPNSEndpoint(url string) bool {
 // the test service (GenericNotificationServer). Those services only deliver notifications to
 // Mattermost's own mobile apps.
 func IsMattermostPushServer(rawURL string) bool {
+	return IsMattermostServiceURL(rawURL)
+}
+
+// IsMattermostServiceURL reports whether the given URL points at a service run by Mattermost, Inc.
+// (any host under mattermost.com): push services, the app marketplace, product notices, security
+// bulletins. Antimatter never connects to them, even when an old configuration still names one.
+func IsMattermostServiceURL(rawURL string) bool {
 	u, err := url.Parse(strings.TrimSpace(rawURL))
 	if err != nil {
 		return false

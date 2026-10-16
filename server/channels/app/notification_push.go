@@ -547,6 +547,10 @@ func (s *Server) StopPushNotificationsHubWorkers() {
 }
 
 func (a *App) rawSendToPushProxy(msg *model.PushNotification) (model.PushResponse, error) {
+	if model.IsMattermostPushServer(*a.Config().EmailSettings.PushNotificationServer) {
+		return nil, errors.New("push notification server is a Mattermost service, which Antimatter doesn't use")
+	}
+
 	msgJSON, err := json.Marshal(msg)
 	if err != nil {
 		return nil, fmt.Errorf("failed to encode to JSON: %w", err)
@@ -629,6 +633,10 @@ func (a *App) SendAckToPushProxy(rctx request.CTX, ack *model.PushNotificationAc
 	rctx.Logger().LogM(mlog.MlvlNotificationTrace, "Notification successfully received",
 		mlog.String("status", model.PushReceived),
 	)
+
+	if model.IsMattermostPushServer(*a.Config().EmailSettings.PushNotificationServer) {
+		return errors.New("push notification server is a Mattermost service, which Antimatter doesn't use")
+	}
 
 	ackJSON, err := json.Marshal(ack)
 	if err != nil {

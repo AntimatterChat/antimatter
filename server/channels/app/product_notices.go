@@ -315,6 +315,10 @@ func (a *App) UpdateViewedProductNoticesForNewUser(userID string) {
 // UpdateProductNotices is called periodically from a scheduled worker to fetch new notices and update the cache
 func (a *App) UpdateProductNotices() *model.AppError {
 	url := *a.Config().AnnouncementSettings.NoticesURL
+	// Product notices were Mattermost's; Antimatter doesn't fetch them from Mattermost, Inc.
+	if url == "" || model.IsMattermostServiceURL(url) {
+		return nil
+	}
 	skip := *a.Config().AnnouncementSettings.NoticesSkipCache
 	mlog.Debug("Will fetch notices from", mlog.String("url", url), mlog.Bool("skip_cache", skip))
 	var err error

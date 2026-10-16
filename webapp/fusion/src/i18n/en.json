@@ -4651,14 +4651,6 @@
     "defaultMessage": "Test Connection",
     "description": "Button label on the System Console SMTP page that sends a test email to verify the connection."
   },
-  "admin.environment.smtp.enableSecurityFixAlert.description": {
-    "defaultMessage": "When true, System Administrators are notified by email if a relevant security fix alert has been announced in the last 12 hours. Requires email to be enabled.",
-    "description": "Help text for the Enable Security Alerts setting on the System Console SMTP page."
-  },
-  "admin.environment.smtp.enableSecurityFixAlert.title": {
-    "defaultMessage": "Enable Security Alerts:",
-    "description": "Setting label (ends with a colon) for the Enable Security Alerts toggle on the System Console SMTP page."
-  },
   "admin.environment.smtp.skipServerCertificateVerification.description": {
     "defaultMessage": "When true, Antimatter will not verify the email server certificate.",
     "description": "Help text for the Skip Server Certificate Verification setting on the System Console SMTP page."
@@ -7902,14 +7894,6 @@
   "admin.log.consoleTitle": {
     "defaultMessage": "Output logs to console: ",
     "description": "Setting label (toggle) on the Environment > Logging admin page; ends with a colon and trailing space."
-  },
-  "admin.log.enableDiagnostics": {
-    "defaultMessage": "Enable Diagnostics and Error Reporting:",
-    "description": "Setting label (toggle) in the System Console enabling telemetry/error reporting to Mattermost; ends with a colon."
-  },
-  "admin.log.enableDiagnosticsDescription": {
-    "defaultMessage": "Enable this feature to improve the quality and performance of Antimatter by sending error reporting and diagnostic information to Mattermost, Inc. Read our <link>privacy policy</link> to learn more.",
-    "description": "Help text for the error reporting and diagnostics setting in the System Console; <link> wraps 'privacy policy'."
   },
   "admin.log.enableWebhookDebugging": {
     "defaultMessage": "Enable Webhook Debugging:",

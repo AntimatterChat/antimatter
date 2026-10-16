@@ -534,6 +534,9 @@ func drainAndCloseBody(body io.ReadCloser) {
 
 // TODO: move this into its own push proxy package once one exists (see also pushNotificationClient in server.go)
 func (ps *PlatformService) testPushProxyConnection(ctx context.Context, serverURL string) error {
+	if model.IsMattermostPushServer(serverURL) {
+		return errors.New("the push notification server is a Mattermost service, which Antimatter doesn't use")
+	}
 	ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
 	defer cancel()
 	versionURL, err := url.JoinPath(serverURL, "version")

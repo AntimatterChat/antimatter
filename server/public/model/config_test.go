@@ -1345,29 +1345,17 @@ func TestConfigDefaultServiceSettingsExperimentalGroupUnreadChannels(t *testing.
 }
 
 func TestConfigDefaultNPSPluginState(t *testing.T) {
-	t.Run("should enable NPS plugin by default", func(t *testing.T) {
+	t.Run("should not enable NPS plugin by default", func(t *testing.T) {
 		c1 := Config{}
 		c1.SetDefaults()
 
-		assert.True(t, c1.PluginSettings.PluginStates["com.mattermost.nps"].Enable)
+		assert.False(t, c1.PluginSettings.PluginStates["com.mattermost.nps"].Enable)
 	})
 
-	t.Run("should enable NPS plugin if diagnostics are enabled", func(t *testing.T) {
+	t.Run("should not enable NPS plugin even with diagnostics enabled", func(t *testing.T) {
 		c1 := Config{
 			LogSettings: LogSettings{
 				EnableDiagnostics: new(true),
-			},
-		}
-
-		c1.SetDefaults()
-
-		assert.True(t, c1.PluginSettings.PluginStates["com.mattermost.nps"].Enable)
-	})
-
-	t.Run("should not enable NPS plugin if diagnostics are disabled", func(t *testing.T) {
-		c1 := Config{
-			LogSettings: LogSettings{
-				EnableDiagnostics: new(false),
 			},
 		}
 
@@ -1408,6 +1396,27 @@ func TestConfigDefaultPushNotificationServer(t *testing.T) {
 
 			assert.Equal(t, server, *c.EmailSettings.PushNotificationServer)
 		}
+	})
+}
+
+func TestConfigDefaultsReachNoMattermostService(t *testing.T) {
+	c := Config{}
+	c.SetDefaults()
+
+	assert.False(t, *c.LogSettings.EnableDiagnostics)
+	assert.False(t, *c.LogSettings.EnableSentry)
+	assert.False(t, *c.ServiceSettings.EnableSecurityFixAlert)
+	assert.False(t, *c.AnnouncementSettings.AdminNoticesEnabled)
+	assert.False(t, *c.AnnouncementSettings.UserNoticesEnabled)
+	assert.Equal(t, "", *c.AnnouncementSettings.NoticesURL)
+	assert.Equal(t, "", *c.CloudSettings.CWSURL)
+	assert.Equal(t, "", *c.CloudSettings.CWSAPIURL)
+
+	t.Run("a saved Mattermost notices url is dropped", func(t *testing.T) {
+		c := Config{AnnouncementSettings: AnnouncementSettings{NoticesURL: NewPointer("https://notices.mattermost.com/")}}
+		c.SetDefaults()
+
+		assert.Equal(t, "", *c.AnnouncementSettings.NoticesURL)
 	})
 }
 
@@ -3262,23 +3271,26 @@ func TestConfigToJSONFiltered(t *testing.T) {
 func TestConfigMarketplaceDefaults(t *testing.T) {
 	t.Parallel()
 
-	t.Run("no marketplace url", func(t *testing.T) {
+	t.Run("no marketplace url, and no remote marketplace", func(t *testing.T) {
 		c := Config{}
 		c.SetDefaults()
 
 		require.True(t, *c.PluginSettings.EnableMarketplace)
-		require.Equal(t, PluginSettingsDefaultMarketplaceURL, *c.PluginSettings.MarketplaceURL)
+		require.False(t, *c.PluginSettings.EnableRemoteMarketplace)
+		require.Equal(t, "", *c.PluginSettings.MarketplaceURL)
 	})
 
-	t.Run("old marketplace url", func(t *testing.T) {
-		c := Config{}
-		c.SetDefaults()
+	t.Run("Mattermost's marketplace urls are dropped", func(t *testing.T) {
+		for _, url := range []string{PluginSettingsOldMarketplaceURL, "https://api.integrations.mattermost.com"} {
+			c := Config{}
+			c.SetDefaults()
 
-		*c.PluginSettings.MarketplaceURL = PluginSettingsOldMarketplaceURL
-		c.SetDefaults()
+			*c.PluginSettings.MarketplaceURL = url
+			c.SetDefaults()
 
-		require.True(t, *c.PluginSettings.EnableMarketplace)
-		require.Equal(t, PluginSettingsDefaultMarketplaceURL, *c.PluginSettings.MarketplaceURL)
+			require.True(t, *c.PluginSettings.EnableMarketplace)
+			require.Equal(t, "", *c.PluginSettings.MarketplaceURL)
+		}
 	})
 
 	t.Run("custom marketplace url", func(t *testing.T) {

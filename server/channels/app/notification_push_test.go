@@ -1709,8 +1709,8 @@ func TestCanSendPushNotifications(t *testing.T) {
 		{name: "no push notification server (the default)", enabled: true, server: model.DefaultPushNotificationServer, expected: false},
 		{name: "blank push notification server", enabled: true, server: "  ", expected: false},
 		{name: "own push proxy", enabled: true, server: "https://push.example.com", expected: true},
-		{name: "Mattermost's test service is kept", enabled: true, server: model.GenericNotificationServer, expected: true},
-		{name: "Mattermost's hosted service refuses this server", enabled: true, server: model.MHPNSGlobal, expected: false},
+		{name: "Mattermost's test service is never used", enabled: true, server: model.GenericNotificationServer, expected: false},
+		{name: "Mattermost's hosted service is never used", enabled: true, server: model.MHPNSGlobal, expected: false},
 	}
 
 	for _, tc := range testCases {

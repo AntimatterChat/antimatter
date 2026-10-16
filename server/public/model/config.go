@@ -236,7 +236,7 @@ const (
 
 	AnnouncementSettingsDefaultBannerColor                  = "#f2a93b"
 	AnnouncementSettingsDefaultBannerTextColor              = "#333333"
-	AnnouncementSettingsDefaultNoticesJsonURL               = "https://notices.mattermost.com/"
+	AnnouncementSettingsDefaultNoticesJsonURL               = ""
 	AnnouncementSettingsDefaultNoticesFetchFrequencySeconds = 3600
 
 	AutoTranslationDefaultWorkers = 6
@@ -275,7 +275,7 @@ const (
 	PluginSettingsDefaultDirectory          = "./plugins"
 	PluginSettingsDefaultClientDirectory    = "./client/plugins"
 	PluginSettingsDefaultEnableMarketplace  = true
-	PluginSettingsDefaultMarketplaceURL     = "https://api.integrations.mattermost.com"
+	PluginSettingsDefaultMarketplaceURL     = ""
 	PluginSettingsOldMarketplaceURL         = "https://marketplace.integrations.mattermost.com"
 	PluginSettingsDefaultHookTimeoutSeconds = 30
 
@@ -311,10 +311,10 @@ const (
 	Office365SettingsDefaultTokenEndpoint   = "https://login.microsoftonline.com/common/oauth2/v2.0/token"
 	Office365SettingsDefaultUserAPIEndpoint = "https://graph.microsoft.com/v1.0/me"
 
-	CloudSettingsDefaultCwsURL        = "https://customers.mattermost.com"
-	CloudSettingsDefaultCwsAPIURL     = "https://portal.internal.prod.cloud.mattermost.com"
-	CloudSettingsDefaultCwsURLTest    = "https://portal.test.cloud.mattermost.com"
-	CloudSettingsDefaultCwsAPIURLTest = "https://api.internal.test.cloud.mattermost.com"
+	CloudSettingsDefaultCwsURL        = ""
+	CloudSettingsDefaultCwsAPIURL     = ""
+	CloudSettingsDefaultCwsURLTest    = ""
+	CloudSettingsDefaultCwsAPIURLTest = ""
 
 	OpenidSettingsDefaultScope = "profile openid email"
 
@@ -608,7 +608,7 @@ func (s *ServiceSettings) SetDefaults(isUpdate bool) {
 	}
 
 	if s.EnableSecurityFixAlert == nil {
-		s.EnableSecurityFixAlert = new(true)
+		s.EnableSecurityFixAlert = new(false)
 	}
 
 	if s.EnableInsecureOutgoingConnections == nil {
@@ -1746,7 +1746,7 @@ func (s *LogSettings) SetDefaults() {
 	}
 
 	if s.EnableDiagnostics == nil {
-		s.EnableDiagnostics = new(true)
+		s.EnableDiagnostics = new(false)
 	}
 
 	if s.EnableSentry == nil {
@@ -2602,13 +2602,14 @@ func (s *AnnouncementSettings) SetDefaults() {
 	}
 
 	if s.AdminNoticesEnabled == nil {
-		s.AdminNoticesEnabled = new(true)
+		s.AdminNoticesEnabled = new(false)
 	}
 
 	if s.UserNoticesEnabled == nil {
-		s.UserNoticesEnabled = new(true)
+		s.UserNoticesEnabled = new(false)
 	}
-	if s.NoticesURL == nil {
+	// Product notices came from Mattermost, Inc.; Antimatter never fetches them from there.
+	if s.NoticesURL == nil || IsMattermostServiceURL(*s.NoticesURL) {
 		s.NoticesURL = new(AnnouncementSettingsDefaultNoticesJsonURL)
 	}
 	if s.NoticesSkipCache == nil {
@@ -3825,8 +3826,8 @@ func (s *PluginSettings) SetDefaults(ls LogSettings) {
 	}
 
 	if s.PluginStates[PluginIdNPS] == nil {
-		// Enable the NPS plugin by default if diagnostics are enabled
-		s.PluginStates[PluginIdNPS] = &PluginState{Enable: ls.EnableDiagnostics == nil || *ls.EnableDiagnostics}
+		// Mattermost's survey plugin reports to Mattermost, Inc.: never on by default.
+		s.PluginStates[PluginIdNPS] = &PluginState{Enable: false}
 	}
 
 	if s.PluginStates[PluginIdCalls] == nil {
@@ -3860,14 +3861,15 @@ func (s *PluginSettings) SetDefaults(ls LogSettings) {
 	}
 
 	if s.EnableRemoteMarketplace == nil {
-		s.EnableRemoteMarketplace = new(true)
+		s.EnableRemoteMarketplace = new(false)
 	}
 
 	if s.AutomaticPrepackagedPlugins == nil {
 		s.AutomaticPrepackagedPlugins = new(true)
 	}
 
-	if s.MarketplaceURL == nil || *s.MarketplaceURL == "" || *s.MarketplaceURL == PluginSettingsOldMarketplaceURL {
+	// Mattermost's marketplace is never used: a configuration that names it gets none.
+	if s.MarketplaceURL == nil || *s.MarketplaceURL == "" || IsMattermostServiceURL(*s.MarketplaceURL) {
 		s.MarketplaceURL = new(PluginSettingsDefaultMarketplaceURL)
 	}
 

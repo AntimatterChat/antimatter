@@ -17,8 +17,6 @@ import (
 	"sync"
 	"time"
 
-	"github.com/getsentry/sentry-go"
-	sentryhttp "github.com/getsentry/sentry-go/http"
 	"github.com/gorilla/mux"
 	"github.com/pkg/errors"
 	"github.com/rs/cors"
@@ -82,8 +80,6 @@ const (
 	scheduledPostJobInterval      = 5 * time.Minute
 	debugScheduledPostJobInterval = 2 * time.Second
 )
-
-var SentryDSN = "https://eaf281226106b5bba68694d1316da21c@o94110.ingest.us.sentry.io/5212327"
 
 type Server struct {
 	// RootRouter is the starting point for all HTTP requests to the server.
@@ -401,35 +397,6 @@ func NewServer(options ...Option) (*Server, error) {
 	// below this. Otherwise, please add it to Channels struct in app/channels.go.
 	// -------------------------------------------------------------------------
 
-	if *s.platform.Config().LogSettings.EnableDiagnostics && *s.platform.Config().LogSettings.EnableSentry {
-		switch model.GetServiceEnvironment() {
-		case model.ServiceEnvironmentDev:
-			mlog.Warn("Sentry reporting is enabled, but service environment is dev. Disabling reporting.")
-		case model.ServiceEnvironmentProduction, model.ServiceEnvironmentTest:
-			if err2 := sentry.Init(sentry.ClientOptions{
-				Dsn:              SentryDSN,
-				Release:          model.BuildHash,
-				AttachStacktrace: true,
-				BeforeSend: func(event *sentry.Event, hint *sentry.EventHint) *sentry.Event {
-					// sanitize data sent to sentry to reduce exposure of PII
-					if event.Request != nil {
-						event.Request.Cookies = ""
-						event.Request.QueryString = ""
-						event.Request.Headers = nil
-						event.Request.Data = ""
-					}
-					return event
-				},
-				EnableTracing: false,
-				TracesSampler: sentry.TracesSampler(func(ctx sentry.SamplingContext) float64 {
-					return 0.0
-				}),
-			}); err2 != nil {
-				mlog.Warn("Sentry could not be initiated, probably bad DSN?", mlog.Err(err2))
-			}
-		}
-	}
-
 	s.pushNotificationClient = s.httpService.MakeClient(true)
 	// Slash commands and outgoing webhooks give each request a deadline derived from
 	// ServiceSettings.OutgoingIntegrationRequestsTimeout, so this client must not impose a
@@ -642,9 +609,6 @@ func (s *Server) runJobs() {
 		runLeaderTasks(appInstance)
 	})
 	s.Go(func() {
-		runSecurityJob(s)
-	})
-	s.Go(func() {
 		runSessionCleanupJob(s)
 	})
 	s.Go(func() {
@@ -766,8 +730,6 @@ func (s *Server) StopHTTPServer() {
 
 func (s *Server) Shutdown() {
 	s.Log().Info("Stopping Server...")
-
-	defer sentry.Flush(2 * time.Second)
 
 	s.RemoveClusterLeaderChangedListener(s.clusterLeaderListenerId)
 
@@ -990,17 +952,6 @@ func (s *Server) Start() error {
 	mlog.Info("Starting Server...")
 
 	var handler http.Handler = s.RootRouter
-
-	switch model.GetServiceEnvironment() {
-	case model.ServiceEnvironmentProduction, model.ServiceEnvironmentTest:
-		if *s.platform.Config().LogSettings.EnableDiagnostics && *s.platform.Config().LogSettings.EnableSentry {
-			sentryHandler := sentryhttp.New(sentryhttp.Options{
-				Repanic: true,
-			})
-			handler = sentryHandler.Handle(handler)
-		}
-	case model.ServiceEnvironmentDev:
-	}
 
 	if allowedOrigins := *s.platform.Config().ServiceSettings.AllowCorsFrom; allowedOrigins != "" {
 		exposedCorsHeaders := *s.platform.Config().ServiceSettings.CorsExposedHeaders
@@ -1287,13 +1238,6 @@ func (s *Server) checkPushNotificationServerURL() {
 	}
 }
 
-func runSecurityJob(s *Server) {
-	doSecurity(s)
-	model.CreateRecurringTask("Security", func() {
-		doSecurity(s)
-	}, time.Hour*4)
-}
-
 func runTokenCleanupJob(s *Server) {
 	doTokenCleanup(s)
 	model.CreateRecurringTask("Token Cleanup", func() {
@@ -1351,10 +1295,6 @@ func doReportUsageToAWSMeteringService(s *Server) {
 	if err := awsMeter.ReportUserCategoryUsage(ctx, reports); err != nil {
 		mlog.Error("Failed to report usage to AWS Metering Service", mlog.Err(err))
 	}
-}
-
-func doSecurity(s *Server) {
-	s.DoSecurityUpdateCheck()
 }
 
 func doTokenCleanup(s *Server) {
