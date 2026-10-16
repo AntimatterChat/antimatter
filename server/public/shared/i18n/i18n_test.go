@@ -8,6 +8,7 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
+	"slices"
 	"strings"
 	"testing"
 
@@ -275,11 +276,11 @@ func webappLanguageValues(t *testing.T, path string) []string {
 	return locales
 }
 
-// supportedLocales is hand-maintained in three other places: the catalogs
-// shipped by the server, the catalogs shipped by the webapp, and the webapp's
-// own languages map. Nothing but this test keeps the four in step, and when
-// they drift the symptom is a language that is offered but cannot load, or a
-// catalog that is translated but never reachable.
+// supportedLocales is hand-maintained in other places too: the catalogs
+// shipped by the server, the catalogs shipped by the webapp, and the web apps'
+// own languages maps (classic and Fusion). Nothing but this test keeps them in
+// step, and when they drift the symptom is a language that is offered but
+// cannot load, or a catalog that is translated but never reachable.
 func TestSupportedLocalesAreInSync(t *testing.T) {
 	t.Run("server translation files", func(t *testing.T) {
 		assert.ElementsMatch(t, supportedLocales, localeFilesIn(t, "../../../i18n"),
@@ -291,8 +292,17 @@ func TestSupportedLocalesAreInSync(t *testing.T) {
 			"supportedLocales and webapp/channels/src/i18n/*.json disagree")
 	})
 
+	// Antimatter: Fusion offers languages the classic web app doesn't (and the other way round), so each
+	// app offers supported languages only, and together they offer them all.
 	t.Run("webapp languages map", func(t *testing.T) {
-		assert.ElementsMatch(t, supportedLocales, webappLanguageValues(t, "../../../../webapp/channels/src/i18n/i18n.ts"),
-			"supportedLocales and the webapp languages map disagree")
+		classic := webappLanguageValues(t, "../../../../webapp/channels/src/i18n/i18n.ts")
+		fusion := webappLanguageValues(t, "../../../../webapp/fusion/src/i18n/i18n.ts")
+		assert.Subset(t, supportedLocales, classic, "the classic web app offers a language the server doesn't support")
+		assert.Subset(t, supportedLocales, fusion, "Fusion offers a language the server doesn't support")
+
+		offered := append(slices.Clone(classic), fusion...)
+		slices.Sort(offered)
+		assert.ElementsMatch(t, supportedLocales, slices.Compact(offered),
+			"supportedLocales and the languages the web apps offer disagree")
 	})
 }
