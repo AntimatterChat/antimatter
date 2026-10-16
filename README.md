@@ -11,6 +11,7 @@ apps.
 - Server: [github.com/AntimatterChat/antimatter](https://github.com/AntimatterChat/antimatter)
 - Docker image with the bundled plugins:
   [github.com/AntimatterChat/antimatter-docker](https://github.com/AntimatterChat/antimatter-docker)
+- Documentation for users, admins and developers: [antimatter.chat/docs](https://antimatter.chat/docs/)
 
 ## Running Antimatter
 
