@@ -780,10 +780,11 @@ func TestPatchConfig(t *testing.T) {
 			assert.False(t, *oldConfig.PasswordSettings.Lowercase)
 			assert.NotEqual(t, 15, *oldConfig.PasswordSettings.MinimumLength)
 			assert.Equal(t, "DEBUG", *oldConfig.LogSettings.ConsoleLevel)
-			assert.True(t, oldConfig.PluginSettings.PluginStates["com.mattermost.nps"].Enable)
+			// Antimatter ships the NPS (survey) plugin disabled, so the patch turns it on.
+			assert.False(t, oldConfig.PluginSettings.PluginStates["com.mattermost.nps"].Enable)
 
 			states := make(map[string]*model.PluginState)
-			states["com.mattermost.nps"] = &model.PluginState{Enable: *new(false)}
+			states["com.mattermost.nps"] = &model.PluginState{Enable: true}
 			config := model.Config{PasswordSettings: model.PasswordSettings{
 				Lowercase:     new(true),
 				MinimumLength: new(15),
@@ -806,7 +807,7 @@ func TestPatchConfig(t *testing.T) {
 			assert.True(t, *updatedConfig.PasswordSettings.Lowercase)
 			assert.Equal(t, "INFO", *updatedConfig.LogSettings.ConsoleLevel)
 			assert.Equal(t, []string{"another-channel"}, updatedConfig.TeamSettings.ExperimentalDefaultChannels)
-			assert.False(t, updatedConfig.PluginSettings.PluginStates["com.mattermost.nps"].Enable)
+			assert.True(t, updatedConfig.PluginSettings.PluginStates["com.mattermost.nps"].Enable)
 			assert.Equal(t, "no-cache, no-store, must-revalidate", response.Header.Get("Cache-Control"))
 
 			// reset the config
