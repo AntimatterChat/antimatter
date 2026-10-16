@@ -85,16 +85,16 @@ body {
 
 /* Loading: the orbits draw themselves, the particles appear on them, and the spark pulses. */
 .LoadingAnimation--loading .LoadingAnimation__orbit-path {
+    animation: LoadingAnimation__draw var(--draw-duration) var(--ease-out) forwards;
     stroke-dasharray: 100;
     stroke-dashoffset: 100;
-    animation: LoadingAnimation__draw var(--draw-duration) var(--ease-out) forwards;
 }
 .LoadingAnimation--loading .LoadingAnimation__orbit--antimatter .LoadingAnimation__orbit-path {
     animation-delay: 120ms;
 }
 .LoadingAnimation--loading .LoadingAnimation__particle {
-    opacity: 0;
     animation: LoadingAnimation__fade-in 200ms calc(var(--draw-duration) - 200ms) var(--ease-out) forwards;
+    opacity: 0;
 }
 .LoadingAnimation--spinning .LoadingAnimation__spark {
     animation: LoadingAnimation__spark-pulse var(--spark-duration) ease-in-out infinite;

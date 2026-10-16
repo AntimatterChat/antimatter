@@ -38,7 +38,6 @@
     color: var(--am-text);
     box-shadow: none;
   }
-  .admin-sidebar .filter-container .filter:focus { border-color: var(--am-matter); box-shadow: 0 0 0 3px var(--am-matter-soft); }
   .admin-sidebar .filter-container .filter::placeholder, .admin-sidebar .search__icon { color: var(--am-muted); }
   // The search field sits on the sidebar, without the classic dark shadow under it, and its icon above the field.
   .admin-sidebar .filter-container { background: var(--am-console-side); box-shadow: none; }

@@ -85,7 +85,7 @@
 :is(.am-app, .am-layer) .am-sticker-msg .am-s-label { font-size: 12px; bottom: 6px; }
 /* Custom emoji: square, the same box as a standard emoji at any font size. */
 :is(.am-app, .am-layer) .am-cemoji { display: inline-grid; place-items: center; vertical-align: -0.2em; width: 1.2em; height: 1.2em; border-radius: .24em; overflow: hidden; color: #fff; line-height: 1; }
-:is(.am-app, .am-layer) .am-cemoji b { font: 800 var(--am-fs, .5em)/1 var(--am-font-ui); letter-spacing: -0.02em; white-space: nowrap; }
+:is(.am-app, .am-layer) .am-cemoji b { font: 800 var(--am-fs, .5em) / 1 var(--am-font-ui); letter-spacing: -0.02em; white-space: nowrap; }
 :is(.am-app, .am-layer) .am-cemoji.am-svg { background: none; border-radius: 0; }
 :is(.am-app, .am-layer) .am-cemoji.am-svg svg { width: 1.2em; height: 1.2em; }
 :is(.am-app, .am-layer) .am-emoji-grid button, :is(.am-app, .am-layer) .am-quick-react button { font-size: 20px; }

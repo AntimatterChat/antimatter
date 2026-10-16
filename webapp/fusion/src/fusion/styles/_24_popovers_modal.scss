@@ -13,7 +13,7 @@
   box-shadow: var(--am-shadow);
   overflow: hidden;
 }
-:is(.am-app, .am-layer) .am-pop .am-cover { height: 60px; background: linear-gradient(120deg, var(--am-matter), var(--am-anti)); }
+:is(.am-app, .am-layer) .am-pop .am-cover { position: relative; height: 60px; background: linear-gradient(120deg, var(--am-matter), var(--am-anti)); }
 :is(.am-app, .am-layer) .am-pop .am-pbody { padding: 0 16px 16px; margin-top: -30px; }
 :is(.am-app, .am-layer) .am-pop .am-av.am-xl { box-shadow: 0 0 0 5px var(--am-raise); }
 :is(.am-app, .am-layer) .am-pop h4 { margin: 10px 0 0; font: 600 18px var(--am-font-display); }
@@ -106,8 +106,6 @@
 :is(.am-app, .am-layer) .am-switch::after { content: ""; position: absolute; top: 3px; left: 3px; width: 18px; height: 18px; border-radius: 50%; background: #fff; transition: transform .15s ease; }
 :is(.am-app, .am-layer) .am-switch[aria-checked="true"] { background: var(--am-matter); }
 :is(.am-app, .am-layer) .am-switch[aria-checked="true"]::after { transform: translateX(16px); }
-:is(.am-app, .am-layer) .am-role-list { display: grid; gap: 8px; }
-:is(.am-app, .am-layer) .am-role-row { display: grid; grid-template-columns: auto minmax(0, 1fr) auto auto; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 10px; background: var(--am-side); border: 1px solid var(--am-line); }
 :is(.am-app, .am-layer) .am-role-row input[type="color"] { width: 30px; height: 30px; border: 0; border-radius: 8px; padding: 0; background: none; cursor: pointer; }
 :is(.am-app, .am-layer) .am-role-row .am-rn b { display: block; }
 :is(.am-app, .am-layer) .am-role-row .am-rn span { font-size: 12.5px; color: var(--am-muted); }
@@ -134,8 +132,6 @@
 :is(.am-app, .am-layer) .am-custom-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 8px; margin-bottom: 14px; }
 :is(.am-app, .am-layer) .am-custom-grid label { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 10px; background: var(--am-side); border: 1px solid var(--am-line); font-size: 13.5px; }
 :is(.am-app, .am-layer) .am-custom-grid input[type="color"] { width: 30px; height: 30px; border: 0; padding: 0; background: none; border-radius: 8px; cursor: pointer; flex: none; }
-:is(.am-app, .am-layer) .am-theme-code { display: flex; gap: 8px; flex-wrap: wrap; }
-:is(.am-app, .am-layer) .am-theme-code input { flex: 1; min-width: 180px; height: 38px; padding: 0 12px; border-radius: 9px; border: 1px solid var(--am-line); background: var(--am-side); font: 12.5px var(--am-font-mono); outline: none; }
 :is(.am-app, .am-layer) .am-theme-code input:focus { border-color: var(--am-matter); }
 :is(.am-app, .am-layer) .am-meter { height: 8px; border-radius: 4px; background: var(--am-raise-2); overflow: hidden; }
 :is(.am-app, .am-layer) .am-meter i { display: block; height: 100%; width: 38%; background: linear-gradient(90deg, var(--am-ok), var(--am-anti)); }
@@ -167,7 +163,7 @@
 :is(.am-app, .am-layer) .am-chip button { display: grid; place-items: center; width: 18px; height: 18px; border-radius: 50%; color: var(--am-muted); }
 :is(.am-app, .am-layer) .am-chip button:hover { background: var(--am-hover); color: var(--am-text); }
 :is(.am-app, .am-layer) .am-field textarea { min-height: 72px; padding: 8px 12px; border-radius: 9px; border: 1px solid var(--am-line); background: var(--am-side); outline: none; font: inherit; resize: vertical; }
-:is(.am-app, .am-layer) .am-theme-code { display: flex; gap: 8px; align-items: center; margin: 8px 0 4px; }
+:is(.am-app, .am-layer) .am-theme-code { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin: 8px 0 4px; }
 :is(.am-app, .am-layer) .am-theme-code input { flex: 1; min-width: 0; height: 36px; padding: 0 10px; border-radius: 9px; border: 1px solid var(--am-line); background: var(--am-side); outline: none; font: 13px var(--am-font-mono); }
 
 // Security settings: authenticator QR code, created token, access history, sign-in providers.
@@ -210,7 +206,7 @@
 /* Roles: the team's roles in order, each with its colour, and an editor under the list. */
 :is(.am-app, .am-layer) .am-roles-pane { width: 100%; }
 :is(.am-app, .am-layer) .am-role-list { display: grid; gap: 2px; margin: 12px 0; }
-:is(.am-app, .am-layer) .am-role-row { display: flex; align-items: center; gap: 10px; padding: 8px 6px 8px 10px; border-radius: 8px; }
+:is(.am-app, .am-layer) .am-role-row { display: flex; align-items: center; gap: 10px; padding: 8px 6px 8px 10px; border-radius: 8px; background: var(--am-side); border: 1px solid var(--am-line); }
 :is(.am-app, .am-layer) .am-role-row:hover { background: var(--am-hover); }
 :is(.am-app, .am-layer) .am-role-row .am-grow { display: grid; min-width: 0; }
 :is(.am-app, .am-layer) .am-role-row .am-grow span { color: var(--am-muted); font-size: 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -280,7 +276,6 @@
 :is(.am-app, .am-layer) .am-field-note.am-bad { color: var(--am-danger); }
 .am-app.am-solo { position: fixed; inset: 0; display: block; background: var(--am-main); }
 /* A profile card's banner, with the mod view and the person's menu at its top right, as Discord's. */
-:is(.am-app, .am-layer) .am-pop .am-cover { position: relative; }
 :is(.am-app, .am-layer) .am-cover-actions { position: absolute; top: 8px; right: 8px; display: flex; gap: 6px; }
 :is(.am-app, .am-layer) .am-cover-btn { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; background: rgba(0, 0, 0, .45); color: #fff; }
 :is(.am-app, .am-layer) .am-cover-btn:hover { background: rgba(0, 0, 0, .65); }

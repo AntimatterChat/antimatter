@@ -83,8 +83,7 @@
 /* Whiteboard */
 :is(.am-app, .am-layer) .am-wb-wrap { position: relative; height: 100%; min-height: 0; display: flex; flex-direction: column; }
 :is(.am-app, .am-layer) .am-wb-tools { display: flex; align-items: center; gap: 1px; flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; padding: 6px 6px; border-bottom: 1px solid var(--am-line); }
-:is(.am-app, .am-layer) .am-wb-tools button { flex: none; }
-:is(.am-app, .am-layer) .am-wb-tools button { width: 29px; height: 30px; border-radius: 7px; display: grid; place-items: center; color: var(--am-muted); }
+:is(.am-app, .am-layer) .am-wb-tools button { flex: none; width: 29px; height: 30px; border-radius: 7px; display: grid; place-items: center; color: var(--am-muted); }
 :is(.am-app, .am-layer) .am-wb-tools button:hover { background: var(--am-hover); color: var(--am-text); }
 :is(.am-app, .am-layer) .am-wb-tools button.am-on { background: var(--am-matter-soft); color: var(--am-matter); }
 :is(.am-app, .am-layer) .am-wb-tools .am-ic { width: 17px; height: 17px; }

@@ -101,6 +101,15 @@ body.app__body #root.am-root > .am-root-main {
   // as its content, and the panels that size themselves to it (the Agents panel's conversation, a virtualized list)
   // get no height at all and show nothing.
   .sidebar-right__body { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+  // The classic panels' headers, drawn as the mockup's panel header (.am-rhs-head).
+  .sidebar--right__header { height: 52px; flex: none; display: flex; align-items: center; gap: 8px; padding: 0 8px 0 16px; border-bottom: 1px solid var(--am-line); color: var(--am-text); white-space: nowrap; overflow: hidden; }
+  .sidebar--right__title { flex: 1; min-width: 0; display: flex; align-items: center; gap: 8px; padding: 0; font: 600 15px var(--am-font-display); line-height: normal; overflow: hidden; text-overflow: ellipsis; }
+  .sidebar--right__title__channel, .sidebar--right__title__subtitle { min-width: 0; margin-left: 6px; padding: 0; border: 0; background: none; font: 500 12px var(--am-font-ui); color: var(--am-muted); overflow: hidden; text-overflow: ellipsis; }
+  .sidebar--right__header .pull-right, .sidebar--right__header .controls { flex: none; display: flex; align-items: center; gap: 2px; float: none; }
+  .sidebar--right__header .btn-icon { width: 32px; height: 32px; min-width: 0; padding: 0; margin: 0; display: grid; place-items: center; border: 0; border-radius: 8px; background: none; color: var(--am-muted); font-size: 18px; }
+  .sidebar--right__header .btn-icon:hover { background: var(--am-hover); color: var(--am-text); }
+  .sidebar--right__header .btn-icon i::before { margin: 0; }
+  .sidebar--right__expand .icon-arrow-collapse { display: none; }
 }
 :is(.am-app, .am-layer) .am-rhs .am-members-panel { padding: 10px 8px 16px; }
 :is(.am-app, .am-layer) .am-rhs .am-composer { padding: 0 14px 14px; }
@@ -111,7 +120,6 @@ body.app__body #root.am-root > .am-root-main {
 body.app__body :where(.am-app, .am-layer) a:where(:not(.am-body *, .am-rhs-classic *)) { color: inherit; text-decoration: none; }
 body.app__body :where(.am-app, .am-layer) a:where(:not(.am-body *, .am-rhs-classic *)):is(:hover, :focus) { color: inherit; text-decoration: none; }
 :is(.am-app, .am-layer) .am-composer input[type="file"] { display: none; }
-:is(.am-app, .am-layer) .am-body .post-code code { background: transparent; padding: 0; }
 
 // What plugins render below a sidebar channel (registerSidebarChannelFooterComponent), e.g. the people in its call.
 :is(.am-app, .am-layer) .am-ch-footer { margin-left: 8px; }
@@ -121,17 +129,6 @@ body.app__body :where(.am-app, .am-layer) a:where(:not(.am-body *, .am-rhs-class
 :is(.am-app, .am-layer) .am-view-panel { display: flex; flex-direction: column; flex: 0 1 50%; min-height: 0; overflow: hidden; border-bottom: 1px solid var(--am-line); }
 :is(.am-app, .am-layer) .am-view-panel.am-fill { flex: 1 1 auto; border-bottom: none; }
 
-// The classic panels' headers, drawn as the mockup's panel header (.am-rhs-head).
-:is(.am-app, .am-layer) .am-rhs-classic {
-  .sidebar--right__header { height: 52px; flex: none; display: flex; align-items: center; gap: 8px; padding: 0 8px 0 16px; border-bottom: 1px solid var(--am-line); color: var(--am-text); white-space: nowrap; overflow: hidden; }
-  .sidebar--right__title { flex: 1; min-width: 0; display: flex; align-items: center; gap: 8px; padding: 0; font: 600 15px var(--am-font-display); line-height: normal; overflow: hidden; text-overflow: ellipsis; }
-  .sidebar--right__title__channel, .sidebar--right__title__subtitle { min-width: 0; margin-left: 6px; padding: 0; border: 0; background: none; font: 500 12px var(--am-font-ui); color: var(--am-muted); overflow: hidden; text-overflow: ellipsis; }
-  .sidebar--right__header .pull-right, .sidebar--right__header .controls { flex: none; display: flex; align-items: center; gap: 2px; float: none; }
-  .sidebar--right__header .btn-icon { width: 32px; height: 32px; min-width: 0; padding: 0; margin: 0; display: grid; place-items: center; border: 0; border-radius: 8px; background: none; color: var(--am-muted); font-size: 18px; }
-  .sidebar--right__header .btn-icon:hover { background: var(--am-hover); color: var(--am-text); }
-  .sidebar--right__header .btn-icon i::before { margin: 0; }
-  .sidebar--right__expand .icon-arrow-collapse { display: none; }
-}
 :is(.am-app, .am-layer) .am-rhs.am-expanded .sidebar--right__expand .icon-arrow-expand { display: none; }
 :is(.am-app, .am-layer) .am-rhs.am-expanded .sidebar--right__expand .icon-arrow-collapse { display: flex; }
 // Expanded panels take the room left once the conversation keeps --am-main-min, never less than a normal panel.
@@ -177,7 +174,7 @@ body.app__body :where(.am-app, .am-layer) a:where(:not(.am-body *, .am-rhs-class
     background: var(--am-rail);
     font: 13px/1.5 var(--am-font-mono);
   }
-  code { font: inherit; }
+  code { background: transparent; padding: 0; font: inherit; }
   .post-code__overlay { top: 6px; right: 6px; height: auto; padding: 0; gap: 4px; background: none; }
   &:hover .post-code__overlay { top: 6px; right: 6px; padding: 0; background: none; }
   .post-code__clipboard { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 6px; background: var(--am-raise); }

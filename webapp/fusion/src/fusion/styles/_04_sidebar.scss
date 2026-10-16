@@ -56,8 +56,7 @@
   text-transform: uppercase;
 }
 :is(.am-app, .am-layer) .am-cat:first-child { margin-top: 8px; }
-:is(.am-app, .am-layer) .am-cat .am-ic { width: 12px; height: 12px; stroke-width: 2.4; }
-:is(.am-app, .am-layer) .am-cat .am-ic { transition: transform .15s ease; }
+:is(.am-app, .am-layer) .am-cat .am-ic { width: 12px; height: 12px; stroke-width: 2.4; transition: transform .15s ease; }
 // Only the chevron turns when the category folds.
 :is(.am-app, .am-layer) .am-cat.am-collapsed > .am-ic:first-child { transform: rotate(-90deg); }
 :is(.am-app, .am-layer) .am-cat:hover { color: var(--am-text-2); }

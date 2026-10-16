@@ -31,7 +31,7 @@
 .am-bs-main.backstage-body { grid-area: bs-main; display: block; overflow-y: auto; min-width: 0; padding: 0; background: none; }
 .am-bs-page {
   // The page column, centred, without the classic page's own margins for its sidebar.
-  .backstage-content { max-width: 980px; margin: 0 auto; padding: 32px 40px 72px; border: 0; background: none; color: var(--am-text); }
+  .backstage-content { container-type: inline-size; max-width: 980px; margin: 0 auto; padding: 32px 40px 72px; border: 0; background: none; color: var(--am-text); }
 
   // Title, with its breadcrumb (Integrations › Incoming webhooks › Add), and the add button.
   .backstage-header { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 18px; }
@@ -76,18 +76,16 @@
 
   // Overview: the kinds of integrations as Fusion cards.
   /* The overview: sections of up to three wide tiles, a column of them when narrow. */
-  .backstage-content { container-type: inline-size; }
   .integrations-section { margin-bottom: 26px; }
   .integrations-section h2 { margin: 0 0 10px; color: var(--am-muted); font: 700 11.5px var(--am-font-ui); letter-spacing: .07em; text-transform: uppercase; }
   .integrations-section:not(:has(.integration-option)) { display: none; }
   .integrations-list { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
   @container (max-width: 760px) { .integrations-list { grid-template-columns: minmax(0, 1fr); } }
-  .integration-option { display: flex; align-items: flex-start; gap: 14px; width: auto; min-height: 96px; padding: 16px; border: 1px solid var(--am-line); border-radius: 14px; background: var(--am-side); color: var(--am-text); font: inherit; text-align: left; text-decoration: none; }
+  .integration-option { --am-tile: var(--am-matter); display: flex; align-items: flex-start; gap: 14px; width: auto; min-height: 96px; padding: 16px; border: 1px solid var(--am-line); border-radius: 14px; background: var(--am-side); color: var(--am-text); font: inherit; text-align: left; text-decoration: none; }
   .integration-option__text { display: grid; gap: 4px; min-width: 0; }
   .integration-option:hover { border-color: var(--am-matter); text-decoration: none; }
   .integration-option__image { display: grid; flex: none; place-items: center; width: 44px; height: 44px; border-radius: 12px; background: color-mix(in srgb, var(--am-tile) 18%, transparent); color: var(--am-tile); }
   .integration-option__image .am-ic { width: 22px; height: 22px; }
-  .integration-option { --am-tile: var(--am-matter); }
   .integration-option--inbox { --am-tile: var(--am-anti); }
   .integration-option--slash { --am-tile: var(--am-spark); }
   .integration-option--shield { --am-tile: var(--am-ok); }
