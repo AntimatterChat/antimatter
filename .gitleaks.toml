@@ -6,7 +6,7 @@ title = "Antimatter gitleaks config"
 [extend]
 useDefault = true
 
-[allowlist]
+[[allowlists]]
 description = "Dependencies, build output and test fixtures"
 paths = [
   '''(^|/)node_modules/''',
@@ -27,6 +27,8 @@ paths = [
 ]
 
 # Known false positives, matched on the whole line.
+[[allowlists]]
+description = "Known false positives"
 regexTarget = "line"
 regexes = [
   # A setting name, not a Vault token.
@@ -38,3 +40,15 @@ regexes = [
   # MinIO key of the throwaway test services.
   '''MINIO_KMS_SECRET_KEY: my-minio-key:''',
 ]
+
+# The Fusion e2e job's admin password (AM_E2E_PASSWORD in antimatter-e2e.yml): an account the job creates on the
+# throwaway Postgres service of that job, which is gone when the job ends. Only that line of that file, and only
+# for the rule it trips (a global allowlist with a path would skip the whole file).
+[[rules]]
+id = "generic-api-key"
+[[rules.allowlists]]
+description = "The e2e job's throwaway admin password"
+condition = "AND"
+paths = ['''^\.github/workflows/antimatter-e2e\.yml$''']
+regexTarget = "line"
+regexes = ['''^\s*AM_E2E_PASSWORD: [^\s#]+\s*$''']
