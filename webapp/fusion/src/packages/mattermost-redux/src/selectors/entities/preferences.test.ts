@@ -180,7 +180,7 @@ describe('Selectors.Preferences', () => {
                         },
                     },
                 },
-            } as unknown as GlobalState)).toEqual(Preferences.THEMES.denim);
+            } as unknown as GlobalState)).toEqual(Preferences.THEMES[Selectors.DEFAULT_FUSION_THEME_KEY]);
         });
 
         it('custom theme', () => {
@@ -488,12 +488,14 @@ describe('Selectors.Preferences', () => {
             } as GlobalState).codeTheme).toEqual(Preferences.THEMES.onyx.codeTheme);
         });
 
+        // Fusion only follows the System Console's default theme when it's one of Fusion's themes: the setting is
+        // shared with the classic web app, whose themes don't fit the Fusion UI.
         it('should return the server-configured theme by default', () => {
             expect(Selectors.getTheme({
                 entities: {
                     general: {
                         config: {
-                            DefaultTheme: 'indigo',
+                            DefaultTheme: 'fusionLight',
                         },
                     },
                     teams: {
@@ -505,14 +507,14 @@ describe('Selectors.Preferences', () => {
                         },
                     },
                 },
-            } as unknown as GlobalState).codeTheme).toEqual(Preferences.THEMES.indigo.codeTheme);
+            } as unknown as GlobalState)).toEqual(Preferences.THEMES.fusionLight);
 
             // Opposite case
             expect(Selectors.getTheme({
                 entities: {
                     general: {
                         config: {
-                            DefaultTheme: 'onyx',
+                            DefaultTheme: 'fusionDark',
                         },
                     },
                     teams: {
@@ -524,7 +526,27 @@ describe('Selectors.Preferences', () => {
                         },
                     },
                 },
-            } as unknown as GlobalState).codeTheme).not.toEqual(Preferences.THEMES.indigo.codeTheme);
+            } as unknown as GlobalState).codeTheme).not.toEqual(Preferences.THEMES.fusionLight.codeTheme);
+        });
+
+        it('ignores a server-configured classic theme and falls back to the Fusion default', () => {
+            for (const DefaultTheme of ['denim', 'indigo', 'onyx']) {
+                expect(Selectors.getTheme({
+                    entities: {
+                        general: {
+                            config: {
+                                DefaultTheme,
+                            },
+                        },
+                        teams: {
+                            currentTeamId: null,
+                        },
+                        preferences: {
+                            myPreferences: {},
+                        },
+                    },
+                } as unknown as GlobalState)).toEqual(Preferences.THEMES[Selectors.DEFAULT_FUSION_THEME_KEY]);
+            }
         });
 
         it('returns the "default" theme if the server-configured value is not present', () => {
@@ -544,7 +566,7 @@ describe('Selectors.Preferences', () => {
                         },
                     },
                 },
-            } as unknown as GlobalState).codeTheme).toEqual(Preferences.THEMES.denim.codeTheme);
+            } as unknown as GlobalState)).toEqual(Preferences.THEMES[Selectors.DEFAULT_FUSION_THEME_KEY]);
         });
     });
 
