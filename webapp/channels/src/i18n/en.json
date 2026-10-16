@@ -6979,6 +6979,10 @@
     "defaultMessage": "Integration Management",
     "description": "Page title of the Integration Management settings page in the System Console integrations section."
   },
+  "admin.integrations.textToSpeech": {
+    "defaultMessage": "Text to speech",
+    "description": ""
+  },
   "admin.intune.authServiceDescription": {
     "defaultMessage": "Select how users authenticate into Antimatter.\n* **OpenID Connect** – Use when users sign in to Antimatter via Microsoft 365 / Entra ID using OIDC.\n* **SAML 2.0** – Use when users authenticate via a SAML provider that ultimately maps to Microsoft Entra ID.\nChoose the option that matches how your organization already authenticates users into Antimatter on other clients.",
     "description": "Admin console help text under the Auth Provider dropdown in the Microsoft Intune section of Mobile Security; contains markdown bullets and bold, and OpenID Connect / SAML 2.0 are protocol names."
@@ -13327,6 +13331,10 @@
     "defaultMessage": "Team Statistics",
     "description": "Navigation item in the System Console sidebar under Reporting; opens the per-team statistics page; compact space."
   },
+  "admin.sidebar.textToSpeech": {
+    "defaultMessage": "Text to speech",
+    "description": ""
+  },
   "admin.sidebar.userManagement": {
     "defaultMessage": "User Management",
     "description": "Category heading in the System Console left navigation sidebar, grouping user, team, and permission pages; compact space."
@@ -15198,6 +15206,58 @@
   "admin.teamChannelSettings.usersToBeRemovedModal.title": {
     "defaultMessage": "<b>{total, number} {total, plural, one {User} other {Users}}</b> To Be Removed",
     "description": "Title of the modal listing users who will be removed by group sync; {total} is the user count with plural forms, and <b></b> wraps the bolded count portion."
+  },
+  "admin.textToSpeech.apiKeyDesc": {
+    "defaultMessage": "Sent as a bearer token. Leave it blank if the API needs none.",
+    "description": ""
+  },
+  "admin.textToSpeech.apiKeyTitle": {
+    "defaultMessage": "API key:",
+    "description": ""
+  },
+  "admin.textToSpeech.enableDesc": {
+    "defaultMessage": "Adds \"Read aloud\" to the menu of messages: their text is read by an OpenAI-compatible text-to-speech API (its /audio/speech endpoint).",
+    "description": ""
+  },
+  "admin.textToSpeech.enableTitle": {
+    "defaultMessage": "Read messages aloud:",
+    "description": ""
+  },
+  "admin.textToSpeech.modelDesc": {
+    "defaultMessage": "The model as the API names it.",
+    "description": ""
+  },
+  "admin.textToSpeech.modelExample": {
+    "defaultMessage": "e.g.: \"tts-1\"",
+    "description": ""
+  },
+  "admin.textToSpeech.modelTitle": {
+    "defaultMessage": "Model:",
+    "description": ""
+  },
+  "admin.textToSpeech.urlDesc": {
+    "defaultMessage": "The base URL of the API, up to and including /v1.",
+    "description": ""
+  },
+  "admin.textToSpeech.urlExample": {
+    "defaultMessage": "e.g.: \"https://tts.yourdomain.com/v1\"",
+    "description": ""
+  },
+  "admin.textToSpeech.urlTitle": {
+    "defaultMessage": "API base URL:",
+    "description": ""
+  },
+  "admin.textToSpeech.voiceDesc": {
+    "defaultMessage": "One of the model's voices. Leave it blank for the model's default.",
+    "description": ""
+  },
+  "admin.textToSpeech.voiceExample": {
+    "defaultMessage": "e.g.: \"alloy\"",
+    "description": ""
+  },
+  "admin.textToSpeech.voiceTitle": {
+    "defaultMessage": "Voice:",
+    "description": ""
   },
   "admin.true": {
     "defaultMessage": "True",
