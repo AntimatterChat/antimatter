@@ -1234,39 +1234,19 @@ func TestImportValidateDirectChannelImportData(t *testing.T) {
 	err = ValidateDirectChannelImportData(&data)
 	require.NotNil(t, err, "Validation should have failed due to invalid number of members.")
 
-	data = DirectChannelImportData{
-		Participants: []*DirectChannelMemberImportData{
-			{
-				Username: new(model.NewId()),
-			},
-			{
-				Username: new(model.NewId()),
-			},
-			{
-				Username: new(model.NewId()),
-			},
-			{
-				Username: new(model.NewId()),
-			},
-			{
-				Username: new(model.NewId()),
-			},
-			{
-				Username: new(model.NewId()),
-			},
-			{
-				Username: new(model.NewId()),
-			},
-			{
-				Username: new(model.NewId()),
-			},
-			{
-				Username: new(model.NewId()),
-			},
-		},
+	// One more than a group message may have.
+	tooMany := make([]*DirectChannelMemberImportData, model.ChannelGroupMaxUsers+1)
+	for i := range tooMany {
+		tooMany[i] = &DirectChannelMemberImportData{Username: new(model.NewId())}
 	}
+	data = DirectChannelImportData{Participants: tooMany}
 	err = ValidateDirectChannelImportData(&data)
 	require.NotNil(t, err, "Validation should have failed due to invalid number of members.")
+
+	// As many as a group message may have.
+	data = DirectChannelImportData{Participants: tooMany[:model.ChannelGroupMaxUsers]}
+	err = ValidateDirectChannelImportData(&data)
+	require.Nil(t, err, "A group message of the largest size should be valid.")
 
 	// Test with invalid FavoritedBy
 	member1 := model.NewId()
@@ -1386,22 +1366,15 @@ func TestImportValidateDirectPostImportData(t *testing.T) {
 	err = ValidateDirectPostImportData(&data, maxPostSize)
 	require.NotNil(t, err, "Should have failed due to unsuitable number of members.")
 
+	tooManyMembers := make([]string, model.ChannelGroupMaxUsers+1)
+	for i := range tooManyMembers {
+		tooManyMembers[i] = model.NewId()
+	}
 	data = DirectPostImportData{
-		ChannelMembers: &[]string{
-			model.NewId(),
-			model.NewId(),
-			model.NewId(),
-			model.NewId(),
-			model.NewId(),
-			model.NewId(),
-			model.NewId(),
-			model.NewId(),
-			model.NewId(),
-			model.NewId(),
-		},
-		User:     new("username"),
-		Message:  new("message"),
-		CreateAt: new(model.GetMillis()),
+		ChannelMembers: &tooManyMembers,
+		User:           new("username"),
+		Message:        new("message"),
+		CreateAt:       new(model.GetMillis()),
 	}
 	err = ValidateDirectPostImportData(&data, maxPostSize)
 	require.NotNil(t, err, "Should have failed due to unsuitable number of members.")

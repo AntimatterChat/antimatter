@@ -25,6 +25,10 @@ const DeprecatedCPAPropertyGroupName = "custom_profile_attributes"
 // AccessControlGroupFieldLimit + 5 must be converted to paginate.
 const AccessControlGroupFieldLimit = 200
 
+// CustomProfileAttributesMaxFields is how many custom profile fields (System Console › User Attributes) a server
+// may define.
+const CustomProfileAttributesMaxFields = 50
+
 var validPropertyGroupNameRegex = regexp.MustCompile(`^[a-z0-9][a-z0-9_]*$`)
 
 const (

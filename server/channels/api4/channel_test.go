@@ -2346,14 +2346,13 @@ func TestCreateGroupChannel(t *testing.T) {
 	require.Error(t, err)
 	CheckBadRequestStatus(t, resp)
 
-	user4 := th.CreateUser(t)
-	user5 := th.CreateUser(t)
-	user6 := th.CreateUser(t)
-	user7 := th.CreateUser(t)
-	user8 := th.CreateUser(t)
-	user9 := th.CreateUser(t)
+	// One more person than a group message may have.
+	tooMany := []string{user.Id, user2.Id, user3.Id}
+	for len(tooMany) < model.ChannelGroupMaxUsers+1 {
+		tooMany = append(tooMany, th.CreateUser(t).Id)
+	}
 
-	rgc, resp, err = client.CreateGroupChannel(context.Background(), []string{user.Id, user2.Id, user3.Id, user4.Id, user5.Id, user6.Id, user7.Id, user8.Id, user9.Id})
+	rgc, resp, err = client.CreateGroupChannel(context.Background(), tooMany)
 	require.Error(t, err)
 	CheckBadRequestStatus(t, resp)
 	require.Nil(t, rgc)

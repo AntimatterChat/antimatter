@@ -360,7 +360,7 @@ func NewServer(options ...Option) (*Server, error) {
 	fieldLimitHook := properties.NewFieldLimitHook(s.propertyService)
 	fieldLimitHook.AddGroupLimit(cpaGroup.ID, &properties.FieldLimitConfig{
 		PerObjectType: map[string]int64{
-			model.PropertyFieldObjectTypeUser: 20,
+			model.PropertyFieldObjectTypeUser: model.CustomProfileAttributesMaxFields,
 		},
 		GlobalLimit: model.AccessControlGroupFieldLimit,
 	})

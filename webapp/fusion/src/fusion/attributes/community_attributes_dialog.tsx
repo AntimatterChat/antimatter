@@ -15,6 +15,7 @@ import Icon from 'fusion/components/icon';
 import {Dialog} from 'fusion/components/layer';
 import {Choice, Toggle} from 'fusion/modals/settings_controls';
 import {am} from 'fusion/utils/class_names';
+import Constants from 'utils/constants';
 
 import type {GlobalState} from 'types/store';
 
@@ -263,7 +264,7 @@ export default function CommunityAttributesDialog({teamId, toast, onHide}: Props
                     </p>
                 )}
                 <div className={am('modal-actions')}>
-                    {!editing && fields.length < 20 && (
+                    {!editing && fields.length < Constants.MAX_COMMUNITY_ATTRIBUTES && (
                         <button
                             type='button'
                             className={am('btn')}

@@ -152,7 +152,7 @@ exports[`components/MoreDirectChannels should exclude deleted users if there is 
                       class="multi-select__help"
                       id="multiSelectHelpMemberInfo"
                     >
-                      Use ↑↓ to browse, ↵ to select. You can add 7 more people. 
+                      Use ↑↓ to browse, ↵ to select. You can add 9 more people. 
                       2 of 3 members
                     </div>
                   </div>
@@ -401,7 +401,7 @@ exports[`components/MoreDirectChannels should match snapshot 1`] = `
                       class="multi-select__help"
                       id="multiSelectHelpMemberInfo"
                     >
-                      Use ↑↓ to browse, ↵ to select. You can add 5 more people. 
+                      Use ↑↓ to browse, ↵ to select. You can add 7 more people. 
                       1 of 3 members
                     </div>
                   </div>

@@ -35,7 +35,7 @@ const (
 
 	ChannelPropsBoardLinkedProperties = "board:linked_properties"
 
-	ChannelGroupMaxUsers       = 8
+	ChannelGroupMaxUsers       = 10
 	ChannelGroupMinUsers       = 3
 	DefaultChannelName         = "town-square"
 	ChannelDisplayNameMaxRunes = 64

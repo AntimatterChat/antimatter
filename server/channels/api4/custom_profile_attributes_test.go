@@ -126,9 +126,9 @@ func TestCPAFieldLimit(t *testing.T) {
 	mainHelper.Parallel(t)
 	th := Setup(t).InitBasic(t)
 
-	// Create 20 fields — the maximum allowed by FieldLimitHook.
-	createdIDs := make([]string, 0, 20)
-	for i := 1; i <= 20; i++ {
+	// Create as many fields as allowed by FieldLimitHook.
+	createdIDs := make([]string, 0, model.CustomProfileAttributesMaxFields)
+	for i := 1; i <= model.CustomProfileAttributesMaxFields; i++ {
 		field := &model.PropertyField{
 			Name: celSafeName(),
 			Type: model.PropertyFieldTypeText,
@@ -139,7 +139,7 @@ func TestCPAFieldLimit(t *testing.T) {
 		createdIDs = append(createdIDs, created.ID)
 	}
 
-	t.Run("creating a 21st field is rejected", func(t *testing.T) {
+	t.Run("creating one more field is rejected", func(t *testing.T) {
 		field := &model.PropertyField{
 			Name: celSafeName(),
 			Type: model.PropertyFieldTypeText,

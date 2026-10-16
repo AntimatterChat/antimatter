@@ -13,7 +13,7 @@ const (
 	CommunityAttributesPropertyGroupName = "community_attributes"
 
 	// CommunityAttributesMaxFields is how many attributes a community may define.
-	CommunityAttributesMaxFields = 20
+	CommunityAttributesMaxFields = 50
 
 	// CommunityAttributeNameMaxRunes is the longest name of an attribute: a label, as "Subcontractor".
 	CommunityAttributeNameMaxRunes = 64
