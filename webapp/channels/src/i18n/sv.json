@@ -4741,7 +4741,7 @@
   "channel_join_request.review.error.not_pending": "Förfrågan är inte längre väntande.",
   "channel_loader.posted": " postade ett meddelande",
   "channel_loader.postedImage": " laddade upp en bild",
-  "channel_loader.socketError": "Kontrollera uppkopplingen, når inte Mattermost-servern. Om detta fortgår, be systemadministratören att [kontrollera WebSocket-porten](!https://antimatter.chat/docs/admins/https.html#nginx).",
+  "channel_loader.socketError": "Kontrollera uppkopplingen, når inte Antimatter-servern. Om detta fortgår, be systemadministratören att [kontrollera WebSocket-porten](!https://antimatter.chat/docs/admins/https.html#nginx).",
   "channel_loader.someone": "Någon",
   "channel_loader.title": "Publicerad",
   "channel_loader.unknown_error": "En okänd statuskod mottogs från servern.",

@@ -4830,7 +4830,7 @@
   "channel_join_request.review.error.not_pending": "Tämä pyyntö ei ole enää odottamassa käsittelyä.",
   "channel_loader.posted": "Lähetetty",
   "channel_loader.postedImage": " lähetti kuvan",
-  "channel_loader.socketError": "Tarkista yhteytesi, Antimatteriin ei saada yhteyttä. Jos ongelma jatkuu, pyydä järjestelmänvalvojaa [tarkistamaan WebSocket-portin](!https://about.mattermost.com/default-websocket-port-help).",
+  "channel_loader.socketError": "Tarkista yhteytesi, Antimatteriin ei saada yhteyttä. Jos ongelma jatkuu, pyydä järjestelmänvalvojaa [tarkistamaan WebSocket-portin](!https://antimatter.chat/docs/admins/https.html#nginx).",
   "channel_loader.someone": "Joku",
   "channel_loader.title": "Lähetetty",
   "channel_loader.unknown_error": "Vastaanotimme odottamattoman tilakoodin palvelimelta.",

@@ -4724,7 +4724,7 @@
   "channel_join_request.review.error.not_pending": "이 요청은 더 이상 대기 중이 아닙니다.",
   "channel_loader.posted": " 가 메시지를 게시했습니다.",
   "channel_loader.postedImage": " uploaded an image",
-  "channel_loader.socketError": "Mattermost에 연결이 안되므로 연결 상태를 확인하십시오. 문제가 지속되면 관리자에게 [WebSocket 포트 확인](!https://antimatter.chat/docs/admins/https.html#nginx)을 문의하십시오.",
+  "channel_loader.socketError": "Antimatter에 연결이 안되므로 연결 상태를 확인하십시오. 문제가 지속되면 관리자에게 [WebSocket 포트 확인](!https://antimatter.chat/docs/admins/https.html#nginx)을 문의하십시오.",
   "channel_loader.someone": "누군가",
   "channel_loader.title": "게시됨",
   "channel_loader.unknown_error": "서버에서 예기치 않은 상태 코드를 받았습니다.",

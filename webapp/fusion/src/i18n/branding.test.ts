@@ -35,7 +35,6 @@ const ALLOWED: Record<string, string> = {
 const KNOWN_DEBT: Record<string, string> = {
 
     // Links and contacts at Mattermost, Inc. (rules 6 and 10).
-    'channel_loader.socketError': 'links to docs.mattermost.com',
     'announcement_bar.warn.contact_support_text': 'licence renewal through support@mattermost.com',
     'user.settings.languages.promote2': 'the Mattermost Translation Server',
     'admin.general.localization.availableLocalesDescription': 'the Mattermost Translation Server',

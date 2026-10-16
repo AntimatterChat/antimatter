@@ -4738,7 +4738,7 @@
   "channel_join_request.review.error.not_pending": "このリクエストは保留中ではなくなりました。",
   "channel_loader.posted": " がメッセージを投稿しました",
   "channel_loader.postedImage": " が画像をアップロードしました",
-  "channel_loader.socketError": "Mattermostに接続できません。接続を確認してください。この問題が続くようならば、システム管理者に[WebSocketのポートを確認するよう](!https://antimatter.chat/docs/admins/https.html#nginx)依頼してください。",
+  "channel_loader.socketError": "Antimatterに接続できません。接続を確認してください。この問題が続くようならば、システム管理者に[WebSocketのポートを確認するよう](!https://antimatter.chat/docs/admins/https.html#nginx)依頼してください。",
   "channel_loader.someone": "誰か",
   "channel_loader.title": "投稿",
   "channel_loader.unknown_error": "サーバーから想定外のステータスコードを受信しました。",

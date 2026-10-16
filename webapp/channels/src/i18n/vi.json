@@ -4621,7 +4621,7 @@
   "channel_join_request.review.error.not_pending": "Yêu cầu này không còn ở trạng thái chờ.",
   "channel_loader.posted": "Đã đăng",
   "channel_loader.postedImage": " đã đăng một hình ảnh",
-  "channel_loader.socketError": "Vui lòng kiểm tra kết nối, Antimatter không thể kết nối được. Nếu sự cố vẫn tiếp diễn, hãy yêu cầu quản trị viên [kiểm tra cổng WebSocket] (! https://about.mattermost.com/default-websocket-port-help).",
+  "channel_loader.socketError": "Vui lòng kiểm tra kết nối, Antimatter không thể kết nối được. Nếu sự cố vẫn tiếp diễn, hãy yêu cầu quản trị viên [kiểm tra cổng WebSocket](!https://antimatter.chat/docs/admins/https.html#nginx).",
   "channel_loader.someone": "Ai đó",
   "channel_loader.title": "Đã đăng",
   "channel_loader.unknown_error": "Chúng tôi đã nhận được mã trạng thái không mong muốn từ máy chủ.",
