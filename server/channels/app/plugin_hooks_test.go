@@ -2824,6 +2824,9 @@ func TestChannelHasBeenCreated(t *testing.T) {
 }
 
 func TestHookServeMetrics(t *testing.T) {
+	// A metric the native metrics service always serves: the server's own metrics, next to the plugins'.
+	const nativeServerMetric = "# TYPE go_goroutines gauge"
+
 	mainHelper.Parallel(t)
 	t.Run("should call plugin ServeMetrics hook", func(t *testing.T) {
 		mainHelper.Parallel(t)
@@ -2875,16 +2878,7 @@ func TestHookServeMetrics(t *testing.T) {
 		// Verify plugin is active
 		require.True(t, th.App.GetPluginsEnvironment().IsActive(pluginID))
 
-		// Create a simple handler that returns server metrics
-		serverMetrics := "# HELP server_test_metric Test metric from server\n# TYPE server_test_metric gauge\nserver_test_metric 100\n"
-		handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			w.Header().Set("Content-Type", "text/plain")
-			w.WriteHeader(http.StatusOK)
-			_, _ = w.Write([]byte(serverMetrics))
-		})
-
-		// Register the metrics handler
-		th.App.Srv().Platform().HandleMetrics("/metrics", handler)
+		// Antimatter's native metrics service serves the server's metrics on /metrics.
 
 		// Get the metrics router
 		metricsRouter := th.App.Srv().Platform().GetMetricsRouter()
@@ -2906,7 +2900,7 @@ func TestHookServeMetrics(t *testing.T) {
 		bodyStr := string(body)
 
 		// Verify both server and plugin metrics are present
-		assert.Contains(t, bodyStr, "server_test_metric 100", "Response should contain server metrics")
+		assert.Contains(t, bodyStr, nativeServerMetric, "Response should contain server metrics")
 		assert.Contains(t, bodyStr, "plugin_test_metric{plugin_id=\""+pluginID+"\"} 42", "Response should contain plugin metrics with plugin_id label")
 	})
 
@@ -2983,16 +2977,7 @@ func TestHookServeMetrics(t *testing.T) {
 		require.True(t, th.App.GetPluginsEnvironment().IsActive(pluginIDs[0]))
 		require.True(t, th.App.GetPluginsEnvironment().IsActive(pluginIDs[1]))
 
-		// Create a simple handler that returns server metrics
-		serverMetrics := "# HELP server_metric Server metric\n# TYPE server_metric gauge\nserver_metric 100\n"
-		handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			w.Header().Set("Content-Type", "text/plain")
-			w.WriteHeader(http.StatusOK)
-			_, _ = w.Write([]byte(serverMetrics))
-		})
-
-		// Register the metrics handler
-		th.App.Srv().Platform().HandleMetrics("/metrics", handler)
+		// Antimatter's native metrics service serves the server's metrics on /metrics.
 
 		// Get the metrics router
 		metricsRouter := th.App.Srv().Platform().GetMetricsRouter()
@@ -3014,7 +2999,7 @@ func TestHookServeMetrics(t *testing.T) {
 		bodyStr := string(body)
 
 		// Verify server and both plugin metrics are present
-		assert.Contains(t, bodyStr, "server_metric 100", "Response should contain server metrics")
+		assert.Contains(t, bodyStr, nativeServerMetric, "Response should contain server metrics")
 		assert.Contains(t, bodyStr, "plugin1_metric{plugin_id=\""+pluginIDs[0]+"\"} 10", "Response should contain plugin1 metrics")
 		assert.Contains(t, bodyStr, "plugin2_metric{plugin_id=\""+pluginIDs[1]+"\"} 20", "Response should contain plugin2 metrics")
 	})
@@ -3052,16 +3037,7 @@ func TestHookServeMetrics(t *testing.T) {
 
 		require.Len(t, pluginIDs, 1)
 
-		// Create a simple handler that returns server metrics
-		serverMetrics := "# HELP server_metric Server metric\n# TYPE server_metric gauge\nserver_metric 100\n"
-		handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			w.Header().Set("Content-Type", "text/plain")
-			w.WriteHeader(http.StatusOK)
-			_, _ = w.Write([]byte(serverMetrics))
-		})
-
-		// Register the metrics handler
-		th.App.Srv().Platform().HandleMetrics("/metrics", handler)
+		// Antimatter's native metrics service serves the server's metrics on /metrics.
 
 		// Get the metrics router
 		metricsRouter := th.App.Srv().Platform().GetMetricsRouter()
@@ -3083,7 +3059,7 @@ func TestHookServeMetrics(t *testing.T) {
 		bodyStr := string(body)
 
 		// Verify only server metrics are present (no plugin metrics)
-		assert.Contains(t, bodyStr, "server_metric 100", "Response should contain server metrics")
+		assert.Contains(t, bodyStr, nativeServerMetric, "Response should contain server metrics")
 		// The plugin didn't implement ServeMetrics, so it shouldn't add any metrics
 		assert.NotContains(t, bodyStr, "plugin_id=\""+pluginIDs[0]+"\"", "Response should not contain plugin metrics from non-implementing plugin")
 	})
@@ -3127,14 +3103,7 @@ func TestHookServeMetrics(t *testing.T) {
 		require.Len(t, pluginIDs, 1)
 		require.True(t, th.App.GetPluginsEnvironment().IsActive(pluginIDs[0]))
 
-		serverMetrics := "# HELP server_metric Server metric\n# TYPE server_metric gauge\nserver_metric 100\n"
-		handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			w.Header().Set("Content-Type", "text/plain")
-			w.WriteHeader(http.StatusOK)
-			_, _ = w.Write([]byte(serverMetrics))
-		})
-
-		th.App.Srv().Platform().HandleMetrics("/metrics", handler)
+		// Antimatter's native metrics service serves the server's metrics on /metrics.
 
 		metricsRouter := th.App.Srv().Platform().GetMetricsRouter()
 		require.NotNil(t, metricsRouter)
@@ -3150,7 +3119,7 @@ func TestHookServeMetrics(t *testing.T) {
 		require.NoError(t, err)
 
 		bodyStr := string(body)
-		assert.Contains(t, bodyStr, "server_metric 100")
+		assert.Contains(t, bodyStr, nativeServerMetric)
 		assert.NotContains(t, bodyStr, "plugin_id=")
 	})
 
@@ -3191,14 +3160,7 @@ func TestHookServeMetrics(t *testing.T) {
 		require.Len(t, pluginIDs, 1)
 		require.True(t, th.App.GetPluginsEnvironment().IsActive(pluginIDs[0]))
 
-		serverMetrics := "# HELP server_metric Server metric\n# TYPE server_metric gauge\nserver_metric 100\n"
-		handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			w.Header().Set("Content-Type", "text/plain")
-			w.WriteHeader(http.StatusOK)
-			_, _ = w.Write([]byte(serverMetrics))
-		})
-
-		th.App.Srv().Platform().HandleMetrics("/metrics", handler)
+		// Antimatter's native metrics service serves the server's metrics on /metrics.
 
 		metricsRouter := th.App.Srv().Platform().GetMetricsRouter()
 		require.NotNil(t, metricsRouter)
@@ -3214,7 +3176,7 @@ func TestHookServeMetrics(t *testing.T) {
 		require.NoError(t, err)
 
 		bodyStr := string(body)
-		assert.Contains(t, bodyStr, "server_metric 100")
+		assert.Contains(t, bodyStr, nativeServerMetric)
 		assert.NotContains(t, bodyStr, "plugin_id=")
 	})
 
@@ -3255,14 +3217,7 @@ func TestHookServeMetrics(t *testing.T) {
 		require.Len(t, pluginIDs, 1)
 		require.True(t, th.App.GetPluginsEnvironment().IsActive(pluginIDs[0]))
 
-		serverMetrics := "# HELP server_metric Server metric\n# TYPE server_metric gauge\nserver_metric 100\n"
-		handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			w.Header().Set("Content-Type", "text/plain")
-			w.WriteHeader(http.StatusOK)
-			_, _ = w.Write([]byte(serverMetrics))
-		})
-
-		th.App.Srv().Platform().HandleMetrics("/metrics", handler)
+		// Antimatter's native metrics service serves the server's metrics on /metrics.
 
 		metricsRouter := th.App.Srv().Platform().GetMetricsRouter()
 		require.NotNil(t, metricsRouter)
@@ -3278,7 +3233,7 @@ func TestHookServeMetrics(t *testing.T) {
 		require.NoError(t, err)
 
 		bodyStr := string(body)
-		assert.Contains(t, bodyStr, "server_metric 100")
+		assert.Contains(t, bodyStr, nativeServerMetric)
 		assert.NotContains(t, bodyStr, "plugin_id=")
 	})
 }
