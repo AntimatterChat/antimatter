@@ -49,9 +49,14 @@ exports[`components/integrations/InstalledOAuthApps should match snapshot 1`] = 
       class="backstage-list__help"
     >
       Create 
-      <span>
+      <a
+        href="https://antimatter.chat/docs/developers/api.html#auth"
+        location="installed_oauth_apps"
+        rel="noopener noreferrer"
+        target="_blank"
+      >
         OAuth 2.0 applications
-      </span>
+      </a>
        to securely integrate bots and third-party apps with Antimatter. Visit the 
       <span>
         App Directory
@@ -384,9 +389,14 @@ exports[`components/integrations/InstalledOAuthApps should match snapshot for Ap
       class="backstage-list__help"
     >
       Create 
-      <span>
+      <a
+        href="https://antimatter.chat/docs/developers/api.html#auth"
+        location="installed_oauth_apps"
+        rel="noopener noreferrer"
+        target="_blank"
+      >
         OAuth 2.0 applications
-      </span>
+      </a>
        to securely integrate bots and third-party apps with Antimatter. Visit the 
       <span>
         App Directory

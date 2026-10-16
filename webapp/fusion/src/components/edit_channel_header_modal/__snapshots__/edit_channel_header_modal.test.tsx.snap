@@ -158,11 +158,15 @@ exports[`components/EditChannelHeaderModal edit direct message channel 1`] = `
                 >
                   Preview
                 </button>
-                <span
+                <a
                   class="textbox-help-link"
+                  href="https://antimatter.chat/docs/users/messages.html#formatting"
+                  location="textbox_links"
+                  rel="noopener noreferrer"
+                  target="_blank"
                 >
                   Help
-                </span>
+                </a>
               </div>
             </div>
           </div>
@@ -347,11 +351,15 @@ exports[`components/EditChannelHeaderModal error with intl message 1`] = `
                 >
                   Preview
                 </button>
-                <span
+                <a
                   class="textbox-help-link"
+                  href="https://antimatter.chat/docs/users/messages.html#formatting"
+                  location="textbox_links"
+                  rel="noopener noreferrer"
+                  target="_blank"
                 >
                   Help
-                </span>
+                </a>
               </div>
             </div>
             <div
@@ -546,11 +554,15 @@ exports[`components/EditChannelHeaderModal error without intl message 1`] = `
                 >
                   Preview
                 </button>
-                <span
+                <a
                   class="textbox-help-link"
+                  href="https://antimatter.chat/docs/users/messages.html#formatting"
+                  location="textbox_links"
+                  rel="noopener noreferrer"
+                  target="_blank"
                 >
                   Help
-                </span>
+                </a>
               </div>
             </div>
             <div
@@ -745,11 +757,15 @@ exports[`components/EditChannelHeaderModal should match snapshot, init 1`] = `
                 >
                   Preview
                 </button>
-                <span
+                <a
                   class="textbox-help-link"
+                  href="https://antimatter.chat/docs/users/messages.html#formatting"
+                  location="textbox_links"
+                  rel="noopener noreferrer"
+                  target="_blank"
                 >
                   Help
-                </span>
+                </a>
               </div>
             </div>
           </div>
@@ -934,11 +950,15 @@ exports[`components/EditChannelHeaderModal submitted 1`] = `
                 >
                   Preview
                 </button>
-                <span
+                <a
                   class="textbox-help-link"
+                  href="https://antimatter.chat/docs/users/messages.html#formatting"
+                  location="textbox_links"
+                  rel="noopener noreferrer"
+                  target="_blank"
                 >
                   Help
-                </span>
+                </a>
               </div>
             </div>
           </div>

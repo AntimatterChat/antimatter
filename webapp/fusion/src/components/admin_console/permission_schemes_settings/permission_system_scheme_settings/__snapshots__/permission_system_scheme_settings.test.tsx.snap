@@ -199,9 +199,14 @@ exports[`components/admin_console/permission_schemes_settings/permission_system_
           >
             <span>
               Configure the default permissions for Team Admins, Channel Admins and other members. This scheme is inherited by all teams unless a 
-              <span>
+              <a
+                href="https://antimatter.chat/docs/communities/roles.html#permissions"
+                location="permission_system_scheme_settings"
+                rel="noopener noreferrer"
+                target="_blank"
+              >
                 Team Override Scheme
-              </span>
+              </a>
                is applied in specific teams.
             </span>
           </div>

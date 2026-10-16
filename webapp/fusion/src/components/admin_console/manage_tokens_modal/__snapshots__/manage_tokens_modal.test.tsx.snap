@@ -86,9 +86,14 @@ exports[`components/admin_console/manage_tokens_modal/manage_tokens_modal.tsx in
                 interact with this Antimatter server
               </span>
               . Tokens are disabled if the user is deactivated. Learn more about 
-              <span>
+              <a
+                href="https://antimatter.chat/docs/developers/api.html#auth"
+                location="manage_tokens_modal"
+                rel="noopener noreferrer"
+                target="_blank"
+              >
                 personal access tokens
-              </span>
+              </a>
               .
             </div>
             <div
@@ -211,9 +216,14 @@ exports[`components/admin_console/manage_tokens_modal/manage_tokens_modal.tsx sh
                 interact with this Antimatter server
               </span>
               . Tokens are disabled if the user is deactivated. Learn more about 
-              <span>
+              <a
+                href="https://antimatter.chat/docs/developers/api.html#auth"
+                location="manage_tokens_modal"
+                rel="noopener noreferrer"
+                target="_blank"
+              >
                 personal access tokens
-              </span>
+              </a>
               .
             </div>
             <div
@@ -398,9 +408,14 @@ exports[`components/admin_console/manage_tokens_modal/manage_tokens_modal.tsx sh
                 interact with this Antimatter server
               </span>
               . Tokens are disabled if the user is deactivated. Learn more about 
-              <span>
+              <a
+                href="https://antimatter.chat/docs/developers/api.html#auth"
+                location="manage_tokens_modal"
+                rel="noopener noreferrer"
+                target="_blank"
+              >
                 personal access tokens
-              </span>
+              </a>
               .
             </div>
             <div

@@ -92,7 +92,7 @@ exports[`components/admin_console/manage_tokens_modal/manage_tokens_modal.tsx in
               </a>
               . Tokens are disabled if the user is deactivated. Learn more about 
               <a
-                href="https://mattermost.com/pl/personal-access-tokens?utm_source=mattermost&utm_medium=in-product&utm_content=manage_tokens_modal&uid=&sid=&server_version="
+                href="https://antimatter.chat/docs/developers/api.html#auth"
                 location="manage_tokens_modal"
                 rel="noopener noreferrer"
                 target="_blank"
@@ -227,7 +227,7 @@ exports[`components/admin_console/manage_tokens_modal/manage_tokens_modal.tsx sh
               </a>
               . Tokens are disabled if the user is deactivated. Learn more about 
               <a
-                href="https://mattermost.com/pl/personal-access-tokens?utm_source=mattermost&utm_medium=in-product&utm_content=manage_tokens_modal&uid=&sid=&server_version="
+                href="https://antimatter.chat/docs/developers/api.html#auth"
                 location="manage_tokens_modal"
                 rel="noopener noreferrer"
                 target="_blank"
@@ -424,7 +424,7 @@ exports[`components/admin_console/manage_tokens_modal/manage_tokens_modal.tsx sh
               </a>
               . Tokens are disabled if the user is deactivated. Learn more about 
               <a
-                href="https://mattermost.com/pl/personal-access-tokens?utm_source=mattermost&utm_medium=in-product&utm_content=manage_tokens_modal&uid=&sid=&server_version="
+                href="https://antimatter.chat/docs/developers/api.html#auth"
                 location="manage_tokens_modal"
                 rel="noopener noreferrer"
                 target="_blank"

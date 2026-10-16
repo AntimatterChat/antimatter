@@ -50,7 +50,7 @@ exports[`components/integrations/InstalledOAuthApps should match snapshot 1`] = 
     >
       Create 
       <a
-        href="https://mattermost.com/pl/setup-oauth-2.0?utm_source=mattermost&utm_medium=in-product&utm_content=installed_oauth_apps&uid=currentUserId&sid=&server_version="
+        href="https://antimatter.chat/docs/developers/api.html#auth"
         location="installed_oauth_apps"
         rel="noopener noreferrer"
         target="_blank"
@@ -395,7 +395,7 @@ exports[`components/integrations/InstalledOAuthApps should match snapshot for Ap
     >
       Create 
       <a
-        href="https://mattermost.com/pl/setup-oauth-2.0?utm_source=mattermost&utm_medium=in-product&utm_content=installed_oauth_apps&uid=currentUserId&sid=&server_version="
+        href="https://antimatter.chat/docs/developers/api.html#auth"
         location="installed_oauth_apps"
         rel="noopener noreferrer"
         target="_blank"

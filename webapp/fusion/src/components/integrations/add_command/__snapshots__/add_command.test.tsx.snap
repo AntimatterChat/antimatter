@@ -119,9 +119,14 @@ exports[`components/integrations/AddCommand should match snapshot 1`] = `
               class="form__help"
             >
               Reserved: 
-              <span>
+              <a
+                href="https://antimatter.chat/docs/developers/commands.html#how"
+                location="abstract_command"
+                rel="noopener noreferrer"
+                target="_blank"
+              >
                 See built-in slash commands
-              </span>
+              </a>
             </div>
           </div>
         </div>
@@ -155,7 +160,7 @@ exports[`components/integrations/AddCommand should match snapshot 1`] = `
             >
               You can connect commands to 
               <a
-                href="https://mattermost.com/pl/outgoing-oauth-connections"
+                href="https://antimatter.chat/docs/developers/webhooks.html#outgoing"
               >
                 outgoing OAuth connections
               </a>

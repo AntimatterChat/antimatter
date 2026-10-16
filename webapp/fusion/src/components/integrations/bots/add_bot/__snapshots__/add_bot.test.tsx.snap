@@ -182,9 +182,14 @@ exports[`components/integrations/bots/AddBot blank 1`] = `
             class="col-md-5 col-sm-8 col-sm-offset-4"
           >
             Select additional permissions for the account. 
-            <span>
+            <a
+              href="https://antimatter.chat/docs/developers/api.html#auth"
+              location="add_bot"
+              rel="noopener noreferrer"
+              target="_blank"
+            >
               Read more about roles and permissions
-            </span>
+            </a>
             .
           </div>
         </div>

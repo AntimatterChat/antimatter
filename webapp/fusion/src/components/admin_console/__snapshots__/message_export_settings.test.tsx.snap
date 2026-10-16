@@ -64,9 +64,14 @@ exports[`components/MessageExportSettings should match snapshot, disabled, actia
                 data-testid="enableComplianceExporthelp-text"
               >
                 When true, Antimatter will export all messages that were posted in the last 24 hours. The export task is scheduled to run once per day. See 
-                <span>
+                <a
+                  href="https://antimatter.chat/docs/admins/operations.html#compliance"
+                  location="message_export_settings"
+                  rel="noopener noreferrer"
+                  target="_blank"
+                >
                   the documentation
-                </span>
+                </a>
                  to learn more.
               </div>
             </div>
@@ -299,9 +304,14 @@ exports[`components/MessageExportSettings should match snapshot, disabled, globa
                 data-testid="enableComplianceExporthelp-text"
               >
                 When true, Antimatter will export all messages that were posted in the last 24 hours. The export task is scheduled to run once per day. See 
-                <span>
+                <a
+                  href="https://antimatter.chat/docs/admins/operations.html#compliance"
+                  location="message_export_settings"
+                  rel="noopener noreferrer"
+                  target="_blank"
+                >
                   the documentation
-                </span>
+                </a>
                  to learn more.
               </div>
             </div>
@@ -740,9 +750,14 @@ exports[`components/MessageExportSettings should match snapshot, enabled, actian
                 data-testid="enableComplianceExporthelp-text"
               >
                 When true, Antimatter will export all messages that were posted in the last 24 hours. The export task is scheduled to run once per day. See 
-                <span>
+                <a
+                  href="https://antimatter.chat/docs/admins/operations.html#compliance"
+                  location="message_export_settings"
+                  rel="noopener noreferrer"
+                  target="_blank"
+                >
                   the documentation
-                </span>
+                </a>
                  to learn more.
               </div>
             </div>
@@ -972,9 +987,14 @@ exports[`components/MessageExportSettings should match snapshot, enabled, global
                 data-testid="enableComplianceExporthelp-text"
               >
                 When true, Antimatter will export all messages that were posted in the last 24 hours. The export task is scheduled to run once per day. See 
-                <span>
+                <a
+                  href="https://antimatter.chat/docs/admins/operations.html#compliance"
+                  location="message_export_settings"
+                  rel="noopener noreferrer"
+                  target="_blank"
+                >
                   the documentation
-                </span>
+                </a>
                  to learn more.
               </div>
             </div>
@@ -1403,9 +1423,14 @@ exports[`components/MessageExportSettings should match snapshot, enabled, global
                 data-testid="enableComplianceExporthelp-text"
               >
                 When true, Antimatter will export all messages that were posted in the last 24 hours. The export task is scheduled to run once per day. See 
-                <span>
+                <a
+                  href="https://antimatter.chat/docs/admins/operations.html#compliance"
+                  location="message_export_settings"
+                  rel="noopener noreferrer"
+                  target="_blank"
+                >
                   the documentation
-                </span>
+                </a>
                  to learn more.
               </div>
             </div>

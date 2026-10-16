@@ -49,9 +49,14 @@ exports[`components/integrations/InstalledOutgoingOAuthConnections should match 
       class="backstage-list__help"
     >
       Create 
-      <span>
+      <a
+        href="https://antimatter.chat/docs/developers/api.html#auth"
+        location="installed_outgoing_oauth_connections"
+        rel="noopener noreferrer"
+        target="_blank"
+      >
         Outgoing OAuth Connections
-      </span>
+      </a>
        to securely integrate bots and third-party apps with Antimatter.
     </span>
     <div

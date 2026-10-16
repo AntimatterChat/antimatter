@@ -414,9 +414,14 @@ exports[`components/DatabaseSettings should match snapshot 1`] = `
                 data-testid="disableDatabaseSearchhelp-text"
               >
                 Disables the use of the database to perform searches. Should only be used when other 
-                <span>
+                <a
+                  href="https://antimatter.chat/docs/admins/operations.html#scaling"
+                  location="database_settings"
+                  rel="noopener noreferrer"
+                  target="_blank"
+                >
                   search engines
-                </span>
+                </a>
                  are configured.
               </div>
             </div>

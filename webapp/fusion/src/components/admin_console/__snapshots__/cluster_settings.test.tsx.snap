@@ -91,9 +91,14 @@ exports[`components/ClusterSettings should match snapshot, compression disabled 
                 data-testid="Enablehelp-text"
               >
                 When true, Antimatter will run in High Availability mode. Please see 
-                <span>
+                <a
+                  href="https://antimatter.chat/docs/admins/operations.html#scaling"
+                  location="cluster_settings"
+                  rel="noopener noreferrer"
+                  target="_blank"
+                >
                   documentation
-                </span>
+                </a>
                  to learn more about configuring High Availability for Antimatter.
               </div>
             </div>
@@ -445,9 +450,14 @@ exports[`components/ClusterSettings should match snapshot, compression enabled 1
                 data-testid="Enablehelp-text"
               >
                 When true, Antimatter will run in High Availability mode. Please see 
-                <span>
+                <a
+                  href="https://antimatter.chat/docs/admins/operations.html#scaling"
+                  location="cluster_settings"
+                  rel="noopener noreferrer"
+                  target="_blank"
+                >
                   documentation
-                </span>
+                </a>
                  to learn more about configuring High Availability for Antimatter.
               </div>
             </div>
@@ -799,9 +809,14 @@ exports[`components/ClusterSettings should match snapshot, encryption disabled 1
                 data-testid="Enablehelp-text"
               >
                 When true, Antimatter will run in High Availability mode. Please see 
-                <span>
+                <a
+                  href="https://antimatter.chat/docs/admins/operations.html#scaling"
+                  location="cluster_settings"
+                  rel="noopener noreferrer"
+                  target="_blank"
+                >
                   documentation
-                </span>
+                </a>
                  to learn more about configuring High Availability for Antimatter.
               </div>
             </div>
@@ -1153,9 +1168,14 @@ exports[`components/ClusterSettings should match snapshot, encryption enabled 1`
                 data-testid="Enablehelp-text"
               >
                 When true, Antimatter will run in High Availability mode. Please see 
-                <span>
+                <a
+                  href="https://antimatter.chat/docs/admins/operations.html#scaling"
+                  location="cluster_settings"
+                  rel="noopener noreferrer"
+                  target="_blank"
+                >
                   documentation
-                </span>
+                </a>
                  to learn more about configuring High Availability for Antimatter.
               </div>
             </div>

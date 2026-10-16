@@ -200,7 +200,7 @@ exports[`components/admin_console/permission_schemes_settings/permission_system_
             <span>
               Configure the default permissions for Team Admins, Channel Admins and other members. This scheme is inherited by all teams unless a 
               <a
-                href="https://mattermost.com/pl/advanced-permissions?utm_source=mattermost&utm_medium=in-product&utm_content=permission_system_scheme_settings&uid=&sid=&server_version="
+                href="https://antimatter.chat/docs/communities/roles.html#permissions"
                 location="permission_system_scheme_settings"
                 rel="noopener noreferrer"
                 target="_blank"

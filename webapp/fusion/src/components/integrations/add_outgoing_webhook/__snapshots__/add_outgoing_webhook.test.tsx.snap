@@ -241,9 +241,14 @@ exports[`components/integrations/AddOutgoingWebhook should match snapshot 1`] = 
               class="form__help"
             >
               Specify the URL that the messages will be sent to. If the URL is private, add it as a 
-              <span>
+              <a
+                href="https://antimatter.chat/docs/admins/security.html#outbound"
+                location="abstract_outgoing_webhook"
+                rel="noopener noreferrer"
+                target="_blank"
+              >
                 trusted internal connection
-              </span>
+              </a>
               .
             </div>
           </div>

@@ -49,9 +49,14 @@ exports[`components/integrations/InstalledOutgoingWebhooks should match snapshot
       class="backstage-list__help"
     >
       Use outgoing webhooks to connect external tools to Antimatter. 
-      <span>
+      <a
+        href="https://antimatter.chat/docs/developers/webhooks.html#outgoing"
+        location="installed_outgoing_webhooks"
+        rel="noopener noreferrer"
+        target="_blank"
+      >
         Build your own
-      </span>
+      </a>
        or visit the 
       <span>
         App Directory

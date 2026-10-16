@@ -192,7 +192,7 @@ exports[`components/integrations/AddOutgoingOAuthConnection should match snapsho
     >
       Get help with 
       <a
-        href="https://mattermost.com/pl/outgoing-oauth-connections"
+        href="https://antimatter.chat/docs/developers/webhooks.html#outgoing"
       >
         configuring outgoing OAuth connections
       </a>

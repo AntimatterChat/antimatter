@@ -25,9 +25,14 @@ exports[`components/admin_console/group_settings/GroupSettings should match snap
           >
             Groups are a way to organize users and apply actions to all users within that group.
 For more information on Groups, please see 
-            <span>
+            <a
+              href="https://antimatter.chat/docs/admins/authentication.html#sso"
+              location="group_settings"
+              rel="noopener noreferrer"
+              target="_blank"
+            >
               documentation
-            </span>
+            </a>
             .
           </div>
         </div>

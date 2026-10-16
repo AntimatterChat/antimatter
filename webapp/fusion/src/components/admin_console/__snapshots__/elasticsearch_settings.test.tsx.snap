@@ -64,9 +64,14 @@ exports[`components/ElasticSearchSettings should match snapshot, disabled 1`] = 
                 data-testid="enableIndexinghelp-text"
               >
                 When true, indexing of new posts occurs automatically. Search queries will use database search until "Enable Elasticsearch for search queries" is enabled. 
-                <span>
+                <a
+                  href="https://antimatter.chat/docs/admins/operations.html#scaling"
+                  location="elasticsearch_settings"
+                  rel="noopener noreferrer"
+                  target="_blank"
+                >
                   Learn more about Elasticsearch in our documentation.
-                </span>
+                </a>
               </div>
             </div>
           </fieldset>
@@ -131,9 +136,14 @@ exports[`components/ElasticSearchSettings should match snapshot, disabled 1`] = 
                 data-testid="connectionUrlhelp-text"
               >
                 The address of the Elasticsearch server. 
-                <span>
+                <a
+                  href="https://antimatter.chat/docs/admins/operations.html#scaling"
+                  location="elasticsearch_settings"
+                  rel="noopener noreferrer"
+                  target="_blank"
+                >
                   Please see documentation with server setup instructions.
-                </span>
+                </a>
               </div>
             </div>
           </div>
@@ -812,9 +822,14 @@ exports[`components/ElasticSearchSettings should match snapshot, enabled 1`] = `
                 data-testid="enableIndexinghelp-text"
               >
                 When true, indexing of new posts occurs automatically. Search queries will use database search until "Enable Elasticsearch for search queries" is enabled. 
-                <span>
+                <a
+                  href="https://antimatter.chat/docs/admins/operations.html#scaling"
+                  location="elasticsearch_settings"
+                  rel="noopener noreferrer"
+                  target="_blank"
+                >
                   Learn more about Elasticsearch in our documentation.
-                </span>
+                </a>
               </div>
             </div>
           </fieldset>
@@ -877,9 +892,14 @@ exports[`components/ElasticSearchSettings should match snapshot, enabled 1`] = `
                 data-testid="connectionUrlhelp-text"
               >
                 The address of the Elasticsearch server. 
-                <span>
+                <a
+                  href="https://antimatter.chat/docs/admins/operations.html#scaling"
+                  location="elasticsearch_settings"
+                  rel="noopener noreferrer"
+                  target="_blank"
+                >
                   Please see documentation with server setup instructions.
-                </span>
+                </a>
               </div>
             </div>
           </div>
@@ -1538,9 +1558,14 @@ exports[`components/ElasticSearchSettings should match snapshot, sniff enabled 1
                 data-testid="enableIndexinghelp-text"
               >
                 When true, indexing of new posts occurs automatically. Search queries will use database search until "Enable Elasticsearch for search queries" is enabled. 
-                <span>
+                <a
+                  href="https://antimatter.chat/docs/admins/operations.html#scaling"
+                  location="elasticsearch_settings"
+                  rel="noopener noreferrer"
+                  target="_blank"
+                >
                   Learn more about Elasticsearch in our documentation.
-                </span>
+                </a>
               </div>
             </div>
           </fieldset>
@@ -1603,9 +1628,14 @@ exports[`components/ElasticSearchSettings should match snapshot, sniff enabled 1
                 data-testid="connectionUrlhelp-text"
               >
                 The address of the Elasticsearch server. 
-                <span>
+                <a
+                  href="https://antimatter.chat/docs/admins/operations.html#scaling"
+                  location="elasticsearch_settings"
+                  rel="noopener noreferrer"
+                  target="_blank"
+                >
                   Please see documentation with server setup instructions.
-                </span>
+                </a>
               </div>
             </div>
           </div>
