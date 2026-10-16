@@ -23,10 +23,6 @@ import (
 
 const requestTimeout = 15 * time.Second
 
-func init() {
-	einterfaces.RegisterOAuthProvider(model.ServiceOffice365, New(nil))
-}
-
 // Provider is the Office 365 OAuth 2.0 provider.
 type Provider struct {
 	keys    *oidc.KeySetCache

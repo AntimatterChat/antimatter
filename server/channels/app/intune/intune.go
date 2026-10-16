@@ -21,7 +21,6 @@ import (
 	"github.com/mattermost/mattermost/server/public/model"
 	"github.com/mattermost/mattermost/server/public/shared/mlog"
 	"github.com/mattermost/mattermost/server/public/shared/request"
-	"github.com/mattermost/mattermost/server/v8/channels/app"
 	"github.com/mattermost/mattermost/server/v8/channels/app/oauthproviders/oidc"
 	"github.com/mattermost/mattermost/server/v8/einterfaces"
 )
@@ -34,11 +33,9 @@ const (
 	requestTimeout = 15 * time.Second
 )
 
-func init() {
-	app.RegisterIntuneInterface(func(a *app.App) einterfaces.IntuneInterface {
-		return New(a, func() *http.Client { return a.HTTPService().MakeClient(false) })
-	})
-}
+// MissingAuthAccountErrorID is the id of the app layer's error when no user has
+// the given authentication data (app.MissingAuthAccountError).
+const MissingAuthAccountErrorID = "app.user.get_by_auth.missing_account.app_error"
 
 // AppAPI is the subset of the app used by the Intune login.
 type AppAPI interface {
@@ -178,7 +175,7 @@ func (in *Intune) Login(rctx request.CTX, accessToken string) (*model.User, *mod
 	if appErr == nil {
 		return user, nil
 	}
-	if appErr.Id != app.MissingAuthAccountError {
+	if appErr.Id != MissingAuthAccountErrorID {
 		return nil, appErr
 	}
 

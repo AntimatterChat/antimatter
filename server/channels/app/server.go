@@ -30,6 +30,7 @@ import (
 	"github.com/mattermost/mattermost/server/public/shared/timezones"
 	"github.com/mattermost/mattermost/server/v8/channels/app/email"
 	"github.com/mattermost/mattermost/server/v8/channels/app/ldap"
+	"github.com/mattermost/mattermost/server/v8/channels/app/outgoingoauth"
 	"github.com/mattermost/mattermost/server/v8/channels/app/platform"
 	"github.com/mattermost/mattermost/server/v8/channels/app/properties"
 	"github.com/mattermost/mattermost/server/v8/channels/app/teams"
@@ -178,6 +179,8 @@ func (s *Server) SetStore(st store.Store) {
 }
 
 func NewServer(options ...Option) (*Server, error) {
+	registerOAuthProviders()
+
 	rootRouter := mux.NewRouter()
 	localRouter := mux.NewRouter()
 
@@ -474,9 +477,10 @@ func NewServer(options ...Option) (*Server, error) {
 		}
 	})
 
-	if outgoingOauthConnectionInterface != nil {
-		s.OutgoingOAuthConnection = outgoingOauthConnectionInterface(app)
-	}
+	s.OutgoingOAuthConnection = outgoingoauth.New(
+		func() store.OutgoingOAuthConnectionStore { return app.Srv().Store().OutgoingOAuthConnection() },
+		func() *http.Client { return app.HTTPService().MakeClient(false) },
+	)
 
 	s.clusterLeaderListenerId = s.AddClusterLeaderChangedListener(func() {
 		mlog.Info("Cluster leader changed. Determining if job schedulers should be running:", mlog.Bool("is_leader", s.IsLeader()))

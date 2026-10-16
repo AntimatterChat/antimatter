@@ -15,21 +15,11 @@ import (
 
 	"github.com/mattermost/mattermost/server/public/model"
 	"github.com/mattermost/mattermost/server/public/shared/request"
-	"github.com/mattermost/mattermost/server/v8/channels/app"
 	"github.com/mattermost/mattermost/server/v8/channels/store"
 	"github.com/mattermost/mattermost/server/v8/einterfaces"
 )
 
 const listPageSize = 100
-
-func init() {
-	app.RegisterOutgoingOAuthConnectionInterface(func(a *app.App) einterfaces.OutgoingOAuthConnectionInterface {
-		return New(
-			func() store.OutgoingOAuthConnectionStore { return a.Srv().Store().OutgoingOAuthConnection() },
-			func() *http.Client { return a.HTTPService().MakeClient(false) },
-		)
-	})
-}
 
 // Service implements einterfaces.OutgoingOAuthConnectionInterface.
 type Service struct {

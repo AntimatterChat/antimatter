@@ -14,7 +14,6 @@ import (
 	"github.com/mattermost/mattermost/server/public/model"
 	"github.com/mattermost/mattermost/server/public/shared/request"
 	"github.com/mattermost/mattermost/server/v8/channels/app/oauthproviders/oidc/oidctest"
-	"github.com/mattermost/mattermost/server/v8/einterfaces"
 )
 
 func setup(t *testing.T) (*Provider, *oidctest.Provider, *model.Config, request.CTX) {
@@ -30,10 +29,6 @@ func setup(t *testing.T) (*Provider, *oidctest.Provider, *model.Config, request.
 	cfg.OpenIdSettings.DiscoveryEndpoint = model.NewPointer(idp.DiscoveryURL())
 
 	return New(nil), idp, cfg, request.TestContext(t)
-}
-
-func TestRegistered(t *testing.T) {
-	assert.NotNil(t, einterfaces.GetOAuthProvider(model.ServiceOpenid))
 }
 
 func TestGetSSOSettings(t *testing.T) {

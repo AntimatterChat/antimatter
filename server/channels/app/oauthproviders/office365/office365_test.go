@@ -14,7 +14,6 @@ import (
 	"github.com/mattermost/mattermost/server/public/model"
 	"github.com/mattermost/mattermost/server/public/shared/request"
 	"github.com/mattermost/mattermost/server/v8/channels/app/oauthproviders/oidc/oidctest"
-	"github.com/mattermost/mattermost/server/v8/einterfaces"
 )
 
 const graphMe = `{"id":"3f2c1a5e-0000-4000-8000-000000000001","displayName":"Ada Lovelace","givenName":"Ada","surname":"Lovelace","mail":"Ada.Lovelace@Contoso.com","userPrincipalName":"ada@contoso.onmicrosoft.com"}`
@@ -26,10 +25,6 @@ func config(directoryID string) *model.Config {
 	cfg.Office365Settings.Id = model.NewPointer("app-id")
 	cfg.Office365Settings.DirectoryId = model.NewPointer(directoryID)
 	return cfg
-}
-
-func TestRegistered(t *testing.T) {
-	assert.NotNil(t, einterfaces.GetOAuthProvider(model.ServiceOffice365))
 }
 
 func TestGetSSOSettings(t *testing.T) {

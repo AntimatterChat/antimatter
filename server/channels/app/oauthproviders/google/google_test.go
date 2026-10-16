@@ -15,7 +15,6 @@ import (
 	"github.com/mattermost/mattermost/server/public/shared/request"
 	"github.com/mattermost/mattermost/server/v8/channels/app/oauthproviders/oidc"
 	"github.com/mattermost/mattermost/server/v8/channels/app/oauthproviders/oidc/oidctest"
-	"github.com/mattermost/mattermost/server/v8/einterfaces"
 )
 
 const peopleMe = `{
@@ -34,10 +33,6 @@ func config() *model.Config {
 	cfg.GoogleSettings.Enable = model.NewPointer(true)
 	cfg.GoogleSettings.Id = model.NewPointer("google-client")
 	return cfg
-}
-
-func TestRegistered(t *testing.T) {
-	assert.NotNil(t, einterfaces.GetOAuthProvider(model.ServiceGoogle))
 }
 
 func TestGetSSOSettings(t *testing.T) {

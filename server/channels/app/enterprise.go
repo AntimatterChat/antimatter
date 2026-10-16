@@ -8,12 +8,6 @@ import (
 	ejobs "github.com/mattermost/mattermost/server/v8/einterfaces/jobs"
 )
 
-var accountMigrationInterface func(*App) einterfaces.AccountMigrationInterface
-
-func RegisterAccountMigrationInterface(f func(*App) einterfaces.AccountMigrationInterface) {
-	accountMigrationInterface = f
-}
-
 var complianceInterface func(*App) einterfaces.ComplianceInterface
 
 func RegisterComplianceInterface(f func(*App) einterfaces.ComplianceInterface) {
@@ -68,12 +62,6 @@ func RegisterNotificationInterface(f func(*App) einterfaces.NotificationInterfac
 	notificationInterface = f
 }
 
-var outgoingOauthConnectionInterface func(*App) einterfaces.OutgoingOAuthConnectionInterface
-
-func RegisterOutgoingOAuthConnectionInterface(f func(*App) einterfaces.OutgoingOAuthConnectionInterface) {
-	outgoingOauthConnectionInterface = f
-}
-
 var accessControlServiceInterface func(*App) einterfaces.AccessControlServiceInterface
 
 func RegisterAccessControlServiceInterface(f func(*App) einterfaces.AccessControlServiceInterface) {
@@ -102,12 +90,6 @@ var autoTranslationInterface func(*Server) einterfaces.AutoTranslationInterface
 
 func RegisterAutoTranslationInterface(f func(*Server) einterfaces.AutoTranslationInterface) {
 	autoTranslationInterface = f
-}
-
-var intuneInterface func(*App) einterfaces.IntuneInterface
-
-func RegisterIntuneInterface(f func(*App) einterfaces.IntuneInterface) {
-	intuneInterface = f
 }
 
 func (s *Server) initEnterprise() {

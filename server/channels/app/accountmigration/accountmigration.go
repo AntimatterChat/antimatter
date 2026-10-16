@@ -13,22 +13,20 @@ import (
 	"github.com/mattermost/mattermost/server/public/model"
 	"github.com/mattermost/mattermost/server/public/shared/mlog"
 	"github.com/mattermost/mattermost/server/public/shared/request"
-	"github.com/mattermost/mattermost/server/v8/channels/app"
 	"github.com/mattermost/mattermost/server/v8/einterfaces"
 )
 
-func init() {
-	app.RegisterAccountMigrationInterface(func(a *app.App) einterfaces.AccountMigrationInterface {
-		return &AccountMigration{b: &appBackend{a: a}}
-	})
-}
-
 // AccountMigration implements einterfaces.AccountMigrationInterface.
 type AccountMigration struct {
-	b backend
+	b Backend
 }
 
 var _ einterfaces.AccountMigrationInterface = (*AccountMigration)(nil)
+
+// New creates the account migration service on top of the given backend.
+func New(b Backend) *AccountMigration {
+	return &AccountMigration{b: b}
+}
 
 const (
 	matchFieldEmail    = "email"

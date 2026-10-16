@@ -20,7 +20,9 @@ import (
 	"github.com/mattermost/mattermost/server/public/plugin"
 	"github.com/mattermost/mattermost/server/public/shared/mlog"
 	"github.com/mattermost/mattermost/server/public/shared/request"
+	"github.com/mattermost/mattermost/server/v8/channels/app/accountmigration"
 	"github.com/mattermost/mattermost/server/v8/channels/app/imaging"
+	"github.com/mattermost/mattermost/server/v8/channels/app/intune"
 	"github.com/mattermost/mattermost/server/v8/channels/app/ldap"
 	"github.com/mattermost/mattermost/server/v8/channels/app/saml"
 	"github.com/mattermost/mattermost/server/v8/config"
@@ -151,9 +153,7 @@ func NewChannels(s *Server) (*Channels, error) {
 	if dataRetentionInterface != nil {
 		ch.DataRetention = dataRetentionInterface(New(ServerConnector(ch)))
 	}
-	if accountMigrationInterface != nil {
-		ch.AccountMigration = accountMigrationInterface(New(ServerConnector(ch)))
-	}
+	ch.AccountMigration = accountmigration.New(&accountMigrationBackend{a: New(ServerConnector(ch))})
 	ch.Ldap = ldap.New(&ldapBackend{a: New(ServerConnector(ch))})
 	if notificationInterface != nil {
 		ch.Notification = notificationInterface(New(ServerConnector(ch)))
@@ -169,9 +169,8 @@ func NewChannels(s *Server) (*Channels, error) {
 		}
 	})
 
-	if intuneInterface != nil {
-		ch.Intune = intuneInterface(New(ServerConnector(ch)))
-	}
+	intuneApp := New(ServerConnector(ch))
+	ch.Intune = intune.New(intuneApp, func() *http.Client { return intuneApp.HTTPService().MakeClient(false) })
 
 	if pushProxyInterface != nil {
 		app := New(ServerConnector(ch))

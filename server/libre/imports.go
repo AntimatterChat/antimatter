@@ -6,13 +6,7 @@ package libre
 import (
 	// Each import registers its implementation from init().
 	_ "github.com/mattermost/mattermost/server/v8/channels/app/accesscontrol"
-	_ "github.com/mattermost/mattermost/server/v8/channels/app/accountmigration"
 	_ "github.com/mattermost/mattermost/server/v8/channels/app/autotranslation"
-	_ "github.com/mattermost/mattermost/server/v8/channels/app/intune"
-	_ "github.com/mattermost/mattermost/server/v8/channels/app/oauthproviders/google"
-	_ "github.com/mattermost/mattermost/server/v8/channels/app/oauthproviders/office365"
-	_ "github.com/mattermost/mattermost/server/v8/channels/app/oauthproviders/openid"
-	_ "github.com/mattermost/mattermost/server/v8/channels/app/outgoingoauth"
 	_ "github.com/mattermost/mattermost/server/v8/channels/app/pushproxy"
 	_ "github.com/mattermost/mattermost/server/v8/channels/jobs/compliance"
 	_ "github.com/mattermost/mattermost/server/v8/channels/jobs/dataretention"

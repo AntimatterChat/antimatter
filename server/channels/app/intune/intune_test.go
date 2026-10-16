@@ -14,7 +14,6 @@ import (
 
 	"github.com/mattermost/mattermost/server/public/model"
 	"github.com/mattermost/mattermost/server/public/shared/request"
-	"github.com/mattermost/mattermost/server/v8/channels/app"
 	"github.com/mattermost/mattermost/server/v8/channels/app/oauthproviders/oidc/oidctest"
 )
 
@@ -38,7 +37,7 @@ func (f *fakeApp) GetUserByAuth(authData *string, authService string) (*model.Us
 			return u, nil
 		}
 	}
-	return nil, model.NewAppError("GetUserByAuth", app.MissingAuthAccountError, nil, "", http.StatusInternalServerError)
+	return nil, model.NewAppError("GetUserByAuth", MissingAuthAccountErrorID, nil, "", http.StatusInternalServerError)
 }
 
 func (f *fakeApp) GetUserByEmail(email string) (*model.User, *model.AppError) {
@@ -47,7 +46,7 @@ func (f *fakeApp) GetUserByEmail(email string) (*model.User, *model.AppError) {
 			return u, nil
 		}
 	}
-	return nil, model.NewAppError("GetUserByEmail", app.MissingAccountError, nil, "", http.StatusNotFound)
+	return nil, model.NewAppError("GetUserByEmail", "app.user.missing_account.const", nil, "", http.StatusNotFound)
 }
 
 func (f *fakeApp) GetUserByUsername(username string) (*model.User, *model.AppError) {

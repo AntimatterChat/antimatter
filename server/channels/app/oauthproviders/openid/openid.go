@@ -30,10 +30,6 @@ import (
 
 const requestTimeout = 15 * time.Second
 
-func init() {
-	einterfaces.RegisterOAuthProvider(model.ServiceOpenid, New(nil))
-}
-
 // registration is what the provider learned about a configured service the
 // last time its settings were resolved. It is used to pick the verification
 // parameters of ID tokens, which do not say which service they belong to.

@@ -25,10 +25,6 @@ const requestTimeout = 15 * time.Second
 
 var googleIssuers = []string{oidc.GoogleIssuer, "accounts.google.com"}
 
-func init() {
-	einterfaces.RegisterOAuthProvider(model.ServiceGoogle, New(nil))
-}
-
 // Provider is the Google OAuth 2.0 provider.
 type Provider struct {
 	keys *oidc.KeySet
