@@ -64,6 +64,7 @@ jest.mock('selectors/views/channel_sidebar', () => ({
 }));
 
 jest.mock('mattermost-redux/selectors/entities/channels', () => ({
+    ...jest.requireActual('mattermost-redux/selectors/entities/channels'),
     getCurrentChannel: jest.fn(),
     isCurrentChannelFavorite: jest.fn(),
     makeGetChannel: jest.fn(() => jest.fn()),
