@@ -235,7 +235,7 @@ func freePort(t testing.TB, ip string) int {
 		u.Close()
 		return port
 	}
-	t.Fatal("no free port")
+	require.FailNow(t, "no free port")
 	return 0
 }
 

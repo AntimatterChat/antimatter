@@ -4,12 +4,13 @@
 package cluster
 
 import (
+	"cmp"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
 	"reflect"
-	"sort"
+	"slices"
 	"time"
 
 	"github.com/mattermost/mattermost/server/public/model"
@@ -28,7 +29,7 @@ func sortedResults(results map[string]rpcResult) []rpcResult {
 	for _, r := range results {
 		out = append(out, r)
 	}
-	sort.Slice(out, func(i, j int) bool { return out[i].node < out[j].node })
+	slices.SortFunc(out, func(a, b rpcResult) int { return cmp.Compare(a.node, b.node) })
 	return out
 }
 

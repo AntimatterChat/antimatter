@@ -5,7 +5,8 @@ package cluster
 
 import (
 	"encoding/binary"
-	"sort"
+	"maps"
+	"slices"
 	"sync"
 	"time"
 
@@ -99,7 +100,7 @@ func (s *sequencer) flush(st *inboundStream) {
 	for seq := range st.buffered {
 		seqs = append(seqs, seq)
 	}
-	sort.Slice(seqs, func(i, j int) bool { return seqs[i] < seqs[j] })
+	slices.Sort(seqs)
 	for _, seq := range seqs {
 		s.deliver(st.buffered[seq])
 		delete(st.buffered, seq)
@@ -169,9 +170,7 @@ func (s *sequencer) handle(body []byte) {
 func (s *sequencer) skipGaps(now time.Time) {
 	s.mu.Lock()
 	streams := make(map[string]*inboundStream, len(s.streams))
-	for k, v := range s.streams {
-		streams[k] = v
-	}
+	maps.Copy(streams, s.streams)
 	s.mu.Unlock()
 
 	for from, st := range streams {

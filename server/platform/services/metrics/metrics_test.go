@@ -481,7 +481,7 @@ func TestReplicaLag(t *testing.T) {
 	select {
 	case <-done:
 	case <-time.After(5 * time.Second):
-		t.Fatal("replica lag was not refreshed")
+		require.FailNow(t, "replica lag was not refreshed")
 	}
 
 	assert.Equal(t, 1234.0, testutil.ToFloat64(m.ReplicaLagAbsolute.WithLabelValues("replica-1")))

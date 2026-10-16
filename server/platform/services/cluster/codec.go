@@ -17,9 +17,10 @@ import (
 //	[magic] [kind] [flags]
 //
 // followed by a kind specific body.
+const envelopeHeaderSize = 3
+
 const (
-	envelopeMagic      byte = 0xB7
-	envelopeHeaderSize      = 3
+	envelopeMagic byte = 0xB7
 
 	kindMessage  byte = 1 // a model.ClusterMessage
 	kindBatch    byte = 2 // several envelopes sent at once
@@ -158,7 +159,7 @@ func decodeBatch(body []byte) ([][]byte, error) {
 		return nil, errMalformed
 	}
 	items := make([][]byte, 0, n)
-	for i := uint64(0); i < n; i++ {
+	for range n {
 		it := r.bytes()
 		if r.err != nil {
 			return nil, r.err

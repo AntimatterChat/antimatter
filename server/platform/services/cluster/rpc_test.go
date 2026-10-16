@@ -5,7 +5,6 @@ package cluster
 
 import (
 	"bytes"
-	"encoding/json"
 	"strings"
 	"testing"
 	"time"
@@ -78,7 +77,7 @@ func TestClusterRequests(t *testing.T) {
 	})
 
 	t.Run("websocket queues", func(t *testing.T) {
-		raw, err := json.Marshal(model.NewWebSocketEvent(model.WebsocketEventPosted, "", "", "", nil, ""))
+		raw, err := model.NewWebSocketEvent(model.WebsocketEventPosted, "", "", "", nil, "").ToJSON()
 		require.NoError(t, err)
 		hosts[2].wsQueues["conn1"] = &model.WSQueues{
 			ActiveQ:    []model.ActiveQueueItem{{Type: model.WebSocketMsgTypeEvent, Buf: raw}},

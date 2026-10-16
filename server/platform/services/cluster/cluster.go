@@ -602,7 +602,7 @@ func (c *Cluster) nodeMeta(limit int) []byte {
 		if len(b) <= limit {
 			return b
 		}
-		if len(m.Hostname) == 0 {
+		if m.Hostname == "" {
 			return nil
 		}
 		// Hostname is the only unbounded field.
@@ -691,7 +691,7 @@ var _ io.Writer = (*memberlistLogWriter)(nil)
 
 func (w *memberlistLogWriter) Write(p []byte) (int, error) {
 	line := string(p)
-	for len(line) > 0 && (line[len(line)-1] == '\n' || line[len(line)-1] == '\r') {
+	for line != "" && (line[len(line)-1] == '\n' || line[len(line)-1] == '\r') {
 		line = line[:len(line)-1]
 	}
 	logger := w.c.logger()
@@ -713,7 +713,7 @@ func hasLevel(line, level string) bool {
 }
 
 func trimLevel(line string) string {
-	if len(line) > 0 && line[0] == '[' {
+	if line != "" && line[0] == '[' {
 		for i := 1; i < len(line); i++ {
 			if line[i] == ']' {
 				line = line[i+1:]
@@ -721,7 +721,7 @@ func trimLevel(line string) string {
 			}
 		}
 	}
-	for len(line) > 0 && line[0] == ' ' {
+	for line != "" && line[0] == ' ' {
 		line = line[1:]
 	}
 	return line
