@@ -16,6 +16,7 @@ import (
 	"github.com/mattermost/mattermost/server/v8/channels/store"
 	"github.com/mattermost/mattermost/server/v8/channels/store/storetest/mocks"
 	"github.com/mattermost/mattermost/server/v8/channels/testlib"
+	"github.com/mattermost/mattermost/server/v8/channels/utils/testutils"
 	"github.com/mattermost/mattermost/server/v8/config"
 	"github.com/mattermost/mattermost/server/v8/platform/shared/templates"
 	"github.com/stretchr/testify/require"
@@ -267,6 +268,7 @@ func (th *TestHelper) UpdateConfig(tb testing.TB, f func(*model.Config)) {
 }
 
 func (th *TestHelper) ConfigureInbucketMail(tb testing.TB) {
+	testutils.SkipWithoutInbucket(tb)
 	inbucket_host := os.Getenv("CI_INBUCKET_HOST")
 	if inbucket_host == "" {
 		inbucket_host = "localhost"

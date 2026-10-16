@@ -21,6 +21,7 @@ import (
 	"time"
 
 	"github.com/mattermost/mattermost/server/public/model"
+	"github.com/mattermost/mattermost/server/v8/channels/utils/testutils"
 	s3 "github.com/minio/minio-go/v7"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -45,6 +46,7 @@ func TestCheckMandatoryS3Fields(t *testing.T) {
 }
 
 func TestMakeBucket(t *testing.T) {
+	testutils.SkipWithoutMinIO(t)
 	s3Host := os.Getenv("CI_MINIO_HOST")
 	if s3Host == "" {
 		s3Host = "localhost"
@@ -86,6 +88,7 @@ func TestMakeBucket(t *testing.T) {
 }
 
 func TestTimeout(t *testing.T) {
+	testutils.SkipWithoutMinIO(t)
 	s3Host := os.Getenv("CI_MINIO_HOST")
 	if s3Host == "" {
 		s3Host = "localhost"
@@ -152,6 +155,7 @@ func TestTimeout(t *testing.T) {
 }
 
 func TestInsecureMakeBucket(t *testing.T) {
+	testutils.SkipWithoutMinIO(t)
 	s3Host := os.Getenv("CI_MINIO_HOST")
 	if s3Host == "" {
 		s3Host = "localhost"
@@ -325,6 +329,7 @@ func (fc fauxCloser) Close() error {
 }
 
 func TestListDirectory(t *testing.T) {
+	testutils.SkipWithoutMinIO(t)
 	s3Host := os.Getenv("CI_MINIO_HOST")
 	if s3Host == "" {
 		s3Host = "localhost"
@@ -381,6 +386,7 @@ func TestListDirectory(t *testing.T) {
 }
 
 func TestWriteFileVideoMimeTypes(t *testing.T) {
+	testutils.SkipWithoutMinIO(t)
 	s3Host := os.Getenv("CI_MINIO_HOST")
 	if s3Host == "" {
 		s3Host = "localhost"

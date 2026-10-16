@@ -4086,6 +4086,7 @@ func TestValidateUserPermissionsOnChannels(t *testing.T) {
 
 func TestInviteUsersToTeam(t *testing.T) {
 	mainHelper.Parallel(t)
+	testutils.SkipWithoutInbucket(t)
 	th := Setup(t).InitBasic(t)
 
 	user1 := th.GenerateTestEmail()
@@ -4479,6 +4480,7 @@ func TestInviteUsersToTeamWithProfiles(t *testing.T) {
 
 func TestInviteGuestsToTeam(t *testing.T) {
 	mainHelper.Parallel(t)
+	testutils.SkipWithoutInbucket(t)
 	th := Setup(t).InitBasic(t)
 
 	guest1 := th.GenerateTestEmail()

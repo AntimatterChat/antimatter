@@ -16,6 +16,7 @@ import (
 	"time"
 
 	"github.com/mattermost/mattermost/server/public/model"
+	"github.com/mattermost/mattermost/server/v8/channels/utils/testutils"
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
 )
@@ -250,6 +251,7 @@ func azuriteSettings(t *testing.T) FileBackendSettings {
 	if port == "" {
 		port = "10000"
 	}
+	testutils.SkipUnlessServiceReachable(t, "Azurite", net.JoinHostPort(host, port))
 	return FileBackendSettings{
 		DriverName:          driverAzure,
 		AzureStorageAccount: azuriteWellKnownAccount,

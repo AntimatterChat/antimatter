@@ -4525,6 +4525,7 @@ func TestUpdateUserHashedPassword(t *testing.T) {
 }
 
 func TestResetPassword(t *testing.T) {
+	testutils.SkipWithoutInbucket(t)
 	th := Setup(t).InitBasic(t)
 	_, err := th.Client.Logout(context.Background())
 	require.NoError(t, err)

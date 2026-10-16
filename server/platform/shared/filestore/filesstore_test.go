@@ -18,6 +18,7 @@ import (
 	"time"
 
 	"github.com/mattermost/mattermost/server/public/model"
+	"github.com/mattermost/mattermost/server/v8/channels/utils/testutils"
 
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
@@ -90,6 +91,7 @@ func TestS3FileBackendTestSuiteWithEncryption(t *testing.T) {
 }
 
 func runBackendTest(t *testing.T, encrypt bool) {
+	testutils.SkipWithoutMinIO(t)
 	s3Host := os.Getenv("CI_MINIO_HOST")
 	if s3Host == "" {
 		s3Host = "localhost"
@@ -654,6 +656,7 @@ func BenchmarkFileStore(b *testing.B) {
 	require.NoError(b, err)
 
 	// Setup S3 backend
+	testutils.SkipWithoutMinIO(b)
 	s3Host := os.Getenv("CI_MINIO_HOST")
 	if s3Host == "" {
 		s3Host = "localhost"

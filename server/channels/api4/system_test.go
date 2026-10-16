@@ -25,6 +25,7 @@ import (
 	"github.com/mattermost/mattermost/server/public/model"
 	"github.com/mattermost/mattermost/server/public/utils"
 	"github.com/mattermost/mattermost/server/v8/channels/utils/fileutils"
+	"github.com/mattermost/mattermost/server/v8/channels/utils/testutils"
 )
 
 func TestGetPing(t *testing.T) {
@@ -189,6 +190,7 @@ func TestEmailTest(t *testing.T) {
 		CheckErrorID(t, err, "api.admin.test_email.missing_server")
 		CheckBadRequestStatus(t, resp)
 
+		testutils.SkipWithoutInbucket(t)
 		inbucket_host := os.Getenv("CI_INBUCKET_HOST")
 		if inbucket_host == "" {
 			inbucket_host = "localhost"
@@ -759,6 +761,7 @@ func TestS3TestConnection(t *testing.T) {
 		resp, err := th.SystemAdminClient.TestS3Connection(context.Background(), &config)
 		CheckBadRequestStatus(t, resp)
 		CheckErrorMessage(t, err, "S3 Bucket is required")
+		testutils.SkipWithoutMinIO(t)
 		// If this fails, check the test configuration to ensure minio is setup with the
 		// `mattermost-test` bucket defined by model.MINIO_BUCKET.
 		*config.FileSettings.AmazonS3Bucket = model.MinioBucket
@@ -785,6 +788,7 @@ func TestS3TestConnection(t *testing.T) {
 	})
 
 	t.Run("with incorrect credentials", func(t *testing.T) {
+		testutils.SkipWithoutMinIO(t)
 		configCopy := config
 		*configCopy.FileSettings.AmazonS3AccessKeyId = "invalidaccesskey"
 		resp, err := th.SystemAdminClient.TestS3Connection(context.Background(), &configCopy)
@@ -801,6 +805,7 @@ func TestS3TestConnection(t *testing.T) {
 	})
 
 	t.Run("desanitizes FakeSetting using running config", func(t *testing.T) {
+		testutils.SkipWithoutMinIO(t)
 		// Seed the running config with valid Minio credentials so the
 		// running config's AmazonS3SecretAccessKey is the real secret.
 		th.App.UpdateConfig(func(c *model.Config) {

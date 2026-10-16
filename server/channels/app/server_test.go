@@ -22,6 +22,7 @@ import (
 	"github.com/mattermost/mattermost/server/public/shared/mlog"
 	"github.com/mattermost/mattermost/server/v8/channels/app/platform"
 	"github.com/mattermost/mattermost/server/v8/channels/utils/fileutils"
+	"github.com/mattermost/mattermost/server/v8/channels/utils/testutils"
 	"github.com/mattermost/mattermost/server/v8/config"
 	"github.com/mattermost/mattermost/server/v8/platform/shared/filestore"
 )
@@ -84,6 +85,7 @@ func TestStartServerPortUnavailable(t *testing.T) {
 
 func TestStartServerNoS3Bucket(t *testing.T) {
 	mainHelper.Parallel(t)
+	testutils.SkipWithoutMinIO(t)
 	s3Host := os.Getenv("CI_MINIO_HOST")
 	if s3Host == "" {
 		s3Host = "localhost"

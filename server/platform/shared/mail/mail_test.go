@@ -21,6 +21,8 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+
+	"github.com/mattermost/mattermost/server/v8/channels/utils/testutils"
 )
 
 const embeddedFileMinSize = 1500
@@ -53,7 +55,16 @@ func getConfig() *SMTPConfig {
 	}
 }
 
+// skipWithoutTestSMTP skips a test that needs the SMTP server and the Inbucket mailbox API when they aren't running.
+func skipWithoutTestSMTP(t *testing.T) {
+	t.Helper()
+	cfg := getConfig()
+	testutils.SkipUnlessServiceReachable(t, "SMTP", net.JoinHostPort(cfg.Server, cfg.Port))
+	testutils.SkipUnlessServiceReachable(t, "Inbucket", strings.TrimPrefix(getInbucketHost(), "http://"))
+}
+
 func TestMailConnectionFromConfig(t *testing.T) {
+	skipWithoutTestSMTP(t)
 	cfg := getConfig()
 
 	conn, err := ConnectToSMTPServer(cfg)
@@ -72,6 +83,7 @@ func TestMailConnectionFromConfig(t *testing.T) {
 }
 
 func TestMailConnectionAdvanced(t *testing.T) {
+	skipWithoutTestSMTP(t)
 	cfg := getConfig()
 
 	conn, err := ConnectToSMTPServerAdvanced(cfg)
@@ -120,6 +132,7 @@ func TestMailConnectionAdvanced(t *testing.T) {
 }
 
 func TestSendMailUsingConfig(t *testing.T) {
+	skipWithoutTestSMTP(t)
 	cfg := getConfig()
 
 	emailTo := "test@example.com"
@@ -154,6 +167,7 @@ func TestSendMailUsingConfig(t *testing.T) {
 }
 
 func TestSendMailPlainText(t *testing.T) {
+	skipWithoutTestSMTP(t)
 	cfg := getConfig()
 	emailSubject := "Testing this email"
 
@@ -226,6 +240,7 @@ func TestSendMailPlainText(t *testing.T) {
 }
 
 func TestSendMailWithEmbeddedFilesUsingConfig(t *testing.T) {
+	skipWithoutTestSMTP(t)
 	cfg := getConfig()
 
 	emailTo := fmt.Sprintf("embedded-files-%d@example.com", time.Now().UnixNano())
@@ -280,6 +295,7 @@ func TestSendMailWithEmbeddedFilesUsingConfig(t *testing.T) {
 }
 
 func TestSendMailUsingConfigAdvanced(t *testing.T) {
+	skipWithoutTestSMTP(t)
 	cfg := getConfig()
 
 	// Delete all the messages before check the sample email
