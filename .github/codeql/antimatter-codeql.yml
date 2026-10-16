@@ -1,0 +1,21 @@
+name: "Antimatter CodeQL config"
+
+# security-extended adds the medium-precision security queries to the default suite.
+queries:
+  - uses: security-extended
+
+paths-ignore:
+  - "**/node_modules"
+  - "**/*_test.go"
+  - "**/*.test.*"
+  - "**/__mocks__"
+  - "**/tests"
+  - "**/testlib"
+  - "**/mocks"
+  - "server/templates"
+  - "server/scripts"
+  - "e2e-tests"
+  - "docs"
+  - "api"
+  - "webapp/channels/tests"
+  - "webapp/fusion/src/tests"

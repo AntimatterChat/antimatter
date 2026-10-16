@@ -1,0 +1,122 @@
+name: Antimatter reports
+
+# Weekly report: coverage (from the full test run), dependency vulnerabilities, outdated and unmaintained
+# dependencies, secrets in the whole history, and the privacy report (every outside address the code can
+# contact). Everything ends up in the "Report" job's summary and in the "antimatter-report" artifact.
+# Run locally with scripts/antimatter/check.sh reports.
+on:
+  schedule:
+    - cron: "41 5 * * 1"  # Mondays 05:41 UTC
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  tests:
+    name: Tests and coverage
+    uses: ./.github/workflows/antimatter-tests.yml
+
+  scans:
+    name: Dependencies, vulnerabilities, secrets, privacy
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Set up Go
+        uses: actions/setup-go@4b73464bb391d4059bd26b0524d20df3927bd417 # v6.3.0
+        with:
+          go-version-file: server/go.mod
+          cache-dependency-path: |
+            server/go.sum
+            server/public/go.sum
+      - name: Set up Node
+        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
+        with:
+          node-version-file: ".nvmrc"
+      - name: Install the scanners
+        env:
+          AM_TOOLS_DIR: ${{ runner.temp }}/am-tools/bin
+        run: scripts/antimatter/install-tools.sh govulncheck osv-scanner gitleaks
+      - name: Outdated and unmaintained dependencies
+        env:
+          GITHUB_TOKEN: ${{ github.token }}  # read-only: archived state of the Go modules' repositories
+        run: python3 scripts/antimatter/deps_report.py --out report
+      - name: Privacy report
+        run: python3 scripts/antimatter/privacy_report.py --out report
+      - name: Dependency vulnerabilities
+        run: |
+          mkdir -p report
+          (cd server && make setup-go-work && govulncheck -format json ./... > ../report/govulncheck-server.json) || true
+          (cd server/public && govulncheck -format json ./... > ../../report/govulncheck-public.json) || true
+          osv-scanner scan source -L webapp/package-lock.json -L server/go.mod -L server/public/go.mod \
+            --format json > report/osv-scanner.json || true
+          (cd webapp && npm audit --package-lock-only --json > ../report/npm-audit.json) || true
+          (cd webapp && npm audit --package-lock-only --omit=dev --json > ../report/npm-audit-prod.json) || true
+          python3 scripts/antimatter/vuln_report.py --out report \
+            --govulncheck "server=report/govulncheck-server.json" \
+            --govulncheck "server/public=report/govulncheck-public.json" \
+            --osv report/osv-scanner.json \
+            --npm-audit "all dependencies=report/npm-audit.json" \
+            --npm-audit "shipped (no dev dependencies)=report/npm-audit-prod.json"
+      - name: Secrets in the whole history
+        run: |
+          status=0
+          gitleaks git . --config .gitleaks.toml --redact --no-banner \
+            --report-format json --report-path report/gitleaks-history.json || status=$?
+          count=$(python3 -c 'import json,sys; print(len(json.load(open(sys.argv[1]))))' report/gitleaks-history.json 2>/dev/null || echo "?")
+          {
+            echo "## Secrets (gitleaks, whole history)"
+            echo
+            if [ "$status" = 0 ]; then echo "No secrets found."; else echo "**$count possible secrets** (redacted details in report/gitleaks-history.json). A secret that was ever pushed must be rotated: removing it from the code isn't enough."; fi
+          } | tee report/secrets.md >> "$GITHUB_STEP_SUMMARY"
+      - name: Upload
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
+        with:
+          name: antimatter-scans
+          path: report
+          retention-days: 90
+
+  report:
+    name: Report
+    needs: [tests, scans]
+    if: ${{ !cancelled() }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Download the reports
+        uses: actions/download-artifact@70fc10c6e5e1ce46ad2ea6f2b72d43f7d47b13c3 # v8.0.0
+        with:
+          pattern: antimatter-*
+          path: antimatter-report
+      - name: Write the summary
+        env:
+          TESTS_RESULT: ${{ needs.tests.result }}
+        run: |
+          cd antimatter-report
+          {
+            echo "# Antimatter weekly report ($(date -u +%Y-%m-%d), ${GITHUB_SHA::10})"
+            echo
+            echo "Test suites: **$TESTS_RESULT**. Full reports (HTML coverage, JSON) are in the antimatter-report artifact."
+            echo
+            for f in antimatter-coverage/coverage.md antimatter-scans/vulnerabilities.md \
+                     antimatter-scans/dependencies.md antimatter-scans/secrets.md antimatter-scans/privacy.md; do
+              if [ -f "$f" ]; then cat "$f"; echo; else echo "_${f} is missing (its job failed)._"; echo; fi
+            done
+          } > README.md
+          cat README.md >> "$GITHUB_STEP_SUMMARY"
+      - name: Upload
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
+        with:
+          name: antimatter-report
+          path: antimatter-report
+          retention-days: 90

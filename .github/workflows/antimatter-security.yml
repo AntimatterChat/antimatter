@@ -1,0 +1,191 @@
+name: Antimatter security
+
+# Static analysis and supply-chain checks, with open-source tools run inside the jobs and GitHub's own
+# features (CodeQL, dependency review). No third-party service, account or token.
+#   CodeQL             Go and JavaScript/TypeScript, security-extended queries; results in Security > Code scanning
+#   govulncheck        known vulnerabilities in code the server calls (fails the job)
+#   osv-scanner, npm audit
+#                      known vulnerabilities in go.mod and package-lock.json (report only)
+#   dependency review  pull requests: new dependencies with high or critical vulnerabilities fail
+#   gitleaks           secrets in the tree and in the pushed commits (fails the job)
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  schedule:
+    - cron: "17 4 * * 1"  # Mondays 04:17 UTC: new advisories against unchanged code
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event_name == 'pull_request' && github.ref || github.run_id }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+permissions:
+  contents: read
+
+jobs:
+  codeql:
+    name: CodeQL (${{ matrix.language }})
+    runs-on: ubuntu-24.04
+    timeout-minutes: 120
+    permissions:
+      contents: read
+      actions: read
+      security-events: write  # upload the results to code scanning
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - language: go
+            build-mode: manual
+          - language: javascript-typescript
+            build-mode: none
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+      - name: Set up Go
+        if: matrix.language == 'go'
+        uses: actions/setup-go@4b73464bb391d4059bd26b0524d20df3927bd417 # v6.3.0
+        with:
+          go-version-file: server/go.mod
+          cache-dependency-path: |
+            server/go.sum
+            server/public/go.sum
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@0d579ffd059c29b07949a3cce3983f0780820c98 # v4.32.6
+        with:
+          languages: ${{ matrix.language }}
+          build-mode: ${{ matrix.build-mode }}
+          config-file: ./.github/codeql/antimatter-codeql.yml
+      - name: Build the server
+        if: matrix.language == 'go'
+        working-directory: server
+        run: |
+          make setup-go-work
+          go build ./...
+          (cd public && go build ./...)
+      - name: Analyze
+        uses: github/codeql-action/analyze@0d579ffd059c29b07949a3cce3983f0780820c98 # v4.32.6
+        with:
+          category: "/language:${{ matrix.language }}"
+
+  govulncheck:
+    name: govulncheck (server)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+      - name: Set up Go
+        uses: actions/setup-go@4b73464bb391d4059bd26b0524d20df3927bd417 # v6.3.0
+        with:
+          go-version-file: server/go.mod
+          cache-dependency-path: |
+            server/go.sum
+            server/public/go.sum
+      - name: Install govulncheck
+        env:
+          AM_TOOLS_DIR: ${{ runner.temp }}/am-tools/bin
+        run: scripts/antimatter/install-tools.sh govulncheck
+      - name: Scan the server and the public module
+        run: |
+          (cd server && make setup-go-work && govulncheck -format json ./... > "$RUNNER_TEMP/govulncheck-server.json") || true
+          (cd server/public && govulncheck -format json ./... > "$RUNNER_TEMP/govulncheck-public.json") || true
+      - name: Report (fails when a vulnerable function is called)
+        run: |
+          python3 scripts/antimatter/vuln_report.py --out vuln-report --fail-on-called \
+            --govulncheck "server=$RUNNER_TEMP/govulncheck-server.json" \
+            --govulncheck "server/public=$RUNNER_TEMP/govulncheck-public.json"
+      - name: Upload the report
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
+        with:
+          name: govulncheck-report
+          path: vuln-report
+          retention-days: 30
+
+  lockfiles:
+    name: osv-scanner and npm audit (report)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+      - name: Set up Node
+        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
+        with:
+          node-version-file: ".nvmrc"
+      - name: Install osv-scanner
+        env:
+          AM_TOOLS_DIR: ${{ runner.temp }}/am-tools/bin
+        run: scripts/antimatter/install-tools.sh osv-scanner
+      - name: Scan the lockfiles
+        run: |
+          osv-scanner scan source -L webapp/package-lock.json -L server/go.mod -L server/public/go.mod \
+            --format json > "$RUNNER_TEMP/osv.json" || true
+          (cd webapp && npm audit --package-lock-only --json > "$RUNNER_TEMP/npm-audit.json") || true
+          (cd webapp && npm audit --package-lock-only --omit=dev --json > "$RUNNER_TEMP/npm-audit-prod.json") || true
+          python3 scripts/antimatter/vuln_report.py --out lockfile-report --osv "$RUNNER_TEMP/osv.json" \
+            --npm-audit "all dependencies=$RUNNER_TEMP/npm-audit.json" \
+            --npm-audit "shipped (no dev dependencies)=$RUNNER_TEMP/npm-audit-prod.json"
+      - name: Upload the report
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
+        with:
+          name: lockfile-vulnerabilities
+          path: lockfile-report
+          retention-days: 30
+
+  dependency-review:
+    name: Dependency review
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+      - name: Review the dependency changes
+        uses: actions/dependency-review-action@a1d282b36b6f3519aa1f3fc636f609c47dddb294 # v5.0.0
+        with:
+          fail-on-severity: high
+          comment-summary-in-pr: never
+
+  secrets:
+    name: Secrets (gitleaks)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Install gitleaks
+        env:
+          AM_TOOLS_DIR: ${{ runner.temp }}/am-tools/bin
+        run: scripts/antimatter/install-tools.sh gitleaks
+      - name: Scan the working tree
+        run: gitleaks dir . --config .gitleaks.toml --redact --no-banner
+      - name: Scan the new commits
+        if: ${{ !cancelled() && github.event_name != 'schedule' && github.event_name != 'workflow_dispatch' }}
+        env:
+          BASE: ${{ github.event.pull_request.base.sha || github.event.before }}
+          HEAD: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          if [ -z "$BASE" ] || [ "$BASE" = 0000000000000000000000000000000000000000 ] \
+              || ! git cat-file -e "$BASE^{commit}" 2>/dev/null; then
+            range="-1 $HEAD"
+          else
+            range="$BASE..$HEAD"
+          fi
+          echo "Scanning $range"
+          gitleaks git . --config .gitleaks.toml --redact --no-banner --log-opts="$range"
