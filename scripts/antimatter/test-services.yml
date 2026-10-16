@@ -44,6 +44,16 @@ services:
       - "127.0.0.1:${AM_TEST_INBUCKET_PORT:-9001}:9001"
       - "127.0.0.1:${AM_TEST_SMTP_PORT:-10025}:10025"
 
+  redis:
+    image: redis:7.4-alpine
+    ports:
+      - "127.0.0.1:${AM_TEST_REDIS_PORT:-6379}:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 3s
+      timeout: 5s
+      retries: 20
+
   azurite:
     image: mcr.microsoft.com/azure-storage/azurite:3.34.0
     command: azurite-blob --blobHost 0.0.0.0 --blobPort 10000 --skipApiVersionCheck

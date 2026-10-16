@@ -12,7 +12,7 @@
 #   security                    govulncheck, osv-scanner, npm audit, gitleaks (secrets in the working tree)
 #   reports                     dependency, vulnerability and privacy reports (+ coverage if already run)
 #   e2e [playwright args]       the Fusion Playwright suite against $AM_E2E_BASE_URL
-#   services up|down            start/stop the Go tests' Postgres, MinIO, Inbucket and Azurite (docker compose)
+#   services up|down            start/stop the Go tests' Postgres, MinIO, Inbucket, Redis and Azurite (docker compose)
 #   tools                       install the pinned scanners (actionlint, gitleaks, osv-scanner...)
 #   all                         policy, lint, security, reports, then `test all`
 #
@@ -97,6 +97,7 @@ test_env() {
     export CI_INBUCKET_HOST="${CI_INBUCKET_HOST:-localhost}" CI_INBUCKET_PORT="${CI_INBUCKET_PORT:-${AM_TEST_INBUCKET_PORT:-9001}}"
     export CI_INBUCKET_SMTP_PORT="${CI_INBUCKET_SMTP_PORT:-${AM_TEST_SMTP_PORT:-10025}}"
     export CI_AZURITE_HOST="${CI_AZURITE_HOST:-localhost}" CI_AZURITE_PORT="${CI_AZURITE_PORT:-${AM_TEST_AZURITE_PORT:-10000}}"
+    export CI_REDIS_HOST="${CI_REDIS_HOST:-localhost}" CI_REDIS_PORT="${CI_REDIS_PORT:-${AM_TEST_REDIS_PORT:-6379}}"
     # The default SMTP server, localhost:10025, is Inbucket's. Only a moved port needs an override, and that one
     # beats the tests that point SMTP somewhere unreachable (they fail then).
     if [ "$CI_INBUCKET_SMTP_PORT" != 10025 ] && [ -z "${AM_EMAILSETTINGS_SMTPPORT:-}" ]; then

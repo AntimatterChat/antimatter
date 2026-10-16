@@ -34,6 +34,7 @@ import (
 	"github.com/mattermost/mattermost/server/v8/channels/store"
 	"github.com/mattermost/mattermost/server/v8/channels/store/storetest/mocks"
 	"github.com/mattermost/mattermost/server/v8/channels/testlib"
+	"github.com/mattermost/mattermost/server/v8/channels/utils/testutils"
 	"github.com/mattermost/mattermost/server/v8/channels/web"
 	"github.com/mattermost/mattermost/server/v8/channels/wsapi"
 	"github.com/mattermost/mattermost/server/v8/config"
@@ -118,14 +119,10 @@ func setupTestHelper(tb testing.TB, dbStore store.Store, sqlSettings *model.SqlS
 	*memoryConfig.AnnouncementSettings.AdminNoticesEnabled = false
 	*memoryConfig.AnnouncementSettings.UserNoticesEnabled = false
 	*memoryConfig.PluginSettings.AutomaticPrepackagedPlugins = false
-	// Enabling Redis with Postgres.
-	if *memoryConfig.SqlSettings.DriverName == model.DatabaseDriverPostgres && !mainHelper.Options.RunParallel {
+	// Enabling Redis with Postgres (when the Redis test service runs, or must: see testutils.UseRedisCache).
+	if *memoryConfig.SqlSettings.DriverName == model.DatabaseDriverPostgres && !mainHelper.Options.RunParallel && testutils.UseRedisCache() {
 		*memoryConfig.CacheSettings.CacheType = model.CacheTypeRedis
-		redisHost := "localhost"
-		if os.Getenv("IS_CI") == "true" {
-			redisHost = "redis"
-		}
-		*memoryConfig.CacheSettings.RedisAddress = redisHost + ":6379"
+		*memoryConfig.CacheSettings.RedisAddress = testutils.RedisEndpoint()
 		*memoryConfig.CacheSettings.DisableClientCache = true
 		*memoryConfig.CacheSettings.RedisDB = 0
 		*memoryConfig.CacheSettings.RedisCachePrefix = model.NewId()

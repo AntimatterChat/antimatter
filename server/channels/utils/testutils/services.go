@@ -10,7 +10,7 @@ import (
 	"time"
 )
 
-// RequireServicesEnv names the environment variable that turns a missing test service (MinIO, Inbucket) into a
+// RequireServicesEnv names the environment variable that turns a missing test service (MinIO, Inbucket, Redis) into a
 // failure instead of a skip. CI sets it when it starts those services, so a broken service can't hide tests there.
 const RequireServicesEnv = "AM_TEST_REQUIRE_SERVICES"
 
@@ -24,6 +24,33 @@ func serviceEndpoint(hostEnv, defaultHost, portEnv, defaultPort string) string {
 		port = defaultPort
 	}
 	return net.JoinHostPort(host, port)
+}
+
+// ServiceReachable tells whether something listens on endpoint.
+func ServiceReachable(endpoint string) bool {
+	conn, err := net.DialTimeout("tcp", endpoint, 2*time.Second)
+	if err != nil {
+		return false
+	}
+	conn.Close()
+	return true
+}
+
+// RedisEndpoint returns the Redis endpoint the tests use for the cache: CI_REDIS_HOST:CI_REDIS_PORT, by default
+// localhost:6379, or redis:6379 in upstream's CI (IS_CI=true, where the services are other containers).
+func RedisEndpoint() string {
+	defaultHost := "localhost"
+	if os.Getenv("IS_CI") == "true" && os.Getenv("CI_REDIS_HOST") == "" {
+		defaultHost = "redis"
+	}
+	return serviceEndpoint("CI_REDIS_HOST", defaultHost, "CI_REDIS_PORT", "6379")
+}
+
+// UseRedisCache tells whether the tests should use the Redis test service as the cache: when it's reachable,
+// or when AM_TEST_REQUIRE_SERVICES=1 (a missing Redis then fails the test instead of falling back to the
+// in-memory cache).
+func UseRedisCache() bool {
+	return os.Getenv(RequireServicesEnv) == "1" || ServiceReachable(RedisEndpoint())
 }
 
 // SkipUnlessServiceReachable skips the test when nothing listens on endpoint, or fails it when

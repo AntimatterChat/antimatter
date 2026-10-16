@@ -88,7 +88,7 @@ third-party service, account or token.
 | **Antimatter Fusion e2e** | push to `main`, pull requests touching the server, the web app or the suite, Mondays | a failing Playwright test |
 | **Antimatter reports** | Mondays, on demand | nothing: it's a report |
 
-**Tests.** The Go tests run in 6 shards against Postgres, MinIO, Inbucket and Azurite
+**Tests.** The Go tests run in 6 shards against Postgres, MinIO, Inbucket, Redis and Azurite
 (`scripts/antimatter/test-services.yml`), using upstream's shard solver; test durations from the last run on
 `main` balance the shards. jest runs in 3 shards per web app. A failure listed in
 `scripts/antimatter/known-failures.txt` is reported as a warning in the job summary; when a listed test

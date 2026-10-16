@@ -1,6 +1,6 @@
 name: Antimatter tests
 
-# Every test suite with coverage: the Go server tests against Postgres, MinIO, Inbucket and Azurite (in 6
+# Every test suite with coverage: the Go server tests against Postgres, MinIO, Inbucket, Redis and Azurite (in 6
 # shards), and jest for Fusion, classic and the platform packages. The coverage job publishes the statistics
 # in its summary and the HTML reports as the "antimatter-coverage" artifact. Failures listed in
 # scripts/antimatter/known-failures.txt (temporary) are reported as warnings; anything else fails the job.
@@ -40,6 +40,9 @@ jobs:
       CI_INBUCKET_SMTP_PORT: "10025"
       CI_AZURITE_HOST: localhost
       CI_AZURITE_PORT: "10000"
+      # The cache of the non-parallel server tests (cmd/mattermost/commands...); IS_CI alone would mean "redis:6379".
+      CI_REDIS_HOST: localhost
+      CI_REDIS_PORT: "6379"
       # No AM_EMAILSETTINGS_SMTP* overrides: the default SMTP server (localhost:10025) is Inbucket's, and an
       # override would also beat the tests that point SMTP somewhere unreachable to check the failure paths.
       IS_CI: "true"
@@ -64,7 +67,7 @@ jobs:
           path: server/prev-gotestsum.json
           key: am-server-test-timing-v1-${{ github.run_id }}
           restore-keys: am-server-test-timing-v1-
-      - name: Start Postgres, MinIO, Inbucket and Azurite
+      - name: Start Postgres, MinIO, Inbucket, Redis and Azurite
         run: |
           docker compose -f scripts/antimatter/test-services.yml up -d --wait
           docker compose -f scripts/antimatter/test-services.yml exec -T minio sh -c 'mkdir -p /data/mattermost-test'
