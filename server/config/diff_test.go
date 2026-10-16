@@ -756,20 +756,14 @@ func TestDiff(t *testing.T) {
 				{
 					Path:    "PluginSettings.PluginStates",
 					BaseVal: defaultConfigGen().PluginSettings.PluginStates,
-					ActualVal: map[string]*model.PluginState{
-						"com.mattermost.nps": {
-							Enable: !defaultConfigGen().PluginSettings.PluginStates["com.mattermost.nps"].Enable,
-						},
-						"com.mattermost.calls": {
-							Enable: true,
-						},
-						"mattermost-ai": {
-							Enable: true,
-						},
-						"playbooks": {
-							Enable: true,
-						},
-					},
+					// Built from the defaults so that the plugins Antimatter enables by default don't need listing here.
+					ActualVal: func() map[string]*model.PluginState {
+						states := defaultConfigGen().PluginSettings.PluginStates
+						states["com.mattermost.nps"] = &model.PluginState{
+							Enable: !states["com.mattermost.nps"].Enable,
+						}
+						return states
+					}(),
 				},
 			},
 			"",
@@ -788,23 +782,13 @@ func TestDiff(t *testing.T) {
 				{
 					Path:    "PluginSettings.PluginStates",
 					BaseVal: defaultConfigGen().PluginSettings.PluginStates,
-					ActualVal: map[string]*model.PluginState{
-						"com.mattermost.nps": {
-							Enable: defaultConfigGen().PluginSettings.PluginStates["com.mattermost.nps"].Enable,
-						},
-						"com.mattermost.newplugin": {
+					ActualVal: func() map[string]*model.PluginState {
+						states := defaultConfigGen().PluginSettings.PluginStates
+						states["com.mattermost.newplugin"] = &model.PluginState{
 							Enable: true,
-						},
-						"com.mattermost.calls": {
-							Enable: true,
-						},
-						"mattermost-ai": {
-							Enable: true,
-						},
-						"playbooks": {
-							Enable: true,
-						},
-					},
+						}
+						return states
+					}(),
 				},
 			},
 			"",
@@ -821,17 +805,11 @@ func TestDiff(t *testing.T) {
 				{
 					Path:    "PluginSettings.PluginStates",
 					BaseVal: defaultConfigGen().PluginSettings.PluginStates,
-					ActualVal: map[string]*model.PluginState{
-						"com.mattermost.calls": {
-							Enable: true,
-						},
-						"mattermost-ai": {
-							Enable: true,
-						},
-						"playbooks": {
-							Enable: true,
-						},
-					},
+					ActualVal: func() map[string]*model.PluginState {
+						states := defaultConfigGen().PluginSettings.PluginStates
+						delete(states, "com.mattermost.nps")
+						return states
+					}(),
 				},
 			},
 			"",
