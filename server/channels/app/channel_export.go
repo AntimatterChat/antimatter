@@ -12,6 +12,7 @@ import (
 	"github.com/mattermost/mattermost/server/public/model"
 	"github.com/mattermost/mattermost/server/public/shared/i18n"
 	"github.com/mattermost/mattermost/server/public/shared/request"
+	"github.com/mattermost/mattermost/server/v8/channels/jobs/messageexport"
 	"github.com/mattermost/mattermost/server/v8/channels/store"
 )
 
@@ -28,43 +29,20 @@ import (
 const channelExportConcurrency = 2
 
 // ChannelExportParams is what the channel exporter is asked for.
-type ChannelExportParams struct {
-	ChannelID string
-
-	// The creation time range of the posts, in milliseconds, inclusive; 0 leaves a bound open.
-	Since int64
-	Until int64
-
-	// MaxPosts is the most posts the export may hold; 0 for no limit.
-	MaxPosts int
-
-	// IncludeEmails fills the authors' email addresses in, when the person exporting may see them.
-	IncludeEmails bool
-
-	// ConsumePosts runs the plugins' MessagesWillBeConsumed hooks on a page of posts (by id), which may replace
-	// them, as when posts are read anywhere else: redaction plugins apply to the export too. Nil runs none.
-	ConsumePosts func(posts map[string]*model.Post)
-}
+type ChannelExportParams = messageexport.ChannelExportParams
 
 // ErrChannelExportTooLarge is returned by the channel exporter when the channel has more than MaxPosts posts in the
 // range.
-var ErrChannelExportTooLarge = errors.New("too many posts to export")
+var ErrChannelExportTooLarge = messageexport.ErrChannelExportTooLarge
 
 // ChannelExporter counts the channel's posts in the range first: when there are more than params.MaxPosts, it
 // returns ErrChannelExportTooLarge without reading them nor calling open. Otherwise it calls open for the writer,
-// writes the CSV export to it and returns how many posts it holds.
+// writes the CSV export to it and returns how many posts it holds. The server's is messageexport.ExportChannelCSV.
 type ChannelExporter func(rctx request.CTX, st store.Store, params ChannelExportParams, open func() (io.Writer, error)) (int, error)
 
-var channelExporter ChannelExporter
-
-// RegisterChannelExporter registers the channel exporter (libre/messageexport's).
-func RegisterChannelExporter(f ChannelExporter) {
-	channelExporter = f
-}
-
-// ChannelExportExporter returns the registered channel exporter.
-func ChannelExportExporter() ChannelExporter {
-	return channelExporter
+// SetChannelExporter replaces the server's channel exporter; tests fake it.
+func (s *Server) SetChannelExporter(f ChannelExporter) {
+	s.channelExporter = f
 }
 
 // ChannelExportOptions is what someone asked to export of a channel.
@@ -133,6 +111,7 @@ func (a *App) ExportChannel(rctx request.CTX, userID, channelID string, opts Cha
 }
 
 func (a *App) exportChannel(rctx request.CTX, rec *model.AuditRecord, userID, channelID string, opts ChannelExportOptions, output ChannelExportOutput) (*ChannelExportFile, *model.AppError) {
+	channelExporter := a.Srv().channelExporter
 	if channelExporter == nil {
 		return nil, model.NewAppError("ExportChannel", "app.channel_export.unavailable.app_error", nil, "", http.StatusNotImplemented)
 	}

@@ -6,6 +6,7 @@ package messageexport
 import (
 	"encoding/csv"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"strings"
@@ -15,7 +16,6 @@ import (
 	"github.com/mattermost/mattermost/server/public/model"
 	"github.com/mattermost/mattermost/server/public/shared/mlog"
 	"github.com/mattermost/mattermost/server/public/shared/request"
-	"github.com/mattermost/mattermost/server/v8/channels/app"
 	"github.com/mattermost/mattermost/server/v8/channels/store"
 )
 
@@ -35,6 +35,29 @@ import (
 //
 // Cells starting with = + - or @ get a leading apostrophe, so that spreadsheets
 // show them rather than run them as formulas (see exportCell).
+
+// ChannelExportParams is what the channel exporter is asked for.
+type ChannelExportParams struct {
+	ChannelID string
+
+	// The creation time range of the posts, in milliseconds, inclusive; 0 leaves a bound open.
+	Since int64
+	Until int64
+
+	// MaxPosts is the most posts the export may hold; 0 for no limit.
+	MaxPosts int
+
+	// IncludeEmails fills the authors' email addresses in, when the person exporting may see them.
+	IncludeEmails bool
+
+	// ConsumePosts runs the plugins' MessagesWillBeConsumed hooks on a page of posts (by id), which may replace
+	// them, as when posts are read anywhere else: redaction plugins apply to the export too. Nil runs none.
+	ConsumePosts func(posts map[string]*model.Post)
+}
+
+// ErrChannelExportTooLarge is returned by ExportChannelCSV when the channel has more than MaxPosts posts in the
+// range.
+var ErrChannelExportTooLarge = errors.New("too many posts to export")
 
 // channelExportPageSize is how many posts are read from the store at once.
 var channelExportPageSize = 500
@@ -78,10 +101,10 @@ func exportCell(s string) string {
 	return csvSafe(s)
 }
 
-// ExportChannelCSV implements app.ChannelExporter: it writes the channel's
+// ExportChannelCSV is the app layer's ChannelExporter: it writes the channel's
 // posts created in the range, oldest first, with their attachments that still
 // exist.
-func ExportChannelCSV(rctx request.CTX, st store.Store, params app.ChannelExportParams, open func() (io.Writer, error)) (int, error) {
+func ExportChannelCSV(rctx request.CTX, st store.Store, params ChannelExportParams, open func() (io.Writer, error)) (int, error) {
 	filter := model.ChannelExportFilter{
 		ChannelId:     params.ChannelID,
 		SinceCreateAt: params.Since,
@@ -94,7 +117,7 @@ func ExportChannelCSV(rctx request.CTX, st store.Store, params app.ChannelExport
 			return 0, fmt.Errorf("failed to count the channel's posts: %w", err)
 		}
 		if count > params.MaxPosts {
-			return 0, app.ErrChannelExportTooLarge
+			return 0, ErrChannelExportTooLarge
 		}
 	}
 
@@ -157,7 +180,7 @@ func ExportChannelCSV(rctx request.CTX, st store.Store, params app.ChannelExport
 // channelExportRows makes the rows of a page of posts, after the plugins'
 // MessagesWillBeConsumed hooks have seen them (redaction plugins apply to the
 // file too).
-func channelExportRows(st store.Store, page []*model.ChannelExportPost, params app.ChannelExportParams) ([][]string, error) {
+func channelExportRows(st store.Store, page []*model.ChannelExportPost, params ChannelExportParams) ([][]string, error) {
 	names, err := channelExportFileNames(st, page)
 	if err != nil {
 		return nil, err

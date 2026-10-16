@@ -26,11 +26,10 @@ import (
 func TestExportCommand(t *testing.T) {
 	th := setup(t).initBasic(t)
 
-	// The exporter (libre/messageexport's, tested there) is faked: it records what it's asked for.
+	// The exporter (messageexport.ExportChannelCSV, tested there) is faked: it records what it's asked for.
 	var asked []app.ChannelExportParams
 	tooLarge := false
-	previous := app.ChannelExportExporter()
-	app.RegisterChannelExporter(func(_ request.CTX, _ store.Store, params app.ChannelExportParams, open func() (io.Writer, error)) (int, error) {
+	th.App.Srv().SetChannelExporter(func(_ request.CTX, _ store.Store, params app.ChannelExportParams, open func() (io.Writer, error)) (int, error) {
 		asked = append(asked, params)
 		if tooLarge {
 			return 0, app.ErrChannelExportTooLarge
@@ -42,7 +41,6 @@ func TestExportCommand(t *testing.T) {
 		_, err = fmt.Fprintf(w, "Post Id\n%s\n", params.ChannelID)
 		return 1, err
 	})
-	t.Cleanup(func() { app.RegisterChannelExporter(previous) })
 
 	run := func(userID, channelID, message string) string {
 		resp := (&ExportProvider{}).DoCommand(th.App, th.Context, &model.CommandArgs{

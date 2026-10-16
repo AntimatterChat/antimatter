@@ -20,7 +20,7 @@ import (
 	"github.com/mattermost/mattermost/server/v8/channels/store"
 )
 
-// fakeChannelExporter stands for libre/messageexport's exporter (tested there): it records what it's asked for.
+// fakeChannelExporter stands for the server's exporter (messageexport.ExportChannelCSV, tested there): it records what it's asked for.
 type fakeChannelExporter struct {
 	mut      sync.Mutex
 	params   []app.ChannelExportParams
@@ -64,17 +64,15 @@ func (f *fakeChannelExporter) last() app.ChannelExportParams {
 	return f.params[len(f.params)-1]
 }
 
-func registerFakeChannelExporter(t *testing.T) *fakeChannelExporter {
+func registerFakeChannelExporter(th *TestHelper) *fakeChannelExporter {
 	f := &fakeChannelExporter{}
-	previous := app.ChannelExportExporter()
-	app.RegisterChannelExporter(f.export)
-	t.Cleanup(func() { app.RegisterChannelExporter(previous) })
+	th.App.Srv().SetChannelExporter(f.export)
 	return f
 }
 
 func TestExportChannel(t *testing.T) {
 	th := Setup(t).InitBasic(t)
-	exporter := registerFakeChannelExporter(t)
+	exporter := registerFakeChannelExporter(th)
 	th.App.UpdateConfig(func(cfg *model.Config) {
 		*cfg.PrivacySettings.ShowEmailAddress = false
 	})

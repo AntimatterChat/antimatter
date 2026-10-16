@@ -26,36 +26,14 @@ import (
 	"github.com/mattermost/mattermost/server/public/model"
 	"github.com/mattermost/mattermost/server/public/shared/mlog"
 	"github.com/mattermost/mattermost/server/public/shared/request"
-	"github.com/mattermost/mattermost/server/v8/channels/app"
 	"github.com/mattermost/mattermost/server/v8/channels/jobs"
 	"github.com/mattermost/mattermost/server/v8/channels/jobs/messageexport/shared"
 	"github.com/mattermost/mattermost/server/v8/einterfaces"
-	ejobs "github.com/mattermost/mattermost/server/v8/einterfaces/jobs"
 )
 
 // syncPollInterval is how often StartSynchronizeJob polls a job run by
 // another worker.
 var syncPollInterval = time.Second
-
-func init() {
-	app.RegisterJobsMessageExportJobInterface(func(s *app.Server) ejobs.MessageExportJobInterface {
-		return NewJob(serverDeps(s))
-	})
-	app.RegisterMessageExportInterface(func(a *app.App) einterfaces.MessageExportInterface {
-		return &MessageExport{deps: func() Deps { return serverDeps(a.Srv()) }}
-	})
-	app.RegisterChannelExporter(ExportChannelCSV)
-}
-
-func serverDeps(s *app.Server) Deps {
-	return Deps{
-		JobServer:         s.Jobs,
-		Store:             s.Store,
-		Config:            s.Config,
-		FileBackend:       s.FileBackend,
-		ExportFileBackend: s.ExportFileBackend,
-	}
-}
 
 // MessageExport implements einterfaces.MessageExportInterface.
 type MessageExport struct {
@@ -63,6 +41,12 @@ type MessageExport struct {
 }
 
 var _ einterfaces.MessageExportInterface = (*MessageExport)(nil)
+
+// New creates a MessageExport whose dependencies are resolved on each use: the
+// job server is created after the service.
+func New(deps func() Deps) *MessageExport {
+	return &MessageExport{deps: deps}
+}
 
 // NewMessageExport creates a MessageExport using the given dependencies.
 func NewMessageExport(deps Deps) *MessageExport {

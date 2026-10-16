@@ -25,6 +25,10 @@ import (
 	"github.com/mattermost/mattermost/server/v8/channels/app/intune"
 	"github.com/mattermost/mattermost/server/v8/channels/app/ldap"
 	"github.com/mattermost/mattermost/server/v8/channels/app/saml"
+	"github.com/mattermost/mattermost/server/v8/channels/jobs/compliance"
+	"github.com/mattermost/mattermost/server/v8/channels/jobs/dataretention"
+	"github.com/mattermost/mattermost/server/v8/channels/jobs/messageexport"
+	"github.com/mattermost/mattermost/server/v8/channels/store"
 	"github.com/mattermost/mattermost/server/v8/config"
 	"github.com/mattermost/mattermost/server/v8/einterfaces"
 	"github.com/mattermost/mattermost/server/v8/platform/services/imageproxy"
@@ -144,15 +148,15 @@ func NewChannels(s *Server) (*Channels, error) {
 	// methods can have access to app methods.
 	// Otherwise, passing server would mean it has to call s.Channels(),
 	// which would be nil at this point.
-	if complianceInterface != nil {
-		ch.Compliance = complianceInterface(New(ServerConnector(ch)))
-	}
-	if messageExportInterface != nil {
-		ch.MessageExport = messageExportInterface(New(ServerConnector(ch)))
-	}
-	if dataRetentionInterface != nil {
-		ch.DataRetention = dataRetentionInterface(New(ServerConnector(ch)))
-	}
+	complianceApp := New(ServerConnector(ch))
+	ch.Compliance = compliance.New(compliance.Deps{
+		Store:    func() store.Store { return complianceApp.Srv().Store() },
+		Config:   complianceApp.Config,
+		IsLeader: complianceApp.IsLeader,
+		Logger:   complianceApp.Log(),
+	})
+	ch.MessageExport = messageexport.New(s.messageExportDeps)
+	ch.DataRetention = dataretention.New(s.Store, s.Config)
 	ch.AccountMigration = accountmigration.New(&accountMigrationBackend{a: New(ServerConnector(ch))})
 	ch.Ldap = ldap.New(&ldapBackend{a: New(ServerConnector(ch))})
 	if notificationInterface != nil {

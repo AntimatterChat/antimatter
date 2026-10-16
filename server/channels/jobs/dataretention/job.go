@@ -11,10 +11,8 @@ import (
 	"time"
 
 	"github.com/mattermost/mattermost/server/public/model"
-	"github.com/mattermost/mattermost/server/public/plugin"
 	"github.com/mattermost/mattermost/server/public/shared/mlog"
 	"github.com/mattermost/mattermost/server/public/shared/request"
-	"github.com/mattermost/mattermost/server/v8/channels/app"
 	"github.com/mattermost/mattermost/server/v8/channels/jobs"
 	"github.com/mattermost/mattermost/server/v8/channels/store"
 	ejobs "github.com/mattermost/mattermost/server/v8/einterfaces/jobs"
@@ -70,38 +68,6 @@ type JobDeps struct {
 	RunPluginsDataRetention func(nowMillis, batchSize int64) (int64, error)
 	// Now returns the current time in milliseconds. Defaults to model.GetMillis.
 	Now func() int64
-}
-
-func serverJobDeps(s *app.Server) JobDeps {
-	return JobDeps{
-		JobServer:   s.Jobs,
-		Store:       s.Store,
-		Config:      s.Config,
-		FileBackend: s.FileBackend,
-		SearchEngines: func() []searchengine.SearchEngineInterface {
-			if s.Platform() == nil || s.Platform().SearchEngine == nil {
-				return nil
-			}
-			return s.Platform().SearchEngine.GetActiveEngines()
-		},
-		RunPluginsDataRetention: func(nowMillis, batchSize int64) (int64, error) {
-			ch := s.Channels()
-			if ch == nil {
-				return 0, nil
-			}
-			var total int64
-			var errs []error
-			ch.RunMultiHook(func(hooks plugin.Hooks, manifest *model.Manifest) bool {
-				deleted, err := hooks.RunDataRetention(nowMillis, batchSize)
-				if err != nil {
-					errs = append(errs, fmt.Errorf("plugin %s: %w", manifest.Id, err))
-				}
-				total += deleted
-				return true
-			}, plugin.RunDataRetentionID)
-			return total, errors.Join(errs...)
-		},
-	}
 }
 
 // Job implements ejobs.DataRetentionJobInterface.

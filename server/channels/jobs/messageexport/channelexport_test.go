@@ -16,7 +16,6 @@ import (
 
 	"github.com/mattermost/mattermost/server/public/model"
 	"github.com/mattermost/mattermost/server/public/shared/request"
-	"github.com/mattermost/mattermost/server/v8/channels/app"
 )
 
 // channelExportFixture is a channel c1 whose posts the store returns by
@@ -50,13 +49,13 @@ func channelExportFixture(t *testing.T, filter model.ChannelExportFilter, count 
 	return s
 }
 
-func exportChannel(t *testing.T, s *testStore, params app.ChannelExportParams) (*bytes.Buffer, int, error) {
+func exportChannel(t *testing.T, s *testStore, params ChannelExportParams) (*bytes.Buffer, int, error) {
 	var buf bytes.Buffer
 	count, err := ExportChannelCSV(request.TestContext(t), s, params, func() (io.Writer, error) { return &buf, nil })
 	return &buf, count, err
 }
 
-func exportChannelRows(t *testing.T, s *testStore, params app.ChannelExportParams) ([][]string, int) {
+func exportChannelRows(t *testing.T, s *testStore, params ChannelExportParams) ([][]string, int) {
 	buf, count, err := exportChannel(t, s, params)
 	require.NoError(t, err)
 	rows, err := csv.NewReader(buf).ReadAll()
@@ -66,7 +65,7 @@ func exportChannelRows(t *testing.T, s *testStore, params app.ChannelExportParam
 
 func TestExportChannelCSV(t *testing.T) {
 	filter := model.ChannelExportFilter{ChannelId: "c1", SinceCreateAt: 100, UntilCreateAt: 1000}
-	params := app.ChannelExportParams{ChannelID: "c1", Since: 100, Until: 1000, MaxPosts: 10, IncludeEmails: true}
+	params := ChannelExportParams{ChannelID: "c1", Since: 100, Until: 1000, MaxPosts: 10, IncludeEmails: true}
 
 	t.Run("the channel's messages, oldest first", func(t *testing.T) {
 		s := channelExportFixture(t, filter, 4)
@@ -108,7 +107,7 @@ func TestExportChannelCSV(t *testing.T) {
 			opened = true
 			return io.Discard, nil
 		})
-		assert.ErrorIs(t, err, app.ErrChannelExportTooLarge)
+		assert.ErrorIs(t, err, ErrChannelExportTooLarge)
 		assert.False(t, opened, "nothing is written")
 		s.ComplianceStore.AssertCalled(t, "ChannelExportCount", mock.Anything, filter, 3)
 		s.ComplianceStore.AssertNotCalled(t, "ChannelExportPosts", mock.Anything, mock.Anything, mock.Anything, mock.Anything)
@@ -159,7 +158,7 @@ func TestExportChannelCSV(t *testing.T) {
 		s := newTestStore()
 		s.ComplianceStore.On("ChannelExportCount", mock.Anything, mock.Anything, mock.Anything).Return(0, nil)
 		s.ComplianceStore.On("ChannelExportPosts", mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return([]*model.ChannelExportPost{}, nil)
-		rows, count := exportChannelRows(t, s, app.ChannelExportParams{ChannelID: "c1", MaxPosts: 10})
+		rows, count := exportChannelRows(t, s, ChannelExportParams{ChannelID: "c1", MaxPosts: 10})
 		assert.Zero(t, count)
 		assert.Equal(t, [][]string{channelExportHeader}, rows)
 	})

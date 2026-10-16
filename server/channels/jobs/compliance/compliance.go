@@ -28,7 +28,6 @@ import (
 	"github.com/mattermost/mattermost/server/public/model"
 	"github.com/mattermost/mattermost/server/public/shared/mlog"
 	"github.com/mattermost/mattermost/server/public/shared/request"
-	"github.com/mattermost/mattermost/server/v8/channels/app"
 	"github.com/mattermost/mattermost/server/v8/channels/store"
 	"github.com/mattermost/mattermost/server/v8/einterfaces"
 )
@@ -49,17 +48,6 @@ const (
 	// daily report.
 	dailyLookupPageSize = 100
 )
-
-func init() {
-	app.RegisterComplianceInterface(func(a *app.App) einterfaces.ComplianceInterface {
-		return New(Deps{
-			Store:    func() store.Store { return a.Srv().Store() },
-			Config:   a.Config,
-			IsLeader: a.IsLeader,
-			Logger:   a.Log(),
-		})
-	})
-}
 
 // Deps holds the dependencies of the compliance implementation. Functions are
 // used (rather than values) so that the latest store/config are always used.

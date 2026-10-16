@@ -15,10 +15,8 @@ import (
 	"unicode/utf8"
 
 	"github.com/mattermost/mattermost/server/public/model"
-	"github.com/mattermost/mattermost/server/v8/channels/app"
 	"github.com/mattermost/mattermost/server/v8/channels/store"
 	"github.com/mattermost/mattermost/server/v8/einterfaces"
-	ejobs "github.com/mattermost/mattermost/server/v8/einterfaces/jobs"
 )
 
 const (
@@ -30,16 +28,6 @@ const (
 
 	msPerHour = int64(60 * 60 * 1000)
 )
-
-func init() {
-	app.RegisterDataRetentionInterface(func(a *app.App) einterfaces.DataRetentionInterface {
-		return New(func() store.Store { return a.Srv().Store() }, a.Config)
-	})
-
-	app.RegisterJobsDataRetentionJobInterface(func(s *app.Server) ejobs.DataRetentionJobInterface {
-		return NewJob(serverJobDeps(s))
-	})
-}
 
 // DataRetention implements einterfaces.DataRetentionInterface.
 type DataRetention struct {

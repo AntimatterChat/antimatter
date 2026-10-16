@@ -8,36 +8,6 @@ import (
 	ejobs "github.com/mattermost/mattermost/server/v8/einterfaces/jobs"
 )
 
-var complianceInterface func(*App) einterfaces.ComplianceInterface
-
-func RegisterComplianceInterface(f func(*App) einterfaces.ComplianceInterface) {
-	complianceInterface = f
-}
-
-var dataRetentionInterface func(*App) einterfaces.DataRetentionInterface
-
-func RegisterDataRetentionInterface(f func(*App) einterfaces.DataRetentionInterface) {
-	dataRetentionInterface = f
-}
-
-var jobsDataRetentionJobInterface func(*Server) ejobs.DataRetentionJobInterface
-
-func RegisterJobsDataRetentionJobInterface(f func(*Server) ejobs.DataRetentionJobInterface) {
-	jobsDataRetentionJobInterface = f
-}
-
-var jobsMessageExportJobInterface func(*Server) ejobs.MessageExportJobInterface
-
-func RegisterJobsMessageExportJobInterface(f func(*Server) ejobs.MessageExportJobInterface) {
-	jobsMessageExportJobInterface = f
-}
-
-var messageExportInterface func(*App) einterfaces.MessageExportInterface
-
-func RegisterMessageExportInterface(f func(*App) einterfaces.MessageExportInterface) {
-	messageExportInterface = f
-}
-
 var cloudInterface func(*Server) einterfaces.CloudInterface
 
 func RegisterCloudInterface(f func(*Server) einterfaces.CloudInterface) {

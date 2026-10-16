@@ -40,6 +40,7 @@ import (
 	"github.com/mattermost/mattermost/server/v8/channels/jobs/active_users"
 	"github.com/mattermost/mattermost/server/v8/channels/jobs/cleanup_desktop_tokens"
 	"github.com/mattermost/mattermost/server/v8/channels/jobs/cleanup_expired_access_tokens"
+	"github.com/mattermost/mattermost/server/v8/channels/jobs/dataretention"
 	"github.com/mattermost/mattermost/server/v8/channels/jobs/delete_dms_preferences_migration"
 	"github.com/mattermost/mattermost/server/v8/channels/jobs/delete_empty_drafts_migration"
 	"github.com/mattermost/mattermost/server/v8/channels/jobs/delete_expired_posts"
@@ -51,6 +52,7 @@ import (
 	"github.com/mattermost/mattermost/server/v8/channels/jobs/extract_content"
 	"github.com/mattermost/mattermost/server/v8/channels/jobs/import_delete"
 	"github.com/mattermost/mattermost/server/v8/channels/jobs/import_process"
+	"github.com/mattermost/mattermost/server/v8/channels/jobs/messageexport"
 	"github.com/mattermost/mattermost/server/v8/channels/jobs/migrations"
 	"github.com/mattermost/mattermost/server/v8/channels/jobs/mobile_session_metadata"
 	"github.com/mattermost/mattermost/server/v8/channels/jobs/notify_admin"
@@ -154,6 +156,8 @@ type Server struct {
 
 	// channelExports holds a slot per channel export running (Antimatter): channelExportConcurrency at most.
 	channelExports chan struct{}
+	// channelExporter writes the channel exports (Antimatter).
+	channelExporter ChannelExporter
 }
 
 // SetNotifyAdminCoolOffDaysOverride sets the cool-off period override for admin notifications.
@@ -190,7 +194,8 @@ func NewServer(options ...Option) (*Server, error) {
 		LocalRouter: localRouter,
 		timezones:   timezones.New(),
 
-		channelExports: make(chan struct{}, channelExportConcurrency),
+		channelExports:  make(chan struct{}, channelExportConcurrency),
+		channelExporter: messageexport.ExportChannelCSV,
 	}
 
 	for _, option := range options {
@@ -1376,15 +1381,11 @@ func (ch *Channels) ClientConfigHash() string {
 func (s *Server) initJobs() {
 	s.Jobs = jobs.NewJobServer(s.platform, s.Store(), s.GetMetrics(), s.Log(), s.platform.Publish)
 
-	if jobsDataRetentionJobInterface != nil {
-		builder := jobsDataRetentionJobInterface(s)
-		s.Jobs.RegisterJobType(model.JobTypeDataRetention, builder.MakeWorker(), builder.MakeScheduler())
-	}
+	dataRetentionJob := dataretention.NewJob(s.dataRetentionJobDeps())
+	s.Jobs.RegisterJobType(model.JobTypeDataRetention, dataRetentionJob.MakeWorker(), dataRetentionJob.MakeScheduler())
 
-	if jobsMessageExportJobInterface != nil {
-		builder := jobsMessageExportJobInterface(s)
-		s.Jobs.RegisterJobType(model.JobTypeMessageExport, builder.MakeWorker(), builder.MakeScheduler())
-	}
+	messageExportJob := messageexport.NewJob(s.messageExportDeps())
+	s.Jobs.RegisterJobType(model.JobTypeMessageExport, messageExportJob.MakeWorker(), messageExportJob.MakeScheduler())
 
 	s.Jobs.RegisterJobType(model.JobTypeElasticsearchPostAggregation, s.newElasticsearchAggregatorWorker(), esjobs.NewAggregatorScheduler(s.Jobs))
 	s.Jobs.RegisterJobType(model.JobTypeElasticsearchPostIndexing, s.newElasticsearchIndexerWorker(), nil)
