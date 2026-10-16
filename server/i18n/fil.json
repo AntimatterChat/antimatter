@@ -5684,6 +5684,10 @@
     "translation": "Hindi matanggal ang miyembro ng channel."
   },
   {
+    "id": "app.channel.remove_member.moderator.app_error",
+    "translation": "Ang mga admin ng channel at ang mga admin at moderator ng community lamang ang maaaring alisin ang mga tao mula sa channel."
+  },
+  {
     "id": "app.channel.reset_all_channel_schemes.app_error",
     "translation": "Hindi namin ma-reset ang mga channel scheme."
   },

@@ -6054,6 +6054,10 @@
     "translation": "Không thể xóa thành viên kênh."
   },
   {
+    "id": "app.channel.remove_member.moderator.app_error",
+    "translation": "Chỉ quản trị viên của kênh và quản trị viên, người điều hành của cộng đồng mới có thể xóa người dùng khỏi kênh."
+  },
+  {
     "id": "app.channel.reset_all_channel_schemes.app_error",
     "translation": "Chúng tôi không thể đặt lại sơ đồ kênh."
   },

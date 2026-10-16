@@ -5684,6 +5684,10 @@
     "translation": "چینل کے رکن کو ہٹانے میں ناکامی۔"
   },
   {
+    "id": "app.channel.remove_member.moderator.app_error",
+    "translation": "صرف چینل کے ایڈمنز اور کمیونٹی کے ایڈمنز اور موڈریٹرز چینل سے افراد کو ہٹا سکتے ہیں۔"
+  },
+  {
     "id": "app.channel.reset_all_channel_schemes.app_error",
     "translation": "ہم چینل اسکیموں کو ری سیٹ نہیں کر سکے۔"
   },

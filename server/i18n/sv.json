@@ -6059,6 +6059,10 @@
     "translation": "Kunde inte radera kanalmedlemmen."
   },
   {
+    "id": "app.channel.remove_member.moderator.app_error",
+    "translation": "Endast kanalens administratörer samt gemenskapens administratörer och moderatorer kan ta bort personer från en kanal."
+  },
+  {
     "id": "app.channel.reset_all_channel_schemes.app_error",
     "translation": "Det går inte att återställa kanalens schema."
   },

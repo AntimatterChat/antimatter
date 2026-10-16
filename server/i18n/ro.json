@@ -6064,6 +6064,10 @@
     "translation": "Nu se poate elimina membrul canalului."
   },
   {
+    "id": "app.channel.remove_member.moderator.app_error",
+    "translation": "Doar administratorii canalului și administratorii și moderatorii comunității pot elimina persoane dintr-un canal."
+  },
+  {
     "id": "app.channel.reset_all_channel_schemes.app_error",
     "translation": "Nu am putut reseta schemele de canale."
   },

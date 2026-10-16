@@ -6059,6 +6059,10 @@
     "translation": "Impossible de récupérer le membre du canal."
   },
   {
+    "id": "app.channel.remove_member.moderator.app_error",
+    "translation": "Seuls les administrateurs du canal, ainsi que les administrateurs et modérateurs de la communauté, peuvent retirer des membres d'un canal."
+  },
+  {
     "id": "app.channel.reset_all_channel_schemes.app_error",
     "translation": "Impossible de restaurer les schémas de permissions de canal."
   },

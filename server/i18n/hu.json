@@ -6059,6 +6059,10 @@
     "translation": "Nem sikerült eltávolítani a csatorna tagot."
   },
   {
+    "id": "app.channel.remove_member.moderator.app_error",
+    "translation": "Csak a csatorna adminisztrátorai, valamint a közösség adminisztrátorai és moderátorai távolíthatják el a tagokat a csatornából."
+  },
+  {
     "id": "app.channel.reset_all_channel_schemes.app_error",
     "translation": "Nem sikerült visszaállítani a csatorna sémákat."
   },

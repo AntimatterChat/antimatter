@@ -5684,6 +5684,10 @@
     "translation": "تعذّر إزالة عضو القناة."
   },
   {
+    "id": "app.channel.remove_member.moderator.app_error",
+    "translation": "لا يمكن إزالة الأشخاص من القناة إلا من قبل مدراء القناة ومدراء ومُشرفي المجتمع."
+  },
+  {
     "id": "app.channel.reset_all_channel_schemes.app_error",
     "translation": "تعذّرت إعادة تعيين مخططات القناة."
   },

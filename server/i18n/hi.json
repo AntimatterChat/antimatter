@@ -5684,6 +5684,10 @@
     "translation": "चैनल सदस्य को हटाने में असमर्थ।"
   },
   {
+    "id": "app.channel.remove_member.moderator.app_error",
+    "translation": "केवल चैनल के एडमिन और कम्युनिटी के एडमिन और मॉडरेटर ही किसी को चैनल से हटा सकते हैं।"
+  },
+  {
     "id": "app.channel.reset_all_channel_schemes.app_error",
     "translation": "चैनल स्कीम रीसेट करने में असमर्थ।"
   },

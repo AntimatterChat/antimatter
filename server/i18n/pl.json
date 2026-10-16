@@ -6069,6 +6069,10 @@
     "translation": "Nie można usunąć członka kanału."
   },
   {
+    "id": "app.channel.remove_member.moderator.app_error",
+    "translation": "Tylko administratorzy kanału oraz administratorzy i moderatorzy społeczności mogą usuwać osoby z kanału."
+  },
+  {
     "id": "app.channel.reset_all_channel_schemes.app_error",
     "translation": "Nie udało się zresetować schematów kanałów."
   },

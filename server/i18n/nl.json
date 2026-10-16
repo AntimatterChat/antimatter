@@ -6059,6 +6059,10 @@
     "translation": "Fout bij het verwijderen van het kanaallid."
   },
   {
+    "id": "app.channel.remove_member.moderator.app_error",
+    "translation": "Alleen beheerders van het kanaal en beheerders en moderators van de community kunnen mensen uit een kanaal verwijderen."
+  },
+  {
     "id": "app.channel.reset_all_channel_schemes.app_error",
     "translation": "We konden de kanaalschema's niet resetten."
   },

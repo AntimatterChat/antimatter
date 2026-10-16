@@ -6069,6 +6069,10 @@
     "translation": "Не вдалося видалити учасника каналу."
   },
   {
+    "id": "app.channel.remove_member.moderator.app_error",
+    "translation": "Тільки адміністратори каналу та адміністратори й модератори спільноти можуть прибирати учасників із каналу."
+  },
+  {
     "id": "app.channel.reset_all_channel_schemes.app_error",
     "translation": "Ми не змогли скинути схеми каналів."
   },

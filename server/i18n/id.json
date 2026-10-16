@@ -5684,6 +5684,10 @@
     "translation": "Tidak dapat menghapus anggota kanal."
   },
   {
+    "id": "app.channel.remove_member.moderator.app_error",
+    "translation": "Hanya admin kanal, admin komunitas, dan moderator yang dapat menghapus orang dari kanal."
+  },
+  {
     "id": "app.channel.reset_all_channel_schemes.app_error",
     "translation": "Kami tidak dapat mengatur ulang skema kanal."
   },

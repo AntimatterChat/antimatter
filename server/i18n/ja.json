@@ -6002,6 +6002,10 @@
     "translation": "チャンネルメンバーを削除できませんでした。"
   },
   {
+    "id": "app.channel.remove_member.moderator.app_error",
+    "translation": "チャンネルからメンバーを削除できるのは、チャンネルの管理者とコミュニティの管理者・モデレーターのみです。"
+  },
+  {
     "id": "app.channel.reset_all_channel_schemes.app_error",
     "translation": "チャンネルスキームをリセットできませんでした。"
   },

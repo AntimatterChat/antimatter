@@ -5684,6 +5684,10 @@
     "translation": "No s'ha pogut eliminar el membre del canal."
   },
   {
+    "id": "app.channel.remove_member.moderator.app_error",
+    "translation": "Només els administradors del canal i els administradors i moderadors de la comunitat poden treure persones d'un canal."
+  },
+  {
     "id": "app.channel.reset_all_channel_schemes.app_error",
     "translation": "No s'han pogut restablir els esquemes del canal."
   },

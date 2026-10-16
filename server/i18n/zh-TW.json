@@ -6054,6 +6054,10 @@
     "translation": "無法移除頻道成員。"
   },
   {
+    "id": "app.channel.remove_member.moderator.app_error",
+    "translation": "只有頻道的管理員以及社群的管理員和版主才能將成員從頻道中移除。"
+  },
+  {
     "id": "app.channel.reset_all_channel_schemes.app_error",
     "translation": "無法重設頻道策略。"
   },

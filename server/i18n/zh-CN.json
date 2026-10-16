@@ -6054,6 +6054,10 @@
     "translation": "无法移除频道成员。"
   },
   {
+    "id": "app.channel.remove_member.moderator.app_error",
+    "translation": "只有频道管理员和社区管理员、版主才能将成员移出频道。"
+  },
+  {
     "id": "app.channel.reset_all_channel_schemes.app_error",
     "translation": "无法重置频道方案。"
   },

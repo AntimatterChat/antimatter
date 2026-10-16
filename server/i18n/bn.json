@@ -5684,6 +5684,10 @@
     "translation": "চ্যানেলের সদস্যকে সরানো যায়নি।"
   },
   {
+    "id": "app.channel.remove_member.moderator.app_error",
+    "translation": "শুধুমাত্র চ্যানেলের অ্যাডমিন এবং কমিউনিটির অ্যাডমিন ও মডারেটররা চ্যানেল থেকে মানুষকে সরিয়ে দিতে পারেন।"
+  },
+  {
     "id": "app.channel.reset_all_channel_schemes.app_error",
     "translation": "চ্যানেলের স্কিমগুলো রিসেট করা যায়নি।"
   },

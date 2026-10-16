@@ -5684,6 +5684,10 @@
     "translation": "Tidak dapat memadam ahli saluran."
   },
   {
+    "id": "app.channel.remove_member.moderator.app_error",
+    "translation": "Hanya pentadbir saluran dan pentadbir serta moderator komuniti boleh mengeluarkan orang daripada saluran."
+  },
+  {
     "id": "app.channel.reset_all_channel_schemes.app_error",
     "translation": "Kami tidak dapat menetapkan semula skema saluran."
   },

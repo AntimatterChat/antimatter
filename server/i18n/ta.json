@@ -5684,6 +5684,10 @@
     "translation": "சேனல் உறுப்பினரை அகற்ற முடியவில்லை."
   },
   {
+    "id": "app.channel.remove_member.moderator.app_error",
+    "translation": "சேனலின் நிர்வாகிகள் மற்றும் சமூகத்தின் நிர்வாகிகள், மிடிட்டர்கள் மட்டுமே ஒரு சேனலில் இருந்து நபர்களை அகற்ற முடியும்."
+  },
+  {
     "id": "app.channel.reset_all_channel_schemes.app_error",
     "translation": "சேனல் திட்டங்களை மீட்டமைக்க முடியவில்லை."
   },

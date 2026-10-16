@@ -6059,6 +6059,10 @@
     "translation": "Членът на канала не можа да бъде премахнат."
   },
   {
+    "id": "app.channel.remove_member.moderator.app_error",
+    "translation": "Само администраторите на канала и администраторите и модераторите на общността могат да премахват хора от канал."
+  },
+  {
     "id": "app.channel.reset_all_channel_schemes.app_error",
     "translation": "Не успяхме да нулираме схемите на канала."
   },
