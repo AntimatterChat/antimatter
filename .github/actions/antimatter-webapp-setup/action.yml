@@ -1,0 +1,33 @@
+name: "Antimatter web app setup"
+description: >
+  Sets up Node from .nvmrc and the webapp's node_modules (every workspace, Fusion included), restored from
+  the cache when package-lock.json hasn't changed, then builds the platform packages.
+
+runs:
+  using: "composite"
+  steps:
+    - name: Set up Node
+      uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
+      with:
+        node-version-file: ".nvmrc"
+    - name: Restore node_modules
+      id: cache
+      uses: actions/cache@cdf6c1fa76f9f475f3d7449005a359c84ca0f306 # v5.0.3
+      with:
+        path: |
+          webapp/node_modules
+          webapp/channels/node_modules
+          webapp/fusion/node_modules
+          webapp/platform/*/node_modules
+        key: am-node-modules-${{ runner.os }}-${{ hashFiles('webapp/package-lock.json', 'webapp/patches/**') }}
+    - name: Install dependencies
+      if: steps.cache.outputs.cache-hit != 'true'
+      shell: bash
+      working-directory: webapp
+      run: npm ci --include=dev --no-audit --no-fund
+    - name: Build the platform packages
+      # npm ci builds them in postinstall; a cache hit restores node_modules only.
+      if: steps.cache.outputs.cache-hit == 'true'
+      shell: bash
+      working-directory: webapp
+      run: npm run postinstall

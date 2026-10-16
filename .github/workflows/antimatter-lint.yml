@@ -1,0 +1,126 @@
+name: Antimatter lint
+
+# Linters and Antimatter's policy checks. Run them locally with scripts/antimatter/check.sh (see TESTING.md).
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event_name == 'pull_request' && github.ref || github.run_id }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+permissions:
+  contents: read
+
+jobs:
+  policy:
+    name: Policy (branding, outbound hosts, AM_ names, translations)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+      - name: Run the policy checks
+        run: python3 scripts/antimatter/policy_check.py
+
+  workflows:
+    name: Workflows (actionlint, yamllint)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+      - name: Install actionlint and yamllint
+        env:
+          AM_TOOLS_DIR: ${{ runner.temp }}/am-tools/bin
+        run: scripts/antimatter/install-tools.sh actionlint yamllint
+      - name: actionlint
+        run: actionlint
+      - name: yamllint
+        if: ${{ !cancelled() }}
+        run: yamllint .github/workflows/
+
+  server:
+    name: Server (golangci-lint, vet)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+      - name: Set up Go
+        uses: actions/setup-go@4b73464bb391d4059bd26b0524d20df3927bd417 # v6.3.0
+        with:
+          go-version-file: server/go.mod
+          cache-dependency-path: |
+            server/go.sum
+            server/public/go.sum
+      - name: golangci-lint (upstream's configuration, server/.golangci.yml)
+        working-directory: server
+        run: make golangci-lint
+      - name: go vet with the Mattermost vet checks
+        if: ${{ !cancelled() }}
+        working-directory: server
+        run: make vet
+      - name: Plugin API checker
+        if: ${{ !cancelled() }}
+        working-directory: server
+        run: make plugin-checker
+      - name: Server translations match en.json
+        if: ${{ !cancelled() }}
+        working-directory: server
+        run: make i18n-verify
+
+  web:
+    name: Web (${{ matrix.workspace }}) eslint, stylelint, tsc
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        workspace: [fusion, channels, platform]
+    env:
+      NODE_OPTIONS: --max-old-space-size=6144
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+      - name: Set up the web app
+        uses: ./.github/actions/antimatter-webapp-setup
+      - name: eslint and stylelint
+        working-directory: webapp
+        env:
+          WORKSPACE: ${{ matrix.workspace }}
+        run: |
+          if [ "$WORKSPACE" = platform ]; then
+            npm run check --workspace=platform/client --workspace=platform/types \
+              --workspace=platform/components --workspace=platform/shared
+          else
+            npm run check --workspace="$WORKSPACE"
+          fi
+      - name: Type check (tsc)
+        if: ${{ !cancelled() }}
+        working-directory: webapp
+        env:
+          WORKSPACE: ${{ matrix.workspace }}
+        run: |
+          if [ "$WORKSPACE" = platform ]; then
+            npm run check-types --workspace=platform/components --workspace=platform/shared
+          else
+            npm run check-types --workspace="$WORKSPACE"
+          fi
+      - name: en.json matches the messages in the code
+        if: ${{ !cancelled() && matrix.workspace != 'platform' }}
+        working-directory: webapp
+        env:
+          WORKSPACE: ${{ matrix.workspace }}
+        run: npm run i18n-extract:check --workspace="$WORKSPACE"

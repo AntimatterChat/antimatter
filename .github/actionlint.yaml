@@ -1,0 +1,13 @@
+# actionlint configuration (Antimatter lint workflow, scripts/antimatter/check.sh lint workflows).
+# Upstream's workflows are kept unchanged to ease merges, and most only run in Mattermost's repository: don't
+# report the style issues shellcheck finds in their scripts. Antimatter's own workflows (antimatter-*.yml)
+# get every check.
+paths:
+  .github/workflows/{e2e-tests-*,mmctl-*,server-*,tag-public-module,webapp-*}.{yml,yaml}:
+    ignore:
+      - 'shellcheck reported issue'
+  .github/workflows/server-ci.yml:
+    ignore:
+      - 'shellcheck reported issue'
+      # Upstream passes a job name to success(); the job only runs in Mattermost's repository.
+      - 'function "success\(\) -> bool" takes 0 parameters'
