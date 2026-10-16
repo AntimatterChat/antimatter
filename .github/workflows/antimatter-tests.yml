@@ -40,8 +40,8 @@ jobs:
       CI_INBUCKET_SMTP_PORT: "10025"
       CI_AZURITE_HOST: localhost
       CI_AZURITE_PORT: "10000"
-      AM_EMAILSETTINGS_SMTPSERVER: localhost
-      AM_EMAILSETTINGS_SMTPPORT: "10025"
+      # No AM_EMAILSETTINGS_SMTP* overrides: the default SMTP server (localhost:10025) is Inbucket's, and an
+      # override would also beat the tests that point SMTP somewhere unreachable to check the failure paths.
       IS_CI: "true"
       ENABLE_COVERAGE: "true"
       # The services above are running: a test that can't reach one fails instead of skipping.

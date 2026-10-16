@@ -97,8 +97,12 @@ test_env() {
     export CI_INBUCKET_HOST="${CI_INBUCKET_HOST:-localhost}" CI_INBUCKET_PORT="${CI_INBUCKET_PORT:-${AM_TEST_INBUCKET_PORT:-9001}}"
     export CI_INBUCKET_SMTP_PORT="${CI_INBUCKET_SMTP_PORT:-${AM_TEST_SMTP_PORT:-10025}}"
     export CI_AZURITE_HOST="${CI_AZURITE_HOST:-localhost}" CI_AZURITE_PORT="${CI_AZURITE_PORT:-${AM_TEST_AZURITE_PORT:-10000}}"
-    export AM_EMAILSETTINGS_SMTPSERVER="${AM_EMAILSETTINGS_SMTPSERVER:-localhost}"
-    export AM_EMAILSETTINGS_SMTPPORT="${AM_EMAILSETTINGS_SMTPPORT:-$CI_INBUCKET_SMTP_PORT}"
+    # The default SMTP server, localhost:10025, is Inbucket's. Only a moved port needs an override, and that one
+    # beats the tests that point SMTP somewhere unreachable (they fail then).
+    if [ "$CI_INBUCKET_SMTP_PORT" != 10025 ] && [ -z "${AM_EMAILSETTINGS_SMTPPORT:-}" ]; then
+        export AM_EMAILSETTINGS_SMTPSERVER="${AM_EMAILSETTINGS_SMTPSERVER:-$CI_INBUCKET_HOST}"
+        export AM_EMAILSETTINGS_SMTPPORT="$CI_INBUCKET_SMTP_PORT"
+    fi
 }
 
 jest_run() { # workspace dir, extra args...
