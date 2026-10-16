@@ -102,9 +102,21 @@ func TestGenerateKey_TrustedHeader(t *testing.T) {
 	req.RemoteAddr = "10.10.10.5:80"
 	req.Header.Set("X-Forwarded-For", "10.6.3.1, 10.5.1.2")
 
+	// The header is read from the right: without TrustedProxyIPs, the right-most address is the client's (the
+	// left-most one is whatever the client sent).
 	rateLimiter, _ := NewRateLimiter(genRateLimitSettings(true, true, ""), []string{"X-Forwarded-For"}, nil)
 	key := rateLimiter.GenerateKey(req)
-	require.Equal(t, "10.6.3.1", key, "Wrong key on test with allowed trusted proxy header")
+	require.Equal(t, "10.5.1.2", key, "Wrong key on test with allowed trusted proxy header")
+
+	// Past the trusted proxies, the next address is the client's.
+	rateLimiter, _ = NewRateLimiter(genRateLimitSettings(true, true, ""), []string{"X-Forwarded-For"}, []string{"10.10.10.0/24", "10.5.1.2"})
+	key = rateLimiter.GenerateKey(req)
+	require.Equal(t, "10.6.3.1", key, "Wrong key on test with trusted proxies")
+
+	// A request that doesn't come from a trusted proxy can't pick its address with the header.
+	rateLimiter, _ = NewRateLimiter(genRateLimitSettings(true, true, ""), []string{"X-Forwarded-For"}, []string{"192.168.0.1"})
+	key = rateLimiter.GenerateKey(req)
+	require.Equal(t, "10.10.10.5", key, "Wrong key on test from an untrusted proxy")
 
 	rateLimiter, _ = NewRateLimiter(genRateLimitSettings(true, true, ""), nil, nil)
 	key = rateLimiter.GenerateKey(req)
