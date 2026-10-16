@@ -343,7 +343,7 @@ export function DeactivateDialog({onClose}: {onClose: () => void}) {
                         {formatMessage({id: 'fusion.settings.cancel', defaultMessage: 'Cancel'})}
                     </button>
                     <button className={am('btn', 'danger')}>
-                        {formatMessage({id: 'fusion.settings.deactivateButton', defaultMessage: 'Deactivate'})}
+                        {formatMessage({id: 'fusion.settings.deactivate', defaultMessage: 'Deactivate account'})}
                     </button>
                 </div>
             </div>

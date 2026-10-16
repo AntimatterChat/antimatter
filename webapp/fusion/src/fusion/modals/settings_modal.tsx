@@ -607,17 +607,13 @@ function AppearancePane() {
 
 function MessagesPane() {
     const {formatMessage} = useIntl();
-    const config = useSelector(getConfig);
     const threadsChoice = useSelector((state: GlobalState) => isCollapsedThreadsAllowed(state) && getConfig(state).CollapsedThreads !== CollapsedThreads.ALWAYS_ON);
     const [threads, setThreads] = usePreference(Preferences.CATEGORY_DISPLAY_SETTINGS, Preferences.COLLAPSED_REPLY_THREADS, useSelector(getCollapsedThreadsPreference));
-    const [linkPreviews, setLinkPreviews] = usePreference(Preferences.CATEGORY_DISPLAY_SETTINGS, Constants.Preferences.LINK_PREVIEW_DISPLAY, Constants.Preferences.LINK_PREVIEW_DISPLAY_DEFAULT);
     const [emoticons, setEmoticons] = usePreference(Preferences.CATEGORY_DISPLAY_SETTINGS, Preferences.RENDER_EMOTICONS_AS_EMOJI, 'true');
     const [walltime, setWalltime] = usePreference(Preferences.CATEGORY_DISPLAY_SETTINGS, WALLTIME_PREFERENCE, 'true');
-    const [joinLeave, setJoinLeave] = usePreference(Preferences.CATEGORY_ADVANCED_SETTINGS, Preferences.ADVANCED_FILTER_JOIN_LEAVE, config.EnableJoinLeaveMessageByDefault || 'true');
     const [ctrlSend, setCtrlSend] = usePreference(Preferences.CATEGORY_ADVANCED_SETTINGS, Preferences.ADVANCED_SEND_ON_CTRL_ENTER, 'false');
     const richTextAllowed = useSelector((state: GlobalState) => getFeatureFlagValue(state, 'WysiwygEditor') === 'true');
     const [richText, setRichText] = usePreference(Preferences.CATEGORY_DISPLAY_SETTINGS, Preferences.WYSIWYG_EDITOR, Preferences.WYSIWYG_EDITOR_DEFAULT);
-    const [syncDrafts, setSyncDrafts] = usePreference(Preferences.CATEGORY_ADVANCED_SETTINGS, Preferences.ADVANCED_SYNC_DRAFTS, 'true');
 
     return (
         <>
@@ -629,14 +625,6 @@ function MessagesPane() {
                     desc={formatMessage({id: 'fusion.settings.threadsDesc', defaultMessage: 'Thread replies stay in their thread instead of the channel, and the threads you follow are listed in Threads.'})}
                     on={threads === Preferences.COLLAPSED_REPLY_THREADS_ON}
                     onChange={(on) => setThreads(on ? Preferences.COLLAPSED_REPLY_THREADS_ON : Preferences.COLLAPSED_REPLY_THREADS_OFF)}
-                />
-            )}
-            {config.EnableLinkPreviews === 'true' && (
-                <Toggle
-                    title={formatMessage({id: 'fusion.settings.linkPreviews', defaultMessage: 'Link previews'})}
-                    desc={formatMessage({id: 'fusion.settings.linkPreviewsDesc', defaultMessage: 'Show a preview of the websites linked in messages.'})}
-                    on={linkPreviews === 'true'}
-                    onChange={(on) => setLinkPreviews(String(on))}
                 />
             )}
             <Toggle
@@ -652,12 +640,6 @@ function MessagesPane() {
                 onChange={(on) => setWalltime(String(on))}
             />
             <Toggle
-                title={formatMessage({id: 'fusion.settings.joinLeave', defaultMessage: 'Join and leave messages'})}
-                desc={formatMessage({id: 'fusion.settings.joinLeaveDesc', defaultMessage: 'Show when people join or leave channels.'})}
-                on={joinLeave === 'true'}
-                onChange={(on) => setJoinLeave(String(on))}
-            />
-            <Toggle
                 title={formatMessage({id: 'fusion.settings.ctrlSend', defaultMessage: 'Send with Ctrl+Enter'})}
                 desc={formatMessage({id: 'fusion.settings.ctrlSendDesc', defaultMessage: 'Enter starts a new line, and Ctrl+Enter (⌘+Enter on a Mac) sends.'})}
                 on={ctrlSend === 'true'}
@@ -669,14 +651,6 @@ function MessagesPane() {
                     desc={formatMessage({id: 'fusion.settings.richTextDesc', defaultMessage: 'See bold, lists, links and code as they will look while you write, instead of their Markdown.'})}
                     on={richText === 'true'}
                     onChange={(on) => setRichText(String(on))}
-                />
-            )}
-            {config.AllowSyncedDrafts === 'true' && (
-                <Toggle
-                    title={formatMessage({id: 'fusion.settings.syncDrafts', defaultMessage: 'Sync drafts'})}
-                    desc={formatMessage({id: 'fusion.settings.syncDraftsDesc', defaultMessage: 'Keep the messages you haven\'t sent yet on the server, to finish them on another device.'})}
-                    on={syncDrafts === 'true'}
-                    onChange={(on) => setSyncDrafts(String(on))}
                 />
             )}
             <ReadingRows/>

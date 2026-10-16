@@ -179,8 +179,8 @@ export function ReadingRows() {
             />
             {previewsAllowed && (
                 <Toggle
-                    title={formatMessage({id: 'fusion.settings.linkPreviews', defaultMessage: 'Website link previews'})}
-                    desc={formatMessage({id: 'fusion.settings.linkPreviewsDesc', defaultMessage: 'A card with the title, description and picture of the first link in a message. The author can remove it from their message.'})}
+                    title={formatMessage({id: 'fusion.settings.linkPreviews', defaultMessage: 'Link previews'})}
+                    desc={formatMessage({id: 'fusion.settings.linkPreviewsDesc', defaultMessage: 'Show a preview of the websites linked in messages.'})}
                     on={linkPreviews !== 'false'}
                     onChange={(on) => setLinkPreviews(String(on))}
                 />
@@ -193,7 +193,7 @@ export function ReadingRows() {
             />
             <Toggle
                 title={formatMessage({id: 'fusion.settings.joinLeave', defaultMessage: 'Join and leave messages'})}
-                desc={formatMessage({id: 'fusion.settings.joinLeaveDesc', defaultMessage: 'Show when people join or leave channels. Channel admins can also turn them off for a whole channel in its settings.'})}
+                desc={formatMessage({id: 'fusion.settings.joinLeaveDesc', defaultMessage: 'Show when people join or leave channels.'})}
                 on={joinLeave !== 'false'}
                 onChange={(on) => setJoinLeave(String(on))}
             />
@@ -237,7 +237,7 @@ export function AdvancedPane() {
             {config.AllowSyncedDrafts === 'true' && (
                 <Toggle
                     title={formatMessage({id: 'fusion.settings.syncDrafts', defaultMessage: 'Sync drafts'})}
-                    desc={formatMessage({id: 'fusion.settings.syncDraftsDesc', defaultMessage: 'Keep unsent messages on the server, to find them on your other devices.'})}
+                    desc={formatMessage({id: 'fusion.settings.syncDraftsDesc', defaultMessage: 'Keep the messages you haven\'t sent yet on the server, to finish them on another device.'})}
                     on={syncDrafts !== 'false'}
                     onChange={(on) => setSyncDrafts(String(on))}
                 />

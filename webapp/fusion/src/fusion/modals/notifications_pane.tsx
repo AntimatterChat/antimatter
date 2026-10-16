@@ -104,7 +104,7 @@ export default function NotificationsPane() {
     ];
     const pushEnabled = config.SendPushNotifications === 'true';
     const emailEnabled = config.SendEmailNotifications === 'true';
-    const firstNameTitle = me.first_name ? formatMessage({id: 'fusion.settings.firstNameIs', defaultMessage: 'My first name, “{name}”'}, {name: me.first_name}) : formatMessage({id: 'fusion.settings.firstName', defaultMessage: 'My first name'});
+    const firstNameTitle = me.first_name ? formatMessage({id: 'fusion.settings.firstNameIs', defaultMessage: 'My first name, “{name}”'}, {name: me.first_name}) : formatMessage({id: 'fusion.settings.firstName', defaultMessage: 'First name'});
 
     const sendTest = async () => {
         setTesting(true);

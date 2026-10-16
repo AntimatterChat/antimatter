@@ -127,4 +127,19 @@ describe('fusion/modals/SettingsModal', () => {
         expect(revokeSession).toHaveBeenCalledWith('me', 'web');
         await waitFor(() => expect(getSessions).toHaveBeenCalledTimes(2));
     });
+
+    test('shows each message setting once, in one tab', () => {
+        const config = {EnableLinkPreviews: 'true', AllowSyncedDrafts: 'true', EnableJoinLeaveMessageByDefault: 'true'};
+        render('messages', {config});
+
+        expect(screen.getAllByRole('switch', {name: 'Link previews'})).toHaveLength(1);
+        expect(screen.getAllByRole('switch', {name: 'Join and leave messages'})).toHaveLength(1);
+        expect(screen.queryByRole('switch', {name: 'Sync drafts'})).not.toBeInTheDocument();
+    });
+
+    test('keeps draft sync in the advanced settings', () => {
+        render('advanced', {config: {AllowSyncedDrafts: 'true'}});
+
+        expect(screen.getAllByRole('switch', {name: 'Sync drafts'})).toHaveLength(1);
+    });
 });
