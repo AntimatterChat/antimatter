@@ -1,0 +1,91 @@
+# nfpm configuration of the all-in-one Antimatter .deb and .rpm packages, run by
+# build-packages.sh (see it for the layout) in a staging directory holding root/opt/antimatter
+# (the release archive) and package/ (a copy of this directory). nfpm expands the environment
+# variables of arch and version, not of the paths.
+name: antimatter
+arch: ${AM_PKG_ARCH}
+platform: linux
+version: ${AM_PKG_VERSION}
+version_schema: semver
+release: "1"
+section: net
+priority: optional
+maintainer: Antimatter contributors <https://github.com/AntimatterChat>
+vendor: Antimatter
+homepage: https://antimatter.chat
+license: AGPL-3.0-only AND Apache-2.0
+description: |-
+  Antimatter, a self-hosted team chat server.
+  The server, amctl, the classic and Fusion web apps and the bundled apps, installed in
+  /opt/antimatter with a systemd service (antimatter.service). It needs a PostgreSQL 15 or newer
+  database, on this machine or another one.
+
+overrides:
+  deb:
+    depends:
+      - ca-certificates
+    recommends:
+      - postgresql
+      - media-types
+    # Text extraction from uploaded documents, for search.
+    suggests:
+      - poppler-utils
+      - wv
+      - unrtf
+      - tidy
+  rpm:
+    depends:
+      - ca-certificates
+    recommends:
+      - postgresql-server
+      - mailcap
+    suggests:
+      - poppler-utils
+      - unrtf
+      - tidy
+
+contents:
+  - src: root/opt/antimatter
+    dst: /opt/antimatter
+    type: tree
+  # Everything the server writes lives outside /opt/antimatter, which the package replaces on
+  # upgrades; the server finds it at its usual relative paths.
+  - src: /etc/antimatter/config
+    dst: /opt/antimatter/config
+    type: symlink
+  - src: /var/lib/antimatter/data
+    dst: /opt/antimatter/data
+    type: symlink
+  - src: /var/lib/antimatter/plugins
+    dst: /opt/antimatter/plugins
+    type: symlink
+  - src: /var/lib/antimatter/client-plugins
+    dst: /opt/antimatter/client/plugins
+    type: symlink
+  - src: /var/log/antimatter
+    dst: /opt/antimatter/logs
+    type: symlink
+  - src: /opt/antimatter/bin/amctl
+    dst: /usr/bin/amctl
+    type: symlink
+  - src: package/antimatter.service
+    dst: /usr/lib/systemd/system/antimatter.service
+    file_info:
+      mode: 0644
+  - dst: /etc/antimatter
+    type: dir
+    file_info:
+      mode: 0755
+  - src: package/antimatter.env
+    dst: /etc/antimatter/antimatter.env
+    type: config|noreplace
+    file_info:
+      mode: 0600
+
+scripts:
+  postinstall: package/scripts/postinstall.sh
+  preremove: package/scripts/preremove.sh
+  postremove: package/scripts/postremove.sh
+
+rpm:
+  group: Applications/Internet

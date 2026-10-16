@@ -1,0 +1,51 @@
+# Antimatter server, installed by the antimatter .deb/.rpm package.
+# Settings: /etc/antimatter/antimatter.env (AM_* variables, e.g. the database) and
+# /etc/antimatter/config/config.json (System Console). Override this unit with
+# `systemctl edit antimatter` rather than editing it: upgrades replace it.
+[Unit]
+Description=Antimatter
+Documentation=https://antimatter.chat/docs/admins/install.html
+After=network-online.target postgresql.service
+Wants=network-online.target
+
+[Service]
+Type=notify
+User=antimatter
+Group=antimatter
+# Package defaults; /etc/antimatter/antimatter.env overrides them. Logs go to the journal
+# (journalctl -u antimatter), and amctl works on this machine without signing in:
+# sudo -u antimatter amctl --local system status
+Environment=AM_LOGSETTINGS_ENABLEFILE=false
+Environment=AM_NOTIFICATIONLOGSETTINGS_ENABLEFILE=false
+Environment=AM_SERVICESETTINGS_ENABLELOCALMODE=true
+Environment=AM_INSTALL_TYPE=linux_package
+EnvironmentFile=/etc/antimatter/antimatter.env
+WorkingDirectory=/opt/antimatter
+ExecStart=/opt/antimatter/bin/antimatter
+# /opt/antimatter/data, plugins and client/plugins link to /var/lib/antimatter, logs to
+# /var/log/antimatter and config to /etc/antimatter/config.
+StateDirectory=antimatter
+StateDirectoryMode=0750
+LogsDirectory=antimatter
+LogsDirectoryMode=0750
+# Database migrations at the first start of a new version can take long.
+TimeoutStartSec=3600
+Restart=always
+RestartSec=10
+LimitNOFILE=49152
+
+# Hardening that leaves the apps (plugins, which run as child processes) working.
+UMask=0027
+NoNewPrivileges=yes
+ProtectSystem=full
+ReadWritePaths=/etc/antimatter/config
+ProtectHome=yes
+PrivateDevices=yes
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectControlGroups=yes
+RestrictSUIDSGID=yes
+LockPersonality=yes
+
+[Install]
+WantedBy=multi-user.target

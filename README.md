@@ -18,11 +18,24 @@ apps.
 The easiest way is the Docker image (`ghcr.io/antimatterchat/antimatter`); see the
 antimatter-docker repository for a ready-to-use compose file.
 
-To run a release archive (`antimatter-<os>-<arch>.tar.gz`):
+Each release (`vX.Y.Z` tag) on the [releases page](https://github.com/AntimatterChat/antimatter/releases)
+has, for Linux `amd64` and `arm64`, a release archive (`antimatter-X.Y.Z-linux-<arch>.tar.gz`) and
+all-in-one `.deb` and `.rpm` packages with the bundled apps, plus a `SHA256SUMS` file. The
+packages install the server in `/opt/antimatter` with a systemd service, `antimatter.service`
+(enabled, not started), running as the `antimatter` user; the database goes in
+`/etc/antimatter/antimatter.env` (`AM_SQLSETTINGS_DATASOURCE`), the data in `/var/lib/antimatter`,
+the logs in the journal. PostgreSQL isn't included:
+
+```sh
+sudo apt install ./antimatter_X.Y.Z-1_amd64.deb        # Debian, Ubuntu
+sudo dnf install ./antimatter-X.Y.Z-1.x86_64.rpm       # Fedora, RHEL, Rocky, Alma
+```
+
+To run a release archive instead:
 
 1. Set up a PostgreSQL database and user.
 2. Unpack the archive, e.g. into `/opt/antimatter`, and point `SqlSettings.DataSource` in
-   `config/config.json` (or the `MM_SQLSETTINGS_DATASOURCE` environment variable) at the database.
+   `config/config.json` (or the `AM_SQLSETTINGS_DATASOURCE` environment variable) at the database.
 3. Start the server with `bin/antimatter`, as an unprivileged user, and open
    http://localhost:8065. The first account created becomes the system administrator.
 
@@ -32,7 +45,9 @@ itself, with `ServiceSettings.EnableLocalMode`).
 ## Building from source
 
 The server is written in Go (`server/`) and the web app in React (`webapp/`). `make build` and
-`make package-linux` in `server/` build the server and its release archives; see
+`make package-linux` in `server/` build the server and its release archives, and
+`server/build/package/build-packages.sh` the `.deb` and `.rpm` packages (the
+`antimatter-release.yml` workflow runs them all on release tags); see
 [CONTRIBUTING.md](CONTRIBUTING.md) for a development setup.
 
 ## Feedback and support
