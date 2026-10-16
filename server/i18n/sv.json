@@ -13148,7 +13148,7 @@
   },
   {
     "id": "model.config.is_valid.max_users.app_error",
-    "translation": "Ogiltigt max antal användare per grupp i gruppinställningarna. Måste vara ett positivt tal."
+    "translation": "Ogiltigt maximalt antal medlemmar per community. Använd 0 för obegränsat eller ett positivt tal."
   },
   {
     "id": "model.config.is_valid.message_export.batch_size.app_error",

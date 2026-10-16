@@ -12425,7 +12425,7 @@
   },
   {
     "id": "model.config.is_valid.max_users.app_error",
-    "translation": "குழு அமைப்புகளுக்கான குழுவுக்கு அதிகபட்ச பயனர்கள் தவறானவை. நேர்மறை எண்ணாக இருக்க வேண்டும்."
+    "translation": "சமூகத்திற்கு அதிகபட்ச உறுப்பினர் எண்ணிக்கை தவறானது. எல்லை இல்லாமல் 0-ஐ அல்லது நேர்மறை எண்ணைப் பயன்படுத்தவும்."
   },
   {
     "id": "model.config.is_valid.message_export.batch_size.app_error",

@@ -1000,10 +1000,6 @@
     "translation": "Message export job BatchSize must be a positive integer."
   },
   {
-    "id": "model.config.is_valid.max_users.app_error",
-    "translation": "Invalid maximum users per team for team settings. Must be a positive number."
-  },
-  {
     "id": "model.config.is_valid.max_notify_per_channel.app_error",
     "translation": "Invalid maximum notifications per channel for team settings. Must be a positive number."
   },

@@ -13148,7 +13148,7 @@
   },
   {
     "id": "model.config.is_valid.max_users.app_error",
-    "translation": "Número inválido del máximo de usuarios por equipo en la configuración de equipo. Debe ser un número positivo."
+    "translation": "Número máximo de miembros por comunidad no válido. Usa 0 para sin límite o un número positivo."
   },
   {
     "id": "model.config.is_valid.message_export.batch_size.app_error",

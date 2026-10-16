@@ -13148,7 +13148,7 @@
   },
   {
     "id": "model.config.is_valid.max_users.app_error",
-    "translation": "Nombre maximum d'utilisateurs par équipe invalide pour les paramètres d'équipe. Doit être un entier positif."
+    "translation": "Nombre maximal de membres par communauté invalide. Utilisez 0 pour aucune limite, ou un nombre positif."
   },
   {
     "id": "model.config.is_valid.message_export.batch_size.app_error",

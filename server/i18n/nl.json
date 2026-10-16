@@ -13148,7 +13148,7 @@
   },
   {
     "id": "model.config.is_valid.max_users.app_error",
-    "translation": "Ongeldig maximaal aantal gebruikers per team bij team instellingen. Moet een getal groter dan 0 zijn."
+    "translation": "Ongeldig aantal leden per community. Gebruik 0 voor geen limiet, of een positief getal."
   },
   {
     "id": "model.config.is_valid.message_export.batch_size.app_error",

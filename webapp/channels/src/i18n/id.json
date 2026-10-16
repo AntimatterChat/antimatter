@@ -10,5 +10,8 @@
   "admin.global_attributes.attribute_details.applies_to.item.user.profile_display.restricted_help": "Hanya admin dan pengguna yang dapat melihat nilainya. Opsi Hanya Admin menampilkannya di profil mereka; Opsi Disembunyikan tidak menampilkannya di mana pun.",
   "admin.global_attributes.attribute_details.applies_to.item.user.profile_display.when_set.label": "Saat Diisi",
   "admin.privacy.enableUserBlockingDescription": "Jika diaktifkan, pengguna dapat mengabaikan dan memblokir satu sama lain, serta memilih untuk menerima Pesan Langsung dari orang yang tidak mereka kenal sebagai permintaan pesan, yang tidak akan memberi notifikasi hingga diterima. Matikan untuk lingkungan kerja di mana rekan kerja harus selalu dapat dihubungi: tidak ada yang dipaksakan saat ini, tetapi daftar dan pilihan yang dibuat pengguna akan disimpan untuk saat fitur ini diaktifkan kembali.",
-  "admin.privacy.enableUserBlockingTitle": "Aktifkan pengabaian, pemblokiran, dan permintaan pesan:"
+  "admin.privacy.enableUserBlockingTitle": "Aktifkan pengabaian, pemblokiran, dan permintaan pesan:",
+  "admin.team.maxUsersDescription": "Jumlah maksimum anggota aktif yang dapat dimiliki oleh sebuah komunitas. 0 berarti tanpa batas. Pengguna yang dinonaktifkan tidak dihitung.",
+  "admin.team.maxUsersExample": "Contoh: \"500\"",
+  "admin.team.maxUsersTitle": "Maks. Anggota per Komunitas:"
 }

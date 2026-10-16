@@ -12677,10 +12677,6 @@
     "translation": "Netinkamas paslaugos nustatymų didžiausias URL ilgis. Turi būti sveikasis skaičius, didesnis nei nulis."
   },
   {
-    "id": "model.config.is_valid.max_users.app_error",
-    "translation": "Netinkamas komandos nustatymų didžiausias naudotojų skaičius komandoje. Turi būti teigiamas skaičius."
-  },
-  {
     "id": "model.config.is_valid.message_export.batch_size.app_error",
     "translation": "Pranešimų eksporto užduoties BatchSize turi būti teigiamas sveikasis skaičius."
   },

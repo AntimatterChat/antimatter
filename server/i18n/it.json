@@ -13148,7 +13148,7 @@
   },
   {
     "id": "model.config.is_valid.max_users.app_error",
-    "translation": "Numero massimo utenti per gruppo non valido per le impostazioni gruppo. Deve essere un numero positivo."
+    "translation": "Numero massimo di membri per community non valido. Usa 0 per nessun limite, oppure un numero positivo."
   },
   {
     "id": "model.config.is_valid.message_export.batch_size.app_error",

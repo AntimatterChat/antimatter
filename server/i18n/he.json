@@ -12425,7 +12425,7 @@
   },
   {
     "id": "model.config.is_valid.max_users.app_error",
-    "translation": "מספר משתמשים מרבי לכל צוות לא תקין בהגדרות הצוות. חייב להיות מספר חיובי."
+    "translation": "מספר חברים מרבי לקהילה לא תקין. השתמשו ב־0 ללא הגבלה, או במספר חיובי."
   },
   {
     "id": "model.config.is_valid.message_export.batch_size.app_error",

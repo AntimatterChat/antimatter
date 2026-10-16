@@ -13157,7 +13157,7 @@
   },
   {
     "id": "model.config.is_valid.max_users.app_error",
-    "translation": "Utilizatorii maximi nevaluiți pentru fiecare echipă pentru setările echipei. Trebuie să fie un număr pozitiv."
+    "translation": "Numărul maxim de membri per comunitate este invalid. Folosiți 0 pentru a nu impune nicio limită, sau un număr pozitiv."
   },
   {
     "id": "model.config.is_valid.message_export.batch_size.app_error",

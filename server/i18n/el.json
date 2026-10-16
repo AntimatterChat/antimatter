@@ -12425,7 +12425,7 @@
   },
   {
     "id": "model.config.is_valid.max_users.app_error",
-    "translation": "Μη έγκυρος μέγιστος αριθμός χρηστών ανά Ομάδα για τις ρυθμίσεις ομάδας. Πρέπει να είναι θετικός αριθμός."
+    "translation": "Μη έγκυρος μέγιστος αριθμός μελών ανά κοινότητα. Χρησιμοποιήστε 0 για απεριόριστο ή έναν θετικό αριθμό."
   },
   {
     "id": "model.config.is_valid.message_export.batch_size.app_error",

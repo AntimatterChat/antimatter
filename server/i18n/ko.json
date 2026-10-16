@@ -12955,7 +12955,7 @@
   },
   {
     "id": "model.config.is_valid.max_users.app_error",
-    "translation": "팀 설정의 팀당 최대 사용자 수가 유효하지 않습니다. 이 값은 양수여야 합니다."
+    "translation": "커뮤니티별 최대 멤버 수가 잘못되었습니다. 제한이 없으면 0, 그 외에는 양의 정수를 입력하세요."
   },
   {
     "id": "model.config.is_valid.message_export.batch_size.app_error",

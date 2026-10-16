@@ -13148,7 +13148,7 @@
   },
   {
     "id": "model.config.is_valid.max_users.app_error",
-    "translation": "Невалидни максимално потребители на екип в настройките на екипа. Трябва да е положително число."
+    "translation": "Невалиден максимален брой членове на общността. Използвайте 0 за неограничен брой или положително число."
   },
   {
     "id": "model.config.is_valid.message_export.batch_size.app_error",

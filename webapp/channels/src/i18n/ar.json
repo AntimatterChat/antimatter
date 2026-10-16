@@ -10,5 +10,8 @@
   "admin.global_attributes.attribute_details.applies_to.item.user.profile_display.restricted_help": "يرى القيمة المديرون والمستخدم نفسه فقط. يعرض «للمديرين فقط» القيمة في ملف المستخدم الشخصي له؛ أما «مخفي» فيخفيها في كل مكان.",
   "admin.global_attributes.attribute_details.applies_to.item.user.profile_display.when_set.label": "عند التعيين",
   "admin.privacy.enableUserBlockingDescription": "عند تفعيله، يمكن للأشخاص تجاهل بعضهم البعض وحظرهم، واختيار استلام الرسائل المباشرة من أشخاص لا يعرفونهم كطلبات رسائل، والتي لا تُرسل إشعارات حتى يتم قبولها. عطّل هذا الخيار في أماكن العمل التي يجب أن يكون فيها الزملاء متاحين دائمًا؛ في هذه الحالة لا يُفرض أي شيء، لكن تُحفظ القوائم والخيارات التي اتخذها الأشخاص عند إعادة تفعيله.",
-  "admin.privacy.enableUserBlockingTitle": "تفعيل التجاهل والحظر وطلبات الرسائل:"
+  "admin.privacy.enableUserBlockingTitle": "تفعيل التجاهل والحظر وطلبات الرسائل:",
+  "admin.team.maxUsersDescription": "الحد الأقصى لعدد الأعضاء النشطين الذين يمكن أن تضمهم مساحة العمل. القيمة 0 تعني عدم وجود حد. لا يُحتسب المستخدمون غير المفعّلون.",
+  "admin.team.maxUsersExample": "مثال: \"500\"",
+  "admin.team.maxUsersTitle": "الحد الأقصى لعدد الأعضاء في مساحة العمل:"
 }

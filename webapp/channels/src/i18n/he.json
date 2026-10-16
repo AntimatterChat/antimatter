@@ -10,5 +10,8 @@
   "admin.global_attributes.attribute_details.applies_to.item.user.profile_display.restricted_help": "רק מנהלים והמשתמש רואים את הערך. 'מנהלים בלבד' מציג אותו בפרופיל שלהם; 'מוסתר' לא מציג אותו בשום מקום.",
   "admin.global_attributes.attribute_details.applies_to.item.user.profile_display.when_set.label": "כשקבוע",
   "admin.privacy.enableUserBlockingDescription": "כשנבחר, משתמשים יכולים להתעלם זה מזה ולחסום, ובחירה לקבל הודעות ישירות ממשתמשים שאינם מוכרים כבקשות הודעה, שאינן מפעילות התראה עד לאישור. כבוי במקומות עבודה שבהם חייבים להיות יכולים להגיע לכל חבר צוות: אז לא נאכפת שום דרישה, אך הרשימות והבחירות שנעשו נשמרות להפעלה מחדש.",
-  "admin.privacy.enableUserBlockingTitle": "הפעלת התעלמות, חסימה ובקשות הודעה:"
+  "admin.privacy.enableUserBlockingTitle": "הפעלת התעלמות, חסימה ובקשות הודעה:",
+  "admin.team.maxUsersDescription": "מספר החברים הפעילים המקסימלי שיש לקהילה. 0 פירושו ללא הגבלה. משתמשים מושבתים אינם נספרים.",
+  "admin.team.maxUsersExample": "למשל: \"500\"",
+  "admin.team.maxUsersTitle": "מספר החברים המקסימלי לקהילה:"
 }

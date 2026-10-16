@@ -13148,7 +13148,7 @@
   },
   {
     "id": "model.config.is_valid.max_users.app_error",
-    "translation": "Érvénytelen csapatonkénti maximális felhasználók száma a csapat beállításoknál. Pozitív számnak kell lennie."
+    "translation": "Érvénytelen maximális tagok száma közösségenként. Használj 0-t korlátozás nélkül, vagy egy pozitív számot."
   },
   {
     "id": "model.config.is_valid.message_export.batch_size.app_error",

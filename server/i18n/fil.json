@@ -12425,7 +12425,7 @@
   },
   {
     "id": "model.config.is_valid.max_users.app_error",
-    "translation": "Hindi wastong maximum na users bawat team para sa mga setting ng team. Dapat positibong numero."
+    "translation": "Hindi wasto ang maximum na miyembro bawat community. Gamitin ang 0 kung walang limitasyon, o isang positibong numero."
   },
   {
     "id": "model.config.is_valid.message_export.batch_size.app_error",

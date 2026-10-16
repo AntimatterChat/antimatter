@@ -13148,7 +13148,7 @@
   },
   {
     "id": "model.config.is_valid.max_users.app_error",
-    "translation": "En fazla takım kullanıcısı sayısı takım ayarı geçersiz. Pozitif bir sayı olmalıdır."
+    "translation": "Topluluk başına geçersiz maksimum üye sayısı. Sınırsız için 0, aksi halde pozitif bir sayı kullanın."
   },
   {
     "id": "model.config.is_valid.message_export.batch_size.app_error",

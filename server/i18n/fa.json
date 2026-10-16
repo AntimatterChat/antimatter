@@ -13148,7 +13148,7 @@
   },
   {
     "id": "model.config.is_valid.max_users.app_error",
-    "translation": "حداکثر کاربران برای هر تیم برای تنظیمات تیم نامعتبر است. باید یک عدد مثبت باشد."
+    "translation": "حداکثر تعداد اعضای هر جامعه نامعتبر است. برای بدون محدودیت از ۰ یا یک عدد مثبت استفاده کنید."
   },
   {
     "id": "model.config.is_valid.message_export.batch_size.app_error",

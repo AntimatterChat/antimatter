@@ -12425,7 +12425,7 @@
   },
   {
     "id": "model.config.is_valid.max_users.app_error",
-    "translation": "টিম সেটিংসের জন্য প্রতিটি টিমে সর্বোচ্চ সদস্যসমূহ বৈধ নয়। এটি একটি ধনাত্মক সংখ্যা হতে হবে।"
+    "translation": "কমিউনিটির প্রতিটি সদস্যের সর্বোচ্চ সংখ্যাটি সঠিক নয়। কোনো সীমা না রাখতে 0 ব্যবহার করুন, অথবা একটি ধনাত্মক সংখ্যা দিন।"
   },
   {
     "id": "model.config.is_valid.message_export.batch_size.app_error",

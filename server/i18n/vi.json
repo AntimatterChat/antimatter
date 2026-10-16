@@ -13139,7 +13139,7 @@
   },
   {
     "id": "model.config.is_valid.max_users.app_error",
-    "translation": "Người dùng tối đa không hợp lệ cho mỗi nhóm cho cài đặt nhóm. Phải là một số dương."
+    "translation": "Số lượng thành viên tối đa cho mỗi cộng đồng không hợp lệ. Sử dụng 0 để không giới hạn, hoặc một số dương."
   },
   {
     "id": "model.config.is_valid.message_export.batch_size.app_error",

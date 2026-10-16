@@ -13166,7 +13166,7 @@
   },
   {
     "id": "model.config.is_valid.max_users.app_error",
-    "translation": "Nieprawidłowa maksymalna ilość użytkowników dla zespołu w ustawieniach zespołu. Musi być liczbą dodatnią."
+    "translation": "Nieprawidłowa maksymalna liczba członków w społeczności. Użyj 0, aby nie ograniczać, lub wpisz dodatnią liczbę."
   },
   {
     "id": "model.config.is_valid.message_export.batch_size.app_error",

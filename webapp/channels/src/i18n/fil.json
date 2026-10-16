@@ -10,5 +10,8 @@
   "admin.global_attributes.attribute_details.applies_to.item.user.profile_display.restricted_help": "Nakikita ng mga Admin at ng user ang value. Sa 'Admins lamang', ipapakita ito sa kanilang profile; sa 'Nakatago', hindi ito ipapakita saanman.",
   "admin.global_attributes.attribute_details.applies_to.item.user.profile_display.when_set.label": "Kapag may value",
   "admin.privacy.enableUserBlockingDescription": "Kapag on, maaaring i-ignore at i-block ang isa’t isa, at pumili na ang mga Direct Message mula sa mga hindi kilala ay maging message requests, na hindi nagpapadala ng notisikasyon hangga’t hindi tinatanggap. I-off para sa mga workplace na dapat laging maabot ang mga kasamahan: hindi na ipinapatupok ang mga ito, ngunit pinapanatili ang mga listahan at mga desisyon ng mga tao para kapag ibabalik ito.",
-  "admin.privacy.enableUserBlockingTitle": "Paganahin ang pag-i-ignore, pag-block, at mga message request:"
+  "admin.privacy.enableUserBlockingTitle": "Paganahin ang pag-i-ignore, pag-block, at mga message request:",
+  "admin.team.maxUsersDescription": "Pinakamataas na bilang ng aktibong miyembro na maaari magkaroon ng isang community. Ang 0 ay nangangahulugang walang limitasyon. Hindi binibilang ang mga naka-deactivate na user.",
+  "admin.team.maxUsersExample": "Hal.: \"500\"",
+  "admin.team.maxUsersTitle": "Pinakamataas na Miyembro Bawat Community:"
 }

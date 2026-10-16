@@ -13148,7 +13148,7 @@
   },
   {
     "id": "model.config.is_valid.max_users.app_error",
-    "translation": "Virheellinen käyttäjien maksiminäärä per tiimi tiimiasetuksissa. Oltava positiivinen numero."
+    "translation": "Virheellinen suurin jäsenmäärä yhteisössä. Käytä 0 ilman rajaa tai positiivista lukua."
   },
   {
     "id": "model.config.is_valid.message_export.batch_size.app_error",

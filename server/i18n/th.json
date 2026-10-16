@@ -12425,7 +12425,7 @@
   },
   {
     "id": "model.config.is_valid.max_users.app_error",
-    "translation": "จำนวนสมาชิกรวมสูงสุดต่อทีมสำหรับตั้งค่าทีมไม่ถูกต้อง ต้องเป็นจำนวนเต็มบวก"
+    "translation": "จำนวนสมาชิกรวมสูงสุดต่อชุมชนไม่ถูกต้อง ใช้ 0 สำหรับไม่จำกัด หรือจำนวนบวก"
   },
   {
     "id": "model.config.is_valid.message_export.batch_size.app_error",

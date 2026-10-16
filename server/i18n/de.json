@@ -13148,7 +13148,7 @@
   },
   {
     "id": "model.config.is_valid.max_users.app_error",
-    "translation": "Ungültige maximale Anzahl an Benutzern pro Team in Teameinstellungen. Muss eine positive Zahl sein."
+    "translation": "Ungültige maximale Anzahl an Mitgliedern pro Community. Verwenden Sie 0 für keine Beschränkung oder eine positive Zahl."
   },
   {
     "id": "model.config.is_valid.message_export.batch_size.app_error",

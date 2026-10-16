@@ -13148,7 +13148,7 @@
   },
   {
     "id": "model.config.is_valid.max_users.app_error",
-    "translation": "Ugyldig maksimalt antall brukere per team i teaminnstillingene. Må være et positivt tall."
+    "translation": "Ugyldig maksimalt antall medlemmer per fellesskap. Bruk 0 for ingen grense, eller et positivt tall."
   },
   {
     "id": "model.config.is_valid.message_export.batch_size.app_error",

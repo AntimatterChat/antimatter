@@ -12425,7 +12425,7 @@
   },
   {
     "id": "model.config.is_valid.max_users.app_error",
-    "translation": "Bilangan pengguna maksimum per pasukan tidak sah untuk tetapan pasukan. Mesti menjadi nombor positif."
+    "translation": "Bilangan ahli maksimum bagi komuniti tidak sah. Gunakan 0 untuk tiada had, atau nombor positif."
   },
   {
     "id": "model.config.is_valid.message_export.batch_size.app_error",

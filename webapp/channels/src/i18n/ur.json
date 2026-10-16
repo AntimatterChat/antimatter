@@ -10,5 +10,8 @@
   "admin.global_attributes.attribute_details.applies_to.item.user.profile_display.restricted_help": "صرف ایڈمنز اور صارف کو قدر نظر آتی ہے۔ ’صرف ایڈمنز‘ اسے صرف ان کے اپنے پروفائل پر دکھاتا ہے؛ ’چھپا ہوا‘ اسے کہیں نہیں دکھاتا۔",
   "admin.global_attributes.attribute_details.applies_to.item.user.profile_display.when_set.label": "جب سیٹ ہو",
   "admin.privacy.enableUserBlockingDescription": "جب یہ فعال ہو، تو لوگ ایک دوسرے کو نظرانداز اور بلاک کر سکتے ہیں، اور ان لوگوں سے براہِ راست پیغامات حاصل کرنے کا انتخاب کر سکتے ہیں جنہیں وہ نہیں جانتے، جو پیغام درخواستوں کی شکل میں آتے ہیں اور قبول ہونے تک اطلاع نہیں دیتے۔ ایسے کام کے مقامات کے لیے غیر فعال کریں جہاں ساتھیوں کو ہمیشہ رسائی میں ہونا ضروری ہو: اس صورت میں اس کی کوئی پابندی نہیں ہوتی، لیکن لوگوں نے بنائے ہوئے فہرست اور انتخاب اس وقت کے لیے محفوظ رہتے ہیں جب یہ دوبارہ فعال کیا جائے۔",
-  "admin.privacy.enableUserBlockingTitle": "نظراندازی، بلاکنگ اور پیغام درخواستیں فعال کریں:"
+  "admin.privacy.enableUserBlockingTitle": "نظراندازی، بلاکنگ اور پیغام درخواستیں فعال کریں:",
+  "admin.team.maxUsersDescription": "کسی کمیونٹی میں فعال اراکین کی زیادہ سے زیادہ تعداد۔ 0 کا مطلب ہے کوئی حد نہیں۔ غیر فعال صارفین کو شمار نہیں کیا جاتا۔",
+  "admin.team.maxUsersExample": "مثلاً: \"500\"",
+  "admin.team.maxUsersTitle": "ہر کمیونٹی میں زیادہ سے زیادہ اراکین:"
 }

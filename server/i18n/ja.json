@@ -12963,7 +12963,7 @@
   },
   {
     "id": "model.config.is_valid.max_users.app_error",
-    "translation": "チーム設定のチーム毎の最大ユーザー数が不正です。正の数を指定してください。"
+    "translation": "コミュニティあたりの最大メンバー数が無効です。制限なしの場合は0、それ以外の場合は正の整数を指定してください。"
   },
   {
     "id": "model.config.is_valid.message_export.batch_size.app_error",

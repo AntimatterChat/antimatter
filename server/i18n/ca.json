@@ -12425,7 +12425,7 @@
   },
   {
     "id": "model.config.is_valid.max_users.app_error",
-    "translation": "Nombre màxim d'usuaris per equip no vàlid per a la configuració de l'equip. Ha de ser un nombre positiu."
+    "translation": "Nombre màxim de membres per comunitat no vàlid. Utilitza 0 per no establir cap límit, o un número positiu."
   },
   {
     "id": "model.config.is_valid.message_export.batch_size.app_error",

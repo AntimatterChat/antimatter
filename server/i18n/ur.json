@@ -12425,7 +12425,7 @@
   },
   {
     "id": "model.config.is_valid.max_users.app_error",
-    "translation": "ٹیم ترتیبات کے لیے فی ٹیم زیادہ سے زیادہ صارفین درست نہیں ہیں۔ یہ ایک مثبت نمبر ہونا چاہیے۔"
+    "translation": "کمیونٹی کے فی ممبرز کی زیادہ سے زیادہ تعداد درست نہیں۔ بغیر کسی حد کے 0 استعمال کریں، یا کوئی مثبت عدد درج کریں۔"
   },
   {
     "id": "model.config.is_valid.message_export.batch_size.app_error",

@@ -10,5 +10,8 @@
   "admin.global_attributes.attribute_details.applies_to.item.user.profile_display.restricted_help": "Només els administradors i l’usuari veuen el valor. «Només administradors» el mostra al seu perfil només a ells; «Amagat» no el mostra enlloc.",
   "admin.global_attributes.attribute_details.applies_to.item.user.profile_display.when_set.label": "Quan està establert",
   "admin.privacy.enableUserBlockingDescription": "Quan està activat, les persones poden ignorar-se i bloquejar-se mútuament, i triar rebre missatges directes de persones desconegudes com a sol·licituds de missatge, que no les notifiquen fins que s’accepten. Desactiva-ho en espais de treball on els companys han de ser sempre contactables: en aquest cas no s’aplica cap restricció, però es conserven les llistes i les opcions que les persones van triar per quan es torni a activar.",
-  "admin.privacy.enableUserBlockingTitle": "Activa ignorar, bloquejar i sol·licituds de missatge:"
+  "admin.privacy.enableUserBlockingTitle": "Activa ignorar, bloquejar i sol·licituds de missatge:",
+  "admin.team.maxUsersDescription": "Nombre màxim de membres actius que pot tenir una comunitat. 0 significa sense límit. Els usuaris desactivats no es compten.",
+  "admin.team.maxUsersExample": "P. ex.: «500»",
+  "admin.team.maxUsersTitle": "Màxim de membres per comunitat:"
 }

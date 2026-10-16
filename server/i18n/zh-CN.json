@@ -13139,7 +13139,7 @@
   },
   {
     "id": "model.config.is_valid.max_users.app_error",
-    "translation": "团队设置中的每团队最大用户数无效。必须是正整数。"
+    "translation": "每个社区的最大成员数无效。使用 0 表示无限制，或输入正整数。"
   },
   {
     "id": "model.config.is_valid.message_export.batch_size.app_error",

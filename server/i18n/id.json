@@ -12425,7 +12425,7 @@
   },
   {
     "id": "model.config.is_valid.max_users.app_error",
-    "translation": "Jumlah pengguna maksimum per tim tidak valid untuk pengaturan tim. Harus berupa angka positif."
+    "translation": "Jumlah anggota maksimum per komunitas tidak valid. Gunakan 0 untuk tanpa batas, atau angka positif."
   },
   {
     "id": "model.config.is_valid.message_export.batch_size.app_error",

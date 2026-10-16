@@ -13139,7 +13139,7 @@
   },
   {
     "id": "model.config.is_valid.max_users.app_error",
-    "translation": "團隊設定中的單一團隊最高使用者數無效。必須為正數。"
+    "translation": "每個社群的成員上限無效。請使用 0 表示不限，或輸入正整數。"
   },
   {
     "id": "model.config.is_valid.message_export.batch_size.app_error",

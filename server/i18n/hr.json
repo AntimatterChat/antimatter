@@ -12732,10 +12732,6 @@
     "translation": "Neispravna najveća duljina URL-a u postavkama usluge. Mora biti cijeli broj veći od nule."
   },
   {
-    "id": "model.config.is_valid.max_users.app_error",
-    "translation": "Neispravan najveći broj korisnika po timu u postavkama tima. Mora biti pozitivan broj."
-  },
-  {
     "id": "model.config.is_valid.message_export.batch_size.app_error",
     "translation": "BatchSize zadatka izvoza poruka mora biti pozitivan cijeli broj."
   },

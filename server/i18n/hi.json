@@ -12425,7 +12425,7 @@
   },
   {
     "id": "model.config.is_valid.max_users.app_error",
-    "translation": "टीम सेटिंग्स के लिए प्रति टीम अमान्य अधिकतम उपयोगकर्ता। एक धनात्मक संख्या होनी चाहिए।"
+    "translation": "समुदाय के प्रति अधिकतम सदस्य अमान्य हैं। कोई सीमा न रखने के लिए 0, या एक धनात्मक संख्या उपयोग करें।"
   },
   {
     "id": "model.config.is_valid.message_export.batch_size.app_error",

@@ -12425,7 +12425,7 @@
   },
   {
     "id": "model.config.is_valid.max_users.app_error",
-    "translation": "الحد الأقصى لعدد المستخدمين لكل فريق غير صالح لإعدادات الفريق. يجب أن يكون رقمًا موجبًا."
+    "translation": "الحد الأقصى لعدد الأعضاء في المجتمع غير صالح. استخدم 0 لعدم وجود حد، أو رقمًا موجبًا."
   },
   {
     "id": "model.config.is_valid.message_export.batch_size.app_error",
