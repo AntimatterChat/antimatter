@@ -1,0 +1,26 @@
+# TEMPORARY list of tests that already failed before Antimatter's CI was set up (2026-10-16).
+#
+# These tests still run on every CI run. When one of them fails, the job reports it as a warning instead of
+# failing; any other failure fails the job. The fixes are in progress: when a listed test passes, the job
+# summary says so, and its line must be removed. Never add a test here to make a red build green: fix the test
+# or the code instead. The goal is an empty file.
+#
+# Format: go <package path suffix> <TestName>       (also matches its subtests)
+#         jest <test file path suffix> <test name substring, or * for the whole file>
+# Anything after "  #" is a comment.
+
+go  channels/api4  TestUnlinkLdapGroup  # expects 501, gets 404
+go  channels/api4  TestGetPostWithPropertyGroups  # session_attributes_stays_gated
+go  channels/api4  TestPatchChannelModerations  # store mock lacks PropertyField (session_attributes.go)
+go  channels/api4  TestGetChannelModerations  # blank DefaultChannelGuestRole case (EOF)
+go  channels/api4  TestChannelEndpointsExcludeBoards  # getChannelsMemberCount
+go  channels/api4  TestChannelEndpointsExcludeSpaces  # getChannelsMemberCount
+go  channels/app  TestAuthorizeOAuthUser  # form-encoded token response
+go  channels/app  TestSupportPacketMarshalGolden  # golden file predates Antimatter settings
+go  channels/app/platform  TestSupportPacketMarshalGolden  # golden file predates Antimatter settings
+go  server/v8/config  TestDiff  # map_change/addition/deletion, default plugin states
+
+jest  webapp/fusion/src/packages/mattermost-redux/src/selectors/entities/preferences.test.ts  get theme  # Fusion themes changed the default
+jest  webapp/fusion/src/utils/text_formatting_links.test.ts  Phone links starting with +  # tel: links
+jest  webapp/fusion/src/utils/text_formatting_links.test.ts  autolinkedUrlSchemes  # tel: links
+jest  webapp/fusion/src/utils/message_html_to_component.test.tsx  phone links  # tel: links
