@@ -27,8 +27,9 @@ channel (or archives it when the server keeps deleted channels, the default), re
 (deactivates them unless `ServiceSettings.EnableAPIUserDeletion` is on) and logs both sessions out. A run that is
 killed half-way may leave its `e2e-*` channel behind.
 
-Running the suite also changes small things for the admin, as using the app does: their recently used emoji, and the
-preference that keeps Fusion from offering them a community layout in the test community.
+Running the suite also changes small things for the admin, as using the app does: their recently used emoji, the
+preference that keeps Fusion from offering them a community layout in the test community, and their onboarding
+checklist, closed (it opens by itself for someone new, and its overlay would take the tests' clicks; the member's too).
 
 ## Settings
 
@@ -84,7 +85,7 @@ AM_E2E_MEMBER_USER=tom AM_E2E_MEMBER_PASSWORD=Antimatter-Local-1 MEM=3 ~/.cache/
 
 ## In CI
 
-`.github/workflows/antimatter-fusion-e2e.yml` builds the server and Fusion from the commit, starts them on Postgres,
+`.github/workflows/antimatter-e2e.yml` builds the server and Fusion from the commit, starts them on Postgres,
 seeds an admin (`e2e-admin`) and a community (`e2e`) with amctl, then runs `npx playwright test` here with
 `AM_E2E_BASE_URL`, `AM_E2E_USER` and `AM_E2E_PASSWORD`. The HTML report, the traces and the server log are uploaded
 as the `fusion-e2e-report` artifact.

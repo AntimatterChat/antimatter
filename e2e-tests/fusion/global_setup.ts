@@ -7,6 +7,10 @@ import {Api} from './lib/api';
 import {ADMIN_STATE, AUTH_DIR, MEMBER_STATE, RUN_FILE, env} from './lib/env';
 import type {Run} from './lib/run';
 
+// The onboarding checklist opens by itself for someone new (a fresh server's admin, a member the setup creates), and
+// its overlay takes every click until it's closed: the tests start with it closed (its button stays).
+const ONBOARDING_CLOSED = {category: 'onboarding_task_list', name: 'onboarding_task_list_open', value: 'false'};
+
 // The global setup logs the admin in, picks the community, creates the channel the tests work in and a member without
 // admin rights, and saves their browser sessions. The global teardown removes what it created.
 export default async function globalSetup() {
@@ -23,7 +27,7 @@ export default async function globalSetup() {
     }
 
     // Fusion offers a community's admins a layout the first time they open it: not in the middle of a test.
-    await admin.savePreferences([{category: 'fusion_layout_offered', name: team.id, value: 'true'}]);
+    await admin.savePreferences([{category: 'fusion_layout_offered', name: team.id, value: 'true'}, ONBOARDING_CLOSED]);
 
     const channel = await admin.createChannel(team.id, `e2e-${stamp}`, `E2E ${stamp}`);
 
@@ -38,6 +42,7 @@ export default async function globalSetup() {
         created = true;
     }
     const member = await Api.login(memberLogin, memberPassword);
+    await member.savePreferences([ONBOARDING_CLOSED]);
     await member.context.storageState({path: MEMBER_STATE});
     await admin.addToChannel(channel.id, member.me.id);
 
