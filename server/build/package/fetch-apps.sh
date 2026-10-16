@@ -7,6 +7,9 @@
 # Usage: fetch-apps.sh <out-dir> [plugins.json]
 #   Needs gh (GH_TOKEN in CI), python3 and gpg. Without a plugins.json file, it reads the one on
 #   antimatter-docker's main branch (AM_APPS_LIST_REPO, AM_APPS_LIST_REF override it).
+#   Only the apps named in AM_BUNDLED_APPS (repository names, space-separated) are bundled; by
+#   default Whiteboard, Voice channels, Calls, Agents, Todo, Polls, Notes and Memes. The others can be
+#   installed later from their own releases.
 #
 # An app takes its latest release, or its newest prerelease when it has no release yet (with a
 # warning). Apps without any release, and bundles without a signature (the server only installs
@@ -38,7 +41,15 @@ fi
 mkdir -p "${out}"
 : > "${out}/apps.txt"
 count=0
-repos="$(python3 -c 'import json, sys; print("\n".join(p["repo"] for p in json.load(open(sys.argv[1]))))' "${list}")"
+bundled="${AM_BUNDLED_APPS:-antimatter-plugin-whiteboard antimatter-plugin-voice-channels antimatter-plugin-calls antimatter-plugin-agents antimatter-plugin-todo antimatter-plugin-polls antimatter-plugin-notes antimatter-plugin-memes}"
+repos="$(python3 -c '
+import json, sys
+wanted = set(sys.argv[2].split())
+print("\n".join(p["repo"] for p in json.load(open(sys.argv[1])) if p["repo"].split("/")[-1] in wanted))
+' "${list}" "${bundled}")"
+for name in ${bundled}; do
+  grep -q "/${name}$" <<<"${repos}" || warn "${name} is not in plugins.json: not bundled"
+done
 for repo in ${repos}; do
   tag="$(gh release view --repo "${repo}" --json tagName --jq .tagName 2>/dev/null || true)"
   if [[ -z "${tag}" ]]; then
