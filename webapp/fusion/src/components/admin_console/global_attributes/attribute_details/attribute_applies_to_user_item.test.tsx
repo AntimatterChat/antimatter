@@ -115,7 +115,7 @@ describe('AttributeAppliesToUserItem', () => {
 
         expect(screen.queryByTestId('attributeAppliesToUserManagedBy')).not.toBeInTheDocument();
         expect(screen.queryByText('Managed by')).not.toBeInTheDocument();
-        expect(screen.queryByText('Not editable in Mattermost.')).not.toBeInTheDocument();
+        expect(screen.queryByText('Not editable in Antimatter.')).not.toBeInTheDocument();
     });
 
     it('Managed by: leaves the editable settings untouched, so a synced attribute still configures its own display and permission', async () => {

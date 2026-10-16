@@ -921,7 +921,7 @@ describe('AttributeDetails', () => {
 
             const managedBy = screen.getByTestId('attributeAppliesToUserManagedBy');
             expect(managedBy).toHaveTextContent('AD/LDAP');
-            expect(screen.getByText('Not editable in Mattermost.')).toBeInTheDocument();
+            expect(screen.getByText('Not editable in Antimatter.')).toBeInTheDocument();
 
             // Compared against the Definition block's chip rather than a hard-coded
             // path, so the two glyphs cannot drift apart unnoticed.
@@ -932,7 +932,7 @@ describe('AttributeDetails', () => {
             await userEvent.click(screen.getByTestId('attributeExternalSourceChip-ldap-remove'));
 
             expect(screen.queryByTestId('attributeAppliesToUserManagedBy')).not.toBeInTheDocument();
-            expect(screen.queryByText('Not editable in Mattermost.')).not.toBeInTheDocument();
+            expect(screen.queryByText('Not editable in Antimatter.')).not.toBeInTheDocument();
         });
 
         it('shows SAML as the Managed-by value when SAML is the only linked source', async () => {
@@ -970,9 +970,9 @@ describe('AttributeDetails', () => {
             await addResourceAndExpand('Posts', 'post');
 
             expect(within(screen.getByTestId('attributeAppliesToRow-user-body')).getByTestId('attributeAppliesToUserManagedBy')).toBeInTheDocument();
-            expect(within(screen.getByTestId('attributeAppliesToRow-channel-body')).queryByText('Not editable in Mattermost.')).not.toBeInTheDocument();
-            expect(within(screen.getByTestId('attributeAppliesToRow-post-body')).queryByText('Not editable in Mattermost.')).not.toBeInTheDocument();
-            expect(screen.getAllByText('Not editable in Mattermost.')).toHaveLength(1);
+            expect(within(screen.getByTestId('attributeAppliesToRow-channel-body')).queryByText('Not editable in Antimatter.')).not.toBeInTheDocument();
+            expect(within(screen.getByTestId('attributeAppliesToRow-post-body')).queryByText('Not editable in Antimatter.')).not.toBeInTheDocument();
+            expect(screen.getAllByText('Not editable in Antimatter.')).toHaveLength(1);
         });
 
         it('linking a source forces Type to Text and marks the page dirty', async () => {
@@ -2507,7 +2507,7 @@ describe('AttributeDetails', () => {
                 await userEvent.click(screen.getByTestId('attributeAppliesToRow-user-toggle'));
 
                 expect(screen.getByTestId('attributeAppliesToUserManagedBy')).toHaveTextContent('SAML');
-                expect(screen.getByText('Not editable in Mattermost.')).toBeInTheDocument();
+                expect(screen.getByText('Not editable in Antimatter.')).toBeInTheDocument();
             });
 
             it('omits the Managed-by row from a loaded Users row when the attribute is managed in Mattermost', async () => {
@@ -3136,7 +3136,7 @@ describe('AttributeDetails', () => {
 
                 expect(screen.queryByTestId('attributeAppliesToUserManagedBy')).not.toBeInTheDocument();
                 expect(screen.queryByText('Managed by')).not.toBeInTheDocument();
-                expect(screen.queryByText('Not editable in Mattermost.')).not.toBeInTheDocument();
+                expect(screen.queryByText('Not editable in Antimatter.')).not.toBeInTheDocument();
             });
 
             it('keeps Save disabled regardless of otherwise-valid field state', async () => {
