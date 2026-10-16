@@ -117,14 +117,9 @@ exports[`components/integrations/AbstractCommand should match snapshot 1`] = `
               class="form__help"
             >
               Reserved: 
-              <a
-                href="https://mattermost.com/pl/custom-slash-commands?utm_source=mattermost&utm_medium=in-product&utm_content=abstract_command&uid=&sid=&server_version="
-                location="abstract_command"
-                rel="noopener noreferrer"
-                target="_blank"
-              >
+              <span>
                 See built-in slash commands
-              </a>
+              </span>
             </div>
           </div>
         </div>
@@ -477,14 +472,9 @@ exports[`components/integrations/AbstractCommand should match snapshot when head
               class="form__help"
             >
               Reserved: 
-              <a
-                href="https://mattermost.com/pl/custom-slash-commands?utm_source=mattermost&utm_medium=in-product&utm_content=abstract_command&uid=&sid=&server_version="
-                location="abstract_command"
-                rel="noopener noreferrer"
-                target="_blank"
-              >
+              <span>
                 See built-in slash commands
-              </a>
+              </span>
             </div>
           </div>
         </div>
@@ -837,14 +827,9 @@ exports[`components/integrations/AbstractCommand should match snapshot, displays
               class="form__help"
             >
               Reserved: 
-              <a
-                href="https://mattermost.com/pl/custom-slash-commands?utm_source=mattermost&utm_medium=in-product&utm_content=abstract_command&uid=&sid=&server_version="
-                location="abstract_command"
-                rel="noopener noreferrer"
-                target="_blank"
-              >
+              <span>
                 See built-in slash commands
-              </a>
+              </span>
             </div>
           </div>
         </div>

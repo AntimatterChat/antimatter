@@ -63,14 +63,9 @@ exports[`admin_console/team_channel_settings/team/TeamModes should match snapsho
                 class="help-text-small help-text-no-padding "
               >
                 When enabled, adding and removing users from groups will add or remove them from this team. The only way of inviting members to this team is by adding the groups they belong to. 
-                <a
-                  href="https://www.mattermost.com/pl/default-ldap-group-constrained-team-channel.html?utm_source=mattermost&utm_medium=in-product&utm_content=team_modes&uid=&sid=&server_version="
-                  location="team_modes"
-                  rel="noopener noreferrer"
-                  target="_blank"
-                >
+                <span>
                   Learn More
-                </a>
+                </span>
               </div>
             </div>
           </div>
