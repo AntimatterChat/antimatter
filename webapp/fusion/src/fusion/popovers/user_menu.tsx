@@ -153,6 +153,7 @@ export function UserMenu({target, onProfile, onClose}: {target: Target; onProfil
             point={target.point}
             placement='point'
             className='plus-pop ch-menu user-menu'
+            toggles={[target.anchor]}
             role='menu'
             label={name}
             onClose={onClose}

@@ -266,10 +266,9 @@ describe('fusion/popovers/useUserMenu', () => {
         expect(screen.getByRole('menu', {name: 'sofia'})).toBeInTheDocument();
     });
 
-    // Known bug: useUserMenu means a second right click on the same element to close the menu, but UserMenu's
-    // Popover gets neither the element as its anchor nor as a toggle, so the press closes it and the context menu
-    // event opens it again. Remove `.failing` once UserMenu passes `toggles={[target.anchor]}`.
-    test.failing('a second right click on the same element closes it', async () => {
+    // The element that opened the menu is one of its toggles: pressing it again isn't a click elsewhere (which would
+    // close the menu, and the context menu event reopen it).
+    test('a second right click on the same element closes it', async () => {
         render();
         await rightClick('Sofía avatar');
         expect(screen.getByRole('menu', {name: 'sofia'})).toBeInTheDocument();
