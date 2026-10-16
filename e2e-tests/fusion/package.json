@@ -1,0 +1,12 @@
+{
+  "name": "antimatter-e2e-fusion",
+  "private": true,
+  "description": "Playwright smoke tests of Antimatter's Fusion web UI",
+  "scripts": {
+    "test": "playwright test",
+    "report": "playwright show-report"
+  },
+  "devDependencies": {
+    "playwright": "1.64.0"
+  }
+}
