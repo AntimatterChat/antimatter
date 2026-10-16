@@ -1,6 +1,7 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 
+import {createMemoryHistory} from 'history';
 import React from 'react';
 import type {RouteComponentProps} from 'react-router-dom';
 import {bindActionCreators} from 'redux';
@@ -22,6 +23,9 @@ jest.mock('components/announcement_bar', () => () => <div/>);
 jest.mock('components/team_sidebar', () => () => <div/>);
 jest.mock('components/mobile_view_watcher', () => () => <div/>);
 jest.mock('./performance_reporter_controller', () => () => <div/>);
+
+// The logged-in pages aren't under test here: a route that only says where it is.
+jest.mock('components/logged_in_route', () => ({path}: {path: string}) => <div data-testid={`logged-in-route ${path}`}/>);
 
 jest.mock('utils/utils', () => ({
     applyTheme: jest.fn(),
@@ -201,6 +205,41 @@ describe('components/Root', () => {
         await waitFor(() => {
             expect(props.history.push).toHaveBeenLastCalledWith('/signup_user_complete');
         });
+    });
+
+    // Antimatter: the Kanban plugin (once Boards) lives at /kanban; old /boards links keep their whole path and query.
+    test.each([
+        ['/boards', '/kanban', ''],
+        ['/boards/team/lumen/b1', '/kanban/team/lumen/b1', ''],
+        ['/boards/team/lumen/b1/v2/c3', '/kanban/team/lumen/b1/v2/c3', '?cardId=c3'],
+    ])('redirects %s to the Kanban plugin', async (from, to, search) => {
+        const history = createMemoryHistory({initialEntries: [from + search]});
+        const props = {
+            ...baseProps,
+            location: {pathname: from} as RouteComponentProps['location'],
+        };
+
+        renderWithContext(<Root {...props}/>, {}, {history});
+
+        await waitFor(() => {
+            expect(history.location.pathname).toBe(to);
+        });
+        expect(history.location.search).toBe(search);
+    });
+
+    test('leaves paths that only start like /boards alone', async () => {
+        const history = createMemoryHistory({initialEntries: ['/boardsroom/channels/town-square']});
+        const props = {
+            ...baseProps,
+            location: {pathname: '/boardsroom/channels/town-square'} as RouteComponentProps['location'],
+        };
+
+        renderWithContext(<Root {...props}/>, {}, {history});
+
+        await waitFor(() => {
+            expect(props.actions.loadConfigAndMe).toHaveBeenCalled();
+        });
+        expect(history.location.pathname).toBe('/boardsroom/channels/town-square');
     });
 
     test('should reload on focus after getting signal login event from another tab', async () => {
