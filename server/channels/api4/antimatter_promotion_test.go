@@ -43,11 +43,11 @@ func TestWhoCanPromoteWhom(t *testing.T) {
 		CheckForbiddenStatus(t, resp)
 	}
 
-	teamAdmin, teamAdminClient := member(t)
+	teamAdmin, _ := member(t)
 	th.UpdateUserToTeamAdmin(t, teamAdmin, team)
-	channelAdmin, channelAdminClient := member(t)
+	channelAdmin, _ := member(t)
 	th.MakeUserChannelAdmin(t, channelAdmin, channel)
-	plain, plainClient := member(t)
+	plain, _ := member(t)
 
 	// The strongest Antimatter role a community's admins can make: every permission a role may hold.
 	strongest, _, err := th.SystemAdminClient.CreateGroup(ctx, &model.Group{
@@ -55,7 +55,7 @@ func TestWhoCanPromoteWhom(t *testing.T) {
 		AllowReference: true, TeamId: team.Id, Position: 0,
 	})
 	require.NoError(t, err)
-	roleHolder, roleHolderClient := member(t)
+	roleHolder, _ := member(t)
 	_, _, err = th.SystemAdminClient.UpsertGroupMembers(ctx, strongest.Id, &model.GroupModifyMembers{UserIds: []string{roleHolder.Id}})
 	require.NoError(t, err)
 	body, err := json.Marshal(map[string][]string{"permissions": model.TeamRolePermissions()})
@@ -67,8 +67,8 @@ func TestWhoCanPromoteWhom(t *testing.T) {
 		TeamMembers: mustTeamMembers(t, th, roleHolder.Id)}, team.Id, model.PermissionManageTeam), "the role works")
 
 	// Log in again now that everyone has their roles, so no session predates them.
-	teamAdminClient, channelAdminClient = loggedIn(t, teamAdmin), loggedIn(t, channelAdmin)
-	plainClient, roleHolderClient = loggedIn(t, plain), loggedIn(t, roleHolder)
+	teamAdminClient, channelAdminClient := loggedIn(t, teamAdmin), loggedIn(t, channelAdmin)
+	plainClient, roleHolderClient := loggedIn(t, plain), loggedIn(t, roleHolder)
 	_, _, err = roleHolderClient.PatchTeam(ctx, team.Id, &model.TeamPatch{Description: model.NewPointer("managed through a role")})
 	require.NoError(t, err, "the role holder does manage the community")
 	_, _, err = teamAdminClient.PatchTeam(ctx, team.Id, &model.TeamPatch{Description: model.NewPointer("managed by its admin")})

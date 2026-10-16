@@ -27,8 +27,8 @@ func TestDeleteDefaultChannels(t *testing.T) {
 		channel, appErr := th.App.GetChannelByName(th.Context, name, th.BasicTeam.Id, false)
 		require.Nil(t, appErr)
 
-		resp, err := client2.DeleteChannel(context.Background(), channel.Id)
-		require.Error(t, err, name)
+		resp, deleteErr := client2.DeleteChannel(context.Background(), channel.Id)
+		require.Error(t, deleteErr, name)
 		CheckForbiddenStatus(t, resp)
 
 		_, err = th.SystemAdminClient.DeleteChannel(context.Background(), channel.Id)

@@ -265,7 +265,7 @@ func TestAllChannelsMembershipRoleGatedChannels(t *testing.T) {
 	_, appErr = th.App.PatchTeam(team.Id, &model.TeamPatch{AllChannelsMembership: model.NewPointer(false)})
 	require.Nil(t, appErr)
 	require.Nil(t, th.App.LeaveChannel(th.Context, channel.Id, insider.Id))
-	team, appErr = th.App.PatchTeam(team.Id, &model.TeamPatch{AllChannelsMembership: model.NewPointer(true)})
+	_, appErr = th.App.PatchTeam(team.Id, &model.TeamPatch{AllChannelsMembership: model.NewPointer(true)})
 	require.Nil(t, appErr)
 	require.Eventually(t, func() bool { return isChannelMember(th, channel.Id, insider.Id) }, 20*time.Second, 100*time.Millisecond)
 	assert.False(t, isChannelMember(th, channel.Id, outsider.Id), "filling a role-gated channel brings its roles' people only")

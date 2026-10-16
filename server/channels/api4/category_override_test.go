@@ -27,13 +27,13 @@ func TestCategoryOverrides(t *testing.T) {
 
 	put := func(t *testing.T, client *model.Client4, path string, body any) (*http.Response, error) {
 		t.Helper()
-		data, err := json.Marshal(body)
-		require.NoError(t, err)
-		resp, err := client.DoAPIPut(context.Background(), path, string(data))
+		data, marshalErr := json.Marshal(body)
+		require.NoError(t, marshalErr)
+		resp, putErr := client.DoAPIPut(context.Background(), path, string(data))
 		if resp != nil && resp.Body != nil {
 			resp.Body.Close()
 		}
-		return resp, err
+		return resp, putErr
 	}
 	categories := "/teams/" + team.Id + "/server_categories"
 	_, err = put(t, th.SystemAdminClient, categories, model.ServerCategoriesUpdate{Categories: []*model.ServerCategory{{Name: "Rules", Locked: true}, {Name: "Community"}}})

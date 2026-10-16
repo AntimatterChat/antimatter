@@ -13,6 +13,7 @@ import (
 	"fmt"
 	"net/http"
 	"regexp"
+	"slices"
 	"strconv"
 	"strings"
 )
@@ -168,12 +169,12 @@ func shiftGroupRefs(template string, by int) string {
 		}
 		name, end := "", i+1
 		if template[i+1] == '{' {
-			close := strings.IndexByte(template[i+2:], '}')
-			if close < 0 {
+			closing := strings.IndexByte(template[i+2:], '}')
+			if closing < 0 {
 				out.WriteByte(c)
 				continue
 			}
-			name, end = template[i+2:i+2+close], i+2+close+1
+			name, end = template[i+2:i+2+closing], i+2+closing+1
 		} else {
 			for end < len(template) && (isWordByte(template[end])) {
 				end++
@@ -235,10 +236,5 @@ func (c *CompiledAutolink) AppliesTo(channelID string) bool {
 	if len(c.Rule.Channels) == 0 {
 		return true
 	}
-	for _, id := range c.Rule.Channels {
-		if id == channelID {
-			return true
-		}
-	}
-	return false
+	return slices.Contains(c.Rule.Channels, channelID)
 }

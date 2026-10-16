@@ -120,8 +120,8 @@ func GetIPAddress(r *http.Request, trustedProxyIPHeader []string, trustedProxies
 		}
 		addresses := strings.Split(header, ",")
 		leftmost := ""
-		for i := len(addresses) - 1; i >= 0; i-- {
-			address := strings.TrimSpace(addresses[i])
+		for _, v := range slices.Backward(addresses) {
+			address := strings.TrimSpace(v)
 			ip := net.ParseIP(address)
 			if ip == nil {
 				continue

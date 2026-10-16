@@ -56,8 +56,8 @@ func TestModeration(t *testing.T) {
 		require.NoError(t, err)
 		if len(permissions) > 0 {
 			data, _ := json.Marshal(map[string][]string{"permissions": permissions})
-			resp, err := th.SystemAdminClient.DoAPIPut(context.Background(), "/groups/"+role.Id+"/team_role/permissions", string(data))
-			require.NoError(t, err)
+			resp, putErr := th.SystemAdminClient.DoAPIPut(context.Background(), "/groups/"+role.Id+"/team_role/permissions", string(data))
+			require.NoError(t, putErr)
 			resp.Body.Close()
 		}
 		if len(userIDs) > 0 {
@@ -201,8 +201,8 @@ func TestModeration(t *testing.T) {
 		_, err = modClient.RemoveTeamMember(context.Background(), team.Id, plain.Id)
 		require.NoError(t, err, "someone without roles")
 		for name, user := range map[string]*model.User{"someone above": above, "someone at the same place": peer, "a team admin": admin} {
-			resp, err := modClient.RemoveTeamMember(context.Background(), team.Id, user.Id)
-			require.Error(t, err, name)
+			resp, removeErr := modClient.RemoveTeamMember(context.Background(), team.Id, user.Id)
+			require.Error(t, removeErr, name)
 			assert.Equal(t, http.StatusForbidden, resp.StatusCode, name)
 			_, _, err = th.SystemAdminClient.GetTeamMember(context.Background(), team.Id, user.Id, "")
 			require.NoError(t, err, "%s is still in the team", name)

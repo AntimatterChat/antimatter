@@ -8040,7 +8040,6 @@ func TestDemoteUserToGuest(t *testing.T) {
 	user2 := th.BasicUser2
 
 	t.Run("demote returns OK", func(t *testing.T) {
-
 		res, err := th.SystemAdminClient.DoAPIPost(context.Background(), "/users/"+user2.Id+"/demote", "")
 
 		require.Equal(t, http.StatusOK, res.StatusCode)
@@ -8048,7 +8047,6 @@ func TestDemoteUserToGuest(t *testing.T) {
 	})
 
 	t.Run("cannot demote bot account", func(t *testing.T) {
-
 		prevBotCreation := *th.App.Config().ServiceSettings.EnableBotAccountCreation
 		th.App.UpdateConfig(func(cfg *model.Config) {
 			*cfg.ServiceSettings.EnableBotAccountCreation = true

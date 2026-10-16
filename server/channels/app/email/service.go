@@ -181,13 +181,6 @@ type ServiceInterface interface {
 	Stop()
 }
 
-func (es *Service) getConfigSiteName() string {
-	if siteName := *es.config().TeamSettings.SiteName; siteName != "" {
-		return siteName
-	}
-	return "Mattermost"
-}
-
 func (es *Service) Store() store.Store {
 	return es.store
 }

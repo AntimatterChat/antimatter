@@ -105,11 +105,9 @@ func TestOnTopPosts(t *testing.T) {
 		var wg sync.WaitGroup
 		appErrs := make([]*model.AppError, racers)
 		for i, post := range posts {
-			wg.Add(1)
-			go func() {
-				defer wg.Done()
+			wg.Go(func() {
 				_, appErrs[i] = th.App.PutPostOnTop(th.Context, post, channel, th.BasicUser.Id, 0)
-			}()
+			})
 		}
 		wg.Wait()
 		saved := 0

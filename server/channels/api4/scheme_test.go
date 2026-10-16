@@ -652,7 +652,6 @@ func TestDeleteScheme(t *testing.T) {
 	th := Setup(t)
 
 	t.Run("ValidTeamScheme", func(t *testing.T) {
-
 		err := th.App.SetPhase2PermissionsMigrationStatus(true)
 		require.NoError(t, err)
 
@@ -730,7 +729,6 @@ func TestDeleteScheme(t *testing.T) {
 	})
 
 	t.Run("ValidChannelScheme", func(t *testing.T) {
-
 		err := th.App.SetPhase2PermissionsMigrationStatus(true)
 		require.NoError(t, err)
 
@@ -790,7 +788,6 @@ func TestDeleteScheme(t *testing.T) {
 	})
 
 	t.Run("FailureCases", func(t *testing.T) {
-
 		err := th.App.SetPhase2PermissionsMigrationStatus(true)
 		require.NoError(t, err)
 

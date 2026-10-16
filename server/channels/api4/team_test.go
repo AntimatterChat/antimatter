@@ -173,7 +173,6 @@ func TestCreateTeam(t *testing.T) {
 		CheckCreatedStatus(t, resp)
 		require.Equal(t, originalName, createdTeam.Name)
 	})
-
 }
 
 func TestCreateTeamSanitization(t *testing.T) {
@@ -1472,7 +1471,6 @@ func TestRestoreTeam(t *testing.T) {
 		require.NoError(t, err)
 		CheckOKStatus(t, resp)
 	})
-
 }
 
 func TestPatchTeamSanitization(t *testing.T) {
@@ -4625,7 +4623,6 @@ func TestInviteGuest(t *testing.T) {
 	th.App.UpdateConfig(func(cfg *model.Config) { *cfg.ServiceSettings.EnableEmailInvitations = true })
 
 	t.Run("Guest Account invite returns OK", func(t *testing.T) {
-
 		guestsInvite := model.GuestsInvite{
 			Emails:   emailList,
 			Channels: []string{th.BasicChannel.Id},

@@ -146,7 +146,6 @@ func TestGetServerLimits(t *testing.T) {
 		require.Nil(t, appErr)
 		require.Equal(t, int64(3), serverLimits.ActiveUserCount)
 	})
-
 }
 
 func TestShouldTrackSingleChannelGuests(t *testing.T) {

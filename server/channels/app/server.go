@@ -468,8 +468,8 @@ func NewServer(options ...Option) (*Server, error) {
 		return nil, err
 	}
 	s.platform.AddConfigListener(func(_, newCfg *model.Config) {
-		if err := s.updateIPFilter(newCfg); err != nil {
-			s.Log().Error("Failed to apply the IP filtering rules; keeping the previous ones", mlog.Err(err))
+		if filterErr := s.updateIPFilter(newCfg); filterErr != nil {
+			s.Log().Error("Failed to apply the IP filtering rules; keeping the previous ones", mlog.Err(filterErr))
 		}
 	})
 

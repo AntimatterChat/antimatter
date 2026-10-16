@@ -113,7 +113,7 @@ func (a *App) CreateCommunityAttribute(rctx request.CTX, teamID, userID string, 
 		}
 		field.Attrs[model.PropertyFieldAttrSortOrder] = order
 	}
-	if appErr := normalizeCommunityAttribute(field); appErr != nil {
+	if appErr = normalizeCommunityAttribute(field); appErr != nil {
 		return nil, appErr
 	}
 
@@ -154,7 +154,7 @@ func (a *App) PatchCommunityAttribute(rctx request.CTX, teamID, fieldID, userID 
 			}
 		}
 	}
-	if appErr := normalizeCommunityAttribute(field); appErr != nil {
+	if appErr = normalizeCommunityAttribute(field); appErr != nil {
 		return nil, appErr
 	}
 	field.UpdatedBy = userID

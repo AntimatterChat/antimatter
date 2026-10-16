@@ -81,13 +81,13 @@ func TestDefaultConfigContactsNoMattermostService(t *testing.T) {
 				walk(path, v.Elem())
 			}
 		case reflect.Struct:
-			for i := 0; i < v.NumField(); i++ {
+			for i := range v.NumField() {
 				if v.Type().Field(i).IsExported() {
 					walk(path+"."+v.Type().Field(i).Name, v.Field(i))
 				}
 			}
 		case reflect.Slice, reflect.Array:
-			for i := 0; i < v.Len(); i++ {
+			for i := range v.Len() {
 				walk(fmt.Sprintf("%s[%d]", path, i), v.Index(i))
 			}
 		case reflect.Map:
@@ -195,7 +195,7 @@ func TestSanitizeHidesEverySecret(t *testing.T) {
 				walk(path, v.Elem(), fill)
 			}
 		case reflect.Struct:
-			for i := 0; i < v.NumField(); i++ {
+			for i := range v.NumField() {
 				if v.Type().Field(i).IsExported() {
 					walk(path+"."+v.Type().Field(i).Name, v.Field(i), fill)
 				}
@@ -207,7 +207,7 @@ func TestSanitizeHidesEverySecret(t *testing.T) {
 					filled = append(filled, path)
 					return
 				}
-				for i := 0; i < v.Len(); i++ {
+				for i := range v.Len() {
 					assert.NotEqual(t, secret, v.Index(i).String(), "%s isn't sanitized", path)
 				}
 			}

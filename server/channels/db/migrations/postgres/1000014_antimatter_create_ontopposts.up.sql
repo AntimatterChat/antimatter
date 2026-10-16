@@ -6,4 +6,5 @@ CREATE TABLE IF NOT EXISTS ontopposts (
     expiresat bigint NOT NULL DEFAULT 0
 );
 
+-- concurrentIndex:ignore the table is created just above: it's empty, there's nothing to block
 CREATE INDEX IF NOT EXISTS idx_ontopposts_channelid ON ontopposts (channelid);

@@ -154,11 +154,9 @@ func testOnTopPostLimit(t *testing.T, rctx request.CTX, ss store.Store) {
 	var wg sync.WaitGroup
 	errs := make([]error, racers)
 	for i, post := range candidates {
-		wg.Add(1)
-		go func() {
-			defer wg.Done()
+		wg.Go(func() {
 			_, errs[i] = ss.OnTopPost().Save(rctx, &model.OnTopPost{PostId: post.Id, ChannelId: channelID, CreateAt: now + limit + 1}, limit)
-		}()
+		})
 	}
 	wg.Wait()
 	saved := 0

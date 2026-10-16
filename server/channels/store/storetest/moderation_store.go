@@ -69,8 +69,8 @@ func testModerationCountPosts(t *testing.T, rctx request.CTX, ss store.Store) {
 	now := model.GetMillis()
 	post := func(channelID string, at int64, postType string) {
 		t.Helper()
-		_, err := ss.Post().Save(rctx, &model.Post{ChannelId: channelID, UserId: userID, Message: "hi", CreateAt: at, Type: postType})
-		require.NoError(t, err)
+		_, saveErr := ss.Post().Save(rctx, &model.Post{ChannelId: channelID, UserId: userID, Message: "hi", CreateAt: at, Type: postType})
+		require.NoError(t, saveErr)
 	}
 	post(channel.Id, now-time.Hour.Milliseconds(), "")
 	post(channel.Id, now-2*time.Hour.Milliseconds(), "")

@@ -245,7 +245,7 @@ func (a *App) KeepTeamRoles(rctx request.CTX, teamID, userID, roles string) (str
 		return "", model.NewAppError("KeepTeamRoles", "app.team.get_member.missing.app_error", nil, "", http.StatusNotFound).Wrap(err)
 	}
 	kept := slices.DeleteFunc(strings.Fields(roles), model.IsTeamRoleName)
-	for _, r := range strings.Fields(member.ExplicitRoles) {
+	for r := range strings.FieldsSeq(member.ExplicitRoles) {
 		if model.IsTeamRoleName(r) {
 			kept = append(kept, r)
 		}

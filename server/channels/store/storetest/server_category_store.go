@@ -128,12 +128,10 @@ func testServerCategoryAddForTeamConcurrently(t *testing.T, rctx request.CTX, ss
 	var wg sync.WaitGroup
 	errs := make(chan error, 10)
 	for i := range 10 {
-		wg.Add(1)
-		go func() {
-			defer wg.Done()
+		wg.Go(func() {
 			_, _, err := ss.ServerCategory().AddForTeam(rctx, teamID, fmt.Sprintf("C%d", i%5))
 			errs <- err
-		}()
+		})
 	}
 	wg.Wait()
 	close(errs)

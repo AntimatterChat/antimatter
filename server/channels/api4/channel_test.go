@@ -2043,7 +2043,6 @@ func TestCanEditChannelBanner(t *testing.T) {
 	th := Setup(t).InitBasic(t)
 
 	t.Run("when channel type is direct message", func(t *testing.T) {
-
 		webContext := &Context{
 			App:        th.App,
 			AppContext: th.Context,
@@ -2064,7 +2063,6 @@ func TestCanEditChannelBanner(t *testing.T) {
 	})
 
 	t.Run("when channel type is group message", func(t *testing.T) {
-
 		webContext := &Context{
 			App:        th.App,
 			AppContext: th.Context,
@@ -2084,7 +2082,6 @@ func TestCanEditChannelBanner(t *testing.T) {
 	})
 
 	t.Run("when channel type is open", func(t *testing.T) {
-
 		channel := th.CreatePublicChannel(t)
 		th.MakeUserChannelAdmin(t, th.BasicUser, channel)
 
@@ -2105,7 +2102,6 @@ func TestCanEditChannelBanner(t *testing.T) {
 	})
 
 	t.Run("when channel type is private", func(t *testing.T) {
-
 		channel := th.CreatePrivateChannel(t)
 		th.MakeUserChannelAdmin(t, th.BasicUser, channel)
 
@@ -3419,7 +3415,6 @@ func TestSearchChannels(t *testing.T) {
 	})
 
 	t.Run("Guests only receive autocompletion for which accounts they are a member of", func(t *testing.T) {
-
 		enableGuestAccounts := *th.App.Config().GuestAccountsSettings.Enable
 		defer func() {
 			th.App.UpdateConfig(func(cfg *model.Config) { cfg.GuestAccountsSettings.Enable = &enableGuestAccounts })
@@ -8388,7 +8383,6 @@ func TestChannelEndpointsExcludeSpaces(t *testing.T) {
 	})
 
 	t.Run("updateChannelScheme rejects a space", func(t *testing.T) {
-
 		err := th.App.SetPhase2PermissionsMigrationStatus(true)
 		require.NoError(t, err)
 
@@ -8502,7 +8496,6 @@ func TestChannelEndpointsExcludeSpaces(t *testing.T) {
 	})
 
 	t.Run("channelMemberCountsByGroup rejects a space", func(t *testing.T) {
-
 		_, resp, err := client.GetChannelMemberCountsByGroup(ctx, space.Id, false, "")
 		require.Error(t, err)
 		CheckForbiddenStatus(t, resp)
@@ -9106,7 +9099,6 @@ func TestGetManagedCategories(t *testing.T) {
 	client := th.Client
 
 	t.Run("should return empty map when no managed categories exist", func(t *testing.T) {
-
 		resp, err := client.DoAPIGet(context.Background(), fmt.Sprintf("/teams/%s/channels/managed_categories", th.BasicTeam.Id), "")
 		require.NoError(t, err)
 		defer resp.Body.Close()
@@ -9117,7 +9109,6 @@ func TestGetManagedCategories(t *testing.T) {
 	})
 
 	t.Run("should return managed category mappings for the user's channels", func(t *testing.T) {
-
 		appErr := th.App.SetChannelManagedCategory(th.Context, th.BasicChannel.Id, "Operations")
 		require.Nil(t, appErr)
 		defer func() {
@@ -9143,7 +9134,6 @@ func TestGetManagedCategoriesFeatureFlagDisabled(t *testing.T) {
 	}).InitBasic(t)
 
 	t.Run("route is not registered when feature flag is off at startup", func(t *testing.T) {
-
 		resp, err := th.Client.DoAPIGet(context.Background(), fmt.Sprintf("/teams/%s/channels/managed_categories", th.BasicTeam.Id), "")
 		require.Error(t, err)
 		require.Equal(t, http.StatusNotFound, resp.StatusCode)

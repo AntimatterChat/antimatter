@@ -316,7 +316,6 @@ func TestTeamAccessControlled(t *testing.T) {
 		require.Nil(t, appErr)
 		require.False(t, controlled)
 	})
-
 }
 
 // TestTeamAccessControlledFeatureFlagOff exercises the kill switch: with the
