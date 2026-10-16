@@ -1,0 +1,145 @@
+name: Antimatter Fusion e2e
+
+# Builds the server and the Fusion UI from this commit, starts them on Postgres inside the job, seeds an
+# admin and a community, then runs the Playwright suite in e2e-tests/fusion (AM_E2E_BASE_URL, AM_E2E_USER and
+# AM_E2E_PASSWORD). The build takes about 15 minutes, so it runs on pushes to main, on pull requests that touch
+# the server, the web app or the suite, weekly and on demand.
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    paths:
+      - "server/**"
+      - "webapp/**"
+      - "e2e-tests/fusion/**"
+      - ".github/workflows/antimatter-e2e.yml"
+  schedule:
+    - cron: "23 3 * * 1"  # Mondays 03:23 UTC
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event_name == 'pull_request' && github.ref || github.run_id }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+permissions:
+  contents: read
+
+jobs:
+  playwright:
+    name: Playwright (Fusion)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: mmuser
+          POSTGRES_PASSWORD: mostest_password
+          POSTGRES_DB: antimatter_e2e
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      AM_E2E_BASE_URL: http://localhost:8065
+      # A throwaway account on the job's own database: not a secret.
+      AM_E2E_USER: e2e-admin
+      AM_E2E_PASSWORD: E2e-Antimatter-Pass-1
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+      - name: Look for the suite
+        id: suite
+        run: |
+          if [ -f e2e-tests/fusion/package.json ]; then
+            echo "present=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "::notice title=Fusion e2e::e2e-tests/fusion has no package.json yet; nothing to run."
+            echo "present=false" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Set up Go
+        if: steps.suite.outputs.present == 'true'
+        uses: actions/setup-go@4b73464bb391d4059bd26b0524d20df3927bd417 # v6.3.0
+        with:
+          go-version-file: server/go.mod
+          cache-dependency-path: |
+            server/go.sum
+            server/public/go.sum
+      - name: Set up the web app
+        if: steps.suite.outputs.present == 'true'
+        uses: ./.github/actions/antimatter-webapp-setup
+      - name: Build the server and amctl
+        if: steps.suite.outputs.present == 'true'
+        working-directory: server
+        run: |
+          make setup-go-work
+          go build -o bin/antimatter ./cmd/antimatter
+          go build -o bin/amctl ./cmd/amctl
+          make config-reset
+      - name: Build Fusion
+        if: steps.suite.outputs.present == 'true'
+        working-directory: webapp/fusion
+        env:
+          FUSION_NO_SOURCE_MAPS: "1"
+          NODE_OPTIONS: --max-old-space-size=6144
+        run: |
+          npm run build
+          ln -nfs ../webapp/fusion/dist ../../server/client-fusion
+      - name: Start the server
+        if: steps.suite.outputs.present == 'true'
+        working-directory: server
+        env:
+          AM_SQLSETTINGS_DRIVERNAME: postgres
+          AM_SQLSETTINGS_DATASOURCE: postgres://mmuser:mostest_password@localhost:5432/antimatter_e2e?sslmode=disable&connect_timeout=10
+          AM_SERVICESETTINGS_SITEURL: http://localhost:8065
+          AM_SERVICESETTINGS_LISTENADDRESS: ":8065"
+          AM_SERVICESETTINGS_ENABLELOCALMODE: "true"
+          AM_SERVICESETTINGS_DEFAULTWEBUI: fusion
+          AM_EMAILSETTINGS_SENDEMAILNOTIFICATIONS: "false"
+          AM_LOGSETTINGS_CONSOLELEVEL: INFO
+          AM_LOGSETTINGS_ENABLEFILE: "false"
+        run: |
+          nohup ./bin/antimatter server > "$RUNNER_TEMP/server.log" 2>&1 &
+          for _ in $(seq 1 90); do
+            if curl -fsS "$AM_E2E_BASE_URL/api/v4/system/ping" > /dev/null 2>&1; then echo "server is up"; exit 0; fi
+            sleep 2
+          done
+          echo "::error::the server didn't start"; tail -100 "$RUNNER_TEMP/server.log"; exit 1
+      - name: Seed an admin and a community
+        if: steps.suite.outputs.present == 'true'
+        working-directory: server
+        run: |
+          ./bin/amctl --local user create --email e2e-admin@example.com --username "$AM_E2E_USER" \
+            --password "$AM_E2E_PASSWORD" --system-admin
+          ./bin/amctl --local team create --name e2e --display-name "E2E community"
+          ./bin/amctl --local team users add e2e "$AM_E2E_USER"
+      - name: Install Playwright
+        if: steps.suite.outputs.present == 'true'
+        working-directory: e2e-tests/fusion
+        run: |
+          if [ -f package-lock.json ]; then npm ci --no-audit --no-fund; else npm install --no-audit --no-fund; fi
+          npx playwright install --with-deps chromium
+      - name: Run the suite
+        if: steps.suite.outputs.present == 'true'
+        working-directory: e2e-tests/fusion
+        run: npx playwright test
+      - name: Collect the server log
+        if: ${{ !cancelled() && steps.suite.outputs.present == 'true' }}
+        run: cp "$RUNNER_TEMP/server.log" e2e-tests/fusion/server.log || true
+      - name: Upload
+        if: ${{ !cancelled() && steps.suite.outputs.present == 'true' }}
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
+        with:
+          name: fusion-e2e-report
+          path: |
+            e2e-tests/fusion/playwright-report
+            e2e-tests/fusion/test-results
+            e2e-tests/fusion/server.log
+          if-no-files-found: warn
+          retention-days: 14
