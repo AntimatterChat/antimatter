@@ -218,3 +218,7 @@ server/docs/*.pdf
 server/docs/*.md
 server/data_dest/
 server/import/
+
+# Antimatter check and report output (scripts/antimatter/check.sh)
+/.am-reports
+__pycache__/

@@ -1,0 +1,53 @@
+# Permanent exceptions to the Antimatter policy checks (scripts/antimatter/policy_check.py).
+#
+# Format: <check> <path-glob> <regex>
+#   check      branding | outbound | am-env | translations
+#   path-glob  the file, relative to the repo root ("**/" may match no directory)
+#   regex      Python regex searched in the offending line (catalogs: "key: value"; translations: the key)
+#
+# Every entry needs a comment right above it saying why the mention is legitimate. Violations that are simply
+# not fixed yet go in policy-baseline.txt, not here.
+
+# --- branding ---------------------------------------------------------------------------------------------
+
+# "Mattermost, Inc." named as the company that runs a service (push, security bulletins): the admin needs to
+# know who they would be talking to.
+branding  **/en.json  Mattermost, Inc\.
+branding  webapp/fusion/src/**  Mattermost, Inc\.
+
+# The health check that warns about a push server run by Mattermost, Inc. has to name it.
+branding  server/i18n/en.json  ^health\.rule\.push_test_proxy\.title:
+
+# Security bulletins come from Mattermost: the subject says so, as the compatibility note it is.
+branding  server/i18n/en.json  ^mattermost\.bulletin\.subject:
+
+# MattermostAppID is the name of a model field (an identifier, kept for API compatibility).
+branding  server/i18n/en.json  ^model\.oauth\.is_valid\.mattermost_app_id\.app_error:
+
+# User-agent detection: the official desktop app still identifies itself as Mattermost/x.y.z.
+branding  webapp/fusion/src/fusion/calls/screen_picker.ts  Antimatter\|Mattermost\)\\/
+branding  webapp/fusion/src/packages/mattermost-redux/src/utils/browser_info.ts  userAgent\.indexOf\('Mattermost'\)|/Mattermost\\/\(
+
+# Legacy theme type names saved in users' preferences (identifiers; the theme picker shows Antimatter names).
+branding  webapp/fusion/src/packages/mattermost-redux/src/selectors/entities/preferences.ts  LegacyThemeType =
+branding  webapp/fusion/src/packages/mattermost-redux/src/utils/theme_utils.ts  ^\s*'?Mattermost( Dark)?'?: '
+
+# --- outbound ---------------------------------------------------------------------------------------------
+
+# Detection constants: model.IsMattermostServiceURL / IsMHPNSEndpoint recognise Mattermost's push services so
+# Antimatter can refuse them and warn the admin. They are never contacted.
+outbound  server/public/model/push_notification.go  MHPNS\w*\s*=\s*"https://[a-z0-9.-]*mattermost\.com"
+outbound  server/public/model/push_notification.go  host == "mattermost\.com" \|\| strings\.HasSuffix\(host, "\.mattermost\.com"\)
+outbound  server/public/model/config.go  GenericNotificationServer = "https://push-test\.mattermost\.com"
+
+# Old Mattermost support links mapped to Antimatter's: a server still configured with them is switched over.
+outbound  server/public/model/config.go  "https://mattermost\.com/pl/[a-z/-]+":\s+SupportSettingsDefault
+
+# Hostname comparisons that recognise Mattermost's services (to warn about them or to treat their links as
+# external); they compare strings and never make a request.
+outbound  webapp/*/src/**  (hostname|host)(\?\.)?\s*(===|!==|==)\s*'mattermost\.com'|endsWith\('\.(test\.)?mattermost\.com'\)
+
+# --- am-env -----------------------------------------------------------------------------------------------
+
+# Makefile switches of the dev environment (not server settings, so they have no AM_ name).
+am-env  server/docker-compose.pgvector.yml  MM_USE_PGVECTOR
