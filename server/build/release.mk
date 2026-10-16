@@ -1,6 +1,10 @@
 .PHONY: dist
 dist: | check-style test package
 
+# Antimatter: the release binaries also carry amctl's build information (amctl version). The -X
+# flags of packages a binary doesn't link are ignored.
+LDFLAGS += $(MMCTL_LDFLAGS)
+
 .PHONY: build-linux
 build-linux: build-linux-amd64 build-linux-arm64
 
@@ -237,6 +241,14 @@ package-general:
 	@# Create needed directories
 	mkdir -p $(DIST_PATH_GENERIC)/bin
 	mkdir -p $(DIST_PATH_GENERIC)/logs
+
+	@# Antimatter: bundled apps, signed bundles (*.tar.gz and *.tar.gz.sig) from
+	@# PREPACKAGED_PLUGINS_DIR, e.g. fetched by build/package/fetch-apps.sh.
+	if [ -n "$(PREPACKAGED_PLUGINS_DIR)" ]; then \
+		mkdir -p $(DIST_PATH_GENERIC)/prepackaged_plugins; \
+		find "$(PREPACKAGED_PLUGINS_DIR)" -maxdepth 1 -type f \( -name '*.tar.gz' -o -name '*.tar.gz.sig' \) \
+			-exec cp {} $(DIST_PATH_GENERIC)/prepackaged_plugins/ \; ; \
+	fi
 
 	@# Copy binaries
 ifeq ($(BUILDER_GOOS_GOARCH),"$(CURRENT_PACKAGE_ARCH)")
