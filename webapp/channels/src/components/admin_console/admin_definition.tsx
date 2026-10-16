@@ -2614,9 +2614,9 @@ const AdminDefinition: AdminDefinitionType = {
                         {
                             type: 'number',
                             key: 'TeamSettings.MaxUsersPerTeam',
-                            label: defineMessage({id: 'admin.team.maxUsersTitle', defaultMessage: 'Max Users Per Team:'}),
-                            help_text: defineMessage({id: 'admin.team.maxUsersDescription', defaultMessage: 'Maximum number of active users per team. Deactivated users are not counted toward this limit.'}),
-                            placeholder: defineMessage({id: 'admin.team.maxUsersExample', defaultMessage: 'E.g.: "25"'}),
+                            label: defineMessage({id: 'admin.team.maxUsersTitle', defaultMessage: 'Max Members Per Community:'}),
+                            help_text: defineMessage({id: 'admin.team.maxUsersDescription', defaultMessage: 'Maximum number of active members a community can have. 0 means no limit. Deactivated users are not counted.'}),
+                            placeholder: defineMessage({id: 'admin.team.maxUsersExample', defaultMessage: 'E.g.: "500"'}),
                             isDisabled: it.not(it.userHasWritePermissionOnResource(RESOURCE_KEYS.SITE.USERS_AND_TEAMS)),
                         },
                         {

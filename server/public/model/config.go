@@ -149,7 +149,7 @@ const (
 	ServiceSettingsMaxUniqueReactionsPerPost     = 500
 
 	TeamSettingsDefaultSiteName              = "Antimatter"
-	TeamSettingsDefaultMaxUsersPerTeam       = 50
+	TeamSettingsDefaultMaxUsersPerTeam       = 0 // no limit
 	TeamSettingsDefaultCustomBrandText       = ""
 	TeamSettingsDefaultCustomDescriptionText = ""
 	TeamSettingsDefaultUserStatusAwayTimeout = 300
@@ -4777,8 +4777,17 @@ func (o *Config) IsValid() *AppError {
 	return nil
 }
 
+// MemberLimit is the most active members a community (team) may have, or -1 for no limit:
+// MaxUsersPerTeam set to 0 means no limit.
+func (s *TeamSettings) MemberLimit() int {
+	if s.MaxUsersPerTeam == nil || *s.MaxUsersPerTeam <= 0 {
+		return -1
+	}
+	return *s.MaxUsersPerTeam
+}
+
 func (s *TeamSettings) isValid() *AppError {
-	if *s.MaxUsersPerTeam <= 0 {
+	if *s.MaxUsersPerTeam < 0 {
 		return NewAppError("Config.IsValid", "model.config.is_valid.max_users.app_error", nil, "", http.StatusBadRequest)
 	}
 

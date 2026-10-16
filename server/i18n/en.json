@@ -15591,8 +15591,8 @@
   },
   {
     "id": "model.config.is_valid.max_users.app_error",
-    "translation": "Invalid maximum users per team for team settings. Must be a positive number.",
-    "description": "Config validation error shown to system admins for the maximum users per team setting; must be a positive number."
+    "translation": "Invalid maximum members per community. Use 0 for no limit, or a positive number.",
+    "description": "Config validation error shown to system admins for the maximum members per community (team) setting; 0 means no limit."
   },
   {
     "id": "model.config.is_valid.message_export.batch_size.app_error",

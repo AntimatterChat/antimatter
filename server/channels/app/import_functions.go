@@ -1349,7 +1349,7 @@ func (a *App) importUserTeams(rctx request.CTX, user *model.User, data *[]import
 	newMembers := []*model.TeamMember{}
 	if len(newTeamMembers) > 0 {
 		var nErr error
-		newMembers, nErr = a.Srv().Store().Team().SaveMultipleMembers(newTeamMembers, *a.Config().TeamSettings.MaxUsersPerTeam)
+		newMembers, nErr = a.Srv().Store().Team().SaveMultipleMembers(newTeamMembers, a.Config().TeamSettings.MemberLimit())
 		if nErr != nil {
 			var conflictErr *store.ErrConflict
 			var limitExceededErr *store.ErrLimitExceeded

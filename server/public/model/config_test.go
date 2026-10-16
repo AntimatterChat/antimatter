@@ -4639,3 +4639,18 @@ func TestTrustedProxyIPsValidation(t *testing.T) {
 		assert.Equal(t, "model.config.is_valid.trusted_proxy_ips.app_error", appErr.Id)
 	}
 }
+
+func TestTeamSettingsMemberLimit(t *testing.T) {
+	c := Config{}
+	c.SetDefaults()
+	assert.Equal(t, 0, *c.TeamSettings.MaxUsersPerTeam, "communities have no member limit by default")
+	assert.Equal(t, -1, c.TeamSettings.MemberLimit())
+	assert.Nil(t, c.TeamSettings.isValid())
+
+	*c.TeamSettings.MaxUsersPerTeam = 50
+	assert.Equal(t, 50, c.TeamSettings.MemberLimit())
+	assert.Nil(t, c.TeamSettings.isValid())
+
+	*c.TeamSettings.MaxUsersPerTeam = -1
+	assert.NotNil(t, c.TeamSettings.isValid())
+}

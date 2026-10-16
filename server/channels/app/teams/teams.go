@@ -201,7 +201,7 @@ func (ts *TeamService) JoinUserToTeam(rctx request.CTX, team *model.Team, user *
 			return nil, false, err
 		}
 
-		tmr, nErr := ts.store.SaveMember(rctx, tm, *ts.config().TeamSettings.MaxUsersPerTeam)
+		tmr, nErr := ts.store.SaveMember(rctx, tm, ts.config().TeamSettings.MemberLimit())
 		if nErr != nil {
 			return nil, false, nErr
 		}
@@ -219,7 +219,7 @@ func (ts *TeamService) JoinUserToTeam(rctx request.CTX, team *model.Team, user *
 		return nil, false, MemberCountError
 	}
 
-	if membersCount >= int64(*ts.config().TeamSettings.MaxUsersPerTeam) {
+	if limit := ts.config().TeamSettings.MemberLimit(); limit >= 0 && membersCount >= int64(limit) {
 		return nil, false, MaxMemberCountError
 	}
 

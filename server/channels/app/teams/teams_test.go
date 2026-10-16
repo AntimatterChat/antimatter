@@ -200,3 +200,53 @@ func TestJoinUserToTeam(t *testing.T) {
 		require.Error(t, err, "Should fail")
 	})
 }
+
+func TestJoinUserToTeamWithoutMemberLimit(t *testing.T) {
+	th := Setup(t)
+
+	id := model.NewId()
+	team, err := th.service.CreateTeam(th.Context, &model.Team{
+		DisplayName: "dn_" + id,
+		Name:        "name" + id,
+		Email:       "success+" + id + "@simulator.amazonses.com",
+		Type:        model.TeamOpen,
+	})
+	require.NoError(t, err)
+	defer th.DeleteTeam(team)
+
+	maxUsersPerTeam := th.service.config().TeamSettings.MaxUsersPerTeam
+	defer th.UpdateConfig(func(cfg *model.Config) { cfg.TeamSettings.MaxUsersPerTeam = maxUsersPerTeam })
+
+	newUser := func() *model.User {
+		u := &model.User{Email: strings.ToLower(model.NewId()) + "success+test@example.com", Username: "u" + model.NewId(), Password: model.NewTestPassword()}
+		ru := th.CreateUser(u)
+		t.Cleanup(func() { th.DeleteUser(u) })
+		return ru
+	}
+
+	t.Run("0 means no limit: everyone joins", func(t *testing.T) {
+		th.UpdateConfig(func(cfg *model.Config) { cfg.TeamSettings.MaxUsersPerTeam = new(0) })
+		for range 3 {
+			_, _, err := th.service.JoinUserToTeam(th.Context, team, newUser())
+			require.NoError(t, err)
+		}
+	})
+
+	t.Run("0 means no limit: rejoining after leaving works", func(t *testing.T) {
+		th.UpdateConfig(func(cfg *model.Config) { cfg.TeamSettings.MaxUsersPerTeam = new(0) })
+		user := newUser()
+		member, _, err := th.service.JoinUserToTeam(th.Context, team, user)
+		require.NoError(t, err)
+		require.NoError(t, th.service.RemoveTeamMember(th.Context, member))
+		_, _, err = th.service.JoinUserToTeam(th.Context, team, user)
+		require.NoError(t, err)
+	})
+
+	t.Run("a positive limit still applies", func(t *testing.T) {
+		count, err := th.service.store.GetActiveMemberCount(team.Id, nil)
+		require.NoError(t, err)
+		th.UpdateConfig(func(cfg *model.Config) { cfg.TeamSettings.MaxUsersPerTeam = new(int(count)) })
+		_, _, err = th.service.JoinUserToTeam(th.Context, team, newUser())
+		require.Error(t, err)
+	})
+}
