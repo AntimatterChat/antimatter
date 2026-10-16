@@ -185,7 +185,11 @@ func TestChannelGuardRegisterUnregisterNilClusterIsSafe(t *testing.T) {
 	mainHelper.Parallel(t)
 	th := Setup(t).InitBasic(t)
 
-	require.Nil(t, th.App.Srv().platform.Cluster(), "expected nil cluster in a single-node test setup")
+	// Antimatter's server always has its native cluster service; take it away to cover a nil Cluster().
+	originalCluster := th.App.Srv().platform.Cluster()
+	th.App.Srv().platform.SetCluster(nil)
+	defer th.App.Srv().platform.SetCluster(originalCluster)
+	require.Nil(t, th.App.Srv().platform.Cluster())
 
 	channelID := th.BasicChannel.Id
 	pluginID := "com.example.nil-cluster-rt"
