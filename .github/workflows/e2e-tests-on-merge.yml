@@ -18,8 +18,11 @@ on:
 
 permissions: {}
 
+# Antimatter: this workflow needs Mattermost's infrastructure or secrets, or is replaced by an
+# antimatter-*.yml workflow. It is kept to ease upstream merges and only runs in Mattermost's repo.
 jobs:
   generate-build-variables:
+    if: github.repository_owner == 'mattermost'
     permissions:
       contents: read
     runs-on: ubuntu-24.04
@@ -69,6 +72,7 @@ jobs:
           fi
 
   check-changes:
+    if: github.repository_owner == 'mattermost'
     permissions:
       contents: read
     runs-on: ubuntu-24.04
@@ -113,6 +117,7 @@ jobs:
 
   # Enterprise Edition
   e2e-cypress:
+    if: github.repository_owner == 'mattermost'
     needs: generate-build-variables
     permissions:
       contents: read
@@ -137,6 +142,7 @@ jobs:
       CWS_EXTRA_HTTP_HEADERS: "${{ secrets.MM_E2E_CWS_EXTRA_HTTP_HEADERS }}"
 
   e2e-playwright:
+    if: github.repository_owner == 'mattermost'
     needs:
       - generate-build-variables
       - check-changes
@@ -162,7 +168,7 @@ jobs:
   # FIPS builds were introduced in release-11.0; skip for older branches.
   e2e-cypress-fips:
     needs: generate-build-variables
-    if: needs.generate-build-variables.outputs.fips_supported == 'true'
+    if: github.repository_owner == 'mattermost' && (needs.generate-build-variables.outputs.fips_supported == 'true')
     permissions:
       contents: read
       statuses: write
@@ -190,7 +196,7 @@ jobs:
     needs:
       - generate-build-variables
       - check-changes
-    if: needs.generate-build-variables.outputs.fips_supported == 'true'
+    if: github.repository_owner == 'mattermost' && (needs.generate-build-variables.outputs.fips_supported == 'true')
     permissions:
       contents: read
       statuses: write

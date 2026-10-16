@@ -19,8 +19,11 @@ concurrency:
 permissions:
   contents: read
 
+# Antimatter: this workflow needs Mattermost's infrastructure or secrets, or is replaced by an
+# antimatter-*.yml workflow. It is kept to ease upstream merges and only runs in Mattermost's repo.
 jobs:
   buildenv:
+    if: github.repository_owner == 'mattermost'
     name: Build Environment
     runs-on: ubuntu-22.04
     permissions:
@@ -82,7 +85,7 @@ jobs:
   check-generated:
     name: Check generated files
     needs: buildenv
-    if: needs.buildenv.outputs.relevant-changed == 'true'
+    if: github.repository_owner == 'mattermost' && (needs.buildenv.outputs.relevant-changed == 'true')
     runs-on: ubuntu-22.04
     services:
       # make default-roles-permissions snapshots a live database.
@@ -124,7 +127,7 @@ jobs:
     name: Check backport migrations
     needs: buildenv
     # Only backports (release-* base) must keep a migration's version+name; new master migrations are expected.
-    if: needs.buildenv.outputs.relevant-changed == 'true' && startsWith(github.base_ref, 'release-')
+    if: github.repository_owner == 'mattermost' && (needs.buildenv.outputs.relevant-changed == 'true' && startsWith(github.base_ref, 'release-'))
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout mattermost project
@@ -144,7 +147,7 @@ jobs:
   check-style:
     name: check-style
     needs: buildenv
-    if: needs.buildenv.outputs.relevant-changed == 'true'
+    if: github.repository_owner == 'mattermost' && (needs.buildenv.outputs.relevant-changed == 'true')
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout mattermost project
@@ -159,7 +162,7 @@ jobs:
   check-mattermost-vet-api:
     name: Vet API
     needs: buildenv
-    if: needs.buildenv.outputs.relevant-changed == 'true'
+    if: github.repository_owner == 'mattermost' && (needs.buildenv.outputs.relevant-changed == 'true')
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout mattermost project
@@ -179,7 +182,7 @@ jobs:
   test-postgres-normal:
     name: Postgres (shard ${{ matrix.shard }})
     needs: buildenv
-    if: needs.buildenv.outputs.relevant-changed == 'true'
+    if: github.repository_owner == 'mattermost' && (needs.buildenv.outputs.relevant-changed == 'true')
     strategy:
       fail-fast: false  # Let all shards complete so we get full test results
       matrix:
@@ -205,7 +208,7 @@ jobs:
   merge-postgres-test-results:
     name: Merge Postgres Test Results
     needs: test-postgres-normal
-    if: always() && needs.test-postgres-normal.result != 'skipped'
+    if: github.repository_owner == 'mattermost' && (always() && needs.test-postgres-normal.result != 'skipped')
     permissions:
       contents: read
       actions: write
@@ -219,7 +222,7 @@ jobs:
   test-elasticsearch-v8:
     name: Elasticsearch v8 Compatibility
     needs: buildenv
-    if: needs.buildenv.outputs.relevant-changed == 'true'
+    if: github.repository_owner == 'mattermost' && (needs.buildenv.outputs.relevant-changed == 'true')
     permissions:
       contents: read
       actions: write
@@ -237,7 +240,7 @@ jobs:
   test-opensearch-v2:
     name: OpenSearch v2 Compatibility
     needs: buildenv
-    if: needs.buildenv.outputs.relevant-changed == 'true'
+    if: github.repository_owner == 'mattermost' && (needs.buildenv.outputs.relevant-changed == 'true')
     permissions:
       contents: read
       actions: write
@@ -256,8 +259,10 @@ jobs:
   # Sharded for fast iteration. Weekly workflow provides regular full coverage.
   test-postgres-normal-fips:
     if: >-
-      needs.buildenv.outputs.relevant-changed == 'true' &&
-      (contains(github.head_ref, 'fips') || needs.buildenv.outputs.gomod-changed == 'true')
+      github.repository_owner == 'mattermost' && (
+        needs.buildenv.outputs.relevant-changed == 'true' &&
+        (contains(github.head_ref, 'fips') || needs.buildenv.outputs.gomod-changed == 'true')
+      )
     name: "Postgres FIPS (shard ${{ matrix.shard }})"
     needs: buildenv
     strategy:
@@ -283,7 +288,7 @@ jobs:
   merge-postgres-fips-test-results:
     name: Merge Postgres FIPS Test Results
     needs: test-postgres-normal-fips
-    if: needs.test-postgres-normal-fips.result != 'skipped'
+    if: github.repository_owner == 'mattermost' && (needs.test-postgres-normal-fips.result != 'skipped')
     permissions:
       contents: read
       actions: write
@@ -295,7 +300,7 @@ jobs:
   test-mmctl:
     name: Run mmctl tests
     needs: buildenv
-    if: needs.buildenv.outputs.relevant-changed == 'true'
+    if: github.repository_owner == 'mattermost' && (needs.buildenv.outputs.relevant-changed == 'true')
     permissions:
       contents: read
       actions: write
@@ -311,8 +316,10 @@ jobs:
       fips-enabled: false
   test-mmctl-fips:
     if: >-
-      needs.buildenv.outputs.relevant-changed == 'true' &&
-      (contains(github.head_ref, 'fips') || needs.buildenv.outputs.gomod-changed == 'true')
+      github.repository_owner == 'mattermost' && (
+        needs.buildenv.outputs.relevant-changed == 'true' &&
+        (contains(github.head_ref, 'fips') || needs.buildenv.outputs.gomod-changed == 'true')
+      )
     name: Run mmctl tests (FIPS)
     needs: buildenv
     permissions:
@@ -334,7 +341,7 @@ jobs:
   build-mattermost-server:
     name: Build mattermost server app
     needs: buildenv
-    if: needs.buildenv.outputs.relevant-changed == 'true'
+    if: github.repository_owner == 'mattermost' && (needs.buildenv.outputs.relevant-changed == 'true')
     permissions:
       contents: read
       actions: write
@@ -379,9 +386,11 @@ jobs:
   ci-complete:
     name: Server CI Complete
     if: >-
-      always() &&
-      (needs.test-mmctl-fips.result == 'success' || needs.test-mmctl-fips.result == 'skipped' || needs.test-mmctl-fips.result == 'failure') &&
-      (needs.merge-postgres-fips-test-results.result == 'success' || needs.merge-postgres-fips-test-results.result == 'skipped' || needs.merge-postgres-fips-test-results.result == 'failure')
+      github.repository_owner == 'mattermost' && (
+        always() &&
+        (needs.test-mmctl-fips.result == 'success' || needs.test-mmctl-fips.result == 'skipped' || needs.test-mmctl-fips.result == 'failure') &&
+        (needs.merge-postgres-fips-test-results.result == 'success' || needs.merge-postgres-fips-test-results.result == 'skipped' || needs.merge-postgres-fips-test-results.result == 'failure')
+      )
     permissions: {}
     runs-on: ubuntu-22.04
     needs:
@@ -408,7 +417,7 @@ jobs:
     name: Server CI Report
     # Skip cleanly (rather than fail) when no relevant Server CI paths
     # changed, since none of the test jobs it reports on will have run.
-    if: always() && needs.buildenv.outputs.relevant-changed == 'true'
+    if: github.repository_owner == 'mattermost' && (always() && needs.buildenv.outputs.relevant-changed == 'true')
     permissions:
       contents: read
       actions: read

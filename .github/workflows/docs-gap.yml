@@ -16,16 +16,20 @@ concurrency:
   group: docs-gap-${{ github.event.pull_request.number }}
   cancel-in-progress: true
 
+# Antimatter: this workflow needs Mattermost's infrastructure or secrets, or is replaced by an
+# antimatter-*.yml workflow. It is kept to ease upstream merges and only runs in Mattermost's repo.
 jobs:
   analyze:
     name: Analyze documentation impact
     # Skip forks (no key/token) and human opt-outs.
     if: >-
-      github.event.pull_request.draft == false &&
-      github.event.pull_request.head.repo.full_name == github.repository &&
-      !startsWith(github.event.pull_request.user.login, 'unified-ci-app') &&
-      !contains(github.event.pull_request.labels.*.name, 'Docs/Not Needed') &&
-      !contains(github.event.pull_request.labels.*.name, 'Docs/Done')
+      github.repository_owner == 'mattermost' && (
+        github.event.pull_request.draft == false &&
+        github.event.pull_request.head.repo.full_name == github.repository &&
+        !startsWith(github.event.pull_request.user.login, 'unified-ci-app') &&
+        !contains(github.event.pull_request.labels.*.name, 'Docs/Not Needed') &&
+        !contains(github.event.pull_request.labels.*.name, 'Docs/Done')
+      )
     runs-on: ubuntu-24.04
     permissions:
       contents: read
@@ -118,7 +122,7 @@ jobs:
     name: Post comment and manage label
     needs: analyze
     # !cancelled (not always): skip superseded concurrency cancels; still run after soft-fail.
-    if: ${{ !cancelled() && needs.analyze.outputs.analyzable == 'true' }}
+    if: github.repository_owner == 'mattermost' && (!cancelled() && needs.analyze.outputs.analyzable == 'true')
     runs-on: ubuntu-24.04
     permissions:
       contents: read

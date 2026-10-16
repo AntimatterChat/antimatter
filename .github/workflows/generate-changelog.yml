@@ -37,8 +37,11 @@ on:
         required: false
         type: string
 
+# Antimatter: this workflow needs Mattermost's infrastructure or secrets, or is replaced by an
+# antimatter-*.yml workflow. It is kept to ease upstream merges and only runs in Mattermost's repo.
 jobs:
   generate-changelog:
+    if: github.repository_owner == 'mattermost'
     runs-on: ubuntu-latest
     permissions:
       contents: read

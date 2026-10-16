@@ -26,8 +26,11 @@ permissions:
   contents: read
   actions: write # required to save the Actions cache
 
+# Antimatter: this workflow needs Mattermost's infrastructure or secrets, or is replaced by an
+# antimatter-*.yml workflow. It is kept to ease upstream merges and only runs in Mattermost's repo.
 jobs:
   warm:
+    if: github.repository_owner == 'mattermost'
     name: Warm E2E npm Registry Cache
     runs-on: ubuntu-24.04
     # Bound a hung run so it can't hold the concurrency group for the default

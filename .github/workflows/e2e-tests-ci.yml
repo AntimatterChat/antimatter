@@ -30,8 +30,11 @@ on:
 
 permissions: {}
 
+# Antimatter: this workflow needs Mattermost's infrastructure or secrets, or is replaced by an
+# antimatter-*.yml workflow. It is kept to ease upstream merges and only runs in Mattermost's repo.
 jobs:
   resolve-pr:
+    if: github.repository_owner == 'mattermost'
     permissions:
       contents: read
       pull-requests: read
@@ -133,7 +136,7 @@ jobs:
       contents: read
       pull-requests: read
     needs: resolve-pr
-    if: needs.resolve-pr.outputs.PR_NUMBER != ''
+    if: github.repository_owner == 'mattermost' && (needs.resolve-pr.outputs.PR_NUMBER != '')
     runs-on: ubuntu-24.04
     outputs:
       should_run: "${{ steps.check.outputs.should_run }}"
@@ -244,7 +247,7 @@ jobs:
     needs:
       - resolve-pr
       - check-changes
-    if: needs.resolve-pr.outputs.PR_NUMBER != ''
+    if: github.repository_owner == 'mattermost' && (needs.resolve-pr.outputs.PR_NUMBER != '')
     permissions:
       contents: read
       statuses: write
@@ -272,7 +275,7 @@ jobs:
     needs:
       - resolve-pr
       - check-changes
-    if: needs.resolve-pr.outputs.PR_NUMBER != ''
+    if: github.repository_owner == 'mattermost' && (needs.resolve-pr.outputs.PR_NUMBER != '')
     permissions:
       contents: read
       statuses: write
@@ -297,7 +300,7 @@ jobs:
     needs:
       - resolve-pr
       - check-changes
-    if: needs.resolve-pr.outputs.PR_NUMBER != '' && needs.check-changes.outputs.should_run_fips == 'true'
+    if: github.repository_owner == 'mattermost' && (needs.resolve-pr.outputs.PR_NUMBER != '' && needs.check-changes.outputs.should_run_fips == 'true')
     permissions:
       contents: read
       statuses: write
@@ -325,7 +328,7 @@ jobs:
     needs:
       - resolve-pr
       - check-changes
-    if: needs.resolve-pr.outputs.PR_NUMBER != '' && needs.check-changes.outputs.should_run_fips == 'true'
+    if: github.repository_owner == 'mattermost' && (needs.resolve-pr.outputs.PR_NUMBER != '' && needs.check-changes.outputs.should_run_fips == 'true')
     permissions:
       contents: read
       statuses: write

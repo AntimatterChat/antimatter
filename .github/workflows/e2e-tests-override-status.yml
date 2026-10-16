@@ -11,8 +11,11 @@ on:
 
 permissions: {}
 
+# Antimatter: this workflow needs Mattermost's infrastructure or secrets, or is replaced by an
+# antimatter-*.yml workflow. It is kept to ease upstream merges and only runs in Mattermost's repo.
 jobs:
   override-status:
+    if: github.repository_owner == 'mattermost'
     permissions:
       contents: read
       pull-requests: read

@@ -90,8 +90,11 @@ on:
 
 permissions: {}
 
+# Antimatter: this workflow needs Mattermost's infrastructure or secrets, or is replaced by an
+# antimatter-*.yml workflow. It is kept to ease upstream merges and only runs in Mattermost's repo.
 jobs:
   generate-build-variables:
+    if: github.repository_owner == 'mattermost'
     runs-on: ubuntu-24.04
     outputs:
       branch: "${{ steps.build-vars.outputs.branch }}"
@@ -179,6 +182,7 @@ jobs:
   # is still in an ESR window, both of which move with the calendar. Resolving it here rather than
   # in the template keeps the template a single-from-version workflow.
   resolve-matrix:
+    if: github.repository_owner == 'mattermost'
     needs:
       - generate-build-variables
     runs-on: ubuntu-24.04
@@ -232,7 +236,7 @@ jobs:
     needs:
       - generate-build-variables
       - resolve-matrix
-    if: needs.resolve-matrix.outputs.matrix_empty != 'true'
+    if: github.repository_owner == 'mattermost' && (needs.resolve-matrix.outputs.matrix_empty != 'true')
     strategy:
       fail-fast: false
       matrix:

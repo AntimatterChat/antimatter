@@ -29,6 +29,8 @@ permissions:
   contents: read
   actions: write # required to save the Actions cache
 
+# Antimatter: this workflow needs Mattermost's infrastructure or secrets, or is replaced by an
+# antimatter-*.yml workflow. It is kept to ease upstream merges and only runs in Mattermost's repo.
 jobs:
   warm:
     name: Warm Cypress deps cache
@@ -36,7 +38,7 @@ jobs:
     # workflow_dispatch can target any branch. Warming from one would write a
     # branch-scoped entry keyed on that branch's lockfile — quota spent on a key
     # no other branch can read, which is the churn this workflow exists to avoid.
-    if: github.ref == 'refs/heads/master'
+    if: github.repository_owner == 'mattermost' && (github.ref == 'refs/heads/master')
     # Bound a hung run so it can't hold the concurrency group for the default
     # 6-hour timeout and block subsequent warm runs.
     timeout-minutes: 30

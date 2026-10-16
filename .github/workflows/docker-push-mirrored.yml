@@ -10,6 +10,8 @@ on:
 permissions:
   contents: read
 
+# Antimatter: this workflow needs Mattermost's infrastructure or secrets, or is replaced by an
+# antimatter-*.yml workflow. It is kept to ease upstream merges and only runs in Mattermost's repo.
 jobs:
   build-docker:
     name: cd/Push mirrored docker images

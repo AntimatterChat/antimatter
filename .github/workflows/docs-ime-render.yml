@@ -25,11 +25,13 @@ concurrency:
 permissions:
   contents: write
 
+# Antimatter: this workflow needs Mattermost's infrastructure or secrets, or is replaced by an
+# antimatter-*.yml workflow. It is kept to ease upstream merges and only runs in Mattermost's repo.
 jobs:
   render:
     name: Render IME diagram PNG
     runs-on: ubuntu-24.04
-    if: github.event.pull_request.head.repo.full_name == github.repository
+    if: github.repository_owner == 'mattermost' && (github.event.pull_request.head.repo.full_name == github.repository)
     steps:
       - name: render/checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1

@@ -32,15 +32,19 @@ concurrency:
     docs-writer-${{ github.event.pull_request.number || inputs.pr_number || github.event.pull_request.head.ref }}
   cancel-in-progress: false
 
+# Antimatter: this workflow needs Mattermost's infrastructure or secrets, or is replaced by an
+# antimatter-*.yml workflow. It is kept to ease upstream merges and only runs in Mattermost's repo.
 jobs:
   draft:
     name: Draft docs PR
     runs-on: ubuntu-24.04
-    if: |
-      github.event_name == 'workflow_dispatch' ||
-      (github.event.pull_request.merged == true &&
-       contains(github.event.pull_request.labels.*.name, 'Docs/Needed') &&
-       !startsWith(github.event.pull_request.head.ref, 'docs/pr-'))
+    if: >-
+      github.repository_owner == 'mattermost' && (
+        github.event_name == 'workflow_dispatch' ||
+        (github.event.pull_request.merged == true &&
+         contains(github.event.pull_request.labels.*.name, 'Docs/Needed') &&
+         !startsWith(github.event.pull_request.head.ref, 'docs/pr-'))
+      )
     env:
       HAS_ANTHROPIC_KEY: ${{ secrets.ANTHROPIC_API_KEY != '' }}
       HAS_DOCS_AI_APP: ${{ vars.DOCS_AI_APP_CLIENT_ID != '' && secrets.DOCS_AI_APP_PRIVATE_KEY != '' }}
@@ -305,11 +309,13 @@ jobs:
   sync:
     name: Mark Docs/Done
     runs-on: ubuntu-24.04
-    if: |
-      github.event_name == 'pull_request' &&
-      github.event.action == 'closed' &&
-      github.event.pull_request.merged == true &&
-      startsWith(github.event.pull_request.head.ref, 'docs/pr-')
+    if: >-
+      github.repository_owner == 'mattermost' && (
+        github.event_name == 'pull_request' &&
+        github.event.action == 'closed' &&
+        github.event.pull_request.merged == true &&
+        startsWith(github.event.pull_request.head.ref, 'docs/pr-')
+      )
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1

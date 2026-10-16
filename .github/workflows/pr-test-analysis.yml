@@ -24,6 +24,8 @@ concurrency:
 
 permissions: {}
 
+# Antimatter: this workflow needs Mattermost's infrastructure or secrets, or is replaced by an
+# antimatter-*.yml workflow. It is kept to ease upstream merges and only runs in Mattermost's repo.
 jobs:
   analyze:
     permissions:
@@ -35,9 +37,11 @@ jobs:
     # fork runs do not receive this repo's Actions secrets).
     # workflow_dispatch: always allowed — runs in this repo with secrets, so you can pass a fork PR number manually.
     if: >-
-      github.event_name == 'workflow_dispatch' ||
-      (github.event.pull_request.draft == false &&
-       github.event.pull_request.head.repo.full_name == 'mattermost/mattermost')
+      github.repository_owner == 'mattermost' && (
+        github.event_name == 'workflow_dispatch' ||
+        (github.event.pull_request.draft == false &&
+         github.event.pull_request.head.repo.full_name == 'mattermost/mattermost')
+      )
     uses: mattermost/mattermost-test-automation-toolkit/.github/workflows/pr-test-analysis.yml@b51a481e3fe6332053be09800d59da1a8c3e3e2e # 2026-09-04
     with:
       pr_number: ${{ github.event.pull_request.number || inputs.pr_number }}

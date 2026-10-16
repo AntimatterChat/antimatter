@@ -16,8 +16,11 @@ concurrency:
 
 permissions: {}
 
+# Antimatter: this workflow needs Mattermost's infrastructure or secrets, or is replaced by an
+# antimatter-*.yml workflow. It is kept to ease upstream merges and only runs in Mattermost's repo.
 jobs:
   check-lint:
+    if: github.repository_owner == 'mattermost'
     permissions:
       contents: read
     runs-on: ubuntu-24.04
@@ -38,6 +41,7 @@ jobs:
           npm run check
 
   check-lockfile:
+    if: github.repository_owner == 'mattermost'
     permissions:
       contents: read
     runs-on: ubuntu-24.04
@@ -70,6 +74,7 @@ jobs:
           fi
 
   check-i18n:
+    if: github.repository_owner == 'mattermost'
     permissions:
       contents: read
     needs: check-lint
@@ -92,6 +97,7 @@ jobs:
           npm run i18n-extract:check
 
   check-external-links:
+    if: github.repository_owner == 'mattermost'
     permissions:
       contents: read
     needs: check-lint
@@ -115,6 +121,7 @@ jobs:
           npm run check-external-links -- --markdown | tee -a $GITHUB_STEP_SUMMARY
 
   check-types:
+    if: github.repository_owner == 'mattermost'
     permissions:
       contents: read
     needs: check-lint
@@ -136,6 +143,7 @@ jobs:
           npm run check-types
 
   test-platform:
+    if: github.repository_owner == 'mattermost'
     needs: check-lint
     runs-on: ubuntu-24.04
     timeout-minutes: 30
@@ -173,6 +181,7 @@ jobs:
           retention-days: 1
 
   test-mattermost-redux:
+    if: github.repository_owner == 'mattermost'
     needs: check-lint
     runs-on: ubuntu-24.04
     timeout-minutes: 30
@@ -207,6 +216,7 @@ jobs:
           retention-days: 1
 
   test-channels:
+    if: github.repository_owner == 'mattermost'
     needs: check-lint
     runs-on: ubuntu-24.04
     timeout-minutes: 30
@@ -251,7 +261,7 @@ jobs:
       actions: read
     runs-on: ubuntu-24.04
     needs: [test-platform, test-mattermost-redux, test-channels]
-    if: ${{ github.event_name != 'pull_request' || !startsWith(github.event.pull_request.base.ref, 'release-') }}
+    if: github.repository_owner == 'mattermost' && (github.event_name != 'pull_request' || !startsWith(github.event.pull_request.base.ref, 'release-'))
     defaults:
       run:
         working-directory: webapp/channels
@@ -310,6 +320,7 @@ jobs:
           flags: webapp
 
   build:
+    if: github.repository_owner == 'mattermost'
     permissions:
       contents: read
     needs: check-lint

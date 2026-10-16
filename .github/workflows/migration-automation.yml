@@ -24,8 +24,11 @@ concurrency:
   group: migration-review-${{ github.ref }}
   cancel-in-progress: true
  
+# Antimatter: this workflow needs Mattermost's infrastructure or secrets, or is replaced by an
+# antimatter-*.yml workflow. It is kept to ease upstream merges and only runs in Mattermost's repo.
 jobs:
   generate:
+    if: github.repository_owner == 'mattermost'
     name: Generate migration review & release notes
     runs-on: ubuntu-latest
  

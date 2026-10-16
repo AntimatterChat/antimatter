@@ -22,8 +22,11 @@ concurrency:
   group: docs-review-${{ inputs.pr_number }}
   cancel-in-progress: true
 
+# Antimatter: this workflow needs Mattermost's infrastructure or secrets, or is replaced by an
+# antimatter-*.yml workflow. It is kept to ease upstream merges and only runs in Mattermost's repo.
 jobs:
   review:
+    if: github.repository_owner == 'mattermost'
     name: Review
     runs-on: ubuntu-24.04
     env:

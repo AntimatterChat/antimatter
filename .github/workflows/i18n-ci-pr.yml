@@ -22,8 +22,11 @@ concurrency:
 permissions:
   contents: read
 
+# Antimatter: this workflow needs Mattermost's infrastructure or secrets, or is replaced by an
+# antimatter-*.yml workflow. It is kept to ease upstream merges and only runs in Mattermost's repo.
 jobs:
   pr-ci:
+    if: github.repository_owner == 'mattermost'
     permissions:
       contents: read
       id-token: write  # for chainguard (FIPS base image pull)

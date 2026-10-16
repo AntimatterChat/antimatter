@@ -29,8 +29,11 @@ env:
 
 permissions: {}
 
+# Antimatter: this workflow needs Mattermost's infrastructure or secrets, or is replaced by an
+# antimatter-*.yml workflow. It is kept to ease upstream merges and only runs in Mattermost's repo.
 jobs:
   build-image:
+    if: github.repository_owner == 'mattermost'
     permissions:
       contents: read
     runs-on: ubuntu-22.04
@@ -78,6 +81,7 @@ jobs:
           tags: mattermost/mattermost-build-server:${{ steps.tag.outputs.TAG }}
 
   build-image-fips:
+    if: github.repository_owner == 'mattermost'
     permissions:
       contents: read
       id-token: write

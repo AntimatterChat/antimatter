@@ -16,8 +16,11 @@ permissions:
   contents: read
   statuses: write
 
+# Antimatter: this workflow needs Mattermost's infrastructure or secrets, or is replaced by an
+# antimatter-*.yml workflow. It is kept to ease upstream merges and only runs in Mattermost's repo.
 jobs:
   update-initial-status:
+    if: github.repository_owner == 'mattermost'
     runs-on: ubuntu-latest
     steps:
       - name: Set pending commit status
@@ -35,6 +38,7 @@ jobs:
             -f target_url="https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
 
   deploy:
+    if: github.repository_owner == 'mattermost'
     uses: ./.github/workflows/docs-preview-template.yml
     secrets:
       AWS_DOCS_PR_PREVIEW_KEY_ID: ${{ secrets.AWS_DOCS_PR_PREVIEW_KEY_ID }}

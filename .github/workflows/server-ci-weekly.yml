@@ -21,8 +21,11 @@ on:
 permissions:
   contents: read
 
+# Antimatter: this workflow needs Mattermost's infrastructure or secrets, or is replaced by an
+# antimatter-*.yml workflow. It is kept to ease upstream merges and only runs in Mattermost's repo.
 jobs:
   buildenv:
+    if: github.repository_owner == 'mattermost'
     name: Build Environment
     runs-on: ubuntu-22.04
     outputs:
@@ -40,6 +43,7 @@ jobs:
           echo "BUILD_SERVER_TAG=${tag}" >> "${GITHUB_OUTPUT}"
 
   test-postgres-binary:
+    if: github.repository_owner == 'mattermost'
     name: Postgres with binary parameters
     needs: buildenv
     permissions:
@@ -59,6 +63,7 @@ jobs:
       fullyparallel: false
 
   test-postgres-normal-fips:
+    if: github.repository_owner == 'mattermost'
     name: Postgres FIPS
     needs: buildenv
     permissions:
@@ -79,6 +84,7 @@ jobs:
       fullyparallel: false
 
   test-mmctl-fips:
+    if: github.repository_owner == 'mattermost'
     name: Run mmctl tests (FIPS)
     needs: buildenv
     permissions:

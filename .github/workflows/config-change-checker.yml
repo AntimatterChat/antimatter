@@ -30,6 +30,8 @@ concurrency:
 
 permissions: {}
 
+# Antimatter: this workflow needs Mattermost's infrastructure or secrets, or is replaced by an
+# antimatter-*.yml workflow. It is kept to ease upstream merges and only runs in Mattermost's repo.
 jobs:
   check-release-notes:
     name: Detect release-note-worthy changes
@@ -37,7 +39,7 @@ jobs:
     # Skip bot-authored PRs (Dependabot, mattermost-bot, etc.) — they will
     # not touch these paths intentionally and cannot receive description updates
     # via GITHUB_TOKEN anyway (fork-like restrictions apply to most bots).
-    if: github.event.pull_request.user.type != 'Bot'
+    if: github.repository_owner == 'mattermost' && (github.event.pull_request.user.type != 'Bot')
 
     permissions:
       pull-requests: write   # needed to update the PR description
