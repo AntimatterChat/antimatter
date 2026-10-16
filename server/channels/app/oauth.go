@@ -1125,6 +1125,9 @@ func (a *App) AuthorizeOAuthUser(rctx request.CTX, w http.ResponseWriter, r *htt
 	var ar *model.AccessResponse
 	err = json.NewDecoder(tee).Decode(&ar)
 	if err != nil || resp.StatusCode != http.StatusOK {
+		// The decoder stops reading at the first invalid byte, and how much it has buffered by then depends
+		// on the Go version (64 bytes with Go 1.27), so read the rest of a short body for the error details.
+		_, _ = io.Copy(&buf, io.LimitReader(resp.Body, 4096))
 		return nil, stateProps, nil, model.NewAppError("AuthorizeOAuthUser", "api.user.authorize_oauth_user.bad_response.app_error", nil, fmt.Sprintf("response_body=%s, status_code=%d, error=%v", redactOAuthTokenResponse(buf.String()), resp.StatusCode, err), http.StatusInternalServerError).Wrap(err)
 	}
 
