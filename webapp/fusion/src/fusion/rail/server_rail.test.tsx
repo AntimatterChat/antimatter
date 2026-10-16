@@ -47,6 +47,11 @@ describe('fusion/rail/ServerRail', () => {
 
     beforeEach(() => {
         jest.clearAllMocks();
+        if (!document.getElementById('am-layer')) {
+            const layer = document.createElement('div');
+            layer.id = 'am-layer';
+            document.body.appendChild(layer);
+        }
         mockTeams = [mockTeam];
         mockUnread = [{channel: alice, mentions: 0, messages: 3}, {channel: bob, mentions: 2, messages: 5}];
     });
@@ -141,6 +146,57 @@ describe('fusion/rail/ServerRail', () => {
         mockTeams = [mockTeam, otherTeam];
         render('town-square', JSON.stringify([{id: 'f1', name: '', teamIds: ['team', 'other']}]));
         expect(screen.getByRole('button', {name: /^Folder Antimatter, Other/})).toHaveAttribute('data-am-tip', 'Antimatter, Other');
+    });
+
+    const savedFolders = () => JSON.parse((savePreferences as jest.Mock).mock.calls.at(-1)[1][0].value);
+    const workFolder = JSON.stringify([{id: 'f1', name: 'Work', teamIds: ['team', 'third']}]);
+
+    test('a folder is renamed and coloured from its menu', async () => {
+        mockTeams = [mockTeam, otherTeam, thirdTeam];
+        render('town-square', workFolder);
+        await userEvent.pointer({keys: '[MouseRight]', target: screen.getByRole('button', {name: 'Folder Work, 2 communities'})});
+        await userEvent.click(screen.getByRole('menuitem', {name: /Folder settings/}));
+
+        const dialog = screen.getByRole('dialog', {name: 'Folder settings'});
+        const name = screen.getByPlaceholderText('Shown when you point at the folder');
+        expect(name).toHaveValue('Work');
+        expect(screen.getByRole('radio', {name: 'Theme colour'})).toHaveAttribute('aria-checked', 'true');
+        await userEvent.clear(name);
+        await userEvent.type(name, '  Clients ');
+        await userEvent.click(screen.getByRole('radio', {name: '#ed4245'}));
+        await userEvent.click(screen.getByRole('button', {name: 'Save'}));
+
+        expect(savedFolders()).toEqual([{id: 'f1', name: 'Clients', color: '#ed4245', teamIds: ['team', 'third']}]);
+        expect(dialog).not.toBeInTheDocument();
+    });
+
+    test('removing a folder keeps its communities in the rail', async () => {
+        mockTeams = [mockTeam, otherTeam, thirdTeam];
+        render('town-square', workFolder);
+        await userEvent.pointer({keys: '[MouseRight]', target: screen.getByRole('button', {name: 'Folder Work, 2 communities'})});
+        await userEvent.click(screen.getByRole('menuitem', {name: /Remove folder/}));
+        expect(savedFolders()).toEqual([]);
+    });
+
+    test('a team dropped on a folder joins it', () => {
+        mockTeams = [mockTeam, otherTeam, thirdTeam];
+        render('town-square', workFolder);
+        const data = {types: ['application/x-am-team'], setData: jest.fn(), effectAllowed: ''};
+        fireEvent.dragStart(screen.getByRole('button', {name: 'Other'}), {dataTransfer: data});
+        fireEvent.drop(screen.getByRole('button', {name: 'Folder Work, 2 communities'}), {dataTransfer: data});
+        expect(savedFolders()).toEqual([{id: 'f1', name: 'Work', teamIds: ['team', 'third', 'other']}]);
+    });
+
+    test('an open folder stays open next time, in this browser', async () => {
+        localStorage.removeItem('am-rail-open-folders');
+        mockTeams = [mockTeam, otherTeam, thirdTeam];
+        const {unmount} = render('town-square', workFolder);
+        await userEvent.click(screen.getByRole('button', {name: 'Folder Work, 2 communities'}));
+        unmount();
+
+        render('town-square', workFolder);
+        expect(screen.getByRole('button', {name: 'Folder Work, 2 communities'})).toHaveAttribute('aria-expanded', 'true');
+        localStorage.removeItem('am-rail-open-folders');
     });
 
     test('shows no group when nothing waits', () => {

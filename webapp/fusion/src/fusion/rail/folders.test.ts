@@ -3,7 +3,7 @@
 
 import type {Team} from '@mattermost/types/teams';
 
-import {addToFolder, folderOfTeam, makeFolder, parseFolders, placeAfter, railItems, removeFromFolder} from './folders';
+import {addToFolder, folderOfTeam, getFolders, isFolderOpen, makeFolder, parseFolders, placeAfter, railItems, removeFromFolder, setFolderOpen} from './folders';
 import type {RailItem} from './folders';
 
 const team = (id: string) => ({id, display_name: id}) as Team;
@@ -60,5 +60,34 @@ describe('server folders', () => {
         const [f] = parseFolders('[{"id":"f","name":"Work","color":"#3ba55c","teamIds":["a","b"]}]');
         expect(f).toEqual({id: 'f', name: 'Work', color: '#3ba55c', teamIds: ['a', 'b']});
         expect(parseFolders('[{"id":"f","color":"red;","teamIds":["a","b"]}]')[0].color).toBeUndefined();
+    });
+
+    test('the folders are read from the user\'s preference', () => {
+        const state = (value?: string) => ({entities: {preferences: {myPreferences: value ? {'fusion_rail--folders': {category: 'fusion_rail', name: 'folders', value}} : {}}}}) as never;
+        expect(getFolders(state())).toEqual([]);
+        expect(getFolders(state('[{"id":"f","name":"Work","teamIds":["a","b"]}]'))).toEqual([{id: 'f', name: 'Work', teamIds: ['a', 'b']}]);
+    });
+
+    test('whether a folder is open is remembered in this browser', () => {
+        localStorage.removeItem('am-rail-open-folders');
+        expect(isFolderOpen('f')).toBe(false);
+        setFolderOpen('f', true);
+        setFolderOpen('g', true);
+        expect(isFolderOpen('f')).toBe(true);
+        setFolderOpen('f', false);
+        expect(isFolderOpen('f')).toBe(false);
+        expect(isFolderOpen('g')).toBe(true);
+        localStorage.removeItem('am-rail-open-folders');
+    });
+
+    test('a broken or unavailable storage leaves folders closed, without failing', () => {
+        localStorage.setItem('am-rail-open-folders', '{nope');
+        expect(isFolderOpen('f')).toBe(false);
+        const setItem = jest.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
+            throw new Error('private browsing');
+        });
+        expect(() => setFolderOpen('f', true)).not.toThrow();
+        setItem.mockRestore();
+        localStorage.removeItem('am-rail-open-folders');
     });
 });
