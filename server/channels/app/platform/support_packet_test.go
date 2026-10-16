@@ -1650,7 +1650,13 @@ func TestSupportPacketMarshalGolden(t *testing.T) {
 			require.NotNil(t, fileData)
 			require.Equal(t, tc.filename, fileData.Filename)
 
-			expected, err := os.ReadFile(filepath.Join(server.GetPackagePath(), "channels", "app", "platform", "testdata", "support_packet", tc.filename))
+			goldenPath := filepath.Join(server.GetPackagePath(), "channels", "app", "platform", "testdata", "support_packet", tc.filename)
+			// Regenerate the golden files with AM_UPDATE_GOLDEN=1 after a deliberate change (for example a new
+			// setting), then review the diff before committing it.
+			if os.Getenv("AM_UPDATE_GOLDEN") == "1" {
+				require.NoError(t, os.WriteFile(goldenPath, fileData.Body, 0o644))
+			}
+			expected, err := os.ReadFile(goldenPath)
 			require.NoError(t, err)
 			require.Equal(t, string(expected), string(fileData.Body))
 		})

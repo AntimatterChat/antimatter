@@ -15,6 +15,7 @@
         "LetsEncryptCertificateCacheFile": null,
         "Forward80To443": null,
         "TrustedProxyIPHeader": null,
+        "TrustedProxyIPs": null,
         "ReadTimeout": null,
         "WriteTimeout": null,
         "IdleTimeout": null,
@@ -33,6 +34,7 @@
         "GoogleDeveloperKey": null,
         "EnableLinkPreviews": null,
         "EnablePermalinkPreviews": null,
+        "EnableInlineReplies": null,
         "RestrictLinkPreviews": null,
         "EnableTesting": null,
         "EnableDeveloper": null,
@@ -63,6 +65,8 @@
         "WebsocketSecurePort": null,
         "WebsocketPort": null,
         "WebserverMode": null,
+        "DefaultWebUI": null,
+        "AllowUserWebUISelection": null,
         "EnableGifPicker": null,
         "GiphySdkKey": null,
         "EnableCustomEmoji": null,
@@ -152,7 +156,10 @@
         "LockTeammateNameDisplay": null,
         "LockProfileFieldsForEmailUsers": null,
         "ExperimentalPrimaryTeam": null,
-        "ExperimentalDefaultChannels": null
+        "ExperimentalDefaultChannels": null,
+        "MemberListRoleGroups": null,
+        "RestrictChannelExportToAdmins": null,
+        "AllChannelsMembershipForNewTeams": null
     },
     "ClientRequirements": {
         "AndroidLatestVersion": "",
@@ -312,7 +319,8 @@
     "PrivacySettings": {
         "ShowEmailAddress": null,
         "ShowFullName": null,
-        "UseAnonymousURLs": null
+        "UseAnonymousURLs": null,
+        "EnableUserBlocking": null
     },
     "SupportSettings": {
         "TermsOfServiceLink": null,
@@ -699,7 +707,15 @@
         "Workers": null,
         "TimeoutMs": null,
         "LibreTranslate": null,
-        "Agents": null
+        "Agents": null,
+        "OpenAI": null
+    },
+    "TextToSpeechSettings": {
+        "Enable": null,
+        "URL": null,
+        "APIKey": null,
+        "Model": null,
+        "Voice": null
     },
     "AIRecapSettings": {
         "Enable": null,
