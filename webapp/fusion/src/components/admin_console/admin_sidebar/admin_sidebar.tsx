@@ -133,7 +133,8 @@ class AdminSidebar extends React.PureComponent<Props, State> {
                 return false;
             }
 
-            if (item.isHidden && item.isHidden(config, this.state, consoleAccess)) {
+            // isHidden is a check or a plain boolean (Antimatter hides the Notices page with true).
+            if (typeof item.isHidden === 'function' ? item.isHidden(config, this.state, consoleAccess) : Boolean(item.isHidden)) {
                 return false;
             }
             return true;

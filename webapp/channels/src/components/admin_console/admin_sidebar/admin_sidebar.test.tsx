@@ -14,6 +14,7 @@ import type {Props as OriginalProps} from 'components/admin_console/admin_sideba
 import {samplePlugin1} from 'tests/helpers/admin_console_plugin_index_sample_pluings';
 import {renderWithContext, screen, userEvent} from 'tests/react_testing_utils';
 import {generateIndex} from 'utils/admin_console_index';
+import {getHistory} from 'utils/browser_history';
 
 jest.mock('utils/utils', () => {
     const original = jest.requireActual('utils/utils');
@@ -474,6 +475,27 @@ describe('components/AdminSidebar', () => {
             await userEvent.type(filterInput, 'autolink');
 
             expect(container).toMatchSnapshot();
+        });
+
+        // Antimatter hides the Notices page with a plain isHidden: true: searching used to call it as a function and
+        // crash the System Console.
+        test('moves to the first visible result, skipping pages hidden with isHidden: true', async () => {
+            idx.search.mockReturnValue(['site_config/notices', 'site_config/customization']);
+            const replace = jest.spyOn(getHistory(), 'replace');
+
+            // Someone who may see both pages.
+            const consoleAccess = {read: {[RESOURCE_KEYS.SITE.CUSTOMIZATION]: true, [RESOURCE_KEYS.SITE.NOTICES]: true}, write: {}};
+            const {container} = renderWithContext(
+                <AdminSidebar
+                    {...props}
+                    consoleAccess={consoleAccess}
+                />,
+            );
+            await userEvent.type(container.querySelector('#adminSidebarFilter') as HTMLInputElement, 'notices');
+
+            expect(replace).toHaveBeenLastCalledWith('/admin_console/site_config/customization');
+            expect(replace).not.toHaveBeenCalledWith('/admin_console/site_config/notices');
+            replace.mockRestore();
         });
     });
 });
