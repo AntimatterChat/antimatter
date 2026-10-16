@@ -11,7 +11,6 @@ import * as GlobalActions from 'actions/global_actions';
 import {openModal} from 'actions/views/modals';
 
 import AboutBuildModal from 'components/about_build_modal';
-import CommercialSupportModal from 'components/commercial_support_modal';
 import {WithTestMenuContext} from 'components/menu/menu_context_test';
 
 import {renderWithContext, screen, userEvent} from 'tests/react_testing_utils';
@@ -139,20 +138,26 @@ describe('components/admin_console/admin_navbar_dropdown', () => {
         const item = screen.getByRole('menuitem', {name: "Administrator's Guide"});
 
         expect(item.tagName).toBe('A');
-        expect(item).toHaveAttribute('href', expect.stringContaining('https://docs.mattermost.com/guides/administration.html'));
+        expect(item).toHaveAttribute('href', expect.stringContaining('https://antimatter.chat/docs/admins/index.html'));
         expect(item).toHaveAttribute('target', '_blank');
         expect(item).toHaveAttribute('rel', 'noopener noreferrer');
     });
 
-    test('should open Commercial Support modal', async () => {
+    test('should render Troubleshooting Forum as an external link to the community discussions', () => {
         renderDropdown({[team1.id]: team1});
 
-        await clickMenuItem('Commercial Support');
+        const item = screen.getByRole('menuitem', {name: 'Troubleshooting Forum'});
 
-        expect(openModalMock).toHaveBeenCalledWith({
-            modalId: ModalIdentifiers.COMMERCIAL_SUPPORT,
-            dialogType: CommercialSupportModal,
-        });
+        expect(item.tagName).toBe('A');
+        expect(item).toHaveAttribute('href', expect.stringContaining('https://github.com/AntimatterChat/community/discussions'));
+        expect(item).toHaveAttribute('target', '_blank');
+        expect(item).toHaveAttribute('rel', 'noopener noreferrer');
+    });
+
+    test('should not show a Commercial Support item', () => {
+        renderDropdown({[team1.id]: team1});
+
+        expect(screen.queryByRole('menuitem', {name: 'Commercial Support'})).not.toBeInTheDocument();
     });
 
     test('should open About modal', async () => {

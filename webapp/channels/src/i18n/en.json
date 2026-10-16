@@ -8419,10 +8419,6 @@
     "defaultMessage": "Administrator's Guide",
     "description": "Menu item in the System Console header dropdown linking to the external administration documentation."
   },
-  "admin.nav.commercialSupport": {
-    "defaultMessage": "Commercial Support",
-    "description": "Menu item in the System Console header dropdown that opens commercial support options."
-  },
   "admin.nav.menuAriaLabel": {
     "defaultMessage": "System Console Menu",
     "description": "Accessibility label (not visible) for the dropdown menu in the System Console header."

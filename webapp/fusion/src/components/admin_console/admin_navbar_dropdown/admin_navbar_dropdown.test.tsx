@@ -11,7 +11,6 @@ import * as GlobalActions from 'actions/global_actions';
 import {openModal} from 'actions/views/modals';
 
 import AboutBuildModal from 'components/about_build_modal';
-import CommercialSupportModal from 'components/commercial_support_modal';
 import {WithTestMenuContext} from 'components/menu/menu_context_test';
 
 import {renderWithContext, screen, userEvent} from 'tests/react_testing_utils';
@@ -133,27 +132,26 @@ describe('components/admin_console/admin_navbar_dropdown', () => {
         expect(screen.getByText('Team Two')).toBeInTheDocument();
     });
 
-    test('should not link the Administrator\'s Guide and the forum to mattermost.com', () => {
+    test('should link the Administrator\'s Guide and the forum to Antimatter\'s own docs and community', () => {
         renderDropdown({[team1.id]: team1});
 
-        // Antimatter shows the links to mattermost.com as text.
-        for (const name of ["Administrator's Guide", 'Troubleshooting Forum']) {
-            const item = screen.getByRole('menuitem', {name});
-            expect(item.tagName).toBe('SPAN');
-            expect(item).not.toHaveAttribute('href');
-        }
+        // These used to point at mattermost.com, which Antimatter shows as text; now they point at
+        // Antimatter's own docs and community, so they render as real links again.
+        const guide = screen.getByRole('menuitem', {name: "Administrator's Guide"});
+        expect(guide.tagName).toBe('A');
+        expect(guide).toHaveAttribute('href', expect.stringContaining('https://antimatter.chat/docs/admins/index.html'));
+
+        const forum = screen.getByRole('menuitem', {name: 'Troubleshooting Forum'});
+        expect(forum.tagName).toBe('A');
+        expect(forum).toHaveAttribute('href', expect.stringContaining('https://github.com/AntimatterChat/community/discussions'));
+
         expect(screen.queryAllByRole('link').filter((link) => link.getAttribute('href')?.includes('mattermost.com'))).toHaveLength(0);
     });
 
-    test('should open Commercial Support modal', async () => {
+    test('should not show a Commercial Support item', () => {
         renderDropdown({[team1.id]: team1});
 
-        await clickMenuItem('Commercial Support');
-
-        expect(openModalMock).toHaveBeenCalledWith({
-            modalId: ModalIdentifiers.COMMERCIAL_SUPPORT,
-            dialogType: CommercialSupportModal,
-        });
+        expect(screen.queryByRole('menuitem', {name: 'Commercial Support'})).not.toBeInTheDocument();
     });
 
     test('should open About modal', async () => {

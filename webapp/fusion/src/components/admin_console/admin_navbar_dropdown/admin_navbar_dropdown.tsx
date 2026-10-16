@@ -17,7 +17,6 @@ import {getCurrentLocale} from 'selectors/i18n';
 import {getNavigationBlocked} from 'selectors/views/admin';
 
 import AboutBuildModal from 'components/about_build_modal';
-import CommercialSupportModal from 'components/commercial_support_modal';
 import * as Menu from 'components/menu';
 
 import {ModalIdentifiers} from 'utils/constants';
@@ -50,13 +49,6 @@ const AdminNavbarDropdown = (firstItemFocusProps: Menu.FirstMenuItemProps) => {
         }
     }, [dispatch, navigationBlocked]);
 
-    const handleCommercialSupport = useCallback(() => {
-        dispatch(openModal({
-            modalId: ModalIdentifiers.COMMERCIAL_SUPPORT,
-            dialogType: CommercialSupportModal,
-        }));
-    }, [dispatch]);
-
     const handleAbout = useCallback(() => {
         dispatch(openModal({
             modalId: ModalIdentifiers.ABOUT,
@@ -64,7 +56,7 @@ const AdminNavbarDropdown = (firstItemFocusProps: Menu.FirstMenuItemProps) => {
         }));
     }, [dispatch]);
 
-    const adminGuideLink = 'https://docs.mattermost.com/guides/administration.html';
+    const adminGuideLink = 'https://antimatter.chat/docs/admins/index.html';
 
     let switchTeamsMenuItem = null;
     if (sortedTeams.length === 0) {
@@ -127,23 +119,13 @@ const AdminNavbarDropdown = (firstItemFocusProps: Menu.FirstMenuItemProps) => {
             />
             <Menu.ItemExternalLink
                 id='adminConsoleTroubleshootingForum'
-                href='https://forum.mattermost.com/t/how-to-use-the-troubleshooting-forum/150'
+                href='https://github.com/AntimatterChat/community/discussions'
                 location='admin_navbar_dropdown'
                 showOpenInNewIcon={true}
                 labels={
                     <FormattedMessage
                         id='admin.nav.troubleshootingForum'
                         defaultMessage='Troubleshooting Forum'
-                    />
-                }
-            />
-            <Menu.Item
-                id='adminConsoleCommercialSupport'
-                onClick={handleCommercialSupport}
-                labels={
-                    <FormattedMessage
-                        id='admin.nav.commercialSupport'
-                        defaultMessage='Commercial Support'
                     />
                 }
             />

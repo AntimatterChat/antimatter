@@ -16,9 +16,9 @@ import {ModalIdentifiers} from 'utils/constants';
 
 import type {PropsFromRedux} from './index';
 
-const mattermostUserGuideLink = 'https://docs.mattermost.com/guides/use-mattermost.html';
-const trainingResourcesLink = 'https://academy.mattermost.com/';
-const askTheCommunityUrl = 'https://mattermost.com/pl/default-ask-mattermost-community/';
+const mattermostUserGuideLink = 'https://antimatter.chat/docs/users/index.html#guide';
+const trainingResourcesLink = 'https://antimatter.chat/docs/users/index.html#guide';
+const askTheCommunityUrl = 'https://github.com/AntimatterChat/community/discussions';
 
 type Props = WrappedComponentProps & PropsFromRedux;
 
