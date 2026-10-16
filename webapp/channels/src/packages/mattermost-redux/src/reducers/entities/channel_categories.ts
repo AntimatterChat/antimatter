@@ -3,7 +3,7 @@
 
 import {combineReducers} from 'redux';
 
-import type {ChannelCategory} from '@mattermost/types/channel_categories';
+import type {ChannelCategoriesState, ChannelCategory} from '@mattermost/types/channel_categories';
 import type {Channel} from '@mattermost/types/channels';
 import type {Team} from '@mattermost/types/teams';
 import type {IDMappedObjects, RelationOneToOne} from '@mattermost/types/utilities';
@@ -223,8 +223,15 @@ export function managedCategoryMappings(state: RelationOneToOne<Team, Record<Cha
     }
 }
 
+// serverCategories are Antimatter's categories for everyone, which only the Fusion UI shows. The shared state type
+// has them, so the classic app keeps the key (always empty), or Redux warns about it in the initial state.
+function serverCategories(state: ChannelCategoriesState['serverCategories'] = {}) {
+    return state;
+}
+
 export default combineReducers({
     byId,
     orderByTeam,
     managedCategoryMappings,
+    serverCategories,
 });
