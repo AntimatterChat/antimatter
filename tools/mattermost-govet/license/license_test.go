@@ -46,6 +46,11 @@ func TestLicense(t *testing.T) {
 		},
 	}
 
+	t.Run("Antimatter and Mattermost Libre contributors", func(t *testing.T) {
+		testdata := analysistest.TestData()
+		analysistest.Run(t, testdata, license.Analyzer, "standard/fork")
+	})
+
 	for _, testCase := range testCases {
 		t.Run(testCase.Description, func(t *testing.T) {
 			t.Run("ignored", func(t *testing.T) {

@@ -31,6 +31,9 @@ var (
 	ignoreFilesPattern       string
 	licenseYear              int
 	sourceAvailablePackageRe = regexp.MustCompile("/enterprise")
+	// Antimatter: its own code, and the code it took from Mattermost Libre, carry their authors' copyright
+	// instead of Mattermost's (with the standard licence reference).
+	forkLicenseLine1Re = regexp.MustCompile(`^// Copyright \(c\) 20[0-9]{2}-present (Antimatter|Mattermost Libre) contributors\.$`)
 )
 
 const (
@@ -159,7 +162,8 @@ func checkFile(pass *analysis.Pass, file *ast.File, ignoreFiles []string, expect
 		return
 	}
 
-	if file.Comments[commentGroup].List[0].Text != expectedLine1 {
+	forkHeader := pass.Analyzer.Name == "license" && forkLicenseLine1Re.MatchString(file.Comments[commentGroup].List[0].Text)
+	if file.Comments[commentGroup].List[0].Text != expectedLine1 && !forkHeader {
 		pass.Reportf(file.Comments[commentGroup].List[0].Pos(), "License copywright wrong, expected: %s", expectedLine1)
 		return
 	}
