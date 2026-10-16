@@ -184,9 +184,24 @@ func TestUnlinkLdapGroup(t *testing.T) {
 	require.Error(t, err)
 	CheckForbiddenStatus(t, resp)
 
+	// Antimatter has no licence gate here (upstream answered 501 without a licence): an unknown group is a 404.
 	_, resp, err = th.SystemAdminClient.UnlinkLdapGroup(context.Background(), entryUUID)
 	require.Error(t, err)
-	CheckNotImplementedStatus(t, resp)
+	CheckNotFoundStatus(t, resp)
+
+	group := th.CreateGroup(t)
+
+	_, resp, err = th.Client.UnlinkLdapGroup(context.Background(), *group.RemoteId)
+	require.Error(t, err)
+	CheckForbiddenStatus(t, resp)
+
+	_, resp, err = th.SystemAdminClient.UnlinkLdapGroup(context.Background(), *group.RemoteId)
+	require.NoError(t, err)
+	CheckOKStatus(t, resp)
+
+	unlinked, appErr := th.App.GetGroup(group.Id, nil, nil)
+	require.Nil(t, appErr)
+	require.NotZero(t, unlinked.DeleteAt)
 }
 
 func TestMigrateIdLdap(t *testing.T) {
