@@ -21,6 +21,7 @@ let mockPrivateChannelPermission = true;
 let mockPublicChannelPermission = true;
 let mockManageChannelAccessRulesPermission = false;
 let mockManageSharedChannelsPermission = false;
+let mockManageTeamPermission = false;
 const mockGetBasePath = jest.fn(() => '');
 const mockChannelSettingsPluginTab = jest.fn();
 const pluginSaveMocks = new Map<string, jest.Mock<Promise<void>, []>>();
@@ -40,6 +41,12 @@ jest.mock('mattermost-redux/selectors/entities/roles', () => ({
             return mockManageChannelAccessRulesPermission;
         }
         return true;
+    }),
+    haveITeamPermission: jest.fn().mockImplementation((state, teamId, permission) => {
+        if (permission === 'manage_team') {
+            return mockManageTeamPermission;
+        }
+        return false;
     }),
     haveISystemPermission: jest.fn().mockImplementation((state, {permission}) => {
         if (permission === 'manage_shared_channels') {
@@ -274,6 +281,7 @@ describe('ChannelSettingsModal', () => {
         mockPublicChannelPermission = true;
         mockManageChannelAccessRulesPermission = false; // Default to no access rules permission
         mockManageSharedChannelsPermission = false;
+        mockManageTeamPermission = false;
         mockGetBasePath.mockReturnValue('');
         mockChannelSettingsPluginTab.mockClear();
 
@@ -349,6 +357,22 @@ describe('ChannelSettingsModal', () => {
 
         // The archive tab should not be in the document
         expect(screen.queryByRole('tab', {name: /archive channel/i})).not.toBeInTheDocument();
+    });
+
+    // Antimatter: a community's admins can archive its default channels too (3afd819d59).
+    it('should show archive tab for default channel to the community admins', async () => {
+        mockManageTeamPermission = true;
+        const testState = makeTestState();
+
+        testState.entities.channels.channels[channelId].name = 'town-square';
+
+        renderWithContext(<ChannelSettingsModal {...baseProps}/>, testState);
+
+        await waitFor(() => {
+            expect(screen.getByRole('tablist')).toBeInTheDocument();
+        });
+
+        expect(screen.getByRole('tab', {name: /archive channel/i})).toBeInTheDocument();
     });
 
     it('should show archive tab for public channel when user has permission', async () => {

@@ -43,8 +43,9 @@ describe('components/user_settings/display/index', () => {
         expect(userLocaleFor(baseState, 'de')).toBe('de');
     });
 
+    // Lithuanian is one of upstream's languages that the Fusion UI doesn't ship (it has Czech, which upstream's test used).
     test('falls back to DefaultClientLocale when the user locale is not supported', () => {
-        expect(userLocaleFor(baseState, 'cs')).toBe('en');
+        expect(userLocaleFor(baseState, 'lt')).toBe('en');
     });
 
     test('falls back to English when DefaultClientLocale is not supported either', () => {
@@ -52,17 +53,17 @@ describe('components/user_settings/display/index', () => {
         // reads .name off the result without a guard, so the fallback has to
         // resolve on its own.
         const state = mergeObjects(baseState, {
-            entities: {general: {config: {DefaultClientLocale: 'cs'}}},
+            entities: {general: {config: {DefaultClientLocale: 'lt'}}},
         });
 
-        const userLocale = userLocaleFor(state, 'cs');
+        const userLocale = userLocaleFor(state, 'lt');
         expect(userLocale).toBe('en');
         expect(getLanguageInfo(userLocale)).toBeDefined();
     });
 
     test('falls back to English when AvailableLocales excludes DefaultClientLocale', () => {
         const state = mergeObjects(baseState, {
-            entities: {general: {config: {AvailableLocales: 'fr', DefaultClientLocale: 'cs'}}},
+            entities: {general: {config: {AvailableLocales: 'fr', DefaultClientLocale: 'lt'}}},
         });
 
         const userLocale = userLocaleFor(state, 'de');

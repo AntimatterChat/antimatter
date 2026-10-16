@@ -14,7 +14,6 @@ import * as Teams from 'mattermost-redux/selectors/entities/teams';
 
 import * as GlobalActions from 'actions/global_actions';
 
-import UserSettingsModal from 'components/user_settings/modal';
 
 import mockStore from 'tests/test_store';
 import {ActionTypes, Constants, ModalIdentifiers} from 'utils/constants';
@@ -198,17 +197,17 @@ describe('executeCommand', () => {
     });
 
     describe('settings', () => {
-        test('should pass right modal params', async () => {
+        // The Fusion UI opens its own settings dialog (fusion/modals/settings_modal.tsx) on this event, instead of
+        // the classic UserSettingsModal.
+        test('opens the Fusion settings', async () => {
+            const listener = jest.fn();
+            window.addEventListener('am-open-settings', listener);
             const result = await store.dispatch(executeCommand('/settings', {} as CommandArgs));
-            expect(store.getActions()).toEqual([
-                {
-                    type: ActionTypes.MODAL_OPEN,
-                    dialogProps: {isContentProductSettings: true},
-                    dialogType: UserSettingsModal,
-                    modalId: 'user_settings',
-                },
-            ]);
-            expect(result.data).toBeDefined();
+            window.removeEventListener('am-open-settings', listener);
+
+            expect(listener).toHaveBeenCalledTimes(1);
+            expect(store.getActions()).toEqual([]);
+            expect(result.data).toEqual({frontendHandled: true});
         });
     });
 

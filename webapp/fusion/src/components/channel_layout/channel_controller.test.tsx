@@ -27,6 +27,9 @@ jest.mock('components/product_notices_modal', () => () => <div/>);
 jest.mock('components/feature_toast/features/mark_all_as_read_toast', () => () => <div/>);
 jest.mock('plugins/pluggable', () => () => <div/>);
 
+// The Fusion UI's shell, which the controller renders instead of the classic sidebar and center channel.
+jest.mock('fusion/shell/fusion_app', () => () => <div/>);
+
 jest.mock('actions/status_actions', () => ({
     addVisibleUsersInCurrentChannelAndSelfToStatusPoll: jest.fn().mockImplementation(() => () => {}),
 }));

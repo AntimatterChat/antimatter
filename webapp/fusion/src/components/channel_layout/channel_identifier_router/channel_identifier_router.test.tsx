@@ -9,7 +9,8 @@ import {getHistory} from 'utils/browser_history';
 
 import ChannelIdentifierRouter from './channel_identifier_router';
 
-jest.mock('components/channel_view/index', () => ({
+// The Fusion UI renders its own conversation view.
+jest.mock('fusion/channel/channel_view', () => ({
     __esModule: true,
     default: () => null,
 }));
