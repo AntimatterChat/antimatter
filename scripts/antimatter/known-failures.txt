@@ -9,6 +9,8 @@
 #         jest <test file path suffix> <test name substring, or * for the whole file>
 # Anything after "  #" is a comment.
 
+# Fixed on branch tests-server (with TestStartServerNoS3Bucket and the invite/email tests, which needed the
+# services): remove these Go entries once tests-server and tests-ci are both merged.
 go  channels/api4  TestUnlinkLdapGroup  # expects 501, gets 404
 go  channels/api4  TestGetPostWithPropertyGroups  # session_attributes_stays_gated
 go  channels/api4  TestPatchChannelModerations  # store mock lacks PropertyField (session_attributes.go)

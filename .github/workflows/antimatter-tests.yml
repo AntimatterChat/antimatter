@@ -44,6 +44,8 @@ jobs:
       AM_EMAILSETTINGS_SMTPPORT: "10025"
       IS_CI: "true"
       ENABLE_COVERAGE: "true"
+      # The services above are running: a test that can't reach one fails instead of skipping.
+      AM_TEST_REQUIRE_SERVICES: "1"
     steps:
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
