@@ -8,21 +8,3 @@
 # Format: go <package path suffix> <TestName>       (also matches its subtests)
 #         jest <test file path suffix> <test name substring, or * for the whole file>
 # Anything after "  #" is a comment.
-
-# Fixed on branch tests-server (with TestStartServerNoS3Bucket and the invite/email tests, which needed the
-# services): remove these Go entries once tests-server and tests-ci are both merged.
-go  channels/api4  TestUnlinkLdapGroup  # expects 501, gets 404
-go  channels/api4  TestGetPostWithPropertyGroups  # session_attributes_stays_gated
-go  channels/api4  TestPatchChannelModerations  # store mock lacks PropertyField (session_attributes.go)
-go  channels/api4  TestGetChannelModerations  # blank DefaultChannelGuestRole case (EOF)
-go  channels/api4  TestChannelEndpointsExcludeBoards  # getChannelsMemberCount
-go  channels/api4  TestChannelEndpointsExcludeSpaces  # getChannelsMemberCount
-go  channels/app  TestAuthorizeOAuthUser  # form-encoded token response
-go  channels/app  TestSupportPacketMarshalGolden  # golden file predates Antimatter settings
-go  channels/app/platform  TestSupportPacketMarshalGolden  # golden file predates Antimatter settings
-go  server/v8/config  TestDiff  # map_change/addition/deletion, default plugin states
-
-jest  webapp/fusion/src/packages/mattermost-redux/src/selectors/entities/preferences.test.ts  get theme  # Fusion themes changed the default
-jest  webapp/fusion/src/utils/text_formatting_links.test.ts  Phone links starting with +  # tel: links
-jest  webapp/fusion/src/utils/text_formatting_links.test.ts  autolinkedUrlSchemes  # tel: links
-jest  webapp/fusion/src/utils/message_html_to_component.test.tsx  phone links  # tel: links
