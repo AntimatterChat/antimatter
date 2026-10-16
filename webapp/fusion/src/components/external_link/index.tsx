@@ -3,6 +3,7 @@
 
 /* eslint-disable @mattermost/use-external-link */
 
+import omit from 'lodash/omit';
 import React, {forwardRef} from 'react';
 
 import type {ExternalLinkQueryParams} from 'components/common/hooks/use_external_link';
@@ -20,6 +21,11 @@ type Props = React.AnchorHTMLAttributes<HTMLAnchorElement> & {
     children: React.ReactNode;
 };
 
+const linkOnlyProps = [
+    'href', 'target', 'rel', 'onClick', 'queryParams', 'location', 'download', 'hrefLang', 'ping', 'referrerPolicy',
+    'type', 'media',
+] as const;
+
 const ExternalLink = forwardRef<HTMLAnchorElement, Props>((props, ref) => {
     const [href] = useExternalLink(props.href, props.location, props.queryParams);
 
@@ -29,9 +35,18 @@ const ExternalLink = forwardRef<HTMLAnchorElement, Props>((props, ref) => {
         }
     };
 
-    // Antimatter: no links to mattermost.com; their text stays.
+    // Antimatter: no links to mattermost.com; their text stays, with the look the link had (class, style, title,
+    // test id), so that a link preview card keeps its layout. What only makes sense on a link is left out.
     if (isMattermostURL(href)) {
-        return <span className={props.className}>{props.children}</span>;
+        const textProps = omit(props, linkOnlyProps);
+        return (
+            <span
+                {...textProps}
+                role={textProps.role === 'link' ? undefined : textProps.role}
+            >
+                {props.children}
+            </span>
+        );
     }
 
     return (

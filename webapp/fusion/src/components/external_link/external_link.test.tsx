@@ -121,4 +121,33 @@ describe('components/external_link', () => {
         expect(screen.getByText('Read the guide')).toBeInTheDocument();
         expect(screen.queryByRole('link')).toBeNull();
     });
+
+    it('keeps the look of a link to mattermost.com shown as text, without what makes it a link', () => {
+        renderWithContext(
+            <ExternalLink
+                location='test'
+                href='https://www.mattermost.com/'
+                className='PostAttachmentOpenGraph'
+                style={{width: '392px'}}
+                title='Open Source Collaboration'
+                data-testid='link-preview'
+                role='link'
+                target='_self'
+                rel='noopener'
+            >
+                {'A link preview'}
+            </ExternalLink>,
+            initialState,
+        );
+
+        const text = screen.getByTestId('link-preview');
+        expect(text.tagName).toBe('SPAN');
+        expect(text).toHaveClass('PostAttachmentOpenGraph');
+        expect(text).toHaveStyle({width: '392px'});
+        expect(text).toHaveAttribute('title', 'Open Source Collaboration');
+        for (const attribute of ['href', 'role', 'target', 'rel', 'location']) {
+            expect(text).not.toHaveAttribute(attribute);
+        }
+        expect(screen.queryByRole('link')).toBeNull();
+    });
 });
