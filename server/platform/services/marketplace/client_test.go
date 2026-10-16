@@ -42,3 +42,16 @@ func TestBuildURL(t *testing.T) {
 		})
 	}
 }
+
+func TestNewClientRefusesMattermostMarketplace(t *testing.T) {
+	for _, address := range []string{
+		"",
+		"https://api.integrations.mattermost.com",
+		"https://API.Integrations.Mattermost.com/",
+		"https://marketplace.mattermost.com",
+	} {
+		client, err := NewClient(address, nil)
+		assert.Error(t, err, address)
+		assert.Nil(t, client, address)
+	}
+}
