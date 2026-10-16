@@ -93,7 +93,7 @@ describe('getReportAProblemLink', () => {
             },
         } as unknown as GlobalState;
 
-        expect(getReportAProblemLink(state)).toContain('https://mattermost.com/pl/report_a_problem_unlicensed');
+        expect(getReportAProblemLink(state)).toContain('https://antimatter.chat/help.html#report');
     });
 });
 

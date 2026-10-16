@@ -10,7 +10,7 @@ export default function NotificationPermissionUnsupportedSectionNotice() {
     const intl = useIntl();
 
     const handleClick = useCallback(async () => {
-        window.open('https://mattermost.com/pl/pc-web-requirements', '_blank', 'noopener,noreferrer');
+        window.open('https://antimatter.chat/docs/users/notifications.html#desktop', '_blank', 'noopener,noreferrer');
     }, []);
 
     return (

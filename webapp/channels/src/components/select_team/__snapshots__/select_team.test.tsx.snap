@@ -53,7 +53,7 @@ exports[`components/select_team/SelectTeam should match snapshot 1`] = `
             </h4>
             <a
               class="LearnAboutTeamsLink"
-              href="https://mattermost.com/pl/mattermost-academy-team-training?utm_source=mattermost&utm_medium=in-product&utm_content=learn_about_teams&uid=&sid=&server_version="
+              href="https://antimatter.chat/docs/communities/index.html#what"
               location="learn_about_teams"
               rel="noopener noreferrer"
               target="_blank"
@@ -296,7 +296,7 @@ exports[`components/select_team/SelectTeam should match snapshot, on no joinable
             </h4>
             <a
               class="LearnAboutTeamsLink"
-              href="https://mattermost.com/pl/mattermost-academy-team-training?utm_source=mattermost&utm_medium=in-product&utm_content=learn_about_teams&uid=&sid=&server_version="
+              href="https://antimatter.chat/docs/communities/index.html#what"
               location="learn_about_teams"
               rel="noopener noreferrer"
               target="_blank"
@@ -439,7 +439,7 @@ exports[`components/select_team/SelectTeam should match snapshot, on no joinable
             </h4>
             <a
               class="LearnAboutTeamsLink"
-              href="https://mattermost.com/pl/mattermost-academy-team-training?utm_source=mattermost&utm_medium=in-product&utm_content=learn_about_teams&uid=&sid=&server_version="
+              href="https://antimatter.chat/docs/communities/index.html#what"
               location="learn_about_teams"
               rel="noopener noreferrer"
               target="_blank"

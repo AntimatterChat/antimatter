@@ -63,9 +63,14 @@ exports[`admin_console/team_channel_settings/team/TeamModes should match snapsho
                 class="help-text-small help-text-no-padding "
               >
                 When enabled, adding and removing users from groups will add or remove them from this team. The only way of inviting members to this team is by adding the groups they belong to. 
-                <span>
+                <a
+                  href="https://antimatter.chat/docs/admins/authentication.html#sso"
+                  location="team_modes"
+                  rel="noopener noreferrer"
+                  target="_blank"
+                >
                   Learn More
-                </span>
+                </a>
               </div>
             </div>
           </div>

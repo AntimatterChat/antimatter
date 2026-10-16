@@ -47,7 +47,7 @@ const SyncGroupsToggle = (props: Props): JSX.Element => {
                     values={{
                         link: (msg: React.ReactNode) => (
                             <ExternalLink
-                                href='https://www.mattermost.com/pl/default-ldap-group-constrained-team-channel.html'
+                                href='https://antimatter.chat/docs/admins/authentication.html#sso'
                                 location='channel_modes'
                             >
                                 {msg}

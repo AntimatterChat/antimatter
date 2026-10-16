@@ -396,7 +396,7 @@ export const ldapWizardAdminDefinition: LDAPAdminDefinitionConfigSchemaSettings 
                     link: (msg: string) => (
                         <ExternalLink
                             location='admin_console'
-                            href='https://docs.mattermost.com/manage/command-line-tools.html#mattermost-ldap-idmigrate'
+                            href='https://antimatter.chat/docs/admins/configuration.html#amctl'
                         >
                             {msg}
                         </ExternalLink>

@@ -51,15 +51,19 @@ exports[`components/select_team/SelectTeam should match snapshot 1`] = `
             <h4>
               Teams you can join: 
             </h4>
-            <span
+            <a
               class="LearnAboutTeamsLink"
+              href="https://antimatter.chat/docs/communities/index.html#what"
+              location="learn_about_teams"
+              rel="noopener noreferrer"
+              target="_blank"
             >
               <i
                 aria-hidden="true"
                 class="icon icon-lightbulb-outline"
               />
               Learn about teams
-            </span>
+            </a>
           </div>
           <div
             class="infinite-scroll signup-team-all"
@@ -290,15 +294,19 @@ exports[`components/select_team/SelectTeam should match snapshot, on no joinable
             <h4>
               Teams you can join: 
             </h4>
-            <span
+            <a
               class="LearnAboutTeamsLink"
+              href="https://antimatter.chat/docs/communities/index.html#what"
+              location="learn_about_teams"
+              rel="noopener noreferrer"
+              target="_blank"
             >
               <i
                 aria-hidden="true"
                 class="icon icon-lightbulb-outline"
               />
               Learn about teams
-            </span>
+            </a>
           </div>
           <div
             class="infinite-scroll signup-team-all"
@@ -429,15 +437,19 @@ exports[`components/select_team/SelectTeam should match snapshot, on no joinable
             <h4>
               Teams you can join: 
             </h4>
-            <span
+            <a
               class="LearnAboutTeamsLink"
+              href="https://antimatter.chat/docs/communities/index.html#what"
+              location="learn_about_teams"
+              rel="noopener noreferrer"
+              target="_blank"
             >
               <i
                 aria-hidden="true"
                 class="icon icon-lightbulb-outline"
               />
               Learn about teams
-            </span>
+            </a>
           </div>
           <div
             class="infinite-scroll signup-team-all"

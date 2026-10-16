@@ -83,23 +83,38 @@ exports[`components/error_page/ErrorMessage should match snapshot, oauth_missing
     </p>
     <p>
       For 
-      <span>
+      <a
+        href="https://antimatter.chat/docs/admins/authentication.html#sso"
+        location="error_link"
+        rel="noopener noreferrer"
+        target="_blank"
+      >
         Google Apps
-      </span>
+      </a>
        make sure your administrator enabled the Google+ API.
     </p>
     <p>
       For 
-      <span>
+      <a
+        href="https://antimatter.chat/docs/admins/authentication.html#sso"
+        location="error_link"
+        rel="noopener noreferrer"
+        target="_blank"
+      >
         Entra ID
-      </span>
+      </a>
        make sure the administrator of your Microsoft organization has enabled the app registered for this server.
     </p>
     <p>
       For 
-      <span>
+      <a
+        href="https://antimatter.chat/docs/admins/authentication.html#sso"
+        location="error_link"
+        rel="noopener noreferrer"
+        target="_blank"
+      >
         GitLab
-      </span>
+      </a>
        please make sure you followed the setup instructions.
     </p>
     <p>

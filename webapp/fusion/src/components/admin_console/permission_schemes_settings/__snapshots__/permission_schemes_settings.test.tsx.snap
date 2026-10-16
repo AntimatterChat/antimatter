@@ -52,9 +52,14 @@ exports[`components/admin_console/permission_schemes_settings/permission_schemes
           >
             <span>
               Permission Schemes set the default permissions for Team Admins, Channel Admins and everyone else. Learn more about permission schemes in our 
-              <span>
+              <a
+                href="https://antimatter.chat/docs/communities/roles.html#permissions"
+                location="permission_scheme_settings"
+                rel="noopener noreferrer"
+                target="_blank"
+              >
                 documentation
-              </span>
+              </a>
               .
             </span>
           </div>
@@ -74,9 +79,14 @@ exports[`components/admin_console/permission_schemes_settings/permission_schemes
                 class="mt-2"
               >
                 Set the default permissions inherited by all teams unless a 
-                <span>
+                <a
+                  href="https://antimatter.chat/docs/communities/roles.html#permissions"
+                  location="permission_scheme_settings"
+                  rel="noopener noreferrer"
+                  target="_blank"
+                >
                   Team Override Scheme
-                </span>
+                </a>
                  is applied.
               </div>
             </div>
@@ -108,9 +118,14 @@ exports[`components/admin_console/permission_schemes_settings/permission_schemes
                 class="mt-2"
               >
                 Use when specific teams need permission exceptions to the 
-                <span>
+                <a
+                  href="https://antimatter.chat/docs/communities/roles.html#permissions"
+                  location="permission_scheme_settings"
+                  rel="noopener noreferrer"
+                  target="_blank"
+                >
                   System Scheme
-                </span>
+                </a>
                 .
               </div>
             </div>
@@ -275,9 +290,14 @@ exports[`components/admin_console/permission_schemes_settings/permission_schemes
           >
             <span>
               Permission Schemes set the default permissions for Team Admins, Channel Admins and everyone else. Learn more about permission schemes in our 
-              <span>
+              <a
+                href="https://antimatter.chat/docs/communities/roles.html#permissions"
+                location="permission_scheme_settings"
+                rel="noopener noreferrer"
+                target="_blank"
+              >
                 documentation
-              </span>
+              </a>
               .
             </span>
           </div>
@@ -297,9 +317,14 @@ exports[`components/admin_console/permission_schemes_settings/permission_schemes
                 class="mt-2"
               >
                 Set the default permissions inherited by all teams unless a 
-                <span>
+                <a
+                  href="https://antimatter.chat/docs/communities/roles.html#permissions"
+                  location="permission_scheme_settings"
+                  rel="noopener noreferrer"
+                  target="_blank"
+                >
                   Team Override Scheme
-                </span>
+                </a>
                  is applied.
               </div>
             </div>
@@ -331,9 +356,14 @@ exports[`components/admin_console/permission_schemes_settings/permission_schemes
                 class="mt-2"
               >
                 Use when specific teams need permission exceptions to the 
-                <span>
+                <a
+                  href="https://antimatter.chat/docs/communities/roles.html#permissions"
+                  location="permission_scheme_settings"
+                  rel="noopener noreferrer"
+                  target="_blank"
+                >
                   System Scheme
-                </span>
+                </a>
                 .
               </div>
             </div>
@@ -386,9 +416,14 @@ exports[`components/admin_console/permission_schemes_settings/permission_schemes
           >
             <span>
               Permission Schemes set the default permissions for Team Admins, Channel Admins and everyone else. Learn more about permission schemes in our 
-              <span>
+              <a
+                href="https://antimatter.chat/docs/communities/roles.html#permissions"
+                location="permission_scheme_settings"
+                rel="noopener noreferrer"
+                target="_blank"
+              >
                 documentation
-              </span>
+              </a>
               .
             </span>
           </div>
@@ -408,9 +443,14 @@ exports[`components/admin_console/permission_schemes_settings/permission_schemes
                 class="mt-2"
               >
                 Set the default permissions inherited by all teams unless a 
-                <span>
+                <a
+                  href="https://antimatter.chat/docs/communities/roles.html#permissions"
+                  location="permission_scheme_settings"
+                  rel="noopener noreferrer"
+                  target="_blank"
+                >
                   Team Override Scheme
-                </span>
+                </a>
                  is applied.
               </div>
             </div>
@@ -442,9 +482,14 @@ exports[`components/admin_console/permission_schemes_settings/permission_schemes
                 class="mt-2"
               >
                 Use when specific teams need permission exceptions to the 
-                <span>
+                <a
+                  href="https://antimatter.chat/docs/communities/roles.html#permissions"
+                  location="permission_scheme_settings"
+                  rel="noopener noreferrer"
+                  target="_blank"
+                >
                   System Scheme
-                </span>
+                </a>
                 .
               </div>
             </div>
@@ -467,9 +512,14 @@ exports[`components/admin_console/permission_schemes_settings/permission_schemes
               class="team-override-unavailable__inner"
             >
               Migration job in progress: Team Override Schemes are not available until the job server completes the permissions migration. Learn more in the 
-              <span>
+              <a
+                href="https://antimatter.chat/docs/admins/index.html"
+                location="permission_scheme_settings"
+                rel="noopener noreferrer"
+                target="_blank"
+              >
                 documentation
-              </span>
+              </a>
               .
             </div>
           </div>
@@ -622,9 +672,14 @@ exports[`components/admin_console/permission_schemes_settings/permission_schemes
           >
             <span>
               Permission Schemes set the default permissions for Team Admins, Channel Admins and everyone else. Learn more about permission schemes in our 
-              <span>
+              <a
+                href="https://antimatter.chat/docs/communities/roles.html#permissions"
+                location="permission_scheme_settings"
+                rel="noopener noreferrer"
+                target="_blank"
+              >
                 documentation
-              </span>
+              </a>
               .
             </span>
           </div>
@@ -644,9 +699,14 @@ exports[`components/admin_console/permission_schemes_settings/permission_schemes
                 class="mt-2"
               >
                 Set the default permissions inherited by all teams unless a 
-                <span>
+                <a
+                  href="https://antimatter.chat/docs/communities/roles.html#permissions"
+                  location="permission_scheme_settings"
+                  rel="noopener noreferrer"
+                  target="_blank"
+                >
                   Team Override Scheme
-                </span>
+                </a>
                  is applied.
               </div>
             </div>
@@ -678,9 +738,14 @@ exports[`components/admin_console/permission_schemes_settings/permission_schemes
                 class="mt-2"
               >
                 Use when specific teams need permission exceptions to the 
-                <span>
+                <a
+                  href="https://antimatter.chat/docs/communities/roles.html#permissions"
+                  location="permission_scheme_settings"
+                  rel="noopener noreferrer"
+                  target="_blank"
+                >
                   System Scheme
-                </span>
+                </a>
                 .
               </div>
             </div>
@@ -703,9 +768,14 @@ exports[`components/admin_console/permission_schemes_settings/permission_schemes
               class="team-override-unavailable__inner"
             >
               Migration job on hold: Team Override Schemes are not available until the job server can execute the permissions migration. The job will be automatically started when the job server is enabled. Learn more in the 
-              <span>
+              <a
+                href="https://antimatter.chat/docs/admins/index.html"
+                location="permission_scheme_settings"
+                rel="noopener noreferrer"
+                target="_blank"
+              >
                 documentation
-              </span>
+              </a>
               .
             </div>
           </div>
@@ -858,9 +928,14 @@ exports[`components/admin_console/permission_schemes_settings/permission_schemes
           >
             <span>
               Permission Schemes set the default permissions for Team Admins, Channel Admins and everyone else. Learn more about permission schemes in our 
-              <span>
+              <a
+                href="https://antimatter.chat/docs/communities/roles.html#permissions"
+                location="permission_scheme_settings"
+                rel="noopener noreferrer"
+                target="_blank"
+              >
                 documentation
-              </span>
+              </a>
               .
             </span>
           </div>
@@ -880,9 +955,14 @@ exports[`components/admin_console/permission_schemes_settings/permission_schemes
                 class="mt-2"
               >
                 Set the default permissions inherited by all teams unless a 
-                <span>
+                <a
+                  href="https://antimatter.chat/docs/communities/roles.html#permissions"
+                  location="permission_scheme_settings"
+                  rel="noopener noreferrer"
+                  target="_blank"
+                >
                   Team Override Scheme
-                </span>
+                </a>
                  is applied.
               </div>
             </div>
@@ -914,9 +994,14 @@ exports[`components/admin_console/permission_schemes_settings/permission_schemes
                 class="mt-2"
               >
                 Use when specific teams need permission exceptions to the 
-                <span>
+                <a
+                  href="https://antimatter.chat/docs/communities/roles.html#permissions"
+                  location="permission_scheme_settings"
+                  rel="noopener noreferrer"
+                  target="_blank"
+                >
                   System Scheme
-                </span>
+                </a>
                 .
               </div>
             </div>

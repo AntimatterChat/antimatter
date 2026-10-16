@@ -146,7 +146,7 @@ export default class PermissionSchemesSettings extends React.PureComponent<Props
                         values={{
                             link: (chunks) => (
                                 <ExternalLink
-                                    href='https://docs.mattermost.com/administration/config-settings.html#jobs'
+                                    href='https://antimatter.chat/docs/admins/index.html'
                                     location='permission_scheme_settings'
                                 >
                                     {chunks}

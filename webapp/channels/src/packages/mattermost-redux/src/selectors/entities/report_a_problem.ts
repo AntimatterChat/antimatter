@@ -23,7 +23,7 @@ export function getReportAProblemLink(state: GlobalState): string {
 
         // falls through
     case 'default':
-        return 'https://mattermost.com/pl/report_a_problem_unlicensed';
+        return 'https://antimatter.chat/help.html#report';
     }
     return '';
 }

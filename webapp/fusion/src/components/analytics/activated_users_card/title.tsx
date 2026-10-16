@@ -23,7 +23,7 @@ const Title = () => {
             <span>
                 <ExternalLink
                     location='activated_users_card.title'
-                    href='https://mattermost.com/pl/site-statistics-definitions'
+                    href='https://antimatter.chat/docs/admins/operations.html#metrics'
                 >
                     {intl.formatMessage(messages.totalUsers)}
                     <InformationOutlineIcon size='16'/>

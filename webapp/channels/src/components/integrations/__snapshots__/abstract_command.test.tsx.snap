@@ -118,7 +118,7 @@ exports[`components/integrations/AbstractCommand should match snapshot 1`] = `
             >
               Reserved: 
               <a
-                href="https://mattermost.com/pl/custom-slash-commands?utm_source=mattermost&utm_medium=in-product&utm_content=abstract_command&uid=&sid=&server_version="
+                href="https://antimatter.chat/docs/developers/commands.html#how"
                 location="abstract_command"
                 rel="noopener noreferrer"
                 target="_blank"
@@ -158,7 +158,7 @@ exports[`components/integrations/AbstractCommand should match snapshot 1`] = `
             >
               You can connect commands to 
               <a
-                href="https://mattermost.com/pl/outgoing-oauth-connections"
+                href="https://antimatter.chat/docs/developers/webhooks.html#outgoing"
               >
                 outgoing OAuth connections
               </a>
@@ -478,7 +478,7 @@ exports[`components/integrations/AbstractCommand should match snapshot when head
             >
               Reserved: 
               <a
-                href="https://mattermost.com/pl/custom-slash-commands?utm_source=mattermost&utm_medium=in-product&utm_content=abstract_command&uid=&sid=&server_version="
+                href="https://antimatter.chat/docs/developers/commands.html#how"
                 location="abstract_command"
                 rel="noopener noreferrer"
                 target="_blank"
@@ -518,7 +518,7 @@ exports[`components/integrations/AbstractCommand should match snapshot when head
             >
               You can connect commands to 
               <a
-                href="https://mattermost.com/pl/outgoing-oauth-connections"
+                href="https://antimatter.chat/docs/developers/webhooks.html#outgoing"
               >
                 outgoing OAuth connections
               </a>
@@ -838,7 +838,7 @@ exports[`components/integrations/AbstractCommand should match snapshot, displays
             >
               Reserved: 
               <a
-                href="https://mattermost.com/pl/custom-slash-commands?utm_source=mattermost&utm_medium=in-product&utm_content=abstract_command&uid=&sid=&server_version="
+                href="https://antimatter.chat/docs/developers/commands.html#how"
                 location="abstract_command"
                 rel="noopener noreferrer"
                 target="_blank"
@@ -878,7 +878,7 @@ exports[`components/integrations/AbstractCommand should match snapshot, displays
             >
               You can connect commands to 
               <a
-                href="https://mattermost.com/pl/outgoing-oauth-connections"
+                href="https://antimatter.chat/docs/developers/webhooks.html#outgoing"
               >
                 outgoing OAuth connections
               </a>

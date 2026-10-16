@@ -306,7 +306,7 @@ const HelpFormatting = (): JSX.Element => {
                                 code: (chunks: React.ReactNode) => <code>{chunks}</code>,
                                 link: (chunks: React.ReactNode) => (
                                     <ExternalLink
-                                        href='https://docs.mattermost.com/end-user-guide/collaborate/format-messages.html'
+                                        href='https://antimatter.chat/docs/users/messages.html#formatting'
                                         location='help_formatting'
                                     >
                                         {chunks}
@@ -368,7 +368,7 @@ const HelpFormatting = (): JSX.Element => {
                                 code: (chunks: React.ReactNode) => <code>{chunks}</code>,
                                 link: (chunks: React.ReactNode) => (
                                     <ExternalLink
-                                        href='https://docs.mattermost.com/end-user-guide/collaborate/react-with-emojis-gifs.html#upload-custom-emojis'
+                                        href='https://antimatter.chat/docs/users/messages.html#emoji'
                                         location='help_formatting'
                                     >
                                         {chunks}

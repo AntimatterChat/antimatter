@@ -160,7 +160,7 @@ const HelpMessaging = (): JSX.Element => {
                                 code: (chunks: React.ReactNode) => <code>{chunks}</code>,
                                 link: (chunks: React.ReactNode) => (
                                     <ExternalLink
-                                        href='https://docs.mattermost.com/end-user-guide/collaborate/react-with-emojis-gifs.html#upload-custom-emojis'
+                                        href='https://antimatter.chat/docs/users/messages.html#emoji'
                                         location='help_messaging'
                                     >
                                         {chunks}

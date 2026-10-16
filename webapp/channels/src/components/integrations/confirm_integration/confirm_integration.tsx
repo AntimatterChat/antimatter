@@ -422,7 +422,7 @@ const ConfirmIntegration = ({team, location, commands, oauthApps, incomingHooks,
                         strong: (msg) => <b>{msg}</b>,
                         link: (msg) => (
                             <ExternalLink
-                                href='https://mattermost.com/pl/default-bot-accounts'
+                                href='https://antimatter.chat/docs/developers/bots.html#why'
                                 location='confirm_integration'
                             >
                                 {msg}
@@ -454,7 +454,7 @@ const ConfirmIntegration = ({team, location, commands, oauthApps, incomingHooks,
                     values={{
                         link: (msg) => (
                             <ExternalLink
-                                href='https://mattermost.com/pl/default-bot-accounts'
+                                href='https://antimatter.chat/docs/developers/bots.html#why'
                                 location='confirm_integration'
                             >
                                 {msg}

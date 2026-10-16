@@ -52,7 +52,7 @@ const HelpCommands = (): JSX.Element => {
                             values={{
                                 link: (chunks: React.ReactNode) => (
                                     <ExternalLink
-                                        href='https://docs.mattermost.com/integrations-guide/built-in-slash-commands.html'
+                                        href='https://antimatter.chat/docs/users/messages.html#commands'
                                         location='help_commands'
                                     >
                                         {chunks}
@@ -173,7 +173,7 @@ const HelpCommands = (): JSX.Element => {
                                 b: (chunks: React.ReactNode) => <b>{chunks}</b>,
                                 link: (chunks: React.ReactNode) => (
                                     <ExternalLink
-                                        href='https://developers.mattermost.com/integrate/slash-commands/custom/'
+                                        href='https://antimatter.chat/docs/developers/commands.html#create'
                                         location='help_commands'
                                     >
                                         {chunks}

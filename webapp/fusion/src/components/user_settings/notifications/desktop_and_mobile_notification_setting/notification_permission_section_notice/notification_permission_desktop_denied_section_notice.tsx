@@ -25,7 +25,7 @@ export default function NotificationPermissionDesktopDeniedSectionNotice(props: 
     }
 
     const handleInstructionButtonClick = useCallback(() => {
-        window.open('https://mattermost.com/pl/manage-notifications', '_blank', 'noopener,noreferrer');
+        window.open('https://antimatter.chat/docs/users/notifications.html#desktop', '_blank', 'noopener,noreferrer');
     }, []);
 
     const title = checkedPermissionDenied ? intl.formatMessage({

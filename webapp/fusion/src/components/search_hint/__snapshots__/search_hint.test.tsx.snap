@@ -286,8 +286,12 @@ exports[`components/SearchHint should match snapshot, without searchType 1`] = `
       class="search-hint_text-container"
     >
       What are you searching for?
-      <span
+      <a
         class="search-hint_learn-search"
+        href="https://antimatter.chat/docs/users/search.html"
+        location="search_hint"
+        rel="noopener noreferrer"
+        target="_blank"
       >
         <span>
           Learn about search
@@ -295,7 +299,7 @@ exports[`components/SearchHint should match snapshot, without searchType 1`] = `
         <i
           class="icon icon-lightbulb-outline"
         />
-      </span>
+      </a>
     </div>
     <div
       class="button-container"

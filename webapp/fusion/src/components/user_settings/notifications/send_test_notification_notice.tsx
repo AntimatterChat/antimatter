@@ -28,7 +28,7 @@ const SendTestNotificationNotice = ({
     const [buttonState, setButtonState] = useState<ButtonState>('idle');
     const isSending = useRef(false);
     const timeout = useRef<NodeJS.Timeout>(undefined);
-    const [externalLink] = useExternalLink('https://mattermost.com/pl/troubleshoot-notifications');
+    const [externalLink] = useExternalLink('https://antimatter.chat/docs/users/notifications.html#desktop');
 
     const onGoToNotificationDocumentation = useCallback(() => {
         window.open(externalLink);

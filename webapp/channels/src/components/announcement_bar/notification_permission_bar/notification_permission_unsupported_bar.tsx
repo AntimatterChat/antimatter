@@ -14,7 +14,7 @@ export default function UnsupportedNotificationAnnouncementBar() {
     const [show, setShow] = useState(!BrowserStore.getHideNotificationPermissionRequestBanner());
 
     const handleClick = useCallback(async () => {
-        window.open('https://mattermost.com/pl/pc-web-requirements', '_blank', 'noopener,noreferrer');
+        window.open('https://antimatter.chat/docs/users/notifications.html#desktop', '_blank', 'noopener,noreferrer');
     }, []);
 
     const handleClose = useCallback(() => {

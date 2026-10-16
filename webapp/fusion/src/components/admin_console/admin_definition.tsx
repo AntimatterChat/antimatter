@@ -2055,7 +2055,7 @@ const AdminDefinition: AdminDefinitionType = {
                                 link: (msg: string) => (
                                     <ExternalLink
                                         location='admin_console'
-                                        href='https://mattermost.com/pl/default-allow-untrusted-internal-connections'
+                                        href='https://antimatter.chat/docs/admins/security.html#outbound'
                                     >
                                         {msg}
                                     </ExternalLink>
@@ -3196,7 +3196,7 @@ const AdminDefinition: AdminDefinitionType = {
                                         link: (msg: string) => (
                                             <ExternalLink
                                                 location='admin_console'
-                                                href='https://mattermost.com/pl/message-priority/'
+                                                href='https://antimatter.chat/docs/users/messages.html#priority'
                                             >
                                                 {msg}
                                             </ExternalLink>
@@ -3214,7 +3214,7 @@ const AdminDefinition: AdminDefinitionType = {
                                         link: (msg: string) => (
                                             <ExternalLink
                                                 location='admin_console'
-                                                href='https://mattermost.com/pl/message-priority/'
+                                                href='https://antimatter.chat/docs/users/messages.html#priority'
                                             >
                                                 {msg}
                                             </ExternalLink>
@@ -3233,7 +3233,7 @@ const AdminDefinition: AdminDefinitionType = {
                                         link: (msg: string) => (
                                             <ExternalLink
                                                 location='admin_console'
-                                                href='https://mattermost.com/pl/message-priority/'
+                                                href='https://antimatter.chat/docs/users/messages.html#priority'
                                             >
                                                 {msg}
                                             </ExternalLink>
@@ -3255,7 +3255,7 @@ const AdminDefinition: AdminDefinitionType = {
                                         link: (msg: string) => (
                                             <ExternalLink
                                                 location='admin_console'
-                                                href='https://mattermost.com/pl/message-priority/'
+                                                href='https://antimatter.chat/docs/users/messages.html#priority'
                                             >
                                                 {msg}
                                             </ExternalLink>
@@ -3278,7 +3278,7 @@ const AdminDefinition: AdminDefinitionType = {
                                         link: (msg: string) => (
                                             <ExternalLink
                                                 location='admin_console'
-                                                href='https://mattermost.com/pl/message-priority/'
+                                                href='https://antimatter.chat/docs/users/messages.html#priority'
                                             >
                                                 {msg}
                                             </ExternalLink>
@@ -3300,7 +3300,7 @@ const AdminDefinition: AdminDefinitionType = {
                                         link: (msg: string) => (
                                             <ExternalLink
                                                 location='admin_console'
-                                                href='https://mattermost.com/pl/message-priority/'
+                                                href='https://antimatter.chat/docs/users/messages.html#priority'
                                             >
                                                 {msg}
                                             </ExternalLink>
@@ -4134,7 +4134,7 @@ const AdminDefinition: AdminDefinitionType = {
                                 link: (msg: string) => (
                                     <ExternalLink
                                         location='admin_console'
-                                        href='http://docs.mattermost.com/deployment/sso-saml.html'
+                                        href='https://antimatter.chat/docs/admins/authentication.html#sso'
                                     >
                                         {msg}
                                     </ExternalLink>
@@ -5430,7 +5430,7 @@ const AdminDefinition: AdminDefinitionType = {
                             help_text: defineMessage({id: 'admin.service.outgoingOAuthConnectionsDesc', defaultMessage: 'When true, outgoing webhooks and slash commands will use set up oauth connections to authenticate with third party services. See <link>documentation</link> to learn more.'}), // eslint-disable-line formatjs/enforce-placeholders -- placeholders provided
                             help_text_values: {
                                 link: (text: string) => (
-                                    <a href='https://mattermost.com/pl/outgoing-oauth-connections'>{text}</a>
+                                    <a href='https://antimatter.chat/docs/developers/webhooks.html#outgoing'>{text}</a>
                                 ),
                             },
                             help_text_markdown: false,
@@ -5617,7 +5617,7 @@ const AdminDefinition: AdminDefinitionType = {
                                 linkDocumentation: (msg: string) => (
                                     <ExternalLink
                                         location='admin_console'
-                                        href='https://mattermost.com/pl/default-bot-accounts'
+                                        href='https://antimatter.chat/docs/developers/bots.html#why'
                                     >
                                         {msg}
                                     </ExternalLink>

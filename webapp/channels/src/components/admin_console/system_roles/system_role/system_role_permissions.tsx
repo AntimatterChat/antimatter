@@ -193,7 +193,7 @@ export default class SystemRolePermissions extends React.PureComponent<Props, St
                             values={{
                                 a: (chunks) => (
                                     <ExternalLink
-                                        href='https://docs.mattermost.com/welcome/manage-custom-groups.html'
+                                        href='https://antimatter.chat/docs/communities/roles.html#teams'
                                         location='adminConsoleSystemRoles'
                                     >
                                         {chunks}
@@ -232,7 +232,7 @@ export default class SystemRolePermissions extends React.PureComponent<Props, St
                             values={{
                                 a: (chunks) => (
                                     <ExternalLink
-                                        href='https://docs.mattermost.com/administration-guide/onboard/connected-workspaces.html'
+                                        href='https://antimatter.chat/docs/admins/index.html'
                                         location='adminConsoleSystemRoles'
                                     >
                                         {chunks}

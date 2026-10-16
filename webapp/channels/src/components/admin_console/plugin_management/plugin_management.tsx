@@ -1382,7 +1382,7 @@ export class PluginManagement extends OLDAdminSettings<Props, State> {
                                             values={{
                                                 link: (msg: React.ReactNode) => (
                                                     <ExternalLink
-                                                        href='https://mattermost.com/pl/default-mattermost-marketplace.html'
+                                                        href='https://antimatter.chat/docs/admins/apps.html#list'
                                                         location='plugin_management'
                                                     >
                                                         {msg}

@@ -171,7 +171,7 @@ export default function SecureConnectionDetail(props: Props) {
                                             values={{
                                                 link: (
                                                     <ExternalLink
-                                                        href='https://mattermost.com/pl/connected-workspaces-destination'
+                                                        href='https://antimatter.chat/docs/admins/index.html'
                                                         location='secure_connection_detail'
                                                     >
                                                         <FormattedMessage

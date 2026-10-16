@@ -545,7 +545,7 @@ export default class AbstractCommand extends React.PureComponent<Props, State> {
                                         defaultMessage={'You can connect commands to <link>outgoing OAuth connections</link>.'}
                                         values={{
                                             link: (text) => (
-                                                <a href='https://mattermost.com/pl/outgoing-oauth-connections'>{text}</a>
+                                                <a href='https://antimatter.chat/docs/developers/webhooks.html#outgoing'>{text}</a>
                                             ),
                                         }}
                                     />

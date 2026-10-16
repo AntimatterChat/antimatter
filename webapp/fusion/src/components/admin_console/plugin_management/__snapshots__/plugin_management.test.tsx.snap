@@ -70,9 +70,14 @@ exports[`components/PluginManagement should match snapshot 1`] = `
                     data-testid="enablehelp-text"
                   >
                     When true, enables plugins on your Antimatter server. Use plugins to integrate with third-party systems, extend functionality, or customize the user interface of your Antimatter server. See 
-                    <span>
+                    <a
+                      href="https://antimatter.chat/docs/developers/apps.html#overview"
+                      location="plugin_management"
+                      rel="noopener noreferrer"
+                      target="_blank"
+                    >
                       documentation
-                    </span>
+                    </a>
                      to learn more.
                   </div>
                 </div>
@@ -120,9 +125,14 @@ exports[`components/PluginManagement should match snapshot 1`] = `
                     data-testid="requirePluginSignaturehelp-text"
                   >
                     When true, uploading plugins is disabled and may only be installed through the Marketplace. Plugins are always verified during Antimatter server startup and initialization. See 
-                    <span>
+                    <a
+                      href="https://antimatter.chat/docs/developers/apps.html#build"
+                      location="plugin_management"
+                      rel="noopener noreferrer"
+                      target="_blank"
+                    >
                       documentation
-                    </span>
+                    </a>
                      to learn more.
                   </div>
                 </div>
@@ -212,9 +222,14 @@ exports[`components/PluginManagement should match snapshot 1`] = `
                     data-testid="undefinedhelp-text"
                   >
                     Upload a plugin for your Antimatter server. See 
-                    <span>
+                    <a
+                      href="https://antimatter.chat/docs/developers/apps.html#overview"
+                      location="plugin_management"
+                      rel="noopener noreferrer"
+                      target="_blank"
+                    >
                       documentation
-                    </span>
+                    </a>
                      to learn more.
                   </div>
                 </div>
@@ -262,9 +277,14 @@ exports[`components/PluginManagement should match snapshot 1`] = `
                     data-testid="enableMarketplacehelp-text"
                   >
                     When true, enables System Administrators to install plugins from the 
-                    <span>
+                    <a
+                      href="https://antimatter.chat/docs/admins/apps.html#list"
+                      location="plugin_management"
+                      rel="noopener noreferrer"
+                      target="_blank"
+                    >
                       marketplace
-                    </span>
+                    </a>
                     .
                   </div>
                 </div>
@@ -509,9 +529,14 @@ exports[`components/PluginManagement should match snapshot when \`Enable Marketp
                     data-testid="enablehelp-text"
                   >
                     When true, enables plugins on your Antimatter server. Use plugins to integrate with third-party systems, extend functionality, or customize the user interface of your Antimatter server. See 
-                    <span>
+                    <a
+                      href="https://antimatter.chat/docs/developers/apps.html#overview"
+                      location="plugin_management"
+                      rel="noopener noreferrer"
+                      target="_blank"
+                    >
                       documentation
-                    </span>
+                    </a>
                      to learn more.
                   </div>
                 </div>
@@ -559,9 +584,14 @@ exports[`components/PluginManagement should match snapshot when \`Enable Marketp
                     data-testid="requirePluginSignaturehelp-text"
                   >
                     When true, uploading plugins is disabled and may only be installed through the Marketplace. Plugins are always verified during Antimatter server startup and initialization. See 
-                    <span>
+                    <a
+                      href="https://antimatter.chat/docs/developers/apps.html#build"
+                      location="plugin_management"
+                      rel="noopener noreferrer"
+                      target="_blank"
+                    >
                       documentation
-                    </span>
+                    </a>
                      to learn more.
                   </div>
                 </div>
@@ -651,9 +681,14 @@ exports[`components/PluginManagement should match snapshot when \`Enable Marketp
                     data-testid="undefinedhelp-text"
                   >
                     Upload a plugin for your Antimatter server. See 
-                    <span>
+                    <a
+                      href="https://antimatter.chat/docs/developers/apps.html#overview"
+                      location="plugin_management"
+                      rel="noopener noreferrer"
+                      target="_blank"
+                    >
                       documentation
-                    </span>
+                    </a>
                      to learn more.
                   </div>
                 </div>
@@ -701,9 +736,14 @@ exports[`components/PluginManagement should match snapshot when \`Enable Marketp
                     data-testid="enableMarketplacehelp-text"
                   >
                     When true, enables System Administrators to install plugins from the 
-                    <span>
+                    <a
+                      href="https://antimatter.chat/docs/admins/apps.html#list"
+                      location="plugin_management"
+                      rel="noopener noreferrer"
+                      target="_blank"
+                    >
                       marketplace
-                    </span>
+                    </a>
                     .
                   </div>
                 </div>
@@ -1026,9 +1066,14 @@ exports[`components/PluginManagement should match snapshot when \`Enable Remote 
                     data-testid="enablehelp-text"
                   >
                     When true, enables plugins on your Antimatter server. Use plugins to integrate with third-party systems, extend functionality, or customize the user interface of your Antimatter server. See 
-                    <span>
+                    <a
+                      href="https://antimatter.chat/docs/developers/apps.html#overview"
+                      location="plugin_management"
+                      rel="noopener noreferrer"
+                      target="_blank"
+                    >
                       documentation
-                    </span>
+                    </a>
                      to learn more.
                   </div>
                 </div>
@@ -1076,9 +1121,14 @@ exports[`components/PluginManagement should match snapshot when \`Enable Remote 
                     data-testid="requirePluginSignaturehelp-text"
                   >
                     When true, uploading plugins is disabled and may only be installed through the Marketplace. Plugins are always verified during Antimatter server startup and initialization. See 
-                    <span>
+                    <a
+                      href="https://antimatter.chat/docs/developers/apps.html#build"
+                      location="plugin_management"
+                      rel="noopener noreferrer"
+                      target="_blank"
+                    >
                       documentation
-                    </span>
+                    </a>
                      to learn more.
                   </div>
                 </div>
@@ -1168,9 +1218,14 @@ exports[`components/PluginManagement should match snapshot when \`Enable Remote 
                     data-testid="undefinedhelp-text"
                   >
                     Upload a plugin for your Antimatter server. See 
-                    <span>
+                    <a
+                      href="https://antimatter.chat/docs/developers/apps.html#overview"
+                      location="plugin_management"
+                      rel="noopener noreferrer"
+                      target="_blank"
+                    >
                       documentation
-                    </span>
+                    </a>
                      to learn more.
                   </div>
                 </div>
@@ -1218,9 +1273,14 @@ exports[`components/PluginManagement should match snapshot when \`Enable Remote 
                     data-testid="enableMarketplacehelp-text"
                   >
                     When true, enables System Administrators to install plugins from the 
-                    <span>
+                    <a
+                      href="https://antimatter.chat/docs/admins/apps.html#list"
+                      location="plugin_management"
+                      rel="noopener noreferrer"
+                      target="_blank"
+                    >
                       marketplace
-                    </span>
+                    </a>
                     .
                   </div>
                 </div>
@@ -1468,9 +1528,14 @@ exports[`components/PluginManagement should match snapshot when \`Require Signat
                     data-testid="enablehelp-text"
                   >
                     When true, enables plugins on your Antimatter server. Use plugins to integrate with third-party systems, extend functionality, or customize the user interface of your Antimatter server. See 
-                    <span>
+                    <a
+                      href="https://antimatter.chat/docs/developers/apps.html#overview"
+                      location="plugin_management"
+                      rel="noopener noreferrer"
+                      target="_blank"
+                    >
                       documentation
-                    </span>
+                    </a>
                      to learn more.
                   </div>
                 </div>
@@ -1518,9 +1583,14 @@ exports[`components/PluginManagement should match snapshot when \`Require Signat
                     data-testid="requirePluginSignaturehelp-text"
                   >
                     When true, uploading plugins is disabled and may only be installed through the Marketplace. Plugins are always verified during Antimatter server startup and initialization. See 
-                    <span>
+                    <a
+                      href="https://antimatter.chat/docs/developers/apps.html#build"
+                      location="plugin_management"
+                      rel="noopener noreferrer"
+                      target="_blank"
+                    >
                       documentation
-                    </span>
+                    </a>
                      to learn more.
                   </div>
                 </div>
@@ -1619,9 +1689,14 @@ exports[`components/PluginManagement should match snapshot when \`Require Signat
                     data-testid="undefinedhelp-text"
                   >
                     Upload a plugin for your Antimatter server. See 
-                    <span>
+                    <a
+                      href="https://antimatter.chat/docs/developers/apps.html#overview"
+                      location="plugin_management"
+                      rel="noopener noreferrer"
+                      target="_blank"
+                    >
                       documentation
-                    </span>
+                    </a>
                      to learn more.
                   </div>
                 </div>
@@ -1669,9 +1744,14 @@ exports[`components/PluginManagement should match snapshot when \`Require Signat
                     data-testid="enableMarketplacehelp-text"
                   >
                     When true, enables System Administrators to install plugins from the 
-                    <span>
+                    <a
+                      href="https://antimatter.chat/docs/admins/apps.html#list"
+                      location="plugin_management"
+                      rel="noopener noreferrer"
+                      target="_blank"
+                    >
                       marketplace
-                    </span>
+                    </a>
                     .
                   </div>
                 </div>
@@ -1916,9 +1996,14 @@ exports[`components/PluginManagement should match snapshot, No installed plugins
                     data-testid="enablehelp-text"
                   >
                     When true, enables plugins on your Antimatter server. Use plugins to integrate with third-party systems, extend functionality, or customize the user interface of your Antimatter server. See 
-                    <span>
+                    <a
+                      href="https://antimatter.chat/docs/developers/apps.html#overview"
+                      location="plugin_management"
+                      rel="noopener noreferrer"
+                      target="_blank"
+                    >
                       documentation
-                    </span>
+                    </a>
                      to learn more.
                   </div>
                 </div>
@@ -1966,9 +2051,14 @@ exports[`components/PluginManagement should match snapshot, No installed plugins
                     data-testid="requirePluginSignaturehelp-text"
                   >
                     When true, uploading plugins is disabled and may only be installed through the Marketplace. Plugins are always verified during Antimatter server startup and initialization. See 
-                    <span>
+                    <a
+                      href="https://antimatter.chat/docs/developers/apps.html#build"
+                      location="plugin_management"
+                      rel="noopener noreferrer"
+                      target="_blank"
+                    >
                       documentation
-                    </span>
+                    </a>
                      to learn more.
                   </div>
                 </div>
@@ -2058,9 +2148,14 @@ exports[`components/PluginManagement should match snapshot, No installed plugins
                     data-testid="undefinedhelp-text"
                   >
                     Upload a plugin for your Antimatter server. See 
-                    <span>
+                    <a
+                      href="https://antimatter.chat/docs/developers/apps.html#overview"
+                      location="plugin_management"
+                      rel="noopener noreferrer"
+                      target="_blank"
+                    >
                       documentation
-                    </span>
+                    </a>
                      to learn more.
                   </div>
                 </div>
@@ -2108,9 +2203,14 @@ exports[`components/PluginManagement should match snapshot, No installed plugins
                     data-testid="enableMarketplacehelp-text"
                   >
                     When true, enables System Administrators to install plugins from the 
-                    <span>
+                    <a
+                      href="https://antimatter.chat/docs/admins/apps.html#list"
+                      location="plugin_management"
+                      rel="noopener noreferrer"
+                      target="_blank"
+                    >
                       marketplace
-                    </span>
+                    </a>
                     .
                   </div>
                 </div>
@@ -2356,9 +2456,14 @@ exports[`components/PluginManagement should match snapshot, allow insecure URL e
                     data-testid="enablehelp-text"
                   >
                     When true, enables plugins on your Antimatter server. Use plugins to integrate with third-party systems, extend functionality, or customize the user interface of your Antimatter server. See 
-                    <span>
+                    <a
+                      href="https://antimatter.chat/docs/developers/apps.html#overview"
+                      location="plugin_management"
+                      rel="noopener noreferrer"
+                      target="_blank"
+                    >
                       documentation
-                    </span>
+                    </a>
                      to learn more.
                   </div>
                 </div>
@@ -2406,9 +2511,14 @@ exports[`components/PluginManagement should match snapshot, allow insecure URL e
                     data-testid="requirePluginSignaturehelp-text"
                   >
                     When true, uploading plugins is disabled and may only be installed through the Marketplace. Plugins are always verified during Antimatter server startup and initialization. See 
-                    <span>
+                    <a
+                      href="https://antimatter.chat/docs/developers/apps.html#build"
+                      location="plugin_management"
+                      rel="noopener noreferrer"
+                      target="_blank"
+                    >
                       documentation
-                    </span>
+                    </a>
                      to learn more.
                   </div>
                 </div>
@@ -2498,9 +2608,14 @@ exports[`components/PluginManagement should match snapshot, allow insecure URL e
                     data-testid="undefinedhelp-text"
                   >
                     Upload a plugin for your Antimatter server. See 
-                    <span>
+                    <a
+                      href="https://antimatter.chat/docs/developers/apps.html#overview"
+                      location="plugin_management"
+                      rel="noopener noreferrer"
+                      target="_blank"
+                    >
                       documentation
-                    </span>
+                    </a>
                      to learn more.
                   </div>
                 </div>
@@ -2548,9 +2663,14 @@ exports[`components/PluginManagement should match snapshot, allow insecure URL e
                     data-testid="enableMarketplacehelp-text"
                   >
                     When true, enables System Administrators to install plugins from the 
-                    <span>
+                    <a
+                      href="https://antimatter.chat/docs/admins/apps.html#list"
+                      location="plugin_management"
+                      rel="noopener noreferrer"
+                      target="_blank"
+                    >
                       marketplace
-                    </span>
+                    </a>
                     .
                   </div>
                 </div>
@@ -2795,9 +2915,14 @@ exports[`components/PluginManagement should match snapshot, disabled 1`] = `
                     data-testid="enablehelp-text"
                   >
                     When true, enables plugins on your Antimatter server. Use plugins to integrate with third-party systems, extend functionality, or customize the user interface of your Antimatter server. See 
-                    <span>
+                    <a
+                      href="https://antimatter.chat/docs/developers/apps.html#overview"
+                      location="plugin_management"
+                      rel="noopener noreferrer"
+                      target="_blank"
+                    >
                       documentation
-                    </span>
+                    </a>
                      to learn more.
                   </div>
                 </div>
@@ -2847,9 +2972,14 @@ exports[`components/PluginManagement should match snapshot, disabled 1`] = `
                     data-testid="requirePluginSignaturehelp-text"
                   >
                     When true, uploading plugins is disabled and may only be installed through the Marketplace. Plugins are always verified during Antimatter server startup and initialization. See 
-                    <span>
+                    <a
+                      href="https://antimatter.chat/docs/developers/apps.html#build"
+                      location="plugin_management"
+                      rel="noopener noreferrer"
+                      target="_blank"
+                    >
                       documentation
-                    </span>
+                    </a>
                      to learn more.
                   </div>
                 </div>
@@ -2954,9 +3084,14 @@ exports[`components/PluginManagement should match snapshot, disabled 1`] = `
                       Enable Plugins
                     </strong>
                      to true. See 
-                    <span>
+                    <a
+                      href="https://antimatter.chat/docs/developers/apps.html#overview"
+                      location="plugin_management"
+                      rel="noopener noreferrer"
+                      target="_blank"
+                    >
                       documentation
-                    </span>
+                    </a>
                      to learn more.
                   </div>
                 </div>
@@ -3006,9 +3141,14 @@ exports[`components/PluginManagement should match snapshot, disabled 1`] = `
                     data-testid="enableMarketplacehelp-text"
                   >
                     When true, enables System Administrators to install plugins from the 
-                    <span>
+                    <a
+                      href="https://antimatter.chat/docs/admins/apps.html#list"
+                      location="plugin_management"
+                      rel="noopener noreferrer"
+                      target="_blank"
+                    >
                       marketplace
-                    </span>
+                    </a>
                     .
                   </div>
                 </div>
@@ -3239,9 +3379,14 @@ exports[`components/PluginManagement should match snapshot, text entered into th
                     data-testid="enablehelp-text"
                   >
                     When true, enables plugins on your Antimatter server. Use plugins to integrate with third-party systems, extend functionality, or customize the user interface of your Antimatter server. See 
-                    <span>
+                    <a
+                      href="https://antimatter.chat/docs/developers/apps.html#overview"
+                      location="plugin_management"
+                      rel="noopener noreferrer"
+                      target="_blank"
+                    >
                       documentation
-                    </span>
+                    </a>
                      to learn more.
                   </div>
                 </div>
@@ -3289,9 +3434,14 @@ exports[`components/PluginManagement should match snapshot, text entered into th
                     data-testid="requirePluginSignaturehelp-text"
                   >
                     When true, uploading plugins is disabled and may only be installed through the Marketplace. Plugins are always verified during Antimatter server startup and initialization. See 
-                    <span>
+                    <a
+                      href="https://antimatter.chat/docs/developers/apps.html#build"
+                      location="plugin_management"
+                      rel="noopener noreferrer"
+                      target="_blank"
+                    >
                       documentation
-                    </span>
+                    </a>
                      to learn more.
                   </div>
                 </div>
@@ -3381,9 +3531,14 @@ exports[`components/PluginManagement should match snapshot, text entered into th
                     data-testid="undefinedhelp-text"
                   >
                     Upload a plugin for your Antimatter server. See 
-                    <span>
+                    <a
+                      href="https://antimatter.chat/docs/developers/apps.html#overview"
+                      location="plugin_management"
+                      rel="noopener noreferrer"
+                      target="_blank"
+                    >
                       documentation
-                    </span>
+                    </a>
                      to learn more.
                   </div>
                 </div>
@@ -3431,9 +3586,14 @@ exports[`components/PluginManagement should match snapshot, text entered into th
                     data-testid="enableMarketplacehelp-text"
                   >
                     When true, enables System Administrators to install plugins from the 
-                    <span>
+                    <a
+                      href="https://antimatter.chat/docs/admins/apps.html#list"
+                      location="plugin_management"
+                      rel="noopener noreferrer"
+                      target="_blank"
+                    >
                       marketplace
-                    </span>
+                    </a>
                     .
                   </div>
                 </div>
@@ -3678,9 +3838,14 @@ exports[`components/PluginManagement should match snapshot, upload disabled 1`] 
                     data-testid="enablehelp-text"
                   >
                     When true, enables plugins on your Antimatter server. Use plugins to integrate with third-party systems, extend functionality, or customize the user interface of your Antimatter server. See 
-                    <span>
+                    <a
+                      href="https://antimatter.chat/docs/developers/apps.html#overview"
+                      location="plugin_management"
+                      rel="noopener noreferrer"
+                      target="_blank"
+                    >
                       documentation
-                    </span>
+                    </a>
                      to learn more.
                   </div>
                 </div>
@@ -3728,9 +3893,14 @@ exports[`components/PluginManagement should match snapshot, upload disabled 1`] 
                     data-testid="requirePluginSignaturehelp-text"
                   >
                     When true, uploading plugins is disabled and may only be installed through the Marketplace. Plugins are always verified during Antimatter server startup and initialization. See 
-                    <span>
+                    <a
+                      href="https://antimatter.chat/docs/developers/apps.html#build"
+                      location="plugin_management"
+                      rel="noopener noreferrer"
+                      target="_blank"
+                    >
                       documentation
-                    </span>
+                    </a>
                      to learn more.
                   </div>
                 </div>
@@ -3829,9 +3999,14 @@ exports[`components/PluginManagement should match snapshot, upload disabled 1`] 
                     data-testid="undefinedhelp-text"
                   >
                     Enable plugin uploads in config.json. See 
-                    <span>
+                    <a
+                      href="https://antimatter.chat/docs/developers/apps.html#overview"
+                      location="plugin_management"
+                      rel="noopener noreferrer"
+                      target="_blank"
+                    >
                       documentation
-                    </span>
+                    </a>
                      to learn more.
                   </div>
                 </div>
@@ -3879,9 +4054,14 @@ exports[`components/PluginManagement should match snapshot, upload disabled 1`] 
                     data-testid="enableMarketplacehelp-text"
                   >
                     When true, enables System Administrators to install plugins from the 
-                    <span>
+                    <a
+                      href="https://antimatter.chat/docs/admins/apps.html#list"
+                      location="plugin_management"
+                      rel="noopener noreferrer"
+                      target="_blank"
+                    >
                       marketplace
-                    </span>
+                    </a>
                     .
                   </div>
                 </div>
@@ -3963,9 +4143,14 @@ exports[`components/PluginManagement should match snapshot, upload disabled 1`] 
                   >
                     <div>
                       Enable plugin uploads in config.json. See 
-                      <span>
+                      <a
+                        href="https://antimatter.chat/docs/developers/apps.html#overview"
+                        location="plugin_management"
+                        rel="noopener noreferrer"
+                        target="_blank"
+                      >
                         documentation
-                      </span>
+                      </a>
                        to learn more.
                     </div>
                   </div>
@@ -4135,9 +4320,14 @@ exports[`components/PluginManagement should match snapshot, with installed plugi
                     data-testid="enablehelp-text"
                   >
                     When true, enables plugins on your Antimatter server. Use plugins to integrate with third-party systems, extend functionality, or customize the user interface of your Antimatter server. See 
-                    <span>
+                    <a
+                      href="https://antimatter.chat/docs/developers/apps.html#overview"
+                      location="plugin_management"
+                      rel="noopener noreferrer"
+                      target="_blank"
+                    >
                       documentation
-                    </span>
+                    </a>
                      to learn more.
                   </div>
                 </div>
@@ -4185,9 +4375,14 @@ exports[`components/PluginManagement should match snapshot, with installed plugi
                     data-testid="requirePluginSignaturehelp-text"
                   >
                     When true, uploading plugins is disabled and may only be installed through the Marketplace. Plugins are always verified during Antimatter server startup and initialization. See 
-                    <span>
+                    <a
+                      href="https://antimatter.chat/docs/developers/apps.html#build"
+                      location="plugin_management"
+                      rel="noopener noreferrer"
+                      target="_blank"
+                    >
                       documentation
-                    </span>
+                    </a>
                      to learn more.
                   </div>
                 </div>
@@ -4277,9 +4472,14 @@ exports[`components/PluginManagement should match snapshot, with installed plugi
                     data-testid="undefinedhelp-text"
                   >
                     Upload a plugin for your Antimatter server. See 
-                    <span>
+                    <a
+                      href="https://antimatter.chat/docs/developers/apps.html#overview"
+                      location="plugin_management"
+                      rel="noopener noreferrer"
+                      target="_blank"
+                    >
                       documentation
-                    </span>
+                    </a>
                      to learn more.
                   </div>
                 </div>
@@ -4327,9 +4527,14 @@ exports[`components/PluginManagement should match snapshot, with installed plugi
                     data-testid="enableMarketplacehelp-text"
                   >
                     When true, enables System Administrators to install plugins from the 
-                    <span>
+                    <a
+                      href="https://antimatter.chat/docs/admins/apps.html#list"
+                      location="plugin_management"
+                      rel="noopener noreferrer"
+                      target="_blank"
+                    >
                       marketplace
-                    </span>
+                    </a>
                     .
                   </div>
                 </div>
@@ -4857,9 +5062,14 @@ exports[`components/PluginManagement should match snapshot, with installed plugi
                     data-testid="enablehelp-text"
                   >
                     When true, enables plugins on your Antimatter server. Use plugins to integrate with third-party systems, extend functionality, or customize the user interface of your Antimatter server. See 
-                    <span>
+                    <a
+                      href="https://antimatter.chat/docs/developers/apps.html#overview"
+                      location="plugin_management"
+                      rel="noopener noreferrer"
+                      target="_blank"
+                    >
                       documentation
-                    </span>
+                    </a>
                      to learn more.
                   </div>
                 </div>
@@ -4907,9 +5117,14 @@ exports[`components/PluginManagement should match snapshot, with installed plugi
                     data-testid="requirePluginSignaturehelp-text"
                   >
                     When true, uploading plugins is disabled and may only be installed through the Marketplace. Plugins are always verified during Antimatter server startup and initialization. See 
-                    <span>
+                    <a
+                      href="https://antimatter.chat/docs/developers/apps.html#build"
+                      location="plugin_management"
+                      rel="noopener noreferrer"
+                      target="_blank"
+                    >
                       documentation
-                    </span>
+                    </a>
                      to learn more.
                   </div>
                 </div>
@@ -4999,9 +5214,14 @@ exports[`components/PluginManagement should match snapshot, with installed plugi
                     data-testid="undefinedhelp-text"
                   >
                     Upload a plugin for your Antimatter server. See 
-                    <span>
+                    <a
+                      href="https://antimatter.chat/docs/developers/apps.html#overview"
+                      location="plugin_management"
+                      rel="noopener noreferrer"
+                      target="_blank"
+                    >
                       documentation
-                    </span>
+                    </a>
                      to learn more.
                   </div>
                 </div>
@@ -5049,9 +5269,14 @@ exports[`components/PluginManagement should match snapshot, with installed plugi
                     data-testid="enableMarketplacehelp-text"
                   >
                     When true, enables System Administrators to install plugins from the 
-                    <span>
+                    <a
+                      href="https://antimatter.chat/docs/admins/apps.html#list"
+                      location="plugin_management"
+                      rel="noopener noreferrer"
+                      target="_blank"
+                    >
                       marketplace
-                    </span>
+                    </a>
                     .
                   </div>
                 </div>
@@ -5377,9 +5602,14 @@ exports[`components/PluginManagement should match snapshot, with installed plugi
                     data-testid="enablehelp-text"
                   >
                     When true, enables plugins on your Antimatter server. Use plugins to integrate with third-party systems, extend functionality, or customize the user interface of your Antimatter server. See 
-                    <span>
+                    <a
+                      href="https://antimatter.chat/docs/developers/apps.html#overview"
+                      location="plugin_management"
+                      rel="noopener noreferrer"
+                      target="_blank"
+                    >
                       documentation
-                    </span>
+                    </a>
                      to learn more.
                   </div>
                 </div>
@@ -5427,9 +5657,14 @@ exports[`components/PluginManagement should match snapshot, with installed plugi
                     data-testid="requirePluginSignaturehelp-text"
                   >
                     When true, uploading plugins is disabled and may only be installed through the Marketplace. Plugins are always verified during Antimatter server startup and initialization. See 
-                    <span>
+                    <a
+                      href="https://antimatter.chat/docs/developers/apps.html#build"
+                      location="plugin_management"
+                      rel="noopener noreferrer"
+                      target="_blank"
+                    >
                       documentation
-                    </span>
+                    </a>
                      to learn more.
                   </div>
                 </div>
@@ -5519,9 +5754,14 @@ exports[`components/PluginManagement should match snapshot, with installed plugi
                     data-testid="undefinedhelp-text"
                   >
                     Upload a plugin for your Antimatter server. See 
-                    <span>
+                    <a
+                      href="https://antimatter.chat/docs/developers/apps.html#overview"
+                      location="plugin_management"
+                      rel="noopener noreferrer"
+                      target="_blank"
+                    >
                       documentation
-                    </span>
+                    </a>
                      to learn more.
                   </div>
                 </div>
@@ -5569,9 +5809,14 @@ exports[`components/PluginManagement should match snapshot, with installed plugi
                     data-testid="enableMarketplacehelp-text"
                   >
                     When true, enables System Administrators to install plugins from the 
-                    <span>
+                    <a
+                      href="https://antimatter.chat/docs/admins/apps.html#list"
+                      location="plugin_management"
+                      rel="noopener noreferrer"
+                      target="_blank"
+                    >
                       marketplace
-                    </span>
+                    </a>
                     .
                   </div>
                 </div>
@@ -5897,9 +6142,14 @@ exports[`components/PluginManagement should match snapshot, with installed plugi
                     data-testid="enablehelp-text"
                   >
                     When true, enables plugins on your Antimatter server. Use plugins to integrate with third-party systems, extend functionality, or customize the user interface of your Antimatter server. See 
-                    <span>
+                    <a
+                      href="https://antimatter.chat/docs/developers/apps.html#overview"
+                      location="plugin_management"
+                      rel="noopener noreferrer"
+                      target="_blank"
+                    >
                       documentation
-                    </span>
+                    </a>
                      to learn more.
                   </div>
                 </div>
@@ -5947,9 +6197,14 @@ exports[`components/PluginManagement should match snapshot, with installed plugi
                     data-testid="requirePluginSignaturehelp-text"
                   >
                     When true, uploading plugins is disabled and may only be installed through the Marketplace. Plugins are always verified during Antimatter server startup and initialization. See 
-                    <span>
+                    <a
+                      href="https://antimatter.chat/docs/developers/apps.html#build"
+                      location="plugin_management"
+                      rel="noopener noreferrer"
+                      target="_blank"
+                    >
                       documentation
-                    </span>
+                    </a>
                      to learn more.
                   </div>
                 </div>
@@ -6039,9 +6294,14 @@ exports[`components/PluginManagement should match snapshot, with installed plugi
                     data-testid="undefinedhelp-text"
                   >
                     Upload a plugin for your Antimatter server. See 
-                    <span>
+                    <a
+                      href="https://antimatter.chat/docs/developers/apps.html#overview"
+                      location="plugin_management"
+                      rel="noopener noreferrer"
+                      target="_blank"
+                    >
                       documentation
-                    </span>
+                    </a>
                      to learn more.
                   </div>
                 </div>
@@ -6089,9 +6349,14 @@ exports[`components/PluginManagement should match snapshot, with installed plugi
                     data-testid="enableMarketplacehelp-text"
                   >
                     When true, enables System Administrators to install plugins from the 
-                    <span>
+                    <a
+                      href="https://antimatter.chat/docs/admins/apps.html#list"
+                      location="plugin_management"
+                      rel="noopener noreferrer"
+                      target="_blank"
+                    >
                       marketplace
-                    </span>
+                    </a>
                     .
                   </div>
                 </div>
@@ -6417,9 +6682,14 @@ exports[`components/PluginManagement should match snapshot, with installed plugi
                     data-testid="enablehelp-text"
                   >
                     When true, enables plugins on your Antimatter server. Use plugins to integrate with third-party systems, extend functionality, or customize the user interface of your Antimatter server. See 
-                    <span>
+                    <a
+                      href="https://antimatter.chat/docs/developers/apps.html#overview"
+                      location="plugin_management"
+                      rel="noopener noreferrer"
+                      target="_blank"
+                    >
                       documentation
-                    </span>
+                    </a>
                      to learn more.
                   </div>
                 </div>
@@ -6467,9 +6737,14 @@ exports[`components/PluginManagement should match snapshot, with installed plugi
                     data-testid="requirePluginSignaturehelp-text"
                   >
                     When true, uploading plugins is disabled and may only be installed through the Marketplace. Plugins are always verified during Antimatter server startup and initialization. See 
-                    <span>
+                    <a
+                      href="https://antimatter.chat/docs/developers/apps.html#build"
+                      location="plugin_management"
+                      rel="noopener noreferrer"
+                      target="_blank"
+                    >
                       documentation
-                    </span>
+                    </a>
                      to learn more.
                   </div>
                 </div>
@@ -6559,9 +6834,14 @@ exports[`components/PluginManagement should match snapshot, with installed plugi
                     data-testid="undefinedhelp-text"
                   >
                     Upload a plugin for your Antimatter server. See 
-                    <span>
+                    <a
+                      href="https://antimatter.chat/docs/developers/apps.html#overview"
+                      location="plugin_management"
+                      rel="noopener noreferrer"
+                      target="_blank"
+                    >
                       documentation
-                    </span>
+                    </a>
                      to learn more.
                   </div>
                 </div>
@@ -6609,9 +6889,14 @@ exports[`components/PluginManagement should match snapshot, with installed plugi
                     data-testid="enableMarketplacehelp-text"
                   >
                     When true, enables System Administrators to install plugins from the 
-                    <span>
+                    <a
+                      href="https://antimatter.chat/docs/admins/apps.html#list"
+                      location="plugin_management"
+                      rel="noopener noreferrer"
+                      target="_blank"
+                    >
                       marketplace
-                    </span>
+                    </a>
                     .
                   </div>
                 </div>

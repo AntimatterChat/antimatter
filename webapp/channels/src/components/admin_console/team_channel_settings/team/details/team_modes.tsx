@@ -38,7 +38,7 @@ const SyncGroupsToggle = ({syncChecked, allAllowedChecked, allowedDomainsChecked
                 values={{
                     link: (msg) => (
                         <ExternalLink
-                            href='https://mattermost.com/pl/default-ldap-group-constrained-team-channel.html'
+                            href='https://antimatter.chat/docs/admins/authentication.html#sso'
                             location='team_modes'
                         >
                             {msg}

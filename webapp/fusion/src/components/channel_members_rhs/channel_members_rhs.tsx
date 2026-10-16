@@ -332,7 +332,7 @@ export default function ChannelMembersRHS({
                         }, {
                             link: (msg: React.ReactNode) => (
                                 <ExternalLink
-                                    href='https://docs.mattermost.com/welcome/about-user-roles.html#channel-admin'
+                                    href='https://antimatter.chat/docs/communities/roles.html#built-in'
                                     location='channel_members_rhs'
                                 >
                                     {msg}
