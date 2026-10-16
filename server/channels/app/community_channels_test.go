@@ -117,8 +117,10 @@ func TestAllChannelsMembershipLeaving(t *testing.T) {
 
 	t.Run("the server's own syncs still remove", func(t *testing.T) {
 		other := th.CreateChannel(t, team)
-		th.AddUserToChannel(t, user, other)
+		// The community brings them in, in the background (adding them here too raced with it).
+		require.Eventually(t, func() bool { return isChannelMember(th, other.Id, user.Id) }, 10*time.Second, 50*time.Millisecond)
 		require.Nil(t, th.App.RemoveUserFromChannel(th.Context, user.Id, "", other))
+		assert.False(t, isChannelMember(th, other.Id, user.Id))
 	})
 
 	t.Run("bots and invite-only channels leave as before", func(t *testing.T) {
