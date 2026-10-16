@@ -3842,6 +3842,8 @@ func TestGetFlaggedPostsForUser(t *testing.T) {
 	mockStore.On("DeliveryTracking").Return(th.App.Srv().Store().DeliveryTracking())
 	mockStore.On("System").Return(th.App.Srv().Store().System())
 	mockStore.On("Role").Return(th.App.Srv().Store().Role())
+	// Session attributes aren't licence-gated in Antimatter, so every request reads their property fields.
+	mockStore.On("PropertyField").Return(th.App.Srv().Store().PropertyField())
 	mockStore.On("Close").Return(nil)
 
 	// Playbooks DB job requires a plugin mock

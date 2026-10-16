@@ -11614,15 +11614,21 @@ func TestMeEndpointsWithMfaEnforced(t *testing.T) {
 func TestGetSessionAttributesManifest(t *testing.T) {
 	th := Setup(t).InitBasic(t)
 
+	th.ConfigStore.SetReadOnlyFF(false)
+	defer th.ConfigStore.SetReadOnlyFF(true)
+
 	t.Run("disabled without feature flag", func(t *testing.T) {
+		// The flag is on by default, and Antimatter has no licence gate in front of it: turn it off.
+		th.App.UpdateConfig(func(cfg *model.Config) {
+			cfg.FeatureFlags.SessionAttributes = false
+		})
+
 		_, resp, err := th.Client.GetSessionAttributesManifest(context.Background())
 		require.Error(t, err)
 		CheckErrorID(t, err, "api.user.session_attributes.disabled.app_error")
 		require.Equal(t, http.StatusNotImplemented, resp.StatusCode)
 	})
 
-	th.ConfigStore.SetReadOnlyFF(false)
-	defer th.ConfigStore.SetReadOnlyFF(true)
 	th.App.UpdateConfig(func(cfg *model.Config) {
 		cfg.FeatureFlags.SessionAttributes = true
 	})
