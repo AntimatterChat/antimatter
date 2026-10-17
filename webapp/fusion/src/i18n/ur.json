@@ -2402,7 +2402,7 @@
   "admin.permissions.permission.manage_roles.name": "رولیز کو منظم کریں",
   "admin.permissions.permission.manage_secure_connections.description": "مشترکہ چینلز کے لیے محفوظ کنکشنز بنائیں، ہٹائیں اور دیکھیں",
   "admin.permissions.permission.manage_secure_connections.name": "محفوظ کنکشنز منظم کریں",
-  "admin.permissions.permission.manage_shared_channels.description": "اشتراک شدہ چینل کے ساتھ ہم آہنگی کے لیے دوسرے Mattermost سرور کو شیئر، ان شیئر اور مدعو کریں",
+  "admin.permissions.permission.manage_shared_channels.description": "شیرڈ چینل کے ساتھ سنک کرنے کے لیے دوسرے Antimatter انسٹنس کو شیئر، ان شیئر اور مدعو کریں",
   "admin.permissions.permission.manage_shared_channels.name": "اشتراک شدہ چینلز کا انتظام",
   "admin.permissions.permission.manage_slash_commands.description": "دوسرے صارفین کے سلاش کمانڈز کو بنائیں، ترمیم کریں اور حذف کریں۔",
   "admin.permissions.permission.manage_slash_commands.name": "دوسروں کے",

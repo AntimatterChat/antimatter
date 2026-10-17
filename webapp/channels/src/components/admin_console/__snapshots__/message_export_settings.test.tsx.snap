@@ -562,7 +562,7 @@ exports[`components/MessageExportSettings should match snapshot, disabled, globa
                     disabled=""
                     id="globalRelayEmailAddress"
                     maxlength="-1"
-                    placeholder="E.g.: \\"globalrelay@mattermost.com\\""
+                    placeholder="E.g.: \\"globalrelay@example.com\\""
                     type="text"
                     value="globalRelay@mattermost.com"
                   />
@@ -594,7 +594,7 @@ exports[`components/MessageExportSettings should match snapshot, disabled, globa
                     disabled=""
                     id="globalRelaySenderAddress"
                     maxlength="-1"
-                    placeholder="E.g.: \\"compliance-export@mattermost.com\\""
+                    placeholder="E.g.: \\"compliance-export@example.com\\""
                     type="text"
                     value=""
                   />
@@ -1237,7 +1237,7 @@ exports[`components/MessageExportSettings should match snapshot, enabled, global
                     data-testid="globalRelayEmailAddressinput"
                     id="globalRelayEmailAddress"
                     maxlength="-1"
-                    placeholder="E.g.: \\"globalrelay@mattermost.com\\""
+                    placeholder="E.g.: \\"globalrelay@example.com\\""
                     type="text"
                     value="globalRelay@mattermost.com"
                   />
@@ -1268,7 +1268,7 @@ exports[`components/MessageExportSettings should match snapshot, enabled, global
                     data-testid="globalRelaySenderAddressinput"
                     id="globalRelaySenderAddress"
                     maxlength="-1"
-                    placeholder="E.g.: \\"compliance-export@mattermost.com\\""
+                    placeholder="E.g.: \\"compliance-export@example.com\\""
                     type="text"
                     value=""
                   />
@@ -1673,7 +1673,7 @@ exports[`components/MessageExportSettings should match snapshot, enabled, global
                     data-testid="globalRelayEmailAddressinput"
                     id="globalRelayEmailAddress"
                     maxlength="-1"
-                    placeholder="E.g.: \\"globalrelay@mattermost.com\\""
+                    placeholder="E.g.: \\"globalrelay@example.com\\""
                     type="text"
                     value="globalRelay@mattermost.com"
                   />
@@ -1704,7 +1704,7 @@ exports[`components/MessageExportSettings should match snapshot, enabled, global
                     data-testid="globalRelaySenderAddressinput"
                     id="globalRelaySenderAddress"
                     maxlength="-1"
-                    placeholder="E.g.: \\"compliance-export@mattermost.com\\""
+                    placeholder="E.g.: \\"compliance-export@example.com\\""
                     type="text"
                     value="compliance-export@mattermost.com"
                   />

@@ -2402,7 +2402,7 @@
   "admin.permissions.permission.manage_roles.name": "إدارة الأدوار",
   "admin.permissions.permission.manage_secure_connections.description": "إنشاء الاتصالات الآمنة للقنوات المشتركة وإزالتها وعرضها",
   "admin.permissions.permission.manage_secure_connections.name": "إدارة الاتصالات الآمنة",
-  "admin.permissions.permission.manage_shared_channels.description": "مشاركة القنوات وإلغاء مشاركتها، ودعوة خادم Mattermost آخر للمزامنة مع قناة مشتركة",
+  "admin.permissions.permission.manage_shared_channels.description": "مشاركة قناة مشتركة أو إلغاء مشاركتها، ودعوة خادم آخر لمزامنة القناة",
   "admin.permissions.permission.manage_shared_channels.name": "إدارة القنوات المشتركة",
   "admin.permissions.permission.manage_slash_commands.description": "إنشاء أوامر الشرطة المائلة التي يملكها مستخدمون آخرون، وتعديلها وحذفها.",
   "admin.permissions.permission.manage_slash_commands.name": "إدارة أوامر المستخدمين الآخرين",

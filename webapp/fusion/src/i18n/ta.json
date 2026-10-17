@@ -2402,7 +2402,7 @@
   "admin.permissions.permission.manage_roles.name": "பங்குகளை நிர்வகி",
   "admin.permissions.permission.manage_secure_connections.description": "பகிரப்பட்ட சேனல்களுக்கான பாதுகாப்பான இணைப்புகளை உருவாக்கவும், நீக்கவும், பார்வையிடவும்",
   "admin.permissions.permission.manage_secure_connections.name": "பாதுகாப்பான இணைப்புகளை நிர்வகி",
-  "admin.permissions.permission.manage_shared_channels.description": "பகிர்த்த சேனல்கள்கள்கு இணைப்பு சேர்ப்பு, இணைப்பு நீக்குதல், மற்றும் வேறொரு Mattermost இன்ஸ்டன்ஸை சேனல்கு இணைப்பு சேர்ப்பு",
+  "admin.permissions.permission.manage_shared_channels.description": "பகிரவும், பகிராமல் செய்யவும், மேலும் ஒரு பகிரப்பட்ட சேனலுடன் ஒத்திசைக்க மற்றொரு இன்ஸ்டன்ஸை அழைக்கவும்",
   "admin.permissions.permission.manage_shared_channels.name": "பகிர்த்த சேனல்கள்கள்கு நிர்வாகம்",
   "admin.permissions.permission.manage_slash_commands.description": "வேறு பயனர்கள்கள்கு சொந்தமான ஸ்லாஷ் கட்டளைகளை உருவாக்குதல், திருத்தல், மற்றும் நீக்குதல்.",
   "admin.permissions.permission.manage_slash_commands.name": "வேறுபவர்கள்கள்கு",

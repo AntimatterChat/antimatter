@@ -1084,7 +1084,7 @@
   "admin.customization.minimumDesktopAppVersionDesc": "Вкажіть мінімальну версію десктопного додатка Antimatter, необхідну для підключення до цього сервера (наприклад, 5.10.0). Користувачі, які підключаються з версією десктопного додатка нижчою за цю мінімальну, побачать сторінку з повідомленням про необхідність оновлення і не зможуть користуватися застосунком, доки не оновлять його. Залиште це поле порожнім, щоб дозволити підключення всіх версій десктопного додатка без обмежень.",
   "admin.customization.minimumDesktopAppVersionError": "Некоректний номер версії. Має бути коректною семантичною версією (наприклад, 5.0.0).",
   "admin.customization.minimumDesktopAppVersionPlaceholder": "Введіть номер версії (наприклад, 5.0.0)",
-  "admin.customization.minimumDesktopAppVersionTitle": "Мінімальна версія Mattermost Desktop App:",
+  "admin.customization.minimumDesktopAppVersionTitle": "Мінімальна версія настільного застосунку:",
   "admin.customization.restrictLinkPreviewsDesc": "Попередній перегляд посилань і попередній перегляд зображень не буде показано для наведеного вище списку доменів, розділених комами.",
   "admin.customization.restrictLinkPreviewsExample": "Наприклад: \"internal.mycompany.com, images.example.com\"",
   "admin.customization.restrictLinkPreviewsTitle": "Вимкнути попередній перегляд посилань на веб-сайти з цих доменів:",

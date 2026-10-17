@@ -2402,7 +2402,7 @@
   "admin.permissions.permission.manage_roles.name": "রোল পরিচালনা",
   "admin.permissions.permission.manage_secure_connections.description": "শেয়ার করা চ্যানেলের জন্য নিরাপদ সংযোগ তৈরি, সরান এবং দেখুন",
   "admin.permissions.permission.manage_secure_connections.name": "নিরাপদ সংযোগ পরিচালনা",
-  "admin.permissions.permission.manage_shared_channels.description": "শেয়ার করা চ্যানেলে অন্য Mattermost ইনস্ট্যান্সের সাথে সিঙ্ক করার জন্য শেয়ার, আনশেয়ার এবং আমন্ত্রণ পাঠান",
+  "admin.permissions.permission.manage_shared_channels.description": "শেয়ার চ্যানেলসমূহের সাথে সিঙ্ক করার জন্য অন্য ইনস্ট্যান্সকে শেয়ার, আনশেয়ার এবং আমন্ত্রণ জানান",
   "admin.permissions.permission.manage_shared_channels.name": "শেয়ার করা চ্যানেল পরিচালনা",
   "admin.permissions.permission.manage_slash_commands.description": "অন্য ব্যবহারকারীদের দ্বারা তৈরি স্লাশ কমান্ড তৈরি, সম্পাদনা এবং মুছে ফেলুন।",
   "admin.permissions.permission.manage_slash_commands.name": "অন্যদের",

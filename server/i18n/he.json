@@ -4489,7 +4489,7 @@
   },
   {
     "id": "api.user.get_authorization_code.endpoint.app_error",
-    "translation": "שגיאה בשליפת נקודת קצה מ-Mattermost Discovery Document."
+    "translation": "שגיאה בשליפת נקודת קצה מ-Discussion Document."
   },
   {
     "id": "api.user.get_profile_image_path.app_error",

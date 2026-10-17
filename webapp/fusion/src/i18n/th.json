@@ -1559,7 +1559,7 @@
   "admin.google.tokenTitle": "Token Endpoint:",
   "admin.google.userTitle": "User API Endpoint:",
   "admin.group_settings.filters.isConfigured": "ตั้้งค่าแล่ว",
-  "admin.group_settings.filters.isLinked": "เชื่อกับ Mattermost",
+  "admin.group_settings.filters.isLinked": "เชื่อมโยงแล้ว",
   "admin.group_settings.filters.isUnconfigured": "ยังไม่ได้ตั้งค่า",
   "admin.group_settings.filters.isUnlinked": "ยังไม่ได่เชื่่อมต่อน",
   "admin.group_settings.group_detail.duplicateMentionNameError": "เมนชันกลุ่มนี้อยู่แล้ว",

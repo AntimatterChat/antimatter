@@ -212,7 +212,7 @@ exports[`admin_console/team_channel_settings/team/TeamDetails should match snaps
                 </div>
                 <input
                   class="form-control"
-                  placeholder="mattermost.com"
+                  placeholder="example.com"
                   type="text"
                   value=""
                 />
