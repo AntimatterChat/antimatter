@@ -90,9 +90,9 @@ describe('components/root/AppLinkRedirect', () => {
         ['/playbooks/runs/x', '/lumen/playbooks/runs/x'],
         ['/kanban/team/t1/b1', '/lumen/focalboard/team/t1/b1'],
         ['/kanban', '/lumen/focalboard'],
-        ['/kanbanroom/channels/town-square', null],
+        ['/kanbanroom/channels/general', null],
         ['/playbooksclub', null],
-        ['/channels/town-square', null],
+        ['/channels/general', null],
     ])('sends %s to the app\'s route in the community', (from, to) => {
         expect(appLinkTarget(from, 'lumen')).toBe(to);
     });

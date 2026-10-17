@@ -28,7 +28,7 @@ jest.mock('mattermost-redux/selectors/entities/channel_categories', () => ({
 
 describe('fusion/sidebar/Dock', () => {
     const team = TestHelper.getTeamMock({id: 'team', name: 'antimatter'});
-    const render = (current = 'town-square') => renderWithContext(
+    const render = (current = 'general') => renderWithContext(
         <Dock
             sidebarRef={{current: null}}
             scrollRef={{current: null}}

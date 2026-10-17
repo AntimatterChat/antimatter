@@ -32,19 +32,19 @@ describe('normalizePanelState', () => {
 describe('withPanelState and readPanelState', () => {
     it('round-trips the state through the query string, escaped', () => {
         const state = 'note/a b&c=d?e#f/ü';
-        const search = withPanelState('?channel=town-square', state);
+        const search = withPanelState('?channel=general', state);
 
         // Escaped: nothing in it can end the parameter, start another, or a fragment
-        expect(search.startsWith('?channel=town-square&state=')).toBe(true);
+        expect(search.startsWith('?channel=general&state=')).toBe(true);
         expect(search).not.toContain('#');
         expect(search.split('&')).toHaveLength(2);
         expect(readPanelState(search)).toBe(state);
-        expect(new URLSearchParams(search).get('channel')).toBe('town-square');
+        expect(new URLSearchParams(search).get('channel')).toBe('general');
     });
 
     it('removes the state when the panel is back on its home, keeping the other parameters', () => {
-        expect(withPanelState('?channel=town-square&state=note%2Fabc', null)).toBe('?channel=town-square');
-        expect(withPanelState('?channel=town-square&state=note%2Fabc', '')).toBe('?channel=town-square');
+        expect(withPanelState('?channel=general&state=note%2Fabc', null)).toBe('?channel=general');
+        expect(withPanelState('?channel=general&state=note%2Fabc', '')).toBe('?channel=general');
         expect(withPanelState('?state=note%2Fabc', undefined)).toBe('');
     });
 
@@ -54,7 +54,7 @@ describe('withPanelState and readPanelState', () => {
 
     it('reads no state from a URL without one, or with one it would not keep', () => {
         expect(readPanelState('')).toBeUndefined();
-        expect(readPanelState('?channel=town-square')).toBeUndefined();
+        expect(readPanelState('?channel=general')).toBeUndefined();
         expect(readPanelState(`?${PANEL_STATE_PARAM}=`)).toBeUndefined();
         expect(readPanelState(`?${PANEL_STATE_PARAM}=${'a'.repeat(MAX_PANEL_STATE_LENGTH + 1)}`)).toBeUndefined();
         expect(readPanelState(`?${PANEL_STATE_PARAM}=note%2Fa%0Ab`)).toBeUndefined();

@@ -110,7 +110,7 @@ func TestMessageActionPayloadToFormValues(t *testing.T) {
 		TeamId:       "team",
 		TeamDomain:   "lumen",
 		ChannelId:    "chan",
-		ChannelName:  "town-square",
+		ChannelName:  "general",
 		Timestamp:    1700000000123,
 		UserId:       "clicker",
 		UserName:     "maya",

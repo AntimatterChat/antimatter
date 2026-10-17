@@ -20,7 +20,7 @@ const initialState: DeepPartial<GlobalState> = {
         channels: {
             currentChannelId: 'channel_id',
             channels: {
-                channel_id: TestHelper.getChannelMock({id: 'channel_id', team_id: 'team_id', type: 'O' as ChannelType, name: 'town-square'}),
+                channel_id: TestHelper.getChannelMock({id: 'channel_id', team_id: 'team_id', type: 'O' as ChannelType, name: 'general'}),
             },
             myMembers: {
                 channel_id: TestHelper.getChannelMembershipMock({channel_id: 'channel_id'}),

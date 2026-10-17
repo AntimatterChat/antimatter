@@ -158,18 +158,18 @@ describe('RhsPluginPopout', () => {
 
         beforeEach(() => {
             mockPanelProps.current = undefined;
-            window.history.replaceState(null, '', '/_popout/rhs/team1/plugin/test-plugin?channel=town-square');
+            window.history.replaceState(null, '', '/_popout/rhs/team1/plugin/test-plugin?channel=general');
         });
 
         it('starts the app where its panel was: the state of the popout URL, unescaped', () => {
-            renderAt('/_popout/rhs/team1/plugin/test-plugin?channel=town-square&state=note%2Fn1%26x%3Dy');
+            renderAt('/_popout/rhs/team1/plugin/test-plugin?channel=general&state=note%2Fn1%26x%3Dy');
 
             expect(mockPanelProps.current?.initialPanelState).toBe('note/n1&x=y');
             expect(typeof mockPanelProps.current?.setPanelState).toBe('function');
         });
 
         it('starts the app on its home when the URL has no state, or one it would not keep', () => {
-            renderAt('/_popout/rhs/team1/plugin/test-plugin?channel=town-square');
+            renderAt('/_popout/rhs/team1/plugin/test-plugin?channel=general');
             expect(mockPanelProps.current?.initialPanelState).toBeUndefined();
 
             renderAt(`/_popout/rhs/team1/plugin/test-plugin?state=${'a'.repeat(600)}`);
@@ -177,15 +177,15 @@ describe('RhsPluginPopout', () => {
         });
 
         it("follows the app in the window's address, keeping the channel", () => {
-            renderAt('/_popout/rhs/team1/plugin/test-plugin?channel=town-square&state=note%2Fn1');
+            renderAt('/_popout/rhs/team1/plugin/test-plugin?channel=general&state=note%2Fn1');
 
             act(() => mockPanelProps.current?.setPanelState?.('note/n2'));
             expect(window.location.pathname).toBe('/_popout/rhs/team1/plugin/test-plugin');
-            expect(window.location.search).toBe('?channel=town-square&state=note%2Fn2');
+            expect(window.location.search).toBe('?channel=general&state=note%2Fn2');
 
             // Back on its list: no state, the channel stays
             act(() => mockPanelProps.current?.setPanelState?.(null));
-            expect(window.location.search).toBe('?channel=town-square');
+            expect(window.location.search).toBe('?channel=general');
 
             // What it started with doesn't change as it moves on
             expect(mockPanelProps.current?.initialPanelState).toBe('note/n1');
