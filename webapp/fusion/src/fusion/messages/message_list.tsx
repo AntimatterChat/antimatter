@@ -54,7 +54,13 @@ function CombinedActivity({id}: {id: string}) {
 
 type Props = {
     channelId: string;
+
+    // The message a link opened: the list loads and opens around it.
     focusedPostId?: string;
+
+    // Whether that message is highlighted: while the address names it. Once it doesn't, the list stays where it
+    // is, around the message, and the channel is read.
+    highlight?: boolean;
     scrollRef: React.RefObject<HTMLDivElement | null>;
 
     // What an empty conversation says.
@@ -66,7 +72,7 @@ type Props = {
 
 // MessageList renders a channel's messages top to bottom, loading older ones while scrolling up, like the classic
 // post list but without virtualization: the mockup's plain, selectable list.
-export default function MessageList({channelId, focusedPostId, scrollRef, emptyText, intro}: Props) {
+export default function MessageList({channelId, focusedPostId, highlight = true, scrollRef, emptyText, intro}: Props) {
     const {formatMessage} = useIntl();
     const dispatch = useDispatch();
     const dayLabel = useDayLabel();
@@ -124,6 +130,13 @@ export default function MessageList({channelId, focusedPostId, scrollRef, emptyT
         // Only when the channel or the linked message changes.
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [channelId, focusedPostId]);
+
+    // A linked message's highlight has ended: the reader has seen the conversation, as when it opens normally.
+    useEffect(() => {
+        if (focusedPostId && !highlight) {
+            dispatch(markChannelAsRead(channelId));
+        }
+    }, [channelId, focusedPostId, highlight, dispatch]);
 
     // Scrolling: start at the bottom (or the linked message), stay at the bottom as messages arrive, and keep the
     // reader's place when older messages are added above.
@@ -335,7 +348,7 @@ export default function MessageList({channelId, focusedPostId, scrollRef, emptyT
                         key={id}
                         postId={id}
                         previousPostId={prev}
-                        highlighted={id === focusedPostId}
+                        highlighted={highlight && id === focusedPostId}
                     />
                 );
             })}
