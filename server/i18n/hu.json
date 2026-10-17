@@ -205,7 +205,7 @@
   },
   {
     "id": "api.admin.test_email.body",
-    "translation": "Úgy tűnik a Antimatter e-mail helyesen van beállítva!"
+    "translation": "Úgy tűnik az Antimatter e-mail helyesen van beállítva!"
   },
   {
     "id": "api.admin.test_email.missing_server",
@@ -257,7 +257,7 @@
   },
   {
     "id": "api.bot.teams_channels.add_message_mobile",
-    "translation": "Kérem, adjon hozzá azokhoz a csapatokhoz és csatornákhoz, amelyekben szeretné, hogy részt vegyek. Ehhez használjon egy böngészőt vagy a Antimatter alkalmazást."
+    "translation": "Kérem, adjon hozzá azokhoz a csapatokhoz és csatornákhoz, amelyekben szeretné, hogy részt vegyek. Ehhez használjon egy böngészőt vagy az Antimatter alkalmazást."
   },
   {
     "id": "api.channel.add_guest.added",
@@ -1288,15 +1288,11 @@
   },
   {
     "id": "api.command_help.success",
-    "translation": "A Antimatter egy nyílt forráskódú platform a biztonságos kommunikációhoz, együttműködéshez és az eszközök és csapatok közötti munka összehangolásához.\nA Antimatter két kulcsfontosságú eszközt tartalmaz:\n\n**Csatornák** - Maradjon kapcsolatban csapatával 1:1 és csoportos üzenetküldéssel.\n**[Forgatókönyvek](/playbooks)** - Építsen és konfiguráljon megismételhető folyamatokat meghatározott és kiszámítható eredmények elérése érdekében.\n\n[Dokumentáció és útmutatók megtekintése]({{.HelpLink}})"
+    "translation": "Az Antimatter egy nyílt forráskódú platform a biztonságos kommunikációhoz, együttműködéshez és az eszközök és csapatok közötti munka összehangolásához.\nA Antimatter két kulcsfontosságú eszközt tartalmaz:\n\n**Csatornák** - Maradjon kapcsolatban csapatával 1:1 és csoportos üzenetküldéssel.\n**[Forgatókönyvek](/playbooks)** - Építsen és konfiguráljon megismételhető folyamatokat meghatározott és kiszámítható eredmények elérése érdekében.\n\n[Dokumentáció és útmutatók megtekintése]({{.HelpLink}})"
   },
   {
     "id": "api.command_invite.channel.app_error",
     "translation": "Hiba történt az aktuális csatorna lekérésekor."
-  },
-  {
-    "id": "api.command_invite.channel.error",
-    "translation": "Nem sikerült megtalálni a {{.Channel}} csatornát. A csatornák azonosításához használja a [csatorna azonosítót](https://docs.mattermost.com/messaging/managing-channels.html#naming-a-channel)."
   },
   {
     "id": "api.command_invite.channel_constrained_user_denied",
@@ -1333,10 +1329,6 @@
   {
     "id": "api.command_invite.permission.app_error",
     "translation": "Nincs elegendő jogosultsága, hogy hozzáadja a {{.User}} felhasználót a {{.Channel}} beszélgetéshez."
-  },
-  {
-    "id": "api.command_invite.private_channel.app_error",
-    "translation": "Nem található a {{.Channel}} csatorna. Kérjük, használja a csatorna azonosítót a csatornák beazonosításához."
   },
   {
     "id": "api.command_invite.success",
@@ -1411,7 +1403,7 @@
   },
   {
     "id": "api.command_logout.desc",
-    "translation": "Kijelentkezés a Mattermostból"
+    "translation": "Kijelentkezés az Antimatterből"
   },
   {
     "id": "api.command_logout.name",
@@ -1522,20 +1514,12 @@
     "translation": "Kikapcsolja az asztali, e-mail és push értesítéseket az aktuális csatornán vagy a megadott [channel] csatornán."
   },
   {
-    "id": "api.command_mute.error",
-    "translation": "Nem sikerült megtalálni a {{.Channel}} csatornát. A csatornák azonosításához használja a [csatorna azonosítót](https://docs.mattermost.com/messaging/managing-channels.html#naming-a-channel)."
-  },
-  {
     "id": "api.command_mute.hint",
     "translation": "~[csatorna]"
   },
   {
     "id": "api.command_mute.name",
     "translation": "némítás"
-  },
-  {
-    "id": "api.command_mute.no_channel.error",
-    "translation": "Nem található a megadott csatorna. A csatornák azonosításához használja a [csatorna azonosítót](https://docs.mattermost.com/messaging/managing-channels.html#naming-a-channel)."
   },
   {
     "id": "api.command_mute.success_mute",
@@ -1611,7 +1595,7 @@
   },
   {
     "id": "api.command_remote.desc",
-    "translation": "Hívjon meg biztonságos kapcsolatokat a Antimatter példányok közötti kommunikációhoz."
+    "translation": "Hívjon meg biztonságos kapcsolatokat az Antimatter példányok közötti kommunikációhoz."
   },
   {
     "id": "api.command_remote.displayname.help",
@@ -2003,7 +1987,7 @@
   },
   {
     "id": "api.config.update.elasticsearch.autocomplete_cannot_be_enabled_error",
-    "translation": "A csatorna automatikus kiegészítése nem engedélyezhető, mert a csatornaindex sémája elavult. Javasoljuk a csatornaindex újragenerálását. További információért lásd a Antimatter változásnaplóját"
+    "translation": "A csatorna automatikus kiegészítése nem engedélyezhető, mert a csatornaindex sémája elavult. Javasoljuk a csatornaindex újragenerálását. További információért lásd az Antimatter változásnaplóját"
   },
   {
     "id": "api.config.update_config.clear_siteurl.app_error",
@@ -4127,74 +4111,6 @@
     "translation": "Nem található a felhasználó."
   },
   {
-    "id": "api.templates.cloud_welcome_email.add_apps_info",
-    "translation": "Adjon hozzá alkalmazásokat a munkaterületéhez"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.add_apps_sub_info",
-    "translation": "Egyszerűsítse munkáját olyan eszközökkel mint GitHub, Jira és Zoom. Fedezze fel további integrációinkat"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.app_market_place",
-    "translation": "az alkalmazás piacon."
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.button",
-    "translation": "Mattermost megnyitása"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.download_mm_info",
-    "translation": "Mattermost alkalmazás letöltése"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.info",
-    "translation": "Köszönjük, hogy létrehozta "
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.info2",
-    "translation": "Ne felejtse el elmenteni vagy könyvjelzővel ellátni a linket későbbi használatra."
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.invite_info",
-    "translation": "Hívjon meg másokat a munkaterületére"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.invite_sub_info",
-    "translation": "Ossza meg ezt a linket, hogy meghívja tagjait a {{.WorkSpace}} munakterületre:"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.mm_apps",
-    "translation": "mobil és asztali alkalmazásokkal"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.signin_sub_info",
-    "translation": "Jelentkezzen be a munkaterületére a"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.signin_sub_info2",
-    "translation": "a legjobb élmény érdekében Windows-on, Linux-on, Mac-en, iOS-en és Androidon."
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.start_questions",
-    "translation": "Kérdései vannak az indulásról? Írjon nekünk a következő címre"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.subject",
-    "translation": "Gratulálunk!"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.subtitle",
-    "translation": "Állítsa be munkaterületét"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.subtitle_info",
-    "translation": "Tegye meg a következő lépéseket csapatai felépítéséhez és a lehető legtöbb kihozásához a munkaterületből."
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.title",
-    "translation": "A munkaterülete készen áll a használatra!"
-  },
-  {
     "id": "api.templates.deactivate_body.info",
     "translation": "Deaktiválta a fiókját a {{ .SiteURL }} oldalon."
   },
@@ -4272,7 +4188,7 @@
   },
   {
     "id": "api.templates.guest_magic_link_body.footer.info",
-    "translation": "Ezt az e-mailt azért kapta, mert valaki bejelentkezési linket kért a Antimatterhoz. Ha nem Ön kérte, nyugodtan figyelmen kívül hagyhatja ezt az e-mailt."
+    "translation": "Ezt az e-mailt azért kapta, mert valaki bejelentkezési linket kért az Antimatterhoz. Ha nem Ön kérte, nyugodtan figyelmen kívül hagyhatja ezt az e-mailt."
   },
   {
     "id": "api.templates.guest_magic_link_body.footer.title",
@@ -4284,7 +4200,7 @@
   },
   {
     "id": "api.templates.guest_magic_link_body.title",
-    "translation": "Bejelentkezés a Antimatterba"
+    "translation": "Bejelentkezés az Antimatterba"
   },
   {
     "id": "api.templates.guest_magic_link_subject",
@@ -4296,7 +4212,7 @@
   },
   {
     "id": "api.templates.invite_body.subTitle",
-    "translation": "Kezdjen el együttműködni a csapatával a Mattermost-on"
+    "translation": "Kezdjen el együttműködni a csapatával az Antimatteren"
   },
   {
     "id": "api.templates.invite_body.title",
@@ -4308,7 +4224,7 @@
   },
   {
     "id": "api.templates.invite_body_footer.info",
-    "translation": "A Antimatter egy rugalmas, nyílt forráskódú üzenetküldő platform, amely biztonságos csapat együttműködést tesz lehetővé."
+    "translation": "Az Antimatter egy rugalmas, nyílt forráskódú üzenetküldő platform, amely biztonságos csapat együttműködést tesz lehetővé."
   },
   {
     "id": "api.templates.invite_body_footer.learn_more",
@@ -4316,7 +4232,7 @@
   },
   {
     "id": "api.templates.invite_body_footer.title",
-    "translation": "Mi az a Antimatter?"
+    "translation": "Mi az az Antimatter?"
   },
   {
     "id": "api.templates.invite_body_guest.subTitle",
@@ -4440,7 +4356,7 @@
   },
   {
     "id": "api.templates.post_body.button",
-    "translation": "Válasz a Mattermostban"
+    "translation": "Válasz az Antimatterben"
   },
   {
     "id": "api.templates.questions_footer.info",
@@ -4544,7 +4460,7 @@
   },
   {
     "id": "api.templates.verify_body.info",
-    "translation": "Ez az e-mail cím volt használva a Antimatter fiók létrehozásakor."
+    "translation": "Ez az e-mail cím volt használva az Antimatter fiók létrehozásakor."
   },
   {
     "id": "api.templates.verify_body.info1",
@@ -4880,7 +4796,7 @@
   },
   {
     "id": "api.user.delete_channel.not_enabled.for_admin.app_error",
-    "translation": "A végleges csatorna törlés funkció nincs engedélyezve. A parancs használatához a ServiceSettings.EnableAPIChannelDeletion beállítást true értékre kell állítani. További információ: https://mattermost.com/pl/environment-configuration-settings"
+    "translation": "A végleges csatorna törlés funkció nincs engedélyezve. A parancs használatához a ServiceSettings.EnableAPIChannelDeletion beállítást true értékre kell állítani. További információ: https://antimatter.chat/docs/admins/configuration.html"
   },
   {
     "id": "api.user.delete_team.not_enabled.app_error",
@@ -4888,7 +4804,7 @@
   },
   {
     "id": "api.user.delete_team.not_enabled.for_admin.app_error",
-    "translation": "A végleges csapat törlés funkció nincs engedélyezve. A parancs használatához a ServiceSettings.EnableAPITeamDeletion beállítást true értékre kell állítani. További információ: https://mattermost.com/pl/environment-configuration-settings."
+    "translation": "A végleges csapat törlés funkció nincs engedélyezve. A parancs használatához a ServiceSettings.EnableAPITeamDeletion beállítást true értékre kell állítani. További információ: https://antimatter.chat/docs/admins/configuration.html."
   },
   {
     "id": "api.user.delete_user.not_enabled.app_error",
@@ -4896,7 +4812,7 @@
   },
   {
     "id": "api.user.delete_user.not_enabled.for_admin.app_error",
-    "translation": "A végleges felhasználó törlés funkció nincs engedélyezve. A parancs használatához a ServiceSettings.EnableAPIUserDeletion beállítást true értékre kell állítani. További információ: https://mattermost.com/pl/environment-configuration-settings."
+    "translation": "A végleges felhasználó törlés funkció nincs engedélyezve. A parancs használatához a ServiceSettings.EnableAPIUserDeletion beállítást true értékre kell állítani. További információ: https://antimatter.chat/docs/admins/configuration.html."
   },
   {
     "id": "api.user.demote_user_to_guest.already_guest.app_error",
@@ -5173,10 +5089,6 @@
   {
     "id": "api.user.saml.relay_state_too_long.app_error",
     "translation": "A SAML relay state túl hosszú."
-  },
-  {
-    "id": "api.user.send_cloud_welcome_email.error",
-    "translation": "Nem sikerült elküldeni a Cloud üdvözlő e-mailt"
   },
   {
     "id": "api.user.send_deactivate_email_and_forget.failed.error",
@@ -5628,7 +5540,7 @@
   },
   {
     "id": "app.bot.get_disable_bot_sysadmin_message",
-    "translation": "{{if .disableBotsSetting}}{{if .printAllBots}}{{.UserName}} ki lett kapcsolva. A következő bot fiókokat kezelték, amelyek le lettek tiltva.\n\n{{.BotNames}}{{else}}{{.UserName}} tiltásra került. Ők kezeltek {{.NumBots}} botfiókot, amelyek le lettek tiltva, beleértve a következőket:\n\n{{.BotNames}}{{end}}Az egyes botok tulajdonjogát úgy veheti át, hogy engedélyezi őket az **Integrációk > Botfiókok** menüpontban, és új tokeneket hoz létre a bothoz.\n\nTovábbi információért lásd a [dokumentációnkat](https://docs.mattermost.com/developer/bot-accounts.html#what-happens-when-a-user-who-owns-bot-accounts-is-disabled).{{else}}{{if .printAllBots}}{{.UserName}} letiltásra került. A következő botfiókokat kezelték, amelyek még mindig engedélyezve vannak.\n\n{{.BotNames}}\n{{else}}{{.UserName}} letiltásra került. Ők kezelték a még mindig engedélyezett {{.NumBots}} botfiókokat, köztük a következőket:\n\n{{.BotNames}}{{end}}Nyomatékosan javasoljuk, hogy vegye tulajdonába az egyes botokat, és engedélyezze újra a **Integrációk > Botfiókok** menüpontban, és hozzon létre új tokeneket a bothoz.\n\nTovábbi információért lásd a [dokumentációnkat](https://docs.mattermost.com/developer/bot-accounts.html#what-happens-when-a-user-who-owns-bot-accounts-is-disabled).\n\nHa azt szeretné, hogy a botfiókok automatikusan kikapcsolódjanak a tulajdonos litáltása után, állítsa a **Rendszerkonzol > Integrációk > Botfiókok** pontban a \"Botfiókok kikapcsolása, ha a tulajdonos letiltásra kerül\" opciót igazra.{{end}}"
+    "translation": "{{if .disableBotsSetting}}{{if .printAllBots}}{{.UserName}} ki lett kapcsolva. A következő bot fiókokat kezelték, amelyek le lettek tiltva.\n\n{{.BotNames}}{{else}}{{.UserName}} tiltásra került. Ők kezeltek {{.NumBots}} botfiókot, amelyek le lettek tiltva, beleértve a következőket:\n\n{{.BotNames}}{{end}}Az egyes botok tulajdonjogát úgy veheti át, hogy engedélyezi őket az **Integrációk > Botfiókok** menüpontban, és új tokeneket hoz létre a bothoz.\n\nTovábbi információért lásd a [dokumentációnkat](https://antimatter.chat/docs/developers/bots.html#enable).{{else}}{{if .printAllBots}}{{.UserName}} letiltásra került. A következő botfiókokat kezelték, amelyek még mindig engedélyezve vannak.\n\n{{.BotNames}}\n{{else}}{{.UserName}} letiltásra került. Ők kezelték a még mindig engedélyezett {{.NumBots}} botfiókokat, köztük a következőket:\n\n{{.BotNames}}{{end}}Nyomatékosan javasoljuk, hogy vegye tulajdonába az egyes botokat, és engedélyezze újra a **Integrációk > Botfiókok** menüpontban, és hozzon létre új tokeneket a bothoz.\n\nTovábbi információért lásd a [dokumentációnkat](https://antimatter.chat/docs/developers/bots.html#enable).\n\nHa azt szeretné, hogy a botfiókok automatikusan kikapcsolódjanak a tulajdonos litáltása után, állítsa a **Rendszerkonzol > Integrációk > Botfiókok** pontban a \"Botfiókok kikapcsolása, ha a tulajdonos letiltásra kerül\" opciót igazra.{{end}}"
   },
   {
     "id": "app.bot.get_system_bot.empty_admin_list.app_error",
@@ -8162,7 +8074,7 @@
   },
   {
     "id": "app.notification.footer.infoLogin",
-    "translation": "Bejelentkezés a Mattermostba"
+    "translation": "Bejelentkezés az Antimatterbe"
   },
   {
     "id": "app.notification.footer.title",
@@ -11336,7 +11248,7 @@
   },
   {
     "id": "ent.intune.login.account_not_found.app_error",
-    "translation": "Fiókja még nincs teljesen beállítva. Kérjük, először jelentkezzen be a Antimatterba a webes vagy az asztali alkalmazáson keresztül."
+    "translation": "Fiókja még nincs teljesen beállítva. Kérjük, először jelentkezzen be az Antimatterba a webes vagy az asztali alkalmazáson keresztül."
   },
   {
     "id": "ent.intune.login.extract_auth_data.app_error",
@@ -11428,7 +11340,7 @@
   },
   {
     "id": "ent.ldap.do_login.user_filtered.app_error",
-    "translation": "Az Ön AD/LDAP fiókjának nincs jogosultsága, hogy használja ezt a Antimatter szervert. Kérje meg a rendszergazdát, hogy ellenőrizze az AD/LDAP felhasználói szűrőt."
+    "translation": "Az Ön AD/LDAP fiókjának nincs jogosultsága, hogy használja ezt az Antimatter szervert. Kérje meg a rendszergazdát, hogy ellenőrizze az AD/LDAP felhasználói szűrőt."
   },
   {
     "id": "ent.ldap.do_login.user_not_registered.app_error",
@@ -11472,11 +11384,7 @@
   },
   {
     "id": "ent.ldap.syncronize.search_failure.app_error",
-    "translation": "Nem sikerült a felhasználók keresése az AD/LDAP-ban. Ellenőrizze, hogy a Antimatter szerver képes-e csatlakozni az AD/LDAP szerverhez, és próbálja újra."
-  },
-  {
-    "id": "ent.ldap.syncronize.search_failure_size_exceeded.app_error",
-    "translation": "Méret korlát túllépve. Próbálja meg ellenőrizni a [maximális oldalméretet](https://docs.mattermost.com/deployment/sso-ldap.html#i-see-the-log-error-ldap-result-code-4-size-limit-exceeded)."
+    "translation": "Nem sikerült a felhasználók keresése az AD/LDAP-ban. Ellenőrizze, hogy az Antimatter szerver képes-e csatlakozni az AD/LDAP szerverhez, és próbálja újra."
   },
   {
     "id": "ent.ldap.update_cpa.empty_attribute",
@@ -12700,7 +12608,7 @@
   },
   {
     "id": "model.config.is_valid.atmos_camo_image_proxy_removed.app_error",
-    "translation": "Az 'atmos/camo' képproxy-típust eltávolították a Antimatter v12.0 verziójában. Állítsa az ImageProxySettings.ImageProxyType értékét 'local'-ra, vagy a képproxy kikapcsolásához állítsa az ImageProxySettings.Enable értékét false-ra."
+    "translation": "Az 'atmos/camo' képproxy-típust eltávolították az Antimatter v12.0 verziójában. Állítsa az ImageProxySettings.ImageProxyType értékét 'local'-ra, vagy a képproxy kikapcsolásához állítsa az ImageProxySettings.Enable értékét false-ra."
   },
   {
     "id": "model.config.is_valid.autotranslation.agents.llm_service_id.app_error",
@@ -14852,7 +14760,7 @@
   },
   {
     "id": "oauth.gitlab.tos.error",
-    "translation": "A GitLab Általános Szerződési Feltételei frissültek. Kérjük, látogassa meg a {{.URL}} webhelyet, hogy elfogadja őket, majd próbáljon meg újra bejelentkezni a Mattermost-ba."
+    "translation": "A GitLab Általános Szerződési Feltételei frissültek. Kérjük, látogassa meg a {{.URL}} webhelyet, hogy elfogadja őket, majd próbáljon meg újra bejelentkezni az Antimatterbe."
   },
   {
     "id": "plugin.api.get_users_in_channel",
@@ -15035,10 +14943,6 @@
     "translation": "Töltse le az alkalmazást"
   },
   {
-    "id": "web.error.unsupported_browser.download_app_or_upgrade_browser",
-    "translation": "Töltse le a Mattermost alkalmazást, vagy használjon támogatott böngészőt a jobb élmény érdekében."
-  },
-  {
     "id": "web.error.unsupported_browser.download_the_app",
     "translation": "Töltse le az alkalmazást"
   },
@@ -15049,10 +14953,6 @@
   {
     "id": "web.error.unsupported_browser.install_guide.windows",
     "translation": "Telepítési útmutató"
-  },
-  {
-    "id": "web.error.unsupported_browser.learn_more",
-    "translation": "További információ a támogatott böngészőkről."
   },
   {
     "id": "web.error.unsupported_browser.min_browser_version.chrome",
@@ -15080,11 +14980,11 @@
   },
   {
     "id": "web.error.unsupported_browser.no_longer_support",
-    "translation": "Ezt a böngészőt a Antimatter már nem támogatja"
+    "translation": "Ezt a böngészőt az Antimatter már nem támogatja"
   },
   {
     "id": "web.error.unsupported_browser.no_longer_support_version",
-    "translation": "A Antimatter már nem támogatja a böngésző ezen verzióját"
+    "translation": "Az Antimatter már nem támogatja a böngésző ezen verzióját"
   },
   {
     "id": "web.error.unsupported_browser.open_system_browser.edge",

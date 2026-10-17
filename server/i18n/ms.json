@@ -1252,10 +1252,6 @@
     "translation": "Ralat dalam mendapatkan saluran semasa."
   },
   {
-    "id": "api.command_invite.channel.error",
-    "translation": "Saluran {{.Channel}} tidak dapat ditemui. Sila gunakan [penangan saluran](https://docs.mattermost.com/messaging/managing-channels.html#naming-a-channel) untuk mengenal pasti saluran."
-  },
-  {
     "id": "api.command_invite.channel_constrained_user_denied",
     "translation": "Saluran ini dikendalikan oleh kumpulan. Pengguna ini bukan sebahagian daripada kumpulan yang diselaraskan dengan saluran ini."
   },
@@ -1290,10 +1286,6 @@
   {
     "id": "api.command_invite.permission.app_error",
     "translation": "Anda tidak mempunyai kebenaran yang mencukupi untuk menambah {{.User}} ke {{.Channel}}."
-  },
-  {
-    "id": "api.command_invite.private_channel.app_error",
-    "translation": "Saluran {{.Channel}} tidak dapat ditemui. Sila gunakan [penangan saluran](https://docs.mattermost.com/messaging/managing-channels.html#naming-a-channel) untuk mengenal pasti saluran."
   },
   {
     "id": "api.command_invite.success",
@@ -1472,20 +1464,12 @@
     "translation": "Matikan pemberitahuan desktop, e-mel dan push untuk saluran semasa atau saluran [saluran] yang dinyatakan."
   },
   {
-    "id": "api.command_mute.error",
-    "translation": "Tidak dapat mencari saluran {{.Channel}}. Sila gunakan [penangan saluran](https://docs.mattermost.com/messaging/managing-channels.html#naming-a-channel) untuk mengenal pasti saluran."
-  },
-  {
     "id": "api.command_mute.hint",
     "translation": "~[saluran]"
   },
   {
     "id": "api.command_mute.name",
     "translation": "senyap"
-  },
-  {
-    "id": "api.command_mute.no_channel.error",
-    "translation": "Tidak dapat mencari saluran yang dinyatakan. Sila gunakan [penangan saluran](https://docs.mattermost.com/messaging/managing-channels.html#naming-a-channel) untuk mengenal pasti saluran."
   },
   {
     "id": "api.command_mute.success_mute",
@@ -3868,74 +3852,6 @@
     "translation": "Tidak dapat mencari pengguna."
   },
   {
-    "id": "api.templates.cloud_welcome_email.add_apps_info",
-    "translation": "Tambah aplikasi ke ruang kerja anda"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.add_apps_sub_info",
-    "translation": "Permudahkan kerja anda dengan alat seperti GitHub, Jira dan Zoom. Terokai semua integrasi yang kami ada di"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.app_market_place",
-    "translation": "pasaran aplikasi kami."
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.button",
-    "translation": "Buka Mattermost"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.download_mm_info",
-    "translation": "Muat turun Aplikasi Mattermost"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.info",
-    "translation": "Terima kasih kerana mencipta "
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.info2",
-    "translation": "Pastikan anda menyimpan atau menanda pautan anda untuk penggunaan masa hadapan."
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.invite_info",
-    "translation": "Jemput orang ke ruang kerja anda"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.invite_sub_info",
-    "translation": "Kongsi pautan ini untuk menjemput ahli anda menyertai {{.WorkSpace}}:"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.mm_apps",
-    "translation": "aplikasi mudah alih dan desktop"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.signin_sub_info",
-    "translation": "Log masuk ke ruang kerja anda di"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.signin_sub_info2",
-    "translation": "untuk pengalaman terbaik pada Windows, Linux, Mac, iOS dan Android."
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.start_questions",
-    "translation": "Ada soalan tentang cara bermula? E-mel kami di"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.subject",
-    "translation": "Tahniah!"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.subtitle",
-    "translation": "Tetapkan ruang kerja anda"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.subtitle_info",
-    "translation": "Lakukan langkah-langkah berikut untuk membina pasukan anda dan mendapatkan manfaat maksimum daripada ruang kerja anda."
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.title",
-    "translation": "Ruang kerja anda sedia digunakan!"
-  },
-  {
     "id": "api.templates.deactivate_body.info",
     "translation": "Anda telah melumpuhkan akaun anda di {{ .SiteURL }}."
   },
@@ -4521,7 +4437,7 @@
   },
   {
     "id": "api.user.delete_channel.not_enabled.for_admin.app_error",
-    "translation": "Ciri penghapusan saluran kekal tidak diaktifkan. ServiceSettings.EnableAPIChannelDeletion mesti ditetapkan kepada true untuk menggunakan arahan ini. Lihat https://mattermost.com/pl/environment-configuration-settings untuk maklumat lanjut"
+    "translation": "Ciri penghapusan saluran kekal tidak diaktifkan. ServiceSettings.EnableAPIChannelDeletion mesti ditetapkan kepada true untuk menggunakan arahan ini. Lihat https://antimatter.chat/docs/admins/configuration.html untuk maklumat lanjut"
   },
   {
     "id": "api.user.delete_team.not_enabled.app_error",
@@ -4529,7 +4445,7 @@
   },
   {
     "id": "api.user.delete_team.not_enabled.for_admin.app_error",
-    "translation": "Ciri penghapusan pasukan kekal tidak diaktifkan. ServiceSettings.EnableAPITeamDeletion mesti ditetapkan kepada true untuk menggunakan arahan ini. Lihat https://mattermost.com/pl/environment-configuration-settings untuk maklumat lanjut."
+    "translation": "Ciri penghapusan pasukan kekal tidak diaktifkan. ServiceSettings.EnableAPITeamDeletion mesti ditetapkan kepada true untuk menggunakan arahan ini. Lihat https://antimatter.chat/docs/admins/configuration.html untuk maklumat lanjut."
   },
   {
     "id": "api.user.delete_user.not_enabled.app_error",
@@ -4537,7 +4453,7 @@
   },
   {
     "id": "api.user.delete_user.not_enabled.for_admin.app_error",
-    "translation": "Ciri penghapusan pengguna kekal tidak diaktifkan. ServiceSettings.EnableAPIUserDeletion mesti ditetapkan kepada true untuk menggunakan arahan ini. Lihat https://mattermost.com/pl/environment-configuration-settings untuk maklumat lanjut."
+    "translation": "Ciri penghapusan pengguna kekal tidak diaktifkan. ServiceSettings.EnableAPIUserDeletion mesti ditetapkan kepada true untuk menggunakan arahan ini. Lihat https://antimatter.chat/docs/admins/configuration.html untuk maklumat lanjut."
   },
   {
     "id": "api.user.demote_user_to_guest.already_guest.app_error",
@@ -4802,10 +4718,6 @@
   {
     "id": "api.user.saml.relay_state_too_long.app_error",
     "translation": "Keadaan relay SAML terlalu panjang."
-  },
-  {
-    "id": "api.user.send_cloud_welcome_email.error",
-    "translation": "Gagal menghantar e-mel alu-aluan awan"
   },
   {
     "id": "api.user.send_deactivate_email_and_forget.failed.error",
@@ -5253,7 +5165,7 @@
   },
   {
     "id": "app.bot.get_disable_bot_sysadmin_message",
-    "translation": "{{if .disableBotsSetting}}{{if .printAllBots}}{{.UserName}} telah dinyahaktifkan. Mereka mengurus akaun bot berikut yang kini telah dinyahaktifkan.\n\n{{.BotNames}}{{else}}{{.UserName}} telah dinyahaktifkan. Mereka mengurus {{.NumBots}} akaun bot yang kini telah dinyahaktifkan, termasuk yang berikut:\n\n{{.BotNames}}{{end}}Anda boleh mengambil alih setiap bot dengan mengaktifkannya di **Integrations > Bot Accounts** dan mencipta token baharu untuk bot tersebut.\n\nUntuk maklumat lanjut, lihat [dokumentasi](https://docs.mattermost.com/developer/bot-accounts.html#what-happens-when-a-user-who-owns-bot-accounts-is-disabled) kami.{{else}}{{if .printAllBots}}{{.UserName}} telah dinyahaktifkan. Mereka mengurus akaun bot berikut yang masih aktif.\n\n{{.BotNames}}\n{{else}}{{.UserName}} telah dinyahaktifkan. Mereka mengurus {{.NumBots}} akaun bot yang masih aktif, termasuk yang berikut:\n\n{{.BotNames}}{{end}}Kami sangat mengesyorkan anda mengambil alih setiap bot dengan mengaktifkannya semula di **Integrations > Bot Accounts** dan mencipta token baharu untuk bot tersebut.\n\nUntuk maklumat lanjut, lihat [dokumentasi](https://docs.mattermost.com/developer/bot-accounts.html#what-happens-when-a-user-who-owns-bot-accounts-is-disabled) kami.\n\nJika anda mahu akaun bot dinyahaktifkan secara automatik selepas pemilik dinyahaktifkan, tetapkan “Disable bot accounts when owner is deactivated” di **System Console > Integrations > Bot Accounts** kepada true.{{end}}"
+    "translation": "{{if .disableBotsSetting}}{{if .printAllBots}}{{.UserName}} telah dinyahaktifkan. Mereka mengurus akaun bot berikut yang kini telah dinyahaktifkan.\n\n{{.BotNames}}{{else}}{{.UserName}} telah dinyahaktifkan. Mereka mengurus {{.NumBots}} akaun bot yang kini telah dinyahaktifkan, termasuk yang berikut:\n\n{{.BotNames}}{{end}}Anda boleh mengambil alih setiap bot dengan mengaktifkannya di **Integrations > Bot Accounts** dan mencipta token baharu untuk bot tersebut.\n\nUntuk maklumat lanjut, lihat [dokumentasi](https://antimatter.chat/docs/developers/bots.html#enable) kami.{{else}}{{if .printAllBots}}{{.UserName}} telah dinyahaktifkan. Mereka mengurus akaun bot berikut yang masih aktif.\n\n{{.BotNames}}\n{{else}}{{.UserName}} telah dinyahaktifkan. Mereka mengurus {{.NumBots}} akaun bot yang masih aktif, termasuk yang berikut:\n\n{{.BotNames}}{{end}}Kami sangat mengesyorkan anda mengambil alih setiap bot dengan mengaktifkannya semula di **Integrations > Bot Accounts** dan mencipta token baharu untuk bot tersebut.\n\nUntuk maklumat lanjut, lihat [dokumentasi](https://antimatter.chat/docs/developers/bots.html#enable) kami.\n\nJika anda mahu akaun bot dinyahaktifkan secara automatik selepas pemilik dinyahaktifkan, tetapkan “Disable bot accounts when owner is deactivated” di **System Console > Integrations > Bot Accounts** kepada true.{{end}}"
   },
   {
     "id": "app.bot.get_system_bot.empty_admin_list.app_error",
@@ -10864,10 +10776,6 @@
     "translation": "ralat mengisi item yang boleh disegerak"
   },
   {
-    "id": "ent.ldap.syncronize.search_failure_size_exceeded.app_error",
-    "translation": "Had Saiz Dilampaui. Cuba tingkatkan tetapan Saiz halaman Maksimum anda. Lihat https://docs.mattermost.com/onboard/ad-ldap.html#i-see-the-log-error-ldap-result-code-4-size-limit-exceeded untuk butiran lanjut."
-  },
-  {
     "id": "ent.ldap.validate_admin_filter.app_error",
     "translation": "Penapis Pentadbir AD/LDAP tidak sah."
   },
@@ -14312,10 +14220,6 @@
     "translation": "Muat Turun Aplikasi"
   },
   {
-    "id": "web.error.unsupported_browser.download_app_or_upgrade_browser",
-    "translation": "Muat turun aplikasi Mattermost atau gunakan pelayar yang disokong untuk pengalaman yang lebih baik."
-  },
-  {
     "id": "web.error.unsupported_browser.download_the_app",
     "translation": "Muat Turun Aplikasi"
   },
@@ -14326,10 +14230,6 @@
   {
     "id": "web.error.unsupported_browser.install_guide.windows",
     "translation": "Panduan Pemasangan"
-  },
-  {
-    "id": "web.error.unsupported_browser.learn_more",
-    "translation": "Ketahui lebih lanjut tentang pelayar yang disokong."
   },
   {
     "id": "web.error.unsupported_browser.min_browser_version.chrome",

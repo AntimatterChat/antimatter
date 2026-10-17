@@ -29,7 +29,7 @@ const (
 var DBPingCmd = &cobra.Command{
 	Use:   "ping",
 	Short: "Wait for the database to become reachable",
-	Long: `Pings the configured Mattermost database, retrying until --timeout expires.
+	Long: `Pings the configured Antimatter database, retrying until --timeout expires.
 Exits 0 once the database accepts a ping. Exits non-zero on timeout or fatal error.
 
 Intended for use as a readiness probe (e.g. a Kubernetes init container).

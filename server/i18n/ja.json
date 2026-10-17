@@ -257,7 +257,7 @@
   },
   {
     "id": "api.bot.teams_channels.add_message_mobile",
-    "translation": "ブラウザ、もしくはMattermostデスクトップアプリから、Botをチーム・チャンネルに追加してください。"
+    "translation": "ブラウザ、もしくはAntimatterデスクトップアプリから、Botをチーム・チャンネルに追加してください。"
   },
   {
     "id": "api.channel.add_guest.added",
@@ -897,7 +897,7 @@
   },
   {
     "id": "api.command.invite_people.desc",
-    "translation": "あなたのMattermostチームへ招待する電子メールを送る"
+    "translation": "あなたのAntimatterチームへ招待する電子メールを送る"
   },
   {
     "id": "api.command.invite_people.email_invitations_off",
@@ -1279,7 +1279,7 @@
   },
   {
     "id": "api.command_help.desc",
-    "translation": "Mattermostヘルプメッセージを表示"
+    "translation": "Antimatterヘルプメッセージを表示"
   },
   {
     "id": "api.command_help.name",
@@ -1292,10 +1292,6 @@
   {
     "id": "api.command_invite.channel.app_error",
     "translation": "現在のチャンネルを取得する際にエラーが発生しました。"
-  },
-  {
-    "id": "api.command_invite.channel.error",
-    "translation": "チャンネル {{.Channel}} が見つかりませんでした。チャンネルの指定には[チャンネルのハンドル名](https://docs.mattermost.com/messaging/managing-channels.html#naming-a-channel)を使用してください。"
   },
   {
     "id": "api.command_invite.channel_constrained_user_denied",
@@ -1332,10 +1328,6 @@
   {
     "id": "api.command_invite.permission.app_error",
     "translation": "{{.User}} を {{.Channel}} に追加する権限がありません。"
-  },
-  {
-    "id": "api.command_invite.private_channel.app_error",
-    "translation": "チャンネル {{.Channel}} が見つかりませんでした。チャンネルの指定には[チャンネルのハンドル名](https://docs.mattermost.com/messaging/managing-channels.html#naming-a-channel)を使用してください。"
   },
   {
     "id": "api.command_invite.success",
@@ -1409,7 +1401,7 @@
   },
   {
     "id": "api.command_logout.desc",
-    "translation": "Mattermostからログアウトする"
+    "translation": "Antimatterからログアウトする"
   },
   {
     "id": "api.command_logout.name",
@@ -1520,20 +1512,12 @@
     "translation": "現在のチャンネル、もしくは指定された [チャンネル] のデスクトップ、電子メール、プッシュ通知をオフにする。"
   },
   {
-    "id": "api.command_mute.error",
-    "translation": "チャンネル {{.Channel}} が見つかりませんでした。チャンネルの指定には[チャンネルのハンドル名](https://docs.mattermost.com/messaging/managing-channels.html#naming-a-channel)を使用してください。"
-  },
-  {
     "id": "api.command_mute.hint",
     "translation": "~[チャンネル]"
   },
   {
     "id": "api.command_mute.name",
     "translation": "ミュート"
-  },
-  {
-    "id": "api.command_mute.no_channel.error",
-    "translation": "指定したチャンネルが見つかりませんでした。チャンネルの指定には[チャンネルのハンドル名](https://docs.mattermost.com/messaging/managing-channels.html#naming-a-channel)を使用してください。"
   },
   {
     "id": "api.command_mute.success_mute",
@@ -1581,7 +1565,7 @@
   },
   {
     "id": "api.command_remote.accept.help",
-    "translation": "外部のMattermostインスタンスからの招待を受け付ける"
+    "translation": "外部のAntimatterインスタンスからの招待を受け付ける"
   },
   {
     "id": "api.command_remote.accept_invitation",
@@ -1609,7 +1593,7 @@
   },
   {
     "id": "api.command_remote.desc",
-    "translation": "Mattermostインスタンス間のコミュニケーションのために、安全な接続を構築します。"
+    "translation": "Antimatterインスタンス間のコミュニケーションのために、安全な接続を構築します。"
   },
   {
     "id": "api.command_remote.displayname.help",
@@ -1657,7 +1641,7 @@
   },
   {
     "id": "api.command_remote.invite_summary",
-    "translation": "以下の AES-256bit で暗号化されたデータを、パスワードと共に外部Mattermostのシステム管理者に送信します。彼らは `{{.Command}}` のスラッシュコマンドを使って招待を受け付けます。\n\n```\n{{.Invitation}}\n```\n\n**安全な接続により、あなたのMattermostインスタンスに次のURLでアクセスできるようにします** {{.SiteURL}}"
+    "translation": "以下の AES-256bit で暗号化されたデータを、パスワードと共に外部Antimatterのシステム管理者に送信します。彼らは `{{.Command}}` のスラッシュコマンドを使って招待を受け付けます。\n\n```\n{{.Invitation}}\n```\n\n**安全な接続により、あなたのAntimatterインスタンスに次のURLでアクセスできるようにします** {{.SiteURL}}"
   },
   {
     "id": "api.command_remote.missing_command",
@@ -1833,7 +1817,7 @@
   },
   {
     "id": "api.command_share.desc",
-    "translation": "現在のチャンネルを外部Mattermostインスタンスへ共有します。"
+    "translation": "現在のチャンネルを外部Antimatterインスタンスへ共有します。"
   },
   {
     "id": "api.command_share.fetch_remote.error",
@@ -1857,7 +1841,7 @@
   },
   {
     "id": "api.command_share.invite_remote.help",
-    "translation": "現在の共有チャンネルに外部Mattermostインスタンスを招待する"
+    "translation": "現在の共有チャンネルに外部Antimatterインスタンスを招待する"
   },
   {
     "id": "api.command_share.invite_remote_to_channel.error",
@@ -2001,7 +1985,7 @@
   },
   {
     "id": "api.config.update.elasticsearch.autocomplete_cannot_be_enabled_error",
-    "translation": "チャンネルインデックススキーマが古いため、チャンネル自動補完を有効にできません。チャンネルインデックスを再生成してください。詳しくはMattermost changelogを参照してください"
+    "translation": "チャンネルインデックススキーマが古いため、チャンネル自動補完を有効にできません。チャンネルインデックスを再生成してください。詳しくはAntimatter changelogを参照してください"
   },
   {
     "id": "api.config.update_config.clear_siteurl.app_error",
@@ -2297,7 +2281,7 @@
   },
   {
     "id": "api.email_batching.send_batched_email_notification.button",
-    "translation": "Mattermostを開く"
+    "translation": "Antimatterを開く"
   },
   {
     "id": "api.email_batching.send_batched_email_notification.messageButton",
@@ -4094,74 +4078,6 @@
     "translation": "ユーザーが見つかりませんでした。"
   },
   {
-    "id": "api.templates.cloud_welcome_email.add_apps_info",
-    "translation": "ワークスペースにアプリを追加する"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.add_apps_sub_info",
-    "translation": "GitHub、Jira、Zoomなどのツールを使って仕事を効率化しましょう。我々のマーケットプレースですべての統合機能をご覧ください"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.app_market_place",
-    "translation": "アプリマーケットプレース。"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.button",
-    "translation": "Mattermostを開く"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.download_mm_info",
-    "translation": "Mattermostアプリをダウンロードする"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.info",
-    "translation": "作成してくれてありがとうございます "
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.info2",
-    "translation": "今後の使用のために、リンクを必ず保存またはブックマークしてください。"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.invite_info",
-    "translation": "ワークスペースにメンバーを招待する"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.invite_sub_info",
-    "translation": "このリンクを共有して、メンバーを {{.WorkSpace}} へ招待してください。"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.mm_apps",
-    "translation": "モバイルおよびデスクトップアプリ"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.signin_sub_info",
-    "translation": "ワークスペースにサインインしてください"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.signin_sub_info2",
-    "translation": "Windows、Linux、Mac、iOS、Androidで最高の体験を。"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.start_questions",
-    "translation": "利用を開始するにあたり、質問がありますか? メールにてお問い合わせください"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.subject",
-    "translation": "おめでとう!"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.subtitle",
-    "translation": "ワークスペースを設定する"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.subtitle_info",
-    "translation": "以下のステップにより、チームを構築し、ワークスペースを最大限に活用することができます。"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.title",
-    "translation": "ワークスペースの準備が整いました!"
-  },
-  {
     "id": "api.templates.deactivate_body.info",
     "translation": "{{ .SiteURL }}で、あなたのアカウントは無効化されました。"
   },
@@ -4263,7 +4179,7 @@
   },
   {
     "id": "api.templates.invite_body.subTitle",
-    "translation": "Mattermostでチームとの共同作業を始める"
+    "translation": "Antimatterでチームとの共同作業を始める"
   },
   {
     "id": "api.templates.invite_body.title",
@@ -4275,7 +4191,7 @@
   },
   {
     "id": "api.templates.invite_body_footer.info",
-    "translation": "Mattermostは、セキュアなチームコラボレーションを可能にする、柔軟なオープンソースのメッセージングプラットフォームです。"
+    "translation": "Antimatterは、セキュアなチームコラボレーションを可能にする、柔軟なオープンソースのメッセージングプラットフォームです。"
   },
   {
     "id": "api.templates.invite_body_footer.learn_more",
@@ -4283,7 +4199,7 @@
   },
   {
     "id": "api.templates.invite_body_footer.title",
-    "translation": "Mattermostとは?"
+    "translation": "Antimatterとは?"
   },
   {
     "id": "api.templates.invite_body_guest.subTitle",
@@ -4395,7 +4311,7 @@
   },
   {
     "id": "api.templates.post_body.button",
-    "translation": "Mattermostで返信する"
+    "translation": "Antimatterで返信する"
   },
   {
     "id": "api.templates.questions_footer.info",
@@ -4487,7 +4403,7 @@
   },
   {
     "id": "api.templates.verify_body.info",
-    "translation": "この電子メールアドレスがMattermostアカウントの作成に使用されました。"
+    "translation": "この電子メールアドレスがAntimatterアカウントの作成に使用されました。"
   },
   {
     "id": "api.templates.verify_body.info1",
@@ -4531,7 +4447,7 @@
   },
   {
     "id": "api.templates.welcome_body.info",
-    "translation": "この電子メールアドレスがMattermostアカウントの作成に使用されました。"
+    "translation": "この電子メールアドレスがAntimatterアカウントの作成に使用されました。"
   },
   {
     "id": "api.templates.welcome_body.info1",
@@ -4823,7 +4739,7 @@
   },
   {
     "id": "api.user.delete_channel.not_enabled.for_admin.app_error",
-    "translation": "永続的なチャンネル削除機能は有効になっていません。このコマンドを使用するには、ServiceSettings.EnableAPIChannelDeletionをtrueに設定する必要があります。詳細は https://mattermost.com/pl/environment-configuration-settings を参照してください"
+    "translation": "永続的なチャンネル削除機能は有効になっていません。このコマンドを使用するには、ServiceSettings.EnableAPIChannelDeletionをtrueに設定する必要があります。詳細は https://antimatter.chat/docs/admins/configuration.html を参照してください"
   },
   {
     "id": "api.user.delete_team.not_enabled.app_error",
@@ -4831,7 +4747,7 @@
   },
   {
     "id": "api.user.delete_team.not_enabled.for_admin.app_error",
-    "translation": "永続的なチーム削除機能は有効になっていません。このコマンドを使用するには、ServiceSettings.EnableAPITeamDeletionをtrueに設定する必要があります。詳細は https://mattermost.com/pl/environment-configuration-settings を参照してください。"
+    "translation": "永続的なチーム削除機能は有効になっていません。このコマンドを使用するには、ServiceSettings.EnableAPITeamDeletionをtrueに設定する必要があります。詳細は https://antimatter.chat/docs/admins/configuration.html を参照してください。"
   },
   {
     "id": "api.user.delete_user.not_enabled.app_error",
@@ -4839,7 +4755,7 @@
   },
   {
     "id": "api.user.delete_user.not_enabled.for_admin.app_error",
-    "translation": "永続的なユーザー削除機能は有効になっていません。このコマンドを使用するには、ServiceSettings.EnableAPIUserDeletionをtrueに設定する必要があります。詳細は https://mattermost.com/pl/environment-configuration-settings を参照してください。"
+    "translation": "永続的なユーザー削除機能は有効になっていません。このコマンドを使用するには、ServiceSettings.EnableAPIUserDeletionをtrueに設定する必要があります。詳細は https://antimatter.chat/docs/admins/configuration.html を参照してください。"
   },
   {
     "id": "api.user.demote_user_to_guest.already_guest.app_error",
@@ -5116,10 +5032,6 @@
   {
     "id": "api.user.saml.relay_state_too_long.app_error",
     "translation": "SAMLのリレーステートが長すぎます。"
-  },
-  {
-    "id": "api.user.send_cloud_welcome_email.error",
-    "translation": "クラウドウェルカムメールを送信できませんでした"
   },
   {
     "id": "api.user.send_deactivate_email_and_forget.failed.error",
@@ -5571,7 +5483,7 @@
   },
   {
     "id": "app.bot.get_disable_bot_sysadmin_message",
-    "translation": "{{if .disableBotsSetting}}{{if .printAllBots}}{{.UserName}} は無効化されています。現在無効化されている以下の Bot アカウントを管理していました。\n\n{{.BotNames}}{{else}}{{.UserName}} は無効化されています。 現在無効化されている以下の Bot アカウントを含む {{.NumBots}} 個の Bot アカウントを管理していました: \n\n{{.BotNames}}{{end}} **統合機能 > Botアカウント** からBotを有効にし、Bot用のトークンを新たに作成することで、これらのBotを引き継ぐことができます。\n\n詳しくは[説明文書](https://docs.mattermost.com/developer/bot-accounts.html#what-happens-when-a-user-who-owns-bot-accounts-is-disabled)を参照してください。{{else}}{{if .printAllBots}}{{.UserName}} は無効化されています。現在も有効化されている以下の Bot アカウントを管理していました。\n\n{{.BotNames}}\n{{else}}{{.UserName}} は無効化されています。以下を含む現在も有効な {{.NumBots}} 個の Bot アカウントを管理していました:\n\n{{.BotNames}}{{end}}**統合機能 > Botアカウント** から各Botを再度有効化し、Bot用のトークンを新たに生成してBotを引き継ぐことを強く推奨します。\n\n詳しくは[説明文書](https://docs.mattermost.com/developer/bot-accounts.html#what-happens-when-a-user-who-owns-bot-accounts-is-disabled)を参照してください。\n\nユーザーが無効化された際に自動でBotも無効化したい場合、**システムコンソール > 統合機能 > Botアカウント** の \"所有者が無効化された際にBotアカウントを無効化する\" を true にしてください。{{end}}"
+    "translation": "{{if .disableBotsSetting}}{{if .printAllBots}}{{.UserName}} は無効化されています。現在無効化されている以下の Bot アカウントを管理していました。\n\n{{.BotNames}}{{else}}{{.UserName}} は無効化されています。 現在無効化されている以下の Bot アカウントを含む {{.NumBots}} 個の Bot アカウントを管理していました: \n\n{{.BotNames}}{{end}} **統合機能 > Botアカウント** からBotを有効にし、Bot用のトークンを新たに作成することで、これらのBotを引き継ぐことができます。\n\n詳しくは[説明文書](https://antimatter.chat/docs/developers/bots.html#enable)を参照してください。{{else}}{{if .printAllBots}}{{.UserName}} は無効化されています。現在も有効化されている以下の Bot アカウントを管理していました。\n\n{{.BotNames}}\n{{else}}{{.UserName}} は無効化されています。以下を含む現在も有効な {{.NumBots}} 個の Bot アカウントを管理していました:\n\n{{.BotNames}}{{end}}**統合機能 > Botアカウント** から各Botを再度有効化し、Bot用のトークンを新たに生成してBotを引き継ぐことを強く推奨します。\n\n詳しくは[説明文書](https://antimatter.chat/docs/developers/bots.html#enable)を参照してください。\n\nユーザーが無効化された際に自動でBotも無効化したい場合、**システムコンソール > 統合機能 > Botアカウント** の \"所有者が無効化された際にBotアカウントを無効化する\" を true にしてください。{{end}}"
   },
   {
     "id": "app.bot.get_system_bot.empty_admin_list.app_error",
@@ -8091,7 +8003,7 @@
   },
   {
     "id": "app.notification.footer.infoLogin",
-    "translation": "Mattermostへログインし"
+    "translation": "Antimatterへログインし"
   },
   {
     "id": "app.notification.footer.title",
@@ -11287,7 +11199,7 @@
   },
   {
     "id": "ent.ldap.do_login.user_filtered.app_error",
-    "translation": "あなたのAD/LDAPアカウントにはMattermostサーバを利用する権限がありません。システム管理者にAD/LDAPのユーザーフィルターをチェックするよう依頼してください。"
+    "translation": "あなたのAD/LDAPアカウントにはAntimatterサーバを利用する権限がありません。システム管理者にAD/LDAPのユーザーフィルターをチェックするよう依頼してください。"
   },
   {
     "id": "ent.ldap.do_login.user_not_registered.app_error",
@@ -11332,10 +11244,6 @@
   {
     "id": "ent.ldap.syncronize.search_failure.app_error",
     "translation": "AD/LDAPでのユーザー検索に失敗しました。MattermostサーバーがAD/LDAPサーバーに接続できることを確認し、再度実行してください。"
-  },
-  {
-    "id": "ent.ldap.syncronize.search_failure_size_exceeded.app_error",
-    "translation": "サイズ制限超過。最大ページサイズ設定を大きくしてください。詳しくは https://docs.mattermost.com/onboard/ad-ldap.html#i-see-the-log-error-ldap-result-code-4-size-limit-exceeded を確認してください。"
   },
   {
     "id": "ent.ldap.update_cpa.empty_attribute",
@@ -14667,7 +14575,7 @@
   },
   {
     "id": "oauth.gitlab.tos.error",
-    "translation": "GitLabの利用規約が更新されました。{{.URL}}で新しい利用規約に同意してから、もう一度Mattermostへログインしてみてください。"
+    "translation": "GitLabの利用規約が更新されました。{{.URL}}で新しい利用規約に同意してから、もう一度Antimatterへログインしてみてください。"
   },
   {
     "id": "plugin.api.get_users_in_channel",
@@ -14850,10 +14758,6 @@
     "translation": "アプリをダウンロードする"
   },
   {
-    "id": "web.error.unsupported_browser.download_app_or_upgrade_browser",
-    "translation": "より良い体験のために、Mattermostアプリかサポートされたブラウザをダウンロードしてください。"
-  },
-  {
     "id": "web.error.unsupported_browser.download_the_app",
     "translation": "アプリをダウンロードする"
   },
@@ -14864,10 +14768,6 @@
   {
     "id": "web.error.unsupported_browser.install_guide.windows",
     "translation": "インストールガイド"
-  },
-  {
-    "id": "web.error.unsupported_browser.learn_more",
-    "translation": "サポートされたブラウザについて詳しく知る。"
   },
   {
     "id": "web.error.unsupported_browser.min_browser_version.chrome",
@@ -14895,11 +14795,11 @@
   },
   {
     "id": "web.error.unsupported_browser.no_longer_support",
-    "translation": "このブラウザはMattermostではサポートされていません"
+    "translation": "このブラウザはAntimatterではサポートされていません"
   },
   {
     "id": "web.error.unsupported_browser.no_longer_support_version",
-    "translation": "あなたのブラウザのバージョンはMattermostではサポートされていません"
+    "translation": "あなたのブラウザのバージョンはAntimatterではサポートされていません"
   },
   {
     "id": "web.error.unsupported_browser.open_system_browser.edge",

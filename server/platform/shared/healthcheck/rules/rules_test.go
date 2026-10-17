@@ -4,6 +4,7 @@
 package rules
 
 import (
+	"strings"
 	"testing"
 
 	"github.com/mattermost/mattermost/server/v8/platform/shared/healthcheck"
@@ -30,4 +31,16 @@ func TestBuiltinRulesOnCloud(t *testing.T) {
 	}
 
 	assert.ElementsMatch(t, []string{"PUSH_EMPTY_URL", "PUSH_BAD_SCHEME", "PUSH_TEST_PROXY"}, cloud)
+}
+
+// TestBuiltinRulesLinkAntimatterDocs: the "learn more" link of every rule leads to Antimatter's documentation or
+// repositories, never to a Mattermost site (UPSTREAM_MERGE_RULES.md, rule 10).
+func TestBuiltinRulesLinkAntimatterDocs(t *testing.T) {
+	for _, rule := range healthcheck.Builtin().Rules() {
+		if rule.DocsURL == "" {
+			continue
+		}
+		assert.True(t, strings.HasPrefix(rule.DocsURL, "https://antimatter.chat/docs/") ||
+			strings.HasPrefix(rule.DocsURL, "https://github.com/AntimatterChat/"), "%s links to %s", rule.Code, rule.DocsURL)
+	}
 }

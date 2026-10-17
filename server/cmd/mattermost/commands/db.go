@@ -48,7 +48,7 @@ This command should be run using a database configuration DSN.`,
 var ResetCmd = &cobra.Command{
 	Use:   "reset",
 	Short: "Reset the database to initial state",
-	Long:  "Completely erases the database causing the loss of all data. This will reset Mattermost to its initial state.",
+	Long:  "Completely erases the database causing the loss of all data. This will reset Antimatter to its initial state.",
 	RunE:  resetCmdF,
 }
 

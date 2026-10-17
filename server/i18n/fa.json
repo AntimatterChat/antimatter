@@ -1295,10 +1295,6 @@
     "translation": "خطا در بازیابی کانال فعلی."
   },
   {
-    "id": "api.command_invite.channel.error",
-    "translation": "کانال {{.Channel}} پیدا نشد. برای شناسایی کانال ها لطفاً از [هندل کانال](https://docs.mattermost.com/messaging/managing-channels.html#naming-a-channel) استفاده کنید."
-  },
-  {
     "id": "api.command_invite.channel_constrained_user_denied",
     "translation": "این کانال توسط گروه‌ها مدیریت می‌شود. این کاربر عضو گروهی نیست که با این کانال همگام‌سازی شده باشد."
   },
@@ -1333,10 +1329,6 @@
   {
     "id": "api.command_invite.permission.app_error",
     "translation": "شما برای افزودن {{.User}} در {{.Channel}} مجوز کافی ندارید."
-  },
-  {
-    "id": "api.command_invite.private_channel.app_error",
-    "translation": "کانال {{.Channel}} پیدا نشد. لطفاً از [شناساگر کانال](https://docs.mattermost.com/messaging/managing-channels.html#naming-a-channel) برای شناسایی کانال‌ها استفاده کنید."
   },
   {
     "id": "api.command_invite.success",
@@ -1522,20 +1514,12 @@
     "translation": "اعلان های دسک تاپ ، ایمیل و پوش را برای کانال فعلی یا [کانال] مشخص شده خاموش می کند."
   },
   {
-    "id": "api.command_mute.error",
-    "translation": "کانال {{.Channel}} پیدا نشد. برای شناسایی کانال ها لطفاً از [هندل کانال](https://docs.mattermost.com/messaging/managing-channels.html#naming-a-channel) استفاده کنید."
-  },
-  {
     "id": "api.command_mute.hint",
     "translation": "~[channel]"
   },
   {
     "id": "api.command_mute.name",
     "translation": "بی صدا"
-  },
-  {
-    "id": "api.command_mute.no_channel.error",
-    "translation": "کانال مشخص شده یافت نشد. برای شناسایی کانال ها لطفاً از [هندل کانال](https://docs.mattermost.com/messaging/managing-channels.html#naming-a-channel) استفاده کنید."
   },
   {
     "id": "api.command_mute.success_mute",
@@ -4127,74 +4111,6 @@
     "translation": "یافتن کاربر امکان‌پذیر نیست."
   },
   {
-    "id": "api.templates.cloud_welcome_email.add_apps_info",
-    "translation": "برنامه ها را به فضای کاری خود اضافه کنید"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.add_apps_sub_info",
-    "translation": "کار خود را با ابزارهایی مانند Github، Google Calendar و Chrome ساده کنید. همه ادغام‌هایی را که روی خود داریم کاوش کنید"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.app_market_place",
-    "translation": "بازار اپلیکیشن."
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.button",
-    "translation": "Mattermost را باز کنید"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.download_mm_info",
-    "translation": "برنامه Mattermost را دانلود کنید"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.info",
-    "translation": "تشکر برای ایجاد "
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.info2",
-    "translation": "مطمئن شوید که پیوند خود را برای استفاده در آینده ذخیره کرده یا نشانک گذاری کنید."
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.invite_info",
-    "translation": "افراد را به فضای کاری خود دعوت کنید"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.invite_sub_info",
-    "translation": "برای دعوت از اعضای خود برای پیوستن به {{.WorkSpace}}، این لینک را به اشتراک بگذارید:"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.mm_apps",
-    "translation": "اپلیکیشن های موبایل و دسکتاپ"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.signin_sub_info",
-    "translation": "وارد فضای کاری خود شوید در"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.signin_sub_info2",
-    "translation": "برای بهترین تجربه در رایانه شخصی، مک، iOS و اندروید."
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.start_questions",
-    "translation": "در مورد شروع کار سوالی دارید؟ به ما ایمیل بزنید"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.subject",
-    "translation": "تبریک می گویم!"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.subtitle",
-    "translation": "فضای کاری خود را تنظیم کنید"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.subtitle_info",
-    "translation": "مراحل زیر را انجام دهید تا تیم های خود را بسازید و بیشترین بهره را از فضای کاری خود ببرید."
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.title",
-    "translation": "فضای کاری شما آماده است!"
-  },
-  {
     "id": "api.templates.deactivate_body.info",
     "translation": "شما حساب خود را در {{ .SiteURL }} غیرفعال کردید."
   },
@@ -4880,7 +4796,7 @@
   },
   {
     "id": "api.user.delete_channel.not_enabled.for_admin.app_error",
-    "translation": "قابلیت حذف دائمی کانال فعال نیست. برای استفاده از این فرمان، ServiceSettings.EnableAPIChannelDeletion باید روی true تنظیم شود. برای اطلاعات بیشتر به https://mattermost.com/pl/environment-configuration-settings مراجعه کنید"
+    "translation": "قابلیت حذف دائمی کانال فعال نیست. برای استفاده از این فرمان، ServiceSettings.EnableAPIChannelDeletion باید روی true تنظیم شود. برای اطلاعات بیشتر به https://antimatter.chat/docs/admins/configuration.html مراجعه کنید"
   },
   {
     "id": "api.user.delete_team.not_enabled.app_error",
@@ -4888,7 +4804,7 @@
   },
   {
     "id": "api.user.delete_team.not_enabled.for_admin.app_error",
-    "translation": "قابلیت حذف دائمی تیم فعال نیست. برای استفاده از این فرمان، ServiceSettings.EnableAPITeamDeletion باید روی true تنظیم شود. برای اطلاعات بیشتر به https://mattermost.com/pl/environment-configuration-settings مراجعه کنید."
+    "translation": "قابلیت حذف دائمی تیم فعال نیست. برای استفاده از این فرمان، ServiceSettings.EnableAPITeamDeletion باید روی true تنظیم شود. برای اطلاعات بیشتر به https://antimatter.chat/docs/admins/configuration.html مراجعه کنید."
   },
   {
     "id": "api.user.delete_user.not_enabled.app_error",
@@ -4896,7 +4812,7 @@
   },
   {
     "id": "api.user.delete_user.not_enabled.for_admin.app_error",
-    "translation": "قابلیت حذف دائمی کاربر فعال نیست. برای استفاده از این فرمان، ServiceSettings.EnableAPIUserDeletion باید روی true تنظیم شود. برای اطلاعات بیشتر به https://mattermost.com/pl/environment-configuration-settings مراجعه کنید."
+    "translation": "قابلیت حذف دائمی کاربر فعال نیست. برای استفاده از این فرمان، ServiceSettings.EnableAPIUserDeletion باید روی true تنظیم شود. برای اطلاعات بیشتر به https://antimatter.chat/docs/admins/configuration.html مراجعه کنید."
   },
   {
     "id": "api.user.demote_user_to_guest.already_guest.app_error",
@@ -5173,10 +5089,6 @@
   {
     "id": "api.user.saml.relay_state_too_long.app_error",
     "translation": "وضعیت رلهٔ SAML بیش از حد طولانی است."
-  },
-  {
-    "id": "api.user.send_cloud_welcome_email.error",
-    "translation": "ایمیل خوش آمدگویی ابری ارسال نشد"
   },
   {
     "id": "api.user.send_deactivate_email_and_forget.failed.error",
@@ -5628,7 +5540,7 @@
   },
   {
     "id": "app.bot.get_disable_bot_sysadmin_message",
-    "translation": "{{if .disableBotsSetting}}{{if .printAllBots}}{{.UserName}} غیرفعال شد. آنها حساب های ربات زیر را که اکنون غیرفعال شده اند مدیریت کردند.\n\n{{.BotNames}}{{else}}{{.UserName}} غیرفعال شد. آنها حساب های ربات {{.NumBots}} را که اکنون غیرفعال شده اند ، مدیریت می کنند ، از جمله موارد زیر:\n\n{{.BotNames}}{{end}} با فعال کردن ربات می توانید در ** ادغام > حساب های ربات ** مالکیت آن را بدست آورید و ایجاد نشانه های جدید برای ربات کنید.\n\nبرای اطلاعات بیشتر ، به [مستندات](https://docs.mattermost.com/developer/bot-accounts.html#what-happens-when-a-user-who-owns-bot-accounts-is-disabled)ما مراجعه کنید . {{else}}{{if .printAllBots}}{{.UserName}} غیرفعال شد. آنها حساب های ربات زیر را که هنوز فعال هستند مدیریت کردند.\n\n{{.BotNames}}\n{{else}}{{.UserName}} غیرفعال شد. آنها حساب های ربات {{.NumBots}} را که هنوز فعال هستند ، از جمله موارد زیر را مدیریت کردند:\n\n{{.BotNames}}{{end}} ما اکیداً به شما توصیه می کنیم با فعال کردن مجدد ربات ، در ** ادغام ها> حساب های ربات **آنرا مالکیت کنید و ایجاد رمزهای جدید برای ربات کنید. .\n\nبرای اطلاعات بیشتر ، به [مستندات](https://docs.mattermost.com/developer/bot-accounts.html#what-happens-when-a-user-who-owns-bot-accounts-is-disabled).\n\nاگر می خواهید حساب ربات پس از غیرفعال شدن مالک به طور خودکار غیرفعال شود ، '** غیرفعال کردن حساب های ربات هنگام غیرفعال شدن مالک' را در ** سیستم کنسول> ادغام ها> حساب های ربات ** به صحیح تنظیم کنید . {{end}}"
+    "translation": "{{if .disableBotsSetting}}{{if .printAllBots}}{{.UserName}} غیرفعال شد. آنها حساب های ربات زیر را که اکنون غیرفعال شده اند مدیریت کردند.\n\n{{.BotNames}}{{else}}{{.UserName}} غیرفعال شد. آنها حساب های ربات {{.NumBots}} را که اکنون غیرفعال شده اند ، مدیریت می کنند ، از جمله موارد زیر:\n\n{{.BotNames}}{{end}} با فعال کردن ربات می توانید در ** ادغام > حساب های ربات ** مالکیت آن را بدست آورید و ایجاد نشانه های جدید برای ربات کنید.\n\nبرای اطلاعات بیشتر ، به [مستندات](https://antimatter.chat/docs/developers/bots.html#enable)ما مراجعه کنید . {{else}}{{if .printAllBots}}{{.UserName}} غیرفعال شد. آنها حساب های ربات زیر را که هنوز فعال هستند مدیریت کردند.\n\n{{.BotNames}}\n{{else}}{{.UserName}} غیرفعال شد. آنها حساب های ربات {{.NumBots}} را که هنوز فعال هستند ، از جمله موارد زیر را مدیریت کردند:\n\n{{.BotNames}}{{end}} ما اکیداً به شما توصیه می کنیم با فعال کردن مجدد ربات ، در ** ادغام ها> حساب های ربات **آنرا مالکیت کنید و ایجاد رمزهای جدید برای ربات کنید. .\n\nبرای اطلاعات بیشتر ، به [مستندات](https://antimatter.chat/docs/developers/bots.html#enable).\n\nاگر می خواهید حساب ربات پس از غیرفعال شدن مالک به طور خودکار غیرفعال شود ، '** غیرفعال کردن حساب های ربات هنگام غیرفعال شدن مالک' را در ** سیستم کنسول> ادغام ها> حساب های ربات ** به صحیح تنظیم کنید . {{end}}"
   },
   {
     "id": "app.bot.get_system_bot.empty_admin_list.app_error",
@@ -11475,10 +11387,6 @@
     "translation": "جستجوی کاربران در AD/LDAP انجام نشد. اگر سرور Antimatter می تواند به سرور AD/LDAP شما متصل شود تست کنید و دوباره امتحان کنید."
   },
   {
-    "id": "ent.ldap.syncronize.search_failure_size_exceeded.app_error",
-    "translation": "بیش از حد مجاز [حداکثر اندازه صفحه](https://docs.mattermost.com/deployment/sso-ldap.html#i-see-the-log-error-ldap-result-code-4-size-limit-exceeded) را امتحان کنید"
-  },
-  {
     "id": "ent.ldap.update_cpa.empty_attribute",
     "translation": "مقدار ویژگی LDAP خالی است"
   },
@@ -15035,10 +14943,6 @@
     "translation": "دانلود برنامه"
   },
   {
-    "id": "web.error.unsupported_browser.download_app_or_upgrade_browser",
-    "translation": "برای داشتن تجربه بهتر ، برنامه Mattermost را بارگیری کنید یا از یک مرورگر پشتیبانی شده استفاده کنید."
-  },
-  {
     "id": "web.error.unsupported_browser.download_the_app",
     "translation": "دانلود برنامه"
   },
@@ -15049,10 +14953,6 @@
   {
     "id": "web.error.unsupported_browser.install_guide.windows",
     "translation": "راهنمای نصب"
-  },
-  {
-    "id": "web.error.unsupported_browser.learn_more",
-    "translation": "درباره مرورگرهای پشتیبانی شده بیشتر بدانید."
   },
   {
     "id": "web.error.unsupported_browser.min_browser_version.chrome",

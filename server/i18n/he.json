@@ -1252,10 +1252,6 @@
     "translation": "שגיאה בשחזור הערוץ הנוכחי."
   },
   {
-    "id": "api.command_invite.channel.error",
-    "translation": "לא ניתן למצוא את הערוץ {{.Channel}}. יש להשתמש ב[שם הערוץ](https://docs.mattermost.com/messaging/managing-channels.html#naming-a-channel) לזיהוי ערוצים."
-  },
-  {
     "id": "api.command_invite.channel_constrained_user_denied",
     "translation": "ערוץ זה מנוהל על ידי קבוצות. משתמש זה אינו חלק מקבוצה שסונכרנה עם הערוץ הזה."
   },
@@ -1290,10 +1286,6 @@
   {
     "id": "api.command_invite.permission.app_error",
     "translation": "אין לך הרשאות מספיקות להוספת {{.User}} ל{{.Channel}}."
-  },
-  {
-    "id": "api.command_invite.private_channel.app_error",
-    "translation": "לא ניתן למצוא את הערוץ {{.Channel}}. יש להשתמש ב[שם הערוץ](https://docs.mattermost.com/messaging/managing-channels.html#naming-a-channel) לזיהוי ערוצים."
   },
   {
     "id": "api.command_invite.success",
@@ -1472,20 +1464,12 @@
     "translation": "מבטל התראות שולחן עבודה, דוא\"ל ודחיפה לערוץ הנוכחי או לערוץ [channel] שצוין."
   },
   {
-    "id": "api.command_mute.error",
-    "translation": "לא ניתן למצוא את הערוץ {{.Channel}}. יש להשתמש ב[כינוי הערוץ](https://docs.mattermost.com/messaging/managing-channels.html#naming-a-channel) לזיהוי ערוצים."
-  },
-  {
     "id": "api.command_mute.hint",
     "translation": "~[channel]"
   },
   {
     "id": "api.command_mute.name",
     "translation": "השתקה"
-  },
-  {
-    "id": "api.command_mute.no_channel.error",
-    "translation": "לא ניתן למצוא את הערוץ שצוין. יש להשתמש ב[כינוי הערוץ](https://docs.mattermost.com/messaging/managing-channels.html#naming-a-channel) לזיהוי ערוצים."
   },
   {
     "id": "api.command_mute.success_mute",
@@ -3868,74 +3852,6 @@
     "translation": "לא ניתן למצוא את המשתמש."
   },
   {
-    "id": "api.templates.cloud_welcome_email.add_apps_info",
-    "translation": "הוספת אפליקציות למרחב העבודה שלך"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.add_apps_sub_info",
-    "translation": "חזקו את זרימת העבודה עם כלים כמו GitHub, Jira ו-Zoom. גלו את כל האינטגרציות הזמינות ב-"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.app_market_place",
-    "translation": "חנות האפליקציות שלנו."
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.button",
-    "translation": "פתיחת Mattermost"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.download_mm_info",
-    "translation": "הורדת אפליקציית Mattermost"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.info",
-    "translation": "תודה שפתחת את "
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.info2",
-    "translation": "ודאו שמדבקים או שומרים את הקישור שלכם לשימוש עתידי."
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.invite_info",
-    "translation": "הזמנת אנשים למרחב העבודה שלכם"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.invite_sub_info",
-    "translation": "שתפו את הקישור הזה כדי להזמין את החברים שלכם להצטרף ל-{{.WorkSpace}}:"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.mm_apps",
-    "translation": "אפליקציות ניידות ודסקטופ"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.signin_sub_info",
-    "translation": "התחברו למרחב העבודה שלכם דרך ה-"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.signin_sub_info2",
-    "translation": "לחוויית שימוש מיטבית ב-Windows, Linux, Mac, iOS ו-Android."
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.start_questions",
-    "translation": "יש לכם שאלות לגבי ההתחלה? שלחו לנו מייל ל-"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.subject",
-    "translation": "מזל טוב!"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.subtitle",
-    "translation": "הגדרת מרחב העבודה שלכם"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.subtitle_info",
-    "translation": "בצעו את השלבים הבאים כדי לבנות את הצוותים שלכם ולנצל במלואם את מרחב העבודה."
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.title",
-    "translation": "מרחב העבודה שלכם מוכן לשימוש!"
-  },
-  {
     "id": "api.templates.deactivate_body.info",
     "translation": "השבתת את החשבון שלך ב-{{ .SiteURL }}."
   },
@@ -4521,7 +4437,7 @@
   },
   {
     "id": "api.user.delete_channel.not_enabled.for_admin.app_error",
-    "translation": "האפשרות למחיקת ערוץ לצמיתות אינה מופעלת. יש להגדיר את ServiceSettings.EnableAPIChannelDeletion ל-true כדי להשתמש בפקודה זו. ראו https://mattermost.com/pl/environment-configuration-settings למידע נוסף"
+    "translation": "האפשרות למחיקת ערוץ לצמיתות אינה מופעלת. יש להגדיר את ServiceSettings.EnableAPIChannelDeletion ל-true כדי להשתמש בפקודה זו. ראו https://antimatter.chat/docs/admins/configuration.html למידע נוסף"
   },
   {
     "id": "api.user.delete_team.not_enabled.app_error",
@@ -4529,7 +4445,7 @@
   },
   {
     "id": "api.user.delete_team.not_enabled.for_admin.app_error",
-    "translation": "האפשרות למחיקת צוות לצמיתות אינה מופעלת. יש להגדיר את ServiceSettings.EnableAPITeamDeletion ל-true כדי להשתמש בפקודה זו. ראו https://mattermost.com/pl/environment-configuration-settings למידע נוסף."
+    "translation": "האפשרות למחיקת צוות לצמיתות אינה מופעלת. יש להגדיר את ServiceSettings.EnableAPITeamDeletion ל-true כדי להשתמש בפקודה זו. ראו https://antimatter.chat/docs/admins/configuration.html למידע נוסף."
   },
   {
     "id": "api.user.delete_user.not_enabled.app_error",
@@ -4537,7 +4453,7 @@
   },
   {
     "id": "api.user.delete_user.not_enabled.for_admin.app_error",
-    "translation": "האפשרות למחיקת משתמש לצמיתות אינה מופעלת. יש להגדיר את ServiceSettings.EnableAPIUserDeletion ל-true כדי להשתמש בפקודה זו. ראו https://mattermost.com/pl/environment-configuration-settings למידע נוסף."
+    "translation": "האפשרות למחיקת משתמש לצמיתות אינה מופעלת. יש להגדיר את ServiceSettings.EnableAPIUserDeletion ל-true כדי להשתמש בפקודה זו. ראו https://antimatter.chat/docs/admins/configuration.html למידע נוסף."
   },
   {
     "id": "api.user.demote_user_to_guest.already_guest.app_error",
@@ -4557,7 +4473,7 @@
   },
   {
     "id": "api.user.get_authorization_code.endpoint.app_error",
-    "translation": "שגיאה בשליפת נקודת קצה מ-Mattermost Discovery Document."
+    "translation": "שגיאה בשליפת נקודת קצה מ-Antimatter Discovery Document."
   },
   {
     "id": "api.user.get_profile_image_path.app_error",
@@ -4802,10 +4718,6 @@
   {
     "id": "api.user.saml.relay_state_too_long.app_error",
     "translation": "מצב ה-relay של SAML ארוך מדי."
-  },
-  {
-    "id": "api.user.send_cloud_welcome_email.error",
-    "translation": "שליחת מכתב הדוא״ל של ברוך הבא לענן נכשלה"
   },
   {
     "id": "api.user.send_deactivate_email_and_forget.failed.error",
@@ -5253,7 +5165,7 @@
   },
   {
     "id": "app.bot.get_disable_bot_sysadmin_message",
-    "translation": "{{if .disableBotsSetting}}{{if .printAllBots}}{{.UserName}} הושבת. הם ניהלו את חשבונות הבוט הבאים, שהושבתו כעת.\n\n{{.BotNames}}{{else}}{{.UserName}} הושבת. הם ניהלו {{.NumBots}} חשבונות בוט שהושבתו כעת, כולל:\n\n{{.BotNames}}{{end}}ניתן לקחת אחריות על כל בוט על ידי הפעלתו ב-**Integrations > Bot Accounts** ויצירת טוקנים חדשים עבור הבוט.\n\nלפרטים נוספים, ראו את [התיעוד](https://docs.mattermost.com/developer/bot-accounts.html#what-happens-when-a-user-who-owns-bot-accounts-is-disabled).{{else}}{{if .printAllBots}}{{.UserName}} הושבת. הם ניהלו את חשבונות הבוט הבאים, שעדיין פעילים.\n\n{{.BotNames}}\n{{else}}{{.UserName}} הושבת. הם ניהלו {{.NumBots}} חשבונות בוט שעדיין פעילים, כולל:\n\n{{.BotNames}}{{end}}אנו ממליצים בחום לקחת אחריות על כל בוט על ידי הפעלתו מחדש ב-**Integrations > Bot Accounts** ויצירת טוקנים חדשים עבור הבוט.\n\nלפרטים נוספים, ראו את [התיעוד](https://docs.mattermost.com/developer/bot-accounts.html#what-happens-when-a-user-who-owns-bot-accounts-is-disabled).\n\nאם ברצונך שהחשבונות יושבאו אוטומטית לאחר השבתת בעל החשבון, הגדר את \"Disable bot accounts when owner is deactivated\" ב-**System Console > Integrations > Bot Accounts** ל-true.{{end}}"
+    "translation": "{{if .disableBotsSetting}}{{if .printAllBots}}{{.UserName}} הושבת. הם ניהלו את חשבונות הבוט הבאים, שהושבתו כעת.\n\n{{.BotNames}}{{else}}{{.UserName}} הושבת. הם ניהלו {{.NumBots}} חשבונות בוט שהושבתו כעת, כולל:\n\n{{.BotNames}}{{end}}ניתן לקחת אחריות על כל בוט על ידי הפעלתו ב-**Integrations > Bot Accounts** ויצירת טוקנים חדשים עבור הבוט.\n\nלפרטים נוספים, ראו את [התיעוד](https://antimatter.chat/docs/developers/bots.html#enable).{{else}}{{if .printAllBots}}{{.UserName}} הושבת. הם ניהלו את חשבונות הבוט הבאים, שעדיין פעילים.\n\n{{.BotNames}}\n{{else}}{{.UserName}} הושבת. הם ניהלו {{.NumBots}} חשבונות בוט שעדיין פעילים, כולל:\n\n{{.BotNames}}{{end}}אנו ממליצים בחום לקחת אחריות על כל בוט על ידי הפעלתו מחדש ב-**Integrations > Bot Accounts** ויצירת טוקנים חדשים עבור הבוט.\n\nלפרטים נוספים, ראו את [התיעוד](https://antimatter.chat/docs/developers/bots.html#enable).\n\nאם ברצונך שהחשבונות יושבאו אוטומטית לאחר השבתת בעל החשבון, הגדר את \"Disable bot accounts when owner is deactivated\" ב-**System Console > Integrations > Bot Accounts** ל-true.{{end}}"
   },
   {
     "id": "app.bot.get_system_bot.empty_admin_list.app_error",
@@ -10864,10 +10776,6 @@
     "translation": "שגיאה במילוי רשימת הסינכרון"
   },
   {
-    "id": "ent.ldap.syncronize.search_failure_size_exceeded.app_error",
-    "translation": "הגודל המרבי חורג מהמגבלה. נסה להגדיל את הגודל המרבי לעמוד בהגדרות. לקבלת פרטים נוספים, ראה https://docs.mattermost.com/onboard/ad-ldap.html#i-see-the-log-error-ldap-result-code-4-size-limit-exceeded"
-  },
-  {
     "id": "ent.ldap.validate_admin_filter.app_error",
     "translation": "מסנן מנהל AD/LDAP לא תקין."
   },
@@ -14312,10 +14220,6 @@
     "translation": "הורדת האפליקציה"
   },
   {
-    "id": "web.error.unsupported_browser.download_app_or_upgrade_browser",
-    "translation": "יש להוריד את אפליקציית Mattermost או להשתמש בדפדפן נתמך לחוויית שימוש טובה יותר."
-  },
-  {
     "id": "web.error.unsupported_browser.download_the_app",
     "translation": "הורדת האפליקציה"
   },
@@ -14326,10 +14230,6 @@
   {
     "id": "web.error.unsupported_browser.install_guide.windows",
     "translation": "מדריך התקנה"
-  },
-  {
-    "id": "web.error.unsupported_browser.learn_more",
-    "translation": "למידע נוסף על דפדפנים נתמכים."
   },
   {
     "id": "web.error.unsupported_browser.min_browser_version.chrome",

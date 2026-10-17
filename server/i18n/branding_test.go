@@ -5,6 +5,8 @@ package i18n
 
 import (
 	"encoding/json"
+	"os"
+	"path/filepath"
 	"regexp"
 	"slices"
 	"strings"
@@ -29,21 +31,8 @@ var brandingAllowed = map[string]string{
 
 // brandingToFix are the strings that still name Mattermost or link to mattermost.com and should not: each needs
 // rewording (and its 37 translations) or its link pointed at https://antimatter.chat/docs/ or dropped. Remove an entry
-// once it's fixed; the test fails until you do, so this list only shrinks.
-var brandingToFix = []string{
-	"api.command_invite.channel.error",
-	"api.command_invite.private_channel.app_error",
-	"api.command_mute.error",
-	"api.command_mute.no_channel.error",
-	"api.templates.cloud_welcome_email.button",
-	"api.templates.cloud_welcome_email.download_mm_info",
-	"api.user.delete_channel.not_enabled.for_admin.app_error",
-	"api.user.delete_team.not_enabled.for_admin.app_error",
-	"api.user.delete_user.not_enabled.for_admin.app_error",
-	"app.bot.get_disable_bot_sysadmin_message",
-	"ent.ldap.syncronize.search_failure_size_exceeded.app_error",
-	"web.error.unsupported_browser.download_app_or_upgrade_browser",
-}
+// once it's fixed; the test fails until you do, so this list only shrinks. It is empty: keep it that way.
+var brandingToFix = []string{}
 
 var mattermostWord = regexp.MustCompile(`(?i)mattermost`)
 
@@ -90,6 +79,35 @@ func TestEnglishStringsLinkNoMattermostSite(t *testing.T) {
 	for _, e := range entries {
 		if link.Match(e.Translation) && !slices.Contains(brandingToFix, e.ID) {
 			t.Errorf("%s links to a Mattermost site: %s", e.ID, strings.TrimSpace(string(e.Translation)))
+		}
+	}
+}
+
+// TestTranslationsDoNotBringMattermostBack checks the 40 other catalogues: where the English string doesn't name
+// Mattermost, its translation must not either (stale upstream translations, UPSTREAM_MERGE_RULES.md rule 26).
+func TestTranslationsDoNotBringMattermostBack(t *testing.T) {
+	var english []catalogueEntry
+	require.NoError(t, json.Unmarshal(English, &english))
+	rebranded := make(map[string]bool, len(english))
+	for _, e := range english {
+		rebranded[e.ID] = !mattermostWord.Match(e.Translation)
+	}
+
+	files, err := filepath.Glob("*.json")
+	require.NoError(t, err)
+	require.Greater(t, len(files), 30, "the translations are missing")
+	for _, file := range files {
+		if file == "en.json" {
+			continue
+		}
+		data, err := os.ReadFile(file)
+		require.NoError(t, err)
+		var entries []catalogueEntry
+		require.NoError(t, json.Unmarshal(data, &entries), file)
+		for _, e := range entries {
+			if rebranded[e.ID] && mattermostWord.Match(e.Translation) {
+				t.Errorf("%s: %s says Mattermost where English doesn't: %s", file, e.ID, string(e.Translation))
+			}
 		}
 	}
 }

@@ -1294,10 +1294,6 @@
     "translation": "取得目前頻道時發生錯誤。"
   },
   {
-    "id": "api.command_invite.channel.error",
-    "translation": "找不到頻道 {{.Channel}}。請用[頻道代號](https://docs.mattermost.com/messaging/managing-channels.html#naming-a-channel)以分辨頻道。"
-  },
-  {
     "id": "api.command_invite.channel_constrained_user_denied",
     "translation": "此頻道是由群組管理。此使用者不是透過同步加入此頻道的群組成員。"
   },
@@ -1332,10 +1328,6 @@
   {
     "id": "api.command_invite.permission.app_error",
     "translation": "沒有足夠的權限將 {{.User}} 新增至 {{.Channel}}。"
-  },
-  {
-    "id": "api.command_invite.private_channel.app_error",
-    "translation": "找不到頻道 {{.Channel}}。請用[頻道代號](https://docs.mattermost.com/messaging/managing-channels.html#naming-a-channel)以分辨頻道。"
   },
   {
     "id": "api.command_invite.success",
@@ -1520,20 +1512,12 @@
     "translation": "對目前頻道或指定的[頻道]關閉桌面、郵件及推播通知。"
   },
   {
-    "id": "api.command_mute.error",
-    "translation": "找不到頻道 {{.Channel}}。請用[頻道代號](https://docs.mattermost.com/messaging/managing-channels.html#naming-a-channel)以分辨頻道。"
-  },
-  {
     "id": "api.command_mute.hint",
     "translation": "~[頻道]"
   },
   {
     "id": "api.command_mute.name",
     "translation": "靜音"
-  },
-  {
-    "id": "api.command_mute.no_channel.error",
-    "translation": "找不到指定的頻道。請用[頻道代號](https://docs.mattermost.com/messaging/managing-channels.html#naming-a-channel)找出頻道。"
   },
   {
     "id": "api.command_mute.success_mute",
@@ -4122,74 +4106,6 @@
     "translation": "找不到使用者。"
   },
   {
-    "id": "api.templates.cloud_welcome_email.add_apps_info",
-    "translation": "新增應用程式至您的工作區"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.add_apps_sub_info",
-    "translation": "將您的工作與 GitHub、Jira 和 Zoom 等等的工具完美整合。在應用程式市集上探索"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.app_market_place",
-    "translation": "我們的整合功能。"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.button",
-    "translation": "開啟 Mattermost"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.download_mm_info",
-    "translation": "下載 Mattermost 應用程式"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.info",
-    "translation": "感謝您註冊 "
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.info2",
-    "translation": "請確保儲存連結或將其加入書籤，以供未來使用。"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.invite_info",
-    "translation": "邀請人們至您的工作區"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.invite_sub_info",
-    "translation": "分享此連結以邀請您的成員加入 {{.WorkSpace}}："
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.mm_apps",
-    "translation": "行動裝置與桌面應用程式"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.signin_sub_info",
-    "translation": "登入我們您的工作區，透過我們的"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.signin_sub_info2",
-    "translation": "以在 Windows、Linux、Mac、iOS 及 Android 上享有最佳體驗。"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.start_questions",
-    "translation": "對開始使用有問題嗎？請透過電子郵件聯絡我們"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.subject",
-    "translation": "恭喜！"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.subtitle",
-    "translation": "設定您的工作區"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.subtitle_info",
-    "translation": "採取下列步驟以建構您的團隊，並使您的工作區發揮最佳助益。"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.title",
-    "translation": "您的工作區已就緒！"
-  },
-  {
     "id": "api.templates.deactivate_body.info",
     "translation": "您已停用在 {{ .SiteURL }} 的帳號。"
   },
@@ -4875,7 +4791,7 @@
   },
   {
     "id": "api.user.delete_channel.not_enabled.for_admin.app_error",
-    "translation": "永久刪除頻道功能未啟用。必須將 ServiceSettings.EnableAPIChannelDeletion 設為 true 才能使用此命令。詳情請參閱 https://mattermost.com/pl/environment-configuration-settings"
+    "translation": "永久刪除頻道功能未啟用。必須將 ServiceSettings.EnableAPIChannelDeletion 設為 true 才能使用此命令。詳情請參閱 https://antimatter.chat/docs/admins/configuration.html"
   },
   {
     "id": "api.user.delete_team.not_enabled.app_error",
@@ -4883,7 +4799,7 @@
   },
   {
     "id": "api.user.delete_team.not_enabled.for_admin.app_error",
-    "translation": "永久刪除團隊功能未啟用。必須將 ServiceSettings.EnableAPITeamDeletion 設為 true 才能使用此命令。詳情請參閱 https://mattermost.com/pl/environment-configuration-settings。"
+    "translation": "永久刪除團隊功能未啟用。必須將 ServiceSettings.EnableAPITeamDeletion 設為 true 才能使用此命令。詳情請參閱 https://antimatter.chat/docs/admins/configuration.html。"
   },
   {
     "id": "api.user.delete_user.not_enabled.app_error",
@@ -4891,7 +4807,7 @@
   },
   {
     "id": "api.user.delete_user.not_enabled.for_admin.app_error",
-    "translation": "永久刪除使用者功能未啟用。必須將 ServiceSettings.EnableAPIUserDeletion 設為 true 才能使用此命令。詳情請參閱 https://mattermost.com/pl/environment-configuration-settings。"
+    "translation": "永久刪除使用者功能未啟用。必須將 ServiceSettings.EnableAPIUserDeletion 設為 true 才能使用此命令。詳情請參閱 https://antimatter.chat/docs/admins/configuration.html。"
   },
   {
     "id": "api.user.demote_user_to_guest.already_guest.app_error",
@@ -5168,10 +5084,6 @@
   {
     "id": "api.user.saml.relay_state_too_long.app_error",
     "translation": "SAML RelayState 過長。"
-  },
-  {
-    "id": "api.user.send_cloud_welcome_email.error",
-    "translation": "無法傳送雲端歡迎電子郵件"
   },
   {
     "id": "api.user.send_deactivate_email_and_forget.failed.error",
@@ -5623,7 +5535,7 @@
   },
   {
     "id": "app.bot.get_disable_bot_sysadmin_message",
-    "translation": "{{if .disableBotsSetting}}{{if .printAllBots}}{{.UserName}} 已被停用。下列由他們管理的機器人帳號已被停用。\n\n{{.BotNames}}{{else}}{{.UserName}} 已被停用。他們管理的 {{.NumBots}} 個機器人帳號已被停用，包括：\n\n{{.BotNames}}{{end}}可以在**「外部整合 > 機器人帳號」**對個別啟用以獲得所有權，並為其建立新的代符。\n\n詳情請參閱[文件](https://docs.mattermost.com/developer/bot-accounts.html#what-happens-when-a-user-who-owns-bot-accounts-is-disabled)。{{else}}{{if .printAllBots}}{{.UserName}} 已被停權。下列由他們管理的機器人帳號還在運作：\n\n{{.BotNames}}\n{{else}}{{.UserName}} 已被停權。他們管理的 {{.NumBots}} 個機器人帳號還在運作，包括：\n\n{{.BotNames}}{{end}}在此強烈建議前往**「外部整合 > 機器人帳號」**重新啟用各個機器人以獲得所有權，並為其建立新的代符。\n\n詳情請參閱 [文件](https://docs.mattermost.com/developer/bot-accounts.html#what-happens-when-a-user-who-owns-bot-accounts-is-disabled)。\n\n如果想要在停用使用者帳號同時自動停用機器人帳號，請前往**「系統主控台 > 外部整合 > 機器人帳號」**啟用「停權使用者時停用機器人帳號」。{{end}}"
+    "translation": "{{if .disableBotsSetting}}{{if .printAllBots}}{{.UserName}} 已被停用。下列由他們管理的機器人帳號已被停用。\n\n{{.BotNames}}{{else}}{{.UserName}} 已被停用。他們管理的 {{.NumBots}} 個機器人帳號已被停用，包括：\n\n{{.BotNames}}{{end}}可以在**「外部整合 > 機器人帳號」**對個別啟用以獲得所有權，並為其建立新的代符。\n\n詳情請參閱[文件](https://antimatter.chat/docs/developers/bots.html#enable)。{{else}}{{if .printAllBots}}{{.UserName}} 已被停權。下列由他們管理的機器人帳號還在運作：\n\n{{.BotNames}}\n{{else}}{{.UserName}} 已被停權。他們管理的 {{.NumBots}} 個機器人帳號還在運作，包括：\n\n{{.BotNames}}{{end}}在此強烈建議前往**「外部整合 > 機器人帳號」**重新啟用各個機器人以獲得所有權，並為其建立新的代符。\n\n詳情請參閱 [文件](https://antimatter.chat/docs/developers/bots.html#enable)。\n\n如果想要在停用使用者帳號同時自動停用機器人帳號，請前往**「系統主控台 > 外部整合 > 機器人帳號」**啟用「停權使用者時停用機器人帳號」。{{end}}"
   },
   {
     "id": "app.bot.get_system_bot.empty_admin_list.app_error",
@@ -11466,10 +11378,6 @@
     "translation": "無法用 AD/LDAP 搜尋使用者。請測試 Antimatter 是否能連線至 AD/LDAP 伺服器並重新嘗試。"
   },
   {
-    "id": "ent.ldap.syncronize.search_failure_size_exceeded.app_error",
-    "translation": "超過大小限制。請檢查[最大分頁大小](https://docs.mattermost.com/deployment/sso-ldap.html#i-see-the-log-error-ldap-result-code-4-size-limit-exceeded)。"
-  },
-  {
     "id": "ent.ldap.update_cpa.empty_attribute",
     "translation": "LDAP 屬性值為空"
   },
@@ -15026,10 +14934,6 @@
     "translation": "下載應用程式"
   },
   {
-    "id": "web.error.unsupported_browser.download_app_or_upgrade_browser",
-    "translation": "下載 Mattermost 應用程式或只用支援的瀏覽器以獲得更好的體驗。"
-  },
-  {
     "id": "web.error.unsupported_browser.download_the_app",
     "translation": "下載應用程式"
   },
@@ -15040,10 +14944,6 @@
   {
     "id": "web.error.unsupported_browser.install_guide.windows",
     "translation": "安裝說明"
-  },
-  {
-    "id": "web.error.unsupported_browser.learn_more",
-    "translation": "了解更多關於支援的瀏覽器。"
   },
   {
     "id": "web.error.unsupported_browser.min_browser_version.chrome",

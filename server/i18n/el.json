@@ -1252,10 +1252,6 @@
     "translation": "Σφάλμα κατά την ανάκτηση του τρέχοντος καναλιού."
   },
   {
-    "id": "api.command_invite.channel.error",
-    "translation": "Δεν βρέθηκε το κανάλι {{.Channel}}. Χρησιμοποιήστε το [όνομα καναλιού](https://docs.mattermost.com/messaging/managing-channels.html#naming-a-channel) για να ταυτοποιήσετε τα κανάλια."
-  },
-  {
     "id": "api.command_invite.channel_constrained_user_denied",
     "translation": "Αυτό το κανάλι διαχειρίζεται από ομάδες. Ο χρήστης αυτός δεν ανήκει σε ομάδα που συγχρονίζεται με αυτό το κανάλι."
   },
@@ -1290,10 +1286,6 @@
   {
     "id": "api.command_invite.permission.app_error",
     "translation": "Δεν έχετε αρκετά δικαιώματα για να προσθέσετε τον χρήστη {{.User}} στο {{.Channel}}."
-  },
-  {
-    "id": "api.command_invite.private_channel.app_error",
-    "translation": "Δεν βρέθηκε το κανάλι {{.Channel}}. Χρησιμοποιήστε το [όνομα καναλιού](https://docs.mattermost.com/messaging/managing-channels.html#naming-a-channel) για να ταυτοποιήσετε τα κανάλια."
   },
   {
     "id": "api.command_invite.success",
@@ -1472,20 +1464,12 @@
     "translation": "Απενεργοποιεί τις ειδοποιήσεις για την επιφάνεια εργασίας, το email και τις push για το τρέχον κανάλι ή το καθορισμένο [channel]."
   },
   {
-    "id": "api.command_mute.error",
-    "translation": "Δεν ήταν δυνατή η εύρεση του καναλιού {{.Channel}}. Χρησιμοποιήστε το [channel handle](https://docs.mattermost.com/messaging/managing-channels.html#naming-a-channel) για να ταυτοποιήσετε τα κανάλια."
-  },
-  {
     "id": "api.command_mute.hint",
     "translation": "~[channel]"
   },
   {
     "id": "api.command_mute.name",
     "translation": "mute"
-  },
-  {
-    "id": "api.command_mute.no_channel.error",
-    "translation": "Δεν ήταν δυνατή η εύρεση του καθορισμένου καναλιού. Χρησιμοποιήστε το [channel handle](https://docs.mattermost.com/messaging/managing-channels.html#naming-a-channel) για να ταυτοποιήσετε τα κανάλια."
   },
   {
     "id": "api.command_mute.success_mute",
@@ -3868,74 +3852,6 @@
     "translation": "Δεν ήταν δυνατή η εύρεση του χρήστη."
   },
   {
-    "id": "api.templates.cloud_welcome_email.add_apps_info",
-    "translation": "Προσθέστε εφαρμογές στον χώρο εργασίας σας"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.add_apps_sub_info",
-    "translation": "Βελτιώστε τη ροή της εργασίας σας με εργαλεία όπως GitHub, Jira και Zoom. Εξερευνήστε όλες τις ενσωματώσεις που έχουμε στη"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.app_market_place",
-    "translation": "αγορά εφαρμογών."
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.button",
-    "translation": "Ανοίξτε το Mattermost"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.download_mm_info",
-    "translation": "Κατεβάστε την εφαρμογή Mattermost"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.info",
-    "translation": "Ευχαριστούμε που δημιουργήσατε το"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.info2",
-    "translation": "Βεβαιωθείτε ότι αποθηκεύετε ή βάζετε σελιδοδείκτη το σύνδεσμο σας για μελλοντική χρήση."
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.invite_info",
-    "translation": "Προκαλέστε άτομα στον χώρο εργασίας σας"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.invite_sub_info",
-    "translation": "Κοινοποιήστε αυτόν τον σύνδεσμο για να προσκαλέσετε τα μέλη σας να συμμετάσχουν στο {{.WorkSpace}}:"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.mm_apps",
-    "translation": "εφαρμογές για κινητά και υπολογιστές"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.signin_sub_info",
-    "translation": "Συνδεθείτε στον χώρο εργασίας σας μέσω των"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.signin_sub_info2",
-    "translation": "για την καλύτερη εμπειρία σε Windows, Linux, Mac, iOS και Android."
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.start_questions",
-    "translation": "Έχετε ερωτήσεις σχετικά με την έναρξη; Επικοινωνήστε μαζί μας μέσω email στο"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.subject",
-    "translation": "Συγχαρητήρια!"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.subtitle",
-    "translation": "Ρυθμίστε τον χώρο εργασίας σας"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.subtitle_info",
-    "translation": "Ακολουθήστε τα παρακάτω βήματα για να δημιουργήσετε τις ομάδες σας και να εξάγετε το μέγιστο από τον χώρο εργασίας σας."
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.title",
-    "translation": "Ο χώρος εργασίας σας είναι έτοιμος!"
-  },
-  {
     "id": "api.templates.deactivate_body.info",
     "translation": "Απενεργοποιήσατε τον λογαριασμό σας στο {{ .SiteURL }}."
   },
@@ -4521,7 +4437,7 @@
   },
   {
     "id": "api.user.delete_channel.not_enabled.for_admin.app_error",
-    "translation": "Η λειτουργία μόνιμης διαγραφής καναλιού δεν είναι ενεργοποιημένη. Το ServiceSettings.EnableAPIChannelDeletion πρέπει να είναι true για να χρησιμοποιηθεί αυτή η εντολή. Δείτε https://mattermost.com/pl/environment-configuration-settings για περισσότερες πληροφορίες"
+    "translation": "Η λειτουργία μόνιμης διαγραφής καναλιού δεν είναι ενεργοποιημένη. Το ServiceSettings.EnableAPIChannelDeletion πρέπει να είναι true για να χρησιμοποιηθεί αυτή η εντολή. Δείτε https://antimatter.chat/docs/admins/configuration.html για περισσότερες πληροφορίες"
   },
   {
     "id": "api.user.delete_team.not_enabled.app_error",
@@ -4529,7 +4445,7 @@
   },
   {
     "id": "api.user.delete_team.not_enabled.for_admin.app_error",
-    "translation": "Η λειτουργία μόνιμης διαγραφής ομάδας δεν είναι ενεργοποιημένη. Το ServiceSettings.EnableAPITeamDeletion πρέπει να είναι true για να χρησιμοποιηθεί αυτή η εντολή. Δείτε https://mattermost.com/pl/environment-configuration-settings για περισσότερες πληροφορίες."
+    "translation": "Η λειτουργία μόνιμης διαγραφής ομάδας δεν είναι ενεργοποιημένη. Το ServiceSettings.EnableAPITeamDeletion πρέπει να είναι true για να χρησιμοποιηθεί αυτή η εντολή. Δείτε https://antimatter.chat/docs/admins/configuration.html για περισσότερες πληροφορίες."
   },
   {
     "id": "api.user.delete_user.not_enabled.app_error",
@@ -4537,7 +4453,7 @@
   },
   {
     "id": "api.user.delete_user.not_enabled.for_admin.app_error",
-    "translation": "Η λειτουργία μόνιμης διαγραφής χρήστη δεν είναι ενεργοποιημένη. Το ServiceSettings.EnableAPIUserDeletion πρέπει να είναι true για να χρησιμοποιηθεί αυτή η εντολή. Δείτε https://mattermost.com/pl/environment-configuration-settings για περισσότερες πληροφορίες."
+    "translation": "Η λειτουργία μόνιμης διαγραφής χρήστη δεν είναι ενεργοποιημένη. Το ServiceSettings.EnableAPIUserDeletion πρέπει να είναι true για να χρησιμοποιηθεί αυτή η εντολή. Δείτε https://antimatter.chat/docs/admins/configuration.html για περισσότερες πληροφορίες."
   },
   {
     "id": "api.user.demote_user_to_guest.already_guest.app_error",
@@ -4802,10 +4718,6 @@
   {
     "id": "api.user.saml.relay_state_too_long.app_error",
     "translation": "Η κατάσταση μεταβίβασης SAML είναι πολύ μεγάλη."
-  },
-  {
-    "id": "api.user.send_cloud_welcome_email.error",
-    "translation": "Απέτυχε η αποστολή του email καλωσορίσματος cloud"
   },
   {
     "id": "api.user.send_deactivate_email_and_forget.failed.error",
@@ -5253,7 +5165,7 @@
   },
   {
     "id": "app.bot.get_disable_bot_sysadmin_message",
-    "translation": "{{if .disableBotsSetting}}{{if .printAllBots}}Ο χρήστης {{.UserName}} απενεργοποιήθηκε. Διαχειρίζονταν τα παρακάτω λογαριασμάτα bot, τα οποία έχουν πλέον απενεργοποιηθεί.\n\n{{.BotNames}}{{else}}Ο χρήστης {{.UserName}} απενεργοποιήθηκε. Διαχειρίζονταν {{.NumBots}} λογαριασμάτα bot, τα οποία έχουν πλέον απενεργοποιηθεί, συμπεριλαμβανομένων των παρακάτω:\n\n{{.BotNames}}{{end}}Μπορείτε να αναλάβετε την ιδιοκτησία κάθε bot ενεργοποιώντας το στις **Ενσωματώσεις > Λογαριασμάτα Bot** και δημιουργώντας νέα tokens για το bot.\n\nΓια περισσότερες πληροφορίες, δείτε την [τεκμηρίωση](https://docs.mattermost.com/developer/bot-accounts.html#what-happens-when-a-user-who-owns-bot-accounts-is-disabled).{{else}}{{if .printAllBots}}Ο χρήστης {{.UserName}} απενεργοποιήθηκε. Διαχειρίζονταν τα παρακάτω λογαριασμάτα bot, τα οποία παραμένουν ενεργά.\n\n{{.BotNames}}\n{{else}}Ο χρήστης {{.UserName}} απενεργοποιήθηκε. Διαχειρίζονταν {{.NumBots}} λογαριασμάτα bot, τα οποία παραμένουν ενεργά, συμπεριλαμβανομένων των παρακάτω:\n\n{{.BotNames}}{{end}}Συστήνουμε ανεπιφύλακτα να αναλάβετε την ιδιοκτησία κάθε bot επανενεργοποιώντας το στις **Ενσωματώσεις > Λογαριασμάτα Bot** και δημιουργώντας νέα tokens για το bot.\n\nΓια περισσότερες πληροφορίες, δείτε την [τεκμηρίωση](https://docs.mattermost.com/developer/bot-accounts.html#what-happens-when-a-user-who-owns-bot-accounts-is-disabled).\n\nΑν θέλετε τα λογαριασμάτα bot να απενεργοποιούνται αυτόματα μετά την απενεργοποίηση του ιδιοκτήτη, ορίστε την επιλογή «Απενεργοποίηση λογαριασμάτων bot όταν απενεργοποιείται ο ιδιοκτήτης» στις **Κονσόλα συστήματος > Ενσωματώσεις > Λογαριασμάτα Bot** σε true.{{end}}"
+    "translation": "{{if .disableBotsSetting}}{{if .printAllBots}}Ο χρήστης {{.UserName}} απενεργοποιήθηκε. Διαχειρίζονταν τα παρακάτω λογαριασμάτα bot, τα οποία έχουν πλέον απενεργοποιηθεί.\n\n{{.BotNames}}{{else}}Ο χρήστης {{.UserName}} απενεργοποιήθηκε. Διαχειρίζονταν {{.NumBots}} λογαριασμάτα bot, τα οποία έχουν πλέον απενεργοποιηθεί, συμπεριλαμβανομένων των παρακάτω:\n\n{{.BotNames}}{{end}}Μπορείτε να αναλάβετε την ιδιοκτησία κάθε bot ενεργοποιώντας το στις **Ενσωματώσεις > Λογαριασμάτα Bot** και δημιουργώντας νέα tokens για το bot.\n\nΓια περισσότερες πληροφορίες, δείτε την [τεκμηρίωση](https://antimatter.chat/docs/developers/bots.html#enable).{{else}}{{if .printAllBots}}Ο χρήστης {{.UserName}} απενεργοποιήθηκε. Διαχειρίζονταν τα παρακάτω λογαριασμάτα bot, τα οποία παραμένουν ενεργά.\n\n{{.BotNames}}\n{{else}}Ο χρήστης {{.UserName}} απενεργοποιήθηκε. Διαχειρίζονταν {{.NumBots}} λογαριασμάτα bot, τα οποία παραμένουν ενεργά, συμπεριλαμβανομένων των παρακάτω:\n\n{{.BotNames}}{{end}}Συστήνουμε ανεπιφύλακτα να αναλάβετε την ιδιοκτησία κάθε bot επανενεργοποιώντας το στις **Ενσωματώσεις > Λογαριασμάτα Bot** και δημιουργώντας νέα tokens για το bot.\n\nΓια περισσότερες πληροφορίες, δείτε την [τεκμηρίωση](https://antimatter.chat/docs/developers/bots.html#enable).\n\nΑν θέλετε τα λογαριασμάτα bot να απενεργοποιούνται αυτόματα μετά την απενεργοποίηση του ιδιοκτήτη, ορίστε την επιλογή «Απενεργοποίηση λογαριασμάτων bot όταν απενεργοποιείται ο ιδιοκτήτης» στις **Κονσόλα συστήματος > Ενσωματώσεις > Λογαριασμάτα Bot** σε true.{{end}}"
   },
   {
     "id": "app.bot.get_system_bot.empty_admin_list.app_error",
@@ -10864,10 +10776,6 @@
     "translation": "σφάλμα κατά την πληροφόρηση στοιχείων συγχρονισμού"
   },
   {
-    "id": "ent.ldap.syncronize.search_failure_size_exceeded.app_error",
-    "translation": "Υπερβαίνει το όριο μεγέθους. Προσπαθήστε να αυξήσετε τη ρύθμιση Μέγιστου μεγέθους σελίδας. Δείτε https://docs.mattermost.com/onboard/ad-ldap.html#i-see-the-log-error-ldap-result-code-4-size-limit-exceeded για περισσότερες λεπτομέρειες."
-  },
-  {
     "id": "ent.ldap.validate_admin_filter.app_error",
     "translation": "Μη έγκυρος Φίλτρο Διαχειριστή AD/LDAP."
   },
@@ -14312,10 +14220,6 @@
     "translation": "Κατεβάστε την εφαρμογή"
   },
   {
-    "id": "web.error.unsupported_browser.download_app_or_upgrade_browser",
-    "translation": "Κατεβάστε την εφαρμογή Mattermost ή χρησιμοποιήστε έναν υποστηριζόμενο περιηγητή για καλύτερη εμπειρία."
-  },
-  {
     "id": "web.error.unsupported_browser.download_the_app",
     "translation": "Λήψη της εφαρμογής"
   },
@@ -14326,10 +14230,6 @@
   {
     "id": "web.error.unsupported_browser.install_guide.windows",
     "translation": "Οδηγός εγκατάστασης"
-  },
-  {
-    "id": "web.error.unsupported_browser.learn_more",
-    "translation": "Μάθετε περισσότερα για τα υποστηριζόμενα προγράμματα περιήγησης."
   },
   {
     "id": "web.error.unsupported_browser.min_browser_version.chrome",

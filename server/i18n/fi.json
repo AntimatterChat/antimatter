@@ -257,7 +257,7 @@
   },
   {
     "id": "api.bot.teams_channels.add_message_mobile",
-    "translation": "Lisää minut joukkueeseen ja kanaviin, joiden kanssa haluat minun olevan vuorovaikutuksessa. Käytä selainta tai Mattermost Desktop -sovellusta."
+    "translation": "Lisää minut joukkueeseen ja kanaviin, joiden kanssa haluat minun olevan vuorovaikutuksessa. Käytä selainta tai Antimatter Desktop -sovellusta."
   },
   {
     "id": "api.channel.add_guest.added",
@@ -1295,10 +1295,6 @@
     "translation": "Virhe nykyisen kanavan noutamisessa."
   },
   {
-    "id": "api.command_invite.channel.error",
-    "translation": "Kanavaa {{.Channel}} ei löytynyt. Käytä [kanavankahvaa](https://docs.mattermost.com/messaging/managing-channels.html#naming-a-channel) kanavien tunnistamiseen."
-  },
-  {
     "id": "api.command_invite.channel_constrained_user_denied",
     "translation": "Tätä kanavaa hallitaan ryhmien avulla.  Tämä käyttäjä ei kuulu ryhmään, joka on synkronoitu tähän kanavaan."
   },
@@ -1333,10 +1329,6 @@
   {
     "id": "api.command_invite.permission.app_error",
     "translation": "Sinulla ei ole riittäviä lupia lisätäksesi {{.User}} kanavalle {{.Channel}}."
-  },
-  {
-    "id": "api.command_invite.private_channel.app_error",
-    "translation": "Kanavaa {{.Channel}} ei löytynyt. Käytä [kanavankahvaa](https://docs.mattermost.com/messaging/managing-channels.html#naming-a-channel) kanavien tunnistamiseen."
   },
   {
     "id": "api.command_invite.success",
@@ -1522,20 +1514,12 @@
     "translation": "Poistaa käytöstä työpöytä-, sähköposti- ja työntöilmoitukset nykyiselle kanavalle tai määritetylle [kanavalle]."
   },
   {
-    "id": "api.command_mute.error",
-    "translation": "Kanavaa {{.Channel}} ei löytynyt. Käytä [kanavankahvaa](https://docs.mattermost.com/messaging/managing-channels.html#naming-a-channel) kanavien tunnistamiseen."
-  },
-  {
     "id": "api.command_mute.hint",
     "translation": "~[kanava]"
   },
   {
     "id": "api.command_mute.name",
     "translation": "mykistä"
-  },
-  {
-    "id": "api.command_mute.no_channel.error",
-    "translation": "Määritettyä kanavaa ei löytynyt. Käytäthän [kanavan kahvaa](https://docs.mattermost.com/messaging/managing-channels.html#naming-a-channel) kanavien tunnistamiseen."
   },
   {
     "id": "api.command_mute.success_mute",
@@ -4127,74 +4111,6 @@
     "translation": "Käyttäjää ei löytynyt."
   },
   {
-    "id": "api.templates.cloud_welcome_email.add_apps_info",
-    "translation": "Lisää sovelluksia työtilaasi"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.add_apps_sub_info",
-    "translation": "Sujuvoita työtäsi työkaluilla kuten GitHub, Jira ja Zoom. Tutustu kaikkiin integraatioihimme"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.app_market_place",
-    "translation": "sovellusten markkinapaikalla."
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.button",
-    "translation": "Avaa Mattermost"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.download_mm_info",
-    "translation": "Lataa Mattermost-sovellus"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.info",
-    "translation": "Kiitos, että loit työtilan "
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.info2",
-    "translation": "Muista tallentaa linkkisi tai lisätä se kirjanmerkkeihin myöhempää käyttöä varten."
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.invite_info",
-    "translation": "Kutsu ihmisiä työtilaasi"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.invite_sub_info",
-    "translation": "Jaa tämä linkki kutsuaksesi jäseniäsi liittymään työtilaan {{.WorkSpace}}:"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.mm_apps",
-    "translation": "mobiili- ja työpöytäsovelluksillamme"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.signin_sub_info",
-    "translation": "Kirjaudu työtilaasi"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.signin_sub_info2",
-    "translation": "saadaksesi parhaan käyttökokemuksen Windowsilla, Linuxilla, Macilla, iOS:llä ja Androidilla."
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.start_questions",
-    "translation": "Onko sinulla kysyttävää alkuun pääsemisestä? Lähetä meille sähköpostia osoitteeseen"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.subject",
-    "translation": "Onnittelut!"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.subtitle",
-    "translation": "Ota työtilasi käyttöön"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.subtitle_info",
-    "translation": "Rakenna tiimisi ja saa työtilastasi kaikki irti seuraavien vaiheiden avulla."
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.title",
-    "translation": "Työtilasi on valmis käyttöön!"
-  },
-  {
     "id": "api.templates.deactivate_body.info",
     "translation": "Kytkit tilisi pois käytöstä osoitteessa {{ .SiteURL }}."
   },
@@ -4880,7 +4796,7 @@
   },
   {
     "id": "api.user.delete_channel.not_enabled.for_admin.app_error",
-    "translation": "Kanavan pysyvä poistaminen -ominaisuus ei ole käytössä. ServiceSettings.EnableAPIChannelDeletion on asetettava arvoon true tämän komennon käyttämiseksi. Lisätietoja: https://mattermost.com/pl/environment-configuration-settings"
+    "translation": "Kanavan pysyvä poistaminen -ominaisuus ei ole käytössä. ServiceSettings.EnableAPIChannelDeletion on asetettava arvoon true tämän komennon käyttämiseksi. Lisätietoja: https://antimatter.chat/docs/admins/configuration.html"
   },
   {
     "id": "api.user.delete_team.not_enabled.app_error",
@@ -4888,7 +4804,7 @@
   },
   {
     "id": "api.user.delete_team.not_enabled.for_admin.app_error",
-    "translation": "Tiimin pysyvä poistaminen -ominaisuus ei ole käytössä. ServiceSettings.EnableAPITeamDeletion on asetettava arvoon true tämän komennon käyttämiseksi. Lisätietoja: https://mattermost.com/pl/environment-configuration-settings."
+    "translation": "Tiimin pysyvä poistaminen -ominaisuus ei ole käytössä. ServiceSettings.EnableAPITeamDeletion on asetettava arvoon true tämän komennon käyttämiseksi. Lisätietoja: https://antimatter.chat/docs/admins/configuration.html."
   },
   {
     "id": "api.user.delete_user.not_enabled.app_error",
@@ -4896,7 +4812,7 @@
   },
   {
     "id": "api.user.delete_user.not_enabled.for_admin.app_error",
-    "translation": "Käyttäjän pysyvä poistaminen -ominaisuus ei ole käytössä. ServiceSettings.EnableAPIUserDeletion on asetettava arvoon true tämän komennon käyttämiseksi. Lisätietoja: https://mattermost.com/pl/environment-configuration-settings."
+    "translation": "Käyttäjän pysyvä poistaminen -ominaisuus ei ole käytössä. ServiceSettings.EnableAPIUserDeletion on asetettava arvoon true tämän komennon käyttämiseksi. Lisätietoja: https://antimatter.chat/docs/admins/configuration.html."
   },
   {
     "id": "api.user.demote_user_to_guest.already_guest.app_error",
@@ -5173,10 +5089,6 @@
   {
     "id": "api.user.saml.relay_state_too_long.app_error",
     "translation": "SAML-välitystila (relay state) on liian pitkä."
-  },
-  {
-    "id": "api.user.send_cloud_welcome_email.error",
-    "translation": "Cloud-tervetuloviestin lähettäminen epäonnistui"
   },
   {
     "id": "api.user.send_deactivate_email_and_forget.failed.error",
@@ -5628,7 +5540,7 @@
   },
   {
     "id": "app.bot.get_disable_bot_sysadmin_message",
-    "translation": "{{if .disableBotsSetting}}{{if .printAllBots}}{{.UserName}} deaktivoitiin. Hän hallinnoi seuraavia bottitilejä, jotka on nyt poistettu käytöstä.\n\n{{.BotNames}}{{else}}{{.UserName}} deaktivoitiin. Hän hallinnoi {{.NumBots}} bottitiliä, jotka on nyt poistettu käytöstä, mukaan lukien seuraavat:\n\n{{.BotNames}}{{end}}Voit ottaa kunkin botin omistukseesi ottamalla sen käyttöön kohdassa **Integraatiot > Bottitilit** ja luomalla botille uudet tunnukset.\n\nLisätietoja on [dokumentaatiossamme](https://docs.mattermost.com/developer/bot-accounts.html#what-happens-when-a-user-who-owns-bot-accounts-is-disabled).{{else}}{{if .printAllBots}}{{.UserName}} deaktivoitiin. Hän hallinnoi seuraavia bottitilejä, jotka ovat edelleen käytössä.\n\n{{.BotNames}}\n{{else}}{{.UserName}} deaktivoitiin. Hän hallinnoi {{.NumBots}} bottitiliä, jotka ovat edelleen käytössä, mukaan lukien seuraavat:\n\n{{.BotNames}}{{end}}Suosittelemme vahvasti, että otat kunkin botin omistukseesi ottamalla sen uudelleen käyttöön kohdassa **Integraatiot > Bottitilit** ja luomalla botille uudet tunnukset.\n\nLisätietoja on [dokumentaatiossamme](https://docs.mattermost.com/developer/bot-accounts.html#what-happens-when-a-user-who-owns-bot-accounts-is-disabled).\n\nJos haluat, että bottitilit poistetaan käytöstä automaattisesti omistajan deaktivoinnin jälkeen, aseta asetus ”Poista bottitilit käytöstä, kun omistaja deaktivoidaan” kohdassa **Järjestelmäkonsoli > Integraatiot > Bottitilit** arvoon tosi.{{end}}"
+    "translation": "{{if .disableBotsSetting}}{{if .printAllBots}}{{.UserName}} deaktivoitiin. Hän hallinnoi seuraavia bottitilejä, jotka on nyt poistettu käytöstä.\n\n{{.BotNames}}{{else}}{{.UserName}} deaktivoitiin. Hän hallinnoi {{.NumBots}} bottitiliä, jotka on nyt poistettu käytöstä, mukaan lukien seuraavat:\n\n{{.BotNames}}{{end}}Voit ottaa kunkin botin omistukseesi ottamalla sen käyttöön kohdassa **Integraatiot > Bottitilit** ja luomalla botille uudet tunnukset.\n\nLisätietoja on [dokumentaatiossamme](https://antimatter.chat/docs/developers/bots.html#enable).{{else}}{{if .printAllBots}}{{.UserName}} deaktivoitiin. Hän hallinnoi seuraavia bottitilejä, jotka ovat edelleen käytössä.\n\n{{.BotNames}}\n{{else}}{{.UserName}} deaktivoitiin. Hän hallinnoi {{.NumBots}} bottitiliä, jotka ovat edelleen käytössä, mukaan lukien seuraavat:\n\n{{.BotNames}}{{end}}Suosittelemme vahvasti, että otat kunkin botin omistukseesi ottamalla sen uudelleen käyttöön kohdassa **Integraatiot > Bottitilit** ja luomalla botille uudet tunnukset.\n\nLisätietoja on [dokumentaatiossamme](https://antimatter.chat/docs/developers/bots.html#enable).\n\nJos haluat, että bottitilit poistetaan käytöstä automaattisesti omistajan deaktivoinnin jälkeen, aseta asetus ”Poista bottitilit käytöstä, kun omistaja deaktivoidaan” kohdassa **Järjestelmäkonsoli > Integraatiot > Bottitilit** arvoon tosi.{{end}}"
   },
   {
     "id": "app.bot.get_system_bot.empty_admin_list.app_error",
@@ -11475,10 +11387,6 @@
     "translation": "Ei voitu etsiä käyttäjiä AD/LDAPista. Tarkista että Mattermost palvelu voi yhdistää AD/LDAP palveluun ja yritä uudestaan."
   },
   {
-    "id": "ent.ldap.syncronize.search_failure_size_exceeded.app_error",
-    "translation": "Kokoraja ylitetty. Kokeile suurentaa Maximum page size -asetusta. Lisätietoja: https://docs.mattermost.com/onboard/ad-ldap.html#i-see-the-log-error-ldap-result-code-4-size-limit-exceeded"
-  },
-  {
     "id": "ent.ldap.update_cpa.empty_attribute",
     "translation": "Tyhjä LDAP-attribuutin arvo"
   },
@@ -15035,10 +14943,6 @@
     "translation": "Lataa sovellus"
   },
   {
-    "id": "web.error.unsupported_browser.download_app_or_upgrade_browser",
-    "translation": "Lataa Mattermost-sovellus tai käytä tuettua selainta saadaksesi paremman käyttökokemuksen."
-  },
-  {
     "id": "web.error.unsupported_browser.download_the_app",
     "translation": "Lataa sovellus"
   },
@@ -15049,10 +14953,6 @@
   {
     "id": "web.error.unsupported_browser.install_guide.windows",
     "translation": "Asennusohje"
-  },
-  {
-    "id": "web.error.unsupported_browser.learn_more",
-    "translation": "Lue lisää tuetuista selaimista."
   },
   {
     "id": "web.error.unsupported_browser.min_browser_version.chrome",

@@ -56,15 +56,10 @@ func TestIsMattermostServiceURL(t *testing.T) {
 // mattermostHost matches hosts of Mattermost, Inc. and of the telemetry and error reporting services upstream used.
 var mattermostHost = regexp.MustCompile(`(?i)(^|[^a-z0-9-])([a-z0-9-]+\.)*(mattermost\.(com|cloud|org|io)|matterlytics|sentry\.io|rudderstack\.com|rudderlabs\.com|segment\.(io|com))\b|stun\.global\.calls`)
 
-// defaultsToFix are default settings that still point at a Mattermost site and should not. They are links shown to
-// users, not addresses the server calls: the "download the apps" links send people to Mattermost's apps, not
-// Antimatter's. Point them at Antimatter's own download pages (or leave them empty) and remove them from here; the test
-// fails until you do, so this list only shrinks.
-var defaultsToFix = map[string]bool{
-	"Config.NativeAppSettings.AppDownloadLink":        true,
-	"Config.NativeAppSettings.AndroidAppDownloadLink": true,
-	"Config.NativeAppSettings.IosAppDownloadLink":     true,
-}
+// defaultsToFix are default settings that still point at a Mattermost site and should not. Point them at Antimatter's
+// own pages (or leave them empty) and remove them from here; the test fails until you do, so this list only shrinks.
+// It is empty: keep it that way.
+var defaultsToFix = map[string]bool{}
 
 // TestDefaultConfigContactsNoMattermostService walks every string of the default configuration (fields, slices, map
 // keys and values) and fails on any Mattermost, telemetry or error reporting host.

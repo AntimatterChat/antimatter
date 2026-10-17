@@ -1574,8 +1574,8 @@
   },
   {
     "id": "api.command_invite.channel.error",
-    "translation": "Could not find the channel {{.Channel}}. Please use the [channel handle](https://docs.mattermost.com/messaging/managing-channels.html#naming-a-channel) to identify channels.",
-    "description": "Ephemeral Markdown error for the /invite slash command; {{.Channel}} is the channel name the user typed; keep the Markdown documentation link."
+    "translation": "Could not find the channel {{.Channel}}. Use the channel handle (the name after ~ when you mention a channel) to identify it.",
+    "description": "Ephemeral error for the /invite slash command; {{.Channel}} is the channel name the user typed; '~' is the character that starts a channel mention."
   },
   {
     "id": "api.command_invite.channel_constrained_user_denied",
@@ -1624,8 +1624,8 @@
   },
   {
     "id": "api.command_invite.private_channel.app_error",
-    "translation": "Could not find the channel {{.Channel}}. Please use the [channel handle](https://docs.mattermost.com/messaging/managing-channels.html#naming-a-channel) to identify channels.",
-    "description": "Ephemeral Markdown error for the /invite slash command when the named private channel is not found; {{.Channel}} is the channel name typed; keep the Markdown documentation link."
+    "translation": "Could not find the channel {{.Channel}}. Use the channel handle (the name after ~ when you mention a channel) to identify it.",
+    "description": "Ephemeral error for the /invite slash command when the named private channel is not found; {{.Channel}} is the channel name typed; '~' is the character that starts a channel mention."
   },
   {
     "id": "api.command_invite.success",
@@ -1857,8 +1857,8 @@
   },
   {
     "id": "api.command_mute.error",
-    "translation": "Could not find the channel {{.Channel}}. Please use the [channel handle](https://docs.mattermost.com/messaging/managing-channels.html#naming-a-channel) to identify channels.",
-    "description": "Ephemeral Markdown error for the /mute slash command; {{.Channel}} is the channel name the user typed; keep the Markdown documentation link."
+    "translation": "Could not find the channel {{.Channel}}. Use the channel handle (the name after ~ when you mention a channel) to identify it.",
+    "description": "Ephemeral error for the /mute slash command; {{.Channel}} is the channel name the user typed; '~' is the character that starts a channel mention."
   },
   {
     "id": "api.command_mute.hint",
@@ -1872,8 +1872,8 @@
   },
   {
     "id": "api.command_mute.no_channel.error",
-    "translation": "Could not find the specified channel. Please use the [channel handle](https://docs.mattermost.com/messaging/managing-channels.html#naming-a-channel) to identify channels.",
-    "description": "Ephemeral Markdown error for the /mute slash command when the given channel cannot be found; keep the Markdown documentation link."
+    "translation": "Could not find the specified channel. Use the channel handle (the name after ~ when you mention a channel) to identify it.",
+    "description": "Ephemeral error for the /mute slash command when the given channel cannot be found; '~' is the character that starts a channel mention."
   },
   {
     "id": "api.command_mute.success_mute",
@@ -4872,91 +4872,6 @@
     "description": "API error when the user referenced in a team operation cannot be found."
   },
   {
-    "id": "api.templates.cloud_welcome_email.add_apps_info",
-    "translation": "Add apps to your workspace",
-    "description": "Section heading in the Cloud workspace welcome email, introducing app integrations."
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.add_apps_sub_info",
-    "translation": "Streamline your work with tools like GitHub, Jira and Zoom. Explore all of the integrations we have on our",
-    "description": "Body sentence in the Cloud welcome email; it is a sentence fragment that continues into a link labelled 'app marketplace.', so it should end mid-sentence."
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.app_market_place",
-    "translation": "app marketplace.",
-    "description": "Link text at the end of the 'add apps' sentence in the Cloud welcome email; continues the preceding fragment, hence the lowercase start and trailing period."
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.button",
-    "translation": "Open Mattermost",
-    "description": "Call-to-action button label in the Cloud welcome email that opens the user's new Mattermost workspace."
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.download_mm_info",
-    "translation": "Download the Mattermost App",
-    "description": "Section heading in the Cloud welcome email prompting the user to download the Mattermost desktop/mobile apps."
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.info",
-    "translation": "Thanks for creating ",
-    "description": "Sentence fragment in the Cloud welcome email; the workspace name is appended directly after it, so keep the trailing space and open-ended phrasing."
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.info2",
-    "translation": "Make sure to save or bookmark your link for future use.",
-    "description": "Body line in the Mattermost Cloud welcome email reminding the new workspace owner to keep their workspace URL."
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.invite_info",
-    "translation": "Invite people to your workspace",
-    "description": "Section heading in the Cloud welcome email introducing the invite link for adding teammates."
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.invite_sub_info",
-    "translation": "Share this link to invite your members to join {{.WorkSpace}}:",
-    "description": "Body text in the Cloud welcome email preceding the invite link; {{.WorkSpace}} is the workspace name."
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.mm_apps",
-    "translation": "mobile and desktop apps",
-    "description": "Link text within a Cloud welcome email sentence pointing to the mobile and desktop app downloads; concatenated into a larger sentence, hence lowercase."
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.signin_sub_info",
-    "translation": "Sign into your workspace on our",
-    "description": "Sentence fragment in the Cloud welcome email that continues into the 'mobile and desktop apps' link text; should end mid-sentence."
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.signin_sub_info2",
-    "translation": "for the best experience on Windows, Linux, Mac, iOS and Android.",
-    "description": "Sentence fragment in the Cloud welcome email that follows a 'download the apps' link; completes a sentence about downloading desktop/mobile apps."
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.start_questions",
-    "translation": "Having questions about getting started? Email us at",
-    "description": "Footer sentence fragment in the Cloud welcome email; the support email address is appended directly after it."
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.subject",
-    "translation": "Congratulations!",
-    "description": "Subject line of the welcome email sent when a new Mattermost Cloud workspace is created."
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.subtitle",
-    "translation": "Set up your workspace",
-    "description": "Subtitle line in the Cloud welcome email, above the workspace setup checklist."
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.subtitle_info",
-    "translation": "Take the following steps to build out your teams and get the most out of your workspace.",
-    "description": "Introductory paragraph in the Cloud welcome email above the list of suggested onboarding steps for the new workspace owner."
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.title",
-    "translation": "Your workspace is ready to go!",
-    "description": "Main heading of the Cloud welcome email announcing the new workspace is created."
-  },
-  {
     "id": "api.templates.deactivate_body.info",
     "translation": "You deactivated your account on {{ .SiteURL }}.",
     "description": "Body text of the email confirming the user deactivated their own account; {{ .SiteURL }} is the Mattermost server URL."
@@ -5688,8 +5603,8 @@
   },
   {
     "id": "api.user.delete_channel.not_enabled.for_admin.app_error",
-    "translation": "Permanent channel deletion feature is not enabled. ServiceSettings.EnableAPIChannelDeletion must be set to true to use this command. See https://mattermost.com/pl/environment-configuration-settings for more information",
-    "description": "Admin-facing variant of the permanent channel deletion error; 'ServiceSettings.EnableAPIChannelDeletion' is a literal config setting name and the URL is a documentation link."
+    "translation": "Permanent channel deletion feature is not enabled. ServiceSettings.EnableAPIChannelDeletion must be set to true to use this command. See https://antimatter.chat/docs/admins/configuration.html for more information.",
+    "description": "Admin-facing variant of the permanent channel deletion error; 'ServiceSettings.EnableAPIChannelDeletion' is a literal config setting name and the URL is a link to Antimatter's documentation on changing settings."
   },
   {
     "id": "api.user.delete_team.not_enabled.app_error",
@@ -5698,8 +5613,8 @@
   },
   {
     "id": "api.user.delete_team.not_enabled.for_admin.app_error",
-    "translation": "Permanent team deletion feature is not enabled. ServiceSettings.EnableAPITeamDeletion must be set to true to use this command. See https://mattermost.com/pl/environment-configuration-settings for more information.",
-    "description": "API error shown to a system admin when permanent team deletion is disabled; 'ServiceSettings.EnableAPITeamDeletion' is a config setting name and the URL is a documentation link; neither should be translated."
+    "translation": "Permanent team deletion feature is not enabled. ServiceSettings.EnableAPITeamDeletion must be set to true to use this command. See https://antimatter.chat/docs/admins/configuration.html for more information.",
+    "description": "API error shown to a system admin when permanent team deletion is disabled; 'ServiceSettings.EnableAPITeamDeletion' is a config setting name and the URL is a link to Antimatter's documentation on changing settings; neither should be translated."
   },
   {
     "id": "api.user.delete_user.not_enabled.app_error",
@@ -5708,8 +5623,8 @@
   },
   {
     "id": "api.user.delete_user.not_enabled.for_admin.app_error",
-    "translation": "Permanent user deletion feature is not enabled. ServiceSettings.EnableAPIUserDeletion must be set to true to use this command. See https://mattermost.com/pl/environment-configuration-settings for more information.",
-    "description": "API error shown to a system admin when permanent user deletion is disabled; 'ServiceSettings.EnableAPIUserDeletion' is a config setting name and the URL is a documentation link; neither should be translated."
+    "translation": "Permanent user deletion feature is not enabled. ServiceSettings.EnableAPIUserDeletion must be set to true to use this command. See https://antimatter.chat/docs/admins/configuration.html for more information.",
+    "description": "API error shown to a system admin when permanent user deletion is disabled; 'ServiceSettings.EnableAPIUserDeletion' is a config setting name and the URL is a link to Antimatter's documentation on changing settings; neither should be translated."
   },
   {
     "id": "api.user.demote_user_to_guest.already_guest.app_error",
@@ -6040,11 +5955,6 @@
     "id": "api.user.saml.relay_state_too_long.app_error",
     "translation": "SAML relay state is too long.",
     "description": "API error (400) returned during SAML login when the RelayState parameter supplied by the identity provider exceeds the allowed length. Seen by an end user as a login failure."
-  },
-  {
-    "id": "api.user.send_cloud_welcome_email.error",
-    "translation": "Failed to send cloud welcome email",
-    "description": "Error when sending the welcome email to a new Mattermost Cloud workspace user fails; admin/log audience."
   },
   {
     "id": "api.user.send_deactivate_email_and_forget.failed.error",
@@ -6603,7 +6513,7 @@
   },
   {
     "id": "app.bot.get_disable_bot_sysadmin_message",
-    "translation": "{{if .disableBotsSetting}}{{if .printAllBots}}{{.UserName}} was deactivated. They managed the following bot accounts which have now been disabled.\n\n{{.BotNames}}{{else}}{{.UserName}} was deactivated. They managed {{.NumBots}} bot accounts which have now been disabled, including the following:\n\n{{.BotNames}}{{end}}You can take ownership of each bot by enabling it at **Integrations > Bot Accounts** and creating new tokens for the bot.\n\nFor more information, see our [documentation](https://docs.mattermost.com/developer/bot-accounts.html#what-happens-when-a-user-who-owns-bot-accounts-is-disabled).{{else}}{{if .printAllBots}}{{.UserName}} was deactivated. They managed the following bot accounts which are still enabled.\n\n{{.BotNames}}\n{{else}}{{.UserName}} was deactivated. They managed {{.NumBots}} bot accounts which are still enabled, including the following:\n\n{{.BotNames}}{{end}}We strongly recommend you to take ownership of each bot by re-enabling it at **Integrations > Bot Accounts** and creating new tokens for the bot.\n\nFor more information, see our [documentation](https://docs.mattermost.com/developer/bot-accounts.html#what-happens-when-a-user-who-owns-bot-accounts-is-disabled).\n\nIf you want bot accounts to disable automatically after owner deactivation, set “Disable bot accounts when owner is deactivated” in **System Console > Integrations > Bot Accounts** to true.{{end}}",
+    "translation": "{{if .disableBotsSetting}}{{if .printAllBots}}{{.UserName}} was deactivated. They managed the following bot accounts which have now been disabled.\n\n{{.BotNames}}{{else}}{{.UserName}} was deactivated. They managed {{.NumBots}} bot accounts which have now been disabled, including the following:\n\n{{.BotNames}}{{end}}You can take ownership of each bot by enabling it at **Integrations > Bot Accounts** and creating new tokens for the bot.\n\nFor more information, see the [documentation](https://antimatter.chat/docs/developers/bots.html#enable).{{else}}{{if .printAllBots}}{{.UserName}} was deactivated. They managed the following bot accounts which are still enabled.\n\n{{.BotNames}}\n{{else}}{{.UserName}} was deactivated. They managed {{.NumBots}} bot accounts which are still enabled, including the following:\n\n{{.BotNames}}{{end}}We strongly recommend you to take ownership of each bot by re-enabling it at **Integrations > Bot Accounts** and creating new tokens for the bot.\n\nFor more information, see the [documentation](https://antimatter.chat/docs/developers/bots.html#enable).\n\nIf you want bot accounts to disable automatically after owner deactivation, set “Disable bot accounts when owner is deactivated” in **System Console > Integrations > Bot Accounts** to true.{{end}}",
     "description": "Go-templated direct message sent to system admins when a user who owned bot accounts is deactivated; branches on whether bots were auto-disabled ({{if .disableBotsSetting}}) and whether all bots are listed ({{.printAllBots}}); {{.UserName}} is the deactivated owner, {{.BotNames}} the bot list, {{.NumBots}} a count; uses Markdown (bold paths, links); template syntax must be preserved exactly."
   },
   {
@@ -13646,8 +13556,8 @@
   },
   {
     "id": "ent.ldap.syncronize.search_failure_size_exceeded.app_error",
-    "translation": "Size Limit Exceeded. Try increasing your Maximum page size setting. Check out https://docs.mattermost.com/onboard/ad-ldap.html#i-see-the-log-error-ldap-result-code-4-size-limit-exceeded for more details.",
-    "description": "AD/LDAP sync job error for admins; 'Maximum page size' is a System Console setting name and the URL is a documentation link that must stay intact."
+    "translation": "Size Limit Exceeded. Try increasing the Maximum Page Size setting in System Console > Authentication > AD/LDAP.",
+    "description": "AD/LDAP sync job error for admins; 'Maximum Page Size' is a System Console setting name and 'System Console > Authentication > AD/LDAP' is the path to it."
   },
   {
     "id": "ent.ldap.validate_admin_filter.app_error",
@@ -17964,7 +17874,7 @@
   },
   {
     "id": "web.error.unsupported_browser.download_app_or_upgrade_browser",
-    "translation": "Download the Mattermost app or use a supported browser for a better experience.",
+    "translation": "Download the Antimatter app or use a supported browser for a better experience.",
     "description": "Subtitle text on the full-page 'unsupported browser' screen suggesting alternatives; end-user facing, shown before login."
   },
   {
@@ -17981,11 +17891,6 @@
     "id": "web.error.unsupported_browser.install_guide.windows",
     "translation": "Install Guide",
     "description": "Link text on the 'unsupported browser' page pointing to the Windows desktop app installation guide."
-  },
-  {
-    "id": "web.error.unsupported_browser.learn_more",
-    "translation": "Learn more about supported browsers.",
-    "description": "Link text on the 'unsupported browser' page leading to documentation about supported browsers."
   },
   {
     "id": "web.error.unsupported_browser.min_browser_version.chrome",

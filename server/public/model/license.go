@@ -25,7 +25,6 @@ const (
 	// uploaded to a server running in a production service environment.
 	WrongEnvironmentTestLicenseError = "api.license.add_license.wrong_environment_test.app_error"
 	LicenseGracePeriod               = DayInMilliseconds * 10 //10 days
-	LicenseRenewalLink               = "https://mattermost.com/renew/"
 
 	LicenseShortSkuE10                = "E10"
 	LicenseShortSkuE20                = "E20"

@@ -89,7 +89,7 @@
   },
   {
     "id": "api.bot.teams_channels.add_message_mobile",
-    "translation": "Pridėkite mane prie komandų ir kanalų, kuriuose norite, kad dalyvaučiau. Tam naudokite naršyklę arba \"Mattermost Desktop\" programėlę."
+    "translation": "Pridėkite mane prie komandų ir kanalų, kuriuose norite, kad dalyvaučiau. Tam naudokite naršyklę arba \"Antimatter Desktop\" programėlę."
   },
   {
     "id": "api.channel.add_members.user_denied",
@@ -1265,10 +1265,6 @@
     "translation": "Klaida gaunant dabartinį kanalą."
   },
   {
-    "id": "api.command_invite.channel.error",
-    "translation": "Nepavyko rasti kanalo {{.Channel}}. Kanalams nurodyti naudokite [kanalo identifikatorių](https://docs.mattermost.com/messaging/managing-channels.html#naming-a-channel)."
-  },
-  {
     "id": "api.command_invite.channel_constrained_user_denied",
     "translation": "Šį kanalą valdo grupės. Šis naudotojas nepriklauso grupei, sinchronizuojamai su šiuo kanalu."
   },
@@ -1299,10 +1295,6 @@
   {
     "id": "api.command_invite.permission.app_error",
     "translation": "Neturite pakankamai leidimų pridėti {{.User}} į kanalą {{.Channel}}."
-  },
-  {
-    "id": "api.command_invite.private_channel.app_error",
-    "translation": "Nepavyko rasti kanalo {{.Channel}}. Kanalams nurodyti naudokite [kanalo identifikatorių](https://docs.mattermost.com/messaging/managing-channels.html#naming-a-channel)."
   },
   {
     "id": "api.command_invite.success",
@@ -1486,20 +1478,12 @@
     "translation": "Išjungia darbalaukio, el. pašto ir tiesioginius pranešimus dabartiniam arba nurodytam [kanalas] kanalui."
   },
   {
-    "id": "api.command_mute.error",
-    "translation": "Nepavyko rasti kanalo {{.Channel}}. Kanalams nurodyti naudokite [kanalo identifikatorių](https://docs.mattermost.com/messaging/managing-channels.html#naming-a-channel)."
-  },
-  {
     "id": "api.command_mute.hint",
     "translation": "~[kanalas]"
   },
   {
     "id": "api.command_mute.name",
     "translation": "nutildyti"
-  },
-  {
-    "id": "api.command_mute.no_channel.error",
-    "translation": "Nepavyko rasti nurodyto kanalo. Kanalams nurodyti naudokite [kanalo identifikatorių](https://docs.mattermost.com/messaging/managing-channels.html#naming-a-channel)."
   },
   {
     "id": "api.command_mute.success_mute",
@@ -4069,74 +4053,6 @@
     "translation": "Nepavyksta rasti naudotojo."
   },
   {
-    "id": "api.templates.cloud_welcome_email.add_apps_info",
-    "translation": "Pridėkite programėlių į savo darbo sritį"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.add_apps_sub_info",
-    "translation": "Supaprastinkite darbą naudodami tokius įrankius kaip GitHub, Jira ir Zoom. Visas mūsų integracijas rasite mūsų"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.app_market_place",
-    "translation": "programėlių parduotuvėje."
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.button",
-    "translation": "Atidaryti Mattermost"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.download_mm_info",
-    "translation": "Atsisiųskite Mattermost programėlę"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.info",
-    "translation": "Dėkojame, kad sukūrėte "
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.info2",
-    "translation": "Būtinai išsaugokite savo nuorodą arba pridėkite ją prie žymelių, kad galėtumėte naudoti vėliau."
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.invite_info",
-    "translation": "Pakvieskite žmones į savo darbo sritį"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.invite_sub_info",
-    "translation": "Pasidalykite šia nuoroda, kad pakviestumėte narius prisijungti prie {{.WorkSpace}}:"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.mm_apps",
-    "translation": "mobiliąsias ir darbalaukio programėles"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.signin_sub_info",
-    "translation": "Prisijunkite prie savo darbo srities naudodami mūsų"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.signin_sub_info2",
-    "translation": "kad patirtis „Windows“, „Linux“, „Mac“, „iOS“ ir „Android“ sistemose būtų geriausia."
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.start_questions",
-    "translation": "Turite klausimų, kaip pradėti? Rašykite mums adresu"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.subject",
-    "translation": "Sveikiname!"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.subtitle",
-    "translation": "Nustatykite savo darbo sritį"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.subtitle_info",
-    "translation": "Atlikite šiuos veiksmus, kad suburtumėte komandas ir išnaudotumėte visas darbo srities galimybes."
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.title",
-    "translation": "Jūsų darbo sritis paruošta!"
-  },
-  {
     "id": "api.templates.deactivate_body.info",
     "translation": "Išaktyvinote savo paskyrą serveryje {{ .SiteURL }}."
   },
@@ -4822,7 +4738,7 @@
   },
   {
     "id": "api.user.delete_channel.not_enabled.for_admin.app_error",
-    "translation": "Negrįžtamo kanalų ištrynimo funkcija neįjungta. Norint naudoti šią komandą, ServiceSettings.EnableAPIChannelDeletion turi būti nustatyta į true. Daugiau informacijos rasite https://mattermost.com/pl/environment-configuration-settings"
+    "translation": "Negrįžtamo kanalų ištrynimo funkcija neįjungta. Norint naudoti šią komandą, ServiceSettings.EnableAPIChannelDeletion turi būti nustatyta į true. Daugiau informacijos rasite https://antimatter.chat/docs/admins/configuration.html"
   },
   {
     "id": "api.user.delete_team.not_enabled.app_error",
@@ -4830,7 +4746,7 @@
   },
   {
     "id": "api.user.delete_team.not_enabled.for_admin.app_error",
-    "translation": "Negrįžtamo komandų ištrynimo funkcija neįjungta. Norint naudoti šią komandą, ServiceSettings.EnableAPITeamDeletion turi būti nustatyta į true. Daugiau informacijos rasite https://mattermost.com/pl/environment-configuration-settings."
+    "translation": "Negrįžtamo komandų ištrynimo funkcija neįjungta. Norint naudoti šią komandą, ServiceSettings.EnableAPITeamDeletion turi būti nustatyta į true. Daugiau informacijos rasite https://antimatter.chat/docs/admins/configuration.html."
   },
   {
     "id": "api.user.delete_user.not_enabled.app_error",
@@ -4838,7 +4754,7 @@
   },
   {
     "id": "api.user.delete_user.not_enabled.for_admin.app_error",
-    "translation": "Negrįžtamo naudotojų ištrynimo funkcija neįjungta. Norint naudoti šią komandą, ServiceSettings.EnableAPIUserDeletion turi būti nustatyta į true. Daugiau informacijos rasite https://mattermost.com/pl/environment-configuration-settings."
+    "translation": "Negrįžtamo naudotojų ištrynimo funkcija neįjungta. Norint naudoti šią komandą, ServiceSettings.EnableAPIUserDeletion turi būti nustatyta į true. Daugiau informacijos rasite https://antimatter.chat/docs/admins/configuration.html."
   },
   {
     "id": "api.user.demote_user_to_guest.already_guest.app_error",
@@ -5115,10 +5031,6 @@
   {
     "id": "api.user.saml.relay_state_too_long.app_error",
     "translation": "SAML perdavimo būsena (relay state) per ilga."
-  },
-  {
-    "id": "api.user.send_cloud_welcome_email.error",
-    "translation": "Nepavyko išsiųsti debesijos pasveikinimo el. laiško"
   },
   {
     "id": "api.user.send_deactivate_email_and_forget.failed.error",
@@ -5570,7 +5482,7 @@
   },
   {
     "id": "app.bot.get_disable_bot_sysadmin_message",
-    "translation": "{{if .disableBotsSetting}}{{if .printAllBots}}{{.UserName}} buvo išaktyvintas. Šis naudotojas valdė toliau nurodytas robotų paskyras, kurios dabar išjungtos.\n\n{{.BotNames}}{{else}}{{.UserName}} buvo išaktyvintas. Šis naudotojas valdė {{.NumBots}} robotų paskyras, kurios dabar išjungtos, įskaitant šias:\n\n{{.BotNames}}{{end}}Galite perimti kiekvieno roboto valdymą įjungdami jį skiltyje **Integracijos > Robotų paskyros** ir sukurdami robotui naujus prieigos raktus.\n\nDaugiau informacijos rasite mūsų [dokumentacijoje](https://docs.mattermost.com/developer/bot-accounts.html#what-happens-when-a-user-who-owns-bot-accounts-is-disabled).{{else}}{{if .printAllBots}}{{.UserName}} buvo išaktyvintas. Šis naudotojas valdė toliau nurodytas robotų paskyras, kurios vis dar įjungtos.\n\n{{.BotNames}}\n{{else}}{{.UserName}} buvo išaktyvintas. Šis naudotojas valdė {{.NumBots}} robotų paskyras, kurios vis dar įjungtos, įskaitant šias:\n\n{{.BotNames}}{{end}}Primygtinai rekomenduojame perimti kiekvieno roboto valdymą iš naujo įjungiant jį skiltyje **Integracijos > Robotų paskyros** ir sukuriant robotui naujus prieigos raktus.\n\nDaugiau informacijos rasite mūsų [dokumentacijoje](https://docs.mattermost.com/developer/bot-accounts.html#what-happens-when-a-user-who-owns-bot-accounts-is-disabled).\n\nJei norite, kad robotų paskyros būtų automatiškai išjungiamos išaktyvinus jų savininką, skiltyje **Sistemos konsolė > Integracijos > Robotų paskyros** nustatykite parinktį „Išjungti robotų paskyras, kai savininkas išaktyvinamas“ į „true“.{{end}}"
+    "translation": "{{if .disableBotsSetting}}{{if .printAllBots}}{{.UserName}} buvo išaktyvintas. Šis naudotojas valdė toliau nurodytas robotų paskyras, kurios dabar išjungtos.\n\n{{.BotNames}}{{else}}{{.UserName}} buvo išaktyvintas. Šis naudotojas valdė {{.NumBots}} robotų paskyras, kurios dabar išjungtos, įskaitant šias:\n\n{{.BotNames}}{{end}}Galite perimti kiekvieno roboto valdymą įjungdami jį skiltyje **Integracijos > Robotų paskyros** ir sukurdami robotui naujus prieigos raktus.\n\nDaugiau informacijos rasite mūsų [dokumentacijoje](https://antimatter.chat/docs/developers/bots.html#enable).{{else}}{{if .printAllBots}}{{.UserName}} buvo išaktyvintas. Šis naudotojas valdė toliau nurodytas robotų paskyras, kurios vis dar įjungtos.\n\n{{.BotNames}}\n{{else}}{{.UserName}} buvo išaktyvintas. Šis naudotojas valdė {{.NumBots}} robotų paskyras, kurios vis dar įjungtos, įskaitant šias:\n\n{{.BotNames}}{{end}}Primygtinai rekomenduojame perimti kiekvieno roboto valdymą iš naujo įjungiant jį skiltyje **Integracijos > Robotų paskyros** ir sukuriant robotui naujus prieigos raktus.\n\nDaugiau informacijos rasite mūsų [dokumentacijoje](https://antimatter.chat/docs/developers/bots.html#enable).\n\nJei norite, kad robotų paskyros būtų automatiškai išjungiamos išaktyvinus jų savininką, skiltyje **Sistemos konsolė > Integracijos > Robotų paskyros** nustatykite parinktį „Išjungti robotų paskyras, kai savininkas išaktyvinamas“ į „true“.{{end}}"
   },
   {
     "id": "app.bot.get_system_bot.empty_admin_list.app_error",
@@ -11121,10 +11033,6 @@
     "translation": "Nepavyko atlikti naudotojų paieškos AD/LDAP. Patikrinkite, ar Mattermost serveris gali prisijungti prie jūsų AD/LDAP serverio, ir bandykite dar kartą."
   },
   {
-    "id": "ent.ldap.syncronize.search_failure_size_exceeded.app_error",
-    "translation": "Viršytas dydžio limitas. Pabandykite padidinti nustatymą „Didžiausias puslapio dydis“. Daugiau informacijos rasite adresu https://docs.mattermost.com/onboard/ad-ldap.html#i-see-the-log-error-ldap-result-code-4-size-limit-exceeded."
-  },
-  {
     "id": "ent.ldap.update_cpa.empty_attribute",
     "translation": "Tuščia LDAP atributo reikšmė"
   },
@@ -14453,10 +14361,6 @@
     "translation": "Atsisiųsti programą"
   },
   {
-    "id": "web.error.unsupported_browser.download_app_or_upgrade_browser",
-    "translation": "Geresnei patirčiai atsisiųskite Mattermost programą arba naudokite palaikomą naršyklę."
-  },
-  {
     "id": "web.error.unsupported_browser.download_the_app",
     "translation": "Atsisiųsti programą"
   },
@@ -14467,10 +14371,6 @@
   {
     "id": "web.error.unsupported_browser.install_guide.windows",
     "translation": "Diegimo vadovas"
-  },
-  {
-    "id": "web.error.unsupported_browser.learn_more",
-    "translation": "Sužinokite daugiau apie palaikomas naršykles."
   },
   {
     "id": "web.error.unsupported_browser.min_browser_version.chrome",

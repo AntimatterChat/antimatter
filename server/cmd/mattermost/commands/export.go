@@ -19,14 +19,14 @@ import (
 
 var ExportCmd = &cobra.Command{
 	Use:   "export",
-	Short: "Export data from Mattermost",
-	Long:  "Export data from Mattermost in a format suitable for import into a third-party application or another Mattermost instance",
+	Short: "Export data from Antimatter",
+	Long:  "Export data from Antimatter in a format suitable for import into a third-party application or another Antimatter server",
 }
 
 var ScheduleExportCmd = &cobra.Command{
 	Use:     "schedule",
-	Short:   "Schedule an export data job in Mattermost",
-	Long:    "Schedule an export data job in Mattermost (this will run asynchronously via a background worker)",
+	Short:   "Schedule an export data job in Antimatter",
+	Long:    "Schedule an export data job in Antimatter (this will run asynchronously via a background worker)",
 	Example: "export schedule --format=actiance --exportFrom=12345 --timeoutSeconds=12345",
 	RunE:    scheduleExportCmdF,
 }
@@ -34,7 +34,7 @@ var ScheduleExportCmd = &cobra.Command{
 var BulkExportCmd = &cobra.Command{
 	Use:     "bulk [file]",
 	Short:   "Export bulk data.",
-	Long:    "Export data to a file compatible with the Mattermost Bulk Import format.",
+	Long:    "Export data to a file in the bulk import format.",
 	Example: "export bulk bulk_data.json",
 	RunE:    bulkExportCmdF,
 	Args:    cobra.ExactArgs(1),

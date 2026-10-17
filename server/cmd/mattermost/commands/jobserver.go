@@ -18,7 +18,7 @@ import (
 
 var JobserverCmd = &cobra.Command{
 	Use:   "jobserver",
-	Short: "Start the Mattermost job server",
+	Short: "Start the Antimatter job server",
 	RunE:  jobserverCmdF,
 }
 
@@ -44,8 +44,8 @@ func jobserverCmdF(command *cobra.Command, args []string) error {
 	rctx := request.EmptyContext(a.Log())
 
 	// Run jobs
-	rctx.Logger().Info("Starting Mattermost job server")
-	defer rctx.Logger().Info("Stopped Mattermost job server")
+	rctx.Logger().Info("Starting Antimatter job server")
+	defer rctx.Logger().Info("Stopped Antimatter job server")
 
 	if !noJobs {
 		a.Srv().Jobs.StartWorkers()
@@ -66,7 +66,7 @@ func jobserverCmdF(command *cobra.Command, args []string) error {
 	<-signalChan
 
 	// Cleanup anything that isn't handled by a defer statement
-	rctx.Logger().Info("Stopping Mattermost job server")
+	rctx.Logger().Info("Stopping Antimatter job server")
 
 	return nil
 }

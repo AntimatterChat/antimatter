@@ -399,7 +399,7 @@ func (h Handler) handleContextError(c *Context, w http.ResponseWriter, r *http.R
 	// check if error is a MaxBytesError error, which occurs when you read more bytes from buffer than configured
 	if ok := errors.As(c.Err, &maxBytesErr); ok {
 		// replace the context error with this error if so,
-		newErr := model.NewAppError(c.Err.Where, "api.context.request_body_too_large.app_error", nil, "Use the setting `MaximumPayloadSizeBytes` in Mattermost config to configure allowed payload limit. Learn more about this setting in Mattermost docs at https://docs.mattermost.com/configure/environment-configuration-settings.html#maximum-payload-size", http.StatusRequestEntityTooLarge)
+		newErr := model.NewAppError(c.Err.Where, "api.context.request_body_too_large.app_error", nil, "Use the setting `ServiceSettings.MaximumPayloadSizeBytes` to configure the allowed payload size. See https://antimatter.chat/docs/admins/security.html#uploads", http.StatusRequestEntityTooLarge)
 		c.Err = newErr
 	}
 

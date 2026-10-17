@@ -1294,10 +1294,6 @@
     "translation": "Lỗi khi truy xuất kênh hiện tại."
   },
   {
-    "id": "api.command_invite.channel.error",
-    "translation": "Không thể tìm thấy kênh {{.Channel}}. Vui lòng sử dụng [xử lý kênh](https://about.mattermost.com/default-channel-handle-documentation) để xác định các kênh."
-  },
-  {
     "id": "api.command_invite.channel_constrained_user_denied",
     "translation": "Kênh này được quản lý bởi các nhóm. Người dùng này không phải là thành viên của nhóm được đồng bộ hóa với kênh này."
   },
@@ -1332,10 +1328,6 @@
   {
     "id": "api.command_invite.permission.app_error",
     "translation": "Bạn không có đủ quyền để thêm {{.User}} vào {{.Channel}}."
-  },
-  {
-    "id": "api.command_invite.private_channel.app_error",
-    "translation": "Không thể tìm thấy kênh {{.Channel}}. Vui lòng sử dụng xử lý kênh để xác định kênh."
   },
   {
     "id": "api.command_invite.success",
@@ -1520,20 +1512,12 @@
     "translation": "Tắt thông báo trên màn hình, email và thông báo đẩy cho kênh hiện tại hoặc [channel] được chỉ định."
   },
   {
-    "id": "api.command_mute.error",
-    "translation": "Không thể tìm thấy kênh {{.Channel}}. Vui lòng sử dụng [xử lý kênh] (https://about.mattermost.com/default-channel-handle-documentation) để xác định các kênh."
-  },
-  {
     "id": "api.command_mute.hint",
     "translation": "~[channel]"
   },
   {
     "id": "api.command_mute.name",
     "translation": "tắt tiếng"
-  },
-  {
-    "id": "api.command_mute.no_channel.error",
-    "translation": "Không thể tìm thấy kênh chỉ định. Vui lòng sử dụng [xử lý kênh] (https://about.mattermost.com/default-channel-handle-documentation) để xác định các kênh."
   },
   {
     "id": "api.command_mute.success_mute",
@@ -4122,74 +4106,6 @@
     "translation": "Không thể tìm thấy người dùng."
   },
   {
-    "id": "api.templates.cloud_welcome_email.add_apps_info",
-    "translation": "Thêm ứng dụng vào không gian làm việc của bạn"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.add_apps_sub_info",
-    "translation": "Hợp lý hóa công việc của bạn với các công cụ như GitHub, Jira và Zoom. Khám phá tất cả các tích hợp chúng tôi có trên"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.app_market_place",
-    "translation": "chợ ứng dụng."
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.button",
-    "translation": "Mở Mattermost"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.download_mm_info",
-    "translation": "Tải ứng dụng Mattermost"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.info",
-    "translation": "Cám ơn vì đã tạo "
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.info2",
-    "translation": "Đảm bảo lưu hoặc đánh dấu liên kết của bạn để sử dụng sau này."
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.invite_info",
-    "translation": "Mời mọi người đến không gian làm việc của bạn"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.invite_sub_info",
-    "translation": "Chia sẻ liên kết này để mời thành viên của bạn tham gia {{.WorkSpace}}:"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.mm_apps",
-    "translation": "ứng dụng dành cho thiết bị di động và máy tính để bàn"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.signin_sub_info",
-    "translation": "Đăng nhập vào không gian làm việc của bạn trên"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.signin_sub_info2",
-    "translation": "để có trải nghiệm tốt nhất trên Windows, Linux, Mac, iOS và Android."
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.start_questions",
-    "translation": "Bạn có thắc mắc về việc bắt đầu? Gửi email cho chúng tôi theo địa chỉ"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.subject",
-    "translation": "Chúc mừng!"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.subtitle",
-    "translation": "Thiết lập không gian làm việc của bạn"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.subtitle_info",
-    "translation": "Thực hiện các bước sau để xây dựng nhóm của bạn và tận dụng tối đa không gian làm việc của bạn."
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.title",
-    "translation": "Không gian làm việc của bạn đã sẵn sàng hoạt động!"
-  },
-  {
     "id": "api.templates.deactivate_body.info",
     "translation": "Bạn đã hủy kích hoạt tài khoản của mình trên {{.SiteURL}}."
   },
@@ -4875,7 +4791,7 @@
   },
   {
     "id": "api.user.delete_channel.not_enabled.for_admin.app_error",
-    "translation": "Tính năng xóa kênh vĩnh viễn không được bật. ServiceSettings.EnableAPIChannelDeletion phải được đặt thành true để sử dụng lệnh này. Xem https://mattermost.com/pl/environment-configuration-settings để biết thêm thông tin"
+    "translation": "Tính năng xóa kênh vĩnh viễn không được bật. ServiceSettings.EnableAPIChannelDeletion phải được đặt thành true để sử dụng lệnh này. Xem https://antimatter.chat/docs/admins/configuration.html để biết thêm thông tin"
   },
   {
     "id": "api.user.delete_team.not_enabled.app_error",
@@ -4883,7 +4799,7 @@
   },
   {
     "id": "api.user.delete_team.not_enabled.for_admin.app_error",
-    "translation": "Tính năng xóa nhóm vĩnh viễn không được bật. ServiceSettings.EnableAPITeamDeletion phải được đặt thành true để sử dụng lệnh này. Xem https://mattermost.com/pl/environment-configuration-settings để biết thêm thông tin."
+    "translation": "Tính năng xóa nhóm vĩnh viễn không được bật. ServiceSettings.EnableAPITeamDeletion phải được đặt thành true để sử dụng lệnh này. Xem https://antimatter.chat/docs/admins/configuration.html để biết thêm thông tin."
   },
   {
     "id": "api.user.delete_user.not_enabled.app_error",
@@ -4891,7 +4807,7 @@
   },
   {
     "id": "api.user.delete_user.not_enabled.for_admin.app_error",
-    "translation": "Tính năng xóa người dùng vĩnh viễn không được bật. ServiceSettings.EnableAPIUserDeletion phải được đặt thành true để sử dụng lệnh này. Xem https://mattermost.com/pl/environment-configuration-settings để biết thêm thông tin."
+    "translation": "Tính năng xóa người dùng vĩnh viễn không được bật. ServiceSettings.EnableAPIUserDeletion phải được đặt thành true để sử dụng lệnh này. Xem https://antimatter.chat/docs/admins/configuration.html để biết thêm thông tin."
   },
   {
     "id": "api.user.demote_user_to_guest.already_guest.app_error",
@@ -5168,10 +5084,6 @@
   {
     "id": "api.user.saml.relay_state_too_long.app_error",
     "translation": "Trạng thái chuyển tiếp (relay state) của SAML quá dài."
-  },
-  {
-    "id": "api.user.send_cloud_welcome_email.error",
-    "translation": "Không gửi được email chào mừng trên đám mây"
   },
   {
     "id": "api.user.send_deactivate_email_and_forget.failed.error",
@@ -5623,7 +5535,7 @@
   },
   {
     "id": "app.bot.get_disable_bot_sysadmin_message",
-    "translation": "{{if .disableBotsSetting}}{{if .printAllBots}}{{.UserName}} đã bị vô hiệu hóa. Họ quản lý các tài khoản bot sau đây hiện đã bị vô hiệu hóa.\n\n{{.BotNames}}{{else}}{{.UserName}} đã bị vô hiệu hóa. Họ quản lý các tài khoản bot {{.NumBots}} hiện đã bị vô hiệu hóa, bao gồm:\n\n{{.BotNames}}{{end}}Bạn có thể sở hữu từng bot bằng cách bật nó tại **Tích hợp > Tài khoản Bot** và tạo mã thông báo mới cho bot.\n\nĐể biết thêm thông tin, hãy xem [tài liệu](https://docs.mattermost.com/developer/bot-accounts.html#what-happens-when-a-user-who-owns-bot-accounts-is-disabled) của chúng tôi .{{else}}{{if .printAllBots}}{{.UserName}} đã bị vô hiệu hóa. Họ đã quản lý các tài khoản bot sau vẫn được kích hoạt.\n\n{{.BotNames}}\n{{else}}{{.UserName}} đã bị vô hiệu hóa. Họ đã quản lý các tài khoản bot {{.NumBots}} vẫn được kích hoạt, bao gồm những tài khoản sau:\n\n{{.BotNames}}{{end}}Chúng tôi đặc biệt khuyên bạn nên sở hữu từng bot bằng cách bật lại bot đó tại **Tích hợp > Tài khoản Bot** và tạo mã thông báo mới cho bot.\n\nĐể biết thêm thông tin, hãy xem [tài liệu](https://docs.mattermost.com/developer/bot-accounts.html#what-happens-when-a-user-who-owns-bot-accounts-is-disabled) của chúng tôi .\n\nNếu bạn muốn tài khoản bot tự động vô hiệu hóa sau khi chủ sở hữu vô hiệu hóa, hãy đặt “Vô hiệu hóa tài khoản bot khi chủ sở hữu bị vô hiệu hóa” trong **Bảng điều khiển hệ thống > Tích hợp > Tài khoản Bot** thành đúng.{{end}}"
+    "translation": "{{if .disableBotsSetting}}{{if .printAllBots}}{{.UserName}} đã bị vô hiệu hóa. Họ quản lý các tài khoản bot sau đây hiện đã bị vô hiệu hóa.\n\n{{.BotNames}}{{else}}{{.UserName}} đã bị vô hiệu hóa. Họ quản lý các tài khoản bot {{.NumBots}} hiện đã bị vô hiệu hóa, bao gồm:\n\n{{.BotNames}}{{end}}Bạn có thể sở hữu từng bot bằng cách bật nó tại **Tích hợp > Tài khoản Bot** và tạo mã thông báo mới cho bot.\n\nĐể biết thêm thông tin, hãy xem [tài liệu](https://antimatter.chat/docs/developers/bots.html#enable) của chúng tôi .{{else}}{{if .printAllBots}}{{.UserName}} đã bị vô hiệu hóa. Họ đã quản lý các tài khoản bot sau vẫn được kích hoạt.\n\n{{.BotNames}}\n{{else}}{{.UserName}} đã bị vô hiệu hóa. Họ đã quản lý các tài khoản bot {{.NumBots}} vẫn được kích hoạt, bao gồm những tài khoản sau:\n\n{{.BotNames}}{{end}}Chúng tôi đặc biệt khuyên bạn nên sở hữu từng bot bằng cách bật lại bot đó tại **Tích hợp > Tài khoản Bot** và tạo mã thông báo mới cho bot.\n\nĐể biết thêm thông tin, hãy xem [tài liệu](https://antimatter.chat/docs/developers/bots.html#enable) của chúng tôi .\n\nNếu bạn muốn tài khoản bot tự động vô hiệu hóa sau khi chủ sở hữu vô hiệu hóa, hãy đặt “Vô hiệu hóa tài khoản bot khi chủ sở hữu bị vô hiệu hóa” trong **Bảng điều khiển hệ thống > Tích hợp > Tài khoản Bot** thành đúng.{{end}}"
   },
   {
     "id": "app.bot.get_system_bot.empty_admin_list.app_error",
@@ -11466,10 +11378,6 @@
     "translation": "Không thể tìm kiếm người dùng trong AD / LDAP. Kiểm tra xem máy chủ Antimatter có thể kết nối với máy chủ AD / LDAP của bạn không và thử lại."
   },
   {
-    "id": "ent.ldap.syncronize.search_failure_size_exceeded.app_error",
-    "translation": "Vượt quá giới hạn kích thước. Hãy thử kiểm tra [kích thước trang tối đa] của bạn (https://docs.mattermost.com/deployment/sso-ldap.html#i-see-the-log-error-ldap-result-code-4-size-limit-exceeded)."
-  },
-  {
     "id": "ent.ldap.update_cpa.empty_attribute",
     "translation": "Giá trị thuộc tính LDAP trống"
   },
@@ -15026,10 +14934,6 @@
     "translation": "Tải xuống App"
   },
   {
-    "id": "web.error.unsupported_browser.download_app_or_upgrade_browser",
-    "translation": "Tải xuống Mattermost app hoặc dùng trình duyệt được hỗ trợ để có trải nghiệm tốt nhất."
-  },
-  {
     "id": "web.error.unsupported_browser.download_the_app",
     "translation": "Tải xuống App"
   },
@@ -15040,10 +14944,6 @@
   {
     "id": "web.error.unsupported_browser.install_guide.windows",
     "translation": "Hướng dẫn cài đặt"
-  },
-  {
-    "id": "web.error.unsupported_browser.learn_more",
-    "translation": "Tìm hiểu thêm về các trình duyệt được hỗ trợ."
   },
   {
     "id": "web.error.unsupported_browser.min_browser_version.chrome",

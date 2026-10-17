@@ -417,7 +417,7 @@ func NewServer(options ...Option) (*Server, error) {
 	s.outgoingWebhookClient.Timeout = 0
 
 	if err2 := utils.TranslationsPreInit(); err2 != nil {
-		return nil, errors.Wrapf(err2, "unable to load Mattermost translation files")
+		return nil, errors.Wrapf(err2, "unable to load Antimatter translation files")
 	}
 	model.AppErrorInit(i18n.T)
 
@@ -437,7 +437,7 @@ func NewServer(options ...Option) (*Server, error) {
 	s.createPushNotificationsHub(request.EmptyContext(s.Log()))
 
 	if err = i18n.InitTranslations(*s.platform.Config().LocalizationSettings.DefaultServerLocale, *s.platform.Config().LocalizationSettings.DefaultClientLocale); err != nil {
-		return nil, errors.Wrapf(err, "unable to load Mattermost translation files")
+		return nil, errors.Wrapf(err, "unable to load Antimatter translation files")
 	}
 
 	templatesDir, ok := templates.GetTemplateDirectory()
@@ -509,7 +509,7 @@ func NewServer(options ...Option) (*Server, error) {
 	if _, err = url.ParseRequestURI(*s.platform.Config().ServiceSettings.SiteURL); err != nil {
 		// Don't spam the logs when in CI or local testing mode
 		if !(os.Getenv("IS_CI") == "true" || os.Getenv("IS_LOCAL_TESTING") == "true") {
-			mlog.Error("SiteURL must be set. Some features will operate incorrectly if the SiteURL is not set. See documentation for details: https://mattermost.com/pl/configure-site-url")
+			mlog.Error("SiteURL must be set. Some features will operate incorrectly if the SiteURL is not set. See https://antimatter.chat/docs/admins/https.html#site-url")
 		}
 	}
 

@@ -1252,10 +1252,6 @@
     "translation": "حدث خطأ أثناء استرجاع القناة الحالية."
   },
   {
-    "id": "api.command_invite.channel.error",
-    "translation": "تعذر العثور على القناة {{.Channel}}. يرجى استخدام [معرّف القناة](https://docs.mattermost.com/messaging/managing-channels.html#naming-a-channel) لتحديد القنوات."
-  },
-  {
     "id": "api.command_invite.channel_constrained_user_denied",
     "translation": "هذه القناة مُدارة بواسطة مجموعات. هذا المستخدم ليس جزءًا من مجموعة متزامنة مع هذه القناة."
   },
@@ -1290,10 +1286,6 @@
   {
     "id": "api.command_invite.permission.app_error",
     "translation": "لا تملك الصلاحيات الكافية لإضافة {{.User}} إلى {{.Channel}}."
-  },
-  {
-    "id": "api.command_invite.private_channel.app_error",
-    "translation": "تعذر العثور على القناة {{.Channel}}. يرجى استخدام [معرّف القناة](https://docs.mattermost.com/messaging/managing-channels.html#naming-a-channel) لتحديد القنوات."
   },
   {
     "id": "api.command_invite.success",
@@ -1472,20 +1464,12 @@
     "translation": "إيقاف إشعارات سطح المكتب والبريد الإلكتروني والإشعارات الفورية للقناة الحالية أو للقناة [القناة] المحددة."
   },
   {
-    "id": "api.command_mute.error",
-    "translation": "تعذّر العثور على القناة {{.Channel}}. يُرجى استخدام [معرّف القناة](https://docs.mattermost.com/messaging/managing-channels.html#naming-a-channel) لتحديد القنوات."
-  },
-  {
     "id": "api.command_mute.hint",
     "translation": "~[قناة]"
   },
   {
     "id": "api.command_mute.name",
     "translation": "كتم"
-  },
-  {
-    "id": "api.command_mute.no_channel.error",
-    "translation": "تعذّر العثور على القناة المحددة. يُرجى استخدام [معرّف القناة](https://docs.mattermost.com/messaging/managing-channels.html#naming-a-channel) لتحديد القنوات."
   },
   {
     "id": "api.command_mute.success_mute",
@@ -3868,74 +3852,6 @@
     "translation": "تعذّر العثور على المستخدم."
   },
   {
-    "id": "api.templates.cloud_welcome_email.add_apps_info",
-    "translation": "أضف التطبيقات إلى مساحة عملك"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.add_apps_sub_info",
-    "translation": "بسّط عملك باستخدام أدوات مثل GitHub وJira وZoom. استكشف جميع التكاملات التي نوفرها في"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.app_market_place",
-    "translation": "سوق التطبيقات."
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.button",
-    "translation": "افتح Mattermost"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.download_mm_info",
-    "translation": "حمّل تطبيق Mattermost"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.info",
-    "translation": "شكرًا لك على إنشاء"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.info2",
-    "translation": "تأكد من حفظ رابطك أو وضع علامة مرجعية عليه للاستخدام في المستقبل."
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.invite_info",
-    "translation": "ادعُ الأشخاص إلى مساحة عملك"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.invite_sub_info",
-    "translation": "شارك هذا الرابط لدعوة أعضاءك للانضمام إلى {{.WorkSpace}}:"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.mm_apps",
-    "translation": "تطبيقات الجوال وسطح المكتب"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.signin_sub_info",
-    "translation": "سجّل الدخول إلى مساحة عملك عبر"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.signin_sub_info2",
-    "translation": "للحصول على أفضل تجربة على Windows وLinux وMac وiOS وAndroid."
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.start_questions",
-    "translation": "هل لديك أسئلة حول البدء؟ راسلنا عبر البريد الإلكتروني على"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.subject",
-    "translation": "تهانينا!"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.subtitle",
-    "translation": "قم بإعداد مساحة عملك"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.subtitle_info",
-    "translation": "اتبع الخطوات التالية لبناء فرقك والحصول على أقصى استفادة من مساحة عملك."
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.title",
-    "translation": "مساحة عملك جاهزة للانطلاق!"
-  },
-  {
     "id": "api.templates.deactivate_body.info",
     "translation": "لقد عطّلت حسابك على {{ .SiteURL }}."
   },
@@ -4521,7 +4437,7 @@
   },
   {
     "id": "api.user.delete_channel.not_enabled.for_admin.app_error",
-    "translation": "ميزة الحذف الدائم للقنوات غير مفعّلة. يجب ضبط ServiceSettings.EnableAPIChannelDeletion على true لاستخدام هذا الأمر. راجع https://mattermost.com/pl/environment-configuration-settings لمزيد من المعلومات"
+    "translation": "ميزة الحذف الدائم للقنوات غير مفعّلة. يجب ضبط ServiceSettings.EnableAPIChannelDeletion على true لاستخدام هذا الأمر. راجع https://antimatter.chat/docs/admins/configuration.html لمزيد من المعلومات"
   },
   {
     "id": "api.user.delete_team.not_enabled.app_error",
@@ -4529,7 +4445,7 @@
   },
   {
     "id": "api.user.delete_team.not_enabled.for_admin.app_error",
-    "translation": "ميزة الحذف الدائم للفريق غير مفعّلة. يجب ضبط ServiceSettings.EnableAPITeamDeletion على true لاستخدام هذا الأمر. راجع https://mattermost.com/pl/environment-configuration-settings لمزيد من المعلومات."
+    "translation": "ميزة الحذف الدائم للفريق غير مفعّلة. يجب ضبط ServiceSettings.EnableAPITeamDeletion على true لاستخدام هذا الأمر. راجع https://antimatter.chat/docs/admins/configuration.html لمزيد من المعلومات."
   },
   {
     "id": "api.user.delete_user.not_enabled.app_error",
@@ -4537,7 +4453,7 @@
   },
   {
     "id": "api.user.delete_user.not_enabled.for_admin.app_error",
-    "translation": "ميزة الحذف الدائم للمستخدمين غير مفعّلة. يجب ضبط ServiceSettings.EnableAPIUserDeletion على true لاستخدام هذا الأمر. راجع https://mattermost.com/pl/environment-configuration-settings لمزيد من المعلومات."
+    "translation": "ميزة الحذف الدائم للمستخدمين غير مفعّلة. يجب ضبط ServiceSettings.EnableAPIUserDeletion على true لاستخدام هذا الأمر. راجع https://antimatter.chat/docs/admins/configuration.html لمزيد من المعلومات."
   },
   {
     "id": "api.user.demote_user_to_guest.already_guest.app_error",
@@ -4802,10 +4718,6 @@
   {
     "id": "api.user.saml.relay_state_too_long.app_error",
     "translation": "حالة إعادة التوجيه SAML طويلة جداً."
-  },
-  {
-    "id": "api.user.send_cloud_welcome_email.error",
-    "translation": "فشل في إرسال بريد الترحيب السحابي"
   },
   {
     "id": "api.user.send_deactivate_email_and_forget.failed.error",
@@ -5253,7 +5165,7 @@
   },
   {
     "id": "app.bot.get_disable_bot_sysadmin_message",
-    "translation": "{{if .disableBotsSetting}}{{if .printAllBots}}تم تعطيل {{.UserName}}. كان يدير حسابات البوت التالية التي تم تعطيلها الآن.\n\n{{.BotNames}}{{else}}تم تعطيل {{.UserName}}. كان يدير {{.NumBots}} من حسابات البوت التي تم تعطيلها الآن، بما في ذلك ما يلي:\n\n{{.BotNames}}{{end}}يمكنك الاستحواذ على كل بوت عن طريق تفعيله في **التكاملات > حسابات البوت** وإنشاء رموز جديدة للبوت.\n\nلمزيد من المعلومات، راجع [التوثيق](https://docs.mattermost.com/developer/bot-accounts.html#what-happens-when-a-user-who-owns-bot-accounts-is-disabled).{{else}}{{if .printAllBots}}تم تعطيل {{.UserName}}. كان يدير حسابات البوت التالية التي لا تزال مفعّلة.\n\n{{.BotNames}}\n{{else}}تم تعطيل {{.UserName}}. كان يدير {{.NumBots}} من حسابات البوت التي لا تزال مفعّلة، بما في ذلك ما يلي:\n\n{{.BotNames}}{{end}}نوصي بشدة بالاستحواذ على كل بوت عن طريق إعادة تفعيله في **التكاملات > حسابات البوت** وإنشاء رموز جديدة للبوت.\n\nلمزيد من المعلومات، راجع [التوثيق](https://docs.mattermost.com/developer/bot-accounts.html#what-happens-when-a-user-who-owns-bot-accounts-is-disabled).\n\nإذا كنت ترغب في تعطيل حسابات البوت تلقائيًا بعد تعطيل المالك، فقم بتعيين \"تعطيل حسابات البوت عند تعطيل المالك\" في **وحدة التحكم بالنظام > التكاملات > حسابات البوت** إلى true.{{end}}"
+    "translation": "{{if .disableBotsSetting}}{{if .printAllBots}}تم تعطيل {{.UserName}}. كان يدير حسابات البوت التالية التي تم تعطيلها الآن.\n\n{{.BotNames}}{{else}}تم تعطيل {{.UserName}}. كان يدير {{.NumBots}} من حسابات البوت التي تم تعطيلها الآن، بما في ذلك ما يلي:\n\n{{.BotNames}}{{end}}يمكنك الاستحواذ على كل بوت عن طريق تفعيله في **التكاملات > حسابات البوت** وإنشاء رموز جديدة للبوت.\n\nلمزيد من المعلومات، راجع [التوثيق](https://antimatter.chat/docs/developers/bots.html#enable).{{else}}{{if .printAllBots}}تم تعطيل {{.UserName}}. كان يدير حسابات البوت التالية التي لا تزال مفعّلة.\n\n{{.BotNames}}\n{{else}}تم تعطيل {{.UserName}}. كان يدير {{.NumBots}} من حسابات البوت التي لا تزال مفعّلة، بما في ذلك ما يلي:\n\n{{.BotNames}}{{end}}نوصي بشدة بالاستحواذ على كل بوت عن طريق إعادة تفعيله في **التكاملات > حسابات البوت** وإنشاء رموز جديدة للبوت.\n\nلمزيد من المعلومات، راجع [التوثيق](https://antimatter.chat/docs/developers/bots.html#enable).\n\nإذا كنت ترغب في تعطيل حسابات البوت تلقائيًا بعد تعطيل المالك، فقم بتعيين \"تعطيل حسابات البوت عند تعطيل المالك\" في **وحدة التحكم بالنظام > التكاملات > حسابات البوت** إلى true.{{end}}"
   },
   {
     "id": "app.bot.get_system_bot.empty_admin_list.app_error",
@@ -10864,10 +10776,6 @@
     "translation": "حدث خطأ أثناء تعبئة العناصر القابلة للمزامنة"
   },
   {
-    "id": "ent.ldap.syncronize.search_failure_size_exceeded.app_error",
-    "translation": "تم تجاوز حد الحجم. حاول زيادة إعداد حجم الصفحة الأقصى. راجع https://docs.mattermost.com/onboard/ad-ldap.html#i-see-the-log-error-ldap-result-code-4-size-limit-exceeded لمزيد من التفاصيل."
-  },
-  {
     "id": "ent.ldap.validate_admin_filter.app_error",
     "translation": "مرشح مسؤول AD/LDAP غير صالح."
   },
@@ -14312,10 +14220,6 @@
     "translation": "تنزيل التطبيق"
   },
   {
-    "id": "web.error.unsupported_browser.download_app_or_upgrade_browser",
-    "translation": "قم بتنزيل تطبيق Mattermost أو استخدم متصفحًا مدعومًا للحصول على تجربة أفضل."
-  },
-  {
     "id": "web.error.unsupported_browser.download_the_app",
     "translation": "تنزيل التطبيق"
   },
@@ -14326,10 +14230,6 @@
   {
     "id": "web.error.unsupported_browser.install_guide.windows",
     "translation": "دليل التثبيت"
-  },
-  {
-    "id": "web.error.unsupported_browser.learn_more",
-    "translation": "اعرف المزيد حول المتصفحات المدعومة."
   },
   {
     "id": "web.error.unsupported_browser.min_browser_version.chrome",

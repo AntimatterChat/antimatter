@@ -81,7 +81,6 @@ const (
 	GenericNotificationServer = "https://push-test.mattermost.com"
 	// DefaultPushNotificationServer is the default EmailSettings.PushNotificationServer: none.
 	DefaultPushNotificationServer = ""
-	MmSupportAdvisorAddress       = "support-advisor@mattermost.com"
 	FullNotification              = "full"
 	IdLoadedNotification          = "id_loaded"
 
@@ -225,9 +224,10 @@ const (
 	SamlSettingsCanonicalAlgorithmC14n11  = "Canonical1.1"
 	SamlSettingsDefaultCanonicalAlgorithm = SamlSettingsCanonicalAlgorithmC14n
 
-	NativeappSettingsDefaultAppDownloadLink        = "https://mattermost.com/pl/download-apps"
-	NativeappSettingsDefaultAndroidAppDownloadLink = "https://mattermost.com/pl/android-app/"
-	NativeappSettingsDefaultIosAppDownloadLink     = "https://mattermost.com/pl/ios-app/"
+	// The Antimatter apps' release pages: the desktop app (Windows, macOS, Linux) and the mobile app (Android, iOS).
+	NativeappSettingsDefaultAppDownloadLink        = "https://github.com/AntimatterChat/desktop-app/releases"
+	NativeappSettingsDefaultAndroidAppDownloadLink = "https://github.com/AntimatterChat/mobile-app/releases"
+	NativeappSettingsDefaultIosAppDownloadLink     = "https://github.com/AntimatterChat/mobile-app/releases"
 
 	ExperimentalSettingsDefaultLinkMetadataTimeoutMilliseconds                       = 5000
 	ExperimentalSettingsDefaultUsersStatusAndProfileFetchingPollIntervalMilliseconds = 3000
@@ -276,7 +276,6 @@ const (
 	PluginSettingsDefaultClientDirectory    = "./client/plugins"
 	PluginSettingsDefaultEnableMarketplace  = true
 	PluginSettingsDefaultMarketplaceURL     = ""
-	PluginSettingsOldMarketplaceURL         = "https://marketplace.integrations.mattermost.com"
 	PluginSettingsDefaultHookTimeoutSeconds = 30
 
 	ComplianceExportDirectoryFormat                = "compliance-export-2006-01-02-15h04m"
@@ -3373,6 +3372,14 @@ type NativeAppSettings struct {
 	MobileAllowPdfLinkNavigation  *bool    `access:"site_customization,write_restrictable"`
 }
 
+// mattermostAppDownloadLinks are the download links that were the defaults before Antimatter had its own apps: a server
+// still on them gets Antimatter's (a link an administrator set is kept).
+var mattermostAppDownloadLinks = map[string]string{
+	"https://mattermost.com/pl/download-apps": NativeappSettingsDefaultAppDownloadLink,
+	"https://mattermost.com/pl/android-app/":  NativeappSettingsDefaultAndroidAppDownloadLink,
+	"https://mattermost.com/pl/ios-app/":      NativeappSettingsDefaultIosAppDownloadLink,
+}
+
 func (s *NativeAppSettings) SetDefaults() {
 	if s.AppDownloadLink == nil {
 		s.AppDownloadLink = new(NativeappSettingsDefaultAppDownloadLink)
@@ -3384,6 +3391,12 @@ func (s *NativeAppSettings) SetDefaults() {
 
 	if s.IosAppDownloadLink == nil {
 		s.IosAppDownloadLink = new(NativeappSettingsDefaultIosAppDownloadLink)
+	}
+
+	for _, link := range []*string{s.AppDownloadLink, s.AndroidAppDownloadLink, s.IosAppDownloadLink} {
+		if antimatter, ok := mattermostAppDownloadLinks[*link]; ok {
+			*link = antimatter
+		}
 	}
 
 	if s.AppCustomURLSchemes == nil {

@@ -257,7 +257,7 @@
   },
   {
     "id": "api.bot.teams_channels.add_message_mobile",
-    "translation": "Por favor, adicione-me às equipas e canais nos quais deseja que eu interaja. Para fazer isto, utilize o navegador ou Mattermost Desktop App."
+    "translation": "Por favor, adicione-me às equipas e canais nos quais deseja que eu interaja. Para fazer isto, utilize o navegador ou Antimatter Desktop App."
   },
   {
     "id": "api.channel.add_guest.added",
@@ -1295,10 +1295,6 @@
     "translation": "Erro para recuperar o canal atual."
   },
   {
-    "id": "api.command_invite.channel.error",
-    "translation": "Não foi possível encontrar o canal {{.Channel}}. Por favor, utilize o [identificador do canal](https://docs.mattermost.com/messaging/managing-channels.html#naming-a-channel) para identificar os canais."
-  },
-  {
     "id": "api.command_invite.channel_constrained_user_denied",
     "translation": "Este canal é gerido por grupos.  Este utilizador não faz parte de um grupo sincronizado com este canal."
   },
@@ -1333,10 +1329,6 @@
   {
     "id": "api.command_invite.permission.app_error",
     "translation": "Não tem permissões suficientes para adicionar {{.User}} no {{.Channel}}."
-  },
-  {
-    "id": "api.command_invite.private_channel.app_error",
-    "translation": "Não foi possível encontrar o canal {{.Channel}}. Por favor, utilize o [identificador do canal](https://docs.mattermost.com/messaging/managing-channels.html#naming-a-channel) para identificar os canais."
   },
   {
     "id": "api.command_invite.success",
@@ -1522,20 +1514,12 @@
     "translation": "Desativa as notificações de PC, e-mail e push para o canal atual ou para o [canal] especificado."
   },
   {
-    "id": "api.command_mute.error",
-    "translation": "Não foi possível encontrar o canal {{.Channel}}. Por favor, utilize o [identificador do canal](https://docs.mattermost.com/messaging/managing-channels.html#naming-a-channel) para identificar os canais."
-  },
-  {
     "id": "api.command_mute.hint",
     "translation": "~[canal]"
   },
   {
     "id": "api.command_mute.name",
     "translation": "silenciar"
-  },
-  {
-    "id": "api.command_mute.no_channel.error",
-    "translation": "Não foi possível encontrar o canal especificado. Por favor, utilize o [identificador do canal](https://docs.mattermost.com/messaging/managing-channels.html#naming-a-channel) para identificar os canais."
   },
   {
     "id": "api.command_mute.success_mute",
@@ -4127,74 +4111,6 @@
     "translation": "Não é possível encontrar o utilizador."
   },
   {
-    "id": "api.templates.cloud_welcome_email.add_apps_info",
-    "translation": "Adicione aplicações ao seu espaço de trabalho"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.add_apps_sub_info",
-    "translation": "Simplifique o seu trabalho com ferramentas como GitHub, Jira e Zoom. Explore todas as integrações que temos no nosso"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.app_market_place",
-    "translation": "marketplace de aplicações."
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.button",
-    "translation": "Abrir o Mattermost"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.download_mm_info",
-    "translation": "Transfira a Aplicação Mattermost"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.info",
-    "translation": "Obrigado por criar "
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.info2",
-    "translation": "Certifique-se de que guarda a sua ligação ou a adiciona aos marcadores para utilização futura."
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.invite_info",
-    "translation": "Convide pessoas para o seu espaço de trabalho"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.invite_sub_info",
-    "translation": "Partilhe esta ligação para convidar os seus membros a juntarem-se a {{.WorkSpace}}:"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.mm_apps",
-    "translation": "aplicações móveis e de ambiente de trabalho"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.signin_sub_info",
-    "translation": "Inicie sessão no seu espaço de trabalho nas nossas"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.signin_sub_info2",
-    "translation": "para a melhor experiência em Windows, Linux, Mac, iOS e Android."
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.start_questions",
-    "translation": "Tem dúvidas sobre como começar? Envie-nos um e-mail para"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.subject",
-    "translation": "Parabéns!"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.subtitle",
-    "translation": "Configure o seu espaço de trabalho"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.subtitle_info",
-    "translation": "Siga os passos seguintes para criar as suas equipas e tirar o máximo partido do seu espaço de trabalho."
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.title",
-    "translation": "O seu espaço de trabalho está pronto!"
-  },
-  {
     "id": "api.templates.deactivate_body.info",
     "translation": "Desativou a sua conta em {{ .SiteURL }}."
   },
@@ -4880,7 +4796,7 @@
   },
   {
     "id": "api.user.delete_channel.not_enabled.for_admin.app_error",
-    "translation": "A funcionalidade de eliminação permanente de canais não está ativada. ServiceSettings.EnableAPIChannelDeletion tem de estar definido como true para utilizar este comando. Consulte https://mattermost.com/pl/environment-configuration-settings para mais informações"
+    "translation": "A funcionalidade de eliminação permanente de canais não está ativada. ServiceSettings.EnableAPIChannelDeletion tem de estar definido como true para utilizar este comando. Consulte https://antimatter.chat/docs/admins/configuration.html para mais informações"
   },
   {
     "id": "api.user.delete_team.not_enabled.app_error",
@@ -4888,7 +4804,7 @@
   },
   {
     "id": "api.user.delete_team.not_enabled.for_admin.app_error",
-    "translation": "A funcionalidade de eliminação permanente de equipas não está ativada. ServiceSettings.EnableAPITeamDeletion tem de estar definido como true para utilizar este comando. Consulte https://mattermost.com/pl/environment-configuration-settings para mais informações."
+    "translation": "A funcionalidade de eliminação permanente de equipas não está ativada. ServiceSettings.EnableAPITeamDeletion tem de estar definido como true para utilizar este comando. Consulte https://antimatter.chat/docs/admins/configuration.html para mais informações."
   },
   {
     "id": "api.user.delete_user.not_enabled.app_error",
@@ -4896,7 +4812,7 @@
   },
   {
     "id": "api.user.delete_user.not_enabled.for_admin.app_error",
-    "translation": "A funcionalidade de eliminação permanente de utilizadores não está ativada. ServiceSettings.EnableAPIUserDeletion tem de estar definido como true para utilizar este comando. Consulte https://mattermost.com/pl/environment-configuration-settings para mais informações."
+    "translation": "A funcionalidade de eliminação permanente de utilizadores não está ativada. ServiceSettings.EnableAPIUserDeletion tem de estar definido como true para utilizar este comando. Consulte https://antimatter.chat/docs/admins/configuration.html para mais informações."
   },
   {
     "id": "api.user.demote_user_to_guest.already_guest.app_error",
@@ -5173,10 +5089,6 @@
   {
     "id": "api.user.saml.relay_state_too_long.app_error",
     "translation": "O relay state SAML é demasiado longo."
-  },
-  {
-    "id": "api.user.send_cloud_welcome_email.error",
-    "translation": "Não foi possível enviar o e-mail de boas-vindas da cloud"
   },
   {
     "id": "api.user.send_deactivate_email_and_forget.failed.error",
@@ -5628,7 +5540,7 @@
   },
   {
     "id": "app.bot.get_disable_bot_sysadmin_message",
-    "translation": "{{if .disableBotsSetting}}{{if .printAllBots}}{{.UserName}} foi desativado. Geria as seguintes contas de bot, que foram agora desativadas.\n\n{{.BotNames}}{{else}}{{.UserName}} foi desativado. Geria {{.NumBots}} contas de bot, que foram agora desativadas, incluindo as seguintes:\n\n{{.BotNames}}{{end}}Pode assumir a propriedade de cada bot ativando-o em **Integrações > Contas de Bot** e criando novos códigos para o bot.\n\nPara mais informações, consulte a nossa [documentação](https://docs.mattermost.com/developer/bot-accounts.html#what-happens-when-a-user-who-owns-bot-accounts-is-disabled).{{else}}{{if .printAllBots}}{{.UserName}} foi desativado. Geria as seguintes contas de bot, que continuam ativadas.\n\n{{.BotNames}}\n{{else}}{{.UserName}} foi desativado. Geria {{.NumBots}} contas de bot, que continuam ativadas, incluindo as seguintes:\n\n{{.BotNames}}{{end}}Recomendamos vivamente que assuma a propriedade de cada bot reativando-o em **Integrações > Contas de Bot** e criando novos códigos para o bot.\n\nPara mais informações, consulte a nossa [documentação](https://docs.mattermost.com/developer/bot-accounts.html#what-happens-when-a-user-who-owns-bot-accounts-is-disabled).\n\nSe pretender que as contas de bot sejam desativadas automaticamente após a desativação do proprietário, defina “Desativar contas de bot quando o proprietário é desativado” em **Consola do Sistema > Integrações > Contas de Bot** como verdadeiro.{{end}}"
+    "translation": "{{if .disableBotsSetting}}{{if .printAllBots}}{{.UserName}} foi desativado. Geria as seguintes contas de bot, que foram agora desativadas.\n\n{{.BotNames}}{{else}}{{.UserName}} foi desativado. Geria {{.NumBots}} contas de bot, que foram agora desativadas, incluindo as seguintes:\n\n{{.BotNames}}{{end}}Pode assumir a propriedade de cada bot ativando-o em **Integrações > Contas de Bot** e criando novos códigos para o bot.\n\nPara mais informações, consulte a nossa [documentação](https://antimatter.chat/docs/developers/bots.html#enable).{{else}}{{if .printAllBots}}{{.UserName}} foi desativado. Geria as seguintes contas de bot, que continuam ativadas.\n\n{{.BotNames}}\n{{else}}{{.UserName}} foi desativado. Geria {{.NumBots}} contas de bot, que continuam ativadas, incluindo as seguintes:\n\n{{.BotNames}}{{end}}Recomendamos vivamente que assuma a propriedade de cada bot reativando-o em **Integrações > Contas de Bot** e criando novos códigos para o bot.\n\nPara mais informações, consulte a nossa [documentação](https://antimatter.chat/docs/developers/bots.html#enable).\n\nSe pretender que as contas de bot sejam desativadas automaticamente após a desativação do proprietário, defina “Desativar contas de bot quando o proprietário é desativado” em **Consola do Sistema > Integrações > Contas de Bot** como verdadeiro.{{end}}"
   },
   {
     "id": "app.bot.get_system_bot.empty_admin_list.app_error",
@@ -11475,10 +11387,6 @@
     "translation": "Falha ao procurar utilizadores no AD/LDAP. Teste se o servidor Mattermost consegue ligar-se ao seu servidor AD/LDAP e tente novamente."
   },
   {
-    "id": "ent.ldap.syncronize.search_failure_size_exceeded.app_error",
-    "translation": "Limite de Tamanho Excedido. Experimente aumentar a definição Tamanho máximo da página. Consulte https://docs.mattermost.com/onboard/ad-ldap.html#i-see-the-log-error-ldap-result-code-4-size-limit-exceeded para mais detalhes."
-  },
-  {
     "id": "ent.ldap.update_cpa.empty_attribute",
     "translation": "Valor do atributo LDAP vazio"
   },
@@ -15035,10 +14943,6 @@
     "translation": "Transferir a App"
   },
   {
-    "id": "web.error.unsupported_browser.download_app_or_upgrade_browser",
-    "translation": "Transfira a aplicação Mattermost ou utilize um navegador suportado para uma melhor experiência."
-  },
-  {
     "id": "web.error.unsupported_browser.download_the_app",
     "translation": "Transferir a App"
   },
@@ -15049,10 +14953,6 @@
   {
     "id": "web.error.unsupported_browser.install_guide.windows",
     "translation": "Guia de Instalação"
-  },
-  {
-    "id": "web.error.unsupported_browser.learn_more",
-    "translation": "Saiba mais sobre os navegadores suportados."
   },
   {
     "id": "web.error.unsupported_browser.min_browser_version.chrome",

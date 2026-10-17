@@ -1252,10 +1252,6 @@
     "translation": "เกดิข้อผดิพลาท่ีจะไดช้่องท่ีใช้อยู่."
   },
   {
-    "id": "api.command_invite.channel.error",
-    "translation": "ไมเ่พลาพบช่อง {{.Channel}}. กรุณาใช[้ช่ือช่อง](https://docs.mattermost.com/messaging/managing-channels.html#naming-a-channel) เพื่่อระบุช่อง."
-  },
-  {
     "id": "api.command_invite.channel_constrained_user_denied",
     "translation": "ช่องน้ีถกูดแู้ลโดยกลุ่่ม. ผู้ใชน้้ีไมไ่ด้เป็นสว่่นหนึ่่งของกลุ่่มท่ีซิงค์กบัช่องน้ี."
   },
@@ -1290,10 +1286,6 @@
   {
     "id": "api.command_invite.permission.app_error",
     "translation": "คุณไมม่ีสิทธิ์เพิ่่ม {{.User}} เข้า {{.Channel}}."
-  },
-  {
-    "id": "api.command_invite.private_channel.app_error",
-    "translation": "ไมเ่พลาพบช่อง {{.Channel}}. กรุณาใช[้ช่ือช่อง](https://docs.mattermost.com/messaging/managing-channels.html#naming-a-channel) เพื่่อระบุช่อง."
   },
   {
     "id": "api.command_invite.success",
@@ -1472,20 +1464,12 @@
     "translation": "ปิดการแจ้งเตือนบนเดสก์ทอป อีเมล และ Push สำหรับช่องปัจจุบันหรือช่อง [channel] ท่ีระบู้"
   },
   {
-    "id": "api.command_mute.error",
-    "translation": "ไม่พบช่อง {{.Channel}} กรุณาใช้ [channel handle](https://docs.mattermost.com/messaging/managing-channels.html#naming-a-channel) เพ่ือระบุช่อง"
-  },
-  {
     "id": "api.command_mute.hint",
     "translation": "~[channel]"
   },
   {
     "id": "api.command_mute.name",
     "translation": "mute"
-  },
-  {
-    "id": "api.command_mute.no_channel.error",
-    "translation": "ไม่พบช่องท่ีระบู้ กรุณาใช้ [channel handle](https://docs.mattermost.com/messaging/managing-channels.html#naming-a-channel) เพ่ือระบุช่อง"
   },
   {
     "id": "api.command_mute.success_mute",
@@ -3868,74 +3852,6 @@
     "translation": "ไม่พบผู้ใช้"
   },
   {
-    "id": "api.templates.cloud_welcome_email.add_apps_info",
-    "translation": "เพิ่มแอปไปยังพื้นที่ทำงานของคุณ"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.add_apps_sub_info",
-    "translation": "ทำให้การทำงานของคุณเป็นระบบด้วยเครื่องมืออย่าง GitHub, Jira และ Zoom สำรวจการเชื่อมต่อทั้งหมดที่มีบน"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.app_market_place",
-    "translation": "ตลาดแอป"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.button",
-    "translation": "เปิด Mattermost"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.download_mm_info",
-    "translation": "ดาวน์โหลดแอป Mattermost"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.info",
-    "translation": "ขอบคุณที่สร้าง"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.info2",
-    "translation": "อย่าลืมบันทึกหรือบุ๊คมาร์กลิงก์ของคุณไว้เพื่อใช้งานในอนาคต"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.invite_info",
-    "translation": "เชิญผู้คนเข้าร่วมพื้นที่ทำงานของคุณ"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.invite_sub_info",
-    "translation": "แชร์ลิงก์นี้เพื่อเชิญสมาชิกร่วม {{.WorkSpace}}:"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.mm_apps",
-    "translation": "แอปมือถือและเดสก์ท็อป"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.signin_sub_info",
-    "translation": "เข้าสู่พื้นที่ทำงานของคุณบน"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.signin_sub_info2",
-    "translation": "เพื่อประสบการณ์ที่ดีที่สุดบน Windows, Linux, Mac, iOS และ Android"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.start_questions",
-    "translation": "มีคำถามเกี่ยวกับการเริ่มต้นใช้งาน? อีเมลหาเราที่"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.subject",
-    "translation": "ยินดีด้วย!"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.subtitle",
-    "translation": "ตั้งค่าพื้นที่ทำงานของคุณ"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.subtitle_info",
-    "translation": "ทำตามขั้นตอนต่อไปนี้เพื่อสร้างทีมของคุณและใช้งานพื้นที่ทำงานของคุณได้อย่างเต็มที่"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.title",
-    "translation": "พื้นที่ทำงานของคุณพร้อมใช้งานแล้ว!"
-  },
-  {
     "id": "api.templates.deactivate_body.info",
     "translation": "คุณได้ปิดใช้งานบัญชีของคุณที่ {{ .SiteURL }} แล้ว"
   },
@@ -4521,7 +4437,7 @@
   },
   {
     "id": "api.user.delete_channel.not_enabled.for_admin.app_error",
-    "translation": "ฟีเจอร์การลบช่องถาวรไม่ถูกเปิดใช้งาน ServiceSettings.EnableAPIChannelDeletion ต้องถูกตั้งค่าเป็น true เพื่อใช้คำสั่งนี้ ดูข้อมูลเพิ่มเติมได้ที่ https://mattermost.com/pl/environment-configuration-settings"
+    "translation": "ฟีเจอร์การลบช่องถาวรไม่ถูกเปิดใช้งาน ServiceSettings.EnableAPIChannelDeletion ต้องถูกตั้งค่าเป็น true เพื่อใช้คำสั่งนี้ ดูข้อมูลเพิ่มเติมได้ที่ https://antimatter.chat/docs/admins/configuration.html"
   },
   {
     "id": "api.user.delete_team.not_enabled.app_error",
@@ -4529,7 +4445,7 @@
   },
   {
     "id": "api.user.delete_team.not_enabled.for_admin.app_error",
-    "translation": "ฟีเจอร์การลบทีมถาวรไม่ถูกเปิดใช้งาน ServiceSettings.EnableAPITeamDeletion ต้องถูกตั้งค่าเป็น true เพื่อใช้คำสั่งนี้ ดูข้อมูลเพิ่มเติมได้ที่ https://mattermost.com/pl/environment-configuration-settings"
+    "translation": "ฟีเจอร์การลบทีมถาวรไม่ถูกเปิดใช้งาน ServiceSettings.EnableAPITeamDeletion ต้องถูกตั้งค่าเป็น true เพื่อใช้คำสั่งนี้ ดูข้อมูลเพิ่มเติมได้ที่ https://antimatter.chat/docs/admins/configuration.html"
   },
   {
     "id": "api.user.delete_user.not_enabled.app_error",
@@ -4537,7 +4453,7 @@
   },
   {
     "id": "api.user.delete_user.not_enabled.for_admin.app_error",
-    "translation": "คุณลักษณะการลบผู้ใช้ถาวรไม่ได้ออกฤทธิ์ ต้องตั้งค่า ServiceSettings.EnableAPIUserDeletion เป็น true เพื่อใช้คำสั่งนี้ ดูข้อมูลเพิ่มเติมที่ https://mattermost.com/pl/environment-configuration-settings"
+    "translation": "คุณลักษณะการลบผู้ใช้ถาวรไม่ได้ออกฤทธิ์ ต้องตั้งค่า ServiceSettings.EnableAPIUserDeletion เป็น true เพื่อใช้คำสั่งนี้ ดูข้อมูลเพิ่มเติมที่ https://antimatter.chat/docs/admins/configuration.html"
   },
   {
     "id": "api.user.demote_user_to_guest.already_guest.app_error",
@@ -4802,10 +4718,6 @@
   {
     "id": "api.user.saml.relay_state_too_long.app_error",
     "translation": "สถานะการส่งต่อ (Relay State) ของ SAML ยาวเกินไป"
-  },
-  {
-    "id": "api.user.send_cloud_welcome_email.error",
-    "translation": "ส่งอีเมลต้อนรับสำหรับ Cloud ไม่สำเร็จ"
   },
   {
     "id": "api.user.send_deactivate_email_and_forget.failed.error",
@@ -5253,7 +5165,7 @@
   },
   {
     "id": "app.bot.get_disable_bot_sysadmin_message",
-    "translation": "{{if .disableBotsSetting}}{{if .printAllBots}}{{.UserName}} ถูกระงับการใช้งานแล้ว บัญชีบอทที่พวกเขาจัดการอยู่ได้ถูกระงับการใช้งานแล้วเช่นกัน\n\n{{.BotNames}}{{else}}{{.UserName}} ถูกระงับการใช้งานแล้ว บัญชีบอท {{.NumBots}} บัญชีที่พวกเขาจัดการอยู่ได้ถูกระงับการใช้งานแล้วเช่นกัน รวมถึงรายการต่อไปนี้:\n\n{{.BotNames}}{{end}}คุณสามารถเป็นเจ้าของแต่ละบอทได้โดยเปิดใช้งานที่ **Integrations > Bot Accounts** และสร้างโทเคนใหม่สำหรับบอท\n\nสำหรับข้อมูลเพิ่มเติม ดู [เอกสารประกอบ](https://docs.mattermost.com/developer/bot-accounts.html#what-happens-when-a-user-who-owns-bot-accounts-is-disabled){{else}}{{if .printAllBots}}{{.UserName}} ถูกระงับการใช้งานแล้ว บัญชีบอทที่พวกเขาจัดการอยู่ยังคงเปิดใช้งานอยู่\n\n{{.BotNames}}\n{{else}}{{.UserName}} ถูกระงับการใช้งานแล้ว บัญชีบอท {{.NumBots}} บัญชีที่พวกเขาจัดการอยู่ยังคงเปิดใช้งานอยู่ รวมถึงรายการต่อไปนี้:\n\n{{.BotNames}}{{end}}เราขอแนะนำให้คุณเป็นเจ้าของแต่ละบอทโดยเปิดใช้งานใหม่ที่ **Integrations > Bot Accounts** และสร้างโทเคนใหม่สำหรับบอท\n\nสำหรับข้อมูลเพิ่มเติม ดู [เอกสารประกอบ](https://docs.mattermost.com/developer/bot-accounts.html#what-happens-when-a-user-who-owns-bot-accounts-is-disabled)\n\nหากคุณต้องการให้บัญชีบอทถูกระงับการใช้งานโดยอัตโนมัติเมื่อเจ้าของถูกระงับการใช้งาน ให้ตั้งค่า “Disable bot accounts when owner is deactivated” ใน **System Console > Integrations > Bot Accounts** เป็น true{{end}}"
+    "translation": "{{if .disableBotsSetting}}{{if .printAllBots}}{{.UserName}} ถูกระงับการใช้งานแล้ว บัญชีบอทที่พวกเขาจัดการอยู่ได้ถูกระงับการใช้งานแล้วเช่นกัน\n\n{{.BotNames}}{{else}}{{.UserName}} ถูกระงับการใช้งานแล้ว บัญชีบอท {{.NumBots}} บัญชีที่พวกเขาจัดการอยู่ได้ถูกระงับการใช้งานแล้วเช่นกัน รวมถึงรายการต่อไปนี้:\n\n{{.BotNames}}{{end}}คุณสามารถเป็นเจ้าของแต่ละบอทได้โดยเปิดใช้งานที่ **Integrations > Bot Accounts** และสร้างโทเคนใหม่สำหรับบอท\n\nสำหรับข้อมูลเพิ่มเติม ดู [เอกสารประกอบ](https://antimatter.chat/docs/developers/bots.html#enable){{else}}{{if .printAllBots}}{{.UserName}} ถูกระงับการใช้งานแล้ว บัญชีบอทที่พวกเขาจัดการอยู่ยังคงเปิดใช้งานอยู่\n\n{{.BotNames}}\n{{else}}{{.UserName}} ถูกระงับการใช้งานแล้ว บัญชีบอท {{.NumBots}} บัญชีที่พวกเขาจัดการอยู่ยังคงเปิดใช้งานอยู่ รวมถึงรายการต่อไปนี้:\n\n{{.BotNames}}{{end}}เราขอแนะนำให้คุณเป็นเจ้าของแต่ละบอทโดยเปิดใช้งานใหม่ที่ **Integrations > Bot Accounts** และสร้างโทเคนใหม่สำหรับบอท\n\nสำหรับข้อมูลเพิ่มเติม ดู [เอกสารประกอบ](https://antimatter.chat/docs/developers/bots.html#enable)\n\nหากคุณต้องการให้บัญชีบอทถูกระงับการใช้งานโดยอัตโนมัติเมื่อเจ้าของถูกระงับการใช้งาน ให้ตั้งค่า “Disable bot accounts when owner is deactivated” ใน **System Console > Integrations > Bot Accounts** เป็น true{{end}}"
   },
   {
     "id": "app.bot.get_system_bot.empty_admin_list.app_error",
@@ -10864,10 +10776,6 @@
     "translation": "เกิดข้อผิดพลาดในการเติมข้อมูล (populate) รายการที่ต้องซิงค์ (syncables)"
   },
   {
-    "id": "ent.ldap.syncronize.search_failure_size_exceeded.app_error",
-    "translation": "เกินขีดจำกัดขนาด (Size Limit Exceeded) ลองเพิ่มค่าการตั้งค่าขนาดหน้าสูงสุด (Maximum page size) ดูรายละเอียดเพิ่มเติมได้ที่ https://docs.mattermost.com/onboard/ad-ldap.html#i-see-the-log-error-ldap-result-code-4-size-limit-exceeded"
-  },
-  {
     "id": "ent.ldap.validate_admin_filter.app_error",
     "translation": "ตัวกรอง (Filter) สำหรับผู้ดูแลระบบ AD/LDAP ไม่ถูกต้อง"
   },
@@ -14312,10 +14220,6 @@
     "translation": "ดาวน์โหลดแอป"
   },
   {
-    "id": "web.error.unsupported_browser.download_app_or_upgrade_browser",
-    "translation": "ดาวน์โหลดแอป Mattermost หรือใช้เบราว์เซอร์ที่รองรับเพื่อประสบการณ์ที่ดีขึ้น"
-  },
-  {
     "id": "web.error.unsupported_browser.download_the_app",
     "translation": "ดาวน์โหลดแอป"
   },
@@ -14326,10 +14230,6 @@
   {
     "id": "web.error.unsupported_browser.install_guide.windows",
     "translation": "คู่มือการติดตั้ง"
-  },
-  {
-    "id": "web.error.unsupported_browser.learn_more",
-    "translation": "เรียนรู้เพิ่มเติมเกี่ยวกับเบราว์เซอร์ที่รองรับ"
   },
   {
     "id": "web.error.unsupported_browser.min_browser_version.chrome",

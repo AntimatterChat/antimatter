@@ -40,7 +40,7 @@ func serverCmdF(command *cobra.Command, args []string) error {
 	interruptChan := make(chan os.Signal, 1)
 
 	if err := utils.TranslationsPreInit(); err != nil {
-		return errors.Wrap(err, "unable to load Mattermost translation files")
+		return errors.Wrap(err, "unable to load Antimatter translation files")
 	}
 
 	customDefaults, err := loadCustomDefaults()

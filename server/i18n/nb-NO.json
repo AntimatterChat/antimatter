@@ -257,7 +257,7 @@
   },
   {
     "id": "api.bot.teams_channels.add_message_mobile",
-    "translation": "Legg meg til i teamene og kanalene du vil at jeg skal samhandle i. Bruk nettleseren eller Mattermost Desktop-appen for å gjøre dette."
+    "translation": "Legg meg til i teamene og kanalene du vil at jeg skal samhandle i. Bruk nettleseren eller Antimatter Desktop-appen for å gjøre dette."
   },
   {
     "id": "api.channel.add_guest.added",
@@ -1295,10 +1295,6 @@
     "translation": "Feil under henting av gjeldende kanal."
   },
   {
-    "id": "api.command_invite.channel.error",
-    "translation": "Fant ikke kanalen {{.Channel}}. Bruk [kanalnavnet (handle)](https://docs.mattermost.com/messaging/managing-channels.html#naming-a-channel) for å identifisere kanaler."
-  },
-  {
     "id": "api.command_invite.channel_constrained_user_denied",
     "translation": "Denne kanalen administreres av grupper. Denne brukeren er ikke med i en gruppe som er synkronisert til denne kanalen."
   },
@@ -1333,10 +1329,6 @@
   {
     "id": "api.command_invite.permission.app_error",
     "translation": "Du har ikke tilstrekkelige tillatelser til å legge til {{.User}} i {{.Channel}}."
-  },
-  {
-    "id": "api.command_invite.private_channel.app_error",
-    "translation": "Fant ikke kanalen {{.Channel}}. Bruk [kanalnavnet (handle)](https://docs.mattermost.com/messaging/managing-channels.html#naming-a-channel) for å identifisere kanaler."
   },
   {
     "id": "api.command_invite.success",
@@ -1522,20 +1514,12 @@
     "translation": "Slår av skrivebords-, e-post- og push-varsler for gjeldende kanal eller den angitte [kanal]."
   },
   {
-    "id": "api.command_mute.error",
-    "translation": "Fant ikke kanalen {{.Channel}}. Bruk [kanalnavnet (handle)](https://docs.mattermost.com/messaging/managing-channels.html#naming-a-channel) for å identifisere kanaler."
-  },
-  {
     "id": "api.command_mute.hint",
     "translation": "~[kanal]"
   },
   {
     "id": "api.command_mute.name",
     "translation": "demp"
-  },
-  {
-    "id": "api.command_mute.no_channel.error",
-    "translation": "Fant ikke den angitte kanalen. Bruk [kanalnavnet (handle)](https://docs.mattermost.com/messaging/managing-channels.html#naming-a-channel) for å identifisere kanaler."
   },
   {
     "id": "api.command_mute.success_mute",
@@ -4127,74 +4111,6 @@
     "translation": "Finner ikke brukeren."
   },
   {
-    "id": "api.templates.cloud_welcome_email.add_apps_info",
-    "translation": "Legg til apper i arbeidsområdet ditt"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.add_apps_sub_info",
-    "translation": "Effektiviser arbeidet med verktøy som GitHub, Jira og Zoom. Utforsk alle integrasjonene vi har i vår"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.app_market_place",
-    "translation": "app-marketplace."
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.button",
-    "translation": "Åpne Mattermost"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.download_mm_info",
-    "translation": "Last ned Mattermost-appen"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.info",
-    "translation": "Takk for at du opprettet "
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.info2",
-    "translation": "Husk å lagre eller bokmerke lenken din til senere bruk."
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.invite_info",
-    "translation": "Inviter folk til arbeidsområdet ditt"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.invite_sub_info",
-    "translation": "Del denne lenken for å invitere medlemmene dine til å bli med i {{.WorkSpace}}:"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.mm_apps",
-    "translation": "mobil- og skrivebordsapper"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.signin_sub_info",
-    "translation": "Logg inn på arbeidsområdet ditt i våre"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.signin_sub_info2",
-    "translation": "for den beste opplevelsen på Windows, Linux, Mac, iOS og Android."
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.start_questions",
-    "translation": "Har du spørsmål om å komme i gang? Send oss en e-post på"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.subject",
-    "translation": "Gratulerer!"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.subtitle",
-    "translation": "Sett opp arbeidsområdet ditt"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.subtitle_info",
-    "translation": "Følg disse trinnene for å bygge ut teamene dine og få mest mulig ut av arbeidsområdet ditt."
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.title",
-    "translation": "Arbeidsområdet ditt er klart til bruk!"
-  },
-  {
     "id": "api.templates.deactivate_body.info",
     "translation": "Du deaktiverte kontoen din på {{ .SiteURL }}."
   },
@@ -4880,7 +4796,7 @@
   },
   {
     "id": "api.user.delete_channel.not_enabled.for_admin.app_error",
-    "translation": "Funksjonen for permanent sletting av kanaler er ikke aktivert. ServiceSettings.EnableAPIChannelDeletion må settes til true for å bruke denne kommandoen. Se https://mattermost.com/pl/environment-configuration-settings for mer informasjon"
+    "translation": "Funksjonen for permanent sletting av kanaler er ikke aktivert. ServiceSettings.EnableAPIChannelDeletion må settes til true for å bruke denne kommandoen. Se https://antimatter.chat/docs/admins/configuration.html for mer informasjon"
   },
   {
     "id": "api.user.delete_team.not_enabled.app_error",
@@ -4888,7 +4804,7 @@
   },
   {
     "id": "api.user.delete_team.not_enabled.for_admin.app_error",
-    "translation": "Funksjonen for permanent sletting av team er ikke aktivert. ServiceSettings.EnableAPITeamDeletion må settes til true for å bruke denne kommandoen. Se https://mattermost.com/pl/environment-configuration-settings for mer informasjon."
+    "translation": "Funksjonen for permanent sletting av team er ikke aktivert. ServiceSettings.EnableAPITeamDeletion må settes til true for å bruke denne kommandoen. Se https://antimatter.chat/docs/admins/configuration.html for mer informasjon."
   },
   {
     "id": "api.user.delete_user.not_enabled.app_error",
@@ -4896,7 +4812,7 @@
   },
   {
     "id": "api.user.delete_user.not_enabled.for_admin.app_error",
-    "translation": "Funksjonen for permanent sletting av brukere er ikke aktivert. ServiceSettings.EnableAPIUserDeletion må settes til true for å bruke denne kommandoen. Se https://mattermost.com/pl/environment-configuration-settings for mer informasjon."
+    "translation": "Funksjonen for permanent sletting av brukere er ikke aktivert. ServiceSettings.EnableAPIUserDeletion må settes til true for å bruke denne kommandoen. Se https://antimatter.chat/docs/admins/configuration.html for mer informasjon."
   },
   {
     "id": "api.user.demote_user_to_guest.already_guest.app_error",
@@ -5173,10 +5089,6 @@
   {
     "id": "api.user.saml.relay_state_too_long.app_error",
     "translation": "SAML relay state er for lang."
-  },
-  {
-    "id": "api.user.send_cloud_welcome_email.error",
-    "translation": "Kunne ikke sende velkomst-e-post for Cloud"
   },
   {
     "id": "api.user.send_deactivate_email_and_forget.failed.error",
@@ -5628,7 +5540,7 @@
   },
   {
     "id": "app.bot.get_disable_bot_sysadmin_message",
-    "translation": "{{if .disableBotsSetting}}{{if .printAllBots}}{{.UserName}} ble deaktivert. Vedkommende administrerte følgende botkontoer, som nå er deaktivert.\n\n{{.BotNames}}{{else}}{{.UserName}} ble deaktivert. Vedkommende administrerte {{.NumBots}} botkontoer, som nå er deaktivert, blant annet følgende:\n\n{{.BotNames}}{{end}}Du kan overta eierskapet til hver bot ved å aktivere den under **Integrasjoner > Botkontoer** og opprette nye tokener for boten.\n\nFor mer informasjon, se [dokumentasjonen](https://docs.mattermost.com/developer/bot-accounts.html#what-happens-when-a-user-who-owns-bot-accounts-is-disabled) vår.{{else}}{{if .printAllBots}}{{.UserName}} ble deaktivert. Vedkommende administrerte følgende botkontoer, som fortsatt er aktivert.\n\n{{.BotNames}}\n{{else}}{{.UserName}} ble deaktivert. Vedkommende administrerte {{.NumBots}} botkontoer, som fortsatt er aktivert, blant annet følgende:\n\n{{.BotNames}}{{end}}Vi anbefaler på det sterkeste at du overtar eierskapet til hver bot ved å aktivere den på nytt under **Integrasjoner > Botkontoer** og opprette nye tokener for boten.\n\nFor mer informasjon, se [dokumentasjonen](https://docs.mattermost.com/developer/bot-accounts.html#what-happens-when-a-user-who-owns-bot-accounts-is-disabled) vår.\n\nHvis du vil at botkontoer skal deaktiveres automatisk når eieren deaktiveres, setter du «Deaktiver botkontoer når eieren deaktiveres» til true under **Systemkonsoll > Integrasjoner > Botkontoer**.{{end}}"
+    "translation": "{{if .disableBotsSetting}}{{if .printAllBots}}{{.UserName}} ble deaktivert. Vedkommende administrerte følgende botkontoer, som nå er deaktivert.\n\n{{.BotNames}}{{else}}{{.UserName}} ble deaktivert. Vedkommende administrerte {{.NumBots}} botkontoer, som nå er deaktivert, blant annet følgende:\n\n{{.BotNames}}{{end}}Du kan overta eierskapet til hver bot ved å aktivere den under **Integrasjoner > Botkontoer** og opprette nye tokener for boten.\n\nFor mer informasjon, se [dokumentasjonen](https://antimatter.chat/docs/developers/bots.html#enable) vår.{{else}}{{if .printAllBots}}{{.UserName}} ble deaktivert. Vedkommende administrerte følgende botkontoer, som fortsatt er aktivert.\n\n{{.BotNames}}\n{{else}}{{.UserName}} ble deaktivert. Vedkommende administrerte {{.NumBots}} botkontoer, som fortsatt er aktivert, blant annet følgende:\n\n{{.BotNames}}{{end}}Vi anbefaler på det sterkeste at du overtar eierskapet til hver bot ved å aktivere den på nytt under **Integrasjoner > Botkontoer** og opprette nye tokener for boten.\n\nFor mer informasjon, se [dokumentasjonen](https://antimatter.chat/docs/developers/bots.html#enable) vår.\n\nHvis du vil at botkontoer skal deaktiveres automatisk når eieren deaktiveres, setter du «Deaktiver botkontoer når eieren deaktiveres» til true under **Systemkonsoll > Integrasjoner > Botkontoer**.{{end}}"
   },
   {
     "id": "app.bot.get_system_bot.empty_admin_list.app_error",
@@ -11475,10 +11387,6 @@
     "translation": "Kunne ikke søke etter brukere i AD/LDAP. Test om Mattermost-serveren kan koble til AD/LDAP-serveren, og prøv igjen."
   },
   {
-    "id": "ent.ldap.syncronize.search_failure_size_exceeded.app_error",
-    "translation": "Størrelsesgrensen er overskredet. Prøv å øke innstillingen for maksimal sidestørrelse. Se https://docs.mattermost.com/onboard/ad-ldap.html#i-see-the-log-error-ldap-result-code-4-size-limit-exceeded for mer informasjon."
-  },
-  {
     "id": "ent.ldap.update_cpa.empty_attribute",
     "translation": "Tom verdi for LDAP-attributt"
   },
@@ -15035,10 +14943,6 @@
     "translation": "Last ned appen"
   },
   {
-    "id": "web.error.unsupported_browser.download_app_or_upgrade_browser",
-    "translation": "Last ned Mattermost-appen eller bruk en støttet nettleser for en bedre opplevelse."
-  },
-  {
     "id": "web.error.unsupported_browser.download_the_app",
     "translation": "Last ned appen"
   },
@@ -15049,10 +14953,6 @@
   {
     "id": "web.error.unsupported_browser.install_guide.windows",
     "translation": "Installasjonsveiledning"
-  },
-  {
-    "id": "web.error.unsupported_browser.learn_more",
-    "translation": "Les mer om støttede nettlesere."
   },
   {
     "id": "web.error.unsupported_browser.min_browser_version.chrome",

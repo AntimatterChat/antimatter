@@ -1297,10 +1297,6 @@
     "translation": "Помилка завантаження поточного каналу."
   },
   {
-    "id": "api.command_invite.channel.error",
-    "translation": "Не вдалося знайти канал {{.Channel}}. Будь ласка, використовуйте [назву каналу](https://docs.mattermost.com/messaging/managing-channels.html#naming-a-channel) для ідентифікації каналів."
-  },
-  {
     "id": "api.command_invite.channel_constrained_user_denied",
     "translation": "Цим каналом керують групи.   Цей користувач не є членом групи, яка синхронізується з цим каналом."
   },
@@ -1335,10 +1331,6 @@
   {
     "id": "api.command_invite.permission.app_error",
     "translation": "У вас недостатньо прав, щоб додати {{.User}} до {{.Channel}}."
-  },
-  {
-    "id": "api.command_invite.private_channel.app_error",
-    "translation": "Не вдалося знайти канал {{.Channel}}. Будь ласка, використовуйте [управління каналом](https://docs.mattermost.com/messaging/managing-channels.html#naming-a-channel) для ідентифікації каналів."
   },
   {
     "id": "api.command_invite.success",
@@ -1526,20 +1518,12 @@
     "translation": "Вимкнути сповіщення на робочому столі, електронній пошті та push-сповіщення для поточного каналу або вказаного [каналу]."
   },
   {
-    "id": "api.command_mute.error",
-    "translation": "Канал {{.Channel}} не знайдено. Зверніть, будь ласка, увагу, що для ідентифікації каналів слід використовувати [ідентифікатор каналу](https://docs.mattermost.com/messaging/managing-channels.html#naming-a-channel)."
-  },
-  {
     "id": "api.command_mute.hint",
     "translation": "~[канал]"
   },
   {
     "id": "api.command_mute.name",
     "translation": "вимкнути звук"
-  },
-  {
-    "id": "api.command_mute.no_channel.error",
-    "translation": "Не вдалося знайти вказаний канал. Будь ласка, використовуйте [гештег каналу](https://docs.mattermost.com/messaging/managing-channels.html#naming-a-channel) для ідентифікаціі каналів."
   },
   {
     "id": "api.command_mute.success_mute",
@@ -4137,74 +4121,6 @@
     "translation": "Неможливо знайти користувача."
   },
   {
-    "id": "api.templates.cloud_welcome_email.add_apps_info",
-    "translation": "Додати додатки до вашого робочого простору"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.add_apps_sub_info",
-    "translation": "Оптимізуйте свою роботу за допомогою таких інструментів, як GitHub, Jira та Zoom. Ознайомтеся з усіма інтеграціями, які ми пропонуємо на нашому"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.app_market_place",
-    "translation": "на маркетплейсі додатків."
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.button",
-    "translation": "Відкрити Mattermost"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.download_mm_info",
-    "translation": "Завантажити додаток Mattermost"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.info",
-    "translation": "Дякуємо за створення "
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.info2",
-    "translation": "Обов'язково збережіть посилання або зробіть закладку для подальшого використання."
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.invite_info",
-    "translation": "Запросити людей до свого робочого простору"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.invite_sub_info",
-    "translation": "Поділіться цим посиланням, щоб запросити учасників приєднатися до {{.WorkSpace}}:"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.mm_apps",
-    "translation": "мобільні та десктопні додатки"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.signin_sub_info",
-    "translation": "Увійдіть у свій робочий простір на нашому"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.signin_sub_info2",
-    "translation": "для найкращого досвіду роботи на Windows, Linux, Mac, iOS та Android."
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.start_questions",
-    "translation": "Маєте питання щодо початку роботи? Напишіть нам за адресою"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.subject",
-    "translation": "Вітаємо!"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.subtitle",
-    "translation": "Налаштуйте свій робочий простір"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.subtitle_info",
-    "translation": "Зробіть наступні кроки, щоб сформувати свою команду та отримати максимум користі від робочого простору."
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.title",
-    "translation": "Ваш робочий простір готовий до роботи!"
-  },
-  {
     "id": "api.templates.deactivate_body.info",
     "translation": "Ви деактивували свій обліковий запис на {{ .SiteURL }}."
   },
@@ -4890,7 +4806,7 @@
   },
   {
     "id": "api.user.delete_channel.not_enabled.for_admin.app_error",
-    "translation": "Функцію остаточного видалення каналів не ввімкнено. Щоб використовувати цю команду, параметр ServiceSettings.EnableAPIChannelDeletion має бути встановлений у true. Докладніше див. https://mattermost.com/pl/environment-configuration-settings"
+    "translation": "Функцію остаточного видалення каналів не ввімкнено. Щоб використовувати цю команду, параметр ServiceSettings.EnableAPIChannelDeletion має бути встановлений у true. Докладніше див. https://antimatter.chat/docs/admins/configuration.html"
   },
   {
     "id": "api.user.delete_team.not_enabled.app_error",
@@ -4898,7 +4814,7 @@
   },
   {
     "id": "api.user.delete_team.not_enabled.for_admin.app_error",
-    "translation": "Функцію остаточного видалення команди не ввімкнено. Щоб використовувати цю команду, параметр ServiceSettings.EnableAPITeamDeletion має бути встановлений у true. Докладніше див. https://mattermost.com/pl/environment-configuration-settings."
+    "translation": "Функцію остаточного видалення команди не ввімкнено. Щоб використовувати цю команду, параметр ServiceSettings.EnableAPITeamDeletion має бути встановлений у true. Докладніше див. https://antimatter.chat/docs/admins/configuration.html."
   },
   {
     "id": "api.user.delete_user.not_enabled.app_error",
@@ -4906,7 +4822,7 @@
   },
   {
     "id": "api.user.delete_user.not_enabled.for_admin.app_error",
-    "translation": "Функцію остаточного видалення користувача не ввімкнено. Щоб використовувати цю команду, параметр ServiceSettings.EnableAPIUserDeletion має бути встановлений у true. Докладніше див. https://mattermost.com/pl/environment-configuration-settings."
+    "translation": "Функцію остаточного видалення користувача не ввімкнено. Щоб використовувати цю команду, параметр ServiceSettings.EnableAPIUserDeletion має бути встановлений у true. Докладніше див. https://antimatter.chat/docs/admins/configuration.html."
   },
   {
     "id": "api.user.demote_user_to_guest.already_guest.app_error",
@@ -5183,10 +5099,6 @@
   {
     "id": "api.user.saml.relay_state_too_long.app_error",
     "translation": "Стан ретрансляції SAML занадто довгий."
-  },
-  {
-    "id": "api.user.send_cloud_welcome_email.error",
-    "translation": "Не вдалося надіслати привітальний лист для хмарного сервісу"
   },
   {
     "id": "api.user.send_deactivate_email_and_forget.failed.error",
@@ -5638,7 +5550,7 @@
   },
   {
     "id": "app.bot.get_disable_bot_sysadmin_message",
-    "translation": "{{if .disableBotsSetting}}{{if .printAllBots}}{{.UserName}} був деактивований. Вони керували наступними бот-акаунтами, які тепер вимкнені.\n\n{{.BotNames}}{{else}}{{.UserName}} був деактивований. Вони керували {{.NumBots}} бот-акаунтами, які тепер були вимкнені, включаючи наступні:\n\n{{.BotNames}}{{end}} Ви можете взяти на себе керування кожним ботом, увімкнувши його в розділі **Інтеграції > Бот-акаунти** та створивши нові токени для бота.\n\nДля додаткової інформації ознайомтесь з нашою [документацією](https://docs.mattermost.com/developer/bot-accounts.html#what-happens-when-a-user-who-owns-bot-accounts-is-disabled).{{else}}{{if .printAllBots}}{{.UserName}} був деактивований. Вони керували наступними бот-акаунтами, які все ще увімкнені.\n\n{{.BotNames}}\n{{else}}{{.UserName}} був деактивований. Вони керували {{.NumBots}} бот-акаунтами, які все ще увімкнені, включаючи наступні:\n\n{{.BotNames}}{{end}} Ми рішуче рекомендуємо взяти на себе керування кожним ботом, повторно увімкнувши його в розділі **Інтеграції > Бот-акаунти** та створивши нові токени для бота.\n\nДля додаткової інформації ознайомтесь з нашою [документацією](https://docs.mattermost.com/developer/bot-accounts.html#what-happens-when-a-user-who-owns-bot-accounts-is-disabled).\n\nЯкщо ви хочете, щоб бот-акаунти вимикалися автоматично після деактивації власника, встановіть опцію \"Вимикати бот-акаунти після деактивації власника\" в **Системній консолі > Інтеграції > Бот-акаунти** на значення \"так\".{{end}}"
+    "translation": "{{if .disableBotsSetting}}{{if .printAllBots}}{{.UserName}} був деактивований. Вони керували наступними бот-акаунтами, які тепер вимкнені.\n\n{{.BotNames}}{{else}}{{.UserName}} був деактивований. Вони керували {{.NumBots}} бот-акаунтами, які тепер були вимкнені, включаючи наступні:\n\n{{.BotNames}}{{end}} Ви можете взяти на себе керування кожним ботом, увімкнувши його в розділі **Інтеграції > Бот-акаунти** та створивши нові токени для бота.\n\nДля додаткової інформації ознайомтесь з нашою [документацією](https://antimatter.chat/docs/developers/bots.html#enable).{{else}}{{if .printAllBots}}{{.UserName}} був деактивований. Вони керували наступними бот-акаунтами, які все ще увімкнені.\n\n{{.BotNames}}\n{{else}}{{.UserName}} був деактивований. Вони керували {{.NumBots}} бот-акаунтами, які все ще увімкнені, включаючи наступні:\n\n{{.BotNames}}{{end}} Ми рішуче рекомендуємо взяти на себе керування кожним ботом, повторно увімкнувши його в розділі **Інтеграції > Бот-акаунти** та створивши нові токени для бота.\n\nДля додаткової інформації ознайомтесь з нашою [документацією](https://antimatter.chat/docs/developers/bots.html#enable).\n\nЯкщо ви хочете, щоб бот-акаунти вимикалися автоматично після деактивації власника, встановіть опцію \"Вимикати бот-акаунти після деактивації власника\" в **Системній консолі > Інтеграції > Бот-акаунти** на значення \"так\".{{end}}"
   },
   {
     "id": "app.bot.get_system_bot.empty_admin_list.app_error",
@@ -11493,10 +11405,6 @@
     "translation": "Не вдалося здійснити пошук користувачів в AD/LDAP. Перевірте, чи може сервер Antimatter підключитися до вашого сервера AD/LDAP, і повторіть спробу."
   },
   {
-    "id": "ent.ldap.syncronize.search_failure_size_exceeded.app_error",
-    "translation": "Розмір перевищено. Спробуйте збільшити налаштування максимальної кількості елементів на сторінці. Для отримання додаткової інформації відвідайте https://docs.mattermost.com/onboard/ad-ldap.html#i-see-the-log-error-ldap-result-code-4-size-limit-exceeded."
-  },
-  {
     "id": "ent.ldap.update_cpa.empty_attribute",
     "translation": "Порожнє значення атрибута LDAP"
   },
@@ -15053,10 +14961,6 @@
     "translation": "Завантажити додаток"
   },
   {
-    "id": "web.error.unsupported_browser.download_app_or_upgrade_browser",
-    "translation": "Завантажте додаток Mattermost або використовуйте підтримуваний браузер для кращого досвіду."
-  },
-  {
     "id": "web.error.unsupported_browser.download_the_app",
     "translation": "Завантажити додаток"
   },
@@ -15067,10 +14971,6 @@
   {
     "id": "web.error.unsupported_browser.install_guide.windows",
     "translation": "Посібник з інсталяції"
-  },
-  {
-    "id": "web.error.unsupported_browser.learn_more",
-    "translation": "Дізнайтеся більше про підтримувані браузери."
   },
   {
     "id": "web.error.unsupported_browser.min_browser_version.chrome",

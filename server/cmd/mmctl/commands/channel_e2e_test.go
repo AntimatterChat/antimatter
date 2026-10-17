@@ -374,7 +374,7 @@ func (s *MmctlE2ETestSuite) TestDeleteChannelsCmd() {
 		err := deleteChannelsCmdF(s.th.SystemAdminClient, cmd, args)
 
 		var expected error
-		expected = multierror.Append(expected, errors.New("unable to delete channel '\""+channel.Name+"\"' error: Permanent channel deletion feature is not enabled. ServiceSettings.EnableAPIChannelDeletion must be set to true to use this command. See https://mattermost.com/pl/environment-configuration-settings for more information"))
+		expected = multierror.Append(expected, errors.New("unable to delete channel '\""+channel.Name+"\"' error: Permanent channel deletion feature is not enabled. ServiceSettings.EnableAPIChannelDeletion must be set to true to use this command. See https://antimatter.chat/docs/admins/configuration.html for more information."))
 
 		s.Require().NotNil(err)
 		s.Require().EqualError(err, expected.Error())

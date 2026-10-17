@@ -279,7 +279,7 @@ func (s *MmctlE2ETestSuite) TestDeleteTeamsCmdF() {
 		s.Require().Error(err)
 		s.Len(printer.GetLines(), 0)
 		s.Len(printer.GetErrorLines(), 1)
-		s.Equal("Unable to delete team '"+s.th.BasicTeam.Name+"' error: Permanent team deletion feature is not enabled. ServiceSettings.EnableAPITeamDeletion must be set to true to use this command. See https://mattermost.com/pl/environment-configuration-settings for more information.", printer.GetErrorLines()[0])
+		s.Equal("Unable to delete team '"+s.th.BasicTeam.Name+"' error: Permanent team deletion feature is not enabled. ServiceSettings.EnableAPITeamDeletion must be set to true to use this command. See https://antimatter.chat/docs/admins/configuration.html for more information.", printer.GetErrorLines()[0])
 
 		// verify team still exists
 		team, _ := s.th.App.GetTeam(s.th.BasicTeam.Id)

@@ -22,7 +22,7 @@ var ImportCmd = &cobra.Command{
 var BulkImportCmd = &cobra.Command{
 	Use:     "bulk [file]",
 	Short:   "Import bulk data.",
-	Long:    "Import data from a Mattermost Bulk Import File.",
+	Long:    "Import data from a bulk import file.",
 	Example: "  import bulk bulk_data.json",
 	RunE:    bulkImportCmdF,
 }

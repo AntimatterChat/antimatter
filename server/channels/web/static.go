@@ -86,7 +86,7 @@ func root(c *Context, w http.ResponseWriter, r *http.Request) {
 	if !CheckClientCompatibility(r.UserAgent()) {
 		w.Header().Set("Cache-Control", "no-store")
 		subpath, _ := utils.GetSubpathFromConfig(c.App.Srv().Config())
-		data := renderUnsupportedBrowser(c.AppContext, r, subpath)
+		data := renderUnsupportedBrowser(c.AppContext, c.App.Srv().Config(), r, subpath)
 
 		err := c.App.Srv().TemplatesContainer().Render(w, "unsupported_browser", data)
 		if err != nil {

@@ -1295,10 +1295,6 @@
     "translation": "Geçerli kanal alınırken sorun çıktı."
   },
   {
-    "id": "api.command_invite.channel.error",
-    "translation": "{{.Channel}} kanalı bulunamadı. Lütfen kanalları belirtmek için [kanal kısaltması](https://docs.mattermost.com/messaging/managing-channels.html#naming-a-channel) kullanın."
-  },
-  {
     "id": "api.command_invite.channel_constrained_user_denied",
     "translation": "Bu kanal gruplar tarafından yönetiliyor.  Bu kullanıcı kanal ile eşitlenen bir grubun üyesi değil."
   },
@@ -1333,10 +1329,6 @@
   {
     "id": "api.command_invite.permission.app_error",
     "translation": "{{.User}} kullanıcısını {{.Channel}} kanalına eklemek için yeterli izinleriniz yok."
-  },
-  {
-    "id": "api.command_invite.private_channel.app_error",
-    "translation": "{{.Channel}} kanalı bulunamadı. Lütfen kanalları belirtmek için [kanal kısaltmasını](https://docs.mattermost.com/messaging/managing-channels.html#naming-a-channel) kullanın."
   },
   {
     "id": "api.command_invite.success",
@@ -1522,20 +1514,12 @@
     "translation": "Geçerli kanal ya da belirtilen [kanal] için bilgisayar, e-posta ve anlık bildirimlerini kapatır."
   },
   {
-    "id": "api.command_mute.error",
-    "translation": "{{.Channel}} kanalı bulunamadı. Lütfen kanalları belirtmek için [kanal kısaltması](https://docs.mattermost.com/messaging/managing-channels.html#naming-a-channel) kullanın."
-  },
-  {
     "id": "api.command_mute.hint",
     "translation": "~[kanal]"
   },
   {
     "id": "api.command_mute.name",
     "translation": "bildirimleri kapat"
-  },
-  {
-    "id": "api.command_mute.no_channel.error",
-    "translation": "Belirtilen kanal bulunamadı. Lütfen kanalları belirtmek için [kanal kısaltması](https://docs.mattermost.com/messaging/managing-channels.html#naming-a-channel) kullanın."
   },
   {
     "id": "api.command_mute.success_mute",
@@ -4127,74 +4111,6 @@
     "translation": "Kullanıcı bulunamadı."
   },
   {
-    "id": "api.templates.cloud_welcome_email.add_apps_info",
-    "translation": "Çalışma alanınıza uygulamalar ekleyin"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.add_apps_sub_info",
-    "translation": "Çalışmalarınızı GitHub, Jira ve Zoom gibi uygulamalar ile paylaşın. Tüm bütünleştirmeleri şurada görebilirsiniz"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.app_market_place",
-    "translation": "uygulama mağazası."
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.button",
-    "translation": "Mattermost uygulamasını aç"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.download_mm_info",
-    "translation": "Mattermost uygulamasını indir"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.info",
-    "translation": "Eklediğiniz için teşekkürler "
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.info2",
-    "translation": "Gelecekte kullanmak için bağlantınızı kaydettiğinizden ya da sık kullanılanlara eklediğinizden emin olun."
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.invite_info",
-    "translation": "Kişileri çalışma alanınıza davet edin"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.invite_sub_info",
-    "translation": "Kişileri {{.WorkSpace}} çalışma alanınıza davet etmek için bu bağlantıyı paylaşın:"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.mm_apps",
-    "translation": "mobil ve bilgisayar uygulamaları"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.signin_sub_info",
-    "translation": "Çalışma alanınıza şuradan oturum açın"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.signin_sub_info2",
-    "translation": "Windows, Linux, Mac, iOS ve Android üzerinde en iyi deneyim için."
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.start_questions",
-    "translation": "Başlamakla ilgili sorularınız mı var? Şu adrese e-posta gönderin"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.subject",
-    "translation": "Tebrikler!"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.subtitle",
-    "translation": "Çalışma alanınızı kurun"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.subtitle_info",
-    "translation": "Aşağıdaki adımları izleyerek takımlarınızı oluşturun ve çalışma alanınızı değerlendirin."
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.title",
-    "translation": "Çalışma alanınız hazır!"
-  },
-  {
     "id": "api.templates.deactivate_body.info",
     "translation": "{{ .SiteURL }} sitesindeki hesabınızı kullanımdan kaldırdınız."
   },
@@ -4880,7 +4796,7 @@
   },
   {
     "id": "api.user.delete_channel.not_enabled.for_admin.app_error",
-    "translation": "Kalıcı kanal silme özelliği açılmamış. Bu komutu kullanabilmek için ServiceSettings.EnableAPIChannelDeletion seçeneği true olarak ayarlanmalıdır. Ayrıntılı bilgi almak için https://mattermost.com/pl/environment-configuration-settings adresine bakın."
+    "translation": "Kalıcı kanal silme özelliği açılmamış. Bu komutu kullanabilmek için ServiceSettings.EnableAPIChannelDeletion seçeneği true olarak ayarlanmalıdır. Ayrıntılı bilgi almak için https://antimatter.chat/docs/admins/configuration.html adresine bakın."
   },
   {
     "id": "api.user.delete_team.not_enabled.app_error",
@@ -4888,7 +4804,7 @@
   },
   {
     "id": "api.user.delete_team.not_enabled.for_admin.app_error",
-    "translation": "Kalıcı takım silme özelliği açılmamış. Bu komutu kullanabilmek için ServiceSettings.EnableAPITeamDeletion seçeneği true olarak ayarlanmalıdır. Ayrıntılı bilgi almak için https://mattermost.com/pl/environment-configuration-settings adresine bakın."
+    "translation": "Kalıcı takım silme özelliği açılmamış. Bu komutu kullanabilmek için ServiceSettings.EnableAPITeamDeletion seçeneği true olarak ayarlanmalıdır. Ayrıntılı bilgi almak için https://antimatter.chat/docs/admins/configuration.html adresine bakın."
   },
   {
     "id": "api.user.delete_user.not_enabled.app_error",
@@ -4896,7 +4812,7 @@
   },
   {
     "id": "api.user.delete_user.not_enabled.for_admin.app_error",
-    "translation": "Kalıcı kullanıcı silme özelliği açılmamış. Bu komutu kullanabilmek için ServiceSettings.EnableAPIUserDeletion seçeneği true olarak ayarlanmalıdır. Ayrıntılı bilgi almak için https://mattermost.com/pl/environment-configuration-settings adresine bakın."
+    "translation": "Kalıcı kullanıcı silme özelliği açılmamış. Bu komutu kullanabilmek için ServiceSettings.EnableAPIUserDeletion seçeneği true olarak ayarlanmalıdır. Ayrıntılı bilgi almak için https://antimatter.chat/docs/admins/configuration.html adresine bakın."
   },
   {
     "id": "api.user.demote_user_to_guest.already_guest.app_error",
@@ -5173,10 +5089,6 @@
   {
     "id": "api.user.saml.relay_state_too_long.app_error",
     "translation": "SAML aktarma durumu (relay state) çok uzun."
-  },
-  {
-    "id": "api.user.send_cloud_welcome_email.error",
-    "translation": "Cloud karşılama iletisi gönderilemedi"
   },
   {
     "id": "api.user.send_deactivate_email_and_forget.failed.error",
@@ -5628,7 +5540,7 @@
   },
   {
     "id": "app.bot.get_disable_bot_sysadmin_message",
-    "translation": "{{if .disableBotsSetting}}{{if .printAllBots}}{{.UserName}} kullanımdan kaldırılmış. Bunlar şu anda kullanımdan kaldırılmış şu bot hesaplarını yönetiyor.\n\n{{.BotNames}}{{else}}{{.UserName}} kullanımdan kaldırılmış. Bunlar şu anda kullanımdan kaldırılmış şu {{.NumBots}} bot hesaplarını yönetiyor:\n\n{{.BotNames}}{{end}}Bu bot hesaplarının sahipliğini almak için, hesapları **Bütünleştirmeler > Bot Hesapları** bölümünden kullanıma alın ve bot hesapları için yeni kodlar oluşturun.\n\nAyrıntılı bilgi almak için [belgelere bakabilirsiniz](https://docs.mattermost.com/developer/bot-accounts.html#what-happens-when-a-user-who-owns-bot-accounts-is-disabled).{{else}}{{if .printAllBots}}{{.UserName}} kullanımdan kaldırılmış Bunlar şu anda hala etkin olan şu bot hesaplarını yönetiyor.\n\n{{.BotNames}}\n{{else}}{{.UserName}} kullanımdan kaldırılmış. Bunlar şu anda hala kullanımda olan şu {{.NumBots}} bot hesaplarını yönetiyor:\n\n{{.BotNames}}{{end}}Bu bot hesaplarının sahipliğini almak için, hesapları **Bütünleştirmeler > Bot Hesapları** bölümünden yeniden kullanıma almanız ve bot hesapları için yeni kodlar oluşturmanız önemle önerilir.\n\nAyrıntılı bilgi almak için [belgelere bakabilirsiniz](https://docs.mattermost.com/developer/bot-accounts.html#what-happens-when-a-user-who-owns-bot-accounts-is-disabled).\n\nKullanıcıların kullanımdan kaldırılmasından sonra bot hesaplarının da otomatik olarak kullanımdan kaldırılmasını istiyorsanız, **Sistem panosu > Bütünleştirmeler > Bot hesapları** bölümünden “Kullanıcı hesabı kullanımdan kaldırıldığında bot hesapları da kullanımdan kaldırılsın” seçeneğini açın.{{end}}"
+    "translation": "{{if .disableBotsSetting}}{{if .printAllBots}}{{.UserName}} kullanımdan kaldırılmış. Bunlar şu anda kullanımdan kaldırılmış şu bot hesaplarını yönetiyor.\n\n{{.BotNames}}{{else}}{{.UserName}} kullanımdan kaldırılmış. Bunlar şu anda kullanımdan kaldırılmış şu {{.NumBots}} bot hesaplarını yönetiyor:\n\n{{.BotNames}}{{end}}Bu bot hesaplarının sahipliğini almak için, hesapları **Bütünleştirmeler > Bot Hesapları** bölümünden kullanıma alın ve bot hesapları için yeni kodlar oluşturun.\n\nAyrıntılı bilgi almak için [belgelere bakabilirsiniz](https://antimatter.chat/docs/developers/bots.html#enable).{{else}}{{if .printAllBots}}{{.UserName}} kullanımdan kaldırılmış Bunlar şu anda hala etkin olan şu bot hesaplarını yönetiyor.\n\n{{.BotNames}}\n{{else}}{{.UserName}} kullanımdan kaldırılmış. Bunlar şu anda hala kullanımda olan şu {{.NumBots}} bot hesaplarını yönetiyor:\n\n{{.BotNames}}{{end}}Bu bot hesaplarının sahipliğini almak için, hesapları **Bütünleştirmeler > Bot Hesapları** bölümünden yeniden kullanıma almanız ve bot hesapları için yeni kodlar oluşturmanız önemle önerilir.\n\nAyrıntılı bilgi almak için [belgelere bakabilirsiniz](https://antimatter.chat/docs/developers/bots.html#enable).\n\nKullanıcıların kullanımdan kaldırılmasından sonra bot hesaplarının da otomatik olarak kullanımdan kaldırılmasını istiyorsanız, **Sistem panosu > Bütünleştirmeler > Bot hesapları** bölümünden “Kullanıcı hesabı kullanımdan kaldırıldığında bot hesapları da kullanımdan kaldırılsın” seçeneğini açın.{{end}}"
   },
   {
     "id": "app.bot.get_system_bot.empty_admin_list.app_error",
@@ -11475,10 +11387,6 @@
     "translation": "AD/LDAP üzerinde kullanıcılar aranamadı. Antimatter sunucunuzun AD/LDAP sunucunuza bağlanabildiğinden emin olun."
   },
   {
-    "id": "ent.ldap.syncronize.search_failure_size_exceeded.app_error",
-    "translation": "Boyut sınırı aşıldı. En büyük dosya boyutu ayarını artırmayı deneyin. Ayrıntılı bilgi almak için https://docs.mattermost.com/deployment/sso-ldap.html#i-see-the-log-error-ldap-result-code-4-size-limit-exceeded adresine bakabilirsiniz."
-  },
-  {
     "id": "ent.ldap.update_cpa.empty_attribute",
     "translation": "LDAP özniteliği değeri alınamadı"
   },
@@ -15035,10 +14943,6 @@
     "translation": "Uygulamayı indir"
   },
   {
-    "id": "web.error.unsupported_browser.download_app_or_upgrade_browser",
-    "translation": "Mattermost uygulamasını indirin ya da daha iyi bir deneyim elde etmek için desteklenen bir tarayıcı kullanın."
-  },
-  {
     "id": "web.error.unsupported_browser.download_the_app",
     "translation": "Uygulamayı indir"
   },
@@ -15049,10 +14953,6 @@
   {
     "id": "web.error.unsupported_browser.install_guide.windows",
     "translation": "Kurulum rehberi"
-  },
-  {
-    "id": "web.error.unsupported_browser.learn_more",
-    "translation": "Desteklenen tarayıcıları öğrenin."
   },
   {
     "id": "web.error.unsupported_browser.min_browser_version.chrome",

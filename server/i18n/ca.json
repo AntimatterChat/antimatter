@@ -1252,10 +1252,6 @@
     "translation": "S'ha produït un error en recuperar el canal actual."
   },
   {
-    "id": "api.command_invite.channel.error",
-    "translation": "No s'ha pogut trobar el canal {{.Channel}}. Utilitza el [nom del canal](https://docs.mattermost.com/messaging/managing-channels.html#naming-a-channel) per identificar els canals."
-  },
-  {
     "id": "api.command_invite.channel_constrained_user_denied",
     "translation": "Aquest canal està gestionat per grups. Aquest usuari no forma part d'un grup sincronitzat amb aquest canal."
   },
@@ -1290,10 +1286,6 @@
   {
     "id": "api.command_invite.permission.app_error",
     "translation": "No tens permisos suficients per afegir {{.User}} a {{.Channel}}."
-  },
-  {
-    "id": "api.command_invite.private_channel.app_error",
-    "translation": "No s'ha pogut trobar el canal {{.Channel}}. Utilitza el [nom del canal](https://docs.mattermost.com/messaging/managing-channels.html#naming-a-channel) per identificar els canals."
   },
   {
     "id": "api.command_invite.success",
@@ -1472,20 +1464,12 @@
     "translation": "Desactiva les notificacions d'escriptori, correu electrònic i notificacions push per al canal actual o per al canal [canal] especificat."
   },
   {
-    "id": "api.command_mute.error",
-    "translation": "No s'ha pogut trobar el canal {{.Channel}}. Utilitza el [nom del canal](https://docs.mattermost.com/messaging/managing-channels.html#naming-a-channel) per identificar els canals."
-  },
-  {
     "id": "api.command_mute.hint",
     "translation": "~[canal]"
   },
   {
     "id": "api.command_mute.name",
     "translation": "silenciar"
-  },
-  {
-    "id": "api.command_mute.no_channel.error",
-    "translation": "No s'ha pogut trobar el canal especificat. Utilitza el [nom del canal](https://docs.mattermost.com/messaging/managing-channels.html#naming-a-channel) per identificar els canals."
   },
   {
     "id": "api.command_mute.success_mute",
@@ -3868,74 +3852,6 @@
     "translation": "No s'ha pogut trobar l'usuari."
   },
   {
-    "id": "api.templates.cloud_welcome_email.add_apps_info",
-    "translation": "Afegeix aplicacions al teu espai de treball"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.add_apps_sub_info",
-    "translation": "Optimitza el teu treball amb eines com GitHub, Jira i Zoom. Explora totes les integracions que tenim al nostre"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.app_market_place",
-    "translation": "mercat d'aplicacions."
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.button",
-    "translation": "Obre Mattermost"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.download_mm_info",
-    "translation": "Descarrega l'aplicació de Mattermost"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.info",
-    "translation": "Gràcies per crear "
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.info2",
-    "translation": "Assegura't de desar o marcar el teu enllaç per a un futur ús."
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.invite_info",
-    "translation": "Convida gent al teu espai de treball"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.invite_sub_info",
-    "translation": "Comparteix aquest enllaç per convidar els teus membres a unir-se a {{.WorkSpace}}:"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.mm_apps",
-    "translation": "aplicacions mòbils i d'escriptori"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.signin_sub_info",
-    "translation": "Inicia sessió al teu espai de treball a les nostres"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.signin_sub_info2",
-    "translation": "per a la millor experiència a Windows, Linux, Mac, iOS i Android."
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.start_questions",
-    "translation": "Tens preguntes sobre com començar? Escriu-nos un correu a"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.subject",
-    "translation": "Enhorabona!"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.subtitle",
-    "translation": "Configura el teu espai de treball"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.subtitle_info",
-    "translation": "Segueix els passos següents per crear els teus equips i aprofitar al màxim el teu espai de treball."
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.title",
-    "translation": "El teu espai de treball està llest per començar!"
-  },
-  {
     "id": "api.templates.deactivate_body.info",
     "translation": "Has desactivat el teu compte a {{ .SiteURL }}."
   },
@@ -4521,7 +4437,7 @@
   },
   {
     "id": "api.user.delete_channel.not_enabled.for_admin.app_error",
-    "translation": "La funció de supressió permanent de canals no està habilitada. ServiceSettings.EnableAPIChannelDeletion s'ha d'establir a true per utilitzar aquesta comanda. Consulta https://mattermost.com/pl/environment-configuration-settings per obtenir més informació"
+    "translation": "La funció de supressió permanent de canals no està habilitada. ServiceSettings.EnableAPIChannelDeletion s'ha d'establir a true per utilitzar aquesta comanda. Consulta https://antimatter.chat/docs/admins/configuration.html per obtenir més informació"
   },
   {
     "id": "api.user.delete_team.not_enabled.app_error",
@@ -4529,7 +4445,7 @@
   },
   {
     "id": "api.user.delete_team.not_enabled.for_admin.app_error",
-    "translation": "La funció de supressió permanent d'equips no està habilitada. ServiceSettings.EnableAPITeamDeletion s'ha d'establir a true per utilitzar aquesta comanda. Consulta https://mattermost.com/pl/environment-configuration-settings per obtenir més informació."
+    "translation": "La funció de supressió permanent d'equips no està habilitada. ServiceSettings.EnableAPITeamDeletion s'ha d'establir a true per utilitzar aquesta comanda. Consulta https://antimatter.chat/docs/admins/configuration.html per obtenir més informació."
   },
   {
     "id": "api.user.delete_user.not_enabled.app_error",
@@ -4537,7 +4453,7 @@
   },
   {
     "id": "api.user.delete_user.not_enabled.for_admin.app_error",
-    "translation": "La funció de supressió permanent d'usuaris no està habilitada. ServiceSettings.EnableAPIUserDeletion s'ha d'establir a true per utilitzar aquesta comanda. Consulta https://mattermost.com/pl/environment-configuration-settings per obtenir més informació."
+    "translation": "La funció de supressió permanent d'usuaris no està habilitada. ServiceSettings.EnableAPIUserDeletion s'ha d'establir a true per utilitzar aquesta comanda. Consulta https://antimatter.chat/docs/admins/configuration.html per obtenir més informació."
   },
   {
     "id": "api.user.demote_user_to_guest.already_guest.app_error",
@@ -4802,10 +4718,6 @@
   {
     "id": "api.user.saml.relay_state_too_long.app_error",
     "translation": "L'estat de relé SAML és massa llarg."
-  },
-  {
-    "id": "api.user.send_cloud_welcome_email.error",
-    "translation": "No s'ha pogut enviar el correu electrònic de benvinguda de la cloud"
   },
   {
     "id": "api.user.send_deactivate_email_and_forget.failed.error",
@@ -5253,7 +5165,7 @@
   },
   {
     "id": "app.bot.get_disable_bot_sysadmin_message",
-    "translation": "{{if .disableBotsSetting}}{{if .printAllBots}}{{.UserName}} s'ha desactivat. Aquesta persona gestionava els següents comptes de bot que ara s'han desactivat.\n\n{{.BotNames}}{{else}}{{.UserName}} s'ha desactivat. Aquesta persona gestionava {{.NumBots}} comptes de bot que ara s'han desactivat, inclosos els següents:\n\n{{.BotNames}}{{end}}Podeu prendre el control de cada bot activant-lo a **Integracions > Comptes de bot** i creant nous tokens per al bot.\n\nPer a més informació, consulteu la nostra [documentació](https://docs.mattermost.com/developer/bot-accounts.html#what-happens-when-a-user-who-owns-bot-accounts-is-disabled).{{else}}{{if .printAllBots}}{{.UserName}} s'ha desactivat. Aquesta persona gestionava els següents comptes de bot que encara estan activats.\n\n{{.BotNames}}\n{{else}}{{.UserName}} s'ha desactivat. Aquesta persona gestionava {{.NumBots}} comptes de bot que encara estan activats, inclosos els següents:\n\n{{.BotNames}}{{end}}Recomanem fermament que prengueu el control de cada bot reactivant-lo a **Integracions > Comptes de bot** i creant nous tokens per al bot.\n\nPer a més informació, consulteu la nostra [documentació](https://docs.mattermost.com/developer/bot-accounts.html#what-happens-when-a-user-who-owns-bot-accounts-is-disabled).\n\nSi voleu que els comptes de bot es desactivin automàticament quan se desactiva el propietari, establiu «Desactiva els comptes de bot quan se desactiva el propietari» a **Consola del sistema > Integracions > Comptes de bot** com a cert.{{end}}"
+    "translation": "{{if .disableBotsSetting}}{{if .printAllBots}}{{.UserName}} s'ha desactivat. Aquesta persona gestionava els següents comptes de bot que ara s'han desactivat.\n\n{{.BotNames}}{{else}}{{.UserName}} s'ha desactivat. Aquesta persona gestionava {{.NumBots}} comptes de bot que ara s'han desactivat, inclosos els següents:\n\n{{.BotNames}}{{end}}Podeu prendre el control de cada bot activant-lo a **Integracions > Comptes de bot** i creant nous tokens per al bot.\n\nPer a més informació, consulteu la nostra [documentació](https://antimatter.chat/docs/developers/bots.html#enable).{{else}}{{if .printAllBots}}{{.UserName}} s'ha desactivat. Aquesta persona gestionava els següents comptes de bot que encara estan activats.\n\n{{.BotNames}}\n{{else}}{{.UserName}} s'ha desactivat. Aquesta persona gestionava {{.NumBots}} comptes de bot que encara estan activats, inclosos els següents:\n\n{{.BotNames}}{{end}}Recomanem fermament que prengueu el control de cada bot reactivant-lo a **Integracions > Comptes de bot** i creant nous tokens per al bot.\n\nPer a més informació, consulteu la nostra [documentació](https://antimatter.chat/docs/developers/bots.html#enable).\n\nSi voleu que els comptes de bot es desactivin automàticament quan se desactiva el propietari, establiu «Desactiva els comptes de bot quan se desactiva el propietari» a **Consola del sistema > Integracions > Comptes de bot** com a cert.{{end}}"
   },
   {
     "id": "app.bot.get_system_bot.empty_admin_list.app_error",
@@ -10864,10 +10776,6 @@
     "translation": "error en omplir els elements sincronitzables"
   },
   {
-    "id": "ent.ldap.syncronize.search_failure_size_exceeded.app_error",
-    "translation": "Límit de mida excedit. Prova d'augmentar la configuració de la mida màxima de la pàgina. Consulta https://docs.mattermost.com/onboard/ad-ldap.html#i-see-the-log-error-ldap-result-code-4-size-limit-exceeded per a més detalls."
-  },
-  {
     "id": "ent.ldap.validate_admin_filter.app_error",
     "translation": "Filtre d'administrador d'AD/LDAP no vàlid."
   },
@@ -14312,10 +14220,6 @@
     "translation": "Descarrega l'aplicació"
   },
   {
-    "id": "web.error.unsupported_browser.download_app_or_upgrade_browser",
-    "translation": "Descarrega l'aplicació de Mattermost o utilitza un navegador compatible per a una millor experiència."
-  },
-  {
     "id": "web.error.unsupported_browser.download_the_app",
     "translation": "Descarrega l'aplicació"
   },
@@ -14326,10 +14230,6 @@
   {
     "id": "web.error.unsupported_browser.install_guide.windows",
     "translation": "Guia d'instal·lació"
-  },
-  {
-    "id": "web.error.unsupported_browser.learn_more",
-    "translation": "Més informació sobre els navegadors admesos."
   },
   {
     "id": "web.error.unsupported_browser.min_browser_version.chrome",

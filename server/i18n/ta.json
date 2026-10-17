@@ -1252,10 +1252,6 @@
     "translation": "தற்போதைய சேனலைப் பெற பிழை ஏற்பட்டது."
   },
   {
-    "id": "api.command_invite.channel.error",
-    "translation": "{{.Channel}} சேனலைக் கண்டறிய முடியவில்லை. சேனல்களை அடையாளம் காண [சேனல் கையாளத்தை](https://docs.mattermost.com/messaging/managing-channels.html#naming-a-channel) பயன்படுத்தவும்."
-  },
-  {
     "id": "api.command_invite.channel_constrained_user_denied",
     "translation": "இந்த சேனல் குழுக்களால் நிர்வகிக்கப்படுகிறது. இந்த பயனர் இந்த சேனலுடன் ஒத்திசைக்கப்பட்ட குழுவின் பகுதியாக இல்லை."
   },
@@ -1290,10 +1286,6 @@
   {
     "id": "api.command_invite.permission.app_error",
     "translation": "{{.Channel}} இல் {{.User}} ஐ சேர்க்க போதுமான அனுமதிகள் உங்களுக்கு இல்லை."
-  },
-  {
-    "id": "api.command_invite.private_channel.app_error",
-    "translation": "{{.Channel}} சேனலைக் கண்டறிய முடியவில்லை. சேனல்களை அடையாளம் காண [சேனல் கையாளத்தை](https://docs.mattermost.com/messaging/managing-channels.html#naming-a-channel) பயன்படுத்தவும்."
   },
   {
     "id": "api.command_invite.success",
@@ -1472,20 +1464,12 @@
     "translation": "தற்போதைய சேனலுக்கோ அல்லது குறிப்பிட்ட [channel] சேனலுக்கோ டெஸ்க்டாப், மின்னஞ்சல் மற்றும் புஷ் அறிவிப்புகளை அணைக்கிறது."
   },
   {
-    "id": "api.command_mute.error",
-    "translation": "{{.Channel}} சேனலைக் கண்டறிய முடியவில்லை. சேனல்களை அடையாளம் காண [channel handle](https://docs.mattermost.com/messaging/managing-channels.html#naming-a-channel) பயன்படுத்தவும்."
-  },
-  {
     "id": "api.command_mute.hint",
     "translation": "~[channel]"
   },
   {
     "id": "api.command_mute.name",
     "translation": "mute"
-  },
-  {
-    "id": "api.command_mute.no_channel.error",
-    "translation": "குறிப்பிட்ட சேனலைக் கண்டறிய முடியவில்லை. சேனல்களை அடையாளம் காண [channel handle](https://docs.mattermost.com/messaging/managing-channels.html#naming-a-channel) பயன்படுத்தவும்."
   },
   {
     "id": "api.command_mute.success_mute",
@@ -3868,74 +3852,6 @@
     "translation": "பயனரைக் கண்டறிய முடியவில்லை."
   },
   {
-    "id": "api.templates.cloud_welcome_email.add_apps_info",
-    "translation": "உங்கள் பணிப்பரப்புக்கு செயலிகள் சேர்க்கவும்"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.add_apps_sub_info",
-    "translation": "GitHub, Jira மற்றும் Zoom போன்ற கருவிகளுடன் உங்கள் பணியை எளிமைப்படுத்தவும். எங்கள் செயலி சந்தையில் உள்ள அனைத்து இணைப்புகளையும் ஆராயுங்கள்"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.app_market_place",
-    "translation": "செயலி சந்தையில்."
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.button",
-    "translation": "Mattermost திறக்கவும்"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.download_mm_info",
-    "translation": "Mattermost செயலியை பதிவிறக்கவும்"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.info",
-    "translation": "உருவாக்கியதற்கு நன்றி"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.info2",
-    "translation": "எதிர்கால பயன்பாட்டிற்காக உங்கள் இணைப்பை சேமிக்கவும் அல்லது புத்தகக்குறி அமைக்கவும்."
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.invite_info",
-    "translation": "உங்கள் பணிப்பரப்புக்கு மக்களை அழைக்கவும்"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.invite_sub_info",
-    "translation": "{{.WorkSpace}}-க்கு உங்கள் உறுப்பினர்களை சேர அழைக்க இந்த இணைப்பை பகிரவும்:"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.mm_apps",
-    "translation": "மொபைல் மற்றும் டெஸ்க்டாப் செயலிகள்"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.signin_sub_info",
-    "translation": "எங்கள் மூலம் உங்கள் பணிப்பரப்புக்கு உள்நுழையவும்"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.signin_sub_info2",
-    "translation": "Windows, Linux, Mac, iOS மற்றும் Android-இல் சிறந்த அனுபவத்திற்கு."
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.start_questions",
-    "translation": "தொடங்குவது பற்றிய கேள்விகள் உள்ளனவா? எங்களுக்கு மின்னஞ்சல் அனுப்பவும்"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.subject",
-    "translation": "வாழ்த்துக்கள்!"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.subtitle",
-    "translation": "உங்கள் பணிப்பரப்பை அமைக்கவும்"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.subtitle_info",
-    "translation": "உங்கள் குழுக்களை உருவாக்கவும் மற்றும் உங்கள் பணிப்பரப்பை மிகச்சிறந்த முறையில் பயன்படுத்த, பின்வரும் படிகளை பின்பற்றவும்."
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.title",
-    "translation": "உங்கள் பணிப்பரப்பு பயன்பாட்டிற்கு தயார்!"
-  },
-  {
     "id": "api.templates.deactivate_body.info",
     "translation": "நீங்கள் {{ .SiteURL }} இல் உங்கள் கணக்கை முடக்கினீர்கள்."
   },
@@ -4521,7 +4437,7 @@
   },
   {
     "id": "api.user.delete_channel.not_enabled.for_admin.app_error",
-    "translation": "நிரந்தர சேனல் நீக்கம் சேவை இயக்கப்படவில்லை. இந்தக் கட்டளைப் பயன்படுத்த ServiceSettings.EnableAPIChannelDeletion-ஐ true-ஆக அமைக்க வேண்டும். மேலும் தகவல்களுக்கு https://mattermost.com/pl/environment-configuration-settings-ஐப் பார்க்கவும்"
+    "translation": "நிரந்தர சேனல் நீக்கம் சேவை இயக்கப்படவில்லை. இந்தக் கட்டளைப் பயன்படுத்த ServiceSettings.EnableAPIChannelDeletion-ஐ true-ஆக அமைக்க வேண்டும். மேலும் தகவல்களுக்கு https://antimatter.chat/docs/admins/configuration.html-ஐப் பார்க்கவும்"
   },
   {
     "id": "api.user.delete_team.not_enabled.app_error",
@@ -4529,7 +4445,7 @@
   },
   {
     "id": "api.user.delete_team.not_enabled.for_admin.app_error",
-    "translation": "நிரந்தர குழு நீக்கம் சேவை இயக்கப்படவில்லை. இந்தக் கட்டளைப் பயன்படுத்த ServiceSettings.EnableAPITeamDeletion-ஐ true-ஆக அமைக்க வேண்டும். மேலும் தகவல்களுக்கு https://mattermost.com/pl/environment-configuration-settings-ஐப் பார்க்கவும்."
+    "translation": "நிரந்தர குழு நீக்கம் சேவை இயக்கப்படவில்லை. இந்தக் கட்டளைப் பயன்படுத்த ServiceSettings.EnableAPITeamDeletion-ஐ true-ஆக அமைக்க வேண்டும். மேலும் தகவல்களுக்கு https://antimatter.chat/docs/admins/configuration.html-ஐப் பார்க்கவும்."
   },
   {
     "id": "api.user.delete_user.not_enabled.app_error",
@@ -4537,7 +4453,7 @@
   },
   {
     "id": "api.user.delete_user.not_enabled.for_admin.app_error",
-    "translation": "நிரந்தர பயனர் நீக்கம் சேவை இயக்கப்படவில்லை. இந்தக் கட்டளைப் பயன்படுத்த ServiceSettings.EnableAPIUserDeletion-ஐ true-ஆக அமைக்க வேண்டும். மேலும் தகவல்களுக்கு https://mattermost.com/pl/environment-configuration-settings-ஐப் பார்க்கவும்."
+    "translation": "நிரந்தர பயனர் நீக்கம் சேவை இயக்கப்படவில்லை. இந்தக் கட்டளைப் பயன்படுத்த ServiceSettings.EnableAPIUserDeletion-ஐ true-ஆக அமைக்க வேண்டும். மேலும் தகவல்களுக்கு https://antimatter.chat/docs/admins/configuration.html-ஐப் பார்க்கவும்."
   },
   {
     "id": "api.user.demote_user_to_guest.already_guest.app_error",
@@ -4802,10 +4718,6 @@
   {
     "id": "api.user.saml.relay_state_too_long.app_error",
     "translation": "SAML ரிலே நிலை மிகவும் நீளமாக உள்ளது."
-  },
-  {
-    "id": "api.user.send_cloud_welcome_email.error",
-    "translation": "கிளவுட் வரவேற்பு மின்னஞ்சலை அனுப்ப முடியவில்லை"
   },
   {
     "id": "api.user.send_deactivate_email_and_forget.failed.error",
@@ -5253,7 +5165,7 @@
   },
   {
     "id": "app.bot.get_disable_bot_sysadmin_message",
-    "translation": "{{if .disableBotsSetting}}{{if .printAllBots}}{{.UserName}} முடக்கப்பட்டார். அவர் நிர்வகித்த பின்வரும் பாட் கணக்குகள் இப்போது முடக்கப்பட்டுள்ளன.\n\n{{.BotNames}}{{else}}{{.UserName}} முடக்கப்பட்டார். அவர் நிர்வகித்த {{.NumBots}} பாட் கணக்குகள் இப்போது முடக்கப்பட்டுள்ளன, இதில் பின்வருவனவும் அடங்கும்:\n\n{{.BotNames}}{{end}}**Integrations > Bot Accounts** இல் பாட்டை இயக்கி, பாட்டிற்கு புதிய டோக்கன்களை உருவாக்கி, ஒவ்வொரு பாட்டையும் உங்கள் சொந்தமாக எடுக்கலாம்.\n\nமேலும் தகவல்களுக்கு, எங்கள் [ஆவணப்படுத்தல்](https://docs.mattermost.com/developer/bot-accounts.html#what-happens-when-a-user-who-owns-bot-accounts-is-disabled) ஐப் பார்க்கவும்.{{else}}{{if .printAllBots}}{{.UserName}} முடக்கப்பட்டார். அவர் நிர்வகித்த பின்வரும் பாட் கணக்குகள் இன்னும் இயக்கத்தில் உள்ளன.\n\n{{.BotNames}}\n{{else}}{{.UserName}} முடக்கப்பட்டார். அவர் நிர்வகித்த {{.NumBots}} பாட் கணக்குகள் இன்னும் இயக்கத்தில் உள்ளன, இதில் பின்வருவனவும் அடங்கும்:\n\n{{.BotNames}}{{end}}**Integrations > Bot Accounts** இல் பாட்டை மீண்டும் இயக்கி, பாட்டிற்கு புதிய டோக்கன்களை உருவாக்கி, ஒவ்வொரு பாட்டையும் உங்கள் சொந்தமாக எடுப்பதை நாங்கள் வலியுறுத்திப் பரிந்துரைக்கிறோம்.\n\nமேலும் தகவல்களுக்கு, எங்கள் [ஆவணப்படுத்தல்](https://docs.mattermost.com/developer/bot-accounts.html#what-happens-when-a-user-who-owns-bot-accounts-is-disabled) ஐப் பார்க்கவும்.\n\nபாட் கணக்குகள் உரிமையாளர் முடக்கப்பட்ட பிறகு தானாக முடக்கப்பட வேண்டும் என்றால், **System Console > Integrations > Bot Accounts** இல் “Disable bot accounts when owner is deactivated” ஐ true ஆக அமைக்கவும்.{{end}}"
+    "translation": "{{if .disableBotsSetting}}{{if .printAllBots}}{{.UserName}} முடக்கப்பட்டார். அவர் நிர்வகித்த பின்வரும் பாட் கணக்குகள் இப்போது முடக்கப்பட்டுள்ளன.\n\n{{.BotNames}}{{else}}{{.UserName}} முடக்கப்பட்டார். அவர் நிர்வகித்த {{.NumBots}} பாட் கணக்குகள் இப்போது முடக்கப்பட்டுள்ளன, இதில் பின்வருவனவும் அடங்கும்:\n\n{{.BotNames}}{{end}}**Integrations > Bot Accounts** இல் பாட்டை இயக்கி, பாட்டிற்கு புதிய டோக்கன்களை உருவாக்கி, ஒவ்வொரு பாட்டையும் உங்கள் சொந்தமாக எடுக்கலாம்.\n\nமேலும் தகவல்களுக்கு, எங்கள் [ஆவணப்படுத்தல்](https://antimatter.chat/docs/developers/bots.html#enable) ஐப் பார்க்கவும்.{{else}}{{if .printAllBots}}{{.UserName}} முடக்கப்பட்டார். அவர் நிர்வகித்த பின்வரும் பாட் கணக்குகள் இன்னும் இயக்கத்தில் உள்ளன.\n\n{{.BotNames}}\n{{else}}{{.UserName}} முடக்கப்பட்டார். அவர் நிர்வகித்த {{.NumBots}} பாட் கணக்குகள் இன்னும் இயக்கத்தில் உள்ளன, இதில் பின்வருவனவும் அடங்கும்:\n\n{{.BotNames}}{{end}}**Integrations > Bot Accounts** இல் பாட்டை மீண்டும் இயக்கி, பாட்டிற்கு புதிய டோக்கன்களை உருவாக்கி, ஒவ்வொரு பாட்டையும் உங்கள் சொந்தமாக எடுப்பதை நாங்கள் வலியுறுத்திப் பரிந்துரைக்கிறோம்.\n\nமேலும் தகவல்களுக்கு, எங்கள் [ஆவணப்படுத்தல்](https://antimatter.chat/docs/developers/bots.html#enable) ஐப் பார்க்கவும்.\n\nபாட் கணக்குகள் உரிமையாளர் முடக்கப்பட்ட பிறகு தானாக முடக்கப்பட வேண்டும் என்றால், **System Console > Integrations > Bot Accounts** இல் “Disable bot accounts when owner is deactivated” ஐ true ஆக அமைக்கவும்.{{end}}"
   },
   {
     "id": "app.bot.get_system_bot.empty_admin_list.app_error",
@@ -10864,10 +10776,6 @@
     "translation": "தொகுப்புகளை நிரப்பும்போது பிழை"
   },
   {
-    "id": "ent.ldap.syncronize.search_failure_size_exceeded.app_error",
-    "translation": "அளவு வரம்பு மீறப்பட்டது. உங்கள் அதிகபட்ச பக்க அளவு அமைப்பை அதிகரிக்க முயற்சிக்கவும். மேலும் விவரங்களுக்கு https://docs.mattermost.com/onboard/ad-ldap.html#i-see-the-log-error-ldap-result-code-4-size-limit-exceeded ஐப் பார்க்கவும்."
-  },
-  {
     "id": "ent.ldap.validate_admin_filter.app_error",
     "translation": "தவறான AD/LDAP நிர்வாகி வடிகட்டி."
   },
@@ -14312,10 +14220,6 @@
     "translation": "பயன்பாட்டைப் பதிவிறக்கவும்"
   },
   {
-    "id": "web.error.unsupported_browser.download_app_or_upgrade_browser",
-    "translation": "மேலும் சிறந்த அனுபவத்திற்காக Mattermost பயன்பாட்டைப் பதிவிறக்கவும் அல்லது ஆதரிக்கப்படும் உலாவியைப் பயன்படுத்தவும்."
-  },
-  {
     "id": "web.error.unsupported_browser.download_the_app",
     "translation": "பாடத்தை பதிவிறக்கவும்"
   },
@@ -14326,10 +14230,6 @@
   {
     "id": "web.error.unsupported_browser.install_guide.windows",
     "translation": "நிறுவல் வழிகாட்டி"
-  },
-  {
-    "id": "web.error.unsupported_browser.learn_more",
-    "translation": "ஆதரிக்கப்படும் உலாவின்கள் பற்றி மேலும் அறியவும்."
   },
   {
     "id": "web.error.unsupported_browser.min_browser_version.chrome",

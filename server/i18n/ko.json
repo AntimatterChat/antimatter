@@ -1287,15 +1287,11 @@
   },
   {
     "id": "api.command_help.success",
-    "translation": "Mattermost는 도구와 팀을 넘나드는 안전한 소통, 협업, 작업 조율을 위한 오픈소스 플랫폼입니다.\nMattermost는 두가지 핵심 도구를 갖고 있습니다:\n\n**Channels** - 1:1 및 그룹 채팅을 통해 팀과의 소통을 유지하세요.\n**[Playbooks](/playbooks)** - 반복가능한 작업들을 구성하여 구체적이고 예측 가능한 결과를 만드세요.\n\n[문서 및 가이드 살펴보기]({{.HelpLink}})"
+    "translation": "Antimatter는 도구와 팀을 넘나드는 안전한 소통, 협업, 작업 조율을 위한 오픈소스 플랫폼입니다.\nAntimatter는 두가지 핵심 도구를 갖고 있습니다:\n\n**Channels** - 1:1 및 그룹 채팅을 통해 팀과의 소통을 유지하세요.\n**[Playbooks](/playbooks)** - 반복가능한 작업들을 구성하여 구체적이고 예측 가능한 결과를 만드세요.\n\n[문서 및 가이드 살펴보기]({{.HelpLink}})"
   },
   {
     "id": "api.command_invite.channel.app_error",
     "translation": "현재 채널 조회 중 오류가 발생하였습니다."
-  },
-  {
-    "id": "api.command_invite.channel.error",
-    "translation": "{{.Channel}} 채널을 찾을 수 없습니다. 채널을 식별하려면 [채널 핸들](https://docs.mattermost.com/messaging/managing-channels.html#naming-a-channel)을 사용하세요."
   },
   {
     "id": "api.command_invite.channel_constrained_user_denied",
@@ -1332,10 +1328,6 @@
   {
     "id": "api.command_invite.permission.app_error",
     "translation": "{{.Channel}} 에 {{.User}}를 추가할 권한이 없습니다."
-  },
-  {
-    "id": "api.command_invite.private_channel.app_error",
-    "translation": "{{.Channel}} 채널을 찾을 수 없습니다. 채널을 식별하려면 [채널 핸들을](https://docs.mattermost.com/messaging/managing-channels.html#naming-a-channel) 사용하세요."
   },
   {
     "id": "api.command_invite.success",
@@ -1520,20 +1512,12 @@
     "translation": "지정된 현재 채널 또는 [채널]에 대한 데스크톱, 전자우편 및 푸시 알림 기능을 해제합니다."
   },
   {
-    "id": "api.command_mute.error",
-    "translation": "{{.Channel}} 채널을 찾을 수 없습니다. 채널을 식별하려면 [채널 핸들](https://docs.mattermost.com/messaging/managing-channels.html#naming-a-channel) 을 사용하세요."
-  },
-  {
     "id": "api.command_mute.hint",
     "translation": "~[채널]"
   },
   {
     "id": "api.command_mute.name",
     "translation": "음소거"
-  },
-  {
-    "id": "api.command_mute.no_channel.error",
-    "translation": "지정한 채널을 찾을 수 없습니다. 채널을 식별하려면 [채널 핸들](https://docs.mattermost.com/messaging/managing-channels.html#naming-a-channel)을 사용하세요."
   },
   {
     "id": "api.command_mute.success_mute",
@@ -4094,74 +4078,6 @@
     "translation": "사용자를 찾을 수 없습니다."
   },
   {
-    "id": "api.templates.cloud_welcome_email.add_apps_info",
-    "translation": "워크스페이스에 앱들을 추가합니다"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.add_apps_sub_info",
-    "translation": "GitHub, Jira 및 Zoom과 같은 도구로 작업을 간소화하세요. Atlassian의 모든 통합 기능을 살펴보세요."
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.app_market_place",
-    "translation": "앱 마켓플레이스."
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.button",
-    "translation": "매터모스트 열기"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.download_mm_info",
-    "translation": "Mattermost 앱 다운로드"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.info",
-    "translation": "만들어 주셔서 감사합니다. "
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.info2",
-    "translation": "나중에 사용할 수 있도록 링크를 저장하거나 북마크에 추가하세요."
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.invite_info",
-    "translation": "사람들을 작업 공간에 초대하기"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.invite_sub_info",
-    "translation": "이 링크를 공유하여 {{.WorkSpace}}에 가입하도록 회원을 초대하세요:"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.mm_apps",
-    "translation": "모바일 및 데스크톱 앱"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.signin_sub_info",
-    "translation": "워크스페이스에 로그인"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.signin_sub_info2",
-    "translation": "Windows, Linux, Mac, iOS 및 Android에서 최상의 환경을 제공합니다."
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.start_questions",
-    "translation": "시작하는 방법에 대해 궁금한 점이 있으신가요? 다음 주소로 이메일을 보내주세요."
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.subject",
-    "translation": "축하합니다!"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.subtitle",
-    "translation": "작업 공간 설정"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.subtitle_info",
-    "translation": "다음 단계를 따라 팀을 구성하고 업무 공간을 최대한 활용하세요."
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.title",
-    "translation": "작업 공간이 준비되었습니다!"
-  },
-  {
     "id": "api.templates.deactivate_body.info",
     "translation": "당신은 {{ .SiteURL }}에서 본인의 계정을 비활성화했습니다."
   },
@@ -4263,7 +4179,7 @@
   },
   {
     "id": "api.templates.invite_body.subTitle",
-    "translation": "팀과 함께 Mattermost에서 협업을 시작하세요"
+    "translation": "팀과 함께 Antimatter에서 협업을 시작하세요"
   },
   {
     "id": "api.templates.invite_body.title",
@@ -4275,7 +4191,7 @@
   },
   {
     "id": "api.templates.invite_body_footer.info",
-    "translation": "Mattermost는 안전한 팀 협업을 지원하는 유연한 오픈소스 메시징 플랫폼입니다."
+    "translation": "Antimatter는 안전한 팀 협업을 지원하는 유연한 오픈소스 메시징 플랫폼입니다."
   },
   {
     "id": "api.templates.invite_body_footer.learn_more",
@@ -4283,7 +4199,7 @@
   },
   {
     "id": "api.templates.invite_body_footer.title",
-    "translation": "Mattermost는 무엇인가요?"
+    "translation": "Antimatter는 무엇인가요?"
   },
   {
     "id": "api.templates.invite_body_guest.subTitle",
@@ -4387,7 +4303,7 @@
   },
   {
     "id": "api.templates.post_body.button",
-    "translation": "Mattermost에서 답장"
+    "translation": "Antimatter에서 답장"
   },
   {
     "id": "api.templates.questions_footer.info",
@@ -4811,7 +4727,7 @@
   },
   {
     "id": "api.user.delete_channel.not_enabled.for_admin.app_error",
-    "translation": "영구 채널 삭제 기능이 활성화되어 있지 않습니다. 이 명령을 사용하려면 ServiceSettings.EnableAPIChannelDeletion을 true로 설정해야 합니다. 자세한 내용은 https://mattermost.com/pl/environment-configuration-settings 를 참고하세요"
+    "translation": "영구 채널 삭제 기능이 활성화되어 있지 않습니다. 이 명령을 사용하려면 ServiceSettings.EnableAPIChannelDeletion을 true로 설정해야 합니다. 자세한 내용은 https://antimatter.chat/docs/admins/configuration.html 를 참고하세요"
   },
   {
     "id": "api.user.delete_team.not_enabled.app_error",
@@ -4819,7 +4735,7 @@
   },
   {
     "id": "api.user.delete_team.not_enabled.for_admin.app_error",
-    "translation": "영구 팀 삭제 기능이 활성화되어 있지 않습니다. 이 명령을 사용하려면 ServiceSettings.EnableAPITeamDeletion을 true로 설정해야 합니다. 자세한 내용은 https://mattermost.com/pl/environment-configuration-settings 를 참고하세요."
+    "translation": "영구 팀 삭제 기능이 활성화되어 있지 않습니다. 이 명령을 사용하려면 ServiceSettings.EnableAPITeamDeletion을 true로 설정해야 합니다. 자세한 내용은 https://antimatter.chat/docs/admins/configuration.html 를 참고하세요."
   },
   {
     "id": "api.user.delete_user.not_enabled.app_error",
@@ -4827,7 +4743,7 @@
   },
   {
     "id": "api.user.delete_user.not_enabled.for_admin.app_error",
-    "translation": "영구 사용자 삭제 기능이 활성화되어 있지 않습니다. 이 명령을 사용하려면 ServiceSettings.EnableAPIUserDeletion을 true로 설정해야 합니다. 자세한 내용은 https://mattermost.com/pl/environment-configuration-settings 를 참고하세요."
+    "translation": "영구 사용자 삭제 기능이 활성화되어 있지 않습니다. 이 명령을 사용하려면 ServiceSettings.EnableAPIUserDeletion을 true로 설정해야 합니다. 자세한 내용은 https://antimatter.chat/docs/admins/configuration.html 를 참고하세요."
   },
   {
     "id": "api.user.demote_user_to_guest.already_guest.app_error",
@@ -5104,10 +5020,6 @@
   {
     "id": "api.user.saml.relay_state_too_long.app_error",
     "translation": "SAML 릴레이 상태가 너무 깁니다."
-  },
-  {
-    "id": "api.user.send_cloud_welcome_email.error",
-    "translation": "클라우드 환영 이메일을 보내지 못했습니다."
   },
   {
     "id": "api.user.send_deactivate_email_and_forget.failed.error",
@@ -5559,7 +5471,7 @@
   },
   {
     "id": "app.bot.get_disable_bot_sysadmin_message",
-    "translation": "{{if .disableBotsSetting}}{{if .printAllBots}}{{.UserName}}이/가 비황성화 되었습니다. 그는 아래 봇 계정들을 관리 중 이었으며 지금 모든 봇 계정도 비활성화 되었습니다.\n\n{{.BotNames}}{{else}}{{.UserName}} 이/가 비황성화 되었습니다. 그들은 {{.NumBots}} 개 봇 계정을 관리 중이었으며 지금 모든 봇 계정도 비활성화 되었습니다:\n\n{{.BotNames}}{{end}} 각각 봇을 직접 관리하려면 **통합관리 > 봇 계정** 메뉴로 이동해서 신규 토큰을 발급하세요.\n\n더 자세한 설명은 관련 [문서](https://docs.mattermost.com/developer/bot-accounts.html#what-happens-when-a-user-who-owns-bot-accounts-is-disabled)를 통해서 확인하세요.{{else}}{{if .printAllBots}}{{.UserName}} 이/가 비황성화 되었습니다. 그는 아래 봇 계정들을 관리 중이었으며, 봇 계정들이 아직 활성화된 상태입니다.\n\n{{.BotNames}}\n{{else}}{{.UserName}} 이/가 비황성화 되었습니다. 그들은 {{.NumBots}} 개 봇 계정을 관리 중이었으며, 봇 계정들이 아직 활성화된 상태입니다.\n\n{{.BotNames}}{{end}} **통합관리 > 봇 계정** 에서 각 봇을 다시 활성화하고 봇을 위한 새로운 토큰을 생성하여 각 봇의 소유권을 갖는 것을 강력히 권장합니다.\n\n더 자세한 설명은 관련 [문서](https://docs.mattermost.com/developer/bot-accounts.html#what-happens-when-a-user-who-owns-bot-accounts-is-disabled)를 통해서 확인하세요.\n\n소유자 비활성화 후 봇 계정을 자동으로 비활성화하려면 **시스템 콘솔 > 통합 > 봇 계정**에서 \"소유자 비활성화 시 봇 계정 비활성화\"를 true로 설정하세요{{end}}"
+    "translation": "{{if .disableBotsSetting}}{{if .printAllBots}}{{.UserName}}이/가 비황성화 되었습니다. 그는 아래 봇 계정들을 관리 중 이었으며 지금 모든 봇 계정도 비활성화 되었습니다.\n\n{{.BotNames}}{{else}}{{.UserName}} 이/가 비황성화 되었습니다. 그들은 {{.NumBots}} 개 봇 계정을 관리 중이었으며 지금 모든 봇 계정도 비활성화 되었습니다:\n\n{{.BotNames}}{{end}} 각각 봇을 직접 관리하려면 **통합관리 > 봇 계정** 메뉴로 이동해서 신규 토큰을 발급하세요.\n\n더 자세한 설명은 관련 [문서](https://antimatter.chat/docs/developers/bots.html#enable)를 통해서 확인하세요.{{else}}{{if .printAllBots}}{{.UserName}} 이/가 비황성화 되었습니다. 그는 아래 봇 계정들을 관리 중이었으며, 봇 계정들이 아직 활성화된 상태입니다.\n\n{{.BotNames}}\n{{else}}{{.UserName}} 이/가 비황성화 되었습니다. 그들은 {{.NumBots}} 개 봇 계정을 관리 중이었으며, 봇 계정들이 아직 활성화된 상태입니다.\n\n{{.BotNames}}{{end}} **통합관리 > 봇 계정** 에서 각 봇을 다시 활성화하고 봇을 위한 새로운 토큰을 생성하여 각 봇의 소유권을 갖는 것을 강력히 권장합니다.\n\n더 자세한 설명은 관련 [문서](https://antimatter.chat/docs/developers/bots.html#enable)를 통해서 확인하세요.\n\n소유자 비활성화 후 봇 계정을 자동으로 비활성화하려면 **시스템 콘솔 > 통합 > 봇 계정**에서 \"소유자 비활성화 시 봇 계정 비활성화\"를 true로 설정하세요{{end}}"
   },
   {
     "id": "app.bot.get_system_bot.empty_admin_list.app_error",
@@ -8083,7 +7995,7 @@
   },
   {
     "id": "app.notification.footer.infoLogin",
-    "translation": "Mattermost에 로그인"
+    "translation": "Antimatter에 로그인"
   },
   {
     "id": "app.notification.footer.title",
@@ -11324,10 +11236,6 @@
   {
     "id": "ent.ldap.syncronize.search_failure.app_error",
     "translation": "Failed to search users in AD/LDAP. Test if the Antimatter server can connect to your AD/LDAP server and try again."
-  },
-  {
-    "id": "ent.ldap.syncronize.search_failure_size_exceeded.app_error",
-    "translation": "크기 제한을 초과했습니다. [최대 페이지 크기]를 확인하십시오 (https://docs.mattermost.com/deployment/sso-ldap.html#i-see-the-log-error-ldap-result-code-4-size-limit-exceeded)."
   },
   {
     "id": "ent.ldap.update_cpa.empty_attribute",
@@ -14659,7 +14567,7 @@
   },
   {
     "id": "oauth.gitlab.tos.error",
-    "translation": "GitLab 서비스 약관이 변경되었습니다. {{.URL}}으로 이동하여 수락한 다음 Mattermost에 다시 로그인해주세요."
+    "translation": "GitLab 서비스 약관이 변경되었습니다. {{.URL}}으로 이동하여 수락한 다음 Antimatter에 다시 로그인해주세요."
   },
   {
     "id": "plugin.api.get_users_in_channel",
@@ -14842,10 +14750,6 @@
     "translation": "앱을 다운로드 받습니다"
   },
   {
-    "id": "web.error.unsupported_browser.download_app_or_upgrade_browser",
-    "translation": "더 나은 경험을 위해 Mattermost 앱을 다운로드하거나 지원되는 브라우저를 사용해 주세요."
-  },
-  {
     "id": "web.error.unsupported_browser.download_the_app",
     "translation": "앱을 다운로드 받습니다"
   },
@@ -14856,10 +14760,6 @@
   {
     "id": "web.error.unsupported_browser.install_guide.windows",
     "translation": "설치 가이드"
-  },
-  {
-    "id": "web.error.unsupported_browser.learn_more",
-    "translation": "지원되는 브라우저에 대해 자세히 알아보세요."
   },
   {
     "id": "web.error.unsupported_browser.min_browser_version.chrome",
@@ -14887,11 +14787,11 @@
   },
   {
     "id": "web.error.unsupported_browser.no_longer_support",
-    "translation": "이 브라우저는 더 이상 Mattermost에서 지원되지 않습니다"
+    "translation": "이 브라우저는 더 이상 Antimatter에서 지원되지 않습니다"
   },
   {
     "id": "web.error.unsupported_browser.no_longer_support_version",
-    "translation": "해당 버전의 브라우저는 더 이상 Mattermost에서 지원하지 않습니다"
+    "translation": "해당 버전의 브라우저는 더 이상 Antimatter에서 지원하지 않습니다"
   },
   {
     "id": "web.error.unsupported_browser.open_system_browser.edge",

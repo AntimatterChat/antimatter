@@ -287,9 +287,9 @@
         "LoginButtonText": "With SAML"
     },
     "NativeAppSettings": {
-        "AppDownloadLink": "https://mattermost.com/download/",
-        "AndroidAppDownloadLink": "https://mattermost.com/pl/android-app/",
-        "IosAppDownloadLink": "https://mattermost.com/pl/ios-app/"
+        "AppDownloadLink": "https://github.com/AntimatterChat/desktop-app/releases",
+        "AndroidAppDownloadLink": "https://github.com/AntimatterChat/mobile-app/releases",
+        "IosAppDownloadLink": "https://github.com/AntimatterChat/mobile-app/releases"
     },
     "ClusterSettings": {
         "Enable": false,

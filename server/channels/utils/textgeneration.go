@@ -32,7 +32,7 @@ multi-line code block
 emoji that should not render in code block: :ice_cream:
 ` + "```" + `
 ` + "`monospace`" + `
-[Link to Mattermost](www.mattermost.com)
+[Link to Antimatter](https://antimatter.chat)
 Inline Image with link, alt text, and hover text: ![Build Status](https://travis-ci.org/mattermost/mattermost-server.svg?branch=master)](https://travis-ci.org/mattermost/mattermost-server)
 
 Three types of lines:

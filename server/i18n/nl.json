@@ -1280,7 +1280,7 @@
   },
   {
     "id": "api.command_help.desc",
-    "translation": "Toon Mattermost-help bericht"
+    "translation": "Toon Antimatter-help bericht"
   },
   {
     "id": "api.command_help.name",
@@ -1293,10 +1293,6 @@
   {
     "id": "api.command_invite.channel.app_error",
     "translation": "Fout bij het ophalen van het huidig kanaal."
-  },
-  {
-    "id": "api.command_invite.channel.error",
-    "translation": "Kan het kanaal {{.Channel}} niet vinden. Gebruik de [kanaalaanduiding](https://docs.mattermost.com/messaging/managing-channels.html#naming-a-channel) om kanalen aan te duiden."
   },
   {
     "id": "api.command_invite.channel_constrained_user_denied",
@@ -1333,10 +1329,6 @@
   {
     "id": "api.command_invite.permission.app_error",
     "translation": "Je hebt niet genoeg rechten om {{.User}} toe te voegen in {{.Channel}}."
-  },
-  {
-    "id": "api.command_invite.private_channel.app_error",
-    "translation": "Kan het kanaal{{.Channel}} niet vinden. Gebruik de [kanaalaanduiding](https://docs.mattermost.com/messaging/managing-channels.html#naming-a-channel) om kanalen aan te duiden."
   },
   {
     "id": "api.command_invite.success",
@@ -1522,20 +1514,12 @@
     "translation": "Schakelt bureaublad, e-mail en push meldingen uit voor het huidige kanaal of het opgegeven kanaal."
   },
   {
-    "id": "api.command_mute.error",
-    "translation": "Kan het kanaal {{.Channel}} niet vinden. Gebruik de [kanaalaanduiding](https://docs.mattermost.com/messaging/managing-channels.html#naming-a-channel) om kanalen aan te duiden."
-  },
-  {
     "id": "api.command_mute.hint",
     "translation": "~[kanaal]"
   },
   {
     "id": "api.command_mute.name",
     "translation": "dempen"
-  },
-  {
-    "id": "api.command_mute.no_channel.error",
-    "translation": "Kan het opgegeven kanaal niet vinden. Gebruik de [kanaalaanduiding](https://docs.mattermost.com/messaging/managing-channels.html#naming-a-channel) om kanalen aan te duiden."
   },
   {
     "id": "api.command_mute.success_mute",
@@ -1611,7 +1595,7 @@
   },
   {
     "id": "api.command_remote.desc",
-    "translation": "Nodig beveiligde verbindingen uit voor communicatie tussen Mattermost-servers."
+    "translation": "Nodig beveiligde verbindingen uit voor communicatie tussen Antimatter-servers."
   },
   {
     "id": "api.command_remote.displayname.help",
@@ -4127,74 +4111,6 @@
     "translation": "Kan de gebruiker niet vinden."
   },
   {
-    "id": "api.templates.cloud_welcome_email.add_apps_info",
-    "translation": "Apps toevoegen aan jouw werkruimte"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.add_apps_sub_info",
-    "translation": "Stroomlijn je werk met tools al GitHub, Jira and Zoom. Verken al onze integraties die we hebben in onze"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.app_market_place",
-    "translation": "app marktplaats."
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.button",
-    "translation": "Mattermost openen"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.download_mm_info",
-    "translation": "Download de Mattermost-app"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.info",
-    "translation": "Bedankt voor het maken van "
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.info2",
-    "translation": "Zorg ervoor dat je jouw link opslaat of bewaard als bladwijzer voor toekomstig gebruik."
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.invite_info",
-    "translation": "Nodig mensen uit op je werkplek"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.invite_sub_info",
-    "translation": "Deel deze link om jouw leden uit te nodigen om lid te worden van {{.WorkSpace}}:"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.mm_apps",
-    "translation": "Mobiele en desktop apps"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.signin_sub_info",
-    "translation": "Meld je aan op jouw werkruimte op onze"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.signin_sub_info2",
-    "translation": "voor de beste ervaring op Windows, Linux, Mac, iOS en Android."
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.start_questions",
-    "translation": "Vragen over hoe te beginnen? E-mail ons op"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.subject",
-    "translation": "Gefeliciteerd!"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.subtitle",
-    "translation": "Richt jouw werkruimte in"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.subtitle_info",
-    "translation": "Neem de volgende stappen om jouw teams samen te stellen en het meeste uit jouw werkruimte te halen."
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.title",
-    "translation": "Jouw werkruimte is klaar voor gebruik!"
-  },
-  {
     "id": "api.templates.deactivate_body.info",
     "translation": "Je schakelde je account uit op {{ .SiteURL }}."
   },
@@ -4880,7 +4796,7 @@
   },
   {
     "id": "api.user.delete_channel.not_enabled.for_admin.app_error",
-    "translation": "Permanente kanaalverwijdering is niet ingeschakeld. ServiceSettings.EnableAPIChannelDeletion moet op true staan om dit commando te kunnen gebruiken. Zie https://mattermost.com/pl/environment-configuration-settings voor meer informatie"
+    "translation": "Permanente kanaalverwijdering is niet ingeschakeld. ServiceSettings.EnableAPIChannelDeletion moet op true staan om dit commando te kunnen gebruiken. Zie https://antimatter.chat/docs/admins/configuration.html voor meer informatie"
   },
   {
     "id": "api.user.delete_team.not_enabled.app_error",
@@ -4888,7 +4804,7 @@
   },
   {
     "id": "api.user.delete_team.not_enabled.for_admin.app_error",
-    "translation": "De permanente teamverwijderingsfunctie is niet ingeschakeld. ServiceSettings.EnableAPITeamDeletion moet op true staan om deze opdracht te kunnen gebruiken. Zie https://mattermost.com/pl/environment-configuration-settings voor meer informatie."
+    "translation": "De permanente teamverwijderingsfunctie is niet ingeschakeld. ServiceSettings.EnableAPITeamDeletion moet op true staan om deze opdracht te kunnen gebruiken. Zie https://antimatter.chat/docs/admins/configuration.html voor meer informatie."
   },
   {
     "id": "api.user.delete_user.not_enabled.app_error",
@@ -4896,7 +4812,7 @@
   },
   {
     "id": "api.user.delete_user.not_enabled.for_admin.app_error",
-    "translation": "De permanente gebruikersverwijderingsfunctie is niet ingeschakeld. ServiceSettings.EnableAPIUserDeletion moet worden ingesteld op true om deze opdracht te gebruiken. Zie https://mattermost.com/pl/environment-configuration-settings voor meer informatie."
+    "translation": "De permanente gebruikersverwijderingsfunctie is niet ingeschakeld. ServiceSettings.EnableAPIUserDeletion moet worden ingesteld op true om deze opdracht te gebruiken. Zie https://antimatter.chat/docs/admins/configuration.html voor meer informatie."
   },
   {
     "id": "api.user.demote_user_to_guest.already_guest.app_error",
@@ -5173,10 +5089,6 @@
   {
     "id": "api.user.saml.relay_state_too_long.app_error",
     "translation": "De SAML-relaystatus is te lang."
-  },
-  {
-    "id": "api.user.send_cloud_welcome_email.error",
-    "translation": "Kan geen welkomstmail naar de cloud sturen"
   },
   {
     "id": "api.user.send_deactivate_email_and_forget.failed.error",
@@ -5628,7 +5540,7 @@
   },
   {
     "id": "app.bot.get_disable_bot_sysadmin_message",
-    "translation": "{{if .disableBotsSetting}}{{if .printAllBots}}{{.UserName}} werden uitgeschakeld. Ze beheerden volgende bot accouts die nu uitgeschakeld zijn.\n\n{{.BotNames}}{{else}}{{.UserName}} werden uitgeschakeld. Zij beheerden {{.NumBots}} volgende bot accouts die nu uitgeschakeld zijn :\n\n{{.BotNames}}{{end}} Je kan eigenaar worden van elke bot door deze in te schakelen bij **Integratie> Bot Accounts** en nieuwe tokens te generen voor de bot.\n\nVoor verdere informatie, bekijk onze [documentatie](https://docs.mattermost.com/developer/bot-accounts.html#what-happens-when-a-user-who-owns-bot-accounts-is-disabled).{{else}}{{if .printAllBots}}{{.UserName}} werd uitgeschakeld. Ze beheerden volgende bot accounts die nog steeds actief zijn.\n\n{{.BotNames}}\n{{else}}{{.UserName}} werd uitgeschakeld. Ze beheerden {{.NumBots}} volgende bot accounts die nog steeds actief zijn:\n\n{{.BotNames}}{{end}} We raden ten stelligste aan dat je eigenaar wordt van elke bot door deze opnieuw in te schakelen bij **Integraties > Bot Accounts** en nieuwe tokens aan te maken voor de bot.\n\nVoor verdere informatie, bekijk onze [documentatie](https://docs.mattermost.com/developer/bot-accounts.html#what-happens-when-a-user-who-owns-bot-accounts-is-disabled).\n\nAls je automatisch bot accounts wil uitschakelen als je een gebruiker deactiveert, stel dan “Schakel bot accounts uit na gebruikersdeactivatie. in bij **Systeem console > Integratie's > Bot Accounts** .{{end}}"
+    "translation": "{{if .disableBotsSetting}}{{if .printAllBots}}{{.UserName}} werden uitgeschakeld. Ze beheerden volgende bot accouts die nu uitgeschakeld zijn.\n\n{{.BotNames}}{{else}}{{.UserName}} werden uitgeschakeld. Zij beheerden {{.NumBots}} volgende bot accouts die nu uitgeschakeld zijn :\n\n{{.BotNames}}{{end}} Je kan eigenaar worden van elke bot door deze in te schakelen bij **Integratie> Bot Accounts** en nieuwe tokens te generen voor de bot.\n\nVoor verdere informatie, bekijk onze [documentatie](https://antimatter.chat/docs/developers/bots.html#enable).{{else}}{{if .printAllBots}}{{.UserName}} werd uitgeschakeld. Ze beheerden volgende bot accounts die nog steeds actief zijn.\n\n{{.BotNames}}\n{{else}}{{.UserName}} werd uitgeschakeld. Ze beheerden {{.NumBots}} volgende bot accounts die nog steeds actief zijn:\n\n{{.BotNames}}{{end}} We raden ten stelligste aan dat je eigenaar wordt van elke bot door deze opnieuw in te schakelen bij **Integraties > Bot Accounts** en nieuwe tokens aan te maken voor de bot.\n\nVoor verdere informatie, bekijk onze [documentatie](https://antimatter.chat/docs/developers/bots.html#enable).\n\nAls je automatisch bot accounts wil uitschakelen als je een gebruiker deactiveert, stel dan “Schakel bot accounts uit na gebruikersdeactivatie. in bij **Systeem console > Integratie's > Bot Accounts** .{{end}}"
   },
   {
     "id": "app.bot.get_system_bot.empty_admin_list.app_error",
@@ -11475,10 +11387,6 @@
     "translation": "Fout bij het zoeken naar gebruikers in AD/LDAP. Test of de Mattermost-server verbinding kan maken met jouw AD/LDAP-server en probeer het opnieuw."
   },
   {
-    "id": "ent.ldap.syncronize.search_failure_size_exceeded.app_error",
-    "translation": "Grootte-limiet overschreden. Probeer je instelling voor maximale paginagrootte te verhogen. Kijk op https://docs.mattermost.com/onboard/ad-ldap.html#i-see-the-log-error-ldap-result-code-4-size-limit-exceeded voor meer informatie."
-  },
-  {
     "id": "ent.ldap.update_cpa.empty_attribute",
     "translation": "Lege LDAP attribuutwaarde"
   },
@@ -15035,10 +14943,6 @@
     "translation": "Download de app"
   },
   {
-    "id": "web.error.unsupported_browser.download_app_or_upgrade_browser",
-    "translation": "Download de Mattermost app of gebruik een ondersteunde browser voor een betere ervaring."
-  },
-  {
     "id": "web.error.unsupported_browser.download_the_app",
     "translation": "Download de app"
   },
@@ -15049,10 +14953,6 @@
   {
     "id": "web.error.unsupported_browser.install_guide.windows",
     "translation": "Installatiehandleiding"
-  },
-  {
-    "id": "web.error.unsupported_browser.learn_more",
-    "translation": "Meer info over ondersteunde browsers."
   },
   {
     "id": "web.error.unsupported_browser.min_browser_version.chrome",

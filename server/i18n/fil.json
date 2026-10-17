@@ -1252,10 +1252,6 @@
     "translation": "May error sa pagkuha ng kasalukuyang channel."
   },
   {
-    "id": "api.command_invite.channel.error",
-    "translation": "Hindi nahanap ang channel {{.Channel}}. Paki-gamit ang [channel handle](https://docs.mattermost.com/messaging/managing-channels.html#naming-a-channel) upang matukoy ang mga channel."
-  },
-  {
     "id": "api.command_invite.channel_constrained_user_denied",
     "translation": "Ang channel na ito ay pinangangasiwaan ng mga grupo. Ang user na ito ay hindi bahagi ng grupo na naka-sync sa channel na ito."
   },
@@ -1290,10 +1286,6 @@
   {
     "id": "api.command_invite.permission.app_error",
     "translation": "Hindi sapat ang iyong mga permiso upang magdagdag ng {{.User}} sa {{.Channel}}."
-  },
-  {
-    "id": "api.command_invite.private_channel.app_error",
-    "translation": "Hindi nahanap ang channel {{.Channel}}. Paki-gamit ang [channel handle](https://docs.mattermost.com/messaging/managing-channels.html#naming-a-channel) upang matukoy ang mga channel."
   },
   {
     "id": "api.command_invite.success",
@@ -1472,20 +1464,12 @@
     "translation": "I-off ang mga notisikasyon sa desktop, email, at push para sa kasalukuyang channel o sa [channel] na tinukoy."
   },
   {
-    "id": "api.command_mute.error",
-    "translation": "Hindi makahanap ng channel {{.Channel}}. Pakinggan ang [channel handle](https://docs.mattermost.com/messaging/managing-channels.html#naming-a-channel) upang tukuyin ang mga channel."
-  },
-  {
     "id": "api.command_mute.hint",
     "translation": "~[channel]"
   },
   {
     "id": "api.command_mute.name",
     "translation": "i-mute"
-  },
-  {
-    "id": "api.command_mute.no_channel.error",
-    "translation": "Hindi makahanap ng tinukoy na channel. Pakinggan ang [channel handle](https://docs.mattermost.com/messaging/managing-channels.html#naming-a-channel) upang tukuyin ang mga channel."
   },
   {
     "id": "api.command_mute.success_mute",
@@ -3868,74 +3852,6 @@
     "translation": "Hindi nakahanap ng user."
   },
   {
-    "id": "api.templates.cloud_welcome_email.add_apps_info",
-    "translation": "Magdagdag ng mga app sa iyong workspace"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.add_apps_sub_info",
-    "translation": "Gawing mas madali ang iyong trabaho gamit ang mga tool tulad ng GitHub, Jira, at Zoom. Pagsaliksikin ang lahat ng integrations na nasa aming"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.app_market_place",
-    "translation": "app marketplace."
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.button",
-    "translation": "Buksan ang Mattermost"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.download_mm_info",
-    "translation": "I-download ang Mattermost App"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.info",
-    "translation": "Maraming salamat sa paglikha ng "
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.info2",
-    "translation": "Siguraduhing i-save o i-bookmark ang iyong link para sa paggamit sa hinaharap."
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.invite_info",
-    "translation": "Mag-imbita ng mga tao sa iyong workspace"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.invite_sub_info",
-    "translation": "Ibahagi ang link na ito upang mag-imbita ng iyong mga miyembro na sumali sa {{.WorkSpace}}:"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.mm_apps",
-    "translation": "mobile at desktop apps"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.signin_sub_info",
-    "translation": "Mag-sign in sa iyong workspace sa aming"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.signin_sub_info2",
-    "translation": "para sa pinakamagandang karanasan sa Windows, Linux, Mac, iOS, at Android."
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.start_questions",
-    "translation": "May mga tanong tungkol sa pagpapaunlad? I-email namin sa"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.subject",
-    "translation": "Pabulong!"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.subtitle",
-    "translation": "I-setup ang iyong workspace"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.subtitle_info",
-    "translation": "Gawin ang mga sumusunod na hakbang upang magtayo ng iyong mga team at makakuha ng pinakamarami mula sa iyong workspace."
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.title",
-    "translation": "Handa na ang iyong workspace!"
-  },
-  {
     "id": "api.templates.deactivate_body.info",
     "translation": "In-deactivate mo ang iyong account sa {{ .SiteURL }}."
   },
@@ -4521,7 +4437,7 @@
   },
   {
     "id": "api.user.delete_channel.not_enabled.for_admin.app_error",
-    "translation": "Hindi pinapayagan ang permanenteng pagtanggal ng channel. Dapat itakda ang ServiceSettings.EnableAPIChannelDeletion sa true upang gamitin ang command na ito. Tingnan ang https://mattermost.com/pl/environment-configuration-settings para sa karagdagang impormasyon"
+    "translation": "Hindi pinapayagan ang permanenteng pagtanggal ng channel. Dapat itakda ang ServiceSettings.EnableAPIChannelDeletion sa true upang gamitin ang command na ito. Tingnan ang https://antimatter.chat/docs/admins/configuration.html para sa karagdagang impormasyon"
   },
   {
     "id": "api.user.delete_team.not_enabled.app_error",
@@ -4529,7 +4445,7 @@
   },
   {
     "id": "api.user.delete_team.not_enabled.for_admin.app_error",
-    "translation": "Hindi pinapayagan ang permanenteng pagtanggal ng Team. Dapat itakda ang ServiceSettings.EnableAPITeamDeletion sa true upang gamitin ang command na ito. Tingnan ang https://mattermost.com/pl/environment-configuration-settings para sa karagdagang impormasyon."
+    "translation": "Hindi pinapayagan ang permanenteng pagtanggal ng Team. Dapat itakda ang ServiceSettings.EnableAPITeamDeletion sa true upang gamitin ang command na ito. Tingnan ang https://antimatter.chat/docs/admins/configuration.html para sa karagdagang impormasyon."
   },
   {
     "id": "api.user.delete_user.not_enabled.app_error",
@@ -4537,7 +4453,7 @@
   },
   {
     "id": "api.user.delete_user.not_enabled.for_admin.app_error",
-    "translation": "Hindi pinapayagan ang permanenteng pagtanggal ng user. Dapat itakda ang ServiceSettings.EnableAPIUserDeletion sa true upang gamitin ang command na ito. Tingnan ang https://mattermost.com/pl/environment-configuration-settings para sa karagdagang impormasyon."
+    "translation": "Hindi pinapayagan ang permanenteng pagtanggal ng user. Dapat itakda ang ServiceSettings.EnableAPIUserDeletion sa true upang gamitin ang command na ito. Tingnan ang https://antimatter.chat/docs/admins/configuration.html para sa karagdagang impormasyon."
   },
   {
     "id": "api.user.demote_user_to_guest.already_guest.app_error",
@@ -4802,10 +4718,6 @@
   {
     "id": "api.user.saml.relay_state_too_long.app_error",
     "translation": "Masyadong mahaba ang SAML relay state."
-  },
-  {
-    "id": "api.user.send_cloud_welcome_email.error",
-    "translation": "Hindi naka-send ang cloud welcome email"
   },
   {
     "id": "api.user.send_deactivate_email_and_forget.failed.error",
@@ -5253,7 +5165,7 @@
   },
   {
     "id": "app.bot.get_disable_bot_sysadmin_message",
-    "translation": "{{if .disableBotsSetting}}{{if .printAllBots}}In-deactivate si {{.UserName}}. In-manage niya ang mga sumusunod na bot account na ngayon ay naka-disable.\n\n{{.BotNames}}{{else}}In-deactivate si {{.UserName}}. In-manage niya {{.NumBots}} bot account na ngayon ay naka-disable, kabilang ang mga sumusunod:\n\n{{.BotNames}}{{end}}Maaari mong kunin ang ownership ng bawat bot sa pamamagitan ng pag-enable nito sa **Integrations > Bot Accounts** at paglikha ng bagong tokens para sa bot.\n\nPara sa mas maraming impormasyon, tingnan ang aming [dokumentasyon](https://docs.mattermost.com/developer/bot-accounts.html#what-happens-when-a-user-who-owns-bot-accounts-is-disabled).{{else}}{{if .printAllBots}}In-deactivate si {{.UserName}}. In-manage niya ang mga sumusunod na bot account na naka-enable pa rin.\n\n{{.BotNames}}\n{{else}}In-deactivate si {{.UserName}}. In-manage niya {{.NumBots}} bot account na naka-enable pa rin, kabilang ang mga sumusunod:\n\n{{.BotNames}}{{end}}Malakas naming inirerekomenda na kunin ang ownership ng bawat bot sa pamamagitan ng pag-re-enable nito sa **Integrations > Bot Accounts** at paglikha ng bagong tokens para sa bot.\n\nPara sa mas maraming impormasyon, tingnan ang aming [dokumentasyon](https://docs.mattermost.com/developer/bot-accounts.html#what-happens-when-a-user-who-owns-bot-accounts-is-disabled).\n\nKung gusto mong awtomatikong ma-disable ang mga bot account pagkatapos ma-deactivate ang owner, itakda ang “Disable bot accounts when owner is deactivated” sa **System Console > Integrations > Bot Accounts** sa true.{{end}}"
+    "translation": "{{if .disableBotsSetting}}{{if .printAllBots}}In-deactivate si {{.UserName}}. In-manage niya ang mga sumusunod na bot account na ngayon ay naka-disable.\n\n{{.BotNames}}{{else}}In-deactivate si {{.UserName}}. In-manage niya {{.NumBots}} bot account na ngayon ay naka-disable, kabilang ang mga sumusunod:\n\n{{.BotNames}}{{end}}Maaari mong kunin ang ownership ng bawat bot sa pamamagitan ng pag-enable nito sa **Integrations > Bot Accounts** at paglikha ng bagong tokens para sa bot.\n\nPara sa mas maraming impormasyon, tingnan ang aming [dokumentasyon](https://antimatter.chat/docs/developers/bots.html#enable).{{else}}{{if .printAllBots}}In-deactivate si {{.UserName}}. In-manage niya ang mga sumusunod na bot account na naka-enable pa rin.\n\n{{.BotNames}}\n{{else}}In-deactivate si {{.UserName}}. In-manage niya {{.NumBots}} bot account na naka-enable pa rin, kabilang ang mga sumusunod:\n\n{{.BotNames}}{{end}}Malakas naming inirerekomenda na kunin ang ownership ng bawat bot sa pamamagitan ng pag-re-enable nito sa **Integrations > Bot Accounts** at paglikha ng bagong tokens para sa bot.\n\nPara sa mas maraming impormasyon, tingnan ang aming [dokumentasyon](https://antimatter.chat/docs/developers/bots.html#enable).\n\nKung gusto mong awtomatikong ma-disable ang mga bot account pagkatapos ma-deactivate ang owner, itakda ang “Disable bot accounts when owner is deactivated” sa **System Console > Integrations > Bot Accounts** sa true.{{end}}"
   },
   {
     "id": "app.bot.get_system_bot.empty_admin_list.app_error",
@@ -10864,10 +10776,6 @@
     "translation": "may error sa pag-populate ng syncables"
   },
   {
-    "id": "ent.ldap.syncronize.search_failure_size_exceeded.app_error",
-    "translation": "Size Limit Exceeded. Subukan mong dagdagan ang Maximum page size setting. Pakinggan ang https://docs.mattermost.com/onboard/ad-ldap.html#i-see-the-log-error-ldap-result-code-4-size-limit-exceeded para sa mas maraming detalye."
-  },
-  {
     "id": "ent.ldap.validate_admin_filter.app_error",
     "translation": "Hindi wastong AD/LDAP Admin Filter."
   },
@@ -14312,10 +14220,6 @@
     "translation": "I-download ang App"
   },
   {
-    "id": "web.error.unsupported_browser.download_app_or_upgrade_browser",
-    "translation": "I-download ang Mattermost app o gumamit ng supported browser para sa mas magandang karanasan."
-  },
-  {
     "id": "web.error.unsupported_browser.download_the_app",
     "translation": "I-download ang App"
   },
@@ -14326,10 +14230,6 @@
   {
     "id": "web.error.unsupported_browser.install_guide.windows",
     "translation": "Gabay sa Pag-install"
-  },
-  {
-    "id": "web.error.unsupported_browser.learn_more",
-    "translation": "Matuto pa tungkol sa mga supported na browser."
   },
   {
     "id": "web.error.unsupported_browser.min_browser_version.chrome",

@@ -257,7 +257,7 @@
   },
   {
     "id": "api.bot.teams_channels.add_message_mobile",
-    "translation": "Adăugați-mă la echipele și canalele pe care doriți să interacționați. Pentru a face acest lucru, utilizați browserul sau aplicația Mattermost Desktop."
+    "translation": "Adăugați-mă la echipele și canalele pe care doriți să interacționați. Pentru a face acest lucru, utilizați browserul sau aplicația Antimatter Desktop."
   },
   {
     "id": "api.channel.add_guest.added",
@@ -1296,10 +1296,6 @@
     "translation": "Eroare la regăsirea canalul curent."
   },
   {
-    "id": "api.command_invite.channel.error",
-    "translation": "Canalul nu a putut fi găsit {{.Channel}}. Utilizați [mânerul canalului](https://docs.mattermost.com/messaging/managing-channels.html#naming-a-channel) pentru a identifica canalele."
-  },
-  {
     "id": "api.command_invite.channel_constrained_user_denied",
     "translation": "Acest canal este gestionat de grupuri.  Acest utilizator nu face parte dintr-un grup sincronizat cu acest canal."
   },
@@ -1334,10 +1330,6 @@
   {
     "id": "api.command_invite.permission.app_error",
     "translation": "Nu aveți suficiente permisiuni pentru a adăuga {{.User}} în {{.Channel}}."
-  },
-  {
-    "id": "api.command_invite.private_channel.app_error",
-    "translation": "Canalul nu a putut fi găsit {{.Channel}}. Utilizați mânerul canalului pentru a identifica canalele."
   },
   {
     "id": "api.command_invite.success",
@@ -1524,20 +1516,12 @@
     "translation": "Se stinge desktop, e-mail şi push notifications pentru canalul curent sau [canal] specificate."
   },
   {
-    "id": "api.command_mute.error",
-    "translation": "Canalul nu a putut fi găsit {{.Channel}}. Utilizați [mânerul canalului](https://docs.mattermost.com/messaging/managing-channels.html#naming-a-channel) pentru a identifica canalele."
-  },
-  {
     "id": "api.command_mute.hint",
     "translation": "~[canal]"
   },
   {
     "id": "api.command_mute.name",
     "translation": "muțește"
-  },
-  {
-    "id": "api.command_mute.no_channel.error",
-    "translation": "Canalul specificat nu a putut găsi. Vă rugăm să folosiţi [mâner canal](https://docs.mattermost.com/messaging/managing-channels.html#naming-a-channel) pentru a identifica canalele."
   },
   {
     "id": "api.command_mute.success_mute",
@@ -4132,74 +4116,6 @@
     "translation": "Imposibil de găsit utilizatorul."
   },
   {
-    "id": "api.templates.cloud_welcome_email.add_apps_info",
-    "translation": "Adăugați aplicații în spațiul de lucru"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.add_apps_sub_info",
-    "translation": "Simplificați-vă munca cu instrumente precum Github, Google Calendar și Chrome. Explorați toate integrările pe care le avem pe site-ul nostru"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.app_market_place",
-    "translation": "piața de aplicații."
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.button",
-    "translation": "Deschideți Mattermost"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.download_mm_info",
-    "translation": "Descărcați aplicația Mattermost"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.info",
-    "translation": "Vă mulțumim pentru crearea "
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.info2",
-    "translation": "Nu uitați să salvați sau să marcați linkul pentru utilizare ulterioară."
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.invite_info",
-    "translation": "Invitați oameni în spațiul dvs. de lucru"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.invite_sub_info",
-    "translation": "Împărtășiți acest link pentru a vă invita membrii să se alăture {{.WorkSpace}}:"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.mm_apps",
-    "translation": "aplicații mobile și desktop"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.signin_sub_info",
-    "translation": "Conectați-vă la spațiul de lucru pe site-ul nostru"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.signin_sub_info2",
-    "translation": "pentru cea mai bună experiență pe PC, Mac, iOS și Android."
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.start_questions",
-    "translation": "Aveți întrebări despre cum să începeți? Trimiteți-ne un e-mail la"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.subject",
-    "translation": "Felicitări!"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.subtitle",
-    "translation": "Configurați-vă spațiul de lucru"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.subtitle_info",
-    "translation": "Urmați următorii pași pentru a vă dezvolta echipele și pentru a profita la maximum de spațiul de lucru."
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.title",
-    "translation": "Spațiul dvs. de lucru este gata de utilizare!"
-  },
-  {
     "id": "api.templates.deactivate_body.info",
     "translation": "Ai dezactivat contul de pe {{ .SiteURL }}."
   },
@@ -4885,7 +4801,7 @@
   },
   {
     "id": "api.user.delete_channel.not_enabled.for_admin.app_error",
-    "translation": "Funcția de ștergere permanentă a canalului nu este activată. ServiceSettings.EnableAPIChannelDeletion trebuie setat la true pentru a utiliza această comandă. Consultați https://mattermost.com/pl/environment-configuration-settings pentru mai multe informații"
+    "translation": "Funcția de ștergere permanentă a canalului nu este activată. ServiceSettings.EnableAPIChannelDeletion trebuie setat la true pentru a utiliza această comandă. Consultați https://antimatter.chat/docs/admins/configuration.html pentru mai multe informații"
   },
   {
     "id": "api.user.delete_team.not_enabled.app_error",
@@ -4893,7 +4809,7 @@
   },
   {
     "id": "api.user.delete_team.not_enabled.for_admin.app_error",
-    "translation": "Funcția de ștergere permanentă a echipei nu este activată. ServiceSettings.EnableAPITeamDeletion trebuie setat la true pentru a utiliza această comandă. Consultați https://mattermost.com/pl/environment-configuration-settings pentru mai multe informații."
+    "translation": "Funcția de ștergere permanentă a echipei nu este activată. ServiceSettings.EnableAPITeamDeletion trebuie setat la true pentru a utiliza această comandă. Consultați https://antimatter.chat/docs/admins/configuration.html pentru mai multe informații."
   },
   {
     "id": "api.user.delete_user.not_enabled.app_error",
@@ -4901,7 +4817,7 @@
   },
   {
     "id": "api.user.delete_user.not_enabled.for_admin.app_error",
-    "translation": "Funcția de ștergere permanentă a utilizatorului nu este activată. ServiceSettings.EnableAPIUserDeletion trebuie setat la true pentru a utiliza această comandă. Consultați https://mattermost.com/pl/environment-configuration-settings pentru mai multe informații."
+    "translation": "Funcția de ștergere permanentă a utilizatorului nu este activată. ServiceSettings.EnableAPIUserDeletion trebuie setat la true pentru a utiliza această comandă. Consultați https://antimatter.chat/docs/admins/configuration.html pentru mai multe informații."
   },
   {
     "id": "api.user.demote_user_to_guest.already_guest.app_error",
@@ -5178,10 +5094,6 @@
   {
     "id": "api.user.saml.relay_state_too_long.app_error",
     "translation": "Starea de retransmisie SAML este prea lungă."
-  },
-  {
-    "id": "api.user.send_cloud_welcome_email.error",
-    "translation": "Nu s-a reușit trimiterea e-mailului de bun venit în cloud"
   },
   {
     "id": "api.user.send_deactivate_email_and_forget.failed.error",
@@ -5633,7 +5545,7 @@
   },
   {
     "id": "app.bot.get_disable_bot_sysadmin_message",
-    "translation": "{{if .disableBotsSetting}}{{if .printAllBots}}{{.UserName}} a fost dezactivat. Au gestionat următoarele conturi bot care acum au fost dezactivate.\n\n{{.BotNames}}{{else}}{{.UserName}} a fost dezactivat. Au gestionat {{.NumBots}} conturi bot care acum au fost dezactivate, inclusiv următoarele:\n\n{{.BotNames}}{{end}} Puteți deține proprietatea fiecărui bot activându-l la **Integrări > Conturi bot** și crearea de noi jetoane pentru bot.\n\nPentru mai multe informații, consultați [documentația](https://docs.mattermost.com/developer/bot-accounts.html#what-happens-when-a-user-who-owns-bot-accounts-is-disabled).{{else}}{{if .printAllBots}}{{.UserName}} a fost dezactivat. Au gestionat următoarele conturi bot care sunt încă activate.\n\n{{.BotNames}}\n{{else}}{{.UserName}} a fost dezactivat. Au gestionat {{.NumBots}} conturi de bot care sunt încă activate, inclusiv următoarele:\n\n{{.BotNames}}{{end}}Vă recomandăm cu tărie să luați proprietatea fiecărui bot reactivându-l la **Integrări > Conturi bot** și crearea de noi jetoane pentru bot.\n\nPentru mai multe informații, consultați [documentația](https://docs.mattermost.com/developer/bot-accounts.html#what-happens-when-a-user-who-owns-bot-accounts-is-disabled).\n\nDacă doriți ca conturile bot să se dezactiveze automat după dezactivarea utilizatorului, setați “Dezactivați conturile bot după dezactivarea utilizatorului” în **Consola de sistem > Integrări > Conturi bot** la adevărat.{{end}}"
+    "translation": "{{if .disableBotsSetting}}{{if .printAllBots}}{{.UserName}} a fost dezactivat. Au gestionat următoarele conturi bot care acum au fost dezactivate.\n\n{{.BotNames}}{{else}}{{.UserName}} a fost dezactivat. Au gestionat {{.NumBots}} conturi bot care acum au fost dezactivate, inclusiv următoarele:\n\n{{.BotNames}}{{end}} Puteți deține proprietatea fiecărui bot activându-l la **Integrări > Conturi bot** și crearea de noi jetoane pentru bot.\n\nPentru mai multe informații, consultați [documentația](https://antimatter.chat/docs/developers/bots.html#enable).{{else}}{{if .printAllBots}}{{.UserName}} a fost dezactivat. Au gestionat următoarele conturi bot care sunt încă activate.\n\n{{.BotNames}}\n{{else}}{{.UserName}} a fost dezactivat. Au gestionat {{.NumBots}} conturi de bot care sunt încă activate, inclusiv următoarele:\n\n{{.BotNames}}{{end}}Vă recomandăm cu tărie să luați proprietatea fiecărui bot reactivându-l la **Integrări > Conturi bot** și crearea de noi jetoane pentru bot.\n\nPentru mai multe informații, consultați [documentația](https://antimatter.chat/docs/developers/bots.html#enable).\n\nDacă doriți ca conturile bot să se dezactiveze automat după dezactivarea utilizatorului, setați “Dezactivați conturile bot după dezactivarea utilizatorului” în **Consola de sistem > Integrări > Conturi bot** la adevărat.{{end}}"
   },
   {
     "id": "app.bot.get_system_bot.empty_admin_list.app_error",
@@ -11484,10 +11396,6 @@
     "translation": "Căutarea utilizatorilor în AD/LDAP nu a reușit. Testaţi dacă serverul Antimatter poate conecta la serverul de anunţuri/LDAP și încercați din nou."
   },
   {
-    "id": "ent.ldap.syncronize.search_failure_size_exceeded.app_error",
-    "translation": "Limita de dimensiune a fost depășită. Încercați să verificați [mărimea paginii maximă] (https://docs.mattermost.com/deployment/sso-ldap.html#i-see-the-log-error-ldap-result-code-4-size-limit-exceeded)."
-  },
-  {
     "id": "ent.ldap.update_cpa.empty_attribute",
     "translation": "Valoare goală pentru atributul LDAP"
   },
@@ -15044,10 +14952,6 @@
     "translation": "Descărcați Aplicația"
   },
   {
-    "id": "web.error.unsupported_browser.download_app_or_upgrade_browser",
-    "translation": "Descărcați aplicația Mattermost sau utilizați un browser acceptat pentru o experiență mai bună."
-  },
-  {
     "id": "web.error.unsupported_browser.download_the_app",
     "translation": "Descărcați Aplicația"
   },
@@ -15058,10 +14962,6 @@
   {
     "id": "web.error.unsupported_browser.install_guide.windows",
     "translation": "Ghid de instalare"
-  },
-  {
-    "id": "web.error.unsupported_browser.learn_more",
-    "translation": "Aflați mai multe despre browserele acceptate."
   },
   {
     "id": "web.error.unsupported_browser.min_browser_version.chrome",

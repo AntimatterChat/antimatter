@@ -8,11 +8,15 @@ import (
 
 	"github.com/avct/uasurfer"
 
+	"github.com/mattermost/mattermost/server/public/model"
 	"github.com/mattermost/mattermost/server/public/shared/request"
 	"github.com/mattermost/mattermost/server/v8/platform/shared/templates"
 )
 
-// MattermostApp describes downloads for the Mattermost App
+// appInstallGuideLink is the user guide's section on the desktop and mobile apps.
+const appInstallGuideLink = "https://antimatter.chat/docs/users/index.html#apps"
+
+// MattermostApp describes downloads for the Antimatter desktop app (the type keeps its upstream name)
 type MattermostApp struct {
 	LogoSrc                string
 	Title                  string
@@ -44,12 +48,11 @@ type SystemBrowser struct {
 	MakeDefaultString      string
 }
 
-func renderUnsupportedBrowser(rctx request.CTX, r *http.Request, subpath string) templates.Data {
+func renderUnsupportedBrowser(rctx request.CTX, cfg *model.Config, r *http.Request, subpath string) templates.Data {
 	data := templates.Data{
 		Props: map[string]any{
 			"Subpath":                           ensureTrailingSlash(subpath),
 			"DownloadAppOrUpgradeBrowserString": rctx.T("web.error.unsupported_browser.download_app_or_upgrade_browser"),
-			"LearnMoreString":                   rctx.T("web.error.unsupported_browser.learn_more"),
 		},
 	}
 
@@ -67,11 +70,17 @@ func renderUnsupportedBrowser(rctx request.CTX, r *http.Request, subpath string)
 		data.Props["NoLongerSupportString"] = rctx.T("web.error.unsupported_browser.no_longer_support")
 	}
 
-	// Mattermost app version
-	if isWindows {
-		data.Props["App"] = renderMattermostAppWindows(rctx)
-	} else if isMacOSX {
-		data.Props["App"] = renderMattermostAppMac(rctx)
+	// The desktop app, from the download page the admin set (the Antimatter releases by default); none without one.
+	downloadLink := ""
+	if cfg.NativeAppSettings.AppDownloadLink != nil {
+		downloadLink = *cfg.NativeAppSettings.AppDownloadLink
+	}
+	if downloadLink != "" {
+		if isWindows {
+			data.Props["App"] = renderMattermostAppWindows(rctx, downloadLink)
+		} else if isMacOSX {
+			data.Props["App"] = renderMattermostAppMac(rctx, downloadLink)
+		}
 	}
 
 	// Browsers to download
@@ -91,27 +100,27 @@ func renderUnsupportedBrowser(rctx request.CTX, r *http.Request, subpath string)
 	return data
 }
 
-func renderMattermostAppMac(rctx request.CTX) MattermostApp {
+func renderMattermostAppMac(rctx request.CTX, downloadLink string) MattermostApp {
 	return MattermostApp{
 		"mac.png",
 		rctx.T("web.error.unsupported_browser.download_the_app"),
 		rctx.T("web.error.unsupported_browser.min_os_version.mac"),
 		rctx.T("web.error.unsupported_browser.download"),
-		"https://mattermost.com/pl/download-apps",
+		downloadLink,
 		rctx.T("web.error.unsupported_browser.install_guide.mac"),
-		"https://docs.mattermost.com/install/desktop.html#mac-os-x-10-9",
+		appInstallGuideLink,
 	}
 }
 
-func renderMattermostAppWindows(rctx request.CTX) MattermostApp {
+func renderMattermostAppWindows(rctx request.CTX, downloadLink string) MattermostApp {
 	return MattermostApp{
 		"windows.svg",
 		rctx.T("web.error.unsupported_browser.download_the_app"),
 		rctx.T("web.error.unsupported_browser.min_os_version.windows"),
 		rctx.T("web.error.unsupported_browser.download"),
-		"https://mattermost.com/pl/download-apps",
+		downloadLink,
 		rctx.T("web.error.unsupported_browser.install_guide.windows"),
-		"https://docs.mattermost.com/install/desktop.html#windows-10-windows-8-1-windows-7",
+		appInstallGuideLink,
 	}
 }
 

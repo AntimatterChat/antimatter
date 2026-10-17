@@ -257,7 +257,7 @@
   },
   {
     "id": "api.bot.teams_channels.add_message_mobile",
-    "translation": "Přidejte mě prosím do týmů a kanálů, ve kterých chcete abych interagoval. Pro tuto akci využijte prohlížeč nebo aplikaci Mattermost Desktop."
+    "translation": "Přidejte mě prosím do týmů a kanálů, ve kterých chcete abych interagoval. Pro tuto akci využijte prohlížeč nebo aplikaci Antimatter Desktop."
   },
   {
     "id": "api.channel.add_guest.added",
@@ -1297,10 +1297,6 @@
     "translation": "Chyba při získávání aktuálního kanálu."
   },
   {
-    "id": "api.command_invite.channel.error",
-    "translation": "Nelze najít kanál {{.Channel}}. Použijte prosím [channel handle](https://about.mattermost.com/default-channel-handle-documentation) k identifikaci kanálů."
-  },
-  {
     "id": "api.command_invite.channel_constrained_user_denied",
     "translation": "Tento kanál je spravován skupinami.  Tento uživatel není součástí skupiny, která je synchronizována s tímto kanálem."
   },
@@ -1335,10 +1331,6 @@
   {
     "id": "api.command_invite.permission.app_error",
     "translation": "Nemáte dostatečná oprávnění k přidání {{.User}} do {{.Channel}}."
-  },
-  {
-    "id": "api.command_invite.private_channel.app_error",
-    "translation": "Nelze najít kanál {{.Channel}}. K identifikaci kanálů prosím použijte [channel handle](https://docs.mattermost.com/messaging/managing-channels.html#naming-a-channel)."
   },
   {
     "id": "api.command_invite.success",
@@ -1526,20 +1518,12 @@
     "translation": "Vypne desktopová, e-mailová a push upozornění pro aktuální kanál nebo zadaný [kanál]."
   },
   {
-    "id": "api.command_mute.error",
-    "translation": "Kanál {{.Channel}} nebyl nalezen. Použijte prosím [identifikátor kanálu](https://about.mattermost.com/default-channel-handle-documentation) k identifikaci kanálů."
-  },
-  {
     "id": "api.command_mute.hint",
     "translation": "~[kanál]"
   },
   {
     "id": "api.command_mute.name",
     "translation": "ztlumit"
-  },
-  {
-    "id": "api.command_mute.no_channel.error",
-    "translation": "Zadaný kanál nebyl nalezen. Použijte prosím [identifikátor kanálu](https://docs.mattermost.com/messaging/managing-channels.html#naming-a-channel) k určení kanálů."
   },
   {
     "id": "api.command_mute.success_mute",
@@ -4137,74 +4121,6 @@
     "translation": "Uživatele nelze najít."
   },
   {
-    "id": "api.templates.cloud_welcome_email.add_apps_info",
-    "translation": "Přidejte aplikace do svého pracovního prostoru"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.add_apps_sub_info",
-    "translation": "Zjednodušte svou práci s nástroji jako GitHub, Jira a Zoom. Prozkoumejte všechny integrace, které máme na našem"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.app_market_place",
-    "translation": "marketplace aplikací."
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.button",
-    "translation": "Otevřít Mattermost"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.download_mm_info",
-    "translation": "Stáhněte si aplikaci Mattermost"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.info",
-    "translation": "Děkujeme za vytvoření "
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.info2",
-    "translation": "Ujistěte se, že máte odkaz uložený nebo v záložkách pro budoucí použití."
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.invite_info",
-    "translation": "Pozvěte lidi do svého pracovního prostoru"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.invite_sub_info",
-    "translation": "Sdílejte tento odkaz a pozvěte své členy, aby se připojili k {{.WorkSpace}}:"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.mm_apps",
-    "translation": "mobilní a desktopové aplikace"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.signin_sub_info",
-    "translation": "Přihlaste se do svého pracovního prostoru na našem"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.signin_sub_info2",
-    "translation": "pro nejlepší uživatelskou zkušenost na systémech Windows, Linux, Mac, iOS a Android."
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.start_questions",
-    "translation": "Máte otázky ohledně toho jak začít? Napište nám email na"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.subject",
-    "translation": "Gratulujeme!"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.subtitle",
-    "translation": "Nastavte svůj pracovní prostor"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.subtitle_info",
-    "translation": "Pro maximální využití svého pracovního prostoru postupujte podle následujících kroků a vytvořte své týmy."
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.title",
-    "translation": "Vaše pracovní prostředí je připraveno k použití!"
-  },
-  {
     "id": "api.templates.deactivate_body.info",
     "translation": "Deaktivovali jste svůj účet na {{ .SiteURL }}."
   },
@@ -4890,7 +4806,7 @@
   },
   {
     "id": "api.user.delete_channel.not_enabled.for_admin.app_error",
-    "translation": "Funkce trvalého smazání kanálu není povolena. Pro použití tohoto příkazu musí být ServiceSettings.EnableAPIChannelDeletion nastaveno na true. Další informace naleznete na https://mattermost.com/pl/environment-configuration-settings"
+    "translation": "Funkce trvalého smazání kanálu není povolena. Pro použití tohoto příkazu musí být ServiceSettings.EnableAPIChannelDeletion nastaveno na true. Další informace naleznete na https://antimatter.chat/docs/admins/configuration.html"
   },
   {
     "id": "api.user.delete_team.not_enabled.app_error",
@@ -4898,7 +4814,7 @@
   },
   {
     "id": "api.user.delete_team.not_enabled.for_admin.app_error",
-    "translation": "Funkce trvalého smazání týmu není povolena. Pro použití tohoto příkazu musí být ServiceSettings.EnableAPITeamDeletion nastaveno na true. Další informace naleznete na https://mattermost.com/pl/environment-configuration-settings."
+    "translation": "Funkce trvalého smazání týmu není povolena. Pro použití tohoto příkazu musí být ServiceSettings.EnableAPITeamDeletion nastaveno na true. Další informace naleznete na https://antimatter.chat/docs/admins/configuration.html."
   },
   {
     "id": "api.user.delete_user.not_enabled.app_error",
@@ -4906,7 +4822,7 @@
   },
   {
     "id": "api.user.delete_user.not_enabled.for_admin.app_error",
-    "translation": "Funkce trvalého smazání uživatele není povolena. Pro použití tohoto příkazu musí být ServiceSettings.EnableAPIUserDeletion nastaveno na true. Další informace naleznete na https://mattermost.com/pl/environment-configuration-settings."
+    "translation": "Funkce trvalého smazání uživatele není povolena. Pro použití tohoto příkazu musí být ServiceSettings.EnableAPIUserDeletion nastaveno na true. Další informace naleznete na https://antimatter.chat/docs/admins/configuration.html."
   },
   {
     "id": "api.user.demote_user_to_guest.already_guest.app_error",
@@ -5183,10 +5099,6 @@
   {
     "id": "api.user.saml.relay_state_too_long.app_error",
     "translation": "Stav SAML relay state je příliš dlouhý."
-  },
-  {
-    "id": "api.user.send_cloud_welcome_email.error",
-    "translation": "Nepodařilo se odeslat uvítací e-mail na cloud"
   },
   {
     "id": "api.user.send_deactivate_email_and_forget.failed.error",
@@ -5638,7 +5550,7 @@
   },
   {
     "id": "app.bot.get_disable_bot_sysadmin_message",
-    "translation": "{{if .disableBotsSetting}}{{if .printAllBots}}Uživatel {{.UserName}} byl zneplatněn. Uživatel spravoval následující účty robotů, které byly nyní též zneplatněny.\n\n{{.BotNames}}{{else}}Uživatel {{.UserName}} byl zneplatněn. Uživatel spravoval určitý počet ({{.NumBots}}) účty robotů, které byly nyní též zneplatněny. Jsou to také tyto:\n\n{{.BotNames}}{{end}}Můžeš převzít vlastnictví každého robota tím, že to povolíš v nabídce **Integrace > Účty robotů** a vytvoříš nového peška pro robota.\n\nPro více informací, viz naše [dokumentace](https://docs.mattermost.com/developer/bot-accounts.html#what-happens-when-a-user-who-owns-bot-accounts-is-disabled).{{else}}{{if .printAllBots}}Uživatel {{.UserName}} byl zneplatněn. Uživatel spravoval následující účty robotů, které jsou stále zplatněny.\n\n{{.BotNames}}\n{{else}}Uživatel {{.UserName}} byl zneplatněn. Uživatel spravoval určitý počet ({{.NumBots}}) účty robotů, , které jsou stále zplatněny. Jsou to také tyto:\n\n{{.BotNames}}{{end}}Silně doporučujeme převzít vlastiství nad těmito roboty tím, že je povolíš v nabídce **Integrace > Účty robotů** a vytvoříš nového peška pro robota.\n\nPro více informací, viz naše [dokumentace](https://docs.mattermost.com/developer/bot-accounts.html#what-happens-when-a-user-who-owns-bot-accounts-is-disabled).\n\nPokud chceš, aby se účty robotů automaticky zneplatniIy po zneplatnění uživatele, nastav na hodnotu \"pravda\" položku \"Zneplatnit účty robotů po zneplatnění uživatele\" v nabídce **Konzola Systému > Integrace > Účty robotů**.{{end}}"
+    "translation": "{{if .disableBotsSetting}}{{if .printAllBots}}Uživatel {{.UserName}} byl zneplatněn. Uživatel spravoval následující účty robotů, které byly nyní též zneplatněny.\n\n{{.BotNames}}{{else}}Uživatel {{.UserName}} byl zneplatněn. Uživatel spravoval určitý počet ({{.NumBots}}) účty robotů, které byly nyní též zneplatněny. Jsou to také tyto:\n\n{{.BotNames}}{{end}}Můžeš převzít vlastnictví každého robota tím, že to povolíš v nabídce **Integrace > Účty robotů** a vytvoříš nového peška pro robota.\n\nPro více informací, viz naše [dokumentace](https://antimatter.chat/docs/developers/bots.html#enable).{{else}}{{if .printAllBots}}Uživatel {{.UserName}} byl zneplatněn. Uživatel spravoval následující účty robotů, které jsou stále zplatněny.\n\n{{.BotNames}}\n{{else}}Uživatel {{.UserName}} byl zneplatněn. Uživatel spravoval určitý počet ({{.NumBots}}) účty robotů, , které jsou stále zplatněny. Jsou to také tyto:\n\n{{.BotNames}}{{end}}Silně doporučujeme převzít vlastiství nad těmito roboty tím, že je povolíš v nabídce **Integrace > Účty robotů** a vytvoříš nového peška pro robota.\n\nPro více informací, viz naše [dokumentace](https://antimatter.chat/docs/developers/bots.html#enable).\n\nPokud chceš, aby se účty robotů automaticky zneplatniIy po zneplatnění uživatele, nastav na hodnotu \"pravda\" položku \"Zneplatnit účty robotů po zneplatnění uživatele\" v nabídce **Konzola Systému > Integrace > Účty robotů**.{{end}}"
   },
   {
     "id": "app.bot.get_system_bot.empty_admin_list.app_error",
@@ -11493,10 +11405,6 @@
     "translation": "Nepodařilo se vyhletat uživatele na AD/LDAP serveru. Otestujte zda se Mattermost dokáže připojit k AD/LDAP serveru a zkuste to znova."
   },
   {
-    "id": "ent.ldap.syncronize.search_failure_size_exceeded.app_error",
-    "translation": "Překročen limit velikosti. Zkuste zvýšit nastavení maximální velikosti stránky. Další podrobnosti najdete na: https://docs.mattermost.com/onboard/ad-ldap.html#i-see-the-log-error-ldap-result-code-4-size-limit-exceeded."
-  },
-  {
     "id": "ent.ldap.update_cpa.empty_attribute",
     "translation": "Prázdná hodnota atributu LDAP"
   },
@@ -15053,10 +14961,6 @@
     "translation": "Stáhnout aplikaci"
   },
   {
-    "id": "web.error.unsupported_browser.download_app_or_upgrade_browser",
-    "translation": "Stáhněte si aplikaci Mattermost nebo použijte podporovaný prohlížeč pro lepší zážitek."
-  },
-  {
     "id": "web.error.unsupported_browser.download_the_app",
     "translation": "Stáhnout aplikaci"
   },
@@ -15067,10 +14971,6 @@
   {
     "id": "web.error.unsupported_browser.install_guide.windows",
     "translation": "Instalační příručka"
-  },
-  {
-    "id": "web.error.unsupported_browser.learn_more",
-    "translation": "Zjistěte více o podporovaných prohlížečích."
   },
   {
     "id": "web.error.unsupported_browser.min_browser_version.chrome",

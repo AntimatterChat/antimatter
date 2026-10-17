@@ -1252,10 +1252,6 @@
     "translation": "বর্তমান চ্যানেলটি আনুমানিক করতে ত্রুটি হয়েছে।"
   },
   {
-    "id": "api.command_invite.channel.error",
-    "translation": "{{.Channel}} চ্যানেলটি খুঁজে পাওয়া যায়নি। চ্যানেল চিহ্নিত করতে অনুগ্রহ করে [চ্যানেল হ্যান্ডেল](https://docs.mattermost.com/messaging/managing-channels.html#naming-a-channel) ব্যবহার করুন।"
-  },
-  {
     "id": "api.command_invite.channel_constrained_user_denied",
     "translation": "এই চ্যানেলটি গ্রুপ দ্বারা পরিচালিত। এই ব্যবহারকারী এই চ্যানেলের সাথে সিঙ্ক করা কোনো গ্রুপের অংশ নন।"
   },
@@ -1290,10 +1286,6 @@
   {
     "id": "api.command_invite.permission.app_error",
     "translation": "আপনার কাছে {{.Channel}}-এ {{.User}}-কে যোগ করার জন্য পর্যাপ্ত অনুমতি নেই।"
-  },
-  {
-    "id": "api.command_invite.private_channel.app_error",
-    "translation": "{{.Channel}} চ্যানেলটি খুঁজে পাওয়া যায়নি। চ্যানেল চিহ্নিত করতে অনুগ্রহ করে [চ্যানেল হ্যান্ডেল](https://docs.mattermost.com/messaging/managing-channels.html#naming-a-channel) ব্যবহার করুন।"
   },
   {
     "id": "api.command_invite.success",
@@ -1472,20 +1464,12 @@
     "translation": "বর্তমান চ্যানেলের বা [channel] নির্দিষ্ট চ্যানেলের জন্য ডেস্কটপ, ইমেইল এবং পুশ নোটিফিকেশন বন্ধ করে দেয়।"
   },
   {
-    "id": "api.command_mute.error",
-    "translation": "{{.Channel}} চ্যানেলটি খুঁজে পাওয়া যায়নি। চ্যানেল চিহ্নিত করতে অনুগ্রহ করে [channel handle](https://docs.mattermost.com/messaging/managing-channels.html#naming-a-channel) ব্যবহার করুন।"
-  },
-  {
     "id": "api.command_mute.hint",
     "translation": "~[channel]"
   },
   {
     "id": "api.command_mute.name",
     "translation": "mute"
-  },
-  {
-    "id": "api.command_mute.no_channel.error",
-    "translation": "নির্দিষ্ট চ্যানেলটি খুঁজে পাওয়া যায়নি। চ্যানেল চিহ্নিত করতে অনুগ্রহ করে [channel handle](https://docs.mattermost.com/messaging/managing-channels.html#naming-a-channel) ব্যবহার করুন।"
   },
   {
     "id": "api.command_mute.success_mute",
@@ -3868,74 +3852,6 @@
     "translation": "ইউজার খুঁজে পাওয়া যায়নি।"
   },
   {
-    "id": "api.templates.cloud_welcome_email.add_apps_info",
-    "translation": "আপনার ওয়ার্কস্পেসে অ্যাপ যোগ করুন"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.add_apps_sub_info",
-    "translation": "GitHub, Jira এবং Zoom-এর মতো টুল দিয়ে আপনার কাজ সহজ করুন। আমাদের অ্যাপ মার্কেটপ্লেসে সব ইন্টিগ্রেশন দেখুন।"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.app_market_place",
-    "translation": "অ্যাপ মার্কেটপ্লেসে।"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.button",
-    "translation": "Mattermost খুলুন"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.download_mm_info",
-    "translation": "Mattermost অ্যাপ ডাউনলোড করুন"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.info",
-    "translation": "আপনি তৈরি করেছেন "
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.info2",
-    "translation": "ভবিষ্যতে ব্যবহারের জন্য আপনার লিংকটি সংরক্ষণ বা বুকমার্ক করে রাখুন।"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.invite_info",
-    "translation": "আপনার ওয়ার্কস্পেসে লোকজনকে আমন্ত্রণ করুন"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.invite_sub_info",
-    "translation": "{{.WorkSpace}}-এ আপনার সদস্যদের আমন্ত্রণ করতে এই লিংকটি শেয়ার করুন:"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.mm_apps",
-    "translation": "মোবাইল এবং ডেস্কটপ অ্যাপে"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.signin_sub_info",
-    "translation": "আমাদের "
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.signin_sub_info2",
-    "translation": "Windows, Linux, Mac, iOS এবং Android-এ সেরা অভিজ্ঞতার জন্য সাইন ইন করুন।"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.start_questions",
-    "translation": "শুরু করার বিষয়ে কোনো প্রশ্ন আছে? আমাদের ইমেইল করুন "
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.subject",
-    "translation": "অভিনন্দন!"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.subtitle",
-    "translation": "আপনার ওয়ার্কস্পেস সেটআপ করুন"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.subtitle_info",
-    "translation": "আপনার টিম গঠন করতে এবং আপনার ওয়ার্কস্পেস থেকে সর্বোচ্চ সুবিধা নিতে নিচের ধাপগুলো অনুসরণ করুন।"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.title",
-    "translation": "আপনার ওয়ার্কস্পেস ব্যবহারের জন্য প্রস্তুত!"
-  },
-  {
     "id": "api.templates.deactivate_body.info",
     "translation": "আপনি {{ .SiteURL }}-এ আপনার অ্যাকাউন্টটি নিষ্ক্রিয় করেছেন।"
   },
@@ -4521,7 +4437,7 @@
   },
   {
     "id": "api.user.delete_channel.not_enabled.for_admin.app_error",
-    "translation": "চ্যানেল স্থায়ীভাবে মুছে ফেলার ফিচারটি চালু নেই। এই কমান্ড ব্যবহার করতে ServiceSettings.EnableAPIChannelDeletion কে true হিসেবে সেট করতে হবে। আরও তথ্যের জন্য https://mattermost.com/pl/environment-configuration-settings দেখুন"
+    "translation": "চ্যানেল স্থায়ীভাবে মুছে ফেলার ফিচারটি চালু নেই। এই কমান্ড ব্যবহার করতে ServiceSettings.EnableAPIChannelDeletion কে true হিসেবে সেট করতে হবে। আরও তথ্যের জন্য https://antimatter.chat/docs/admins/configuration.html দেখুন"
   },
   {
     "id": "api.user.delete_team.not_enabled.app_error",
@@ -4529,7 +4445,7 @@
   },
   {
     "id": "api.user.delete_team.not_enabled.for_admin.app_error",
-    "translation": "টিম স্থায়ীভাবে মুছে ফেলার ফিচারটি চালু নেই। এই কমান্ড ব্যবহার করতে ServiceSettings.EnableAPITeamDeletion কে true হিসেবে সেট করতে হবে। আরও তথ্যের জন্য https://mattermost.com/pl/environment-configuration-settings দেখুন।"
+    "translation": "টিম স্থায়ীভাবে মুছে ফেলার ফিচারটি চালু নেই। এই কমান্ড ব্যবহার করতে ServiceSettings.EnableAPITeamDeletion কে true হিসেবে সেট করতে হবে। আরও তথ্যের জন্য https://antimatter.chat/docs/admins/configuration.html দেখুন।"
   },
   {
     "id": "api.user.delete_user.not_enabled.app_error",
@@ -4537,7 +4453,7 @@
   },
   {
     "id": "api.user.delete_user.not_enabled.for_admin.app_error",
-    "translation": "ইউজার স্থায়ীভাবে মুছে ফেলার ফিচারটি চালু নেই। এই কমান্ড ব্যবহার করতে ServiceSettings.EnableAPIUserDeletion কে true হিসেবে সেট করতে হবে। আরও তথ্যের জন্য https://mattermost.com/pl/environment-configuration-settings দেখুন।"
+    "translation": "ইউজার স্থায়ীভাবে মুছে ফেলার ফিচারটি চালু নেই। এই কমান্ড ব্যবহার করতে ServiceSettings.EnableAPIUserDeletion কে true হিসেবে সেট করতে হবে। আরও তথ্যের জন্য https://antimatter.chat/docs/admins/configuration.html দেখুন।"
   },
   {
     "id": "api.user.demote_user_to_guest.already_guest.app_error",
@@ -4802,10 +4718,6 @@
   {
     "id": "api.user.saml.relay_state_too_long.app_error",
     "translation": "SAML রিলে স্টেটটি খুব দীর্ঘ।"
-  },
-  {
-    "id": "api.user.send_cloud_welcome_email.error",
-    "translation": "ক্লাউড স্বাগত ইমেইল পাঠানো ব্যর্থ হয়েছে"
   },
   {
     "id": "api.user.send_deactivate_email_and_forget.failed.error",
@@ -5253,7 +5165,7 @@
   },
   {
     "id": "app.bot.get_disable_bot_sysadmin_message",
-    "translation": "{{if .disableBotsSetting}}{{if .printAllBots}}{{.UserName}}-কে নিষ্ক্রিয় করা হয়েছে। তিনি নিম্নলিখিত বট অ্যাকাউন্টগুলির ব্যবস্থাপনা করতেন, যা এখন নিষ্ক্রিয় করা হয়েছে।\n\n{{.BotNames}}{{else}}{{.UserName}}-কে নিষ্ক্রিয় করা হয়েছে। তিনি {{.NumBots}}টি বট অ্যাকাউন্টের ব্যবস্থাপনা করতেন, যা এখন নিষ্ক্রিয় করা হয়েছে, যার মধ্যে রয়েছে:\n\n{{.BotNames}}{{end}}আপনি **Integrations > Bot Accounts**-এ গিয়ে প্রতিটি বট সক্রিয় করে এবং বটের জন্য নতুন টোকেন তৈরি করে প্রতিটি বটের মালিকানা নিতে পারেন।\n\nআরও তথ্যের জন্য আমাদের [ডকুমেন্টেশন](https://docs.mattermost.com/developer/bot-accounts.html#what-happens-when-a-user-who-owns-bot-accounts-is-disabled) দেখুন।{{else}}{{if .printAllBots}}{{.UserName}}-কে নিষ্ক্রিয় করা হয়েছে। তিনি নিম্নলিখিত বট অ্যাকাউন্টগুলির ব্যবস্থাপনা করতেন, যা এখনও সক্রিয় আছে।\n\n{{.BotNames}}\n{{else}}{{.UserName}}-কে নিষ্ক্রিয় করা হয়েছে। তিনি {{.NumBots}}টি বট অ্যাকাউন্টের ব্যবস্থাপনা করতেন, যা এখনও সক্রিয় আছে, যার মধ্যে রয়েছে:\n\n{{.BotNames}}{{end}}আপনি **Integrations > Bot Accounts**-এ গিয়ে প্রতিটি বট পুনরায় সক্রিয় করে এবং বটের জন্য নতুন টোকেন তৈরি করে প্রতিটি বটের মালিকানা নেওয়ার জন্য আমাদের জোরালভাবে পরামর্শ দিচ্ছি।\n\nআরও তথ্যের জন্য আমাদের [ডকুমেন্টেশন](https://docs.mattermost.com/developer/bot-accounts.html#what-happens-when-a-user-who-owns-bot-accounts-is-disabled) দেখুন।\n\nআপনি যদি মালিক নিষ্ক্রিয় হওয়ার পরে বট অ্যাকাউন্ট স্বয়ংক্রিয়ভাবে নিষ্ক্রিয় করতে চান, তবে **System Console > Integrations > Bot Accounts**-এ “Disable bot accounts when owner is deactivated”-কে true-তে সেট করুন।{{end}}"
+    "translation": "{{if .disableBotsSetting}}{{if .printAllBots}}{{.UserName}}-কে নিষ্ক্রিয় করা হয়েছে। তিনি নিম্নলিখিত বট অ্যাকাউন্টগুলির ব্যবস্থাপনা করতেন, যা এখন নিষ্ক্রিয় করা হয়েছে।\n\n{{.BotNames}}{{else}}{{.UserName}}-কে নিষ্ক্রিয় করা হয়েছে। তিনি {{.NumBots}}টি বট অ্যাকাউন্টের ব্যবস্থাপনা করতেন, যা এখন নিষ্ক্রিয় করা হয়েছে, যার মধ্যে রয়েছে:\n\n{{.BotNames}}{{end}}আপনি **Integrations > Bot Accounts**-এ গিয়ে প্রতিটি বট সক্রিয় করে এবং বটের জন্য নতুন টোকেন তৈরি করে প্রতিটি বটের মালিকানা নিতে পারেন।\n\nআরও তথ্যের জন্য আমাদের [ডকুমেন্টেশন](https://antimatter.chat/docs/developers/bots.html#enable) দেখুন।{{else}}{{if .printAllBots}}{{.UserName}}-কে নিষ্ক্রিয় করা হয়েছে। তিনি নিম্নলিখিত বট অ্যাকাউন্টগুলির ব্যবস্থাপনা করতেন, যা এখনও সক্রিয় আছে।\n\n{{.BotNames}}\n{{else}}{{.UserName}}-কে নিষ্ক্রিয় করা হয়েছে। তিনি {{.NumBots}}টি বট অ্যাকাউন্টের ব্যবস্থাপনা করতেন, যা এখনও সক্রিয় আছে, যার মধ্যে রয়েছে:\n\n{{.BotNames}}{{end}}আপনি **Integrations > Bot Accounts**-এ গিয়ে প্রতিটি বট পুনরায় সক্রিয় করে এবং বটের জন্য নতুন টোকেন তৈরি করে প্রতিটি বটের মালিকানা নেওয়ার জন্য আমাদের জোরালভাবে পরামর্শ দিচ্ছি।\n\nআরও তথ্যের জন্য আমাদের [ডকুমেন্টেশন](https://antimatter.chat/docs/developers/bots.html#enable) দেখুন।\n\nআপনি যদি মালিক নিষ্ক্রিয় হওয়ার পরে বট অ্যাকাউন্ট স্বয়ংক্রিয়ভাবে নিষ্ক্রিয় করতে চান, তবে **System Console > Integrations > Bot Accounts**-এ “Disable bot accounts when owner is deactivated”-কে true-তে সেট করুন।{{end}}"
   },
   {
     "id": "app.bot.get_system_bot.empty_admin_list.app_error",
@@ -10864,10 +10776,6 @@
     "translation": "সিঙ্কেবলস পূরণ করতে সমস্যা হয়েছে"
   },
   {
-    "id": "ent.ldap.syncronize.search_failure_size_exceeded.app_error",
-    "translation": "সাইজ লিমিট অতিক্রম হয়েছে। আপনার ম্যাক্সিমাম পেজ সাইজ সেটিংস বাড়ানোর চেষ্টা করুন। আরও বিস্তারিত জানতে https://docs.mattermost.com/onboard/ad-ldap.html#i-see-the-log-error-ldap-result-code-4-size-limit-exceeded দেখুন।"
-  },
-  {
     "id": "ent.ldap.validate_admin_filter.app_error",
     "translation": "অবৈধ AD/LDAP অ্যাডমিন ফিল্টার।"
   },
@@ -14312,10 +14220,6 @@
     "translation": "অ্যাপ ডাউনলোড করুন"
   },
   {
-    "id": "web.error.unsupported_browser.download_app_or_upgrade_browser",
-    "translation": "উন্নত অভিজ্ঞতার জন্য Mattermost অ্যাপ ডাউনলোড করুন বা একটি সাপোর্টেড ব্রাউজার ব্যবহার করুন।"
-  },
-  {
     "id": "web.error.unsupported_browser.download_the_app",
     "translation": "অ্যাপ ডাউনলোড করুন"
   },
@@ -14326,10 +14230,6 @@
   {
     "id": "web.error.unsupported_browser.install_guide.windows",
     "translation": "ইনস্টল গাইড"
-  },
-  {
-    "id": "web.error.unsupported_browser.learn_more",
-    "translation": "সাপোর্টেড ব্রাউজার সম্পর্কে আরও জানুন।"
   },
   {
     "id": "web.error.unsupported_browser.min_browser_version.chrome",

@@ -100,7 +100,7 @@ func printPanic(x any) {
 var RootCmd = &cobra.Command{
 	Use:               "amctl",
 	Short:             "Remote client for the Open Source, self-hosted Slack-alternative",
-	Long:              `Antimatter, based on Mattermost, offers workplace messaging across web, PC and phones with archiving, search and integration with your existing systems. Upstream documentation is available at https://docs.mattermost.com`,
+	Long:              `Antimatter, based on Mattermost, offers workplace messaging across web, PC and phones with archiving, search and integration with your existing systems. Documentation is available at https://antimatter.chat/docs/`,
 	DisableAutoGenTag: true,
 	PersistentPreRun: func(cmd *cobra.Command, args []string) {
 		for i, arg := range args {

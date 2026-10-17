@@ -17,7 +17,7 @@ func init() {
 const (
 	siteURLSubject     = "ServiceSettings.SiteURL"
 	siteURLConsolePath = "/admin_console/environment/web_server"
-	siteURLDocsURL     = "https://mattermost.com/pl/configure-site-url"
+	siteURLDocsURL     = "https://antimatter.chat/docs/admins/https.html#site-url"
 )
 
 var siteURLEmpty = healthcheck.Rule{

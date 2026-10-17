@@ -3281,7 +3281,7 @@ func TestConfigMarketplaceDefaults(t *testing.T) {
 	})
 
 	t.Run("Mattermost's marketplace urls are dropped", func(t *testing.T) {
-		for _, url := range []string{PluginSettingsOldMarketplaceURL, "https://api.integrations.mattermost.com"} {
+		for _, url := range []string{"https://marketplace.integrations.mattermost.com", "https://api.integrations.mattermost.com"} {
 			c := Config{}
 			c.SetDefaults()
 
@@ -4621,6 +4621,40 @@ func TestSupportSettingsMattermostLinks(t *testing.T) {
 		s := SupportSettings{HelpLink: new("https://wiki.example.com/chat")}
 		s.SetDefaults()
 		require.Equal(t, "https://wiki.example.com/chat", *s.HelpLink)
+	})
+}
+
+func TestNativeAppSettingsAntimatterDownloadLinks(t *testing.T) {
+	t.Run("a new server links to the Antimatter apps", func(t *testing.T) {
+		s := NativeAppSettings{}
+		s.SetDefaults()
+		require.Equal(t, "https://github.com/AntimatterChat/desktop-app/releases", *s.AppDownloadLink)
+		require.Equal(t, "https://github.com/AntimatterChat/mobile-app/releases", *s.AndroidAppDownloadLink)
+		require.Equal(t, "https://github.com/AntimatterChat/mobile-app/releases", *s.IosAppDownloadLink)
+	})
+
+	t.Run("the former Mattermost defaults become Antimatter's", func(t *testing.T) {
+		s := NativeAppSettings{
+			AppDownloadLink:        new("https://mattermost.com/pl/download-apps"),
+			AndroidAppDownloadLink: new("https://mattermost.com/pl/android-app/"),
+			IosAppDownloadLink:     new("https://mattermost.com/pl/ios-app/"),
+		}
+		s.SetDefaults()
+		require.Equal(t, NativeappSettingsDefaultAppDownloadLink, *s.AppDownloadLink)
+		require.Equal(t, NativeappSettingsDefaultAndroidAppDownloadLink, *s.AndroidAppDownloadLink)
+		require.Equal(t, NativeappSettingsDefaultIosAppDownloadLink, *s.IosAppDownloadLink)
+	})
+
+	t.Run("links an administrator set, or cleared, are kept", func(t *testing.T) {
+		s := NativeAppSettings{
+			AppDownloadLink:        new("https://intranet.example.com/chat-apps"),
+			AndroidAppDownloadLink: new(""),
+			IosAppDownloadLink:     new("https://apps.apple.com/app/id123"),
+		}
+		s.SetDefaults()
+		require.Equal(t, "https://intranet.example.com/chat-apps", *s.AppDownloadLink)
+		require.Equal(t, "", *s.AndroidAppDownloadLink)
+		require.Equal(t, "https://apps.apple.com/app/id123", *s.IosAppDownloadLink)
 	})
 }
 

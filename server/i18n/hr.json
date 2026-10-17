@@ -188,18 +188,6 @@
     "translation": "travanj"
   },
   {
-    "id": "api.templates.cloud_welcome_email.button",
-    "translation": "Otvori Mattermost"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.app_market_place",
-    "translation": "tržnici programa."
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.add_apps_sub_info",
-    "translation": "Optimiraj tok tvog rada pomoću alata kao što su GitHub, Jira i Zoom. Istraži sve naše integracije na"
-  },
-  {
     "id": "api.admin.ldap.not_available.app_error",
     "translation": "LDAP nije dostupan."
   },
@@ -589,7 +577,7 @@
   },
   {
     "id": "api.bot.teams_channels.add_message_mobile",
-    "translation": "Dodaj me timovima i kanalima u kojima želiš da interagiram. Za to koristi preglednik ili aplikaciju Mattermost Desktop."
+    "translation": "Dodaj me timovima i kanalima u kojima želiš da interagiram. Za to koristi preglednik ili aplikaciju Antimatter Desktop."
   },
   {
     "id": "api.channel.create_channel.direct_channel.app_error",
@@ -1824,10 +1812,6 @@
     "translation": "Greška pri dohvaćanju trenutačnog kanala."
   },
   {
-    "id": "api.command_invite.channel.error",
-    "translation": "Nije moguće pronaći kanal {{.Channel}}. Za prepoznavanje kanala koristi [oznaku kanala](https://docs.mattermost.com/messaging/managing-channels.html#naming-a-channel)."
-  },
-  {
     "id": "api.command_invite.channel_constrained_user_denied",
     "translation": "Ovim kanalom upravljaju grupe.  Ovaj korisnik nije dio grupe koja se sinkronizira s ovim kanalom."
   },
@@ -1850,10 +1834,6 @@
   {
     "id": "api.command_invite.permission.app_error",
     "translation": "Nemaš dovoljno dozvola za dodavanje korisnika {{.User}} u {{.Channel}}."
-  },
-  {
-    "id": "api.command_invite.private_channel.app_error",
-    "translation": "Nije moguće pronaći kanal {{.Channel}}. Za prepoznavanje kanala koristi [oznaku kanala](https://docs.mattermost.com/messaging/managing-channels.html#naming-a-channel)."
   },
   {
     "id": "api.command_invite.success",
@@ -1970,14 +1950,6 @@
   {
     "id": "api.command_mute.desc",
     "translation": "Isključuje obavijesti na računalu, e-mail i push obavijesti za trenutačni kanal ili navedeni [kanal]."
-  },
-  {
-    "id": "api.command_mute.error",
-    "translation": "Nije moguće pronaći kanal {{.Channel}}. Za prepoznavanje kanala koristi [oznaku kanala](https://docs.mattermost.com/messaging/managing-channels.html#naming-a-channel)."
-  },
-  {
-    "id": "api.command_mute.no_channel.error",
-    "translation": "Nije moguće pronaći navedeni kanal. Za prepoznavanje kanala koristi [oznaku kanala](https://docs.mattermost.com/messaging/managing-channels.html#naming-a-channel)."
   },
   {
     "id": "api.command_mute.success_mute",
@@ -4396,62 +4368,6 @@
     "translation": "Nije moguće pronaći korisnika."
   },
   {
-    "id": "api.templates.cloud_welcome_email.add_apps_info",
-    "translation": "Dodaj aplikacije u svoj radni prostor"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.download_mm_info",
-    "translation": "Preuzmi aplikaciju Mattermost"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.info",
-    "translation": "Hvala što si stvorio/la "
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.info2",
-    "translation": "Spremi svoju poveznicu ili je dodaj u zabilješke za buduću upotrebu."
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.invite_info",
-    "translation": "Pozovi ljude u svoj radni prostor"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.invite_sub_info",
-    "translation": "Podijeli ovu poveznicu da pozoveš svoje članove da se pridruže radnom prostoru {{.WorkSpace}}:"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.mm_apps",
-    "translation": "mobilnim i desktop aplikacijama"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.signin_sub_info",
-    "translation": "Prijavi se u svoj radni prostor u našim"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.signin_sub_info2",
-    "translation": "za najbolje iskustvo na sustavima Windows, Linux, Mac, iOS i Android."
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.start_questions",
-    "translation": "Imaš pitanja o početku rada? Piši nam na"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.subject",
-    "translation": "Čestitamo!"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.subtitle",
-    "translation": "Postavi svoj radni prostor"
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.subtitle_info",
-    "translation": "Slijedi ove korake da izgradiš svoje timove i izvučeš najviše iz svog radnog prostora."
-  },
-  {
-    "id": "api.templates.cloud_welcome_email.title",
-    "translation": "Tvoj radni prostor je spreman!"
-  },
-  {
     "id": "api.templates.deactivate_body.info",
     "translation": "Deaktivirao/la si svoj račun na {{ .SiteURL }}."
   },
@@ -5049,7 +4965,7 @@
   },
   {
     "id": "api.user.delete_channel.not_enabled.for_admin.app_error",
-    "translation": "Značajka trajnog brisanja kanala nije uključena. Za korištenje ove naredbe postavka ServiceSettings.EnableAPIChannelDeletion mora biti postavljena na true. Za više informacija pogledaj https://mattermost.com/pl/environment-configuration-settings"
+    "translation": "Značajka trajnog brisanja kanala nije uključena. Za korištenje ove naredbe postavka ServiceSettings.EnableAPIChannelDeletion mora biti postavljena na true. Za više informacija pogledaj https://antimatter.chat/docs/admins/configuration.html"
   },
   {
     "id": "api.user.delete_team.not_enabled.app_error",
@@ -5057,7 +4973,7 @@
   },
   {
     "id": "api.user.delete_team.not_enabled.for_admin.app_error",
-    "translation": "Značajka trajnog brisanja timova nije uključena. Za korištenje ove naredbe postavka ServiceSettings.EnableAPITeamDeletion mora biti postavljena na true. Za više informacija pogledaj https://mattermost.com/pl/environment-configuration-settings."
+    "translation": "Značajka trajnog brisanja timova nije uključena. Za korištenje ove naredbe postavka ServiceSettings.EnableAPITeamDeletion mora biti postavljena na true. Za više informacija pogledaj https://antimatter.chat/docs/admins/configuration.html."
   },
   {
     "id": "api.user.delete_user.not_enabled.app_error",
@@ -5065,7 +4981,7 @@
   },
   {
     "id": "api.user.delete_user.not_enabled.for_admin.app_error",
-    "translation": "Značajka trajnog brisanja korisnika nije uključena. Za korištenje ove naredbe postavka ServiceSettings.EnableAPIUserDeletion mora biti postavljena na true. Za više informacija pogledaj https://mattermost.com/pl/environment-configuration-settings."
+    "translation": "Značajka trajnog brisanja korisnika nije uključena. Za korištenje ove naredbe postavka ServiceSettings.EnableAPIUserDeletion mora biti postavljena na true. Za više informacija pogledaj https://antimatter.chat/docs/admins/configuration.html."
   },
   {
     "id": "api.user.demote_user_to_guest.already_guest.app_error",
@@ -5338,10 +5254,6 @@
   {
     "id": "api.user.saml.relay_state_too_long.app_error",
     "translation": "SAML relay state je predugačak."
-  },
-  {
-    "id": "api.user.send_cloud_welcome_email.error",
-    "translation": "Slanje e-maila dobrodošlice za Cloud nije uspjelo"
   },
   {
     "id": "api.user.send_deactivate_email_and_forget.failed.error",
@@ -5737,7 +5649,7 @@
   },
   {
     "id": "app.bot.get_disable_bot_sysadmin_message",
-    "translation": "{{if .disableBotsSetting}}{{if .printAllBots}}{{.UserName}} je deaktiviran/a. Upravljao/la je sljedećim računima botova koji su sada isključeni.\n\n{{.BotNames}}{{else}}{{.UserName}} je deaktiviran/a. Upravljao/la je s {{.NumBots}} računa botova koji su sada isključeni, uključujući sljedeće:\n\n{{.BotNames}}{{end}}Vlasništvo nad svakim botom možeš preuzeti tako da ga uključiš pod **Integracije > Računi botova** i stvoriš nove tokene za bota.\n\nZa više informacija pogledaj našu [dokumentaciju](https://docs.mattermost.com/developer/bot-accounts.html#what-happens-when-a-user-who-owns-bot-accounts-is-disabled).{{else}}{{if .printAllBots}}{{.UserName}} je deaktiviran/a. Upravljao/la je sljedećim računima botova koji su i dalje uključeni.\n\n{{.BotNames}}\n{{else}}{{.UserName}} je deaktiviran/a. Upravljao/la je s {{.NumBots}} računa botova koji su i dalje uključeni, uključujući sljedeće:\n\n{{.BotNames}}{{end}}Toplo preporučujemo da preuzmeš vlasništvo nad svakim botom tako da ga ponovno uključiš pod **Integracije > Računi botova** i stvoriš nove tokene za bota.\n\nZa više informacija pogledaj našu [dokumentaciju](https://docs.mattermost.com/developer/bot-accounts.html#what-happens-when-a-user-who-owns-bot-accounts-is-disabled).\n\nAko želiš da se računi botova automatski isključe nakon deaktivacije vlasnika, postavi „Isključi račune botova kad je vlasnik deaktiviran” u **Konzola sustava > Integracije > Računi botova** na true.{{end}}"
+    "translation": "{{if .disableBotsSetting}}{{if .printAllBots}}{{.UserName}} je deaktiviran/a. Upravljao/la je sljedećim računima botova koji su sada isključeni.\n\n{{.BotNames}}{{else}}{{.UserName}} je deaktiviran/a. Upravljao/la je s {{.NumBots}} računa botova koji su sada isključeni, uključujući sljedeće:\n\n{{.BotNames}}{{end}}Vlasništvo nad svakim botom možeš preuzeti tako da ga uključiš pod **Integracije > Računi botova** i stvoriš nove tokene za bota.\n\nZa više informacija pogledaj našu [dokumentaciju](https://antimatter.chat/docs/developers/bots.html#enable).{{else}}{{if .printAllBots}}{{.UserName}} je deaktiviran/a. Upravljao/la je sljedećim računima botova koji su i dalje uključeni.\n\n{{.BotNames}}\n{{else}}{{.UserName}} je deaktiviran/a. Upravljao/la je s {{.NumBots}} računa botova koji su i dalje uključeni, uključujući sljedeće:\n\n{{.BotNames}}{{end}}Toplo preporučujemo da preuzmeš vlasništvo nad svakim botom tako da ga ponovno uključiš pod **Integracije > Računi botova** i stvoriš nove tokene za bota.\n\nZa više informacija pogledaj našu [dokumentaciju](https://antimatter.chat/docs/developers/bots.html#enable).\n\nAko želiš da se računi botova automatski isključe nakon deaktivacije vlasnika, postavi „Isključi račune botova kad je vlasnik deaktiviran” u **Konzola sustava > Integracije > Računi botova** na true.{{end}}"
   },
   {
     "id": "app.bot.get_system_bot.empty_admin_list.app_error",
@@ -11188,10 +11100,6 @@
     "translation": "Pretraživanje korisnika u AD/LDAP-u nije uspjelo. Provjeri može li se Mattermost server povezati s tvojim AD/LDAP serverom i pokušaj ponovno."
   },
   {
-    "id": "ent.ldap.syncronize.search_failure_size_exceeded.app_error",
-    "translation": "Premašeno je ograničenje veličine. Pokušaj povećati postavku „Maksimalna veličina stranice”. Za više pojedinosti pogledaj https://docs.mattermost.com/onboard/ad-ldap.html#i-see-the-log-error-ldap-result-code-4-size-limit-exceeded"
-  },
-  {
     "id": "ent.ldap.update_cpa.empty_attribute",
     "translation": "Prazna vrijednost LDAP atributa"
   },
@@ -14476,10 +14384,6 @@
     "translation": "Preuzmi aplikaciju"
   },
   {
-    "id": "web.error.unsupported_browser.download_app_or_upgrade_browser",
-    "translation": "Za bolje iskustvo preuzmi Mattermost aplikaciju ili koristi podržani preglednik."
-  },
-  {
     "id": "web.error.unsupported_browser.download_the_app",
     "translation": "Preuzmi aplikaciju"
   },
@@ -14490,10 +14394,6 @@
   {
     "id": "web.error.unsupported_browser.install_guide.windows",
     "translation": "Vodič za instalaciju"
-  },
-  {
-    "id": "web.error.unsupported_browser.learn_more",
-    "translation": "Saznaj više o podržanim preglednicima."
   },
   {
     "id": "web.error.unsupported_browser.no_longer_support_version",
