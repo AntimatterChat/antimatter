@@ -58,6 +58,7 @@ import LongBody from './long_body';
 import {useMentionClick} from './mention_click';
 import {useConcernsMe} from './mentions';
 import MessageMenu from './message_menu';
+import MovedNote from './moved_note';
 import {OnTopTag} from './on_top';
 import Reactions from './reactions';
 import ReplyRef from './reply_ref';
@@ -90,7 +91,13 @@ function SystemLine({post}: {post: Post}) {
         icon = 'user-plus';
     } else if (post.type === Posts.POST_TYPES.HEADER_CHANGE || post.type === Posts.POST_TYPES.DISPLAYNAME_CHANGE || post.type === Posts.POST_TYPES.PURPOSE_CHANGE) {
         icon = 'pen';
+    } else if (post.type === Posts.POST_TYPES.WRANGLER) {
+        icon = 'forward';
     }
+
+    // A moved thread's pointer and note: one line of text with the channel as a link, without a preview of the
+    // linked message under it.
+    const moved = post.type === Posts.POST_TYPES.WRANGLER;
     return (
         <div
             className={am('msg', 'sysline')}
@@ -98,12 +105,14 @@ function SystemLine({post}: {post: Post}) {
         >
             <span className={am('sys-ic')}><Icon name={icon}/></span>
             <span className={am('body')}>
-                <MessageWithAdditionalContent
-                    post={post}
-                    pluginPostTypes={pluginPostTypes}
-                    isRHS={false}
-                    isChannelAutotranslated={false}
-                />
+                {moved ? <MovedNote post={post}/> : (
+                    <MessageWithAdditionalContent
+                        post={post}
+                        pluginPostTypes={pluginPostTypes}
+                        isRHS={false}
+                        isChannelAutotranslated={false}
+                    />
+                )}
             </span>
             <MessageTime timestamp={post.create_at}/>
         </div>

@@ -25367,6 +25367,18 @@
     "defaultMessage": "Mod view",
     "description": ""
   },
+  "fusion.moved.anotherChannel": {
+    "defaultMessage": "another channel",
+    "description": "Stands for a private channel the reader can't see, in 'A thread … has been moved to another channel' and 'This thread was moved from another channel'; it is a link."
+  },
+  "fusion.moved.from": {
+    "defaultMessage": "This thread was moved from {channel}",
+    "description": "System line in the channel a thread was moved to; {channel} is a link showing where it came from (#name, or 'another channel')."
+  },
+  "fusion.moved.to": {
+    "defaultMessage": "{count, plural, one {A message has been moved to {channel}} other {A thread with # messages has been moved to {channel}}}",
+    "description": "System line left where a thread was moved from; {channel} is a link showing the channel it went to (#name, or 'another channel'); # is the number of messages."
+  },
   "fusion.msgLink.message": {
     "defaultMessage": "Message",
     "description": ""
