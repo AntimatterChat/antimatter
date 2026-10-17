@@ -77,6 +77,9 @@ body.app__body #root.am-root > .am-root-main {
   pre code { padding: 0; background: none; }
   a { color: var(--am-anti); }
   .mention-link, .mention--highlight { color: var(--am-matter); background: var(--am-matter-soft); padding: 0 3px; border-radius: 4px; font-weight: 600; }
+  // A mention of you is a link inside a highlight: only the highlight draws, or the two translucent boxes of different
+  // widths overlap into a darker middle with lighter edges.
+  .mention--highlight .mention-link { background: none; padding: 0; border-radius: 0; }
   // The classic emoticon is an inline-flex box: its baseline is that of the hidden :name: text, so only middle keeps it
   // on the line; middle centres it on the lower-case letters, a little low next to capitals: it's raised to centre on
   // the text.

@@ -31,7 +31,7 @@ import {canPopout, popoutThread} from 'utils/popouts/popout_windows';
 import type {GlobalState} from 'types/store';
 
 import ThreadMenu from './thread_menu';
-import {ThreadSuggestion, ThreadToChannelDialog} from './thread_to';
+import {ThreadToChannelDialog} from './thread_to';
 import type {ThreadConversion} from './thread_to';
 
 // ThreadPanel shows a thread in the right-hand panel: the first message, its replies, and a composer.
@@ -47,6 +47,14 @@ export default function ThreadPanel({rootId, inWindow = false}: {rootId: string;
     const me = useSelector(getCurrentUserId);
     const team = useSelector(getCurrentTeam);
     const expanded = useSelector(getIsRhsExpanded);
+
+    // The thread view has no expand button: a panel left expanded (by an older version, or the search results) goes
+    // back to its width, which the person can still drag.
+    useEffect(() => {
+        if (expanded) {
+            dispatch(toggleRhsExpanded());
+        }
+    }, [expanded, dispatch]);
     const bodyRef = useRef<HTMLDivElement>(null);
     const menuRef = useRef<HTMLButtonElement>(null);
     const [menu, setMenu] = useState(false);
@@ -157,20 +165,6 @@ export default function ThreadPanel({rootId, inWindow = false}: {rootId: string;
                 {!inWindow && (
                     <button
                         className={am('icon-btn')}
-                        aria-pressed={expanded}
-                        title={expanded ? formatMessage({id: 'fusion.thread.collapse', defaultMessage: 'Collapse the panel'}) : formatMessage({id: 'fusion.thread.expand', defaultMessage: 'Expand the panel'})}
-                        aria-label={expanded ? formatMessage({id: 'fusion.thread.collapse', defaultMessage: 'Collapse the panel'}) : formatMessage({id: 'fusion.thread.expand', defaultMessage: 'Expand the panel'})}
-                        onClick={() => dispatch(toggleRhsExpanded())}
-                    >
-                        <Icon
-                            name='expand'
-                            size='sm'
-                        />
-                    </button>
-                )}
-                {!inWindow && (
-                    <button
-                        className={am('icon-btn')}
                         title={formatMessage({id: 'fusion.rhs.close', defaultMessage: 'Close'})}
                         aria-label={formatMessage({id: 'fusion.thread.close', defaultMessage: 'Close thread'})}
                         onClick={() => dispatch(closeRightHandSide())}
@@ -207,11 +201,6 @@ export default function ThreadPanel({rootId, inWindow = false}: {rootId: string;
                 <Message
                     postId={rootId}
                     inThread={true}
-                />
-                <ThreadSuggestion
-                    root={root}
-                    replyCount={replies.length}
-                    onConvert={setConverting}
                 />
                 <div className={am('replies-sep')}>
                     {formatMessage({id: 'fusion.thread.replies', defaultMessage: '{count, plural, one {# reply} other {# replies}}'}, {count: replies.length})}

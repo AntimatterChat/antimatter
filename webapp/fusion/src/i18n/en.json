@@ -28535,14 +28535,6 @@
     "defaultMessage": "Close thread",
     "description": ""
   },
-  "fusion.thread.collapse": {
-    "defaultMessage": "Collapse the panel",
-    "description": ""
-  },
-  "fusion.thread.expand": {
-    "defaultMessage": "Expand the panel",
-    "description": ""
-  },
   "fusion.thread.following": {
     "defaultMessage": "Following",
     "description": ""
@@ -28602,18 +28594,6 @@
   "fusion.threadMenu.moreLabel": {
     "defaultMessage": "More thread actions",
     "description": ""
-  },
-  "fusion.threadTo.channel": {
-    "defaultMessage": "Make it a channel",
-    "description": "Button in the thread view: starts a new channel carrying on the thread's conversation."
-  },
-  "fusion.threadTo.lead": {
-    "defaultMessage": "Worth its own space?",
-    "description": "Short prompt in the thread view, before the buttons 'Make it a topic' and 'Make it a channel', inviting to give the conversation a space of its own."
-  },
-  "fusion.threadTo.topic": {
-    "defaultMessage": "Make it a topic",
-    "description": "Button in the thread view: names the thread to make it a topic (Antimatter's named conversation inside a channel)."
   },
   "fusion.threadToChannel.create": {
     "defaultMessage": "Create the channel",

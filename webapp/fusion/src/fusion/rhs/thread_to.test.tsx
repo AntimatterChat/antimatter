@@ -15,7 +15,7 @@ import {TestHelper} from 'utils/test_helper';
 
 import type {GlobalState} from 'types/store';
 
-import {canMoveThread, canMoveThreadTo, ThreadSuggestion, ThreadToChannelDialog} from './thread_to';
+import {canMoveThread, canMoveThreadTo, ThreadToChannelDialog} from './thread_to';
 
 jest.mock('mattermost-redux/actions/channels', () => ({
     ...jest.requireActual('mattermost-redux/actions/channels'),
@@ -77,95 +77,6 @@ function state({teamPermissions = ['create_public_channel', 'create_private_chan
         },
     } as never;
 }
-
-describe('fusion/rhs/ThreadSuggestion', () => {
-    test('proposes to make a thread with replies a topic or a channel', async () => {
-        const onConvert = jest.fn();
-        renderWithContext(
-            <ThreadSuggestion
-                root={root}
-                replyCount={2}
-                onConvert={onConvert}
-            />,
-            state(),
-        );
-        await userEvent.click(screen.getByRole('button', {name: 'Make it a topic'}));
-        expect(onConvert).toHaveBeenLastCalledWith('topic');
-        await userEvent.click(screen.getByRole('button', {name: 'Make it a channel'}));
-        expect(onConvert).toHaveBeenLastCalledWith('channel');
-    });
-
-    test('offers only a channel to who may not edit the first message', () => {
-        renderWithContext(
-            <ThreadSuggestion
-                root={root}
-                replyCount={2}
-                onConvert={jest.fn()}
-            />,
-            state({channelPermissions: []}),
-        );
-        expect(screen.queryByRole('button', {name: 'Make it a topic'})).not.toBeInTheDocument();
-        expect(screen.getByRole('button', {name: 'Make it a channel'})).toBeInTheDocument();
-    });
-
-    test('offers only a topic to who may not create channels', () => {
-        renderWithContext(
-            <ThreadSuggestion
-                root={root}
-                replyCount={2}
-                onConvert={jest.fn()}
-            />,
-            state({teamPermissions: []}),
-        );
-        expect(screen.getByRole('button', {name: 'Make it a topic'})).toBeInTheDocument();
-        expect(screen.queryByRole('button', {name: 'Make it a channel'})).not.toBeInTheDocument();
-    });
-
-    test('stays away from topics, threads without replies, and direct messages', () => {
-        const topic = {...root, id: 'topic', props: {am_thread_title: 'Beam test'}};
-        const {rerender} = renderWithContext(
-            <ThreadSuggestion
-                root={topic}
-                replyCount={2}
-                onConvert={jest.fn()}
-            />,
-            state({posts: [topic]}),
-        );
-        expect(screen.queryByRole('note')).not.toBeInTheDocument();
-
-        rerender(
-            <ThreadSuggestion
-                root={root}
-                replyCount={0}
-                onConvert={jest.fn()}
-            />,
-        );
-        expect(screen.queryByRole('note')).not.toBeInTheDocument();
-
-        rerender(
-            <ThreadSuggestion
-                root={{...root, id: 'dmroot', channel_id: 'dm', user_id: 'bob'}}
-                replyCount={2}
-                onConvert={jest.fn()}
-            />,
-        );
-        expect(screen.queryByRole('note')).not.toBeInTheDocument();
-    });
-
-    test('can be dismissed', async () => {
-        const other = {...root, id: 'other'};
-        renderWithContext(
-            <ThreadSuggestion
-                root={other}
-                replyCount={1}
-                onConvert={jest.fn()}
-            />,
-            state({posts: [other]}),
-        );
-        await userEvent.click(screen.getByRole('button', {name: 'Dismiss'}));
-        expect(screen.queryByRole('note')).not.toBeInTheDocument();
-    });
-});
 
 describe('fusion/rhs/ThreadToChannelDialog', () => {
     beforeEach(() => {

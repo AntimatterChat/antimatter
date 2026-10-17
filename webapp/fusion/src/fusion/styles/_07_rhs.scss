@@ -125,7 +125,3 @@
 :is(.am-app, .am-layer) .am-timeout-durations { display: flex; flex-wrap: wrap; gap: 8px; margin: 4px 0 12px; }
 
 /* The thread view's proposal to make a thread a topic or a channel. */
-:is(.am-app, .am-layer) .am-thread-to { display: flex; align-items: center; gap: 8px; margin: 8px 16px; padding: 6px 8px 6px 12px; border-radius: 10px; background: var(--am-raise-2); color: var(--am-text-2); font-size: 13px; }
-:is(.am-app, .am-layer) .am-thread-to .am-grow { flex: 1; min-width: 0; }
-:is(.am-app, .am-layer) .am-thread-to-btn { flex: none; padding: 4px 10px; border-radius: 7px; font-size: 12.5px; font-weight: 600; color: var(--am-anti); }
-:is(.am-app, .am-layer) .am-thread-to-btn:hover { background: var(--am-hover); color: var(--am-text); }
