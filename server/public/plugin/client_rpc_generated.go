@@ -11,6 +11,7 @@ import (
 	"log"
 
 	saml2 "github.com/mattermost/gosaml2"
+	"github.com/mattermost/mattermost/server/public/ai"
 	"github.com/mattermost/mattermost/server/public/model"
 	"github.com/mattermost/mattermost/server/public/shared/mlog"
 )
@@ -9808,6 +9809,165 @@ func (s *apiRPCServer) GetAccessControlVisualAST(args *Z_GetAccessControlVisualA
 		returns.A, returns.B = hook.GetAccessControlVisualAST(args.A, args.B, args.C)
 	} else {
 		return encodableError(fmt.Errorf("API GetAccessControlVisualAST called but not implemented."))
+	}
+	return nil
+}
+
+type Z_AIChatArgs struct {
+	A string
+	B string
+	C string
+	D *ai.ChatRequest
+}
+
+type Z_AIChatReturns struct {
+	A *ai.ChatResponse
+	B *model.AppError
+}
+
+func (g *apiRPCClient) AIChat(actingUserID, channelID, teamID string, request *ai.ChatRequest) (*ai.ChatResponse, *model.AppError) {
+	_args := &Z_AIChatArgs{actingUserID, channelID, teamID, request}
+	_returns := &Z_AIChatReturns{}
+	if err := g.client.Call("Plugin.AIChat", _args, _returns); err != nil {
+		log.Printf("RPC call to AIChat API failed: %s", err.Error())
+	}
+	return _returns.A, _returns.B
+}
+
+func (s *apiRPCServer) AIChat(args *Z_AIChatArgs, returns *Z_AIChatReturns) error {
+	if hook, ok := s.impl.(interface {
+		AIChat(actingUserID, channelID, teamID string, request *ai.ChatRequest) (*ai.ChatResponse, *model.AppError)
+	}); ok {
+		returns.A, returns.B = hook.AIChat(args.A, args.B, args.C, args.D)
+	} else {
+		return encodableError(fmt.Errorf("API AIChat called but not implemented."))
+	}
+	return nil
+}
+
+type Z_AIEmbedArgs struct {
+	A string
+	B string
+	C string
+	D *ai.EmbedRequest
+}
+
+type Z_AIEmbedReturns struct {
+	A *ai.EmbedResponse
+	B *model.AppError
+}
+
+func (g *apiRPCClient) AIEmbed(actingUserID, channelID, teamID string, request *ai.EmbedRequest) (*ai.EmbedResponse, *model.AppError) {
+	_args := &Z_AIEmbedArgs{actingUserID, channelID, teamID, request}
+	_returns := &Z_AIEmbedReturns{}
+	if err := g.client.Call("Plugin.AIEmbed", _args, _returns); err != nil {
+		log.Printf("RPC call to AIEmbed API failed: %s", err.Error())
+	}
+	return _returns.A, _returns.B
+}
+
+func (s *apiRPCServer) AIEmbed(args *Z_AIEmbedArgs, returns *Z_AIEmbedReturns) error {
+	if hook, ok := s.impl.(interface {
+		AIEmbed(actingUserID, channelID, teamID string, request *ai.EmbedRequest) (*ai.EmbedResponse, *model.AppError)
+	}); ok {
+		returns.A, returns.B = hook.AIEmbed(args.A, args.B, args.C, args.D)
+	} else {
+		return encodableError(fmt.Errorf("API AIEmbed called but not implemented."))
+	}
+	return nil
+}
+
+type Z_AITranscribeArgs struct {
+	A string
+	B string
+	C string
+	D *ai.TranscribeRequest
+}
+
+type Z_AITranscribeReturns struct {
+	A *ai.TranscribeResponse
+	B *model.AppError
+}
+
+func (g *apiRPCClient) AITranscribe(actingUserID, channelID, teamID string, request *ai.TranscribeRequest) (*ai.TranscribeResponse, *model.AppError) {
+	_args := &Z_AITranscribeArgs{actingUserID, channelID, teamID, request}
+	_returns := &Z_AITranscribeReturns{}
+	if err := g.client.Call("Plugin.AITranscribe", _args, _returns); err != nil {
+		log.Printf("RPC call to AITranscribe API failed: %s", err.Error())
+	}
+	return _returns.A, _returns.B
+}
+
+func (s *apiRPCServer) AITranscribe(args *Z_AITranscribeArgs, returns *Z_AITranscribeReturns) error {
+	if hook, ok := s.impl.(interface {
+		AITranscribe(actingUserID, channelID, teamID string, request *ai.TranscribeRequest) (*ai.TranscribeResponse, *model.AppError)
+	}); ok {
+		returns.A, returns.B = hook.AITranscribe(args.A, args.B, args.C, args.D)
+	} else {
+		return encodableError(fmt.Errorf("API AITranscribe called but not implemented."))
+	}
+	return nil
+}
+
+type Z_AIDecideArgs struct {
+	A string
+	B string
+	C string
+	D *ai.DecideRequest
+}
+
+type Z_AIDecideReturns struct {
+	A *ai.DecideResponse
+	B *model.AppError
+}
+
+func (g *apiRPCClient) AIDecide(actingUserID, channelID, teamID string, request *ai.DecideRequest) (*ai.DecideResponse, *model.AppError) {
+	_args := &Z_AIDecideArgs{actingUserID, channelID, teamID, request}
+	_returns := &Z_AIDecideReturns{}
+	if err := g.client.Call("Plugin.AIDecide", _args, _returns); err != nil {
+		log.Printf("RPC call to AIDecide API failed: %s", err.Error())
+	}
+	return _returns.A, _returns.B
+}
+
+func (s *apiRPCServer) AIDecide(args *Z_AIDecideArgs, returns *Z_AIDecideReturns) error {
+	if hook, ok := s.impl.(interface {
+		AIDecide(actingUserID, channelID, teamID string, request *ai.DecideRequest) (*ai.DecideResponse, *model.AppError)
+	}); ok {
+		returns.A, returns.B = hook.AIDecide(args.A, args.B, args.C, args.D)
+	} else {
+		return encodableError(fmt.Errorf("API AIDecide called but not implemented."))
+	}
+	return nil
+}
+
+type Z_AIConnectionsForUserArgs struct {
+	A string
+	B string
+	C string
+}
+
+type Z_AIConnectionsForUserReturns struct {
+	A []*model.AIConnectionInfo
+	B *model.AppError
+}
+
+func (g *apiRPCClient) AIConnectionsForUser(userID, channelID, teamID string) ([]*model.AIConnectionInfo, *model.AppError) {
+	_args := &Z_AIConnectionsForUserArgs{userID, channelID, teamID}
+	_returns := &Z_AIConnectionsForUserReturns{}
+	if err := g.client.Call("Plugin.AIConnectionsForUser", _args, _returns); err != nil {
+		log.Printf("RPC call to AIConnectionsForUser API failed: %s", err.Error())
+	}
+	return _returns.A, _returns.B
+}
+
+func (s *apiRPCServer) AIConnectionsForUser(args *Z_AIConnectionsForUserArgs, returns *Z_AIConnectionsForUserReturns) error {
+	if hook, ok := s.impl.(interface {
+		AIConnectionsForUser(userID, channelID, teamID string) ([]*model.AIConnectionInfo, *model.AppError)
+	}); ok {
+		returns.A, returns.B = hook.AIConnectionsForUser(args.A, args.B, args.C)
+	} else {
+		return encodableError(fmt.Errorf("API AIConnectionsForUser called but not implemented."))
 	}
 	return nil
 }

@@ -11,6 +11,7 @@ import (
 	"net/http"
 	timePkg "time"
 
+	"github.com/mattermost/mattermost/server/public/ai"
 	"github.com/mattermost/mattermost/server/public/model"
 	"github.com/mattermost/mattermost/server/public/shared/mlog"
 )
@@ -1858,5 +1859,47 @@ func (api *apiTimerLayer) GetAccessControlVisualAST(actingUserID, resourceType, 
 	startTime := timePkg.Now()
 	_returnsA, _returnsB := api.apiImpl.GetAccessControlVisualAST(actingUserID, resourceType, expression)
 	api.recordTime(startTime, "GetAccessControlVisualAST", _returnsB == nil)
+	return _returnsA, _returnsB
+}
+
+func (api *apiTimerLayer) AIChat(actingUserID, channelID, teamID string, request *ai.ChatRequest) (*ai.ChatResponse, *model.AppError) {
+	startTime := timePkg.Now()
+	_returnsA, _returnsB := api.apiImpl.AIChat(actingUserID, channelID, teamID, request)
+	api.recordTime(startTime, "AIChat", _returnsB == nil)
+	return _returnsA, _returnsB
+}
+
+func (api *apiTimerLayer) AIChatStream(actingUserID, channelID, teamID string, request *ai.ChatRequest) (*ai.Stream, *model.AppError) {
+	startTime := timePkg.Now()
+	_returnsA, _returnsB := api.apiImpl.AIChatStream(actingUserID, channelID, teamID, request)
+	api.recordTime(startTime, "AIChatStream", _returnsB == nil)
+	return _returnsA, _returnsB
+}
+
+func (api *apiTimerLayer) AIEmbed(actingUserID, channelID, teamID string, request *ai.EmbedRequest) (*ai.EmbedResponse, *model.AppError) {
+	startTime := timePkg.Now()
+	_returnsA, _returnsB := api.apiImpl.AIEmbed(actingUserID, channelID, teamID, request)
+	api.recordTime(startTime, "AIEmbed", _returnsB == nil)
+	return _returnsA, _returnsB
+}
+
+func (api *apiTimerLayer) AITranscribe(actingUserID, channelID, teamID string, request *ai.TranscribeRequest) (*ai.TranscribeResponse, *model.AppError) {
+	startTime := timePkg.Now()
+	_returnsA, _returnsB := api.apiImpl.AITranscribe(actingUserID, channelID, teamID, request)
+	api.recordTime(startTime, "AITranscribe", _returnsB == nil)
+	return _returnsA, _returnsB
+}
+
+func (api *apiTimerLayer) AIDecide(actingUserID, channelID, teamID string, request *ai.DecideRequest) (*ai.DecideResponse, *model.AppError) {
+	startTime := timePkg.Now()
+	_returnsA, _returnsB := api.apiImpl.AIDecide(actingUserID, channelID, teamID, request)
+	api.recordTime(startTime, "AIDecide", _returnsB == nil)
+	return _returnsA, _returnsB
+}
+
+func (api *apiTimerLayer) AIConnectionsForUser(userID, channelID, teamID string) ([]*model.AIConnectionInfo, *model.AppError) {
+	startTime := timePkg.Now()
+	_returnsA, _returnsB := api.apiImpl.AIConnectionsForUser(userID, channelID, teamID)
+	api.recordTime(startTime, "AIConnectionsForUser", _returnsB == nil)
 	return _returnsA, _returnsB
 }
