@@ -53,6 +53,7 @@ func GetMockStoreForSetupFunctions() *mocks.Store {
 	systemStore.On("GetByName", "AntimatterAdministratorRolesMigrationComplete").Return(&model.System{Name: "AntimatterAdministratorRolesMigrationComplete", Value: "true"}, nil)
 	systemStore.On("GetByName", "AntimatterMaxUsersPerTeamUnlimitedMigrationComplete").Return(&model.System{Name: "AntimatterMaxUsersPerTeamUnlimitedMigrationComplete", Value: "true"}, nil)
 	systemStore.On("GetByName", "AntimatterCommunityKindsMigrationComplete").Return(&model.System{Name: "AntimatterCommunityKindsMigrationComplete", Value: "true"}, nil)
+	systemStore.On("GetByName", "AntimatterAIConnectionsFromAgentsMigrationComplete").Return(&model.System{Name: "AntimatterAIConnectionsFromAgentsMigrationComplete", Value: "true"}, nil)
 	systemStore.On("GetByName", model.MigrationKeyEmojiPermissionsSplit).Return(&model.System{Name: model.MigrationKeyEmojiPermissionsSplit, Value: "true"}, nil)
 	systemStore.On("GetByName", model.MigrationKeyWebhookPermissionsSplit).Return(&model.System{Name: model.MigrationKeyWebhookPermissionsSplit, Value: "true"}, nil)
 	systemStore.On("GetByName", model.MigrationKeyIntegrationsOwnPermissions).Return(&model.System{Name: model.MigrationKeyIntegrationsOwnPermissions, Value: "true"}, nil)
@@ -115,6 +116,7 @@ func GetMockStoreForSetupFunctions() *mocks.Store {
 	systemStore.On("GetByName", model.MigrationRemoveImportTeamPermission).Return(&model.System{Name: model.MigrationRemoveImportTeamPermission, Value: "true"}, nil)
 	systemStore.On("GetByName", model.MigrationKeyAddAIRecapsPermissions).Return(&model.System{Name: model.MigrationKeyAddAIRecapsPermissions, Value: "true"}, nil)
 	systemStore.On("GetByName", model.MigrationKeyAntimatterChannelArchiveRights).Return(&model.System{Name: model.MigrationKeyAntimatterChannelArchiveRights, Value: "true"}, nil)
+	systemStore.On("GetByName", model.MigrationKeyAntimatterAIConnectionPermissions).Return(&model.System{Name: model.MigrationKeyAntimatterAIConnectionPermissions, Value: "true"}, nil)
 
 	systemStore.On("InsertIfExists", mock.AnythingOfType("*model.System")).Return(&model.System{}, nil).Once()
 	systemStore.On("Save", mock.AnythingOfType("*model.System")).Return(nil)

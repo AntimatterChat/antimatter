@@ -64,6 +64,7 @@ type Store interface {
 	ServerCategory() ServerCategoryStore
 	Moderation() ModerationStore
 	OnTopPost() OnTopPostStore
+	AIConnection() AIConnectionStore
 	ChannelOverride() ChannelOverrideStore
 	MarkSystemRanUnitTests()
 	Close()
@@ -1165,6 +1166,33 @@ type OnTopPostStore interface {
 	// Delete takes a message off the top; ErrNotFound when it wasn't there.
 	Delete(rctx request.CTX, postID string) error
 	DeleteForChannel(rctx request.CTX, channelID string) error
+}
+
+// AIConnectionStore keeps the model connections (Antimatter), with their keys sealed by the app, and their usage.
+type AIConnectionStore interface {
+	Save(rctx request.CTX, connection *model.AIConnection) (*model.AIConnection, error)
+	Update(rctx request.CTX, connection *model.AIConnection) (*model.AIConnection, error)
+	// Get gives a connection, deleted or not.
+	Get(rctx request.CTX, id string) (*model.AIConnection, error)
+	// GetForScopes gives the connections, not deleted, of the scopes ("server" and team IDs), by name.
+	GetForScopes(rctx request.CTX, scopes []string) ([]*model.AIConnection, error)
+	// GetAll gives every connection not deleted, by scope and name.
+	GetAll(rctx request.CTX) ([]*model.AIConnection, error)
+	// Delete marks a connection deleted and forgets its sealed key and headers.
+	Delete(rctx request.CTX, id string, deleteAt int64) error
+
+	// AddUsage adds requests and tokens to a connection's usage of a day, for a person and purpose.
+	AddUsage(rctx request.CTX, usage *model.AIUsage) error
+	// GetUsageTotals adds up a connection's usage since a day (20261001).
+	GetUsageTotals(rctx request.CTX, connectionID string, sinceDay int) (model.AIUsageTotals, error)
+	// GetUserUsageTotals adds up a person's usage of a connection since a day.
+	GetUserUsageTotals(rctx request.CTX, connectionID, userID string, sinceDay int) (model.AIUsageTotals, error)
+	// GetUsage lists a connection's usage rows since a day, by day.
+	GetUsage(rctx request.CTX, connectionID string, sinceDay int) ([]*model.AIUsage, error)
+
+	// GetAgentsPluginConfig gives the active configuration (JSON) of the Agents plugin, from its own table
+	// Agents_ConfigHistory: only the row marked active, never the history. "" when the table or the row is missing.
+	GetAgentsPluginConfig(rctx request.CTX) (string, error)
 }
 
 // ServerCategoryStore keeps the sidebar categories admins set up for everyone in a team (Antimatter).

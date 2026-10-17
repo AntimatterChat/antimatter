@@ -491,3 +491,7 @@ channels/db/migrations/postgres/1000013_antimatter_add_isteam_to_usergroups.down
 channels/db/migrations/postgres/1000013_antimatter_add_isteam_to_usergroups.up.sql
 channels/db/migrations/postgres/1000014_antimatter_create_ontopposts.down.sql
 channels/db/migrations/postgres/1000014_antimatter_create_ontopposts.up.sql
+channels/db/migrations/postgres/1000015_antimatter_create_aiconnections.down.sql
+channels/db/migrations/postgres/1000015_antimatter_create_aiconnections.up.sql
+channels/db/migrations/postgres/1000016_antimatter_create_aiusage.down.sql
+channels/db/migrations/postgres/1000016_antimatter_create_aiusage.up.sql
