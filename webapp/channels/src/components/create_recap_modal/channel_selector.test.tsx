@@ -136,7 +136,7 @@ describe('ChannelSelector', () => {
             renderWithContext(<ChannelSelector {...defaultProps}/>);
 
             const searchInput = screen.getByPlaceholderText('Search and select channels');
-            await userEvent.type(searchInput, 'Town');
+            await userEvent.type(searchInput, 'Gen');
 
             expect(screen.getByText('General')).toBeInTheDocument();
             expect(screen.queryByText('Off-Topic')).not.toBeInTheDocument();

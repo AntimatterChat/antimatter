@@ -1605,8 +1605,9 @@ describe('Selectors.Channels.getRedirectChannelNameForTeam', () => {
 describe('Selectors.Channels.getRedirectChannelNameForTeam with default channels that can go (Antimatter)', () => {
     const team = {...TestHelper.fakeTeamWithId(), default_channel_id: ''};
     const user = TestHelper.fakeUserWithId();
-    const townSquare = {...TestHelper.fakeChannelWithId(team.id), name: 'general', display_name: 'General', type: General.OPEN_CHANNEL};
-    const lobby = {...TestHelper.fakeChannelWithId(team.id), name: 'lobby', display_name: 'Lobby', type: General.OPEN_CHANNEL};
+    const general = {...TestHelper.fakeChannelWithId(team.id), name: 'general', display_name: 'General', type: General.OPEN_CHANNEL};
+    // Atrium sorts before General: landing there shows the first channel was chosen, not the default one.
+    const atrium = {...TestHelper.fakeChannelWithId(team.id), name: 'atrium', display_name: 'Atrium', type: General.OPEN_CHANNEL};
     const zebra = {...TestHelper.fakeChannelWithId(team.id), name: 'zebra', display_name: 'Zebra', type: General.OPEN_CHANNEL};
     const state = (teamPatch: object, channels: Channel[]) => deepFreezeAndThrowOnMutation({
         entities: {
@@ -1622,19 +1623,19 @@ describe('Selectors.Channels.getRedirectChannelNameForTeam with default channels
     });
 
     it('lands in the channel the team chose', () => {
-        expect(Selectors.getRedirectChannelNameForTeam(state({default_channel_id: zebra.id}, [townSquare, lobby, zebra]), team.id)).toEqual('zebra');
+        expect(Selectors.getRedirectChannelNameForTeam(state({default_channel_id: zebra.id}, [general, atrium, zebra]), team.id)).toEqual('zebra');
     });
 
     it('lands in the first channel when General is archived', () => {
-        expect(Selectors.getRedirectChannelNameForTeam(state({}, [{...townSquare, delete_at: 1}, zebra, lobby]), team.id)).toEqual('lobby');
+        expect(Selectors.getRedirectChannelNameForTeam(state({}, [{...general, delete_at: 1}, zebra, atrium]), team.id)).toEqual('atrium');
     });
 
     it('lands in the first channel when the chosen one is archived, rather than in General', () => {
-        expect(Selectors.getRedirectChannelNameForTeam(state({default_channel_id: zebra.id}, [{...zebra, delete_at: 1}, townSquare, lobby]), team.id)).toEqual('lobby');
+        expect(Selectors.getRedirectChannelNameForTeam(state({default_channel_id: zebra.id}, [{...zebra, delete_at: 1}, general, atrium]), team.id)).toEqual('atrium');
     });
 
     it('lands in the first channel when General is gone', () => {
-        expect(Selectors.getRedirectChannelNameForTeam(state({}, [zebra, lobby]), team.id)).toEqual('lobby');
+        expect(Selectors.getRedirectChannelNameForTeam(state({}, [zebra, atrium]), team.id)).toEqual('atrium');
     });
 });
 
