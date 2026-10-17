@@ -21,6 +21,7 @@ import BurnOnReadConfirmationModal from 'components/burn_on_read_confirmation_mo
 import BurnOnReadExpirationHandler from 'components/post_view/burn_on_read_expiration_handler';
 
 import Icon from 'fusion/components/icon';
+import {defaultBurnSeconds, formatBurnDuration, readDurationSeconds} from 'fusion/composer/burn_duration';
 import {am} from 'fusion/utils/class_names';
 import {useBurnOnReadDeleteModal} from 'hooks/useBurnOnReadDeleteModal';
 import {ModalIdentifiers} from 'utils/constants';
@@ -58,19 +59,12 @@ function useCountdown(until: number | null): string {
     return h ? `${h}:${String(m).padStart(2, '0')}:${s}` : `${m}:${s}`;
 }
 
-// useBurnDuration describes how long a message lives once opened: its own read_duration, else the server's setting.
-export function useBurnDuration(post?: Post): string {
-    const {formatMessage} = useIntl();
+// useBurnDuration describes how long a message lives once opened: its own read_duration (its sender's choice), else
+// the server's setting.
+export function useBurnDuration(post?: Post, style: 'short' | 'long' = 'long'): string {
+    const intl = useIntl();
     const config = useSelector(getConfig);
-    const ms = toNumber(post?.props?.read_duration);
-    const seconds = ms ? Math.round(ms / 1000) : parseInt(config.BurnOnReadDurationSeconds || '600', 10);
-    if (seconds < 60) {
-        return formatMessage({id: 'fusion.burn.seconds', defaultMessage: '{count, plural, one {# second} other {# seconds}}'}, {count: seconds});
-    }
-    if (seconds < 3600) {
-        return formatMessage({id: 'fusion.burn.minutes', defaultMessage: '{count, plural, one {# minute} other {# minutes}}'}, {count: Math.round(seconds / 60)});
-    }
-    return formatMessage({id: 'fusion.burn.hours', defaultMessage: '{count, plural, one {# hour} other {# hours}}'}, {count: Math.round(seconds / 3600)});
+    return formatBurnDuration(readDurationSeconds(post?.props) ?? defaultBurnSeconds(config), intl, style);
 }
 
 // BurnCover hides a Burn-on-Read message until its reader opens it: the mockup's .burn-cover.
@@ -130,6 +124,7 @@ export function BurnTag({post, showTag = true}: {post: Post; showTag?: boolean})
     const left = useCountdown(expireAt);
     const sender = post.user_id === me;
     const handlers = useBurnOnReadDeleteModal({postId: post.id, userId: me, isSender: sender});
+    const duration = useBurnDuration(post, 'short');
 
     const handler = (
         <BurnOnReadExpirationHandler
@@ -142,7 +137,8 @@ export function BurnTag({post, showTag = true}: {post: Post; showTag?: boolean})
         return handler;
     }
 
-    const label = expireAt ? formatMessage({id: 'fusion.burn.burning', defaultMessage: 'Burning… {left}'}, {left}) : formatMessage({id: 'fusion.burn.tag', defaultMessage: 'Burn on read'});
+    // Until it's opened, how long it lives then (its sender's choice); then the time left.
+    const label = expireAt ? formatMessage({id: 'fusion.burn.burning', defaultMessage: 'Burning… {left}'}, {left}) : formatMessage({id: 'fusion.burn.tagWithDuration', defaultMessage: 'Burn on read · {duration}'}, {duration});
     let title = formatMessage({id: 'fusion.burn.tagTitle', defaultMessage: 'This message is deleted after it is read'});
     if (sender) {
         title = formatMessage({id: 'fusion.burn.senderTitle', defaultMessage: 'Click to delete the message for everyone'});

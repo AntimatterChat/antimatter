@@ -6,12 +6,9 @@ import {useIntl} from 'react-intl';
 import {useDispatch, useSelector, useStore} from 'react-redux';
 
 import type {FileInfo} from '@mattermost/types/files';
-import type {PostPriority} from '@mattermost/types/posts';
 
 import {savePreferences} from 'mattermost-redux/actions/preferences';
-import {Posts} from 'mattermost-redux/constants';
 import {getConfig} from 'mattermost-redux/selectors/entities/general';
-import {isPostPriorityEnabled} from 'mattermost-redux/selectors/entities/posts';
 import {getBool, getWysiwygEditorPreference} from 'mattermost-redux/selectors/entities/preferences';
 import {isScheduledPostsEnabled} from 'mattermost-redux/selectors/entities/scheduled_posts';
 import {getCurrentUserId} from 'mattermost-redux/selectors/entities/users';
@@ -22,18 +19,14 @@ import {emitLocalUserTypingEvent} from 'actions/global_actions';
 import {editLatestPost, onSubmit} from 'actions/views/create_comment';
 import {removeDraft, updateDraft} from 'actions/views/drafts';
 import {replyToLatestPostInChannel} from 'actions/views/rhs';
-import {isBurnOnReadEnabled} from 'selectors/burn_on_read';
 
 import {getComposerPlaceholder} from 'components/advanced_text_editor/composer_placeholder';
 import WysiwygEditor from 'components/advanced_text_editor/wysiwyg_editor/wysiwyg_editor';
 import type {WysiwygEditorHandle} from 'components/advanced_text_editor/wysiwyg_editor/wysiwyg_editor';
-import {useCreateBurnOnReadAccess} from 'components/common/hooks/useCreateBurnOnReadAccess';
 import Markdown from 'components/markdown';
 
 import Icon from 'fusion/components/icon';
 import {Popover} from 'fusion/components/layer';
-import {MenuHeading, MenuItem, MenuSeparator} from 'fusion/components/menu';
-import {useBurnDuration} from 'fusion/messages/burn_on_read';
 import {
     MENTION_PREFERENCE_CATEGORY,
     MENTION_PREFERENCE_NAME,
@@ -48,7 +41,6 @@ import {
     useQuoted,
 } from 'fusion/messages/inline_reply';
 import type {ReplyEventDetail} from 'fusion/messages/inline_reply';
-import {isSpoiler, SPOILER_PROP} from 'fusion/messages/spoiler';
 import EmojiPicker from 'fusion/popovers/emoji_picker';
 import {MENTION_EVENT} from 'fusion/popovers/user_menu';
 import {useDialogs} from 'fusion/shell/dialogs_context';
@@ -71,6 +63,8 @@ import {confirmChannelWideMentions} from './confirm_mentions';
 import {useDraftAutosave} from './draft_autosave';
 import {FORMATS, applyFormat, formatRich} from './formats';
 import {useShowFormatting} from './formatting_preference';
+import {MessageOptionChips, MessageOptionsPopover, useMessageOptions} from './message_options';
+import type {OptionSection} from './message_options';
 import PlusMenu from './plus_menu';
 import {SchedulePopover, ScheduledNote} from './schedule';
 import SendButton from './send_button';
@@ -102,15 +96,7 @@ export default function Composer({channelId, rootId = '', placeholder}: Props) {
     const dialogs = useDialogs();
     const dispatch = useDispatch();
     const store = useStore<GlobalState>();
-    const priorityEnabled = useSelector(isPostPriorityEnabled);
-    const burnEnabledInConfig = useSelector(isBurnOnReadEnabled);
-
-    // Permission policies can also forbid burn-on-read messages in a channel (the server re-checks).
-    const burnAllowedByPolicy = useCreateBurnOnReadAccess(channelId);
-    const burnEnabled = burnEnabledInConfig && burnAllowedByPolicy;
     const schedulingEnabled = useSelector(isScheduledPostsEnabled);
-    const burnDuration = useBurnDuration();
-    const persistentMinutes = useSelector((state: GlobalState) => parseInt(getConfig(state).PersistentNotificationIntervalMinutes || '5', 10) || 5);
     const toast = useToast();
     const maxFileSize = useSelector((state: GlobalState) => parseInt(getConfig(state).MaxFileSize || '0', 10) || 0);
     const maxPostSize = useSelector((state: GlobalState) => parseInt(getConfig(state).MaxPostSize || '', 10) || Constants.DEFAULT_CHARACTER_LIMIT);
@@ -132,7 +118,7 @@ export default function Composer({channelId, rootId = '', placeholder}: Props) {
     const {draft, setDraft, save, cancel: cancelSave, key} = useDraftAutosave(channelId, rootId);
     const [showFormatting, setShowFormatting] = useShowFormatting();
     const [pending, setPending] = useState<Pending[]>([]);
-    const [menu, setMenu] = useState<'plus' | 'emoji' | 'priority' | 'burn' | 'more' | 'schedule' | 'ai' | null>(null);
+    const [menu, setMenu] = useState<'plus' | 'emoji' | 'options' | 'more' | 'schedule' | 'ai' | null>(null);
     const textareaRef = useRef<HTMLTextAreaElement>(null);
 
     // The rich text editor (beta) shows the formatting as you write, in place of the plain text box, when chosen in
@@ -142,8 +128,11 @@ export default function Composer({channelId, rootId = '', placeholder}: Props) {
     const fileRef = useRef<HTMLInputElement>(null);
     const plusRef = useRef<HTMLButtonElement>(null);
     const emojiRef = useRef<HTMLButtonElement>(null);
-    const priorityRef = useRef<HTMLButtonElement>(null);
-    const burnRef = useRef<HTMLButtonElement>(null);
+
+    // The message's options open from their button, or from the chip of one of them (on that one), above the button:
+    // a chip goes when its option is turned off.
+    const optionsRef = useRef<HTMLButtonElement>(null);
+    const [optionsSection, setOptionsSection] = useState<OptionSection | undefined>();
 
     // AI rewriting, once an admin picked a model connection for it: busy while it writes, and the text before it, to
     // undo.
@@ -517,102 +506,18 @@ export default function Composer({channelId, rootId = '', placeholder}: Props) {
         return () => window.removeEventListener(DROP_FILES_EVENT, onDrop);
     }, [rootId]);
 
-    const priority = draft.metadata?.priority;
-    const setPriority = (patch: Partial<{priority: PostPriority | ''; requested_ack: boolean; persistent_notifications: boolean}>) => {
-        const next = {priority: (priority?.priority || '') as PostPriority | '', requested_ack: priority?.requested_ack || false, persistent_notifications: priority?.persistent_notifications || false, ...patch};
-        if (next.priority !== 'urgent') {
-            next.persistent_notifications = false;
-        }
-        change({metadata: {...draft.metadata, priority: next}});
+    // Priority, burning on read and spoilers: set in one popover, shown as chips.
+    const options = useMessageOptions(draft, change, channelId, rootId);
+    const openOptions = (section?: OptionSection) => {
+        setOptionsSection(section);
+        setMenu(menu === 'options' && !section ? null : 'options');
     };
-    const burn = draft.type === Posts.POST_TYPES.BURN_ON_READ;
-
-    // A spoiler is sent with the spoiler prop, which hides its text and files until its readers click it.
-    const spoiler = isSpoiler(draft);
-    const setSpoiler = (on: boolean) => {
-        const props = {...draft.props};
-        if (on) {
-            props[SPOILER_PROP] = true;
-        } else {
-            delete props[SPOILER_PROP];
-        }
-        change({props});
-    };
-
-    const chips = [];
-    if (priority?.priority) {
-        chips.push(
-            <span
-                key='prio'
-                className={am('opt-chip', priority.priority)}
-            >
-                <Icon name='flag'/>
-                {priority.priority === 'urgent' ? formatMessage({id: 'fusion.composer.urgent', defaultMessage: 'Urgent'}) : formatMessage({id: 'fusion.composer.important', defaultMessage: 'Important'})}
-                {priority.requested_ack ? formatMessage({id: 'fusion.composer.withAck', defaultMessage: ' · acknowledgement'}) : ''}
-                {priority.persistent_notifications ? formatMessage({id: 'fusion.composer.persistent', defaultMessage: ' · persistent'}) : ''}
-                <button
-                    type='button'
-                    aria-label={formatMessage({id: 'fusion.composer.removePriority', defaultMessage: 'Remove priority'})}
-                    onClick={() => setPriority({priority: '', requested_ack: false})}
-                >
-                    <Icon name='x'/>
-                </button>
-            </span>,
-        );
-    } else if (priority?.requested_ack) {
-        chips.push(
-            <span
-                key='ack'
-                className={am('opt-chip')}
-            >
-                <Icon name='check'/>
-                {formatMessage({id: 'fusion.composer.ackRequested', defaultMessage: 'Acknowledgement requested'})}
-                <button
-                    type='button'
-                    aria-label={formatMessage({id: 'fusion.composer.removeAck', defaultMessage: 'Remove acknowledgement'})}
-                    onClick={() => setPriority({requested_ack: false})}
-                >
-                    <Icon name='x'/>
-                </button>
-            </span>,
-        );
-    }
-    if (burn) {
-        chips.push(
-            <span
-                key='burn'
-                className={am('opt-chip', 'burn')}
-            >
-                <Icon name='flame'/>
-                {formatMessage({id: 'fusion.composer.burns', defaultMessage: 'Burns on read'})}
-                <button
-                    type='button'
-                    aria-label={formatMessage({id: 'fusion.composer.noBurn', defaultMessage: 'Turn off burn on read'})}
-                    onClick={() => change({type: undefined})}
-                >
-                    <Icon name='x'/>
-                </button>
-            </span>,
-        );
-    }
-    if (spoiler) {
-        chips.push(
-            <span
-                key='spoiler'
-                className={am('opt-chip', 'spoiler')}
-            >
-                <Icon name='eye-off'/>
-                {formatMessage({id: 'fusion.composer.spoilerOn', defaultMessage: 'Spoiler'})}
-                <button
-                    type='button'
-                    aria-label={formatMessage({id: 'fusion.composer.noSpoiler', defaultMessage: 'Don\'t send as a spoiler'})}
-                    onClick={() => setSpoiler(false)}
-                >
-                    <Icon name='x'/>
-                </button>
-            </span>,
-        );
-    }
+    const chips = (
+        <MessageOptionChips
+            options={options}
+            onEdit={openOptions}
+        />
+    );
     const files = draft.fileInfos.map((f) => (
         <span
             key={f.id}
@@ -713,7 +618,7 @@ export default function Composer({channelId, rootId = '', placeholder}: Props) {
                 </div>
             )}
             <div className={am('compose-box')}>
-                {(chips.length > 0 || files.length > 0 || uploads.length > 0) && <div className={am('opt-chips')}>{chips}{files}{uploads}</div>}
+                {(options.active || files.length > 0 || uploads.length > 0) && <div className={am('opt-chips')}>{chips}{files}{uploads}</div>}
                 {previewing && draft.message.trim() && (
                     <div
                         className={am('md-preview')}
@@ -840,6 +745,18 @@ export default function Composer({channelId, rootId = '', placeholder}: Props) {
                     >
                         <Icon name='smile'/>
                     </button>
+                    <button
+                        ref={optionsRef}
+                        type='button'
+                        className={am('icon-btn', 'opts-btn', {on: options.active})}
+                        title={formatMessage({id: 'fusion.composer.options', defaultMessage: 'Message options'})}
+                        aria-label={formatMessage({id: 'fusion.composer.options', defaultMessage: 'Message options'})}
+                        aria-haspopup='dialog'
+                        aria-expanded={menu === 'options'}
+                        onClick={() => openOptions()}
+                    >
+                        <Icon name='sliders'/>
+                    </button>
                     <SendButton
                         disabled={pending.length > 0}
                         laterRef={sendLaterRef}
@@ -854,7 +771,7 @@ export default function Composer({channelId, rootId = '', placeholder}: Props) {
                         // The buttons leave the focus in the text, where the format applies and the writing goes on.
                         onMouseDown={(e) => e.preventDefault()}
                         role='toolbar'
-                        aria-label={formatMessage({id: 'fusion.composer.formatting', defaultMessage: 'Formatting and message options'})}
+                        aria-label={formatMessage({id: 'fusion.composer.formattingBar', defaultMessage: 'Formatting'})}
                     >
                         {aiAvailable && (
                             <>
@@ -945,43 +862,6 @@ export default function Composer({channelId, rootId = '', placeholder}: Props) {
                                 </PluggableErrorBoundary>
                             ) : null;
                         })}
-                        <span className={am('grow')}/>
-                        {priorityEnabled && !rootId && (
-                            <button
-                                ref={priorityRef}
-                                type='button'
-                                className={am({on: Boolean(priority?.priority), [`prio-${priority?.priority}`]: Boolean(priority?.priority)})}
-                                title={formatMessage({id: 'fusion.composer.priority', defaultMessage: 'Message priority'})}
-                                aria-label={formatMessage({id: 'fusion.composer.priority', defaultMessage: 'Message priority'})}
-                                aria-haspopup='menu'
-                                onClick={() => setMenu(menu === 'priority' ? null : 'priority')}
-                            >
-                                <Icon name='flag'/>
-                            </button>
-                        )}
-                        {burnEnabled && (
-                            <button
-                                ref={burnRef}
-                                type='button'
-                                className={am({on: burn, burn})}
-                                title={formatMessage({id: 'fusion.composer.burn', defaultMessage: 'Burn on read'})}
-                                aria-label={formatMessage({id: 'fusion.composer.burn', defaultMessage: 'Burn on read'})}
-                                aria-haspopup='menu'
-                                onClick={() => setMenu(menu === 'burn' ? null : 'burn')}
-                            >
-                                <Icon name='flame'/>
-                            </button>
-                        )}
-                        <button
-                            type='button'
-                            className={am({on: spoiler}, 'spoiler')}
-                            title={formatMessage({id: 'fusion.composer.spoiler', defaultMessage: 'Send as a spoiler'})}
-                            aria-label={formatMessage({id: 'fusion.composer.spoiler', defaultMessage: 'Send as a spoiler'})}
-                            aria-pressed={spoiler}
-                            onClick={() => setSpoiler(!spoiler)}
-                        >
-                            <Icon name='eye-off'/>
-                        </button>
                     </div>
                 )}
             </div>
@@ -1070,99 +950,14 @@ export default function Composer({channelId, rootId = '', placeholder}: Props) {
                     </div>
                 </Popover>
             )}
-            {menu === 'priority' && (
-                <Popover
-                    anchor={priorityRef.current}
-                    placement='above'
-                    className='plus-pop prio-pop'
-                    role='menu'
-                    label={formatMessage({id: 'fusion.composer.priority', defaultMessage: 'Message priority'})}
+            {menu === 'options' && (
+                <MessageOptionsPopover
+                    key={optionsSection || 'all'}
+                    options={options}
+                    anchor={optionsRef.current}
+                    section={optionsSection}
                     onClose={() => setMenu(null)}
-                >
-                    <MenuHeading>{formatMessage({id: 'fusion.composer.priority', defaultMessage: 'Message priority'})}</MenuHeading>
-                    {(['', 'important', 'urgent'] as const).map((p) => (
-                        <MenuItem
-                            key={p || 'standard'}
-                            role='menuitemradio'
-                            checked={(priority?.priority || '') === p}
-                            icon={p ? 'flag' : 'chat'}
-                            label={p ? <span className={am('prio', p)}>{p === 'urgent' ? formatMessage({id: 'fusion.composer.urgent', defaultMessage: 'Urgent'}) : formatMessage({id: 'fusion.composer.important', defaultMessage: 'Important'})}</span> : formatMessage({id: 'fusion.composer.standard', defaultMessage: 'Standard'})}
-                            onClick={() => setPriority({priority: p as PostPriority | ''})}
-                        />
-                    ))}
-                    <MenuSeparator/>
-                    <div className={am('pp-row')}>
-                        <span>
-                            {formatMessage({id: 'fusion.composer.requestAck', defaultMessage: 'Request acknowledgement'})}
-                            <small>{formatMessage({id: 'fusion.composer.requestAckDesc', defaultMessage: 'Recipients confirm they have read it'})}</small>
-                        </span>
-                        <button
-                            type='button'
-                            className={am('switch')}
-                            role='switch'
-                            aria-checked={Boolean(priority?.requested_ack)}
-                            aria-label={formatMessage({id: 'fusion.composer.requestAck', defaultMessage: 'Request acknowledgement'})}
-                            onClick={() => setPriority({requested_ack: !priority?.requested_ack})}
-                        />
-                    </div>
-                    <div className={am('pp-row', {disabled: priority?.priority !== 'urgent'})}>
-                        <span>
-                            {formatMessage({id: 'fusion.composer.persistentTitle', defaultMessage: 'Persistent notifications'})}
-                            <small>{formatMessage({id: 'fusion.composer.persistentEvery', defaultMessage: 'Repeats every {minutes, plural, one {minute} other {# minutes}} until acknowledged · urgent only'}, {minutes: persistentMinutes})}</small>
-                        </span>
-                        <button
-                            type='button'
-                            className={am('switch')}
-                            role='switch'
-                            aria-checked={Boolean(priority?.persistent_notifications)}
-                            aria-label={formatMessage({id: 'fusion.composer.persistentTitle', defaultMessage: 'Persistent notifications'})}
-                            onClick={() => setPriority({persistent_notifications: !priority?.persistent_notifications})}
-                        />
-                    </div>
-                    <div className={am('pp-foot')}>
-                        <button
-                            type='button'
-                            className={am('btn', 'primary')}
-                            onClick={() => setMenu(null)}
-                        >
-                            {formatMessage({id: 'fusion.composer.done', defaultMessage: 'Done'})}
-                        </button>
-                    </div>
-                </Popover>
-            )}
-            {menu === 'burn' && (
-                <Popover
-                    anchor={burnRef.current}
-                    placement='above'
-                    className='plus-pop prio-pop'
-                    role='menu'
-                    label={formatMessage({id: 'fusion.composer.burn', defaultMessage: 'Burn on read'})}
-                    onClose={() => setMenu(null)}
-                >
-                    <div className={am('pp-row')}>
-                        <span>
-                            {formatMessage({id: 'fusion.composer.burn', defaultMessage: 'Burn on read'})}
-                            <small>{formatMessage({id: 'fusion.composer.burnAfter', defaultMessage: 'Deleted {duration} after each person opens it'}, {duration: burnDuration})}</small>
-                        </span>
-                        <button
-                            type='button'
-                            className={am('switch', 'burn')}
-                            role='switch'
-                            aria-checked={burn}
-                            aria-label={formatMessage({id: 'fusion.composer.burn', defaultMessage: 'Burn on read'})}
-                            onClick={() => change({type: burn ? undefined : Posts.POST_TYPES.BURN_ON_READ})}
-                        />
-                    </div>
-                    <div className={am('pp-foot')}>
-                        <button
-                            type='button'
-                            className={am('btn', 'primary')}
-                            onClick={() => setMenu(null)}
-                        >
-                            {formatMessage({id: 'fusion.composer.done', defaultMessage: 'Done'})}
-                        </button>
-                    </div>
-                </Popover>
+                />
             )}
         </form>
     );
