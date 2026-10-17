@@ -59,6 +59,8 @@ import AiRewriteMenu, {useAIRewriteAvailable} from './ai_rewrite';
 import Autocomplete from './autocomplete';
 import type {AutocompleteHandle} from './autocomplete';
 import AwayNote from './away_note';
+import {COMPOSER_MODE_EVENT, ComposerModeBar, ComposerModeBody, modeText, useComposerModes} from './composer_modes';
+import type {ComposerModeEventDetail} from './composer_modes';
 import {confirmChannelWideMentions} from './confirm_mentions';
 import {useDraftAutosave} from './draft_autosave';
 import {FORMATS, applyFormat, formatRich} from './formats';
@@ -110,7 +112,7 @@ export default function Composer({channelId, rootId = '', placeholder}: Props) {
     const aiItems = useSelector((state: GlobalState) => state.plugins.components.AIActionMenuItem) || NO_AI_ITEMS;
 
     // Plugins can change the placeholder (registerComposerPlaceholder).
-    const shownPlaceholder = useSelector((state: GlobalState) => getComposerPlaceholder(state, channelId, placeholder, intl));
+    const channelPlaceholder = useSelector((state: GlobalState) => getComposerPlaceholder(state, channelId, placeholder, intl));
     const ctrlSend = useSelector((state: GlobalState) => getBool(state, Constants.Preferences.CATEGORY_ADVANCED_SETTINGS, 'send_on_ctrl_enter', false));
     const inlineReplies = useInlineRepliesEnabled();
     const mentionByDefault = useSelector((state: GlobalState) => getBool(state, MENTION_PREFERENCE_CATEGORY, MENTION_PREFERENCE_NAME, true));
@@ -148,9 +150,47 @@ export default function Composer({channelId, rootId = '', placeholder}: Props) {
     const moreRef = useRef<HTMLButtonElement>(null);
     const autocompleteRef = useRef<AutocompleteHandle>(null);
 
+    // Apps' composer modes (a poll…): the one the composer is in, if any, and what Send does in it. A mode doesn't
+    // follow the conversation, nor stay once its app is gone.
+    const modes = useComposerModes(channelId, rootId);
+    const [modeId, setModeId] = useState<string | null>(null);
+    const mode = modeId ? modes.find((m) => m.id === modeId) : undefined;
+    const shownPlaceholder = (mode && modeText(mode.placeholder, intl)) || channelPlaceholder;
+    const modeSubmit = useRef<((message: string) => Promise<string | void>) | null>(null);
+    const [modeBusy, setModeBusy] = useState(false);
+    const setModeSubmit = useCallback((fn: ((message: string) => Promise<string | void>) | null) => {
+        modeSubmit.current = fn;
+    }, []);
+    const enterMode = (id: string) => {
+        setMenu(null);
+        setSendError('');
+        modeSubmit.current = null;
+        setModeId(id);
+        requestAnimationFrame(() => (richRef.current || textareaRef.current)?.focus());
+    };
+    const leaveMode = () => {
+        setModeId(null);
+        setSendError('');
+        modeSubmit.current = null;
+        requestAnimationFrame(() => (richRef.current || textareaRef.current)?.focus());
+    };
+    const enterModeRef = useRef(enterMode);
+    enterModeRef.current = enterMode;
+    useEffect(() => {
+        const onMode = (e: Event) => {
+            const detail = (e as CustomEvent<ComposerModeEventDetail>).detail;
+            if (detail?.id && detail.channelId === channelId && (detail.rootId || '') === rootId) {
+                enterModeRef.current(detail.id);
+            }
+        };
+        window.addEventListener(COMPOSER_MODE_EVENT, onMode);
+        return () => window.removeEventListener(COMPOSER_MODE_EVENT, onMode);
+    }, [channelId, rootId]);
+
     // The draft switches with the conversation (useDraftAutosave); the uploads in progress don't follow it.
     useEffect(() => {
         setPending([]);
+        setModeId(null);
     }, [channelId, rootId]);
 
     const grow = useCallback(() => {
@@ -226,7 +266,34 @@ export default function Composer({channelId, rootId = '', placeholder}: Props) {
         setReplyTo(next);
     };
 
+    // In a mode, Send is the mode's: what it sends takes the text, and the composer goes back to a plain message. The
+    // rest of the draft (files, options) stays for the next one.
+    const submitMode = async () => {
+        if (modeBusy || !modeSubmit.current) {
+            return;
+        }
+        setSendError('');
+        setModeBusy(true);
+        let error: string | void;
+        try {
+            error = await modeSubmit.current(draft.message);
+        } catch (err) {
+            error = (err as Error)?.message || formatMessage({id: 'fusion.composer.sendFailed', defaultMessage: 'The message couldn\'t be sent.'});
+        }
+        setModeBusy(false);
+        if (error) {
+            setSendError(error);
+            return;
+        }
+        change({message: ''});
+        leaveMode();
+    };
+
     const submit = async () => {
+        if (mode) {
+            await submitMode();
+            return;
+        }
         const message = draft.message;
         if (!message.trim() && !draft.fileInfos.length) {
             return;
@@ -321,6 +388,12 @@ export default function Composer({channelId, rootId = '', placeholder}: Props) {
             setReplyTo('');
             return;
         }
+        if (e.key === 'Escape' && mode) {
+            e.preventDefault();
+            e.stopPropagation();
+            leaveMode();
+            return;
+        }
         if (inlineReplies && (e.key === 'ArrowUp' || e.key === 'ArrowDown') && e.shiftKey && !draft.message && !e.altKey && !e.ctrlKey && !e.metaKey) {
             e.preventDefault();
             moveReplyTo(e.key === 'ArrowUp');
@@ -385,6 +458,10 @@ export default function Composer({channelId, rootId = '', placeholder}: Props) {
             e.preventDefault();
             e.stopPropagation();
             setReplyTo('');
+        } else if (e.key === 'Escape' && mode) {
+            e.preventDefault();
+            e.stopPropagation();
+            leaveMode();
         } else if ((e.ctrlKey || e.metaKey) && e.altKey && (e.key.toLowerCase() === 'p' || e.code === 'KeyP')) {
             e.preventDefault();
             setPreviewing(!previewing);
@@ -617,8 +694,14 @@ export default function Composer({channelId, rootId = '', placeholder}: Props) {
                     </button>
                 </div>
             )}
-            <div className={am('compose-box')}>
-                {(options.active || files.length > 0 || uploads.length > 0) && <div className={am('opt-chips')}>{chips}{files}{uploads}</div>}
+            <div className={am('compose-box', {'in-mode': Boolean(mode)})}>
+                {mode && (
+                    <ComposerModeBar
+                        mode={mode}
+                        onCancel={leaveMode}
+                    />
+                )}
+                {!mode && (options.active || files.length > 0 || uploads.length > 0) && <div className={am('opt-chips')}>{chips}{files}{uploads}</div>}
                 {previewing && draft.message.trim() && (
                     <div
                         className={am('md-preview')}
@@ -663,17 +746,19 @@ export default function Composer({channelId, rootId = '', placeholder}: Props) {
                     </span>
                 )}
                 <div className={am('compose-row')}>
-                    <button
-                        ref={plusRef}
-                        type='button'
-                        className={am('plus-btn')}
-                        aria-label={formatMessage({id: 'fusion.composer.plus', defaultMessage: 'Add a file and more'})}
-                        aria-haspopup='menu'
-                        aria-expanded={menu === 'plus'}
-                        onClick={() => setMenu(menu === 'plus' ? null : 'plus')}
-                    >
-                        <span><Icon name='plus'/></span>
-                    </button>
+                    {!mode && (
+                        <button
+                            ref={plusRef}
+                            type='button'
+                            className={am('plus-btn')}
+                            aria-label={formatMessage({id: 'fusion.composer.plus', defaultMessage: 'Add a file and more'})}
+                            aria-haspopup='menu'
+                            aria-expanded={menu === 'plus'}
+                            onClick={() => setMenu(menu === 'plus' ? null : 'plus')}
+                        >
+                            <span><Icon name='plus'/></span>
+                        </button>
+                    )}
                     {richText && (
                         <div
                             className={am('rich-input')}
@@ -745,25 +830,38 @@ export default function Composer({channelId, rootId = '', placeholder}: Props) {
                     >
                         <Icon name='smile'/>
                     </button>
-                    <button
-                        ref={optionsRef}
-                        type='button'
-                        className={am('icon-btn', 'opts-btn', {on: options.active})}
-                        title={formatMessage({id: 'fusion.composer.options', defaultMessage: 'Message options'})}
-                        aria-label={formatMessage({id: 'fusion.composer.options', defaultMessage: 'Message options'})}
-                        aria-haspopup='dialog'
-                        aria-expanded={menu === 'options'}
-                        onClick={() => openOptions()}
-                    >
-                        <Icon name='sliders'/>
-                    </button>
+                    {!mode && (
+                        <button
+                            ref={optionsRef}
+                            type='button'
+                            className={am('icon-btn', 'opts-btn', {on: options.active})}
+                            title={formatMessage({id: 'fusion.composer.options', defaultMessage: 'Message options'})}
+                            aria-label={formatMessage({id: 'fusion.composer.options', defaultMessage: 'Message options'})}
+                            aria-haspopup='dialog'
+                            aria-expanded={menu === 'options'}
+                            onClick={() => openOptions()}
+                        >
+                            <Icon name='sliders'/>
+                        </button>
+                    )}
                     <SendButton
-                        disabled={pending.length > 0}
+                        disabled={pending.length > 0 || modeBusy}
+                        label={mode ? modeText(mode.sendLabel, intl) : undefined}
                         laterRef={sendLaterRef}
                         laterOpen={menu === 'schedule'}
-                        onLater={schedulingEnabled ? () => setMenu(menu === 'schedule' ? null : 'schedule') : undefined}
+                        onLater={schedulingEnabled && !mode ? () => setMenu(menu === 'schedule' ? null : 'schedule') : undefined}
                     />
                 </div>
+                {mode && (
+                    <ComposerModeBody
+                        mode={mode}
+                        channelId={channelId}
+                        rootId={rootId || undefined}
+                        message={draft.message}
+                        setSubmit={setModeSubmit}
+                        onCancel={leaveMode}
+                    />
+                )}
                 {showFormatting && (
                     <div
                         className={am('fmt-bar')}
@@ -886,6 +984,8 @@ export default function Composer({channelId, rootId = '', placeholder}: Props) {
                     anchor={plusRef.current}
                     channelId={channelId}
                     rootId={rootId}
+                    modes={modes}
+                    onMode={enterMode}
                     onPickFile={() => fileRef.current?.click()}
                     onUpload={upload}
                     onClose={() => setMenu(null)}

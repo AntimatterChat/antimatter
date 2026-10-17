@@ -6,10 +6,13 @@ import React from 'react';
 import {onSubmit} from 'actions/views/create_comment';
 
 import {LAYER_ID} from 'fusion/components/layer';
-import {fireEvent, renderWithContext, screen, userEvent, waitFor, within} from 'tests/react_testing_utils';
+import {act, fireEvent, renderWithContext, screen, userEvent, waitFor, within} from 'tests/react_testing_utils';
 import {TestHelper} from 'utils/test_helper';
 
+import type {ComposerModeProps} from 'types/store/plugins';
+
 import Composer from './composer';
+import {COMPOSER_MODE_EVENT} from './composer_modes';
 
 const mockTomorrow = Date.UTC(2030, 0, 1, 9);
 
@@ -44,7 +47,7 @@ jest.mock('./schedule', () => ({
 
 describe('fusion/composer/Composer', () => {
     const channel = TestHelper.getChannelMock({id: 'c1', name: 'general', display_name: 'General', type: 'O', team_id: 'team'});
-    const render = (config: Record<string, string> = {}) => renderWithContext(
+    const render = (config: Record<string, string> = {}, components: Record<string, unknown> = {}) => renderWithContext(
         <Composer
             channelId='c1'
             placeholder='Write to General'
@@ -55,7 +58,7 @@ describe('fusion/composer/Composer', () => {
                 users: {currentUserId: 'me'},
                 channels: {currentChannelId: 'c1', channels: {c1: channel}},
             },
-            plugins: {components: {}},
+            plugins: {components},
         } as never,
     );
 
@@ -200,6 +203,125 @@ describe('fusion/composer/Composer', () => {
             await open();
             expect(within(popover()).queryByRole('switch', {name: 'Burn on read'})).not.toBeInTheDocument();
             expect(within(popover()).getByRole('switch', {name: 'Send as a spoiler'})).toBeInTheDocument();
+        });
+    });
+
+    // An app's way of writing a message, e.g. a poll: its question the composer's text, its options under it.
+    describe('composer modes', () => {
+        let submitted: string[] = [];
+        let answer: string | void;
+        function PollFields({message, setSubmit, onCancel, channelId}: ComposerModeProps) {
+            setSubmit(async (text) => {
+                submitted.push(text);
+                return answer;
+            });
+            return (
+                <div data-testid='poll-fields'>
+                    {`${channelId}: ${message}`}
+                    <button
+                        type='button'
+                        onClick={onCancel}
+                    >
+                        {'Plain message'}
+                    </button>
+                </div>
+            );
+        }
+        const poll = {
+            id: 'polls.poll',
+            pluginId: 'polls',
+            label: 'Create a poll',
+            fusionIcon: 'poll',
+            placeholder: () => 'Ask a question',
+            sendLabel: 'Post poll',
+            component: PollFields,
+            shouldRender: () => true,
+        };
+        const renderWithPoll = () => render({}, {ComposerMode: [poll]});
+        const enterPoll = async () => {
+            await userEvent.click(screen.getByRole('button', {name: 'Add a file and more'}));
+            await userEvent.click(screen.getByRole('menuitem', {name: 'Create a poll'}));
+        };
+
+        beforeEach(() => {
+            submitted = [];
+            answer = undefined;
+        });
+
+        test('the "+" menu offers it; in it, the text is the question and the mode\'s fields are under it', async () => {
+            renderWithPoll();
+            await enterPoll();
+
+            expect(screen.getByText('Create a poll')).toBeInTheDocument();
+            const question = screen.getByRole('textbox', {name: 'Ask a question'});
+            await waitFor(() => expect(question).toHaveFocus());
+            await userEvent.type(question, 'Lunch?');
+            expect(screen.getByTestId('poll-fields')).toHaveTextContent('c1: Lunch?');
+
+            // Send posts the poll; what doesn't apply to it goes meanwhile.
+            expect(screen.getByRole('button', {name: 'Post poll'})).toBeInTheDocument();
+            expect(screen.queryByRole('button', {name: 'Send later'})).not.toBeInTheDocument();
+            expect(screen.queryByRole('button', {name: 'Message options'})).not.toBeInTheDocument();
+            expect(screen.queryByRole('button', {name: 'Add a file and more'})).not.toBeInTheDocument();
+        });
+
+        test('Send runs the mode\'s submit with the text, then the composer is a plain, empty one again', async () => {
+            renderWithPoll();
+            await enterPoll();
+            await userEvent.type(screen.getByRole('textbox', {name: 'Ask a question'}), 'Lunch?');
+            await userEvent.click(screen.getByRole('button', {name: 'Post poll'}));
+
+            await waitFor(() => expect(submitted).toEqual(['Lunch?']));
+            expect(onSubmit).not.toHaveBeenCalled();
+            await waitFor(() => expect(screen.queryByTestId('poll-fields')).not.toBeInTheDocument());
+            expect(screen.getByRole('textbox', {name: 'Write to General'})).toHaveValue('');
+        });
+
+        test('what the mode says went wrong shows, and the composer stays in it', async () => {
+            answer = 'A poll needs at least two options.';
+            renderWithPoll();
+            await enterPoll();
+            await userEvent.type(screen.getByRole('textbox', {name: 'Ask a question'}), 'Lunch?{Enter}');
+
+            expect(await screen.findByRole('alert')).toHaveTextContent('A poll needs at least two options.');
+            expect(screen.getByTestId('poll-fields')).toBeInTheDocument();
+            expect(screen.getByRole('textbox', {name: 'Ask a question'})).toHaveValue('Lunch?');
+        });
+
+        test('Cancel, Escape or the mode itself go back to a plain message, keeping the text', async () => {
+            renderWithPoll();
+            await enterPoll();
+            await userEvent.type(screen.getByRole('textbox', {name: 'Ask a question'}), 'Lunch?');
+            await userEvent.click(screen.getByRole('button', {name: 'Cancel: back to a plain message'}));
+            expect(screen.queryByTestId('poll-fields')).not.toBeInTheDocument();
+            expect(screen.getByRole('textbox', {name: 'Write to General'})).toHaveValue('Lunch?');
+
+            await enterPoll();
+            await userEvent.type(screen.getByRole('textbox', {name: 'Ask a question'}), '{Escape}');
+            expect(screen.queryByTestId('poll-fields')).not.toBeInTheDocument();
+
+            await enterPoll();
+            await userEvent.click(screen.getByRole('button', {name: 'Plain message'}));
+            expect(screen.queryByTestId('poll-fields')).not.toBeInTheDocument();
+            expect(submitted).toEqual([]);
+        });
+
+        test('an app opens its mode in the composer of a conversation (e.g. from a slash command)', () => {
+            renderWithPoll();
+            act(() => {
+                window.dispatchEvent(new CustomEvent(COMPOSER_MODE_EVENT, {detail: {id: 'polls.poll', channelId: 'other'}}));
+            });
+            expect(screen.queryByTestId('poll-fields')).not.toBeInTheDocument();
+            act(() => {
+                window.dispatchEvent(new CustomEvent(COMPOSER_MODE_EVENT, {detail: {id: 'polls.poll', channelId: 'c1'}}));
+            });
+            expect(screen.getByTestId('poll-fields')).toBeInTheDocument();
+        });
+
+        test('a mode its app no longer offers isn\'t there', async () => {
+            render({}, {ComposerMode: [{...poll, shouldRender: () => false}]});
+            await userEvent.click(screen.getByRole('button', {name: 'Add a file and more'}));
+            expect(screen.queryByRole('menuitem', {name: 'Create a poll'})).not.toBeInTheDocument();
         });
     });
 });

@@ -23651,6 +23651,14 @@
     "defaultMessage": "Messages can be up to {max} characters",
     "description": ""
   },
+  "fusion.composer.modeCancel": {
+    "defaultMessage": "Cancel: back to a plain message",
+    "description": "Accessible name of the Cancel button in the bar of a composer mode (an app's way of writing a message, e.g. a poll): leaves the mode, keeping the text. Starts with the button's visible text, \"Cancel\"."
+  },
+  "fusion.composer.modeCancelShort": {
+    "defaultMessage": "Cancel",
+    "description": "Visible text of the button leaving a composer mode (e.g. writing a poll) for a plain message."
+  },
   "fusion.composer.moreFormatting": {
     "defaultMessage": "More formatting",
     "description": ""

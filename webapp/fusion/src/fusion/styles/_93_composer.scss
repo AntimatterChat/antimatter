@@ -67,3 +67,12 @@
 :is(.am-app, .am-layer) .am-burn-custom input[aria-invalid="true"] { border-color: var(--am-danger); }
 :is(.am-app, .am-layer) .am-burn-custom small { color: var(--am-muted); }
 :is(.am-app, .am-layer) .am-burn-custom small.am-over { color: var(--am-danger); }
+
+// An app's composer mode, e.g. a poll (composer/composer_modes.tsx): a bar naming it with Cancel at the top of the
+// compose box, the text box (the poll's question), then the mode's fields.
+:is(.am-app, .am-layer) .am-cmode-bar { display: flex; align-items: center; gap: 6px; margin: 0 0 4px; padding: 0 2px 6px 6px; border-bottom: 1px solid var(--am-line); font: 600 13px var(--am-font-ui); color: var(--am-matter); }
+:is(.am-app, .am-layer) .am-cmode-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+:is(.am-app, .am-layer) .am-cmode-cancel { flex: none; height: 26px; padding: 0 10px; border-radius: 7px; font: 600 12.5px var(--am-font-ui); color: var(--am-muted); }
+:is(.am-app, .am-layer) .am-cmode-cancel:hover { background: var(--am-hover); color: var(--am-text); }
+:is(.am-app, .am-layer) .am-cmode-cancel:focus-visible { outline: 2px solid var(--am-matter); outline-offset: 1px; }
+:is(.am-app, .am-layer) .am-cmode-body { padding: 6px 2px 2px; }

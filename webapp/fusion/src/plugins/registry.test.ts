@@ -707,6 +707,81 @@ describe('PluginRegistry — registerComposerMenuItem', () => {
     });
 });
 
+describe('PluginRegistry — registerComposerMode', () => {
+    const PLUGIN_ID = 'test_plugin';
+    const Fields = () => null;
+
+    beforeEach(() => {
+        mockCurrentStore = createStore(pluginsReducer);
+    });
+
+    function getModes() {
+        return mockCurrentStore.getState().components.ComposerMode;
+    }
+
+    it('adds an entry to ComposerMode with the plugin id and the given fields', () => {
+        const registry = new PluginRegistry(PLUGIN_ID);
+        const shouldRender = () => true;
+        const placeholder = () => 'Ask a question';
+        const id = registry.registerComposerMode({
+            id: 'test.poll',
+            label: 'Create a poll',
+            fusionIcon: 'poll',
+            placeholder,
+            sendLabel: 'Post poll',
+            component: Fields,
+            shouldRender,
+        });
+
+        expect(id).toBe('test.poll');
+        expect(getModes()).toEqual([{
+            id: 'test.poll',
+            pluginId: PLUGIN_ID,
+            label: 'Create a poll',
+            fusionIcon: 'poll',
+            placeholder,
+            sendLabel: 'Post poll',
+            component: Fields,
+            shouldRender,
+        }]);
+    });
+
+    it('defaults the optional fields', () => {
+        const registry = new PluginRegistry(PLUGIN_ID);
+        const id = registry.registerComposerMode({label: 'Poll', component: Fields});
+
+        const mode = getModes()[0];
+        expect(id).toBeTruthy();
+        expect(mode.id).toBe(id);
+        expect(mode.fusionIcon).toBeUndefined();
+        expect(mode.placeholder).toBeUndefined();
+        expect(mode.sendLabel).toBeUndefined();
+        expect(mode.shouldRender({} as GlobalState, {channelId: 'channel'})).toBe(true);
+    });
+
+    it('REMOVED_WEBAPP_PLUGIN sweeps entries for that plugin and leaves others intact', () => {
+        new PluginRegistry(PLUGIN_ID).registerComposerMode({label: 'Mine', component: Fields});
+        new PluginRegistry('other_plugin').registerComposerMode({label: 'Other', component: Fields});
+
+        mockCurrentStore.dispatch({
+            type: ActionTypes.REMOVED_WEBAPP_PLUGIN,
+            data: {id: PLUGIN_ID},
+        });
+
+        expect(getModes()).toHaveLength(1);
+        expect(getModes()[0].pluginId).toBe('other_plugin');
+    });
+
+    it('unregisterComponent removes the mode', () => {
+        const registry = new PluginRegistry(PLUGIN_ID);
+        const id = registry.registerComposerMode({label: 'Poll', component: Fields});
+
+        registry.unregisterComponent(id);
+
+        expect(getModes()).toHaveLength(0);
+    });
+});
+
 describe('PluginRegistry — registerEmojiPickerTab', () => {
     const PLUGIN_ID = 'test_plugin';
     const Tab = () => null;

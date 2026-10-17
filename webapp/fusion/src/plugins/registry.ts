@@ -30,6 +30,7 @@ import {
 import {clearLoggedChannelIntroErrors} from 'selectors/channel_intro';
 import {clearLoggedChannelViewPanelErrors} from 'selectors/channel_view_panel';
 import {clearLoggedComposerMenuItemErrors} from 'selectors/composer_menu';
+import {clearLoggedComposerModeErrors} from 'selectors/composer_modes';
 import {clearLoggedEmojiPickerTabErrors} from 'selectors/emoji_picker_tabs';
 import {clearLoggedIntegrationsOptionErrors} from 'selectors/integrations_options';
 import store from 'stores/redux_store';
@@ -85,6 +86,7 @@ import type {
     ChannelViewPanelRegistration,
     ComposerPlaceholderRegistration,
     ComposerMenuItemRegistration,
+    ComposerModeRegistration,
     EmojiPickerTabRegistration,
     IntegrationsOptionRegistration,
     ProductSwitcherMenuItemRegistration,
@@ -1658,6 +1660,64 @@ export default class PluginRegistry {
             icon: resolveReactElement(icon),
             fusionIcon,
             action,
+            shouldRender,
+        });
+        return id;
+    });
+
+    /**
+     * Antimatter Fusion: register a composer mode, a way of writing a message other than plain text, e.g. a poll. The
+     * mode is offered in the composer's "+" menu; picked, the composer keeps its text box (the mode's text, e.g. the
+     * poll's question), shows the mode's fields under it and a bar naming the mode with a Cancel button (back to a
+     * plain message), and Send runs the mode's submit instead of posting the text. Only the Fusion UI has composer
+     * modes: check that the registry has this function, and keep your own dialog otherwise.
+     * Accepts the following:
+     * - id - Optional unique identifier of the mode (e.g. 'com.example.polls.poll'); generated when omitted
+     * - label - A string or React element naming the mode in the "+" menu and in its bar
+     * - fusionIcon - Optional id of an icon of the Fusion UI's icon set (e.g. 'poll')
+     * - placeholder - Optional placeholder of the text box in the mode, a string or a function of react-intl's intl
+     * - sendLabel - Optional label of the send button in the mode, likewise
+     * - component - The mode's fields, a React component receiving:
+     *   - channelId, rootId - The composer's channel, and its thread for a reply box
+     *   - message - The composer's text
+     *   - setSubmit - Sets what Send does: a function called with the composer's text that resolves to nothing once
+     *     sent (the composer then empties and goes back to a plain message), or to an error message it shows
+     *   - onCancel - Back to a plain message, keeping the text
+     * - shouldRender - Optional function receiving the full Redux state and {channelId, rootId}, returning whether to
+     *   offer the mode in that composer. A throwing shouldRender hides it.
+     * To open the mode from elsewhere (e.g. a slash command without arguments), dispatch a window event:
+     * window.dispatchEvent(new CustomEvent('am-composer-mode', {detail: {id, channelId, rootId}})).
+     * Cleaned up automatically when the plugin is removed.
+     * Returns the mode's id.
+     */
+    registerComposerMode = reArg(['id', 'label', 'fusionIcon', 'placeholder', 'sendLabel', 'component', 'shouldRender'], ({
+        id = generateId(),
+        label,
+        fusionIcon,
+        placeholder,
+        sendLabel,
+        component,
+        shouldRender = defaultShouldRender,
+    }: {
+        id?: string;
+        label: ReactResolvable;
+        fusionIcon?: ComposerModeRegistration['fusionIcon'];
+        placeholder?: ComposerModeRegistration['placeholder'];
+        sendLabel?: ComposerModeRegistration['sendLabel'];
+        component: ComposerModeRegistration['component'];
+        shouldRender?: ComposerModeRegistration['shouldRender'];
+    }) => {
+        if (this.isActive()) {
+            clearLoggedComposerModeErrors(this.id);
+        }
+        this.dispatchPluginComponentWithData('ComposerMode', {
+            id,
+            pluginId: this.id,
+            label: resolveReactElement(label),
+            fusionIcon,
+            placeholder,
+            sendLabel,
+            component,
             shouldRender,
         });
         return id;

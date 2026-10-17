@@ -10,11 +10,13 @@ import {MenuItem} from 'fusion/components/menu';
 import {am} from 'fusion/utils/class_names';
 
 import type {GlobalState} from 'types/store';
-import type {FileUploadMethodAction} from 'types/store/plugins';
+import type {ComposerModeRegistration, FileUploadMethodAction} from 'types/store/plugins';
 
+import {ComposerModeItems} from './composer_modes';
 import PluginMenuItems from './plugin_menu_items';
 
 const NO_METHODS: FileUploadMethodAction[] = [];
+const NO_MODES: ComposerModeRegistration[] = [];
 
 type Props = {
     anchor: HTMLElement | null;
@@ -25,12 +27,16 @@ type Props = {
     onPickFile: () => void;
     onUpload: (files: FileList | File[]) => void;
     onClose: () => void;
+
+    // Apps' composer modes (a poll…), which the composer switches to.
+    modes?: ComposerModeRegistration[];
+    onMode?: (id: string) => void;
 };
 
 // PlusMenu is the composer's "+" menu: only what adds something to the message (a file, and what apps add: a
 // picture from elsewhere, a poll, a location…). Scheduling is the send button's chevron (and the formatting bar's
 // clock); slash commands start by typing /.
-export default function PlusMenu({anchor, channelId, rootId, onPickFile, onUpload, onClose}: Props) {
+export default function PlusMenu({anchor, channelId, rootId, onPickFile, onUpload, onClose, modes = NO_MODES, onMode}: Props) {
     const {formatMessage} = useIntl();
     const uploadMethods = useSelector((state: GlobalState) => state.plugins.components.FileUploadMethod) || NO_METHODS;
 
@@ -65,6 +71,15 @@ export default function PlusMenu({anchor, channelId, rootId, onPickFile, onUploa
                     {method.text}
                 </button>
             ))}
+            {onMode && (
+                <ComposerModeItems
+                    modes={modes}
+                    onPick={(id) => {
+                        onClose();
+                        onMode(id);
+                    }}
+                />
+            )}
             <PluginMenuItems
                 channelId={channelId}
                 rootId={rootId}
