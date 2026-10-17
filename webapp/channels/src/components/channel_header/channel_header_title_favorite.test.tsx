@@ -24,10 +24,10 @@ describe('ChannelHeaderTitleFavorite Component', () => {
     let getCurrentChannelMock: jest.SpyInstance;
     let dispatchMock: jest.Mock;
 
-    const ADD_TO_FAVORITES_REGEX = /add to favorites/i;
-    const REMOVE_FROM_FAVORITES_REGEX = /remove from favorites/i;
-    const ADD_TO_FAVORITES_LABEL = 'add to favorites';
-    const REMOVE_FROM_FAVORITES_LABEL = 'remove from favorites';
+    const ADD_TO_FAVORITES_REGEX = /add to favourites/i;
+    const REMOVE_FROM_FAVORITES_REGEX = /remove from favourites/i;
+    const ADD_TO_FAVORITES_LABEL = 'add to favourites';
+    const REMOVE_FROM_FAVORITES_LABEL = 'remove from favourites';
 
     const activeChannel: Channel = {
         id: 'channel_id',
@@ -63,7 +63,7 @@ describe('ChannelHeaderTitleFavorite Component', () => {
         return renderWithContext(<ChannelHeaderTitleFavorite/>);
     }
 
-    it('should dispatch favoriteChannel when "Add to Favorites" button is clicked', async () => {
+    it('should dispatch favoriteChannel when "Add to Favourites" button is clicked', async () => {
         isCurrentChannelFavoriteMock.mockReturnValue(false);
         getCurrentChannelMock.mockReturnValue(activeChannel);
 
@@ -85,7 +85,7 @@ describe('ChannelHeaderTitleFavorite Component', () => {
         });
     });
 
-    it('should dispatch unfavoriteChannel when "Remove from Favorites" button is clicked', async () => {
+    it('should dispatch unfavoriteChannel when "Remove from Favourites" button is clicked', async () => {
         isCurrentChannelFavoriteMock.mockReturnValue(true);
         getCurrentChannelMock.mockReturnValue(activeChannel);
 
@@ -127,7 +127,7 @@ describe('ChannelHeaderTitleFavorite Component', () => {
         expect(button).toBeNull();
     });
 
-    it('should render "Add to Favorites" button when not favorite', () => {
+    it('should render "Add to Favourites" button when not favorite', () => {
         isCurrentChannelFavoriteMock.mockReturnValue(false);
         getCurrentChannelMock.mockReturnValue(activeChannel);
 
@@ -142,7 +142,7 @@ describe('ChannelHeaderTitleFavorite Component', () => {
         expect(icon).toHaveClass('icon-star-outline');
     });
 
-    it('should render "Remove from Favorites" button when favorite', () => {
+    it('should render "Remove from Favourites" button when favorite', () => {
         isCurrentChannelFavoriteMock.mockReturnValue(true);
         getCurrentChannelMock.mockReturnValue(activeChannel);
 

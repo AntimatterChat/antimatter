@@ -36,7 +36,7 @@ describe('channel_info_rhs/top_buttons', () => {
         },
     };
 
-    test('should display and toggle Favorite', async () => {
+    test('should display and toggle Favourite', async () => {
         const toggleFavorite = jest.fn();
 
         // Favorite to Favorited
@@ -54,8 +54,8 @@ describe('channel_info_rhs/top_buttons', () => {
             />,
         );
 
-        expect(screen.getByText('Favorite')).toBeInTheDocument();
-        await userEvent.click(screen.getByText('Favorite'));
+        expect(screen.getByText('Favourite')).toBeInTheDocument();
+        await userEvent.click(screen.getByText('Favourite'));
         expect(toggleFavorite).toHaveBeenCalled();
 
         // Favorited to Favorite
@@ -67,8 +67,8 @@ describe('channel_info_rhs/top_buttons', () => {
             />,
         );
 
-        expect(screen.getByText('Favorited')).toBeInTheDocument();
-        await userEvent.click(screen.getByText('Favorited'));
+        expect(screen.getByText('Favourited')).toBeInTheDocument();
+        await userEvent.click(screen.getByText('Favourited'));
         expect(toggleFavorite).toHaveBeenCalled();
     });
 
@@ -188,7 +188,7 @@ describe('channel_info_rhs/top_buttons', () => {
             />,
         );
 
-        const favoriteButton = screen.getByRole('button', {name: 'Favorite'});
+        const favoriteButton = screen.getByRole('button', {name: 'Favourite'});
         expect(favoriteButton).toBeDisabled();
     });
 

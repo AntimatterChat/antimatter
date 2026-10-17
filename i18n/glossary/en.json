@@ -505,13 +505,17 @@
     ]
   },
   "favorite": {
-    "definition": "To mark a channel so it appears in the Favorites sidebar category; also the marked item itself.",
+    "definition": "To mark a channel so it appears in the Favourites sidebar category; also the marked item itself. The English interface spells it the British way (favourite, Favourites, unfavourite).",
     "partOfSpeech": "noun/verb",
     "doNotTranslate": false,
     "aliases": [
       "Favorite",
       "Favorites",
-      "unfavorite"
+      "unfavorite",
+      "favourite",
+      "Favourite",
+      "Favourites",
+      "unfavourite"
     ]
   },
   "search": {

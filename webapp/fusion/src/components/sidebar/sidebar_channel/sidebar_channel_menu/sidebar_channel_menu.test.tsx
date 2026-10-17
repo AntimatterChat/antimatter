@@ -88,7 +88,7 @@ describe('components/sidebar/sidebar_channel/sidebar_channel_menu', () => {
 
         await openMenu();
 
-        expect(screen.getByRole('menuitem', {name: 'Favorite'})).toBeInTheDocument();
+        expect(screen.getByRole('menuitem', {name: 'Favourite'})).toBeInTheDocument();
         expect(screen.getByRole('menuitem', {name: 'Mute Channel'})).toBeInTheDocument();
         expect(screen.getByRole('menuitem', {name: 'Copy Link'})).toBeInTheDocument();
         expect(screen.getByRole('menuitem', {name: 'Add Members'})).toBeInTheDocument();
@@ -140,8 +140,8 @@ describe('components/sidebar/sidebar_channel/sidebar_channel_menu', () => {
         );
 
         await openMenu();
-        expect(screen.queryByRole('menuitem', {name: 'Favorite'})).not.toBeInTheDocument();
-        expect(screen.getByRole('menuitem', {name: 'Unfavorite'})).toBeInTheDocument();
+        expect(screen.queryByRole('menuitem', {name: 'Favourite'})).not.toBeInTheDocument();
+        expect(screen.getByRole('menuitem', {name: 'Unfavourite'})).toBeInTheDocument();
 
         expect(baseElement).toMatchSnapshot();
     });
@@ -229,7 +229,7 @@ describe('components/sidebar/sidebar_channel/sidebar_channel_menu', () => {
 
         await openMenu();
 
-        const favoriteItem = screen.getByRole('menuitem', {name: 'Favorite'});
+        const favoriteItem = screen.getByRole('menuitem', {name: 'Favourite'});
         expect(favoriteItem).toHaveAttribute('aria-disabled', 'true');
 
         spy.mockRestore();

@@ -125,7 +125,7 @@ export default function TopButtons({
 
     // Favorite Button State
     const favoriteIcon = isFavorite ? 'icon-star' : 'icon-star-outline';
-    const favoriteText = isFavorite ? formatMessage({id: 'channel_info_rhs.top_buttons.favorited', defaultMessage: 'Favorited'}) : formatMessage({id: 'channel_info_rhs.top_buttons.favorite', defaultMessage: 'Favorite'});
+    const favoriteText = isFavorite ? formatMessage({id: 'channel_info_rhs.top_buttons.favorited', defaultMessage: 'Favourited'}) : formatMessage({id: 'channel_info_rhs.top_buttons.favorite', defaultMessage: 'Favourite'});
 
     // Mute Button State
     const mutedIcon = isMuted ? 'icon-bell-off-outline' : 'icon-bell-outline';
@@ -142,12 +142,12 @@ export default function TopButtons({
                     isInManagedCategory ? (
                         <FormattedMessage
                             id='channelHeader.managedCategoryFavoriteDisabled'
-                            defaultMessage='Channels in managed categories cannot be favorited.'
+                            defaultMessage='Channels in managed categories cannot be favourited.'
                         />
                     ) : (
                         <FormattedMessage
                             id='channel_info_rhs.top_buttons.favorite.tooltip'
-                            defaultMessage='Add this channel to favorites'
+                            defaultMessage='Add this channel to favourites'
                         />
                     )
                 }

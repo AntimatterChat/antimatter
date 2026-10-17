@@ -128,7 +128,7 @@ export default function ChannelIntro({channel}: {channel: Channel}) {
                     {!direct && !everyoneIn && action('user-plus', formatMessage({id: 'fusion.intro.addMembers', defaultMessage: 'Add members'}), () => dialogs.addPeople(channel))}
                     {canEditHeader && !channel.header && action('pen', formatMessage({id: 'fusion.intro.setHeader', defaultMessage: 'Set a header'}), () => dispatch(openDialog(ModalIdentifiers.EDIT_CHANNEL_HEADER, EditChannelHeaderModal, {channel})))}
                     {!notes && action('bell', formatMessage({id: 'fusion.intro.notifications', defaultMessage: 'Notifications'}), () => dispatch(openDialog(ModalIdentifiers.CHANNEL_NOTIFICATIONS, ChannelNotificationsModal, {channel, currentUser: me})))}
-                    {action('star', favorite ? formatMessage({id: 'fusion.intro.favorited', defaultMessage: 'Favorite'}) : formatMessage({id: 'fusion.intro.favorite', defaultMessage: 'Add to favorites'}), () => dispatch(favorite ? unfavoriteChannel(channel.id) : favoriteChannel(channel.id)), favorite)}
+                    {action('star', favorite ? formatMessage({id: 'fusion.intro.favorited', defaultMessage: 'Favourite'}) : formatMessage({id: 'fusion.intro.favorite', defaultMessage: 'Add to favourites'}), () => dispatch(favorite ? unfavoriteChannel(channel.id) : favoriteChannel(channel.id)), favorite)}
                     {member && pluginButtons.map((button) => (
                         <button
                             key={button.id}

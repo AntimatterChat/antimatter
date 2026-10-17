@@ -6,6 +6,7 @@ import React from 'react';
 import type {Channel} from '@mattermost/types/channels';
 import type {TeamKind} from '@mattermost/types/teams';
 
+import {favoriteChannel} from 'mattermost-redux/actions/channels';
 import {patchTeam} from 'mattermost-redux/actions/teams';
 
 import {muteFor} from 'fusion/sidebar/timed_mute';
@@ -46,6 +47,10 @@ jest.mock('fusion/sidebar/timed_mute', () => ({
     getMuteEnd: () => 0,
     muteFor: jest.fn(() => ({type: 'MOCK_MUTE'})),
     unmute: jest.fn(() => ({type: 'MOCK_UNMUTE'})),
+}));
+jest.mock('mattermost-redux/actions/channels', () => ({
+    ...jest.requireActual('mattermost-redux/actions/channels'),
+    favoriteChannel: jest.fn(() => ({type: 'MOCK_FAVORITE'})),
 }));
 jest.mock('mattermost-redux/actions/teams', () => ({
     ...jest.requireActual('mattermost-redux/actions/teams'),
@@ -223,5 +228,14 @@ describe('fusion/popovers/ChannelMenu: default channels and all-channels communi
         const archived = ch('town', 'general', {delete_at: 3});
         render(archived, state({channels: [archived, dev]}));
         expect(item('Unarchive channel')).toBeInTheDocument();
+    });
+
+    // Antimatter's English interface spells it the British way.
+    test('Favourite adds the channel to Favourites, spelt the British way', async () => {
+        render(dev);
+        expect(item('Favorite')).not.toBeInTheDocument();
+        await userEvent.click(screen.getByRole('menuitem', {name: 'Favourite'}));
+        expect(favoriteChannel).toHaveBeenCalledWith('dev');
+        await waitFor(() => expect(mockToast).toHaveBeenCalledWith('Added to Favourites'));
     });
 });

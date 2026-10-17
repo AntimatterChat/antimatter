@@ -74,7 +74,7 @@ const ChannelMoveToSubMenuOld = (props: Props) => {
             let text = category.display_name;
 
             if (category.type === CategoryTypes.FAVORITES) {
-                text = formatMessage({id: 'sidebar_left.sidebar_channel_menu.favorites', defaultMessage: 'Favorites'});
+                text = formatMessage({id: 'sidebar_left.sidebar_channel_menu.favorites', defaultMessage: 'Favourites'});
             }
             if (category.type === CategoryTypes.CHANNELS) {
                 text = formatMessage({id: 'sidebar_left.sidebar_channel_menu.channels', defaultMessage: 'Channels'});

@@ -32,7 +32,7 @@ describe('components/ChannelHeaderMenu/MenuItems/ToggleFavoriteChannel', () => {
             </WithTestMenuContext>, {},
         );
 
-        const menuItem = screen.getByText('Add to Favorites');
+        const menuItem = screen.getByText('Add to Favourites');
         expect(menuItem).toBeInTheDocument();
 
         await userEvent.click(menuItem); // Simulate click on the menu item
@@ -53,7 +53,7 @@ describe('components/ChannelHeaderMenu/MenuItems/ToggleFavoriteChannel', () => {
             </WithTestMenuContext>, {},
         );
 
-        const menuItem = screen.getByRole('menuitem', {name: 'Add to Favorites'});
+        const menuItem = screen.getByRole('menuitem', {name: 'Add to Favourites'});
         expect(menuItem).toHaveAttribute('aria-disabled', 'true');
 
         isChannelInManagedCategorySpy.mockRestore();
@@ -69,7 +69,7 @@ describe('components/ChannelHeaderMenu/MenuItems/ToggleFavoriteChannel', () => {
             </WithTestMenuContext>, {},
         );
 
-        const menuItem = screen.getByText('Remove from Favorites');
+        const menuItem = screen.getByText('Remove from Favourites');
         expect(menuItem).toBeInTheDocument();
 
         await userEvent.click(menuItem); // Simulate click on the menu item

@@ -339,7 +339,7 @@ describe('components/post_view/ChannelIntroMessages', () => {
             expect(screen.queryByText('test channel')).not.toBeInTheDocument();
 
             // Action buttons row is still rendered by the server — Favorite button is always shown
-            expect(screen.getByLabelText('Favorite')).toBeInTheDocument();
+            expect(screen.getByLabelText('Favourite')).toBeInTheDocument();
         });
 
         test('no matching registration — default body renders', () => {

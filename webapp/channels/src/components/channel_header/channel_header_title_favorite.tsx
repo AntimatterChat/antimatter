@@ -54,9 +54,9 @@ const ChannelHeaderTitleFavorite = () => {
         return null;
     }
 
-    let ariaLabel = intl.formatMessage({id: 'channelHeader.addToFavorites', defaultMessage: 'Add to Favorites'});
+    let ariaLabel = intl.formatMessage({id: 'channelHeader.addToFavorites', defaultMessage: 'Add to Favourites'});
     if (isFavorite) {
-        ariaLabel = intl.formatMessage({id: 'channelHeader.removeFromFavorites', defaultMessage: 'Remove from Favorites'});
+        ariaLabel = intl.formatMessage({id: 'channelHeader.removeFromFavorites', defaultMessage: 'Remove from Favourites'});
     }
     ariaLabel = ariaLabel.toLowerCase();
 
@@ -65,7 +65,7 @@ const ChannelHeaderTitleFavorite = () => {
         title = (
             <FormattedMessage
                 id='channelHeader.managedCategoryFavoriteDisabled'
-                defaultMessage='Channels in managed categories cannot be favorited.'
+                defaultMessage='Channels in managed categories cannot be favourited.'
             />
         );
     } else {
@@ -74,12 +74,12 @@ const ChannelHeaderTitleFavorite = () => {
                 {!isFavorite &&
                     <FormattedMessage
                         id='channelHeader.addToFavorites'
-                        defaultMessage='Add to Favorites'
+                        defaultMessage='Add to Favourites'
                     />}
                 {isFavorite &&
                     <FormattedMessage
                         id='channelHeader.removeFromFavorites'
-                        defaultMessage='Remove from Favorites'
+                        defaultMessage='Remove from Favourites'
                     />}
             </>
         );

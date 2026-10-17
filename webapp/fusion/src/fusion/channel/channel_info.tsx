@@ -111,7 +111,7 @@ export default function ChannelInfo({channel, title, anchor, onCollection, onMem
                 )}
             </div>
             <div className={am('info-acts')}>
-                {action('star', favorite ? formatMessage({id: 'fusion.info.favorited', defaultMessage: 'Favorited'}) : formatMessage({id: 'fusion.info.favorite', defaultMessage: 'Favorite'}), () => dispatch(favorite ? unfavoriteChannel(channel.id) : favoriteChannel(channel.id)), favorite)}
+                {action('star', favorite ? formatMessage({id: 'fusion.info.favorited', defaultMessage: 'Favourited'}) : formatMessage({id: 'fusion.info.favorite', defaultMessage: 'Favourite'}), () => dispatch(favorite ? unfavoriteChannel(channel.id) : favoriteChannel(channel.id)), favorite)}
                 {action(muted ? 'bell-off' : 'bell', muted ? formatMessage({id: 'fusion.info.muted', defaultMessage: 'Muted'}) : formatMessage({id: 'fusion.info.mute', defaultMessage: 'Mute'}), () => dispatch(muted ? unmute(channel.id) : muteFor(channel.id, 0)), muted)}
                 {!direct && !archived && action('user-plus', formatMessage({id: 'fusion.info.add', defaultMessage: 'Add people'}), () => {
                     onClose();

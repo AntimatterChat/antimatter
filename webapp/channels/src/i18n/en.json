@@ -17820,16 +17820,16 @@
     "description": "Tooltip on the copy-link button at the top of the channel info right-hand sidebar; copies the channel's URL."
   },
   "channel_info_rhs.top_buttons.favorite": {
-    "defaultMessage": "Favorite",
-    "description": "Label of the favorite toggle button at the top of the channel info sidebar when the channel is not favorited ('Favorite' as a verb); also used in the channel intro."
+    "defaultMessage": "Favourite",
+    "description": "Label of the favourite toggle button at the top of the channel info sidebar when the channel is not favourited ('Favourite' as a verb); also used in the channel intro."
   },
   "channel_info_rhs.top_buttons.favorite.tooltip": {
-    "defaultMessage": "Add this channel to favorites",
-    "description": "Tooltip on the favorite button at the top of the channel info right-hand sidebar; adds the channel to the Favorites sidebar category."
+    "defaultMessage": "Add this channel to favourites",
+    "description": "Tooltip on the favourite button at the top of the channel info right-hand sidebar; adds the channel to the Favourites sidebar category."
   },
   "channel_info_rhs.top_buttons.favorited": {
-    "defaultMessage": "Favorited",
-    "description": "Toggled-state label on the favorite button in the channel info sidebar, shown when the channel is already a favorite; past participle, compact space."
+    "defaultMessage": "Favourited",
+    "description": "Toggled-state label on the favourite button in the channel info sidebar, shown when the channel is already a favourite; past participle, compact space."
   },
   "channel_info_rhs.top_buttons.mute": {
     "defaultMessage": "Mute",
@@ -18948,20 +18948,20 @@
     "description": "Help text under the auto-translation toggle explaining messages will be translated into each member's language."
   },
   "channelHeader.addToFavorites": {
-    "defaultMessage": "Add to Favorites",
-    "description": "Tooltip and aria-label of the star button in the channel header when the channel is not yet favorited."
+    "defaultMessage": "Add to Favourites",
+    "description": "Tooltip and aria-label of the star button in the channel header when the channel is not yet favourited."
   },
   "channelHeader.hideInfo": {
     "defaultMessage": "Close Info",
     "description": "Menu item in the channel dropdown menu that closes the channel info sidebar."
   },
   "channelHeader.managedCategoryFavoriteDisabled": {
-    "defaultMessage": "Channels in managed categories cannot be favorited.",
-    "description": "Tooltip explaining why the favorite action is disabled: the channel is in an admin-managed sidebar category."
+    "defaultMessage": "Channels in managed categories cannot be favourited.",
+    "description": "Tooltip explaining why the favourite action is disabled: the channel is in an admin-managed sidebar category."
   },
   "channelHeader.removeFromFavorites": {
-    "defaultMessage": "Remove from Favorites",
-    "description": "Tooltip and aria-label of the star button in the channel header when the channel is already favorited."
+    "defaultMessage": "Remove from Favourites",
+    "description": "Tooltip and aria-label of the star button in the channel header when the channel is already favourited."
   },
   "channelHeader.unmute": {
     "defaultMessage": "Unmute",
@@ -27668,12 +27668,12 @@
     "description": "Accessibility label for the channel options menu button next to a channel in the left sidebar; {channelName} is the channel's name."
   },
   "sidebar_left.sidebar_channel_menu.favoriteChannel": {
-    "defaultMessage": "Favorite",
-    "description": "Menu item in a sidebar channel's options menu that adds the channel to Favorites; 'Favorite' is a verb."
+    "defaultMessage": "Favourite",
+    "description": "Menu item in a sidebar channel's options menu that adds the channel to Favourites; 'Favourite' is a verb."
   },
   "sidebar_left.sidebar_channel_menu.favorites": {
-    "defaultMessage": "Favorites",
-    "description": "Destination option in the 'Move to' submenu of a channel's menu; the Favorites sidebar category."
+    "defaultMessage": "Favourites",
+    "description": "Destination option in the 'Move to' submenu of a channel's menu; the Favourites sidebar category."
   },
   "sidebar_left.sidebar_channel_menu.leaveChannel": {
     "defaultMessage": "Leave Channel",
@@ -27716,8 +27716,8 @@
     "description": "Menu item in the sidebar channel menu that mutes the channel; 'Mute' is a verb."
   },
   "sidebar_left.sidebar_channel_menu.unfavoriteChannel": {
-    "defaultMessage": "Unfavorite",
-    "description": "Menu item in a sidebar channel's options menu that removes the channel from Favorites; 'Unfavorite' is a verb."
+    "defaultMessage": "Unfavourite",
+    "description": "Menu item in a sidebar channel's options menu that removes the channel from Favourites; 'Unfavourite' is a verb."
   },
   "sidebar_left.sidebar_channel_menu.unmute": {
     "defaultMessage": "Unmute",
@@ -27844,8 +27844,8 @@
     "description": "All-caps header of the Direct Messages category in the channel sidebar; compact space."
   },
   "sidebar.types.favorites": {
-    "defaultMessage": "FAVORITES",
-    "description": "All-caps header of the Favorites category in the channel sidebar; compact space."
+    "defaultMessage": "FAVOURITES",
+    "description": "All-caps header of the Favourites category in the channel sidebar; compact space."
   },
   "sidebar.types.unreadChannels.ariaLabel": {
     "defaultMessage": "Unread",

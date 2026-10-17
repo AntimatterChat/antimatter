@@ -4080,7 +4080,7 @@
   {
     "id": "api.preference.delete_preferences.update_sidebar.app_error",
     "translation": "Unable to update sidebar to match deleted preferences",
-    "description": "Internal error when updating the channel sidebar (e.g. favorites categories) after preference deletion fails."
+    "description": "Internal error when updating the channel sidebar (e.g. favourites categories) after preference deletion fails."
   },
   {
     "id": "api.preference.preferences_category.get.app_error",
@@ -4095,7 +4095,7 @@
   {
     "id": "api.preference.update_preferences.update_sidebar.app_error",
     "translation": "Unable to update sidebar to match updated preferences",
-    "description": "Internal error when updating the channel sidebar (e.g. favorites categories) after a preference change fails."
+    "description": "Internal error when updating the channel sidebar (e.g. favourites categories) after a preference change fails."
   },
   {
     "id": "api.property.v2_group_not_found.app_error",
@@ -6963,7 +6963,7 @@
   {
     "id": "app.channel.create_initial_sidebar_categories.internal_error",
     "translation": "Unable to create initial sidebar categories for user.",
-    "description": "API error returned when the server fails to create the default sidebar categories (Favorites, Channels, Direct Messages) for a user."
+    "description": "API error returned when the server fails to create the default sidebar categories (Favourites, Channels, Direct Messages) for a user."
   },
   {
     "id": "app.channel.delete.app_error",
@@ -9014,7 +9014,7 @@
   {
     "id": "app.import.import_user_channels.save_preferences.error",
     "translation": "Error importing user channel memberships. Failed to save preferences.",
-    "description": "Bulk import error shown to admins when saving channel-related preferences (e.g. favorites) for an imported user fails."
+    "description": "Bulk import error shown to admins when saving channel-related preferences (e.g. favourites) for an imported user fails."
   },
   {
     "id": "app.import.import_user_teams.save_members.conflict.app_error",
@@ -9143,8 +9143,8 @@
   },
   {
     "id": "app.import.validate_direct_channel_import_data.unknown_favoriter.error",
-    "translation": "Direct channel can only be favorited by members. \"{{.Username}}\" is not a member.",
-    "description": "Bulk-import validation error when someone listed as favoriting a direct channel is not one of its members; {{.Username}} is that user's username."
+    "translation": "Direct channel can only be favourited by members. \"{{.Username}}\" is not a member.",
+    "description": "Bulk-import validation error when someone listed as favouriting a direct channel is not one of its members; {{.Username}} is that user's username."
   },
   {
     "id": "app.import.validate_direct_post_import_data.attachment.error",

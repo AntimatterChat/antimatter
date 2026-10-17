@@ -37,13 +37,13 @@ const ToggleFavoriteChannel = ({
     let text = (
         <FormattedMessage
             id='channelHeader.addToFavorites'
-            defaultMessage='Add to Favorites'
+            defaultMessage='Add to Favourites'
         />);
     if (isFavorite) {
         text = (
             <FormattedMessage
                 id='channelHeader.removeFromFavorites'
-                defaultMessage='Remove from Favorites'
+                defaultMessage='Remove from Favourites'
             />);
     }
 
@@ -53,7 +53,7 @@ const ToggleFavoriteChannel = ({
                 title={
                     <FormattedMessage
                         id='channelHeader.managedCategoryFavoriteDisabled'
-                        defaultMessage='Channels in managed categories cannot be favorited.'
+                        defaultMessage='Channels in managed categories cannot be favourited.'
                     />
                 }
             >

@@ -3215,6 +3215,22 @@ func (s *TimerLayerChannelStore) RemoveMembers(rctx request.CTX, channelID strin
 	return err
 }
 
+func (s *TimerLayerChannelStore) RenameFavoritesCategories(from string, to string, afterID string, limit int) (string, int64, error) {
+	start := time.Now()
+
+	result, resultVar1, err := s.ChannelStore.RenameFavoritesCategories(from, to, afterID, limit)
+
+	elapsed := float64(time.Since(start)) / float64(time.Second)
+	if s.Root.Metrics != nil {
+		success := "false"
+		if err == nil {
+			success = "true"
+		}
+		s.Root.Metrics.ObserveStoreMethodDuration("ChannelStore.RenameFavoritesCategories", success, elapsed)
+	}
+	return result, resultVar1, err
+}
+
 func (s *TimerLayerChannelStore) ResetAllChannelSchemes() error {
 	start := time.Now()
 

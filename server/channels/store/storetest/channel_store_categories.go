@@ -1017,7 +1017,7 @@ func testUpdateSidebarCategories(t *testing.T, rctx request.CTX, ss store.Store)
 		// Which somehow blanks out stuff because ???
 		got, err := ss.Channel().GetSidebarCategory(favoritesCategory.Id)
 		require.NoError(t, err)
-		assert.Equal(t, "Favorites", got.DisplayName)
+		assert.Equal(t, "Favourites", got.DisplayName)
 	})
 
 	t.Run("categories should be returned in their original order", func(t *testing.T) {
@@ -1105,8 +1105,8 @@ func testUpdateSidebarCategories(t *testing.T, rctx request.CTX, ss store.Store)
 		updatedCategories, _, err := ss.Channel().UpdateSidebarCategories(userID, team.Id, categoriesToUpdate)
 		assert.NoError(t, err)
 
-		assert.NotEqual(t, "Favorites", categoriesToUpdate[0].DisplayName)
-		assert.Equal(t, "Favorites", updatedCategories[0].DisplayName)
+		assert.NotEqual(t, "Favourites", categoriesToUpdate[0].DisplayName)
+		assert.Equal(t, "Favourites", updatedCategories[0].DisplayName)
 		assert.NotEqual(t, model.SidebarCategoryChannels, categoriesToUpdate[1].Type)
 		assert.Equal(t, model.SidebarCategoryChannels, updatedCategories[1].Type)
 		assert.NotEqual(t, []string{}, categoriesToUpdate[2].Channels)

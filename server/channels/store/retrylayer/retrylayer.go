@@ -3741,6 +3741,27 @@ func (s *RetryLayerChannelStore) RemoveMembers(rctx request.CTX, channelID strin
 
 }
 
+func (s *RetryLayerChannelStore) RenameFavoritesCategories(from string, to string, afterID string, limit int) (string, int64, error) {
+
+	tries := 0
+	for {
+		result, resultVar1, err := s.ChannelStore.RenameFavoritesCategories(from, to, afterID, limit)
+		if err == nil {
+			return result, resultVar1, nil
+		}
+		if !isRepeatableError(err) {
+			return result, resultVar1, err
+		}
+		tries++
+		if tries >= 3 {
+			err = errors.Wrap(err, "giving up after 3 consecutive repeatable transaction failures")
+			return result, resultVar1, err
+		}
+		timepkg.Sleep(100 * timepkg.Millisecond)
+	}
+
+}
+
 func (s *RetryLayerChannelStore) ResetAllChannelSchemes() error {
 
 	tries := 0

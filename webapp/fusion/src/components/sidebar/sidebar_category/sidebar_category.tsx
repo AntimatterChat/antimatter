@@ -461,6 +461,6 @@ const categoryNames = defineMessages({
     },
     favorites: {
         id: 'sidebar.types.favorites',
-        defaultMessage: 'FAVORITES',
+        defaultMessage: 'FAVOURITES',
     },
 });

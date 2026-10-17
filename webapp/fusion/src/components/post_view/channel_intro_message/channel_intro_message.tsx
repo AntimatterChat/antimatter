@@ -761,13 +761,13 @@ function createFavoriteButton(isFavorite: boolean, toggleFavorite: () => void, d
         favoriteText = (
             <FormattedMessage
                 id='channel_info_rhs.top_buttons.favorited'
-                defaultMessage='Favorited'
+                defaultMessage='Favourited'
             />);
     } else {
         favoriteText = (
             <FormattedMessage
                 id='channel_info_rhs.top_buttons.favorite'
-                defaultMessage='Favorite'
+                defaultMessage='Favourite'
             />);
     }
 
@@ -777,7 +777,7 @@ function createFavoriteButton(isFavorite: boolean, toggleFavorite: () => void, d
             className={`action-button ${isFavorite ? 'active' : ''}  ${classes}`}
             onClick={toggleFavorite}
             disabled={disabled}
-            aria-label={'Favorite'}
+            aria-label={'Favourite'}
         >
             {isFavorite ? <StarIcon size={24}/> : <StarOutlineIcon size={24}/>}
             {favoriteText}
@@ -790,7 +790,7 @@ function createFavoriteButton(isFavorite: boolean, toggleFavorite: () => void, d
                 title={
                     <FormattedMessage
                         id='channelHeader.managedCategoryFavoriteDisabled'
-                        defaultMessage='Channels in managed categories cannot be favorited.'
+                        defaultMessage='Channels in managed categories cannot be favourited.'
                     />
                 }
             >

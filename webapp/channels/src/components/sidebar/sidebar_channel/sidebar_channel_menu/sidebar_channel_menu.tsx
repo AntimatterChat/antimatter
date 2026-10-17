@@ -114,7 +114,7 @@ const SidebarChannelMenu = ({
                 labels={(
                     <FormattedMessage
                         id='sidebar_left.sidebar_channel_menu.unfavoriteChannel'
-                        defaultMessage='Unfavorite'
+                        defaultMessage='Unfavourite'
                     />
                 )}
                 disabled={isInManagedCategory}
@@ -133,7 +133,7 @@ const SidebarChannelMenu = ({
                 labels={(
                     <FormattedMessage
                         id='sidebar_left.sidebar_channel_menu.favoriteChannel'
-                        defaultMessage='Favorite'
+                        defaultMessage='Favourite'
                     />
                 )}
                 disabled={isInManagedCategory}
@@ -146,7 +146,7 @@ const SidebarChannelMenu = ({
             title={
                 <FormattedMessage
                     id='channelHeader.managedCategoryFavoriteDisabled'
-                    defaultMessage='Channels in managed categories cannot be favorited.'
+                    defaultMessage='Channels in managed categories cannot be favourited.'
                 />
             }
         >

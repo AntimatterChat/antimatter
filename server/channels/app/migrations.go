@@ -1572,6 +1572,7 @@ func (s *Server) doAppMigrations() {
 		{"Antimatter Community Kinds Migration", s.doCommunityKindsMigration},
 		{"Antimatter AI Connections From Agents Migration", s.doAIConnectionsFromAgentsMigration},
 		{"Antimatter General Channel Migration", s.doGeneralChannelMigration},
+		{"Antimatter Favourites Category Migration", s.doFavouritesCategoryMigration},
 	}
 
 	for i := range m1 {

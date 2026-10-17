@@ -212,10 +212,10 @@ export default function ChannelMenu({channel, anchor, point, placement = 'right'
             )}
             <MenuItem
                 icon='star'
-                label={favorite ? formatMessage({id: 'fusion.channelMenu.unfavorite', defaultMessage: 'Unfavorite'}) : formatMessage({id: 'fusion.channelMenu.favorite', defaultMessage: 'Favorite'})}
+                label={favorite ? formatMessage({id: 'fusion.channelMenu.unfavorite', defaultMessage: 'Unfavourite'}) : formatMessage({id: 'fusion.channelMenu.favorite', defaultMessage: 'Favourite'})}
                 onClick={run(() => {
                     dispatch(favorite ? unfavoriteChannel(channel.id) : favoriteChannel(channel.id));
-                    toast(favorite ? formatMessage({id: 'fusion.toast.unfavorited', defaultMessage: 'Removed from Favorites'}) : formatMessage({id: 'fusion.toast.favorited', defaultMessage: 'Added to Favorites'}));
+                    toast(favorite ? formatMessage({id: 'fusion.toast.unfavorited', defaultMessage: 'Removed from Favourites'}) : formatMessage({id: 'fusion.toast.favorited', defaultMessage: 'Added to Favourites'}));
                 })}
             />
             {muted ? (

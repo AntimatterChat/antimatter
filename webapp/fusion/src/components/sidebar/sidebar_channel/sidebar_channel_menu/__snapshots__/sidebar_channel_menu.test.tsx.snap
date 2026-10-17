@@ -148,7 +148,7 @@ exports[`components/sidebar/sidebar_channel/sidebar_channel_menu should match sn
           <div
             class="label-elements"
           >
-            Favorite
+            Favourite
           </div>
         </li>
         <li
@@ -441,7 +441,7 @@ exports[`components/sidebar/sidebar_channel/sidebar_channel_menu should match sn
           <div
             class="label-elements"
           >
-            Favorite
+            Favourite
           </div>
         </li>
         <li
@@ -734,7 +734,7 @@ exports[`components/sidebar/sidebar_channel/sidebar_channel_menu should match sn
           <div
             class="label-elements"
           >
-            Favorite
+            Favourite
           </div>
         </li>
         <li
@@ -1027,7 +1027,7 @@ exports[`components/sidebar/sidebar_channel/sidebar_channel_menu should show cor
           <div
             class="label-elements"
           >
-            Favorite
+            Favourite
           </div>
         </li>
         <li
@@ -1252,7 +1252,7 @@ exports[`components/sidebar/sidebar_channel/sidebar_channel_menu should show cor
           <div
             class="label-elements"
           >
-            Favorite
+            Favourite
           </div>
         </li>
         <li
@@ -1510,7 +1510,7 @@ exports[`components/sidebar/sidebar_channel/sidebar_channel_menu should show cor
           <div
             class="label-elements"
           >
-            Unfavorite
+            Unfavourite
           </div>
         </li>
         <li
@@ -1803,7 +1803,7 @@ exports[`components/sidebar/sidebar_channel/sidebar_channel_menu should show cor
           <div
             class="label-elements"
           >
-            Favorite
+            Favourite
           </div>
         </li>
         <li
@@ -2096,7 +2096,7 @@ exports[`components/sidebar/sidebar_channel/sidebar_channel_menu should show cor
           <div
             class="label-elements"
           >
-            Favorite
+            Favourite
           </div>
         </li>
         <li
@@ -2389,7 +2389,7 @@ exports[`components/sidebar/sidebar_channel/sidebar_channel_menu should show cor
           <div
             class="label-elements"
           >
-            Favorite
+            Favourite
           </div>
         </li>
         <li
@@ -2682,7 +2682,7 @@ exports[`components/sidebar/sidebar_channel/sidebar_channel_menu should show cor
           <div
             class="label-elements"
           >
-            Favorite
+            Favourite
           </div>
         </li>
         <li

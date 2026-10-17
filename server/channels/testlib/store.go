@@ -55,6 +55,7 @@ func GetMockStoreForSetupFunctions() *mocks.Store {
 	systemStore.On("GetByName", "AntimatterCommunityKindsMigrationComplete").Return(&model.System{Name: "AntimatterCommunityKindsMigrationComplete", Value: "true"}, nil)
 	systemStore.On("GetByName", "AntimatterAIConnectionsFromAgentsMigrationComplete").Return(&model.System{Name: "AntimatterAIConnectionsFromAgentsMigrationComplete", Value: "true"}, nil)
 	systemStore.On("GetByName", "AntimatterGeneralChannelMigrationComplete").Return(&model.System{Name: "AntimatterGeneralChannelMigrationComplete", Value: "true"}, nil)
+	systemStore.On("GetByName", "AntimatterFavouritesCategoryMigrationComplete").Return(&model.System{Name: "AntimatterFavouritesCategoryMigrationComplete", Value: "true"}, nil)
 	systemStore.On("GetByName", model.MigrationKeyEmojiPermissionsSplit).Return(&model.System{Name: model.MigrationKeyEmojiPermissionsSplit, Value: "true"}, nil)
 	systemStore.On("GetByName", model.MigrationKeyWebhookPermissionsSplit).Return(&model.System{Name: model.MigrationKeyWebhookPermissionsSplit, Value: "true"}, nil)
 	systemStore.On("GetByName", model.MigrationKeyIntegrationsOwnPermissions).Return(&model.System{Name: model.MigrationKeyIntegrationsOwnPermissions, Value: "true"}, nil)

@@ -2743,6 +2743,41 @@ func (_m *ChannelStore) RemoveMembers(rctx request.CTX, channelID string, userId
 	return r0
 }
 
+// RenameFavoritesCategories provides a mock function with given fields: from, to, afterID, limit
+func (_m *ChannelStore) RenameFavoritesCategories(from string, to string, afterID string, limit int) (string, int64, error) {
+	ret := _m.Called(from, to, afterID, limit)
+
+	if len(ret) == 0 {
+		panic("no return value specified for RenameFavoritesCategories")
+	}
+
+	var r0 string
+	var r1 int64
+	var r2 error
+	if rf, ok := ret.Get(0).(func(string, string, string, int) (string, int64, error)); ok {
+		return rf(from, to, afterID, limit)
+	}
+	if rf, ok := ret.Get(0).(func(string, string, string, int) string); ok {
+		r0 = rf(from, to, afterID, limit)
+	} else {
+		r0 = ret.Get(0).(string)
+	}
+
+	if rf, ok := ret.Get(1).(func(string, string, string, int) int64); ok {
+		r1 = rf(from, to, afterID, limit)
+	} else {
+		r1 = ret.Get(1).(int64)
+	}
+
+	if rf, ok := ret.Get(2).(func(string, string, string, int) error); ok {
+		r2 = rf(from, to, afterID, limit)
+	} else {
+		r2 = ret.Error(2)
+	}
+
+	return r0, r1, r2
+}
+
 // ResetAllChannelSchemes provides a mock function with no fields
 func (_m *ChannelStore) ResetAllChannelSchemes() error {
 	ret := _m.Called()

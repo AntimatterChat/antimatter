@@ -88,7 +88,7 @@ const ChannelMoveToSubMenu = (props: Props) => {
                 text = (
                     <FormattedMessage
                         id='sidebar_left.sidebar_channel_menu.favorites'
-                        defaultMessage='Favorites'
+                        defaultMessage='Favourites'
                     />
                 );
             }
