@@ -181,4 +181,12 @@ describe('components/channel_layout/ChannelIdentifierRouter', () => {
         expect(baseProps.actions.focusPost).toHaveBeenCalledTimes(2);
         expect(baseProps.actions.focusPost).toHaveBeenLastCalledWith('second', '/team/channels/town', 'me');
     });
+
+    test('leaving the linked message (Jump to present) cancels its highlight\'s end, which would bring it back', () => {
+        const {rerender} = render(<ChannelIdentifierRouter {...conversation('ops-oncall', 'newroot')}/>);
+        rerender(<ChannelIdentifierRouter {...conversation('ops-oncall')}/>);
+        jest.runOnlyPendingTimers();
+        expect(mockReplace).not.toHaveBeenCalled();
+        expect(baseProps.actions.onChannelByIdentifierEnter).toHaveBeenCalledTimes(1);
+    });
 });

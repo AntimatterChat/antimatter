@@ -66,6 +66,10 @@ export default class ChannelIdentifierRouter extends React.PureComponent<Props> 
             clearTimeout(this.replaceUrlTimeout);
             this.props.actions.onChannelByIdentifierEnter(this.props);
             this.replaceUrlIfPermalink();
+        } else if (prevProps.match.params.postid && !this.props.match.params.postid) {
+            // The reader left the message (Jump to present, or a message sent): its highlight's end mustn't bring it
+            // back.
+            clearTimeout(this.replaceUrlTimeout);
         }
     }
     componentDidMount() {

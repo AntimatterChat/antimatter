@@ -64,7 +64,7 @@ export default function ChannelView({resolvingPermalink = false}: Props) {
         !haveIChannelPermission(state, channel!.team_id, channel!.id, Permissions.CREATE_POST));
 
     // The message a link opened: highlighted while the address names it, and the one the list stays around.
-    const {linkedPostId, anchorPostId} = usePermalinkAnchor(channel?.id, resolvingPermalink);
+    const {linkedPostId, anchorPostId, leaveAnchor} = usePermalinkAnchor(channel?.id, resolvingPermalink);
     const viewRef = useRef<HTMLDivElement>(null);
     const [dropping, setDropping] = useState(false);
     const voice = useIsVoiceChannel(channel?.id);
@@ -203,6 +203,7 @@ export default function ChannelView({resolvingPermalink = false}: Props) {
                         channelId={channel.id}
                         focusedPostId={anchorPostId}
                         highlight={Boolean(linkedPostId)}
+                        onJumpToPresent={leaveAnchor}
                         scrollRef={viewRef}
                         intro={<ChannelIntro channel={channel}/>}
                     />

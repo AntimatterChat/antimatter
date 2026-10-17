@@ -7,7 +7,7 @@ import {Route} from 'react-router-dom';
 
 import {PostTypes} from 'mattermost-redux/action_types';
 
-import {act, renderWithContext, screen} from 'tests/react_testing_utils';
+import {act, fireEvent, renderWithContext, screen} from 'tests/react_testing_utils';
 import {getHistory} from 'utils/browser_history';
 import {TestHelper} from 'utils/test_helper';
 
@@ -31,12 +31,14 @@ const state = {
 } as never;
 
 function Probe({channelId, resolving}: {channelId: string; resolving: boolean}) {
-    const {linkedPostId, anchorPostId} = usePermalinkAnchor(channelId, resolving);
+    const {linkedPostId, anchorPostId, leaveAnchor} = usePermalinkAnchor(channelId, resolving);
     return (
-        <div
+        <button
+            type='button'
             data-testid='probe'
             data-linked={linkedPostId || ''}
             data-anchor={anchorPostId || ''}
+            onClick={leaveAnchor}
         />
     );
 }
@@ -111,10 +113,44 @@ describe('fusion/channel/usePermalinkAnchor', () => {
         expect(probe()).toHaveAttribute('data-anchor', 'newroot');
 
         act(() => {
-            store.dispatch({type: PostTypes.RECEIVED_NEW_POST, data: TestHelper.getPostMock({id: 'me:4000', pending_post_id: 'me:4000', type: '', channel_id: 'oncall', user_id: 'me', create_at: 4000}), features: {crtEnabled: false}});
+            store.dispatch({type: PostTypes.RECEIVED_NEW_POST, data: TestHelper.getPostMock({id: 'me:now', pending_post_id: 'me:now', type: '', channel_id: 'oncall', user_id: 'me', create_at: Date.now() + 1000}), features: {crtEnabled: false}});
         });
         expect(probe()).toHaveAttribute('data-anchor', '');
         expect(history.location.pathname).toBe('/lumen/channels/ops-oncall');
         expect(history.location.state).toBeUndefined();
+    });
+
+    test('an older message of the reader\'s, loaded with the newest ones, doesn\'t move the reader', () => {
+        const {store} = setup('/lumen/channels/ops-oncall', {permalinkAnchor: 'newroot'});
+        act(() => {
+            store.dispatch({type: PostTypes.RECEIVED_NEW_POST, data: TestHelper.getPostMock({id: 'mine', type: '', channel_id: 'oncall', user_id: 'me', create_at: 2500}), features: {crtEnabled: false}});
+        });
+        expect(probe()).toHaveAttribute('data-anchor', 'newroot');
+    });
+
+    test('sending a message while the linked message is still highlighted brings back the newest messages too', () => {
+        const {history, store} = setup('/lumen/channels/ops-oncall/newroot');
+        act(() => {
+            store.dispatch({type: PostTypes.RECEIVED_NEW_POST, data: TestHelper.getPostMock({id: 'me:now', pending_post_id: 'me:now', type: '', channel_id: 'oncall', user_id: 'me', create_at: Date.now() + 1000}), features: {crtEnabled: false}});
+        });
+        expect(history.location.pathname).toBe('/lumen/channels/ops-oncall');
+        expect(probe()).toHaveAttribute('data-anchor', '');
+    });
+
+    test('Jump to present leaves the message: while it\'s highlighted, the address drops it', () => {
+        const {history} = setup('/lumen/channels/ops-oncall/newroot');
+        fireEvent.click(probe());
+        expect(history.location.pathname).toBe('/lumen/channels/ops-oncall');
+        expect(history.location.state).toBeUndefined();
+        expect(probe()).toHaveAttribute('data-linked', '');
+        expect(probe()).toHaveAttribute('data-anchor', '');
+    });
+
+    test('Jump to present leaves the message: once its highlight has ended, the address\'s state drops it', () => {
+        const {history} = setup('/lumen/channels/ops-oncall', {permalinkAnchor: 'newroot'});
+        fireEvent.click(probe());
+        expect(history.location.pathname).toBe('/lumen/channels/ops-oncall');
+        expect(history.location.state).toBeUndefined();
+        expect(probe()).toHaveAttribute('data-anchor', '');
     });
 });
