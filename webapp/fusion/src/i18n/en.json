@@ -1995,6 +1995,118 @@
     "defaultMessage": "Performance Monitoring",
     "description": "Page name for Environment > Performance Monitoring in the System Console sidebar."
   },
+  "admin.ai.connections.search": {
+    "defaultMessage": "AI providers, API keys, models, limits and usage",
+    "description": "Search keywords for the System Console's Model connections page (not shown as a sentence; used to find the page in the console search)."
+  },
+  "admin.ai.connections.title": {
+    "defaultMessage": "Model connections",
+    "description": "Page title of System Console › AI › Model connections."
+  },
+  "admin.ai.features.attention": {
+    "defaultMessage": "This connection needs attention: {reason}",
+    "description": "Warning under a feature's connection picker when the picked connection needs an admin's attention; {reason} is the server's explanation."
+  },
+  "admin.ai.features.attentionOption": {
+    "defaultMessage": "{name} (needs attention)",
+    "description": "Option in the model connection drop-down for a connection that needs attention; {name} is the connection's name."
+  },
+  "admin.ai.features.autoTranslation": {
+    "defaultMessage": "Auto-translation",
+    "description": "Setting label on the Built-in features page: the model connection used for automatic message translation."
+  },
+  "admin.ai.features.autoTranslationHelp": {
+    "defaultMessage": "Used when the translation provider is \"Model connection\", in <link>Site Configuration › Localization</link>.",
+    "description": "Help text under the auto-translation setting; <link>…</link> wraps the System Console page path 'Site Configuration › Localization'. Keep the tags; translate the text inside."
+  },
+  "admin.ai.features.defaultChat": {
+    "defaultMessage": "The connection's chat model ({model})",
+    "description": "Model drop-down option meaning 'use the connection's default chat model'; {model} is that model's name."
+  },
+  "admin.ai.features.defaultChatNone": {
+    "defaultMessage": "The connection's chat model (none set: pick one)",
+    "description": "Model drop-down option when the connection names no default chat model: the admin must pick a model."
+  },
+  "admin.ai.features.defaultSpeech": {
+    "defaultMessage": "The text to speech model ({model})",
+    "description": "Model drop-down option for text to speech meaning 'use the model set in the Text to speech settings'; {model} is that model's name."
+  },
+  "admin.ai.features.defaultSpeechNone": {
+    "defaultMessage": "The text to speech model (none set: pick one)",
+    "description": "Model drop-down option for text to speech when the Text to speech settings name no model."
+  },
+  "admin.ai.features.lead": {
+    "defaultMessage": "Pick the server-wide model connection each built-in feature uses, and its model. A feature without one uses no AI. The built-in features don't need the AI chat app.",
+    "description": "Introduction at the top of System Console › AI › Built-in features. 'AI chat' is the name of an app (plugin)."
+  },
+  "admin.ai.features.loadFailed": {
+    "defaultMessage": "The model connections couldn't be loaded.",
+    "description": "Error shown when the list of model connections can't be fetched for the built-in feature pickers."
+  },
+  "admin.ai.features.loadModels": {
+    "defaultMessage": "Load models",
+    "description": "Button that asks the AI endpoint for the list of models it offers."
+  },
+  "admin.ai.features.missing": {
+    "defaultMessage": "This connection no longer exists or isn't server-wide: the feature fails until another one is picked.",
+    "description": "Warning under a feature's connection picker when the saved connection was deleted or is a community's (not server-wide)."
+  },
+  "admin.ai.features.model": {
+    "defaultMessage": "Model",
+    "description": "Label of the model drop-down of a built-in AI feature (which AI model of the connection it uses)."
+  },
+  "admin.ai.features.modelHelp": {
+    "defaultMessage": "The connection's defaults are listed; load the models to see all those its endpoint offers.",
+    "description": "Help text under a feature's model drop-down."
+  },
+  "admin.ai.features.modelsFailed": {
+    "defaultMessage": "The models couldn't be loaded.",
+    "description": "Error shown when the models offered by a connection's endpoint can't be listed."
+  },
+  "admin.ai.features.noConnections": {
+    "defaultMessage": "There are no server-wide model connections yet: add one in <link>AI › Model connections</link>.",
+    "description": "Shown on the Built-in features page when no server-wide model connection exists; <link>…</link> wraps the page path 'AI › Model connections'."
+  },
+  "admin.ai.features.off": {
+    "defaultMessage": "Off: this feature uses no AI.",
+    "description": "Help text when a built-in AI feature has no model connection picked ('Off')."
+  },
+  "admin.ai.features.offOption": {
+    "defaultMessage": "Off",
+    "description": "First option of a model connection drop-down: no connection, the feature's AI is turned off."
+  },
+  "admin.ai.features.recaps": {
+    "defaultMessage": "Recaps",
+    "description": "Setting label on the Built-in features page: the model connection used to make recaps (AI summaries of channels)."
+  },
+  "admin.ai.features.recapsHelp": {
+    "defaultMessage": "Summaries of the channels people choose, on demand or on a schedule. Recaps also need to be on in Site Configuration › Recaps.",
+    "description": "Help text under the recaps setting. 'Site Configuration › Recaps' is a System Console page path."
+  },
+  "admin.ai.features.rewrite": {
+    "defaultMessage": "Rewrite in the composer",
+    "description": "Setting label on the Built-in features page: the model connection used by the AI rewrite menu of the message box (composer)."
+  },
+  "admin.ai.features.rewriteHelp": {
+    "defaultMessage": "The AI menu of the message box: improve, shorten, fix, translate. It shows once a connection is picked.",
+    "description": "Help text under the composer rewrite setting; lists what the AI menu of the message box does."
+  },
+  "admin.ai.features.textToSpeech": {
+    "defaultMessage": "Text to speech",
+    "description": "Setting label on the Built-in features page: the model connection used to read messages aloud."
+  },
+  "admin.ai.features.textToSpeechHelp": {
+    "defaultMessage": "Reads messages aloud with the connection's /audio/speech endpoint, in place of the address and key of <link>Integrations › Text to speech</link>, which also sets the voice.",
+    "description": "Help text under the text to speech setting; /audio/speech is an API path (keep as is); <link>…</link> wraps the System Console page path 'Integrations › Text to speech'."
+  },
+  "admin.ai.features.title": {
+    "defaultMessage": "Built-in AI features",
+    "description": "Page title of System Console › AI › Built-in features."
+  },
+  "admin.ai.features.unknownOption": {
+    "defaultMessage": "Unknown connection ({id})",
+    "description": "Option in the model connection drop-down for a saved connection that no longer exists; {id} is its ID."
+  },
   "admin.audit_logging_experimental.file_enabled.help_text": {
     "defaultMessage": "Choose whether audit logs are written locally to a file or not.",
     "description": "Admin console help text under the file-output toggle on the Compliance > Audit Logging page."
@@ -9011,6 +9123,14 @@
     "defaultMessage": "Manage AI Agents",
     "description": "Name of the permission group in the scheme editor covering management of AI agents (AI assistant bots)."
   },
+  "admin.permissions.group.manage_ai_connections.description": {
+    "defaultMessage": "Manage the AI providers' addresses and keys: the server-wide connections, and a community's own.",
+    "description": "Description of the 'Manage model connections' permission group: server-wide connections and a community's own."
+  },
+  "admin.permissions.group.manage_ai_connections.name": {
+    "defaultMessage": "Manage model connections",
+    "description": "Name of a group of permissions in the System Console permission schemes: managing model connections (AI providers' addresses and API keys)."
+  },
   "admin.permissions.group.manage_incoming_webhooks.description": {
     "defaultMessage": "Manage own and others' incoming webhooks.",
     "description": "Description of the Manage Incoming Webhooks permission in the scheme editor's integrations group."
@@ -9403,6 +9523,14 @@
     "defaultMessage": "List users without team",
     "description": "Row label for the permission to list users who belong to no team, in the System Console permission scheme editor; 'List' is a verb."
   },
+  "admin.permissions.permission.manage_ai_connections.description": {
+    "defaultMessage": "Add, edit and delete the model connections of the whole server, see their usage, share them with communities, and pick the ones the built-in AI features use.",
+    "description": "Description of the permission to manage server-wide model connections."
+  },
+  "admin.permissions.permission.manage_ai_connections.name": {
+    "defaultMessage": "Manage server-wide model connections",
+    "description": "Name of the permission to manage the model connections of the whole server."
+  },
   "admin.permissions.permission.manage_channel_access_rules.description": {
     "defaultMessage": "Configure attribute-based access control policy for channels.",
     "description": "Description text for the permission to configure attribute-based access control rules on channels, in the System Console permission scheme editor."
@@ -9626,6 +9754,14 @@
   "admin.permissions.permission.manage_team_access_rules.name": {
     "defaultMessage": "Manage channel membership policies",
     "description": "Row label for the permission to manage attribute-based channel membership policies within a team, in the System Console permission scheme editor."
+  },
+  "admin.permissions.permission.manage_team_ai_connections.description": {
+    "defaultMessage": "Add, edit and delete the model connections a community uses on its own, and see their usage.",
+    "description": "Description of the permission to manage a community's own model connections."
+  },
+  "admin.permissions.permission.manage_team_ai_connections.name": {
+    "defaultMessage": "Manage the community's model connections",
+    "description": "Name of the permission to manage a community's own model connections ('community' = a team)."
   },
   "admin.permissions.permission.manage_team_roles.description": {
     "defaultMessage": "Manage team roles",
@@ -12971,6 +13107,18 @@
     "defaultMessage": "This setting has been set through an environment variable. It cannot be changed through the System Console.",
     "description": "Warning banner shown under a System Console setting that is locked because it was configured via an environment variable."
   },
+  "admin.sidebar.ai": {
+    "defaultMessage": "AI",
+    "description": "Section title in the System Console sidebar for the server's AI settings (model connections and built-in AI features)."
+  },
+  "admin.sidebar.aiBuiltInFeatures": {
+    "defaultMessage": "Built-in features",
+    "description": "System Console sidebar entry, under AI: the page where each built-in AI feature (rewrite, recaps, auto-translation, text to speech) gets a model connection."
+  },
+  "admin.sidebar.aiModelConnections": {
+    "defaultMessage": "Model connections",
+    "description": "System Console sidebar entry, under AI: the page listing model connections (AI providers' addresses and API keys)."
+  },
   "admin.sidebar.announcement": {
     "defaultMessage": "System-wide Notifications",
     "description": "Navigation item in the System Console sidebar; opens the announcement banner (system-wide notifications) settings page; compact space."
@@ -13311,17 +13459,33 @@
     "defaultMessage": "An unknown error occurred while checking the Agents plugin status.",
     "description": "Error message on the System Console Localization page when the status check of the Agents plugin (Mattermost AI plugin) fails."
   },
+  "admin.site.localization.autoTranslationAgentsOlder": {
+    "defaultMessage": "This older setting no longer needs the AI chat app: it translates with the model connection picked for auto-translation in AI › Built-in features, else with the one migrated from the app’s service. Switch to “Model connection” to pick it here.",
+    "description": "Notice shown when auto-translation still uses the older 'AI chat app's service' provider; explains it now uses a model connection. Keep the quoted option name consistent with the drop-down's 'Model connection'."
+  },
+  "admin.site.localization.autoTranslationAgentsSwitch": {
+    "defaultMessage": "Switch to Model connection",
+    "description": "Button that switches auto-translation from the older provider to 'Model connection'."
+  },
+  "admin.site.localization.autoTranslationConnectionHelp": {
+    "defaultMessage": "A server-wide connection of <link>AI › Model connections</link>. A dedicated translation model (such as HY-MT) is fast and accurate; a general LLM works too.",
+    "description": "Help text under the auto-translation model connection picker. HY-MT is the name of a translation model; 'AI › Model connections' is a System Console page path."
+  },
+  "admin.site.localization.autoTranslationConnectionTitle": {
+    "defaultMessage": "Model connection",
+    "description": "Label of the model connection picker in the auto-translation settings."
+  },
   "admin.site.localization.autoTranslationInfo": {
     "defaultMessage": "Channel admins must also enable auto-translation for each channel where they want to use it.",
     "description": "Informational note under the auto-translation setting on the System Console Localization page, telling admins that channel admins must also opt in per channel."
   },
-  "admin.site.localization.autoTranslationLLMConfigNote": {
-    "defaultMessage": "LLMs must first be configured in the Agents plugin.",
-    "description": "Note under the AI Service setting on the System Console Localization page; LLM means large language model, 'Agents' is the Mattermost AI plugin name."
+  "admin.site.localization.autoTranslationProviderAgents": {
+    "defaultMessage": "AI chat app's service (older)",
+    "description": "Option of the auto-translation provider drop-down: the older setting that named a service of the AI chat app (a plugin). 'AI chat' is the app's name."
   },
-  "admin.site.localization.autoTranslationLLMServiceTitle": {
-    "defaultMessage": "AI Service",
-    "description": "Setting label on the System Console Localization page for choosing the AI service used for auto-translation."
+  "admin.site.localization.autoTranslationProviderConnection": {
+    "defaultMessage": "Model connection (recommended)",
+    "description": "Option of the auto-translation provider drop-down: translate with a model connection (the recommended choice)."
   },
   "admin.site.localization.autoTranslationProviderDescription": {
     "defaultMessage": "<strong>NOTE:</strong> If using external translation services (e.g., cloud-based LLMs), message data may be processed outside your environment.",
@@ -13350,6 +13514,10 @@
   "admin.site.localization.autoTranslationProviderLibreTranslateURLTitle": {
     "defaultMessage": "LibreTranslate API Endpoint:",
     "description": "Setting label (with trailing colon) for the LibreTranslate server URL input on the System Console Localization page."
+  },
+  "admin.site.localization.autoTranslationProviderOpenAI": {
+    "defaultMessage": "OpenAI-compatible API, set up here",
+    "description": "Option of the auto-translation provider drop-down: an OpenAI-compatible API whose address and key are typed on this page."
   },
   "admin.site.localization.autoTranslationProviderOpenAIAPIKeyDescription": {
     "defaultMessage": "Sent as a bearer token. Leave it blank if the API needs none.",
@@ -13410,10 +13578,6 @@
   "admin.site.localization.enableAutoTranslationTitle": {
     "defaultMessage": "Auto-translation",
     "description": "Setting label on the System Console Localization page for enabling automatic message translation."
-  },
-  "admin.site.localization.goToAgentsConfig": {
-    "defaultMessage": "Go to Agents plugin config",
-    "description": "Link/button text on the System Console Localization page navigating to the Agents plugin (Mattermost AI plugin) configuration page."
   },
   "admin.site.localization.languages.description": {
     "defaultMessage": "Choose which languages should be the defaults",
@@ -15166,6 +15330,10 @@
   "admin.textToSpeech.apiKeyTitle": {
     "defaultMessage": "API key:",
     "description": ""
+  },
+  "admin.textToSpeech.connectionBanner": {
+    "defaultMessage": "Messages are read aloud with the model connection picked in AI › Built-in features: the API base URL and key below aren't used. The voice still is, and the model when the connection names none.",
+    "description": "Notice on the Text to speech settings when a model connection is picked for text to speech: the URL and API key fields of the page are then unused."
   },
   "admin.textToSpeech.enableDesc": {
     "defaultMessage": "Adds \"Read aloud\" to the menu of messages: their text is read by an OpenAI-compatible text-to-speech API (its /audio/speech endpoint).",
@@ -20955,6 +21123,530 @@
     "defaultMessage": "The AI is rewriting your message…",
     "description": ""
   },
+  "fusion.aiConnections.add": {
+    "defaultMessage": "Add a connection",
+    "description": "Button that opens the form to add a model connection."
+  },
+  "fusion.aiConnections.addLabel": {
+    "defaultMessage": "Add a model connection",
+    "description": "Accessible name of the form adding a model connection."
+  },
+  "fusion.aiConnections.allTeams": {
+    "defaultMessage": "All communities",
+    "description": "Switch: share the connection with every community."
+  },
+  "fusion.aiConnections.allTeamsDesc": {
+    "defaultMessage": "Usable in every community, and in direct and group messages. Otherwise only in the communities chosen.",
+    "description": "Help of the 'All communities' switch."
+  },
+  "fusion.aiConnections.apiKey": {
+    "defaultMessage": "API key",
+    "description": "Field label: the provider's API key (secret)."
+  },
+  "fusion.aiConnections.attentionForm": {
+    "defaultMessage": "Needs attention: {reason} Saving clears this.",
+    "description": "Notice at the top of the edit form of a connection that needs attention; {reason} is the server's explanation (a full sentence)."
+  },
+  "fusion.aiConnections.audience": {
+    "defaultMessage": "Who may use it",
+    "description": "Section heading: who may use the connection."
+  },
+  "fusion.aiConnections.audienceChosen": {
+    "defaultMessage": "Teams, roles and admins chosen",
+    "description": "Accessible name of the group of team, role and admin buttons who may use the connection."
+  },
+  "fusion.aiConnections.back": {
+    "defaultMessage": "Back to the connections",
+    "description": "Button leaving a connection's usage view, back to the list."
+  },
+  "fusion.aiConnections.baseURL": {
+    "defaultMessage": "Base URL",
+    "description": "Field label: the API's base address (URL)."
+  },
+  "fusion.aiConnections.baseURLBad": {
+    "defaultMessage": "An http or https address, without a query or a password in it.",
+    "description": "Error under the base URL field when the address isn't acceptable."
+  },
+  "fusion.aiConnections.baseURLDesc": {
+    "defaultMessage": "Up to and including /v1. Left empty: {url}.",
+    "description": "Help under the base URL field; /v1 is part of an address, keep as is; {url} is the provider's default address."
+  },
+  "fusion.aiConnections.cancel": {
+    "defaultMessage": "Cancel",
+    "description": "Button closing the form without saving, or dismissing a confirmation."
+  },
+  "fusion.aiConnections.confirm": {
+    "defaultMessage": "Delete {name}? Its key is forgotten, and what uses it stops using AI. This can't be undone.",
+    "description": "In-page confirmation before deleting a model connection; {name} is its name."
+  },
+  "fusion.aiConnections.confirmDelete": {
+    "defaultMessage": "Delete connection",
+    "description": "Button confirming the deletion of a model connection."
+  },
+  "fusion.aiConnections.confirmLabel": {
+    "defaultMessage": "Delete {name}?",
+    "description": "Accessible name of the in-page delete confirmation; {name} is the connection's name."
+  },
+  "fusion.aiConnections.create": {
+    "defaultMessage": "Add connection",
+    "description": "Button saving a new connection."
+  },
+  "fusion.aiConnections.created": {
+    "defaultMessage": "{name} added. Load its models to pick its defaults.",
+    "description": "Status message after a connection is added (the form stays open); {name} is its name."
+  },
+  "fusion.aiConnections.delete": {
+    "defaultMessage": "Delete",
+    "description": "Tooltip of the button that deletes a model connection."
+  },
+  "fusion.aiConnections.deleted": {
+    "defaultMessage": "{name} deleted. The features that used it no longer use AI until another connection is picked.",
+    "description": "Status message after a connection is deleted; {name} is its name."
+  },
+  "fusion.aiConnections.deleteFailed": {
+    "defaultMessage": "The connection couldn't be deleted.",
+    "description": "Error when deleting a model connection fails."
+  },
+  "fusion.aiConnections.deleteOne": {
+    "defaultMessage": "Delete {name}",
+    "description": "Accessible name of the delete button of one connection; {name} is its name."
+  },
+  "fusion.aiConnections.dialect": {
+    "defaultMessage": "Decisions API",
+    "description": "Label of the choice of how decisions models are called (two API styles)."
+  },
+  "fusion.aiConnections.dialect.openai": {
+    "defaultMessage": "OpenAI decisions",
+    "description": "Choice: OpenAI's decisions API style. 'OpenAI' is a company name."
+  },
+  "fusion.aiConnections.dialect.systemone": {
+    "defaultMessage": "SystemOne",
+    "description": "Choice: the SystemOne API style (a product name, keep as is)."
+  },
+  "fusion.aiConnections.dialectDesc": {
+    "defaultMessage": "How the decisions model is called: OpenAI's /v1/decisions, or the native /v1/systemone of Jev and Laya.",
+    "description": "Help of the decisions API choice; /v1/decisions and /v1/systemone are API paths and Jev and Laya product names, keep as is."
+  },
+  "fusion.aiConnections.edit": {
+    "defaultMessage": "Edit",
+    "description": "Tooltip of the button that edits a model connection."
+  },
+  "fusion.aiConnections.editLabel": {
+    "defaultMessage": "Edit {name}",
+    "description": "Accessible name of the form editing a model connection; {name} is its name."
+  },
+  "fusion.aiConnections.editOne": {
+    "defaultMessage": "Edit {name}",
+    "description": "Accessible name of the edit button of one connection, and of its edit form; {name} is its name."
+  },
+  "fusion.aiConnections.everyone": {
+    "defaultMessage": "Everyone",
+    "description": "Switch: everyone may use the connection."
+  },
+  "fusion.aiConnections.everyoneCommunityDesc": {
+    "defaultMessage": "Everyone in the community. Otherwise only its teams, roles and admins chosen.",
+    "description": "Help of the Everyone switch, for a community's own connection."
+  },
+  "fusion.aiConnections.everyoneDesc": {
+    "defaultMessage": "Everyone where it's usable. Otherwise only the teams, roles and admins chosen.",
+    "description": "Help of the Everyone switch, for a server-wide connection; 'teams' are groups of people within a community."
+  },
+  "fusion.aiConnections.guests": {
+    "defaultMessage": "Guests too",
+    "description": "Switch: guest accounts may use the connection too (off by default)."
+  },
+  "fusion.aiConnections.guestsDesc": {
+    "defaultMessage": "Guests may use it only when this is on, even with Everyone.",
+    "description": "Help of the 'Guests too' switch."
+  },
+  "fusion.aiConnections.headerAdd": {
+    "defaultMessage": "Add a header",
+    "description": "Button adding an extra header row."
+  },
+  "fusion.aiConnections.headerName": {
+    "defaultMessage": "Name of header {n}",
+    "description": "Accessible name of a header's name field; {n} is its number."
+  },
+  "fusion.aiConnections.headerRemove": {
+    "defaultMessage": "Remove header {n}",
+    "description": "Accessible name of the button removing a header row; {n} is its number."
+  },
+  "fusion.aiConnections.headers": {
+    "defaultMessage": "Extra headers",
+    "description": "Field label: extra HTTP headers sent with each call to the provider (e.g. an organisation ID)."
+  },
+  "fusion.aiConnections.headersBad": {
+    "defaultMessage": "A header name is letters, digits and - only, and can't be Host, Cookie or Content-Type.",
+    "description": "Error when a header name isn't allowed; Host, Cookie and Content-Type are HTTP header names, keep as is."
+  },
+  "fusion.aiConnections.headersChange": {
+    "defaultMessage": "Change",
+    "description": "Button to edit the saved extra headers (their values must be typed again)."
+  },
+  "fusion.aiConnections.headersKeep": {
+    "defaultMessage": "Keep the saved headers",
+    "description": "Button cancelling header changes and keeping the saved headers."
+  },
+  "fusion.aiConnections.headersNone": {
+    "defaultMessage": "None",
+    "description": "Shown when the connection sends no extra headers."
+  },
+  "fusion.aiConnections.headersRemove": {
+    "defaultMessage": "Remove all",
+    "description": "Button removing all the extra headers."
+  },
+  "fusion.aiConnections.headersRetype": {
+    "defaultMessage": "Saved values are never shown: type each value again. Saving replaces all the headers.",
+    "description": "Note when editing headers: saved values are never shown and saving replaces all headers."
+  },
+  "fusion.aiConnections.headerValue": {
+    "defaultMessage": "Value of header {n}",
+    "description": "Accessible name of a header's value field; {n} is its number."
+  },
+  "fusion.aiConnections.keyAdd": {
+    "defaultMessage": "Add a key",
+    "description": "Button to add an API key to a connection that has none."
+  },
+  "fusion.aiConnections.keyKeep": {
+    "defaultMessage": "Keep the saved key",
+    "description": "Button that cancels replacing the key and keeps the saved one."
+  },
+  "fusion.aiConnections.keyNone": {
+    "defaultMessage": "No key",
+    "description": "Shown when the connection has no API key."
+  },
+  "fusion.aiConnections.keyNote": {
+    "defaultMessage": "Stored encrypted. It's never shown again, only its last four characters.",
+    "description": "Note under the API key field: keys are stored encrypted and never shown again."
+  },
+  "fusion.aiConnections.keyPlaceholder": {
+    "defaultMessage": "Paste the key; leave it empty if the endpoint needs none",
+    "description": "Placeholder of the API key field."
+  },
+  "fusion.aiConnections.keyRemove": {
+    "defaultMessage": "Remove",
+    "description": "Button to remove the saved API key (on save)."
+  },
+  "fusion.aiConnections.keyRemoving": {
+    "defaultMessage": "The key is removed when you save.",
+    "description": "Notice after Remove: the key goes when the form is saved."
+  },
+  "fusion.aiConnections.keyReplace": {
+    "defaultMessage": "Replace",
+    "description": "Button to type a new API key in place of the saved one."
+  },
+  "fusion.aiConnections.keySet": {
+    "defaultMessage": "Set",
+    "description": "Shown in place of a saved API key too short to show its end."
+  },
+  "fusion.aiConnections.keySetLast4": {
+    "defaultMessage": "Set, ends in ••{last4}",
+    "description": "Shown in place of a saved API key, which is never shown again; {last4} is its last four characters."
+  },
+  "fusion.aiConnections.lead": {
+    "defaultMessage": "The AI providers Antimatter may call, with their keys. The built-in features use the server-wide ones picked in Built-in features; apps use those their people may use. Keys are stored encrypted and never shown again.",
+    "description": "Introduction above the System Console's list of model connections. 'Built-in features' is the name of another page; 'AI chat' style app names stay as is."
+  },
+  "fusion.aiConnections.leadCommunity": {
+    "defaultMessage": "AI providers this community uses on its own, with their keys, for the apps of its people. Keys are stored encrypted and never shown again.",
+    "description": "Introduction above a community's own list of model connections, in the community settings."
+  },
+  "fusion.aiConnections.limit.budget": {
+    "defaultMessage": "Tokens per month",
+    "description": "Field label: maximum tokens (units of AI text) per month for the whole connection."
+  },
+  "fusion.aiConnections.limit.rpm": {
+    "defaultMessage": "Requests per minute",
+    "description": "Field label: maximum requests per minute for the whole connection."
+  },
+  "fusion.aiConnections.limit.userBudget": {
+    "defaultMessage": "Per person, tokens per month",
+    "description": "Field label: maximum tokens per month for each person."
+  },
+  "fusion.aiConnections.limit.userRpm": {
+    "defaultMessage": "Per person, requests per minute",
+    "description": "Field label: maximum requests per minute for each person."
+  },
+  "fusion.aiConnections.limits": {
+    "defaultMessage": "Limits",
+    "description": "Section heading: usage limits of the connection."
+  },
+  "fusion.aiConnections.limitsBad": {
+    "defaultMessage": "Limits are whole numbers, 0 or more.",
+    "description": "Error when a limit isn't a whole number of 0 or more."
+  },
+  "fusion.aiConnections.limitsDesc": {
+    "defaultMessage": "Empty or 0: no limit. Requests per minute are counted on each server; token budgets per calendar month (UTC).",
+    "description": "Help under the Limits heading; UTC is the time zone."
+  },
+  "fusion.aiConnections.listLabel": {
+    "defaultMessage": "Model connections",
+    "description": "Accessible name of the list of model connections (read by screen readers)."
+  },
+  "fusion.aiConnections.loadFailed": {
+    "defaultMessage": "The model connections couldn't be loaded.",
+    "description": "Error when the list of model connections can't be fetched."
+  },
+  "fusion.aiConnections.loading": {
+    "defaultMessage": "Loading…",
+    "description": "Shown while the model connections or their usage load."
+  },
+  "fusion.aiConnections.loadModels": {
+    "defaultMessage": "Load models",
+    "description": "Button that asks the provider for the list of models it offers."
+  },
+  "fusion.aiConnections.loadModelsAfterSave": {
+    "defaultMessage": "Save the connection to load the models it offers.",
+    "description": "Note next to the disabled Load models button of a connection not saved yet."
+  },
+  "fusion.aiConnections.model.chat": {
+    "defaultMessage": "Chat",
+    "description": "Capability name and field label: the chat (text generation) model."
+  },
+  "fusion.aiConnections.model.decisions": {
+    "defaultMessage": "Decisions",
+    "description": "Capability name and field label: the decisions model (fast yes/no classification)."
+  },
+  "fusion.aiConnections.model.embeddings": {
+    "defaultMessage": "Embeddings",
+    "description": "Capability name and field label: the embeddings model (turns text into vectors for search)."
+  },
+  "fusion.aiConnections.model.transcription": {
+    "defaultMessage": "Transcription",
+    "description": "Capability name and field label: the speech-to-text model."
+  },
+  "fusion.aiConnections.models": {
+    "defaultMessage": "Models",
+    "description": "Section heading: the connection's default models."
+  },
+  "fusion.aiConnections.models.failed": {
+    "defaultMessage": "The models couldn't be loaded.",
+    "description": "Error when the models can't be listed."
+  },
+  "fusion.aiConnections.modelsDesc": {
+    "defaultMessage": "The model used for each capability when a feature or an app doesn't name one. Leave a capability empty if this endpoint doesn't offer it.",
+    "description": "Help under the Models heading."
+  },
+  "fusion.aiConnections.modelsLoaded": {
+    "defaultMessage": "{count, plural, =0 {The endpoint lists no models.} one {# model: pick it as you type.} other {# models: pick them as you type.}}",
+    "description": "After loading models: how many the endpoint lists; they're offered as suggestions while typing. ICU plural on {count}."
+  },
+  "fusion.aiConnections.name": {
+    "defaultMessage": "Name",
+    "description": "Field label: the connection's name."
+  },
+  "fusion.aiConnections.namePlaceholder": {
+    "defaultMessage": "e.g. Company OpenAI",
+    "description": "Example name in the empty name field of a model connection."
+  },
+  "fusion.aiConnections.needsAttention": {
+    "defaultMessage": "Needs attention",
+    "description": "Badge on a model connection that can't be used until an admin fixes it (the reason is shown under it)."
+  },
+  "fusion.aiConnections.newKey": {
+    "defaultMessage": "New API key",
+    "description": "Accessible name of the field typing a replacement API key."
+  },
+  "fusion.aiConnections.none": {
+    "defaultMessage": "No model connections yet.",
+    "description": "Shown when there are no model connections yet."
+  },
+  "fusion.aiConnections.noTeams": {
+    "defaultMessage": "No communities yet.",
+    "description": "Shown when there are no communities to share with."
+  },
+  "fusion.aiConnections.presetLocal": {
+    "defaultMessage": "{name} on this server",
+    "description": "Preset button for a provider running on the Antimatter server's own machine; {name} is the product name (Ollama, LiteLLM)."
+  },
+  "fusion.aiConnections.presets": {
+    "defaultMessage": "Presets",
+    "description": "Field label above buttons that fill in the address of well-known AI providers."
+  },
+  "fusion.aiConnections.provider": {
+    "defaultMessage": "Provider",
+    "description": "Label of the provider choice of a model connection (OpenAI-compatible or Anthropic)."
+  },
+  "fusion.aiConnections.provider.anthropic": {
+    "defaultMessage": "Anthropic",
+    "description": "Provider name: Anthropic's API. 'Anthropic' is a company name; keep as is."
+  },
+  "fusion.aiConnections.provider.openai": {
+    "defaultMessage": "OpenAI-compatible",
+    "description": "Provider name: an API compatible with OpenAI's (most AI providers and gateways)."
+  },
+  "fusion.aiConnections.providerDesc": {
+    "defaultMessage": "Most providers and gateways speak the OpenAI API (vLLM, Ollama, LiteLLM, OpenRouter, Azure OpenAI…).",
+    "description": "Help text of the provider choice; the names in brackets are products and stay as is."
+  },
+  "fusion.aiConnections.purpose.app": {
+    "defaultMessage": "App: {id}",
+    "description": "Use of a connection by an app on its own; {id} is the app's (plugin's) ID, keep as is."
+  },
+  "fusion.aiConnections.purpose.autoTranslation": {
+    "defaultMessage": "Auto-translation",
+    "description": "Use of a connection: automatic translation of messages."
+  },
+  "fusion.aiConnections.purpose.recaps": {
+    "defaultMessage": "Recaps",
+    "description": "Use of a connection: recaps (AI summaries of channels)."
+  },
+  "fusion.aiConnections.purpose.rewrite": {
+    "defaultMessage": "Rewrite",
+    "description": "Use of a connection: the message box's AI rewrite."
+  },
+  "fusion.aiConnections.purpose.textToSpeech": {
+    "defaultMessage": "Text to speech",
+    "description": "Use of a connection: reading messages aloud."
+  },
+  "fusion.aiConnections.purpose.user": {
+    "defaultMessage": "People, through apps",
+    "description": "Use of a connection: people's own requests through apps (the AI chat app and others)."
+  },
+  "fusion.aiConnections.role.systemAdmin": {
+    "defaultMessage": "System admins",
+    "description": "Audience choice: the server's system admins."
+  },
+  "fusion.aiConnections.role.teamAdmin": {
+    "defaultMessage": "Community admins",
+    "description": "Audience choice: the communities' admins."
+  },
+  "fusion.aiConnections.save": {
+    "defaultMessage": "Save",
+    "description": "Button saving an edited connection."
+  },
+  "fusion.aiConnections.saved": {
+    "defaultMessage": "{name} saved.",
+    "description": "Status message after a connection is saved; {name} is its name."
+  },
+  "fusion.aiConnections.saveFailed": {
+    "defaultMessage": "The connection couldn't be saved.",
+    "description": "Error when saving a connection fails without a message from the server."
+  },
+  "fusion.aiConnections.scope.community": {
+    "defaultMessage": "Community: {name}",
+    "description": "Where a model connection belongs: one community; {name} is the community's name."
+  },
+  "fusion.aiConnections.scope.serverAll": {
+    "defaultMessage": "Server-wide, all communities",
+    "description": "Where a model connection is usable: the whole server, in every community."
+  },
+  "fusion.aiConnections.scope.serverSome": {
+    "defaultMessage": "Server-wide, {count, plural, =0 {no community yet} one {# community} other {# communities}}",
+    "description": "Where a server-wide connection is usable: the number of communities it's shared with. ICU plural on {count}."
+  },
+  "fusion.aiConnections.sharing": {
+    "defaultMessage": "Communities",
+    "description": "Section heading: the communities a server-wide connection is shared with."
+  },
+  "fusion.aiConnections.teamsChosen": {
+    "defaultMessage": "Communities chosen",
+    "description": "Accessible name of the group of community buttons to share with."
+  },
+  "fusion.aiConnections.test": {
+    "defaultMessage": "Test connection",
+    "description": "Button testing the connection as filled in, before or after saving."
+  },
+  "fusion.aiConnections.test.failedToRun": {
+    "defaultMessage": "The test couldn't run.",
+    "description": "Error when the test request itself fails (not the connection)."
+  },
+  "fusion.aiConnections.test.saveFirst": {
+    "defaultMessage": "The saved key and headers stay on the server: to test the new address with them, save first, or type the key again.",
+    "description": "Shown when testing a changed address of a saved connection: the saved key never leaves the server, so the admin saves first or types the key again."
+  },
+  "fusion.aiConnections.testFailed": {
+    "defaultMessage": "It doesn't work: {error}",
+    "description": "Result of a failed connection test; {error} is the provider's message."
+  },
+  "fusion.aiConnections.testFailedStatus": {
+    "defaultMessage": "It doesn't work (HTTP {status}): {error}",
+    "description": "Result of a failed connection test with an HTTP status code ({status}); {error} is the provider's message."
+  },
+  "fusion.aiConnections.testing": {
+    "defaultMessage": "Testing…",
+    "description": "Shown while a connection is being tested."
+  },
+  "fusion.aiConnections.testOk": {
+    "defaultMessage": "It works: {count, plural, =0 {answered} one {# model} other {# models}} in {ms, number} ms.",
+    "description": "Result of a successful connection test: how many models the endpoint lists ({count}, ICU plural; 0 means it answered without a list) and the time taken ({ms} milliseconds)."
+  },
+  "fusion.aiConnections.testOne": {
+    "defaultMessage": "Test {name}",
+    "description": "Accessible name of the Test button of one connection; {name} is the connection's name."
+  },
+  "fusion.aiConnections.testShort": {
+    "defaultMessage": "Test",
+    "description": "Short button that tests a saved model connection (checks the address and key work)."
+  },
+  "fusion.aiConnections.undo": {
+    "defaultMessage": "Undo",
+    "description": "Button cancelling the removal of the key."
+  },
+  "fusion.aiConnections.usage.budget": {
+    "defaultMessage": "{used} of {budget} tokens this month",
+    "description": "Under the budget bar; {used} and {budget} are compact numbers (e.g. 12.3K of 100K)."
+  },
+  "fusion.aiConnections.usage.budgetLabel": {
+    "defaultMessage": "Monthly token budget",
+    "description": "Accessible name of the bar showing how much of the monthly token budget is used."
+  },
+  "fusion.aiConnections.usage.byDay": {
+    "defaultMessage": "By day (UTC)",
+    "description": "Heading of the usage per day; UTC is the time zone of the days."
+  },
+  "fusion.aiConnections.usage.byPurpose": {
+    "defaultMessage": "By use",
+    "description": "Heading of the usage per use (people, rewrite, recaps…)."
+  },
+  "fusion.aiConnections.usage.dayLine": {
+    "defaultMessage": "{tokens} tokens · {requests, plural, one {# request} other {# requests}}",
+    "description": "One day's usage; {tokens} is a compact number, {requests} a count (ICU plural)."
+  },
+  "fusion.aiConnections.usage.input": {
+    "defaultMessage": "tokens in",
+    "description": "Under a number in the usage totals: tokens sent to the model this month."
+  },
+  "fusion.aiConnections.usage.none": {
+    "defaultMessage": "Not used this month.",
+    "description": "Shown when the connection wasn't used this month."
+  },
+  "fusion.aiConnections.usage.output": {
+    "defaultMessage": "tokens out",
+    "description": "Under a number in the usage totals: tokens the model produced this month."
+  },
+  "fusion.aiConnections.usage.requests": {
+    "defaultMessage": "requests",
+    "description": "Under a number in the usage totals: requests made this month."
+  },
+  "fusion.aiConnections.usage.requestsCount": {
+    "defaultMessage": "{count, plural, one {# request} other {# requests}}",
+    "description": "Requests of one use; ICU plural on {count}."
+  },
+  "fusion.aiConnections.usage.tokensCount": {
+    "defaultMessage": "{tokens} tokens",
+    "description": "Tokens of one use; {tokens} is a compact number."
+  },
+  "fusion.aiConnections.usageButton": {
+    "defaultMessage": "Usage",
+    "description": "Tooltip of the button showing a connection's usage this month."
+  },
+  "fusion.aiConnections.usageLabel": {
+    "defaultMessage": "Usage in {month}",
+    "description": "Accessible name of a connection's usage view; {month} is a month and year (e.g. October 2026)."
+  },
+  "fusion.aiConnections.usageLine": {
+    "defaultMessage": "This month: {tokens} tokens, {requests, plural, one {# request} other {# requests}}",
+    "description": "This month's use of a connection, in the list; {tokens} is a compact number (e.g. 12.3K), {requests} a count (ICU plural)."
+  },
+  "fusion.aiConnections.usageOf": {
+    "defaultMessage": "Usage of {name}",
+    "description": "Heading of a connection's usage view; {name} is the connection's name."
+  },
+  "fusion.aiConnections.usageOne": {
+    "defaultMessage": "Usage of {name}",
+    "description": "Accessible name of the usage button of one connection; {name} is its name."
+  },
   "fusion.apps.about": {
     "defaultMessage": "About Antimatter",
     "description": ""
@@ -25499,6 +26191,14 @@
     "defaultMessage": "Everything the community's admins can do.",
     "description": ""
   },
+  "fusion.roles.perm.aiConnections": {
+    "defaultMessage": "Manage model connections",
+    "description": "Permission switch in a community role's editor: may manage the community's model connections (AI providers and keys)."
+  },
+  "fusion.roles.perm.aiConnectionsDesc": {
+    "defaultMessage": "Add the community's own AI providers and their keys, and see what they use.",
+    "description": "Description under the 'Manage model connections' role permission switch."
+  },
   "fusion.roles.perm.channels": {
     "defaultMessage": "Manage channels",
     "description": ""
@@ -25686,6 +26386,14 @@
   "fusion.selfRoles.title": {
     "defaultMessage": "Your roles",
     "description": ""
+  },
+  "fusion.serverMenu.aiConnections": {
+    "defaultMessage": "Model connections…",
+    "description": "Community menu entry (under 'Organise the community') opening the community settings' Model connections tab; the ellipsis means a dialog opens."
+  },
+  "fusion.serverMenu.aiConnectionsSub": {
+    "defaultMessage": "The community's own AI providers",
+    "description": "Short subtitle under the 'Model connections…' community menu entry."
   },
   "fusion.serverMenu.attributes": {
     "defaultMessage": "Member attributes…",
@@ -27206,6 +27914,10 @@
   "fusion.teams.team": {
     "defaultMessage": "Team",
     "description": ""
+  },
+  "fusion.teamSettings.aiConnections": {
+    "defaultMessage": "Model connections",
+    "description": "Tab name in the community settings: the community's own model connections (AI providers' addresses and keys)."
   },
   "fusion.teamSettings.autolinks": {
     "defaultMessage": "Autolinks",
@@ -32595,13 +33307,13 @@
     "defaultMessage": "Available again at {time}",
     "description": "Disabled-state tooltip on the create-recap button during a cooldown period; {time} is the formatted time it becomes available; recaps are AI-generated message summaries."
   },
-  "recaps.addRecap.disabled": {
-    "defaultMessage": "Agents Bridge is not enabled",
-    "description": "Disabled-state tooltip on the create-recap button when the AI feature is off; 'Agents Bridge' is a feature name and should not be translated."
-  },
   "recaps.addRecap.limitReachedTooltip": {
     "defaultMessage": "Daily limit reached. Resets at {time}",
     "description": "Disabled-state tooltip on the create-recap button when the daily recap limit is used up; {time} is the formatted reset time."
+  },
+  "recaps.addRecap.noConnection": {
+    "defaultMessage": "Recaps need a model connection: an admin picks one in the System Console, AI › Built-in features.",
+    "description": "Tooltip on the disabled 'Create a recap' / 'Add a recap' buttons when no model connection is set for recaps; 'AI › Built-in features' is a System Console page path."
   },
   "recaps.channelMenu.ariaLabel": {
     "defaultMessage": "Options for {channelName}",
@@ -32778,6 +33490,10 @@
   "recaps.modal.atWhatTime": {
     "defaultMessage": "At what time?",
     "description": "Label above the time-of-day dropdown in the recap scheduling step."
+  },
+  "recaps.modal.connectionAgentName": {
+    "defaultMessage": "the AI",
+    "description": "Fills {agentName} in 'Additional instructions for {agentName}' when recaps are made by the server's AI (no named agent): 'the AI'. Must read naturally after 'for'."
   },
   "recaps.modal.createSchedule": {
     "defaultMessage": "Create schedule",

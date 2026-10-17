@@ -1995,6 +1995,58 @@
     "defaultMessage": "Performance Monitoring",
     "description": "Page name for Environment > Performance Monitoring in the System Console sidebar."
   },
+  "admin.ai.features.attention": {
+    "defaultMessage": "This connection needs attention: {reason}",
+    "description": "Warning under a feature's connection picker when the picked connection needs an admin's attention; {reason} is the server's explanation."
+  },
+  "admin.ai.features.attentionOption": {
+    "defaultMessage": "{name} (needs attention)",
+    "description": "Option in the model connection drop-down for a connection that needs attention; {name} is the connection's name."
+  },
+  "admin.ai.features.defaultChat": {
+    "defaultMessage": "The connection's chat model ({model})",
+    "description": "Model drop-down option meaning 'use the connection's default chat model'; {model} is that model's name."
+  },
+  "admin.ai.features.defaultChatNone": {
+    "defaultMessage": "The connection's chat model (none set: pick one)",
+    "description": "Model drop-down option when the connection names no default chat model: the admin must pick a model."
+  },
+  "admin.ai.features.loadFailed": {
+    "defaultMessage": "The model connections couldn't be loaded.",
+    "description": "Error shown when the list of model connections can't be fetched for the built-in feature pickers."
+  },
+  "admin.ai.features.loadModels": {
+    "defaultMessage": "Load models",
+    "description": "Button that asks the AI endpoint for the list of models it offers."
+  },
+  "admin.ai.features.missing": {
+    "defaultMessage": "This connection no longer exists or isn't server-wide: the feature fails until another one is picked.",
+    "description": "Warning under a feature's connection picker when the saved connection was deleted or is a community's (not server-wide)."
+  },
+  "admin.ai.features.model": {
+    "defaultMessage": "Model",
+    "description": "Label of the model drop-down of a built-in AI feature (which AI model of the connection it uses)."
+  },
+  "admin.ai.features.modelHelp": {
+    "defaultMessage": "The connection's defaults are listed; load the models to see all those its endpoint offers.",
+    "description": "Help text under a feature's model drop-down."
+  },
+  "admin.ai.features.modelsFailed": {
+    "defaultMessage": "The models couldn't be loaded.",
+    "description": "Error shown when the models offered by a connection's endpoint can't be listed."
+  },
+  "admin.ai.features.off": {
+    "defaultMessage": "Off: this feature uses no AI.",
+    "description": "Help text when a built-in AI feature has no model connection picked ('Off')."
+  },
+  "admin.ai.features.offOption": {
+    "defaultMessage": "Off",
+    "description": "First option of a model connection drop-down: no connection, the feature's AI is turned off."
+  },
+  "admin.ai.features.unknownOption": {
+    "defaultMessage": "Unknown connection ({id})",
+    "description": "Option in the model connection drop-down for a saved connection that no longer exists; {id} is its ID."
+  },
   "admin.audit_logging_experimental.file_enabled.help_text": {
     "defaultMessage": "Choose whether audit logs are written locally to a file or not.",
     "description": "Admin console help text under the file-output toggle on the Compliance > Audit Logging page."
@@ -9087,6 +9139,14 @@
     "defaultMessage": "Manage AI Agents",
     "description": "Name of the permission group in the scheme editor covering management of AI agents (AI assistant bots)."
   },
+  "admin.permissions.group.manage_ai_connections.description": {
+    "defaultMessage": "Manage the AI providers' addresses and keys: the server-wide connections, and a community's own.",
+    "description": "Description of the 'Manage model connections' permission group: server-wide connections and a community's own."
+  },
+  "admin.permissions.group.manage_ai_connections.name": {
+    "defaultMessage": "Manage model connections",
+    "description": "Name of a group of permissions in the System Console permission schemes: managing model connections (AI providers' addresses and API keys)."
+  },
   "admin.permissions.group.manage_incoming_webhooks.description": {
     "defaultMessage": "Manage own and others' incoming webhooks.",
     "description": "Description of the Manage Incoming Webhooks permission in the scheme editor's integrations group."
@@ -9479,6 +9539,14 @@
     "defaultMessage": "List users without team",
     "description": "Row label for the permission to list users who belong to no team, in the System Console permission scheme editor; 'List' is a verb."
   },
+  "admin.permissions.permission.manage_ai_connections.description": {
+    "defaultMessage": "Add, edit and delete the model connections of the whole server, see their usage, share them with communities, and pick the ones the built-in AI features use.",
+    "description": "Description of the permission to manage server-wide model connections."
+  },
+  "admin.permissions.permission.manage_ai_connections.name": {
+    "defaultMessage": "Manage server-wide model connections",
+    "description": "Name of the permission to manage the model connections of the whole server."
+  },
   "admin.permissions.permission.manage_channel_access_rules.description": {
     "defaultMessage": "Configure attribute-based access control policy for channels.",
     "description": "Description text for the permission to configure attribute-based access control rules on channels, in the System Console permission scheme editor."
@@ -9702,6 +9770,14 @@
   "admin.permissions.permission.manage_team_access_rules.name": {
     "defaultMessage": "Manage channel membership policies",
     "description": "Row label for the permission to manage attribute-based channel membership policies within a team, in the System Console permission scheme editor."
+  },
+  "admin.permissions.permission.manage_team_ai_connections.description": {
+    "defaultMessage": "Add, edit and delete the model connections a community uses on its own, and see their usage.",
+    "description": "Description of the permission to manage a community's own model connections."
+  },
+  "admin.permissions.permission.manage_team_ai_connections.name": {
+    "defaultMessage": "Manage the community's model connections",
+    "description": "Name of the permission to manage a community's own model connections ('community' = a team)."
   },
   "admin.permissions.permission.manage_team_roles.description": {
     "defaultMessage": "Manage team roles",
@@ -13387,17 +13463,33 @@
     "defaultMessage": "An unknown error occurred while checking the Agents plugin status.",
     "description": "Error message on the System Console Localization page when the status check of the Agents plugin (Mattermost AI plugin) fails."
   },
+  "admin.site.localization.autoTranslationAgentsOlder": {
+    "defaultMessage": "This older setting no longer needs the AI chat app: it translates with the model connection picked for auto-translation, else with the one migrated from the app’s service. Switch to “Model connection” to pick it here.",
+    "description": "Notice shown when auto-translation still uses the older 'AI chat app's service' provider; explains it now uses a model connection. Keep the quoted option name consistent with the drop-down's 'Model connection'."
+  },
+  "admin.site.localization.autoTranslationAgentsSwitch": {
+    "defaultMessage": "Switch to Model connection",
+    "description": "Button that switches auto-translation from the older provider to 'Model connection'."
+  },
+  "admin.site.localization.autoTranslationConnectionHelp": {
+    "defaultMessage": "A server-wide model connection, set up in the System Console of the Fusion web app (AI › Model connections). A dedicated translation model (such as HY-MT) is fast and accurate; a general LLM works too.",
+    "description": "Help text under the auto-translation model connection picker. HY-MT is the name of a translation model; 'AI › Model connections' is a System Console page path."
+  },
+  "admin.site.localization.autoTranslationConnectionTitle": {
+    "defaultMessage": "Model connection",
+    "description": "Label of the model connection picker in the auto-translation settings."
+  },
   "admin.site.localization.autoTranslationInfo": {
     "defaultMessage": "Channel admins must also enable auto-translation for each channel where they want to use it.",
     "description": "Informational note under the auto-translation setting on the System Console Localization page, telling admins that channel admins must also opt in per channel."
   },
-  "admin.site.localization.autoTranslationLLMConfigNote": {
-    "defaultMessage": "LLMs must first be configured in the Agents plugin.",
-    "description": "Note under the AI Service setting on the System Console Localization page; LLM means large language model, 'Agents' is the Mattermost AI plugin name."
+  "admin.site.localization.autoTranslationProviderAgents": {
+    "defaultMessage": "AI chat app's service (older)",
+    "description": "Option of the auto-translation provider drop-down: the older setting that named a service of the AI chat app (a plugin). 'AI chat' is the app's name."
   },
-  "admin.site.localization.autoTranslationLLMServiceTitle": {
-    "defaultMessage": "AI Service",
-    "description": "Setting label on the System Console Localization page for choosing the AI service used for auto-translation."
+  "admin.site.localization.autoTranslationProviderConnection": {
+    "defaultMessage": "Model connection (recommended)",
+    "description": "Option of the auto-translation provider drop-down: translate with a model connection (the recommended choice)."
   },
   "admin.site.localization.autoTranslationProviderDescription": {
     "defaultMessage": "<strong>NOTE:</strong> If using external translation services (e.g., cloud-based LLMs), message data may be processed outside your environment.",
@@ -13426,6 +13518,10 @@
   "admin.site.localization.autoTranslationProviderLibreTranslateURLTitle": {
     "defaultMessage": "LibreTranslate API Endpoint:",
     "description": "Setting label (with trailing colon) for the LibreTranslate server URL input on the System Console Localization page."
+  },
+  "admin.site.localization.autoTranslationProviderOpenAI": {
+    "defaultMessage": "OpenAI-compatible API, set up here",
+    "description": "Option of the auto-translation provider drop-down: an OpenAI-compatible API whose address and key are typed on this page."
   },
   "admin.site.localization.autoTranslationProviderOpenAIAPIKeyDescription": {
     "defaultMessage": "Sent as a bearer token. Leave it blank if the API needs none.",
@@ -13486,10 +13582,6 @@
   "admin.site.localization.enableAutoTranslationTitle": {
     "defaultMessage": "Auto-translation",
     "description": "Setting label on the System Console Localization page for enabling automatic message translation."
-  },
-  "admin.site.localization.goToAgentsConfig": {
-    "defaultMessage": "Go to Agents plugin config",
-    "description": "Link/button text on the System Console Localization page navigating to the Agents plugin (Mattermost AI plugin) configuration page."
   },
   "admin.site.localization.languages.description": {
     "defaultMessage": "Choose which languages should be the defaults",
@@ -15210,6 +15302,10 @@
   "admin.textToSpeech.apiKeyTitle": {
     "defaultMessage": "API key:",
     "description": ""
+  },
+  "admin.textToSpeech.connectionBanner": {
+    "defaultMessage": "Messages are read aloud with the model connection picked for text to speech (in the System Console of the Fusion web app, AI › Built-in features): the API base URL and key below aren't used. The voice still is, and the model when the connection names none.",
+    "description": "Notice on the Text to speech settings when a model connection is picked for text to speech: the URL and API key fields of the page are then unused."
   },
   "admin.textToSpeech.enableDesc": {
     "defaultMessage": "Adds \"Read aloud\" to the menu of messages: their text is read by an OpenAI-compatible text-to-speech API (its /audio/speech endpoint).",
@@ -25679,13 +25775,13 @@
     "defaultMessage": "Available again at {time}",
     "description": "Disabled-state tooltip on the create-recap button during a cooldown period; {time} is the formatted time it becomes available; recaps are AI-generated message summaries."
   },
-  "recaps.addRecap.disabled": {
-    "defaultMessage": "Agents Bridge is not enabled",
-    "description": "Disabled-state tooltip on the create-recap button when the AI feature is off; 'Agents Bridge' is a feature name and should not be translated."
-  },
   "recaps.addRecap.limitReachedTooltip": {
     "defaultMessage": "Daily limit reached. Resets at {time}",
     "description": "Disabled-state tooltip on the create-recap button when the daily recap limit is used up; {time} is the formatted reset time."
+  },
+  "recaps.addRecap.noConnection": {
+    "defaultMessage": "Recaps need a model connection: an admin picks one in the System Console, AI › Built-in features.",
+    "description": "Tooltip on the disabled 'Create a recap' / 'Add a recap' buttons when no model connection is set for recaps; 'AI › Built-in features' is a System Console page path."
   },
   "recaps.channelMenu.ariaLabel": {
     "defaultMessage": "Options for {channelName}",
@@ -25862,6 +25958,10 @@
   "recaps.modal.atWhatTime": {
     "defaultMessage": "At what time?",
     "description": "Label above the time-of-day dropdown in the recap scheduling step."
+  },
+  "recaps.modal.connectionAgentName": {
+    "defaultMessage": "the AI",
+    "description": "Fills {agentName} in 'Additional instructions for {agentName}' when recaps are made by the server's AI (no named agent): 'the AI'. Must read naturally after 'for'."
   },
   "recaps.modal.createSchedule": {
     "defaultMessage": "Create schedule",
