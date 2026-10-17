@@ -15,7 +15,7 @@ import {TestHelper} from 'utils/test_helper';
 
 import type {GlobalState} from 'types/store';
 
-import {canMoveThread, ThreadSuggestion, ThreadToChannelDialog} from './thread_to';
+import {canMoveThread, canMoveThreadTo, ThreadSuggestion, ThreadToChannelDialog} from './thread_to';
 
 jest.mock('mattermost-redux/actions/channels', () => ({
     ...jest.requireActual('mattermost-redux/actions/channels'),
@@ -36,6 +36,13 @@ const me = TestHelper.getUserMock({id: 'me', username: 'me', roles: 'system_user
 const team = TestHelper.getTeamMock({id: 'team', name: 'lumen', display_name: 'Lumen Labs'});
 const channel = TestHelper.getChannelMock({id: 'ch', name: 'beam-schedule', display_name: 'Beam schedule', type: 'O', team_id: 'team', delete_at: 0});
 const dm = TestHelper.getChannelMock({id: 'dm', name: 'me__bob', type: 'D', team_id: '', delete_at: 0});
+const pub2 = TestHelper.getChannelMock({id: 'pub2', name: 'off-topic', type: 'O', team_id: 'team', delete_at: 0});
+const priv = TestHelper.getChannelMock({id: 'priv', name: 'mine', type: 'P', team_id: 'team', delete_at: 0});
+const privsrc = TestHelper.getChannelMock({id: 'privsrc', name: 'secret', type: 'P', team_id: 'team', delete_at: 0});
+const elsewhere = TestHelper.getChannelMock({id: 'elsewhere', name: 'far', type: 'O', team_id: 'team2', delete_at: 0});
+const archived = TestHelper.getChannelMock({id: 'archived', name: 'old', type: 'O', team_id: 'team', delete_at: 5});
+const notMember = TestHelper.getChannelMock({id: 'notmember', name: 'theirs', type: 'O', team_id: 'team', delete_at: 0});
+const member = (id: string, schemeAdmin = false) => ({channel_id: id, user_id: 'me', roles: 'channel_user', scheme_admin: schemeAdmin});
 const root = TestHelper.getPostMock({id: 'root', channel_id: 'ch', user_id: 'me', root_id: '', message: 'Shall we move the **beam** test to Friday?', props: {}});
 const replyBob = TestHelper.getPostMock({id: 'r1', channel_id: 'ch', user_id: 'bob', root_id: 'root', message: 'Fine by me', create_at: 2});
 const replyMaya = TestHelper.getPostMock({id: 'r2', channel_id: 'ch', user_id: 'maya', root_id: 'root', message: 'Friday works', create_at: 3});
@@ -48,13 +55,18 @@ function state({teamPermissions = ['create_public_channel', 'create_private_chan
             teams: {currentTeamId: 'team', teams: {team}, myMembers: {team: {team_id: 'team', user_id: 'me', roles: 'team_user'}}},
             channels: {
                 currentChannelId: 'ch',
-                channels: {ch: channel, dm},
-                myMembers: {ch: {channel_id: 'ch', user_id: 'me', roles: 'channel_user', scheme_admin: channelAdmin}, dm: {channel_id: 'dm', user_id: 'me', roles: 'channel_user'}},
-                roles: {ch: new Set(['channel_user']), dm: new Set(['channel_user'])},
+                channels: {ch: channel, dm, pub2, priv, privsrc, elsewhere, archived, notmember: notMember},
+                myMembers: {ch: member('ch', channelAdmin), dm: member('dm'), pub2: member('pub2'), priv: member('priv'), privsrc: member('privsrc', channelAdmin), elsewhere: member('elsewhere'), archived: member('archived')},
+                roles: Object.fromEntries(['ch', 'dm', 'pub2', 'priv', 'privsrc', 'elsewhere', 'archived'].map((id) => [id, new Set(['channel_user'])])),
             },
             posts: {
                 posts: Object.fromEntries(posts.map((p) => [p.id, p])),
-                postsInThread: {root: posts.filter((p) => p.root_id === 'root').map((p) => p.id)},
+                postsInThread: posts.reduce<Record<string, string[]>>((byRoot, p) => {
+                    if (p.root_id) {
+                        byRoot[p.root_id] = [...(byRoot[p.root_id] || []), p.id];
+                    }
+                    return byRoot;
+                }, {}),
             },
             roles: {roles: {
                 system_user: {name: 'system_user', permissions: systemPermissions},
@@ -239,6 +251,24 @@ describe('fusion/rhs/ThreadToChannelDialog', () => {
         expect(addChannelMembers).not.toHaveBeenCalled();
     });
 
+    test('an author doesn\'t move others\' replies into a private channel: links instead', async () => {
+        const onClose = jest.fn();
+        renderWithContext(
+            <ThreadToChannelDialog
+                root={root}
+                onClose={onClose}
+            />,
+            state(),
+        );
+        expect(screen.getByText(/takes this thread's messages/)).toBeInTheDocument();
+        await userEvent.click(screen.getByRole('switch', {name: 'Private channel'}));
+        expect(screen.getByText(/the replies stay in the thread/)).toBeInTheDocument();
+        await userEvent.click(screen.getByRole('button', {name: 'Create the channel'}));
+        await waitFor(() => expect(onClose).toHaveBeenCalled());
+        expect(moveThreadToChannel).not.toHaveBeenCalled();
+        expect(createPost).toHaveBeenCalledTimes(2);
+    });
+
     test('shows why the channel couldn\'t be made', async () => {
         (createChannel as jest.Mock).mockImplementationOnce(() => ({type: 'FAILED', error: {message: 'A channel with that name already exists'}}));
         const onClose = jest.fn();
@@ -286,5 +316,61 @@ describe('fusion/rhs/canMoveThread', () => {
         const st = state() as unknown as {entities: {channels: {channels: Record<string, unknown>}}};
         st.entities.channels.channels.ch = {...channel, delete_at: 1};
         expect(can(st as never, root)).toBe(false);
+    });
+});
+
+describe('fusion/rhs/canMoveThreadTo', () => {
+    const withPosts = {channelPermissions: ['edit_post', 'create_post']};
+    function Probe({post, target}: {post: typeof root; target: Parameters<typeof canMoveThreadTo>[2]}) {
+        const ok = useSelector((st: GlobalState) => canMoveThreadTo(st, post, target));
+        return <span data-testid='can'>{String(ok)}</span>;
+    }
+    const can = (st: never, post: typeof root, target: Parameters<typeof canMoveThreadTo>[2]) => {
+        const {unmount} = renderWithContext(
+            <Probe
+                post={post}
+                target={target}
+            />,
+            st,
+        );
+        const ok = screen.getByTestId('can').textContent === 'true';
+        unmount();
+        return ok;
+    };
+
+    const privRoot = {...root, id: 'proot', channel_id: 'privsrc', reply_count: 1};
+    const privReply = {...replyBob, id: 'pr1', channel_id: 'privsrc', root_id: 'proot'};
+    const ownRoot = {...root, id: 'own', reply_count: 1};
+    const ownReply = {...replyBob, id: 'or1', user_id: 'me', root_id: 'own'};
+
+    test('an author moves others\' replies between public channels only', () => {
+        const st = state({...withPosts});
+        expect(can(st, root, pub2)).toBe(true);
+        expect(can(state({...withPosts}), root, priv)).toBe(false);
+        expect(can(state({...withPosts}), root, {type: 'O'})).toBe(true);
+        expect(can(state({...withPosts}), root, {type: 'P'})).toBe(false);
+    });
+
+    test('an author can\'t take others\' replies out of a private channel; a moderator can', () => {
+        expect(can(state({...withPosts, posts: [privRoot, privReply]}), privRoot, pub2)).toBe(false);
+        expect(can(state({...withPosts, posts: [privRoot, privReply], channelAdmin: true}), privRoot, pub2)).toBe(true);
+        expect(can(state({...withPosts, posts: [privRoot, privReply], systemPermissions: ['manage_system']}), privRoot, priv)).toBe(true);
+    });
+
+    test('a thread of one\'s own messages goes anywhere in the community', () => {
+        expect(can(state({...withPosts, posts: [ownRoot, ownReply]}), ownRoot, priv)).toBe(true);
+
+        // Not while its replies aren't loaded.
+        expect(can(state({...withPosts, posts: [ownRoot]}), ownRoot, priv)).toBe(false);
+    });
+
+    test('only channels of the same community, not archived, where one may post, and not the same one', () => {
+        const moderator = {...withPosts, systemPermissions: ['manage_system']};
+        expect(can(state(moderator), root, elsewhere)).toBe(false);
+        expect(can(state(moderator), root, archived)).toBe(false);
+        expect(can(state(moderator), root, notMember)).toBe(false);
+        expect(can(state(moderator), root, channel)).toBe(false);
+        expect(can(state(moderator), root, dm)).toBe(false);
+        expect(can(state({systemPermissions: ['manage_system']}), root, pub2)).toBe(false);
     });
 });

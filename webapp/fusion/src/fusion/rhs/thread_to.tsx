@@ -59,23 +59,75 @@ export function useThreadConversions(root: Post): {topic: boolean; renameTopic: 
     }, shallowEqual);
 }
 
-// canMoveThread mirrors the server's rule for moving a thread to another channel of its community (POST
-// /posts/{id}/move_to_channel): its author, the channel's admins, the community's admins, whoever has "Manage
-// messages" (deleting others' messages) in the channel, and system admins; not in direct or group messages, nor in
-// archived channels, nor system or burn-on-read messages.
-export function canMoveThread(state: GlobalState, root: Post): boolean {
+// The rules of the server's move_to_channel (POST /posts/{id}/move_to_channel, App.CanMoveThread).
+
+// A thread that can move at all: a community's channel (not a direct or group message) that isn't archived, and not
+// a system or burn-on-read message.
+function movableSource(state: GlobalState, root: Post) {
     const channel = getChannel(state, root.channel_id);
     if (!channel || !channel.team_id || channel.delete_at !== 0 || channel.type === Constants.DM_CHANNEL || channel.type === Constants.GM_CHANNEL) {
-        return false;
+        return undefined;
     }
-    if (isSystemMessage(root) || root.type === Posts.POST_TYPES.BURN_ON_READ) {
-        return false;
+    if (isSystemMessage(root) || root.type === Posts.POST_TYPES.BURN_ON_READ || root.root_id) {
+        return undefined;
     }
-    return root.user_id === getCurrentUserId(state) ||
-        haveISystemPermission(state, {permission: Permissions.MANAGE_SYSTEM}) ||
+    return channel;
+}
+
+// isThreadModerator: the channel's admins, the community's admins, whoever has "Manage messages" (deleting others'
+// messages) in the channel, and system admins. They move any thread of the channel within the community.
+export function isThreadModerator(state: GlobalState, channel: Channel): boolean {
+    return haveISystemPermission(state, {permission: Permissions.MANAGE_SYSTEM}) ||
         haveITeamPermission(state, channel.team_id, Permissions.MANAGE_TEAM) ||
         Boolean(getMyChannelMember(state, channel.id)?.scheme_admin) ||
         haveIChannelPermission(state, channel.team_id, channel.id, Permissions.DELETE_OTHERS_POSTS);
+}
+
+// Whether every message of the thread is the current user's, as far as the loaded thread shows (not when replies
+// aren't loaded yet).
+function threadIsMine(state: GlobalState, root: Post): boolean {
+    const me = getCurrentUserId(state);
+    if (root.user_id !== me) {
+        return false;
+    }
+    const replies = (state.entities.posts.postsInThread[root.id] || []).map((id) => state.entities.posts.posts[id]).filter(Boolean);
+    if (replies.length < (root.reply_count || 0)) {
+        return false;
+    }
+    return replies.every((reply) => reply.user_id === me);
+}
+
+// canMoveThread says whether the current user may move the thread somewhere: moderators, and its author.
+export function canMoveThread(state: GlobalState, root: Post): boolean {
+    const channel = movableSource(state, root);
+    return Boolean(channel) && (root.user_id === getCurrentUserId(state) || isThreadModerator(state, channel!));
+}
+
+// canMoveThreadTo says whether the current user may move the thread to target (a channel of the same community,
+// not archived, where they may post). Moderators may; its author without moderation rights only when every message
+// of the thread is theirs, or when both channels are public: they mustn't expose others' replies from a private
+// channel, nor hide them in a private one. targetType is for a channel not made yet.
+export function canMoveThreadTo(state: GlobalState, root: Post, target: Channel | {type: string; id?: undefined}): boolean {
+    const source = movableSource(state, root);
+    if (!source) {
+        return false;
+    }
+    if (target.id) {
+        const channel = target as Channel;
+        if (channel.id === source.id || channel.team_id !== source.team_id || channel.delete_at !== 0 || (channel.type !== Constants.OPEN_CHANNEL && channel.type !== Constants.PRIVATE_CHANNEL)) {
+            return false;
+        }
+        if (!getMyChannelMember(state, channel.id) || !haveIChannelPermission(state, channel.team_id, channel.id, Permissions.CREATE_POST)) {
+            return false;
+        }
+    }
+    if (isThreadModerator(state, source)) {
+        return true;
+    }
+    if (root.user_id !== getCurrentUserId(state)) {
+        return false;
+    }
+    return (source.type === Constants.OPEN_CHANNEL && target.type === Constants.OPEN_CHANNEL) || threadIsMine(state, root);
 }
 
 // The people who wrote in the thread, the current user aside.
@@ -107,9 +159,11 @@ export function ThreadToChannelDialog({root, onClose}: {root: Post; onClose: () 
     const canPublic = useSelector((state: GlobalState) => Boolean(source) && haveITeamPermission(state, source!.team_id, Permissions.CREATE_PUBLIC_CHANNEL));
     const canPrivate = useSelector((state: GlobalState) => Boolean(source) && haveITeamPermission(state, source!.team_id, Permissions.CREATE_PRIVATE_CHANNEL));
     const participants = useParticipants(root);
-    const moves = useSelector((state: GlobalState) => canMoveThread(state, root));
-    const [name, setName] = useState(() => (getThreadTitle(root) || plainText(root.message, 60)).slice(0, 64));
     const [isPrivate, setPrivate] = useState(() => (source?.type === Constants.PRIVATE_CHANNEL && canPrivate) || !canPublic);
+
+    // Whether the thread may move into the new channel, given its privacy (see canMoveThreadTo).
+    const moves = useSelector((state: GlobalState) => canMoveThreadTo(state, root, {type: isPrivate ? Constants.PRIVATE_CHANNEL : Constants.OPEN_CHANNEL}));
+    const [name, setName] = useState(() => (getThreadTitle(root) || plainText(root.message, 60)).slice(0, 64));
     const [invite, setInvite] = useState(true);
     const [saving, setSaving] = useState(false);
     const [error, setError] = useState('');
