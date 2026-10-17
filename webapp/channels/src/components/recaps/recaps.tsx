@@ -68,6 +68,7 @@ const Recaps = () => {
         history.replace(newUrl);
     }, [history, location.pathname, location.search]);
     const enableAIRecaps = useGetFeatureFlagValue('EnableAIRecaps');
+
     // Antimatter: recaps are made with the model connection an admin picked for them (AI › Built-in features).
     const recapsAvailable = useAIRecapsAvailable();
     const unavailableTitle = recapsAvailable ? undefined : formatMessage({id: 'recaps.addRecap.noConnection', defaultMessage: 'Recaps need a model connection: an admin picks one in the System Console, AI › Built-in features.'});

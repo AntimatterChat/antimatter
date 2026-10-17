@@ -45,12 +45,12 @@ import {ID_PATH_PATTERN} from 'utils/path';
 import {getSiteURL} from 'utils/url';
 
 import PolicyList from './access_control';
-import AIBuiltInFeatures, {searchableStrings as aiBuiltInFeaturesSearchableStrings} from './ai/builtin_features';
-import AIModelConnectionsPage, {searchableStrings as aiModelConnectionsSearchableStrings} from './ai/model_connections_page';
 import AccessControlPolicyJobs from './access_control/jobs';
 import PolicyDetails from './access_control/policy_details';
 import * as DefinitionConstants from './admin_definition_constants';
 import {it, usesLegacyOauth, validators} from './admin_definition_helpers';
+import AIBuiltInFeatures, {searchableStrings as aiBuiltInFeaturesSearchableStrings} from './ai/builtin_features';
+import AIModelConnectionsPage, {searchableStrings as aiModelConnectionsSearchableStrings} from './ai/model_connections_page';
 import Audits from './audits';
 import {searchableStrings as auditSearchableStrings} from './audits/audits';
 import BoardAttributes, {searchableStrings as boardAttributesSearchableStrings} from './board_attributes';
@@ -5345,6 +5345,7 @@ const AdminDefinition: AdminDefinitionType = {
             },
         },
     },
+
     // Antimatter: the server's AI. Model connections (the providers' addresses and keys) and the connection and model
     // of each built-in feature, for those who manage the server-wide connections.
     ai: {

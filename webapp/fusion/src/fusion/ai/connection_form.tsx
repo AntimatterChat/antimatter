@@ -1,4 +1,4 @@
-// Copyright (c) 2026-present Antimatter contributors.
+// Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 
 import React, {useEffect, useId, useMemo, useState} from 'react';
@@ -17,8 +17,6 @@ import {Choice, Toggle} from 'fusion/modals/settings_controls';
 import {getRolesByTeam} from 'fusion/teams/roles';
 import {getTeamsByCommunity, loadTeams} from 'fusion/teams/teams';
 import {am} from 'fusion/utils/class_names';
-
-import type {GlobalState} from 'types/store';
 
 import {
     AI_CONNECTION_SCOPE_SERVER,
@@ -188,6 +186,10 @@ export default function ConnectionForm({scope: newScope, connection, onSaved, on
 
     const keySet = Boolean(connection?.api_key_set);
     const last4 = connection?.api_key_last4;
+    let keyState = formatMessage({id: 'fusion.aiConnections.keyNone', defaultMessage: 'No key'});
+    if (keySet) {
+        keyState = last4 ? formatMessage({id: 'fusion.aiConnections.keySetLast4', defaultMessage: 'Set, ends in ••{last4}'}, {last4}) : formatMessage({id: 'fusion.aiConnections.keySet', defaultMessage: 'Set'});
+    }
 
     return (
         <form
@@ -265,9 +267,7 @@ export default function ConnectionForm({scope: newScope, connection, onSaved, on
                 <span>{formatMessage({id: 'fusion.aiConnections.apiKey', defaultMessage: 'API key'})}</span>
                 {connection && draft.keyAction === 'keep' && (
                     <div className={am('ai-secret')}>
-                        <span>
-                            {keySet ? (last4 ? formatMessage({id: 'fusion.aiConnections.keySetLast4', defaultMessage: 'Set, ends in ••{last4}'}, {last4}) : formatMessage({id: 'fusion.aiConnections.keySet', defaultMessage: 'Set'})) : formatMessage({id: 'fusion.aiConnections.keyNone', defaultMessage: 'No key'})}
-                        </span>
+                        <span>{keyState}</span>
                         <button
                             type='button'
                             className={am('btn', 'small')}

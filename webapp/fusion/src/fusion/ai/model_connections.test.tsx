@@ -1,4 +1,4 @@
-// Copyright (c) 2026-present Antimatter contributors.
+// Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 
 import React from 'react';
@@ -65,6 +65,7 @@ const state = {
 
 describe('fusion/ai/ModelConnections', () => {
     let spies: jest.SpyInstance[] = [];
+
     // Spies on a Client4 method; the mock's calls are read as the requests sent.
     type Impl = (...args: never[]) => unknown;
     const spy = (name: keyof typeof Client4, impl: (...args: never[]) => unknown) => {

@@ -248,9 +248,7 @@ const CreateRecapModal = ({onExited, editScheduledRecap}: Props) => {
         };
 
         try {
-            const result = isEditMode && editScheduledRecap ?
-                await dispatch(updateScheduledRecap(editScheduledRecap.id, input)) :
-                await dispatch(createScheduledRecap(input));
+            const result = isEditMode && editScheduledRecap ? await dispatch(updateScheduledRecap(editScheduledRecap.id, input)) : await dispatch(createScheduledRecap(input));
 
             if (result.error) {
                 setError(result.error.message || formatMessage({id: 'recaps.modal.error.scheduleFailed', defaultMessage: 'Failed to save scheduled recap. Please try again.'}));
@@ -416,9 +414,7 @@ const CreateRecapModal = ({onExited, editScheduledRecap}: Props) => {
     const headerText = (
         <div className='create-recap-modal-header'>
             <span>
-                {isEditMode ?
-                    formatMessage({id: 'recaps.modal.titleEdit', defaultMessage: 'Edit your recap'}) :
-                    formatMessage({id: 'recaps.modal.title', defaultMessage: 'Set up your recap'})
+                {isEditMode ? formatMessage({id: 'recaps.modal.titleEdit', defaultMessage: 'Edit your recap'}) : formatMessage({id: 'recaps.modal.title', defaultMessage: 'Set up your recap'})
                 }
             </span>
             <div className='create-recap-modal-header-actions'>

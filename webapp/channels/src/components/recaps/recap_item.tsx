@@ -32,6 +32,7 @@ const RecapItem = ({recap, isExpanded, onToggle}: Props) => {
     const dispatch = useDispatch();
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
     const agents = useSelector(getAgents);
+
     // Antimatter: regenerating needs the model connection an admin picked for recaps.
     const recapsAvailable = useAIRecapsAvailable();
 

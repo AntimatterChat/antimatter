@@ -32,8 +32,8 @@ import PostBoxIndicator from 'components/advanced_text_editor/post_box_indicator
 import WysiwygEditor from 'components/advanced_text_editor/wysiwyg_editor/wysiwyg_editor';
 import type {WysiwygEditorHandle} from 'components/advanced_text_editor/wysiwyg_editor/wysiwyg_editor';
 import AutoHeightSwitcher from 'components/common/auto_height_switcher';
-import useDidUpdate from 'components/common/hooks/useDidUpdate';
 import {useAIRewriteAvailable} from 'components/common/hooks/useAIFeatures';
+import useDidUpdate from 'components/common/hooks/useDidUpdate';
 import DeletePostModal from 'components/delete_post_modal';
 import {
     DropOverlayIdCreateComment,
@@ -206,6 +206,7 @@ const AdvancedTextEditor = ({
     });
     const selectedPostFocussedAt = useSelector((state: GlobalState) => getSelectedPostFocussedAt(state));
     const aiActionMenuItems = useSelector((state: GlobalState) => state.plugins.components.AIActionMenuItem);
+
     // Antimatter: the rewrite runs on the model connection an admin picked for it, not through the AI chat app.
     const aiRewriteEnabled = useAIRewriteAvailable();
 

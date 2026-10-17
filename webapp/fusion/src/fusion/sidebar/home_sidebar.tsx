@@ -94,6 +94,7 @@ export default function HomeSidebar() {
     const draftCount = useSelector(getDraftsCount);
     const scheduledEnabled = useSelector(isScheduledPostsEnabled);
     const scheduledCount = useSelector((state: GlobalState) => (team ? getScheduledPostsByTeamCount(state, team.id, true) : 0));
+
     // Antimatter: recaps once they're on and an admin picked a model connection for them, or while the person has
     // recaps to read.
     const recapsEnabled = useRecapsEntryShown(useSelector((state: GlobalState) => getFeatureFlagValue(state, 'EnableAIRecaps') === 'true'));

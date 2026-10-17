@@ -1,4 +1,4 @@
-// Copyright (c) 2026-present Antimatter contributors.
+// Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 
 import type {
@@ -268,18 +268,26 @@ export function requestOf(draft: Draft, scope: string): AIConnectionRequest {
 // patchOf is the patch saving an edited connection: the key only when replaced or removed, the headers only when
 // changed; everything else as shown.
 export function patchOf(draft: Draft, scope: string): AIConnectionPatch {
-    const {scope: _, api_key: apiKey, extra_headers: extraHeaders, ...rest} = requestOf(draft, scope); // eslint-disable-line @typescript-eslint/no-unused-vars
-    const patch: AIConnectionPatch = {...rest};
-    if (scope !== AI_CONNECTION_SCOPE_SERVER) {
-        delete patch.sharing;
+    const request = requestOf(draft, scope);
+    const patch: AIConnectionPatch = {
+        name: request.name,
+        provider: request.provider,
+        base_url: request.base_url,
+        models: request.models,
+        decisions_dialect: request.decisions_dialect,
+        limits: request.limits,
+        audience: request.audience,
+    };
+    if (scope === AI_CONNECTION_SCOPE_SERVER) {
+        patch.sharing = request.sharing;
     }
-    if (draft.keyAction === 'replace' && apiKey) {
-        patch.api_key = apiKey;
+    if (draft.keyAction === 'replace' && request.api_key) {
+        patch.api_key = request.api_key;
     } else if (draft.keyAction === 'remove') {
         patch.api_key = '';
     }
     if (draft.headersChanged) {
-        patch.extra_headers = extraHeaders;
+        patch.extra_headers = request.extra_headers;
     }
     return patch;
 }

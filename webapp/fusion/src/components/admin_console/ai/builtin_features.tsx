@@ -1,4 +1,4 @@
-// Copyright (c) 2026-present Antimatter contributors.
+// Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 
 import React, {useCallback} from 'react';
@@ -57,10 +57,31 @@ export default function BuiltInFeatures(props: SystemConsoleCustomSettingsCompon
     const link = (to: string) => (chunks: React.ReactNode) => <Link to={to}>{chunks}</Link>;
 
     const labels: Record<keyof AISettings, [React.ReactNode, React.ReactNode]> = {
-        Rewrite: [<FormattedMessage {...messages.rewrite} key='l'/>, <FormattedMessage {...messages.rewriteHelp} key='h'/>],
-        Recaps: [<FormattedMessage {...messages.recaps} key='l'/>, <FormattedMessage {...messages.recapsHelp} key='h'/>],
+        Rewrite: [
+            <FormattedMessage
+                {...messages.rewrite}
+                key='l'
+            />,
+            <FormattedMessage
+                {...messages.rewriteHelp}
+                key='h'
+            />,
+        ],
+        Recaps: [
+            <FormattedMessage
+                {...messages.recaps}
+                key='l'
+            />,
+            <FormattedMessage
+                {...messages.recapsHelp}
+                key='h'
+            />,
+        ],
         AutoTranslation: [
-            <FormattedMessage {...messages.autoTranslation} key='l'/>,
+            <FormattedMessage
+                {...messages.autoTranslation}
+                key='l'
+            />,
             <FormattedMessage
                 {...messages.autoTranslationHelp}
                 key='h'
@@ -68,7 +89,10 @@ export default function BuiltInFeatures(props: SystemConsoleCustomSettingsCompon
             />,
         ],
         TextToSpeech: [
-            <FormattedMessage {...messages.textToSpeech} key='l'/>,
+            <FormattedMessage
+                {...messages.textToSpeech}
+                key='l'
+            />,
             <FormattedMessage
                 {...messages.textToSpeechHelp}
                 key='h'

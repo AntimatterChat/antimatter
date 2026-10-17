@@ -1,4 +1,4 @@
-// Copyright (c) 2026-present Antimatter contributors.
+// Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 
 import React from 'react';
@@ -75,10 +75,11 @@ describe('components/admin_console/ai/BuiltInFeatures', () => {
     test('every feature is Off without a connection, and the server-wide connections are offered', async () => {
         render();
         await waitFor(() => expect(list).toHaveBeenCalledWith('server'));
+        await waitFor(() => expect(document.getElementById('RewriteConnectionId')).toBeEnabled());
         for (const id of ['Rewrite', 'Recaps', 'AutoTranslation', 'TextToSpeech']) {
             const select = document.getElementById(`${id}ConnectionId`) as HTMLSelectElement;
             expect(select.value).toBe('');
-            await waitFor(() => expect(select).toBeEnabled());
+            expect(select).toBeEnabled();
             const names = within(select).getAllByRole('option').map((o) => o.textContent);
             expect(names).toEqual(['Off', 'Broken (needs attention)', 'Lumen OpenAI']);
         }

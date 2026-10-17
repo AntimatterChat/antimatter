@@ -4,9 +4,9 @@
 import React from 'react';
 import {MemoryRouter, Route} from 'react-router-dom';
 
-import {renderWithContext, screen} from 'tests/react_testing_utils';
-
 import {resetRecapsLookedFor} from 'components/common/hooks/useAIFeatures';
+
+import {renderWithContext, screen} from 'tests/react_testing_utils';
 
 import RecapsLink from './recaps_link';
 

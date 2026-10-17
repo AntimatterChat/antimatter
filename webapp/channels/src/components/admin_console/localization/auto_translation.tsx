@@ -62,6 +62,7 @@ export const AI_AUTO_TRANSLATION_KEY = 'AISettings.AutoTranslation';
 
 export default function AutoTranslation(props: SystemConsoleCustomSettingsComponentProps) {
     const {formatMessage} = useIntl();
+
     // Antimatter: a model connection is the recommended provider, the default for a new setup.
     const [autoTranslationSettings, setAutoTranslationSettings] = useState<AutoTranslationSettings>(() => {
         const settings = props.value as AutoTranslationSettings;
