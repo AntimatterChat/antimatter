@@ -27,6 +27,8 @@ overrides:
     recommends:
       - postgresql
       - media-types
+      # GIFs and stickers for the bundled GIFs app (and the Memes app's picker tab).
+      - gifs-server
     # Text extraction from uploaded documents, for search.
     suggests:
       - poppler-utils
@@ -39,6 +41,7 @@ overrides:
     recommends:
       - postgresql-server
       - mailcap
+      - gifs-server
     suggests:
       - poppler-utils
       - unrtf
