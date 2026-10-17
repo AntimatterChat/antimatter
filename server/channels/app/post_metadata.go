@@ -331,6 +331,12 @@ func (a *App) getEmbedsAndImages(rctx request.CTX, post *model.Post, isNewPost b
 		post.Metadata.Embeds = []*model.PostEmbed{}
 	}
 
+	// Antimatter: a moved thread's pointer and note link to the thread or channel; a preview of it under such a
+	// system line (a stacked avatar, name and date) only got in the way.
+	if post.Type == model.PostTypeWrangler {
+		return post
+	}
+
 	// Embeds use the first autolink from the post message only (not from attachments or blocks).
 	firstLink := a.getFirstLink(rctx, post.Message)
 

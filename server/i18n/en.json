@@ -10812,6 +10812,36 @@
     "description": "System message shown in the destination channel atop a thread that was moved there using the move-thread feature."
   },
   {
+    "id": "app.post.move_thread.moved_from",
+    "translation": "This thread was moved from [#{{.ChannelName}}]({{.Link}})",
+    "description": "System message in the channel a thread was moved to. [#{{.ChannelName}}]({{.Link}}) is a Markdown link to where it came from: keep the brackets, parentheses, # and placeholders as they are."
+  },
+  {
+    "id": "app.post.move_thread.moved_from_hidden",
+    "translation": "This thread was moved from [another channel]({{.Link}})",
+    "description": "System message in the channel a thread was moved to, when it came from a private channel whose name stays hidden. [another channel]({{.Link}}) is a Markdown link: translate only 'another channel'."
+  },
+  {
+    "id": "app.post.move_thread.moved_to.multiple",
+    "translation": "A thread with {{.NumMessages}} messages has been moved to [#{{.ChannelName}}]({{.Link}})",
+    "description": "System message left where a thread was moved from; {{.NumMessages}} is a number (2 or more). [#{{.ChannelName}}]({{.Link}}) is a Markdown link: keep the brackets, parentheses, # and placeholders as they are."
+  },
+  {
+    "id": "app.post.move_thread.moved_to.one",
+    "translation": "A message has been moved to [#{{.ChannelName}}]({{.Link}})",
+    "description": "System message left where a one-message thread was moved from. [#{{.ChannelName}}]({{.Link}}) is a Markdown link: keep the brackets, parentheses, # and placeholders as they are; {{.ChannelName}} is the channel's name."
+  },
+  {
+    "id": "app.post.move_thread.moved_to_hidden.multiple",
+    "translation": "A thread with {{.NumMessages}} messages has been moved to [another channel]({{.Link}})",
+    "description": "System message left where a thread was moved from, when it went to a private channel whose name stays hidden; {{.NumMessages}} is a number (2 or more). [another channel]({{.Link}}) is a Markdown link: translate only 'another channel'."
+  },
+  {
+    "id": "app.post.move_thread.moved_to_hidden.one",
+    "translation": "A message has been moved to [another channel]({{.Link}})",
+    "description": "System message left where a one-message thread was moved from, when it went to a private channel whose name stays hidden. [another channel]({{.Link}}) is a Markdown link: translate only 'another channel'."
+  },
+  {
     "id": "app.post.move_thread_command.channel.multiple_messages",
     "translation": "A thread with {{.NumMessages}} messages has been moved: {{.Link}}\n",
     "description": "System message posted in the original channel after a thread is moved; {{.NumMessages}} is the message count and {{.Link}} a permalink to the new location; ends with a newline."

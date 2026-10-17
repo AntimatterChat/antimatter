@@ -55,11 +55,28 @@ func requireNotMoved(t *testing.T, th *TestHelper, f movedThreadFixture) {
 	assert.Equal(t, f.root.ChannelId, root.ChannelId)
 }
 
+// latestWrangler gives the newest move pointer or note of a channel.
+func latestWrangler(t *testing.T, th *TestHelper, channelID string) *model.Post {
+	t.Helper()
+	posts, appErr := th.App.GetPostsPage(th.Context, model.GetPostsOptions{ChannelId: channelID, Page: 0, PerPage: 30})
+	require.Nil(t, appErr)
+	var found *model.Post
+	for _, p := range posts.ToSlice() {
+		if p.Type == model.PostTypeWrangler && (found == nil || p.CreateAt > found.CreateAt) {
+			found = p
+		}
+	}
+	require.NotNil(t, found, "a move pointer or note in the channel")
+	return found
+}
+
 func TestAntimatterMoveThreadToChannel(t *testing.T) {
 	mainHelper.Parallel(t)
 	th := Setup(t).InitBasic(t)
 	source := th.BasicChannel
 	target := th.BasicChannel2
+	siteURL := "http://antimatter.example.com"
+	th.App.UpdateConfig(func(cfg *model.Config) { *cfg.ServiceSettings.SiteURL = siteURL })
 
 	t.Run("the author moves the thread: authors, times, reactions and a pointer kept", func(t *testing.T) {
 		f := makeThread(t, th, source, th.BasicUser, th.BasicUser2, th.BasicUser)
@@ -97,6 +114,14 @@ func TestAntimatterMoveThreadToChannel(t *testing.T) {
 			}
 			require.NotNil(t, copied, "reply %q keeps its time", original.Message)
 			assert.Equal(t, original.UserId, copied.UserId, "reply keeps its author")
+
+			// A copy is a normal message: the original's type and props (only made silent), not edited.
+			assert.Equal(t, original.Type, copied.Type)
+			assert.Equal(t, original.EditAt, copied.EditAt)
+			assert.Empty(t, copied.OriginalId)
+			copiedProps := copied.GetProps()
+			delete(copiedProps, model.PostPropsSilentNotification)
+			assert.Equal(t, len(original.GetProps()), len(copiedProps), "the copy carries the original's props, %v", copied.GetProps())
 			assert.Equal(t, moved.Id, copied.RootId)
 			assert.Equal(t, target.Id, copied.ChannelId)
 			assert.Equal(t, true, copied.GetProp(model.PostPropsSilentNotification), "a moved message notifies nobody again")
@@ -108,7 +133,6 @@ func TestAntimatterMoveThreadToChannel(t *testing.T) {
 			}
 		}
 		require.NotNil(t, note, "the target says the thread came from elsewhere")
-		assert.Equal(t, "app.post.move_thread.from_another_channel", note.GetProp("TranslationID"))
 
 		// The old thread is gone, and a pointer to the new place is left.
 		_, appErr = th.App.GetSinglePost(th.Context, f.root.Id, false)
@@ -122,8 +146,67 @@ func TestAntimatterMoveThreadToChannel(t *testing.T) {
 			}
 		}
 		require.NotNil(t, pointer)
-		assert.Contains(t, pointer.GetProp("MovedThreadPermalink"), "/"+th.BasicTeam.Name+"/pl/"+moved.Id)
+		link := siteURL + "/" + th.BasicTeam.Name + "/pl/" + moved.Id
+		assert.Equal(t, link, pointer.GetProp("MovedThreadPermalink"))
 		assert.EqualValues(t, 3, pointer.GetProp("NumMessages"))
+
+		// Its text links the target's name to the moved thread, never a bare address, and its props name the
+		// target for the apps.
+		assert.Equal(t, "A thread with 3 messages has been moved to [#"+target.Name+"]("+link+")", pointer.Message)
+		assert.Equal(t, "app.post.move_thread.moved_to.multiple", pointer.GetProp("TranslationID"))
+		assert.Equal(t, target.Id, pointer.GetProp("MovedThreadChannelId"))
+		assert.Equal(t, target.Name, pointer.GetProp("MovedThreadChannelName"))
+		assert.Equal(t, target.DisplayName, pointer.GetProp("MovedThreadChannelDisplayName"))
+		assert.Equal(t, th.BasicTeam.Name, pointer.GetProp("MovedThreadTeamName"))
+		assert.Equal(t, moved.Id, pointer.GetProp("MovedThreadPostId"))
+
+		// The note links the source's name to the pointer left there.
+		pointerLink := siteURL + "/" + th.BasicTeam.Name + "/pl/" + pointer.Id
+		assert.Equal(t, "This thread was moved from [#"+source.Name+"]("+pointerLink+")", note.Message)
+		assert.Equal(t, "app.post.move_thread.moved_from", note.GetProp("TranslationID"))
+		assert.Equal(t, source.Id, note.GetProp("MovedFromChannelId"))
+		assert.Equal(t, source.Name, note.GetProp("MovedFromChannelName"))
+		assert.Equal(t, source.DisplayName, note.GetProp("MovedFromChannelDisplayName"))
+		assert.Equal(t, pointer.Id, note.GetProp("MovedFromPostId"))
+		assert.Equal(t, pointerLink, note.GetProp("MovedFromPermalink"))
+
+		// Neither gets a preview of the linked message under it (it showed as a stacked avatar, name and date).
+		for _, p := range []*model.Post{pointer, note} {
+			prepared := th.App.PreparePostForClient(th.Context, p.Clone(), &model.PreparePostForClientOpts{})
+			if prepared.Metadata != nil {
+				assert.Empty(t, prepared.Metadata.Embeds, "no embed under %q", p.Message)
+			}
+		}
+	})
+
+	t.Run("a private channel's name stays out of the pointer and the note", func(t *testing.T) {
+		secret := th.CreateChannelWithClient(t, th.SystemAdminClient, model.ChannelTypePrivate)
+		f := makeThread(t, th, source, th.BasicUser, th.BasicUser2)
+		moved, resp, err := moveTo(th.SystemAdminClient, f.root.Id, secret.Id, false)
+		require.NoError(t, err)
+		CheckOKStatus(t, resp)
+
+		pointer := latestWrangler(t, th, source.Id)
+		link := siteURL + "/" + th.BasicTeam.Name + "/pl/" + moved.Id
+		assert.Equal(t, "A thread with 2 messages has been moved to [another channel]("+link+")", pointer.Message)
+		assert.Equal(t, "app.post.move_thread.moved_to_hidden.multiple", pointer.GetProp("TranslationID"))
+		assert.NotContains(t, pointer.Message, secret.Name)
+		assert.Equal(t, secret.Id, pointer.GetProp("MovedThreadChannelId"))
+		assert.Nil(t, pointer.GetProp("MovedThreadChannelName"))
+		assert.Nil(t, pointer.GetProp("MovedThreadChannelDisplayName"))
+
+		// Moved back out, the note in the public channel doesn't name the private one either.
+		back, resp, err := moveTo(th.SystemAdminClient, moved.Id, target.Id, false)
+		require.NoError(t, err)
+		CheckOKStatus(t, resp)
+		note := latestWrangler(t, th, target.Id)
+		assert.Equal(t, back.Id, note.RootId)
+		assert.Equal(t, "app.post.move_thread.moved_from_hidden", note.GetProp("TranslationID"))
+		assert.Contains(t, note.Message, "[another channel]("+siteURL+"/"+th.BasicTeam.Name+"/pl/")
+		assert.NotContains(t, note.Message, secret.Name)
+		assert.Equal(t, secret.Id, note.GetProp("MovedFromChannelId"))
+		assert.Nil(t, note.GetProp("MovedFromChannelName"))
+		assert.Nil(t, note.GetProp("MovedFromChannelDisplayName"))
 	})
 
 	t.Run("flatten turns the replies into the channel's messages, without the topic name", func(t *testing.T) {

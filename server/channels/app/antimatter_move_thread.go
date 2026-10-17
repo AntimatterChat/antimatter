@@ -165,13 +165,37 @@ func (a *App) MoveThreadToChannel(rctx request.CTX, postID, targetChannelID stri
 		return nil, model.NewAppError("MoveThreadToChannel", "app.post.move_thread_command.error", nil, "", http.StatusInternalServerError).Wrap(err)
 	}
 
-	// The note in the target: under the moved thread, or after the messages.
+	// Deleting the first message deletes its replies.
+	if _, appErr = a.DeletePost(rctx, root.Id, user.Id); appErr != nil {
+		return nil, appErr
+	}
+
+	siteURL := *a.Config().ServiceSettings.SiteURL
+
+	// The pointer in the old place: "A thread with 13 messages has been moved to #target", the name a link to the
+	// moved thread. A private target is "another channel" (its name stays out of the message and the props); the
+	// link is kept, and refuses who can't see it.
+	pointerMessage, pointerProps := movedThreadPointer(T, wpl.NumPosts(), target, team.Name, newRoot.Id, makePostLink(siteURL, team.Name, newRoot.Id))
+	pointer, _, appErr := a.CreatePost(rctx, &model.Post{
+		UserId:    user.Id,
+		Type:      model.PostTypeWrangler,
+		ChannelId: source.Id,
+		Message:   pointerMessage,
+		Props:     pointerProps,
+	}, source, model.CreatePostFlags{})
+	if appErr != nil {
+		return nil, appErr
+	}
+
+	// The note in the target, under the moved thread or after the messages: "This thread was moved from #source",
+	// the name a link to the pointer left there.
+	noteMessage, noteProps := movedThreadNote(T, source, team.Name, pointer.Id, makePostLink(siteURL, team.Name, pointer.Id))
 	note := &model.Post{
 		UserId:    user.Id,
 		Type:      model.PostTypeWrangler,
 		ChannelId: target.Id,
-		Message:   T("app.post.move_thread.from_another_channel"),
-		Props:     model.StringInterface{"TranslationID": "app.post.move_thread.from_another_channel"},
+		Message:   noteMessage,
+		Props:     noteProps,
 	}
 	if !flatten {
 		note.RootId = newRoot.Id
@@ -180,32 +204,74 @@ func (a *App) MoveThreadToChannel(rctx request.CTX, postID, targetChannelID stri
 		return nil, appErr
 	}
 
-	// Deleting the first message deletes its replies.
-	if _, appErr = a.DeletePost(rctx, root.Id, user.Id); appErr != nil {
-		return nil, appErr
-	}
-
-	// The pointer in the old place, as upstream's move leaves it.
-	link := makePostLink(*a.Config().ServiceSettings.SiteURL, team.Name, newRoot.Id)
-	translationID := "app.post.move_thread_command.channel.multiple_messages"
-	message := T(translationID, model.StringInterface{"NumMessages": wpl.NumPosts(), "Link": link})
-	if wpl.NumPosts() == 1 {
-		translationID = "app.post.move_thread_command.channel.one_message"
-		message = T(translationID, model.StringInterface{"Link": link})
-	}
-	if _, _, appErr = a.CreatePost(rctx, &model.Post{
-		UserId:    user.Id,
-		Type:      model.PostTypeWrangler,
-		ChannelId: source.Id,
-		Message:   message,
-		Props: model.StringInterface{
-			"TranslationID":        translationID,
-			"MovedThreadPermalink": link,
-			"NumMessages":          wpl.NumPosts(),
-		},
-	}, source, model.CreatePostFlags{}); appErr != nil {
-		return nil, appErr
-	}
-
 	return newRoot, nil
+}
+
+// The props of Antimatter's pointer and note posts, beside upstream's TranslationID, MovedThreadPermalink and
+// NumMessages, so clients write the channel's name as a link (#name) instead of a raw address. A private channel's
+// name and display name are left out: readers who aren't in it see "another channel".
+const (
+	PostPropsMovedThreadChannelID          = "MovedThreadChannelId"
+	PostPropsMovedThreadChannelName        = "MovedThreadChannelName"
+	PostPropsMovedThreadChannelDisplayName = "MovedThreadChannelDisplayName"
+	PostPropsMovedThreadTeamName           = "MovedThreadTeamName"
+	PostPropsMovedThreadPostID             = "MovedThreadPostId"
+	PostPropsMovedFromChannelID            = "MovedFromChannelId"
+	PostPropsMovedFromChannelName          = "MovedFromChannelName"
+	PostPropsMovedFromChannelDisplayName   = "MovedFromChannelDisplayName"
+	PostPropsMovedFromTeamName             = "MovedFromTeamName"
+	PostPropsMovedFromPostID               = "MovedFromPostId"
+	PostPropsMovedFromPermalink            = "MovedFromPermalink"
+)
+
+// movedThreadPointer gives the message and props of the pointer left where a thread was.
+func movedThreadPointer(T i18n.TranslateFunc, count int, target *model.Channel, teamName, newRootID, link string) (string, model.StringInterface) {
+	public := target.Type == model.ChannelTypeOpen
+	translationID := "app.post.move_thread.moved_to"
+	if !public {
+		translationID = "app.post.move_thread.moved_to_hidden"
+	}
+	if count == 1 {
+		translationID += ".one"
+	} else {
+		translationID += ".multiple"
+	}
+	message := T(translationID, map[string]any{"NumMessages": count, "ChannelName": target.Name, "Link": link})
+
+	props := model.StringInterface{
+		"TranslationID":               translationID,
+		"MovedThreadPermalink":        link,
+		"NumMessages":                 count,
+		PostPropsMovedThreadChannelID: target.Id,
+		PostPropsMovedThreadTeamName:  teamName,
+		PostPropsMovedThreadPostID:    newRootID,
+	}
+	if public {
+		props[PostPropsMovedThreadChannelName] = target.Name
+		props[PostPropsMovedThreadChannelDisplayName] = target.DisplayName
+	}
+	return message, props
+}
+
+// movedThreadNote gives the message and props of the note that says where a moved thread came from.
+func movedThreadNote(T i18n.TranslateFunc, source *model.Channel, teamName, pointerID, link string) (string, model.StringInterface) {
+	public := source.Type == model.ChannelTypeOpen
+	translationID := "app.post.move_thread.moved_from"
+	if !public {
+		translationID = "app.post.move_thread.moved_from_hidden"
+	}
+	message := T(translationID, map[string]any{"ChannelName": source.Name, "Link": link})
+
+	props := model.StringInterface{
+		"TranslationID":             translationID,
+		PostPropsMovedFromChannelID: source.Id,
+		PostPropsMovedFromTeamName:  teamName,
+		PostPropsMovedFromPostID:    pointerID,
+		PostPropsMovedFromPermalink: link,
+	}
+	if public {
+		props[PostPropsMovedFromChannelName] = source.Name
+		props[PostPropsMovedFromChannelDisplayName] = source.DisplayName
+	}
+	return message, props
 }
