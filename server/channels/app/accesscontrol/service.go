@@ -1,4 +1,4 @@
-// Copyright (c) 2026-present Mattermost Libre contributors.
+// Copyright (c) 2026-present Antimatter contributors.
 // See LICENSE.txt for license information.
 
 // Package accesscontrol is a free implementation of the attribute-based access

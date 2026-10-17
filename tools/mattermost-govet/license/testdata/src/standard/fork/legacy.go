@@ -3,4 +3,4 @@
 
 package fork
 
-func Libre() {}
+func Legacy() {}

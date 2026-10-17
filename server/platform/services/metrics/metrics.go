@@ -1,4 +1,4 @@
-// Copyright (c) 2026-present Mattermost Libre contributors.
+// Copyright (c) 2026-present Antimatter contributors.
 // See LICENSE.txt for license information.
 
 // Package metrics implements einterfaces.MetricsInterface on top of the Prometheus client

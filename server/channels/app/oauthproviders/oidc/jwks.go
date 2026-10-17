@@ -1,8 +1,9 @@
-// Copyright (c) 2026-present Mattermost Libre contributors.
+// Copyright (c) 2026-present Antimatter contributors.
 // See LICENSE.txt for license information.
 
-// Package oidc contains the OpenID Connect building blocks shared by the
-// Mattermost Libre SSO providers: discovery document retrieval, JSON Web Key
+// Package oidc contains the OpenID Connect building blocks shared by
+// Antimatter's SSO providers (Google, Office 365, OpenID Connect) and the
+// Intune sign-in: discovery document retrieval, JSON Web Key
 // Set handling with key rollover, and ID/access token verification.
 package oidc
 

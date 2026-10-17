@@ -1,4 +1,4 @@
-// Copyright (c) 2026-present Mattermost Libre contributors.
+// Copyright (c) 2026-present Antimatter contributors.
 // See LICENSE.txt for license information.
 
 // Package pushproxy manages the authentication token that the server sends
@@ -7,9 +7,9 @@
 // Such tokens are issued by Mattermost Inc's hosted push notification
 // service in exchange for a license-signed request; the open source
 // mattermost-push-proxy that self-hosted deployments run does not
-// authenticate servers and has no token endpoint. Mattermost Libre therefore
-// never obtains new tokens: it keeps serving a token already stored in the
-// database (for example one issued before migrating to Libre) until the push
+// authenticate servers and has no token endpoint. Antimatter therefore never
+// obtains new tokens: it keeps serving a token already stored in the database
+// (for example one issued before migrating from Mattermost) until the push
 // proxy URL changes, and otherwise sends push notifications without the
 // authentication headers, which is what self-hosted push proxies expect.
 package pushproxy

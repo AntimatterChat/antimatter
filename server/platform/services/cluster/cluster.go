@@ -1,4 +1,4 @@
-// Copyright (c) 2026-present Mattermost Libre contributors.
+// Copyright (c) 2026-present Antimatter contributors.
 // See LICENSE.txt for license information.
 
 // Package cluster implements einterfaces.ClusterInterface, allowing several
@@ -43,6 +43,8 @@ import (
 const (
 	// memberlist label prefix. Nodes only talk to nodes using the same label,
 	// which keeps different clusters (and incompatible implementations) apart.
+	// It keeps the value given before the project was renamed (Mattermost
+	// Libre): a new one would split clusters during rolling upgrades.
 	labelPrefix = "mmlibre1:"
 
 	defaultTCPTimeout       = 10 * time.Second

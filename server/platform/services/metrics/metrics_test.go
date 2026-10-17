@@ -1,4 +1,4 @@
-// Copyright (c) 2026-present Mattermost Libre contributors.
+// Copyright (c) 2026-present Antimatter contributors.
 // See LICENSE.txt for license information.
 
 package metrics
@@ -292,8 +292,8 @@ var registerFakeDriver sync.Once
 
 func openFakeDB(t *testing.T) *sql.DB {
 	t.Helper()
-	registerFakeDriver.Do(func() { sql.Register("libre-metrics-fake", fakeDriver{}) })
-	db, err := sql.Open("libre-metrics-fake", "")
+	registerFakeDriver.Do(func() { sql.Register("antimatter-metrics-fake", fakeDriver{}) })
+	db, err := sql.Open("antimatter-metrics-fake", "")
 	require.NoError(t, err)
 	t.Cleanup(func() { db.Close() })
 	return db

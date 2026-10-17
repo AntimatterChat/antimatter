@@ -31,8 +31,9 @@ var (
 	ignoreFilesPattern       string
 	licenseYear              int
 	sourceAvailablePackageRe = regexp.MustCompile("/enterprise")
-	// Antimatter: its own code, and the code it took from Mattermost Libre, carry their authors' copyright
-	// instead of Mattermost's (with the standard licence reference).
+	// Antimatter: its own code carries its authors' copyright ("Antimatter contributors") instead of
+	// Mattermost's, with the standard licence reference. The header its code had before the project was
+	// renamed ("Mattermost Libre contributors") is still accepted, for code merged from older branches.
 	forkLicenseLine1Re = regexp.MustCompile(`^// Copyright \(c\) 20[0-9]{2}-present (Antimatter|Mattermost Libre) contributors\.$`)
 )
 

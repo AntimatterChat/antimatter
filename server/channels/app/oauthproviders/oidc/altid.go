@@ -1,4 +1,4 @@
-// Copyright (c) 2026-present Mattermost Libre contributors.
+// Copyright (c) 2026-present Antimatter contributors.
 // See LICENSE.txt for license information.
 
 package oidc
@@ -76,7 +76,7 @@ func (c *AltIDCache) Get(authData string) []string {
 	return e.ids
 }
 
-// SameUser implements einterfaces.OAuthProvider.IsSameUser for the Libre
+// SameUser implements einterfaces.OAuthProvider.IsSameUser for Antimatter's
 // providers: the accounts must use the same authentication service and the
 // stored AuthData must be the identifier of the verified identity, or one of
 // the alternative identifiers observed for it during this login.

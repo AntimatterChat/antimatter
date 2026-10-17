@@ -1,4 +1,4 @@
-// Copyright (c) 2026-present Mattermost Libre contributors.
+// Copyright (c) 2026-present Antimatter contributors.
 // See LICENSE.txt for license information.
 
 package oidc
@@ -178,7 +178,7 @@ func (i Identity) Names() (string, string) {
 	return SplitName(i.Name)
 }
 
-const propPrefix = "libre_oidc_"
+const propPrefix = "antimatter_oidc_"
 
 // ToUser converts the identity to a user whose Props carry the raw identity
 // so that it can be recovered with IdentityFromUser. Such users are only
