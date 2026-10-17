@@ -159,7 +159,8 @@
         "ExperimentalDefaultChannels": null,
         "MemberListRoleGroups": null,
         "RestrictChannelExportToAdmins": null,
-        "AllChannelsMembershipForNewTeams": null
+        "AllChannelsMembershipForNewTeams": null,
+        "DefaultCommunityKind": null
     },
     "ClientRequirements": {
         "AndroidLatestVersion": "",

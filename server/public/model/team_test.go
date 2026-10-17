@@ -243,3 +243,19 @@ func TestTeamMemberListView(t *testing.T) {
 	require.NotNil(t, appErr)
 	assert.Equal(t, "model.team.is_valid.member_list_view.app_error", appErr.Id)
 }
+
+// Antimatter: the kind new communities get, a server setting.
+func TestDefaultCommunityKindSetting(t *testing.T) {
+	cfg := &Config{}
+	cfg.SetDefaults()
+	assert.Equal(t, TeamKindCommunity, *cfg.TeamSettings.DefaultCommunityKind)
+	require.Nil(t, cfg.TeamSettings.isValid())
+
+	*cfg.TeamSettings.DefaultCommunityKind = TeamKindWorkplace
+	require.Nil(t, cfg.TeamSettings.isValid())
+
+	*cfg.TeamSettings.DefaultCommunityKind = "corporate"
+	appErr := cfg.TeamSettings.isValid()
+	require.NotNil(t, appErr)
+	assert.Equal(t, "model.config.is_valid.default_community_kind.app_error", appErr.Id)
+}

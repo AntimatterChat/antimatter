@@ -2769,6 +2769,23 @@ const AdminDefinition: AdminDefinitionType = {
                             isDisabled: it.not(it.userHasWritePermissionOnResource(RESOURCE_KEYS.SITE.USERS_AND_TEAMS)),
                         },
                         {
+                            type: 'dropdown',
+                            key: 'TeamSettings.DefaultCommunityKind',
+                            label: defineMessage({id: 'admin.team.defaultCommunityKindTitle', defaultMessage: 'Kind of new communities:'}),
+                            help_text: defineMessage({id: 'admin.team.defaultCommunityKindDescription', defaultMessage: 'The kind of the communities created from now on, unless their layout preset chooses another; on upgrade, communities that have no kind yet get it once. In a community, only its admins (and roles that manage channels) archive channels; in a workplace, members also archive the channels they created. Each community\'s admins can change its kind in its settings.'}),
+                            options: [
+                                {
+                                    value: 'community',
+                                    display_name: defineMessage({id: 'admin.team.defaultCommunityKind.community', defaultMessage: 'Community'}),
+                                },
+                                {
+                                    value: 'workplace',
+                                    display_name: defineMessage({id: 'admin.team.defaultCommunityKind.workplace', defaultMessage: 'Workplace'}),
+                                },
+                            ],
+                            isDisabled: it.not(it.userHasWritePermissionOnResource(RESOURCE_KEYS.SITE.USERS_AND_TEAMS)),
+                        },
+                        {
                             type: 'bool',
                             key: 'TeamSettings.EnableLastActiveTime',
                             label: defineMessage({id: 'admin.team.lastActiveTimeTitle', defaultMessage: 'Enable last active time: '}),

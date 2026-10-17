@@ -15200,6 +15200,11 @@
     "description": "Config validation error shown to system admins; 'DCR' means OAuth Dynamic Client Registration, and 'http://'/'https://' are literal scheme prefixes."
   },
   {
+    "id": "model.config.is_valid.default_community_kind.app_error",
+    "translation": "Invalid kind of new communities: TeamSettings.DefaultCommunityKind must be community or workplace.",
+    "description": "Configuration validation error (Antimatter). Keep TeamSettings.DefaultCommunityKind, community and workplace as they are: they are the setting's name and values."
+  },
+  {
     "id": "model.config.is_valid.default_web_ui.app_error",
     "translation": "Invalid default web UI {{.Value}}. Must be 'classic' or 'fusion'.",
     "description": "Configuration validation error for the default web UI (ServiceSettings.DefaultWebUI). {{.Value}} is the value entered; 'classic' and 'fusion' are literal config values; keep them in English."

@@ -14891,6 +14891,22 @@
     "defaultMessage": "Enable Custom Statuses: ",
     "description": "Admin console label for a true/false setting enabling user-set custom status messages; ends with a colon and trailing space before the radio buttons."
   },
+  "admin.team.defaultCommunityKind.community": {
+    "defaultMessage": "Community",
+    "description": "Option of the System Console setting for the kind of new communities: a public or hobby community, as on Discord."
+  },
+  "admin.team.defaultCommunityKind.workplace": {
+    "defaultMessage": "Workplace",
+    "description": "Option of the System Console setting for the kind of new communities: a company's or an organisation's workspace."
+  },
+  "admin.team.defaultCommunityKindDescription": {
+    "defaultMessage": "The kind of the communities created from now on, unless their layout preset chooses another; on upgrade, communities that have no kind yet get it once. In a community, only its admins (and roles that manage channels) archive channels; in a workplace, members also archive the channels they created. Each community's admins can change its kind in its settings.",
+    "description": "Help text of the System Console setting for the kind of new communities; 'layout preset' is one of the community layouts (Hybrid, Community, Workplace)."
+  },
+  "admin.team.defaultCommunityKindTitle": {
+    "defaultMessage": "Kind of new communities:",
+    "description": "System Console setting (Users and Teams) choosing the kind of community new communities are."
+  },
   "admin.team.deleteAccountDesc": {
     "defaultMessage": "The URL for the Delete Account link in the Security tab of Profile Settings. If this field is empty, the Delete Account link is hidden from users.",
     "description": "Admin console help text for the Delete Account Link customization setting."

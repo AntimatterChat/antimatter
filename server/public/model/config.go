@@ -2691,6 +2691,10 @@ type TeamSettings struct {
 	// Antimatter: communities created from now on have everyone in all their channels (Team.AllChannelsMembership,
 	// which each community can turn off). Existing communities keep theirs.
 	AllChannelsMembershipForNewTeams *bool `access:"site_users_and_teams"`
+
+	// Antimatter: the kind of community new communities are (Team.Kind, TeamKindCommunity or TeamKindWorkplace),
+	// unless created with one; once, on upgrade, existing communities without a kind get it too.
+	DefaultCommunityKind *string `access:"site_users_and_teams"`
 }
 
 func (s *TeamSettings) SetDefaults() {
@@ -2732,6 +2736,10 @@ func (s *TeamSettings) SetDefaults() {
 
 	if s.AllChannelsMembershipForNewTeams == nil {
 		s.AllChannelsMembershipForNewTeams = new(true)
+	}
+
+	if s.DefaultCommunityKind == nil {
+		s.DefaultCommunityKind = new(TeamKindCommunity)
 	}
 
 	if s.EnableLastActiveTime == nil {
@@ -4793,6 +4801,10 @@ func (s *TeamSettings) isValid() *AppError {
 
 	if *s.MaxChannelsPerTeam <= 0 {
 		return NewAppError("Config.IsValid", "model.config.is_valid.max_channels.app_error", nil, "", http.StatusBadRequest)
+	}
+
+	if *s.DefaultCommunityKind != TeamKindCommunity && *s.DefaultCommunityKind != TeamKindWorkplace {
+		return NewAppError("Config.IsValid", "model.config.is_valid.default_community_kind.app_error", nil, "", http.StatusBadRequest)
 	}
 
 	if *s.UserStatusAwayTimeout <= 0 {

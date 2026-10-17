@@ -491,6 +491,7 @@ export type TeamSettings = {
     MemberListRoleGroups: boolean;
     RestrictChannelExportToAdmins: boolean;
     AllChannelsMembershipForNewTeams: boolean;
+    DefaultCommunityKind: 'community' | 'workplace';
 };
 
 export type ClientRequirements = {

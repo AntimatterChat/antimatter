@@ -179,3 +179,90 @@ func TestMaxUsersPerTeamUnlimitedMigration(t *testing.T) {
 		assert.Equal(t, 0, *cfg.TeamSettings.MaxUsersPerTeam)
 	})
 }
+
+func teamKindRow(t *testing.T, th *TestHelper, teamID string) string {
+	t.Helper()
+	row, err := th.Store.System().GetByName(model.TeamKindSystemKeyPrefix + teamID)
+	if err != nil {
+		return ""
+	}
+	return row.Value
+}
+
+func TestCommunityKinds(t *testing.T) {
+	setDefault := func(th *TestHelper, kind string) {
+		th.App.UpdateConfig(func(cfg *model.Config) { *cfg.TeamSettings.DefaultCommunityKind = kind })
+	}
+
+	t.Run("a new community gets the setting's kind, unless created with one, and its row", func(t *testing.T) {
+		th := Setup(t)
+		team := th.CreateTeam(t)
+		assert.Equal(t, model.TeamKindCommunity, team.Kind)
+		assert.Equal(t, model.TeamKindCommunity, teamKindRow(t, th, team.Id), "the row is written for the default kind too")
+
+		setDefault(th, model.TeamKindWorkplace)
+		team = th.CreateTeam(t)
+		assert.Equal(t, model.TeamKindWorkplace, team.Kind)
+		assert.Equal(t, model.TeamKindWorkplace, teamKindRow(t, th, team.Id))
+
+		chosen, appErr := th.App.CreateTeam(th.Context, &model.Team{DisplayName: "Chosen", Name: "c" + model.NewId(), Email: "c@example.com", Type: model.TeamOpen, Kind: model.TeamKindCommunity})
+		require.Nil(t, appErr)
+		assert.Equal(t, model.TeamKindCommunity, chosen.Kind, "a preset's kind wins over the setting")
+		assert.Equal(t, model.TeamKindCommunity, teamKindRow(t, th, chosen.Id))
+
+		// Saving a team without a kind keeps the one it has.
+		team.Kind = ""
+		_, err := th.Store.Team().Update(team)
+		require.NoError(t, err)
+		assert.Equal(t, model.TeamKindWorkplace, teamKindRow(t, th, team.Id))
+	})
+
+	// Before the upgrade, communities had no kind row.
+	beforeUpgrade := func(t *testing.T, th *TestHelper, teams ...*model.Team) {
+		t.Helper()
+		for _, team := range teams {
+			_, err := th.Store.System().PermanentDeleteByName(model.TeamKindSystemKeyPrefix + team.Id)
+			require.NoError(t, err)
+		}
+		_, err := th.Store.System().PermanentDeleteByName(communityKindsMigrationKey)
+		require.NoError(t, err)
+	}
+
+	for _, kind := range []string{model.TeamKindCommunity, model.TeamKindWorkplace} {
+		t.Run("on upgrade, communities without a kind get the setting's: "+kind, func(t *testing.T) {
+			th := Setup(t)
+			old, other := th.CreateTeam(t), th.CreateTeam(t)
+			beforeUpgrade(t, th, old, other)
+			setDefault(th, kind)
+
+			require.NoError(t, th.Server.doCommunityKindsMigration())
+			assert.Equal(t, kind, teamKindRow(t, th, old.Id))
+			assert.Equal(t, kind, teamKindRow(t, th, other.Id))
+			fetched, appErr := th.App.GetTeam(old.Id)
+			require.Nil(t, appErr)
+			assert.Equal(t, kind, fetched.Kind)
+		})
+	}
+
+	t.Run("on upgrade, a kind already set is kept, and it runs once", func(t *testing.T) {
+		th := Setup(t)
+		set, unset := th.CreateTeam(t), th.CreateTeam(t)
+		beforeUpgrade(t, th, unset)
+		require.NoError(t, th.Store.System().SaveOrUpdate(&model.System{Name: model.TeamKindSystemKeyPrefix + set.Id, Value: model.TeamKindWorkplace}))
+		setDefault(th, model.TeamKindCommunity)
+
+		require.NoError(t, th.Server.doCommunityKindsMigration())
+		assert.Equal(t, model.TeamKindWorkplace, teamKindRow(t, th, set.Id), "not overwritten")
+		assert.Equal(t, model.TeamKindCommunity, teamKindRow(t, th, unset.Id))
+		_, err := th.Store.System().GetByName(communityKindsMigrationKey)
+		require.NoError(t, err)
+
+		later := th.CreateTeam(t)
+		_, err = th.Store.System().PermanentDeleteByName(model.TeamKindSystemKeyPrefix + later.Id)
+		require.NoError(t, err)
+		setDefault(th, model.TeamKindWorkplace)
+		require.NoError(t, th.Server.doCommunityKindsMigration())
+		assert.Empty(t, teamKindRow(t, th, later.Id), "it ran once")
+		assert.Equal(t, model.TeamKindCommunity, teamKindRow(t, th, unset.Id))
+	})
+}

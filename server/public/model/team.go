@@ -28,12 +28,17 @@ const (
 const TeamOnboardingMaxLength = 16384
 
 // The kinds of community (Antimatter), which set some of what its members may do. A community (the default) is a
-// public or hobby one, as on Discord: its members don't archive channels, its admins (and roles that manage channels) do. A
-// workplace is a company's or an organisation's workspace: its members archive the channels they created (those
-// they're the admins of) too.
+// public or hobby one, as on Discord: its members don't archive channels, its admins (and roles that manage
+// channels) do. A workplace is a company's or an organisation's workspace: its members archive the channels they
+// created (those they're the admins of) too. New communities get TeamSettings.DefaultCommunityKind unless created
+// with a kind.
 const (
 	TeamKindCommunity = "community"
 	TeamKindWorkplace = "workplace"
+
+	// TeamKindSystemKeyPrefix names the Systems row holding a team's kind, followed by its id. Every team has one:
+	// apps that can't read the teams through the API (Calls) read it directly.
+	TeamKindSystemKeyPrefix = "AmTeamKind_"
 )
 
 // How a community's member list groups its members (Antimatter): as each member chooses (the default), or always by

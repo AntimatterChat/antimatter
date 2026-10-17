@@ -103,6 +103,10 @@ func (a *App) AdjustTeamsFromProductLimits(teamLimits *model.TeamsLimits) *model
 }
 
 func (a *App) CreateTeam(rctx request.CTX, team *model.Team) (*model.Team, *model.AppError) {
+	// Antimatter: a community created without a kind gets the server's default one.
+	if team.Kind == "" {
+		team.Kind = *a.Config().TeamSettings.DefaultCommunityKind
+	}
 	rteam, err := a.ch.srv.teamService.CreateTeam(rctx, team)
 	if err != nil {
 		var invErr *store.ErrInvalidInput

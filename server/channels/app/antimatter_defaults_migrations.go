@@ -23,6 +23,7 @@ const (
 	moderatorPresetMigrationKey          = "AntimatterModeratorPresetMigrationComplete"
 	administratorRolesMigrationKey       = "AntimatterAdministratorRolesMigrationComplete"
 	maxUsersPerTeamUnlimitedMigrationKey = "AntimatterMaxUsersPerTeamUnlimitedMigrationComplete"
+	communityKindsMigrationKey           = "AntimatterCommunityKindsMigrationComplete"
 
 	// oldMaxUsersPerTeamDefault is TeamSettings.MaxUsersPerTeam's default before it became 0 (no limit).
 	oldMaxUsersPerTeamDefault = 50
@@ -171,4 +172,43 @@ func (s *Server) maxUsersPerTeamSetFromEnvironment() bool {
 	}
 	_, ok = teamSettings["MaxUsersPerTeam"]
 	return ok
+}
+
+// doCommunityKindsMigration gives every community that has no kind yet (all of them, on the first start of the
+// version that brought kinds) TeamSettings.DefaultCommunityKind, as it is when it runs: a server set to workplace
+// before upgrading makes all its communities workplaces. Each community's row is written explicitly, as for new ones,
+// so that apps reading the Systems table (Calls) find it; a kind already set is kept. Admins change each community's
+// kind afterwards.
+func (s *Server) doCommunityKindsMigration() error {
+	if done, err := s.migrationDone(communityKindsMigrationKey); done || err != nil {
+		return err
+	}
+
+	kind := model.TeamKindCommunity
+	if k := s.Config().TeamSettings.DefaultCommunityKind; k != nil && *k == model.TeamKindWorkplace {
+		kind = model.TeamKindWorkplace
+	}
+	teams, err := s.Store().Team().GetAll()
+	if err != nil {
+		return fmt.Errorf("failed to get the teams: %w", err)
+	}
+	written := 0
+	for _, team := range teams {
+		name := model.TeamKindSystemKeyPrefix + team.Id
+		var nfErr *store.ErrNotFound
+		if _, err := s.Store().System().GetByName(name); err == nil {
+			continue
+		} else if !errors.As(err, &nfErr) {
+			return fmt.Errorf("failed to get the kind of team %s: %w", team.Id, err)
+		}
+		if err := s.Store().System().SaveOrUpdate(&model.System{Name: name, Value: kind}); err != nil {
+			return fmt.Errorf("failed to save the kind of team %s: %w", team.Id, err)
+		}
+		written++
+	}
+	if written > 0 {
+		s.Store().Team().ClearCaches()
+		mlog.Info("Gave the communities without a kind the default one", mlog.Int("teams", written), mlog.String("kind", kind))
+	}
+	return s.markMigrationDone(communityKindsMigrationKey)
 }

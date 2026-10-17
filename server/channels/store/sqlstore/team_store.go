@@ -263,38 +263,39 @@ func prefixedTeamSliceColumns(isSelect bool, prefix string) []string {
 // Antimatter: some community settings, AllChannelsMembership, DefaultChannelId, Kind and MemberListView, are kept in
 // the Systems table, one row each per team that sets them, rather than in new Teams columns: no schema migration.
 // Selecting teams reads them back into the team (prefixedTeamSliceColumns); saving a team writes them
-// (saveTeamSettings). Kind and MemberListView are stored when they aren't the default: a team without the row is a
-// community, whose members choose how they list its members.
+// (saveTeamSettings). Every team has its Kind row (model.TeamKindSystemKeyPrefix), written when it's created (and for
+// older teams by a migration), which apps such as Calls read directly; a team saved without a kind keeps the one it
+// has. MemberListView is stored when it isn't the default: members choose how they list a team's members.
 const (
 	teamAllChannelsKeyPrefix    = "AmTeamAllChannels_"
 	teamDefaultChannelKeyPrefix = "AmTeamDefaultChannel_"
-	teamKindKeyPrefix           = "AmTeamKind_"
+	teamKindKeyPrefix           = model.TeamKindSystemKeyPrefix
 	teamMemberListViewKeyPrefix = "AmTeamMemberListView_"
 )
 
 // teamSettingPrefixes are the Systems rows of a team's settings, removed with it.
 var teamSettingPrefixes = []string{teamAllChannelsKeyPrefix, teamDefaultChannelKeyPrefix, teamKindKeyPrefix, teamMemberListViewKeyPrefix}
 
-// teamSettingKeys gives each setting of a team its Systems row, with the value it stores; "" deletes the row.
+// teamSettingKeys gives each setting of a team its Systems row, with the value it stores; "" deletes the row. A
+// setting left out is left as it is.
 func teamSettingKeys(team *model.Team) map[string]string {
 	allChannels := ""
 	if team.AllChannelsMembership {
 		allChannels = "true"
 	}
-	kind := ""
-	if team.IsWorkplace() {
-		kind = model.TeamKindWorkplace
-	}
 	memberListView := ""
 	if team.MemberListView == model.TeamMemberListViewRoles || team.MemberListView == model.TeamMemberListViewTeams {
 		memberListView = team.MemberListView
 	}
-	return map[string]string{
+	keys := map[string]string{
 		teamAllChannelsKeyPrefix + team.Id:    allChannels,
 		teamDefaultChannelKeyPrefix + team.Id: team.DefaultChannelId,
-		teamKindKeyPrefix + team.Id:           kind,
 		teamMemberListViewKeyPrefix + team.Id: memberListView,
 	}
+	if team.Kind == model.TeamKindCommunity || team.Kind == model.TeamKindWorkplace {
+		keys[teamKindKeyPrefix+team.Id] = team.Kind
+	}
+	return keys
 }
 
 // saveTeamSettings writes the settings of a team that changed since old (nil for a new team).

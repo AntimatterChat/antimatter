@@ -432,3 +432,33 @@ func TestCommunityMemberListView(t *testing.T) {
 	assert.Equal(t, model.TeamMemberListViewTeams, patched.MemberListView)
 	assert.Equal(t, model.TeamKindCommunity, patched.Kind)
 }
+
+// Antimatter: communities made through the API are of the server's default kind, unless created with one.
+func TestCreateTeamKind(t *testing.T) {
+	mainHelper.Parallel(t)
+	th := Setup(t).InitBasic(t)
+	ctx := context.Background()
+	newTeam := func(kind string) *model.Team {
+		return &model.Team{DisplayName: "Kind", Name: GenerateTestTeamName(), Email: th.GenerateTestEmail(), Type: model.TeamOpen, Kind: kind}
+	}
+
+	team, _, err := th.Client.CreateTeam(ctx, newTeam(""))
+	require.NoError(t, err)
+	assert.Equal(t, model.TeamKindCommunity, team.Kind)
+
+	th.App.UpdateConfig(func(cfg *model.Config) { *cfg.TeamSettings.DefaultCommunityKind = model.TeamKindWorkplace })
+	team, _, err = th.Client.CreateTeam(ctx, newTeam(""))
+	require.NoError(t, err)
+	assert.Equal(t, model.TeamKindWorkplace, team.Kind)
+	fetched, _, err := th.Client.GetTeam(ctx, team.Id, "")
+	require.NoError(t, err)
+	assert.Equal(t, model.TeamKindWorkplace, fetched.Kind)
+
+	team, _, err = th.Client.CreateTeam(ctx, newTeam(model.TeamKindCommunity))
+	require.NoError(t, err)
+	assert.Equal(t, model.TeamKindCommunity, team.Kind, "the kind asked for wins")
+
+	_, resp, err := th.Client.CreateTeam(ctx, newTeam("castle"))
+	require.Error(t, err)
+	CheckBadRequestStatus(t, resp)
+}
