@@ -28,6 +28,7 @@ export function useCanAddPeople(channel?: Channel) {
         if (channel?.type === Constants.GM_CHANNEL && !channel.delete_at) {
             return true;
         }
+
         // An archived channel still takes members, to read it (an auditor going through old information).
         if (!channel || !team || (channel.type !== Constants.OPEN_CHANNEL && channel.type !== Constants.PRIVATE_CHANNEL)) {
             return false;

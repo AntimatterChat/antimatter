@@ -8,7 +8,6 @@ import {haveIChannelPermission, haveISystemPermission} from 'mattermost-redux/se
 import {getChannelSettingsTabs} from 'selectors/plugins';
 
 import {canArchiveChannel} from 'fusion/channel/community_channels';
-
 import Constants from 'utils/constants';
 
 import type {GlobalState} from 'types/store';

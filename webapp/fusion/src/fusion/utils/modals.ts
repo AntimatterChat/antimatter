@@ -9,10 +9,9 @@ import type {ChannelCategory} from '@mattermost/types/channel_categories';
 import {openModal} from 'actions/views/modals';
 
 import {makeAsyncComponent} from 'components/async_load';
+import type {FusionTeamSettingsTab} from 'components/team_settings_modal/team_settings_modal';
 
 import {ModalIdentifiers} from 'utils/constants';
-
-import type {FusionTeamSettingsTab} from 'components/team_settings_modal/team_settings_modal';
 
 import type {ModalData} from 'types/actions';
 import type {ThunkActionFunc} from 'types/store';
@@ -41,6 +40,7 @@ export const openCreateCategory = () => openDialog(ModalIdentifiers.EDIT_CATEGOR
 export const openRenameCategory = (category: ChannelCategory) => openDialog(ModalIdentifiers.EDIT_CATEGORY, EditCategoryModal, {categoryId: category.id, initialCategoryName: category.display_name});
 export const openDeleteCategory = (category: ChannelCategory) => openDialog(ModalIdentifiers.DELETE_CATEGORY, DeleteCategoryModal, {category});
 export const openInvitePeople = () => openDialog(ModalIdentifiers.INVITATION, InvitationModal, {});
+
 // openTeamSettings opens the community settings, on one of its tabs (Antimatter: roles, onboarding, attributes,
 // layout... which used to be dialogs of their own) or the first one.
 export const openTeamSettings = (initialTab?: FusionTeamSettingsTab) => openDialog(ModalIdentifiers.TEAM_SETTINGS, TeamSettingsModal, {isOpen: true, initialTab});
