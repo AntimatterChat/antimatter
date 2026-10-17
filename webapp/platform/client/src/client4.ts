@@ -6,6 +6,7 @@
 import type {AccessControlPolicy, CELExpressionError, AccessControlTestResult, AccessControlPoliciesResult, AccessControlPolicyChannelsResult, AccessControlVisualAST, AccessControlAttributes, AccessControlPolicyActiveUpdate, PolicySimulationResponse, PolicySimulationByUsersParams} from '@mattermost/types/access_control';
 import type {ClusterInfo, AnalyticsRow, SchemaMigration, LogFilterQuery} from '@mattermost/types/admin';
 import type {Agent, LLMService} from '@mattermost/types/agents';
+import type {AIConnection, AIConnectionInfo, AIConnectionPatch, AIConnectionRequest, AIConnectionTestResult, AIConnectionUsage, AIModelInfo} from '@mattermost/types/ai_connections';
 import type {AppBinding, AppCallRequest, AppCallResponse} from '@mattermost/types/apps';
 import type {Audit} from '@mattermost/types/audits';
 import type {UserAutocomplete, AutocompleteSuggestion} from '@mattermost/types/autocomplete';
@@ -497,6 +498,15 @@ export default class Client4 {
 
     getAgentsRoute() {
         return `${this.getBaseRoute()}/agents`;
+    }
+
+    // Antimatter: model connections.
+    getAIConnectionsRoute() {
+        return `${this.getBaseRoute()}/ai/connections`;
+    }
+
+    getAIConnectionRoute(connectionId: string) {
+        return `${this.getAIConnectionsRoute()}/${encodeURIComponent(connectionId)}`;
     }
 
     getLLMServicesRoute() {
@@ -3878,6 +3888,88 @@ export default class Client4 {
     getLLMServices = () => {
         return this.doFetch<LLMService[]>(
             `${this.getBaseRoute()}/llmservices`,
+            {method: 'get'},
+        );
+    };
+
+    // Model connections (Antimatter). The ones the caller manages: of a scope ('server' or a team ID), or all of them.
+    getAIConnections = (scope?: string) => {
+        return this.doFetch<AIConnection[]>(
+            `${this.getAIConnectionsRoute()}${buildQueryString(scope ? {scope} : {})}`,
+            {method: 'get'},
+        );
+    };
+
+    // The connections the caller may use in a channel or community.
+    getUsableAIConnections = (channelId?: string, teamId?: string) => {
+        const query: Record<string, string> = {};
+        if (channelId) {
+            query.channel_id = channelId;
+        }
+        if (teamId) {
+            query.team_id = teamId;
+        }
+        return this.doFetch<AIConnectionInfo[]>(
+            `${this.getAIConnectionsRoute()}/usable${buildQueryString(query)}`,
+            {method: 'get'},
+        );
+    };
+
+    getAIConnection = (connectionId: string) => {
+        return this.doFetch<AIConnection>(
+            this.getAIConnectionRoute(connectionId),
+            {method: 'get'},
+        );
+    };
+
+    createAIConnection = (connection: AIConnectionRequest) => {
+        return this.doFetch<AIConnection>(
+            this.getAIConnectionsRoute(),
+            {method: 'post', body: JSON.stringify(connection)},
+        );
+    };
+
+    // A field left out is kept; api_key replaces the key ('' removes it), extra_headers replaces all the headers.
+    patchAIConnection = (connectionId: string, patch: AIConnectionPatch) => {
+        return this.doFetch<AIConnection>(
+            this.getAIConnectionRoute(connectionId),
+            {method: 'patch', body: JSON.stringify(patch)},
+        );
+    };
+
+    deleteAIConnection = (connectionId: string) => {
+        return this.doFetch<StatusOK>(
+            this.getAIConnectionRoute(connectionId),
+            {method: 'delete'},
+        );
+    };
+
+    // Tests a connection before it's saved: nothing is stored.
+    testAIConnectionRequest = (connection: AIConnectionRequest) => {
+        return this.doFetch<AIConnectionTestResult>(
+            `${this.getAIConnectionsRoute()}/test`,
+            {method: 'post', body: JSON.stringify(connection)},
+        );
+    };
+
+    testAIConnection = (connectionId: string) => {
+        return this.doFetch<AIConnectionTestResult>(
+            `${this.getAIConnectionRoute(connectionId)}/test`,
+            {method: 'post'},
+        );
+    };
+
+    getAIConnectionModels = (connectionId: string) => {
+        return this.doFetch<AIModelInfo[]>(
+            `${this.getAIConnectionRoute(connectionId)}/models`,
+            {method: 'get'},
+        );
+    };
+
+    // The connection's usage this month: totals, per day and per purpose.
+    getAIConnectionUsage = (connectionId: string) => {
+        return this.doFetch<AIConnectionUsage>(
+            `${this.getAIConnectionRoute(connectionId)}/usage`,
             {method: 'get'},
         );
     };
