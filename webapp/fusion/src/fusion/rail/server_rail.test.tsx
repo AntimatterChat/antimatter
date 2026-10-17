@@ -14,7 +14,8 @@ import {TestHelper} from 'utils/test_helper';
 import ServerRail from './server_rail';
 
 const mockLayout = {home: false, setHome: jest.fn(), setNavOpen: jest.fn()};
-jest.mock('fusion/shell/layout_context', () => ({useLayout: () => mockLayout}));
+jest.mock('fusion/shell/layout_context', () => ({useLayout: () => mockLayout, isPhoneLayout: () => false}));
+jest.mock('fusion/sidebar/home_sidebar', () => ({DM_FIND_ID: 'am-dm-find'}));
 jest.mock('actions/team_actions', () => ({switchTeam: jest.fn(() => ({type: 'SWITCH'})), updateTeamsOrderForUser: jest.fn(() => ({type: 'ORDER'}))}));
 jest.mock('fusion/shell/global_search_context', () => ({useGlobalSearch: () => ({open: jest.fn()})}));
 jest.mock('mattermost-redux/actions/preferences', () => ({savePreferences: jest.fn(() => ({type: 'PREFS'}))}));
@@ -56,12 +57,45 @@ describe('fusion/rail/ServerRail', () => {
         mockUnread = [{channel: alice, mentions: 0, messages: 3}, {channel: bob, mentions: 2, messages: 5}];
     });
 
-    test('starts with the teams, without the home logo', () => {
+    test('starts with the chat bubble of all the direct messages, then the teams', () => {
         render();
 
         const buttons = screen.getAllByRole('button');
-        expect(buttons[0]).toHaveAccessibleName('Antimatter');
-        expect(screen.queryByRole('button', {name: 'Direct messages'})).not.toBeInTheDocument();
+        expect(buttons[0]).toHaveAccessibleName('All direct messages, 8 unread messages');
+        expect(buttons[1]).toHaveAccessibleName('Antimatter');
+    });
+
+    test('counts the messages waiting in the direct messages on the bubble', () => {
+        render();
+
+        const bubble = screen.getByRole('button', {name: /^All direct messages/});
+        expect(bubble).toHaveAttribute('data-am-tip', 'All direct messages');
+        expect(bubble.querySelector('.am-badge')).toHaveTextContent('8');
+    });
+
+    test('is a plain chat bubble without unread direct messages', () => {
+        mockUnread = [];
+        render();
+
+        const bubble = screen.getByRole('button', {name: 'All direct messages'});
+        expect(bubble.querySelector('use')).toHaveAttribute('href', '#am-i-chat');
+        expect(bubble.querySelector('.am-badge')).not.toBeInTheDocument();
+    });
+
+    test('opens the list of the direct messages from the bubble, in the navigation drawer on a phone', async () => {
+        render();
+
+        await userEvent.click(screen.getByRole('button', {name: /^All direct messages/}));
+        expect(mockLayout.setHome).toHaveBeenCalledWith(true);
+        expect(mockLayout.setNavOpen).toHaveBeenCalledWith(true);
+    });
+
+    test('marks the bubble while the direct messages list is open', () => {
+        mockLayout.home = true;
+        render();
+        mockLayout.home = false;
+
+        expect(screen.getByRole('button', {name: /^All direct messages/})).toHaveAttribute('aria-current', 'page');
     });
 
     test('lists the direct messages waiting for you at the bottom, above search', () => {

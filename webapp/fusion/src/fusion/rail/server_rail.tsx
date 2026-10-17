@@ -21,8 +21,9 @@ import ServerMenu from 'fusion/popovers/server_menu';
 import {getLastTeamChannelName, getSortedMyTeams, getUnreadDirectChannels} from 'fusion/selectors';
 import {useDialogs} from 'fusion/shell/dialogs_context';
 import {useGlobalSearch} from 'fusion/shell/global_search_context';
-import {useLayout} from 'fusion/shell/layout_context';
+import {isPhoneLayout, useLayout} from 'fusion/shell/layout_context';
 import {DirectFace} from 'fusion/sidebar/direct_row';
+import {DM_FIND_ID} from 'fusion/sidebar/home_sidebar';
 import {markTeamAsRead} from 'fusion/sidebar/team_actions';
 import {a11yRegion} from 'fusion/utils/a11y_regions';
 import {am} from 'fusion/utils/class_names';
@@ -329,9 +330,39 @@ function FolderButton({folder, teams, open, unread, mentions, onToggle, onDropTe
     );
 }
 
-// ServerRail is the column of teams on the far left; the mockup calls teams servers. Direct messages waiting for you
-// sit at its bottom, above search, as round faces under a chat bubble so they don't read as servers. All the
-// conversations open from the chat bubble of the sidebar's dock.
+// DirectMessagesButton heads the rail: a chat bubble that opens the list of all the direct messages in the sidebar
+// (in the navigation drawer on a phone), with the number of messages waiting in them.
+function DirectMessagesButton() {
+    const {formatMessage} = useIntl();
+    const layout = useLayout();
+    const unread = useSelector(getUnreadDirectChannels).reduce((n, dm) => n + Math.max(dm.messages, dm.mentions), 0);
+    const label = formatMessage({id: 'fusion.dock.all', defaultMessage: 'All direct messages'});
+    return (
+        <button
+            className={am('srv', 'dm-home', {active: layout.home})}
+            data-am-tip={label}
+            data-am-tip-side='right'
+            aria-label={unread ? formatMessage({id: 'fusion.dock.allUnread', defaultMessage: '{label}, {count, plural, one {# unread message} other {# unread messages}}'}, {label, count: unread}) : label}
+            aria-current={layout.home ? 'page' : undefined}
+            onClick={() => {
+                layout.setHome(true);
+                layout.setNavOpen(true);
+
+                // Ready to find a conversation; not on a phone, where the keyboard would cover the list.
+                if (!isPhoneLayout()) {
+                    requestAnimationFrame(() => document.getElementById(DM_FIND_ID)?.focus());
+                }
+            }}
+        >
+            <Icon name='chat'/>
+            {unread > 0 && <span className={am('badge')}>{unread > 99 ? '99+' : unread}</span>}
+        </button>
+    );
+}
+
+// ServerRail is the column of teams on the far left; the mockup calls teams servers. On top, the chat bubble of all
+// the direct messages; the ones waiting for you sit at its bottom, above search, as round faces under a chat bubble
+// so they don't read as servers.
 export default function ServerRail() {
     const {formatMessage} = useIntl();
     const dispatch = useDispatch();
@@ -438,6 +469,11 @@ export default function ServerRail() {
             aria-label={formatMessage({id: 'fusion.rail.label', defaultMessage: 'Communities'})}
         >
             {showHistoryButtons() && <HistoryButtons/>}
+            <DirectMessagesButton/>
+            <span
+                className={am('srv-sep')}
+                role='separator'
+            />
             {railItems(teams, folders).map((item) => {
                 const teamButton = (team: Team) => (
                     <TeamButton

@@ -59,7 +59,7 @@
   // unread channels of a community in bold once you're in it, the custom statuses on profiles.
   :is(.am-app, .am-layer) .am-ch-threads { display: none; }
   :is(.am-app, .am-layer) .am-msg-tools :is(.am-quick-emoji, .am-tools-sep) { display: none; }
-  :is(.am-app, .am-layer) .am-dm .am-dm-count, :is(.am-app, .am-layer) .am-dock-all .am-badge { display: none; }
+  :is(.am-app, .am-layer) .am-dm .am-dm-count, :is(.am-app, .am-layer) .am-srv.am-dm-home .am-badge { display: none; }
   :is(.am-app, .am-layer) .am-srv.am-unread::before { height: 0; }
   :is(.am-app, .am-layer) .am-srv:hover::before { height: 20px; }
   :is(.am-app, .am-layer) .am-srv.am-active::before { height: 36px; }

@@ -18,9 +18,7 @@ import {useCallsOnTop} from 'fusion/calls/calls_on_top';
 import Icon from 'fusion/components/icon';
 import ServerMenu from 'fusion/popovers/server_menu';
 import {getHiddenDirectIds} from 'fusion/privacy/blocking';
-import {getUnreadDirectChannels} from 'fusion/selectors';
 import {isKeybind} from 'fusion/shell/keybinds';
-import {useLayout} from 'fusion/shell/layout_context';
 import {a11yRegion} from 'fusion/utils/a11y_regions';
 import {am} from 'fusion/utils/class_names';
 import Pluggable from 'plugins/pluggable';
@@ -33,17 +31,15 @@ import {useSidebarThreads} from './channel_threads';
 import DirectRow from './direct_row';
 import {getHiddenChannelIds} from './hidden';
 import HiddenSection from './hidden_section';
-import {DM_FIND_ID} from './home_sidebar';
 import MoreUnreads from './more_unreads';
 import {getSidebarCategories} from './server_categories';
 import UnreadCategory from './unread_category';
 import VoicePanel from './voice_panel';
 
-// The direct messages category is shown as a dock of open conversations at the bottom of the sidebar. Its chat bubble
-// opens all the conversations, and counts the messages waiting in them.
+// The direct messages category is shown as a dock of open conversations at the bottom of the sidebar. All the
+// conversations open from the chat bubble at the top of the team rail.
 function Dock() {
     const {formatMessage} = useIntl();
-    const layout = useLayout();
     const categories = useSelector(getSidebarCategories);
     const dmCategory = categories.find((c) => c.type === 'direct_messages');
 
@@ -57,8 +53,6 @@ function Dock() {
 
     // A conversation with a call in progress stays on top while it lasts.
     const channels = useCallsOnTop(open);
-    const unread = useSelector(getUnreadDirectChannels).reduce((n, dm) => n + Math.max(dm.messages, dm.mentions), 0);
-    const allLabel = formatMessage({id: 'fusion.dock.all', defaultMessage: 'All direct messages'});
 
     return (
         <div
@@ -67,22 +61,6 @@ function Dock() {
         >
             <div className={am('dock-head')}>
                 <span className={am('grow')}>{formatMessage({id: 'fusion.dock.title', defaultMessage: 'Open conversations'})}</span>
-                <button
-                    className={am('dock-all')}
-                    data-am-tip={allLabel}
-                    aria-label={unread ? formatMessage({id: 'fusion.dock.allUnread', defaultMessage: '{label}, {count, plural, one {# unread message} other {# unread messages}}'}, {label: allLabel, count: unread}) : allLabel}
-                    onClick={() => {
-                        // Ready to find a conversation, as the team rail's home icon used to be.
-                        layout.setHome(true);
-                        requestAnimationFrame(() => document.getElementById(DM_FIND_ID)?.focus());
-                    }}
-                >
-                    <Icon
-                        name='chat'
-                        size='sm'
-                    />
-                    {unread > 0 && <span className={am('badge')}>{unread > 99 ? '99+' : unread}</span>}
-                </button>
             </div>
             {channels.length > 0 && (
                 <div className={am('dock-list')}>
