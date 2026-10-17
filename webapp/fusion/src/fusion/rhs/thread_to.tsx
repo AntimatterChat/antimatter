@@ -21,7 +21,6 @@ import {getCurrentUserId} from 'mattermost-redux/selectors/entities/users';
 
 import {switchToChannel} from 'actions/views/channel';
 
-import Icon from 'fusion/components/icon';
 import {Dialog} from 'fusion/components/layer';
 import {getThreadTitle} from 'fusion/messages/thread_title';
 import {useToast} from 'fusion/shell/toast_context';
@@ -313,65 +312,5 @@ export function ThreadToChannelDialog({root, onClose}: {root: Post; onClose: () 
                 </div>
             </div>
         </Dialog>
-    );
-}
-
-// The threads whose suggestion was dismissed, until the page reloads.
-const dismissed = new Set<string>();
-
-// ThreadSuggestion proposes, at the top of a thread with replies that isn't a topic, to make it a topic or a channel.
-export function ThreadSuggestion({root, replyCount, onConvert}: {root: Post; replyCount: number; onConvert: (to: ThreadConversion) => void}) {
-    const {formatMessage} = useIntl();
-    const can = useThreadConversions(root);
-    const [, setDismissed] = useState(0);
-
-    // A topic already has its own space.
-    if (!replyCount || getThreadTitle(root) || (!can.topic && !can.channel) || dismissed.has(root.id)) {
-        return null;
-    }
-    return (
-        <div
-            className={am('thread-to')}
-            role='note'
-        >
-            <Icon
-                name='thread'
-                size='sm'
-            />
-            <span className={am('grow')}>{formatMessage({id: 'fusion.threadTo.lead', defaultMessage: 'Worth its own space?'})}</span>
-            {can.topic && (
-                <button
-                    type='button'
-                    className={am('thread-to-btn')}
-                    onClick={() => onConvert('topic')}
-                >
-                    {formatMessage({id: 'fusion.threadTo.topic', defaultMessage: 'Make it a topic'})}
-                </button>
-            )}
-            {can.channel && (
-                <button
-                    type='button'
-                    className={am('thread-to-btn')}
-                    onClick={() => onConvert('channel')}
-                >
-                    {formatMessage({id: 'fusion.threadTo.channel', defaultMessage: 'Make it a channel'})}
-                </button>
-            )}
-            <button
-                type='button'
-                className={am('sleep-x')}
-                aria-label={formatMessage({id: 'fusion.sleep.dismiss', defaultMessage: 'Dismiss'})}
-                title={formatMessage({id: 'fusion.sleep.dismiss', defaultMessage: 'Dismiss'})}
-                onClick={() => {
-                    dismissed.add(root.id);
-                    setDismissed((n) => n + 1);
-                }}
-            >
-                <Icon
-                    name='x'
-                    size='xs'
-                />
-            </button>
-        </div>
     );
 }

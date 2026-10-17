@@ -1,7 +1,7 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 
-import React, {useRef, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {useIntl} from 'react-intl';
 import {shallowEqual, useDispatch, useSelector} from 'react-redux';
 
@@ -223,8 +223,14 @@ export default function ResultsPanel({rhsState}: {rhsState: string}) {
         }
     };
 
-    // The results can take the whole width, or a window of their own, as the classic search results.
+    // The results can open in a window of their own, as the classic search results. There's no expand button: a
+    // panel left expanded (by an older version) goes back to its width, which the person can still drag.
     const expanded = useSelector(getIsRhsExpanded);
+    useEffect(() => {
+        if (expanded) {
+            dispatch(toggleRhsExpanded());
+        }
+    }, [expanded, dispatch]);
     const team = useSelector(getCurrentTeam);
     const channelName = useSelector((state: GlobalState) => state.entities.channels.channels[channelId]?.name);
     const searchTeamId = useSelector(getSearchTeam);
@@ -273,18 +279,6 @@ export default function ResultsPanel({rhsState}: {rhsState: string}) {
                         />
                     </button>
                 )}
-                <button
-                    className={am('icon-btn')}
-                    aria-pressed={expanded}
-                    title={expanded ? formatMessage({id: 'fusion.thread.collapse', defaultMessage: 'Collapse the panel'}) : formatMessage({id: 'fusion.thread.expand', defaultMessage: 'Expand the panel'})}
-                    aria-label={expanded ? formatMessage({id: 'fusion.thread.collapse', defaultMessage: 'Collapse the panel'}) : formatMessage({id: 'fusion.thread.expand', defaultMessage: 'Expand the panel'})}
-                    onClick={() => dispatch(toggleRhsExpanded())}
-                >
-                    <Icon
-                        name='expand'
-                        size='sm'
-                    />
-                </button>
                 <button
                     className={am('icon-btn')}
                     aria-label={formatMessage({id: 'fusion.rhs.close', defaultMessage: 'Close'})}
