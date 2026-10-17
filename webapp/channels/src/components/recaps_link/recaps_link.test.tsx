@@ -6,6 +6,8 @@ import {MemoryRouter, Route} from 'react-router-dom';
 
 import {renderWithContext, screen} from 'tests/react_testing_utils';
 
+import {resetRecapsLookedFor} from 'components/common/hooks/useAIFeatures';
+
 import RecapsLink from './recaps_link';
 
 const mockUseFeatureFlag = jest.fn(() => 'true');
@@ -17,6 +19,13 @@ jest.mock('components/common/hooks/useGetFeatureFlagValue', () => ({
 const mockGetBadge = jest.fn(() => ({count: 0, hasFailed: false}));
 jest.mock('mattermost-redux/selectors/entities/recaps', () => ({
     getUnreadFinishedRecapsBadge: () => mockGetBadge(),
+}));
+
+const mockGetRecaps = jest.fn(() => ({type: 'MOCK_GET_RECAPS'}));
+const mockGetScheduledRecaps = jest.fn(() => ({type: 'MOCK_GET_SCHEDULED_RECAPS'}));
+jest.mock('mattermost-redux/actions/recaps', () => ({
+    getRecaps: (...args: unknown[]) => mockGetRecaps(...args as []),
+    getScheduledRecaps: (...args: unknown[]) => mockGetScheduledRecaps(...args as []),
 }));
 
 const defaultState = {
@@ -48,6 +57,9 @@ describe('components/recaps_link/RecapsLink', () => {
     beforeEach(() => {
         mockUseFeatureFlag.mockReturnValue('true');
         mockGetBadge.mockReturnValue({count: 0, hasFailed: false});
+        mockGetRecaps.mockClear();
+        mockGetScheduledRecaps.mockClear();
+        resetRecapsLookedFor();
     });
 
     test('renders nothing when the feature flag is disabled', () => {
@@ -57,17 +69,42 @@ describe('components/recaps_link/RecapsLink', () => {
         expect(container).toBeEmptyDOMElement();
     });
 
-    // Antimatter: recaps need the model connection an admin picked for them (AIRecapsAvailable).
-    test('renders nothing without a model connection for recaps', () => {
-        const {container} = renderWithContext(
-            <MemoryRouter initialEntries={['/team1']}>
-                <Route path='/:team'>
-                    <RecapsLink/>
-                </Route>
-            </MemoryRouter>,
-            {...defaultState, entities: {...defaultState.entities, general: {config: {AIRecapsAvailable: 'false'}}}},
-        );
+    // Antimatter: recaps need the model connection an admin picked for them (AIRecapsAvailable); without one, the
+    // entry still shows while the person has recaps to read.
+    const renderWith = (general: Record<string, unknown>, recaps?: Record<string, unknown>) => renderWithContext(
+        <MemoryRouter initialEntries={['/team1']}>
+            <Route path='/:team'>
+                <RecapsLink/>
+            </Route>
+        </MemoryRouter>,
+        {...defaultState, entities: {...defaultState.entities, general, ...(recaps ? {recaps} : {})}},
+    );
+
+    test('renders nothing without a model connection and without recaps, after looking for them once', () => {
+        const {container} = renderWith({config: {AIRecapsAvailable: 'false'}});
         expect(container).toBeEmptyDOMElement();
+        expect(mockGetRecaps).toHaveBeenCalledWith(0, 1);
+        expect(mockGetScheduledRecaps).toHaveBeenCalledWith(0, 1);
+
+        renderWith({config: {AIRecapsAvailable: 'false'}});
+        expect(mockGetRecaps).toHaveBeenCalledTimes(1);
+    });
+
+    test('without a model connection, still shows the person\'s recaps', () => {
+        renderWith({config: {AIRecapsAvailable: 'false'}}, {byId: {r1: {id: 'r1'}}, allIds: ['r1'], scheduledRecaps: {}, limitStatus: null});
+        expect(screen.getByText('Recaps')).toBeInTheDocument();
+        expect(mockGetRecaps).not.toHaveBeenCalled();
+    });
+
+    test('without a model connection, still shows the person\'s schedules', () => {
+        renderWith({config: {AIRecapsAvailable: 'false'}}, {byId: {}, allIds: [], scheduledRecaps: {s1: {id: 's1'}}, limitStatus: null});
+        expect(screen.getByText('Recaps')).toBeInTheDocument();
+    });
+
+    test('with a model connection, shows without looking for recaps', () => {
+        renderLink();
+        expect(screen.getByText('Recaps')).toBeInTheDocument();
+        expect(mockGetRecaps).not.toHaveBeenCalled();
     });
 
     test('does not render a badge when there are no unread recaps', () => {
