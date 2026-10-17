@@ -22,7 +22,6 @@ import {MenuHeading, MenuSeparator} from 'fusion/components/menu';
 import {isSpoiler, SPOILER_PROP} from 'fusion/messages/spoiler';
 import {am} from 'fusion/utils/class_names';
 
-import type {GlobalState} from 'types/store';
 import type {PostDraft} from 'types/store/draft';
 
 import {BurnDurationSlider, burnLimitSeconds, clampBurnSeconds, defaultBurnSeconds, formatBurnDuration, readDurationSeconds, withReadDuration} from './burn_duration';
