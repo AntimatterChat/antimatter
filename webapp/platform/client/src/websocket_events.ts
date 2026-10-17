@@ -73,6 +73,8 @@ export const enum WebSocketEvents {
     MemberTimeoutsUpdated = 'member_timeouts_updated',
     PostPutOnTop = 'post_put_on_top',
     PostRemovedFromTop = 'post_removed_from_top',
+    AgentActivityChanged = 'agent_activity_changed',
+    AgentPostStream = 'agent_post_stream',
     CloudSubscriptionChanged = 'cloud_subscription_changed',
     ThreadUpdated = 'thread_updated',
     ThreadFollowChanged = 'thread_follow_changed',
