@@ -15,12 +15,15 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+
+	"github.com/mattermost/mattermost/server/v8/platform/shared/filestore"
 )
 
 // The keys of model connections (and their extra headers) are encrypted at rest with AES-256-GCM.
 //
 // The key encryption key comes from AM_AI_ENCRYPTION_KEY (base64 of 32 bytes; MM_AI_ENCRYPTION_KEY is the older
-// name), else from a key file the server creates, readable by it alone (0600), in its data directory. Older keys
+// name), else from a key file the server creates, readable by it alone (0600), in its data directory. The file
+// backend hides that file (filestore.AIKeyFileName) from everything else: apps, exports, archives. Older keys
 // can still decrypt during a rotation through AM_AI_ENCRYPTION_PREVIOUS_KEYS (comma-separated, base64); what's
 // encrypted again is encrypted with the current key.
 //
@@ -34,7 +37,7 @@ const (
 	keySize               = 32
 	fingerprintSize       = 4
 	nonceSize             = 12
-	keyFileName           = "ai-encryption.key"
+	keyFileName           = filestore.AIKeyFileName
 	EncryptionKeyEnv      = "AI_ENCRYPTION_KEY"
 	PreviousKeysEnv       = "AI_ENCRYPTION_PREVIOUS_KEYS"
 )
