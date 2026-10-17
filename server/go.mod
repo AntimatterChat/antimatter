@@ -45,7 +45,6 @@ require (
 	github.com/mattermost/gosaml2 v0.10.0
 	github.com/mattermost/ldap v0.0.0-20231116144001-0f480c025956
 	github.com/mattermost/logr/v2 v2.0.22
-	github.com/mattermost/mattermost-plugin-ai v1.14.2
 	github.com/mattermost/mattermost/server/public v0.4.3
 	github.com/mattermost/morph v1.1.0
 	github.com/mattermost/pdf v0.0.0-20260828123129-5b7509a6ca01
