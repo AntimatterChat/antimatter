@@ -21192,8 +21192,8 @@
     "description": "Button saving a new connection."
   },
   "fusion.aiConnections.created": {
-    "defaultMessage": "{name} added. Load its models to pick its defaults.",
-    "description": "Status message after a connection is added (the form stays open); {name} is its name."
+    "defaultMessage": "{name} added.",
+    "description": "Status message after a connection is added; {name} is its name."
   },
   "fusion.aiConnections.delete": {
     "defaultMessage": "Delete",
@@ -21395,10 +21395,6 @@
     "defaultMessage": "Load models",
     "description": "Button that asks the provider for the list of models it offers."
   },
-  "fusion.aiConnections.loadModelsAfterSave": {
-    "defaultMessage": "Save the connection to load the models it offers.",
-    "description": "Note next to the disabled Load models button of a connection not saved yet."
-  },
   "fusion.aiConnections.model.chat": {
     "defaultMessage": "Chat",
     "description": "Capability name and field label: the chat (text generation) model."
@@ -21422,6 +21418,10 @@
   "fusion.aiConnections.models.failed": {
     "defaultMessage": "The models couldn't be loaded.",
     "description": "Error when the models can't be listed."
+  },
+  "fusion.aiConnections.models.saveFirst": {
+    "defaultMessage": "The saved key and headers stay on the server: to load the models of the new address with them, save first, or type the key again.",
+    "description": "Shown when loading the models of a changed address of a saved connection: the saved key never leaves the server, so the admin saves first or types the key again."
   },
   "fusion.aiConnections.modelsDesc": {
     "defaultMessage": "The model used for each capability when a feature or an app doesn't name one. Leave a capability empty if this endpoint doesn't offer it.",

@@ -66,6 +66,7 @@ export default function ConnectionForm({scope: newScope, connection, onSaved, on
     const [test, setTest] = useState<AIConnectionTestResult | null>(null);
     const [testNote, setTestNote] = useState('');
     const [models, setModels] = useState<AIModelInfo[] | null>(null);
+    const [modelsNote, setModelsNote] = useState('');
     const modelListId = useId();
 
     const teams = useSelector(getTeams);
@@ -161,14 +162,23 @@ export default function ConnectionForm({scope: newScope, connection, onSaved, on
         }
     };
 
+    // A saved connection's models come from the server with its own key while its address and key are unchanged; a
+    // new or changed one's with what the form holds, as its test does.
     const loadModels = async () => {
-        if (!connection) {
+        setModelsNote('');
+        setError('');
+        if (connection && endpointChanged(draft, connection) && testRequestNeedsSavedSecrets(draft, connection)) {
+            setModelsNote(formatMessage({id: 'fusion.aiConnections.models.saveFirst', defaultMessage: 'The saved key and headers stay on the server: to load the models of the new address with them, save first, or type the key again.'}));
             return;
         }
         setBusy('models');
-        setError('');
         try {
-            setModels(await Client4.getAIConnectionModels(connection.id));
+            if (connection && !endpointChanged(draft, connection)) {
+                setModels(await Client4.getAIConnectionModels(connection.id));
+            } else {
+                const request = requestOf(draft, scope);
+                setModels(await Client4.getAIConnectionRequestModels({...request, name: request.name || 'models'}));
+            }
         } catch (err) {
             setError(errorMessage(err, formatMessage({id: 'fusion.aiConnections.models.failed', defaultMessage: 'The models couldn\'t be loaded.'})));
         } finally {
@@ -442,14 +452,14 @@ export default function ConnectionForm({scope: newScope, connection, onSaved, on
                 <button
                     type='button'
                     className={am('btn', 'small')}
-                    disabled={!connection || busy !== ''}
+                    disabled={busy !== '' || problems.includes('baseURL') || problems.includes('headers')}
                     onClick={loadModels}
                 >
                     {formatMessage({id: 'fusion.aiConnections.loadModels', defaultMessage: 'Load models'})}
                 </button>
                 <small className={am('field-note')}>
-                    {!connection && formatMessage({id: 'fusion.aiConnections.loadModelsAfterSave', defaultMessage: 'Save the connection to load the models it offers.'})}
-                    {connection && models && formatMessage({id: 'fusion.aiConnections.modelsLoaded', defaultMessage: '{count, plural, =0 {The endpoint lists no models.} one {# model: pick it as you type.} other {# models: pick them as you type.}}'}, {count: models.length})}
+                    {modelsNote}
+                    {!modelsNote && models && formatMessage({id: 'fusion.aiConnections.modelsLoaded', defaultMessage: '{count, plural, =0 {The endpoint lists no models.} one {# model: pick it as you type.} other {# models: pick them as you type.}}'}, {count: models.length})}
                 </small>
             </div>
             {draft.provider === 'openai_compatible' && (

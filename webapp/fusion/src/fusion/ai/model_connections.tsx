@@ -125,14 +125,8 @@ export default function ModelConnections({scope, listScope}: Props) {
             delete next[c.id];
             return next;
         });
-        if (created) {
-            // A new connection stays open: its models can be loaded now that it's saved.
-            setView({kind: 'edit', id: c.id});
-            setStatus(formatMessage({id: 'fusion.aiConnections.created', defaultMessage: '{name} added. Load its models to pick its defaults.'}, {name: c.name}));
-        } else {
-            setView({kind: 'list'});
-            setStatus(formatMessage({id: 'fusion.aiConnections.saved', defaultMessage: '{name} saved.'}, {name: c.name}));
-        }
+        setView({kind: 'list'});
+        setStatus(created ? formatMessage({id: 'fusion.aiConnections.created', defaultMessage: '{name} added.'}, {name: c.name}) : formatMessage({id: 'fusion.aiConnections.saved', defaultMessage: '{name} saved.'}, {name: c.name}));
     };
 
     if (!connections) {
@@ -144,14 +138,6 @@ export default function ModelConnections({scope, listScope}: Props) {
     if (view.kind === 'new' || (view.kind === 'edit' && current)) {
         return (
             <div className={am('ai-connections')}>
-                {status && view.kind === 'edit' && (
-                    <p
-                        className={am('ai-status')}
-                        role='status'
-                    >
-                        {status}
-                    </p>
-                )}
                 <ConnectionForm
                     key={current?.id || 'new'}
                     scope={scope}

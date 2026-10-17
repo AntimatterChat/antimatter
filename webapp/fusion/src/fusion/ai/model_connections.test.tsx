@@ -132,9 +132,9 @@ describe('fusion/ai/ModelConnections', () => {
             audience: {everyone: true, group_ids: [], roles: [], allow_guests: false},
         });
 
-        // Saved, it stays open to load its models.
+        // Saved, back to the list.
         expect(await screen.findByRole('status')).toHaveTextContent('Mistral added.');
-        expect(screen.getByRole('button', {name: 'Load models'})).toBeEnabled();
+        expect(within(screen.getByRole('list', {name: 'Model connections'})).getByText('Mistral')).toBeInTheDocument();
     });
 
     test('tests a new connection before it\'s saved, with what the form holds', async () => {
@@ -265,11 +265,44 @@ describe('fusion/ai/ModelConnections', () => {
         expect(await screen.findByText('2 models: pick them as you type.')).toBeInTheDocument();
     });
 
-    test('a new connection loads its models once saved', async () => {
+    test('loads the models of a new connection before it\'s saved, with what the form holds', async () => {
         spy('getAIConnections', async () => []);
+        const unsaved = spy('getAIConnectionRequestModels', async () => [{id: 'mistral-large'}, {id: 'mistral-small'}]);
+        const saved = spy('getAIConnectionModels', async () => []);
+        const create = spy('createAIConnection', async () => connection());
         renderServer();
+
         await userEvent.click(await screen.findByRole('button', {name: 'Add a connection'}));
-        expect(screen.getByRole('button', {name: 'Load models'})).toBeDisabled();
+        await userEvent.click(screen.getByRole('button', {name: 'Mistral'}));
+        await userEvent.type(screen.getByLabelText('API key'), 'sk-mistral');
+        await userEvent.click(screen.getByRole('button', {name: 'Load models'}));
+
+        await waitFor(() => expect(unsaved).toHaveBeenCalledTimes(1));
+        expect(unsaved.mock.calls[0][0]).toMatchObject({scope: 'server', base_url: 'https://api.mistral.ai/v1', api_key: 'sk-mistral'});
+        expect(await screen.findByText('2 models: pick them as you type.')).toBeInTheDocument();
+        expect(document.querySelectorAll('datalist option')).toHaveLength(2);
+        expect(saved).not.toHaveBeenCalled();
+        expect(create).not.toHaveBeenCalled();
+    });
+
+    test('loads a changed connection\'s models with the form\'s key, never the saved one', async () => {
+        spy('getAIConnections', async () => [connection()]);
+        const unsaved = spy('getAIConnectionRequestModels', async () => [{id: 'gpt-x'}]);
+        const saved = spy('getAIConnectionModels', async () => []);
+        renderServer();
+
+        await userEvent.click(await screen.findByRole('button', {name: 'Edit Lumen OpenAI'}));
+        await userEvent.click(screen.getByRole('button', {name: 'OpenRouter'}));
+        await userEvent.click(screen.getByRole('button', {name: 'Load models'}));
+        expect(await screen.findByText(/to load the models of the new address with them, save first/)).toBeInTheDocument();
+        expect(unsaved).not.toHaveBeenCalled();
+
+        await userEvent.click(screen.getByRole('button', {name: 'Replace'}));
+        await userEvent.type(screen.getByLabelText('New API key'), 'sk-router');
+        await userEvent.click(screen.getByRole('button', {name: 'Load models'}));
+        await waitFor(() => expect(unsaved).toHaveBeenCalledTimes(1));
+        expect(unsaved.mock.calls[0][0]).toMatchObject({base_url: 'https://openrouter.ai/api/v1', api_key: 'sk-router'});
+        expect(saved).not.toHaveBeenCalled();
     });
 
     test('asks in the page before deleting', async () => {

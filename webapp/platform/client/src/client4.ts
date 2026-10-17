@@ -3959,6 +3959,14 @@ export default class Client4 {
         );
     };
 
+    // The models a connection's endpoint offers before it's saved: the same body as testAIConnectionRequest.
+    getAIConnectionRequestModels = (connection: AIConnectionRequest) => {
+        return this.doFetch<AIModelInfo[]>(
+            `${this.getAIConnectionsRoute()}/models`,
+            {method: 'post', body: JSON.stringify(connection)},
+        );
+    };
+
     getAIConnectionModels = (connectionId: string) => {
         return this.doFetch<AIModelInfo[]>(
             `${this.getAIConnectionRoute(connectionId)}/models`,
