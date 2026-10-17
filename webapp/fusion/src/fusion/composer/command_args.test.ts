@@ -17,10 +17,13 @@ const commands: CommandSpec[] = [
             Trigger: 'remote',
             HelpText: 'Manage secure connections',
             SubCommands: [
-                {Trigger: 'create', Arguments: [
-                    {Name: 'name', HelpText: 'The connection\'s name', Type: 'TextInput', Required: true, Data: {Hint: '[name]'}},
-                    {Name: 'password', HelpText: 'Its password', Type: 'TextInput', Required: false, Data: {Hint: '[password]'}},
-                ]},
+                {
+                    Trigger: 'create',
+                    Arguments: [
+                        {Name: 'name', HelpText: 'The connection\'s name', Type: 'TextInput', Required: true, Data: {Hint: '[name]'}},
+                        {Name: 'password', HelpText: 'Its password', Type: 'TextInput', Required: false, Data: {Hint: '[password]'}},
+                    ],
+                },
                 {Trigger: 'remove', Arguments: [{HelpText: 'The connection', Type: 'StaticList', Required: true, Data: {PossibleArguments: [{Item: 'lab'}, {Item: 'hq'}]}}]},
             ],
         },

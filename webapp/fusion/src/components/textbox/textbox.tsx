@@ -115,6 +115,7 @@ export default class Textbox extends React.PureComponent<Props> {
                 priorityProfiles: this.props.priorityProfiles,
                 defaultAgent: this.props.defaultAgent,
             }),
+
             // Antimatter: channels are linked as #channel-name in Fusion.
             new ChannelMentionProvider(props.actions.autocompleteChannels, props.delayChannelAutocomplete, '#'),
             new EmoticonProvider(),

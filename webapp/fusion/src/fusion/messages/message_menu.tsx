@@ -101,6 +101,7 @@ export default function MessageMenu({post, anchor, inThread, onClose, onMoreReac
     const quick = [...new Set([...[...recent].reverse(), ...QUICK_REACTIONS])].slice(0, QUICK_COUNT);
 
     const openNotes = useNotesToSelf();
+
     // Antimatter moves threads between the channels of a community, for their authors and moderators.
     const canMove = useSelector((state: GlobalState) => {
         const root = getPost(state, post.root_id || post.id);
