@@ -1606,6 +1606,7 @@ describe('Selectors.Channels.getRedirectChannelNameForTeam with default channels
     const team = {...TestHelper.fakeTeamWithId(), default_channel_id: ''};
     const user = TestHelper.fakeUserWithId();
     const general = {...TestHelper.fakeChannelWithId(team.id), name: 'general', display_name: 'General', type: General.OPEN_CHANNEL};
+
     // Atrium sorts before General: landing there shows the first channel was chosen, not the default one.
     const atrium = {...TestHelper.fakeChannelWithId(team.id), name: 'atrium', display_name: 'Atrium', type: General.OPEN_CHANNEL};
     const zebra = {...TestHelper.fakeChannelWithId(team.id), name: 'zebra', display_name: 'Zebra', type: General.OPEN_CHANNEL};
