@@ -11,8 +11,8 @@ import {am} from 'fusion/utils/class_names';
 import type {GlobalState} from 'types/store';
 
 import {useCallActions} from './actions';
-import {isRecordingAvailable} from './host_api';
 import {useCall, useIsVoiceChannel} from './hooks';
+import {isRecordingAvailable} from './host_api';
 
 // Recordings of calls, by the Calls plugin's job service (Enable call recordings): the host starts and stops them,
 // everyone sees that the call is recorded, and the recording is posted in the call's thread once it stops. Calls

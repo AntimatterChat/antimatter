@@ -2,6 +2,7 @@
 // See LICENSE.txt for license information.
 
 import configureStore from 'store';
+
 import {TestHelper} from 'utils/test_helper';
 
 import type {GlobalState} from 'types/store';
