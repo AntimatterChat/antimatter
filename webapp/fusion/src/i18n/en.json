@@ -25711,6 +25711,30 @@
     "defaultMessage": "Emoji",
     "description": ""
   },
+  "fusion.pickerView.back": {
+    "defaultMessage": "Back",
+    "description": "Shared by the emoji picker's views (adding or managing custom emoji, GIFs, stickers, meme templates): label of the back arrow returning to the tab's grid."
+  },
+  "fusion.pickerView.delete": {
+    "defaultMessage": "Delete",
+    "description": "Shared by the emoji picker's views (adding or managing custom emoji, GIFs, stickers, meme templates): button confirming the deletion, in the row asking for confirmation."
+  },
+  "fusion.pickerView.deleting": {
+    "defaultMessage": "Deleting…",
+    "description": "Shared by the emoji picker's views (adding or managing custom emoji, GIFs, stickers, meme templates): the confirmation button while it deletes."
+  },
+  "fusion.pickerView.keep": {
+    "defaultMessage": "Keep",
+    "description": "Shared by the emoji picker's views (adding or managing custom emoji, GIFs, stickers, meme templates): button cancelling a deletion, in the row asking for confirmation."
+  },
+  "fusion.pickerView.loading": {
+    "defaultMessage": "Loading…",
+    "description": "Shared by the emoji picker's views (adding or managing custom emoji, GIFs, stickers, meme templates): shown while the list loads."
+  },
+  "fusion.pickerView.more": {
+    "defaultMessage": "Show more",
+    "description": "Shared by the emoji picker's views (adding or managing custom emoji, GIFs, stickers, meme templates): button at the end of a long list, drawing or loading the next part."
+  },
   "fusion.privacy.asAbove": {
     "defaultMessage": "As above ({choice})",
     "description": "Option for a community in the Privacy settings: use the choice made for all communities. {choice} is that choice, e.g. \"Ask me first\"."

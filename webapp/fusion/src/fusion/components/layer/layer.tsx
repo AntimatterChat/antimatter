@@ -69,6 +69,10 @@ type PopoverProps = {
 
     // On a phone a popover is a sheet from the bottom of the screen, over a scrim; false keeps it beside its anchor.
     sheet?: boolean;
+
+    // What Escape does first: true when it was handled (the picker going back from a view to its grid), so the
+    // popover stays open. Without it, or when it returns false, Escape closes the popover.
+    onEscape?: () => boolean;
 };
 
 const MARGIN = 8;
@@ -149,11 +153,13 @@ function place(pop: HTMLElement, placement: Placement, anchor?: HTMLElement | nu
 
 // Popover is a floating .am-pop: placed next to its anchor, closed by Escape or a click elsewhere. On a phone it's a
 // sheet (.am-sheet) from the bottom of the screen instead, the whole width, as menus are in phone apps.
-export function Popover({anchor, point, placement = 'below', className, role = 'dialog', label, onClose, children, style, toggles, sheet: canSheet = true}: PopoverProps) {
+export function Popover({anchor, point, placement = 'below', className, role = 'dialog', label, onClose, children, style, toggles, sheet: canSheet = true, onEscape}: PopoverProps) {
     const ref = useRef<HTMLDivElement>(null);
     const [, setPlaced] = useState(false);
     const togglesRef = useRef(toggles);
     togglesRef.current = toggles;
+    const onEscapeRef = useRef(onEscape);
+    onEscapeRef.current = onEscape;
     const sheet = useIsPhone() && canSheet;
 
     // The press that opened it, for an anchor that isn't shown: taken once, as the popover follows its anchor.
@@ -193,6 +199,10 @@ export function Popover({anchor, point, placement = 'below', className, role = '
         const onKeyDown = (e: KeyboardEvent) => {
             if (e.key === 'Escape') {
                 e.stopPropagation();
+                if (onEscapeRef.current?.()) {
+                    e.preventDefault();
+                    return;
+                }
                 onClose();
             }
         };

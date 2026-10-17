@@ -119,6 +119,18 @@ body.app__body #root.am-root {
     :is(.am-app, .am-layer) .am-fmt-bar > * { flex: none; }
     :is(.am-app, .am-layer) .am-fmt-bar button { width: 40px; height: 40px; }
     :is(.am-app, .am-layer) .am-typing { left: 14px; }
+
+    // The emoji picker is a sheet of one height, whether it shows a grid or a view (adding, managing); the view
+    // scrolls inside it, its buttons in reach above the home bar.
+    :is(.am-app, .am-layer) .am-pop.am-sheet.am-picker { height: min(560px, calc(var(--am-vvh, 100dvh) - 56px - env(safe-area-inset-top))); overflow: hidden; }
+    :is(.am-app, .am-layer) .am-picker-search-row > .am-pv-btn { width: 40px; height: 40px; }
+    :is(.am-app, .am-layer) :is(.am-pv-back, .am-pv-row-delete) { width: 44px; height: 44px; }
+    :is(.am-app, .am-layer) .am-pv-row { min-height: 52px; }
+    :is(.am-app, .am-layer) .am-pv-confirm { padding-left: 8px; }
+    :is(.am-app, .am-layer) .am-pv-confirm-btns .am-btn.am-small { height: 40px; padding: 0 16px; font-size: 14px; }
+    :is(.am-app, .am-layer) .am-pv-actions .am-btn { flex: 1; min-height: 44px; }
+    :is(.am-app, .am-layer) .am-ce-page { padding: 12px; }
+    :is(.am-app, .am-layer) .am-pv.am-pv-page { max-height: none; }
 }
 
 // A phone held sideways has little height: lower headers, and sheets and dialogs no wider than a menu needs.

@@ -22,6 +22,8 @@ import type {Theme} from 'mattermost-redux/selectors/entities/preferences';
 
 import type {NewPostMessageProps} from 'actions/new_post';
 
+import type {PickerKit} from 'fusion/popovers/picker_views';
+
 import type {ChannelSettingsSchema, ChannelSettingsTabBodyProps, ChannelSettingsTabShouldRender} from 'types/plugins/channel_settings';
 import type {PluginConfiguration} from 'types/plugins/user_settings';
 import type {GlobalState} from 'types/store';
@@ -555,6 +557,13 @@ export type EmojiPickerTabProps = {
 
     /** Inserts text at the caret of the message box, like the emoji the user picks. */
     insertText?: (text: string) => void;
+
+    /**
+     * Antimatter Fusion: the components of the picker's add and manage views (the "+" and manage buttons next to the
+     * search box, the view with its back arrow, fields, drop zone and list), so that a tab's views look like the
+     * emoji tab's and stay inside the picker. Hosts without it leave it out: a tab keeps its own dialogs then.
+     */
+    pickerKit?: PickerKit;
 };
 
 export type EmojiPickerTabRegistration = PluginComponent & {

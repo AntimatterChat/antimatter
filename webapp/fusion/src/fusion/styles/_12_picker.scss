@@ -95,3 +95,87 @@
   :is(.am-app, .am-layer) .am-pop.am-picker { width: calc(100vw - 16px); }
   :is(.am-app, .am-layer) .am-emoji-scroll .am-emoji-grid { grid-template-columns: repeat(7, 1fr); }
 }
+
+/* ---------- The picker's views: adding and managing what's in a tab (fusion/popovers/picker_views.tsx) ---------- */
+// They take the place of a tab's search, grid and footer, in the same box: the picker keeps its size and place. The
+// plugins' tabs (GIFs, stickers, memes) get the same components, so these rules are theirs too.
+:is(.am-app, .am-layer) .am-picker-search-row > .am-pv-btn { color: var(--am-text-2); }
+:is(.am-app, .am-layer) .am-picker-search-row > .am-pv-btn:hover { color: var(--am-text); background: var(--am-hover); }
+:is(.am-app, .am-layer) .am-pv { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+:is(.am-app, .am-layer) .am-pv-head { flex: none; display: flex; align-items: center; gap: 6px; height: 50px; padding: 0 10px 0 6px; border-bottom: 1px solid var(--am-line); }
+:is(.am-app, .am-layer) .am-pv-head h3 { flex: 1; min-width: 0; margin: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font: 700 15px var(--am-font-ui); color: var(--am-text); }
+:is(.am-app, .am-layer) .am-pv-back { flex: none; width: 34px; height: 34px; border-radius: 8px; color: var(--am-text-2); }
+:is(.am-app, .am-layer) .am-pv-back:hover { color: var(--am-text); background: var(--am-hover); }
+:is(.am-app, .am-layer) .am-pv-back .am-ic { transform: rotate(90deg); }
+:is(.am-app, .am-layer) .am-pv-body { flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding: 12px; }
+:is(.am-app, .am-layer) .am-pv-actions { flex: none; display: flex; justify-content: flex-end; gap: 8px; padding: 8px 12px; border-top: 1px solid var(--am-line); background: var(--am-side); }
+:is(.am-app, .am-layer) .am-pv .am-btn.am-small { height: 28px; padding: 0 10px; font-size: 12.5px; }
+:is(.am-app, .am-layer) .am-pv .am-btn[aria-disabled="true"] { opacity: .6; }
+:is(.am-app, .am-layer) .am-pv :is(button, input, [tabindex]):focus-visible { outline: 2px solid var(--am-matter); outline-offset: 1px; }
+
+// Messages: errors at once, the rest politely.
+:is(.am-app, .am-layer) .am-pv-notice { margin: 0 0 10px; padding: 8px 10px; border-radius: 8px; font-size: 13px; line-height: 1.35; }
+:is(.am-app, .am-layer) .am-pv-notice.am-pv-error { color: var(--am-danger); background: color-mix(in srgb, var(--am-danger) 10%, transparent); }
+:is(.am-app, .am-layer) .am-pv-notice.am-pv-ok { color: var(--am-ok); background: color-mix(in srgb, var(--am-ok) 10%, transparent); }
+:is(.am-app, .am-layer) .am-pv-notice.am-pv-info { color: var(--am-text-2); background: var(--am-side); }
+:is(.am-app, .am-layer) .am-pv-message { margin: 0; min-height: 1.35em; font-size: 12.5px; line-height: 1.35; color: var(--am-muted); }
+:is(.am-app, .am-layer) .am-pv-message.am-pv-error { color: var(--am-danger); }
+:is(.am-app, .am-layer) .am-pv-message.am-pv-ok { color: var(--am-ok); }
+
+// Fields.
+:is(.am-app, .am-layer) .am-pv-field { gap: 6px; margin-bottom: 12px; }
+:is(.am-app, .am-layer) .am-pv-field-head { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
+:is(.am-app, .am-layer) .am-pv-field-head > label { font: 700 11px var(--am-font-ui); letter-spacing: .07em; text-transform: uppercase; color: var(--am-muted); }
+:is(.am-app, .am-layer) .am-pv-aside { font-size: 11.5px; color: var(--am-faint); font-variant-numeric: tabular-nums; }
+:is(.am-app, .am-layer) .am-ce-name { display: flex; align-items: center; gap: 2px; height: 38px; padding: 0 10px; border-radius: 9px; border: 1px solid var(--am-line); background: var(--am-main); color: var(--am-muted); font: 14px var(--am-font-mono); }
+:is(.am-app, .am-layer) .am-ce-name:focus-within { border-color: var(--am-matter); }
+:is(.am-app, .am-layer) .am-pv-field.am-invalid .am-ce-name { border-color: var(--am-danger); }
+:is(.am-app, .am-layer) .am-field .am-ce-name input[type="text"] { flex: 1; min-width: 0; height: auto; padding: 0; border: 0; border-radius: 0; outline: none; background: transparent; color: var(--am-text); font: inherit; }
+
+// The image: chosen, dropped or pasted.
+:is(.am-app, .am-layer) .am-pv-drop-wrap { margin-bottom: 12px; }
+:is(.am-app, .am-layer) .am-pv-drop { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; min-height: 124px; margin-bottom: 6px; padding: 12px; border: 1.5px dashed color-mix(in srgb, var(--am-muted) 45%, transparent); border-radius: 12px; background: var(--am-side); text-align: center; transition: border-color .12s ease, background .12s ease; }
+:is(.am-app, .am-layer) .am-pv-drop.am-over { border-color: var(--am-matter); background: var(--am-matter-soft); }
+:is(.am-app, .am-layer) .am-pv-drop.am-invalid { border-color: var(--am-danger); }
+:is(.am-app, .am-layer) .am-pv-drop-ic { width: 26px; height: 26px; color: var(--am-muted); }
+:is(.am-app, .am-layer) .am-pv-drop-preview img { display: block; max-width: 96px; max-height: 96px; object-fit: contain; }
+:is(.am-app, .am-layer) .am-pv-drop-name { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 12px; color: var(--am-text-2); }
+:is(.am-app, .am-layer) .am-ce-preview { display: flex; align-items: flex-end; justify-content: center; gap: 22px; }
+:is(.am-app, .am-layer) .am-ce-preview figure { display: grid; justify-items: center; gap: 4px; margin: 0; }
+:is(.am-app, .am-layer) .am-ce-preview img { display: block; object-fit: contain; }
+:is(.am-app, .am-layer) .am-ce-preview figcaption { font-size: 11px; color: var(--am-muted); }
+
+// The list of what was added.
+:is(.am-app, .am-layer) .am-pv-search { padding: 0 0 10px; }
+:is(.am-app, .am-layer) .am-pv-search input::-webkit-search-cancel-button { cursor: pointer; }
+:is(.am-app, .am-layer) .am-pv-list { list-style: none; margin: 0; padding: 0; }
+:is(.am-app, .am-layer) .am-pv-row { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; min-height: 44px; padding: 2px 4px; border-radius: 8px; }
+:is(.am-app, .am-layer) .am-pv-row:hover { background: var(--am-hover); }
+:is(.am-app, .am-layer) .am-pv-row.am-confirming { background: color-mix(in srgb, var(--am-danger) 9%, transparent); }
+:is(.am-app, .am-layer) .am-pv-row-main { flex: 1; min-width: 0; display: flex; align-items: center; gap: 10px; padding: 4px; border-radius: 6px; color: inherit; text-align: left; }
+:is(.am-app, .am-layer) .am-pv-row-img { flex: none; width: 32px; height: 32px; display: grid; place-items: center; }
+:is(.am-app, .am-layer) .am-pv-row-img img { max-width: 32px; max-height: 32px; object-fit: contain; }
+:is(.am-app, .am-layer) .am-pv-row-text { min-width: 0; display: grid; }
+:is(.am-app, .am-layer) .am-pv-row-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 600; font-size: 13.5px; color: var(--am-text); }
+:is(.am-app, .am-layer) .am-pv-row-meta { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 12px; color: var(--am-muted); }
+:is(.am-app, .am-layer) .am-pv-row-delete { flex: none; width: 32px; height: 32px; border-radius: 8px; color: var(--am-muted); }
+:is(.am-app, .am-layer) .am-pv-row-delete:hover { color: var(--am-danger); background: color-mix(in srgb, var(--am-danger) 12%, transparent); }
+:is(.am-app, .am-layer) .am-pv-confirm { flex-basis: 100%; display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 2px 8px 8px 46px; font-size: 12.5px; color: var(--am-text-2); }
+:is(.am-app, .am-layer) .am-pv-confirm-text { flex: 1 1 160px; }
+:is(.am-app, .am-layer) .am-pv-confirm-btns { display: flex; gap: 6px; }
+:is(.am-app, .am-layer) .am-pv-empty { margin: 0; padding: 24px 8px; text-align: center; font-size: 13px; color: var(--am-muted); }
+:is(.am-app, .am-layer) .am-pv-more { display: flex; justify-content: center; padding: 8px 0; }
+
+// The emoji just added, first on the grid and ready to use.
+:is(.am-app, .am-layer) .am-emoji-added button.am-fresh { border-radius: 8px; background: var(--am-matter-soft); box-shadow: inset 0 0 0 2px var(--am-matter); }
+
+// The same views on the /:team/emoji page.
+:is(.am-app, .am-layer) .am-ce-page { max-width: 720px; padding: 24px; }
+:is(.am-app, .am-layer) .am-pv.am-pv-page { min-height: 420px; max-height: calc(var(--am-vvh, 100dvh) - 96px); border: 1px solid var(--am-line); border-radius: 12px; background: var(--am-raise); overflow: hidden; }
+:is(.am-app, .am-layer) .am-pv-page .am-pv-head { height: 58px; padding: 0 16px; }
+:is(.am-app, .am-layer) .am-pv-page .am-pv-head h3 { font-size: 18px; }
+:is(.am-app, .am-layer) .am-pv-page .am-pv-body { padding: 16px; }
+
+@media (prefers-reduced-motion: reduce) {
+  :is(.am-app, .am-layer) .am-pv-drop { transition: none; }
+}
