@@ -165,4 +165,25 @@ describe('at mention suggestion', () => {
 
         expect(screen.queryByText('IMPORTED - INACTIVE')).not.toBeInTheDocument();
     });
+
+    // Antimatter: an agent's account shows AGENT, from the agents' list (isAgent) or from the user itself (is_agent).
+    test('tags an agent AGENT, whichever way it comes', () => {
+        const {unmount} = renderWithContext(
+            <AtMentionSuggestion
+                {...baseProps}
+                item={{...userid2, username: 'coder', is_bot: true, is_agent: true} as Item}
+            />,
+        );
+        expect(screen.getByText('AGENT')).toBeInTheDocument();
+        unmount();
+
+        renderWithContext(
+            <AtMentionSuggestion
+                {...baseProps}
+                item={{...userid2, username: 'release', is_bot: true} as Item}
+            />,
+        );
+        expect(screen.getByText('BOT')).toBeInTheDocument();
+    });
 });
+

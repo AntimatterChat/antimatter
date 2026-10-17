@@ -11,6 +11,7 @@ import {isGuest, isSystemAdmin} from 'mattermost-redux/utils/user_utils';
 
 import {getRhsState} from 'selectors/rhs';
 
+import AgentTag from 'components/widgets/tag/agent_tag';
 import BotTag from 'components/widgets/tag/bot_tag';
 import GuestTag from 'components/widgets/tag/guest_tag';
 import ImportedInactiveTag from 'components/widgets/tag/imported_inactive_tag';
@@ -23,6 +24,9 @@ import type {GlobalState} from 'types/store';
 
 type Props = {
     isBot?: boolean;
+
+    // Antimatter: an agent's account shows AGENT instead of BOT.
+    isAgent?: boolean;
     isImportedInactive?: boolean;
     roles: string;
     returnFocus: () => void;
@@ -54,6 +58,7 @@ function getIsChannelAdmin(state: GlobalState, userId: string, channelId?: strin
 
 const ProfilePopoverTitle = ({
     isBot,
+    isAgent,
     isImportedInactive,
     roles,
     returnFocus,
@@ -86,7 +91,14 @@ const ProfilePopoverTitle = ({
     }
 
     let roleTitle;
-    if (isBot) {
+    if (isBot && isAgent) {
+        roleTitle = (
+            <AgentTag
+                className='user-popover__role'
+                size={'sm'}
+            />
+        );
+    } else if (isBot) {
         roleTitle = (
             <BotTag
                 className='user-popover__role'

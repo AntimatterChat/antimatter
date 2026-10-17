@@ -219,7 +219,7 @@ const AtMentionSuggestion = React.forwardRef<HTMLLIElement, SuggestionProps<Item
                 >
                     {'@' + itemname}
                 </span>
-                {item.is_bot && <span id={ids.botTag}>{item.isAgent ? <AgentTag/> : <BotTag/>}</span>}
+                {item.is_bot && <span id={ids.botTag}>{item.isAgent || item.is_agent ? <AgentTag/> : <BotTag/>}</span>}
                 {description && <span id={ids.description}>{description}</span>}
                 {youElement}
                 {customStatus}
