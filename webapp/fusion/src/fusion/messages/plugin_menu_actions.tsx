@@ -11,7 +11,7 @@ import {getConfig} from 'mattermost-redux/selectors/entities/general';
 
 import {MenuAppIcon} from 'fusion/apps/app_glyph';
 import Icon from 'fusion/components/icon';
-import {Flyout, MenuHeading} from 'fusion/components/menu';
+import {Flyout, MenuHeading, MenuSeparator} from 'fusion/components/menu';
 import {useToast} from 'fusion/shell/toast_context';
 import {am} from 'fusion/utils/class_names';
 import {getImageSrc, isSystemMessage} from 'utils/post_utils';
@@ -100,9 +100,10 @@ function IntegrationIcon({action}: {action: MessageAction}) {
 }
 
 // PluginMenuActions are the entries apps and integrations add to a message's ⋯ menu, all under one "More actions"
-// flyout: no app gets an entry of its own in the menu. The apps' single actions come first, then each submenu
-// (registerPostDropdownSubMenuAction, such as the AI actions) as a headed group, then the integrations' message
-// actions under "Integrations". Each entry shows its app's or integration's icon, in grey.
+// flyout: no app gets an entry of its own in the menu. The apps' single actions come first, then the entries of each
+// submenu (registerPostDropdownSubMenuAction, such as the AI actions), set apart by a line but without the submenu's
+// name, then the integrations' message actions under "Integrations". Each entry shows its app's or integration's
+// icon, in grey.
 export default function PluginMenuActions({post, label, menuLabel, run}: Props) {
     const {formatMessage} = useIntl();
     const toast = useToast();
@@ -143,9 +144,12 @@ export default function PluginMenuActions({post, label, menuLabel, run}: Props) 
             menuLabel={menuLabel}
         >
             {single.map(item)}
-            {groups.map(({group, items}) => (
+
+            {/* A submenu's entries (the AI actions) without its name as a heading: their app's icon and the menu
+                say where they come from. A line sets them apart. */}
+            {groups.map(({group, items}, i) => (
                 <React.Fragment key={group.id}>
-                    <MenuHeading>{group.text}</MenuHeading>
+                    {(single.length > 0 || i > 0) && <MenuSeparator/>}
                     {items.map(item)}
                 </React.Fragment>
             ))}
