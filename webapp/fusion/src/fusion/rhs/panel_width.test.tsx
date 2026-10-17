@@ -137,15 +137,15 @@ describe('fusion/rhs/panel_width', () => {
 
         test('shows the restore button only once resized, and restores the default width', async () => {
             render();
-            expect(screen.queryByRole('button', {name: 'Restore default width'})).toBeNull();
+            expect(screen.queryByRole('button', {name: "Restore the panel's size"})).toBeNull();
             const handle = screen.getByRole('separator');
             handle.focus();
             await userEvent.keyboard('{End}');
-            const restore = screen.getByRole('button', {name: 'Restore default width'});
-            expect(restore).toHaveAttribute('title', 'Restore default width');
+            const restore = screen.getByRole('button', {name: "Restore the panel's size"});
+            expect(restore).toHaveAttribute('data-am-tip', "Restore the panel's size");
             await userEvent.click(restore);
             expect(width()).toBe('');
-            expect(screen.queryByRole('button', {name: 'Restore default width'})).toBeNull();
+            expect(screen.queryByRole('button', {name: "Restore the panel's size"})).toBeNull();
         });
 
         test('forgets the width when the panel closes', async () => {
@@ -230,7 +230,7 @@ describe('fusion/rhs/panel_width', () => {
                 onRestore={onRestore}
             />,
         );
-        await userEvent.click(screen.getByRole('button', {name: 'Restore default width'}));
+        await userEvent.click(screen.getByRole('button', {name: "Restore the panel's size"}));
         expect(onRestore).toHaveBeenCalledTimes(1);
     });
 });

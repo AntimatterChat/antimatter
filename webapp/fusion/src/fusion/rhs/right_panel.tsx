@@ -2,7 +2,6 @@
 // See LICENSE.txt for license information.
 
 import React, {useRef} from 'react';
-import {useIntl} from 'react-intl';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {closeRightHandSide} from 'actions/views/rhs';
@@ -12,10 +11,8 @@ import ChannelInfoRhs from 'components/channel_info_rhs';
 import PostEditHistory from 'components/post_edit_history';
 import Search from 'components/search/index';
 
-import {PanelAppIcon} from 'fusion/apps/app_rail';
 import {getKnownApp} from 'fusion/apps/known_apps';
 import {useOpenVoiceChat, VoiceChatPanel} from 'fusion/calls/voice_chat';
-import Icon from 'fusion/components/icon';
 import {SheetBack} from 'fusion/components/layer';
 import {useIsPhone} from 'fusion/hooks/media';
 import MemberList from 'fusion/members/member_list';
@@ -23,17 +20,17 @@ import ModViewPanel from 'fusion/moderation/mod_view';
 import {a11yRegion} from 'fusion/utils/a11y_regions';
 import {am} from 'fusion/utils/class_names';
 import RhsPlugin from 'plugins/rhs_plugin';
-import {getHistory} from 'utils/browser_history';
 import {RHSStates} from 'utils/constants';
 
 import type {GlobalState} from 'types/store';
 
-import {PanelResizeHandle, RestoreWidthButton, usePanelWidth} from './panel_width';
+import {PanelResizeHandle, usePanelWidth} from './panel_width';
 import ResultsPanel from './results_panel';
 import ThreadPanel from './thread_panel';
 
 // A panel of the classic web app, shown as it is inside the Fusion UI's right-hand slot. Its own header (title,
-// expand, popout and close buttons) is styled as the mockup's panel header.
+// expand, popout and close buttons) is styled as the mockup's panel header; an app's panel has Fusion's
+// (AppPanelHeader: the app's icon and name, restore its size, open it in a new window, close it).
 function ClassicPanel({children}: {children: React.ReactNode}) {
     return (
         <div className={am('rhs-classic')}>
@@ -48,12 +45,9 @@ export default function RightPanel() {
     const rhsState = useSelector(getRhsState);
     const selectedPostId = useSelector(getSelectedPostId);
     const expanded = useSelector(getIsRhsExpanded);
-    const {formatMessage} = useIntl();
     const dispatch = useDispatch();
     const pluginId = useSelector((state: GlobalState) => state.plugins.components.RightHandSidebarComponent.find((c) => c.id === getPluggableId(state))?.pluginId);
 
-    // A plugin that is also a product (Boards, Playbooks) can show its panel as its full page.
-    const product = useSelector((state: GlobalState) => (pluginId ? state.plugins.components.Product?.find((p) => p.pluginId === pluginId) : undefined));
     const voiceChat = useOpenVoiceChat();
     const phone = useIsPhone();
 
@@ -83,31 +77,10 @@ export default function RightPanel() {
         roomy = roomyApp;
         content = (
             <ClassicPanel>
-                {pluginId && <PanelAppIcon pluginId={pluginId}/>}
-                <div className={am('rhs-tools')}>
-                    <RestoreWidthButton
-                        sized={panelWidth.width !== null && panelWidth.bounds !== null}
-                        onRestore={panelWidth.reset}
-                    />
-                    {product && (
-                        <button
-                            type='button'
-                            className={am('icon-btn', 'rhs-fullpage')}
-                            title={formatMessage({id: 'fusion.rhs.fullPage', defaultMessage: 'Open as a full page'})}
-                            aria-label={formatMessage({id: 'fusion.rhs.fullPage', defaultMessage: 'Open as a full page'})}
-                            onClick={() => {
-                                dispatch(closeRightHandSide());
-                                getHistory().push(product.baseURL);
-                            }}
-                        >
-                            <Icon
-                                name='fullscreen'
-                                size='sm'
-                            />
-                        </button>
-                    )}
-                </div>
-                <RhsPlugin/>
+                <RhsPlugin
+                    sized={panelWidth.width !== null && panelWidth.bounds !== null}
+                    onRestoreSize={panelWidth.reset}
+                />
             </ClassicPanel>
         );
     } else if (rhsState === RHSStates.CHANNEL_INFO) {

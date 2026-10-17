@@ -3,16 +3,18 @@
 
 import React, {useCallback, useEffect, useRef} from 'react';
 import {useIntl} from 'react-intl';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 
 import {getCurrentChannel} from 'mattermost-redux/selectors/entities/channels';
 import {getCurrentTeam} from 'mattermost-redux/selectors/entities/teams';
 
-import {RHS_PLUGIN_TITLE} from 'components/rhs_plugin_popout/rhs_plugin_popout';
-import SearchResultsHeader from 'components/search_results_header';
+import {closeRightHandSide} from 'actions/views/rhs';
 
+import {RHS_PLUGIN_TITLE} from 'components/rhs_plugin_popout/rhs_plugin_popout';
+
+import AppPanelHeader from 'fusion/rhs/app_panel_header';
 import Pluggable from 'plugins/pluggable';
-import {popoutRhsPlugin} from 'utils/popouts/popout_windows';
+import {isChannelPopoutWindow, isPopoutWindow, popoutRhsPlugin} from 'utils/popouts/popout_windows';
 
 import type {GlobalState} from 'types/store';
 
@@ -24,10 +26,18 @@ export type Props = {
     title: React.ReactNode;
     pluginId?: string;
     showPopout?: boolean;
+
+    // Whether the person resized the panel away from its default width (Fusion's right-hand slot), and how to give
+    // it back: the header's "Restore the panel's size" button.
+    sized?: boolean;
+    onRestoreSize?: () => void;
 };
 
-const RhsPlugin = ({showPluggable, pluggableId, title, pluginId, showPopout = true}: Props) => {
+// RhsPlugin is an app's side panel: the header every app's panel has (its icon and name, then restore its size, open
+// it in a new window and close it: AppPanelHeader), over the app's own panel, which draws its controls itself.
+const RhsPlugin = ({showPluggable, pluggableId, title, pluginId, showPopout = true, sized = false, onRestoreSize}: Props) => {
     const intl = useIntl();
+    const dispatch = useDispatch();
     const currentTeam = useSelector(getCurrentTeam);
     const currentChannel = useSelector(getCurrentChannel);
     const pluginDisplayName = useSelector((state: GlobalState) => (pluginId ? state.plugins.plugins[pluginId]?.name : undefined));
@@ -65,9 +75,16 @@ const RhsPlugin = ({showPluggable, pluggableId, title, pluginId, showPopout = tr
             id='rhsContainer'
             className='sidebar-right__body'
         >
-            <SearchResultsHeader newWindowHandler={showPopout ? newWindowHandler : undefined}>
-                {title}
-            </SearchResultsHeader>
+            {pluginId && (
+                <AppPanelHeader
+                    pluginId={pluginId}
+                    title={title}
+                    sized={sized}
+                    onRestoreSize={onRestoreSize}
+                    onNewWindow={showPopout ? newWindowHandler : undefined}
+                    onClose={!isPopoutWindow() || isChannelPopoutWindow() ? () => dispatch(closeRightHandSide()) : undefined}
+                />
+            )}
             {
                 showPluggable &&
                 <Pluggable

@@ -14,7 +14,7 @@ import {am} from 'fusion/utils/class_names';
 
 // An app's panel (Notes, Whiteboard, Playbooks…) is as wide as its default (styles/_09_apps.scss) until its user drags
 // its left edge: it then keeps that width while it stays open, switching apps included, and goes back to its default
-// when it closes, or with its header's "Restore default width" button. The member list in the same column keeps its
+// when it closes, or with its header's "Restore the panel's size" button. The member list in the same column keeps its
 // width.
 //
 // The stylesheet gives the panel its bounds: min-width is its default width, max-width leaves the conversation its
@@ -234,12 +234,12 @@ export function RestoreWidthButton({sized, onRestore}: {sized: boolean; onRestor
     if (!sized) {
         return null;
     }
-    const label = formatMessage({id: 'fusion.rhs.restoreWidth', defaultMessage: 'Restore default width'});
+    const label = formatMessage({id: 'fusion.rhs.restoreSize', defaultMessage: "Restore the panel's size"});
     return (
         <button
             type='button'
             className={am('icon-btn', 'rhs-restore-width')}
-            title={label}
+            data-am-tip={label}
             aria-label={label}
             onClick={onRestore}
         >
