@@ -337,6 +337,19 @@ func (a *App) ListAIConnectionModels(rctx request.CTX, c *model.AIConnection) ([
 	return models, nil
 }
 
+// ListAIConnectionRequestModels gives the models a connection's endpoint offers before it's saved; nothing is
+// stored. Its calls go out as a saved connection of its scope's would (a community's can't reach internal addresses).
+func (a *App) ListAIConnectionRequestModels(rctx request.CTX, req *model.AIConnectionRequest) ([]ai.ModelInfo, *model.AppError) {
+	c, appErr := a.newAIConnectionFromRequest(req, "")
+	if appErr != nil {
+		return nil, appErr
+	}
+	if appErr := c.IsValid(); appErr != nil {
+		return nil, appErr
+	}
+	return a.ListAIConnectionModels(rctx, c)
+}
+
 // GetAIConnectionUsage gives a connection's usage this month, per day and purpose.
 func (a *App) GetAIConnectionUsage(rctx request.CTX, c *model.AIConnection) (*model.AIConnectionUsage, *model.AppError) {
 	now := time.Now()

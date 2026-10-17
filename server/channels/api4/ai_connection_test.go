@@ -282,3 +282,85 @@ func TestAIConnectionsNeverGiveTheKey(t *testing.T) {
 	assert.NotContains(t, th.LogBuffer.String(), apiAITestKey)
 	assert.NotContains(t, th.LogBuffer.String(), "header-secret-value")
 }
+
+// Antimatter: the models of a connection can be listed before it's saved, for the form's model fields, with the same
+// permission as a test before saving and the same rules for outgoing requests; nothing is stored.
+func TestAIConnectionModelsBeforeSaving(t *testing.T) {
+	th, clients := setupAIConnectionsAPI(t)
+	ctx := context.Background()
+
+	var gotKey, gotHeader string
+	endpoint := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if !strings.HasSuffix(r.URL.Path, "/v1/models") {
+			http.NotFound(w, r)
+			return
+		}
+		gotKey, gotHeader = r.Header.Get("Authorization"), r.Header.Get("X-Org")
+		fmt.Fprint(w, `{"data":[{"id":"gpt-test","owned_by":"lab"},{"id":"embed-test"}]}`)
+	}))
+	t.Cleanup(endpoint.Close)
+
+	t.Run("lists the endpoint's models with the key and headers given", func(t *testing.T) {
+		models, _, err := clients.systemAdmin.GetAIConnectionRequestModels(ctx, aiConnectionRequest(model.AIConnectionScopeServer, endpoint.URL))
+		require.NoError(t, err)
+		require.Len(t, models, 2)
+		assert.Equal(t, "embed-test", models[0].ID, "sorted by ID")
+		assert.Equal(t, "gpt-test", models[1].ID)
+		assert.Equal(t, "lab", models[1].OwnedBy)
+		assert.Equal(t, "Bearer "+apiAITestKey, gotKey)
+		assert.Equal(t, "header-secret-value", gotHeader)
+
+		list, _, err := clients.systemAdmin.GetAIConnections(ctx, "")
+		require.NoError(t, err)
+		assert.Empty(t, list, "listing models saves nothing")
+	})
+
+	t.Run("needs the permission of the request's scope", func(t *testing.T) {
+		_, resp, err := clients.member.GetAIConnectionRequestModels(ctx, aiConnectionRequest(model.AIConnectionScopeServer, endpoint.URL))
+		require.Error(t, err)
+		CheckForbiddenStatus(t, resp)
+
+		_, resp, err = clients.communityAdmin.GetAIConnectionRequestModels(ctx, aiConnectionRequest(model.AIConnectionScopeServer, endpoint.URL))
+		require.Error(t, err)
+		CheckForbiddenStatus(t, resp)
+
+		_, resp, err = clients.communityAdmin.GetAIConnectionRequestModels(ctx, aiConnectionRequest(clients.otherTeam.Id, endpoint.URL))
+		require.Error(t, err, "another community's scope")
+		CheckForbiddenStatus(t, resp)
+
+		_, resp, err = clients.guest.GetAIConnectionRequestModels(ctx, aiConnectionRequest(th.BasicTeam.Id, endpoint.URL))
+		require.Error(t, err)
+		CheckForbiddenStatus(t, resp)
+
+		models, _, err := clients.communityAdmin.GetAIConnectionRequestModels(ctx, aiConnectionRequest(th.BasicTeam.Id, endpoint.URL))
+		require.NoError(t, err, "a community's admins, for their community")
+		assert.Len(t, models, 2)
+	})
+
+	t.Run("a community's request can't reach internal addresses", func(t *testing.T) {
+		th.App.UpdateConfig(func(cfg *model.Config) {
+			*cfg.ServiceSettings.AllowedUntrustedInternalConnections = ""
+		})
+		t.Cleanup(func() {
+			th.App.UpdateConfig(func(cfg *model.Config) {
+				*cfg.ServiceSettings.AllowedUntrustedInternalConnections = "127.0.0.1"
+			})
+		})
+		gotKey = ""
+		_, _, err := clients.communityAdmin.GetAIConnectionRequestModels(ctx, aiConnectionRequest(th.BasicTeam.Id, endpoint.URL))
+		require.Error(t, err)
+		assert.Empty(t, gotKey, "the request never reached the endpoint")
+
+		models, _, err := clients.systemAdmin.GetAIConnectionRequestModels(ctx, aiConnectionRequest(model.AIConnectionScopeServer, endpoint.URL))
+		require.NoError(t, err, "a server-wide connection is a system admin's, and may be on the local network")
+		assert.Len(t, models, 2)
+	})
+
+	t.Run("a bad request is refused", func(t *testing.T) {
+		req := aiConnectionRequest(model.AIConnectionScopeServer, endpoint.URL)
+		req.BaseURL = "ftp://example.com"
+		_, resp, err := clients.systemAdmin.GetAIConnectionRequestModels(ctx, req)
+		require.Error(t, err)
+		CheckBadRequestStatus(t, resp)
+	})
+}

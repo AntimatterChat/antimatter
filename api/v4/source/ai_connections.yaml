@@ -100,6 +100,45 @@
           $ref: "#/components/responses/BadRequest"
         "403":
           $ref: "#/components/responses/Forbidden"
+  /api/v4/ai/connections/models:
+    post:
+      tags:
+        - ai connections
+      summary: List the models of a model connection before saving it
+      description: >
+        Lists the models an endpoint offers, with the key and headers given. Nothing is saved; the call goes out
+        as a saved connection of that scope's would (a community's can't reach internal addresses).
+
+        ##### Permissions
+
+        As for adding a connection of that scope.
+
+        __Minimum server version__: 11.11 (Antimatter)
+      operationId: GetAIConnectionRequestModels
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AIConnectionRequest"
+      responses:
+        "200":
+          description: The models
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    owned_by:
+                      type: string
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "403":
+          $ref: "#/components/responses/Forbidden"
   /api/v4/ai/connections/usable:
     get:
       tags:

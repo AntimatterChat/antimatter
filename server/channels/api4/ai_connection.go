@@ -22,6 +22,7 @@ func (api *API) InitAIConnections() {
 	connections.Handle("", api.APISessionRequired(getAIConnections)).Methods(http.MethodGet)
 	connections.Handle("", api.APISessionRequired(createAIConnection)).Methods(http.MethodPost)
 	connections.Handle("/test", api.APISessionRequired(testAIConnectionRequest)).Methods(http.MethodPost)
+	connections.Handle("/models", api.APISessionRequired(getAIConnectionRequestModels)).Methods(http.MethodPost)
 	connections.Handle("/usable", api.APISessionRequired(getUsableAIConnections)).Methods(http.MethodGet)
 
 	connection := connections.PathPrefix("/{connection_id:[A-Za-z0-9]+}").Subrouter()
@@ -154,6 +155,28 @@ func testAIConnectionRequest(c *Context, w http.ResponseWriter, r *http.Request)
 	}
 	auditRec.Success()
 	writeJSON(c, w, result)
+}
+
+// getAIConnectionRequestModels lists the models of a connection before it's saved, for the form's model fields: the
+// same body, permission and outgoing-request rules as a test before saving. Nothing is stored.
+func getAIConnectionRequestModels(c *Context, w http.ResponseWriter, r *http.Request) {
+	auditRec := c.MakeAuditRecord(model.AuditEventTestAIConnection, model.AuditStatusFail)
+	defer c.LogAuditRec(auditRec)
+
+	req := decodeAIConnectionRequest(c, w, r)
+	if req == nil {
+		return
+	}
+	model.AddEventParameterToAuditRec(auditRec, "scope", req.Scope)
+	model.AddEventParameterToAuditRec(auditRec, "base_url", req.BaseURL)
+	model.AddEventParameterToAuditRec(auditRec, "operation", "models")
+	models, appErr := c.App.ListAIConnectionRequestModels(c.AppContext, req)
+	if appErr != nil {
+		c.Err = appErr
+		return
+	}
+	auditRec.Success()
+	writeJSON(c, w, models)
 }
 
 func getAIConnection(c *Context, w http.ResponseWriter, r *http.Request) {

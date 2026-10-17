@@ -72,6 +72,16 @@ func (c *Client4) TestAIConnectionRequest(ctx context.Context, request *AIConnec
 	return DecodeJSONFromResponse[*AIConnectionTestResult](r)
 }
 
+// GetAIConnectionRequestModels lists the models a connection's endpoint offers before it's saved.
+func (c *Client4) GetAIConnectionRequestModels(ctx context.Context, request *AIConnectionRequest) ([]ai.ModelInfo, *Response, error) {
+	r, err := c.doAPIPostJSON(ctx, c.aiConnectionsRoute().Join("models"), request)
+	if err != nil {
+		return nil, BuildResponse(r), err
+	}
+	defer closeBody(r)
+	return DecodeJSONFromResponse[[]ai.ModelInfo](r)
+}
+
 // GetAIConnection gets a model connection, without its key.
 func (c *Client4) GetAIConnection(ctx context.Context, connectionID string) (*AIConnection, *Response, error) {
 	r, err := c.doAPIGet(ctx, c.aiConnectionRoute(connectionID), "")
