@@ -9,7 +9,9 @@ import {renderWithContext, screen} from 'tests/react_testing_utils';
 
 import Category from './category';
 
-jest.mock('selectors/views/channel_sidebar', () => ({makeGetFilteredChannelIdsForCategory: () => () => ['ops']}));
+// The category's channels, the same list every time, as the memoised selector gives it.
+const mockChannelIds = ['ops'];
+jest.mock('selectors/views/channel_sidebar', () => ({makeGetFilteredChannelIdsForCategory: () => () => mockChannelIds}));
 jest.mock('./channel_row', () => ({__esModule: true, default: ({channelId}: {channelId: string}) => <div>{channelId}</div>}));
 
 const staff = {id: 'managed_staff', team_id: 'team', user_id: 'me', type: 'managed', display_name: 'Staff', sorting: 'manual', channel_ids: ['ops'], muted: false, collapsed: false} as unknown as ChannelCategory;
