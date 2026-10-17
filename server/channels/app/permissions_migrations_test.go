@@ -585,7 +585,7 @@ func TestAntimatterChannelArchiveRightsMigration(t *testing.T) {
 	require.Nil(t, appErr)
 
 	assert.ElementsMatch(t, []string{model.PermissionCreatePost.Id}, channelUser.Permissions, "members no longer archive")
-	assert.ElementsMatch(t, []string{model.PermissionManageChannelRoles.Id}, channelAdmin.Permissions, "the channels' admins get nothing: corporate communities let them archive in code")
+	assert.ElementsMatch(t, []string{model.PermissionManageChannelRoles.Id}, channelAdmin.Permissions, "the channels' admins get nothing: workplace communities let them archive in code")
 	assert.ElementsMatch(t, []string{model.PermissionManageTeam.Id, model.PermissionDeletePublicChannel.Id, model.PermissionDeletePrivateChannel.Id}, teamAdmin.Permissions)
 	assert.ElementsMatch(t, []string{model.PermissionCreatePost.Id, model.PermissionDeletePublicChannel.Id}, schemeChannelUser.Permissions, "a team override scheme is left alone")
 

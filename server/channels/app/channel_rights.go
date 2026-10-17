@@ -17,7 +17,7 @@ import (
 // it to the community's admins (team_admin) instead, and the kind of community adds:
 //
 //   - a community (TeamKindCommunity): nobody else; its moderators, when a role grants them "Manage channels";
-//   - a corporate community (TeamKindCorporate): also the channel's admins, that is whoever created it and those
+//   - a workplace community (TeamKindWorkplace): also the channel's admins, that is whoever created it and those
 //     they made admins of it.
 //
 // What a system admin grants through the permission schemes (channel_user, channel_admin, a team override scheme) or
@@ -33,7 +33,7 @@ func (a *App) SessionCanArchiveChannel(rctx request.CTX, session model.Session, 
 	if ok, _ := a.SessionHasPermissionToChannel(rctx, session, channel.Id, perm); ok {
 		return nil
 	}
-	if channel.TeamId != "" && a.isCorporateTeam(channel.TeamId) {
+	if channel.TeamId != "" && a.isWorkplaceTeam(channel.TeamId) {
 		if ok, _ := a.SessionHasPermissionToChannel(rctx, session, channel.Id, model.PermissionManageChannelRoles); ok {
 			return nil
 		}
@@ -41,11 +41,11 @@ func (a *App) SessionCanArchiveChannel(rctx request.CTX, session model.Session, 
 	return model.MakePermissionError(&session, []*model.Permission{perm})
 }
 
-// isCorporateTeam tells whether a team is a corporate community; one that can't be read counts as a community, the
+// isWorkplaceTeam tells whether a team is a workplace community; one that can't be read counts as a community, the
 // kind that allows less.
-func (a *App) isCorporateTeam(teamID string) bool {
+func (a *App) isWorkplaceTeam(teamID string) bool {
 	team, appErr := a.GetTeam(teamID)
-	return appErr == nil && team.IsCorporate()
+	return appErr == nil && team.IsWorkplace()
 }
 
 // SessionCanChangeOnTop tells whether a session may put a channel's messages on top, or take them off: in a direct or

@@ -143,11 +143,11 @@ describe('fusion/popovers/ChannelMenu: default channels and all-channels communi
         expect(item('Archive channel…')).not.toBeInTheDocument();
     });
 
-    // Antimatter: in a corporate community, the channel's admins (whoever created it) archive it; in a community, not
+    // Antimatter: in a workplace community, the channel's admins (whoever created it) archive it; in a community, not
     // without the permission.
-    test('in a corporate community, the channel\'s admins archive it', () => {
+    test('in a workplace community, the channel\'s admins archive it', () => {
         mockChannelPerms = new Set(['manage_channel_roles']);
-        render(dev, state({kind: 'corporate'}));
+        render(dev, state({kind: 'workplace'}));
         expect(item('Archive channel…')).toBeInTheDocument();
     });
 

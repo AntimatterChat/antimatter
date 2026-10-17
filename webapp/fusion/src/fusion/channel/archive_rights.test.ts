@@ -8,10 +8,10 @@ import {TestHelper} from 'utils/test_helper';
 
 import type {GlobalState} from 'types/store';
 
-import {canArchiveChannel, isCorporateCommunity} from './community_channels';
+import {canArchiveChannel, isWorkplaceCommunity} from './community_channels';
 
 // Who may archive a channel, as the server's SessionCanArchiveChannel: in a community, not its members, even of the
-// channels they created; in a corporate community, the channels' admins (their creators) too.
+// channels they created; in a workplace community, the channels' admins (their creators) too.
 describe('fusion/channel/community_channels canArchiveChannel', () => {
     const channel = (extra: Partial<Channel> = {}) => TestHelper.getChannelMock({id: 'ch', team_id: 'team', type: 'O', delete_at: 0, ...extra});
     const state = ({kind = 'community', channelRoles = ['channel_user'], teamRoles = ['team_user'], permissions = {}}: {kind?: TeamKind; channelRoles?: string[]; teamRoles?: string[]; permissions?: Record<string, string[]>} = {}) => ({
@@ -44,14 +44,14 @@ describe('fusion/channel/community_channels canArchiveChannel', () => {
         expect(canArchiveChannel(state({channelRoles: ['channel_user', 'channel_admin']}), channel({type: 'P'}))).toBe(false);
     });
 
-    test('in a corporate community, the channels\' admins archive, not the other members', () => {
-        expect(canArchiveChannel(state({kind: 'corporate'}), channel())).toBe(false);
-        expect(canArchiveChannel(state({kind: 'corporate', channelRoles: ['channel_user', 'channel_admin']}), channel())).toBe(true);
-        expect(canArchiveChannel(state({kind: 'corporate', channelRoles: ['channel_user', 'channel_admin']}), channel({type: 'P'}))).toBe(true);
+    test('in a workplace community, the channels\' admins archive, not the other members', () => {
+        expect(canArchiveChannel(state({kind: 'workplace'}), channel())).toBe(false);
+        expect(canArchiveChannel(state({kind: 'workplace', channelRoles: ['channel_user', 'channel_admin']}), channel())).toBe(true);
+        expect(canArchiveChannel(state({kind: 'workplace', channelRoles: ['channel_user', 'channel_admin']}), channel({type: 'P'}))).toBe(true);
     });
 
     test('the community\'s admins archive in both kinds', () => {
-        for (const kind of ['community', 'corporate'] as TeamKind[]) {
+        for (const kind of ['community', 'workplace'] as TeamKind[]) {
             expect(canArchiveChannel(state({kind, teamRoles: ['team_user', 'team_admin']}), channel())).toBe(true);
             expect(canArchiveChannel(state({kind, teamRoles: ['team_user', 'team_admin']}), channel({type: 'P'}))).toBe(true);
         }
@@ -69,9 +69,9 @@ describe('fusion/channel/community_channels canArchiveChannel', () => {
         expect(canArchiveChannel(admin, undefined)).toBe(false);
     });
 
-    test('a community is of the community kind unless it says it\'s corporate', () => {
-        expect(isCorporateCommunity(state({kind: 'corporate'}), 'team')).toBe(true);
-        expect(isCorporateCommunity(state(), 'team')).toBe(false);
-        expect(isCorporateCommunity(state(), 'unknown')).toBe(false);
+    test('a community is of the community kind unless it says it\'s a workplace', () => {
+        expect(isWorkplaceCommunity(state({kind: 'workplace'}), 'team')).toBe(true);
+        expect(isWorkplaceCommunity(state(), 'team')).toBe(false);
+        expect(isWorkplaceCommunity(state(), 'unknown')).toBe(false);
     });
 });

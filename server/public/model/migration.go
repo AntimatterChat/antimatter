@@ -69,7 +69,7 @@ const (
 	MigrationRemoveImportTeamPermission                = "remove_import_team_permission"
 	MigrationKeyAddAIRecapsPermissions                 = "add_ai_recaps_permissions"
 
-	// Antimatter: members no longer archive channels; the community's admins do (and, in a corporate community, the
+	// Antimatter: members no longer archive channels; the community's admins do (and, in a workplace community, the
 	// channels' admins: app.SessionCanArchiveChannel).
 	MigrationKeyAntimatterChannelArchiveRights = "antimatter_channel_archive_rights"
 )

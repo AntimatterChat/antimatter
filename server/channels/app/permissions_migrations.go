@@ -1369,7 +1369,7 @@ func (a *App) getAddAIRecapsPermissionsMigration() (permissionsMap, error) {
 // getAntimatterChannelArchiveRightsMigration takes archiving channels from their members (channel_user, which held
 // delete_public/private_channel upstream) and gives it to the community's admins (team_admin), on the system scheme's
 // roles: a team override scheme is a system admin's own choice and stays as it is. A fresh install gets the same
-// from model.MakeDefaultRoles; the channels' admins of a corporate community archive through
+// from model.MakeDefaultRoles; the channels' admins of a workplace community archive through
 // app.SessionCanArchiveChannel, not a permission.
 func (a *App) getAntimatterChannelArchiveRightsMigration() (permissionsMap, error) {
 	return permissionsMap{

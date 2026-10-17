@@ -23,7 +23,7 @@ export type TeamMemberWithError = {
 
 export type TeamType = 'O' | 'I';
 
-export type TeamKind = 'community' | 'corporate';
+export type TeamKind = 'community' | 'workplace';
 
 export type TeamMemberListView = 'choice' | 'roles' | 'teams';
 
@@ -61,7 +61,7 @@ export type Team = {
     default_channel_id?: string;
 
     /**
-     * Antimatter: the kind of community. In a community (the default), members don't archive channels; in a corporate
+     * Antimatter: the kind of community. In a community (the default), members don't archive channels; in a workplace
      * one, they archive those they created (whose admins they are).
      */
     kind?: TeamKind;

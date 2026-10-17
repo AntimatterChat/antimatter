@@ -53,7 +53,7 @@ export const MODERATOR_PERMISSIONS = [
 
 // The presets of the roles and categories plan. Hybrid, Antimatter's default: curated categories for everyone and an
 // open one where members file their channels. Community, Discord's: categories admins keep. Both make a community of
-// the community kind. Workplace, Mattermost's: everyone's own categories only, in a corporate community, where
+// the community kind. Workplace, Mattermost's: everyone's own categories only, in a workplace community, where
 // members archive the channels they created.
 export const PRESETS: Record<Preset, TeamTemplate> = {
     hybrid: {
@@ -75,7 +75,7 @@ export const PRESETS: Record<Preset, TeamTemplate> = {
         server_categories: [],
         channels: [],
         roles: [],
-        kind: 'corporate',
+        kind: 'workplace',
     },
 };
 
@@ -141,7 +141,7 @@ export function parseTemplate(json: string): TeamTemplate | undefined {
             })).
             filter((r) => r.display_name),
         onboarding: typeof raw.onboarding === 'string' ? raw.onboarding : undefined,
-        kind: raw.kind === 'community' || raw.kind === 'corporate' ? raw.kind : undefined,
+        kind: raw.kind === 'community' || raw.kind === 'workplace' ? raw.kind : undefined,
     };
 }
 

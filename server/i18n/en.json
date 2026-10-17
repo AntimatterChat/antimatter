@@ -17254,8 +17254,8 @@
   },
   {
     "id": "model.team.is_valid.kind.app_error",
-    "translation": "Invalid kind of community: it must be community or corporate.",
-    "description": "Validation error when a team (community) is given a kind other than \"community\" or \"corporate\" (Antimatter). Keep the words community and corporate as they are: they are the values to send."
+    "translation": "Invalid kind of community: it must be community or workplace.",
+    "description": "Validation error when a team (community) is given a kind other than \"community\" or \"workplace\" (Antimatter). Keep the words community and workplace as they are: they are the values to send."
   },
   {
     "id": "model.team.is_valid.member_list_view.app_error",

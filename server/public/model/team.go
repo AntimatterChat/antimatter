@@ -28,12 +28,12 @@ const (
 const TeamOnboardingMaxLength = 16384
 
 // The kinds of community (Antimatter), which set some of what its members may do. A community (the default) is a
-// public or hobby one, as on Discord: its members don't archive channels, its admins and moderators do. A corporate
-// one is a company's or an organisation's workspace: its members archive the channels they created (those they're
-// the admins of) too.
+// public or hobby one, as on Discord: its members don't archive channels, its admins (and roles that manage channels) do. A
+// workplace is a company's or an organisation's workspace: its members archive the channels they created (those
+// they're the admins of) too.
 const (
 	TeamKindCommunity = "community"
-	TeamKindCorporate = "corporate"
+	TeamKindWorkplace = "workplace"
 )
 
 // How a community's member list groups its members (Antimatter): as each member chooses (the default), or always by
@@ -85,7 +85,7 @@ type Team struct {
 	// community's join and leave messages go. Empty for Town Square while there is one (DefaultChannelName).
 	DefaultChannelId string `json:"default_channel_id"`
 
-	// Antimatter: Kind is the kind of community, TeamKindCommunity or TeamKindCorporate (see IsCorporate).
+	// Antimatter: Kind is the kind of community, TeamKindCommunity or TeamKindWorkplace (see IsWorkplace).
 	Kind string `json:"kind"`
 
 	// Antimatter: MemberListView is how the member list groups the community's members: TeamMemberListViewChoice
@@ -145,9 +145,9 @@ func (o *Team) Auditable() map[string]any {
 	}
 }
 
-// IsCorporate tells whether a team is a corporate community (TeamKindCorporate); any other is a community.
-func (o *Team) IsCorporate() bool {
-	return o != nil && o.Kind == TeamKindCorporate
+// IsWorkplace tells whether a team is a workplace community (TeamKindWorkplace); any other is a community.
+func (o *Team) IsWorkplace() bool {
+	return o != nil && o.Kind == TeamKindWorkplace
 }
 
 func (o *Team) LogClone() any {
@@ -224,7 +224,7 @@ func (o *Team) IsValid() *AppError {
 		return NewAppError("Team.IsValid", "model.team.is_valid.default_channel.app_error", nil, "id="+o.Id, http.StatusBadRequest)
 	}
 
-	if o.Kind != "" && o.Kind != TeamKindCommunity && o.Kind != TeamKindCorporate {
+	if o.Kind != "" && o.Kind != TeamKindCommunity && o.Kind != TeamKindWorkplace {
 		return NewAppError("Team.IsValid", "model.team.is_valid.kind.app_error", nil, "id="+o.Id, http.StatusBadRequest)
 	}
 

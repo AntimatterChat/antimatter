@@ -204,25 +204,25 @@ func TestTeamKind(t *testing.T) {
 	o := Team{DisplayName: "test", Name: "zzzzz", Type: TeamOpen}
 	o.PreSave()
 	assert.Equal(t, TeamKindCommunity, o.Kind)
-	assert.False(t, o.IsCorporate())
+	assert.False(t, o.IsWorkplace())
 	require.Nil(t, o.IsValid())
 
-	o.Patch(&TeamPatch{Kind: NewPointer(TeamKindCorporate)})
-	assert.Equal(t, TeamKindCorporate, o.Kind)
-	assert.True(t, o.IsCorporate())
+	o.Patch(&TeamPatch{Kind: NewPointer(TeamKindWorkplace)})
+	assert.Equal(t, TeamKindWorkplace, o.Kind)
+	assert.True(t, o.IsWorkplace())
 	require.Nil(t, o.IsValid())
 
 	o.Kind = ""
 	require.Nil(t, o.IsValid(), "a team saved before kinds existed is a community")
-	assert.False(t, o.IsCorporate())
+	assert.False(t, o.IsWorkplace())
 
-	o.Kind = "workplace"
+	o.Kind = "castle"
 	appErr := o.IsValid()
 	require.NotNil(t, appErr)
 	assert.Equal(t, "model.team.is_valid.kind.app_error", appErr.Id)
 
 	var none *Team
-	assert.False(t, none.IsCorporate())
+	assert.False(t, none.IsWorkplace())
 }
 
 // Antimatter: how the member list groups a community's members. Members choose unless the admins fix it.

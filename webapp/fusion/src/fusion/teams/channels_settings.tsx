@@ -73,13 +73,13 @@ export default function ChannelsSettings() {
         <div className={am('team-channels')}>
             <Choice<TeamKind>
                 title={formatMessage({id: 'fusion.teamChannels.kind', defaultMessage: 'Kind of community'})}
-                desc={formatMessage({id: 'fusion.teamChannels.kindDesc', defaultMessage: 'A community, as on Discord: only its admins (and roles that manage channels) archive channels. Corporate, for a company\'s or an organisation\'s workspace: members also archive the channels they created. In both, only the channels\' admins, the community\'s admins and moderators put messages on top.'})}
-                value={team.kind === 'corporate' ? 'corporate' : 'community'}
+                desc={formatMessage({id: 'fusion.teamChannels.kindDesc', defaultMessage: 'A community, as on Discord: only its admins (and roles that manage channels) archive channels. Workplace, for a company\'s or an organisation\'s workspace: members also archive the channels they created. In both, only the channels\' admins, the community\'s admins and moderators put messages on top.'})}
+                value={team.kind === 'workplace' ? 'workplace' : 'community'}
                 options={[
                     ['community', formatMessage({id: 'fusion.teamChannels.kind.community', defaultMessage: 'Community'})],
-                    ['corporate', formatMessage({id: 'fusion.teamChannels.kind.corporate', defaultMessage: 'Corporate'})],
+                    ['workplace', formatMessage({id: 'fusion.teamChannels.kind.workplace', defaultMessage: 'Workplace'})],
                 ]}
-                onChange={(kind) => save({kind}, kind === 'corporate' ? formatMessage({id: 'fusion.teamChannels.kindCorporate', defaultMessage: 'Members now archive the channels they created'}) : formatMessage({id: 'fusion.teamChannels.kindCommunity', defaultMessage: 'Only the community\'s admins archive channels now'}))}
+                onChange={(kind) => save({kind}, kind === 'workplace' ? formatMessage({id: 'fusion.teamChannels.kindWorkplace', defaultMessage: 'Members now archive the channels they created'}) : formatMessage({id: 'fusion.teamChannels.kindCommunity', defaultMessage: 'Only the community\'s admins archive channels now'}))}
             />
             <Toggle
                 title={formatMessage({id: 'fusion.teamChannels.all', defaultMessage: 'Members are in every channel'})}

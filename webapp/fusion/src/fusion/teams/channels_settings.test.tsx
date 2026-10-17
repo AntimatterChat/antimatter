@@ -48,19 +48,19 @@ function state({allChannels = false, defaultChannelId = '', list = channels, kin
 const options = () => within(screen.getByRole('combobox', {name: 'Default channel'})).getAllByRole('option').map((o) => o.textContent);
 
 describe('fusion/teams/ChannelsSettings', () => {
-    test('makes the community corporate, and back', async () => {
+    test('makes the community a workplace, and back', async () => {
         renderWithContext(<ChannelsSettings/>, state() as never);
         const kind = screen.getByRole('group', {name: 'Kind of community'});
         expect(within(kind).getByRole('button', {name: 'Community'})).toHaveAttribute('aria-pressed', 'true');
-        await userEvent.click(within(kind).getByRole('button', {name: 'Corporate'}));
-        expect(patchTeam).toHaveBeenCalledWith({id: 't1', kind: 'corporate'});
+        await userEvent.click(within(kind).getByRole('button', {name: 'Workplace'}));
+        expect(patchTeam).toHaveBeenCalledWith({id: 't1', kind: 'workplace'});
         await waitFor(() => expect(mockToast).toHaveBeenCalledWith('Members now archive the channels they created'));
     });
 
-    test('shows a corporate community as such', async () => {
-        renderWithContext(<ChannelsSettings/>, state({kind: 'corporate'}) as never);
+    test('shows a workplace community as such', async () => {
+        renderWithContext(<ChannelsSettings/>, state({kind: 'workplace'}) as never);
         const kind = screen.getByRole('group', {name: 'Kind of community'});
-        expect(within(kind).getByRole('button', {name: 'Corporate'})).toHaveAttribute('aria-pressed', 'true');
+        expect(within(kind).getByRole('button', {name: 'Workplace'})).toHaveAttribute('aria-pressed', 'true');
         await userEvent.click(within(kind).getByRole('button', {name: 'Community'}));
         expect(patchTeam).toHaveBeenCalledWith({id: 't1', kind: 'community'});
     });

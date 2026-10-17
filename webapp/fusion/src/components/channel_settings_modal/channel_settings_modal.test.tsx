@@ -407,14 +407,14 @@ describe('ChannelSettingsModal', () => {
         expect(screen.queryByRole('tab', {name: /archive channel/i})).not.toBeInTheDocument();
     });
 
-    // Antimatter: in a corporate community, the channel's admins (whoever created it) archive it; in a community,
+    // Antimatter: in a workplace community, the channel's admins (whoever created it) archive it; in a community,
     // they don't without the permission.
-    it('should show archive tab to the channel admins of a corporate community only', async () => {
+    it('should show archive tab to the channel admins of a workplace community only', async () => {
         mockPublicChannelPermission = false;
 
-        const corporate = makeTestState() as DeepPartial<GlobalState>;
-        corporate.entities!.teams = {teams: {team_id: TestHelper.getTeamMock({id: 'team_id', kind: 'corporate'})}};
-        const {unmount} = renderWithContext(<ChannelSettingsModal {...baseProps}/>, corporate as GlobalState);
+        const workplace = makeTestState() as DeepPartial<GlobalState>;
+        workplace.entities!.teams = {teams: {team_id: TestHelper.getTeamMock({id: 'team_id', kind: 'workplace'})}};
+        const {unmount} = renderWithContext(<ChannelSettingsModal {...baseProps}/>, workplace as GlobalState);
         await waitFor(() => {
             expect(screen.getByRole('tablist')).toBeInTheDocument();
         });

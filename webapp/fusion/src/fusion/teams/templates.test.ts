@@ -58,7 +58,7 @@ describe('parseTemplate', () => {
     });
 
     test('reads the kind, and drops one it does not know', () => {
-        expect(parseTemplate(JSON.stringify({...PRESETS.workplace, kind: 'corporate'}))?.kind).toBe('corporate');
+        expect(parseTemplate(JSON.stringify({...PRESETS.workplace, kind: 'workplace'}))?.kind).toBe('workplace');
         expect(parseTemplate(JSON.stringify({...PRESETS.workplace, kind: 'castle'}))?.kind).toBeUndefined();
     });
 
@@ -89,10 +89,10 @@ describe('PRESETS', () => {
         }
     });
 
-    test('hybrid and community make communities; workplace, a corporate one', () => {
+    test('hybrid and community make communities; workplace, a workplace', () => {
         expect(PRESETS.hybrid.kind).toBe('community');
         expect(PRESETS.community.kind).toBe('community');
-        expect(PRESETS.workplace.kind).toBe('corporate');
+        expect(PRESETS.workplace.kind).toBe('workplace');
     });
 
     test('community keeps every category locked', () => {
@@ -145,8 +145,8 @@ describe('applyTemplate', () => {
 
     test('sets the kind of community the template makes', async () => {
         (patchTeam as jest.Mock).mockClear();
-        await run({version: 1, server_categories: [], channels: [], roles: [], kind: 'corporate'});
-        expect(patchTeam).toHaveBeenCalledWith({id: 'team', kind: 'corporate'});
+        await run({version: 1, server_categories: [], channels: [], roles: [], kind: 'workplace'});
+        expect(patchTeam).toHaveBeenCalledWith({id: 'team', kind: 'workplace'});
 
         (patchTeam as jest.Mock).mockClear();
         await run({version: 1, server_categories: [], channels: [], roles: []});

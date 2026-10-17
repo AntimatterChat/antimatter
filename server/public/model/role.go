@@ -978,7 +978,7 @@ func MakeDefaultRoles() map[string]*Role {
 			PermissionUseChannelMentions.Id,
 			PermissionManagePublicChannelProperties.Id,
 			// Antimatter: members don't archive channels (delete_public/private_channel); the community's admins do,
-			// and in a corporate community the channels' admins (see app.SessionCanArchiveChannel).
+			// and in a workplace community the channels' admins (see app.SessionCanArchiveChannel).
 			PermissionManagePrivateChannelProperties.Id,
 			PermissionManagePrivateChannelMembers.Id,
 			PermissionDeletePost.Id,

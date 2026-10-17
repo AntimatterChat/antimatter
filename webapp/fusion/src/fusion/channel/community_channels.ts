@@ -62,15 +62,15 @@ export function isFirstDefaultChannel(state: GlobalState, channel: Channel): boo
     return channel.name === Constants.DEFAULT_CHANNEL || channel.name === Constants.OFFTOPIC_CHANNEL || isDefaultChannel(state, channel);
 }
 
-// isCorporateCommunity tells whether a community is of the corporate kind (a company's or an organisation's
+// isWorkplaceCommunity tells whether a community is of the workplace kind (a company's or an organisation's
 // workspace) rather than a community (the default).
-export function isCorporateCommunity(state: GlobalState, teamId: string): boolean {
-    return getTeam(state, teamId)?.kind === 'corporate';
+export function isWorkplaceCommunity(state: GlobalState, teamId: string): boolean {
+    return getTeam(state, teamId)?.kind === 'workplace';
 }
 
 // canArchiveChannel tells whether one may archive a channel of a community, as the server does
 // (SessionCanArchiveChannel): those the permissions let (the community's admins, roles that manage channels, what a
-// system admin gave members), and in a corporate community the channel's admins too, that is whoever created it. In
+// system admin gave members), and in a workplace community the channel's admins too, that is whoever created it. In
 // a community, members don't archive channels, not even those they created. The default channels' extra rule (the
 // community's admins only) is the caller's.
 export function canArchiveChannel(state: GlobalState, channel: Channel | undefined): boolean {
@@ -81,5 +81,5 @@ export function canArchiveChannel(state: GlobalState, channel: Channel | undefin
     if (haveIChannelPermission(state, channel.team_id, channel.id, permission)) {
         return true;
     }
-    return isCorporateCommunity(state, channel.team_id) && haveIChannelPermission(state, channel.team_id, channel.id, Permissions.MANAGE_CHANNEL_ROLES);
+    return isWorkplaceCommunity(state, channel.team_id) && haveIChannelPermission(state, channel.team_id, channel.id, Permissions.MANAGE_CHANNEL_ROLES);
 }

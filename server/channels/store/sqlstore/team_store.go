@@ -282,8 +282,8 @@ func teamSettingKeys(team *model.Team) map[string]string {
 		allChannels = "true"
 	}
 	kind := ""
-	if team.IsCorporate() {
-		kind = model.TeamKindCorporate
+	if team.IsWorkplace() {
+		kind = model.TeamKindWorkplace
 	}
 	memberListView := ""
 	if team.MemberListView == model.TeamMemberListViewRoles || team.MemberListView == model.TeamMemberListViewTeams {

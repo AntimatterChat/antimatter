@@ -123,21 +123,21 @@ func TestCommunityKind(t *testing.T) {
 	assert.Equal(t, model.TeamKindCommunity, h.team.Kind, "a new community is of the community kind")
 
 	_, member := h.member(t)
-	_, resp, err := member.PatchTeam(ctx, h.team.Id, &model.TeamPatch{Kind: model.NewPointer(model.TeamKindCorporate)})
+	_, resp, err := member.PatchTeam(ctx, h.team.Id, &model.TeamPatch{Kind: model.NewPointer(model.TeamKindWorkplace)})
 	require.Error(t, err, "members don't change the kind")
 	CheckForbiddenStatus(t, resp)
 
-	_, resp, err = h.th.SystemAdminClient.PatchTeam(ctx, h.team.Id, &model.TeamPatch{Kind: model.NewPointer("workplace")})
+	_, resp, err = h.th.SystemAdminClient.PatchTeam(ctx, h.team.Id, &model.TeamPatch{Kind: model.NewPointer("castle")})
 	require.Error(t, err)
 	CheckBadRequestStatus(t, resp)
 
 	_, admin := h.admin(t)
-	patched, _, err := admin.PatchTeam(ctx, h.team.Id, &model.TeamPatch{Kind: model.NewPointer(model.TeamKindCorporate)})
+	patched, _, err := admin.PatchTeam(ctx, h.team.Id, &model.TeamPatch{Kind: model.NewPointer(model.TeamKindWorkplace)})
 	require.NoError(t, err, "the community's admins change it")
-	assert.Equal(t, model.TeamKindCorporate, patched.Kind)
+	assert.Equal(t, model.TeamKindWorkplace, patched.Kind)
 	fetched, _, err := member.GetTeam(ctx, h.team.Id, "")
 	require.NoError(t, err)
-	assert.Equal(t, model.TeamKindCorporate, fetched.Kind, "everyone sees it")
+	assert.Equal(t, model.TeamKindWorkplace, fetched.Kind, "everyone sees it")
 
 	patched, _, err = admin.PatchTeam(ctx, h.team.Id, &model.TeamPatch{Kind: model.NewPointer(model.TeamKindCommunity)})
 	require.NoError(t, err)
@@ -195,8 +195,8 @@ func TestArchiveChannelRights(t *testing.T) {
 		}
 	})
 
-	t.Run("in a corporate community, members archive the channels they created, not the others", func(t *testing.T) {
-		h := newRightsHelper(t, model.TeamKindCorporate)
+	t.Run("in a workplace community, members archive the channels they created, not the others", func(t *testing.T) {
+		h := newRightsHelper(t, model.TeamKindWorkplace)
 		user, client := h.member(t)
 		other, otherClient := h.member(t)
 		for _, channelType := range []model.ChannelType{model.ChannelTypeOpen, model.ChannelTypePrivate} {
@@ -222,8 +222,8 @@ func TestArchiveChannelRights(t *testing.T) {
 		}
 	})
 
-	t.Run("in a corporate community, the default channels stay with its admins", func(t *testing.T) {
-		h := newRightsHelper(t, model.TeamKindCorporate)
+	t.Run("in a workplace community, the default channels stay with its admins", func(t *testing.T) {
+		h := newRightsHelper(t, model.TeamKindWorkplace)
 		user, client := h.member(t)
 		townSquare, appErr := h.th.App.GetChannelByName(h.th.Context, model.DefaultChannelName, h.team.Id, false)
 		require.Nil(t, appErr)
@@ -251,7 +251,7 @@ func TestOnTopRights(t *testing.T) {
 	mainHelper.Parallel(t)
 	ctx := context.Background()
 
-	for _, kind := range []string{model.TeamKindCommunity, model.TeamKindCorporate} {
+	for _, kind := range []string{model.TeamKindCommunity, model.TeamKindWorkplace} {
 		t.Run("in a "+kind+" community", func(t *testing.T) {
 			h := newRightsHelper(t, kind)
 			user, client := h.member(t)
