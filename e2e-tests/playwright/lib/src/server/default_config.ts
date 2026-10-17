@@ -223,6 +223,7 @@ const defaultServerConfig: AdminConfig = {
         EnableBurnOnRead: true,
         BurnOnReadDurationSeconds: 600,
         BurnOnReadMaximumTimeToLiveSeconds: 604800,
+        BurnOnReadMaximumDurationSeconds: 86400,
         BurnOnReadSchedulerFrequencySeconds: 600,
         EnableAPIChannelDeletion: false,
         EnableLocalMode: false,
