@@ -22923,10 +22923,6 @@
     "defaultMessage": "Recipients confirm they have read it",
     "description": ""
   },
-  "fusion.composer.schedule": {
-    "defaultMessage": "Schedule message",
-    "description": ""
-  },
   "fusion.composer.send": {
     "defaultMessage": "Send",
     "description": ""

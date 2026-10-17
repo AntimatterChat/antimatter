@@ -150,11 +150,9 @@ export default function Composer({channelId, rootId = '', placeholder}: Props) {
     const aiRef = useRef<HTMLButtonElement>(null);
     const [aiBusy, setAiBusy] = useState(false);
     const [aiOriginal, setAiOriginal] = useState<string | null>(null);
-    const scheduleRef = useRef<HTMLButtonElement>(null);
 
-    // The schedule picker opens from the send button's chevron or the formatting bar's clock, next to which it shows.
+    // The schedule picker opens from the send button's chevron ("Send later"), next to which it shows.
     const sendLaterRef = useRef<HTMLButtonElement>(null);
-    const [scheduleFrom, setScheduleFrom] = useState<'send' | 'bar'>('send');
     const moreRef = useRef<HTMLButtonElement>(null);
     const autocompleteRef = useRef<AutocompleteHandle>(null);
 
@@ -842,11 +840,8 @@ export default function Composer({channelId, rootId = '', placeholder}: Props) {
                     <SendButton
                         disabled={pending.length > 0}
                         laterRef={sendLaterRef}
-                        laterOpen={menu === 'schedule' && scheduleFrom === 'send'}
-                        onLater={schedulingEnabled ? () => {
-                            setScheduleFrom('send');
-                            setMenu(menu === 'schedule' && scheduleFrom === 'send' ? null : 'schedule');
-                        } : undefined}
+                        laterOpen={menu === 'schedule'}
+                        onLater={schedulingEnabled ? () => setMenu(menu === 'schedule' ? null : 'schedule') : undefined}
                     />
                 </div>
                 {showFormatting && (
@@ -984,22 +979,6 @@ export default function Composer({channelId, rootId = '', placeholder}: Props) {
                         >
                             <Icon name='eye-off'/>
                         </button>
-                        {schedulingEnabled && (
-                            <button
-                                ref={scheduleRef}
-                                type='button'
-                                className={am({on: menu === 'schedule' && scheduleFrom === 'bar'})}
-                                title={formatMessage({id: 'fusion.composer.schedule', defaultMessage: 'Schedule message'})}
-                                aria-label={formatMessage({id: 'fusion.composer.schedule', defaultMessage: 'Schedule message'})}
-                                aria-haspopup='menu'
-                                onClick={() => {
-                                    setScheduleFrom('bar');
-                                    setMenu(menu === 'schedule' ? null : 'schedule');
-                                }}
-                            >
-                                <Icon name='clock'/>
-                            </button>
-                        )}
                     </div>
                 )}
             </div>
@@ -1048,7 +1027,7 @@ export default function Composer({channelId, rootId = '', placeholder}: Props) {
             )}
             {menu === 'schedule' && (
                 <SchedulePopover
-                    anchor={scheduleFrom === 'bar' ? scheduleRef.current : sendLaterRef.current}
+                    anchor={sendLaterRef.current}
                     onSchedule={(at) => schedule(at)}
                     onClose={() => setMenu(null)}
                 />
