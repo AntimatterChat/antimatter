@@ -28,7 +28,8 @@ export function useCanAddPeople(channel?: Channel) {
         if (channel?.type === Constants.GM_CHANNEL && !channel.delete_at) {
             return true;
         }
-        if (!channel || !team || channel.delete_at || (channel.type !== Constants.OPEN_CHANNEL && channel.type !== Constants.PRIVATE_CHANNEL)) {
+        // An archived channel still takes members, to read it (an auditor going through old information).
+        if (!channel || !team || (channel.type !== Constants.OPEN_CHANNEL && channel.type !== Constants.PRIVATE_CHANNEL)) {
             return false;
         }
         const permission = channel.type === Constants.OPEN_CHANNEL ? Permissions.MANAGE_PUBLIC_CHANNEL_MEMBERS : Permissions.MANAGE_PRIVATE_CHANNEL_MEMBERS;

@@ -431,15 +431,16 @@ export default function ChannelMenu({channel, anchor, point, placement = 'right'
                     />
                 </>
             )}
+            {/* An archived channel still takes members, to read it (an auditor going through old information). */}
+            {!direct && !everyoneIn && (
+                <MenuItem
+                    icon='user-plus'
+                    label={formatMessage({id: 'fusion.channelMenu.addMembers', defaultMessage: 'Add members'})}
+                    onClick={run(() => (channel.type === Constants.OPEN_CHANNEL || isPrivate ? dialogs.addPeople(channel) : dispatch(openDialog(ModalIdentifiers.CHANNEL_INVITE, ChannelInviteModal, {channel}))))}
+                />
+            )}
             {!direct && !archived && (
                 <>
-                    {!everyoneIn && (
-                        <MenuItem
-                            icon='user-plus'
-                            label={formatMessage({id: 'fusion.channelMenu.addMembers', defaultMessage: 'Add members'})}
-                            onClick={run(() => (channel.type === Constants.OPEN_CHANNEL || isPrivate ? dialogs.addPeople(channel) : dispatch(openDialog(ModalIdentifiers.CHANNEL_INVITE, ChannelInviteModal, {channel}))))}
-                        />
-                    )}
                     <MenuItem
                         icon='cog'
                         label={formatMessage({id: 'fusion.channelMenu.settings', defaultMessage: 'Channel settings'})}

@@ -157,7 +157,7 @@ describe('fusion/popovers/ChannelMenu: default channels and all-channels communi
         expect(item('Archive channel…')).not.toBeInTheDocument();
     });
 
-    test('an archived channel offers no permissions to change', () => {
+    test('an archived channel offers nothing to change, but takes members', () => {
         mockTeamPerms = new Set(ADMIN);
         mockChannelPerms = new Set(['manage_channel_roles']);
         const {unmount} = render(dev);
@@ -166,6 +166,10 @@ describe('fusion/popovers/ChannelMenu: default channels and all-channels communi
 
         render(ch('old', 'old', {delete_at: 5}));
         expect(item(/Permissions…/)).not.toBeInTheDocument();
+        expect(item('Channel settings')).not.toBeInTheDocument();
+
+        // It still takes members, to read it.
+        expect(item('Add members')).toBeInTheDocument();
     });
 
     test('an admin makes a channel the default one', async () => {

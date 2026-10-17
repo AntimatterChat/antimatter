@@ -330,6 +330,27 @@ func TestArchivedChannelIsLeftAlone(t *testing.T) {
 	_, resp, err = admin.PatchChannel(ctx, channel.Id, &model.ChannelPatch{DisplayName: model.NewPointer("renamed")})
 	require.Error(t, err, "it isn't renamed")
 	CheckBadRequestStatus(t, resp)
+
+	scheme, _, err := admin.CreateScheme(ctx, &model.Scheme{DisplayName: "Archive", Name: model.NewId(), Scope: model.SchemeScopeChannel})
+	require.NoError(t, err)
+	_, err = admin.UpdateChannelScheme(ctx, channel.Id, scheme.Id)
+	require.Error(t, err, "its scheme stays")
+
+	resp, err = admin.PinPost(ctx, post.Id)
+	require.Error(t, err, "nothing is pinned")
+	CheckBadRequestStatus(t, resp)
+
+	// It still takes new members, to read it (an auditor going through old information), and stays read-only.
+	auditor, auditorClient := h.member(t)
+	_, _, err = admin.AddChannelMember(ctx, channel.Id, auditor.Id)
+	require.NoError(t, err, "an archived channel still takes new members")
+	posts, _, err := auditorClient.GetPostsForChannel(ctx, channel.Id, 0, 60, "", false, true)
+	require.NoError(t, err, "they read its history")
+	assert.Contains(t, posts.Order, post.Id)
+	_, _, err = auditorClient.CreatePost(ctx, &model.Post{ChannelId: channel.Id, Message: "late"})
+	require.Error(t, err, "nobody posts in it")
+	_, _, err = auditorClient.SaveReaction(ctx, &model.Reaction{UserId: auditor.Id, PostId: post.Id, EmojiName: "smile"})
+	require.Error(t, err, "nor reacts")
 }
 
 func TestModeratorPresetAndAdministratorRoles(t *testing.T) {

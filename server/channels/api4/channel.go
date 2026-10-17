@@ -3110,6 +3110,12 @@ func updateChannelScheme(c *Context, w http.ResponseWriter, r *http.Request) {
 
 	auditRec.AddEventPriorState(channel)
 
+	// Antimatter: an archived channel is left as it is, its scheme included.
+	if channel.DeleteAt != 0 {
+		c.Err = model.NewAppError("updateChannelScheme", "api.channel.update_channel.deleted.app_error", nil, "", http.StatusBadRequest)
+		return
+	}
+
 	channel.SchemeId = &scheme.Id
 
 	updatedChannel, err := c.App.UpdateChannelScheme(c.AppContext, channel)
