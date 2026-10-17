@@ -120,8 +120,18 @@ type ChatRequest struct {
 	MaxTokens   int      `json:"max_tokens,omitempty"`
 	Temperature *float64 `json:"temperature,omitempty"`
 
+	// Reasoning asks a model that can reason before answering to do so; nil leaves it to the model.
+	Reasoning *Reasoning `json:"reasoning,omitempty"`
+
 	// Operation is a short label for usage and audit records (e.g. "summarize_thread"); never content.
 	Operation string `json:"operation,omitempty"`
+}
+
+// Reasoning is how much a model reasons before answering: Effort ("minimal", "low", "medium", "high") for
+// OpenAI-style models, BudgetTokens (the most tokens it may think with) for Anthropic's; 0 lets the server pick.
+type Reasoning struct {
+	Effort       string `json:"effort,omitempty"`
+	BudgetTokens int    `json:"budget_tokens,omitempty"`
 }
 
 // Usage counts the tokens a call used, as the provider reports them (or estimated when it doesn't).

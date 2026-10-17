@@ -89,6 +89,8 @@ export type WebSocketMessage = (
     Messages.MemberTimeoutsUpdated |
     Messages.PostPutOnTop |
     Messages.PostRemovedFromTop |
+    Messages.AgentActivityChanged |
+    Messages.AgentPostStream |
 
     Messages.EmojiAdded |
 

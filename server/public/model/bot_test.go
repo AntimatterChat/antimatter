@@ -263,6 +263,7 @@ func TestBotPreSave(t *testing.T) {
 
 	originalBot.CreateAt = bot.CreateAt
 	originalBot.UpdateAt = bot.UpdateAt
+	originalBot.Kind = BotKindBot // Antimatter: a bot is a plain bot unless made an agent
 	assert.Equal(t, originalBot, bot)
 }
 
@@ -293,6 +294,7 @@ func TestBotPreUpdate(t *testing.T) {
 
 	originalBot.CreateAt = bot.CreateAt
 	originalBot.UpdateAt = bot.UpdateAt
+	originalBot.Kind = BotKindBot // Antimatter: a bot is a plain bot unless made an agent
 	assert.Equal(t, originalBot, bot)
 }
 

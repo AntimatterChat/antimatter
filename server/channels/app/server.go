@@ -149,8 +149,6 @@ type Server struct {
 	PushProxy               einterfaces.PushProxyInterface
 	AutoTranslation         einterfaces.AutoTranslationInterface
 
-	agentsBridgeOverride AgentsBridge
-
 	// ai holds the AI service's key encryption keyring and rate limiter (Antimatter), made when first needed.
 	ai aiServerState
 

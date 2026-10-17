@@ -1571,6 +1571,8 @@ func (s *Server) doAppMigrations() {
 		{"Antimatter Max Users Per Team Unlimited Migration", s.doMaxUsersPerTeamUnlimitedMigration},
 		{"Antimatter Community Kinds Migration", s.doCommunityKindsMigration},
 		{"Antimatter AI Connections From Agents Migration", s.doAIConnectionsFromAgentsMigration},
+		// After the connections: the agents it makes use the connections migrated from the plugin's services.
+		{"Antimatter Agents From Bots Migration", s.doAgentsFromBotsMigration},
 		{"Antimatter General Channel Migration", s.doGeneralChannelMigration},
 		{"Antimatter Favourites Category Migration", s.doFavouritesCategoryMigration},
 	}

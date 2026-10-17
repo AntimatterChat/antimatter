@@ -27,7 +27,7 @@ test('creates selected-channels recap and auto-renders mocked summary', {tag: '@
         throw new Error('Failed to create admin user');
     }
 
-    const {agent} = await setupRecapBridge(pw, adminClient, {
+    await setupRecapBridge(pw, adminClient, {
         completions: [
             pw.recapCompletion({
                 highlights: [recapHighlight],
@@ -80,7 +80,7 @@ test('creates selected-channels recap and auto-renders mocked summary', {tag: '@
     const recapRequest = bridgeState.recorded_requests.find((request) => request.operation === 'recap_summary');
 
     expect(recapRequest).toBeDefined();
-    expect(recapRequest?.agent_id).toBe(agent.id);
+    expect(recapRequest?.client_operation).toBe('recap_summary:summarize_channel');
     expect(recapRequest?.messages.some((message) => message.message.includes(sourceMessage))).toBe(true);
 });
 

@@ -456,3 +456,15 @@ func TestOpenAIChatStreamFromAWholeAnswer(t *testing.T) {
 	assert.Equal(t, ai.Usage{InputTokens: 4, OutputTokens: 3}, resp.Usage)
 	assert.Equal(t, ai.FinishReasonStop, resp.FinishReason)
 }
+
+func TestOpenAIReasoningEffort(t *testing.T) {
+	p := &openAIProvider{base: newBase(Config{BaseURL: "https://llm.example.com/v1"})}
+	body := p.buildChat(ai.ChatRequest{Model: "m"}, false, false)
+	assert.Empty(t, body.ReasoningEffort, "no reasoning asked: the model decides")
+
+	body = p.buildChat(ai.ChatRequest{Model: "m", Reasoning: &ai.Reasoning{Effort: "high"}}, true, false)
+	assert.Equal(t, "high", body.ReasoningEffort)
+
+	body = p.buildChat(ai.ChatRequest{Model: "m", Reasoning: &ai.Reasoning{}}, false, false)
+	assert.Equal(t, "medium", body.ReasoningEffort, "reasoning without an effort asks for medium")
+}

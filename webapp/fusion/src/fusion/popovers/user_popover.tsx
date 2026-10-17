@@ -13,6 +13,7 @@ import {getUserCurrentTimezone} from 'mattermost-redux/utils/timezone_utils';
 import {openDirectChannelToUserId} from 'actions/channel_actions';
 import {makeGetCustomStatus} from 'selectors/views/custom_status';
 
+import {AgentActivityLine, IntegrationTag, useAgentBusy} from 'fusion/agents/agent_status';
 import CallUserButton, {useCanCall} from 'fusion/calls/call_user_button';
 import Avatar from 'fusion/components/avatar';
 import Icon from 'fusion/components/icon';
@@ -102,6 +103,7 @@ export default function UserPopover({userId, anchor, onClose, toggles}: Props) {
     const [settingStatus, setSettingStatus] = useState(false);
     const moreButton = useRef<HTMLButtonElement>(null);
     const [more, setMore] = useState(false);
+    const agentBusy = useAgentBusy(user);
     const canModerate = useSelector((state: GlobalState) => Boolean(team) && canModerateTeam(state, team!.id));
     const timeout = useSelector((state: GlobalState) => (team ? getMemberTimeout(state, team.id, userId) : undefined));
     const {formatTime, formatDate} = useIntl();
@@ -111,6 +113,7 @@ export default function UserPopover({userId, anchor, onClose, toggles}: Props) {
     }
     const isMe = userId === me;
     const bot = user.is_bot;
+    const agent = Boolean(user.is_agent);
 
     const message = async () => {
         const result = await dispatch(openDirectChannelToUserId(userId));
@@ -177,10 +180,18 @@ export default function UserPopover({userId, anchor, onClose, toggles}: Props) {
                 />
                 <h4 style={{display: 'flex', alignItems: 'center', gap: 6, color: roleColor}}>
                     {name}
-                    {bot && <span className={am('bot-tag')}>{'BOT'}</span>}
+                    {bot && <IntegrationTag agent={agent}/>}
                     <TeamTag user={user}/>
                 </h4>
-                <div className={am('handle')}>{`@${user.username} · ${formatMessage(STATUS_LABELS[status] || STATUS_LABELS.offline)}`}</div>
+                {/* A busy agent's status starts with what it's doing; otherwise the plain status, as a person's. */}
+                <div className={am('handle')}>
+                    {agentBusy ? (
+                        <>
+                            {`@${user.username} · `}
+                            <AgentActivityLine user={user}/>
+                        </>
+                    ) : `@${user.username} · ${formatMessage(STATUS_LABELS[status] || STATUS_LABELS.offline)}`}
+                </div>
                 {!bot && (
                     <div className={am('facts')}>
                         {user.position && (
@@ -198,7 +209,10 @@ export default function UserPopover({userId, anchor, onClose, toggles}: Props) {
                 )}
                 {bot && (
                     <div className={am('facts')}>
-                        <span><Icon name='plug'/>{user.bot_description || formatMessage({id: 'fusion.profile.bot', defaultMessage: 'Integration · posts on behalf of an app'})}</span>
+                        <span>
+                            <Icon name='plug'/>
+                            {user.bot_description || (agent ? formatMessage({id: 'fusion.profile.agent', defaultMessage: 'Agent · mention it or message it, like a coworker'}) : formatMessage({id: 'fusion.profile.bot', defaultMessage: 'Integration · posts on behalf of an app'}))}
+                        </span>
                     </div>
                 )}
                 {timeout && (

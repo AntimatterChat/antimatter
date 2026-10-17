@@ -8,6 +8,7 @@ import {isGuest} from 'mattermost-redux/utils/user_utils';
 
 import ProfilePopover from 'components/profile_popover';
 import SharedUserIndicator from 'components/shared_user_indicator';
+import AgentTag from 'components/widgets/tag/agent_tag';
 import BotTag from 'components/widgets/tag/bot_tag';
 import GuestTag from 'components/widgets/tag/guest_tag';
 import ImportedInactiveTag from 'components/widgets/tag/imported_inactive_tag';
@@ -101,7 +102,7 @@ export default function UserProfile({
                 remoteNames={remoteNames}
             />
             }
-            {(user && user.is_bot) && <BotTag/>}
+            {(user && user.is_bot) && (user.is_agent ? <AgentTag/> : <BotTag/>)}
             {(user && !hideGuestTag && isGuest(user.roles)) && <GuestTag/>}
             {(user && user.props?.importedInactive === 'true') && <ImportedInactiveTag/>}
         </>

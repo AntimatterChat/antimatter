@@ -4,8 +4,8 @@
         - agents
       summary: Get available agents
       description: >
-        Retrieve all available agents from the plugin's bridge API.
-        If a user ID is provided, only agents accessible to that user are returned.
+        Lists the built-in agents the caller may talk to (Antimatter: the server's agents, enabled, not external),
+        each with its model connection as its service. Kept for older apps; new code uses `/api/v4/ai/agents`.
 
         ##### Permissions
 
@@ -30,8 +30,8 @@
         - agents
       summary: Get agents bridge status
       description: >
-        Retrieve the status of the AI plugin bridge.
-        Returns availability boolean and a reason code if unavailable.
+        Tells whether the caller has an agent to talk to, with a reason code when not
+        (`app.agents.status.no_agents`).
 
         ##### Permissions
 
@@ -56,9 +56,8 @@
         - agents
       summary: Get available LLM services
       description: >
-        Retrieve all available LLM services from the plugin's bridge API.
-        If a user ID is provided, only services accessible to that user
-        (via their permitted bots) are returned.
+        Lists the model connections the caller may use (Antimatter), as the AI chat app's services were listed:
+        their ID, name and provider, never a key.
 
         ##### Permissions
 

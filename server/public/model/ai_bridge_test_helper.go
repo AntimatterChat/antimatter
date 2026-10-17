@@ -21,8 +21,7 @@ type AIBridgeTestHelperMessage struct {
 }
 
 type AIBridgeTestHelperFeatureFlags struct {
-	EnableAIPluginBridge *bool `json:"enable_ai_plugin_bridge,omitempty"`
-	EnableAIRecaps       *bool `json:"enable_ai_recaps,omitempty"`
+	EnableAIRecaps *bool `json:"enable_ai_recaps,omitempty"`
 }
 
 type AIBridgeTestHelperConfig struct {
@@ -38,10 +37,8 @@ type AIBridgeTestHelperRecordedRequest struct {
 	Operation        string                      `json:"operation"`
 	ClientOperation  string                      `json:"client_operation,omitempty"`
 	OperationSubType string                      `json:"operation_sub_type,omitempty"`
-	SessionUserID    string                      `json:"session_user_id,omitempty"`
 	UserID           string                      `json:"user_id,omitempty"`
 	ChannelID        string                      `json:"channel_id,omitempty"`
-	AgentID          string                      `json:"agent_id,omitempty"`
 	ServiceID        string                      `json:"service_id,omitempty"`
 	Messages         []AIBridgeTestHelperMessage `json:"messages"`
 	JSONOutputFormat map[string]any              `json:"json_output_format,omitempty"`

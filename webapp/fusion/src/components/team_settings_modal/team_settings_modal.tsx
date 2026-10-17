@@ -14,6 +14,7 @@ import {isChannelAccessControlEnabled, isTeamMembershipAccessControlEnabled} fro
 
 import TeamSettings from 'components/team_settings';
 
+import AgentsSettings from 'fusion/agents/agents_settings';
 import ModelConnections from 'fusion/ai/model_connections';
 import CommunityAttributesSettings from 'fusion/attributes/community_attributes_dialog';
 import Icon from 'fusion/components/icon';
@@ -33,8 +34,8 @@ import './team_settings_modal.scss';
 const SHOW_PANEL_ERROR_STATE_TAB_SWITCH_TIMEOUT = 3000;
 
 // The tabs the Fusion UI draws itself; the others are the classic web app's.
-export type FusionTeamSettingsTab = 'channels' | 'roles' | 'onboarding' | 'layout' | 'attributes' | 'autolinks' | 'ai_connections';
-const FUSION_TABS = new Set<string>(['channels', 'roles', 'onboarding', 'layout', 'attributes', 'autolinks', 'ai_connections']);
+export type FusionTeamSettingsTab = 'channels' | 'roles' | 'onboarding' | 'layout' | 'attributes' | 'autolinks' | 'ai_connections' | 'agents';
+const FUSION_TABS = new Set<string>(['channels', 'roles', 'onboarding', 'layout', 'attributes', 'autolinks', 'ai_connections', 'agents']);
 
 type Props = {
     isOpen: boolean;
@@ -207,6 +208,15 @@ const TeamSettingsModal = ({isOpen, onExited, focusOriginElement, initialTab}: P
             iconTitle: formatMessage({id: 'fusion.teamSettings.aiConnections', defaultMessage: 'Model connections'}),
             display: canManageAIConnections,
         },
+        {
+
+            // Antimatter: the community's own agents, for its admins.
+            name: 'agents',
+            uiName: formatMessage({id: 'fusion.teamSettings.agents', defaultMessage: 'Agents'}),
+            icon: 'icon icon-creation-outline',
+            iconTitle: formatMessage({id: 'fusion.teamSettings.agents', defaultMessage: 'Agents'}),
+            display: canManageTeam,
+        },
     ];
 
     // Closing the Fusion dialog has no fade-out to wait for.
@@ -284,6 +294,12 @@ const TeamSettingsModal = ({isOpen, onExited, focusOriginElement, initialTab}: P
                     <ModelConnections
                         scope={teamId}
                         listScope={teamId}
+                    />
+                )}
+                {shownTab === 'agents' && team && (
+                    <AgentsSettings
+                        scope={team.id}
+                        teamName={team.name}
                     />
                 )}
                 {shownTab && !FUSION_TABS.has(shownTab) && (

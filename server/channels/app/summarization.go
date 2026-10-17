@@ -86,26 +86,10 @@ Example format: "Team decided to migrate to microservices architecture [PERMALIN
 
 Your response must be compacted valid JSON only, with no additional text, formatting, nor code blocks.`, channelName, siteURL, teamName, conversationText, strings.Join(postIDs, ", "), customInstructionsBlock, siteURL, teamName, siteURL, teamName)
 
-	// Create bridge client
-	sessionUserID := ""
-	if session := rctx.Session(); session != nil {
-		sessionUserID = session.UserId
-	}
+	// The recap is for the person asking (the session's), else for the recap's owner.
 	requestUserID := userID
-	if sessionUserID != "" {
-		requestUserID = sessionUserID
-	}
-	completionRequest := BridgeCompletionRequest{
-		Operation:       BridgeOperationRecapSummary,
-		ClientOperation: "recaps",
-		Messages: []BridgeMessage{
-			{Role: "system", Message: systemPrompt},
-			{Role: "user", Message: userPrompt},
-		},
-		JSONOutputFormat: summarizePostsJSONSchema,
-		OperationSubType: "summarize_channel",
-		UserID:           requestUserID,
-		ChannelID:        posts[0].ChannelId,
+	if session := rctx.Session(); session != nil && session.UserId != "" {
+		requestUserID = session.UserId
 	}
 
 	rctx.Logger().Debug("Calling AI agent for post summarization",
@@ -116,32 +100,23 @@ Your response must be compacted valid JSON only, with no additional text, format
 	)
 
 	// Antimatter: recaps run on the model connection of AISettings.Recaps, through the server's AI service, for the
-	// recap's owner; they no longer need the AI chat app. agentID is kept for older clients, and for the test bridge.
-	var completion string
-	if bridge := a.testAIFeatureBridge(); bridge != nil {
-		var err error
-		completion, err = bridge.AgentCompletion(sessionUserID, agentID, completionRequest)
-		if err != nil {
-			return nil, model.NewAppError("SummarizePosts", "app.ai.summarize.agent_call_failed", nil, err.Error(), http.StatusInternalServerError)
+	// recap's owner; they no longer need the AI chat app. agentID is kept for older clients.
+	result, appErr := a.aiFeatureCall(rctx, ai.PurposeRecaps, a.Config().AISettings.Recaps, requestUserID, posts[0].ChannelId, ai.ChatRequest{
+		Messages: []ai.Message{
+			{Role: ai.RoleSystem, Content: systemPrompt},
+			{Role: ai.RoleUser, Content: userPrompt},
+		},
+		JSONSchema:     summarizePostsJSONSchemaRaw,
+		JSONSchemaName: "recap",
+		Operation:      "recap_summary:summarize_channel",
+	})
+	if appErr != nil {
+		if appErr.Id == "app.ai.feature.not_configured.app_error" {
+			return nil, appErr
 		}
-	} else {
-		result, appErr := a.aiFeatureCall(rctx, ai.PurposeRecaps, a.Config().AISettings.Recaps, requestUserID, posts[0].ChannelId, ai.ChatRequest{
-			Messages: []ai.Message{
-				{Role: ai.RoleSystem, Content: systemPrompt},
-				{Role: ai.RoleUser, Content: userPrompt},
-			},
-			JSONSchema:     summarizePostsJSONSchemaRaw,
-			JSONSchemaName: "recap",
-			Operation:      "recap_summary:summarize_channel",
-		})
-		if appErr != nil {
-			if appErr.Id == "app.ai.feature.not_configured.app_error" {
-				return nil, appErr
-			}
-			return nil, model.NewAppError("SummarizePosts", "app.ai.summarize.agent_call_failed", nil, "", appErr.StatusCode).Wrap(appErr)
-		}
-		completion = ai.StripMarkdownCodeFencing(result.Message.Content)
+		return nil, model.NewAppError("SummarizePosts", "app.ai.summarize.agent_call_failed", nil, "", appErr.StatusCode).Wrap(appErr)
 	}
+	completion := ai.StripMarkdownCodeFencing(result.Message.Content)
 
 	var summary model.AIRecapSummaryResponse
 	if err := json.Unmarshal([]byte(completion), &summary); err != nil {

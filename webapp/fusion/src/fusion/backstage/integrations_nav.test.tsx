@@ -38,4 +38,41 @@ describe('fusion/backstage/IntegrationsNav', () => {
         render({enableCustomEmoji: false, canCreateOrDeleteCustomEmoji: true});
         expect(screen.queryByRole('link', {name: 'Custom emoji'})).not.toBeInTheDocument();
     });
+
+    // Antimatter: agents, for the server's admins (server-wide ones) and the community's (its own).
+    const renderWithRoles = (roles: string, teamRoles: string, permissions: Record<string, string[]>) => renderWithContext(
+        <IntegrationsNav
+            team={team}
+            enableCustomEmoji={false}
+            enableIncomingWebhooks={false}
+            enableOutgoingWebhooks={false}
+            enableCommands={false}
+            enableOAuthServiceProvider={false}
+            enableOutgoingOAuthConnections={false}
+            canCreateOrDeleteCustomEmoji={false}
+            canManageIntegrations={true}
+        />,
+        {
+            plugins: {components: {IntegrationsOption: []}},
+            entities: {
+                users: {currentUserId: 'me', profiles: {me: TestHelper.getUserMock({id: 'me', roles})}},
+                teams: {currentTeamId: 'team1', teams: {team1: team}, myMembers: {team1: {team_id: 'team1', user_id: 'me', roles: teamRoles}}},
+                roles: {roles: Object.fromEntries(Object.entries(permissions).map(([name, perms]) => [name, {name, permissions: perms}]))},
+            },
+        } as never,
+    );
+
+    test('lists Agents for a system admin and for the community\'s admins', () => {
+        const {unmount} = renderWithRoles('system_user system_admin', 'team_user', {system_admin: ['manage_system'], system_user: [], team_user: []});
+        expect(screen.getByRole('link', {name: 'Agents'})).toHaveAttribute('href', '/lab/integrations/agents');
+        unmount();
+
+        renderWithRoles('system_user', 'team_user team_admin', {system_user: [], team_user: [], team_admin: ['manage_team']});
+        expect(screen.getByRole('link', {name: 'Agents'})).toBeInTheDocument();
+    });
+
+    test('has no Agents for a member who manages neither', () => {
+        renderWithRoles('system_user', 'team_user', {system_user: [], team_user: []});
+        expect(screen.queryByRole('link', {name: 'Agents'})).not.toBeInTheDocument();
+    });
 });

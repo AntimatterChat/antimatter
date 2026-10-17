@@ -70,6 +70,9 @@ components:
       properties:
         id:
           type: string
+        is_agent:
+          description: Set for an agent's account (Antimatter); agents are bots too.
+          type: boolean
         create_at:
           description: The time in milliseconds a user was created
           type: integer
@@ -4023,6 +4026,9 @@ components:
         user_id:
           description: The user id of the associated user entry.
           type: string
+        kind:
+          description: "`bot`, or `agent` for an agent's account (Antimatter)."
+          type: string
         create_at:
           description: The time in milliseconds a bot was created
           type: integer
@@ -4616,6 +4622,192 @@ components:
           type: array
           items:
             type: string
+    AIAgentToolPolicy:
+      type: object
+      description: Which tools an agent may use (app.tool, app.* or *) and which run without asking; tools that change something always ask.
+      properties:
+        enabled:
+          type: boolean
+        allowed:
+          type: array
+          items:
+            type: string
+        auto_run:
+          type: array
+          items:
+            type: string
+    AIAgentReasoning:
+      type: object
+      properties:
+        enabled:
+          type: boolean
+        effort:
+          type: string
+          enum: ["", minimal, low, medium, high]
+        budget_tokens:
+          type: integer
+    AIAgentAccess:
+      type: object
+      description: Who may talk to an agent; guests only with allow_guests.
+      properties:
+        everyone:
+          type: boolean
+        team_ids:
+          type: array
+          items:
+            type: string
+        channel_ids:
+          type: array
+          items:
+            type: string
+          description: The members of these channels.
+        roles:
+          type: array
+          items:
+            type: string
+        user_ids:
+          type: array
+          items:
+            type: string
+        allow_guests:
+          type: boolean
+    AIAgentDetails:
+      type: object
+      properties:
+        user_id:
+          type: string
+        scope:
+          type: string
+          description: "`server`, or a team ID."
+        external:
+          type: boolean
+        connection_id:
+          type: string
+        connection_name:
+          type: string
+        model:
+          type: string
+        system_prompt:
+          type: string
+        tools:
+          $ref: "#/components/schemas/AIAgentToolPolicy"
+        reasoning:
+          $ref: "#/components/schemas/AIAgentReasoning"
+        max_tool_turns:
+          type: integer
+        access:
+          $ref: "#/components/schemas/AIAgentAccess"
+        needs_attention:
+          type: string
+        creator_id:
+          type: string
+        updater_id:
+          type: string
+        create_at:
+          type: integer
+          format: int64
+        update_at:
+          type: integer
+          format: int64
+        delete_at:
+          type: integer
+          format: int64
+        username:
+          type: string
+        display_name:
+          type: string
+        description:
+          type: string
+        last_icon_update:
+          type: integer
+          format: int64
+        enabled:
+          type: boolean
+    AIAgentRequest:
+      type: object
+      required:
+        - username
+      properties:
+        username:
+          type: string
+        display_name:
+          type: string
+        description:
+          type: string
+        scope:
+          type: string
+        external:
+          type: boolean
+        connection_id:
+          type: string
+        model:
+          type: string
+        system_prompt:
+          type: string
+        tools:
+          $ref: "#/components/schemas/AIAgentToolPolicy"
+        reasoning:
+          $ref: "#/components/schemas/AIAgentReasoning"
+        max_tool_turns:
+          type: integer
+        access:
+          $ref: "#/components/schemas/AIAgentAccess"
+    AIAgentPatch:
+      type: object
+      properties:
+        username:
+          type: string
+        display_name:
+          type: string
+        description:
+          type: string
+        connection_id:
+          type: string
+        model:
+          type: string
+        system_prompt:
+          type: string
+        tools:
+          $ref: "#/components/schemas/AIAgentToolPolicy"
+        reasoning:
+          $ref: "#/components/schemas/AIAgentReasoning"
+        max_tool_turns:
+          type: integer
+        access:
+          $ref: "#/components/schemas/AIAgentAccess"
+    AgentActivity:
+      type: object
+      properties:
+        user_id:
+          type: string
+        state:
+          type: string
+          enum: [idle, thinking, working, waiting, blocked, offline]
+        text:
+          type: string
+        thread_post_id:
+          type: string
+        update_at:
+          type: integer
+          format: int64
+        expires_at:
+          type: integer
+          format: int64
+    AgentActivityRequest:
+      type: object
+      required:
+        - state
+      properties:
+        state:
+          type: string
+          enum: [idle, thinking, working, waiting, blocked, offline]
+        text:
+          type: string
+          description: A few words on the task, one line of 200 characters at most.
+        thread_post_id:
+          type: string
+        expires_in_seconds:
+          type: integer
     AIUsageTotals:
       type: object
       properties:
@@ -4704,9 +4896,6 @@ components:
     AIBridgeTestHelperFeatureFlags:
       type: object
       properties:
-        enable_ai_plugin_bridge:
-          type: boolean
-          description: Override for the EnableAIPluginBridge feature flag in test mode
         enable_ai_recaps:
           type: boolean
           description: Override for the EnableAIRecaps feature flag in test mode
@@ -4775,21 +4964,15 @@ components:
         operation_sub_type:
           type: string
           description: Optional subtype used to disambiguate bridge requests
-        session_user_id:
-          type: string
-          description: Session user ID used when invoking the bridge
         user_id:
           type: string
           description: Optional effective user ID passed through the bridge request
         channel_id:
           type: string
           description: Optional channel context passed through the bridge request
-        agent_id:
-          type: string
-          description: Agent ID targeted by the bridge completion request
         service_id:
           type: string
-          description: Service ID targeted by the bridge completion request
+          description: The test model's connection ID
         messages:
           type: array
           items:

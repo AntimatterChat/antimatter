@@ -17,6 +17,7 @@ import {isPostPriorityEnabled} from 'mattermost-redux/selectors/entities/posts';
 import {getCurrentTeam} from 'mattermost-redux/selectors/entities/teams';
 import {getCurrentUserId, getUser} from 'mattermost-redux/selectors/entities/users';
 
+import {IntegrationTag} from 'fusion/agents/agent_status';
 import Icon from 'fusion/components/icon';
 import {useDisplayName} from 'fusion/hooks/users';
 import MessageContent from 'fusion/messages/content/message_content';
@@ -200,7 +201,7 @@ function OnTopBanner({entry, post, now, position, open, setOpen, canRemove, onRe
             <div className={am('ot-body')}>
                 <div className={am('ot-meta')}>
                     <b style={roleColor && !bot ? {color: roleColor} : undefined}>{authorName}</b>
-                    {bot && <span className={am('bot-tag')}>{'BOT'}</span>}
+                    {bot && <IntegrationTag agent={Boolean(author?.is_agent) && !isFromWebhook(post)}/>}
                     <span>
                         {entry.created_by === me ? formatMessage({id: 'fusion.ontop.byYou', defaultMessage: '· put on top by you'}) : formatMessage({id: 'fusion.ontop.by', defaultMessage: '· put on top by {name}'}, {name: byName})}
                     </span>

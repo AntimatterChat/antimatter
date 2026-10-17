@@ -21127,6 +21127,482 @@
     "defaultMessage": "Use “Invite someone new” to bring people in.",
     "description": ""
   },
+  "fusion.agents.access": {
+    "defaultMessage": "Who may talk to it",
+    "description": "Agents settings (Integrations › Agents, or a community's settings › Agents). An agent is an account people mention or message like a coworker, answered by an AI model (built-in) or by a program elsewhere (external). Text: \"Who may talk to it\"."
+  },
+  "fusion.agents.accessNone": {
+    "defaultMessage": "Choose who may talk to it, or turn on Everyone.",
+    "description": "Agents settings (Integrations › Agents, or a community's settings › Agents). An agent is an account people mention or message like a coworker, answered by an AI model (built-in) or by a program elsewhere (external). Text: \"Choose who may talk to it, or turn on Everyone.\"."
+  },
+  "fusion.agents.add": {
+    "defaultMessage": "Add an agent",
+    "description": "Agents settings (Integrations › Agents, or a community's settings › Agents). An agent is an account people mention or message like a coworker, answered by an AI model (built-in) or by a program elsewhere (external). Text: \"Add an agent\"."
+  },
+  "fusion.agents.addLabel": {
+    "defaultMessage": "Add an agent",
+    "description": "Agents settings (Integrations › Agents, or a community's settings › Agents). An agent is an account people mention or message like a coworker, answered by an AI model (built-in) or by a program elsewhere (external). Text: \"Add an agent\"."
+  },
+  "fusion.agents.attentionForm": {
+    "defaultMessage": "Needs attention: {reason} Saving clears this.",
+    "description": "Agents settings (Integrations › Agents, or a community's settings › Agents). An agent is an account people mention or message like a coworker, answered by an AI model (built-in) or by a program elsewhere (external). Text: \"Needs attention: {reason} Saving clears this.\". {reason} is the server's explanation, in English."
+  },
+  "fusion.agents.avatar": {
+    "defaultMessage": "Picture",
+    "description": "Agents settings (Integrations › Agents, or a community's settings › Agents). An agent is an account people mention or message like a coworker, answered by an AI model (built-in) or by a program elsewhere (external). Its picture, in the agent's form: the field label."
+  },
+  "fusion.agents.avatarBad": {
+    "defaultMessage": "Pick an image of up to 10 MB.",
+    "description": "Agents settings (Integrations › Agents, or a community's settings › Agents). An agent is an account people mention or message like a coworker, answered by an AI model (built-in) or by a program elsewhere (external). Its picture, in the agent's form: error for a file that isn't an image or is too big."
+  },
+  "fusion.agents.avatarFailed": {
+    "defaultMessage": "The picture couldn't be saved.",
+    "description": "Agents settings (Integrations › Agents, or a community's settings › Agents). An agent is an account people mention or message like a coworker, answered by an AI model (built-in) or by a program elsewhere (external). Its picture, in the agent's form: error when saving the picture failed."
+  },
+  "fusion.agents.avatarFile": {
+    "defaultMessage": "Picture of {name}",
+    "description": "Agents settings (Integrations › Agents, or a community's settings › Agents). An agent is an account people mention or message like a coworker, answered by an AI model (built-in) or by a program elsewhere (external). Its picture, in the agent's form: accessible label of the file picker; {name} is the agent."
+  },
+  "fusion.agents.avatarReset": {
+    "defaultMessage": "Reset",
+    "description": "Agents settings (Integrations › Agents, or a community's settings › Agents). An agent is an account people mention or message like a coworker, answered by an AI model (built-in) or by a program elsewhere (external). Its picture, in the agent's form: button to go back to the default picture."
+  },
+  "fusion.agents.avatarUpload": {
+    "defaultMessage": "Upload a picture",
+    "description": "Agents settings (Integrations › Agents, or a community's settings › Agents). An agent is an account people mention or message like a coworker, answered by an AI model (built-in) or by a program elsewhere (external). Its picture, in the agent's form: button to pick a new picture."
+  },
+  "fusion.agents.channels": {
+    "defaultMessage": "Channels",
+    "description": "Agents settings (Integrations › Agents, or a community's settings › Agents). An agent is an account people mention or message like a coworker, answered by an AI model (built-in) or by a program elsewhere (external). Text: \"Channels\"."
+  },
+  "fusion.agents.channelsChosen": {
+    "defaultMessage": "Channels chosen",
+    "description": "Agents settings (Integrations › Agents, or a community's settings › Agents). An agent is an account people mention or message like a coworker, answered by an AI model (built-in) or by a program elsewhere (external). Text: \"Channels chosen\"."
+  },
+  "fusion.agents.channelsFilter": {
+    "defaultMessage": "Find a channel",
+    "description": "Agents settings (Integrations › Agents, or a community's settings › Agents). An agent is an account people mention or message like a coworker, answered by an AI model (built-in) or by a program elsewhere (external). Text: \"Find a channel\"."
+  },
+  "fusion.agents.communitySection": {
+    "defaultMessage": "Agents of {team}",
+    "description": "Heading of a community's own agents on the Integrations › Agents page; {team} is the community's name."
+  },
+  "fusion.agents.confirm": {
+    "defaultMessage": "Delete {name}? Its account is deactivated and its settings forgotten; its messages stay. This can't be undone.",
+    "description": "Agents settings (Integrations › Agents, or a community's settings › Agents). An agent is an account people mention or message like a coworker, answered by an AI model (built-in) or by a program elsewhere (external). Text: \"Delete {name}? Its account is deactivated and its settings forgotten; its messages stay. This can't be undone.\". {name} is the agent's name."
+  },
+  "fusion.agents.confirmDelete": {
+    "defaultMessage": "Delete agent",
+    "description": "Agents settings (Integrations › Agents, or a community's settings › Agents). An agent is an account people mention or message like a coworker, answered by an AI model (built-in) or by a program elsewhere (external). Text: \"Delete agent\"."
+  },
+  "fusion.agents.connection": {
+    "defaultMessage": "Model connection",
+    "description": "Agents settings (Integrations › Agents, or a community's settings › Agents). An agent is an account people mention or message like a coworker, answered by an AI model (built-in) or by a program elsewhere (external). Text: \"Model connection\"."
+  },
+  "fusion.agents.connectionPick": {
+    "defaultMessage": "Pick a connection",
+    "description": "Agents settings (Integrations › Agents, or a community's settings › Agents). An agent is an account people mention or message like a coworker, answered by an AI model (built-in) or by a program elsewhere (external). Text: \"Pick a connection\"."
+  },
+  "fusion.agents.connectionsFailed": {
+    "defaultMessage": "The model connections couldn't be loaded.",
+    "description": "Agents settings (Integrations › Agents, or a community's settings › Agents). An agent is an account people mention or message like a coworker, answered by an AI model (built-in) or by a program elsewhere (external). Text: \"The model connections couldn't be loaded.\"."
+  },
+  "fusion.agents.create": {
+    "defaultMessage": "Add agent",
+    "description": "Agents settings (Integrations › Agents, or a community's settings › Agents). An agent is an account people mention or message like a coworker, answered by an AI model (built-in) or by a program elsewhere (external). Text: \"Add agent\"."
+  },
+  "fusion.agents.created": {
+    "defaultMessage": "{name} added. Mention it or message it to talk to it.",
+    "description": "Agents settings (Integrations › Agents, or a community's settings › Agents). An agent is an account people mention or message like a coworker, answered by an AI model (built-in) or by a program elsewhere (external). Text: \"{name} added. Mention it or message it to talk to it.\". {name} is the agent's name."
+  },
+  "fusion.agents.createdExternal": {
+    "defaultMessage": "{name} added. Now connect the program that answers for it.",
+    "description": "Agents settings (Integrations › Agents, or a community's settings › Agents). An agent is an account people mention or message like a coworker, answered by an AI model (built-in) or by a program elsewhere (external). Text: \"{name} added. Now connect the program that answers for it.\". {name} is the agent's name."
+  },
+  "fusion.agents.deleted": {
+    "defaultMessage": "{name} deleted. Its messages stay.",
+    "description": "Agents settings (Integrations › Agents, or a community's settings › Agents). An agent is an account people mention or message like a coworker, answered by an AI model (built-in) or by a program elsewhere (external). Text: \"{name} deleted. Its messages stay.\". {name} is the agent's name."
+  },
+  "fusion.agents.deleteFailed": {
+    "defaultMessage": "The agent couldn't be deleted.",
+    "description": "Agents settings (Integrations › Agents, or a community's settings › Agents). An agent is an account people mention or message like a coworker, answered by an AI model (built-in) or by a program elsewhere (external). Text: \"The agent couldn't be deleted.\"."
+  },
+  "fusion.agents.description": {
+    "defaultMessage": "Description",
+    "description": "Agents settings (Integrations › Agents, or a community's settings › Agents). An agent is an account people mention or message like a coworker, answered by an AI model (built-in) or by a program elsewhere (external). Text: \"Description\"."
+  },
+  "fusion.agents.descriptionPlaceholder": {
+    "defaultMessage": "What it's for, shown on its profile",
+    "description": "Agents settings (Integrations › Agents, or a community's settings › Agents). An agent is an account people mention or message like a coworker, answered by an AI model (built-in) or by a program elsewhere (external). Text: \"What it's for, shown on its profile\"."
+  },
+  "fusion.agents.disable": {
+    "defaultMessage": "Turn off",
+    "description": "Agents settings (Integrations › Agents, or a community's settings › Agents). An agent is an account people mention or message like a coworker, answered by an AI model (built-in) or by a program elsewhere (external). Text: \"Turn off\"."
+  },
+  "fusion.agents.disabled": {
+    "defaultMessage": "{name} is off: nobody can talk to it until it's turned on again.",
+    "description": "Agents settings (Integrations › Agents, or a community's settings › Agents). An agent is an account people mention or message like a coworker, answered by an AI model (built-in) or by a program elsewhere (external). Text: \"{name} is off: nobody can talk to it until it's turned on again.\". {name} is the agent's name."
+  },
+  "fusion.agents.disableOne": {
+    "defaultMessage": "Turn off {name}",
+    "description": "Agents settings (Integrations › Agents, or a community's settings › Agents). An agent is an account people mention or message like a coworker, answered by an AI model (built-in) or by a program elsewhere (external). Text: \"Turn off {name}\". {name} is the agent's name."
+  },
+  "fusion.agents.displayName": {
+    "defaultMessage": "Display name",
+    "description": "Agents settings (Integrations › Agents, or a community's settings › Agents). An agent is an account people mention or message like a coworker, answered by an AI model (built-in) or by a program elsewhere (external). Text: \"Display name\"."
+  },
+  "fusion.agents.displayNamePlaceholder": {
+    "defaultMessage": "e.g. Researcher",
+    "description": "Agents settings (Integrations › Agents, or a community's settings › Agents). An agent is an account people mention or message like a coworker, answered by an AI model (built-in) or by a program elsewhere (external). Text: \"e.g. Researcher\"."
+  },
+  "fusion.agents.done": {
+    "defaultMessage": "Done",
+    "description": "Agents settings (Integrations › Agents, or a community's settings › Agents). An agent is an account people mention or message like a coworker, answered by an AI model (built-in) or by a program elsewhere (external). Text: \"Done\"."
+  },
+  "fusion.agents.editLabel": {
+    "defaultMessage": "Edit {name}",
+    "description": "Agents settings (Integrations › Agents, or a community's settings › Agents). An agent is an account people mention or message like a coworker, answered by an AI model (built-in) or by a program elsewhere (external). Text: \"Edit {name}\". {name} is the agent's name."
+  },
+  "fusion.agents.enable": {
+    "defaultMessage": "Turn on",
+    "description": "Agents settings (Integrations › Agents, or a community's settings › Agents). An agent is an account people mention or message like a coworker, answered by an AI model (built-in) or by a program elsewhere (external). Text: \"Turn on\"."
+  },
+  "fusion.agents.enabled": {
+    "defaultMessage": "{name} is on.",
+    "description": "Agents settings (Integrations › Agents, or a community's settings › Agents). An agent is an account people mention or message like a coworker, answered by an AI model (built-in) or by a program elsewhere (external). Text: \"{name} is on.\". {name} is the agent's name."
+  },
+  "fusion.agents.enableOne": {
+    "defaultMessage": "Turn on {name}",
+    "description": "Agents settings (Integrations › Agents, or a community's settings › Agents). An agent is an account people mention or message like a coworker, answered by an AI model (built-in) or by a program elsewhere (external). Text: \"Turn on {name}\". {name} is the agent's name."
+  },
+  "fusion.agents.everyone": {
+    "defaultMessage": "Everyone",
+    "description": "Agents settings (Integrations › Agents, or a community's settings › Agents). An agent is an account people mention or message like a coworker, answered by an AI model (built-in) or by a program elsewhere (external). Text: \"Everyone\"."
+  },
+  "fusion.agents.everyoneCommunityDesc": {
+    "defaultMessage": "Everyone in the community. Otherwise only the channels and admins chosen.",
+    "description": "Agents settings (Integrations › Agents, or a community's settings › Agents). An agent is an account people mention or message like a coworker, answered by an AI model (built-in) or by a program elsewhere (external). Text: \"Everyone in the community. Otherwise only the channels and admins chosen.\"."
+  },
+  "fusion.agents.everyoneDesc": {
+    "defaultMessage": "Everyone on the server. Otherwise only the communities, channels and admins chosen.",
+    "description": "Agents settings (Integrations › Agents, or a community's settings › Agents). An agent is an account people mention or message like a coworker, answered by an AI model (built-in) or by a program elsewhere (external). Text: \"Everyone on the server. Otherwise only the communities, channels and admins chosen.\"."
+  },
+  "fusion.agents.externalHelpBots": {
+    "defaultMessage": "Open Bot accounts",
+    "description": "Agents settings (Integrations › Agents, or a community's settings › Agents). An agent is an account people mention or message like a coworker, answered by an AI model (built-in) or by a program elsewhere (external). Help shown after making an external agent, telling how its program signs in and reports what it's doing."
+  },
+  "fusion.agents.externalHelpKeep": {
+    "defaultMessage": "Keep the token secret: anyone who has it can post as the agent.",
+    "description": "Agents settings (Integrations › Agents, or a community's settings › Agents). An agent is an account people mention or message like a coworker, answered by an AI model (built-in) or by a program elsewhere (external). Help shown after making an external agent, telling how its program signs in and reports what it's doing."
+  },
+  "fusion.agents.externalHelpLabel": {
+    "defaultMessage": "Connect {name}",
+    "description": "Agents settings (Integrations › Agents, or a community's settings › Agents). An agent is an account people mention or message like a coworker, answered by an AI model (built-in) or by a program elsewhere (external). Help shown after making an external agent, telling how its program signs in and reports what it's doing. {name} is the agent."
+  },
+  "fusion.agents.externalHelpTitle": {
+    "defaultMessage": "Connect the program behind {name}",
+    "description": "Agents settings (Integrations › Agents, or a community's settings › Agents). An agent is an account people mention or message like a coworker, answered by an AI model (built-in) or by a program elsewhere (external). Help shown after making an external agent, telling how its program signs in and reports what it's doing. {name} is the agent."
+  },
+  "fusion.agents.externalHelpToken": {
+    "defaultMessage": "It signs in with a token of the agent's account (@{username}). A system admin makes one in Integrations › Bot accounts: find @{username} and pick Create new token. Or with the API:",
+    "description": "Agents settings (Integrations › Agents, or a community's settings › Agents). An agent is an account people mention or message like a coworker, answered by an AI model (built-in) or by a program elsewhere (external). Help shown after making an external agent, telling how its program signs in and reports what it's doing.  {username} is the account's username."
+  },
+  "fusion.agents.externalHelpUse": {
+    "defaultMessage": "The program then calls the API and opens the websocket with the header {header}, reads its mentions and messages, and answers like a person would. It shows what it's doing with:",
+    "description": "Agents settings (Integrations › Agents, or a community's settings › Agents). An agent is an account people mention or message like a coworker, answered by an AI model (built-in) or by a program elsewhere (external). Help shown after making an external agent, telling how its program signs in and reports what it's doing.  {header} is the HTTP header, kept as is."
+  },
+  "fusion.agents.externalLine": {
+    "defaultMessage": "External: a program answers for it",
+    "description": "Agents settings (Integrations › Agents, or a community's settings › Agents). An agent is an account people mention or message like a coworker, answered by an AI model (built-in) or by a program elsewhere (external). Text: \"External: a program answers for it\"."
+  },
+  "fusion.agents.guests": {
+    "defaultMessage": "Guests too",
+    "description": "Agents settings (Integrations › Agents, or a community's settings › Agents). An agent is an account people mention or message like a coworker, answered by an AI model (built-in) or by a program elsewhere (external). Text: \"Guests too\"."
+  },
+  "fusion.agents.guestsDesc": {
+    "defaultMessage": "Guests may talk to it only when this is on, even with Everyone.",
+    "description": "Agents settings (Integrations › Agents, or a community's settings › Agents). An agent is an account people mention or message like a coworker, answered by an AI model (built-in) or by a program elsewhere (external). Text: \"Guests may talk to it only when this is on, even with Everyone.\"."
+  },
+  "fusion.agents.kind": {
+    "defaultMessage": "Kind",
+    "description": "Agents settings (Integrations › Agents, or a community's settings › Agents). An agent is an account people mention or message like a coworker, answered by an AI model (built-in) or by a program elsewhere (external). Text: \"Kind\"."
+  },
+  "fusion.agents.kindBuiltin": {
+    "defaultMessage": "Built-in",
+    "description": "Agents settings (Integrations › Agents, or a community's settings › Agents). An agent is an account people mention or message like a coworker, answered by an AI model (built-in) or by a program elsewhere (external). Text: \"Built-in\"."
+  },
+  "fusion.agents.kindBuiltinDesc": {
+    "defaultMessage": "Antimatter answers for the agent when someone mentions it, messages it or replies in its threads, with a model connection.",
+    "description": "Agents settings (Integrations › Agents, or a community's settings › Agents). An agent is an account people mention or message like a coworker, answered by an AI model (built-in) or by a program elsewhere (external). Text: \"Antimatter answers for the agent when someone mentions it, messages it or replies in its threads, with a model connection.\"."
+  },
+  "fusion.agents.kindBuiltinNote": {
+    "defaultMessage": "Built-in agent: Antimatter answers for it with the model below.",
+    "description": "Agents settings (Integrations › Agents, or a community's settings › Agents). An agent is an account people mention or message like a coworker, answered by an AI model (built-in) or by a program elsewhere (external). Text: \"Built-in agent: Antimatter answers for it with the model below.\"."
+  },
+  "fusion.agents.kindExternal": {
+    "defaultMessage": "External agent",
+    "description": "Agents settings (Integrations › Agents, or a community's settings › Agents). An agent is an account people mention or message like a coworker, answered by an AI model (built-in) or by a program elsewhere (external). Text: \"External agent\"."
+  },
+  "fusion.agents.kindExternalDesc": {
+    "defaultMessage": "A program elsewhere (a coding agent on a project, for instance) signs in with the agent's token and answers like a person would. Antimatter doesn't answer for it.",
+    "description": "Agents settings (Integrations › Agents, or a community's settings › Agents). An agent is an account people mention or message like a coworker, answered by an AI model (built-in) or by a program elsewhere (external). Text: \"A program elsewhere (a coding agent on a project, for instance) signs in with the agent's token and answers like a person would. Antimatter doesn't answer for it.\"."
+  },
+  "fusion.agents.kindExternalNote": {
+    "defaultMessage": "External agent: a program elsewhere answers for it.",
+    "description": "Agents settings (Integrations › Agents, or a community's settings › Agents). An agent is an account people mention or message like a coworker, answered by an AI model (built-in) or by a program elsewhere (external). Text: \"External agent: a program elsewhere answers for it.\"."
+  },
+  "fusion.agents.lead": {
+    "defaultMessage": "Agents are accounts people mention or message like a coworker. A built-in agent answers with a model connection and its instructions, as the person asking, with their rights; an external one is a program elsewhere that signs in with a token.",
+    "description": "Agents settings (Integrations › Agents, or a community's settings › Agents). An agent is an account people mention or message like a coworker, answered by an AI model (built-in) or by a program elsewhere (external). Text: \"Agents are accounts people mention or message like a coworker. A built-in agent answers with a model connection and its instructions, as the person asking, with their rights; an external one is a program elsewhere that signs in with a token.\"."
+  },
+  "fusion.agents.leadCommunity": {
+    "defaultMessage": "This community's own agents, for its members: accounts they mention or message like a coworker.",
+    "description": "Agents settings (Integrations › Agents, or a community's settings › Agents). An agent is an account people mention or message like a coworker, answered by an AI model (built-in) or by a program elsewhere (external). Text: \"This community's own agents, for its members: accounts they mention or message like a coworker.\"."
+  },
+  "fusion.agents.listLabel": {
+    "defaultMessage": "Agents",
+    "description": "Agents settings (Integrations › Agents, or a community's settings › Agents). An agent is an account people mention or message like a coworker, answered by an AI model (built-in) or by a program elsewhere (external). Text: \"Agents\"."
+  },
+  "fusion.agents.loadFailed": {
+    "defaultMessage": "The agents couldn't be loaded.",
+    "description": "Agents settings (Integrations › Agents, or a community's settings › Agents). An agent is an account people mention or message like a coworker, answered by an AI model (built-in) or by a program elsewhere (external). Text: \"The agents couldn't be loaded.\"."
+  },
+  "fusion.agents.maxToolTurns": {
+    "defaultMessage": "Tool turns",
+    "description": "Agents settings (Integrations › Agents, or a community's settings › Agents). An agent is an account people mention or message like a coworker, answered by an AI model (built-in) or by a program elsewhere (external). Text: \"Tool turns\"."
+  },
+  "fusion.agents.maxToolTurnsDesc": {
+    "defaultMessage": "How many times in a row it may use tools before it answers: up to 250; empty for 30.",
+    "description": "Agents settings (Integrations › Agents, or a community's settings › Agents). An agent is an account people mention or message like a coworker, answered by an AI model (built-in) or by a program elsewhere (external). Text: \"How many times in a row it may use tools before it answers: up to 250; empty for 30.\"."
+  },
+  "fusion.agents.model": {
+    "defaultMessage": "Model",
+    "description": "Agents settings (Integrations › Agents, or a community's settings › Agents). An agent is an account people mention or message like a coworker, answered by an AI model (built-in) or by a program elsewhere (external). Text: \"Model\"."
+  },
+  "fusion.agents.modelDesc": {
+    "defaultMessage": "Left empty: the connection's chat model, {model}.",
+    "description": "Agents settings (Integrations › Agents, or a community's settings › Agents). An agent is an account people mention or message like a coworker, answered by an AI model (built-in) or by a program elsewhere (external). Text: \"Left empty: the connection's chat model, {model}.\". {model} is a model's identifier."
+  },
+  "fusion.agents.modelDescNone": {
+    "defaultMessage": "Pick one of the connection's models, or type its name.",
+    "description": "Agents settings (Integrations › Agents, or a community's settings › Agents). An agent is an account people mention or message like a coworker, answered by an AI model (built-in) or by a program elsewhere (external). Text: \"Pick one of the connection's models, or type its name.\"."
+  },
+  "fusion.agents.modelName": {
+    "defaultMessage": "Model",
+    "description": "Agents settings (Integrations › Agents, or a community's settings › Agents). An agent is an account people mention or message like a coworker, answered by an AI model (built-in) or by a program elsewhere (external). Text: \"Model\"."
+  },
+  "fusion.agents.more": {
+    "defaultMessage": "More settings",
+    "description": "Agents settings (Integrations › Agents, or a community's settings › Agents). An agent is an account people mention or message like a coworker, answered by an AI model (built-in) or by a program elsewhere (external). Text: \"More settings\"."
+  },
+  "fusion.agents.noConnection": {
+    "defaultMessage": "No connection",
+    "description": "Agents settings (Integrations › Agents, or a community's settings › Agents). An agent is an account people mention or message like a coworker, answered by an AI model (built-in) or by a program elsewhere (external). Text: \"No connection\"."
+  },
+  "fusion.agents.noConnections": {
+    "defaultMessage": "No model connection yet: add one in the System Console, AI › Model connections.",
+    "description": "Agents settings (Integrations › Agents, or a community's settings › Agents). An agent is an account people mention or message like a coworker, answered by an AI model (built-in) or by a program elsewhere (external). Text: \"No model connection yet: add one in the System Console, AI › Model connections.\"."
+  },
+  "fusion.agents.noConnectionsCommunity": {
+    "defaultMessage": "No model connection yet: add one in Model connections, or ask a system admin to share one with this community.",
+    "description": "Agents settings (Integrations › Agents, or a community's settings › Agents). An agent is an account people mention or message like a coworker, answered by an AI model (built-in) or by a program elsewhere (external). Text: \"No model connection yet: add one in Model connections, or ask a system admin to share one with this community.\"."
+  },
+  "fusion.agents.none": {
+    "defaultMessage": "No agents yet.",
+    "description": "Agents settings (Integrations › Agents, or a community's settings › Agents). An agent is an account people mention or message like a coworker, answered by an AI model (built-in) or by a program elsewhere (external). Text: \"No agents yet.\"."
+  },
+  "fusion.agents.noPermission": {
+    "defaultMessage": "Only the server's and this community's admins manage agents.",
+    "description": "Integrations › Agents, for someone who may manage no agents."
+  },
+  "fusion.agents.off": {
+    "defaultMessage": "Off",
+    "description": "Agents settings (Integrations › Agents, or a community's settings › Agents). An agent is an account people mention or message like a coworker, answered by an AI model (built-in) or by a program elsewhere (external). Text: \"Off\"."
+  },
+  "fusion.agents.playful.brewing": {
+    "defaultMessage": "Brewing…",
+    "description": "One of the playful words shown in an agent's status line (member list, profile card) while it works without saying on what; picked at random. A verb ending in -ing in English, with an ellipsis: translate as a short, light-hearted word for 'doing something', not literally if it reads oddly."
+  },
+  "fusion.agents.playful.charting": {
+    "defaultMessage": "Charting…",
+    "description": "One of the playful words shown in an agent's status line (member list, profile card) while it works without saying on what; picked at random. A verb ending in -ing in English, with an ellipsis: translate as a short, light-hearted word for 'doing something', not literally if it reads oddly."
+  },
+  "fusion.agents.playful.distilling": {
+    "defaultMessage": "Distilling…",
+    "description": "One of the playful words shown in an agent's status line (member list, profile card) while it works without saying on what; picked at random. A verb ending in -ing in English, with an ellipsis: translate as a short, light-hearted word for 'doing something', not literally if it reads oddly."
+  },
+  "fusion.agents.playful.mulling": {
+    "defaultMessage": "Mulling…",
+    "description": "One of the playful words shown in an agent's status line (member list, profile card) while it works without saying on what; picked at random. A verb ending in -ing in English, with an ellipsis: translate as a short, light-hearted word for 'doing something', not literally if it reads oddly."
+  },
+  "fusion.agents.playful.noodling": {
+    "defaultMessage": "Noodling…",
+    "description": "One of the playful words shown in an agent's status line (member list, profile card) while it works without saying on what; picked at random. A verb ending in -ing in English, with an ellipsis: translate as a short, light-hearted word for 'doing something', not literally if it reads oddly."
+  },
+  "fusion.agents.playful.piecing": {
+    "defaultMessage": "Piecing together…",
+    "description": "One of the playful words shown in an agent's status line (member list, profile card) while it works without saying on what; picked at random. A verb ending in -ing in English, with an ellipsis: translate as a short, light-hearted word for 'doing something', not literally if it reads oddly."
+  },
+  "fusion.agents.playful.polishing": {
+    "defaultMessage": "Polishing…",
+    "description": "One of the playful words shown in an agent's status line (member list, profile card) while it works without saying on what; picked at random. A verb ending in -ing in English, with an ellipsis: translate as a short, light-hearted word for 'doing something', not literally if it reads oddly."
+  },
+  "fusion.agents.playful.pondering": {
+    "defaultMessage": "Pondering…",
+    "description": "One of the playful words shown in an agent's status line (member list, profile card) while it works without saying on what; picked at random. A verb ending in -ing in English, with an ellipsis: translate as a short, light-hearted word for 'doing something', not literally if it reads oddly."
+  },
+  "fusion.agents.playful.puzzling": {
+    "defaultMessage": "Puzzling…",
+    "description": "One of the playful words shown in an agent's status line (member list, profile card) while it works without saying on what; picked at random. A verb ending in -ing in English, with an ellipsis: translate as a short, light-hearted word for 'doing something', not literally if it reads oddly."
+  },
+  "fusion.agents.playful.rummaging": {
+    "defaultMessage": "Rummaging…",
+    "description": "One of the playful words shown in an agent's status line (member list, profile card) while it works without saying on what; picked at random. A verb ending in -ing in English, with an ellipsis: translate as a short, light-hearted word for 'doing something', not literally if it reads oddly."
+  },
+  "fusion.agents.playful.simmering": {
+    "defaultMessage": "Simmering…",
+    "description": "One of the playful words shown in an agent's status line (member list, profile card) while it works without saying on what; picked at random. A verb ending in -ing in English, with an ellipsis: translate as a short, light-hearted word for 'doing something', not literally if it reads oddly."
+  },
+  "fusion.agents.playful.sketching": {
+    "defaultMessage": "Sketching…",
+    "description": "One of the playful words shown in an agent's status line (member list, profile card) while it works without saying on what; picked at random. A verb ending in -ing in English, with an ellipsis: translate as a short, light-hearted word for 'doing something', not literally if it reads oddly."
+  },
+  "fusion.agents.playful.sorting": {
+    "defaultMessage": "Sorting…",
+    "description": "One of the playful words shown in an agent's status line (member list, profile card) while it works without saying on what; picked at random. A verb ending in -ing in English, with an ellipsis: translate as a short, light-hearted word for 'doing something', not literally if it reads oddly."
+  },
+  "fusion.agents.playful.tinkering": {
+    "defaultMessage": "Tinkering…",
+    "description": "One of the playful words shown in an agent's status line (member list, profile card) while it works without saying on what; picked at random. A verb ending in -ing in English, with an ellipsis: translate as a short, light-hearted word for 'doing something', not literally if it reads oddly."
+  },
+  "fusion.agents.playful.untangling": {
+    "defaultMessage": "Untangling…",
+    "description": "One of the playful words shown in an agent's status line (member list, profile card) while it works without saying on what; picked at random. A verb ending in -ing in English, with an ellipsis: translate as a short, light-hearted word for 'doing something', not literally if it reads oddly."
+  },
+  "fusion.agents.playful.weaving": {
+    "defaultMessage": "Weaving…",
+    "description": "One of the playful words shown in an agent's status line (member list, profile card) while it works without saying on what; picked at random. A verb ending in -ing in English, with an ellipsis: translate as a short, light-hearted word for 'doing something', not literally if it reads oddly."
+  },
+  "fusion.agents.reasoning": {
+    "defaultMessage": "Reasoning",
+    "description": "Agents settings (Integrations › Agents, or a community's settings › Agents). An agent is an account people mention or message like a coworker, answered by an AI model (built-in) or by a program elsewhere (external). Text: \"Reasoning\"."
+  },
+  "fusion.agents.reasoning.high": {
+    "defaultMessage": "High",
+    "description": "Agents settings (Integrations › Agents, or a community's settings › Agents). An agent is an account people mention or message like a coworker, answered by an AI model (built-in) or by a program elsewhere (external). An option of the Reasoning setting (how much a model thinks before it answers)."
+  },
+  "fusion.agents.reasoning.low": {
+    "defaultMessage": "Low",
+    "description": "Agents settings (Integrations › Agents, or a community's settings › Agents). An agent is an account people mention or message like a coworker, answered by an AI model (built-in) or by a program elsewhere (external). An option of the Reasoning setting (how much a model thinks before it answers)."
+  },
+  "fusion.agents.reasoning.medium": {
+    "defaultMessage": "Medium",
+    "description": "Agents settings (Integrations › Agents, or a community's settings › Agents). An agent is an account people mention or message like a coworker, answered by an AI model (built-in) or by a program elsewhere (external). An option of the Reasoning setting (how much a model thinks before it answers)."
+  },
+  "fusion.agents.reasoning.minimal": {
+    "defaultMessage": "Minimal",
+    "description": "Agents settings (Integrations › Agents, or a community's settings › Agents). An agent is an account people mention or message like a coworker, answered by an AI model (built-in) or by a program elsewhere (external). An option of the Reasoning setting (how much a model thinks before it answers)."
+  },
+  "fusion.agents.reasoning.off": {
+    "defaultMessage": "Off",
+    "description": "Agents settings (Integrations › Agents, or a community's settings › Agents). An agent is an account people mention or message like a coworker, answered by an AI model (built-in) or by a program elsewhere (external). An option of the Reasoning setting (how much a model thinks before it answers)."
+  },
+  "fusion.agents.reasoningDesc": {
+    "defaultMessage": "For models that can think before they answer: slower, often better. Others ignore it.",
+    "description": "Agents settings (Integrations › Agents, or a community's settings › Agents). An agent is an account people mention or message like a coworker, answered by an AI model (built-in) or by a program elsewhere (external). Text: \"For models that can think before they answer: slower, often better. Others ignore it.\"."
+  },
+  "fusion.agents.rolesChosen": {
+    "defaultMessage": "Roles chosen",
+    "description": "Agents settings (Integrations › Agents, or a community's settings › Agents). An agent is an account people mention or message like a coworker, answered by an AI model (built-in) or by a program elsewhere (external). Text: \"Roles chosen\"."
+  },
+  "fusion.agents.save": {
+    "defaultMessage": "Save",
+    "description": "Agents settings (Integrations › Agents, or a community's settings › Agents). An agent is an account people mention or message like a coworker, answered by an AI model (built-in) or by a program elsewhere (external). Text: \"Save\"."
+  },
+  "fusion.agents.saved": {
+    "defaultMessage": "{name} saved.",
+    "description": "Agents settings (Integrations › Agents, or a community's settings › Agents). An agent is an account people mention or message like a coworker, answered by an AI model (built-in) or by a program elsewhere (external). Text: \"{name} saved.\". {name} is the agent's name."
+  },
+  "fusion.agents.saveFailed": {
+    "defaultMessage": "The agent couldn't be saved.",
+    "description": "Agents settings (Integrations › Agents, or a community's settings › Agents). An agent is an account people mention or message like a coworker, answered by an AI model (built-in) or by a program elsewhere (external). Text: \"The agent couldn't be saved.\"."
+  },
+  "fusion.agents.serverSection": {
+    "defaultMessage": "Server-wide agents",
+    "description": "Heading of the server-wide agents on the Integrations › Agents page (for system admins)."
+  },
+  "fusion.agents.state.blocked": {
+    "defaultMessage": "Blocked",
+    "description": "Accessible label of the dot by an agent's name while it can't go on without help."
+  },
+  "fusion.agents.state.thinking": {
+    "defaultMessage": "Thinking",
+    "description": "Accessible label of the small yellow dot by an agent's name while it thinks about an answer."
+  },
+  "fusion.agents.state.waiting": {
+    "defaultMessage": "Waiting for someone",
+    "description": "Accessible label of the dot by an agent's name while it waits for someone (an answer, a confirmation)."
+  },
+  "fusion.agents.state.working": {
+    "defaultMessage": "Working",
+    "description": "Accessible label of the small yellow dot by an agent's name while it works on something."
+  },
+  "fusion.agents.systemPrompt": {
+    "defaultMessage": "Instructions",
+    "description": "Agents settings (Integrations › Agents, or a community's settings › Agents). An agent is an account people mention or message like a coworker, answered by an AI model (built-in) or by a program elsewhere (external). Text: \"Instructions\"."
+  },
+  "fusion.agents.systemPromptDesc": {
+    "defaultMessage": "Its system prompt. People who talk to it don't see it.",
+    "description": "Agents settings (Integrations › Agents, or a community's settings › Agents). An agent is an account people mention or message like a coworker, answered by an AI model (built-in) or by a program elsewhere (external). Text: \"Its system prompt. People who talk to it don't see it.\"."
+  },
+  "fusion.agents.systemPromptPlaceholder": {
+    "defaultMessage": "Who the agent is and how it works, e.g. \"You research questions and answer with sources.\"",
+    "description": "Agents settings (Integrations › Agents, or a community's settings › Agents). An agent is an account people mention or message like a coworker, answered by an AI model (built-in) or by a program elsewhere (external). Text: \"Who the agent is and how it works, e.g. \"You research questions and answer with sources.\"\"."
+  },
+  "fusion.agents.tag": {
+    "defaultMessage": "AGENT",
+    "description": "Label after an agent's name (in messages, the member list, profile cards and @ suggestions), in place of BOT; keep it short and in capitals."
+  },
+  "fusion.agents.teamsChosen": {
+    "defaultMessage": "Communities chosen",
+    "description": "Agents settings (Integrations › Agents, or a community's settings › Agents). An agent is an account people mention or message like a coworker, answered by an AI model (built-in) or by a program elsewhere (external). Text: \"Communities chosen\"."
+  },
+  "fusion.agents.title": {
+    "defaultMessage": "Agents",
+    "description": "Title of the Integrations › Agents page."
+  },
+  "fusion.agents.toggleFailed": {
+    "defaultMessage": "The agent couldn't be changed.",
+    "description": "Agents settings (Integrations › Agents, or a community's settings › Agents). An agent is an account people mention or message like a coworker, answered by an AI model (built-in) or by a program elsewhere (external). Text: \"The agent couldn't be changed.\"."
+  },
+  "fusion.agents.tools": {
+    "defaultMessage": "Tools",
+    "description": "Agents settings (Integrations › Agents, or a community's settings › Agents). An agent is an account people mention or message like a coworker, answered by an AI model (built-in) or by a program elsewhere (external). Text: \"Tools\"."
+  },
+  "fusion.agents.toolsSoon": {
+    "defaultMessage": "Coming soon: the tools of Antimatter and its apps the agent may use, always with the rights of the person asking.",
+    "description": "Agents settings (Integrations › Agents, or a community's settings › Agents). An agent is an account people mention or message like a coworker, answered by an AI model (built-in) or by a program elsewhere (external). Text: \"Coming soon: the tools of Antimatter and its apps the agent may use, always with the rights of the person asking.\"."
+  },
+  "fusion.agents.username": {
+    "defaultMessage": "Username",
+    "description": "Agents settings (Integrations › Agents, or a community's settings › Agents). An agent is an account people mention or message like a coworker, answered by an AI model (built-in) or by a program elsewhere (external). Text: \"Username\"."
+  },
+  "fusion.agents.usernameDesc": {
+    "defaultMessage": "How people mention it: 3 to 22 lower-case letters, digits, dots, dashes or underscores, starting with a letter.",
+    "description": "Agents settings (Integrations › Agents, or a community's settings › Agents). An agent is an account people mention or message like a coworker, answered by an AI model (built-in) or by a program elsewhere (external). Text: \"How people mention it: 3 to 22 lower-case letters, digits, dots, dashes or underscores, starting with a letter.\"."
+  },
+  "fusion.agents.usernamePlaceholder": {
+    "defaultMessage": "e.g. researcher",
+    "description": "Agents settings (Integrations › Agents, or a community's settings › Agents). An agent is an account people mention or message like a coworker, answered by an AI model (built-in) or by a program elsewhere (external). Text: \"e.g. researcher\"."
+  },
+  "fusion.agents.waitingForYou": {
+    "defaultMessage": "Waiting for you…",
+    "description": "Status line of an agent (member list, profile card) when it waits for someone and says nothing more precise. Ends with an ellipsis."
+  },
+  "fusion.agents.writing": {
+    "defaultMessage": "Writing…",
+    "description": "Small note in a message's header while an agent is still writing its reply into it. Ends with an ellipsis."
+  },
   "fusion.ai.failed": {
     "defaultMessage": "The AI couldn't rewrite the message",
     "description": ""
@@ -24619,6 +25095,10 @@
     "defaultMessage": "Spoiler",
     "description": ""
   },
+  "fusion.integrations.agents": {
+    "defaultMessage": "Agents",
+    "description": "Entry of the Integrations page's side panel: the page that manages agents."
+  },
   "fusion.integrations.back": {
     "defaultMessage": "Back to {team}",
     "description": ""
@@ -25862,6 +26342,10 @@
   "fusion.profile.adminOnly": {
     "defaultMessage": "Only admins and this person see this",
     "description": ""
+  },
+  "fusion.profile.agent": {
+    "defaultMessage": "Agent · mention it or message it, like a coworker",
+    "description": "Profile card of an agent without a description: what the account is and how to use it."
   },
   "fusion.profile.bot": {
     "defaultMessage": "Integration · posts on behalf of an app",
@@ -28046,6 +28530,10 @@
   "fusion.teams.team": {
     "defaultMessage": "Team",
     "description": ""
+  },
+  "fusion.teamSettings.agents": {
+    "defaultMessage": "Agents",
+    "description": "Tab of the community settings: the community's own agents."
   },
   "fusion.teamSettings.aiConnections": {
     "defaultMessage": "Model connections",

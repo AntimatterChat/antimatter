@@ -44,10 +44,10 @@ export type AIBridgeMockRecordedRequest = {
     operation: AIBridgeOperation | string;
     client_operation?: string;
     operation_sub_type?: string;
-    session_user_id?: string;
     user_id?: string;
     channel_id?: string;
-    agent_id?: string;
+
+    // The test model connection the request ran on.
     service_id?: string;
     messages: AIBridgeMockMessage[];
     json_output_format?: Record<string, unknown>;
@@ -59,7 +59,6 @@ export type AIBridgeMockConfig = {
     services?: AIBridgeMockService[];
     agent_completions?: Partial<Record<AIBridgeOperation | string, AIBridgeMockCompletion[]>>;
     feature_flags?: {
-        enable_ai_plugin_bridge?: boolean;
         enable_ai_recaps?: boolean;
     };
     record_requests?: boolean;
@@ -114,12 +113,8 @@ export async function enableAIBridgeTestMode(
         },
     });
 
-    await configureAIBridgeMock(adminClient, {
-        feature_flags: {
-            enable_ai_plugin_bridge: true,
-            ...(enableRecaps ? {enable_ai_recaps: true} : {}),
-        },
-    });
+    // The built-in features call the test model the server installs; recaps still have their feature flag.
+    await configureAIBridgeMock(adminClient, enableRecaps ? {feature_flags: {enable_ai_recaps: true}} : {});
 
     return adminClient.getConfig();
 }

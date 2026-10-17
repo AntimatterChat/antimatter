@@ -109,6 +109,8 @@ type SqlStoreStores struct {
 	moderation                 store.ModerationStore
 	onTopPost                  store.OnTopPostStore
 	aiConnection               store.AIConnectionStore
+	aiAgent                    store.AIAgentStore
+	agentActivity              store.AgentActivityStore
 	channelOverride            store.ChannelOverrideStore
 	scheduledPost              store.ScheduledPostStore
 	view                       store.ViewStore
@@ -307,6 +309,8 @@ func New(settings model.SqlSettings, logger mlog.LoggerIFace, metrics einterface
 	store.stores.moderation = newSqlModerationStore(store)
 	store.stores.onTopPost = newSqlOnTopPostStore(store)
 	store.stores.aiConnection = newSqlAIConnectionStore(store)
+	store.stores.aiAgent = newSqlAIAgentStore(store)
+	store.stores.agentActivity = newSqlAgentActivityStore(store)
 	store.stores.channelOverride = newSqlChannelOverrideStore(store)
 	store.stores.scheduledPost = newScheduledPostStore(store)
 	store.stores.view = newSqlViewStore(store)
@@ -944,6 +948,14 @@ func (ss *SqlStore) OnTopPost() store.OnTopPostStore {
 
 func (ss *SqlStore) AIConnection() store.AIConnectionStore {
 	return ss.stores.aiConnection
+}
+
+func (ss *SqlStore) AIAgent() store.AIAgentStore {
+	return ss.stores.aiAgent
+}
+
+func (ss *SqlStore) AgentActivity() store.AgentActivityStore {
+	return ss.stores.agentActivity
 }
 
 func (ss *SqlStore) ChannelOverride() store.ChannelOverrideStore {

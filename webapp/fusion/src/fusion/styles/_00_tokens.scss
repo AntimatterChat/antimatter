@@ -31,6 +31,10 @@
   --am-role-mod: #22D3EE;
   --am-role-core: #A78BFA;
   --am-role-bot: #23A55A;
+  /* Agents: their tag, and their activity (working; waiting for someone or blocked). */
+  --am-agent: #8B5CF6;
+  --am-agent-busy: #F0B232;
+  --am-agent-waiting: #F97316;
   --am-font-ui: "Figtree", "Segoe UI", system-ui, sans-serif;
   --am-font-display: "Sora", "Figtree", "Segoe UI", sans-serif;
   --am-font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
@@ -65,6 +69,9 @@
     --am-role-mod: #0E7490;
     --am-role-core: #6D28D9;
     --am-role-bot: #047857;
+    --am-agent: #7C3AED;
+    --am-agent-busy: #CA8A04;
+    --am-agent-waiting: #C2410C;
   }
 }
 :root[data-am-theme="light"] {
@@ -96,6 +103,9 @@
   --am-role-mod: #0E7490;
   --am-role-core: #6D28D9;
   --am-role-bot: #047857;
+  --am-agent: #7C3AED;
+  --am-agent-busy: #CA8A04;
+  --am-agent-waiting: #C2410C;
 }
 
 :root[data-am-theme="oled"] {
@@ -127,6 +137,9 @@
   --am-role-mod: #22D3EE;
   --am-role-core: #B69CFC;
   --am-role-bot: #23A55A;
+  --am-agent: #8B5CF6;
+  --am-agent-busy: #F0B232;
+  --am-agent-waiting: #F97316;
 }
 :root[data-am-theme="oled"] .am-servers { border-right: 1px solid var(--am-line); }
 :root[data-am-theme="oled"] .am-sidebar { border-right: 1px solid var(--am-line); }

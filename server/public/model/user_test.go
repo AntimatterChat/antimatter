@@ -83,6 +83,7 @@ func TestUserAuditable(t *testing.T) {
 			"is_bot":                     false,
 			"bot_description":            "",
 			"bot_last_icon_update":       int64(0),
+			"is_agent":                   false,
 			"terms_of_service_id":        "",
 			"terms_of_service_create_at": int64(0),
 			"disable_welcome_email":      false,

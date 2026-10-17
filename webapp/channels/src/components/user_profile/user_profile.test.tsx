@@ -87,4 +87,27 @@ describe('components/UserProfile', () => {
         expect(screen.queryByText('IMPORTED - INACTIVE')).not.toBeInTheDocument();
         expect(container).toMatchSnapshot();
     });
+
+    // Antimatter: an agent's account (a bot of kind agent) is tagged AGENT instead of BOT.
+    test('tags an agent AGENT and a bot BOT', () => {
+        const {unmount} = render(
+            <UserProfile
+                {...baseProps}
+                user={{username: 'coder', is_bot: true, is_agent: true} as UserProfileType}
+            />,
+        );
+        expect(screen.getByText('AGENT')).toBeInTheDocument();
+        expect(screen.queryByText('BOT')).not.toBeInTheDocument();
+        unmount();
+
+        render(
+            <UserProfile
+                {...baseProps}
+                user={{username: 'release', is_bot: true} as UserProfileType}
+            />,
+        );
+        expect(screen.getByText('BOT')).toBeInTheDocument();
+        expect(screen.queryByText('AGENT')).not.toBeInTheDocument();
+    });
 });
+

@@ -7,6 +7,9 @@ export type Bot = {
     display_name?: string;
     description?: string;
     owner_id: string;
+
+    // Antimatter: 'agent' for an agent's account, 'bot' otherwise.
+    kind?: 'bot' | 'agent';
     create_at: number;
     update_at: number;
     delete_at: number;

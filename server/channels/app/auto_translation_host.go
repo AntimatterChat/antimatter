@@ -70,9 +70,6 @@ func (h *autoTranslationHost) AIChat(ctx context.Context, connectionID, modelNam
 	if a == nil {
 		return "", errors.New("the server isn't ready")
 	}
-	if bridge := a.testAIFeatureBridge(); bridge != nil {
-		return bridge.ServiceCompletion("", connectionID, autoTranslationBridgeRequest(req))
-	}
 	messages := make([]ai.Message, 0, len(req.Messages))
 	for _, m := range req.Messages {
 		messages = append(messages, ai.Message{Role: ai.Role(m.Role), Content: m.Message})
@@ -92,21 +89,6 @@ func (h *autoTranslationHost) AIChat(ctx context.Context, connectionID, modelNam
 		return "", appErr
 	}
 	return resp.Message.Content, nil
-}
-
-// autoTranslationBridgeRequest turns an auto-translation completion into the bridge's request for the
-// auto_translate operation, for the test bridge only.
-func autoTranslationBridgeRequest(req autotranslation.CompletionRequest) BridgeCompletionRequest {
-	messages := make([]BridgeMessage, 0, len(req.Messages))
-	for _, m := range req.Messages {
-		messages = append(messages, BridgeMessage{Role: m.Role, Message: m.Message})
-	}
-	return BridgeCompletionRequest{
-		Operation:        BridgeOperationAutoTranslate,
-		ClientOperation:  string(BridgeOperationAutoTranslate),
-		Messages:         messages,
-		JSONOutputFormat: req.JSONOutputFormat,
-	}
 }
 
 func (h *autoTranslationHost) JobServer() *jobs.JobServer { return h.srv.Jobs }

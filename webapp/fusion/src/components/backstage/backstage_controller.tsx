@@ -28,6 +28,7 @@ import AddOutgoingOAuthConnection from 'components/integrations/outgoing_oauth_c
 import EditOutgoingOAuthConnection from 'components/integrations/outgoing_oauth_connections/edit_outgoing_oauth_connection';
 import InstalledOutgoingOAuthConnections from 'components/integrations/outgoing_oauth_connections/installed_outgoing_oauth_connections';
 
+import AgentsPage from 'fusion/backstage/agents_page';
 import CustomEmojiPage from 'fusion/backstage/custom_emoji_page';
 import IntegrationsNav from 'fusion/backstage/integrations_nav';
 import {IconSprite} from 'fusion/components/icon';
@@ -222,6 +223,12 @@ const BackstageController = (props: Props) => {
                                 view='add'
                             />
                         )}
+                    />
+                    {/* Antimatter: agents (server-wide and this community's). */}
+                    <Route
+                        exact={true}
+                        path={`${props.match.url}/agents`}
+                        render={() => <AgentsPage team={extraProps.team}/>}
                     />
                     <BackstageRoute
                         extraProps={extraProps}

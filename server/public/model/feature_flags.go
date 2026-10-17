@@ -85,9 +85,6 @@ type FeatureFlags struct {
 	// Enable burn-on-read messages that automatically delete after viewing
 	BurnOnRead bool
 
-	// FEATURE_FLAG_REMOVAL: EnableAIPluginBridge
-	EnableAIPluginBridge bool
-
 	// FEATURE_FLAG_REMOVAL: EnableAIRecaps - Remove this when GA is released
 	// Antimatter: on by default. Recaps are a built-in AI feature, and do nothing until an admin picks a model
 	// connection for them (System Console > AI > Built-in features); AIRecapSettings.Enable turns them off.
@@ -210,9 +207,6 @@ func (f *FeatureFlags) SetDefaults() {
 	f.ClassificationMarkings = true
 
 	f.BurnOnRead = true
-
-	// FEATURE_FLAG_REMOVAL: EnableAIPluginBridge - Remove this default when MVP is to be released
-	f.EnableAIPluginBridge = false
 
 	f.EnableAIRecaps = true
 

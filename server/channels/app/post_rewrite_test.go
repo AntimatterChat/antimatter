@@ -4,6 +4,7 @@
 package app
 
 import (
+	"encoding/json"
 	"strings"
 	"testing"
 
@@ -29,23 +30,20 @@ func TestBuildRewriteSystemPrompt(t *testing.T) {
 }
 
 func TestRewriteMessage(t *testing.T) {
-	t.Run("sets_structured_output_schema_on_bridge_request", func(t *testing.T) {
-		bridge := &testAgentsBridge{
-			completeFn: func(sessionUserID, agentID string, req BridgeCompletionRequest) (string, error) {
-				return `{"rewritten_text":"Rewritten message"}`, nil
-			},
-		}
-
-		th := Setup(t, WithAgentsBridge(bridge)).InitBasic(t)
+	t.Run("sets_structured_output_schema_on_the_model_request", func(t *testing.T) {
+		th, llm, _ := setupAIFeatureModel(t, `{"rewritten_text":"Rewritten message"}`)
 		ctx := th.Context.WithSession(&model.Session{UserId: th.BasicUser.Id})
 
 		response, appErr := th.App.RewriteMessage(ctx, model.NewId(), "original message", model.RewriteActionImproveWriting, "", "")
 		require.Nil(t, appErr)
 		require.NotNil(t, response)
 		assert.Equal(t, "Rewritten message", response.RewrittenText)
-		require.Len(t, bridge.completeCalls, 1)
-		assert.Equal(t, BridgeOperationRewrite, bridge.completeCalls[0].request.Operation)
-		assert.Equal(t, string(model.RewriteActionImproveWriting), bridge.completeCalls[0].request.OperationSubType)
-		assert.Equal(t, rewriteResponseJSONSchema, bridge.completeCalls[0].request.JSONOutputFormat)
+		require.Len(t, llm.calls(), 1)
+		assert.Equal(t, "rewrite", llm.calls()[0].schemaName())
+		format := llm.calls()[0].Body["response_format"].(map[string]any)["json_schema"].(map[string]any)
+		schema, err := json.Marshal(format["schema"])
+		require.NoError(t, err)
+		assert.JSONEq(t, string(rewriteResponseJSONSchemaRaw), string(schema), "the rewrite's own schema")
+		assert.Contains(t, llm.calls()[0].messages()[1]["content"], "original message")
 	})
 }

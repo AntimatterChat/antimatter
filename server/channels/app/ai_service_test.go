@@ -30,6 +30,11 @@ type fakeLLM struct {
 	mu       sync.Mutex
 	answer   string
 	requests []fakeLLMRequest
+	// failStatus, when set, makes chats fail with this status and failMessage.
+	failStatus  int
+	failMessage string
+	// chunks, when set, are streamed (server-sent events) to the chats that ask for a stream.
+	chunks []string
 }
 
 type fakeLLMRequest struct {
@@ -46,9 +51,27 @@ func newFakeLLM(t *testing.T, answer string) *fakeLLM {
 		_ = json.Unmarshal(raw, &body)
 		f.mu.Lock()
 		f.requests = append(f.requests, fakeLLMRequest{Path: r.URL.Path, Authorization: r.Header.Get("Authorization"), Body: body})
-		answer := f.answer
+		answer, failStatus, failMessage, chunks := f.answer, f.failStatus, f.failMessage, f.chunks
 		f.mu.Unlock()
 		switch {
+		case failStatus == 0 && len(chunks) > 0 && body["stream"] == true:
+			w.Header().Set("Content-Type", "text/event-stream")
+			flusher, _ := w.(http.Flusher)
+			for _, chunk := range chunks {
+				content, _ := json.Marshal(chunk)
+				fmt.Fprintf(w, "data: {\"choices\":[{\"delta\":{\"content\":%s}}]}\n\n", content)
+				if flusher != nil {
+					flusher.Flush()
+				}
+			}
+			fmt.Fprint(w, "data: {\"choices\":[{\"delta\":{},\"finish_reason\":\"stop\"}]}\n\n")
+			fmt.Fprint(w, "data: {\"choices\":[],\"usage\":{\"prompt_tokens\":12,\"completion_tokens\":6}}\n\n")
+			fmt.Fprint(w, "data: [DONE]\n\n")
+		case failStatus != 0 && strings.HasSuffix(r.URL.Path, "/chat/completions"):
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(failStatus)
+			msg, _ := json.Marshal(failMessage)
+			fmt.Fprintf(w, `{"error":{"message":%s}}`, msg)
 		case strings.HasSuffix(r.URL.Path, "/models"):
 			fmt.Fprint(w, `{"data":[{"id":"test-model"}]}`)
 		case strings.HasSuffix(r.URL.Path, "/audio/speech"):
@@ -62,6 +85,71 @@ func newFakeLLM(t *testing.T, answer string) *fakeLLM {
 	}))
 	t.Cleanup(f.Close)
 	return f
+}
+
+// streamIn makes the endpoint stream its answers in these pieces.
+func (f *fakeLLM) streamIn(chunks ...string) {
+	f.mu.Lock()
+	defer f.mu.Unlock()
+	f.chunks = chunks
+}
+
+// fail makes the endpoint's chats fail.
+func (f *fakeLLM) fail(status int, message string) {
+	f.mu.Lock()
+	defer f.mu.Unlock()
+	f.failStatus, f.failMessage = status, message
+}
+
+// messages gives a chat request's messages as role and content.
+func (r fakeLLMRequest) messages() []map[string]any {
+	list, _ := r.Body["messages"].([]any)
+	out := make([]map[string]any, 0, len(list))
+	for _, m := range list {
+		if message, ok := m.(map[string]any); ok {
+			out = append(out, message)
+		}
+	}
+	return out
+}
+
+// schemaName gives the name of the JSON schema a chat asked for, "" for none.
+func (r fakeLLMRequest) schemaName() string {
+	format, _ := r.Body["response_format"].(map[string]any)
+	schema, _ := format["json_schema"].(map[string]any)
+	name, _ := schema["name"].(string)
+	return name
+}
+
+// assertAIUsageFor checks that the model calls of a test were counted against a person.
+func assertAIUsageFor(t *testing.T, th *TestHelper, userID string) {
+	t.Helper()
+	connections, err := th.App.Srv().Store().AIConnection().GetAll(th.Context)
+	require.NoError(t, err)
+	found := false
+	for _, c := range connections {
+		usage, appErr := th.App.GetAIConnectionUsage(th.Context, c)
+		require.Nil(t, appErr)
+		for _, day := range usage.Days {
+			found = found || day.UserId == userID
+		}
+	}
+	assert.True(t, found, "the call is counted against the person")
+}
+
+// setupAIFeatureModel gives a test server whose built-in features (rewrite, recaps, auto-translation) run on a
+// server-wide connection to a fake model that answers answer.
+func setupAIFeatureModel(t *testing.T, answer string) (*TestHelper, *fakeLLM, *model.AIConnection) {
+	t.Helper()
+	th := setupAITest(t)
+	f := newFakeLLM(t, answer)
+	c := createTestAIConnection(t, th, f, model.AIConnectionScopeServer, nil)
+	th.App.UpdateConfig(func(cfg *model.Config) {
+		cfg.AISettings.Rewrite.ConnectionId = model.NewPointer(c.Id)
+		cfg.AISettings.Recaps.ConnectionId = model.NewPointer(c.Id)
+		cfg.AISettings.AutoTranslation.ConnectionId = model.NewPointer(c.Id)
+	})
+	return th, f, c
 }
 
 func (f *fakeLLM) calls() []fakeLLMRequest {

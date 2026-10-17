@@ -1,6 +1,7 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 
+import type {AgentActivityChangedData, AgentPostStreamData} from '@mattermost/types/ai_agents';
 import type {ChannelBookmarkWithFileInfo, UpdateChannelBookmarkResponse} from '@mattermost/types/channel_bookmarks';
 import type {ChannelCategory} from '@mattermost/types/channel_categories';
 import type {Channel, ChannelJoinRequest, ChannelMembership, ChannelType} from '@mattermost/types/channels';
@@ -451,6 +452,12 @@ export type PostRemovedFromTop = BaseWebSocketMessage<WebSocketEvents.PostRemove
     post_id: string;
     channel_id: string;
 }>;
+
+// Antimatter: an agent's activity changed (never with its thread).
+export type AgentActivityChanged = BaseWebSocketMessage<WebSocketEvents.AgentActivityChanged, AgentActivityChangedData>;
+
+// Antimatter: an agent's answer streaming into its post.
+export type AgentPostStream = BaseWebSocketMessage<WebSocketEvents.AgentPostStream, AgentPostStreamData>;
 
 // Emoji messages
 

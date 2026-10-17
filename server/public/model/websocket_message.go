@@ -131,6 +131,9 @@ const (
 	WebsocketEventSharedChannelRemoteUpdated WebsocketEventType = "shared_channel_remote_updated"
 	WebsocketEventChannelJoinRequestCreated  WebsocketEventType = "channel_join_request_created"
 	WebsocketEventChannelJoinRequestUpdated  WebsocketEventType = "channel_join_request_updated"
+	// Antimatter: an agent's activity changed; an agent's reply grows as the model streams it.
+	WebsocketEventAgentActivityChanged WebsocketEventType = "agent_activity_changed"
+	WebsocketEventAgentPostStream      WebsocketEventType = "agent_post_stream"
 
 	WebSocketMsgTypeResponse = "response"
 	WebSocketMsgTypeEvent    = "event"

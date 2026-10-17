@@ -145,8 +145,8 @@ func (z *User) DecodeMsg(dc *msgp.Reader) (err error) {
 		err = msgp.WrapError(err)
 		return
 	}
-	if zb0001 != 35 {
-		err = msgp.ArrayError{Wanted: 35, Got: zb0001}
+	if zb0001 != 36 {
+		err = msgp.ArrayError{Wanted: 36, Got: zb0001}
 		return
 	}
 	z.Id, err = dc.ReadString()
@@ -348,13 +348,18 @@ func (z *User) DecodeMsg(dc *msgp.Reader) (err error) {
 		err = msgp.WrapError(err, "MfaUsedTimestamps")
 		return
 	}
+	z.IsAgent, err = dc.ReadBool()
+	if err != nil {
+		err = msgp.WrapError(err, "IsAgent")
+		return
+	}
 	return
 }
 
 // EncodeMsg implements msgp.Encodable
 func (z *User) EncodeMsg(en *msgp.Writer) (err error) {
-	// array header, size 35
-	err = en.Append(0xdc, 0x0, 0x23)
+	// array header, size 36
+	err = en.Append(0xdc, 0x0, 0x24)
 	if err != nil {
 		return
 	}
@@ -547,14 +552,19 @@ func (z *User) EncodeMsg(en *msgp.Writer) (err error) {
 		err = msgp.WrapError(err, "MfaUsedTimestamps")
 		return
 	}
+	err = en.WriteBool(z.IsAgent)
+	if err != nil {
+		err = msgp.WrapError(err, "IsAgent")
+		return
+	}
 	return
 }
 
 // MarshalMsg implements msgp.Marshaler
 func (z *User) MarshalMsg(b []byte) (o []byte, err error) {
 	o = msgp.Require(b, z.Msgsize())
-	// array header, size 35
-	o = append(o, 0xdc, 0x0, 0x23)
+	// array header, size 36
+	o = append(o, 0xdc, 0x0, 0x24)
 	o = msgp.AppendString(o, z.Id)
 	o = msgp.AppendInt64(o, z.CreateAt)
 	o = msgp.AppendInt64(o, z.UpdateAt)
@@ -614,6 +624,7 @@ func (z *User) MarshalMsg(b []byte) (o []byte, err error) {
 		err = msgp.WrapError(err, "MfaUsedTimestamps")
 		return
 	}
+	o = msgp.AppendBool(o, z.IsAgent)
 	return
 }
 
@@ -625,8 +636,8 @@ func (z *User) UnmarshalMsg(bts []byte) (o []byte, err error) {
 		err = msgp.WrapError(err)
 		return
 	}
-	if zb0001 != 35 {
-		err = msgp.ArrayError{Wanted: 35, Got: zb0001}
+	if zb0001 != 36 {
+		err = msgp.ArrayError{Wanted: 36, Got: zb0001}
 		return
 	}
 	z.Id, bts, err = msgp.ReadStringBytes(bts)
@@ -826,6 +837,11 @@ func (z *User) UnmarshalMsg(bts []byte) (o []byte, err error) {
 		err = msgp.WrapError(err, "MfaUsedTimestamps")
 		return
 	}
+	z.IsAgent, bts, err = msgp.ReadBoolBytes(bts)
+	if err != nil {
+		err = msgp.WrapError(err, "IsAgent")
+		return
+	}
 	o = bts
 	return
 }
@@ -844,7 +860,7 @@ func (z *User) Msgsize() (s int) {
 	} else {
 		s += msgp.StringPrefixSize + len(*z.RemoteId)
 	}
-	s += msgp.Int64Size + msgp.BoolSize + msgp.StringPrefixSize + len(z.BotDescription) + msgp.Int64Size + msgp.StringPrefixSize + len(z.TermsOfServiceId) + msgp.Int64Size + msgp.BoolSize + msgp.Int64Size + z.MfaUsedTimestamps.Msgsize()
+	s += msgp.Int64Size + msgp.BoolSize + msgp.StringPrefixSize + len(z.BotDescription) + msgp.Int64Size + msgp.StringPrefixSize + len(z.TermsOfServiceId) + msgp.Int64Size + msgp.BoolSize + msgp.Int64Size + z.MfaUsedTimestamps.Msgsize() + msgp.BoolSize
 	return
 }
 

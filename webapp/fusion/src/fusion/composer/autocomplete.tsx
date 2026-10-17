@@ -31,6 +31,7 @@ import EmoticonProvider from 'components/suggestion/emoticon_provider';
 import type Provider from 'components/suggestion/provider';
 import {flattenItems, flattenTerms} from 'components/suggestion/suggestion_results';
 
+import {IntegrationTag} from 'fusion/agents/agent_status';
 import Avatar from 'fusion/components/avatar';
 import ChannelIcon from 'fusion/sidebar/channel_icon';
 import {am} from 'fusion/utils/class_names';
@@ -69,7 +70,8 @@ const SPECIAL_DESCRIPTIONS: Record<string, {id: string; defaultMessage: string}>
     all: {id: 'fusion.ac.all', defaultMessage: 'Notifies everyone in this channel'},
 };
 
-function RowContent({kind, row}: {kind: Kind; row: Row}) {
+// RowContent is one suggestion (exported for its tests).
+export function RowContent({kind, row}: {kind: Kind; row: Row}) {
     const {formatMessage} = useIntl();
     const item = row.item as Record<string, unknown>;
     if (kind === 'mention' && item && typeof item.username === 'string' && item.id) {
@@ -91,9 +93,12 @@ function RowContent({kind, row}: {kind: Kind; row: Row}) {
                     status={true}
                 />
                 <span className={am('main')}>{`@${user.username}`}</span>
+
+                {/* Agents come with the people (the server's autocomplete lists those the person may talk to). */}
+                {(user.is_agent || item.isAgent === true) && <IntegrationTag agent={true}/>}
                 <span className={am('desc')}>
                     {[user.first_name, user.last_name].filter(Boolean).join(' ') || user.nickname}
-                    {user.is_bot ? ' · ' + formatMessage({id: 'fusion.ac.bot', defaultMessage: 'bot'}) : ''}
+                    {user.is_bot && !user.is_agent && item.isAgent !== true ? ' · ' + formatMessage({id: 'fusion.ac.bot', defaultMessage: 'bot'}) : ''}
                 </span>
             </>
         );

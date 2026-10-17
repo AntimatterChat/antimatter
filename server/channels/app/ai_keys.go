@@ -20,6 +20,20 @@ type aiServerState struct {
 	mu      sync.Mutex
 	keyring *aiservice.Keyring
 	limiter *aiservice.Limiter
+
+	// agents is the node's list of agents; e2eModel the end-to-end tests' stand-in model, when they installed one.
+	agents   *agentDirectory
+	e2eModel *aiE2EModel
+}
+
+// agentDirectory gives the node's list of agents.
+func (s *aiServerState) agentDirectory() *agentDirectory {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	if s.agents == nil {
+		s.agents = &agentDirectory{}
+	}
+	return s.agents
 }
 
 // aiKeyring gives the keyring of the connections' keys, loaded the first time it's needed.

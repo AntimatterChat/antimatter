@@ -87,8 +87,18 @@ type anRequest struct {
 	Tools       []anTool    `json:"tools,omitempty"`
 	ToolChoice  any         `json:"tool_choice,omitempty"`
 	Temperature *float64    `json:"temperature,omitempty"`
+	Thinking    *anThinking `json:"thinking,omitempty"`
 	Stream      bool        `json:"stream,omitempty"`
 }
+
+// anThinking turns on Anthropic's extended thinking, with the most tokens the model may think with.
+type anThinking struct {
+	Type         string `json:"type"`
+	BudgetTokens int    `json:"budget_tokens"`
+}
+
+// Anthropic's thinking needs at least this budget.
+const anthropicMinThinkingBudget = 1024
 
 type anUsage struct {
 	InputTokens  int64 `json:"input_tokens"`
@@ -207,6 +217,18 @@ func (p *anthropicProvider) build(req ai.ChatRequest, stream bool) (anRequest, a
 		}
 		out.Tools = []anTool{{Name: anthropicOutputTool, Description: "Give the answer, following this schema.", InputSchema: schema}}
 		out.ToolChoice = map[string]string{"type": "tool", "name": anthropicOutputTool}
+	}
+	// Thinking can't be combined with a forced tool or a chosen temperature: those calls go without it.
+	if req.Reasoning != nil && out.ToolChoice == nil && out.Temperature == nil {
+		budget := req.Reasoning.BudgetTokens
+		if budget <= 0 {
+			budget = min(max(out.MaxTokens/4, anthropicMinThinkingBudget), 8192)
+		}
+		budget = max(budget, anthropicMinThinkingBudget)
+		if out.MaxTokens <= budget {
+			out.MaxTokens = budget + anthropicDefaultMaxTokens
+		}
+		out.Thinking = &anThinking{Type: "enabled", BudgetTokens: budget}
 	}
 	return out, plan
 }

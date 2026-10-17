@@ -1,0 +1,400 @@
+  /api/v4/ai/agents:
+    get:
+      tags:
+        - ai agents
+      summary: List the agents you manage
+      description: >
+        Lists the agents of a scope: `server` for the server-wide ones, or a team (community) ID for its own.
+        Without a scope, every agent the caller manages. An agent names its model connection by ID and name only.
+
+        ##### Permissions
+
+        `manage_system` for server agents; `manage_team` in the community for a community's. On top of the scope,
+        `manage_own_agent` for an agent the caller made and `manage_others_agent` for the others (the community's
+        admins hold both).
+
+        __Minimum server version__: 11.11 (Antimatter)
+      operationId: GetAIAgents
+      parameters:
+        - name: scope
+          in: query
+          description: "`server`, or a team ID."
+          schema:
+            type: string
+      responses:
+        "200":
+          description: The agents
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AIAgentDetails"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+    post:
+      tags:
+        - ai agents
+      summary: Make an agent
+      description: >
+        Makes an agent and its bot account (of kind `agent`). A built-in agent runs in the server on a model
+        connection its scope may use (a server agent: a server-wide connection; a community's agent: its own or a
+        server-wide one shared with it). An external agent (`external: true`) has no runtime: a program signs in
+        with the account's token and answers like a person would. A community's agent joins its community.
+
+        ##### Permissions
+
+        The scope's (`manage_system`, or `manage_team` in the community), and `manage_own_agent`.
+
+        __Minimum server version__: 11.11 (Antimatter)
+      operationId: CreateAIAgent
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AIAgentRequest"
+      responses:
+        "201":
+          description: The agent
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AIAgentDetails"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+  /api/v4/ai/agents/connections:
+    get:
+      tags:
+        - ai agents
+      summary: List the connections an agent may use
+      description: >
+        The model connections an agent of a scope may be set up on.
+
+        ##### Permissions
+
+        The scope's.
+
+        __Minimum server version__: 11.11 (Antimatter)
+      operationId: GetAIAgentConnections
+      parameters:
+        - name: scope
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: The connections
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AIConnectionInfo"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+  /api/v4/ai/agents/connections/{connection_id}/models:
+    get:
+      tags:
+        - ai agents
+      summary: List the models of a connection an agent may use
+      description: >
+        The models a connection's endpoint offers, for an agent of the scope.
+
+        ##### Permissions
+
+        The scope's.
+
+        __Minimum server version__: 11.11 (Antimatter)
+      operationId: GetAIAgentConnectionModels
+      parameters:
+        - name: connection_id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: scope
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: The models
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    owned_by:
+                      type: string
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+  /api/v4/ai/agents/activity/ids:
+    post:
+      tags:
+        - ai agents
+      summary: Get the activity of agents
+      description: >
+        The activity of the agents among up to 200 user IDs that the caller can see; other IDs are left out. An
+        agent that never set one is `idle`. `thread_post_id` is only given to who may read that thread.
+
+        ##### Permissions
+
+        Must be authenticated.
+
+        __Minimum server version__: 11.11 (Antimatter)
+      operationId: GetAgentActivitiesByIds
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: string
+      responses:
+        "200":
+          description: The activities
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AgentActivity"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+  /api/v4/ai/agents/{agent_id}:
+    get:
+      tags:
+        - ai agents
+      summary: Get an agent
+      description: >
+        An agent's settings and account.
+
+        ##### Permissions
+
+        Managing the agent (see List the agents you manage).
+
+        __Minimum server version__: 11.11 (Antimatter)
+      operationId: GetAIAgent
+      parameters:
+        - name: agent_id
+          in: path
+          required: true
+          description: The agent's user ID.
+          schema:
+            type: string
+      responses:
+        "200":
+          description: The agent
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AIAgentDetails"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+    patch:
+      tags:
+        - ai agents
+      summary: Change an agent
+      description: >
+        Changes an agent's account (username, display name, description) and settings. Its scope and whether it's
+        external never change. Saving clears what needed attention.
+
+        ##### Permissions
+
+        Managing the agent.
+
+        __Minimum server version__: 11.11 (Antimatter)
+      operationId: PatchAIAgent
+      parameters:
+        - name: agent_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AIAgentPatch"
+      responses:
+        "200":
+          description: The agent
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AIAgentDetails"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+    delete:
+      tags:
+        - ai agents
+      summary: Delete an agent
+      description: >
+        Deletes an agent's settings and deactivates its account; its messages stay, still shown as an agent's.
+
+        ##### Permissions
+
+        Managing the agent.
+
+        __Minimum server version__: 11.11 (Antimatter)
+      operationId: DeleteAIAgent
+      parameters:
+        - name: agent_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          $ref: "#/components/responses/StatusOK"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+  /api/v4/ai/agents/{agent_id}/enable:
+    post:
+      tags:
+        - ai agents
+      summary: Turn an agent on
+      description: >
+        Reactivates the agent's account.
+
+        ##### Permissions
+
+        Managing the agent.
+
+        __Minimum server version__: 11.11 (Antimatter)
+      operationId: EnableAIAgent
+      parameters:
+        - name: agent_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: The agent
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AIAgentDetails"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+  /api/v4/ai/agents/{agent_id}/disable:
+    post:
+      tags:
+        - ai agents
+      summary: Turn an agent off
+      description: >
+        Deactivates the agent's account: nobody can talk to it, and it shows offline.
+
+        ##### Permissions
+
+        Managing the agent.
+
+        __Minimum server version__: 11.11 (Antimatter)
+      operationId: DisableAIAgent
+      parameters:
+        - name: agent_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: The agent
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AIAgentDetails"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+  /api/v4/ai/agents/{agent_id}/activity:
+    get:
+      tags:
+        - ai agents
+      summary: Get an agent's activity
+      description: >
+        What the agent is doing now. An expired busy state is `idle`. `thread_post_id` is only given to who may
+        read that thread.
+
+        ##### Permissions
+
+        Seeing the agent (as for its user).
+
+        __Minimum server version__: 11.11 (Antimatter)
+      operationId: GetAgentActivity
+      parameters:
+        - name: agent_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: The activity
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AgentActivity"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+    put:
+      tags:
+        - ai agents
+      summary: Set an agent's activity
+      description: >
+        Sets what the agent is doing, sent live to everyone who can see it (the `agent_activity_changed`
+        websocket event, without the thread). Busy states (thinking, working, waiting, blocked) expire after
+        `expires_in_seconds` (10 minutes by default, 24 hours at most). The thread must be one the caller can read.
+
+        ##### Permissions
+
+        The agent's own token, or managing the agent.
+
+        __Minimum server version__: 11.11 (Antimatter)
+      operationId: SetAgentActivity
+      parameters:
+        - name: agent_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AgentActivityRequest"
+      responses:
+        "200":
+          description: The activity
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AgentActivity"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "403":
+          $ref: "#/components/responses/Forbidden"

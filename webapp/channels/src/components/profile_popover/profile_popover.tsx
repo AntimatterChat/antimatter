@@ -157,6 +157,7 @@ const ProfilePopover = ({
             <ProfilePopoverTitle
                 channelId={channelId}
                 isBot={user.is_bot}
+                isAgent={Boolean(user.is_agent)}
                 isImportedInactive={user.props?.importedInactive === 'true'}
                 returnFocus={handleReturnFocus}
                 roles={user.roles}

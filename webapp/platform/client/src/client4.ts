@@ -6,6 +6,7 @@
 import type {AccessControlPolicy, CELExpressionError, AccessControlTestResult, AccessControlPoliciesResult, AccessControlPolicyChannelsResult, AccessControlVisualAST, AccessControlAttributes, AccessControlPolicyActiveUpdate, PolicySimulationResponse, PolicySimulationByUsersParams} from '@mattermost/types/access_control';
 import type {ClusterInfo, AnalyticsRow, SchemaMigration, LogFilterQuery} from '@mattermost/types/admin';
 import type {Agent, LLMService} from '@mattermost/types/agents';
+import type {AgentActivity, AgentActivityRequest, AIAgentDetails, AIAgentPatch, AIAgentRequest} from '@mattermost/types/ai_agents';
 import type {AIConnection, AIConnectionInfo, AIConnectionPatch, AIConnectionRequest, AIConnectionTestResult, AIConnectionUsage, AIModelInfo} from '@mattermost/types/ai_connections';
 import type {AppBinding, AppCallRequest, AppCallResponse} from '@mattermost/types/apps';
 import type {Audit} from '@mattermost/types/audits';
@@ -507,6 +508,15 @@ export default class Client4 {
 
     getAIConnectionRoute(connectionId: string) {
         return `${this.getAIConnectionsRoute()}/${encodeURIComponent(connectionId)}`;
+    }
+
+    // Antimatter: agents.
+    getAIAgentsRoute() {
+        return `${this.getBaseRoute()}/ai/agents`;
+    }
+
+    getAIAgentRoute(userId: string) {
+        return `${this.getAIAgentsRoute()}/${encodeURIComponent(userId)}`;
     }
 
     getLLMServicesRoute() {
@@ -3979,6 +3989,98 @@ export default class Client4 {
         return this.doFetch<AIConnectionUsage>(
             `${this.getAIConnectionRoute(connectionId)}/usage`,
             {method: 'get'},
+        );
+    };
+
+    // Agents (Antimatter). The ones the caller manages: of a scope ('server' or a team ID), or all of them.
+    getAIAgents = (scope?: string) => {
+        return this.doFetch<AIAgentDetails[]>(
+            `${this.getAIAgentsRoute()}${buildQueryString(scope ? {scope} : {})}`,
+            {method: 'get'},
+        );
+    };
+
+    getAIAgent = (userId: string) => {
+        return this.doFetch<AIAgentDetails>(
+            this.getAIAgentRoute(userId),
+            {method: 'get'},
+        );
+    };
+
+    // Makes the agent and its account.
+    createAIAgent = (agent: AIAgentRequest) => {
+        return this.doFetch<AIAgentDetails>(
+            this.getAIAgentsRoute(),
+            {method: 'post', body: JSON.stringify(agent)},
+        );
+    };
+
+    // A field left out is kept; the scope and whether the agent is external never change.
+    patchAIAgent = (userId: string, patch: AIAgentPatch) => {
+        return this.doFetch<AIAgentDetails>(
+            this.getAIAgentRoute(userId),
+            {method: 'patch', body: JSON.stringify(patch)},
+        );
+    };
+
+    // Removes the agent's settings and deactivates its account.
+    deleteAIAgent = (userId: string) => {
+        return this.doFetch<StatusOK>(
+            this.getAIAgentRoute(userId),
+            {method: 'delete'},
+        );
+    };
+
+    enableAIAgent = (userId: string) => {
+        return this.doFetch<AIAgentDetails>(
+            `${this.getAIAgentRoute(userId)}/enable`,
+            {method: 'post'},
+        );
+    };
+
+    disableAIAgent = (userId: string) => {
+        return this.doFetch<AIAgentDetails>(
+            `${this.getAIAgentRoute(userId)}/disable`,
+            {method: 'post'},
+        );
+    };
+
+    // The connections an agent of a scope may use: a server agent the server's, a community's agent its own and the
+    // server's shared with it.
+    getAIAgentConnections = (scope: string) => {
+        return this.doFetch<AIConnectionInfo[]>(
+            `${this.getAIAgentsRoute()}/connections${buildQueryString({scope})}`,
+            {method: 'get'},
+        );
+    };
+
+    getAIAgentConnectionModels = (connectionId: string, scope: string) => {
+        return this.doFetch<AIModelInfo[]>(
+            `${this.getAIAgentsRoute()}/connections/${encodeURIComponent(connectionId)}/models${buildQueryString({scope})}`,
+            {method: 'get'},
+        );
+    };
+
+    getAgentActivity = (userId: string) => {
+        return this.doFetch<AgentActivity>(
+            `${this.getAIAgentRoute(userId)}/activity`,
+            {method: 'get'},
+        );
+    };
+
+    // Sets an agent's activity: with the agent's own token, or as one of its managers.
+    setAgentActivity = (userId: string, activity: AgentActivityRequest) => {
+        return this.doFetch<AgentActivity>(
+            `${this.getAIAgentRoute(userId)}/activity`,
+            {method: 'put', body: JSON.stringify(activity)},
+        );
+    };
+
+    // The activities of some users (up to 200): only agents are answered.
+    getAgentActivitiesByIds = (userIds: string[]) => {
+        return this.doFetch<AgentActivity[]>(
+            `${this.getAIAgentsRoute()}/activity/ids`,
+            {method: 'post', body: JSON.stringify(userIds)},
         );
     };
 

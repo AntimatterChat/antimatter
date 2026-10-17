@@ -65,6 +65,8 @@ type Store interface {
 	Moderation() ModerationStore
 	OnTopPost() OnTopPostStore
 	AIConnection() AIConnectionStore
+	AIAgent() AIAgentStore
+	AgentActivity() AgentActivityStore
 	ChannelOverride() ChannelOverrideStore
 	MarkSystemRanUnitTests()
 	Close()
@@ -564,6 +566,10 @@ type BotStore interface {
 	Save(bot *model.Bot) (*model.Bot, error)
 	Update(bot *model.Bot) (*model.Bot, error)
 	PermanentDelete(userID string) error
+	// SetKind makes a bot a plain bot or an agent (Antimatter).
+	SetKind(userID, kind string) error
+	// SetKindForOwner gives every bot of an owner a kind, and the IDs of those it changed.
+	SetKindForOwner(ownerID, kind string) ([]string, error)
 }
 
 type SessionStore interface {
@@ -1195,6 +1201,35 @@ type AIConnectionStore interface {
 	// GetAgentsPluginConfig gives the active configuration (JSON) of the Agents plugin, from its own table
 	// Agents_ConfigHistory: only the row marked active, never the history. "" when the table or the row is missing.
 	GetAgentsPluginConfig(rctx request.CTX) (string, error)
+}
+
+// AIAgentStore keeps the settings of the agents (Antimatter), keyed by their bot account's user ID.
+type AIAgentStore interface {
+	Save(rctx request.CTX, agent *model.AIAgent) (*model.AIAgent, error)
+	// Update saves an agent's settings; never its scope, whether it's external, or who made it when.
+	Update(rctx request.CTX, agent *model.AIAgent) (*model.AIAgent, error)
+	// Get gives an agent, deleted or not.
+	Get(rctx request.CTX, userID string) (*model.AIAgent, error)
+	// GetForScopes gives the agents, not deleted, of the scopes ("server" and team IDs).
+	GetForScopes(rctx request.CTX, scopes []string) ([]*model.AIAgent, error)
+	// GetAll gives every agent not deleted.
+	GetAll(rctx request.CTX) ([]*model.AIAgent, error)
+	// Delete marks an agent's settings deleted.
+	Delete(rctx request.CTX, userID string, deleteAt int64) error
+
+	// GetAgentsPluginUserAgents gives the agents people made in the Agents plugin, from its own table
+	// Agents_UserAgents (not deleted ones); none when the table isn't there.
+	GetAgentsPluginUserAgents(rctx request.CTX) ([]*model.AIAgentsPluginAgent, error)
+}
+
+// AgentActivityStore keeps what each agent is doing now (Antimatter).
+type AgentActivityStore interface {
+	// Save sets an agent's activity, replacing the one it had.
+	Save(rctx request.CTX, activity *model.AgentActivity) error
+	Get(rctx request.CTX, userID string) (*model.AgentActivity, error)
+	// GetMany gives the activities of the agents among userIDs that have one.
+	GetMany(rctx request.CTX, userIDs []string) ([]*model.AgentActivity, error)
+	Delete(rctx request.CTX, userID string) error
 }
 
 // ServerCategoryStore keeps the sidebar categories admins set up for everyone in a team (Antimatter).

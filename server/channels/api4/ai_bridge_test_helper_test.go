@@ -8,7 +8,6 @@ import (
 	"testing"
 
 	"github.com/mattermost/mattermost/server/public/model"
-	app "github.com/mattermost/mattermost/server/v8/channels/app"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -28,8 +27,7 @@ func TestAIBridgeTestHelperAdminPUTGETDELETE(t *testing.T) {
 			Available: true,
 		},
 		FeatureFlags: &model.AIBridgeTestHelperFeatureFlags{
-			EnableAIPluginBridge: new(true),
-			EnableAIRecaps:       new(true),
+			EnableAIRecaps: new(true),
 		},
 		Agents: []model.BridgeAgentInfo{{
 			ID:          agentID,
@@ -45,7 +43,7 @@ func TestAIBridgeTestHelperAdminPUTGETDELETE(t *testing.T) {
 			Type: "anthropic",
 		}},
 		AgentCompletions: map[string][]model.AIBridgeTestHelperCompletion{
-			string(app.BridgeOperationRewrite): {{
+			"rewrite": {{
 				Completion: `{"rewritten_text":"Rewritten text"}`,
 			}},
 		},
@@ -60,9 +58,7 @@ func TestAIBridgeTestHelperAdminPUTGETDELETE(t *testing.T) {
 	require.Len(t, state.Agents, 1)
 	assert.Equal(t, agentID, state.Agents[0].ID)
 	require.NotNil(t, state.FeatureFlags)
-	require.NotNil(t, state.FeatureFlags.EnableAIPluginBridge)
 	require.NotNil(t, state.FeatureFlags.EnableAIRecaps)
-	assert.True(t, *state.FeatureFlags.EnableAIPluginBridge)
 	assert.True(t, *state.FeatureFlags.EnableAIRecaps)
 
 	state, resp, err = th.SystemAdminClient.GetAIBridgeTestHelper(context.Background())
@@ -73,7 +69,6 @@ func TestAIBridgeTestHelperAdminPUTGETDELETE(t *testing.T) {
 	require.Len(t, state.Services, 1)
 	assert.Equal(t, serviceID, state.Services[0].ID)
 	require.NotNil(t, state.FeatureFlags)
-	assert.True(t, *state.FeatureFlags.EnableAIPluginBridge)
 	assert.True(t, *state.FeatureFlags.EnableAIRecaps)
 
 	resp, err = th.SystemAdminClient.DeleteAIBridgeTestHelper(context.Background())
@@ -91,7 +86,6 @@ func TestAIBridgeTestHelperAdminPUTGETDELETE(t *testing.T) {
 	assert.Empty(t, state.RecordedRequests)
 	assert.False(t, state.RecordRequests)
 	require.NotNil(t, state.FeatureFlags)
-	assert.True(t, *state.FeatureFlags.EnableAIPluginBridge)
 	assert.True(t, *state.FeatureFlags.EnableAIRecaps)
 }
 
@@ -136,8 +130,7 @@ func TestAIBridgeTestHelperMocksRealEndpoints(t *testing.T) {
 			Available: true,
 		},
 		FeatureFlags: &model.AIBridgeTestHelperFeatureFlags{
-			EnableAIPluginBridge: new(true),
-			EnableAIRecaps:       new(true),
+			EnableAIRecaps: new(true),
 		},
 		Agents: []model.BridgeAgentInfo{{
 			ID:          agentID,
@@ -153,7 +146,7 @@ func TestAIBridgeTestHelperMocksRealEndpoints(t *testing.T) {
 			Type: "anthropic",
 		}},
 		AgentCompletions: map[string][]model.AIBridgeTestHelperCompletion{
-			string(app.BridgeOperationRewrite): {{
+			"rewrite": {{
 				Completion: `{"rewritten_text":"Polished text"}`,
 			}},
 		},
@@ -161,8 +154,9 @@ func TestAIBridgeTestHelperMocksRealEndpoints(t *testing.T) {
 	})
 	require.NoError(t, err)
 	CheckOKStatus(t, resp)
-	assert.True(t, th.App.Config().FeatureFlags.EnableAIPluginBridge)
 	assert.True(t, th.App.Config().FeatureFlags.EnableAIRecaps)
+	connectionID := th.App.Config().AISettings.Rewrite.ConnectionId
+	require.NotEmpty(t, *connectionID, "the built-in features use the test model's connection")
 
 	statusResp, httpResp, err := getAPIResponse[model.AgentsIntegrityResponse](t, th.Client, "/agents/status")
 	require.NoError(t, err)
@@ -200,8 +194,39 @@ func TestAIBridgeTestHelperMocksRealEndpoints(t *testing.T) {
 	require.NoError(t, err)
 	CheckOKStatus(t, helperResp)
 	require.Len(t, state.RecordedRequests, 1)
-	assert.Equal(t, string(app.BridgeOperationRewrite), state.RecordedRequests[0].Operation)
-	assert.Equal(t, agentID, state.RecordedRequests[0].AgentID)
+	assert.Equal(t, "rewrite", state.RecordedRequests[0].Operation)
+	assert.Equal(t, "message_rewrite:fix_spelling", state.RecordedRequests[0].ClientOperation)
+	assert.Equal(t, th.BasicUser.Id, state.RecordedRequests[0].UserID)
+	assert.Equal(t, *connectionID, state.RecordedRequests[0].ServiceID)
+
+	// Removing the test model puts the features' settings back and deletes its connection.
+	resp, err = th.SystemAdminClient.DeleteAIBridgeTestHelper(context.Background())
+	require.NoError(t, err)
+	CheckOKStatus(t, resp)
+	assert.Empty(t, *th.App.Config().AISettings.Rewrite.ConnectionId)
+	_, appErr := th.App.GetAIConnection(th.Context, *connectionID)
+	require.NotNil(t, appErr)
+}
+
+// Without EnableTesting, the test model's connection isn't answered by it, even if one was left installed.
+func TestAIBridgeTestHelperOnlyWithEnableTesting(t *testing.T) {
+	mainHelper.Parallel(t)
+
+	th := SetupConfig(t, func(cfg *model.Config) {
+		*cfg.ServiceSettings.EnableTesting = true
+	}).InitBasic(t)
+	_, resp, err := th.SystemAdminClient.SetAIBridgeTestHelper(context.Background(), &model.AIBridgeTestHelperConfig{
+		AgentCompletions: map[string][]model.AIBridgeTestHelperCompletion{"rewrite": {{Completion: `{"rewritten_text":"Polished text"}`}}},
+	})
+	require.NoError(t, err)
+	CheckOKStatus(t, resp)
+
+	th.App.UpdateConfig(func(cfg *model.Config) { *cfg.ServiceSettings.EnableTesting = false })
+	rewriteHTTPResp, err := th.Client.DoAPIPostJSON(context.Background(), "/posts/rewrite", &model.RewriteRequest{Message: "hi", Action: model.RewriteActionFixSpelling})
+	if rewriteHTTPResp != nil {
+		defer rewriteHTTPResp.Body.Close()
+	}
+	require.Error(t, err, "the test model's connection points nowhere: no answer without the test model")
 }
 
 func getAPIResponse[T any](tb testing.TB, client *model.Client4, route string) (T, *model.Response, error) {

@@ -37,6 +37,8 @@ type AICall struct {
 	Purpose ai.Purpose
 	// PluginID is the app making the call for UserID, set by the server's plugin API.
 	PluginID string
+	// AgentID is the agent the server's agent runtime calls the model for, on UserID's behalf.
+	AgentID string
 	// ChannelID and TeamID are where the call happens; both may be empty. A channel's community wins: a team ID that
 	// isn't the channel's is refused.
 	ChannelID string
@@ -50,6 +52,8 @@ func (c AICall) usagePurpose() string {
 		return string(c.Purpose)
 	case c.PluginID != "":
 		return "plugin:" + c.PluginID
+	case c.AgentID != "":
+		return "agent:" + c.AgentID
 	default:
 		return ""
 	}
@@ -158,6 +162,10 @@ func (a *App) prepareAICall(rctx request.CTX, call AICall, connectionID, request
 	if call.Purpose != "" && !call.Purpose.IsBuiltIn() {
 		return nil, model.NewAppError(where, "app.ai.call.purpose.app_error", nil, "purpose="+string(call.Purpose), http.StatusBadRequest)
 	}
+	if call.Purpose != "" && call.AgentID != "" {
+		// An agent answers for a person, never as a built-in feature.
+		return nil, model.NewAppError(where, "app.ai.call.purpose.app_error", nil, "agent_id="+call.AgentID, http.StatusBadRequest)
+	}
 	if call.Purpose != "" && call.PluginID != "" {
 		// Apps call for a person, never as a built-in feature.
 		return nil, model.NewAppError(where, "app.ai.call.purpose.app_error", nil, "plugin_id="+call.PluginID, http.StatusBadRequest)
@@ -224,8 +232,11 @@ func (a *App) prepareAICall(rctx request.CTX, call AICall, connectionID, request
 		return nil, appErr
 	}
 
-	provider, appErr := a.aiProvider(c)
-	if appErr != nil {
+	var provider ai.Provider
+	if m := a.aiE2EModel(); m != nil && m.serves(c.Id) {
+		// The end-to-end tests' stand-in model answers its own connection's calls (EnableTesting only).
+		provider = &aiE2EProvider{m: m, call: call}
+	} else if provider, appErr = a.aiProvider(c); appErr != nil {
 		return nil, appErr
 	}
 	return &aiPreparedCall{call: call, connection: c, model: modelName, capability: capability, operation: operation, provider: provider, started: time.Now()}, nil
@@ -293,6 +304,9 @@ func (a *App) finishAICall(rctx request.CTX, p *aiPreparedCall, usage ai.Usage, 
 	model.AddEventParameterToAuditRec(rec, "connection_id", p.connection.Id)
 	model.AddEventParameterToAuditRec(rec, "scope", p.connection.Scope)
 	model.AddEventParameterToAuditRec(rec, "purpose", p.call.usagePurpose())
+	if p.call.AgentID != "" {
+		model.AddEventParameterToAuditRec(rec, "agent_id", p.call.AgentID)
+	}
 	model.AddEventParameterToAuditRec(rec, "capability", string(p.capability))
 	model.AddEventParameterToAuditRec(rec, "model", p.model)
 	model.AddEventParameterToAuditRec(rec, "operation", p.operation)

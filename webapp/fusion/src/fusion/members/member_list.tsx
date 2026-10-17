@@ -20,6 +20,7 @@ import {makeGetCustomStatus} from 'selectors/views/custom_status';
 
 import PendingJoinRequests from 'components/channel_members_rhs/pending_join_requests';
 
+import {AgentActivityLine, IntegrationTag, useAgentBusy} from 'fusion/agents/agent_status';
 import {useMemberListAttribute} from 'fusion/attributes/member_list_attribute';
 import {TalkNote} from 'fusion/calls/markers';
 import Avatar from 'fusion/components/avatar';
@@ -60,13 +61,15 @@ type MemberProps = {
 
 const NO_REQUESTS: ReturnType<typeof getPendingChannelJoinRequests> = [];
 
-function Member({user, off, role, attribute, onOpen, onMenu}: MemberProps) {
+// Member is one row of the list (exported for its tests).
+export function Member({user, off, role, attribute, onOpen, onMenu}: MemberProps) {
     const {formatMessage} = useIntl();
     const name = useDisplayName(user);
     const roleColor = useRoleColor(user.id);
     const getCustomStatus = useMemo(() => makeGetCustomStatus(), []);
     const custom = useSelector((state: GlobalState) => getCustomStatus(state, user.id));
     const timedOut = useSelector((state: GlobalState) => isTimedOut(state, getCurrentTeamId(state), user.id));
+    const agentBusy = useAgentBusy(user);
     return (
         <button
             className={am('member', {off})}
@@ -103,14 +106,17 @@ function Member({user, off, role, attribute, onOpen, onMenu}: MemberProps) {
                             />
                         </span>
                     )}
-                    {user.is_bot && <span className={am('bot-tag')}>{'BOT'}</span>}
+                    {user.is_bot && <IntegrationTag agent={Boolean(user.is_agent)}/>}
                     <TeamTag
                         user={user}
                         label={true}
                     />
                     {isGuest(user.roles) && <span className={am('bot-tag', 'guest-tag')}>{formatMessage({id: 'fusion.message.guest', defaultMessage: 'GUEST'})}</span>}
                 </b>
-                <span><TalkNote userId={user.id}>{custom?.text || attribute || user.position || ''}</TalkNote></span>
+                <span>
+                    {/* A busy agent's status line starts with its activity; otherwise its plain status, as a person's. */}
+                    {agentBusy ? <AgentActivityLine user={user}/> : <TalkNote userId={user.id}>{custom?.text || attribute || user.position || ''}</TalkNote>}
+                </span>
             </span>
         </button>
     );

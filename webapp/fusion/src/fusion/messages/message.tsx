@@ -24,6 +24,7 @@ import {getIsPostBeingEdited, getIsPostBeingEditedInRHS} from 'selectors/posts';
 import RenderEmoji from 'components/emoji/render_emoji';
 import MessageWithAdditionalContent from 'components/message_with_additional_content';
 
+import {AgentNameDot, IntegrationTag} from 'fusion/agents/agent_status';
 import CallCard, {useCallCard} from 'fusion/calls/call_card';
 import Avatar from 'fusion/components/avatar';
 import Icon from 'fusion/components/icon';
@@ -209,6 +210,12 @@ export default function Message({postId, previousPostId, inThread = false, highl
     // Every post made by a webhook is tagged BOT, as the System Console says and the classic UI does, whether or not
     // it overrides the username: one posting under its creator's name could pass for them.
     const bot = isFromBot(post) || Boolean(user?.is_bot) || isFromWebhook(post);
+
+    // An agent's own posts are tagged AGENT; a webhook's stay BOT, whoever made it.
+    const agent = Boolean(user?.is_agent) && !isFromWebhook(post);
+
+    // An agent's reply while its answer streams in.
+    const streaming = agent && Boolean(post.props?.agent_streaming);
     const priority = priorityEnabled ? post.metadata?.priority?.priority : undefined;
     const burn = post.type === Posts.POST_TYPES.BURN_ON_READ && post.state !== Posts.POST_DELETED;
 
@@ -504,6 +511,7 @@ export default function Message({postId, previousPostId, inThread = false, highl
         'hl-me': concernsMe,
         'menu-open': popover === 'menu' || popover === 'react' || popover === 'react-more' || pluginMenu !== null,
         flash: highlighted,
+        'agent-writing': streaming,
 
         // A message being sent is dimmed; one that couldn't be sent, more, with what to do under it.
         sending: post.pending_post_id === post.id && !post.failed,
@@ -525,7 +533,7 @@ export default function Message({postId, previousPostId, inThread = false, highl
                 <div>
                     <div className={am('msg-head')}>
                         <b className={am('author')}>{authorName}</b>
-                        {bot && <span className={am('bot-tag')}>{'BOT'}</span>}
+                        {bot && <IntegrationTag agent={agent}/>}
                         <MessageTime timestamp={post.create_at}/>
                         <span className={am('eph-note')}>
                             <Icon name='lock'/>
@@ -636,6 +644,9 @@ export default function Message({postId, previousPostId, inThread = false, highl
                     >
                         {authorName}
                     </button>
+
+                    {/* While an agent works, only a dot by its name: what it's doing shows in the member list and its card. */}
+                    {agent && !webhook && <AgentNameDot user={user}/>}
                     {!bot && !webhook && <StatusEmoji userId={post.user_id}/>}
                     {user?.remote_id && (
                         <span
@@ -648,7 +659,7 @@ export default function Message({postId, previousPostId, inThread = false, highl
                             />
                         </span>
                     )}
-                    {(bot || webhook) && <span className={am('bot-tag')}>{'BOT'}</span>}
+                    {(bot || webhook) && <IntegrationTag agent={agent && !webhook}/>}
                     {!bot && !webhook && (
                         <TeamTag
                             user={user}
@@ -658,6 +669,7 @@ export default function Message({postId, previousPostId, inThread = false, highl
                     {!bot && !webhook && user && isGuest(user.roles) && <span className={am('bot-tag', 'guest-tag')}>{formatMessage({id: 'fusion.message.guest', defaultMessage: 'GUEST'})}</span>}
                     {webhook && <span className={am('via')}>{formatMessage({id: 'fusion.message.viaWebhook', defaultMessage: 'via webhook'})}</span>}
                     <MessageTime timestamp={post.create_at}/>
+                    {streaming && <span className={am('agent-writing-note')}>{formatMessage({id: 'fusion.agents.writing', defaultMessage: 'Writing…'})}</span>}
                     <Pluggable
                         pluggableName='PostHeader'
                         post={post}
