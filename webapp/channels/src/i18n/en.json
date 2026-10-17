@@ -863,6 +863,38 @@
     "defaultMessage": "Enter the URL of a .png or .jpg file for this integration to use as the profile picture when posting. The file should be at least 128 pixels by 128 pixels. If left blank, the profile picture specified by the webhook creator is used.",
     "description": "Help text under the Profile Picture URL field on the outgoing webhook create/edit form."
   },
+  "add_outgoing_webhook.messageAction.channelHelp": {
+    "defaultMessage": "Optional. The public channel whose messages get this action in their menu; without one, every public channel of the community does.",
+    "description": "Help under the Channel field of the outgoing webhook form, for a webhook that triggers from the message menu (a message action). 'Community' is Antimatter's word for a team."
+  },
+  "add_outgoing_webhook.messageAction.help": {
+    "defaultMessage": "The webhook doesn't fire on posted messages: it's an action under More actions in the message menu, and sends the message someone picks it for.",
+    "description": "Help under the 'Trigger When' field of the outgoing webhook form when 'From the message menu' is chosen. 'More actions' is the name of the submenu of a message's menu."
+  },
+  "add_outgoing_webhook.messageAction.icon": {
+    "defaultMessage": "Icon",
+    "description": "Label of the field of the outgoing webhook form for the icon of a message action (shown before its name in a message's menu)."
+  },
+  "add_outgoing_webhook.messageAction.iconHelp": {
+    "defaultMessage": "The action's icon in the message menu, shown in grey: the URL of a .png or .jpg image, or an uploaded one. Without an icon, the action gets a neutral one.",
+    "description": "Help under the Icon field of the outgoing webhook form, for a webhook that triggers from the message menu (a message action)."
+  },
+  "add_outgoing_webhook.messageAction.iconPreview": {
+    "defaultMessage": "The icon, in grey as in the message menu",
+    "description": "Alternative text of the preview of a message action's icon on the outgoing webhook form; the message menu shows it in grey."
+  },
+  "add_outgoing_webhook.messageAction.nameRequired": {
+    "defaultMessage": "A title is required: it's the action's name in the message menu.",
+    "description": "Error on the outgoing webhook form when the webhook triggers from the message menu and has no title; the title is the label people see in a message's menu."
+  },
+  "add_outgoing_webhook.messageAction.removeIcon": {
+    "defaultMessage": "Remove the icon",
+    "description": "Button of the outgoing webhook form removing a message action's icon (it then gets a neutral icon)."
+  },
+  "add_outgoing_webhook.messageAction.upload": {
+    "defaultMessage": "Or upload an image:",
+    "description": "Label of the file picker of the outgoing webhook form, to upload a message action's icon instead of giving its URL; a file picker follows."
+  },
   "add_outgoing_webhook.save": {
     "defaultMessage": "Save",
     "description": "Submit button label on the Add Outgoing Webhook form."
@@ -902,6 +934,10 @@
   "add_outgoing_webhook.triggerWordsTriggerWhenFullWord": {
     "defaultMessage": "First word matches a trigger word exactly",
     "description": "Dropdown option for the 'Trigger When' setting on the outgoing webhook form: fire only on an exact first-word match."
+  },
+  "add_outgoing_webhook.triggerWordsTriggerWhenMessageMenu": {
+    "defaultMessage": "From the message menu",
+    "description": "Option of an outgoing webhook's 'Trigger When' list, and its value in the list of webhooks: the webhook is an action people pick in a message's menu (under More actions), which sends that message to the webhook; it never fires on posted messages."
   },
   "add_outgoing_webhook.triggerWordsTriggerWhenStartsWith": {
     "defaultMessage": "First word starts with a trigger word",

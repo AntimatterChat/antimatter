@@ -11,6 +11,9 @@ import type {Team} from '@mattermost/types/teams';
 import type {ActionResult} from 'mattermost-redux/types/actions';
 
 import AbstractOutgoingWebhook from 'components/integrations/abstract_outgoing_webhook';
+import {uploadOutgoingHookIcon} from 'components/integrations/outgoing_webhook_icon';
+
+import {clearMessageActions} from 'fusion/messages/message_actions';
 
 const messages = defineMessages({
     footer: {
@@ -58,11 +61,22 @@ const AddOutgoingWebhook = ({team, actions, enablePostUsernameOverride, enablePo
 
     const [serverError, setServerError] = useState('');
 
-    const addOutgoingHook = async (hook: OutgoingWebhook) => {
+    const addOutgoingHook = async (hook: OutgoingWebhook, iconFile?: File | null) => {
         setServerError('');
 
         const {data, error} = await actions.createOutgoingHook(hook);
         if (data) {
+            // The message menus show the new message action at once.
+            clearMessageActions();
+            if (iconFile) {
+                try {
+                    await uploadOutgoingHookIcon(data.id, iconFile);
+                } catch {
+                    // The webhook is saved: its icon can be uploaded again on its page.
+                    history.push(`/${team.name}/integrations/outgoing_webhooks/edit?id=${data.id}`);
+                    return;
+                }
+            }
             history.push(`/${team.name}/integrations/confirm?type=outgoing_webhooks&id=${data.id}`);
             return;
         }
@@ -83,6 +97,7 @@ const AddOutgoingWebhook = ({team, actions, enablePostUsernameOverride, enablePo
             serverError={serverError}
             enablePostUsernameOverride={enablePostUsernameOverride}
             enablePostIconOverride={enablePostIconOverride}
+            canUploadIcon={true}
         />
     );
 };

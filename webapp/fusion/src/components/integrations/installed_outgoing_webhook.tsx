@@ -92,6 +92,9 @@ export default class InstalledOutgoingWebhook extends React.PureComponent<Props>
         const triggerWordsFull = 0;
         const triggerWordsStartsWith = 1;
 
+        // A message action (Antimatter): picked from a message's menu, it sends that message.
+        const messageMenu = 2;
+
         if (outgoingWebhook && !matchesFilter(outgoingWebhook, channel, filter)) {
             return null;
         }
@@ -153,6 +156,13 @@ export default class InstalledOutgoingWebhook extends React.PureComponent<Props>
                 <FormattedMessage
                     id='add_outgoing_webhook.triggerWordsTriggerWhenStartsWith'
                     defaultMessage='First word starts with a trigger word'
+                />
+            );
+        } else if (outgoingWebhook.trigger_when === messageMenu) {
+            triggerWhen = (
+                <FormattedMessage
+                    id='add_outgoing_webhook.triggerWordsTriggerWhenMessageMenu'
+                    defaultMessage='From the message menu'
                 />
             );
         }

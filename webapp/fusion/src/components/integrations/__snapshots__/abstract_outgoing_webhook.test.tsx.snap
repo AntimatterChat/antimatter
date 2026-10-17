@@ -216,6 +216,11 @@ word
               >
                 First word starts with a trigger word
               </option>
+              <option
+                value="2"
+              >
+                From the message menu
+              </option>
             </select>
             <div
               class="form__help"

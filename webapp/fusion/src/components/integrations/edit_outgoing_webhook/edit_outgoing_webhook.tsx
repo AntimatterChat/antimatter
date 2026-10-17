@@ -11,8 +11,10 @@ import type {ActionResult} from 'mattermost-redux/types/actions';
 
 import ConfirmModal from 'components/confirm_modal';
 import AbstractOutgoingWebhook from 'components/integrations/abstract_outgoing_webhook';
+import {uploadOutgoingHookIcon} from 'components/integrations/outgoing_webhook_icon';
 import LoadingScreen from 'components/loading_screen';
 
+import {clearMessageActions} from 'fusion/messages/message_actions';
 import {getHistory} from 'utils/browser_history';
 
 const HEADER = {id: 'integrations.edit', defaultMessage: 'Edit'};
@@ -72,6 +74,9 @@ interface State {
 export default class EditOutgoingWebhook extends React.PureComponent<Props, State> {
     private newHook: OutgoingWebhook | undefined;
 
+    // An icon picked to upload once the webhook is saved (message actions).
+    private newIconFile: File | null | undefined;
+
     constructor(props: Props) {
         super(props);
         this.state = {
@@ -86,8 +91,9 @@ export default class EditOutgoingWebhook extends React.PureComponent<Props, Stat
         }
     }
 
-    editOutgoingHook = async (hook: OutgoingWebhook): Promise<void> => {
+    editOutgoingHook = async (hook: OutgoingWebhook, iconFile?: File | null): Promise<void> => {
         this.newHook = hook;
+        this.newIconFile = iconFile;
 
         if (this.props.hook!.id) {
             hook.id = this.props.hook!.id;
@@ -125,6 +131,20 @@ export default class EditOutgoingWebhook extends React.PureComponent<Props, Stat
         const {data, error} = await this.props.actions.updateOutgoingHook(this.newHook!);
 
         if (data) {
+            // The message menus show the action as it now is.
+            clearMessageActions();
+            if (this.newIconFile) {
+                try {
+                    await uploadOutgoingHookIcon(data.id, this.newIconFile);
+                } catch (e) {
+                    this.setState({
+                        showConfirmModal: false,
+                        serverError: (e as Error).message,
+                    });
+                    this.props.actions.getOutgoingHook(data.id);
+                    return;
+                }
+            }
             getHistory().push(`/${this.props.team.name}/integrations/outgoing_webhooks`);
             return;
         }
@@ -188,6 +208,7 @@ export default class EditOutgoingWebhook extends React.PureComponent<Props, Stat
                 initialHook={this.props.hook}
                 enablePostUsernameOverride={this.props.enablePostUsernameOverride}
                 enablePostIconOverride={this.props.enablePostIconOverride}
+                canUploadIcon={true}
             />
         );
     }

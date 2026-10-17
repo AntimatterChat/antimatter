@@ -11,6 +11,8 @@ import {buttonClassNames} from '@mattermost/shared/components/button';
 import type {OutgoingWebhook} from '@mattermost/types/integrations';
 import type {Team} from '@mattermost/types/teams';
 
+import {Client4} from 'mattermost-redux/client';
+
 import BackstageHeader from 'components/backstage/components/backstage_header';
 import ChannelSelect from 'components/channel_select';
 import ExternalLink from 'components/external_link';
@@ -20,6 +22,13 @@ import SpinnerButton from 'components/spinner_button';
 import {DocLinks} from 'utils/constants';
 import {localizeMessage} from 'utils/utils';
 
+// The trigger of a message action (Antimatter): the webhook is an action of the message menu, sending the message
+// someone picks it for, and never fires on posted messages.
+const TRIGGER_MESSAGE_MENU = 2;
+
+// Where an uploaded icon is served from (model.OutgoingWebhookIconPath).
+const UPLOADED_ICON_PATH = '/api/v4/hooks/outgoing/';
+
 interface State {
     callbackUrls: string;
     channelId: string;
@@ -28,6 +37,10 @@ interface State {
     description: string;
     displayName: string;
     iconURL: string;
+
+    // An icon picked to upload (message actions), and its preview.
+    iconFile: File | null;
+    iconPreview: string;
     saving: boolean;
     triggerWhen: number;
     triggerWords: string;
@@ -72,9 +85,14 @@ interface Props {
     initialHook?: OutgoingWebhook;
 
     /**
-     * The async function to run when the action button is pressed
+     * The async function to run when the action button is pressed, with the icon picked to upload (message actions)
      */
-    action: (hook: OutgoingWebhook) => Promise<void>;
+    action: (hook: OutgoingWebhook, iconFile?: File | null) => Promise<void>;
+
+    /**
+     * Whether an icon can be uploaded for a message action (else only its URL can be given)
+     */
+    canUploadIcon?: boolean;
 
     /**
      * Whether to allow configuration of the default post username.
@@ -123,8 +141,22 @@ export default class AbstractOutgoingWebhook extends React.PureComponent<Props, 
             clientError: null,
             username: hook?.username || '',
             iconURL: hook?.icon_url || '',
+            iconFile: null,
+            iconPreview: '',
         };
     };
+
+    componentWillUnmount() {
+        this.revokeIconPreview();
+    }
+
+    revokeIconPreview = () => {
+        if (this.state.iconPreview && typeof URL.revokeObjectURL === 'function') {
+            URL.revokeObjectURL(this.state.iconPreview);
+        }
+    };
+
+    isMessageAction = () => this.state.triggerWhen === TRIGGER_MESSAGE_MENU;
 
     handleSubmit = (e: MouseEvent<HTMLElement> | FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -149,7 +181,23 @@ export default class AbstractOutgoingWebhook extends React.PureComponent<Props, 
             }
         }
 
-        if (!this.state.channelId && triggerWords.length === 0) {
+        const messageAction = this.isMessageAction();
+
+        if (messageAction && !this.state.displayName.trim()) {
+            this.setState({
+                saving: false,
+                clientError: (
+                    <FormattedMessage
+                        id='add_outgoing_webhook.messageAction.nameRequired'
+                        defaultMessage="A title is required: it's the action's name in the message menu."
+                    />
+                ),
+            });
+
+            return;
+        }
+
+        if (!messageAction && !this.state.channelId && triggerWords.length === 0) {
             this.setState({
                 saving: false,
                 clientError: (
@@ -189,7 +237,7 @@ export default class AbstractOutgoingWebhook extends React.PureComponent<Props, 
         const hook = {
             team_id: this.props.team.id,
             channel_id: this.state.channelId,
-            trigger_words: triggerWords,
+            trigger_words: messageAction ? [] : triggerWords,
             trigger_when: this.state.triggerWhen,
             callback_urls: callbackUrls,
             display_name: this.state.displayName,
@@ -205,7 +253,7 @@ export default class AbstractOutgoingWebhook extends React.PureComponent<Props, 
             token: this.props.initialHook?.token || '',
         };
 
-        this.props.action(hook).then(() => this.setState({saving: false}));
+        this.props.action(hook, messageAction ? this.state.iconFile : null).then(() => this.setState({saving: false}));
     };
 
     updateDisplayName: ChangeEventHandler<HTMLInputElement> = (e) => {
@@ -262,6 +310,100 @@ export default class AbstractOutgoingWebhook extends React.PureComponent<Props, 
         });
     };
 
+    // A picked icon replaces the icon's URL; it is uploaded once the webhook is saved.
+    updateIconFile: ChangeEventHandler<HTMLInputElement> = (e) => {
+        const file = e.target.files?.[0] || null;
+        this.revokeIconPreview();
+        this.setState({
+            iconFile: file,
+            iconPreview: file && typeof URL.createObjectURL === 'function' ? URL.createObjectURL(file) : '',
+            iconURL: file ? '' : this.state.iconURL,
+        });
+    };
+
+    removeIcon = () => {
+        this.revokeIconPreview();
+        this.setState({
+            iconFile: null,
+            iconPreview: '',
+            iconURL: '',
+        });
+    };
+
+    renderMessageActionIcon = () => {
+        const uploaded = this.state.iconURL.startsWith(UPLOADED_ICON_PATH);
+        const preview = this.state.iconPreview || (uploaded ? Client4.getUrl() + this.state.iconURL : '');
+        return (
+            <div className='form-group'>
+                <label
+                    className='control-label col-sm-4'
+                    htmlFor='messageActionIconURL'
+                >
+                    <FormattedMessage
+                        id='add_outgoing_webhook.messageAction.icon'
+                        defaultMessage='Icon'
+                    />
+                </label>
+                <div className='col-md-5 col-sm-8'>
+                    {preview ? (
+                        <div className='d-flex align-items-center'>
+                            <img
+                                src={preview}
+                                alt={localizeMessage({id: 'add_outgoing_webhook.messageAction.iconPreview', defaultMessage: 'The icon, in grey as in the message menu'})}
+                                width={32}
+                                height={32}
+                                style={{borderRadius: 6, filter: 'grayscale(1)', marginRight: 12}}
+                            />
+                            <button
+                                type='button'
+                                className='btn btn-link'
+                                onClick={this.removeIcon}
+                            >
+                                <FormattedMessage
+                                    id='add_outgoing_webhook.messageAction.removeIcon'
+                                    defaultMessage='Remove the icon'
+                                />
+                            </button>
+                        </div>
+                    ) : (
+                        <input
+                            id='messageActionIconURL'
+                            type='text'
+                            maxLength={1024}
+                            className='form-control'
+                            placeholder='https://'
+                            value={this.state.iconURL}
+                            onChange={this.updateIconURL}
+                        />
+                    )}
+                    {this.props.canUploadIcon && (
+                        <div className='form__help'>
+                            <label htmlFor='messageActionIconFile'>
+                                <FormattedMessage
+                                    id='add_outgoing_webhook.messageAction.upload'
+                                    defaultMessage='Or upload an image:'
+                                />
+                            </label>
+                            {' '}
+                            <input
+                                id='messageActionIconFile'
+                                type='file'
+                                accept='image/png,image/jpeg,image/gif'
+                                onChange={this.updateIconFile}
+                            />
+                        </div>
+                    )}
+                    <div className='form__help'>
+                        <FormattedMessage
+                            id='add_outgoing_webhook.messageAction.iconHelp'
+                            defaultMessage="The action's icon in the message menu, shown in grey: the URL of a .png or .jpg image, or an uploaded one. Without an icon, the action gets a neutral one."
+                        />
+                    </div>
+                </div>
+            </div>
+        );
+    };
+
     render() {
         const contentTypeOption1 = 'application/x-www-form-urlencoded';
         const contentTypeOption2 = 'application/json';
@@ -269,6 +411,7 @@ export default class AbstractOutgoingWebhook extends React.PureComponent<Props, 
         const headerToRender = this.props.header;
         const footerToRender = this.props.footer;
         const renderExtra = this.props.renderExtra;
+        const messageAction = this.isMessageAction();
 
         return (
             <div className='backstage-content'>
@@ -409,40 +552,49 @@ export default class AbstractOutgoingWebhook extends React.PureComponent<Props, 
                                     selectDm={false}
                                 />
                                 <div className='form__help'>
-                                    <FormattedMessage
-                                        id='add_outgoing_webhook.channel.help'
-                                        defaultMessage='This field is optional if you specify at least one trigger word. Specify the public channel that delivers the payload to the webhook.'
-                                    />
+                                    {messageAction ? (
+                                        <FormattedMessage
+                                            id='add_outgoing_webhook.messageAction.channelHelp'
+                                            defaultMessage='Optional. The public channel whose messages get this action in their menu; without one, every public channel of the community does.'
+                                        />
+                                    ) : (
+                                        <FormattedMessage
+                                            id='add_outgoing_webhook.channel.help'
+                                            defaultMessage='This field is optional if you specify at least one trigger word. Specify the public channel that delivers the payload to the webhook.'
+                                        />
+                                    )}
                                 </div>
                             </div>
                         </div>
-                        <div className='form-group'>
-                            <label
-                                className='control-label col-sm-4'
-                                htmlFor='triggerWords'
-                            >
-                                <FormattedMessage
-                                    id='add_outgoing_webhook.triggerWords'
-                                    defaultMessage='Trigger Words (One Per Line)'
-                                />
-                            </label>
-                            <div className='col-md-5 col-sm-8'>
-                                <textarea
-                                    id='triggerWords'
-                                    rows={3}
-                                    maxLength={1000}
-                                    className='form-control'
-                                    value={this.state.triggerWords}
-                                    onChange={this.updateTriggerWords}
-                                />
-                                <div className='form__help'>
+                        {!messageAction && (
+                            <div className='form-group'>
+                                <label
+                                    className='control-label col-sm-4'
+                                    htmlFor='triggerWords'
+                                >
                                     <FormattedMessage
-                                        id='add_outgoing_webhook.triggerWords.help'
-                                        defaultMessage='Specify the trigger words that send an HTTP POST request to your application. The trigger can be for the channel, the outgoing webhook, or both. If you select only Channel, trigger words are optional. If you select both, the message must match both values.'
+                                        id='add_outgoing_webhook.triggerWords'
+                                        defaultMessage='Trigger Words (One Per Line)'
                                     />
+                                </label>
+                                <div className='col-md-5 col-sm-8'>
+                                    <textarea
+                                        id='triggerWords'
+                                        rows={3}
+                                        maxLength={1000}
+                                        className='form-control'
+                                        value={this.state.triggerWords}
+                                        onChange={this.updateTriggerWords}
+                                    />
+                                    <div className='form__help'>
+                                        <FormattedMessage
+                                            id='add_outgoing_webhook.triggerWords.help'
+                                            defaultMessage='Specify the trigger words that send an HTTP POST request to your application. The trigger can be for the channel, the outgoing webhook, or both. If you select only Channel, trigger words are optional. If you select both, the message must match both values.'
+                                        />
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        )}
                         <div className='form-group'>
                             <label
                                 className='control-label col-sm-4'
@@ -470,12 +622,24 @@ export default class AbstractOutgoingWebhook extends React.PureComponent<Props, 
                                     >
                                         {localizeMessage({id: 'add_outgoing_webhook.triggerWordsTriggerWhenStartsWith', defaultMessage: 'First word starts with a trigger word'})}
                                     </option>
+                                    <option
+                                        value={String(TRIGGER_MESSAGE_MENU)}
+                                    >
+                                        {localizeMessage({id: 'add_outgoing_webhook.triggerWordsTriggerWhenMessageMenu', defaultMessage: 'From the message menu'})}
+                                    </option>
                                 </select>
                                 <div className='form__help'>
-                                    <FormattedMessage
-                                        id='add_outgoing_webhook.triggerWordsTriggerWhen.help'
-                                        defaultMessage='Specify when to trigger the outgoing webhook.'
-                                    />
+                                    {messageAction ? (
+                                        <FormattedMessage
+                                            id='add_outgoing_webhook.messageAction.help'
+                                            defaultMessage="The webhook doesn't fire on posted messages: it's an action under More actions in the message menu, and sends the message someone picks it for."
+                                        />
+                                    ) : (
+                                        <FormattedMessage
+                                            id='add_outgoing_webhook.triggerWordsTriggerWhen.help'
+                                            defaultMessage='Specify when to trigger the outgoing webhook.'
+                                        />
+                                    )}
                                 </div>
                             </div>
                         </div>
@@ -548,7 +712,8 @@ export default class AbstractOutgoingWebhook extends React.PureComponent<Props, 
                                 </div>
                             </div>
                         }
-                        {this.props.enablePostIconOverride &&
+                        {messageAction && this.renderMessageActionIcon()}
+                        {this.props.enablePostIconOverride && !messageAction &&
                             <div className='form-group'>
                                 <label
                                     className='control-label col-sm-4'
