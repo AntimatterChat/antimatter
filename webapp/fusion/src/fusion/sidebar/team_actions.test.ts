@@ -3,16 +3,20 @@
 
 import {setCategoryMuted} from 'mattermost-redux/actions/channel_categories';
 import {readMultipleChannels} from 'mattermost-redux/actions/channels';
+import {savePreferences} from 'mattermost-redux/actions/preferences';
 
 import type {GlobalState} from 'types/store';
 
-import {getUnreadChannelIdsInTeam, isTeamMuted, markTeamAsRead, setTeamMuted} from './team_actions';
+import {CATEGORY_HIDE_MUTED, getUnreadChannelIdsInTeam, isHidingMutedChannels, isTeamMuted, markTeamAsRead, setHidingMutedChannels, setTeamMuted} from './team_actions';
 
 jest.mock('mattermost-redux/actions/channel_categories', () => ({
     setCategoryMuted: jest.fn((id: string, muted: boolean) => ({type: 'MUTED', id, muted})),
 }));
 jest.mock('mattermost-redux/actions/channels', () => ({
     readMultipleChannels: jest.fn((ids: string[]) => ({type: 'READ', ids})),
+}));
+jest.mock('mattermost-redux/actions/preferences', () => ({
+    savePreferences: jest.fn((userId: string, preferences: unknown[]) => ({type: 'SAVE_PREFERENCES', userId, preferences})),
 }));
 
 describe('fusion/sidebar/team_actions', () => {
@@ -49,6 +53,27 @@ describe('fusion/sidebar/team_actions', () => {
         const dispatch: jest.Mock = jest.fn((a: unknown): unknown => (typeof a === 'function' ? a(dispatch, () => state([false, false])) : a));
         await markTeamAsRead('team')(dispatch as never, () => state([false, false]), undefined);
         expect(readMultipleChannels).toHaveBeenCalledWith(['unread']);
+    });
+
+    // The server refuses preference names and categories over 32 characters: the setting must be one it keeps.
+    test('hides a community\'s muted channels with a preference the server accepts, and reads it back', async () => {
+        const teamId = 'abcdefghijklmnopqrstuvwxyz';
+        const dispatch = jest.fn((a) => a);
+        await setHidingMutedChannels(teamId, true)(dispatch as never, () => state([false, false]), undefined);
+        expect(savePreferences).toHaveBeenCalledWith('me', [{user_id: 'me', category: CATEGORY_HIDE_MUTED, name: teamId, value: 'true'}]);
+        const [[, [saved]]] = (savePreferences as jest.Mock).mock.calls;
+        expect(saved.category.length).toBeLessThanOrEqual(32);
+        expect(saved.name.length).toBeLessThanOrEqual(32);
+
+        const withPreference = (value: string) => {
+            const s = state([false, false]) as unknown as {entities: {preferences: {myPreferences: Record<string, unknown>}}};
+            s.entities.preferences.myPreferences = {[`${CATEGORY_HIDE_MUTED}--${teamId}`]: {user_id: 'me', category: CATEGORY_HIDE_MUTED, name: teamId, value}};
+            return s as unknown as GlobalState;
+        };
+        expect(isHidingMutedChannels(withPreference('true'), teamId)).toBe(true);
+        expect(isHidingMutedChannels(withPreference('false'), teamId)).toBe(false);
+        expect(isHidingMutedChannels(state([false, false]), teamId)).toBe(false);
+        expect(isHidingMutedChannels(withPreference('true'), 'other-team')).toBe(false);
     });
 
     test('mutes a team through its categories, leaving direct messages and empty categories', async () => {
