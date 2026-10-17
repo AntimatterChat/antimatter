@@ -22,14 +22,12 @@ import (
 // thread), on the thread's first message.
 const antimatterThreadTitleProp = "am_thread_title"
 
-// CanMoveThread says whether a user may move the thread of root, in the
-// channel source, elsewhere: the thread's author, the channel's admins, the
-// community's admins, those with "Manage messages" in the channel (delete
-// others' messages, as moving deletes the originals) and system admins.
-func (a *App) CanMoveThread(rctx request.CTX, userID string, root *model.Post, source *model.Channel) bool {
-	if root.UserId == userID {
-		return true
-	}
+// IsThreadModerator says whether a user moderates the threads of the channel
+// source: its channel admins, the community's admins, those with "Manage
+// messages" in the channel (deleting others' messages, as moving deletes the
+// originals) and system admins. They may move any of its threads to another
+// channel of the community.
+func (a *App) IsThreadModerator(rctx request.CTX, userID string, source *model.Channel) bool {
 	if a.HasPermissionTo(rctx, userID, model.PermissionManageSystem) {
 		return true
 	}
@@ -41,6 +39,40 @@ func (a *App) CanMoveThread(rctx request.CTX, userID string, root *model.Post, s
 	}
 	has, _ := a.HasPermissionToChannel(rctx, userID, source.Id, model.PermissionDeleteOthersPosts)
 	return has
+}
+
+// CanMoveThread says whether a user may move the thread (posts, its first
+// message first) from source to target. Moderators may (IsThreadModerator).
+// The thread's author without moderation rights may only when every message of
+// the thread is theirs, or when both channels are public: otherwise they could
+// expose others' replies from a private channel, or hide them in a private
+// channel of their own. It returns nil when allowed.
+func (a *App) CanMoveThread(rctx request.CTX, userID string, posts []*model.Post, source, target *model.Channel) *model.AppError {
+	if len(posts) == 0 {
+		return moveThreadError("api.post.move_thread.unsupported.app_error", nil, http.StatusBadRequest)
+	}
+	if a.IsThreadModerator(rctx, userID, source) {
+		return nil
+	}
+	root := posts[0]
+	for _, post := range posts {
+		if post.RootId == "" {
+			root = post
+			break
+		}
+	}
+	if root.UserId != userID {
+		return moveThreadError("api.post.move_thread.no_permission", nil, http.StatusForbidden)
+	}
+	if source.Type == model.ChannelTypeOpen && target.Type == model.ChannelTypeOpen {
+		return nil
+	}
+	for _, post := range posts {
+		if post.UserId != userID {
+			return moveThreadError("api.post.move_thread.private_needs_moderator.app_error", nil, http.StatusForbidden)
+		}
+	}
+	return nil
 }
 
 func moveThreadError(id string, params map[string]any, status int) *model.AppError {
@@ -78,7 +110,9 @@ func (a *App) MoveThreadToChannel(rctx request.CTX, postID, targetChannelID stri
 		return nil, appErr
 	}
 
-	if !a.CanMoveThread(rctx, user.Id, root, source) {
+	// Only authors and moderators get further; CanMoveThread decides once the
+	// thread and the target are known.
+	if root.UserId != user.Id && !a.IsThreadModerator(rctx, user.Id, source) {
 		return nil, moveThreadError("api.post.move_thread.no_permission", nil, http.StatusForbidden)
 	}
 	if source.DeleteAt != 0 || target.DeleteAt != 0 {
@@ -106,6 +140,9 @@ func (a *App) MoveThreadToChannel(rctx request.CTX, postID, targetChannelID stri
 		if p.Type == model.PostTypeBurnOnRead {
 			return nil, moveThreadError("api.post.move_thread.unsupported.app_error", nil, http.StatusBadRequest)
 		}
+	}
+	if appErr = a.CanMoveThread(rctx, user.Id, wpl.Posts, source, target); appErr != nil {
+		return nil, appErr
 	}
 	if limit := *a.Config().WranglerSettings.MoveThreadMaxCount; limit > 0 && int64(wpl.NumPosts()) > limit {
 		return nil, moveThreadError("api.post.move_thread.too_long.app_error", map[string]any{"Count": wpl.NumPosts(), "Max": limit}, http.StatusBadRequest)

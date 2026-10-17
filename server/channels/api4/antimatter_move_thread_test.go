@@ -176,6 +176,55 @@ func TestAntimatterMoveThreadToChannel(t *testing.T) {
 		requireNotMoved(t, th, f)
 	})
 
+	// An author without moderation rights moves others' replies only between public channels.
+
+	t.Run("an author can't take others' replies out of a private channel", func(t *testing.T) {
+		f := makeThread(t, th, th.BasicPrivateChannel, th.BasicUser, th.BasicUser2)
+		_, resp, err := moveTo(th.Client, f.root.Id, target.Id, false)
+		require.Error(t, err)
+		CheckForbiddenStatus(t, resp)
+		CheckErrorID(t, err, "api.post.move_thread.private_needs_moderator.app_error")
+		requireNotMoved(t, th, f)
+	})
+
+	t.Run("an author can't hide others' replies in a private channel", func(t *testing.T) {
+		mine := th.CreatePrivateChannel(t)
+		f := makeThread(t, th, source, th.BasicUser, th.BasicUser2)
+		_, resp, err := moveTo(th.Client, f.root.Id, mine.Id, false)
+		require.Error(t, err)
+		CheckForbiddenStatus(t, resp)
+		CheckErrorID(t, err, "api.post.move_thread.private_needs_moderator.app_error")
+		requireNotMoved(t, th, f)
+	})
+
+	t.Run("an author moves a thread of their own messages out of a private channel", func(t *testing.T) {
+		f := makeThread(t, th, th.BasicPrivateChannel, th.BasicUser, th.BasicUser)
+		moved, resp, err := moveTo(th.Client, f.root.Id, target.Id, false)
+		require.NoError(t, err)
+		CheckOKStatus(t, resp)
+		assert.Equal(t, target.Id, moved.ChannelId)
+	})
+
+	t.Run("an author moves others' replies between public channels", func(t *testing.T) {
+		f := makeThread(t, th, source, th.BasicUser, th.BasicUser2)
+		_, resp, err := moveTo(th.Client, f.root.Id, target.Id, false)
+		require.NoError(t, err)
+		CheckOKStatus(t, resp)
+	})
+
+	t.Run("a moderator moves others' replies from a private channel to a public one", func(t *testing.T) {
+		moderator := th.CreateUser(t)
+		th.LinkUserToTeam(t, moderator, th.BasicTeam)
+		th.AddUserToChannel(t, moderator, th.BasicPrivateChannel)
+		th.AddUserToChannel(t, moderator, target)
+		th.MakeUserChannelAdmin(t, moderator, th.BasicPrivateChannel)
+		f := makeThread(t, th, th.BasicPrivateChannel, th.BasicUser, th.BasicUser2)
+
+		_, resp, err := moveTo(loggedInAs(t, th, moderator), f.root.Id, target.Id, false)
+		require.NoError(t, err)
+		CheckOKStatus(t, resp)
+	})
+
 	t.Run("the channel's admins may", func(t *testing.T) {
 		admin := th.CreateUser(t)
 		th.LinkUserToTeam(t, admin, th.BasicTeam)

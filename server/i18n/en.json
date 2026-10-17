@@ -3873,6 +3873,11 @@
     "description": "API error when a user lacks permission to move a message thread to another channel."
   },
   {
+    "id": "api.post.move_thread.private_needs_moderator.app_error",
+    "translation": "Only a moderator can move other people's replies to or from a private channel. You can move this thread between public channels, or a thread of only your own messages.",
+    "description": "API error when a thread's author, without moderation rights, tries to move a thread holding other people's replies out of or into a private channel."
+  },
+  {
     "id": "api.post.move_thread.same_channel.app_error",
     "translation": "The thread is already in this channel.",
     "description": "API error when moving a thread to the channel it is already in."
