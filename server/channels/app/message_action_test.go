@@ -476,7 +476,8 @@ func TestRunMessageActionAnswers(t *testing.T) {
 		channel := th.CreateChannel(t, th.BasicTeam)
 		post := th.CreatePost(t, channel)
 		rec := newMessageActionReceiver(t, `{"text": "Archived"}`)
-		hook := createMessageAction(t, th, channel.Id, rec.URL)
+		// Archiving a channel deletes the webhooks bound to it: a community-wide action still covers it.
+		hook := createMessageAction(t, th, "", rec.URL)
 		require.Nil(t, th.App.DeleteChannel(th.Context, channel, th.SystemAdminUser.Id))
 		archived, appErr := th.App.GetChannel(th.Context, channel.Id)
 		require.Nil(t, appErr)

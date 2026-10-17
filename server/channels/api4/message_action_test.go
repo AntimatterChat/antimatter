@@ -184,8 +184,9 @@ func TestMessageActionsInArchivedChannel(t *testing.T) {
 
 	channel := th.CreatePublicChannel(t)
 	post := th.CreatePostWithClient(t, th.Client, channel)
-	hook := createMessageActionHook(t, th, channel.Id, ts.URL)
-	_, err := th.Client.DeleteChannel(context.Background(), channel.Id)
+	// Archiving a channel deletes the webhooks bound to it: a community-wide action still covers it.
+	hook := createMessageActionHook(t, th, "", ts.URL)
+	_, err := th.SystemAdminClient.DeleteChannel(context.Background(), channel.Id)
 	require.NoError(t, err)
 
 	// The message only goes out: sending it from an archived channel is allowed.
