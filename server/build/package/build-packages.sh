@@ -5,9 +5,9 @@
 #
 # Usage: build-packages.sh <antimatter-linux-ARCH.tar.gz> <amd64|arm64> <version> <out-dir>
 #   e.g. build-packages.sh dist/antimatter-linux-amd64.tar.gz amd64 1.2.0 release/
-# Writes <out-dir>/antimatter-<version>-linux-<arch>.tar.gz, antimatter_<version>_<arch>.deb and
+# Writes <out-dir>/antimatter-<version>-linux-<arch>.tar.gz, antimatter_<version>-1_<arch>.deb and
 # antimatter-<version>-1.<x86_64|aarch64>.rpm (a version like 1.2.0-rc.1 becomes 1.2.0~rc.1 in
-# the packages, so that it sorts before 1.2.0).
+# the .deb and .rpm, so that it sorts before 1.2.0; the archive keeps 1.2.0-rc.1).
 #
 # Package layout:
 #   /opt/antimatter                  the archive's content (bin/, client/, client-fusion/, i18n/,
