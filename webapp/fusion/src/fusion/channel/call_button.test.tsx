@@ -55,25 +55,19 @@ describe('fusion/channel/CallButton', () => {
         expect(mockActions.startOrJoinCall).toHaveBeenCalledWith('dm1');
     });
 
-    test('in the call: shows the call in place of the messages, and leaves it', async () => {
+    // The voice connection panel at the bottom of the sidebar shows the call: the header doesn't, whether the call
+    // is shown or not.
+    test.each([null, 'dm1', 'other'])('in the call (call shown: %s): only leaving, no button to show the call', async (view) => {
         mockCall = {};
         mockLocal = {channelId: 'dm1'};
+        mockCallView = view;
         renderWithContext(<CallButton channel={channel}/>);
-        await userEvent.click(screen.getByRole('button', {name: 'Show the call'}));
-        expect(showCall).toHaveBeenCalledWith(expect.anything(), 'dm1');
-        await userEvent.click(screen.getByRole('button', {name: 'Leave the call'}));
-        expect(mockActions.leaveCall).toHaveBeenCalled();
-    });
-
-    test('in the call, with the call shown: only leaving, no button back to the messages', async () => {
-        mockLocal = {channelId: 'dm1'};
-        mockCallView = 'dm1';
-        renderWithContext(<CallButton channel={channel}/>);
-        expect(screen.queryByRole('button', {name: 'Show the messages'})).not.toBeInTheDocument();
         expect(screen.queryByRole('button', {name: 'Show the call'})).not.toBeInTheDocument();
+        expect(screen.queryByRole('button', {name: 'Show the messages'})).not.toBeInTheDocument();
         expect(screen.getAllByRole('button')).toHaveLength(1);
         await userEvent.click(screen.getByRole('button', {name: 'Leave the call'}));
         expect(mockActions.leaveCall).toHaveBeenCalled();
+        expect(showCall).not.toHaveBeenCalled();
     });
 
     test('no button where calls are off, in voice channels, or without the Calls app', () => {
