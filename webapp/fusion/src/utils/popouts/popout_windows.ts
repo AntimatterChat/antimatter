@@ -7,6 +7,7 @@ import type {ChannelType} from '@mattermost/types/channels';
 
 import {Client4} from 'mattermost-redux/client';
 
+import {withPanelState} from 'plugins/rhs_plugin/panel_state';
 import Constants, {RHSStates} from 'utils/constants';
 import DesktopApp from 'utils/desktop_api';
 import {getBasePath} from 'utils/url';
@@ -62,11 +63,14 @@ export async function popoutThread(
     return popoutListeners;
 }
 
+// popoutRhsPlugin opens an app's side panel in a new window, in the channel it was shown in, and where the panel said it
+// was (panelState, its setPanelState prop: see plugins/rhs_plugin/panel_state.ts).
 export async function popoutRhsPlugin(
     titleTemplate: string,
     pluginId: string,
     teamName: string,
     channelName?: string,
+    panelState?: string,
 ) {
     const url = new URL(
         `${getBasePath()}/_popout/rhs/${teamName}/plugin/${pluginId}`,
@@ -75,6 +79,7 @@ export async function popoutRhsPlugin(
     if (channelName) {
         url.searchParams.set('channel', channelName);
     }
+    url.search = withPanelState(url.search, panelState);
 
     const path = `${url.pathname}${url.search}`;
 

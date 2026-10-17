@@ -4,7 +4,7 @@
 import React from 'react';
 import {MemoryRouter, Route} from 'react-router-dom';
 
-import {renderWithContext, screen} from 'tests/react_testing_utils';
+import {act, renderWithContext, screen} from 'tests/react_testing_utils';
 
 import RhsPluginPopout from './rhs_plugin_popout';
 
@@ -20,13 +20,18 @@ jest.mock('components/search_results_header', () => ({
     ),
 }));
 
+type MockPanelProps = {pluggableName: string; pluggableId: string; initialPanelState?: string; setPanelState?: (state: string | null) => void};
+const mockPanelProps: {current?: MockPanelProps} = {};
 jest.mock('plugins/pluggable', () => ({
     __esModule: true,
-    default: ({pluggableName, pluggableId}: {pluggableName: string; pluggableId: string}) => (
-        <div data-testid={`pluggable-${pluggableName}-${pluggableId}`}>
-            {`Pluggable: ${pluggableName} - ${pluggableId}`}
-        </div>
-    ),
+    default: (props: MockPanelProps) => {
+        mockPanelProps.current = props;
+        return (
+            <div data-testid={`pluggable-${props.pluggableName}-${props.pluggableId}`}>
+                {`Pluggable: ${props.pluggableName} - ${props.pluggableId}`}
+            </div>
+        );
+    },
 }));
 
 const mockUseParams = jest.spyOn(require('react-router-dom'), 'useParams');
@@ -139,6 +144,52 @@ describe('RhsPluginPopout', () => {
 
         expect(screen.getByTestId('search-results-header')).toBeInTheDocument();
         expect(screen.getByTestId(`pluggable-RightHandSidebarComponent-${pluggableId}`)).toBeInTheDocument();
+    });
+    describe('panel state', () => {
+        const renderAt = (entry: string) => renderWithContext(
+            <MemoryRouter initialEntries={[entry]}>
+                <Route
+                    path='/_popout/rhs/:team/plugin/:pluginId'
+                    component={RhsPluginPopout}
+                />
+            </MemoryRouter>,
+            baseState,
+        );
+
+        beforeEach(() => {
+            mockPanelProps.current = undefined;
+            window.history.replaceState(null, '', '/_popout/rhs/team1/plugin/test-plugin?channel=town-square');
+        });
+
+        it('starts the app where its panel was: the state of the popout URL, unescaped', () => {
+            renderAt('/_popout/rhs/team1/plugin/test-plugin?channel=town-square&state=note%2Fn1%26x%3Dy');
+
+            expect(mockPanelProps.current?.initialPanelState).toBe('note/n1&x=y');
+            expect(typeof mockPanelProps.current?.setPanelState).toBe('function');
+        });
+
+        it('starts the app on its home when the URL has no state, or one it would not keep', () => {
+            renderAt('/_popout/rhs/team1/plugin/test-plugin?channel=town-square');
+            expect(mockPanelProps.current?.initialPanelState).toBeUndefined();
+
+            renderAt(`/_popout/rhs/team1/plugin/test-plugin?state=${'a'.repeat(600)}`);
+            expect(mockPanelProps.current?.initialPanelState).toBeUndefined();
+        });
+
+        it("follows the app in the window's address, keeping the channel", () => {
+            renderAt('/_popout/rhs/team1/plugin/test-plugin?channel=town-square&state=note%2Fn1');
+
+            act(() => mockPanelProps.current?.setPanelState?.('note/n2'));
+            expect(window.location.pathname).toBe('/_popout/rhs/team1/plugin/test-plugin');
+            expect(window.location.search).toBe('?channel=town-square&state=note%2Fn2');
+
+            // Back on its list: no state, the channel stays
+            act(() => mockPanelProps.current?.setPanelState?.(null));
+            expect(window.location.search).toBe('?channel=town-square');
+
+            // What it started with doesn't change as it moves on
+            expect(mockPanelProps.current?.initialPanelState).toBe('note/n1');
+        });
     });
 });
 

@@ -385,9 +385,22 @@ export type PostDropdownMenuItemComponent = PluginComponent & {
     component: React.ComponentType<BasePluggableProps & {postId: string}>;
 };
 
+// What the Fusion UI gives an app's side panel, besides the theme and the websocket client (see
+// plugins/rhs_plugin/panel_state.ts). Both are optional: the classic UI and older hosts give neither.
+export type RightHandSidebarPanelProps = {
+
+    // setPanelState says where the panel is, as a short string the app defines ('note/<id>'), or null or '' on its
+    // home. Opening the panel in a new window starts it there. Never a secret: it goes into the window's URL.
+    setPanelState?: (state: string | null) => void;
+
+    // initialPanelState is the state the panel had when it was opened in this new window, if any. The app checks it
+    // as any input: it fetches the item again, and shows its home or a not-found view if the person can't open it.
+    initialPanelState?: string;
+};
+
 export type RightHandSidebarComponent = PluginComponent & {
     title: PluggableText;
-    component: React.ComponentType<BasePluggableProps>;
+    component: React.ComponentType<BasePluggableProps & RightHandSidebarPanelProps>;
     showPopout?: boolean;
 };
 

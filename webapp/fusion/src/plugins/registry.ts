@@ -1182,6 +1182,11 @@ export default class PluginRegistry {
      * - component - A react component to display in the Right-Hand Sidebar.
      * - title - A string or JSX element to display as a title for the RHS.
      * - showPopout - Optional boolean (default: true). Set to false to hide the "Open in new window" button in the RHS header.
+     * The component gets two more props (types/store/plugins.ts, RightHandSidebarPanelProps):
+     * - setPanelState(state) - says where the panel is, as a short string the app defines ('note/<id>'), or null on its
+     *   home. "Open in new window" opens the panel there. It goes into the window's URL: never put a secret in it.
+     * - initialPanelState - in the new window, the state the panel had, or undefined. Treat it as untrusted input:
+     *   fetch the item again, and show the app's home or a not-found view if the person can't open it.
      * Returns:
      * - id: a unique identifier
      * - showRHSPlugin: the action to dispatch that will open the RHS.

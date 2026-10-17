@@ -3,6 +3,7 @@
 
 import {isDesktopApp} from '@mattermost/shared/utils/user_agent';
 
+import {readPanelState} from 'plugins/rhs_plugin/panel_state';
 import DesktopApp from 'utils/desktop_api';
 import {getBasePath} from 'utils/url';
 
@@ -172,6 +173,47 @@ describe('popout_windows', () => {
             expect(getMockSetupBrowserPopout()).toHaveBeenCalledWith(
                 '/company/mattermost/_popout/rhs/test-team/plugin/test-plugin-id?channel=test-channel',
             );
+        });
+
+        it('puts the panel state in the popout URL, escaped, and it reads back the same', async () => {
+            setupBrowser();
+
+            await popoutRhsPlugin('{pluginDisplayName} - {serverName}', 'test-plugin-id', 'test-team', 'test-channel', 'note/n1&channel=other#x');
+
+            const path = getMockSetupBrowserPopout().mock.calls[0][0] as string;
+            expect(path).toBe('/_popout/rhs/test-team/plugin/test-plugin-id?channel=test-channel&state=note%2Fn1%26channel%3Dother%23x');
+
+            const search = path.slice(path.indexOf('?'));
+            expect(readPanelState(search)).toBe('note/n1&channel=other#x');
+            expect(new URLSearchParams(search).getAll('channel')).toEqual(['test-channel']);
+        });
+
+        it('puts the panel state in the desktop popout URL too', async () => {
+            setupDesktop();
+
+            await popoutRhsPlugin('{pluginDisplayName} - {serverName}', 'test-plugin-id', 'test-team', 'test-channel', 'run/r1');
+
+            expect(mockDesktopApp.setupDesktopPopout).toHaveBeenCalledWith(
+                '/_popout/rhs/test-team/plugin/test-plugin-id?channel=test-channel&state=run%2Fr1',
+                {
+                    isRHS: true,
+                    titleTemplate: '{pluginDisplayName} - {serverName}',
+                },
+            );
+        });
+
+        it('has no state parameter when the panel never set one, or is on its home', async () => {
+            setupBrowser();
+
+            await popoutRhsPlugin('{pluginDisplayName} - {serverName}', 'test-plugin-id', 'test-team', 'test-channel', undefined);
+            await popoutRhsPlugin('{pluginDisplayName} - {serverName}', 'test-plugin-id', 'test-team', 'test-channel', '');
+            await popoutRhsPlugin('{pluginDisplayName} - {serverName}', 'test-plugin-id', 'test-team', undefined, undefined);
+
+            expect(getMockSetupBrowserPopout().mock.calls.map((call) => call[0])).toEqual([
+                '/_popout/rhs/test-team/plugin/test-plugin-id?channel=test-channel',
+                '/_popout/rhs/test-team/plugin/test-plugin-id?channel=test-channel',
+                '/_popout/rhs/test-team/plugin/test-plugin-id',
+            ]);
         });
     });
 
