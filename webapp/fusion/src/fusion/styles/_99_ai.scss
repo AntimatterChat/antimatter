@@ -1,0 +1,97 @@
+// Copyright (c) 2026-present Antimatter contributors.
+// See LICENSE.txt for license information.
+
+// Model connections (fusion/ai): their list, form and usage, in the community settings and in the System Console.
+@use 'breakpoints' as *;
+
+:is(.am-app, .am-layer) :is(.am-ai-connections, .am-ai-form) .am-btn.am-small { height: 30px; padding: 0 12px; font-size: 13px; }
+:is(.am-app, .am-layer) .am-ai-connections .am-icon-btn.am-danger:hover { color: var(--am-danger); }
+
+:is(.am-app, .am-layer) .am-ai-list { display: grid; gap: 6px; margin: 12px 0; padding: 0; list-style: none; }
+:is(.am-app, .am-layer) .am-ai-row { padding: 10px 10px 10px 12px; border: 1px solid var(--am-line); border-radius: 10px; background: var(--am-side); }
+:is(.am-app, .am-layer) .am-ai-row.am-attention { border-color: color-mix(in srgb, var(--am-away) 60%, var(--am-line)); }
+:is(.am-app, .am-layer) .am-ai-row-main { display: flex; align-items: center; gap: 10px; }
+:is(.am-app, .am-layer) .am-ai-row-main .am-grow { display: grid; min-width: 0; flex: 1; }
+:is(.am-app, .am-layer) .am-ai-row-main b { overflow: hidden; color: var(--am-text); text-overflow: ellipsis; white-space: nowrap; }
+:is(.am-app, .am-layer) .am-ai-row-main span { overflow: hidden; color: var(--am-muted); font-size: 12.5px; text-overflow: ellipsis; white-space: nowrap; }
+:is(.am-app, .am-layer) .am-ai-row-actions { display: flex; flex: none; align-items: center; gap: 2px; }
+:is(.am-app, .am-layer) .am-ai-badge {
+  flex: none;
+  padding: 2px 8px;
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--am-away) 18%, transparent);
+  color: var(--am-away);
+  font-size: 11.5px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+:is(.am-app, .am-layer) .am-ai-attention { margin: 8px 0 0; color: var(--am-text-2); font-size: 13px; }
+:is(.am-app, .am-layer) .am-ai-form > .am-ai-attention { margin: 0 0 14px; padding: 8px 12px; border-radius: 9px; background: color-mix(in srgb, var(--am-away) 14%, transparent); }
+:is(.am-app, .am-layer) .am-ai-confirm { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 10px; color: var(--am-text); font-size: 13.5px; }
+:is(.am-app, .am-layer) .am-ai-confirm > span { flex: 1 1 260px; }
+:is(.am-app, .am-layer) .am-ai-add { justify-content: flex-start; }
+
+// The form.
+:is(.am-app, .am-layer) .am-ai-form .am-toggle-row:last-of-type { border-bottom: 0; }
+:is(.am-app, .am-layer) .am-ai-secret { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; color: var(--am-text-2); font-size: 14px; }
+:is(.am-app, .am-layer) .am-ai-secret .am-grow { flex: 1 1 240px; min-width: 0; }
+:is(.am-app, .am-layer) .am-ai-secret input[type="password"] {
+  height: 38px;
+  padding: 0 12px;
+  border: 1px solid var(--am-line);
+  border-radius: 9px;
+  background: var(--am-side);
+  color: var(--am-text);
+  outline: none;
+}
+:is(.am-app, .am-layer) .am-ai-secret input[type="password"]:focus { border-color: var(--am-matter); }
+:is(.am-app, .am-layer) .am-ai-header-row { display: grid; align-items: center; gap: 8px; grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr) auto; margin-bottom: 8px; }
+:is(.am-app, .am-layer) .am-ai-header-row input {
+  height: 38px;
+  min-width: 0;
+  padding: 0 12px;
+  border: 1px solid var(--am-line);
+  border-radius: 9px;
+  background: var(--am-side);
+  color: var(--am-text);
+  outline: none;
+}
+:is(.am-app, .am-layer) .am-ai-header-row input:focus { border-color: var(--am-matter); }
+:is(.am-app, .am-layer) .am-ai-models, :is(.am-app, .am-layer) .am-ai-limits { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 12px; }
+:is(.am-app, .am-layer) .am-ai-picks { margin: 4px 0 12px; }
+:is(.am-app, .am-layer) .am-ai-status { min-height: 20px; margin: 12px 0 4px; color: var(--am-text-2); font-size: 13.5px; }
+:is(.am-app, .am-layer) .am-ai-status .am-ic { margin-right: 4px; vertical-align: -3px; }
+:is(.am-app, .am-layer) .am-ai-ok { color: var(--am-ok); }
+:is(.am-app, .am-layer) .am-ai-bad { color: var(--am-danger); }
+:is(.am-app, .am-layer) .am-ai-form .am-modal-actions { flex-wrap: wrap; }
+
+// The usage.
+:is(.am-app, .am-layer) .am-ai-usage h4 { margin: 18px 0 6px; color: var(--am-muted); font: 700 11px var(--am-font-ui); letter-spacing: .07em; text-transform: uppercase; }
+:is(.am-app, .am-layer) .am-ai-usage-totals { display: grid; gap: 8px; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+:is(.am-app, .am-layer) .am-ai-usage-totals > div { display: grid; padding: 10px 12px; border: 1px solid var(--am-line); border-radius: 10px; background: var(--am-side); }
+:is(.am-app, .am-layer) .am-ai-usage-totals b { color: var(--am-text); font: 700 20px var(--am-font-display); }
+:is(.am-app, .am-layer) .am-ai-usage-totals span { color: var(--am-muted); font-size: 12.5px; }
+:is(.am-app, .am-layer) .am-ai-budget { display: grid; gap: 6px; margin-top: 12px; color: var(--am-text-2); font-size: 13px; }
+:is(.am-app, .am-layer) .am-ai-meter, :is(.am-app, .am-layer) .am-ai-bar { display: block; overflow: hidden; height: 8px; border-radius: 4px; background: var(--am-raise); }
+:is(.am-app, .am-layer) .am-ai-meter i, :is(.am-app, .am-layer) .am-ai-bar i { display: block; height: 100%; border-radius: 4px; background: var(--am-matter); }
+:is(.am-app, .am-layer) .am-ai-usage-table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+:is(.am-app, .am-layer) .am-ai-usage-table :is(th, td) { padding: 6px 4px; border-bottom: 1px solid var(--am-line); text-align: left; }
+:is(.am-app, .am-layer) .am-ai-usage-table th { color: var(--am-text); font-weight: 600; }
+:is(.am-app, .am-layer) .am-ai-usage-table td { color: var(--am-text-2); text-align: right; white-space: nowrap; }
+:is(.am-app, .am-layer) .am-ai-days { display: grid; gap: 4px; margin: 0; padding: 0; list-style: none; }
+:is(.am-app, .am-layer) .am-ai-days li { display: grid; align-items: center; gap: 10px; grid-template-columns: 56px minmax(0, 1fr) auto; font-size: 12.5px; }
+:is(.am-app, .am-layer) .am-ai-day { color: var(--am-muted); }
+:is(.am-app, .am-layer) .am-ai-day-n { color: var(--am-text-2); white-space: nowrap; }
+
+@media #{$phone} {
+  :is(.am-app, .am-layer) .am-ai-row-main { flex-wrap: wrap; }
+  :is(.am-app, .am-layer) .am-ai-row-main .am-grow { flex-basis: 100%; }
+  :is(.am-app, .am-layer) .am-ai-row-actions { margin-left: auto; }
+  :is(.am-app, .am-layer) :is(.am-ai-models, .am-ai-limits) { grid-template-columns: minmax(0, 1fr); }
+  :is(.am-app, .am-layer) .am-ai-header-row { grid-template-columns: minmax(0, 1fr) auto; }
+  :is(.am-app, .am-layer) .am-ai-header-row input:nth-of-type(2) { grid-column: 1; }
+  :is(.am-app, .am-layer) .am-ai-usage-totals { grid-template-columns: minmax(0, 1fr); }
+  :is(.am-app, .am-layer) .am-ai-days li { grid-template-columns: 48px minmax(0, 1fr); }
+  :is(.am-app, .am-layer) .am-ai-days .am-ai-day-n { grid-column: 2; }
+  :is(.am-app, .am-layer) .am-ai-form .am-modal-actions .am-btn { flex: 1 1 auto; justify-content: center; }
+}

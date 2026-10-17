@@ -73,6 +73,7 @@ export default function ServerMenu({team: forTeam, anchor, point, width, onClose
     const customGroups = useSelector(isCustomGroupsEnabled);
     const hasOpenRoles = useSelector((state: GlobalState) => getTeamRoles(state, teamId).some((r) => r.self_assignable));
     const canManageRoles = useSelector((state: GlobalState) => haveITeamPermission(state, teamId, Permissions.MANAGE_TEAM_ROLES));
+    const canManageAIConnections = useSelector((state: GlobalState) => haveITeamPermission(state, teamId, Permissions.MANAGE_TEAM_AI_CONNECTIONS));
     const canAddUsers = useSelector((state: GlobalState) => haveITeamPermission(state, teamId, Permissions.ADD_USER_TO_TEAM));
     const canInviteGuests = useSelector((state: GlobalState) => haveITeamPermission(state, teamId, Permissions.INVITE_GUEST)) && config.EnableGuestAccounts === 'true';
     const unread = useSelector((state: GlobalState) => getUnreadChannelIdsInTeam(state, teamId).length > 0);
@@ -192,13 +193,13 @@ export default function ServerMenu({team: forTeam, anchor, point, width, onClose
                     onClick={inTeam(() => dialogs.selfRoles())}
                 />
             )}
-            {(canManage || canManageRoles) && customGroups && (
+            {(((canManage || canManageRoles) && customGroups) || canManageAIConnections) && (
                 <Flyout
                     icon='board'
                     label={formatMessage({id: 'fusion.serverMenu.setup', defaultMessage: 'Organise the community'})}
                     menuLabel={formatMessage({id: 'fusion.serverMenu.setup', defaultMessage: 'Organise the community'})}
                 >
-                    {canManageRoles && (
+                    {canManageRoles && customGroups && (
                         <MenuItem
                             icon='rank'
                             label={formatMessage({id: 'fusion.serverMenu.roles', defaultMessage: 'Roles…'})}
@@ -206,7 +207,7 @@ export default function ServerMenu({team: forTeam, anchor, point, width, onClose
                             onClick={inTeam(() => dispatch(openTeamSettings('roles')))}
                         />
                     )}
-                    {canManage && (
+                    {canManage && customGroups && (
                         <>
                             <MenuItem
                                 icon='chat'
@@ -227,6 +228,14 @@ export default function ServerMenu({team: forTeam, anchor, point, width, onClose
                                 onClick={inTeam(() => dispatch(openTeamSettings('attributes')))}
                             />
                         </>
+                    )}
+                    {canManageAIConnections && (
+                        <MenuItem
+                            icon='sparkle'
+                            label={formatMessage({id: 'fusion.serverMenu.aiConnections', defaultMessage: 'Model connections…'})}
+                            sub={formatMessage({id: 'fusion.serverMenu.aiConnectionsSub', defaultMessage: 'The community\'s own AI providers'})}
+                            onClick={inTeam(() => dispatch(openTeamSettings('ai_connections')))}
+                        />
                     )}
                 </Flyout>
             )}

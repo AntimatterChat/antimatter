@@ -3,6 +3,7 @@
 
 import React from 'react';
 
+import {Client4} from 'mattermost-redux/client';
 import {Permissions} from 'mattermost-redux/constants';
 
 import TeamSettingsModal from 'components/team_settings_modal/team_settings_modal';
@@ -324,6 +325,61 @@ describe('components/team_settings_modal', () => {
         await userEvent.click(screen.getByRole('button', {name: 'Close'}));
         await waitFor(() => {
             expect(baseProps.onExited).toHaveBeenCalled();
+        });
+    });
+
+    // Antimatter: a community's own model connections, for those who may manage them (its admins, and the roles
+    // granted it).
+    describe('Model connections tab', () => {
+        let list: jest.SpyInstance;
+        beforeEach(() => {
+            list = jest.spyOn(Client4, 'getAIConnections').mockResolvedValue([]);
+        });
+        afterEach(() => {
+            list.mockRestore();
+        });
+
+        test('is hidden without the permission, even from the community\'s admins', () => {
+            renderWithContext(<TeamSettingsModal {...baseProps}/>, withPermissions([Permissions.MANAGE_TEAM, Permissions.MANAGE_TEAM_ROLES]));
+            expect(screen.queryByRole('tab', {name: 'Model connections'})).not.toBeInTheDocument();
+            expect(list).not.toHaveBeenCalled();
+        });
+
+        test('a tab asked for without the permission opens another one', () => {
+            renderWithContext(
+                <TeamSettingsModal
+                    {...baseProps}
+                    initialTab='ai_connections'
+                />,
+                baseState,
+            );
+            expect(screen.getByRole('tab', {name: 'Overview'})).toHaveAttribute('aria-selected', 'true');
+            expect(list).not.toHaveBeenCalled();
+        });
+
+        test('lists the community\'s own connections for those who may manage them', async () => {
+            renderWithContext(
+                <TeamSettingsModal
+                    {...baseProps}
+                    initialTab='ai_connections'
+                />,
+                withPermissions([Permissions.MANAGE_TEAM, Permissions.MANAGE_TEAM_AI_CONNECTIONS]),
+            );
+            expect(screen.getByRole('tab', {name: 'Model connections'})).toHaveAttribute('aria-selected', 'true');
+            expect(await screen.findByText('No model connections yet.')).toBeInTheDocument();
+            expect(list).toHaveBeenCalledWith('team-id');
+        });
+
+        test('those who only manage the model connections get that tab alone', async () => {
+            renderWithContext(
+                <TeamSettingsModal
+                    {...baseProps}
+                    initialTab='ai_connections'
+                />,
+                withPermissions([Permissions.MANAGE_TEAM_AI_CONNECTIONS]),
+            );
+            expect(screen.getAllByRole('tab').map((tab) => tab.textContent)).toEqual(['Model connections']);
+            expect(await screen.findByRole('button', {name: 'Add a connection'})).toBeInTheDocument();
         });
     });
 });

@@ -14,6 +14,7 @@ import {isChannelAccessControlEnabled, isTeamMembershipAccessControlEnabled} fro
 
 import TeamSettings from 'components/team_settings';
 
+import ModelConnections from 'fusion/ai/model_connections';
 import CommunityAttributesSettings from 'fusion/attributes/community_attributes_dialog';
 import Icon from 'fusion/components/icon';
 import {Dialog} from 'fusion/components/layer';
@@ -32,8 +33,8 @@ import './team_settings_modal.scss';
 const SHOW_PANEL_ERROR_STATE_TAB_SWITCH_TIMEOUT = 3000;
 
 // The tabs the Fusion UI draws itself; the others are the classic web app's.
-export type FusionTeamSettingsTab = 'channels' | 'roles' | 'onboarding' | 'layout' | 'attributes' | 'autolinks';
-const FUSION_TABS = new Set<string>(['channels', 'roles', 'onboarding', 'layout', 'attributes', 'autolinks']);
+export type FusionTeamSettingsTab = 'channels' | 'roles' | 'onboarding' | 'layout' | 'attributes' | 'autolinks' | 'ai_connections';
+const FUSION_TABS = new Set<string>(['channels', 'roles', 'onboarding', 'layout', 'attributes', 'autolinks', 'ai_connections']);
 
 type Props = {
     isOpen: boolean;
@@ -70,6 +71,9 @@ const TeamSettingsModal = ({isOpen, onExited, focusOriginElement, initialTab}: P
     const canManageTeam = useSelector((state: GlobalState) => haveITeamPermission(state, teamId, Permissions.MANAGE_TEAM));
     const canManageRoles = useSelector((state: GlobalState) => haveITeamPermission(state, teamId, Permissions.MANAGE_TEAM_ROLES));
     const customGroups = useSelector(isCustomGroupsEnabled);
+
+    // Antimatter: the community's own model connections, for its admins (and the roles granted it).
+    const canManageAIConnections = useSelector((state: GlobalState) => haveITeamPermission(state, teamId, Permissions.MANAGE_TEAM_AI_CONNECTIONS));
 
     useEffect(() => {
         setShow(isOpen);
@@ -130,8 +134,8 @@ const TeamSettingsModal = ({isOpen, onExited, focusOriginElement, initialTab}: P
             icon: 'icon icon-information-outline',
             iconTitle: formatMessage({id: 'generic_icons.info', defaultMessage: 'Info Icon'}),
 
-            // Those who only manage the roles (not the community) get the Roles tab alone.
-            display: canManageTeam || !canManageRoles,
+            // Those who only manage the roles or the model connections (not the community) get those tabs alone.
+            display: canManageTeam || (!canManageRoles && !canManageAIConnections),
         },
         {
             name: 'access',
@@ -195,6 +199,13 @@ const TeamSettingsModal = ({isOpen, onExited, focusOriginElement, initialTab}: P
             icon: 'icon icon-link-variant',
             iconTitle: formatMessage({id: 'fusion.teamSettings.autolinks', defaultMessage: 'Autolinks'}),
             display: canManageTeam,
+        },
+        {
+            name: 'ai_connections',
+            uiName: formatMessage({id: 'fusion.teamSettings.aiConnections', defaultMessage: 'Model connections'}),
+            icon: 'icon icon-creation-outline',
+            iconTitle: formatMessage({id: 'fusion.teamSettings.aiConnections', defaultMessage: 'Model connections'}),
+            display: canManageAIConnections,
         },
     ];
 
@@ -269,6 +280,12 @@ const TeamSettingsModal = ({isOpen, onExited, focusOriginElement, initialTab}: P
                 )}
                 {shownTab === 'layout' && <TeamLayoutSettings onClose={handleHide}/>}
                 {shownTab === 'autolinks' && <AutolinksSettings setUnsaved={setAreThereUnsavedChanges}/>}
+                {shownTab === 'ai_connections' && teamId && (
+                    <ModelConnections
+                        scope={teamId}
+                        listScope={teamId}
+                    />
+                )}
                 {shownTab && !FUSION_TABS.has(shownTab) && (
 
                     // The tabs' classic styles are scoped to the classic dialog's class.
