@@ -18,6 +18,7 @@ import type {VoiceParticipant} from './calls_api';
 import {raisedHandOrder, useRecentReactions} from './extras';
 import {useCallMedia, useIsVoiceChannel, useLocalCall, useParticipants} from './hooks';
 import {useParticipantMenu} from './participant_menu';
+import {RecordingBadge} from './recording';
 import {TranscriptionOverlay} from './transcription';
 
 // FakeScreen is the mockup's drawing of a shared screen, shown until (or where) the real one can't be.
@@ -284,6 +285,7 @@ export default function Stage({channelId, fullscreen = false}: Props) {
     const reactions = (
         <>
             <Reactions channelId={channelId}/>
+            <RecordingBadge channelId={channelId}/>
             <TranscriptionOverlay channelId={channelId}/>
         </>
     );

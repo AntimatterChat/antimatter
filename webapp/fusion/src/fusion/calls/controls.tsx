@@ -20,6 +20,7 @@ import {getCallsAPI} from './calls_api';
 import {BLUR_INTENSITIES, blurPreset, getScreenQuality, QUICK_REACTIONS, SCREEN_FRAME_RATES, SCREEN_HEIGHTS, setScreenQuality, setScreenSurface} from './extras';
 import {useCall} from './hooks';
 import type {MyCallState} from './hooks';
+import {RecordingControl} from './recording';
 import {screenPicker} from './screen_picker';
 import type {ScreenSurface} from './screen_picker';
 import {startScreenShare} from './screen_sources';
@@ -359,6 +360,10 @@ export default function CallControls({my, withPopout = false}: Props) {
                     >
                         <Icon name='hand'/>
                     </button>
+                    <RecordingControl
+                        channelId={my.call.channelId}
+                        isHost={my.isHost}
+                    />
                     <TranscriptionControls
                         channelId={my.call.channelId}
                         isHost={my.isHost}

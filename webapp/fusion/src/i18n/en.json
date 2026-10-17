@@ -21459,6 +21459,22 @@
     "defaultMessage": "Declined",
     "description": ""
   },
+  "fusion.calls.card.endConfirm": {
+    "defaultMessage": "End call",
+    "description": "Confirm button of the dialog that ends a call for everyone"
+  },
+  "fusion.calls.card.endForEveryone": {
+    "defaultMessage": "End call for everyone",
+    "description": "Button on a call's card in the messages, next to Join, for someone allowed to end the call who isn't in it; it disconnects everyone"
+  },
+  "fusion.calls.card.endMessage": {
+    "defaultMessage": "Everyone still in the call in {where} is disconnected, and the call ends.",
+    "description": "Text of the dialog that ends a call for everyone; {where} is the channel (#name) or conversation"
+  },
+  "fusion.calls.card.endTitle": {
+    "defaultMessage": "End the call for everyone?",
+    "description": "Title of the dialog that ends a call for everyone"
+  },
   "fusion.calls.card.ended": {
     "defaultMessage": "Call ended",
     "description": ""
@@ -21703,6 +21719,14 @@
     "defaultMessage": "Lower hand",
     "description": ""
   },
+  "fusion.calls.menu.makeHost": {
+    "defaultMessage": "Make host",
+    "description": "Item of the menu of someone in a call, for the call's host and system admins: makes that person the call's host"
+  },
+  "fusion.calls.menu.makeHostSub": {
+    "defaultMessage": "The host controls go to them",
+    "description": "Hint under 'Make host' in the menu of someone in a call"
+  },
   "fusion.calls.menu.message": {
     "defaultMessage": "Message",
     "description": ""
@@ -21802,6 +21826,18 @@
   "fusion.calls.react": {
     "defaultMessage": "React",
     "description": ""
+  },
+  "fusion.calls.record": {
+    "defaultMessage": "Record the call",
+    "description": "Button of the call controls, for the call's host, that starts recording the call"
+  },
+  "fusion.calls.recording": {
+    "defaultMessage": "Recording",
+    "description": "Badge shown over a call to everyone in it while it is recorded"
+  },
+  "fusion.calls.recordingTip": {
+    "defaultMessage": "This call is recorded; the recording is posted in the call's thread when it stops.",
+    "description": "Tooltip of the Recording badge over a call"
   },
   "fusion.calls.resolution": {
     "defaultMessage": "Resolution",
@@ -21903,6 +21939,10 @@
     "defaultMessage": "Start a call",
     "description": ""
   },
+  "fusion.calls.stopRecording": {
+    "defaultMessage": "Stop recording",
+    "description": "Button of the call controls, for the call's host, that stops recording the call"
+  },
   "fusion.calls.stopSharing": {
     "defaultMessage": "Stop sharing",
     "description": ""
@@ -21939,6 +21979,14 @@
     "defaultMessage": "Disconnected from {name}",
     "description": ""
   },
+  "fusion.calls.toast.endFailed": {
+    "defaultMessage": "Couldn't end the call in {where}",
+    "description": "Notice when ending a call for everyone failed; {where} is the channel (#name) or conversation"
+  },
+  "fusion.calls.toast.ended": {
+    "defaultMessage": "Ended the call in {where} for everyone",
+    "description": "Notice after ending a call for everyone; {where} is the channel (#name) or conversation"
+  },
   "fusion.calls.toast.hostMuted": {
     "defaultMessage": "Muted {name} in {where}",
     "description": ""
@@ -21967,6 +22015,14 @@
     "defaultMessage": "Left the call in {where}",
     "description": ""
   },
+  "fusion.calls.toast.madeHost": {
+    "defaultMessage": "{name} is now the host",
+    "description": "Notice after making someone the host of a call; {name} is their first name"
+  },
+  "fusion.calls.toast.makeHostFailed": {
+    "defaultMessage": "Couldn't make {name} the host",
+    "description": "Notice when making someone the host of a call failed; {name} is their first name"
+  },
   "fusion.calls.toast.modMuted": {
     "defaultMessage": "Muted {name} for this call: they can't unmute until you allow it",
     "description": ""
@@ -21990,6 +22046,22 @@
   "fusion.calls.toast.moved": {
     "defaultMessage": "Moved to {name}",
     "description": ""
+  },
+  "fusion.calls.toast.recordingStartFailed": {
+    "defaultMessage": "The recording couldn't be started",
+    "description": "Notice when starting the recording of a call failed"
+  },
+  "fusion.calls.toast.recordingStarted": {
+    "defaultMessage": "Recording started",
+    "description": "Notice after the host started recording the call"
+  },
+  "fusion.calls.toast.recordingStopFailed": {
+    "defaultMessage": "The recording couldn't be stopped",
+    "description": "Notice when stopping the recording of a call failed"
+  },
+  "fusion.calls.toast.recordingStopped": {
+    "defaultMessage": "Recording stopped: it will be posted in the call's thread",
+    "description": "Notice after the host stopped recording the call"
   },
   "fusion.calls.toast.removed": {
     "defaultMessage": "Removed {name} from the call",

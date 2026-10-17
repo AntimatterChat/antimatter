@@ -25,6 +25,7 @@ const mockActions = {
 jest.mock('./actions', () => ({useCallActions: () => mockActions}));
 jest.mock('./hooks', () => ({useCall: () => null}));
 jest.mock('./transcription', () => ({TranscriptionControls: () => null}));
+jest.mock('./recording', () => ({RecordingControl: () => null}));
 
 function mockCalls(blur = {on: false, intensity: 50}) {
     const api = {

@@ -250,3 +250,36 @@ export function useCanModerateCall(channelId: string): boolean {
     useCallsAPIs();
     return useSelector((state: GlobalState) => canModerateCall(state, channelId));
 }
+
+// canEndCall tells whether the user may end the call of a channel for everyone, as Calls checks it: its moderators
+// (see canModerateCall), and outside voice channels whoever started it, also once they left it (leaving passes the
+// host on).
+export function canEndCall(state: GlobalState, channelId: string): boolean {
+    const call = getCall(state, channelId);
+    if (!call) {
+        return false;
+    }
+    if (call.ownerId === getCurrentUserId(state) && !isVoiceChannel(state, channelId)) {
+        return true;
+    }
+    return canModerateCall(state, channelId);
+}
+
+export function useCanEndCall(channelId: string): boolean {
+    useCallsAPIs();
+    return useSelector((state: GlobalState) => canEndCall(state, channelId));
+}
+
+// canMakeHost tells whether the user may make someone else the host of a channel's call: its host and system admins.
+export function canMakeHost(state: GlobalState, channelId: string): boolean {
+    const call = getCall(state, channelId);
+    if (!call) {
+        return false;
+    }
+    return call.hostId === getCurrentUserId(state) || isSystemAdmin(getCurrentUser(state)?.roles || '');
+}
+
+export function useCanMakeHost(channelId: string): boolean {
+    useCallsAPIs();
+    return useSelector((state: GlobalState) => canMakeHost(state, channelId));
+}

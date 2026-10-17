@@ -25,6 +25,7 @@ import type {GlobalState} from 'types/store';
 import {getCall, getCallsAPI, getLocalCall, getVoiceAPI, isVoiceChannel} from './calls_api';
 import type {CallsCall, VoiceParticipant} from './calls_api';
 import {getScreenQuality, getScreenSurface} from './extras';
+import {endCallForEveryone, makeHost as requestMakeHost, startRecording, stopRecording} from './host_api';
 import type {MyCallState} from './hooks';
 import {screenPicker} from './screen_picker';
 import {startScreenShare} from './screen_sources';
@@ -302,6 +303,45 @@ function makeActions(getState: () => GlobalState, intl: IntlShape, openDirect: (
         showToast(formatMessage({id: 'fusion.calls.toast.asked', defaultMessage: 'Asked {name} to unmute'}, {name}));
     };
 
+    // Makes someone in the call its host (for the host and system admins): they keep it until they leave.
+    const makeHost = async (p: VoiceParticipant, channelId: string) => {
+        const name = firstName(getState(), p.userId);
+        try {
+            await requestMakeHost(channelId, p.userId);
+        } catch {
+            showToast(formatMessage({id: 'fusion.calls.toast.makeHostFailed', defaultMessage: 'Couldn\'t make {name} the host'}, {name}));
+            return;
+        }
+        showToast(formatMessage({id: 'fusion.calls.toast.madeHost', defaultMessage: '{name} is now the host'}, {name}));
+    };
+
+    // Ends a channel's call for everyone in it, from its card once out of it (see canEndCall).
+    const endForEveryone = async (channelId: string) => {
+        const where = channelLabel(getState(), channelId);
+        try {
+            await endCallForEveryone(channelId);
+        } catch {
+            showToast(formatMessage({id: 'fusion.calls.toast.endFailed', defaultMessage: 'Couldn\'t end the call in {where}'}, {where}));
+            return;
+        }
+        showToast(formatMessage({id: 'fusion.calls.toast.ended', defaultMessage: 'Ended the call in {where} for everyone'}, {where}));
+    };
+
+    // The host records the call; the recording is posted in the call's thread once it stops.
+    const toggleRecording = async (channelId: string, recording: boolean) => {
+        try {
+            await (recording ? stopRecording(channelId) : startRecording(channelId));
+        } catch {
+            showToast(recording ?
+                formatMessage({id: 'fusion.calls.toast.recordingStopFailed', defaultMessage: 'The recording couldn\'t be stopped'}) :
+                formatMessage({id: 'fusion.calls.toast.recordingStartFailed', defaultMessage: 'The recording couldn\'t be started'}));
+            return;
+        }
+        showToast(recording ?
+            formatMessage({id: 'fusion.calls.toast.recordingStopped', defaultMessage: 'Recording stopped: it will be posted in the call\'s thread'}) :
+            formatMessage({id: 'fusion.calls.toast.recordingStarted', defaultMessage: 'Recording started'}));
+    };
+
     return {
         openDirect,
         joinVoice,
@@ -321,6 +361,9 @@ function makeActions(getState: () => GlobalState, intl: IntlShape, openDirect: (
         hostStopScreen,
         modMute,
         askToUnmute,
+        makeHost,
+        endForEveryone,
+        toggleRecording,
     };
 }
 

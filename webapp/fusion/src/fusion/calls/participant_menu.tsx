@@ -18,7 +18,7 @@ import {goToChannel, useCallActions, useChannelLabel} from './actions';
 import {getCallsAPI} from './calls_api';
 import type {VoiceParticipant} from './calls_api';
 import {canSetVolume, getUserVolume, setUserVolume} from './extras';
-import {useCanModerateCall, useIsVoiceChannel} from './hooks';
+import {useCanMakeHost, useCanModerateCall, useIsVoiceChannel} from './hooks';
 
 type MenuProps = {
     participant: VoiceParticipant;
@@ -30,7 +30,7 @@ type MenuProps = {
 
 // ParticipantMenu is the mockup's user context menu for someone in a call: profile, message, call, copy their
 // username, and for the call's host and moderators the host controls Calls offers, asking them to unmute, and a
-// moderator mute, which they can't lift themselves.
+// moderator mute, which they can't lift themselves. The host (and system admins) can also make them the host.
 function ParticipantMenu({participant: p, channelId, point, onProfile, onClose}: MenuProps) {
     const {formatMessage} = useIntl();
     const store = useStore<GlobalState>();
@@ -40,6 +40,9 @@ function ParticipantMenu({participant: p, channelId, point, onProfile, onClose}:
     const where = useChannelLabel(channelId);
     const voice = useIsVoiceChannel(channelId);
     const moderate = useCanModerateCall(channelId) && !p.isMe;
+
+    // The host passes it on to someone in the call (system admins can too); bots can't be hosts.
+    const makeHost = useCanMakeHost(channelId) && !p.isMe && !p.isHost && !user?.is_bot;
     const moderation = Boolean(getCallsAPI()?.moderation);
     const [volume, setVolume] = useState(() => getUserVolume(p.userId));
 
@@ -131,6 +134,14 @@ function ParticipantMenu({participant: p, channelId, point, onProfile, onClose}:
                             label={p.modMuted ? formatMessage({id: 'fusion.calls.menu.liftModMute', defaultMessage: 'Allow to unmute'}) : formatMessage({id: 'fusion.calls.menu.modMute', defaultMessage: 'Mute for this call'})}
                             sub={p.modMuted ? undefined : formatMessage({id: 'fusion.calls.menu.modMuteSub', defaultMessage: 'They stay muted until you allow it, even if they rejoin'})}
                             onClick={run(() => actions.modMute(p, channelId, !p.modMuted))}
+                        />
+                    )}
+                    {makeHost && (
+                        <MenuItem
+                            icon='star'
+                            label={formatMessage({id: 'fusion.calls.menu.makeHost', defaultMessage: 'Make host'})}
+                            sub={formatMessage({id: 'fusion.calls.menu.makeHostSub', defaultMessage: 'The host controls go to them'})}
+                            onClick={run(() => actions.makeHost(p, channelId))}
                         />
                     )}
                     {p.raisedHand && (

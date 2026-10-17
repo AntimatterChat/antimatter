@@ -19,8 +19,10 @@ const mockActions = {
     askToUnmute: jest.fn(),
     openDirect: jest.fn(),
     callUser: jest.fn(),
+    makeHost: jest.fn(),
 };
 let mockModerate = true;
+let mockMakeHost = false;
 jest.mock('./actions', () => ({
     useCallActions: () => mockActions,
     useChannelLabel: () => 'Lobby',
@@ -28,6 +30,7 @@ jest.mock('./actions', () => ({
 }));
 jest.mock('./hooks', () => ({
     useCanModerateCall: () => mockModerate,
+    useCanMakeHost: () => mockMakeHost,
     useIsVoiceChannel: () => true,
 }));
 jest.mock('./extras', () => ({canSetVolume: () => false, getUserVolume: () => 1, setUserVolume: jest.fn()}));
@@ -67,6 +70,7 @@ describe('fusion/calls/participant_menu', () => {
         layer.id = LAYER_ID;
         document.body.append(layer);
         mockModerate = true;
+        mockMakeHost = false;
         Object.values(mockActions).forEach((fn) => fn.mockClear());
         window.antimatterCalls = {version: 1, moderation: {}} as unknown as AntimatterCallsAPI;
     });
@@ -130,5 +134,25 @@ describe('fusion/calls/participant_menu', () => {
         expect(screen.queryByRole('menuitem', {name: 'Ask to unmute'})).not.toBeInTheDocument();
         expect(screen.queryByRole('menuitem', {name: /Mute for this call/})).not.toBeInTheDocument();
         expect(screen.getByRole('menuitem', {name: 'Kick from voice channel'})).toBeInTheDocument();
+    });
+
+    test('the host makes someone else the host', async () => {
+        mockMakeHost = true;
+        open(participant());
+        await userEvent.click(screen.getByRole('menuitem', {name: /Make host/}));
+        expect(mockActions.makeHost).toHaveBeenCalledWith(expect.objectContaining({userId: 'u1'}), 'room');
+    });
+
+    test('nobody is made host who is already, and only the host and system admins can', () => {
+        mockMakeHost = true;
+        open(participant({isHost: true}));
+        expect(screen.queryByRole('menuitem', {name: /Make host/})).not.toBeInTheDocument();
+    });
+
+    test('a moderator who isn\'t the host can\'t make someone host', () => {
+        mockMakeHost = false;
+        open(participant());
+        expect(screen.getByRole('menuitem', {name: 'Mute'})).toBeInTheDocument();
+        expect(screen.queryByRole('menuitem', {name: /Make host/})).not.toBeInTheDocument();
     });
 });

@@ -11,12 +11,13 @@ import type {Post} from '@mattermost/types/posts';
 import Avatar from 'fusion/components/avatar';
 import Icon from 'fusion/components/icon';
 import {useDisplayName, useUser} from 'fusion/hooks/users';
+import {useDialogs} from 'fusion/shell/dialogs_context';
 import {am} from 'fusion/utils/class_names';
 
 import type {GlobalState} from 'types/store';
 
 import {useCallActions, useChannelLabel} from './actions';
-import {useCall, useCallsAvailable, useLocalCall, useParticipants} from './hooks';
+import {useCall, useCallsAvailable, useCanEndCall, useLocalCall, useParticipants} from './hooks';
 
 // The Calls plugin's post for a call (start, end, and in direct messages the ringing outcome).
 const CALL_POST_TYPE = 'custom_calls';
@@ -63,12 +64,15 @@ function num(value: unknown): number {
 }
 
 // CallCard is the mockup's call card in place of the Calls plugin's call post: who is in the call and a button to
-// join or leave it while it runs, and how long it lasted once it's over.
+// join or leave it while it runs, and how long it lasted once it's over. Leaving is only leaving: once out of the
+// call, someone allowed to end it (whoever started it, its host and moderators) can also end it for everyone.
 export default function CallCard({post}: {post: Post}) {
     const intl = useIntl();
     const {formatMessage} = intl;
     const actions = useCallActions();
+    const dialogs = useDialogs();
     const call = useCall(post.channel_id);
+    const canEnd = useCanEndCall(post.channel_id);
     const participants = useParticipants(post.channel_id);
     const local = useLocalCall();
     const where = useChannelLabel(post.channel_id);
@@ -141,17 +145,38 @@ export default function CallCard({post}: {post: Post}) {
                     {formatMessage({id: 'fusion.calls.card.leave', defaultMessage: 'Leave'})}
                 </button>
             ) : (
-                <button
-                    className={am('btn')}
-                    style={{height: 32, background: 'var(--am-ok)', color: '#fff'}}
-                    onClick={() => actions.startOrJoinCall(post.channel_id)}
-                >
-                    <Icon
-                        name='phone'
-                        size='sm'
-                    />
-                    {formatMessage({id: 'fusion.calls.card.join', defaultMessage: 'Join'})}
-                </button>
+                <>
+                    {canEnd && (
+                        <button
+                            className={am('btn', 'danger')}
+                            style={{height: 32}}
+                            onClick={() => dialogs.confirm({
+                                title: formatMessage({id: 'fusion.calls.card.endTitle', defaultMessage: 'End the call for everyone?'}),
+                                message: formatMessage({id: 'fusion.calls.card.endMessage', defaultMessage: 'Everyone still in the call in {where} is disconnected, and the call ends.'}, {where}),
+                                confirmLabel: formatMessage({id: 'fusion.calls.card.endConfirm', defaultMessage: 'End call'}),
+                                danger: true,
+                                onConfirm: () => actions.endForEveryone(post.channel_id),
+                            })}
+                        >
+                            <Icon
+                                name='hangup'
+                                size='sm'
+                            />
+                            {formatMessage({id: 'fusion.calls.card.endForEveryone', defaultMessage: 'End call for everyone'})}
+                        </button>
+                    )}
+                    <button
+                        className={am('btn')}
+                        style={{height: 32, background: 'var(--am-ok)', color: '#fff'}}
+                        onClick={() => actions.startOrJoinCall(post.channel_id)}
+                    >
+                        <Icon
+                            name='phone'
+                            size='sm'
+                        />
+                        {formatMessage({id: 'fusion.calls.card.join', defaultMessage: 'Join'})}
+                    </button>
+                </>
             )}
         </div>
     );
