@@ -101,8 +101,8 @@ func TestAntimatterMoveThreadToChannel(t *testing.T) {
 			assert.Equal(t, target.Id, copied.ChannelId)
 			assert.Equal(t, true, copied.GetProp(model.PostPropsSilentNotification), "a moved message notifies nobody again")
 			if original.Id == f.replies[0].Id {
-				reactions, appErr := th.App.GetReactionsForPost(copied.Id)
-				require.Nil(t, appErr)
+				reactions, reactionsErr := th.App.GetReactionsForPost(copied.Id)
+				require.Nil(t, reactionsErr)
 				require.Len(t, reactions, 1)
 				assert.Equal(t, "smile", reactions[0].EmojiName)
 			}
