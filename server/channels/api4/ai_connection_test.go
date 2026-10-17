@@ -46,16 +46,19 @@ func aiConnectionRequest(scope, url string) *model.AIConnectionRequest {
 	}
 }
 
-// rawBody gets an API answer as text, to check what it carries.
+// rawBody gets an API answer as text, whatever its status, to check what it carries.
 func rawBody(t *testing.T, client *model.Client4, method, path string) string {
 	t.Helper()
-	resp, err := client.DoAPIRequestWithHeaders(context.Background(), method, client.APIURL+path, "", nil)
-	if resp == nil {
-		require.NoError(t, err)
-	}
+	req, err := http.NewRequestWithContext(context.Background(), method, client.APIURL+path, nil)
+	require.NoError(t, err)
+	req.Header.Set(model.HeaderAuth, client.AuthType+" "+client.AuthToken)
+	req.Header.Set(model.HeaderRequestedWith, model.HeaderRequestedWithXML)
+	resp, err := client.HTTPClient.Do(req)
+	require.NoError(t, err)
 	defer resp.Body.Close()
-	data, readErr := io.ReadAll(resp.Body)
-	require.NoError(t, readErr)
+	data, err := io.ReadAll(resp.Body)
+	require.NoError(t, err)
+	require.Less(t, resp.StatusCode, 300, "%s %s: %s", method, path, data)
 	return string(data)
 }
 
@@ -68,6 +71,7 @@ func setupAIConnectionsAPI(t *testing.T) (*TestHelper, aiTestClients) {
 	th := Setup(t).InitBasic(t)
 	th.App.UpdateConfig(func(cfg *model.Config) {
 		*cfg.ServiceSettings.AllowedUntrustedInternalConnections = "127.0.0.1"
+		*cfg.GuestAccountsSettings.Enable = true
 	})
 
 	th.LinkUserToTeam(t, th.TeamAdminUser, th.BasicTeam)
@@ -253,7 +257,12 @@ func TestAIConnectionsNeverGiveTheKey(t *testing.T) {
 		"/ai/connections/" + created.Id + "/usage",
 		"/ai/connections/usable?team_id=" + th.BasicTeam.Id,
 	} {
-		body := rawBody(t, clients.systemAdmin, http.MethodGet, path)
+		client := clients.systemAdmin
+		if strings.Contains(path, "/usable") {
+			// The system admin isn't in the community: its admin lists what they may use there.
+			client = clients.communityAdmin
+		}
+		body := rawBody(t, client, http.MethodGet, path)
 		assert.NotContains(t, body, apiAITestKey, path)
 		assert.NotContains(t, body, "header-secret-value", path)
 		assert.NotContains(t, body, "sealed", path)
