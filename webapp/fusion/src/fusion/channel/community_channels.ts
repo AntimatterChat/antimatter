@@ -74,7 +74,7 @@ export function isWorkplaceCommunity(state: GlobalState, teamId: string): boolea
 // a community, members don't archive channels, not even those they created. The default channels' extra rule (the
 // community's admins only) is the caller's.
 export function canArchiveChannel(state: GlobalState, channel: Channel | undefined): boolean {
-    if (!channel || !channel.team_id || channel.delete_at !== 0 || (channel.type !== Constants.OPEN_CHANNEL && channel.type !== Constants.PRIVATE_CHANNEL)) {
+    if (!channel || !channel.team_id || channel.delete_at || (channel.type !== Constants.OPEN_CHANNEL && channel.type !== Constants.PRIVATE_CHANNEL)) {
         return false;
     }
     const permission = channel.type === Constants.PRIVATE_CHANNEL ? Permissions.DELETE_PRIVATE_CHANNEL : Permissions.DELETE_PUBLIC_CHANNEL;

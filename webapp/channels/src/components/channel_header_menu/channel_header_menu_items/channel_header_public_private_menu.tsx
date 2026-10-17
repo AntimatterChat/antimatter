@@ -4,6 +4,7 @@
 import type {ReactNode} from 'react';
 import React from 'react';
 import {FormattedMessage} from 'react-intl';
+import {useSelector} from 'react-redux';
 
 import type {Channel} from '@mattermost/types/channels';
 import type {UserProfile} from '@mattermost/types/users';
@@ -15,7 +16,10 @@ import ChannelMoveToSubMenu from 'components/channel_move_to_sub_menu';
 import * as Menu from 'components/menu';
 import ChannelPermissionGate from 'components/permissions_gates/channel_permission_gate';
 
+import {canArchiveChannel} from 'utils/archive_rights';
 import {Constants} from 'utils/constants';
+
+import type {GlobalState} from 'types/store';
 
 import MenuItemArchiveChannel from '../menu_items/archive_channel';
 import MenuItemAutotranslation from '../menu_items/autotranslation';
@@ -50,7 +54,7 @@ const ChannelHeaderPublicMenu = ({channel, user, isMuted, isDefault, isMobile, i
     const isPrivate = channel?.type === Constants.PRIVATE_CHANNEL;
 
     const channelMembersPermission = isPrivate ? Permissions.MANAGE_PRIVATE_CHANNEL_MEMBERS : Permissions.MANAGE_PUBLIC_CHANNEL_MEMBERS;
-    const channelDeletePermission = isPrivate ? Permissions.DELETE_PRIVATE_CHANNEL : Permissions.DELETE_PUBLIC_CHANNEL;
+    const canArchive = useSelector((state: GlobalState) => canArchiveChannel(state, channel));
     const channelUnarchivePermission = Permissions.MANAGE_TEAM;
 
     return (
@@ -173,16 +177,11 @@ const ChannelHeaderPublicMenu = ({channel, user, isMuted, isDefault, isMobile, i
                 <MenuItemCloseChannel/>
             )}
 
-            {!isArchived && !isDefault && (
-                <ChannelPermissionGate
-                    channelId={channel.id}
-                    teamId={channel.team_id}
-                    permissions={[channelDeletePermission]}
-                >
-                    <MenuItemArchiveChannel
-                        channel={channel}
-                    />
-                </ChannelPermissionGate>
+            {/* Antimatter: who archives depends on the kind of community too (canArchiveChannel). */}
+            {!isArchived && !isDefault && canArchive && (
+                <MenuItemArchiveChannel
+                    channel={channel}
+                />
             )}
 
             {isArchived && !isDefault && (

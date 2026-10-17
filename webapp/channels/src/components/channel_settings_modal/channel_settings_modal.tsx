@@ -29,6 +29,7 @@ import type {Tab as SidebarTab} from 'components/settings_sidebar/settings_sideb
 import {normalizePluginIcon} from 'components/settings_sidebar/settings_sidebar';
 
 import {focusElement} from 'utils/a11y_utils';
+import {canArchiveChannel} from 'utils/archive_rights';
 import Constants from 'utils/constants';
 
 import type {GlobalState} from 'types/store';
@@ -153,13 +154,8 @@ function ChannelSettingsModal({channelId, isOpen, onExited, focusOriginElement}:
     const shouldShowConfigurationTab = canManageBanner || canManageChannelTranslation || canManageSharedChannels || canManageJoinLeaveMessages;
     const shouldShowInfoTab = canManageChannelProperties;
 
-    const canArchivePrivateChannels = useSelector((state: GlobalState) =>
-        haveIChannelPermission(state, channel.team_id, channel.id, Permissions.DELETE_PRIVATE_CHANNEL),
-    );
-
-    const canArchivePublicChannels = useSelector((state: GlobalState) =>
-        haveIChannelPermission(state, channel.team_id, channel.id, Permissions.DELETE_PUBLIC_CHANNEL),
-    );
+    // Antimatter: who archives depends on the kind of community too (canArchiveChannel).
+    const canArchive = useSelector((state: GlobalState) => canArchiveChannel(state, channel));
 
     const canManageChannelAccessRules = useSelector((state: GlobalState) =>
         haveIChannelPermission(state, channel.team_id, channel.id, Permissions.MANAGE_CHANNEL_ACCESS_RULES),
@@ -194,8 +190,7 @@ function ChannelSettingsModal({channelId, isOpen, onExited, focusOriginElement}:
     const shouldShowPermissionsPolicyTab = shouldShowAccessRulesTab && channelPermissionPoliciesEnabled;
 
     const shouldShowArchiveTab = channel.name !== Constants.DEFAULT_CHANNEL &&
-        ((channel.type === Constants.PRIVATE_CHANNEL && canArchivePrivateChannels) ||
-        (channel.type === Constants.OPEN_CHANNEL && canArchivePublicChannels));
+        canArchive;
 
     const [show, setShow] = useState(isOpen);
 
