@@ -50,7 +50,7 @@ export function rovingKeyDown(e: React.KeyboardEvent<HTMLElement> | KeyboardEven
     } else if (e.key === next) {
         to = at < 0 ? 0 : (at + 1) % items.length;
     } else {
-        to = at < 0 ? items.length - 1 : (at - 1 + items.length) % items.length;
+        to = at < 0 ? items.length - 1 : ((at + items.length) - 1) % items.length;
     }
     e.preventDefault();
     e.stopPropagation();
