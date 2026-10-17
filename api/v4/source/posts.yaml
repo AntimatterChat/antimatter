@@ -1362,11 +1362,14 @@
         ##### Permissions
 
         Must be able to read the thread and to post (`create_post`) in the
-        target channel, and be the thread's author, an admin of its channel,
-        an admin of the community, or have `delete_others_posts` ("Manage
-        messages") in its channel; system admins may too. Both channels must
-        belong to the same community (no direct or group messages), be
-        different, and not be archived.
+        target channel. Moderators (admins of the thread's channel, admins
+        of the community, those with `delete_others_posts` ("Manage
+        messages") in its channel, and system admins) may move any thread.
+        The thread's author without those rights may move it only when every
+        message of it is theirs, or when both channels are public (otherwise
+        403 `api.post.move_thread.private_needs_moderator.app_error`). Both
+        channels must belong to the same community (no direct or group
+        messages), be different, and not be archived.
       operationId: MoveThreadToChannel
       parameters:
         - name: post_id
