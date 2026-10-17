@@ -1,7 +1,7 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 
-import {expect, test} from '../lib/fixtures';
+import {expect, test, uniq} from '../lib/fixtures';
 
 test('the composer\'s emoji picker searches and inserts an emoji', async ({fusion, page}) => {
     await fusion.openChannel();
@@ -25,22 +25,43 @@ test('the composer\'s emoji picker searches and inserts an emoji', async ({fusio
     await fusion.composer.fill('');
 });
 
-test('opens the custom emoji dialog from the picker', async ({fusion, page}) => {
+// A 2×2 PNG, for the custom emoji the test adds.
+const PNG = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAEUlEQVR4nGP438DwH4QZYAwAWsoJ+e+uaqEAAAAASUVORK5CYII=', 'base64');
+
+test('adds and deletes a custom emoji inside the picker, which stays open', async ({fusion, page}) => {
+    const name = uniq('e2e_').toLowerCase();
     await fusion.openChannel();
     await fusion.main.getByRole('button', {name: 'Emoji', exact: true}).click();
-    await page.getByRole('dialog', {name: 'Emoji'}).getByRole('button', {name: 'Add custom emoji'}).click();
+    const picker = page.getByRole('dialog', {name: 'Emoji'});
+    await picker.getByRole('button', {name: 'Add custom emoji'}).click();
 
-    const dialog = page.getByRole('dialog', {name: 'Custom emoji'});
-    await expect(dialog).toBeVisible();
-    await expect(dialog.getByRole('tab', {name: 'Add'})).toBeVisible();
-    await expect(dialog.getByRole('tab', {name: 'All custom emoji'})).toBeVisible();
+    // The add view takes the grid's place: the picker stays open.
+    const add = picker.getByRole('form', {name: 'Add a custom emoji'});
+    await expect(add).toBeVisible();
+    await add.locator('input[type="file"]').setInputFiles({name: `${name}.png`, mimeType: 'image/png', buffer: PNG});
 
-    // Nothing to add until there's an image and a name.
-    await expect(dialog.getByRole('button', {name: 'Add emoji'})).toBeDisabled();
+    // The name comes from the file, and the server says it's free.
+    await expect(add.getByRole('textbox', {name: 'Name'})).toHaveValue(name);
+    await expect(add.getByText(`:${name}: is free.`)).toBeVisible();
+    await add.getByRole('button', {name: 'Save'}).click();
 
-    await dialog.getByRole('tab', {name: 'All custom emoji'}).click();
-    await expect(dialog.getByRole('tab', {name: 'All custom emoji'})).toHaveAttribute('aria-selected', 'true');
+    // Back on the grid, the new emoji first and ready to use.
+    await expect(add).toBeHidden();
+    await expect(picker.getByRole('heading', {name: 'Just added'})).toBeVisible();
+    await expect(picker.getByRole('button', {name, exact: true}).first()).toBeFocused();
 
+    // Manage: search it, delete it after confirming in its row.
+    await picker.getByRole('button', {name: 'Custom emoji', exact: true}).click();
+    const manage = picker.getByRole('region', {name: 'Custom emoji'});
+    await manage.getByRole('searchbox', {name: 'Search custom emoji'}).fill(name);
+    await manage.getByRole('button', {name: `Delete :${name}:`}).click();
+    await manage.getByRole('group').getByRole('button', {name: 'Delete', exact: true}).click();
+    await expect(manage.getByText(`:${name}: was deleted.`)).toBeVisible();
+
+    // Escape goes back to the grid, then closes the picker.
     await page.keyboard.press('Escape');
-    await expect(dialog).toBeHidden();
+    await expect(manage).toBeHidden();
+    await expect(picker.getByRole('textbox', {name: 'Search emoji'})).toBeVisible();
+    await page.keyboard.press('Escape');
+    await expect(picker).toBeHidden();
 });

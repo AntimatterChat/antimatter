@@ -23839,125 +23839,153 @@
     "defaultMessage": "That address is taken.",
     "description": ""
   },
-  "fusion.customEmoji.add": {
-    "defaultMessage": "Add emoji",
-    "description": ""
+  "fusion.customEmoji.addButton": {
+    "defaultMessage": "Add custom emoji",
+    "description": "Button at the top of the Custom emoji page that opens the view for adding a custom emoji."
   },
   "fusion.customEmoji.added": {
     "defaultMessage": ":{name}: is ready to use.",
-    "description": ""
+    "description": "On the Custom emoji page, once an emoji was added: {name} is its name, typed between colons in messages."
   },
   "fusion.customEmoji.adding": {
     "defaultMessage": "Adding…",
-    "description": ""
+    "description": "In the emoji picker's view for adding a custom emoji (and on the Custom emoji page): the Save button while the emoji is being added."
   },
-  "fusion.customEmoji.addTab": {
-    "defaultMessage": "Add",
-    "description": ""
-  },
-  "fusion.customEmoji.allTab": {
-    "defaultMessage": "All custom emoji",
-    "description": ""
+  "fusion.customEmoji.addTitle": {
+    "defaultMessage": "Add a custom emoji",
+    "description": "In the emoji picker's view for adding a custom emoji (and on the Custom emoji page): title of the view, next to its back arrow."
   },
   "fusion.customEmoji.cancel": {
     "defaultMessage": "Cancel",
-    "description": ""
+    "description": "In the emoji picker's view for adding a custom emoji (and on the Custom emoji page): button going back to the picker's grid without adding."
   },
-  "fusion.customEmoji.changeImage": {
-    "defaultMessage": "Change image…",
-    "description": ""
-  },
-  "fusion.customEmoji.chooseImage": {
-    "defaultMessage": "Choose an image…",
-    "description": ""
-  },
-  "fusion.customEmoji.close": {
-    "defaultMessage": "Close",
-    "description": ""
-  },
-  "fusion.customEmoji.confirmDelete": {
-    "defaultMessage": "Delete",
-    "description": ""
+  "fusion.customEmoji.confirm": {
+    "defaultMessage": "Delete :{name}:? Messages and reactions using it will show its name instead.",
+    "description": "In the emoji picker's view listing the server's custom emoji (and on the Custom emoji page): confirmation shown in the emoji's row before deleting it; {name} is the emoji's name, typed between colons in messages."
   },
   "fusion.customEmoji.delete": {
     "defaultMessage": "Delete :{name}:",
-    "description": ""
+    "description": "In the emoji picker's view listing the server's custom emoji (and on the Custom emoji page): label of the delete button of an emoji's row; {name} is the emoji's name."
+  },
+  "fusion.customEmoji.deleted": {
+    "defaultMessage": ":{name}: was deleted.",
+    "description": "In the emoji picker's view listing the server's custom emoji (and on the Custom emoji page): status line once an emoji was deleted; {name} is its name."
   },
   "fusion.customEmoji.deleteFailed": {
     "defaultMessage": "The emoji couldn't be deleted.",
-    "description": ""
-  },
-  "fusion.customEmoji.done": {
-    "defaultMessage": "Done",
-    "description": ""
+    "description": "In the emoji picker's view listing the server's custom emoji (and on the Custom emoji page): error when the server didn't delete the emoji and gave no reason."
   },
   "fusion.customEmoji.failed": {
     "defaultMessage": "The emoji couldn't be added.",
-    "description": ""
+    "description": "In the emoji picker's view for adding a custom emoji (and on the Custom emoji page): error when the server didn't add the emoji and gave no reason."
   },
-  "fusion.customEmoji.image": {
-    "defaultMessage": "Image",
-    "description": ""
+  "fusion.customEmoji.image.change": {
+    "defaultMessage": "Change image…",
+    "description": "In the emoji picker's view for adding a custom emoji (and on the Custom emoji page): button choosing another image once one is chosen."
   },
-  "fusion.customEmoji.imageRequired": {
+  "fusion.customEmoji.image.choose": {
+    "defaultMessage": "Drop, paste or choose an image",
+    "description": "In the emoji picker's view for adding a custom emoji (and on the Custom emoji page): button of the drop zone: it opens the file chooser; an image can also be dropped on the zone or pasted."
+  },
+  "fusion.customEmoji.image.hint": {
+    "defaultMessage": "PNG, GIF (animated: up to {frames} frames), JPEG or WebP; up to {kb} KB and {px} × {px} pixels. Shown at 128 pixels at most.",
+    "description": "In the emoji picker's view for adding a custom emoji (and on the Custom emoji page): the image types and limits, under the drop zone. {frames} is the most frames of an animated GIF (70), {kb} the largest file in kilobytes (512), {px} the largest width and height in pixels (1028)."
+  },
+  "fusion.customEmoji.image.pixels": {
+    "defaultMessage": "This image is larger than {max} × {max} pixels. Choose a smaller one.",
+    "description": "In the emoji picker's view for adding a custom emoji (and on the Custom emoji page): error under the drop zone; {max} is the largest width and height in pixels."
+  },
+  "fusion.customEmoji.image.required": {
     "defaultMessage": "Choose an image.",
-    "description": ""
+    "description": "In the emoji picker's view for adding a custom emoji (and on the Custom emoji page): error under the drop zone when saving without an image."
   },
-  "fusion.customEmoji.keep": {
-    "defaultMessage": "Keep",
-    "description": ""
+  "fusion.customEmoji.image.size": {
+    "defaultMessage": "This image is larger than {max} KB. Choose a smaller one.",
+    "description": "In the emoji picker's view for adding a custom emoji (and on the Custom emoji page): error under the drop zone; {max} is the largest file size in kilobytes."
   },
-  "fusion.customEmoji.lead": {
-    "defaultMessage": "Everyone on the server can use it in messages and reactions, as :name:. PNG, GIF (animated too), JPEG or WebP, 1 MB at most; it shows at 22 pixels high.",
-    "description": ""
-  },
-  "fusion.customEmoji.more": {
-    "defaultMessage": "Show more",
-    "description": ""
+  "fusion.customEmoji.image.type": {
+    "defaultMessage": "Choose a PNG, GIF, JPEG or WebP image.",
+    "description": "In the emoji picker's view for adding a custom emoji (and on the Custom emoji page): error under the drop zone for another kind of file."
   },
   "fusion.customEmoji.name": {
     "defaultMessage": "Name",
-    "description": ""
+    "description": "In the emoji picker's view for adding a custom emoji (and on the Custom emoji page): label of the name field."
   },
-  "fusion.customEmoji.nameInvalid": {
-    "defaultMessage": "A name can only have lowercase letters, numbers, and - + _",
-    "description": ""
+  "fusion.customEmoji.name.chars": {
+    "defaultMessage": "A name can’t have {chars}. Use lowercase letters, numbers, and - + _",
+    "description": "In the emoji picker's view for adding a custom emoji (and on the Custom emoji page): error under the name as it is typed; {chars} lists the characters not allowed, each in quotes, or the word for spaces (fusion.customEmoji.name.space)."
   },
-  "fusion.customEmoji.namePlaceholder": {
-    "defaultMessage": "e.g. party_parrot",
-    "description": ""
+  "fusion.customEmoji.name.free": {
+    "defaultMessage": ":{name}: is free.",
+    "description": "In the emoji picker's view for adding a custom emoji (and on the Custom emoji page): shown under the name once the server confirmed no custom emoji has it; {name} is the name."
   },
-  "fusion.customEmoji.nameRequired": {
+  "fusion.customEmoji.name.hint": {
+    "defaultMessage": "Lowercase letters, numbers, and - + _. People type it as :name:.",
+    "description": "In the emoji picker's view for adding a custom emoji (and on the Custom emoji page): hint under the name field. Keep \":name:\" as is: it shows how emoji are typed between colons."
+  },
+  "fusion.customEmoji.name.long": {
+    "defaultMessage": "A name can have up to {max} characters.",
+    "description": "In the emoji picker's view for adding a custom emoji (and on the Custom emoji page): error under the name; {max} is 64."
+  },
+  "fusion.customEmoji.name.required": {
     "defaultMessage": "Give the emoji a name.",
-    "description": ""
+    "description": "In the emoji picker's view for adding a custom emoji (and on the Custom emoji page): error under the name when saving without one."
   },
-  "fusion.customEmoji.nameSystem": {
-    "defaultMessage": "An emoji already has this name.",
-    "description": ""
+  "fusion.customEmoji.name.space": {
+    "defaultMessage": "spaces",
+    "description": "In the emoji picker's view for adding a custom emoji (and on the Custom emoji page): inserted as {chars} in fusion.customEmoji.name.chars when the name has spaces: \"A name can’t have spaces.\""
   },
-  "fusion.customEmoji.nameTaken": {
-    "defaultMessage": "A custom emoji already has this name.",
-    "description": ""
+  "fusion.customEmoji.name.system": {
+    "defaultMessage": ":{name}: is a standard emoji. Choose another name.",
+    "description": "In the emoji picker's view for adding a custom emoji (and on the Custom emoji page): error under the name when a standard (Unicode) emoji has it; {name} is the name."
   },
-  "fusion.customEmoji.noMatch": {
-    "defaultMessage": "No custom emoji matches.",
-    "description": ""
+  "fusion.customEmoji.name.taken": {
+    "defaultMessage": "There’s already a custom emoji called :{name}:.",
+    "description": "In the emoji picker's view for adding a custom emoji (and on the Custom emoji page): error under the name when another custom emoji has it; {name} is the name."
+  },
+  "fusion.customEmoji.nameExample": {
+    "defaultMessage": "party_parrot",
+    "description": "Placeholder of the custom emoji name field: an example name, between colons shown around the field. Keep it lowercase with an underscore."
+  },
+  "fusion.customEmoji.noMatchTerm": {
+    "defaultMessage": "No custom emoji matches “{term}”.",
+    "description": "In the emoji picker's view listing the server's custom emoji (and on the Custom emoji page): shown when the search finds nothing; {term} is what was searched."
   },
   "fusion.customEmoji.none": {
     "defaultMessage": "No custom emoji yet.",
-    "description": ""
+    "description": "In the emoji picker's view listing the server's custom emoji (and on the Custom emoji page): shown when the server has no custom emoji."
+  },
+  "fusion.customEmoji.off": {
+    "defaultMessage": "Custom emoji are turned off on this server.",
+    "description": "On the Custom emoji page (Integrations › Custom emoji) when the server has custom emoji turned off."
+  },
+  "fusion.customEmoji.preview.label": {
+    "defaultMessage": "Preview of :{name}: at {sizes} pixels",
+    "description": "In the emoji picker's view for adding a custom emoji (and on the Custom emoji page): screen reader label of the preview of the chosen image; {name} is the emoji's name, {sizes} the sizes listed (16, 22, 32)."
+  },
+  "fusion.customEmoji.preview.large": {
+    "defaultMessage": "Large",
+    "description": "In the emoji picker's view for adding a custom emoji (and on the Custom emoji page): caption of the biggest preview (32 pixels, as in the picker's footer)."
+  },
+  "fusion.customEmoji.preview.message": {
+    "defaultMessage": "Message",
+    "description": "In the emoji picker's view for adding a custom emoji (and on the Custom emoji page): caption of the preview at the size emoji have in messages (22 pixels)."
+  },
+  "fusion.customEmoji.preview.reaction": {
+    "defaultMessage": "Reaction",
+    "description": "In the emoji picker's view for adding a custom emoji (and on the Custom emoji page): caption of the preview at the size of reactions (16 pixels)."
+  },
+  "fusion.customEmoji.save": {
+    "defaultMessage": "Save",
+    "description": "In the emoji picker's view for adding a custom emoji (and on the Custom emoji page): button adding the emoji."
   },
   "fusion.customEmoji.search": {
     "defaultMessage": "Search custom emoji",
-    "description": ""
+    "description": "In the emoji picker's view listing the server's custom emoji (and on the Custom emoji page): placeholder and label of the search box."
   },
   "fusion.customEmoji.title": {
     "defaultMessage": "Custom emoji",
-    "description": ""
-  },
-  "fusion.customEmoji.tooLarge": {
-    "defaultMessage": "The image must be 1 MB at most.",
-    "description": ""
+    "description": "Title of the emoji picker's view listing the server's custom emoji, and of the Custom emoji page."
   },
   "fusion.delete.cancel": {
     "defaultMessage": "Cancel",
@@ -25669,7 +25697,7 @@
   },
   "fusion.picker.addCustomEmoji": {
     "defaultMessage": "Add custom emoji",
-    "description": ""
+    "description": "Emoji picker: tooltip and label of the \"+\" button next to the search box, which shows the view for adding a custom emoji in place of the grid."
   },
   "fusion.picker.categories": {
     "defaultMessage": "Emoji categories",
@@ -25679,9 +25707,17 @@
     "defaultMessage": "Insert",
     "description": ""
   },
+  "fusion.picker.justAdded": {
+    "defaultMessage": "Just added",
+    "description": "Emoji picker: heading of the row of custom emoji added from the picker, shown first on its grid with the newest focused."
+  },
   "fusion.picker.label": {
     "defaultMessage": "Emoji",
     "description": ""
+  },
+  "fusion.picker.manageCustomEmoji": {
+    "defaultMessage": "Custom emoji",
+    "description": "Emoji picker: tooltip and label of the button next to the search box (and \"+\") that shows the server's custom emoji, to search and delete them, in place of the grid."
   },
   "fusion.picker.none": {
     "defaultMessage": "No emoji match.",

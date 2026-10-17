@@ -5,16 +5,25 @@ import React from 'react';
 
 import type {DeepPartial} from '@mattermost/types/utilities';
 
+import {EmojiTypes} from 'mattermost-redux/action_types';
+import {createCustomEmoji} from 'mattermost-redux/actions/emojis';
+
 import {LAYER_ID} from 'fusion/components/layer';
-import {renderWithContext, screen, userEvent} from 'tests/react_testing_utils';
+import {renderWithContext, screen, userEvent, waitFor} from 'tests/react_testing_utils';
+import {TestHelper} from 'utils/test_helper';
 
 import type {GlobalState} from 'types/store';
 import type {EmojiPickerTabProps, EmojiPickerTabRegistration} from 'types/store/plugins';
 
 import EmojiPicker from './emoji_picker';
+import type {PickerKit} from './picker_views';
 
-// Permissions are the gate's business: here, the user may create emoji.
-jest.mock('components/permissions_gates/any_team_permission_gate', () => ({children}: {children: React.ReactNode}) => children);
+jest.mock('mattermost-redux/actions/emojis', () => ({
+    ...jest.requireActual('mattermost-redux/actions/emojis'),
+    createCustomEmoji: jest.fn(),
+    getCustomEmojiByName: jest.fn(() => ({type: 'MOCK_EMOJI_BY_NAME', error: {status_code: 404}})),
+    getCustomEmojis: jest.fn(() => ({type: 'MOCK_GET_EMOJIS', data: []})),
+}));
 
 function makeTab(partial: Partial<EmojiPickerTabRegistration> = {}): EmojiPickerTabRegistration {
     return {
@@ -157,36 +166,156 @@ describe('fusion/popovers/EmojiPicker', () => {
         expect(screen.getByRole('textbox', {name: 'Search emoji'})).toBeInTheDocument();
     });
 
-    test('opens the custom emoji dialog when custom emoji are enabled', async () => {
+    // Custom emoji: "+" adds one and "Custom emoji" manages them, in views of the picker, for those allowed to.
+    const MEMBER = ['create_emojis', 'delete_emojis'];
+    const ADMIN = ['create_emojis', 'delete_emojis', 'delete_others_emojis'];
+    const emojiState = ({perms = MEMBER, enabled = true, systemRole = 'system_user'} = {}) => ({
+        entities: {
+            general: {config: {EnableCustomEmoji: enabled ? 'true' : 'false'}},
+            users: {currentUserId: 'me', profiles: {me: TestHelper.getUserMock({id: 'me', roles: systemRole})}},
+            roles: {roles: {[systemRole]: {id: 'r1', name: systemRole, permissions: perms}}},
+            teams: {currentTeamId: 'team1', teams: {team1: TestHelper.getTeamMock({id: 'team1', name: 'lab'})}, myMembers: {}},
+        },
+    }) as DeepPartial<GlobalState>;
+    const renderPicker = (state: DeepPartial<GlobalState>, props: Partial<React.ComponentProps<typeof EmojiPicker>> = {}) => {
         const onClose = jest.fn();
-        const state = {
-            entities: {
-                general: {config: {EnableCustomEmoji: 'true'}},
-                teams: {currentTeamId: 'team1', teams: {team1: {id: 'team1', name: 'lab'}}},
-            },
-        } as DeepPartial<GlobalState>;
+        const onPick = jest.fn();
         renderWithContext(
             <EmojiPicker
                 anchor={null}
-                onPick={jest.fn()}
+                onPick={onPick}
                 onClose={onClose}
+                {...props}
             />,
             state,
         );
-        await userEvent.click(screen.getByRole('button', {name: 'Add custom emoji'}));
-        expect(onClose).toHaveBeenCalled();
+        return {onClose, onPick};
+    };
+
+    test('members have "+" and "Custom emoji" next to the search', () => {
+        renderPicker(emojiState());
+        expect(screen.getByRole('button', {name: 'Add custom emoji'})).toBeInTheDocument();
+        expect(screen.getByRole('button', {name: 'Custom emoji'})).toBeInTheDocument();
     });
 
-    test('has no custom emoji button when custom emoji are off', () => {
-        renderWithContext(
+    test('guests have neither, nor anyone when custom emoji are off', () => {
+        const {unmount} = renderWithContext(
             <EmojiPicker
                 anchor={null}
                 onPick={jest.fn()}
                 onClose={jest.fn()}
             />,
-            {entities: {teams: {currentTeamId: 'team1', teams: {team1: {id: 'team1', name: 'lab'}}}}} as DeepPartial<GlobalState>,
+            emojiState({perms: [], systemRole: 'system_guest'}),
         );
         expect(screen.queryByRole('button', {name: 'Add custom emoji'})).not.toBeInTheDocument();
+        expect(screen.queryByRole('button', {name: 'Custom emoji'})).not.toBeInTheDocument();
+        unmount();
+
+        renderPicker(emojiState({perms: ADMIN, enabled: false, systemRole: 'system_admin'}));
+        expect(screen.queryByRole('button', {name: 'Add custom emoji'})).not.toBeInTheDocument();
+        expect(screen.queryByRole('button', {name: 'Custom emoji'})).not.toBeInTheDocument();
+    });
+
+    test('someone who may delete emoji but not add any has only "Custom emoji"', () => {
+        renderPicker(emojiState({perms: ['delete_emojis']}));
+        expect(screen.queryByRole('button', {name: 'Add custom emoji'})).not.toBeInTheDocument();
+        expect(screen.getByRole('button', {name: 'Custom emoji'})).toBeInTheDocument();
+    });
+
+    test('"+" shows the add view in the picker, which stays open; Back returns to the grid', async () => {
+        const {onClose} = renderPicker(emojiState());
+        await userEvent.click(screen.getByRole('button', {name: 'Add custom emoji'}));
+
+        const picker = screen.getByRole('dialog', {name: 'Emoji'});
+        expect(picker).toContainElement(screen.getByRole('form', {name: 'Add a custom emoji'}));
+        expect(screen.queryByRole('textbox', {name: 'Search emoji'})).not.toBeInTheDocument();
+        expect(screen.getByRole('button', {name: 'Back'})).toHaveFocus();
+
+        await userEvent.click(screen.getByRole('button', {name: 'Back'}));
+        expect(screen.getByRole('textbox', {name: 'Search emoji'})).toBeInTheDocument();
+        await waitFor(() => expect(screen.getByRole('button', {name: 'Add custom emoji'})).toHaveFocus());
+        expect(onClose).not.toHaveBeenCalled();
+    });
+
+    test('Escape goes back from a view to the grid, and closes the picker from the grid', async () => {
+        const {onClose} = renderPicker(emojiState());
+        await userEvent.click(screen.getByRole('button', {name: 'Custom emoji'}));
+        expect(screen.getByRole('region', {name: 'Custom emoji'})).toBeInTheDocument();
+
+        await userEvent.keyboard('{Escape}');
+        expect(screen.queryByRole('region', {name: 'Custom emoji'})).not.toBeInTheDocument();
+        expect(screen.getByRole('textbox', {name: 'Search emoji'})).toBeInTheDocument();
+        expect(onClose).not.toHaveBeenCalled();
+
+        await userEvent.keyboard('{Escape}');
+        expect(onClose).toHaveBeenCalled();
+    });
+
+    test('a saved emoji comes back first on the grid, focused and ready to use', async () => {
+        URL.createObjectURL = jest.fn(() => 'blob:preview');
+        URL.revokeObjectURL = jest.fn();
+        const created = {id: 'e3', name: 'party_parrot', creator_id: 'me', create_at: 1, update_at: 1, delete_at: 0, category: 'custom'};
+        jest.mocked(createCustomEmoji).mockReturnValue({type: EmojiTypes.RECEIVED_CUSTOM_EMOJI, data: created} as never);
+        const {onClose, onPick} = renderPicker(emojiState(), {keepOpen: true, compose: {channelId: 'channel', insertText: jest.fn()}});
+
+        await userEvent.click(screen.getByRole('button', {name: 'Add custom emoji'}));
+        await userEvent.upload(document.querySelector('input[type="file"]') as HTMLInputElement, new File(['x'], 'Party Parrot.gif', {type: 'image/gif'}));
+        await screen.findByText(':party_parrot: is free.');
+        await userEvent.click(screen.getByRole('button', {name: 'Save'}));
+
+        expect(await screen.findByRole('heading', {name: 'Just added'})).toBeInTheDocument();
+        const fresh = screen.getByRole('button', {name: 'party_parrot'});
+        expect(fresh).toHaveFocus();
+        expect(screen.getByText(':party_parrot:', {selector: 'code'})).toBeInTheDocument();
+
+        await userEvent.keyboard('{Enter}');
+        expect(onPick).toHaveBeenCalledWith('party_parrot');
+        expect(onClose).not.toHaveBeenCalled();
+    });
+
+    test('hands the picker kit to the plugins\' tabs, whose views go back on Escape too', async () => {
+        // A plugin tab with an add view, made of the kit as a plugin would.
+        const component = ({pickerKit}: EmojiPickerTabProps) => {
+            const kit = pickerKit as PickerKit;
+            const [view, open, back] = kit.usePickerView<'add'>();
+            if (view === 'add') {
+                return (
+                    <kit.PickerViewFrame
+                        title='Add a sticker'
+                        onBack={back}
+                    >
+                        {'sticker form'}
+                    </kit.PickerViewFrame>
+                );
+            }
+            return (
+                <kit.PickerViewButtons
+                    onAdd={() => open('add')}
+                    addLabel='Add a sticker'
+                    manageLabel='Manage stickers'
+                />
+            );
+        };
+        const onClose = jest.fn();
+        renderWithContext(
+            <EmojiPicker
+                anchor={null}
+                onPick={jest.fn()}
+                onClose={onClose}
+                compose={{channelId: 'channel', insertText: jest.fn()}}
+            />,
+            stateWith([makeTab({id: 'stickers', label: 'Stickers', component})]),
+        );
+        await userEvent.click(screen.getByRole('tab', {name: 'Stickers'}));
+
+        // Only the buttons a tab passes a handler for.
+        expect(screen.queryByRole('button', {name: 'Manage stickers'})).not.toBeInTheDocument();
+        await userEvent.click(screen.getByRole('button', {name: 'Add a sticker'}));
+        expect(screen.getByRole('region', {name: 'Add a sticker'})).toHaveTextContent('sticker form');
+
+        await userEvent.keyboard('{Escape}');
+        expect(screen.queryByRole('region', {name: 'Add a sticker'})).not.toBeInTheDocument();
+        expect(onClose).not.toHaveBeenCalled();
     });
 
     // The search ranks recently used emoji first: it must get their ids, not their names (an unknown id crashed the

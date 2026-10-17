@@ -7,9 +7,6 @@ import {shallowEqual, useDispatch, useSelector} from 'react-redux';
 
 import type {Emoji} from '@mattermost/types/emojis';
 
-import Permissions from 'mattermost-redux/constants/permissions';
-import {getCustomEmojisEnabled} from 'mattermost-redux/selectors/entities/emojis';
-import {getCurrentTeam} from 'mattermost-redux/selectors/entities/teams';
 import {isSystemEmoji} from 'mattermost-redux/utils/emoji_utils';
 
 import {addRecentEmoji} from 'actions/emoji_actions';
@@ -18,17 +15,18 @@ import {getEmojiMap, getRecentEmojisNames, getUserSkinTone} from 'selectors/emoj
 
 import RenderEmoji from 'components/emoji/render_emoji';
 import {getFilteredEmojis, getUpdatedCategoriesAndAllEmojis} from 'components/emoji_picker/utils';
-import AnyTeamPermissionGate from 'components/permissions_gates/any_team_permission_gate';
 
 import Icon, {isIconName} from 'fusion/components/icon';
 import {Popover} from 'fusion/components/layer';
 import {am} from 'fusion/utils/class_names';
-import {openCustomEmoji} from 'fusion/utils/modals';
 import PluggableErrorBoundary from 'plugins/pluggable/error_boundary';
 
 import type {GlobalState} from 'types/store';
 import type {EmojiPickerTabRegistration} from 'types/store/plugins';
 
+import {AddCustomEmojiView, CustomEmojiButtons, ManageCustomEmojiView} from './custom_emoji_views';
+import type {CustomEmojiView} from './custom_emoji_views';
+import {PickerEscapeProvider, pickerKit, useEscapeStack, usePickerView} from './picker_views';
 import SkinTonePicker from './skin_tone_picker';
 
 const nameOf = (emoji: Emoji) => (isSystemEmoji(emoji) ? emoji.short_names[0] : emoji.name);
@@ -114,25 +112,30 @@ type EmojiTabProps = {
     query: string;
     onQuery: (query: string) => void;
     onPick: (emoji: Emoji) => void;
-    onClose: () => void;
     keepOpen: boolean;
+
+    // Opens the add or manage view in place of the grid.
+    onOpenView: (view: CustomEmojiView) => void;
+
+    // The custom emoji just added, newest first: they come first, the newest focused and ready to use.
+    added: string[];
 };
 
 // EmojiTab is the mockup's emoji picker: search, category rail, grid and a footer naming the emoji under the pointer.
-function EmojiTab({query, onQuery, onPick: pick, onClose, keepOpen}: EmojiTabProps) {
+// Next to the search, "+" adds a custom emoji and "Custom emoji" manages them, in views of the picker.
+function EmojiTab({query, onQuery, onPick: pick, keepOpen, onOpenView, added}: EmojiTabProps) {
     const {formatMessage} = useIntl();
-    const dispatch = useDispatch();
-    const customEmojisEnabled = useSelector(getCustomEmojisEnabled);
-    const teamName = useSelector((state: GlobalState) => getCurrentTeam(state)?.name ?? '');
     const emojiMap = useSelector(getEmojiMap);
     const used = useSelector(getRecentEmojisNames);
 
     // The "Recently used" line comes first; until anything was used, it holds the usual reactions.
     const recent = used.length ? used : DEFAULT_RECENT;
     const skinTone = useSelector(getUserSkinTone);
-    const [hovered, setHovered] = useState<Emoji | null>(null);
+    const justAdded = useMemo(() => added.map((name) => emojiMap.get(name)).filter((e): e is Emoji => Boolean(e)), [added, emojiMap]);
+    const [hovered, setHovered] = useState<Emoji | null>(justAdded[0] ?? null);
     const scrollRef = useRef<HTMLDivElement>(null);
     const inputRef = useRef<HTMLInputElement>(null);
+    const addedRef = useRef<HTMLButtonElement>(null);
 
     const [categories, allEmojis] = useMemo(() => getUpdatedCategoriesAndAllEmojis(emojiMap, recent, skinTone, {}), [emojiMap, recent, skinTone]);
 
@@ -140,8 +143,9 @@ function EmojiTab({query, onQuery, onPick: pick, onClose, keepOpen}: EmojiTabPro
     const recentIds = categories.recent?.emojiIds;
     const results = useMemo(() => (query.trim() ? getFilteredEmojis(allEmojis, query.trim(), recentIds ?? [], skinTone) : null), [allEmojis, query, recentIds, skinTone]);
 
+    // The search has the focus, or the emoji just added: Enter or a click uses it.
     useEffect(() => {
-        inputRef.current?.focus();
+        (addedRef.current || inputRef.current)?.focus();
     }, []);
 
     const sections = Object.values(categories).filter((c) => c.emojiIds?.length);
@@ -170,22 +174,7 @@ function EmojiTab({query, onQuery, onPick: pick, onClose, keepOpen}: EmojiTabPro
                     />
                 </label>
                 <SkinTonePicker/>
-                {customEmojisEnabled && teamName && (
-                    <AnyTeamPermissionGate permissions={[Permissions.CREATE_EMOJIS]}>
-                        <button
-                            type='button'
-                            className={am('icon-btn')}
-                            title={formatMessage({id: 'fusion.picker.addCustomEmoji', defaultMessage: 'Add custom emoji'})}
-                            aria-label={formatMessage({id: 'fusion.picker.addCustomEmoji', defaultMessage: 'Add custom emoji'})}
-                            onClick={() => {
-                                onClose();
-                                dispatch(openCustomEmoji());
-                            }}
-                        >
-                            <Icon name='plus'/>
-                        </button>
-                    </AnyTeamPermissionGate>
-                )}
+                <CustomEmojiButtons onOpen={onOpenView}/>
             </div>
             <div className={am('picker-body')}>
                 {!results && (
@@ -232,17 +221,46 @@ function EmojiTab({query, onQuery, onPick: pick, onClose, keepOpen}: EmojiTabPro
                                 <div className={am('empty')}>{formatMessage({id: 'fusion.picker.none', defaultMessage: 'No emoji match.'})}</div>
                             )}
                         </>
-                    ) : sections.map((c) => (
-                        <React.Fragment key={c.name}>
-                            <h5 id={`am-ecat-${c.name}`}>{formatMessage(c.label)}</h5>
-                            <LazyGrid
-                                emojis={(c.emojiIds || []).map((id) => allEmojis[id]).filter(Boolean)}
-                                onPick={pick}
-                                onHover={setHovered}
-                                root={scrollRef.current}
-                            />
-                        </React.Fragment>
-                    ))}
+                    ) : (
+                        <>
+                            {justAdded.length > 0 && (
+                                <>
+                                    <h5 id='am-ecat-added'>{formatMessage({id: 'fusion.picker.justAdded', defaultMessage: 'Just added'})}</h5>
+                                    <div className={am('emoji-grid', 'emoji-added')}>
+                                        {justAdded.map((emoji, i) => (
+                                            <button
+                                                key={idOf(emoji)}
+                                                ref={i === 0 ? addedRef : undefined}
+                                                type='button'
+                                                className={am({fresh: i === 0})}
+                                                title={`:${nameOf(emoji)}:`}
+                                                aria-label={nameOf(emoji)}
+                                                onClick={() => pick(emoji)}
+                                                onMouseEnter={() => setHovered(emoji)}
+                                                onFocus={() => setHovered(emoji)}
+                                            >
+                                                <RenderEmoji
+                                                    emojiName={nameOf(emoji)}
+                                                    size={22}
+                                                />
+                                            </button>
+                                        ))}
+                                    </div>
+                                </>
+                            )}
+                            {sections.map((c) => (
+                                <React.Fragment key={c.name}>
+                                    <h5 id={`am-ecat-${c.name}`}>{formatMessage(c.label)}</h5>
+                                    <LazyGrid
+                                        emojis={(c.emojiIds || []).map((id) => allEmojis[id]).filter(Boolean)}
+                                        onPick={pick}
+                                        onHover={setHovered}
+                                        root={scrollRef.current}
+                                    />
+                                </React.Fragment>
+                            ))}
+                        </>
+                    )}
                 </div>
             </div>
             <div className={am('picker-foot')}>
@@ -261,7 +279,8 @@ function EmojiTab({query, onQuery, onPick: pick, onClose, keepOpen}: EmojiTabPro
 
 // EmojiPicker is the mockup's picker. The composer's has tabs when plugins add some (registerEmojiPickerTab), in
 // the mockup's order: theirs (GIFs, Stickers), Emoji, then theirs of order 10 or more (Memes). A plugin tab renders
-// its own search box and body.
+// its own search box and body, and gets the picker's kit for its add and manage views (pickerKit). The views stay in
+// the picker: Escape goes back from a view to its grid, and closes the picker from the grid.
 export default function EmojiPicker({anchor, onPick, onClose, keepOpen = false, compose}: Props) {
     const {formatMessage} = useIntl();
     const dispatch = useDispatch();
@@ -271,6 +290,9 @@ export default function EmojiPicker({anchor, onPick, onClose, keepOpen = false, 
     const pluginTabs = useSelector((state: GlobalState) => (compose ? getEmojiPickerTabs(state, ctx) : NO_TABS), shallowEqual);
     const [selected, setSelected] = useState(compose ? lastTab : EMOJI_TAB);
     const [query, setQuery] = useState('');
+    const [view, openView, closeView] = usePickerView<CustomEmojiView>();
+    const [added, setAdded] = useState<string[]>([]);
+    const escapes = useEscapeStack();
 
     // A tab that went away (e.g. its plugin was disabled) leaves the Emoji tab selected.
     const pluginTab = pluginTabs.find((t) => t.id === selected);
@@ -279,6 +301,7 @@ export default function EmojiPicker({anchor, onPick, onClose, keepOpen = false, 
         setSelected(id);
         rememberTab(id);
         setQuery('');
+        closeView(false);
     };
 
     const pick = (emoji: Emoji) => {
@@ -305,56 +328,78 @@ export default function EmojiPicker({anchor, onPick, onClose, keepOpen = false, 
             className='picker'
             label={formatMessage({id: 'fusion.picker.label', defaultMessage: 'Emoji'})}
             onClose={onClose}
+            onEscape={escapes.escape}
         >
-            {pluginTabs.length > 0 && (
-                <div
-                    className={am('picker-tabs')}
-                    role='tablist'
-                >
-                    {tabs.map((t) => (
-                        <button
-                            key={t.id}
-                            type='button'
-                            role='tab'
-                            aria-selected={current === t.id}
-                            className={am({on: current === t.id})}
-                            onClick={() => selectTab(t.id)}
-                        >
-                            {t.icon && (
-                                <Icon
-                                    name={t.icon}
-                                    size='sm'
-                                />
-                            )}
-                            {t.label}
-                        </button>
-                    ))}
-                </div>
-            )}
-            {pluginTab ? (
-                <PluggableErrorBoundary
-                    key={pluginTab.id}
-                    pluginId={pluginTab.pluginId}
-                >
-                    <pluginTab.component
-                        channelId={channelId}
-                        rootId={rootId}
-                        filter={query}
-                        onFilterChange={setQuery}
-                        onSelectDone={onClose}
-                        isFusion={true}
-                        insertText={compose?.insertText}
+            <PickerEscapeProvider value={escapes.value}>
+                {pluginTabs.length > 0 && (
+                    <div
+                        className={am('picker-tabs')}
+                        role='tablist'
+                    >
+                        {tabs.map((t) => (
+                            <button
+                                key={t.id}
+                                type='button'
+                                role='tab'
+                                aria-selected={current === t.id}
+                                className={am({on: current === t.id})}
+                                onClick={() => selectTab(t.id)}
+                            >
+                                {t.icon && (
+                                    <Icon
+                                        name={t.icon}
+                                        size='sm'
+                                    />
+                                )}
+                                {t.label}
+                            </button>
+                        ))}
+                    </div>
+                )}
+                {pluginTab ? (
+                    <PluggableErrorBoundary
+                        key={pluginTab.id}
+                        pluginId={pluginTab.pluginId}
+                    >
+                        <pluginTab.component
+                            channelId={channelId}
+                            rootId={rootId}
+                            filter={query}
+                            onFilterChange={setQuery}
+                            onSelectDone={onClose}
+                            isFusion={true}
+                            insertText={compose?.insertText}
+                            pickerKit={pickerKit}
+                        />
+                    </PluggableErrorBoundary>
+                ) : null}
+                {!pluginTab && view === 'add' && (
+                    <AddCustomEmojiView
+                        onBack={closeView}
+                        onAdded={(emoji) => {
+                            setAdded((names) => [emoji.name, ...names.filter((n) => n !== emoji.name)]);
+                            setQuery('');
+                            closeView(false);
+                        }}
                     />
-                </PluggableErrorBoundary>
-            ) : (
-                <EmojiTab
-                    query={query}
-                    onQuery={setQuery}
-                    onPick={pick}
-                    onClose={onClose}
-                    keepOpen={keepOpen}
-                />
-            )}
+                )}
+                {!pluginTab && view === 'manage' && (
+                    <ManageCustomEmojiView
+                        onBack={closeView}
+                        onPick={pick}
+                    />
+                )}
+                {!pluginTab && view === 'grid' && (
+                    <EmojiTab
+                        query={query}
+                        onQuery={setQuery}
+                        onPick={pick}
+                        keepOpen={keepOpen}
+                        onOpenView={openView}
+                        added={added}
+                    />
+                )}
+            </PickerEscapeProvider>
         </Popover>
     );
 }
