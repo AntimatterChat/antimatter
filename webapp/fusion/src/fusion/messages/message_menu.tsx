@@ -33,6 +33,7 @@ import Icon from 'fusion/components/icon';
 import {Popover} from 'fusion/components/layer';
 import {Flyout, MenuHeading, MenuItem, MenuSeparator} from 'fusion/components/menu';
 import {CustomTimeForm} from 'fusion/composer/schedule';
+import {useDisplayPrefs} from 'fusion/hooks/display';
 import CopyIdItem from 'fusion/popovers/copy_id_item';
 import {canMoveThread} from 'fusion/rhs/thread_to';
 import {useDialogs} from 'fusion/shell/dialogs_context';
@@ -48,6 +49,8 @@ import {copyToClipboard} from 'utils/utils';
 
 import type {GlobalState} from 'types/store';
 
+import {useImageCount} from './content/files';
+import {setImagesShown, useImagesShown} from './content/image_fold';
 import {canReplyInline, replyInline, useInlineRepliesEnabled} from './inline_reply';
 import {ON_TOP_DURATIONS, durationLabel, useCanChangeOnTop} from './on_top';
 import type {OnTopDuration} from './on_top';
@@ -101,6 +104,11 @@ export default function MessageMenu({post, anchor, inThread, onClose, onMoreReac
     const quick = [...new Set([...[...recent].reverse(), ...QUICK_REACTIONS])].slice(0, QUICK_COUNT);
 
     const openNotes = useNotesToSelf();
+
+    // Its images are hidden or shown from here (the message keeps a line to show them again).
+    const imageCount = useImageCount(post);
+    const collapsePreviews = useDisplayPrefs().collapsePreviews;
+    const imagesShown = useImagesShown(post.id) ?? !collapsePreviews;
 
     // Antimatter moves threads between the channels of a community, for their authors and moderators.
     const canMove = useSelector((state: GlobalState) => {
@@ -373,6 +381,13 @@ export default function MessageMenu({post, anchor, inThread, onClose, onMoreReac
                         </button>
                     )}
                 </Flyout>
+            )}
+            {imageCount > 0 && (
+                <MenuItem
+                    icon={imagesShown ? 'eye-off' : 'eye'}
+                    label={imagesShown ? formatMessage({id: 'fusion.files.hideImages', defaultMessage: '{count, plural, one {Hide image} other {Hide # images}}'}, {count: imageCount}) : formatMessage({id: 'fusion.files.showImages', defaultMessage: '{count, plural, one {Show image} other {Show # images}}'}, {count: imageCount})}
+                    onClick={run(() => setImagesShown(post.id, !imagesShown))}
+                />
             )}
             <MenuSeparator/>
             <MenuItem

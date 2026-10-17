@@ -25,11 +25,12 @@ import {getSiteURL} from 'utils/url';
 import type {GlobalState} from 'types/store';
 
 import FileMenu from './file_menu';
+import {setImagesShown, useImagesShown} from './image_fold';
 import {imageTileStyle} from './image_tile';
 import {imageCaption, useLightbox} from './lightbox';
 import type {LightboxImage} from './lightbox';
 
-function isImage(file: FileInfo, svgs: boolean) {
+export function isImage(file: FileInfo, svgs: boolean) {
     const ext = (file.extension || '').toLowerCase();
     if (ext === 'svg') {
         return svgs;
@@ -43,6 +44,15 @@ function imageSrc(file: FileInfo) {
     return file.has_preview_image && ext !== 'gif' ? getFilePreviewUrl(file.id) : getFileUrl(file.id);
 }
 
+// useImageCount is how many images a message has: its ⋯ menu offers to hide or show them.
+export function useImageCount(post: Post): number {
+    const getFiles = useMemo(() => makeGetFilesForPost(), []);
+    const stored = useSelector((state: GlobalState) => getFiles(state, post.id));
+    const svgs = useSelector((state: GlobalState) => getConfig(state).EnableSVGs === 'true');
+    const files = post.type === Posts.POST_TYPES.BURN_ON_READ && post.metadata?.files ? post.metadata.files : stored;
+    return files.filter((f) => isImage(f, svgs)).length;
+}
+
 // Files draws a message's uploads as the mockup does: images as .img-att tiles that open the lightbox, with their name
 // and size in the tooltip rather than over the picture, other files as .attach chips (extension badge, name,
 // "412 KB · PDF") that open the classic file preview.
@@ -54,7 +64,7 @@ export default function Files({post}: {post: Post}) {
     const svgs = useSelector((state: GlobalState) => getConfig(state).EnableSVGs === 'true');
     const [lightbox, openImage] = useLightbox();
     const prefs = useDisplayPrefs();
-    const [imagesOpen, setImagesOpen] = useState<boolean | null>(null);
+    const imagesOpen = useImagesShown(post.id);
 
     // The menu of an attachment: from its ⋯ button (anchor) or a right-click (point).
     const [menu, setMenu] = useState<{file: FileInfo; anchor?: HTMLElement; point?: {x: number; y: number}} | null>(null);
@@ -94,7 +104,8 @@ export default function Files({post}: {post: Post}) {
         return null;
     }
 
-    // Images can be folded, one message at a time; they start folded or open as the reader chose (/expand, /collapse).
+    // Images can be folded, one message at a time, from its ⋯ menu; they start folded or open as the reader chose
+    // (/expand, /collapse). Folded, a line shows them again.
     const imageCount = files.filter((f) => isImage(f, svgs)).length;
     const imagesShown = imagesOpen ?? !prefs.collapsePreviews;
 
@@ -122,7 +133,7 @@ export default function Files({post}: {post: Post}) {
                     type='button'
                     className={am('img-toggle', {open: imagesShown})}
                     aria-expanded={imagesShown}
-                    onClick={() => setImagesOpen(!imagesShown)}
+                    onClick={() => setImagesShown(post.id, !imagesShown)}
                 >
                     <Icon
                         name='chev'
@@ -170,29 +181,6 @@ export default function Files({post}: {post: Post}) {
                                 alt=''
                                 loading='lazy'
                             />
-                            <span
-                                role='button'
-                                tabIndex={0}
-                                className={am('att-more', 'att-fold')}
-                                title={formatMessage({id: 'fusion.files.hideImages', defaultMessage: '{count, plural, one {Hide image} other {Hide # images}}'}, {count: imageCount})}
-                                aria-label={formatMessage({id: 'fusion.files.hideImages', defaultMessage: '{count, plural, one {Hide image} other {Hide # images}}'}, {count: imageCount})}
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    setImagesOpen(false);
-                                }}
-                                onKeyDown={(e) => {
-                                    if (e.key === 'Enter' || e.key === ' ') {
-                                        e.preventDefault();
-                                        e.stopPropagation();
-                                        setImagesOpen(false);
-                                    }
-                                }}
-                            >
-                                <Icon
-                                    name='chev'
-                                    size='sm'
-                                />
-                            </span>
                         </button>
                     );
                 }

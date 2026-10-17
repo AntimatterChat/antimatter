@@ -18,18 +18,19 @@ import {getHistory} from 'utils/browser_history';
 
 import type {ActionFuncAsync, GlobalState} from 'types/store';
 
-// Antimatter's own sidebar preferences: hiding a team's muted channels (Discord's "Hide muted channels").
-const CATEGORY_FUSION_SIDEBAR = 'fusion_sidebar';
-const hideMutedName = (teamId: string) => `hide_muted_channels--${teamId}`;
+// Antimatter's own sidebar preference: hiding a community's muted channels, one preference per community named by its
+// id. The server takes names of at most 32 characters: the former "hide_muted_channels--<id>" (47) was refused, and
+// the setting came undone as soon as it was made.
+export const CATEGORY_HIDE_MUTED = 'fusion_hide_muted';
 
 export function isHidingMutedChannels(state: GlobalState, teamId: string): boolean {
-    return getPreference(state, CATEGORY_FUSION_SIDEBAR, hideMutedName(teamId), 'false') === 'true';
+    return getPreference(state, CATEGORY_HIDE_MUTED, teamId, 'false') === 'true';
 }
 
 export function setHidingMutedChannels(teamId: string, hide: boolean): ActionFuncAsync {
     return (dispatch, getState) => {
         const userId = getCurrentUserId(getState());
-        return dispatch(savePreferences(userId, [{user_id: userId, category: CATEGORY_FUSION_SIDEBAR, name: hideMutedName(teamId), value: String(hide)}]));
+        return dispatch(savePreferences(userId, [{user_id: userId, category: CATEGORY_HIDE_MUTED, name: teamId, value: String(hide)}]));
     };
 }
 

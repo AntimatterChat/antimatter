@@ -10,7 +10,6 @@ import type {UserCustomStatus} from '@mattermost/types/users';
 
 import {removeRecentCustomStatus, setCustomStatus, setStatus, unsetCustomStatus, updateMe} from 'mattermost-redux/actions/users';
 import {getConfig} from 'mattermost-redux/selectors/entities/general';
-import {getCurrentTeam} from 'mattermost-redux/selectors/entities/teams';
 import {getCurrentUser, getDndEndTimeForUserId} from 'mattermost-redux/selectors/entities/users';
 
 import {emitUserLoggedOutEvent} from 'actions/global_actions';
@@ -109,7 +108,6 @@ export default function StatusPopover({anchor, onClose}: Props) {
     const settings = useSettings();
     const toast = useToast();
     const me = useSelector(getCurrentUser);
-    const team = useSelector(getCurrentTeam);
     const name = useDisplayName(me);
     const status = useUserStatus(me?.id);
     const dndEndTime = useSelector((state: GlobalState) => (me ? getDndEndTimeForUserId(state, me.id) : 0));
@@ -524,15 +522,7 @@ export default function StatusPopover({anchor, onClose}: Props) {
                     />
                     {formatMessage({id: 'fusion.status.settings', defaultMessage: 'Profile & settings'})}
                 </button>
-                {team && (
-                    <button onClick={() => getHistory().push(`/${team.name}/integrations`)}>
-                        <Icon
-                            name='plug'
-                            size='sm'
-                        />
-                        {formatMessage({id: 'fusion.status.integrations', defaultMessage: 'Integrations'})}
-                    </button>
-                )}
+                {/* A community's integrations are in its settings (its menu › Community settings › Integrations). */}
                 {systemConsole && (
                     <button onClick={() => getHistory().push('/admin_console')}>
                         <Icon

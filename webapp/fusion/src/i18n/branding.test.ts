@@ -27,7 +27,7 @@ const ALLOWED: Record<string, string> = {
     'admin.email.mattermostPushServer': 'warns that a push server is run by Mattermost, Inc. and only serves its apps',
     'admin.plugin.addOn.notSupported': 'a third-party plugin needs an add-on Mattermost sells',
     'admin.plugin.addOn.notSupportedWarning': 'a third-party plugin needs an add-on Mattermost sells',
-    'fusion.layout.workplaceDesc': 'compares a community layout with Mattermost\'s, as the next option does with Discord',
+    'fusion.layout.workplaceDesc': 'compares the Workplace layout with Mattermost\'s',
 };
 
 // Known branding debt: strings inherited from Mattermost that should be reworded (and translated into the 37

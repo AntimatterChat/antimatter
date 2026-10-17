@@ -75,17 +75,24 @@ describe('fusion/messages/PluginMenuActions', () => {
         expect(screen.queryByRole('menuitem', {name: 'AI actions'})).not.toBeInTheDocument();
         expect(screen.queryByRole('menu', {name: 'AI actions'})).not.toBeInTheDocument();
         const menu = screen.getByRole('menu', {name: 'More message actions'});
-        expect(within(menu).getByText('AI actions')).toBeInTheDocument();
         expect(within(menu).getAllByRole('menuitem').map((i) => i.textContent)).toEqual(['Create a task', 'Summarize', 'Translate']);
+
+        // Nor a heading naming them: the app's icon and the menu say it. A line sets them apart from the others.
+        expect(within(menu).queryByText('AI actions')).not.toBeInTheDocument();
+        expect(menu.querySelector('.am-pop-h')).toBeNull();
+        expect(menu.querySelectorAll('hr')).toHaveLength(1);
 
         await userEvent.click(within(menu).getByRole('menuitem', {name: 'Summarize'}));
         expect(summarize.action).toHaveBeenCalledWith('post1');
     });
 
-    test('shows More actions for a submenu alone', () => {
+    test('shows More actions for a submenu alone, without a heading nor a line', () => {
         render([action('ai', 'AI actions', {pluginId: 'mattermost-ai', subMenu: [action('s1', 'Summarize')]})]);
         expect(screen.getByRole('menuitem', {name: 'More actions'})).toBeInTheDocument();
-        expect(within(screen.getByRole('menu', {name: 'More message actions'})).getAllByRole('menuitem').map((i) => i.textContent)).toEqual(['Summarize']);
+        const menu = screen.getByRole('menu', {name: 'More message actions'});
+        expect(within(menu).getAllByRole('menuitem').map((i) => i.textContent)).toEqual(['Summarize']);
+        expect(screen.queryByText('AI actions')).not.toBeInTheDocument();
+        expect(menu.querySelector('hr')).toBeNull();
     });
 
     test('leaves out actions whose filter refuses the message, and empty submenus', () => {

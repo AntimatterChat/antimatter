@@ -1,3 +1,5 @@
+@use 'breakpoints' as *;
+
 // The channel and team settings: the classic web app's tabs in a Fusion dialog, drawn with the Fusion theme.
 
 // The community settings hold the community's roles, onboarding, attributes and layout too: more room than the user
@@ -89,4 +91,39 @@
   .SaveChangesPanel { border: 1px solid var(--am-line); border-radius: 12px; background: var(--am-raise); box-shadow: var(--am-shadow); color: var(--am-text); }
   .SaveChangesPanel__save-btn { border-radius: 9px; background: var(--am-matter); color: #fff; }
   .SaveChangesPanel__cancel-btn { border-radius: 9px; background: var(--am-raise-2); color: var(--am-text); }
+}
+
+// The community settings' way to its integrations, after the tabs: a page of its own, which the icon tells.
+:is(.am-app, .am-layer) .am-modal.am-team-settings nav button.am-ts-link { display: flex; align-items: center; gap: 6px; }
+:is(.am-app, .am-layer) .am-modal.am-team-settings nav button.am-ts-link .am-ic { color: var(--am-muted); }
+
+// The Members page: the classic member list (search, people, their role menu), drawn as the Fusion dialogs draw it.
+:is(.am-app, .am-layer) .am-team-settings > .am-pane {
+  .am-team-members-head { display: flex; justify-content: flex-end; margin-bottom: 12px; }
+  .am-team-members-head .am-btn { width: auto; gap: 6px; }
+  .am-team-members {
+    color: var(--am-text);
+    font-family: var(--am-font-ui);
+
+    .filter-textbox { border: 1px solid var(--am-line); border-radius: 9px; background: var(--am-side); box-shadow: none; color: var(--am-text); }
+    .filter-textbox:focus { border-color: var(--am-matter); box-shadow: none; }
+    .filter-row .icon-magnify { color: var(--am-muted); }
+    .more-modal__row { border-color: var(--am-line); border-radius: 10px; }
+    .more-modal__row:hover, .more-modal__row.a11y--active { background: var(--am-hover); }
+    .more-modal__name { color: var(--am-text); font-weight: 600; }
+    .more-modal__description, .member-count, .filter-controls { color: var(--am-muted); }
+    .more-modal__dropdown, .color--link, .dropdown-toggle { color: var(--am-anti); }
+    .btn.btn-link { background: none; color: var(--am-anti); }
+  }
+
+  // The Teams page: a team per row, its tag first.
+  .am-team-row { width: 100%; text-align: left; color: var(--am-text); }
+  .am-team-row .am-team-tag { flex: none; }
+  .am-team-teams-foot { display: flex; margin-top: 12px; }
+  .am-team-teams-foot .am-btn { width: auto; gap: 6px; }
+}
+
+// Phones lay the tabs in a row: no line before the integrations there.
+@media #{$compact} {
+  :is(.am-app, .am-layer) .am-modal.am-team-settings nav hr { display: none; }
 }

@@ -39,8 +39,6 @@ body.app__body #root.am-root > .am-root-main {
 :is(.am-app, .am-layer) .am-img-toggle:hover { color: var(--am-text); background: var(--am-hover); }
 :is(.am-app, .am-layer) .am-img-toggle .am-ic { transform: rotate(-90deg); transition: transform .15s ease; }
 :is(.am-app, .am-layer) .am-img-toggle.am-open .am-ic { transform: none; }
-:is(.am-app, .am-layer) .am-att-more.am-att-fold { right: 38px; }
-:is(.am-app, .am-layer) .am-att-fold .am-ic { transform: rotate(180deg); }
 /* An attachment's ⋯ button, shown on hover, opens its menu (download, copy link, open in channel). */
 :is(.am-app, .am-layer) :is(.am-img-att, .am-attach) { position: relative; }
 :is(.am-app, .am-layer) .am-att-more { position: absolute; top: 6px; right: 6px; display: none; place-items: center; width: 26px; height: 26px; border-radius: 7px; background: var(--am-raise); color: var(--am-text-2); box-shadow: var(--am-shadow); }

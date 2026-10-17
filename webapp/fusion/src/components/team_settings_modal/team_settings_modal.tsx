@@ -3,14 +3,9 @@
 
 import React, {useState, useRef, useCallback, useEffect} from 'react';
 import {useIntl} from 'react-intl';
-import {useSelector} from 'react-redux';
+import {shallowEqual, useDispatch, useSelector} from 'react-redux';
 
-import {Permissions} from 'mattermost-redux/constants';
-import {isCustomGroupsEnabled} from 'mattermost-redux/selectors/entities/preferences';
-import {haveISystemPermission, haveITeamPermission} from 'mattermost-redux/selectors/entities/roles';
 import {getCurrentTeam, getCurrentTeamId} from 'mattermost-redux/selectors/entities/teams';
-
-import {isChannelAccessControlEnabled, isTeamMembershipAccessControlEnabled} from 'selectors/general';
 
 import TeamSettings from 'components/team_settings';
 
@@ -21,11 +16,16 @@ import Icon from 'fusion/components/icon';
 import {Dialog} from 'fusion/components/layer';
 import AutolinksSettings from 'fusion/teams/autolinks_settings';
 import ChannelsSettings from 'fusion/teams/channels_settings';
+import {getCommunitySettingsAccess} from 'fusion/teams/community_settings_access';
+import MembersSettings from 'fusion/teams/members_settings';
 import OnboardingSettings from 'fusion/teams/onboarding_editor';
 import RolesSettings from 'fusion/teams/roles_dialog';
 import {TeamLayoutSettings} from 'fusion/teams/team_layout_dialog';
+import TeamsSettings from 'fusion/teams/teams_settings';
 import {am} from 'fusion/utils/class_names';
+import {openInvitePeople, openUserGroups} from 'fusion/utils/modals';
 import {focusElement} from 'utils/a11y_utils';
+import {getHistory} from 'utils/browser_history';
 
 import type {GlobalState} from 'types/store';
 
@@ -34,8 +34,8 @@ import './team_settings_modal.scss';
 const SHOW_PANEL_ERROR_STATE_TAB_SWITCH_TIMEOUT = 3000;
 
 // The tabs the Fusion UI draws itself; the others are the classic web app's.
-export type FusionTeamSettingsTab = 'channels' | 'roles' | 'onboarding' | 'layout' | 'attributes' | 'autolinks' | 'ai_connections' | 'agents';
-const FUSION_TABS = new Set<string>(['channels', 'roles', 'onboarding', 'layout', 'attributes', 'autolinks', 'ai_connections', 'agents']);
+export type FusionTeamSettingsTab = 'members' | 'teams' | 'channels' | 'roles' | 'onboarding' | 'layout' | 'attributes' | 'autolinks' | 'ai_connections' | 'agents';
+const FUSION_TABS = new Set<string>(['members', 'teams', 'channels', 'roles', 'onboarding', 'layout', 'attributes', 'autolinks', 'ai_connections', 'agents']);
 
 type Props = {
     isOpen: boolean;
@@ -54,27 +54,14 @@ const TeamSettingsModal = ({isOpen, onExited, focusOriginElement, initialTab}: P
     const [hasBeenWarned, setHasBeenWarned] = useState(false);
     const modalBodyRef = useRef<HTMLDivElement>(null);
     const {formatMessage} = useIntl();
+    const dispatch = useDispatch();
 
     const teamId = useSelector(getCurrentTeamId);
     const team = useSelector(getCurrentTeam);
-    const canInviteUsers = useSelector((state: GlobalState) =>
-        haveITeamPermission(state, teamId, Permissions.INVITE_USER),
-    );
-    const abacEnabled = useSelector(isChannelAccessControlEnabled);
-    const teamMembershipAbacEnabled = useSelector(isTeamMembershipAccessControlEnabled);
-    const isSystemAdmin = useSelector((state: GlobalState) =>
-        haveISystemPermission(state, {permission: Permissions.MANAGE_SYSTEM}),
-    );
-    const hasTeamAccessRulesPermission = useSelector((state: GlobalState) =>
-        haveITeamPermission(state, teamId, Permissions.MANAGE_TEAM_ACCESS_RULES),
-    );
-    const canManageTeamAccessRules = isSystemAdmin || hasTeamAccessRulesPermission;
-    const canManageTeam = useSelector((state: GlobalState) => haveITeamPermission(state, teamId, Permissions.MANAGE_TEAM));
-    const canManageRoles = useSelector((state: GlobalState) => haveITeamPermission(state, teamId, Permissions.MANAGE_TEAM_ROLES));
-    const customGroups = useSelector(isCustomGroupsEnabled);
 
-    // Antimatter: the community's own model connections, for its admins (and the roles granted it).
-    const canManageAIConnections = useSelector((state: GlobalState) => haveITeamPermission(state, teamId, Permissions.MANAGE_TEAM_AI_CONNECTIONS));
+    // Antimatter: what one may manage, page by page, as the community menu decides who sees the settings
+    // (fusion/teams/community_settings_access.ts).
+    const access = useSelector((state: GlobalState) => getCommunitySettingsAccess(state, teamId), shallowEqual);
 
     useEffect(() => {
         setShow(isOpen);
@@ -112,6 +99,20 @@ const TeamSettingsModal = ({isOpen, onExited, focusOriginElement, initialTab}: P
         setShow(false);
     }, []);
 
+    // Leaves the settings for a dialog or page of their own (inviting people, every team, the integrations): not with
+    // unsaved changes, which warn as switching tabs does.
+    const leaveFor = (go: () => void) => {
+        if (areThereUnsavedChanges) {
+            setShowTabSwitchError(true);
+            setTimeout(() => {
+                setShowTabSwitchError(false);
+            }, SHOW_PANEL_ERROR_STATE_TAB_SWITCH_TIMEOUT);
+            return;
+        }
+        setShow(false);
+        go();
+    };
+
     const handleExited = useCallback(() => {
         // Reset all state
         setActiveTab(initialTab || 'info');
@@ -134,79 +135,99 @@ const TeamSettingsModal = ({isOpen, onExited, focusOriginElement, initialTab}: P
             uiName: formatMessage({id: 'fusion.teamSettings.overview', defaultMessage: 'Overview'}),
             icon: 'icon icon-information-outline',
             iconTitle: formatMessage({id: 'generic_icons.info', defaultMessage: 'Info Icon'}),
-
-            // Those who only manage the roles or the model connections (not the community) get those tabs alone.
-            display: canManageTeam || (!canManageRoles && !canManageAIConnections),
+            display: access.manage,
         },
         {
             name: 'access',
             uiName: formatMessage({id: 'team_settings_modal.accessTab', defaultMessage: 'Access'}),
             icon: 'icon icon-account-multiple-outline',
             iconTitle: formatMessage({id: 'generic_icons.member', defaultMessage: 'Member Icon'}),
-            display: canInviteUsers,
+
+            // The community's invitations: changing them takes managing it (the server checks manage_team).
+            display: access.access,
         },
         {
             name: 'team_membership',
             uiName: formatMessage({id: 'team_settings_modal.teamMembershipTab', defaultMessage: 'Team Membership'}),
             icon: 'icon icon-iframe-list-outline',
             iconTitle: formatMessage({id: 'generic_icons.team_membership', defaultMessage: 'Team Membership Icon'}),
-            display: teamMembershipAbacEnabled && canManageTeamAccessRules,
+            display: access.teamMembership,
         },
         {
             name: 'access_policies',
             uiName: formatMessage({id: 'team_settings_modal.accessPoliciesTab', defaultMessage: 'Channel Membership'}),
             icon: 'icon icon-message-check-outline',
             iconTitle: formatMessage({id: 'generic_icons.access_rules', defaultMessage: 'Membership Policy Icon'}),
-            display: abacEnabled && canManageTeamAccessRules,
+            display: access.accessPolicies,
+        },
+        {
+
+            // Antimatter: the members (the menu's former Manage members), for everyone who opens the settings.
+            name: 'members',
+            uiName: formatMessage({id: 'fusion.teamSettings.members', defaultMessage: 'Members'}),
+            icon: 'icon icon-account-multiple-outline',
+            iconTitle: formatMessage({id: 'fusion.teamSettings.members', defaultMessage: 'Members'}),
+            display: true,
+        },
+        {
+
+            // And its teams (the menu's former Teams…), when the server has them.
+            name: 'teams',
+            uiName: formatMessage({id: 'fusion.teamSettings.teams', defaultMessage: 'Teams'}),
+            icon: 'icon icon-account-group-outline',
+            iconTitle: formatMessage({id: 'fusion.teamSettings.teams', defaultMessage: 'Teams'}),
+            display: access.teams,
         },
         {
             name: 'channels',
             uiName: formatMessage({id: 'fusion.teamSettings.channels', defaultMessage: 'Channels'}),
             icon: 'icon icon-globe',
             iconTitle: formatMessage({id: 'fusion.teamSettings.channels', defaultMessage: 'Channels'}),
-            display: canManageTeam,
+            display: access.manage,
         },
         {
             name: 'roles',
             uiName: formatMessage({id: 'fusion.roles.title', defaultMessage: 'Roles'}),
             icon: 'icon icon-shield-outline',
             iconTitle: formatMessage({id: 'fusion.roles.title', defaultMessage: 'Roles'}),
-            display: canManageRoles && customGroups,
+            display: access.roles,
         },
         {
             name: 'onboarding',
             uiName: formatMessage({id: 'fusion.onboarding.editTitle', defaultMessage: 'Onboarding'}),
             icon: 'icon icon-message-text-outline',
             iconTitle: formatMessage({id: 'fusion.onboarding.editTitle', defaultMessage: 'Onboarding'}),
-            display: canManageTeam && customGroups,
+            display: access.manage && access.teams,
         },
         {
             name: 'attributes',
             uiName: formatMessage({id: 'fusion.communityAttributes.title', defaultMessage: 'Member attributes'}),
             icon: 'icon icon-tag-outline',
             iconTitle: formatMessage({id: 'fusion.communityAttributes.title', defaultMessage: 'Member attributes'}),
-            display: canManageTeam && customGroups,
+            display: access.manage && access.teams,
         },
         {
             name: 'layout',
             uiName: formatMessage({id: 'fusion.layout.title', defaultMessage: 'Community layout'}),
             icon: 'icon icon-view-grid-outline',
             iconTitle: formatMessage({id: 'fusion.layout.title', defaultMessage: 'Community layout'}),
-            display: canManageTeam && customGroups,
+            display: access.manage && access.teams,
         },
         {
             name: 'autolinks',
             uiName: formatMessage({id: 'fusion.teamSettings.autolinks', defaultMessage: 'Autolinks'}),
             icon: 'icon icon-link-variant',
             iconTitle: formatMessage({id: 'fusion.teamSettings.autolinks', defaultMessage: 'Autolinks'}),
-            display: canManageTeam,
+            display: access.manage,
         },
         {
             name: 'ai_connections',
             uiName: formatMessage({id: 'fusion.teamSettings.aiConnections', defaultMessage: 'Model connections'}),
             icon: 'icon icon-creation-outline',
             iconTitle: formatMessage({id: 'fusion.teamSettings.aiConnections', defaultMessage: 'Model connections'}),
-            display: canManageAIConnections,
+
+            // Antimatter: the community's own model connections, for its admins (and the roles granted it).
+            display: access.aiConnections,
         },
         {
 
@@ -215,7 +236,7 @@ const TeamSettingsModal = ({isOpen, onExited, focusOriginElement, initialTab}: P
             uiName: formatMessage({id: 'fusion.teamSettings.agents', defaultMessage: 'Agents'}),
             icon: 'icon icon-creation-outline',
             iconTitle: formatMessage({id: 'fusion.teamSettings.agents', defaultMessage: 'Agents'}),
-            display: canManageTeam,
+            display: access.manage,
         },
     ];
 
@@ -262,6 +283,25 @@ const TeamSettingsModal = ({isOpen, onExited, focusOriginElement, initialTab}: P
                         {tab.uiName}
                     </button>
                 ))}
+
+                {/* Antimatter: the community's integrations have pages of their own (the menu's former link in the
+                    user menu): this leaves the settings for them. */}
+                {access.integrations && team && (
+                    <>
+                        <hr/>
+                        <button
+                            type='button'
+                            className={am('ts-link')}
+                            onClick={() => leaveFor(() => getHistory().push(`/${team.name}/integrations`))}
+                        >
+                            {formatMessage({id: 'fusion.teamSettings.integrations', defaultMessage: 'Integrations'})}
+                            <Icon
+                                name='popout'
+                                size='xs'
+                            />
+                        </button>
+                    </>
+                )}
             </nav>
             <div
                 ref={modalBodyRef}
@@ -279,6 +319,8 @@ const TeamSettingsModal = ({isOpen, onExited, focusOriginElement, initialTab}: P
                         {formatMessage({id: 'saveChangesPanel.message', defaultMessage: 'You have unsaved changes'})}
                     </p>
                 )}
+                {shownTab === 'members' && <MembersSettings onInvite={() => leaveFor(() => dispatch(openInvitePeople()))}/>}
+                {shownTab === 'teams' && <TeamsSettings onOpenAll={() => leaveFor(() => dispatch(openUserGroups(teamId)))}/>}
                 {shownTab === 'channels' && <ChannelsSettings/>}
                 {shownTab === 'roles' && <RolesSettings onClose={handleHide}/>}
                 {shownTab === 'onboarding' && <OnboardingSettings setUnsaved={setAreThereUnsavedChanges}/>}

@@ -73,7 +73,7 @@ export default function ChannelsSettings() {
         <div className={am('team-channels')}>
             <Choice<TeamKind>
                 title={formatMessage({id: 'fusion.teamChannels.kind', defaultMessage: 'Kind of community'})}
-                desc={formatMessage({id: 'fusion.teamChannels.kindDesc', defaultMessage: 'A community, as on Discord: only its admins (and roles that manage channels) archive channels. Workplace, for a company\'s or an organisation\'s workspace: members also archive the channels they created. In both, only the channels\' admins, the community\'s admins and moderators put messages on top.'})}
+                desc={formatMessage({id: 'fusion.teamChannels.kindDesc', defaultMessage: 'Community: only its admins (and roles that manage channels) archive channels. Workplace, for a company\'s or an organisation\'s workspace: members also archive the channels they created. In both, only the channels\' admins, the community\'s admins and moderators put messages on top.'})}
                 value={team.kind === 'workplace' ? 'workplace' : 'community'}
                 options={[
                     ['community', formatMessage({id: 'fusion.teamChannels.kind.community', defaultMessage: 'Community'})],
@@ -83,7 +83,7 @@ export default function ChannelsSettings() {
             />
             <Toggle
                 title={formatMessage({id: 'fusion.teamChannels.all', defaultMessage: 'Members are in every channel'})}
-                desc={formatMessage({id: 'fusion.teamChannels.allDesc', defaultMessage: 'As in Discord: everyone in the community is in all its public channels, and in the private channels their roles open. They mute channels instead of leaving them, and nobody is removed from one: moderate through the community (removal, timeouts) or the channel\'s permissions. Guests and bots are only in the channels they\'re added to. Turning it on adds everyone to those channels (communities created before this setting existed keep their channels until you turn it on); turning it off keeps everyone where they are, free to leave.'})}
+                desc={formatMessage({id: 'fusion.teamChannels.allDesc', defaultMessage: 'Everyone in the community is in all its public channels, and in the private channels their roles open. They mute channels instead of leaving them, and nobody is removed from one: moderate through the community (removal, timeouts) or the channel\'s permissions. Guests and bots are only in the channels they\'re added to. Turning it on adds everyone to those channels (communities created before this setting existed keep their channels until you turn it on); turning it off keeps everyone where they are, free to leave.'})}
                 on={Boolean(team.all_channels_membership)}
                 onChange={(on) => save({all_channels_membership: on}, on ? formatMessage({id: 'fusion.teamChannels.allOn', defaultMessage: 'Everyone is being added to the channels they may see'}) : formatMessage({id: 'fusion.teamChannels.allOff', defaultMessage: 'Members can leave channels again'}))}
             />

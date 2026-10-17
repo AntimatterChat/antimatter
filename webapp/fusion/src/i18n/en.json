@@ -15036,7 +15036,7 @@
     "description": "Used both as the Teams page title in the System Console and as the 'Teams' filter group name in admin channel lists; plural noun."
   },
   "admin.team.allChannelsMembershipDescription": {
-    "defaultMessage": "When true, communities created from now on have their members in all the channels they may see, as in Discord: they mute channels instead of leaving them. Each community can turn this off in its settings. Existing communities are not changed.",
+    "defaultMessage": "When true, communities created from now on have their members in all the channels they may see: they mute channels instead of leaving them. Each community can turn this off in its settings. Existing communities are not changed.",
     "description": "Help text of the System Console setting deciding whether new communities have all their members in every channel (Antimatter)."
   },
   "admin.team.allChannelsMembershipTitle": {
@@ -24601,7 +24601,7 @@
   },
   "fusion.files.hideImages": {
     "defaultMessage": "{count, plural, one {Hide image} other {Hide # images}}",
-    "description": ""
+    "description": "Entry of a message's ⋯ menu hiding the images attached to the message; {count} is how many."
   },
   "fusion.files.linkCopied": {
     "defaultMessage": "Link copied",
@@ -24637,7 +24637,7 @@
   },
   "fusion.files.showImages": {
     "defaultMessage": "{count, plural, one {Show image} other {Show # images}}",
-    "description": ""
+    "description": "Entry of a message's ⋯ menu, and the line left under a message whose images are hidden, showing them again; {count} is how many."
   },
   "fusion.folded.blocked": {
     "defaultMessage": "Message from someone you blocked",
@@ -25212,8 +25212,8 @@
     "description": ""
   },
   "fusion.layout.communityDesc": {
-    "defaultMessage": "Like Discord: categories the admins keep, and a Moderators role. Only the community's admins archive channels. To stop members creating channels, change the community's permissions in the System Console.",
-    "description": "Description of the Community layout preset in the Community layout settings; Discord is a name."
+    "defaultMessage": "Categories the admins keep, and a Moderators role. Only the community's admins archive channels. To stop members creating channels, change the community's permissions in the System Console.",
+    "description": "Description of the Community layout preset in the Community layout settings."
   },
   "fusion.layout.export": {
     "defaultMessage": "Export as a template",
@@ -26979,22 +26979,6 @@
     "defaultMessage": "Your roles",
     "description": ""
   },
-  "fusion.serverMenu.aiConnections": {
-    "defaultMessage": "Model connections…",
-    "description": "Community menu entry (under 'Organise the community') opening the community settings' Model connections tab; the ellipsis means a dialog opens."
-  },
-  "fusion.serverMenu.aiConnectionsSub": {
-    "defaultMessage": "The community's own AI providers",
-    "description": "Short subtitle under the 'Model connections…' community menu entry."
-  },
-  "fusion.serverMenu.attributes": {
-    "defaultMessage": "Member attributes…",
-    "description": ""
-  },
-  "fusion.serverMenu.attributesSub": {
-    "defaultMessage": "Company, site… on profiles",
-    "description": ""
-  },
   "fusion.serverMenu.browse": {
     "defaultMessage": "Browse channels",
     "description": ""
@@ -27013,7 +26997,7 @@
   },
   "fusion.serverMenu.hideMuted": {
     "defaultMessage": "Hide muted channels",
-    "description": ""
+    "description": "Community menu checkbox: hides the community's muted channels from the sidebar; a check shows when it is on."
   },
   "fusion.serverMenu.invite": {
     "defaultMessage": "Invite people",
@@ -27027,20 +27011,8 @@
     "defaultMessage": "{team} menu",
     "description": ""
   },
-  "fusion.serverMenu.layout": {
-    "defaultMessage": "Community layout…",
-    "description": ""
-  },
-  "fusion.serverMenu.layoutSub": {
-    "defaultMessage": "Presets and templates",
-    "description": ""
-  },
   "fusion.serverMenu.leave": {
     "defaultMessage": "Leave community",
-    "description": ""
-  },
-  "fusion.serverMenu.manageMembers": {
-    "defaultMessage": "Manage members",
     "description": ""
   },
   "fusion.serverMenu.markRead": {
@@ -27071,14 +27043,6 @@
     "defaultMessage": "Notification settings",
     "description": ""
   },
-  "fusion.serverMenu.onboarding": {
-    "defaultMessage": "Onboarding…",
-    "description": ""
-  },
-  "fusion.serverMenu.onboardingSub": {
-    "defaultMessage": "Questions newcomers answer",
-    "description": ""
-  },
   "fusion.serverMenu.otherPlugins": {
     "defaultMessage": "Other",
     "description": ""
@@ -27087,25 +27051,13 @@
     "defaultMessage": "Remove from {folder}",
     "description": ""
   },
-  "fusion.serverMenu.roles": {
-    "defaultMessage": "Roles…",
-    "description": ""
-  },
-  "fusion.serverMenu.rolesSub": {
-    "defaultMessage": "Colours, groups in the member list, badges",
-    "description": ""
-  },
   "fusion.serverMenu.selfRoles": {
     "defaultMessage": "Your roles…",
     "description": ""
   },
   "fusion.serverMenu.settings": {
     "defaultMessage": "Community settings",
-    "description": ""
-  },
-  "fusion.serverMenu.setup": {
-    "defaultMessage": "Organise the community",
-    "description": ""
+    "description": "Community menu entry opening the community's settings; shown to those who may manage something there (the community, its roles, members' roles, model connections or integrations)."
   },
   "fusion.serverMenu.toFolder": {
     "defaultMessage": "Add to folder",
@@ -27120,20 +27072,16 @@
     "description": ""
   },
   "fusion.serverMenu.unreadOnly": {
-    "defaultMessage": "Show unread channels only",
-    "description": ""
+    "defaultMessage": "Hide read channels",
+    "description": "Community menu checkbox: hides the channels without unread messages from the sidebar, showing only the unread ones; a check shows when it is on. Short: it fits on one line."
   },
   "fusion.serverMenu.userGroups": {
     "defaultMessage": "Teams…",
-    "description": ""
-  },
-  "fusion.serverMenu.userGroupsSub": {
-    "defaultMessage": "Teams with a tag, a lead and a channel",
-    "description": ""
+    "description": "Community menu entry opening the community's teams (groups of people with a tag, a lead and a channel); for those who don't get the community settings, which have a Teams page. The ellipsis means a dialog opens."
   },
   "fusion.serverMenu.viewMembers": {
     "defaultMessage": "View members",
-    "description": ""
+    "description": "Community menu entry opening the list of the community's members; for those who don't get the community settings, which have a Members page."
   },
   "fusion.settings.accessHistory": {
     "defaultMessage": "Access history",
@@ -28299,10 +28247,6 @@
     "defaultMessage": "Remove from recents",
     "description": ""
   },
-  "fusion.status.integrations": {
-    "defaultMessage": "Integrations",
-    "description": ""
-  },
   "fusion.status.label": {
     "defaultMessage": "Set your status",
     "description": ""
@@ -28360,7 +28304,7 @@
     "description": "Title of the community setting putting every member in all the channels they may see, as in Discord."
   },
   "fusion.teamChannels.allDesc": {
-    "defaultMessage": "As in Discord: everyone in the community is in all its public channels, and in the private channels their roles open. They mute channels instead of leaving them, and nobody is removed from one: moderate through the community (removal, timeouts) or the channel's permissions. Guests and bots are only in the channels they're added to. Turning it on adds everyone to those channels (communities created before this setting existed keep their channels until you turn it on); turning it off keeps everyone where they are, free to leave.",
+    "defaultMessage": "Everyone in the community is in all its public channels, and in the private channels their roles open. They mute channels instead of leaving them, and nobody is removed from one: moderate through the community (removal, timeouts) or the channel's permissions. Guests and bots are only in the channels they're added to. Turning it on adds everyone to those channels (communities created before this setting existed keep their channels until you turn it on); turning it off keeps everyone where they are, free to leave.",
     "description": "Description of the community setting putting every member in all the channels they may see."
   },
   "fusion.teamChannels.allOff": {
@@ -28416,7 +28360,7 @@
     "description": "Toast shown when a community admin makes a workplace a community again."
   },
   "fusion.teamChannels.kindDesc": {
-    "defaultMessage": "A community, as on Discord: only its admins (and roles that manage channels) archive channels. Workplace, for a company's or an organisation's workspace: members also archive the channels they created. In both, only the channels' admins, the community's admins and moderators put messages on top.",
+    "defaultMessage": "Community: only its admins (and roles that manage channels) archive channels. Workplace, for a company's or an organisation's workspace: members also archive the channels they created. In both, only the channels' admins, the community's admins and moderators put messages on top.",
     "description": "Description of the kind of community setting; 'put messages on top' is the feature that pins a message above a channel's messages for a while."
   },
   "fusion.teamChannels.kindWorkplace": {
@@ -28519,6 +28463,10 @@
     "defaultMessage": "Model connections",
     "description": "Tab name in the community settings: the community's own model connections (AI providers' addresses and keys)."
   },
+  "fusion.teamSettings.allTeams": {
+    "defaultMessage": "Find and create teams…",
+    "description": "Button of the Teams tab of the community settings opening the teams dialog, to search, create and archive teams; the ellipsis means a dialog opens."
+  },
   "fusion.teamSettings.autolinks": {
     "defaultMessage": "Autolinks",
     "description": ""
@@ -28535,9 +28483,29 @@
     "defaultMessage": "Close",
     "description": "Button at the bottom of a tab of the community settings (Roles, Member attributes, Community layout) that closes the community settings."
   },
+  "fusion.teamSettings.integrations": {
+    "defaultMessage": "Integrations",
+    "description": "Last entry of the community settings' tab list: leaves the settings for the community's integrations pages (webhooks, slash commands, bot accounts); shown to those who may manage some."
+  },
+  "fusion.teamSettings.members": {
+    "defaultMessage": "Members",
+    "description": "Tab of the community settings listing the community's members; those who manage roles change a member's role or remove them there."
+  },
+  "fusion.teamSettings.noTeams": {
+    "defaultMessage": "No teams yet.",
+    "description": "Shown in the Teams tab of the community settings when the community has no teams."
+  },
   "fusion.teamSettings.overview": {
     "defaultMessage": "Overview",
     "description": ""
+  },
+  "fusion.teamSettings.teams": {
+    "defaultMessage": "Teams",
+    "description": "Tab of the community settings listing the community's teams (groups of people with a tag, a lead and a channel)."
+  },
+  "fusion.teamSettings.teamsDesc": {
+    "defaultMessage": "Teams have a tag people show next to their name, a lead and a channel.",
+    "description": "Introduction of the Teams tab of the community settings."
   },
   "fusion.theme.code": {
     "defaultMessage": "Theme code",

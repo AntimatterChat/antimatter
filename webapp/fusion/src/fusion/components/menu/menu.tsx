@@ -25,12 +25,17 @@ type ItemProps = {
 
     // For an item that shows its choices under it, in the menu (a mute's durations): whether they're shown.
     expanded?: boolean;
+
+    // A keyboard shortcut doing the same, in a tooltip (Ctrl+Shift+U) and for screen readers (Control+Shift+U): not a
+    // second line under the label.
+    shortcut?: {label: string; keys: string};
     onClick?: (e: React.MouseEvent) => void;
     children?: React.ReactNode;
 };
 
-// MenuItem is a row of a .am-plus-pop menu.
-export function MenuItem({icon, glyph, label, sub, danger, accent, checked, role = 'menuitem', disabled, action, expanded, onClick, children}: ItemProps) {
+// MenuItem is a row of a .am-plus-pop menu. A menuitemcheckbox (or radio) tells its state with aria-checked and, when
+// on, a check at its end.
+export function MenuItem({icon, glyph, label, sub, danger, accent, checked, role = 'menuitem', disabled, action, expanded, shortcut, onClick, children}: ItemProps) {
     return (
         <button
             type='button'
@@ -38,6 +43,8 @@ export function MenuItem({icon, glyph, label, sub, danger, accent, checked, role
             aria-checked={role === 'menuitem' ? undefined : Boolean(checked)}
             aria-expanded={expanded}
             data-action={action}
+            aria-keyshortcuts={shortcut?.keys}
+            title={shortcut?.label}
             className={am({danger, accent, cur: role === 'menuitemradio' && checked})}
             disabled={disabled}
             onClick={onClick}
