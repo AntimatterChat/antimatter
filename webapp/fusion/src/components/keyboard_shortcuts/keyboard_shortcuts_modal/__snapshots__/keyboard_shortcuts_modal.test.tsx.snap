@@ -579,7 +579,7 @@ exports[`components/KeyboardShortcutsModal should match snapshot modal 1`] = `
                         <mark
                           class="shortcut-key shortcut-key--shortcut-modal"
                         >
-                          ~
+                          #
                         </mark>
                         <mark
                           class="shortcut-key shortcut-key--shortcut-modal"
@@ -1475,7 +1475,7 @@ exports[`components/KeyboardShortcutsModal should match snapshot modal with Call
                         <mark
                           class="shortcut-key shortcut-key--shortcut-modal"
                         >
-                          ~
+                          #
                         </mark>
                         <mark
                           class="shortcut-key shortcut-key--shortcut-modal"
