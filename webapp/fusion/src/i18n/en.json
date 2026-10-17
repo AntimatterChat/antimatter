@@ -15036,7 +15036,7 @@
     "description": "Used both as the Teams page title in the System Console and as the 'Teams' filter group name in admin channel lists; plural noun."
   },
   "admin.team.allChannelsMembershipDescription": {
-    "defaultMessage": "When true, communities created from now on have their members in all the channels they may see, as in Discord: they mute channels instead of leaving them. Each community can turn this off in its settings. Existing communities are not changed.",
+    "defaultMessage": "When true, communities created from now on have their members in all the channels they may see: they mute channels instead of leaving them. Each community can turn this off in its settings. Existing communities are not changed.",
     "description": "Help text of the System Console setting deciding whether new communities have all their members in every channel (Antimatter)."
   },
   "admin.team.allChannelsMembershipTitle": {
@@ -24760,8 +24760,8 @@
     "description": ""
   },
   "fusion.layout.communityDesc": {
-    "defaultMessage": "Like Discord: categories the admins keep, and a Moderators role. Only the community's admins archive channels. To stop members creating channels, change the community's permissions in the System Console.",
-    "description": "Description of the Community layout preset in the Community layout settings; Discord is a name."
+    "defaultMessage": "Categories the admins keep, and a Moderators role. Only the community's admins archive channels. To stop members creating channels, change the community's permissions in the System Console.",
+    "description": "Description of the Community layout preset in the Community layout settings."
   },
   "fusion.layout.export": {
     "defaultMessage": "Export as a template",
@@ -27896,7 +27896,7 @@
     "description": "Title of the community setting putting every member in all the channels they may see, as in Discord."
   },
   "fusion.teamChannels.allDesc": {
-    "defaultMessage": "As in Discord: everyone in the community is in all its public channels, and in the private channels their roles open. They mute channels instead of leaving them, and nobody is removed from one: moderate through the community (removal, timeouts) or the channel's permissions. Guests and bots are only in the channels they're added to. Turning it on adds everyone to those channels (communities created before this setting existed keep their channels until you turn it on); turning it off keeps everyone where they are, free to leave.",
+    "defaultMessage": "Everyone in the community is in all its public channels, and in the private channels their roles open. They mute channels instead of leaving them, and nobody is removed from one: moderate through the community (removal, timeouts) or the channel's permissions. Guests and bots are only in the channels they're added to. Turning it on adds everyone to those channels (communities created before this setting existed keep their channels until you turn it on); turning it off keeps everyone where they are, free to leave.",
     "description": "Description of the community setting putting every member in all the channels they may see."
   },
   "fusion.teamChannels.allOff": {
@@ -27952,7 +27952,7 @@
     "description": "Toast shown when a community admin makes a workplace a community again."
   },
   "fusion.teamChannels.kindDesc": {
-    "defaultMessage": "A community, as on Discord: only its admins (and roles that manage channels) archive channels. Workplace, for a company's or an organisation's workspace: members also archive the channels they created. In both, only the channels' admins, the community's admins and moderators put messages on top.",
+    "defaultMessage": "Community: only its admins (and roles that manage channels) archive channels. Workplace, for a company's or an organisation's workspace: members also archive the channels they created. In both, only the channels' admins, the community's admins and moderators put messages on top.",
     "description": "Description of the kind of community setting; 'put messages on top' is the feature that pins a message above a channel's messages for a while."
   },
   "fusion.teamChannels.kindWorkplace": {

@@ -24,7 +24,7 @@ const PRESET_TEXT: Array<{preset: Preset; title: MessageDescriptor; desc: Messag
     {
         preset: 'community',
         title: defineMessage({id: 'fusion.layout.community', defaultMessage: 'Community'}),
-        desc: defineMessage({id: 'fusion.layout.communityDesc', defaultMessage: 'Like Discord: categories the admins keep, and a Moderators role. Only the community\'s admins archive channels. To stop members creating channels, change the community\'s permissions in the System Console.'}),
+        desc: defineMessage({id: 'fusion.layout.communityDesc', defaultMessage: 'Categories the admins keep, and a Moderators role. Only the community\'s admins archive channels. To stop members creating channels, change the community\'s permissions in the System Console.'}),
     },
     {
         preset: 'workplace',
