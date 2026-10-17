@@ -80,7 +80,7 @@ describe('components/admin_console/ai/BuiltInFeatures', () => {
             expect(select.value).toBe('');
             await waitFor(() => expect(select).toBeEnabled());
             const names = within(select).getAllByRole('option').map((o) => o.textContent);
-            expect(names).toEqual(['Off', 'Lumen OpenAI', 'Broken (needs attention)']);
+            expect(names).toEqual(['Off', 'Broken (needs attention)', 'Lumen OpenAI']);
         }
         expect(screen.queryByLabelText('Model')).not.toBeInTheDocument();
     });

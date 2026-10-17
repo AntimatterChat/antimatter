@@ -1754,6 +1754,76 @@ exports[`components/admin_console/permission_schemes_settings/permission_system_
                             </div>
                           </div>
                         </div>
+                        <div
+                          class="permission-group"
+                        >
+                          <div
+                            class="permission-group-row "
+                            id="all_users-integrations-manage_ai_connections_group"
+                          >
+                            <div
+                              class="fa fa-caret-right permission-arrow open"
+                            />
+                            <div
+                              class="permission-check "
+                              data-testid="all_users-integrations-manage_ai_connections_group-checkbox"
+                            />
+                            <span
+                              class="permission-name"
+                            >
+                              Manage model connections
+                            </span>
+                            <span
+                              class="permission-description"
+                            >
+                              Manage the AI providers' addresses and keys: the server-wide connections, and a community's own.
+                            </span>
+                          </div>
+                          <div
+                            class="permission-group-permissions open"
+                          >
+                            <div
+                              class="permission-row"
+                              data-testid="permissionRow"
+                              id="all_users-integrations-manage_ai_connections_group-manage_ai_connections"
+                            >
+                              <div
+                                class="permission-check "
+                                data-testid="all_users-integrations-manage_ai_connections_group-manage_ai_connections-checkbox"
+                              />
+                              <span
+                                class="permission-name"
+                              >
+                                Manage server-wide model connections
+                              </span>
+                              <span
+                                class="permission-description"
+                              >
+                                Add, edit and delete the model connections of the whole server, see their usage, share them with communities, and pick the ones the built-in AI features use.
+                              </span>
+                            </div>
+                            <div
+                              class="permission-row"
+                              data-testid="permissionRow"
+                              id="all_users-integrations-manage_ai_connections_group-manage_team_ai_connections"
+                            >
+                              <div
+                                class="permission-check "
+                                data-testid="all_users-integrations-manage_ai_connections_group-manage_team_ai_connections-checkbox"
+                              />
+                              <span
+                                class="permission-name"
+                              >
+                                Manage the community's model connections
+                              </span>
+                              <span
+                                class="permission-description"
+                              >
+                                Add, edit and delete the model connections a community uses on its own, and see their usage.
+                              </span>
+                            </div>
+                          </div>
+                        </div>
                       </div>
                     </div>
                     <div
@@ -4079,6 +4149,86 @@ exports[`components/admin_console/permission_schemes_settings/permission_system_
                         </div>
                       </div>
                     </div>
+                    <div
+                      class="permission-group"
+                    >
+                      <div
+                        class="permission-group-row "
+                        id="-integrations"
+                      >
+                        <div
+                          class="fa fa-caret-right permission-arrow open"
+                        />
+                        <div
+                          class="permission-check "
+                          data-testid="-integrations-checkbox"
+                        />
+                        <span
+                          class="permission-name"
+                        >
+                          Integrations & Customizations
+                        </span>
+                        <span
+                          class="permission-description"
+                        >
+                          Manage OAuth 2.0, slash commands, webhooks and emoji.
+                        </span>
+                      </div>
+                      <div
+                        class="permission-group-permissions open"
+                      >
+                        <div
+                          class="permission-group"
+                        >
+                          <div
+                            class="permission-group-row "
+                            id="-integrations-manage_ai_connections_group"
+                          >
+                            <div
+                              class="fa fa-caret-right permission-arrow open"
+                            />
+                            <div
+                              class="permission-check "
+                              data-testid="-integrations-manage_ai_connections_group-checkbox"
+                            />
+                            <span
+                              class="permission-name"
+                            >
+                              Manage model connections
+                            </span>
+                            <span
+                              class="permission-description"
+                            >
+                              Manage the AI providers' addresses and keys: the server-wide connections, and a community's own.
+                            </span>
+                          </div>
+                          <div
+                            class="permission-group-permissions open"
+                          >
+                            <div
+                              class="permission-row"
+                              data-testid="permissionRow"
+                              id="-integrations-manage_ai_connections_group-manage_team_ai_connections"
+                            >
+                              <div
+                                class="permission-check "
+                                data-testid="-integrations-manage_ai_connections_group-manage_team_ai_connections-checkbox"
+                              />
+                              <span
+                                class="permission-name"
+                              >
+                                Manage the community's model connections
+                              </span>
+                              <span
+                                class="permission-description"
+                              >
+                                Add, edit and delete the model connections a community uses on its own, and see their usage.
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -5323,6 +5473,76 @@ exports[`components/admin_console/permission_schemes_settings/permission_system_
                                 class="permission-description"
                               >
                                 Create and manage AI agents for other users.
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                        <div
+                          class="permission-group"
+                        >
+                          <div
+                            class="permission-group-row  read-only"
+                            id="-integrations-manage_ai_connections_group"
+                          >
+                            <div
+                              class="fa fa-caret-right permission-arrow open"
+                            />
+                            <div
+                              class="permission-check "
+                              data-testid="-integrations-manage_ai_connections_group-checkbox"
+                            />
+                            <span
+                              class="permission-name"
+                            >
+                              Manage model connections
+                            </span>
+                            <span
+                              class="permission-description"
+                            >
+                              Manage the AI providers' addresses and keys: the server-wide connections, and a community's own.
+                            </span>
+                          </div>
+                          <div
+                            class="permission-group-permissions open"
+                          >
+                            <div
+                              class="permission-row read-only"
+                              data-testid="permissionRow"
+                              id="-integrations-manage_ai_connections_group-manage_ai_connections"
+                            >
+                              <div
+                                class="permission-check "
+                                data-testid="-integrations-manage_ai_connections_group-manage_ai_connections-checkbox"
+                              />
+                              <span
+                                class="permission-name"
+                              >
+                                Manage server-wide model connections
+                              </span>
+                              <span
+                                class="permission-description"
+                              >
+                                Add, edit and delete the model connections of the whole server, see their usage, share them with communities, and pick the ones the built-in AI features use.
+                              </span>
+                            </div>
+                            <div
+                              class="permission-row read-only"
+                              data-testid="permissionRow"
+                              id="-integrations-manage_ai_connections_group-manage_team_ai_connections"
+                            >
+                              <div
+                                class="permission-check "
+                                data-testid="-integrations-manage_ai_connections_group-manage_team_ai_connections-checkbox"
+                              />
+                              <span
+                                class="permission-name"
+                              >
+                                Manage the community's model connections
+                              </span>
+                              <span
+                                class="permission-description"
+                              >
+                                Add, edit and delete the model connections a community uses on its own, and see their usage.
                               </span>
                             </div>
                           </div>
