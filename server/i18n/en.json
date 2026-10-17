@@ -6522,19 +6522,79 @@
     "description": "API error when fetching the list of configured AI agents (bots backed by language models) fails; 'agents' are AI assistants."
   },
   {
-    "id": "app.agents.get_agents.bridge_call_failed",
-    "translation": "Bridge call failed.",
-    "description": "Internal error when the server's call to the AI agents bridge (Agents plugin integration) fails while listing agents; technical."
-  },
-  {
     "id": "app.agents.get_services.app_error",
     "translation": "Failed to get LLM services.",
     "description": "API error when fetching the configured LLM (large language model) services for AI agents fails; admin audience."
   },
   {
-    "id": "app.agents.get_services.bridge_call_failed",
-    "translation": "Bridge call failed.",
-    "description": "Internal error when the server's call to the AI agents bridge fails while listing available AI services; technical."
+    "id": "app.agents.status.no_agents",
+    "translation": "No agent is available to you.",
+    "description": "Reason given to older apps (GET /api/v4/agents/status) when the person has no agent to talk to."
+  },
+  {
+    "id": "app.ai.agent.access.app_error",
+    "translation": "You can't talk to this agent here.",
+    "description": "API error of the agents (Antimatter). The agent's access settings don't include the person, or the place."
+  },
+  {
+    "id": "app.ai.agent.activity.get.app_error",
+    "translation": "The agents' activity couldn't be read.",
+    "description": "API error of the agents (Antimatter). What an agent is doing now; a database failure."
+  },
+  {
+    "id": "app.ai.agent.activity.save.app_error",
+    "translation": "The agent's activity couldn't be saved.",
+    "description": "API error of the agents (Antimatter). What an agent is doing now; a database failure."
+  },
+  {
+    "id": "app.ai.agent.connection.app_error",
+    "translation": "An agent here can't use this model connection: a server-wide agent needs a server-wide connection, and a community's agent its community's own or one shared with it.",
+    "description": "API error of the agents (Antimatter). The connection picked for the agent."
+  },
+  {
+    "id": "app.ai.agent.get.app_error",
+    "translation": "The agents couldn't be read.",
+    "description": "API error of the agents (Antimatter). A database failure."
+  },
+  {
+    "id": "app.ai.agent.manage_permission.app_error",
+    "translation": "You can't manage the agents here.",
+    "description": "API error of the agents (Antimatter). The person isn't an admin of the scope (the server, or the community) they asked for."
+  },
+  {
+    "id": "app.ai.agent.not_found.app_error",
+    "translation": "This agent doesn't exist, or was deleted.",
+    "description": "API error of the agents (Antimatter)."
+  },
+  {
+    "id": "app.ai.agent.references.app_error",
+    "translation": "The agent names a community, channel or person that doesn't exist, or a channel of another community.",
+    "description": "API error of the agents (Antimatter). Who may talk to the agent."
+  },
+  {
+    "id": "app.ai.agent.save.app_error",
+    "translation": "The agent couldn't be saved.",
+    "description": "API error of the agents (Antimatter). A database failure."
+  },
+  {
+    "id": "app.ai.agent.turn.empty",
+    "translation": "Sorry, I have no answer to that.",
+    "description": "An agent's reply when the model answered nothing, written as the agent speaking."
+  },
+  {
+    "id": "app.ai.agent.turn.failed",
+    "translation": "Sorry, I couldn't answer: {{.Reason}}",
+    "description": "An agent's reply when the model call failed before answering, written as the agent speaking. {{.Reason}} is the translated error (e.g. the connection's limit was reached)."
+  },
+  {
+    "id": "app.ai.agent.turn.interrupted",
+    "translation": "Sorry, my answer was interrupted. Ask me again in a moment.",
+    "description": "An agent's reply (or its end) when the model stopped partway through, written as the agent speaking."
+  },
+  {
+    "id": "app.ai.agent.turn.not_allowed",
+    "translation": "{{.Agent}} isn't available to you here.",
+    "description": "Message only the person who asked sees, when they mention or message an agent they may not talk to in that place. {{.Agent}} is the agent's @username."
   },
   {
     "id": "app.ai.call.audience.app_error",
@@ -14565,6 +14625,91 @@
     "description": "API error when a post acknowledgement has a malformed user ID for the acknowledging user."
   },
   {
+    "id": "model.agent_activity.expires.app_error",
+    "translation": "An agent's activity lasts between 1 second and 24 hours.",
+    "description": "Validation error of an agent's activity (Antimatter), which the agent or its managers set."
+  },
+  {
+    "id": "model.agent_activity.state.app_error",
+    "translation": "An agent's state is idle, thinking, working, waiting, blocked or offline.",
+    "description": "Validation error of an agent's activity (Antimatter), which the agent or its managers set."
+  },
+  {
+    "id": "model.agent_activity.text.app_error",
+    "translation": "What the agent is doing fits on one line of 200 characters at most.",
+    "description": "Validation error of an agent's activity (Antimatter), which the agent or its managers set."
+  },
+  {
+    "id": "model.agent_activity.thread_post_id.app_error",
+    "translation": "The thread of an agent's activity must be a message ID.",
+    "description": "Validation error of an agent's activity (Antimatter), which the agent or its managers set."
+  },
+  {
+    "id": "model.ai_agent.access.app_error",
+    "translation": "Who may talk to the agent names invalid communities, channels, roles or people, or too many.",
+    "description": "Validation error of an agent's settings (Antimatter) when it is made or changed."
+  },
+  {
+    "id": "model.ai_agent.access_community.app_error",
+    "translation": "A community's agent is only for its own community.",
+    "description": "Validation error of an agent's settings (Antimatter) when it is made or changed."
+  },
+  {
+    "id": "model.ai_agent.connection_id.app_error",
+    "translation": "Pick the model connection the agent uses.",
+    "description": "Validation error of an agent's settings (Antimatter) when it is made or changed."
+  },
+  {
+    "id": "model.ai_agent.external.app_error",
+    "translation": "An external agent has no model, connection or system prompt: its program answers.",
+    "description": "Validation error of an agent's settings (Antimatter) when it is made or changed."
+  },
+  {
+    "id": "model.ai_agent.max_tool_turns.app_error",
+    "translation": "An agent takes between 0 (the default) and 250 tool turns.",
+    "description": "Validation error of an agent's settings (Antimatter) when it is made or changed. A tool turn is the model calling tools and reading their results."
+  },
+  {
+    "id": "model.ai_agent.model.app_error",
+    "translation": "The model name is too long, or has more than one line.",
+    "description": "Validation error of an agent's settings (Antimatter) when it is made or changed."
+  },
+  {
+    "id": "model.ai_agent.needs_attention.app_error",
+    "translation": "The note on what needs attention is too long.",
+    "description": "Validation error of an agent's settings (Antimatter) when it is made or changed."
+  },
+  {
+    "id": "model.ai_agent.reasoning.app_error",
+    "translation": "The reasoning effort is minimal, low, medium or high, and its budget between 0 and 128,000 tokens.",
+    "description": "Validation error of an agent's settings (Antimatter) when it is made or changed."
+  },
+  {
+    "id": "model.ai_agent.scope.app_error",
+    "translation": "An agent belongs to the server or to one community.",
+    "description": "Validation error of an agent's settings (Antimatter) when it is made or changed."
+  },
+  {
+    "id": "model.ai_agent.system_prompt.app_error",
+    "translation": "The system prompt is too long (32,000 characters at most).",
+    "description": "Validation error of an agent's settings (Antimatter) when it is made or changed."
+  },
+  {
+    "id": "model.ai_agent.times.app_error",
+    "translation": "The agent's creation and update times are missing.",
+    "description": "Validation error of an agent's settings (Antimatter) when it is made or changed."
+  },
+  {
+    "id": "model.ai_agent.tools.app_error",
+    "translation": "A tool name is invalid, or there are too many (256 at most).",
+    "description": "Validation error of an agent's settings (Antimatter) when it is made or changed. Tool names look like app.tool_name, app.* or *."
+  },
+  {
+    "id": "model.ai_agent.user_id.app_error",
+    "translation": "An agent needs a valid account.",
+    "description": "Validation error of an agent's settings (Antimatter) when it is made or changed."
+  },
+  {
     "id": "model.ai_connection.api_key.app_error",
     "translation": "The API key is too long or contains a line break.",
     "description": "Validation error of an AI model connection (Antimatter) when it is created or changed."
@@ -14768,6 +14913,11 @@
     "id": "model.bot.is_valid.description.app_error",
     "translation": "Invalid description.",
     "description": "API validation error when creating or updating a bot account whose description text exceeds the allowed length."
+  },
+  {
+    "id": "model.bot.is_valid.kind.app_error",
+    "translation": "A bot account is a bot or an agent.",
+    "description": "Validation error of a bot account (Antimatter): its kind."
   },
   {
     "id": "model.bot.is_valid.update_at.app_error",
