@@ -431,6 +431,7 @@ func Init(srv *app.Server) (*API, error) {
 	api.InitDeliveryTracking()
 	api.InitHealthDashboard()
 	api.InitAgents()
+	api.InitAIConnections()
 	api.InitProperties()
 
 	// If we allow testing then listen for manual testing URL hits
