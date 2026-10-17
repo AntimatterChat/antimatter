@@ -20,8 +20,12 @@ import (
 // and leave alone what an admin chose.
 
 const (
-	moderatorPresetMigrationKey    = "AntimatterModeratorPresetMigrationComplete"
-	administratorRolesMigrationKey = "AntimatterAdministratorRolesMigrationComplete"
+	moderatorPresetMigrationKey          = "AntimatterModeratorPresetMigrationComplete"
+	administratorRolesMigrationKey       = "AntimatterAdministratorRolesMigrationComplete"
+	maxUsersPerTeamUnlimitedMigrationKey = "AntimatterMaxUsersPerTeamUnlimitedMigrationComplete"
+
+	// oldMaxUsersPerTeamDefault is TeamSettings.MaxUsersPerTeam's default before it became 0 (no limit).
+	oldMaxUsersPerTeamDefault = 50
 )
 
 // moderatorPresetPermissionsV1 is what the "Moderators" role of Fusion's layout presets (webapp/fusion/src/fusion/
@@ -140,4 +144,31 @@ func (s *Server) doAdministratorRolesMigration() error {
 		mlog.Info("Gave the roles with Administrator on what their community's admins may do", mlog.Int("roles", updated))
 	}
 	return s.markMigrationDone(administratorRolesMigrationKey)
+}
+
+// doMaxUsersPerTeamUnlimitedMigration lifts TeamSettings.MaxUsersPerTeam from 50, its old default, to 0 (no limit),
+// its default now. Config files store every setting, defaults included, so 50 there is almost always the former
+// default rather than an admin's choice; any other value is kept, and so is one set through the environment
+// (AM_ or MM_TEAMSETTINGS_MAXUSERSPERTEAM).
+func (s *Server) doMaxUsersPerTeamUnlimitedMigration() error {
+	if done, err := s.migrationDone(maxUsersPerTeamUnlimitedMigrationKey); done || err != nil {
+		return err
+	}
+
+	if limit := s.Config().TeamSettings.MaxUsersPerTeam; limit != nil && *limit == oldMaxUsersPerTeamDefault && !s.maxUsersPerTeamSetFromEnvironment() {
+		s.platform.UpdateConfig(func(config *model.Config) {
+			config.TeamSettings.MaxUsersPerTeam = model.NewPointer(model.TeamSettingsDefaultMaxUsersPerTeam)
+		})
+		mlog.Info("Lifted the limit of members per community, which was the old default", mlog.Int("old_limit", oldMaxUsersPerTeamDefault))
+	}
+	return s.markMigrationDone(maxUsersPerTeamUnlimitedMigrationKey)
+}
+
+func (s *Server) maxUsersPerTeamSetFromEnvironment() bool {
+	teamSettings, ok := s.platform.GetEnvironmentOverrides()["TeamSettings"].(map[string]any)
+	if !ok {
+		return false
+	}
+	_, ok = teamSettings["MaxUsersPerTeam"]
+	return ok
 }

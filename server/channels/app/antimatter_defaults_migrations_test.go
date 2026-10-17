@@ -133,3 +133,49 @@ func mustRole(t *testing.T, th *TestHelper, name string) *model.Role {
 	require.Nil(t, appErr)
 	return role
 }
+
+func TestMaxUsersPerTeamUnlimitedMigration(t *testing.T) {
+	setLimit := func(th *TestHelper, limit int) {
+		th.App.UpdateConfig(func(cfg *model.Config) { *cfg.TeamSettings.MaxUsersPerTeam = limit })
+	}
+	beforeUpgrade := func(t *testing.T, th *TestHelper, limit int) {
+		t.Helper()
+		_, err := th.Store.System().PermanentDeleteByName(maxUsersPerTeamUnlimitedMigrationKey)
+		require.NoError(t, err)
+		setLimit(th, limit)
+	}
+
+	t.Run("lifts the old default to no limit, once", func(t *testing.T) {
+		th := Setup(t)
+		beforeUpgrade(t, th, 50)
+		require.NoError(t, th.Server.doMaxUsersPerTeamUnlimitedMigration())
+		assert.Equal(t, 0, *th.App.Config().TeamSettings.MaxUsersPerTeam)
+		_, err := th.Store.System().GetByName(maxUsersPerTeamUnlimitedMigrationKey)
+		require.NoError(t, err)
+
+		setLimit(th, 50)
+		require.NoError(t, th.Server.doMaxUsersPerTeamUnlimitedMigration())
+		assert.Equal(t, 50, *th.App.Config().TeamSettings.MaxUsersPerTeam, "an admin who sets 50 afterwards keeps it")
+	})
+
+	t.Run("keeps another limit", func(t *testing.T) {
+		th := Setup(t)
+		beforeUpgrade(t, th, 20)
+		require.NoError(t, th.Server.doMaxUsersPerTeamUnlimitedMigration())
+		assert.Equal(t, 20, *th.App.Config().TeamSettings.MaxUsersPerTeam)
+	})
+
+	t.Run("keeps a limit set in the environment", func(t *testing.T) {
+		th := Setup(t)
+		beforeUpgrade(t, th, 50)
+		t.Setenv("AM_TEAMSETTINGS_MAXUSERSPERTEAM", "50")
+		require.NoError(t, th.Server.doMaxUsersPerTeamUnlimitedMigration())
+		assert.Equal(t, 50, *th.App.Config().TeamSettings.MaxUsersPerTeam)
+	})
+
+	t.Run("the default is no limit", func(t *testing.T) {
+		cfg := &model.Config{}
+		cfg.SetDefaults()
+		assert.Equal(t, 0, *cfg.TeamSettings.MaxUsersPerTeam)
+	})
+}

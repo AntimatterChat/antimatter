@@ -1568,6 +1568,7 @@ func (s *Server) doAppMigrations() {
 		// After the permissions migrations: the Administrator roles get what the community admins' role holds now.
 		{"Antimatter Moderator Preset Migration", s.doModeratorPresetMigration},
 		{"Antimatter Administrator Roles Migration", s.doAdministratorRolesMigration},
+		{"Antimatter Max Users Per Team Unlimited Migration", s.doMaxUsersPerTeamUnlimitedMigration},
 	}
 
 	for i := range m1 {
