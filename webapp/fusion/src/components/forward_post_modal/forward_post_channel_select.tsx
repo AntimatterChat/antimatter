@@ -229,9 +229,18 @@ type Props<O> = {
     currentBodyHeight: number;
     value?: O;
     validChannelTypes?: string[];
+
+    // Antimatter: keeps only the channels this accepts (the move-thread dialog's targets, say).
+    isValidChannel?: (channel: Channel) => boolean;
 };
 
-function ForwardPostChannelSelect({onSelect, value, currentBodyHeight, validChannelTypes = ['O', 'P', 'D', 'G']}: Props<ChannelOption>) {
+// The channels of the provider's results that can be chosen, without archived ones, deactivated people's
+// conversations and channels one isn't in.
+export function selectableChannels(items: any[], isValid: (channel: Channel) => boolean): Channel[] {
+    return items.filter((item) => item?.channel && isValid(item.channel) && !item.deactivated && !item.discoverableNonMember).map((item) => item.channel);
+}
+
+function ForwardPostChannelSelect({onSelect, value, currentBodyHeight, validChannelTypes = ['O', 'P', 'D', 'G'], isValidChannel}: Props<ChannelOption>) {
     const {formatMessage} = useIntl();
     const {current: provider} = useRef<SwitchChannelProvider>(new SwitchChannelProvider());
 
@@ -241,7 +250,7 @@ function ForwardPostChannelSelect({onSelect, value, currentBodyHeight, validChan
 
     const baseStyles = getBaseStyles(currentBodyHeight);
 
-    const isValidChannelType = (channel: Channel) => validChannelTypes.includes(channel.type) && !channel.delete_at;
+    const isValidChannelType = (channel: Channel) => validChannelTypes.includes(channel.type) && !channel.delete_at && (!isValidChannel || isValidChannel(channel));
 
     const getDefaultResults = () => {
         let options: OptionsOrGroups<ChannelOption, GroupBase<ChannelOption>> = [];
@@ -250,10 +259,7 @@ function ForwardPostChannelSelect({onSelect, value, currentBodyHeight, validChan
             options = [
                 {
                     label: formatMessage({id: 'suggestion.mention.recent.channels', defaultMessage: 'Recent'}),
-                    options: flattenItems(res).filter((item) => item?.channel && isValidChannelType(item.channel) && !item.deactivated && !item.discoverableNonMember).map((item) => {
-                        const {channel} = item;
-                        return makeSelectedChannelOption(channel);
-                    }),
+                    options: selectableChannels(flattenItems(res), isValidChannelType).map(makeSelectedChannelOption),
                 },
             ];
         };
@@ -277,9 +283,7 @@ function ForwardPostChannelSelect({onSelect, value, currentBodyHeight, validChan
              */
             const handleResults = async (res: ProviderResults<any>) => {
                 callCount++;
-                await flattenItems(res).filter((item) => item?.channel && isValidChannelType(item.channel) && !item.deactivated && !item.discoverableNonMember).forEach((item) => {
-                    const {channel} = item;
-
+                selectableChannels(flattenItems(res), isValidChannelType).forEach((channel) => {
                     if (options.findIndex((option) => option.value === channel.id) === -1) {
                         options.push(makeSelectedChannelOption(channel));
                     }

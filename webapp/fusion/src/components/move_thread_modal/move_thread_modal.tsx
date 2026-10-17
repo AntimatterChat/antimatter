@@ -4,7 +4,7 @@
 import classNames from 'classnames';
 import React, {useCallback, useMemo, useRef, useState} from 'react';
 import {useIntl} from 'react-intl';
-import {useSelector} from 'react-redux';
+import {useSelector, useStore} from 'react-redux';
 import type {OnChangeValue} from 'react-select';
 
 import type {ClientError} from '@mattermost/client';
@@ -13,6 +13,7 @@ import type {Channel} from '@mattermost/types/channels';
 import type {Post, PostPreviewMetadata} from '@mattermost/types/posts';
 
 import {makeGetChannel} from 'mattermost-redux/selectors/entities/channels';
+import {getPost} from 'mattermost-redux/selectors/entities/posts';
 import {getCurrentTeam} from 'mattermost-redux/selectors/entities/teams';
 import type {ActionResult} from 'mattermost-redux/types/actions';
 
@@ -21,6 +22,7 @@ import ChannelSelector from 'components/forward_post_modal/forward_post_channel_
 import NotificationBox from 'components/notification_box';
 import PostMessagePreview from 'components/post_view/post_message_preview';
 
+import {canMoveThreadTo} from 'fusion/rhs/thread_to';
 import Constants from 'utils/constants';
 
 import type {GlobalState} from 'types/store';
@@ -65,6 +67,12 @@ const MoveThreadModal = ({onExited, post, actions}: Props) => {
 
     const originalChannel = useSelector((state: GlobalState) => getChannel(state, post.channel_id));
     const currentTeam = useSelector(getCurrentTeam);
+
+    // Antimatter: only the channels the thread may move to (the same community's channels where one can post, and
+    // public ones only for an author moving others' replies; see canMoveThreadTo).
+    const store = useStore<GlobalState>();
+    const root = useSelector((state: GlobalState) => (post.root_id ? getPost(state, post.root_id) : post)) || post;
+    const isValidTarget = useCallback((channel: Channel) => canMoveThreadTo(store.getState(), root, channel), [store, root]);
 
     const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -218,6 +226,7 @@ const MoveThreadModal = ({onExited, post, actions}: Props) => {
                     value={selectedChannel}
                     currentBodyHeight={bodyHeight}
                     validChannelTypes={['O', 'P']}
+                    isValidChannel={isValidTarget}
                 />
                 <div className={'move-thread__post-preview'}>
                     <span className={'move-thread__post-preview--title'}>

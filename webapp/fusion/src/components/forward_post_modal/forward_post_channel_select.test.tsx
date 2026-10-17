@@ -8,7 +8,7 @@ import {compassIconForName} from 'components/channel_type_icon';
 import {renderWithContext, screen} from 'tests/react_testing_utils';
 import {TestHelper} from 'utils/test_helper';
 
-import {FormattedOption, makeSelectedChannelOption} from './forward_post_channel_select';
+import {FormattedOption, makeSelectedChannelOption, selectableChannels} from './forward_post_channel_select';
 
 jest.mock('components/channel_type_icon/compass_icon_resolver', () => ({
     compassIconForName: jest.fn().mockReturnValue(null),
@@ -281,5 +281,25 @@ describe('forward_post_channel_select/FormattedOption', () => {
 
         expect(screen.getByTestId('profile-picture')).toBeInTheDocument();
         expect(screen.queryByTestId('stub-override-icon')).not.toBeInTheDocument();
+    });
+});
+
+// Antimatter: the move-thread dialog keeps only the channels the thread may move to.
+describe('forward_post_channel_select/selectableChannels', () => {
+    const team = TestHelper.getChannelMock({id: 'c1', type: 'O', team_id: 't1'});
+    const other = TestHelper.getChannelMock({id: 'c2', type: 'O', team_id: 't2'});
+    const dm = TestHelper.getChannelMock({id: 'c3', type: 'D', team_id: ''});
+    const items = [
+        {channel: team},
+        {channel: other},
+        {channel: dm},
+        {channel: team, deactivated: true},
+        {channel: team, discoverableNonMember: true},
+        {loading: true},
+    ];
+
+    test('keeps the channels the filter accepts, without deactivated conversations nor channels one isn\'t in', () => {
+        expect(selectableChannels(items, (c) => c.team_id === 't1').map((c) => c.id)).toEqual(['c1']);
+        expect(selectableChannels(items, () => true).map((c) => c.id)).toEqual(['c1', 'c2', 'c3']);
     });
 });
