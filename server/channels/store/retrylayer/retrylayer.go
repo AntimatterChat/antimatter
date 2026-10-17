@@ -806,6 +806,27 @@ func (s *RetryLayerAIAgentStore) GetAll(rctx request.CTX) ([]*model.AIAgent, err
 
 }
 
+func (s *RetryLayerAIAgentStore) GetConversations(rctx request.CTX, opts model.AIAgentConversationsOptions) ([]*model.AIAgentConversation, error) {
+
+	tries := 0
+	for {
+		result, err := s.AIAgentStore.GetConversations(rctx, opts)
+		if err == nil {
+			return result, nil
+		}
+		if !isRepeatableError(err) {
+			return result, err
+		}
+		tries++
+		if tries >= 3 {
+			err = errors.Wrap(err, "giving up after 3 consecutive repeatable transaction failures")
+			return result, err
+		}
+		timepkg.Sleep(100 * timepkg.Millisecond)
+	}
+
+}
+
 func (s *RetryLayerAIAgentStore) GetForScopes(rctx request.CTX, scopes []string) ([]*model.AIAgent, error) {
 
 	tries := 0

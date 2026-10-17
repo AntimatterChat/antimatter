@@ -6,6 +6,7 @@ package model
 import (
 	"context"
 	"net/url"
+	"strconv"
 
 	"github.com/mattermost/mattermost/server/public/ai"
 )
@@ -137,4 +138,36 @@ func (c *Client4) GetAgentActivitiesByIds(ctx context.Context, userIDs []string)
 	}
 	defer closeBody(r)
 	return DecodeJSONFromResponse[[]*AgentActivity](r)
+}
+
+// GetAIAgentConversations lists the caller's conversations with agents (one agent's with a non-empty agentID), the
+// most recent first, those that last moved before "before" (milliseconds; 0 for the latest).
+func (c *Client4) GetAIAgentConversations(ctx context.Context, agentID string, before int64, perPage int) ([]*AIAgentConversation, *Response, error) {
+	query := url.Values{}
+	if agentID != "" {
+		query.Set("agent_id", agentID)
+	}
+	if before > 0 {
+		query.Set("before", strconv.FormatInt(before, 10))
+	}
+	if perPage > 0 {
+		query.Set("per_page", strconv.Itoa(perPage))
+	}
+	r, err := c.doAPIGetWithQuery(ctx, c.aiAgentsRoute().Join("conversations"), query, "")
+	if err != nil {
+		return nil, BuildResponse(r), err
+	}
+	defer closeBody(r)
+	return DecodeJSONFromResponse[[]*AIAgentConversation](r)
+}
+
+// StartAIAgentTask asks an agent for a task (a summary...), for the caller. It gives the caller's message asking for
+// it, in their direct message with the agent, where the agent answers.
+func (c *Client4) StartAIAgentTask(ctx context.Context, agentID string, request *AIAgentTaskRequest) (*Post, *Response, error) {
+	r, err := c.doAPIPostJSON(ctx, c.aiAgentRoute(agentID).Join("tasks"), request)
+	if err != nil {
+		return nil, BuildResponse(r), err
+	}
+	defer closeBody(r)
+	return DecodeJSONFromResponse[*Post](r)
 }

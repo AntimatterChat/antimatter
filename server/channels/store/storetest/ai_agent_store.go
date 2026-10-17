@@ -19,6 +19,7 @@ func TestAIAgentStore(t *testing.T, rctx request.CTX, ss store.Store) {
 	t.Run("External", func(t *testing.T) { testAIAgentExternal(t, rctx, ss) })
 	t.Run("Scopes", func(t *testing.T) { testAIAgentScopes(t, rctx, ss) })
 	t.Run("Delete", func(t *testing.T) { testAIAgentDelete(t, rctx, ss) })
+	t.Run("Conversations", func(t *testing.T) { testAIAgentConversations(t, rctx, ss) })
 }
 
 func TestAgentActivityStore(t *testing.T, rctx request.CTX, ss store.Store) {
@@ -257,4 +258,71 @@ func TestAIAgentAgentsPluginUserAgents(t *testing.T, rctx request.CTX, ss store.
 	assert.True(t, got.ReasoningEnabled)
 	assert.Equal(t, 0, got.MaxToolTurns, "an older table without MaxToolTurns")
 	assert.Equal(t, creator, got.CreatorID)
+}
+
+// A person's conversations with agents: the threads they started in their direct messages with agents, answered or
+// not; the threads elsewhere they follow that an agent replied in; never someone else's, a deleted one, or a thread
+// only people replied in. The most recent first, with a cursor.
+func testAIAgentConversations(t *testing.T, rctx request.CTX, ss store.Store) {
+	me, agent, someone := model.NewId(), model.NewId(), model.NewId()
+	dm, channel := model.NewId(), model.NewId()
+	now := model.GetMillis()
+	save := func(p *model.Post) *model.Post {
+		t.Helper()
+		saved, err := ss.Post().Save(rctx, p)
+		require.NoError(t, err)
+		return saved
+	}
+	follow := func(postID string) {
+		t.Helper()
+		_, err := ss.Thread().MaintainMembership(me, postID, store.ThreadMembershipOpts{Following: true, UpdateFollowing: true})
+		require.NoError(t, err)
+	}
+
+	answered := save(&model.Post{UserId: me, ChannelId: dm, Message: "\n  Summarise the launch thread\nplease", CreateAt: now - 5000})
+	save(&model.Post{UserId: agent, ChannelId: dm, RootId: answered.Id, Message: "Here it is.", CreateAt: now - 4000})
+	waiting := save(&model.Post{UserId: me, ChannelId: dm, Message: "What changed this week?", CreateAt: now - 3000})
+	save(&model.Post{UserId: agent, ChannelId: dm, Message: "I started this one myself.", CreateAt: now - 2900})
+	deleted := save(&model.Post{UserId: me, ChannelId: dm, Message: "Forget it", CreateAt: now - 2800})
+	require.NoError(t, ss.Post().Delete(rctx, deleted.Id, now-2700, me))
+
+	inChannel := save(&model.Post{UserId: someone, ChannelId: channel, Message: "@agent can you plan the release?", CreateAt: now - 6000})
+	save(&model.Post{UserId: agent, ChannelId: channel, RootId: inChannel.Id, Message: "Plan: ...", CreateAt: now - 1000})
+	follow(inChannel.Id)
+	peopleOnly := save(&model.Post{UserId: someone, ChannelId: channel, Message: "Lunch?", CreateAt: now - 7000})
+	save(&model.Post{UserId: me, ChannelId: channel, RootId: peopleOnly.Id, Message: "Yes", CreateAt: now - 900})
+	follow(peopleOnly.Id)
+
+	opts := model.AIAgentConversationsOptions{UserId: me, DirectChannelIds: []string{dm}, AgentIds: []string{agent}, Limit: 10}
+	got, err := ss.AIAgent().GetConversations(rctx, opts)
+	require.NoError(t, err)
+	ids := make([]string, 0, len(got))
+	for _, c := range got {
+		ids = append(ids, c.RootId)
+	}
+	require.Equal(t, []string{inChannel.Id, waiting.Id, answered.Id}, ids, "the most recent first")
+
+	assert.False(t, got[0].Direct)
+	assert.Contains(t, got[0].Participants, agent, "with its participants, to tell the agent")
+	assert.Equal(t, int64(1), got[0].ReplyCount)
+	assert.True(t, got[1].Direct)
+	assert.Zero(t, got[1].ReplyCount, "not answered yet")
+	assert.Equal(t, "Summarise the launch thread", got[2].Title, "the first line of its first message")
+	assert.Equal(t, int64(1), got[2].ReplyCount)
+
+	opts.Before = got[1].LastActivityAt()
+	got, err = ss.AIAgent().GetConversations(rctx, opts)
+	require.NoError(t, err)
+	require.Len(t, got, 1)
+	assert.Equal(t, answered.Id, got[0].RootId, "only what moved before the cursor")
+
+	opts.Before, opts.Limit = 0, 1
+	got, err = ss.AIAgent().GetConversations(rctx, opts)
+	require.NoError(t, err)
+	require.Len(t, got, 1)
+	assert.Equal(t, inChannel.Id, got[0].RootId)
+
+	got, err = ss.AIAgent().GetConversations(rctx, model.AIAgentConversationsOptions{UserId: someone, DirectChannelIds: []string{dm}, AgentIds: []string{agent}, Limit: 10})
+	require.NoError(t, err)
+	assert.Empty(t, got, "never someone else's direct message, nor a thread they don't follow")
 }

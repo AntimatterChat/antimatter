@@ -774,6 +774,22 @@ func (s *TimerLayerAIAgentStore) GetAll(rctx request.CTX) ([]*model.AIAgent, err
 	return result, err
 }
 
+func (s *TimerLayerAIAgentStore) GetConversations(rctx request.CTX, opts model.AIAgentConversationsOptions) ([]*model.AIAgentConversation, error) {
+	start := time.Now()
+
+	result, err := s.AIAgentStore.GetConversations(rctx, opts)
+
+	elapsed := float64(time.Since(start)) / float64(time.Second)
+	if s.Root.Metrics != nil {
+		success := "false"
+		if err == nil {
+			success = "true"
+		}
+		s.Root.Metrics.ObserveStoreMethodDuration("AIAgentStore.GetConversations", success, elapsed)
+	}
+	return result, err
+}
+
 func (s *TimerLayerAIAgentStore) GetForScopes(rctx request.CTX, scopes []string) ([]*model.AIAgent, error) {
 	start := time.Now()
 

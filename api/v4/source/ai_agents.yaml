@@ -179,6 +179,55 @@
                   $ref: "#/components/schemas/AgentActivity"
         "400":
           $ref: "#/components/responses/BadRequest"
+  /api/v4/ai/agents/conversations:
+    get:
+      tags:
+        - ai agents
+      summary: List your conversations with agents
+      description: >
+        The AI chat's list: the threads you started in your direct messages with the agents you may use, and the
+        threads elsewhere that one of them replied in and that you follow and may still read. The most recent first.
+        A conversation with an agent you may no longer use isn't listed.
+
+        ##### Permissions
+
+        Any person. Asking for an agent you may not use (`agent_id`) is refused.
+
+        __Minimum server version__: 11.11 (Antimatter)
+      operationId: GetAIAgentConversations
+      parameters:
+        - name: agent_id
+          in: query
+          description: Only the conversations with this agent.
+          schema:
+            type: string
+        - name: before
+          in: query
+          description: Only the conversations that last moved before this time (milliseconds), for the next page.
+          schema:
+            type: integer
+            format: int64
+        - name: per_page
+          in: query
+          description: How many, 100 at most.
+          schema:
+            type: integer
+            default: 50
+      responses:
+        "200":
+          description: The conversations
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AIAgentConversation"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
   /api/v4/ai/agents/{agent_id}:
     get:
       tags:
@@ -398,3 +447,50 @@
           $ref: "#/components/responses/BadRequest"
         "403":
           $ref: "#/components/responses/Forbidden"
+  /api/v4/ai/agents/{agent_id}/tasks:
+    post:
+      tags:
+        - ai agents
+      summary: Ask an agent for a task
+      description: >
+        Asks a built-in agent to summarise a thread (`summarize_thread`), find its action items
+        (`find_action_items`) or open questions (`find_open_questions`), summarise a channel (`summarize_channel`,
+        from `since` on) or answer a question about it (`ask_channel`), or summarise a call's transcription
+        (`summarize_transcription`). The request becomes your message in your direct message with the agent, in
+        your language; the agent answers it there, in its thread, reading what the task is about as you, at each
+        turn. The answer is that message.
+
+        ##### Permissions
+
+        You may use the agent, and read the post's or the channel's content. A post or channel you can't read is
+        answered as one that isn't there.
+
+        __Minimum server version__: 11.11 (Antimatter)
+      operationId: StartAIAgentTask
+      parameters:
+        - name: agent_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AIAgentTaskRequest"
+      responses:
+        "201":
+          description: Your message asking for the task, in your direct message with the agent
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Post"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"

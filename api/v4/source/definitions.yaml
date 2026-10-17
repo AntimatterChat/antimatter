@@ -4807,6 +4807,52 @@ components:
           type: string
         expires_in_seconds:
           type: integer
+    AIAgentConversation:
+      type: object
+      properties:
+        root_id:
+          type: string
+          description: The thread's first message.
+        channel_id:
+          type: string
+        agent_id:
+          type: string
+        title:
+          type: string
+          description: The first line of the thread's first message, shortened.
+        direct:
+          type: boolean
+          description: In your direct message with the agent (else a thread elsewhere it replied in).
+        reply_count:
+          type: integer
+          format: int64
+        create_at:
+          type: integer
+          format: int64
+        last_reply_at:
+          type: integer
+          format: int64
+    AIAgentTaskRequest:
+      type: object
+      required:
+        - task
+      properties:
+        task:
+          type: string
+          enum: [summarize_thread, find_action_items, find_open_questions, summarize_channel, ask_channel, summarize_transcription]
+        post_id:
+          type: string
+          description: The thread's (any of its messages) or the transcription's post, for the tasks on a post.
+        channel_id:
+          type: string
+          description: The channel, for summarize_channel and ask_channel.
+        since:
+          type: integer
+          format: int64
+          description: For summarize_channel, the messages from this time on (milliseconds); the latest ones without.
+        question:
+          type: string
+          description: For ask_channel, the question (2,000 characters at most).
     AIUsageTotals:
       type: object
       properties:

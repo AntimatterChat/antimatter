@@ -105,6 +105,7 @@ const (
 	AuditEventDeleteAIAgent                     = "deleteAIAgent"                     // delete an agent
 	AuditEventEnableAIAgent                     = "enableAIAgent"                     // turn an agent's account on
 	AuditEventDisableAIAgent                    = "disableAIAgent"                    // turn an agent's account off
+	AuditEventStartAIAgentTask                  = "startAIAgentTask"                  // ask an agent for a task (a summary...) on a post or channel
 	AuditEventCreateCommunityAttribute          = "createCommunityAttribute"          // define a user attribute for a team's members
 	AuditEventPatchCommunityAttribute           = "patchCommunityAttribute"           // change a team's user attribute
 	AuditEventDeleteCommunityAttribute          = "deleteCommunityAttribute"          // delete a team's user attribute

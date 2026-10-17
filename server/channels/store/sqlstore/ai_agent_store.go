@@ -4,9 +4,12 @@
 package sqlstore
 
 import (
+	"cmp"
 	"database/sql"
 	"encoding/json"
+	"slices"
 
+	"github.com/lib/pq"
 	sq "github.com/mattermost/squirrel"
 	"github.com/pkg/errors"
 
@@ -281,6 +284,95 @@ func (s *SqlAIAgentStore) GetAgentsPluginUserAgents(rctx request.CTX) ([]*model.
 			}
 		}
 		out = append(out, agent)
+	}
+	return out, nil
+}
+
+// aiAgentConversationRow is a conversation as read: a thread's first message, with its thread's counts.
+type aiAgentConversationRow struct {
+	Id           string
+	ChannelId    string
+	Message      string
+	CreateAt     int64
+	ReplyCount   int64
+	LastReplyAt  int64
+	Participants model.StringArray
+}
+
+func (r *aiAgentConversationRow) toModel() *model.AIAgentConversation {
+	return &model.AIAgentConversation{
+		RootId:       r.Id,
+		ChannelId:    r.ChannelId,
+		Title:        model.AIAgentConversationTitle(r.Message),
+		ReplyCount:   r.ReplyCount,
+		CreateAt:     r.CreateAt,
+		LastReplyAt:  r.LastReplyAt,
+		Participants: r.Participants,
+	}
+}
+
+func (s *SqlAIAgentStore) GetConversations(rctx request.CTX, opts model.AIAgentConversationsOptions) ([]*model.AIAgentConversation, error) {
+	out := []*model.AIAgentConversation{}
+	if opts.Limit <= 0 || opts.UserId == "" {
+		return out, nil
+	}
+	db := s.DBXFromContext(rctx.Context())
+
+	// The threads the person started in their direct messages with the agents, answered or not yet.
+	if len(opts.DirectChannelIds) > 0 {
+		lastMoved := "GREATEST(p.CreateAt, COALESCE(t.LastReplyAt, 0))"
+		query := s.getQueryBuilder().
+			Select("p.Id", "p.ChannelId", "p.Message", "p.CreateAt", "COALESCE(t.ReplyCount, 0) AS ReplyCount", "COALESCE(t.LastReplyAt, 0) AS LastReplyAt").
+			From("Posts p").
+			LeftJoin("Threads t ON t.PostId = p.Id").
+			Where(sq.Eq{"p.ChannelId": opts.DirectChannelIds, "p.UserId": opts.UserId, "p.RootId": "", "p.DeleteAt": 0, "p.Type": ""}).
+			OrderBy(lastMoved + " DESC").
+			Limit(uint64(opts.Limit))
+		if opts.Before > 0 {
+			query = query.Where(sq.Lt{lastMoved: opts.Before})
+		}
+		rows := []*aiAgentConversationRow{}
+		if err := db.SelectBuilder(&rows, query); err != nil {
+			return nil, errors.Wrapf(err, "failed to get the conversations with agents in direct messages user_id=%s", opts.UserId)
+		}
+		for _, r := range rows {
+			c := r.toModel()
+			c.Direct = true
+			out = append(out, c)
+		}
+	}
+
+	// The threads elsewhere that the person follows and an agent replied in (Threads.Participants is jsonb).
+	if len(opts.AgentIds) > 0 {
+		query := s.getQueryBuilder().
+			Select("p.Id", "p.ChannelId", "p.Message", "p.CreateAt", "t.ReplyCount", "t.LastReplyAt", "t.Participants").
+			From("ThreadMemberships tm").
+			Join("Threads t ON t.PostId = tm.PostId").
+			Join("Posts p ON p.Id = t.PostId").
+			Where(sq.Eq{"tm.UserId": opts.UserId, "tm.Following": true, "p.DeleteAt": 0}).
+			Where(sq.Expr("jsonb_exists_any(t.Participants, ?)", pq.Array(opts.AgentIds))).
+			OrderBy("t.LastReplyAt DESC").
+			Limit(uint64(opts.Limit))
+		if len(opts.DirectChannelIds) > 0 {
+			query = query.Where(sq.NotEq{"t.ChannelId": opts.DirectChannelIds})
+		}
+		if opts.Before > 0 {
+			query = query.Where(sq.Lt{"t.LastReplyAt": opts.Before})
+		}
+		rows := []*aiAgentConversationRow{}
+		if err := db.SelectBuilder(&rows, query); err != nil {
+			return nil, errors.Wrapf(err, "failed to get the threads with agents user_id=%s", opts.UserId)
+		}
+		for _, r := range rows {
+			out = append(out, r.toModel())
+		}
+	}
+
+	slices.SortStableFunc(out, func(x, y *model.AIAgentConversation) int {
+		return cmp.Compare(y.LastActivityAt(), x.LastActivityAt())
+	})
+	if len(out) > opts.Limit {
+		out = out[:opts.Limit]
 	}
 	return out, nil
 }

@@ -570,6 +570,11 @@ func (a *App) buildAgentConversation(rctx request.CTX, agent *model.AIAgent, bot
 	if prompt := strings.TrimSpace(agent.SystemPrompt); prompt != "" {
 		instructions += "\n\n" + prompt
 	}
+	// A conversation the AI chat started with a task (a summary...): the task, and what it's about read now for the
+	// person (see ai_agent_task.go).
+	if task := a.agentTaskOfTurn(rctx, agent, asker, post, channel); task != nil {
+		instructions += "\n\n" + a.agentTaskMaterial(rctx, agent, asker, task)
+	}
 	messages := []ai.Message{{Role: ai.RoleSystem, Content: instructions}}
 
 	// The thread up to the post, oldest first; a post that isn't in a thread is the conversation alone.
