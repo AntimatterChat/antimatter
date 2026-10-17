@@ -1,4 +1,4 @@
-// Copyright (c) 2026-present Antimatter contributors.
+// Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 
 import {MAX_PANEL_STATE_LENGTH, PANEL_STATE_PARAM, normalizePanelState, readPanelState, withPanelState} from './panel_state';
