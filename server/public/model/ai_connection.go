@@ -261,6 +261,12 @@ func AIHeaderNames(headers map[string]string) []string {
 	return names
 }
 
+// ValidAIBaseURL tells whether a connection may have this base URL: empty (the provider's default), or http(s)
+// without credentials, query or fragment.
+func ValidAIBaseURL(raw string) bool {
+	return isValidAIBaseURL(raw)
+}
+
 func isValidAIBaseURL(raw string) bool {
 	if raw == "" {
 		return true

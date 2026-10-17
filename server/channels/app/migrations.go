@@ -1570,6 +1570,7 @@ func (s *Server) doAppMigrations() {
 		{"Antimatter Administrator Roles Migration", s.doAdministratorRolesMigration},
 		{"Antimatter Max Users Per Team Unlimited Migration", s.doMaxUsersPerTeamUnlimitedMigration},
 		{"Antimatter Community Kinds Migration", s.doCommunityKindsMigration},
+		{"Antimatter AI Connections From Agents Migration", s.doAIConnectionsFromAgentsMigration},
 	}
 
 	for i := range m1 {
