@@ -440,11 +440,12 @@ func TestCreateScheduledRecapMasterToggleDisabled(t *testing.T) {
 }
 
 func TestCreateScheduledRecapFeatureFlagDisabled(t *testing.T) {
-	th := Setup(t).InitBasic(t)
-	th.App.UpdateConfig(func(cfg *model.Config) {
+	// The flag is on by default; feature flags only change when the server is set up (they're read-only after).
+	th := SetupConfig(t, func(cfg *model.Config) {
 		cfg.FeatureFlags.EnableAIRecaps = false
 		cfg.AIRecapSettings.Enable = model.NewPointer(true)
-	})
+	}).InitBasic(t)
+	require.False(t, th.App.Config().FeatureFlags.EnableAIRecaps)
 
 	ctx := th.Context.WithSession(&model.Session{UserId: th.BasicUser.Id})
 	recap := &model.ScheduledRecap{

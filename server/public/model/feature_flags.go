@@ -89,6 +89,8 @@ type FeatureFlags struct {
 	EnableAIPluginBridge bool
 
 	// FEATURE_FLAG_REMOVAL: EnableAIRecaps - Remove this when GA is released
+	// Antimatter: on by default. Recaps are a built-in AI feature, and do nothing until an admin picks a model
+	// connection for them (System Console > AI > Built-in features); AIRecapSettings.Enable turns them off.
 	EnableAIRecaps bool
 
 	// FEATURE_FLAG_REMOVAL: IntegratedBoards - Remove this when GA is released
@@ -212,7 +214,7 @@ func (f *FeatureFlags) SetDefaults() {
 	// FEATURE_FLAG_REMOVAL: EnableAIPluginBridge - Remove this default when MVP is to be released
 	f.EnableAIPluginBridge = false
 
-	f.EnableAIRecaps = false
+	f.EnableAIRecaps = true
 
 	f.IntegratedBoards = false
 

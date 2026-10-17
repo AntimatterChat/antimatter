@@ -75,6 +75,21 @@ func TestFeatureFlagsSetDefaults_AttributeValueMasking(t *testing.T) {
 	require.Equal(t, "true", flags.ToMap()["AttributeValueMasking"])
 }
 
+// Antimatter's recaps are built in: the flag is on by default, so admins only pick a model connection for them.
+func TestFeatureFlagsSetDefaults_EnableAIRecaps(t *testing.T) {
+	var flags FeatureFlags
+	flags.SetDefaults()
+
+	require.True(t, flags.EnableAIRecaps, "EnableAIRecaps should default to true")
+	require.Equal(t, "true", flags.ToMap()["EnableAIRecaps"])
+
+	var cfg Config
+	cfg.SetDefaults()
+	require.True(t, cfg.AIRecapsEnabled(), "a new server has recaps, without setting AM_FEATUREFLAGS_ENABLEAIRECAPS")
+	cfg.AIRecapSettings.Enable = NewPointer(false)
+	require.False(t, cfg.AIRecapsEnabled(), "AIRecapSettings.Enable still turns them off")
+}
+
 func TestFeatureFlagsSetDefaults_RecurringScheduledPosts(t *testing.T) {
 	var flags FeatureFlags
 	flags.SetDefaults()
