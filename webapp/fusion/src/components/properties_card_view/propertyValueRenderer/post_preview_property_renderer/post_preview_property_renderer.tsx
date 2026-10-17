@@ -39,7 +39,7 @@ export default function PostPreviewPropertyRenderer({metadata}: Props) {
 
     const postPreviewFooterMessage = formatMessage({
         id: 'forward_post_modal.preview.footer_message',
-        defaultMessage: 'Originally posted in ~{channel}',
+        defaultMessage: 'Originally posted in #{channel}',
     },
     {
         channel: channel?.display_name || '',

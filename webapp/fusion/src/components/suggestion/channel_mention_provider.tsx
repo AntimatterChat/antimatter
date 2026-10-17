@@ -58,7 +58,7 @@ export const ChannelMentionSuggestion = React.forwardRef<HTMLLIElement, Suggesti
         </span>
     );
 
-    const description = '~' + channel?.name;
+    const description = (props.term?.charAt(0) === '#' ? '#' : '~') + channel?.name;
 
     return (
         <SuggestionContainer
@@ -91,13 +91,15 @@ export default class ChannelMentionProvider extends Provider {
     private delayChannelAutocomplete: boolean;
     autocompleteChannels: (term: string, success: (channels: Channel[]) => void, error: () => void) => Promise<ActionResult>;
 
-    constructor(channelSearchFunc: (term: string, success: (channels: Channel[]) => void, error: () => void) => Promise<ActionResult>, delayChannelAutocomplete: boolean) {
+    // Antimatter: Fusion links channels with #channel-name (the usual sign), so it passes '#'; '~' stays the
+    // default for the classic code paths. Both are rendered as channel links.
+    constructor(channelSearchFunc: (term: string, success: (channels: Channel[]) => void, error: () => void) => Promise<ActionResult>, delayChannelAutocomplete: boolean, triggerCharacter: '~' | '#' = '~') {
         super();
 
         this.lastPrefixTrimmed = '';
         this.lastPrefixWithNoResults = '';
         this.lastCompletedWord = '';
-        this.triggerCharacter = '~';
+        this.triggerCharacter = triggerCharacter;
 
         this.autocompleteChannels = channelSearchFunc;
         this.delayChannelAutocomplete = delayChannelAutocomplete;
@@ -110,19 +112,26 @@ export default class ChannelMentionProvider extends Provider {
     handlePretextChanged(pretext: string, resultCallback: ResultsCallback<Channel>) {
         this.resetRequest();
 
-        const captured = (/\B(~([^~\r\n]*))$/i).exec(pretext.toLowerCase());
+        const trigger = this.triggerCharacter;
+        const captured = (trigger === '#' ? /\B(#([^#\r\n]*))$/i : /\B(~([^~\r\n]*))$/i).exec(pretext.toLowerCase());
 
         if (!captured) {
             // Not a channel mention
             return false;
         }
 
-        if (captured.index > 0 && pretext[captured.index - 1] === '~') {
+        if (captured.index > 0 && pretext[captured.index - 1] === trigger) {
             // Multiple ~'s in a row so let's return and not show the autocomplete
             return false;
         }
 
         const prefix = captured[2];
+
+        // A # followed by a space starts a Markdown heading ("# Title"), not a channel link; and &#39; is an
+        // HTML entity.
+        if (trigger === '#' && ((/^\s/).test(prefix) || (captured.index > 0 && pretext[captured.index - 1] === '&'))) {
+            return false;
+        }
 
         if (this.delayChannelAutocomplete && prefix.length < MIN_CHANNEL_LINK_LENGTH) {
             return false;
@@ -189,8 +198,8 @@ export default class ChannelMentionProvider extends Provider {
         });
         resultCallback({
             groups: [
-                myChannelsGroup(myChannels),
-                moreChannelsGroup([], true),
+                myChannelsGroup(myChannels, trigger),
+                moreChannelsGroup([], true, trigger),
             ],
             matchedPretext: captured[1],
         });
@@ -246,8 +255,8 @@ export default class ChannelMentionProvider extends Provider {
             resultCallback({
                 matchedPretext: captured[1],
                 groups: [
-                    myChannelsGroup(myChannels),
-                    moreChannelsGroup(moreChannels, false),
+                    myChannelsGroup(myChannels, trigger),
+                    moreChannelsGroup(moreChannels, false, trigger),
                 ],
             });
         };
@@ -267,8 +276,8 @@ export default class ChannelMentionProvider extends Provider {
     }
 }
 
-export function myChannelsGroup(items: Channel[]) {
-    const terms = items.map((channel) => '~' + channel?.name);
+export function myChannelsGroup(items: Channel[], trigger: '~' | '#' = '~') {
+    const terms = items.map((channel) => trigger + channel?.name);
 
     return {
         key: 'myChannels',
@@ -279,7 +288,7 @@ export function myChannelsGroup(items: Channel[]) {
     };
 }
 
-export function moreChannelsGroup(items: Channel[], loading: boolean) {
+export function moreChannelsGroup(items: Channel[], loading: boolean, trigger: '~' | '#' = '~') {
     const label = defineMessage({id: 'suggestion.mention.morechannels', defaultMessage: 'Other Channels'});
 
     if (loading) {
@@ -294,7 +303,7 @@ export function moreChannelsGroup(items: Channel[], loading: boolean) {
         };
     }
 
-    const terms = items.map((channel) => '~' + channel?.name);
+    const terms = items.map((channel) => trigger + channel?.name);
 
     return {
         key: 'moreChannels',

@@ -13,6 +13,8 @@ import React from 'react';
 
 import type {Channel} from '@mattermost/types/channels';
 
+import {getMyChannelMemberships} from 'mattermost-redux/selectors/entities/channels';
+
 import {renderWithContext} from 'tests/react_testing_utils';
 
 import ChannelMentionProvider, {ChannelMentionSuggestion} from './channel_mention_provider';
@@ -217,6 +219,61 @@ describe('ChannelMentionProvider.handlePretextChanged', () => {
             expect(autocompleteChannels).toHaveBeenCalledWith('', expect.anything(), expect.anything());
             expect(resultsCallback).toHaveBeenCalled();
         });
+    });
+});
+
+describe('ChannelMentionProvider with the # trigger (Antimatter)', () => {
+    const autocompleteChannels = jest.fn();
+    const resultsCallback = jest.fn();
+
+    let provider: ChannelMentionProvider;
+    beforeEach(() => {
+        autocompleteChannels.mockClear();
+        resultsCallback.mockClear();
+        (getMyChannelMemberships as jest.Mock).mockReturnValue({});
+        provider = new ChannelMentionProvider(autocompleteChannels, false, '#');
+    });
+
+    test('typing # opens the channel list', () => {
+        expect(provider.triggerCharacter).toBe('#');
+        const matched = provider.handlePretextChanged('see #', resultsCallback);
+
+        expect(matched).toBe(true);
+        expect(autocompleteChannels).toHaveBeenCalledWith('', expect.anything(), expect.anything());
+        expect(resultsCallback).toHaveBeenCalledWith(expect.objectContaining({matchedPretext: '#'}));
+    });
+
+    test('completes channels as #channel-name', () => {
+        const matched = provider.handlePretextChanged('this is #town-sq', resultsCallback);
+
+        expect(matched).toBe(true);
+        expect(autocompleteChannels).toHaveBeenCalledWith('town-sq', expect.anything(), expect.anything());
+        expect(resultsCallback).toHaveBeenCalledWith(expect.objectContaining({matchedPretext: '#town-sq'}));
+
+        const [success] = autocompleteChannels.mock.calls[0].slice(1);
+        success([{id: 'c1', name: 'town-square', display_name: 'Town Square', type: 'O', delete_at: 0}]);
+        const last = resultsCallback.mock.calls[resultsCallback.mock.calls.length - 1][0];
+        expect(last.groups[1].terms).toEqual(['#town-square']);
+    });
+
+    test('no longer reacts to ~', () => {
+        expect(provider.handlePretextChanged('~town', resultsCallback)).toBe(false);
+        expect(autocompleteChannels).not.toHaveBeenCalled();
+    });
+
+    test('leaves Markdown headings, ## and HTML entities alone', () => {
+        expect(provider.handlePretextChanged('# Title', resultsCallback)).toBe(false);
+        expect(provider.handlePretextChanged('## Title', resultsCallback)).toBe(false);
+        expect(provider.handlePretextChanged('&#39', resultsCallback)).toBe(false);
+        expect(provider.handlePretextChanged('page#anchor', resultsCallback)).toBe(false);
+        expect(autocompleteChannels).not.toHaveBeenCalled();
+    });
+
+    test('the classic provider keeps ~', () => {
+        const classic = new ChannelMentionProvider(autocompleteChannels, false);
+        expect(classic.triggerCharacter).toBe('~');
+        expect(classic.handlePretextChanged('#town', resultsCallback)).toBe(false);
+        expect(classic.handlePretextChanged('~town', resultsCallback)).toBe(true);
     });
 });
 

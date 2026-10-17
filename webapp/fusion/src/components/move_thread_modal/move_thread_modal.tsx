@@ -177,7 +177,7 @@ const MoveThreadModal = ({onExited, post, actions}: Props) => {
 
     const postPreviewFooterMessage = formatMessage({
         id: 'move_thread_modal.preview.footer_message',
-        defaultMessage: 'Originally posted in ~{channelName}',
+        defaultMessage: 'Originally posted in #{channelName}',
     },
     {
         channelName: originalChannel?.display_name || '',

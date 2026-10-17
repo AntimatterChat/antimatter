@@ -421,7 +421,7 @@ describe('PostMessagePreview', () => {
                 testState,
             );
 
-            expect(screen.getByText('Only visible to users in', {exact: false})).toHaveTextContent(`Only visible to users in ~${teammate.username}`);
+            expect(screen.getByText('Only visible to users in', {exact: false})).toHaveTextContent(`Only visible to users in #${teammate.username}`);
         });
 
         test('should use the channel display name for a fully loaded GM channel', () => {
@@ -462,7 +462,7 @@ describe('PostMessagePreview', () => {
                 testState,
             );
 
-            expect(screen.getByText('Only visible to users in', {exact: false})).toHaveTextContent('Only visible to users in ~username1, teammate_username');
+            expect(screen.getByText('Only visible to users in', {exact: false})).toHaveTextContent('Only visible to users in #username1, teammate_username');
         });
 
         test('should fall back to "Someone" as the channel display name when the DM teammate is not loaded', () => {
@@ -497,7 +497,7 @@ describe('PostMessagePreview', () => {
                 testState,
             );
 
-            expect(screen.getByText('Only visible to users in', {exact: false})).toHaveTextContent('Only visible to users in ~Someone');
+            expect(screen.getByText('Only visible to users in', {exact: false})).toHaveTextContent('Only visible to users in #Someone');
         });
     });
 });

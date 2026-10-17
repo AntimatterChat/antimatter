@@ -22,7 +22,7 @@ exports[`components/FilePreviewModalInfo should match snapshot 1`] = `
       <span
         class="file-preview-modal__channel"
       >
-        Shared in ~name
+        Shared in #name
       </span>
     </div>
   </div>

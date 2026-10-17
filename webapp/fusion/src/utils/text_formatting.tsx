@@ -159,7 +159,7 @@ export interface TextFormattingOptionsBase {
     /**
      * An object mapping channel display names to channels.
      *
-     * If provided, ~channel mentions will be replaced with links to the relevant channel.
+     * If provided, ~channel and #channel mentions will be replaced with links to the relevant channel.
      */
     channelNamesMap: ChannelNamesMap;
 
@@ -562,19 +562,22 @@ export function autolinkChannelMentions(
     function addToken(channelName: string, teamName: string, mention: string, displayName: string) {
         const index = tokens.size;
         const alias = `$MM_CHANNELMENTION${index}$`;
+
+        // The link keeps the sign its author typed: ~ (Mattermost's) or # (Antimatter's).
+        const sigil = mention.charAt(0) === '#' ? '#' : '~';
         let href = '#';
         if (teamName) {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             href = ((window as any).basename || '') + '/' + teamName + '/channels/' + channelName;
             tokens.set(alias, {
-                value: `<a class="mention-link" href="${href}" data-channel-mention-team="${teamName}" data-channel-mention="${channelName}">~${displayName}</a>`,
+                value: `<a class="mention-link" href="${href}" data-channel-mention-team="${teamName}" data-channel-mention="${channelName}">${sigil}${displayName}</a>`,
                 originalText: mention,
             });
         } else if (team) {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             href = ((window as any).basename || '') + '/' + team.name + '/channels/' + channelName;
             tokens.set(alias, {
-                value: `<a class="mention-link" href="${href}" data-channel-mention="${channelName}">~${displayName}</a>`,
+                value: `<a class="mention-link" href="${href}" data-channel-mention="${channelName}">${sigil}${displayName}</a>`,
                 originalText: mention,
             });
         }
@@ -634,7 +637,7 @@ export function autolinkChannelMentions(
                     const alias = addToken(
                         channelNameLower,
                         teamName,
-                        '~' + channelNameLower,
+                        mention.charAt(0) + channelNameLower,
                         escapeHtml(displayName),
                     );
                     return alias + suffix;
@@ -651,6 +654,14 @@ export function autolinkChannelMentions(
     let output = text;
     output = output.replace(
         /\B(~([a-z0-9.\-_]*))/gi,
+        replaceChannelMentionWithToken,
+    );
+
+    // Antimatter: #channel-name links a channel too, when a channel of that name is known (in the community, or
+    // resolved by the server in the post's channel_mentions); any other #word stays a hashtag. Not after a letter
+    // (C#, page#anchor), another # or & (the &#39; entities of escaped text).
+    output = output.replace(
+        /(?<![\p{L}\d_&#])(#([a-z0-9][a-z0-9.\-_]*))/giu,
         replaceChannelMentionWithToken,
     );
 
@@ -842,7 +853,8 @@ function autolinkHashtags(
 
     const newTokens = new Map();
     for (const [alias, token] of tokens) {
-        if (token.originalText.lastIndexOf('#', 0) === 0) {
+        // A #channel-name that was linked to its channel stays a channel link.
+        if (token.originalText.lastIndexOf('#', 0) === 0 && !alias.startsWith('$MM_CHANNELMENTION')) {
             const index = tokens.size + newTokens.size;
             const newAlias = `$MM_HASHTAG${index}$`;
 

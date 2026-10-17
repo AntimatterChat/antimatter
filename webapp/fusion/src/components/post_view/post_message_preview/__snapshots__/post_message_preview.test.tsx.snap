@@ -82,7 +82,7 @@ exports[`PostMessagePreview nested previews should render file preview 1`] = `
               class="post__preview-footer"
             >
               <p>
-                Only visible to users in ~channel name
+                Only visible to users in #channel name
               </p>
             </div>
           </div>
@@ -175,7 +175,7 @@ exports[`PostMessagePreview nested previews should render opengraph preview 1`] 
               class="post__preview-footer"
             >
               <p>
-                Only visible to users in ~channel name
+                Only visible to users in #channel name
               </p>
             </div>
           </div>
@@ -268,7 +268,7 @@ exports[`PostMessagePreview should not render bot icon 1`] = `
               class="post__preview-footer"
             >
               <p>
-                Only visible to users in ~channel name
+                Only visible to users in #channel name
               </p>
             </div>
           </div>
@@ -361,7 +361,7 @@ exports[`PostMessagePreview should render bot icon 1`] = `
               class="post__preview-footer"
             >
               <p>
-                Only visible to users in ~channel name
+                Only visible to users in #channel name
               </p>
             </div>
           </div>
@@ -454,7 +454,7 @@ exports[`PostMessagePreview should render correctly 1`] = `
               class="post__preview-footer"
             >
               <p>
-                Only visible to users in ~channel name
+                Only visible to users in #channel name
               </p>
             </div>
           </div>
@@ -549,7 +549,7 @@ exports[`PostMessagePreview show render without preview when preview posts becom
               class="post__preview-footer"
             >
               <p>
-                Only visible to users in ~channel name
+                Only visible to users in #channel name
               </p>
             </div>
           </div>

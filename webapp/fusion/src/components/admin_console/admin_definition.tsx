@@ -6097,7 +6097,7 @@ const AdminDefinition: AdminDefinitionType = {
                             type: 'bool',
                             key: 'ExperimentalSettings.DelayChannelAutocomplete',
                             label: defineMessage({id: 'admin.experimental.delayChannelAutocomplete.title', defaultMessage: 'Delay Channel Autocomplete:'}),
-                            help_text: defineMessage({id: 'admin.experimental.delayChannelAutocomplete.desc', defaultMessage: 'When true, the autocomplete for channel links (such as ~town-square) will only trigger after typing a tilde followed by a couple letters. When false, the autocomplete will appear as soon as the user types a tilde.'}),
+                            help_text: defineMessage({id: 'admin.experimental.delayChannelAutocomplete.desc', defaultMessage: 'When true, the autocomplete for channel links (such as #town-square) will only trigger after typing # followed by a couple of letters. When false, the autocomplete will appear as soon as the user types #.'}),
                             isDisabled: it.not(it.userHasWritePermissionOnResource(RESOURCE_KEYS.EXPERIMENTAL.FEATURES)),
                         },
                         {

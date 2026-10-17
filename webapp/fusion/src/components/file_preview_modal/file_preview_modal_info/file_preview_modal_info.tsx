@@ -42,7 +42,7 @@ const FilePreviewModalInfo: React.FC<Props> = (props: Props) => {
     const channelName = channel ? (
         <FormattedMessage
             id='file_preview_modal_info.shared_in'
-            defaultMessage='Shared in ~{name}'
+            defaultMessage='Shared in #{name}'
             values={{
                 name: channel.display_name || channel.name,
             }}

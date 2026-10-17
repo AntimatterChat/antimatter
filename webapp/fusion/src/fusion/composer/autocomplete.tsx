@@ -106,7 +106,7 @@ function RowContent({kind, row}: {kind: Kind; row: Row}) {
         return (
             <>
                 <span className={am('cmd-ic')}><ChannelIcon channel={channel}/></span>
-                <span className={am('main')}>{`~${channel.display_name || channel.name}`}</span>
+                <span className={am('main')}>{`#${channel.display_name || channel.name}`}</span>
                 <span className={am('desc')}>{channel.purpose || channel.header || ''}</span>
             </>
         );
@@ -146,7 +146,7 @@ function RowContent({kind, row}: {kind: Kind; row: Row}) {
     return <span className={am('main')}>{row.term}</span>;
 }
 
-// Autocomplete suggests people (@), channels (~), commands (/) and emoji (:) as you type, with the classic web app's
+// Autocomplete suggests people (@), channels (#, written #channel-name), commands (/) and emoji (:) as you type, with the classic web app's
 // suggestion providers, drawn as the mockup's list above the composer.
 const Autocomplete = forwardRef<AutocompleteHandle, Props>(({channelId, rootId, value, textareaRef, onChange}, ref) => {
     const {formatMessage} = useIntl();
@@ -175,7 +175,7 @@ const Autocomplete = forwardRef<AutocompleteHandle, Props>(({channelId, rootId, 
             priorityProfiles,
             defaultAgent,
         })],
-        ['channel', new ChannelMentionProvider((term, success, error) => dispatch(autocompleteChannels(term, success, error)), delayChannelAutocomplete)],
+        ['channel', new ChannelMentionProvider((term, success, error) => dispatch(autocompleteChannels(term, success, error)), delayChannelAutocomplete, '#')],
         ['emoji', new EmoticonProvider()],
 
         // eslint-disable-next-line react-hooks/exhaustive-deps

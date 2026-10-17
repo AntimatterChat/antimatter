@@ -291,7 +291,7 @@ export const KEYBOARD_SHORTCUTS = {
     }),
     msgCompChannel: defineMessage({
         id: 'shortcuts.msgs.comp.channel',
-        defaultMessage: 'Channel:\t~|[a-z]|Tab',
+        defaultMessage: 'Channel:\t#|[a-z]|Tab',
     }),
     msgCompEmoji: defineMessage({
         id: 'shortcuts.msgs.comp.emoji',

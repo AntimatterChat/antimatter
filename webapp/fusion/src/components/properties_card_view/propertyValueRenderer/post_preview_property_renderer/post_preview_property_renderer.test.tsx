@@ -108,7 +108,7 @@ describe('PostPreviewPropertyRenderer', () => {
         });
 
         expect(getByText('Test post message')).toBeVisible();
-        expect(getByText('Originally posted in ~Test Channel')).toBeVisible();
+        expect(getByText('Originally posted in #Test Channel')).toBeVisible();
 
         const previewAttachment = container.querySelector('.attachment');
         expect(previewAttachment).toHaveClass('attachment--permalink', 'attachment--prevent-click');
@@ -167,7 +167,7 @@ describe('PostPreviewPropertyRenderer', () => {
 
         expect(getByTestId('post-preview-property')).toBeVisible();
         expect(getByText('Test post message')).toBeVisible();
-        expect(getByText('Originally posted in ~Test Channel')).toBeVisible();
+        expect(getByText('Originally posted in #Test Channel')).toBeVisible();
     });
 
     it('should handle missing display names gracefully', async () => {
@@ -192,7 +192,7 @@ describe('PostPreviewPropertyRenderer', () => {
 
         expect(getByTestId('post-preview-property')).toBeVisible();
         expect(getByText('Test post message')).toBeVisible();
-        expect(getByText('Originally posted in ~')).toBeVisible();
+        expect(getByText('Originally posted in #')).toBeVisible();
     });
 
     it('should handle post with file attachments', async () => {
@@ -230,7 +230,7 @@ describe('PostPreviewPropertyRenderer', () => {
 
         expect(getByTestId('post-preview-property')).toBeVisible();
         expect(getByText('Post with file attachment')).toBeVisible();
-        expect(getByText('Originally posted in ~Test Channel')).toBeVisible();
+        expect(getByText('Originally posted in #Test Channel')).toBeVisible();
 
         // Assert that file attachments are visible
         expect(getByText('document.pdf')).toBeVisible();

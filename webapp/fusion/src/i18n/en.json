@@ -4772,8 +4772,8 @@
     "description": "Admin console setting label for the Threaded Discussions (collapsed reply threads) dropdown on the Posts page."
   },
   "admin.experimental.delayChannelAutocomplete.desc": {
-    "defaultMessage": "When true, the autocomplete for channel links (such as ~town-square) will only trigger after typing a tilde followed by a couple letters. When false, the autocomplete will appear as soon as the user types a tilde.",
-    "description": "Admin console help text for the channel autocomplete delay toggle on the Experimental Features page; '~town-square' is a literal channel link example."
+    "defaultMessage": "When true, the autocomplete for channel links (such as #town-square) will only trigger after typing # followed by a couple of letters. When false, the autocomplete will appear as soon as the user types #.",
+    "description": "Admin console help text for the channel autocomplete delay toggle on the Experimental Features page; '#town-square' is a literal channel link example and '#' the sign that starts a channel link: keep both."
   },
   "admin.experimental.delayChannelAutocomplete.title": {
     "defaultMessage": "Delay Channel Autocomplete:",
@@ -20480,8 +20480,8 @@
     "description": "Label prefix concatenated directly with the uppercase file extension (e.g. 'File type PDF') in the file details preview; keep the trailing space."
   },
   "file_preview_modal_info.shared_in": {
-    "defaultMessage": "Shared in ~{name}",
-    "description": "Subtitle in the file preview modal header showing which channel the file was posted in; {name} is the channel name and '~' is the channel prefix symbol."
+    "defaultMessage": "Shared in #{name}",
+    "description": "Subtitle in the file preview modal header showing which channel the file was posted in; {name} is the channel name and '#' is the channel sign (keep it)."
   },
   "file_preview_modal_main_actions.public_link-copied": {
     "defaultMessage": "Public link copied",
@@ -20724,8 +20724,8 @@
     "description": "Notice in the Forward Message modal when the message comes from a private channel; {channelName} is that channel's name, rendered bold via <strong>."
   },
   "forward_post_modal.preview.footer_message": {
-    "defaultMessage": "Originally posted in ~{channel}",
-    "description": "Footer under the message preview in the Forward Message modal and post-preview cards; {channel} is the original channel's name and '~' is the channel prefix symbol."
+    "defaultMessage": "Originally posted in #{channel}",
+    "description": "Footer under the message preview in the Forward Message modal and post-preview cards; {channel} is the original channel's name and '#' is the channel sign (keep it)."
   },
   "forward_post_modal.preview.title": {
     "defaultMessage": "Message preview",
@@ -30828,8 +30828,8 @@
     "description": "Warning notice in the 'Move thread' dialog when moving a thread into or out of a direct/group message, since that changes who can read it."
   },
   "move_thread_modal.preview.footer_message": {
-    "defaultMessage": "Originally posted in ~{channelName}",
-    "description": "Footer line under the message preview in the 'Move thread' dialog; {channelName} is the source channel's name and the ~ prefix is Mattermost channel-link syntax."
+    "defaultMessage": "Originally posted in #{channelName}",
+    "description": "Footer line under the message preview in the 'Move thread' dialog; {channelName} is the source channel's name and '#' is the channel sign (keep it)."
   },
   "move_thread_modal.preview.title": {
     "defaultMessage": "Message preview",
@@ -31912,8 +31912,8 @@
     "description": "Menu item in the message actions menu that marks the message (and later ones) as unread."
   },
   "post_message_preview.channel": {
-    "defaultMessage": "Only visible to users in ~{channel}",
-    "description": "Footer under a forwarded/previewed message indicating its visibility; {channel} is the source channel's name prefixed with '~'."
+    "defaultMessage": "Only visible to users in #{channel}",
+    "description": "Footer under a forwarded/previewed message indicating its visibility; {channel} is the source channel's name and '#' is the channel sign (keep it)."
   },
   "post_message_view.edited": {
     "defaultMessage": "Edited",
@@ -33924,8 +33924,8 @@
     "description": "Footer note in the keyboard shortcuts modal explaining that typing / in the message box lists slash commands."
   },
   "shortcuts.msgs.comp.channel": {
-    "defaultMessage": "Channel:\t~|[a-z]|Tab",
-    "description": "Autocomplete shortcut entry: typing ~ plus letters then Tab completes a channel name. Description before the tab; keep the tab and pipes and the literal '~' and '[a-z]' tokens."
+    "defaultMessage": "Channel:\t#|[a-z]|Tab",
+    "description": "Autocomplete shortcut entry: typing # plus letters then Tab completes a channel name. Description before the tab; keep the tab and pipes and the literal '#' and '[a-z]' tokens."
   },
   "shortcuts.msgs.comp.emoji": {
     "defaultMessage": "Emoji:\t:|[a-z]|Tab",
