@@ -253,24 +253,27 @@ func prefixedTeamSliceColumns(isSelect bool, prefix string) []string {
 			fmt.Sprintf("COALESCE((SELECT sy.Value FROM Systems sy WHERE sy.Name = '%s' || %s.Id), '') = 'true' AS AllChannelsMembership", teamAllChannelsKeyPrefix, prefix),
 			fmt.Sprintf("COALESCE((SELECT sy.Value FROM Systems sy WHERE sy.Name = '%s' || %s.Id), '') AS DefaultChannelId", teamDefaultChannelKeyPrefix, prefix),
 			fmt.Sprintf("COALESCE((SELECT sy.Value FROM Systems sy WHERE sy.Name = '%s' || %s.Id), '%s') AS Kind", teamKindKeyPrefix, prefix, model.TeamKindCommunity),
+			fmt.Sprintf("COALESCE((SELECT sy.Value FROM Systems sy WHERE sy.Name = '%s' || %s.Id), '%s') AS MemberListView", teamMemberListViewKeyPrefix, prefix, model.TeamMemberListViewChoice),
 		)
 	}
 
 	return columns
 }
 
-// Antimatter: some community settings, AllChannelsMembership, DefaultChannelId and Kind, are kept in the Systems
-// table, one row each per team that sets them, rather than in new Teams columns: no schema migration. Selecting teams
-// reads them back into the team (prefixedTeamSliceColumns); saving a team writes them (saveTeamSettings). Kind is
-// stored for corporate communities only: a team without the row is a community.
+// Antimatter: some community settings, AllChannelsMembership, DefaultChannelId, Kind and MemberListView, are kept in
+// the Systems table, one row each per team that sets them, rather than in new Teams columns: no schema migration.
+// Selecting teams reads them back into the team (prefixedTeamSliceColumns); saving a team writes them
+// (saveTeamSettings). Kind and MemberListView are stored when they aren't the default: a team without the row is a
+// community, whose members choose how they list its members.
 const (
 	teamAllChannelsKeyPrefix    = "AmTeamAllChannels_"
 	teamDefaultChannelKeyPrefix = "AmTeamDefaultChannel_"
 	teamKindKeyPrefix           = "AmTeamKind_"
+	teamMemberListViewKeyPrefix = "AmTeamMemberListView_"
 )
 
 // teamSettingPrefixes are the Systems rows of a team's settings, removed with it.
-var teamSettingPrefixes = []string{teamAllChannelsKeyPrefix, teamDefaultChannelKeyPrefix, teamKindKeyPrefix}
+var teamSettingPrefixes = []string{teamAllChannelsKeyPrefix, teamDefaultChannelKeyPrefix, teamKindKeyPrefix, teamMemberListViewKeyPrefix}
 
 // teamSettingKeys gives each setting of a team its Systems row, with the value it stores; "" deletes the row.
 func teamSettingKeys(team *model.Team) map[string]string {
@@ -282,10 +285,15 @@ func teamSettingKeys(team *model.Team) map[string]string {
 	if team.IsCorporate() {
 		kind = model.TeamKindCorporate
 	}
+	memberListView := ""
+	if team.MemberListView == model.TeamMemberListViewRoles || team.MemberListView == model.TeamMemberListViewTeams {
+		memberListView = team.MemberListView
+	}
 	return map[string]string{
 		teamAllChannelsKeyPrefix + team.Id:    allChannels,
 		teamDefaultChannelKeyPrefix + team.Id: team.DefaultChannelId,
 		teamKindKeyPrefix + team.Id:           kind,
+		teamMemberListViewKeyPrefix + team.Id: memberListView,
 	}
 }
 

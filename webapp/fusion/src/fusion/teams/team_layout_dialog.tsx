@@ -33,8 +33,32 @@ const PRESET_TEXT: Array<{preset: Preset; title: MessageDescriptor; desc: Messag
     },
 ];
 
-// TeamLayoutDialog sets a team up from a preset or a template, and exports its layout as a template.
+// TeamLayoutDialog offers to set a new team up from a preset, the first time its admin opens it.
 export default function TeamLayoutDialog({onClose, first = false}: {onClose: () => void; first?: boolean}) {
+    const {formatMessage} = useIntl();
+    const team = useSelector(getCurrentTeam);
+    return (
+        <Dialog
+            label={formatMessage({id: 'fusion.layout.title', defaultMessage: 'Community layout'})}
+            onClose={onClose}
+            small={false}
+            className={am('wide')}
+        >
+            <div className={am('pane', 'roles-pane')}>
+                <h2>{first ? formatMessage({id: 'fusion.layout.firstTitle', defaultMessage: 'Set up {team}'}, {team: team?.display_name}) : formatMessage({id: 'fusion.layout.title', defaultMessage: 'Community layout'})}</h2>
+                <TeamLayoutSettings
+                    first={first}
+                    onClose={onClose}
+                />
+            </div>
+        </Dialog>
+    );
+}
+
+// TeamLayoutSettings sets a team up from a preset or a template, and exports its layout as a template: the Community
+// layout tab of the community settings, and the first-time dialog's content. Close (Not now, the first time) closes
+// them; applying a preset closes the first-time dialog.
+export function TeamLayoutSettings({onClose, first = false}: {onClose: () => void; first?: boolean}) {
     const {formatMessage} = useIntl();
     const dispatch = useDispatch();
     const toast = useToast();
@@ -62,7 +86,9 @@ export default function TeamLayoutDialog({onClose, first = false}: {onClose: () 
         } else {
             toast(formatMessage({id: 'fusion.layout.applied', defaultMessage: '{team} is set up'}, {team: team.display_name}));
         }
-        onClose();
+        if (first) {
+            onClose();
+        }
     };
 
     const download = async () => {
@@ -94,79 +120,80 @@ export default function TeamLayoutDialog({onClose, first = false}: {onClose: () 
     };
 
     return (
-        <Dialog
-            label={formatMessage({id: 'fusion.layout.title', defaultMessage: 'Community layout'})}
-            onClose={onClose}
-            small={false}
-            className={am('wide')}
-        >
-            <div className={am('pane', 'roles-pane')}>
-                <h2>{first ? formatMessage({id: 'fusion.layout.firstTitle', defaultMessage: 'Set up {team}'}, {team: team?.display_name}) : formatMessage({id: 'fusion.layout.title', defaultMessage: 'Community layout'})}</h2>
-                <p className={am('lead')}>{formatMessage({id: 'fusion.layout.lead', defaultMessage: 'Start from a preset, or from a template exported from another community. Applying it only removes the community categories it doesn\'t include.'})}</p>
-                <div
-                    className={am('presets')}
-                    role='radiogroup'
-                >
-                    {PRESET_TEXT.map((p) => (
-                        <button
-                            key={p.preset}
-                            type='button'
-                            role='radio'
-                            aria-checked={chosen === p.preset}
-                            className={am('preset', {on: chosen === p.preset})}
-                            onClick={() => setChosen(p.preset)}
-                        >
-                            <b>{formatMessage(p.title)}</b>
-                            <span>{formatMessage(p.desc)}</span>
-                        </button>
-                    ))}
-                </div>
-                <input
-                    ref={fileRef}
-                    type='file'
-                    accept='application/json,.json'
-                    style={{display: 'none'}}
-                    onChange={(e) => load(e.target.files?.[0])}
-                />
-                <div className={am('modal-actions')}>
-                    {!first && (
-                        <>
-                            <button
-                                type='button'
-                                className={am('btn')}
-                                onClick={download}
-                            >
-                                {formatMessage({id: 'fusion.layout.export', defaultMessage: 'Export as a template'})}
-                            </button>
-                            <button
-                                type='button'
-                                className={am('btn')}
-                                disabled={busy}
-                                onClick={() => fileRef.current?.click()}
-                            >
-                                {formatMessage({id: 'fusion.layout.import', defaultMessage: 'Apply a template…'})}
-                            </button>
-                        </>
-                    )}
-                    {first && (
+        <>
+            <p className={am('lead')}>{formatMessage({id: 'fusion.layout.lead', defaultMessage: 'Start from a preset, or from a template exported from another community. Applying it only removes the community categories it doesn\'t include.'})}</p>
+            <div
+                className={am('presets')}
+                role='radiogroup'
+            >
+                {PRESET_TEXT.map((p) => (
+                    <button
+                        key={p.preset}
+                        type='button'
+                        role='radio'
+                        aria-checked={chosen === p.preset}
+                        className={am('preset', {on: chosen === p.preset})}
+                        onClick={() => setChosen(p.preset)}
+                    >
+                        <b>{formatMessage(p.title)}</b>
+                        <span>{formatMessage(p.desc)}</span>
+                    </button>
+                ))}
+            </div>
+            <input
+                ref={fileRef}
+                type='file'
+                accept='application/json,.json'
+                style={{display: 'none'}}
+                onChange={(e) => load(e.target.files?.[0])}
+            />
+            <div className={am('modal-actions')}>
+                {!first && (
+                    <>
                         <button
                             type='button'
                             className={am('btn')}
-                            onClick={onClose}
+                            onClick={download}
                         >
-                            {formatMessage({id: 'fusion.layout.later', defaultMessage: 'Not now'})}
+                            {formatMessage({id: 'fusion.layout.export', defaultMessage: 'Export as a template'})}
                         </button>
-                    )}
+                        <button
+                            type='button'
+                            className={am('btn')}
+                            disabled={busy}
+                            onClick={() => fileRef.current?.click()}
+                        >
+                            {formatMessage({id: 'fusion.layout.import', defaultMessage: 'Apply a template…'})}
+                        </button>
+                    </>
+                )}
+                {first && (
                     <button
                         type='button'
-                        className={am('btn', 'primary')}
-                        disabled={busy}
-                        onClick={() => apply(PRESETS[chosen])}
+                        className={am('btn')}
+                        onClick={onClose}
                     >
-                        {formatMessage({id: 'fusion.layout.apply', defaultMessage: 'Apply'})}
+                        {formatMessage({id: 'fusion.layout.later', defaultMessage: 'Not now'})}
                     </button>
-                </div>
+                )}
+                {!first && (
+                    <button
+                        type='button'
+                        className={am('btn')}
+                        onClick={onClose}
+                    >
+                        {formatMessage({id: 'fusion.teamSettings.closeButton', defaultMessage: 'Close'})}
+                    </button>
+                )}
+                <button
+                    type='button'
+                    className={am('btn', 'primary')}
+                    disabled={busy}
+                    onClick={() => apply(PRESETS[chosen])}
+                >
+                    {formatMessage({id: 'fusion.layout.apply', defaultMessage: 'Apply'})}
+                </button>
             </div>
-        </Dialog>
+        </>
     );
 }

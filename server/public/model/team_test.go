@@ -224,3 +224,22 @@ func TestTeamKind(t *testing.T) {
 	var none *Team
 	assert.False(t, none.IsCorporate())
 }
+
+// Antimatter: how the member list groups a community's members. Members choose unless the admins fix it.
+func TestTeamMemberListView(t *testing.T) {
+	o := Team{DisplayName: "test", Name: "zzzzz", Type: TeamOpen}
+	o.PreSave()
+	assert.Equal(t, TeamMemberListViewChoice, o.MemberListView)
+	require.Nil(t, o.IsValid())
+
+	for _, view := range []string{TeamMemberListViewRoles, TeamMemberListViewTeams, TeamMemberListViewChoice, ""} {
+		o.Patch(&TeamPatch{MemberListView: NewPointer(view)})
+		assert.Equal(t, view, o.MemberListView)
+		require.Nil(t, o.IsValid(), view)
+	}
+
+	o.MemberListView = "status"
+	appErr := o.IsValid()
+	require.NotNil(t, appErr)
+	assert.Equal(t, "model.team.is_valid.member_list_view.app_error", appErr.Id)
+}

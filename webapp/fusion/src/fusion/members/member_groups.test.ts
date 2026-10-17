@@ -7,7 +7,7 @@ import type {UserProfile} from '@mattermost/types/users';
 import {renderHookWithContext} from 'tests/react_testing_utils';
 
 import type {MemberRole} from './member_groups';
-import {useMemberGroups} from './member_groups';
+import {memberGrouping, useMemberGroups} from './member_groups';
 
 const user = (id: string) => ({id, username: id, roles: 'system_user', props: {}}) as unknown as UserProfile;
 const group = (id: string, fields: Partial<Group>) => ({id, name: id, display_name: id, source: 'custom', delete_at: 0, team_id: '', member_ids: [], ...fields}) as Group;
@@ -86,5 +86,24 @@ describe('useMemberGroups when the team hides role colours', () => {
             } as never,
         ).result.current;
         expect(groups[0]).toMatchObject({key: 'role-mods', color: undefined});
+    });
+});
+
+describe('memberGrouping', () => {
+    test('members choose unless the community\'s admins chose', () => {
+        expect(memberGrouping('choice', 'teams', true, true)).toBe('teams');
+        expect(memberGrouping(undefined, 'roles', true, true)).toBe('roles');
+        expect(memberGrouping('roles', 'teams', true, true)).toBe('roles');
+        expect(memberGrouping('teams', 'roles', true, true)).toBe('teams');
+    });
+
+    test('by team only when the community has teams', () => {
+        expect(memberGrouping('teams', 'roles', false, true)).toBe('roles');
+        expect(memberGrouping('choice', 'teams', false, true)).toBe('roles');
+    });
+
+    test('by role only when the server allows it', () => {
+        expect(memberGrouping('roles', 'roles', true, false)).toBe('teams');
+        expect(memberGrouping('choice', 'roles', false, false)).toBe('teams');
     });
 });

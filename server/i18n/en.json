@@ -17258,6 +17258,11 @@
     "description": "Validation error when a team (community) is given a kind other than \"community\" or \"corporate\" (Antimatter). Keep the words community and corporate as they are: they are the values to send."
   },
   {
+    "id": "model.team.is_valid.member_list_view.app_error",
+    "translation": "Invalid member list view: it must be choice, roles or teams.",
+    "description": "Validation error when a team (community) is given a member list view other than \"choice\", \"roles\" or \"teams\" (Antimatter). Keep the words choice, roles and teams as they are: they are the values to send."
+  },
+  {
     "id": "model.team.is_valid.name.app_error",
     "translation": "Invalid name.",
     "description": "API error when a team's display name is empty or too long."

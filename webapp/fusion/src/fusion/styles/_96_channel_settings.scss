@@ -1,5 +1,15 @@
 // The channel and team settings: the classic web app's tabs in a Fusion dialog, drawn with the Fusion theme.
 
+// The community settings hold the community's roles, onboarding, attributes and layout too: more room than the user
+// settings, as much as the screen gives up to a point. Phones show it full screen, as every dialog with tabs
+// (_99_phone.scss).
+:is(.am-app, .am-layer) .am-modal.am-team-settings {
+  width: min(1120px, 100%);
+  height: min(820px, 100%);
+
+  .am-pane > .am-field-error { margin: 0 0 12px; }
+}
+
 :is(.am-app, .am-layer) .am-modal:is(.am-channel-settings, .am-team-settings) {
   // The bar that saves changes is fixed to its dialog, as in the classic one: a transform makes the dialog its frame.
   transform: translateZ(0);

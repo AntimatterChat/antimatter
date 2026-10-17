@@ -22603,10 +22603,6 @@
     "defaultMessage": "Delete",
     "description": ""
   },
-  "fusion.communityAttributes.done": {
-    "defaultMessage": "Done",
-    "description": ""
-  },
   "fusion.communityAttributes.down": {
     "defaultMessage": "Move down",
     "description": ""
@@ -24571,6 +24567,10 @@
     "defaultMessage": "Answer",
     "description": ""
   },
+  "fusion.onboarding.cancel": {
+    "defaultMessage": "Cancel",
+    "description": "Button of the Onboarding tab of the community settings that takes back the changes not saved yet."
+  },
   "fusion.onboarding.done": {
     "defaultMessage": "Done",
     "description": ""
@@ -25355,10 +25355,6 @@
     "defaultMessage": "Deleted the role {role}",
     "description": ""
   },
-  "fusion.roles.done": {
-    "defaultMessage": "Done",
-    "description": ""
-  },
   "fusion.roles.down": {
     "defaultMessage": "Move down",
     "description": ""
@@ -25390,6 +25386,26 @@
   "fusion.roles.lead": {
     "defaultMessage": "Roles give members colours. Roles shown separately get their own group in the member list; the member's highest role sets their name colour.",
     "description": ""
+  },
+  "fusion.roles.memberList": {
+    "defaultMessage": "Member list",
+    "description": "Title of the community setting (Roles tab of the community settings) choosing how the member list groups the community's members."
+  },
+  "fusion.roles.memberList.choice": {
+    "defaultMessage": "Let members choose",
+    "description": "Option of the community's member list setting: each member switches between grouping by role and by team."
+  },
+  "fusion.roles.memberList.roles": {
+    "defaultMessage": "By roles",
+    "description": "Option of the community's member list setting: the member list always groups people by their roles (admins, moderators...)."
+  },
+  "fusion.roles.memberList.teams": {
+    "defaultMessage": "By team",
+    "description": "Option of the community's member list setting: the member list always groups people by their team within the community."
+  },
+  "fusion.roles.memberListDesc": {
+    "defaultMessage": "How the member list groups the community's members: by their roles, by their teams, or as each member chooses.",
+    "description": "Description of the community's member list setting; teams are the community's Antimatter teams (user groups with a tag)."
   },
   "fusion.roles.members": {
     "defaultMessage": "{count, plural, one {# member} other {# members}}",
@@ -27118,6 +27134,10 @@
   "fusion.teamSettings.close": {
     "defaultMessage": "Close team settings",
     "description": ""
+  },
+  "fusion.teamSettings.closeButton": {
+    "defaultMessage": "Close",
+    "description": "Button at the bottom of a tab of the community settings (Roles, Member attributes, Community layout) that closes the community settings."
   },
   "fusion.teamSettings.overview": {
     "defaultMessage": "Overview",

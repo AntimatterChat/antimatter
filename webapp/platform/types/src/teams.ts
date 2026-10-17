@@ -25,6 +25,8 @@ export type TeamType = 'O' | 'I';
 
 export type TeamKind = 'community' | 'corporate';
 
+export type TeamMemberListView = 'choice' | 'roles' | 'teams';
+
 export type Team = {
     id: string;
     create_at: number;
@@ -63,6 +65,9 @@ export type Team = {
      * one, they archive those they created (whose admins they are).
      */
     kind?: TeamKind;
+
+    /** Antimatter: how the member list groups the community's members: as each chooses, by role, or by team. */
+    member_list_view?: TeamMemberListView;
 
     /** Data Retention Policy id. Unrelated to access-control policies below. */
     policy_id?: string | null;

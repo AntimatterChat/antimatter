@@ -18,7 +18,6 @@ import {setUnreadFilterEnabled} from 'actions/views/channel_sidebar';
 import {getMainMenuPluginComponents, getSidebarBrowseOrAddChannelMenuPluginComponents} from 'selectors/plugins';
 import {isUnreadFilterEnabled} from 'selectors/views/channel_sidebar';
 
-import {openCommunityAttributes} from 'fusion/attributes/edit_attributes_item';
 import {isAllChannelsCommunity} from 'fusion/channel/community_channels';
 import {Popover} from 'fusion/components/layer';
 import {Flyout, MenuHeading, MenuItem, MenuSeparator} from 'fusion/components/menu';
@@ -204,7 +203,7 @@ export default function ServerMenu({team: forTeam, anchor, point, width, onClose
                             icon='rank'
                             label={formatMessage({id: 'fusion.serverMenu.roles', defaultMessage: 'Roles…'})}
                             sub={formatMessage({id: 'fusion.serverMenu.rolesSub', defaultMessage: 'Colours, groups in the member list, badges'})}
-                            onClick={inTeam(() => dialogs.roles())}
+                            onClick={inTeam(() => dispatch(openTeamSettings('roles')))}
                         />
                     )}
                     {canManage && (
@@ -213,19 +212,19 @@ export default function ServerMenu({team: forTeam, anchor, point, width, onClose
                                 icon='chat'
                                 label={formatMessage({id: 'fusion.serverMenu.onboarding', defaultMessage: 'Onboarding…'})}
                                 sub={formatMessage({id: 'fusion.serverMenu.onboardingSub', defaultMessage: 'Questions newcomers answer'})}
-                                onClick={inTeam(() => dialogs.onboarding())}
+                                onClick={inTeam(() => dispatch(openTeamSettings('onboarding')))}
                             />
                             <MenuItem
                                 icon='board'
                                 label={formatMessage({id: 'fusion.serverMenu.layout', defaultMessage: 'Community layout…'})}
                                 sub={formatMessage({id: 'fusion.serverMenu.layoutSub', defaultMessage: 'Presets and templates'})}
-                                onClick={inTeam(() => dialogs.teamLayout())}
+                                onClick={inTeam(() => dispatch(openTeamSettings('layout')))}
                             />
                             <MenuItem
                                 icon='tag'
                                 label={formatMessage({id: 'fusion.serverMenu.attributes', defaultMessage: 'Member attributes…'})}
                                 sub={formatMessage({id: 'fusion.serverMenu.attributesSub', defaultMessage: 'Company, site… on profiles'})}
-                                onClick={run(() => dispatch(openCommunityAttributes(teamId, toast)))}
+                                onClick={inTeam(() => dispatch(openTeamSettings('attributes')))}
                             />
                         </>
                     )}

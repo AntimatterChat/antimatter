@@ -6,6 +6,7 @@ import {useIntl} from 'react-intl';
 import {shallowEqual, useSelector} from 'react-redux';
 
 import type {Group} from '@mattermost/types/groups';
+import type {TeamMemberListView} from '@mattermost/types/teams';
 import type {UserProfile} from '@mattermost/types/users';
 
 import {getChannelMembersInChannels} from 'mattermost-redux/selectors/entities/channels';
@@ -39,6 +40,17 @@ export type MemberGroup = {
 
 // How the member list groups people: by role (when the admins allow it), or by team.
 export type Grouping = 'roles' | 'teams';
+
+// memberGrouping is how the member list groups people: as the community's admins chose (its member_list_view), or as
+// the person chose when the admins let members choose. By team only when the community has teams, and by role only
+// when the server's admins allow it (TeamSettings.MemberListRoleGroups).
+export function memberGrouping(view: TeamMemberListView | undefined, chosen: string, hasTeams: boolean, rolesAllowed: boolean): Grouping {
+    if (!rolesAllowed) {
+        return 'teams';
+    }
+    const wanted = view === 'roles' || view === 'teams' ? view : chosen;
+    return wanted === 'teams' && hasTeams ? 'teams' : 'roles';
+}
 
 export const ROLE_COLORS: Record<string, string> = {
     admin: 'var(--am-role-admin)',

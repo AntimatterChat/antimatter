@@ -19,14 +19,9 @@ import {openDialog} from 'fusion/utils/modals';
 import type {GlobalState} from 'types/store';
 
 import {useCommunityAttributes} from './community_attributes';
-import CommunityAttributesDialog from './community_attributes_dialog';
 import UserAttributesDialog, {shownServerAttributes, useCanEditServerAttributes} from './user_attributes_dialog';
 
 export const USER_ATTRIBUTES_DIALOG = 'fusion_user_attributes';
-export const COMMUNITY_ATTRIBUTES_DIALOG = 'fusion_community_attributes';
-
-// openCommunityAttributes opens the dialog where a community's admins define its members' attributes.
-export const openCommunityAttributes = (teamId: string, toast?: (text: string) => void) => openDialog(COMMUNITY_ATTRIBUTES_DIALOG, CommunityAttributesDialog, {teamId, toast});
 
 // EditAttributesItem is "Edit attributes…" in a person's menu, for those who may set some of their attributes: the
 // server's admins, the community's, and the person themselves when the community has attributes they set.

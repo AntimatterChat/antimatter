@@ -8,12 +8,15 @@ import {Client4} from 'mattermost-redux/client';
 import {renderWithContext, screen, userEvent, waitFor, within} from 'tests/react_testing_utils';
 
 import {attributesState, field} from './attributes_test_utils';
-import CommunityAttributesDialog from './community_attributes_dialog';
+import CommunityAttributesSettings from './community_attributes_dialog';
+
+const mockToast = jest.fn();
+jest.mock('fusion/shell/toast_context', () => ({useToast: () => mockToast}));
 
 // Each test has its own community: the attributes are cached by community.
 let team = 0;
 
-describe('fusion/attributes/CommunityAttributesDialog', () => {
+describe('fusion/attributes/CommunityAttributesSettings', () => {
     beforeEach(() => {
         team++;
         if (!document.getElementById('am-layer')) {
@@ -28,16 +31,31 @@ describe('fusion/attributes/CommunityAttributesDialog', () => {
         jest.spyOn(Client4, 'createCommunityAttribute').mockResolvedValue(field('new'));
         jest.spyOn(Client4, 'patchCommunityAttribute').mockResolvedValue(field('x'));
         jest.spyOn(Client4, 'deleteCommunityAttribute').mockResolvedValue({status: 'OK'} as never);
-        const toast = jest.fn();
+        mockToast.mockClear();
+        const onClose = jest.fn();
         renderWithContext(
-            <CommunityAttributesDialog
+            <CommunityAttributesSettings
                 teamId={`team${team}`}
-                toast={toast}
+                onClose={onClose}
             />,
             attributesState(`team${team}`) as never,
         );
-        return toast;
+        return mockToast;
     };
+
+    test('closes the community settings with Close', async () => {
+        jest.spyOn(Client4, 'getCommunityAttributes').mockResolvedValue([]);
+        const onClose = jest.fn();
+        renderWithContext(
+            <CommunityAttributesSettings
+                teamId={`team${team}`}
+                onClose={onClose}
+            />,
+            attributesState(`team${team}`) as never,
+        );
+        await userEvent.click(await screen.findByRole('button', {name: 'Close'}));
+        expect(onClose).toHaveBeenCalled();
+    });
 
     test('lists the attributes with who sets and who sees them', async () => {
         render([field('Company', {managed: 'admin', visibility: 'admin', member_list: true}), field('Site', {visibility: 'hidden'})]);

@@ -257,4 +257,73 @@ describe('components/team_settings_modal', () => {
         renderWithContext(<TeamSettingsModal {...baseProps}/>, baseState);
         expect(screen.queryByRole('tab', {name: 'Autolinks'})).not.toBeInTheDocument();
     });
+
+    // Antimatter: the community's roles, onboarding, attributes and layout are tabs of its settings, which the
+    // community menu opens on the right tab.
+    const withPermissions = (permissions: string[]) => ({
+        ...baseState,
+        entities: {
+            ...baseState.entities,
+            general: {config: {EnableCustomGroups: 'true'}},
+            roles: {roles: {team_user: {permissions}}},
+        },
+    });
+
+    test('shows the roles, onboarding, attributes and layout tabs to the community\'s admins', () => {
+        renderWithContext(<TeamSettingsModal {...baseProps}/>, withPermissions([Permissions.MANAGE_TEAM, Permissions.MANAGE_TEAM_ROLES]));
+        for (const name of ['Overview', 'Channels', 'Roles', 'Onboarding', 'Member attributes', 'Community layout', 'Autolinks']) {
+            expect(screen.getByRole('tab', {name})).toBeInTheDocument();
+        }
+    });
+
+    test('opens on the tab asked for', () => {
+        renderWithContext(
+            <TeamSettingsModal
+                {...baseProps}
+                initialTab='onboarding'
+            />,
+            withPermissions([Permissions.MANAGE_TEAM, Permissions.MANAGE_TEAM_ROLES]),
+        );
+        expect(screen.getByRole('tab', {name: 'Onboarding'})).toHaveAttribute('aria-selected', 'true');
+        expect(screen.getByRole('heading', {name: 'Onboarding'})).toBeInTheDocument();
+        expect(screen.getByRole('button', {name: 'Cancel'})).toBeInTheDocument();
+        expect(screen.getByRole('button', {name: 'Save'})).toBeInTheDocument();
+    });
+
+    test('those who only manage the roles get the Roles tab alone', () => {
+        renderWithContext(
+            <TeamSettingsModal
+                {...baseProps}
+                initialTab='roles'
+            />,
+            withPermissions([Permissions.MANAGE_TEAM_ROLES]),
+        );
+        expect(screen.getAllByRole('tab').map((tab) => tab.textContent)).toEqual(['Roles']);
+        expect(screen.getByRole('tab', {name: 'Roles'})).toHaveAttribute('aria-selected', 'true');
+    });
+
+    test('a tab one may not see opens the first one instead', () => {
+        renderWithContext(
+            <TeamSettingsModal
+                {...baseProps}
+                initialTab='layout'
+            />,
+            baseState,
+        );
+        expect(screen.getByRole('tab', {name: 'Overview'})).toHaveAttribute('aria-selected', 'true');
+    });
+
+    test('Close in the Roles tab closes the settings', async () => {
+        renderWithContext(
+            <TeamSettingsModal
+                {...baseProps}
+                initialTab='roles'
+            />,
+            withPermissions([Permissions.MANAGE_TEAM, Permissions.MANAGE_TEAM_ROLES]),
+        );
+        await userEvent.click(screen.getByRole('button', {name: 'Close'}));
+        await waitFor(() => {
+            expect(baseProps.onExited).toHaveBeenCalled();
+        });
+    });
 });

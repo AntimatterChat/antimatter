@@ -6,6 +6,7 @@ import {useIntl} from 'react-intl';
 import {useSelector} from 'react-redux';
 
 import {Permissions} from 'mattermost-redux/constants';
+import {isCustomGroupsEnabled} from 'mattermost-redux/selectors/entities/preferences';
 import {haveISystemPermission, haveITeamPermission} from 'mattermost-redux/selectors/entities/roles';
 import {getCurrentTeam, getCurrentTeamId} from 'mattermost-redux/selectors/entities/teams';
 
@@ -13,10 +14,14 @@ import {isChannelAccessControlEnabled, isTeamMembershipAccessControlEnabled} fro
 
 import TeamSettings from 'components/team_settings';
 
+import CommunityAttributesSettings from 'fusion/attributes/community_attributes_dialog';
 import Icon from 'fusion/components/icon';
 import {Dialog} from 'fusion/components/layer';
 import AutolinksSettings from 'fusion/teams/autolinks_settings';
 import ChannelsSettings from 'fusion/teams/channels_settings';
+import OnboardingSettings from 'fusion/teams/onboarding_editor';
+import RolesSettings from 'fusion/teams/roles_dialog';
+import {TeamLayoutSettings} from 'fusion/teams/team_layout_dialog';
 import {am} from 'fusion/utils/class_names';
 import {focusElement} from 'utils/a11y_utils';
 
@@ -26,14 +31,21 @@ import './team_settings_modal.scss';
 
 const SHOW_PANEL_ERROR_STATE_TAB_SWITCH_TIMEOUT = 3000;
 
+// The tabs the Fusion UI draws itself; the others are the classic web app's.
+export type FusionTeamSettingsTab = 'channels' | 'roles' | 'onboarding' | 'layout' | 'attributes' | 'autolinks';
+const FUSION_TABS = new Set<string>(['channels', 'roles', 'onboarding', 'layout', 'attributes', 'autolinks']);
+
 type Props = {
     isOpen: boolean;
     onExited: () => void;
     focusOriginElement?: string;
+
+    // The tab to open on, when its opener may see it (Antimatter: the community menu's entries).
+    initialTab?: string;
 };
 
-const TeamSettingsModal = ({isOpen, onExited, focusOriginElement}: Props) => {
-    const [activeTab, setActiveTab] = useState('info');
+const TeamSettingsModal = ({isOpen, onExited, focusOriginElement, initialTab}: Props) => {
+    const [activeTab, setActiveTab] = useState(initialTab || 'info');
     const [show, setShow] = useState(isOpen);
     const [areThereUnsavedChanges, setAreThereUnsavedChanges] = useState(false);
     const [showTabSwitchError, setShowTabSwitchError] = useState(false);
@@ -56,6 +68,8 @@ const TeamSettingsModal = ({isOpen, onExited, focusOriginElement}: Props) => {
     );
     const canManageTeamAccessRules = isSystemAdmin || hasTeamAccessRulesPermission;
     const canManageTeam = useSelector((state: GlobalState) => haveITeamPermission(state, teamId, Permissions.MANAGE_TEAM));
+    const canManageRoles = useSelector((state: GlobalState) => haveITeamPermission(state, teamId, Permissions.MANAGE_TEAM_ROLES));
+    const customGroups = useSelector(isCustomGroupsEnabled);
 
     useEffect(() => {
         setShow(isOpen);
@@ -95,7 +109,7 @@ const TeamSettingsModal = ({isOpen, onExited, focusOriginElement}: Props) => {
 
     const handleExited = useCallback(() => {
         // Reset all state
-        setActiveTab('info');
+        setActiveTab(initialTab || 'info');
         setAreThereUnsavedChanges(false);
         setShowTabSwitchError(false);
         setHasBeenWarned(false);
@@ -107,7 +121,7 @@ const TeamSettingsModal = ({isOpen, onExited, focusOriginElement}: Props) => {
 
         // Notify parent
         onExited();
-    }, [onExited, focusOriginElement]);
+    }, [onExited, focusOriginElement, initialTab]);
 
     const tabs = [
         {
@@ -115,6 +129,9 @@ const TeamSettingsModal = ({isOpen, onExited, focusOriginElement}: Props) => {
             uiName: formatMessage({id: 'fusion.teamSettings.overview', defaultMessage: 'Overview'}),
             icon: 'icon icon-information-outline',
             iconTitle: formatMessage({id: 'generic_icons.info', defaultMessage: 'Info Icon'}),
+
+            // Those who only manage the roles (not the community) get the Roles tab alone.
+            display: canManageTeam || !canManageRoles,
         },
         {
             name: 'access',
@@ -145,6 +162,34 @@ const TeamSettingsModal = ({isOpen, onExited, focusOriginElement}: Props) => {
             display: canManageTeam,
         },
         {
+            name: 'roles',
+            uiName: formatMessage({id: 'fusion.roles.title', defaultMessage: 'Roles'}),
+            icon: 'icon icon-shield-outline',
+            iconTitle: formatMessage({id: 'fusion.roles.title', defaultMessage: 'Roles'}),
+            display: canManageRoles && customGroups,
+        },
+        {
+            name: 'onboarding',
+            uiName: formatMessage({id: 'fusion.onboarding.editTitle', defaultMessage: 'Onboarding'}),
+            icon: 'icon icon-message-text-outline',
+            iconTitle: formatMessage({id: 'fusion.onboarding.editTitle', defaultMessage: 'Onboarding'}),
+            display: canManageTeam && customGroups,
+        },
+        {
+            name: 'attributes',
+            uiName: formatMessage({id: 'fusion.communityAttributes.title', defaultMessage: 'Member attributes'}),
+            icon: 'icon icon-tag-outline',
+            iconTitle: formatMessage({id: 'fusion.communityAttributes.title', defaultMessage: 'Member attributes'}),
+            display: canManageTeam && customGroups,
+        },
+        {
+            name: 'layout',
+            uiName: formatMessage({id: 'fusion.layout.title', defaultMessage: 'Community layout'}),
+            icon: 'icon icon-view-grid-outline',
+            iconTitle: formatMessage({id: 'fusion.layout.title', defaultMessage: 'Community layout'}),
+            display: canManageTeam && customGroups,
+        },
+        {
             name: 'autolinks',
             uiName: formatMessage({id: 'fusion.teamSettings.autolinks', defaultMessage: 'Autolinks'}),
             icon: 'icon icon-link-variant',
@@ -167,6 +212,9 @@ const TeamSettingsModal = ({isOpen, onExited, focusOriginElement}: Props) => {
     const modalTitle = formatMessage({id: 'team_settings_modal.title', defaultMessage: 'Team Settings'});
     const visibleTabs = tabs.filter((tab) => tab.display !== false);
 
+    // A tab one may not see (asked for by an opener, or no longer allowed) falls back to the first one.
+    const shownTab = visibleTabs.some((tab) => tab.name === activeTab) ? activeTab : visibleTabs[0]?.name;
+
     // The Fusion UI shows the team settings in its own dialog, as the channel settings: the tabs on the left under the
     // team's name, the tab's name as the heading of the pane.
     return (
@@ -186,8 +234,8 @@ const TeamSettingsModal = ({isOpen, onExited, focusOriginElement}: Props) => {
                         key={tab.name}
                         type='button'
                         role='tab'
-                        className={am({on: tab.name === activeTab})}
-                        aria-selected={tab.name === activeTab}
+                        className={am({on: tab.name === shownTab})}
+                        aria-selected={tab.name === shownTab}
                         onClick={() => updateTab(tab.name)}
                     >
                         {tab.uiName}
@@ -199,16 +247,34 @@ const TeamSettingsModal = ({isOpen, onExited, focusOriginElement}: Props) => {
                 className={am('pane')}
                 role='tabpanel'
             >
-                <h2>{visibleTabs.find((tab) => tab.name === activeTab)?.uiName}</h2>
+                <h2>{visibleTabs.find((tab) => tab.name === shownTab)?.uiName}</h2>
 
-                {activeTab === 'channels' && <ChannelsSettings/>}
-                {activeTab === 'autolinks' && <AutolinksSettings setUnsaved={setAreThereUnsavedChanges}/>}
-                {activeTab !== 'channels' && activeTab !== 'autolinks' && (
+                {/* The Fusion tabs have their own Save and Cancel (or Close); the classic ones, the bar that saves. */}
+                {showTabSwitchError && FUSION_TABS.has(shownTab || '') && (
+                    <p
+                        className={am('field-error')}
+                        role='alert'
+                    >
+                        {formatMessage({id: 'saveChangesPanel.message', defaultMessage: 'You have unsaved changes'})}
+                    </p>
+                )}
+                {shownTab === 'channels' && <ChannelsSettings/>}
+                {shownTab === 'roles' && <RolesSettings onClose={handleHide}/>}
+                {shownTab === 'onboarding' && <OnboardingSettings setUnsaved={setAreThereUnsavedChanges}/>}
+                {shownTab === 'attributes' && (
+                    <CommunityAttributesSettings
+                        teamId={teamId}
+                        onClose={handleHide}
+                    />
+                )}
+                {shownTab === 'layout' && <TeamLayoutSettings onClose={handleHide}/>}
+                {shownTab === 'autolinks' && <AutolinksSettings setUnsaved={setAreThereUnsavedChanges}/>}
+                {shownTab && !FUSION_TABS.has(shownTab) && (
 
                     // The tabs' classic styles are scoped to the classic dialog's class.
                     <div className='TeamSettingsModal'>
                         <TeamSettings
-                            activeTab={activeTab}
+                            activeTab={shownTab}
                             areThereUnsavedChanges={areThereUnsavedChanges}
                             setAreThereUnsavedChanges={setAreThereUnsavedChanges}
                             showTabSwitchError={showTabSwitchError}

@@ -36,6 +36,14 @@ const (
 	TeamKindCorporate = "corporate"
 )
 
+// How a community's member list groups its members (Antimatter): as each member chooses (the default), or always by
+// role (admins, moderators...) or by team (its Antimatter teams).
+const (
+	TeamMemberListViewChoice = "choice"
+	TeamMemberListViewRoles  = "roles"
+	TeamMemberListViewTeams  = "teams"
+)
+
 type Team struct {
 	Id                  string  `json:"id"`
 	CreateAt            int64   `json:"create_at"`
@@ -79,6 +87,10 @@ type Team struct {
 
 	// Antimatter: Kind is the kind of community, TeamKindCommunity or TeamKindCorporate (see IsCorporate).
 	Kind string `json:"kind"`
+
+	// Antimatter: MemberListView is how the member list groups the community's members: TeamMemberListViewChoice
+	// (each member chooses), TeamMemberListViewRoles or TeamMemberListViewTeams.
+	MemberListView string `json:"member_list_view"`
 
 	// Not persisted; derived by the store via EXISTS on AccessControlPolicies(Type='team').
 	// Use HasMembershipPolicyAction for enforcement — this is a read-path signal only.
@@ -129,6 +141,7 @@ func (o *Team) Auditable() map[string]any {
 		"all_channels_membership": o.AllChannelsMembership,
 		"default_channel_id":      o.DefaultChannelId,
 		"kind":                    o.Kind,
+		"member_list_view":        o.MemberListView,
 	}
 }
 
@@ -157,6 +170,7 @@ type TeamPatch struct {
 	AllChannelsMembership *bool   `json:"all_channels_membership"`
 	DefaultChannelId      *string `json:"default_channel_id"`
 	Kind                  *string `json:"kind"`
+	MemberListView        *string `json:"member_list_view"`
 }
 
 func (o *TeamPatch) Auditable() map[string]any {
@@ -171,6 +185,7 @@ func (o *TeamPatch) Auditable() map[string]any {
 		"all_channels_membership": o.AllChannelsMembership,
 		"default_channel_id":      o.DefaultChannelId,
 		"kind":                    o.Kind,
+		"member_list_view":        o.MemberListView,
 	}
 }
 
@@ -211,6 +226,10 @@ func (o *Team) IsValid() *AppError {
 
 	if o.Kind != "" && o.Kind != TeamKindCommunity && o.Kind != TeamKindCorporate {
 		return NewAppError("Team.IsValid", "model.team.is_valid.kind.app_error", nil, "id="+o.Id, http.StatusBadRequest)
+	}
+
+	if o.MemberListView != "" && o.MemberListView != TeamMemberListViewChoice && o.MemberListView != TeamMemberListViewRoles && o.MemberListView != TeamMemberListViewTeams {
+		return NewAppError("Team.IsValid", "model.team.is_valid.member_list_view.app_error", nil, "id="+o.Id, http.StatusBadRequest)
 	}
 
 	if len(o.Onboarding) > TeamOnboardingMaxLength || (o.Onboarding != "" && !json.Valid([]byte(o.Onboarding))) {
@@ -300,6 +319,10 @@ func (o *Team) PreSave() {
 
 	if o.Kind == "" {
 		o.Kind = TeamKindCommunity
+	}
+
+	if o.MemberListView == "" {
+		o.MemberListView = TeamMemberListViewChoice
 	}
 }
 
@@ -420,6 +443,10 @@ func (o *Team) Patch(patch *TeamPatch) {
 
 	if patch.Kind != nil {
 		o.Kind = *patch.Kind
+	}
+
+	if patch.MemberListView != nil {
+		o.MemberListView = *patch.MemberListView
 	}
 
 	if patch.DefaultChannelId != nil {

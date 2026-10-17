@@ -23,10 +23,7 @@ import RemoveMemberDialog from 'fusion/moderation/remove_member_dialog';
 import TimeoutDialog from 'fusion/moderation/timeout_dialog';
 import BlockPromptDialog from 'fusion/privacy/block_prompt';
 import CreateTeamDialog from 'fusion/teams/create_team_dialog';
-import OnboardingEditor from 'fusion/teams/onboarding_editor';
-import RolesDialog from 'fusion/teams/roles_dialog';
 import SelfRolesDialog from 'fusion/teams/self_roles_dialog';
-import TeamLayoutDialog from 'fusion/teams/team_layout_dialog';
 import {openInvitePeople, openNewChannel} from 'fusion/utils/modals';
 
 type Dialogs = {
@@ -49,9 +46,6 @@ type Dialogs = {
     // Rename a server category (team admins).
     renameServerCategory: (name: string) => void;
 
-    // Set up the team's roles (team admins).
-    roles: () => void;
-
     // A channel's permissions: overrides, and the roles a private channel is for.
     channelPermissions: (channel: Channel) => void;
 
@@ -63,12 +57,6 @@ type Dialogs = {
 
     // Take or leave the team's roles open to all.
     selfRoles: () => void;
-
-    // Write the team's onboarding (team admins).
-    onboarding: () => void;
-
-    // Set the team up from a preset or template, or export it (team admins).
-    teamLayout: () => void;
 
     // Make a new team.
     createTeam: () => void;
@@ -90,9 +78,9 @@ type Dialogs = {
     blockPrompt: (userId: string) => void;
 };
 
-const DialogsContext = createContext<Dialogs>({createChannel: () => {}, addPeople: () => {}, invite: () => {}, deleteMessage: () => {}, createCategory: () => {}, renameServerCategory: () => {}, roles: () => {}, channelPermissions: () => {}, exportChannel: () => {}, categoryPermissions: () => {}, selfRoles: () => {}, onboarding: () => {}, teamLayout: () => {}, confirm: () => {}, help: () => {}, createTeam: () => {}, timeOut: () => {}, removeFromTeam: () => {}, browseChannels: () => {}, blockPrompt: () => {}});
+const DialogsContext = createContext<Dialogs>({createChannel: () => {}, addPeople: () => {}, invite: () => {}, deleteMessage: () => {}, createCategory: () => {}, renameServerCategory: () => {}, channelPermissions: () => {}, exportChannel: () => {}, categoryPermissions: () => {}, selfRoles: () => {}, confirm: () => {}, help: () => {}, createTeam: () => {}, timeOut: () => {}, removeFromTeam: () => {}, browseChannels: () => {}, blockPrompt: () => {}});
 
-type Open = {kind: 'create'; categoryId?: string} | {kind: 'add'; channel: Channel} | {kind: 'delete'; post: Post} | {kind: 'category'; renaming?: string} | {kind: 'roles'} | {kind: 'permissions'; channel: Channel} | {kind: 'export'; channel: Channel} | {kind: 'selfRoles'} | {kind: 'onboarding'} | {kind: 'layout'} | {kind: 'confirm'; options: ConfirmOptions} | {kind: 'help'; page?: HelpPage} | {kind: 'categoryPermissions'; teamId: string; name: string} | {kind: 'createTeam'} | {kind: 'timeOut'; userId: string} | {kind: 'removeFromTeam'; userId: string} | {kind: 'browse'} | {kind: 'blockPrompt'; userId: string} | null;
+type Open = {kind: 'create'; categoryId?: string} | {kind: 'add'; channel: Channel} | {kind: 'delete'; post: Post} | {kind: 'category'; renaming?: string} | {kind: 'permissions'; channel: Channel} | {kind: 'export'; channel: Channel} | {kind: 'selfRoles'} | {kind: 'confirm'; options: ConfirmOptions} | {kind: 'help'; page?: HelpPage} | {kind: 'categoryPermissions'; teamId: string; name: string} | {kind: 'createTeam'} | {kind: 'timeOut'; userId: string} | {kind: 'removeFromTeam'; userId: string} | {kind: 'browse'} | {kind: 'blockPrompt'; userId: string} | null;
 
 // DialogsProvider owns the Fusion UI's own dialogs that menus and buttons open, outliving the menu that opened them.
 export function DialogsProvider({children}: {children: React.ReactNode}) {
@@ -106,13 +94,10 @@ export function DialogsProvider({children}: {children: React.ReactNode}) {
         deleteMessage: (post) => setOpen({kind: 'delete', post}),
         createCategory: () => setOpen({kind: 'category'}),
         renameServerCategory: (name) => setOpen({kind: 'category', renaming: name}),
-        roles: () => setOpen({kind: 'roles'}),
         channelPermissions: (channel) => setOpen({kind: 'permissions', channel}),
         exportChannel: (channel) => setOpen({kind: 'export', channel}),
         categoryPermissions: (teamId, name) => setOpen({kind: 'categoryPermissions', teamId, name}),
         selfRoles: () => setOpen({kind: 'selfRoles'}),
-        onboarding: () => setOpen({kind: 'onboarding'}),
-        teamLayout: () => setOpen({kind: 'layout'}),
         confirm: (options) => setOpen({kind: 'confirm', options}),
         help: (page) => setOpen({kind: 'help', page}),
         createTeam: () => setOpen({kind: 'createTeam'}),
@@ -152,10 +137,7 @@ export function DialogsProvider({children}: {children: React.ReactNode}) {
                     onClose={close}
                 />
             )}
-            {open?.kind === 'roles' && <RolesDialog onClose={close}/>}
             {open?.kind === 'selfRoles' && <SelfRolesDialog onClose={close}/>}
-            {open?.kind === 'onboarding' && <OnboardingEditor onClose={close}/>}
-            {open?.kind === 'layout' && <TeamLayoutDialog onClose={close}/>}
             {open?.kind === 'createTeam' && <CreateTeamDialog onClose={close}/>}
             {open?.kind === 'browse' && <BrowseChannelsDialog onClose={close}/>}
             {open?.kind === 'timeOut' && (

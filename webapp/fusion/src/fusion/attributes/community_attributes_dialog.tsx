@@ -12,8 +12,8 @@ import type {CommunityAttributeField, CommunityAttributeFieldPatch} from '@matte
 import {getTeam} from 'mattermost-redux/selectors/entities/teams';
 
 import Icon from 'fusion/components/icon';
-import {Dialog} from 'fusion/components/layer';
 import {Choice, Toggle} from 'fusion/modals/settings_controls';
+import {useToast} from 'fusion/shell/toast_context';
 import {am} from 'fusion/utils/class_names';
 import Constants from 'utils/constants';
 
@@ -83,20 +83,20 @@ function patchOf(draft: Draft): CommunityAttributeFieldPatch {
 
 type Props = {
     teamId: string;
-    toast?: (text: string) => void;
-    onHide?: () => void;
+    onClose: () => void;
 };
 
-// CommunityAttributesDialog is where a community's admins define its members' attributes (who they work for, their
-// site…): shown on profiles within the community, set by the admins or by each member.
-export default function CommunityAttributesDialog({teamId, toast, onHide}: Props) {
+// CommunityAttributesSettings is the Member attributes tab of the community settings, where a community's admins
+// define its members' attributes (who they work for, their site…): shown on profiles within the community, set by the
+// admins or by each member. Close closes the settings.
+export default function CommunityAttributesSettings({teamId, onClose}: Props) {
     const {formatMessage} = useIntl();
+    const toast = useToast();
     const team = useSelector((state: GlobalState) => getTeam(state, teamId));
     const fields = useCommunityAttributes(teamId) || [];
     const [editing, setEditing] = useState<string | 'new' | null>(null);
     const [deleting, setDeleting] = useState<string | null>(null);
     const [error, setError] = useState('');
-    const close = () => onHide?.();
 
     const attempt = async (action: () => Promise<unknown>) => {
         setError('');
@@ -132,161 +132,152 @@ export default function CommunityAttributesDialog({teamId, toast, onHide}: Props
     const remove = async (field: CommunityAttributeField) => {
         if (await attempt(() => deleteCommunityAttribute(teamId, field.id))) {
             setDeleting(null);
-            toast?.(formatMessage({id: 'fusion.communityAttributes.deleted', defaultMessage: 'Deleted the attribute {name}'}, {name: field.name}));
+            toast(formatMessage({id: 'fusion.communityAttributes.deleted', defaultMessage: 'Deleted the attribute {name}'}, {name: field.name}));
         }
     };
 
     const kindLabel = (field: CommunityAttributeField) => formatMessage(KINDS.find(([k]) => k === kindOf(field))?.[1] || KINDS[0][1]);
-    const title = formatMessage({id: 'fusion.communityAttributes.title', defaultMessage: 'Member attributes'});
     const edited = fields.find((f) => f.id === editing);
 
     return (
-        <Dialog
-            label={title}
-            onClose={close}
-            small={false}
-            className={am('wide')}
-        >
-            <div className={am('pane', 'roles-pane')}>
-                <h2>{title}</h2>
-                <p className={am('lead')}>{formatMessage({id: 'fusion.communityAttributes.lead', defaultMessage: 'Details about the members of {community}, such as who they work for or where: shown on their profiles in this community only. Set them from a member\'s menu, "Edit attributes…".'}, {community: team?.display_name || ''})}</p>
-                <div className={am('role-list')}>
-                    {fields.map((field, i) => (
-                        <div
-                            key={field.id}
-                            className={am('role-row')}
-                        >
-                            <Icon
-                                name='tag'
-                                size='sm'
-                            />
-                            <div className={am('grow')}>
-                                <b>{field.name}</b>
-                                <span>
-                                    {kindLabel(field)}
-                                    {field.attrs?.managed === 'admin' ? ` · ${formatMessage({id: 'fusion.communityAttributes.byAdmins', defaultMessage: 'set by admins'})}` : ` · ${formatMessage({id: 'fusion.communityAttributes.byMembers', defaultMessage: 'set by members'})}`}
-                                    {field.attrs?.visibility === 'admin' && ` · ${formatMessage({id: 'fusion.communityAttributes.adminsOnly', defaultMessage: 'admins only'})}`}
-                                    {field.attrs?.visibility === 'hidden' && ` · ${formatMessage({id: 'fusion.communityAttributes.hidden', defaultMessage: 'hidden'})}`}
-                                    {field.attrs?.member_list && ` · ${formatMessage({id: 'fusion.communityAttributes.inList', defaultMessage: 'in the member list'})}`}
-                                </span>
-                            </div>
-                            {deleting === field.id ? (
-                                <>
-                                    <span className={am('attr-confirm')}>{formatMessage({id: 'fusion.communityAttributes.deleteConfirm', defaultMessage: 'Delete it and everyone\'s values?'})}</span>
-                                    <button
-                                        type='button'
-                                        className={am('btn')}
-                                        onClick={() => setDeleting(null)}
-                                    >
-                                        {formatMessage({id: 'fusion.communityAttributes.cancel', defaultMessage: 'Cancel'})}
-                                    </button>
-                                    <button
-                                        type='button'
-                                        className={am('btn', 'danger')}
-                                        onClick={() => remove(field)}
-                                    >
-                                        {formatMessage({id: 'fusion.communityAttributes.deleteIt', defaultMessage: 'Delete'})}
-                                    </button>
-                                </>
-                            ) : (
-                                <>
-                                    <button
-                                        type='button'
-                                        className={am('icon-btn')}
-                                        title={formatMessage({id: 'fusion.communityAttributes.up', defaultMessage: 'Move up'})}
-                                        aria-label={formatMessage({id: 'fusion.communityAttributes.up', defaultMessage: 'Move up'})}
-                                        disabled={i === 0}
-                                        onClick={() => move(i, -1)}
-                                    >
-                                        <Icon
-                                            name='chev'
-                                            size='sm'
-                                            className={am('flip')}
-                                        />
-                                    </button>
-                                    <button
-                                        type='button'
-                                        className={am('icon-btn')}
-                                        title={formatMessage({id: 'fusion.communityAttributes.down', defaultMessage: 'Move down'})}
-                                        aria-label={formatMessage({id: 'fusion.communityAttributes.down', defaultMessage: 'Move down'})}
-                                        disabled={i === fields.length - 1}
-                                        onClick={() => move(i, 1)}
-                                    >
-                                        <Icon
-                                            name='chev'
-                                            size='sm'
-                                        />
-                                    </button>
-                                    <button
-                                        type='button'
-                                        className={am('icon-btn')}
-                                        title={formatMessage({id: 'fusion.communityAttributes.edit', defaultMessage: 'Edit the attribute'})}
-                                        aria-label={formatMessage({id: 'fusion.communityAttributes.edit', defaultMessage: 'Edit the attribute'})}
-                                        onClick={() => setEditing(editing === field.id ? null : field.id)}
-                                    >
-                                        <Icon
-                                            name='pen'
-                                            size='sm'
-                                        />
-                                    </button>
-                                    <button
-                                        type='button'
-                                        className={am('icon-btn', 'danger')}
-                                        title={formatMessage({id: 'fusion.communityAttributes.delete', defaultMessage: 'Delete the attribute'})}
-                                        aria-label={formatMessage({id: 'fusion.communityAttributes.delete', defaultMessage: 'Delete the attribute'})}
-                                        onClick={() => setDeleting(field.id)}
-                                    >
-                                        <Icon
-                                            name='trash'
-                                            size='sm'
-                                        />
-                                    </button>
-                                </>
-                            )}
-                        </div>
-                    ))}
-                    {!fields.length && <p className={am('lead')}>{formatMessage({id: 'fusion.communityAttributes.none', defaultMessage: 'No attributes yet. Add one, such as "Company" or "Location".'})}</p>}
-                </div>
-                {editing && (
-                    <AttributeEditor
-                        key={editing}
-                        field={edited}
-                        onSave={(draft) => save(draft, edited)}
-                        onCancel={() => setEditing(null)}
-                    />
-                )}
-                {error && (
-                    <p
-                        className={am('field-error')}
-                        role='alert'
+        <div className={am('roles-pane')}>
+            <p className={am('lead')}>{formatMessage({id: 'fusion.communityAttributes.lead', defaultMessage: 'Details about the members of {community}, such as who they work for or where: shown on their profiles in this community only. Set them from a member\'s menu, "Edit attributes…".'}, {community: team?.display_name || ''})}</p>
+            <div className={am('role-list')}>
+                {fields.map((field, i) => (
+                    <div
+                        key={field.id}
+                        className={am('role-row')}
                     >
-                        {error}
-                    </p>
-                )}
-                <div className={am('modal-actions')}>
-                    {!editing && fields.length < Constants.MAX_COMMUNITY_ATTRIBUTES && (
-                        <button
-                            type='button'
-                            className={am('btn')}
-                            onClick={() => setEditing('new')}
-                        >
-                            <Icon
-                                name='plus'
-                                size='sm'
-                            />
-                            {formatMessage({id: 'fusion.communityAttributes.create', defaultMessage: 'Add attribute'})}
-                        </button>
-                    )}
+                        <Icon
+                            name='tag'
+                            size='sm'
+                        />
+                        <div className={am('grow')}>
+                            <b>{field.name}</b>
+                            <span>
+                                {kindLabel(field)}
+                                {field.attrs?.managed === 'admin' ? ` · ${formatMessage({id: 'fusion.communityAttributes.byAdmins', defaultMessage: 'set by admins'})}` : ` · ${formatMessage({id: 'fusion.communityAttributes.byMembers', defaultMessage: 'set by members'})}`}
+                                {field.attrs?.visibility === 'admin' && ` · ${formatMessage({id: 'fusion.communityAttributes.adminsOnly', defaultMessage: 'admins only'})}`}
+                                {field.attrs?.visibility === 'hidden' && ` · ${formatMessage({id: 'fusion.communityAttributes.hidden', defaultMessage: 'hidden'})}`}
+                                {field.attrs?.member_list && ` · ${formatMessage({id: 'fusion.communityAttributes.inList', defaultMessage: 'in the member list'})}`}
+                            </span>
+                        </div>
+                        {deleting === field.id ? (
+                            <>
+                                <span className={am('attr-confirm')}>{formatMessage({id: 'fusion.communityAttributes.deleteConfirm', defaultMessage: 'Delete it and everyone\'s values?'})}</span>
+                                <button
+                                    type='button'
+                                    className={am('btn')}
+                                    onClick={() => setDeleting(null)}
+                                >
+                                    {formatMessage({id: 'fusion.communityAttributes.cancel', defaultMessage: 'Cancel'})}
+                                </button>
+                                <button
+                                    type='button'
+                                    className={am('btn', 'danger')}
+                                    onClick={() => remove(field)}
+                                >
+                                    {formatMessage({id: 'fusion.communityAttributes.deleteIt', defaultMessage: 'Delete'})}
+                                </button>
+                            </>
+                        ) : (
+                            <>
+                                <button
+                                    type='button'
+                                    className={am('icon-btn')}
+                                    title={formatMessage({id: 'fusion.communityAttributes.up', defaultMessage: 'Move up'})}
+                                    aria-label={formatMessage({id: 'fusion.communityAttributes.up', defaultMessage: 'Move up'})}
+                                    disabled={i === 0}
+                                    onClick={() => move(i, -1)}
+                                >
+                                    <Icon
+                                        name='chev'
+                                        size='sm'
+                                        className={am('flip')}
+                                    />
+                                </button>
+                                <button
+                                    type='button'
+                                    className={am('icon-btn')}
+                                    title={formatMessage({id: 'fusion.communityAttributes.down', defaultMessage: 'Move down'})}
+                                    aria-label={formatMessage({id: 'fusion.communityAttributes.down', defaultMessage: 'Move down'})}
+                                    disabled={i === fields.length - 1}
+                                    onClick={() => move(i, 1)}
+                                >
+                                    <Icon
+                                        name='chev'
+                                        size='sm'
+                                    />
+                                </button>
+                                <button
+                                    type='button'
+                                    className={am('icon-btn')}
+                                    title={formatMessage({id: 'fusion.communityAttributes.edit', defaultMessage: 'Edit the attribute'})}
+                                    aria-label={formatMessage({id: 'fusion.communityAttributes.edit', defaultMessage: 'Edit the attribute'})}
+                                    onClick={() => setEditing(editing === field.id ? null : field.id)}
+                                >
+                                    <Icon
+                                        name='pen'
+                                        size='sm'
+                                    />
+                                </button>
+                                <button
+                                    type='button'
+                                    className={am('icon-btn', 'danger')}
+                                    title={formatMessage({id: 'fusion.communityAttributes.delete', defaultMessage: 'Delete the attribute'})}
+                                    aria-label={formatMessage({id: 'fusion.communityAttributes.delete', defaultMessage: 'Delete the attribute'})}
+                                    onClick={() => setDeleting(field.id)}
+                                >
+                                    <Icon
+                                        name='trash'
+                                        size='sm'
+                                    />
+                                </button>
+                            </>
+                        )}
+                    </div>
+                ))}
+                {!fields.length && <p className={am('lead')}>{formatMessage({id: 'fusion.communityAttributes.none', defaultMessage: 'No attributes yet. Add one, such as "Company" or "Location".'})}</p>}
+            </div>
+            {editing && (
+                <AttributeEditor
+                    key={editing}
+                    field={edited}
+                    onSave={(draft) => save(draft, edited)}
+                    onCancel={() => setEditing(null)}
+                />
+            )}
+            {error && (
+                <p
+                    className={am('field-error')}
+                    role='alert'
+                >
+                    {error}
+                </p>
+            )}
+            <div className={am('modal-actions')}>
+                {!editing && fields.length < Constants.MAX_COMMUNITY_ATTRIBUTES && (
                     <button
                         type='button'
-                        className={am('btn', 'primary')}
-                        onClick={close}
+                        className={am('btn')}
+                        onClick={() => setEditing('new')}
                     >
-                        {formatMessage({id: 'fusion.communityAttributes.done', defaultMessage: 'Done'})}
+                        <Icon
+                            name='plus'
+                            size='sm'
+                        />
+                        {formatMessage({id: 'fusion.communityAttributes.create', defaultMessage: 'Add attribute'})}
                     </button>
-                </div>
+                )}
+                <button
+                    type='button'
+                    className={am('btn', 'primary')}
+                    onClick={onClose}
+                >
+                    {formatMessage({id: 'fusion.teamSettings.closeButton', defaultMessage: 'Close'})}
+                </button>
             </div>
-        </Dialog>
+        </div>
     );
 }
 

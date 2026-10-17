@@ -7,6 +7,7 @@ import type {MessageDescriptor} from 'react-intl';
 import {shallowEqual, useDispatch, useSelector} from 'react-redux';
 
 import type {Group} from '@mattermost/types/groups';
+import type {TeamMemberListView} from '@mattermost/types/teams';
 import type {UserProfile} from '@mattermost/types/users';
 
 import {addUsersToGroup, archiveGroup, createGroupWithUserIds, patchGroup, removeUsersFromGroup} from 'mattermost-redux/actions/groups';
@@ -20,9 +21,8 @@ import {getCurrentUserId} from 'mattermost-redux/selectors/entities/users';
 
 import Avatar from 'fusion/components/avatar';
 import Icon from 'fusion/components/icon';
-import {Dialog} from 'fusion/components/layer';
 import PeopleSearch, {PersonName} from 'fusion/members/people_search';
-import {Toggle} from 'fusion/modals/settings_controls';
+import {Choice, Toggle} from 'fusion/modals/settings_controls';
 import {useToast} from 'fusion/shell/toast_context';
 import {am} from 'fusion/utils/class_names';
 
@@ -55,9 +55,10 @@ const SWITCHES: Array<{key: string; label: MessageDescriptor; desc: MessageDescr
 
 const slug = (name: string) => name.toLowerCase().normalize('NFKD').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 40) || 'role';
 
-// RolesDialog is where a team's admins set up its roles, as Discord's server settings: their names, colours, icons,
-// order and members, whether each shows its members apart, and the team's display settings (role colours, badges).
-export default function RolesDialog({onClose}: {onClose: () => void}) {
+// RolesSettings is the Roles tab of the community settings, where a team's admins set up its roles, as Discord's
+// server settings: their names, colours, icons, order and members, whether each shows its members apart, and the
+// team's display settings (role colours, badges, how the member list groups people). Close closes the settings.
+export default function RolesSettings({onClose}: {onClose: () => void}) {
     const {formatMessage} = useIntl();
     const dispatch = useDispatch();
     const toast = useToast();
@@ -142,140 +143,143 @@ export default function RolesDialog({onClose}: {onClose: () => void}) {
 
     const editedRole = roles.find((r) => r.id === editing);
     return (
-        <Dialog
-            label={formatMessage({id: 'fusion.roles.title', defaultMessage: 'Roles'})}
-            onClose={onClose}
-            small={false}
-            className={am('wide')}
-        >
-            <div className={am('pane', 'roles-pane')}>
-                <h2>{formatMessage({id: 'fusion.roles.title', defaultMessage: 'Roles'})}</h2>
-                <p className={am('lead')}>{formatMessage({id: 'fusion.roles.lead', defaultMessage: 'Roles give members colours. Roles shown separately get their own group in the member list; the member\'s highest role sets their name colour.'})}</p>
-                {team && admin && (
-                    <>
-                        <Toggle
-                            title={formatMessage({id: 'fusion.roles.colors', defaultMessage: 'Role colours'})}
-                            desc={formatMessage({id: 'fusion.roles.colorsDesc', defaultMessage: 'Names take the colour of their highest role, over everyone\'s coloured names.'})}
-                            on={!team.hide_role_colors}
-                            onChange={(on) => dispatch(patchTeam({id: team.id, hide_role_colors: !on}))}
-                        />
-                        <Toggle
-                            title={formatMessage({id: 'fusion.roles.badges', defaultMessage: 'Everyone shows a team badge'})}
-                            desc={formatMessage({id: 'fusion.roles.badgesDesc', defaultMessage: 'For example in a company: in this community, people who chose no badge show the tag of their first team here.'})}
-                            on={Boolean(team.require_team_badges)}
-                            onChange={(on) => dispatch(patchTeam({id: team.id, require_team_badges: on}))}
-                        />
-                    </>
-                )}
-                <div className={am('role-list')}>
-                    {roles.map((role, i) => (
-                        <div
-                            key={role.id}
-                            className={am('role-row')}
-                        >
-                            <i
-                                className={am('role-dot')}
-                                style={{background: role.color || 'var(--am-muted)'}}
-                            />
-                            <div className={am('grow')}>
-                                <b style={role.color ? {color: role.color} : undefined}>{role.display_name}</b>
-                                <span>
-                                    {formatMessage({id: 'fusion.roles.members', defaultMessage: '{count, plural, one {# member} other {# members}}'}, {count: role.member_ids?.length || 0})}
-                                    {role.hoist && ` · ${formatMessage({id: 'fusion.roles.shownApart', defaultMessage: 'shown separately'})}`}
-                                    {role.self_assignable && ` · ${formatMessage({id: 'fusion.roles.openToAll', defaultMessage: 'open to all'})}`}
-                                    {` · @${role.name}`}
-                                </span>
-                            </div>
-                            <button
-                                type='button'
-                                className={am('icon-btn')}
-                                title={formatMessage({id: 'fusion.roles.up', defaultMessage: 'Move up'})}
-                                aria-label={formatMessage({id: 'fusion.roles.up', defaultMessage: 'Move up'})}
-                                disabled={i === 0 || !manages(role) || !manages(roles[i - 1])}
-                                onClick={() => move(i, -1)}
-                            >
-                                <Icon
-                                    name='chev'
-                                    size='sm'
-                                    className={am('flip')}
-                                />
-                            </button>
-                            <button
-                                type='button'
-                                className={am('icon-btn')}
-                                title={formatMessage({id: 'fusion.roles.down', defaultMessage: 'Move down'})}
-                                aria-label={formatMessage({id: 'fusion.roles.down', defaultMessage: 'Move down'})}
-                                disabled={i === roles.length - 1 || !manages(role)}
-                                onClick={() => move(i, 1)}
-                            >
-                                <Icon
-                                    name='chev'
-                                    size='sm'
-                                />
-                            </button>
-                            <button
-                                type='button'
-                                className={am('icon-btn')}
-                                title={formatMessage({id: 'fusion.roles.edit', defaultMessage: 'Edit the role'})}
-                                aria-label={formatMessage({id: 'fusion.roles.edit', defaultMessage: 'Edit the role'})}
-                                disabled={!manages(role)}
-                                onClick={() => setEditing(editing === role.id ? null : role.id)}
-                            >
-                                <Icon
-                                    name='pen'
-                                    size='sm'
-                                />
-                            </button>
-                            <button
-                                type='button'
-                                className={am('icon-btn', 'danger')}
-                                title={formatMessage({id: 'fusion.roles.delete', defaultMessage: 'Delete the role'})}
-                                aria-label={formatMessage({id: 'fusion.roles.delete', defaultMessage: 'Delete the role'})}
-                                disabled={!manages(role)}
-                                onClick={() => remove(role)}
-                            >
-                                <Icon
-                                    name='trash'
-                                    size='sm'
-                                />
-                            </button>
-                        </div>
-                    ))}
-                    {!roles.length && <p className={am('lead')}>{formatMessage({id: 'fusion.roles.none', defaultMessage: 'No roles yet.'})}</p>}
-                </div>
-                {editing && (
-                    <RoleEditor
-                        key={editing}
-                        role={editedRole}
-                        onSave={(draft) => save(draft, editedRole)}
-                        onCancel={() => setEditing(null)}
-                        onMembersChanged={refresh}
+        <div className={am('roles-pane')}>
+            <p className={am('lead')}>{formatMessage({id: 'fusion.roles.lead', defaultMessage: 'Roles give members colours. Roles shown separately get their own group in the member list; the member\'s highest role sets their name colour.'})}</p>
+            {team && admin && (
+                <>
+                    <Toggle
+                        title={formatMessage({id: 'fusion.roles.colors', defaultMessage: 'Role colours'})}
+                        desc={formatMessage({id: 'fusion.roles.colorsDesc', defaultMessage: 'Names take the colour of their highest role, over everyone\'s coloured names.'})}
+                        on={!team.hide_role_colors}
+                        onChange={(on) => dispatch(patchTeam({id: team.id, hide_role_colors: !on}))}
                     />
-                )}
-                <div className={am('modal-actions')}>
-                    {!editing && (
+                    <Toggle
+                        title={formatMessage({id: 'fusion.roles.badges', defaultMessage: 'Everyone shows a team badge'})}
+                        desc={formatMessage({id: 'fusion.roles.badgesDesc', defaultMessage: 'For example in a company: in this community, people who chose no badge show the tag of their first team here.'})}
+                        on={Boolean(team.require_team_badges)}
+                        onChange={(on) => dispatch(patchTeam({id: team.id, require_team_badges: on}))}
+                    />
+                    <Choice<TeamMemberListView>
+                        title={formatMessage({id: 'fusion.roles.memberList', defaultMessage: 'Member list'})}
+                        desc={formatMessage({id: 'fusion.roles.memberListDesc', defaultMessage: 'How the member list groups the community\'s members: by their roles, by their teams, or as each member chooses.'})}
+                        value={team.member_list_view || 'choice'}
+                        options={[
+                            ['roles', formatMessage({id: 'fusion.roles.memberList.roles', defaultMessage: 'By roles'})],
+                            ['teams', formatMessage({id: 'fusion.roles.memberList.teams', defaultMessage: 'By team'})],
+                            ['choice', formatMessage({id: 'fusion.roles.memberList.choice', defaultMessage: 'Let members choose'})],
+                        ]}
+                        onChange={(view) => dispatch(patchTeam({id: team.id, member_list_view: view}))}
+                    />
+                </>
+            )}
+            <div className={am('role-list')}>
+                {roles.map((role, i) => (
+                    <div
+                        key={role.id}
+                        className={am('role-row')}
+                    >
+                        <i
+                            className={am('role-dot')}
+                            style={{background: role.color || 'var(--am-muted)'}}
+                        />
+                        <div className={am('grow')}>
+                            <b style={role.color ? {color: role.color} : undefined}>{role.display_name}</b>
+                            <span>
+                                {formatMessage({id: 'fusion.roles.members', defaultMessage: '{count, plural, one {# member} other {# members}}'}, {count: role.member_ids?.length || 0})}
+                                {role.hoist && ` · ${formatMessage({id: 'fusion.roles.shownApart', defaultMessage: 'shown separately'})}`}
+                                {role.self_assignable && ` · ${formatMessage({id: 'fusion.roles.openToAll', defaultMessage: 'open to all'})}`}
+                                {` · @${role.name}`}
+                            </span>
+                        </div>
                         <button
                             type='button'
-                            className={am('btn')}
-                            onClick={() => setEditing('new')}
+                            className={am('icon-btn')}
+                            title={formatMessage({id: 'fusion.roles.up', defaultMessage: 'Move up'})}
+                            aria-label={formatMessage({id: 'fusion.roles.up', defaultMessage: 'Move up'})}
+                            disabled={i === 0 || !manages(role) || !manages(roles[i - 1])}
+                            onClick={() => move(i, -1)}
                         >
                             <Icon
-                                name='plus'
+                                name='chev'
+                                size='sm'
+                                className={am('flip')}
+                            />
+                        </button>
+                        <button
+                            type='button'
+                            className={am('icon-btn')}
+                            title={formatMessage({id: 'fusion.roles.down', defaultMessage: 'Move down'})}
+                            aria-label={formatMessage({id: 'fusion.roles.down', defaultMessage: 'Move down'})}
+                            disabled={i === roles.length - 1 || !manages(role)}
+                            onClick={() => move(i, 1)}
+                        >
+                            <Icon
+                                name='chev'
                                 size='sm'
                             />
-                            {formatMessage({id: 'fusion.roles.create', defaultMessage: 'Create role'})}
                         </button>
-                    )}
+                        <button
+                            type='button'
+                            className={am('icon-btn')}
+                            title={formatMessage({id: 'fusion.roles.edit', defaultMessage: 'Edit the role'})}
+                            aria-label={formatMessage({id: 'fusion.roles.edit', defaultMessage: 'Edit the role'})}
+                            disabled={!manages(role)}
+                            onClick={() => setEditing(editing === role.id ? null : role.id)}
+                        >
+                            <Icon
+                                name='pen'
+                                size='sm'
+                            />
+                        </button>
+                        <button
+                            type='button'
+                            className={am('icon-btn', 'danger')}
+                            title={formatMessage({id: 'fusion.roles.delete', defaultMessage: 'Delete the role'})}
+                            aria-label={formatMessage({id: 'fusion.roles.delete', defaultMessage: 'Delete the role'})}
+                            disabled={!manages(role)}
+                            onClick={() => remove(role)}
+                        >
+                            <Icon
+                                name='trash'
+                                size='sm'
+                            />
+                        </button>
+                    </div>
+                ))}
+                {!roles.length && <p className={am('lead')}>{formatMessage({id: 'fusion.roles.none', defaultMessage: 'No roles yet.'})}</p>}
+            </div>
+            {editing && (
+                <RoleEditor
+                    key={editing}
+                    role={editedRole}
+                    onSave={(draft) => save(draft, editedRole)}
+                    onCancel={() => setEditing(null)}
+                    onMembersChanged={refresh}
+                />
+            )}
+            <div className={am('modal-actions')}>
+                {!editing && (
                     <button
                         type='button'
-                        className={am('btn', 'primary')}
-                        onClick={onClose}
+                        className={am('btn')}
+                        onClick={() => setEditing('new')}
                     >
-                        {formatMessage({id: 'fusion.roles.done', defaultMessage: 'Done'})}
+                        <Icon
+                            name='plus'
+                            size='sm'
+                        />
+                        {formatMessage({id: 'fusion.roles.create', defaultMessage: 'Create role'})}
                     </button>
-                </div>
+                )}
+                <button
+                    type='button'
+                    className={am('btn', 'primary')}
+                    onClick={onClose}
+                >
+                    {formatMessage({id: 'fusion.teamSettings.closeButton', defaultMessage: 'Close'})}
+                </button>
             </div>
-        </Dialog>
+        </div>
     );
 }
 

@@ -397,3 +397,38 @@ func TestModeratorPresetAndAdministratorRoles(t *testing.T) {
 		assert.Equal(t, []string{model.PermissionDeleteOthersPosts.Id}, h.rolePermissions(t, role))
 	})
 }
+
+// Antimatter: a community's admins choose how its member list groups people, or let each member choose.
+func TestCommunityMemberListView(t *testing.T) {
+	mainHelper.Parallel(t)
+	h := newRightsHelper(t, "")
+	ctx := context.Background()
+	assert.Equal(t, model.TeamMemberListViewChoice, h.team.MemberListView, "members choose by default")
+
+	_, member := h.member(t)
+	_, resp, err := member.PatchTeam(ctx, h.team.Id, &model.TeamPatch{MemberListView: model.NewPointer(model.TeamMemberListViewRoles)})
+	require.Error(t, err, "members don't set it")
+	CheckForbiddenStatus(t, resp)
+
+	_, resp, err = h.th.SystemAdminClient.PatchTeam(ctx, h.team.Id, &model.TeamPatch{MemberListView: model.NewPointer("status")})
+	require.Error(t, err)
+	CheckBadRequestStatus(t, resp)
+
+	_, admin := h.admin(t)
+	for _, view := range []string{model.TeamMemberListViewTeams, model.TeamMemberListViewRoles, model.TeamMemberListViewChoice} {
+		patched, _, err := admin.PatchTeam(ctx, h.team.Id, &model.TeamPatch{MemberListView: model.NewPointer(view)})
+		require.NoError(t, err, view)
+		assert.Equal(t, view, patched.MemberListView)
+		fetched, _, err := member.GetTeam(ctx, h.team.Id, "")
+		require.NoError(t, err)
+		assert.Equal(t, view, fetched.MemberListView, "members see it")
+	}
+
+	// Patching something else keeps it.
+	_, _, err = admin.PatchTeam(ctx, h.team.Id, &model.TeamPatch{MemberListView: model.NewPointer(model.TeamMemberListViewTeams)})
+	require.NoError(t, err)
+	patched, _, err := admin.PatchTeam(ctx, h.team.Id, &model.TeamPatch{Description: model.NewPointer("about")})
+	require.NoError(t, err)
+	assert.Equal(t, model.TeamMemberListViewTeams, patched.MemberListView)
+	assert.Equal(t, model.TeamKindCommunity, patched.Kind)
+}

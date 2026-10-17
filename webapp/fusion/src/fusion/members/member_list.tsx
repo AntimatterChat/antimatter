@@ -10,7 +10,7 @@ import type {UserProfile} from '@mattermost/types/users';
 import {countPendingChannelJoinRequests, getChannelJoinRequests, getChannelStats} from 'mattermost-redux/actions/channels';
 import {canManageChannelJoinRequests, getAllChannelStats, getCurrentChannelId, getCurrentChannel, getPendingChannelJoinRequests} from 'mattermost-redux/selectors/entities/channels';
 import {isTimedOut} from 'mattermost-redux/selectors/entities/roles';
-import {getCurrentTeamId} from 'mattermost-redux/selectors/entities/teams';
+import {getCurrentTeamId, getTeam} from 'mattermost-redux/selectors/entities/teams';
 import {makeGetProfilesInChannel} from 'mattermost-redux/selectors/entities/users';
 import {isGuest} from 'mattermost-redux/utils/user_utils';
 
@@ -42,7 +42,7 @@ import {openAddToGroup} from 'fusion/utils/modals';
 import type {GlobalState} from 'types/store';
 
 import MemberAddPopover, {useCanAddPeople} from './member_add_popover';
-import {ROLE_COLORS, useMemberGroups, useMemberRoles} from './member_groups';
+import {ROLE_COLORS, memberGrouping, useMemberGroups, useMemberRoles} from './member_groups';
 import type {Grouping, MemberRole} from './member_groups';
 
 const PER_PAGE = 100;
@@ -127,15 +127,15 @@ export default function MemberList({inPanel = false}: {inPanel?: boolean}) {
     const memberCount = useSelector((state: GlobalState) => getAllChannelStats(state)[channelId]?.member_count);
     const roles = useMemberRoles(profiles, channelId);
 
-    // People are listed by role (when the admins allow it) or by team, as each person chooses.
+    // People are listed by role (when the server's admins allow it) or by team: as the community's admins chose, or as
+    // each person chooses when they let them.
     const rolesAllowed = useRoleGroupsAllowed();
     const hasTeams = useSelector((state: GlobalState) => getTeams(state).length > 0);
     const [chosenGrouping, setGrouping] = usePreference(CATEGORY_FUSION_DISPLAY, MEMBER_GROUPING, 'roles');
-    let grouping: Grouping = chosenGrouping === 'teams' && hasTeams ? 'teams' : 'roles';
-    if (!rolesAllowed) {
-        grouping = 'teams';
-    }
     const teamId = useSelector(getCurrentTeamId);
+    const view = useSelector((state: GlobalState) => getTeam(state, teamId)?.member_list_view);
+    const grouping = memberGrouping(view, chosenGrouping, hasTeams, rolesAllowed);
+    const membersChoose = !view || view === 'choice';
     const listAttribute = useMemberListAttribute(channel?.type === 'D' || channel?.type === 'G' ? undefined : teamId, profiles);
     const shownProfiles = listAttribute.filtering ? profiles.filter((u) => listAttribute.shown(u.id)) : profiles;
     const groups = useMemberGroups(shownProfiles, roles, grouping);
@@ -175,7 +175,7 @@ export default function MemberList({inPanel = false}: {inPanel?: boolean}) {
                 {/* On a phone the list takes the whole screen: back to the conversation. */}
                 {phone && <SheetBack onBack={() => (inPanel ? dispatch(closeRightHandSide()) : layout.setRightOpen(false))}/>}
                 <span>{formatMessage({id: 'fusion.members.title', defaultMessage: '{count, plural, one {# member} other {# members}}'}, {count: Math.max(memberCount ?? 0, profiles.length)})}</span>
-                {rolesAllowed && hasTeams && !direct && (
+                {rolesAllowed && hasTeams && !direct && membersChoose && (
                     <span
                         className={am('mem-grouping')}
                         role='radiogroup'
