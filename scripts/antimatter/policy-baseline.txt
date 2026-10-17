@@ -2,7 +2,6 @@
 # regenerate this file with `scripts/antimatter/policy_check.py --update-baseline` to drop it.
 # Never add a new violation here; fix it, or add a commented entry to policy-allowlist.txt if it's legitimate.
 # Format: check<TAB>path<TAB>text (the offending line with whitespace collapsed, or "key: value" for catalogs).
-am-env	README.md	`config/config.json` (or the `MM_SQLSETTINGS_DATASOURCE` environment variable) at the database.
 am-env	server/docker-compose.yaml	- "MM_CLUSTERSETTINGS_CLUSTERNAME=mm_dev_cluster"
 am-env	server/docker-compose.yaml	- "MM_CLUSTERSETTINGS_ENABLE=true"
 am-env	server/docker-compose.yaml	- "MM_LOGSETTINGS_FILELOCATION=./logs/follower"
@@ -199,7 +198,6 @@ translations	server/i18n/zh-CN.json	app.channel_export.sent_conversation
 translations	server/i18n/zh-TW.json	app.channel_export.sent
 translations	server/i18n/zh-TW.json	app.channel_export.sent_conversation
 translations	webapp/fusion/src/i18n/ar.json	admin.cacheSettings.redisDBPlaceholder
-translations	webapp/fusion/src/i18n/ar.json	admin.global_attributes.attribute_details.external_source.links_removed
 translations	webapp/fusion/src/i18n/ar.json	admin.image.extractContentTimeoutExample
 translations	webapp/fusion/src/i18n/ar.json	admin.image.maxFileSizeExample
 translations	webapp/fusion/src/i18n/ar.json	admin.userManagement.userDetail.arrayValueSeparator
@@ -231,7 +229,6 @@ translations	webapp/fusion/src/i18n/bn.json	adminConsole.list.table.rowsCount.50
 translations	webapp/fusion/src/i18n/bn.json	fusion.attributes.none
 translations	webapp/fusion/src/i18n/bn.json	fusion.settings.fieldNone
 translations	webapp/fusion/src/i18n/ca.json	admin.cacheSettings.redisDBPlaceholder
-translations	webapp/fusion/src/i18n/ca.json	admin.global_attributes.attribute_details.external_source.links_removed
 translations	webapp/fusion/src/i18n/ca.json	admin.image.extractContentTimeoutExample
 translations	webapp/fusion/src/i18n/ca.json	admin.image.maxFileSizeExample
 translations	webapp/fusion/src/i18n/ca.json	admin.userManagement.userDetail.arrayValueSeparator
@@ -243,10 +240,6 @@ translations	webapp/fusion/src/i18n/ca.json	adminConsole.list.table.rowsCount.50
 translations	webapp/fusion/src/i18n/ca.json	fusion.attributes.none
 translations	webapp/fusion/src/i18n/ca.json	fusion.settings.fieldNone
 translations	webapp/fusion/src/i18n/cs.json	admin.cacheSettings.redisDBPlaceholder
-translations	webapp/fusion/src/i18n/cs.json	admin.elasticsearch.rebuildChannelsIndex.helpText
-translations	webapp/fusion/src/i18n/cs.json	admin.global_attributes.attribute_details.external_source.links_removed
-translations	webapp/fusion/src/i18n/cs.json	admin.global_attributes.attribute_details.graph.delete.blocked.lead
-translations	webapp/fusion/src/i18n/cs.json	admin.global_attributes.attribute_details.name_error.reserved_word
 translations	webapp/fusion/src/i18n/cs.json	admin.image.extractContentTimeoutExample
 translations	webapp/fusion/src/i18n/cs.json	admin.image.maxFileSizeExample
 translations	webapp/fusion/src/i18n/cs.json	admin.userManagement.userDetail.arrayValueSeparator
@@ -255,7 +248,6 @@ translations	webapp/fusion/src/i18n/cs.json	adminConsole.list.table.rowsCount.10
 translations	webapp/fusion/src/i18n/cs.json	adminConsole.list.table.rowsCount.100
 translations	webapp/fusion/src/i18n/cs.json	adminConsole.list.table.rowsCount.20
 translations	webapp/fusion/src/i18n/cs.json	adminConsole.list.table.rowsCount.50
-translations	webapp/fusion/src/i18n/cs.json	channel_invite.invite_team_members.message
 translations	webapp/fusion/src/i18n/cs.json	fusion.attributes.none
 translations	webapp/fusion/src/i18n/cs.json	fusion.settings.fieldNone
 translations	webapp/fusion/src/i18n/da.json	admin.cacheSettings.redisDBPlaceholder
@@ -340,7 +332,6 @@ translations	webapp/fusion/src/i18n/he.json	adminConsole.list.table.rowsCount.10
 translations	webapp/fusion/src/i18n/he.json	adminConsole.list.table.rowsCount.100
 translations	webapp/fusion/src/i18n/he.json	adminConsole.list.table.rowsCount.20
 translations	webapp/fusion/src/i18n/he.json	adminConsole.list.table.rowsCount.50
-translations	webapp/fusion/src/i18n/he.json	api.channel.add_guest.added
 translations	webapp/fusion/src/i18n/he.json	fusion.attributes.none
 translations	webapp/fusion/src/i18n/he.json	fusion.settings.fieldNone
 translations	webapp/fusion/src/i18n/hi.json	admin.cacheSettings.redisDBPlaceholder
@@ -355,12 +346,6 @@ translations	webapp/fusion/src/i18n/hi.json	adminConsole.list.table.rowsCount.50
 translations	webapp/fusion/src/i18n/hi.json	fusion.attributes.none
 translations	webapp/fusion/src/i18n/hi.json	fusion.settings.fieldNone
 translations	webapp/fusion/src/i18n/hu.json	admin.cacheSettings.redisDBPlaceholder
-translations	webapp/fusion/src/i18n/hu.json	admin.global_attributes.attribute_details.external_source.links_removed
-translations	webapp/fusion/src/i18n/hu.json	admin.global_attributes.attribute_details.graph.delete.blocked.lead
-translations	webapp/fusion/src/i18n/hu.json	admin.global_attributes.attribute_details.name_error.reserved_word
-translations	webapp/fusion/src/i18n/hu.json	admin.global_attributes.attribute_details.options.graph.parent_edge.cycle
-translations	webapp/fusion/src/i18n/hu.json	admin.global_attributes.attribute_details.options.rank_lowest
-translations	webapp/fusion/src/i18n/hu.json	admin.global_attributes.attribute_details.save_error.applies_to_rollback_failed
 translations	webapp/fusion/src/i18n/hu.json	admin.image.extractContentTimeoutExample
 translations	webapp/fusion/src/i18n/hu.json	admin.userManagement.userDetail.arrayValueSeparator
 translations	webapp/fusion/src/i18n/hu.json	admin.userManagement.userDetail.separator
@@ -397,12 +382,8 @@ translations	webapp/fusion/src/i18n/ja.json	admin.service.revokeNonCompliantToke
 translations	webapp/fusion/src/i18n/ja.json	admin.service.revokeNonCompliantTokens.success
 translations	webapp/fusion/src/i18n/ja.json	fusion.attributes.none
 translations	webapp/fusion/src/i18n/ja.json	fusion.settings.fieldNone
-translations	webapp/fusion/src/i18n/ja.json	team_settings.membership_tab.confirm.restricted_count
-translations	webapp/fusion/src/i18n/ja.json	team_settings.mode_flip_confirm.message_with_count
-translations	webapp/fusion/src/i18n/ja.json	user.settings.tokens.expiryTooFar
 translations	webapp/fusion/src/i18n/ko.json	admin.global_attributes.attribute_details.external_source.links_removed
 translations	webapp/fusion/src/i18n/ko.json	admin.image.extractContentTimeoutExample
-translations	webapp/fusion/src/i18n/ko.json	admin.team_settings.team_detail.save_confirm.body
 translations	webapp/fusion/src/i18n/ko.json	admin.userManagement.userDetail.arrayValueSeparator
 translations	webapp/fusion/src/i18n/ko.json	admin.userManagement.userDetail.separator
 translations	webapp/fusion/src/i18n/ko.json	fusion.attributes.none
@@ -437,7 +418,6 @@ translations	webapp/fusion/src/i18n/nb-NO.json	fusion.settings.fieldNone
 translations	webapp/fusion/src/i18n/nl.json	admin.image.extractContentTimeoutExample
 translations	webapp/fusion/src/i18n/nl.json	fusion.attributes.none
 translations	webapp/fusion/src/i18n/nl.json	fusion.settings.fieldNone
-translations	webapp/fusion/src/i18n/pl.json	admin.team_settings.team_detail.save_confirm.add_body
 translations	webapp/fusion/src/i18n/pl.json	fusion.attributes.none
 translations	webapp/fusion/src/i18n/pl.json	fusion.settings.fieldNone
 translations	webapp/fusion/src/i18n/pt-BR.json	admin.image.extractContentTimeoutExample
@@ -497,7 +477,6 @@ translations	webapp/fusion/src/i18n/th.json	adminConsole.list.table.rowsCount.10
 translations	webapp/fusion/src/i18n/th.json	adminConsole.list.table.rowsCount.100
 translations	webapp/fusion/src/i18n/th.json	adminConsole.list.table.rowsCount.20
 translations	webapp/fusion/src/i18n/th.json	adminConsole.list.table.rowsCount.50
-translations	webapp/fusion/src/i18n/th.json	channel_bookmarks.confirm.delete.text
 translations	webapp/fusion/src/i18n/th.json	fusion.attributes.none
 translations	webapp/fusion/src/i18n/th.json	fusion.settings.fieldNone
 translations	webapp/fusion/src/i18n/tr.json	admin.image.extractContentTimeoutExample
@@ -517,18 +496,8 @@ translations	webapp/fusion/src/i18n/ur.json	adminConsole.list.table.rowsCount.20
 translations	webapp/fusion/src/i18n/ur.json	adminConsole.list.table.rowsCount.50
 translations	webapp/fusion/src/i18n/ur.json	fusion.attributes.none
 translations	webapp/fusion/src/i18n/ur.json	fusion.settings.fieldNone
-translations	webapp/fusion/src/i18n/vi.json	add_outgoing_oauth_connection.grant_type.required
-translations	webapp/fusion/src/i18n/vi.json	add_outgoing_oauth_connection.name.required
-translations	webapp/fusion/src/i18n/vi.json	add_outgoing_oauth_connection.oauth_token_url.required
-translations	webapp/fusion/src/i18n/vi.json	add_outgoing_oauth_connection.token_url
-translations	webapp/fusion/src/i18n/vi.json	admin.access_control.simulate_access.details.multi_policy_explainer_mixed
 translations	webapp/fusion/src/i18n/vi.json	admin.cacheSettings.redisDBPlaceholder
-translations	webapp/fusion/src/i18n/vi.json	admin.global_attributes.attribute_details.name_error.reserved_word
-translations	webapp/fusion/src/i18n/vi.json	admin.global_attributes.attribute_details.options.graph.parent_edge.cycle
 translations	webapp/fusion/src/i18n/vi.json	admin.image.extractContentTimeoutExample
-translations	webapp/fusion/src/i18n/vi.json	admin.permission_policies.edit.info_banner.evaluation_order
-translations	webapp/fusion/src/i18n/vi.json	admin.permission_policies.edit.info_banner.title
-translations	webapp/fusion/src/i18n/vi.json	admin.secure_connection_detail.shared_channels.placeholder.title_remote
 translations	webapp/fusion/src/i18n/vi.json	admin.userManagement.userDetail.arrayValueSeparator
 translations	webapp/fusion/src/i18n/vi.json	admin.userManagement.userDetail.separator
 translations	webapp/fusion/src/i18n/vi.json	adminConsole.list.table.rowsCount.10
@@ -541,13 +510,7 @@ translations	webapp/fusion/src/i18n/zh-CN.json	fusion.attributes.none
 translations	webapp/fusion/src/i18n/zh-CN.json	fusion.settings.fieldNone
 translations	webapp/fusion/src/i18n/zh-TW.json	admin.cacheSettings.redisDBPlaceholder
 translations	webapp/fusion/src/i18n/zh-TW.json	admin.image.extractContentTimeoutExample
-translations	webapp/fusion/src/i18n/zh-TW.json	admin.team_settings.team_detail.save_confirm.add_body
 translations	webapp/fusion/src/i18n/zh-TW.json	admin.userManagement.userDetail.arrayValueSeparator
 translations	webapp/fusion/src/i18n/zh-TW.json	admin.userManagement.userDetail.separator
-translations	webapp/fusion/src/i18n/zh-TW.json	channel_attributes.labels.overflow_aria
 translations	webapp/fusion/src/i18n/zh-TW.json	fusion.attributes.none
 translations	webapp/fusion/src/i18n/zh-TW.json	fusion.settings.fieldNone
-translations	webapp/fusion/src/i18n/zh-TW.json	team_settings.membership_tab.confirm.allowed_count
-translations	webapp/fusion/src/i18n/zh-TW.json	team_settings.membership_tab.confirm.restricted_count
-translations	webapp/fusion/src/i18n/zh-TW.json	team_settings.sync_status.days_ago
-translations	webapp/fusion/src/i18n/zh-TW.json	team_settings.sync_status.hours_ago

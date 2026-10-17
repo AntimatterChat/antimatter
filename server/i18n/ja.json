@@ -1294,6 +1294,10 @@
     "translation": "現在のチャンネルを取得する際にエラーが発生しました。"
   },
   {
+    "id": "api.command_invite.channel.error",
+    "translation": "チャンネル {{.Channel}} が見つかりませんでした。チャンネルを特定するには、チャンネルハンドル（チャンネルをメンションする際に ~ の後ろに表示される名前）を使用してください。"
+  },
+  {
     "id": "api.command_invite.channel_constrained_user_denied",
     "translation": "このチャンネルはグループによって管理されています。  このユーザーはこのチャンネルと同期しているグループのメンバーではありません。"
   },
@@ -1328,6 +1332,10 @@
   {
     "id": "api.command_invite.permission.app_error",
     "translation": "{{.User}} を {{.Channel}} に追加する権限がありません。"
+  },
+  {
+    "id": "api.command_invite.private_channel.app_error",
+    "translation": "チャンネル {{.Channel}} が見つかりませんでした。チャンネルを特定するには、チャンネルハンドル（チャンネルをメンションする際に ~ の後ろに表示される名前）を使用してください。"
   },
   {
     "id": "api.command_invite.success",
@@ -1512,12 +1520,20 @@
     "translation": "現在のチャンネル、もしくは指定された [チャンネル] のデスクトップ、電子メール、プッシュ通知をオフにする。"
   },
   {
+    "id": "api.command_mute.error",
+    "translation": "チャンネル {{.Channel}} が見つかりませんでした。チャンネルを特定するには、チャンネルハンドル（チャンネルをメンションする際に ~ の後ろに表示される名前）を使用してください。"
+  },
+  {
     "id": "api.command_mute.hint",
     "translation": "~[チャンネル]"
   },
   {
     "id": "api.command_mute.name",
     "translation": "ミュート"
+  },
+  {
+    "id": "api.command_mute.no_channel.error",
+    "translation": "指定されたチャンネルが見つかりませんでした。チャンネルを特定するには、チャンネルハンドル（チャンネルをメンションする際に ~ の後ろに表示される名前）を使用してください。"
   },
   {
     "id": "api.command_mute.success_mute",
@@ -8138,6 +8154,10 @@
     "translation": "チャンネルの上部にあるメッセージを取得できません。"
   },
   {
+    "id": "app.on_top_post.moderators_only.app_error",
+    "translation": "メッセージをピン留めできるのは、チャンネルの管理者、コミュニティの管理者およびモデレーターのみです。"
+  },
+  {
     "id": "app.on_top_post.not_on_top.app_error",
     "translation": "このメッセージはチャンネルの上部にありません。"
   },
@@ -11246,6 +11266,10 @@
     "translation": "AD/LDAPでのユーザー検索に失敗しました。MattermostサーバーがAD/LDAPサーバーに接続できることを確認し、再度実行してください。"
   },
   {
+    "id": "ent.ldap.syncronize.search_failure_size_exceeded.app_error",
+    "translation": "サイズ制限を超えました。システムコンソール > 認証 > AD/LDAP の「最大ページサイズ」設定を増やしてみてください。"
+  },
+  {
     "id": "ent.ldap.update_cpa.empty_attribute",
     "translation": "空のLDAP属性値です"
   },
@@ -12552,6 +12576,10 @@
   {
     "id": "model.config.is_valid.dcr_redirect_uri_allowlist.app_error",
     "translation": "DCRリダイレクトURI許可リストに不正なパターンが含まれています。パターンはhttp://またはhttps://で始まる必要があり、空や空白のみにはできません。"
+  },
+  {
+    "id": "model.config.is_valid.default_community_kind.app_error",
+    "translation": "新しいコミュニティの種類が無効です。TeamSettings.DefaultCommunityKind は community または workplace である必要があります。"
   },
   {
     "id": "model.config.is_valid.default_web_ui.app_error",
@@ -14202,6 +14230,14 @@
     "translation": "不正な招待IDです。"
   },
   {
+    "id": "model.team.is_valid.kind.app_error",
+    "translation": "コミュニティの種類が無効です。community または workplace である必要があります。"
+  },
+  {
+    "id": "model.team.is_valid.member_list_view.app_error",
+    "translation": "メンバーリストの表示形式が無効です。choice、roles または teams である必要があります。"
+  },
+  {
     "id": "model.team.is_valid.name.app_error",
     "translation": "不正な名前です。"
   },
@@ -14756,6 +14792,10 @@
   {
     "id": "web.error.unsupported_browser.download",
     "translation": "アプリをダウンロードする"
+  },
+  {
+    "id": "web.error.unsupported_browser.download_app_or_upgrade_browser",
+    "translation": "より良い体験のために、Antimatter アプリをダウンロードするか、サポートされているブラウザを使用してください。"
   },
   {
     "id": "web.error.unsupported_browser.download_the_app",

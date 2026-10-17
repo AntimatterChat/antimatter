@@ -1295,6 +1295,10 @@
     "translation": "Feil under henting av gjeldende kanal."
   },
   {
+    "id": "api.command_invite.channel.error",
+    "translation": "Fant ikke kanalen {{.Channel}}. Bruk kanalens håndtak (navnet etter ~ når du nevner en kanal) for å identifisere den."
+  },
+  {
     "id": "api.command_invite.channel_constrained_user_denied",
     "translation": "Denne kanalen administreres av grupper. Denne brukeren er ikke med i en gruppe som er synkronisert til denne kanalen."
   },
@@ -1329,6 +1333,10 @@
   {
     "id": "api.command_invite.permission.app_error",
     "translation": "Du har ikke tilstrekkelige tillatelser til å legge til {{.User}} i {{.Channel}}."
+  },
+  {
+    "id": "api.command_invite.private_channel.app_error",
+    "translation": "Fant ikke kanalen {{.Channel}}. Bruk kanalens håndtak (navnet etter ~ når du nevner en kanal) for å identifisere den."
   },
   {
     "id": "api.command_invite.success",
@@ -1514,12 +1522,20 @@
     "translation": "Slår av skrivebords-, e-post- og push-varsler for gjeldende kanal eller den angitte [kanal]."
   },
   {
+    "id": "api.command_mute.error",
+    "translation": "Fant ikke kanalen {{.Channel}}. Bruk kanalens håndtak (navnet etter ~ når du nevner en kanal) for å identifisere den."
+  },
+  {
     "id": "api.command_mute.hint",
     "translation": "~[kanal]"
   },
   {
     "id": "api.command_mute.name",
     "translation": "demp"
+  },
+  {
+    "id": "api.command_mute.no_channel.error",
+    "translation": "Fant ikke den angitte kanalen. Bruk kanalens håndtak (navnet etter ~ når du nevner en kanal) for å identifisere den."
   },
   {
     "id": "api.command_mute.success_mute",
@@ -8209,6 +8225,10 @@
     "translation": "Kan ikke hente meldingene øverst i kanalen."
   },
   {
+    "id": "app.on_top_post.moderators_only.app_error",
+    "translation": "Kun kanalens administratorer, samfunnets administratorer og moderatorer kan feste meldinger øverst."
+  },
+  {
     "id": "app.on_top_post.not_on_top.app_error",
     "translation": "Denne meldingen er ikke festet øverst i kanalen."
   },
@@ -11387,6 +11407,10 @@
     "translation": "Kunne ikke søke etter brukere i AD/LDAP. Test om Mattermost-serveren kan koble til AD/LDAP-serveren, og prøv igjen."
   },
   {
+    "id": "ent.ldap.syncronize.search_failure_size_exceeded.app_error",
+    "translation": "Størrelsesgrense overskredet. Prøv å øke innstillingen for maksimalt sidestørrelse i Systemkonsoll > Autentisering > AD/LDAP."
+  },
+  {
     "id": "ent.ldap.update_cpa.empty_attribute",
     "translation": "Tom verdi for LDAP-attributt"
   },
@@ -12737,6 +12761,10 @@
   {
     "id": "model.config.is_valid.dcr_redirect_uri_allowlist.app_error",
     "translation": "Tillatelseslisten for DCR-omdirigerings-URI-er inneholder et ugyldig mønster. Hvert mønster må være en gyldig URI med skjema og vert (for eksempel https://example.com/** eller cursor://app/callback) og kan ikke være tomt eller bare bestå av mellomrom."
+  },
+  {
+    "id": "model.config.is_valid.default_community_kind.app_error",
+    "translation": "Ugyldig type for nye samfunn: TeamSettings.DefaultCommunityKind må være community eller workplace."
   },
   {
     "id": "model.config.is_valid.default_web_ui.app_error",
@@ -14387,6 +14415,14 @@
     "translation": "Ugyldig invitasjons-ID."
   },
   {
+    "id": "model.team.is_valid.kind.app_error",
+    "translation": "Ugyldig type samfunn: den må være community eller workplace."
+  },
+  {
+    "id": "model.team.is_valid.member_list_view.app_error",
+    "translation": "Ugyldig visning av medlemsliste: den må være choice, roles eller teams."
+  },
+  {
     "id": "model.team.is_valid.name.app_error",
     "translation": "Ugyldig navn."
   },
@@ -14941,6 +14977,10 @@
   {
     "id": "web.error.unsupported_browser.download",
     "translation": "Last ned appen"
+  },
+  {
+    "id": "web.error.unsupported_browser.download_app_or_upgrade_browser",
+    "translation": "Last ned Antimatter-appen eller bruk en støttet nettleser for en bedre opplevelse."
   },
   {
     "id": "web.error.unsupported_browser.download_the_app",

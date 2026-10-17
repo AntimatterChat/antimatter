@@ -1252,6 +1252,10 @@
     "translation": "தற்போதைய சேனலைப் பெற பிழை ஏற்பட்டது."
   },
   {
+    "id": "api.command_invite.channel.error",
+    "translation": "சேனல்களைக் கண்டறிய முடியவில்லை: {{.Channel}}. சேனல்களைக் குறிப்பிட, சேனல் ஹேண்டிலை (சேனலை குறிக்கும்போது ~-க்குப் பின் உள்ள பெயர்) பயன்படுத்தவும்."
+  },
+  {
     "id": "api.command_invite.channel_constrained_user_denied",
     "translation": "இந்த சேனல் குழுக்களால் நிர்வகிக்கப்படுகிறது. இந்த பயனர் இந்த சேனலுடன் ஒத்திசைக்கப்பட்ட குழுவின் பகுதியாக இல்லை."
   },
@@ -1286,6 +1290,10 @@
   {
     "id": "api.command_invite.permission.app_error",
     "translation": "{{.Channel}} இல் {{.User}} ஐ சேர்க்க போதுமான அனுமதிகள் உங்களுக்கு இல்லை."
+  },
+  {
+    "id": "api.command_invite.private_channel.app_error",
+    "translation": "சேனல்களைக் கண்டறிய முடியவில்லை: {{.Channel}}. சேனல்களைக் குறிப்பிட, சேனல் ஹேண்டிலை (சேனலை குறிக்கும்போது ~-க்குப் பின் உள்ள பெயர்) பயன்படுத்தவும்."
   },
   {
     "id": "api.command_invite.success",
@@ -1464,12 +1472,20 @@
     "translation": "தற்போதைய சேனலுக்கோ அல்லது குறிப்பிட்ட [channel] சேனலுக்கோ டெஸ்க்டாப், மின்னஞ்சல் மற்றும் புஷ் அறிவிப்புகளை அணைக்கிறது."
   },
   {
+    "id": "api.command_mute.error",
+    "translation": "சேனல்களைக் கண்டறிய முடியவில்லை: {{.Channel}}. சேனல்களைக் குறிப்பிட, சேனல் ஹேண்டிலை (சேனலை குறிக்கும்போது ~-க்குப் பின் உள்ள பெயர்) பயன்படுத்தவும்."
+  },
+  {
     "id": "api.command_mute.hint",
     "translation": "~[channel]"
   },
   {
     "id": "api.command_mute.name",
     "translation": "mute"
+  },
+  {
+    "id": "api.command_mute.no_channel.error",
+    "translation": "குறிப்பிட்ட சேனலைக் கண்டறிய முடியவில்லை. சேனல்களைக் குறிப்பிட, சேனல் ஹேண்டிலை (சேனலை குறிக்கும்போது ~-க்குப் பின் உள்ள பெயர்) பயன்படுத்தவும்."
   },
   {
     "id": "api.command_mute.success_mute",
@@ -7780,6 +7796,10 @@
     "translation": "சேனலின் மேல் இருக்கும் செய்திகளை பெற முடியவில்லை."
   },
   {
+    "id": "app.on_top_post.moderators_only.app_error",
+    "translation": "சேனலின் நிர்வாகிகள், சமூகத்தின் நிர்வாகிகள் மற்றும் அதன் மிடிஏட்டர்கள் மட்டுமே செய்திகளை மேலே வைக்க முடியும்."
+  },
+  {
     "id": "app.on_top_post.not_on_top.app_error",
     "translation": "இந்த செய்தி அதன் சேனலின் மேல் இல்லை."
   },
@@ -10776,6 +10796,10 @@
     "translation": "தொகுப்புகளை நிரப்பும்போது பிழை"
   },
   {
+    "id": "ent.ldap.syncronize.search_failure_size_exceeded.app_error",
+    "translation": "அளவு வரம்பு மீறப்பட்டது. அமைப்பு கன்சோலில் > அங்கீகாரம் > AD/LDAP-இல் அதிகபட்சப் பக்க அளவு அமைப்பை அதிகரிக்க முயற்சிக்கவும்."
+  },
+  {
     "id": "ent.ldap.validate_admin_filter.app_error",
     "translation": "தவறான AD/LDAP நிர்வாகி வடிகட்டி."
   },
@@ -12014,6 +12038,10 @@
   {
     "id": "model.config.is_valid.dcr_redirect_uri_allowlist.app_error",
     "translation": "DCR redirect URI allowlist-ல் தவறான pattern உள்ளது. ஒவ்வொரு pattern-மும் scheme மற்றும் host உடன் கூடிய சரியான URI ஆக இருக்க வேண்டும் (எ.கா., https://example.com/** அல்லது cursor://app/callback), காலியாகவோ அல்லது வெற்றிடமாகவோ இருக்கக்கூடாது."
+  },
+  {
+    "id": "model.config.is_valid.default_community_kind.app_error",
+    "translation": "புதிய சமூகங்களின் தரவு தவறானது: TeamSettings.DefaultCommunityKind என்பது community அல்லது workplace ஆக இருக்க வேண்டும்."
   },
   {
     "id": "model.config.is_valid.default_web_ui.app_error",
@@ -13664,6 +13692,14 @@
     "translation": "தவறான அழைப்பு id."
   },
   {
+    "id": "model.team.is_valid.kind.app_error",
+    "translation": "சமூகத்தின் தரவு தவறானது: இது community அல்லது workplace ஆக இருக்க வேண்டும்."
+  },
+  {
+    "id": "model.team.is_valid.member_list_view.app_error",
+    "translation": "உறுப்பினர் பட்டைக் காட்சி தவறானது: இது choice, roles அல்லது teams ஆக இருக்க வேண்டும்."
+  },
+  {
     "id": "model.team.is_valid.name.app_error",
     "translation": "தவறான பெயர்."
   },
@@ -14218,6 +14254,10 @@
   {
     "id": "web.error.unsupported_browser.download",
     "translation": "பயன்பாட்டைப் பதிவிறக்கவும்"
+  },
+  {
+    "id": "web.error.unsupported_browser.download_app_or_upgrade_browser",
+    "translation": "மேம்பட்ட அனுபவத்திற்காக Antimatter செயலியைப் பதிவிறக்கவும் அல்லது ஆதரிக்கப்படும் உலாவியைப் பயன்படுத்தவும்."
   },
   {
     "id": "web.error.unsupported_browser.download_the_app",

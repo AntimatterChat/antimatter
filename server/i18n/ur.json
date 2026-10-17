@@ -1252,6 +1252,10 @@
     "translation": "موجودہ چینل حاصل کرنے میں خرابی۔"
   },
   {
+    "id": "api.command_invite.channel.error",
+    "translation": "چینل {{.Channel}} نہیں ملا۔ اس کی شناخت کے لیے چینل ہینڈل (چینل کے تذکرے کے بعد ~ کے بعد والا نام) استعمال کریں۔"
+  },
+  {
     "id": "api.command_invite.channel_constrained_user_denied",
     "translation": "یہ چینل گروپس کے ذریعے منظم ہے۔ یہ صارف اس چینل سے منسلک گروپ کا حصہ نہیں ہے۔"
   },
@@ -1286,6 +1290,10 @@
   {
     "id": "api.command_invite.permission.app_error",
     "translation": "آپ کے پاس {{.Channel}} میں {{.User}} کو شامل کرنے کے لیے کافی اجازتیں نہیں ہیں۔"
+  },
+  {
+    "id": "api.command_invite.private_channel.app_error",
+    "translation": "چینل {{.Channel}} نہیں ملا۔ اس کی شناخت کے لیے چینل ہینڈل (چینل کے تذکرے کے بعد ~ کے بعد والا نام) استعمال کریں۔"
   },
   {
     "id": "api.command_invite.success",
@@ -1464,12 +1472,20 @@
     "translation": "موجودہ چینل یا مقررہ [channel] کے لیے ڈیسک ٹاپ، ای میل اور پش اطلاعات بند کر دیتا ہے۔"
   },
   {
+    "id": "api.command_mute.error",
+    "translation": "چینل {{.Channel}} نہیں ملا۔ اس کی شناخت کے لیے چینل ہینڈل (چینل کے تذکرے کے بعد ~ کے بعد والا نام) استعمال کریں۔"
+  },
+  {
     "id": "api.command_mute.hint",
     "translation": "~[channel]"
   },
   {
     "id": "api.command_mute.name",
     "translation": "خاموش کریں"
+  },
+  {
+    "id": "api.command_mute.no_channel.error",
+    "translation": "مذکورہ چینل نہیں ملا۔ اس کی شناخت کے لیے چینل ہینڈل (چینل کے تذکرے کے بعد ~ کے بعد والا نام) استعمال کریں۔"
   },
   {
     "id": "api.command_mute.success_mute",
@@ -7780,6 +7796,10 @@
     "translation": "چینل کے اوپر موجود پیغامات حاصل کرنے میں ناکامی۔"
   },
   {
+    "id": "app.on_top_post.moderators_only.app_error",
+    "translation": "صرف چینل کے ایڈمنز، کمیونٹی کے ایڈمنز اور اس کے ماڈریٹرز پیغامات کو اوپر لگا سکتے ہیں۔"
+  },
+  {
     "id": "app.on_top_post.not_on_top.app_error",
     "translation": "یہ پیغام اپنے چینل کے اوپر نہیں ہے۔"
   },
@@ -10776,6 +10796,10 @@
     "translation": "syncables کو بھرنے میں خرابی"
   },
   {
+    "id": "ent.ldap.syncronize.search_failure_size_exceeded.app_error",
+    "translation": "سائز کی حد عبور ہو گئی۔ سسٹم کنسول > Authentication > AD/LDAP میں Maximum Page Size ترتیب کو بڑھانے کی کوشش کریں۔"
+  },
+  {
     "id": "ent.ldap.validate_admin_filter.app_error",
     "translation": "غلط AD/LDAP ایڈمن فلٹر۔"
   },
@@ -12014,6 +12038,10 @@
   {
     "id": "model.config.is_valid.dcr_redirect_uri_allowlist.app_error",
     "translation": "DCR redirect URI allowlist میں ایک غیر معیاری پیٹرن موجود ہے۔ ہر پیٹرن ایک درست URI ہونا چاہیے جس میں scheme اور host ہو (مثلاً https://example.com/** یا cursor://app/callback) اور یہ خالی یا صرف whitespace نہیں ہو سکتا۔"
+  },
+  {
+    "id": "model.config.is_valid.default_community_kind.app_error",
+    "translation": "نئی کمیونٹی کی قسم غلط ہے: TeamSettings.DefaultCommunityKind کو community یا workplace ہونا چاہیے۔"
   },
   {
     "id": "model.config.is_valid.default_web_ui.app_error",
@@ -13664,6 +13692,14 @@
     "translation": "مکملہ آئی ڈی درست نہیں۔"
   },
   {
+    "id": "model.team.is_valid.kind.app_error",
+    "translation": "کمیونٹی کی قسم غلط ہے: یہ community یا workplace ہونی چاہیے۔"
+  },
+  {
+    "id": "model.team.is_valid.member_list_view.app_error",
+    "translation": "ممبر لسٹ ویو غلط ہے: یہ choice, roles یا teams ہونا چاہیے۔"
+  },
+  {
     "id": "model.team.is_valid.name.app_error",
     "translation": "نام درست نہیں۔"
   },
@@ -14218,6 +14254,10 @@
   {
     "id": "web.error.unsupported_browser.download",
     "translation": "ایپ ڈاؤن لوڈ کریں"
+  },
+  {
+    "id": "web.error.unsupported_browser.download_app_or_upgrade_browser",
+    "translation": "بہتر تجربے کے لیے Antimatter ایپ ڈاؤن لوڈ کریں یا سپورٹڈ براؤزر استعمال کریں۔"
   },
   {
     "id": "web.error.unsupported_browser.download_the_app",

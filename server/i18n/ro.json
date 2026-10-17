@@ -1296,6 +1296,10 @@
     "translation": "Eroare la regăsirea canalul curent."
   },
   {
+    "id": "api.command_invite.channel.error",
+    "translation": "Nu am putut găsi canalul {{.Channel}}. Folosiți identificatorul canalului (numele după ~ când menționați un canal) pentru a-l identifica."
+  },
+  {
     "id": "api.command_invite.channel_constrained_user_denied",
     "translation": "Acest canal este gestionat de grupuri.  Acest utilizator nu face parte dintr-un grup sincronizat cu acest canal."
   },
@@ -1330,6 +1334,10 @@
   {
     "id": "api.command_invite.permission.app_error",
     "translation": "Nu aveți suficiente permisiuni pentru a adăuga {{.User}} în {{.Channel}}."
+  },
+  {
+    "id": "api.command_invite.private_channel.app_error",
+    "translation": "Nu am putut găsi canalul {{.Channel}}. Folosiți identificatorul canalului (numele după ~ când menționați un canal) pentru a-l identifica."
   },
   {
     "id": "api.command_invite.success",
@@ -1516,12 +1524,20 @@
     "translation": "Se stinge desktop, e-mail şi push notifications pentru canalul curent sau [canal] specificate."
   },
   {
+    "id": "api.command_mute.error",
+    "translation": "Nu am putut găsi canalul {{.Channel}}. Folosiți identificatorul canalului (numele după ~ când menționați un canal) pentru a-l identifica."
+  },
+  {
     "id": "api.command_mute.hint",
     "translation": "~[canal]"
   },
   {
     "id": "api.command_mute.name",
     "translation": "muțește"
+  },
+  {
+    "id": "api.command_mute.no_channel.error",
+    "translation": "Nu am putut găsi canalul specificat. Folosiți identificatorul canalului (numele după ~ când menționați un canal) pentru a-l identifica."
   },
   {
     "id": "api.command_mute.success_mute",
@@ -8216,6 +8232,10 @@
     "translation": "Nu se pot obține mesajele din partea de sus a canalului."
   },
   {
+    "id": "app.on_top_post.moderators_only.app_error",
+    "translation": "Doar administratorii canalului, administratorii comunității și moderatorii săi pot fixa mesaje în partea de sus."
+  },
+  {
     "id": "app.on_top_post.not_on_top.app_error",
     "translation": "Acest mesaj nu este fixat în partea de sus a canalului."
   },
@@ -11396,6 +11416,10 @@
     "translation": "Căutarea utilizatorilor în AD/LDAP nu a reușit. Testaţi dacă serverul Antimatter poate conecta la serverul de anunţuri/LDAP și încercați din nou."
   },
   {
+    "id": "ent.ldap.syncronize.search_failure_size_exceeded.app_error",
+    "translation": "Limita de dimensiune depășită. Încercați să măriți setarea „Dimensiunea maximă a paginii” în Consola de sistem > Autentificare > AD/LDAP."
+  },
+  {
     "id": "ent.ldap.update_cpa.empty_attribute",
     "translation": "Valoare goală pentru atributul LDAP"
   },
@@ -12746,6 +12770,10 @@
   {
     "id": "model.config.is_valid.dcr_redirect_uri_allowlist.app_error",
     "translation": "Lista de URI-uri de redirecționare permise pentru DCR conține un model invalid. Modelele trebuie să înceapă cu http:// sau https:// și nu pot fi goale sau formate doar din spații."
+  },
+  {
+    "id": "model.config.is_valid.default_community_kind.app_error",
+    "translation": "Tip de comunități noi nevalid: TeamSettings.DefaultCommunityKind trebuie să fie comunitate sau mediu de lucru."
   },
   {
     "id": "model.config.is_valid.default_web_ui.app_error",
@@ -14396,6 +14424,14 @@
     "translation": "ID invitație invalid."
   },
   {
+    "id": "model.team.is_valid.kind.app_error",
+    "translation": "Tip de comunitate nevalid: trebuie să fie comunitate sau mediu de lucru."
+  },
+  {
+    "id": "model.team.is_valid.member_list_view.app_error",
+    "translation": "Vizualizare a listei de membri nevalidă: trebuie să fie alegere, roluri sau echipe."
+  },
+  {
     "id": "model.team.is_valid.name.app_error",
     "translation": "Nume invalid."
   },
@@ -14950,6 +14986,10 @@
   {
     "id": "web.error.unsupported_browser.download",
     "translation": "Descărcați Aplicația"
+  },
+  {
+    "id": "web.error.unsupported_browser.download_app_or_upgrade_browser",
+    "translation": "Descărcați aplicația Antimatter sau folosiți un browser compatibil pentru o experiență mai bună."
   },
   {
     "id": "web.error.unsupported_browser.download_the_app",

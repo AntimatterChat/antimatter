@@ -1295,6 +1295,10 @@
     "translation": "Fejl ved hentning af den aktuelle kanal."
   },
   {
+    "id": "api.command_invite.channel.error",
+    "translation": "Kunne ikke finde kanalen {{.Channel}}. Brug kanalens handle (navnet efter ~ når du omtaler en kanal) til at identificere den."
+  },
+  {
     "id": "api.command_invite.channel_constrained_user_denied",
     "translation": "Denne kanal administreres af grupper. Denne bruger er ikke en del af en gruppe, der er synkroniseret med denne kanal."
   },
@@ -1329,6 +1333,10 @@
   {
     "id": "api.command_invite.permission.app_error",
     "translation": "Du har ikke tilstrækkelige tilladelser til at tilføje {{.User}} i {{.Channel}}."
+  },
+  {
+    "id": "api.command_invite.private_channel.app_error",
+    "translation": "Kunne ikke finde kanalen {{.Channel}}. Brug kanalens handle (navnet efter ~ når du omtaler en kanal) til at identificere den."
   },
   {
     "id": "api.command_invite.success",
@@ -1514,12 +1522,20 @@
     "translation": "Slår skrivebords-, e-mail- og push-notifikationer fra for den aktuelle kanal eller den angivne [kanal]."
   },
   {
+    "id": "api.command_mute.error",
+    "translation": "Kunne ikke finde kanalen {{.Channel}}. Brug kanalens handle (navnet efter ~ når du omtaler en kanal) til at identificere den."
+  },
+  {
     "id": "api.command_mute.hint",
     "translation": "~[kanal]"
   },
   {
     "id": "api.command_mute.name",
     "translation": "slå lyd fra"
+  },
+  {
+    "id": "api.command_mute.no_channel.error",
+    "translation": "Kunne ikke finde den angivne kanal. Brug kanalens handle (navnet efter ~ når du omtaler en kanal) til at identificere den."
   },
   {
     "id": "api.command_mute.success_mute",
@@ -8209,6 +8225,10 @@
     "translation": "Kunne ikke hente beskederne øverst i kanalen."
   },
   {
+    "id": "app.on_top_post.moderators_only.app_error",
+    "translation": "Kun kanalens administratorer, fællesskabets administratorer og moderatorer kan fastgøre beskeder øverst."
+  },
+  {
     "id": "app.on_top_post.not_on_top.app_error",
     "translation": "Denne besked er ikke fastgjort øverst i kanalen."
   },
@@ -11387,6 +11407,10 @@
     "translation": "Søgning efter brugere i AD/LDAP mislykkedes. Test om Mattermost-serveren kan oprette forbindelse til din AD/LDAP-server og prøv igen."
   },
   {
+    "id": "ent.ldap.syncronize.search_failure_size_exceeded.app_error",
+    "translation": "Størrelsesbegrænsning overskredet. Prøv at øge indstillingen for maksimal side størrelse i Systemkonsol > Autentificering > AD/LDAP."
+  },
+  {
     "id": "ent.ldap.update_cpa.empty_attribute",
     "translation": "Tom LDAP-attributværdi"
   },
@@ -12737,6 +12761,10 @@
   {
     "id": "model.config.is_valid.dcr_redirect_uri_allowlist.app_error",
     "translation": "DCR-viderestillings-URI-tilladelsesliste indeholder et ugyldigt mønster. Mønstre skal starte med http:// eller https:// og må ikke være tomme eller indeholde kun mellemrum."
+  },
+  {
+    "id": "model.config.is_valid.default_community_kind.app_error",
+    "translation": "Ugyldig type for nye fællesskaber: TeamSettings.DefaultCommunityKind skal være community eller workplace."
   },
   {
     "id": "model.config.is_valid.default_web_ui.app_error",
@@ -14387,6 +14415,14 @@
     "translation": "Ugyldigt invite-id."
   },
   {
+    "id": "model.team.is_valid.kind.app_error",
+    "translation": "Ugyldig type for fællesskab: den skal være community eller workplace."
+  },
+  {
+    "id": "model.team.is_valid.member_list_view.app_error",
+    "translation": "Ugyldig visning af medlemsliste: den skal være choice, roles eller teams."
+  },
+  {
     "id": "model.team.is_valid.name.app_error",
     "translation": "Ugyldigt navn."
   },
@@ -14941,6 +14977,10 @@
   {
     "id": "web.error.unsupported_browser.download",
     "translation": "Download appen"
+  },
+  {
+    "id": "web.error.unsupported_browser.download_app_or_upgrade_browser",
+    "translation": "Download Antimatter-appen eller brug en understøttet browser for en bedre oplevelse."
   },
   {
     "id": "web.error.unsupported_browser.download_the_app",

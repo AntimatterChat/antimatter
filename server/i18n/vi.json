@@ -1294,6 +1294,10 @@
     "translation": "Lỗi khi truy xuất kênh hiện tại."
   },
   {
+    "id": "api.command_invite.channel.error",
+    "translation": "Không tìm thấy kênh {{.Channel}}. Hãy sử dụng tên định danh của kênh (tên sau dấu ~ khi nhắc đến kênh) để xác định nó."
+  },
+  {
     "id": "api.command_invite.channel_constrained_user_denied",
     "translation": "Kênh này được quản lý bởi các nhóm. Người dùng này không phải là thành viên của nhóm được đồng bộ hóa với kênh này."
   },
@@ -1328,6 +1332,10 @@
   {
     "id": "api.command_invite.permission.app_error",
     "translation": "Bạn không có đủ quyền để thêm {{.User}} vào {{.Channel}}."
+  },
+  {
+    "id": "api.command_invite.private_channel.app_error",
+    "translation": "Không tìm thấy kênh {{.Channel}}. Hãy sử dụng tên định danh của kênh (tên sau dấu ~ khi nhắc đến kênh) để xác định nó."
   },
   {
     "id": "api.command_invite.success",
@@ -1512,12 +1520,20 @@
     "translation": "Tắt thông báo trên màn hình, email và thông báo đẩy cho kênh hiện tại hoặc [channel] được chỉ định."
   },
   {
+    "id": "api.command_mute.error",
+    "translation": "Không tìm thấy kênh {{.Channel}}. Hãy sử dụng tên định danh của kênh (tên sau dấu ~ khi nhắc đến kênh) để xác định nó."
+  },
+  {
     "id": "api.command_mute.hint",
     "translation": "~[channel]"
   },
   {
     "id": "api.command_mute.name",
     "translation": "tắt tiếng"
+  },
+  {
+    "id": "api.command_mute.no_channel.error",
+    "translation": "Không tìm thấy kênh được chỉ định. Hãy sử dụng tên định danh của kênh (tên sau dấu ~ khi nhắc đến kênh) để xác định nó."
   },
   {
     "id": "api.command_mute.success_mute",
@@ -8202,6 +8218,10 @@
     "translation": "Không thể lấy tin nhắn ở đầu kênh."
   },
   {
+    "id": "app.on_top_post.moderators_only.app_error",
+    "translation": "Chỉ quản trị viên của kênh, quản trị viên của cộng đồng và người điều hành mới có thể ghim tin nhắn lên trên cùng."
+  },
+  {
     "id": "app.on_top_post.not_on_top.app_error",
     "translation": "Tin nhắn này không ở đầu kênh của nó."
   },
@@ -11378,6 +11398,10 @@
     "translation": "Không thể tìm kiếm người dùng trong AD / LDAP. Kiểm tra xem máy chủ Antimatter có thể kết nối với máy chủ AD / LDAP của bạn không và thử lại."
   },
   {
+    "id": "ent.ldap.syncronize.search_failure_size_exceeded.app_error",
+    "translation": "Vượt quá giới hạn kích thước. Hãy thử tăng cài đặt Kích thước Trang Tối đa trong Bảng điều khiển Hệ thống > Xác thực > AD/LDAP."
+  },
+  {
     "id": "ent.ldap.update_cpa.empty_attribute",
     "translation": "Giá trị thuộc tính LDAP trống"
   },
@@ -12728,6 +12752,10 @@
   {
     "id": "model.config.is_valid.dcr_redirect_uri_allowlist.app_error",
     "translation": "Danh sách cho phép URI chuyển hướng DCR chứa mẫu không hợp lệ. Các mẫu phải bắt đầu bằng http:// hoặc https:// và không được để trống hoặc chỉ chứa khoảng trắng."
+  },
+  {
+    "id": "model.config.is_valid.default_community_kind.app_error",
+    "translation": "Loại cộng đồng mới không hợp lệ: TeamSettings.DefaultCommunityKind phải là community hoặc workplace."
   },
   {
     "id": "model.config.is_valid.default_web_ui.app_error",
@@ -14378,6 +14406,14 @@
     "translation": "Id mời không hợp lệ"
   },
   {
+    "id": "model.team.is_valid.kind.app_error",
+    "translation": "Loại cộng đồng không hợp lệ: phải là community hoặc workplace."
+  },
+  {
+    "id": "model.team.is_valid.member_list_view.app_error",
+    "translation": "Giao diện danh sách thành viên không hợp lệ: phải là choice, roles hoặc teams."
+  },
+  {
     "id": "model.team.is_valid.name.app_error",
     "translation": "Tên không hợp lệ"
   },
@@ -14932,6 +14968,10 @@
   {
     "id": "web.error.unsupported_browser.download",
     "translation": "Tải xuống App"
+  },
+  {
+    "id": "web.error.unsupported_browser.download_app_or_upgrade_browser",
+    "translation": "Tải ứng dụng Antimatter hoặc sử dụng trình duyệt được hỗ trợ để có trải nghiệm tốt hơn."
   },
   {
     "id": "web.error.unsupported_browser.download_the_app",

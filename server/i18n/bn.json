@@ -1252,6 +1252,10 @@
     "translation": "বর্তমান চ্যানেলটি আনুমানিক করতে ত্রুটি হয়েছে।"
   },
   {
+    "id": "api.command_invite.channel.error",
+    "translation": "চ্যানেল {{.Channel}} খুঁজে পাওয়া যায়নি। চ্যানেল হ্যান্ডেল (যখন আপনি একটি চ্যানেল মেনশন করেন, ~ এর পরের নাম) ব্যবহার করে এটি চিহ্নিত করুন।"
+  },
+  {
     "id": "api.command_invite.channel_constrained_user_denied",
     "translation": "এই চ্যানেলটি গ্রুপ দ্বারা পরিচালিত। এই ব্যবহারকারী এই চ্যানেলের সাথে সিঙ্ক করা কোনো গ্রুপের অংশ নন।"
   },
@@ -1286,6 +1290,10 @@
   {
     "id": "api.command_invite.permission.app_error",
     "translation": "আপনার কাছে {{.Channel}}-এ {{.User}}-কে যোগ করার জন্য পর্যাপ্ত অনুমতি নেই।"
+  },
+  {
+    "id": "api.command_invite.private_channel.app_error",
+    "translation": "চ্যানেল {{.Channel}} খুঁজে পাওয়া যায়নি। চ্যানেল হ্যান্ডেল (যখন আপনি একটি চ্যানেল মেনশন করেন, ~ এর পরের নাম) ব্যবহার করে এটি চিহ্নিত করুন।"
   },
   {
     "id": "api.command_invite.success",
@@ -1464,12 +1472,20 @@
     "translation": "বর্তমান চ্যানেলের বা [channel] নির্দিষ্ট চ্যানেলের জন্য ডেস্কটপ, ইমেইল এবং পুশ নোটিফিকেশন বন্ধ করে দেয়।"
   },
   {
+    "id": "api.command_mute.error",
+    "translation": "চ্যানেল {{.Channel}} খুঁজে পাওয়া যায়নি। চ্যানেল হ্যান্ডেল (যখন আপনি একটি চ্যানেল মেনশন করেন, ~ এর পরের নাম) ব্যবহার করে এটি চিহ্নিত করুন।"
+  },
+  {
     "id": "api.command_mute.hint",
     "translation": "~[channel]"
   },
   {
     "id": "api.command_mute.name",
     "translation": "mute"
+  },
+  {
+    "id": "api.command_mute.no_channel.error",
+    "translation": "নির্দিষ্ট চ্যানেল খুঁজে পাওয়া যায়নি। চ্যানেল হ্যান্ডেল (যখন আপনি একটি চ্যানেল মেনশন করেন, ~ এর পরের নাম) ব্যবহার করে এটি চিহ্নিত করুন।"
   },
   {
     "id": "api.command_mute.success_mute",
@@ -7780,6 +7796,10 @@
     "translation": "চ্যানেলের উপরের মেসেজসমূহ পড়া যাচ্ছে না।"
   },
   {
+    "id": "app.on_top_post.moderators_only.app_error",
+    "translation": "শুধুমাত্র চ্যানেলের অ্যাডমিন, কমিউনিটির অ্যাডমিন এবং মডারেটররা মাত্র মESSAGES-কে উপরে রাখতে পারেন।"
+  },
+  {
     "id": "app.on_top_post.not_on_top.app_error",
     "translation": "এই মেসেজটি তার চ্যানেলের উপরে নেই।"
   },
@@ -10776,6 +10796,10 @@
     "translation": "সিঙ্কেবলস পূরণ করতে সমস্যা হয়েছে"
   },
   {
+    "id": "ent.ldap.syncronize.search_failure_size_exceeded.app_error",
+    "translation": "সাইজ লিমিট অতিক্রম হয়েছে। সিস্টেম কনসোল > Authentication > AD/LDAP-এ Maximum Page Size সেটিংস বাড়ানোর চেষ্টা করুন।"
+  },
+  {
     "id": "ent.ldap.validate_admin_filter.app_error",
     "translation": "অবৈধ AD/LDAP অ্যাডমিন ফিল্টার।"
   },
@@ -12014,6 +12038,10 @@
   {
     "id": "model.config.is_valid.dcr_redirect_uri_allowlist.app_error",
     "translation": "DCR রিডাইরেক্ট URI অলাউলিস্টে একটি অবৈধ প্যাটার্ন রয়েছে। প্রতিটি প্যাটার্ন একটি বৈধ URI হতে হবে যার একটি স্কিম এবং হোস্ট থাকবে (যেমন https://example.com/** বা cursor://app/callback) এবং এটি খালি বা শুধু স্পেস হতে পারে না।"
+  },
+  {
+    "id": "model.config.is_valid.default_community_kind.app_error",
+    "translation": "নতুন কমিউনিটির প্রকারটি অবৈধ: TeamSettings.DefaultCommunityKind অবশ্যই community বা workplace হতে হবে।"
   },
   {
     "id": "model.config.is_valid.default_web_ui.app_error",
@@ -13664,6 +13692,14 @@
     "translation": "আমন্ত্রণ আইডিটি বৈধ নয়।"
   },
   {
+    "id": "model.team.is_valid.kind.app_error",
+    "translation": "কমিউনিটির প্রকারটি অবৈধ: এটি অবশ্যই community বা workplace হতে হবে।"
+  },
+  {
+    "id": "model.team.is_valid.member_list_view.app_error",
+    "translation": "সদস্য তালিকা ভিউটি অবৈধ: এটি অবশ্যই choice, roles বা teams হতে হবে।"
+  },
+  {
     "id": "model.team.is_valid.name.app_error",
     "translation": "নামটি বৈধ নয়।"
   },
@@ -14218,6 +14254,10 @@
   {
     "id": "web.error.unsupported_browser.download",
     "translation": "অ্যাপ ডাউনলোড করুন"
+  },
+  {
+    "id": "web.error.unsupported_browser.download_app_or_upgrade_browser",
+    "translation": "উন্নত অভিজ্ঞতার জন্য Antimatter অ্যাপ ডাউনলোড করুন বা একটি সাপোর্টেড ব্রাউজার ব্যবহার করুন।"
   },
   {
     "id": "web.error.unsupported_browser.download_the_app",

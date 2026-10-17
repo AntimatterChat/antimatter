@@ -1252,6 +1252,10 @@
     "translation": "वर्तमान चैनल प्राप्त करने में त्रुटि।"
   },
   {
+    "id": "api.command_invite.channel.error",
+    "translation": "चैनल {{.Channel}} नहीं मिल सका। चैनल को पहचानने के लिए चैनल हैंडल (जब आप चैनल का उल्लेख करते हैं, ~ के बाद का नाम) का उपयोग करें।"
+  },
+  {
     "id": "api.command_invite.channel_constrained_user_denied",
     "translation": "यह चैनल समूहों द्वारा प्रबंधित किया जाता है। यह उपयोगकर्ता इस चैनल से सिंक किए गए समूह का हिस्सा नहीं है।"
   },
@@ -1286,6 +1290,10 @@
   {
     "id": "api.command_invite.permission.app_error",
     "translation": "आपके पास {{.Channel}} में {{.User}} को जोड़ने के लिए पर्याप्त अनुमतियां नहीं हैं।"
+  },
+  {
+    "id": "api.command_invite.private_channel.app_error",
+    "translation": "चैनल {{.Channel}} नहीं मिल सका। चैनल को पहचानने के लिए चैनल हैंडल (जब आप चैनल का उल्लेख करते हैं, ~ के बाद का नाम) का उपयोग करें।"
   },
   {
     "id": "api.command_invite.success",
@@ -1464,12 +1472,20 @@
     "translation": "वर्तमान चैनल या निर्दिष्ट [चैनल] के लिए डेस्कटॉप, ईमेल और पुश सूचनाएं बंद करता है।"
   },
   {
+    "id": "api.command_mute.error",
+    "translation": "चैनल {{.Channel}} नहीं मिल सका। चैनल को पहचानने के लिए चैनल हैंडल (जब आप चैनल का उल्लेख करते हैं, ~ के बाद का नाम) का उपयोग करें।"
+  },
+  {
     "id": "api.command_mute.hint",
     "translation": "~[चैनल]"
   },
   {
     "id": "api.command_mute.name",
     "translation": "म्यूट"
+  },
+  {
+    "id": "api.command_mute.no_channel.error",
+    "translation": "निर्दिष्ट चैनल नहीं मिल सका। चैनल को पहचानने के लिए चैनल हैंडल (जब आप चैनल का उल्लेख करते हैं, ~ के बाद का नाम) का उपयोग करें।"
   },
   {
     "id": "api.command_mute.success_mute",
@@ -7780,6 +7796,10 @@
     "translation": "चैनल के शीर्ष पर रखे गए संदेश प्राप्त करने में असमर्थ।"
   },
   {
+    "id": "app.on_top_post.moderators_only.app_error",
+    "translation": "केवल चैनल के एडमिन, कम्युनिटी के एडमिन और उसके मॉडरेटर ही संदेशों को सबसे ऊपर रख सकते हैं।"
+  },
+  {
     "id": "app.on_top_post.not_on_top.app_error",
     "translation": "यह संदेश अपने चैनल के शीर्ष पर नहीं है।"
   },
@@ -10776,6 +10796,10 @@
     "translation": "सिंकैबल्स भरने में त्रुटि"
   },
   {
+    "id": "ent.ldap.syncronize.search_failure_size_exceeded.app_error",
+    "translation": "साइज़ सीमा पार हो गई। System Console > Authentication > AD/LDAP में Maximum Page Size सेटिंग बढ़ाने का प्रयास करें।"
+  },
+  {
     "id": "ent.ldap.validate_admin_filter.app_error",
     "translation": "अमान्य AD/LDAP एडमिन फ़िल्टर."
   },
@@ -12014,6 +12038,10 @@
   {
     "id": "model.config.is_valid.dcr_redirect_uri_allowlist.app_error",
     "translation": "DCR रीडायरेक्ट URI अनुमत सूची में एक अमान्य पैटर्न है। प्रत्येक पैटर्न एक मान्य URI होना चाहिए जिसमें स्कीम और होस्ट हो (उदाहरण के लिए https://example.com/** या cursor://app/callback) और यह खाली या व्हाइटस्पेस नहीं हो सकता।"
+  },
+  {
+    "id": "model.config.is_valid.default_community_kind.app_error",
+    "translation": "नई कम्युनिटी का प्रकार अमान्य है: TeamSettings.DefaultCommunityKind community या workplace होना चाहिए।"
   },
   {
     "id": "model.config.is_valid.default_web_ui.app_error",
@@ -13664,6 +13692,14 @@
     "translation": "अमान्य आमंत्रण id।"
   },
   {
+    "id": "model.team.is_valid.kind.app_error",
+    "translation": "कम्युनिटी का प्रकार अमान्य है: यह community या workplace होना चाहिए।"
+  },
+  {
+    "id": "model.team.is_valid.member_list_view.app_error",
+    "translation": "सदस्य सूची दृश्य अमान्य है: यह choice, roles या teams होना चाहिए।"
+  },
+  {
     "id": "model.team.is_valid.name.app_error",
     "translation": "अमान्य नाम।"
   },
@@ -14218,6 +14254,10 @@
   {
     "id": "web.error.unsupported_browser.download",
     "translation": "ऐप डाउनलोड करें"
+  },
+  {
+    "id": "web.error.unsupported_browser.download_app_or_upgrade_browser",
+    "translation": "बेहतर अनुभव के लिए Antimatter ऐप डाउनलोड करें या एक समर्थित ब्राउज़र का उपयोग करें।"
   },
   {
     "id": "web.error.unsupported_browser.download_the_app",

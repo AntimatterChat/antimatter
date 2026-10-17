@@ -1295,6 +1295,10 @@
     "translation": "Fel vid hämtning av nuvarande kanal."
   },
   {
+    "id": "api.command_invite.channel.error",
+    "translation": "Kunde inte hitta kanalen {{.Channel}}. Använd kanalens namn (namnet efter ~ när du nämner en kanal) för att identifiera den."
+  },
+  {
     "id": "api.command_invite.channel_constrained_user_denied",
     "translation": "Den här kanalen hanteras av grupper.    Den här användaren är inte medlem i en grupp synkad med kanalen."
   },
@@ -1329,6 +1333,10 @@
   {
     "id": "api.command_invite.permission.app_error",
     "translation": "Du har inte behörighet att lägga till {{.User}} i {{.Channel}}."
+  },
+  {
+    "id": "api.command_invite.private_channel.app_error",
+    "translation": "Kunde inte hitta kanalen {{.Channel}}. Använd kanalens namn (namnet efter ~ när du nämner en kanal) för att identifiera den."
   },
   {
     "id": "api.command_invite.success",
@@ -1514,12 +1522,20 @@
     "translation": "Stänger av desktop, e-post och push-notifieringar för denna kanal eller den specificerade [channel]."
   },
   {
+    "id": "api.command_mute.error",
+    "translation": "Kunde inte hitta kanalen {{.Channel}}. Använd kanalens namn (namnet efter ~ när du nämner en kanal) för att identifiera den."
+  },
+  {
     "id": "api.command_mute.hint",
     "translation": "~[kanal]"
   },
   {
     "id": "api.command_mute.name",
     "translation": "tysta"
+  },
+  {
+    "id": "api.command_mute.no_channel.error",
+    "translation": "Kunde inte hitta den angivna kanalen. Använd kanalens namn (namnet efter ~ när du nämner en kanal) för att identifiera den."
   },
   {
     "id": "api.command_mute.success_mute",
@@ -8209,6 +8225,10 @@
     "translation": "Det gick inte att hämta meddelandena högst upp i kanalen."
   },
   {
+    "id": "app.on_top_post.moderators_only.app_error",
+    "translation": "Endast kanalens administratörer, gemenskapens administratörer och dess moderatorer kan fästa meddelanden högst upp."
+  },
+  {
     "id": "app.on_top_post.not_on_top.app_error",
     "translation": "Det här meddelandet är inte fäst högst upp i sin kanal."
   },
@@ -11387,6 +11407,10 @@
     "translation": "Kunde inte söka på användare i AD/LDAP. Testa om Mattermost-servern kan ansluta till din AD/LDAP-server och försök igen."
   },
   {
+    "id": "ent.ldap.syncronize.search_failure_size_exceeded.app_error",
+    "translation": "Storleksgränsen överskreds. Försök att öka inställningen Maximalt sidstorlek i Systemkonsol > Autentisering > AD/LDAP."
+  },
+  {
     "id": "ent.ldap.update_cpa.empty_attribute",
     "translation": "Tomt LDAP-attributvärde"
   },
@@ -12737,6 +12761,10 @@
   {
     "id": "model.config.is_valid.dcr_redirect_uri_allowlist.app_error",
     "translation": "DCR-listan över tillåtna omdirigerings-URI:er innehåller ett ogiltigt mönster. Mönster måste börja med http:// eller https:// och får inte vara tomma eller enbart blanksteg."
+  },
+  {
+    "id": "model.config.is_valid.default_community_kind.app_error",
+    "translation": "Ogiltig typ av nya gemenskaper: TeamSettings.DefaultCommunityKind måste vara community eller workplace."
   },
   {
     "id": "model.config.is_valid.default_web_ui.app_error",
@@ -14387,6 +14415,14 @@
     "translation": "Ogiltigt inbjudnings-id."
   },
   {
+    "id": "model.team.is_valid.kind.app_error",
+    "translation": "Ogiltig typ av gemenskap: den måste vara community eller workplace."
+  },
+  {
+    "id": "model.team.is_valid.member_list_view.app_error",
+    "translation": "Ogiltig vy för medlemslista: den måste vara choice, roles eller teams."
+  },
+  {
     "id": "model.team.is_valid.name.app_error",
     "translation": "Ogiltigt namn."
   },
@@ -14941,6 +14977,10 @@
   {
     "id": "web.error.unsupported_browser.download",
     "translation": "Ladda ner Appen"
+  },
+  {
+    "id": "web.error.unsupported_browser.download_app_or_upgrade_browser",
+    "translation": "Ladda ner Antimatter-appen eller använd en stödd webbläsare för en bättre upplevelse."
   },
   {
     "id": "web.error.unsupported_browser.download_the_app",

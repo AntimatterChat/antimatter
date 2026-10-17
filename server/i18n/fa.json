@@ -1295,6 +1295,10 @@
     "translation": "خطا در بازیابی کانال فعلی."
   },
   {
+    "id": "api.command_invite.channel.error",
+    "translation": "کانال {{.Channel}} یافت نشد. برای شناسایی آن از نام کانال (نامی که بعد از ~ هنگام اشاره به کانال می‌آید) استفاده کنید."
+  },
+  {
     "id": "api.command_invite.channel_constrained_user_denied",
     "translation": "این کانال توسط گروه‌ها مدیریت می‌شود. این کاربر عضو گروهی نیست که با این کانال همگام‌سازی شده باشد."
   },
@@ -1329,6 +1333,10 @@
   {
     "id": "api.command_invite.permission.app_error",
     "translation": "شما برای افزودن {{.User}} در {{.Channel}} مجوز کافی ندارید."
+  },
+  {
+    "id": "api.command_invite.private_channel.app_error",
+    "translation": "کانال {{.Channel}} یافت نشد. برای شناسایی آن از نام کانال (نامی که بعد از ~ هنگام اشاره به کانال می‌آید) استفاده کنید."
   },
   {
     "id": "api.command_invite.success",
@@ -1514,12 +1522,20 @@
     "translation": "اعلان های دسک تاپ ، ایمیل و پوش را برای کانال فعلی یا [کانال] مشخص شده خاموش می کند."
   },
   {
+    "id": "api.command_mute.error",
+    "translation": "کانال {{.Channel}} یافت نشد. برای شناسایی آن از نام کانال (نامی که بعد از ~ هنگام اشاره به کانال می‌آید) استفاده کنید."
+  },
+  {
     "id": "api.command_mute.hint",
     "translation": "~[channel]"
   },
   {
     "id": "api.command_mute.name",
     "translation": "بی صدا"
+  },
+  {
+    "id": "api.command_mute.no_channel.error",
+    "translation": "کانال مشخص‌شده یافت نشد. برای شناسایی آن از نام کانال (نامی که بعد از ~ هنگام اشاره به کانال می‌آید) استفاده کنید."
   },
   {
     "id": "api.command_mute.success_mute",
@@ -8209,6 +8225,10 @@
     "translation": "نمی‌توان پیام‌های بالای کانال را دریافت کرد."
   },
   {
+    "id": "app.on_top_post.moderators_only.app_error",
+    "translation": "فقط مدیران کانال، مدیران جامعه و ناظران می‌توانند پیام‌ها را در بالای صفحه قرار دهند."
+  },
+  {
     "id": "app.on_top_post.not_on_top.app_error",
     "translation": "این پیام در بالای کانال خود قرار ندارد."
   },
@@ -11387,6 +11407,10 @@
     "translation": "جستجوی کاربران در AD/LDAP انجام نشد. اگر سرور Antimatter می تواند به سرور AD/LDAP شما متصل شود تست کنید و دوباره امتحان کنید."
   },
   {
+    "id": "ent.ldap.syncronize.search_failure_size_exceeded.app_error",
+    "translation": "حجم بیش از حد مجاز است. برای رفع مشکل، مقدار «حجم صفحه حداکثری» را در کنسول سیستم > احراز هویت > AD/LDAP افزایش دهید."
+  },
+  {
     "id": "ent.ldap.update_cpa.empty_attribute",
     "translation": "مقدار ویژگی LDAP خالی است"
   },
@@ -12737,6 +12761,10 @@
   {
     "id": "model.config.is_valid.dcr_redirect_uri_allowlist.app_error",
     "translation": "فهرست مجاز URIهای هدایت DCR شامل یک الگوی نامعتبر است. الگوها باید با http:// یا https:// شروع شوند و نمی‌توانند خالی یا فقط فاصله باشند."
+  },
+  {
+    "id": "model.config.is_valid.default_community_kind.app_error",
+    "translation": "نوع جدید جامعه‌ها نامعتبر است: TeamSettings.DefaultCommunityKind باید community یا workplace باشد."
   },
   {
     "id": "model.config.is_valid.default_web_ui.app_error",
@@ -14387,6 +14415,14 @@
     "translation": "شناسه دعوت نامعتبر است."
   },
   {
+    "id": "model.team.is_valid.kind.app_error",
+    "translation": "نوع جامعه نامعتبر است: باید community یا workplace باشد."
+  },
+  {
+    "id": "model.team.is_valid.member_list_view.app_error",
+    "translation": "نمای فهرست اعضا نامعتبر است: باید choice، roles یا teams باشد."
+  },
+  {
     "id": "model.team.is_valid.name.app_error",
     "translation": "نام نامعتبر."
   },
@@ -14941,6 +14977,10 @@
   {
     "id": "web.error.unsupported_browser.download",
     "translation": "دانلود برنامه"
+  },
+  {
+    "id": "web.error.unsupported_browser.download_app_or_upgrade_browser",
+    "translation": "برای تجربه بهتر، اپلیکیشن Antimatter را دانلود کنید یا از یک مرورگر پشتیبانی‌شده استفاده کنید."
   },
   {
     "id": "web.error.unsupported_browser.download_the_app",

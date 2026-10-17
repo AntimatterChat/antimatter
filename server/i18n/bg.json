@@ -1295,6 +1295,10 @@
     "translation": "Грешка при получаване на текущия канал."
   },
   {
+    "id": "api.command_invite.channel.error",
+    "translation": "Не може да се намери каналът {{.Channel}}. Използвайте идентификатора на канала (името след ~ при споменаване на канал), за да го идентифицирате."
+  },
+  {
     "id": "api.command_invite.channel_constrained_user_denied",
     "translation": "Този канал се управлява от групи. Този потребител не е част от група, която е свързана с този канал."
   },
@@ -1329,6 +1333,10 @@
   {
     "id": "api.command_invite.permission.app_error",
     "translation": "Нямате достатъчно права за да добавите {{.User}} в {{.Channel}}."
+  },
+  {
+    "id": "api.command_invite.private_channel.app_error",
+    "translation": "Не може да се намери каналът {{.Channel}}. Използвайте идентификатора на канала (името след ~ при споменаване на канал), за да го идентифицирате."
   },
   {
     "id": "api.command_invite.success",
@@ -1514,12 +1522,20 @@
     "translation": "Изключи настолните, ел.поща и изскачащи известия за текущия или за зададен [канал]."
   },
   {
+    "id": "api.command_mute.error",
+    "translation": "Не може да се намери каналът {{.Channel}}. Използвайте идентификатора на канала (името след ~ при споменаване на канал), за да го идентифицирате."
+  },
+  {
     "id": "api.command_mute.hint",
     "translation": "~[канал]"
   },
   {
     "id": "api.command_mute.name",
     "translation": "заглуши"
+  },
+  {
+    "id": "api.command_mute.no_channel.error",
+    "translation": "Не може да се намери посоченият канал. Използвайте идентификатора на канала (името след ~ при споменаване на канал), за да го идентифицирате."
   },
   {
     "id": "api.command_mute.success_mute",
@@ -8209,6 +8225,10 @@
     "translation": "Неуспешно получаване на съобщенията в горната част на канала."
   },
   {
+    "id": "app.on_top_post.moderators_only.app_error",
+    "translation": "Само администраторите на канала, администраторите на общността и модераторите ѝ могат да поставят съобщения в горната част."
+  },
+  {
     "id": "app.on_top_post.not_on_top.app_error",
     "translation": "Това съобщение не е в горната част на канала си."
   },
@@ -11387,6 +11407,10 @@
     "translation": "Неуспешно търсене на потребители в AD/LDAP. Проверете дали Antimatter сървъра може да се свърже с вашия AD/LDAP сървър и опитайте отново."
   },
   {
+    "id": "ent.ldap.syncronize.search_failure_size_exceeded.app_error",
+    "translation": "Превъзходен е лимитът за размер. Опитайте да увеличите настройката „Максимален размер на страница“ в Системна конзола > Автентикация > AD/LDAP."
+  },
+  {
     "id": "ent.ldap.update_cpa.empty_attribute",
     "translation": "Празна стойност на LDAP атрибут"
   },
@@ -12737,6 +12761,10 @@
   {
     "id": "model.config.is_valid.dcr_redirect_uri_allowlist.app_error",
     "translation": "Списъкът с разрешени URI за пренасочване при DCR съдържа невалиден шаблон. Шаблоните трябва да започват с http:// или https:// и не могат да бъдат празни или само интервали."
+  },
+  {
+    "id": "model.config.is_valid.default_community_kind.app_error",
+    "translation": "Невалиден вид за нови общности: TeamSettings.DefaultCommunityKind трябва да бъде community или workplace."
   },
   {
     "id": "model.config.is_valid.default_web_ui.app_error",
@@ -14387,6 +14415,14 @@
     "translation": "Невалиден id на поканата."
   },
   {
+    "id": "model.team.is_valid.kind.app_error",
+    "translation": "Невалиден вид общност: трябва да бъде community или workplace."
+  },
+  {
+    "id": "model.team.is_valid.member_list_view.app_error",
+    "translation": "Невалиден изглед на списъка с членове: трябва да бъде choice, roles или teams."
+  },
+  {
     "id": "model.team.is_valid.name.app_error",
     "translation": "Невалидно име."
   },
@@ -14941,6 +14977,10 @@
   {
     "id": "web.error.unsupported_browser.download",
     "translation": "Изтеглете приложението"
+  },
+  {
+    "id": "web.error.unsupported_browser.download_app_or_upgrade_browser",
+    "translation": "Изтеглете приложението Antimatter или използвайте поддържан браузър за по-добра опит."
   },
   {
     "id": "web.error.unsupported_browser.download_the_app",

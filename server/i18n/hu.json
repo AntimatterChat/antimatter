@@ -1295,6 +1295,10 @@
     "translation": "Hiba történt az aktuális csatorna lekérésekor."
   },
   {
+    "id": "api.command_invite.channel.error",
+    "translation": "Nem található a(z) {{.Channel}} csatorna. A csatorna azonosításához használja a csatorna nevet (a ~ utáni nevet, amikor egy csatornát említ)."
+  },
+  {
     "id": "api.command_invite.channel_constrained_user_denied",
     "translation": "Ezt a csatornát csoportok kezelik.  Ez a felhasználó nem része annak a csoportnak, amelyet ezzel a csatornával szinkronizáltak."
   },
@@ -1329,6 +1333,10 @@
   {
     "id": "api.command_invite.permission.app_error",
     "translation": "Nincs elegendő jogosultsága, hogy hozzáadja a {{.User}} felhasználót a {{.Channel}} beszélgetéshez."
+  },
+  {
+    "id": "api.command_invite.private_channel.app_error",
+    "translation": "Nem található a(z) {{.Channel}} csatorna. A csatorna azonosításához használja a csatorna nevet (a ~ utáni nevet, amikor egy csatornát említ)."
   },
   {
     "id": "api.command_invite.success",
@@ -1514,12 +1522,20 @@
     "translation": "Kikapcsolja az asztali, e-mail és push értesítéseket az aktuális csatornán vagy a megadott [channel] csatornán."
   },
   {
+    "id": "api.command_mute.error",
+    "translation": "Nem található a(z) {{.Channel}} csatorna. A csatorna azonosításához használja a csatorna nevet (a ~ utáni nevet, amikor egy csatornát említ)."
+  },
+  {
     "id": "api.command_mute.hint",
     "translation": "~[csatorna]"
   },
   {
     "id": "api.command_mute.name",
     "translation": "némítás"
+  },
+  {
+    "id": "api.command_mute.no_channel.error",
+    "translation": "Nem található a megadott csatorna. A csatorna azonosításához használja a csatorna nevet (a ~ utáni nevet, amikor egy csatornát említ)."
   },
   {
     "id": "api.command_mute.success_mute",
@@ -8209,6 +8225,10 @@
     "translation": "Nem sikerült lekérni a csatorna tetején lévő üzeneteket."
   },
   {
+    "id": "app.on_top_post.moderators_only.app_error",
+    "translation": "Csak a csatorna adminisztrátorai, a közösség adminisztrátorai és moderátorai tehetnek üzeneteket a tetejére."
+  },
+  {
     "id": "app.on_top_post.not_on_top.app_error",
     "translation": "Ez az üzenet nem a csatorna tetején van."
   },
@@ -11387,6 +11407,10 @@
     "translation": "Nem sikerült a felhasználók keresése az AD/LDAP-ban. Ellenőrizze, hogy az Antimatter szerver képes-e csatlakozni az AD/LDAP szerverhez, és próbálja újra."
   },
   {
+    "id": "ent.ldap.syncronize.search_failure_size_exceeded.app_error",
+    "translation": "Méretkorlát túllépése. Próbálja meg növelni a Maximális oldalméret beállítást a Rendszerkonzol > Hitelesítés > AD/LDAP menüben."
+  },
+  {
     "id": "ent.ldap.update_cpa.empty_attribute",
     "translation": "Üres LDAP attribútumérték"
   },
@@ -12737,6 +12761,10 @@
   {
     "id": "model.config.is_valid.dcr_redirect_uri_allowlist.app_error",
     "translation": "A DCR átirányítási URI engedélyezőlistája érvénytelen mintát tartalmaz. A mintáknak http:// vagy https:// előtaggal kell kezdődniük, és nem lehetnek üresek vagy csak szóközből állók."
+  },
+  {
+    "id": "model.config.is_valid.default_community_kind.app_error",
+    "translation": "Érvénytelen új közösségek típusa: a TeamSettings.DefaultCommunityKindnak community vagy workplace értéket kell tartalmaznia."
   },
   {
     "id": "model.config.is_valid.default_web_ui.app_error",
@@ -14387,6 +14415,14 @@
     "translation": "Érvénytelen meghívó azonosító."
   },
   {
+    "id": "model.team.is_valid.kind.app_error",
+    "translation": "Érvénytelen közösség típusa: community vagy workplace értéket kell tartalmaznia."
+  },
+  {
+    "id": "model.team.is_valid.member_list_view.app_error",
+    "translation": "Érvénytelen taglista nézet: choice, roles vagy teams értéket kell tartalmaznia."
+  },
+  {
     "id": "model.team.is_valid.name.app_error",
     "translation": "Érvénytelen név."
   },
@@ -14941,6 +14977,10 @@
   {
     "id": "web.error.unsupported_browser.download",
     "translation": "Töltse le az alkalmazást"
+  },
+  {
+    "id": "web.error.unsupported_browser.download_app_or_upgrade_browser",
+    "translation": "Töltse le az Antimatter alkalmazást, vagy használjon támogatott böngészőt a jobb élmény érdekében."
   },
   {
     "id": "web.error.unsupported_browser.download_the_app",

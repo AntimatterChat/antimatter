@@ -1252,6 +1252,10 @@
     "translation": "May error sa pagkuha ng kasalukuyang channel."
   },
   {
+    "id": "api.command_invite.channel.error",
+    "translation": "Hindi nakita ang channel {{.Channel}}. Gamitin ang channel handle (ang pangalan pagkatapos ng ~ kapag binabanggit ang channel) upang matukoy ito."
+  },
+  {
     "id": "api.command_invite.channel_constrained_user_denied",
     "translation": "Ang channel na ito ay pinangangasiwaan ng mga grupo. Ang user na ito ay hindi bahagi ng grupo na naka-sync sa channel na ito."
   },
@@ -1286,6 +1290,10 @@
   {
     "id": "api.command_invite.permission.app_error",
     "translation": "Hindi sapat ang iyong mga permiso upang magdagdag ng {{.User}} sa {{.Channel}}."
+  },
+  {
+    "id": "api.command_invite.private_channel.app_error",
+    "translation": "Hindi nakita ang channel {{.Channel}}. Gamitin ang channel handle (ang pangalan pagkatapos ng ~ kapag binabanggit ang channel) upang matukoy ito."
   },
   {
     "id": "api.command_invite.success",
@@ -1464,12 +1472,20 @@
     "translation": "I-off ang mga notisikasyon sa desktop, email, at push para sa kasalukuyang channel o sa [channel] na tinukoy."
   },
   {
+    "id": "api.command_mute.error",
+    "translation": "Hindi nakita ang channel {{.Channel}}. Gamitin ang channel handle (ang pangalan pagkatapos ng ~ kapag binabanggit ang channel) upang matukoy ito."
+  },
+  {
     "id": "api.command_mute.hint",
     "translation": "~[channel]"
   },
   {
     "id": "api.command_mute.name",
     "translation": "i-mute"
+  },
+  {
+    "id": "api.command_mute.no_channel.error",
+    "translation": "Hindi nakita ang tinukoy na channel. Gamitin ang channel handle (ang pangalan pagkatapos ng ~ kapag binabanggit ang channel) upang matukoy ito."
   },
   {
     "id": "api.command_mute.success_mute",
@@ -7780,6 +7796,10 @@
     "translation": "Hindi maaaring kuhanin ang mga mensahe sa itaas ng channel."
   },
   {
+    "id": "app.on_top_post.moderators_only.app_error",
+    "translation": "Ang mga Admin ng channel, mga Admin ng community, at mga Moderator lamang ang maaaring ilagay sa itaas ang mga mensahe."
+  },
+  {
     "id": "app.on_top_post.not_on_top.app_error",
     "translation": "Hindi nasa itaas ng channel nito ang mensahe na ito."
   },
@@ -10776,6 +10796,10 @@
     "translation": "may error sa pag-populate ng syncables"
   },
   {
+    "id": "ent.ldap.syncronize.search_failure_size_exceeded.app_error",
+    "translation": "Lumampas ang Limit ng Laki. Subukang dagdagan ang Maximum Page Size setting sa System Console > Authentication > AD/LDAP."
+  },
+  {
     "id": "ent.ldap.validate_admin_filter.app_error",
     "translation": "Hindi wastong AD/LDAP Admin Filter."
   },
@@ -12014,6 +12038,10 @@
   {
     "id": "model.config.is_valid.dcr_redirect_uri_allowlist.app_error",
     "translation": "May invalid na pattern ang DCR redirect URI allowlist. Dapat valid na URI na may scheme at host ang bawat pattern (hal. https://example.com/** o cursor://app/callback) at hindi dapat walang laman o puno ng whitespace."
+  },
+  {
+    "id": "model.config.is_valid.default_community_kind.app_error",
+    "translation": "Hindi wasto ang uri ng mga bagong community: dapat community o workplace ang TeamSettings.DefaultCommunityKind."
   },
   {
     "id": "model.config.is_valid.default_web_ui.app_error",
@@ -13664,6 +13692,14 @@
     "translation": "Hindi wastong invite id."
   },
   {
+    "id": "model.team.is_valid.kind.app_error",
+    "translation": "Hindi wasto ang uri ng community: dapat community o workplace."
+  },
+  {
+    "id": "model.team.is_valid.member_list_view.app_error",
+    "translation": "Hindi wasto ang view ng listahan ng mga miyembro: dapat choice, roles, o teams."
+  },
+  {
     "id": "model.team.is_valid.name.app_error",
     "translation": "Hindi wastong pangalan."
   },
@@ -14218,6 +14254,10 @@
   {
     "id": "web.error.unsupported_browser.download",
     "translation": "I-download ang App"
+  },
+  {
+    "id": "web.error.unsupported_browser.download_app_or_upgrade_browser",
+    "translation": "I-download ang Antimatter app o gumamit ng supported browser para sa mas magandang karanasan."
   },
   {
     "id": "web.error.unsupported_browser.download_the_app",

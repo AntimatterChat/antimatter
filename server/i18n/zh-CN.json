@@ -1294,6 +1294,10 @@
     "translation": "获取当前频道错误。"
   },
   {
+    "id": "api.command_invite.channel.error",
+    "translation": "未找到频道 {{.Channel}}。请使用频道句柄（提及频道时 ~ 后面的名称）来指定它。"
+  },
+  {
     "id": "api.command_invite.channel_constrained_user_denied",
     "translation": "该频道由群组管理。该用户不是与该频道同步群组的成员。"
   },
@@ -1328,6 +1332,10 @@
   {
     "id": "api.command_invite.permission.app_error",
     "translation": "您没有足够的权限在 {{.Channel}} 添加 {{.User}}。"
+  },
+  {
+    "id": "api.command_invite.private_channel.app_error",
+    "translation": "未找到频道 {{.Channel}}。请使用频道句柄（提及频道时 ~ 后面的名称）来指定它。"
   },
   {
     "id": "api.command_invite.success",
@@ -1512,12 +1520,20 @@
     "translation": "关闭当前频道或指定[频道]的桌面、邮件以及推送通知。"
   },
   {
+    "id": "api.command_mute.error",
+    "translation": "未找到频道 {{.Channel}}。请使用频道句柄（提及频道时 ~ 后面的名称）来指定它。"
+  },
+  {
     "id": "api.command_mute.hint",
     "translation": "~[频道]"
   },
   {
     "id": "api.command_mute.name",
     "translation": "静音"
+  },
+  {
+    "id": "api.command_mute.no_channel.error",
+    "translation": "未找到指定的频道。请使用频道句柄（提及频道时 ~ 后面的名称）来指定它。"
   },
   {
     "id": "api.command_mute.success_mute",
@@ -8202,6 +8218,10 @@
     "translation": "无法获取频道顶部的消息。"
   },
   {
+    "id": "app.on_top_post.moderators_only.app_error",
+    "translation": "只有频道管理员、社区管理员及其版主才能将消息置顶。"
+  },
+  {
     "id": "app.on_top_post.not_on_top.app_error",
     "translation": "此消息未在其频道中置顶。"
   },
@@ -11378,6 +11398,10 @@
     "translation": "从 AD/LDAP 搜索用户失败。请测试 Antimatter 服务器是否可以连接您的 AD/LDAP 服务器后重新尝试。"
   },
   {
+    "id": "ent.ldap.syncronize.search_failure_size_exceeded.app_error",
+    "translation": "超出大小限制。请尝试在系统控制台 > 身份验证 > AD/LDAP 中增加“最大页面大小”设置。"
+  },
+  {
     "id": "ent.ldap.update_cpa.empty_attribute",
     "translation": "空的 LDAP 属性值"
   },
@@ -12728,6 +12752,10 @@
   {
     "id": "model.config.is_valid.dcr_redirect_uri_allowlist.app_error",
     "translation": "DCR 重定向 URI 允许列表包含无效模式。模式必须以 http:// 或 https:// 开头，且不能为空或仅包含空白字符。"
+  },
+  {
+    "id": "model.config.is_valid.default_community_kind.app_error",
+    "translation": "新社区类型无效：TeamSettings.DefaultCommunityKind 必须是 community 或 workplace。"
   },
   {
     "id": "model.config.is_valid.default_web_ui.app_error",
@@ -14378,6 +14406,14 @@
     "translation": "邀请 ID 无效。"
   },
   {
+    "id": "model.team.is_valid.kind.app_error",
+    "translation": "社区类型无效：必须是 community 或 workplace。"
+  },
+  {
+    "id": "model.team.is_valid.member_list_view.app_error",
+    "translation": "成员列表视图无效：必须是 choice、roles 或 teams。"
+  },
+  {
     "id": "model.team.is_valid.name.app_error",
     "translation": "名称无效。"
   },
@@ -14932,6 +14968,10 @@
   {
     "id": "web.error.unsupported_browser.download",
     "translation": "下载应用"
+  },
+  {
+    "id": "web.error.unsupported_browser.download_app_or_upgrade_browser",
+    "translation": "请下载 Antimatter 应用或使用受支持的浏览器以获得更好的体验。"
   },
   {
     "id": "web.error.unsupported_browser.download_the_app",

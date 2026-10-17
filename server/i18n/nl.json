@@ -1295,6 +1295,10 @@
     "translation": "Fout bij het ophalen van het huidig kanaal."
   },
   {
+    "id": "api.command_invite.channel.error",
+    "translation": "Het kanaal {{.Channel}} kon niet worden gevonden. Gebruik de kanaalhandler (de naam na ~ wanneer u een kanaal vermeldt) om het te identificeren."
+  },
+  {
     "id": "api.command_invite.channel_constrained_user_denied",
     "translation": "Dit kanaal wordt beheerd door groepen.  Deze gebruiker is geen lid van een groep die verbonden is met dit kanaal."
   },
@@ -1329,6 +1333,10 @@
   {
     "id": "api.command_invite.permission.app_error",
     "translation": "Je hebt niet genoeg rechten om {{.User}} toe te voegen in {{.Channel}}."
+  },
+  {
+    "id": "api.command_invite.private_channel.app_error",
+    "translation": "Het kanaal {{.Channel}} kon niet worden gevonden. Gebruik de kanaalhandler (de naam na ~ wanneer u een kanaal vermeldt) om het te identificeren."
   },
   {
     "id": "api.command_invite.success",
@@ -1514,12 +1522,20 @@
     "translation": "Schakelt bureaublad, e-mail en push meldingen uit voor het huidige kanaal of het opgegeven kanaal."
   },
   {
+    "id": "api.command_mute.error",
+    "translation": "Het kanaal {{.Channel}} kon niet worden gevonden. Gebruik de kanaalhandler (de naam na ~ wanneer u een kanaal vermeldt) om het te identificeren."
+  },
+  {
     "id": "api.command_mute.hint",
     "translation": "~[kanaal]"
   },
   {
     "id": "api.command_mute.name",
     "translation": "dempen"
+  },
+  {
+    "id": "api.command_mute.no_channel.error",
+    "translation": "Het opgegeven kanaal kon niet worden gevonden. Gebruik de kanaalhandler (de naam na ~ wanneer u een kanaal vermeldt) om het te identificeren."
   },
   {
     "id": "api.command_mute.success_mute",
@@ -8209,6 +8225,10 @@
     "translation": "De berichten bovenaan het kanaal kunnen niet worden opgehaald."
   },
   {
+    "id": "app.on_top_post.moderators_only.app_error",
+    "translation": "Alleen de beheerders van het kanaal, de beheerders van de community en de moderators kunnen berichten bovenaan plaatsen."
+  },
+  {
     "id": "app.on_top_post.not_on_top.app_error",
     "translation": "Dit bericht staat niet bovenaan het kanaal."
   },
@@ -11387,6 +11407,10 @@
     "translation": "Fout bij het zoeken naar gebruikers in AD/LDAP. Test of de Mattermost-server verbinding kan maken met jouw AD/LDAP-server en probeer het opnieuw."
   },
   {
+    "id": "ent.ldap.syncronize.search_failure_size_exceeded.app_error",
+    "translation": "Groottelimiet overschreden. Probeer de instelling 'Maximale paginagrootte' te verhogen in Systeemconsole > Authenticatie > AD/LDAP."
+  },
+  {
     "id": "ent.ldap.update_cpa.empty_attribute",
     "translation": "Lege LDAP attribuutwaarde"
   },
@@ -12737,6 +12761,10 @@
   {
     "id": "model.config.is_valid.dcr_redirect_uri_allowlist.app_error",
     "translation": "DCR redirect URI allowlist bevat een ongeldig patroon. Patronen moeten beginnen met http:// of https:// en mogen niet leeg zijn of spaties bevatten."
+  },
+  {
+    "id": "model.config.is_valid.default_community_kind.app_error",
+    "translation": "Ongeldige soort voor nieuwe communities: TeamSettings.DefaultCommunityKind moet 'community' of 'workplace' zijn."
   },
   {
     "id": "model.config.is_valid.default_web_ui.app_error",
@@ -14387,6 +14415,14 @@
     "translation": "Ongeldige uitnodiging-id."
   },
   {
+    "id": "model.team.is_valid.kind.app_error",
+    "translation": "Ongeldige soort community: deze moet 'community' of 'workplace' zijn."
+  },
+  {
+    "id": "model.team.is_valid.member_list_view.app_error",
+    "translation": "Ongeldige weergave van de ledenlijst: deze moet 'choice', 'roles' of 'teams' zijn."
+  },
+  {
     "id": "model.team.is_valid.name.app_error",
     "translation": "Ongeldige naam."
   },
@@ -14941,6 +14977,10 @@
   {
     "id": "web.error.unsupported_browser.download",
     "translation": "Download de app"
+  },
+  {
+    "id": "web.error.unsupported_browser.download_app_or_upgrade_browser",
+    "translation": "Download de Antimatter-app of gebruik een ondersteunde browser voor een betere ervaring."
   },
   {
     "id": "web.error.unsupported_browser.download_the_app",

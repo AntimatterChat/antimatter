@@ -1295,6 +1295,10 @@
     "translation": "Erro para recuperar o canal atual."
   },
   {
+    "id": "api.command_invite.channel.error",
+    "translation": "Não foi possível encontrar o canal {{.Channel}}. Utilize o identificador do canal (o nome após ~ quando menciona um canal) para o identificar."
+  },
+  {
     "id": "api.command_invite.channel_constrained_user_denied",
     "translation": "Este canal é gerido por grupos.  Este utilizador não faz parte de um grupo sincronizado com este canal."
   },
@@ -1329,6 +1333,10 @@
   {
     "id": "api.command_invite.permission.app_error",
     "translation": "Não tem permissões suficientes para adicionar {{.User}} no {{.Channel}}."
+  },
+  {
+    "id": "api.command_invite.private_channel.app_error",
+    "translation": "Não foi possível encontrar o canal {{.Channel}}. Utilize o identificador do canal (o nome após ~ quando menciona um canal) para o identificar."
   },
   {
     "id": "api.command_invite.success",
@@ -1514,12 +1522,20 @@
     "translation": "Desativa as notificações de PC, e-mail e push para o canal atual ou para o [canal] especificado."
   },
   {
+    "id": "api.command_mute.error",
+    "translation": "Não foi possível encontrar o canal {{.Channel}}. Utilize o identificador do canal (o nome após ~ quando menciona um canal) para o identificar."
+  },
+  {
     "id": "api.command_mute.hint",
     "translation": "~[canal]"
   },
   {
     "id": "api.command_mute.name",
     "translation": "silenciar"
+  },
+  {
+    "id": "api.command_mute.no_channel.error",
+    "translation": "Não foi possível encontrar o canal especificado. Utilize o identificador do canal (o nome após ~ quando menciona um canal) para o identificar."
   },
   {
     "id": "api.command_mute.success_mute",
@@ -8209,6 +8225,10 @@
     "translation": "Não foi possível obter as mensagens no topo do canal."
   },
   {
+    "id": "app.on_top_post.moderators_only.app_error",
+    "translation": "Apenas os administradores do canal, os administradores da comunidade e os seus moderadores podem fixar mensagens no topo."
+  },
+  {
     "id": "app.on_top_post.not_on_top.app_error",
     "translation": "Esta mensagem não está no topo do seu canal."
   },
@@ -11387,6 +11407,10 @@
     "translation": "Falha ao procurar utilizadores no AD/LDAP. Teste se o servidor Mattermost consegue ligar-se ao seu servidor AD/LDAP e tente novamente."
   },
   {
+    "id": "ent.ldap.syncronize.search_failure_size_exceeded.app_error",
+    "translation": "Limite de tamanho excedido. Tente aumentar a definição de Tamanho Máximo da Página em Consola do sistema > Autenticação > AD/LDAP."
+  },
+  {
     "id": "ent.ldap.update_cpa.empty_attribute",
     "translation": "Valor do atributo LDAP vazio"
   },
@@ -12737,6 +12761,10 @@
   {
     "id": "model.config.is_valid.dcr_redirect_uri_allowlist.app_error",
     "translation": "A lista de URIs de redirecionamento permitidos para DCR contém um padrão inválido. Cada padrão deve ser um URI válido com esquema e anfitrião (por exemplo, https://example.com/** ou cursor://app/callback) e não pode estar vazio nem conter apenas espaços."
+  },
+  {
+    "id": "model.config.is_valid.default_community_kind.app_error",
+    "translation": "Tipo de novas comunidades inválido: TeamSettings.DefaultCommunityKind deve ser community ou workplace."
   },
   {
     "id": "model.config.is_valid.default_web_ui.app_error",
@@ -14387,6 +14415,14 @@
     "translation": "Id. de convite inválido."
   },
   {
+    "id": "model.team.is_valid.kind.app_error",
+    "translation": "Tipo de comunidade inválido: deve ser community ou workplace."
+  },
+  {
+    "id": "model.team.is_valid.member_list_view.app_error",
+    "translation": "Vista da lista de membros inválida: deve ser choice, roles ou teams."
+  },
+  {
     "id": "model.team.is_valid.name.app_error",
     "translation": "Nome inválido."
   },
@@ -14941,6 +14977,10 @@
   {
     "id": "web.error.unsupported_browser.download",
     "translation": "Transferir a App"
+  },
+  {
+    "id": "web.error.unsupported_browser.download_app_or_upgrade_browser",
+    "translation": "Descarregue a aplicação Antimatter ou utilize um navegador suportado para uma melhor experiência."
   },
   {
     "id": "web.error.unsupported_browser.download_the_app",

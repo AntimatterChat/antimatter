@@ -1252,6 +1252,10 @@
     "translation": "Σφάλμα κατά την ανάκτηση του τρέχοντος καναλιού."
   },
   {
+    "id": "api.command_invite.channel.error",
+    "translation": "Δεν ήταν δυνατή η εύρεση του καναλιού {{.Channel}}. Χρησιμοποιήστε τον κωδικό του καναλιού (το όνομα μετά το ~ όταν αναφέρετε ένα κανάλι) για να το ταυτοποιήσετε."
+  },
+  {
     "id": "api.command_invite.channel_constrained_user_denied",
     "translation": "Αυτό το κανάλι διαχειρίζεται από ομάδες. Ο χρήστης αυτός δεν ανήκει σε ομάδα που συγχρονίζεται με αυτό το κανάλι."
   },
@@ -1286,6 +1290,10 @@
   {
     "id": "api.command_invite.permission.app_error",
     "translation": "Δεν έχετε αρκετά δικαιώματα για να προσθέσετε τον χρήστη {{.User}} στο {{.Channel}}."
+  },
+  {
+    "id": "api.command_invite.private_channel.app_error",
+    "translation": "Δεν ήταν δυνατή η εύρεση του καναλιού {{.Channel}}. Χρησιμοποιήστε τον κωδικό του καναλιού (το όνομα μετά το ~ όταν αναφέρετε ένα κανάλι) για να το ταυτοποιήσετε."
   },
   {
     "id": "api.command_invite.success",
@@ -1464,12 +1472,20 @@
     "translation": "Απενεργοποιεί τις ειδοποιήσεις για την επιφάνεια εργασίας, το email και τις push για το τρέχον κανάλι ή το καθορισμένο [channel]."
   },
   {
+    "id": "api.command_mute.error",
+    "translation": "Δεν ήταν δυνατή η εύρεση του καναλιού {{.Channel}}. Χρησιμοποιήστε τον κωδικό του καναλιού (το όνομα μετά το ~ όταν αναφέρετε ένα κανάλι) για να το ταυτοποιήσετε."
+  },
+  {
     "id": "api.command_mute.hint",
     "translation": "~[channel]"
   },
   {
     "id": "api.command_mute.name",
     "translation": "mute"
+  },
+  {
+    "id": "api.command_mute.no_channel.error",
+    "translation": "Δεν ήταν δυνατή η εύρεση του καθορισμένου καναλιού. Χρησιμοποιήστε τον κωδικό του καναλιού (το όνομα μετά το ~ όταν αναφέρετε ένα κανάλι) για να το ταυτοποιήσετε."
   },
   {
     "id": "api.command_mute.success_mute",
@@ -7780,6 +7796,10 @@
     "translation": "Δεν ήταν δυνατή η λήψη των μηνυμάτων στην κορυφή του καναλιού."
   },
   {
+    "id": "app.on_top_post.moderators_only.app_error",
+    "translation": "Μόνο οι διαχειριστές του καναλιού, οι διαχειριστές της κοινότητας και οι μεσάζοντες μπορούν να τοποθετούν μηνύματα στην κορυφή."
+  },
+  {
     "id": "app.on_top_post.not_on_top.app_error",
     "translation": "Αυτό το μήνυμα δεν βρίσκεται στην κορυφή του καναλιού του."
   },
@@ -10776,6 +10796,10 @@
     "translation": "σφάλμα κατά την πληροφόρηση στοιχείων συγχρονισμού"
   },
   {
+    "id": "ent.ldap.syncronize.search_failure_size_exceeded.app_error",
+    "translation": "Υπερβαίνει το όριο μεγέθους. Προσπαθήστε να αυξήσετε τη ρύθμιση «Μέγιστο μέγεθος σελίδας» στην Κονσόλα συστήματος > Πιστοποίηση > AD/LDAP."
+  },
+  {
     "id": "ent.ldap.validate_admin_filter.app_error",
     "translation": "Μη έγκυρος Φίλτρο Διαχειριστή AD/LDAP."
   },
@@ -12014,6 +12038,10 @@
   {
     "id": "model.config.is_valid.dcr_redirect_uri_allowlist.app_error",
     "translation": "Η λίστα επιτρεπόμενων URI ανακατεύθυνσης DCR περιέχει ένα μη έγκυρο μοτίβο. Κάθε μοτίβο πρέπει να είναι ένα έγκυρο URI με σχήμα και host (για παράδειγμα https://example.com/** ή cursor://app/callback) και δεν μπορεί να είναι κενό ή να περιέχει μόνο κενά."
+  },
+  {
+    "id": "model.config.is_valid.default_community_kind.app_error",
+    "translation": "Μη έγκυρος τύπος νέων κοινοτήτων: το TeamSettings.DefaultCommunityKind πρέπει να είναι community ή workplace."
   },
   {
     "id": "model.config.is_valid.default_web_ui.app_error",
@@ -13664,6 +13692,14 @@
     "translation": "Μη έγκυρο id πρόσκλησης."
   },
   {
+    "id": "model.team.is_valid.kind.app_error",
+    "translation": "Μη έγκυρος τύπος κοινότητας: πρέπει να είναι community ή workplace."
+  },
+  {
+    "id": "model.team.is_valid.member_list_view.app_error",
+    "translation": "Μη έγκυρη προβολή λίστας μελών: πρέπει να είναι choice, roles ή teams."
+  },
+  {
     "id": "model.team.is_valid.name.app_error",
     "translation": "Μη έγκυρο όνομα."
   },
@@ -14218,6 +14254,10 @@
   {
     "id": "web.error.unsupported_browser.download",
     "translation": "Κατεβάστε την εφαρμογή"
+  },
+  {
+    "id": "web.error.unsupported_browser.download_app_or_upgrade_browser",
+    "translation": "Κατεβάστε την εφαρμογή Antimatter ή χρησιμοποιήστε ένα υποστηριζόμενο πρόγραμμα περιήγησης για καλύτερη εμπειρία."
   },
   {
     "id": "web.error.unsupported_browser.download_the_app",

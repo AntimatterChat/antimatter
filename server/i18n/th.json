@@ -1252,6 +1252,10 @@
     "translation": "เกดิข้อผดิพลาท่ีจะไดช้่องท่ีใช้อยู่."
   },
   {
+    "id": "api.command_invite.channel.error",
+    "translation": "ไม่พบช่อง {{.Channel}} ให้อ้างอิงช่องดวยแฮนเดิล (ชื่อท่ีอยูดวย ~ เมื่อกำเนิดช่อง)"
+  },
+  {
     "id": "api.command_invite.channel_constrained_user_denied",
     "translation": "ช่องน้ีถกูดแู้ลโดยกลุ่่ม. ผู้ใชน้้ีไมไ่ด้เป็นสว่่นหนึ่่งของกลุ่่มท่ีซิงค์กบัช่องน้ี."
   },
@@ -1286,6 +1290,10 @@
   {
     "id": "api.command_invite.permission.app_error",
     "translation": "คุณไมม่ีสิทธิ์เพิ่่ม {{.User}} เข้า {{.Channel}}."
+  },
+  {
+    "id": "api.command_invite.private_channel.app_error",
+    "translation": "ไม่พบช่อง {{.Channel}} ให้อ้างอิงช่องดวยแฮนเดิล (ชื่อท่ีอยูดวย ~ เมื่อกำเนิดช่อง)"
   },
   {
     "id": "api.command_invite.success",
@@ -1464,12 +1472,20 @@
     "translation": "ปิดการแจ้งเตือนบนเดสก์ทอป อีเมล และ Push สำหรับช่องปัจจุบันหรือช่อง [channel] ท่ีระบู้"
   },
   {
+    "id": "api.command_mute.error",
+    "translation": "ไม่พบช่อง {{.Channel}} ให้อ้างอิงช่องดวยแฮนเดิล (ชื่อท่ีอยูดวย ~ เมื่อกำเนิดช่อง)"
+  },
+  {
     "id": "api.command_mute.hint",
     "translation": "~[channel]"
   },
   {
     "id": "api.command_mute.name",
     "translation": "mute"
+  },
+  {
+    "id": "api.command_mute.no_channel.error",
+    "translation": "ไม่พบช่องท่ีกำเนิด ให้อ้างอิงช่องดวยแฮนเดิล (ชื่อท่ีอยูดวย ~ เมื่อกำเนิดช่อง)"
   },
   {
     "id": "api.command_mute.success_mute",
@@ -7780,6 +7796,10 @@
     "translation": "ไม่สามารถดึงข้อความที่ปักหมุดในช่องได้"
   },
   {
+    "id": "app.on_top_post.moderators_only.app_error",
+    "translation": "เฉพาะผู้ดูลแลระบบของช่อง ผู้ดูลแลระบบของชุมชน และผู้ดูลแลระบบของชุมชนเท่านั้ท่ีสามารถวางข้อความไว้บนสุดได้"
+  },
+  {
     "id": "app.on_top_post.not_on_top.app_error",
     "translation": "ข้อความนี้ไม่ได้อยู่ในตำแหน่งปักหมุดของช่อง"
   },
@@ -10776,6 +10796,10 @@
     "translation": "เกิดข้อผิดพลาดในการเติมข้อมูล (populate) รายการที่ต้องซิงค์ (syncables)"
   },
   {
+    "id": "ent.ldap.syncronize.search_failure_size_exceeded.app_error",
+    "translation": "ขนาดเกินขีดจำกัด ให้อัปเดตการตั่งค่า Maximum Page Size ในคอนโซลระบบ > Authentication > AD/LDAP"
+  },
+  {
     "id": "ent.ldap.validate_admin_filter.app_error",
     "translation": "ตัวกรอง (Filter) สำหรับผู้ดูแลระบบ AD/LDAP ไม่ถูกต้อง"
   },
@@ -12014,6 +12038,10 @@
   {
     "id": "model.config.is_valid.dcr_redirect_uri_allowlist.app_error",
     "translation": "รายการ URI ที่ได้รับอนุญาตสำหรับ DCR redirect มีรูปแบบที่ไม่ถูกต้อง แต่ละรูปแบบต้องเป็น URI ที่ถูกต้องพร้อม scheme และ host (เช่น https://example.com/** หรือ cursor://app/callback) และไม่สามารถว่างหรือมีเพียงช่องว่างได้"
+  },
+  {
+    "id": "model.config.is_valid.default_community_kind.app_error",
+    "translation": "ประเภทของชุมชนใหม่ไม่ถุกต้อง: TeamSettings.DefaultCommunityKind ต้องเป็น community หรือ workplace"
   },
   {
     "id": "model.config.is_valid.default_web_ui.app_error",
@@ -13664,6 +13692,14 @@
     "translation": "รหัสเชิญไม่ถูกต้อง"
   },
   {
+    "id": "model.team.is_valid.kind.app_error",
+    "translation": "ประเภทของชุมชนไม่ถุกต้อง: ต้องเป็น community หรือ workplace"
+  },
+  {
+    "id": "model.team.is_valid.member_list_view.app_error",
+    "translation": "มุมมองรายช่ือสมาชิกไม่ถุกต้อง: ต้องเป็น choice, roles หรือ teams"
+  },
+  {
     "id": "model.team.is_valid.name.app_error",
     "translation": "ชื่อไม่ถูกต้อง"
   },
@@ -14218,6 +14254,10 @@
   {
     "id": "web.error.unsupported_browser.download",
     "translation": "ดาวน์โหลดแอป"
+  },
+  {
+    "id": "web.error.unsupported_browser.download_app_or_upgrade_browser",
+    "translation": "ดาวน์โหลดแอป Antimatter หรือใช้เบราว์เซอร์ท่ีรองรับ เพื่อบุคคลิกประสบการณ์ทดี่ีขึ้่น"
   },
   {
     "id": "web.error.unsupported_browser.download_the_app",

@@ -1294,6 +1294,10 @@
     "translation": "현재 채널 조회 중 오류가 발생하였습니다."
   },
   {
+    "id": "api.command_invite.channel.error",
+    "translation": "채널 {{.Channel}}을(를) 찾을 수 없습니다. 채널을 식별하려면 채널 핸들(채널을 멘션할 때 ~ 뒤에 오는 이름)을 사용하세요."
+  },
+  {
     "id": "api.command_invite.channel_constrained_user_denied",
     "translation": "이 채널은 그룹에서 관리합니다. 이 사용자는 이 채널에 동기화된 그룹에 속해 있지 않습니다."
   },
@@ -1328,6 +1332,10 @@
   {
     "id": "api.command_invite.permission.app_error",
     "translation": "{{.Channel}} 에 {{.User}}를 추가할 권한이 없습니다."
+  },
+  {
+    "id": "api.command_invite.private_channel.app_error",
+    "translation": "{{.Channel}} 채널을 찾을 수 없습니다. 채널 핸들(채널을 멘션할 때 ~ 뒤에 오는 이름)을 사용하여 채널을 식별하세요."
   },
   {
     "id": "api.command_invite.success",
@@ -1512,12 +1520,20 @@
     "translation": "지정된 현재 채널 또는 [채널]에 대한 데스크톱, 전자우편 및 푸시 알림 기능을 해제합니다."
   },
   {
+    "id": "api.command_mute.error",
+    "translation": "채널 {{.Channel}}을(를) 찾을 수 없습니다. 채널 핸들(채널 멘션 시 ~ 뒤에 오는 이름)을 사용하여 채널을 식별하세요."
+  },
+  {
     "id": "api.command_mute.hint",
     "translation": "~[채널]"
   },
   {
     "id": "api.command_mute.name",
     "translation": "음소거"
+  },
+  {
+    "id": "api.command_mute.no_channel.error",
+    "translation": "지정한 채널을 찾을 수 없습니다. 채널 핸들(채널을 멘션할 때 ~ 뒤에 오는 이름)을 사용하여 채널을 지정하세요."
   },
   {
     "id": "api.command_mute.success_mute",
@@ -8130,6 +8146,10 @@
     "translation": "채널 상단의 메시지를 가져올 수 없습니다."
   },
   {
+    "id": "app.on_top_post.moderators_only.app_error",
+    "translation": "채널 관리자, 커뮤니티 관리자 및 모더레이터만 메시지를 상단에 고정할 수 있습니다."
+  },
+  {
     "id": "app.on_top_post.not_on_top.app_error",
     "translation": "이 메시지는 해당 채널의 상단에 고정되어 있지 않습니다."
   },
@@ -11238,6 +11258,10 @@
     "translation": "Failed to search users in AD/LDAP. Test if the Antimatter server can connect to your AD/LDAP server and try again."
   },
   {
+    "id": "ent.ldap.syncronize.search_failure_size_exceeded.app_error",
+    "translation": "크기 제한을 초과했습니다. 시스템 콘솔 > 인증 > AD/LDAP에서 최대 페이지 크기 설정을 늘려 보세요."
+  },
+  {
     "id": "ent.ldap.update_cpa.empty_attribute",
     "translation": "빈 LDAP 속성 값"
   },
@@ -12544,6 +12568,10 @@
   {
     "id": "model.config.is_valid.dcr_redirect_uri_allowlist.app_error",
     "translation": "DCR 리디렉트 URI 허용 목록에 잘못된 패턴이 있습니다. 패턴은 http:// 또는 https://로 시작해야 하며 비어 있거나 공백일 수 없습니다."
+  },
+  {
+    "id": "model.config.is_valid.default_community_kind.app_error",
+    "translation": "새 커뮤니티의 종류가 잘못되었습니다. TeamSettings.DefaultCommunityKind 값은 community 또는 workplace여야 합니다."
   },
   {
     "id": "model.config.is_valid.default_web_ui.app_error",
@@ -14194,6 +14222,14 @@
     "translation": "잘못된 초대 id"
   },
   {
+    "id": "model.team.is_valid.kind.app_error",
+    "translation": "유효하지 않은 커뮤니티 유형입니다. '커뮤니티' 또는 '워크플레이스'여야 합니다."
+  },
+  {
+    "id": "model.team.is_valid.member_list_view.app_error",
+    "translation": "잘못된 멤버 목록 보기: choice, roles 또는 teams여야 합니다."
+  },
+  {
     "id": "model.team.is_valid.name.app_error",
     "translation": "잘못된 이름"
   },
@@ -14748,6 +14784,10 @@
   {
     "id": "web.error.unsupported_browser.download",
     "translation": "앱을 다운로드 받습니다"
+  },
+  {
+    "id": "web.error.unsupported_browser.download_app_or_upgrade_browser",
+    "translation": "더 나은 경험을 위해 Antimatter 앱을 다운로드하거나 지원되는 브라우저를 사용하세요."
   },
   {
     "id": "web.error.unsupported_browser.download_the_app",

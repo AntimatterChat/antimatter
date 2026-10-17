@@ -1252,6 +1252,10 @@
     "translation": "Ralat dalam mendapatkan saluran semasa."
   },
   {
+    "id": "api.command_invite.channel.error",
+    "translation": "Tidak dapat menemui saluran {{.Channel}}. Guna handle saluran (nama selepas ~ apabila anda menyebut saluran) untuk mengenal pasti saluran tersebut."
+  },
+  {
     "id": "api.command_invite.channel_constrained_user_denied",
     "translation": "Saluran ini dikendalikan oleh kumpulan. Pengguna ini bukan sebahagian daripada kumpulan yang diselaraskan dengan saluran ini."
   },
@@ -1286,6 +1290,10 @@
   {
     "id": "api.command_invite.permission.app_error",
     "translation": "Anda tidak mempunyai kebenaran yang mencukupi untuk menambah {{.User}} ke {{.Channel}}."
+  },
+  {
+    "id": "api.command_invite.private_channel.app_error",
+    "translation": "Tidak dapat menemui saluran {{.Channel}}. Guna handle saluran (nama selepas ~ apabila anda menyebut saluran) untuk mengenal pasti saluran tersebut."
   },
   {
     "id": "api.command_invite.success",
@@ -1464,12 +1472,20 @@
     "translation": "Matikan pemberitahuan desktop, e-mel dan push untuk saluran semasa atau saluran [saluran] yang dinyatakan."
   },
   {
+    "id": "api.command_mute.error",
+    "translation": "Tidak dapat menemui saluran {{.Channel}}. Guna handle saluran (nama selepas ~ apabila anda menyebut saluran) untuk mengenal pasti saluran tersebut."
+  },
+  {
     "id": "api.command_mute.hint",
     "translation": "~[saluran]"
   },
   {
     "id": "api.command_mute.name",
     "translation": "senyap"
+  },
+  {
+    "id": "api.command_mute.no_channel.error",
+    "translation": "Tidak dapat menemui saluran yang dinyatakan. Guna handle saluran (nama selepas ~ apabila anda menyebut saluran) untuk mengenal pasti saluran tersebut."
   },
   {
     "id": "api.command_mute.success_mute",
@@ -7780,6 +7796,10 @@
     "translation": "Tidak dapat mendapatkan mesej di bahagian atas Saluran."
   },
   {
+    "id": "app.on_top_post.moderators_only.app_error",
+    "translation": "Hanya pentadbir saluran, pentadbir komuniti dan moderator boleh meletakkan mesej di bahagian atas."
+  },
+  {
     "id": "app.on_top_post.not_on_top.app_error",
     "translation": "Mesej ini tidak berada di bahagian atas Salurannya."
   },
@@ -10776,6 +10796,10 @@
     "translation": "ralat mengisi item yang boleh disegerak"
   },
   {
+    "id": "ent.ldap.syncronize.search_failure_size_exceeded.app_error",
+    "translation": "Had Saiz Dilebihi. Cuba tingkatkan tetapan Saiz Maksimum Halaman dalam Konsol Sistem > Pengesahan > AD/LDAP."
+  },
+  {
     "id": "ent.ldap.validate_admin_filter.app_error",
     "translation": "Penapis Pentadbir AD/LDAP tidak sah."
   },
@@ -12014,6 +12038,10 @@
   {
     "id": "model.config.is_valid.dcr_redirect_uri_allowlist.app_error",
     "translation": "Senarai benarkan URI alih DCR mengandungi corak yang tidak sah. Setiap corak mesti menjadi URI yang sah dengan skema dan hos (contohnya https://example.com/** atau cursor://app/callback) dan tidak boleh kosong atau ruang kosong."
+  },
+  {
+    "id": "model.config.is_valid.default_community_kind.app_error",
+    "translation": "Jenis komuniti baharu tidak sah: TeamSettings.DefaultCommunityKind mesti komuniti atau tempat kerja."
   },
   {
     "id": "model.config.is_valid.default_web_ui.app_error",
@@ -13664,6 +13692,14 @@
     "translation": "Id jemputan tidak sah."
   },
   {
+    "id": "model.team.is_valid.kind.app_error",
+    "translation": "Jenis komuniti tidak sah: ia mesti komuniti atau tempat kerja."
+  },
+  {
+    "id": "model.team.is_valid.member_list_view.app_error",
+    "translation": "Paparan senarai ahli tidak sah: ia mesti pilihan, peranan atau pasukan."
+  },
+  {
     "id": "model.team.is_valid.name.app_error",
     "translation": "Nama tidak sah."
   },
@@ -14218,6 +14254,10 @@
   {
     "id": "web.error.unsupported_browser.download",
     "translation": "Muat Turun Aplikasi"
+  },
+  {
+    "id": "web.error.unsupported_browser.download_app_or_upgrade_browser",
+    "translation": "Muat turun aplikasi Antimatter atau gunakan pelayar yang disokong untuk pengalaman yang lebih baik."
   },
   {
     "id": "web.error.unsupported_browser.download_the_app",

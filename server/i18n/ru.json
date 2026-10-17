@@ -1297,6 +1297,10 @@
     "translation": "Ошибка получения текущего канала."
   },
   {
+    "id": "api.command_invite.channel.error",
+    "translation": "Не удалось найти канал {{.Channel}}. Используйте идентификатор канала (имя после ~ при упоминании канала), чтобы его указать."
+  },
+  {
     "id": "api.command_invite.channel_constrained_user_denied",
     "translation": "Этот канал управляется группами.  Данный пользователь не входит в группу, синхронизированную с этим каналом."
   },
@@ -1331,6 +1335,10 @@
   {
     "id": "api.command_invite.permission.app_error",
     "translation": "У вас недостаточно прав для добавления {{.User}} в {{.Channel}}."
+  },
+  {
+    "id": "api.command_invite.private_channel.app_error",
+    "translation": "Не удалось найти канал {{.Channel}}. Используйте идентификатор канала (имя после ~ при упоминании канала), чтобы его указать."
   },
   {
     "id": "api.command_invite.success",
@@ -1518,12 +1526,20 @@
     "translation": "Отключить уведомления на рабочем столе, электронной почте и push-уведомления для текущего канала или указанного [канала]."
   },
   {
+    "id": "api.command_mute.error",
+    "translation": "Не удалось найти канал {{.Channel}}. Используйте идентификатор канала (имя после ~ при упоминании канала), чтобы его указать."
+  },
+  {
     "id": "api.command_mute.hint",
     "translation": "~[канал]"
   },
   {
     "id": "api.command_mute.name",
     "translation": "выкл"
+  },
+  {
+    "id": "api.command_mute.no_channel.error",
+    "translation": "Не удалось найти указанный канал. Используйте идентификатор канала (имя после ~ при упоминании канала), чтобы его указать."
   },
   {
     "id": "api.command_mute.success_mute",
@@ -8223,6 +8239,10 @@
     "translation": "Не удалось получить закреплённые сообщения канала."
   },
   {
+    "id": "app.on_top_post.moderators_only.app_error",
+    "translation": "Только администраторы канала, администраторы сообщества и его модераторы могут закреплять сообщения вверху."
+  },
+  {
     "id": "app.on_top_post.not_on_top.app_error",
     "translation": "Это сообщение не закреплено в канале."
   },
@@ -11405,6 +11425,10 @@
     "translation": "Не удалось найти пользователей в AD/LDAP. Проверьте, может ли сервер Antimatter подключиться к вашему серверу AD/LDAP, и попробуйте снова."
   },
   {
+    "id": "ent.ldap.syncronize.search_failure_size_exceeded.app_error",
+    "translation": "Превышен лимит размера. Попробуйте увеличить значение параметра «Максимальный размер страницы» в разделе «Системная консоль» > «Аутентификация» > «AD/LDAP»."
+  },
+  {
     "id": "ent.ldap.update_cpa.empty_attribute",
     "translation": "Пустое значение атрибута LDAP"
   },
@@ -12755,6 +12779,10 @@
   {
     "id": "model.config.is_valid.dcr_redirect_uri_allowlist.app_error",
     "translation": "Список разрешённых URI перенаправления DCR содержит недопустимый шаблон. Шаблоны должны начинаться с http:// или https:// и не могут быть пустыми или состоять из пробелов."
+  },
+  {
+    "id": "model.config.is_valid.default_community_kind.app_error",
+    "translation": "Недопустимый тип новых сообществ: TeamSettings.DefaultCommunityKind должен быть community или workplace."
   },
   {
     "id": "model.config.is_valid.default_web_ui.app_error",
@@ -14405,6 +14433,14 @@
     "translation": "Некорректный идентификатор приглашения."
   },
   {
+    "id": "model.team.is_valid.kind.app_error",
+    "translation": "Недопустимый тип сообщества: он должен быть community или workplace."
+  },
+  {
+    "id": "model.team.is_valid.member_list_view.app_error",
+    "translation": "Недопустимый вид списка участников: он должен быть choice, roles или teams."
+  },
+  {
     "id": "model.team.is_valid.name.app_error",
     "translation": "Некорректное имя."
   },
@@ -14959,6 +14995,10 @@
   {
     "id": "web.error.unsupported_browser.download",
     "translation": "Скачать приложение"
+  },
+  {
+    "id": "web.error.unsupported_browser.download_app_or_upgrade_browser",
+    "translation": "Скачайте приложение Antimatter или используйте поддерживаемый браузер для более комфортной работы."
   },
   {
     "id": "web.error.unsupported_browser.download_the_app",

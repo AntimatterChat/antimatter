@@ -1295,6 +1295,10 @@
     "translation": "Virhe nykyisen kanavan noutamisessa."
   },
   {
+    "id": "api.command_invite.channel.error",
+    "translation": "Kanavaa {{.Channel}} ei löytynyt. Käytä kanavan tunnusta (nimi ~-merkin jälkeen, kun mainitset kanavan) tunnistamaan se."
+  },
+  {
     "id": "api.command_invite.channel_constrained_user_denied",
     "translation": "Tätä kanavaa hallitaan ryhmien avulla.  Tämä käyttäjä ei kuulu ryhmään, joka on synkronoitu tähän kanavaan."
   },
@@ -1329,6 +1333,10 @@
   {
     "id": "api.command_invite.permission.app_error",
     "translation": "Sinulla ei ole riittäviä lupia lisätäksesi {{.User}} kanavalle {{.Channel}}."
+  },
+  {
+    "id": "api.command_invite.private_channel.app_error",
+    "translation": "Kanavaa {{.Channel}} ei löytynyt. Käytä kanavan tunnusta (nimi ~-merkin jälkeen, kun mainitset kanavan) tunnistamaan se."
   },
   {
     "id": "api.command_invite.success",
@@ -1514,12 +1522,20 @@
     "translation": "Poistaa käytöstä työpöytä-, sähköposti- ja työntöilmoitukset nykyiselle kanavalle tai määritetylle [kanavalle]."
   },
   {
+    "id": "api.command_mute.error",
+    "translation": "Kanavaa {{.Channel}} ei löytynyt. Käytä kanavan tunnusta (nimi ~-merkin jälkeen, kun mainitset kanavan) tunnistamaan se."
+  },
+  {
     "id": "api.command_mute.hint",
     "translation": "~[kanava]"
   },
   {
     "id": "api.command_mute.name",
     "translation": "mykistä"
+  },
+  {
+    "id": "api.command_mute.no_channel.error",
+    "translation": "Määritettyä kanavaa ei löytynyt. Käytä kanavan tunnusta (nimi ~-merkin jälkeen, kun mainitset kanavan) tunnistamaan se."
   },
   {
     "id": "api.command_mute.success_mute",
@@ -8209,6 +8225,10 @@
     "translation": "Kanavan yläreunan viestien hakeminen epäonnistui."
   },
   {
+    "id": "app.on_top_post.moderators_only.app_error",
+    "translation": "Vain kanavan ylläpitäjät, yhteisön ylläpitäjät ja moderaattorit voivat kiinnittää viestejä yläreunaan."
+  },
+  {
     "id": "app.on_top_post.not_on_top.app_error",
     "translation": "Tämä viesti ei ole kanavansa yläreunassa."
   },
@@ -11387,6 +11407,10 @@
     "translation": "Ei voitu etsiä käyttäjiä AD/LDAPista. Tarkista että Mattermost palvelu voi yhdistää AD/LDAP palveluun ja yritä uudestaan."
   },
   {
+    "id": "ent.ldap.syncronize.search_failure_size_exceeded.app_error",
+    "translation": "Koon raja ylitetty. Yritä lisätä Asetus: Enimmäissivukoko -asetuksen arvoa Järjestelmäkonsoli > Tunnistautuminen > AD/LDAP -osiossa."
+  },
+  {
     "id": "ent.ldap.update_cpa.empty_attribute",
     "translation": "Tyhjä LDAP-attribuutin arvo"
   },
@@ -12737,6 +12761,10 @@
   {
     "id": "model.config.is_valid.dcr_redirect_uri_allowlist.app_error",
     "translation": "DCR-uudelleenohjaus-URI:en sallittujen luettelo sisältää virheellisen mallin. Jokaisen mallin on oltava kelvollinen URI, jossa on skeema ja isäntä (esimerkiksi https://example.com/** tai cursor://app/callback), eikä se voi olla tyhjä tai pelkkää tyhjää tilaa."
+  },
+  {
+    "id": "model.config.is_valid.default_community_kind.app_error",
+    "translation": "Virheellinen uuden yhteisön tyyppi: TeamSettings.DefaultCommunityKind:n on oltava community tai workplace."
   },
   {
     "id": "model.config.is_valid.default_web_ui.app_error",
@@ -14387,6 +14415,14 @@
     "translation": "Virheellinen kutsun tunniste"
   },
   {
+    "id": "model.team.is_valid.kind.app_error",
+    "translation": "Virheellinen yhteisön tyyppi: sen on oltava community tai workplace."
+  },
+  {
+    "id": "model.team.is_valid.member_list_view.app_error",
+    "translation": "Virheellinen jäsenlistan näkymä: sen on oltava choice, roles tai teams."
+  },
+  {
     "id": "model.team.is_valid.name.app_error",
     "translation": "Virheellinen name"
   },
@@ -14941,6 +14977,10 @@
   {
     "id": "web.error.unsupported_browser.download",
     "translation": "Lataa sovellus"
+  },
+  {
+    "id": "web.error.unsupported_browser.download_app_or_upgrade_browser",
+    "translation": "Lataa Antimatter-sovellus tai käytä tuettua selainta saadaksesi paremmamman käyttökokemuksen."
   },
   {
     "id": "web.error.unsupported_browser.download_the_app",

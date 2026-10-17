@@ -1252,6 +1252,10 @@
     "translation": "S'ha produït un error en recuperar el canal actual."
   },
   {
+    "id": "api.command_invite.channel.error",
+    "translation": "No s'ha pogut trobar el canal {{.Channel}}. Utilitza el manenyal del canal (el nom després de ~ quan menciones un canal) per identificar-lo."
+  },
+  {
     "id": "api.command_invite.channel_constrained_user_denied",
     "translation": "Aquest canal està gestionat per grups. Aquest usuari no forma part d'un grup sincronitzat amb aquest canal."
   },
@@ -1286,6 +1290,10 @@
   {
     "id": "api.command_invite.permission.app_error",
     "translation": "No tens permisos suficients per afegir {{.User}} a {{.Channel}}."
+  },
+  {
+    "id": "api.command_invite.private_channel.app_error",
+    "translation": "No s'ha pogut trobar el canal {{.Channel}}. Utilitza el manenyal del canal (el nom després de ~ quan menciones un canal) per identificar-lo."
   },
   {
     "id": "api.command_invite.success",
@@ -1464,12 +1472,20 @@
     "translation": "Desactiva les notificacions d'escriptori, correu electrònic i notificacions push per al canal actual o per al canal [canal] especificat."
   },
   {
+    "id": "api.command_mute.error",
+    "translation": "No s'ha pogut trobar el canal {{.Channel}}. Utilitza el manenyal del canal (el nom després de ~ quan menciones un canal) per identificar-lo."
+  },
+  {
     "id": "api.command_mute.hint",
     "translation": "~[canal]"
   },
   {
     "id": "api.command_mute.name",
     "translation": "silenciar"
+  },
+  {
+    "id": "api.command_mute.no_channel.error",
+    "translation": "No s'ha pogut trobar el canal especificat. Utilitza el manenyal del canal (el nom després de ~ quan menciones un canal) per identificar-lo."
   },
   {
     "id": "api.command_mute.success_mute",
@@ -7780,6 +7796,10 @@
     "translation": "No s'han pogut obtenir els missatges de la part superior del canal."
   },
   {
+    "id": "app.on_top_post.moderators_only.app_error",
+    "translation": "Només els administradors del canal, els administradors de la comunitat i els seus moderadors poden fixar missatges a la part superior."
+  },
+  {
     "id": "app.on_top_post.not_on_top.app_error",
     "translation": "Aquest missatge no està a la part superior del seu canal."
   },
@@ -10776,6 +10796,10 @@
     "translation": "error en omplir els elements sincronitzables"
   },
   {
+    "id": "ent.ldap.syncronize.search_failure_size_exceeded.app_error",
+    "translation": "S'ha superat el límit de mida. Prova d'augmentar la configuració de Mida màxima de pàgina a Consola del sistema > Autenticació > AD/LDAP."
+  },
+  {
     "id": "ent.ldap.validate_admin_filter.app_error",
     "translation": "Filtre d'administrador d'AD/LDAP no vàlid."
   },
@@ -12014,6 +12038,10 @@
   {
     "id": "model.config.is_valid.dcr_redirect_uri_allowlist.app_error",
     "translation": "La llista permesa de URI de redirecció DCR conté un patró no vàlid. Cada patró ha de ser una URI vàlida amb un esquema i un host (per exemple https://example.com/** o cursor://app/callback) i no pot estar buit ni contenir espais en blanc."
+  },
+  {
+    "id": "model.config.is_valid.default_community_kind.app_error",
+    "translation": "Tipus de noves comunitats no vàlid: TeamSettings.DefaultCommunityKind ha de ser community o workplace."
   },
   {
     "id": "model.config.is_valid.default_web_ui.app_error",
@@ -13664,6 +13692,14 @@
     "translation": "L'identificador de la invitació no és vàlid."
   },
   {
+    "id": "model.team.is_valid.kind.app_error",
+    "translation": "Tipus de comunitat no vàlid: ha de ser community o workplace."
+  },
+  {
+    "id": "model.team.is_valid.member_list_view.app_error",
+    "translation": "Vista de la llista de membres no vàlida: ha de ser choice, roles o teams."
+  },
+  {
     "id": "model.team.is_valid.name.app_error",
     "translation": "El nom no és vàlid."
   },
@@ -14218,6 +14254,10 @@
   {
     "id": "web.error.unsupported_browser.download",
     "translation": "Descarrega l'aplicació"
+  },
+  {
+    "id": "web.error.unsupported_browser.download_app_or_upgrade_browser",
+    "translation": "Descarrega l'aplicació d'Antimatter o utilitza un navegador compatible per tenir una millor experiència."
   },
   {
     "id": "web.error.unsupported_browser.download_the_app",

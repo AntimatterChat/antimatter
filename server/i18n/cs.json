@@ -1297,6 +1297,10 @@
     "translation": "Chyba při získávání aktuálního kanálu."
   },
   {
+    "id": "api.command_invite.channel.error",
+    "translation": "Kanál {{.Channel}} nebyl nalezen. Pro jeho identifikaci použijte název kanálu (název za ~ při zmíňování kanálu)."
+  },
+  {
     "id": "api.command_invite.channel_constrained_user_denied",
     "translation": "Tento kanál je spravován skupinami.  Tento uživatel není součástí skupiny, která je synchronizována s tímto kanálem."
   },
@@ -1331,6 +1335,10 @@
   {
     "id": "api.command_invite.permission.app_error",
     "translation": "Nemáte dostatečná oprávnění k přidání {{.User}} do {{.Channel}}."
+  },
+  {
+    "id": "api.command_invite.private_channel.app_error",
+    "translation": "Kanál {{.Channel}} nebyl nalezen. Pro jeho identifikaci použijte název kanálu (název za ~ při zmíňování kanálu)."
   },
   {
     "id": "api.command_invite.success",
@@ -1518,12 +1526,20 @@
     "translation": "Vypne desktopová, e-mailová a push upozornění pro aktuální kanál nebo zadaný [kanál]."
   },
   {
+    "id": "api.command_mute.error",
+    "translation": "Kanál {{.Channel}} nebyl nalezen. Pro jeho identifikaci použijte název kanálu (název za ~ při zmíňování kanálu)."
+  },
+  {
     "id": "api.command_mute.hint",
     "translation": "~[kanál]"
   },
   {
     "id": "api.command_mute.name",
     "translation": "ztlumit"
+  },
+  {
+    "id": "api.command_mute.no_channel.error",
+    "translation": "Zadaný kanál nebyl nalezen. Pro jeho identifikaci použijte název kanálu (název za ~ při zmíňování kanálu)."
   },
   {
     "id": "api.command_mute.success_mute",
@@ -8223,6 +8239,10 @@
     "translation": "Nelze načíst zprávy na vrcholu kanálu."
   },
   {
+    "id": "app.on_top_post.moderators_only.app_error",
+    "translation": "Zprávy na vrchol mohou umístit pouze administrátoři kanálu, administrátoři komunity a moderátoři."
+  },
+  {
     "id": "app.on_top_post.not_on_top.app_error",
     "translation": "Tato zpráva není na vrcholu svého kanálu."
   },
@@ -11405,6 +11425,10 @@
     "translation": "Nepodařilo se vyhletat uživatele na AD/LDAP serveru. Otestujte zda se Mattermost dokáže připojit k AD/LDAP serveru a zkuste to znova."
   },
   {
+    "id": "ent.ldap.syncronize.search_failure_size_exceeded.app_error",
+    "translation": "Překročen limit velikosti. Zkuste zvýšit nastavení Maximální velikost stránky v Systémová konzole > Autentizace > AD/LDAP."
+  },
+  {
     "id": "ent.ldap.update_cpa.empty_attribute",
     "translation": "Prázdná hodnota atributu LDAP"
   },
@@ -12755,6 +12779,10 @@
   {
     "id": "model.config.is_valid.dcr_redirect_uri_allowlist.app_error",
     "translation": "Seznam povolených URI přesměrování pro DCR obsahuje neplatný vzor. Každý vzor musí být platné URI se schématem a hostitelem (například https://example.com/** nebo cursor://app/callback) a nesmí být prázdný ani tvořený jen mezerami."
+  },
+  {
+    "id": "model.config.is_valid.default_community_kind.app_error",
+    "translation": "Neplatný typ nových komunit: TeamSettings.DefaultCommunityKind musí být community nebo workplace."
   },
   {
     "id": "model.config.is_valid.default_web_ui.app_error",
@@ -14405,6 +14433,14 @@
     "translation": "Nevalidní invite id."
   },
   {
+    "id": "model.team.is_valid.kind.app_error",
+    "translation": "Neplatný typ komunity: musí být community nebo workplace."
+  },
+  {
+    "id": "model.team.is_valid.member_list_view.app_error",
+    "translation": "Neplatný zobrazení seznamu členů: musí být choice, roles nebo teams."
+  },
+  {
     "id": "model.team.is_valid.name.app_error",
     "translation": "Neplatné jméno."
   },
@@ -14959,6 +14995,10 @@
   {
     "id": "web.error.unsupported_browser.download",
     "translation": "Stáhnout aplikaci"
+  },
+  {
+    "id": "web.error.unsupported_browser.download_app_or_upgrade_browser",
+    "translation": "Stáhněte si aplikaci Antimatter nebo použijte podporovaný prohlížeč pro lepší zážitek."
   },
   {
     "id": "web.error.unsupported_browser.download_the_app",

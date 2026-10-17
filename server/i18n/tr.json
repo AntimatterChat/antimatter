@@ -1295,6 +1295,10 @@
     "translation": "Geçerli kanal alınırken sorun çıktı."
   },
   {
+    "id": "api.command_invite.channel.error",
+    "translation": "Kanal {{.Channel}} bulunamadı. Kanalı belirlemek için kanal işlecini (bir kanala bahsettiğinizde ~ işaretinden sonraki ad) kullanın."
+  },
+  {
     "id": "api.command_invite.channel_constrained_user_denied",
     "translation": "Bu kanal gruplar tarafından yönetiliyor.  Bu kullanıcı kanal ile eşitlenen bir grubun üyesi değil."
   },
@@ -1329,6 +1333,10 @@
   {
     "id": "api.command_invite.permission.app_error",
     "translation": "{{.User}} kullanıcısını {{.Channel}} kanalına eklemek için yeterli izinleriniz yok."
+  },
+  {
+    "id": "api.command_invite.private_channel.app_error",
+    "translation": "Kanal {{.Channel}} bulunamadı. Kanalı belirlemek için kanal işlecini (bir kanala bahsettiğinizde ~ işaretinden sonraki ad) kullanın."
   },
   {
     "id": "api.command_invite.success",
@@ -1514,12 +1522,20 @@
     "translation": "Geçerli kanal ya da belirtilen [kanal] için bilgisayar, e-posta ve anlık bildirimlerini kapatır."
   },
   {
+    "id": "api.command_mute.error",
+    "translation": "Kanal {{.Channel}} bulunamadı. Kanalı belirlemek için kanal işlecini (bir kanala bahsettiğinizde ~ işaretinden sonraki ad) kullanın."
+  },
+  {
     "id": "api.command_mute.hint",
     "translation": "~[kanal]"
   },
   {
     "id": "api.command_mute.name",
     "translation": "bildirimleri kapat"
+  },
+  {
+    "id": "api.command_mute.no_channel.error",
+    "translation": "Belirtilen kanal bulunamadı. Kanalı belirlemek için kanal işlecini (bir kanala bahsettiğinizde ~ işaretinden sonraki ad) kullanın."
   },
   {
     "id": "api.command_mute.success_mute",
@@ -8209,6 +8225,10 @@
     "translation": "Kanalın üstündeki iletiler alınamadı."
   },
   {
+    "id": "app.on_top_post.moderators_only.app_error",
+    "translation": "Yalnızca kanalın yöneticileri, topluluğun yöneticileri ve moderatörleri iletileri en üste taşıyabilir."
+  },
+  {
     "id": "app.on_top_post.not_on_top.app_error",
     "translation": "Bu ileti, kanalının üstünde değil."
   },
@@ -11387,6 +11407,10 @@
     "translation": "AD/LDAP üzerinde kullanıcılar aranamadı. Antimatter sunucunuzun AD/LDAP sunucunuza bağlanabildiğinden emin olun."
   },
   {
+    "id": "ent.ldap.syncronize.search_failure_size_exceeded.app_error",
+    "translation": "Boyut sınırı aşıldı. Sistem Konsolu > Kimlik Doğrulama > AD/LDAP bölümünde Maksimum Sayfa Boyutu ayarını artırmayı deneyin."
+  },
+  {
     "id": "ent.ldap.update_cpa.empty_attribute",
     "translation": "LDAP özniteliği değeri alınamadı"
   },
@@ -12737,6 +12761,10 @@
   {
     "id": "model.config.is_valid.dcr_redirect_uri_allowlist.app_error",
     "translation": "DCR yönlendirme adresi izin verilenler listesinde geçersiz bir kalıp var. Kalıplar http:// ya da https:// ile başlamalı, boş ya da yalnızca boşluk karakterlerinden oluşuyor olmamalıdır."
+  },
+  {
+    "id": "model.config.is_valid.default_community_kind.app_error",
+    "translation": "Yeni topluluklar için geçersiz tür: TeamSettings.DefaultCommunityKind değeri community veya workplace olmalıdır."
   },
   {
     "id": "model.config.is_valid.default_web_ui.app_error",
@@ -14387,6 +14415,14 @@
     "translation": "Davet kimliği geçersiz."
   },
   {
+    "id": "model.team.is_valid.kind.app_error",
+    "translation": "Geçersiz topluluk türü: community veya workplace olmalıdır."
+  },
+  {
+    "id": "model.team.is_valid.member_list_view.app_error",
+    "translation": "Geçersiz üye listesi görünümü: choice, roles veya teams olmalıdır."
+  },
+  {
     "id": "model.team.is_valid.name.app_error",
     "translation": "Ad geçersiz."
   },
@@ -14941,6 +14977,10 @@
   {
     "id": "web.error.unsupported_browser.download",
     "translation": "Uygulamayı indir"
+  },
+  {
+    "id": "web.error.unsupported_browser.download_app_or_upgrade_browser",
+    "translation": "Daha iyi bir deneyim için Antimatter uygulamasını indirin veya desteklenen bir tarayıcı kullanın."
   },
   {
     "id": "web.error.unsupported_browser.download_the_app",

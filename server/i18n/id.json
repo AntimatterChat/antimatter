@@ -1252,6 +1252,10 @@
     "translation": "Gagal mengambil kanal saat ini."
   },
   {
+    "id": "api.command_invite.channel.error",
+    "translation": "Kanal {{.Channel}} tidak ditemukan. Gunakan handle kanal (nama setelah ~ saat Anda menyebut kanal) untuk mengidentifikasinya."
+  },
+  {
     "id": "api.command_invite.channel_constrained_user_denied",
     "translation": "Kanal ini dikelola oleh grup. Pengguna ini bukan bagian dari grup yang disinkronkan dengan kanal ini."
   },
@@ -1286,6 +1290,10 @@
   {
     "id": "api.command_invite.permission.app_error",
     "translation": "Anda tidak memiliki izin yang cukup untuk menambahkan {{.User}} ke {{.Channel}}."
+  },
+  {
+    "id": "api.command_invite.private_channel.app_error",
+    "translation": "Kanal {{.Channel}} tidak ditemukan. Gunakan handle kanal (nama setelah ~ saat Anda menyebut kanal) untuk mengidentifikasinya."
   },
   {
     "id": "api.command_invite.success",
@@ -1464,12 +1472,20 @@
     "translation": "Matikan notifikasi desktop, email, dan push untuk kanal saat ini atau [kanal] yang ditentukan."
   },
   {
+    "id": "api.command_mute.error",
+    "translation": "Kanal {{.Channel}} tidak ditemukan. Gunakan handle kanal (nama setelah ~ saat Anda menyebut kanal) untuk mengidentifikasinya."
+  },
+  {
     "id": "api.command_mute.hint",
     "translation": "~[kanal]"
   },
   {
     "id": "api.command_mute.name",
     "translation": "bisukan"
+  },
+  {
+    "id": "api.command_mute.no_channel.error",
+    "translation": "Kanal yang ditentukan tidak ditemukan. Gunakan handle kanal (nama setelah ~ saat Anda menyebut kanal) untuk mengidentifikasinya."
   },
   {
     "id": "api.command_mute.success_mute",
@@ -7780,6 +7796,10 @@
     "translation": "Tidak dapat mengambil pesan di bagian atas Kanal."
   },
   {
+    "id": "app.on_top_post.moderators_only.app_error",
+    "translation": "Hanya admin kanal, admin komunitas, dan moderatornya yang dapat memunculkan pesan ke atas."
+  },
+  {
     "id": "app.on_top_post.not_on_top.app_error",
     "translation": "Pesan ini tidak ada di bagian atas Kanalnya."
   },
@@ -10776,6 +10796,10 @@
     "translation": "gagal mengisi data yang disinkronkan"
   },
   {
+    "id": "ent.ldap.syncronize.search_failure_size_exceeded.app_error",
+    "translation": "Batas Ukuran Melebihi. Coba tingkatkan pengaturan Maximum Page Size di Konsol Sistem > Autentikasi > AD/LDAP."
+  },
+  {
     "id": "ent.ldap.validate_admin_filter.app_error",
     "translation": "Filter Admin AD/LDAP tidak valid."
   },
@@ -12014,6 +12038,10 @@
   {
     "id": "model.config.is_valid.dcr_redirect_uri_allowlist.app_error",
     "translation": "Daftar izin URI pengalihan DCR memuat pola yang tidak valid. Setiap pola harus berupa URI valid dengan skema dan host (misalnya https://example.com/** atau cursor://app/callback) dan tidak boleh kosong atau hanya spasi."
+  },
+  {
+    "id": "model.config.is_valid.default_community_kind.app_error",
+    "translation": "Jenis komunitas baru tidak valid: TeamSettings.DefaultCommunityKind harus community atau workplace."
   },
   {
     "id": "model.config.is_valid.default_web_ui.app_error",
@@ -13664,6 +13692,14 @@
     "translation": "Id undangan tidak valid."
   },
   {
+    "id": "model.team.is_valid.kind.app_error",
+    "translation": "Jenis komunitas tidak valid: harus community atau workplace."
+  },
+  {
+    "id": "model.team.is_valid.member_list_view.app_error",
+    "translation": "Tampilan daftar anggota tidak valid: harus choice, roles, atau teams."
+  },
+  {
     "id": "model.team.is_valid.name.app_error",
     "translation": "Nama tidak valid."
   },
@@ -14218,6 +14254,10 @@
   {
     "id": "web.error.unsupported_browser.download",
     "translation": "Unduh Aplikasi"
+  },
+  {
+    "id": "web.error.unsupported_browser.download_app_or_upgrade_browser",
+    "translation": "Unduh aplikasi Antimatter atau gunakan browser yang didukung untuk pengalaman yang lebih baik."
   },
   {
     "id": "web.error.unsupported_browser.download_the_app",

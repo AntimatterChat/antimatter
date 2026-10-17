@@ -1297,6 +1297,10 @@
     "translation": "Błąd pobierania aktualnego kanału."
   },
   {
+    "id": "api.command_invite.channel.error",
+    "translation": "Nie można znaleźć kanału {{.Channel}}. Użyj identyfikatora kanału (nazwy po ~ przy wzmiance kanału), aby go zidentyfikować."
+  },
+  {
     "id": "api.command_invite.channel_constrained_user_denied",
     "translation": "Ten kanał jest zarządzany przez grupy.  Ten użytkownik nie jest członkiem grupy, która jest zsynchronizowana z tym kanałem."
   },
@@ -1331,6 +1335,10 @@
   {
     "id": "api.command_invite.permission.app_error",
     "translation": "Nie posiadasz wystarczających uprawnień, aby dodać {{.User}} in {{.Channel}}."
+  },
+  {
+    "id": "api.command_invite.private_channel.app_error",
+    "translation": "Nie można znaleźć kanału {{.Channel}}. Użyj identyfikatora kanału (nazwy po ~ przy wzmiance kanału), aby go zidentyfikować."
   },
   {
     "id": "api.command_invite.success",
@@ -1518,12 +1526,20 @@
     "translation": "Wyłącza powiadomienia na pulpicie, email i push dla obecnego kanału lub określonego przez [channel] kanału."
   },
   {
+    "id": "api.command_mute.error",
+    "translation": "Nie można znaleźć kanału {{.Channel}}. Użyj identyfikatora kanału (nazwy po ~ przy wzmiance kanału), aby go zidentyfikować."
+  },
+  {
     "id": "api.command_mute.hint",
     "translation": "~[kanał]"
   },
   {
     "id": "api.command_mute.name",
     "translation": "wycisz"
+  },
+  {
+    "id": "api.command_mute.no_channel.error",
+    "translation": "Nie można znaleźć wskazanego kanału. Użyj identyfikatora kanału (nazwy po ~ przy wzmiance kanału), aby go zidentyfikować."
   },
   {
     "id": "api.command_mute.success_mute",
@@ -8223,6 +8239,10 @@
     "translation": "Nie można pobrać wiadomości z góry kanału."
   },
   {
+    "id": "app.on_top_post.moderators_only.app_error",
+    "translation": "Tylko administratorzy kanału, administratorzy społeczności oraz jej moderatorzy mogą przypinać wiadomości na górze."
+  },
+  {
     "id": "app.on_top_post.not_on_top.app_error",
     "translation": "Ta wiadomość nie znajduje się na górze kanału."
   },
@@ -11405,6 +11425,10 @@
     "translation": "Nie można przeszukać użytkowników w AD/LDAP. Sprawdź, czy serwer Antimatter może połączyć się z serwerem AD/LDAP i spróbuj ponownie."
   },
   {
+    "id": "ent.ldap.syncronize.search_failure_size_exceeded.app_error",
+    "translation": "Przekroczono limit rozmiaru. Spróbuj zwiększyć ustawienie Maksymalny rozmiar strony w Konsola systemu > Uwierzytelnianie > AD/LDAP."
+  },
+  {
     "id": "ent.ldap.update_cpa.empty_attribute",
     "translation": "Pusta wartość atrybutu LDAP"
   },
@@ -12755,6 +12779,10 @@
   {
     "id": "model.config.is_valid.dcr_redirect_uri_allowlist.app_error",
     "translation": "Lista dozwolonych URI przekierowania DCR zawiera nieprawidłowy wzorzec. Wzorce muszą zaczynać się od http:// lub https:// i nie mogą być puste ani zawierać białych znaków."
+  },
+  {
+    "id": "model.config.is_valid.default_community_kind.app_error",
+    "translation": "Nieprawidłowy typ nowych społeczności: TeamSettings.DefaultCommunityKind musi wynosić community lub workplace."
   },
   {
     "id": "model.config.is_valid.default_web_ui.app_error",
@@ -14405,6 +14433,14 @@
     "translation": "Nie prawidłowe id zaproszenia."
   },
   {
+    "id": "model.team.is_valid.kind.app_error",
+    "translation": "Nieprawidłowy typ społeczności: musi wynosić community lub workplace."
+  },
+  {
+    "id": "model.team.is_valid.member_list_view.app_error",
+    "translation": "Nieprawidłowy widok listy członków: musi wynosić choice, roles lub teams."
+  },
+  {
     "id": "model.team.is_valid.name.app_error",
     "translation": "Niepoprawna nazwa."
   },
@@ -14959,6 +14995,10 @@
   {
     "id": "web.error.unsupported_browser.download",
     "translation": "Pobierz aplikację"
+  },
+  {
+    "id": "web.error.unsupported_browser.download_app_or_upgrade_browser",
+    "translation": "Pobierz aplikację Antimatter lub użyj wspieranego przeglądarki, aby uzyskać lepsze doświadczenie."
   },
   {
     "id": "web.error.unsupported_browser.download_the_app",

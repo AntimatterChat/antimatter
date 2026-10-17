@@ -1295,6 +1295,10 @@
     "translation": "Errore nel caricamento del canale corrente."
   },
   {
+    "id": "api.command_invite.channel.error",
+    "translation": "Impossibile trovare il canale {{.Channel}}. Usa il handle del canale (il nome dopo ~ quando menzioni un canale) per identificarlo."
+  },
+  {
     "id": "api.command_invite.channel_constrained_user_denied",
     "translation": "Questo canale è gestito da gruppi.  Questo utente non fa parte di un gruppo sincronizzato con questo canale."
   },
@@ -1329,6 +1333,10 @@
   {
     "id": "api.command_invite.permission.app_error",
     "translation": "Non si hanno permessi sufficienti per aggiungere {{.User}} in {{.Channel}}."
+  },
+  {
+    "id": "api.command_invite.private_channel.app_error",
+    "translation": "Impossibile trovare il canale {{.Channel}}. Usa il handle del canale (il nome dopo ~ quando menzioni un canale) per identificarlo."
   },
   {
     "id": "api.command_invite.success",
@@ -1514,12 +1522,20 @@
     "translation": "Disattiva le notifiche desktop, email e push per il canale corrente oppure per il [channel] specificato."
   },
   {
+    "id": "api.command_mute.error",
+    "translation": "Impossibile trovare il canale {{.Channel}}. Usa il handle del canale (il nome dopo ~ quando menzioni un canale) per identificarlo."
+  },
+  {
     "id": "api.command_mute.hint",
     "translation": "~[canale]"
   },
   {
     "id": "api.command_mute.name",
     "translation": "silenzia"
+  },
+  {
+    "id": "api.command_mute.no_channel.error",
+    "translation": "Impossibile trovare il canale specificato. Usa il handle del canale (il nome dopo ~ quando menzioni un canale) per identificarlo."
   },
   {
     "id": "api.command_mute.success_mute",
@@ -8209,6 +8225,10 @@
     "translation": "Impossibile recuperare i messaggi fissati in cima al canale."
   },
   {
+    "id": "app.on_top_post.moderators_only.app_error",
+    "translation": "Solo gli Amministratori del canale, gli Amministratori della community e i suoi moderatori possono fissare i messaggi in cima."
+  },
+  {
     "id": "app.on_top_post.not_on_top.app_error",
     "translation": "Questo messaggio non è fissato in cima al suo canale."
   },
@@ -11387,6 +11407,10 @@
     "translation": "Impossibile trovare gli utenti AD/LDAP. Controllare se il server Antimatter riesce a collegarsi al server AD/LDAP e riprovare."
   },
   {
+    "id": "ent.ldap.syncronize.search_failure_size_exceeded.app_error",
+    "translation": "Limite di dimensione superato. Prova ad aumentare l'impostazione Dimensione massima pagina in Console di Sistema > Autenticazione > AD/LDAP."
+  },
+  {
     "id": "ent.ldap.update_cpa.empty_attribute",
     "translation": "Valore dell'attributo LDAP vuoto"
   },
@@ -12737,6 +12761,10 @@
   {
     "id": "model.config.is_valid.dcr_redirect_uri_allowlist.app_error",
     "translation": "L'elenco dei redirect URI DCR consentiti contiene un pattern non valido. I pattern devono iniziare con http:// o https:// e non possono essere vuoti o composti solo da spazi."
+  },
+  {
+    "id": "model.config.is_valid.default_community_kind.app_error",
+    "translation": "Tipo di nuove community non valido: TeamSettings.DefaultCommunityKind deve essere community o workplace."
   },
   {
     "id": "model.config.is_valid.default_web_ui.app_error",
@@ -14387,6 +14415,14 @@
     "translation": "Id invito non valido."
   },
   {
+    "id": "model.team.is_valid.kind.app_error",
+    "translation": "Tipo di community non valido: deve essere community o workplace."
+  },
+  {
+    "id": "model.team.is_valid.member_list_view.app_error",
+    "translation": "Visualizzazione elenco membri non valida: deve essere choice, roles o teams."
+  },
+  {
     "id": "model.team.is_valid.name.app_error",
     "translation": "Nome non valido."
   },
@@ -14941,6 +14977,10 @@
   {
     "id": "web.error.unsupported_browser.download",
     "translation": "Scarica l'App"
+  },
+  {
+    "id": "web.error.unsupported_browser.download_app_or_upgrade_browser",
+    "translation": "Scarica l'app Antimatter o usa un browser supportato per un'esperienza migliore."
   },
   {
     "id": "web.error.unsupported_browser.download_the_app",

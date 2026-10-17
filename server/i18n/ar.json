@@ -1252,6 +1252,10 @@
     "translation": "حدث خطأ أثناء استرجاع القناة الحالية."
   },
   {
+    "id": "api.command_invite.channel.error",
+    "translation": "تعذّر العثور على القناة {{.Channel}}. استخدم معرّف القناة (الاسم الذي يأتي بعد ~ عند الإشارة إلى قناة) لتحديدها."
+  },
+  {
     "id": "api.command_invite.channel_constrained_user_denied",
     "translation": "هذه القناة مُدارة بواسطة مجموعات. هذا المستخدم ليس جزءًا من مجموعة متزامنة مع هذه القناة."
   },
@@ -1286,6 +1290,10 @@
   {
     "id": "api.command_invite.permission.app_error",
     "translation": "لا تملك الصلاحيات الكافية لإضافة {{.User}} إلى {{.Channel}}."
+  },
+  {
+    "id": "api.command_invite.private_channel.app_error",
+    "translation": "تعذّر العثور على القناة {{.Channel}}. استخدم معرّف القناة (الاسم الذي يأتي بعد ~ عند الإشارة إلى قناة) لتحديدها."
   },
   {
     "id": "api.command_invite.success",
@@ -1464,12 +1472,20 @@
     "translation": "إيقاف إشعارات سطح المكتب والبريد الإلكتروني والإشعارات الفورية للقناة الحالية أو للقناة [القناة] المحددة."
   },
   {
+    "id": "api.command_mute.error",
+    "translation": "تعذّر العثور على القناة {{.Channel}}. استخدم معرّف القناة (الاسم الذي يأتي بعد ~ عند الإشارة إلى قناة) لتحديدها."
+  },
+  {
     "id": "api.command_mute.hint",
     "translation": "~[قناة]"
   },
   {
     "id": "api.command_mute.name",
     "translation": "كتم"
+  },
+  {
+    "id": "api.command_mute.no_channel.error",
+    "translation": "تعذّر العثور على القناة المحددة. استخدم معرّف القناة (الاسم الذي يأتي بعد ~ عند الإشارة إلى قناة) لتحديدها."
   },
   {
     "id": "api.command_mute.success_mute",
@@ -7780,6 +7796,10 @@
     "translation": "تعذّر جلب الرسائل المثبتة في أعلى القناة."
   },
   {
+    "id": "app.on_top_post.moderators_only.app_error",
+    "translation": "لا يمكن تثبيت الرسائل في الأعلى إلا من قِبل مدراء القناة، ومدراء المجتمع، ومُشرفيه."
+  },
+  {
     "id": "app.on_top_post.not_on_top.app_error",
     "translation": "هذه الرسالة غير مثبتة في أعلى قناتها."
   },
@@ -10776,6 +10796,10 @@
     "translation": "حدث خطأ أثناء تعبئة العناصر القابلة للمزامنة"
   },
   {
+    "id": "ent.ldap.syncronize.search_failure_size_exceeded.app_error",
+    "translation": "تجاوز الحد الأقصى للحجم. جرّب زيادة إعداد «الحجم الأقصى للصفحة» في وحدة التحكم بالنظام > المصادقة > AD/LDAP."
+  },
+  {
     "id": "ent.ldap.validate_admin_filter.app_error",
     "translation": "مرشح مسؤول AD/LDAP غير صالح."
   },
@@ -12014,6 +12038,10 @@
   {
     "id": "model.config.is_valid.dcr_redirect_uri_allowlist.app_error",
     "translation": "قائمة السماح لعناوين إعادة التوجيه DCR تحتوي على نمط غير صالح. يجب أن يكون كل نمط عنوان URI صالحًا يحتوي على مخطط ومضيف (على سبيل المثال https://example.com/** أو cursor://app/callback) ولا يمكن أن يكون فارغًا أو يحتوي على مسافات."
+  },
+  {
+    "id": "model.config.is_valid.default_community_kind.app_error",
+    "translation": "نوع المجتمعات الجديدة غير صالح: يجب أن تكون قيمة TeamSettings.DefaultCommunityKind إما community أو workplace."
   },
   {
     "id": "model.config.is_valid.default_web_ui.app_error",
@@ -13664,6 +13692,14 @@
     "translation": "معرف الدعوة غير صالح."
   },
   {
+    "id": "model.team.is_valid.kind.app_error",
+    "translation": "نوع المجتمع غير صالح: يجب أن يكون إما community أو workplace."
+  },
+  {
+    "id": "model.team.is_valid.member_list_view.app_error",
+    "translation": "عرض قائمة الأعضاء غير صالح: يجب أن يكون إما choice أو roles أو teams."
+  },
+  {
     "id": "model.team.is_valid.name.app_error",
     "translation": "الاسم غير صالح."
   },
@@ -14218,6 +14254,10 @@
   {
     "id": "web.error.unsupported_browser.download",
     "translation": "تنزيل التطبيق"
+  },
+  {
+    "id": "web.error.unsupported_browser.download_app_or_upgrade_browser",
+    "translation": "حمّل تطبيق Antimatter أو استخدم متصفحًا مدعومًا للحصول على تجربة أفضل."
   },
   {
     "id": "web.error.unsupported_browser.download_the_app",
