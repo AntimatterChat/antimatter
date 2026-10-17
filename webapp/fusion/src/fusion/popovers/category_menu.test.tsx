@@ -86,6 +86,32 @@ describe('fusion/popovers/CategoryMenu', () => {
         expect(setCategorySorting).toHaveBeenCalledWith('cat', CategorySorting.Recency);
     });
 
+    // A server category's admins order it: Move up and Move down point their own ways (Move up had the down chevron).
+    test('Move up shows the up chevron and Move down the down one', async () => {
+        const server = (name: string, order: number) => ({team_id: 'team', name, sort_order: order, locked: false, create_at: 0, update_at: 0});
+        const middle = category('managed', {display_name: 'Work'});
+        renderWithContext(
+            <CategoryMenu
+                category={middle}
+                point={{x: 10, y: 10}}
+                onClose={jest.fn()}
+            />,
+            {
+                entities: {
+                    channels: {channels: {}, myMembers: {}, messageCounts: {}},
+                    channelCategories: {byId: {cat: middle}, serverCategories: {team: [server('Intro', 0), server('Work', 1), server('Archive', 2)]}},
+                    teams: {currentTeamId: 'team', teams: {team: {id: 'team', name: 'team'}}, myMembers: {team: {team_id: 'team', user_id: 'me', roles: 'team_admin'}}},
+                    roles: {roles: {team_admin: {name: 'team_admin', permissions: ['manage_team']}}},
+                    users: {currentUserId: 'me', profiles: {me: {id: 'me', roles: 'system_user'}}},
+                },
+            } as never,
+        );
+
+        const icon = (name: string) => screen.getByRole('menuitem', {name}).querySelector('svg use')?.getAttribute('href');
+        expect(icon('Move up')).toBe('#am-i-chev-up');
+        expect(icon('Move down')).toBe('#am-i-chev');
+    });
+
     test('in French, names the Favourites category in French and a custom one by its own name', () => {
         const renderFr = (c: ChannelCategory) => renderWithContext(
             <CategoryMenu

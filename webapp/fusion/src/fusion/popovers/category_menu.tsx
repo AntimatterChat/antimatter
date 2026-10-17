@@ -113,7 +113,7 @@ export default function CategoryMenu({category, anchor, point, onClose, canCreat
                     />
                     {at > 0 && (
                         <MenuItem
-                            icon='chev'
+                            icon='chev-up'
                             label={formatMessage({id: 'fusion.categoryMenu.moveUp', defaultMessage: 'Move up'})}
                             onClick={run(() => dispatch(moveServerCategory(category.team_id, name, -1)))}
                         />
