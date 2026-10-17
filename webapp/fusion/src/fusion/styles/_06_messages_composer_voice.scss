@@ -280,6 +280,10 @@
 :is(.am-app, .am-layer) .am-send-btn { background: var(--am-matter); color: #fff; }
 :is(.am-app, .am-layer) .am-send-btn .am-ic { width: 18px; height: 18px; }
 :is(.am-app, .am-layer) .am-send-btn:hover { background: var(--am-matter); color: #fff; filter: brightness(1.1); }
+/* With scheduled messages on, the send button is split: its chevron sends later. */
+:is(.am-app, .am-layer) .am-send-btn.am-split { border-top-right-radius: 0; border-bottom-right-radius: 0; }
+:is(.am-app, .am-layer) .am-send-later { width: 20px; margin-left: -3px; background: var(--am-matter); color: #fff; border-top-left-radius: 0; border-bottom-left-radius: 0; box-shadow: inset 1px 0 0 rgba(255, 255, 255, .35); }
+:is(.am-app, .am-layer) .am-send-later:hover, :is(.am-app, .am-layer) .am-send-later.am-on { background: var(--am-matter); color: #fff; filter: brightness(1.1); }
 
 /* Forum */
 :is(.am-app, .am-layer) .am-forum { padding: 18px 20px 28px; display: grid; gap: 14px; align-content: start; }

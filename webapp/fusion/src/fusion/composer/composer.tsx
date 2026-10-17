@@ -61,7 +61,7 @@ import {generateId} from 'utils/utils';
 
 import type {GlobalState} from 'types/store';
 import type {PostDraft} from 'types/store/draft';
-import type {AIActionMenuItemComponent, FilesWillUploadHook, FileUploadMethodAction, PostEditorActionComponent} from 'types/store/plugins';
+import type {AIActionMenuItemComponent, FilesWillUploadHook, PostEditorActionComponent} from 'types/store/plugins';
 
 import AiRewriteMenu, {useAgentsAvailable} from './ai_rewrite';
 import Autocomplete from './autocomplete';
@@ -71,8 +71,9 @@ import {confirmChannelWideMentions} from './confirm_mentions';
 import {useDraftAutosave} from './draft_autosave';
 import {FORMATS, applyFormat, formatRich} from './formats';
 import {useShowFormatting} from './formatting_preference';
-import PluginMenuItems from './plugin_menu_items';
+import PlusMenu from './plus_menu';
 import {SchedulePopover, ScheduledNote} from './schedule';
+import SendButton from './send_button';
 import SleepNote from './sleep_note';
 import Typing from './typing';
 
@@ -92,7 +93,6 @@ export const DROP_FILES_EVENT = 'am-drop-files';
 // Composer writes messages: the mockup's compose box around the classic web app's drafts and submit logic
 // (slash commands, reactions, message priority).
 const NO_HOOKS: FilesWillUploadHook[] = [];
-const NO_METHODS: FileUploadMethodAction[] = [];
 const NO_EDITOR_ACTIONS: PostEditorActionComponent[] = [];
 const NO_AI_ITEMS: AIActionMenuItemComponent[] = [];
 
@@ -120,7 +120,6 @@ export default function Composer({channelId, rootId = '', placeholder}: Props) {
     const [previewing, setPreviewing] = useState(false);
     const requests = useRef<Record<string, XMLHttpRequest>>({});
     const uploadHooks = useSelector((state: GlobalState) => state.plugins.components.FilesWillUploadHook) || NO_HOOKS;
-    const uploadMethods = useSelector((state: GlobalState) => state.plugins.components.FileUploadMethod) || NO_METHODS;
     const editorActions = useSelector((state: GlobalState) => state.plugins.components.PostEditorAction) || NO_EDITOR_ACTIONS;
     const aiItems = useSelector((state: GlobalState) => state.plugins.components.AIActionMenuItem) || NO_AI_ITEMS;
 
@@ -153,8 +152,9 @@ export default function Composer({channelId, rootId = '', placeholder}: Props) {
     const [aiOriginal, setAiOriginal] = useState<string | null>(null);
     const scheduleRef = useRef<HTMLButtonElement>(null);
 
-    // The schedule picker opens from the + menu or the toolbar's clock button, next to which it shows.
-    const [scheduleFromBar, setScheduleFromBar] = useState(false);
+    // The schedule picker opens from the send button's chevron or the formatting bar's clock, next to which it shows.
+    const sendLaterRef = useRef<HTMLButtonElement>(null);
+    const [scheduleFrom, setScheduleFrom] = useState<'send' | 'bar'>('send');
     const moreRef = useRef<HTMLButtonElement>(null);
     const autocompleteRef = useRef<AutocompleteHandle>(null);
 
@@ -839,16 +839,15 @@ export default function Composer({channelId, rootId = '', placeholder}: Props) {
                     >
                         <Icon name='smile'/>
                     </button>
-                    <button
-                        className={am('icon-btn', 'send-btn')}
-                        aria-label={formatMessage({id: 'fusion.composer.send', defaultMessage: 'Send'})}
+                    <SendButton
                         disabled={pending.length > 0}
-                    >
-                        <Icon
-                            name='send'
-                            size='sm'
-                        />
-                    </button>
+                        laterRef={sendLaterRef}
+                        laterOpen={menu === 'schedule' && scheduleFrom === 'send'}
+                        onLater={schedulingEnabled ? () => {
+                            setScheduleFrom('send');
+                            setMenu(menu === 'schedule' && scheduleFrom === 'send' ? null : 'schedule');
+                        } : undefined}
+                    />
                 </div>
                 {showFormatting && (
                     <div
@@ -989,12 +988,12 @@ export default function Composer({channelId, rootId = '', placeholder}: Props) {
                             <button
                                 ref={scheduleRef}
                                 type='button'
-                                className={am({on: menu === 'schedule' && scheduleFromBar})}
+                                className={am({on: menu === 'schedule' && scheduleFrom === 'bar'})}
                                 title={formatMessage({id: 'fusion.composer.schedule', defaultMessage: 'Schedule message'})}
                                 aria-label={formatMessage({id: 'fusion.composer.schedule', defaultMessage: 'Schedule message'})}
                                 aria-haspopup='menu'
                                 onClick={() => {
-                                    setScheduleFromBar(true);
+                                    setScheduleFrom('bar');
                                     setMenu(menu === 'schedule' ? null : 'schedule');
                                 }}
                             >
@@ -1021,62 +1020,14 @@ export default function Composer({channelId, rootId = '', placeholder}: Props) {
                 }}
             />
             {menu === 'plus' && (
-                <Popover
+                <PlusMenu
                     anchor={plusRef.current}
-                    placement='above'
-                    className='plus-pop'
-                    role='menu'
-                    label={formatMessage({id: 'fusion.composer.plusMenu', defaultMessage: 'Add to message'})}
+                    channelId={channelId}
+                    rootId={rootId}
+                    onPickFile={() => fileRef.current?.click()}
+                    onUpload={upload}
                     onClose={() => setMenu(null)}
-                >
-                    <MenuItem
-                        icon='upload'
-                        label={formatMessage({id: 'fusion.composer.upload', defaultMessage: 'Upload a file'})}
-                        onClick={() => {
-                            setMenu(null);
-                            fileRef.current?.click();
-                        }}
-                    />
-                    {uploadMethods.map((method) => (
-                        <button
-                            key={method.id}
-                            type='button'
-                            role='menuitem'
-                            onClick={() => {
-                                setMenu(null);
-                                method.action?.((files: FileList | File[]) => upload(files));
-                            }}
-                        >
-                            <span className={am('plugin-ic')}>{method.icon}</span>
-                            {method.text}
-                        </button>
-                    ))}
-                    <PluginMenuItems
-                        channelId={channelId}
-                        rootId={rootId}
-                        onClose={() => setMenu(null)}
-                    />
-                    <MenuSeparator/>
-                    {schedulingEnabled && (
-                        <MenuItem
-                            icon='clock'
-                            label={formatMessage({id: 'fusion.composer.schedule', defaultMessage: 'Schedule message'})}
-                            onClick={() => {
-                                setScheduleFromBar(false);
-                                setMenu('schedule');
-                            }}
-                        />
-                    )}
-                    <MenuItem
-                        icon='slash'
-                        label={formatMessage({id: 'fusion.composer.slash', defaultMessage: 'Use a slash command'})}
-                        onClick={() => {
-                            setMenu(null);
-                            change({message: '/'});
-                            requestAnimationFrame(() => textareaRef.current?.focus());
-                        }}
-                    />
-                </Popover>
+                />
             )}
             {menu === 'ai' && (
                 <AiRewriteMenu
@@ -1097,7 +1048,7 @@ export default function Composer({channelId, rootId = '', placeholder}: Props) {
             )}
             {menu === 'schedule' && (
                 <SchedulePopover
-                    anchor={scheduleFromBar ? scheduleRef.current : plusRef.current}
+                    anchor={scheduleFrom === 'bar' ? scheduleRef.current : sendLaterRef.current}
                     onSchedule={(at) => schedule(at)}
                     onClose={() => setMenu(null)}
                 />

@@ -22931,12 +22931,12 @@
     "defaultMessage": "The message couldn't be sent.",
     "description": ""
   },
+  "fusion.composer.sendLater": {
+    "defaultMessage": "Send later",
+    "description": "Tooltip and accessible name of the small chevron button next to the composer's Send button; it opens the picker to schedule the message for later."
+  },
   "fusion.composer.showFormatting": {
     "defaultMessage": "Show formatting",
-    "description": ""
-  },
-  "fusion.composer.slash": {
-    "defaultMessage": "Use a slash command",
     "description": ""
   },
   "fusion.composer.spoiler": {
