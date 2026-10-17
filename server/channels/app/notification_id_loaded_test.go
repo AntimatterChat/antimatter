@@ -70,7 +70,7 @@ func TestIDLoadedGetNotificationMessage(t *testing.T) {
 
 	receiver := &model.User{Id: model.NewId(), Username: "receiver", Locale: "en"}
 	sender := &model.User{Id: model.NewId(), Username: "sender", Locale: "en"}
-	channel := &model.Channel{Id: model.NewId(), TeamId: model.NewId(), Type: model.ChannelTypeOpen, DisplayName: "Town Square"}
+	channel := &model.Channel{Id: model.NewId(), TeamId: model.NewId(), Type: model.ChannelTypeOpen, DisplayName: "General"}
 	post := &model.Post{Id: model.NewId(), ChannelId: channel.Id, UserId: sender.Id, Message: "hello **world**"}
 
 	f.posts.On("GetSingle", mock.Anything, post.Id, false).Return(post, nil)
@@ -86,7 +86,7 @@ func TestIDLoadedGetNotificationMessage(t *testing.T) {
 	require.Nil(t, appErr)
 
 	assert.Equal(t, "@sender: hello world", msg.Message)
-	assert.Equal(t, "Town Square", msg.ChannelName)
+	assert.Equal(t, "General", msg.ChannelName)
 	assert.Equal(t, "@sender", msg.SenderName)
 	assert.Equal(t, post.Id, msg.PostId)
 	assert.Equal(t, channel.Id, msg.ChannelId)

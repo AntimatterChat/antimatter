@@ -1519,7 +1519,7 @@ func TestCreateUserWithToken(t *testing.T) {
 		members, err := th.App.GetChannelMembersForUser(th.Context, th.BasicTeam.Id, newUser.Id)
 		require.Nil(t, err)
 
-		// Should have default channels (Town Square, Off-Topic) + channel1 = 3 channels
+		// Should have default channels (General, Off-Topic) + channel1 = 3 channels
 		channelIds := make(map[string]bool)
 		for _, member := range members {
 			channelIds[member.ChannelId] = true
@@ -1916,14 +1916,14 @@ func TestGetViewUsersRestrictions(t *testing.T) {
 	th.CreateChannel(t, team1) // Another channel
 	team1offtopic, err := th.App.GetChannelByName(th.Context, "off-topic", team1.Id, false)
 	require.Nil(t, err)
-	team1townsquare, err := th.App.GetChannelByName(th.Context, "town-square", team1.Id, false)
+	team1general, err := th.App.GetChannelByName(th.Context, model.DefaultChannelName, team1.Id, false)
 	require.Nil(t, err)
 
 	team2channel1 := th.CreateChannel(t, team2)
 	th.CreateChannel(t, team2) // Another channel
 	team2offtopic, err := th.App.GetChannelByName(th.Context, "off-topic", team2.Id, false)
 	require.Nil(t, err)
-	team2townsquare, err := th.App.GetChannelByName(th.Context, "town-square", team2.Id, false)
+	team2general, err := th.App.GetChannelByName(th.Context, model.DefaultChannelName, team2.Id, false)
 	require.Nil(t, err)
 
 	_, appErr = th.App.AddUserToChannel(th.Context, user1, team1channel1, false)
@@ -1980,7 +1980,7 @@ func TestGetViewUsersRestrictions(t *testing.T) {
 		assert.NotNil(t, restrictions)
 		assert.NotNil(t, restrictions.Teams)
 		assert.NotNil(t, restrictions.Channels)
-		assert.ElementsMatch(t, []string{team1townsquare.Id, team1offtopic.Id, team1channel1.Id, team1channel2.Id, team2townsquare.Id, team2offtopic.Id, team2channel1.Id}, restrictions.Channels)
+		assert.ElementsMatch(t, []string{team1general.Id, team1offtopic.Id, team1channel1.Id, team1channel2.Id, team2general.Id, team2offtopic.Id, team2channel1.Id}, restrictions.Channels)
 		assert.ElementsMatch(t, []string{team1.Id, team2.Id}, restrictions.Teams)
 	})
 
@@ -1999,7 +1999,7 @@ func TestGetViewUsersRestrictions(t *testing.T) {
 		assert.NotNil(t, restrictions)
 		assert.Empty(t, restrictions.Teams)
 		assert.NotNil(t, restrictions.Channels)
-		assert.ElementsMatch(t, []string{team1townsquare.Id, team1offtopic.Id, team1channel1.Id, team1channel2.Id, team2townsquare.Id, team2offtopic.Id, team2channel1.Id}, restrictions.Channels)
+		assert.ElementsMatch(t, []string{team1general.Id, team1offtopic.Id, team1channel1.Id, team1channel2.Id, team2general.Id, team2offtopic.Id, team2channel1.Id}, restrictions.Channels)
 	})
 
 	t.Run("VIEW_MEMBERS permission for some teams but not for others", func(t *testing.T) {
@@ -2026,7 +2026,7 @@ func TestGetViewUsersRestrictions(t *testing.T) {
 		assert.NotNil(t, restrictions.Teams)
 		assert.NotNil(t, restrictions.Channels)
 		assert.ElementsMatch(t, restrictions.Teams, []string{team1.Id})
-		assert.ElementsMatch(t, []string{team1townsquare.Id, team1offtopic.Id, team1channel1.Id, team1channel2.Id, team2townsquare.Id, team2offtopic.Id, team2channel1.Id}, restrictions.Channels)
+		assert.ElementsMatch(t, []string{team1general.Id, team1offtopic.Id, team1channel1.Id, team1channel2.Id, team2general.Id, team2offtopic.Id, team2channel1.Id}, restrictions.Channels)
 	})
 }
 
@@ -2975,7 +2975,7 @@ func TestAuthenticateUserForGuestMagicLink(t *testing.T) {
 		members, chanErr := th.App.GetChannelMembersForUser(th.Context, th.BasicTeam.Id, user.Id)
 		require.Nil(t, chanErr)
 		// Guests are only added to the channels specified in the token (BasicChannel and channel2)
-		// They do not automatically get added to Town Square like regular users
+		// They do not automatically get added to General like regular users
 		assert.GreaterOrEqual(t, len(members), 2, "User should be in at least 2 channels")
 
 		// Cleanup

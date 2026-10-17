@@ -16,10 +16,10 @@ import (
 )
 
 func TestMaskText(t *testing.T) {
-	text := "Hi @alice.smith, see https://example.com/a?b=1 and `go test` :tada: in ~town-square #release {{0}}"
+	text := "Hi @alice.smith, see https://example.com/a?b=1 and `go test` :tada: in ~general #release {{0}}"
 	m := maskText(text)
 
-	for _, protected := range []string{"@alice.smith", "https://example.com/a?b=1", "`go test`", ":tada:", "~town-square", "#release", "{{0}}"} {
+	for _, protected := range []string{"@alice.smith", "https://example.com/a?b=1", "`go test`", ":tada:", "~general", "#release", "{{0}}"} {
 		assert.Contains(t, m.Masks, protected)
 	}
 	assert.Equal(t, "Hi {{0}}, see {{1}} and {{2}} {{3}} in {{4}} {{5}} {{6}}", m.Text)

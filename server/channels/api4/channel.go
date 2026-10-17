@@ -1981,7 +1981,7 @@ func deleteChannel(c *Context, w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Antimatter: the default channels (Town Square, Off-Topic, the one the community chose) are the community's: its
+	// Antimatter: the default channels (General, Off-Topic, the one the community chose) are the community's: its
 	// admins archive and delete them.
 	if channel.TeamId != "" && (slices.Contains(c.App.DefaultChannelNames(c.AppContext), channel.Name) || c.App.IsDefaultChannel(c.AppContext, channel)) &&
 		!c.App.SessionHasPermissionToTeam(*c.AppContext.Session(), channel.TeamId, model.PermissionManageTeam) {

@@ -37,7 +37,7 @@ const (
 
 	ChannelGroupMaxUsers       = 10
 	ChannelGroupMinUsers       = 3
-	DefaultChannelName         = "town-square"
+	DefaultChannelName         = "general"
 	ChannelDisplayNameMaxRunes = 64
 	ChannelNameMinLength       = 1
 	ChannelNameMaxLength       = 64
@@ -45,6 +45,11 @@ const (
 	ChannelPurposeMaxRunes     = 250
 	ChannelCacheSize           = 25000
 	ChannelBannerInfoMaxLength = 1024
+
+	// Antimatter: LegacyDefaultChannelName is the default channel's name before it became DefaultChannelName (Town
+	// Square before General). An upgrade renames it (doGeneralChannelMigration); lookups by this name still find the
+	// community's default channel once no channel has it, so old links, webhooks and apps keep working.
+	LegacyDefaultChannelName = "town-square"
 
 	ChannelSortByUsername = "username"
 	ChannelSortByStatus   = "status"
@@ -273,7 +278,7 @@ type ChannelModeratedRolesPatch struct {
 // ChannelSearchOpts contains options for searching channels.
 //
 // NotAssociatedToGroup will exclude channels that have associated, active GroupChannels records.
-// ExcludeDefaultChannels will exclude the configured default channels (ex 'town-square' and 'off-topic').
+// ExcludeDefaultChannels will exclude the configured default channels (ex 'general' and 'off-topic').
 // IncludeDeleted will include channel records where DeleteAt != 0.
 // ExcludeChannelNames will exclude channels from the results by name.
 // IncludeSearchById will include searching matches against channel IDs in the results

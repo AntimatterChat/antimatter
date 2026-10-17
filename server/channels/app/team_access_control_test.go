@@ -120,10 +120,10 @@ func TestValidateTeamScopePolicyChannelAssignment(t *testing.T) {
 	})
 
 	t.Run("default channel returns error", func(t *testing.T) {
-		townSquare, appErr := th.App.GetChannelByName(th.Context, model.DefaultChannelName, th.BasicTeam.Id, false)
+		generalChannel, appErr := th.App.GetChannelByName(th.Context, model.DefaultChannelName, th.BasicTeam.Id, false)
 		require.Nil(t, appErr)
 
-		appErr = th.App.ValidateTeamScopePolicyChannelAssignment(th.Context, th.BasicTeam.Id, []string{townSquare.Id})
+		appErr = th.App.ValidateTeamScopePolicyChannelAssignment(th.Context, th.BasicTeam.Id, []string{generalChannel.Id})
 		require.NotNil(t, appErr)
 		assert.Equal(t, "app.pap.access_control.channel_default", appErr.Id)
 	})
@@ -146,12 +146,12 @@ func TestValidateTeamScopePolicyChannelAssignment(t *testing.T) {
 	t.Run("mix of valid and invalid channels returns error", func(t *testing.T) {
 		validChannel := th.CreatePrivateChannel(t, th.BasicTeam)
 
-		townSquare, appErr := th.App.GetChannelByName(th.Context, model.DefaultChannelName, th.BasicTeam.Id, false)
+		generalChannel, appErr := th.App.GetChannelByName(th.Context, model.DefaultChannelName, th.BasicTeam.Id, false)
 		require.Nil(t, appErr)
 
 		appErr = th.App.ValidateTeamScopePolicyChannelAssignment(th.Context, th.BasicTeam.Id, []string{
 			validChannel.Id,
-			townSquare.Id, // default channel — invalid
+			generalChannel.Id, // default channel — invalid
 		})
 		require.NotNil(t, appErr)
 	})

@@ -221,7 +221,7 @@ func TestUpdateCategoryForTeamForUser(t *testing.T) {
 
 		channelsCategory := categories.Categories[1]
 		require.Equal(t, model.SidebarCategoryChannels, channelsCategory.Type)
-		require.Len(t, channelsCategory.Channels, 5) // Town Square, Off Topic, and the 3 channels created by InitBasic
+		require.Len(t, channelsCategory.Channels, 5) // General, Off-Topic, and the 3 channels created by InitBasic
 
 		// Should return the correct values from the API
 		updatedCategory := &model.SidebarCategoryWithChannels{
@@ -314,7 +314,7 @@ func TestUpdateCategoryForTeamForUser(t *testing.T) {
 
 		channelsCategory := categories.Categories[1]
 		require.Equal(t, model.SidebarCategoryChannels, channelsCategory.Type)
-		require.Len(t, channelsCategory.Channels, 5) // Town Square, Off Topic, and the 3 channels created by InitBasic
+		require.Len(t, channelsCategory.Channels, 5) // General, Off-Topic, and the 3 channels created by InitBasic
 
 		// Delete one of the channels (Antimatter: members don't archive channels, so a system admin does)
 		_, err = th.SystemAdminClient.DeleteChannel(context.Background(), th.BasicChannel.Id)

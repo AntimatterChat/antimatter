@@ -2447,7 +2447,7 @@ func (a *App) publishTeamPolicyEnforcedUpdate(rctx request.CTX, teamID string) {
 
 // ValidateChannelEligibilityForAccessControl checks that a channel is eligible for
 // access control policy assignment: must be public or private (DM/GM excluded),
-// not group-constrained, not shared, and not a team default channel (e.g. town-square).
+// not group-constrained, not shared, and not a team default channel (e.g. general).
 func (a *App) ValidateChannelEligibilityForAccessControl(rctx request.CTX, channel *model.Channel) *model.AppError {
 	if channel.Type != model.ChannelTypePrivate && channel.Type != model.ChannelTypeOpen {
 		return model.NewAppError("ValidateChannelEligibilityForAccessControl",

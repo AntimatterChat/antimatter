@@ -507,7 +507,7 @@ func TestIsValidWebAuthRedirectURL(t *testing.T) {
 				SiteURL: new("https://example.com"),
 			},
 		}
-		redirectURL := "/test/channels/town-square"
+		redirectURL := "/test/channels/general"
 
 		err := ValidateWebAuthRedirectUrl(config, redirectURL)
 		require.NoError(t, err)

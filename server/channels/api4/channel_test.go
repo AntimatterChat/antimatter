@@ -3098,7 +3098,7 @@ func TestGetChannelsForUser(t *testing.T) {
 	numPrivate := 0
 	numPublic := 0
 	numOffTopic := 0
-	numTownSquare := 0
+	numGeneral := 0
 	for _, ch := range channels {
 		if ch.Type == model.ChannelTypeOpen {
 			numPublic++
@@ -3108,8 +3108,8 @@ func TestGetChannelsForUser(t *testing.T) {
 
 		if ch.DisplayName == "Off-Topic" {
 			numOffTopic++
-		} else if ch.DisplayName == "Town Square" {
-			numTownSquare++
+		} else if ch.DisplayName == "General" {
+			numGeneral++
 		}
 	}
 
@@ -3117,7 +3117,7 @@ func TestGetChannelsForUser(t *testing.T) {
 	assert.Equal(t, 2, numPrivate)
 	assert.Equal(t, 7, numPublic)
 	assert.Equal(t, 2, numOffTopic)
-	assert.Equal(t, 2, numTownSquare)
+	assert.Equal(t, 2, numGeneral)
 
 	// Creating some more channels to be exactly 100 to test page size boundaries.
 	for range 91 {
@@ -3167,7 +3167,7 @@ func TestGetAllChannels(t *testing.T) {
 		deletedChannel := channels[0].Channel
 
 		// Never try to delete the default channel
-		if deletedChannel.Name == "town-square" {
+		if deletedChannel.Name == model.DefaultChannelName {
 			deletedChannel = channels[1].Channel
 		}
 
@@ -3264,7 +3264,7 @@ func TestGetAllChannels(t *testing.T) {
 		CheckOKStatus(t, resp)
 		require.True(t, len(channels) > 0)
 		for _, channel := range channels {
-			if channel.DisplayName != "Off-Topic" && channel.DisplayName != "Town Square" {
+			if channel.DisplayName != "Off-Topic" && channel.DisplayName != "General" {
 				require.NotEqual(t, "", channel.CreatorId)
 				require.NotEqual(t, "", channel.Name)
 			}
@@ -3275,7 +3275,7 @@ func TestGetAllChannels(t *testing.T) {
 		CheckOKStatus(t, resp)
 		require.True(t, len(channels) > 0)
 		for _, channel := range channels {
-			if channel.DisplayName != "Off-Topic" && channel.DisplayName != "Town Square" {
+			if channel.DisplayName != "Off-Topic" && channel.DisplayName != "General" {
 				require.NotEqual(t, "", channel.CreatorId)
 				require.NotEqual(t, "", channel.Name)
 			}
@@ -3720,7 +3720,7 @@ func TestSearchAllChannels(t *testing.T) {
 		CheckOKStatus(t, resp)
 		require.True(t, len(channels) > 0)
 		for _, channel := range channels {
-			if channel.DisplayName != "Off-Topic" && channel.DisplayName != "Town Square" {
+			if channel.DisplayName != "Off-Topic" && channel.DisplayName != "General" {
 				require.NotEqual(t, "", channel.CreatorId)
 				require.NotEqual(t, "", channel.Name)
 			}
@@ -3731,7 +3731,7 @@ func TestSearchAllChannels(t *testing.T) {
 		CheckOKStatus(t, resp)
 		require.True(t, len(channels) > 0)
 		for _, channel := range channels {
-			if channel.DisplayName != "Off-Topic" && channel.DisplayName != "Town Square" {
+			if channel.DisplayName != "Off-Topic" && channel.DisplayName != "General" {
 				require.NotEqual(t, "", channel.CreatorId)
 				require.NotEqual(t, "", channel.Name)
 			}
@@ -6421,25 +6421,32 @@ func TestAutocompleteChannels(t *testing.T) {
 		expectedExcludes []string
 	}{
 		{
-			"Basic town-square",
+			"Basic general",
+			th.BasicTeam.Id,
+			"gene",
+			[]string{model.DefaultChannelName},
+			[]string{"off-topic", "town", "tower"},
+		},
+		{
+			"Basic town",
 			th.BasicTeam.Id,
 			"town",
-			[]string{"town-square", "town"},
-			[]string{"off-topic", "tower"},
+			[]string{"town"},
+			[]string{model.DefaultChannelName, "off-topic", "tower"},
 		},
 		{
 			"Basic off-topic",
 			th.BasicTeam.Id,
 			"off-to",
 			[]string{"off-topic"},
-			[]string{"town-square", "town", "tower"},
+			[]string{model.DefaultChannelName, "town", "tower"},
 		},
 		{
-			"Basic town square and off topic",
+			"Basic town and tower",
 			th.BasicTeam.Id,
 			"tow",
-			[]string{"town-square", "tower", "town"},
-			[]string{"off-topic"},
+			[]string{"tower", "town"},
+			[]string{model.DefaultChannelName, "off-topic"},
 		},
 	} {
 		t.Run(tc.description, func(t *testing.T) {
@@ -6530,25 +6537,32 @@ func TestAutocompleteChannelsForSearch(t *testing.T) {
 		expectedExcludes []string
 	}{
 		{
-			"Basic town-square",
+			"Basic general",
+			th.BasicTeam.Id,
+			"gene",
+			[]string{model.DefaultChannelName},
+			[]string{"off-topic", "town", "townpriv"},
+		},
+		{
+			"Basic townpriv",
 			th.BasicTeam.Id,
 			"town",
-			[]string{"town-square", "townpriv"},
-			[]string{"off-topic", "town"},
+			[]string{"townpriv"},
+			[]string{model.DefaultChannelName, "off-topic", "town"},
 		},
 		{
 			"Basic off-topic",
 			th.BasicTeam.Id,
 			"off-to",
 			[]string{"off-topic"},
-			[]string{"town-square", "town", "townpriv"},
+			[]string{model.DefaultChannelName, "town", "townpriv"},
 		},
 		{
-			"Basic town square and townpriv",
+			"Basic townpriv but not the private town",
 			th.BasicTeam.Id,
 			"tow",
-			[]string{"town-square", "townpriv"},
-			[]string{"off-topic", "town"},
+			[]string{"townpriv"},
+			[]string{model.DefaultChannelName, "off-topic", "town"},
 		},
 		{
 			"Direct and group messages",
@@ -6662,14 +6676,14 @@ func TestAutocompleteChannelsForSearchGuestUsers(t *testing.T) {
 			th.BasicTeam.Id,
 			"town",
 			[]string{"town", "townpriv"},
-			[]string{"town-square", "off-topic"},
+			[]string{model.DefaultChannelName, "off-topic"},
 		},
 		{
 			"Should return empty if not member of the searched channels",
 			th.BasicTeam.Id,
 			"off-to",
 			[]string{},
-			[]string{"off-topic", "town-square", "town", "townpriv"},
+			[]string{"off-topic", model.DefaultChannelName, "town", "townpriv"},
 		},
 		{
 			"Should return direct and group messages",
@@ -8789,13 +8803,13 @@ func TestSetChannelMembers(t *testing.T) {
 		CheckBadRequestStatus(t, resp)
 	})
 
-	t.Run("town-square non-guests cannot be removed", func(t *testing.T) {
-		// Find town-square
-		townSquare, appErr := th.App.GetChannelByName(th.Context, model.DefaultChannelName, th.BasicTeam.Id, false)
+	t.Run("general non-guests cannot be removed", func(t *testing.T) {
+		// Find general
+		generalChannel, appErr := th.App.GetChannelByName(th.Context, model.DefaultChannelName, th.BasicTeam.Id, false)
 		require.Nil(t, appErr)
 
 		// Set to empty list, non-guest members cannot be removed and should appear in errors
-		results, _, err := th.SystemAdminClient.SetChannelMembers(ctx, townSquare.Id, &model.SetChannelMembersRequest{Members: []string{}}, 0, 0)
+		results, _, err := th.SystemAdminClient.SetChannelMembers(ctx, generalChannel.Id, &model.SetChannelMembersRequest{Members: []string{}}, 0, 0)
 		require.NoError(t, err)
 
 		var allErrors []model.SetChannelMembersError
@@ -8804,10 +8818,10 @@ func TestSetChannelMembers(t *testing.T) {
 		}
 		assert.NotEmpty(t, allErrors, "non-guest members should appear in errors")
 
-		// Verify members are still in town-square (removal was blocked)
-		members, _, err := th.SystemAdminClient.GetChannelMembers(ctx, townSquare.Id, 0, 100, "")
+		// Verify members are still in general (removal was blocked)
+		members, _, err := th.SystemAdminClient.GetChannelMembers(ctx, generalChannel.Id, 0, 100, "")
 		require.NoError(t, err)
-		assert.NotEmpty(t, members, "town-square should still have members")
+		assert.NotEmpty(t, members, "general should still have members")
 	})
 
 	t.Run("user not on team appears in errors", func(t *testing.T) {

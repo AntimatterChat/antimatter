@@ -994,10 +994,10 @@ func TestAssignAccessControlPolicyToChannels(t *testing.T) {
 		th.App.Srv().ch.AccessControl = mockAccessControl
 		mockAccessControl.On("GetPolicy", th.Context, parentID).Return(&model.AccessControlPolicy{Type: model.AccessControlPolicyTypeParent}, nil)
 
-		townSquare, appErr := th.App.GetChannelByName(th.Context, model.DefaultChannelName, th.BasicTeam.Id, false)
+		generalChannel, appErr := th.App.GetChannelByName(th.Context, model.DefaultChannelName, th.BasicTeam.Id, false)
 		require.Nil(t, appErr)
 
-		policies, err := th.App.AssignAccessControlPolicyToChannels(th.Context, parentID, []string{townSquare.Id})
+		policies, err := th.App.AssignAccessControlPolicyToChannels(th.Context, parentID, []string{generalChannel.Id})
 		require.NotNil(t, err)
 		assert.Nil(t, policies)
 		assert.Equal(t, "app.pap.access_control.channel_default", err.Id)
@@ -1661,15 +1661,15 @@ func TestValidateChannelAccessControlPermission(t *testing.T) {
 	})
 
 	t.Run("Default channel should fail", func(t *testing.T) {
-		townSquare, appErr := th.App.GetChannelByName(th.Context, model.DefaultChannelName, th.BasicTeam.Id, false)
+		generalChannel, appErr := th.App.GetChannelByName(th.Context, model.DefaultChannelName, th.BasicTeam.Id, false)
 		require.Nil(t, appErr)
 
-		th.AddUserToChannel(t, channelAdmin, townSquare)
+		th.AddUserToChannel(t, channelAdmin, generalChannel)
 
-		_, appErr = th.App.UpdateChannelMemberRoles(th.Context, townSquare.Id, channelAdmin.Id, "channel_user channel_admin")
+		_, appErr = th.App.UpdateChannelMemberRoles(th.Context, generalChannel.Id, channelAdmin.Id, "channel_user channel_admin")
 		require.Nil(t, appErr)
 
-		appErr = th.App.ValidateChannelAccessControlPermission(th.Context, channelAdmin.Id, townSquare.Id)
+		appErr = th.App.ValidateChannelAccessControlPermission(th.Context, channelAdmin.Id, generalChannel.Id)
 		require.NotNil(t, appErr)
 		assert.Equal(t, "app.pap.access_control.channel_default", appErr.Id)
 	})
@@ -1914,16 +1914,16 @@ func TestValidateChannelAccessControlPolicyCreation(t *testing.T) {
 	})
 
 	t.Run("Creating policy for default channel should fail", func(t *testing.T) {
-		townSquare, appErr := th.App.GetChannelByName(th.Context, model.DefaultChannelName, th.BasicTeam.Id, false)
+		generalChannel, appErr := th.App.GetChannelByName(th.Context, model.DefaultChannelName, th.BasicTeam.Id, false)
 		require.Nil(t, appErr)
 
-		th.AddUserToChannel(t, channelAdmin, townSquare)
+		th.AddUserToChannel(t, channelAdmin, generalChannel)
 
-		_, appErr = th.App.UpdateChannelMemberRoles(th.Context, townSquare.Id, channelAdmin.Id, "channel_user channel_admin")
+		_, appErr = th.App.UpdateChannelMemberRoles(th.Context, generalChannel.Id, channelAdmin.Id, "channel_user channel_admin")
 		require.Nil(t, appErr)
 
 		policy := &model.AccessControlPolicy{
-			ID:       townSquare.Id,
+			ID:       generalChannel.Id,
 			Type:     model.AccessControlPolicyTypeChannel,
 			Version:  model.AccessControlPolicyVersionV0_2,
 			Revision: 1,

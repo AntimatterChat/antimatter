@@ -48,8 +48,8 @@ func (ts *TeamService) GetTeams(teamIDs []string) ([]*model.Team, error) {
 // CreateDefaultChannels creates channels in the given team for each channel returned by (*App).DefaultChannelNames.
 func (ts *TeamService) createDefaultChannels(rctx request.CTX, teamID string) ([]*model.Channel, error) {
 	displayNames := map[string]string{
-		"town-square": i18n.T("api.channel.create_default_channels.town_square"),
-		"off-topic":   i18n.T("api.channel.create_default_channels.off_topic"),
+		model.DefaultChannelName: i18n.T("api.channel.create_default_channels.general"),
+		"off-topic":              i18n.T("api.channel.create_default_channels.off_topic"),
 	}
 	channels := []*model.Channel{}
 	defaultChannelNames := ts.DefaultChannelNames()

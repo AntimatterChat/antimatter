@@ -75,8 +75,8 @@ func TestRunComplianceJob(t *testing.T) {
 	}
 
 	posts := []*model.CompliancePost{
-		{TeamName: "team", ChannelName: "town-square", UserUsername: "alice", PostId: "p1", PostCreateAt: 10, PostUpdateAt: 10, PostMessage: "hello"},
-		{TeamName: "team", ChannelName: "town-square", UserUsername: "bob", PostId: "p2", PostCreateAt: 11, PostUpdateAt: 11, PostMessage: "=cmd"},
+		{TeamName: "team", ChannelName: "general", UserUsername: "alice", PostId: "p1", PostCreateAt: 10, PostUpdateAt: 10, PostMessage: "hello"},
+		{TeamName: "team", ChannelName: "general", UserUsername: "bob", PostId: "p2", PostCreateAt: 11, PostUpdateAt: 11, PostMessage: "=cmd"},
 		{TeamName: "direct-messages", ChannelName: "a__b", UserUsername: "bob", PostId: "p3", PostCreateAt: 12, PostUpdateAt: 12, PostMessage: "dm", IsBot: true},
 	}
 

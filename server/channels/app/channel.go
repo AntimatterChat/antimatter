@@ -32,19 +32,21 @@ const (
 //
 // By default the list will be (not necessarily in this order):
 //
-//	['town-square', 'off-topic']
+//	['general', 'off-topic']
 //
 // However, if TeamSettings.ExperimentalDefaultChannels contains a list of channels then that list will replace
-// 'off-topic' and be included in the return results in addition to 'town-square'. For example:
+// 'off-topic' and be included in the return results in addition to 'general'. For example:
 //
-//	['town-square', 'game-of-thrones', 'wow']
+//	['general', 'game-of-thrones', 'wow']
+//
+// Antimatter: 'town-square', the default channel's old name, in that list stands for 'general' (no second channel).
 func (a *App) DefaultChannelNames(rctx request.CTX) []string {
-	names := []string{"town-square"}
+	names := []string{model.DefaultChannelName}
 
 	if len(a.Config().TeamSettings.ExperimentalDefaultChannels) == 0 {
 		names = append(names, "off-topic")
 	} else {
-		seenChannels := map[string]bool{"town-square": true}
+		seenChannels := map[string]bool{model.DefaultChannelName: true, model.LegacyDefaultChannelName: true}
 		for _, channelName := range a.Config().TeamSettings.ExperimentalDefaultChannels {
 			if !seenChannels[channelName] {
 				names = append(names, channelName)
@@ -2434,16 +2436,10 @@ func (a *App) GetChannelsMemberCount(rctx request.CTX, channelIDs []string) (map
 	return channelsCount, nil
 }
 
+// GetChannelByName gives a community's channel by name. Antimatter: town-square, the default channel's old name, gives
+// the community's default channel when no channel has that name (legacyDefaultChannel).
 func (a *App) GetChannelByName(rctx request.CTX, channelName, teamID string, includeDeleted bool) (*model.Channel, *model.AppError) {
-	var channel *model.Channel
-	var err error
-
-	if includeDeleted {
-		channel, err = a.Srv().Store().Channel().GetByNameIncludeDeleted(teamID, channelName, false)
-	} else {
-		channel, err = a.Srv().Store().Channel().GetByName(teamID, channelName, false)
-	}
-
+	channel, err := a.getChannelByNameOrLegacy(rctx, teamID, channelName, includeDeleted, false)
 	if err != nil {
 		var nfErr *store.ErrNotFound
 		switch {
@@ -2479,15 +2475,8 @@ func (a *App) GetChannelByNameForTeamName(rctx request.CTX, channelName, teamNam
 		}
 	}
 
-	var result *model.Channel
-
-	var nErr error
-	if includeDeleted {
-		result, nErr = a.Srv().Store().Channel().GetByNameIncludeDeleted(team.Id, channelName, false)
-	} else {
-		result, nErr = a.Srv().Store().Channel().GetByName(team.Id, channelName, false)
-	}
-
+	// Antimatter: town-square gives the community's default channel when no channel has that name.
+	result, nErr := a.getChannelByNameOrLegacy(rctx, team.Id, channelName, includeDeleted, false)
 	if nErr != nil {
 		var nfErr *store.ErrNotFound
 		switch {
@@ -3125,7 +3114,7 @@ func (a *App) removeUserFromChannel(rctx request.CTX, userIDToRemove string, rem
 	}
 	isGuest := user.IsGuest()
 
-	// Everyone stays in their community's default channel (Town Square unless it chose another).
+	// Everyone stays in their community's default channel (General unless it chose another).
 	if !isGuest && a.isDefaultChannel(rctx, channel) {
 		return model.NewAppError("RemoveUserFromChannel", "api.channel.remove.default.app_error", map[string]any{"Channel": channel.DisplayName}, "", http.StatusBadRequest)
 	}

@@ -83,7 +83,7 @@ var usage = `Mattermost testing commands to help configure the system
 		/test post u=@username p=passwd c=~channelname t=teamname "message"
 
 		Example:
-			/test post u=@user-1 p=user-1 c=~town-square t=ad-1 "message"
+			/test post u=@user-1 p=user-1 c=~general t=ad-1 "message"
 
 	Url - Add a post containing the text from a given url to current channel.
 		/test url

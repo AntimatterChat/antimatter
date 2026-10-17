@@ -87,7 +87,7 @@ type Team struct {
 	AllChannelsMembership bool `json:"all_channels_membership"`
 
 	// Antimatter: DefaultChannelId is the community's default channel, a public one: where newcomers land and the
-	// community's join and leave messages go. Empty for Town Square while there is one (DefaultChannelName).
+	// community's join and leave messages go. Empty for General while there is one (DefaultChannelName).
 	DefaultChannelId string `json:"default_channel_id"`
 
 	// Antimatter: Kind is the kind of community, TeamKindCommunity or TeamKindWorkplace (see IsWorkplace).

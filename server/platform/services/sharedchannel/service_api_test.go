@@ -27,7 +27,7 @@ func (testNoopPlatform) InvalidateCacheForChannel(channel *model.Channel) {}
 func TestUnshareChannel_systemPostsForEachRemoteWorkspace(t *testing.T) {
 	channelID := model.NewId()
 	teamID := model.NewId()
-	channel := &model.Channel{Id: channelID, TeamId: teamID, Name: "town-square", DisplayName: "Town Square"}
+	channel := &model.Channel{Id: channelID, TeamId: teamID, Name: "general", DisplayName: "General"}
 
 	remoteIDA := model.NewId()
 	remoteIDB := model.NewId()

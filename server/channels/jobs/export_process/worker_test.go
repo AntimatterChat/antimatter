@@ -96,7 +96,7 @@ func TestMakeWorkerTeamAndChannelNameMapping(t *testing.T) {
 			Id: model.NewId(),
 			Data: map[string]string{
 				"team_name":    "engineering",
-				"channel_name": "town-square",
+				"channel_name": "general",
 			},
 		}
 		expectWorkerJobCompletion(mockStore, job)
@@ -104,7 +104,7 @@ func TestMakeWorkerTeamAndChannelNameMapping(t *testing.T) {
 		worker.DoJob(job)
 
 		require.Equal(t, "engineering", app.receivedOpts.TeamName)
-		require.Equal(t, "town-square", app.receivedOpts.ChannelName)
+		require.Equal(t, "general", app.receivedOpts.ChannelName)
 		require.True(t, app.receivedOpts.CreateArchive)
 	})
 
@@ -200,14 +200,14 @@ func TestMakeWorkerTeamAndChannelNameMapping(t *testing.T) {
 
 		job := &model.Job{
 			Id:   model.NewId(),
-			Data: map[string]string{"channel_name": "town-square"},
+			Data: map[string]string{"channel_name": "general"},
 		}
 		expectWorkerJobCompletion(mockStore, job)
 
 		worker.DoJob(job)
 
 		require.Empty(t, app.receivedOpts.TeamName)
-		require.Equal(t, "town-square", app.receivedOpts.ChannelName)
+		require.Equal(t, "general", app.receivedOpts.ChannelName)
 	})
 }
 

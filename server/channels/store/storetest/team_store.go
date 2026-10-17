@@ -3286,11 +3286,11 @@ func testGetChannelUnreadsForAllTeams(t *testing.T, rctx request.CTX, ss store.S
 	_, nErr = ss.Team().SaveMember(rctx, m2, -1)
 	require.NoError(t, nErr)
 
-	c1 := &model.Channel{TeamId: m1.TeamId, Name: model.NewId(), DisplayName: "Town Square", Type: model.ChannelTypeOpen, TotalMsgCount: 100}
+	c1 := &model.Channel{TeamId: m1.TeamId, Name: model.NewId(), DisplayName: "General", Type: model.ChannelTypeOpen, TotalMsgCount: 100}
 	_, nErr = ss.Channel().Save(rctx, c1, -1)
 	require.NoError(t, nErr)
 
-	c2 := &model.Channel{TeamId: m2.TeamId, Name: model.NewId(), DisplayName: "Town Square", Type: model.ChannelTypeOpen, TotalMsgCount: 100}
+	c2 := &model.Channel{TeamId: m2.TeamId, Name: model.NewId(), DisplayName: "General", Type: model.ChannelTypeOpen, TotalMsgCount: 100}
 	_, nErr = ss.Channel().Save(rctx, c2, -1)
 	require.NoError(t, nErr)
 
@@ -3349,11 +3349,11 @@ func testGetChannelUnreadsForTeam(t *testing.T, rctx request.CTX, ss store.Store
 	_, nErr := ss.Team().SaveMember(rctx, m1, -1)
 	require.NoError(t, nErr)
 
-	c1 := &model.Channel{TeamId: m1.TeamId, Name: model.NewId(), DisplayName: "Town Square", Type: model.ChannelTypeOpen, TotalMsgCount: 100}
+	c1 := &model.Channel{TeamId: m1.TeamId, Name: model.NewId(), DisplayName: "General", Type: model.ChannelTypeOpen, TotalMsgCount: 100}
 	_, nErr = ss.Channel().Save(rctx, c1, -1)
 	require.NoError(t, nErr)
 
-	c2 := &model.Channel{TeamId: m1.TeamId, Name: model.NewId(), DisplayName: "Town Square", Type: model.ChannelTypeOpen, TotalMsgCount: 100}
+	c2 := &model.Channel{TeamId: m1.TeamId, Name: model.NewId(), DisplayName: "General", Type: model.ChannelTypeOpen, TotalMsgCount: 100}
 	_, nErr = ss.Channel().Save(rctx, c2, -1)
 	require.NoError(t, nErr)
 

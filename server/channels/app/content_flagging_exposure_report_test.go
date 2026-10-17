@@ -427,7 +427,7 @@ func TestWritePostExposureCSV(t *testing.T) {
 			Version:     model.PostExposureReportVersion,
 			PostID:      "post1",
 			ChannelID:   "channel1",
-			ChannelName: "Town Square",
+			ChannelName: "General",
 			ChannelType: model.ChannelTypeOpen,
 			TeamID:      "team1",
 			WindowStart: 1700000000000,
@@ -460,7 +460,7 @@ func TestWritePostExposureCSV(t *testing.T) {
 
 		out := buf.String()
 		require.Contains(t, out, "# Post ID: post1")
-		require.Contains(t, out, "# Channel: Town Square (channel1)")
+		require.Contains(t, out, "# Channel: General (channel1)")
 		require.Contains(t, out, "# Post created at: 2023-11-14T22:13:20Z")
 		require.Contains(t, out, "# Flagged at: 2023-11-14T22:23:20Z")
 		require.Contains(t, out, "# Total users: 0")

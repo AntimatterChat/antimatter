@@ -485,7 +485,7 @@ func TestLeaveTeamPolicyDrivenAudit(t *testing.T) {
 	})
 
 	// Antimatter: a community may have no default channel (archived or deleted), and leaving it no longer fails then,
-	// so this leave, which used to fail on the missing Town Square, succeeds with its cascade linked to it.
+	// so this leave, which used to fail on the missing General, succeeds with its cascade linked to it.
 	t.Run("deferred parent succeeds when the team has no default channel, after a cascade", func(t *testing.T) {
 		th.App.UpdateConfig(func(cfg *model.Config) {
 			*cfg.ServiceSettings.ExperimentalEnableDefaultChannelLeaveJoinMessages = true

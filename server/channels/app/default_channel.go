@@ -4,15 +4,17 @@
 package app
 
 import (
+	"errors"
 	"net/http"
 	"time"
 
 	"github.com/mattermost/mattermost/server/public/model"
 	"github.com/mattermost/mattermost/server/public/shared/mlog"
 	"github.com/mattermost/mattermost/server/public/shared/request"
+	"github.com/mattermost/mattermost/server/v8/channels/store"
 )
 
-// Filling a channel with its community: everyone in it (but guests and bots), as for Town Square, a default channel the
+// Filling a channel with its community: everyone in it (but guests and bots), as for General, a default channel the
 // community chose, or every channel of a community that has everyone in all its channels (community_channels.go).
 
 // communityFillBatchSize is how many people a channel is filled with at once; communityFillPause lets the database
@@ -98,11 +100,12 @@ func (a *App) fillChannelWithCommunity(rctx request.CTX, team *model.Team, chann
 }
 
 // Default channels. A community's default channel is where newcomers land and its join and leave messages go: the
-// public channel its admins chose (Team.DefaultChannelId), else Town Square. Either can be archived or deleted like any
-// channel: the community then has no default channel, and people land in the first channel they're in.
+// public channel its admins chose (Team.DefaultChannelId), else General (named town-square, Town Square, before an
+// upgrade renamed it). Either can be archived or deleted like any channel: the community then has no default channel,
+// and people land in the first channel they're in.
 
 // GetDefaultChannelForTeam gives a community's default channel, nil when it has none open to all (the chosen one, or
-// Town Square, archived, deleted or private).
+// General, archived, deleted or private).
 func (a *App) GetDefaultChannelForTeam(rctx request.CTX, team *model.Team) *model.Channel {
 	if team == nil {
 		return nil
@@ -113,6 +116,11 @@ func (a *App) GetDefaultChannelForTeam(rctx request.CTX, team *model.Team) *mode
 		channel, err = a.Srv().Store().Channel().Get(team.DefaultChannelId, true)
 	} else {
 		channel, err = a.Srv().Store().Channel().GetByName(team.Id, model.DefaultChannelName, true)
+		var nfErr *store.ErrNotFound
+		if err != nil && errors.As(err, &nfErr) {
+			// Not renamed yet: a community imported after the upgrade, or created by a server of an older version.
+			channel, err = a.Srv().Store().Channel().GetByName(team.Id, model.LegacyDefaultChannelName, true)
+		}
 	}
 	if err != nil || channel.TeamId != team.Id || channel.DeleteAt != 0 || channel.Type != model.ChannelTypeOpen {
 		return nil
@@ -128,7 +136,7 @@ func (a *App) isDefaultChannel(rctx request.CTX, channel *model.Channel) bool {
 	team, appErr := a.GetTeam(channel.TeamId)
 	if appErr != nil {
 		// As before default channels could be chosen.
-		return channel.Name == model.DefaultChannelName
+		return channel.Name == model.DefaultChannelName || channel.Name == model.LegacyDefaultChannelName
 	}
 	defaultChannel := a.GetDefaultChannelForTeam(rctx, team)
 	return defaultChannel != nil && defaultChannel.Id == channel.Id
@@ -151,8 +159,8 @@ func (a *App) checkDefaultChannelChoice(teamID, channelID string) *model.AppErro
 	return nil
 }
 
-// FillDefaultChannelInBackground brings everyone into the channel a community chose as its default channel: as Town
-// Square, everyone is in it.
+// FillDefaultChannelInBackground brings everyone into the channel a community chose as its default channel: as General,
+// everyone is in it.
 func (a *App) FillDefaultChannelInBackground(rctx request.CTX, team *model.Team) {
 	channel := a.GetDefaultChannelForTeam(rctx, team)
 	if channel == nil || team.DefaultChannelId == "" {
@@ -162,4 +170,41 @@ func (a *App) FillDefaultChannelInBackground(rctx request.CTX, team *model.Team)
 	a.Srv().Go(func() {
 		a.fillChannelWithCommunity(request.EmptyContext(logger), team, channel)
 	})
+}
+
+// The default channel's old name. It was town-square (Town Square) before it became general (General), and links,
+// incoming webhooks, slash commands, apps and scripts still ask for it by that name. Once no channel of the community
+// has it, they get the community's default channel instead: General, or the channel its admins chose. A community that
+// had a general channel of its own kept its town-square (doGeneralChannelMigration), and still gets that one.
+
+// legacyDefaultChannel gives the community's default channel for a lookup of town-square that found no channel, and
+// nil for any other name, outside communities, or when the community has no default channel.
+func (a *App) legacyDefaultChannel(rctx request.CTX, teamID, channelName string) *model.Channel {
+	if channelName != model.LegacyDefaultChannelName || teamID == "" {
+		return nil
+	}
+	team, appErr := a.GetTeam(teamID)
+	if appErr != nil {
+		return nil
+	}
+	return a.GetDefaultChannelForTeam(rctx, team)
+}
+
+// getChannelByNameOrLegacy looks a community's channel up by name as the store does, town-square giving the community's
+// default channel when no channel has that name (legacyDefaultChannel).
+func (a *App) getChannelByNameOrLegacy(rctx request.CTX, teamID, channelName string, includeDeleted, allowFromCache bool) (*model.Channel, error) {
+	var channel *model.Channel
+	var err error
+	if includeDeleted {
+		channel, err = a.Srv().Store().Channel().GetByNameIncludeDeleted(teamID, channelName, allowFromCache)
+	} else {
+		channel, err = a.Srv().Store().Channel().GetByName(teamID, channelName, allowFromCache)
+	}
+	var nfErr *store.ErrNotFound
+	if err != nil && errors.As(err, &nfErr) {
+		if legacy := a.legacyDefaultChannel(rctx, teamID, channelName); legacy != nil {
+			return legacy, nil
+		}
+	}
+	return channel, err
 }

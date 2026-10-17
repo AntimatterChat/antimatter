@@ -12,19 +12,21 @@ import (
 
 // By default the list will be (not necessarily in this order):
 //
-//	['town-square', 'off-topic']
+//	['general', 'off-topic']
 //
 // However, if TeamSettings.ExperimentalDefaultChannels contains a list of channels then that list will replace
-// 'off-topic' and be included in the return results in addition to 'town-square'. For example:
+// 'off-topic' and be included in the return results in addition to 'general'. For example:
 //
-//	['town-square', 'game-of-thrones', 'wow']
+//	['general', 'game-of-thrones', 'wow']
+//
+// Antimatter: 'town-square', the default channel's old name, in that list stands for 'general' (no second channel).
 func (ts *TeamService) DefaultChannelNames() []string {
-	names := []string{"town-square"}
+	names := []string{model.DefaultChannelName}
 
 	if len(ts.config().TeamSettings.ExperimentalDefaultChannels) == 0 {
 		names = append(names, "off-topic")
 	} else {
-		seenChannels := map[string]bool{"town-square": true}
+		seenChannels := map[string]bool{model.DefaultChannelName: true, model.LegacyDefaultChannelName: true}
 		for _, channelName := range ts.config().TeamSettings.ExperimentalDefaultChannels {
 			if !seenChannels[channelName] {
 				names = append(names, channelName)

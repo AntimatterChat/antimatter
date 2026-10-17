@@ -10,6 +10,7 @@ import (
 	"strings"
 
 	"github.com/mattermost/mattermost/server/public/model"
+	"github.com/mattermost/mattermost/server/public/shared/i18n"
 	"github.com/mattermost/mattermost/server/public/shared/mlog"
 	"github.com/mattermost/mattermost/server/public/shared/request"
 	"github.com/mattermost/mattermost/server/v8/channels/store"
@@ -24,6 +25,7 @@ const (
 	administratorRolesMigrationKey       = "AntimatterAdministratorRolesMigrationComplete"
 	maxUsersPerTeamUnlimitedMigrationKey = "AntimatterMaxUsersPerTeamUnlimitedMigrationComplete"
 	communityKindsMigrationKey           = "AntimatterCommunityKindsMigrationComplete"
+	generalChannelMigrationKey           = "AntimatterGeneralChannelMigrationComplete"
 
 	// oldMaxUsersPerTeamDefault is TeamSettings.MaxUsersPerTeam's default before it became 0 (no limit).
 	oldMaxUsersPerTeamDefault = 50
@@ -211,4 +213,127 @@ func (s *Server) doCommunityKindsMigration() error {
 		mlog.Info("Gave the communities without a kind the default one", mlog.Int("teams", written), mlog.String("kind", kind))
 	}
 	return s.markMigrationDone(communityKindsMigrationKey)
+}
+
+// The default channel's display names. General is what communities get now; Town Square is what they got before, in
+// the server's language of the time: its translations stay in the catalogs for doGeneralChannelMigration only.
+const generalChannelDisplayNameID = "api.channel.create_default_channels.general"
+
+var legacyDefaultChannelDisplayNameID = i18n.TranslationId("api.channel.create_default_channels.town_square")
+
+// translateOr translates a string, giving fallback when the catalogs aren't loaded.
+func translateOr(t i18n.TranslateFunc, id, fallback string) string {
+	if translated := t(id); translated != "" && translated != id {
+		return translated
+	}
+	return fallback
+}
+
+// generalChannelDisplayName gives the display name of a default channel the migration renames: General, in the
+// language of its old name, when its admins never renamed it, that is when it is still Town Square in one of the
+// server's languages. ok is false for a name the admins chose, which the channel keeps. The server's language is tried
+// first, then English, as several languages share a name.
+func (s *Server) generalChannelDisplayName(displayName string) (string, bool) {
+	displayName = strings.TrimSpace(displayName)
+	if displayName == "" {
+		return "", false
+	}
+	locales := []string{}
+	if locale := s.Config().LocalizationSettings.DefaultServerLocale; locale != nil && *locale != "" {
+		locales = append(locales, *locale)
+	}
+	locales = append(locales, "en")
+	others := []string{}
+	for locale := range i18n.GetSupportedLocales() {
+		others = append(others, locale)
+	}
+	slices.Sort(others)
+	locales = append(locales, others...)
+
+	for _, locale := range locales {
+		t := i18n.GetUserTranslations(locale)
+		if translateOr(t, legacyDefaultChannelDisplayNameID, "Town Square") == displayName {
+			return translateOr(t, generalChannelDisplayNameID, "General"), true
+		}
+	}
+	return "", false
+}
+
+// doGeneralChannelMigration renames every community's default channel from town-square (Town Square) to general
+// (General), the name communities get now. It keeps the channel's ID, so links by ID, members, posts and settings stay.
+// The display name changes only while it is still the old default (in any of the server's languages); one the admins
+// chose is kept. A community that has a channel named general of its own, even archived, keeps its town-square as it
+// is, which stays its default channel (Team.DefaultChannelId is set to it unless the community chose another): its
+// links keep working and nothing is merged. An archived town-square is kept too, as the store can't update it.
+//
+// Old links and lookups by town-square still find the default channel (getChannelByNameOrLegacy, and the web apps'
+// channel routes). A community that failed to be renamed is logged and tried again on the next start.
+func (s *Server) doGeneralChannelMigration() error {
+	if done, err := s.migrationDone(generalChannelMigrationKey); done || err != nil {
+		return err
+	}
+
+	rctx := request.EmptyContext(s.Log())
+	teams, err := s.Store().Team().GetAll()
+	if err != nil {
+		return fmt.Errorf("failed to get the teams: %w", err)
+	}
+	renamed, kept, failed := 0, 0, 0
+	for _, team := range teams {
+		var nfErr *store.ErrNotFound
+		channel, err := s.Store().Channel().GetByNameIncludeDeleted(team.Id, model.LegacyDefaultChannelName, false)
+		if errors.As(err, &nfErr) {
+			continue
+		} else if err != nil {
+			mlog.Warn("Failed to get a community's town-square channel", mlog.String("team_id", team.Id), mlog.Err(err))
+			failed++
+			continue
+		}
+		if channel.DeleteAt != 0 {
+			mlog.Info("Kept the archived town-square channel of a community", mlog.String("team_id", team.Id), mlog.String("channel_id", channel.Id))
+			kept++
+			continue
+		}
+
+		if _, err = s.Store().Channel().GetByNameIncludeDeleted(team.Id, model.DefaultChannelName, false); err == nil {
+			if team.DefaultChannelId == "" {
+				team.DefaultChannelId = channel.Id
+				if _, err = s.Store().Team().Update(team); err != nil {
+					mlog.Warn("Failed to keep town-square as a community's default channel", mlog.String("team_id", team.Id), mlog.Err(err))
+					failed++
+					continue
+				}
+			}
+			mlog.Warn("Kept the town-square channel of a community that has a general channel of its own; its admins may rename them",
+				mlog.String("team_id", team.Id), mlog.String("team_name", team.Name), mlog.String("channel_id", channel.Id))
+			kept++
+			continue
+		} else if !errors.As(err, &nfErr) {
+			mlog.Warn("Failed to look for a community's general channel", mlog.String("team_id", team.Id), mlog.Err(err))
+			failed++
+			continue
+		}
+
+		channel.Name = model.DefaultChannelName
+		if displayName, ok := s.generalChannelDisplayName(channel.DisplayName); ok {
+			channel.DisplayName = displayName
+		}
+		if _, err = s.Store().Channel().Update(rctx, channel); err != nil {
+			mlog.Warn("Failed to rename a community's town-square channel to general", mlog.String("team_id", team.Id), mlog.String("channel_id", channel.Id), mlog.Err(err))
+			failed++
+			continue
+		}
+		renamed++
+	}
+
+	if renamed > 0 || kept > 0 {
+		s.Store().Channel().ClearCaches()
+		s.Store().Team().ClearCaches()
+		mlog.Info("Renamed the communities' default channel from town-square to general", mlog.Int("renamed", renamed), mlog.Int("kept", kept))
+	}
+	if failed > 0 {
+		mlog.Warn("Some communities' default channel couldn't be renamed to general; trying again on the next start", mlog.Int("failed", failed))
+		return nil
+	}
+	return s.markMigrationDone(generalChannelMigrationKey)
 }

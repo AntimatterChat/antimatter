@@ -2950,25 +2950,25 @@ func TestExportVersionScopeMetadata(t *testing.T) {
 	})
 
 	t.Run("multi-team and multi-channel scopes are comma-separated", func(t *testing.T) {
-		info := scopeOf(t, []string{"engineering", "design"}, []string{"town-square", "off-topic"})
+		info := scopeOf(t, []string{"engineering", "design"}, []string{"general", "off-topic"})
 		require.NotEmpty(t, info.Additional)
 
 		var scope imports.ExportScopeAdditional
 		require.NoError(t, json.Unmarshal(info.Additional, &scope))
 		assert.Equal(t, "engineering,design", scope.TeamName)
-		assert.Equal(t, "town-square,off-topic", scope.ChannelName)
+		assert.Equal(t, "general,off-topic", scope.ChannelName)
 
 		// splitTrimNames on the import side has to round-trip this back to the
 		// same sets, since the remap guards count them to detect ambiguity.
 		assert.Equal(t, []string{"engineering", "design"}, splitTrimNames(scope.TeamName))
-		assert.Equal(t, []string{"town-square", "off-topic"}, splitTrimNames(scope.ChannelName))
+		assert.Equal(t, []string{"general", "off-topic"}, splitTrimNames(scope.ChannelName))
 	})
 
 	t.Run("channel scope without a team scope is not representable", func(t *testing.T) {
 		// BulkExport rejects this combination up front; exportVersion mirrors that
 		// by keying the blob off the team filter, so a channel-only call emits no
 		// scope rather than a scope the importer could not act on.
-		info := scopeOf(t, nil, []string{"town-square"})
+		info := scopeOf(t, nil, []string{"general"})
 		assert.Empty(t, info.Additional)
 	})
 }

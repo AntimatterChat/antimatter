@@ -506,11 +506,11 @@ func TestCreateAccessControlPolicy(t *testing.T) {
 			cfg.AccessControlSettings.EnableAttributeBasedAccessControl = new(true)
 		})
 
-		townSquare, appErr := th.App.GetChannelByName(th.Context, model.DefaultChannelName, th.BasicTeam.Id, false)
+		generalChannel, appErr := th.App.GetChannelByName(th.Context, model.DefaultChannelName, th.BasicTeam.Id, false)
 		require.Nil(t, appErr)
 
 		defaultChannelPolicy := &model.AccessControlPolicy{
-			ID:       townSquare.Id,
+			ID:       generalChannel.Id,
 			Type:     model.AccessControlPolicyTypeChannel,
 			Name:     "default-channel-policy",
 			Version:  model.AccessControlPolicyVersionV0_3,

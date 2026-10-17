@@ -1041,14 +1041,14 @@ func (a *App) HandleIncomingWebhook(rctx request.CTX, hookID string, req *model.
 		} else if channelName[0] == '#' {
 			cchan = make(chan store.StoreResult[*model.Channel], 1)
 			go func() {
-				chnn, chnnErr := a.Srv().Store().Channel().GetByName(hook.TeamId, channelName[1:], true)
+				chnn, chnnErr := a.getChannelByNameOrLegacy(rctx, hook.TeamId, channelName[1:], false, true)
 				cchan <- store.StoreResult[*model.Channel]{Data: chnn, NErr: chnnErr}
 				close(cchan)
 			}()
 		} else {
 			cchan = make(chan store.StoreResult[*model.Channel], 1)
 			go func() {
-				chnn, chnnErr := a.Srv().Store().Channel().GetByName(hook.TeamId, channelName, true)
+				chnn, chnnErr := a.getChannelByNameOrLegacy(rctx, hook.TeamId, channelName, false, true)
 				cchan <- store.StoreResult[*model.Channel]{Data: chnn, NErr: chnnErr}
 				close(cchan)
 			}()

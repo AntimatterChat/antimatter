@@ -147,7 +147,7 @@ func TestMakeWorkerLocalModeOptsMapping(t *testing.T) {
 				"import_file":              zipPath,
 				"local_mode":               "true",
 				"destination_team_name":    "engineering",
-				"destination_channel_name": "town-square",
+				"destination_channel_name": "general",
 				"skip_preflight":           "true",
 				"imported_users":           "active",
 			},
@@ -157,7 +157,7 @@ func TestMakeWorkerLocalModeOptsMapping(t *testing.T) {
 		worker.DoJob(job)
 
 		require.Equal(t, "engineering", app.receivedOpts.DestinationTeamName)
-		require.Equal(t, "town-square", app.receivedOpts.DestinationChannelName)
+		require.Equal(t, "general", app.receivedOpts.DestinationChannelName)
 		require.True(t, app.receivedOpts.SkipPreflight)
 		require.Equal(t, model.ImportedUsersActive, app.receivedOpts.ImportedUsers)
 		require.False(t, app.removeFileCalled, "local_mode imports must not delete the source file")

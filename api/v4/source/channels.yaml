@@ -27,7 +27,7 @@
           default: 0
       - name: exclude_default_channels
         in: query
-        description: Whether to exclude default channels (ex Town Square, Off-Topic) from the results.
+        description: Whether to exclude default channels (ex General, Off-Topic) from the results.
         schema:
           type: boolean
           default: false
@@ -218,7 +218,7 @@
         the channel.
 
 
-        Configured 'default' channels (ex Town Square and Off-Topic) can be excluded from the results
+        Configured 'default' channels (ex General and Off-Topic) can be excluded from the results
 
         with the `exclude_default_channels` boolean parameter.
 
@@ -627,7 +627,7 @@
         must be a channel member. Updating `name`, `display_name`, or `purpose`
         is not allowed.
 
-        The default channel (e.g. Town Square) cannot have its `name` changed.
+        The default channel (e.g. General) cannot have its `name` changed.
 
         ##### Permissions
 
@@ -658,7 +658,7 @@
                   type: string
                   description: The unique handle for the channel, will be present in the
                     channel URL. Cannot be updated for direct or group message channels.
-                    Cannot be changed for the default channel (e.g. Town Square).
+                    Cannot be changed for the default channel (e.g. General).
                 display_name:
                   type: string
                   description: The non-unique UI name for the channel. Cannot be updated
@@ -1296,6 +1296,7 @@
       summary: Get a channel by name
       description: |
         Gets channel from the provided team id and channel name strings.
+        `town-square`, the default channel's former name, gives the team's default channel when no channel has that name.
         ##### Permissions
         `read_channel` permission for the channel.
       operationId: GetChannelByName
@@ -1338,6 +1339,7 @@
       summary: Get a channel by name and team name
       description: |
         Gets a channel from the provided team name and channel name strings.
+        `town-square`, the default channel's former name, gives the team's default channel when no channel has that name.
         ##### Permissions
         `read_channel` permission for the channel.
       operationId: GetChannelByNameForTeamName

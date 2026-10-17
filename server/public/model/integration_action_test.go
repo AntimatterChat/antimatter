@@ -2249,7 +2249,7 @@ func TestValidateMmBlocksActions(t *testing.T) {
 		p := &Post{}
 		p.AddProp(PostPropsMmBlocksActions, map[string]any{
 			"open1": mmBlocksOpenURLEntry("https://example.com/page", nil),
-			"open2": mmBlocksOpenURLEntry("/team/channels/town-square", map[string]any{"q": "1"}),
+			"open2": mmBlocksOpenURLEntry("/team/channels/general", map[string]any{"q": "1"}),
 		})
 		ensureMmBlocksReferenceActions(p)
 		assert.NoError(t, ValidateMmBlocksActions(p))

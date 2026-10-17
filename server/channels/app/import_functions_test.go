@@ -2641,7 +2641,7 @@ func TestImportUserTeams(t *testing.T) {
 							Name: &channel3.Name,
 						},
 						{
-							Name: new("town-square"),
+							Name: new(model.DefaultChannelName),
 						},
 					},
 				},

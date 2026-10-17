@@ -315,7 +315,7 @@ func TestIndexChannel(t *testing.T) {
 	require.Nil(t, e.IndexChannel(rctx, dm, nil, nil))
 	assert.Nil(t, f.doc("mm_channels", "d1"))
 
-	public := &model.Channel{Id: "o1", TeamId: "t1", Type: model.ChannelTypeOpen, Name: "town-square", DisplayName: "Town Square"}
+	public := &model.Channel{Id: "o1", TeamId: "t1", Type: model.ChannelTypeOpen, Name: "general", DisplayName: "General"}
 	require.Nil(t, e.SyncBulkIndexChannels(rctx, []*model.Channel{public, private, dm}, func(ch *model.Channel) ([]string, error) {
 		return []string{"u9"}, nil
 	}, nil))

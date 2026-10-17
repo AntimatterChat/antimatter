@@ -23,13 +23,13 @@ func TestCommunityDefaultChannel(t *testing.T) {
 	th := Setup(t).InitBasic(t)
 
 	team := th.CreateTeam(t)
-	townSquare, appErr := th.App.GetChannelByName(th.Context, model.DefaultChannelName, team.Id, false)
+	generalChannel, appErr := th.App.GetChannelByName(th.Context, model.DefaultChannelName, team.Id, false)
 	require.Nil(t, appErr)
 
-	t.Run("Town Square, unless the community chooses another public channel", func(t *testing.T) {
+	t.Run("General, unless the community chooses another public channel", func(t *testing.T) {
 		got := th.App.GetDefaultChannelForTeam(th.Context, team)
 		require.NotNil(t, got)
-		assert.Equal(t, townSquare.Id, got.Id)
+		assert.Equal(t, generalChannel.Id, got.Id)
 
 		private := th.CreatePrivateChannel(t, team)
 		_, appErr := th.App.PatchTeam(team.Id, &model.TeamPatch{DefaultChannelId: model.NewPointer(private.Id)})
@@ -43,20 +43,20 @@ func TestCommunityDefaultChannel(t *testing.T) {
 		lobby := th.CreateChannel(t, team)
 		team, appErr = th.App.PatchTeam(team.Id, &model.TeamPatch{DefaultChannelId: model.NewPointer(lobby.Id)})
 		require.Nil(t, appErr)
-		require.Eventually(t, func() bool { return isChannelMember(th, lobby.Id, early.Id) }, 10*time.Second, 50*time.Millisecond, "as in Town Square, everyone is in it")
+		require.Eventually(t, func() bool { return isChannelMember(th, lobby.Id, early.Id) }, 10*time.Second, 50*time.Millisecond, "as in General, everyone is in it")
 		got = th.App.GetDefaultChannelForTeam(th.Context, team)
 		require.NotNil(t, got)
 		assert.Equal(t, lobby.Id, got.Id)
-		assert.False(t, th.App.IsDefaultChannel(th.Context, townSquare))
+		assert.False(t, th.App.IsDefaultChannel(th.Context, generalChannel))
 
-		// Newcomers land in it, and Town Square is an ordinary channel they can leave.
+		// Newcomers land in it, and General is an ordinary channel they can leave.
 		user := th.CreateUser(t)
 		th.LinkUserToTeam(t, user, team)
 		assert.True(t, isChannelMember(th, lobby.Id, user.Id))
 		appErr = th.App.LeaveChannel(th.Context, lobby.Id, user.Id)
 		require.NotNil(t, appErr)
 		assert.Equal(t, "api.channel.remove.default.app_error", appErr.Id)
-		require.Nil(t, th.App.LeaveChannel(th.Context, townSquare.Id, user.Id))
+		require.Nil(t, th.App.LeaveChannel(th.Context, generalChannel.Id, user.Id))
 
 		_, appErr = th.App.PatchTeam(team.Id, &model.TeamPatch{DefaultChannelId: model.NewPointer("")})
 		require.Nil(t, appErr)
@@ -68,7 +68,7 @@ func TestCommunityDefaultChannel(t *testing.T) {
 		th.App.UpdateConfig(func(cfg *model.Config) {
 			*cfg.ServiceSettings.ExperimentalEnableDefaultChannelLeaveJoinMessages = true
 		})
-		require.Nil(t, th.App.DeleteChannel(th.Context, townSquare, th.SystemAdminUser.Id))
+		require.Nil(t, th.App.DeleteChannel(th.Context, generalChannel, th.SystemAdminUser.Id))
 		offTopic, appErr := th.App.GetChannelByName(th.Context, "off-topic", team.Id, false)
 		require.Nil(t, appErr)
 		require.Nil(t, th.App.DeleteChannel(th.Context, offTopic, th.SystemAdminUser.Id))
@@ -76,12 +76,12 @@ func TestCommunityDefaultChannel(t *testing.T) {
 
 		user := th.CreateUser(t)
 		th.LinkUserToTeam(t, user, team)
-		assert.False(t, isChannelMember(th, townSquare.Id, user.Id), "nobody joins an archived channel")
+		assert.False(t, isChannelMember(th, generalChannel.Id, user.Id), "nobody joins an archived channel")
 
 		require.Nil(t, th.App.RemoveUserFromTeam(th.Context, team.Id, user.Id, user.Id), "leaving a community without a default channel works")
 
 		// Deleted for good too.
-		require.Nil(t, th.App.PermanentDeleteChannel(th.Context, townSquare))
+		require.Nil(t, th.App.PermanentDeleteChannel(th.Context, generalChannel))
 		other := th.CreateUser(t)
 		th.LinkUserToTeam(t, other, team)
 		require.Nil(t, th.App.RemoveUserFromTeam(th.Context, team.Id, other.Id, th.SystemAdminUser.Id))

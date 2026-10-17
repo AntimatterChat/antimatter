@@ -140,14 +140,18 @@ func TestCreateTeam(t *testing.T) {
 		team := th.CreateTeamWithClient(t, c)
 		channels, _, err := c.GetPublicChannelsForTeam(context.Background(), team.Id, 0, 1000, "")
 		require.NoError(t, err)
+		foundGeneral := false
 		for _, ch := range channels {
 			if ch.Name == "off-topic" {
 				require.Equal(t, translateFunc("api.channel.create_default_channels.off_topic"), ch.DisplayName)
 			}
-			if ch.Name == "town-square" {
-				require.Equal(t, translateFunc("api.channel.create_default_channels.town_square"), ch.DisplayName)
+			if ch.Name == model.DefaultChannelName {
+				foundGeneral = true
+				require.Equal(t, translateFunc("api.channel.create_default_channels.general"), ch.DisplayName)
 			}
+			require.NotEqual(t, model.LegacyDefaultChannelName, ch.Name, "new communities get general, not town-square")
 		}
+		require.True(t, foundGeneral, "new communities get the general channel")
 	})
 
 	t.Run("should override team name with server-generated ID when UseAnonymousURLs is enabled", func(t *testing.T) {

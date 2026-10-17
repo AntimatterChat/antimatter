@@ -515,6 +515,11 @@
     "description": "API validation error when creating a channel; 'team_id' is a literal JSON field name and must not be translated."
   },
   {
+    "id": "api.channel.create_default_channels.general",
+    "translation": "General",
+    "description": "Display name of the default channel automatically created in every new community, which every member belongs to (its URL name is 'general'). Translate as a channel name, like 'Off-Topic'; existing communities' default channel is renamed to it on upgrade."
+  },
+  {
     "id": "api.channel.create_default_channels.off_topic",
     "translation": "Off-Topic",
     "description": "Display name of the 'Off-Topic' channel automatically created in every new team."
@@ -522,7 +527,7 @@
   {
     "id": "api.channel.create_default_channels.town_square",
     "translation": "Town Square",
-    "description": "Display name of the 'Town Square' default channel automatically created in every new team; every team member belongs to it."
+    "description": "Former display name of the default channel, now 'General'. Not shown anymore: the upgrade recognises default channels still named this way in any language and renames them 'General'. Keep the existing translation unchanged."
   },
   {
     "id": "api.channel.create_direct_channel.invalid_user.app_error",
@@ -552,7 +557,7 @@
   {
     "id": "api.channel.delete_channel.cannot.app_error",
     "translation": "Unable to delete the default channel {{.Channel}}.",
-    "description": "API error when someone tries to archive a team's default channel; {{.Channel}} is the default channel's name (e.g. Town Square)."
+    "description": "API error when someone tries to archive a team's default channel; {{.Channel}} is the default channel's name (e.g. General)."
   },
   {
     "id": "api.channel.delete_channel.deleted.app_error",
@@ -662,7 +667,7 @@
   {
     "id": "api.channel.leave.default.app_error",
     "translation": "Unable to leave the default channel {{.Channel}}.",
-    "description": "Ephemeral error when a user tries to leave the team's default channel via the /leave slash command; {{.Channel}} is the default channel's name (e.g. Town Square)."
+    "description": "Ephemeral error when a user tries to leave the team's default channel via the /leave slash command; {{.Channel}} is the default channel's name (e.g. General)."
   },
   {
     "id": "api.channel.leave.direct.app_error",
@@ -807,7 +812,7 @@
   {
     "id": "api.channel.remove.default.app_error",
     "translation": "Unable to remove user from the default channel {{.Channel}}.",
-    "description": "API error returned when trying to remove a user from the team's default channel; {{.Channel}} is that channel's name (e.g. town-square)."
+    "description": "API error returned when trying to remove a user from the team's default channel; {{.Channel}} is that channel's name (e.g. general)."
   },
   {
     "id": "api.channel.remove_channel_member.type.app_error",
@@ -897,7 +902,7 @@
   {
     "id": "api.channel.update_channel.tried.app_error",
     "translation": "Tried to perform an invalid update of the default channel {{.Channel}}.",
-    "description": "API error when an update is not allowed on the team's default channel; {{.Channel}} is the default channel's name (e.g. town-square)."
+    "description": "API error when an update is not allowed on the team's default channel; {{.Channel}} is the default channel's name (e.g. general)."
   },
   {
     "id": "api.channel.update_channel.typechange.app_error",
@@ -957,7 +962,7 @@
   {
     "id": "api.channel.update_channel_privacy.default_channel_error",
     "translation": "The default channel cannot be made private.",
-    "description": "API error when converting the team's default channel (e.g. Town Square) to private, which is not allowed."
+    "description": "API error when converting the team's default channel (e.g. General) to private, which is not allowed."
   },
   {
     "id": "api.channel.update_channel_scheme.scheme_scope.error",
@@ -10109,7 +10114,7 @@
   {
     "id": "app.pap.access_control.channel_default",
     "translation": "Membership policies cannot be applied to team default channels.",
-    "description": "API error when an attribute-based membership policy is applied to a team's default channel (e.g. Town Square), which is not allowed; 'pap' = Policy Administration Point, admin-facing."
+    "description": "API error when an attribute-based membership policy is applied to a team's default channel (e.g. General), which is not allowed; 'pap' = Policy Administration Point, admin-facing."
   },
   {
     "id": "app.pap.access_control.channel_group_constrained",

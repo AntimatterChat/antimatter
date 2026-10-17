@@ -190,7 +190,7 @@ func (s *Server) startChannelExport() (release func(), ok bool) {
 	}
 }
 
-// channelExportFileName names the file after the channel and the day, in UTC: town-square-2026-10-12.csv.
+// channelExportFileName names the file after the channel and the day, in UTC: general-2026-10-12.csv.
 // Conversations have no readable name: theirs say what they are.
 func channelExportFileName(channel *model.Channel, now time.Time) string {
 	name := channel.Name

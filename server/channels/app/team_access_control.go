@@ -294,7 +294,7 @@ func (a *App) ReconcilePolicyTeamScope(rctx request.CTX, policyID string) *model
 //   - All channels are public or private (DM/GM excluded)
 //   - No group-constrained channels
 //   - No shared channels
-//   - No team default channels (e.g. town-square)
+//   - No team default channels (e.g. general)
 func (a *App) ValidateTeamScopePolicyChannelAssignment(rctx request.CTX, teamID string, channelIDs []string) *model.AppError {
 	if len(channelIDs) == 0 {
 		return model.NewAppError("ValidateTeamScopePolicyChannelAssignment",
