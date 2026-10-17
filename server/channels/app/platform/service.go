@@ -254,9 +254,9 @@ func New(sc ServiceConfig, options ...Option) (*PlatformService, error) {
 	searchEngine := searchengine.NewBroker(ps.Config())
 	ps.SearchEngine = searchEngine
 
-	// Step 4: Init Enterprise
+	// Step 4: Init the cluster, search engine, diagnostics and access control services
 	// Depends on step 3 (s.SearchEngine must be non-nil)
-	ps.initEnterprise()
+	ps.initServices()
 
 	// Step 5: Init Metrics
 	if ps.metricsIFace == nil { // tests may provide their own
@@ -489,7 +489,10 @@ func (ps *PlatformService) SetLogger(logger *mlog.Logger) {
 	ps.logger = logger
 }
 
-func (ps *PlatformService) initEnterprise() {
+// initServices builds the services the platform holds: clustering, the
+// Elasticsearch/OpenSearch engine, the AD/LDAP and SAML diagnostics and the
+// access control decision point.
+func (ps *PlatformService) initServices() {
 	if ps.clusterIFace == nil { // tests may provide their own
 		ps.clusterIFace = cluster.New(&clusterHost{ps: ps})
 	}

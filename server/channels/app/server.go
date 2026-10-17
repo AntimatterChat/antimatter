@@ -29,6 +29,7 @@ import (
 	"github.com/mattermost/mattermost/server/public/shared/request"
 	"github.com/mattermost/mattermost/server/public/shared/timezones"
 	"github.com/mattermost/mattermost/server/v8/channels/app/accesscontrol"
+	"github.com/mattermost/mattermost/server/v8/channels/app/autotranslation"
 	"github.com/mattermost/mattermost/server/v8/channels/app/email"
 	"github.com/mattermost/mattermost/server/v8/channels/app/ldap"
 	"github.com/mattermost/mattermost/server/v8/channels/app/outgoingoauth"
@@ -226,9 +227,9 @@ func NewServer(options ...Option) (*Server, error) {
 
 	s.httpService = httpservice.MakeHTTPService(s.platform)
 
-	// Step 2: Init Enterprise
+	// Step 2: Auto-translation
 	// Depends on step 1 (s.Platform must be non-nil)
-	s.initEnterprise()
+	s.AutoTranslation = autotranslation.New(newAutoTranslationHost(s))
 
 	s.userService, err = users.New(users.ServiceConfig{
 		UserStore:    s.Store().User(),
