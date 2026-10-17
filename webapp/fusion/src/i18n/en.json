@@ -21435,6 +21435,10 @@
     "defaultMessage": "Call connection",
     "description": ""
   },
+  "fusion.calls.calling": {
+    "defaultMessage": "Calling…",
+    "description": "Status in the call dock of a call in a direct or group message that nobody else has joined yet, while it rings; it becomes 'Call connected' once someone joins"
+  },
   "fusion.calls.camera": {
     "defaultMessage": "Camera",
     "description": ""

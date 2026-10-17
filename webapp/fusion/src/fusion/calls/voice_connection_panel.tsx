@@ -16,6 +16,7 @@ import {am} from 'fusion/utils/class_names';
 import type {GlobalState} from 'types/store';
 
 import {goToChannel, showCall, useCallActions, useChannelLabel} from './actions';
+import {useCallStatus} from './call_status';
 import CallVideo from './call_video';
 import type {VoiceParticipant} from './calls_api';
 import {muteIcon, ScreenShareMenu, useToggleLabels} from './controls';
@@ -79,6 +80,7 @@ export default function VoiceConnectionPanel() {
     const label = useChannelLabel(channelId);
     const where = useWhere(channelId);
     const labels = useToggleLabels(my);
+    const callStatus = useCallStatus(my);
     const shareRef = useRef<HTMLButtonElement>(null);
     const [sharing, setSharing] = useState(false);
 
@@ -93,9 +95,12 @@ export default function VoiceConnectionPanel() {
     };
     const sharer = participants.find((p) => p.screenSharing);
     let status;
-    if (my.call.state === 'connecting') {
+    if (callStatus === 'connecting') {
         status = formatMessage({id: 'fusion.calls.connecting', defaultMessage: 'Connecting…'});
-    } else if (my.voice) {
+    } else if (callStatus === 'calling') {
+        // A direct or group message's call that nobody else joined yet: it's ringing.
+        status = formatMessage({id: 'fusion.calls.calling', defaultMessage: 'Calling…'});
+    } else if (callStatus === 'voice') {
         status = formatMessage({id: 'fusion.calls.voiceConnected', defaultMessage: 'Voice connected'});
     } else {
         status = formatMessage({id: 'fusion.calls.callConnected', defaultMessage: 'Call connected'});
