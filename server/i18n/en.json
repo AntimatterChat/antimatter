@@ -1599,8 +1599,8 @@
   },
   {
     "id": "api.command_invite.hint",
-    "translation": "@[username]... ~[channel]...",
-    "description": "Autocomplete argument hint for the /invite slash command; @[username] and ~[channel] are placeholder notations for a mention and channel handle; keep the symbols."
+    "translation": "@[username]... #[channel]...",
+    "description": "Autocomplete argument hint for the /invite slash command; @[username] and #[channel] are placeholder notations for a mention and a channel link; keep the @ and # signs, the brackets and the dots, translate only the words inside the brackets."
   },
   {
     "id": "api.command_invite.missing_message.app_error",
@@ -1677,8 +1677,8 @@
   },
   {
     "id": "api.command_join.hint",
-    "translation": "~[channel]",
-    "description": "Autocomplete argument hint for the /join slash command; ~[channel] is placeholder notation for a channel handle; keep the tilde and brackets."
+    "translation": "#[channel]",
+    "description": "Autocomplete argument hint for the /join slash command; #[channel] is placeholder notation for a channel link; keep the # sign and brackets, translate only the word inside."
   },
   {
     "id": "api.command_join.list.app_error",
@@ -1862,8 +1862,8 @@
   },
   {
     "id": "api.command_mute.hint",
-    "translation": "~[channel]",
-    "description": "Autocomplete argument hint for the /mute slash command; ~[channel] is placeholder notation for an optional channel handle; keep the tilde and brackets."
+    "translation": "#[channel]",
+    "description": "Autocomplete argument hint for the /mute slash command; #[channel] is placeholder notation for an optional channel link; keep the # sign and brackets, translate only the word inside."
   },
   {
     "id": "api.command_mute.name",

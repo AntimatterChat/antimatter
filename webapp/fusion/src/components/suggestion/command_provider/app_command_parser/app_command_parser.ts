@@ -1356,7 +1356,7 @@ export class AppCommandParser {
                     /* eslint-disable no-await-in-loop */
                     for (const value of commandValues) {
                         let channelName = value;
-                        if (channelName[0] === '~') {
+                        if (channelName[0] === '~' || channelName[0] === '#') {
                             channelName = channelName.substr(1);
                         }
                         const channel = await getChannel(channelName);
@@ -1383,7 +1383,7 @@ export class AppCommandParser {
                 }
 
                 let channelName = values[f.name] as string;
-                if (channelName[0] === '~') {
+                if (channelName[0] === '~' || channelName[0] === '#') {
                     channelName = channelName.substr(1);
                 }
                 const channel = await getChannel(channelName);
@@ -1916,7 +1916,7 @@ export class AppCommandParser {
 
     private getChannelFieldSuggestions = async (parsed: ParsedCommand): Promise<AutocompleteSuggestion[]> => {
         let input = parsed.incomplete.trim();
-        if (input[0] === '~') {
+        if (input[0] === '~' || input[0] === '#') {
             input = input.substring(1);
         }
         const {data} = await this.store.dispatch(autocompleteChannels(this.teamID, input));
