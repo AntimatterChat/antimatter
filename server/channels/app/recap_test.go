@@ -617,13 +617,7 @@ func TestProcessRecapChannel(t *testing.T) {
 	})
 
 	t.Run("process channel with posts persists recap channel", func(t *testing.T) {
-		bridge := &testAgentsBridge{
-			completeFn: func(sessionUserID, agentID string, req BridgeCompletionRequest) (string, error) {
-				return `{"highlights":["A deterministic highlight"],"action_items":["A deterministic action item"]}`, nil
-			},
-		}
-
-		th := Setup(t, WithAgentsBridge(bridge)).InitBasic(t)
+		th, llm, _ := setupAIFeatureModel(t, `{"highlights":["A deterministic highlight"],"action_items":["A deterministic action item"]}`)
 
 		// Enable AI Recaps feature flag
 		th.App.UpdateConfig(func(cfg *model.Config) { cfg.FeatureFlags.EnableAIRecaps = true })
@@ -650,8 +644,8 @@ func TestProcessRecapChannel(t *testing.T) {
 		require.NotNil(t, result)
 		assert.True(t, result.Success)
 		assert.Equal(t, 1, result.MessageCount)
-		require.Len(t, bridge.completeCalls, 1)
-		assert.Equal(t, BridgeOperationRecapSummary, bridge.completeCalls[0].request.Operation)
+		require.Len(t, llm.calls(), 1)
+		assert.Equal(t, "recap", llm.calls()[0].schemaName())
 
 		recapChannels, storeErr := th.App.Srv().Store().Recap().GetRecapChannelsByRecapId(recapID)
 		require.NoError(t, storeErr)
@@ -663,13 +657,7 @@ func TestProcessRecapChannel(t *testing.T) {
 	})
 
 	t.Run("malformed completion surfaces parse failure", func(t *testing.T) {
-		bridge := &testAgentsBridge{
-			completeFn: func(sessionUserID, agentID string, req BridgeCompletionRequest) (string, error) {
-				return "{invalid json", nil
-			},
-		}
-
-		th := Setup(t, WithAgentsBridge(bridge)).InitBasic(t)
+		th, _, _ := setupAIFeatureModel(t, "{invalid json")
 
 		// Enable AI Recaps feature flag
 		th.App.UpdateConfig(func(cfg *model.Config) { cfg.FeatureFlags.EnableAIRecaps = true })
@@ -706,14 +694,7 @@ func TestProcessRecapChannel(t *testing.T) {
 	})
 
 	t.Run("denies channel when user lacks read permission", func(t *testing.T) {
-		bridge := &testAgentsBridge{
-			completeFn: func(sessionUserID, agentID string, req BridgeCompletionRequest) (string, error) {
-				require.Fail(t, "bridge should not be called when user lacks channel access")
-				return "", nil
-			},
-		}
-
-		th := Setup(t, WithAgentsBridge(bridge)).InitBasic(t)
+		th, llm, _ := setupAIFeatureModel(t, "")
 		th.App.UpdateConfig(func(cfg *model.Config) { cfg.FeatureFlags.EnableAIRecaps = true })
 
 		// Private channel owned by another user; BasicUser is not a member.
@@ -741,7 +722,7 @@ func TestProcessRecapChannel(t *testing.T) {
 		assert.Equal(t, "app.recap.permission_denied", err.Id)
 		require.NotNil(t, result)
 		assert.False(t, result.Success)
-		assert.Empty(t, bridge.completeCalls)
+		assert.Empty(t, llm.calls())
 
 		recapChannels, storeErr := th.App.Srv().Store().Recap().GetRecapChannelsByRecapId(recapID)
 		require.NoError(t, storeErr)
@@ -749,14 +730,7 @@ func TestProcessRecapChannel(t *testing.T) {
 	})
 
 	t.Run("max posts per day prevents additional post processing", func(t *testing.T) {
-		bridge := &testAgentsBridge{
-			completeFn: func(sessionUserID, agentID string, req BridgeCompletionRequest) (string, error) {
-				require.Fail(t, "bridge should not be called when post usage is exhausted")
-				return "", nil
-			},
-		}
-
-		th := Setup(t, WithAgentsBridge(bridge)).InitBasic(t)
+		th, llm, _ := setupAIFeatureModel(t, "")
 		th.App.UpdateConfig(func(cfg *model.Config) {
 			cfg.FeatureFlags.EnableAIRecaps = true
 			cfg.AIRecapSettings.EnforcePostsPerDay = model.NewPointer(true)
@@ -798,7 +772,7 @@ func TestProcessRecapChannel(t *testing.T) {
 		require.NotNil(t, result)
 		assert.True(t, result.Success)
 		assert.Equal(t, 0, result.MessageCount)
-		assert.Empty(t, bridge.completeCalls)
+		assert.Empty(t, llm.calls())
 
 		recapChannels, storeErr := th.App.Srv().Store().Recap().GetRecapChannelsByRecapId(recapID)
 		require.NoError(t, storeErr)
@@ -836,13 +810,7 @@ func TestProcessRecapChannelTokenLimit(t *testing.T) {
 
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			bridge := &testAgentsBridge{
-				completeFn: func(sessionUserID, agentID string, req BridgeCompletionRequest) (string, error) {
-					return `{"highlights":["h"],"action_items":["a"]}`, nil
-				},
-			}
-
-			th := Setup(t, WithAgentsBridge(bridge)).InitBasic(t)
+			th, _, _ := setupAIFeatureModel(t, `{"highlights":["h"],"action_items":["a"]}`)
 			th.App.UpdateConfig(func(cfg *model.Config) {
 				cfg.FeatureFlags.EnableAIRecaps = true
 				cfg.AIRecapSettings.EnforceTokensPerRecap = model.NewPointer(tc.enforceTokens)

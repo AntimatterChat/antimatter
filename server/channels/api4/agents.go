@@ -21,7 +21,7 @@ func (api *API) InitAgents() {
 }
 
 func getAgentsStatus(c *Context, w http.ResponseWriter, r *http.Request) {
-	available, reason := c.App.GetAIPluginBridgeStatus(c.AppContext)
+	available, reason := c.App.GetAgentsStatus(c.AppContext, c.AppContext.Session().UserId)
 
 	resp := &model.AgentsIntegrityResponse{
 		Available: available,

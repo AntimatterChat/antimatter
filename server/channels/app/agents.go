@@ -4,96 +4,91 @@
 package app
 
 import (
-	"net/http"
-
-	agentclient "github.com/mattermost/mattermost-plugin-ai/public/bridgeclient"
 	"github.com/mattermost/mattermost/server/public/model"
-	"github.com/mattermost/mattermost/server/public/shared/mlog"
 	"github.com/mattermost/mattermost/server/public/shared/request"
 )
 
-// GetBridgeClient remains as a compatibility helper for downstream enterprise code.
-// New server code should use a.ch.agentsBridge instead of relying on the concrete bridge client.
-func (a *App) GetBridgeClient(userID string) *agentclient.Client {
-	return agentclient.NewClientFromApp(a, userID)
+// Antimatter: GET /api/v4/agents, /agents/status and /llmservices keep their shapes for the classic web app, the
+// mobile apps and older clients, now served from the server's agents and model connections rather than the AI chat
+// app's bridge. The end-to-end tests' stand-in model may set what they answer (ServiceSettings.EnableTesting only).
+
+// GetAgentsStatus tells whether a person has an agent to talk to, with the reason (a translation ID) when not.
+func (a *App) GetAgentsStatus(rctx request.CTX, userID string) (bool, string) {
+	if m := a.aiE2EModel(); m != nil {
+		if available, reason, ok := m.statusOverride(); ok {
+			return available, reason
+		}
+	}
+	agents, _, appErr := a.GetAIAgentsForUser(rctx, userID)
+	if appErr != nil || len(agents) == 0 {
+		return false, "app.agents.status.no_agents"
+	}
+	return true, ""
 }
 
-// ServiceCompletion remains as a compatibility helper for downstream enterprise
-// code that needs service-based bridge completions while using the shared
-// AgentsBridge abstraction.
-func (a *App) ServiceCompletion(sessionUserID, serviceID string, req BridgeCompletionRequest) (string, error) {
-	return a.ch.agentsBridge.ServiceCompletion(sessionUserID, serviceID, req)
-}
-
-// GetAIPluginBridgeStatus checks if the mattermost-ai plugin is active and supports the bridge API (v1.5.0+)
-// It returns a boolean indicating availability, and a reason string (translation ID) if unavailable.
-func (a *App) GetAIPluginBridgeStatus(rctx request.CTX) (bool, string) {
-	return a.ch.agentsBridge.Status(rctx)
-}
-
-// GetAgents retrieves all available agents from the bridge API
+// GetAgents lists the built-in agents a person may talk to, as the AI chat app's bridge listed its bots: the
+// connection they use as their service, never anything about its key.
 func (a *App) GetAgents(rctx request.CTX, userID string) ([]model.BridgeAgentInfo, *model.AppError) {
-	sessionUserID := ""
-	if session := rctx.Session(); session != nil {
-		sessionUserID = session.UserId
+	if m := a.aiE2EModel(); m != nil {
+		if agents, ok := m.agentsOverride(); ok {
+			return agents, nil
+		}
 	}
-
-	agents, err := a.ch.agentsBridge.GetAgents(sessionUserID, userID)
-	if err != nil {
-		rctx.Logger().Error("Failed to get agents from bridge",
-			mlog.Err(err),
-			mlog.String("user_id", userID),
-		)
-		return nil, model.NewAppError("GetAgents", "app.agents.get_agents.bridge_call_failed", nil, err.Error(), http.StatusInternalServerError)
-	}
-
-	return agents, nil
-}
-
-// GetUsersForAgents retrieves the User objects for all available agents
-func (a *App) GetUsersForAgents(rctx request.CTX, userID string) ([]*model.User, *model.AppError) {
-	agents, appErr := a.GetAgents(rctx, userID)
+	agents, users, appErr := a.GetAIAgentsForUser(rctx, userID)
 	if appErr != nil {
 		return nil, appErr
 	}
-
-	if len(agents) == 0 {
-		return []*model.User{}, nil
-	}
-
-	users := make([]*model.User, 0, len(agents))
-	for _, agent := range agents {
-		// Agents have a username field that corresponds to the bot user's username
-		user, err := a.Srv().Store().User().GetByUsername(agent.Username)
-		if err != nil {
-			rctx.Logger().Warn("Failed to get user for agent",
-				mlog.Err(err),
-				mlog.String("agent_id", agent.ID),
-				mlog.String("username", agent.Username),
-			)
-			continue
+	infos := make([]model.BridgeAgentInfo, 0, len(agents))
+	for i, agent := range agents {
+		info := model.BridgeAgentInfo{
+			ID:          agent.UserId,
+			DisplayName: users[i].GetDisplayName(model.ShowFullName),
+			Username:    users[i].Username,
+			ServiceID:   agent.ConnectionId,
+			IsDefault:   i == 0,
 		}
-		users = append(users, user)
+		if c, err := a.Srv().Store().AIConnection().Get(rctx, agent.ConnectionId); err == nil {
+			info.ServiceType = c.Provider
+		}
+		infos = append(infos, info)
 	}
+	return infos, nil
+}
 
+// GetUsersForAgents gives the accounts of the agents a person may talk to (the users autocomplete's agents).
+func (a *App) GetUsersForAgents(rctx request.CTX, userID string) ([]*model.User, *model.AppError) {
+	if m := a.aiE2EModel(); m != nil {
+		if agents, ok := m.agentsOverride(); ok {
+			users := make([]*model.User, 0, len(agents))
+			for _, agent := range agents {
+				if user, err := a.Srv().Store().User().GetByUsername(agent.Username); err == nil {
+					users = append(users, user)
+				}
+			}
+			return users, nil
+		}
+	}
+	_, users, appErr := a.GetAIAgentsForUser(rctx, userID)
+	if appErr != nil {
+		return nil, appErr
+	}
 	return users, nil
 }
 
-// GetLLMServices retrieves all available LLM services from the bridge API
+// GetLLMServices lists the model connections a person may use, as the bridge listed its services.
 func (a *App) GetLLMServices(rctx request.CTX, userID string) ([]model.BridgeServiceInfo, *model.AppError) {
-	sessionUserID := ""
-	if session := rctx.Session(); session != nil {
-		sessionUserID = session.UserId
+	if m := a.aiE2EModel(); m != nil {
+		if services, ok := m.servicesOverride(); ok {
+			return services, nil
+		}
 	}
-
-	services, err := a.ch.agentsBridge.GetServices(sessionUserID, userID)
-	if err != nil {
-		rctx.Logger().Error("Failed to get LLM services from bridge",
-			mlog.Err(err),
-			mlog.String("user_id", userID),
-		)
-		return nil, model.NewAppError("GetLLMServices", "app.agents.get_services.bridge_call_failed", nil, err.Error(), http.StatusInternalServerError)
+	connections, appErr := a.GetAIConnectionsForUser(rctx, userID, "", "")
+	if appErr != nil {
+		return nil, appErr
 	}
-
+	services := make([]model.BridgeServiceInfo, 0, len(connections))
+	for _, c := range connections {
+		services = append(services, model.BridgeServiceInfo{ID: c.Id, Name: c.Name, Type: c.Provider})
+	}
 	return services, nil
 }

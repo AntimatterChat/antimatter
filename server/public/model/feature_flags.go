@@ -85,9 +85,6 @@ type FeatureFlags struct {
 	// Enable burn-on-read messages that automatically delete after viewing
 	BurnOnRead bool
 
-	// FEATURE_FLAG_REMOVAL: EnableAIPluginBridge
-	EnableAIPluginBridge bool
-
 	// FEATURE_FLAG_REMOVAL: EnableAIRecaps - Remove this when GA is released
 	EnableAIRecaps bool
 
@@ -208,9 +205,6 @@ func (f *FeatureFlags) SetDefaults() {
 	f.ClassificationMarkings = true
 
 	f.BurnOnRead = true
-
-	// FEATURE_FLAG_REMOVAL: EnableAIPluginBridge - Remove this default when MVP is to be released
-	f.EnableAIPluginBridge = false
 
 	f.EnableAIRecaps = false
 

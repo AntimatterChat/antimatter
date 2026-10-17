@@ -1580,6 +1580,10 @@ type UpdatePostOptions struct {
 	SafeUpdate    bool
 	IsRestorePost bool
 
+	// StreamedReply (Antimatter) is set by the agent runtime when it saves the text of a reply the model streamed:
+	// the text arriving isn't an edit, so the post isn't marked edited.
+	StreamedReply bool
+
 	// AllowMmBlocksActionsUpdate grants the caller permission to add,
 	// remove, or modify the mm_blocks_actions prop. Without it,
 	// non-integration sessions cannot change mm_blocks_actions and the

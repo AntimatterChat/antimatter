@@ -503,6 +503,9 @@ func (a *App) CreatePost(rctx request.CTX, post *model.Post, channel *model.Chan
 
 			a.RecordPostDeliveryToPlugins(rctx, pluginIDs, pluginPost)
 		})
+
+		// Antimatter: a post for an agent (a mention, a direct message, a reply in its thread) starts its turn.
+		a.maybeStartAgentTurns(rctx, rpost, channel)
 	}
 
 	// Normally, we would let the API layer call PreparePostForClient, but we do it here since it also needs
@@ -1000,7 +1003,9 @@ func (a *App) UpdatePost(rctx request.CTX, receivedUpdatedPost *model.Post, upda
 		return nil, false, err
 	}
 
-	if restrictDM {
+	// An agent's reply in a direct message with it finishes even where direct messages are restricted to
+	// communities: agents are exempt, as bots are when people message them.
+	if restrictDM && !updatePostOptions.StreamedReply {
 		err := model.NewAppError("UpdatePost", "api.post.update_post.can_not_update_post_in_restricted_dm.error", nil, "", http.StatusBadRequest)
 		return nil, false, err
 	}
@@ -1009,7 +1014,9 @@ func (a *App) UpdatePost(rctx request.CTX, receivedUpdatedPost *model.Post, upda
 
 	if newPost.Message != receivedUpdatedPost.Message {
 		newPost.Message = receivedUpdatedPost.Message
-		newPost.EditAt = model.GetMillis()
+		if !updatePostOptions.StreamedReply {
+			newPost.EditAt = model.GetMillis()
+		}
 		newPost.Hashtags, _ = model.ParseHashtags(receivedUpdatedPost.Message)
 	}
 
@@ -1097,7 +1104,7 @@ func (a *App) UpdatePost(rctx request.CTX, receivedUpdatedPost *model.Post, upda
 	}
 
 	// Avoid deep-equal checks if EditAt was already modified through message change
-	if newPost.EditAt == oldPost.EditAt && (!oldPost.FileIds.Equals(newPost.FileIds) || !oldPost.AttachmentsEqual(newPost)) {
+	if !updatePostOptions.StreamedReply && newPost.EditAt == oldPost.EditAt && (!oldPost.FileIds.Equals(newPost.FileIds) || !oldPost.AttachmentsEqual(newPost)) {
 		newPost.EditAt = model.GetMillis()
 	}
 
@@ -3728,39 +3735,20 @@ func (a *App) RewriteMessage(
 	}
 
 	// Antimatter: the rewrite runs on the model connection of AISettings.Rewrite, through the server's AI service;
-	// it no longer needs the AI chat app. agentID is kept for older clients, and for the test bridge only.
-	var completion string
-	if bridge := a.testAIFeatureBridge(); bridge != nil {
-		var err error
-		completion, err = bridge.AgentCompletion(sessionUserID, agentID, BridgeCompletionRequest{
-			Operation:       BridgeOperationRewrite,
-			ClientOperation: "message_rewrite",
-			Messages: []BridgeMessage{
-				{Role: "system", Message: systemPrompt},
-				{Role: "user", Message: userPrompt},
-			},
-			JSONOutputFormat: rewriteResponseJSONSchema,
-			OperationSubType: normalizeRewriteAction(action),
-			UserID:           sessionUserID,
-		})
-		if err != nil {
-			return nil, model.NewAppError("RewriteMessage", "app.post.rewrite.agent_call_failed", nil, err.Error(), 500)
-		}
-	} else {
-		result, appErr := a.aiFeatureCall(rctx, ai.PurposeRewrite, a.Config().AISettings.Rewrite, sessionUserID, "", ai.ChatRequest{
-			Messages: []ai.Message{
-				{Role: ai.RoleSystem, Content: systemPrompt},
-				{Role: ai.RoleUser, Content: userPrompt},
-			},
-			JSONSchema:     rewriteResponseJSONSchemaRaw,
-			JSONSchemaName: "rewrite",
-			Operation:      "message_rewrite:" + normalizeRewriteAction(action),
-		})
-		if appErr != nil {
-			return nil, appErr
-		}
-		completion = ai.StripMarkdownCodeFencing(result.Message.Content)
+	// it no longer needs the AI chat app. agentID is kept for older clients.
+	result, appErr := a.aiFeatureCall(rctx, ai.PurposeRewrite, a.Config().AISettings.Rewrite, sessionUserID, "", ai.ChatRequest{
+		Messages: []ai.Message{
+			{Role: ai.RoleSystem, Content: systemPrompt},
+			{Role: ai.RoleUser, Content: userPrompt},
+		},
+		JSONSchema:     rewriteResponseJSONSchemaRaw,
+		JSONSchemaName: "rewrite",
+		Operation:      "message_rewrite:" + normalizeRewriteAction(action),
+	})
+	if appErr != nil {
+		return nil, appErr
 	}
+	completion := ai.StripMarkdownCodeFencing(result.Message.Content)
 
 	var response model.RewriteResponse
 	if err := json.Unmarshal([]byte(completion), &response); err != nil {

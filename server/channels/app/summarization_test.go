@@ -4,7 +4,7 @@
 package app
 
 import (
-	"errors"
+	"net/http"
 	"testing"
 
 	"github.com/mattermost/mattermost/server/public/model"
@@ -68,13 +68,7 @@ func TestBuildConversationText(t *testing.T) {
 
 func TestSummarizePosts(t *testing.T) {
 	t.Run("successful recap completion parsing", func(t *testing.T) {
-		bridge := &testAgentsBridge{
-			completeFn: func(sessionUserID, agentID string, req BridgeCompletionRequest) (string, error) {
-				return `{"highlights":["Highlight 1"],"action_items":["Action 1"]}`, nil
-			},
-		}
-
-		th := Setup(t, WithAgentsBridge(bridge)).InitBasic(t)
+		th, llm, _ := setupAIFeatureModel(t, `{"highlights":["Highlight 1"],"action_items":["Action 1"]}`)
 		ctx := th.Context.WithSession(&model.Session{UserId: th.BasicUser.Id})
 		posts := []*model.Post{{
 			Id:       model.NewId(),
@@ -91,20 +85,13 @@ func TestSummarizePosts(t *testing.T) {
 		require.NotNil(t, summary)
 		assert.Equal(t, []string{"Highlight 1"}, summary.Highlights)
 		assert.Equal(t, []string{"Action 1"}, summary.ActionItems)
-		require.Len(t, bridge.completeCalls, 1)
-		assert.Equal(t, BridgeOperationRecapSummary, bridge.completeCalls[0].request.Operation)
-		assert.Equal(t, th.BasicUser.Id, bridge.completeCalls[0].sessionUserID)
-		assert.Equal(t, th.BasicUser.Id, bridge.completeCalls[0].request.UserID)
+		require.Len(t, llm.calls(), 1)
+		assert.Equal(t, "recap", llm.calls()[0].schemaName(), "the recap asks for its JSON schema")
+		assertAIUsageFor(t, th, th.BasicUser.Id)
 	})
 
 	t.Run("null arrays normalize to empty slices", func(t *testing.T) {
-		bridge := &testAgentsBridge{
-			completeFn: func(sessionUserID, agentID string, req BridgeCompletionRequest) (string, error) {
-				return `{"highlights":null,"action_items":null}`, nil
-			},
-		}
-
-		th := Setup(t, WithAgentsBridge(bridge)).InitBasic(t)
+		th, _, _ := setupAIFeatureModel(t, `{"highlights":null,"action_items":null}`)
 		ctx := th.Context.WithSession(&model.Session{UserId: th.BasicUser.Id})
 		posts := []*model.Post{{
 			Id:       model.NewId(),
@@ -125,14 +112,9 @@ func TestSummarizePosts(t *testing.T) {
 		assert.NotNil(t, summary.ActionItems)
 	})
 
-	t.Run("bridge error returns agent call failed", func(t *testing.T) {
-		bridge := &testAgentsBridge{
-			completeFn: func(sessionUserID, agentID string, req BridgeCompletionRequest) (string, error) {
-				return "", errors.New("bridge failed")
-			},
-		}
-
-		th := Setup(t, WithAgentsBridge(bridge)).InitBasic(t)
+	t.Run("a failing model returns agent call failed", func(t *testing.T) {
+		th, llm, _ := setupAIFeatureModel(t, "")
+		llm.fail(http.StatusInternalServerError, "model failed")
 		ctx := th.Context.WithSession(&model.Session{UserId: th.BasicUser.Id})
 		posts := []*model.Post{{
 			Id:       model.NewId(),
@@ -151,13 +133,7 @@ func TestSummarizePosts(t *testing.T) {
 	})
 
 	t.Run("invalid json returns parse failed", func(t *testing.T) {
-		bridge := &testAgentsBridge{
-			completeFn: func(sessionUserID, agentID string, req BridgeCompletionRequest) (string, error) {
-				return "{invalid json", nil
-			},
-		}
-
-		th := Setup(t, WithAgentsBridge(bridge)).InitBasic(t)
+		th, _, _ := setupAIFeatureModel(t, "{invalid json")
 		ctx := th.Context.WithSession(&model.Session{UserId: th.BasicUser.Id})
 		posts := []*model.Post{{
 			Id:       model.NewId(),
@@ -175,9 +151,8 @@ func TestSummarizePosts(t *testing.T) {
 		assert.Equal(t, "app.ai.summarize.parse_failed", appErr.Id)
 	})
 
-	t.Run("empty posts short circuit without bridge call", func(t *testing.T) {
-		bridge := &testAgentsBridge{}
-		th := Setup(t, WithAgentsBridge(bridge)).InitBasic(t)
+	t.Run("empty posts short circuit without a model call", func(t *testing.T) {
+		th, llm, _ := setupAIFeatureModel(t, "")
 		ctx := th.Context.WithSession(&model.Session{UserId: th.BasicUser.Id})
 
 		summary, appErr := th.App.SummarizePosts(ctx, th.BasicUser.Id, []*model.Post{}, th.BasicChannel.DisplayName, th.BasicTeam.Name, model.NewId())
@@ -185,17 +160,11 @@ func TestSummarizePosts(t *testing.T) {
 		require.NotNil(t, summary)
 		assert.Empty(t, summary.Highlights)
 		assert.Empty(t, summary.ActionItems)
-		assert.Len(t, bridge.completeCalls, 0)
+		assert.Len(t, llm.calls(), 0)
 	})
 
 	t.Run("custom instructions are included in prompt", func(t *testing.T) {
-		bridge := &testAgentsBridge{
-			completeFn: func(sessionUserID, agentID string, req BridgeCompletionRequest) (string, error) {
-				return `{"highlights":["Highlight 1"],"action_items":[]}`, nil
-			},
-		}
-
-		th := Setup(t, WithAgentsBridge(bridge)).InitBasic(t)
+		th, llm, _ := setupAIFeatureModel(t, `{"highlights":["Highlight 1"],"action_items":[]}`)
 		ctx := th.Context.WithSession(&model.Session{UserId: th.BasicUser.Id})
 		posts := []*model.Post{{
 			Id:        model.NewId(),
@@ -210,9 +179,10 @@ func TestSummarizePosts(t *testing.T) {
 
 		_, appErr := th.App.SummarizePostsWithInstructions(ctx, th.BasicUser.Id, posts, th.BasicChannel.DisplayName, th.BasicTeam.Name, model.NewId(), "Focus on launch risks")
 		require.Nil(t, appErr)
-		require.Len(t, bridge.completeCalls, 1)
-		require.Len(t, bridge.completeCalls[0].request.Messages, 2)
-		assert.Contains(t, bridge.completeCalls[0].request.Messages[1].Message, "Additional user instructions:")
-		assert.Contains(t, bridge.completeCalls[0].request.Messages[1].Message, "Focus on launch risks")
+		require.Len(t, llm.calls(), 1)
+		messages := llm.calls()[0].messages()
+		require.Len(t, messages, 2)
+		assert.Contains(t, messages[1]["content"], "Additional user instructions:")
+		assert.Contains(t, messages[1]["content"], "Focus on launch risks")
 	})
 }
