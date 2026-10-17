@@ -28,7 +28,29 @@ GO_MODULES = (
 
 # Server code written for Antimatter (whole directories; Antimatter's changes inside upstream packages are
 # counted with those packages).
-ANTIMATTER_SERVER_DIRS = ("server/libre/", "server/cmd/antimatter/", "server/cmd/amctl/")
+ANTIMATTER_SERVER_DIRS = (
+    # The free implementations of server/einterfaces, which used to live in server/libre/.
+    "server/channels/app/accesscontrol/",
+    "server/channels/app/accountmigration/",
+    "server/channels/app/autotranslation/",
+    "server/channels/app/intune/",
+    "server/channels/app/ldap/",
+    "server/channels/app/oauthproviders/google/",
+    "server/channels/app/oauthproviders/office365/",
+    "server/channels/app/oauthproviders/oidc/",
+    "server/channels/app/oauthproviders/openid/",
+    "server/channels/app/outgoingoauth/",
+    "server/channels/app/pushproxy/",
+    "server/channels/app/saml/",
+    "server/channels/jobs/compliance/",
+    "server/channels/jobs/dataretention/",
+    "server/channels/jobs/messageexport/",
+    "server/platform/services/cluster/",
+    "server/platform/services/metrics/",
+    "server/platform/services/searchengine/elasticsearch/",
+    "server/cmd/antimatter/",
+    "server/cmd/amctl/",
+)
 
 AREA_LABELS = {
     "server": "Server (Go)",
@@ -186,7 +208,8 @@ def main():
     if "server" in detail:
         files = detail["server"]
         antimatter = total(files, ANTIMATTER_SERVER_DIRS)
-        md += ["### Server", "", f"Antimatter-only code ({', '.join(ANTIMATTER_SERVER_DIRS)}): "
+        md += ["### Server", "", f"Antimatter-only code ({len(ANTIMATTER_SERVER_DIRS)} directories: the einterfaces "
+               "implementations, clustering, metrics, search, amctl and the server command): "
                f"{antimatter.covered}/{antimatter.total} statements, **{pct(antimatter):.1f}%**.", ""]
         groups = group(files, 2, "server/")
         groups.pop("server/public", None)
