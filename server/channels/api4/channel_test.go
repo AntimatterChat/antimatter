@@ -3915,8 +3915,8 @@ func TestDeleteChannel(t *testing.T) {
 
 	// Antimatter: in a workplace community, members archive the channels they created, as upstream; in a community
 	// they don't (TestArchiveChannelRights).
-	_, _, err := th.SystemAdminClient.PatchTeam(context.Background(), team.Id, &model.TeamPatch{Kind: model.NewPointer(model.TeamKindWorkplace)})
-	require.NoError(t, err)
+	_, _, patchErr := th.SystemAdminClient.PatchTeam(context.Background(), team.Id, &model.TeamPatch{Kind: model.NewPointer(model.TeamKindWorkplace)})
+	require.NoError(t, patchErr)
 
 	// successful delete of public channel
 	th.TestForAllClients(t, func(t *testing.T, client *model.Client4) {

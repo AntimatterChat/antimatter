@@ -449,11 +449,11 @@ func TestCommunityMemberListView(t *testing.T) {
 
 	_, admin := h.admin(t)
 	for _, view := range []string{model.TeamMemberListViewTeams, model.TeamMemberListViewRoles, model.TeamMemberListViewChoice} {
-		patched, _, err := admin.PatchTeam(ctx, h.team.Id, &model.TeamPatch{MemberListView: model.NewPointer(view)})
-		require.NoError(t, err, view)
+		patched, _, patchErr := admin.PatchTeam(ctx, h.team.Id, &model.TeamPatch{MemberListView: model.NewPointer(view)})
+		require.NoError(t, patchErr, view)
 		assert.Equal(t, view, patched.MemberListView)
-		fetched, _, err := member.GetTeam(ctx, h.team.Id, "")
-		require.NoError(t, err)
+		fetched, _, getErr := member.GetTeam(ctx, h.team.Id, "")
+		require.NoError(t, getErr)
 		assert.Equal(t, view, fetched.MemberListView, "members see it")
 	}
 

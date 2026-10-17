@@ -97,9 +97,9 @@ func (a *App) TeamAdminRolePermissions(rctx request.CTX, teamID string) ([]strin
 	}
 	roleName := model.TeamAdminRoleId
 	if team.SchemeId != nil && *team.SchemeId != "" {
-		scheme, appErr := a.GetScheme(*team.SchemeId)
-		if appErr != nil {
-			return nil, appErr
+		scheme, schemeErr := a.GetScheme(*team.SchemeId)
+		if schemeErr != nil {
+			return nil, schemeErr
 		}
 		roleName = scheme.DefaultTeamAdminRole
 	}
