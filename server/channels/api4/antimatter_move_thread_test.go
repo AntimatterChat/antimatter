@@ -5,6 +5,7 @@ package api4
 
 import (
 	"context"
+	"maps"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -119,7 +120,7 @@ func TestAntimatterMoveThreadToChannel(t *testing.T) {
 			assert.Equal(t, original.Type, copied.Type)
 			assert.Equal(t, original.EditAt, copied.EditAt)
 			assert.Empty(t, copied.OriginalId)
-			copiedProps := copied.GetProps()
+			copiedProps := maps.Clone(copied.GetProps())
 			delete(copiedProps, model.PostPropsSilentNotification)
 			assert.Equal(t, len(original.GetProps()), len(copiedProps), "the copy carries the original's props, %v", copied.GetProps())
 			assert.Equal(t, moved.Id, copied.RootId)
