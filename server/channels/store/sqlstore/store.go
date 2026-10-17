@@ -108,6 +108,7 @@ type SqlStoreStores struct {
 	serverCategory             store.ServerCategoryStore
 	moderation                 store.ModerationStore
 	onTopPost                  store.OnTopPostStore
+	communityRules             store.CommunityRulesStore
 	aiConnection               store.AIConnectionStore
 	channelOverride            store.ChannelOverrideStore
 	scheduledPost              store.ScheduledPostStore
@@ -306,6 +307,7 @@ func New(settings model.SqlSettings, logger mlog.LoggerIFace, metrics einterface
 	store.stores.serverCategory = newSqlServerCategoryStore(store)
 	store.stores.moderation = newSqlModerationStore(store)
 	store.stores.onTopPost = newSqlOnTopPostStore(store)
+	store.stores.communityRules = newSqlCommunityRulesStore(store)
 	store.stores.aiConnection = newSqlAIConnectionStore(store)
 	store.stores.channelOverride = newSqlChannelOverrideStore(store)
 	store.stores.scheduledPost = newScheduledPostStore(store)
@@ -940,6 +942,10 @@ func (ss *SqlStore) Moderation() store.ModerationStore {
 
 func (ss *SqlStore) OnTopPost() store.OnTopPostStore {
 	return ss.stores.onTopPost
+}
+
+func (ss *SqlStore) CommunityRules() store.CommunityRulesStore {
+	return ss.stores.communityRules
 }
 
 func (ss *SqlStore) AIConnection() store.AIConnectionStore {

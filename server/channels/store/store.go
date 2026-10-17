@@ -64,6 +64,7 @@ type Store interface {
 	ServerCategory() ServerCategoryStore
 	Moderation() ModerationStore
 	OnTopPost() OnTopPostStore
+	CommunityRules() CommunityRulesStore
 	AIConnection() AIConnectionStore
 	ChannelOverride() ChannelOverrideStore
 	MarkSystemRanUnitTests()
@@ -1168,6 +1169,26 @@ type OnTopPostStore interface {
 	// Delete takes a message off the top; ErrNotFound when it wasn't there.
 	Delete(rctx request.CTX, postID string) error
 	DeleteForChannel(rctx request.CTX, channelID string) error
+}
+
+// CommunityRulesStore keeps each community's rules (Antimatter), and who agreed to which version of them.
+type CommunityRulesStore interface {
+	// Get gives a community's rules; ErrNotFound when it never had any.
+	Get(rctx request.CTX, teamID string) (*model.CommunityRules, error)
+	// Save puts in place a community's rules, on or off, with their text, atomically: version 1 the first time, then
+	// the same version, or the next one when askAgain.
+	Save(rctx request.CTX, rules *model.CommunityRules, askAgain bool) (*model.CommunityRules, error)
+	// Accept keeps someone's agreement to a version; agreeing to it again keeps the first time.
+	Accept(rctx request.CTX, acceptance *model.CommunityRulesAcceptance) error
+	// GetAcceptedVersion gives the latest version someone agreed to in a community; 0 when none.
+	GetAcceptedVersion(rctx request.CTX, teamID, userID string) (int64, error)
+	// GetAcceptancesForUser gives every agreement someone made, in every community, the latest first.
+	GetAcceptancesForUser(rctx request.CTX, userID string) ([]*model.CommunityRulesAcceptance, error)
+	// CountAcceptances counts a community's active members (no bots, no deactivated accounts), and those of them who
+	// agreed to a version.
+	CountAcceptances(rctx request.CTX, teamID string, version int64) (*model.CommunityRulesStats, error)
+	DeleteForTeam(rctx request.CTX, teamID string) error
+	PermanentDeleteByUser(rctx request.CTX, userID string) error
 }
 
 // AIConnectionStore keeps the model connections (Antimatter), with their keys sealed by the app, and their usage.

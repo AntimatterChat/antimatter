@@ -495,3 +495,7 @@ channels/db/migrations/postgres/1000015_antimatter_create_aiconnections.down.sql
 channels/db/migrations/postgres/1000015_antimatter_create_aiconnections.up.sql
 channels/db/migrations/postgres/1000016_antimatter_create_aiusage.down.sql
 channels/db/migrations/postgres/1000016_antimatter_create_aiusage.up.sql
+channels/db/migrations/postgres/1000020_antimatter_create_communityrules.down.sql
+channels/db/migrations/postgres/1000020_antimatter_create_communityrules.up.sql
+channels/db/migrations/postgres/1000021_antimatter_create_communityrulesacceptances.down.sql
+channels/db/migrations/postgres/1000021_antimatter_create_communityrulesacceptances.up.sql
