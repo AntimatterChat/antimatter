@@ -38,6 +38,7 @@ const LayoutContext = createContext<Layout | null>(null);
 
 export function LayoutProvider({children}: {children: React.ReactNode}) {
     const [home, setHome] = useState(false);
+
     // The member list shows beside the conversation on wide screens, unless the simplified interface keeps it closed
     // until it's opened (from the channel header).
     const simplified = useSelector(isSimplifiedInterface);

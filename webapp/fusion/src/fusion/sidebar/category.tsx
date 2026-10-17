@@ -169,6 +169,7 @@ export default function Category({category}: {category: ChannelCategory}) {
             setMark(null);
         }
     };
+
     // What the admins' mark means, in the Fusion tooltip: the lock of a locked category, else the server.
     const serverMark = locked ? formatMessage({id: 'fusion.sidebar.serverLocked', defaultMessage: 'Set up for everyone by the community\'s admins. Its channels stay here.'}) : formatMessage({id: 'fusion.sidebar.serverOpen', defaultMessage: 'Set up for everyone by the community\'s admins. You can move its channels to your own categories.'});
     const markClass = (target: string) => (mark?.target === target ? am(mark.after ? 'drop-after' : 'drop-before') : '');
