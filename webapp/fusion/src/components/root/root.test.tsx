@@ -27,6 +27,10 @@ jest.mock('./performance_reporter_controller', () => () => <div/>);
 // The logged-in pages aren't under test here: a route that only says where it is.
 jest.mock('components/logged_in_route', () => ({path}: {path: string}) => <div data-testid={`logged-in-route ${path}`}/>);
 
+// A logged-in page shows its content (the app link redirect, a product's page) without loading the user.
+jest.mock('components/logged_in', () => ({children}: {children: React.ReactNode}) => <>{children}</>);
+jest.mock('components/product_pluggable', () => () => <div data-testid='product-page'/>);
+
 jest.mock('utils/utils', () => ({
     applyTheme: jest.fn(),
     makeIsEligibleForClick: jest.fn(),
@@ -240,6 +244,40 @@ describe('components/Root', () => {
             expect(props.actions.loadConfigAndMe).toHaveBeenCalled();
         });
         expect(history.location.pathname).toBe('/boardsroom/channels/town-square');
+    });
+
+    // Antimatter: Playbooks left its full page for the side panel; its old links open in the last community, where
+    // the app opens the panel on the page they point to.
+    test.each([
+        ['/playbooks/runs/abcdefghijklmnopqrstuvwxyz', '/myTeam/playbooks/runs/abcdefghijklmnopqrstuvwxyz', '?from=dm_assignedtask'],
+        ['/playbooks/playbooks/abcdefghijklmnopqrstuvwxyz', '/myTeam/playbooks/playbooks/abcdefghijklmnopqrstuvwxyz', ''],
+    ])('sends the old app link %s to the community', async (from, to, search) => {
+        const history = createMemoryHistory({initialEntries: [from + search]});
+        const props = {
+            ...baseProps,
+            location: {pathname: from} as RouteComponentProps['location'],
+        };
+
+        renderWithContext(<Root {...props}/>, {}, {history});
+
+        await waitFor(() => {
+            expect(history.location.pathname).toBe(to);
+        });
+        expect(history.location.search).toBe(search);
+    });
+
+    test('leaves the old app links to an app that still has its full page there', async () => {
+        const history = createMemoryHistory({initialEntries: ['/playbooks/runs/abcdefghijklmnopqrstuvwxyz']});
+        const props = {
+            ...baseProps,
+            products: [{id: 'playbooks', pluginId: 'playbooks', baseURL: '/playbooks'}] as unknown as Props['products'],
+            location: {pathname: '/playbooks/runs/abcdefghijklmnopqrstuvwxyz'} as RouteComponentProps['location'],
+        };
+
+        const {findByTestId} = renderWithContext(<Root {...props}/>, {}, {history});
+
+        await findByTestId('product-page');
+        expect(history.location.pathname).toBe('/playbooks/runs/abcdefghijklmnopqrstuvwxyz');
     });
 
     test('should reload on focus after getting signal login event from another tab', async () => {

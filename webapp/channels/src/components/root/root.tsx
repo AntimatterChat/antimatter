@@ -39,6 +39,7 @@ import {isTeamScopedProduct} from 'utils/products';
 import {getSiteURL} from 'utils/url';
 import {isTextDroppableEvent} from 'utils/utils';
 
+import AppLinkRedirect, {APP_LINK_PATHS} from './app_link_redirect';
 import LuxonController from './luxon_controller';
 import PerformanceReporterController from './performance_reporter_controller';
 import RootProvider from './root_provider';
@@ -467,6 +468,15 @@ export default class Root extends React.PureComponent<Props, State> {
                                         )}
                                     />
                                 ))}
+                                {/* Antimatter: the links to the apps that left their full page (Playbooks) open them in a community. */}
+                                <Route
+                                    path={APP_LINK_PATHS}
+                                    render={(props) => (
+                                        <LoggedIn {...props}>
+                                            <AppLinkRedirect teamName={this.props.permalinkRedirectTeamName}/>
+                                        </LoggedIn>
+                                    )}
+                                />
                                 <LoggedInRoute
                                     path={`/:team(${TEAM_NAME_PATH_PATTERN})`}
                                     component={TeamController}
