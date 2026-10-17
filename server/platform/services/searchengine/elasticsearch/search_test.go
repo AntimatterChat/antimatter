@@ -231,7 +231,7 @@ func TestSearchPosts(t *testing.T) {
 		f.searchHits = func(tgt string, body map[string]any) []map[string]any {
 			target = tgt
 			return []map[string]any{
-				{"_id": "p1", "highlight": map[string]any{"message": []string{"the <mm-libre-hl>Apple</mm-libre-hl> and <mm-libre-hl>apples</mm-libre-hl>, <mm-libre-hl>Apple</mm-libre-hl>"}}},
+				{"_id": "p1", "highlight": map[string]any{"message": []string{"the <antimatter-hl>Apple</antimatter-hl> and <antimatter-hl>apples</antimatter-hl>, <antimatter-hl>Apple</antimatter-hl>"}}},
 				{"_id": "p2"},
 			}
 		}

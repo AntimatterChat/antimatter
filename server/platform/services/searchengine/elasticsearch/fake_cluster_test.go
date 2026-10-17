@@ -49,6 +49,9 @@ type fakeCluster struct {
 	failStatus int
 	// foreign lists indexes created with mappings of another implementation.
 	foreign map[string]bool
+	// meta overrides the _meta of an index's mappings (indexes created by an
+	// earlier version).
+	meta map[string]map[string]any
 }
 
 func newFakeCluster(t *testing.T, openSearch bool) *fakeCluster {
@@ -60,6 +63,7 @@ func newFakeCluster(t *testing.T, openSearch bool) *fakeCluster {
 		templates:  map[string]json.RawMessage{},
 		settings:   map[string][]json.RawMessage{},
 		foreign:    map[string]bool{},
+		meta:       map[string]map[string]any{},
 	}
 	f.server = httptest.NewServer(http.HandlerFunc(f.handle))
 	t.Cleanup(f.server.Close)
@@ -187,7 +191,10 @@ func (f *fakeCluster) handle(w http.ResponseWriter, r *http.Request) {
 			if _, ok := f.indexes[name]; !ok {
 				continue
 			}
-			meta := map[string]any{"mattermost_libre_schema": schemaVersion}
+			meta := map[string]any{schemaMetaKey: schemaVersion}
+			if m, ok := f.meta[name]; ok {
+				meta = m
+			}
 			if f.foreign[name] {
 				meta = map[string]any{}
 			}
@@ -227,6 +234,7 @@ func (f *fakeCluster) handle(w http.ResponseWriter, r *http.Request) {
 		for name := range strings.SplitSeq(parts[0], ",") {
 			delete(f.indexes, name)
 			delete(f.foreign, name)
+			delete(f.meta, name)
 			for alias, target := range f.aliases {
 				if target == name {
 					delete(f.aliases, alias)

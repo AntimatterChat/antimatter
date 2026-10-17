@@ -37,9 +37,22 @@ const (
 	monthlyIndexDateLayout = "2006_01"
 	aggregatedPostsInfix   = "posts_agg_"
 
-	// Version of the mappings below. Stored in the index metadata so that
-	// outdated indexes can be detected.
+	// Version of the mappings below. Stored in the index metadata, under
+	// schemaMetaKey, so that outdated indexes can be detected.
 	schemaVersion = 1
+
+	// schemaMetaKey is the mappings' _meta key holding schemaVersion.
+	// legacySchemaMetaKey is the one written before the rename of the project
+	// (Mattermost Libre): the indexes created then carry it, and are as current
+	// as the others.
+	schemaMetaKey       = "antimatter_schema"
+	legacySchemaMetaKey = "mattermost_libre_schema"
+
+	// managedBy marks the index templates installed by this engine (the
+	// templates' _meta, only written: the templates are replaced at each
+	// start, so the value they had before, "mattermost-libre", is simply
+	// overwritten).
+	managedBy = "antimatter"
 
 	templatePriority = 200
 )
@@ -129,6 +142,10 @@ func (n indexNames) kindOf(name string) string {
 	return ""
 }
 
+// templateName is the name of the index template of an index kind. It keeps
+// the name given before the rename of the project (Mattermost Libre): index
+// templates with the same priority and overlapping patterns are rejected, so a
+// template under a new name would conflict with the one existing clusters have.
 func (n indexNames) templateName(kind string) string {
 	return n.prefix + "mattermost_libre_" + kind
 }
@@ -255,7 +272,7 @@ func mappingFor(kind string) map[string]any {
 	}
 	return map[string]any{
 		"dynamic":    false,
-		"_meta":      map[string]any{"mattermost_libre_schema": schemaVersion},
+		"_meta":      map[string]any{schemaMetaKey: schemaVersion},
 		"properties": properties,
 	}
 }
@@ -286,7 +303,7 @@ func indexTemplate(kind string, names indexNames, s *model.ElasticsearchSettings
 			},
 			"mappings": mappingFor(kind),
 		},
-		"_meta": map[string]any{"managed_by": "mattermost-libre", "schema": schemaVersion},
+		"_meta": map[string]any{"managed_by": managedBy, "schema": schemaVersion},
 	}
 }
 
@@ -364,14 +381,24 @@ func (e *Engine) checkSchemas(ctx context.Context, c *client, names indexNames) 
 		if !ok {
 			continue
 		}
-		version, _ := entry.Mappings.Meta["mattermost_libre_schema"].(float64)
-		if int(version) != schemaVersion {
+		if mappingSchemaVersion(entry.Mappings.Meta) != schemaVersion {
 			outdated[names.kindOf(name)] = true
 			e.logger().Warn("The search index was not created by this server version and must be rebuilt: purge the indexes and run a bulk indexing job",
 				mlog.String("index", name))
 		}
 	}
 	e.outdated.Store(&outdated)
+}
+
+// mappingSchemaVersion returns the schema version recorded in the _meta of an
+// index's mappings, under the current or the legacy key (0 for none).
+func mappingSchemaVersion(meta map[string]any) int {
+	for _, key := range []string{schemaMetaKey, legacySchemaMetaKey} {
+		if version, ok := meta[key].(float64); ok {
+			return int(version)
+		}
+	}
+	return 0
 }
 
 func (e *Engine) isOutdated(kind string) bool {

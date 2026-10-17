@@ -6,6 +6,7 @@ package elasticsearch
 import (
 	"encoding/json"
 	"net/http"
+	"strings"
 	"testing"
 	"time"
 
@@ -502,6 +503,61 @@ func TestOutdatedIndexesDisableAutocomplete(t *testing.T) {
 
 	require.Nil(t, e.PurgeIndexList(request.TestContext(t), []string{"channels"}))
 	assert.True(t, e.IsAutocompletionEnabled())
+}
+
+// TestIndexesFromEarlierVersionsAreKept covers a cluster set up before the
+// rename of the project: its indexes carry the schema version under the legacy
+// _meta key and its templates are marked managed by "mattermost-libre". They
+// must be used as they are, not reported outdated, rebuilt or duplicated.
+func TestIndexesFromEarlierVersionsAreKept(t *testing.T) {
+	forBothBackends(t, func(t *testing.T, f *fakeCluster) {
+		legacyMeta := map[string]any{"mattermost_libre_schema": float64(schemaVersion)}
+		for _, name := range []string{"mm_channels", "mm_users", "mm_files"} {
+			f.indexes[name] = map[string]json.RawMessage{}
+			f.meta[name] = legacyMeta
+		}
+		for _, kind := range allKinds {
+			f.templates["mm_mattermost_libre_"+kind] = json.RawMessage(`{"_meta":{"managed_by":"mattermost-libre","schema":1}}`)
+		}
+
+		e := startedEngine(t, f, nil)
+		assert.True(t, e.IsSearchEnabled())
+		assert.True(t, e.IsAutocompletionEnabled(), "the indexes of an earlier version are current")
+
+		// The indexes are kept, not deleted nor created again.
+		for _, r := range f.requestsTo("") {
+			if r.Method == http.MethodDelete || (r.Method == http.MethodPut && !strings.HasPrefix(r.Path, "/_index_template/")) {
+				t.Errorf("unexpected %s %s", r.Method, r.Path)
+			}
+		}
+		assert.Equal(t, []string{"mm_channels", "mm_files", "mm_users"}, f.indexNames())
+
+		// The templates are replaced under the same names, now marked as
+		// Antimatter's: no second set of templates.
+		assert.Len(t, f.templates, len(allKinds))
+		for _, kind := range allKinds {
+			var tpl struct {
+				Meta     map[string]any `json:"_meta"`
+				Template struct {
+					Mappings struct {
+						Meta map[string]any `json:"_meta"`
+					} `json:"mappings"`
+				} `json:"template"`
+			}
+			require.NoError(t, json.Unmarshal(f.templates["mm_mattermost_libre_"+kind], &tpl), kind)
+			assert.Equal(t, "antimatter", tpl.Meta["managed_by"], kind)
+			assert.Equal(t, float64(schemaVersion), tpl.Template.Mappings.Meta["antimatter_schema"], kind)
+		}
+	})
+}
+
+func TestMappingSchemaVersion(t *testing.T) {
+	assert.Equal(t, schemaVersion, mappingSchemaVersion(map[string]any{"antimatter_schema": float64(schemaVersion)}))
+	assert.Equal(t, schemaVersion, mappingSchemaVersion(map[string]any{"mattermost_libre_schema": float64(schemaVersion)}))
+	assert.Equal(t, 7, mappingSchemaVersion(map[string]any{"antimatter_schema": float64(7), "mattermost_libre_schema": float64(1)}))
+	assert.Equal(t, 0, mappingSchemaVersion(map[string]any{}))
+	assert.Equal(t, 0, mappingSchemaVersion(nil))
+	assert.Equal(t, 0, mappingSchemaVersion(map[string]any{"schema": float64(1)}))
 }
 
 func TestUpdateConfigRestartsOnClientSettingsChange(t *testing.T) {

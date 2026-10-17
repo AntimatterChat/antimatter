@@ -266,8 +266,8 @@ func postChannelScope(channels model.ChannelList, publicWithoutMembership bool) 
 }
 
 const (
-	highlightPreTag  = "<mm-libre-hl>"
-	highlightPostTag = "</mm-libre-hl>"
+	highlightPreTag  = "<antimatter-hl>"
+	highlightPostTag = "</antimatter-hl>"
 )
 
 // buildPostSearch builds the body of a post search request.
