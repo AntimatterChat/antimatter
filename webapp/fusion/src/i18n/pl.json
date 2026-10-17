@@ -7044,7 +7044,6 @@
   "fusion.settings.displaySpacious": "Rozszerzony",
   "fusion.settings.displayStandard": "Standardowy",
   "fusion.settings.dmLimit": "Otwarte rozmowy",
-  "fusion.settings.dmLimitDesc": "Ile rozmów bezpośrednich pokazuje pasek boczny. Nieprzeczytane są zawsze widoczne.",
   "fusion.settings.email": "Powiadomienia e-mail",
   "fusion.settings.email15": "Co 15 minut",
   "fusion.settings.emailChanged": "Zmieniono adres e-mail",

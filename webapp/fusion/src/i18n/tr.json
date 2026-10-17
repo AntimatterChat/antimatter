@@ -6991,7 +6991,6 @@
   "fusion.settings.displaySpacious": "Geniş",
   "fusion.settings.displayStandard": "Standart",
   "fusion.settings.dmLimit": "Açık sohbetler",
-  "fusion.settings.dmLimitDesc": "Kenar çubuğunun listelediği doğrudan iletilerin sayısı. Okunmamış olanlar her zaman görünür.",
   "fusion.settings.email": "E-posta bildirimleri",
   "fusion.settings.email15": "Her 15 dakikada bir",
   "fusion.settings.emailChanged": "E-posta değiştirildi",

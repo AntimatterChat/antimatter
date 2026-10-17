@@ -207,4 +207,13 @@ describe('fusion/modals/SettingsModal', () => {
         await userEvent.click(simplified);
         expect(savePreferences).toHaveBeenCalledWith('me', [{user_id: 'me', category: 'fusion_display', name: 'simplified_interface', value: 'true'}]);
     });
+
+    test('lists 10 open conversations by default, as each person sets', async () => {
+        render('appearance');
+
+        const count = screen.getByRole('group', {name: 'Open conversations'});
+        expect(within(count).getByRole('button', {name: '10'})).toHaveAttribute('aria-pressed', 'true');
+        await userEvent.click(within(count).getByRole('button', {name: '20'}));
+        expect(savePreferences).toHaveBeenCalledWith('me', [{user_id: 'me', category: 'sidebar_settings', name: 'limit_visible_dms_gms', value: '20'}]);
+    });
 });

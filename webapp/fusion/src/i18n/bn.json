@@ -6519,7 +6519,6 @@
   "fusion.settings.displaySpacious": "প্রশস্ত",
   "fusion.settings.displayStandard": "স্ট্যান্ডার্ড",
   "fusion.settings.dmLimit": "খোলা কথোপকথন",
-  "fusion.settings.dmLimitDesc": "সাইডবারে কতগুলো ডাইরেক্ট মেসেজ তালিকাভুক্ত হবে। অপঠিতগুলো সবসময় দেখানো হয়।",
   "fusion.settings.email": "ইমেইল নোটিফিকেশন",
   "fusion.settings.email15": "প্রতি ১৫ মিনিটে",
   "fusion.settings.emailChanged": "ইমেইল পরিবর্তিত হয়েছে",

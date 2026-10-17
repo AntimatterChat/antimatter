@@ -6961,7 +6961,6 @@
   "fusion.settings.displaySpacious": "넓게",
   "fusion.settings.displayStandard": "표준",
   "fusion.settings.dmLimit": "열린 대화",
-  "fusion.settings.dmLimitDesc": "사이드바에 표시할 다이렉트 메시지 수입니다. 읽지 않은 대화는 항상 표시됩니다.",
   "fusion.settings.email": "이메일 알림",
   "fusion.settings.email15": "15분마다",
   "fusion.settings.emailChanged": "이메일이 변경되었습니다",

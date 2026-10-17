@@ -6788,7 +6788,6 @@
   "fusion.settings.displaySpacious": "Rộng rãi",
   "fusion.settings.displayStandard": "Tiêu chuẩn",
   "fusion.settings.dmLimit": "Cuộc trò chuyện mở",
-  "fusion.settings.dmLimitDesc": "Số lượng tin nhắn trực tiếp được liệt kê trong thanh bên. Tin nhắn chưa đọc luôn được hiển thị.",
   "fusion.settings.email": "Thông báo qua email",
   "fusion.settings.email15": "Mỗi 15 phút",
   "fusion.settings.emailChanged": "Đã thay đổi email",

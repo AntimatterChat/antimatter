@@ -6519,7 +6519,6 @@
   "fusion.settings.displaySpacious": "กว้าง",
   "fusion.settings.displayStandard": "มาตรฐาน",
   "fusion.settings.dmLimit": "การสนทนาที่เปิดอยู่",
-  "fusion.settings.dmLimitDesc": "จำนวนข้อความส่วนตัวที่แสดงในแถบด้านข้าง ข้อความที่ยังไม่ได้อ่านจะแสดงเสมอ",
   "fusion.settings.email": "การแจ้งเตือนทางอีเมล",
   "fusion.settings.email15": "ทุก 15 นาที",
   "fusion.settings.emailChanged": "เปลี่ยนอีเมลแล้ว",

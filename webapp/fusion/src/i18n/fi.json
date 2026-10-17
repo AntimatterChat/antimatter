@@ -6519,7 +6519,6 @@
   "fusion.settings.displaySpacious": "Väljyys",
   "fusion.settings.displayStandard": "Normaali",
   "fusion.settings.dmLimit": "Avoimet keskustelut",
-  "fusion.settings.dmLimitDesc": "Kuinka monta suoraa viestiä sivupalkissa näytetään. Lukemattomat näkyvät aina.",
   "fusion.settings.email": "Sähköposti-ilmoitukset",
   "fusion.settings.email15": "15 minuutin välein",
   "fusion.settings.emailChanged": "Sähköpostiosoite muutettu",

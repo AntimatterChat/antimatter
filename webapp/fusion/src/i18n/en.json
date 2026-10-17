@@ -26084,8 +26084,8 @@
     "description": ""
   },
   "fusion.settings.dmLimitDesc": {
-    "defaultMessage": "How many direct messages the sidebar lists. Unread ones always show.",
-    "description": ""
+    "defaultMessage": "How many conversations Open conversations lists, the latest active first. Unread ones that don't fit wait at the bottom of the community rail.",
+    "description": "Description of the \"Open conversations\" setting (a choice of 5, 10, 15, 20 or 40): the number of direct messages shown in the Open conversations list at the bottom of the sidebar. \"Community rail\" is the column of community icons on the far left."
   },
   "fusion.settings.email": {
     "defaultMessage": "Email notifications",

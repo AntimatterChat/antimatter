@@ -597,7 +597,7 @@ function AppearancePane() {
             />
             <Choice
                 title={formatMessage({id: 'fusion.settings.dmLimit', defaultMessage: 'Open conversations'})}
-                desc={formatMessage({id: 'fusion.settings.dmLimitDesc', defaultMessage: 'How many direct messages the sidebar lists. Unread ones always show.'})}
+                desc={formatMessage({id: 'fusion.settings.dmLimitDesc', defaultMessage: 'How many conversations Open conversations lists, the latest active first. Unread ones that don\'t fit wait at the bottom of the community rail.'})}
                 value={dmLimit}
                 options={['5', '10', '15', '20', '40'].map((n): [string, string] => [n, n])}
                 onChange={setDmLimit}

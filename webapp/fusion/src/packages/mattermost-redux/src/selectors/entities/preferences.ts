@@ -318,9 +318,10 @@ export function syncedDraftsAreAllowedAndEnabled(state: GlobalState): boolean {
     return isConfiguredForFeature && isConfiguredForUser;
 }
 
-// DEFAULT_VISIBLE_DM_GM_LIMIT is how many read direct and group messages the sidebar lists by default: Antimatter's
-// Fusion UI keeps its dock of open conversations short (Mattermost lists 40).
-export const DEFAULT_VISIBLE_DM_GM_LIMIT = 5;
+// DEFAULT_VISIBLE_DM_GM_LIMIT is how many direct and group messages the sidebar lists by default (the "Open
+// conversations" setting): Antimatter's Fusion UI keeps its dock of open conversations short, the unread ones past it
+// waiting on the team rail (Mattermost lists 40).
+export const DEFAULT_VISIBLE_DM_GM_LIMIT = 10;
 
 export function getVisibleDmGmLimit(state: GlobalState, userPreferences?: PreferencesType) {
     const defaultLimit = DEFAULT_VISIBLE_DM_GM_LIMIT;

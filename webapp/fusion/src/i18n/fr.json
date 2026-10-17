@@ -6794,7 +6794,6 @@
   "fusion.settings.displaySpacious": "Aéré",
   "fusion.settings.displayStandard": "Standard",
   "fusion.settings.dmLimit": "Conversations ouvertes",
-  "fusion.settings.dmLimitDesc": "Nombre de messages personnels affichés dans la barre latérale. Les conversations non lues sont toujours affichées.",
   "fusion.settings.email": "Notifications par e-mail",
   "fusion.settings.email15": "Toutes les 15 minutes",
   "fusion.settings.emailChanged": "E-mail modifié",

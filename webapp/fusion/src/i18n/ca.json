@@ -6519,7 +6519,6 @@
   "fusion.settings.displaySpacious": "Ampli",
   "fusion.settings.displayStandard": "Estàndard",
   "fusion.settings.dmLimit": "Converses obertes",
-  "fusion.settings.dmLimitDesc": "Quants missatges directes llista la barra lateral. Els no llegits sempre es mostren.",
   "fusion.settings.email": "Notificacions per correu electrònic",
   "fusion.settings.email15": "Cada 15 minuts",
   "fusion.settings.emailChanged": "S’ha canviat el correu electrònic",

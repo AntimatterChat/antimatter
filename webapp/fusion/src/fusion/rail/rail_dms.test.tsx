@@ -57,7 +57,7 @@ describe('fusion/rail/RailDirectMessages', () => {
         expect(container.querySelectorAll('.am-dm-srv')[0].previousElementSibling).toBe(all);
     });
 
-    test('leaves out the conversations of the Open conversations dock, already shown there', () => {
+    test('shows the unread conversations the dock has no room for, and leaves out those it shows', () => {
         mockDock = ['alice-dm'];
         render();
 
@@ -65,12 +65,25 @@ describe('fusion/rail/RailDirectMessages', () => {
         expect(screen.getByRole('button', {name: /^carol, dan/})).toBeInTheDocument();
     });
 
-    test('shows them while the list of all the direct messages takes the dock\'s place', () => {
-        mockDock = ['alice-dm'];
+    test('shows none while the list of all the direct messages takes the dock\'s place: they are all in it', () => {
         mockLayout.home = true;
-        render();
+        const {container} = render();
 
+        expect(container.querySelector('.am-dm-srv')).not.toBeInTheDocument();
+        expect(screen.getByRole('button', {name: /^All direct messages/})).not.toHaveClass('am-mini');
+    });
+
+    test('lets a conversation go from the rail once read', () => {
+        mockDock = ['carol-dm'];
+        const {unmount} = render();
         expect(screen.getByRole('button', {name: /^alice, bob/})).toBeInTheDocument();
+        unmount();
+
+        // Read, and still too old for the dock: no bubble any more, and the chat bubble grows back.
+        mockUnread = [{channel: carol, mentions: 2, messages: 2}];
+        render();
+        expect(screen.queryByRole('button', {name: /^alice, bob/})).not.toBeInTheDocument();
+        expect(screen.getByRole('button', {name: /^All direct messages/})).not.toHaveClass('am-mini');
     });
 
     test('is a full rail bubble when nothing waits outside the dock', () => {

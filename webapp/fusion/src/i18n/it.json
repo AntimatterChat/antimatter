@@ -6617,7 +6617,6 @@
   "fusion.settings.displaySpacious": "Ampio",
   "fusion.settings.displayStandard": "Standard",
   "fusion.settings.dmLimit": "Conversazioni aperte",
-  "fusion.settings.dmLimitDesc": "Quanti messaggi diretti elenca la barra laterale. Quelli non letti vengono sempre mostrati.",
   "fusion.settings.email": "Notifiche via email",
   "fusion.settings.email15": "Ogni 15 minuti",
   "fusion.settings.emailChanged": "Email modificata",

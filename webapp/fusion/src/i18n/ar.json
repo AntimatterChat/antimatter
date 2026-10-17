@@ -6519,7 +6519,6 @@
   "fusion.settings.displaySpacious": "واسع",
   "fusion.settings.displayStandard": "قياسي",
   "fusion.settings.dmLimit": "المحادثات المفتوحة",
-  "fusion.settings.dmLimitDesc": "عدد الرسائل المباشرة التي يعرضها الشريط الجانبي. تُعرض دائمًا الرسائل غير المقروءة.",
   "fusion.settings.email": "إشعارات البريد الإلكتروني",
   "fusion.settings.email15": "كل 15 دقيقة",
   "fusion.settings.emailChanged": "تم تغيير البريد الإلكتروني",

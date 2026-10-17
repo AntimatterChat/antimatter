@@ -7044,7 +7044,6 @@
   "fusion.settings.displaySpacious": "宽松",
   "fusion.settings.displayStandard": "标准",
   "fusion.settings.dmLimit": "打开的会话",
-  "fusion.settings.dmLimitDesc": "侧栏列出的私信数量。未读私信始终显示。",
   "fusion.settings.email": "邮件通知",
   "fusion.settings.email15": "每 15 分钟",
   "fusion.settings.emailChanged": "邮件已更改",

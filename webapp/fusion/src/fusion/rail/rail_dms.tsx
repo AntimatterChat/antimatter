@@ -25,8 +25,9 @@ const MAX_BUBBLES = 5;
 // RailDirectMessages sits at the bottom of the team rail, above search: the direct messages waiting for you, as round
 // faces with their counts, under a small chat bubble that opens the list of all the direct messages. Without any, the
 // chat bubble is a rail bubble of its own; it shrinks to the small icon, or grows back, with an animation (none with
-// reduced motion). The conversations listed in the sidebar's Open conversations dock, and the one you're in, aren't
-// among the faces: they show there already, with their red ring.
+// reduced motion). The faces are the unread conversations the sidebar's Open conversations dock has no room for (it
+// keeps the latest active, up to the "Open conversations" setting): those in the dock show there already, with
+// their red ring. None while the list of all the direct messages takes the dock's place: they're all in it.
 export default function RailDirectMessages() {
     const {formatMessage} = useIntl();
     const layout = useLayout();
@@ -37,9 +38,8 @@ export default function RailDirectMessages() {
     const getDockChannelIds = useMemo(() => makeGetDockChannelIds(), []);
     const dockIds = useSelector(getDockChannelIds);
 
-    // The dock is in the team's sidebar: while the list of all the direct messages takes its place, it isn't shown.
-    const inDock = useMemo(() => new Set(layout.home ? [] : dockIds), [dockIds, layout.home]);
-    const waiting = unreadDMs.filter((dm) => dm.channel.id !== currentChannelId && !inDock.has(dm.channel.id)).slice(0, MAX_BUBBLES);
+    const inDock = useMemo(() => new Set(dockIds), [dockIds]);
+    const waiting = layout.home ? [] : unreadDMs.filter((dm) => dm.channel.id !== currentChannelId && !inDock.has(dm.channel.id)).slice(0, MAX_BUBBLES);
     const stacked = waiting.length > 0;
 
     const unread = unreadDMs.reduce((n, dm) => n + Math.max(dm.messages, dm.mentions), 0);

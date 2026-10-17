@@ -6869,7 +6869,6 @@
   "fusion.settings.displaySpacious": "Просторий",
   "fusion.settings.displayStandard": "Стандартне",
   "fusion.settings.dmLimit": "Відкриті розмови",
-  "fusion.settings.dmLimitDesc": "Скільки приватних повідомлень перелічує бічна панель. Непрочитані завжди відображаються.",
   "fusion.settings.email": "Сповіщення на електронну пошту",
   "fusion.settings.email15": "Кожні 15 хвилин",
   "fusion.settings.emailChanged": "Електронну пошту змінено",

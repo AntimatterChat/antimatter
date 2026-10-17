@@ -6519,7 +6519,6 @@
   "fusion.settings.displaySpacious": "Ευρύχωρο",
   "fusion.settings.displayStandard": "Κανονική",
   "fusion.settings.dmLimit": "Ανοιχτές συνομιλίες",
-  "fusion.settings.dmLimitDesc": "Πόσα άμεσα μηνύματα εμφανίζει η πλευρική στήλη. Τα μη αναγνωσμένα εμφανίζονται πάντα.",
   "fusion.settings.email": "Ειδοποιήσεις μέσω email",
   "fusion.settings.email15": "Κάθε 15 λεπτά",
   "fusion.settings.emailChanged": "Το email άλλαξε",
