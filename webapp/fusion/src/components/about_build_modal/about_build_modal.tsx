@@ -5,7 +5,7 @@ import React, {useState} from 'react';
 import {Modal} from 'react-bootstrap';
 import {FormattedMessage, useIntl} from 'react-intl';
 
-import {getDesktopVersion, isDesktopApp} from '@mattermost/shared/utils/user_agent';
+import {isDesktopApp} from '@mattermost/shared/utils/user_agent';
 import type {ClientConfig} from '@mattermost/types/config';
 
 import CopyButton from 'components/copy_button';
@@ -14,6 +14,7 @@ import Nbsp from 'components/html_entities/nbsp';
 import MattermostLogo from 'components/widgets/icons/mattermost_logo';
 
 import {AboutLinks} from 'utils/constants';
+import {getDisplayDesktopVersion} from 'utils/desktop_version';
 
 type SocketStatus = {
     connected: boolean;
@@ -104,7 +105,7 @@ export default function AboutBuildModal(props: Props) {
     const getDesktopVersionString = () => {
         return intl.formatMessage(
             {id: 'about.desktopVersion', defaultMessage: 'Desktop Version:'},
-        ) + '\u00a0' + getDesktopVersion();
+        ) + '\u00a0' + getDisplayDesktopVersion();
     };
 
     const getDbVersionString = () => {

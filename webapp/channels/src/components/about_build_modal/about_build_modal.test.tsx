@@ -186,6 +186,40 @@ describe('components/AboutBuildModal', () => {
         expect(screen.getByTestId('aboutModalVersionInfo')).not.toHaveTextContent('(FIPS)');
     });
 
+    describe('desktop version', () => {
+        const ELECTRON = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.7339.41 Electron/38.1.0 Safari/537.36';
+
+        function mockUserAgent(userAgent: string) {
+            jest.spyOn(window.navigator, 'userAgent', 'get').mockReturnValue(userAgent);
+            jest.spyOn(window.navigator, 'appVersion', 'get').mockReturnValue(userAgent.replace(/^Mozilla\//, ''));
+        }
+
+        test('should show the Antimatter Desktop version, not the Mattermost-compatible one', () => {
+            mockUserAgent(`${ELECTRON} Antimatter/0.9.0-rc-1 Mattermost/6.4.0`);
+
+            renderAboutBuildModal({config, socketStatus});
+
+            expect(screen.getByTestId('aboutModalVersionInfo')).toHaveTextContent('Desktop Version: 0.9.0-rc-1');
+            expect(screen.getByTestId('aboutModalVersionInfo')).not.toHaveTextContent('6.4.0');
+        });
+
+        test('should show the Mattermost Desktop version when there is no Antimatter token', () => {
+            mockUserAgent(`${ELECTRON} Mattermost/5.10.2`);
+
+            renderAboutBuildModal({config, socketStatus});
+
+            expect(screen.getByTestId('aboutModalVersionInfo')).toHaveTextContent('Desktop Version: 5.10.2');
+        });
+
+        test('should not show a desktop version in a browser', () => {
+            mockUserAgent(ELECTRON.replace(' Electron/38.1.0', ''));
+
+            renderAboutBuildModal({config, socketStatus});
+
+            expect(screen.getByTestId('aboutModalVersionInfo')).not.toHaveTextContent('Desktop Version');
+        });
+    });
+
     function renderAboutBuildModal(props = {}) {
         const onExited = jest.fn();
         const show = true;
