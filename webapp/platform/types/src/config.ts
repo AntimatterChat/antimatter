@@ -812,6 +812,7 @@ export type AutoTranslationSettings = {
     Enable: boolean;
     TargetLanguages: string[];
     Workers: number;
+
     // Antimatter: 'connection' translates with the model connection of AISettings.AutoTranslation; 'agents', the
     // older name, means the same (falling back to the connection with Agents.LLMServiceID's ID).
     Provider: '' | 'libretranslate' | 'agents' | 'openai' | 'connection';

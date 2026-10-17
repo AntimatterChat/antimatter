@@ -6,7 +6,6 @@ import React, {type JSX} from 'react';
 import * as UserAgent from '@mattermost/shared/utils/user_agent';
 
 import {renderWithContext, screen, userEvent} from 'tests/react_testing_utils';
-
 import {getHistory} from 'utils/browser_history';
 
 import {OnboardingTasksName} from './constants';
@@ -133,6 +132,7 @@ describe('onboarding tasks manager', () => {
             expect(openSpy).toHaveBeenCalledWith('https://downloads.example.com/chat', '_blank', 'noopener,noreferrer');
         });
     });
+
     // Antimatter: the product menu, where the tour pointed at the System Console, only shows when an app has a page of
     // its own; without it, the task opens the System Console.
     describe('the visit_system_console task', () => {

@@ -7,11 +7,11 @@ import {useSelector} from 'react-redux';
 import {isDesktopApp} from '@mattermost/shared/utils/user_agent';
 import type {ProductIdentifier} from '@mattermost/types/products';
 
+import type {GlobalState} from 'types/store';
+
 import HistoryButtons from './history_buttons';
 import {ProductHeading} from './product_branding';
 import ProductSwitcherMenu from './switch_product_menu';
-
-import type {GlobalState} from 'types/store';
 
 import './left_controls.scss';
 

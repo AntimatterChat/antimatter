@@ -34,9 +34,9 @@ import {am} from 'fusion/utils/class_names';
 import {getHistory} from 'utils/browser_history';
 import {ModalIdentifiers} from 'utils/constants';
 
-import {canOpenMarketplace, canVisitSystemConsole} from './admin_links';
-
 import type {GlobalState} from 'types/store';
+
+import {canOpenMarketplace, canVisitSystemConsole} from './admin_links';
 
 type Props = {
     anchor: HTMLElement | null;

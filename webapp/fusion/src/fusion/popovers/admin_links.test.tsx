@@ -103,6 +103,7 @@ describe('fusion/popovers/admin_links', () => {
         unmount2();
         jest.mocked(UserAgent.isDesktopApp).mockReturnValue(false);
 
+        // eslint-disable-next-line no-script-url -- the test: a javascript: link in the config isn't offered for download
         renderWithContext(<Probe/>, state({config: {AppDownloadLink: 'javascript:alert(1)'}}));
         expect(screen.queryByText('download:javascript:alert(1)')).not.toBeInTheDocument();
     });
