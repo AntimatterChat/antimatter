@@ -356,7 +356,9 @@ type DropZoneProps = {
 const firstFile = (list: FileList | null | undefined) => (list && list.length ? list[0] : null);
 
 // PickerDropZone takes a file chosen with the file chooser, dropped on it, or pasted anywhere in its view (Ctrl/⌘+V
-// with an image on the clipboard; pasting text in a field stays pasting text).
+// with an image on the clipboard; pasting text in a field stays pasting text). The zone is one control: a button the
+// size of the zone that opens the file chooser, with what was chosen beside it once there is something, and the types
+// and limits under it until then (or what's wrong with the file), so that the view stays short.
 export function PickerDropZone({accept, file, onFile, label, hint, error, preview, changeLabel}: DropZoneProps) {
     const inputRef = useRef<HTMLInputElement>(null);
     const zoneRef = useRef<HTMLDivElement>(null);
@@ -392,6 +394,8 @@ export function PickerDropZone({accept, file, onFile, label, hint, error, previe
         return () => doc.removeEventListener('paste', onPaste);
     }, []);
 
+    // The types and limits matter until a file is chosen; then only what's wrong with it does.
+    const note = error || (file ? null : hint);
     return (
         <div className={am('pv-drop-wrap')}>
             <div
@@ -433,12 +437,6 @@ export function PickerDropZone({accept, file, onFile, label, hint, error, previe
                         )}
                     </div>
                 )}
-                {!file && (
-                    <Icon
-                        name='upload'
-                        className={am('pv-drop-ic')}
-                    />
-                )}
                 <input
                     ref={inputRef}
                     type='file'
@@ -456,21 +454,31 @@ export function PickerDropZone({accept, file, onFile, label, hint, error, previe
                 />
                 <button
                     type='button'
-                    className={am('btn', 'pv-drop-btn')}
-                    aria-describedby={hintId}
+                    className={am('pv-drop-btn')}
+                    aria-describedby={note ? hintId : undefined}
                     onClick={() => inputRef.current?.click()}
                 >
-                    {file ? changeLabel : label}
+                    {!file && (
+                        <Icon
+                            name='upload'
+                            className={am('pv-drop-ic')}
+                        />
+                    )}
+                    <span className={am('pv-drop-text')}>
+                        <span className={am('pv-drop-label')}>{file ? changeLabel : label}</span>
+                        {file && <span className={am('pv-drop-name')}>{file.name}</span>}
+                    </span>
                 </button>
-                {file && <span className={am('pv-drop-name')}>{file.name}</span>}
             </div>
-            <p
-                id={hintId}
-                className={am('pv-message', error ? 'pv-error' : 'pv-hint')}
-                role={error ? 'alert' : undefined}
-            >
-                {error || hint}
-            </p>
+            {note && (
+                <p
+                    id={hintId}
+                    className={am('pv-message', error ? 'pv-error' : 'pv-hint')}
+                    role={error ? 'alert' : undefined}
+                >
+                    {note}
+                </p>
+            )}
         </div>
     );
 }
