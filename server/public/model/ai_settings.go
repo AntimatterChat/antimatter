@@ -109,12 +109,14 @@ func (o *Config) TextToSpeechUsesConnection() bool {
 }
 
 // AutoTranslationConnection gives the connection and model auto-translation uses when its provider is a model
-// connection ("connection", or the older "agents"): AISettings.AutoTranslation, else the Agents plugin's service ID.
+// connection ("connection", or the older "agents"): AISettings.AutoTranslation, else, for "agents", the Agents plugin's
+// service ID.
 func (o *Config) AutoTranslationConnection() (connectionID, modelName string) {
 	if s := o.AISettings.AutoTranslation; s.IsConfigured() {
 		return *s.ConnectionId, SafeDereference(s.Model)
 	}
-	if o.AutoTranslationSettings.Agents != nil {
+	// Only the older "agents" provider falls back to the plugin's service ID.
+	if SafeDereference(o.AutoTranslationSettings.Provider) == "agents" && o.AutoTranslationSettings.Agents != nil {
 		modelName := ""
 		if o.AISettings.AutoTranslation != nil {
 			modelName = SafeDereference(o.AISettings.AutoTranslation.Model)
