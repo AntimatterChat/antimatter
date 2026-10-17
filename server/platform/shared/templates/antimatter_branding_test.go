@@ -13,12 +13,20 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+// shippedTemplatesDir is server/templates. GetTemplateDirectory would find this package's own directory, which is also
+// named templates.
+func shippedTemplatesDir(t *testing.T) string {
+	dir := filepath.Join("..", "..", "..", "templates")
+	_, err := os.Stat(filepath.Join(dir, "welcome_body.html"))
+	require.NoError(t, err, "server/templates is missing")
+	return dir
+}
+
 // TestShippedTemplatesNameNoMattermostSite checks the email and error page templates the server ships: none may link
 // to, or give an address at, a Mattermost site (UPSTREAM_MERGE_RULES.md, rule 10). CSS classes and data attributes
 // named mattermost-* are identifiers and don't count.
 func TestShippedTemplatesNameNoMattermostSite(t *testing.T) {
-	dir, ok := GetTemplateDirectory()
-	require.True(t, ok, "the templates directory is missing")
+	dir := shippedTemplatesDir(t)
 
 	files, err := filepath.Glob(filepath.Join(dir, "*.html"))
 	require.NoError(t, err)
@@ -38,8 +46,7 @@ func TestShippedTemplatesNameNoMattermostSite(t *testing.T) {
 // TestNoCloudBillingTemplates: the Cloud welcome, renewal, arrears and payment emails belonged to Mattermost's Cloud
 // billing, which Antimatter removed; nothing sends them, so they aren't shipped.
 func TestNoCloudBillingTemplates(t *testing.T) {
-	dir, ok := GetTemplateDirectory()
-	require.True(t, ok)
+	dir := shippedTemplatesDir(t)
 
 	for _, pattern := range []string{"cloud_*", "payment_failed*"} {
 		matches, err := filepath.Glob(filepath.Join(dir, pattern))
