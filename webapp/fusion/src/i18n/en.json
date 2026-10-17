@@ -23159,6 +23159,10 @@
     "defaultMessage": "Add members",
     "description": ""
   },
+  "fusion.channelMenu.apps": {
+    "defaultMessage": "Apps",
+    "description": "Heading of the group of actions that installed apps add to a channel's menu."
+  },
   "fusion.channelMenu.archive": {
     "defaultMessage": "Archive channel…",
     "description": ""
@@ -23202,6 +23206,22 @@
   "fusion.channelMenu.leave": {
     "defaultMessage": "Leave channel",
     "description": ""
+  },
+  "fusion.channelMenu.leaveAsk": {
+    "defaultMessage": "Leave channel…",
+    "description": "Item at the bottom of a channel's menu (under its name in the header, and its ⋯ menu in the sidebar): leave the channel, after confirming. The ellipsis says a confirmation follows."
+  },
+  "fusion.channelMenu.leavePrivateMessage": {
+    "defaultMessage": "It's a private channel: you'll need to be added again to come back.",
+    "description": "Text of the dialog asking before leaving a private channel: once left, someone has to add the person again."
+  },
+  "fusion.channelMenu.leavePublicMessage": {
+    "defaultMessage": "You can join it again at any time from Browse channels.",
+    "description": "Text of the dialog asking before leaving a public channel. \"Browse channels\" is the name of the dialog listing a community's channels."
+  },
+  "fusion.channelMenu.leaveTitle": {
+    "defaultMessage": "Leave {name}?",
+    "description": "Title of the dialog asking before leaving a channel, from its menu; {name} is the channel's name with its #."
   },
   "fusion.channelMenu.lockedNote": {
     "defaultMessage": "{category} is locked: its channels stay there.",
@@ -23247,9 +23267,9 @@
     "defaultMessage": "Muted until {time}",
     "description": ""
   },
-  "fusion.channelMenu.muteInstead": {
-    "defaultMessage": "Mute channel",
-    "description": "Channel menu item shown instead of 'Leave channel' in a community whose members are in all its channels: mutes the channel."
+  "fusion.channelMenu.muteFor": {
+    "defaultMessage": "Mute for",
+    "description": "Accessible name of the list of durations shown under \"Mute channel\" in a channel's menu (For 1 hour, For 8 hours, …)."
   },
   "fusion.channelMenu.muteInsteadSub": {
     "defaultMessage": "Everyone in {community} is in all its channels",
@@ -23289,10 +23309,6 @@
   },
   "fusion.channelMenu.unarchive": {
     "defaultMessage": "Unarchive channel",
-    "description": ""
-  },
-  "fusion.channelMenu.unfavorite": {
-    "defaultMessage": "Unfavourite",
     "description": ""
   },
   "fusion.channelMenu.unhide": {
@@ -24511,52 +24527,8 @@
     "defaultMessage": "You: {text}",
     "description": ""
   },
-  "fusion.info.add": {
-    "defaultMessage": "Add people",
-    "description": ""
-  },
-  "fusion.info.copyLink": {
-    "defaultMessage": "Copy link",
-    "description": ""
-  },
   "fusion.info.created": {
     "defaultMessage": "Created by {name} on {date}",
-    "description": ""
-  },
-  "fusion.info.favorite": {
-    "defaultMessage": "Favourite",
-    "description": ""
-  },
-  "fusion.info.favorited": {
-    "defaultMessage": "Favourited",
-    "description": ""
-  },
-  "fusion.info.files": {
-    "defaultMessage": "Files",
-    "description": ""
-  },
-  "fusion.info.label": {
-    "defaultMessage": "About {name}",
-    "description": ""
-  },
-  "fusion.info.members": {
-    "defaultMessage": "Members",
-    "description": ""
-  },
-  "fusion.info.mute": {
-    "defaultMessage": "Mute",
-    "description": ""
-  },
-  "fusion.info.muted": {
-    "defaultMessage": "Muted",
-    "description": ""
-  },
-  "fusion.info.pinned": {
-    "defaultMessage": "Pinned messages",
-    "description": ""
-  },
-  "fusion.info.settings": {
-    "defaultMessage": "Settings",
     "description": ""
   },
   "fusion.inlineReply.deleted": {

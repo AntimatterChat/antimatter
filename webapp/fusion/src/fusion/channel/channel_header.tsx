@@ -41,7 +41,7 @@ import type {GlobalState} from 'types/store';
 import type {PluginComponent, SearchButtonsComponent, SearchSuggestionsComponent} from 'types/store/plugins';
 
 import CallButton, {OtherCallProviders} from './call_button';
-import ChannelInfo from './channel_info';
+import ChannelNameMenu from './channel_name_menu';
 import HeaderTopic from './header_topic';
 
 const NO_CHANNELS: Channel[] = [];
@@ -193,7 +193,7 @@ export default function ChannelHeader({channel}: {channel: Channel}) {
                         type='button'
                         className={am('title-btn', {on: info})}
                         title={formatMessage({id: 'fusion.header.info', defaultMessage: 'About this conversation'})}
-                        aria-haspopup='dialog'
+                        aria-haspopup='menu'
                         aria-expanded={info}
                         onClick={() => setInfo(!info)}
                     >
@@ -568,20 +568,10 @@ export default function ChannelHeader({channel}: {channel: Channel}) {
                 </Popover>
             )}
             {info && (
-                <ChannelInfo
+                <ChannelNameMenu
                     channel={channel}
                     title={title}
                     anchor={infoRef.current}
-                    onCollection={(tab) => {
-                        setInfo(false);
-                        setCollectionsTab(tab);
-                        setCollections(true);
-                    }}
-                    onMembers={() => {
-                        if (!layout.showMembers) {
-                            layout.toggleMembers();
-                        }
-                    }}
                     onClose={() => setInfo(false)}
                 />
             )}

@@ -3,60 +3,31 @@
 
 import React, {useState} from 'react';
 import {useIntl} from 'react-intl';
-import {shallowEqual, useDispatch, useSelector, useStore} from 'react-redux';
+import {shallowEqual, useDispatch, useSelector} from 'react-redux';
 
 import type {Channel} from '@mattermost/types/channels';
 
 import {addChannelToCategory} from 'mattermost-redux/actions/channel_categories';
-import {favoriteChannel, readMultipleChannels, setMyChannelAutotranslation, unfavoriteChannel} from 'mattermost-redux/actions/channels';
-import {savePreferences} from 'mattermost-redux/actions/preferences';
-import {patchTeam} from 'mattermost-redux/actions/teams';
-import {Permissions, Preferences} from 'mattermost-redux/constants';
+import {readMultipleChannels} from 'mattermost-redux/actions/channels';
 import {getCategoryInTeamWithChannel, getManagedCategoryMappings} from 'mattermost-redux/selectors/entities/channel_categories';
-import {getCurrentChannelId, getMyChannelMembership, isChannelAutotranslated, isFavoriteChannel, isMyChannelAutotranslated, isUserLanguageSupportedForAutotranslation, makeGetChannelUnreadCount} from 'mattermost-redux/selectors/entities/channels';
-import {getConfig} from 'mattermost-redux/selectors/entities/general';
-import {haveIChannelPermission, haveITeamPermission} from 'mattermost-redux/selectors/entities/roles';
+import {makeGetChannelUnreadCount} from 'mattermost-redux/selectors/entities/channels';
 import {getCurrentTeam} from 'mattermost-redux/selectors/entities/teams';
-import {getCurrentUser, getCurrentUserId, getUser} from 'mattermost-redux/selectors/entities/users';
-import {getUserIdFromChannelName, isChannelMuted} from 'mattermost-redux/utils/channel_utils';
 
 import {markMostRecentPostInChannelAsUnread} from 'actions/post_actions';
-import {leaveChannel, leaveDirectChannel} from 'actions/views/channel';
 import {getCategoriesForCurrentTeam} from 'selectors/views/channel_sidebar';
 
-import ChannelInviteModal from 'components/channel_invite_modal';
-import ChannelNotificationsModal from 'components/channel_notifications_modal';
-import ChannelSettingsModal from 'components/channel_settings_modal/channel_settings_modal';
-import ConvertChannelModal from 'components/convert_channel_modal';
-import ConvertGmToChannelModal from 'components/convert_gm_to_channel_modal';
-import DeleteChannelModal from 'components/delete_channel_modal';
-import DisableAutotranslationModal from 'components/disable_autotranslation_modal';
-import EditChannelHeaderModal from 'components/edit_channel_header_modal';
-import LeaveChannelModal from 'components/leave_channel_modal';
-import UnarchiveChannelModal from 'components/unarchive_channel_modal';
-
-import {canArchiveChannel, isAllChannelsCommunity, isCommunityChannelFor, isDefaultChannel, isFirstDefaultChannel} from 'fusion/channel/community_channels';
+import {ChannelActionGroups, useChannelActions} from 'fusion/channel/channel_actions';
 import Icon from 'fusion/components/icon';
 import {Popover} from 'fusion/components/layer';
 import type {Placement} from 'fusion/components/layer';
-import {MenuItem, MenuSeparator} from 'fusion/components/menu';
+import {MenuItem, MenuKeys} from 'fusion/components/menu';
 import CopyIdItem from 'fusion/popovers/copy_id_item';
-import {useDialogs} from 'fusion/shell/dialogs_context';
 import {useToast} from 'fusion/shell/toast_context';
 import {categoryName} from 'fusion/sidebar/category_name';
-import {RenameGroupDialog} from 'fusion/sidebar/group_dm';
 import {hideConversation, isHidden, showConversation} from 'fusion/sidebar/hidden';
 import {canFileChannel, fileChannel, fileChannelHere, findServerCategory, getServerCategories, getSidebarCategories, isServerCategory, SERVER_CATEGORY_PREFIX} from 'fusion/sidebar/server_categories';
-import {getMuteEnd, muteFor, MUTE_DURATIONS, unmute} from 'fusion/sidebar/timed_mute';
 import {am} from 'fusion/utils/class_names';
-import {openAddToGroup, openDialog} from 'fusion/utils/modals';
-import {channelPath} from 'fusion/utils/paths';
-import {getHistory} from 'utils/browser_history';
-import {getChannelRoutePathAndIdentifier} from 'utils/channel_utils';
-import Constants, {ModalIdentifiers} from 'utils/constants';
-import {canPopout, getPopoutChannelTitle, popoutChannel} from 'utils/popouts/popout_windows';
-import {getSiteURL} from 'utils/url';
-import {copyToClipboard} from 'utils/utils';
+import Constants from 'utils/constants';
 
 import type {GlobalState} from 'types/store';
 
@@ -68,36 +39,22 @@ type Props = {
     onClose: () => void;
 };
 
-type Sub = 'move' | 'mute' | null;
-
-// ChannelMenu is the ⋯ menu of a channel or a conversation: in the sidebar (also its right-click menu) and in the
-// chat header.
+// ChannelMenu is the ⋯ menu of a channel or a conversation in the sidebar (also its right-click menu): its actions as
+// the menu under its name in the chat header has them (see useChannelActions), with the sidebar's own among the
+// frequent ones: marking it read or unread, moving it to a category, hiding it.
 export default function ChannelMenu({channel, anchor, point, placement = 'right', onClose}: Props) {
-    const intl = useIntl();
-    const {formatMessage} = intl;
+    const {formatMessage} = useIntl();
     const dispatch = useDispatch();
-    const store = useStore<GlobalState>();
     const toast = useToast();
-    const dialogs = useDialogs();
-
-    // The channel's admins and the team's set its permissions: overrides and, when private, the roles it's for.
-    const canManageAccess = useSelector((state: GlobalState) => haveITeamPermission(state, channel.team_id, Permissions.MANAGE_TEAM) || haveIChannelPermission(state, channel.team_id, channel.id, Permissions.MANAGE_CHANNEL_ROLES));
-
-    // Everyone who reads a channel can export its messages, unless the system admins keep that to admins.
-    const canExport = useSelector((state: GlobalState) => getConfig(state).RestrictChannelExportToAdmins !== 'true') || canManageAccess;
-    const [sub, setSub] = useState<Sub>(null);
-    const [renaming, setRenaming] = useState(false);
+    const {actions, replacement} = useChannelActions(channel, onClose);
+    const [moving, setMoving] = useState(false);
     const [getUnreadCount] = useState(makeGetChannelUnreadCount);
-    const me = useSelector(getCurrentUser);
-    const userId = useSelector(getCurrentUserId);
     const team = useSelector(getCurrentTeam);
-    const current = useSelector(getCurrentChannelId) === channel.id;
-    const favorite = useSelector((state: GlobalState) => isFavoriteChannel(state, channel.id));
-    const muted = useSelector((state: GlobalState) => isChannelMuted(getMyChannelMembership(state, channel.id)));
-    const muteEnd = useSelector((state: GlobalState) => getMuteEnd(state, channel.id));
     const unread = useSelector((state: GlobalState) => getUnreadCount(state, channel.id)).showUnread;
+    const hidden = useSelector((state: GlobalState) => isHidden(state, channel.id));
     const categories = useSelector(getCategoriesForCurrentTeam);
     const currentCategory = useSelector((state: GlobalState) => (team ? getCategoryInTeamWithChannel(state, team.id, channel.id) : undefined));
+    const direct = channel.type === Constants.DM_CHANNEL || channel.type === Constants.GM_CHANNEL;
 
     // Where the channel can move: the team's categories for everyone it may be filed in, then the person's own, unless
     // it sits in a locked category. Back to Channels unfiles it, for those allowed to.
@@ -111,184 +68,50 @@ export default function ChannelMenu({channel, anchor, point, placement = 'right'
 
     // Out of a locked category, only back to Channels, for those who may unfile it (team admins).
     const personalTargets = filedLocked ? categories.filter((c) => c.type === 'channels' && canUnfile) : categories.filter((c) => c.type !== 'direct_messages' && !isServerCategory(c) && !(c.type === 'channels' && filedName && !canUnfile));
-    const pluginActions = useSelector((state: GlobalState) => state.plugins.components.ChannelHeader) || [];
 
-    // Auto-translation, once a channel admin turned it on for the channel: each reader can turn it off for them.
-    const channelTranslated = useSelector((state: GlobalState) => isChannelAutotranslated(state, channel.id));
-    const hidden = useSelector((state: GlobalState) => isHidden(state, channel.id));
-    const myTranslation = useSelector((state: GlobalState) => isMyChannelAutotranslated(state, channel.id));
-    const languageSupported = useSelector(isUserLanguageSupportedForAutotranslation);
-    const teammate = useSelector((state: GlobalState) => (channel.type === Constants.DM_CHANNEL ? getUser(state, getUserIdFromChannelName(getCurrentUserId(state), channel.name)) : undefined));
-
-    const direct = channel.type === Constants.DM_CHANNEL || channel.type === Constants.GM_CHANNEL;
-    const isPrivate = channel.type === Constants.PRIVATE_CHANNEL;
-    const archived = channel.delete_at !== 0;
-
-    // The community's default channel can't be left nor made private; it and the channels every community starts
-    // with are archived by the community's admins only. In a community that has everyone in all its channels, people
-    // mute channels rather than leave them.
-    const isDefault = useSelector((state: GlobalState) => isDefaultChannel(state, channel));
-    const firstDefault = useSelector((state: GlobalState) => isFirstDefaultChannel(state, channel));
-    const stays = useSelector((state: GlobalState) => isCommunityChannelFor(state, channel, getCurrentUserId(state)));
-    const everyoneIn = useSelector((state: GlobalState) => channel.type === Constants.OPEN_CHANNEL && isAllChannelsCommunity(state, channel.team_id));
-    const may = useSelector((state: GlobalState) => ({
-        archive: canArchiveChannel(state, channel),
-        unarchive: haveITeamPermission(state, channel.team_id, Permissions.MANAGE_TEAM),
-        convert: haveIChannelPermission(state, channel.team_id, channel.id, Permissions.CONVERT_PUBLIC_CHANNEL_TO_PRIVATE),
-        editHeader: haveIChannelPermission(state, channel.team_id, channel.id, isPrivate ? Permissions.MANAGE_PRIVATE_CHANNEL_PROPERTIES : Permissions.MANAGE_PUBLIC_CHANNEL_PROPERTIES),
-    }), (a, b) => a.archive === b.archive && a.unarchive === b.unarchive && a.convert === b.convert && a.editHeader === b.editHeader);
-    const canArchive = !direct && !archived && may.archive && (!firstDefault || may.unarchive);
-    const canUnarchive = !direct && archived && may.unarchive;
-    const canConvert = channel.type === Constants.OPEN_CHANNEL && !archived && !isDefault && may.convert;
-    const canEditHeader = !archived && (direct || may.editHeader);
+    if (replacement) {
+        return <>{replacement}</>;
+    }
 
     const run = (action: () => void) => () => {
         action();
         onClose();
     };
-
     const label = direct ? channel.display_name : '#' + channel.display_name;
 
-    const canLeave = ((channel.type === Constants.OPEN_CHANNEL && !isDefault) || isPrivate) && !stays;
-    const leave = () => {
-        if (isPrivate || channel.policy_enforced) {
-            dispatch(openDialog(ModalIdentifiers.LEAVE_PRIVATE_CHANNEL_MODAL, LeaveChannelModal, {channel}));
-        } else {
-            dispatch(leaveChannel(channel.id));
-            toast(formatMessage({id: 'fusion.toast.left', defaultMessage: 'You left {name}'}, {name: label}));
-        }
-    };
-
-    // Closing a conversation hides it from the open conversations, as the dock's ×; closing an archived channel goes
-    // back to the team.
-    const close = () => {
-        if (direct) {
-            const category = channel.type === Constants.DM_CHANNEL ? Preferences.CATEGORY_DIRECT_CHANNEL_SHOW : Preferences.CATEGORY_GROUP_CHANNEL_SHOW;
-            const name = channel.type === Constants.DM_CHANNEL ? channel.teammate_id || getUserIdFromChannelName(userId, channel.name) : channel.id;
-            dispatch(savePreferences(userId, [{user_id: userId, category, name, value: 'false'}]));
-            dispatch(leaveDirectChannel(channel.name));
-        }
-        if ((current || !direct) && team) {
-            getHistory().push(`/${team.name}`);
-        }
-    };
-
-    if (renaming) {
-        return (
-            <RenameGroupDialog
-                channel={channel}
-                onClose={onClose}
-            />
-        );
-    }
-
-    return (
-        <Popover
-            anchor={anchor}
-            point={point}
-            placement={point ? 'point' : placement}
-            className='plus-pop ch-menu'
-            role='menu'
-            label={formatMessage({id: 'fusion.channelMenu.label', defaultMessage: 'Options for {name}'}, {name: channel.display_name})}
-            onClose={onClose}
-        >
-            {unread ? (
-                <MenuItem
-                    icon='check'
-                    label={formatMessage({id: 'fusion.channelMenu.markRead', defaultMessage: 'Mark as read'})}
-                    onClick={run(() => {
-                        dispatch(readMultipleChannels([channel.id]));
-                        toast(formatMessage({id: 'fusion.toast.markedRead', defaultMessage: 'Marked {name} as read'}, {name: label}));
-                    })}
-                />
-            ) : (
-                <MenuItem
-                    icon='inbox'
-                    label={formatMessage({id: 'fusion.channelMenu.markUnread', defaultMessage: 'Mark as unread'})}
-                    onClick={run(() => {
-                        dispatch(markMostRecentPostInChannelAsUnread(channel.id));
-                        toast(formatMessage({id: 'fusion.toast.markedUnread', defaultMessage: 'Marked {name} as unread'}, {name: label}));
-                    })}
-                />
-            )}
-            <MenuItem
-                icon='star'
-                label={favorite ? formatMessage({id: 'fusion.channelMenu.unfavorite', defaultMessage: 'Unfavourite'}) : formatMessage({id: 'fusion.channelMenu.favorite', defaultMessage: 'Favourite'})}
-                onClick={run(() => {
-                    dispatch(favorite ? unfavoriteChannel(channel.id) : favoriteChannel(channel.id));
-                    toast(favorite ? formatMessage({id: 'fusion.toast.unfavorited', defaultMessage: 'Removed from Favourites'}) : formatMessage({id: 'fusion.toast.favorited', defaultMessage: 'Added to Favourites'}));
-                })}
-            />
-            {muted ? (
-                <MenuItem
-                    icon='bell'
-                    label={direct ? formatMessage({id: 'fusion.channelMenu.unmuteConversation', defaultMessage: 'Unmute conversation'}) : formatMessage({id: 'fusion.channelMenu.unmute', defaultMessage: 'Unmute channel'})}
-                    sub={muteEnd ? formatMessage({id: 'fusion.channelMenu.mutedUntil', defaultMessage: 'Muted until {time}'}, {time: intl.formatDate(muteEnd, {weekday: 'short', hour: 'numeric', minute: '2-digit'})}) : undefined}
-                    onClick={run(() => {
-                        dispatch(unmute(channel.id));
-                        toast(formatMessage({id: 'fusion.toast.unmuted', defaultMessage: 'Unmuted'}));
-                    })}
-                />
-            ) : (
-                <MenuItem
-                    icon='bell-off'
-                    label={direct ? formatMessage({id: 'fusion.channelMenu.muteConversation', defaultMessage: 'Mute conversation'}) : formatMessage({id: 'fusion.channelMenu.mute', defaultMessage: 'Mute channel'})}
-                    onClick={() => setSub(sub === 'mute' ? null : 'mute')}
-                >
-                    <span className={am('end')}>
-                        <Icon
-                            name='chev'
-                            size='xs'
-                        />
-                    </span>
-                </MenuItem>
-            )}
-            {sub === 'mute' && (
-                <div className={am('sub')}>
-                    {MUTE_DURATIONS.map(([duration, text]) => (
-                        <button
-                            key={duration}
-                            type='button'
-                            role='menuitem'
-                            onClick={run(() => {
-                                dispatch(muteFor(channel.id, duration));
-                                toast(formatMessage({id: 'fusion.toast.muted', defaultMessage: 'Muted — no notifications or unread badges'}));
-                            })}
-                        >
-                            {formatMessage(text)}
-                        </button>
-                    ))}
-                </div>
-            )}
-            {channelTranslated && (
-                <MenuItem
-                    icon='globe'
-                    role='menuitemcheckbox'
-                    checked={myTranslation}
-                    disabled={!languageSupported}
-                    label={formatMessage({id: 'fusion.channelMenu.translate', defaultMessage: 'Translate messages'})}
-                    sub={languageSupported ? formatMessage({id: 'fusion.channelMenu.translateSub', defaultMessage: 'Into your language, by the server'}) : formatMessage({id: 'fusion.channelMenu.translateUnsupported', defaultMessage: 'Your language isn\'t supported'})}
-                    onClick={run(() => {
-                        if (myTranslation) {
-                            dispatch(openDialog(ModalIdentifiers.DISABLE_AUTOTRANSLATION_CONFIRM, DisableAutotranslationModal, {channel}));
-                        } else {
-                            dispatch(setMyChannelAutotranslation(channel.id, true));
-                        }
-                    })}
-                />
-            )}
-            <MenuItem
-                icon='bell'
-                label={formatMessage({id: 'fusion.channelMenu.notifications', defaultMessage: 'Notification preferences…'})}
-                onClick={run(() => dispatch(openDialog(ModalIdentifiers.CHANNEL_NOTIFICATIONS, ChannelNotificationsModal, {channel, currentUser: me})))}
-            />
+    // The sidebar's own entries, among the frequent ones: marking read first, moving and hiding last.
+    const markRead = unread ? (
+        <MenuItem
+            action='mark-read'
+            icon='check'
+            label={formatMessage({id: 'fusion.channelMenu.markRead', defaultMessage: 'Mark as read'})}
+            onClick={run(() => {
+                dispatch(readMultipleChannels([channel.id]));
+                toast(formatMessage({id: 'fusion.toast.markedRead', defaultMessage: 'Marked {name} as read'}, {name: label}));
+            })}
+        />
+    ) : (
+        <MenuItem
+            action='mark-read'
+            icon='inbox'
+            label={formatMessage({id: 'fusion.channelMenu.markUnread', defaultMessage: 'Mark as unread'})}
+            onClick={run(() => {
+                dispatch(markMostRecentPostInChannelAsUnread(channel.id));
+                toast(formatMessage({id: 'fusion.toast.markedUnread', defaultMessage: 'Marked {name} as unread'}, {name: label}));
+            })}
+        />
+    );
+    const organise = (
+        <>
             {!direct && (
                 <MenuItem
+                    action='move'
                     icon='folder'
                     label={formatMessage({id: 'fusion.channelMenu.move', defaultMessage: 'Move to…'})}
-                    onClick={() => setSub(sub === 'move' ? null : 'move')}
+                    expanded={moving}
+                    onClick={() => setMoving(!moving)}
                 >
-                    <span className={am('end')}>
+                    <span className={am('end', 'sub-chev', {open: moving})}>
                         <Icon
                             name='chev'
                             size='xs'
@@ -296,8 +119,12 @@ export default function ChannelMenu({channel, anchor, point, placement = 'right'
                     </span>
                 </MenuItem>
             )}
-            {sub === 'move' && (
-                <div className={am('sub')}>
+            {moving && (
+                <div
+                    className={am('sub')}
+                    role='group'
+                    aria-label={formatMessage({id: 'fusion.channelMenu.move', defaultMessage: 'Move to…'})}
+                >
                     {serverTargets.length > 0 && <div className={am('sub-head')}>{formatMessage({id: 'fusion.channelMenu.moveForEveryone', defaultMessage: 'For everyone'})}</div>}
                     {serverTargets.map((c) => {
                         const here = shownIn?.id === SERVER_CATEGORY_PREFIX + c.name;
@@ -356,12 +183,14 @@ export default function ChannelMenu({channel, anchor, point, placement = 'right'
             )}
             {hidden ? (
                 <MenuItem
+                    action='hide'
                     icon='inbox'
                     label={formatMessage({id: 'fusion.channelMenu.unhide', defaultMessage: 'Show in the sidebar'})}
                     onClick={run(() => dispatch(showConversation(channel.id)))}
                 />
             ) : (
                 <MenuItem
+                    action='hide'
                     icon='eye-off'
                     label={formatMessage({id: 'fusion.channelMenu.hide', defaultMessage: 'Hide until new messages'})}
                     sub={formatMessage({id: 'fusion.channelMenu.hideSub', defaultMessage: 'It comes back when someone writes in it'})}
@@ -371,168 +200,30 @@ export default function ChannelMenu({channel, anchor, point, placement = 'right'
                     })}
                 />
             )}
-            <MenuSeparator/>
-            <MenuItem
-                icon='link'
-                label={formatMessage({id: 'fusion.channelMenu.copyLink', defaultMessage: 'Copy link'})}
-                onClick={run(() => {
-                    if (team) {
-                        copyToClipboard(getSiteURL() + channelPath(team.name, channel));
-                        toast(formatMessage({id: 'fusion.toast.linkCopied', defaultMessage: 'Link copied'}));
-                    }
-                })}
-            />
-            {canPopout() && team && (
-                <MenuItem
-                    icon='popout'
-                    label={formatMessage({id: 'fusion.channelMenu.newWindow', defaultMessage: 'Open in new window'})}
-                    onClick={run(() => {
-                        const {path, identifier} = getChannelRoutePathAndIdentifier(channel, teammate?.username);
-                        popoutChannel(formatMessage(getPopoutChannelTitle(channel.type)), team.name, path, identifier);
-                    })}
+        </>
+    );
+
+    return (
+        <Popover
+            anchor={anchor}
+            point={point}
+            placement={point ? 'point' : placement}
+            className='plus-pop ch-menu'
+            role='menu'
+            label={formatMessage({id: 'fusion.channelMenu.label', defaultMessage: 'Options for {name}'}, {name: channel.display_name})}
+            onClose={onClose}
+        >
+            <MenuKeys>
+                <ChannelActionGroups
+                    actions={actions}
+                    onClose={onClose}
+                    extra={{quick: {before: markRead, after: organise}}}
                 />
-            )}
-            {canExport && (
-                <MenuItem
-                    icon='file'
-                    label={direct ? formatMessage({id: 'fusion.channelExport.menuConversation', defaultMessage: 'Export conversation…'}) : formatMessage({id: 'fusion.channelExport.menu', defaultMessage: 'Export channel…'})}
-                    onClick={run(() => dialogs.exportChannel(channel))}
+                <CopyIdItem
+                    id={channel.id}
+                    onDone={onClose}
                 />
-            )}
-            {canEditHeader && (
-                <MenuItem
-                    icon='pen'
-                    label={formatMessage({id: 'fusion.channelMenu.editHeader', defaultMessage: 'Edit header'})}
-                    onClick={run(() => dispatch(openDialog(ModalIdentifiers.EDIT_CHANNEL_HEADER, EditChannelHeaderModal, {channel})))}
-                />
-            )}
-            {channel.type === Constants.GM_CHANNEL && (
-                <>
-                    <MenuItem
-                        icon='user-plus'
-                        label={formatMessage({id: 'fusion.group.addPeople', defaultMessage: 'Add people…'})}
-                        sub={formatMessage({id: 'fusion.group.addPeopleSub', defaultMessage: 'Starts a new group with everyone'})}
-                        onClick={run(() => {
-                            // The dialog adds to the conversation being read: open the group first.
-                            if (team) {
-                                getHistory().push(`/${team.name}/messages/${channel.name}`);
-                            }
-                            requestAnimationFrame(() => dispatch(openAddToGroup()));
-                        })}
-                    />
-                    <MenuItem
-                        icon='pen'
-                        label={formatMessage({id: 'fusion.group.rename', defaultMessage: 'Rename group'})}
-                        onClick={() => setRenaming(true)}
-                    />
-                    <MenuItem
-                        icon='hash'
-                        label={formatMessage({id: 'fusion.group.convert', defaultMessage: 'Convert to private channel'})}
-                        onClick={run(() => dispatch(openDialog(ModalIdentifiers.CONVERT_GM_TO_CHANNEL, ConvertGmToChannelModal, {channel})))}
-                    />
-                </>
-            )}
-            {/* An archived channel still takes members, to read it (an auditor going through old information). */}
-            {!direct && !everyoneIn && (
-                <MenuItem
-                    icon='user-plus'
-                    label={formatMessage({id: 'fusion.channelMenu.addMembers', defaultMessage: 'Add members'})}
-                    onClick={run(() => (channel.type === Constants.OPEN_CHANNEL || isPrivate ? dialogs.addPeople(channel) : dispatch(openDialog(ModalIdentifiers.CHANNEL_INVITE, ChannelInviteModal, {channel}))))}
-                />
-            )}
-            {!direct && !archived && (
-                <>
-                    <MenuItem
-                        icon='cog'
-                        label={formatMessage({id: 'fusion.channelMenu.settings', defaultMessage: 'Channel settings'})}
-                        onClick={run(() => dispatch(openDialog(ModalIdentifiers.CHANNEL_SETTINGS, ChannelSettingsModal, {channelId: channel.id, isOpen: true})))}
-                    />
-                </>
-            )}
-            {!direct && !archived && canManageAccess && (
-                <MenuItem
-                    icon='shield'
-                    label={formatMessage({id: 'fusion.channelMenu.permissions', defaultMessage: 'Permissions…'})}
-                    sub={formatMessage({id: 'fusion.channelMenu.permissionsSub', defaultMessage: 'Who sees it, and what roles can do here'})}
-                    onClick={run(() => dialogs.channelPermissions(channel))}
-                />
-            )}
-            {channel.type === Constants.OPEN_CHANNEL && !archived && !isDefault && may.unarchive && (
-                <MenuItem
-                    icon='flag'
-                    label={formatMessage({id: 'fusion.channelMenu.makeDefault', defaultMessage: 'Make it the default channel'})}
-                    sub={formatMessage({id: 'fusion.channelMenu.makeDefaultSub', defaultMessage: 'Newcomers land here, and everyone is in it'})}
-                    onClick={run(async () => {
-                        const result = await dispatch(patchTeam({id: channel.team_id, default_channel_id: channel.id}));
-                        if ('error' in result && result.error) {
-                            toast((result.error as {message?: string}).message || formatMessage({id: 'fusion.teamChannels.failed', defaultMessage: 'The setting couldn\'t be saved.'}));
-                        } else {
-                            toast(formatMessage({id: 'fusion.toast.madeDefault', defaultMessage: '{name} is the default channel'}, {name: label}));
-                        }
-                    })}
-                />
-            )}
-            {canConvert && (
-                <MenuItem
-                    icon='lock'
-                    label={formatMessage({id: 'fusion.channelMenu.convert', defaultMessage: 'Convert to private channel…'})}
-                    onClick={run(() => dispatch(openDialog(ModalIdentifiers.CONVERT_CHANNEL, ConvertChannelModal, {channelId: channel.id, channelDisplayName: channel.display_name})))}
-                />
-            )}
-            {pluginActions.filter((action) => !action.shouldRender || action.shouldRender(store.getState())).map((action) => (
-                <MenuItem
-                    key={action.id}
-                    icon='plug'
-                    label={action.text as string}
-                    onClick={run(() => action.action?.(channel.id))}
-                />
-            ))}
-            {(direct || archived || canLeave || (stays && !muted) || canArchive || canUnarchive) && <MenuSeparator/>}
-            {canUnarchive && (
-                <MenuItem
-                    icon='folder'
-                    label={formatMessage({id: 'fusion.channelMenu.unarchive', defaultMessage: 'Unarchive channel'})}
-                    onClick={run(() => dispatch(openDialog(ModalIdentifiers.UNARCHIVE_CHANNEL, UnarchiveChannelModal, {channel})))}
-                />
-            )}
-            {(direct || archived) && (
-                <MenuItem
-                    icon='x'
-                    label={direct ? formatMessage({id: 'fusion.channelMenu.closeConversation', defaultMessage: 'Close conversation'}) : formatMessage({id: 'fusion.channelMenu.close', defaultMessage: 'Close channel'})}
-                    onClick={run(close)}
-                />
-            )}
-            {canLeave && !archived && (
-                <MenuItem
-                    icon='leave'
-                    danger={true}
-                    label={formatMessage({id: 'fusion.channelMenu.leave', defaultMessage: 'Leave channel'})}
-                    onClick={run(leave)}
-                />
-            )}
-            {stays && !muted && (
-                <MenuItem
-                    icon='bell-off'
-                    label={formatMessage({id: 'fusion.channelMenu.muteInstead', defaultMessage: 'Mute channel'})}
-                    sub={formatMessage({id: 'fusion.channelMenu.muteInsteadSub', defaultMessage: 'Everyone in {community} is in all its channels'}, {community: team?.display_name || ''})}
-                    onClick={run(() => {
-                        dispatch(muteFor(channel.id, 0));
-                        toast(formatMessage({id: 'fusion.toast.muted', defaultMessage: 'Muted — no notifications or unread badges'}));
-                    })}
-                />
-            )}
-            {canArchive && (
-                <MenuItem
-                    icon='trash'
-                    danger={true}
-                    label={formatMessage({id: 'fusion.channelMenu.archive', defaultMessage: 'Archive channel…'})}
-                    onClick={run(() => dispatch(openDialog(ModalIdentifiers.DELETE_CHANNEL, DeleteChannelModal, {channel})))}
-                />
-            )}
-            <CopyIdItem
-                id={channel.id}
-                onDone={onClose}
-            />
+            </MenuKeys>
         </Popover>
     );
 }
