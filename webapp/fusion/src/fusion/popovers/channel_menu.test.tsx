@@ -1,7 +1,12 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 
+import fs from 'fs';
+import path from 'path';
+
 import React from 'react';
+import {createIntl} from 'react-intl';
+import type {IntlShape} from 'react-intl';
 
 import type {ChannelCategory} from '@mattermost/types/channel_categories';
 import type {Channel} from '@mattermost/types/channels';
@@ -12,11 +17,17 @@ import {favoriteChannel} from 'mattermost-redux/actions/channels';
 import {patchTeam} from 'mattermost-redux/actions/teams';
 
 import {muteFor} from 'fusion/sidebar/timed_mute';
-import frMessages from 'i18n/fr.json';
 import {renderWithContext, screen, userEvent, waitFor} from 'tests/react_testing_utils';
 import {TestHelper} from 'utils/test_helper';
 
 import ChannelMenu from './channel_menu';
+
+// The tests mock every i18n/*.json import: read the real French catalog.
+const frMessages: Record<string, string> = JSON.parse(fs.readFileSync(path.join(__dirname, '..', '..', 'i18n', 'fr.json'), 'utf8'));
+
+// The tests' useIntl is English (tests/react-intl_mock.ts): speak French for these.
+const intlModule: {useIntl: () => IntlShape} = jest.requireMock('react-intl');
+const speakFrench = () => jest.spyOn(intlModule, 'useIntl').mockReturnValue(createIntl({locale: 'fr', messages: frMessages, defaultLocale: 'en', timeZone: 'Etc/UTC', textComponent: 'span'}));
 
 // The default channel and all-channels communities in the channel menu: who may leave, archive, make default.
 
@@ -249,7 +260,7 @@ describe('fusion/popovers/ChannelMenu: default channels and all-channels communi
 });
 
 describe('fusion/popovers/ChannelMenu: the categories to move to, in the user\'s language', () => {
-    const fr = frMessages as Record<string, string>;
+    const fr = frMessages;
     const category = (id: string, type: ChannelCategory['type'], displayName: string) => ({id, team_id: 't1', user_id: 'me', type, display_name: displayName, channel_ids: [], sorting: 'default', muted: false, collapsed: false}) as unknown as ChannelCategory;
 
     beforeEach(() => {
@@ -267,7 +278,12 @@ describe('fusion/popovers/ChannelMenu: the categories to move to, in the user\'s
             document.body.appendChild(layer);
         }
     });
+    let spy: jest.SpyInstance;
+    beforeEach(() => {
+        spy = speakFrench();
+    });
     afterEach(() => {
+        spy.mockRestore();
         mockCategories = [];
     });
 

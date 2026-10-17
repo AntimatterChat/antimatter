@@ -1,7 +1,12 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 
+import fs from 'fs';
+import path from 'path';
+
 import React from 'react';
+import {createIntl} from 'react-intl';
+import type {IntlShape} from 'react-intl';
 
 import {CategorySorting} from '@mattermost/types/channel_categories';
 import type {ChannelCategory} from '@mattermost/types/channel_categories';
@@ -9,10 +14,16 @@ import type {ChannelCategory} from '@mattermost/types/channel_categories';
 import {setCategoryMuted, setCategorySorting} from 'mattermost-redux/actions/channel_categories';
 
 import {openDeleteCategory, openRenameCategory} from 'fusion/utils/modals';
-import frMessages from 'i18n/fr.json';
 import {renderWithContext, screen, userEvent} from 'tests/react_testing_utils';
 
 import CategoryMenu from './category_menu';
+
+// The tests mock every i18n/*.json import: read the real French catalog.
+const frMessages: Record<string, string> = JSON.parse(fs.readFileSync(path.join(__dirname, '..', '..', 'i18n', 'fr.json'), 'utf8'));
+
+// The tests' useIntl is English (tests/react-intl_mock.ts): speak French for these.
+const intlModule: {useIntl: () => IntlShape} = jest.requireMock('react-intl');
+const speakFrench = () => jest.spyOn(intlModule, 'useIntl').mockReturnValue(createIntl({locale: 'fr', messages: frMessages, defaultLocale: 'en', timeZone: 'Etc/UTC', textComponent: 'span'}));
 
 jest.mock('mattermost-redux/actions/channel_categories', () => ({
     setCategoryMuted: jest.fn(() => ({type: 'MUTED'})),
@@ -76,7 +87,6 @@ describe('fusion/popovers/CategoryMenu', () => {
     });
 
     test('in French, names the Favourites category in French and a custom one by its own name', () => {
-        const fr = frMessages as Record<string, string>;
         const renderFr = (c: ChannelCategory) => renderWithContext(
             <CategoryMenu
                 category={c}
@@ -84,14 +94,19 @@ describe('fusion/popovers/CategoryMenu', () => {
                 onClose={jest.fn()}
             />,
             {entities: {channels: {channels: {}, myMembers: {}, messageCounts: {}}, channelCategories: {byId: {cat: c}}}} as never,
-            {locale: 'fr', intlMessages: fr},
+            {locale: 'fr', intlMessages: frMessages},
         );
 
-        const {unmount} = renderFr(category('favorites', {display_name: 'Favourites'}));
-        expect(screen.getByRole('menu', {name: 'Options pour Favoris'})).toBeInTheDocument();
-        unmount();
+        const spy = speakFrench();
+        try {
+            const {unmount} = renderFr(category('favorites', {display_name: 'Favourites'}));
+            expect(screen.getByRole('menu', {name: 'Options pour Favoris'})).toBeInTheDocument();
+            unmount();
 
-        renderFr(category('custom', {display_name: 'Work'}));
-        expect(screen.getByRole('menu', {name: 'Options pour Work'})).toBeInTheDocument();
+            renderFr(category('custom', {display_name: 'Work'}));
+            expect(screen.getByRole('menu', {name: 'Options pour Work'})).toBeInTheDocument();
+        } finally {
+            spy.mockRestore();
+        }
     });
 });

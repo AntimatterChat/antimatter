@@ -1,14 +1,25 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 
+import fs from 'fs';
+import path from 'path';
+
 import React from 'react';
+import {createIntl} from 'react-intl';
+import type {IntlShape} from 'react-intl';
 
 import type {ChannelCategory} from '@mattermost/types/channel_categories';
 
-import frMessages from 'i18n/fr.json';
 import {renderWithContext, screen} from 'tests/react_testing_utils';
 
 import Category from './category';
+
+// The tests mock every i18n/*.json import: read the real French catalog.
+const frMessages: Record<string, string> = JSON.parse(fs.readFileSync(path.join(__dirname, '..', '..', 'i18n', 'fr.json'), 'utf8'));
+
+// The tests' useIntl is English (tests/react-intl_mock.ts): speak French for these.
+const intlModule: {useIntl: () => IntlShape} = jest.requireMock('react-intl');
+const speakFrench = () => jest.spyOn(intlModule, 'useIntl').mockReturnValue(createIntl({locale: 'fr', messages: frMessages, defaultLocale: 'en', timeZone: 'Etc/UTC', textComponent: 'span'}));
 
 // The category's channels, the same list every time, as the memoised selector gives it.
 const mockChannelIds = ['ops'];
@@ -47,7 +58,7 @@ describe('fusion/sidebar/Category', () => {
 });
 
 describe('fusion/sidebar/Category: names in the user\'s language', () => {
-    const fr = frMessages as Record<string, string>;
+    const fr = frMessages;
     const category = (id: string, type: ChannelCategory['type'], displayName: string) => ({id, team_id: 'team', user_id: 'me', type, display_name: displayName, sorting: 'default', channel_ids: ['ops'], muted: false, collapsed: false}) as unknown as ChannelCategory;
     const renderIn = (c: ChannelCategory, locale = 'fr') => renderWithContext(
         <Category category={c}/>,
@@ -61,25 +72,33 @@ describe('fusion/sidebar/Category: names in the user\'s language', () => {
         {locale, intlMessages: locale === 'fr' ? fr : undefined},
     );
 
-    test('in French, the Favourites and Channels categories have their French names, whatever name the server stored', () => {
-        const {unmount} = renderIn(category('favorites_me_team', 'favorites', 'Favorites'));
-        expect(screen.getByText('Favoris')).toBeInTheDocument();
-        expect(screen.queryByText('Favorites')).not.toBeInTheDocument();
-        expect(screen.getByRole('button', {name: 'Options de la catégorie Favoris'})).toBeInTheDocument();
-        unmount();
-
-        renderIn(category('channels_me_team', 'channels', 'Channels'));
-        expect(screen.getByText('Canaux')).toBeInTheDocument();
-    });
-
-    test('a custom category keeps the name its owner gave it', () => {
-        renderIn(category('custom1', 'custom', 'Work'));
-        expect(screen.getByText('Work')).toBeInTheDocument();
-        expect(screen.getByRole('button', {name: 'Options de la catégorie Work'})).toBeInTheDocument();
-    });
-
     test('in English, the Favourites category says Favourites', () => {
         renderIn(category('favorites_me_team', 'favorites', 'Favorites'), 'en');
         expect(screen.getByText('Favourites')).toBeInTheDocument();
+    });
+
+    describe('in French', () => {
+        let spy: jest.SpyInstance;
+        beforeEach(() => {
+            spy = speakFrench();
+        });
+        afterEach(() => spy.mockRestore());
+
+        test('the Favourites and Channels categories have their French names, whatever name the server stored', () => {
+            const {unmount} = renderIn(category('favorites_me_team', 'favorites', 'Favorites'));
+            expect(screen.getByText('Favoris')).toBeInTheDocument();
+            expect(screen.queryByText('Favorites')).not.toBeInTheDocument();
+            expect(screen.getByRole('button', {name: 'Options de la catégorie Favoris'})).toBeInTheDocument();
+            unmount();
+
+            renderIn(category('channels_me_team', 'channels', 'Channels'));
+            expect(screen.getByText('Canaux')).toBeInTheDocument();
+        });
+
+        test('a custom category keeps the name its owner gave it', () => {
+            renderIn(category('custom1', 'custom', 'Work'));
+            expect(screen.getByText('Work')).toBeInTheDocument();
+            expect(screen.getByRole('button', {name: 'Options de la catégorie Work'})).toBeInTheDocument();
+        });
     });
 });
