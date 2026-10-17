@@ -2,6 +2,7 @@
 // See LICENSE.txt for license information.
 
 import {useEffect} from 'react';
+import {defineMessage} from 'react-intl';
 import {useDispatch, useSelector, useStore} from 'react-redux';
 
 import {deletePreferences, savePreferences} from 'mattermost-redux/actions/preferences';
@@ -17,13 +18,14 @@ import type {ActionFuncAsync, GlobalState} from 'types/store';
 // channel once it's past (on the next start if it was closed then).
 export const CATEGORY_MUTE_UNTIL = 'fusion_mute_until';
 
-// The mute durations offered, in milliseconds; 0 is until unmuted.
+// The mute durations offered, in milliseconds; 0 is until unmuted. defineMessage puts them in the catalog to
+// translate.
 export const MUTE_DURATIONS: Array<[number, {id: string; defaultMessage: string}]> = [
-    [36e5, {id: 'fusion.mute.1h', defaultMessage: 'For 1 hour'}],
-    [8 * 36e5, {id: 'fusion.mute.8h', defaultMessage: 'For 8 hours'}],
-    [864e5, {id: 'fusion.mute.1d', defaultMessage: 'For 24 hours'}],
-    [7 * 864e5, {id: 'fusion.mute.1w', defaultMessage: 'For a week'}],
-    [0, {id: 'fusion.mute.forever', defaultMessage: 'Until I unmute it'}],
+    [36e5, defineMessage({id: 'fusion.mute.1h', defaultMessage: 'For 1 hour'})],
+    [8 * 36e5, defineMessage({id: 'fusion.mute.8h', defaultMessage: 'For 8 hours'})],
+    [864e5, defineMessage({id: 'fusion.mute.1d', defaultMessage: 'For 24 hours'})],
+    [7 * 864e5, defineMessage({id: 'fusion.mute.1w', defaultMessage: 'For a week'})],
+    [0, defineMessage({id: 'fusion.mute.forever', defaultMessage: 'Until I unmute it'})],
 ];
 
 function forgetMuteEnd(userId: string, channelId: string, state: GlobalState) {

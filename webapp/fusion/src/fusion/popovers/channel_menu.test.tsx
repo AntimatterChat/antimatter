@@ -16,14 +16,20 @@ import {addChannelToCategory} from 'mattermost-redux/actions/channel_categories'
 import {favoriteChannel} from 'mattermost-redux/actions/channels';
 import {patchTeam} from 'mattermost-redux/actions/teams';
 
+import ChannelNameMenu from 'fusion/channel/channel_name_menu';
 import {muteFor} from 'fusion/sidebar/timed_mute';
 import {renderWithContext, screen, userEvent, waitFor} from 'tests/react_testing_utils';
 import {TestHelper} from 'utils/test_helper';
 
 import ChannelMenu from './channel_menu';
 
-// The tests mock every i18n/*.json import: read the real French catalog.
-const frMessages: Record<string, string> = JSON.parse(fs.readFileSync(path.join(__dirname, '..', '..', 'i18n', 'fr.json'), 'utf8'));
+// The tests mock every i18n/*.json import: read the real French catalog. Strings not translated yet (translations
+// come after the English ones) fall back to English, as the app does.
+const enCatalog: Record<string, {defaultMessage: string}> = JSON.parse(fs.readFileSync(path.join(__dirname, '..', '..', 'i18n', 'en.json'), 'utf8'));
+const frMessages: Record<string, string> = {
+    ...Object.fromEntries(Object.entries(enCatalog).map(([id, {defaultMessage}]) => [id, defaultMessage])),
+    ...JSON.parse(fs.readFileSync(path.join(__dirname, '..', '..', 'i18n', 'fr.json'), 'utf8')),
+};
 
 // The tests' useIntl is English (tests/react-intl_mock.ts): speak French for these.
 const intlModule: {useIntl: () => IntlShape} = jest.requireMock('react-intl');
@@ -58,7 +64,7 @@ jest.mock('fusion/sidebar/server_categories', () => ({
     isServerCategory: () => false,
 }));
 jest.mock('fusion/sidebar/timed_mute', () => ({
-    MUTE_DURATIONS: [],
+    MUTE_DURATIONS: [[0, {id: 'fusion.mute.forever', defaultMessage: 'Until I unmute it'}]],
     getMuteEnd: () => 0,
     muteFor: jest.fn(() => ({type: 'MOCK_MUTE'})),
     unmute: jest.fn(() => ({type: 'MOCK_UNMUTE'})),
@@ -70,6 +76,7 @@ jest.mock('mattermost-redux/actions/channel_categories', () => ({
 jest.mock('mattermost-redux/actions/channels', () => ({
     ...jest.requireActual('mattermost-redux/actions/channels'),
     favoriteChannel: jest.fn(() => ({type: 'MOCK_FAVORITE'})),
+    getChannelStats: jest.fn(() => ({type: 'MOCK_STATS'})),
 }));
 jest.mock('mattermost-redux/actions/teams', () => ({
     ...jest.requireActual('mattermost-redux/actions/teams'),
@@ -109,7 +116,8 @@ function state({allChannels = false, defaultChannelId = '', channels = all, kind
     };
 }
 
-const MEMBER = ['delete_public_channel', 'delete_private_channel'];
+// Members here may archive channels (as a system admin may let them) and add people to them.
+const MEMBER = ['delete_public_channel', 'delete_private_channel', 'manage_public_channel_members', 'manage_private_channel_members'];
 const ADMIN = ['manage_team'];
 
 describe('fusion/popovers/ChannelMenu: default channels and all-channels communities', () => {
@@ -135,7 +143,7 @@ describe('fusion/popovers/ChannelMenu: default channels and all-channels communi
 
     test('nobody leaves the default channel, and only admins archive it', () => {
         render(town);
-        expect(item('Leave channel')).not.toBeInTheDocument();
+        expect(item('Leave channel…')).not.toBeInTheDocument();
         expect(item('Archive channel…')).not.toBeInTheDocument();
         expect(item(/Make it the default channel/)).not.toBeInTheDocument();
         expect(item('Convert to private channel…')).not.toBeInTheDocument();
@@ -145,18 +153,18 @@ describe('fusion/popovers/ChannelMenu: default channels and all-channels communi
         mockTeamPerms = new Set(ADMIN);
         render(town);
         expect(item('Archive channel…')).toBeInTheDocument();
-        expect(item('Leave channel')).not.toBeInTheDocument();
+        expect(item('Leave channel…')).not.toBeInTheDocument();
     });
 
     test('Off-Topic can be left, but only admins archive it', () => {
         render(offTopic);
-        expect(item('Leave channel')).toBeInTheDocument();
+        expect(item('Leave channel…')).toBeInTheDocument();
         expect(item('Archive channel…')).not.toBeInTheDocument();
     });
 
     test('an ordinary channel is left and archived by those allowed, and made default only by admins', () => {
         render(dev);
-        expect(item('Leave channel')).toBeInTheDocument();
+        expect(item('Leave channel…')).toBeInTheDocument();
         expect(item('Archive channel…')).toBeInTheDocument();
         expect(item(/Make it the default channel/)).not.toBeInTheDocument();
     });
@@ -183,7 +191,7 @@ describe('fusion/popovers/ChannelMenu: default channels and all-channels communi
 
     test('an archived channel offers nothing to change, but takes members', () => {
         mockTeamPerms = new Set(ADMIN);
-        mockChannelPerms = new Set(['manage_channel_roles']);
+        mockChannelPerms = new Set(['manage_channel_roles', 'manage_public_channel_members']);
         const {unmount} = render(dev);
         expect(item(/Permissions…/)).toBeInTheDocument();
         unmount();
@@ -206,26 +214,36 @@ describe('fusion/popovers/ChannelMenu: default channels and all-channels communi
 
     test('once another channel is the default, General can be left and that one can\'t', () => {
         render(town, state({defaultChannelId: 'dev'}));
-        expect(item('Leave channel')).toBeInTheDocument();
+        expect(item('Leave channel…')).toBeInTheDocument();
     });
 
     test('the chosen default channel can\'t be left', () => {
         render(dev, state({defaultChannelId: 'dev'}));
-        expect(item('Leave channel')).not.toBeInTheDocument();
+        expect(item('Leave channel…')).not.toBeInTheDocument();
         expect(item('Archive channel…')).not.toBeInTheDocument();
     });
 
+    // Muting is offered once: Mute itself says why there's no Leave (there was a second "Mute channel" for it).
     test('in an all-channels community, members mute public channels instead of leaving, and add nobody', async () => {
         render(dev, state({allChannels: true}));
-        expect(item('Leave channel')).not.toBeInTheDocument();
+        expect(item('Leave channel…')).not.toBeInTheDocument();
         expect(item('Add members')).not.toBeInTheDocument();
+        expect(screen.getAllByRole('menuitem', {name: /Mute channel/})).toHaveLength(1);
         await userEvent.click(screen.getByRole('menuitem', {name: /Everyone in Lumen is in all its channels/}));
+        await userEvent.click(screen.getByRole('menuitem', {name: 'Until I unmute it'}));
         expect(muteFor).toHaveBeenCalledWith('dev', 0);
+    });
+
+    // Adding people takes managing the channel's members, as the server and the member list's "+" have it.
+    test('without managing its members, nobody is offered to add people to a channel', () => {
+        mockChannelPerms = new Set(['delete_public_channel']);
+        render(dev);
+        expect(item('Add members')).not.toBeInTheDocument();
     });
 
     test('in an all-channels community, invitation-only private channels are still left and joined by invitation', () => {
         render(secret, state({allChannels: true}));
-        expect(item('Leave channel')).toBeInTheDocument();
+        expect(item('Leave channel…')).toBeInTheDocument();
         expect(item('Add members')).toBeInTheDocument();
         expect(item(/Everyone in Lumen is in all its channels/)).not.toBeInTheDocument();
     });
@@ -253,9 +271,78 @@ describe('fusion/popovers/ChannelMenu: default channels and all-channels communi
     test('Favourite adds the channel to Favourites, spelt the British way', async () => {
         render(dev);
         expect(item('Favorite')).not.toBeInTheDocument();
-        await userEvent.click(screen.getByRole('menuitem', {name: 'Favourite'}));
+        await userEvent.click(screen.getByRole('menuitemcheckbox', {name: 'Favourite'}));
         expect(favoriteChannel).toHaveBeenCalledWith('dev');
         await waitFor(() => expect(mockToast).toHaveBeenCalledWith('Added to Favourites'));
+    });
+});
+
+describe('fusion/popovers/ChannelMenu: the same actions as the menu under the channel\'s name', () => {
+    beforeEach(() => {
+        mockTeamPerms = new Set();
+        mockChannelPerms = new Set(MEMBER);
+        if (!document.getElementById('am-layer')) {
+            const layer = document.createElement('div');
+            layer.id = 'am-layer';
+            document.body.appendChild(layer);
+        }
+    });
+
+    const ids = () => Array.from(screen.getByRole('menu').querySelectorAll('[data-action]')).map((el) => el.getAttribute('data-action'));
+    const sidebarIds = (channel: Channel) => {
+        const {unmount} = renderWithContext(
+            <ChannelMenu
+                channel={channel}
+                point={{x: 1, y: 1}}
+                onClose={jest.fn()}
+            />,
+            state() as never,
+        );
+        const shown = ids();
+        unmount();
+        return shown;
+    };
+    const headerIds = (channel: Channel) => {
+        const {unmount} = renderWithContext(
+            <ChannelNameMenu
+                channel={channel}
+                title={channel.display_name}
+                anchor={null}
+                onClose={jest.fn()}
+            />,
+            state() as never,
+        );
+        const shown = ids();
+        unmount();
+        return shown;
+    };
+    const SIDEBAR_ONLY = ['mark-read', 'move', 'hide'];
+
+    test.each<[string, string[]]>([['a member', []], ['a community admin', ADMIN]])('for %s, both menus offer the same actions in the same order, the sidebar adding its own', (who, team) => {
+        mockTeamPerms = new Set(team);
+        for (const channel of [dev, secret, town]) {
+            const sidebar = sidebarIds(channel);
+            expect(sidebar.filter((id) => !SIDEBAR_ONLY.includes(id!))).toEqual(headerIds(channel));
+            expect(sidebar[0]).toBe('mark-read');
+            expect(new Set(sidebar).size).toBe(sidebar.length);
+        }
+    });
+
+    test('its first item takes the focus and the arrow keys move along it', async () => {
+        renderWithContext(
+            <ChannelMenu
+                channel={dev}
+                point={{x: 1, y: 1}}
+                onClose={jest.fn()}
+            />,
+            state() as never,
+        );
+        const items = Array.from(screen.getByRole('menu').querySelectorAll<HTMLElement>('[role^="menuitem"]'));
+        expect(items[0]).toHaveFocus();
+        await userEvent.keyboard('{ArrowDown}');
+        expect(items[1]).toHaveFocus();
+        await userEvent.keyboard('{ArrowUp}{ArrowUp}');
+        expect(items[items.length - 1]).toHaveFocus();
     });
 });
 
