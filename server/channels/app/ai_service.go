@@ -182,17 +182,17 @@ func (a *App) prepareAICall(rctx request.CTX, call AICall, connectionID, request
 			return nil, model.NewAppError(where, "app.ai.call.builtin_server_only.app_error", nil, "connection_id="+c.Id, http.StatusForbidden)
 		}
 		if call.UserID != "" {
-			if user, appErr := a.GetUser(rctx, call.UserID); appErr != nil || user.DeleteAt != 0 {
+			if user, userErr := a.GetUser(rctx, call.UserID); userErr != nil || user.DeleteAt != 0 {
 				return nil, model.NewAppError(where, "app.ai.call.user.app_error", nil, "user_id="+call.UserID, http.StatusForbidden)
 			}
 		}
 	} else {
-		user, teamID, appErr := a.aiCallContext(rctx, call.UserID, call.ChannelID, call.TeamID)
-		if appErr != nil {
-			return nil, appErr
+		user, teamID, ctxErr := a.aiCallContext(rctx, call.UserID, call.ChannelID, call.TeamID)
+		if ctxErr != nil {
+			return nil, ctxErr
 		}
-		if appErr := a.aiAudienceAllows(rctx, c, user, teamID); appErr != nil {
-			return nil, appErr
+		if audienceErr := a.aiAudienceAllows(rctx, c, user, teamID); audienceErr != nil {
+			return nil, audienceErr
 		}
 		call.TeamID = teamID
 	}
@@ -220,7 +220,7 @@ func (a *App) prepareAICall(rctx request.CTX, call AICall, connectionID, request
 		return nil, model.NewAppError(where, "app.ai.call.no_model.app_error", map[string]any{"Capability": string(capability)}, "too long", http.StatusBadRequest)
 	}
 
-	if appErr := a.checkAILimits(rctx, c, call.UserID); appErr != nil {
+	if appErr = a.checkAILimits(rctx, c, call.UserID); appErr != nil {
 		return nil, appErr
 	}
 

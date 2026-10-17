@@ -206,7 +206,7 @@ func LoadKeyring(opts LoadKeyringOptions) (*Keyring, KeySource, string, error) {
 	var previous [][]byte
 	if opts.Lookup != nil {
 		if list, ok := opts.Lookup(PreviousKeysEnv); ok && strings.TrimSpace(list) != "" {
-			for _, encoded := range strings.Split(list, ",") {
+			for encoded := range strings.SplitSeq(list, ",") {
 				if strings.TrimSpace(encoded) == "" {
 					continue
 				}

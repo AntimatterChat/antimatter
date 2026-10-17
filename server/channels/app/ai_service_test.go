@@ -135,8 +135,8 @@ func TestAIConnectionKeysAreSealed(t *testing.T) {
 	t.Run("a sealed key moved to another connection doesn't open", func(t *testing.T) {
 		other := createTestAIConnection(t, th, f, model.AIConnectionScopeServer, nil)
 		other.APIKeySealed = stored.APIKeySealed
-		_, appErr := th.App.Srv().Store().AIConnection().Update(th.Context, other)
-		require.Nil(t, appErr)
+		_, err := th.App.Srv().Store().AIConnection().Update(th.Context, other)
+		require.NoError(t, err)
 		_, callErr := aiChat(th, AICall{UserID: th.BasicUser.Id}, other.Id)
 		require.NotNil(t, callErr)
 		assert.Equal(t, "app.ai.connection.key_unreadable.app_error", callErr.Id)
@@ -219,7 +219,7 @@ func TestAIConnectionAudience(t *testing.T) {
 	t.Run("a channel the person can't read", func(t *testing.T) {
 		c := createTestAIConnection(t, th, f, th.BasicTeam.Id, nil)
 		private := th.CreatePrivateChannel(t, th.BasicTeam)
-		th.RemoveUserFromChannel(t, th.BasicUser, private)
+		require.Nil(t, th.RemoveUserFromChannel(t, th.BasicUser, private))
 		_, appErr := aiChat(th, AICall{UserID: th.BasicUser.Id, ChannelID: private.Id}, c.Id)
 		require.NotNil(t, appErr)
 		assert.Equal(t, http.StatusForbidden, appErr.StatusCode)

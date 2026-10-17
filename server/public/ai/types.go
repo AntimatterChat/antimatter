@@ -10,6 +10,7 @@ package ai
 import (
 	"encoding/json"
 	"errors"
+	"slices"
 )
 
 // Capability is what a model connection can be used for. Each has its own default model on the connection.
@@ -38,12 +39,7 @@ var BuiltInPurposes = []Purpose{PurposeRecaps, PurposeRewrite, PurposeAutoTransl
 
 // IsBuiltIn tells whether p is one of the server's own features.
 func (p Purpose) IsBuiltIn() bool {
-	for _, b := range BuiltInPurposes {
-		if p == b {
-			return true
-		}
-	}
-	return false
+	return slices.Contains(BuiltInPurposes, p)
 }
 
 // Role is who wrote a message of a conversation.

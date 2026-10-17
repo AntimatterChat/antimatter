@@ -77,7 +77,7 @@ func TestSanitizeProviderErrorMessage(t *testing.T) {
 	}
 	assert.Contains(t, out, "401")
 
-	assert.Equal(t, "a [U+202E]b", SanitizeNonPrintableChars("a ‮b"))
+	assert.Equal(t, "a [U+202E]b", SanitizeNonPrintableChars("a \u202eb"))
 }
 
 func TestDecideRequestValidate(t *testing.T) {

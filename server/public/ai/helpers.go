@@ -12,6 +12,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"regexp"
+	"slices"
 	"strings"
 	"unicode"
 	"unicode/utf8"
@@ -53,8 +54,7 @@ func TruncateMessages(messages []Message, maxTokens int, countTokens func(string
 	keep := make([]bool, len(messages))
 	contents := make([]string, len(messages))
 	truncated := false
-	for i := len(messages) - 1; i >= 0; i-- {
-		m := messages[i]
+	for i, m := range slices.Backward(messages) {
 		contents[i] = m.Content
 		if m.Role == RoleSystem {
 			keep[i] = true

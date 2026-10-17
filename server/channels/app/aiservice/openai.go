@@ -15,7 +15,7 @@ import (
 	"net/http"
 	"net/url"
 	"regexp"
-	"sort"
+	"slices"
 	"strconv"
 	"strings"
 
@@ -449,9 +449,9 @@ func (f *thinkFilter) feed(chunk string) (text, reasoning string) {
 		chunk = strings.TrimPrefix(trimmed, "<think>")
 	}
 	if f.inThink {
-		if idx := strings.Index(chunk, "</think>"); idx >= 0 {
+		if thought, rest, found := strings.Cut(chunk, "</think>"); found {
 			f.inThink = false
-			return strings.TrimLeft(chunk[idx+len("</think>"):], " \t\r\n"), chunk[:idx]
+			return strings.TrimLeft(rest, " \t\r\n"), thought
 		}
 		return "", chunk
 	}
@@ -561,7 +561,7 @@ func (p *openAIProvider) readChatStream(runner *streamRunner, resp *http.Respons
 		for i := range calls {
 			indexes = append(indexes, i)
 		}
-		sort.Ints(indexes)
+		slices.Sort(indexes)
 		raw := make([]oaToolCall, 0, len(calls))
 		for _, i := range indexes {
 			raw = append(raw, oaToolCall{ID: calls[i].id, Function: oaFunctionCall{Name: calls[i].name, Arguments: calls[i].args.String()}})
@@ -641,7 +641,7 @@ func (p *openAIProvider) Transcribe(ctx context.Context, req ai.TranscribeReques
 	if err != nil {
 		return nil, err
 	}
-	if _, err := part.Write(req.Audio); err != nil {
+	if _, err = part.Write(req.Audio); err != nil {
 		return nil, err
 	}
 	fields := map[string]string{"model": req.Model, "language": req.Language, "prompt": req.Prompt, "response_format": "json"}
@@ -652,11 +652,11 @@ func (p *openAIProvider) Transcribe(ctx context.Context, req ai.TranscribeReques
 		if value == "" {
 			continue
 		}
-		if err := form.WriteField(name, value); err != nil {
+		if err = form.WriteField(name, value); err != nil {
 			return nil, err
 		}
 	}
-	if err := form.Close(); err != nil {
+	if err = form.Close(); err != nil {
 		return nil, err
 	}
 	httpReq, err := p.newRequest(ctx, http.MethodPost, "/audio/transcriptions", &buf, form.FormDataContentType(), p.setAuth)
@@ -745,7 +745,7 @@ func (p *openAIProvider) ListModels(ctx context.Context) ([]ai.ModelInfo, error)
 			models = append(models, ai.ModelInfo{ID: m.ID, OwnedBy: m.OwnedBy})
 		}
 	}
-	sort.Slice(models, func(i, j int) bool { return models[i].ID < models[j].ID })
+	slices.SortFunc(models, func(a, b ai.ModelInfo) int { return strings.Compare(a.ID, b.ID) })
 	return models, nil
 }
 

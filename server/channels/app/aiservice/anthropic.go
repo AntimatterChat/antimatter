@@ -10,7 +10,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
-	"sort"
+	"slices"
 	"strings"
 
 	"github.com/mattermost/mattermost/server/public/ai"
@@ -106,7 +106,8 @@ type anResponse struct {
 type outputMode int
 
 const (
-	outputNone outputMode = iota
+	// The zero value: no structured output.
+	_ outputMode = iota
 	// outputTool forces the structured_output tool; wrapped says the schema isn't an object and sits in "value".
 	outputTool
 	// outputPrompt puts the schema in the instructions, when the caller has tools of its own.
@@ -419,7 +420,7 @@ func (p *anthropicProvider) readStream(runner *streamRunner, resp *http.Response
 	for i := range tools {
 		indexes = append(indexes, i)
 	}
-	sort.Ints(indexes)
+	slices.Sort(indexes)
 	var calls []ai.ToolCall
 	for _, i := range indexes {
 		b := tools[i]
@@ -483,6 +484,6 @@ func (p *anthropicProvider) ListModels(ctx context.Context) ([]ai.ModelInfo, err
 			models = append(models, ai.ModelInfo{ID: m.ID, OwnedBy: "anthropic"})
 		}
 	}
-	sort.Slice(models, func(i, j int) bool { return models[i].ID < models[j].ID })
+	slices.SortFunc(models, func(a, b ai.ModelInfo) int { return strings.Compare(a.ID, b.ID) })
 	return models, nil
 }

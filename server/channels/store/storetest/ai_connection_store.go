@@ -186,8 +186,8 @@ func TestAIConnectionAgentsPluginConfig(t *testing.T, rctx request.CTX, ss store
 		ID VARCHAR(26) PRIMARY KEY, Config TEXT NOT NULL, CreateAt BIGINT NOT NULL, Active BOOLEAN NOT NULL DEFAULT false)`)
 	require.NoError(t, err)
 	defer func() {
-		_, err := s.GetMaster().Exec("DROP TABLE IF EXISTS Agents_ConfigHistory")
-		require.NoError(t, err)
+		_, dropErr := s.GetMaster().Exec("DROP TABLE IF EXISTS Agents_ConfigHistory")
+		require.NoError(t, dropErr)
 	}()
 
 	config, err = ss.AIConnection().GetAgentsPluginConfig(rctx)

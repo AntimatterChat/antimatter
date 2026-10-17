@@ -251,9 +251,7 @@ func (a *App) sendMessageAction(rctx request.CTX, hook *model.OutgoingWebhook, p
 	sent := make([]bool, len(hook.CallbackURLs))
 	var wg sync.WaitGroup
 	for i, callbackURL := range hook.CallbackURLs {
-		wg.Add(1)
-		go func() {
-			defer wg.Done()
+		wg.Go(func() {
 			defer func() {
 				if r := recover(); r != nil {
 					logger.Error("Recovered from panic in a message action request", mlog.Any("panic", r))
@@ -287,7 +285,7 @@ func (a *App) sendMessageAction(rctx request.CTX, hook *model.OutgoingWebhook, p
 			}
 			responses[i] = resp
 			sent[i] = true
-		}()
+		})
 	}
 	wg.Wait()
 

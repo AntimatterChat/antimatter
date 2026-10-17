@@ -31,12 +31,12 @@ func TestLocalBackendHidesTheAIKeyFile(t *testing.T) {
 	require.NoError(t, err)
 
 	for _, path := range []string{AIKeyFileName, "/" + AIKeyFileName, "./" + AIKeyFileName, "teams/../" + AIKeyFileName, AIKeyFileName + ".tmp-123"} {
-		_, err := backend.ReadFile(path)
+		_, err = backend.ReadFile(path)
 		assert.ErrorIs(t, err, fs.ErrNotExist, path)
 		_, err = backend.Reader(path)
 		assert.ErrorIs(t, err, fs.ErrNotExist, path)
-		exists, err := backend.FileExists(path)
-		require.NoError(t, err)
+		exists, existsErr := backend.FileExists(path)
+		require.NoError(t, existsErr)
 		assert.False(t, exists, path)
 		_, err = backend.FileSize(path)
 		assert.Error(t, err, path)

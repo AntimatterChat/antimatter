@@ -92,8 +92,8 @@ func TestAIConnectionsFromAgentsMigration(t *testing.T) {
 		ID VARCHAR(26) PRIMARY KEY, Config TEXT NOT NULL, CreateAt BIGINT NOT NULL, Active BOOLEAN NOT NULL DEFAULT false)`)
 	require.NoError(t, err)
 	t.Cleanup(func() {
-		_, err := master.Exec("DROP TABLE IF EXISTS Agents_ConfigHistory")
-		require.NoError(t, err)
+		_, dropErr := master.Exec("DROP TABLE IF EXISTS Agents_ConfigHistory")
+		require.NoError(t, dropErr)
 	})
 
 	serviceID, vertexID := model.NewId(), model.NewId()
