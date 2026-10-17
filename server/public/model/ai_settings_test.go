@@ -49,8 +49,14 @@ func TestAISettingsDefaultsAndValidation(t *testing.T) {
 		*cfg.AutoTranslationSettings.Provider = "agents"
 		cfg.AutoTranslationSettings.Agents.LLMServiceID = NewPointer(serviceID)
 		require.Nil(t, cfg.AutoTranslationSettings.isValid())
+		require.Nil(t, cfg.isValidAISettings())
 		connectionID, _ := cfg.AutoTranslationConnection()
 		assert.Equal(t, serviceID, connectionID)
+
+		cfg.AutoTranslationSettings.Agents.LLMServiceID = NewPointer("")
+		require.NotNil(t, cfg.isValidAISettings(), "neither a service nor a connection")
+		cfg.AISettings.AutoTranslation.ConnectionId = NewPointer(NewId())
+		require.Nil(t, cfg.isValidAISettings(), "the connection is enough")
 	})
 
 	t.Run("text to speech through a connection needs no URL", func(t *testing.T) {

@@ -87,8 +87,17 @@ func (o *Config) isValidAISettings() *AppError {
 	}
 
 	at := o.AutoTranslationSettings
-	if at.Enable != nil && *at.Enable && at.Provider != nil && *at.Provider == AutoTranslationProviderConnection && !s.AutoTranslation.IsConfigured() {
-		return NewAppError("Config.IsValid", "model.config.is_valid.autotranslation.connection.app_error", nil, "", http.StatusBadRequest)
+	if at.Enable != nil && *at.Enable && at.Provider != nil {
+		switch *at.Provider {
+		case AutoTranslationProviderConnection:
+			if !s.AutoTranslation.IsConfigured() {
+				return NewAppError("Config.IsValid", "model.config.is_valid.autotranslation.connection.app_error", nil, "", http.StatusBadRequest)
+			}
+		case "agents":
+			if connectionID, _ := o.AutoTranslationConnection(); connectionID == "" {
+				return NewAppError("Config.IsValid", "model.config.is_valid.autotranslation.agents.llm_service_id.app_error", nil, "", http.StatusBadRequest)
+			}
+		}
 	}
 	return nil
 }

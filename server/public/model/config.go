@@ -5668,10 +5668,8 @@ func (s *AutoTranslationSettings) isValid() *AppError {
 		// The model connection is AISettings.AutoTranslation's, checked there.
 	case "agents":
 		// Antimatter: "agents" was the Agents plugin's LLM service; it now names a model connection too, the one of
-		// AISettings.AutoTranslation, else the migrated service's (connections migrated from the plugin keep its IDs).
-		if s.Agents == nil || s.Agents.LLMServiceID == nil || *s.Agents.LLMServiceID == "" {
-			return NewAppError("Config.IsValid", "model.config.is_valid.autotranslation.agents.llm_service_id.app_error", nil, "", http.StatusBadRequest)
-		}
+		// AISettings.AutoTranslation, else the migrated service's (connections migrated from the plugin keep its
+		// IDs). Config.isValidAISettings checks there is one.
 	case "openai":
 		if s.OpenAI == nil || s.OpenAI.URL == nil || !IsValidHTTPURL(*s.OpenAI.URL) {
 			return NewAppError("Config.IsValid", "model.config.is_valid.autotranslation.openai.url.app_error", nil, "", http.StatusBadRequest)
