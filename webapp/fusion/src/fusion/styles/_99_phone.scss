@@ -80,6 +80,8 @@ body.app__body #root.am-root {
     }
     :is(.am-app, .am-layer) .am-pop.am-sheet.am-plus-pop { padding: 8px 8px calc(8px + env(safe-area-inset-bottom)); }
     :is(.am-app, .am-layer) .am-pop.am-sheet :is(button[role^="menuitem"], .am-fly > button) { min-height: 44px; font-size: 15px; }
+    // The mod view's actions are as easy to tap as a sheet's items.
+    :is(.am-app, .am-layer) .am-mod-act { min-height: 44px; font-size: 15px; }
     // A menu's submenus open under their item rather than beside it.
     :is(.am-app, .am-layer) .am-sheet .am-fly-menu { position: static; width: auto; padding: 0; border: 0; margin: 0 0 4px 30px; background: none; box-shadow: none; }
     :is(.am-app, .am-layer) .am-sheet .am-fly-menu::after { display: none; }

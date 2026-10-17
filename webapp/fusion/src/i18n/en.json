@@ -25219,6 +25219,10 @@
     "defaultMessage": "Deactivate account",
     "description": ""
   },
+  "fusion.modView.deactivateAsk": {
+    "defaultMessage": "Deactivate account…",
+    "description": "Destructive action in a system admin's mod view of someone: deactivate their account, after confirming. The ellipsis says a confirmation follows."
+  },
   "fusion.modView.deactivateFailed": {
     "defaultMessage": "The account couldn't be deactivated.",
     "description": ""
@@ -25241,14 +25245,6 @@
   },
   "fusion.modView.joined": {
     "defaultMessage": "Member since",
-    "description": ""
-  },
-  "fusion.modView.lift": {
-    "defaultMessage": "Remove timeout",
-    "description": ""
-  },
-  "fusion.modView.message": {
-    "defaultMessage": "Message",
     "description": ""
   },
   "fusion.modView.messageCounts": {
@@ -25299,10 +25295,6 @@
     "defaultMessage": "Notable permissions",
     "description": ""
   },
-  "fusion.modView.remove": {
-    "defaultMessage": "Remove from community",
-    "description": ""
-  },
   "fusion.modView.removeRole": {
     "defaultMessage": "Remove the role {role}",
     "description": ""
@@ -25315,9 +25307,9 @@
     "defaultMessage": "Roles",
     "description": ""
   },
-  "fusion.modView.seeMessages": {
-    "defaultMessage": "See them",
-    "description": ""
+  "fusion.modView.searchMessages": {
+    "defaultMessage": "Search their messages",
+    "description": "Action in a moderator's mod view of someone: search the messages that person wrote."
   },
   "fusion.modView.summary": {
     "defaultMessage": "Summary",
@@ -25329,10 +25321,6 @@
   },
   "fusion.modView.timedOut": {
     "defaultMessage": "Timed out until {time}, {date}",
-    "description": ""
-  },
-  "fusion.modView.timeOut": {
-    "defaultMessage": "Time out",
     "description": ""
   },
   "fusion.modView.title": {

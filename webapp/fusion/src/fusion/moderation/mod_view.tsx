@@ -1,7 +1,7 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 
-import React, {useEffect, useMemo, useState} from 'react';
+import React, {useEffect, useId, useMemo, useRef, useState} from 'react';
 import {defineMessage, useIntl} from 'react-intl';
 import type {MessageDescriptor} from 'react-intl';
 import {useDispatch, useSelector} from 'react-redux';
@@ -25,6 +25,9 @@ import {getModViewUserId} from 'selectors/rhs';
 
 import Avatar from 'fusion/components/avatar';
 import Icon from 'fusion/components/icon';
+import type {IconName} from 'fusion/components/icon';
+import {Popover} from 'fusion/components/layer';
+import {MenuItem, MenuKeys, rovingKeyDown} from 'fusion/components/menu';
 import {useDisplayName, useUser, useUserStatus} from 'fusion/hooks/users';
 import {STATUS_LABELS} from 'fusion/popovers/user_popover';
 import {useDialogs} from 'fusion/shell/dialogs_context';
@@ -51,8 +54,18 @@ const NOTABLE: Array<{permission: string; label: MessageDescriptor}> = [
     {permission: Permissions.USE_CHANNEL_MENTIONS, label: defineMessage({id: 'fusion.modView.perm.everyone', defaultMessage: 'Mention @channel and @all'})},
 ];
 
-// ModViewPanel is someone's mod view in the right-hand side, as Discord's: what a team's moderators look at before
-// acting, and their actions, each offered to those allowed to.
+// One of the mod view's actions: data-action names it, once in the panel.
+type ModAction = {
+    id: string;
+    icon: IconName;
+    label: string;
+    danger?: boolean;
+    run: () => void;
+};
+
+// ModViewPanel is someone's mod view in the right-hand side, as Discord's: who they are and their state (a timeout),
+// then the actions a team's moderators take, each once and offered to those allowed to (the destructive ones last,
+// each asking first), then what they look at before acting: a summary, their roles and their notable permissions.
 export default function ModViewPanel() {
     const {formatMessage, formatDate, formatTime} = useIntl();
     const dispatch = useDispatch();
@@ -68,6 +81,10 @@ export default function ModViewPanel() {
     const teamId = team?.id || '';
     const [info, setInfo] = useState<MemberModeration | null>(null);
     const [infoFailed, setInfoFailed] = useState(false);
+    const [addingRole, setAddingRole] = useState(false);
+    const addRoleRef = useRef<HTMLButtonElement>(null);
+    const actionsRef = useRef<HTMLDivElement>(null);
+    const titleId = useId();
 
     const canModerate = useSelector((state: GlobalState) => canModerateTeam(state, teamId));
     const canRemove = useSelector((state: GlobalState) => haveITeamPermission(state, teamId, Permissions.REMOVE_USER_FROM_TEAM));
@@ -158,13 +175,45 @@ export default function ModViewPanel() {
     });
 
     const date = (at: number) => formatDate(at, {year: 'numeric', month: 'short', day: 'numeric'});
+
+    // The actions, in the order a moderator reaches for them: talk to them, look at what they wrote, time them out
+    // (or lift it); then, set apart, removing them from the community and deactivating their account.
+    const actions: ModAction[] = [];
+    const destructive: ModAction[] = [];
+    if (!isMe) {
+        actions.push({id: 'message', icon: 'chat', label: formatMessage({id: 'fusion.userMenu.message', defaultMessage: 'Message'}), run: message});
+    }
+    actions.push({id: 'search-messages', icon: 'search', label: formatMessage({id: 'fusion.modView.searchMessages', defaultMessage: 'Search their messages'}), run: theirMessages});
+    if (canRemove && actionable) {
+        actions.push(timeout ? {id: 'lift-timeout', icon: 'timer', label: formatMessage({id: 'fusion.userMenu.liftTimeout', defaultMessage: 'Remove timeout'}), run: liftTimeout} : {id: 'time-out', icon: 'timer', label: formatMessage({id: 'fusion.userMenu.timeOut', defaultMessage: 'Time out…'}), run: () => dialogs.timeOut(userId)});
+        destructive.push({id: 'remove-from-community', icon: 'leave', danger: true, label: formatMessage({id: 'fusion.userMenu.removeTeam', defaultMessage: 'Remove from community…'}), run: () => dialogs.removeFromTeam(userId)});
+    }
+    if (systemAdmin && !isMe && !isSystemAdmin(user.roles || '') && user.delete_at === 0) {
+        destructive.push({id: 'deactivate', icon: 'ban', danger: true, label: formatMessage({id: 'fusion.modView.deactivateAsk', defaultMessage: 'Deactivate account…'}), run: deactivate});
+    }
+    const actionButton = (action: ModAction) => (
+        <button
+            key={action.id}
+            type='button'
+            data-action={action.id}
+            className={am('mod-act', {danger: action.danger})}
+            onClick={action.run}
+        >
+            <Icon
+                name={action.icon}
+                size='sm'
+            />
+            <span>{action.label}</span>
+        </button>
+    );
+
     return (
-        <div
+        <section
             className={am('mod-view')}
-            aria-label={formatMessage({id: 'fusion.modView.title', defaultMessage: 'Mod view'})}
+            aria-labelledby={titleId}
         >
             <div className={am('rhs-head')}>
-                <h3>
+                <h3 id={titleId}>
                     <Icon name='shield'/>
                     {formatMessage({id: 'fusion.modView.title', defaultMessage: 'Mod view'})}
                 </h3>
@@ -187,7 +236,7 @@ export default function ModViewPanel() {
                     />
                     <div>
                         <b style={roleColor ? {color: roleColor} : undefined}>
-                            {name}
+                            <span className={am('mod-name')}>{name}</span>
                             <TeamTag user={user}/>
                         </b>
                         <span>{`@${user.username} · ${formatMessage(STATUS_LABELS[status] || STATUS_LABELS.offline)}`}</span>
@@ -204,35 +253,37 @@ export default function ModViewPanel() {
                             <b>{formatMessage({id: 'fusion.modView.timedOut', defaultMessage: 'Timed out until {time}, {date}'}, {time: formatTime(timeout.until), date: date(timeout.until)})}</b>
                             {timeout.reason && <span>{timeout.reason}</span>}
                         </div>
-                        {canRemove && actionable && (
-                            <button
-                                type='button'
-                                className={am('btn', 'small')}
-                                onClick={liftTimeout}
-                            >
-                                {formatMessage({id: 'fusion.modView.lift', defaultMessage: 'Remove timeout'})}
-                            </button>
-                        )}
                     </div>
                 )}
 
-                <h3 className={am('section-title')}>{formatMessage({id: 'fusion.modView.summary', defaultMessage: 'Summary'})}</h3>
+                {/* The actions are one toolbar: Tab reaches it, the arrow keys move along it. */}
+                <div
+                    ref={actionsRef}
+                    className={am('mod-actions')}
+                    role='toolbar'
+                    aria-orientation='vertical'
+                    aria-label={formatMessage({id: 'fusion.modView.actions', defaultMessage: 'Actions'})}
+                    onKeyDown={(e) => rovingKeyDown(e, actionsRef.current, 'button')}
+                >
+                    {actions.map(actionButton)}
+                    {destructive.length > 0 && (
+                        <div
+                            className={am('mod-sep')}
+                            role='separator'
+                        />
+                    )}
+                    {destructive.map(actionButton)}
+                </div>
+                {!actionable && !isMe && <p className={am('mod-note')}>{formatMessage({id: 'fusion.modView.adminNote', defaultMessage: 'Admins can\'t be timed out or removed here.'})}</p>}
+
+                <h4 className={am('section-title')}>{formatMessage({id: 'fusion.modView.summary', defaultMessage: 'Summary'})}</h4>
                 <dl className={am('mod-facts')}>
                     <dt>{formatMessage({id: 'fusion.modView.joined', defaultMessage: 'Member since'})}</dt>
                     <dd>{info ? date(info.joined_at) : '…'}</dd>
                     <dt>{formatMessage({id: 'fusion.modView.created', defaultMessage: 'Account created'})}</dt>
                     <dd>{date(user.create_at)}</dd>
                     <dt>{formatMessage({id: 'fusion.modView.messages', defaultMessage: 'Messages in the community'})}</dt>
-                    <dd>
-                        {info ? formatMessage({id: 'fusion.modView.messageCounts', defaultMessage: '{day} in the last day · {week} in the last week'}, {day: info.posts_last_day, week: info.posts_last_week}) : '…'}
-                        <button
-                            type='button'
-                            className={am('link')}
-                            onClick={theirMessages}
-                        >
-                            {formatMessage({id: 'fusion.modView.seeMessages', defaultMessage: 'See them'})}
-                        </button>
-                    </dd>
+                    <dd>{info ? formatMessage({id: 'fusion.modView.messageCounts', defaultMessage: '{day} in the last day · {week} in the last week'}, {day: info.posts_last_day, week: info.posts_last_week}) : '…'}</dd>
                     {user.email && (
                         <>
                             <dt>{formatMessage({id: 'fusion.modView.email', defaultMessage: 'Email'})}</dt>
@@ -240,9 +291,9 @@ export default function ModViewPanel() {
                         </>
                     )}
                 </dl>
-                {infoFailed && <p className={am('lead')}>{formatMessage({id: 'fusion.modView.infoFailed', defaultMessage: 'Some of their details couldn\'t be loaded.'})}</p>}
+                {infoFailed && <p className={am('mod-note')}>{formatMessage({id: 'fusion.modView.infoFailed', defaultMessage: 'Some of their details couldn\'t be loaded.'})}</p>}
 
-                <h3 className={am('section-title')}>{formatMessage({id: 'fusion.modView.roles', defaultMessage: 'Roles'})}</h3>
+                <h4 className={am('section-title')}>{formatMessage({id: 'fusion.modView.roles', defaultMessage: 'Roles'})}</h4>
                 <div className={am('mod-roles')}>
                     {(theirRoles || []).map((r) => (
                         <span
@@ -257,6 +308,7 @@ export default function ModViewPanel() {
                             {canManageRoles && (
                                 <button
                                     type='button'
+                                    data-action={`remove-role:${r.id}`}
                                     aria-label={formatMessage({id: 'fusion.modView.removeRole', defaultMessage: 'Remove the role {role}'}, {role: r.display_name})}
                                     onClick={() => setRole(r.id, false)}
                                 >
@@ -270,88 +322,61 @@ export default function ModViewPanel() {
                     ))}
                     {!theirRoles?.length && <span className={am('muted')}>{formatMessage({id: 'fusion.modView.noRoles', defaultMessage: 'No roles'})}</span>}
                     {canManageRoles && missingRoles.length > 0 && (
-                        <select
-                            value=''
-                            aria-label={formatMessage({id: 'fusion.modView.addRole', defaultMessage: 'Add a role'})}
-                            onChange={(e) => e.target.value && setRole(e.target.value, true)}
+                        <button
+                            ref={addRoleRef}
+                            type='button'
+                            data-action='add-role'
+                            className={am('mod-add-role', {on: addingRole})}
+                            aria-haspopup='menu'
+                            aria-expanded={addingRole}
+                            onClick={() => setAddingRole(!addingRole)}
                         >
-                            <option value=''>{formatMessage({id: 'fusion.modView.addRole', defaultMessage: 'Add a role'})}</option>
-                            {missingRoles.map((r) => (
-                                <option
-                                    key={r.id}
-                                    value={r.id}
-                                >
-                                    {r.display_name}
-                                </option>
-                            ))}
-                        </select>
+                            <Icon
+                                name='plus'
+                                size='xs'
+                            />
+                            {formatMessage({id: 'fusion.modView.addRole', defaultMessage: 'Add a role'})}
+                        </button>
                     )}
                 </div>
+                {addingRole && (
+                    <Popover
+                        anchor={addRoleRef.current}
+                        placement='below-start'
+                        className='plus-pop ch-menu mod-role-menu'
+                        role='menu'
+                        label={formatMessage({id: 'fusion.modView.addRole', defaultMessage: 'Add a role'})}
+                        onClose={() => setAddingRole(false)}
+                    >
+                        <MenuKeys>
+                            {missingRoles.map((r) => (
+                                <MenuItem
+                                    key={r.id}
+                                    action={`add-role:${r.id}`}
+                                    glyph={(
+                                        <i
+                                            className={am('role-dot')}
+                                            style={{background: r.color || 'var(--am-muted)'}}
+                                        />
+                                    )}
+                                    label={r.display_name}
+                                    onClick={() => {
+                                        setAddingRole(false);
+                                        setRole(r.id, true);
+                                    }}
+                                />
+                            ))}
+                        </MenuKeys>
+                    </Popover>
+                )}
 
-                <h3 className={am('section-title')}>{formatMessage({id: 'fusion.modView.permissions', defaultMessage: 'Notable permissions'})}</h3>
+                <h4 className={am('section-title')}>{formatMessage({id: 'fusion.modView.permissions', defaultMessage: 'Notable permissions'})}</h4>
                 <ul className={am('mod-perms')}>
                     {isSystemAdmin(user.roles || '') && <li><b>{formatMessage({id: 'fusion.modView.systemAdmin', defaultMessage: 'System admin: every permission'})}</b></li>}
                     {notable.map((n) => <li key={n.permission}>{formatMessage(n.label)}</li>)}
                     {!notable.length && <li className={am('muted')}>{formatMessage({id: 'fusion.modView.noPerms', defaultMessage: 'No permissions beyond a member\'s'})}</li>}
                 </ul>
-
-                <h3 className={am('section-title')}>{formatMessage({id: 'fusion.modView.actions', defaultMessage: 'Actions'})}</h3>
-                <div className={am('mod-actions')}>
-                    {!isMe && (
-                        <button
-                            type='button'
-                            className={am('btn')}
-                            onClick={message}
-                        >
-                            <Icon
-                                name='chat'
-                                size='sm'
-                            />
-                            {formatMessage({id: 'fusion.modView.message', defaultMessage: 'Message'})}
-                        </button>
-                    )}
-                    {canRemove && actionable && !timeout && (
-                        <button
-                            type='button'
-                            className={am('btn')}
-                            onClick={() => dialogs.timeOut(userId)}
-                        >
-                            <Icon
-                                name='timer'
-                                size='sm'
-                            />
-                            {formatMessage({id: 'fusion.modView.timeOut', defaultMessage: 'Time out'})}
-                        </button>
-                    )}
-                    {canRemove && actionable && (
-                        <button
-                            type='button'
-                            className={am('btn', 'danger-ghost')}
-                            onClick={() => dialogs.removeFromTeam(userId)}
-                        >
-                            <Icon
-                                name='leave'
-                                size='sm'
-                            />
-                            {formatMessage({id: 'fusion.modView.remove', defaultMessage: 'Remove from community'})}
-                        </button>
-                    )}
-                    {systemAdmin && !isMe && !isSystemAdmin(user.roles || '') && user.delete_at === 0 && (
-                        <button
-                            type='button'
-                            className={am('btn', 'danger-ghost')}
-                            onClick={deactivate}
-                        >
-                            <Icon
-                                name='x'
-                                size='sm'
-                            />
-                            {formatMessage({id: 'fusion.modView.deactivate', defaultMessage: 'Deactivate account'})}
-                        </button>
-                    )}
-                </div>
-                {!actionable && !isMe && <p className={am('lead')}>{formatMessage({id: 'fusion.modView.adminNote', defaultMessage: 'Admins can\'t be timed out or removed here.'})}</p>}
             </div>
-        </div>
+        </section>
     );
 }
