@@ -9892,6 +9892,11 @@
     "translation": "Unable to get the messages on top of the channel."
   },
   {
+    "id": "app.on_top_post.moderators_only.app_error",
+    "translation": "Only the channel's admins, the community's admins and its moderators can put messages on top.",
+    "description": "API error when a member who is not a channel admin, community admin or moderator tries to put a message on top of a channel, or take it off (Antimatter)."
+  },
+  {
     "id": "app.on_top_post.not_on_top.app_error",
     "translation": "This message isn't on top of its channel."
   },
@@ -17246,6 +17251,11 @@
     "id": "model.team.is_valid.invite_id.app_error",
     "translation": "Invalid invite id.",
     "description": "API error when a team's invite ID (code used in invitation links) is empty."
+  },
+  {
+    "id": "model.team.is_valid.kind.app_error",
+    "translation": "Invalid kind of community: it must be community or corporate.",
+    "description": "Validation error when a team (community) is given a kind other than \"community\" or \"corporate\" (Antimatter). Keep the words community and corporate as they are: they are the values to send."
   },
   {
     "id": "model.team.is_valid.name.app_error",

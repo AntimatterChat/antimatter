@@ -4505,7 +4505,7 @@ func TestGetPostsForChannelAroundLastUnreadBurnOnRead(t *testing.T) {
 		// user1 will be in the channel.
 		th.AddUserToChannel(t, user2, ch)
 		t.Cleanup(func() {
-			_, err := th.Client.DeleteChannel(context.Background(), ch.Id)
+			_, err := th.SystemAdminClient.DeleteChannel(context.Background(), ch.Id)
 			require.NoError(t, err)
 		})
 		return ch
@@ -5427,7 +5427,7 @@ func TestSearchPosts(t *testing.T) {
 
 	archivedChannel := th.CreatePublicChannel(t)
 	_ = th.CreateMessagePostWithClient(t, th.Client, archivedChannel, "#hashtag for post3")
-	_, err := th.Client.DeleteChannel(context.Background(), archivedChannel.Id)
+	_, err := th.SystemAdminClient.DeleteChannel(context.Background(), archivedChannel.Id)
 	require.NoError(t, err)
 
 	otherTeam := th.CreateTeam(t)

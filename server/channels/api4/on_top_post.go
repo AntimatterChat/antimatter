@@ -12,7 +12,8 @@ import (
 )
 
 // Antimatter: messages put on top of a channel, for a while or until removed. Who may read the channel sees them;
-// who may pin its messages and post in it puts them there and takes them off.
+// its admins, the community's admins and moderators put them there and take them off, as do the members of a direct
+// or group message (see app.SessionCanChangeOnTop).
 
 func (api *API) InitOnTopPosts() {
 	api.BaseRoutes.Channel.Handle("/on_top", api.APISessionRequired(getOnTopPosts)).Methods(http.MethodGet)
@@ -44,8 +45,8 @@ func getOnTopPosts(c *Context, w http.ResponseWriter, r *http.Request) {
 }
 
 // onTopPostAndChannel gives the post of the request and its channel, when the session may put it on top: those who
-// may read the channel, as for pinning, and post in it, so that the channel's moderation (read-only channels,
-// overrides), timeouts and membership apply.
+// may read the channel and post in it, so that the channel's moderation (read-only channels, overrides), timeouts and
+// membership apply, and who moderate it (app.SessionCanChangeOnTop).
 func onTopPostAndChannel(c *Context, auditRec *model.AuditRecord) (*model.Post, *model.Channel) {
 	post, appErr := c.App.GetSinglePost(c.AppContext, c.Params.PostId, false)
 	if appErr != nil {
@@ -63,8 +64,8 @@ func onTopPostAndChannel(c *Context, auditRec *model.AuditRecord) (*model.Post, 
 		c.SetPermissionError(model.PermissionReadChannelContent)
 		return nil, nil
 	}
-	if ok, _ := c.App.SessionHasPermissionToChannel(c.AppContext, *c.AppContext.Session(), channel.Id, model.PermissionCreatePost); !ok {
-		c.SetPermissionError(model.PermissionCreatePost)
+	if appErr := c.App.SessionCanChangeOnTop(c.AppContext, *c.AppContext.Session(), channel); appErr != nil {
+		c.Err = appErr
 		return nil, nil
 	}
 	return post, channel

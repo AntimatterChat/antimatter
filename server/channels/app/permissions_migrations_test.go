@@ -533,3 +533,77 @@ func TestApplyPermissionsMapToSchemeRole(t *testing.T) {
 		})
 	}
 }
+
+// Antimatter: on upgrade, members stop archiving channels and the community's admins start, on the system scheme's
+// roles only; a team override scheme's channel_user keeps what its system admin gave it.
+func TestAntimatterChannelArchiveRightsMigration(t *testing.T) {
+	mainHelper.Parallel(t)
+
+	th := SetupWithStoreMock(t)
+
+	migrationMap, err := th.App.getAntimatterChannelArchiveRightsMigration()
+	require.NoError(t, err)
+
+	channelUser := &model.Role{
+		Name:        model.ChannelUserRoleId,
+		Permissions: []string{model.PermissionCreatePost.Id, model.PermissionDeletePublicChannel.Id, model.PermissionDeletePrivateChannel.Id},
+	}
+	channelAdmin := &model.Role{
+		Name:        model.ChannelAdminRoleId,
+		Permissions: []string{model.PermissionManageChannelRoles.Id},
+	}
+	teamAdmin := &model.Role{
+		Name:        model.TeamAdminRoleId,
+		Permissions: []string{model.PermissionManageTeam.Id},
+	}
+	schemeChannelUser := &model.Role{
+		Name:          model.NewId(),
+		DisplayName:   sqlstore.SchemeRoleDisplayNameChannelUser,
+		SchemeManaged: true,
+		Permissions:   []string{model.PermissionCreatePost.Id, model.PermissionDeletePublicChannel.Id},
+	}
+	roles := []*model.Role{channelUser, channelAdmin, teamAdmin, schemeChannelUser}
+
+	mockStore := th.App.Srv().Store().(*mocks.Store)
+	roleStore := mocks.RoleStore{}
+	systemStore := mocks.SystemStore{}
+
+	mockStore.On("Role").Return(&roleStore)
+	mockStore.On("System").Return(&systemStore)
+
+	systemStore.On("GetByName", model.MigrationKeyAntimatterChannelArchiveRights).
+		Return(nil, model.NewAppError("test", "missing", nil, "", 404)).Once()
+	systemStore.On("GetByName", model.MigrationKeyAntimatterChannelArchiveRights).
+		Return(&model.System{Name: model.MigrationKeyAntimatterChannelArchiveRights, Value: "true"}, nil).Once()
+	systemStore.On("SaveOrUpdate", mock.MatchedBy(func(system *model.System) bool {
+		return system.Name == model.MigrationKeyAntimatterChannelArchiveRights && system.Value == "true"
+	})).Return(nil).Once()
+	roleStore.On("SavePreservingUnknownPermissions", mock.AnythingOfType("*model.Role")).
+		Return(func(role *model.Role) *model.Role { return role }, nil)
+
+	appErr := th.App.Srv().doPermissionsMigration(model.MigrationKeyAntimatterChannelArchiveRights, migrationMap, roles)
+	require.Nil(t, appErr)
+
+	assert.ElementsMatch(t, []string{model.PermissionCreatePost.Id}, channelUser.Permissions, "members no longer archive")
+	assert.ElementsMatch(t, []string{model.PermissionManageChannelRoles.Id}, channelAdmin.Permissions, "the channels' admins get nothing: corporate communities let them archive in code")
+	assert.ElementsMatch(t, []string{model.PermissionManageTeam.Id, model.PermissionDeletePublicChannel.Id, model.PermissionDeletePrivateChannel.Id}, teamAdmin.Permissions)
+	assert.ElementsMatch(t, []string{model.PermissionCreatePost.Id, model.PermissionDeletePublicChannel.Id}, schemeChannelUser.Permissions, "a team override scheme is left alone")
+
+	// Runs once.
+	channelUser.Permissions = append(channelUser.Permissions, model.PermissionDeletePublicChannel.Id)
+	appErr = th.App.Srv().doPermissionsMigration(model.MigrationKeyAntimatterChannelArchiveRights, migrationMap, roles)
+	require.Nil(t, appErr)
+	assert.Contains(t, channelUser.Permissions, model.PermissionDeletePublicChannel.Id)
+	systemStore.AssertNumberOfCalls(t, "SaveOrUpdate", 1)
+}
+
+// The fresh install's defaults are the ones the migration brings existing servers to.
+func TestAntimatterChannelArchiveRightsDefaults(t *testing.T) {
+	roles := model.MakeDefaultRoles()
+	for _, p := range []string{model.PermissionDeletePublicChannel.Id, model.PermissionDeletePrivateChannel.Id} {
+		assert.NotContains(t, roles[model.ChannelUserRoleId].Permissions, p)
+		assert.NotContains(t, roles[model.ChannelAdminRoleId].Permissions, p)
+		assert.NotContains(t, roles[model.TeamUserRoleId].Permissions, p)
+		assert.Contains(t, roles[model.TeamAdminRoleId].Permissions, p)
+	}
+}

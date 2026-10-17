@@ -198,3 +198,29 @@ func TestTeamSanitizePreservesPolicyEnforced(t *testing.T) {
 		require.Empty(t, team.InviteId, "InviteId must be cleared by Sanitize")
 	})
 }
+
+// Antimatter: the kind of community. New teams are communities; only the two kinds are valid.
+func TestTeamKind(t *testing.T) {
+	o := Team{DisplayName: "test", Name: "zzzzz", Type: TeamOpen}
+	o.PreSave()
+	assert.Equal(t, TeamKindCommunity, o.Kind)
+	assert.False(t, o.IsCorporate())
+	require.Nil(t, o.IsValid())
+
+	o.Patch(&TeamPatch{Kind: NewPointer(TeamKindCorporate)})
+	assert.Equal(t, TeamKindCorporate, o.Kind)
+	assert.True(t, o.IsCorporate())
+	require.Nil(t, o.IsValid())
+
+	o.Kind = ""
+	require.Nil(t, o.IsValid(), "a team saved before kinds existed is a community")
+	assert.False(t, o.IsCorporate())
+
+	o.Kind = "workplace"
+	appErr := o.IsValid()
+	require.NotNil(t, appErr)
+	assert.Equal(t, "model.team.is_valid.kind.app_error", appErr.Id)
+
+	var none *Team
+	assert.False(t, none.IsCorporate())
+}

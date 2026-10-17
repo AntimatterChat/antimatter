@@ -1565,6 +1565,9 @@ func (s *Server) doAppMigrations() {
 		{"Session Attributes Properties Setup", s.doSetupSessionAttributesProperties},
 		{"Web UI Default Fusion Migration", s.doWebUIDefaultFusionMigration},
 		{"Antimatter Teams In Communities Migration", s.doTeamsInCommunitiesMigration},
+		// After the permissions migrations: the Administrator roles get what the community admins' role holds now.
+		{"Antimatter Moderator Preset Migration", s.doModeratorPresetMigration},
+		{"Antimatter Administrator Roles Migration", s.doAdministratorRolesMigration},
 	}
 
 	for i := range m1 {

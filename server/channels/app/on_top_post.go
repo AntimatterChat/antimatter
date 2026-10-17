@@ -14,7 +14,8 @@ import (
 )
 
 // Antimatter: messages put on top of a channel. Several can be there at once, each for a while or until removed;
-// who may pin a message to the channel and post in it may put it on top or take it off. Expired or deleted ones are
+// the channel's admins, the community's admins and moderators put them there and take them off, as the members of a
+// direct or group message do (SessionCanChangeOnTop). Expired or deleted ones are
 // left out when read, and forgotten the next time a message of the channel is put on top.
 
 // GetOnTopPosts gives the messages on top of a channel, the latest put there first.

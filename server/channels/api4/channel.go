@@ -53,6 +53,17 @@ func rejectSpaceChannelByID(c *Context, channelId string) bool {
 	return false
 }
 
+// rejectArchivedChannelByID refuses to change an archived channel (Antimatter): nothing about it changes until it's
+// unarchived. A channel that can't be read is left to the request's own error.
+func rejectArchivedChannelByID(c *Context, where, channelID string) bool {
+	channel, err := c.App.GetChannel(c.AppContext, channelID)
+	if err != nil || channel.DeleteAt == 0 {
+		return false
+	}
+	c.Err = model.NewAppError(where, "api.channel.update_channel.deleted.app_error", nil, "", http.StatusBadRequest)
+	return true
+}
+
 func (api *API) InitChannel() {
 	api.BaseRoutes.Channels.Handle("", api.APISessionRequired(getAllChannels)).Methods(http.MethodGet)
 	api.BaseRoutes.Channels.Handle("", api.APISessionRequired(createChannel)).Methods(http.MethodPost)
@@ -549,6 +560,12 @@ func updateChannelPrivacy(c *Context, w http.ResponseWriter, r *http.Request) {
 
 	auditRec.AddEventPriorState(channel)
 
+	// Antimatter: an archived channel is left as it is.
+	if channel.DeleteAt != 0 {
+		c.Err = model.NewAppError("updateChannelPrivacy", "api.channel.update_channel.deleted.app_error", nil, "", http.StatusBadRequest)
+		return
+	}
+
 	if model.ChannelType(privacy) == model.ChannelTypeOpen {
 		if ok, _ := c.App.SessionHasPermissionToChannel(c.AppContext, *c.AppContext.Session(), c.Params.ChannelId, model.PermissionConvertPrivateChannelToPublic); !ok {
 			c.SetPermissionError(model.PermissionConvertPrivateChannelToPublic)
@@ -616,6 +633,13 @@ func patchChannel(c *Context, w http.ResponseWriter, r *http.Request) {
 	defer c.LogAuditRec(auditRec)
 	model.AddEventParameterAuditableToAuditRec(auditRec, "channel", patch)
 	auditRec.AddEventPriorState(oldChannel)
+
+	// Antimatter: an archived channel is left as it is (its name, header, purpose, banner, category...) until it's
+	// unarchived.
+	if oldChannel.DeleteAt != 0 {
+		c.Err = model.NewAppError("patchChannel", "api.channel.update_channel.deleted.app_error", nil, "", http.StatusBadRequest)
+		return
+	}
 
 	updatingProperties := patch.DisplayName != nil || patch.Name != nil || patch.Header != nil || patch.Purpose != nil || patch.GroupConstrained != nil || patch.DefaultCategoryName != nil
 	updatingAutoTranslation := patch.AutoTranslation != nil
@@ -1951,18 +1975,10 @@ func deleteChannel(c *Context, w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if channel.Type == model.ChannelTypeOpen {
-		if ok, _ := c.App.SessionHasPermissionToChannel(c.AppContext, *c.AppContext.Session(), channel.Id, model.PermissionDeletePublicChannel); !ok {
-			c.SetPermissionError(model.PermissionDeletePublicChannel)
-			return
-		}
-	}
-
-	if channel.Type == model.ChannelTypePrivate {
-		if ok, _ := c.App.SessionHasPermissionToChannel(c.AppContext, *c.AppContext.Session(), channel.Id, model.PermissionDeletePrivateChannel); !ok {
-			c.SetPermissionError(model.PermissionDeletePrivateChannel)
-			return
-		}
+	// Antimatter: who archives depends on the kind of community too (see SessionCanArchiveChannel).
+	if appErr := c.App.SessionCanArchiveChannel(c.AppContext, *c.AppContext.Session(), channel); appErr != nil {
+		c.Err = appErr
+		return
 	}
 
 	// Antimatter: the default channels (Town Square, Off-Topic, the one the community chose) are the community's: its
@@ -2394,6 +2410,10 @@ func updateChannelMemberRoles(c *Context, w http.ResponseWriter, r *http.Request
 		return
 	}
 
+	if rejectArchivedChannelByID(c, "updateChannelMemberRoles", c.Params.ChannelId) {
+		return
+	}
+
 	if _, err := c.App.UpdateChannelMemberRoles(c.AppContext, c.Params.ChannelId, c.Params.UserId, newRoles); err != nil {
 		c.Err = err
 		return
@@ -2431,6 +2451,10 @@ func updateChannelMemberSchemeRoles(c *Context, w http.ResponseWriter, r *http.R
 
 	if ok, _ := c.App.SessionHasPermissionToChannel(c.AppContext, *c.AppContext.Session(), c.Params.ChannelId, model.PermissionManageChannelRoles); !ok {
 		c.SetPermissionError(model.PermissionManageChannelRoles)
+		return
+	}
+
+	if rejectArchivedChannelByID(c, "updateChannelMemberSchemeRoles", c.Params.ChannelId) {
 		return
 	}
 

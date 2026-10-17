@@ -3909,6 +3909,11 @@ func TestDeleteChannel(t *testing.T) {
 	user := th.BasicUser
 	user2 := th.BasicUser2
 
+	// Antimatter: in a corporate community, members archive the channels they created, as upstream; in a community
+	// they don't (TestArchiveChannelRights).
+	_, _, err := th.SystemAdminClient.PatchTeam(context.Background(), team.Id, &model.TeamPatch{Kind: model.NewPointer(model.TeamKindCorporate)})
+	require.NoError(t, err)
+
 	// successful delete of public channel
 	th.TestForAllClients(t, func(t *testing.T, client *model.Client4) {
 		publicChannel1 := th.CreatePublicChannel(t)
@@ -3981,7 +3986,7 @@ func TestDeleteChannel(t *testing.T) {
 
 	th.LoginBasic(t)
 	publicChannel5 := th.CreatePublicChannel(t)
-	_, err := c.Logout(context.Background())
+	_, err = c.Logout(context.Background())
 	require.NoError(t, err)
 
 	// Other users can't delete the channel
@@ -4233,12 +4238,13 @@ func TestRestoreChannel(t *testing.T) {
 	mainHelper.Parallel(t)
 	th := Setup(t).InitBasic(t)
 
+	// Antimatter: members don't archive channels, so a system admin does.
 	publicChannel1 := th.CreatePublicChannel(t)
-	_, err := th.Client.DeleteChannel(context.Background(), publicChannel1.Id)
+	_, err := th.SystemAdminClient.DeleteChannel(context.Background(), publicChannel1.Id)
 	require.NoError(t, err)
 
 	privateChannel1 := th.CreatePrivateChannel(t)
-	_, err = th.Client.DeleteChannel(context.Background(), privateChannel1.Id)
+	_, err = th.SystemAdminClient.DeleteChannel(context.Background(), privateChannel1.Id)
 	require.NoError(t, err)
 
 	_, resp, err := th.Client.RestoreChannel(context.Background(), publicChannel1.Id)
@@ -5733,7 +5739,7 @@ func TestAddChannelMember(t *testing.T) {
 	require.Error(t, err)
 	CheckNotFoundStatus(t, resp)
 
-	_, err = client.DeleteChannel(context.Background(), otherChannel.Id)
+	_, err = th.SystemAdminClient.DeleteChannel(context.Background(), otherChannel.Id)
 	require.NoError(t, err)
 
 	// Adding user to a deleted channel is fine
@@ -6397,9 +6403,9 @@ func TestAutocompleteChannels(t *testing.T) {
 	})
 	require.NoError(t, err)
 	defer func() {
-		_, err = th.Client.DeleteChannel(context.Background(), ptown.Id)
+		_, err = th.SystemAdminClient.DeleteChannel(context.Background(), ptown.Id)
 		require.NoError(t, err)
-		_, err = th.Client.DeleteChannel(context.Background(), tower.Id)
+		_, err = th.SystemAdminClient.DeleteChannel(context.Background(), tower.Id)
 		require.NoError(t, err)
 	}()
 

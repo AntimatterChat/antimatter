@@ -1366,6 +1366,24 @@ func (a *App) getAddAIRecapsPermissionsMigration() (permissionsMap, error) {
 	}, nil
 }
 
+// getAntimatterChannelArchiveRightsMigration takes archiving channels from their members (channel_user, which held
+// delete_public/private_channel upstream) and gives it to the community's admins (team_admin), on the system scheme's
+// roles: a team override scheme is a system admin's own choice and stays as it is. A fresh install gets the same
+// from model.MakeDefaultRoles; the channels' admins of a corporate community archive through
+// app.SessionCanArchiveChannel, not a permission.
+func (a *App) getAntimatterChannelArchiveRightsMigration() (permissionsMap, error) {
+	return permissionsMap{
+		permissionTransformation{
+			On:     isExactRole(model.ChannelUserRoleId),
+			Remove: []string{PermissionDeletePublicChannel, PermissionDeletePrivateChannel},
+		},
+		permissionTransformation{
+			On:  isExactRole(model.TeamAdminRoleId),
+			Add: []string{PermissionDeletePublicChannel, PermissionDeletePrivateChannel},
+		},
+	}, nil
+}
+
 // DoPermissionsMigrations execute all the permissions migrations need by the current version.
 func (a *App) DoPermissionsMigrations() error {
 	return a.Srv().doPermissionsMigrations()
@@ -1431,6 +1449,7 @@ func (s *Server) doPermissionsMigrations() error {
 		{Key: model.MigrationKeyAddDiscoverableChannelPermissions, Migration: a.getAddDiscoverableChannelPermissionsMigration},
 		{Key: model.MigrationRemoveImportTeamPermission, Migration: a.removeImportTeamPermissionMigration},
 		{Key: model.MigrationKeyAddAIRecapsPermissions, Migration: a.getAddAIRecapsPermissionsMigration},
+		{Key: model.MigrationKeyAntimatterChannelArchiveRights, Migration: a.getAntimatterChannelArchiveRightsMigration},
 	}
 
 	roles, err := s.Store().Role().GetAll()

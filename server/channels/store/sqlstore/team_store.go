@@ -252,19 +252,25 @@ func prefixedTeamSliceColumns(isSelect bool, prefix string) []string {
 		columns = append(columns,
 			fmt.Sprintf("COALESCE((SELECT sy.Value FROM Systems sy WHERE sy.Name = '%s' || %s.Id), '') = 'true' AS AllChannelsMembership", teamAllChannelsKeyPrefix, prefix),
 			fmt.Sprintf("COALESCE((SELECT sy.Value FROM Systems sy WHERE sy.Name = '%s' || %s.Id), '') AS DefaultChannelId", teamDefaultChannelKeyPrefix, prefix),
+			fmt.Sprintf("COALESCE((SELECT sy.Value FROM Systems sy WHERE sy.Name = '%s' || %s.Id), '%s') AS Kind", teamKindKeyPrefix, prefix, model.TeamKindCommunity),
 		)
 	}
 
 	return columns
 }
 
-// Antimatter: two community settings, AllChannelsMembership and DefaultChannelId, are kept in the Systems table, one
-// row each per team that sets them, rather than in new Teams columns: no schema migration. Selecting teams reads them
-// back into the team (prefixedTeamSliceColumns); saving a team writes them (saveTeamSettings).
+// Antimatter: some community settings, AllChannelsMembership, DefaultChannelId and Kind, are kept in the Systems
+// table, one row each per team that sets them, rather than in new Teams columns: no schema migration. Selecting teams
+// reads them back into the team (prefixedTeamSliceColumns); saving a team writes them (saveTeamSettings). Kind is
+// stored for corporate communities only: a team without the row is a community.
 const (
 	teamAllChannelsKeyPrefix    = "AmTeamAllChannels_"
 	teamDefaultChannelKeyPrefix = "AmTeamDefaultChannel_"
+	teamKindKeyPrefix           = "AmTeamKind_"
 )
+
+// teamSettingPrefixes are the Systems rows of a team's settings, removed with it.
+var teamSettingPrefixes = []string{teamAllChannelsKeyPrefix, teamDefaultChannelKeyPrefix, teamKindKeyPrefix}
 
 // teamSettingKeys gives each setting of a team its Systems row, with the value it stores; "" deletes the row.
 func teamSettingKeys(team *model.Team) map[string]string {
@@ -272,9 +278,14 @@ func teamSettingKeys(team *model.Team) map[string]string {
 	if team.AllChannelsMembership {
 		allChannels = "true"
 	}
+	kind := ""
+	if team.IsCorporate() {
+		kind = model.TeamKindCorporate
+	}
 	return map[string]string{
 		teamAllChannelsKeyPrefix + team.Id:    allChannels,
 		teamDefaultChannelKeyPrefix + team.Id: team.DefaultChannelId,
+		teamKindKeyPrefix + team.Id:           kind,
 	}
 }
 
@@ -817,7 +828,15 @@ func (s SqlTeamStore) PermanentDelete(teamId string) error {
 	if _, err = s.GetMaster().Exec(sql, args...); err != nil {
 		return errors.Wrapf(err, "failed to delete Team with id=%s", teamId)
 	}
-	if _, err = s.GetMaster().Exec("DELETE FROM Systems WHERE Name IN (?, ?)", teamAllChannelsKeyPrefix+teamId, teamDefaultChannelKeyPrefix+teamId); err != nil {
+	names := make([]string, 0, len(teamSettingPrefixes))
+	for _, prefix := range teamSettingPrefixes {
+		names = append(names, prefix+teamId)
+	}
+	query, args, err := s.getQueryBuilder().Delete("Systems").Where(sq.Eq{"Name": names}).ToSql()
+	if err != nil {
+		return errors.Wrap(err, "team_settings_tosql")
+	}
+	if _, err = s.GetMaster().Exec(query, args...); err != nil {
 		return errors.Wrapf(err, "failed to delete the settings of Team with id=%s", teamId)
 	}
 	return nil

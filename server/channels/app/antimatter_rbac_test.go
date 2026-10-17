@@ -290,6 +290,21 @@ func TestUpgradeDoesNotPromoteAnyone(t *testing.T) {
 			}
 		}
 	})
+
+	// Archiving channels moved from the members to the community's admins (MigrationKeyAntimatterChannelArchiveRights):
+	// an upgraded server ends up as a fresh install.
+	t.Run("who archives channels is the same as on a fresh install", func(t *testing.T) {
+		upgraded := readRoles(t, th.App.Srv().Store())
+		golden := readGoldenRoles(t)
+		for _, name := range []string{model.ChannelUserRoleId, model.ChannelAdminRoleId, model.TeamUserRoleId, model.TeamAdminRoleId} {
+			for _, p := range []string{model.PermissionDeletePublicChannel.Id, model.PermissionDeletePrivateChannel.Id} {
+				assert.Equal(t, slices.Contains(golden[name].Permissions, p), slices.Contains(upgraded[name].Permissions, p),
+					"%s holding %s after the upgrade", name, p)
+			}
+		}
+		assert.NotContains(t, upgraded[model.ChannelUserRoleId].Permissions, model.PermissionDeletePublicChannel.Id)
+		assert.Contains(t, upgraded[model.TeamAdminRoleId].Permissions, model.PermissionDeletePublicChannel.Id)
+	})
 }
 
 type membershipSnapshot struct {

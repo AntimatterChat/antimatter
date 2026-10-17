@@ -1628,7 +1628,7 @@ func TestSearchFilesInTeam(t *testing.T) {
 	require.NoError(t, err)
 	err = th.App.Srv().Store().FileInfo().AttachToPost(th.Context, fileInfo5.Id, rpost.Id, rpost.ChannelId, th.BasicUser.Id)
 	require.NoError(t, err)
-	_, err = th.Client.DeleteChannel(context.Background(), archivedChannel.Id)
+	_, err = th.SystemAdminClient.DeleteChannel(context.Background(), archivedChannel.Id)
 	require.NoError(t, err)
 
 	terms := "search"

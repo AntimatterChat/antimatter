@@ -21,6 +21,15 @@ func TestOnTopPosts(t *testing.T) {
 	ctx := context.Background()
 	hour := time.Hour.Milliseconds()
 
+	// Antimatter: the channels' admins, the community's admins and moderators put messages on top, members don't
+	// (TestOnTopRights): the basic users are admins of the basic channels here.
+	for _, channel := range []*model.Channel{th.BasicChannel, th.BasicPrivateChannel} {
+		for _, user := range []*model.User{th.BasicUser, th.BasicUser2} {
+			_, appErr := th.App.UpdateChannelMemberSchemeRoles(th.Context, channel.Id, user.Id, false, true, true)
+			require.Nil(t, appErr)
+		}
+	}
+
 	waitFor := func(t *testing.T, wsClient *model.WebSocketClient, eventType model.WebsocketEventType) *model.WebSocketEvent {
 		t.Helper()
 		timeout := time.After(5 * time.Second)
@@ -60,7 +69,7 @@ func TestOnTopPosts(t *testing.T) {
 		require.Len(t, list, 1)
 		assert.Equal(t, post.Id, list[0].PostId)
 
-		// Others who may read the channel see it, and may take it off.
+		// Others who may read the channel see it, and its other admins may take it off.
 		other := th.CreateClient()
 		_, _, err = other.Login(ctx, th.BasicUser2.Email, th.BasicUser2.Password)
 		require.NoError(t, err)
@@ -117,7 +126,7 @@ func TestOnTopPosts(t *testing.T) {
 		assert.Len(t, list, 1, "still on top")
 	})
 
-	// Putting a message on top, or taking it off, takes posting in the channel too.
+	// Putting a message on top, or taking it off, takes posting in the channel too, and moderating it.
 	expectRefused := func(t *testing.T, client *model.Client4, channelID, postID string) {
 		t.Helper()
 		list, _, err := client.GetOnTopPosts(ctx, channelID)

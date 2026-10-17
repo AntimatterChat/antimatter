@@ -316,8 +316,8 @@ func TestUpdateCategoryForTeamForUser(t *testing.T) {
 		require.Equal(t, model.SidebarCategoryChannels, channelsCategory.Type)
 		require.Len(t, channelsCategory.Channels, 5) // Town Square, Off Topic, and the 3 channels created by InitBasic
 
-		// Delete one of the channels
-		_, err = client.DeleteChannel(context.Background(), th.BasicChannel.Id)
+		// Delete one of the channels (Antimatter: members don't archive channels, so a system admin does)
+		_, err = th.SystemAdminClient.DeleteChannel(context.Background(), th.BasicChannel.Id)
 		require.NoError(t, err)
 
 		// Should still be able to reorder the channels

@@ -91,6 +91,9 @@ func saveChannelOverride(c *Context, w http.ResponseWriter, r *http.Request) {
 		c.SetPermissionError(model.PermissionManageChannelRoles)
 		return
 	}
+	if rejectArchivedChannelByID(c, "saveChannelOverride", channel.Id) {
+		return
+	}
 	// The channel's admins who aren't the team's change only what they may do themselves there, as Discord's
 	// overwrites: no allowing themselves more, nor taking from moderators what they don't hold.
 	if !c.App.SessionHasPermissionToTeam(*c.AppContext.Session(), channel.TeamId, model.PermissionManageTeam) {
@@ -165,6 +168,9 @@ func setChannelRoleAccess(c *Context, w http.ResponseWriter, r *http.Request) {
 
 	if !canManageChannelAccess(c, channel) {
 		c.SetPermissionError(model.PermissionManageChannelRoles)
+		return
+	}
+	if rejectArchivedChannelByID(c, "setChannelRoleAccess", channel.Id) {
 		return
 	}
 	if appErr := c.App.SetChannelRoleAccess(c.AppContext, channel, body.GroupIds); appErr != nil {

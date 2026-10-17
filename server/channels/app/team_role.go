@@ -40,7 +40,9 @@ func (a *App) GetTeamRole(rctx request.CTX, group *model.Group) (*model.Role, *m
 }
 
 // SetTeamRolePermissions sets what an Antimatter role grants. Only permissions a role may hold are accepted, and
-// someone who isn't a team admin can only hand out permissions they have themselves in the team.
+// someone who isn't a team admin can only hand out permissions they have themselves in the team. A role that may
+// manage the team (the role editor's "Administrator") also gets everything else the team's admins may do that a role
+// may hold (TeamAdminRolePermissions), as the editor promises.
 func (a *App) SetTeamRolePermissions(rctx request.CTX, session model.Session, group *model.Group, permissions []string) (*model.Role, *model.AppError) {
 	if !group.IsRole() {
 		return nil, model.NewAppError("SetTeamRolePermissions", "app.team_role.not_a_role.app_error", nil, "", http.StatusBadRequest)
@@ -61,6 +63,16 @@ func (a *App) SetTeamRolePermissions(rctx request.CTX, session model.Session, gr
 		}
 	}
 
+	if slices.Contains(permissions, model.PermissionManageTeam.Id) {
+		adminPermissions, appErr := a.TeamAdminRolePermissions(rctx, group.TeamId)
+		if appErr != nil {
+			return nil, appErr
+		}
+		permissions = append(permissions, adminPermissions...)
+		slices.Sort(permissions)
+		permissions = slices.Compact(permissions)
+	}
+
 	role, appErr := a.GetTeamRole(rctx, group)
 	if appErr != nil {
 		return nil, appErr
@@ -73,6 +85,37 @@ func (a *App) SetTeamRolePermissions(rctx request.CTX, session model.Session, gr
 	// Its members hold it (again): roles made before they granted anything, or drifted, catch up here.
 	a.syncTeamRoleForAllMembers(rctx, group, true)
 	return role, nil
+}
+
+// TeamAdminRolePermissions gives what a team's admins may do that an Antimatter role may hold: the permissions of the
+// team's admin role (its scheme's, or the system scheme's) a role may grant (model.TeamRolePermissions), never a
+// system-wide one. A role with "Administrator" on holds them all.
+func (a *App) TeamAdminRolePermissions(rctx request.CTX, teamID string) ([]string, *model.AppError) {
+	team, appErr := a.GetTeam(teamID)
+	if appErr != nil {
+		return nil, appErr
+	}
+	roleName := model.TeamAdminRoleId
+	if team.SchemeId != nil && *team.SchemeId != "" {
+		scheme, appErr := a.GetScheme(*team.SchemeId)
+		if appErr != nil {
+			return nil, appErr
+		}
+		roleName = scheme.DefaultTeamAdminRole
+	}
+	role, appErr := a.GetRoleByName(rctx, roleName)
+	if appErr != nil {
+		return nil, appErr
+	}
+	allowed := model.TeamRolePermissions()
+	permissions := make([]string, 0, len(role.Permissions))
+	for _, p := range role.Permissions {
+		if slices.Contains(allowed, p) {
+			permissions = append(permissions, p)
+		}
+	}
+	slices.Sort(permissions)
+	return slices.Compact(permissions), nil
 }
 
 // CheckTeamRoleMembers refuses people who aren't in the team of a role or an Antimatter team (both are for their
