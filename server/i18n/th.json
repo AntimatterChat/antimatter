@@ -412,6 +412,10 @@
     "translation": "ไม่พบ team_id ใน body ของคำขอ"
   },
   {
+    "id": "api.channel.create_default_channels.general",
+    "translation": "ทัวไป"
+  },
+  {
     "id": "api.channel.create_default_channels.off_topic",
     "translation": "นอกเรื่อง"
   },

@@ -412,6 +412,10 @@
     "translation": "Λείπει το team_id στο σώμα του αιτήματος"
   },
   {
+    "id": "api.channel.create_default_channels.general",
+    "translation": "Γενικά"
+  },
+  {
     "id": "api.channel.create_default_channels.off_topic",
     "translation": "Εκτός θέματος"
   },

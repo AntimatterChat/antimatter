@@ -424,6 +424,10 @@
     "translation": "Manca team_id nel corpo della richiesta"
   },
   {
+    "id": "api.channel.create_default_channels.general",
+    "translation": "Generale"
+  },
+  {
     "id": "api.channel.create_default_channels.off_topic",
     "translation": "Senza-Argomento"
   },

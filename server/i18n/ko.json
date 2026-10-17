@@ -424,6 +424,10 @@
     "translation": "요청 본문에 team_id가 누락되었습니다"
   },
   {
+    "id": "api.channel.create_default_channels.general",
+    "translation": "일반"
+  },
+  {
     "id": "api.channel.create_default_channels.off_topic",
     "translation": "잡담"
   },

@@ -412,6 +412,10 @@
     "translation": "مفقود team_id في جسم الطلب"
   },
   {
+    "id": "api.channel.create_default_channels.general",
+    "translation": "عام"
+  },
+  {
     "id": "api.channel.create_default_channels.off_topic",
     "translation": "خارج الموضوع"
   },

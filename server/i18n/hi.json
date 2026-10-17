@@ -412,6 +412,10 @@
     "translation": "रिक्वेस्ट बॉडी में team_id नहीं मिला"
   },
   {
+    "id": "api.channel.create_default_channels.general",
+    "translation": "सामान्य"
+  },
+  {
     "id": "api.channel.create_default_channels.off_topic",
     "translation": "विषय से बाहर"
   },

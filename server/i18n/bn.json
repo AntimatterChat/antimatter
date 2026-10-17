@@ -412,6 +412,10 @@
     "translation": "রিকোয়েস্ট বডিতে team_id অনুপস্থিত"
   },
   {
+    "id": "api.channel.create_default_channels.general",
+    "translation": "জেনারেল"
+  },
+  {
     "id": "api.channel.create_default_channels.off_topic",
     "translation": "অফ-টপিক"
   },

@@ -424,6 +424,10 @@
     "translation": "Chybí team_id v těle požadavku"
   },
   {
+    "id": "api.channel.create_default_channels.general",
+    "translation": "Obecné"
+  },
+  {
     "id": "api.channel.create_default_channels.off_topic",
     "translation": "Mimo téma"
   },

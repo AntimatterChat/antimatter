@@ -424,6 +424,10 @@
     "translation": "Thiếu team_id trong yêu cầu gửi đi"
   },
   {
+    "id": "api.channel.create_default_channels.general",
+    "translation": "Chung"
+  },
+  {
     "id": "api.channel.create_default_channels.off_topic",
     "translation": "Chủ đề ngoài lề"
   },

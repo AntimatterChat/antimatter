@@ -424,6 +424,10 @@
     "translation": "team_id está em falta no corpo do pedido"
   },
   {
+    "id": "api.channel.create_default_channels.general",
+    "translation": "Geral"
+  },
+  {
     "id": "api.channel.create_default_channels.off_topic",
     "translation": "Fora do Tópico"
   },

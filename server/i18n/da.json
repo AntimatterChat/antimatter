@@ -424,6 +424,10 @@
     "translation": "Mangler team_id i request-meddelelsen"
   },
   {
+    "id": "api.channel.create_default_channels.general",
+    "translation": "Generel"
+  },
+  {
     "id": "api.channel.create_default_channels.off_topic",
     "translation": "Irrelevant"
   },

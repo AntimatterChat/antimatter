@@ -412,6 +412,10 @@
     "translation": "Wala ang team_id sa request body"
   },
   {
+    "id": "api.channel.create_default_channels.general",
+    "translation": "Pangkalahatan"
+  },
+  {
     "id": "api.channel.create_default_channels.off_topic",
     "translation": "Off-Topic"
   },

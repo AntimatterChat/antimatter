@@ -424,6 +424,10 @@
     "translation": "Відсутній team_id в тілі запиту"
   },
   {
+    "id": "api.channel.create_default_channels.general",
+    "translation": "Загальний"
+  },
+  {
     "id": "api.channel.create_default_channels.off_topic",
     "translation": "Офтопік"
   },

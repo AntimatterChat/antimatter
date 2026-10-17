@@ -412,6 +412,10 @@
     "translation": "team_id tidak ada di body permintaan"
   },
   {
+    "id": "api.channel.create_default_channels.general",
+    "translation": "Umum"
+  },
+  {
     "id": "api.channel.create_default_channels.off_topic",
     "translation": "Di Luar Topik"
   },

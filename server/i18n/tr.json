@@ -424,6 +424,10 @@
     "translation": "İstek içeriğinde team_id eksik"
   },
   {
+    "id": "api.channel.create_default_channels.general",
+    "translation": "Genel"
+  },
+  {
     "id": "api.channel.create_default_channels.off_topic",
     "translation": "Konu dışı"
   },

@@ -424,6 +424,10 @@
     "translation": "Brakujące id_zespołu w treści żądania"
   },
   {
+    "id": "api.channel.create_default_channels.general",
+    "translation": "Ogólny"
+  },
+  {
     "id": "api.channel.create_default_channels.off_topic",
     "translation": "Pogawędki"
   },

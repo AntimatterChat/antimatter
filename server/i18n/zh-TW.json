@@ -424,6 +424,10 @@
     "translation": "要求內容中缺少 team_id 屬性"
   },
   {
+    "id": "api.channel.create_default_channels.general",
+    "translation": "一般"
+  },
+  {
     "id": "api.channel.create_default_channels.off_topic",
     "translation": "閒聊"
   },

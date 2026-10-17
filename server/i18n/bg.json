@@ -424,6 +424,10 @@
     "translation": "Липсва team_id в тялото на заявката"
   },
   {
+    "id": "api.channel.create_default_channels.general",
+    "translation": "Общо"
+  },
+  {
     "id": "api.channel.create_default_channels.off_topic",
     "translation": "Извън темата"
   },

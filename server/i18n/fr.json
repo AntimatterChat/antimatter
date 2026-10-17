@@ -424,6 +424,10 @@
     "translation": "Le champ team_id est manquant dans le corps de la requête"
   },
   {
+    "id": "api.channel.create_default_channels.general",
+    "translation": "Général"
+  },
+  {
     "id": "api.channel.create_default_channels.off_topic",
     "translation": "Hors-sujet"
   },

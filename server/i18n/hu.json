@@ -424,6 +424,10 @@
     "translation": "Hiányzó team_id a kérés törzsében"
   },
   {
+    "id": "api.channel.create_default_channels.general",
+    "translation": "Általános"
+  },
+  {
     "id": "api.channel.create_default_channels.off_topic",
     "translation": "Egyebek"
   },

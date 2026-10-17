@@ -412,6 +412,10 @@
     "translation": "درخواست کے باڈی میں team_id موجود نہیں"
   },
   {
+    "id": "api.channel.create_default_channels.general",
+    "translation": "جنرل"
+  },
+  {
     "id": "api.channel.create_default_channels.off_topic",
     "translation": "موضوع سے باہر"
   },

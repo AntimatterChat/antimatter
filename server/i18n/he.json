@@ -412,6 +412,10 @@
     "translation": "חסר team_id בגוף הבקשה"
   },
   {
+    "id": "api.channel.create_default_channels.general",
+    "translation": "כללי"
+  },
+  {
     "id": "api.channel.create_default_channels.off_topic",
     "translation": "נושאים שונים"
   },

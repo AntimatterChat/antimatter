@@ -424,6 +424,10 @@
     "translation": "team_id mangler i forespørselsteksten"
   },
   {
+    "id": "api.channel.create_default_channels.general",
+    "translation": "Generell"
+  },
+  {
     "id": "api.channel.create_default_channels.off_topic",
     "translation": "Utenfor tema"
   },

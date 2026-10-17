@@ -412,6 +412,10 @@
     "translation": "request body-ல் team_id இல்லை"
   },
   {
+    "id": "api.channel.create_default_channels.general",
+    "translation": "பொது"
+  },
+  {
     "id": "api.channel.create_default_channels.off_topic",
     "translation": "பொருளற்ற விவாதம்"
   },
