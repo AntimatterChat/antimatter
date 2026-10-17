@@ -29,6 +29,9 @@ const TRIGGER_MESSAGE_MENU = 2;
 // Where an uploaded icon is served from (model.OutgoingWebhookIconPath).
 const UPLOADED_ICON_PATH = '/api/v4/hooks/outgoing/';
 
+// The start of an icon's URL, as a hint in its empty field.
+const URL_PLACEHOLDER = 'https://';
+
 interface State {
     callbackUrls: string;
     channelId: string;
@@ -371,7 +374,7 @@ export default class AbstractOutgoingWebhook extends React.PureComponent<Props, 
                             type='text'
                             maxLength={1024}
                             className='form-control'
-                            placeholder='https://'
+                            placeholder={URL_PLACEHOLDER}
                             value={this.state.iconURL}
                             onChange={this.updateIconURL}
                         />
@@ -384,9 +387,9 @@ export default class AbstractOutgoingWebhook extends React.PureComponent<Props, 
                                     defaultMessage='Or upload an image:'
                                 />
                             </label>
-                            {' '}
                             <input
                                 id='messageActionIconFile'
+                                style={{marginLeft: 6}}
                                 type='file'
                                 accept='image/png,image/jpeg,image/gif'
                                 onChange={this.updateIconFile}

@@ -120,7 +120,7 @@ export function messageActionIconSrc(iconUrl: string, imageProxy: (url: string) 
     if (iconUrl.startsWith('/api/v4/hooks/outgoing/')) {
         return Client4.getUrl() + iconUrl;
     }
-    if (/^https?:\/\//i.test(iconUrl)) {
+    if ((/^https?:\/\//i).test(iconUrl)) {
         return imageProxy(iconUrl);
     }
     return '';
