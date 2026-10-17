@@ -23940,8 +23940,8 @@
     "description": ""
   },
   "fusion.layout.communityDesc": {
-    "defaultMessage": "Like Discord: categories the admins keep, and a Moderators role. To stop members creating channels, change the community's permissions in the System Console.",
-    "description": ""
+    "defaultMessage": "Like Discord: categories the admins keep, and a Moderators role. Only the community's admins archive channels. To stop members creating channels, change the community's permissions in the System Console.",
+    "description": "Description of the Community layout preset in the Community layout settings; Discord is a name."
   },
   "fusion.layout.export": {
     "defaultMessage": "Export as a template",
@@ -23956,8 +23956,8 @@
     "description": ""
   },
   "fusion.layout.hybridDesc": {
-    "defaultMessage": "Curated categories for everyone, an open Community one where members file their channels, and a Moderators role.",
-    "description": ""
+    "defaultMessage": "Curated categories for everyone, an open Community one where members file their channels, and a Moderators role. Only the community's admins archive channels.",
+    "description": "Description of the Hybrid layout preset in the Community layout settings."
   },
   "fusion.layout.import": {
     "defaultMessage": "Apply a template…",
@@ -23988,8 +23988,8 @@
     "description": ""
   },
   "fusion.layout.workplaceDesc": {
-    "defaultMessage": "Like Mattermost: everyone keeps their own categories. Removes the categories for everyone; roles stay.",
-    "description": ""
+    "defaultMessage": "Like Mattermost: everyone keeps their own categories, and archives the channels they created. Removes the categories for everyone; roles stay.",
+    "description": "Description of the Workplace layout preset in the Community layout settings (it makes a corporate community); Mattermost is a name."
   },
   "fusion.lightbox.close": {
     "defaultMessage": "Close image",
@@ -25460,8 +25460,8 @@
     "description": ""
   },
   "fusion.roles.perm.messagesDesc": {
-    "defaultMessage": "Edit and delete other people's messages.",
-    "description": ""
+    "defaultMessage": "Edit and delete other people's messages, and put messages on top of channels.",
+    "description": "Description of the Manage messages permission switch in the community role editor: what holders of the role may do."
   },
   "fusion.roles.perm.private": {
     "defaultMessage": "Create private channels",
@@ -26994,6 +26994,30 @@
   "fusion.teamChannels.failed": {
     "defaultMessage": "The setting couldn't be saved.",
     "description": "Toast when a community channel setting couldn't be saved and the server gave no reason."
+  },
+  "fusion.teamChannels.kind": {
+    "defaultMessage": "Kind of community",
+    "description": "Title of the community setting (Channels tab of the community settings) choosing between a community and a corporate community."
+  },
+  "fusion.teamChannels.kind.community": {
+    "defaultMessage": "Community",
+    "description": "Option of the kind of community setting: a public or hobby community, as on Discord."
+  },
+  "fusion.teamChannels.kind.corporate": {
+    "defaultMessage": "Corporate",
+    "description": "Option of the kind of community setting: a company's or an organisation's workspace."
+  },
+  "fusion.teamChannels.kindCommunity": {
+    "defaultMessage": "Only the community's admins archive channels now",
+    "description": "Toast shown when a community admin makes a corporate community a community again."
+  },
+  "fusion.teamChannels.kindCorporate": {
+    "defaultMessage": "Members now archive the channels they created",
+    "description": "Toast shown when a community admin makes the community corporate."
+  },
+  "fusion.teamChannels.kindDesc": {
+    "defaultMessage": "A community, as on Discord: only its admins (and roles that manage channels) archive channels. Corporate, for a company's or an organisation's workspace: members also archive the channels they created. In both, only the channels' admins, the community's admins and moderators put messages on top.",
+    "description": "Description of the kind of community setting; 'put messages on top' is the feature that pins a message above a channel's messages for a while."
   },
   "fusion.teams.cancel": {
     "defaultMessage": "Cancel",

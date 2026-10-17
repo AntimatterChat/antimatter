@@ -23,6 +23,8 @@ export type TeamMemberWithError = {
 
 export type TeamType = 'O' | 'I';
 
+export type TeamKind = 'community' | 'corporate';
+
 export type Team = {
     id: string;
     create_at: number;
@@ -55,6 +57,12 @@ export type Team = {
 
     /** Antimatter: the community's default channel (where newcomers land); empty for Town Square while there is one. */
     default_channel_id?: string;
+
+    /**
+     * Antimatter: the kind of community. In a community (the default), members don't archive channels; in a corporate
+     * one, they archive those they created (whose admins they are).
+     */
+    kind?: TeamKind;
 
     /** Data Retention Policy id. Unrelated to access-control policies below. */
     policy_id?: string | null;

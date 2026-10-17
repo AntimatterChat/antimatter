@@ -4,6 +4,7 @@
 import React from 'react';
 
 import type {Channel} from '@mattermost/types/channels';
+import type {TeamKind} from '@mattermost/types/teams';
 
 import {patchTeam} from 'mattermost-redux/actions/teams';
 
@@ -32,10 +33,10 @@ const channels = [
     ch('old', 'old', 'Old', {delete_at: 4}),
 ];
 
-function state({allChannels = false, defaultChannelId = '', list = channels} = {}) {
+function state({allChannels = false, defaultChannelId = '', list = channels, kind = 'community' as TeamKind} = {}) {
     return {
         entities: {
-            teams: {currentTeamId: 't1', teams: {t1: TestHelper.getTeamMock({id: 't1', all_channels_membership: allChannels, default_channel_id: defaultChannelId})}},
+            teams: {currentTeamId: 't1', teams: {t1: TestHelper.getTeamMock({id: 't1', all_channels_membership: allChannels, default_channel_id: defaultChannelId, kind})}},
             channels: {
                 channels: Object.fromEntries(list.map((c) => [c.id, c])),
                 channelsInTeam: {t1: new Set(list.map((c) => c.id))},
@@ -47,6 +48,23 @@ function state({allChannels = false, defaultChannelId = '', list = channels} = {
 const options = () => within(screen.getByRole('combobox', {name: 'Default channel'})).getAllByRole('option').map((o) => o.textContent);
 
 describe('fusion/teams/ChannelsSettings', () => {
+    test('makes the community corporate, and back', async () => {
+        renderWithContext(<ChannelsSettings/>, state() as never);
+        const kind = screen.getByRole('group', {name: 'Kind of community'});
+        expect(within(kind).getByRole('button', {name: 'Community'})).toHaveAttribute('aria-pressed', 'true');
+        await userEvent.click(within(kind).getByRole('button', {name: 'Corporate'}));
+        expect(patchTeam).toHaveBeenCalledWith({id: 't1', kind: 'corporate'});
+        await waitFor(() => expect(mockToast).toHaveBeenCalledWith('Members now archive the channels they created'));
+    });
+
+    test('shows a corporate community as such', async () => {
+        renderWithContext(<ChannelsSettings/>, state({kind: 'corporate'}) as never);
+        const kind = screen.getByRole('group', {name: 'Kind of community'});
+        expect(within(kind).getByRole('button', {name: 'Corporate'})).toHaveAttribute('aria-pressed', 'true');
+        await userEvent.click(within(kind).getByRole('button', {name: 'Community'}));
+        expect(patchTeam).toHaveBeenCalledWith({id: 't1', kind: 'community'});
+    });
+
     test('turns on "everyone in every channel"', async () => {
         renderWithContext(<ChannelsSettings/>, state() as never);
         const toggle = screen.getByRole('switch', {name: 'Members are in every channel'});

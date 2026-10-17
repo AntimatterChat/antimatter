@@ -39,6 +39,8 @@ const SWATCHES = ['#e74c3c', '#e67e22', '#f1c40f', '#2ecc71', '#1abc9c', '#3498d
 type Draft = {display_name: string; color: string; icon: string; hoist: boolean; self_assignable: boolean; permissions?: string[]; permissionsChanged?: boolean};
 
 // What a role can grant, as Discord's permission switches: each is on when the role holds all its permissions.
+// Administrator holds them all: the server gives a role that may manage the community everything else its admins may
+// do (SetTeamRolePermissions), and the other switches show on while it is.
 const SWITCHES: Array<{key: string; label: MessageDescriptor; desc: MessageDescriptor; permissions: string[]}> = [
     {key: 'admin', label: defineMessage({id: 'fusion.roles.perm.admin', defaultMessage: 'Administrator'}), desc: defineMessage({id: 'fusion.roles.perm.adminDesc', defaultMessage: 'Everything the community\'s admins can do.'}), permissions: [Permissions.MANAGE_TEAM]},
     {key: 'roles', label: defineMessage({id: 'fusion.roles.perm.roles', defaultMessage: 'Manage roles'}), desc: defineMessage({id: 'fusion.roles.perm.rolesDesc', defaultMessage: 'Make and edit the roles below their own, and give them to people.'}), permissions: [Permissions.MANAGE_TEAM_ROLES]},
@@ -47,7 +49,7 @@ const SWITCHES: Array<{key: string; label: MessageDescriptor; desc: MessageDescr
     {key: 'public', label: defineMessage({id: 'fusion.roles.perm.public', defaultMessage: 'Create public channels'}), desc: defineMessage({id: 'fusion.roles.perm.publicDesc', defaultMessage: 'Channels anyone in the community can join.'}), permissions: [Permissions.CREATE_PUBLIC_CHANNEL]},
     {key: 'private', label: defineMessage({id: 'fusion.roles.perm.private', defaultMessage: 'Create private channels'}), desc: defineMessage({id: 'fusion.roles.perm.privateDesc', defaultMessage: 'Channels for the people invited.'}), permissions: [Permissions.CREATE_PRIVATE_CHANNEL]},
     {key: 'channels', label: defineMessage({id: 'fusion.roles.perm.channels', defaultMessage: 'Manage channels'}), desc: defineMessage({id: 'fusion.roles.perm.channelsDesc', defaultMessage: 'Rename, convert and archive channels, and manage their members and admins.'}), permissions: [Permissions.MANAGE_PUBLIC_CHANNEL_PROPERTIES, Permissions.MANAGE_PRIVATE_CHANNEL_PROPERTIES, Permissions.DELETE_PUBLIC_CHANNEL, Permissions.DELETE_PRIVATE_CHANNEL, Permissions.MANAGE_PUBLIC_CHANNEL_MEMBERS, Permissions.MANAGE_PRIVATE_CHANNEL_MEMBERS, Permissions.MANAGE_CHANNEL_ROLES, Permissions.CONVERT_PUBLIC_CHANNEL_TO_PRIVATE, Permissions.CONVERT_PRIVATE_CHANNEL_TO_PUBLIC]},
-    {key: 'messages', label: defineMessage({id: 'fusion.roles.perm.messages', defaultMessage: 'Manage messages'}), desc: defineMessage({id: 'fusion.roles.perm.messagesDesc', defaultMessage: 'Edit and delete other people\'s messages.'}), permissions: [Permissions.DELETE_OTHERS_POSTS, Permissions.EDIT_OTHERS_POSTS]},
+    {key: 'messages', label: defineMessage({id: 'fusion.roles.perm.messages', defaultMessage: 'Manage messages'}), desc: defineMessage({id: 'fusion.roles.perm.messagesDesc', defaultMessage: 'Edit and delete other people\'s messages, and put messages on top of channels.'}), permissions: [Permissions.DELETE_OTHERS_POSTS, Permissions.EDIT_OTHERS_POSTS]},
     {key: 'integrations', label: defineMessage({id: 'fusion.roles.perm.integrations', defaultMessage: 'Manage integrations'}), desc: defineMessage({id: 'fusion.roles.perm.integrationsDesc', defaultMessage: 'Webhooks and slash commands, theirs and other people\'s.'}), permissions: [Permissions.MANAGE_OWN_INCOMING_WEBHOOKS, Permissions.MANAGE_OWN_OUTGOING_WEBHOOKS, Permissions.MANAGE_OWN_SLASH_COMMANDS, Permissions.MANAGE_OTHERS_INCOMING_WEBHOOKS, Permissions.MANAGE_OTHERS_OUTGOING_WEBHOOKS, Permissions.MANAGE_OTHERS_SLASH_COMMANDS]},
 ];
 
@@ -306,6 +308,7 @@ function RoleEditor({role, onSave, onCancel, onMembersChanged}: EditorProps) {
         return Object.fromEntries(SWITCHES.map((sw) => [sw.key, admin || sw.permissions.every((p) => haveITeamPermission(state, teamId, p))]));
     }, shallowEqual);
     const current = draft.permissions || [];
+    const administrator = current.includes(Permissions.MANAGE_TEAM);
     const toggle = (permissions: string[], on: boolean) => set({permissions: on ? [...new Set([...current, ...permissions])] : current.filter((p) => !permissions.includes(p)), permissionsChanged: true});
     const loading = !draft.permissions && !loadFailed;
 
@@ -364,16 +367,20 @@ function RoleEditor({role, onSave, onCancel, onMembersChanged}: EditorProps) {
             <div className={am('field', 'role-perms')}>
                 <span>{formatMessage({id: 'fusion.roles.permissions', defaultMessage: 'Permissions'})}</span>
                 {loadFailed && <p className={am('lead')}>{formatMessage({id: 'fusion.roles.permissionsFailed', defaultMessage: 'The role\'s permissions couldn\'t be loaded: saving leaves them as they are.'})}</p>}
-                {SWITCHES.map((sw) => (
-                    <Toggle
-                        key={sw.key}
-                        title={formatMessage(sw.label)}
-                        desc={formatMessage(sw.desc)}
-                        on={sw.permissions.every((p) => current.includes(p))}
-                        disabled={!held[sw.key] || !draft.permissions}
-                        onChange={(on) => toggle(sw.permissions, on)}
-                    />
-                ))}
+                {SWITCHES.map((sw) => {
+                    // Administrator includes the others: they show on, and come back as they were when it's off.
+                    const implied = administrator && sw.key !== 'admin';
+                    return (
+                        <Toggle
+                            key={sw.key}
+                            title={formatMessage(sw.label)}
+                            desc={formatMessage(sw.desc)}
+                            on={implied || sw.permissions.every((p) => current.includes(p))}
+                            disabled={implied || !held[sw.key] || !draft.permissions}
+                            onChange={(on) => toggle(sw.permissions, on)}
+                        />
+                    );
+                })}
             </div>
             {role && (
                 <RoleMembers

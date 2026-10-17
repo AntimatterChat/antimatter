@@ -28,7 +28,7 @@ import {getChannelSettingsTabs} from 'selectors/plugins';
 import type {Tab as SidebarTab} from 'components/settings_sidebar/settings_sidebar';
 import {normalizePluginIcon} from 'components/settings_sidebar/settings_sidebar';
 
-import {isFirstDefaultChannel} from 'fusion/channel/community_channels';
+import {canArchiveChannel, isFirstDefaultChannel} from 'fusion/channel/community_channels';
 import Icon from 'fusion/components/icon';
 import {Dialog} from 'fusion/components/layer';
 import {am} from 'fusion/utils/class_names';
@@ -156,13 +156,8 @@ function ChannelSettingsModal({channelId, isOpen, onExited, focusOriginElement}:
     const shouldShowConfigurationTab = canManageBanner || canManageChannelTranslation || canManageSharedChannels || canManageJoinLeaveMessages;
     const shouldShowInfoTab = canManageChannelProperties;
 
-    const canArchivePrivateChannels = useSelector((state: GlobalState) =>
-        haveIChannelPermission(state, channel.team_id, channel.id, Permissions.DELETE_PRIVATE_CHANNEL),
-    );
-
-    const canArchivePublicChannels = useSelector((state: GlobalState) =>
-        haveIChannelPermission(state, channel.team_id, channel.id, Permissions.DELETE_PUBLIC_CHANNEL),
-    );
+    // Antimatter: who archives depends on the kind of community too (see canArchiveChannel).
+    const canArchive = useSelector((state: GlobalState) => canArchiveChannel(state, channel));
 
     const canManageChannelAccessRules = useSelector((state: GlobalState) =>
         haveIChannelPermission(state, channel.team_id, channel.id, Permissions.MANAGE_CHANNEL_ACCESS_RULES),
@@ -198,9 +193,7 @@ function ChannelSettingsModal({channelId, isOpen, onExited, focusOriginElement}:
 
     // Antimatter: the default channels can be archived too, by the community's admins.
     const mayArchiveDefault = useSelector((state: GlobalState) => !isFirstDefaultChannel(state, channel) || haveITeamPermission(state, channel.team_id, Permissions.MANAGE_TEAM));
-    const shouldShowArchiveTab = mayArchiveDefault &&
-        ((channel.type === Constants.PRIVATE_CHANNEL && canArchivePrivateChannels) ||
-        (channel.type === Constants.OPEN_CHANNEL && canArchivePublicChannels));
+    const shouldShowArchiveTab = mayArchiveDefault && canArchive;
 
     const [show, setShow] = useState(isOpen);
 

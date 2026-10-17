@@ -141,11 +141,17 @@ describe('fusion/messages/on_top', () => {
             },
         }) as unknown as GlobalState;
 
-        test('where one may post, not in an archived channel', () => {
-            expect(canChangeOnTop(state(['create_post']), channel())).toBe(true);
+        test('the channel\'s admins and moderators, where they may post, not in an archived channel', () => {
+            expect(canChangeOnTop(state(['create_post', 'manage_channel_roles']), channel())).toBe(true);
+            expect(canChangeOnTop(state(['create_post', 'delete_others_posts']), channel())).toBe(true);
+            expect(canChangeOnTop(state(['manage_channel_roles']), channel())).toBe(false);
+            expect(canChangeOnTop(state(['create_post', 'manage_channel_roles']), channel({delete_at: 5}))).toBe(false);
+            expect(canChangeOnTop(state(['create_post', 'manage_channel_roles']), undefined)).toBe(false);
+        });
+
+        test('not the members, who only post', () => {
+            expect(canChangeOnTop(state(['create_post']), channel())).toBe(false);
             expect(canChangeOnTop(state([]), channel())).toBe(false);
-            expect(canChangeOnTop(state(['create_post']), channel({delete_at: 5}))).toBe(false);
-            expect(canChangeOnTop(state(['create_post']), undefined)).toBe(false);
         });
 
         test('not in a restricted direct message, nor while that\'s not known', () => {

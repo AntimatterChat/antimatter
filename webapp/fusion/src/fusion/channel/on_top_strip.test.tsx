@@ -37,7 +37,7 @@ describe('fusion/channel/OnTopStrip', () => {
     };
     const list = [entry('first', 3, later), entry('second', 2, 0, 'marie'), entry('third', 1)];
 
-    const state = (onTop: OnTopPost[], postsById: Record<string, Post> = posts, channelPermissions = ['create_post']) => ({
+    const state = (onTop: OnTopPost[], postsById: Record<string, Post> = posts, channelPermissions = ['create_post', 'manage_channel_roles']) => ({
         entities: {
             users: {currentUserId: me.id, profiles: {me: {...me, roles: 'system_user'}, marie}},
             posts: {posts: postsById},
@@ -125,6 +125,12 @@ describe('fusion/channel/OnTopStrip', () => {
 
     test('has no remove button where the server would refuse it', async () => {
         renderWithContext(<OnTopStrip channel={channel}/>, state(list, posts, []));
+        await screen.findByRole('region', {name: 'On top of this channel'});
+        expect(screen.queryByRole('button', {name: 'Remove from top'})).not.toBeInTheDocument();
+    });
+
+    test('has no remove button for members, who only post', async () => {
+        renderWithContext(<OnTopStrip channel={channel}/>, state(list, posts, ['create_post']));
         await screen.findByRole('region', {name: 'On top of this channel'});
         expect(screen.queryByRole('button', {name: 'Remove from top'})).not.toBeInTheDocument();
     });

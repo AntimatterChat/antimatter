@@ -5,22 +5,22 @@ import React, {useEffect, useMemo} from 'react';
 import {useIntl} from 'react-intl';
 import {useDispatch, useSelector} from 'react-redux';
 
-import type {Team} from '@mattermost/types/teams';
+import type {Team, TeamKind} from '@mattermost/types/teams';
 
 import {getChannels} from 'mattermost-redux/actions/channels';
 import {patchTeam} from 'mattermost-redux/actions/teams';
 import {getChannelsInTeam} from 'mattermost-redux/selectors/entities/channels';
 import {getCurrentTeam} from 'mattermost-redux/selectors/entities/teams';
 
-import {Select, Toggle} from 'fusion/modals/settings_controls';
+import {Choice, Select, Toggle} from 'fusion/modals/settings_controls';
 import {useToast} from 'fusion/shell/toast_context';
 import {am} from 'fusion/utils/class_names';
 import Constants from 'utils/constants';
 
 import type {GlobalState} from 'types/store';
 
-// ChannelsSettings is the Channels tab of the community settings: whether everyone is in all its channels, as in
-// Discord, and its default channel, where newcomers land.
+// ChannelsSettings is the Channels tab of the community settings: the kind of community (who archives channels),
+// whether everyone is in all its channels, as in Discord, and its default channel, where newcomers land.
 export default function ChannelsSettings() {
     const {formatMessage} = useIntl();
     const dispatch = useDispatch();
@@ -71,6 +71,16 @@ export default function ChannelsSettings() {
 
     return (
         <div className={am('team-channels')}>
+            <Choice<TeamKind>
+                title={formatMessage({id: 'fusion.teamChannels.kind', defaultMessage: 'Kind of community'})}
+                desc={formatMessage({id: 'fusion.teamChannels.kindDesc', defaultMessage: 'A community, as on Discord: only its admins (and roles that manage channels) archive channels. Corporate, for a company\'s or an organisation\'s workspace: members also archive the channels they created. In both, only the channels\' admins, the community\'s admins and moderators put messages on top.'})}
+                value={team.kind === 'corporate' ? 'corporate' : 'community'}
+                options={[
+                    ['community', formatMessage({id: 'fusion.teamChannels.kind.community', defaultMessage: 'Community'})],
+                    ['corporate', formatMessage({id: 'fusion.teamChannels.kind.corporate', defaultMessage: 'Corporate'})],
+                ]}
+                onChange={(kind) => save({kind}, kind === 'corporate' ? formatMessage({id: 'fusion.teamChannels.kindCorporate', defaultMessage: 'Members now archive the channels they created'}) : formatMessage({id: 'fusion.teamChannels.kindCommunity', defaultMessage: 'Only the community\'s admins archive channels now'}))}
+            />
             <Toggle
                 title={formatMessage({id: 'fusion.teamChannels.all', defaultMessage: 'Members are in every channel'})}
                 desc={formatMessage({id: 'fusion.teamChannels.allDesc', defaultMessage: 'As in Discord: everyone in the community is in all its public channels, and in the private channels their roles open. They mute channels instead of leaving them, and nobody is removed from one: moderate through the community (removal, timeouts) or the channel\'s permissions. Guests and bots are only in the channels they\'re added to. Turning it on adds everyone to those channels (communities created before this setting existed keep their channels until you turn it on); turning it off keeps everyone where they are, free to leave.'})}

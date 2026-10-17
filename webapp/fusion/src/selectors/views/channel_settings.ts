@@ -7,6 +7,8 @@ import {haveIChannelPermission, haveISystemPermission} from 'mattermost-redux/se
 
 import {getChannelSettingsTabs} from 'selectors/plugins';
 
+import {canArchiveChannel} from 'fusion/channel/community_channels';
+
 import Constants from 'utils/constants';
 
 import type {GlobalState} from 'types/store';
@@ -76,15 +78,8 @@ export function canAccessChannelSettings(state: GlobalState, channelId: string):
     const hasSharedChannelsPermission = isSharedChannelsEnabled &&
         haveISystemPermission(state, {permission: Permissions.MANAGE_SHARED_CHANNELS});
 
-    // Archive tab permissions
-    const archivePermission = isPrivate ? Permissions.DELETE_PRIVATE_CHANNEL : Permissions.DELETE_PUBLIC_CHANNEL;
-
-    const hasArchivePermission = !isDefaultChannel && haveIChannelPermission(
-        state,
-        teamId,
-        channelId,
-        archivePermission,
-    );
+    // Archive tab permissions: Antimatter's, which depend on the kind of community too.
+    const hasArchivePermission = !isDefaultChannel && canArchiveChannel(state, channel);
 
     // User can access channel settings if they have permission for at least one tab
     return hasInfoPermission || hasBannerPermission || hasTranslationPermission || hasSharedChannelsPermission || hasArchivePermission || hasVisiblePluginTabs;

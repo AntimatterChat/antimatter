@@ -133,6 +133,9 @@ export default function MessageMenu({post, anchor, inThread, onClose, onMoreReac
     // restricted direct message, and where one may post), nor system or burn-on-read messages.
     const onTop = useSelector((state: GlobalState) => getOnTopEntry(state, post.channel_id, post.id));
     const canOnTop = useCanChangeOnTop(channel);
+
+    // An archived channel is left as it is: its messages aren't pinned nor put on top (the server refuses).
+    const archivedChannel = Boolean(channel && channel.delete_at !== 0);
     const putOnTop = async (duration: OnTopDuration, ms: number) => {
         const result = await dispatch(putPostOnTop(post.id, ms));
         if (result && 'error' in result && result.error) {
@@ -339,7 +342,7 @@ export default function MessageMenu({post, anchor, inThread, onClose, onMoreReac
                     toast(saved ? formatMessage({id: 'fusion.toast.unsaved', defaultMessage: 'Removed from saved'}) : formatMessage({id: 'fusion.toast.saved', defaultMessage: 'Saved — find it in Saved messages'}));
                 })}
             />
-            {!system && (
+            {!system && !archivedChannel && (
                 <MenuItem
                     icon='pin'
                     label={post.is_pinned ? formatMessage({id: 'fusion.messageMenu.unpin', defaultMessage: 'Unpin from channel'}) : formatMessage({id: 'fusion.messageMenu.pin', defaultMessage: 'Pin to channel'})}

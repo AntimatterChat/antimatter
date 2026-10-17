@@ -35,7 +35,7 @@ import EditChannelHeaderModal from 'components/edit_channel_header_modal';
 import LeaveChannelModal from 'components/leave_channel_modal';
 import UnarchiveChannelModal from 'components/unarchive_channel_modal';
 
-import {isAllChannelsCommunity, isCommunityChannelFor, isDefaultChannel, isFirstDefaultChannel} from 'fusion/channel/community_channels';
+import {canArchiveChannel, isAllChannelsCommunity, isCommunityChannelFor, isDefaultChannel, isFirstDefaultChannel} from 'fusion/channel/community_channels';
 import Icon from 'fusion/components/icon';
 import {Popover} from 'fusion/components/layer';
 import type {Placement} from 'fusion/components/layer';
@@ -131,7 +131,7 @@ export default function ChannelMenu({channel, anchor, point, placement = 'right'
     const stays = useSelector((state: GlobalState) => isCommunityChannelFor(state, channel, getCurrentUserId(state)));
     const everyoneIn = useSelector((state: GlobalState) => channel.type === Constants.OPEN_CHANNEL && isAllChannelsCommunity(state, channel.team_id));
     const may = useSelector((state: GlobalState) => ({
-        archive: haveIChannelPermission(state, channel.team_id, channel.id, isPrivate ? Permissions.DELETE_PRIVATE_CHANNEL : Permissions.DELETE_PUBLIC_CHANNEL),
+        archive: canArchiveChannel(state, channel),
         unarchive: haveITeamPermission(state, channel.team_id, Permissions.MANAGE_TEAM),
         convert: haveIChannelPermission(state, channel.team_id, channel.id, Permissions.CONVERT_PUBLIC_CHANNEL_TO_PRIVATE),
         editHeader: haveIChannelPermission(state, channel.team_id, channel.id, isPrivate ? Permissions.MANAGE_PRIVATE_CHANNEL_PROPERTIES : Permissions.MANAGE_PUBLIC_CHANNEL_PROPERTIES),
@@ -447,7 +447,7 @@ export default function ChannelMenu({channel, anchor, point, placement = 'right'
                     />
                 </>
             )}
-            {!direct && canManageAccess && (
+            {!direct && !archived && canManageAccess && (
                 <MenuItem
                     icon='shield'
                     label={formatMessage({id: 'fusion.channelMenu.permissions', defaultMessage: 'Permissions…'})}

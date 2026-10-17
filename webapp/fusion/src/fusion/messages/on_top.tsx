@@ -13,7 +13,7 @@ import {fetchIsRestrictedDM} from 'mattermost-redux/actions/channels';
 import {Permissions} from 'mattermost-redux/constants';
 import {getConfig} from 'mattermost-redux/selectors/entities/general';
 import {getOnTopEntry, isOnTopActive} from 'mattermost-redux/selectors/entities/on_top_posts';
-import {haveIChannelPermission} from 'mattermost-redux/selectors/entities/roles';
+import {haveIChannelPermission, haveITeamPermission} from 'mattermost-redux/selectors/entities/roles';
 
 import Icon from 'fusion/components/icon';
 import {am} from 'fusion/utils/class_names';
@@ -94,9 +94,10 @@ function isRestrictedDMUnknown(state: GlobalState, channel: Channel): boolean {
         state.entities.channels.restrictedDMs?.[channel.id] === undefined;
 }
 
-// canChangeOnTop tells whether one may put messages on top of a channel and take them off, as the server does: not in
-// an archived channel or a restricted direct message (nor while it's not known whether it's restricted), and in a
-// team channel only where one may post (its moderation, overrides, a timeout and membership apply).
+// canChangeOnTop tells whether one may put messages on top of a channel and take them off, as the server does
+// (SessionCanChangeOnTop): not in an archived channel or a restricted direct message (nor while it's not known whether
+// it's restricted); in a team channel only its admins, the community's admins and moderators (who manage messages),
+// where they may post (its moderation, overrides, a timeout and membership apply). Members don't.
 export function canChangeOnTop(state: GlobalState, channel: Channel | undefined): boolean {
     if (!channel || channel.delete_at !== 0) {
         return false;
@@ -107,7 +108,12 @@ export function canChangeOnTop(state: GlobalState, channel: Channel | undefined)
         }
         return !state.entities.channels.restrictedDMs?.[channel.id];
     }
-    return haveIChannelPermission(state, channel.team_id, channel.id, Permissions.CREATE_POST);
+    if (!haveIChannelPermission(state, channel.team_id, channel.id, Permissions.CREATE_POST)) {
+        return false;
+    }
+    return haveIChannelPermission(state, channel.team_id, channel.id, Permissions.MANAGE_CHANNEL_ROLES) ||
+        haveIChannelPermission(state, channel.team_id, channel.id, Permissions.DELETE_OTHERS_POSTS) ||
+        haveITeamPermission(state, channel.team_id, Permissions.MANAGE_TEAM);
 }
 
 // useCanChangeOnTop is canChangeOnTop, finding out first whether a direct message is restricted when it's not known.

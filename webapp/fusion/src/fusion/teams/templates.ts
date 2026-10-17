@@ -3,12 +3,14 @@
 
 import type {ServerCategory} from '@mattermost/types/channel_categories';
 import type {Channel} from '@mattermost/types/channels';
+import type {TeamKind} from '@mattermost/types/teams';
 
 import {saveServerCategories} from 'mattermost-redux/actions/channel_categories';
 import {createChannel} from 'mattermost-redux/actions/channels';
 import {createGroupWithUserIds, patchGroup} from 'mattermost-redux/actions/groups';
 import {patchTeam} from 'mattermost-redux/actions/teams';
 import {Client4} from 'mattermost-redux/client';
+import {Permissions} from 'mattermost-redux/constants';
 import {getManagedCategoryMappings} from 'mattermost-redux/selectors/entities/channel_categories';
 import {getMyChannels} from 'mattermost-redux/selectors/entities/channels';
 import {getTeam} from 'mattermost-redux/selectors/entities/teams';
@@ -29,33 +31,51 @@ export type TeamTemplate = {
     channels: Array<{name: string; display_name: string; type: 'O' | 'P'; purpose?: string; header?: string}>;
     roles: Array<{display_name: string; color?: string; hoist?: boolean; self_assignable?: boolean; permissions?: string[]}>;
     onboarding?: string;
+
+    // The kind of community it makes (see Team.kind): what its members may do, such as archiving channels.
+    kind?: TeamKind;
 };
 
 export type Preset = 'hybrid' | 'community' | 'workplace';
 
-const MODERATOR_PERMISSIONS = ['delete_others_posts', 'edit_others_posts', 'manage_public_channel_properties', 'manage_private_channel_properties', 'manage_public_channel_members', 'manage_private_channel_members'];
+// What the presets' moderators may do: manage messages (edit and delete others', put them on top), rename channels
+// and manage their members, and remove people, which timeouts take too (the server's CheckCanModerateMember). The
+// server brings the presets' roles made before "Remove people" was in it up to this (doModeratorPresetMigration).
+export const MODERATOR_PERMISSIONS = [
+    Permissions.DELETE_OTHERS_POSTS,
+    Permissions.EDIT_OTHERS_POSTS,
+    Permissions.MANAGE_PUBLIC_CHANNEL_PROPERTIES,
+    Permissions.MANAGE_PRIVATE_CHANNEL_PROPERTIES,
+    Permissions.MANAGE_PUBLIC_CHANNEL_MEMBERS,
+    Permissions.MANAGE_PRIVATE_CHANNEL_MEMBERS,
+    Permissions.REMOVE_USER_FROM_TEAM,
+];
 
 // The presets of the roles and categories plan. Hybrid, Antimatter's default: curated categories for everyone and an
-// open one where members file their channels. Community, Discord's: categories admins keep. Workplace, Mattermost's:
-// everyone's own categories only.
+// open one where members file their channels. Community, Discord's: categories admins keep. Both make a community of
+// the community kind. Workplace, Mattermost's: everyone's own categories only, in a corporate community, where
+// members archive the channels they created.
 export const PRESETS: Record<Preset, TeamTemplate> = {
     hybrid: {
         version: 1,
         server_categories: [{name: 'Information', locked: true, channels: ['town-square']}, {name: 'Community', locked: false, channels: ['off-topic']}],
         channels: [],
         roles: [{display_name: 'Moderators', color: '#e67e22', hoist: true, permissions: MODERATOR_PERMISSIONS}],
+        kind: 'community',
     },
     community: {
         version: 1,
         server_categories: [{name: 'Information', locked: true, channels: ['town-square']}, {name: 'Channels', locked: true, channels: ['off-topic']}],
         channels: [],
         roles: [{display_name: 'Moderators', color: '#e67e22', hoist: true, permissions: MODERATOR_PERMISSIONS}],
+        kind: 'community',
     },
     workplace: {
         version: 1,
         server_categories: [],
         channels: [],
         roles: [],
+        kind: 'corporate',
     },
 };
 
@@ -82,6 +102,7 @@ export function exportTemplate(teamId: string): ActionFuncAsync<TeamTemplate> {
                 channels: channels.map((c) => ({name: c.name, display_name: c.display_name, type: c.type as 'O' | 'P', purpose: c.purpose || undefined, header: c.header || undefined})),
                 roles: roles.map((r, i) => ({display_name: r.display_name, color: r.color || undefined, hoist: r.hoist, self_assignable: r.self_assignable, permissions: permissions[i]})),
                 onboarding: getTeam(state, teamId)?.onboarding || undefined,
+                kind: getTeam(state, teamId)?.kind || undefined,
             },
         };
     };
@@ -120,12 +141,13 @@ export function parseTemplate(json: string): TeamTemplate | undefined {
             })).
             filter((r) => r.display_name),
         onboarding: typeof raw.onboarding === 'string' ? raw.onboarding : undefined,
+        kind: raw.kind === 'community' || raw.kind === 'corporate' ? raw.kind : undefined,
     };
 }
 
 // applyTemplate sets a team up from a template: the channels it lacks, the roles it lacks (and the looks and
-// permissions of those it has), its server categories with their channels filed in, and its onboarding. It goes on
-// past what fails, and gives back how many steps did.
+// permissions of those it has), its server categories with their channels filed in, its onboarding and its kind. It
+// goes on past what fails, and gives back how many steps did.
 export function applyTemplate(teamId: string, template: TeamTemplate): ActionFuncAsync<{failed: number}> {
     return async (dispatch, getState) => {
         let failed = 0;
@@ -171,8 +193,12 @@ export function applyTemplate(teamId: string, template: TeamTemplate): ActionFun
             filter((channel): channel is Channel => Boolean(channel)).
             map((channel) => dispatch(fileChannel(channel.id, category.name)).then(failedIf))));
 
-        if (template.onboarding !== undefined) {
-            failedIf(await dispatch(patchTeam({id: teamId, onboarding: template.onboarding})));
+        if (template.onboarding !== undefined || template.kind) {
+            failedIf(await dispatch(patchTeam({
+                id: teamId,
+                ...(template.onboarding === undefined ? {} : {onboarding: template.onboarding}),
+                ...(template.kind ? {kind: template.kind} : {}),
+            })));
         }
         dispatch(loadTeams());
         return {data: {failed}};

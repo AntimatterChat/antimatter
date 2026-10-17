@@ -4,6 +4,7 @@
 import {saveServerCategories} from 'mattermost-redux/actions/channel_categories';
 import {createChannel} from 'mattermost-redux/actions/channels';
 import {createGroupWithUserIds, patchGroup} from 'mattermost-redux/actions/groups';
+import {patchTeam} from 'mattermost-redux/actions/teams';
 import {Client4} from 'mattermost-redux/client';
 import initialState from 'mattermost-redux/store/initial_state';
 
@@ -21,6 +22,10 @@ jest.mock('mattermost-redux/actions/channels', () => ({
     ...jest.requireActual('mattermost-redux/actions/channels'),
     createChannel: jest.fn(),
     patchChannel: jest.fn(() => ({type: 'PATCHED', data: {id: 'x', team_id: 'team'}})),
+}));
+jest.mock('mattermost-redux/actions/teams', () => ({
+    ...jest.requireActual('mattermost-redux/actions/teams'),
+    patchTeam: jest.fn(() => ({type: 'PATCHED_TEAM', data: {}})),
 }));
 jest.mock('mattermost-redux/actions/groups', () => ({
     ...jest.requireActual('mattermost-redux/actions/groups'),
@@ -52,6 +57,11 @@ describe('parseTemplate', () => {
         });
     });
 
+    test('reads the kind, and drops one it does not know', () => {
+        expect(parseTemplate(JSON.stringify({...PRESETS.workplace, kind: 'corporate'}))?.kind).toBe('corporate');
+        expect(parseTemplate(JSON.stringify({...PRESETS.workplace, kind: 'castle'}))?.kind).toBeUndefined();
+    });
+
     test('refuses what is not a template', () => {
         expect(parseTemplate('nope')).toBeUndefined();
         expect(parseTemplate('{}')).toBeUndefined();
@@ -67,6 +77,22 @@ describe('PRESETS', () => {
         expect(roles).toHaveLength(1);
         expect(roles[0]).toMatchObject({display_name: 'Moderators', hoist: true});
         expect(roles[0].permissions).toContain('delete_others_posts');
+    });
+
+    test('the moderators of the presets may time out and remove people, and manage messages', () => {
+        for (const preset of [PRESETS.hybrid, PRESETS.community]) {
+            const permissions = preset.roles[0].permissions;
+            expect(permissions).toContain('remove_user_from_team');
+            expect(permissions).toContain('delete_others_posts');
+            expect(permissions).not.toContain('manage_team');
+            expect(permissions).not.toContain('delete_public_channel');
+        }
+    });
+
+    test('hybrid and community make communities; workplace, a corporate one', () => {
+        expect(PRESETS.hybrid.kind).toBe('community');
+        expect(PRESETS.community.kind).toBe('community');
+        expect(PRESETS.workplace.kind).toBe('corporate');
     });
 
     test('community keeps every category locked', () => {
@@ -115,6 +141,16 @@ describe('applyTemplate', () => {
         expect(result).toEqual({data: {failed: 1}});
         expect(createGroupWithUserIds).toHaveBeenCalled();
         expect(saveServerCategories).toHaveBeenCalledWith('team', {categories: [{name: 'Info', locked: true}], removed: ['Old']});
+    });
+
+    test('sets the kind of community the template makes', async () => {
+        (patchTeam as jest.Mock).mockClear();
+        await run({version: 1, server_categories: [], channels: [], roles: [], kind: 'corporate'});
+        expect(patchTeam).toHaveBeenCalledWith({id: 'team', kind: 'corporate'});
+
+        (patchTeam as jest.Mock).mockClear();
+        await run({version: 1, server_categories: [], channels: [], roles: []});
+        expect(patchTeam).not.toHaveBeenCalled();
     });
 
     test('a role without permissions keeps those it has', async () => {

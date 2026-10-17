@@ -407,6 +407,29 @@ describe('ChannelSettingsModal', () => {
         expect(screen.queryByRole('tab', {name: /archive channel/i})).not.toBeInTheDocument();
     });
 
+    // Antimatter: in a corporate community, the channel's admins (whoever created it) archive it; in a community,
+    // they don't without the permission.
+    it('should show archive tab to the channel admins of a corporate community only', async () => {
+        mockPublicChannelPermission = false;
+
+        const corporate = makeTestState() as DeepPartial<GlobalState>;
+        corporate.entities!.teams = {teams: {team_id: TestHelper.getTeamMock({id: 'team_id', kind: 'corporate'})}};
+        const {unmount} = renderWithContext(<ChannelSettingsModal {...baseProps}/>, corporate as GlobalState);
+        await waitFor(() => {
+            expect(screen.getByRole('tablist')).toBeInTheDocument();
+        });
+        expect(screen.getByRole('tab', {name: /archive channel/i})).toBeInTheDocument();
+        unmount();
+
+        const community = makeTestState() as DeepPartial<GlobalState>;
+        community.entities!.teams = {teams: {team_id: TestHelper.getTeamMock({id: 'team_id', kind: 'community'})}};
+        renderWithContext(<ChannelSettingsModal {...baseProps}/>, community as GlobalState);
+        await waitFor(() => {
+            expect(screen.getByRole('tablist')).toBeInTheDocument();
+        });
+        expect(screen.queryByRole('tab', {name: /archive channel/i})).not.toBeInTheDocument();
+    });
+
     it('should show archive tab for private channel when user has permission', async () => {
         mockPrivateChannelPermission = true;
 

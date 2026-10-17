@@ -19,17 +19,17 @@ const PRESET_TEXT: Array<{preset: Preset; title: MessageDescriptor; desc: Messag
     {
         preset: 'hybrid',
         title: defineMessage({id: 'fusion.layout.hybrid', defaultMessage: 'Hybrid (recommended)'}),
-        desc: defineMessage({id: 'fusion.layout.hybridDesc', defaultMessage: 'Curated categories for everyone, an open Community one where members file their channels, and a Moderators role.'}),
+        desc: defineMessage({id: 'fusion.layout.hybridDesc', defaultMessage: 'Curated categories for everyone, an open Community one where members file their channels, and a Moderators role. Only the community\'s admins archive channels.'}),
     },
     {
         preset: 'community',
         title: defineMessage({id: 'fusion.layout.community', defaultMessage: 'Community'}),
-        desc: defineMessage({id: 'fusion.layout.communityDesc', defaultMessage: 'Like Discord: categories the admins keep, and a Moderators role. To stop members creating channels, change the community\'s permissions in the System Console.'}),
+        desc: defineMessage({id: 'fusion.layout.communityDesc', defaultMessage: 'Like Discord: categories the admins keep, and a Moderators role. Only the community\'s admins archive channels. To stop members creating channels, change the community\'s permissions in the System Console.'}),
     },
     {
         preset: 'workplace',
         title: defineMessage({id: 'fusion.layout.workplace', defaultMessage: 'Workplace'}),
-        desc: defineMessage({id: 'fusion.layout.workplaceDesc', defaultMessage: 'Like Mattermost: everyone keeps their own categories. Removes the categories for everyone; roles stay.'}),
+        desc: defineMessage({id: 'fusion.layout.workplaceDesc', defaultMessage: 'Like Mattermost: everyone keeps their own categories, and archives the channels they created. Removes the categories for everyone; roles stay.'}),
     },
 ];
 

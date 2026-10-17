@@ -3,7 +3,9 @@
 
 import type {Channel} from '@mattermost/types/channels';
 
+import {Permissions} from 'mattermost-redux/constants';
 import {getChannelsNameMapInTeam} from 'mattermost-redux/selectors/entities/channels';
+import {haveIChannelPermission} from 'mattermost-redux/selectors/entities/roles';
 import {getTeam} from 'mattermost-redux/selectors/entities/teams';
 import {getUser} from 'mattermost-redux/selectors/entities/users';
 import {isGuest} from 'mattermost-redux/utils/user_utils';
@@ -58,4 +60,26 @@ export function isDefaultChannel(state: GlobalState, channel: Channel | undefine
 // Off-Topic), or the one it chose: only the community's admins archive those.
 export function isFirstDefaultChannel(state: GlobalState, channel: Channel): boolean {
     return channel.name === Constants.DEFAULT_CHANNEL || channel.name === Constants.OFFTOPIC_CHANNEL || isDefaultChannel(state, channel);
+}
+
+// isCorporateCommunity tells whether a community is of the corporate kind (a company's or an organisation's
+// workspace) rather than a community (the default).
+export function isCorporateCommunity(state: GlobalState, teamId: string): boolean {
+    return getTeam(state, teamId)?.kind === 'corporate';
+}
+
+// canArchiveChannel tells whether one may archive a channel of a community, as the server does
+// (SessionCanArchiveChannel): those the permissions let (the community's admins, roles that manage channels, what a
+// system admin gave members), and in a corporate community the channel's admins too, that is whoever created it. In
+// a community, members don't archive channels, not even those they created. The default channels' extra rule (the
+// community's admins only) is the caller's.
+export function canArchiveChannel(state: GlobalState, channel: Channel | undefined): boolean {
+    if (!channel || !channel.team_id || channel.delete_at !== 0 || (channel.type !== Constants.OPEN_CHANNEL && channel.type !== Constants.PRIVATE_CHANNEL)) {
+        return false;
+    }
+    const permission = channel.type === Constants.PRIVATE_CHANNEL ? Permissions.DELETE_PRIVATE_CHANNEL : Permissions.DELETE_PUBLIC_CHANNEL;
+    if (haveIChannelPermission(state, channel.team_id, channel.id, permission)) {
+        return true;
+    }
+    return isCorporateCommunity(state, channel.team_id) && haveIChannelPermission(state, channel.team_id, channel.id, Permissions.MANAGE_CHANNEL_ROLES);
 }
