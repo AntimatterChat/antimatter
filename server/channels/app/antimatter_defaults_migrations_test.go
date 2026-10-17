@@ -112,6 +112,7 @@ func TestTeamAdminRolePermissions(t *testing.T) {
 	}
 
 	t.Run("follows the team's scheme", func(t *testing.T) {
+		require.NoError(t, th.App.SetPhase2PermissionsMigrationStatus(true))
 		scheme, appErr := th.App.CreateScheme(&model.Scheme{Name: model.NewId(), DisplayName: "Scheme", Scope: model.SchemeScopeTeam})
 		require.Nil(t, appErr)
 		_, appErr = th.App.PatchRole(mustRole(t, th, scheme.DefaultTeamAdminRole), &model.RolePatch{Permissions: &[]string{model.PermissionManageTeam.Id}})
