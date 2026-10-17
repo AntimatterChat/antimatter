@@ -135,7 +135,7 @@ describe('components/team_settings_modal', () => {
             />,
             stateWithoutPermission,
         );
-        expect(screen.getAllByRole('tab').map((tab) => tab.textContent)).toEqual(['Overview', 'Members', 'Channels', 'Autolinks']);
+        expect(screen.getAllByRole('tab').map((tab) => tab.textContent)).toEqual(['Overview', 'Members', 'Channels', 'Autolinks', 'Agents']);
     });
 
     test('should warn on first close attempt with unsaved changes and stay open', async () => {
@@ -399,7 +399,7 @@ describe('components/team_settings_modal', () => {
         test('the admins\' tabs, in order', () => {
             renderWithContext(<TeamSettingsModal {...baseProps}/>, withPermissions(admin));
             expect(screen.getAllByRole('tab').map((tab) => tab.textContent)).toEqual([
-                'Overview', 'Access', 'Members', 'Teams', 'Channels', 'Roles', 'Onboarding', 'Member attributes', 'Community layout', 'Autolinks',
+                'Overview', 'Access', 'Members', 'Teams', 'Channels', 'Roles', 'Onboarding', 'Member attributes', 'Community layout', 'Autolinks', 'Agents',
             ]);
         });
 
