@@ -11,3 +11,7 @@ export function channelPath(teamName: string, channel: Pick<Channel, 'name'>): s
 export function permalinkPath(teamName: string, postId: string): string {
     return `/${teamName}/pl/${postId}`;
 }
+
+// The address's state once a permalink's message is no longer in it (a few seconds after it opened): the message
+// the conversation's list stays around.
+export type PermalinkAnchorState = {permalinkAnchor?: string};

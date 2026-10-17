@@ -6,15 +6,28 @@ import {withRouter} from 'react-router-dom';
 import {bindActionCreators} from 'redux';
 import type {Dispatch} from 'redux';
 
+import {getCurrentUserId} from 'mattermost-redux/selectors/entities/users';
+
+import {focusPost} from 'components/permalink_view/actions';
+
+import type {GlobalState} from 'types/store';
+
 import {onChannelByIdentifierEnter} from './actions';
 import ChannelIdentifierRouter from './channel_identifier_router';
+
+function mapStateToProps(state: GlobalState) {
+    return {
+        currentUserId: getCurrentUserId(state),
+    };
+}
 
 function mapDispatchToProps(dispatch: Dispatch) {
     return {
         actions: bindActionCreators({
             onChannelByIdentifierEnter,
+            focusPost,
         }, dispatch),
     };
 }
 
-export default withRouter(connect(null, mapDispatchToProps)(ChannelIdentifierRouter));
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(ChannelIdentifierRouter));

@@ -4,7 +4,6 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {useIntl} from 'react-intl';
 import {useSelector} from 'react-redux';
-import {useRouteMatch} from 'react-router-dom';
 
 import {Permissions} from 'mattermost-redux/constants';
 import {getChannelMessageCount, getCurrentChannel, isDeactivatedDirectChannel} from 'mattermost-redux/selectors/entities/channels';
@@ -35,10 +34,17 @@ import ChannelHeader from './channel_header';
 import ChannelIntro from './channel_intro';
 import ChannelViewPanel from './channel_view_panel';
 import OnTopStrip from './on_top_strip';
+import {usePermalinkAnchor} from './permalink_anchor';
 import SharedBanner from './shared_banner';
 
+type Props = {
+
+    // A permalink is being resolved to its conversation: the conversation shown stays as it is meanwhile.
+    resolvingPermalink?: boolean;
+};
+
 // ChannelView is a conversation: header, messages and composer.
-export default function ChannelView() {
+export default function ChannelView({resolvingPermalink = false}: Props) {
     const {formatMessage, formatTime} = useIntl();
     const channel = useSelector(getCurrentChannel);
     const deactivated = useSelector((state: GlobalState) => (channel ? isDeactivatedDirectChannel(state, channel.id) : false));
@@ -56,7 +62,9 @@ export default function ChannelView() {
     }, [timeout]);
     const readOnly = useSelector((state: GlobalState) => Boolean(channel?.team_id) && Boolean(state.entities.channels.myMembers[channel!.id]) &&
         !haveIChannelPermission(state, channel!.team_id, channel!.id, Permissions.CREATE_POST));
-    const match = useRouteMatch<{postid?: string}>();
+
+    // The message a link opened: highlighted while the address names it, and the one the list stays around.
+    const {linkedPostId, anchorPostId} = usePermalinkAnchor(channel?.id, resolvingPermalink);
     const viewRef = useRef<HTMLDivElement>(null);
     const [dropping, setDropping] = useState(false);
     const voice = useIsVoiceChannel(channel?.id);
@@ -75,10 +83,10 @@ export default function ChannelView() {
     // A plugin's panel (e.g. a call) takes the place of the messages until it shows them; they're
     // hidden again on channel switch, and shown for a permalink so that it shows its post.
     const panel = useSelector((state: GlobalState) => (channel ? getChannelViewPanel(state, channel.id) : null));
-    const [panelMessagesVisible, setPanelMessagesVisible] = useState(Boolean(match.params.postid));
+    const [panelMessagesVisible, setPanelMessagesVisible] = useState(Boolean(anchorPostId));
     useEffect(() => {
-        setPanelMessagesVisible(Boolean(match.params.postid));
-    }, [channel?.id, match.params.postid]);
+        setPanelMessagesVisible(Boolean(anchorPostId));
+    }, [channel?.id, anchorPostId]);
 
     if (!channel) {
         return <div className={am('empty')}>{formatMessage({id: 'fusion.channel.loading', defaultMessage: 'Loading…'})}</div>;
@@ -86,7 +94,7 @@ export default function ChannelView() {
 
     // A voice channel is its call's stage, with its text chat in the right-hand panel; so is a conversation whose
     // call is shown (from the call panel, or once joined from its card). A permalink shows the post.
-    if ((voice || (callView === channel.id && inCallHere)) && !match.params.postid) {
+    if ((voice || (callView === channel.id && inCallHere)) && !anchorPostId) {
         return (
             <>
                 <ChannelHeader channel={channel}/>
@@ -193,7 +201,8 @@ export default function ChannelView() {
                     <MessageList
                         key={channel.id}
                         channelId={channel.id}
-                        focusedPostId={match.params.postid}
+                        focusedPostId={anchorPostId}
+                        highlight={Boolean(linkedPostId)}
                         scrollRef={viewRef}
                         intro={<ChannelIntro channel={channel}/>}
                     />
