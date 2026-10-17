@@ -3076,11 +3076,13 @@ func (s *TextToSpeechSettings) SetDefaults() {
 	}
 }
 
-func (s *TextToSpeechSettings) isValid() *AppError {
+// isValid checks the settings; usesConnection says AISettings.TextToSpeech names a model connection, which gives the
+// address and key instead of URL and APIKey (Antimatter).
+func (s *TextToSpeechSettings) isValid(usesConnection bool) *AppError {
 	if !*s.Enable {
 		return nil
 	}
-	if !IsValidHTTPURL(*s.URL) {
+	if !usesConnection && !IsValidHTTPURL(*s.URL) {
 		return NewAppError("Config.IsValid", "model.config.is_valid.text_to_speech.url.app_error", nil, "", http.StatusBadRequest)
 	}
 	if strings.TrimSpace(*s.Model) == "" {
@@ -4481,6 +4483,7 @@ type Config struct {
 	AutoTranslationSettings     AutoTranslationSettings
 	TextToSpeechSettings        TextToSpeechSettings
 	AIRecapSettings             AIRecapSettings
+	AISettings                  AISettings
 	IPFilteringSettings         IPFilteringSettings
 }
 
@@ -4604,6 +4607,7 @@ func (o *Config) SetDefaults() {
 	o.ContentFlaggingSettings.SetDefaults()
 	o.DeliveryTrackingSettings.SetDefaults()
 	o.AIRecapSettings.SetDefaults()
+	o.AISettings.SetDefaults()
 	o.IPFilteringSettings.SetDefaults()
 }
 
@@ -4729,7 +4733,7 @@ func (o *Config) IsValid() *AppError {
 		return appErr
 	}
 
-	if appErr := o.TextToSpeechSettings.isValid(); appErr != nil {
+	if appErr := o.TextToSpeechSettings.isValid(o.TextToSpeechUsesConnection()); appErr != nil {
 		return appErr
 	}
 
@@ -4770,6 +4774,10 @@ func (o *Config) IsValid() *AppError {
 	}
 
 	if appErr := o.AIRecapSettings.IsValid(); appErr != nil {
+		return appErr
+	}
+
+	if appErr := o.isValidAISettings(); appErr != nil {
 		return appErr
 	}
 
@@ -5656,7 +5664,11 @@ func (s *AutoTranslationSettings) isValid() *AppError {
 		if s.LibreTranslate == nil || s.LibreTranslate.URL == nil || *s.LibreTranslate.URL == "" || !IsValidHTTPURL(*s.LibreTranslate.URL) {
 			return NewAppError("Config.IsValid", "model.config.is_valid.autotranslation.libretranslate.url.app_error", nil, "", http.StatusBadRequest)
 		}
+	case AutoTranslationProviderConnection:
+		// The model connection is AISettings.AutoTranslation's, checked there.
 	case "agents":
+		// Antimatter: "agents" was the Agents plugin's LLM service; it now names a model connection too, the one of
+		// AISettings.AutoTranslation, else the migrated service's (connections migrated from the plugin keep its IDs).
 		if s.Agents == nil || s.Agents.LLMServiceID == nil || *s.Agents.LLMServiceID == "" {
 			return NewAppError("Config.IsValid", "model.config.is_valid.autotranslation.agents.llm_service_id.app_error", nil, "", http.StatusBadRequest)
 		}

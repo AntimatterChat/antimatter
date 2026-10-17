@@ -95,6 +95,11 @@ const (
 	AuditEventPutPostOnTop                      = "putPostOnTop"                      // keep a message on top of its channel for a while
 	AuditEventRemovePostFromTop                 = "removePostFromTop"                 // take a message off the top of its channel
 	AuditEventSetChannelRoleAccess              = "setChannelRoleAccess"              // make a channel for some roles only
+	AuditEventCreateAIConnection                = "createAIConnection"                // add a model connection (server-wide or a community's)
+	AuditEventPatchAIConnection                 = "patchAIConnection"                 // change a model connection
+	AuditEventDeleteAIConnection                = "deleteAIConnection"                // delete a model connection
+	AuditEventTestAIConnection                  = "testAIConnection"                  // test a model connection's endpoint and key
+	AuditEventAICall                            = "aiCall"                            // a call to a model through the AI service (never its content)
 	AuditEventCreateCommunityAttribute          = "createCommunityAttribute"          // define a user attribute for a team's members
 	AuditEventPatchCommunityAttribute           = "patchCommunityAttribute"           // change a team's user attribute
 	AuditEventDeleteCommunityAttribute          = "deleteCommunityAttribute"          // delete a team's user attribute

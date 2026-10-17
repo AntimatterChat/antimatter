@@ -72,4 +72,8 @@ const (
 	// Antimatter: members no longer archive channels; the community's admins do (and, in a workplace community, the
 	// channels' admins: app.SessionCanArchiveChannel).
 	MigrationKeyAntimatterChannelArchiveRights = "antimatter_channel_archive_rights"
+
+	// Antimatter: system admins manage the server-wide model connections; the community's admins (team_admin) their
+	// community's own.
+	MigrationKeyAntimatterAIConnectionPermissions = "antimatter_ai_connection_permissions"
 )

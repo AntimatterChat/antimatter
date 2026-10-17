@@ -258,6 +258,8 @@ export type ClientConfig = {
     AutoTranslationLanguages: string;
     EnableAutoTranslation: string;
     EnableTextToSpeech: string;
+    AIRewriteAvailable: string;
+    AIRecapsAvailable: string;
     RestrictDMAndGMAutotranslation: string;
 };
 
@@ -1128,6 +1130,19 @@ export type RecapLimitSettings = {
     CooldownMinutes: number;
 };
 
+// Antimatter: the model connection and model of each built-in AI feature (empty: the feature's AI is off).
+export type AIFeatureSettings = {
+    ConnectionId: string;
+    Model: string;
+};
+
+export type AISettings = {
+    Rewrite: AIFeatureSettings;
+    Recaps: AIFeatureSettings;
+    AutoTranslation: AIFeatureSettings;
+    TextToSpeech: AIFeatureSettings;
+};
+
 export type AIRecapSettings = {
     Enable: boolean;
     DefaultLimits: RecapLimitSettings;
@@ -1189,6 +1204,7 @@ export type AdminConfig = {
     AutoTranslationSettings: AutoTranslationSettings;
     TextToSpeechSettings: TextToSpeechSettings;
     AIRecapSettings: AIRecapSettings;
+    AISettings: AISettings;
     IPFilteringSettings: IPFilteringSettings;
     MobileEphemeralModeSettings: MobileEphemeralModeSettings;
 };

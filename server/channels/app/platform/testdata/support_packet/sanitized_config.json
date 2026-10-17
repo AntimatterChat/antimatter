@@ -729,6 +729,12 @@
         "EnforcePostsPerDay": null,
         "EnforceCooldown": null
     },
+    "AISettings": {
+        "Rewrite": null,
+        "Recaps": null,
+        "AutoTranslation": null,
+        "TextToSpeech": null
+    },
     "IPFilteringSettings": {
         "Rules": null
     },

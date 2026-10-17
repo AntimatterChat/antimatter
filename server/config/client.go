@@ -169,6 +169,9 @@ func GenerateClientConfig(c *model.Config, telemetryID string) map[string]string
 	props["ContentFlaggingEnabled"] = strconv.FormatBool(c.FeatureFlags.ContentFlagging && *c.ContentFlaggingSettings.EnableContentFlagging)
 	props["EnableAutoTranslation"] = strconv.FormatBool(c.FeatureFlags.AutoTranslation && *c.AutoTranslationSettings.Enable)
 	props["EnableTextToSpeech"] = strconv.FormatBool(*c.TextToSpeechSettings.Enable)
+	// Antimatter: the built-in AI features work once an admin picked a model connection for them.
+	props["AIRewriteAvailable"] = strconv.FormatBool(c.AISettings.Rewrite.IsConfigured())
+	props["AIRecapsAvailable"] = strconv.FormatBool(c.AISettings.Recaps.IsConfigured())
 	if c.FeatureFlags.AutoTranslation {
 		props["AutoTranslationLanguages"] = strings.Join(*c.AutoTranslationSettings.TargetLanguages, ",")
 	} else {

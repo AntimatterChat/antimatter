@@ -422,6 +422,8 @@ var SysconsoleWritePermissions []*Permission
 
 var PermissionManageOutgoingOAuthConnections *Permission
 var PermissionManageOwnAgent *Permission
+var PermissionManageAIConnections *Permission
+var PermissionManageTeamAIConnections *Permission
 var PermissionManageOthersAgent *Permission
 var ModeratedBookmarkPermissions []*Permission
 
@@ -2380,6 +2382,20 @@ func initializePermissions() {
 		PermissionScopeSystem,
 	}
 
+	// Antimatter: model connections. System admins manage the server-wide ones; a community's admins its own.
+	PermissionManageAIConnections = &Permission{
+		"manage_ai_connections",
+		"authentication.permissions.manage_ai_connections.name",
+		"authentication.permissions.manage_ai_connections.description",
+		PermissionScopeSystem,
+	}
+	PermissionManageTeamAIConnections = &Permission{
+		"manage_team_ai_connections",
+		"authentication.permissions.manage_team_ai_connections.name",
+		"authentication.permissions.manage_team_ai_connections.description",
+		PermissionScopeTeam,
+	}
+
 	SysconsoleReadPermissions = []*Permission{
 		PermissionSysconsoleReadAboutEditionAndLicense,
 		PermissionSysconsoleReadBilling,
@@ -2580,6 +2596,7 @@ func initializePermissions() {
 		PermissionManageOutgoingOAuthConnections,
 		PermissionManageOwnAgent,
 		PermissionManageOthersAgent,
+		PermissionManageAIConnections,
 	}
 
 	TeamScopedPermissions := []*Permission{
@@ -2609,6 +2626,7 @@ func initializePermissions() {
 		PermissionInviteGuest,
 		PermissionPublicPlaybookCreate,
 		PermissionPrivatePlaybookCreate,
+		PermissionManageTeamAIConnections,
 	}
 
 	ChannelScopedPermissions := []*Permission{

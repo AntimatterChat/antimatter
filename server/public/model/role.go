@@ -1099,6 +1099,8 @@ func MakeDefaultRoles() map[string]*Role {
 			// Antimatter: the community's admins archive its channels, which members no longer do.
 			PermissionDeletePublicChannel.Id,
 			PermissionDeletePrivateChannel.Id,
+			// Antimatter: the community's admins manage its own model connections.
+			PermissionManageTeamAIConnections.Id,
 			PermissionDeletePost.Id,
 			PermissionDeleteOthersPosts.Id,
 			PermissionAddBookmarkPublicChannel.Id,
