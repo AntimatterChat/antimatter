@@ -154,26 +154,22 @@ func (a *App) isCommunityRulesExempt(rctx request.CTX, user *model.User, teamID 
 	return user.IsBot || user.IsRemote() || a.HasPermissionToTeam(rctx, user.Id, teamID, model.PermissionManageTeam)
 }
 
-// hasAcceptedCommunityRules tells whether someone agreed to a version of a team's rules, or a later one. A replica
-// that hasn't caught up with an agreement just made is asked again on the master, so posting right after agreeing
-// works.
-func (a *App) hasAcceptedCommunityRules(rctx request.CTX, teamID, userID string, version int64) (bool, error) {
+// acceptedVersion gives the latest version of a team's rules someone agreed to, from a replica, or from the master
+// when asked to (a replica may not have caught up with an agreement just made).
+func (a *App) acceptedVersion(rctx request.CTX, teamID, userID string, master bool) (int64, *model.AppError) {
+	if master {
+		rctx = RequestContextWithMaster(rctx)
+	}
 	accepted, err := a.Srv().Store().CommunityRules().GetAcceptedVersion(rctx, teamID, userID)
 	if err != nil {
-		return false, err
+		return 0, model.NewAppError("checkCommunityRules", "app.community_rules.get.app_error", nil, "", http.StatusInternalServerError).Wrap(err)
 	}
-	if accepted >= version {
-		return true, nil
-	}
-	accepted, err = a.Srv().Store().CommunityRules().GetAcceptedVersion(RequestContextWithMaster(rctx), teamID, userID)
-	if err != nil {
-		return false, err
-	}
-	return accepted >= version, nil
+	return accepted, nil
 }
 
 // checkCommunityRules refuses a message someone posts as themselves in a team channel whose rules are on, until they
-// agreed to the current version. Direct and group messages, and those exempt, pass.
+// agreed to the current version. Direct and group messages, and those exempt, pass. The master database is only
+// asked when a replica says they haven't agreed and they aren't an admin, so posting right after agreeing works.
 func (a *App) checkCommunityRules(rctx request.CTX, user *model.User, channel *model.Channel) *model.AppError {
 	if user == nil || channel == nil || channel.TeamId == "" {
 		return nil
@@ -185,11 +181,17 @@ func (a *App) checkCommunityRules(rctx request.CTX, user *model.User, channel *m
 	if !rules.IsActive() || user.IsBot || user.IsRemote() {
 		return nil
 	}
-	accepted, err := a.hasAcceptedCommunityRules(rctx, channel.TeamId, user.Id, rules.Version)
-	if err != nil {
-		return model.NewAppError("checkCommunityRules", "app.community_rules.get.app_error", nil, "", http.StatusInternalServerError).Wrap(err)
+	accepted, appErr := a.acceptedVersion(rctx, channel.TeamId, user.Id, false)
+	if appErr != nil {
+		return appErr
 	}
-	if accepted || a.HasPermissionToTeam(rctx, user.Id, channel.TeamId, model.PermissionManageTeam) {
+	if accepted >= rules.Version || a.HasPermissionToTeam(rctx, user.Id, channel.TeamId, model.PermissionManageTeam) {
+		return nil
+	}
+	if accepted, appErr = a.acceptedVersion(rctx, channel.TeamId, user.Id, true); appErr != nil {
+		return appErr
+	}
+	if accepted >= rules.Version {
 		return nil
 	}
 	return communityRulesNotAcceptedError("checkCommunityRules")
@@ -200,6 +202,14 @@ func (a *App) checkCommunityRules(rctx request.CTX, user *model.User, channel *m
 // system call) and direct and group messages pass.
 func (a *App) CheckCommunityRulesForUser(rctx request.CTX, userID string, channel *model.Channel) *model.AppError {
 	if userID == "" || channel == nil || channel.TeamId == "" {
+		return nil
+	}
+	// Most communities have no rules: they cost a cache lookup, not the user's.
+	rules, appErr := a.GetCommunityRules(rctx, channel.TeamId)
+	if appErr != nil {
+		return appErr
+	}
+	if !rules.IsActive() {
 		return nil
 	}
 	user, appErr := a.GetUser(rctx, userID)
