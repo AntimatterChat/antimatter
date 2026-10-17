@@ -1,0 +1,46 @@
+// Agents (Antimatter): the AGENT tag, and the dot of an agent's activity.
+
+/* Agents get the bot label's shape in purple: they're accounts people talk to like a coworker. */
+:is(.am-app, .am-layer) .am-bot-tag.am-agent-tag { background: var(--am-agent); color: #FFFFFF; }
+
+/* The activity dot: yellow while the agent works (pulsing), the attention colour while it waits for someone. */
+:is(.am-app, .am-layer) .am-agent-dot {
+  display: inline-block;
+  flex: none;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  align-self: center;
+  vertical-align: 1px;
+}
+:is(.am-app, .am-layer) .am-agent-dot.am-agent-busy { background: var(--am-agent-busy); }
+:is(.am-app, .am-layer) .am-agent-dot.am-agent-waiting { background: var(--am-agent-waiting); }
+:is(.am-app, .am-layer) .am-agent-dot.am-agent-pulse { animation: am-agent-pulse 1.6s ease-in-out infinite; }
+@keyframes am-agent-pulse {
+  0%, 100% { opacity: 1; box-shadow: 0 0 0 0 color-mix(in srgb, var(--am-agent-busy) 55%, transparent); }
+  50% { opacity: .55; box-shadow: 0 0 0 4px color-mix(in srgb, var(--am-agent-busy) 0%, transparent); }
+}
+@media (prefers-reduced-motion: reduce) {
+  :is(.am-app, .am-layer) .am-agent-dot.am-agent-pulse { animation: none; }
+}
+
+/* In the member list and the profile card: the dot, then what the agent is doing. */
+:is(.am-app, .am-layer) .am-agent-activity { display: inline-flex; align-items: center; gap: 6px; min-width: 0; color: var(--am-text-2); }
+:is(.am-app, .am-layer) .am-agent-activity .am-agent-activity-text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+:is(.am-app, .am-layer) .am-agent-activity.am-agent-activity-waiting { color: var(--am-agent-waiting); }
+
+/* A reply an agent is still writing. */
+:is(.am-app, .am-layer) .am-agent-writing-note { display: inline-flex; align-items: center; gap: 6px; color: var(--am-muted); font: italic 400 12px var(--am-font-ui); }
+
+/* The agents' settings: their list and form. */
+:is(.am-app, .am-layer) .am-agents .am-agent-row-name { display: inline-flex; align-items: center; gap: 6px; }
+:is(.am-app, .am-layer) .am-agents .am-agent-off { opacity: .6; }
+:is(.am-app, .am-layer) .am-agents .am-agent-token { margin: 8px 0; padding: 10px 12px; border-radius: 8px; background: var(--am-raise); font: 400 12px/1.5 var(--am-font-mono); white-space: pre-wrap; overflow-wrap: anywhere; }
+:is(.am-app, .am-layer) .am-agents .am-agent-avatar { display: flex; align-items: center; gap: 12px; }
+:is(.am-app, .am-layer) .am-agents .am-agent-avatar img { width: 48px; height: 48px; border-radius: 50%; object-fit: cover; background: var(--am-raise); }
+:is(.am-app, .am-layer) .am-agents textarea.am-agent-prompt { min-height: 140px; resize: vertical; font: 400 13px/1.45 var(--am-font-mono); }
+
+/* Integrations › Agents, a Fusion page in the integrations frame. */
+.am-bs-page .am-agents-page { max-width: 760px; padding: 24px 32px 48px; }
+.am-bs-page .am-agents-page > h2 { margin: 0 0 12px; font: 700 20px var(--am-font-display); color: var(--am-text); }
+.am-bs-page .am-agents-page section + section { margin-top: 28px; }

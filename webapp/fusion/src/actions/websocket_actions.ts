@@ -174,6 +174,7 @@ import {clearGraphOptionNamesForField, commitGraphOptionNames} from 'components/
 import RemovedFromChannelModal from 'components/removed_from_channel_modal';
 
 import WebSocketClient from 'client/web_websocket_client';
+import {handleAgentPostStream} from 'fusion/agents/stream';
 import {loadPlugin, loadPluginsIfNecessary, removePlugin} from 'plugins';
 import {getHistory} from 'utils/browser_history';
 import {ActionTypes, Constants, AnnouncementBarMessages, JobStatuses, SocketEvents, UserStatuses, ModalIdentifiers, PageLoadContext} from 'utils/constants';
@@ -733,6 +734,10 @@ export function handleEvent(msg: WebSocketMessage) {
     case WebSocketEvents.PostPutOnTop:
         // Antimatter: a message was put on top of its channel, or again with a new time.
         dispatch({type: ChannelTypes.POST_PUT_ON_TOP, data: msg.data.on_top});
+        break;
+    case WebSocketEvents.AgentPostStream:
+        // Antimatter: an agent's answer streaming into its post.
+        handleAgentPostStream(msg.data, dispatch, getState);
         break;
     case WebSocketEvents.PostRemovedFromTop:
         dispatch({type: ChannelTypes.POST_REMOVED_FROM_TOP, data: {channel_id: msg.data.channel_id, post_id: msg.data.post_id}});

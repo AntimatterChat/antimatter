@@ -31,6 +31,8 @@ import EmoticonProvider from 'components/suggestion/emoticon_provider';
 import type Provider from 'components/suggestion/provider';
 import {flattenItems, flattenTerms} from 'components/suggestion/suggestion_results';
 
+import {IntegrationTag} from 'fusion/agents/agent_status';
+import {agentMentionRows, useMentionableAgents} from 'fusion/agents/mention_agents';
 import Avatar from 'fusion/components/avatar';
 import ChannelIcon from 'fusion/sidebar/channel_icon';
 import {am} from 'fusion/utils/class_names';
@@ -91,9 +93,10 @@ function RowContent({kind, row}: {kind: Kind; row: Row}) {
                     status={true}
                 />
                 <span className={am('main')}>{`@${user.username}`}</span>
+                {(user.is_agent || item.isAgent === true) && <IntegrationTag agent={true}/>}
                 <span className={am('desc')}>
                     {[user.first_name, user.last_name].filter(Boolean).join(' ') || user.nickname}
-                    {user.is_bot ? ' · ' + formatMessage({id: 'fusion.ac.bot', defaultMessage: 'bot'}) : ''}
+                    {user.is_bot && !user.is_agent && item.isAgent !== true ? ' · ' + formatMessage({id: 'fusion.ac.bot', defaultMessage: 'bot'}) : ''}
                 </span>
             </>
         );
@@ -174,6 +177,11 @@ const Autocomplete = forwardRef<AutocompleteHandle, Props>(({channelId, rootId, 
     const [selected, setSelected] = useState(0);
     const dismissedFor = useRef<string | null>(null);
 
+    // Server-wide agents are in no community: they're added to the @ suggestions from the agents the person may use.
+    const mentionableAgents = useMentionableAgents();
+    const agentsRef = useRef(mentionableAgents);
+    agentsRef.current = mentionableAgents;
+
     // In a slash command's arguments, @, # and ~ suggest people and channels: # completes #channel (the built-in
     // commands take it), ~ completes ~channel (for the apps that parse that). 'slash' providers only work there;
     // elsewhere ~ also suggests channels, for people used to it, but writes them #channel ('text' providers).
@@ -215,7 +223,10 @@ const Autocomplete = forwardRef<AutocompleteHandle, Props>(({channelId, rootId, 
             handled = provider.handlePretextChanged(pretext, (res) => {
                 const terms = flattenTerms(res);
                 const items = flattenItems(res);
-                const rows = terms.map((term, i) => ({term, item: items[i]})).filter((r) => r.item && !(typeof r.item === 'object' && r.item !== null && 'loading' in (r.item as object)));
+                let rows: Row[] = terms.map((term, i) => ({term, item: items[i]})).filter((r) => r.item && !(typeof r.item === 'object' && r.item !== null && 'loading' in (r.item as object)));
+                if (kind === 'mention') {
+                    rows = agentMentionRows(rows, res.matchedPretext, agentsRef.current);
+                }
                 setResults(rows.length ? {kind, matchedPretext: res.matchedPretext, rows: rows.slice(0, 12)} : null);
                 setSelected(0);
             });
