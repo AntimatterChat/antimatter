@@ -509,4 +509,21 @@ describe('components/signup/Signup', () => {
         const enabledButton = screen.getByRole('button', {name: /Create account/i});
         expect(enabledButton).not.toBeDisabled();
     });
+
+    it('should take the back link to the login page, keeping the query', () => {
+        mockLocation = {pathname: '/signup_user_complete', search: '?redirect_to=%2Fantimatter', hash: ''};
+        const onCustomizeHeader = jest.fn();
+
+        renderWithContext(<Signup onCustomizeHeader={onCustomizeHeader}/>, mockState);
+
+        expect(onCustomizeHeader).toHaveBeenLastCalledWith(expect.objectContaining({
+            backButtonURL: '/login?redirect_to=%2Fantimatter',
+            onBackButtonClick: expect.any(Function),
+        }));
+
+        // Not back in the browser's history, which leaves the site when the page was opened from a link.
+        const {calls} = onCustomizeHeader.mock;
+        calls[calls.length - 1][0].onBackButtonClick();
+        expect(mockHistoryPush).not.toHaveBeenCalled();
+    });
 });

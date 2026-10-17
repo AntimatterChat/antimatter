@@ -238,9 +238,12 @@ const Signup = ({onCustomizeHeader}: SignupProps) => {
         return externalLoginOptions;
     };
 
+    // Back goes to the login page, with the same query (an invitation, where to go once signed in): going back in the
+    // browser's history, as Mattermost did, left the site or did nothing when the page was opened from a link, and the
+    // link under it went to the root at the same time.
     const handleHeaderBackButtonOnClick = useCallback(() => {
-        history.goBack();
-    }, [history]);
+        setDesktopLoginLink('');
+    }, []);
 
     const handleInvalidInvite = ({
         // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -367,6 +370,7 @@ const Signup = ({onCustomizeHeader}: SignupProps) => {
         if (onCustomizeHeader) {
             onCustomizeHeader({
                 onBackButtonClick: handleHeaderBackButtonOnClick,
+                backButtonURL: `/login${search}`,
                 alternateLink: isMobileView ? getAlternateLink() : undefined,
             });
         }

@@ -3,15 +3,34 @@
 // the Fusion tokens. #root outweighs the classic selectors, however deeply they nest.
 @use '00_tokens' as tokens;
 
-// The pages' background: the app's ground in dark mode; in light mode a neutral off-white rather than the app's
-// lavender ground, which is too strong for a whole page.
-:root { --am-auth-ground: var(--am-ground); }
-:root[data-am-theme="light"] { --am-auth-ground: #f6f6f8; }
+// The pages' own neutral greys, not the app's lavender-tinted ones: a page, a card on it and the fields in the card.
+// Dark: the app's ground and surfaces, which are neutral already. Light: off-white and white, with grey lines.
+:root {
+  --am-auth-ground: var(--am-ground);
+  --am-auth-ground-2: #18191b;
+  --am-auth-card: var(--am-main);
+  --am-auth-field: #26272b;
+  --am-auth-field-line: #43454c;
+  --am-auth-field-hover: #5a5d66;
+  --am-auth-placeholder: #80848e;
+  --am-auth-label: #a3a7b0;
+}
+@mixin auth-light {
+  --am-auth-ground: #f5f5f7;
+  --am-auth-ground-2: #ececef;
+  --am-auth-card: #ffffff;
+  --am-auth-field: #ffffff;
+  --am-auth-field-line: #d3d4da;
+  --am-auth-field-hover: #b4b6be;
+  --am-auth-placeholder: #8b8d96;
+  --am-auth-label: #5f616b;
+}
+:root[data-am-theme="light"] { @include auth-light; }
 @media (prefers-color-scheme: light) {
-  :root[data-am-theme="system"] { --am-auth-ground: #f6f6f8; }
+  :root[data-am-theme="system"] { @include auth-light; }
 }
 
-// Behind the older pages' template, which doesn't fill the window.
+// Behind the older pages' template, which doesn't fill the window: the page's ground, a quiet grey fading down.
 :is(html, body):has(.am-auth) { background: var(--am-auth-ground); }
 
 #root .am-auth {
@@ -21,8 +40,7 @@
 
   .header-footer-route-container,
   &.inner-wrap {
-    background: var(--am-auth-ground);
-    background-image: none;
+    background: linear-gradient(180deg, var(--am-auth-ground) 0%, var(--am-auth-ground-2) 100%) fixed;
   }
 
   a { color: var(--am-anti); }
@@ -41,9 +59,25 @@
   .am-auth-anti { fill: var(--am-auth-ground); stroke: var(--am-anti); stroke-width: 2.5; }
   .hfroute-header .header-main > :not(:first-child),
   :is(.login-body-alternate-link, .signup-body-alternate-link) { color: var(--am-muted); font-size: 14px; }
-  .header-back-button a { color: var(--am-text-2); }
-  .signup-header { position: static; width: auto; height: auto; padding: 0; margin: 0 0 18px 40px; border: 0; background: transparent; }
-  .signup-header a { color: var(--am-text-2); }
+  // "Back", under the brand, as a button: the classic one sat on its own above the page, its arrow over its word.
+  .signup-header { position: static; width: auto; height: auto; padding: 0; margin: 0 0 18px 40px; border: 0; background: transparent; line-height: normal; }
+  .hfroute-header .header-back-button.signup-header { position: absolute; top: auto; bottom: -12px; left: 40px; margin: 0; padding: 0; }
+  .signup-header a {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    height: 32px;
+    padding: 0 12px 0 8px;
+    border-radius: 8px;
+    color: var(--am-text-2);
+    font: 600 14px var(--am-font-ui);
+    text-decoration: none;
+  }
+  .signup-header a:hover, .signup-header a:focus-visible { background: var(--am-hover); color: var(--am-text); text-decoration: none; }
+  .signup-header .fa { margin: 0; font-size: 18px; line-height: 1; }
+  @media screen and (max-width: 699px) {
+    .hfroute-header .header-back-button.signup-header { left: 24px; }
+  }
 
   // The older pages' template: the brand above, the page in a centred column.
   &.inner-wrap { display: flex; min-height: 100vh; flex-direction: column; margin: 0; }
@@ -64,37 +98,52 @@
 
   // The card.
   :is(.login-body-card, .signup-body-card) {
-    border: 1px solid var(--am-line);
+    border: 1px solid var(--am-auth-field-line);
     border-radius: 16px;
-    background: var(--am-main);
-    box-shadow: var(--am-shadow);
+    background: var(--am-auth-card);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
   }
   :is(.login-body-card-content, .signup-body-card-content) { padding: 36px 40px; }
   :is(.login-body-card-title, .signup-body-card-title) { color: var(--am-text); font: 600 21px var(--am-font-display); }
   :is(.login-body-card-form-divider, .signup-body-card-form-divider) { background: var(--am-line); }
-  :is(.login-body-card-form-divider-label, .signup-body-card-form-divider-label) { background: var(--am-main); color: var(--am-muted); }
+  :is(.login-body-card-form-divider-label, .signup-body-card-form-divider-label) { background: var(--am-auth-card); color: var(--am-muted); }
 
-  // Inputs: the classic Input widget, with its floating legend.
+  // Inputs: the classic Input widget, with its floating legend, in neutral greys; the accent only marks the focus.
   .Input_fieldset {
-    border: 1px solid var(--am-line);
+    border: 1px solid var(--am-auth-field-line);
     border-radius: 9px;
-    background: var(--am-side);
+    background: var(--am-auth-field);
     box-shadow: none;
   }
-  .Input_fieldset:hover { border-color: var(--am-raise-2); }
-  .Input_fieldset:focus-within { border-color: var(--am-matter); box-shadow: 0 0 0 3px var(--am-matter-soft); }
+  .Input_fieldset:hover { border-color: var(--am-auth-field-hover); }
+  .Input_fieldset:focus-within { border-color: var(--am-matter); box-shadow: 0 0 0 3px color-mix(in srgb, var(--am-matter) 14%, transparent); }
   .Input_fieldset.Input_fieldset___error { border-color: var(--am-danger); box-shadow: none; }
   // The legend sits on the border: the card's colour above it, the field's below.
-  .Input_legend { background: linear-gradient(180deg, var(--am-main) 50%, var(--am-side) 50%); color: var(--am-muted); }
+  .Input_legend { background: linear-gradient(180deg, var(--am-auth-card) 50%, var(--am-auth-field) 50%); color: var(--am-auth-label); }
   .Input_fieldset:focus-within .Input_legend { color: var(--am-matter); }
   .Input_container .Input, .Input_wrapper { color: var(--am-text); background: transparent; }
-  .Input_container .Input::placeholder { color: var(--am-faint); }
-  .Input_wrapper button, .Input_wrapper .icon { color: var(--am-muted); }
-  .password-input-toggle { border-radius: 7px; background: transparent; color: var(--am-muted); }
-  .password-input-toggle:hover { background: var(--am-raise); color: var(--am-text); }
+  .Input_container .Input::placeholder { color: var(--am-auth-placeholder); }
+  .Input_wrapper button, .Input_wrapper .icon { color: var(--am-auth-label); }
+  .password-input-toggle { border-radius: 7px; background: transparent; color: var(--am-auth-label); }
+  .password-input-toggle:hover { background: var(--am-hover); color: var(--am-text); }
   .Input___error { color: var(--am-danger); }
-  .form-control { color: var(--am-text); background: var(--am-side); border-color: var(--am-line); border-radius: 9px; box-shadow: none; }
+  .form-control { color: var(--am-text); background: var(--am-auth-field); border-color: var(--am-auth-field-line); border-radius: 9px; box-shadow: none; }
+  .form-control:hover { border-color: var(--am-auth-field-hover); }
   .form-control:focus { border-color: var(--am-matter); }
+
+  // Fields a password manager or the browser filled: the theme's field colours, not the browser's yellow. The colour
+  // can't be changed, but an inset shadow covers it, and the text keeps the theme's colour.
+  :is(input, textarea, select):is(:-webkit-autofill, :-webkit-autofill:hover, :-webkit-autofill:focus) {
+    -webkit-text-fill-color: var(--am-text);
+    caret-color: var(--am-text);
+    box-shadow: 0 0 0 1000px var(--am-auth-field) inset;
+    transition: background-color 600000s 0s, color 600000s 0s;
+  }
+  :is(input, textarea, select):autofill {
+    -webkit-text-fill-color: var(--am-text);
+    caret-color: var(--am-text);
+    box-shadow: 0 0 0 1000px var(--am-auth-field) inset;
+  }
 
   // Buttons: the primary one in the accent colour, the others raised.
   :is(.btn-primary, .login-body-card-form-button-submit, .signup-body-card-form-button-submit) {
@@ -108,23 +157,18 @@
   }
   :is(.btn-primary, .login-body-card-form-button-submit, .signup-body-card-form-button-submit):hover:not(:disabled) { filter: brightness(1.1); background: var(--am-matter); }
   :is(.btn-primary, .login-body-card-form-button-submit, .signup-body-card-form-button-submit):disabled { opacity: .45; background: var(--am-matter); color: #fff; }
-  .btn-tertiary, .btn-secondary, .btn-default {
-    border: 1px solid var(--am-line);
+  // The other buttons and the single sign-on ones: neutral, like the fields.
+  .btn-tertiary, .btn-secondary, .btn-default, .external-login-button {
+    border: 1px solid var(--am-auth-field-line);
     border-radius: 10px;
-    background: var(--am-raise);
+    background: var(--am-auth-field);
     color: var(--am-text);
     box-shadow: none;
   }
-
-  // Single sign-on buttons.
-  .external-login-button {
-    border: 1px solid var(--am-line);
-    border-radius: 10px;
-    background: var(--am-side);
-    color: var(--am-text);
-    box-shadow: none;
+  :is(.btn-tertiary, .btn-secondary, .btn-default, .external-login-button):hover {
+    border-color: var(--am-auth-field-hover);
+    background: color-mix(in srgb, var(--am-text) 4%, var(--am-auth-field));
   }
-  .external-login-button:hover { background: var(--am-raise); border-color: var(--am-raise-2); }
   .external-login-button-label { color: var(--am-text); font-weight: 600; }
 
   // Alert banners in the card.
@@ -144,10 +188,10 @@
     max-width: 520px;
     padding: 36px 40px;
     margin: auto;
-    border: 1px solid var(--am-line);
+    border: 1px solid var(--am-auth-field-line);
     border-radius: 16px;
-    background: var(--am-main);
-    box-shadow: var(--am-shadow);
+    background: var(--am-auth-card);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
     color: var(--am-text-2);
     text-align: left;
   }
@@ -160,10 +204,10 @@
     max-width: 460px;
     padding: 32px 36px;
     margin: 48px auto;
-    border: 1px solid var(--am-line);
+    border: 1px solid var(--am-auth-field-line);
     border-radius: 16px;
-    background: var(--am-main);
-    box-shadow: var(--am-shadow);
+    background: var(--am-auth-card);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
   }
   &.inner-wrap .signup-team__container h1 { margin-top: 0; font-size: 26px; }
   &.inner-wrap .signup-team__container p { color: var(--am-text-2); }
