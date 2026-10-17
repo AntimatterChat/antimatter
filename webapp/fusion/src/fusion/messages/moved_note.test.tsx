@@ -3,7 +3,7 @@
 
 import React from 'react';
 
-import {renderWithContext, screen} from 'tests/react_testing_utils';
+import {fireEvent, renderWithContext, screen} from 'tests/react_testing_utils';
 import {getHistory} from 'utils/browser_history';
 import {TestHelper} from 'utils/test_helper';
 
@@ -77,6 +77,37 @@ describe('fusion/messages/MovedNote', () => {
         const push = jest.spyOn(getHistory(), 'push').mockImplementation(() => undefined);
         anchor.click();
         expect(push).toHaveBeenCalledWith('/lumen/pl/newroot');
+        push.mockRestore();
+    });
+
+    test('the link opens the moved thread in the app, as links to messages do: no page load', () => {
+        renderWithContext(<MovedNote post={pointer}/>, state());
+        const push = jest.spyOn(getHistory(), 'push').mockImplementation(() => undefined);
+
+        // fireEvent.click is false when the click's default (following the address, a page load) is prevented.
+        expect(fireEvent.click(screen.getByRole('link', {name: '#Ops on call'}))).toBe(false);
+        expect(push).toHaveBeenCalledTimes(1);
+        expect(push).toHaveBeenCalledWith('/lumen/pl/newroot');
+        push.mockRestore();
+    });
+
+    test('the note\'s link opens the pointer left in the old channel, in the app', () => {
+        renderWithContext(<MovedNote post={note}/>, state());
+        const push = jest.spyOn(getHistory(), 'push').mockImplementation(() => undefined);
+        expect(fireEvent.click(screen.getByRole('link', {name: '#General'}))).toBe(false);
+        expect(push).toHaveBeenCalledWith('/lumen/pl/pointer');
+        push.mockRestore();
+    });
+
+    test('a click with a modifier is left to the browser: a new tab or window', () => {
+        renderWithContext(<MovedNote post={pointer}/>, state());
+        const push = jest.spyOn(getHistory(), 'push').mockImplementation(() => undefined);
+        const anchor = screen.getByRole('link', {name: '#Ops on call'});
+        expect(fireEvent.click(anchor, {ctrlKey: true})).toBe(true);
+        expect(fireEvent.click(anchor, {metaKey: true})).toBe(true);
+        expect(fireEvent.click(anchor, {shiftKey: true})).toBe(true);
+        expect(push).not.toHaveBeenCalled();
+        push.mockRestore();
     });
 
     test('one message', () => {
