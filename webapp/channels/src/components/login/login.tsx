@@ -464,6 +464,9 @@ const Login = ({onCustomizeHeader}: LoginProps) => {
         if (onCustomizeHeader) {
             onCustomizeHeader({
                 onBackButtonClick: (showMfa || desktopLoginLink) ? handleHeaderBackButtonOnClick : undefined,
+
+                // Back to the login form, with its query (where to go once signed in), rather than the root.
+                backButtonURL: `/login${search}`,
                 alternateLink: isMobileView ? getAlternateLink() : undefined,
             });
         }
@@ -808,6 +811,7 @@ const Login = ({onCustomizeHeader}: LoginProps) => {
 
     const handleHeaderBackButtonOnClick = () => {
         setShowMfa(false);
+        setDesktopLoginLink('');
     };
 
     const handleInputOnChange = ({target: {value: loginId}}: React.ChangeEvent<HTMLInputElement>) => {

@@ -14,7 +14,7 @@ import LocalStorageStore from 'stores/local_storage_store';
 import Login from 'components/login/login';
 
 import mergeObjects from 'packages/mattermost-redux/test/merge_objects';
-import {renderWithContext, screen, userEvent} from 'tests/react_testing_utils';
+import {renderWithContext, screen, userEvent, waitFor} from 'tests/react_testing_utils';
 import Constants, {WindowSizes} from 'utils/constants';
 import DesktopApp from 'utils/desktop_api';
 import {showNotification} from 'utils/notifications';
@@ -762,5 +762,26 @@ describe('components/login/Login', () => {
             // Password field should be hidden
             expect(screen.queryByLabelText('Password')).not.toBeInTheDocument();
         });
+    });
+
+    it('should take the back link of the two-factor step to the login form, keeping the query', async () => {
+        jest.spyOn(loginActions, 'login').mockImplementationOnce(() => (() => Promise.resolve({error: {server_error_id: 'mfa.validate_token.authenticate.app_error'}})) as never);
+        const history = createMemoryHistory({initialEntries: [{pathname: '/login', search: '?redirect_to=%2Fantimatter'}]});
+        const onCustomizeHeader = jest.fn();
+        const state = mergeObjects(baseState, {entities: {general: {config: {EnableSignInWithEmail: 'true'}}}});
+
+        renderWithContext(<Login onCustomizeHeader={onCustomizeHeader}/>, state, {history});
+
+        // No back link on the login form itself.
+        expect(onCustomizeHeader).toHaveBeenLastCalledWith(expect.objectContaining({onBackButtonClick: undefined}));
+
+        await userEvent.type(screen.getByLabelText('Email'), 'maya@example.com');
+        await userEvent.type(screen.getByLabelText('Password'), 'a-good-password');
+        await userEvent.click(screen.getByRole('button', {name: 'Log in'}));
+
+        await waitFor(() => expect(onCustomizeHeader).toHaveBeenLastCalledWith(expect.objectContaining({
+            backButtonURL: '/login?redirect_to=%2Fantimatter',
+            onBackButtonClick: expect.any(Function),
+        })));
     });
 });
