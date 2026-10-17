@@ -38,9 +38,18 @@ const OPEN_TEAM_CARD = 'am-open-team-card';
 
 type OpenTeamCard = {teamId: string; x: number; y: number};
 
+// openTeamCard opens a team's card under its tag, for the whole app (see TeamCardHost).
+function openTeamCard(e: React.MouseEvent<HTMLElement>, teamId: string) {
+    e.stopPropagation();
+    const rect = e.currentTarget.getBoundingClientRect();
+    window.dispatchEvent(new CustomEvent<OpenTeamCard>(OPEN_TEAM_CARD, {detail: {teamId, x: rect.left, y: rect.bottom + 6}}));
+}
+
 // TeamTag is the short tag of the team someone shows next to their name, as a server tag; it opens the team's card,
 // in place of a profile card it may sit in (one card at a time).
-// A tag inside something clickable (a member row) is a plain label: buttons don't nest.
+// A tag inside something clickable (a member row) is a label, not a button (buttons don't nest), but a click on it
+// still opens the team's card rather than the row's profile card, as the tag does everywhere else; the keyboard
+// reaches the team from the profile card.
 // Teams belong to one community: the tag is the one shown in communityId (a message's community), else in the current
 // community.
 export function TeamTag({user, label = false, communityId}: {user: UserProfile | undefined; label?: boolean; communityId?: string}) {
@@ -53,6 +62,7 @@ export function TeamTag({user, label = false, communityId}: {user: UserProfile |
             <span
                 className={am('team-tag')}
                 title={team.display_name}
+                onClick={(e) => openTeamCard(e, team.id)}
             >
                 {team.tag}
             </span>
@@ -63,11 +73,7 @@ export function TeamTag({user, label = false, communityId}: {user: UserProfile |
             type='button'
             className={am('team-tag')}
             title={team.display_name}
-            onClick={(e) => {
-                e.stopPropagation();
-                const rect = e.currentTarget.getBoundingClientRect();
-                window.dispatchEvent(new CustomEvent<OpenTeamCard>(OPEN_TEAM_CARD, {detail: {teamId: team.id, x: rect.left, y: rect.bottom + 6}}));
-            }}
+            onClick={(e) => openTeamCard(e, team.id)}
         >
             {team.tag}
         </button>
