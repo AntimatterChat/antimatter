@@ -381,6 +381,7 @@ func Init(srv *app.Server) (*API, error) {
 	api.InitLicense()
 	api.InitConfig()
 	api.InitWebhook()
+	api.InitMessageAction()
 	api.InitPreference()
 	api.InitSaml()
 	api.InitCompliance()

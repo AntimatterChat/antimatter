@@ -5028,6 +5028,64 @@ func (c *Client4) DeleteOutgoingWebhook(ctx context.Context, hookId string) (*Re
 	return BuildResponse(r), nil
 }
 
+// SetOutgoingWebhookIcon uploads the icon of an outgoing webhook (a PNG, JPEG or GIF image, stored as a 128 px PNG):
+// the icon of its message action in the message menu, and of the posts it answers with.
+func (c *Client4) SetOutgoingWebhookIcon(ctx context.Context, hookId string, data []byte) (*OutgoingWebhook, *Response, error) {
+	body := &bytes.Buffer{}
+	writer := multipart.NewWriter(body)
+
+	part, err := writer.CreateFormFile("image", "icon.png")
+	if err != nil {
+		return nil, nil, fmt.Errorf("failed to create form file: %w", err)
+	}
+
+	if _, err = io.Copy(part, bytes.NewBuffer(data)); err != nil {
+		return nil, nil, fmt.Errorf("failed to copy data to form file: %w", err)
+	}
+
+	if err = writer.Close(); err != nil {
+		return nil, nil, fmt.Errorf("failed to close multipart writer: %w", err)
+	}
+
+	r, err := c.doAPIRequestReaderRoute(ctx, http.MethodPost, c.outgoingWebhookRoute(hookId).Join("icon"), writer.FormDataContentType(), body, nil)
+	if err != nil {
+		return nil, BuildResponse(r), err
+	}
+	defer closeBody(r)
+	return DecodeJSONFromResponse[*OutgoingWebhook](r)
+}
+
+// GetOutgoingWebhookIcon returns the uploaded icon of an outgoing webhook, as PNG.
+func (c *Client4) GetOutgoingWebhookIcon(ctx context.Context, hookId string) ([]byte, *Response, error) {
+	r, err := c.doAPIGet(ctx, c.outgoingWebhookRoute(hookId).Join("icon"), "")
+	if err != nil {
+		return nil, BuildResponse(r), err
+	}
+	defer closeBody(r)
+	return ReadBytesFromResponse(r)
+}
+
+// GetMessageActionsForChannel returns the message actions (outgoing webhooks triggered from the message menu) that
+// the current user may pick for the messages of a channel.
+func (c *Client4) GetMessageActionsForChannel(ctx context.Context, channelId string) ([]*MessageAction, *Response, error) {
+	r, err := c.doAPIGet(ctx, c.channelRoute(channelId).Join("message_actions"), "")
+	if err != nil {
+		return nil, BuildResponse(r), err
+	}
+	defer closeBody(r)
+	return DecodeJSONFromResponse[[]*MessageAction](r)
+}
+
+// RunMessageAction sends a message to a message action's callback URLs, as the current user.
+func (c *Client4) RunMessageAction(ctx context.Context, postId, hookId string) (*MessageActionResult, *Response, error) {
+	r, err := c.doAPIPost(ctx, c.postRoute(postId).Join("message_actions", hookId), "")
+	if err != nil {
+		return nil, BuildResponse(r), err
+	}
+	defer closeBody(r)
+	return DecodeJSONFromResponse[*MessageActionResult](r)
+}
+
 // Preferences Section
 
 // GetPreferences returns the user's preferences.

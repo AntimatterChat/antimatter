@@ -163,6 +163,9 @@ type Server struct {
 	channelExports chan struct{}
 	// channelExporter writes the channel exports (Antimatter).
 	channelExporter ChannelExporter
+
+	// messageActions limits how often each person runs message actions (Antimatter).
+	messageActions messageActionLimiter
 }
 
 // SetNotifyAdminCoolOffDaysOverride sets the cool-off period override for admin notifications.

@@ -570,6 +570,8 @@ const (
 	AuditEventGetOutgoingHook         = "getOutgoingHook"         // get outgoing webhook details
 	AuditEventLocalCreateIncomingHook = "localCreateIncomingHook" // create incoming webhook locally
 	AuditEventRegenOutgoingHookToken  = "regenOutgoingHookToken"  // regenerate authentication token
+	AuditEventRunMessageAction        = "runMessageAction"        // send a message to a message action (Antimatter)
+	AuditEventSetOutgoingHookIcon     = "setOutgoingHookIcon"     // upload an outgoing webhook's icon (Antimatter)
 	AuditEventUpdateIncomingHook      = "updateIncomingHook"      // update incoming webhook
 	AuditEventUpdateOutgoingHook      = "updateOutgoingHook"      // update outgoing webhook
 )

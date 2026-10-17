@@ -1285,7 +1285,9 @@ components:
             type: string
         trigger_when:
           description: When to trigger the webhook, `0` when a trigger word is present at
-            all and `1` if the message starts with a trigger word
+            all and `1` if the message starts with a trigger word; `2` makes it a
+            message action, picked from the message menu, which never fires on
+            posted messages and has no trigger words (Antimatter)
           type: integer
         callback_urls:
           description: The URLs to POST the payloads to when the webhook is triggered

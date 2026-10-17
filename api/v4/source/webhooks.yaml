@@ -290,7 +290,9 @@
                 trigger_when:
                   description: When to trigger the webhook, `0` when a trigger word is
                     present at all and `1` if the message starts with a trigger
-                    word
+                    word; `2` makes it a message action, picked from the message
+                    menu, which never fires on posted messages and has no trigger
+                    words (Antimatter)
                   type: integer
                 callback_urls:
                   description: The URLs to POST the payloads to when the webhook is
@@ -532,3 +534,188 @@
           $ref: "#/components/responses/Forbidden"
         "404":
           $ref: "#/components/responses/NotFound"
+  "/api/v4/hooks/outgoing/{hook_id}/icon":
+    get:
+      tags:
+        - webhooks
+      summary: Get an outgoing webhook's uploaded icon
+      description: >
+        Get the icon uploaded for an outgoing webhook, as a 128 px PNG (Antimatter).
+
+        ##### Permissions
+
+        Membership of the webhook's team.
+      operationId: GetOutgoingWebhookIcon
+      parameters:
+        - name: hook_id
+          in: path
+          description: Outgoing webhook GUID
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: The icon, as PNG
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+    post:
+      tags:
+        - webhooks
+      summary: Upload an outgoing webhook's icon
+      description: >
+        Upload a PNG, JPEG or GIF image as the outgoing webhook's icon: the icon of its message action in the
+        message menu, and of the posts it answers with. It is stored as a 128 px PNG, and the webhook's
+        `icon_url` points at it (Antimatter).
+
+        ##### Permissions
+
+        The permissions to update the webhook: `manage_outgoing_webhooks` for the team, and
+        `manage_others_outgoing_webhooks` if someone else created it.
+      operationId: SetOutgoingWebhookIcon
+      parameters:
+        - name: hook_id
+          in: path
+          description: Outgoing webhook GUID
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                image:
+                  description: The image to upload
+                  type: string
+                  format: binary
+              required:
+                - image
+        required: true
+      responses:
+        "200":
+          description: The updated outgoing webhook
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OutgoingWebhook"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "413":
+          $ref: "#/components/responses/TooLarge"
+        "501":
+          $ref: "#/components/responses/NotImplemented"
+  "/api/v4/channels/{channel_id}/message_actions":
+    get:
+      tags:
+        - webhooks
+      summary: Get the message actions of a channel
+      description: >
+        Get the message actions (outgoing webhooks with `trigger_when` `2`) that the current user may pick for the
+        messages of a channel: the ones bound to the channel, and, except for guests, the ones of its team without a
+        channel. Only public channels have message actions. Neither tokens nor callback URLs are returned
+        (Antimatter).
+
+        ##### Permissions
+
+        Read access to the channel.
+      operationId: GetMessageActionsForChannel
+      parameters:
+        - name: channel_id
+          in: path
+          description: Channel GUID
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: The message actions, by name
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    team_id:
+                      type: string
+                    channel_id:
+                      type: string
+                    display_name:
+                      type: string
+                    description:
+                      type: string
+                    icon_url:
+                      description: The uploaded icon, or an http(s) image URL; empty for none
+                      type: string
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+  "/api/v4/posts/{post_id}/message_actions/{hook_id}":
+    post:
+      tags:
+        - webhooks
+      summary: Send a message to a message action
+      description: >
+        Send a message to the callback URLs of a message action, as the current user (Antimatter). The payload has
+        `trigger` `message_action`, the webhook's `token`, the message (`post_id`, `text`, `post_user_id`,
+        `post_user_name`, `post_create_at`, `permalink`, `files` with their names and links, `priority`,
+        `requested_ack`), its channel and team, and who picked the action (`user_id`, `user_name`). A burn-on-read
+        message is sent without its text and files (`burn_on_read` is `true`). The webhook may answer as an
+        outgoing webhook does (`text`, `attachments`, `response_type`), or with an `ephemeral_text` returned to
+        the current user alone. Where the current user can't post (a read-only or archived channel), an answer is
+        shown to them alone instead of posted. Each user may run 10 message actions a minute, after a burst of 5.
+
+        ##### Permissions
+
+        Read access to the message.
+      operationId: RunMessageAction
+      parameters:
+        - name: post_id
+          in: path
+          description: Post GUID
+          required: true
+          schema:
+            type: string
+        - name: hook_id
+          in: path
+          description: Outgoing webhook GUID
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: The message was sent
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ephemeral_text:
+                    description: The webhook's `ephemeral_text`, if any
+                    type: string
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "429":
+          $ref: "#/components/responses/TooManyRequests"
+        "501":
+          $ref: "#/components/responses/NotImplemented"
+        "502":
+          description: None of the webhook's callback URLs could be reached

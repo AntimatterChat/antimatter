@@ -62,6 +62,10 @@ func (a *App) handleWebhookEvents(rctx request.CTX, post *model.Post, team *mode
 
 	relevantHooks := []*model.OutgoingWebhook{}
 	for _, hook := range hooks {
+		// A message action only sends the messages people pick it for, from the message menu.
+		if hook.IsMessageAction() {
+			continue
+		}
 		if hook.ChannelId == post.ChannelId || hook.ChannelId == "" {
 			if hook.ChannelId == post.ChannelId && len(hook.TriggerWords) == 0 {
 				relevantHooks = append(relevantHooks, hook)
@@ -732,7 +736,8 @@ func (a *App) CreateOutgoingWebhook(hook *model.OutgoingWebhook) (*model.Outgoin
 		if channel.Type != model.ChannelTypeOpen || channel.TeamId != hook.TeamId {
 			return nil, model.NewAppError("CreateOutgoingWebhook", "api.webhook.create_outgoing.permissions.app_error", nil, "", http.StatusForbidden)
 		}
-	} else if len(hook.TriggerWords) == 0 {
+	} else if len(hook.TriggerWords) == 0 && !hook.IsMessageAction() {
+		// A message action without a channel is offered in every public channel of its community.
 		return nil, model.NewAppError("CreateOutgoingWebhook", "api.webhook.create_outgoing.triggers.app_error", nil, "", http.StatusBadRequest)
 	}
 
@@ -784,8 +789,18 @@ func (a *App) UpdateOutgoingWebhook(rctx request.CTX, oldHook, updatedHook *mode
 		if channel.TeamId != oldHook.TeamId {
 			return nil, model.NewAppError("UpdateOutgoingWebhook", "api.webhook.create_outgoing.permissions.app_error", nil, "", http.StatusForbidden)
 		}
-	} else if len(updatedHook.TriggerWords) == 0 {
+	} else if len(updatedHook.TriggerWords) == 0 && !updatedHook.IsMessageAction() {
 		return nil, model.NewAppError("UpdateOutgoingWebhook", "api.webhook.create_outgoing.triggers.app_error", nil, "", http.StatusInternalServerError)
+	}
+
+	// The store doesn't check updated hooks: a message action's own rules (a name, no trigger words) are checked here.
+	if updatedHook.IsMessageAction() {
+		if len(updatedHook.TriggerWords) != 0 {
+			return nil, model.NewAppError("UpdateOutgoingWebhook", "model.outgoing_hook.is_valid.message_action_words.app_error", nil, "", http.StatusBadRequest)
+		}
+		if strings.TrimSpace(updatedHook.DisplayName) == "" {
+			return nil, model.NewAppError("UpdateOutgoingWebhook", "model.outgoing_hook.is_valid.message_action_name.app_error", nil, "", http.StatusBadRequest)
+		}
 	}
 
 	allHooks, err := a.Srv().Store().Webhook().GetOutgoingByTeam(oldHook.TeamId, -1, -1)
@@ -811,6 +826,11 @@ func (a *App) UpdateOutgoingWebhook(rctx request.CTX, oldHook, updatedHook *mode
 	webhook, err := a.Srv().Store().Webhook().UpdateOutgoing(updatedHook)
 	if err != nil {
 		return nil, model.NewAppError("UpdateOutgoingWebhook", "app.webhooks.update_outgoing.app_error", nil, "", http.StatusInternalServerError).Wrap(err)
+	}
+
+	// An uploaded icon replaced by a URL, or by none, is deleted.
+	if oldHook.HasUploadedIcon() && !updatedHook.HasUploadedIcon() {
+		a.removeOutgoingWebhookIconFile(rctx, oldHook.Id)
 	}
 
 	return webhook, nil

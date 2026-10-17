@@ -3592,6 +3592,11 @@
     "description": "API error shown when someone tries to use or manage outgoing webhooks while the admin has turned the feature off; outgoing webhooks send channel messages to external services."
   },
   {
+    "id": "api.outgoing_webhook.icon.too_large.app_error",
+    "translation": "The icon's file is too large.",
+    "description": "API error when the file uploaded as an outgoing webhook's icon is larger than the maximum file size."
+  },
+  {
     "id": "api.payload.parse.error",
     "translation": "An error occurred while parsing the payload.",
     "description": "Generic API error returned when a request body sent to the server cannot be parsed; 'payload' is the request body, audience is API clients/developers."
@@ -9750,6 +9755,51 @@
     "id": "app.member_count",
     "translation": "error retrieving member count",
     "description": "Low-level database error detail when counting a group's members fails; terse developer-facing text."
+  },
+  {
+    "id": "app.message_action.failed.app_error",
+    "translation": "{{.Name}} couldn't be reached. Try again later.",
+    "description": "API error shown as a short notice when a message action (an integration in a message's menu) fails to send the message to any of its URLs; {{.Name}} is the integration's title."
+  },
+  {
+    "id": "app.message_action.icon.decode.app_error",
+    "translation": "The icon must be a PNG, JPEG or GIF image.",
+    "description": "API error when the file uploaded as an outgoing webhook's icon isn't an image the server can read."
+  },
+  {
+    "id": "app.message_action.icon.not_found.app_error",
+    "translation": "This integration has no uploaded icon.",
+    "description": "API error when the uploaded icon of an outgoing webhook is requested but none was uploaded."
+  },
+  {
+    "id": "app.message_action.icon.read.app_error",
+    "translation": "The icon's image couldn't be read.",
+    "description": "API error when the image uploaded as an outgoing webhook's icon can't be read."
+  },
+  {
+    "id": "app.message_action.icon.too_large.app_error",
+    "translation": "The icon's image is too large.",
+    "description": "API error when the image uploaded as an outgoing webhook's icon has more pixels than the server allows."
+  },
+  {
+    "id": "app.message_action.not_found.app_error",
+    "translation": "This action isn't available for this message.",
+    "description": "API error when someone runs a message action (an integration listed in a message's menu) that doesn't exist, or that doesn't cover the message's channel or isn't offered to them."
+  },
+  {
+    "id": "app.message_action.rate_limit.app_error",
+    "translation": "The action couldn't be run. Please try again.",
+    "description": "API error when the server can't check how often someone runs message actions (integrations in a message's menu); an internal error."
+  },
+  {
+    "id": "app.message_action.rate_limited.app_error",
+    "translation": "You've sent too many messages to integrations. Try again in a minute.",
+    "description": "API error shown as a short notice when someone runs message actions (integrations in a message's menu that send the message to an outside service) too often."
+  },
+  {
+    "id": "app.message_action.system_message.app_error",
+    "translation": "System messages can't be sent to an integration.",
+    "description": "API error when someone runs a message action (an integration that sends a message to an outside service) on a system message such as 'joined the channel'."
   },
   {
     "id": "app.message_request.action.app_error",
@@ -16906,6 +16956,16 @@
     "id": "model.outgoing_hook.is_valid.id.app_error",
     "translation": "Invalid Id.",
     "description": "API error when an outgoing webhook's ID field is malformed."
+  },
+  {
+    "id": "model.outgoing_hook.is_valid.message_action_name.app_error",
+    "translation": "A message action needs a title: it is the name shown in the message menu.",
+    "description": "API error when an outgoing webhook set to trigger from the message menu (a message action) has an empty title; the title is the label of its entry in a message's menu."
+  },
+  {
+    "id": "model.outgoing_hook.is_valid.message_action_words.app_error",
+    "translation": "A message action can't have trigger words: people pick it from the message menu.",
+    "description": "API error when an outgoing webhook set to trigger from the message menu (a message action) also has trigger words; message actions are only run by picking them in a message's menu."
   },
   {
     "id": "model.outgoing_hook.is_valid.team_id.app_error",
