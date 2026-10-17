@@ -26,7 +26,9 @@ func TestCommunityRulesAPI(t *testing.T) {
 	ctx := context.Background()
 	team := th.BasicTeam
 
-	// The basic user made the basic team, so they're one of its admins; the others are plain members.
+	// The basic user is one of the community's admins; the others are plain members.
+	_, appErr := th.App.UpdateTeamMemberSchemeRoles(th.Context, team.Id, th.BasicUser.Id, false, true, true)
+	require.Nil(t, appErr)
 	member := func(t *testing.T) (*model.User, *model.Client4) {
 		t.Helper()
 		user := th.CreateUser(t)
