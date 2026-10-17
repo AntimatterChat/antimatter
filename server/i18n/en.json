@@ -3853,6 +3853,16 @@
     "description": "API error in an admin reporting endpoint when the channel whose posts were requested does not exist."
   },
   {
+    "id": "api.post.move_thread.archived.app_error",
+    "translation": "Threads can't be moved from or to an archived channel.",
+    "description": "API error when moving a thread out of, or into, an archived channel."
+  },
+  {
+    "id": "api.post.move_thread.cannot_post.app_error",
+    "translation": "You can't post in the channel you're moving the thread to.",
+    "description": "API error when moving a thread to a channel where the user may not write (not a member, read-only, timed out...)."
+  },
+  {
     "id": "api.post.move_thread.disabled.app_error",
     "translation": "Thread moving is disabled",
     "description": "API error when a user tries to move a message thread to another channel while the Move Thread feature is disabled."
@@ -3861,6 +3871,26 @@
     "id": "api.post.move_thread.no_permission",
     "translation": "You do not have permission to move this thread.",
     "description": "API error when a user lacks permission to move a message thread to another channel."
+  },
+  {
+    "id": "api.post.move_thread.same_channel.app_error",
+    "translation": "The thread is already in this channel.",
+    "description": "API error when moving a thread to the channel it is already in."
+  },
+  {
+    "id": "api.post.move_thread.same_community.app_error",
+    "translation": "A thread can only be moved to another channel of its community.",
+    "description": "API error when moving a thread to a channel of another community, or to or from a direct or group message. 'Community' is Antimatter's name for a team."
+  },
+  {
+    "id": "api.post.move_thread.too_long.app_error",
+    "translation": "This thread has {{.Count}} messages; threads of up to {{.Max}} messages can be moved.",
+    "description": "API error when a thread is longer than the administrator's limit for moving threads; {{.Count}} and {{.Max}} are numbers."
+  },
+  {
+    "id": "api.post.move_thread.unsupported.app_error",
+    "translation": "System messages and burn-on-read messages can't be moved.",
+    "description": "API error when moving a thread whose first message is a system message, or that holds a burn-on-read message."
   },
   {
     "id": "api.post.patch_post.can_not_update_burn_on_read_post.error",

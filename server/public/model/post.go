@@ -262,6 +262,14 @@ type MoveThreadParams struct {
 	ChannelId string `json:"channel_id"`
 }
 
+// MoveThreadToChannelParams asks Antimatter to move a thread to another
+// channel of its community (POST /posts/{post_id}/move_to_channel). With
+// Flatten, the replies become messages of the channel instead of a thread.
+type MoveThreadToChannelParams struct {
+	ChannelId string `json:"channel_id"`
+	Flatten   bool   `json:"flatten,omitempty"`
+}
+
 type SearchParameter struct {
 	Terms                  *string `json:"terms"`
 	IsOrSearch             *bool   `json:"is_or_search"`
@@ -441,6 +449,12 @@ type CreatePostFlags struct {
 	OverrideIconURL    string
 	OverrideIconEmoji  string
 	WebhookDisplayName string
+
+	// MovedPost marks the copy of a message being moved to another channel with
+	// its thread (Antimatter's App.MoveThreadToChannel). It lets that copy be
+	// silent whoever wrote it: moving a conversation must not notify its
+	// mentions again. Set only by the server.
+	MovedPost bool
 }
 
 type GetPostsSinceOptions struct {

@@ -289,7 +289,7 @@ func (a *App) CreatePost(rctx request.CTX, post *model.Post, channel *model.Chan
 	}
 
 	if silentRequested {
-		if !a.isIntegrationPostAuthor(rctx, user, flags) {
+		if !flags.MovedPost && !a.isIntegrationPostAuthor(rctx, user, flags) {
 			rctx.Logger().Warn("Rejected silent notification post from non-integration author",
 				mlog.String("user_id", user.Id),
 				mlog.String("channel_id", channel.Id),
@@ -3267,6 +3267,19 @@ func (a *App) ValidateMoveOrCopy(rctx request.CTX, wpl *model.WranglerPostList, 
 }
 
 func (a *App) CopyWranglerPostlist(rctx request.CTX, wpl *model.WranglerPostList, targetChannel *model.Channel) (*model.Post, bool, *model.AppError) {
+	return a.copyPostList(rctx, wpl, targetChannel, copyPostListOptions{})
+}
+
+// copyPostListOptions are Antimatter's ways of copying a thread for
+// MoveThreadToChannel: keeping each message's times, making the copies silent,
+// and turning the replies into messages of the channel.
+type copyPostListOptions struct {
+	keepTimes bool
+	silent    bool
+	flatten   bool
+}
+
+func (a *App) copyPostList(rctx request.CTX, wpl *model.WranglerPostList, targetChannel *model.Channel, opts copyPostListOptions) (*model.Post, bool, *model.AppError) {
 	var appErr *model.AppError
 	var newRootPost *model.Post
 
@@ -3319,6 +3332,24 @@ func (a *App) CopyWranglerPostlist(rctx request.CTX, wpl *model.WranglerPostList
 		newPost := post.Clone()
 		newPost = newPost.CleanPost()
 		newPost.ChannelId = targetChannel.Id
+		if opts.keepTimes {
+			newPost.CreateAt = post.CreateAt
+			newPost.EditAt = post.EditAt
+		}
+		if opts.silent && newPost.Metadata != nil && newPost.Metadata.Priority != nil {
+			// A moved message keeps its priority but doesn't ring again:
+			// persistent notifications can't be silent.
+			metadata := *newPost.Metadata
+			priority := *metadata.Priority
+			priority.PersistentNotifications = nil
+			metadata.Priority = &priority
+			newPost.Metadata = &metadata
+		}
+		if opts.flatten {
+			// A topic's name means nothing once its replies are the channel's
+			// messages (Fusion keeps it in this prop).
+			newPost.DelProp(antimatterThreadTitleProp)
+		}
 
 		// The original post's display-identity props were already stripped
 		// from newPost by CleanPost/SanitizeProps inside the CreatePost call
@@ -3329,6 +3360,8 @@ func (a *App) CopyWranglerPostlist(rctx request.CTX, wpl *model.WranglerPostList
 		// reinjection block and model/post.go's SanitizeProps).
 		flags := model.CreatePostFlags{
 			FromIncomingWebhook: post.GetProp(model.PostPropsFromWebhook) == "true",
+			SilentNotification:  opts.silent,
+			MovedPost:           opts.silent,
 		}
 		if flags.FromIncomingWebhook {
 			flags.OverrideUsername, _ = post.GetProp(model.PostPropsOverrideUsername).(string)
@@ -3345,6 +3378,9 @@ func (a *App) CopyWranglerPostlist(rctx request.CTX, wpl *model.WranglerPostList
 			newRootPost = newPost.Clone()
 		} else {
 			newPost.RootId = newRootPost.Id
+			if opts.flatten {
+				newPost.RootId = ""
+			}
 			newPost, _, appErr = a.CreatePost(rctx, newPost, targetChannel, flags)
 			if appErr != nil {
 				return nil, false, appErr

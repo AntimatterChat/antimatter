@@ -3975,6 +3975,17 @@ func (c *Client4) MoveThread(ctx context.Context, postId string, params *MoveThr
 	return BuildResponse(r), nil
 }
 
+// MoveThreadToChannel moves the thread of postId to another channel of its
+// community (Antimatter) and returns the moved first message.
+func (c *Client4) MoveThreadToChannel(ctx context.Context, postId string, params *MoveThreadToChannelParams) (*Post, *Response, error) {
+	r, err := c.doAPIPostJSON(ctx, c.postRoute(postId).Join("move_to_channel"), params)
+	if err != nil {
+		return nil, BuildResponse(r), err
+	}
+	defer closeBody(r)
+	return DecodeJSONFromResponse[*Post](r)
+}
+
 // GetPostsAroundLastUnread gets a list of posts around last unread post by a user in a channel.
 func (c *Client4) GetPostsAroundLastUnread(ctx context.Context, userId, channelId string, limitBefore, limitAfter int, collapsedThreads bool) (*PostList, *Response, error) {
 	values := url.Values{}

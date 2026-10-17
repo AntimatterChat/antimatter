@@ -52,6 +52,7 @@ func (api *API) InitPost() {
 	api.BaseRoutes.PostForUser.Handle("/ack", api.APISessionRequired(unacknowledgePost)).Methods(http.MethodDelete)
 
 	api.BaseRoutes.Post.Handle("/move", api.APISessionRequired(moveThread)).Methods(http.MethodPost)
+	api.BaseRoutes.Post.Handle("/move_to_channel", api.APISessionRequired(moveThreadToChannel)).Methods(http.MethodPost)
 
 	api.BaseRoutes.Posts.Handle("/rewrite", api.APISessionRequired(rewriteMessage)).Methods(http.MethodPost)
 	api.BaseRoutes.Post.Handle("/reveal", api.APISessionRequired(revealPost)).Methods(http.MethodGet)
