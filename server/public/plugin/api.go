@@ -9,6 +9,7 @@ import (
 
 	plugin "github.com/hashicorp/go-plugin"
 
+	"github.com/mattermost/mattermost/server/public/ai"
 	"github.com/mattermost/mattermost/server/public/model"
 	"github.com/mattermost/mattermost/server/public/shared/mlog"
 )
@@ -1846,6 +1847,62 @@ type API interface {
 	// @tag AccessControl
 	// Minimum server version: 11.10
 	GetAccessControlVisualAST(actingUserID, resourceType, expression string) (*model.VisualExpression, *model.AppError)
+
+	// Antimatter: the server's AI service. Each call runs on a model connection an admin set up (the connection's
+	// key never reaches the plugin), for a person, in a channel or community, and the server checks that this
+	// person may use that connection there: a community's connection only in its own channels and for its
+	// members, a server-wide one only in the communities it's shared with (direct and group messages need it
+	// shared with all of them), and only for those its audience names. It also applies the connection's limits
+	// and budgets, counts the tokens against the person and the plugin, and audits the call (never its content).
+	//
+	// actingUserID must come from a source the server verified: the Mattermost-User-Id header of a request the
+	// server routed to the plugin (ServeHTTP), or the user of a hook's context (a post's author in
+	// MessageHasBeenPosted, the user of ExecuteCommand's args...). Never take it from a message, a webhook
+	// payload, a URL, or another plugin's request: the plugin would spend another person's access. channelID and
+	// teamID may be empty; a channel's community wins, and a team ID that isn't the channel's is refused. With
+	// neither, only server-wide connections shared with every community can be used.
+
+	// AIChat runs a chat completion: messages, tools, structured output (request.JSONSchema). request.Model may be
+	// empty for the connection's chat model.
+	//
+	// @tag AI
+	// Minimum server version: 11.11 (Antimatter)
+	AIChat(actingUserID, channelID, teamID string, request *ai.ChatRequest) (*ai.ChatResponse, *model.AppError)
+
+	// AIChatStream streams a chat completion. Read the stream's Events until the channel is closed (it ends with an
+	// end or an error event), or Close it to stop the call.
+	//
+	// @tag AI
+	// Minimum server version: 11.11 (Antimatter)
+	AIChatStream(actingUserID, channelID, teamID string, request *ai.ChatRequest) (*ai.Stream, *model.AppError)
+
+	// AIEmbed gives the embeddings of texts, with the connection's embeddings model unless request.Model says
+	// otherwise.
+	//
+	// @tag AI
+	// Minimum server version: 11.11 (Antimatter)
+	AIEmbed(actingUserID, channelID, teamID string, request *ai.EmbedRequest) (*ai.EmbedResponse, *model.AppError)
+
+	// AITranscribe turns speech into text, with the connection's transcription model unless request.Model says
+	// otherwise.
+	//
+	// @tag AI
+	// Minimum server version: 11.11 (Antimatter)
+	AITranscribe(actingUserID, channelID, teamID string, request *ai.TranscribeRequest) (*ai.TranscribeResponse, *model.AppError)
+
+	// AIDecide asks a decision model typed questions (predicate, choice, score) about a text, in the connection's
+	// decisions dialect (OpenAI's /v1/decisions or SystemOne's /v1/systemone).
+	//
+	// @tag AI
+	// Minimum server version: 11.11 (Antimatter)
+	AIDecide(actingUserID, channelID, teamID string, request *ai.DecideRequest) (*ai.DecideResponse, *model.AppError)
+
+	// AIConnectionsForUser lists the model connections a person may use in a channel or community, with their
+	// models and capabilities (never their keys).
+	//
+	// @tag AI
+	// Minimum server version: 11.11 (Antimatter)
+	AIConnectionsForUser(userID, channelID, teamID string) ([]*model.AIConnectionInfo, *model.AppError)
 }
 
 var handshake = plugin.HandshakeConfig{

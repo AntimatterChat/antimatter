@@ -41,6 +41,7 @@ var excludedPluginHooks = []string{
 	"MessagesWillBeConsumedWithContext",
 	"OnActivate",
 	"PluginHTTP",
+	"AIChatStream",
 	"ServeHTTP",
 	"UploadData",
 	"ReceiveSharedChannelAttachmentSyncMsg",
