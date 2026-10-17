@@ -27,9 +27,9 @@ test(
         const dmChannel = await adminClient.createDirectChannel([adminUser.id, user.id]);
         await adminClient.createPost({channel_id: dmChannel.id, user_id: adminUser.id, message: 'hi there'});
 
-        // # Log in and view Town Square so the other items are not the active channel
+        // # Log in and view General so the other items are not the active channel
         const {channelsPage} = await pw.testBrowser.login(user);
-        await channelsPage.goto(team.name, 'town-square');
+        await channelsPage.goto(team.name, 'general');
         await channelsPage.toBeVisible();
 
         // * Verify the public channel item background changes on hover

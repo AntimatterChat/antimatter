@@ -52,10 +52,10 @@ test.describe('ABAC - Public channels', () => {
         const {adminUser, adminClient, team} = await pw.initSetup();
         await enableABACConfig(adminClient);
 
-        // # Open Channel Settings on the default (town-square) channel
+        // # Open Channel Settings on the default (general) channel
         const {page} = await pw.testBrowser.login(adminUser);
         const channelsPage = new ChannelsPage(page);
-        await channelsPage.goto(team.name, 'town-square');
+        await channelsPage.goto(team.name, 'general');
         await channelsPage.toBeVisible();
 
         const channelSettings = await channelsPage.openChannelSettings();
@@ -88,10 +88,10 @@ test.describe('ABAC - Public channels', () => {
         const channelSelector = page.locator('.channel-selector-modal');
         await channelSelector.waitFor();
 
-        // * Both default channels (town-square, off-topic) are absent from the list.
+        // * Both default channels (general, off-topic) are absent from the list.
         // The component contract is `excludeDefaultChannels={true}` — assert the
         // canonical channel rows by their stable test ids rather than display text.
-        await expect(channelSelector.locator('[data-testid="ChannelRow-town-square"]')).toHaveCount(0);
+        await expect(channelSelector.locator('[data-testid="ChannelRow-general"]')).toHaveCount(0);
         await expect(channelSelector.locator('[data-testid="ChannelRow-off-topic"]')).toHaveCount(0);
 
         await teamSettings.close();

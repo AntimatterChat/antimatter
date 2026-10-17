@@ -64,7 +64,7 @@ test('MM-T1722 opens a saved post from an archived channel without a reply box',
     ]);
 
     const {channelsPage} = await pw.testBrowser.login(user);
-    await channelsPage.goto(team.name, 'town-square');
+    await channelsPage.goto(team.name, 'general');
     await channelsPage.toBeVisible();
 
     // # Open the Saved messages panel

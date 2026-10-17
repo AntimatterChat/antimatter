@@ -10,9 +10,9 @@ test('should show Demo Plugin enabled/disabled status in left sidebar header', a
     const {adminClient, user, team} = await pw.initSetup();
     await setupDemoPlugin(adminClient, pw);
 
-    // 2. Login and navigate to Town Square — slash commands work from any channel
+    // 2. Login and navigate to General — slash commands work from any channel
     const {channelsPage} = await pw.testBrowser.login(user);
-    await channelsPage.goto(team.name, 'town-square');
+    await channelsPage.goto(team.name, 'general');
     await channelsPage.toBeVisible();
 
     // The sidebar indicator: a span containing "Demo Plugin:" with a sibling span for the status
@@ -42,9 +42,9 @@ test('should show demo plugin plug icon at the bottom of the team sidebar', asyn
     const {adminClient, user, team} = await pw.initSetup();
     await setupDemoPlugin(adminClient, pw);
 
-    // 2. Login and navigate to Town Square
+    // 2. Login and navigate to General
     const {channelsPage} = await pw.testBrowser.login(user);
-    await channelsPage.goto(team.name, 'town-square');
+    await channelsPage.goto(team.name, 'general');
     await channelsPage.toBeVisible();
 
     // 3. Verify the plug icon is visible in the team sidebar
@@ -59,9 +59,9 @@ test('should show Demo Plugin Item in Browse or create channels menu and trigger
     const {adminClient, user, team} = await pw.initSetup();
     await setupDemoPlugin(adminClient, pw);
 
-    // 2. Login and navigate to Town Square
+    // 2. Login and navigate to General
     const {channelsPage} = await pw.testBrowser.login(user);
-    await channelsPage.goto(team.name, 'town-square');
+    await channelsPage.goto(team.name, 'general');
     await channelsPage.toBeVisible();
 
     // 3. Click the "Browse or create channels" button in the channel sidebar header

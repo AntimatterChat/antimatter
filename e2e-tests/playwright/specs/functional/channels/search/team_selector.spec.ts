@@ -221,8 +221,8 @@ test('MM-T5803 search results narrow to the selected team and update after leavi
 
     const messageInFirstTeam = 'pineapple message in the first team';
     const messageInSecondTeam = 'pineapple message in the second team';
-    const firstChannel = await adminClient.getChannelByName(team.id, 'town-square');
-    const secondChannel = await adminClient.getChannelByName(secondTeam.id, 'town-square');
+    const firstChannel = await adminClient.getChannelByName(team.id, 'general');
+    const secondChannel = await adminClient.getChannelByName(secondTeam.id, 'general');
     await adminClient.createPost({channel_id: firstChannel.id, message: messageInFirstTeam});
     await adminClient.createPost({channel_id: secondChannel.id, message: messageInSecondTeam});
 

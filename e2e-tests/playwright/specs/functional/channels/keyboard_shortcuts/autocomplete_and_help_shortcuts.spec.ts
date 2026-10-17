@@ -10,7 +10,7 @@ test('MM-T1273 completes at-mention autocomplete with Tab', {tag: '@keyboard_sho
     // # Create and log in as a test user
     const {user, team} = await pw.initSetup();
     const {channelsPage} = await pw.testBrowser.login(user);
-    await channelsPage.goto(team.name, 'town-square');
+    await channelsPage.goto(team.name, 'general');
     await channelsPage.toBeVisible();
 
     // # Type the first characters of the user's own username to trigger the mention autocomplete
@@ -28,7 +28,7 @@ test('MM-T1274 completes emoji autocomplete with Tab', {tag: '@keyboard_shortcut
     // # Create and log in as a test user
     const {user, team} = await pw.initSetup();
     const {channelsPage} = await pw.testBrowser.login(user);
-    await channelsPage.goto(team.name, 'town-square');
+    await channelsPage.goto(team.name, 'general');
     await channelsPage.toBeVisible();
 
     // # Type a partial emoji name to trigger the emoji autocomplete, then select with Tab
@@ -47,7 +47,7 @@ test('MM-T1279 opens keyboard shortcuts modal from the Help menu', {tag: '@keybo
     // # Create and log in as a test user
     const {user, team} = await pw.initSetup();
     const {channelsPage} = await pw.testBrowser.login(user);
-    await channelsPage.goto(team.name, 'town-square');
+    await channelsPage.goto(team.name, 'general');
     await channelsPage.toBeVisible();
 
     // # Open the Help menu and click "Keyboard shortcuts"

@@ -105,7 +105,7 @@ describe('Keyboard Shortcuts', () => {
         cy.url().should('equal', `${Cypress.config('baseUrl')}/${testTeam.name}/threads`);
 
         // * Confirm the townsquare channel is selected in the suggestion list
-        cy.get('#suggestionList').findByTestId('town-square').should('be.visible').and('have.class', 'suggestion--selected');
+        cy.get('#suggestionList').findByTestId('general').should('be.visible').and('have.class', 'suggestion--selected');
 
         // # Press down arrow
         cy.wait(TIMEOUTS.HALF_SEC);

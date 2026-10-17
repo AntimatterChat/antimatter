@@ -220,8 +220,8 @@ test.describe('Post list scroll to permalink', () => {
             test(`${testCase.name} - should stay at the linked post when switching to the channel`, async ({}) => {
                 const watcher = await watchPostListScroll(page, channel.id);
 
-                // # Start in Town Square and wait for its contents to load
-                await channelsPage.goto(team.name, 'town-square');
+                // # Start in General and wait for its contents to load
+                await channelsPage.goto(team.name, 'general');
                 await channelsPage.centerView.getLastPost();
 
                 // # Post a permalink pointing to the other channel

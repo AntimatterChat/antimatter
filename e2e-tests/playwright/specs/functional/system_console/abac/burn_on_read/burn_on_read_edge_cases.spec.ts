@@ -79,7 +79,7 @@ test('shows only the remove-all control on a burn-on-read draft label', {tag: '@
 
     // # Mark a draft as burn-on-read
     const {channelsPage} = await pw.testBrowser.login(adminUser);
-    await channelsPage.goto(team.name, 'town-square');
+    await channelsPage.goto(team.name, 'general');
     await channelsPage.toBeVisible();
     await channelsPage.centerView.postCreate.writeMessage(`draft ${getRandomId()}`);
     await channelsPage.centerView.postCreate.toggleBurnOnRead();
@@ -131,7 +131,7 @@ test(
 
         // # Mark a draft as burn-on-read while still allowed
         const {channelsPage, draftsPage} = await pw.testBrowser.login(adminUser);
-        await channelsPage.goto(team.name, 'town-square');
+        await channelsPage.goto(team.name, 'general');
         await channelsPage.toBeVisible();
         await channelsPage.centerView.postCreate.writeMessage(message);
         await channelsPage.centerView.postCreate.toggleBurnOnRead();
@@ -167,7 +167,7 @@ test(
         await expect(draft.deleteButton).toBeVisible();
 
         // # Back to the composer, and clear the burn-on-read label
-        await channelsPage.goto(team.name, 'town-square');
+        await channelsPage.goto(team.name, 'general');
         await channelsPage.toBeVisible();
         await channelsPage.centerView.postCreate.removeAllLabelsButton.click();
 
@@ -224,7 +224,7 @@ test(
 
         // # Schedule a burn-on-read post two days out so it cannot fire mid-test
         const {channelsPage, scheduledPostsPage} = await pw.testBrowser.login(adminUser);
-        await channelsPage.goto(team.name, 'town-square');
+        await channelsPage.goto(team.name, 'general');
         await channelsPage.toBeVisible();
         await channelsPage.centerView.postCreate.toggleBurnOnRead();
         await channelsPage.scheduleMessage(original, 2, 0);
@@ -286,7 +286,7 @@ test(
 
         // # Schedule a burn-on-read post two days out so it cannot fire mid-test
         const {channelsPage, scheduledPostsPage} = await pw.testBrowser.login(adminUser);
-        await channelsPage.goto(team.name, 'town-square');
+        await channelsPage.goto(team.name, 'general');
         await channelsPage.toBeVisible();
         await channelsPage.centerView.postCreate.toggleBurnOnRead();
         await channelsPage.scheduleMessage(message, 2, 0);

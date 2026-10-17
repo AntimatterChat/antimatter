@@ -170,8 +170,8 @@ test.describe('Post list initial scroll in read channel', () => {
 
                 const watcher = await watchPostListScroll(page, channel.id);
 
-                // # Start in Town Square and wait for its contents to load
-                await channelsPage.goto(team.name, 'town-square');
+                // # Start in General and wait for its contents to load
+                await channelsPage.goto(team.name, 'general');
                 await channelsPage.centerView.getLastPost();
 
                 // # Switch to the channel

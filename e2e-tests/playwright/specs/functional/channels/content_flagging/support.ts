@@ -39,10 +39,10 @@ export async function setupContentFlagging(
 
 export async function createPost(adminClient: any, userClient: any, team: any, user: any, message: string) {
     const channels = await adminClient.getMyChannels(team.id);
-    const townSquare = channels.find((ch: any) => ch.name === 'town-square');
+    const townSquare = channels.find((ch: any) => ch.name === 'general');
 
     if (!townSquare) {
-        throw new Error('Town Square channel not found');
+        throw new Error('General channel not found');
     }
 
     const post = await userClient.createPost({

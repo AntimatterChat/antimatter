@@ -33,7 +33,7 @@ describe('Integrations page', () => {
 
         cy.apiInitSetup().then(({team, user}) => {
             user1 = user;
-            testChannelUrl1 = `/${team.name}/channels/town-square`;
+            testChannelUrl1 = `/${team.name}/channels/general`;
 
             cy.apiCreateUser().then(({user: otherUser}) => {
                 user2 = otherUser;

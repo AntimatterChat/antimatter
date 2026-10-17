@@ -16,7 +16,7 @@ describe('Compact view: Markdown quotation', () => {
     let userTwo;
 
     before(() => {
-        // # Login as test user and visit town-square
+        // # Login as test user and visit general
         cy.apiInitSetup().then(({team, user}) => {
             testTeam = team;
             userOne = user;

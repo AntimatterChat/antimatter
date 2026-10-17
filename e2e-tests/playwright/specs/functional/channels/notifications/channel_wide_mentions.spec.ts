@@ -22,9 +22,9 @@ test(
         // # Initialize setup and get the required users and team
         const {team, adminUser, user} = await pw.initSetup();
 
-        // # Log in as the admin in one browser session and navigate to the "town-square" channel
+        // # Log in as the admin in one browser session and navigate to the "general" channel
         const {page: adminPage, channelsPage: adminChannelsPage} = await pw.testBrowser.login(adminUser);
-        await adminChannelsPage.goto(team.name, 'town-square');
+        await adminChannelsPage.goto(team.name, 'general');
         await adminChannelsPage.toBeVisible();
 
         // # Stub the Notification in the admin's browser to capture notifications
@@ -90,7 +90,7 @@ test(
         }
 
         const {channelsPage} = await pw.testBrowser.login(user);
-        await channelsPage.goto(team.name, 'town-square');
+        await channelsPage.goto(team.name, 'general');
         await channelsPage.toBeVisible();
 
         // # Type a mixed-case channel-wide mention and send it
@@ -155,7 +155,7 @@ test(
         await lastPost.toContainText(message);
 
         // # Switch to another channel and back
-        await channelsPage.sidebarLeft.goToItem('town-square');
+        await channelsPage.sidebarLeft.goToItem('general');
         await channelsPage.sidebarLeft.goToItem('off-topic');
 
         // * Verify the uppercase mention is still shown after returning to the channel

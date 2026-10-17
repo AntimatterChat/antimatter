@@ -20,12 +20,12 @@ let testUser: Cypress.UserProfile;
 
 describe('Category sorting', () => {
     beforeEach(() => {
-        // # Login as test user and visit town-square
+        // # Login as test user and visit general
         cy.apiAdminLogin();
         cy.apiInitSetup({loginAfter: true}).then(({team, user}) => {
             testTeam = team;
             testUser = user;
-            cy.visit(`/${team.name}/channels/town-square`);
+            cy.visit(`/${team.name}/channels/general`);
         });
     });
 

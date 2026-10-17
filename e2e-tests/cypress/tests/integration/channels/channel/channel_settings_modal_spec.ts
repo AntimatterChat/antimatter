@@ -330,7 +330,7 @@ describe('Channel Settings Modal', () => {
             cy.get('.SidebarChannel').contains('Archived Channel Test').should('exist');
 
             // # Navigate to a different channel
-            cy.visit(`/${testTeam.name}/channels/town-square`);
+            cy.visit(`/${testTeam.name}/channels/general`);
 
             // * Verify archived channel disappears from sidebar after navigating away
             cy.get('.SidebarChannel').contains('Archived Channel Test').should('not.exist');

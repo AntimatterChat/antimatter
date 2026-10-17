@@ -13,7 +13,7 @@ describe('Scroll', () => {
     let testTeam;
 
     beforeEach(() => {
-        // # Create new team and new user and visit Town Square channel
+        // # Create new team and new user and visit General channel
         cy.apiInitSetup().then(({team, channel}) => {
             testTeam = team;
 

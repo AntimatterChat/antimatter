@@ -365,7 +365,7 @@ test.describe('System Console - Global Attributes listing', {tag: '@system_conso
 
                 // * The expected order renders in profile settings (Settings > Profile)
                 const {channelsPage} = await pw.testBrowser.login(user);
-                await channelsPage.goto(team.name, 'town-square');
+                await channelsPage.goto(team.name, 'general');
                 const profileModal = await channelsPage.openProfileModal();
                 const sectionHeadings = await profileModal.sectionHeadings.allTextContents();
                 expect(sectionHeadings.filter((heading: string) => labels.includes(heading))).toEqual(expectedOrder);

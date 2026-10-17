@@ -60,7 +60,7 @@ describe('archive channel search tests', () => {
     it('MM-T1708 An archived channel can be searched since archived channels are always viewable', () => {
         cy.apiLogin(testUser);
 
-        // # Open a channel other than Town Square
+        // # Open a channel other than General
         cy.visit(`/${testTeam.name}/channels/off-topic`);
         cy.contains('#channelHeaderTitle', 'Off-Topic');
 

@@ -15,15 +15,15 @@ describe('Message Draft with attachment and Switch Channels', () => {
     let testChannel2;
 
     before(() => {
-        // # Login as test user and visit town-square
+        // # Login as test user and visit general
         cy.apiInitSetup({loginAfter: true}).then(({team, channel}) => {
             testChannel1 = channel;
 
             cy.apiCreateChannel(team.id, 'channel', 'Channel').then((out) => {
                 testChannel2 = out.channel;
             });
-            cy.visit(`/${team.name}/channels/town-square`);
-            cy.get('#channelHeaderTitle').should('be.visible').should('contain', 'Town Square');
+            cy.visit(`/${team.name}/channels/general`);
+            cy.get('#channelHeaderTitle').should('be.visible').should('contain', 'General');
         });
     });
 

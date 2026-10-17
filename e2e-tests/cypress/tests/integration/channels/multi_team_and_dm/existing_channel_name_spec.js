@@ -16,10 +16,10 @@ describe('Channel', () => {
     let testTeamId;
 
     before(() => {
-        // # Login as test user and visit town-square
+        // # Login as test user and visit general
         cy.apiInitSetup({loginAfter: true}).then(({team}) => {
             testTeamId = team.id;
-            cy.visit(`/${team.name}/channels/town-square`);
+            cy.visit(`/${team.name}/channels/general`);
         });
     });
 

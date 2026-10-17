@@ -16,8 +16,8 @@ test('should parse user and channel mentions from /show_mentions command text', 
     await channelsPage.goto();
     await channelsPage.toBeVisible();
 
-    // 3. Navigate to Town Square
-    await channelsPage.goto(team.name, 'town-square');
+    // 3. Navigate to General
+    await channelsPage.goto(team.name, 'general');
     await channelsPage.toBeVisible();
 
     // Re-apply setupDemoPlugin: concurrent initSetup() resets PluginSettings.Plugins = {}
@@ -29,7 +29,7 @@ test('should parse user and channel mentions from /show_mentions command text', 
         .filter({hasText: 'contains the following different mentions'})
         .last();
     for (let attempt = 0; attempt < 2; attempt++) {
-        await channelsPage.centerView.postCreate.input.fill('/show_mentions @sysadmin ~town-square');
+        await channelsPage.centerView.postCreate.input.fill('/show_mentions @sysadmin ~general');
         await channelsPage.centerView.postCreate.sendMessage();
         try {
             await expect(responsePost).toBeVisible({timeout: 15000});
@@ -52,11 +52,11 @@ test('should parse user and channel mentions from /show_mentions command text', 
     // 7. Assert channel mentions section
     await expect(responsePost.getByRole('heading', {name: 'Mentions to public channels'})).toBeVisible();
     await expect(responsePost.getByRole('columnheader', {name: 'Channel name'})).toBeVisible();
-    await expect(responsePost.getByRole('cell', {name: '~Town Square'})).toBeVisible();
+    await expect(responsePost.getByRole('cell', {name: '~General'})).toBeVisible();
 
-    // 8. Assert ~Town Square is a link pointing to the town-square channel
-    await expect(responsePost.getByRole('link', {name: '~Town Square'})).toHaveAttribute(
+    // 8. Assert ~General is a link pointing to the general channel
+    await expect(responsePost.getByRole('link', {name: '~General'})).toHaveAttribute(
         'href',
-        /\/channels\/town-square$/,
+        /\/channels\/general$/,
     );
 });

@@ -28,8 +28,8 @@ describe('Multi-user group messages', () => {
         // # Login as test user
         cy.apiLogin(testUser);
 
-        // # Go to town-square channel
-        cy.visit(`/${testTeam.name}/channels/town-square`);
+        // # Go to general channel
+        cy.visit(`/${testTeam.name}/channels/general`);
 
         // # Open the 'Direct messages' dialog to create a new direct message
         cy.uiAddDirectMessage().should('be.visible').click();
@@ -50,7 +50,7 @@ describe('Multi-user group messages', () => {
         cy.findByText('Close Group Message').should('be.visible').click();
 
         // * Validate that GM is closed and we are redirected
-        expectActiveChannelToBe('Town Square', '/town-square');
+        expectActiveChannelToBe('General', '/general');
     });
 });
 

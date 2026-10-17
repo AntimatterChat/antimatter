@@ -23,7 +23,7 @@ describe('Recent Emoji', () => {
 
         cy.apiInitSetup().then(({team, user}) => {
             cy.apiLogin(user);
-            cy.visit(`/${team.name}/channels/town-square`);
+            cy.visit(`/${team.name}/channels/general`);
         });
     });
 

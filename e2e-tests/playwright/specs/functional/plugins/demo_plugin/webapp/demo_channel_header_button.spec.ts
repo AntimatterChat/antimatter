@@ -10,9 +10,9 @@ test('should open right-hand sidebar when demo plugin App Bar button is clicked'
     const {adminClient, user, team} = await pw.initSetup();
     await setupDemoPlugin(adminClient, pw);
 
-    // 2. Login and navigate to Town Square
+    // 2. Login and navigate to General
     const {channelsPage} = await pw.testBrowser.login(user);
-    await channelsPage.goto(team.name, 'town-square');
+    await channelsPage.goto(team.name, 'general');
     await channelsPage.toBeVisible();
 
     // 3. Locate and click the demo plugin button in the right App Bar

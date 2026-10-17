@@ -101,7 +101,7 @@ describe('Guest Accounts', () => {
         const email = `${username}@sample.mattermost.com`;
 
         // # From the main page, invite a Guest user and click on the Join Team in the email sent to the guest user.
-        cy.visit(`/${testTeam.name}/channels/town-square`);
+        cy.visit(`/${testTeam.name}/channels/general`);
 
         // # Open team menu, click Invite People, then invite guest
         cy.uiOpenTeamMenu('Invite people');

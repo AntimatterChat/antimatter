@@ -68,10 +68,10 @@ describe('LDAP Group Sync - Test channel public/private toggle', () => {
     });
 
     it('MM-T4003_3 Verify that toggles are disabled for default channel', () => {
-        cy.visit(`/${testTeam.name}/channels/town-square`);
+        cy.visit(`/${testTeam.name}/channels/general`);
         cy.getCurrentChannelId().then((id) => {
             cy.visit(`/admin_console/user_management/channels/${id}`);
-            cy.get('#channel_profile').contains('Town Square');
+            cy.get('#channel_profile').contains('General');
             cy.get('#channel_manage').scrollIntoView().should('be.visible').within(() => {
                 cy.get('.line-switch').first().within(() => {
                     cy.findByText('Sync Group Members').should('be.visible');

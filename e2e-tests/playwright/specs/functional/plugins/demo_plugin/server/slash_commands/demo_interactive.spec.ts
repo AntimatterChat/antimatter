@@ -16,8 +16,8 @@ test('should post interactive button and respond with click attribution via /int
     await channelsPage.goto();
     await channelsPage.toBeVisible();
 
-    // 3. Navigate to Town Square
-    await channelsPage.goto(team.name, 'town-square');
+    // 3. Navigate to General
+    await channelsPage.goto(team.name, 'general');
     await channelsPage.toBeVisible();
 
     // Re-apply setupDemoPlugin: concurrent initSetup() resets PluginSettings.Plugins = {}

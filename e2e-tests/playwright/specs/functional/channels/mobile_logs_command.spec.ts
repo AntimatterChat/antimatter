@@ -30,9 +30,9 @@ test.describe('/mobile-logs slash command', () => {
             // # Initialize setup
             const {team, user, userClient} = await pw.initSetup();
 
-            // # Log in as the user and navigate to town-square
+            // # Log in as the user and navigate to general
             const {channelsPage} = await pw.testBrowser.login(user);
-            await channelsPage.goto(team.name, 'town-square');
+            await channelsPage.goto(team.name, 'general');
             await channelsPage.toBeVisible();
 
             // # Execute /mobile-logs on
@@ -65,9 +65,9 @@ test.describe('/mobile-logs slash command', () => {
             {user_id: user.id, category: 'advanced_settings', name: 'attach_app_logs', value: 'true'},
         ]);
 
-        // # Log in as the user and navigate to town-square
+        // # Log in as the user and navigate to general
         const {channelsPage} = await pw.testBrowser.login(user);
-        await channelsPage.goto(team.name, 'town-square');
+        await channelsPage.goto(team.name, 'general');
         await channelsPage.toBeVisible();
 
         // # Execute /mobile-logs off
@@ -93,9 +93,9 @@ test.describe('/mobile-logs slash command', () => {
             // # Initialize setup
             const {team, user} = await pw.initSetup();
 
-            // # Log in as the user and navigate to town-square
+            // # Log in as the user and navigate to general
             const {channelsPage} = await pw.testBrowser.login(user);
-            await channelsPage.goto(team.name, 'town-square');
+            await channelsPage.goto(team.name, 'general');
             await channelsPage.toBeVisible();
 
             // # Execute /mobile-logs status
@@ -123,9 +123,9 @@ test.describe('/mobile-logs slash command', () => {
                 {user_id: user.id, category: 'advanced_settings', name: 'attach_app_logs', value: 'true'},
             ]);
 
-            // # Log in as the user and navigate to town-square
+            // # Log in as the user and navigate to general
             const {channelsPage} = await pw.testBrowser.login(user);
-            await channelsPage.goto(team.name, 'town-square');
+            await channelsPage.goto(team.name, 'general');
             await channelsPage.toBeVisible();
 
             // # Execute /mobile-logs status
@@ -145,9 +145,9 @@ test.describe('/mobile-logs slash command', () => {
         // # Initialize setup
         const {team, user} = await pw.initSetup();
 
-        // # Log in as the user and navigate to town-square
+        // # Log in as the user and navigate to general
         const {channelsPage} = await pw.testBrowser.login(user);
-        await channelsPage.goto(team.name, 'town-square');
+        await channelsPage.goto(team.name, 'general');
         await channelsPage.toBeVisible();
 
         // # Execute /mobile-logs with an invalid action
@@ -169,9 +169,9 @@ test.describe('/mobile-logs slash command', () => {
             // # Initialize setup
             const {team, adminUser, user, userClient} = await pw.initSetup();
 
-            // # Log in as admin and navigate to town-square
+            // # Log in as admin and navigate to general
             const {channelsPage} = await pw.testBrowser.login(adminUser);
-            await channelsPage.goto(team.name, 'town-square');
+            await channelsPage.goto(team.name, 'general');
             await channelsPage.toBeVisible();
 
             // # Execute /mobile-logs on for the regular user
@@ -205,9 +205,9 @@ test.describe('/mobile-logs slash command', () => {
                 {user_id: user.id, category: 'advanced_settings', name: 'attach_app_logs', value: 'true'},
             ]);
 
-            // # Log in as admin and navigate to town-square
+            // # Log in as admin and navigate to general
             const {channelsPage} = await pw.testBrowser.login(adminUser);
-            await channelsPage.goto(team.name, 'town-square');
+            await channelsPage.goto(team.name, 'general');
             await channelsPage.toBeVisible();
 
             // # Disable for the regular user
@@ -241,7 +241,7 @@ test.describe('/mobile-logs slash command', () => {
 
             // # Log in as the first regular user
             const {channelsPage} = await pw.testBrowser.login(user);
-            await channelsPage.goto(team.name, 'town-square');
+            await channelsPage.goto(team.name, 'general');
             await channelsPage.toBeVisible();
 
             // # Try to enable mobile logs for the other user
@@ -264,7 +264,7 @@ test.describe('/mobile-logs slash command', () => {
             const {team, user} = await pw.initSetup();
 
             const {channelsPage} = await pw.testBrowser.login(user);
-            await channelsPage.goto(team.name, 'town-square');
+            await channelsPage.goto(team.name, 'general');
             await channelsPage.toBeVisible();
 
             // # Post the mobile-logs command
@@ -284,9 +284,9 @@ test.describe('/mobile-logs slash command', () => {
         // # Initialize setup
         const {team, adminUser, user} = await pw.initSetup();
 
-        // # Log in as admin and navigate to town-square
+        // # Log in as admin and navigate to general
         const {channelsPage} = await pw.testBrowser.login(adminUser);
-        await channelsPage.goto(team.name, 'town-square');
+        await channelsPage.goto(team.name, 'general');
         await channelsPage.toBeVisible();
 
         // # Check status (default off)
@@ -307,7 +307,7 @@ test.describe('/mobile-logs slash command', () => {
 
         // # Log in as admin
         const {channelsPage} = await pw.testBrowser.login(adminUser);
-        await channelsPage.goto(team.name, 'town-square');
+        await channelsPage.goto(team.name, 'general');
         await channelsPage.toBeVisible();
 
         // # Try to enable for a nonexistent user

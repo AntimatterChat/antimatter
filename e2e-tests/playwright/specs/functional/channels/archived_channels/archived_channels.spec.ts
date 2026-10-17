@@ -48,8 +48,8 @@ test('MM-T1679 opens an archived channel by jumping from search results', {tag: 
 
     // # Archive the channel, then move to another channel
     await channelsPage.archiveChannel();
-    await channelsPage.sidebarLeft.goToItem('town-square');
-    await channelsPage.centerView.header.toHaveTitle('Town Square');
+    await channelsPage.sidebarLeft.goToItem('general');
+    await channelsPage.centerView.header.toHaveTitle('General');
 
     // # Search for the message posted in the archived channel
     await channelsPage.searchFor(message);

@@ -16,7 +16,7 @@ describe('Post Header', () => {
     let testTeam;
 
     before(() => {
-        // # Login as test user and visit town-square channel
+        // # Login as test user and visit general channel
         cy.apiInitSetup({loginAfter: true}).then(({team}) => {
             testTeam = team;
 

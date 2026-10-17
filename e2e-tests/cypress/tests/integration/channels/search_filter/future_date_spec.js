@@ -31,7 +31,7 @@ describe('Search Date Filter', () => {
         cy.apiInitSetup({userPrefix: 'other-admin'}).then(({team, channel, user, channelUrl}) => {
             anotherAdmin = user;
 
-            // # Visit town-square
+            // # Visit general
             cy.visit(channelUrl);
 
             setupTestData(testData, {team, channel, admin, anotherAdmin});

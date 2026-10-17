@@ -67,7 +67,7 @@ test.describe('Reply notifications', () => {
                 response.request().method() === 'POST' &&
                 response.ok(),
         );
-        await channelsPage.sidebarLeft.goToItem('Town Square');
+        await channelsPage.sidebarLeft.goToItem('General');
         await channelViewResponse;
     }
 
@@ -82,7 +82,7 @@ test.describe('Reply notifications', () => {
         await channelsPage.postMessage('Hi there, this is another root message');
         const rootPost = (await (await rootPostResponse).json()) as {id: string};
 
-        // # Move to Town Square and post a reply as the sender
+        // # Move to General and post a reply as the sender
         await goToTownSquare();
         await senderClient.createPost({
             channel_id: channel.id,
@@ -157,7 +157,7 @@ test.describe('Reply notifications', () => {
             const receiverReply = await channelsPage.sidebarRight.getLastPost();
             await receiverReply.toContainText('this is a reply from the receiver');
 
-            // # Move to Town Square, clear captured notifications, and post another reply as the sender
+            // # Move to General, clear captured notifications, and post another reply as the sender
             await goToTownSquare();
             await pw.clearCapturedNotifications(receiverPage);
             const message = 'This is a reply by sender';

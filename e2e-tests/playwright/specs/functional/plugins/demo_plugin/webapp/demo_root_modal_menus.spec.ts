@@ -10,9 +10,9 @@ test('should open Root Modal from team dropdown main menu', async ({pw}) => {
     const {adminClient, user, team} = await pw.initSetup();
     await setupDemoPlugin(adminClient, pw);
 
-    // 2. Login and navigate to Town Square
+    // 2. Login and navigate to General
     const {channelsPage} = await pw.testBrowser.login(user);
-    await channelsPage.goto(team.name, 'town-square');
+    await channelsPage.goto(team.name, 'general');
     await channelsPage.toBeVisible();
 
     // 3. Open the team name dropdown in the left sidebar
@@ -34,9 +34,9 @@ test('should open Root Modal from channel header dropdown More actions', async (
     const {adminClient, user, team} = await pw.initSetup();
     await setupDemoPlugin(adminClient, pw);
 
-    // 2. Login and navigate to Town Square
+    // 2. Login and navigate to General
     const {channelsPage} = await pw.testBrowser.login(user);
-    await channelsPage.goto(team.name, 'town-square');
+    await channelsPage.goto(team.name, 'general');
     await channelsPage.toBeVisible();
 
     // 3. Open channel header dropdown
@@ -72,9 +72,9 @@ test.skip('should open Sample Confirmation Dialog from team dropdown and respond
     const {adminClient, user, team} = await pw.initSetup();
     await setupDemoPlugin(adminClient, pw);
 
-    // 2. Login and navigate to Town Square
+    // 2. Login and navigate to General
     const {channelsPage} = await pw.testBrowser.login(user);
-    await channelsPage.goto(team.name, 'town-square');
+    await channelsPage.goto(team.name, 'general');
     await channelsPage.toBeVisible();
 
     // 3. Open team dropdown and click "Sample Confirmation Dialog"

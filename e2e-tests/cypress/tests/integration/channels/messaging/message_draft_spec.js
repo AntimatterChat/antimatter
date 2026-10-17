@@ -29,10 +29,10 @@ describe('Message Draft', () => {
         cy.uiGetPostTextBox().type('comm');
 
         // # Go to another test channel without submitting the draft in the previous channel
-        cy.get('#sidebarItem_town-square').click({force: true});
+        cy.get('#sidebarItem_general').click({force: true});
 
         // * Validate if the newly navigated channel is open
-        cy.url().should('include', `/${testTeam.name}/channels/town-square`);
+        cy.url().should('include', `/${testTeam.name}/channels/general`);
 
         // * Validate if the draft icon is visible on side bar on the previous channel with a draft
         cy.get('#sidebarItem_off-topic').findByTestId('draftIcon').should('be.visible');

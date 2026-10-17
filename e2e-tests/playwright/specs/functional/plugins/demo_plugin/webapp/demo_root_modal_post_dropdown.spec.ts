@@ -10,9 +10,9 @@ test('should open Root Modal from post actions menu and all submenu items', asyn
     const {adminClient, user, team} = await pw.initSetup();
     await setupDemoPlugin(adminClient, pw);
 
-    // 2. Login and navigate to Town Square
+    // 2. Login and navigate to General
     const {channelsPage} = await pw.testBrowser.login(user);
-    await channelsPage.goto(team.name, 'town-square');
+    await channelsPage.goto(team.name, 'general');
     await channelsPage.toBeVisible();
 
     // 3. Post a message to use as the target post

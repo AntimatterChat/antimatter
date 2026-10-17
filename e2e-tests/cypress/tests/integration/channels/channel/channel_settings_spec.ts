@@ -28,8 +28,8 @@ describe('Channel Settings', () => {
 
             cy.apiLogin(user);
 
-            // # Visit town-square channel
-            cy.visit(`/${testTeam.name}/channels/town-square`);
+            // # Visit general channel
+            cy.visit(`/${testTeam.name}/channels/general`);
         });
     });
 
@@ -43,11 +43,11 @@ describe('Channel Settings', () => {
             cy.findByText('Channel Settings').click();
 
             // # Change channel name (this should NOT affect the URL anymore)
-            cy.get('#input_channel-settings-name').clear().type('town-square');
+            cy.get('#input_channel-settings-name').clear().type('general');
 
             // # Now explicitly change the URL to trigger the validation error
             cy.get('.url-input-button').click();
-            cy.get('.url-input-container input').clear().type('town-square');
+            cy.get('.url-input-container input').clear().type('general');
             cy.get('.url-input-container button.url-input-button').click();
 
             // # Try to save
@@ -60,13 +60,13 @@ describe('Channel Settings', () => {
             cy.url().should('include', `/${testTeam.name}/channels/${channel.name}`);
 
             // # Enter a new URL and save
-            cy.get('.url-input-container input').clear().type('another-town-square');
+            cy.get('.url-input-container input').clear().type('another-general');
             cy.get('.url-input-button').click();
             cy.get('.url-input-container button.url-input-button').click();
             cy.get('[data-testid="SaveChangesPanel__save-btn"]').click();
 
             // * URL is updated and no errors are displayed
-            cy.url().should('include', `/${testTeam.name}/channels/another-town-square`);
+            cy.url().should('include', `/${testTeam.name}/channels/another-general`);
         });
     });
 

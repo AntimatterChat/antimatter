@@ -234,10 +234,10 @@ declare global {
 
             /**
              * Open menu of a channel in the sidebar
-             * @param {string} channelName - name of channel, ex. 'town-square'
+             * @param {string} channelName - name of channel, ex. 'general'
              * @param {boolean} isChannelId - default false. If true, it will use channel id instead of channel name
              * @example
-             *   cy.uiGetChannelSidebarMenu('Town Square');
+             *   cy.uiGetChannelSidebarMenu('General');
              *   cy.uiGetChannelSidebarMenu('user1212__user333', true);
              */
             uiGetChannelSidebarMenu(channelName: string, isChannelId?: boolean): Chainable;
@@ -247,7 +247,7 @@ declare global {
              * @param {string} name - channel name for channels, and threads for Global Threads
              *
              * @example
-             *   cy.uiClickSidebarItem('town-square');
+             *   cy.uiClickSidebarItem('general');
              */
             uiClickSidebarItem(name: string): Chainable;
 
@@ -256,7 +256,7 @@ declare global {
              * @param {string} name - channel name for channels, and threads for Global Threads
              *
              * @example
-             *   cy.uiGetSidebarItem('town-square').find('.badge').should('be.visible');
+             *   cy.uiGetSidebarItem('general').find('.badge').should('be.visible');
              */
             uiGetSidebarItem(name: string): Chainable;
 

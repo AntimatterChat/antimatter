@@ -47,7 +47,7 @@ test(
     async ({pw}) => {
         const {user, team} = await pw.initSetup();
         const {channelsPage} = await pw.testBrowser.login(user);
-        await channelsPage.goto(team.name, 'town-square');
+        await channelsPage.goto(team.name, 'general');
         await channelsPage.toBeVisible();
 
         // # Create a new public channel via the modal
@@ -62,7 +62,7 @@ test(
         await channelMenu.leaveChannel.click();
 
         // * Verify the user is redirected to the default channel and the channel is no longer in the sidebar
-        await channelsPage.centerView.header.toHaveTitle('Town Square');
+        await channelsPage.centerView.header.toHaveTitle('General');
         await expect(channelsPage.sidebarLeft.container.getByText(createdChannel)).not.toBeVisible();
 
         // # Open the create-channel modal, enter a name, and cancel without creating

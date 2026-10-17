@@ -38,9 +38,9 @@ describe('Mark as Unread', () => {
                 cy.apiAddUserToTeam(team.id, newUser.id);
             });
 
-            // # Login as test user and go to town square
+            // # Login as test user and go to general
             cy.apiLogin(testUser);
-            cy.visit(`/${team.name}/channels/town-square`);
+            cy.visit(`/${team.name}/channels/general`);
         });
     });
 
@@ -74,7 +74,7 @@ describe('Mark as Unread', () => {
             cy.get(`#sidebarItem_${gmChannel.name}`).should('have.attr', 'aria-label', `${otherUser1.username}, ${otherUser2.username} 2 mentions`);
 
             // # Leave the group message channel
-            cy.get('#sidebarItem_town-square').click();
+            cy.get('#sidebarItem_general').click();
 
             // * Verify the group message in LHS is unread
             cy.get(`#sidebarItem_${gmChannel.name}`).should('have.attr', 'aria-label', `${otherUser1.username}, ${otherUser2.username} 2 mentions`);

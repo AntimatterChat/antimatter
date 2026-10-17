@@ -10,7 +10,7 @@ test('MM-T351 disregards a wildcard that is not preceded by text', {tag: '@searc
     // # Create and log in as a test user
     const {user, team} = await pw.initSetup();
     const {channelsPage} = await pw.testBrowser.login(user);
-    await channelsPage.goto(team.name, 'town-square');
+    await channelsPage.goto(team.name, 'general');
     await channelsPage.toBeVisible();
 
     // # Post two messages, one with a longer variant of the search term
@@ -32,7 +32,7 @@ test('MM-T367 clicks top navigation buttons while the search box has focus', {ta
     // # Create and log in as a test user
     const {user, team} = await pw.initSetup();
     const {channelsPage, page} = await pw.testBrowser.login(user);
-    await channelsPage.goto(team.name, 'town-square');
+    await channelsPage.goto(team.name, 'general');
     await channelsPage.toBeVisible();
 
     // The open search box traps focus and marks the top-right header buttons aria-hidden, so match hidden too.
@@ -69,7 +69,7 @@ test('MM-T370 shows search help text when the search box is opened', {tag: '@sea
     // # Create and log in as a test user
     const {user, team} = await pw.initSetup();
     const {channelsPage} = await pw.testBrowser.login(user);
-    await channelsPage.goto(team.name, 'town-square');
+    await channelsPage.goto(team.name, 'general');
     await channelsPage.toBeVisible();
 
     // # Post a message and open its thread

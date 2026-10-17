@@ -34,9 +34,9 @@ describe('System Console', () => {
         // # Change the role of the user back to user
         cy.externalUpdateUserRoles(testUser.id, 'system_user');
 
-        // # User should get redirected to town square
+        // # User should get redirected to general
         cy.get('#adminConsoleWrapper').should('not.exist');
         cy.get('#postListContent', {timeout: TIMEOUTS.HALF_MIN}).should('be.visible');
-        cy.url().should('include', 'town-square');
+        cy.url().should('include', 'general');
     });
 });

@@ -55,8 +55,8 @@ describe('Guest Account - Guest User Invitation Email Flow', () => {
         cy.apiInitSetup().then(({team}) => {
             testTeam = team;
 
-            // # Go to town square
-            cy.visit(`/${team.name}/channels/town-square`);
+            // # Go to general
+            cy.visit(`/${team.name}/channels/general`);
         });
     });
 

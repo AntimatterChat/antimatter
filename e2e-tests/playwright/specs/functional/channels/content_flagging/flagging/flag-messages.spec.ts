@@ -209,9 +209,9 @@ test('Verify user cannot flag already flagged message', async ({pw}) => {
     const {id: secondUserID} = await adminClient.createUser(secondUser, '', '');
     await adminClient.addToTeam(team.id, secondUserID);
     const channels = await adminClient.getMyChannels(team.id);
-    const townSquare = channels.find((channel) => channel.name === 'town-square');
+    const townSquare = channels.find((channel) => channel.name === 'general');
     if (!townSquare) {
-        throw new Error('Town Square channel not found');
+        throw new Error('General channel not found');
     }
 
     const message = `Post by @${user.username}, is flagged once`;
@@ -223,8 +223,8 @@ test('Verify user cannot flag already flagged message', async ({pw}) => {
     await adminClient.flagPost(postToBeflagged.id, FLAG_REASON_CLASSIFICATION_MISMATCH, FLAG_COMMENT);
 
     // Login as the second user
-    const channelsPage = await loginAndNavigate(pw, secondUser, team.name, 'town-square');
-    // Town Square may show join/system posts above the target — select by post id.
+    const channelsPage = await loginAndNavigate(pw, secondUser, team.name, 'general');
+    // General may show join/system posts above the target — select by post id.
     const post = await channelsPage.centerView.getPostById(postToBeflagged.id);
 
     // Re-apply guard immediately before dot-menu: login takes 3-5 s during which a
@@ -268,9 +268,9 @@ test('Verify user cannot flag a message that was previously retained', async ({p
     const {id: secondUserID, username: secondUsername} = await adminClient.createUser(secondUser, '', '');
     await adminClient.addToTeam(team.id, secondUserID);
     const channels = await adminClient.getMyChannels(team.id);
-    const townSquare = channels.find((channel) => channel.name === 'town-square');
+    const townSquare = channels.find((channel) => channel.name === 'general');
     if (!townSquare) {
-        throw new Error('Town Square channel not found');
+        throw new Error('General channel not found');
     }
 
     await adminClient.patchConfig({
@@ -334,7 +334,7 @@ test('Verify user cannot flag a message that was previously retained', async ({p
     });
 
     // Login as the second user
-    const channelsPage = await loginAndNavigate(pw, secondUser, team.name, 'town-square');
+    const channelsPage = await loginAndNavigate(pw, secondUser, team.name, 'general');
     const post = await channelsPage.centerView.getPostById(postToBeflagged.id);
 
     // Try to flag previously retained post
@@ -402,7 +402,7 @@ test('Verify Flagging reason dropdown', async ({pw}) => {
         },
     });
 
-    const channelsPage = await loginAndNavigate(pw, user, team.name, 'town-square');
+    const channelsPage = await loginAndNavigate(pw, user, team.name, 'general');
     const message = 'This is a test message to be flagged';
     const {post} = await postMessage(channelsPage, message);
 
@@ -443,7 +443,7 @@ test('Verify Comments are required for Flagging', async ({pw}) => {
         },
     });
 
-    const channelsPage = await loginAndNavigate(pw, user, team.name, 'town-square');
+    const channelsPage = await loginAndNavigate(pw, user, team.name, 'general');
     const message = 'This is a test message to be flagged';
     const {post} = await postMessage(channelsPage, message);
 
@@ -498,9 +498,9 @@ test('Verify message is removed from channel if the reviewer removed the message
     });
 
     const channels = await adminClient.getMyChannels(team.id);
-    const townSquare = channels.find((channel) => channel.name === 'town-square');
+    const townSquare = channels.find((channel) => channel.name === 'general');
     if (!townSquare) {
-        throw new Error('Town Square channel not found');
+        throw new Error('General channel not found');
     }
 
     const message = `Post by @${user.username}, is flagged once`;
@@ -528,7 +528,7 @@ test('Verify message is removed from channel if the reviewer removed the message
     await adminClient.removeFlaggedPost(postToBeflagged.id, 'Removing this post after review');
 
     // Login as the user
-    const channelsPage = await loginAndNavigate(pw, user, team.name, 'town-square');
+    const channelsPage = await loginAndNavigate(pw, user, team.name, 'general');
     const lastPostId = await channelsPage.centerView.getLastPostID();
     expect(lastPostId).not.toBe(postToBeflagged.id);
 });

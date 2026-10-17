@@ -22,7 +22,7 @@ const blob = getBlobFromAsset(filename);
 
 test.beforeEach(async ({pw}) => {
     ({userClient, user, team} = await pw.initSetup());
-    townSquareChannel = await userClient.getChannelByName(team.id, 'town-square');
+    townSquareChannel = await userClient.getChannelByName(team.id, 'general');
 });
 
 test('should succeed with File', async ({pw}) => {

@@ -110,7 +110,7 @@ function verifyCreatePublicChannel(teamName, testUsers) {
 
         // # Login as a user, and visit the team and channel
         cy.apiLogin(user);
-        cy.visit(`/${teamName}/channels/town-square`);
+        cy.visit(`/${teamName}/channels/general`);
 
         // # Click on create new channel at LHS
         cy.uiBrowseOrCreateChannel('Create new channel');

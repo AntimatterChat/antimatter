@@ -117,7 +117,7 @@ describe('Settings > Display > Channel Display Mode', () => {
         cy.uiClose();
 
         // # Go to channel which has any posts
-        cy.get('#sidebarItem_town-square').click({force: true});
+        cy.get('#sidebarItem_general').click({force: true});
 
         // * Validate if the post content in center channel is fixed and centered
         // by checking the exact class name.

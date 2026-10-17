@@ -46,8 +46,8 @@ describe('Guest Account - Guest User Invitation Flow', () => {
                 cy.apiAddUserToTeam(testTeam.id, newUser.id);
             });
 
-            // # Go to town square
-            cy.visit(`/${team.name}/channels/town-square`);
+            // # Go to general
+            cy.visit(`/${team.name}/channels/general`);
         });
     });
 
@@ -57,14 +57,14 @@ describe('Guest Account - Guest User Invitation Flow', () => {
         cy.apiCreateChannel(testTeam.id, `private-${getRandomId()}`, privateChannelDisplayName, 'P').then(() => {
             // # Invite a new guest by email, adding both a public and a private channel
             const email = `temp-${getRandomId()}@mattermost.com`;
-            invitePeople(email, 1, email, ['Town Square', privateChannelDisplayName], false);
+            invitePeople(email, 1, email, ['General', privateChannelDisplayName], false);
 
             // * Verify both channels are added to the list of channels the guest will be added to
             cy.get('.channels-input__control').should('be.visible').within(() => {
                 cy.get('.channels-input__multi-value').should('have.length', 2);
 
-                // * Verify the public channel (Town Square) is added
-                cy.findByText('Town Square').should('be.visible');
+                // * Verify the public channel (General) is added
+                cy.findByText('General').should('be.visible');
                 cy.get('.public-channel-icon').should('be.visible');
 
                 // * Verify the private channel is added
@@ -105,7 +105,7 @@ describe('Guest Account - Guest User Invitation Flow', () => {
 
         cy.get('.channels-input__control').should('be.visible').within(() => {
             // * Verify the input placeholder text
-            cy.get('.channels-input__placeholder').should('have.text', 'e.g. Town Square');
+            cy.get('.channels-input__placeholder').should('have.text', 'e.g. General');
 
             // # Type the channel name
             cy.get('input').typeWithForce('town sq');
@@ -113,7 +113,7 @@ describe('Guest Account - Guest User Invitation Flow', () => {
 
         cy.get('.channels-input__menu').
             children().should('have.length', 1).
-            eq(0).should('contain', 'Town Square').click();
+            eq(0).should('contain', 'General').click();
 
         // * Verify Set Custom Message before clicking on the link
         cy.get('.AddToChannels').should('be.visible').within(() => {
@@ -137,7 +137,7 @@ describe('Guest Account - Guest User Invitation Flow', () => {
         changeGuestFeatureSettings(false, true);
 
         // # reload current page
-        cy.visit(`/${testTeam.name}/channels/town-square`);
+        cy.visit(`/${testTeam.name}/channels/general`);
 
         // # Open team menu and click 'Invite People'
         cy.uiOpenTeamMenu('Invite people');
@@ -161,7 +161,7 @@ describe('Guest Account - Guest User Invitation Flow', () => {
         cy.reload();
 
         const email = `temp-${getRandomId()}@mattermost.com`;
-        invitePeople(email, 1, email, 'Town Square', false);
+        invitePeople(email, 1, email, 'General', false);
 
         // * Verify Invite Guests button is disabled
         cy.findByTestId('inviteButton').should('be.disabled');
@@ -172,7 +172,7 @@ describe('Guest Account - Guest User Invitation Flow', () => {
         changeGuestFeatureSettings();
 
         // # Visit Team page
-        cy.visit(`/${testTeam.name}/channels/town-square`);
+        cy.visit(`/${testTeam.name}/channels/general`);
 
         // # Invite a email containing uppercase letters
         const email = `tEMp-${getRandomId()}@mattermost.com`;
@@ -229,7 +229,7 @@ describe('Guest Account - Guest User Invitation Flow', () => {
         // * Verify the channel is preselected
         cy.get('.channels-input__control').should('be.visible').within(() => {
             cy.get('.public-channel-icon').should('be.visible');
-            cy.findByText('Town Square').should('be.visible');
+            cy.findByText('General').should('be.visible');
         });
 
         // * Verify the email field is empty

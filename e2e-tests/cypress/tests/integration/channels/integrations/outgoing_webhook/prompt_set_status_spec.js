@@ -17,7 +17,7 @@ describe('Prompting set status', () => {
     before(() => {
         cy.apiInitSetup().then(({user, team}) => {
             user1 = user;
-            testChannelUrl = `/${team.name}/channels/town-square`;
+            testChannelUrl = `/${team.name}/channels/general`;
 
             cy.apiCreateUser().then(({user: otherUser}) => {
                 user2 = otherUser;

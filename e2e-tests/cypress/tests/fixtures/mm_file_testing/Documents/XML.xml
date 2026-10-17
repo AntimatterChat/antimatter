@@ -11,8 +11,8 @@
     </server>
     <channels>
         <channel id="1" type="public">
-            <name>Town Square</name>
-            <display_name>Town Square</display_name>
+            <name>General</name>
+            <display_name>General</display_name>
             <purpose>General discussion</purpose>
         </channel>
         <channel id="2" type="private">

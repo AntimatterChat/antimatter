@@ -66,7 +66,7 @@ test.afterEach(async () => {
  * Every other spec in this directory grants the action and then denies it with a
  * deny-everyone expression, so attribute matching itself is never exercised, and nothing
  * proves an allowed user is unaffected while a policy is active. Both users sit in
- * town-square under the same policy, so the only thing that differs is the attribute.
+ * general under the same policy, so the only thing that differs is the attribute.
  *
  * Deliberately ONE policy plus a user who fails to match, not a grant policy plus a deny
  * policy: rules for the same role are AND'd (ResolvePermissionRule), so a deny would win
@@ -100,9 +100,9 @@ test(
         });
         await ensureABACEnabled(adminClient);
 
-        // # View town-square as the user the policy matches
+        // # View general as the user the policy matches
         const {channelsPage: allowedPage} = await pw.testBrowser.login(allowedUser);
-        await allowedPage.goto(team.name, 'town-square');
+        await allowedPage.goto(team.name, 'general');
         await allowedPage.toBeVisible();
 
         // * Verify the control is offered
@@ -120,7 +120,7 @@ test(
 
         // # View the same channel as the user the policy does not match
         const {channelsPage: deniedPage} = await pw.testBrowser.login(deniedUser);
-        await deniedPage.goto(team.name, 'town-square');
+        await deniedPage.goto(team.name, 'general');
         await deniedPage.toBeVisible();
 
         // * Verify the control is withheld, so no burn-on-read post can be composed

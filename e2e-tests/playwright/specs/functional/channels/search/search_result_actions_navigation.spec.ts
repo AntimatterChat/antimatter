@@ -10,7 +10,7 @@ test('MM-T348 shows a full special-character username as a link in search result
     // # Create a user whose username contains '-' and '_', plus a user who mentions them
     const {user: mentioningUser, team, adminClient, userClient} = await pw.initSetup();
     const [specialUser] = await adminClient.createUsers(team.id, 1, 'test-user_');
-    const townSquare = await adminClient.getChannelByName(team.id, 'town-square');
+    const townSquare = await adminClient.getChannelByName(team.id, 'general');
     await adminClient.addToChannel(specialUser.id, townSquare.id);
 
     // # The first user posts a message mentioning the special-character username
@@ -23,7 +23,7 @@ test('MM-T348 shows a full special-character username as a link in search result
 
     // # Log in as the mentioned user and open Recent Mentions
     const {channelsPage} = await pw.testBrowser.login(specialUser);
-    await channelsPage.goto(team.name, 'town-square');
+    await channelsPage.goto(team.name, 'general');
     await channelsPage.toBeVisible();
     await channelsPage.globalHeader.openRecentMentions();
 

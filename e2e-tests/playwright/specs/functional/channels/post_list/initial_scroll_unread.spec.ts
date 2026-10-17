@@ -199,8 +199,8 @@ test.describe('Post list initial scroll in unread channel', () => {
             test(`${testCase.name} - should stay at the bottom when switching to the channel`, async ({}) => {
                 const watcher = await watchPostListScroll(page, channel.id);
 
-                // # Start in Town Square and wait for its contents to load
-                await channelsPage.goto(team.name, 'town-square');
+                // # Start in General and wait for its contents to load
+                await channelsPage.goto(team.name, 'general');
                 await channelsPage.centerView.getLastPost();
 
                 // * Verify that the channel starts as unread

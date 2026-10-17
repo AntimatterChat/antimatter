@@ -21,9 +21,9 @@ describe('Cookie with Subpath', () => {
         cy.apiInitSetup().then(({team, user}) => {
             testUser = user;
 
-            // Logout current session and try to visit town-square
+            // Logout current session and try to visit general
             cy.apiLogout().then(() => {
-                townsquareLink = `/${team.name}/channels/town-square`;
+                townsquareLink = `/${team.name}/channels/general`;
                 cy.visit(townsquareLink);
             });
         });
@@ -50,7 +50,7 @@ describe('Cookie with Subpath', () => {
 
                 // * Check subpath included in url
                 cy.url().should('include', subpath);
-                cy.url().should('include', '/channels/town-square');
+                cy.url().should('include', '/channels/general');
 
                 // * Check cookies have correct path parameter
                 cy.getCookies().should('have.length', 5).each((cookie) => {

@@ -45,7 +45,7 @@ describe('Mark post with mentions as unread', () => {
                     cy.apiAddUserToChannel(channelB.id, userB.id);
                 });
 
-                cy.visit(`/${testTeam.name}/channels/town-square`);
+                cy.visit(`/${testTeam.name}/channels/general`);
             });
         });
     });
@@ -53,7 +53,7 @@ describe('Mark post with mentions as unread', () => {
     it('MM-T247 Marks posts with mentions as unread', () => {
         // # Login as userB
         cy.apiLogin(userB);
-        cy.visit(`/${testTeam.name}/channels/town-square`);
+        cy.visit(`/${testTeam.name}/channels/general`);
 
         // # Navigate to both channels, so the new messages line appears above posts
         switchToChannel(channelA);

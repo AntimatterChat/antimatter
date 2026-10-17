@@ -18,9 +18,9 @@ describe('Header', () => {
         cy.shouldNotRunOnCloudEdition();
         cy.shouldHavePluginUploadEnabled();
 
-        // # Setup and visit town-square
+        // # Setup and visit general
         cy.apiInitSetup().then(({team}) => {
-            cy.visit(`/${team.name}/channels/town-square`);
+            cy.visit(`/${team.name}/channels/general`);
         });
     });
 

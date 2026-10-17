@@ -113,17 +113,17 @@ test.describe('channel mention resolution', () => {
                 const viewer = await pw.createNewUserProfile(adminClient);
                 await adminClient.addToTeam(team.id, viewer.id);
 
-                // # Author posts the mention in town-square (both users are members)
-                const townSquare = await adminClient.getChannelByName(team.id, 'town-square');
+                // # Author posts the mention in general (both users are members)
+                const townSquare = await adminClient.getChannelByName(team.id, 'general');
                 await userClient.createPost({
                     channel_id: townSquare.id,
                     message: `Please see ~${channelName}`,
                     user_id: author.id,
                 });
 
-                // # Log in as the viewer and open town-square
+                // # Log in as the viewer and open general
                 const {channelsPage} = await pw.testBrowser.login(viewer);
-                await channelsPage.goto(team.name, 'town-square');
+                await channelsPage.goto(team.name, 'general');
                 await channelsPage.toBeVisible();
 
                 const lastPost = await channelsPage.getLastPost();

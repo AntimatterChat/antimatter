@@ -39,7 +39,7 @@ describe('Keyboard Shortcuts', () => {
                     dmWithSysadmin.name = sysadmin.username;
                     dmWithSysadmin.display_name = sysadmin.username;
                 });
-                cy.apiGetChannelByName(testTeam.name, 'town-square').then((out) => {
+                cy.apiGetChannelByName(testTeam.name, 'general').then((out) => {
                     townSquare = out.channel;
                 });
                 cy.apiGetChannelByName(testTeam.name, 'off-topic').then((out) => {

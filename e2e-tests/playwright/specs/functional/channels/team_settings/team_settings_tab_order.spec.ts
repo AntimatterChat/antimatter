@@ -18,7 +18,7 @@ test.describe('Team Settings Modal - Tab Order', {tag: ['@abac', '@team_membersh
 
         const {page} = await pw.testBrowser.login(adminUser);
         const channelsPage = new ChannelsPage(page);
-        await channelsPage.goto(team.name, 'town-square');
+        await channelsPage.goto(team.name, 'general');
         await channelsPage.toBeVisible();
 
         const teamSettings = await channelsPage.openTeamSettings();
@@ -50,7 +50,7 @@ test.describe('Team Settings Modal - Tab Order', {tag: ['@abac', '@team_membersh
 
         const {page} = await pw.testBrowser.login(adminUser);
         const channelsPage = new ChannelsPage(page);
-        await channelsPage.goto(team.name, 'town-square');
+        await channelsPage.goto(team.name, 'general');
         await channelsPage.toBeVisible();
 
         const teamSettings = await channelsPage.openTeamSettings();
@@ -76,7 +76,7 @@ test.describe('Team Settings Modal - Tab Order', {tag: ['@abac', '@team_membersh
 
         const {page} = await pw.testBrowser.login(adminUser);
         const channelsPage = new ChannelsPage(page);
-        await channelsPage.goto(team.name, 'town-square');
+        await channelsPage.goto(team.name, 'general');
         await channelsPage.toBeVisible();
 
         const teamSettings = await channelsPage.openTeamSettings();
@@ -97,7 +97,7 @@ test.describe('Team Settings Modal - Tab Order', {tag: ['@abac', '@team_membersh
 
         const {page} = await pw.testBrowser.login(adminUser);
         const channelsPage = new ChannelsPage(page);
-        await channelsPage.goto(team.name, 'town-square');
+        await channelsPage.goto(team.name, 'general');
         await channelsPage.toBeVisible();
 
         const teamSettings = await channelsPage.openTeamSettings();

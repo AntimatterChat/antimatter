@@ -223,7 +223,7 @@ export default class ChannelsPage {
         return channelsUrl;
     }
 
-    async expectOnTeamChannel(teamName: string, channelName = 'town-square') {
+    async expectOnTeamChannel(teamName: string, channelName = 'general') {
         const escapedTeam = teamName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
         const escapedChannel = channelName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
         await expect(this.page).toHaveURL(new RegExp(`/${escapedTeam}/channels/${escapedChannel}(?:/|\\?|#|$)`));

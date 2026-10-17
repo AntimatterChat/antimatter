@@ -42,7 +42,7 @@ describe('Custom emojis', () => {
         cy.apiInitSetup().then(({team, user}) => {
             testTeam = team;
             testUser = user;
-            townsquareLink = `/${team.name}/channels/town-square`;
+            townsquareLink = `/${team.name}/channels/general`;
         });
 
         cy.apiCreateUser().then(({user: user1}) => {

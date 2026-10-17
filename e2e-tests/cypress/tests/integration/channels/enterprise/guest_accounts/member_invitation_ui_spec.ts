@@ -43,8 +43,8 @@ describe('Guest Account - Member Invitation Flow', () => {
             testUser = user;
             testTeam = team;
 
-            // # Go to town square
-            cy.visit(`/${testTeam.name}/channels/town-square`);
+            // # Go to general
+            cy.visit(`/${testTeam.name}/channels/general`);
         });
     });
 
@@ -114,7 +114,7 @@ describe('Guest Account - Member Invitation Flow', () => {
         // * Verify if user has access to the default channels
         cy.uiGetLhsSection('CHANNELS').within(() => {
             cy.findByText('Off-Topic').should('be.visible');
-            cy.findByText('Town Square').should('be.visible');
+            cy.findByText('General').should('be.visible');
         });
     });
 
@@ -123,7 +123,7 @@ describe('Guest Account - Member Invitation Flow', () => {
         cy.apiAdminLogin();
         cy.apiCreateTeam('team', 'Team').then(({team}) => {
             // # Visit the team and wait for page to load and then logout.
-            cy.visit(`/${team.name}/channels/town-square`);
+            cy.visit(`/${team.name}/channels/general`);
             cy.uiGetPostTextBox().wait(TIMEOUTS.TWO_SEC);
             const inviteMembersLink = `/signup_user_complete/?id=${team.invite_id}`;
             cy.apiLogout();
@@ -149,7 +149,7 @@ describe('Guest Account - Member Invitation Flow', () => {
             // * Verify if user has access to the default channels in the invited teams
             cy.uiGetLhsSection('CHANNELS').within(() => {
                 cy.findByText('Off-Topic').should('be.visible');
-                cy.findByText('Town Square').should('be.visible');
+                cy.findByText('General').should('be.visible');
             });
         });
     });

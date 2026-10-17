@@ -20,7 +20,7 @@ test('MM-T5584 views and unarchives a custom group', {tag: '@channels'}, async (
     });
 
     const {channelsPage} = await pw.testBrowser.login(user);
-    await channelsPage.goto(team.name, 'town-square');
+    await channelsPage.goto(team.name, 'general');
     await channelsPage.toBeVisible();
     const groupModal = channelsPage.getViewUserGroupModal(group.display_name);
 
@@ -62,7 +62,7 @@ test('MM-T5598 invites a custom group to a channel', {tag: '@channels'}, async (
     });
 
     const {channelsPage} = await pw.testBrowser.login(user);
-    await channelsPage.goto(team.name, 'town-square');
+    await channelsPage.goto(team.name, 'general');
     await channelsPage.toBeVisible();
 
     // # Create a new channel

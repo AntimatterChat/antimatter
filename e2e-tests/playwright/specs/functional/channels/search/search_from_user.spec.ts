@@ -12,7 +12,7 @@ test('MM-T376 MM-T377 completes a from: user search from the autocomplete', {tag
     // # Create the test user plus another user who authors a post
     const {user, team, adminClient} = await pw.initSetup();
     const [author] = await adminClient.createUsers(team.id, 1, 'author');
-    const townSquare = await adminClient.getChannelByName(team.id, 'town-square');
+    const townSquare = await adminClient.getChannelByName(team.id, 'general');
     await adminClient.addToChannel(author.id, townSquare.id);
 
     const token = `fromsearch${pw.random.id()}`;
@@ -20,7 +20,7 @@ test('MM-T376 MM-T377 completes a from: user search from the autocomplete', {tag
     await authorClient.createPost({channel_id: townSquare.id, message: token});
 
     const {channelsPage} = await pw.testBrowser.login(user);
-    await channelsPage.goto(team.name, 'town-square');
+    await channelsPage.goto(team.name, 'general');
     await channelsPage.toBeVisible();
 
     // # Open search and type the from: modifier

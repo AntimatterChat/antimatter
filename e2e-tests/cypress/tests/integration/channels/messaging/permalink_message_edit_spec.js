@@ -30,9 +30,9 @@ describe('Permalink message edit', () => {
     });
 
     it('MM-T180 Edit a message in permalink view', () => {
-        // # Login as test user and visit town-square
+        // # Login as test user and visit general
         cy.apiLogin(testUser);
-        cy.visit(`/${testTeam.name}/channels/town-square`);
+        cy.visit(`/${testTeam.name}/channels/general`);
 
         const searchWord = `searchtest ${Date.now()}`;
 
@@ -48,7 +48,7 @@ describe('Permalink message edit', () => {
 
         cy.getLastPostId().then((postId) => {
             // # Check if url include the permalink
-            cy.url().should('include', `/${testTeam.name}/channels/town-square/${postId}`);
+            cy.url().should('include', `/${testTeam.name}/channels/general/${postId}`);
 
             // # Click on ... button of last post matching the searchWord
             cy.clickPostDotMenu(postId);
@@ -64,9 +64,9 @@ describe('Permalink message edit', () => {
             // # Check edited post
             verifyEditedPermalink(postId, editedText, testTeam);
 
-            // # Login as other user, visit town-square and post any message
+            // # Login as other user, visit general and post any message
             cy.apiLogin(otherUser);
-            cy.visit(`/${testTeam.name}/channels/town-square`);
+            cy.visit(`/${testTeam.name}/channels/general`);
             cy.postMessage('hello');
 
             // # Find searchWord and verify edited post
@@ -75,7 +75,7 @@ describe('Permalink message edit', () => {
             cy.get('.search-item__jump').first().click();
 
             // # Check if url include the permalink
-            cy.url().should('include', `/${testTeam.name}/channels/town-square/${postId}`);
+            cy.url().should('include', `/${testTeam.name}/channels/general/${postId}`);
 
             verifyEditedPermalink(postId, editedText, testTeam);
         });
@@ -83,7 +83,7 @@ describe('Permalink message edit', () => {
 
     function verifyEditedPermalink(permalinkId, text, team) {
         // * Check if url redirects back to parent path eventually
-        cy.wait(TIMEOUTS.FIVE_SEC).url().should('include', `/${team.name}/channels/town-square`).and('not.include', `/${permalinkId}`);
+        cy.wait(TIMEOUTS.FIVE_SEC).url().should('include', `/${team.name}/channels/general`).and('not.include', `/${permalinkId}`);
 
         // * Verify edited post
         cy.get(`#postMessageText_${permalinkId}`).should('have.text', `${text} Edited`);

@@ -58,18 +58,18 @@ describe('Notifications', () => {
 
     it('MM-T566 New message bar - Displays in permalink view', () => {
         cy.makeClient().then(async (client) => {
-            const townChannel = await client.getChannelByName(testTeam.id, 'town-square');
+            const townChannel = await client.getChannelByName(testTeam.id, 'general');
             const townChannelId = townChannel.id;
 
-            // # Post messages in town-square channel
+            // # Post messages in general channel
             Cypress._.times(15, (postNumber) => {
                 cy.postMessageAs({sender: otherUser, message: `P${postNumber}`, channelId: townChannelId});
             });
 
-            // # Enter "in:town-square" in the search bar and hit ENTER
+            // # Enter "in:general" in the search bar and hit ENTER
             cy.uiGetSearchContainer().click();
             cy.uiGetSearchBox().
-                typeWithForce('in:town-square').
+                typeWithForce('in:general').
                 wait(TIMEOUTS.HALF_SEC).
                 typeWithForce('{enter}').
                 typeWithForce('{enter}');
@@ -85,7 +85,7 @@ describe('Notifications', () => {
                 cy.get(`#post_${postIdTest}`).should('not.have.class', 'post--highlight');
             });
 
-            // # Other user post a message in town-square channel
+            // # Other user post a message in general channel
             cy.postMessageAs({
                 sender: otherUser,
                 message: 'message from user B',

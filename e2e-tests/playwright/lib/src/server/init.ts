@@ -63,7 +63,7 @@ export async function initSetup({
             userClient,
             team,
             offTopicUrl: getUrl(team.name, 'off-topic'),
-            townSquareUrl: getUrl(team.name, 'town-square'),
+            townSquareUrl: getUrl(team.name, 'general'),
         };
     } catch (error) {
         expect(error, 'Should not throw an error').toBeFalsy();

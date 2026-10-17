@@ -25,9 +25,9 @@ test('should show "Upload using Demo Plugin" entry in attachment menu and open R
     const {adminClient, user, team} = await pw.initSetup();
     await setupDemoPlugin(adminClient, pw);
 
-    // 2. Login and navigate to Town Square
+    // 2. Login and navigate to General
     const {channelsPage} = await pw.testBrowser.login(user);
-    await channelsPage.goto(team.name, 'town-square');
+    await channelsPage.goto(team.name, 'general');
     await channelsPage.toBeVisible();
 
     // 3. Click the attachment button to open the upload type menu
@@ -132,9 +132,9 @@ test('should upload a file via "Your computer" from the demo plugin attachment s
     const {adminClient, user, team} = await pw.initSetup();
     await setupDemoPlugin(adminClient, pw);
 
-    // 2. Login and navigate to Town Square
+    // 2. Login and navigate to General
     const {channelsPage} = await pw.testBrowser.login(user);
-    await channelsPage.goto(team.name, 'town-square');
+    await channelsPage.goto(team.name, 'general');
     await channelsPage.toBeVisible();
 
     // 3. Upload a file via the UI — the demo plugin intercepts the attachment button

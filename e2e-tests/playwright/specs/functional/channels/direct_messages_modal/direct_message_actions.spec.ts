@@ -15,7 +15,7 @@ test('MM-T448 does not notify a user mentioned in a different DM', {tag: '@direc
 
     // # As the test user, open a DM with the partner and mention the third user there
     const {channelsPage} = await pw.testBrowser.login(user);
-    await channelsPage.goto(team.name, 'town-square');
+    await channelsPage.goto(team.name, 'general');
     await channelsPage.toBeVisible();
     const dmModal = await channelsPage.openDirectChannelsModal();
     await dmModal.selectUser(partner);
@@ -26,7 +26,7 @@ test('MM-T448 does not notify a user mentioned in a different DM', {tag: '@direc
 
     // # Log in as the mentioned user and open Recent Mentions
     const {channelsPage: mentionedPage} = await pw.testBrowser.login(mentioned);
-    await mentionedPage.goto(team.name, 'town-square');
+    await mentionedPage.goto(team.name, 'general');
     await mentionedPage.toBeVisible();
     await mentionedPage.globalHeader.openRecentMentions();
 
@@ -47,7 +47,7 @@ test(
         const [otherUser] = await adminClient.createUsers(team.id, 1, 'other');
 
         const {channelsPage} = await pw.testBrowser.login(user);
-        await channelsPage.goto(team.name, 'town-square');
+        await channelsPage.goto(team.name, 'general');
         await channelsPage.toBeVisible();
 
         // # Open a direct message channel with the other user

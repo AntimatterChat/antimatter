@@ -31,7 +31,7 @@ describe('System Console > User Management > Deactivation', () => {
         // # Login as other admin.
         cy.apiLogin(otherAdmin);
 
-        // # Visit town-square
+        // # Visit general
         cy.visit(`/${team1.name}`);
     });
 

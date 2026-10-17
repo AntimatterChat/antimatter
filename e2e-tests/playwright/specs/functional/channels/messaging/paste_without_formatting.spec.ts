@@ -11,7 +11,7 @@ import {expect, test} from '@mattermost/playwright-lib';
 test('MM-T1434 pasting with Ctrl/Cmd+Shift+V skips Mattermost paste formatting', {tag: '@messaging'}, async ({pw}) => {
     const {user, team} = await pw.initSetup();
     const {channelsPage} = await pw.testBrowser.login(user);
-    await channelsPage.goto(team.name, 'town-square');
+    await channelsPage.goto(team.name, 'general');
     await channelsPage.toBeVisible();
 
     const html = '<table><tr><td>foo</td><td>bar</td></tr></table>';

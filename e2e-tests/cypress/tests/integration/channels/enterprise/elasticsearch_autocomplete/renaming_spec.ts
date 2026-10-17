@@ -38,8 +38,8 @@ describe('Autocomplete with Elasticsearch - Renaming', () => {
             // # Enable Elasticsearch
             enableElasticSearch();
 
-            // # Visit town-square channel
-            cy.visit(`/${team.name}/channels/town-square`);
+            // # Visit general channel
+            cy.visit(`/${team.name}/channels/general`);
         });
     });
 

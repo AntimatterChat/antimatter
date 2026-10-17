@@ -17,10 +17,10 @@ describe('Messaging', () => {
     let otherUser;
 
     before(() => {
-        // # Visit town-square
+        // # Visit general
         cy.apiInitSetup().then(({team, user}) => {
             otherUser = user;
-            townsquareLink = `/${team.name}/channels/town-square`;
+            townsquareLink = `/${team.name}/channels/general`;
             cy.visit(townsquareLink);
         });
     });

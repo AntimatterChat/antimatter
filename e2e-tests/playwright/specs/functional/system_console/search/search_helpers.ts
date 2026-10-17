@@ -12,7 +12,7 @@ import type {PlaywrightExtended} from '@mattermost/playwright-lib';
  * specs, which otherwise differ only in prerequisite setup (ensure*, plus index purge).
  */
 export async function postAndFindMessage(pw: PlaywrightExtended, userClient: Client4, teamId: string): Promise<void> {
-    const townSquare = await userClient.getChannelByName(teamId, 'town-square');
+    const townSquare = await userClient.getChannelByName(teamId, 'general');
     const uniqueTerm = `searchterm${getRandomId()}`;
     await userClient.createPost({channel_id: townSquare.id, message: `hello ${uniqueTerm}`});
 

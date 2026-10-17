@@ -43,7 +43,7 @@ describe('Onboarding', () => {
 
         cy.apiInitSetup().then(({team}) => {
             testTeam = team;
-            cy.visit(`/${team.name}/channels/town-square`);
+            cy.visit(`/${team.name}/channels/general`);
         });
     });
 

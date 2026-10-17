@@ -30,9 +30,9 @@ test.describe('Interactive mm_blocks (incoming webhook)', () => {
             const {team, user, adminClient} = await pw.initSetup();
 
             const channels = await adminClient.getMyChannels(team.id);
-            const townSquare = channels.find((ch) => ch.name === 'town-square');
+            const townSquare = channels.find((ch) => ch.name === 'general');
             if (!townSquare) {
-                throw new Error('Town Square channel not found');
+                throw new Error('General channel not found');
             }
 
             const webhook = await adminClient.createIncomingWebhook({
@@ -49,7 +49,7 @@ test.describe('Interactive mm_blocks (incoming webhook)', () => {
             });
 
             const {channelsPage} = await pw.testBrowser.login(user);
-            await channelsPage.goto(team.name, 'town-square');
+            await channelsPage.goto(team.name, 'general');
             await channelsPage.toBeVisible();
 
             const lastPost = await channelsPage.getLastPost();
@@ -66,9 +66,9 @@ test.describe('Interactive mm_blocks (incoming webhook)', () => {
             const {team, user, adminClient} = await pw.initSetup();
 
             const channels = await adminClient.getMyChannels(team.id);
-            const townSquare = channels.find((ch) => ch.name === 'town-square');
+            const townSquare = channels.find((ch) => ch.name === 'general');
             if (!townSquare) {
-                throw new Error('Town Square channel not found');
+                throw new Error('General channel not found');
             }
 
             const webhook = await adminClient.createIncomingWebhook({
@@ -88,7 +88,7 @@ test.describe('Interactive mm_blocks (incoming webhook)', () => {
             });
 
             const {channelsPage} = await pw.testBrowser.login(user);
-            await channelsPage.goto(team.name, 'town-square');
+            await channelsPage.goto(team.name, 'general');
             await channelsPage.toBeVisible();
 
             const lastPost = await channelsPage.getLastPost();
@@ -105,9 +105,9 @@ test.describe('Interactive mm_blocks (incoming webhook)', () => {
             const {team, user, adminClient} = await pw.initSetup();
 
             const channels = await adminClient.getMyChannels(team.id);
-            const townSquare = channels.find((ch) => ch.name === 'town-square');
+            const townSquare = channels.find((ch) => ch.name === 'general');
             if (!townSquare) {
-                throw new Error('Town Square channel not found');
+                throw new Error('General channel not found');
             }
 
             const webhook = await adminClient.createIncomingWebhook({
@@ -134,7 +134,7 @@ test.describe('Interactive mm_blocks (incoming webhook)', () => {
             });
 
             const {channelsPage} = await pw.testBrowser.login(user);
-            await channelsPage.goto(team.name, 'town-square');
+            await channelsPage.goto(team.name, 'general');
             await channelsPage.toBeVisible();
 
             const lastPost = await channelsPage.getLastPost();
@@ -153,9 +153,9 @@ test.describe('Interactive mm_blocks (incoming webhook)', () => {
             const {team, user, adminClient} = await pw.initSetup();
 
             const channels = await adminClient.getMyChannels(team.id);
-            const townSquare = channels.find((ch) => ch.name === 'town-square');
+            const townSquare = channels.find((ch) => ch.name === 'general');
             if (!townSquare) {
-                throw new Error('Town Square channel not found');
+                throw new Error('General channel not found');
             }
 
             const webhook = await adminClient.createIncomingWebhook({
@@ -205,7 +205,7 @@ test.describe('Interactive mm_blocks (incoming webhook)', () => {
             });
 
             const {channelsPage} = await pw.testBrowser.login(user);
-            await channelsPage.goto(team.name, 'town-square');
+            await channelsPage.goto(team.name, 'general');
             await channelsPage.toBeVisible();
 
             const lastPost = await channelsPage.getLastPost();
@@ -245,9 +245,9 @@ test.describe('Interactive mm_blocks (incoming webhook)', () => {
             const {team, user, adminClient} = await pw.initSetup();
 
             const channels = await adminClient.getMyChannels(team.id);
-            const townSquare = channels.find((ch) => ch.name === 'town-square');
+            const townSquare = channels.find((ch) => ch.name === 'general');
             if (!townSquare) {
-                throw new Error('Town Square channel not found');
+                throw new Error('General channel not found');
             }
 
             const webhook = await adminClient.createIncomingWebhook({
@@ -280,7 +280,7 @@ test.describe('Interactive mm_blocks (incoming webhook)', () => {
             });
 
             const {channelsPage} = await pw.testBrowser.login(user);
-            await channelsPage.goto(team.name, 'town-square');
+            await channelsPage.goto(team.name, 'general');
             await channelsPage.toBeVisible();
 
             const lastPost = await channelsPage.getLastPost();
@@ -325,9 +325,9 @@ test.describe('Interactive mm_blocks (incoming webhook)', () => {
             const {team, user, adminClient} = await pw.initSetup();
 
             const channels = await adminClient.getMyChannels(team.id);
-            const townSquare = channels.find((ch) => ch.name === 'town-square');
+            const townSquare = channels.find((ch) => ch.name === 'general');
             if (!townSquare) {
-                throw new Error('Town Square channel not found');
+                throw new Error('General channel not found');
             }
 
             const webhook = await adminClient.createIncomingWebhook({
@@ -360,7 +360,7 @@ test.describe('Interactive mm_blocks (incoming webhook)', () => {
             });
 
             const {channelsPage} = await pw.testBrowser.login(user);
-            await channelsPage.goto(team.name, 'town-square');
+            await channelsPage.goto(team.name, 'general');
             await channelsPage.toBeVisible();
 
             const lastPost = await channelsPage.getLastPost();
@@ -394,9 +394,9 @@ test.describe('Interactive mm_blocks (incoming webhook)', () => {
             await adminClient.patchConfig({ServiceSettings: {EnablePostUsernameOverride: true}});
 
             const channels = await adminClient.getMyChannels(team.id);
-            const townSquare = channels.find((ch) => ch.name === 'town-square');
+            const townSquare = channels.find((ch) => ch.name === 'general');
             if (!townSquare) {
-                throw new Error('Town Square channel not found');
+                throw new Error('General channel not found');
             }
 
             const webhook = await adminClient.createIncomingWebhook({
@@ -432,7 +432,7 @@ test.describe('Interactive mm_blocks (incoming webhook)', () => {
             });
 
             const {channelsPage} = await pw.testBrowser.login(user);
-            await channelsPage.goto(team.name, 'town-square');
+            await channelsPage.goto(team.name, 'general');
             await channelsPage.toBeVisible();
 
             const lastPost = await channelsPage.getLastPost();
@@ -474,9 +474,9 @@ test.describe('Interactive mm_blocks (incoming webhook)', () => {
             const {team, user, adminClient} = await pw.initSetup();
 
             const channels = await adminClient.getMyChannels(team.id);
-            const townSquare = channels.find((ch) => ch.name === 'town-square');
+            const townSquare = channels.find((ch) => ch.name === 'general');
             if (!townSquare) {
-                throw new Error('Town Square channel not found');
+                throw new Error('General channel not found');
             }
 
             const webhook = await adminClient.createIncomingWebhook({
@@ -513,7 +513,7 @@ test.describe('Interactive mm_blocks (incoming webhook)', () => {
             });
 
             const {channelsPage} = await pw.testBrowser.login(user);
-            await channelsPage.goto(team.name, 'town-square');
+            await channelsPage.goto(team.name, 'general');
             await channelsPage.toBeVisible();
 
             const lastPost = await channelsPage.getLastPost();
@@ -569,9 +569,9 @@ test.describe('Interactive mm_blocks (incoming webhook)', () => {
             const {team, user, adminClient} = await pw.initSetup();
 
             const channels = await adminClient.getMyChannels(team.id);
-            const townSquare = channels.find((ch) => ch.name === 'town-square');
+            const townSquare = channels.find((ch) => ch.name === 'general');
             if (!townSquare) {
-                throw new Error('Town Square channel not found');
+                throw new Error('General channel not found');
             }
 
             const webhook = await adminClient.createIncomingWebhook({
@@ -605,7 +605,7 @@ test.describe('Interactive mm_blocks (incoming webhook)', () => {
             });
 
             const {channelsPage} = await pw.testBrowser.login(user);
-            await channelsPage.goto(team.name, 'town-square');
+            await channelsPage.goto(team.name, 'general');
             await channelsPage.toBeVisible();
 
             const lastPost = await channelsPage.getLastPost();
@@ -663,9 +663,9 @@ test.describe('Interactive mm_blocks (incoming webhook)', () => {
             const {adminClient, team, user} = await pw.initSetup();
 
             const channels = await adminClient.getMyChannels(team.id);
-            const townSquare = channels.find((ch) => ch.name === 'town-square');
+            const townSquare = channels.find((ch) => ch.name === 'general');
             if (!townSquare) {
-                throw new Error('Town Square channel not found');
+                throw new Error('General channel not found');
             }
 
             const webhook = await adminClient.createIncomingWebhook({
@@ -699,7 +699,7 @@ test.describe('Interactive mm_blocks (incoming webhook)', () => {
             });
 
             const {channelsPage} = await pw.testBrowser.login(user);
-            await channelsPage.goto(team.name, 'town-square');
+            await channelsPage.goto(team.name, 'general');
             await channelsPage.toBeVisible();
 
             const lastPost = await channelsPage.getLastPost();
@@ -722,7 +722,7 @@ test.describe('Interactive mm_blocks (incoming webhook)', () => {
             await channelSelect.click();
             await channelSelect.fill('Town');
             await channelsPage.page
-                .getByRole('option', {name: /Town Square/})
+                .getByRole('option', {name: /General/})
                 .first()
                 .click();
 
@@ -756,9 +756,9 @@ test.describe('Interactive mm_blocks (incoming webhook)', () => {
             const {team, user, adminClient} = await pw.initSetup();
 
             const channels = await adminClient.getMyChannels(team.id);
-            const townSquare = channels.find((ch) => ch.name === 'town-square');
+            const townSquare = channels.find((ch) => ch.name === 'general');
             if (!townSquare) {
-                throw new Error('Town Square channel not found');
+                throw new Error('General channel not found');
             }
 
             const webhook = await adminClient.createIncomingWebhook({
@@ -796,7 +796,7 @@ test.describe('Interactive mm_blocks (incoming webhook)', () => {
             });
 
             const {channelsPage} = await pw.testBrowser.login(user);
-            await channelsPage.goto(team.name, 'town-square');
+            await channelsPage.goto(team.name, 'general');
             await channelsPage.toBeVisible();
 
             const lastPost = await channelsPage.getLastPost();
@@ -825,10 +825,10 @@ test.describe('Interactive mm_blocks (incoming webhook)', () => {
             const {team, user, adminClient} = await pw.initSetup();
 
             const channels = await adminClient.getMyChannels(team.id);
-            const townSquare = channels.find((ch) => ch.name === 'town-square');
+            const townSquare = channels.find((ch) => ch.name === 'general');
             const offTopic = channels.find((ch) => ch.name === 'off-topic');
             if (!townSquare || !offTopic) {
-                throw new Error('Town Square or Off-Topic channel not found');
+                throw new Error('General or Off-Topic channel not found');
             }
 
             const webhook = await adminClient.createIncomingWebhook({
@@ -862,7 +862,7 @@ test.describe('Interactive mm_blocks (incoming webhook)', () => {
             });
 
             const {channelsPage} = await pw.testBrowser.login(user);
-            await channelsPage.goto(team.name, 'town-square');
+            await channelsPage.goto(team.name, 'general');
             await channelsPage.toBeVisible();
 
             const lastPost = await channelsPage.getLastPost();
@@ -896,9 +896,9 @@ test.describe('Interactive mm_blocks (incoming webhook)', () => {
             const {team, user, adminClient} = await pw.initSetup();
 
             const channels = await adminClient.getMyChannels(team.id);
-            const townSquare = channels.find((ch) => ch.name === 'town-square');
+            const townSquare = channels.find((ch) => ch.name === 'general');
             if (!townSquare) {
-                throw new Error('Town Square channel not found');
+                throw new Error('General channel not found');
             }
 
             const webhook = await adminClient.createIncomingWebhook({
@@ -937,7 +937,7 @@ test.describe('Interactive mm_blocks (incoming webhook)', () => {
             });
 
             const {channelsPage} = await pw.testBrowser.login(user);
-            await channelsPage.goto(team.name, 'town-square');
+            await channelsPage.goto(team.name, 'general');
             await channelsPage.toBeVisible();
 
             const lastPost = await channelsPage.getLastPost();
@@ -982,9 +982,9 @@ test.describe('Interactive mm_blocks (incoming webhook)', () => {
             const {team, user, adminClient} = await pw.initSetup();
 
             const channels = await adminClient.getMyChannels(team.id);
-            const townSquare = channels.find((ch) => ch.name === 'town-square');
+            const townSquare = channels.find((ch) => ch.name === 'general');
             if (!townSquare) {
-                throw new Error('Town Square channel not found');
+                throw new Error('General channel not found');
             }
 
             const webhook = await adminClient.createIncomingWebhook({
@@ -1019,7 +1019,7 @@ test.describe('Interactive mm_blocks (incoming webhook)', () => {
             });
 
             const {channelsPage} = await pw.testBrowser.login(user);
-            await channelsPage.goto(team.name, 'town-square');
+            await channelsPage.goto(team.name, 'general');
             await channelsPage.toBeVisible();
 
             const lastPost = await channelsPage.getLastPost();
@@ -1057,9 +1057,9 @@ test.describe('Interactive mm_blocks (incoming webhook)', () => {
             const {team, user, adminClient} = await pw.initSetup();
 
             const channels = await adminClient.getMyChannels(team.id);
-            const townSquare = channels.find((ch) => ch.name === 'town-square');
+            const townSquare = channels.find((ch) => ch.name === 'general');
             if (!townSquare) {
-                throw new Error('Town Square channel not found');
+                throw new Error('General channel not found');
             }
 
             const webhook = await adminClient.createIncomingWebhook({
@@ -1098,7 +1098,7 @@ test.describe('Interactive mm_blocks (incoming webhook)', () => {
             });
 
             const {channelsPage} = await pw.testBrowser.login(user);
-            await channelsPage.goto(team.name, 'town-square');
+            await channelsPage.goto(team.name, 'general');
             await channelsPage.toBeVisible();
 
             const lastPost = await channelsPage.getLastPost();
@@ -1136,9 +1136,9 @@ test.describe('Interactive mm_blocks (incoming webhook)', () => {
             const {team, user, adminClient} = await pw.initSetup();
 
             const channels = await adminClient.getMyChannels(team.id);
-            const townSquare = channels.find((ch) => ch.name === 'town-square');
+            const townSquare = channels.find((ch) => ch.name === 'general');
             if (!townSquare) {
-                throw new Error('Town Square channel not found');
+                throw new Error('General channel not found');
             }
 
             const webhook = await adminClient.createIncomingWebhook({
@@ -1164,7 +1164,7 @@ test.describe('Interactive mm_blocks (incoming webhook)', () => {
             });
 
             const {channelsPage} = await pw.testBrowser.login(user);
-            await channelsPage.goto(team.name, 'town-square');
+            await channelsPage.goto(team.name, 'general');
             await channelsPage.toBeVisible();
 
             const lastPost = await channelsPage.getLastPost();
@@ -1200,9 +1200,9 @@ test.describe('Interactive mm_blocks (incoming webhook)', () => {
             const {team, user, adminClient} = await pw.initSetup();
 
             const channels = await adminClient.getMyChannels(team.id);
-            const townSquare = channels.find((ch) => ch.name === 'town-square');
+            const townSquare = channels.find((ch) => ch.name === 'general');
             if (!townSquare) {
-                throw new Error('Town Square channel not found');
+                throw new Error('General channel not found');
             }
 
             const webhook = await adminClient.createIncomingWebhook({
@@ -1229,7 +1229,7 @@ test.describe('Interactive mm_blocks (incoming webhook)', () => {
             });
 
             const {channelsPage} = await pw.testBrowser.login(user);
-            await channelsPage.goto(team.name, 'town-square');
+            await channelsPage.goto(team.name, 'general');
             await channelsPage.toBeVisible();
 
             const lastPost = await channelsPage.getLastPost();

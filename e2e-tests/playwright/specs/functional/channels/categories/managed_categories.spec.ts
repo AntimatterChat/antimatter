@@ -72,9 +72,9 @@ test.describe('Managed Channel Categories', () => {
             await enableManagedCategories(adminClient);
             await adminClient.addToTeam(team.id, adminUser.id);
 
-            // # Log in and navigate to town-square
+            // # Log in and navigate to general
             const {page, channelsPage} = await pw.testBrowser.login(adminUser);
-            await channelsPage.goto(team.name, 'town-square');
+            await channelsPage.goto(team.name, 'general');
             await channelsPage.toBeVisible();
 
             // # Create a new channel
@@ -195,7 +195,7 @@ test.describe('Managed Channel Categories', () => {
 
             // # Log in and open the new channel modal
             const {page, channelsPage} = await pw.testBrowser.login(adminUser);
-            await channelsPage.goto(team.name, 'town-square');
+            await channelsPage.goto(team.name, 'general');
             await channelsPage.toBeVisible();
 
             const newChannelModal = await channelsPage.openNewChannelModal();
@@ -246,7 +246,7 @@ test.describe('Managed Channel Categories', () => {
 
             // # Log in as regular user
             const {channelsPage} = await pw.testBrowser.login(user);
-            await channelsPage.goto(team.name, 'town-square');
+            await channelsPage.goto(team.name, 'general');
             await channelsPage.toBeVisible();
 
             // * Verify the managed category is visible and positioned above CHANNELS
@@ -284,7 +284,7 @@ test.describe('Managed Channel Categories', () => {
 
             // # Log in as regular user who is not a member of the channel
             const {channelsPage} = await pw.testBrowser.login(user);
-            await channelsPage.goto(team.name, 'town-square');
+            await channelsPage.goto(team.name, 'general');
             await channelsPage.toBeVisible();
 
             // * Verify the managed category is not visible
@@ -329,7 +329,7 @@ test.describe('Managed Channel Categories', () => {
 
         // # Log in as regular user
         const {channelsPage} = await pw.testBrowser.login(user);
-        await channelsPage.goto(team.name, 'town-square');
+        await channelsPage.goto(team.name, 'general');
         await channelsPage.toBeVisible();
 
         // * Verify both channels are visible and Alpha appears before Bravo
@@ -405,7 +405,7 @@ test.describe('Managed Channel Categories', () => {
 
         // # Log in as regular user
         const {channelsPage} = await pw.testBrowser.login(user);
-        await channelsPage.goto(team.name, 'town-square');
+        await channelsPage.goto(team.name, 'general');
         await channelsPage.toBeVisible();
 
         // # Right-click on the managed category header
@@ -443,7 +443,7 @@ test.describe('Managed Channel Categories', () => {
 
             // # Log in as regular user
             const {channelsPage} = await pw.testBrowser.login(user);
-            await channelsPage.goto(team.name, 'town-square');
+            await channelsPage.goto(team.name, 'general');
             await channelsPage.toBeVisible();
 
             // # Open the channel options menu via the three-dot button
@@ -494,7 +494,7 @@ test.describe('Managed Channel Categories', () => {
 
             // # Log in as regular user
             const {channelsPage} = await pw.testBrowser.login(user);
-            await channelsPage.goto(team.name, 'town-square');
+            await channelsPage.goto(team.name, 'general');
             await channelsPage.toBeVisible();
 
             // # Open the channel options menu via the three-dot button
@@ -559,7 +559,7 @@ test.describe('Managed Channel Categories', () => {
 
             // # Log in as regular user
             const {channelsPage} = await pw.testBrowser.login(user);
-            await channelsPage.goto(team.name, 'town-square');
+            await channelsPage.goto(team.name, 'general');
             await channelsPage.toBeVisible();
 
             // * Verify only one category header exists and both channels are under it
@@ -599,7 +599,7 @@ test.describe('Managed Channel Categories', () => {
 
             // # Log in as regular user
             const {channelsPage} = await pw.testBrowser.login(user);
-            await channelsPage.goto(team.name, 'town-square');
+            await channelsPage.goto(team.name, 'general');
             await channelsPage.toBeVisible();
 
             // * Verify the managed category does not exist yet

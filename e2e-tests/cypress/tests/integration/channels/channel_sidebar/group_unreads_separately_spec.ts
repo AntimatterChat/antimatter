@@ -22,7 +22,7 @@ describe('Channel sidebar - group unreads separately', () => {
                 testTeam = team;
                 testChannel = channel;
 
-                cy.visit(`/${team.name}/channels/town-square`);
+                cy.visit(`/${team.name}/channels/general`);
 
                 // # Toggle the unreads category setting
                 enableOrDisableUnreadsCategory();
@@ -50,7 +50,7 @@ describe('Channel sidebar - group unreads separately', () => {
         cy.get('.SidebarChannelGroup:contains(UNREADS)').should('be.visible').get(`.SidebarChannel:not(.unread):contains(${testChannel.display_name})`).should('be.visible');
 
         // # Switch to another channel
-        cy.get('.SidebarLink:contains(Town Square)').should('be.visible').click();
+        cy.get('.SidebarLink:contains(General)').should('be.visible').click();
 
         // * Verify unreads category has disappeared
         cy.get('.SidebarChannelGroupHeader:contains(UNREADS)').should('not.exist');
@@ -81,7 +81,7 @@ describe('Channel sidebar - group unreads separately', () => {
         cy.get(`.SidebarChannel.unread .SidebarLink:contains(${testChannel.display_name})`).should('be.visible').click();
 
         // # Switch to another channel
-        cy.get('.SidebarLink:contains(Town Square)').should('be.visible').click();
+        cy.get('.SidebarLink:contains(General)').should('be.visible').click();
 
         // * Verify that the channel is currently in the CHANNELS category
         cy.get('.SidebarChannelGroup:contains(CHANNELS)').should('be.visible').get(`.SidebarChannel:not(.unread):contains(${testChannel.display_name})`).should('be.visible');
@@ -121,8 +121,8 @@ describe('Channel sidebar - group unreads separately', () => {
         // # Leave the channel
         cy.uiLeaveChannel();
 
-        // * User should be redirect to Town Square
-        cy.url().should('include', '/channels/town-square');
+        // * User should be redirect to General
+        cy.url().should('include', '/channels/general');
     });
 });
 

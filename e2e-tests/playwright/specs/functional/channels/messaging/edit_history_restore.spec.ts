@@ -10,7 +10,7 @@ import {test} from '@mattermost/playwright-lib';
 test('MM-T5537 views message edit history and restores a previous version', {tag: '@messaging'}, async ({pw}) => {
     const {user, team} = await pw.initSetup();
     const {channelsPage, page} = await pw.testBrowser.login(user);
-    await channelsPage.goto(team.name, 'town-square');
+    await channelsPage.goto(team.name, 'general');
     await channelsPage.toBeVisible();
 
     // # Post a message

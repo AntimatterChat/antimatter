@@ -73,7 +73,7 @@ test('LDAP guest login with team invite lands on the invited channel', {tag: '@l
 
     // # Invite the guest to the team and default channel
     await adminClient.addToTeam(team.id, provisionedUser.id);
-    const townSquare = await adminClient.getChannelByName(team.id, 'town-square');
+    const townSquare = await adminClient.getChannelByName(team.id, 'general');
     await adminClient.addToChannel(provisionedUser.id, townSquare.id);
     await adminClient.revokeAllSessionsForUser(provisionedUser.id);
 
@@ -84,5 +84,5 @@ test('LDAP guest login with team invite lands on the invited channel', {tag: '@l
     await pw.loginPage.expectNotOnLoginPage();
 
     // * Verify login itself lands on the invited channel
-    await pw.channelsPage.expectOnTeamChannel(team.name, 'town-square');
+    await pw.channelsPage.expectOnTeamChannel(team.name, 'general');
 });

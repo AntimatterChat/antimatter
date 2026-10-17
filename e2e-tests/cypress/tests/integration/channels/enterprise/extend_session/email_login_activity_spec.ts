@@ -48,7 +48,7 @@ describe('MM-T2575 Extend Session - Email Login', () => {
 
         cy.apiUpdateConfig(setting);
 
-        // # Login as test user and go to town-square channel
+        // # Login as test user and go to general channel
         cy.apiLogin(testUser);
         cy.visit(offTopicUrl);
 
@@ -72,7 +72,7 @@ describe('MM-T2575 Extend Session - Email Login', () => {
                 cy.externalRequest({user: admin, method: 'POST', path: 'caches/invalidate'});
                 cy.reload();
 
-                // # Try to visit town-square channel
+                // # Try to visit general channel
                 cy.visit(offTopicUrl);
 
                 // * Verify that it redirects to login page due to expired session
@@ -130,7 +130,7 @@ describe('MM-T2575 Extend Session - Email Login', () => {
             } as Cypress.AdminConfig;
             cy.apiUpdateConfig(setting);
 
-            // # Login as test user and go to town-square channel
+            // # Login as test user and go to general channel
             cy.apiLogin(testUser);
             cy.visit(offTopicUrl);
 
@@ -184,7 +184,7 @@ describe('MM-T2575 Extend Session - Email Login', () => {
             } as Cypress.AdminConfig;
             cy.apiUpdateConfig(setting);
 
-            // # Login as test user and go to town-square channel
+            // # Login as test user and go to general channel
             cy.apiLogin(testUser);
             cy.visit(offTopicUrl);
 

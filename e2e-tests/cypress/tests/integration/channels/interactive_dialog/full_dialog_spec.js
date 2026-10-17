@@ -26,7 +26,7 @@ describe('Interactive Dialog - Apps Form', () => {
 
     const optionsLength = {
         someuserselector: 25, // default number of users in autocomplete
-        somechannelselector: 2, // town-square and off-topic for new team
+        somechannelselector: 2, // general and off-topic for new team
         someoptionselector: 3, // number of defined basic options
         someradiooptions: 2, // number of defined basic options
     };

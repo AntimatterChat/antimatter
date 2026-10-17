@@ -240,7 +240,7 @@ function sysadminSetup(user) {
                 channels.forEach((channel) => {
                     if (
                         (channel.team_id === defaultTeam.id || channel.team_name === defaultTeam.name) &&
-                        (channel.name !== 'town-square' && channel.name !== 'off-topic')
+                        (channel.name !== 'general' && channel.name !== 'off-topic')
                     ) {
                         cy.apiDeleteChannel(channel.id);
                     }

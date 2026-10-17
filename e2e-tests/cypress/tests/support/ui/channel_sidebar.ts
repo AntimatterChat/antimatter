@@ -42,7 +42,7 @@ Cypress.Commands.add('uiCreateSidebarCategory', uiCreateSidebarCategory);
  * @param [isChannelId=false] whether channelName is a channel ID
  *
  * @example
- *   cy.uiMoveChannelToCategory('Town Square', 'Favorites');
+ *   cy.uiMoveChannelToCategory('General', 'Favorites');
  */
 function uiMoveChannelToCategory(channelName: string, categoryName: string, newCategory = false, isChannelId = false): ChainableT<any> {
     // # Open the channel menu, select Move to

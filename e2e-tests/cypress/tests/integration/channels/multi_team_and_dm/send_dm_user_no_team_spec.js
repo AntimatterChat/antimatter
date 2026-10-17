@@ -23,7 +23,7 @@ describe('Send a DM', () => {
         cy.apiInitSetup().then(({team, user}) => {
             userA = user;
             team1 = team;
-            testChannelUrl = `/${team.name}/channels/town-square`;
+            testChannelUrl = `/${team.name}/channels/general`;
 
             cy.apiCreateUser().then(({user: otherUser}) => {
                 userB = otherUser;

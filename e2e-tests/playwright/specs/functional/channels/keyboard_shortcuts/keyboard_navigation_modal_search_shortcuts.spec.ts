@@ -22,7 +22,7 @@ test(
         await page.keyboard.press('Alt+ArrowDown');
 
         // * Verify the next channel in the sidebar is shown
-        await channelsPage.centerView.header.toHaveTitle('Town Square');
+        await channelsPage.centerView.header.toHaveTitle('General');
 
         // # Move to the previous channel with the keyboard
         await page.keyboard.press('Alt+ArrowUp');
@@ -41,7 +41,7 @@ test(
     async ({pw}) => {
         const {user, team} = await pw.initSetup();
         const {channelsPage, page} = await pw.testBrowser.login(user);
-        await channelsPage.goto(team.name, 'town-square');
+        await channelsPage.goto(team.name, 'general');
         await channelsPage.toBeVisible();
 
         // # Focus the message box and press the Direct Messages shortcut

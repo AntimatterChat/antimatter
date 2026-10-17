@@ -5,7 +5,7 @@ import {decomposeKorean, expect, koreanTestPhrase, test, typeHangulCharacterWith
 
 async function openInvitePeopleModal(pw: any, adminUser: any, team: any) {
     const {channelsPage} = await pw.testBrowser.login(adminUser);
-    await channelsPage.goto(team.name, 'town-square');
+    await channelsPage.goto(team.name, 'general');
     await channelsPage.toBeVisible();
 
     await channelsPage.sidebarLeft.teamMenuButton.click();
@@ -28,7 +28,7 @@ test('MM-66937 Invite modal results match the current input state', async ({pw})
 
     // # Log in as admin
     const {channelsPage} = await pw.testBrowser.login(adminUser);
-    await channelsPage.goto(team.name, 'town-square');
+    await channelsPage.goto(team.name, 'general');
     await channelsPage.toBeVisible();
 
     // # Open the Invite People modal
@@ -205,7 +205,7 @@ test('MM-66937 Invite modal results match the current input state when typing in
 
     // # Log in as admin
     const {channelsPage, page} = await pw.testBrowser.login(adminUser);
-    await channelsPage.goto(team.name, 'town-square');
+    await channelsPage.goto(team.name, 'general');
     await channelsPage.toBeVisible();
 
     // # Open the Invite People modal

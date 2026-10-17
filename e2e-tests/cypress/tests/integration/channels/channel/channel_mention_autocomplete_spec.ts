@@ -56,7 +56,7 @@ describe('Channel', () => {
         cy.get('@suggestionList').get('[role="presentation"]').contains(myChannelsDividerText, {matchCase: false});
         cy.get('@suggestionList').get('[role="option"]').should('contain', ownChannel.display_name);
         cy.get('@suggestionList').get('[role="option"]').should('contain', 'Off-Topic');
-        cy.get('@suggestionList').get('[role="option"]').should('contain', 'Town Square');
+        cy.get('@suggestionList').get('[role="option"]').should('contain', 'General');
 
         // * Should render "OTHER CHANNELS" suggestion list group
         cy.get('@suggestionList').get('[role="presentation"]').contains(otherChannelsDividerText, {matchCase: false});
@@ -83,7 +83,7 @@ describe('Channel', () => {
         cy.get('@suggestionList').get('[role="option"]').should('contain', ownChannel.display_name);
         cy.get('@suggestionList').get('[role="option"]').should('contain', otherChannel.display_name);
         cy.get('@suggestionList').get('[role="option"]').should('contain', 'Off-Topic');
-        cy.get('@suggestionList').get('[role="option"]').should('contain', 'Town Square');
+        cy.get('@suggestionList').get('[role="option"]').should('contain', 'General');
     });
 
     it('Getting removed from a channel should alter channel mention autocomplete lists accordingly', () => {
@@ -108,7 +108,7 @@ describe('Channel', () => {
             cy.get('@suggestionList').get('[role="presentation"]').contains(myChannelsDividerText, {matchCase: false});
             cy.get('@suggestionList').get('[role="option"]').should('contain', ownChannel.display_name);
             cy.get('@suggestionList').get('[role="option"]').should('contain', 'Off-Topic');
-            cy.get('@suggestionList').get('[role="option"]').should('contain', 'Town Square');
+            cy.get('@suggestionList').get('[role="option"]').should('contain', 'General');
 
             // * Should render "OTHER CHANNELS" suggestion list group
             cy.get('@suggestionList').get('[role="presentation"]').contains(otherChannelsDividerText, {matchCase: false});

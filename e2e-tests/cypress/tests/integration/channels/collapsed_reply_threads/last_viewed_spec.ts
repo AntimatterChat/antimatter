@@ -59,8 +59,8 @@ describe('Collapsed Reply Threads', () => {
     });
 
     it('MM-T4887 should stay on threads view when switching teams', () => {
-        // # Navigate to the new teams town square
-        cy.visit(`/${teamA.name}/channels/town-square`);
+        // # Navigate to the new teams general
+        cy.visit(`/${teamA.name}/channels/general`);
 
         // # Switch to Team B
         cy.get(`#${teamB.name}TeamButton`, {timeout: TIMEOUTS.ONE_MIN}).should('be.visible').click();
@@ -79,7 +79,7 @@ describe('Collapsed Reply Threads', () => {
         cy.get(`#${teamA.name}TeamButton`, {timeout: TIMEOUTS.ONE_MIN}).should('be.visible').click();
 
         // Verify url is set to landing channel
-        cy.url().should('include', `${teamA.name}/channels/town-square`);
+        cy.url().should('include', `${teamA.name}/channels/general`);
     });
 
     it('MM-T4843_1 should go to threads view when switching a team if that was the last view on that team', () => {

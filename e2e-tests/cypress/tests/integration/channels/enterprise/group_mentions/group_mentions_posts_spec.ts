@@ -98,7 +98,7 @@ describe('Group Mentions', () => {
 
         // # Add board user to test team to ensure that it exists in the team and set its preferences to skip tutorial step
         cy.apiGetUserByEmail(boardUser.email).then(({user}) => {
-            cy.apiGetChannelByName(testTeam.name, 'town-square').then(({channel}) => {
+            cy.apiGetChannelByName(testTeam.name, 'general').then(({channel}) => {
                 cy.apiAddUserToTeam(testTeam.id, user.id).then(() => {
                     cy.apiAddUserToChannel(channel.id, user.id);
                 });
@@ -174,7 +174,7 @@ describe('Group Mentions', () => {
 
         // # Login as a regular user
         cy.apiLogin(regularUser);
-        cy.visit(`/${testTeam.name}/channels/town-square`);
+        cy.visit(`/${testTeam.name}/channels/general`);
         cy.uiGetPostTextBox();
 
         // # Trigger DM with a user
@@ -215,7 +215,7 @@ describe('Group Mentions', () => {
 
         // # Login as a regular user
         cy.apiLogin(regularUser);
-        cy.visit(`/${testTeam.name}/channels/town-square`);
+        cy.visit(`/${testTeam.name}/channels/general`);
         cy.uiGetPostTextBox();
 
         // # Trigger DM with couple of users

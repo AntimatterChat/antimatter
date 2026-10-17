@@ -14,7 +14,7 @@ import {expect, test} from '@mattermost/playwright-lib';
 test('MM-T5600 MM-T5601 shows the Bookmarks Bar option in the channel menu', {tag: '@channels'}, async ({pw}) => {
     const {user, team} = await pw.initSetup();
     const {channelsPage} = await pw.testBrowser.login(user);
-    await channelsPage.goto(team.name, 'town-square');
+    await channelsPage.goto(team.name, 'general');
     await channelsPage.toBeVisible();
 
     // # Open the channel menu
@@ -37,7 +37,7 @@ test('MM-T5600 MM-T5601 shows the Bookmarks Bar option in the channel menu', {ta
 test('MM-T5602 adds a link bookmark to the channel bookmarks bar', {tag: '@channels'}, async ({pw}) => {
     const {user, team} = await pw.initSetup();
     const {channelsPage} = await pw.testBrowser.login(user);
-    await channelsPage.goto(team.name, 'town-square');
+    await channelsPage.goto(team.name, 'general');
     await channelsPage.toBeVisible();
 
     // # Open the Bookmarks Bar submenu from the channel menu and choose "Add a link"
@@ -61,7 +61,7 @@ test('MM-T5602 adds a link bookmark to the channel bookmarks bar', {tag: '@chann
 test('MM-T5603 adds a file bookmark to the channel bookmarks bar', {tag: '@channels'}, async ({pw}) => {
     const {user, team} = await pw.initSetup();
     const {channelsPage, page} = await pw.testBrowser.login(user);
-    await channelsPage.goto(team.name, 'town-square');
+    await channelsPage.goto(team.name, 'general');
     await channelsPage.toBeVisible();
 
     // # Open the Bookmarks Bar submenu and choose "Attach a file", selecting a file

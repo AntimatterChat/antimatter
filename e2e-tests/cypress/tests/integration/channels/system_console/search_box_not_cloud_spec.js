@@ -36,8 +36,8 @@ describe('System console', () => {
         cy.apiInstallPluginFromUrl('https://github.com/mattermost/mattermost-plugin-aws-SNS/releases/download/v1.1.0/com.mattermost.aws-sns-1.1.0.tar.gz', true);
 
         // # A bug with the endpoint used for downloading plugins which doesn't send websocket events out so state is not updated
-        // # Therefore, we visit town-square to update the state of our app then re-visit admin console
-        cy.visit('ad-1/channels/town-square');
+        // # Therefore, we visit general to update the state of our app then re-visit admin console
+        cy.visit('ad-1/channels/general');
         cy.visit('/admin_console');
 
         // # Type first plugin name

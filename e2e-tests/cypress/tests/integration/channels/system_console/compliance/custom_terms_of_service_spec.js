@@ -50,8 +50,8 @@ describe('Custom Terms of Service', () => {
         // # Login as the test user
         cy.apiLogin(testUser);
 
-        // # Visit the test team town square
-        cy.visit(`/${testTeam.name}/channels/town-square`);
+        // # Visit the test team general
+        cy.visit(`/${testTeam.name}/channels/general`);
 
         // * Ensure that the terms of service text shows as expected
         cy.findByTestId('termsOfService').should('be.visible').and('contain.text', customTermsOfServiceText);
@@ -60,7 +60,7 @@ describe('Custom Terms of Service', () => {
         cy.get('#acceptTerms').should('be.visible').click();
 
         // * Ensure the user is redirected to the appropriate team after terms are accepted
-        cy.url().should('include', `/${testTeam.name}/channels/town-square`);
+        cy.url().should('include', `/${testTeam.name}/channels/general`);
     });
 
     it('MM-T1191 - Repeated edits must be agreed to', () => {
@@ -101,8 +101,8 @@ describe('Custom Terms of Service', () => {
         // # Login as the test user
         cy.apiLogin(testUser);
 
-        // # Visit the test team town square
-        cy.visit(`/${testTeam.name}/channels/town-square`);
+        // # Visit the test team general
+        cy.visit(`/${testTeam.name}/channels/general`);
 
         // * Ensure that the first terms of service is visible
         cy.findByTestId('termsOfService').should('be.visible').and('contain.text', firstTOS);
@@ -131,8 +131,8 @@ describe('Custom Terms of Service', () => {
         // # Login as the test user
         cy.apiLogin(testUser);
 
-        // # Visit the test team town square
-        cy.visit(`/${testTeam.name}/channels/town-square`);
+        // # Visit the test team general
+        cy.visit(`/${testTeam.name}/channels/general`);
 
         // * Ensure that the new terms of service is visible
         cy.findByTestId('termsOfService').should('be.visible').and('contain.text', secondTOS);
@@ -141,6 +141,6 @@ describe('Custom Terms of Service', () => {
         cy.get('#acceptTerms').should('be.visible').click();
 
         // * Ensure the user is redirected to the appropriate team after terms are accepted
-        cy.url().should('include', `/${testTeam.name}/channels/town-square`);
+        cy.url().should('include', `/${testTeam.name}/channels/general`);
     });
 });

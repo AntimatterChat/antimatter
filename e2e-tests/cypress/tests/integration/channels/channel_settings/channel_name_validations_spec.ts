@@ -22,9 +22,9 @@ describe('Channel routing', () => {
             testTeam = team;
             testUser = user;
 
-            // # Login as test user and go to town square
+            // # Login as test user and go to general
             cy.apiLogin(testUser);
-            cy.visit(`/${team.name}/channels/town-square`);
+            cy.visit(`/${team.name}/channels/general`);
         });
     });
 

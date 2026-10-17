@@ -17,7 +17,7 @@ test(
         const {adminUser, adminClient, team} = await pw.initSetup();
         const {channelsPage} = await pw.testBrowser.login(adminUser);
 
-        await channelsPage.goto(team.name, 'town-square');
+        await channelsPage.goto(team.name, 'general');
         await channelsPage.toBeVisible();
 
         // # Open the Channel Settings modal on the Info tab
@@ -25,7 +25,7 @@ test(
         const infoSettings = await channelSettings.openInfoTab();
 
         // * Verify the URL is shown read-only, with no way to edit it and an explanation why
-        await expect(infoSettings.urlLabel).toContainText('town-square');
+        await expect(infoSettings.urlLabel).toContainText('general');
         await expect(infoSettings.urlEditButton).not.toBeVisible();
         await expect(infoSettings.urlInput).not.toBeVisible();
         await expect(infoSettings.container.getByText(DEFAULT_CHANNEL_URL_LOCKED_TEXT)).toBeVisible();
@@ -40,8 +40,8 @@ test(
         await channelsPage.centerView.header.toHaveTitle('Company Wide');
 
         // * Verify the server kept the default channel URL and applied the new display name
-        const channel = await adminClient.getChannelByName(team.id, 'town-square');
-        expect(channel.name).toBe('town-square');
+        const channel = await adminClient.getChannelByName(team.id, 'general');
+        expect(channel.name).toBe('general');
         expect(channel.display_name).toBe('Company Wide');
     },
 );

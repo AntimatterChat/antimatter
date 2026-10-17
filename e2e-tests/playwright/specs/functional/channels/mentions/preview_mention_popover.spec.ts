@@ -20,11 +20,11 @@ test(
 
         const mentionedUser = await adminClient.createUser(await pw.random.user('mentioned'), '', '');
         await adminClient.addToTeam(team.id, mentionedUser.id);
-        const townSquare = await adminClient.getChannelByName(team.id, 'town-square');
+        const townSquare = await adminClient.getChannelByName(team.id, 'general');
         await adminClient.addToChannel(mentionedUser.id, townSquare.id);
 
         const {channelsPage} = await pw.testBrowser.login(user);
-        await channelsPage.goto(team.name, 'town-square');
+        await channelsPage.goto(team.name, 'general');
         await channelsPage.toBeVisible();
 
         const unique = `preview-mention-${pw.random.id()}`;

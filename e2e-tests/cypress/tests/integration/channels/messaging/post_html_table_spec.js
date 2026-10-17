@@ -14,9 +14,9 @@ import * as TIMEOUTS from '@/fixtures/timeouts';
 
 describe('Post HTML', () => {
     before(() => {
-        // # Create new team and new user and visit Town Square channel
+        // # Create new team and new user and visit General channel
         cy.apiInitSetup({loginAfter: true}).then(({team}) => {
-            cy.visit(`/${team.name}/channels/town-square`);
+            cy.visit(`/${team.name}/channels/general`);
         });
     });
 

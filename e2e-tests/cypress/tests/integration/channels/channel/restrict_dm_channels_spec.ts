@@ -36,8 +36,8 @@ describe('Restrict Direct Message Channels', () => {
     });
 
     it('should allow direct messages between any users when RestrictDirectMessage is set to "any"', () => {
-        // # Visit the town-square channel
-        cy.visit(`/${testTeam.name}/channels/town-square`);
+        // # Visit the general channel
+        cy.visit(`/${testTeam.name}/channels/general`);
 
         // # Open the direct messages modal
         cy.findByLabelText('DIRECT MESSAGES').parents('.SidebarChannelGroup').within(() => {
@@ -64,8 +64,8 @@ describe('Restrict Direct Message Channels', () => {
             });
         });
 
-        // # Visit the town-square channel
-        cy.visit(`/${testTeam.name}/channels/town-square`);
+        // # Visit the general channel
+        cy.visit(`/${testTeam.name}/channels/general`);
 
         // # Open the direct messages modal
         cy.findByLabelText('DIRECT MESSAGES').parents('.SidebarChannelGroup').within(() => {
@@ -86,8 +86,8 @@ describe('Restrict Direct Message Channels', () => {
         // # Login as the test user again
         cy.apiLogin(testUser);
 
-        // # Visit the town-square channel
-        cy.visit(`/${testTeam.name}/channels/town-square`);
+        // # Visit the general channel
+        cy.visit(`/${testTeam.name}/channels/general`);
 
         // # Open the direct messages modal
         cy.findByLabelText('DIRECT MESSAGES').parents('.SidebarChannelGroup').within(() => {
@@ -115,8 +115,8 @@ describe('Restrict Direct Message Channels', () => {
         // # Login as the test user
         cy.apiLogin(testUser);
 
-        // # Visit the town-square channel
-        cy.visit(`/${testTeam.name}/channels/town-square`);
+        // # Visit the general channel
+        cy.visit(`/${testTeam.name}/channels/general`);
 
         // # Open a direct message with another user
         cy.apiCreateDirectChannel([otherUser.id, testUser.id]).then((channel) => {

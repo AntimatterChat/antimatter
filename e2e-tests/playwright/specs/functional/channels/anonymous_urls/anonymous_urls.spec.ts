@@ -837,7 +837,7 @@ test.describe('Anonymous URLs', () => {
         const targetChannel = createdChannels[0];
 
         // # Open Find Channels and search by display name
-        await channelsPage.goto(team.name, 'town-square');
+        await channelsPage.goto(team.name, 'general');
         await channelsPage.toBeVisible();
         await channelsPage.sidebarLeft.findChannelButton.click();
         await channelsPage.findChannelsModal.toBeVisible();
@@ -879,7 +879,7 @@ test.describe('Anonymous URLs', () => {
         const postId = await lastPost.getId();
 
         // # Open message search from another channel
-        await channelsPage.goto(team.name, 'town-square');
+        await channelsPage.goto(team.name, 'general');
         await channelsPage.toBeVisible();
         await channelsPage.globalHeader.openSearch();
         await channelsPage.searchBox.searchInput.fill(message);
@@ -946,7 +946,7 @@ test.describe('Anonymous URLs', () => {
             const searchableChannel = createdChannels[1];
 
             // # Reopen the channel from Find Channels using its display name
-            await channelsPage.goto(team.name, 'town-square');
+            await channelsPage.goto(team.name, 'general');
             await channelsPage.toBeVisible();
             await channelsPage.sidebarLeft.findChannelButton.click();
             await channelsPage.findChannelsModal.toBeVisible();

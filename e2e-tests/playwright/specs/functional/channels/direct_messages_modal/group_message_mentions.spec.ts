@@ -47,7 +47,7 @@ test(
         const [member1, member2] = await adminClient.createUsers(team.id, 2, 'gm');
 
         const {channelsPage, page} = await pw.testBrowser.login(user);
-        await channelsPage.goto(team.name, 'town-square');
+        await channelsPage.goto(team.name, 'general');
         await channelsPage.toBeVisible();
 
         // # Create a group message with the two members

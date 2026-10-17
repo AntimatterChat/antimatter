@@ -15,14 +15,14 @@ test.describe('draft channel switch', () => {
         await channelsPage.toBeVisible();
 
         const originDraft = `origin-draft-${pw.random.id()}`;
-        const destinationMessage = `town-square-${pw.random.id()}`;
+        const destinationMessage = `general-${pw.random.id()}`;
 
         // # Type a draft in Off-Topic and do not send it
         await channelsPage.centerView.postCreate.writeMessage(originDraft);
 
-        // # Switch to Town Square via the sidebar
-        await channelsPage.sidebarLeft.goToItem('town-square');
-        await channelsPage.centerView.header.toHaveTitle('Town Square');
+        // # Switch to General via the sidebar
+        await channelsPage.sidebarLeft.goToItem('general');
+        await channelsPage.centerView.header.toHaveTitle('General');
 
         // * Destination composer must not inherit the origin draft
         expect(await channelsPage.centerView.postCreate.getInputValue()).toBe('');
@@ -34,11 +34,11 @@ test.describe('draft channel switch', () => {
         await expect(channelsPage.sidebarLeft.draftIcon('off-topic')).toBeVisible();
         await channelsPage.sidebarLeft.draftsVisible();
 
-        // # Send a different message from Town Square
+        // # Send a different message from General
         await channelsPage.centerView.postCreate.writeMessage(destinationMessage);
         await channelsPage.centerView.postCreate.sendMessage();
 
-        // * Town Square shows the destination message
+        // * General shows the destination message
         await channelsPage.centerView.waitUntilLastPostContains(destinationMessage);
 
         // # Return to Off-Topic
@@ -54,11 +54,11 @@ test.describe('draft channel switch', () => {
         // * Off-Topic shows the origin draft message
         await channelsPage.centerView.waitUntilLastPostContains(originDraft);
 
-        // # Return to Town Square
-        await channelsPage.sidebarLeft.goToItem('town-square');
-        await channelsPage.centerView.header.toHaveTitle('Town Square');
+        // # Return to General
+        await channelsPage.sidebarLeft.goToItem('general');
+        await channelsPage.centerView.header.toHaveTitle('General');
 
-        // * Origin draft did not post to Town Square
+        // * Origin draft did not post to General
         await expect(channelsPage.centerView.container).not.toContainText(originDraft);
     });
 
@@ -79,14 +79,14 @@ test.describe('draft channel switch', () => {
         // # Leave a draft in Off-Topic
         await channelsPage.centerView.postCreate.writeMessage(originDraft);
 
-        // # Switch to Town Square using Ctrl/Cmd+K
+        // # Switch to General using Ctrl/Cmd+K
         await page.keyboard.press('ControlOrMeta+K');
         await expect(channelsPage.findChannelsModal.input).toBeVisible();
         await channelsPage.findChannelsModal.input.fill('town');
-        await channelsPage.findChannelsModal.selectChannel('town-square');
-        await channelsPage.centerView.header.toHaveTitle('Town Square');
+        await channelsPage.findChannelsModal.selectChannel('general');
+        await channelsPage.centerView.header.toHaveTitle('General');
 
-        // * Town Square did not inherit the Off-Topic draft
+        // * General did not inherit the Off-Topic draft
         expect(await channelsPage.centerView.postCreate.getInputValue()).toBe('');
 
         // # Send a destination-owned message

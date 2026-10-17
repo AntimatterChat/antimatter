@@ -10,7 +10,7 @@ test('MM-T71 moves the autocomplete highlight with hover and arrow keys', {tag: 
     // # Create and log in as a test user
     const {user, team} = await pw.initSetup();
     const {channelsPage} = await pw.testBrowser.login(user);
-    await channelsPage.goto(team.name, 'town-square');
+    await channelsPage.goto(team.name, 'general');
     await channelsPage.toBeVisible();
 
     // # Type a partial emoji name to open the autocomplete with multiple suggestions

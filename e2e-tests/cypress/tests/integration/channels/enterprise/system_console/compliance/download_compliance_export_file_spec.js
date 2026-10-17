@@ -58,7 +58,7 @@ describe('Compliance Export', () => {
         cy.uiEnableComplianceExport();
 
         // # Navigate to a team and post an attachment
-        cy.visit(`/${newTeam.name}/channels/town-square`);
+        cy.visit(`/${newTeam.name}/channels/general`);
         gotoTeamAndPostImage();
 
         // # Go to compliance page and start export
@@ -90,7 +90,7 @@ describe('Compliance Export', () => {
         cy.uiEnableComplianceExport(ExportFormatActiance);
 
         // # Navigate to a team and post an attachment
-        cy.visit(`/${newTeam.name}/channels/town-square`);
+        cy.visit(`/${newTeam.name}/channels/general`);
         gotoTeamAndPostImage();
 
         // # Go to compliance page and start export
@@ -127,7 +127,7 @@ describe('Compliance Export', () => {
         cy.uiEnableComplianceExport(ExportFormatActiance);
 
         // # Navigate to a team and post a message with an attachment
-        cy.visit(`/${newTeam.name}/channels/town-square`);
+        cy.visit(`/${newTeam.name}/channels/general`);
         gotoTeamAndPostImage();
 
         // # Go to compliance page and start export
@@ -160,15 +160,15 @@ describe('Compliance Export', () => {
         cy.uiEnableComplianceExport(ExportFormatActiance);
 
         // # Navigate to a team and post a message
-        cy.visit(`/${newTeam.name}/channels/town-square`);
+        cy.visit(`/${newTeam.name}/channels/general`);
         cy.postMessage('Testing');
 
         // # Go to compliance page and start export
         cy.uiGoToCompliancePage();
         cy.uiExportCompliance();
 
-        // # Visit town-square channel and edit the last post
-        cy.visit(`/${newTeam.name}/channels/town-square`);
+        // # Visit general channel and edit the last post
+        cy.visit(`/${newTeam.name}/channels/general`);
         editLastPost('Hello');
 
         // # Go to compliance page and start export
@@ -268,7 +268,7 @@ describe('Compliance Export', () => {
 function deleteLastPost() {
     cy.apiGetTeamsForUser().then(({teams}) => {
         const team = teams[0];
-        cy.visit(`/${team.name}/channels/town-square`);
+        cy.visit(`/${team.name}/channels/general`);
         cy.getLastPostId().then((lastPostId) => {
             // # Click post dot menu in center.
             cy.clickPostDotMenu(lastPostId);

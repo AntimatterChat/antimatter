@@ -60,16 +60,16 @@ describe('System Console > User Management > Users', () => {
         // # Login as System Admin
         cy.apiAdminLogin();
 
-        // # Create new setup, login as test user and visit town-square
+        // # Create new setup, login as test user and visit general
         cy.apiInitSetup({loginAfter: true}).then(({team}) => {
-            cy.visit(`/${team.name}/channels/town-square`);
+            cy.visit(`/${team.name}/channels/general`);
             cy.get('#sidebarItem_off-topic').click({force: true});
 
             // # Issue a Request to Revoke All Sessions as SysAdmin
             const baseUrl = Cypress.config('baseUrl');
             cy.externalRequest({user: admin, method: 'post', baseUrl, path: 'users/sessions/revoke/all'}).then(() => {
-                // # Initiate browser activity like visit to town-square
-                cy.visit(`/${team.name}/channels/town-square`);
+                // # Initiate browser activity like visit to general
+                cy.visit(`/${team.name}/channels/general`);
 
                 // * Verify if the regular member is logged out and redirected to login page
                 cy.url({timeout: TIMEOUTS.HALF_MIN}).should('include', '/login');

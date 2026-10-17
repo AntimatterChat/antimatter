@@ -45,7 +45,7 @@ test.describe('Team Members Modal - Membership Policy Banner', {tag: ['@abac', '
 
         const {page} = await pw.testBrowser.login(teamAdmin);
         const channelsPage = new ChannelsPage(page);
-        await channelsPage.goto(team.name, 'town-square');
+        await channelsPage.goto(team.name, 'general');
         await channelsPage.toBeVisible();
 
         // # Open Team Members modal via sidebar menu
@@ -81,7 +81,7 @@ test.describe('Team Members Modal - Membership Policy Banner', {tag: ['@abac', '
 
         const {page} = await pw.testBrowser.login(teamAdmin);
         const channelsPage = new ChannelsPage(page);
-        await channelsPage.goto(team.name, 'town-square');
+        await channelsPage.goto(team.name, 'general');
         await channelsPage.toBeVisible();
 
         // # Open Team Members modal
@@ -144,7 +144,7 @@ test.describe('Team Members Modal - Membership Policy Banner', {tag: ['@abac', '
 
         const {page} = await pw.testBrowser.login(regularUser);
         const channelsPage = new ChannelsPage(page);
-        await channelsPage.goto(team.name, 'town-square');
+        await channelsPage.goto(team.name, 'general');
         await channelsPage.toBeVisible();
 
         // # Open Team Members modal (regular user sees "View members")
@@ -173,7 +173,7 @@ test.describe('Team Members Modal - Membership Policy Banner', {tag: ['@abac', '
 
         const {page} = await pw.testBrowser.login(teamAdmin);
         const channelsPage = new ChannelsPage(page);
-        await channelsPage.goto(team.name, 'town-square');
+        await channelsPage.goto(team.name, 'general');
         await channelsPage.toBeVisible();
 
         // # Open Team Members modal

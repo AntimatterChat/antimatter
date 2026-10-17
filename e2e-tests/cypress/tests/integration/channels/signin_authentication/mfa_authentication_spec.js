@@ -54,7 +54,7 @@ describe('Authentication', () => {
         cy.apiLogin(testUser);
 
         // # Go to Profile > Security > Multi-factor Authentication > Edit
-        cy.visit(`/${testTeam.name}/channels/town-square`).wait(timeouts.ONE_SEC);
+        cy.visit(`/${testTeam.name}/channels/general`).wait(timeouts.ONE_SEC);
         cy.uiOpenProfileModal('Security');
         cy.get('#mfaEdit').should('be.visible').click();
         cy.findByText('Add MFA to Account').should('be.visible').click();
@@ -80,7 +80,7 @@ describe('Authentication', () => {
             fillMFACode(token);
 
             // * Multi-factor Authentication is enabled, and login is successful only after entering the MFA code.
-            cy.url().should('include', 'town-square');
+            cy.url().should('include', 'general');
         });
     });
 
@@ -116,7 +116,7 @@ describe('Authentication', () => {
             fillCredentialsForUser(testUser);
 
             // * Login should be successful without having to enter an MFA code.
-            cy.url().should('include', 'town-square');
+            cy.url().should('include', 'general');
         });
     });
 });

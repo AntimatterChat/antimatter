@@ -89,8 +89,8 @@ test(
         // # Hold the channel search open so the initial local results can be observed independently of the response
         const releaseSearch = await holdChannelSearch(page);
 
-        // # Visit town-square channel
-        await channelsPage.goto(team.name, 'town-square');
+        // # Visit general channel
+        await channelsPage.goto(team.name, 'general');
         await channelsPage.toBeVisible();
 
         // # Type a channel mention matching both channels
@@ -165,8 +165,8 @@ test('channel mention autocomplete ignores a search that finishes out of order',
         await route.continue();
     });
 
-    // # Visit town-square channel
-    await channelsPage.goto(team.name, 'town-square');
+    // # Visit general channel
+    await channelsPage.goto(team.name, 'general');
     await channelsPage.toBeVisible();
 
     // # Note when the delayed search for the shortest mention finishes

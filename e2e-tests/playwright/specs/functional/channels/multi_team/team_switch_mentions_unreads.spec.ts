@@ -39,7 +39,7 @@ test(
         // * Verify the second team opens at the top of its channel list and both DMs remain available
         await expect
             .poll(() => page.url(), {timeout: pw.duration.ten_sec})
-            .toContain(`/${secondTeam.name}/channels/town-square`);
+            .toContain(`/${secondTeam.name}/channels/general`);
         await expect(channelsPage.sidebarLeft.teamMenuButton).toContainText(secondTeam.display_name);
         await expect(channelsPage.sidebarLeft.item(sharedUser.username)).toBeVisible();
         await expect(channelsPage.sidebarLeft.item(firstTeamUser.username)).toBeVisible();

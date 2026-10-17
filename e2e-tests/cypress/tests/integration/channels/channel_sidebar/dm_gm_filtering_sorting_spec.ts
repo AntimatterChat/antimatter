@@ -15,7 +15,7 @@ describe('DM/GM filtering and sorting', () => {
     let testUser: Cypress.UserProfile;
 
     before(() => {
-        // # Login as test user and visit town-square
+        // # Login as test user and visit general
         cy.apiInitSetup({loginAfter: true, promoteNewUserAsAdmin: true}).then(({user, townSquareUrl}) => {
             testUser = user;
             cy.visit(townSquareUrl);

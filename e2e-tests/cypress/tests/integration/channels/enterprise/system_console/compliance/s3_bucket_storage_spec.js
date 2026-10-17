@@ -77,7 +77,7 @@ describe('Compliance Export', () => {
         cy.findByText('Connection was successful').should('be.visible');
 
         // # Navigate to a team and post an attachment
-        cy.visit(`/${teamName}/channels/town-square`);
+        cy.visit(`/${teamName}/channels/general`);
         gotoTeamAndPostImage();
 
         // # Go to compliance page and start export

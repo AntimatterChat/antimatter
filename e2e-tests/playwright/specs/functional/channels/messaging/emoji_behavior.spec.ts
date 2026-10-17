@@ -56,7 +56,7 @@ test('MM-T156 ignores a leading colon when searching the emoji picker', {tag: '@
     // # Create and log in as a test user
     const {user, team} = await pw.initSetup();
     const {channelsPage} = await pw.testBrowser.login(user);
-    await channelsPage.goto(team.name, 'town-square');
+    await channelsPage.goto(team.name, 'general');
     await channelsPage.toBeVisible();
 
     // # Post a message and open the emoji reaction picker on it

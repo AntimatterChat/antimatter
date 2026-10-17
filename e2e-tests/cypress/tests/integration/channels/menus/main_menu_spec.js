@@ -23,7 +23,7 @@ describe('Main menu', () => {
 
     it('MM-T711_1 - Click on menu item should toggle the menu', () => {
         cy.apiLogin(testUser);
-        cy.visit(`/${testTeam.name}/channels/town-square`);
+        cy.visit(`/${testTeam.name}/channels/general`);
 
         cy.uiOpenProfileModal('Profile Settings');
         cy.findByRole('set status').should('not.exist');
@@ -31,7 +31,7 @@ describe('Main menu', () => {
 
     it('MM-T711_2 - Click on menu divider shouldn\'t toggle the menu', () => {
         cy.apiLogin(testUser);
-        cy.visit(`/${testTeam.name}/channels/town-square`);
+        cy.visit(`/${testTeam.name}/channels/general`);
 
         cy.uiOpenUserMenu().within(() => {
             cy.findAllByRole('separator').last().click();
@@ -40,7 +40,7 @@ describe('Main menu', () => {
 
     it('should show integrations option for system administrator', () => {
         cy.apiAdminLogin();
-        cy.visit(`/${testTeam.name}/channels/town-square`);
+        cy.visit(`/${testTeam.name}/channels/general`);
 
         cy.uiOpenSwitchProductMenu();
 
@@ -49,7 +49,7 @@ describe('Main menu', () => {
 
     it('should not show integrations option for team member without permissions', () => {
         cy.apiLogin(testUser);
-        cy.visit(`/${testTeam.name}/channels/town-square`);
+        cy.visit(`/${testTeam.name}/channels/general`);
 
         cy.uiOpenSwitchProductMenu();
 

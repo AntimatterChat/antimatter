@@ -10,7 +10,7 @@ test('MM-T359 returns all case variants when searching a hashtag', {tag: ['@sear
     // # Create and log in as a test user
     const {user, team} = await pw.initSetup();
     const {channelsPage} = await pw.testBrowser.login(user);
-    await channelsPage.goto(team.name, 'town-square');
+    await channelsPage.goto(team.name, 'general');
     await channelsPage.toBeVisible();
 
     // # Post the same hashtag word in three different letter cases
@@ -39,7 +39,7 @@ test('MM-T360 searches a hashtag from a recent mention', {tag: '@search'}, async
     // # Create the test user plus a second user who will mention them
     const {user, team, adminClient} = await pw.initSetup();
     const [mentioner] = await adminClient.createUsers(team.id, 1, 'mentioner');
-    const townSquare = await adminClient.getChannelByName(team.id, 'town-square');
+    const townSquare = await adminClient.getChannelByName(team.id, 'general');
     await adminClient.addToChannel(mentioner.id, townSquare.id);
 
     // # The second user posts a message with a hashtag that mentions the test user
@@ -48,7 +48,7 @@ test('MM-T360 searches a hashtag from a recent mention', {tag: '@search'}, async
     await mentionerClient.createPost({channel_id: townSquare.id, message: `${hashtag} @${user.username}`});
 
     const {channelsPage} = await pw.testBrowser.login(user);
-    await channelsPage.goto(team.name, 'town-square');
+    await channelsPage.goto(team.name, 'general');
     await channelsPage.toBeVisible();
 
     // # Open Recent Mentions
@@ -73,14 +73,14 @@ test('MM-T361 searches a hashtag from a saved message', {tag: '@search'}, async 
     // # Create and log in as a test user, and post + save a message with a hashtag
     const {user, team, userClient} = await pw.initSetup();
     const hashtag = `#hello${pw.random.id()}`;
-    const townSquare = await userClient.getChannelByName(team.id, 'town-square');
+    const townSquare = await userClient.getChannelByName(team.id, 'general');
     const post = await userClient.createPost({channel_id: townSquare.id, message: `${hashtag} World`});
     await userClient.savePreferences(user.id, [
         {user_id: user.id, category: 'flagged_post', name: post.id, value: 'true'},
     ]);
 
     const {channelsPage} = await pw.testBrowser.login(user);
-    await channelsPage.goto(team.name, 'town-square');
+    await channelsPage.goto(team.name, 'general');
     await channelsPage.toBeVisible();
 
     // # Open Saved messages

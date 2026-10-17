@@ -86,7 +86,7 @@ describe('Group Mentions', () => {
 
         // # Add board user to test team to ensure that it exists in the team and set its preferences to skip tutorial step
         cy.apiGetUserByEmail(boardUser.email).then(({user}) => {
-            cy.apiGetChannelByName(testTeam.name, 'town-square').then(({channel}) => {
+            cy.apiGetChannelByName(testTeam.name, 'general').then(({channel}) => {
                 cy.apiAddUserToTeam(testTeam.id, user.id).then(() => {
                     cy.apiAddUserToChannel(channel.id, user.id);
                 });

@@ -26,7 +26,7 @@ async function postWithPriorityAndVerify(pw: PlaywrightExtended, priority: Exclu
     const {channelsPage} = await pw.testBrowser.login(user);
 
     // # Visit default channel page
-    await channelsPage.goto(team.name, 'town-square');
+    await channelsPage.goto(team.name, 'general');
     await channelsPage.toBeVisible();
 
     // # Open priority menu
@@ -87,7 +87,7 @@ test(
         const {channelsPage} = await pw.testBrowser.login(user);
 
         // # Visit default channel page
-        await channelsPage.goto(team.name, 'town-square');
+        await channelsPage.goto(team.name, 'general');
         await channelsPage.toBeVisible();
 
         // * Verify the priority control is available while the system setting is enabled
@@ -142,7 +142,7 @@ test(
 
             // # Log in as a user after the setting is disabled
             const {channelsPage} = await pw.testBrowser.login(user);
-            await channelsPage.goto(team.name, 'town-square');
+            await channelsPage.goto(team.name, 'general');
             await channelsPage.toBeVisible();
 
             // * Verify the priority control is hidden
@@ -197,7 +197,7 @@ test(
         const {channelsPage} = await pw.testBrowser.login(user);
 
         // # Visit default channel page
-        await channelsPage.goto(team.name, 'town-square');
+        await channelsPage.goto(team.name, 'general');
         await channelsPage.toBeVisible();
 
         const {postCreate} = channelsPage.centerView;

@@ -15,7 +15,7 @@ test(
     async ({pw}) => {
         const {user, team} = await pw.initSetup();
         const {channelsPage, page} = await pw.testBrowser.login(user);
-        await channelsPage.goto(team.name, 'town-square');
+        await channelsPage.goto(team.name, 'general');
         await channelsPage.toBeVisible();
 
         // # Post a message and press Up arrow from the empty center message box
@@ -70,7 +70,7 @@ test(
     async ({pw}) => {
         const {user, team} = await pw.initSetup();
         const {channelsPage, page} = await pw.testBrowser.login(user);
-        await channelsPage.goto(team.name, 'town-square');
+        await channelsPage.goto(team.name, 'general');
         await channelsPage.toBeVisible();
 
         // # Compose a fenced code block using Shift+Enter for new lines

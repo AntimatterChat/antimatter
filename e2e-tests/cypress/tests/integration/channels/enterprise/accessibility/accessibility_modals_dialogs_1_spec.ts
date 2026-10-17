@@ -38,9 +38,9 @@ describe('Verify Accessibility Support in Modals & Dialogs', () => {
     });
 
     beforeEach(() => {
-        // # Login as sysadmin and visit the town-square
+        // # Login as sysadmin and visit the general
         cy.apiAdminLogin();
-        cy.visit(`/${testTeam.name}/channels/town-square`);
+        cy.visit(`/${testTeam.name}/channels/general`);
     });
 
     it('MM-T1454 Accessibility Support in Different Modals and Dialog screen', () => {

@@ -47,15 +47,15 @@ describe('Channels', () => {
                     testChannel = channel;
                 });
 
-                // # Go to town square
-                cy.visit(`/${team.name}/channels/town-square`);
+                // # Go to general
+                cy.visit(`/${team.name}/channels/general`);
             });
         });
     });
 
     it('MM-19337 Verify UI of Browse channels modal with archived selection as admin', () => {
         // * Verify browse channels modal as admin shows archived channels option
-        cy.visit(`/${testTeam.name}/channels/town-square`);
+        cy.visit(`/${testTeam.name}/channels/general`);
         cy.uiBrowseOrCreateChannel('Browse channels');
         cy.get('#browseChannelsModal').should('be.visible').within(() => {
             cy.get('#menuWrapper').should('be.visible').and('have.text', channelType.all);
@@ -66,7 +66,7 @@ describe('Channels', () => {
     it('MM-19337 Verify UI of Browse channels modal with archived selection as regular user', () => {
         // # Login as regular user and verify browse channels modal shows archived channels option
         cy.apiLogin(testUser);
-        cy.visit(`/${testTeam.name}/channels/town-square`);
+        cy.visit(`/${testTeam.name}/channels/general`);
         cy.uiBrowseOrCreateChannel('Browse channels');
         cy.get('#browseChannelsModal').should('be.visible').within(() => {
             cy.get('#menuWrapper').should('be.visible').and('have.text', channelType.all);
@@ -77,7 +77,7 @@ describe('Channels', () => {
     it('MM-19337 Enable users to view archived channels', () => {
         // # Login as new user and go to "/"
         cy.apiLogin(otherUser);
-        cy.visit(`/${testTeam.name}/channels/town-square`);
+        cy.visit(`/${testTeam.name}/channels/general`);
 
         // # Go to LHS and click 'Browse channels'
         cy.uiBrowseOrCreateChannel('Browse channels');
@@ -153,7 +153,7 @@ describe('Channels', () => {
         cy.uiGetPostTextBox({exist: false});
 
         // # Switch to another channel
-        cy.get('#sidebarItem_town-square').click();
+        cy.get('#sidebarItem_general').click();
 
         // * Assert that archived channel doesn't show up in LHS list
         cy.get('#sidebar-left').should('not.contain', testChannel.display_name);
@@ -162,7 +162,7 @@ describe('Channels', () => {
     it('MM-19337 Increase channel member count when user joins a channel', () => {
         // # Login as new user and go to "/"
         cy.apiLogin(otherUser);
-        cy.visit(`/${testTeam.name}/channels/town-square`);
+        cy.visit(`/${testTeam.name}/channels/general`);
 
         let newChannel: Channel;
         cy.apiCreateChannel(testTeam.id, 'channel-to-leave', 'Channel to leave').then(({channel}) => {
@@ -172,8 +172,8 @@ describe('Channels', () => {
             // # Leave the channel
             cy.uiLeaveChannel();
 
-            // * Verify that we've switched to Town Square
-            cy.url().should('include', '/channels/town-square');
+            // * Verify that we've switched to General
+            cy.url().should('include', '/channels/general');
         });
 
         // # Go to LHS and click 'Browse channels'
@@ -205,8 +205,8 @@ describe('Channels', () => {
                 // # Leave the channel
                 cy.uiLeaveChannel();
 
-                // * Verify that we've switched to Town Square
-                cy.url().should('include', '/channels/town-square');
+                // * Verify that we've switched to General
+                cy.url().should('include', '/channels/general');
             });
 
             cy.apiCreateChannel(team.id, 'archived-channel', 'Archived Channel').then(({channel}) => {
@@ -221,8 +221,8 @@ describe('Channels', () => {
                 // # Leave the channel
                 cy.uiLeaveChannel();
 
-                // * Verify that we've switched to Town Square
-                cy.url().should('include', '/channels/town-square');
+                // * Verify that we've switched to General
+                cy.url().should('include', '/channels/general');
             });
 
             createPrivateChannel(team.id).then((channel) => {
@@ -233,7 +233,7 @@ describe('Channels', () => {
 
                 // # Archive the channel
                 cy.uiArchiveChannel();
-                cy.visit(`/${team.name}/channels/town-square`);
+                cy.visit(`/${team.name}/channels/general`);
             });
         });
 

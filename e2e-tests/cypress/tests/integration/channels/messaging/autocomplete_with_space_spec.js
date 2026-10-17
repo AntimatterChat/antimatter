@@ -16,7 +16,7 @@ describe('Messaging', () => {
     let testUser;
 
     before(() => {
-        // # Login as admin and visit town-square
+        // # Login as admin and visit general
         cy.apiInitSetup({channelPrefix: {name: 'ask-anything', displayName: 'Ask Anything'}}).then(({team, channel, user}) => {
             testTeam = team;
             testChannel = channel;
@@ -25,7 +25,7 @@ describe('Messaging', () => {
     });
 
     beforeEach(() => {
-        cy.visit(`/${testTeam.name}/channels/town-square`);
+        cy.visit(`/${testTeam.name}/channels/general`);
     });
 
     it('MM-T1662_1 Autocomplete should match entries with spaces', () => {

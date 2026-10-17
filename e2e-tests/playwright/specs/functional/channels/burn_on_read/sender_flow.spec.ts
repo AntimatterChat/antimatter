@@ -15,7 +15,7 @@ test.describe('Burn-on-Read Sender Flow', () => {
 
         // # Login as sender
         const {channelsPage} = await pw.testBrowser.login(user);
-        await channelsPage.goto(team.name, 'town-square');
+        await channelsPage.goto(team.name, 'general');
         await channelsPage.toBeVisible();
 
         // # Enable BoR toggle in composer
@@ -139,7 +139,7 @@ test.describe('Burn-on-Read Sender Flow', () => {
 
         // # Login as sender and post BoR message
         const {channelsPage: senderPage} = await pw.testBrowser.login(user);
-        await senderPage.goto(team.name, 'town-square');
+        await senderPage.goto(team.name, 'general');
         await senderPage.centerView.postCreate.toggleBurnOnRead();
         const message = `To be deleted ${pw.random.id()}`;
         await senderPage.postMessage(message);
@@ -164,7 +164,7 @@ test.describe('Burn-on-Read Sender Flow', () => {
 
         // # Login as recipient and verify post is not visible
         const {channelsPage: recipientPage} = await pw.testBrowser.login(recipient);
-        await recipientPage.goto(team.name, 'town-square');
+        await recipientPage.goto(team.name, 'general');
 
         // * Verify the deleted message is not in the channel
         const posts = await recipientPage.centerView.container.locator('.post').all();

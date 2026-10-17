@@ -21,7 +21,7 @@ describe('Environment', () => {
         cy.shouldNotRunOnCloudEdition();
         cy.apiInitSetup().then(({team}) => {
             testTeam = team;
-            townsquareLink = `/${team.name}/channels/town-square`;
+            townsquareLink = `/${team.name}/channels/general`;
         });
     });
 

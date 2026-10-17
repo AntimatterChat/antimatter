@@ -19,9 +19,9 @@ describe('Integrations', () => {
         cy.apiUploadAndEnablePlugin(demoPlugin);
         cy.apiUploadAndEnablePlugin(jiraPlugin);
 
-        // # Initialize setup and visit town-square
+        // # Initialize setup and visit general
         cy.apiInitSetup().then(({team}) => {
-            cy.visit(`/${team.name}/channels/town-square`);
+            cy.visit(`/${team.name}/channels/general`);
         });
     });
 

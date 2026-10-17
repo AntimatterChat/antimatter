@@ -14,7 +14,7 @@ test(
     async ({pw}) => {
         const {adminUser, team} = await pw.initSetup();
         const {channelsPage} = await pw.testBrowser.login(adminUser);
-        await channelsPage.goto(team.name, 'town-square');
+        await channelsPage.goto(team.name, 'general');
         await channelsPage.toBeVisible();
 
         // # Open the App Marketplace from the product menu

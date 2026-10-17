@@ -36,9 +36,9 @@ describe('Keyboard Shortcuts', () => {
     });
 
     beforeEach(() => {
-        // # Login as admin and visit town-square
+        // # Login as admin and visit general
         cy.apiAdminLogin();
-        cy.visit(`/${testTeam.name}/channels/town-square`);
+        cy.visit(`/${testTeam.name}/channels/general`);
     });
 
     it('MM-T1227 - CTRL/CMD+K - Join public channel', () => {

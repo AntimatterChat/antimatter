@@ -88,7 +88,7 @@ describe('Authentication', () => {
         cy.visit('/login');
         fillCredentialsForUser(testUser2);
 
-        cy.visit(`/${testTeam2.name}/channels/town-square`).wait(timeouts.ONE_SEC);
+        cy.visit(`/${testTeam2.name}/channels/general`).wait(timeouts.ONE_SEC);
 
         // # Logout
         cy.uiLogout();
@@ -106,6 +106,6 @@ describe('Authentication', () => {
         cy.visit('/login');
         fillCredentialsForUser(testUser2);
 
-        cy.url().should('include', `/${testTeam2.name}/channels/town-square`);
+        cy.url().should('include', `/${testTeam2.name}/channels/general`);
     });
 });

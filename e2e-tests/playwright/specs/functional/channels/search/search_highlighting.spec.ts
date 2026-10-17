@@ -10,7 +10,7 @@ test('MM-T354 highlights only the searched terms when searching with double quot
     // # Create and log in as a test user
     const {user, team} = await pw.initSetup();
     const {channelsPage} = await pw.testBrowser.login(user);
-    await channelsPage.goto(team.name, 'town-square');
+    await channelsPage.goto(team.name, 'general');
     await channelsPage.toBeVisible();
 
     // # Post a message that contains the two search words plus an unrelated unique word
@@ -41,7 +41,7 @@ test(
         // # Create and log in as a test user
         const {user, team} = await pw.initSetup();
         const {channelsPage} = await pw.testBrowser.login(user);
-        await channelsPage.goto(team.name, 'town-square');
+        await channelsPage.goto(team.name, 'general');
         await channelsPage.toBeVisible();
 
         // # Post a message that contains two distinct words

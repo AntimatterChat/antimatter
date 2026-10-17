@@ -78,7 +78,7 @@ describe('Deactivated user', () => {
                     should('have.property', 'value', personalAccessToken);
 
                 // * Verify we're still logged in using the PAT
-                cy.get('#sidebarItem_town-square').should('be.visible');
+                cy.get('#sidebarItem_general').should('be.visible');
 
                 // # Make an API request using the PAT
                 cy.request({
@@ -113,7 +113,7 @@ describe('Deactivated user', () => {
                         });
 
                         // # Try to navigate back to the channel
-                        cy.visit(`/${testTeam.name}/channels/town-square`);
+                        cy.visit(`/${testTeam.name}/channels/general`);
 
                         // * Verify we are redirect to the login page
                         cy.url().should('include', '/login');

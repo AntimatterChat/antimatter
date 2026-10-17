@@ -14,7 +14,7 @@ test('forward post channel selector searches and selects a destination channel',
 
     const message = `forward-selector-${pw.random.id()}`;
     const {channelsPage, page} = await pw.testBrowser.login(user);
-    await channelsPage.goto(team.name, 'town-square');
+    await channelsPage.goto(team.name, 'general');
     await channelsPage.toBeVisible();
     await channelsPage.postMessage(message);
 

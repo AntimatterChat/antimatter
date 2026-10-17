@@ -83,7 +83,7 @@ test.describe('Team Settings Modal - Access Tab - Discoverability', {tag: ['@aba
         const channelsPage = new ChannelsPage(page);
 
         // # Navigate and open Team Settings
-        await channelsPage.goto(team.name, 'town-square');
+        await channelsPage.goto(team.name, 'general');
         await channelsPage.toBeVisible();
         const teamSettings = await channelsPage.openTeamSettings();
         await teamSettings.openAccessTab();
@@ -122,7 +122,7 @@ test.describe('Team Settings Modal - Access Tab - Discoverability', {tag: ['@aba
         const channelsPage = new ChannelsPage(page);
 
         // # Navigate and open Team Settings
-        await channelsPage.goto(team.name, 'town-square');
+        await channelsPage.goto(team.name, 'general');
         await channelsPage.toBeVisible();
         const teamSettings = await channelsPage.openTeamSettings();
         await teamSettings.openAccessTab();
@@ -160,7 +160,7 @@ test.describe('Team Settings Modal - Access Tab - Discoverability', {tag: ['@aba
         const channelsPage = new ChannelsPage(page);
 
         // # Navigate and open Team Settings (team is public)
-        await channelsPage.goto(team.name, 'town-square');
+        await channelsPage.goto(team.name, 'general');
         await channelsPage.toBeVisible();
         const teamSettings = await channelsPage.openTeamSettings();
         await teamSettings.openAccessTab();
@@ -199,7 +199,7 @@ test.describe('Team Settings Modal - Access Tab - Discoverability', {tag: ['@aba
         const channelsPage = new ChannelsPage(page);
 
         // # Navigate and open Team Settings
-        await channelsPage.goto(team.name, 'town-square');
+        await channelsPage.goto(team.name, 'general');
         await channelsPage.toBeVisible();
         const teamSettings = await channelsPage.openTeamSettings();
         await teamSettings.openAccessTab();
@@ -229,7 +229,7 @@ test.describe('Team Settings Modal - Access Tab - Discoverability', {tag: ['@aba
         const channelsPage = new ChannelsPage(page);
 
         // # Navigate and open Team Settings
-        await channelsPage.goto(team.name, 'town-square');
+        await channelsPage.goto(team.name, 'general');
         await channelsPage.toBeVisible();
         const teamSettings = await channelsPage.openTeamSettings();
         await teamSettings.openAccessTab();
@@ -272,7 +272,7 @@ test.describe('Team Settings Modal - Access Tab - Discoverability', {tag: ['@aba
         const channelsPage = new ChannelsPage(page);
 
         // # Navigate and open Team Settings
-        await channelsPage.goto(team.name, 'town-square');
+        await channelsPage.goto(team.name, 'general');
         await channelsPage.toBeVisible();
         const teamSettings = await channelsPage.openTeamSettings();
         await teamSettings.openAccessTab();
@@ -325,7 +325,7 @@ test.describe('Team Settings Modal - Access Tab - Discoverability', {tag: ['@aba
         const channelsPage = new ChannelsPage(page);
 
         // # Navigate and open Team Settings (team is private + policy_enforced)
-        await channelsPage.goto(team.name, 'town-square');
+        await channelsPage.goto(team.name, 'general');
         await channelsPage.toBeVisible();
         const teamSettings = await channelsPage.openTeamSettings();
         await teamSettings.openAccessTab();
@@ -373,7 +373,7 @@ test.describe('Team Settings Modal - Access Tab - Discoverability', {tag: ['@aba
 
         const {page} = await pw.testBrowser.login(adminUser);
         const channelsPage = new ChannelsPage(page);
-        await channelsPage.goto(team.name, 'town-square');
+        await channelsPage.goto(team.name, 'general');
         await channelsPage.toBeVisible();
 
         // # Switch the team public and save
@@ -445,7 +445,7 @@ test.describe('Team Settings Modal - Access Tab - Discoverability', {tag: ['@aba
 
         const {page} = await pw.testBrowser.login(adminUser);
         const channelsPage = new ChannelsPage(page);
-        await channelsPage.goto(team.name, 'town-square');
+        await channelsPage.goto(team.name, 'general');
         await channelsPage.toBeVisible();
         const teamSettings = await channelsPage.openTeamSettings();
         await teamSettings.openAccessTab();
@@ -481,7 +481,7 @@ test.describe('Team Settings Modal - Access Tab - Discoverability', {tag: ['@aba
 
         const {page} = await pw.testBrowser.login(adminUser);
         const channelsPage = new ChannelsPage(page);
-        await channelsPage.goto(team.name, 'town-square');
+        await channelsPage.goto(team.name, 'general');
         await channelsPage.toBeVisible();
         const teamSettings = await channelsPage.openTeamSettings();
         await teamSettings.openAccessTab();
@@ -512,7 +512,7 @@ test.describe('Team Settings Modal - Access Tab - Discoverability', {tag: ['@aba
         const channelsPage = new ChannelsPage(page);
 
         // # Navigate and open Team Settings
-        await channelsPage.goto(team.name, 'town-square');
+        await channelsPage.goto(team.name, 'general');
         await channelsPage.toBeVisible();
         const teamSettings = await channelsPage.openTeamSettings();
         await teamSettings.openAccessTab();

@@ -40,7 +40,7 @@ test('MM-T94 RHS fetches messages on reconnect while a different channel is in c
 
     // # Reconnect and nudge the client with some activity so it resyncs missed messages
     await pw.connectWebsockets(page);
-    await channelsPage.sidebarLeft.goToItem('town-square');
+    await channelsPage.sidebarLeft.goToItem('general');
     await channelsPage.postMessage('nudge 1');
     await channelsPage.sidebarLeft.goToItem(offTopic.name);
     await channelsPage.postMessage('nudge 2');

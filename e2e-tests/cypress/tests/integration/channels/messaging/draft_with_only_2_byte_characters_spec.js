@@ -42,8 +42,8 @@ describe('Messaging', () => {
         // * Check that the Korean message got posted in the channel
         cy.get(`#postMessageText_${lastPostId}`).should('contain', '휴');
 
-        // # Change channels to the Town Square channel
-        cy.get('#sidebarItem_town-square').click();
+        // # Change channels to the General channel
+        cy.get('#sidebarItem_general').click();
 
         // * Check that the draft icon does not exist next to the Test Channel name
         cy.get(`#sidebarItem_${testChannel.name}`).findByTestId('draftIcon').should('not.exist');

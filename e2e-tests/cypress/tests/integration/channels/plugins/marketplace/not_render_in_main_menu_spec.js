@@ -19,7 +19,7 @@ describe('Plugin Marketplace', () => {
     before(() => {
         cy.apiInitSetup().then(({team, user}) => {
             regularUser = user;
-            townsquareLink = `/${team.name}/channels/town-square`;
+            townsquareLink = `/${team.name}/channels/general`;
         });
     });
 
@@ -57,7 +57,7 @@ describe('Plugin Marketplace', () => {
             },
         });
 
-        // # Visit town-square channel
+        // # Visit general channel
         cy.visit(townsquareLink);
 
         // * Verify Plugin Marketplace does not exist
@@ -75,7 +75,7 @@ describe('Plugin Marketplace', () => {
             },
         });
 
-        // # Visit town-square channel
+        // # Visit general channel
         cy.visit(townsquareLink);
 
         // * Verify Plugin Marketplace does not exist

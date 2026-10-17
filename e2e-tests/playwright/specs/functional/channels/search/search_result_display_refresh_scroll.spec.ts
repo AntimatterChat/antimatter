@@ -57,10 +57,10 @@ test('MM-T355 replaces old search results with new results', {tag: '@search'}, a
     const helloToken = `hello${pw.random.id()}`;
     const writingToken = `writing${pw.random.id()}`;
 
-    await channelsPage.goto(team.name, 'town-square');
+    await channelsPage.goto(team.name, 'general');
     await channelsPage.toBeVisible();
 
-    // # Post a message in Town Square and search for it
+    // # Post a message in General and search for it
     await channelsPage.postMessage(`${helloToken} there everyone`);
     await channelsPage.searchFor(helloToken);
 

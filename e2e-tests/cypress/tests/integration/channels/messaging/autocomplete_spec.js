@@ -27,7 +27,7 @@ describe('autocomplete', () => {
     before(() => {
         sysadmin = getAdminAccount();
 
-        // # Login as admin and visit town-square
+        // # Login as admin and visit general
         cy.apiInitSetup({channelPrefix: {name: 'ask-anything', displayName: 'Ask Anything'}}).then(({team, channel, user}) => {
             testTeam = team;
             testChannel = channel;
@@ -59,7 +59,7 @@ describe('autocomplete', () => {
     });
 
     it('MM-T2199 @ autocomplete - username', () => {
-        cy.visit(`/${testTeam.name}/channels/town-square`);
+        cy.visit(`/${testTeam.name}/channels/general`);
 
         // # Clear then type @  and user name
         cy.uiGetPostTextBox().clear().type(`@${testUser.username}`);
@@ -81,7 +81,7 @@ describe('autocomplete', () => {
     });
 
     it('MM-T2200 @ autocomplete - nickname', () => {
-        cy.visit(`/${testTeam.name}/channels/town-square`);
+        cy.visit(`/${testTeam.name}/channels/general`);
 
         // # Clear then type @ and user nickname
         cy.uiGetPostTextBox().clear().type(`@${testUser.nickname}`);
@@ -103,7 +103,7 @@ describe('autocomplete', () => {
     });
 
     it('MM-T2201 @ autocomplete - first name', () => {
-        cy.visit(`/${testTeam.name}/channels/town-square`);
+        cy.visit(`/${testTeam.name}/channels/general`);
 
         // # Clear then type @  and user first names
         cy.uiGetPostTextBox().clear().type(`@${testUser.first_name}`);
@@ -125,7 +125,7 @@ describe('autocomplete', () => {
     });
 
     it('MM-T2203 @ autocomplete - not email', () => {
-        cy.visit(`/${testTeam.name}/channels/town-square`);
+        cy.visit(`/${testTeam.name}/channels/general`);
 
         // # Clear then type @ and user email
         cy.uiGetPostTextBox().clear().type(`@${testUser.email}`);
@@ -293,7 +293,7 @@ describe('autocomplete', () => {
     });
 
     it('MM-T2212 @ mention followed by dot or underscore should highlight', () => {
-        cy.visit(`/${testTeam.name}/channels/town-square`);
+        cy.visit(`/${testTeam.name}/channels/general`);
 
         // # Type input suffixed with '.'
         cy.uiGetPostTextBox().clear().type(`@${sysadmin.username}.`).type('{enter}{enter}');

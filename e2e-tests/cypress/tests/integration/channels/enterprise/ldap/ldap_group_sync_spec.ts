@@ -292,13 +292,13 @@ context('ldap', () => {
         it('MM-T2630 - Default channel cannot be toggled to private', () => {
             cy.visit('/admin_console/user_management/channels');
 
-            // # Search for the channel town square
+            // # Search for the channel general
             cy.get('.DataGrid_searchBar').within(() => {
-                cy.findByPlaceholderText('Search').should('be.visible').type('Town Square');
+                cy.findByPlaceholderText('Search').should('be.visible').type('General');
             });
             cy.wait(TIMEOUTS.FIVE_SEC);
 
-            cy.findAllByTestId('town-squareedit').then((elements) => {
+            cy.findAllByTestId('generaledit').then((elements) => {
                 elements[0].click();
                 cy.get('.admin-console__header', {timeout: TIMEOUTS.ONE_MIN}).should('be.visible').and('have.text', 'Channel Configuration');
 
@@ -323,7 +323,7 @@ context('ldap', () => {
 
                 // # Post /leave command in testChannel to leave it
                 cy.postMessage('/leave ');
-                cy.get('#channelHeaderTitle', {timeout: TIMEOUTS.ONE_MIN}).should('be.visible').and('contain', 'Town Square');
+                cy.get('#channelHeaderTitle', {timeout: TIMEOUTS.ONE_MIN}).should('be.visible').and('contain', 'General');
 
                 // Visit the permalink link
                 cy.visit(`/${testTeam.name}/pl/${postId}`);
@@ -333,7 +333,7 @@ context('ldap', () => {
 
                 // # Leave the channel again
                 cy.postMessage('/leave ');
-                cy.get('#channelHeaderTitle', {timeout: TIMEOUTS.ONE_MIN}).should('be.visible').and('contain', 'Town Square');
+                cy.get('#channelHeaderTitle', {timeout: TIMEOUTS.ONE_MIN}).should('be.visible').and('contain', 'General');
 
                 // # Login as sysadmin and convert testChannel to private channel
                 cy.apiAdminLogin();

@@ -39,8 +39,8 @@ test(
         // # Log in user
         const {page, channelsPage} = await pw.testBrowser.login(user);
 
-        // # Visit town square to ensure we're in a stable state
-        await channelsPage.goto(team.name, 'town-square');
+        // # Visit general to ensure we're in a stable state
+        await channelsPage.goto(team.name, 'general');
         await channelsPage.toBeVisible();
 
         // # Open browse channels modal to show archived channels

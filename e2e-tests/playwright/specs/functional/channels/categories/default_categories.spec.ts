@@ -35,7 +35,7 @@ test.describe('Channel Category Sorting', () => {
 
             // # Log in and open channel settings
             const {channelsPage} = await pw.testBrowser.login(adminUser);
-            await channelsPage.goto(team.name, 'town-square');
+            await channelsPage.goto(team.name, 'general');
             await channelsPage.toBeVisible();
 
             const channelSettingsModal = await channelsPage.openChannelSettings();
@@ -66,7 +66,7 @@ test.describe('Channel Category Sorting', () => {
 
             // # Log in and open the new channel modal
             const {page, channelsPage} = await pw.testBrowser.login(adminUser);
-            await channelsPage.goto(team.name, 'town-square');
+            await channelsPage.goto(team.name, 'general');
             await channelsPage.toBeVisible();
 
             const newChannelModal = await channelsPage.openNewChannelModal();
@@ -108,9 +108,9 @@ test.describe('Channel Category Sorting', () => {
         await enableChannelCategorySorting(adminClient);
         await adminClient.addToTeam(team.id, adminUser.id);
 
-        // # Log in and navigate to town-square
+        // # Log in and navigate to general
         const {page, channelsPage} = await pw.testBrowser.login(adminUser);
-        await channelsPage.goto(team.name, 'town-square');
+        await channelsPage.goto(team.name, 'general');
         await channelsPage.toBeVisible();
 
         // # Create a new channel

@@ -49,9 +49,9 @@ test.describe('Message attachment special character decoding', () => {
             const {team, user, adminClient} = await pw.initSetup();
 
             const channels = await adminClient.getMyChannels(team.id);
-            const townSquare = channels.find((ch) => ch.name === 'town-square');
+            const townSquare = channels.find((ch) => ch.name === 'general');
             if (!townSquare) {
-                throw new Error('Town Square channel not found');
+                throw new Error('General channel not found');
             }
 
             // # Create an incoming webhook for the channel
@@ -74,7 +74,7 @@ test.describe('Message attachment special character decoding', () => {
 
             // # Log in and navigate to the channel
             const {channelsPage} = await pw.testBrowser.login(user);
-            await channelsPage.goto(team.name, 'town-square');
+            await channelsPage.goto(team.name, 'general');
             await channelsPage.toBeVisible();
 
             // # Get the last post which should contain the webhook attachment
@@ -98,9 +98,9 @@ test.describe('Message attachment special character decoding', () => {
             const {team, user, adminClient} = await pw.initSetup();
 
             const channels = await adminClient.getMyChannels(team.id);
-            const townSquare = channels.find((ch) => ch.name === 'town-square');
+            const townSquare = channels.find((ch) => ch.name === 'general');
             if (!townSquare) {
-                throw new Error('Town Square channel not found');
+                throw new Error('General channel not found');
             }
 
             const webhook = await adminClient.createIncomingWebhook({
@@ -120,7 +120,7 @@ test.describe('Message attachment special character decoding', () => {
             });
 
             const {channelsPage} = await pw.testBrowser.login(user);
-            await channelsPage.goto(team.name, 'town-square');
+            await channelsPage.goto(team.name, 'general');
             await channelsPage.toBeVisible();
 
             const lastPost = await channelsPage.getLastPost();
@@ -140,9 +140,9 @@ test.describe('Message attachment special character decoding', () => {
             const {team, user, adminClient} = await pw.initSetup();
 
             const channels = await adminClient.getMyChannels(team.id);
-            const townSquare = channels.find((ch) => ch.name === 'town-square');
+            const townSquare = channels.find((ch) => ch.name === 'general');
             if (!townSquare) {
-                throw new Error('Town Square channel not found');
+                throw new Error('General channel not found');
             }
 
             const webhook = await adminClient.createIncomingWebhook({
@@ -160,7 +160,7 @@ test.describe('Message attachment special character decoding', () => {
             });
 
             const {channelsPage} = await pw.testBrowser.login(user);
-            await channelsPage.goto(team.name, 'town-square');
+            await channelsPage.goto(team.name, 'general');
             await channelsPage.toBeVisible();
 
             const lastPost = await channelsPage.getLastPost();
@@ -180,9 +180,9 @@ test.describe('Message attachment special character decoding', () => {
             const {team, user, adminClient} = await pw.initSetup();
 
             const channels = await adminClient.getMyChannels(team.id);
-            const townSquare = channels.find((ch) => ch.name === 'town-square');
+            const townSquare = channels.find((ch) => ch.name === 'general');
             if (!townSquare) {
-                throw new Error('Town Square channel not found');
+                throw new Error('General channel not found');
             }
 
             const webhook = await adminClient.createIncomingWebhook({
@@ -203,7 +203,7 @@ test.describe('Message attachment special character decoding', () => {
             });
 
             const {channelsPage} = await pw.testBrowser.login(user);
-            await channelsPage.goto(team.name, 'town-square');
+            await channelsPage.goto(team.name, 'general');
             await channelsPage.toBeVisible();
 
             const lastPost = await channelsPage.getLastPost();
@@ -224,9 +224,9 @@ test.describe('Message attachment special character decoding', () => {
             const {team, user, adminClient} = await pw.initSetup();
 
             const channels = await adminClient.getMyChannels(team.id);
-            const townSquare = channels.find((ch) => ch.name === 'town-square');
+            const townSquare = channels.find((ch) => ch.name === 'general');
             if (!townSquare) {
-                throw new Error('Town Square channel not found');
+                throw new Error('General channel not found');
             }
 
             const webhook = await adminClient.createIncomingWebhook({
@@ -246,7 +246,7 @@ test.describe('Message attachment special character decoding', () => {
             });
 
             const {channelsPage} = await pw.testBrowser.login(user);
-            await channelsPage.goto(team.name, 'town-square');
+            await channelsPage.goto(team.name, 'general');
             await channelsPage.toBeVisible();
 
             const lastPost = await channelsPage.getLastPost();
@@ -267,9 +267,9 @@ test.describe('Message attachment special character decoding', () => {
             const {team, user, adminClient} = await pw.initSetup();
 
             const channels = await adminClient.getMyChannels(team.id);
-            const townSquare = channels.find((ch) => ch.name === 'town-square');
+            const townSquare = channels.find((ch) => ch.name === 'general');
             if (!townSquare) {
-                throw new Error('Town Square channel not found');
+                throw new Error('General channel not found');
             }
 
             const webhook = await adminClient.createIncomingWebhook({
@@ -290,7 +290,7 @@ test.describe('Message attachment special character decoding', () => {
             });
 
             const {channelsPage} = await pw.testBrowser.login(user);
-            await channelsPage.goto(team.name, 'town-square');
+            await channelsPage.goto(team.name, 'general');
             await channelsPage.toBeVisible();
 
             const lastPost = await channelsPage.getLastPost();

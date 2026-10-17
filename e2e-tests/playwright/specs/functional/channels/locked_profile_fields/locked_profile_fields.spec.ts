@@ -142,7 +142,7 @@ async function setLockConfig(adminClient: Client4, lockSetting: LockSetting) {
 }
 
 async function openInviteModal(channelsPage: ChannelsPage, team: Team) {
-    await channelsPage.goto(team.name, 'town-square');
+    await channelsPage.goto(team.name, 'general');
     await channelsPage.toBeVisible();
     await channelsPage.sidebarLeft.teamMenuButton.click();
     await channelsPage.teamMenu.toBeVisible();

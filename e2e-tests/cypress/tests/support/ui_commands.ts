@@ -418,7 +418,7 @@ Cypress.Commands.add('leaveTeam', leaveTeam);
 // Text Box
 // ***********************************************************
 
-function clearPostTextbox(channelName = 'town-square') {
+function clearPostTextbox(channelName = 'general') {
     cy.get(`#sidebarItem_${channelName}`).click({force: true});
     cy.uiGetPostTextBox().clear();
 }

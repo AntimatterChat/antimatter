@@ -33,7 +33,7 @@ describe('Recent Emoji', () => {
 
         cy.apiInitSetup().then(({team, user}) => {
             cy.apiLogin(user);
-            townsquareLink = `/${team.name}/channels/town-square`;
+            townsquareLink = `/${team.name}/channels/general`;
             cy.visit(townsquareLink);
         });
     });

@@ -29,7 +29,7 @@ describe('Profile popover', () => {
 
                 cy.apiAddUserToTeam(testTeam.id, otherUser.id).then(() => {
                     cy.apiAddUserToChannel(testChannel.id, otherUser.id).then(() => {
-                        // # Login as test user and visit town-square
+                        // # Login as test user and visit general
                         cy.apiLogin(testUser);
                         cy.visit(`/${testTeam.name}/channels/${testChannel.name}`);
 
@@ -68,7 +68,7 @@ describe('Profile popover', () => {
 });
 
 function verifyDMChannelViaSendMessage(postId, team, channel, profileSelector, user) {
-    // # Go to default town-square channel
+    // # Go to default general channel
     cy.visit(`/${team.name}/channels/${channel.name}`);
 
     // # Visit post thread on RHS and verify that RHS is opened

@@ -52,7 +52,7 @@ describe('Bot post unread message', () => {
         markAsUnreadFromPost(botPost);
 
         // * Verify the channel is unread in LHS
-        cy.visit(`/${testTeam.name}/channels/town-square`);
+        cy.visit(`/${testTeam.name}/channels/general`);
         cy.get(`#sidebarItem_${newChannel.name}`).should(beUnread).click();
 
         // * Verify the notification separator line exists and present before the unread message

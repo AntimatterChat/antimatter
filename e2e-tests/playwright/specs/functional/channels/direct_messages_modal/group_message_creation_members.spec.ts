@@ -14,7 +14,7 @@ test('MM-T460 Add and remove users while creating new Group Message', async ({pw
 
     // # Open the Direct Messages modal and select two users
     const {channelsPage} = await pw.testBrowser.login(user);
-    await channelsPage.goto(team.name, 'town-square');
+    await channelsPage.goto(team.name, 'general');
     await channelsPage.toBeVisible();
     const modal = await channelsPage.openDirectChannelsModal();
     await modal.selectUser(participants[0]);
@@ -57,7 +57,7 @@ test('MM-T465 Create a group message and show participant details', async ({pw})
 
     // # Create a group message from the Direct Messages modal
     const {channelsPage} = await pw.testBrowser.login(user);
-    await channelsPage.goto(team.name, 'town-square');
+    await channelsPage.goto(team.name, 'general');
     await channelsPage.toBeVisible();
     const modal = await channelsPage.openDirectChannelsModal();
     for (const participant of participants) {
@@ -100,7 +100,7 @@ test(
         const [member1, member2, member3] = await adminClient.createUsers(team.id, 3, 'gm');
 
         const {channelsPage, page} = await pw.testBrowser.login(user);
-        await channelsPage.goto(team.name, 'town-square');
+        await channelsPage.goto(team.name, 'general');
         await channelsPage.toBeVisible();
 
         // # Create a group message with two members

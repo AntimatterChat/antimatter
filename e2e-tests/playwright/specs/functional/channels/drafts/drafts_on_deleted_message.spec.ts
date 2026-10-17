@@ -13,7 +13,7 @@ test('MM-T5435_1 Global Drafts link in sidebar should be hidden when another use
     }
 
     // # Get the default channel of the team for getting the channel id
-    const channel = await adminClient.getChannelByName(team.id, 'town-square');
+    const channel = await adminClient.getChannelByName(team.id, 'general');
 
     // # Create a post in the channel by admin
     const adminPost = await adminClient.createPost(

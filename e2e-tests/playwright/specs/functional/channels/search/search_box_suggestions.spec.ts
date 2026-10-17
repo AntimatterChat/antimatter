@@ -105,7 +105,7 @@ test('limits grouped channel suggestions and preserves the selected channel', {t
     }
 
     const {channelsPage} = await pw.testBrowser.login(user);
-    await channelsPage.goto(team.name, 'town-square');
+    await channelsPage.goto(team.name, 'general');
     await channelsPage.toBeVisible();
 
     await channelsPage.globalHeader.openSearch();

@@ -54,7 +54,7 @@ describe('Incoming webhook', () => {
     });
 
     beforeEach(() => {
-        cy.visit(`/${testTeam.name}/channels/town-square`);
+        cy.visit(`/${testTeam.name}/channels/general`);
     });
 
     it('MM-T620 Payload username and profile picture override in-app settings', () => {

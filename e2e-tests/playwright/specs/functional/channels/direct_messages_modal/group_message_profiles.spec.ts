@@ -42,7 +42,7 @@ test(
 
         // # Log the user in and open the channels page
         const {page, channelsPage} = await pw.testBrowser.login(user);
-        await channelsPage.goto(team.name, 'town-square');
+        await channelsPage.goto(team.name, 'general');
         await channelsPage.toBeVisible();
 
         // # Create 11 GMs using the Direct Channels modal
@@ -72,8 +72,8 @@ test(
         const targetGm = gmChannels[0];
         const otherGms = gmChannels.slice(1);
 
-        // # Refresh the app and go back to Town Square
-        await channelsPage.goto(team.name, 'town-square');
+        // # Refresh the app and go back to General
+        await channelsPage.goto(team.name, 'general');
 
         // * Verify the target GM is not present in the sidebar to ensure that the sidebar hasn't loaded it
         await expect(page.locator(`#sidebarItem_${targetGm.channel.name}`)).toHaveCount(0);

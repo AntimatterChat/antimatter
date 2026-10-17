@@ -19,8 +19,8 @@ test('should open /dialog date and post submit confirmation after selecting date
     await channelsPage.goto();
     await channelsPage.toBeVisible();
 
-    // 3. Navigate to Town Square
-    await channelsPage.goto(team.name, 'town-square');
+    // 3. Navigate to General
+    await channelsPage.goto(team.name, 'general');
     await channelsPage.toBeVisible();
 
     // 4. Send /dialog date command (retry if the dialog doesn't appear — plugin races are common under PW_WORKERS=8).

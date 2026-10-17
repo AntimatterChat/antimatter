@@ -39,7 +39,7 @@ test.fixme(
 
         // # Log in as the non-member user and open Browse Channels
         const {channelsPage} = await pw.testBrowser.login(user);
-        await channelsPage.goto(team.name, 'town-square');
+        await channelsPage.goto(team.name, 'general');
         await channelsPage.toBeVisible();
 
         const dialog = await channelsPage.openBrowseChannelsModal();
@@ -80,7 +80,7 @@ test(
 
         // # Log in as the non-member user
         const {channelsPage} = await pw.testBrowser.login(user);
-        await channelsPage.goto(team.name, 'town-square');
+        await channelsPage.goto(team.name, 'general');
         await channelsPage.toBeVisible();
 
         // # Open Find Channels (Cmd/Ctrl+K) and locate the discoverable channel

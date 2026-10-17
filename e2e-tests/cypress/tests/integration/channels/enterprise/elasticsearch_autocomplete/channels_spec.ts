@@ -35,7 +35,7 @@ describe('Autocomplete with Elasticsearch - Channel', () => {
         // # Enable Elasticsearch
         enableElasticSearch();
 
-        // # Login as test user and go to town-square
+        // # Login as test user and go to general
         cy.apiInitSetup({loginAfter: true}).then(({team, user}) => {
             testUser = user;
             testTeam = team;
@@ -43,8 +43,8 @@ describe('Autocomplete with Elasticsearch - Channel', () => {
     });
 
     beforeEach(() => {
-        // # Visit town-square channel
-        cy.visit(`/${testTeam.name}/channels/town-square`);
+        // # Visit general channel
+        cy.visit(`/${testTeam.name}/channels/general`);
     });
 
     it('MM-T2510_1 Private channel I do belong to appears', () => {

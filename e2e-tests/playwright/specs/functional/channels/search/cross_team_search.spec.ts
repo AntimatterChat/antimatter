@@ -16,7 +16,7 @@ test('MM-T5806 cross-team search works under the Onyx (dark) theme', {tag: '@sea
     await adminClient.addUsersToTeam(secondTeam.id, [user.id]);
 
     const message = 'this is a test post containing the word pineapple';
-    const channel = await adminClient.getChannelByName(team.id, 'town-square');
+    const channel = await adminClient.getChannelByName(team.id, 'general');
     await adminClient.createPost({channel_id: channel.id, message});
 
     // # Log in and switch to the Onyx (dark) theme
@@ -151,7 +151,7 @@ test.fixme(
         const {adminClient, team, user} = await pw.initSetup();
         const secondTeam = await adminClient.createTeam(await pw.random.team('team', 'Team', 'O', true));
         await adminClient.addUsersToTeam(secondTeam.id, [user.id]);
-        const channel = await adminClient.getChannelByName(team.id, 'town-square');
+        const channel = await adminClient.getChannelByName(team.id, 'general');
 
         const {channelsPage} = await pw.testBrowser.login(user);
         await channelsPage.goto(team.name, channel.name);

@@ -101,7 +101,7 @@ test(
         await ensureABACEnabled(adminClient);
 
         const {channelsPage} = await pw.testBrowser.login(user);
-        await channelsPage.goto(team.name, 'town-square');
+        await channelsPage.goto(team.name, 'general');
         await channelsPage.toBeVisible();
 
         // * Verify the composer agrees the user may create one, so a later failure points
@@ -111,7 +111,7 @@ test(
         // # Schedule a burn-on-read post for a few seconds out. Through the API rather
         // than the schedule-message modal, whose slots are half-hourly; the server accepts
         // any time down to 5s in the past.
-        const channel = await adminClient.getChannelByName(team.id, 'town-square');
+        const channel = await adminClient.getChannelByName(team.id, 'general');
         const message = `bor scheduled ${getRandomId()}`;
         const scheduled = await scheduleBurnOnReadPostInPage(channelsPage.page, {
             channelId: channel.id,

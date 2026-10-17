@@ -23,7 +23,7 @@ test(
         await adminClient.addToChannel(user.id, publicChannel.id);
 
         const {channelsPage, page} = await pw.testBrowser.login(user);
-        await channelsPage.goto(team.name, 'town-square');
+        await channelsPage.goto(team.name, 'general');
         await channelsPage.toBeVisible();
 
         const {findChannelsModal} = channelsPage;
@@ -75,7 +75,7 @@ test(
 
         // # Log in as admin in one browser session
         const {channelsPage: adminChannelsPage} = await pw.testBrowser.login(adminUser);
-        await adminChannelsPage.goto(team.name, 'town-square');
+        await adminChannelsPage.goto(team.name, 'general');
         await adminChannelsPage.toBeVisible();
 
         // # Have admin post the root message for the thread
@@ -108,7 +108,7 @@ test(
 
         // # Log in as regular user in a separate browser session
         const {channelsPage: userChannelsPage, page: userPage} = await pw.testBrowser.login(user);
-        await userChannelsPage.goto(team.name, 'town-square');
+        await userChannelsPage.goto(team.name, 'general');
         await userChannelsPage.toBeVisible();
 
         // # Bring focus to the post textbox in center channel
@@ -151,7 +151,7 @@ test(
     async ({pw}) => {
         const {user, team} = await pw.initSetup();
         const {channelsPage, page} = await pw.testBrowser.login(user);
-        await channelsPage.goto(team.name, 'town-square');
+        await channelsPage.goto(team.name, 'general');
         await channelsPage.toBeVisible();
 
         // # Post a message and open its reply thread in the right sidebar

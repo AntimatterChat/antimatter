@@ -16,15 +16,15 @@ test('shows the communities and their channels', async ({fusion, run}) => {
 
     await expect(fusion.sidebar.getByRole('heading', {level: 2, name: run.team.displayName})).toBeVisible();
     await expect(fusion.sidebar.locator(`a[href$="/channels/${run.channel.name}"]`)).toBeVisible();
-    await expect(fusion.sidebar.locator('a[href$="/channels/town-square"]')).toBeVisible();
+    await expect(fusion.sidebar.locator('a[href$="/channels/general"]')).toBeVisible();
     await expect(fusion.main.getByRole('heading', {level: 1})).toContainText(run.channel.displayName);
 });
 
 test('switches channel from the sidebar', async ({fusion, page, run}) => {
     await fusion.openChannel();
 
-    await fusion.sidebar.locator('a[href$="/channels/town-square"]').click();
-    await expect(page).toHaveURL(/\/channels\/town-square$/);
+    await fusion.sidebar.locator('a[href$="/channels/general"]').click();
+    await expect(page).toHaveURL(/\/channels\/general$/);
     await expect(fusion.main.getByRole('heading', {level: 1})).not.toContainText(run.channel.displayName);
 
     // Back: the test channel may sit in a collapsed category, which only shows the open channel.
@@ -32,4 +32,12 @@ test('switches channel from the sidebar', async ({fusion, page, run}) => {
     await expect(page).toHaveURL(new RegExp(`/channels/${run.channel.name}$`));
     await expect(fusion.main.getByRole('heading', {level: 1})).toContainText(run.channel.displayName);
     await expect(fusion.composer).toBeVisible();
+});
+
+test('an old link to town-square, the default channel\'s former name, lands in general', async ({fusion, page, run}) => {
+    await fusion.openChannel();
+
+    await page.goto(`/${run.team.name}/channels/town-square`);
+    await expect(page).toHaveURL(/\/channels\/general$/);
+    await expect(fusion.main.getByRole('heading', {level: 1})).toContainText('General');
 });

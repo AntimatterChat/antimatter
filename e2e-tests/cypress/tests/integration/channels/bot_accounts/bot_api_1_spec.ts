@@ -62,7 +62,7 @@ describe('Bot accounts ownership and API', () => {
         // # Login as a regular user
         cy.apiLogin(newUser);
 
-        cy.visit(`/${newTeam.name}/channels/town-square`);
+        cy.visit(`/${newTeam.name}/channels/general`);
 
         // # Click product switch button
         cy.uiOpenSwitchProductMenu();

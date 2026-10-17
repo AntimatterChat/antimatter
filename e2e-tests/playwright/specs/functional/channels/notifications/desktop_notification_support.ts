@@ -134,9 +134,9 @@ export async function runDisplayNameCase(pw: PlaywrightExtended, testCase: Displ
     }
 
     const channel = await adminClient.getChannelByName(team.id, 'off-topic');
-    const townSquare = await adminClient.getChannelByName(team.id, 'town-square');
+    const townSquare = await adminClient.getChannelByName(team.id, 'general');
     const {page, channelsPage} = await pw.testBrowser.login(receiver);
-    await channelsPage.goto(team.name, 'town-square');
+    await channelsPage.goto(team.name, 'general');
     await channelsPage.toBeVisible();
     await pw.stubNotification(page, 'granted');
     await ensureSenderProfileLoaded(senderClient, channelsPage, townSquare.id, pw, page);
@@ -183,9 +183,9 @@ export async function runNotificationSettingCase(pw: PlaywrightExtended, testCas
     await adminClient.addToChannel(receiver.id, syncChannel.id);
     await adminClient.addToChannel(sender.id, syncChannel.id);
 
-    const townSquare = await adminClient.getChannelByName(team.id, 'town-square');
+    const townSquare = await adminClient.getChannelByName(team.id, 'general');
     const {page, channelsPage} = await pw.testBrowser.login(receiver);
-    await channelsPage.goto(team.name, 'town-square');
+    await channelsPage.goto(team.name, 'general');
     await channelsPage.toBeVisible();
     await pw.stubNotification(page, 'granted');
     await ensureSenderProfileLoaded(senderClient, channelsPage, townSquare.id, pw, page);

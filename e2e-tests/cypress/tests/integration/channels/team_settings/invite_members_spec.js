@@ -108,7 +108,7 @@ describe('Invite Members', () => {
         it('focuses user email input by default', () => {
             // # Login and visit
             cy.apiLogin(testUser);
-            cy.visit(`/${testTeam.name}/channels/town-square`);
+            cy.visit(`/${testTeam.name}/channels/general`);
 
             // # Open and select invite menu item
             cy.uiOpenTeamMenu('Invite people');
@@ -178,7 +178,7 @@ function inviteUser(user) {
 function inviteUserToTeamAsMember(testUser, testTeam, user) {
     // # Login and visit
     cy.apiLogin(testUser);
-    cy.visit(`/${testTeam.name}/channels/town-square`);
+    cy.visit(`/${testTeam.name}/channels/general`);
 
     // # Open and select invite menu item
     cy.uiOpenTeamMenu('Invite people');

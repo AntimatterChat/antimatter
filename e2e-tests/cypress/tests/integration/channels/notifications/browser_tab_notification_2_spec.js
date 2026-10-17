@@ -31,7 +31,7 @@ describe('Notifications', () => {
 
         cy.apiCreateTeam('team-b', 'Team B').then(({team}) => {
             team2 = team;
-            testTeam2TownSquareUrl = `/${team2.name}/channels/town-square`;
+            testTeam2TownSquareUrl = `/${team2.name}/channels/general`;
         });
 
         cy.apiInitSetup().then(({team, user, townSquareUrl}) => {
@@ -61,7 +61,7 @@ describe('Notifications', () => {
         cy.apiLogin(user1);
         cy.visit(testTeam1TownSquareUrl);
 
-        // # Return to town square
+        // # Return to general
         cy.visit(testTeam1TownSquareUrl);
 
         // * Check for no unreads or mentions
@@ -78,7 +78,7 @@ describe('Notifications', () => {
         cy.wait(TIMEOUTS.HALF_SEC);
 
         // * Browser tab should displays (1) * channel - [team name] Mattermost
-        cy.title().should('include', `(1) Town Square - ${team1.display_name} ${siteName}`);
+        cy.title().should('include', `(1) General - ${team1.display_name} ${siteName}`);
 
         // * Team sidebar: Small dot left of team B icon in team sidebar
         cy.get(`#${team2.name}TeamButton`).parent('.unread').should('be.visible').within(() => {
@@ -96,7 +96,7 @@ describe('Notifications', () => {
         cy.visit(testTeam1TownSquareUrl);
 
         // * Browser tab should displays (1) * channel - [team name] Mattermost (for verify count increase)
-        cy.title().should('include', `(1) Town Square - ${team1.display_name} ${siteName}`);
+        cy.title().should('include', `(1) General - ${team1.display_name} ${siteName}`);
 
         // # Have another user view team B
         cy.apiLogin(user2);
@@ -122,14 +122,14 @@ describe('Notifications', () => {
             should('contain', `@${user1.username}`).
             should('contain', 'added to the channel');
 
-        // # Switch to User 1 and visit the town-square
+        // # Switch to User 1 and visit the general
         cy.apiLogout();
         cy.apiLogin(user1);
         cy.visit(testTeam1TownSquareUrl);
 
         // * Title should be increased
         // * Browser tab should displays (1) * channel - [team name] Mattermost
-        cy.title().should('include', `(2) Town Square - ${team1.display_name} ${siteName}`);
+        cy.title().should('include', `(2) General - ${team1.display_name} ${siteName}`);
 
         // * Team sidebar: Small dot left of team B icon in team sidebar
         cy.get(`#${team2.name}TeamButton`).should('be.visible').within(() => {

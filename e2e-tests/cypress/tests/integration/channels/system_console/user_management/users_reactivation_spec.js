@@ -26,7 +26,7 @@ describe('System Console > User Management > Reactivation', () => {
     });
 
     it('MM-T952 Reactivating a user results in them showing up in the normal spot in the list, without the `Deactivated` label.', () => {
-        // # Visit town-square
+        // # Visit general
         cy.visit(`/${teamName}`);
 
         // # Create two users with same random prefix

@@ -17,10 +17,10 @@ import * as TIMEOUTS from '@/fixtures/timeouts';
 
 function removeUserFromAllChannels(verifyAlert: boolean, user: Cypress.UserProfile) {
     // # Remove the Guest user from all channels of a team as a sysadmin
-    const channels = ['Town Square', 'Off-Topic'];
+    const channels = ['General', 'Off-Topic'];
 
-    // # Always click on the Town Square channel first
-    cy.get('#sidebarItem_town-square').click({force: true});
+    // # Always click on the General channel first
+    cy.get('#sidebarItem_general').click({force: true});
 
     channels.forEach((channel) => {
         // # Remove the Guest User from channel
@@ -29,7 +29,7 @@ function removeUserFromAllChannels(verifyAlert: boolean, user: Cypress.UserProfi
         });
 
         // * Verify if guest user gets a message when the channel is removed. Does not appears when removed from last channel of the last team
-        if (channel === 'Town Square' || verifyAlert) {
+        if (channel === 'General' || verifyAlert) {
             cy.get('#removeFromChannelModalLabel').should('be.visible').and('have.text', `Removed from ${channel}`);
             cy.get('.modal-body').should('be.visible').contains(`removed you from ${channel}`);
             cy.get('#removedChannelBtn').should('be.visible').and('have.text', 'Okay').click().wait(TIMEOUTS.HALF_SEC);
@@ -57,7 +57,7 @@ describe('Guest Account - Guest User Removal Experience', () => {
                     cy.apiAddUserToTeam(team1.id, guest.id);
                     cy.apiAddUserToTeam(team2.id, guest.id).then(() => {
                         cy.apiLogin(guest);
-                        cy.visit(`/${team2.name}/channels/town-square`);
+                        cy.visit(`/${team2.name}/channels/general`);
                     });
                 });
             });
@@ -94,7 +94,7 @@ describe('Guest Account - Guest User Removal Experience', () => {
 
         // Login as sysadmin and verify test team 2
         cy.apiAdminLogin();
-        cy.reload().visit(`/${team2.name}/channels/town-square`);
+        cy.reload().visit(`/${team2.name}/channels/general`);
 
         // * Verify if status is displayed indicating guest user is removed from the channel
         cy.getLastPost().

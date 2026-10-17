@@ -24,7 +24,7 @@ test(
     async ({pw}) => {
         // # Post an attachment containing primary, danger, and default buttons
         const {adminClient, team, user} = await pw.initSetup();
-        const channel = await adminClient.getChannelByName(team.id, 'town-square');
+        const channel = await adminClient.getChannelByName(team.id, 'general');
         const webhook = await adminClient.createIncomingWebhook({
             channel_id: channel.id,
             display_name: 'Theme buttons',

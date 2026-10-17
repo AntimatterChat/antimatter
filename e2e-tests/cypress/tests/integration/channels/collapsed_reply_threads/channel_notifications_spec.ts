@@ -104,8 +104,8 @@ describe('CRT Desktop notifications', () => {
 
         // # Post a root message as other user
         cy.postMessageAs({sender, message: 'This is a not followed root message', channelId: testChannelId, rootId: ''}).then(({id: postId}) => {
-            // # Switch to town-square so that unread notifications in test channel may be triggered
-            cy.uiClickSidebarItem('town-square');
+            // # Switch to general so that unread notifications in test channel may be triggered
+            cy.uiClickSidebarItem('general');
 
             // # Post a message in unfollowed thread as another user
             cy.postMessageAs({sender, message: 'This is a reply to the unfollowed thread', channelId: testChannelId, rootId: postId});
@@ -125,8 +125,8 @@ describe('CRT Desktop notifications', () => {
 
         // # Get post id of message
         cy.getLastPostId().then((postId) => {
-            // # Switch to town-square so that unread notifications in test channel may be triggered
-            cy.uiClickSidebarItem('town-square');
+            // # Switch to general so that unread notifications in test channel may be triggered
+            cy.uiClickSidebarItem('general');
 
             // # Post a message in original thread as another user
             const message = 'This is a reply to the root post';
@@ -209,8 +209,8 @@ describe('CRT Desktop notifications', () => {
         // # Save the changes
         cy.findByText('Save').should('be.visible').click();
 
-        // # Go to the town-square channel
-        cy.visit(`/${testTeam.name}/channels/town-square`);
+        // # Go to the general channel
+        cy.visit(`/${testTeam.name}/channels/general`);
 
         // # Post a root message as other user in the test channel
         cy.postMessageAs({sender, message: 'This is the root message which will not have a at-mention in thread', channelId: testChannelId, rootId: ''}).then(({id: postId}) => {

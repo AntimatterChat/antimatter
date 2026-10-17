@@ -36,8 +36,8 @@ test(
         // # Log in as regular user
         const {page, channelsPage} = await pw.testBrowser.login(user);
 
-        // # Visit town-square channel
-        await channelsPage.goto(team.name, 'town-square');
+        // # Visit general channel
+        await channelsPage.goto(team.name, 'general');
         await channelsPage.toBeVisible();
 
         // # Open the Browse Channels modal
@@ -99,8 +99,8 @@ test(
         // # Log in as regular user
         const {page, channelsPage} = await pw.testBrowser.login(user);
 
-        // # Visit town-square channel
-        await channelsPage.goto(team.name, 'town-square');
+        // # Visit general channel
+        await channelsPage.goto(team.name, 'general');
         await channelsPage.toBeVisible();
 
         // # Open the Browse Channels modal

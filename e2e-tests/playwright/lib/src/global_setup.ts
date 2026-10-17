@@ -77,7 +77,7 @@ async function sysadminSetup(client: Client4, user: UserProfile | null) {
     await printClientInfo(client);
 
     // Create default team if not present.
-    // Otherwise, create other teams and channels other than the default team cna channels (town-square and off-topic).
+    // Otherwise, create other teams and channels other than the default team cna channels (general and off-topic).
     const myTeams = await client.getMyTeams();
     const myDefaultTeam = myTeams && myTeams.length > 0 && myTeams.find((team) => team.name === defaultTeam.name);
     if (!myDefaultTeam) {
@@ -93,7 +93,7 @@ async function sysadminSetup(client: Client4, user: UserProfile | null) {
                 .filter((channel) => {
                     return (
                         channel.team_id === myDefaultTeam.id &&
-                        channel.name !== 'town-square' &&
+                        channel.name !== 'general' &&
                         channel.name !== 'off-topic'
                     );
                 })

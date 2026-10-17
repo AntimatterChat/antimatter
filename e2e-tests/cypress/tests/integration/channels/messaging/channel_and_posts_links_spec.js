@@ -44,7 +44,7 @@ describe('Message permalink', () => {
     });
 
     it('MM-T1630 - "Jump" to convo works every time for a conversation', () => {
-        cy.visit(`/${testTeam.name}/channels/town-square`);
+        cy.visit(`/${testTeam.name}/channels/general`);
 
         // # Post 25 messages
         let index = 0;
@@ -54,7 +54,7 @@ describe('Message permalink', () => {
 
         // # Search for a message in the current channel
         cy.uiGetSearchContainer().click();
-        cy.uiGetSearchBox().clear().type('in:town-square').wait(TIMEOUTS.HALF_SEC).type('{enter}{enter}');
+        cy.uiGetSearchBox().clear().type('in:general').wait(TIMEOUTS.HALF_SEC).type('{enter}{enter}');
 
         // # Jump to first permalink view (most recent message)
         cy.get('.search-item__jump').first().click();
@@ -72,7 +72,7 @@ describe('Message permalink', () => {
 
         // # Search for a message in the current channel
         cy.uiGetSearchContainer().click();
-        cy.uiGetSearchBox().clear().type('in:town-square').wait(TIMEOUTS.HALF_SEC).type('{enter}{enter}');
+        cy.uiGetSearchBox().clear().type('in:general').wait(TIMEOUTS.HALF_SEC).type('{enter}{enter}');
 
         // # Jump to first permalink view (most recent message)
         cy.get('.search-item__jump').first().click();
@@ -84,8 +84,8 @@ describe('Message permalink', () => {
     });
 
     it('MM-T2222 - Channel shortlinking - ~ autocomplete', () => {
-        const publicChannelName = 'town-square';
-        const publicChannelDisplayName = 'Town Square';
+        const publicChannelName = 'general';
+        const publicChannelDisplayName = 'General';
 
         cy.visit(`/${testTeam.name}/channels/off-topic`);
 
@@ -109,7 +109,7 @@ describe('Message permalink', () => {
     });
 
     it('MM-T2224 - Channel shortlinking - link joins public channel', () => {
-        cy.visit(`/${testTeam.name}/channels/town-square`);
+        cy.visit(`/${testTeam.name}/channels/general`);
 
         // # Clear then type ~ and prefix of channel name
         cy.uiGetPostTextBox().clear().type(`~${testChannel.display_name}`).wait(TIMEOUTS.HALF_SEC);
@@ -128,7 +128,7 @@ describe('Message permalink', () => {
 
         cy.apiLogout();
         cy.apiLogin(notInChannelUser);
-        cy.visit(`/${testTeam.name}/channels/town-square`);
+        cy.visit(`/${testTeam.name}/channels/general`);
 
         // # Check that the channel display name has been posted
         cy.getLastPostId().then((postId) => {
@@ -139,7 +139,7 @@ describe('Message permalink', () => {
     });
 
     it('MM-T2234 - Permalink - auto joins public channel', () => {
-        cy.visit(`/${testTeam.name}/channels/town-square`);
+        cy.visit(`/${testTeam.name}/channels/general`);
 
         // # Post message
         cy.postMessage('Test');
@@ -155,7 +155,7 @@ describe('Message permalink', () => {
             cy.uiClickCopyLink(permalink, id);
 
             // # Leave the channel
-            cy.visit(`/${testTeam.name}/channels/town-square`);
+            cy.visit(`/${testTeam.name}/channels/general`);
 
             // # Visit the permalink
             cy.visit(permalink);
@@ -187,7 +187,7 @@ describe('Message permalink', () => {
                 cy.uiClickCopyLink(permalink, id);
 
                 // # Leave the channel
-                cy.visit(`/${testTeam.name}/channels/town-square`);
+                cy.visit(`/${testTeam.name}/channels/general`);
 
                 cy.apiLogout();
                 cy.apiLogin(testUser);

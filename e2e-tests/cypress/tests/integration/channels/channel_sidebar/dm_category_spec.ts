@@ -19,10 +19,10 @@ describe('MM-T3156 DM category', () => {
     const usernames: string[] = [];
 
     before(() => {
-        // # Login as test user and visit town-square
+        // # Login as test user and visit general
         cy.apiInitSetup({loginAfter: true, promoteNewUserAsAdmin: true}).then(({team, user}) => {
             testUser = user;
-            cy.visit(`/${team.name}/channels/town-square`);
+            cy.visit(`/${team.name}/channels/general`);
 
             const usersPrefixes = ['a', 'c', 'd', 'j', 'p', 'u', 'x', 'z'];
             usersPrefixes.forEach((prefix) => {

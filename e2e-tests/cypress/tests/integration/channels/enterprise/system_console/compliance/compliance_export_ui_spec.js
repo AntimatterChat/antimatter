@@ -46,7 +46,7 @@ describe('Compliance Export', () => {
 
     it('MM-T3435 - Download Compliance Export Files - CSV Format', () => {
         // # Navigate to a team and post an attachment
-        cy.visit(`/${teamName}/channels/town-square`);
+        cy.visit(`/${teamName}/channels/general`);
         gotoTeamAndPostImage();
 
         // # Go to compliance page and start export
@@ -67,7 +67,7 @@ describe('Compliance Export', () => {
 
     it('MM-T3438 - Download Compliance Export Files when 0 messages exported', () => {
         // # Navigate to a team and post an attachment
-        cy.visit(`/${teamName}/channels/town-square`);
+        cy.visit(`/${teamName}/channels/general`);
         gotoTeamAndPostImage();
 
         // # Go to compliance page and start export
@@ -96,7 +96,7 @@ describe('Compliance Export', () => {
 
     it('MM-T1168 - Compliance Export - Run Now, entry appears in job table', () => {
         // # Navigate to a team and post an attachment
-        cy.visit(`/${teamName}/channels/town-square`);
+        cy.visit(`/${teamName}/channels/general`);
         gotoTeamAndPostImage();
 
         // # Go to compliance page and start export
@@ -126,7 +126,7 @@ describe('Compliance Export', () => {
 
     it('MM-T1169 - Compliance Export - CSV and Global Relay', () => {
         // # Navigate to a team and post an attachment
-        cy.visit(`/${teamName}/channels/town-square`);
+        cy.visit(`/${teamName}/channels/general`);
         gotoTeamAndPostImage();
 
         // # Post 9 text messages

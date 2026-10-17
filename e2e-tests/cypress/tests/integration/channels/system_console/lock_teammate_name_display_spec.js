@@ -14,7 +14,7 @@ describe('System Console', () => {
     let townSquareUrl;
 
     before(() => {
-        // # Initialize setup and visit town-square
+        // # Initialize setup and visit general
         cy.apiInitSetup().then((out) => {
             townSquareUrl = out.townSquareUrl;
         });

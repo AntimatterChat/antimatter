@@ -36,8 +36,8 @@ describe('Create bot', () => {
 
 function createBot() {
     cy.apiInitSetup().then(({team}) => {
-        // # Go to town-square channel
-        cy.visit(`/${team.name}/channels/town-square`);
+        // # Go to general channel
+        cy.visit(`/${team.name}/channels/general`);
         cy.postMessage('hello');
 
         // # Go to bot integrations page

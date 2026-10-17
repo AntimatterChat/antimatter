@@ -9,7 +9,7 @@ import {expect, test} from '@mattermost/playwright-lib';
  */
 test('MM-T596 sets the search date with the calendar picker', {tag: '@search'}, async ({pw}) => {
     const {adminClient, team, user} = await pw.initSetup();
-    const channel = await adminClient.getChannelByName(team.id, 'town-square');
+    const channel = await adminClient.getChannelByName(team.id, 'general');
 
     // # Pin the user's timezone and clock so "today" in the picker is a fixed, known date
     await adminClient.patchUser({
@@ -107,7 +107,7 @@ test('MM-T600 updates the search date with the keyboard', {tag: '@search'}, asyn
 test('MM-T3997 reopens the date picker when backspacing after a date filter', {tag: '@search'}, async ({pw}) => {
     const {user, team} = await pw.initSetup();
     const {channelsPage, page} = await pw.testBrowser.login(user);
-    await channelsPage.goto(team.name, 'town-square');
+    await channelsPage.goto(team.name, 'general');
     await channelsPage.toBeVisible();
 
     // # Open search and type a "before:" date filter to open the day picker

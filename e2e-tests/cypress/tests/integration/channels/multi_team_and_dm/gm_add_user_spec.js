@@ -29,9 +29,9 @@ describe('Multi-user group messages', () => {
         // # Login as test user
         cy.apiLogin(testUser);
 
-        // # Go to town-square channel
-        cy.visit(`/${testTeam.name}/channels/town-square`);
-        cy.contains('#channelHeaderTitle', 'Town Square');
+        // # Go to general channel
+        cy.visit(`/${testTeam.name}/channels/general`);
+        cy.contains('#channelHeaderTitle', 'General');
 
         // # Open the 'Direct messages' dialog
         cy.uiAddDirectMessage().click().wait(TIMEOUTS.ONE_SEC);

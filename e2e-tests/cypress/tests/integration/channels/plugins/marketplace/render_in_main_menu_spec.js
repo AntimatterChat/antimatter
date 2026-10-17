@@ -20,7 +20,7 @@ describe('Plugin Marketplace', () => {
 
     before(() => {
         cy.apiInitSetup().then(({team}) => {
-            townsquareLink = `/${team.name}/channels/town-square`;
+            townsquareLink = `/${team.name}/channels/general`;
             pluginManagementPage = '/admin_console/plugins/plugin_management';
         });
     });

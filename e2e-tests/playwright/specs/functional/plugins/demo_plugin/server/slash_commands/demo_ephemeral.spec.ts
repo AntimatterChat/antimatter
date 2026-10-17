@@ -17,8 +17,8 @@ test('should send ephemeral post with Update and Delete actions via /ephemeral c
     await channelsPage.goto();
     await channelsPage.toBeVisible();
 
-    // 3. Navigate to Town Square — avoids noise from demo plugin's own ephemeral messages
-    await channelsPage.goto(team.name, 'town-square');
+    // 3. Navigate to General — avoids noise from demo plugin's own ephemeral messages
+    await channelsPage.goto(team.name, 'general');
     await channelsPage.toBeVisible();
 
     // 4. Send /ephemeral command (retry once if the plugin is not yet ready)
@@ -76,7 +76,7 @@ test('should send ephemeral post with Update and Delete actions via /ephemeral c
     await expect(deletedPost.getByRole('button', {name: 'Update 1', exact: true})).not.toBeVisible();
     await expect(deletedPost.getByRole('button', {name: 'Delete', exact: true})).not.toBeVisible();
 
-    // 8. Send /ephemeral_override command (still in Town Square)
+    // 8. Send /ephemeral_override command (still in General)
     await channelsPage.centerView.postCreate.input.fill('/ephemeral_override');
     await channelsPage.centerView.postCreate.sendMessage();
 

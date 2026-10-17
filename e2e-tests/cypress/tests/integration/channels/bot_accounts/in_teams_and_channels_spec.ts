@@ -33,7 +33,7 @@ describe('Managing bots in Teams and Channels', () => {
     it('MM-T1814 Add a BOT to a team', () => {
         cy.makeClient().then(async (client) => {
             // # Go to channel
-            const channel = await client.getChannelByName(team.id, 'town-square');
+            const channel = await client.getChannelByName(team.id, 'general');
             cy.visit(`/${team.name}/channels/${channel.name}`);
 
             // # Invite bot to team (asserts the modal success message)
@@ -48,7 +48,7 @@ describe('Managing bots in Teams and Channels', () => {
     it('MM-T1815 Add a BOT to a team that has email restricted', () => {
         cy.makeClient().then(async (client) => {
             // # Go to channel
-            const channel = await client.getChannelByName(team.id, 'town-square');
+            const channel = await client.getChannelByName(team.id, 'general');
             cy.visit(`/${team.name}/channels/${channel.name}`);
 
             // # Invite bot to team

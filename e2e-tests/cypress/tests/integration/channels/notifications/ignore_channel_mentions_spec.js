@@ -19,7 +19,7 @@ describe('Notifications', () => {
     let channelB;
 
     before(() => {
-        // # Login as new user and visit town-square
+        // # Login as new user and visit general
         cy.apiInitSetup().then(({team, user}) => {
             testTeam = team;
 

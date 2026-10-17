@@ -15,9 +15,9 @@ import {getRandomId} from '@/utils';
 
 describe('Channel sidebar', () => {
     before(() => {
-        // # Login as test user and visit town-square
+        // # Login as test user and visit general
         cy.apiInitSetup({loginAfter: true}).then(({team}) => {
-            cy.visit(`/${team.name}/channels/town-square`);
+            cy.visit(`/${team.name}/channels/general`);
         });
     });
 
@@ -57,9 +57,9 @@ describe('Channel sidebar', () => {
         cy.get('#channelHeaderTitle').click();
         cy.get('#channelLeaveChannel').click();
 
-        // * Verify that we've switched to Town Square
-        cy.get('#channelHeaderTitle').should('contain', 'Town Square');
-        cy.url().should('include', `/${teamName}/channels/town-square`);
+        // * Verify that we've switched to General
+        cy.get('#channelHeaderTitle').should('contain', 'General');
+        cy.url().should('include', `/${teamName}/channels/general`);
 
         // # Click on the sidebar menu dropdown and select browse channels
         cy.uiBrowseOrCreateChannel('Browse channels');

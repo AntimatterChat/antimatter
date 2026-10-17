@@ -39,7 +39,7 @@ describe('SignIn Authentication', () => {
             cy.get('#saveSetting').should('not.be.disabled').click();
 
             // * Check that it login successfully and it redirects into the main channel page
-            cy.url().should('include', '/channels/town-square');
+            cy.url().should('include', '/channels/general');
 
             // # Click logout via user menu
             cy.uiOpenUserMenu('Log out');
@@ -60,7 +60,7 @@ describe('SignIn Authentication', () => {
             cy.get('#saveSetting').should('not.be.disabled').click();
 
             // * Check that it login successfully and it redirects into the main channel page
-            cy.url().should('include', '/channels/town-square');
+            cy.url().should('include', '/channels/general');
         });
     });
 });

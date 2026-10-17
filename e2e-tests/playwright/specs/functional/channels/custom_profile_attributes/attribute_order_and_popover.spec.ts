@@ -37,7 +37,7 @@ test(
         try {
             await setupCustomProfileAttributeValues(userClient, attributes, fields);
             const {channelsPage} = await pw.testBrowser.login(user);
-            await channelsPage.goto(team.name, 'town-square');
+            await channelsPage.goto(team.name, 'general');
 
             // * Verify the order in profile settings
             const profileModal = await channelsPage.openProfileModal();
@@ -81,7 +81,7 @@ test(
             // # Open a profile popover containing ten populated attributes
             await setupCustomProfileAttributeValues(userClient, attributes, fields);
             const {channelsPage} = await pw.testBrowser.login(user);
-            await channelsPage.goto(team.name, 'town-square');
+            await channelsPage.goto(team.name, 'general');
             await channelsPage.postMessage(`Popover scroll ${suffix}`);
             const post = await channelsPage.getLastPost();
             const popover = await channelsPage.openProfilePopover(post);

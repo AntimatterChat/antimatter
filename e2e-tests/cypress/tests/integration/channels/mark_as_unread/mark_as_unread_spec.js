@@ -70,7 +70,7 @@ describe('Mark as Unread', () => {
             });
 
             cy.apiLogin(testUser);
-            cy.visit(`/${team1.name}/channels/town-square`);
+            cy.visit(`/${team1.name}/channels/general`);
         });
     });
 
@@ -147,7 +147,7 @@ describe('Mark as Unread', () => {
         cy.visit(`/${team1.name}/integrations/`);
 
         // # Navigate back to chat/main screen
-        cy.visit(`/${team1.name}/channels/town-square`);
+        cy.visit(`/${team1.name}/channels/general`);
 
         // * Verify channels are unread
         cy.get(`#sidebarItem_${channelA.name}`).should(beUnread);

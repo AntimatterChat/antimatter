@@ -35,9 +35,9 @@ describe('Messaging', () => {
             cy.apiAddUserToTeam(testTeam.id, deactivatedUser.id);
             cy.externalActivateUser(deactivatedUser.id, false);
 
-            // # Login as test user and visit town-square
+            // # Login as test user and visit general
             cy.apiLogin(testUser);
-            cy.visit(`/${testTeam.name}/channels/town-square`);
+            cy.visit(`/${testTeam.name}/channels/general`);
 
             // # Click on '+' sign to open DM modal
             cy.uiAddDirectMessage().click().wait(TIMEOUTS.ONE_SEC);
@@ -56,7 +56,7 @@ describe('Messaging', () => {
         cy.apiCreateUser().then(({user: deactivatedUser}) => {
             cy.apiAddUserToTeam(testTeam.id, deactivatedUser.id);
 
-            // # Login as test user and visit town-square
+            // # Login as test user and visit general
             cy.apiLogin(testUser);
             cy.visit(`/${testTeam.name}/messages/@${deactivatedUser.username}`);
 
@@ -82,9 +82,9 @@ describe('Messaging', () => {
     });
 
     it('MM-T5669 Navigating DM list using Up/Down arrow keys scrolls it', () => {
-        // # Login as test user and visit town-square
+        // # Login as test user and visit general
         cy.apiLogin(testUser);
-        cy.visit(`/${testTeam.name}/channels/town-square`);
+        cy.visit(`/${testTeam.name}/channels/general`);
 
         // # Click on '+' sign to open DM modal
         cy.uiAddDirectMessage().click().wait(TIMEOUTS.ONE_SEC);

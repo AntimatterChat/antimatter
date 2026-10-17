@@ -30,11 +30,11 @@ test('MM-T3293 The entire thread appears in the RHS (scrollable)', {tag: ['@mess
     // # Add the other user to the team
     await adminClient.addToTeam(team.id, otherUser.id);
 
-    // # Get the town-square channel
+    // # Get the general channel
     const channels = await userClient.getMyChannels(team.id);
-    const townSquare = channels.find((channel) => channel.name === 'town-square');
+    const townSquare = channels.find((channel) => channel.name === 'general');
     if (!townSquare) {
-        throw new Error('Town Square channel not found');
+        throw new Error('General channel not found');
     }
 
     // # Create a thread with several replies to make it scrollable in RHS
@@ -77,7 +77,7 @@ test('MM-T3293 The entire thread appears in the RHS (scrollable)', {tag: ['@mess
 
     // # Load the channel as main user
     const {page, channelsPage} = await pw.testBrowser.login(mainUser);
-    await channelsPage.goto(team.name, 'town-square');
+    await channelsPage.goto(team.name, 'general');
     await channelsPage.toBeVisible();
 
     // # Open thread via "Last Reply" — the root post (First message) is buried 140+ posts

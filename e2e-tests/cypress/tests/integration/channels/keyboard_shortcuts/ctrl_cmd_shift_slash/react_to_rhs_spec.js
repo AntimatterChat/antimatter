@@ -30,7 +30,7 @@ describe('Keyboard shortcut CTRL/CMD+Shift+\\ for adding reaction to last messag
     });
 
     beforeEach(() => {
-        // # Login as test user and visit town-square
+        // # Login as test user and visit general
         cy.apiLogin(testUser);
         cy.visit(`/${testTeam.name}/channels/off-topic`);
         cy.get('#channelHeaderTitle', {timeout: TIMEOUTS.ONE_MIN}).should('be.visible').and('contain', 'Off-Topic');

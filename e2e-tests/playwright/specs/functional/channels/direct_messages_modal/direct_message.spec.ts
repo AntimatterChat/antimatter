@@ -11,7 +11,7 @@ test('MM-T457 Self direct message', {tag: '@direct_messages'}, async ({pw}) => {
 
     // # Open the Direct Messages modal and search for the current user
     const {channelsPage, page} = await pw.testBrowser.login(user);
-    await channelsPage.goto(team.name, 'town-square');
+    await channelsPage.goto(team.name, 'general');
     await channelsPage.toBeVisible();
     await pw.stubNotification(page, 'granted');
     const modal = await channelsPage.openDirectChannelsModal();

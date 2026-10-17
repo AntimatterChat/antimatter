@@ -14,7 +14,7 @@ test('MM-T1254 MM-T1256 MM-T1257 MM-T1258 CTRL/CMD+UP and CTRL/CMD+DOWN cycle pr
 
     // # Post several messages and focus the textbox
     const {channelsPage, page} = await pw.testBrowser.login(user);
-    await channelsPage.goto(team.name, 'town-square');
+    await channelsPage.goto(team.name, 'general');
     await channelsPage.toBeVisible();
     for (const message of messages) {
         await channelsPage.postMessage(message);
@@ -46,7 +46,7 @@ test('MM-T1260 UP arrow edits the previous post', async ({pw}) => {
 
     // # Post a message and press Up from the center textbox
     const {channelsPage, page} = await pw.testBrowser.login(user);
-    await channelsPage.goto(team.name, 'town-square');
+    await channelsPage.goto(team.name, 'general');
     await channelsPage.toBeVisible();
     await channelsPage.postMessage('Test');
     const postId = await channelsPage.centerView.getLastPostID();

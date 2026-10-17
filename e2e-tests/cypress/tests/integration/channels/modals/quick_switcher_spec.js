@@ -28,7 +28,7 @@ describe('Quick switcher', () => {
             testUser = user;
             testTeam = team;
             testChannel = channel;
-            cy.visit(`/${testTeam.name}/channels/town-square`);
+            cy.visit(`/${testTeam.name}/channels/general`);
         });
         cy.apiCreateUser({prefix: `${userPrefix}1`}).then(({user: user1}) => {
             firstUser = user1;
@@ -51,7 +51,7 @@ describe('Quick switcher', () => {
     });
 
     it('MM-T3447_1 Should add recent user on top of results', () => {
-        cy.visit(`/${testTeam.name}/channels/town-square`);
+        cy.visit(`/${testTeam.name}/channels/general`);
 
         // # Type either cmd+K / ctrl+K depending on OS
         cy.uiGetPostTextBox().cmdOrCtrlShortcut('K');

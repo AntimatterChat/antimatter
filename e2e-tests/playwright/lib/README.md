@@ -232,7 +232,7 @@ test('verify notification on mention', async ({pw}) => {
 
     // # Setup admin browser with notifications
     const {page: adminPage, channelsPage: adminChannelsPage} = await pw.testBrowser.login(adminUser);
-    await adminChannelsPage.goto(team.name, 'town-square');
+    await adminChannelsPage.goto(team.name, 'general');
     await pw.stubNotification(adminPage, 'granted');
 
     // # Setup user browser and post mention

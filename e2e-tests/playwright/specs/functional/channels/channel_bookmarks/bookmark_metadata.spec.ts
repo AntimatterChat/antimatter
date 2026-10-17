@@ -10,7 +10,7 @@ import {expect, test} from '@mattermost/playwright-lib';
 test('MM-T5604 auto-fills the bookmark title from the entered link', {tag: '@channels'}, async ({pw}) => {
     const {user, team} = await pw.initSetup();
     const {channelsPage} = await pw.testBrowser.login(user);
-    await channelsPage.goto(team.name, 'town-square');
+    await channelsPage.goto(team.name, 'general');
     await channelsPage.toBeVisible();
 
     // # Open the bookmark create modal via the channel menu's Bookmarks Bar submenu

@@ -39,7 +39,7 @@ describe('Autocomplete with Elasticsearch - Renaming Team', () => {
             // # Enable Elasticsearch
             enableElasticSearch();
 
-            cy.visit(`/${team.name}/channels/town-square`);
+            cy.visit(`/${team.name}/channels/general`);
 
             // # Verify user and channel appears in search results before change
             searchAndVerifyUser(user);
@@ -48,7 +48,7 @@ describe('Autocomplete with Elasticsearch - Renaming Team', () => {
             // # Rename the team
             cy.apiPatchTeam(team.id, {display_name: 'updatedteam' + randomId});
 
-            cy.visit(`/${team.name}/channels/town-square`);
+            cy.visit(`/${team.name}/channels/general`);
         });
     });
 

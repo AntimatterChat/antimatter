@@ -151,7 +151,7 @@ test.describe('ABAC - Team Sync Channel Cascade', {tag: ['@abac', '@team_members
             )
             .toEqual(expect.arrayContaining([eng1.id, mkt1.id]));
 
-        // Team sync adds users to the team (and town-square) only — not to
+        // Team sync adds users to the team (and general) only — not to
         // arbitrary private channels. Add both manually so the cascade has something to remove.
         await adminClient.addToChannel(eng1.id, privateChannel.id);
         await adminClient.addToChannel(mkt1.id, privateChannel.id);
@@ -210,11 +210,11 @@ test.describe('ABAC - Team Sync Channel Cascade', {tag: ['@abac', '@team_members
         const mkt1ChannelsPage = new ChannelsPage(mkt1Page);
 
         // Land on homeTeam so we have a valid context to inspect the sidebar from
-        await mkt1ChannelsPage.goto(homeTeam.name, 'town-square');
+        await mkt1ChannelsPage.goto(homeTeam.name, 'general');
         await mkt1ChannelsPage.toBeVisible();
 
         // * Navigating to the governed team URL redirects mkt1 away (no membership)
-        await mkt1Page.goto(`/${team.name}/channels/town-square`);
+        await mkt1Page.goto(`/${team.name}/channels/general`);
         await mkt1Page.waitForLoadState('networkidle');
         await expect(mkt1Page).not.toHaveURL(new RegExp(`/${team.name}/`), {timeout: 10000});
 
@@ -229,7 +229,7 @@ test.describe('ABAC - Team Sync Channel Cascade', {tag: ['@abac', '@team_members
         // * eng1 can access the governed team — URL confirms they are on it
         // (team sidebar icon only renders when the user belongs to multiple teams,
         // so we assert the route instead of the sidebar element)
-        await eng1ChannelsPage.goto(team.name, 'town-square');
+        await eng1ChannelsPage.goto(team.name, 'general');
         await eng1ChannelsPage.toBeVisible();
         await expect(eng1Page).toHaveURL(new RegExp(`/${team.name}/`), {timeout: 10000});
 

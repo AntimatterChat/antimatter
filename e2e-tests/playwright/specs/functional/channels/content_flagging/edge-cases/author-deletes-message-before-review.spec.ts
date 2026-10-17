@@ -42,7 +42,7 @@ test.skip('should not be able to restore flagged messages when author deletes me
     expect(flagReport.delete_at).not.toBe(0);
 
     const {channelsPage, contentReviewPage} = await pw.testBrowser.login(reviewerUser);
-    await channelsPage.goto(team.name, 'town-square');
+    await channelsPage.goto(team.name, 'general');
     await channelsPage.toBeVisible();
 
     await verifyAuthorNotification(post.id, channelsPage, contentReviewPage, team.name, message, 'Removed');

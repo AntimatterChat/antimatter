@@ -27,12 +27,12 @@ describe('Handle new post', () => {
             user1 = user;
 
             cy.apiLogin(user1);
-            cy.visit(`/${team.name}/channels/town-square`);
+            cy.visit(`/${team.name}/channels/general`);
         });
     });
 
     it.skip('MM-T4609 - should mark channel as unread when a message is sent in another channel', () => {
-        // # Explicitly click over to the test channel from Town Square
+        // # Explicitly click over to the test channel from General
         // # to dismiss the unread + badge from adding `user` to the channel
         cy.get(`#sidebarItem_${channel1.name}`).click();
 
@@ -40,8 +40,8 @@ describe('Handle new post', () => {
         cy.get(`#sidebarItem_${channel1.name}`).should(beRead);
         cy.get(`#sidebarItem_${channel1.name} .badge`).should('not.exist');
 
-        // # Switch back to Town Square
-        cy.get('#sidebarItem_town-square').click();
+        // # Switch back to General
+        cy.get('#sidebarItem_general').click();
 
         // # Have another user post in the test channel
         cy.postMessageAs({sender: admin, message: 'post', channelId: channel1.id});
@@ -52,7 +52,7 @@ describe('Handle new post', () => {
     });
 
     it.skip('MM-T4610 - should show the mention badge when a mention is sent in another channel', () => {
-        // # Explicitly click over to the test channel from Town Square
+        // # Explicitly click over to the test channel from General
         // # to dismiss the unread + badge from the end of the previous test
         // # (maybe should use a new channel but then the same thing has to be done
         // # for that anyways)
@@ -61,8 +61,8 @@ describe('Handle new post', () => {
         cy.get(`#sidebarItem_${channel1.name}`).should(beRead);
         cy.get(`#sidebarItem_${channel1.name} .badge`).should('not.exist');
 
-        // # Switch back to Town Square
-        cy.get('#sidebarItem_town-square').click();
+        // # Switch back to General
+        cy.get('#sidebarItem_general').click();
 
         // # Have another user post in the test channel
         cy.postMessageAs({sender: admin, message: `@${user1.username}`, channelId: channel1.id});

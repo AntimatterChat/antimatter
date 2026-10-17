@@ -35,9 +35,9 @@ test('MM-T472 Add a channel header to a GM', {tag: '@messaging'}, async ({pw}) =
     // * Verify the group message remains read for the user who changed the header
     await channelsPage.sidebarLeft.assertItemRead(members[0].username);
 
-    // # Sign in as another group member and view Town Square
+    // # Sign in as another group member and view General
     const {channelsPage: memberChannelsPage} = await pw.testBrowser.login(members[0]);
-    await memberChannelsPage.goto(team.name, 'town-square');
+    await memberChannelsPage.goto(team.name, 'general');
     await memberChannelsPage.toBeVisible();
 
     // * Verify the header update marks the group message unread for the other member
@@ -71,9 +71,9 @@ test('MM-T473_1 Edit GM channel header', {tag: '@messaging'}, async ({pw}) => {
     await expect(channelsPage.centerView.header.getHeaderText(header)).toBeVisible();
     await (await channelsPage.getLastPost()).toContainText('updated the channel header');
 
-    // # Sign in as another group member and view Town Square
+    // # Sign in as another group member and view General
     const {channelsPage: memberChannelsPage} = await pw.testBrowser.login(members[0]);
-    await memberChannelsPage.goto(team.name, 'town-square');
+    await memberChannelsPage.goto(team.name, 'general');
     await memberChannelsPage.toBeVisible();
 
     // * Verify the edit marks the group message unread for the other member

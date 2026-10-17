@@ -32,13 +32,13 @@ describe('Teams Suite', () => {
     it('MM-T393 Cancel out of leaving team', () => {
         // # Login and go to /
         cy.apiLogin(testUser);
-        cy.visit(`/${testTeam.name}/channels/town-square`);
+        cy.visit(`/${testTeam.name}/channels/general`);
 
         // * Check the team name
         cy.uiGetLHSHeader().findByText(testTeam.display_name);
 
         // * Check the initial Url
-        cy.url().should('include', `/${testTeam.name}/channels/town-square`);
+        cy.url().should('include', `/${testTeam.name}/channels/general`);
 
         // # Open team menu and click "Manage Members"
         cy.uiOpenTeamMenu('Leave team');
@@ -56,7 +56,7 @@ describe('Teams Suite', () => {
         cy.uiGetLHSHeader().findByText(testTeam.display_name);
 
         // * check the final Url
-        cy.url().should('include', `/${testTeam.name}/channels/town-square`);
+        cy.url().should('include', `/${testTeam.name}/channels/general`);
     });
 
     it('MM-T2340 Team or System Admin searches and adds new team member', () => {
@@ -71,7 +71,7 @@ describe('Teams Suite', () => {
         cy.apiCreateUser().then(({user}) => {
             otherUser = user;
 
-            cy.visit(`/${testTeam.name}/channels/town-square`);
+            cy.visit(`/${testTeam.name}/channels/general`);
 
             // # Open team menu and click "Invite People"
             cy.uiOpenTeamMenu();
@@ -96,7 +96,7 @@ describe('Teams Suite', () => {
             cy.findByTestId('inviteButton').click();
             cy.findByTestId('confirm-done').click();
 
-            // * As sysadmin, verify system message posts in Town Square and Off-Topic
+            // * As sysadmin, verify system message posts in General and Off-Topic
             cy.getLastPost().wait(TIMEOUTS.HALF_SEC).then(($el) => {
                 cy.wrap($el).get('.user-popover').
                     should('be.visible').
@@ -122,12 +122,12 @@ describe('Teams Suite', () => {
             cy.apiLogin(otherUser);
 
             // # Visit the new team and verify that it's in the correct team view
-            cy.visit(`/${testTeam.name}/channels/town-square`);
+            cy.visit(`/${testTeam.name}/channels/general`);
             cy.uiGetLHSHeader().findByText(testTeam.display_name);
 
             const sysadmin = getAdminAccount();
 
-            // * As other user, verify system message posts in Town Square and Off-Topic
+            // * As other user, verify system message posts in General and Off-Topic
             cy.getLastPost().wait(TIMEOUTS.HALF_SEC).then(($el) => {
                 cy.wrap($el).get('.user-popover').
                     should('be.visible').
@@ -166,7 +166,7 @@ describe('Teams Suite', () => {
         // # Leave all teams
         cy.apiGetTeamsForUser().then(({teams}) => {
             teams.forEach((team) => {
-                cy.visit(`/${team.name}/channels/town-square`);
+                cy.visit(`/${team.name}/channels/general`);
                 cy.uiGetLHSHeader().findByText(testTeam.display_name);
                 cy.leaveTeam();
             });
@@ -184,7 +184,7 @@ describe('Teams Suite', () => {
 
     it('MM-T1535 Team setting / Invite code text', () => {
         // # visit /
-        cy.visit(`/${testTeam.name}/channels/town-square`);
+        cy.visit(`/${testTeam.name}/channels/general`);
 
         // # Open team menu and click "Team Settings"
         cy.uiOpenTeamMenu('Team settings');
@@ -207,8 +207,8 @@ describe('Teams Suite', () => {
     it('MM-T2312 Team setting / Team name: Change name', () => {
         const teamName = 'Test Team';
 
-        // # Visit town-square channel
-        cy.visit(`/${testTeam.name}/channels/town-square`);
+        // # Visit general channel
+        cy.visit(`/${testTeam.name}/channels/general`);
 
         // # Open team menu and click "Team Settings"
         cy.uiOpenTeamMenu('Team settings');
@@ -229,14 +229,14 @@ describe('Teams Suite', () => {
         cy.get(`#${testTeam.name}TeamButton`).scrollIntoView().should('have.attr', 'aria-label', 'test team team');
 
         // # Verify url has original team name
-        cy.url().should('include', `/${testTeam.name}/channels/town-square`);
+        cy.url().should('include', `/${testTeam.name}/channels/general`);
     });
 
     it('MM-T2317 Team setting / Update team description', () => {
         const teamDescription = 'This is the best team';
 
-        // # Visit town-square channel
-        cy.visit(`/${testTeam.name}/channels/town-square`);
+        // # Visit general channel
+        cy.visit(`/${testTeam.name}/channels/general`);
 
         // # Open team menu and click "Team Settings"
         cy.uiOpenTeamMenu('Team settings');
@@ -258,8 +258,8 @@ describe('Teams Suite', () => {
     });
 
     it('MM-T2318 Allow anyone to join this team', () => {
-        // # Visit town-square channel
-        cy.visit(`/${testTeam.name}/channels/town-square`);
+        // # Visit general channel
+        cy.visit(`/${testTeam.name}/channels/general`);
 
         // # Open team menu and click "Team Settings"
         cy.uiOpenTeamMenu('Team settings');
@@ -284,9 +284,9 @@ describe('Teams Suite', () => {
         // # Select test team name
         cy.findByText(testTeam.display_name, {timeout: TIMEOUTS.HALF_MIN}).should('be.visible').click();
 
-        // # Verify Town square is visible
-        cy.url().should('include', `/${testTeam.name}/channels/town-square`);
-        cy.get('h2.channel-intro__title').should('be.visible').should('have.text', 'Town Square');
+        // # Verify General is visible
+        cy.url().should('include', `/${testTeam.name}/channels/general`);
+        cy.get('h2.channel-intro__title').should('be.visible').should('have.text', 'General');
     });
 
     it('MM-T2322 Do not allow anyone to join this team', () => {
@@ -295,8 +295,8 @@ describe('Teams Suite', () => {
             cy.apiPatchTeam(joinableTeam.id, {allow_open_invite: true});
         });
 
-        // # Visit town-square channel
-        cy.visit(`/${testTeam.name}/channels/town-square`);
+        // # Visit general channel
+        cy.visit(`/${testTeam.name}/channels/general`);
 
         // # Open team menu and click "Team Settings"
         cy.uiOpenTeamMenu('Team settings');
@@ -312,7 +312,7 @@ describe('Teams Suite', () => {
 
         // # Login as new user
         cy.apiLogin(testUser);
-        cy.visit(`/${testTeam.name}/channels/town-square`);
+        cy.visit(`/${testTeam.name}/channels/general`);
 
         // # Open team menu and click "Join Another Team"
         cy.uiOpenTeamMenu('Join another team');
@@ -325,9 +325,9 @@ describe('Teams Suite', () => {
         cy.apiLogout();
         cy.wait(TIMEOUTS.ONE_SEC);
 
-        // * Login as test user and join town square
+        // * Login as test user and join general
         cy.apiLogin(testUser);
-        cy.visit(`/${testTeam.name}/channels/town-square`);
+        cy.visit(`/${testTeam.name}/channels/general`);
 
         // # Open team menu and click "View Members"
         cy.uiOpenTeamMenu('View members');

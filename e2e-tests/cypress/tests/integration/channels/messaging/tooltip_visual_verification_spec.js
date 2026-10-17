@@ -16,7 +16,7 @@ describe('Messaging', () => {
             cy.apiCreateUser().then(({user: otherUser}) => {
                 cy.apiAddUserToTeam(team.id, otherUser.id).then(() => {
                     cy.apiAddUserToChannel(channel.id, otherUser.id).then(() => {
-                        // # Login as test user and visit town-square
+                        // # Login as test user and visit general
                         cy.apiLogin(testUser);
 
                         // # Start DM with other user

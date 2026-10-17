@@ -29,7 +29,7 @@ describe('Channel Settings', () => {
                 testTeam = team;
                 user1 = user;
 
-                cy.visit(`/${testTeam.name}/channels/town-square`);
+                cy.visit(`/${testTeam.name}/channels/general`);
             });
         });
     });

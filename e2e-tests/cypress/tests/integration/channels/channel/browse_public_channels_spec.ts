@@ -52,8 +52,8 @@ describe('browse public channels', () => {
                     cy.apiCreateChannel(testTeam.id, 'public-channel', 'public-channel');
                 }
 
-                // # Go to town square
-                cy.visit(`/${team.name}/channels/town-square`);
+                // # Go to general
+                cy.visit(`/${team.name}/channels/general`);
             });
         });
     });
@@ -62,8 +62,8 @@ describe('browse public channels', () => {
         // # Login as other user
         cy.apiLogin(otherUser);
 
-        // # Go to town square
-        cy.visit(`/${testTeam.name}/channels/town-square`);
+        // # Go to general
+        cy.visit(`/${testTeam.name}/channels/general`);
 
         // # Go to LHS and click 'Browse channels'
         cy.uiBrowseOrCreateChannel('Browse channels');
@@ -104,8 +104,8 @@ describe('browse public channels', () => {
         // # Login as testUser
         cy.apiLogin(testUser);
 
-        // # Go to town square
-        cy.visit(`/${testTeam.name}/channels/town-square`);
+        // # Go to general
+        cy.visit(`/${testTeam.name}/channels/general`);
 
         // # Go to LHS and click 'Browse channels'
         cy.uiBrowseOrCreateChannel('Browse channels');

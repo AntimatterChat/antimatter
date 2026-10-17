@@ -24,8 +24,8 @@ test('MM-T4410 Channel Drafts are scoped to current active team', {tag: '@messag
 
     const {channelsPage, draftsPage} = await pw.testBrowser.login(user);
 
-    // # Open Town Square on Team1 and leave a channel draft
-    await channelsPage.goto(team1.name, 'town-square');
+    // # Open General on Team1 and leave a channel draft
+    await channelsPage.goto(team1.name, 'general');
     await channelsPage.toBeVisible();
     await channelsPage.centerView.postCreate.writeMessage(team1Draft);
 
@@ -37,24 +37,24 @@ test('MM-T4410 Channel Drafts are scoped to current active team', {tag: '@messag
     await channelsPage.sidebarLeft.draftsVisible();
     expect(await channelsPage.sidebarLeft.getDraftsBadgeCount()).toBe('1');
 
-    // * Town Square shows a pencil icon for the draft
+    // * General shows a pencil icon for the draft
     // (move the mouse off the sidebar first: the pencil is hidden while its row is hovered)
     await channelsPage.centerView.postCreate.input.hover();
-    await expect(channelsPage.sidebarLeft.draftIcon('town-square')).toBeVisible();
+    await expect(channelsPage.sidebarLeft.draftIcon('general')).toBeVisible();
 
     // # Switch to Team2 Off-Topic and leave a different channel draft
     await channelsPage.switchToTeam(team2.name);
 
-    // * Team1's Town Square draft icon is not carried over into Team2's sidebar
-    await expect(channelsPage.sidebarLeft.draftIcon('town-square')).not.toBeAttached();
+    // * Team1's General draft icon is not carried over into Team2's sidebar
+    await expect(channelsPage.sidebarLeft.draftIcon('general')).not.toBeAttached();
 
     await channelsPage.sidebarLeft.goToItem('off-topic');
     await channelsPage.centerView.header.toHaveTitle('Off-Topic');
     await channelsPage.centerView.postCreate.writeMessage(team2Draft);
 
     // # Switch away so the Team2 draft is persisted with show:true
-    await channelsPage.sidebarLeft.goToItem('town-square');
-    await channelsPage.centerView.header.toHaveTitle('Town Square');
+    await channelsPage.sidebarLeft.goToItem('general');
+    await channelsPage.centerView.header.toHaveTitle('General');
 
     // * Global Drafts appears in the LHS with count 1 for Team2 only
     await channelsPage.sidebarLeft.draftsVisible();
@@ -91,12 +91,12 @@ test('MM-T4410 Channel Drafts are scoped to current active team', {tag: '@messag
     await channelsPage.sidebarLeft.goToDrafts();
     await draftsPage.toBeVisible();
 
-    // * Only the Town Square draft from Team1 is listed
+    // * Only the General draft from Team1 is listed
     await draftsPage.expectDraftCount(1);
     expect(await draftsPage.getBadgeCountOnTab()).toBe('1');
-    const team1DraftPost = await draftsPage.getDraftByChannelName('Town Square');
+    const team1DraftPost = await draftsPage.getDraftByChannelName('General');
     await expect(team1DraftPost.panelHeader).toContainText('In:');
-    await expect(team1DraftPost.panelHeader).toContainText('Town Square');
+    await expect(team1DraftPost.panelHeader).toContainText('General');
     await expect(team1DraftPost.panelBody).toContainText(team1Draft);
     await expect(draftsPage.draftViews()).not.toContainText(team2Draft);
 });

@@ -17,13 +17,13 @@ test.describe('Interactive mm_blocks (ephemeral post)', () => {
             const {team, user, adminClient} = await pw.initSetup();
 
             const channels = await adminClient.getMyChannels(team.id);
-            const townSquare = channels.find((ch) => ch.name === 'town-square');
+            const townSquare = channels.find((ch) => ch.name === 'general');
             if (!townSquare) {
-                throw new Error('Town Square channel not found');
+                throw new Error('General channel not found');
             }
 
             const {channelsPage} = await pw.testBrowser.login(user);
-            await channelsPage.goto(team.name, 'town-square');
+            await channelsPage.goto(team.name, 'general');
             await channelsPage.toBeVisible();
 
             const marker = `E2E mm_blocks ephemeral ${pw.random.id()}`;
@@ -71,13 +71,13 @@ test.describe('Interactive mm_blocks (ephemeral post)', () => {
             const {team, user, adminClient, userClient} = await pw.initSetup();
 
             const channels = await adminClient.getMyChannels(team.id);
-            const townSquare = channels.find((ch) => ch.name === 'town-square');
+            const townSquare = channels.find((ch) => ch.name === 'general');
             if (!townSquare) {
-                throw new Error('Town Square channel not found');
+                throw new Error('General channel not found');
             }
 
             const {channelsPage} = await pw.testBrowser.login(user);
-            await channelsPage.goto(team.name, 'town-square');
+            await channelsPage.goto(team.name, 'general');
             await channelsPage.toBeVisible();
 
             // Ephemeral roots have no Reply control; under CRT, integration ephemerals stay out of the center list.
@@ -161,13 +161,13 @@ test.describe('Interactive mm_blocks (ephemeral post)', () => {
             const {team, user, adminClient, userClient} = await pw.initSetup();
 
             const channels = await adminClient.getMyChannels(team.id);
-            const townSquare = channels.find((ch) => ch.name === 'town-square');
+            const townSquare = channels.find((ch) => ch.name === 'general');
             if (!townSquare) {
-                throw new Error('Town Square channel not found');
+                throw new Error('General channel not found');
             }
 
             const {channelsPage} = await pw.testBrowser.login(user);
-            await channelsPage.goto(team.name, 'town-square');
+            await channelsPage.goto(team.name, 'general');
             await channelsPage.toBeVisible();
 
             const anchorMarker = `E2E mm_blocks anchor ${pw.random.id()}`;
@@ -247,13 +247,13 @@ test.describe('Interactive mm_blocks (ephemeral post)', () => {
             await adminClient.patchConfig({ServiceSettings: {EnablePostUsernameOverride: true}});
 
             const channels = await adminClient.getMyChannels(team.id);
-            const townSquare = channels.find((ch) => ch.name === 'town-square');
+            const townSquare = channels.find((ch) => ch.name === 'general');
             if (!townSquare) {
-                throw new Error('Town Square channel not found');
+                throw new Error('General channel not found');
             }
 
             const {channelsPage} = await pw.testBrowser.login(user);
-            await channelsPage.goto(team.name, 'town-square');
+            await channelsPage.goto(team.name, 'general');
             await channelsPage.toBeVisible();
 
             const anchorMarker = `E2E mm_blocks anchor override ${pw.random.id()}`;
@@ -339,13 +339,13 @@ test.describe('Interactive mm_blocks (ephemeral post)', () => {
             const {team, user, adminClient, userClient} = await pw.initSetup();
 
             const channels = await adminClient.getMyChannels(team.id);
-            const townSquare = channels.find((ch) => ch.name === 'town-square');
+            const townSquare = channels.find((ch) => ch.name === 'general');
             if (!townSquare) {
-                throw new Error('Town Square channel not found');
+                throw new Error('General channel not found');
             }
 
             const {channelsPage} = await pw.testBrowser.login(user);
-            await channelsPage.goto(team.name, 'town-square');
+            await channelsPage.goto(team.name, 'general');
             await channelsPage.toBeVisible();
 
             const anchorMarker = `E2E mm_blocks eph query anchor ${pw.random.id()}`;
@@ -426,13 +426,13 @@ test.describe('Interactive mm_blocks (ephemeral post)', () => {
             const {team, user, adminClient, userClient} = await pw.initSetup();
 
             const channels = await adminClient.getMyChannels(team.id);
-            const townSquare = channels.find((ch) => ch.name === 'town-square');
+            const townSquare = channels.find((ch) => ch.name === 'general');
             if (!townSquare) {
-                throw new Error('Town Square channel not found');
+                throw new Error('General channel not found');
             }
 
             const {channelsPage} = await pw.testBrowser.login(user);
-            await channelsPage.goto(team.name, 'town-square');
+            await channelsPage.goto(team.name, 'general');
             await channelsPage.toBeVisible();
 
             const anchorMarker = `E2E mm_blocks eph override anchor ${pw.random.id()}`;
@@ -509,13 +509,13 @@ test.describe('Interactive mm_blocks (ephemeral post)', () => {
             const {team, user, adminClient, userClient} = await pw.initSetup();
 
             const channels = await adminClient.getMyChannels(team.id);
-            const townSquare = channels.find((ch) => ch.name === 'town-square');
+            const townSquare = channels.find((ch) => ch.name === 'general');
             if (!townSquare) {
-                throw new Error('Town Square channel not found');
+                throw new Error('General channel not found');
             }
 
             const {channelsPage} = await pw.testBrowser.login(user);
-            await channelsPage.goto(team.name, 'town-square');
+            await channelsPage.goto(team.name, 'general');
             await channelsPage.toBeVisible();
 
             const anchorMarker = `E2E mm_blocks eph select query anchor ${pw.random.id()}`;
@@ -604,13 +604,13 @@ test.describe('Interactive mm_blocks (ephemeral post)', () => {
             const {team, user, adminClient, userClient} = await pw.initSetup();
 
             const channels = await adminClient.getMyChannels(team.id);
-            const townSquare = channels.find((ch) => ch.name === 'town-square');
+            const townSquare = channels.find((ch) => ch.name === 'general');
             if (!townSquare) {
-                throw new Error('Town Square channel not found');
+                throw new Error('General channel not found');
             }
 
             const {channelsPage} = await pw.testBrowser.login(user);
-            await channelsPage.goto(team.name, 'town-square');
+            await channelsPage.goto(team.name, 'general');
             await channelsPage.toBeVisible();
 
             const anchorMarker = `E2E mm_blocks eph ds users anchor ${pw.random.id()}`;
@@ -698,13 +698,13 @@ test.describe('Interactive mm_blocks (ephemeral post)', () => {
             const {team, user, adminClient, userClient} = await pw.initSetup();
 
             const channels = await adminClient.getMyChannels(team.id);
-            const townSquare = channels.find((ch) => ch.name === 'town-square');
+            const townSquare = channels.find((ch) => ch.name === 'general');
             if (!townSquare) {
-                throw new Error('Town Square channel not found');
+                throw new Error('General channel not found');
             }
 
             const {channelsPage} = await pw.testBrowser.login(user);
-            await channelsPage.goto(team.name, 'town-square');
+            await channelsPage.goto(team.name, 'general');
             await channelsPage.toBeVisible();
 
             const anchorMarker = `E2E mm_blocks eph ds channels anchor ${pw.random.id()}`;
@@ -757,7 +757,7 @@ test.describe('Interactive mm_blocks (ephemeral post)', () => {
             await channelSelect.click();
             await channelSelect.fill('Town');
             await channelsPage.page
-                .getByRole('option', {name: /Town Square/})
+                .getByRole('option', {name: /General/})
                 .first()
                 .click();
 
@@ -791,13 +791,13 @@ test.describe('Interactive mm_blocks (ephemeral post)', () => {
             const {team, user, adminClient, userClient} = await pw.initSetup();
 
             const channels = await adminClient.getMyChannels(team.id);
-            const townSquare = channels.find((ch) => ch.name === 'town-square');
+            const townSquare = channels.find((ch) => ch.name === 'general');
             if (!townSquare) {
-                throw new Error('Town Square channel not found');
+                throw new Error('General channel not found');
             }
 
             const {channelsPage} = await pw.testBrowser.login(user);
-            await channelsPage.goto(team.name, 'town-square');
+            await channelsPage.goto(team.name, 'general');
             await channelsPage.toBeVisible();
 
             const anchorMarker = `E2E mm_blocks eph context anchor ${pw.random.id()}`;
@@ -862,14 +862,14 @@ test.describe('Interactive mm_blocks (ephemeral post)', () => {
             const {team, user, adminClient, userClient} = await pw.initSetup();
 
             const channels = await adminClient.getMyChannels(team.id);
-            const townSquare = channels.find((ch) => ch.name === 'town-square');
+            const townSquare = channels.find((ch) => ch.name === 'general');
             const offTopic = channels.find((ch) => ch.name === 'off-topic');
             if (!townSquare || !offTopic) {
-                throw new Error('Town Square or Off-Topic channel not found');
+                throw new Error('General or Off-Topic channel not found');
             }
 
             const {channelsPage} = await pw.testBrowser.login(user);
-            await channelsPage.goto(team.name, 'town-square');
+            await channelsPage.goto(team.name, 'general');
             await channelsPage.toBeVisible();
 
             const anchorMarker = `E2E mm_blocks eph openurl anchor ${pw.random.id()}`;

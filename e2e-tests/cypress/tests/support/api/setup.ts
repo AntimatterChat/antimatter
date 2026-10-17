@@ -59,7 +59,7 @@ function apiInitSetup(arg: SetupParam = {}): ChainableT<SetupResult> {
                             user,
                             channelUrl: getUrl(channel.name),
                             offTopicUrl: getUrl('off-topic'),
-                            townSquareUrl: getUrl('town-square'),
+                            townSquareUrl: getUrl('general'),
                         };
 
                         if (loginAfter) {
@@ -84,7 +84,7 @@ declare global {
         interface Chainable {
 
             /**
-             * Creates a new user and make it a member of the new public team and its channels - one public channel, town-square and off-topic.
+             * Creates a new user and make it a member of the new public team and its channels - one public channel, general and off-topic.
              * Created user has an option to log in after all are setup.
              * Requires sysadmin session to initiate this command.
              * @param {boolean} options.loginAfter - false (default) or true if wants to login as the new user after setting up. Note that when true, succeeding API request will be limited to access/permission of a regular system user.
@@ -99,7 +99,7 @@ declare global {
              * @returns {Cypress.Channel} `out.channel` as `Channel` object
              * @returns {string} `out.channelUrl` as channel URL
              * @returns {string} `out.offTopicUrl` as off-topic URL
-             * @returns {string} `out.townSquareUrl` as town-square URL
+             * @returns {string} `out.townSquareUrl` as general URL
              *
              * @example
              *   let testUser;

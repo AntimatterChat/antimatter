@@ -42,7 +42,7 @@ test('Verify Reporter is notified if flagged post is Retained in a channel', asy
     await reviewerUserClient.keepFlaggedPost(post.id, 'Retaining this post after review');
 
     const {channelsPage} = await pw.testBrowser.login(reporterUser);
-    await channelsPage.goto(team.name, 'town-square');
+    await channelsPage.goto(team.name, 'general');
     await channelsPage.toBeVisible();
 
     const expected = `The post having ID ${post.id} in the channel ${townSquare.display_name} which you quarantined for review has been restored by a reviewer.`;
@@ -86,7 +86,7 @@ test('Verify Reporter is notified if flagged post is Removed from a channel', as
     await reviewerUserClient.removeFlaggedPost(post.id, 'Retaining this post after review');
 
     const {channelsPage} = await pw.testBrowser.login(reporterUser);
-    await channelsPage.goto(team.name, 'town-square');
+    await channelsPage.goto(team.name, 'general');
     await channelsPage.toBeVisible();
 
     const expected = `The post having ID ${post.id} in the channel ${townSquare.display_name} which you quarantined for review has been permanently removed by a reviewer.`;

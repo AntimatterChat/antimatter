@@ -37,7 +37,7 @@ describe('Slash commands page', () => {
 
             // # Open slash command page
             cy.get('#slashCommands').click();
-            channelUrl = `${testTeam.name}/channels/town-square`;
+            channelUrl = `${testTeam.name}/channels/general`;
         });
     });
 

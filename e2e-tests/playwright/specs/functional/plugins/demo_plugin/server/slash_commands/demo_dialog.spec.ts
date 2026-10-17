@@ -20,7 +20,7 @@ test('should open /dialog and post submit confirmation on submit', async ({pw}) 
     await channelsPage.toBeVisible();
 
     // 3. Navigate to Demo Plugin channel
-    await channelsPage.goto(team.name, 'town-square');
+    await channelsPage.goto(team.name, 'general');
     await channelsPage.toBeVisible();
 
     // 4. Send /dialog command (with one retry if the dialog doesn't appear).
@@ -97,7 +97,7 @@ test('should post cancellation notification when /dialog is cancelled', async ({
     await channelsPage.toBeVisible();
 
     // 3. Navigate to Demo Plugin channel
-    await channelsPage.goto(team.name, 'town-square');
+    await channelsPage.goto(team.name, 'general');
     await channelsPage.toBeVisible();
 
     // 4. Send /dialog command (with one retry if the dialog doesn't appear).
@@ -150,7 +150,7 @@ test('should show validation errors when required fields are submitted empty', a
     await channelsPage.toBeVisible();
 
     // 3. Navigate to Demo Plugin channel
-    await channelsPage.goto(team.name, 'town-square');
+    await channelsPage.goto(team.name, 'general');
     await channelsPage.toBeVisible();
 
     // 4. Send /dialog command (with one retry if the dialog doesn't appear).
@@ -199,8 +199,8 @@ test('should show general error and keep dialog open on /dialog error submit', a
     await channelsPage.goto();
     await channelsPage.toBeVisible();
 
-    // 3. Navigate to Town Square
-    await channelsPage.goto(team.name, 'town-square');
+    // 3. Navigate to General
+    await channelsPage.goto(team.name, 'general');
     await channelsPage.toBeVisible();
 
     // 4. Send /dialog error command (with one retry if the dialog doesn't appear).
@@ -251,8 +251,8 @@ test('should show general error on /dialog error-no-elements confirm', async ({p
     await channelsPage.goto();
     await channelsPage.toBeVisible();
 
-    // 3. Navigate to Town Square
-    await channelsPage.goto(team.name, 'town-square');
+    // 3. Navigate to General
+    await channelsPage.goto(team.name, 'general');
     await channelsPage.toBeVisible();
 
     // 4. Send /dialog error-no-elements command (with one retry if the dialog doesn't appear).

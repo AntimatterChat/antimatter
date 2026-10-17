@@ -68,7 +68,7 @@ test.describe('Team Settings Modal - Team Membership as Team Admin', {tag: ['@ab
 
         const {page} = await pw.testBrowser.login(teamAdmin);
         const channelsPage = new ChannelsPage(page);
-        await channelsPage.goto(team.name, 'town-square');
+        await channelsPage.goto(team.name, 'general');
         await channelsPage.toBeVisible();
 
         const {teamSettings, tab} = await openTeamMembershipTab(page, channelsPage);
@@ -110,7 +110,7 @@ test.describe('Team Settings Modal - Team Membership as Team Admin', {tag: ['@ab
 
         const {page} = await pw.testBrowser.login(teamAdmin);
         const channelsPage = new ChannelsPage(page);
-        await channelsPage.goto(team.name, 'town-square');
+        await channelsPage.goto(team.name, 'general');
         await channelsPage.toBeVisible();
 
         const {teamSettings, tab} = await openTeamMembershipTab(page, channelsPage);
@@ -153,7 +153,7 @@ test.describe('Team Settings Modal - Team Membership as Team Admin', {tag: ['@ab
 
         const {page} = await pw.testBrowser.login(teamAdmin);
         const channelsPage = new ChannelsPage(page);
-        await channelsPage.goto(team.name, 'town-square');
+        await channelsPage.goto(team.name, 'general');
         await channelsPage.toBeVisible();
 
         const {teamSettings, tab} = await openTeamMembershipTab(page, channelsPage);
@@ -232,7 +232,7 @@ test.describe('Team Settings Modal - Team Membership as Team Admin', {tag: ['@ab
 
         const {page} = await pw.testBrowser.login(teamAdmin);
         const channelsPage = new ChannelsPage(page);
-        await channelsPage.goto(team.name, 'town-square');
+        await channelsPage.goto(team.name, 'general');
         await channelsPage.toBeVisible();
 
         const {teamSettings, tab} = await openTeamMembershipTab(page, channelsPage);
@@ -284,7 +284,7 @@ test.describe('Team Settings Modal - Team Membership as Team Admin', {tag: ['@ab
 
         const {page} = await pw.testBrowser.login(teamAdmin);
         const channelsPage = new ChannelsPage(page);
-        await channelsPage.goto(team.name, 'town-square');
+        await channelsPage.goto(team.name, 'general');
         await channelsPage.toBeVisible();
 
         const teamSettings = await channelsPage.openTeamSettings();
@@ -368,7 +368,7 @@ test.describe('Team Settings Modal - Team Membership as Team Admin', {tag: ['@ab
 
         const {page} = await pw.testBrowser.login(teamAdmin);
         const channelsPage = new ChannelsPage(page);
-        await channelsPage.goto(team.name, 'town-square');
+        await channelsPage.goto(team.name, 'general');
         await channelsPage.toBeVisible();
 
         const teamSettings = await channelsPage.openTeamSettings();
@@ -430,7 +430,7 @@ test.describe('Team Settings Modal - Team Membership as Team Admin', {tag: ['@ab
 
         const {page} = await pw.testBrowser.login(teamAdmin);
         const channelsPage = new ChannelsPage(page);
-        await channelsPage.goto(team.name, 'town-square');
+        await channelsPage.goto(team.name, 'general');
         await channelsPage.toBeVisible();
 
         const {teamSettings, tab} = await openTeamMembershipTab(page, channelsPage);
@@ -470,7 +470,7 @@ test.describe('Team Settings Modal - Team Membership as Team Admin', {tag: ['@ab
 
         const {page} = await pw.testBrowser.login(teamAdmin);
         const channelsPage = new ChannelsPage(page);
-        await channelsPage.goto(team.name, 'town-square');
+        await channelsPage.goto(team.name, 'general');
         await channelsPage.toBeVisible();
 
         const {teamSettings, tab} = await openTeamMembershipTab(page, channelsPage);

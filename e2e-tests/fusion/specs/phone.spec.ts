@@ -16,10 +16,10 @@ test('shows one pane at a time on a phone', async ({fusion, page, run}) => {
 
     // The navigation slides in, and going to a channel brings the conversation back.
     await fusion.main.getByRole('button', {name: 'Open navigation'}).click();
-    const link = fusion.sidebar.locator('a[href$="/channels/town-square"]');
+    const link = fusion.sidebar.locator('a[href$="/channels/general"]');
     await expect(link).toBeInViewport();
     await link.click();
-    await expect(page).toHaveURL(/\/channels\/town-square$/);
+    await expect(page).toHaveURL(/\/channels\/general$/);
     await expect(fusion.composer).toBeInViewport();
     await expect(link).not.toBeInViewport();
 });

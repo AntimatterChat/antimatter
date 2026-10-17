@@ -46,8 +46,8 @@ test('MM-T5611 opens external and internal bookmark links', {tag: '@channels'}, 
     await createLinkBookmark(
         userClient,
         channel.id,
-        'Town Square',
-        new URL(`/${team.name}/channels/town-square`, testConfig.baseURL).toString(),
+        'General',
+        new URL(`/${team.name}/channels/general`, testConfig.baseURL).toString(),
     );
     await channelsPage.goto(team.name, channel.name);
 
@@ -60,9 +60,9 @@ test('MM-T5611 opens external and internal bookmark links', {tag: '@channels'}, 
     await popup.close();
 
     // # Open the internal bookmark
-    await channelsPage.channelBookmarksBar.getBookmark('Town Square').click();
-    // * Verify it navigates to Town Square in Mattermost
-    await expect.poll(() => page.url()).toContain(`/${team.name}/channels/town-square`);
+    await channelsPage.channelBookmarksBar.getBookmark('General').click();
+    // * Verify it navigates to General in Mattermost
+    await expect.poll(() => page.url()).toContain(`/${team.name}/channels/general`);
 });
 
 /**

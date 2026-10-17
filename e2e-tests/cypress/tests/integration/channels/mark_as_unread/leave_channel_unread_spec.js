@@ -52,7 +52,7 @@ describe('Leaving channel', () => {
             });
 
             cy.apiLogin(testUser);
-            cy.visit(`/${team.name}/channels/town-square`);
+            cy.visit(`/${team.name}/channels/general`);
         });
     });
 

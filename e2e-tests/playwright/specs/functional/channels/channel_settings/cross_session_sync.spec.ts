@@ -12,11 +12,11 @@ test('MM-T837 syncs public channel create and archive across sessions', {tag: '@
 
     // # Log in as the same user in two separate browser sessions
     const {channelsPage: firstSession} = await pw.testBrowser.login(user);
-    await firstSession.goto(team.name, 'town-square');
+    await firstSession.goto(team.name, 'general');
     await firstSession.toBeVisible();
 
     const {channelsPage: secondSession} = await pw.testBrowser.login(user);
-    await secondSession.goto(team.name, 'town-square');
+    await secondSession.goto(team.name, 'general');
     await secondSession.toBeVisible();
 
     // # Create a public channel in the first session
@@ -30,7 +30,7 @@ test('MM-T837 syncs public channel create and archive across sessions', {tag: '@
 
     // # Archive the channel in the first session, then navigate away from the archived channel
     await firstSession.archiveChannel();
-    await firstSession.sidebarLeft.goToItem('town-square');
+    await firstSession.sidebarLeft.goToItem('general');
 
     // * Verify the channel is removed from the sidebar of both sessions
     await expect(firstSession.sidebarLeft.container.getByText(channelName)).not.toBeVisible();
@@ -49,11 +49,11 @@ test(
 
         // # Log in as the same user in two separate browser sessions
         const {channelsPage: firstSession} = await pw.testBrowser.login(user);
-        await firstSession.goto(team.name, 'town-square');
+        await firstSession.goto(team.name, 'general');
         await firstSession.toBeVisible();
 
         const {channelsPage: secondSession} = await pw.testBrowser.login(user);
-        await secondSession.goto(team.name, 'town-square');
+        await secondSession.goto(team.name, 'general');
         await secondSession.toBeVisible();
 
         // # Create a public channel in the first session
@@ -73,7 +73,7 @@ test(
         await channelMenu.leaveChannel.click();
 
         // * Verify the first session is redirected to the default channel and the channel is gone from its sidebar
-        await firstSession.centerView.header.toHaveTitle('Town Square');
+        await firstSession.centerView.header.toHaveTitle('General');
         await expect(firstSession.sidebarLeft.container.getByText(channelName)).not.toBeVisible();
 
         // * Verify the second session stays on its current channel and the left channel is removed from its sidebar
@@ -89,18 +89,18 @@ test(
  * MM-T2554 covers the same behavior as MM-T2549 and is covered by this test.
  */
 test(
-    'MM-T2549 MM-T2554 leaving a viewed channel redirects the other session viewing it to Town Square',
+    'MM-T2549 MM-T2554 leaving a viewed channel redirects the other session viewing it to General',
     {tag: '@channel_settings'},
     async ({pw}) => {
         const {user, team} = await pw.initSetup();
 
         // # Log in as the same user in two separate browser sessions
         const {channelsPage: firstSession} = await pw.testBrowser.login(user);
-        await firstSession.goto(team.name, 'town-square');
+        await firstSession.goto(team.name, 'general');
         await firstSession.toBeVisible();
 
         const {channelsPage: secondSession} = await pw.testBrowser.login(user);
-        await secondSession.goto(team.name, 'town-square');
+        await secondSession.goto(team.name, 'general');
         await secondSession.toBeVisible();
 
         // # Create a public channel in the first session
@@ -117,12 +117,12 @@ test(
         const channelMenu = await firstSession.openChannelMenu();
         await channelMenu.leaveChannel.click();
 
-        // * Verify the first session is redirected to Town Square and the channel is gone from its sidebar
-        await firstSession.centerView.header.toHaveTitle('Town Square');
+        // * Verify the first session is redirected to General and the channel is gone from its sidebar
+        await firstSession.centerView.header.toHaveTitle('General');
         await expect(firstSession.sidebarLeft.container.getByText(channelName)).not.toBeVisible();
 
-        // * Verify the second session is also redirected to Town Square and the channel is removed from its sidebar
-        await secondSession.centerView.header.toHaveTitle('Town Square');
+        // * Verify the second session is also redirected to General and the channel is removed from its sidebar
+        await secondSession.centerView.header.toHaveTitle('General');
         await expect(secondSession.sidebarLeft.container.getByText(channelName)).not.toBeVisible();
     },
 );

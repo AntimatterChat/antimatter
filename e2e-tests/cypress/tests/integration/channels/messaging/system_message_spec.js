@@ -53,7 +53,7 @@ describe('System Message', () => {
     let testUsername;
 
     before(() => {
-        // # Login as test user and visit town-square
+        // # Login as test user and visit general
         cy.apiInitSetup({loginAfter: true}).then(({team, user}) => {
             testUsername = user.username;
             cy.visit(`/${team.name}/channels/off-topic`);

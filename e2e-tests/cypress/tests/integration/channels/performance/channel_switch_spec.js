@@ -18,8 +18,8 @@ describe('Channel switch performance test', () => {
         cy.apiInitSetup({loginAfter: true}).then(({team}) => {
             teamName = team;
 
-            // # Go to town square
-            cy.visit(`/${team.name}/channels/town-square`);
+            // # Go to general
+            cy.visit(`/${team.name}/channels/general`);
             cy.get('#sidebarItem_off-topic').should('be.visible');
         });
     });
@@ -39,7 +39,7 @@ describe('Channel switch performance test', () => {
 
             // # Reset test run so we can start on the initially specified channel
             () => {
-                cy.visit(`/${teamName.name}/channels/town-square`);
+                cy.visit(`/${teamName.name}/channels/general`);
                 cy.get('#sidebarItem_off-topic').should('be.visible');
             },
         );

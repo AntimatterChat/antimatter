@@ -16,11 +16,11 @@ describe('Leave Channel Command', () => {
     let testChannel: Cypress.Channel;
 
     before(() => {
-        // # Login as test user and go to town-square
+        // # Login as test user and go to general
         cy.apiInitSetup({loginAfter: true}).then(({team, channel}) => {
             testChannel = channel;
-            cy.visit(`/${team.name}/channels/town-square`);
-            cy.get('#channelHeaderTitle').should('be.visible').and('contain', 'Town Square');
+            cy.visit(`/${team.name}/channels/general`);
+            cy.get('#channelHeaderTitle').should('be.visible').and('contain', 'General');
         });
     });
 
@@ -35,7 +35,7 @@ describe('Leave Channel Command', () => {
         cy.wait(TIMEOUTS.TWO_SEC);
 
         // * Assert that user is redirected to townsquare
-        cy.url().should('include', '/channels/town-square');
-        cy.get('#channelHeaderTitle').should('be.visible').and('contain', 'Town Square');
+        cy.url().should('include', '/channels/general');
+        cy.get('#channelHeaderTitle').should('be.visible').and('contain', 'General');
     });
 });

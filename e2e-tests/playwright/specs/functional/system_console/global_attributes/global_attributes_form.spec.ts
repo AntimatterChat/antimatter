@@ -1876,7 +1876,7 @@ test.describe('System Console - Global Attributes form', {tag: '@system_console'
 
                 // # Post a message as the user and open their own profile popover
                 const {channelsPage} = await pw.testBrowser.login(user);
-                await channelsPage.goto(team.name, 'town-square');
+                await channelsPage.goto(team.name, 'general');
                 await channelsPage.postMessage(`display-name-rendering-${timestamp}`);
 
                 const lastPost = await channelsPage.getLastPost();

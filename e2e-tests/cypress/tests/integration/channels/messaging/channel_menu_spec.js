@@ -33,13 +33,13 @@ describe('Channel header menu', () => {
         cy.apiInitSetup({loginAfter: true}).then(({team, user}) => {
             testUser = user;
             testTeam = team;
-            cy.visit(`/${testTeam.name}/channels/town-square`);
+            cy.visit(`/${testTeam.name}/channels/general`);
         });
     });
 
     it('MM-14490 show/hide properly menu dividers', () => {
         // # Go to "/"
-        cy.visit(`/${testTeam.name}/channels/town-square`);
+        cy.visit(`/${testTeam.name}/channels/general`);
 
         // # Create new test channel
         cy.apiCreateChannel(testTeam.id, 'channel-test', 'Channel Test').then(({channel}) => {
@@ -86,7 +86,7 @@ describe('Channel header menu', () => {
 
     it('MM-24590 should leave channel successfully', () => {
         // # Go to "/"
-        cy.visit(`/${testTeam.name}/channels/town-square`);
+        cy.visit(`/${testTeam.name}/channels/general`);
 
         // # Create new test channel
         cy.apiAdminLogin();
@@ -109,8 +109,8 @@ describe('Channel header menu', () => {
             // # Click the "Leave Channel" option
             cy.get('#channelLeaveChannel').click();
 
-            // * Should now be in Town Square
-            cy.get('#channelHeaderInfo').should('be.visible').and('contain', 'Town Square');
+            // * Should now be in General
+            cy.get('#channelHeaderInfo').should('be.visible').and('contain', 'General');
         });
     });
 });

@@ -21,7 +21,7 @@ describe('View Members modal', () => {
             // # Visit default channel and verify members modal
             cy.apiLogin(user);
             cy.externalUpdateUserRoles(user.id, 'system_user system_admin');
-            cy.visit(`/${team.name}/channels/town-square`);
+            cy.visit(`/${team.name}/channels/general`);
             verifyMemberDropdownAction(true);
 
             // # Make user a regular member

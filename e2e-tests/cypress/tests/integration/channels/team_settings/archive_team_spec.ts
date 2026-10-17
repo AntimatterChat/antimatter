@@ -35,7 +35,7 @@ describe('Teams Settings', () => {
                     cy.apiLogin(user);
 
                     // # Visit team 1 so the previous team is set to team 1 in local storage
-                    cy.visit(`/${team1.name}/channels/town-square`);
+                    cy.visit(`/${team1.name}/channels/general`);
 
                     // * Verify user is part of both teams
                     cy.get(`#${team1.name}TeamButton`, {timeout: TIMEOUTS.TEN_SEC}).should('be.visible');
@@ -60,10 +60,10 @@ describe('Teams Settings', () => {
                     cy.visit('/');
 
                     // * Verify we landed on team 2 url
-                    cy.url().should('include', `/${team2.name}/channels/town-square`);
+                    cy.url().should('include', `/${team2.name}/channels/general`);
 
                     // # Try to visit team 1 from the url
-                    cy.visit(`/${team1.name}/channels/town-square`);
+                    cy.visit(`/${team1.name}/channels/general`);
 
                     // * Verify we are redirected to team not found
                     cy.url().should('include', '/error?type=team_not_found');

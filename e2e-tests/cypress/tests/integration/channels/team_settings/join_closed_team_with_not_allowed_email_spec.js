@@ -136,8 +136,8 @@ describe('Team Settings', () => {
                     // # Login as new team admin
                     cy.apiLogin(user);
 
-                    // # Go to Town Square
-                    cy.visit(`/${otherTeam.name}/channels/town-square`);
+                    // # Go to General
+                    cy.visit(`/${otherTeam.name}/channels/general`);
 
                     // # Open team menu and click 'Join Another Team'
                     cy.uiOpenTeamMenu('Join another team');

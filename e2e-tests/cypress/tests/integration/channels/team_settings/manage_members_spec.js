@@ -22,7 +22,7 @@ describe('Manage Members', () => {
         // # Login as sysadmin
         cy.apiAdminLogin();
 
-        // # Login as test user and visit town-square
+        // # Login as test user and visit general
         cy.apiInitSetup().then(({team, user}) => {
             testTeam = team;
             testUser = user;
@@ -30,8 +30,8 @@ describe('Manage Members', () => {
     });
 
     it('MM-T2331 System Admin can promote Member to Team Admin', () => {
-        // # Go to Town Square
-        cy.visit(`/${testTeam.name}/channels/town-square`);
+        // # Go to General
+        cy.visit(`/${testTeam.name}/channels/general`);
 
         // # Open team menu and click 'Manage Members'
         cy.uiOpenTeamMenu('Manage members');
@@ -57,8 +57,8 @@ describe('Manage Members', () => {
                 // # Login as new team admin
                 cy.apiLogin(testUser);
 
-                // # Go to Town Square
-                cy.visit(`/${testTeam.name}/channels/town-square`);
+                // # Go to General
+                cy.visit(`/${testTeam.name}/channels/general`);
 
                 // # Open team menu and click 'Manage Members'
                 cy.uiOpenTeamMenu('Manage members');
@@ -90,8 +90,8 @@ describe('Manage Members', () => {
                         // # Login as new team admin
                         cy.apiLogin(testUser);
 
-                        // # Go to Town Square
-                        cy.visit(`/${testTeam.name}/channels/town-square`);
+                        // # Go to General
+                        cy.visit(`/${testTeam.name}/channels/general`);
 
                         // # Open team menu and click 'Manage Members'
                         cy.uiOpenTeamMenu('Manage members');
@@ -109,13 +109,13 @@ describe('Manage Members', () => {
                         cy.apiLogin(user);
 
                         // # Go to team that they are still a member of
-                        cy.visit(`/${otherTeam.name}/channels/town-square`);
+                        cy.visit(`/${otherTeam.name}/channels/general`);
 
                         // * Verify they are still a member
                         cy.uiGetLHSHeader().should('contain', otherTeam.display_name);
 
                         // # Go to team that they were removed from
-                        cy.visit(`/${testTeam.name}/channels/town-square`);
+                        cy.visit(`/${testTeam.name}/channels/general`);
 
                         // * Verify that they get a 'Team Not Found' screen
                         cy.url().should('include', '/error?type=team_not_found');
@@ -135,8 +135,8 @@ describe('Manage Members', () => {
                 // # Login as new team admin
                 cy.apiLogin(testUser);
 
-                // # Go to Town Square
-                cy.visit(`/${testTeam.name}/channels/town-square`);
+                // # Go to General
+                cy.visit(`/${testTeam.name}/channels/general`);
 
                 // # Open team menu and click 'Manage Members'
                 cy.uiOpenTeamMenu('Manage members');
@@ -159,7 +159,7 @@ describe('Manage Members', () => {
                     cy.apiLogin(user);
 
                     // # Go to team that they were removed from
-                    cy.visit(`/${testTeam.name}/channels/town-square`);
+                    cy.visit(`/${testTeam.name}/channels/general`);
 
                     // * Verify that they get a 'Team Not Found' screen
                     cy.url().should('include', '/error?type=team_not_found');

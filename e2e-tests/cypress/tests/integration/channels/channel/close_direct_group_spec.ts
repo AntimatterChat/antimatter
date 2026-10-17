@@ -16,12 +16,12 @@ import type {ChainableT} from '@/types';
 // Stage: @prod
 // Group: @channels @channel @channel_settings @not_cloud
 
-// Make sure that the current channel is Town Square and that the
+// Make sure that the current channel is General and that the
 // channel identified by the passed name is no longer in the channel
 // sidebar
 function verifyChannelWasProperlyClosed(channelName: string) {
     // * Make sure that we have switched channels
-    cy.get('#channelHeaderTitle').should('contain', 'Town Square');
+    cy.get('#channelHeaderTitle').should('contain', 'General');
 
     // * Make sure the old DM no longer exists
     cy.get('#sidebarItem_' + channelName).should('not.exist');
@@ -44,9 +44,9 @@ describe('Close direct messages', () => {
                 cy.apiAddUserToTeam(team.id, newUser.id);
             });
 
-            // # Login as test user and go to town square
+            // # Login as test user and go to general
             cy.apiLogin(testUser);
-            cy.visit(`/${testTeam.name}/channels/town-square`);
+            cy.visit(`/${testTeam.name}/channels/general`);
         });
     });
 
@@ -96,9 +96,9 @@ describe('Close group messages', () => {
                 cy.apiAddUserToTeam(team.id, newUser.id);
             });
 
-            // # Login as test user and go to town square
+            // # Login as test user and go to general
             cy.apiLogin(testUser);
-            cy.visit(`/${team.name}/channels/town-square`);
+            cy.visit(`/${team.name}/channels/general`);
         });
     });
 

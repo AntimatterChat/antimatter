@@ -32,8 +32,8 @@ describe('Autocomplete with Database - Users', () => {
 
             cy.apiLogin(searchData.sysadmin);
 
-            // # Navigate to the new teams town square
-            cy.visit(`/${searchData.team.name}/channels/town-square`);
+            // # Navigate to the new teams general
+            cy.visit(`/${searchData.team.name}/channels/general`);
 
             // # Open quick channel switcher
             cy.typeCmdOrCtrl().type('k');

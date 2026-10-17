@@ -134,9 +134,9 @@ describe('Integrations', () => {
         // * Verity Off-Topic is not shown in LHS
         cy.get('#sidebar-left').should('be.visible').should('not.contain', 'Off-Topic');
 
-        // * Verify user is redirected to Town Square
-        cy.uiGetLhsSection('CHANNELS').find('.active').should('contain', 'Town Square');
-        cy.get('#channelHeaderTitle').should('be.visible').should('contain', 'Town Square');
+        // * Verify user is redirected to General
+        cy.uiGetLhsSection('CHANNELS').find('.active').should('contain', 'General');
+        cy.get('#channelHeaderTitle').should('be.visible').should('contain', 'General');
     });
 
     it('MM-T574 /shrug test', () => {
@@ -169,8 +169,8 @@ describe('Integrations', () => {
         cy.apiAdminLogin();
 
         cy.apiInitSetup().then(({team}) => {
-            // # Go to town square
-            cy.visit(`/${team.name}/channels/town-square`);
+            // # Go to general
+            cy.visit(`/${team.name}/channels/general`);
 
             // # Post "/marketplace" as SystemAdmin
             cy.postMessage('/marketplace ');

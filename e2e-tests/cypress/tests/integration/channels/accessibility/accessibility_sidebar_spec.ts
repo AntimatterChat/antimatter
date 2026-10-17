@@ -172,9 +172,9 @@ describe('Accessibility tests for RHS getting focus after buttons actions', () =
         cy.apiInitSetup().then(({team, user}) => {
             testUser = user;
 
-            // # Login as the test user and visit the town-square channel
+            // # Login as the test user and visit the general channel
             cy.apiLogin(testUser);
-            cy.visit(`/${team.name}/channels/town-square`);
+            cy.visit(`/${team.name}/channels/general`);
             cy.get('#postListContent').should('be.visible');
         });
     });

@@ -10,7 +10,7 @@ test('MM-T176 highlights the center post when its timestamp is clicked', {tag: [
     // # Create and log in as a test user
     const {user, team} = await pw.initSetup();
     const {channelsPage, page} = await pw.testBrowser.login(user);
-    await channelsPage.goto(team.name, 'town-square');
+    await channelsPage.goto(team.name, 'general');
     await channelsPage.toBeVisible();
 
     // # Post a message and open its thread, then reply in the RHS

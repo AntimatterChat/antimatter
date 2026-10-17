@@ -18,9 +18,9 @@ test(
             await adminClient.addToTeam(team.id, extraUser.id);
         }
 
-        // # Log in and go to Town Square (all team members are in it by default)
+        // # Log in and go to General (all team members are in it by default)
         const {channelsPage} = await pw.testBrowser.login(user);
-        await channelsPage.goto(team.name, 'town-square');
+        await channelsPage.goto(team.name, 'general');
         await channelsPage.toBeVisible();
 
         // # Type a message with @all to trigger the notify-all confirmation modal

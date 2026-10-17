@@ -224,7 +224,7 @@ test('MM-T5465-5 Should highlight keywords in message sent from another user', a
     }
 
     // # Get the default channel of the team for getting the channel id
-    const channel = await adminClient.getChannelByName(team.id, 'town-square');
+    const channel = await adminClient.getChannelByName(team.id, 'general');
 
     const highlightKeyword = keywords[0];
     const messageWithKeyword = `This received message contains the ${highlightKeyword} keyword `;

@@ -23,8 +23,8 @@ test(
         // # Log in as admin
         const {page, channelsPage} = await pw.testBrowser.login(adminUser);
 
-        // # Visit town-square channel
-        await channelsPage.goto(team.name, 'town-square');
+        // # Visit general channel
+        await channelsPage.goto(team.name, 'general');
         await channelsPage.toBeVisible();
 
         // # Click on the Write a direct message button to open the Direct Messages dialog
@@ -95,8 +95,8 @@ test(
         // # Log in as admin
         const {page, channelsPage} = await pw.testBrowser.login(user);
 
-        // # Visit town-square channel
-        await channelsPage.goto(team.name, 'town-square');
+        // # Visit general channel
+        await channelsPage.goto(team.name, 'general');
         await channelsPage.toBeVisible();
 
         // # Click on the Write a direct message button to open the Direct Messages dialog

@@ -19,8 +19,8 @@ test('should update form fields dynamically when project type changes via /dialo
     await channelsPage.goto();
     await channelsPage.toBeVisible();
 
-    // 3. Navigate to Town Square
-    await channelsPage.goto(team.name, 'town-square');
+    // 3. Navigate to General
+    await channelsPage.goto(team.name, 'general');
     await channelsPage.toBeVisible();
 
     // 4. Send /dialog field-refresh command (with one retry if the dialog doesn't appear).

@@ -89,7 +89,7 @@ describe('Team Permissions', () => {
         cy.apiLogin(testUser);
 
         // # Go to main channel
-        cy.visit(`/${testTeam.name}/channels/town-square`);
+        cy.visit(`/${testTeam.name}/channels/general`);
 
         // # Open hamburger menu
         cy.uiOpenTeamMenu().wait(TIMEOUTS.HALF_SEC);
@@ -139,7 +139,7 @@ describe('Team Permissions', () => {
         cy.apiLogin(testUser);
 
         // # Go to main channel
-        cy.visit(`/${testTeam.name}/channels/town-square`);
+        cy.visit(`/${testTeam.name}/channels/general`);
 
         // # Click on create new channel at LHS
         cy.uiBrowseOrCreateChannel('Create new channel');

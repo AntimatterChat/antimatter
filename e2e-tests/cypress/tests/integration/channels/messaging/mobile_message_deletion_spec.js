@@ -15,7 +15,7 @@ describe('Delete Parent Message', () => {
         // # Set view port to mobile
         cy.viewport('iphone-6');
 
-        // # Login as test user and visit town-square channel
+        // # Login as test user and visit general channel
         cy.apiInitSetup({loginAfter: true}).then(({team}) => {
             cy.visit(`/${team.name}/channels/off-topic`);
         });

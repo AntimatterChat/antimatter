@@ -99,7 +99,7 @@ test('MM-T1755 rejects an email invite outside the allowed domains', {tag: '@aut
         });
 
         const {channelsPage} = await pw.testBrowser.login(user);
-        await channelsPage.goto(team.name, 'town-square');
+        await channelsPage.goto(team.name, 'general');
         await channelsPage.toBeVisible();
 
         // # Invite an email that is not on the allow list

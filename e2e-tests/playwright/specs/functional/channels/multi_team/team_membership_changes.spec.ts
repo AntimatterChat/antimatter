@@ -23,7 +23,7 @@ test('MM-T2547 leaves a team while viewing it and rejoins it', {tag: '@multi_tea
     await adminClient.addToTeam(secondTeam.id, user.id);
 
     const {channelsPage, page} = await pw.testBrowser.login(user);
-    await channelsPage.goto(team.name, 'town-square');
+    await channelsPage.goto(team.name, 'general');
     await channelsPage.toBeVisible();
 
     // # Leave the current team from the team menu
@@ -68,7 +68,7 @@ test(
         await adminClient.addToTeam(secondTeam.id, user.id);
 
         const {channelsPage, page} = await pw.testBrowser.login(user);
-        await channelsPage.goto(team.name, 'town-square');
+        await channelsPage.goto(team.name, 'general');
         await channelsPage.toBeVisible();
         await expect(page.locator(`#${team.name}TeamButton`)).toBeVisible();
 

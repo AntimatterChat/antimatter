@@ -38,9 +38,9 @@ test(
             },
         });
 
-        // # Log in and view the first team's Town Square, then stub notifications
+        // # Log in and view the first team's General, then stub notifications
         const {channelsPage, page} = await pw.testBrowser.login(user);
-        await channelsPage.goto(team.name, 'town-square');
+        await channelsPage.goto(team.name, 'general');
         await channelsPage.toBeVisible();
         await pw.stubNotification(page, 'granted');
 
@@ -79,9 +79,9 @@ test(
         // # Create a direct message channel between the admin and the user
         const dmChannel = await adminClient.createDirectChannel([adminUser.id, user.id]);
 
-        // # Log in and view Town Square, then stub notifications
+        // # Log in and view General, then stub notifications
         const {channelsPage, page} = await pw.testBrowser.login(user);
-        await channelsPage.goto(team.name, 'town-square');
+        await channelsPage.goto(team.name, 'general');
         await channelsPage.toBeVisible();
         await pw.stubNotification(page, 'granted');
 
@@ -120,9 +120,9 @@ test(
         // # Create a direct message channel between the admin and the user
         const dmChannel = await adminClient.createDirectChannel([adminUser.id, user.id]);
 
-        // # Log in and view Town Square (not the DM), then stub notifications
+        // # Log in and view General (not the DM), then stub notifications
         const {channelsPage, page} = await pw.testBrowser.login(user);
-        await channelsPage.goto(team.name, 'town-square');
+        await channelsPage.goto(team.name, 'general');
         await channelsPage.toBeVisible();
         await pw.stubNotification(page, 'granted');
 

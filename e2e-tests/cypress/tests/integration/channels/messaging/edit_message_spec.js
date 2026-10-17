@@ -23,7 +23,7 @@ describe('Edit Message', () => {
     });
 
     beforeEach(() => {
-        // # Visit town-square
+        // # Visit general
         cy.visit(offTopicUrl);
     });
 

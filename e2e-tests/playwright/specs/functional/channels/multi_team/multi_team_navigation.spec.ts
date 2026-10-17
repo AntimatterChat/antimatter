@@ -57,7 +57,7 @@ test('MM-T431 reopens to the previously viewed team and channel', {tag: '@multi_
     await adminClient.addToTeam(secondTeam.id, user.id);
 
     const {channelsPage, page} = await pw.testBrowser.login(user);
-    await channelsPage.goto(team.name, 'town-square');
+    await channelsPage.goto(team.name, 'general');
     await channelsPage.toBeVisible();
 
     // # Switch to the second team and view its Off-Topic channel
@@ -84,7 +84,7 @@ test('MM-T440 expands and collapses the RHS reply panel', {tag: '@multi_team'}, 
     // # Create and log in as a test user
     const {user, team} = await pw.initSetup();
     const {channelsPage} = await pw.testBrowser.login(user);
-    await channelsPage.goto(team.name, 'town-square');
+    await channelsPage.goto(team.name, 'general');
     await channelsPage.toBeVisible();
 
     // # Post a message and open its thread in the RHS

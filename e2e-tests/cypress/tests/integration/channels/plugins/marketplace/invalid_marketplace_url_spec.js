@@ -19,7 +19,7 @@ describe('Plugin Marketplace', () => {
         cy.shouldHavePluginUploadEnabled();
 
         cy.apiInitSetup().then(({team}) => {
-            townsquareLink = `/${team.name}/channels/town-square`;
+            townsquareLink = `/${team.name}/channels/general`;
         });
     });
 
@@ -40,7 +40,7 @@ describe('Plugin Marketplace', () => {
         // # Cleanup installed plugins
         cy.apiUninstallAllPlugins();
 
-        // # Visit the Town Square channel
+        // # Visit the General channel
         cy.visit(townsquareLink);
 
         // # Open up marketplace
