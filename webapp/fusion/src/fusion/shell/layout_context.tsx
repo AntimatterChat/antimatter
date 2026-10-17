@@ -1,11 +1,12 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 
-import React, {createContext, useCallback, useContext, useMemo, useState} from 'react';
+import React, {createContext, useCallback, useContext, useEffect, useMemo, useRef, useState} from 'react';
 import {useSelector} from 'react-redux';
 
 import {getIsRhsOpen} from 'selectors/rhs';
 
+import {isSimplifiedInterface} from 'fusion/hooks/display';
 import {isCompact} from 'fusion/hooks/media';
 
 // Phone layout: the navigation and the right-hand drawer slide over the chat (see styles/_25_responsive.scss).
@@ -37,7 +38,17 @@ const LayoutContext = createContext<Layout | null>(null);
 
 export function LayoutProvider({children}: {children: React.ReactNode}) {
     const [home, setHome] = useState(false);
-    const [showMembers, setShowMembers] = useState(() => window.innerWidth > 1100);
+    // The member list shows beside the conversation on wide screens, unless the simplified interface keeps it closed
+    // until it's opened (from the channel header).
+    const simplified = useSelector(isSimplifiedInterface);
+    const [showMembers, setShowMembers] = useState(() => window.innerWidth > 1100 && !simplified);
+    const wasSimplified = useRef(simplified);
+    useEffect(() => {
+        if (wasSimplified.current !== simplified) {
+            wasSimplified.current = simplified;
+            setShowMembers(window.innerWidth > 1100 && !simplified);
+        }
+    }, [simplified]);
     const [navOpen, setNavOpen] = useState(false);
     const [rightOpen, setRightOpen] = useState(false);
     const toggleMembers = useCallback(() => setShowMembers((on) => !on), []);

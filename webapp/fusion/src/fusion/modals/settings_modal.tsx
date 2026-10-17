@@ -49,13 +49,13 @@ import type {PluginConfiguration} from 'types/plugins/user_settings';
 import type {GlobalState} from 'types/store';
 
 import CustomThemeEditor, {useStartCustomTheme} from './custom_theme_editor';
-import {AdvancedPane, DisplayRows, ReadingRows} from './display_settings';
+import {AccessibilityPane, AdvancedPane, DisplayRows, ReadingRows} from './display_settings';
 import KeyboardPane from './keyboard_pane';
 import NotificationsPane from './notifications_pane';
 import {AccessHistory, CustomProfileFields, DeactivateDialog, EmailChange, MfaSection, OAuthAppsSection, SignInMethod, TokensSection} from './security_extras';
 import {Action, Choice, Toggle, usePreference} from './settings_controls';
 
-export type SettingsTab = 'account' | 'security' | 'privacy' | 'notifications' | 'appearance' | 'messages' | 'language' | 'keyboard' | 'advanced' | `plugin:${string}`;
+export type SettingsTab = 'account' | 'security' | 'privacy' | 'notifications' | 'appearance' | 'accessibility' | 'messages' | 'language' | 'keyboard' | 'advanced' | `plugin:${string}`;
 
 const TABS: Array<[Exclude<SettingsTab, `plugin:${string}`>, {id: string; defaultMessage: string}]> = [
     ['account', {id: 'fusion.settings.account', defaultMessage: 'My account'}],
@@ -63,6 +63,7 @@ const TABS: Array<[Exclude<SettingsTab, `plugin:${string}`>, {id: string; defaul
     ['privacy', {id: 'fusion.settings.privacy', defaultMessage: 'Privacy & safety'}],
     ['notifications', {id: 'fusion.settings.notifications', defaultMessage: 'Notifications'}],
     ['appearance', {id: 'fusion.settings.appearance', defaultMessage: 'Appearance'}],
+    ['accessibility', {id: 'fusion.settings.accessibility', defaultMessage: 'Accessibility'}],
     ['messages', {id: 'fusion.settings.messages', defaultMessage: 'Messages'}],
     ['language', {id: 'fusion.settings.language', defaultMessage: 'Language & time'}],
     ['keyboard', {id: 'fusion.settings.keyboard', defaultMessage: 'Keyboard'}],
@@ -744,6 +745,7 @@ export default function SettingsModal({tab, onTab, onClose}: Props) {
         privacy: <PrivacyPane/>,
         notifications: <NotificationsPane/>,
         appearance: <AppearancePane/>,
+        accessibility: <AccessibilityPane/>,
         messages: <MessagesPane/>,
         language: <LanguagePane/>,
         keyboard: <KeyboardPane/>,

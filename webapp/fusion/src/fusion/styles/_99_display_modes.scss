@@ -1,0 +1,73 @@
+// Display modes of the Fusion UI, set on <html> by shell/display_modes.ts from the user's settings:
+// - data-am-density: compact, standard or spacious messages, and lists (channels, conversations, members) to match;
+// - data-am-simplified: the simplified interface of the Accessibility settings.
+@use 'breakpoints' as *;
+
+/* ---------- Compact: the lists tighten as the messages do (see .am-msgs.am-compact) ---------- */
+:root[data-am-density="compact"] {
+  :is(.am-app, .am-layer) .am-ch { min-height: 28px; padding-top: 3px; padding-bottom: 3px; }
+  :is(.am-app, .am-layer) .am-ch-actions { top: 14px; }
+  :is(.am-app, .am-layer) .am-dm { padding-top: 3px; padding-bottom: 3px; }
+  :is(.am-app, .am-layer) .am-dock-row .am-dm { min-height: 28px; padding-top: 2px; padding-bottom: 2px; }
+  :is(.am-app, .am-layer) .am-cat { margin-top: 14px; }
+  :is(.am-app, .am-layer) .am-cat:first-child { margin-top: 6px; }
+  :is(.am-app, .am-layer) .am-member { padding-top: 3px; padding-bottom: 3px; }
+  :is(.am-app, .am-layer) .am-role-head { margin-top: 12px; }
+}
+
+/* ---------- Spacious: more room around messages and in the lists ---------- */
+:root[data-am-density="spacious"] {
+  :is(.am-app, .am-layer) .am-msg { padding-top: 10px; padding-bottom: 10px; }
+  :is(.am-app, .am-layer) .am-msg:not(.am-cont) { margin-top: 6px; }
+  :is(.am-app, .am-layer) .am-msg.am-cont { padding-top: 4px; padding-bottom: 4px; }
+  :is(.am-app, .am-layer) .am-body { line-height: 1.6; }
+  :is(.am-app, .am-layer) .am-reactions { margin-top: 8px; }
+  :is(.am-app, .am-layer) .am-day { margin-top: 22px; margin-bottom: 10px; }
+
+  :is(.am-app, .am-layer) .am-ch { min-height: 38px; padding-top: 8px; padding-bottom: 8px; }
+  :is(.am-app, .am-layer) .am-ch-actions { top: 19px; }
+  :is(.am-app, .am-layer) .am-ch-row + .am-ch-row { margin-top: 4px; }
+  :is(.am-app, .am-layer) .am-ch.am-ch-thread { height: 32px; }
+  :is(.am-app, .am-layer) .am-dm { padding-top: 8px; padding-bottom: 8px; }
+  :is(.am-app, .am-layer) .am-dock-row .am-dm { min-height: 38px; padding-top: 6px; padding-bottom: 6px; }
+  :is(.am-app, .am-layer) .am-dock-list { gap: 4px; }
+  :is(.am-app, .am-layer) .am-cat { margin-top: 26px; margin-bottom: 6px; }
+  :is(.am-app, .am-layer) .am-cat:first-child { margin-top: 10px; }
+  :is(.am-app, .am-layer) .am-member { padding-top: 8px; padding-bottom: 8px; }
+  :is(.am-app, .am-layer) .am-role-head { margin-top: 22px; margin-bottom: 8px; }
+}
+
+/* ---------- Simplified interface ---------- */
+:root[data-am-simplified] {
+  // No animations or transitions, as with the system's reduced motion setting.
+  .am-app *, .am-layer *, :is(.am-app, .am-layer) *::before, :is(.am-app, .am-layer) *::after { transition: none !important; animation: none !important; }
+
+  // Bigger targets: rows and the small buttons of the sidebar, the message toolbar and the menus.
+  :is(.am-app, .am-layer) .am-ch { min-height: 38px; }
+  :is(.am-app, .am-layer) .am-ch-actions { top: 19px; }
+  :is(.am-app, .am-layer) .am-ch-act, :is(.am-app, .am-layer) .am-dock-x { width: 30px; height: 30px; }
+  :is(.am-app, .am-layer) .am-ch-row:hover > .am-ch, :is(.am-app, .am-layer) .am-ch-row:has(:focus-visible) > .am-ch { padding-right: 74px; }
+  :is(.am-app, .am-layer) .am-ch-row.am-one-act:hover > .am-ch, :is(.am-app, .am-layer) .am-ch-row.am-one-act:has(:focus-visible) > .am-ch { padding-right: 40px; }
+  :is(.am-app, .am-layer) .am-dock-row .am-dm { min-height: 38px; }
+  :is(.am-app, .am-layer) .am-dock-row:hover .am-dm, :is(.am-app, .am-layer) .am-dock-row:focus-within .am-dm { padding-right: 40px; }
+  :is(.am-app, .am-layer) .am-msg-tools button { width: 34px; height: 34px; }
+  :is(.am-app, .am-layer) .am-plus-pop button { min-height: 40px; }
+  :is(.am-app, .am-layer) .am-member { min-height: 44px; }
+
+  // Fewer things at once. Every one of them stays within reach: the threads in Threads and in their messages, the
+  // recent emoji in the reaction picker, a conversation's unread messages in its ring and in the conversation, the
+  // unread channels of a community in bold once you're in it, the custom statuses on profiles.
+  :is(.am-app, .am-layer) .am-ch-threads { display: none; }
+  :is(.am-app, .am-layer) .am-msg-tools :is(.am-quick-emoji, .am-tools-sep) { display: none; }
+  :is(.am-app, .am-layer) .am-dm .am-dm-count, :is(.am-app, .am-layer) .am-dock-all .am-badge { display: none; }
+  :is(.am-app, .am-layer) .am-srv.am-unread::before { height: 0; }
+  :is(.am-app, .am-layer) .am-srv:hover::before { height: 20px; }
+  :is(.am-app, .am-layer) .am-srv.am-active::before { height: 36px; }
+  :is(.am-app, .am-layer) .am-sidebar .am-status-emoji { display: none; }
+}
+
+/* ---------- Phones: the sidebar's rows stay a finger high, whatever the density (see _99_phone.scss) ---------- */
+@media #{$phone} {
+  :root:is([data-am-density], [data-am-simplified]) :is(.am-app, .am-layer) .am-sidebar :is(.am-ch, .am-vp) { min-height: 40px; }
+  :root:is([data-am-density], [data-am-simplified]) :is(.am-app, .am-layer) .am-sidebar .am-dm, :root:is([data-am-density], [data-am-simplified]) :is(.am-app, .am-layer) .am-dock-row .am-dm { min-height: 44px; }
+}

@@ -32,6 +32,7 @@ import MemberList from 'fusion/members/member_list';
 import ServerRail from 'fusion/rail/server_rail';
 import RightPanel from 'fusion/rhs/right_panel';
 import GlobalSearch from 'fusion/search/global_search';
+import {useSyncedDrafts} from 'fusion/sidebar/drafts';
 import HomeSidebar from 'fusion/sidebar/home_sidebar';
 import TeamSidebar from 'fusion/sidebar/team_sidebar';
 import {useMuteExpiry} from 'fusion/sidebar/timed_mute';
@@ -46,6 +47,7 @@ import {applyTheme} from 'utils/utils';
 import type {GlobalState} from 'types/store';
 
 import {DialogsProvider} from './dialogs_context';
+import {useDisplayModes} from './display_modes';
 import {useFaceTips} from './face_tips';
 import {GlobalSearchProvider, useGlobalSearch} from './global_search_context';
 import {isKeybind} from './keybinds';
@@ -85,6 +87,10 @@ function Frame({children}: Props) {
     useMuteExpiry();
     useNavShortcuts();
     useLoadTeams();
+    useDisplayModes();
+
+    // The drafts kept on the server, for the pencils of the sidebar and the composers.
+    useSyncedDrafts();
 
     // The channel's overrides (Antimatter), which permission checks apply: loaded when it's first opened, then kept
     // up to date by the server's events.
@@ -251,6 +257,7 @@ export default function FusionApp({children}: Props) {
 function PopoutFrame({children, panel}: Props & {panel: boolean}) {
     const store = useStore<GlobalState>();
     useFaceTips();
+    useDisplayModes();
 
     useEffect(() => {
         const root = document.getElementById('root');

@@ -5,7 +5,7 @@ import React, {useState} from 'react';
 import {useIntl} from 'react-intl';
 import {useDispatch, useSelector} from 'react-redux';
 
-import {saveTheme} from 'mattermost-redux/actions/preferences';
+import {savePreferences, saveTheme} from 'mattermost-redux/actions/preferences';
 import {updateMe} from 'mattermost-redux/actions/users';
 import {Preferences as ReduxPreferences} from 'mattermost-redux/constants';
 import {getConfig} from 'mattermost-redux/selectors/entities/general';
@@ -13,7 +13,16 @@ import {getTheme} from 'mattermost-redux/selectors/entities/preferences';
 import type {Theme} from 'mattermost-redux/selectors/entities/preferences';
 import {getCurrentUser} from 'mattermost-redux/selectors/entities/users';
 
-import {CATEGORY_FUSION_DISPLAY, DEVELOPER_MODE, STREAMER_MODE} from 'fusion/hooks/display';
+import {
+    CATEGORY_FUSION_DISPLAY,
+    COLORIZE_USERNAMES_DEFAULT,
+    DEVELOPER_MODE,
+    getDensity,
+    SIMPLIFIED_INTERFACE,
+    SPACIOUS_DISPLAY,
+    STREAMER_MODE,
+} from 'fusion/hooks/display';
+import type {Density} from 'fusion/hooks/display';
 import {useToast} from 'fusion/shell/toast_context';
 import {am} from 'fusion/utils/class_names';
 import {Preferences} from 'utils/constants';
@@ -46,18 +55,23 @@ export function codeToTheme(code: string): Theme | null {
     }
 }
 
-// DisplayRows are the Appearance pane's display settings: message layout, name colours, channel width, and the theme
-// share codes.
+// DisplayRows are the Appearance pane's display settings: message density, availability, channel width, and the
+// theme share codes.
 export function DisplayRows() {
     const {formatMessage} = useIntl();
     const dispatch = useDispatch();
     const toast = useToast();
     const theme = useSelector(getTheme);
-    const [display, setDisplay] = usePreference(Preferences.CATEGORY_DISPLAY_SETTINGS, Preferences.MESSAGE_DISPLAY, Preferences.MESSAGE_DISPLAY_DEFAULT);
-    const [colorize, setColorize] = usePreference(Preferences.CATEGORY_DISPLAY_SETTINGS, Preferences.COLORIZE_USERNAMES, Preferences.COLORIZE_USERNAMES_DEFAULT);
+    const density = useSelector(getDensity);
     const [width, setWidth] = usePreference(Preferences.CATEGORY_DISPLAY_SETTINGS, Preferences.CHANNEL_DISPLAY_MODE, Preferences.CHANNEL_DISPLAY_MODE_DEFAULT);
     const [statusOnPosts, setStatusOnPosts] = usePreference(Preferences.CATEGORY_DISPLAY_SETTINGS, Preferences.AVAILABILITY_STATUS_ON_POSTS, Preferences.AVAILABILITY_STATUS_ON_POSTS_DEFAULT);
     const me = useSelector(getCurrentUser);
+
+    // Compact is Mattermost's message display; spacious is Antimatter's, beside it, with Mattermost's left standard.
+    const setDensity = (next: Density) => dispatch(savePreferences(me.id, [
+        {user_id: me.id, category: Preferences.CATEGORY_DISPLAY_SETTINGS, name: Preferences.MESSAGE_DISPLAY, value: next === 'compact' ? Preferences.MESSAGE_DISPLAY_COMPACT : Preferences.MESSAGE_DISPLAY_CLEAN},
+        {user_id: me.id, category: CATEGORY_FUSION_DISPLAY, name: SPACIOUS_DISPLAY, value: String(next === 'spacious')},
+    ]));
     const lastActiveEnabled = useSelector((state: GlobalState) => getConfig(state).EnableLastActiveTime === 'true');
     const [code, setCode] = useState('');
 
@@ -75,21 +89,16 @@ export function DisplayRows() {
     return (
         <>
             <Section title={formatMessage({id: 'fusion.settings.display', defaultMessage: 'Display'})}/>
-            <Choice
+            <Choice<Density>
                 title={formatMessage({id: 'fusion.settings.messageDisplay', defaultMessage: 'Message display'})}
-                desc={formatMessage({id: 'fusion.settings.messageDisplayDesc', defaultMessage: 'Compact fits more messages: no pictures, tighter rows.'})}
-                value={display}
+                desc={formatMessage({id: 'fusion.settings.messageDisplayDesc', defaultMessage: 'Compact fits more on screen: no pictures, tighter rows. Spacious leaves more room around messages and in the lists.'})}
+                value={density}
                 options={[
-                    [Preferences.MESSAGE_DISPLAY_CLEAN, formatMessage({id: 'fusion.settings.displayStandard', defaultMessage: 'Standard'})],
-                    [Preferences.MESSAGE_DISPLAY_COMPACT, formatMessage({id: 'fusion.settings.displayCompact', defaultMessage: 'Compact'})],
+                    ['compact', formatMessage({id: 'fusion.settings.displayCompact', defaultMessage: 'Compact'})],
+                    ['standard', formatMessage({id: 'fusion.settings.displayStandard', defaultMessage: 'Standard'})],
+                    ['spacious', formatMessage({id: 'fusion.settings.displaySpacious', defaultMessage: 'Spacious'})],
                 ]}
-                onChange={setDisplay}
-            />
-            <Toggle
-                title={formatMessage({id: 'fusion.settings.colorize', defaultMessage: 'Colour names'})}
-                desc={formatMessage({id: 'fusion.settings.colorizeDesc', defaultMessage: 'Give each person\'s name in messages a colour of their own.'})}
-                on={colorize === 'true'}
-                onChange={(on) => setColorize(String(on))}
+                onChange={setDensity}
             />
             <Toggle
                 title={formatMessage({id: 'fusion.settings.statusOnPosts', defaultMessage: 'Availability on pictures'})}
@@ -142,6 +151,35 @@ export function DisplayRows() {
                     {formatMessage({id: 'fusion.settings.applyThemeCode', defaultMessage: 'Apply'})}
                 </button>
             </div>
+        </>
+    );
+}
+
+// AccessibilityPane gathers what makes Antimatter easier to read and to use: names in colours of their own, which
+// start off (roles already colour names, and colours alone tell little), and the simplified interface.
+export function AccessibilityPane() {
+    const {formatMessage} = useIntl();
+
+    // The preference stays Mattermost's: whoever turned it on or off keeps their choice.
+    const [colorize, setColorize] = usePreference(Preferences.CATEGORY_DISPLAY_SETTINGS, Preferences.COLORIZE_USERNAMES, COLORIZE_USERNAMES_DEFAULT);
+    const [simplified, setSimplified] = usePreference(CATEGORY_FUSION_DISPLAY, SIMPLIFIED_INTERFACE, 'false');
+
+    return (
+        <>
+            <h2>{formatMessage({id: 'fusion.settings.accessibility', defaultMessage: 'Accessibility'})}</h2>
+            <p className={am('lead')}>{formatMessage({id: 'fusion.settings.accessibilityLead', defaultMessage: 'Make Antimatter easier to read and to use. Your system\'s reduced motion setting is followed too.'})}</p>
+            <Toggle
+                title={formatMessage({id: 'fusion.settings.simplified', defaultMessage: 'Simplified interface'})}
+                desc={formatMessage({id: 'fusion.settings.simplifiedDesc', defaultMessage: 'Less on screen at once: bigger buttons and rows, no animations, the member list closed until you open it, counts only for mentions, and fewer buttons over messages. Everything stays within reach.'})}
+                on={simplified === 'true'}
+                onChange={(on) => setSimplified(String(on))}
+            />
+            <Toggle
+                title={formatMessage({id: 'fusion.settings.colorize', defaultMessage: 'Colour names'})}
+                desc={formatMessage({id: 'fusion.settings.colorizeDesc', defaultMessage: 'Give each person\'s name in messages a colour of their own, to tell people apart at a glance. Off by default: roles already colour the names of the people who hold them.'})}
+                on={colorize === 'true'}
+                onChange={(on) => setColorize(String(on))}
+            />
         </>
     );
 }

@@ -3,13 +3,19 @@
 
 import React from 'react';
 
+import {savePreferences} from 'mattermost-redux/actions/preferences';
 import {getSessions, revokeSession, updateMe, updateUserPassword} from 'mattermost-redux/actions/users';
 
-import {renderWithContext, screen, userEvent, waitFor} from 'tests/react_testing_utils';
+import {renderWithContext, screen, userEvent, waitFor, within} from 'tests/react_testing_utils';
 import {TestHelper} from 'utils/test_helper';
 
 import SettingsModal from './settings_modal';
 import type {SettingsTab} from './settings_modal';
+
+jest.mock('mattermost-redux/actions/preferences', () => ({
+    ...jest.requireActual('mattermost-redux/actions/preferences'),
+    savePreferences: jest.fn(() => ({type: 'MOCK_SAVE_PREFERENCES'})),
+}));
 
 jest.mock('mattermost-redux/actions/users', () => ({
     ...jest.requireActual('mattermost-redux/actions/users'),
@@ -34,7 +40,8 @@ describe('fusion/modals/SettingsModal', () => {
 
     const me = TestHelper.getUserMock({id: 'me', username: 'jason', first_name: 'Jason', nickname: '', auth_service: '', roles: 'system_user'});
 
-    const render = (tab: SettingsTab, {user = me, config = {}, sessions = []}: {user?: typeof me; config?: Record<string, string>; sessions?: unknown[]} = {}) => renderWithContext(
+    const pref = (category: string, name: string, value: string) => ({[`${category}--${name}`]: {user_id: me.id, category, name, value}});
+    const render = (tab: SettingsTab, {user = me, config = {}, sessions = [], preferences = {}}: {user?: typeof me; config?: Record<string, string>; sessions?: unknown[]; preferences?: Record<string, unknown>} = {}) => renderWithContext(
         <SettingsModal
             tab={tab}
             onTab={jest.fn()}
@@ -44,6 +51,7 @@ describe('fusion/modals/SettingsModal', () => {
             entities: {
                 general: {config: {PasswordMinimumLength: '8', ...config}},
                 users: {currentUserId: user.id, profiles: {[user.id]: user}, mySessions: sessions},
+                preferences: {myPreferences: preferences},
             },
         } as never,
     );
@@ -141,5 +149,62 @@ describe('fusion/modals/SettingsModal', () => {
         render('advanced', {config: {AllowSyncedDrafts: 'true'}});
 
         expect(screen.getAllByRole('switch', {name: 'Sync drafts'})).toHaveLength(1);
+    });
+
+    test('offers compact, standard and spacious messages, standard to start with', () => {
+        render('appearance');
+
+        const display = screen.getByRole('group', {name: 'Message display'});
+        expect(within(display).getAllByRole('button').map((b) => b.textContent)).toEqual(['Compact', 'Standard', 'Spacious']);
+        expect(within(display).getByRole('button', {name: 'Standard'})).toHaveAttribute('aria-pressed', 'true');
+    });
+
+    test('saves spacious beside a standard message display, for the apps that only know compact and standard', async () => {
+        render('appearance');
+
+        await userEvent.click(within(screen.getByRole('group', {name: 'Message display'})).getByRole('button', {name: 'Spacious'}));
+        expect(savePreferences).toHaveBeenCalledWith('me', [
+            {user_id: 'me', category: 'display_settings', name: 'message_display', value: 'clean'},
+            {user_id: 'me', category: 'fusion_display', name: 'spacious', value: 'true'},
+        ]);
+    });
+
+    test('turns spacious off when compact is chosen', async () => {
+        render('appearance', {preferences: pref('fusion_display', 'spacious', 'true')});
+
+        const display = screen.getByRole('group', {name: 'Message display'});
+        expect(within(display).getByRole('button', {name: 'Spacious'})).toHaveAttribute('aria-pressed', 'true');
+        await userEvent.click(within(display).getByRole('button', {name: 'Compact'}));
+        expect(savePreferences).toHaveBeenCalledWith('me', [
+            {user_id: 'me', category: 'display_settings', name: 'message_display', value: 'compact'},
+            {user_id: 'me', category: 'fusion_display', name: 'spacious', value: 'false'},
+        ]);
+    });
+
+    test('keeps coloured names out of the appearance settings, in accessibility, off by default', () => {
+        render('appearance');
+        expect(screen.queryByRole('switch', {name: 'Colour names'})).not.toBeInTheDocument();
+        expect(screen.getByRole('button', {name: 'Accessibility'})).toBeInTheDocument();
+
+        render('accessibility');
+        expect(screen.getByRole('switch', {name: 'Colour names'})).toHaveAttribute('aria-checked', 'false');
+    });
+
+    test('keeps the coloured names of those who turned them on', async () => {
+        render('accessibility', {preferences: pref('display_settings', 'colorize_usernames', 'true')});
+
+        const colours = screen.getByRole('switch', {name: 'Colour names'});
+        expect(colours).toHaveAttribute('aria-checked', 'true');
+        await userEvent.click(colours);
+        expect(savePreferences).toHaveBeenCalledWith('me', [{user_id: 'me', category: 'display_settings', name: 'colorize_usernames', value: 'false'}]);
+    });
+
+    test('turns the simplified interface on, off to start with', async () => {
+        render('accessibility');
+
+        const simplified = screen.getByRole('switch', {name: 'Simplified interface'});
+        expect(simplified).toHaveAttribute('aria-checked', 'false');
+        await userEvent.click(simplified);
+        expect(savePreferences).toHaveBeenCalledWith('me', [{user_id: 'me', category: 'fusion_display', name: 'simplified_interface', value: 'true'}]);
     });
 });
