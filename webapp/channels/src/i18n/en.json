@@ -26651,6 +26651,10 @@
     "defaultMessage": "Channel Removed",
     "description": "Compact error badge on a scheduled post row when its destination channel no longer exists."
   },
+  "scheduled_post.error_code.community_rules_not_accepted": {
+    "defaultMessage": "Rules Not Agreed",
+    "description": "Compact error badge on a scheduled post row when it couldn't be sent because its author hadn't agreed to the rules of the channel's community."
+  },
   "scheduled_post.error_code.invalid_post": {
     "defaultMessage": "Invalid Post",
     "description": "Compact error badge on a scheduled post row when the post content is invalid and cannot be sent."

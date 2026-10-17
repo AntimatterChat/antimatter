@@ -671,6 +671,16 @@ export function fetchTeamTimeouts(teamId: string) {
     });
 }
 
+// fetchCommunityRules loads a team's rules as the current user sees them (Antimatter): whether they must agree before
+// they post in its channels.
+export function fetchCommunityRules(teamId: string) {
+    return bindClientFunc({
+        clientFunc: Client4.getCommunityRules,
+        onSuccess: TeamTypes.RECEIVED_COMMUNITY_RULES,
+        params: [teamId],
+    });
+}
+
 export function checkIfTeamExists(teamName: string): ActionFuncAsync<boolean> {
     return async (dispatch, getState) => {
         let data;

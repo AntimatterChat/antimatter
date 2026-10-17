@@ -1,0 +1,28 @@
+// Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
+// See LICENSE.txt for license information.
+
+// A community's rules: the dialog to agree to them, the notice in place of the message box until one does (the
+// request bar's look, _99_privacy), and the Rules tab of the community settings.
+:is(.am-app, .am-layer) .am-community-rules-text { max-height: min(48vh, 420px); overflow-y: auto; padding: 12px 14px; margin-bottom: 14px; border: 1px solid var(--am-line); border-radius: 10px; background: var(--am-side); color: var(--am-text); font-size: 14px; line-height: 1.5; overflow-wrap: anywhere; }
+:is(.am-app, .am-layer) .am-community-rules-text > :first-child { margin-top: 0; }
+:is(.am-app, .am-layer) .am-community-rules-text > :last-child { margin-bottom: 0; }
+:is(.am-app, .am-layer) .am-community-rules-text a { color: var(--am-anti); }
+:is(.am-app, .am-layer) .am-community-rules .am-modal-actions .am-btn .am-ic { width: 16px; height: 16px; }
+:is(.am-app, .am-layer) .am-community-rules-bar > .am-ic { color: var(--am-anti); }
+
+:is(.am-app, .am-layer) .am-community-rules-settings .am-toggle-row { margin-bottom: 14px; }
+:is(.am-app, .am-layer) .am-community-rules-tabs { margin-bottom: 10px; }
+:is(.am-app, .am-layer) .am-community-rules-tabs button { padding: 0 14px; }
+:is(.am-app, .am-layer) .am-community-rules-input { min-height: 180px; font-family: var(--am-font-mono); font-size: 13px; }
+:is(.am-app, .am-layer) .am-community-rules-preview { min-height: 180px; }
+:is(.am-app, .am-layer) .am-community-rules-settings .am-check-row { align-items: flex-start; margin-bottom: 12px; }
+:is(.am-app, .am-layer) .am-community-rules-settings .am-check-row input { margin-top: 3px; flex: none; }
+:is(.am-app, .am-layer) .am-community-rules-settings .am-check-row span { color: var(--am-text-2); }
+:is(.am-app, .am-layer) .am-community-rules-settings .am-check-row b { color: var(--am-text); }
+:is(.am-app, .am-layer) :is(.am-community-rules-hint, .am-community-rules-stats) { margin: 0 0 12px; color: var(--am-muted); font-size: 13px; }
+
+@media (max-width: 720px) {
+    :is(.am-app, .am-layer) .am-community-rules-text { max-height: 52vh; }
+    :is(.am-app, .am-layer) .am-community-rules-bar .am-request-actions { width: 100%; }
+    :is(.am-app, .am-layer) .am-community-rules-bar .am-request-actions .am-btn { flex: 1; justify-content: center; }
+}

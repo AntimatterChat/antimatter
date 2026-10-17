@@ -42,6 +42,7 @@ export default keyMirror({
     REMOVE_MEMBER_FROM_TEAM: null,
     RECEIVED_TEAM_STATS: null,
     RECEIVED_TEAM_TIMEOUTS: null,
+    RECEIVED_COMMUNITY_RULES: null,
     RECEIVED_MY_TEAM_UNREADS: null,
     LEAVE_TEAM: null,
     UPDATED_TEAM_SCHEME: null,

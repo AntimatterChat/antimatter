@@ -4,6 +4,7 @@
 import type {AnyAction} from 'redux';
 import {combineReducers} from 'redux';
 
+import type {CommunityRules} from '@mattermost/types/community_rules';
 import type {MemberTimeout} from '@mattermost/types/moderation';
 import type {Team, TeamMembership, TeamUnread} from '@mattermost/types/teams';
 import type {UserProfile} from '@mattermost/types/users';
@@ -520,6 +521,18 @@ export function timeouts(state: RelationOneToOne<Team, MemberTimeout[]> = {}, ac
     }
 }
 
+// communityRules are the rules of each team whose rules were loaded, as the current user sees them (Antimatter).
+export function communityRules(state: RelationOneToOne<Team, CommunityRules> = {}, action: MMReduxAction) {
+    switch (action.type) {
+    case TeamTypes.RECEIVED_COMMUNITY_RULES:
+        return {...state, [action.data.team_id]: action.data};
+    case UserTypes.LOGOUT_SUCCESS:
+        return {};
+    default:
+        return state;
+    }
+}
+
 export default combineReducers({
 
     // the current selected team
@@ -545,4 +558,7 @@ export default combineReducers({
 
     // Antimatter: timeouts, by team
     timeouts,
+
+    // Antimatter: the community rules, by team
+    communityRules,
 });

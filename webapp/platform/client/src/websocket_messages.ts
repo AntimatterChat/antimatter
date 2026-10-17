@@ -442,6 +442,20 @@ export type MemberTimeoutsUpdated = BaseWebSocketMessage<WebSocketEvents.MemberT
     team_id: string;
 }>;
 
+// Antimatter: a team's rules changed (turned on or off, edited, or everyone asked to agree again); its members'
+// clients fetch them again.
+export type CommunityRulesUpdated = BaseWebSocketMessage<WebSocketEvents.CommunityRulesUpdated, {
+    team_id: string;
+    enabled: boolean;
+    version: number;
+}>;
+
+// Antimatter: the current user agreed to a team's rules (maybe in another session).
+export type CommunityRulesAccepted = BaseWebSocketMessage<WebSocketEvents.CommunityRulesAccepted, {
+    team_id: string;
+    version: number;
+}>;
+
 // Antimatter: a message was put on top of its channel (or again, with a new time), or taken off it.
 export type PostPutOnTop = BaseWebSocketMessage<WebSocketEvents.PostPutOnTop, {
     on_top: OnTopPost;

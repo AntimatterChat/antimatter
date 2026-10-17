@@ -53,6 +53,7 @@ import EmojiPicker from 'fusion/popovers/emoji_picker';
 import {MENTION_EVENT} from 'fusion/popovers/user_menu';
 import {useDialogs} from 'fusion/shell/dialogs_context';
 import {useToast} from 'fusion/shell/toast_context';
+import {CommunityRulesGate} from 'fusion/teams/community_rules_dialog';
 import {a11yRegion} from 'fusion/utils/a11y_regions';
 import {am} from 'fusion/utils/class_names';
 import PluggableErrorBoundary from 'plugins/pluggable/error_boundary';
@@ -96,7 +97,17 @@ const NO_HOOKS: FilesWillUploadHook[] = [];
 const NO_EDITOR_ACTIONS: PostEditorActionComponent[] = [];
 const NO_AI_ITEMS: AIActionMenuItemComponent[] = [];
 
-export default function Composer({channelId, rootId = '', placeholder}: Props) {
+// Composer is the message box; in a community's channel, the notice asking to agree to its rules until one does
+// (Antimatter: the server refuses the messages until then).
+export default function Composer(props: Props) {
+    return (
+        <CommunityRulesGate channelId={props.channelId}>
+            <MessageBox {...props}/>
+        </CommunityRulesGate>
+    );
+}
+
+function MessageBox({channelId, rootId = '', placeholder}: Props) {
     const intl = useIntl();
     const {formatMessage} = intl;
     const dialogs = useDialogs();

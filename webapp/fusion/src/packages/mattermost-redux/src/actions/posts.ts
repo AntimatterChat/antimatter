@@ -24,6 +24,7 @@ import {
     savePreferences,
 } from 'mattermost-redux/actions/preferences';
 import {batchFetchStatusesProfilesGroupsFromPosts} from 'mattermost-redux/actions/status_profile_polling';
+import {fetchCommunityRules} from 'mattermost-redux/actions/teams';
 import {decrementThreadCounts} from 'mattermost-redux/actions/threads';
 import {getProfilesByIds, getProfilesByUsernames, getStatusesByIds} from 'mattermost-redux/actions/users';
 import {Client4, DEFAULT_LIMIT_AFTER, DEFAULT_LIMIT_BEFORE} from 'mattermost-redux/client';
@@ -41,6 +42,9 @@ import {scanHumanReadableStringsFromInteractiveProps} from 'mattermost-redux/uti
 import {isCombinedUserActivityPost} from 'mattermost-redux/utils/post_list';
 
 import {logError, LogErrorBarMode} from './errors';
+
+// Antimatter: the server refuses a message in a community whose rules one hasn't agreed to with this error.
+const COMMUNITY_RULES_NOT_ACCEPTED = 'api.post.community_rules_not_accepted';
 
 // receivedPost should be dispatched after a single post from the server. This typically happens when an existing post
 // is updated.
@@ -304,11 +308,17 @@ export function createPost(
                     failed: true,
                     update_at: Date.now(),
 
-                    // Antimatter: a message refused for good, to someone who blocked you or whom you block, says
-                    // why instead of offering to send it again.
-                    ...(error.server_error_id?.startsWith('app.user_block.') ? {failed_reason: error.message} : {}),
+                    // Antimatter: a message refused for good, to someone who blocked you or whom you block, or
+                    // before you agreed to the community's rules, says why instead of offering to send it again.
+                    ...(error.server_error_id?.startsWith('app.user_block.') || error.server_error_id === COMMUNITY_RULES_NOT_ACCEPTED ? {failed_reason: error.message} : {}),
                 };
                 actions = [{type: PostTypes.CREATE_POST_FAILURE, error}];
+
+                // Antimatter: the community's rules came on (or changed) unnoticed: loading them puts the notice
+                // asking to agree in place of the message box.
+                if (error.server_error_id === COMMUNITY_RULES_NOT_ACCEPTED && channel?.team_id) {
+                    dispatch(fetchCommunityRules(channel.team_id));
+                }
 
                 // If the failure was because: the root post was deleted or
                 // TownSquareIsReadOnly=true then remove the post

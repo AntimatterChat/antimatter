@@ -730,6 +730,14 @@ export function handleEvent(msg: WebSocketMessage) {
         // Antimatter: who's timed out in a team changed.
         dispatch(TeamActions.fetchTeamTimeouts(msg.data.team_id));
         break;
+    case WebSocketEvents.CommunityRulesUpdated:
+    case WebSocketEvents.CommunityRulesAccepted:
+        // Antimatter: a team's rules changed, or the current user agreed to them (maybe elsewhere): whether they must
+        // agree before posting follows. Teams not opened yet load theirs when they're opened.
+        if (getState().entities.teams.communityRules?.[msg.data.team_id] || getState().entities.teams.currentTeamId === msg.data.team_id) {
+            dispatch(TeamActions.fetchCommunityRules(msg.data.team_id));
+        }
+        break;
     case WebSocketEvents.PostPutOnTop:
         // Antimatter: a message was put on top of its channel, or again with a new time.
         dispatch({type: ChannelTypes.POST_PUT_ON_TOP, data: msg.data.on_top});
