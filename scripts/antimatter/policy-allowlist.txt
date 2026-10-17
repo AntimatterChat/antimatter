@@ -24,6 +24,13 @@ branding  server/i18n/en.json  ^mattermost\.bulletin\.subject:
 # MattermostAppID is the name of a model field (an identifier, kept for API compatibility).
 branding  server/i18n/en.json  ^model\.oauth\.is_valid\.mattermost_app_id\.app_error:
 
+# The web apps' strings that may name Mattermost (the branding tests in webapp/*/src/i18n/branding.test.ts list the
+# same): an HTTP header name, a third-party plugin that needs an add-on Mattermost sells, and the community layout
+# option that compares itself with Mattermost's, as the next option does with Discord.
+branding  webapp/*/src/i18n/en.json  ^admin\.accesscontrol\.trustProxyDeviceIdentityHeader\.desc:
+branding  webapp/*/src/i18n/en.json  ^admin\.plugin\.addOn\.notSupported(Warning)?:
+branding  webapp/fusion/src/i18n/en.json  ^fusion\.layout\.workplaceDesc:
+
 # User-agent detection: the official desktop app still identifies itself as Mattermost/x.y.z.
 branding  webapp/fusion/src/fusion/calls/screen_picker.ts  Antimatter\|Mattermost\)\\/
 branding  webapp/fusion/src/packages/mattermost-redux/src/utils/browser_info.ts  userAgent\.indexOf\('Mattermost'\)|/Mattermost\\/\(

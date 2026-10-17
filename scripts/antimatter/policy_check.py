@@ -97,6 +97,9 @@ def check_branding(files):
         catalog = amlib.load_catalog(full)
         catalogs[area] = catalog
         for key, value in catalog.items():
+            # The web apps' catalogs hold {defaultMessage, description}; the server's a string (or plural forms).
+            if isinstance(value, dict):
+                value = value.get("defaultMessage", "")
             if isinstance(value, str) and BRANDING_RE.search(value):
                 findings.append(Finding("branding", path, 0, f"{key}: {value}", f"{area} catalog"))
 
