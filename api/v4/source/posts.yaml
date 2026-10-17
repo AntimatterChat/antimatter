@@ -1343,6 +1343,70 @@
         "501":
           $ref: "#/components/responses/NotImplemented"
 
+  "/api/v4/posts/{post_id}/move_to_channel":
+    post:
+      tags:
+        - posts
+      summary: Move a thread to another channel of its community
+      description: >
+        Antimatter: moves the thread of a post (its first message and all
+        its replies; a reply's id moves its whole thread) to another channel
+        of the same community. The messages keep their authors, times,
+        reactions and files, and their copies notify nobody. With `flatten`,
+        the replies become messages of the target channel instead of a
+        thread. The target gets a note that the thread came from another
+        channel, and the source a message linking to the moved thread; the
+        original messages are deleted. The administrator's
+        `WranglerSettings.MoveThreadMaxCount` caps the thread's length.
+
+        ##### Permissions
+
+        Must be able to read the thread and to post (`create_post`) in the
+        target channel, and be the thread's author, an admin of its channel,
+        an admin of the community, or have `delete_others_posts` ("Manage
+        messages") in its channel; system admins may too. Both channels must
+        belong to the same community (no direct or group messages), be
+        different, and not be archived.
+      operationId: MoveThreadToChannel
+      parameters:
+        - name: post_id
+          in: path
+          description: The identifier of the thread's first message, or of one of its replies
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - channel_id
+              properties:
+                channel_id:
+                  type: string
+                  description: The channel the thread moves to
+                flatten:
+                  type: boolean
+                  description: Make the replies messages of the target channel instead of a thread
+                  default: false
+        required: true
+      responses:
+        "200":
+          description: The thread was moved; the moved first message is returned
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Post"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+
   "/api/v4/posts/{post_id}/restore/{restore_version_id}":
     post:
       tags:
