@@ -58,8 +58,9 @@
 :is(.am-app, .am-layer) .am-plug.am-voice { background: #0891B2; }
 :is(.am-app, .am-layer) .am-plug.am-integrations { background: #64748B; }
 :is(.am-app, .am-layer) .am-pop.am-msg-menu, :is(.am-app, .am-layer) .am-pop.am-server-menu, :is(.am-app, .am-layer) .am-pop.am-ch-menu { overflow: visible; }
-// A channel's menus have no flyouts (their choices open under their items): taller than the window, they scroll.
-:is(.am-app, .am-layer) .am-pop.am-ch-menu:not(.am-user-menu) { max-height: calc(var(--am-vvh, 100dvh) - 16px); overflow-y: auto; overscroll-behavior: contain; }
+// A channel's menus have no flyouts (their choices open under their items): taller than the window, they scroll
+// (a sheet, on a phone, has its own height).
+:is(.am-app, .am-layer) .am-pop.am-ch-menu:not(.am-user-menu, .am-sheet) { max-height: calc(var(--am-vvh, 100dvh) - 16px); overflow-y: auto; overscroll-behavior: contain; }
 // MenuKeys wraps a menu's items for its keys, without a box of its own.
 :is(.am-app, .am-layer) .am-menu-keys { display: contents; }
 // An item whose choices open under it: its chevron turns as they show.
