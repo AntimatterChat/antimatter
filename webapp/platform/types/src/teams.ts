@@ -57,7 +57,7 @@ export type Team = {
     /** Antimatter: everyone in the community is in every channel they may see, and mutes channels rather than leaving them. */
     all_channels_membership?: boolean;
 
-    /** Antimatter: the community's default channel (where newcomers land); empty for Town Square while there is one. */
+    /** Antimatter: the community's default channel (where newcomers land); empty for General while there is one. */
     default_channel_id?: string;
 
     /**

@@ -18,7 +18,7 @@ const team = TestHelper.getTeamMock({id: 'team', name: 'antimatter'});
 const secret = TestHelper.getChannelMock({id: 'secret', name: 'secret', display_name: 'Secret', type: 'P', team_id: team.id});
 
 describe('fusion/sidebar/ChannelRow', () => {
-    const render = ({current = 'town-square', draft = '', muted = false}: {current?: string; draft?: string; muted?: boolean} = {}) => renderWithContext(
+    const render = ({current = 'general', draft = '', muted = false}: {current?: string; draft?: string; muted?: boolean} = {}) => renderWithContext(
         <ChannelRow channelId={secret.id}/>,
         {
             entities: {

@@ -5,7 +5,7 @@ exports[`components/sidebar/sidebar_channel/sidebar_channel_link should fetch sh
   <a
     aria-label="channel_label"
     class="SidebarLink"
-    href="/team/channels/town-square"
+    href="/team/channels/general"
     id="sidebarItem_"
     tabindex="0"
   >
@@ -56,7 +56,7 @@ exports[`components/sidebar/sidebar_channel/sidebar_channel_link should match sn
   <a
     aria-label="channel_label"
     class="SidebarLink"
-    href="/team/channels/town-square"
+    href="/team/channels/general"
     id="sidebarItem_"
     tabindex="0"
   >
@@ -103,7 +103,7 @@ exports[`components/sidebar/sidebar_channel/sidebar_channel_link should match sn
   <a
     aria-label="channel_label"
     class="SidebarLink"
-    href="/team/channels/town-square"
+    href="/team/channels/general"
     id="sidebarItem_"
     tabindex="0"
   >
@@ -150,7 +150,7 @@ exports[`components/sidebar/sidebar_channel/sidebar_channel_link should match sn
   <a
     aria-label="aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
     class="SidebarLink"
-    href="/team/channels/town-square"
+    href="/team/channels/general"
     id="sidebarItem_"
     tabindex="0"
   >
@@ -198,7 +198,7 @@ exports[`components/sidebar/sidebar_channel/sidebar_channel_link should match sn
     aria-label="channel_label aria_label_prefix_ 2 mentions"
     class="SidebarLink unread-title"
     data-testid="sidebar-unread-channel"
-    href="/team/channels/town-square"
+    href="/team/channels/general"
     id="sidebarItem_"
     tabindex="0"
   >
@@ -255,7 +255,7 @@ exports[`components/sidebar/sidebar_channel/sidebar_channel_link should not fetc
   <a
     aria-label="channel_label"
     class="SidebarLink"
-    href="/team/channels/town-square"
+    href="/team/channels/general"
     id="sidebarItem_"
     tabindex="0"
   >
@@ -306,7 +306,7 @@ exports[`components/sidebar/sidebar_channel/sidebar_channel_link should not fetc
   <a
     aria-label="channel_label"
     class="SidebarLink"
-    href="/team/channels/town-square"
+    href="/team/channels/general"
     id="sidebarItem_"
     tabindex="0"
   >

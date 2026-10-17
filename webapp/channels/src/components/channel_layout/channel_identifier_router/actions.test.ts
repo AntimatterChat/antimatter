@@ -280,6 +280,72 @@ describe('Actions', () => {
             expect(joinChannel).not.toHaveBeenCalled();
             expect(history.replace).toHaveBeenCalled();
         });
+        describe('old links to town-square, the default channel\'s former name', () => {
+            const general = {id: 'channel_general', name: 'general', team_id: 'team_id1', type: 'O' as const, delete_at: 0};
+            const stateWithGeneral = {
+                ...initialState,
+                entities: {
+                    ...initialState.entities,
+                    roles: {roles: {}},
+                    channels: {
+                        ...initialState.entities.channels,
+                        channels: {...initialState.entities.channels.channels, channel_general: general},
+                        myMembers: {...initialState.entities.channels.myMembers, channel_general: {channel_id: 'channel_general', user_id: 'current_user_id'}},
+                    },
+                    users: {
+                        ...initialState.entities.users,
+                        profiles: {...initialState.entities.users.profiles, current_user_id: {roles: 'system_user'}},
+                    },
+                },
+            };
+
+            test('lead to the default channel the server answers with, at its own URL', async () => {
+                (joinChannel as jest.Mock).mockClear();
+                (emitChannelClickEvent as jest.Mock).mockClear();
+                const testStore = await mockStore(initialState);
+                (getChannelByNameAndTeamName as jest.Mock).mockReturnValueOnce({type: '', data: general});
+                const history = {replace: jest.fn()};
+
+                await testStore.dispatch(goToChannelByChannelName({params: {team: 'team1', identifier: 'town-square', path: '/'}, url: ''} as Match, history as any));
+                expect(getChannelByNameAndTeamName).toHaveBeenCalledWith('team1', 'town-square', true);
+                expect(history.replace).toHaveBeenCalledWith('/team1/channels/general');
+                expect(joinChannel).not.toHaveBeenCalled();
+                expect(emitChannelClickEvent).not.toHaveBeenCalled();
+            });
+
+            test('lead to the community\'s default channel when the server finds none', async () => {
+                (joinChannel as jest.Mock).mockClear();
+                const testStore = await mockStore(stateWithGeneral);
+                (getChannelByNameAndTeamName as jest.Mock).mockReturnValueOnce({type: '', error: {status_code: 404}});
+                const history = {replace: jest.fn()};
+
+                await testStore.dispatch(goToChannelByChannelName({params: {team: 'team1', identifier: 'town-square', path: '/'}, url: ''} as Match, history as any));
+                expect(history.replace).toHaveBeenCalledWith('/team1/channels/general');
+                expect(joinChannel).not.toHaveBeenCalled();
+            });
+
+            test('open a community\'s own town-square as any channel', async () => {
+                (emitChannelClickEvent as jest.Mock).mockClear();
+                const townSquare = {id: 'channel_ts', name: 'town-square', team_id: 'team_id1', type: 'O' as const};
+                const testStore = await mockStore({
+                    ...initialState,
+                    entities: {
+                        ...initialState.entities,
+                        channels: {
+                            ...initialState.entities.channels,
+                            channels: {...initialState.entities.channels.channels, channel_ts: townSquare},
+                            myMembers: {...initialState.entities.channels.myMembers, channel_ts: {channel_id: 'channel_ts', user_id: 'current_user_id'}},
+                            channelsInTeam: {...initialState.entities.channels.channelsInTeam, team_id1: new Set(['channel_id1', 'channel_ts'])},
+                        },
+                    },
+                });
+                const history = {replace: jest.fn()};
+
+                await testStore.dispatch(goToChannelByChannelName({params: {team: 'team1', identifier: 'town-square', path: '/'}, url: ''} as Match, history as any));
+                expect(history.replace).not.toHaveBeenCalled();
+                expect(emitChannelClickEvent).toHaveBeenCalledWith(townSquare);
+            });
+        });
     });
 
     describe('goToDirectChannelByUserId', () => {

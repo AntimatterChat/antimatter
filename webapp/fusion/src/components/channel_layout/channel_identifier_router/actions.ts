@@ -177,6 +177,15 @@ export function goToChannelByChannelName(match: Match, history: History): Action
             }
         }
 
+        // Antimatter: the default channel was town-square before it became general. Without a channel of that name
+        // (the server answers with the default channel), an old link leads to the community's default channel, at its
+        // own URL.
+        if (channelName === Constants.LEGACY_DEFAULT_CHANNEL && channel?.name !== channelName) {
+            const defaultChannelName = channel && !channel.delete_at ? channel.name : getRedirectChannelNameForTeam(getState(), teamObj.id);
+            history.replace(`/${team}/channels/${defaultChannelName}`);
+            return {data: undefined};
+        }
+
         let member;
         if (channel) {
             member = state.entities.channels.myMembers[channel.id];

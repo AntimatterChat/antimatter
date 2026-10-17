@@ -63,7 +63,7 @@ describe('components/threading/hooks', () => {
             };
 
             beforeEach(() => {
-                history.replace('/team-a/channels/town-square');
+                history.replace('/team-a/channels/general');
             });
 
             test('should drop the selected thread while still on the threads route', () => {
@@ -73,7 +73,7 @@ describe('components/threading/hooks', () => {
                 expect(window.location.pathname).toBe('/team-a/threads');
             });
 
-            test.each(['/team-b', '/team-a/channels/town-square'])('should not navigate back after leaving for %s', (path) => {
+            test.each(['/team-b', '/team-a/channels/general'])('should not navigate back after leaving for %s', (path) => {
                 const clear = renderAtTeamAThreads();
 
                 act(() => history.push(path));

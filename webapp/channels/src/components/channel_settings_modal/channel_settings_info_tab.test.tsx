@@ -818,10 +818,10 @@ describe('ChannelSettingsInfoTab', () => {
 
     describe('URL editing', () => {
         const defaultChannel = TestHelper.getChannelMock({
-            id: 'town-square-id',
+            id: 'general-id',
             team_id: 'team1',
-            display_name: 'Town Square',
-            name: 'town-square',
+            display_name: 'General',
+            name: 'general',
             purpose: '',
             header: '',
             type: 'O',
@@ -835,7 +835,7 @@ describe('ChannelSettingsInfoTab', () => {
                 />,
             );
 
-            expect(screen.getByTestId('urlInputLabel')).toHaveTextContent('town-square');
+            expect(screen.getByTestId('urlInputLabel')).toHaveTextContent('general');
             expect(screen.queryByRole('button', {name: 'Edit'})).not.toBeInTheDocument();
             expect(screen.getByText('The URL of the default channel cannot be changed.')).toBeVisible();
         });
@@ -860,8 +860,8 @@ describe('ChannelSettingsInfoTab', () => {
 
             await userEvent.click(screen.getByRole('button', {name: 'Save'}));
 
-            expect(patchChannel).toHaveBeenCalledWith('town-square-id', {display_name: 'Company Wide'});
-            expect(screen.getByTestId('urlInputLabel')).toHaveTextContent('town-square');
+            expect(patchChannel).toHaveBeenCalledWith('general-id', {display_name: 'Company Wide'});
+            expect(screen.getByTestId('urlInputLabel')).toHaveTextContent('general');
         });
 
         it('should keep the default channel URL locked when the user also lacks manage permission', () => {

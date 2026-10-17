@@ -24,7 +24,7 @@ jest.mock('fusion/selectors', () => ({getUnreadDirectChannels: () => mockUnread}
 
 describe('fusion/rail/RailDirectMessages', () => {
     const team = TestHelper.getTeamMock({id: 'team', name: 'antimatter'});
-    const render = (currentChannelId = 'town-square') => renderWithContext(
+    const render = (currentChannelId = 'general') => renderWithContext(
         <RailDirectMessages/>,
         {
             entities: {

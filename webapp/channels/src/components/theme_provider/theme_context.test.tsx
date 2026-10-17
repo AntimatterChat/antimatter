@@ -28,7 +28,7 @@ describe('useAppBodyClass', () => {
     }
 
     it.each([
-        '/myteam/channels/town-square',
+        '/myteam/channels/general',
         '/myteam/messages/@someone',
         '/myteam/channels/integrations',
         '/admin_console/integrations/bot_accounts',
@@ -61,7 +61,7 @@ describe('useAppBodyClass', () => {
     });
 
     it('toggles app__body as the route changes', () => {
-        const {history} = renderUseAppBodyClass('/myteam/channels/town-square');
+        const {history} = renderUseAppBodyClass('/myteam/channels/general');
 
         expect(document.body.classList.contains('app__body')).toBe(true);
 
@@ -71,7 +71,7 @@ describe('useAppBodyClass', () => {
         expect(document.body.classList.contains('app__body')).toBe(false);
 
         act(() => {
-            history.push('/myteam/channels/town-square');
+            history.push('/myteam/channels/general');
         });
         expect(document.body.classList.contains('app__body')).toBe(true);
     });
@@ -95,7 +95,7 @@ describe('WithUserTheme', () => {
     }
 
     it('adds app__body to the document body for a themed route while mounted', () => {
-        const {unmount} = renderWithUserTheme('/myteam/channels/town-square');
+        const {unmount} = renderWithUserTheme('/myteam/channels/general');
 
         expect(document.body.classList.contains('app__body')).toBe(true);
 

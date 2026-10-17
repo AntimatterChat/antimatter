@@ -2573,7 +2573,7 @@
   },
   "admin.channel_settings.channel_details.default_channel_not_supported": {
     "defaultMessage": "The default channel cannot have a membership policy.",
-    "description": "Description under the attribute-based access toggle explaining why it is disabled for the team's default channel (e.g. Town Square)."
+    "description": "Description under the attribute-based access toggle explaining why it is disabled for the team's default channel (e.g. General)."
   },
   "admin.channel_settings.channel_details.isDefaultDescr": {
     "defaultMessage": "This default channel cannot be converted into a private channel.",
@@ -3744,8 +3744,8 @@
     "description": "Label of a true/false toggle in System Console > Site Configuration > Customization. Keep the trailing colon."
   },
   "admin.customization.enableTutorialDesc": {
-    "defaultMessage": "When true, users are prompted with a tutorial when they open Antimatter for the first time after account creation. When false, the tutorial is disabled, and users are placed in Town Square when they open Antimatter for the first time after account creation.",
-    "description": "Help text under the 'Enable Tutorial' toggle in System Console > Site Configuration > Customization. 'When true'/'When false' refer to the toggle state; 'Town Square' is the default channel name and is a product term."
+    "defaultMessage": "When true, users are prompted with a tutorial when they open Antimatter for the first time after account creation. When false, the tutorial is disabled, and users are placed in General when they open Antimatter for the first time after account creation.",
+    "description": "Help text under the 'Enable Tutorial' toggle in System Console > Site Configuration > Customization. 'When true'/'When false' refer to the toggle state; 'General' is the default channel's name."
   },
   "admin.customization.enableTutorialTitle": {
     "defaultMessage": "Enable Tutorial:",
@@ -4920,8 +4920,8 @@
     "description": "Admin console setting label for the Threaded Discussions (collapsed reply threads) dropdown on the Posts page."
   },
   "admin.experimental.delayChannelAutocomplete.desc": {
-    "defaultMessage": "When true, the autocomplete for channel links (such as #town-square) will only trigger after typing # followed by a couple of letters. When false, the autocomplete will appear as soon as the user types #.",
-    "description": "Admin console help text for the channel autocomplete delay toggle on the Experimental Features page; '#town-square' is a literal channel link example and '#' the sign that starts a channel link: keep both."
+    "defaultMessage": "When true, the autocomplete for channel links (such as #general) will only trigger after typing # followed by a couple of letters. When false, the autocomplete will appear as soon as the user types #.",
+    "description": "Admin console help text for the channel autocomplete delay toggle on the Experimental Features page; '#general' is a literal channel link example and '#' the sign that starts a channel link: keep both."
   },
   "admin.experimental.delayChannelAutocomplete.title": {
     "defaultMessage": "Delay Channel Autocomplete:",
@@ -4976,8 +4976,8 @@
     "description": "Setting label (toggle) on the Experimental Features admin page; refers to automatic out-of-office style replies to direct messages. Ends with a colon."
   },
   "admin.experimental.experimentalEnableDefaultChannelLeaveJoinMessages.desc": {
-    "defaultMessage": "This setting determines whether team leave/join system messages are posted in the default town-square channel.",
-    "description": "Admin console help text under a toggle on the Experimental Features page; town-square is the internal name of the default channel."
+    "defaultMessage": "This setting determines whether team leave/join system messages are posted in the default channel, general.",
+    "description": "Admin console help text under a toggle on the Experimental Features page; general is the internal (URL) name of the default channel."
   },
   "admin.experimental.experimentalEnableDefaultChannelLeaveJoinMessages.title": {
     "defaultMessage": "Enable Default Channel Leave/Join System Messages:",
@@ -6396,8 +6396,8 @@
     "description": "Panel heading on the group configuration page for the group's name and mention settings."
   },
   "admin.group_settings.group_detail.groupTeamsAndChannelsDescription": {
-    "defaultMessage": "Set default teams and channels for group members. Teams added will include default channels, town-square, and off-topic. Adding a channel without setting the team will add the implied team to the listing below.",
-    "description": "Subtitle of the 'Team and Channel Membership' panel on the group configuration page; 'town-square' and 'off-topic' are default channel names."
+    "defaultMessage": "Set default teams and channels for group members. Teams added will include default channels, general, and off-topic. Adding a channel without setting the team will add the implied team to the listing below.",
+    "description": "Subtitle of the 'Team and Channel Membership' panel on the group configuration page; 'general' and 'off-topic' are default channel names."
   },
   "admin.group_settings.group_detail.groupTeamsAndChannelsTitle": {
     "defaultMessage": "Team and Channel Membership",
@@ -18077,7 +18077,7 @@
   },
   "channel_members_rhs.default_channel_moderation_restrictions": {
     "defaultMessage": "In this channel, you can only remove guests. Only <link>channel admins</link> can manage other members.",
-    "description": "Notice in the members panel of the default (town square) channel; <link> wraps a link to documentation about channel admins."
+    "description": "Notice in the members panel of the default (general) channel; <link> wraps a link to documentation about channel admins."
   },
   "channel_members_rhs.header.title": {
     "defaultMessage": "Members",
@@ -20489,7 +20489,7 @@
   },
   "error.channelNotFound.link": {
     "defaultMessage": "Back to {defaultChannelName}",
-    "description": "Back navigation link on the channel-not-found error page; {defaultChannelName} is the default channel's name, usually 'Town Square'."
+    "description": "Back navigation link on the channel-not-found error page; {defaultChannelName} is the default channel's name, usually 'General'."
   },
   "error.generic.link": {
     "defaultMessage": "Back to Antimatter",
@@ -27921,7 +27921,7 @@
   },
   "fusion.teamChannels.defaultNone": {
     "defaultMessage": "None: the first channel each person is in",
-    "description": "Choice of no default channel when the community has no Town Square: people land in their first channel."
+    "description": "Choice of no default channel when the community has no General channel: people land in their first channel."
   },
   "fusion.teamChannels.defaultSaved": {
     "defaultMessage": "Default channel saved",
@@ -27929,7 +27929,7 @@
   },
   "fusion.teamChannels.defaultTownSquare": {
     "defaultMessage": "#{channel} (the first channel)",
-    "description": "Choice of no explicit default channel: Town Square is used; {channel} is its name."
+    "description": "Choice of no explicit default channel: the General channel is used; {channel} is its name."
   },
   "fusion.teamChannels.failed": {
     "defaultMessage": "The setting couldn't be saved.",
@@ -30345,7 +30345,7 @@
   },
   "intro_messages.default": {
     "defaultMessage": "Welcome to {display_name}. Post messages here that you want everyone to see. Everyone automatically becomes a member of this channel when they join the team.",
-    "description": "Channel intro text at the top of the team's default channel (e.g. Town Square); {display_name} is the channel's display name."
+    "description": "Channel intro text at the top of the team's default channel (e.g. General); {display_name} is the channel's display name."
   },
   "intro_messages.DM": {
     "defaultMessage": "This is the start of your direct message history with {teammate}. Messages and files shared here are not shown to anyone else.",
@@ -32349,7 +32349,7 @@
   },
   "onboardingTour.ChannelsAndDirectMessagesTour.townSquare": {
     "defaultMessage": "We’ve also added the <b>{townSquare}</b> and <b>{offTopic}</b> channels for everyone on your team.",
-    "description": "Sentence in the onboarding tour tooltip; {townSquare} and {offTopic} are the display names of the default 'Town Square' and 'Off-Topic' channels, and <b> tags render bold."
+    "description": "Sentence in the onboarding tour tooltip; {townSquare} and {offTopic} are the display names of the default 'General' and 'Off-Topic' channels, and <b> tags render bold."
   },
   "onboardingTour.CreateAndJoinChannels.Description": {
     "defaultMessage": "Create new channels or browse available channels to see what your team is discussing. As you join channels, organize them into categories based on how you work.",

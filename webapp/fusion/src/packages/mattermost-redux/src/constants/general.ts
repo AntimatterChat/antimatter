@@ -50,7 +50,10 @@ export default {
     RESTRICT_DIRECT_MESSAGE_ANY: 'any',
     RESTRICT_DIRECT_MESSAGE_TEAM: 'team',
     SWITCH_TO_DEFAULT_CHANNEL: 'switch_to_default_channel',
-    DEFAULT_CHANNEL: 'town-square',
+    DEFAULT_CHANNEL: 'general',
+
+    // Antimatter: the default channel's name before it became general.
+    LEGACY_DEFAULT_CHANNEL: 'town-square',
     DM_CHANNEL: 'D' as const,
     OPEN_CHANNEL: 'O' as const,
     PRIVATE_CHANNEL: 'P' as const,

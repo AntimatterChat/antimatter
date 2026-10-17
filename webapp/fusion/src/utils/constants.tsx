@@ -1402,8 +1402,11 @@ export const Constants = {
     POST_MODAL_PADDING: 170,
     SCROLL_DELAY: 2000,
     SCROLL_PAGE_FRACTION: 3,
-    DEFAULT_CHANNEL: 'town-square',
-    DEFAULT_CHANNEL_UI_NAME: 'Town Square',
+    DEFAULT_CHANNEL: 'general',
+    DEFAULT_CHANNEL_UI_NAME: 'General',
+
+    // Antimatter: the default channel's name before it became general; old links to it lead to the default channel.
+    LEGACY_DEFAULT_CHANNEL: 'town-square',
     OFFTOPIC_CHANNEL: 'off-topic',
     OFFTOPIC_CHANNEL_UI_NAME: 'Off-Topic',
     GITLAB_SERVICE: 'gitlab',

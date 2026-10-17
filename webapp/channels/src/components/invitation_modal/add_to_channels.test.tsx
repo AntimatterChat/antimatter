@@ -29,7 +29,7 @@ const baseProps: Props = deepFreeze({
     currentChannel: {
         display_name: '',
     },
-    townSquareDisplayName: 'Town Square',
+    townSquareDisplayName: 'General',
 });
 
 describe('AddToChannels', () => {

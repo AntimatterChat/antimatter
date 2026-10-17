@@ -33,8 +33,8 @@ describe('components/integrations/InstalledOutgoingWebhooks', () => {
     });
     const channel = TestHelper.getChannelMock({
         id: 'mdpzfpfcxi85zkkqkzkch4b85h',
-        name: 'town-square',
-        display_name: 'town-square',
+        name: 'general',
+        display_name: 'general',
     });
     const outgoingWebhooks = [
         {

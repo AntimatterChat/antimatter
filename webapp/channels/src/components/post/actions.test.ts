@@ -21,7 +21,7 @@ jest.mock('utils/browser_history', () => ({
 describe('highlightPostInChannelPopout', () => {
     const team = TestHelper.getTeamMock({id: 'team_id', name: 'test-team'});
     const currentUser = TestHelper.getUserMock({id: 'current_user_id', username: 'currentuser'});
-    const channel = TestHelper.getChannelMock({id: 'channel_id', name: 'town-square', type: 'O'});
+    const channel = TestHelper.getChannelMock({id: 'channel_id', name: 'general', type: 'O'});
 
     const baseState = {
         entities: {
@@ -90,6 +90,6 @@ describe('highlightPostInChannelPopout', () => {
             channelId: 'channel_id',
         });
 
-        expect(mockReplace).toHaveBeenCalledWith('/_popout/channel/test-team/channels/town-square/post_123');
+        expect(mockReplace).toHaveBeenCalledWith('/_popout/channel/test-team/channels/general/post_123');
     });
 });

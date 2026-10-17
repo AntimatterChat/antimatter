@@ -55,13 +55,13 @@ export default function ChannelsSettings() {
         }
     };
 
-    // No choice is Town Square while there is one; without it, people land in the first channel they're in.
-    const townSquare = publicChannels.find((c) => c.name === Constants.DEFAULT_CHANNEL);
+    // No choice is General while there is one; without it, people land in the first channel they're in.
+    const general = publicChannels.find((c) => c.name === Constants.DEFAULT_CHANNEL);
     const chosen = team.default_channel_id || '';
-    const automatic = townSquare ? formatMessage({id: 'fusion.teamChannels.defaultTownSquare', defaultMessage: '#{channel} (the first channel)'}, {channel: townSquare.display_name}) : formatMessage({id: 'fusion.teamChannels.defaultNone', defaultMessage: 'None: the first channel each person is in'});
+    const automatic = general ? formatMessage({id: 'fusion.teamChannels.defaultTownSquare', defaultMessage: '#{channel} (the first channel)'}, {channel: general.display_name}) : formatMessage({id: 'fusion.teamChannels.defaultNone', defaultMessage: 'None: the first channel each person is in'});
     const options: Array<[string, string]> = [['', automatic]];
     for (const channel of publicChannels) {
-        if (channel.id !== townSquare?.id || chosen === channel.id) {
+        if (channel.id !== general?.id || chosen === channel.id) {
             options.push([channel.id, '#' + channel.display_name]);
         }
     }

@@ -41,11 +41,11 @@ jest.mock('./schedule', () => ({
 }));
 
 describe('fusion/composer/Composer', () => {
-    const channel = TestHelper.getChannelMock({id: 'c1', name: 'town-square', display_name: 'Town Square', type: 'O', team_id: 'team'});
+    const channel = TestHelper.getChannelMock({id: 'c1', name: 'general', display_name: 'General', type: 'O', team_id: 'team'});
     const render = () => renderWithContext(
         <Composer
             channelId='c1'
-            placeholder='Write to Town Square'
+            placeholder='Write to General'
         />,
         {
             entities: {
@@ -78,7 +78,7 @@ describe('fusion/composer/Composer', () => {
     test('schedules the message from "Send later"', async () => {
         render();
 
-        await userEvent.type(screen.getByRole('textbox', {name: 'Write to Town Square'}), 'See you tomorrow');
+        await userEvent.type(screen.getByRole('textbox', {name: 'Write to General'}), 'See you tomorrow');
         await userEvent.click(screen.getByRole('button', {name: 'Send later'}));
         await userEvent.click(screen.getByRole('button', {name: 'Tomorrow at 9:00'}));
 

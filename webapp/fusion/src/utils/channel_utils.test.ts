@@ -201,9 +201,9 @@ describe('Channel Utils', () => {
 
     describe('getChannelRoutePathAndIdentifier', () => {
         test('should return channels path and channel name for open channels', () => {
-            const channel = {type: Constants.OPEN_CHANNEL, name: 'town-square'} as Channel;
+            const channel = {type: Constants.OPEN_CHANNEL, name: 'general'} as Channel;
             const result = Utils.getChannelRoutePathAndIdentifier(channel);
-            expect(result).toEqual({path: 'channels', identifier: 'town-square'});
+            expect(result).toEqual({path: 'channels', identifier: 'general'});
         });
 
         test('should return channels path and channel name for private channels', () => {
@@ -231,9 +231,9 @@ describe('Channel Utils', () => {
         });
 
         test('should ignore dmUsername for non-DM channels', () => {
-            const channel = {type: Constants.OPEN_CHANNEL, name: 'town-square'} as Channel;
+            const channel = {type: Constants.OPEN_CHANNEL, name: 'general'} as Channel;
             const result = Utils.getChannelRoutePathAndIdentifier(channel, 'johndoe');
-            expect(result).toEqual({path: 'channels', identifier: 'town-square'});
+            expect(result).toEqual({path: 'channels', identifier: 'general'});
         });
 
         test('should ignore dmUsername for GM channels', () => {

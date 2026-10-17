@@ -417,7 +417,7 @@ describe('components/signup/Signup', () => {
         );
 
         await waitFor(() => {
-            expect(mockHistoryPush).toHaveBeenCalledWith('/teamName/channels/town-square');
+            expect(mockHistoryPush).toHaveBeenCalledWith('/teamName/channels/general');
         });
     });
 

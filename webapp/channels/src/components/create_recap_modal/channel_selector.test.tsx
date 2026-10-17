@@ -13,8 +13,8 @@ describe('ChannelSelector', () => {
     const mockChannels: Channel[] = [
         {
             id: 'channel1',
-            name: 'town-square',
-            display_name: 'Town Square',
+            name: 'general',
+            display_name: 'General',
             type: 'O',
             create_at: 1000,
             update_at: 1000,
@@ -82,7 +82,7 @@ describe('ChannelSelector', () => {
         it('should render all channels', () => {
             renderWithContext(<ChannelSelector {...defaultProps}/>);
 
-            expect(screen.getByText('Town Square')).toBeInTheDocument();
+            expect(screen.getByText('General')).toBeInTheDocument();
             expect(screen.getByText('Off-Topic')).toBeInTheDocument();
             expect(screen.getByText('Private Channel')).toBeInTheDocument();
             expect(screen.getByText('Dev Team')).toBeInTheDocument();
@@ -94,7 +94,7 @@ describe('ChannelSelector', () => {
             renderWithContext(<ChannelSelector {...defaultProps}/>);
 
             expect(screen.getByText('RECOMMENDED')).toBeInTheDocument();
-            expect(screen.getByText('Town Square')).toBeInTheDocument();
+            expect(screen.getByText('General')).toBeInTheDocument();
             expect(screen.getByText('Private Channel')).toBeInTheDocument();
         });
 
@@ -138,7 +138,7 @@ describe('ChannelSelector', () => {
             const searchInput = screen.getByPlaceholderText('Search and select channels');
             await userEvent.type(searchInput, 'Town');
 
-            expect(screen.getByText('Town Square')).toBeInTheDocument();
+            expect(screen.getByText('General')).toBeInTheDocument();
             expect(screen.queryByText('Off-Topic')).not.toBeInTheDocument();
         });
 
@@ -149,7 +149,7 @@ describe('ChannelSelector', () => {
             await userEvent.type(searchInput, 'off-topic');
 
             expect(screen.getByText('Off-Topic')).toBeInTheDocument();
-            expect(screen.queryByText('Town Square')).not.toBeInTheDocument();
+            expect(screen.queryByText('General')).not.toBeInTheDocument();
         });
 
         it('should be case insensitive', async () => {
@@ -178,7 +178,7 @@ describe('ChannelSelector', () => {
 
             // Only Private Channel should be visible, and it should be in recommended
             expect(screen.getByText('Private Channel')).toBeInTheDocument();
-            expect(screen.queryByText('Town Square')).not.toBeInTheDocument();
+            expect(screen.queryByText('General')).not.toBeInTheDocument();
         });
     });
 
@@ -212,7 +212,7 @@ describe('ChannelSelector', () => {
                 />,
             );
 
-            const channelItem = screen.getByText('Town Square').closest('.channel-selector-item');
+            const channelItem = screen.getByText('General').closest('.channel-selector-item');
             await userEvent.click(channelItem!);
 
             expect(setSelectedChannelIds).toHaveBeenCalledWith(['channel1']);
@@ -227,7 +227,7 @@ describe('ChannelSelector', () => {
                 />,
             );
 
-            const checkbox = screen.getByText('Town Square').closest('.channel-selector-item')?.querySelector('input[type="checkbox"]');
+            const checkbox = screen.getByText('General').closest('.channel-selector-item')?.querySelector('input[type="checkbox"]');
             expect(checkbox).not.toBeNull();
 
             await userEvent.click(checkbox!);
@@ -261,7 +261,7 @@ describe('ChannelSelector', () => {
                 />,
             );
 
-            const channelItem = screen.getByText('Town Square').closest('.channel-selector-item');
+            const channelItem = screen.getByText('General').closest('.channel-selector-item');
             await userEvent.click(channelItem!);
 
             expect(setSelectedChannelIds).toHaveBeenCalledWith(['channel2']);
@@ -277,7 +277,7 @@ describe('ChannelSelector', () => {
                 />,
             );
 
-            const checkbox = screen.getByText('Town Square').closest('.channel-selector-item')?.querySelector('input[type="checkbox"]');
+            const checkbox = screen.getByText('General').closest('.channel-selector-item')?.querySelector('input[type="checkbox"]');
             expect(checkbox).not.toBeNull();
 
             await userEvent.click(checkbox!);
@@ -290,7 +290,7 @@ describe('ChannelSelector', () => {
         it('should show globe icon for open channels', () => {
             renderWithContext(<ChannelSelector {...defaultProps}/>);
 
-            const townSquareItem = screen.getByText('Town Square').closest('.channel-selector-item');
+            const townSquareItem = screen.getByText('General').closest('.channel-selector-item');
             const icon = townSquareItem?.querySelector('.icon-globe');
             expect(icon).toBeInTheDocument();
         });
@@ -309,7 +309,7 @@ describe('ChannelSelector', () => {
                 {plugins: {components: {ChannelIconOverride: [{id: '1', pluginId: 'p', matcher: () => true, iconName: 'shield-outline'}]}}} as any,
             );
 
-            const townSquareItem = screen.getByText('Town Square').closest('.channel-selector-item');
+            const townSquareItem = screen.getByText('General').closest('.channel-selector-item');
             const icon = townSquareItem?.querySelector('i');
             expect(icon).toBeInTheDocument();
             expect(icon).toHaveClass('icon-shield-outline');
@@ -322,7 +322,7 @@ describe('ChannelSelector', () => {
                 {plugins: {components: {ChannelIconOverride: [{id: '1', pluginId: 'p', matcher: () => false, iconName: 'shield-outline'}]}}} as any,
             );
 
-            const townSquareItem = screen.getByText('Town Square').closest('.channel-selector-item');
+            const townSquareItem = screen.getByText('General').closest('.channel-selector-item');
             const icon = townSquareItem?.querySelector('i');
             expect(icon).toBeInTheDocument();
             expect(icon).toHaveClass('icon-globe');

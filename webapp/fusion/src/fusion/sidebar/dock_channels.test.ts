@@ -18,7 +18,7 @@ jest.mock('mattermost-redux/selectors/entities/channel_categories', () => ({
 describe('fusion/sidebar/makeGetDockChannelIds', () => {
     // dm0 is the latest active, dm11 the oldest; the category lists them in its own order.
     const ids = ['dm3', 'dm0', 'dm11', 'dm7', 'dm1', 'dm10', 'dm5', 'dm2', 'dm9', 'dm6', 'dm4', 'dm8'];
-    const stateWith = ({limit, current = 'town-square'}: {limit?: string; current?: string} = {}) => ({
+    const stateWith = ({limit, current = 'general'}: {limit?: string; current?: string} = {}) => ({
         entities: {
             general: {config: {}},
             channels: {

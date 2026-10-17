@@ -135,7 +135,7 @@ describe('Notifications.showNotification', () => {
         Notifications = require('utils/notifications');
 
         const sensitiveBody = '@alice: token=AKIA-SECRET-VALUE confidential incident details';
-        const visibleTitle = '@alice posted in Town Square';
+        const visibleTitle = '@alice posted in General';
 
         await store.dispatch(Notifications.showNotification({
             title: visibleTitle,

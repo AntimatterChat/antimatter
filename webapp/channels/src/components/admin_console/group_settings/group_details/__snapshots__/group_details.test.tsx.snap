@@ -152,7 +152,7 @@ exports[`components/admin_console/group_settings/group_details/GroupDetails shou
               <div
                 class="mt-2"
               >
-                Set default teams and channels for group members. Teams added will include default channels, town-square, and off-topic. Adding a channel without setting the team will add the implied team to the listing below.
+                Set default teams and channels for group members. Teams added will include default channels, general, and off-topic. Adding a channel without setting the team will add the implied team to the listing below.
               </div>
             </div>
             <div
@@ -563,7 +563,7 @@ exports[`components/admin_console/group_settings/group_details/GroupDetails shou
               <div
                 class="mt-2"
               >
-                Set default teams and channels for group members. Teams added will include default channels, town-square, and off-topic. Adding a channel without setting the team will add the implied team to the listing below.
+                Set default teams and channels for group members. Teams added will include default channels, general, and off-topic. Adding a channel without setting the team will add the implied team to the listing below.
               </div>
             </div>
             <div
@@ -972,7 +972,7 @@ exports[`components/admin_console/group_settings/group_details/GroupDetails shou
               <div
                 class="mt-2"
               >
-                Set default teams and channels for group members. Teams added will include default channels, town-square, and off-topic. Adding a channel without setting the team will add the implied team to the listing below.
+                Set default teams and channels for group members. Teams added will include default channels, general, and off-topic. Adding a channel without setting the team will add the implied team to the listing below.
               </div>
             </div>
             <div
@@ -1381,7 +1381,7 @@ exports[`components/admin_console/group_settings/group_details/GroupDetails shou
               <div
                 class="mt-2"
               >
-                Set default teams and channels for group members. Teams added will include default channels, town-square, and off-topic. Adding a channel without setting the team will add the implied team to the listing below.
+                Set default teams and channels for group members. Teams added will include default channels, general, and off-topic. Adding a channel without setting the team will add the implied team to the listing below.
               </div>
             </div>
             <div

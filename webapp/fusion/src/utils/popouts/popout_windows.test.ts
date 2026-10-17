@@ -221,10 +221,10 @@ describe('popout_windows', () => {
         it('should include the path segment in the URL for regular channels', async () => {
             setupBrowser();
 
-            await popoutChannel('Title', 'test-team', 'channels', 'town-square');
+            await popoutChannel('Title', 'test-team', 'channels', 'general');
 
             expect(getMockSetupBrowserPopout()).toHaveBeenCalledWith(
-                '/_popout/channel/test-team/channels/town-square',
+                '/_popout/channel/test-team/channels/general',
             );
         });
 
@@ -241,20 +241,20 @@ describe('popout_windows', () => {
         it('should include subpath in popout URL when basename is set', async () => {
             setupBrowser('/company/mattermost');
 
-            await popoutChannel('Title', 'test-team', 'channels', 'town-square');
+            await popoutChannel('Title', 'test-team', 'channels', 'general');
 
             expect(getMockSetupBrowserPopout()).toHaveBeenCalledWith(
-                '/company/mattermost/_popout/channel/test-team/channels/town-square',
+                '/company/mattermost/_popout/channel/test-team/channels/general',
             );
         });
 
         it('should call desktop popout with correct path for desktop app', async () => {
             setupDesktop();
 
-            await popoutChannel('Channel Title', 'test-team', 'channels', 'town-square');
+            await popoutChannel('Channel Title', 'test-team', 'channels', 'general');
 
             expect(mockDesktopApp.setupDesktopPopout).toHaveBeenCalledWith(
-                '/_popout/channel/test-team/channels/town-square',
+                '/_popout/channel/test-team/channels/general',
                 {titleTemplate: 'Channel Title'},
             );
         });
@@ -284,8 +284,8 @@ describe('popout_windows', () => {
         });
 
         it('should include channel param when provided', async () => {
-            await callDesktop('Pinned Messages - {serverName}', 'test-team', '', 'pin', 'messages', 'town-square');
-            expectDesktopPath('channel=town-square');
+            await callDesktop('Pinned Messages - {serverName}', 'test-team', '', 'pin', 'messages', 'general');
+            expectDesktopPath('channel=general');
         });
 
         it('should include searchTeamId when provided', async () => {

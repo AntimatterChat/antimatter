@@ -58,7 +58,7 @@ jest.mock('components/loading_screen', () => ({
 
 describe('ChannelPopout', () => {
     const team = TestHelper.getTeamMock({id: 'team_id', name: 'test-team'});
-    const channel = TestHelper.getChannelMock({id: 'channel_id', name: 'town-square', type: 'O'});
+    const channel = TestHelper.getChannelMock({id: 'channel_id', name: 'general', type: 'O'});
 
     const baseState = {
         entities: {
@@ -100,20 +100,20 @@ describe('ChannelPopout', () => {
 
     test('should show loading screen when team is not found', () => {
         jest.mocked(useTeamByName).mockReturnValue(undefined);
-        renderPopout('/_popout/channel/test-team/channels/town-square');
+        renderPopout('/_popout/channel/test-team/channels/general');
         expect(screen.getByTestId('loading-screen')).toBeInTheDocument();
     });
 
     test('should render ChannelIdentifierRouter in the Fusion UI\'s frame when team is resolved', () => {
         jest.mocked(useTeamByName).mockReturnValue(team);
-        renderPopout('/_popout/channel/test-team/channels/town-square');
+        renderPopout('/_popout/channel/test-team/channels/general');
 
         expect(screen.getByTestId('fusion-popout')).toContainElement(screen.getByTestId('channel-identifier-router'));
     });
 
     test('should dispatch team bootstrapping actions when team is resolved', async () => {
         jest.mocked(useTeamByName).mockReturnValue(team);
-        renderPopout('/_popout/channel/test-team/channels/town-square');
+        renderPopout('/_popout/channel/test-team/channels/general');
 
         await waitFor(() => {
             expect(jest.mocked(selectTeam)).toHaveBeenCalledWith('team_id');
@@ -125,7 +125,7 @@ describe('ChannelPopout', () => {
 
     test('should dispatch getChannelStats when channel is available', async () => {
         jest.mocked(useTeamByName).mockReturnValue(team);
-        renderPopout('/_popout/channel/test-team/channels/town-square');
+        renderPopout('/_popout/channel/test-team/channels/general');
 
         await waitFor(() => {
             expect(jest.mocked(getChannelStats)).toHaveBeenCalledWith('channel_id');

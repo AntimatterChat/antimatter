@@ -20,7 +20,7 @@ import type {GlobalState} from 'types/store';
 // private channel their roles open, and mute channels rather than leave them. Guests and bots aren't concerned.
 //
 // Its default channel is where newcomers land and its join and leave messages go: the public channel its admins chose,
-// else Town Square. Either can be archived, and the community then has none.
+// else General. Either can be archived, and the community then has none.
 
 // isAllChannelsCommunity tells whether a community has everyone in all its channels.
 export function isAllChannelsCommunity(state: GlobalState, teamId: string): boolean {
@@ -56,7 +56,7 @@ export function isDefaultChannel(state: GlobalState, channel: Channel | undefine
     return Boolean(channel?.team_id) && getDefaultChannel(state, channel!.team_id)?.id === channel!.id;
 }
 
-// isFirstDefaultChannel tells whether a channel is one of those every community starts with (Town Square and
+// isFirstDefaultChannel tells whether a channel is one of those every community starts with (General and
 // Off-Topic), or the one it chose: only the community's admins archive those.
 export function isFirstDefaultChannel(state: GlobalState, channel: Channel): boolean {
     return channel.name === Constants.DEFAULT_CHANNEL || channel.name === Constants.OFFTOPIC_CHANNEL || isDefaultChannel(state, channel);

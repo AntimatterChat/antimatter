@@ -1266,7 +1266,7 @@ export const getChannelsWithUserProfiles: (state: GlobalState) => Array<{
     },
 );
 
-// Antimatter: a team's default channel is the public channel it chose (default_channel_id), else Town Square; either
+// Antimatter: a team's default channel is the public channel it chose (default_channel_id), else General; either
 // can be archived or deleted, and the team then has none.
 export const getDefaultChannelForTeams: (state: GlobalState) => RelationOneToOne<Team, Channel> = createSelector(
     'getDefaultChannelForTeams',
@@ -1336,7 +1336,7 @@ export const getRedirectChannelNameForTeam = (state: GlobalState, teamId: string
     }
 
     // Antimatter: without a default channel known here (archived, deleted, or not loaded yet), the first channel I'm in;
-    // Town Square as before when there's none.
+    // General as before when there's none.
     const myFirstChannelForTeam = getMyFirstChannelForTeams(state)[teamId];
 
     return (myFirstChannelForTeam && myFirstChannelForTeam.name) || General.DEFAULT_CHANNEL;

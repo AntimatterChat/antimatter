@@ -63,7 +63,7 @@ describe('JobDetailsModal', () => {
         entities: {
             channels: {
                 channels: {
-                    channel1: TestHelper.getChannelMock({id: 'channel1', display_name: 'Town Square', team_id: 'team1'}),
+                    channel1: TestHelper.getChannelMock({id: 'channel1', display_name: 'General', team_id: 'team1'}),
                 },
             },
             teams: {

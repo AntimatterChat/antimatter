@@ -71,7 +71,7 @@ describe('popout focus tracking', () => {
 
     it('should track channel focus from popoutChannel', async () => {
         setupWithCapture();
-        await popoutChannel('Title', 'test-team', 'channels', 'town-square');
+        await popoutChannel('Title', 'test-team', 'channels', 'general');
 
         simulateMessage(POPOUT_FOCUSED, 'channel-123');
         expect(getFocusedPopoutInfo()).toEqual({channelId: 'channel-123', threadId: undefined});
@@ -91,7 +91,7 @@ describe('popout focus tracking', () => {
 
     it('should clear focus on blur', async () => {
         setupWithCapture();
-        await popoutChannel('Title', 'test-team', 'channels', 'town-square');
+        await popoutChannel('Title', 'test-team', 'channels', 'general');
 
         simulateMessage(POPOUT_FOCUSED, 'channel-123');
         expect(getFocusedPopoutInfo()).not.toBeNull();

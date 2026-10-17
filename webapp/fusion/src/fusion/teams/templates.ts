@@ -10,7 +10,7 @@ import {createChannel} from 'mattermost-redux/actions/channels';
 import {createGroupWithUserIds, patchGroup} from 'mattermost-redux/actions/groups';
 import {patchTeam} from 'mattermost-redux/actions/teams';
 import {Client4} from 'mattermost-redux/client';
-import {Permissions} from 'mattermost-redux/constants';
+import {General, Permissions} from 'mattermost-redux/constants';
 import {getManagedCategoryMappings} from 'mattermost-redux/selectors/entities/channel_categories';
 import {getMyChannels} from 'mattermost-redux/selectors/entities/channels';
 import {getTeam} from 'mattermost-redux/selectors/entities/teams';
@@ -58,14 +58,14 @@ export const MODERATOR_PERMISSIONS = [
 export const PRESETS: Record<Preset, TeamTemplate> = {
     hybrid: {
         version: 1,
-        server_categories: [{name: 'Information', locked: true, channels: ['town-square']}, {name: 'Community', locked: false, channels: ['off-topic']}],
+        server_categories: [{name: 'Information', locked: true, channels: [General.DEFAULT_CHANNEL]}, {name: 'Community', locked: false, channels: ['off-topic']}],
         channels: [],
         roles: [{display_name: 'Moderators', color: '#e67e22', hoist: true, permissions: MODERATOR_PERMISSIONS}],
         kind: 'community',
     },
     community: {
         version: 1,
-        server_categories: [{name: 'Information', locked: true, channels: ['town-square']}, {name: 'Channels', locked: true, channels: ['off-topic']}],
+        server_categories: [{name: 'Information', locked: true, channels: [General.DEFAULT_CHANNEL]}, {name: 'Channels', locked: true, channels: ['off-topic']}],
         channels: [],
         roles: [{display_name: 'Moderators', color: '#e67e22', hoist: true, permissions: MODERATOR_PERMISSIONS}],
         kind: 'community',
@@ -109,7 +109,8 @@ export function exportTemplate(teamId: string): ActionFuncAsync<TeamTemplate> {
 }
 
 // parseTemplate reads a template file, or undefined when it isn't one. It keeps what's well formed of each entry and
-// drops the entries it can't use.
+// drops the entries it can't use. Templates made before the default channel became general list it as town-square: it
+// stands for general.
 export function parseTemplate(json: string): TeamTemplate | undefined {
     let raw;
     try {
@@ -122,14 +123,15 @@ export function parseTemplate(json: string): TeamTemplate | undefined {
     }
     const text = (v: unknown) => (typeof v === 'string' ? v.trim() : '');
     const strings = (v: unknown) => (Array.isArray(v) ? v.filter((x): x is string => typeof x === 'string') : []);
+    const channelName = (name: string) => (name === General.LEGACY_DEFAULT_CHANNEL ? General.DEFAULT_CHANNEL : name);
     const objects = (v: unknown[]) => v.filter((x): x is Record<string, unknown> => Boolean(x) && typeof x === 'object');
     return {
         version: 1,
         server_categories: objects(raw.server_categories).
-            map((c) => ({name: text(c.name), locked: c.locked === true, channels: strings(c.channels)})).
+            map((c) => ({name: text(c.name), locked: c.locked === true, channels: strings(c.channels).map(channelName)})).
             filter((c) => c.name),
         channels: objects(raw.channels).
-            map((c) => ({name: text(c.name), display_name: text(c.display_name), type: c.type === 'P' ? 'P' as const : 'O' as const, purpose: text(c.purpose) || undefined, header: text(c.header) || undefined})).
+            map((c) => ({name: channelName(text(c.name)), display_name: text(c.display_name), type: c.type === 'P' ? 'P' as const : 'O' as const, purpose: text(c.purpose) || undefined, header: text(c.header) || undefined})).
             filter((c) => (/^[a-z0-9]+([a-z0-9_-]*[a-z0-9]+)*$/).test(c.name) && c.display_name),
         roles: objects(raw.roles).
             map((r) => ({

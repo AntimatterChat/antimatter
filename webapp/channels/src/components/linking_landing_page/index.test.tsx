@@ -14,8 +14,8 @@ jest.mock('utils/browser_utils', () => ({
 }));
 
 const siteUrl = 'http://localhost:8065';
-const landingPath = '/landing#/team-name/channels/town-square';
-const redirectUrl = `${siteUrl}/team-name/channels/town-square`;
+const landingPath = '/landing#/team-name/channels/general';
+const redirectUrl = `${siteUrl}/team-name/channels/general`;
 
 describe('components/LinkingLandingPage (connected)', () => {
     function makeState(enableDesktopLandingPage: 'true' | 'false') {

@@ -16,7 +16,7 @@ const mockConfirm = jest.fn();
 let mockLocal: {channelId: string} | null = null;
 let mockCanEnd = false;
 const mockStartAt = Date.now() - 60000;
-jest.mock('./actions', () => ({useCallActions: () => mockActions, useChannelLabel: () => '#town-square'}));
+jest.mock('./actions', () => ({useCallActions: () => mockActions, useChannelLabel: () => '#general'}));
 jest.mock('./hooks', () => ({
     useCall: () => ({id: 'call', channelId: 'ch', threadId: 'post', startAt: mockStartAt, ownerId: 'starter', hostId: 'someone', recording: false}),
     useCallsAvailable: () => true,

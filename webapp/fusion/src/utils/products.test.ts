@@ -95,7 +95,7 @@ describe('getCurrentProduct', () => {
     });
 
     it('does not match a team-scoped product when the keyword segment is absent', () => {
-        expect(getCurrentProduct(products, '/myteam/channels/town-square')).toBeNull();
+        expect(getCurrentProduct(products, '/myteam/channels/general')).toBeNull();
     });
 
     it('returns null when no product matches the pathname', () => {

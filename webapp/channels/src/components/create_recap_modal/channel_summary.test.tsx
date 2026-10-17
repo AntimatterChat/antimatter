@@ -13,8 +13,8 @@ describe('ChannelSummary', () => {
     const mockChannels: Channel[] = [
         {
             id: 'channel1',
-            name: 'town-square',
-            display_name: 'Town Square',
+            name: 'general',
+            display_name: 'General',
             type: 'O',
             create_at: 1000,
             update_at: 1000,
@@ -83,7 +83,7 @@ describe('ChannelSummary', () => {
         it('should render selected channels only', () => {
             renderWithContext(<ChannelSummary {...defaultProps}/>);
 
-            expect(screen.getByText('Town Square')).toBeInTheDocument();
+            expect(screen.getByText('General')).toBeInTheDocument();
             expect(screen.getByText('Off-Topic')).toBeInTheDocument();
             expect(screen.queryByText('Private Channel')).not.toBeInTheDocument();
         });
@@ -96,7 +96,7 @@ describe('ChannelSummary', () => {
                 />,
             );
 
-            expect(screen.getByText('Town Square')).toBeInTheDocument();
+            expect(screen.getByText('General')).toBeInTheDocument();
             expect(screen.getByText('Off-Topic')).toBeInTheDocument();
             expect(screen.getByText('Private Channel')).toBeInTheDocument();
         });
@@ -109,7 +109,7 @@ describe('ChannelSummary', () => {
                 />,
             );
 
-            expect(screen.queryByText('Town Square')).not.toBeInTheDocument();
+            expect(screen.queryByText('General')).not.toBeInTheDocument();
             expect(screen.queryByText('Off-Topic')).not.toBeInTheDocument();
         });
     });
@@ -123,7 +123,7 @@ describe('ChannelSummary', () => {
                 />,
             );
 
-            const channelItem = screen.getByText('Town Square').closest('.summary-channel-item');
+            const channelItem = screen.getByText('General').closest('.summary-channel-item');
             const icon = channelItem?.querySelector('.icon-globe');
             expect(icon).toBeInTheDocument();
         });
@@ -201,7 +201,7 @@ describe('ChannelSummary', () => {
                 {plugins: {components: {ChannelIconOverride: [{id: '1', pluginId: 'p', matcher: () => true, iconName: 'shield-outline'}]}}} as any,
             );
 
-            const channelItem = screen.getByText('Town Square').closest('.summary-channel-item');
+            const channelItem = screen.getByText('General').closest('.summary-channel-item');
             const icon = channelItem?.querySelector('i');
             expect(icon).toBeInTheDocument();
             expect(icon).toHaveClass('icon-shield-outline');
@@ -217,7 +217,7 @@ describe('ChannelSummary', () => {
                 {plugins: {components: {ChannelIconOverride: [{id: '1', pluginId: 'p', matcher: () => false, iconName: 'shield-outline'}]}}} as any,
             );
 
-            const channelItem = screen.getByText('Town Square').closest('.summary-channel-item');
+            const channelItem = screen.getByText('General').closest('.summary-channel-item');
             const icon = channelItem?.querySelector('i');
             expect(icon).toBeInTheDocument();
             expect(icon).toHaveClass('icon-globe');
@@ -233,7 +233,7 @@ describe('ChannelSummary', () => {
                 />,
             );
 
-            expect(screen.getByText('Town Square')).toBeInTheDocument();
+            expect(screen.getByText('General')).toBeInTheDocument();
             expect(screen.queryByText('channel999')).not.toBeInTheDocument();
         });
 
@@ -245,7 +245,7 @@ describe('ChannelSummary', () => {
                 />,
             );
 
-            expect(screen.queryByText('Town Square')).not.toBeInTheDocument();
+            expect(screen.queryByText('General')).not.toBeInTheDocument();
             expect(screen.queryByText('Off-Topic')).not.toBeInTheDocument();
         });
 
@@ -262,7 +262,7 @@ describe('ChannelSummary', () => {
             );
 
             // Channels should appear in the order they appear in myChannels (channel1, channel2, channel3)
-            expect(channelItems[0]).toHaveTextContent('Town Square');
+            expect(channelItems[0]).toHaveTextContent('General');
             expect(channelItems[1]).toHaveTextContent('Off-Topic');
             expect(channelItems[2]).toHaveTextContent('Private Channel');
         });
@@ -272,8 +272,8 @@ describe('ChannelSummary', () => {
         it('should display channel display_name not name', () => {
             renderWithContext(<ChannelSummary {...defaultProps}/>);
 
-            expect(screen.getByText('Town Square')).toBeInTheDocument();
-            expect(screen.queryByText('town-square')).not.toBeInTheDocument();
+            expect(screen.getByText('General')).toBeInTheDocument();
+            expect(screen.queryByText('general')).not.toBeInTheDocument();
         });
     });
 
@@ -286,7 +286,7 @@ describe('ChannelSummary', () => {
                 />,
             );
 
-            const townSquareItems = screen.getAllByText('Town Square');
+            const townSquareItems = screen.getAllByText('General');
 
             // Should only render each channel once even if ID appears multiple times
             expect(townSquareItems.length).toBe(1);

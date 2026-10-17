@@ -54,10 +54,10 @@ describe('ChannelMentionProvider.handlePretextChanged', () => {
         });
 
         test('should match a channel\'s name', () => {
-            const matched = provider.handlePretextChanged('~town-square', resultsCallback);
+            const matched = provider.handlePretextChanged('~general', resultsCallback);
 
             expect(matched).toBe(true);
-            expect(autocompleteChannels).toHaveBeenCalledWith('town-square', expect.anything(), expect.anything());
+            expect(autocompleteChannels).toHaveBeenCalledWith('general', expect.anything(), expect.anything());
             expect(resultsCallback).toHaveBeenCalled();
         });
 
@@ -70,10 +70,10 @@ describe('ChannelMentionProvider.handlePretextChanged', () => {
         });
 
         test('should match a channel\'s display name', () => {
-            const matched = provider.handlePretextChanged('~Town Square', resultsCallback);
+            const matched = provider.handlePretextChanged('~General', resultsCallback);
 
             expect(matched).toBe(true);
-            expect(autocompleteChannels).toHaveBeenCalledWith('town square', expect.anything(), expect.anything());
+            expect(autocompleteChannels).toHaveBeenCalledWith('general', expect.anything(), expect.anything());
             expect(resultsCallback).toHaveBeenCalled();
         });
 
@@ -86,7 +86,7 @@ describe('ChannelMentionProvider.handlePretextChanged', () => {
         });
 
         test('should only match at the end of the text', () => {
-            const matched = provider.handlePretextChanged('this is ~town-square, not ~off-topic', resultsCallback);
+            const matched = provider.handlePretextChanged('this is ~general, not ~off-topic', resultsCallback);
 
             expect(matched).toBe(true);
             expect(autocompleteChannels).toHaveBeenCalledWith('off-topic', expect.anything(), expect.anything());
@@ -112,7 +112,7 @@ describe('ChannelMentionProvider.handlePretextChanged', () => {
         });
 
         test('should not match the middle of strikethrough text', () => {
-            const matched = provider.handlePretextChanged('~~town square', resultsCallback);
+            const matched = provider.handlePretextChanged('~~general', resultsCallback);
 
             expect(matched).toBe(false);
             expect(autocompleteChannels).not.toHaveBeenCalled();
@@ -130,9 +130,9 @@ describe('ChannelMentionProvider.handlePretextChanged', () => {
 
     describe('matching text after completing a result', () => {
         test('should not continue to match a link that was just completed', () => {
-            provider.handleCompleteWord('~town-square');
+            provider.handleCompleteWord('~general');
 
-            const matched = provider.handlePretextChanged('This is ~town-square', resultsCallback);
+            const matched = provider.handlePretextChanged('This is ~general', resultsCallback);
 
             expect(matched).toBe(false);
             expect(autocompleteChannels).not.toHaveBeenCalled();
@@ -140,9 +140,9 @@ describe('ChannelMentionProvider.handlePretextChanged', () => {
         });
 
         test('should not continue to match a link that was completed, even after typing more text', () => {
-            provider.handleCompleteWord('~town-square');
+            provider.handleCompleteWord('~general');
 
-            const matched = provider.handlePretextChanged('This is ~town-square and a test', resultsCallback);
+            const matched = provider.handlePretextChanged('This is ~general and a test', resultsCallback);
 
             expect(matched).toBe(false);
             expect(autocompleteChannels).not.toHaveBeenCalled();
@@ -150,9 +150,9 @@ describe('ChannelMentionProvider.handlePretextChanged', () => {
         });
 
         test('should start matching input again after another link is started', () => {
-            provider.handleCompleteWord('~town-square');
+            provider.handleCompleteWord('~general');
 
-            const matched = provider.handlePretextChanged('This is ~town-square and not ~off', resultsCallback);
+            const matched = provider.handlePretextChanged('This is ~general and not ~off', resultsCallback);
 
             expect(matched).toBe(true);
             expect(autocompleteChannels).toHaveBeenCalledWith('off', expect.anything(), expect.anything());
@@ -251,9 +251,9 @@ describe('ChannelMentionProvider with the # trigger (Antimatter)', () => {
         expect(resultsCallback).toHaveBeenCalledWith(expect.objectContaining({matchedPretext: '#town-sq'}));
 
         const [success] = autocompleteChannels.mock.calls[0].slice(1);
-        success([{id: 'c1', name: 'town-square', display_name: 'Town Square', type: 'O', delete_at: 0}]);
+        success([{id: 'c1', name: 'general', display_name: 'General', type: 'O', delete_at: 0}]);
         const last = resultsCallback.mock.calls[resultsCallback.mock.calls.length - 1][0];
-        expect(last.groups[1].terms).toEqual(['#town-square']);
+        expect(last.groups[1].terms).toEqual(['#general']);
     });
 
     test('no longer reacts to ~', () => {
@@ -275,18 +275,18 @@ describe('ChannelMentionProvider with the # trigger (Antimatter)', () => {
         expect(resultsCallback).toHaveBeenCalledWith(expect.objectContaining({matchedPretext: '~town'}));
 
         const [success] = autocompleteChannels.mock.calls[0].slice(1);
-        success([{id: 'c1', name: 'town-square', display_name: 'Town Square', type: 'O', delete_at: 0}]);
+        success([{id: 'c1', name: 'general', display_name: 'General', type: 'O', delete_at: 0}]);
         const last = resultsCallback.mock.calls[resultsCallback.mock.calls.length - 1][0];
-        expect(last.groups[1].terms).toEqual(['#town-square']);
+        expect(last.groups[1].terms).toEqual(['#general']);
     });
 
     test('in slash command arguments, ~ completes ~channel-name', () => {
         const tilde = new ChannelMentionProvider(autocompleteChannels, false, '~');
         expect(tilde.handlePretextChanged('/mute ~town', resultsCallback)).toBe(true);
         const [success] = autocompleteChannels.mock.calls[0].slice(1);
-        success([{id: 'c1', name: 'town-square', display_name: 'Town Square', type: 'O', delete_at: 0}]);
+        success([{id: 'c1', name: 'general', display_name: 'General', type: 'O', delete_at: 0}]);
         const last = resultsCallback.mock.calls[resultsCallback.mock.calls.length - 1][0];
-        expect(last.groups[1].terms).toEqual(['~town-square']);
+        expect(last.groups[1].terms).toEqual(['~general']);
     });
 
     test('the classic provider keeps ~', () => {

@@ -15,9 +15,9 @@ describe('TextFormatting.ChannelLinks', () => {
         );
 
         expect(
-            TextFormatting.formatText('~town-square', {}, emojiMap).trim(),
+            TextFormatting.formatText('~general', {}, emojiMap).trim(),
         ).toBe(
-            '<p>~town-square</p>',
+            '<p>~general</p>',
         );
     });
 
@@ -26,59 +26,59 @@ describe('TextFormatting.ChannelLinks', () => {
             delete (window as any).basename;
         });
 
-        test('should link ~town-square', () => {
+        test('should link ~general', () => {
             expect(
-                TextFormatting.formatText('~town-square', {
-                    channelNamesMap: {'town-square': 'Town Square'},
+                TextFormatting.formatText('~general', {
+                    channelNamesMap: {general: 'General'},
                     team: TH.getTeamMock({name: 'myteam'}),
                 }, emojiMap).trim(),
             ).toBe(
-                '<p><a class="mention-link" href="/myteam/channels/town-square" data-channel-mention="town-square">~Town Square</a></p>',
+                '<p><a class="mention-link" href="/myteam/channels/general" data-channel-mention="general">~General</a></p>',
             );
         });
 
-        test('should link ~town-square followed by a period', () => {
+        test('should link ~general followed by a period', () => {
             expect(
-                TextFormatting.formatText('~town-square.', {
-                    channelNamesMap: {'town-square': 'Town Square'},
+                TextFormatting.formatText('~general.', {
+                    channelNamesMap: {general: 'General'},
                     team: TH.getTeamMock({name: 'myteam'}),
                 }, emojiMap).trim(),
             ).toBe(
-                '<p><a class="mention-link" href="/myteam/channels/town-square" data-channel-mention="town-square">~Town Square</a>.</p>',
+                '<p><a class="mention-link" href="/myteam/channels/general" data-channel-mention="general">~General</a>.</p>',
             );
         });
 
-        test('should link ~town-square, with display_name an HTML string', () => {
+        test('should link ~general, with display_name an HTML string', () => {
             expect(
-                TextFormatting.formatText('~town-square', {
-                    channelNamesMap: {'town-square': '<b>Reception</b>'},
+                TextFormatting.formatText('~general', {
+                    channelNamesMap: {general: '<b>Reception</b>'},
                     team: TH.getTeamMock({name: 'myteam'}),
                 }, emojiMap).trim(),
             ).toBe(
-                '<p><a class="mention-link" href="/myteam/channels/town-square" data-channel-mention="town-square">~&lt;b&gt;Reception&lt;/b&gt;</a></p>',
+                '<p><a class="mention-link" href="/myteam/channels/general" data-channel-mention="general">~&lt;b&gt;Reception&lt;/b&gt;</a></p>',
             );
         });
 
-        test('should link ~town-square, with a basename defined', () => {
+        test('should link ~general, with a basename defined', () => {
             window.basename = '/subpath';
             expect(
-                TextFormatting.formatText('~town-square', {
-                    channelNamesMap: {'town-square': '<b>Reception</b>'},
+                TextFormatting.formatText('~general', {
+                    channelNamesMap: {general: '<b>Reception</b>'},
                     team: TH.getTeamMock({name: 'myteam'}),
                 }, emojiMap).trim(),
             ).toBe(
-                '<p><a class="mention-link" href="/subpath/myteam/channels/town-square" data-channel-mention="town-square">~&lt;b&gt;Reception&lt;/b&gt;</a></p>',
+                '<p><a class="mention-link" href="/subpath/myteam/channels/general" data-channel-mention="general">~&lt;b&gt;Reception&lt;/b&gt;</a></p>',
             );
         });
 
         test('should link in brackets', () => {
             expect(
-                TextFormatting.formatText('(~town-square)', {
-                    channelNamesMap: {'town-square': 'Town Square'},
+                TextFormatting.formatText('(~general)', {
+                    channelNamesMap: {general: 'General'},
                     team: TH.getTeamMock({name: 'myteam'}),
                 }, emojiMap).trim(),
             ).toBe(
-                '<p>(<a class="mention-link" href="/myteam/channels/town-square" data-channel-mention="town-square">~Town Square</a>)</p>',
+                '<p>(<a class="mention-link" href="/myteam/channels/general" data-channel-mention="general">~General</a>)</p>',
             );
         });
     });
@@ -86,12 +86,12 @@ describe('TextFormatting.ChannelLinks', () => {
     describe('invalid channel links', () => {
         test('should not link when a ~ is in the middle of a word', () => {
             expect(
-                TextFormatting.formatText('aa~town-square', {
-                    channelNamesMap: {'town-square': 'Town Square'},
+                TextFormatting.formatText('aa~general', {
+                    channelNamesMap: {general: 'General'},
                     team: TH.getTeamMock({name: 'myteam'}),
                 }, emojiMap).trim(),
             ).toBe(
-                '<p>aa~town-square</p>',
+                '<p>aa~general</p>',
             );
         });
     });

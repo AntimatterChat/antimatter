@@ -10,7 +10,7 @@ import type {GlobalState} from 'types/store';
 import {getDefaultChannel, isAllChannelsCommunity, isCommunityChannelFor, isDefaultChannel, isFirstDefaultChannel} from './community_channels';
 
 const ch = (id: string, name: string, extra: Partial<Channel> = {}) => TestHelper.getChannelMock({id, name, display_name: name, team_id: 't1', type: 'O', delete_at: 0, ...extra});
-const town = ch('town', 'town-square');
+const town = ch('town', 'general');
 const offTopic = ch('off', 'off-topic');
 const dev = ch('dev', 'dev');
 const secret = ch('secret', 'secret', {type: 'P'});
@@ -66,7 +66,7 @@ describe('fusion/channel/community_channels', () => {
         expect(isCommunityChannelFor(state(), undefined, 'ana')).toBe(false);
     });
 
-    test('the default channel is Town Square unless the community chose another', () => {
+    test('the default channel is General unless the community chose another', () => {
         expect(getDefaultChannel(state(), 't1')?.id).toBe('town');
         expect(isDefaultChannel(state(), town)).toBe(true);
         expect(isDefaultChannel(state(), dev)).toBe(false);
@@ -85,7 +85,7 @@ describe('fusion/channel/community_channels', () => {
         expect(getDefaultChannel(state(), 'unknown')).toBeUndefined();
     });
 
-    test('Town Square, Off-Topic and the chosen default are the channels only admins archive', () => {
+    test('General, Off-Topic and the chosen default are the channels only admins archive', () => {
         const chosen = state({defaultChannelId: 'dev'});
         expect(isFirstDefaultChannel(chosen, town)).toBe(true);
         expect(isFirstDefaultChannel(chosen, offTopic)).toBe(true);

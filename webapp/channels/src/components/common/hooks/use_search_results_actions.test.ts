@@ -140,7 +140,7 @@ describe('useSearchResultsActions', () => {
             return cleaned;
         }
 
-        expect(callWithTerms('hello in:town-square from:user1')).toBe('hello');
+        expect(callWithTerms('hello in:general from:user1')).toBe('hello');
         expect(callWithTerms('hello world')).toBe('hello world');
         expect(jest.mocked(updateSearchTermsAction)).toHaveBeenCalledTimes(1);
     });

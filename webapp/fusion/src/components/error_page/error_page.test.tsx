@@ -14,7 +14,7 @@ describe('ErrorPage', () => {
             (
                 <ErrorPage
                     location={{
-                        search: `?type=${ErrorPageTypes.PERMALINK_NOT_FOUND}&returnTo=/team/channels/town-square`,
+                        search: `?type=${ErrorPageTypes.PERMALINK_NOT_FOUND}&returnTo=/team/channels/general`,
                     }}
                 />
             ),

@@ -17,6 +17,8 @@ import {generateId} from 'mattermost-redux/utils/helpers';
 import {switchToChannel} from 'actions/views/channel';
 import {getLastViewedChannelNameByTeamName} from 'selectors/local_storage';
 
+import {Constants} from 'utils/constants';
+
 import type {GlobalState} from 'types/store';
 
 interface MatchParams {
@@ -38,7 +40,7 @@ const PlaybookRunner = () => {
 
     useEffect(() => {
         const switchToChannelAndStartRun = async () => {
-            const channelToSwitchTo = lastViewedChannel ?? await Client4.getChannelByName(team?.id || '', 'town-square');
+            const channelToSwitchTo = lastViewedChannel ?? await Client4.getChannelByName(team?.id || '', Constants.DEFAULT_CHANNEL);
 
             dispatch(switchToChannel(channelToSwitchTo));
             dispatch(startPlaybookRunById(channelToSwitchTo, team?.id || '', playbookId));

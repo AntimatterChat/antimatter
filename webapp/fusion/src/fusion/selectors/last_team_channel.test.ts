@@ -14,14 +14,14 @@ describe('fusion/selectors/getLastTeamChannelName', () => {
         entities: {
             channels: {
                 channels: {
-                    'town-square': channel('town-square', 'team'),
+                    general: channel('general', 'team'),
                     'off-topic': channel('off-topic', 'team'),
                     archived: channel('archived', 'team', 1),
                     elsewhere: channel('elsewhere', 'other'),
                     dm: channel('dm', ''),
                 },
                 myMembers: {
-                    'town-square': member('town-square', 1),
+                    general: member('general', 1),
                     'off-topic': member('off-topic', 2),
                     archived: member('archived', 5),
                     elsewhere: member('elsewhere', 6),

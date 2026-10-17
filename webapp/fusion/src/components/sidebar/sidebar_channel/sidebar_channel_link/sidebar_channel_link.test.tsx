@@ -37,7 +37,7 @@ describe('components/sidebar/sidebar_channel/sidebar_channel_link', () => {
 
     const baseProps = {
         channel: baseChannel,
-        link: '/team/channels/town-square',
+        link: '/team/channels/general',
         label: 'channel_label',
         icon: null,
         unreadMentions: 0,

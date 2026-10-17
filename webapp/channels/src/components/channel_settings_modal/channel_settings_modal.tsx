@@ -176,7 +176,7 @@ function ChannelSettingsModal({channelId, isOpen, onExited, focusOriginElement}:
 
     const isPolicyEligibleChannelType = channel.type === Constants.PRIVATE_CHANNEL || channel.type === Constants.OPEN_CHANNEL;
 
-    // Default channels (town-square / off-topic) cannot have ABAC policies —
+    // Default channels (general / off-topic) cannot have ABAC policies —
     // ValidateChannelEligibilityForAccessControl rejects them on the server, so
     // showing the Membership Policy tab here would only let the user assemble
     // rules they can never save.

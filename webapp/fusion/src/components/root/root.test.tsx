@@ -236,10 +236,10 @@ describe('components/Root', () => {
     });
 
     test('leaves paths that only start like /boards alone', async () => {
-        const history = createMemoryHistory({initialEntries: ['/boardsroom/channels/town-square']});
+        const history = createMemoryHistory({initialEntries: ['/boardsroom/channels/general']});
         const props = {
             ...baseProps,
-            location: {pathname: '/boardsroom/channels/town-square'} as RouteComponentProps['location'],
+            location: {pathname: '/boardsroom/channels/general'} as RouteComponentProps['location'],
         };
 
         renderWithContext(<Root {...props}/>, {}, {history});
@@ -247,7 +247,7 @@ describe('components/Root', () => {
         await waitFor(() => {
             expect(props.actions.loadConfigAndMe).toHaveBeenCalled();
         });
-        expect(history.location.pathname).toBe('/boardsroom/channels/town-square');
+        expect(history.location.pathname).toBe('/boardsroom/channels/general');
     });
 
     // Antimatter: Playbooks left its full page for the side panel; its old links open in the last community, where

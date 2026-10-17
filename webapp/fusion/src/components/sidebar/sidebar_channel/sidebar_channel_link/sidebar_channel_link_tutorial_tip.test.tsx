@@ -34,7 +34,7 @@ describe('components/sidebar/sidebar_channel_link - EnableTutorial effect', () =
 
     const townSquare = {
         id: 'town_square_channel_id',
-        display_name: 'Town Square',
+        display_name: 'General',
         create_at: 0,
         update_at: 0,
         delete_at: 0,
@@ -52,8 +52,8 @@ describe('components/sidebar/sidebar_channel_link - EnableTutorial effect', () =
 
     const ownProps = {
         channel: townSquare,
-        link: '/team/channels/town-square',
-        label: 'Town Square',
+        link: '/team/channels/general',
+        label: 'General',
         icon: null,
         isSharedChannel: false,
     };

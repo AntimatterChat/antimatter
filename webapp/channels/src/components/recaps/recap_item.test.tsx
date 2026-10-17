@@ -93,7 +93,7 @@ describe('RecapItem', () => {
                 id: 'recap_channel1',
                 recap_id: 'recap1',
                 channel_id: 'channel1',
-                channel_name: 'town-square',
+                channel_name: 'general',
                 highlights: ['One highlight'],
                 action_items: ['One action item'],
                 source_post_ids: [],

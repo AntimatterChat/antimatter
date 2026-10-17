@@ -29,7 +29,7 @@ export const useGetTourSteps = (tourCategory: string) => {
     let tourSteps: Record<string, number> = TTNameMapToTourSteps[tourCategory];
 
     if (tourCategory === TutorialTourName.ONBOARDING_TUTORIAL_STEP && isGuestUser) {
-        // restrict the 'learn more about messaging' tour when user is guest (townSquare, channel creation and user invite are restricted to guests)
+        // restrict the 'learn more about messaging' tour when user is guest (the general channel, channel creation and user invite are restricted to guests)
         tourSteps = TTNameMapToTourSteps[TutorialTourName.ONBOARDING_TUTORIAL_STEP_FOR_GUESTS];
     }
     return tourSteps;

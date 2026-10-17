@@ -74,7 +74,7 @@ exports[`components/integrations/InstalledOutgoingWebhooks should match snapshot
             <strong
               class="item-details__name"
             >
-              town-square
+              general
             </strong>
             <div
               class="item-actions"
@@ -182,7 +182,7 @@ exports[`components/integrations/InstalledOutgoingWebhooks should match snapshot
             <strong
               class="item-details__name"
             >
-              town-square
+              general
             </strong>
             <div
               class="item-actions"

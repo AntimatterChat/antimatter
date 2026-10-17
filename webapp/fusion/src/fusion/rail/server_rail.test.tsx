@@ -34,12 +34,12 @@ jest.mock('fusion/selectors', () => ({
 }));
 
 describe('fusion/rail/ServerRail', () => {
-    const render = (currentChannelId = 'town-square', folders?: string) => renderWithContext(
+    const render = (currentChannelId = 'general', folders?: string) => renderWithContext(
         <ServerRail/>,
         {
             entities: {
                 teams: {currentTeamId: mockTeam.id, teams: Object.fromEntries(mockTeams.map((t) => [t.id, t])), myMembers: Object.fromEntries(mockTeams.map((t) => [t.id, {team_id: t.id}]))},
-                channels: {currentChannelId, channels: {[alice.id]: alice, [bob.id]: bob, 'town-square': TestHelper.getChannelMock({id: 'town-square', type: 'O'})}},
+                channels: {currentChannelId, channels: {[alice.id]: alice, [bob.id]: bob, general: TestHelper.getChannelMock({id: 'general', type: 'O'})}},
                 users: {currentUserId: 'me'},
                 preferences: {myPreferences: folders ? {'fusion_rail--folders': {user_id: 'me', category: 'fusion_rail', name: 'folders', value: folders}} : {}},
             },
@@ -132,7 +132,7 @@ describe('fusion/rail/ServerRail', () => {
 
     test('a folder shows its name on hover, and opens in place', async () => {
         mockTeams = [mockTeam, otherTeam, thirdTeam];
-        render('town-square', JSON.stringify([{id: 'f1', name: 'Work', color: '#3ba55c', teamIds: ['team', 'third']}]));
+        render('general', JSON.stringify([{id: 'f1', name: 'Work', color: '#3ba55c', teamIds: ['team', 'third']}]));
 
         const folder = screen.getByRole('button', {name: 'Folder Work, 2 communities'});
         expect(folder).toHaveAttribute('data-am-tip', 'Work');
@@ -146,7 +146,7 @@ describe('fusion/rail/ServerRail', () => {
 
     test('an unnamed folder is called after its communities', () => {
         mockTeams = [mockTeam, otherTeam];
-        render('town-square', JSON.stringify([{id: 'f1', name: '', teamIds: ['team', 'other']}]));
+        render('general', JSON.stringify([{id: 'f1', name: '', teamIds: ['team', 'other']}]));
         expect(screen.getByRole('button', {name: /^Folder Antimatter, Other/})).toHaveAttribute('data-am-tip', 'Antimatter, Other');
     });
 
@@ -155,7 +155,7 @@ describe('fusion/rail/ServerRail', () => {
 
     test('a folder is renamed and coloured from its menu', async () => {
         mockTeams = [mockTeam, otherTeam, thirdTeam];
-        render('town-square', workFolder);
+        render('general', workFolder);
         await userEvent.pointer({keys: '[MouseRight]', target: screen.getByRole('button', {name: 'Folder Work, 2 communities'})});
         await userEvent.click(screen.getByRole('menuitem', {name: /Folder settings/}));
 
@@ -174,7 +174,7 @@ describe('fusion/rail/ServerRail', () => {
 
     test('removing a folder keeps its communities in the rail', async () => {
         mockTeams = [mockTeam, otherTeam, thirdTeam];
-        render('town-square', workFolder);
+        render('general', workFolder);
         await userEvent.pointer({keys: '[MouseRight]', target: screen.getByRole('button', {name: 'Folder Work, 2 communities'})});
         await userEvent.click(screen.getByRole('menuitem', {name: /Remove folder/}));
         expect(savedFolders()).toEqual([]);
@@ -182,7 +182,7 @@ describe('fusion/rail/ServerRail', () => {
 
     test('a team dropped on a folder joins it', () => {
         mockTeams = [mockTeam, otherTeam, thirdTeam];
-        render('town-square', workFolder);
+        render('general', workFolder);
         const data = {types: ['application/x-am-team'], setData: jest.fn(), effectAllowed: ''};
         fireEvent.dragStart(screen.getByRole('button', {name: 'Other'}), {dataTransfer: data});
         fireEvent.drop(screen.getByRole('button', {name: 'Folder Work, 2 communities'}), {dataTransfer: data});
@@ -192,11 +192,11 @@ describe('fusion/rail/ServerRail', () => {
     test('an open folder stays open next time, in this browser', async () => {
         localStorage.removeItem('am-rail-open-folders');
         mockTeams = [mockTeam, otherTeam, thirdTeam];
-        const {unmount} = render('town-square', workFolder);
+        const {unmount} = render('general', workFolder);
         await userEvent.click(screen.getByRole('button', {name: 'Folder Work, 2 communities'}));
         unmount();
 
-        render('town-square', workFolder);
+        render('general', workFolder);
         expect(screen.getByRole('button', {name: 'Folder Work, 2 communities'})).toHaveAttribute('aria-expanded', 'true');
         localStorage.removeItem('am-rail-open-folders');
     });

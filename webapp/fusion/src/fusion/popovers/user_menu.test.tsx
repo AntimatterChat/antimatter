@@ -204,7 +204,7 @@ describe('fusion/popovers/UserMenu', () => {
 
     test('nobody is removed from the default channel', () => {
         mockPerms = new Set(['c1:manage_public_channel_members', 'c1:manage_channel_roles']);
-        render('sofia', state({channelName: 'town-square'}));
+        render('sofia', state({channelName: 'general'}));
         expect(screen.queryByRole('menuitem', {name: 'Remove from channel'})).not.toBeInTheDocument();
     });
 

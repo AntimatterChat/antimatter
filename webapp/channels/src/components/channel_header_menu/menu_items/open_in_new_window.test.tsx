@@ -54,7 +54,7 @@ describe('MenuItemOpenInNewWindow', () => {
     });
 
     test('should render menu item and separator', () => {
-        const channel = TestHelper.getChannelMock({type: 'O' as ChannelType, name: 'town-square'});
+        const channel = TestHelper.getChannelMock({type: 'O' as ChannelType, name: 'general'});
 
         renderWithContext(
             <WithTestMenuContext>
@@ -68,7 +68,7 @@ describe('MenuItemOpenInNewWindow', () => {
     });
 
     test('should call popoutChannel when clicked', async () => {
-        const channel = TestHelper.getChannelMock({type: 'O' as ChannelType, name: 'town-square'});
+        const channel = TestHelper.getChannelMock({type: 'O' as ChannelType, name: 'general'});
 
         renderWithContext(
             <WithTestMenuContext>
@@ -83,7 +83,7 @@ describe('MenuItemOpenInNewWindow', () => {
             expect.any(String),
             'test-team',
             'channels',
-            'town-square',
+            'general',
         );
     });
 });

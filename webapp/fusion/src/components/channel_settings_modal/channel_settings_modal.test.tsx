@@ -343,7 +343,7 @@ describe('ChannelSettingsModal', () => {
     it('should not show archive tab for default channel', async () => {
         const testState = makeTestState();
 
-        testState.entities.channels.channels[channelId].name = 'town-square';
+        testState.entities.channels.channels[channelId].name = 'general';
 
         renderWithContext(<ChannelSettingsModal {...baseProps}/>, testState);
 
@@ -364,7 +364,7 @@ describe('ChannelSettingsModal', () => {
         mockManageTeamPermission = true;
         const testState = makeTestState();
 
-        testState.entities.channels.channels[channelId].name = 'town-square';
+        testState.entities.channels.channels[channelId].name = 'general';
 
         renderWithContext(<ChannelSettingsModal {...baseProps}/>, testState);
 
@@ -578,7 +578,7 @@ describe('ChannelSettingsModal', () => {
         });
 
         it.each([
-            ['town-square', 'town-square'],
+            ['general', 'general'],
             ['off-topic', 'off-topic'],
         ])('should not show Access Control tab on %s default channel even with permission', async (_label, channelName) => {
             // The server rejects ABAC policies on default channels via

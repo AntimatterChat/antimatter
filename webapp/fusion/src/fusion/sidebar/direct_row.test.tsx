@@ -17,7 +17,7 @@ const dm = TestHelper.getChannelMock({id: 'dm', type: 'D', name: 'alice__me', di
 const team = TestHelper.getTeamMock({id: 'team', name: 'antimatter'});
 
 describe('fusion/sidebar/DirectRow', () => {
-    const render = ({unread = 0, current = 'town-square', draft = ''}: {unread?: number; current?: string; draft?: string} = {}) => renderWithContext(
+    const render = ({unread = 0, current = 'general', draft = ''}: {unread?: number; current?: string; draft?: string} = {}) => renderWithContext(
         <DirectRow
             channel={dm}
             dock={true}

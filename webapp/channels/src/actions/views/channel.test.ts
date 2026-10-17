@@ -26,7 +26,7 @@ jest.mock('utils/channel_utils.tsx', () => {
 
     return {
         ...original,
-        getRedirectChannelNameForTeam: () => 'town-square',
+        getRedirectChannelNameForTeam: () => 'general',
     };
 });
 
@@ -68,7 +68,7 @@ function makePostList(postList: DeepPartial<PostList>): PostList {
 
 describe('channel view actions', () => {
     const channel1 = {id: 'channelid1', name: 'channel1', display_name: 'Channel 1', type: 'O', team_id: 'teamid1'} as Channel;
-    const townsquare = {id: 'channelid2', name: General.DEFAULT_CHANNEL, display_name: 'Town Square', type: 'O', team_id: 'teamid1'} as Channel;
+    const townsquare = {id: 'channelid2', name: General.DEFAULT_CHANNEL, display_name: 'General', type: 'O', team_id: 'teamid1'} as Channel;
     const gmChannel = {id: 'gmchannelid', name: 'gmchannel', display_name: 'GM Channel 1', type: 'G'} as Channel;
     const team1 = {id: 'teamid1', name: 'team1'};
 
@@ -205,7 +205,7 @@ describe('channel view actions', () => {
     });
 
     describe('goToLastViewedChannel', () => {
-        test('should switch to town square if last viewed channel is current channel', async () => {
+        test('should switch to general if last viewed channel is current channel', async () => {
             await store.dispatch(Actions.goToLastViewedChannel());
             expect(getHistory().push).toHaveBeenCalledWith(`/${team1.name}/channels/${General.DEFAULT_CHANNEL}`);
         });

@@ -26,7 +26,7 @@ jest.mock('fusion/shell/toast_context', () => ({useToast: () => mockToast}));
 
 const ch = (id: string, name: string, display: string, extra: Partial<Channel> = {}) => TestHelper.getChannelMock({id, name, display_name: display, team_id: 't1', type: 'O', delete_at: 0, ...extra});
 const channels = [
-    ch('town', 'town-square', 'Town Square'),
+    ch('town', 'general', 'General'),
     ch('dev', 'dev', 'Dev'),
     ch('ann', 'announcements', 'Announcements'),
     ch('secret', 'secret', 'Secret', {type: 'P'}),
@@ -81,17 +81,17 @@ describe('fusion/teams/ChannelsSettings', () => {
         await waitFor(() => expect(mockToast).toHaveBeenCalledWith('Members can leave channels again'));
     });
 
-    test('the default channel is Town Square until another public channel is chosen', async () => {
+    test('the default channel is General until another public channel is chosen', async () => {
         renderWithContext(<ChannelsSettings/>, state() as never);
         expect(screen.getByRole('combobox', {name: 'Default channel'})).toHaveValue('');
-        expect(options()).toEqual(['#Town Square (the first channel)', '#Announcements', '#Dev']);
+        expect(options()).toEqual(['#General (the first channel)', '#Announcements', '#Dev']);
 
         await userEvent.selectOptions(screen.getByRole('combobox', {name: 'Default channel'}), 'dev');
         expect(patchTeam).toHaveBeenCalledWith({id: 't1', default_channel_id: 'dev'});
         await waitFor(() => expect(mockToast).toHaveBeenCalledWith('Default channel saved'));
     });
 
-    test('without Town Square, newcomers land in their first channel', () => {
+    test('without General, newcomers land in their first channel', () => {
         renderWithContext(<ChannelsSettings/>, state({list: channels.slice(1)}) as never);
         expect(options()[0]).toBe('None: the first channel each person is in');
     });

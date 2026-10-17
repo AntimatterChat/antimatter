@@ -67,7 +67,7 @@ describe('CreateTeamDialog', () => {
 
         await waitFor(() => expect(onClose).toHaveBeenCalled());
         expect(createTeam).toHaveBeenCalledWith(expect.objectContaining({display_name: 'Detector Physics', name: 'detector-physics', type: 'O', allow_open_invite: true}));
-        expect(push).toHaveBeenCalledWith('/detector-physics/channels/town-square');
+        expect(push).toHaveBeenCalledWith('/detector-physics/channels/general');
     });
 
     test('an address that\'s taken or malformed can\'t be used', async () => {

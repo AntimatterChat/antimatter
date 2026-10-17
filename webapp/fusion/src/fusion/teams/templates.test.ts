@@ -44,17 +44,33 @@ describe('parseTemplate', () => {
         const parsed = parseTemplate(JSON.stringify({
             version: 1,
             server_categories: [{name: ' Info ', locked: 'yes', channels: ['a', 3]}, {locked: true}, null],
-            channels: [{name: 'town-square', display_name: 'Town Square', type: 'P'}, {name: 'Bad Name!', display_name: 'x'}, {name: 'nodisplay'}],
+            channels: [{name: 'general', display_name: 'General', type: 'P'}, {name: 'Bad Name!', display_name: 'x'}, {name: 'nodisplay'}],
             roles: [{display_name: 'Mods', color: 'orange', hoist: 1, permissions: 'all'}, {color: '#ffffff'}],
             onboarding: 42,
         }));
         expect(parsed).toEqual({
             version: 1,
             server_categories: [{name: 'Info', locked: false, channels: ['a']}],
-            channels: [{name: 'town-square', display_name: 'Town Square', type: 'P', purpose: undefined, header: undefined}],
+            channels: [{name: 'general', display_name: 'General', type: 'P', purpose: undefined, header: undefined}],
             roles: [{display_name: 'Mods', color: undefined, hoist: false, self_assignable: false, permissions: undefined}],
             onboarding: undefined,
         });
+    });
+
+    test('reads town-square, the default channel\'s former name, in older templates as general', () => {
+        const parsed = parseTemplate(JSON.stringify({
+            version: 1,
+            server_categories: [{name: 'Information', locked: true, channels: ['town-square', 'rules']}],
+            channels: [{name: 'town-square', display_name: 'Town Square', type: 'O'}, {name: 'rules', display_name: 'Rules', type: 'O'}],
+            roles: [],
+        }));
+        expect(parsed?.server_categories).toEqual([{name: 'Information', locked: true, channels: ['general', 'rules']}]);
+        expect(parsed?.channels.map((c) => c.name)).toEqual(['general', 'rules']);
+    });
+
+    test('the presets file the default channel, general, under Information', () => {
+        expect(PRESETS.hybrid.server_categories[0].channels).toEqual(['general']);
+        expect(PRESETS.community.server_categories[0].channels).toEqual(['general']);
     });
 
     test('reads the kind, and drops one it does not know', () => {

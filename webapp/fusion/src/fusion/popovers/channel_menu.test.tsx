@@ -57,7 +57,7 @@ jest.mock('fusion/shell/toast_context', () => ({useToast: () => mockToast}));
 jest.mock('fusion/shell/dialogs_context', () => ({useDialogs: () => ({addPeople: jest.fn(), confirm: jest.fn()})}));
 
 const ch = (id: string, name: string, extra: Partial<Channel> = {}) => TestHelper.getChannelMock({id, name, display_name: name, team_id: 't1', type: 'O', delete_at: 0, ...extra});
-const town = ch('town', 'town-square');
+const town = ch('town', 'general');
 const offTopic = ch('off', 'off-topic');
 const dev = ch('dev', 'dev');
 const secret = ch('secret', 'secret', {type: 'P'});
@@ -180,7 +180,7 @@ describe('fusion/popovers/ChannelMenu: default channels and all-channels communi
         await waitFor(() => expect(mockToast).toHaveBeenCalledWith('#dev is the default channel'));
     });
 
-    test('once another channel is the default, Town Square can be left and that one can\'t', () => {
+    test('once another channel is the default, General can be left and that one can\'t', () => {
         render(town, state({defaultChannelId: 'dev'}));
         expect(item('Leave channel')).toBeInTheDocument();
     });
@@ -213,14 +213,14 @@ describe('fusion/popovers/ChannelMenu: default channels and all-channels communi
     });
 
     test('only community admins unarchive a channel', () => {
-        const archived = ch('town', 'town-square', {delete_at: 3});
+        const archived = ch('town', 'general', {delete_at: 3});
         render(archived, state({channels: [archived, dev]}));
         expect(item('Unarchive channel')).not.toBeInTheDocument();
     });
 
     test('a community admin unarchives an archived default channel', () => {
         mockTeamPerms = new Set(ADMIN);
-        const archived = ch('town', 'town-square', {delete_at: 3});
+        const archived = ch('town', 'general', {delete_at: 3});
         render(archived, state({channels: [archived, dev]}));
         expect(item('Unarchive channel')).toBeInTheDocument();
     });

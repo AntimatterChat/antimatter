@@ -82,8 +82,8 @@ describe('ChannelNameFormField - URL editor visibility', () => {
 describe('ChannelNameFormField - default channel URL', () => {
     const defaultChannelProps = {
         ...baseProps,
-        value: 'Town Square',
-        currentUrl: 'town-square',
+        value: 'General',
+        currentUrl: 'general',
         isEditingExistingChannel: true,
         isDefaultChannel: true,
     };
@@ -101,7 +101,7 @@ describe('ChannelNameFormField - default channel URL', () => {
             makeState('false'),
         );
 
-        expect(screen.getByTestId('urlInputLabel')).toHaveTextContent('town-square');
+        expect(screen.getByTestId('urlInputLabel')).toHaveTextContent('general');
         expect(screen.queryByRole('button', {name: 'Edit'})).not.toBeInTheDocument();
         expect(screen.queryByTestId('channelURLInput')).not.toBeInTheDocument();
         expect(screen.getByText('The URL of the default channel cannot be changed.')).toBeVisible();

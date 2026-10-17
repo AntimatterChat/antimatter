@@ -16,7 +16,7 @@ describe('components/integrations/InstalledIncomingWebhooks', () => {
     const user = TestHelper.getUserMock({id: 'userId'});
     const channel = TestHelper.getChannelMock({
         id: 'channelId',
-        display_name: 'Town Square',
+        display_name: 'General',
     });
 
     const hookAlpha: IncomingWebhook = TestHelper.getIncomingWebhookMock({
@@ -123,7 +123,7 @@ describe('components/integrations/InstalledIncomingWebhooks', () => {
             user_id: 'userId',
         });
 
-        // channel display_name is "Town Square" which sorts before "Zeta Webhook"
+        // channel display_name is "General" which sorts before "Zeta Webhook"
         const props = {
             ...defaultProps,
             incomingHooks: [namedHook, noNameHook],
@@ -141,13 +141,13 @@ describe('components/integrations/InstalledIncomingWebhooks', () => {
             expect(screen.getByText('Zeta Webhook')).toBeInTheDocument();
         });
 
-        const townSquareEl = screen.getByText('Town Square');
+        const townSquareEl = screen.getByText('General');
         const zetaEl = screen.getByText('Zeta Webhook');
 
         expect(townSquareEl).toBeInTheDocument();
         expect(zetaEl).toBeInTheDocument();
 
-        // Verify DOM order: Town Square (channel fallback) should appear before Zeta Webhook
+        // Verify DOM order: General (channel fallback) should appear before Zeta Webhook
         const position = townSquareEl.compareDocumentPosition(zetaEl);
         expect(position & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     });

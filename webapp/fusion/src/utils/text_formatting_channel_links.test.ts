@@ -15,9 +15,9 @@ describe('TextFormatting.ChannelLinks', () => {
         );
 
         expect(
-            TextFormatting.formatText('~town-square', {}, emojiMap).trim(),
+            TextFormatting.formatText('~general', {}, emojiMap).trim(),
         ).toBe(
-            '<p>~town-square</p>',
+            '<p>~general</p>',
         );
     });
 
@@ -26,59 +26,59 @@ describe('TextFormatting.ChannelLinks', () => {
             delete (window as any).basename;
         });
 
-        test('should link ~town-square', () => {
+        test('should link ~general', () => {
             expect(
-                TextFormatting.formatText('~town-square', {
-                    channelNamesMap: {'town-square': 'Town Square'},
+                TextFormatting.formatText('~general', {
+                    channelNamesMap: {general: 'General'},
                     team: TH.getTeamMock({name: 'myteam'}),
                 }, emojiMap).trim(),
             ).toBe(
-                '<p><a class="mention-link" href="/myteam/channels/town-square" data-channel-mention="town-square">#Town Square</a></p>',
+                '<p><a class="mention-link" href="/myteam/channels/general" data-channel-mention="general">#General</a></p>',
             );
         });
 
-        test('should link ~town-square followed by a period', () => {
+        test('should link ~general followed by a period', () => {
             expect(
-                TextFormatting.formatText('~town-square.', {
-                    channelNamesMap: {'town-square': 'Town Square'},
+                TextFormatting.formatText('~general.', {
+                    channelNamesMap: {general: 'General'},
                     team: TH.getTeamMock({name: 'myteam'}),
                 }, emojiMap).trim(),
             ).toBe(
-                '<p><a class="mention-link" href="/myteam/channels/town-square" data-channel-mention="town-square">#Town Square</a>.</p>',
+                '<p><a class="mention-link" href="/myteam/channels/general" data-channel-mention="general">#General</a>.</p>',
             );
         });
 
-        test('should link ~town-square, with display_name an HTML string', () => {
+        test('should link ~general, with display_name an HTML string', () => {
             expect(
-                TextFormatting.formatText('~town-square', {
-                    channelNamesMap: {'town-square': '<b>Reception</b>'},
+                TextFormatting.formatText('~general', {
+                    channelNamesMap: {general: '<b>Reception</b>'},
                     team: TH.getTeamMock({name: 'myteam'}),
                 }, emojiMap).trim(),
             ).toBe(
-                '<p><a class="mention-link" href="/myteam/channels/town-square" data-channel-mention="town-square">#&lt;b&gt;Reception&lt;/b&gt;</a></p>',
+                '<p><a class="mention-link" href="/myteam/channels/general" data-channel-mention="general">#&lt;b&gt;Reception&lt;/b&gt;</a></p>',
             );
         });
 
-        test('should link ~town-square, with a basename defined', () => {
+        test('should link ~general, with a basename defined', () => {
             window.basename = '/subpath';
             expect(
-                TextFormatting.formatText('~town-square', {
-                    channelNamesMap: {'town-square': '<b>Reception</b>'},
+                TextFormatting.formatText('~general', {
+                    channelNamesMap: {general: '<b>Reception</b>'},
                     team: TH.getTeamMock({name: 'myteam'}),
                 }, emojiMap).trim(),
             ).toBe(
-                '<p><a class="mention-link" href="/subpath/myteam/channels/town-square" data-channel-mention="town-square">#&lt;b&gt;Reception&lt;/b&gt;</a></p>',
+                '<p><a class="mention-link" href="/subpath/myteam/channels/general" data-channel-mention="general">#&lt;b&gt;Reception&lt;/b&gt;</a></p>',
             );
         });
 
         test('should link in brackets', () => {
             expect(
-                TextFormatting.formatText('(~town-square)', {
-                    channelNamesMap: {'town-square': 'Town Square'},
+                TextFormatting.formatText('(~general)', {
+                    channelNamesMap: {general: 'General'},
                     team: TH.getTeamMock({name: 'myteam'}),
                 }, emojiMap).trim(),
             ).toBe(
-                '<p>(<a class="mention-link" href="/myteam/channels/town-square" data-channel-mention="town-square">#Town Square</a>)</p>',
+                '<p>(<a class="mention-link" href="/myteam/channels/general" data-channel-mention="general">#General</a>)</p>',
             );
         });
     });
@@ -86,12 +86,12 @@ describe('TextFormatting.ChannelLinks', () => {
     describe('invalid channel links', () => {
         test('should not link when a ~ is in the middle of a word', () => {
             expect(
-                TextFormatting.formatText('aa~town-square', {
-                    channelNamesMap: {'town-square': 'Town Square'},
+                TextFormatting.formatText('aa~general', {
+                    channelNamesMap: {general: 'General'},
                     team: TH.getTeamMock({name: 'myteam'}),
                 }, emojiMap).trim(),
             ).toBe(
-                '<p>aa~town-square</p>',
+                '<p>aa~general</p>',
             );
         });
     });
@@ -99,24 +99,24 @@ describe('TextFormatting.ChannelLinks', () => {
     // Antimatter: channels are written #channel-name; a #word that names no known channel stays a hashtag.
     describe('#channel links', () => {
         const options = () => ({
-            channelNamesMap: {'town-square': 'Town Square', 'off-topic': {display_name: 'Off-Topic', team_name: 'otherteam'}},
+            channelNamesMap: {general: 'General', 'off-topic': {display_name: 'Off-Topic', team_name: 'otherteam'}},
             team: TH.getTeamMock({name: 'myteam'}),
         });
 
-        test('should link #town-square', () => {
+        test('should link #general', () => {
             expect(
-                TextFormatting.formatText('see #town-square', options(), emojiMap).trim(),
+                TextFormatting.formatText('see #general', options(), emojiMap).trim(),
             ).toBe(
-                '<p>see <a class="mention-link" href="/myteam/channels/town-square" data-channel-mention="town-square">#Town Square</a></p>',
+                '<p>see <a class="mention-link" href="/myteam/channels/general" data-channel-mention="general">#General</a></p>',
             );
         });
 
-        test('should link #town-square followed by a period, and show old ~ links as #', () => {
+        test('should link #general followed by a period, and show old ~ links as #', () => {
             expect(
-                TextFormatting.formatText('#town-square. ~town-square', options(), emojiMap).trim(),
+                TextFormatting.formatText('#general. ~general', options(), emojiMap).trim(),
             ).toBe(
-                '<p><a class="mention-link" href="/myteam/channels/town-square" data-channel-mention="town-square">#Town Square</a>. ' +
-                '<a class="mention-link" href="/myteam/channels/town-square" data-channel-mention="town-square">#Town Square</a></p>',
+                '<p><a class="mention-link" href="/myteam/channels/general" data-channel-mention="general">#General</a>. ' +
+                '<a class="mention-link" href="/myteam/channels/general" data-channel-mention="general">#General</a></p>',
             );
         });
 
@@ -138,17 +138,17 @@ describe('TextFormatting.ChannelLinks', () => {
 
         test('should keep a hashtag without channels', () => {
             expect(
-                TextFormatting.formatText('#town-square', {}, emojiMap).trim(),
+                TextFormatting.formatText('#general', {}, emojiMap).trim(),
             ).toBe(
-                "<p><a class='mention-link' href='#' data-hashtag='#town-square'>#town-square</a></p>",
+                "<p><a class='mention-link' href='#' data-hashtag='#general'>#general</a></p>",
             );
         });
 
         test('should not link in the middle of a word, after & or ##, nor a heading', () => {
-            expect(TextFormatting.formatText('aa#town-square', options(), emojiMap).trim()).toBe('<p>aa#town-square</p>');
-            expect(TextFormatting.formatText('##town-square', options(), emojiMap).trim()).not.toContain('data-channel-mention');
-            expect(TextFormatting.formatText('# town-square', options(), emojiMap).trim()).not.toContain('data-channel-mention');
-            expect(TextFormatting.formatText('it\'s #town-square', options(), emojiMap).trim()).toContain('data-channel-mention="town-square"');
+            expect(TextFormatting.formatText('aa#general', options(), emojiMap).trim()).toBe('<p>aa#general</p>');
+            expect(TextFormatting.formatText('##general', options(), emojiMap).trim()).not.toContain('data-channel-mention');
+            expect(TextFormatting.formatText('# general', options(), emojiMap).trim()).not.toContain('data-channel-mention');
+            expect(TextFormatting.formatText('it\'s #general', options(), emojiMap).trim()).toContain('data-channel-mention="general"');
         });
     });
 });

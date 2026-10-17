@@ -37,10 +37,10 @@ const ordinaryChannel = TestHelper.getChannelMock({
 });
 
 const defaultChannel = TestHelper.getChannelMock({
-    id: 'town-square-id',
+    id: 'general-id',
     team_id: 'team-id',
-    display_name: 'Town Square',
-    name: 'town-square',
+    display_name: 'General',
+    name: 'general',
     type: 'O',
 });
 
@@ -57,7 +57,7 @@ describe('RenameChannelModal', () => {
     test('should not offer the URL Edit button for the default channel', () => {
         renderWithContext(<RenameChannelModal {...makeProps(defaultChannel)}/>, state);
 
-        expect(screen.getByTestId('urlInputLabel')).toHaveTextContent('town-square');
+        expect(screen.getByTestId('urlInputLabel')).toHaveTextContent('general');
         expect(screen.queryByRole('button', {name: 'Edit'})).not.toBeInTheDocument();
         expect(screen.getByText('The URL of the default channel cannot be changed.')).toBeVisible();
     });
@@ -76,12 +76,12 @@ describe('RenameChannelModal', () => {
         // The server rejects the patch only when `name` differs from the
         // default channel's current name, so it must be sent unchanged.
         await waitFor(() => {
-            expect(props.actions.patchChannel).toHaveBeenCalledWith('town-square-id', {
+            expect(props.actions.patchChannel).toHaveBeenCalledWith('general-id', {
                 display_name: 'Company Wide',
-                name: 'town-square',
+                name: 'general',
             });
         });
-        expect(getHistory().push).toHaveBeenCalledWith('/test-team/channels/town-square');
+        expect(getHistory().push).toHaveBeenCalledWith('/test-team/channels/general');
     });
 
     test('should let the user rename the URL of an ordinary channel', async () => {

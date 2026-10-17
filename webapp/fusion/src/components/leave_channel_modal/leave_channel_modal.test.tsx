@@ -45,10 +45,10 @@ describe('components/LeaveChannelModal', () => {
             last_post_at: 0,
             last_root_post_at: 0,
         },
-        'town-square': {
-            id: 'town-square-id',
-            name: 'town-square',
-            display_name: 'Town Square',
+        general: {
+            id: 'general-id',
+            name: 'general',
+            display_name: 'General',
             type: ('O' as ChannelType),
             team_id: 'team-1',
             header: '',
@@ -66,7 +66,7 @@ describe('components/LeaveChannelModal', () => {
 
     test('should match snapshot, init', () => {
         const props = {
-            channel: channels['town-square'],
+            channel: channels.general,
             onExited: jest.fn(),
             actions: {
                 leaveChannel: jest.fn(),
@@ -112,7 +112,7 @@ describe('components/LeaveChannelModal', () => {
 
     test('should match snapshot for the policy enforced public channel variant', () => {
         const policyChannel = {
-            ...channels['town-square'],
+            ...channels.general,
             display_name: 'Ask IT',
             policy_enforced: true,
         };
@@ -135,7 +135,7 @@ describe('components/LeaveChannelModal', () => {
 
     test('should render policy variant for a policy enforced public channel and offer Mute instead', async () => {
         const policyChannel = {
-            ...channels['town-square'],
+            ...channels.general,
             policy_enforced: true,
         };
 
@@ -169,7 +169,7 @@ describe('components/LeaveChannelModal', () => {
 
     test('should keep modal open when Mute instead fails', async () => {
         const policyChannel = {
-            ...channels['town-square'],
+            ...channels.general,
             policy_enforced: true,
         };
 
@@ -204,7 +204,7 @@ describe('components/LeaveChannelModal', () => {
 
     test('should hide mute hint when channel is already muted', async () => {
         const policyChannel = {
-            ...channels['town-square'],
+            ...channels.general,
             policy_enforced: true,
         };
 

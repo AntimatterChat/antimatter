@@ -69,14 +69,14 @@ describe('utils/web_ui', () => {
     });
 
     test('loadWebUI loads the current page in the given web UI', () => {
-        window.history.replaceState(null, '', '/team/channels/town-square?q=1');
+        window.history.replaceState(null, '', '/team/channels/general?q=1');
         loadWebUI(OTHER_WEB_UI);
-        expect(navigateTo).toHaveBeenCalledWith(`${window.location.origin}/team/channels/town-square?q=1&webui=${OTHER_WEB_UI}`);
+        expect(navigateTo).toHaveBeenCalledWith(`${window.location.origin}/team/channels/general?q=1&webui=${OTHER_WEB_UI}`);
     });
 
     describe('captureRequestedWebUI', () => {
         test('keeps the requested web UI once and removes it from the address', () => {
-            window.history.replaceState(null, '', `/team/channels/town-square?webui=${CURRENT_WEB_UI}&q=1`);
+            window.history.replaceState(null, '', `/team/channels/general?webui=${CURRENT_WEB_UI}&q=1`);
             captureRequestedWebUI();
             expect(window.location.search).toBe('?q=1');
             expect(takeRequestedWebUI()).toBe(CURRENT_WEB_UI);
@@ -84,7 +84,7 @@ describe('utils/web_ui', () => {
         });
 
         test('ignores a web UI other than the current one', () => {
-            window.history.replaceState(null, '', `/team/channels/town-square?webui=${OTHER_WEB_UI}`);
+            window.history.replaceState(null, '', `/team/channels/general?webui=${OTHER_WEB_UI}`);
             captureRequestedWebUI();
             expect(window.location.search).toBe('');
             expect(takeRequestedWebUI()).toBeNull();

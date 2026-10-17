@@ -1447,7 +1447,7 @@ describe('Selectors.Channels.getRedirectChannelNameForTeam', () => {
                     ...testState.entities.channels,
                     channels: {
                         ...testState.entities.channels.channels,
-                        'town-square-team1': {...TestHelper.fakeChannelWithId(team1.id), id: 'town-square-team1', name: 'town-square', type: General.OPEN_CHANNEL},
+                        'general-team1': {...TestHelper.fakeChannelWithId(team1.id), id: 'general-team1', name: 'general', type: General.OPEN_CHANNEL},
                     },
                 },
                 roles: {
@@ -1464,7 +1464,7 @@ describe('Selectors.Channels.getRedirectChannelNameForTeam', () => {
         expect(Selectors.getRedirectChannelNameForTeam(modifiedState, team1.id)).toEqual(General.DEFAULT_CHANNEL);
     });
 
-    it('getRedirectChannelNameForTeam with advanced permissions but without JOIN_PUBLIC_CHANNELS permission but being member of town-square', () => {
+    it('getRedirectChannelNameForTeam with advanced permissions but without JOIN_PUBLIC_CHANNELS permission but being member of general', () => {
         const modifiedState = {
             ...testState,
             entities: {
@@ -1481,8 +1481,8 @@ describe('Selectors.Channels.getRedirectChannelNameForTeam', () => {
                         },
                         [channel1.id]: {
                             id: channel1.id,
-                            display_name: 'Town Square',
-                            name: 'town-square',
+                            display_name: 'General',
+                            name: 'general',
                             team_id: team1.id,
                         },
                     },
@@ -1547,7 +1547,7 @@ describe('Selectors.Channels.getRedirectChannelNameForTeam', () => {
                     ...testState.entities.channels,
                     channels: {
                         ...testState.entities.channels.channels,
-                        'town-square-team2': {...TestHelper.fakeChannelWithId(team2.id), id: 'town-square-team2', name: 'town-square', type: General.OPEN_CHANNEL},
+                        'general-team2': {...TestHelper.fakeChannelWithId(team2.id), id: 'general-team2', name: 'general', type: General.OPEN_CHANNEL},
                     },
                 },
                 roles: {
@@ -1564,7 +1564,7 @@ describe('Selectors.Channels.getRedirectChannelNameForTeam', () => {
         expect(Selectors.getRedirectChannelNameForTeam(modifiedState, team2.id)).toEqual(General.DEFAULT_CHANNEL);
     });
 
-    it('getRedirectChannelNameForTeam with advanced permissions but without JOIN_PUBLIC_CHANNELS permission but being member of town-square in not current team', () => {
+    it('getRedirectChannelNameForTeam with advanced permissions but without JOIN_PUBLIC_CHANNELS permission but being member of general in not current team', () => {
         const modifiedState = {
             ...testState,
             entities: {
@@ -1581,8 +1581,8 @@ describe('Selectors.Channels.getRedirectChannelNameForTeam', () => {
                         },
                         [channel3.id]: {
                             id: channel3.id,
-                            display_name: 'Town Square',
-                            name: 'town-square',
+                            display_name: 'General',
+                            name: 'general',
                             team_id: team2.id,
                         },
                     },
@@ -1605,7 +1605,7 @@ describe('Selectors.Channels.getRedirectChannelNameForTeam', () => {
 describe('Selectors.Channels.getRedirectChannelNameForTeam with default channels that can go (Antimatter)', () => {
     const team = {...TestHelper.fakeTeamWithId(), default_channel_id: ''};
     const user = TestHelper.fakeUserWithId();
-    const townSquare = {...TestHelper.fakeChannelWithId(team.id), name: 'town-square', display_name: 'Town Square', type: General.OPEN_CHANNEL};
+    const townSquare = {...TestHelper.fakeChannelWithId(team.id), name: 'general', display_name: 'General', type: General.OPEN_CHANNEL};
     const lobby = {...TestHelper.fakeChannelWithId(team.id), name: 'lobby', display_name: 'Lobby', type: General.OPEN_CHANNEL};
     const zebra = {...TestHelper.fakeChannelWithId(team.id), name: 'zebra', display_name: 'Zebra', type: General.OPEN_CHANNEL};
     const state = (teamPatch: object, channels: Channel[]) => deepFreezeAndThrowOnMutation({
@@ -1625,15 +1625,15 @@ describe('Selectors.Channels.getRedirectChannelNameForTeam with default channels
         expect(Selectors.getRedirectChannelNameForTeam(state({default_channel_id: zebra.id}, [townSquare, lobby, zebra]), team.id)).toEqual('zebra');
     });
 
-    it('lands in the first channel when Town Square is archived', () => {
+    it('lands in the first channel when General is archived', () => {
         expect(Selectors.getRedirectChannelNameForTeam(state({}, [{...townSquare, delete_at: 1}, zebra, lobby]), team.id)).toEqual('lobby');
     });
 
-    it('lands in the first channel when the chosen one is archived, rather than in Town Square', () => {
+    it('lands in the first channel when the chosen one is archived, rather than in General', () => {
         expect(Selectors.getRedirectChannelNameForTeam(state({default_channel_id: zebra.id}, [{...zebra, delete_at: 1}, townSquare, lobby]), team.id)).toEqual('lobby');
     });
 
-    it('lands in the first channel when Town Square is gone', () => {
+    it('lands in the first channel when General is gone', () => {
         expect(Selectors.getRedirectChannelNameForTeam(state({}, [zebra, lobby]), team.id)).toEqual('lobby');
     });
 });

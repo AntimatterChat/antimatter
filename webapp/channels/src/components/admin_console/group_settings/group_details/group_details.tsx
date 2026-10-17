@@ -690,7 +690,7 @@ export class GroupDetails extends React.PureComponent<Props, State> {
                         <AdminPanel
                             id='group_teams_and_channels'
                             title={defineMessage({id: 'admin.group_settings.group_detail.groupTeamsAndChannelsTitle', defaultMessage: 'Team and Channel Membership'})}
-                            subtitle={defineMessage({id: 'admin.group_settings.group_detail.groupTeamsAndChannelsDescription', defaultMessage: 'Set default teams and channels for group members. Teams added will include default channels, town-square, and off-topic. Adding a channel without setting the team will add the implied team to the listing below.'})}
+                            subtitle={defineMessage({id: 'admin.group_settings.group_detail.groupTeamsAndChannelsDescription', defaultMessage: 'Set default teams and channels for group members. Teams added will include default channels, general, and off-topic. Adding a channel without setting the team will add the implied team to the listing below.'})}
                             button={
                                 <div className='group-profile-add-menu'>
                                     <MenuWrapper isDisabled={isDisabled}>

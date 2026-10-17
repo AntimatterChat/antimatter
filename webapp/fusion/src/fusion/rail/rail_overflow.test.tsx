@@ -38,7 +38,7 @@ describe('fusion/rail: the Open conversations overflow', () => {
         {
             entities: {
                 teams: {currentTeamId: team.id, teams: {[team.id]: team}},
-                channels: {currentChannelId: 'town-square', channels: Object.fromEntries(mockChannels.map((c) => [c.id, c]))},
+                channels: {currentChannelId: 'general', channels: Object.fromEntries(mockChannels.map((c) => [c.id, c]))},
                 users: {currentUserId: 'me'},
                 preferences: {myPreferences: limit ? {'sidebar_settings--limit_visible_dms_gms': {user_id: 'me', category: 'sidebar_settings', name: 'limit_visible_dms_gms', value: limit}} : {}},
             },

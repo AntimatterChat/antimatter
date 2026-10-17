@@ -141,7 +141,7 @@ describe('CreateTeamForm - display_name step', () => {
             await userEvent.click(screen.getByRole('button', {name: /create/i}));
 
             await waitFor(() => {
-                expect(defaultProps.history.push).toHaveBeenCalledWith('/my-new-team/channels/town-square');
+                expect(defaultProps.history.push).toHaveBeenCalledWith('/my-new-team/channels/general');
             });
         });
 
@@ -289,7 +289,7 @@ describe('CreateTeamForm - team_url step', () => {
             expect(actions.createTeam).toHaveBeenCalledTimes(1);
             expect(actions.createTeam).toHaveBeenCalledWith({display_name: 'test-team', name: 'test-team', type: 'O'});
             expect(props.history.push).toHaveBeenCalledTimes(1);
-            expect(props.history.push).toHaveBeenCalledWith('/test-team/channels/town-square');
+            expect(props.history.push).toHaveBeenCalledWith('/test-team/channels/general');
         });
     });
 
