@@ -3990,7 +3990,7 @@ func TestDeleteChannel(t *testing.T) {
 
 	th.LoginBasic(t)
 	publicChannel5 := th.CreatePublicChannel(t)
-	_, err = c.Logout(context.Background())
+	_, err := c.Logout(context.Background())
 	require.NoError(t, err)
 
 	// Other users can't delete the channel
