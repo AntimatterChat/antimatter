@@ -62,6 +62,7 @@ func testAIConnectionSaveGetUpdate(t *testing.T, rctx request.CTX, ss store.Stor
 	got.Name = "Renamed"
 	got.APIKeySealed = ""
 	got.Scope = model.NewId() // ignored: the scope never changes
+	got.Sharing = model.AIConnectionSharing{}
 	got.UpdaterId = model.NewId()
 	_, err = ss.AIConnection().Update(rctx, got)
 	require.NoError(t, err)
