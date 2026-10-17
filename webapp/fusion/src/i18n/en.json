@@ -27355,6 +27355,14 @@
     "defaultMessage": "A new channel in {team} carries on this thread's conversation. It starts with a link to the thread, and the thread gets a link to it; the replies stay in the thread.",
     "description": "Explanation in the 'Make it a channel' dialog; {team} is the community's name. The thread's existing replies are not moved."
   },
+  "fusion.threadToChannel.leadMove": {
+    "defaultMessage": "A new channel in {team} takes this thread's messages, with their authors and times: they become the channel's first messages, and the thread's place gets a link to them.",
+    "description": "Explanation in the 'Make it a channel' dialog for people allowed to move the thread; {team} is the community's name. The messages are moved, not copied."
+  },
+  "fusion.threadToChannel.moveFailed": {
+    "defaultMessage": "The thread couldn't be moved: {error}",
+    "description": "Toast when the new channel was created but moving the thread's messages into it failed; {error} is the server's reason. The channel then starts with links to the thread instead."
+  },
   "fusion.threadToChannel.pointer": {
     "defaultMessage": "This conversation continues in #{channel}.",
     "description": "Reply posted in a thread after a channel was made from it; #{channel} is a channel link (keep the # right before the placeholder)."

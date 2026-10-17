@@ -1241,6 +1241,15 @@ export default class Client4 {
         );
     };
 
+    // Antimatter: moves a thread to another channel of its community; flatten makes its replies messages of the
+    // channel. Returns the moved first message.
+    moveThreadToChannel = (postId: string, channelId: string, flatten = false) => {
+        return this.doFetch<Post>(
+            this.getPostRoute(postId) + '/move_to_channel',
+            {method: 'post', body: JSON.stringify({channel_id: channelId, flatten})},
+        );
+    };
+
     switchEmailToOAuth = (service: string, email: string, password: string, mfaCode = '') => {
         return this.doFetch<AuthChangeResponse>(
             `${this.getUsersRoute()}/login/switch`,

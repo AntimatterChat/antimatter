@@ -2,9 +2,10 @@
 // See LICENSE.txt for license information.
 
 import React from 'react';
+import {useSelector} from 'react-redux';
 
 import {addChannelMembers, createChannel} from 'mattermost-redux/actions/channels';
-import {createPost} from 'mattermost-redux/actions/posts';
+import {createPost, moveThreadToChannel} from 'mattermost-redux/actions/posts';
 
 import {switchToChannel} from 'actions/views/channel';
 
@@ -12,7 +13,9 @@ import {LAYER_ID} from 'fusion/components/layer';
 import {renderWithContext, screen, userEvent, waitFor} from 'tests/react_testing_utils';
 import {TestHelper} from 'utils/test_helper';
 
-import {ThreadSuggestion, ThreadToChannelDialog} from './thread_to';
+import type {GlobalState} from 'types/store';
+
+import {canMoveThread, ThreadSuggestion, ThreadToChannelDialog} from './thread_to';
 
 jest.mock('mattermost-redux/actions/channels', () => ({
     ...jest.requireActual('mattermost-redux/actions/channels'),
@@ -22,6 +25,7 @@ jest.mock('mattermost-redux/actions/channels', () => ({
 jest.mock('mattermost-redux/actions/posts', () => ({
     ...jest.requireActual('mattermost-redux/actions/posts'),
     createPost: jest.fn(() => ({type: 'POSTED', data: true})),
+    moveThreadToChannel: jest.fn(() => ({type: 'MOVED', data: {id: 'moved'}})),
 }));
 jest.mock('actions/views/channel', () => ({
     ...jest.requireActual('actions/views/channel'),
@@ -36,7 +40,7 @@ const root = TestHelper.getPostMock({id: 'root', channel_id: 'ch', user_id: 'me'
 const replyBob = TestHelper.getPostMock({id: 'r1', channel_id: 'ch', user_id: 'bob', root_id: 'root', message: 'Fine by me', create_at: 2});
 const replyMaya = TestHelper.getPostMock({id: 'r2', channel_id: 'ch', user_id: 'maya', root_id: 'root', message: 'Friday works', create_at: 3});
 
-function state({teamPermissions = ['create_public_channel', 'create_private_channel'], channelPermissions = ['edit_post'], posts = [root, replyBob, replyMaya]}: {teamPermissions?: string[]; channelPermissions?: string[]; posts?: Array<ReturnType<typeof TestHelper.getPostMock>>} = {}) {
+function state({teamPermissions = ['create_public_channel', 'create_private_channel'], channelPermissions = ['edit_post'], posts = [root, replyBob, replyMaya], channelAdmin = false, systemPermissions = []}: {teamPermissions?: string[]; channelPermissions?: string[]; posts?: Array<ReturnType<typeof TestHelper.getPostMock>>; channelAdmin?: boolean; systemPermissions?: string[]} = {}) {
     return {
         entities: {
             general: {config: {CollapsedThreads: 'always_on', PostEditTimeLimit: '-1'}},
@@ -45,7 +49,7 @@ function state({teamPermissions = ['create_public_channel', 'create_private_chan
             channels: {
                 currentChannelId: 'ch',
                 channels: {ch: channel, dm},
-                myMembers: {ch: {channel_id: 'ch', user_id: 'me', roles: 'channel_user'}, dm: {channel_id: 'dm', user_id: 'me', roles: 'channel_user'}},
+                myMembers: {ch: {channel_id: 'ch', user_id: 'me', roles: 'channel_user', scheme_admin: channelAdmin}, dm: {channel_id: 'dm', user_id: 'me', roles: 'channel_user'}},
                 roles: {ch: new Set(['channel_user']), dm: new Set(['channel_user'])},
             },
             posts: {
@@ -53,7 +57,7 @@ function state({teamPermissions = ['create_public_channel', 'create_private_chan
                 postsInThread: {root: posts.filter((p) => p.root_id === 'root').map((p) => p.id)},
             },
             roles: {roles: {
-                system_user: {name: 'system_user', permissions: []},
+                system_user: {name: 'system_user', permissions: systemPermissions},
                 team_user: {name: 'team_user', permissions: teamPermissions},
                 channel_user: {name: 'channel_user', permissions: channelPermissions},
             }},
@@ -162,7 +166,7 @@ describe('fusion/rhs/ThreadToChannelDialog', () => {
         document.getElementById(LAYER_ID)?.remove();
     });
 
-    test('creates a channel named after the thread, brings its people, and links both ways', async () => {
+    test('creates a channel named after the thread, brings its people, and moves the thread\'s messages there', async () => {
         const onClose = jest.fn();
         renderWithContext(
             <ThreadToChannelDialog
@@ -181,9 +185,43 @@ describe('fusion/rhs/ThreadToChannelDialog', () => {
 
         expect(createChannel).toHaveBeenCalledWith(expect.objectContaining({team_id: 'team', name: 'beam-test', display_name: 'Beam test', type: 'O'}), 'me');
         expect(addChannelMembers).toHaveBeenCalledWith('newch', ['bob', 'maya']);
-        expect(createPost).toHaveBeenCalledWith(expect.objectContaining({channel_id: 'newch', user_id: 'me', message: expect.stringMatching(/^Continued from a thread in #beam-schedule: .*\/lumen\/pl\/root$/)}));
-        expect(createPost).toHaveBeenCalledWith(expect.objectContaining({channel_id: 'ch', root_id: 'root', user_id: 'me', message: 'This conversation continues in #beam-test.'}));
+        expect(moveThreadToChannel).toHaveBeenCalledWith('root', 'newch', true);
+        expect(createPost).not.toHaveBeenCalled();
         expect(switchToChannel).toHaveBeenCalledWith(expect.objectContaining({id: 'newch'}));
+    });
+
+    test('who may not move the thread starts the channel with links both ways', async () => {
+        const bobsRoot = {...root, id: 'bobroot', user_id: 'bob'};
+        const onClose = jest.fn();
+        renderWithContext(
+            <ThreadToChannelDialog
+                root={bobsRoot}
+                onClose={onClose}
+            />,
+            state({posts: [bobsRoot]}),
+        );
+        expect(screen.getByText(/the replies stay in the thread/)).toBeInTheDocument();
+        await userEvent.click(screen.getByRole('button', {name: 'Create the channel'}));
+        await waitFor(() => expect(onClose).toHaveBeenCalled());
+
+        expect(moveThreadToChannel).not.toHaveBeenCalled();
+        expect(createPost).toHaveBeenCalledWith(expect.objectContaining({channel_id: 'newch', user_id: 'me', message: expect.stringMatching(/^Continued from a thread in #beam-schedule: .*\/lumen\/pl\/bobroot$/)}));
+        expect(createPost).toHaveBeenCalledWith(expect.objectContaining({channel_id: 'ch', root_id: 'bobroot', user_id: 'me', message: expect.stringMatching(/^This conversation continues in #shall-we-move/)}));
+    });
+
+    test('links both ways when the move fails', async () => {
+        (moveThreadToChannel as jest.Mock).mockImplementationOnce(() => ({type: 'FAILED', error: {message: 'Nope'}}));
+        const onClose = jest.fn();
+        renderWithContext(
+            <ThreadToChannelDialog
+                root={root}
+                onClose={onClose}
+            />,
+            state(),
+        );
+        await userEvent.click(screen.getByRole('button', {name: 'Create the channel'}));
+        await waitFor(() => expect(onClose).toHaveBeenCalled());
+        expect(createPost).toHaveBeenCalledTimes(2);
     });
 
     test('can leave the thread\'s people out, and make the channel private', async () => {
@@ -215,5 +253,38 @@ describe('fusion/rhs/ThreadToChannelDialog', () => {
         expect(await screen.findByRole('alert')).toHaveTextContent('A channel with that name already exists');
         expect(createPost).not.toHaveBeenCalled();
         expect(onClose).not.toHaveBeenCalled();
+    });
+});
+
+describe('fusion/rhs/canMoveThread', () => {
+    const othersRoot = {...root, id: 'other', user_id: 'bob'};
+    function Probe({post}: {post: typeof root}) {
+        const ok = useSelector((st: GlobalState) => canMoveThread(st, post));
+        return <span data-testid='can'>{String(ok)}</span>;
+    }
+    const can = (st: never, post = othersRoot) => {
+        const {unmount} = renderWithContext(<Probe post={post}/>, st);
+        const ok = screen.getByTestId('can').textContent === 'true';
+        unmount();
+        return ok;
+    };
+
+    test('the author may, a plain member may not', () => {
+        expect(can(state(), root)).toBe(true);
+        expect(can(state())).toBe(false);
+    });
+
+    test('the channel\'s admins, the community\'s admins, "Manage messages" and system admins may', () => {
+        expect(can(state({channelAdmin: true}))).toBe(true);
+        expect(can(state({teamPermissions: ['manage_team']}))).toBe(true);
+        expect(can(state({channelPermissions: ['delete_others_posts']}))).toBe(true);
+        expect(can(state({systemPermissions: ['manage_system']}))).toBe(true);
+    });
+
+    test('never in direct messages nor archived channels', () => {
+        expect(can(state(), {...root, channel_id: 'dm'})).toBe(false);
+        const st = state() as unknown as {entities: {channels: {channels: Record<string, unknown>}}};
+        st.entities.channels.channels.ch = {...channel, delete_at: 1};
+        expect(can(st as never, root)).toBe(false);
     });
 });

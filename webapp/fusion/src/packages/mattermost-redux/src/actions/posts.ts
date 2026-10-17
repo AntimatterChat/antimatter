@@ -1192,10 +1192,12 @@ export function removePost(post: ExtendedPost): ActionFunc<boolean> {
     };
 }
 
+// Antimatter: moving a thread goes through the server's move_to_channel (upstream's /move is behind a retired
+// feature flag).
 export function moveThread(postId: string, channelId: string): ActionFuncAsync {
     return async (dispatch, getState) => {
         try {
-            await Client4.moveThread(postId, channelId);
+            await Client4.moveThreadToChannel(postId, channelId);
         } catch (error) {
             forceLogoutIfNecessary(error, dispatch, getState);
             dispatch({type: PostTypes.MOVE_POST_FAILURE, error});
@@ -1206,6 +1208,26 @@ export function moveThread(postId: string, channelId: string): ActionFuncAsync {
         dispatch({type: PostTypes.MOVE_POST_SUCCESS});
 
         return {data: true};
+    };
+}
+
+// moveThreadToChannel moves a thread to another channel of its community, its replies made messages of the channel
+// with flatten; it gives the moved first message.
+export function moveThreadToChannel(postId: string, channelId: string, flatten = false): ActionFuncAsync<Post> {
+    return async (dispatch, getState) => {
+        let moved: Post;
+        try {
+            moved = await Client4.moveThreadToChannel(postId, channelId, flatten);
+        } catch (error) {
+            forceLogoutIfNecessary(error, dispatch, getState);
+            dispatch({type: PostTypes.MOVE_POST_FAILURE, error});
+            dispatch(logError(error));
+            return {error};
+        }
+
+        dispatch({type: PostTypes.MOVE_POST_SUCCESS});
+
+        return {data: moved};
     };
 }
 

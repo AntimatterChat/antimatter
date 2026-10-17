@@ -17,14 +17,12 @@ import {getOnTopEntry} from 'mattermost-redux/selectors/entities/on_top_posts';
 import {getPost, isPostFlagged} from 'mattermost-redux/selectors/entities/posts';
 import {isCollapsedThreadsEnabled} from 'mattermost-redux/selectors/entities/preferences';
 import {contentFlaggingEnabledInTeam, getCurrentTeam} from 'mattermost-redux/selectors/entities/teams';
-import {makeGetThreadOrSynthetic} from 'mattermost-redux/selectors/entities/threads';
 import {getCurrentUserId} from 'mattermost-redux/selectors/entities/users';
 
 import {flagPost, markPostAsUnread, pinPost, setEditingPost, toggleReaction, unflagPost, unpinPost} from 'actions/post_actions';
 import {forwardPost} from 'actions/views/posts';
 import {selectPost} from 'actions/views/rhs';
 import {getRecentEmojisNames} from 'selectors/emojis';
-import {makeCanWrangler} from 'selectors/posts';
 
 import RenderEmoji from 'components/emoji/render_emoji';
 import FlagPostModal from 'components/flag_message_modal/flag_post_modal';
@@ -36,6 +34,7 @@ import {Popover} from 'fusion/components/layer';
 import {Flyout, MenuHeading, MenuItem, MenuSeparator} from 'fusion/components/menu';
 import {CustomTimeForm} from 'fusion/composer/schedule';
 import CopyIdItem from 'fusion/popovers/copy_id_item';
+import {canMoveThread} from 'fusion/rhs/thread_to';
 import {useDialogs} from 'fusion/shell/dialogs_context';
 import {useToast} from 'fusion/shell/toast_context';
 import {useNotesToSelf} from 'fusion/sidebar/group_dm';
@@ -102,15 +101,10 @@ export default function MessageMenu({post, anchor, inThread, onClose, onMoreReac
     const quick = [...new Set([...[...recent].reverse(), ...QUICK_REACTIONS])].slice(0, QUICK_COUNT);
 
     const openNotes = useNotesToSelf();
-    const [canWrangler] = useState(makeCanWrangler);
-    const [getThreadOrSynthetic] = useState(makeGetThreadOrSynthetic);
+    // Antimatter moves threads between the channels of a community, for their authors and moderators.
     const canMove = useSelector((state: GlobalState) => {
-        const channel = getChannel(state, post.channel_id);
         const root = getPost(state, post.root_id || post.id);
-        if (!channel || !root || post.type === Posts.POST_TYPES.BURN_ON_READ) {
-            return false;
-        }
-        return canWrangler(state, channel.type, getThreadOrSynthetic(state, root).reply_count);
+        return root !== undefined && post.type !== Posts.POST_TYPES.BURN_ON_READ && canMoveThread(state, root);
     });
     const run = (action: () => void) => () => {
         action();

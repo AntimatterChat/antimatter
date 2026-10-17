@@ -9,13 +9,13 @@ import type {Channel, ChannelType} from '@mattermost/types/channels';
 import type {Post} from '@mattermost/types/posts';
 
 import {addChannelMembers, createChannel} from 'mattermost-redux/actions/channels';
-import {createPost} from 'mattermost-redux/actions/posts';
+import {createPost, moveThreadToChannel} from 'mattermost-redux/actions/posts';
 import {Permissions, Posts} from 'mattermost-redux/constants';
-import {getChannel} from 'mattermost-redux/selectors/entities/channels';
+import {getChannel, getMyChannelMember} from 'mattermost-redux/selectors/entities/channels';
 import {getConfig} from 'mattermost-redux/selectors/entities/general';
 import {makeGetPostsForThread} from 'mattermost-redux/selectors/entities/posts';
 import {isCollapsedThreadsEnabled} from 'mattermost-redux/selectors/entities/preferences';
-import {haveITeamPermission} from 'mattermost-redux/selectors/entities/roles';
+import {haveIChannelPermission, haveISystemPermission, haveITeamPermission} from 'mattermost-redux/selectors/entities/roles';
 import {getTeam} from 'mattermost-redux/selectors/entities/teams';
 import {getCurrentUserId} from 'mattermost-redux/selectors/entities/users';
 
@@ -59,6 +59,25 @@ export function useThreadConversions(root: Post): {topic: boolean; renameTopic: 
     }, shallowEqual);
 }
 
+// canMoveThread mirrors the server's rule for moving a thread to another channel of its community (POST
+// /posts/{id}/move_to_channel): its author, the channel's admins, the community's admins, whoever has "Manage
+// messages" (deleting others' messages) in the channel, and system admins; not in direct or group messages, nor in
+// archived channels, nor system or burn-on-read messages.
+export function canMoveThread(state: GlobalState, root: Post): boolean {
+    const channel = getChannel(state, root.channel_id);
+    if (!channel || !channel.team_id || channel.delete_at !== 0 || channel.type === Constants.DM_CHANNEL || channel.type === Constants.GM_CHANNEL) {
+        return false;
+    }
+    if (isSystemMessage(root) || root.type === Posts.POST_TYPES.BURN_ON_READ) {
+        return false;
+    }
+    return root.user_id === getCurrentUserId(state) ||
+        haveISystemPermission(state, {permission: Permissions.MANAGE_SYSTEM}) ||
+        haveITeamPermission(state, channel.team_id, Permissions.MANAGE_TEAM) ||
+        Boolean(getMyChannelMember(state, channel.id)?.scheme_admin) ||
+        haveIChannelPermission(state, channel.team_id, channel.id, Permissions.DELETE_OTHERS_POSTS);
+}
+
 // The people who wrote in the thread, the current user aside.
 function useParticipants(root: Post): string[] {
     const getPostsForThread = useMemo(() => makeGetPostsForThread(), []);
@@ -75,9 +94,9 @@ function useParticipants(root: Post): string[] {
 }
 
 // ThreadToChannelDialog starts a channel from a thread: it creates the channel (named after the topic, or the first
-// words of the thread), invites the people who wrote in the thread, starts it with a link back to the thread, and
-// leaves a pointer to the new channel in the thread. The thread's messages stay where they are: the server can't move
-// them (its move-thread API is behind a retired feature flag).
+// words of the thread) and invites the people who wrote in the thread. Who may move the thread moves its messages
+// there, as the channel's messages (the server leaves a pointer in the old place); the others start the channel with
+// a link back to the thread, and leave a link to the new channel in the thread.
 export function ThreadToChannelDialog({root, onClose}: {root: Post; onClose: () => void}) {
     const {formatMessage} = useIntl();
     const dispatch = useDispatch();
@@ -88,6 +107,7 @@ export function ThreadToChannelDialog({root, onClose}: {root: Post; onClose: () 
     const canPublic = useSelector((state: GlobalState) => Boolean(source) && haveITeamPermission(state, source!.team_id, Permissions.CREATE_PUBLIC_CHANNEL));
     const canPrivate = useSelector((state: GlobalState) => Boolean(source) && haveITeamPermission(state, source!.team_id, Permissions.CREATE_PRIVATE_CHANNEL));
     const participants = useParticipants(root);
+    const moves = useSelector((state: GlobalState) => canMoveThread(state, root));
     const [name, setName] = useState(() => (getThreadTitle(root) || plainText(root.message, 60)).slice(0, 64));
     const [isPrivate, setPrivate] = useState(() => (source?.type === Constants.PRIVATE_CHANNEL && canPrivate) || !canPublic);
     const [invite, setInvite] = useState(true);
@@ -118,6 +138,29 @@ export function ThreadToChannelDialog({root, onClose}: {root: Post; onClose: () 
         if (invite && participants.length) {
             await dispatch(addChannelMembers(created.id, participants));
         }
+        let moved = false;
+        if (moves) {
+            const result = await dispatch(moveThreadToChannel(root.id, created.id, true));
+            if (result && 'error' in result && result.error) {
+                toast(formatMessage({id: 'fusion.threadToChannel.moveFailed', defaultMessage: 'The thread couldn\'t be moved: {error}'}, {error: (result.error as {message?: string}).message || ''}));
+            } else {
+                moved = true;
+            }
+        }
+        if (!moved) {
+            await linkBothWays(created);
+        }
+        setSaving(false);
+        dispatch(switchToChannel(created));
+        toast(formatMessage({id: 'fusion.toast.created', defaultMessage: 'Created {name}'}, {name: '#' + created.display_name}));
+        onClose();
+    };
+
+    // Without moving the thread, the new channel and the thread point at each other.
+    const linkBothWays = async (created: Channel) => {
+        if (!source || !team) {
+            return;
+        }
         const link = getSiteURL() + permalinkPath(team.name, root.id);
         await dispatch(createPost({
             channel_id: created.id,
@@ -130,10 +173,6 @@ export function ThreadToChannelDialog({root, onClose}: {root: Post; onClose: () 
             user_id: me,
             message: formatMessage({id: 'fusion.threadToChannel.pointer', defaultMessage: 'This conversation continues in #{channel}.'}, {channel: created.name}),
         } as Post));
-        setSaving(false);
-        dispatch(switchToChannel(created));
-        toast(formatMessage({id: 'fusion.toast.created', defaultMessage: 'Created {name}'}, {name: '#' + created.display_name}));
-        onClose();
     };
 
     const title = formatMessage({id: 'fusion.threadToChannel.title', defaultMessage: 'Make it a channel'});
@@ -146,7 +185,7 @@ export function ThreadToChannelDialog({root, onClose}: {root: Post; onClose: () 
             <div className={am('pane')}>
                 <h2>{title}</h2>
                 <p className={am('lead')}>
-                    {formatMessage({id: 'fusion.threadToChannel.lead', defaultMessage: 'A new channel in {team} carries on this thread\'s conversation. It starts with a link to the thread, and the thread gets a link to it; the replies stay in the thread.'}, {team: team?.display_name || ''})}
+                    {moves ? formatMessage({id: 'fusion.threadToChannel.leadMove', defaultMessage: 'A new channel in {team} takes this thread\'s messages, with their authors and times: they become the channel\'s first messages, and the thread\'s place gets a link to them.'}, {team: team?.display_name || ''}) : formatMessage({id: 'fusion.threadToChannel.lead', defaultMessage: 'A new channel in {team} carries on this thread\'s conversation. It starts with a link to the thread, and the thread gets a link to it; the replies stay in the thread.'}, {team: team?.display_name || ''})}
                 </p>
                 <label className={am('field')}>
                     <span>{formatMessage({id: 'fusion.createChannel.name', defaultMessage: 'Name'})}</span>
