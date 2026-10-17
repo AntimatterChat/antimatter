@@ -234,7 +234,6 @@ const initialComponents: PluginsState['components'] = {
     ComposerMenuItem: [],
     EmojiPickerTab: [],
     IntegrationsOption: [],
-    ProductSwitcherMenuItem: [],
     MessageWillBePosted: [],
     MessageWillBeUpdated: [],
     SlashCommandWillBePosted: [],

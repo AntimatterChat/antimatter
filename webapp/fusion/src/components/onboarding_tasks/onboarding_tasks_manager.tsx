@@ -16,7 +16,6 @@ import {isCurrentUserGuestUser, isCurrentUserSystemAdmin, isFirstAdmin} from 'ma
 import {
     openInvitationsModal,
     setShowOnboardingCompleteProfileTour,
-    setShowOnboardingVisitConsoleTour,
     switchToChannels,
 } from 'actions/views/onboarding_tasks';
 import {getOnboardingTaskPreferences} from 'selectors/onboarding';
@@ -26,7 +25,6 @@ import Gears from 'components/common/svg_images_components/gears_svg';
 import Handshake from 'components/common/svg_images_components/handshake_svg';
 import Phone from 'components/common/svg_images_components/phone_svg';
 import Sunglasses from 'components/common/svg_images_components/sunglasses_svg';
-import {ELEMENT_ID_FOR_SWITCH_PRODUCT_MENU_BUTTON} from 'components/global_header/left_controls/switch_product_menu';
 import {openMenu} from 'components/menu';
 import {
     AutoTourStatus,
@@ -215,16 +213,10 @@ export const useHandleOnBoardingTaskTrigger = () => {
             break;
         }
         case OnboardingTasksName.VISIT_SYSTEM_CONSOLE: {
-            // Antimatter: the product menu (and its System Console entry, which the tour points at) only shows when an
-            // app has a page of its own; Fusion's frame has none. Without it, the task opens the System Console.
-            if (!document.getElementById(ELEMENT_ID_FOR_SWITCH_PRODUCT_MENU_BUTTON)) {
-                handleSaveData(taskName, TaskNameMapToSteps[taskName].FINISHED);
-                getHistory().push('/admin_console');
-                break;
-            }
-            openMenu(ELEMENT_ID_FOR_SWITCH_PRODUCT_MENU_BUTTON);
-            dispatch(setShowOnboardingVisitConsoleTour(true));
-            handleSaveData(taskName, TaskNameMapToSteps[taskName].STARTED);
+            // Antimatter: Fusion has no product menu (its System Console entry was where the tour pointed): the task
+            // opens the System Console, which is also in the status menu.
+            handleSaveData(taskName, TaskNameMapToSteps[taskName].FINISHED);
+            getHistory().push('/admin_console');
             break;
         }
         case OnboardingTasksName.INVITE_PEOPLE: {

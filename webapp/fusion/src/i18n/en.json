@@ -21007,10 +21007,6 @@
     "defaultMessage": "Privacy policy",
     "description": ""
   },
-  "fusion.about.products": {
-    "defaultMessage": "Products",
-    "description": ""
-  },
   "fusion.about.report": {
     "defaultMessage": "Report a problem",
     "description": ""
@@ -29575,38 +29571,6 @@
     "defaultMessage": "Settings",
     "description": "Tooltip/accessibility label for the gear button in the global header that opens the Settings modal."
   },
-  "globalHeader.productSwitcherMenu.aboutMenuItem.label": {
-    "defaultMessage": "About {appTitle}",
-    "description": "Menu item in the product menu (grid icon at the top left of the global header). It opens the About dialog. {appTitle} is the configured site name, or 'Mattermost' if none is set."
-  },
-  "globalHeader.productSwitcherMenu.ariaLabel": {
-    "defaultMessage": "Product menu",
-    "description": "Screen-reader label for the product menu that opens from the grid icon and product name at the top left of the global header."
-  },
-  "globalHeader.productSwitcherMenu.downloadMenuItem.label": {
-    "defaultMessage": "Download Apps",
-    "description": "Menu item in the product menu at the top left of the global header. It opens the download page for the desktop and mobile apps. Hidden in the desktop app."
-  },
-  "globalHeader.productSwitcherMenu.integrationsMenuItem.label": {
-    "defaultMessage": "Integrations",
-    "description": "Menu item in the product menu at the top left of the global header. It opens the team's Integrations page (webhooks, slash commands, bots). Plural noun."
-  },
-  "globalHeader.productSwitcherMenu.marketplaceMenuItem.label": {
-    "defaultMessage": "App Marketplace",
-    "description": "Menu item in the product menu at the top left of the global header, shown only to admins who can manage plugins. It opens the plugin Marketplace dialog. Product feature name."
-  },
-  "globalHeader.productSwitcherMenu.menuButtonLabel": {
-    "defaultMessage": "Open product menu",
-    "description": "Screen-reader label and hover tooltip for the grid icon and product name at the top left of the global header. It opens the product menu."
-  },
-  "globalHeader.productSwitcherMenu.systemConsoleMenuItem.label": {
-    "defaultMessage": "System Console",
-    "description": "Menu item in the product menu at the top left of the global header, shown to admins. It opens the System Console. Use the product's standard translation of 'System Console'."
-  },
-  "globalHeader.productSwitcherMenu.userGroupsMenuItem.label": {
-    "defaultMessage": "User Groups",
-    "description": "Menu item in the product menu at the top left of the global header. It opens the User Groups dialog for custom groups of users that can be mentioned. Feature name."
-  },
   "globalThreads.heading": {
     "defaultMessage": "Followed threads",
     "description": "Heading of the global Threads view listing threads the user follows; also used as the mobile channel-header title for that view."
@@ -32811,14 +32775,6 @@
     "defaultMessage": "Edit your profile",
     "description": "Title of the tour tip shown during the 'complete your profile' onboarding task."
   },
-  "onboardingTask.visitSystemConsole.Description": {
-    "defaultMessage": "More detailed configuration settings for your server can be accessed here.",
-    "description": "Body text of the tour tip pointing at the System Console entry during the 'visit System Console' onboarding task; audience is server admins."
-  },
-  "onboardingTask.visitSystemConsole.title": {
-    "defaultMessage": "Visit the System Console",
-    "description": "Title of the tour tip shown during the 'visit System Console' onboarding task; System Console is the admin settings area."
-  },
   "onboardingTour.ChannelsAndDirectMessagesTour.channels": {
     "defaultMessage": "Channels are where you can communicate with your team about a topic or project.",
     "description": "First paragraph of the onboarding tour tooltip explaining the channel sidebar; 'Channels' here is the Mattermost concept of conversation spaces."
@@ -33594,10 +33550,6 @@
   "posts_view.newMsg": {
     "defaultMessage": "New Messages",
     "description": "Label on the horizontal separator line in the message list marking where unread messages begin."
-  },
-  "product_menu_item.open_in_new_tab": {
-    "defaultMessage": "Open in new tab",
-    "description": "Tooltip/accessibility label on external product links in the product switcher menu indicating they open in a new browser tab."
   },
   "profile_popover.aria_label.with_username": {
     "defaultMessage": "{userName}'s profile popover",
