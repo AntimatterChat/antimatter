@@ -33,7 +33,7 @@ import WysiwygEditor from 'components/advanced_text_editor/wysiwyg_editor/wysiwy
 import type {WysiwygEditorHandle} from 'components/advanced_text_editor/wysiwyg_editor/wysiwyg_editor';
 import AutoHeightSwitcher from 'components/common/auto_height_switcher';
 import useDidUpdate from 'components/common/hooks/useDidUpdate';
-import useGetAgentsBridgeEnabled from 'components/common/hooks/useGetAgentsBridgeEnabled';
+import {useAIRewriteAvailable} from 'components/common/hooks/useAIFeatures';
 import DeletePostModal from 'components/delete_post_modal';
 import {
     DropOverlayIdCreateComment,
@@ -218,7 +218,8 @@ const AdvancedTextEditor = ({
     });
     const selectedPostFocussedAt = useSelector((state: GlobalState) => getSelectedPostFocussedAt(state));
     const aiActionMenuItems = useSelector((state: GlobalState) => state.plugins.components.AIActionMenuItem);
-    const {available: aiRewriteEnabled} = useGetAgentsBridgeEnabled();
+    // Antimatter: the rewrite runs on the model connection an admin picked for it, not through the AI chat app.
+    const aiRewriteEnabled = useAIRewriteAvailable();
 
     const canPost = useSelector((state: GlobalState) => {
         const channel = getChannel(state, channelId);

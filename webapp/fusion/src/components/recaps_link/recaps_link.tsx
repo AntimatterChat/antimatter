@@ -14,6 +14,7 @@ import {getUnreadFinishedRecapsBadge} from 'mattermost-redux/selectors/entities/
 import {getCurrentTeamId} from 'mattermost-redux/selectors/entities/teams';
 import {getCurrentUserId} from 'mattermost-redux/selectors/entities/users';
 
+import {useAIRecapsAvailable} from 'components/common/hooks/useAIFeatures';
 import useGetFeatureFlagValue from 'components/common/hooks/useGetFeatureFlagValue';
 import ChannelMentionBadge from 'components/sidebar/sidebar_channel/channel_mention_badge';
 
@@ -33,9 +34,12 @@ const RecapsLink = () => {
     const {count: unreadCount, hasFailed} = useSelector(getUnreadFinishedRecapsBadge, shallowEqual);
     const enableAIRecaps = useGetFeatureFlagValue('EnableAIRecaps');
 
+    // Antimatter: recaps need the model connection an admin picked for them.
+    const recapsAvailable = useAIRecapsAvailable();
+
     const inRecaps = matchPath(pathname, {path: '/:team/recaps/:recapId?'}) != null;
 
-    if (!currentTeamId || !currentUserId || enableAIRecaps !== 'true') {
+    if (!currentTeamId || !currentUserId || enableAIRecaps !== 'true' || !recapsAvailable) {
         return null;
     }
 

@@ -13,7 +13,7 @@ import {readMultipleChannels} from 'mattermost-redux/actions/channels';
 import {markRecapAsRead, deleteRecap, regenerateRecap} from 'mattermost-redux/actions/recaps';
 import {getAgents} from 'mattermost-redux/selectors/entities/agents';
 
-import useGetAgentsBridgeEnabled from 'components/common/hooks/useGetAgentsBridgeEnabled';
+import {useAIRecapsAvailable} from 'components/common/hooks/useAIFeatures';
 import ConfirmModal from 'components/confirm_modal';
 
 import RecapChannelCard from './recap_channel_card';
@@ -32,7 +32,8 @@ const RecapItem = ({recap, isExpanded, onToggle}: Props) => {
     const dispatch = useDispatch();
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
     const agents = useSelector(getAgents);
-    const agentsBridgeEnabled = useGetAgentsBridgeEnabled();
+    // Antimatter: regenerating needs the model connection an admin picked for recaps.
+    const recapsAvailable = useAIRecapsAvailable();
 
     const isProcessing = recap.status === RecapStatus.PENDING || recap.status === RecapStatus.PROCESSING;
     const isFailed = recap.status === RecapStatus.FAILED;
@@ -77,12 +78,12 @@ const RecapItem = ({recap, isExpanded, onToggle}: Props) => {
                     defaultMessage: 'Regenerate this recap',
                 }),
                 onClick: handleRegenerateRecap,
-                disabled: !agentsBridgeEnabled,
+                disabled: !recapsAvailable,
             });
         }
 
         return actions;
-    }, [formatMessage, handleMarkAllChannelsRead, handleRegenerateRecap, isFailed, agentsBridgeEnabled, recap.read_at]);
+    }, [formatMessage, handleMarkAllChannelsRead, handleRegenerateRecap, isFailed, recapsAvailable, recap.read_at]);
 
     const handleDelete = () => {
         dispatch(deleteRecap(recap.id));

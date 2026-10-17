@@ -4,13 +4,14 @@
 import React from 'react';
 import {MemoryRouter} from 'react-router-dom';
 
-import {renderWithContext, waitFor} from 'tests/react_testing_utils';
+import {renderWithContext, screen, waitFor} from 'tests/react_testing_utils';
 
 import {LhsItemType, LhsPage} from 'types/store/lhs';
 
 import Recaps from './recaps';
 
 const mockDispatch = jest.fn(() => Promise.resolve({data: []}));
+const mockRecapsAvailable = jest.fn(() => true);
 const mockGetAgents = jest.fn(() => ({type: 'GET_AGENTS'}));
 const mockGetRecaps = jest.fn((page: number, perPage: number) => ({type: 'GET_RECAPS', meta: {page, perPage}}));
 const mockGetScheduledRecaps = jest.fn((page: number, perPage: number) => ({type: 'GET_SCHEDULED_RECAPS', meta: {page, perPage}}));
@@ -53,7 +54,9 @@ jest.mock('actions/views/modals', () => ({
     openModal: jest.fn(() => ({type: 'OPEN_MODAL'})),
 }));
 
-jest.mock('components/common/hooks/useGetAgentsBridgeEnabled', () => jest.fn(() => ({available: true})));
+jest.mock('components/common/hooks/useAIFeatures', () => ({
+    useAIRecapsAvailable: () => mockRecapsAvailable(),
+}));
 jest.mock('components/common/hooks/useGetFeatureFlagValue', () => jest.fn(() => 'true'));
 jest.mock('components/create_recap_modal', () => () => <div data-testid='create-recap-modal'/>);
 jest.mock('./recaps_list', () => ({__esModule: true, default: () => <div data-testid='recaps-list'/>}));
@@ -67,6 +70,7 @@ describe('components/recaps/Recaps', () => {
         mockFetchRecapLimitStatus.mockClear();
         mockMarkRecapsAsViewed.mockClear();
         mockSelectLhsItem.mockClear();
+        mockRecapsAvailable.mockReturnValue(true);
     });
 
     test('selects Recaps in the LHS on mount', async () => {
@@ -90,5 +94,29 @@ describe('components/recaps/Recaps', () => {
         // markRecapsAsViewed runs asynchronously after getRecaps resolves.
         await waitFor(() => expect(mockMarkRecapsAsViewed).toHaveBeenCalled());
         expect(mockDispatch).toHaveBeenCalledWith({type: 'MARK_RECAPS_VIEWED'});
+    });
+
+    // Antimatter: recaps are made with the model connection an admin picked for them (AIRecapsAvailable).
+    test('creating a recap is offered once recaps have a model connection', async () => {
+        renderWithContext(
+            <MemoryRouter>
+                <Recaps/>
+            </MemoryRouter>,
+        );
+        const create = await screen.findByRole('button', {name: 'Create a recap'});
+        expect(create).toBeEnabled();
+        expect(create).not.toHaveAttribute('title');
+    });
+
+    test('without a model connection, creating a recap is off and says why', async () => {
+        mockRecapsAvailable.mockReturnValue(false);
+        renderWithContext(
+            <MemoryRouter>
+                <Recaps/>
+            </MemoryRouter>,
+        );
+        const create = await screen.findByRole('button', {name: 'Create a recap'});
+        expect(create).toBeDisabled();
+        expect(create).toHaveAttribute('title', expect.stringContaining('AI › Built-in features'));
     });
 });

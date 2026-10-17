@@ -5,6 +5,7 @@ import React from 'react';
 
 import {getAgents} from 'mattermost-redux/actions/agents';
 import {savePreferences} from 'mattermost-redux/actions/preferences';
+import {createRecap, createScheduledRecap} from 'mattermost-redux/actions/recaps';
 
 import {renderWithContext, screen, userEvent, waitFor, waitForElementToBeRemoved} from 'tests/react_testing_utils';
 import {Preferences} from 'utils/constants';
@@ -475,5 +476,45 @@ describe('CreateRecapModal', () => {
             expect(mockHistoryPush).toHaveBeenCalledWith('/recaps?tab=scheduled');
         });
     });
-});
 
+    // Antimatter: with a model connection picked for recaps (AIRecapsAvailable), the server makes them with it: no agent
+    // is fetched, offered or sent.
+    describe('with a model connection for recaps', () => {
+        const withConnection = () => {
+            const root = makeRootTeamState();
+            return {...root, entities: {...root.entities, general: {config: {AIRecapsAvailable: 'true'}}}};
+        };
+
+        test('fetches no agents and offers no agent picker', () => {
+            renderWithContext(<CreateRecapModal {...defaultProps}/>, withConnection());
+            expect(getAgents).not.toHaveBeenCalled();
+            expect(screen.queryByLabelText('Agent selector')).not.toBeInTheDocument();
+            expect(screen.queryByText('GENERATE WITH:')).not.toBeInTheDocument();
+        });
+
+        test('runs a recap once without an agent', async () => {
+            renderWithContext(<CreateRecapModal {...defaultProps}/>, withConnection());
+            await userEvent.type(screen.getByPlaceholderText('Give your recap a name'), 'Test Recap');
+            await userEvent.click(screen.getByText('Recap all my unreads'));
+            await userEvent.click(screen.getByLabelText('Run once'));
+            await userEvent.click(screen.getByRole('button', {name: /next/i}));
+            await userEvent.click(await screen.findByRole('button', {name: /start recap/i}));
+
+            await waitFor(() => expect(createRecap).toHaveBeenCalledWith('Test Recap', expect.any(Array), ''));
+        });
+
+        test('schedules a recap without an agent', async () => {
+            renderWithContext(<CreateRecapModal {...defaultProps}/>, withConnection());
+            await userEvent.type(screen.getByPlaceholderText('Give your recap a name'), 'Test Recap');
+            await userEvent.click(screen.getByText('Recap all my unreads'));
+            await userEvent.click(screen.getByRole('button', {name: /next/i}));
+            expect(screen.getByText(/Additional instructions for the AI/)).toBeInTheDocument();
+            const createSchedule = await screen.findByRole('button', {name: /create schedule/i});
+            await userEvent.click(screen.getByText('M', {selector: 'button'}));
+            await waitFor(() => expect(createSchedule).not.toBeDisabled());
+            await userEvent.click(createSchedule);
+
+            await waitFor(() => expect(createScheduledRecap).toHaveBeenCalledWith(expect.objectContaining({agent_id: ''})));
+        });
+    });
+});

@@ -17,6 +17,8 @@ import {getUserIdFromChannelName} from 'mattermost-redux/utils/channel_utils';
 import {openDirectChannelToUserId} from 'actions/channel_actions';
 import {makeGetDraftsCount} from 'selectors/drafts';
 
+import {isAIRecapsAvailable} from 'components/common/hooks/useAIFeatures';
+
 import {useCallsOnTop} from 'fusion/calls/calls_on_top';
 import Icon from 'fusion/components/icon';
 import {useUnreadMentions} from 'fusion/hooks/mentions';
@@ -92,7 +94,8 @@ export default function HomeSidebar() {
     const draftCount = useSelector(getDraftsCount);
     const scheduledEnabled = useSelector(isScheduledPostsEnabled);
     const scheduledCount = useSelector((state: GlobalState) => (team ? getScheduledPostsByTeamCount(state, team.id, true) : 0));
-    const recapsEnabled = useSelector((state: GlobalState) => getFeatureFlagValue(state, 'EnableAIRecaps') === 'true');
+    // Antimatter: recaps once they're on and an admin picked a model connection for them.
+    const recapsEnabled = useSelector((state: GlobalState) => getFeatureFlagValue(state, 'EnableAIRecaps') === 'true' && isAIRecapsAvailable(state));
     const pathname = useLocation().pathname;
 
     // The pages of the home: drafts, scheduled messages and AI recaps, in the main column.

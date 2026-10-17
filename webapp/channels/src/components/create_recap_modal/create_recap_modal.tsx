@@ -23,6 +23,7 @@ import {getCurrentTimezone} from 'mattermost-redux/selectors/entities/timezone';
 import {getCurrentUserId} from 'mattermost-redux/selectors/entities/users';
 
 import {AgentDropdown, useSelectedAgent} from 'components/common/agents';
+import {useAIRecapsAvailable} from 'components/common/hooks/useAIFeatures';
 import PaginationDots from 'components/common/pagination_dots';
 import RecapUsageBadge from 'components/recaps/recap_usage_badge';
 
@@ -53,6 +54,10 @@ const CreateRecapModal = ({onExited, editScheduledRecap}: Props) => {
     const limitStatus = useSelector(getRecapLimitStatus);
     const defaultAgent = useSelector(getDefaultAgent);
     const [preferredSelectedBotId, setPreferredSelectedBotId] = useSelectedAgent(agents);
+
+    // Antimatter: with a model connection picked for recaps (AI › Built-in features), the server makes them with it and
+    // no agent is picked; the agents (and their picker) are only for servers without one.
+    const usesConnection = useAIRecapsAvailable();
 
     const [currentStep, setCurrentStep] = useState(1);
     const [recapName, setRecapName] = useState('');
@@ -106,10 +111,12 @@ const CreateRecapModal = ({onExited, editScheduledRecap}: Props) => {
 
     const isBlocked = manualLimitBlockMessage.length > 0;
 
-    // Fetch AI agents on mount
+    // Fetch AI agents on mount, when one is picked
     useEffect(() => {
-        dispatch(getAgents());
-    }, [dispatch]);
+        if (!usesConnection) {
+            dispatch(getAgents());
+        }
+    }, [dispatch, usesConnection]);
 
     // Pre-fill form for edit mode
     useEffect(() => {
@@ -177,7 +184,7 @@ const CreateRecapModal = ({onExited, editScheduledRecap}: Props) => {
             return;
         }
 
-        if (!selectedBotId) {
+        if (!usesConnection && !selectedBotId) {
             setError(formatMessage({id: 'recaps.modal.error.noBot', defaultMessage: 'Please select an AI agent.'}));
             return;
         }
@@ -207,7 +214,7 @@ const CreateRecapModal = ({onExited, editScheduledRecap}: Props) => {
         if (runOnce) {
             try {
                 // Run once: create immediate recap (existing behavior)
-                const result = await dispatch(createRecap(recapName, selectedChannelIds, selectedBotId));
+                const result = await dispatch(createRecap(recapName, selectedChannelIds, usesConnection ? '' : selectedBotId));
                 if (result.error) {
                     setError(result.error.message || formatMessage({id: 'recaps.modal.error.createFailed', defaultMessage: 'Failed to create recap. Please try again.'}));
                     setIsSubmitting(false);
@@ -236,7 +243,7 @@ const CreateRecapModal = ({onExited, editScheduledRecap}: Props) => {
             channel_mode: recapType === 'all_unreads' ? ScheduledRecapChannelModes.AllUnreads : ScheduledRecapChannelModes.Specific,
             channel_ids: recapType === 'selected' ? selectedChannelIds : undefined,
             custom_instructions: customInstructions || undefined,
-            agent_id: selectedBotId,
+            agent_id: usesConnection ? '' : selectedBotId,
             is_recurring: true,
         };
 
@@ -261,6 +268,7 @@ const CreateRecapModal = ({onExited, editScheduledRecap}: Props) => {
         selectedChannelIds,
         currentUserId,
         selectedBotId,
+        usesConnection,
         runOnce,
         isEditMode,
         editScheduledRecap,
@@ -282,7 +290,7 @@ const CreateRecapModal = ({onExited, editScheduledRecap}: Props) => {
 
     const canProceed = () => {
         if (currentStep === 1) {
-            return recapName.trim().length > 0 && recapType !== null && selectedBotId.length > 0;
+            return recapName.trim().length > 0 && recapType !== null && (usesConnection || selectedBotId.length > 0);
         } else if (currentStep === 2) {
             return selectedChannelIds.length > 0;
         } else if (currentStep === 3) {
@@ -293,7 +301,7 @@ const CreateRecapModal = ({onExited, editScheduledRecap}: Props) => {
                 }
 
                 // Run once summary step
-                return selectedChannelIds.length > 0 && selectedBotId.length > 0;
+                return selectedChannelIds.length > 0 && (usesConnection || selectedBotId.length > 0);
             }
 
             // Schedule configuration step
@@ -352,7 +360,7 @@ const CreateRecapModal = ({onExited, editScheduledRecap}: Props) => {
             // Scheduled: show schedule configuration
             // Get the selected agent's display name
             const selectedAgent = agents.find((agent) => agent.id === selectedBotId);
-            const agentName = selectedAgent?.displayName || selectedAgent?.username || 'Copilot';
+            const agentName = usesConnection ? formatMessage({id: 'recaps.modal.connectionAgentName', defaultMessage: 'the AI'}) : (selectedAgent?.displayName || selectedAgent?.username || 'Copilot');
             return (
                 <ScheduleConfiguration
                     daysOfWeek={daysOfWeek}
@@ -415,15 +423,17 @@ const CreateRecapModal = ({onExited, editScheduledRecap}: Props) => {
             </span>
             <div className='create-recap-modal-header-actions'>
                 <RecapUsageBadge/>
-                <AgentDropdown
-                    showLabel={true}
-                    selectedBotId={selectedBotId}
-                    onBotSelect={handleBotSelect}
-                    bots={agents}
-                    defaultBotId={defaultAgent?.id}
-                    disabled={isSubmitting}
-                    onMenuToggle={handleAgentMenuToggle}
-                />
+                {!usesConnection && (
+                    <AgentDropdown
+                        showLabel={true}
+                        selectedBotId={selectedBotId}
+                        onBotSelect={handleBotSelect}
+                        bots={agents}
+                        defaultBotId={defaultAgent?.id}
+                        disabled={isSubmitting}
+                        onMenuToggle={handleAgentMenuToggle}
+                    />
+                )}
             </div>
         </div>
     );

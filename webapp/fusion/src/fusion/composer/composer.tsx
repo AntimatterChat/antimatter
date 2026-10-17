@@ -63,7 +63,7 @@ import type {GlobalState} from 'types/store';
 import type {PostDraft} from 'types/store/draft';
 import type {AIActionMenuItemComponent, FilesWillUploadHook, PostEditorActionComponent} from 'types/store/plugins';
 
-import AiRewriteMenu, {useAgentsAvailable} from './ai_rewrite';
+import AiRewriteMenu, {useAIRewriteAvailable} from './ai_rewrite';
 import Autocomplete from './autocomplete';
 import type {AutocompleteHandle} from './autocomplete';
 import AwayNote from './away_note';
@@ -145,8 +145,11 @@ export default function Composer({channelId, rootId = '', placeholder}: Props) {
     const priorityRef = useRef<HTMLButtonElement>(null);
     const burnRef = useRef<HTMLButtonElement>(null);
 
-    // AI rewriting, when an agent is there: busy while it writes, and the text before it, to undo.
-    const aiAvailable = useAgentsAvailable();
+    // AI rewriting, once an admin picked a model connection for it: busy while it writes, and the text before it, to
+    // undo.
+    // The menu also holds apps' AI items (the AI chat app's prompts), which don't need it.
+    const rewriteAvailable = useAIRewriteAvailable();
+    const aiAvailable = rewriteAvailable || aiItems.length > 0;
     const aiRef = useRef<HTMLButtonElement>(null);
     const [aiBusy, setAiBusy] = useState(false);
     const [aiOriginal, setAiOriginal] = useState<string | null>(null);
@@ -1011,6 +1014,7 @@ export default function Composer({channelId, rootId = '', placeholder}: Props) {
             {menu === 'ai' && (
                 <AiRewriteMenu
                     anchor={aiRef.current}
+                    canRewrite={rewriteAvailable}
                     pluginItems={aiItems}
                     pluginProps={{draft, getSelectedText: selectedText, updateText: (message: string) => change({message}), channelId, isRHS: Boolean(rootId)}}
                     message={draft.message}

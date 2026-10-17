@@ -16,7 +16,7 @@ import {getAllRecaps, getUnreadRecaps, getReadRecaps, getAllScheduledRecaps} fro
 import {selectLhsItem} from 'actions/views/lhs';
 import {openModal} from 'actions/views/modals';
 
-import useGetAgentsBridgeEnabled from 'components/common/hooks/useGetAgentsBridgeEnabled';
+import {useAIRecapsAvailable} from 'components/common/hooks/useAIFeatures';
 import useGetFeatureFlagValue from 'components/common/hooks/useGetFeatureFlagValue';
 import CreateRecapModal from 'components/create_recap_modal';
 
@@ -68,7 +68,9 @@ const Recaps = () => {
         history.replace(newUrl);
     }, [history, location.pathname, location.search]);
     const enableAIRecaps = useGetFeatureFlagValue('EnableAIRecaps');
-    const agentsBridgeEnabled = useGetAgentsBridgeEnabled();
+    // Antimatter: recaps are made with the model connection an admin picked for them (AI › Built-in features).
+    const recapsAvailable = useAIRecapsAvailable();
+    const unavailableTitle = recapsAvailable ? undefined : formatMessage({id: 'recaps.addRecap.noConnection', defaultMessage: 'Recaps need a model connection: an admin picks one in the System Console, AI › Built-in features.'});
 
     const allRecaps = useSelector(getAllRecaps);
     const unreadRecaps = useSelector(getUnreadRecaps);
@@ -142,7 +144,7 @@ const Recaps = () => {
                 scheduledRecaps={scheduledRecaps}
                 onEdit={handleEditScheduledRecap}
                 onCreateClick={handleAddRecap}
-                createDisabled={!agentsBridgeEnabled.available}
+                createDisabled={!recapsAvailable}
             />
         );
     } else if (hasNoRecaps) {
@@ -159,8 +161,8 @@ const Recaps = () => {
                     emphasis='primary'
                     className='recaps-placeholder-button'
                     onClick={handleAddRecap}
-                    disabled={!agentsBridgeEnabled.available}
-                    title={agentsBridgeEnabled.available ? undefined : formatMessage({id: 'recaps.addRecap.disabled', defaultMessage: 'Agents Bridge is not enabled'})}
+                    disabled={!recapsAvailable}
+                    title={unavailableTitle}
                 >
                     {formatMessage({id: 'recaps.placeholder.createRecap', defaultMessage: 'Create a recap'})}
                 </Button>
@@ -207,8 +209,8 @@ const Recaps = () => {
                         emphasis='tertiary'
                         className='recap-add-button'
                         onClick={handleAddRecap}
-                        disabled={!agentsBridgeEnabled.available}
-                        title={agentsBridgeEnabled.available ? undefined : formatMessage({id: 'recaps.addRecap.disabled', defaultMessage: 'Agents Bridge is not enabled'})}
+                        disabled={!recapsAvailable}
+                        title={unavailableTitle}
                     >
                         <PlusIcon size={12}/>
                         {formatMessage({id: 'recaps.addRecap', defaultMessage: 'Add a recap'})}

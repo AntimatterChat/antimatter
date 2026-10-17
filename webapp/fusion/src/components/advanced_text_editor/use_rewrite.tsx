@@ -5,6 +5,7 @@ import type React from 'react';
 import {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 
+import type {Agent} from '@mattermost/types/agents';
 import type {ServerError} from '@mattermost/types/errors';
 
 import {getAgents as getAgentsAction} from 'mattermost-redux/actions/agents';
@@ -12,11 +13,14 @@ import {Client4} from 'mattermost-redux/client';
 import {getAgents} from 'mattermost-redux/selectors/entities/agents';
 
 import {useSelectedAgent} from 'components/common/agents';
+import {useAIRewriteAvailable} from 'components/common/hooks/useAIFeatures';
 import type TextboxClass from 'components/textbox/textbox';
 
 import type {PostDraft} from 'types/store/draft';
 
 import {RewriteAction} from './rewrite_action';
+
+const NO_AGENTS: Agent[] = [];
 
 const useRewrite = (
     draft: PostDraft,
@@ -28,8 +32,14 @@ const useRewrite = (
     }) | null>>,
 ) => {
     const dispatch = useDispatch();
-    const agents = useSelector(getAgents);
-    const [selectedAgentId, setSelectedAgentId] = useSelectedAgent(agents);
+
+    // Antimatter: with a model connection picked for the rewrite (AI › Built-in features), the server rewrites with it
+    // and no agent is picked; the agents (and their picker) are only for servers without one.
+    const usesConnection = useAIRewriteAvailable();
+    const allAgents = useSelector(getAgents);
+    const agents = usesConnection ? NO_AGENTS : allAgents;
+    const [preferredAgentId, setSelectedAgentId] = useSelectedAgent(agents);
+    const selectedAgentId = usesConnection ? '' : preferredAgentId;
 
     const [prompt, setPrompt] = useState('');
 
@@ -138,8 +148,10 @@ const useRewrite = (
     }, [handleRewrite]);
 
     useEffect(() => {
-        dispatch(getAgentsAction());
-    }, [dispatch]);
+        if (!usesConnection) {
+            dispatch(getAgentsAction());
+        }
+    }, [dispatch, usesConnection]);
 
     useEffect(() => {
         if (isMenuOpen && !draft.message.trim()) {

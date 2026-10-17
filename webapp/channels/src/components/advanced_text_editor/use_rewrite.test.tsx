@@ -210,6 +210,33 @@ describe('useRewrite', () => {
         });
     });
 
+    // Antimatter: with a model connection picked for the rewrite (AISettings.Rewrite, AIRewriteAvailable in the client
+    // config), the server rewrites with it: no agents are fetched, none is offered, none is sent.
+    describe('with a model connection for the rewrite', () => {
+        const withConnection = (): DeepPartial<GlobalState> => ({
+            ...getBaseState(),
+            entities: {
+                ...getBaseState().entities,
+                general: {config: {AIRewriteAvailable: 'true'}},
+            },
+        });
+
+        it('fetches no agents and offers none', () => {
+            const {result} = renderHookWithProps(mockDraft, undefined, withConnection());
+            expect(getAgentsAction).not.toHaveBeenCalled();
+            expect(result.current.rewriteMenuProps.agents).toEqual([]);
+            expect(result.current.rewriteMenuProps.selectedAgentId).toBe('');
+        });
+
+        it('rewrites without an agent', async () => {
+            const {result} = renderHookWithProps(mockDraft, undefined, withConnection());
+            result.current.rewriteMenuProps.onMenuAction(RewriteAction.SHORTEN)();
+            await waitFor(() => {
+                expect(Client4.getAIRewrittenMessage).toHaveBeenCalledWith('', 'Test message', RewriteAction.SHORTEN, undefined, '');
+            });
+        });
+    });
+
     describe('handleRewrite', () => {
         it('should successfully rewrite message', async () => {
             const {result} = renderHookWithProps();

@@ -21,6 +21,7 @@ jest.mock('mattermost-redux/selectors/entities/recaps', () => ({
 
 const defaultState = {
     entities: {
+        general: {config: {AIRecapsAvailable: 'true'}},
         teams: {
             currentTeamId: 'team1',
             teams: {team1: {id: 'team1', name: 'team1'}},
@@ -53,6 +54,19 @@ describe('components/recaps_link/RecapsLink', () => {
         mockUseFeatureFlag.mockReturnValue('false');
         mockGetBadge.mockReturnValue({count: 5, hasFailed: true});
         const {container} = renderLink();
+        expect(container).toBeEmptyDOMElement();
+    });
+
+    // Antimatter: recaps need the model connection an admin picked for them (AIRecapsAvailable).
+    test('renders nothing without a model connection for recaps', () => {
+        const {container} = renderWithContext(
+            <MemoryRouter initialEntries={['/team1']}>
+                <Route path='/:team'>
+                    <RecapsLink/>
+                </Route>
+            </MemoryRouter>,
+            {...defaultState, entities: {...defaultState.entities, general: {config: {AIRecapsAvailable: 'false'}}}},
+        );
         expect(container).toBeEmptyDOMElement();
     });
 

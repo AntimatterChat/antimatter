@@ -1,19 +1,16 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {useIntl} from 'react-intl';
 import {useDispatch, useSelector} from 'react-redux';
 
-import {getAgents as fetchAgents} from 'mattermost-redux/actions/agents';
 import {savePreferences} from 'mattermost-redux/actions/preferences';
 import {Client4} from 'mattermost-redux/client';
-import {getAgents} from 'mattermost-redux/selectors/entities/agents';
 import {get as getPreference} from 'mattermost-redux/selectors/entities/preferences';
 import {getCurrentUserId} from 'mattermost-redux/selectors/entities/users';
 
 import {RewriteAction} from 'components/advanced_text_editor/rewrite_action';
-import {useSelectedAgent} from 'components/common/agents';
 
 import type {IconName} from 'fusion/components/icon';
 import {Popover} from 'fusion/components/layer';
@@ -38,18 +35,15 @@ const ACTIONS: AiAction[] = [
 const CATEGORY_FUSION_AI = 'fusion_ai';
 const NAME_LANGUAGE = 'translate_to';
 
-// useAgentsAvailable says whether an AI agent can rewrite messages (the Agents plugin, with an agent).
-export function useAgentsAvailable(): boolean {
-    const dispatch = useDispatch();
-    const agents = useSelector(getAgents);
-    useEffect(() => {
-        dispatch(fetchAgents());
-    }, [dispatch]);
-    return Boolean(agents?.length);
-}
+// Antimatter: the rewrite runs on the model connection an admin picked for it (AI › Built-in features); whether there is
+// one is useAIRewriteAvailable's (the client config's AIRewriteAvailable). No agent is picked any more.
+export {useAIRewriteAvailable} from 'components/common/hooks/useAIFeatures';
 
 type Props = {
     anchor: HTMLElement | null;
+
+    // Whether the server rewrites (a model connection is picked for it); apps' items show either way.
+    canRewrite: boolean;
 
     pluginItems: AIActionMenuItemComponent[];
     pluginProps: AIActionMenuItemProps;
@@ -61,13 +55,11 @@ type Props = {
     onClose: () => void;
 };
 
-// AiRewriteMenu has an AI agent rewrite the message being written, as the mockup's AI menu: improve, fix, shorten,
+// AiRewriteMenu has the AI rewrite the message being written, as the mockup's AI menu: improve, fix, shorten,
 // make more formal, translate; then plugins' AI items (the Agents app's custom prompts and their management).
-export default function AiRewriteMenu({anchor, pluginItems, pluginProps, message, rootId, onRewritten, onError, onBusy, onClose}: Props) {
+export default function AiRewriteMenu({anchor, canRewrite, pluginItems, pluginProps, message, rootId, onRewritten, onError, onBusy, onClose}: Props) {
     const {formatMessage} = useIntl();
     const dispatch = useDispatch();
-    const agents = useSelector(getAgents);
-    const [agentId] = useSelectedAgent(agents);
     const userId = useSelector(getCurrentUserId);
     const lastLanguage = useSelector((state: GlobalState) => getPreference(state, CATEGORY_FUSION_AI, NAME_LANGUAGE, ''));
     const [translating, setTranslating] = useState(false);
@@ -78,7 +70,7 @@ export default function AiRewriteMenu({anchor, pluginItems, pluginProps, message
         onClose();
         onBusy(true);
         try {
-            const result = await Client4.getAIRewrittenMessage(agentId, message, action, custom, rootId);
+            const result = await Client4.getAIRewrittenMessage('', message, action, custom, rootId);
             onRewritten(result, message);
         } catch (e) {
             onError((e as {message?: string})?.message || formatMessage({id: 'fusion.ai.failed', defaultMessage: 'The AI couldn\'t rewrite the message'}));
@@ -105,8 +97,8 @@ export default function AiRewriteMenu({anchor, pluginItems, pluginProps, message
             onClose={onClose}
         >
             <MenuHeading>{formatMessage({id: 'fusion.ai.label', defaultMessage: 'Rewrite with AI'})}</MenuHeading>
-            {!hasText && <p className={am('ai-hint')}>{formatMessage({id: 'fusion.ai.writeFirst', defaultMessage: 'Write your message first.'})}</p>}
-            {ACTIONS.map((a) => (
+            {canRewrite && !hasText && <p className={am('ai-hint')}>{formatMessage({id: 'fusion.ai.writeFirst', defaultMessage: 'Write your message first.'})}</p>}
+            {canRewrite && ACTIONS.map((a) => (
                 <MenuItem
                     key={a.key}
                     icon={a.icon}
@@ -115,7 +107,7 @@ export default function AiRewriteMenu({anchor, pluginItems, pluginProps, message
                     onClick={() => rewrite(a.action, a.prompt)}
                 />
             ))}
-            {!translating && (
+            {canRewrite && !translating && (
                 <MenuItem
                     icon='globe'
                     label={formatMessage({id: 'fusion.ai.translate', defaultMessage: 'Translate…'})}
@@ -123,7 +115,7 @@ export default function AiRewriteMenu({anchor, pluginItems, pluginProps, message
                     onClick={() => setTranslating(true)}
                 />
             )}
-            {translating && (
+            {canRewrite && translating && (
                 <form
                     className={am('ai-prompt')}
                     onSubmit={(e) => {
@@ -140,7 +132,7 @@ export default function AiRewriteMenu({anchor, pluginItems, pluginProps, message
                     />
                 </form>
             )}
-            {pluginItems.length > 0 && <MenuSeparator/>}
+            {canRewrite && pluginItems.length > 0 && <MenuSeparator/>}
             {[...pluginItems].sort((a, b) => a.sortOrder - b.sortOrder).map((item) => {
                 const Component = item.component;
                 if (Component) {
