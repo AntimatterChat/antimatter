@@ -9061,6 +9061,30 @@
     "translation": "Este tópico foi movido de outro canal"
   },
   {
+    "id": "app.post.move_thread.moved_from",
+    "translation": "Este tópico foi movido de [#{{.ChannelName}}]({{.Link}})"
+  },
+  {
+    "id": "app.post.move_thread.moved_from_hidden",
+    "translation": "Este tópico foi movido de [outro canal]({{.Link}})"
+  },
+  {
+    "id": "app.post.move_thread.moved_to.multiple",
+    "translation": "Um tópico com {{.NumMessages}} mensagens foi movido para [#{{.ChannelName}}]({{.Link}})"
+  },
+  {
+    "id": "app.post.move_thread.moved_to.one",
+    "translation": "Uma mensagem foi movida para [#{{.ChannelName}}]({{.Link}})"
+  },
+  {
+    "id": "app.post.move_thread.moved_to_hidden.multiple",
+    "translation": "Um tópico com {{.NumMessages}} mensagens foi movido para [outro canal]({{.Link}})"
+  },
+  {
+    "id": "app.post.move_thread.moved_to_hidden.one",
+    "translation": "Uma mensagem foi movida para [outro canal]({{.Link}})"
+  },
+  {
     "id": "app.post.move_thread_command.channel.multiple_messages",
     "translation": "Foi movido um tópico com {{.NumMessages}} mensagens: {{.Link}}\n"
   },

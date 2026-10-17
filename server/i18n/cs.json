@@ -9075,6 +9075,30 @@
     "translation": "Toto vlákno bylo přesunuto z jiného kanálu"
   },
   {
+    "id": "app.post.move_thread.moved_from",
+    "translation": "Toto vlákno bylo přesunuto z kanálu [#{{.ChannelName}}]({{.Link}})"
+  },
+  {
+    "id": "app.post.move_thread.moved_from_hidden",
+    "translation": "Toto vlákno bylo přesunuto z [jiného kanálu]({{.Link}})"
+  },
+  {
+    "id": "app.post.move_thread.moved_to.multiple",
+    "translation": "Vlákno se {{.NumMessages}} zprávami bylo přesunuto do kanálu [#{{.ChannelName}}]({{.Link}})"
+  },
+  {
+    "id": "app.post.move_thread.moved_to.one",
+    "translation": "Zpráva byla přesunuta do kanálu [#{{.ChannelName}}]({{.Link}})"
+  },
+  {
+    "id": "app.post.move_thread.moved_to_hidden.multiple",
+    "translation": "Vlákno se {{.NumMessages}} zprávami bylo přesunuto do [jiného kanálu]({{.Link}})"
+  },
+  {
+    "id": "app.post.move_thread.moved_to_hidden.one",
+    "translation": "Zpráva byla přesunuta do [jiného kanálu]({{.Link}})"
+  },
+  {
     "id": "app.post.move_thread_command.channel.multiple_messages",
     "translation": "Vlákno s {{.NumMessages}} zprávami bylo přesunuto: {{.Link}}\n"
   },

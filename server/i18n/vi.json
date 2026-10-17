@@ -9054,6 +9054,30 @@
     "translation": "Chủ đề này đã được di chuyển từ một kênh khác"
   },
   {
+    "id": "app.post.move_thread.moved_from",
+    "translation": "Chủ đề này đã được chuyển từ [#{{.ChannelName}}]({{.Link}})"
+  },
+  {
+    "id": "app.post.move_thread.moved_from_hidden",
+    "translation": "Chủ đề này đã được chuyển từ [một kênh khác]({{.Link}})"
+  },
+  {
+    "id": "app.post.move_thread.moved_to.multiple",
+    "translation": "Một chủ đề gồm {{.NumMessages}} tin nhắn đã được chuyển đến [#{{.ChannelName}}]({{.Link}})"
+  },
+  {
+    "id": "app.post.move_thread.moved_to.one",
+    "translation": "Một tin nhắn đã được chuyển đến [#{{.ChannelName}}]({{.Link}})"
+  },
+  {
+    "id": "app.post.move_thread.moved_to_hidden.multiple",
+    "translation": "Một chủ đề gồm {{.NumMessages}} tin nhắn đã được chuyển đến [một kênh khác]({{.Link}})"
+  },
+  {
+    "id": "app.post.move_thread.moved_to_hidden.one",
+    "translation": "Một tin nhắn đã được chuyển đến [một kênh khác]({{.Link}})"
+  },
+  {
     "id": "app.post.move_thread_command.channel.multiple_messages",
     "translation": "Một chủ đề với {{.NumMessages}} tin nhắn đã được di chuyển: {{.Link}}\n"
   },

@@ -8608,6 +8608,30 @@
     "translation": "यह थ्रेड किसी अन्य चैनल से यहाँ लाया गया"
   },
   {
+    "id": "app.post.move_thread.moved_from",
+    "translation": "यह थ्रेड [#{{.ChannelName}}]({{.Link}}) से हटाया गया"
+  },
+  {
+    "id": "app.post.move_thread.moved_from_hidden",
+    "translation": "यह थ्रेड [एक अन्य चैनल]({{.Link}}) से हटाया गया"
+  },
+  {
+    "id": "app.post.move_thread.moved_to.multiple",
+    "translation": "{{.NumMessages}} संदेशों वाला थ्रेड [#{{.ChannelName}}]({{.Link}}) में स्थानांतरित किया गया"
+  },
+  {
+    "id": "app.post.move_thread.moved_to.one",
+    "translation": "एक संदेश [#{{.ChannelName}}]({{.Link}}) में स्थानांतरित किया गया"
+  },
+  {
+    "id": "app.post.move_thread.moved_to_hidden.multiple",
+    "translation": "{{.NumMessages}} संदेशों वाला थ्रेड [एक अन्य चैनल]({{.Link}}) में स्थानांतरित किया गया"
+  },
+  {
+    "id": "app.post.move_thread.moved_to_hidden.one",
+    "translation": "एक संदेश [एक अन्य चैनल]({{.Link}}) में स्थानांतरित किया गया"
+  },
+  {
     "id": "app.post.move_thread_command.channel.multiple_messages",
     "translation": "{{.NumMessages}} संदेशों वाला थ्रेड यहाँ लाया गया: {{.Link}}\n"
   },

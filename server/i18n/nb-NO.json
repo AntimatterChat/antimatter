@@ -9061,6 +9061,30 @@
     "translation": "Denne tråden ble flyttet fra en annen kanal"
   },
   {
+    "id": "app.post.move_thread.moved_from",
+    "translation": "Denne tråden ble flyttet fra [#{{.ChannelName}}]({{.Link}})"
+  },
+  {
+    "id": "app.post.move_thread.moved_from_hidden",
+    "translation": "Denne tråden ble flyttet fra [en annen kanal]({{.Link}})"
+  },
+  {
+    "id": "app.post.move_thread.moved_to.multiple",
+    "translation": "En tråd med {{.NumMessages}} meldinger ble flyttet til [#{{.ChannelName}}]({{.Link}})"
+  },
+  {
+    "id": "app.post.move_thread.moved_to.one",
+    "translation": "En melding ble flyttet til [#{{.ChannelName}}]({{.Link}})"
+  },
+  {
+    "id": "app.post.move_thread.moved_to_hidden.multiple",
+    "translation": "En tråd med {{.NumMessages}} meldinger ble flyttet til [en annen kanal]({{.Link}})"
+  },
+  {
+    "id": "app.post.move_thread.moved_to_hidden.one",
+    "translation": "En melding ble flyttet til [en annen kanal]({{.Link}})"
+  },
+  {
     "id": "app.post.move_thread_command.channel.multiple_messages",
     "translation": "En tråd med {{.NumMessages}} meldinger er flyttet: {{.Link}}\n"
   },

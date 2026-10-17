@@ -9061,6 +9061,30 @@
     "translation": "Questo thread è stato spostato da un altro canale"
   },
   {
+    "id": "app.post.move_thread.moved_from",
+    "translation": "Questo thread è stato spostato da [#{{.ChannelName}}]({{.Link}})"
+  },
+  {
+    "id": "app.post.move_thread.moved_from_hidden",
+    "translation": "Questo thread è stato spostato da [un altro canale]({{.Link}})"
+  },
+  {
+    "id": "app.post.move_thread.moved_to.multiple",
+    "translation": "Un thread con {{.NumMessages}} messaggi è stato spostato in [#{{.ChannelName}}]({{.Link}})"
+  },
+  {
+    "id": "app.post.move_thread.moved_to.one",
+    "translation": "Un messaggio è stato spostato in [#{{.ChannelName}}]({{.Link}})"
+  },
+  {
+    "id": "app.post.move_thread.moved_to_hidden.multiple",
+    "translation": "Un thread con {{.NumMessages}} messaggi è stato spostato in [un altro canale]({{.Link}})"
+  },
+  {
+    "id": "app.post.move_thread.moved_to_hidden.one",
+    "translation": "Un messaggio è stato spostato in [un altro canale]({{.Link}})"
+  },
+  {
     "id": "app.post.move_thread_command.channel.multiple_messages",
     "translation": "Un thread con {{.NumMessages}} messaggi è stato spostato: {{.Link}}\n"
   },

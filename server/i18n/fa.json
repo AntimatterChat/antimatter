@@ -9061,6 +9061,30 @@
     "translation": "این موضوع از کانال دیگری منتقل شده است"
   },
   {
+    "id": "app.post.move_thread.moved_from",
+    "translation": "این رشته از [#{{.ChannelName}}]({{.Link}}) جابه‌جا شده است"
+  },
+  {
+    "id": "app.post.move_thread.moved_from_hidden",
+    "translation": "این رشته از [یک کانال دیگر]({{.Link}}) جابه‌جا شده است"
+  },
+  {
+    "id": "app.post.move_thread.moved_to.multiple",
+    "translation": "رشته‌ای با {{.NumMessages}} پیام به [#{{.ChannelName}}]({{.Link}}) جابه‌جا شده است"
+  },
+  {
+    "id": "app.post.move_thread.moved_to.one",
+    "translation": "یک پیام به [#{{.ChannelName}}]({{.Link}}) جابه‌جا شده است"
+  },
+  {
+    "id": "app.post.move_thread.moved_to_hidden.multiple",
+    "translation": "رشته‌ای با {{.NumMessages}} پیام به [یک کانال دیگر]({{.Link}}) جابه‌جا شده است"
+  },
+  {
+    "id": "app.post.move_thread.moved_to_hidden.one",
+    "translation": "یک پیام به [یک کانال دیگر]({{.Link}}) جابه‌جا شده است"
+  },
+  {
     "id": "app.post.move_thread_command.channel.multiple_messages",
     "translation": "موضوعی با {{.NumMessages}} پیام منتقل شد: {{.Link}}\n"
   },

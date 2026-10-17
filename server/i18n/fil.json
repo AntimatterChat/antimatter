@@ -8608,6 +8608,30 @@
     "translation": "Inilipat ang Thread na ito mula sa ibang Channel"
   },
   {
+    "id": "app.post.move_thread.moved_from",
+    "translation": "Inilipat ang thread na ito mula sa [#{{.ChannelName}}]({{.Link}})"
+  },
+  {
+    "id": "app.post.move_thread.moved_from_hidden",
+    "translation": "Inilipat ang thread na ito mula sa [ibang channel]({{.Link}})"
+  },
+  {
+    "id": "app.post.move_thread.moved_to.multiple",
+    "translation": "Inilipat ang thread na may {{.NumMessages}} na mensahe sa [#{{.ChannelName}}]({{.Link}})"
+  },
+  {
+    "id": "app.post.move_thread.moved_to.one",
+    "translation": "Inilipat ang mensahe sa [#{{.ChannelName}}]({{.Link}})"
+  },
+  {
+    "id": "app.post.move_thread.moved_to_hidden.multiple",
+    "translation": "Inilipat ang thread na may {{.NumMessages}} na mensahe sa [ibang channel]({{.Link}})"
+  },
+  {
+    "id": "app.post.move_thread.moved_to_hidden.one",
+    "translation": "Inilipat ang mensahe sa [ibang channel]({{.Link}})"
+  },
+  {
     "id": "app.post.move_thread_command.channel.multiple_messages",
     "translation": "Inilipat ang isang Thread na may {{.NumMessages}} na mensahe: {{.Link}}\n"
   },

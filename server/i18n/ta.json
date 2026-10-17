@@ -8608,6 +8608,30 @@
     "translation": "இந்த த்ரெட் மற்றொரு சேனலிலிருந்து நகர்த்தப்பட்டது"
   },
   {
+    "id": "app.post.move_thread.moved_from",
+    "translation": "இந்த த்ரெட் [#{{.ChannelName}}]({{.Link}}) சேனலிலிருந்து நகர்த்தப்பட்டது"
+  },
+  {
+    "id": "app.post.move_thread.moved_from_hidden",
+    "translation": "இந்த த்ரெட் [மற்றொரு சேனலிலிருந்து]({{.Link}}) நகர்த்தப்பட்டது"
+  },
+  {
+    "id": "app.post.move_thread.moved_to.multiple",
+    "translation": "{{.NumMessages}} செய்திகள் கொண்ட ஒரு த்ரெட் [#{{.ChannelName}}]({{.Link}}) சேனலுக்கு நகர்த்தப்பட்டது"
+  },
+  {
+    "id": "app.post.move_thread.moved_to.one",
+    "translation": "ஒரு செய்தி [#{{.ChannelName}}]({{.Link}}) சேனலுக்கு நகர்த்தப்பட்டது"
+  },
+  {
+    "id": "app.post.move_thread.moved_to_hidden.multiple",
+    "translation": "{{.NumMessages}} செய்திகள் கொண்ட ஒரு த்ரெட் [மற்றொரு சேனலுக்கு]({{.Link}}) நகர்த்தப்பட்டது"
+  },
+  {
+    "id": "app.post.move_thread.moved_to_hidden.one",
+    "translation": "ஒரு செய்தி [மற்றொரு சேனலுக்கு]({{.Link}}) நகர்த்தப்பட்டது"
+  },
+  {
     "id": "app.post.move_thread_command.channel.multiple_messages",
     "translation": "{{.NumMessages}} செய்திகளுடன் கூடிய த்ரெட் நகர்த்தப்பட்டது: {{.Link}}\n"
   },

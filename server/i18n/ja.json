@@ -8970,6 +8970,30 @@
     "translation": "このスレッドは別のチャンネルから移動されました"
   },
   {
+    "id": "app.post.move_thread.moved_from",
+    "translation": "このスレッドは [#{{.ChannelName}}]({{.Link}}) から移動されました"
+  },
+  {
+    "id": "app.post.move_thread.moved_from_hidden",
+    "translation": "このスレッドは [別のチャンネル]({{.Link}}) から移動されました"
+  },
+  {
+    "id": "app.post.move_thread.moved_to.multiple",
+    "translation": "{{.NumMessages}}件のメッセージを含むスレッドが [#{{.ChannelName}}]({{.Link}}) に移動されました"
+  },
+  {
+    "id": "app.post.move_thread.moved_to.one",
+    "translation": "メッセージが [#{{.ChannelName}}]({{.Link}}) に移動されました"
+  },
+  {
+    "id": "app.post.move_thread.moved_to_hidden.multiple",
+    "translation": "{{.NumMessages}}件のメッセージを含むスレッドが [別のチャンネル]({{.Link}}) に移動されました"
+  },
+  {
+    "id": "app.post.move_thread.moved_to_hidden.one",
+    "translation": "メッセージが [別のチャンネル]({{.Link}}) に移動されました"
+  },
+  {
     "id": "app.post.move_thread_command.channel.multiple_messages",
     "translation": "{{.NumMessages}} メッセージのあるスレッドが移動されました: {{.Link}}\n"
   },

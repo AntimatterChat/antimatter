@@ -8608,6 +8608,30 @@
     "translation": "Bebenang ini telah dipindahkan dari saluran lain"
   },
   {
+    "id": "app.post.move_thread.moved_from",
+    "translation": "Bebenang ini telah dipindahkan dari [#{{.ChannelName}}]({{.Link}})"
+  },
+  {
+    "id": "app.post.move_thread.moved_from_hidden",
+    "translation": "Bebenang ini telah dipindahkan dari [saluran lain]({{.Link}})"
+  },
+  {
+    "id": "app.post.move_thread.moved_to.multiple",
+    "translation": "Bebenang dengan {{.NumMessages}} mesej telah dipindahkan ke [#{{.ChannelName}}]({{.Link}})"
+  },
+  {
+    "id": "app.post.move_thread.moved_to.one",
+    "translation": "Mesej telah dipindahkan ke [#{{.ChannelName}}]({{.Link}})"
+  },
+  {
+    "id": "app.post.move_thread.moved_to_hidden.multiple",
+    "translation": "Bebenang dengan {{.NumMessages}} mesej telah dipindahkan ke [saluran lain]({{.Link}})"
+  },
+  {
+    "id": "app.post.move_thread.moved_to_hidden.one",
+    "translation": "Mesej telah dipindahkan ke [saluran lain]({{.Link}})"
+  },
+  {
     "id": "app.post.move_thread_command.channel.multiple_messages",
     "translation": "Bebenang dengan {{.NumMessages}} mesej telah dipindahkan: {{.Link}}\n"
   },

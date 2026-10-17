@@ -9061,6 +9061,30 @@
     "translation": "Diese Unterhaltung wurde von einem anderen Kanal verschoben"
   },
   {
+    "id": "app.post.move_thread.moved_from",
+    "translation": "Dieser Thread wurde aus [#{{.ChannelName}}]({{.Link}}) verschoben"
+  },
+  {
+    "id": "app.post.move_thread.moved_from_hidden",
+    "translation": "Dieser Thread wurde aus [einem anderen Kanal]({{.Link}}) verschoben"
+  },
+  {
+    "id": "app.post.move_thread.moved_to.multiple",
+    "translation": "Ein Thread mit {{.NumMessages}} Nachrichten wurde nach [#{{.ChannelName}}]({{.Link}}) verschoben"
+  },
+  {
+    "id": "app.post.move_thread.moved_to.one",
+    "translation": "Eine Nachricht wurde nach [#{{.ChannelName}}]({{.Link}}) verschoben"
+  },
+  {
+    "id": "app.post.move_thread.moved_to_hidden.multiple",
+    "translation": "Ein Thread mit {{.NumMessages}} Nachrichten wurde nach [einem anderen Kanal]({{.Link}}) verschoben"
+  },
+  {
+    "id": "app.post.move_thread.moved_to_hidden.one",
+    "translation": "Eine Nachricht wurde nach [einem anderen Kanal]({{.Link}}) verschoben"
+  },
+  {
     "id": "app.post.move_thread_command.channel.multiple_messages",
     "translation": "Eine Unterhaltung mit {{.NumMessages}} Nachrichten wurde verschoben: {{.Link}}\n"
   },

@@ -8962,6 +8962,30 @@
     "translation": "이 스레드가 다른 채널에서 이동되었습니다."
   },
   {
+    "id": "app.post.move_thread.moved_from",
+    "translation": "이 글타래는 [#{{.ChannelName}}]({{.Link}})에서 이동되었습니다"
+  },
+  {
+    "id": "app.post.move_thread.moved_from_hidden",
+    "translation": "이 글타래는 [다른 채널]({{.Link}})에서 이동되었습니다"
+  },
+  {
+    "id": "app.post.move_thread.moved_to.multiple",
+    "translation": "{{.NumMessages}}개의 메시지가 포함된 글타래가 [#{{.ChannelName}}]({{.Link}})으로 이동되었습니다"
+  },
+  {
+    "id": "app.post.move_thread.moved_to.one",
+    "translation": "메시지가 [#{{.ChannelName}}]({{.Link}})으로 이동되었습니다"
+  },
+  {
+    "id": "app.post.move_thread.moved_to_hidden.multiple",
+    "translation": "{{.NumMessages}}개의 메시지가 포함된 글타래가 [다른 채널]({{.Link}})으로 이동되었습니다"
+  },
+  {
+    "id": "app.post.move_thread.moved_to_hidden.one",
+    "translation": "메시지가 [다른 채널]({{.Link}})으로 이동되었습니다"
+  },
+  {
     "id": "app.post.move_thread_command.channel.multiple_messages",
     "translation": "{{.NumMessages}}개 메시지가 있는 글타래가 이동되었습니다: {{.Link}}\n"
   },

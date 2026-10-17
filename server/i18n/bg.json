@@ -9061,6 +9061,30 @@
     "translation": "Този разговор беше преместен от друг канал"
   },
   {
+    "id": "app.post.move_thread.moved_from",
+    "translation": "Тази нишка е преместена от [#{{.ChannelName}}]({{.Link}})"
+  },
+  {
+    "id": "app.post.move_thread.moved_from_hidden",
+    "translation": "Тази нишка е преместена от [друг канал]({{.Link}})"
+  },
+  {
+    "id": "app.post.move_thread.moved_to.multiple",
+    "translation": "Нишка с {{.NumMessages}} съобщения е преместена в [#{{.ChannelName}}]({{.Link}})"
+  },
+  {
+    "id": "app.post.move_thread.moved_to.one",
+    "translation": "Съобщение е преместено в [#{{.ChannelName}}]({{.Link}})"
+  },
+  {
+    "id": "app.post.move_thread.moved_to_hidden.multiple",
+    "translation": "Нишка с {{.NumMessages}} съобщения е преместена в [друг канал]({{.Link}})"
+  },
+  {
+    "id": "app.post.move_thread.moved_to_hidden.one",
+    "translation": "Съобщение е преместено в [друг канал]({{.Link}})"
+  },
+  {
     "id": "app.post.move_thread_command.channel.multiple_messages",
     "translation": "Разговор с {{.NumMessages}} съобщения беше преместен: {{.Link}}\n"
   },

@@ -9075,6 +9075,30 @@
     "translation": "Это обсуждение было перенесено с другого канала"
   },
   {
+    "id": "app.post.move_thread.moved_from",
+    "translation": "Это обсуждение было перемещено из [#{{.ChannelName}}]({{.Link}})"
+  },
+  {
+    "id": "app.post.move_thread.moved_from_hidden",
+    "translation": "Это обсуждение было перемещено из [другого канала]({{.Link}})"
+  },
+  {
+    "id": "app.post.move_thread.moved_to.multiple",
+    "translation": "Обсуждение с {{.NumMessages}} сообщениями было перемещено в [#{{.ChannelName}}]({{.Link}})"
+  },
+  {
+    "id": "app.post.move_thread.moved_to.one",
+    "translation": "Сообщение было перемещено в [#{{.ChannelName}}]({{.Link}})"
+  },
+  {
+    "id": "app.post.move_thread.moved_to_hidden.multiple",
+    "translation": "Обсуждение с {{.NumMessages}} сообщениями было перемещено в [другой канал]({{.Link}})"
+  },
+  {
+    "id": "app.post.move_thread.moved_to_hidden.one",
+    "translation": "Сообщение было перемещено в [другой канал]({{.Link}})"
+  },
+  {
     "id": "app.post.move_thread_command.channel.multiple_messages",
     "translation": "Обсуждение с сообщениями {{.NumMessages}} было перемещено: {{.Link}}\n"
   },

@@ -9061,6 +9061,30 @@
     "translation": "Dit draadje was verplaatst vanuit een ander kanaal"
   },
   {
+    "id": "app.post.move_thread.moved_from",
+    "translation": "Dit draadje is verplaatst vanuit [#{{.ChannelName}}]({{.Link}})"
+  },
+  {
+    "id": "app.post.move_thread.moved_from_hidden",
+    "translation": "Dit draadje is verplaatst vanuit [een ander kanaal]({{.Link}})"
+  },
+  {
+    "id": "app.post.move_thread.moved_to.multiple",
+    "translation": "Een draadje met {{.NumMessages}} berichten is verplaatst naar [#{{.ChannelName}}]({{.Link}})"
+  },
+  {
+    "id": "app.post.move_thread.moved_to.one",
+    "translation": "Een bericht is verplaatst naar [#{{.ChannelName}}]({{.Link}})"
+  },
+  {
+    "id": "app.post.move_thread.moved_to_hidden.multiple",
+    "translation": "Een draadje met {{.NumMessages}} berichten is verplaatst naar [een ander kanaal]({{.Link}})"
+  },
+  {
+    "id": "app.post.move_thread.moved_to_hidden.one",
+    "translation": "Een bericht is verplaatst naar [een ander kanaal]({{.Link}})"
+  },
+  {
     "id": "app.post.move_thread_command.channel.multiple_messages",
     "translation": "Een draadje met {{.NumMessages}} berichten is verplaatst: {{.Link}}\n"
   },

@@ -9061,6 +9061,30 @@
     "translation": "Ez az üzenetszál egy másik csatornából lett áthelyezve"
   },
   {
+    "id": "app.post.move_thread.moved_from",
+    "translation": "Ez az üzenetszál a(z) [#{{.ChannelName}}]({{.Link}}) csatornából lett áthelyezve"
+  },
+  {
+    "id": "app.post.move_thread.moved_from_hidden",
+    "translation": "Ez az üzenetszál [egy másik csatornából]({{.Link}}) került ide"
+  },
+  {
+    "id": "app.post.move_thread.moved_to.multiple",
+    "translation": "Egy {{.NumMessages}} üzenetes szál a(z) [#{{.ChannelName}}]({{.Link}}) csatornába lett áthelyezve"
+  },
+  {
+    "id": "app.post.move_thread.moved_to.one",
+    "translation": "Egy üzenet a(z) [#{{.ChannelName}}]({{.Link}}) csatornába lett áthelyezve"
+  },
+  {
+    "id": "app.post.move_thread.moved_to_hidden.multiple",
+    "translation": "A(z) {{.NumMessages}} üzenetes üzenetszál átkerült [egy másik csatornába]({{.Link}})"
+  },
+  {
+    "id": "app.post.move_thread.moved_to_hidden.one",
+    "translation": "Egy üzenet átkerült [egy másik csatornába]({{.Link}})"
+  },
+  {
     "id": "app.post.move_thread_command.channel.multiple_messages",
     "translation": "Egy {{.NumMessages}} üzenetet tartalmazó üzenetszál át lett helyezve: {{.Link}}\n"
   },

@@ -9061,6 +9061,30 @@
     "translation": "Este hilo fue movido desde otro canal"
   },
   {
+    "id": "app.post.move_thread.moved_from",
+    "translation": "Este hilo se movió desde [#{{.ChannelName}}]({{.Link}})"
+  },
+  {
+    "id": "app.post.move_thread.moved_from_hidden",
+    "translation": "Este hilo se movió desde [otro canal]({{.Link}})"
+  },
+  {
+    "id": "app.post.move_thread.moved_to.multiple",
+    "translation": "Un hilo con {{.NumMessages}} mensajes se movió a [#{{.ChannelName}}]({{.Link}})"
+  },
+  {
+    "id": "app.post.move_thread.moved_to.one",
+    "translation": "Un mensaje se movió a [#{{.ChannelName}}]({{.Link}})"
+  },
+  {
+    "id": "app.post.move_thread.moved_to_hidden.multiple",
+    "translation": "Un hilo con {{.NumMessages}} mensajes se movió a [otro canal]({{.Link}})"
+  },
+  {
+    "id": "app.post.move_thread.moved_to_hidden.one",
+    "translation": "Un mensaje se movió a [otro canal]({{.Link}})"
+  },
+  {
     "id": "app.post.move_thread_command.channel.multiple_messages",
     "translation": "Se ha movido un hilo con {{.NumMessages}} mensajes: {{.Link}}\n"
   },

@@ -9075,6 +9075,30 @@
     "translation": "Ten wątek został przeniesiony z innego kanału"
   },
   {
+    "id": "app.post.move_thread.moved_from",
+    "translation": "Ten wątek został przeniesiony z kanału [#{{.ChannelName}}]({{.Link}})"
+  },
+  {
+    "id": "app.post.move_thread.moved_from_hidden",
+    "translation": "Ten wątek został przeniesiony z [innego kanału]({{.Link}})"
+  },
+  {
+    "id": "app.post.move_thread.moved_to.multiple",
+    "translation": "Wątek z {{.NumMessages}} wiadomościami został przeniesiony do kanału [#{{.ChannelName}}]({{.Link}})"
+  },
+  {
+    "id": "app.post.move_thread.moved_to.one",
+    "translation": "Wiadomość została przeniesiona do kanału [#{{.ChannelName}}]({{.Link}})"
+  },
+  {
+    "id": "app.post.move_thread.moved_to_hidden.multiple",
+    "translation": "Wątek z {{.NumMessages}} wiadomościami został przeniesiony do [innego kanału]({{.Link}})"
+  },
+  {
+    "id": "app.post.move_thread.moved_to_hidden.one",
+    "translation": "Wiadomość została przeniesiona do [innego kanału]({{.Link}})"
+  },
+  {
     "id": "app.post.move_thread_command.channel.multiple_messages",
     "translation": "Wątek z wiadomościami {{.NumMessages}} został przeniesiony: {{.Link}}\n"
   },

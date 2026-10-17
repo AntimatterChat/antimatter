@@ -9054,6 +9054,30 @@
     "translation": "此討論串係從其他頻道移動過來"
   },
   {
+    "id": "app.post.move_thread.moved_from",
+    "translation": "此討論串已從 [#{{.ChannelName}}]({{.Link}}) 移入"
+  },
+  {
+    "id": "app.post.move_thread.moved_from_hidden",
+    "translation": "此討論串已從 [另一個頻道]({{.Link}}) 移入"
+  },
+  {
+    "id": "app.post.move_thread.moved_to.multiple",
+    "translation": "包含 {{.NumMessages}} 則訊息的討論串已移至 [#{{.ChannelName}}]({{.Link}})"
+  },
+  {
+    "id": "app.post.move_thread.moved_to.one",
+    "translation": "一則訊息已移至 [#{{.ChannelName}}]({{.Link}})"
+  },
+  {
+    "id": "app.post.move_thread.moved_to_hidden.multiple",
+    "translation": "包含 {{.NumMessages}} 則訊息的討論串已移至 [另一個頻道]({{.Link}})"
+  },
+  {
+    "id": "app.post.move_thread.moved_to_hidden.one",
+    "translation": "一則訊息已移至 [另一個頻道]({{.Link}})"
+  },
+  {
     "id": "app.post.move_thread_command.channel.multiple_messages",
     "translation": "具有 {{.NumMessages}} 則訊息的討論串已移動：{{.Link}}\n"
   },

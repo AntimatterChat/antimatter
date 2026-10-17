@@ -8608,6 +8608,30 @@
     "translation": "এই থ্রেডটি অন্য একটি চ্যানেল থেকে সরানো হয়েছে"
   },
   {
+    "id": "app.post.move_thread.moved_from",
+    "translation": "এই থ্রেডটি [#{{.ChannelName}}]({{.Link}}) থেকে সরানো হয়েছে"
+  },
+  {
+    "id": "app.post.move_thread.moved_from_hidden",
+    "translation": "এই থ্রেডটি [অন্য চ্যানেল]({{.Link}}) থেকে সরানো হয়েছে"
+  },
+  {
+    "id": "app.post.move_thread.moved_to.multiple",
+    "translation": "{{.NumMessages}}টি ম্যাসেজসহ একটি থ্রেড [#{{.ChannelName}}]({{.Link}}) এ সরানো হয়েছে"
+  },
+  {
+    "id": "app.post.move_thread.moved_to.one",
+    "translation": "একটি ম্যাসেজ [#{{.ChannelName}}]({{.Link}}) এ সরানো হয়েছে"
+  },
+  {
+    "id": "app.post.move_thread.moved_to_hidden.multiple",
+    "translation": "{{.NumMessages}}টি ম্যাসেজসহ একটি থ্রেড [অন্য চ্যানেল]({{.Link}}) এ সরানো হয়েছে"
+  },
+  {
+    "id": "app.post.move_thread.moved_to_hidden.one",
+    "translation": "একটি ম্যাসেজ [অন্য চ্যানেল]({{.Link}}) এ সরানো হয়েছে"
+  },
+  {
     "id": "app.post.move_thread_command.channel.multiple_messages",
     "translation": "{{.NumMessages}}টি মেসেজসহ একটি থ্রেড সরানো হয়েছে: {{.Link}}\n"
   },

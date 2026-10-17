@@ -9054,6 +9054,30 @@
     "translation": "此话题移动自其他频道"
   },
   {
+    "id": "app.post.move_thread.moved_from",
+    "translation": "该话题已从 [#{{.ChannelName}}]({{.Link}}) 移动"
+  },
+  {
+    "id": "app.post.move_thread.moved_from_hidden",
+    "translation": "该话题已从[其他频道]({{.Link}}) 移动"
+  },
+  {
+    "id": "app.post.move_thread.moved_to.multiple",
+    "translation": "包含 {{.NumMessages}} 条消息的话题已移动到 [#{{.ChannelName}}]({{.Link}})"
+  },
+  {
+    "id": "app.post.move_thread.moved_to.one",
+    "translation": "一条消息已移动到 [#{{.ChannelName}}]({{.Link}})"
+  },
+  {
+    "id": "app.post.move_thread.moved_to_hidden.multiple",
+    "translation": "包含 {{.NumMessages}} 条消息的话题已移动到[其他频道]({{.Link}})"
+  },
+  {
+    "id": "app.post.move_thread.moved_to_hidden.one",
+    "translation": "一条消息已移动到[其他频道]({{.Link}})"
+  },
+  {
     "id": "app.post.move_thread_command.channel.multiple_messages",
     "translation": "一个包含 {{.NumMessages}} 条消息的话题已被移动：{{.Link}}\n"
   },

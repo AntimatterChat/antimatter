@@ -9061,6 +9061,30 @@
     "translation": "Tämä ketju siirrettiin toisesta kanavasta"
   },
   {
+    "id": "app.post.move_thread.moved_from",
+    "translation": "Tämä ketju siirrettiin kanavasta [#{{.ChannelName}}]({{.Link}})"
+  },
+  {
+    "id": "app.post.move_thread.moved_from_hidden",
+    "translation": "Tämä ketju siirrettiin [toisesta kanavasta]({{.Link}})"
+  },
+  {
+    "id": "app.post.move_thread.moved_to.multiple",
+    "translation": "Ketju, jossa on {{.NumMessages}} viestiä, siirrettiin kanavaan [#{{.ChannelName}}]({{.Link}})"
+  },
+  {
+    "id": "app.post.move_thread.moved_to.one",
+    "translation": "Viesti siirrettiin kanavaan [#{{.ChannelName}}]({{.Link}})"
+  },
+  {
+    "id": "app.post.move_thread.moved_to_hidden.multiple",
+    "translation": "Ketju, jossa on {{.NumMessages}} viestiä, siirrettiin [toiseen kanavaan]({{.Link}})"
+  },
+  {
+    "id": "app.post.move_thread.moved_to_hidden.one",
+    "translation": "Viesti siirrettiin [toiseen kanavaan]({{.Link}})"
+  },
+  {
     "id": "app.post.move_thread_command.channel.multiple_messages",
     "translation": "Ketju, jossa on {{.NumMessages}} viestiä, on siirretty: {{.Link}}\n"
   },

@@ -9061,6 +9061,30 @@
     "translation": "Bu konu başka bir kanaldan taşınmış"
   },
   {
+    "id": "app.post.move_thread.moved_from",
+    "translation": "Bu konu [#{{.ChannelName}}]({{.Link}}) kanalından taşındı"
+  },
+  {
+    "id": "app.post.move_thread.moved_from_hidden",
+    "translation": "Bu konu [başka bir kanal]({{.Link}})dan taşındı"
+  },
+  {
+    "id": "app.post.move_thread.moved_to.multiple",
+    "translation": "{{.NumMessages}} iletiden oluşan bir konu [#{{.ChannelName}}]({{.Link}}) kanalına taşındı"
+  },
+  {
+    "id": "app.post.move_thread.moved_to.one",
+    "translation": "Bir ileti [#{{.ChannelName}}]({{.Link}}) kanalına taşındı"
+  },
+  {
+    "id": "app.post.move_thread.moved_to_hidden.multiple",
+    "translation": "{{.NumMessages}} iletiden oluşan bir konu [başka bir kanal]({{.Link}})a taşındı"
+  },
+  {
+    "id": "app.post.move_thread.moved_to_hidden.one",
+    "translation": "Bir ileti [başka bir kanal]({{.Link}})a taşındı"
+  },
+  {
     "id": "app.post.move_thread_command.channel.multiple_messages",
     "translation": "{{.NumMessages}} ileti bulunan bir konu taşındı: {{.Link}}\n"
   },

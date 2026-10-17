@@ -9068,6 +9068,30 @@
     "translation": "Acest fir a fost mutat din alt canal"
   },
   {
+    "id": "app.post.move_thread.moved_from",
+    "translation": "Acest fir de discuție a fost mutat din [#{{.ChannelName}}]({{.Link}})"
+  },
+  {
+    "id": "app.post.move_thread.moved_from_hidden",
+    "translation": "Acest fir de discuție a fost mutat din [alt canal]({{.Link}})"
+  },
+  {
+    "id": "app.post.move_thread.moved_to.multiple",
+    "translation": "Un fir de discuție cu {{.NumMessages}} mesaje a fost mutat în [#{{.ChannelName}}]({{.Link}})"
+  },
+  {
+    "id": "app.post.move_thread.moved_to.one",
+    "translation": "Un mesaj a fost mutat în [#{{.ChannelName}}]({{.Link}})"
+  },
+  {
+    "id": "app.post.move_thread.moved_to_hidden.multiple",
+    "translation": "Un fir de discuție cu {{.NumMessages}} mesaje a fost mutat în [alt canal]({{.Link}})"
+  },
+  {
+    "id": "app.post.move_thread.moved_to_hidden.one",
+    "translation": "Un mesaj a fost mutat în [alt canal]({{.Link}})"
+  },
+  {
     "id": "app.post.move_thread_command.channel.multiple_messages",
     "translation": "Un fir cu {{.NumMessages}} mesaje a fost mutat: {{.Link}}\n"
   },

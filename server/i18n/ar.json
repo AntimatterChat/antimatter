@@ -8608,6 +8608,30 @@
     "translation": "تم نقل هذه السلسلة من قناة أخرى"
   },
   {
+    "id": "app.post.move_thread.moved_from",
+    "translation": "تم نقل هذه السلسلة من [#{{.ChannelName}}]({{.Link}})"
+  },
+  {
+    "id": "app.post.move_thread.moved_from_hidden",
+    "translation": "تم نقل هذه السلسلة من [قناة أخرى]({{.Link}})"
+  },
+  {
+    "id": "app.post.move_thread.moved_to.multiple",
+    "translation": "تم نقل سلسلة تحتوي على {{.NumMessages}} رسائل إلى [#{{.ChannelName}}]({{.Link}})"
+  },
+  {
+    "id": "app.post.move_thread.moved_to.one",
+    "translation": "تم نقل رسالة إلى [#{{.ChannelName}}]({{.Link}})"
+  },
+  {
+    "id": "app.post.move_thread.moved_to_hidden.multiple",
+    "translation": "تم نقل سلسلة تحتوي على {{.NumMessages}} رسائل إلى [قناة أخرى]({{.Link}})"
+  },
+  {
+    "id": "app.post.move_thread.moved_to_hidden.one",
+    "translation": "تم نقل رسالة إلى [قناة أخرى]({{.Link}})"
+  },
+  {
     "id": "app.post.move_thread_command.channel.multiple_messages",
     "translation": "تم نقل سلسلة تحتوي على {{.NumMessages}} رسائل: {{.Link}}\n"
   },

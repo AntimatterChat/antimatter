@@ -9061,6 +9061,30 @@
     "translation": "Ce fil a été déplacé à partir d’un autre canal"
   },
   {
+    "id": "app.post.move_thread.moved_from",
+    "translation": "Ce fil de discussion a été déplacé depuis [#{{.ChannelName}}]({{.Link}})"
+  },
+  {
+    "id": "app.post.move_thread.moved_from_hidden",
+    "translation": "Ce fil de discussion a été déplacé depuis [un autre canal]({{.Link}})"
+  },
+  {
+    "id": "app.post.move_thread.moved_to.multiple",
+    "translation": "Un fil de discussion avec {{.NumMessages}} messages a été déplacé vers [#{{.ChannelName}}]({{.Link}})"
+  },
+  {
+    "id": "app.post.move_thread.moved_to.one",
+    "translation": "Un message a été déplacé vers [#{{.ChannelName}}]({{.Link}})"
+  },
+  {
+    "id": "app.post.move_thread.moved_to_hidden.multiple",
+    "translation": "Un fil de discussion avec {{.NumMessages}} messages a été déplacé vers [un autre canal]({{.Link}})"
+  },
+  {
+    "id": "app.post.move_thread.moved_to_hidden.one",
+    "translation": "Un message a été déplacé vers [un autre canal]({{.Link}})"
+  },
+  {
     "id": "app.post.move_thread_command.channel.multiple_messages",
     "translation": "Un fil de discussion avec {{.NumMessages}} messages a été déplacé : {{.Link}}\n"
   },
