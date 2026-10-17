@@ -31,11 +31,13 @@ describe('fusion/members/Member: agents', () => {
         fakeMatchMedia(() => false);
     });
 
+    // The member group's role (not an ARIA role).
+    const group = 'bot' as const;
     const render = (user: typeof coder) => renderWithContext(
         <Member
             user={user}
             off={false}
-            role='bot'
+            role={group}
             onOpen={jest.fn()}
             onMenu={jest.fn()}
         />,

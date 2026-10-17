@@ -209,6 +209,7 @@ const TeamSettingsModal = ({isOpen, onExited, focusOriginElement, initialTab}: P
             display: canManageAIConnections,
         },
         {
+
             // Antimatter: the community's own agents, for its admins.
             name: 'agents',
             uiName: formatMessage({id: 'fusion.teamSettings.agents', defaultMessage: 'Agents'}),

@@ -57,11 +57,28 @@ describe('fusion/agents/agents', () => {
 
     test('a saved agent becomes the same draft', () => {
         const draft = draftFromAgent({
-            user_id: 'u', scope: 'server', external: false, connection_id: 'c', model: 'm', system_prompt: 'p',
-            tools: {enabled: false, allowed: [], auto_run: []}, reasoning: {enabled: true, effort: 'high', budget_tokens: 0},
-            max_tool_turns: 40, access: {everyone: false, team_ids: [], channel_ids: ['ch'], roles: ['team_admin'], user_ids: ['u2'], allow_guests: true},
-            needs_attention: '', creator_id: '', updater_id: '', create_at: 1, update_at: 1, delete_at: 0,
-            username: 'r', display_name: 'R', description: 'd', last_icon_update: 0, enabled: true, connection_name: 'C',
+            user_id: 'u',
+            scope: 'server',
+            external: false,
+            connection_id: 'c',
+            model: 'm',
+            system_prompt: 'p',
+            tools: {enabled: false, allowed: [], auto_run: []},
+            reasoning: {enabled: true, effort: 'high', budget_tokens: 0},
+            max_tool_turns: 40,
+            access: {everyone: false, team_ids: [], channel_ids: ['ch'], roles: ['team_admin'], user_ids: ['u2'], allow_guests: true},
+            needs_attention: '',
+            creator_id: '',
+            updater_id: '',
+            create_at: 1,
+            update_at: 1,
+            delete_at: 0,
+            username: 'r',
+            display_name: 'R',
+            description: 'd',
+            last_icon_update: 0,
+            enabled: true,
+            connection_name: 'C',
         });
         expect(draft).toEqual(expect.objectContaining({kind: 'builtin', reasoningEffort: 'high', maxToolTurns: '40', channelIds: ['ch'], userIds: ['u2'], allowGuests: true}));
     });
