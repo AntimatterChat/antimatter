@@ -2856,6 +2856,10 @@
     "translation": "Webhook keluar telah dilumpuhkan oleh pentadbir sistem."
   },
   {
+    "id": "api.outgoing_webhook.icon.too_large.app_error",
+    "translation": "Fail ikon terlalu besar."
+  },
+  {
     "id": "api.payload.parse.error",
     "translation": "Ralat berlaku semasa mengurai beban."
   },
@@ -7746,6 +7750,42 @@
   {
     "id": "app.member_count",
     "translation": "ralat mendapatkan bilangan ahli"
+  },
+  {
+    "id": "app.message_action.failed.app_error",
+    "translation": "{{.Name}} tidak dapat dihubungi. Cuba lagi kemudian."
+  },
+  {
+    "id": "app.message_action.icon.decode.app_error",
+    "translation": "Ikon mesti imej PNG, JPEG atau GIF."
+  },
+  {
+    "id": "app.message_action.icon.not_found.app_error",
+    "translation": "Integrasi ini tiada ikon yang dimuat naik."
+  },
+  {
+    "id": "app.message_action.icon.read.app_error",
+    "translation": "Imej ikon tidak dapat dibaca."
+  },
+  {
+    "id": "app.message_action.icon.too_large.app_error",
+    "translation": "Imej ikon terlalu besar."
+  },
+  {
+    "id": "app.message_action.not_found.app_error",
+    "translation": "Aksi ini tidak tersedia untuk mesej ini."
+  },
+  {
+    "id": "app.message_action.rate_limit.app_error",
+    "translation": "Aksi tidak dapat dilaksanakan. Sila cuba lagi."
+  },
+  {
+    "id": "app.message_action.rate_limited.app_error",
+    "translation": "Anda telah menghantar terlalu banyak mesej ke integrasi. Cuba lagi dalam satu minit."
+  },
+  {
+    "id": "app.message_action.system_message.app_error",
+    "translation": "Mesej sistem tidak boleh dihantar ke integrasi."
   },
   {
     "id": "app.message_request.action.app_error",
@@ -13482,6 +13522,14 @@
   {
     "id": "model.outgoing_hook.is_valid.id.app_error",
     "translation": "ID tidak sah."
+  },
+  {
+    "id": "model.outgoing_hook.is_valid.message_action_name.app_error",
+    "translation": "Aksi mesej memerlukan tajuk: ia ialah nama yang dipaparkan dalam menu mesej."
+  },
+  {
+    "id": "model.outgoing_hook.is_valid.message_action_words.app_error",
+    "translation": "Aksi mesej tidak boleh mempunyai perkataan pencetus: orang memilihnya daripada menu mesej."
   },
   {
     "id": "model.outgoing_hook.is_valid.team_id.app_error",

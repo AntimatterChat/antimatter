@@ -1,4 +1,13 @@
 {
+  "add_outgoing_webhook.messageAction.channelHelp": "Pilihan. Saluran awam yang mesejnya akan mempunyai tindakan ini dalam menunya; tanpa saluran ini, semua saluran awam dalam pasukan akan memilikinya.",
+  "add_outgoing_webhook.messageAction.help": "Webhook ini tidak dicetuskan pada mesej yang dipos: ia adalah tindakan di bawah Tindakan Lanjut dalam menu mesej, dan menghantar mesej yang dipilih oleh pengguna.",
+  "add_outgoing_webhook.messageAction.icon": "Ikon",
+  "add_outgoing_webhook.messageAction.iconHelp": "Ikon tindakan dalam menu mesej, ditunjukkan dalam warna kelabu: URL imej .png atau .jpg, atau imej yang dimuat naik. Tanpa ikon, tindakan akan menggunakan ikon neutral.",
+  "add_outgoing_webhook.messageAction.iconPreview": "Ikon, dalam warna kelabu seperti dalam menu mesej",
+  "add_outgoing_webhook.messageAction.nameRequired": "Tajuk diperlukan: ia ialah nama tindakan dalam menu mesej.",
+  "add_outgoing_webhook.messageAction.removeIcon": "Buang ikon",
+  "add_outgoing_webhook.messageAction.upload": "Atau muat naik imej:",
+  "add_outgoing_webhook.triggerWordsTriggerWhenMessageMenu": "Dari menu mesej",
   "admin.ai.features.attention": "Sambungan ini memerlukan perhatian: {reason}",
   "admin.ai.features.attentionOption": "{name} (memerlukan perhatian)",
   "admin.ai.features.defaultChat": "Model sembang sambungan ({model})",

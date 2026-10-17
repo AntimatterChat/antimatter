@@ -1,4 +1,13 @@
 {
+  "add_outgoing_webhook.messageAction.channelHelp": "Opsyonal. Ang pampublikong channel na mga mensahe nito ang magkakaroon ng aksyong ito sa menu nila; kung wala, ang lahat ng pampublikong channel ng team ang magkakaroon.",
+  "add_outgoing_webhook.messageAction.help": "Hindi nag-aactivate ang webhook sa mga ipinost na mensahe: ito ay isang aksyon sa ilalim ng More actions sa menu ng mensahe, at nagpapadala ng mensahe na pinili nito ng tao.",
+  "add_outgoing_webhook.messageAction.icon": "Icon",
+  "add_outgoing_webhook.messageAction.iconHelp": "Ang icon ng aksyon sa menu ng mensahe, ipinapakita sa kulay abo: ang URL ng isang .png o .jpg na imahe, o isang na-upload. Kung wala ang icon, may neutral na icon ang aksyon.",
+  "add_outgoing_webhook.messageAction.iconPreview": "Ang icon, sa kulay abo tulad ng sa menu ng mensahe",
+  "add_outgoing_webhook.messageAction.nameRequired": "Kailangan ng pamagat: ito ang pangalan ng aksyon sa menu ng mensahe.",
+  "add_outgoing_webhook.messageAction.removeIcon": "Alisin ang icon",
+  "add_outgoing_webhook.messageAction.upload": "O mag-upload ng imahe:",
+  "add_outgoing_webhook.triggerWordsTriggerWhenMessageMenu": "Mula sa menu ng mensahe",
   "admin.ai.features.attention": "Kailangan ng atensyon ang koneksyong ito: {reason}",
   "admin.ai.features.attentionOption": "{name} (kailangan ng atensyon)",
   "admin.ai.features.defaultChat": "Chat model ng koneksyon ({model})",

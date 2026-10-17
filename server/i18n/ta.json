@@ -2856,6 +2856,10 @@
     "translation": "வெளியேறும் வெப்க்குகளே நிரவாகியால் முடக்கபபட்டது."
   },
   {
+    "id": "api.outgoing_webhook.icon.too_large.app_error",
+    "translation": "அடையாளத்தின் கோப்பு மிகவும் பெரியது."
+  },
+  {
     "id": "api.payload.parse.error",
     "translation": "பேல்டைகளை பகுப்பாய்வு செய்யும்போது பிழை ஏற்பட்டது."
   },
@@ -7746,6 +7750,42 @@
   {
     "id": "app.member_count",
     "translation": "உறுப்பினர் எண்ணிக்கையைப் பெறத் தவறு"
+  },
+  {
+    "id": "app.message_action.failed.app_error",
+    "translation": "{{.Name}}-ஐ அணுக முடியவில்லை. பின்னர் மீண்டும் முயற்சிக்கவும்."
+  },
+  {
+    "id": "app.message_action.icon.decode.app_error",
+    "translation": "அடையாளம் PNG, JPEG அல்லது GIF படமாக இருக்க வேண்டும்."
+  },
+  {
+    "id": "app.message_action.icon.not_found.app_error",
+    "translation": "இந்த இணைப்பில் பதிவேற்றப்பட்ட அடையாளம் இல்லை."
+  },
+  {
+    "id": "app.message_action.icon.read.app_error",
+    "translation": "அடையாளத்தின் படிமத்தை படிக்க முடியவில்லை."
+  },
+  {
+    "id": "app.message_action.icon.too_large.app_error",
+    "translation": "அடையாளத்தின் படிமம் மிகவும் பெரியது."
+  },
+  {
+    "id": "app.message_action.not_found.app_error",
+    "translation": "இந்தச் செயல் இந்தச் செய்திக்கு கிடைக்கவில்லை."
+  },
+  {
+    "id": "app.message_action.rate_limit.app_error",
+    "translation": "செயலை இயக்க முடியவில்லை. மீண்டும் முயற்சிக்கவும்."
+  },
+  {
+    "id": "app.message_action.rate_limited.app_error",
+    "translation": "இணைப்புகளுக்கு மிக அதிகமான செய்திகள் அனுப்பப்பட்டன. ஒரு நிமிடத்தில் மீண்டும் முயற்சிக்கவும்."
+  },
+  {
+    "id": "app.message_action.system_message.app_error",
+    "translation": "அமைப்பு செய்திகளை இணைப்புகளுக்கு அனுப்ப முடியாது."
   },
   {
     "id": "app.message_request.action.app_error",
@@ -13482,6 +13522,14 @@
   {
     "id": "model.outgoing_hook.is_valid.id.app_error",
     "translation": "தவறான அடையாளம்."
+  },
+  {
+    "id": "model.outgoing_hook.is_valid.message_action_name.app_error",
+    "translation": "செய்திச் செயலுக்கு ஒரு தலைப்பு தேவை: அது செய்தி மெனுவில் காட்டப்படும் பெயராகும்."
+  },
+  {
+    "id": "model.outgoing_hook.is_valid.message_action_words.app_error",
+    "translation": "செய்திச் செயலுக்கு தூண்டிச் சொற்கள் இருக்கக்கூடாது: மக்கள் அதை செய்தி மெனுவிலிருந்து தேர்ந்தெடுக்கிறார்கள்."
   },
   {
     "id": "model.outgoing_hook.is_valid.team_id.app_error",

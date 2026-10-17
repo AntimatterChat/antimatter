@@ -3037,6 +3037,10 @@
     "translation": "Udgående webhooks er blevet deaktiveret af systemadministratoren."
   },
   {
+    "id": "api.outgoing_webhook.icon.too_large.app_error",
+    "translation": "Ikonets fil er for stor."
+  },
+  {
     "id": "api.payload.parse.error",
     "translation": "Der opstod en fejl under behandling af payload."
   },
@@ -8175,6 +8179,42 @@
   {
     "id": "app.member_count",
     "translation": "fejl ved hentning af medlemsantal"
+  },
+  {
+    "id": "app.message_action.failed.app_error",
+    "translation": "{{.Name}} kunne ikke nås. Prøv igen senere."
+  },
+  {
+    "id": "app.message_action.icon.decode.app_error",
+    "translation": "Ikonet skal være et PNG-, JPEG- eller GIF-billede."
+  },
+  {
+    "id": "app.message_action.icon.not_found.app_error",
+    "translation": "Denne integration har ikke et uploadet ikon."
+  },
+  {
+    "id": "app.message_action.icon.read.app_error",
+    "translation": "Ikonets billede kunne ikke læses."
+  },
+  {
+    "id": "app.message_action.icon.too_large.app_error",
+    "translation": "Ikonets billede er for stort."
+  },
+  {
+    "id": "app.message_action.not_found.app_error",
+    "translation": "Denne handling er ikke tilgængelig for denne besked."
+  },
+  {
+    "id": "app.message_action.rate_limit.app_error",
+    "translation": "Handlingen kunne ikke udføres. Prøv igen."
+  },
+  {
+    "id": "app.message_action.rate_limited.app_error",
+    "translation": "Du har sendt for mange beskeder til integrationer. Prøv igen om et minut."
+  },
+  {
+    "id": "app.message_action.system_message.app_error",
+    "translation": "Systembeskeder kan ikke sendes til en integration."
   },
   {
     "id": "app.message_request.action.app_error",
@@ -14205,6 +14245,14 @@
   {
     "id": "model.outgoing_hook.is_valid.id.app_error",
     "translation": "Ugyldig id."
+  },
+  {
+    "id": "model.outgoing_hook.is_valid.message_action_name.app_error",
+    "translation": "En beskedhandling kræver en titel: Det er navnet, der vises i beskedmenuen."
+  },
+  {
+    "id": "model.outgoing_hook.is_valid.message_action_words.app_error",
+    "translation": "En beskedhandling kan ikke have udløsende ord: Folk vælger den fra beskedmenuen."
   },
   {
     "id": "model.outgoing_hook.is_valid.team_id.app_error",

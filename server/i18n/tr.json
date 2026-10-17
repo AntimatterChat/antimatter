@@ -3037,6 +3037,10 @@
     "translation": "Giden İnternet kancaları sistem yöneticisi tarafından kapatılmış."
   },
   {
+    "id": "api.outgoing_webhook.icon.too_large.app_error",
+    "translation": "Sembol dosyası çok büyük."
+  },
+  {
     "id": "api.payload.parse.error",
     "translation": "Yük işlenirken bir sorun çıktı."
   },
@@ -8175,6 +8179,42 @@
   {
     "id": "app.member_count",
     "translation": "üye sayısı alınırken sorun çıktı"
+  },
+  {
+    "id": "app.message_action.failed.app_error",
+    "translation": "{{.Name}}'a ulaşılamadı. Lütfen daha sonra tekrar deneyin."
+  },
+  {
+    "id": "app.message_action.icon.decode.app_error",
+    "translation": "Sembol bir PNG, JPEG veya GIF görüntüsü olmalıdır."
+  },
+  {
+    "id": "app.message_action.icon.not_found.app_error",
+    "translation": "Bu entegrasyonun yüklü bir sembolü yok."
+  },
+  {
+    "id": "app.message_action.icon.read.app_error",
+    "translation": "Sembolün görüntüsü okunamadı."
+  },
+  {
+    "id": "app.message_action.icon.too_large.app_error",
+    "translation": "Sembolün görüntüsü çok büyük."
+  },
+  {
+    "id": "app.message_action.not_found.app_error",
+    "translation": "Bu işlem bu iletide kullanılamaz."
+  },
+  {
+    "id": "app.message_action.rate_limit.app_error",
+    "translation": "İşlem çalıştırılamadı. Lütfen tekrar deneyin."
+  },
+  {
+    "id": "app.message_action.rate_limited.app_error",
+    "translation": "Entegrasyonlara çok fazla iletme gönderdiniz. Bir dakika içinde tekrar deneyin."
+  },
+  {
+    "id": "app.message_action.system_message.app_error",
+    "translation": "Sistem iletileri entegrasyona gönderilemez."
   },
   {
     "id": "app.message_request.action.app_error",
@@ -14205,6 +14245,14 @@
   {
     "id": "model.outgoing_hook.is_valid.id.app_error",
     "translation": "Kimlik geçersiz."
+  },
+  {
+    "id": "model.outgoing_hook.is_valid.message_action_name.app_error",
+    "translation": "Bir iletme işlemi için bir başlık gereklidir: Bu, iletme menüsünde görünen isimdir."
+  },
+  {
+    "id": "model.outgoing_hook.is_valid.message_action_words.app_error",
+    "translation": "Bir iletme işlemi tetikleyici kelime içeremez: Kullanıcılar bunu iletme menüsünden seçer."
   },
   {
     "id": "model.outgoing_hook.is_valid.team_id.app_error",

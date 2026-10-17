@@ -1,4 +1,13 @@
 {
+  "add_outgoing_webhook.messageAction.channelHelp": "اختیاری۔ وہ عوامی چینل جس کے پیغامات کے مینو میں یہ ایکشن شامل ہوگا؛ اگر کوئی چینل منتخب نہ کیا جائے تو کمیونٹی کے تمام عوامی چینلز میں یہ ایکشن دستیاب ہوگا۔",
+  "add_outgoing_webhook.messageAction.help": "یہ ویب ہک پوسٹ شدہ پیغامات پر فائر نہیں ہوتا: یہ پیغام کے مینو میں 'مزید ایکشنز' کے تحت ایک ایکشن ہے، اور وہ پیغام بھیجتا ہے جس کے لیے کوئی اسے منتخب کرتا ہے۔",
+  "add_outgoing_webhook.messageAction.icon": "آئیکن",
+  "add_outgoing_webhook.messageAction.iconHelp": "پیغام کے مینو میں ایکشن کا آئیکن، جو سرمئی رنگ میں دکھایا جاتا ہے: .png یا .jpg امیج کا URL، یا اپ لوڈ شدہ امیج۔ اگر کوئی آئیکن نہ ہو تو ایک نیوٹرل آئیکن استعمال ہوگا۔",
+  "add_outgoing_webhook.messageAction.iconPreview": "آئیکن، پیغام کے مینو کی طرح سرمئی رنگ میں",
+  "add_outgoing_webhook.messageAction.nameRequired": "عنوان درکار ہے: یہ پیغام کے مینو میں ایکشن کا نام ہوگا۔",
+  "add_outgoing_webhook.messageAction.removeIcon": "آئیکن ہٹائیں",
+  "add_outgoing_webhook.messageAction.upload": "یا امیج اپ لوڈ کریں:",
+  "add_outgoing_webhook.triggerWordsTriggerWhenMessageMenu": "پیغام کے مینو سے",
   "admin.ai.features.attention": "اس کنکشن کو توجہ درکار ہے: {reason}",
   "admin.ai.features.attentionOption": "{name} (توجہ درکار)",
   "admin.ai.features.defaultChat": "کنکشن کا چیٹ ماڈل ({model})",

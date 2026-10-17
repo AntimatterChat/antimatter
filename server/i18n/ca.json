@@ -2856,6 +2856,10 @@
     "translation": "Els webhooks sortints han estat desactivats per l'administrador del sistema."
   },
   {
+    "id": "api.outgoing_webhook.icon.too_large.app_error",
+    "translation": "El fitxer de la icona és massa gran."
+  },
+  {
     "id": "api.payload.parse.error",
     "translation": "S'ha produït un error en analitzar la càrrega."
   },
@@ -7746,6 +7750,42 @@
   {
     "id": "app.member_count",
     "translation": "error en recuperar el nombre de membres"
+  },
+  {
+    "id": "app.message_action.failed.app_error",
+    "translation": "No s'ha pogut contactar amb {{.Name}}. Torna-ho a provar més tard."
+  },
+  {
+    "id": "app.message_action.icon.decode.app_error",
+    "translation": "La icona ha de ser una imatge PNG, JPEG o GIF."
+  },
+  {
+    "id": "app.message_action.icon.not_found.app_error",
+    "translation": "Aquesta integració no té cap icona penjada."
+  },
+  {
+    "id": "app.message_action.icon.read.app_error",
+    "translation": "No s'ha pogut llegir la imatge de la icona."
+  },
+  {
+    "id": "app.message_action.icon.too_large.app_error",
+    "translation": "La imatge de la icona és massa gran."
+  },
+  {
+    "id": "app.message_action.not_found.app_error",
+    "translation": "Aquesta acció no està disponible per a aquest missatge."
+  },
+  {
+    "id": "app.message_action.rate_limit.app_error",
+    "translation": "No s'ha pogut executar l'acció. Torna-ho a provar."
+  },
+  {
+    "id": "app.message_action.rate_limited.app_error",
+    "translation": "Has enviat massa missatges a les integracions. Torna-ho a provar en un minut."
+  },
+  {
+    "id": "app.message_action.system_message.app_error",
+    "translation": "No es poden enviar missatges del sistema a una integració."
   },
   {
     "id": "app.message_request.action.app_error",
@@ -13482,6 +13522,14 @@
   {
     "id": "model.outgoing_hook.is_valid.id.app_error",
     "translation": "ID no vàlid."
+  },
+  {
+    "id": "model.outgoing_hook.is_valid.message_action_name.app_error",
+    "translation": "Una acció de missatge necessita un títol: és el nom que es mostra al menú del missatge."
+  },
+  {
+    "id": "model.outgoing_hook.is_valid.message_action_words.app_error",
+    "translation": "Una acció de missatge no pot tenir paraules d'activació: les persones la trien des del menú del missatge."
   },
   {
     "id": "model.outgoing_hook.is_valid.team_id.app_error",

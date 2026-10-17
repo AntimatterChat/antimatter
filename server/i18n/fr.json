@@ -3037,6 +3037,10 @@
     "translation": "Les webhooks sortants ont été désactivés par l'administrateur système."
   },
   {
+    "id": "api.outgoing_webhook.icon.too_large.app_error",
+    "translation": "Le fichier de l’icône est trop volumineux."
+  },
+  {
     "id": "api.payload.parse.error",
     "translation": "Une erreur est survenue lors de l'analyse de la charge utile."
   },
@@ -8175,6 +8179,42 @@
   {
     "id": "app.member_count",
     "translation": "impossible d'obtenir le nombre de membres"
+  },
+  {
+    "id": "app.message_action.failed.app_error",
+    "translation": "Impossible de joindre {{.Name}}. Veuillez réessayer plus tard."
+  },
+  {
+    "id": "app.message_action.icon.decode.app_error",
+    "translation": "L’icône doit être une image PNG, JPEG ou GIF."
+  },
+  {
+    "id": "app.message_action.icon.not_found.app_error",
+    "translation": "Cette intégration n’a pas d’icône téléversée."
+  },
+  {
+    "id": "app.message_action.icon.read.app_error",
+    "translation": "Impossible de lire l’image de l’icône."
+  },
+  {
+    "id": "app.message_action.icon.too_large.app_error",
+    "translation": "L’image de l’icône est trop volumineuse."
+  },
+  {
+    "id": "app.message_action.not_found.app_error",
+    "translation": "Cette action n’est pas disponible pour ce message."
+  },
+  {
+    "id": "app.message_action.rate_limit.app_error",
+    "translation": "Impossible d’exécuter l’action. Veuillez réessayer."
+  },
+  {
+    "id": "app.message_action.rate_limited.app_error",
+    "translation": "Vous avez envoyé trop de messages aux intégrations. Veuillez réessayer dans une minute."
+  },
+  {
+    "id": "app.message_action.system_message.app_error",
+    "translation": "Les messages système ne peuvent pas être envoyés à une intégration."
   },
   {
     "id": "app.message_request.action.app_error",
@@ -14205,6 +14245,14 @@
   {
     "id": "model.outgoing_hook.is_valid.id.app_error",
     "translation": "Id invalide"
+  },
+  {
+    "id": "model.outgoing_hook.is_valid.message_action_name.app_error",
+    "translation": "Une action de message nécessite un titre : c’est le nom affiché dans le menu du message."
+  },
+  {
+    "id": "model.outgoing_hook.is_valid.message_action_words.app_error",
+    "translation": "Une action de message ne peut pas avoir de mots déclencheurs : les utilisateurs la sélectionnent depuis le menu du message."
   },
   {
     "id": "model.outgoing_hook.is_valid.team_id.app_error",

@@ -3022,6 +3022,10 @@
     "translation": "Outgoing webhook은 관리자에 의해 제한되었습니다."
   },
   {
+    "id": "api.outgoing_webhook.icon.too_large.app_error",
+    "translation": "아이콘 파일이 너무 큽니다."
+  },
+  {
     "id": "api.payload.parse.error",
     "translation": "페이로드를 구문 분석하는 동안 오류가 발생했습니다."
   },
@@ -8096,6 +8100,42 @@
   {
     "id": "app.member_count",
     "translation": "회원 수 검색 오류"
+  },
+  {
+    "id": "app.message_action.failed.app_error",
+    "translation": "{{.Name}}에 연결할 수 없습니다. 나중에 다시 시도해 주세요."
+  },
+  {
+    "id": "app.message_action.icon.decode.app_error",
+    "translation": "아이콘은 PNG, JPEG 또는 GIF 형식의 이미지여야 합니다."
+  },
+  {
+    "id": "app.message_action.icon.not_found.app_error",
+    "translation": "이 통합에 업로드된 아이콘이 없습니다."
+  },
+  {
+    "id": "app.message_action.icon.read.app_error",
+    "translation": "아이콘 이미지를 읽을 수 없습니다."
+  },
+  {
+    "id": "app.message_action.icon.too_large.app_error",
+    "translation": "아이콘 이미지가 너무 큽니다."
+  },
+  {
+    "id": "app.message_action.not_found.app_error",
+    "translation": "이 메시지에 이 작업을 사용할 수 없습니다."
+  },
+  {
+    "id": "app.message_action.rate_limit.app_error",
+    "translation": "작업을 실행할 수 없습니다. 다시 시도해 주세요."
+  },
+  {
+    "id": "app.message_action.rate_limited.app_error",
+    "translation": "통합으로 보낸 메시지가 너무 많습니다. 1분 후 다시 시도해 주세요."
+  },
+  {
+    "id": "app.message_action.system_message.app_error",
+    "translation": "시스템 메시지를 통합으로 보낼 수 없습니다."
   },
   {
     "id": "app.message_request.action.app_error",
@@ -14012,6 +14052,14 @@
   {
     "id": "model.outgoing_hook.is_valid.id.app_error",
     "translation": "잘못된 ID"
+  },
+  {
+    "id": "model.outgoing_hook.is_valid.message_action_name.app_error",
+    "translation": "메시지 작업에는 제목이 필요합니다. 메시지 메뉴에 표시되는 이름입니다."
+  },
+  {
+    "id": "model.outgoing_hook.is_valid.message_action_words.app_error",
+    "translation": "메시지 작업에는 트리거 단어를 사용할 수 없습니다. 사용자가 메시지 메뉴에서 선택합니다."
   },
   {
     "id": "model.outgoing_hook.is_valid.team_id.app_error",

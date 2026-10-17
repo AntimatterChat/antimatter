@@ -3034,6 +3034,10 @@
     "translation": "Outgoing webhooks đã bị vô hiệu hóa bởi quản trị viên hệ thống."
   },
   {
+    "id": "api.outgoing_webhook.icon.too_large.app_error",
+    "translation": "Tệp biểu tượng quá lớn."
+  },
+  {
     "id": "api.payload.parse.error",
     "translation": "Đã xảy ra lỗi khi phân tích payload."
   },
@@ -8168,6 +8172,42 @@
   {
     "id": "app.member_count",
     "translation": "lỗi lấy số thành viên"
+  },
+  {
+    "id": "app.message_action.failed.app_error",
+    "translation": "Không thể liên hệ với {{.Name}}. Vui lòng thử lại sau."
+  },
+  {
+    "id": "app.message_action.icon.decode.app_error",
+    "translation": "Biểu tượng phải là tệp ảnh PNG, JPEG hoặc GIF."
+  },
+  {
+    "id": "app.message_action.icon.not_found.app_error",
+    "translation": "Tích hợp này không có biểu tượng đã tải lên."
+  },
+  {
+    "id": "app.message_action.icon.read.app_error",
+    "translation": "Không thể đọc ảnh biểu tượng."
+  },
+  {
+    "id": "app.message_action.icon.too_large.app_error",
+    "translation": "Ảnh biểu tượng quá lớn."
+  },
+  {
+    "id": "app.message_action.not_found.app_error",
+    "translation": "Hành động này không khả dụng cho tin nhắn này."
+  },
+  {
+    "id": "app.message_action.rate_limit.app_error",
+    "translation": "Không thể thực hiện hành động. Vui lòng thử lại."
+  },
+  {
+    "id": "app.message_action.rate_limited.app_error",
+    "translation": "Bạn đã gửi quá nhiều tin nhắn đến các tích hợp. Vui lòng thử lại sau một phút."
+  },
+  {
+    "id": "app.message_action.system_message.app_error",
+    "translation": "Không thể gửi tin nhắn hệ thống đến tích hợp."
   },
   {
     "id": "app.message_request.action.app_error",
@@ -14196,6 +14236,14 @@
   {
     "id": "model.outgoing_hook.is_valid.id.app_error",
     "translation": "Id không hợp lệ."
+  },
+  {
+    "id": "model.outgoing_hook.is_valid.message_action_name.app_error",
+    "translation": "Hành động tin nhắn cần có tiêu đề: đây là tên hiển thị trong menu tin nhắn."
+  },
+  {
+    "id": "model.outgoing_hook.is_valid.message_action_words.app_error",
+    "translation": "Hành động tin nhắn không thể có từ kích hoạt: người dùng chọn nó từ menu tin nhắn."
   },
   {
     "id": "model.outgoing_hook.is_valid.team_id.app_error",

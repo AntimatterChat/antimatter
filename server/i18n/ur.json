@@ -2856,6 +2856,10 @@
     "translation": "سسٹم ایڈمن نے آؤٹ گوئنگ ویب ہکس غیر فعال کر دیے ہیں۔"
   },
   {
+    "id": "api.outgoing_webhook.icon.too_large.app_error",
+    "translation": "آئیکن کی فائل بہت بڑی ہے۔"
+  },
+  {
     "id": "api.payload.parse.error",
     "translation": "پے لوڈ کو پارس کرنے کے دوران خرابی پیش آئی۔"
   },
@@ -7746,6 +7750,42 @@
   {
     "id": "app.member_count",
     "translation": "رکنوں کی تعداد حاصل کرنے میں خرابی"
+  },
+  {
+    "id": "app.message_action.failed.app_error",
+    "translation": "{{.Name}} تک رسائی ممکن نہیں ہوئی۔ بعد میں دوبارہ کوشش کریں۔"
+  },
+  {
+    "id": "app.message_action.icon.decode.app_error",
+    "translation": "آئیکن کو PNG، JPEG یا GIF تصویر ہونی چاہیے۔"
+  },
+  {
+    "id": "app.message_action.icon.not_found.app_error",
+    "translation": "اس انٹیگریشن کا کوئی اپ لوڈ شدہ آئیکن موجود نہیں ہے۔"
+  },
+  {
+    "id": "app.message_action.icon.read.app_error",
+    "translation": "آئیکن کی تصویر پڑھی نہیں جا سکی۔"
+  },
+  {
+    "id": "app.message_action.icon.too_large.app_error",
+    "translation": "آئیکن کی تصویر بہت بڑی ہے۔"
+  },
+  {
+    "id": "app.message_action.not_found.app_error",
+    "translation": "یہ ایکشن اس پیغام کے لیے دستیاب نہیں ہے۔"
+  },
+  {
+    "id": "app.message_action.rate_limit.app_error",
+    "translation": "ایکشن کو چلایا نہیں جا سکا۔ براہ کرم دوبارہ کوشش کریں۔"
+  },
+  {
+    "id": "app.message_action.rate_limited.app_error",
+    "translation": "آپ نے انٹیگریشنز کو بہت زیادہ پیغامات بھیجے ہیں۔ ایک منٹ بعد دوبارہ کوشش کریں۔"
+  },
+  {
+    "id": "app.message_action.system_message.app_error",
+    "translation": "سسٹم پیغامات کو انٹیگریشن کو بھیجا نہیں جا سکتا۔"
   },
   {
     "id": "app.message_request.action.app_error",
@@ -13482,6 +13522,14 @@
   {
     "id": "model.outgoing_hook.is_valid.id.app_error",
     "translation": "غلط آئی ڈی۔"
+  },
+  {
+    "id": "model.outgoing_hook.is_valid.message_action_name.app_error",
+    "translation": "پیغام ایکشن کو عنوان درکار ہے: یہ پیغام کے مینیو میں دکھایا جانے والا نام ہے۔"
+  },
+  {
+    "id": "model.outgoing_hook.is_valid.message_action_words.app_error",
+    "translation": "پیغام ایکشن میں ٹریگر ورڈز شامل نہیں ہو سکتے: لوگ اسے پیغام کے مینیو سے منتخب کرتے ہیں۔"
   },
   {
     "id": "model.outgoing_hook.is_valid.team_id.app_error",

@@ -3037,6 +3037,10 @@
     "translation": "Webhooks de Salida han sido deshabilitados por el administrador del sistema."
   },
   {
+    "id": "api.outgoing_webhook.icon.too_large.app_error",
+    "translation": "El archivo del icono es demasiado grande."
+  },
+  {
     "id": "api.payload.parse.error",
     "translation": "Ha ocurrido un error al analizar el payload."
   },
@@ -8175,6 +8179,42 @@
   {
     "id": "app.member_count",
     "translation": "error al obtener el número de miembros"
+  },
+  {
+    "id": "app.message_action.failed.app_error",
+    "translation": "No se pudo conectar con {{.Name}}. Inténtalo de nuevo más tarde."
+  },
+  {
+    "id": "app.message_action.icon.decode.app_error",
+    "translation": "El icono debe ser una imagen PNG, JPEG o GIF."
+  },
+  {
+    "id": "app.message_action.icon.not_found.app_error",
+    "translation": "Esta integración no tiene un icono subido."
+  },
+  {
+    "id": "app.message_action.icon.read.app_error",
+    "translation": "No se pudo leer la imagen del icono."
+  },
+  {
+    "id": "app.message_action.icon.too_large.app_error",
+    "translation": "La imagen del icono es demasiado grande."
+  },
+  {
+    "id": "app.message_action.not_found.app_error",
+    "translation": "Esta acción no está disponible para este mensaje."
+  },
+  {
+    "id": "app.message_action.rate_limit.app_error",
+    "translation": "No se pudo ejecutar la acción. Inténtalo de nuevo."
+  },
+  {
+    "id": "app.message_action.rate_limited.app_error",
+    "translation": "Has enviado demasiados mensajes a las integraciones. Inténtalo de nuevo en un minuto."
+  },
+  {
+    "id": "app.message_action.system_message.app_error",
+    "translation": "No se pueden enviar mensajes de sistema a una integración."
   },
   {
     "id": "app.message_request.action.app_error",
@@ -14205,6 +14245,14 @@
   {
     "id": "model.outgoing_hook.is_valid.id.app_error",
     "translation": "Id inválido."
+  },
+  {
+    "id": "model.outgoing_hook.is_valid.message_action_name.app_error",
+    "translation": "Una acción de mensaje necesita un título: es el nombre que se muestra en el menú del mensaje."
+  },
+  {
+    "id": "model.outgoing_hook.is_valid.message_action_words.app_error",
+    "translation": "Una acción de mensaje no puede tener palabras de activación: las personas la seleccionan desde el menú del mensaje."
   },
   {
     "id": "model.outgoing_hook.is_valid.team_id.app_error",

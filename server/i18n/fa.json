@@ -3037,6 +3037,10 @@
     "translation": "وب بوک های خروجی توسط مدیر سیستم غیرفعال شده اند."
   },
   {
+    "id": "api.outgoing_webhook.icon.too_large.app_error",
+    "translation": "فایل آیکون بیش از حد بزرگ است."
+  },
+  {
     "id": "api.payload.parse.error",
     "translation": "هنگام تجزیه payload خطایی روی داد."
   },
@@ -8175,6 +8179,42 @@
   {
     "id": "app.member_count",
     "translation": "خطا در بازیابی تعداد اعضا"
+  },
+  {
+    "id": "app.message_action.failed.app_error",
+    "translation": "به {{.Name}} دسترسی یافت نشد. لطفاً بعداً دوباره تلاش کنید."
+  },
+  {
+    "id": "app.message_action.icon.decode.app_error",
+    "translation": "آیکون باید یک تصویر PNG، JPEG یا GIF باشد."
+  },
+  {
+    "id": "app.message_action.icon.not_found.app_error",
+    "translation": "این یکپارچه‌سازی آیکون بارگذاری‌شده‌ای ندارد."
+  },
+  {
+    "id": "app.message_action.icon.read.app_error",
+    "translation": "تصویر آیکون قابل خواندن نبود."
+  },
+  {
+    "id": "app.message_action.icon.too_large.app_error",
+    "translation": "تصویر آیکون بیش از حد بزرگ است."
+  },
+  {
+    "id": "app.message_action.not_found.app_error",
+    "translation": "این عمل برای این پیام در دسترس نیست."
+  },
+  {
+    "id": "app.message_action.rate_limit.app_error",
+    "translation": "امکان اجرای عمل وجود ندارد. لطفاً دوباره تلاش کنید."
+  },
+  {
+    "id": "app.message_action.rate_limited.app_error",
+    "translation": "شما پیام‌های زیادی به یکپارچه‌سازی‌ها ارسال کرده‌اید. لطفاً یک دقیقه دیگر تلاش کنید."
+  },
+  {
+    "id": "app.message_action.system_message.app_error",
+    "translation": "پیام‌های سیستمی نمی‌توانند به یک یکپارچه‌سازی ارسال شوند."
   },
   {
     "id": "app.message_request.action.app_error",
@@ -14205,6 +14245,14 @@
   {
     "id": "model.outgoing_hook.is_valid.id.app_error",
     "translation": "شناسه نامعتبر است."
+  },
+  {
+    "id": "model.outgoing_hook.is_valid.message_action_name.app_error",
+    "translation": "یک عمل پیام به عنوان نیاز دارد: این همان نامی است که در منوی پیام نمایش داده می‌شود."
+  },
+  {
+    "id": "model.outgoing_hook.is_valid.message_action_words.app_error",
+    "translation": "یک عمل پیام نمی‌تواند کلمات محرک داشته باشد: افراد آن را از منوی پیام انتخاب می‌کنند."
   },
   {
     "id": "model.outgoing_hook.is_valid.team_id.app_error",

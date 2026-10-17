@@ -1,4 +1,13 @@
 {
+  "add_outgoing_webhook.messageAction.channelHelp": "Opsional. Kanal publik yang pesannya memiliki aksi ini di menu; tanpa ini, semua kanal publik di tim akan memilikinya.",
+  "add_outgoing_webhook.messageAction.help": "Webhook ini tidak dipicu oleh pesan yang diposting: ini adalah aksi di bawah Aksi Lainnya di menu pesan, dan mengirim pesan yang dipilih seseorang.",
+  "add_outgoing_webhook.messageAction.icon": "Ikon",
+  "add_outgoing_webhook.messageAction.iconHelp": "Ikon aksi di menu pesan, ditampilkan dalam warna abu-abu: URL gambar .png atau .jpg, atau yang diunggah. Tanpa ikon, aksi akan mendapatkan ikon netral.",
+  "add_outgoing_webhook.messageAction.iconPreview": "Ikon, dalam warna abu-abu seperti di menu pesan",
+  "add_outgoing_webhook.messageAction.nameRequired": "Judul diperlukan: ini adalah nama aksi di menu pesan.",
+  "add_outgoing_webhook.messageAction.removeIcon": "Hapus ikon",
+  "add_outgoing_webhook.messageAction.upload": "Atau unggah gambar:",
+  "add_outgoing_webhook.triggerWordsTriggerWhenMessageMenu": "Dari menu pesan",
   "admin.ai.features.attention": "Koneksi ini memerlukan perhatian: {reason}",
   "admin.ai.features.attentionOption": "{name} (memerlukan perhatian)",
   "admin.ai.features.defaultChat": "Model chat koneksi ({model})",

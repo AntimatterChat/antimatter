@@ -3022,6 +3022,10 @@
     "translation": "外向きのウェブフックはシステム管理者によって無効にされています。"
   },
   {
+    "id": "api.outgoing_webhook.icon.too_large.app_error",
+    "translation": "アイコンのファイルが大きすぎます。"
+  },
+  {
     "id": "api.payload.parse.error",
     "translation": "ペイロードの解析中にエラーが発生しました。"
   },
@@ -8104,6 +8108,42 @@
   {
     "id": "app.member_count",
     "translation": "メンバー数をカウントする際にエラーが発生しました"
+  },
+  {
+    "id": "app.message_action.failed.app_error",
+    "translation": "{{.Name}} に接続できません。しばらくしてから再試行してください。"
+  },
+  {
+    "id": "app.message_action.icon.decode.app_error",
+    "translation": "アイコンは PNG、JPEG または GIF 形式の画像である必要があります。"
+  },
+  {
+    "id": "app.message_action.icon.not_found.app_error",
+    "translation": "この統合にはアップロードされたアイコンがありません。"
+  },
+  {
+    "id": "app.message_action.icon.read.app_error",
+    "translation": "アイコンの画像を読み取れませんでした。"
+  },
+  {
+    "id": "app.message_action.icon.too_large.app_error",
+    "translation": "アイコンの画像が大きすぎます。"
+  },
+  {
+    "id": "app.message_action.not_found.app_error",
+    "translation": "このアクションはこのメッセージでは使用できません。"
+  },
+  {
+    "id": "app.message_action.rate_limit.app_error",
+    "translation": "アクションを実行できませんでした。再試行してください。"
+  },
+  {
+    "id": "app.message_action.rate_limited.app_error",
+    "translation": "統合へのメッセージ送信回数が多すぎます。1分後に再試行してください。"
+  },
+  {
+    "id": "app.message_action.system_message.app_error",
+    "translation": "システムメッセージは統合に送信できません。"
   },
   {
     "id": "app.message_request.action.app_error",
@@ -14020,6 +14060,14 @@
   {
     "id": "model.outgoing_hook.is_valid.id.app_error",
     "translation": "不正なIDです。"
+  },
+  {
+    "id": "model.outgoing_hook.is_valid.message_action_name.app_error",
+    "translation": "メッセージアクションにはタイトルが必要です。メッセージメニューに表示される名前です。"
+  },
+  {
+    "id": "model.outgoing_hook.is_valid.message_action_words.app_error",
+    "translation": "メッセージアクションにはトリガーワードを設定できません。メッセージメニューから選択します。"
   },
   {
     "id": "model.outgoing_hook.is_valid.team_id.app_error",

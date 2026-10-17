@@ -2856,6 +2856,10 @@
     "translation": "সিস্টেম অ্যাডমিন আউটগোয়িং ওয়েবহুকস বন্ধ করে দিয়েছেন।"
   },
   {
+    "id": "api.outgoing_webhook.icon.too_large.app_error",
+    "translation": "আইকনের ফাইলটি খুব বড়।"
+  },
+  {
     "id": "api.payload.parse.error",
     "translation": "পেইলোড পার্স করার সময় একটি এরর হয়েছে।"
   },
@@ -7746,6 +7750,42 @@
   {
     "id": "app.member_count",
     "translation": "সদস্য সংখ্যা পেতে ত্রুটি"
+  },
+  {
+    "id": "app.message_action.failed.app_error",
+    "translation": "{{.Name}}-এ পৌঁছানো যায়নি। পরে আবার চেষ্টা করুন।"
+  },
+  {
+    "id": "app.message_action.icon.decode.app_error",
+    "translation": "আইকনটি PNG, JPEG বা GIF ছবি হতে হবে।"
+  },
+  {
+    "id": "app.message_action.icon.not_found.app_error",
+    "translation": "এই ইন্টিগ্রেশনে কোনো আপলোড করা আইকন নেই।"
+  },
+  {
+    "id": "app.message_action.icon.read.app_error",
+    "translation": "আইকনের ছবিটি পড়া যায়নি।"
+  },
+  {
+    "id": "app.message_action.icon.too_large.app_error",
+    "translation": "আইকনের ছবিটি খুব বড়।"
+  },
+  {
+    "id": "app.message_action.not_found.app_error",
+    "translation": "এই ম্যাসেজের জন্য এই অ্যাকশনটি উপলব্ধ নয়।"
+  },
+  {
+    "id": "app.message_action.rate_limit.app_error",
+    "translation": "অ্যাকশনটি চালনা করা যায়নি। অনুগ্রহ করে আবার চেষ্টা করুন।"
+  },
+  {
+    "id": "app.message_action.rate_limited.app_error",
+    "translation": "আপনি ইন্টিগ্রেশনে খুব বেশি ম্যাসেজ পাঠিয়েছেন। এক মিনিট পরে আবার চেষ্টা করুন।"
+  },
+  {
+    "id": "app.message_action.system_message.app_error",
+    "translation": "সিস্টেম ম্যাসেজ ইন্টিগ্রেশনে পাঠানো যায় না।"
   },
   {
     "id": "app.message_request.action.app_error",
@@ -13482,6 +13522,14 @@
   {
     "id": "model.outgoing_hook.is_valid.id.app_error",
     "translation": "অবৈধ আইডি।"
+  },
+  {
+    "id": "model.outgoing_hook.is_valid.message_action_name.app_error",
+    "translation": "ম্যাসেজ অ্যাকশনের জন্য একটি শিরোনাম প্রয়োজন: এটি ম্যাসেজ মেনুতে প্রদর্শিত নাম।"
+  },
+  {
+    "id": "model.outgoing_hook.is_valid.message_action_words.app_error",
+    "translation": "ম্যাসেজ অ্যাকশনে ট্রিগার ওয়ার্ড থাকতে পারে না: মানুষ এটি ম্যাসেজ মেনু থেকে বেছে নেয়।"
   },
   {
     "id": "model.outgoing_hook.is_valid.team_id.app_error",

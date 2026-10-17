@@ -3037,6 +3037,10 @@
     "translation": "Utgående webhooks er deaktivert av systemadministratoren."
   },
   {
+    "id": "api.outgoing_webhook.icon.too_large.app_error",
+    "translation": "Ikonets fil er for stor."
+  },
+  {
     "id": "api.payload.parse.error",
     "translation": "Det oppstod en feil under tolkning av nyttelasten."
   },
@@ -8175,6 +8179,42 @@
   {
     "id": "app.member_count",
     "translation": "feil ved henting av antall medlemmer"
+  },
+  {
+    "id": "app.message_action.failed.app_error",
+    "translation": "Kunne ikke nå {{.Name}}. Prøv igjen senere."
+  },
+  {
+    "id": "app.message_action.icon.decode.app_error",
+    "translation": "Ikonet må være et PNG-, JPEG- eller GIF-bilde."
+  },
+  {
+    "id": "app.message_action.icon.not_found.app_error",
+    "translation": "Denne integrasjonen har ikke lastet opp noe ikon."
+  },
+  {
+    "id": "app.message_action.icon.read.app_error",
+    "translation": "Kunne ikke lese ikonets bilde."
+  },
+  {
+    "id": "app.message_action.icon.too_large.app_error",
+    "translation": "Ikonets bilde er for stort."
+  },
+  {
+    "id": "app.message_action.not_found.app_error",
+    "translation": "Denne handlingen er ikke tilgjengelig for denne meldingen."
+  },
+  {
+    "id": "app.message_action.rate_limit.app_error",
+    "translation": "Handlingen kunne ikke utføres. Prøv igjen."
+  },
+  {
+    "id": "app.message_action.rate_limited.app_error",
+    "translation": "Du har sendt for mange meldinger til integrasjoner. Prøv igjen om ett minutt."
+  },
+  {
+    "id": "app.message_action.system_message.app_error",
+    "translation": "Systemmeldinger kan ikke sendes til en integrasjon."
   },
   {
     "id": "app.message_request.action.app_error",
@@ -14205,6 +14245,14 @@
   {
     "id": "model.outgoing_hook.is_valid.id.app_error",
     "translation": "Ugyldig ID."
+  },
+  {
+    "id": "model.outgoing_hook.is_valid.message_action_name.app_error",
+    "translation": "En meldingshandling trenger en tittel: dette er navnet som vises i meldingsmenyen."
+  },
+  {
+    "id": "model.outgoing_hook.is_valid.message_action_words.app_error",
+    "translation": "En meldingshandling kan ikke ha utløsende ord: folk velger den fra meldingsmenyen."
   },
   {
     "id": "model.outgoing_hook.is_valid.team_id.app_error",

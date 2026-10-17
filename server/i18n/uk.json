@@ -3043,6 +3043,10 @@
     "translation": "Вихідні веб-хуки відключені системним адміністратором."
   },
   {
+    "id": "api.outgoing_webhook.icon.too_large.app_error",
+    "translation": "Файл іконки надто великий."
+  },
+  {
     "id": "api.payload.parse.error",
     "translation": "Виникла помилка при розборі корисного навантаження."
   },
@@ -8189,6 +8193,42 @@
   {
     "id": "app.member_count",
     "translation": "помилка при отриманні кількості користувачів"
+  },
+  {
+    "id": "app.message_action.failed.app_error",
+    "translation": "Не вдалося зв’язатися з {{.Name}}. Спробуйте пізніше."
+  },
+  {
+    "id": "app.message_action.icon.decode.app_error",
+    "translation": "Іконка має бути зображенням у форматі PNG, JPEG або GIF."
+  },
+  {
+    "id": "app.message_action.icon.not_found.app_error",
+    "translation": "Для цієї інтеграції не завантажено іконку."
+  },
+  {
+    "id": "app.message_action.icon.read.app_error",
+    "translation": "Не вдалося прочитати зображення іконки."
+  },
+  {
+    "id": "app.message_action.icon.too_large.app_error",
+    "translation": "Зображення іконки надто велике."
+  },
+  {
+    "id": "app.message_action.not_found.app_error",
+    "translation": "Ця дія недоступна для цього повідомлення."
+  },
+  {
+    "id": "app.message_action.rate_limit.app_error",
+    "translation": "Не вдалося виконати дію. Спробуйте ще раз."
+  },
+  {
+    "id": "app.message_action.rate_limited.app_error",
+    "translation": "Ви надіслали надто багато повідомлень до інтеграцій. Спробуйте через хвилину."
+  },
+  {
+    "id": "app.message_action.system_message.app_error",
+    "translation": "Системні повідомлення не можна надсилати до інтеграцій."
   },
   {
     "id": "app.message_request.action.app_error",
@@ -14223,6 +14263,14 @@
   {
     "id": "model.outgoing_hook.is_valid.id.app_error",
     "translation": "Недійсний ідентифікатор."
+  },
+  {
+    "id": "model.outgoing_hook.is_valid.message_action_name.app_error",
+    "translation": "Дія повідомлення потребує заголовка: це ім’я, яке відображається в меню повідомлення."
+  },
+  {
+    "id": "model.outgoing_hook.is_valid.message_action_words.app_error",
+    "translation": "Дія повідомлення не може мати тригерних слів: користувачі обирають її в меню повідомлення."
   },
   {
     "id": "model.outgoing_hook.is_valid.team_id.app_error",

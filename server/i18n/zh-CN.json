@@ -3034,6 +3034,10 @@
     "translation": "传出 Webhook 已被系统管理员禁用。"
   },
   {
+    "id": "api.outgoing_webhook.icon.too_large.app_error",
+    "translation": "图标文件过大。"
+  },
+  {
     "id": "api.payload.parse.error",
     "translation": "读取载荷时出现错误。"
   },
@@ -8168,6 +8172,42 @@
   {
     "id": "app.member_count",
     "translation": "获取成员统计数量时出错"
+  },
+  {
+    "id": "app.message_action.failed.app_error",
+    "translation": "无法连接到 {{.Name}}。请稍后再试。"
+  },
+  {
+    "id": "app.message_action.icon.decode.app_error",
+    "translation": "图标必须是 PNG、JPEG 或 GIF 图片。"
+  },
+  {
+    "id": "app.message_action.icon.not_found.app_error",
+    "translation": "此集成未上传图标。"
+  },
+  {
+    "id": "app.message_action.icon.read.app_error",
+    "translation": "无法读取图标图片。"
+  },
+  {
+    "id": "app.message_action.icon.too_large.app_error",
+    "translation": "图标图片过大。"
+  },
+  {
+    "id": "app.message_action.not_found.app_error",
+    "translation": "此操作在此消息中不可用。"
+  },
+  {
+    "id": "app.message_action.rate_limit.app_error",
+    "translation": "无法执行该操作。请重试。"
+  },
+  {
+    "id": "app.message_action.rate_limited.app_error",
+    "translation": "您向集成发送的消息过多。请一分钟后重试。"
+  },
+  {
+    "id": "app.message_action.system_message.app_error",
+    "translation": "无法将系统消息发送到集成。"
   },
   {
     "id": "app.message_request.action.app_error",
@@ -14196,6 +14236,14 @@
   {
     "id": "model.outgoing_hook.is_valid.id.app_error",
     "translation": "ID 无效。"
+  },
+  {
+    "id": "model.outgoing_hook.is_valid.message_action_name.app_error",
+    "translation": "消息操作需要一个标题：它是消息菜单中显示的名称。"
+  },
+  {
+    "id": "model.outgoing_hook.is_valid.message_action_words.app_error",
+    "translation": "消息操作不能包含触发词：用户从消息菜单中选择它。"
   },
   {
     "id": "model.outgoing_hook.is_valid.team_id.app_error",

@@ -2856,6 +2856,10 @@
     "translation": "आउटगोइंग वेबहुक सिस्टम एडमिन द्वारा निष्क्रिय कर दिए गए हैं।"
   },
   {
+    "id": "api.outgoing_webhook.icon.too_large.app_error",
+    "translation": "आइकॉन का फ़ाइल बहुत बड़ी है।"
+  },
+  {
     "id": "api.payload.parse.error",
     "translation": "पेयलोड को पार्स करने के दौरान एक त्रुटि हुई।"
   },
@@ -7746,6 +7750,42 @@
   {
     "id": "app.member_count",
     "translation": "सदस्य संख्या प्राप्त करने में त्रुटि"
+  },
+  {
+    "id": "app.message_action.failed.app_error",
+    "translation": "{{.Name}} तक पहुँचा नहीं जा सका। बाद में पुनः प्रयास करें।"
+  },
+  {
+    "id": "app.message_action.icon.decode.app_error",
+    "translation": "आइकॉन PNG, JPEG या GIF इमेज होना चाहिए।"
+  },
+  {
+    "id": "app.message_action.icon.not_found.app_error",
+    "translation": "इस इंटीग्रेशन का कोई अपलोड किया गया आइकॉन नहीं है।"
+  },
+  {
+    "id": "app.message_action.icon.read.app_error",
+    "translation": "आइकॉन की इमेज पढ़ी नहीं जा सकी।"
+  },
+  {
+    "id": "app.message_action.icon.too_large.app_error",
+    "translation": "आइकॉन की इमेज बहुत बड़ी है।"
+  },
+  {
+    "id": "app.message_action.not_found.app_error",
+    "translation": "यह एक्शन इस संदेश के लिए उपलब्ध नहीं है।"
+  },
+  {
+    "id": "app.message_action.rate_limit.app_error",
+    "translation": "एक्शन चलाया नहीं जा सका। कृपया पुनः प्रयास करें।"
+  },
+  {
+    "id": "app.message_action.rate_limited.app_error",
+    "translation": "आपने इंटीग्रेशन में बहुत सारे संदेश भेज दिए हैं। एक मिनट बाद पुनः प्रयास करें।"
+  },
+  {
+    "id": "app.message_action.system_message.app_error",
+    "translation": "सिस्टम संदेशों को इंटीग्रेशन में भेजा नहीं जा सकता।"
   },
   {
     "id": "app.message_request.action.app_error",
@@ -13482,6 +13522,14 @@
   {
     "id": "model.outgoing_hook.is_valid.id.app_error",
     "translation": "अमान्य आईडी।"
+  },
+  {
+    "id": "model.outgoing_hook.is_valid.message_action_name.app_error",
+    "translation": "संदेश एक्शन को एक शीर्षक की आवश्यकता है: यह संदेश मेन्यू में दिखाया जाने वाला नाम है।"
+  },
+  {
+    "id": "model.outgoing_hook.is_valid.message_action_words.app_error",
+    "translation": "संदेश एक्शन में ट्रिगर शब्द नहीं हो सकते: लोग इसे संदेश मेन्यू से चुनते हैं।"
   },
   {
     "id": "model.outgoing_hook.is_valid.team_id.app_error",

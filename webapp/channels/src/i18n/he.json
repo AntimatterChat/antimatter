@@ -1,4 +1,13 @@
 {
+  "add_outgoing_webhook.messageAction.channelHelp": "לא חובה. הערוץ הציבורי שההודעות שלו יציגו את הפעולה הזו בתפריט; אם לא ייבחר ערוץ, כל הערוצים הציבוריים של הצוות יציגו אותה.",
+  "add_outgoing_webhook.messageAction.help": "ה־Webhook לא מתפעל על הודעות שפורסמו: זו פעולה בתפריט 'עוד פעולות' של ההודעה, והיא שולחת את ההודעה שבחר בה המשתמש.",
+  "add_outgoing_webhook.messageAction.icon": "סמל",
+  "add_outgoing_webhook.messageAction.iconHelp": "סמל הפעולה בתפריט ההודעה, המוצג בגוון אפור: כתובת URL של תמונה בפורמט .png או .jpg, או תמונה שהועלתה. אם לא ייבחר סמל, תינתן לפעולה סמל ניטרלי.",
+  "add_outgoing_webhook.messageAction.iconPreview": "הסמל, בגוון אפור כפי שהוא מופיע בתפריט ההודעה",
+  "add_outgoing_webhook.messageAction.nameRequired": "נדרש כותרת: זו שם הפעולה בתפריט ההודעה.",
+  "add_outgoing_webhook.messageAction.removeIcon": "הסרת הסמל",
+  "add_outgoing_webhook.messageAction.upload": "או העלאת תמונה:",
+  "add_outgoing_webhook.triggerWordsTriggerWhenMessageMenu": "מתפריט ההודעה",
   "admin.ai.features.attention": "החיבור הזה דורש תשומת לב: {reason}",
   "admin.ai.features.attentionOption": "{name} (דורש תשומת לב)",
   "admin.ai.features.defaultChat": "מודל השיחה של החיבור ({model})",

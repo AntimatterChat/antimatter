@@ -3037,6 +3037,10 @@
     "translation": "Utgående webhooks har inaktiverats av systemadministratören."
   },
   {
+    "id": "api.outgoing_webhook.icon.too_large.app_error",
+    "translation": "Ikonens fil är för stor."
+  },
+  {
     "id": "api.payload.parse.error",
     "translation": "Ett fel uppstod när innehållet analyserades."
   },
@@ -8175,6 +8179,42 @@
   {
     "id": "app.member_count",
     "translation": "fel då antalet medlemmar skulle hämtas"
+  },
+  {
+    "id": "app.message_action.failed.app_error",
+    "translation": "Kunde inte nå {{.Name}}. Försök igen senare."
+  },
+  {
+    "id": "app.message_action.icon.decode.app_error",
+    "translation": "Ikonen måste vara en PNG-, JPEG- eller GIF-bild."
+  },
+  {
+    "id": "app.message_action.icon.not_found.app_error",
+    "translation": "Denna integration har ingen uppladdad ikon."
+  },
+  {
+    "id": "app.message_action.icon.read.app_error",
+    "translation": "Ikonens bild kunde inte läsas."
+  },
+  {
+    "id": "app.message_action.icon.too_large.app_error",
+    "translation": "Ikonens bild är för stor."
+  },
+  {
+    "id": "app.message_action.not_found.app_error",
+    "translation": "Den här åtgärden är inte tillgänglig för det här meddelandet."
+  },
+  {
+    "id": "app.message_action.rate_limit.app_error",
+    "translation": "Åtgärden kunde inte köras. Försök igen."
+  },
+  {
+    "id": "app.message_action.rate_limited.app_error",
+    "translation": "Du har skickat för många meddelanden till integrationer. Försök igen om en minut."
+  },
+  {
+    "id": "app.message_action.system_message.app_error",
+    "translation": "Systemmeddelanden kan inte skickas till en integration."
   },
   {
     "id": "app.message_request.action.app_error",
@@ -14205,6 +14245,14 @@
   {
     "id": "model.outgoing_hook.is_valid.id.app_error",
     "translation": "Ogiltigt id."
+  },
+  {
+    "id": "model.outgoing_hook.is_valid.message_action_name.app_error",
+    "translation": "En meddelandeåtgärd behöver en titel: det är namnet som visas i meddelandemenyn."
+  },
+  {
+    "id": "model.outgoing_hook.is_valid.message_action_words.app_error",
+    "translation": "En meddelandeåtgärd kan inte ha utlösande ord: personer väljer den från meddelandemenyn."
   },
   {
     "id": "model.outgoing_hook.is_valid.team_id.app_error",

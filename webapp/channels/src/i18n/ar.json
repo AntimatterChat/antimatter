@@ -1,4 +1,13 @@
 {
+  "add_outgoing_webhook.messageAction.channelHelp": "اختياري. القناة العامة التي تظهر فيها هذه الإجراء في قائمة رسائلها؛ وإذا لم تُحدد قناة، فستظهر في جميع القنوات العامة للفريق.",
+  "add_outgoing_webhook.messageAction.help": "لا يُطلق هذا الخطاف عند نشر الرسائل: إنه إجراء يظهر ضمن «المزيد من الإجراءات» في قائمة الرسالة، ويرسل الرسالة التي يختارها المستخدم.",
+  "add_outgoing_webhook.messageAction.icon": "الأيقونة",
+  "add_outgoing_webhook.messageAction.iconHelp": "أيقونة الإجراء في قائمة الرسالة، وتظهر باللون الرمادي: عنوان URL لصورة بصيغة .png أو .jpg، أو صورة مرفوعة. إذا لم تُحدد أيقونة، فسيتم استخدام أيقونة محايدة.",
+  "add_outgoing_webhook.messageAction.iconPreview": "الأيقونة، باللون الرمادي كما تظهر في قائمة الرسالة",
+  "add_outgoing_webhook.messageAction.nameRequired": "العنوان مطلوب: فهو اسم الإجراء الذي يظهر في قائمة الرسالة.",
+  "add_outgoing_webhook.messageAction.removeIcon": "إزالة الأيقونة",
+  "add_outgoing_webhook.messageAction.upload": "أو ارفع صورة:",
+  "add_outgoing_webhook.triggerWordsTriggerWhenMessageMenu": "من قائمة الرسالة",
   "admin.ai.features.attention": "يتطلب هذا الاتصال انتباهًا: {reason}",
   "admin.ai.features.attentionOption": "{name} (يتطلب انتباهًا)",
   "admin.ai.features.defaultChat": "نموذج المحادثة الافتراضي للاتصال ({model})",

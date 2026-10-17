@@ -3043,6 +3043,10 @@
     "translation": "Исходящие вебхуки отключены системным администратором."
   },
   {
+    "id": "api.outgoing_webhook.icon.too_large.app_error",
+    "translation": "Файл значка слишком большой."
+  },
+  {
     "id": "api.payload.parse.error",
     "translation": "При разборе полезной нагрузки произошла ошибка."
   },
@@ -8189,6 +8193,42 @@
   {
     "id": "app.member_count",
     "translation": "ошибка при получении количества участников"
+  },
+  {
+    "id": "app.message_action.failed.app_error",
+    "translation": "Не удалось связаться с {{.Name}}. Повторите попытку позже."
+  },
+  {
+    "id": "app.message_action.icon.decode.app_error",
+    "translation": "Значок должен быть изображением в формате PNG, JPEG или GIF."
+  },
+  {
+    "id": "app.message_action.icon.not_found.app_error",
+    "translation": "Для этой интеграции не загружен значок."
+  },
+  {
+    "id": "app.message_action.icon.read.app_error",
+    "translation": "Не удалось прочитать изображение значка."
+  },
+  {
+    "id": "app.message_action.icon.too_large.app_error",
+    "translation": "Изображение значка слишком большое."
+  },
+  {
+    "id": "app.message_action.not_found.app_error",
+    "translation": "Это действие недоступно для данного сообщения."
+  },
+  {
+    "id": "app.message_action.rate_limit.app_error",
+    "translation": "Не удалось выполнить действие. Повторите попытку."
+  },
+  {
+    "id": "app.message_action.rate_limited.app_error",
+    "translation": "Вы отправили слишком много сообщений в интеграции. Повторите попытку через минуту."
+  },
+  {
+    "id": "app.message_action.system_message.app_error",
+    "translation": "Системные сообщения нельзя отправлять в интеграцию."
   },
   {
     "id": "app.message_request.action.app_error",
@@ -14223,6 +14263,14 @@
   {
     "id": "model.outgoing_hook.is_valid.id.app_error",
     "translation": "Недопустимый идентификатор."
+  },
+  {
+    "id": "model.outgoing_hook.is_valid.message_action_name.app_error",
+    "translation": "Для действия с сообщением требуется название: оно отображается в меню сообщения."
+  },
+  {
+    "id": "model.outgoing_hook.is_valid.message_action_words.app_error",
+    "translation": "Действие с сообщением не может иметь ключевые слова: пользователи выбирают его из меню сообщения."
   },
   {
     "id": "model.outgoing_hook.is_valid.team_id.app_error",

@@ -1,4 +1,13 @@
 {
+  "add_outgoing_webhook.messageAction.channelHelp": "Προαιρετικό. Το δημόσιο κανάλι των μηνυμάτων του οποίου το μενού θα περιλαμβάνει αυτή την ενέργεια. Αν δεν καθοριστεί κανένα, θα εμφανίζεται στο μενού όλων των δημόσιων καναλιών της ομάδας.",
+  "add_outgoing_webhook.messageAction.help": "Το Webhook δεν ενεργοποιείται σε αποστέλλονται μηνύματα: είναι μια ενέργεια στο υπομενού «Περισσότερες ενέργειες» του μενού μηνύματος και αποστέλλει το μήνυμα για το οποίο επιλέγεται.",
+  "add_outgoing_webhook.messageAction.icon": "Εικονίδιο",
+  "add_outgoing_webhook.messageAction.iconHelp": "Το εικονίδιο της ενέργειας στο μενού μηνύματος, που εμφανίζεται σε γκρι: το URL μιας εικόνας .png ή .jpg, ή μιας ανεβασμένης εικόνας. Αν δεν καθοριστεί εικονίδιο, η ενέργεια θα λάβει ένα ουδέτερο εικονίδιο.",
+  "add_outgoing_webhook.messageAction.iconPreview": "Το εικονίδιο, σε γκρι όπως στο μενού μηνύματος",
+  "add_outgoing_webhook.messageAction.nameRequired": "Απαιτείται τίτλος: είναι το όνομα της ενέργειας στο μενού μηνύματος.",
+  "add_outgoing_webhook.messageAction.removeIcon": "Αφαίρεση εικονιδίου",
+  "add_outgoing_webhook.messageAction.upload": "Ή ανεβάστε μια εικόνα:",
+  "add_outgoing_webhook.triggerWordsTriggerWhenMessageMenu": "Από το μενού μηνύματος",
   "admin.ai.features.attention": "Αυτή η σύνδεση χρειάζεται προσοχή: {reason}",
   "admin.ai.features.attentionOption": "{name} (χρειάζεται προσοχή)",
   "admin.ai.features.defaultChat": "Το μοντέλο συνομιλίας της σύνδεσης ({model})",

@@ -1,4 +1,13 @@
 {
+  "add_outgoing_webhook.messageAction.channelHelp": "ไม่บังคับ ช่องสาธารณะท่ีข้อความในนั้่นจะมีย่อยน้ีในเมนู; ถ่าไม่ต้งไว้ ทุกช่องสาธารณะในท่ีทำงานจะมีย่อยน้ี",
+  "add_outgoing_webhook.messageAction.help": "เว็บฮุคไม่ทำงานเม่ียมีย่อย: น้ีค่อการกระทำในเมนูย่อย 'More actions' ของข้อความ และจะส่่งข้อความท่ีผ้้ใช้เลืก",
+  "add_outgoing_webhook.messageAction.icon": "ไอคอน",
+  "add_outgoing_webhook.messageAction.iconHelp": "ไอคอนของการกระทำในเมนูข้อความ แสดงเป็นส่ีเทา: URL ของภาพ .png หรือ .jpg หรือภาพท่ีอปัโหลด; ถ่าไม่มีไอคอน การกระทำจะได้อไอคอนกลางๆ",
+  "add_outgoing_webhook.messageAction.iconPreview": "ไอคอน แสดงเป็นส่ีเทาเช่่นในเมนูข้อความ",
+  "add_outgoing_webhook.messageAction.nameRequired": "ต้งชื่อ: น้ีค่อช่ือของการกระทำในเมนูข้อความ",
+  "add_outgoing_webhook.messageAction.removeIcon": "ลบไอคอน",
+  "add_outgoing_webhook.messageAction.upload": "หรืออปัโหลดภาพ:",
+  "add_outgoing_webhook.triggerWordsTriggerWhenMessageMenu": "จากเมนูข้อความ",
   "admin.ai.features.attention": "การเชื่อมต่อนี้ต้องการความสนใจ: {reason}",
   "admin.ai.features.attentionOption": "{name} (ต้องการความสนใจ)",
   "admin.ai.features.defaultChat": "โมเดลแชทของการเชื่อมต่อ ({model})",

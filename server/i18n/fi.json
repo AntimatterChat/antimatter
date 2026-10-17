@@ -3037,6 +3037,10 @@
     "translation": "Järjestelmänvalvoja on estänyt ulos suunnatut webhookit."
   },
   {
+    "id": "api.outgoing_webhook.icon.too_large.app_error",
+    "translation": "Kuvakkeen tiedosto on liian suuri."
+  },
+  {
     "id": "api.payload.parse.error",
     "translation": "Pyynnön sisältöä jäsennettäessä tapahtui virhe."
   },
@@ -8175,6 +8179,42 @@
   {
     "id": "app.member_count",
     "translation": "virhe haettaessa jäsenmäärää"
+  },
+  {
+    "id": "app.message_action.failed.app_error",
+    "translation": "{{.Name}}:ää ei voitu tavoittaa. Yritä myöhemmin uudelleen."
+  },
+  {
+    "id": "app.message_action.icon.decode.app_error",
+    "translation": "Kuvakkeen on oltava PNG-, JPEG- tai GIF-kuva."
+  },
+  {
+    "id": "app.message_action.icon.not_found.app_error",
+    "translation": "Tälle integraatiolle ei ole ladattu kuvaketta."
+  },
+  {
+    "id": "app.message_action.icon.read.app_error",
+    "translation": "Kuvakkeen kuvaa ei voitu lukea."
+  },
+  {
+    "id": "app.message_action.icon.too_large.app_error",
+    "translation": "Kuvakkeen kuva on liian suuri."
+  },
+  {
+    "id": "app.message_action.not_found.app_error",
+    "translation": "Tämä toiminto ei ole käytettävissä tälle viestille."
+  },
+  {
+    "id": "app.message_action.rate_limit.app_error",
+    "translation": "Toimintoa ei voitu suorittaa. Yritä uudelleen."
+  },
+  {
+    "id": "app.message_action.rate_limited.app_error",
+    "translation": "Olet lähettänyt liian monta viestiä integraatioihin. Yritä minuutin kuluttua uudelleen."
+  },
+  {
+    "id": "app.message_action.system_message.app_error",
+    "translation": "Järjestelmäviestejä ei voi lähettää integraatioon."
   },
   {
     "id": "app.message_request.action.app_error",
@@ -14205,6 +14245,14 @@
   {
     "id": "model.outgoing_hook.is_valid.id.app_error",
     "translation": "Virheellinen ID"
+  },
+  {
+    "id": "model.outgoing_hook.is_valid.message_action_name.app_error",
+    "translation": "Viestitoiminnon tarvitsee olla nimetty: se on nimi, joka näkyy viestin valikossa."
+  },
+  {
+    "id": "model.outgoing_hook.is_valid.message_action_words.app_error",
+    "translation": "Viestitoiminnolla ei voi olla laukaisusanoja: käyttäjät valitsevat sen viestin valikosta."
   },
   {
     "id": "model.outgoing_hook.is_valid.team_id.app_error",

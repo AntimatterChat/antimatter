@@ -3037,6 +3037,10 @@
     "translation": "I webhooks in uscita sono stati disabilitati dall'Amministratore di Distema."
   },
   {
+    "id": "api.outgoing_webhook.icon.too_large.app_error",
+    "translation": "Il file dell'icona è troppo grande."
+  },
+  {
     "id": "api.payload.parse.error",
     "translation": "Si è verificato un errore durante l'analisi del payload."
   },
@@ -8175,6 +8179,42 @@
   {
     "id": "app.member_count",
     "translation": "errore durante il recupero del numero di membri"
+  },
+  {
+    "id": "app.message_action.failed.app_error",
+    "translation": "Impossibile raggiungere {{.Name}}. Riprova più tardi."
+  },
+  {
+    "id": "app.message_action.icon.decode.app_error",
+    "translation": "L'icona deve essere un'immagine PNG, JPEG o GIF."
+  },
+  {
+    "id": "app.message_action.icon.not_found.app_error",
+    "translation": "Questa integrazione non ha un'icona caricata."
+  },
+  {
+    "id": "app.message_action.icon.read.app_error",
+    "translation": "Impossibile leggere l'immagine dell'icona."
+  },
+  {
+    "id": "app.message_action.icon.too_large.app_error",
+    "translation": "L'immagine dell'icona è troppo grande."
+  },
+  {
+    "id": "app.message_action.not_found.app_error",
+    "translation": "Questa azione non è disponibile per questo messaggio."
+  },
+  {
+    "id": "app.message_action.rate_limit.app_error",
+    "translation": "Impossibile eseguire l'azione. Riprova."
+  },
+  {
+    "id": "app.message_action.rate_limited.app_error",
+    "translation": "Hai inviato troppi messaggi alle integrazioni. Riprova tra un minuto."
+  },
+  {
+    "id": "app.message_action.system_message.app_error",
+    "translation": "I messaggi di sistema non possono essere inviati a un'integrazione."
   },
   {
     "id": "app.message_request.action.app_error",
@@ -14205,6 +14245,14 @@
   {
     "id": "model.outgoing_hook.is_valid.id.app_error",
     "translation": "ID non valido."
+  },
+  {
+    "id": "model.outgoing_hook.is_valid.message_action_name.app_error",
+    "translation": "Un'azione del messaggio richiede un titolo: è il nome visualizzato nel menu del messaggio."
+  },
+  {
+    "id": "model.outgoing_hook.is_valid.message_action_words.app_error",
+    "translation": "Un'azione del messaggio non può avere parole di attivazione: viene selezionata dal menu del messaggio."
   },
   {
     "id": "model.outgoing_hook.is_valid.team_id.app_error",

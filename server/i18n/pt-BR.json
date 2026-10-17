@@ -3037,6 +3037,10 @@
     "translation": "Webhooks de saída foram desabilitados pelo administrador do sistema."
   },
   {
+    "id": "api.outgoing_webhook.icon.too_large.app_error",
+    "translation": "O arquivo do ícone é muito grande."
+  },
+  {
     "id": "api.payload.parse.error",
     "translation": "Ocorreu um erro ao analisar payload."
   },
@@ -8175,6 +8179,42 @@
   {
     "id": "app.member_count",
     "translation": "erro ao recuperar contagem de membros"
+  },
+  {
+    "id": "app.message_action.failed.app_error",
+    "translation": "Não foi possível contatar {{.Name}}. Tente novamente mais tarde."
+  },
+  {
+    "id": "app.message_action.icon.decode.app_error",
+    "translation": "O ícone deve ser uma imagem PNG, JPEG ou GIF."
+  },
+  {
+    "id": "app.message_action.icon.not_found.app_error",
+    "translation": "Esta integração não possui ícone enviado."
+  },
+  {
+    "id": "app.message_action.icon.read.app_error",
+    "translation": "Não foi possível ler a imagem do ícone."
+  },
+  {
+    "id": "app.message_action.icon.too_large.app_error",
+    "translation": "A imagem do ícone é muito grande."
+  },
+  {
+    "id": "app.message_action.not_found.app_error",
+    "translation": "Esta ação não está disponível para esta mensagem."
+  },
+  {
+    "id": "app.message_action.rate_limit.app_error",
+    "translation": "Não foi possível executar a ação. Tente novamente."
+  },
+  {
+    "id": "app.message_action.rate_limited.app_error",
+    "translation": "Você enviou muitas mensagens para integrações. Tente novamente em um minuto."
+  },
+  {
+    "id": "app.message_action.system_message.app_error",
+    "translation": "Mensagens do sistema não podem ser enviadas para uma integração."
   },
   {
     "id": "app.message_request.action.app_error",
@@ -14205,6 +14245,14 @@
   {
     "id": "model.outgoing_hook.is_valid.id.app_error",
     "translation": "ID inválida."
+  },
+  {
+    "id": "model.outgoing_hook.is_valid.message_action_name.app_error",
+    "translation": "Uma ação de mensagem precisa de um título: é o nome exibido no menu da mensagem."
+  },
+  {
+    "id": "model.outgoing_hook.is_valid.message_action_words.app_error",
+    "translation": "Uma ação de mensagem não pode ter palavras de gatilho: as pessoas a selecionam no menu da mensagem."
   },
   {
     "id": "model.outgoing_hook.is_valid.team_id.app_error",

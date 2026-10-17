@@ -1,4 +1,13 @@
 {
+  "add_outgoing_webhook.messageAction.channelHelp": "वैकल्पिक। वह सार्वजनिक चैनल जिसके संदेशों में यह क्रिया अपने मेनू में दिखाई देगी; यदि कोई चैनल न चुना जाए, तो समुदाय के सभी सार्वजनिक चैनलों में यह दिखाई देगी।",
+  "add_outgoing_webhook.messageAction.help": "यह वेबहुक पोस्ट किए गए संदेशों पर नहीं चलता: यह संदेश के मेनू में 'अधिक क्रियाएं' के अंतर्गत एक क्रिया है, और वह संदेश भेजता है जिसके लिए कोई इसे चुनता है।",
+  "add_outgoing_webhook.messageAction.icon": "आइकॉन",
+  "add_outgoing_webhook.messageAction.iconHelp": "संदेश के मेनू में क्रिया का आइकॉन, जो भूरे रंग में दिखाई देता है: .png या .jpg इमेज का URL, या अपलोड की गई इमेज। यदि कोई आइकॉन न हो, तो क्रिया को एक तटस्थ आइकॉन मिलता है।",
+  "add_outgoing_webhook.messageAction.iconPreview": "आइकॉन, संदेश के मेनू में जैसे भूरे रंग में",
+  "add_outgoing_webhook.messageAction.nameRequired": "शीर्षक आवश्यक है: यह संदेश के मेनू में क्रिया का नाम है।",
+  "add_outgoing_webhook.messageAction.removeIcon": "आइकॉन हटाएं",
+  "add_outgoing_webhook.messageAction.upload": "या इमेज अपलोड करें:",
+  "add_outgoing_webhook.triggerWordsTriggerWhenMessageMenu": "संदेश के मेनू से",
   "admin.ai.features.attention": "इस कनेक्शन को ध्यान की ज़रूरत है: {reason}",
   "admin.ai.features.attentionOption": "{name} (ध्यान की ज़रूरत है)",
   "admin.ai.features.defaultChat": "कनेक्शन का चैट मॉडल ({model})",

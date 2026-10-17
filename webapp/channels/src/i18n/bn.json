@@ -1,4 +1,13 @@
 {
+  "add_outgoing_webhook.messageAction.channelHelp": "ঐচ্ছিক। যে পাবলিক চ্যানেলের মেনুতে এই অ্যাকশনটি যুক্ত হবে; যদি নির্দিষ্ট চ্যানেল না দেন, তবে কমিউনিটির সব পাবলিক চ্যানেলেই এটি যুক্ত হবে।",
+  "add_outgoing_webhook.messageAction.help": "ওয়েবহুকটি পোস্ট করা মেসেজগুলিতে ফায়ার হয় না: এটি মেনুতে ‘More actions’ সাবমেনুর অধীনে একটি অ্যাকশন, এবং যে মেসেজের জন্য কেউ এটি বেছে নেয়, সেই মেসেজটি পাঠিয়ে দেয়।",
+  "add_outgoing_webhook.messageAction.icon": "আইকন",
+  "add_outgoing_webhook.messageAction.iconHelp": "মেসেজ মেনুতে অ্যাকশনের আইকন, যা ধূসর রঙে দেখানো হয়: একটি .png বা .jpg ইমেজের URL, অথবা আপলোড করা একটি ইমেজ। আইকন না থাকলে অ্যাকশনটি একটি নিরপেক্ষ আইকন পাবে।",
+  "add_outgoing_webhook.messageAction.iconPreview": "আইকনটি, যেমন মেসেজ মেনুতে দেখা যায়, ধূসর রঙে",
+  "add_outgoing_webhook.messageAction.nameRequired": "একটি শিরোনাম আবশ্যক: এটি মেনুতে অ্যাকশনের নাম হিসেবে দেখা যায়।",
+  "add_outgoing_webhook.messageAction.removeIcon": "আইকন সরান",
+  "add_outgoing_webhook.messageAction.upload": "অথবা একটি ইমেজ আপলোড করুন:",
+  "add_outgoing_webhook.triggerWordsTriggerWhenMessageMenu": "মেসেজ মেনু থেকে",
   "admin.ai.features.attention": "এই সংযোগটির জন্য মনোযোগ প্রয়োজন: {reason}",
   "admin.ai.features.attentionOption": "{name} (মনোযোগ প্রয়োজন)",
   "admin.ai.features.defaultChat": "সংযোগের চ্যাট মডেল ({model})",

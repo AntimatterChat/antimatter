@@ -1,4 +1,13 @@
 {
+  "add_outgoing_webhook.messageAction.channelHelp": "Opcional. El canal públic els missatges del qual tindran aquesta acció al seu menú; si no n'hi ha cap, la tindran tots els canals públics de l'equip.",
+  "add_outgoing_webhook.messageAction.help": "El webhook no s'activa amb els missatges publicats: és una acció dins de «Més accions» al menú del missatge, i envia el missatge que algú hi seleccioni.",
+  "add_outgoing_webhook.messageAction.icon": "Icona",
+  "add_outgoing_webhook.messageAction.iconHelp": "La icona de l'acció al menú del missatge, que s'hi mostra en gris: l'URL d'una imatge .png o .jpg, o una que s'hagi penjat. Si no hi ha icona, l'acció en rep una neutra.",
+  "add_outgoing_webhook.messageAction.iconPreview": "La icona, en gris com al menú del missatge",
+  "add_outgoing_webhook.messageAction.nameRequired": "Cal un títol: és el nom de l'acció al menú del missatge.",
+  "add_outgoing_webhook.messageAction.removeIcon": "Elimina la icona",
+  "add_outgoing_webhook.messageAction.upload": "O penja una imatge:",
+  "add_outgoing_webhook.triggerWordsTriggerWhenMessageMenu": "Des del menú del missatge",
   "admin.ai.features.attention": "Aquesta connexió necessita atenció: {reason}",
   "admin.ai.features.attentionOption": "{name} (necessita atenció)",
   "admin.ai.features.defaultChat": "El model de xat de la connexió ({model})",

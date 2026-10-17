@@ -1,4 +1,13 @@
 {
+  "add_outgoing_webhook.messageAction.channelHelp": "விருப்பத்திற்குரியது. இதன் செய்திகளின் மெனுவில் இந்த செயல்பாடு தோன்றும் பொது சேனலு; இல்லையெனில், குழுவின் அனைத்து பொது சேனல்களிலும் தோன்றும்.",
+  "add_outgoing_webhook.messageAction.help": "இந்த வெப்கூக் அனுப்பப்பட்ட செய்திகளில் இயங்காது: இது செய்தி மெனுவில் ‘மேலும் செயல்பாடுகள்’ கீழ் உள்ள ஒரு செயல்பாடாகும், அதை யாரேனும் தேர்ந்தெடுத்தால் அந்த செய்தியை அனுப்பும்.",
+  "add_outgoing_webhook.messageAction.icon": "இருப்பு",
+  "add_outgoing_webhook.messageAction.iconHelp": "செய்தி மெனுவில் செயல்பாட்டின் இருப்பு, பழுப்பு நிறத்தில் தோன்றும்: .png அல்லது .jpg படத்தின் URL, அல்லது பதிவேற்றப்பட்ட ஒரு படம். இருப்பு இல்லையெனில், செயல்பாட்டிற்கு ஒரு நடுநிலையான இருப்பு வழங்கப்படும்.",
+  "add_outgoing_webhook.messageAction.iconPreview": "செய்தி மெனுவில் போல பழுப்பு நிறத்தில் இருப்பு",
+  "add_outgoing_webhook.messageAction.nameRequired": "தலைப்பு அவசியம்: அது செய்தி மெனுவில் செயல்பாட்டின் பெயராகும்.",
+  "add_outgoing_webhook.messageAction.removeIcon": "இருப்பை அகற்று",
+  "add_outgoing_webhook.messageAction.upload": "அல்லது ஒரு படத்தை பதிவேற்று:",
+  "add_outgoing_webhook.triggerWordsTriggerWhenMessageMenu": "செய்தி மெனுவிலிருந்து",
   "admin.ai.features.attention": "இந்த இணைப்புக்கு கவனம் தேவை: {reason}",
   "admin.ai.features.attentionOption": "{name} (கவனம் தேவை)",
   "admin.ai.features.defaultChat": "இணைப்பின் உரையாடல் மாதிரி ({model})",
