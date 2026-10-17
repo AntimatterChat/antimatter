@@ -1,11 +1,13 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 
+import Permissions from 'mattermost-redux/constants/permissions';
+
 import AdminDefinition from 'components/admin_console/admin_definition';
 
 import type {GlobalState} from 'types/store';
 
-import {getAdminDefinition} from './admin_console';
+import {getAdminDefinition, getConsoleAccess} from './admin_console';
 
 type TestReducerState = {
     something?: string;
@@ -69,6 +71,32 @@ describe('Selectors.AdminConsole', () => {
             } as unknown as GlobalState);
             expect(result.something).toEqual('test');
             expect(result.otherThing).toEqual('other-thing');
+        });
+    });
+
+    describe('getConsoleAccess', () => {
+        const stateWith = (permissions: string[], adminConsoleReducers: Record<string, unknown> = {}) => ({
+            entities: {
+                users: {currentUserId: 'me', profiles: {me: {id: 'me', roles: 'system_user console_role'}}},
+                roles: {roles: {console_role: {name: 'console_role', permissions}}},
+            },
+            plugins: {adminConsoleReducers},
+        } as unknown as GlobalState);
+
+        // The AI section has no System Console permissions: the console used to fail to open for everyone.
+        it('gives no access to the sections without System Console permissions, without failing', () => {
+            const access = getConsoleAccess(stateWith([Permissions.SYSCONSOLE_READ_PLUGINS]));
+            expect(AdminDefinition).toHaveProperty('ai');
+            expect(access.read.ai).toBe(false);
+            expect(access.write.ai).toBe(false);
+            expect(access.read.plugins).toBe(true);
+            expect(access.write.plugins).toBe(false);
+        });
+
+        it('works out the access of a section a plugin adds', () => {
+            const access = getConsoleAccess(stateWith([], {'add-section': (data: object) => ({...data, my_plugin: {}})}));
+            expect(access.read.my_plugin).toBe(false);
+            expect(access.read.plugins).toBe(false);
         });
     });
 });

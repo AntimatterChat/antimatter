@@ -44,7 +44,9 @@ export const getConsoleAccess = createSelector(
             write: {},
         };
         const addEntriesForKey = (entryKey: string) => {
-            const permissions = ResourceToSysConsolePermissionsTable[entryKey].filter((x) => mySystemPermissions.has(x));
+            // Antimatter: a section without System Console permissions of its own (AI, which its own permission
+            // gates, or one a plugin adds) gives no access through them, instead of breaking the whole console.
+            const permissions = (ResourceToSysConsolePermissionsTable[entryKey] ?? []).filter((x) => mySystemPermissions.has(x));
             consoleAccess.read[entryKey] = permissions.length !== 0;
             consoleAccess.write[entryKey] = permissions.some((permission) => permission.startsWith('sysconsole_write_'));
         };
