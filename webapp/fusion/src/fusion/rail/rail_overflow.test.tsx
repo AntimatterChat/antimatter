@@ -17,7 +17,8 @@ type Unread = {channel: typeof mockChannels[number]; mentions: number; messages:
 let mockUnread: Unread[] = [];
 const unreadIn = (ids: string[]) => mockChannels.filter((c) => ids.includes(c.id)).map((channel) => ({channel, mentions: 1, messages: 1}));
 
-jest.mock('fusion/shell/layout_context', () => ({useLayout: () => ({home: false, setHome: jest.fn(), setNavOpen: jest.fn()}), isPhoneLayout: () => false}));
+let mockDockRows: number | null = null;
+jest.mock('fusion/shell/layout_context', () => ({useLayout: () => ({home: false, setHome: jest.fn(), setNavOpen: jest.fn(), dockRows: mockDockRows}), isPhoneLayout: () => false}));
 jest.mock('fusion/sidebar/home_sidebar', () => ({DM_FIND_ID: 'am-dm-find'}));
 jest.mock('fusion/sidebar/server_categories', () => ({getSidebarCategories: () => [mockCategory]}));
 jest.mock('fusion/sidebar/hidden', () => ({getHiddenChannelIds: () => new Set()}));
@@ -65,5 +66,14 @@ describe('fusion/rail: the Open conversations overflow', () => {
 
         expect(bubbles()).toEqual([]);
         expect(screen.getByRole('button', {name: /^All direct messages/})).not.toHaveClass('am-mini');
+    });
+
+    test('the unread conversations the dock has no room for wait on the rail too', () => {
+        mockUnread = unreadIn(['dm0', 'dm3', 'dm9']);
+        mockDockRows = 3;
+        render();
+        mockDockRows = null;
+
+        expect(bubbles()).toEqual(['group 3', 'group 9']);
     });
 });

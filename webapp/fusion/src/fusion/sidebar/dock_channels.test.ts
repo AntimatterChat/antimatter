@@ -55,4 +55,16 @@ describe('fusion/sidebar/makeGetDockChannelIds', () => {
         const get = makeGetDockChannelIds();
         expect(get(stateWith())).toBe(get(stateWith()));
     });
+
+    test('keeps no more than the rows that fit, the latest active', () => {
+        expect(makeGetDockChannelIds()(stateWith(), 3)).toEqual(['dm0', 'dm1', 'dm2']);
+        expect(makeGetDockChannelIds()(stateWith({limit: '5'}), 8)).toHaveLength(5);
+        expect(makeGetDockChannelIds()(stateWith(), null)).toHaveLength(10);
+    });
+
+    test('keeps the conversation you are in even when no row fits', () => {
+        expect(makeGetDockChannelIds()(stateWith({current: 'dm11'}), 0)).toEqual(['dm11']);
+        expect(makeGetDockChannelIds()(stateWith(), 0)).toEqual([]);
+        expect(makeGetDockChannelIds()(stateWith({current: 'dm11'}), 2)).toEqual(['dm0', 'dm11']);
+    });
 });

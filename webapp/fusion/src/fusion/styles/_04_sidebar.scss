@@ -196,7 +196,7 @@
 :is(.am-app, .am-layer) .am-home-links { display: grid; gap: 1px; padding: 4px 8px; }
 // The conversations dock is set apart from the channels above it by a thin rule and a slightly raised background, no
 // shadow: --am-line barely shows on the sidebar in dark themes, so the rule is muted-based.
-:is(.am-app, .am-layer) .am-dock { flex: none; max-height: 30%; display: flex; flex-direction: column; border-top: 1px solid color-mix(in srgb, var(--am-muted) 30%, transparent); background: color-mix(in srgb, var(--am-side) 92%, var(--am-raise)); position: relative; }
+:is(.am-app, .am-layer) .am-dock { flex: none; overflow: hidden; display: flex; flex-direction: column; border-top: 1px solid color-mix(in srgb, var(--am-muted) 30%, transparent); background: color-mix(in srgb, var(--am-side) 92%, var(--am-raise)); position: relative; }
 :is(.am-app, .am-layer) .am-dock-head {
   display: flex;
   align-items: center;
@@ -211,7 +211,8 @@
 :is(.am-app, .am-layer) .am-dock-head button { color: var(--am-muted); display: grid; place-items: center; }
 :is(.am-app, .am-layer) .am-dock-head button:hover { color: var(--am-text); }
 // One column as wide as the list: long names are cut, never widen it.
-:is(.am-app, .am-layer) .am-dock-list { overflow-y: auto; padding: 0 10px 10px 8px; display: grid; grid-template-columns: minmax(0, 1fr); gap: 2px; }
+// The dock never scrolls: it shows the conversations that fit (sidebar/dock_fit.ts), the rest wait on the team rail.
+:is(.am-app, .am-layer) .am-dock-list { overflow: hidden; padding: 0 10px 10px 8px; display: grid; grid-template-columns: minmax(0, 1fr); gap: 2px; }
 :is(.am-app, .am-layer) .am-dock-row { position: relative; }
 // The unread count ends where the channels' do; the close button takes its place on hover.
 :is(.am-app, .am-layer) .am-dock-row .am-dm { min-height: 32px; padding-top: 3px; padding-bottom: 3px; }

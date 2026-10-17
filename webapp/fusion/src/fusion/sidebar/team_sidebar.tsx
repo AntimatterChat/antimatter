@@ -1,19 +1,15 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 
-import React, {useEffect, useMemo, useRef, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {useIntl} from 'react-intl';
 import {shallowEqual, useDispatch, useSelector, useStore} from 'react-redux';
 
-import type {Channel} from '@mattermost/types/channels';
-
-import {makeGetChannel} from 'mattermost-redux/selectors/entities/channels';
 import {getCurrentTeam, getCurrentTeamId} from 'mattermost-redux/selectors/entities/teams';
 
 import {setUnreadFilterEnabled} from 'actions/views/channel_sidebar';
 import {isUnreadFilterEnabled} from 'selectors/views/channel_sidebar';
 
-import {useCallsOnTop} from 'fusion/calls/calls_on_top';
 import Icon from 'fusion/components/icon';
 import ServerMenu from 'fusion/popovers/server_menu';
 import {isKeybind} from 'fusion/shell/keybinds';
@@ -26,8 +22,7 @@ import type {GlobalState} from 'types/store';
 import Category from './category';
 import ChannelRow from './channel_row';
 import {useSidebarThreads} from './channel_threads';
-import DirectRow from './direct_row';
-import {makeGetDockChannelIds} from './dock_channels';
+import Dock from './dock';
 import {getHiddenChannelIds} from './hidden';
 import HiddenSection from './hidden_section';
 import MoreUnreads from './more_unreads';
@@ -35,49 +30,12 @@ import {getSidebarCategories} from './server_categories';
 import UnreadCategory from './unread_category';
 import VoicePanel from './voice_panel';
 
-// The direct messages category is shown as a dock of open conversations at the bottom of the sidebar. All the
-// conversations open from the chat bubble at the bottom of the team rail.
-function Dock() {
-    const {formatMessage} = useIntl();
-
-    // All the open conversations, unread or not: the Unreads section above the categories leaves them here, and the
-    // team rail leaves them out of its unread bubbles.
-    const getDockChannelIds = useMemo(() => makeGetDockChannelIds(), []);
-    const channelIds = useSelector(getDockChannelIds);
-    const getChannel = useMemo(() => makeGetChannel(), []);
-    const open = useSelector((state: GlobalState) => channelIds.map((id) => getChannel(state, id)).filter(Boolean) as Channel[], shallowEqual);
-
-    // A conversation with a call in progress stays on top while it lasts.
-    const channels = useCallsOnTop(open);
-
-    return (
-        <div
-            className={am('dock')}
-            aria-label={formatMessage({id: 'fusion.dock.label', defaultMessage: 'Open conversations'})}
-        >
-            <div className={am('dock-head')}>
-                <span className={am('grow')}>{formatMessage({id: 'fusion.dock.title', defaultMessage: 'Open conversations'})}</span>
-            </div>
-            {channels.length > 0 && (
-                <div className={am('dock-list')}>
-                    {channels.map((channel) => (
-                        <DirectRow
-                            key={channel.id}
-                            channel={channel}
-                            dock={true}
-                        />
-                    ))}
-                </div>
-            )}
-        </div>
-    );
-}
-
 // TeamSidebar lists the current team's channels by category.
 export default function TeamSidebar() {
     const {formatMessage} = useIntl();
     const dispatch = useDispatch();
     const scrollRef = useRef<HTMLDivElement>(null);
+    const sidebarRef = useRef<HTMLElement>(null);
 
     // The unread filter (Ctrl/Cmd+Shift+U, or the team menu) lists only the unread channels, as in the classic sidebar.
     const unreadOnly = useSelector(isUnreadFilterEnabled);
@@ -113,6 +71,7 @@ export default function TeamSidebar() {
 
     return (
         <aside
+            ref={sidebarRef}
             {...a11yRegion(am('sidebar'), 'sidebar')}
             aria-label={formatMessage({id: 'fusion.sidebar.label', defaultMessage: 'Channels and direct messages'})}
         >
@@ -170,7 +129,10 @@ export default function TeamSidebar() {
                     />
                 )}
             </div>
-            <Dock/>
+            <Dock
+                sidebarRef={sidebarRef}
+                scrollRef={scrollRef}
+            />
             <VoicePanel/>
             {menuOpen && (
                 <ServerMenu

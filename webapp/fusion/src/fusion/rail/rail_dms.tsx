@@ -19,6 +19,8 @@ import {am} from 'fusion/utils/class_names';
 import {channelPath} from 'fusion/utils/paths';
 import {getHistory} from 'utils/browser_history';
 
+import type {GlobalState} from 'types/store';
+
 // How many unread conversations the rail shows at most.
 const MAX_BUBBLES = 5;
 
@@ -26,8 +28,9 @@ const MAX_BUBBLES = 5;
 // faces with their counts, under a small chat bubble that opens the list of all the direct messages. Without any, the
 // chat bubble is a rail bubble of its own; it shrinks to the small icon, or grows back, with an animation (none with
 // reduced motion). The faces are the unread conversations the sidebar's Open conversations dock has no room for (it
-// keeps the latest active, up to the "Open conversations" setting): those in the dock show there already, with
-// their red ring. None while the list of all the direct messages takes the dock's place: they're all in it.
+// keeps the latest active, as many as fit, up to the "Open conversations" setting): those in the dock show there
+// already, with their red ring. None while the list of all the direct messages takes the dock's place: they're all in
+// it.
 export default function RailDirectMessages() {
     const {formatMessage} = useIntl();
     const layout = useLayout();
@@ -36,7 +39,7 @@ export default function RailDirectMessages() {
     const currentChannelId = useSelector(getCurrentChannelId);
     const currentTeam = useSelector(getCurrentTeam);
     const getDockChannelIds = useMemo(() => makeGetDockChannelIds(), []);
-    const dockIds = useSelector(getDockChannelIds);
+    const dockIds = useSelector((state: GlobalState) => getDockChannelIds(state, layout.dockRows));
 
     const inDock = useMemo(() => new Set(dockIds), [dockIds]);
     const waiting = layout.home ? [] : unreadDMs.filter((dm) => dm.channel.id !== currentChannelId && !inDock.has(dm.channel.id)).slice(0, MAX_BUBBLES);

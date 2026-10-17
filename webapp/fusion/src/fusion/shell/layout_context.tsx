@@ -32,6 +32,11 @@ type Layout = {
 
     // Slides the right-hand drawer in, with the member list when no panel is open.
     openRightDrawer: () => void;
+
+    // How many conversations fit in the sidebar's Open conversations dock (measured by useDockFit); null until
+    // measured. The team rail shows the unread ones that don't fit.
+    dockRows: number | null;
+    setDockRows: (rows: number | null) => void;
 };
 
 const LayoutContext = createContext<Layout | null>(null);
@@ -52,6 +57,7 @@ export function LayoutProvider({children}: {children: React.ReactNode}) {
     }, [simplified]);
     const [navOpen, setNavOpen] = useState(false);
     const [rightOpen, setRightOpen] = useState(false);
+    const [dockRows, setDockRows] = useState<number | null>(null);
     const toggleMembers = useCallback(() => setShowMembers((on) => !on), []);
     const rhsOpen = useSelector(getIsRhsOpen);
     const openRightDrawer = useCallback(() => {
@@ -72,7 +78,9 @@ export function LayoutProvider({children}: {children: React.ReactNode}) {
         rightOpen,
         setRightOpen,
         openRightDrawer,
-    }), [home, showMembers, toggleMembers, navOpen, rightOpen, openRightDrawer]);
+        dockRows,
+        setDockRows,
+    }), [home, showMembers, toggleMembers, navOpen, rightOpen, openRightDrawer, dockRows]);
 
     return <LayoutContext.Provider value={value}>{children}</LayoutContext.Provider>;
 }
