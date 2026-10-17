@@ -160,7 +160,6 @@ describe('fusion/popovers/AddCustomEmojiView', () => {
         await userEvent.upload(fileInput(), image('big.gif', MAX_BYTES + 1));
         expect(screen.getByRole('alert')).toHaveTextContent('This image is larger than 512 KB. Choose a smaller one.');
 
-
         // The file chooser filters by type, but a drop or a paste doesn't.
         fireEvent.change(fileInput(), {target: {files: [image('vector.svg', 100, 'image/svg+xml')]}});
         expect(screen.getByRole('alert')).toHaveTextContent('Choose a PNG, GIF, JPEG or WebP image.');

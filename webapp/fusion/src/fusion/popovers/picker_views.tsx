@@ -291,6 +291,7 @@ export function PickerField({label, hint, error, ok, aside, children}: FieldProp
 
 export function PickerSearch({value, onChange, placeholder, autoFocus = true}: {value: string; onChange: (value: string) => void; placeholder: string; autoFocus?: boolean}) {
     const ref = useRef<HTMLInputElement>(null);
+
     // Not on a touch screen, where it would bring the keyboard over half the picker: the field is a tap away.
     useEffect(() => {
         if (autoFocus && !isTouch()) {

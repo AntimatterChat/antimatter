@@ -23,8 +23,8 @@ import {useDockFit} from './dock_fit';
 type Props = {
 
     /** The sidebar and its channel list, to measure the room the dock has. */
-    sidebarRef: RefObject<HTMLElement>;
-    scrollRef: RefObject<HTMLElement>;
+    sidebarRef: RefObject<HTMLElement | null>;
+    scrollRef: RefObject<HTMLElement | null>;
 };
 
 // Dock shows the direct messages category as a dock of open conversations at the bottom of the sidebar. It never

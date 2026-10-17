@@ -46,9 +46,9 @@ export function computeDockRows({sidebar, others, channels, chrome, row, gap}: D
 }
 
 type Refs = {
-    sidebar: RefObject<HTMLElement>;
-    scroll: RefObject<HTMLElement>;
-    dock: RefObject<HTMLElement>;
+    sidebar: RefObject<HTMLElement | null>;
+    scroll: RefObject<HTMLElement | null>;
+    dock: RefObject<HTMLElement | null>;
 };
 
 // useDockFit measures how many conversations fit in the Open conversations dock, so that it never scrolls, and keeps
