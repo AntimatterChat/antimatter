@@ -3,29 +3,34 @@
 
 import React from 'react';
 
+import type {Post} from '@mattermost/types/posts';
+
 import {renderWithContext, screen, userEvent, within} from 'tests/react_testing_utils';
 
 import PluginMenuActions from './plugin_menu_actions';
 
-const action = (id: string, text: string, extra: Record<string, unknown> = {}) => ({id, pluginId: 'p', text, action: jest.fn(), ...extra});
+const action = (id: string, text: React.ReactNode, extra: Record<string, unknown> = {}) => ({id, pluginId: 'p', text, action: jest.fn(), ...extra});
+
+const post = {id: 'post1', channel_id: 'chan1', type: '', message: 'hello', pending_post_id: ''} as unknown as Post;
 
 describe('fusion/messages/PluginMenuActions', () => {
-    const render = (actions: Array<ReturnType<typeof action>>) => {
+    const render = (actions: Array<ReturnType<typeof action>>, extraState: Record<string, unknown> = {}, forPost: Post = post) => {
         const onDone = jest.fn();
         const run = (fn: () => void) => () => {
             fn();
             onDone();
         };
+        const {plugins, ...rest} = extraState as {plugins?: {components?: Record<string, unknown>}};
         renderWithContext(
             <div role='menu'>
                 <PluginMenuActions
-                    postId='post1'
+                    post={forPost}
                     label='More actions'
                     menuLabel='More message actions'
                     run={run}
                 />
             </div>,
-            {plugins: {components: {PostDropdownMenu: actions}}} as never,
+            {plugins: {components: {PostDropdownMenu: actions, ...plugins?.components}}, ...rest} as never,
         );
         return onDone;
     };
@@ -73,5 +78,46 @@ describe('fusion/messages/PluginMenuActions', () => {
         ]);
         expect(screen.queryAllByRole('menuitem')).toHaveLength(0);
         expect(screen.queryByText('Group')).not.toBeInTheDocument();
+    });
+
+    describe('app icons', () => {
+        const iconOf = (name: string) => screen.getByRole('menuitem', {name}).querySelector('.am-mi-app');
+
+        test('an app the mockup knows shows its Fusion icon, hidden from screen readers', () => {
+            render([action('pb', 'Run playbook', {pluginId: 'playbooks'})]);
+            const icon = iconOf('Run playbook');
+            expect(icon).toHaveAttribute('aria-hidden', 'true');
+            expect(icon?.querySelector('use')).toHaveAttribute('href', '#am-i-runbook');
+        });
+
+        test('another app shows the icon of its app bar entry', () => {
+            render([action('x', 'Send to Acme', {pluginId: 'com.acme'})], {
+                plugins: {components: {AppBar: [{id: 'bar', pluginId: 'com.acme', iconUrl: 'https://acme.example/icon.png'}]}},
+            });
+            expect(iconOf('Send to Acme')?.querySelector('img')).toHaveAttribute('src', 'https://acme.example/icon.png');
+        });
+
+        test('an app without an icon gets the neutral app icon', () => {
+            render([action('x', 'Do the thing', {pluginId: 'com.noicon'})]);
+            expect(iconOf('Do the thing')?.querySelector('use')).toHaveAttribute('href', '#am-i-apps');
+        });
+
+        test('the icon an app draws in its own text is hidden, the app icon standing for it', () => {
+            const text = (
+                <>
+                    <span className='MenuItem__icon'><i className='CompassIcon icon-product-playbooks'/></span>
+                    {'Run playbook'}
+                </>
+            );
+            render([action('pb', text, {pluginId: 'playbooks'})]);
+            const item = screen.getByRole('menuitem', {name: 'Run playbook'});
+            expect(item.querySelector('.MenuItem__icon')).toHaveClass('am-mi-own-ic');
+            expect(item.querySelectorAll('.am-mi-app')).toHaveLength(1);
+        });
+
+        test('a text that starts with words keeps them', () => {
+            render([action('x', <span>{'Create a task'}</span>, {pluginId: 'com.tasks'})]);
+            expect(screen.getByRole('menuitem', {name: 'Create a task'}).querySelector('.am-mi-own-ic')).toBeNull();
+        });
     });
 });

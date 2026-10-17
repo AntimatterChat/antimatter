@@ -17,13 +17,11 @@ import {manuallyMarkThreadAsUnread} from 'actions/views/threads';
 
 import {Popover} from 'fusion/components/layer';
 import {MenuItem, MenuSeparator} from 'fusion/components/menu';
-import PluginMenuActions from 'fusion/messages/plugin_menu_actions';
+import PluginMenuActions, {usePluginMenuActions} from 'fusion/messages/plugin_menu_actions';
 import {useToast} from 'fusion/shell/toast_context';
 import {permalinkPath} from 'fusion/utils/paths';
 import {getSiteURL} from 'utils/url';
 import {copyToClipboard} from 'utils/utils';
-
-import type {GlobalState} from 'types/store';
 
 import {useThreadConversions} from './thread_to';
 import type {ThreadConversion} from './thread_to';
@@ -49,8 +47,7 @@ export default function ThreadMenu({root, lastReplyAt, anchor, onClose, onConver
     const me = useSelector(getCurrentUserId);
     const team = useSelector(getCurrentTeam);
     const crt = useSelector(isCollapsedThreadsEnabled);
-    const pluginActions = useSelector((state: GlobalState) => state.plugins.components.PostDropdownMenu || []);
-    const plugins = pluginActions.filter((a) => !a.filter || a.filter(root.id));
+    const more = usePluginMenuActions(root);
     const can = useThreadConversions(root);
 
     const run = (action: () => void) => () => {
@@ -119,9 +116,9 @@ export default function ThreadMenu({root, lastReplyAt, anchor, onClose, onConver
                 label={formatMessage({id: 'fusion.messageMenu.unread', defaultMessage: 'Mark as unread'})}
                 onClick={run(markUnread)}
             />
-            {plugins.length > 0 && <MenuSeparator/>}
+            {more.any && <MenuSeparator/>}
             <PluginMenuActions
-                postId={root.id}
+                post={root}
                 label={formatMessage({id: 'fusion.threadMenu.more', defaultMessage: 'More actions'})}
                 menuLabel={formatMessage({id: 'fusion.threadMenu.moreLabel', defaultMessage: 'More thread actions'})}
                 run={run}

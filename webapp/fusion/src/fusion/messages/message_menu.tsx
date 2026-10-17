@@ -394,7 +394,7 @@ export default function MessageMenu({post, anchor, inThread, onClose, onMoreReac
                 })}
             />
             <PluginMenuActions
-                postId={post.id}
+                post={post}
                 label={formatMessage({id: 'fusion.messageMenu.more', defaultMessage: 'More actions'})}
                 menuLabel={formatMessage({id: 'fusion.messageMenu.moreLabel', defaultMessage: 'More message actions, from apps'})}
                 run={run}

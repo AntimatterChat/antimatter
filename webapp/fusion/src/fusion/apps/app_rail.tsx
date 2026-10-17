@@ -15,45 +15,20 @@ import {getActiveRhsComponent} from 'selectors/rhs';
 import AppBarBinding from 'components/app_bar/app_bar_binding';
 
 import Avatar from 'fusion/components/avatar';
-import Icon from 'fusion/components/icon';
 import AboutPopover from 'fusion/popovers/about_popover';
 import StatusPopover from 'fusion/popovers/status_popover';
 import {am} from 'fusion/utils/class_names';
 
 import type {GlobalState} from 'types/store';
-import type {AppBarAction, ChannelHeaderButtonAction} from 'types/store/plugins';
+import type {AppBarAction} from 'types/store/plugins';
 
+import {AppGlyph, useAppComponent} from './app_glyph';
+import type {AppComponent} from './app_glyph';
 import {getKnownApp} from './known_apps';
-
-type AppComponent = AppBarAction | ChannelHeaderButtonAction;
-
-// AppGlyph is an app's icon: the mockup's, in its colour, for the apps it knows; else the plugin's own.
-function AppGlyph({component}: {component: AppComponent}) {
-    const [failed, setFailed] = useState(false);
-    const known = getKnownApp(component.pluginId);
-    const iconUrl = 'iconUrl' in component ? component.iconUrl : undefined;
-    const icon = 'icon' in component ? component.icon : undefined;
-    if (known) {
-        return <Icon name={known.icon}/>;
-    }
-    if (iconUrl && !failed) {
-        return (
-            <img
-                className={am('app-img')}
-                src={iconUrl}
-                alt=''
-                onError={() => setFailed(true)}
-            />
-        );
-    }
-    return <>{icon || <Icon name='plug'/>}</>;
-}
 
 // PanelAppIcon is the icon of the app whose panel is open, before the panel's title, as in the app rail.
 export function PanelAppIcon({pluginId}: {pluginId: string}) {
-    const appBarComponents = useSelector(getAppBarPluginComponents);
-    const headerComponents = useSelector(getChannelHeaderPluginComponents);
-    const component = [...appBarComponents, ...headerComponents].find((c) => c.pluginId === pluginId);
+    const component = useAppComponent(pluginId);
     if (!component) {
         return null;
     }

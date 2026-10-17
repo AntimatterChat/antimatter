@@ -33,6 +33,16 @@
 :is(.am-app, .am-layer) .am-fly-menu button:is(:hover, :focus-visible) .am-ic { color: var(--am-text); }
 :is(.am-app, .am-layer) .am-fly-menu button:is(:hover, :focus-visible) .am-menu-sub { color: var(--am-text-2); }
 :is(.am-app, .am-layer) .am-fly-menu .am-pop-h { margin: 4px 8px 4px; }
+// An app's or an integration's icon before its action in a message's More actions, at the menu's icon size and in grey
+// like the menu's own icons (Fusion's icons take the text colour; images and the apps' own icons lose their colours),
+// in the light and dark themes alike.
+:is(.am-app, .am-layer) .am-mi-app { width: 20px; height: 20px; flex: none; display: grid; place-items: center; overflow: hidden; filter: grayscale(1); }
+:is(.am-app, .am-layer) .am-mi-app img { width: 18px; height: 18px; border-radius: 4px; object-fit: contain; opacity: .8; }
+:is(.am-app, .am-layer) .am-mi-app > :not(.am-ic, img) { max-width: 20px; max-height: 20px; font-size: 18px; line-height: 1; opacity: .8; }
+:is(.am-app, .am-layer) .am-mi-app > svg:not(.am-ic), :is(.am-app, .am-layer) .am-mi-app > :not(.am-ic, img) svg { width: 18px; height: 18px; }
+:is(.am-app, .am-layer) .am-mi-label { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+// An app's own icon at the start of its action's text (Playbooks, GitHub, the AI chat): the one above stands for it.
+:is(.am-app, .am-layer) .am-mi-label > .am-mi-own-ic { display: none; }
 :is(.am-app, .am-layer) .am-menu-sub { display: block; font-size: 12px; font-weight: 400; color: var(--am-muted); }
 :is(.am-app, .am-layer) .am-user-menu { width: 240px; }
 :is(.am-app, .am-layer) .am-user-menu .am-pop-h { margin-top: 2px; }
