@@ -84,7 +84,7 @@ function nextPluginMenu(current: string | null, id: string, open: boolean): stri
     return current === id ? null : current;
 }
 
-function SystemLine({post}: {post: Post}) {
+function SystemLine({post, highlighted = false}: {post: Post; highlighted?: boolean}) {
     const pluginPostTypes = useSelector((state: GlobalState) => state.plugins.postTypes);
     let icon: IconName = 'bell';
     if (post.type === Posts.POST_TYPES.JOIN_CHANNEL || post.type === Posts.POST_TYPES.ADD_TO_CHANNEL || post.type === Posts.POST_TYPES.COMBINED_USER_ACTIVITY) {
@@ -100,7 +100,7 @@ function SystemLine({post}: {post: Post}) {
     const moved = post.type === Posts.POST_TYPES.WRANGLER;
     return (
         <div
-            className={am('msg', 'sysline')}
+            className={am('msg', 'sysline', {flash: highlighted})}
             id={`post_${post.id}`}
         >
             <span className={am('sys-ic')}><Icon name={icon}/></span>
@@ -190,7 +190,12 @@ export default function Message({postId, previousPostId, inThread = false, highl
     }
 
     if (isSystemMessage(post) && post.type !== Posts.POST_TYPES.EPHEMERAL) {
-        return <SystemLine post={post}/>;
+        return (
+            <SystemLine
+                post={post}
+                highlighted={highlighted}
+            />
+        );
     }
 
     if (blockLevel && !revealed && post.type !== Posts.POST_TYPES.EPHEMERAL) {
