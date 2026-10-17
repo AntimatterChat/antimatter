@@ -1384,6 +1384,23 @@ func (a *App) getAntimatterChannelArchiveRightsMigration() (permissionsMap, erro
 	}, nil
 }
 
+// getAntimatterAIConnectionPermissionsMigration gives system admins the management of the server-wide model
+// connections and of every community's, and the community's admins (team_admin, and the admin role of team schemes,
+// which have no such permission otherwise) their community's own. A fresh install gets the same from
+// model.MakeDefaultRoles; nobody else gets anything.
+func (a *App) getAntimatterAIConnectionPermissionsMigration() (permissionsMap, error) {
+	return permissionsMap{
+		permissionTransformation{
+			On:  isExactRole(model.SystemAdminRoleId),
+			Add: []string{model.PermissionManageAIConnections.Id, model.PermissionManageTeamAIConnections.Id},
+		},
+		permissionTransformation{
+			On:  isRole(model.TeamAdminRoleId),
+			Add: []string{model.PermissionManageTeamAIConnections.Id},
+		},
+	}, nil
+}
+
 // DoPermissionsMigrations execute all the permissions migrations need by the current version.
 func (a *App) DoPermissionsMigrations() error {
 	return a.Srv().doPermissionsMigrations()
@@ -1450,6 +1467,7 @@ func (s *Server) doPermissionsMigrations() error {
 		{Key: model.MigrationRemoveImportTeamPermission, Migration: a.removeImportTeamPermissionMigration},
 		{Key: model.MigrationKeyAddAIRecapsPermissions, Migration: a.getAddAIRecapsPermissionsMigration},
 		{Key: model.MigrationKeyAntimatterChannelArchiveRights, Migration: a.getAntimatterChannelArchiveRightsMigration},
+		{Key: model.MigrationKeyAntimatterAIConnectionPermissions, Migration: a.getAntimatterAIConnectionPermissionsMigration},
 	}
 
 	roles, err := s.Store().Role().GetAll()

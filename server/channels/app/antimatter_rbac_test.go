@@ -90,7 +90,9 @@ func adminPermission(p string) bool {
 		model.PermissionReadAudits.Id,
 		model.PermissionGetLogs.Id,
 		model.PermissionManageLicenseInformation.Id,
-		model.PermissionReadOtherUsersTeams.Id:
+		model.PermissionReadOtherUsersTeams.Id,
+		model.PermissionManageAIConnections.Id,
+		model.PermissionManageTeamAIConnections.Id:
 		return true
 	}
 	return false
@@ -289,6 +291,23 @@ func TestUpgradeDoesNotPromoteAnyone(t *testing.T) {
 					"after the upgrade, member role %s holds %s, which a fresh install doesn't give it", name, p)
 			}
 		}
+	})
+
+	// Model connections (MigrationKeyAntimatterAIConnectionPermissions): the system admins manage them all, the
+	// community's admins their community's; an upgraded server ends up as a fresh install, and nobody else gets them.
+	t.Run("who manages model connections is the same as on a fresh install", func(t *testing.T) {
+		upgraded := readRoles(t, th.App.Srv().Store())
+		golden := readGoldenRoles(t)
+		for name, role := range golden {
+			for _, p := range []string{model.PermissionManageAIConnections.Id, model.PermissionManageTeamAIConnections.Id} {
+				assert.Equal(t, slices.Contains(role.Permissions, p), slices.Contains(upgraded[name].Permissions, p),
+					"%s holding %s after the upgrade", name, p)
+			}
+		}
+		assert.Contains(t, upgraded[model.SystemAdminRoleId].Permissions, model.PermissionManageAIConnections.Id)
+		assert.Contains(t, upgraded[model.TeamAdminRoleId].Permissions, model.PermissionManageTeamAIConnections.Id)
+		assert.NotContains(t, upgraded[model.TeamAdminRoleId].Permissions, model.PermissionManageAIConnections.Id)
+		assert.NotContains(t, upgraded[model.SystemUserRoleId].Permissions, model.PermissionManageTeamAIConnections.Id)
 	})
 
 	// Archiving channels moved from the members to the community's admins (MigrationKeyAntimatterChannelArchiveRights):
