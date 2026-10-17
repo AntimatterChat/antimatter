@@ -214,9 +214,8 @@ func (sr *ScheduledRecap) IsValid() *AppError {
 		}
 	}
 
-	if sr.AgentId == "" {
-		return NewAppError("ScheduledRecap.IsValid", "model.scheduled_recap.is_valid.agent_id.app_error", nil, "", http.StatusBadRequest)
-	}
+	// Antimatter: a recap runs on the model connection of AISettings.Recaps, so the agent may be empty (older
+	// clients still send one).
 
 	return nil
 }

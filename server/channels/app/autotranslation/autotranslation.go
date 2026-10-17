@@ -3,8 +3,8 @@
 
 // Package autotranslation implements einterfaces.AutoTranslationInterface:
 // per-channel automatic translation of posts into the languages of the
-// channel members, backed by a LibreTranslate server or an LLM reached
-// through the Agents plugin.
+// channel members, backed by a LibreTranslate server, an OpenAI-compatible
+// API, or an LLM on a model connection of the server's AI service.
 //
 // Translate records a "processing" translation for every language the
 // channel needs and returns immediately; a pool of workers then calls the
@@ -72,9 +72,9 @@ func featureAvailable(cfg *model.Config) (bool, string) {
 		if settings.LibreTranslate == nil || model.SafeDereference(settings.LibreTranslate.URL) == "" {
 			return false, "LibreTranslate URL not configured"
 		}
-	case providerAgents:
-		if settings.Agents == nil || model.SafeDereference(settings.Agents.LLMServiceID) == "" {
-			return false, "Agents LLM service not configured"
+	case providerAgents, providerConnection:
+		if connectionID, _ := cfg.AutoTranslationConnection(); connectionID == "" {
+			return false, "model connection not configured"
 		}
 	case providerOpenAI:
 		if settings.OpenAI == nil || model.SafeDereference(settings.OpenAI.URL) == "" || model.SafeDereference(settings.OpenAI.Model) == "" {
@@ -228,9 +228,8 @@ func (s *Service) getProvider() (provider, error) {
 	if settings.LibreTranslate != nil {
 		key += "\x00" + model.SafeDereference(settings.LibreTranslate.URL) + "\x00" + model.SafeDereference(settings.LibreTranslate.APIKey)
 	}
-	if settings.Agents != nil {
-		key += "\x00" + model.SafeDereference(settings.Agents.LLMServiceID)
-	}
+	connectionID, modelName := cfg.AutoTranslationConnection()
+	key += "\x00" + connectionID + "\x00" + modelName
 
 	s.provMu.Lock()
 	defer s.provMu.Unlock()

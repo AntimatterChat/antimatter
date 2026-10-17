@@ -1832,7 +1832,8 @@ func rewriteMessage(c *Context, w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if !model.IsValidId(req.AgentID) {
+	// Antimatter: the rewrite runs on the model connection of AISettings.Rewrite; an agent is optional.
+	if req.AgentID != "" && !model.IsValidId(req.AgentID) {
 		c.SetInvalidParam("agent_id")
 		return
 	}

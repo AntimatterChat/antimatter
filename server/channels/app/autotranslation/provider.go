@@ -13,13 +13,12 @@ import (
 
 const (
 	providerLibreTranslate = "libretranslate"
-	providerAgents         = "agents"
+	// providerAgents is the older name of providerConnection: it once went through the Agents plugin.
+	providerAgents     = "agents"
+	providerConnection = model.AutoTranslationProviderConnection
 )
 
-var (
-	ErrAgentsUnavailable = errors.New("the Agents plugin bridge is not available")
-	errNoProvider        = errors.New("no translation provider is configured")
-)
+var errNoProvider = errors.New("no translation provider is configured")
 
 // translateResult is the output of a provider translation call.
 type translateResult struct {
@@ -59,11 +58,12 @@ func newProvider(h Host, cfg *model.Config) (provider, error) {
 			model.SafeDereference(settings.LibreTranslate.APIKey),
 			timeout,
 		), nil
-	case providerAgents:
-		if settings.Agents == nil || model.SafeDereference(settings.Agents.LLMServiceID) == "" {
+	case providerAgents, providerConnection:
+		connectionID, modelName := cfg.AutoTranslationConnection()
+		if connectionID == "" {
 			return nil, errNoProvider
 		}
-		return newAgentsProvider(h, model.SafeDereference(settings.Agents.LLMServiceID)), nil
+		return newConnectionProvider(h, model.SafeDereference(settings.Provider), connectionID, modelName), nil
 	case providerOpenAI:
 		if settings.OpenAI == nil || model.SafeDereference(settings.OpenAI.URL) == "" || model.SafeDereference(settings.OpenAI.Model) == "" {
 			return nil, errNoProvider

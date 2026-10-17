@@ -76,10 +76,7 @@ func createScheduledRecap(c *Context, w http.ResponseWriter, r *http.Request) {
 		c.SetInvalidParam("channel_mode")
 		return
 	}
-	if recap.AgentId == "" {
-		c.SetInvalidParam("agent_id")
-		return
-	}
+	// Antimatter: the agent is optional; recaps run on the model connection of AISettings.Recaps.
 	recap.Enabled = true
 
 	auditRec := c.MakeAuditRecord(model.AuditEventCreateScheduledRecap, model.AuditStatusFail)

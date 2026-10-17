@@ -10,18 +10,20 @@ import (
 	"strings"
 )
 
-// agentsProvider translates through an LLM service configured in the Agents
-// plugin, reached over the plugin bridge.
-type agentsProvider struct {
-	h         Host
-	serviceID string
+// connectionProvider translates with an LLM on a model connection (AISettings.AutoTranslation, or the Agents
+// plugin's service ID for the older "agents" provider), through the server's AI service.
+type connectionProvider struct {
+	h            Host
+	name         string
+	connectionID string
+	model        string
 }
 
-func newAgentsProvider(h Host, serviceID string) *agentsProvider {
-	return &agentsProvider{h: h, serviceID: serviceID}
+func newConnectionProvider(h Host, name, connectionID, model string) *connectionProvider {
+	return &connectionProvider{h: h, name: name, connectionID: connectionID, model: model}
 }
 
-func (p *agentsProvider) Name() string { return providerAgents }
+func (p *connectionProvider) Name() string { return p.name }
 
 const agentsTranslateSystemPrompt = `You are a translation engine embedded in a chat application.
 You receive a JSON object with "target_language", "source_language" and "texts".
@@ -66,32 +68,9 @@ var agentsDetectSchema = map[string]any{
 	"additionalProperties": false,
 }
 
-// complete runs a bridge completion and honors ctx cancellation; the bridge
-// call itself cannot be interrupted, so a timed-out call is abandoned.
-func (p *agentsProvider) complete(ctx context.Context, req CompletionRequest) (string, error) {
-	if ok, reason := p.h.AgentsBridgeStatus(); !ok {
-		if reason != "" {
-			return "", fmt.Errorf("%w: %s", ErrAgentsUnavailable, reason)
-		}
-		return "", ErrAgentsUnavailable
-	}
-
-	type result struct {
-		out string
-		err error
-	}
-	done := make(chan result, 1)
-	go func() {
-		out, err := p.h.AgentsServiceCompletion(p.serviceID, req)
-		done <- result{out, err}
-	}()
-
-	select {
-	case <-ctx.Done():
-		return "", ctx.Err()
-	case r := <-done:
-		return r.out, r.err
-	}
+// complete runs a chat on the connection; the AI service honours ctx.
+func (p *connectionProvider) complete(ctx context.Context, req CompletionRequest) (string, error) {
+	return p.h.AIChat(ctx, p.connectionID, p.model, req)
 }
 
 // decodeLLMJSON parses a JSON completion, tolerating a Markdown code fence
@@ -106,7 +85,7 @@ func decodeLLMJSON(s string, out any) error {
 	return json.Unmarshal([]byte(s), out)
 }
 
-func (p *agentsProvider) Translate(ctx context.Context, texts []string, src, dst string) (*translateResult, error) {
+func (p *connectionProvider) Translate(ctx context.Context, texts []string, src, dst string) (*translateResult, error) {
 	if len(texts) == 0 {
 		return &translateResult{}, nil
 	}
@@ -140,10 +119,10 @@ func (p *agentsProvider) Translate(ctx context.Context, texts []string, src, dst
 		Confidence     *float64 `json:"confidence"`
 	}
 	if err := decodeLLMJSON(completion, &resp); err != nil {
-		return nil, fmt.Errorf("invalid completion from the Agents plugin: %w", err)
+		return nil, fmt.Errorf("invalid completion from the model: %w", err)
 	}
 	if len(resp.Translations) != len(texts) {
-		return nil, fmt.Errorf("the Agents plugin returned %d translations for %d texts", len(resp.Translations), len(texts))
+		return nil, fmt.Errorf("the model returned %d translations for %d texts", len(resp.Translations), len(texts))
 	}
 
 	result := &translateResult{Texts: resp.Translations, SourceLang: normalizeLang(resp.SourceLanguage)}
@@ -154,7 +133,7 @@ func (p *agentsProvider) Translate(ctx context.Context, texts []string, src, dst
 	return result, nil
 }
 
-func (p *agentsProvider) Detect(ctx context.Context, text string) (string, *float64, error) {
+func (p *connectionProvider) Detect(ctx context.Context, text string) (string, *float64, error) {
 	completion, err := p.complete(ctx, CompletionRequest{
 		Messages: []CompletionMessage{
 			{Role: "system", Message: agentsDetectSystemPrompt},
@@ -171,11 +150,11 @@ func (p *agentsProvider) Detect(ctx context.Context, text string) (string, *floa
 		Confidence *float64 `json:"confidence"`
 	}
 	if err := decodeLLMJSON(completion, &resp); err != nil {
-		return "", nil, fmt.Errorf("invalid completion from the Agents plugin: %w", err)
+		return "", nil, fmt.Errorf("invalid completion from the model: %w", err)
 	}
 	lang := normalizeLang(resp.Language)
 	if lang == "" {
-		return "", nil, fmt.Errorf("the Agents plugin could not detect the language")
+		return "", nil, fmt.Errorf("the model could not detect the language")
 	}
 	var conf *float64
 	if resp.Confidence != nil {

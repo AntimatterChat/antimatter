@@ -5,6 +5,8 @@ package autotranslation
 
 import (
 	"cmp"
+	"context"
+	"errors"
 	"net/http"
 	"slices"
 	"sync"
@@ -27,9 +29,8 @@ type fakeHost struct {
 	client *http.Client
 	logger mlog.LoggerIFace
 
-	agentsAvailable bool
-	agentsReply     func(serviceID string, req CompletionRequest) (string, error)
-	agentsRequests  []CompletionRequest
+	aiReply    func(connectionID, model string, req CompletionRequest) (string, error)
+	aiRequests []CompletionRequest
 }
 
 func newTestConfig(providerName, url string) *model.Config {
@@ -84,18 +85,15 @@ func (h *fakeHost) HTTPClient() *http.Client {
 	return http.DefaultClient
 }
 
-func (h *fakeHost) AgentsBridgeStatus() (bool, string) {
-	if h.agentsAvailable {
-		return true, ""
-	}
-	return false, "app.agents.bridge.not_available.plugin_not_active"
-}
-
-func (h *fakeHost) AgentsServiceCompletion(serviceID string, req CompletionRequest) (string, error) {
+func (h *fakeHost) AIChat(ctx context.Context, connectionID, model string, req CompletionRequest) (string, error) {
 	h.mu.Lock()
-	h.agentsRequests = append(h.agentsRequests, req)
+	h.aiRequests = append(h.aiRequests, req)
+	reply := h.aiReply
 	h.mu.Unlock()
-	return h.agentsReply(serviceID, req)
+	if reply == nil {
+		return "", errors.New("no model connection")
+	}
+	return reply(connectionID, model, req)
 }
 
 func (h *fakeHost) JobServer() *jobs.JobServer { return nil }

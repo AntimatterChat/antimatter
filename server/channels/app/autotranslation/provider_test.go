@@ -16,6 +16,8 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+
+	"github.com/mattermost/mattermost/server/public/model"
 )
 
 // fakeLibreTranslate emulates the parts of the LibreTranslate API used here.
@@ -200,15 +202,17 @@ func TestLibreTranslateTimeout(t *testing.T) {
 	assert.True(t, errors.Is(err, context.DeadlineExceeded))
 }
 
-func TestAgentsProvider(t *testing.T) {
-	h := &fakeHost{agentsAvailable: true}
-	p := newAgentsProvider(h, "openai")
+func TestConnectionProvider(t *testing.T) {
+	h := &fakeHost{}
+	p := newConnectionProvider(h, providerConnection, "connection-id", "hy-mt")
 	ctx := context.Background()
 
 	t.Run("translate", func(t *testing.T) {
-		h.agentsReply = func(serviceID string, req CompletionRequest) (string, error) {
-			assert.Equal(t, "openai", serviceID)
+		h.aiReply = func(connectionID, modelName string, req CompletionRequest) (string, error) {
+			assert.Equal(t, "connection-id", connectionID)
+			assert.Equal(t, "hy-mt", modelName)
 			require.Len(t, req.Messages, 2)
+			assert.Equal(t, agentsTranslateSchema, req.JSONOutputFormat)
 			var input struct {
 				Target string   `json:"target_language"`
 				Source string   `json:"source_language"`
@@ -226,10 +230,11 @@ func TestAgentsProvider(t *testing.T) {
 		assert.Equal(t, "en", res.SourceLang)
 		require.NotNil(t, res.Confidence)
 		assert.InDelta(t, 0.97, *res.Confidence, 0.001)
+		assert.Equal(t, providerConnection, p.Name())
 	})
 
 	t.Run("wrong number of translations", func(t *testing.T) {
-		h.agentsReply = func(string, CompletionRequest) (string, error) {
+		h.aiReply = func(string, string, CompletionRequest) (string, error) {
 			return `{"translations":[],"source_language":"en","confidence":1}`, nil
 		}
 		_, err := p.Translate(ctx, []string{"Hello"}, "", "es")
@@ -237,7 +242,7 @@ func TestAgentsProvider(t *testing.T) {
 	})
 
 	t.Run("detect", func(t *testing.T) {
-		h.agentsReply = func(string, CompletionRequest) (string, error) {
+		h.aiReply = func(string, string, CompletionRequest) (string, error) {
 			return `{"language":"fr","confidence":0.9}`, nil
 		}
 		lang, conf, err := p.Detect(ctx, "Bonjour")
@@ -246,10 +251,34 @@ func TestAgentsProvider(t *testing.T) {
 		assert.InDelta(t, 0.9, *conf, 0.001)
 	})
 
-	t.Run("bridge unavailable", func(t *testing.T) {
-		h.agentsAvailable = false
-		defer func() { h.agentsAvailable = true }()
+	t.Run("the AI service refuses", func(t *testing.T) {
+		h.aiReply = func(string, string, CompletionRequest) (string, error) {
+			return "", errors.New("budget spent")
+		}
 		_, err := p.Translate(ctx, []string{"Hello"}, "", "es")
-		require.ErrorIs(t, err, ErrAgentsUnavailable)
+		require.Error(t, err)
 	})
+}
+
+func TestNewProviderUsesTheConnection(t *testing.T) {
+	cfg := newTestConfig(providerConnection, "")
+	_, err := newProvider(&fakeHost{}, cfg)
+	require.ErrorIs(t, err, errNoProvider, "no connection chosen")
+
+	connectionID := model.NewId()
+	cfg.AISettings.AutoTranslation.ConnectionId = model.NewPointer(connectionID)
+	cfg.AISettings.AutoTranslation.Model = model.NewPointer("hy-mt")
+	prov, err := newProvider(&fakeHost{}, cfg)
+	require.NoError(t, err)
+	cp, ok := prov.(*connectionProvider)
+	require.True(t, ok)
+	assert.Equal(t, connectionID, cp.connectionID)
+	assert.Equal(t, "hy-mt", cp.model)
+
+	// The older "agents" provider falls back to the plugin's service ID, which the migrated connection kept.
+	legacy := newTestConfig(providerAgents, "")
+	prov, err = newProvider(&fakeHost{}, legacy)
+	require.NoError(t, err)
+	assert.Equal(t, "openai", prov.(*connectionProvider).connectionID)
+	assert.Equal(t, providerAgents, prov.Name())
 }

@@ -400,10 +400,11 @@ func TestScheduledRecapIsValid(t *testing.T) {
 		assert.Nil(t, sr.IsValid())
 	})
 
-	t.Run("empty agent id fails", func(t *testing.T) {
+	// Antimatter: recaps run on the model connection of AISettings.Recaps; the agent is optional.
+	t.Run("empty agent id is fine", func(t *testing.T) {
 		sr := validRecap()
 		sr.AgentId = ""
-		assert.NotNil(t, sr.IsValid())
+		assert.Nil(t, sr.IsValid())
 	})
 }
 

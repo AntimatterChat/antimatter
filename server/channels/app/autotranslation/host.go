@@ -4,6 +4,7 @@
 package autotranslation
 
 import (
+	"context"
 	"net/http"
 
 	"github.com/mattermost/mattermost/server/public/model"
@@ -27,11 +28,9 @@ type Host interface {
 	// HTTPClient returns a client for calls to the administrator-configured
 	// translation provider.
 	HTTPClient() *http.Client
-	// AgentsBridgeStatus reports whether the Agents plugin bridge can be used.
-	AgentsBridgeStatus() (bool, string)
-	// AgentsServiceCompletion runs a non-streaming completion against the
-	// given LLM service through the Agents plugin bridge.
-	AgentsServiceCompletion(serviceID string, req CompletionRequest) (string, error)
+	// AIChat runs a completion on a model connection through the server's AI
+	// service, as its auto-translation feature, and gives the answer's text.
+	AIChat(ctx context.Context, connectionID, model string, req CompletionRequest) (string, error)
 	// JobServer returns the job server, used to build the recovery job.
 	JobServer() *jobs.JobServer
 }
@@ -42,8 +41,8 @@ type CompletionMessage struct {
 	Message string
 }
 
-// CompletionRequest is an auto-translation completion run through the Agents
-// plugin bridge (the host sends it as the bridge's auto_translate operation).
+// CompletionRequest is an auto-translation completion, run on a model
+// connection.
 type CompletionRequest struct {
 	Messages         []CompletionMessage
 	JSONOutputFormat map[string]any

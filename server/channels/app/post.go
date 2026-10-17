@@ -16,6 +16,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/mattermost/mattermost/server/public/ai"
 	"github.com/mattermost/mattermost/server/public/model"
 	"github.com/mattermost/mattermost/server/public/plugin"
 	"github.com/mattermost/mattermost/server/public/shared/i18n"
@@ -3682,6 +3683,9 @@ var rewriteResponseJSONSchema = map[string]any{
 	"additionalProperties": false,
 }
 
+// rewriteResponseJSONSchemaRaw is the same schema, as the AI service takes it.
+var rewriteResponseJSONSchemaRaw = mustMarshalJSONSchema(rewriteResponseJSONSchema)
+
 // RewriteMessage rewrites a message using AI based on the specified action
 func (a *App) RewriteMessage(
 	rctx request.CTX,
@@ -3723,21 +3727,39 @@ func (a *App) RewriteMessage(
 		sessionUserID = session.UserId
 	}
 
-	completionRequest := BridgeCompletionRequest{
-		Operation:       BridgeOperationRewrite,
-		ClientOperation: "message_rewrite",
-		Messages: []BridgeMessage{
-			{Role: "system", Message: systemPrompt},
-			{Role: "user", Message: userPrompt},
-		},
-		JSONOutputFormat: rewriteResponseJSONSchema,
-		OperationSubType: normalizeRewriteAction(action),
-		UserID:           sessionUserID,
-	}
-
-	completion, err := a.ch.agentsBridge.AgentCompletion(sessionUserID, agentID, completionRequest)
-	if err != nil {
-		return nil, model.NewAppError("RewriteMessage", "app.post.rewrite.agent_call_failed", nil, err.Error(), 500)
+	// Antimatter: the rewrite runs on the model connection of AISettings.Rewrite, through the server's AI service;
+	// it no longer needs the AI chat app. agentID is kept for older clients, and for the test bridge only.
+	var completion string
+	if bridge := a.testAIFeatureBridge(); bridge != nil {
+		var err error
+		completion, err = bridge.AgentCompletion(sessionUserID, agentID, BridgeCompletionRequest{
+			Operation:       BridgeOperationRewrite,
+			ClientOperation: "message_rewrite",
+			Messages: []BridgeMessage{
+				{Role: "system", Message: systemPrompt},
+				{Role: "user", Message: userPrompt},
+			},
+			JSONOutputFormat: rewriteResponseJSONSchema,
+			OperationSubType: normalizeRewriteAction(action),
+			UserID:           sessionUserID,
+		})
+		if err != nil {
+			return nil, model.NewAppError("RewriteMessage", "app.post.rewrite.agent_call_failed", nil, err.Error(), 500)
+		}
+	} else {
+		result, appErr := a.aiFeatureCall(rctx, ai.PurposeRewrite, a.Config().AISettings.Rewrite, sessionUserID, "", ai.ChatRequest{
+			Messages: []ai.Message{
+				{Role: ai.RoleSystem, Content: systemPrompt},
+				{Role: ai.RoleUser, Content: userPrompt},
+			},
+			JSONSchema:     rewriteResponseJSONSchemaRaw,
+			JSONSchemaName: "rewrite",
+			Operation:      "message_rewrite:" + normalizeRewriteAction(action),
+		})
+		if appErr != nil {
+			return nil, appErr
+		}
+		completion = ai.StripMarkdownCodeFencing(result.Message.Content)
 	}
 
 	var response model.RewriteResponse

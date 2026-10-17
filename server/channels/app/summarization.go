@@ -10,6 +10,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/mattermost/mattermost/server/public/ai"
 	"github.com/mattermost/mattermost/server/public/model"
 	"github.com/mattermost/mattermost/server/public/shared/mlog"
 	"github.com/mattermost/mattermost/server/public/shared/request"
@@ -34,6 +35,9 @@ var summarizePostsJSONSchema = map[string]any{
 	"required":             []any{"highlights", "action_items"},
 	"additionalProperties": false,
 }
+
+// summarizePostsJSONSchemaRaw is the same schema, as the AI service takes it.
+var summarizePostsJSONSchemaRaw = mustMarshalJSONSchema(summarizePostsJSONSchema)
 
 // SummarizePosts generates an AI summary of posts with highlights and action items
 func (a *App) SummarizePosts(rctx request.CTX, userID string, posts []*model.Post, channelName, teamName string, agentID string) (*model.AIRecapSummaryResponse, *model.AppError) {
@@ -111,9 +115,32 @@ Your response must be compacted valid JSON only, with no additional text, format
 		mlog.Int("post_count", len(posts)),
 	)
 
-	completion, err := a.ch.agentsBridge.AgentCompletion(sessionUserID, agentID, completionRequest)
-	if err != nil {
-		return nil, model.NewAppError("SummarizePosts", "app.ai.summarize.agent_call_failed", nil, err.Error(), http.StatusInternalServerError)
+	// Antimatter: recaps run on the model connection of AISettings.Recaps, through the server's AI service, for the
+	// recap's owner; they no longer need the AI chat app. agentID is kept for older clients, and for the test bridge.
+	var completion string
+	if bridge := a.testAIFeatureBridge(); bridge != nil {
+		var err error
+		completion, err = bridge.AgentCompletion(sessionUserID, agentID, completionRequest)
+		if err != nil {
+			return nil, model.NewAppError("SummarizePosts", "app.ai.summarize.agent_call_failed", nil, err.Error(), http.StatusInternalServerError)
+		}
+	} else {
+		result, appErr := a.aiFeatureCall(rctx, ai.PurposeRecaps, a.Config().AISettings.Recaps, requestUserID, posts[0].ChannelId, ai.ChatRequest{
+			Messages: []ai.Message{
+				{Role: ai.RoleSystem, Content: systemPrompt},
+				{Role: ai.RoleUser, Content: userPrompt},
+			},
+			JSONSchema:     summarizePostsJSONSchemaRaw,
+			JSONSchemaName: "recap",
+			Operation:      "recap_summary:summarize_channel",
+		})
+		if appErr != nil {
+			if appErr.Id == "app.ai.feature.not_configured.app_error" {
+				return nil, appErr
+			}
+			return nil, model.NewAppError("SummarizePosts", "app.ai.summarize.agent_call_failed", nil, "", appErr.StatusCode).Wrap(appErr)
+		}
+		completion = ai.StripMarkdownCodeFencing(result.Message.Content)
 	}
 
 	var summary model.AIRecapSummaryResponse

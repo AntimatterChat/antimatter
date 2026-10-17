@@ -14,6 +14,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/mattermost/mattermost/server/public/ai"
 	"github.com/mattermost/mattermost/server/public/model"
 	"github.com/mattermost/mattermost/server/public/shared/mlog"
 	"github.com/mattermost/mattermost/server/public/shared/request"
@@ -71,6 +72,34 @@ func (a *App) GetPostSpeech(rctx request.CTX, post *model.Post) ([]byte, string,
 	text := utils.SpeechText(post.Message, speechMaxRunes)
 	if text == "" {
 		return nil, "", model.NewAppError("GetPostSpeech", "app.post.speech.empty.app_error", nil, "", http.StatusBadRequest)
+	}
+
+	// Antimatter: with a model connection in AISettings.TextToSpeech, the speech comes from it through the AI service
+	// (its address and key, its limits and usage); else from the URL of TextToSpeechSettings.
+	cfg := a.Config()
+	if cfg.TextToSpeechUsesConnection() {
+		connectionID := *cfg.AISettings.TextToSpeech.ConnectionId
+		modelName := model.SafeDereference(cfg.AISettings.TextToSpeech.Model)
+		if modelName == "" {
+			modelName = *settings.Model
+		}
+		key := fmt.Sprintf("%s:%d:connection:%s:%s:%s", post.Id, post.EditAt, connectionID, modelName, *settings.Voice)
+		if audio, ok := cachedSpeech(key); ok {
+			return audio.data, audio.contentType, nil
+		}
+		userID := ""
+		if session := rctx.Session(); session != nil {
+			userID = session.UserId
+		}
+		ctx, cancel := context.WithTimeout(rctx.Context(), speechTimeout)
+		defer cancel()
+		speech, appErr := a.AISpeak(rctx.WithContext(ctx), AICall{UserID: userID, Purpose: ai.PurposeTextToSpeech, ChannelID: post.ChannelId},
+			ai.SpeechRequest{ConnectionID: connectionID, Model: modelName, Input: text, Voice: *settings.Voice, Format: "mp3"})
+		if appErr != nil {
+			return nil, "", appErr
+		}
+		cacheSpeech(key, speechAudio{data: speech.Audio, contentType: speech.ContentType})
+		return speech.Audio, speech.ContentType, nil
 	}
 
 	key := fmt.Sprintf("%s:%d:%s:%s:%s", post.Id, post.EditAt, *settings.URL, *settings.Model, *settings.Voice)

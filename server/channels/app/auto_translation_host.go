@@ -4,8 +4,12 @@
 package app
 
 import (
+	"context"
+	"encoding/json"
+	"errors"
 	"net/http"
 
+	"github.com/mattermost/mattermost/server/public/ai"
 	"github.com/mattermost/mattermost/server/public/model"
 	"github.com/mattermost/mattermost/server/public/shared/mlog"
 	"github.com/mattermost/mattermost/server/public/shared/request"
@@ -59,24 +63,39 @@ func (h *autoTranslationHost) app() *App {
 	return New(ServerConnector(ch))
 }
 
-func (h *autoTranslationHost) AgentsBridgeStatus() (bool, string) {
+// AIChat runs an auto-translation completion on a model connection through the AI service, as the server's
+// auto-translation feature (no person behind it): only a server-wide connection serves it.
+func (h *autoTranslationHost) AIChat(ctx context.Context, connectionID, modelName string, req autotranslation.CompletionRequest) (string, error) {
 	a := h.app()
 	if a == nil {
-		return false, "app.agents.bridge.not_available.plugin_env_not_initialized"
+		return "", errors.New("the server isn't ready")
 	}
-	return a.GetAIPluginBridgeStatus(request.EmptyContext(h.srv.Log()))
+	if bridge := a.testAIFeatureBridge(); bridge != nil {
+		return bridge.ServiceCompletion("", connectionID, autoTranslationBridgeRequest(req))
+	}
+	messages := make([]ai.Message, 0, len(req.Messages))
+	for _, m := range req.Messages {
+		messages = append(messages, ai.Message{Role: ai.Role(m.Role), Content: m.Message})
+	}
+	chat := ai.ChatRequest{ConnectionID: connectionID, Model: modelName, Messages: messages, Operation: "auto_translate"}
+	if req.JSONOutputFormat != nil {
+		schema, err := json.Marshal(req.JSONOutputFormat)
+		if err != nil {
+			return "", err
+		}
+		chat.JSONSchema = schema
+		chat.JSONSchemaName = "translation"
+	}
+	rctx := request.EmptyContext(h.srv.Log()).WithContext(ctx)
+	resp, appErr := a.AIChat(rctx, AICall{Purpose: ai.PurposeAutoTranslation}, chat)
+	if appErr != nil {
+		return "", appErr
+	}
+	return resp.Message.Content, nil
 }
 
-func (h *autoTranslationHost) AgentsServiceCompletion(serviceID string, req autotranslation.CompletionRequest) (string, error) {
-	a := h.app()
-	if a == nil {
-		return "", autotranslation.ErrAgentsUnavailable
-	}
-	return a.ServiceCompletion("", serviceID, autoTranslationBridgeRequest(req))
-}
-
-// autoTranslationBridgeRequest turns an auto-translation completion into the
-// Agents bridge's request for the auto_translate operation.
+// autoTranslationBridgeRequest turns an auto-translation completion into the bridge's request for the
+// auto_translate operation, for the test bridge only.
 func autoTranslationBridgeRequest(req autotranslation.CompletionRequest) BridgeCompletionRequest {
 	messages := make([]BridgeMessage, 0, len(req.Messages))
 	for _, m := range req.Messages {

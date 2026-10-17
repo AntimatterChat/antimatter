@@ -84,10 +84,7 @@ func createRecap(c *Context, w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if req.AgentID == "" {
-		c.SetInvalidParam("agent_id")
-		return
-	}
+	// Antimatter: the agent is optional; recaps run on the model connection of AISettings.Recaps.
 
 	auditRec := c.MakeAuditRecord(model.AuditEventCreateRecap, model.AuditStatusFail)
 	defer c.LogAuditRecWithLevel(auditRec, app.LevelContent)

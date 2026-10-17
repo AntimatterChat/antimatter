@@ -317,8 +317,7 @@ func TestTranslateProviderFailure(t *testing.T) {
 
 func TestTranslateWithAgents(t *testing.T) {
 	env := newTestEnv(t, providerAgents, "")
-	env.h.agentsAvailable = true
-	env.h.agentsReply = func(serviceID string, req CompletionRequest) (string, error) {
+	env.h.aiReply = func(connectionID, modelName string, req CompletionRequest) (string, error) {
 		return `{"translations":["Hola {{0}}, la versión está lista para todos los equipos."],"source_language":"en","confidence":0.99}`, nil
 	}
 	require.NoError(t, env.svc.Start())
