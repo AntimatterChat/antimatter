@@ -48,7 +48,7 @@ const PAGE = 100;
 
 // nameFromFile makes an emoji name of a file name: "Party Parrot.gif" is "party_parrot".
 export function nameFromFile(file: string) {
-    return file.replace(/\.[^.]+$/, '').toLowerCase().replace(/[^a-z0-9+_-]+/g, '_').replace(/^_+|_+$/g, '').slice(0, NAME_MAX);
+    return file.replace(/\.[^.]+$/, '').toLowerCase().replace(/[^a-z0-9+_-]+/g, '_').replace(/^[-_]+|[-_]+$/g, '').slice(0, NAME_MAX);
 }
 
 // cleanName is the name as the server keeps it: lowercase (it lowers it too), without the colons people type around

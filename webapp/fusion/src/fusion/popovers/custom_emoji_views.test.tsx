@@ -242,7 +242,9 @@ describe('fusion/popovers/ManageCustomEmojiView', () => {
 
         await userEvent.clear(screen.getByRole('searchbox', {name: 'Search custom emoji'}));
         await userEvent.type(screen.getByRole('searchbox', {name: 'Search custom emoji'}), 'zzz');
-        expect(screen.getByText('No custom emoji matches “zzz”.')).toBeInTheDocument();
+
+        // Once the server answered too.
+        expect(await screen.findByText('No custom emoji matches “zzz”.')).toBeInTheDocument();
     });
 
     test('members delete only their own emoji', () => {
