@@ -65,6 +65,42 @@ func TestChannelMentions(t *testing.T) {
 			message:  "Check ~engineering",
 			expected: []string{"engineering"},
 		},
+		// Antimatter: #channel-name links channels too.
+		{
+			name:     "hash channel mention",
+			message:  "Check out #engineering",
+			expected: []string{"engineering"},
+		},
+		{
+			name:     "hash and tilde mentions together, deduplicated",
+			message:  "#engineering, ~qa-team and ~engineering",
+			expected: []string{"engineering", "qa-team"},
+		},
+		{
+			name:     "hash mention at start, with hyphens, underscores and digits",
+			message:  "#release-2026_q4 is open",
+			expected: []string{"release-2026_q4"},
+		},
+		{
+			name:     "a Markdown heading is not a channel",
+			message:  "# Release notes\n## Fixes",
+			expected: nil,
+		},
+		{
+			name:     "a # after a letter or digit is not a channel",
+			message:  "C# and https://example.com/page#section and 3#4",
+			expected: nil,
+		},
+		{
+			name:     "an HTML entity is not a channel",
+			message:  "it&#39;s fine",
+			expected: nil,
+		},
+		{
+			name:     "## is not a channel",
+			message:  "##engineering",
+			expected: nil,
+		},
 	}
 
 	for _, tt := range tests {
@@ -108,6 +144,10 @@ func TestChannelMentionsFromStrings(t *testing.T) {
 
 	t.Run("numeric segment without tilde", func(t *testing.T) {
 		assert.Nil(t, ChannelMentionsFromStrings([]string{"123"}))
+	})
+
+	t.Run("hash mentions across segments", func(t *testing.T) {
+		assert.Equal(t, []string{"eng", "ops"}, ChannelMentionsFromStrings([]string{"plain", "see #eng", "and ~ops, #eng"}))
 	})
 
 	t.Run("numeric segment with mention in another segment", func(t *testing.T) {
@@ -184,6 +224,16 @@ func TestChannelMentionsFromAttachments(t *testing.T) {
 		}
 		result := ChannelMentionsFromAttachments(attachments)
 		assert.Empty(t, result)
+	})
+
+	t.Run("attachment with hash mentions", func(t *testing.T) {
+		attachments := []*MessageAttachment{
+			{
+				Pretext: "Check #engineering",
+				Fields:  []*MessageAttachmentField{{Title: "#title", Value: "#qa-team"}},
+			},
+		}
+		assert.Equal(t, []string{"engineering", "qa-team"}, ChannelMentionsFromAttachments(attachments))
 	})
 
 	t.Run("multiple attachments with multiple mentions", func(t *testing.T) {

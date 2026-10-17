@@ -1050,6 +1050,38 @@ func TestGenerateHyperlinkForChannelsPublic(t *testing.T) {
 	assert.Equal(t, message+"<a href='"+channelURL+"'>"+mention+"</a>", outMessage)
 }
 
+// Antimatter: #channel-name links a channel too, in emails as in the apps.
+func TestGenerateHyperlinkForChannelsHashSign(t *testing.T) {
+	mainHelper.Parallel(t)
+	th := SetupWithStoreMock(t)
+
+	ch := &model.Channel{
+		Id:          model.NewId(),
+		Name:        "channelname",
+		DisplayName: "ChannelName",
+		Type:        model.ChannelTypeOpen,
+	}
+	message := "See #" + ch.Name + " (and the older ~" + ch.Name + ")"
+
+	teamName := "testteam"
+	teamURL := "http://localhost:8065/landing#/testteam"
+
+	storeMock := th.App.Srv().Store().(*mocks.Store)
+	teamStoreMock := mocks.TeamStore{}
+	teamStoreMock.On("GetByName", "testteam").Return(&model.Team{Id: "test", Name: "testteam"}, nil)
+	storeMock.On("Team").Return(&teamStoreMock)
+
+	channelStoreMock := mocks.ChannelStore{}
+	channelStoreMock.On("GetByNames", "test", []string{ch.Name}, true).Return([]*model.Channel{ch}, nil)
+	storeMock.On("Channel").Return(&channelStoreMock)
+
+	th.App.Srv().EmailService.SetStore(storeMock)
+	outMessage, err := th.App.Srv().EmailService.GenerateHyperlinkForChannels(message, teamName, teamURL)
+	require.NoError(t, err)
+	channelURL := teamURL + "/channels/" + ch.Name
+	assert.Equal(t, "See <a href='"+channelURL+"'>#"+ch.Name+"</a> (and the older <a href='"+channelURL+"'>~"+ch.Name+"</a>)", outMessage)
+}
+
 func TestGenerateHyperlinkForChannelsMultiPublic(t *testing.T) {
 	mainHelper.Parallel(t)
 	th := SetupWithStoreMock(t)

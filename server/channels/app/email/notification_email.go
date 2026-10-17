@@ -177,8 +177,11 @@ func (es *Service) GenerateHyperlinkForChannels(postMessage, teamName, landingUR
 	for _, ch := range channels {
 		if !visited[ch.Id] && ch.Type == model.ChannelTypeOpen {
 			channelURL := landingURL + "/channels/" + ch.Name
-			channelHyperLink := fmt.Sprintf("<a href='%s'>%s</a>", channelURL, "~"+ch.Name)
-			postMessage = strings.Replace(postMessage, "~"+ch.Name, channelHyperLink, -1)
+			// ~channel and, in Antimatter, #channel; each link keeps the sign its author wrote.
+			for _, sigil := range []string{"~", "#"} {
+				channelHyperLink := fmt.Sprintf("<a href='%s'>%s</a>", channelURL, sigil+ch.Name)
+				postMessage = strings.ReplaceAll(postMessage, sigil+ch.Name, channelHyperLink)
+			}
 			visited[ch.Id] = true
 		}
 	}

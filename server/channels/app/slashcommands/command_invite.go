@@ -215,7 +215,7 @@ func (i *InviteProvider) parseMessage(a *app.App, rctx request.CTX, args *model.
 			continue
 		}
 
-		if msg[0] == '@' || (msg[0] != '~' && j == 0) {
+		if msg[0] == '@' || (msg[0] != '~' && msg[0] != '#' && j == 0) {
 			targetMentionName := strings.TrimPrefix(msg, "@")
 			users, _ := i.getUsersFromMentionName(a, targetMentionName)
 			if len(users) == 0 {
@@ -226,7 +226,8 @@ func (i *InviteProvider) parseMessage(a *app.App, rctx request.CTX, args *model.
 			}
 			targetUsers = append(targetUsers, users...)
 		} else {
-			targetChannelName := strings.TrimPrefix(msg, "~")
+			// ~channel and, in Antimatter, #channel.
+			targetChannelName := strings.TrimPrefix(strings.TrimPrefix(msg, "~"), "#")
 			channelToJoin, err := a.GetChannelByName(rctx, targetChannelName, args.TeamId, false)
 			if err != nil {
 				*resps = append(*resps, args.T("api.command_invite.channel.error", map[string]any{

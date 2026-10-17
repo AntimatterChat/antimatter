@@ -40,7 +40,8 @@ func (*JoinProvider) GetCommand(a *app.App, T i18n.TranslateFunc) *model.Command
 func (*JoinProvider) DoCommand(a *app.App, rctx request.CTX, args *model.CommandArgs, message string) *model.CommandResponse {
 	channelName := strings.ToLower(message)
 
-	if strings.HasPrefix(message, "~") {
+	// ~channel and, in Antimatter, #channel.
+	if strings.HasPrefix(message, "~") || strings.HasPrefix(message, "#") {
 		channelName = message[1:]
 	}
 

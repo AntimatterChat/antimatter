@@ -84,6 +84,34 @@ func TestJoinCommandWithTilde(t *testing.T) {
 	assert.Equal(t, "http://test.url/"+th.BasicTeam.Name+"/channels/"+channel2.Name, resp.GotoLocation)
 }
 
+// Antimatter: channels are written #channel-name.
+func TestJoinCommandWithHash(t *testing.T) {
+	th := setup(t).initBasic(t)
+
+	if testing.Short() {
+		t.SkipNow()
+	}
+
+	channel2, _ := th.App.CreateChannel(th.Context, &model.Channel{
+		DisplayName: "AA",
+		Name:        "aa" + model.NewId() + "a",
+		Type:        model.ChannelTypeOpen,
+		TeamId:      th.BasicTeam.Id,
+		CreatorId:   th.BasicUser.Id,
+	}, false)
+
+	cmd := &JoinProvider{}
+	resp := cmd.DoCommand(th.App, th.Context, &model.CommandArgs{
+		T:       i18n.IdentityTfunc(),
+		UserId:  th.BasicUser2.Id,
+		SiteURL: "http://test.url",
+		TeamId:  th.BasicTeam.Id,
+	}, "#"+channel2.Name)
+
+	assert.Equal(t, "", resp.Text)
+	assert.Equal(t, "http://test.url/"+th.BasicTeam.Name+"/channels/"+channel2.Name, resp.GotoLocation)
+}
+
 func TestJoinCommandPermissions(t *testing.T) {
 	th := setup(t).initBasic(t)
 

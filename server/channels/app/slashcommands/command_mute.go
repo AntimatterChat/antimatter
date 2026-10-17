@@ -48,7 +48,7 @@ func (*MuteProvider) DoCommand(a *app.App, rctx request.CTX, args *model.Command
 	channelName := ""
 	splitMessage := strings.Split(message, " ")
 	// Overwrite channel with channel-handle if set
-	if strings.HasPrefix(message, "~") {
+	if strings.HasPrefix(message, "~") || strings.HasPrefix(message, "#") {
 		channelName = splitMessage[0][1:]
 	} else {
 		channelName = splitMessage[0]

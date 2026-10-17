@@ -8,13 +8,32 @@ import (
 	"strings"
 )
 
-var channelMentionRegexp = regexp.MustCompile(`\B~[a-zA-Z0-9\-_]+`)
+// channelMentionRegexp finds ~channel-name and, in Antimatter, #channel-name links. A # is not a link after a
+// letter or digit (C#, page#anchor), and #name only becomes a link when a channel of that name exists; otherwise it
+// stays a hashtag.
+var channelMentionRegexp = regexp.MustCompile(`\B(?:~[a-zA-Z0-9\-_]+|#[a-zA-Z0-9][a-zA-Z0-9\-_]*)`)
+
+// channelMentionNames returns the channel names linked in s, without their ~ or #, in order.
+func channelMentionNames(s string) []string {
+	if !strings.ContainsAny(s, "~#") {
+		return nil
+	}
+	var names []string
+	for _, loc := range channelMentionRegexp.FindAllStringIndex(s, -1) {
+		// &#39; is an HTML entity and ##name a heading, not channels.
+		if s[loc[0]] == '#' && loc[0] > 0 && (s[loc[0]-1] == '&' || s[loc[0]-1] == '#') {
+			continue
+		}
+		names = append(names, s[loc[0]+1:loc[1]])
+	}
+	return names
+}
 
 func ChannelMentions(message string) []string {
 	return ChannelMentionsFromStrings([]string{message})
 }
 
-// ChannelMentionsFromStrings extracts ~channel-name mentions from each string, deduplicating across
+// ChannelMentionsFromStrings extracts ~channel-name and #channel-name mentions from each string, deduplicating across
 // all inputs. Callers typically pass post.AllStrings() so mentions are found in the message, message
 // attachments, and interactive payloads (mm_blocks, blocks, cards) consistently with other post text.
 func ChannelMentionsFromStrings(strs []string) []string {
@@ -22,11 +41,7 @@ func ChannelMentionsFromStrings(strs []string) []string {
 	var names []string
 
 	for _, s := range strs {
-		if !strings.Contains(s, "~") {
-			continue
-		}
-		for _, match := range channelMentionRegexp.FindAllString(s, -1) {
-			name := match[1:]
+		for _, name := range channelMentionNames(s) {
 			if !alreadyMentioned[name] {
 				names = append(names, name)
 				alreadyMentioned[name] = true
@@ -49,8 +64,7 @@ func ChannelMentionsFromAttachments(attachments []*MessageAttachment) []string {
 		}
 
 		// Scan pretext
-		for _, match := range channelMentionRegexp.FindAllString(attachment.Pretext, -1) {
-			name := match[1:]
+		for _, name := range channelMentionNames(attachment.Pretext) {
 			if !alreadyMentioned[name] {
 				names = append(names, name)
 				alreadyMentioned[name] = true
@@ -58,8 +72,7 @@ func ChannelMentionsFromAttachments(attachments []*MessageAttachment) []string {
 		}
 
 		// Scan text
-		for _, match := range channelMentionRegexp.FindAllString(attachment.Text, -1) {
-			name := match[1:]
+		for _, name := range channelMentionNames(attachment.Text) {
 			if !alreadyMentioned[name] {
 				names = append(names, name)
 				alreadyMentioned[name] = true
@@ -82,8 +95,7 @@ func ChannelMentionsFromAttachments(attachments []*MessageAttachment) []string {
 				continue
 			}
 
-			for _, match := range channelMentionRegexp.FindAllString(valueStr, -1) {
-				name := match[1:]
+			for _, name := range channelMentionNames(valueStr) {
 				if !alreadyMentioned[name] {
 					names = append(names, name)
 					alreadyMentioned[name] = true

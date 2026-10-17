@@ -58,6 +58,14 @@ func TestInviteProvider(t *testing.T) {
 		checkIsMember(channel.Id, th.BasicUser2.Id)
 	})
 
+	t.Run("add user to another channel written #channel", func(t *testing.T) {
+		channel := th.createChannel(t, th.BasicTeam, model.ChannelTypeOpen)
+
+		msg := "@" + th.BasicUser2.Username + " #" + channel.Name
+		runCmd(msg, "api.command_invite.success")
+		checkIsMember(channel.Id, th.BasicUser2.Id)
+	})
+
 	t.Run("add a user to a private channel", func(t *testing.T) {
 		privateChannel := th.createChannel(t, th.BasicTeam, model.ChannelTypePrivate)
 
