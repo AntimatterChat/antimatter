@@ -180,3 +180,27 @@ func TestAnthropicRefusedKeyIsRedacted(t *testing.T) {
 	assert.Equal(t, http.StatusUnauthorized, pe.StatusCode)
 	assert.NotContains(t, pe.Error(), anthropicTestKey)
 }
+
+func TestAnthropicThinking(t *testing.T) {
+	p := &anthropicProvider{}
+	body, _ := p.build(ai.ChatRequest{Model: "m", Messages: []ai.Message{{Role: ai.RoleUser, Content: "hi"}}}, false)
+	assert.Nil(t, body.Thinking, "no reasoning asked: no thinking")
+
+	body, _ = p.build(ai.ChatRequest{Model: "m", Reasoning: &ai.Reasoning{}, Messages: []ai.Message{{Role: ai.RoleUser, Content: "hi"}}}, true)
+	require.NotNil(t, body.Thinking)
+	assert.Equal(t, "enabled", body.Thinking.Type)
+	assert.Equal(t, anthropicMinThinkingBudget, body.Thinking.BudgetTokens)
+	assert.Greater(t, body.MaxTokens, body.Thinking.BudgetTokens, "the answer has room after the thinking")
+
+	body, _ = p.build(ai.ChatRequest{Model: "m", MaxTokens: 2000, Reasoning: &ai.Reasoning{BudgetTokens: 5000}, Messages: []ai.Message{{Role: ai.RoleUser, Content: "hi"}}}, false)
+	require.NotNil(t, body.Thinking)
+	assert.Equal(t, 5000, body.Thinking.BudgetTokens)
+	assert.Greater(t, body.MaxTokens, 5000)
+
+	temperature := 0.2
+	body, _ = p.build(ai.ChatRequest{Model: "m", Temperature: &temperature, Reasoning: &ai.Reasoning{}, Messages: []ai.Message{{Role: ai.RoleUser, Content: "hi"}}}, false)
+	assert.Nil(t, body.Thinking, "thinking doesn't take a temperature")
+
+	body, _ = p.build(ai.ChatRequest{Model: "m", JSONSchema: json.RawMessage(`{"type":"object"}`), Reasoning: &ai.Reasoning{}, Messages: []ai.Message{{Role: ai.RoleUser, Content: "hi"}}}, false)
+	assert.Nil(t, body.Thinking, "nor a forced tool")
+}

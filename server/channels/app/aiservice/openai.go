@@ -136,6 +136,7 @@ type oaChatRequest struct {
 	MaxTokens           int               `json:"max_tokens,omitempty"`
 	MaxCompletionTokens int               `json:"max_completion_tokens,omitempty"`
 	Temperature         *float64          `json:"temperature,omitempty"`
+	ReasoningEffort     string            `json:"reasoning_effort,omitempty"`
 	Stream              bool              `json:"stream,omitempty"`
 	StreamOptions       *oaStreamOptions  `json:"stream_options,omitempty"`
 }
@@ -266,6 +267,12 @@ func (p *openAIProvider) buildChat(req ai.ChatRequest, stream, promptSchema bool
 			out.MaxCompletionTokens = req.MaxTokens
 		} else {
 			out.MaxTokens = req.MaxTokens
+		}
+	}
+	if req.Reasoning != nil {
+		out.ReasoningEffort = req.Reasoning.Effort
+		if out.ReasoningEffort == "" {
+			out.ReasoningEffort = "medium"
 		}
 	}
 	if stream {
