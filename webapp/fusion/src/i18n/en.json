@@ -21851,10 +21851,6 @@
     "defaultMessage": "Show live captions",
     "description": ""
   },
-  "fusion.calls.showMessages": {
-    "defaultMessage": "Show the messages",
-    "description": ""
-  },
   "fusion.calls.showVoice": {
     "defaultMessage": "Show the voice channel",
     "description": ""

@@ -4,7 +4,6 @@
 import React from 'react';
 
 import {showCall} from 'fusion/calls/actions';
-import {setCallView} from 'fusion/calls/ui_state';
 import {renderWithContext, screen, userEvent} from 'tests/react_testing_utils';
 import {TestHelper} from 'utils/test_helper';
 
@@ -26,8 +25,7 @@ jest.mock('fusion/calls/hooks', () => ({
     useParticipants: () => [{}, {}, {}],
     useLocalCall: () => mockLocal,
 }));
-jest.mock('fusion/calls/ui_state', () => ({useCallsUI: () => ({callView: mockCallView}), setCallView: jest.fn()}));
-jest.mock('fusion/calls/voice_chat', () => ({useOpenVoiceChat: () => null, useVoiceChatActions: () => ({close: jest.fn()})}));
+jest.mock('fusion/calls/ui_state', () => ({useCallsUI: () => ({callView: mockCallView})}));
 
 const channel = TestHelper.getChannelMock({id: 'dm1', type: 'D', delete_at: 0});
 
@@ -67,12 +65,15 @@ describe('fusion/channel/CallButton', () => {
         expect(mockActions.leaveCall).toHaveBeenCalled();
     });
 
-    test('in the call, with the call shown: back to the messages', async () => {
+    test('in the call, with the call shown: only leaving, no button back to the messages', async () => {
         mockLocal = {channelId: 'dm1'};
         mockCallView = 'dm1';
         renderWithContext(<CallButton channel={channel}/>);
-        await userEvent.click(screen.getByRole('button', {name: 'Show the messages'}));
-        expect(setCallView).toHaveBeenCalledWith(null);
+        expect(screen.queryByRole('button', {name: 'Show the messages'})).not.toBeInTheDocument();
+        expect(screen.queryByRole('button', {name: 'Show the call'})).not.toBeInTheDocument();
+        expect(screen.getAllByRole('button')).toHaveLength(1);
+        await userEvent.click(screen.getByRole('button', {name: 'Leave the call'}));
+        expect(mockActions.leaveCall).toHaveBeenCalled();
     });
 
     test('no button where calls are off, in voice channels, or without the Calls app', () => {
