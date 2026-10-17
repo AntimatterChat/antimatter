@@ -201,3 +201,24 @@ func TestRunDailyReportIfNeeded(t *testing.T) {
 		require.NoError(t, err)
 	})
 }
+
+func TestStopComplianceDailyJob(t *testing.T) {
+	now := time.Date(2026, 3, 10, 3, 15, 0, 0, time.Local)
+
+	t.Run("stops the started task", func(t *testing.T) {
+		c := newTestCompliance(t, &storetest.Store{}, testConfig(t), now)
+		c.StartComplianceDailyJob()
+		require.NotNil(t, c.dailyTask)
+
+		c.StopComplianceDailyJob()
+		assert.Nil(t, c.dailyTask)
+		c.StopComplianceDailyJob()
+	})
+
+	t.Run("a stopped service does not start", func(t *testing.T) {
+		c := newTestCompliance(t, &storetest.Store{}, testConfig(t), now)
+		c.StopComplianceDailyJob()
+		c.StartComplianceDailyJob()
+		assert.Nil(t, c.dailyTask)
+	})
+}

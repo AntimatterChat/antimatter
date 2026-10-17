@@ -763,6 +763,7 @@ func (s *Server) Shutdown() {
 			s.Log().Error("Error shutting down auto-translation service", mlog.Err(err))
 		}
 	}
+	s.stopComplianceDailyJob()
 	s.serviceMux.RUnlock()
 
 	s.StopHTTPServer()

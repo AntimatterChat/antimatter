@@ -66,7 +66,10 @@ type Compliance struct {
 
 	startOnce sync.Once
 	dailyMut  sync.Mutex
+
+	taskMu    sync.Mutex
 	dailyTask *model.ScheduledTask
+	stopped   bool
 }
 
 var _ einterfaces.ComplianceInterface = (*Compliance)(nil)
@@ -98,10 +101,28 @@ func ReportPath(cfg *model.Config, job *model.Compliance) string {
 func (c *Compliance) StartComplianceDailyJob() {
 	c.startOnce.Do(func() {
 		c.RunDailyReportIfNeeded()
+
+		c.taskMu.Lock()
+		defer c.taskMu.Unlock()
+		if c.stopped {
+			return
+		}
 		c.dailyTask = model.CreateRecurringTask("Compliance Daily Report", func() {
 			c.RunDailyReportIfNeeded()
 		}, dailyCheckInterval)
 	})
+}
+
+// StopComplianceDailyJob stops the background task of the daily report, when
+// the server shuts down.
+func (c *Compliance) StopComplianceDailyJob() {
+	c.taskMu.Lock()
+	defer c.taskMu.Unlock()
+	c.stopped = true
+	if c.dailyTask != nil {
+		c.dailyTask.Cancel()
+		c.dailyTask = nil
+	}
 }
 
 // RunDailyReportIfNeeded generates the daily report covering the previous day
