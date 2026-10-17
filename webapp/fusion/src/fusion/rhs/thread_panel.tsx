@@ -24,13 +24,15 @@ import {getThreadPopoutTitle} from 'components/thread_popout/thread_popout';
 import Icon from 'fusion/components/icon';
 import Composer from 'fusion/composer/composer';
 import Message from 'fusion/messages/message';
-import {getThreadTitle} from 'fusion/messages/thread_title';
+import {getThreadTitle, TopicDialog} from 'fusion/messages/thread_title';
 import {am} from 'fusion/utils/class_names';
 import {canPopout, popoutThread} from 'utils/popouts/popout_windows';
 
 import type {GlobalState} from 'types/store';
 
 import ThreadMenu from './thread_menu';
+import {ThreadSuggestion, ThreadToChannelDialog} from './thread_to';
+import type {ThreadConversion} from './thread_to';
 
 // ThreadPanel shows a thread in the right-hand panel: the first message, its replies, and a composer.
 // inWindow draws it as a window of its own (a popout): without the buttons that open, size or close the panel.
@@ -48,6 +50,9 @@ export default function ThreadPanel({rootId, inWindow = false}: {rootId: string;
     const bodyRef = useRef<HTMLDivElement>(null);
     const menuRef = useRef<HTMLButtonElement>(null);
     const [menu, setMenu] = useState(false);
+
+    // The dialog making the thread a topic or a channel, from the menu or the proposal under the header.
+    const [converting, setConverting] = useState<ThreadConversion | null>(null);
 
     useEffect(() => {
         dispatch(getPostThread(rootId));
@@ -179,9 +184,22 @@ export default function ThreadPanel({rootId, inWindow = false}: {rootId: string;
                         lastReplyAt={lastReply ? lastReply.edit_at || lastReply.create_at : root.create_at}
                         anchor={menuRef.current}
                         onClose={() => setMenu(false)}
+                        onConvert={setConverting}
                     />
                 )}
             </div>
+            {converting === 'topic' && (
+                <TopicDialog
+                    post={root}
+                    onClose={() => setConverting(null)}
+                />
+            )}
+            {converting === 'channel' && (
+                <ThreadToChannelDialog
+                    root={root}
+                    onClose={() => setConverting(null)}
+                />
+            )}
             <div
                 ref={bodyRef}
                 className={am('rhs-body')}
@@ -189,6 +207,11 @@ export default function ThreadPanel({rootId, inWindow = false}: {rootId: string;
                 <Message
                     postId={rootId}
                     inThread={true}
+                />
+                <ThreadSuggestion
+                    root={root}
+                    replyCount={replies.length}
+                    onConvert={setConverting}
                 />
                 <div className={am('replies-sep')}>
                     {formatMessage({id: 'fusion.thread.replies', defaultMessage: '{count, plural, one {# reply} other {# replies}}'}, {count: replies.length})}

@@ -24295,6 +24295,14 @@
     "defaultMessage": "Copy link",
     "description": ""
   },
+  "fusion.messageMenu.makeTopic": {
+    "defaultMessage": "Make it a topic…",
+    "description": "Menu item (message menu and thread menu) that names a thread to make it a topic. 'Topic' is Antimatter's name for a named conversation inside a channel, listed under the channel in the sidebar; translate it consistently (not as 'thread' nor 'channel')."
+  },
+  "fusion.messageMenu.makeTopicSub": {
+    "defaultMessage": "A named conversation, listed under the channel",
+    "description": "Second line under 'Make it a topic…' explaining what a topic is: a named conversation shown under its channel in the sidebar."
+  },
   "fusion.messageMenu.more": {
     "defaultMessage": "More actions",
     "description": "Entry of a message's ⋯ menu opening the submenu with every action that apps add to messages (the AI actions among them)."
@@ -24309,14 +24317,6 @@
   },
   "fusion.messageMenu.moveThread": {
     "defaultMessage": "Move thread…",
-    "description": ""
-  },
-  "fusion.messageMenu.nameThread": {
-    "defaultMessage": "Name thread…",
-    "description": ""
-  },
-  "fusion.messageMenu.nameThreadSub": {
-    "defaultMessage": "Make it a sub-chat of the channel",
     "description": ""
   },
   "fusion.messageMenu.pin": {
@@ -24367,9 +24367,9 @@
     "defaultMessage": "When",
     "description": ""
   },
-  "fusion.messageMenu.renameThread": {
-    "defaultMessage": "Rename thread…",
-    "description": ""
+  "fusion.messageMenu.renameTopic": {
+    "defaultMessage": "Rename topic…",
+    "description": "Menu item (message menu and thread menu) that renames a topic. 'Topic' is Antimatter's name for a named conversation inside a channel; translate it consistently."
   },
   "fusion.messageMenu.reply": {
     "defaultMessage": "Reply in thread",
@@ -26887,6 +26887,10 @@
     "defaultMessage": "Thread",
     "description": ""
   },
+  "fusion.sidebar.topicLabel": {
+    "defaultMessage": "Topic: {name}, {count, plural, one {# new reply} other {# new replies}}",
+    "description": "Accessible name (for screen readers) of a topic listed under its channel in the sidebar; {name} is the topic's name, {count} its new replies."
+  },
   "fusion.sidebar.unreadOnly": {
     "defaultMessage": "Unread channels only",
     "description": ""
@@ -27279,16 +27283,8 @@
     "defaultMessage": "Name",
     "description": ""
   },
-  "fusion.thread.nameLead": {
-    "defaultMessage": "A named thread is a sub-chat of its channel: its followers see it under the channel in their sidebar.",
-    "description": ""
-  },
   "fusion.thread.namePlaceholder": {
     "defaultMessage": "e.g. Release 2.1",
-    "description": ""
-  },
-  "fusion.thread.nameTitle": {
-    "defaultMessage": "Name this thread",
     "description": ""
   },
   "fusion.thread.popout": {
@@ -27311,6 +27307,14 @@
     "defaultMessage": "Thread actions",
     "description": ""
   },
+  "fusion.threadMenu.makeChannel": {
+    "defaultMessage": "Make it a channel…",
+    "description": "Thread menu item that starts a new channel carrying on the thread's conversation."
+  },
+  "fusion.threadMenu.makeChannelSub": {
+    "defaultMessage": "Carry on in a new channel",
+    "description": "Second line under 'Make it a channel…' in the thread menu."
+  },
   "fusion.threadMenu.more": {
     "defaultMessage": "More actions",
     "description": ""
@@ -27318,6 +27322,46 @@
   "fusion.threadMenu.moreLabel": {
     "defaultMessage": "More thread actions",
     "description": ""
+  },
+  "fusion.threadTo.channel": {
+    "defaultMessage": "Make it a channel",
+    "description": "Button in the thread view: starts a new channel carrying on the thread's conversation."
+  },
+  "fusion.threadTo.lead": {
+    "defaultMessage": "Worth its own space?",
+    "description": "Short prompt in the thread view, before the buttons 'Make it a topic' and 'Make it a channel', inviting to give the conversation a space of its own."
+  },
+  "fusion.threadTo.topic": {
+    "defaultMessage": "Make it a topic",
+    "description": "Button in the thread view: names the thread to make it a topic (Antimatter's named conversation inside a channel)."
+  },
+  "fusion.threadToChannel.create": {
+    "defaultMessage": "Create the channel",
+    "description": "Button of the 'Make it a channel' dialog."
+  },
+  "fusion.threadToChannel.firstMessage": {
+    "defaultMessage": "Continued from a thread in #{channel}: {link}",
+    "description": "First message posted in a channel made from a thread; #{channel} is a channel link (keep the # right before the placeholder) and {link} the thread's address."
+  },
+  "fusion.threadToChannel.invite": {
+    "defaultMessage": "{count, plural, one {Add the other person in the thread} other {Add the # other people in the thread}}",
+    "description": "Switch in the 'Make it a channel' dialog: also add the people who wrote in the thread to the new channel; {count} is how many."
+  },
+  "fusion.threadToChannel.inviteDesc": {
+    "defaultMessage": "Everyone who wrote in it becomes a member of the new channel.",
+    "description": "Explanation under the switch adding the thread's participants to the new channel."
+  },
+  "fusion.threadToChannel.lead": {
+    "defaultMessage": "A new channel in {team} carries on this thread's conversation. It starts with a link to the thread, and the thread gets a link to it; the replies stay in the thread.",
+    "description": "Explanation in the 'Make it a channel' dialog; {team} is the community's name. The thread's existing replies are not moved."
+  },
+  "fusion.threadToChannel.pointer": {
+    "defaultMessage": "This conversation continues in #{channel}.",
+    "description": "Reply posted in a thread after a channel was made from it; #{channel} is a channel link (keep the # right before the placeholder)."
+  },
+  "fusion.threadToChannel.title": {
+    "defaultMessage": "Make it a channel",
+    "description": "Title of the dialog that creates a new channel from a thread; also the thread view's button opening it."
   },
   "fusion.time.dayAt": {
     "defaultMessage": "{day} at {time}",
@@ -27594,6 +27638,22 @@
   "fusion.toast.unsaved": {
     "defaultMessage": "Removed from saved",
     "description": ""
+  },
+  "fusion.topic.lead": {
+    "defaultMessage": "A topic is a named conversation inside its channel: everyone who follows it sees it under the channel in their sidebar.",
+    "description": "Explanation at the top of the dialog that makes a thread a topic. 'Topic' is Antimatter's name for a named conversation inside a channel; translate it consistently."
+  },
+  "fusion.topic.leadRename": {
+    "defaultMessage": "Leave the name empty to make it a plain thread again.",
+    "description": "Added to the topic dialog's explanation when renaming: an empty name turns the topic back into an ordinary thread (a stream of replies)."
+  },
+  "fusion.topic.makeTitle": {
+    "defaultMessage": "Make it a topic",
+    "description": "Title of the dialog that names a thread to make it a topic (Antimatter's named conversation inside a channel); also the thread view's button with the same action."
+  },
+  "fusion.topic.renameTitle": {
+    "defaultMessage": "Rename the topic",
+    "description": "Title of the dialog that renames a topic (Antimatter's named conversation inside a channel)."
   },
   "fusion.translation.original": {
     "defaultMessage": "Original message",

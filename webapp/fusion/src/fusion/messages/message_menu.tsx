@@ -54,7 +54,7 @@ import {ON_TOP_DURATIONS, durationLabel, useCanChangeOnTop} from './on_top';
 import type {OnTopDuration} from './on_top';
 import PluginMenuActions from './plugin_menu_actions';
 import {readAloud, stopReading, useReadingPostId} from './read_aloud';
-import {getThreadTitle, NameThreadDialog} from './thread_title';
+import {getThreadTitle, TopicDialog} from './thread_title';
 
 // The quick reactions: your most used recent emoji first, then these.
 const QUICK_REACTIONS = ['+1', 'heart', 'joy', 'tada', 'eyes', 'white_check_mark'];
@@ -163,7 +163,7 @@ export default function MessageMenu({post, anchor, inThread, onClose, onMoreReac
 
     if (namingThread) {
         return (
-            <NameThreadDialog
+            <TopicDialog
                 post={post}
                 onClose={onClose}
             />
@@ -250,8 +250,8 @@ export default function MessageMenu({post, anchor, inThread, onClose, onMoreReac
             {canName && (
                 <MenuItem
                     icon='thread'
-                    label={getThreadTitle(post) ? formatMessage({id: 'fusion.messageMenu.renameThread', defaultMessage: 'Rename thread…'}) : formatMessage({id: 'fusion.messageMenu.nameThread', defaultMessage: 'Name thread…'})}
-                    sub={formatMessage({id: 'fusion.messageMenu.nameThreadSub', defaultMessage: 'Make it a sub-chat of the channel'})}
+                    label={getThreadTitle(post) ? formatMessage({id: 'fusion.messageMenu.renameTopic', defaultMessage: 'Rename topic…'}) : formatMessage({id: 'fusion.messageMenu.makeTopic', defaultMessage: 'Make it a topic…'})}
+                    sub={formatMessage({id: 'fusion.messageMenu.makeTopicSub', defaultMessage: 'A named conversation, listed under the channel'})}
                     onClick={() => setNamingThread(true)}
                 />
             )}

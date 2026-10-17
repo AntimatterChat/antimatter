@@ -23,7 +23,7 @@ import {plainText} from 'fusion/utils/plain_text';
 import type {GlobalState} from 'types/store';
 
 // A followed thread shows under its channel while it has unread replies, while it's open in the right panel, and
-// always when it's named (a sub-chat): named ones first.
+// always when it's a topic (a named thread): topics first.
 function sidebarThreadIds(state: GlobalState, channelId: string): string[] {
     const selected = getSelectedPostId(state);
     const named = (thread: UserThread) => Boolean(getThreadTitle(getPost(state, thread.id)));
@@ -51,7 +51,7 @@ function ThreadRow({threadId}: {threadId: string}) {
             type='button'
             className={am('ch', 'ch-thread', {active: open, unread: thread.unread_replies > 0, named: Boolean(named)})}
             title={name}
-            aria-label={formatMessage({id: 'fusion.sidebar.threadLabel', defaultMessage: 'Thread: {name}, {count, plural, one {# new reply} other {# new replies}}'}, {name, count: thread.unread_replies})}
+            aria-label={named ? formatMessage({id: 'fusion.sidebar.topicLabel', defaultMessage: 'Topic: {name}, {count, plural, one {# new reply} other {# new replies}}'}, {name, count: thread.unread_replies}) : formatMessage({id: 'fusion.sidebar.threadLabel', defaultMessage: 'Thread: {name}, {count, plural, one {# new reply} other {# new replies}}'}, {name, count: thread.unread_replies})}
             onClick={() => dispatch(selectPostById(threadId))}
         >
             <span
