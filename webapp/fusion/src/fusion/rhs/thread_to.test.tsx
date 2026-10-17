@@ -43,9 +43,9 @@ const elsewhere = TestHelper.getChannelMock({id: 'elsewhere', name: 'far', type:
 const archived = TestHelper.getChannelMock({id: 'archived', name: 'old', type: 'O', team_id: 'team', delete_at: 5});
 const notMember = TestHelper.getChannelMock({id: 'notmember', name: 'theirs', type: 'O', team_id: 'team', delete_at: 0});
 const member = (id: string, schemeAdmin = false) => ({channel_id: id, user_id: 'me', roles: 'channel_user', scheme_admin: schemeAdmin});
-const root = TestHelper.getPostMock({id: 'root', channel_id: 'ch', user_id: 'me', root_id: '', message: 'Shall we move the **beam** test to Friday?', props: {}});
-const replyBob = TestHelper.getPostMock({id: 'r1', channel_id: 'ch', user_id: 'bob', root_id: 'root', message: 'Fine by me', create_at: 2});
-const replyMaya = TestHelper.getPostMock({id: 'r2', channel_id: 'ch', user_id: 'maya', root_id: 'root', message: 'Friday works', create_at: 3});
+const root = TestHelper.getPostMock({type: '', id: 'root', channel_id: 'ch', user_id: 'me', root_id: '', message: 'Shall we move the **beam** test to Friday?', props: {}});
+const replyBob = TestHelper.getPostMock({type: '', id: 'r1', channel_id: 'ch', user_id: 'bob', root_id: 'root', message: 'Fine by me', create_at: 2});
+const replyMaya = TestHelper.getPostMock({type: '', id: 'r2', channel_id: 'ch', user_id: 'maya', root_id: 'root', message: 'Friday works', create_at: 3});
 
 function state({teamPermissions = ['create_public_channel', 'create_private_channel'], channelPermissions = ['edit_post'], posts = [root, replyBob, replyMaya], channelAdmin = false, systemPermissions = []}: {teamPermissions?: string[]; channelPermissions?: string[]; posts?: Array<ReturnType<typeof TestHelper.getPostMock>>; channelAdmin?: boolean; systemPermissions?: string[]} = {}) {
     return {
