@@ -160,9 +160,7 @@ func NewChannels(s *Server) (*Channels, error) {
 	ch.DataRetention = dataretention.New(s.Store, s.Config)
 	ch.AccountMigration = accountmigration.New(&accountMigrationBackend{a: New(ServerConnector(ch))})
 	ch.Ldap = ldap.New(&ldapBackend{a: New(ServerConnector(ch))})
-	if notificationInterface != nil {
-		ch.Notification = notificationInterface(New(ServerConnector(ch)))
-	}
+	ch.Notification = &idLoadedNotification{app: New(ServerConnector(ch))}
 	ch.Saml = saml.New(&samlBackend{a: New(ServerConnector(ch))})
 	if err := ch.Saml.ConfigureSP(request.EmptyContext(s.Log())); err != nil {
 		s.Log().Error("An error occurred while configuring SAML Service Provider", mlog.Err(err))

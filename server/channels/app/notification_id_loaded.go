@@ -1,12 +1,7 @@
 // Copyright (c) 2026-present Mattermost Libre contributors.
 // See LICENSE.txt for license information.
 
-// Package notification implements ID-loaded push notifications.
-//
-// With PushNotificationContents set to "id_loaded", the push proxy only ever
-// sees ids. When the mobile app receives such a notification it acknowledges
-// it to the server, which answers with the full notification built here.
-package notification
+package app
 
 import (
 	"errors"
@@ -14,36 +9,33 @@ import (
 
 	"github.com/mattermost/mattermost/server/public/model"
 	"github.com/mattermost/mattermost/server/public/shared/request"
-	"github.com/mattermost/mattermost/server/v8/channels/app"
 	"github.com/mattermost/mattermost/server/v8/channels/store"
 	"github.com/mattermost/mattermost/server/v8/einterfaces"
 )
 
-func init() {
-	app.RegisterNotificationInterface(func(a *app.App) einterfaces.NotificationInterface {
-		return &Notification{app: a}
-	})
+// idLoadedNotification implements einterfaces.NotificationInterface: ID-loaded
+// push notifications. With PushNotificationContents set to "id_loaded", the
+// push proxy only ever sees ids. When the mobile app receives such a
+// notification it acknowledges it to the server, which answers with the full
+// notification built here.
+type idLoadedNotification struct {
+	app *App
 }
 
-// Notification implements einterfaces.NotificationInterface.
-type Notification struct {
-	app *app.App
-}
-
-var _ einterfaces.NotificationInterface = (*Notification)(nil)
+var _ einterfaces.NotificationInterface = (*idLoadedNotification)(nil)
 
 // GetNotificationMessage builds the full push notification for the post
 // referenced by an ID-loaded notification acknowledgement.
 //
 // The caller has already checked that userID may read the post.
-func (n *Notification) GetNotificationMessage(rctx request.CTX, ack *model.PushNotificationAck, userID string) (*model.PushNotification, *model.AppError) {
+func (n *idLoadedNotification) GetNotificationMessage(rctx request.CTX, ack *model.PushNotificationAck, userID string) (*model.PushNotification, *model.AppError) {
 	a := n.app
 	if ack == nil || ack.PostId == "" {
 		return nil, model.NewAppError("GetNotificationMessage", "api.push_notification.id_loaded.fetch.app_error", nil, "missing post id", http.StatusBadRequest)
 	}
 
 	// Read the stored post, exactly as the regular push notification path
-	// does; app.GetSinglePost would reveal burn-on-read posts to the user.
+	// does; GetSinglePost would reveal burn-on-read posts to the user.
 	post, err := a.Srv().Store().Post().GetSingle(rctx, ack.PostId, false)
 	if err != nil {
 		status := http.StatusInternalServerError
@@ -69,7 +61,7 @@ func (n *Notification) GetNotificationMessage(rctx request.CTX, ack *model.PushN
 		return nil, appErr
 	}
 
-	notification := &app.PostNotification{
+	notification := &PostNotification{
 		Channel: channel,
 		Post:    post,
 		Sender:  sender,

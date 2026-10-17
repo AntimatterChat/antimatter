@@ -1,7 +1,7 @@
 // Copyright (c) 2026-present Mattermost Libre contributors.
 // See LICENSE.txt for license information.
 
-package notification
+package app
 
 import (
 	"errors"
@@ -15,21 +15,20 @@ import (
 
 	"github.com/mattermost/mattermost/server/public/model"
 	"github.com/mattermost/mattermost/server/public/shared/request"
-	"github.com/mattermost/mattermost/server/v8/channels/app"
 	"github.com/mattermost/mattermost/server/v8/channels/store"
 	"github.com/mattermost/mattermost/server/v8/channels/store/storetest/mocks"
 	"github.com/mattermost/mattermost/server/v8/channels/testlib"
 	"github.com/mattermost/mattermost/server/v8/config"
 )
 
-type fixture struct {
-	app      *app.App
+type idLoadedFixture struct {
+	app      *App
 	users    *mocks.UserStore
 	posts    *mocks.PostStore
 	channels *mocks.ChannelStore
 }
 
-func setup(t *testing.T) *fixture {
+func setupIDLoadedNotification(t *testing.T) *idLoadedFixture {
 	t.Helper()
 	setupStore := testlib.GetMockStoreForSetupFunctions()
 	preferences := &mocks.PreferenceStore{}
@@ -52,7 +51,7 @@ func setup(t *testing.T) *fixture {
 	_, _, err := configStore.Set(cfg)
 	require.NoError(t, err)
 
-	s, err := app.NewServer(app.ConfigStore(configStore), app.StoreOverride(setupStore), app.SkipPostInitialization())
+	s, err := NewServer(ConfigStore(configStore), StoreOverride(setupStore), SkipPostInitialization())
 	if err != nil {
 		t.Skipf("cannot create a server without a database: %v", err)
 	}
@@ -62,11 +61,11 @@ func setup(t *testing.T) *fixture {
 	posts := setupStore.Post().(*mocks.PostStore)
 	channels := setupStore.Channel().(*mocks.ChannelStore)
 
-	return &fixture{app: app.New(app.ServerConnector(s.Channels())), users: users, posts: posts, channels: channels}
+	return &idLoadedFixture{app: New(ServerConnector(s.Channels())), users: users, posts: posts, channels: channels}
 }
 
-func TestGetNotificationMessage(t *testing.T) {
-	f := setup(t)
+func TestIDLoadedGetNotificationMessage(t *testing.T) {
+	f := setupIDLoadedNotification(t)
 	rctx := request.TestContext(t)
 
 	receiver := &model.User{Id: model.NewId(), Username: "receiver", Locale: "en"}
@@ -81,7 +80,7 @@ func TestGetNotificationMessage(t *testing.T) {
 	f.users.On("Get", mock.Anything, sender.Id).Return(sender, nil)
 	f.users.On("GetUnreadCount", receiver.Id, false).Return(int64(3), nil)
 
-	n := &Notification{app: f.app}
+	n := &idLoadedNotification{app: f.app}
 	ack := &model.PushNotificationAck{Id: "ack-id", PostId: post.Id, ClientPlatform: "ios", NotificationType: model.PushTypeMessage, IsIdLoaded: true}
 	msg, appErr := n.GetNotificationMessage(rctx, ack, receiver.Id)
 	require.Nil(t, appErr)

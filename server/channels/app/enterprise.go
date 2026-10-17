@@ -14,12 +14,6 @@ func RegisterCloudInterface(f func(*Server) einterfaces.CloudInterface) {
 	cloudInterface = f
 }
 
-var notificationInterface func(*App) einterfaces.NotificationInterface
-
-func RegisterNotificationInterface(f func(*App) einterfaces.NotificationInterface) {
-	notificationInterface = f
-}
-
 func (s *Server) initEnterprise() {
 	if cloudInterface != nil {
 		s.Cloud = cloudInterface(s)
