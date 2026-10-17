@@ -66,10 +66,6 @@ type aiPreparedCall struct {
 	started    time.Time
 }
 
-func aiForbidden(where, id, detail string) *model.AppError {
-	return model.NewAppError(where, id, nil, detail, http.StatusForbidden)
-}
-
 // aiCallContext checks a person and where they call from, and gives the community of the call ("" for direct and
 // group messages, or no context).
 func (a *App) aiCallContext(rctx request.CTX, userID, channelID, teamID string) (*model.User, string, *model.AppError) {
@@ -78,28 +74,28 @@ func (a *App) aiCallContext(rctx request.CTX, userID, channelID, teamID string) 
 	}
 	user, appErr := a.GetUser(rctx, userID)
 	if appErr != nil {
-		return nil, "", aiForbidden("aiCallContext", "app.ai.call.user.app_error", "user_id="+userID)
+		return nil, "", model.NewAppError("aiCallContext", "app.ai.call.user.app_error", nil, "user_id="+userID, http.StatusForbidden)
 	}
 	if user.DeleteAt != 0 {
-		return nil, "", aiForbidden("aiCallContext", "app.ai.call.user.app_error", "deactivated user_id="+userID)
+		return nil, "", model.NewAppError("aiCallContext", "app.ai.call.user.app_error", nil, "deactivated user_id="+userID, http.StatusForbidden)
 	}
 	if channelID != "" {
 		channel, appErr := a.GetChannel(rctx, channelID)
 		if appErr != nil {
-			return nil, "", aiForbidden("aiCallContext", "app.ai.call.channel.app_error", "channel_id="+channelID)
+			return nil, "", model.NewAppError("aiCallContext", "app.ai.call.channel.app_error", nil, "channel_id="+channelID, http.StatusForbidden)
 		}
 		if teamID != "" && teamID != channel.TeamId {
 			return nil, "", model.NewAppError("aiCallContext", "app.ai.call.team_mismatch.app_error", nil, "", http.StatusBadRequest)
 		}
 		if ok, _ := a.HasPermissionToChannel(rctx, userID, channelID, model.PermissionReadChannelContent); !ok {
-			return nil, "", aiForbidden("aiCallContext", "app.ai.call.channel.app_error", "no read access to channel_id="+channelID)
+			return nil, "", model.NewAppError("aiCallContext", "app.ai.call.channel.app_error", nil, "no read access to channel_id="+channelID, http.StatusForbidden)
 		}
 		teamID = channel.TeamId
 	}
 	if teamID != "" {
 		member, appErr := a.GetTeamMember(rctx, teamID, userID)
 		if appErr != nil || member.DeleteAt != 0 {
-			return nil, "", aiForbidden("aiCallContext", "app.ai.call.team.app_error", "not a member of team_id="+teamID)
+			return nil, "", model.NewAppError("aiCallContext", "app.ai.call.team.app_error", nil, "not a member of team_id="+teamID, http.StatusForbidden)
 		}
 	}
 	return user, teamID, nil
@@ -109,10 +105,10 @@ func (a *App) aiCallContext(rctx request.CTX, userID, channelID, teamID string) 
 // be available there, and its audience must name them.
 func (a *App) aiAudienceAllows(rctx request.CTX, c *model.AIConnection, user *model.User, teamID string) *model.AppError {
 	if !c.SharedWithTeam(teamID) {
-		return aiForbidden("aiAudienceAllows", "app.ai.call.not_available_here.app_error", "connection_id="+c.Id)
+		return model.NewAppError("aiAudienceAllows", "app.ai.call.not_available_here.app_error", nil, "connection_id="+c.Id, http.StatusForbidden)
 	}
 	if user.IsGuest() && !c.Audience.AllowGuests {
-		return aiForbidden("aiAudienceAllows", "app.ai.call.audience.app_error", "guest")
+		return model.NewAppError("aiAudienceAllows", "app.ai.call.audience.app_error", nil, "guest", http.StatusForbidden)
 	}
 	if c.Audience.Everyone {
 		return nil
@@ -152,7 +148,7 @@ func (a *App) aiAudienceAllows(rctx request.CTX, c *model.AIConnection, user *mo
 			return nil
 		}
 	}
-	return aiForbidden("aiAudienceAllows", "app.ai.call.audience.app_error", "connection_id="+c.Id)
+	return model.NewAppError("aiAudienceAllows", "app.ai.call.audience.app_error", nil, "connection_id="+c.Id, http.StatusForbidden)
 }
 
 // prepareAICall runs the checks of a call: the principal, the connection, the audience, the model, the limits and
@@ -183,11 +179,11 @@ func (a *App) prepareAICall(rctx request.CTX, call AICall, connectionID, request
 	if call.Purpose != "" {
 		// A built-in feature uses the connection a system admin chose for it: a server-wide one.
 		if !c.IsServerScoped() {
-			return nil, aiForbidden(where, "app.ai.call.builtin_server_only.app_error", "connection_id="+c.Id)
+			return nil, model.NewAppError(where, "app.ai.call.builtin_server_only.app_error", nil, "connection_id="+c.Id, http.StatusForbidden)
 		}
 		if call.UserID != "" {
 			if user, appErr := a.GetUser(rctx, call.UserID); appErr != nil || user.DeleteAt != 0 {
-				return nil, aiForbidden(where, "app.ai.call.user.app_error", "user_id="+call.UserID)
+				return nil, model.NewAppError(where, "app.ai.call.user.app_error", nil, "user_id="+call.UserID, http.StatusForbidden)
 			}
 		}
 	} else {
@@ -315,17 +311,15 @@ func aiCallError(where string, err error) *model.AppError {
 	case errors.Is(err, context.DeadlineExceeded):
 		return model.NewAppError(where, "app.ai.call.timeout.app_error", nil, "", http.StatusGatewayTimeout)
 	case errors.As(err, &pe):
-		status := http.StatusBadGateway
-		id := "app.ai.call.provider_failed.app_error"
 		switch {
 		case pe.StatusCode == http.StatusTooManyRequests:
-			status, id = http.StatusTooManyRequests, "app.ai.call.provider_rate_limited.app_error"
+			return model.NewAppError(where, "app.ai.call.provider_rate_limited.app_error", nil, pe.Message, http.StatusTooManyRequests)
 		case pe.StatusCode == http.StatusUnauthorized || pe.StatusCode == http.StatusForbidden:
-			id = "app.ai.call.provider_refused.app_error"
+			return model.NewAppError(where, "app.ai.call.provider_refused.app_error", nil, pe.Message, http.StatusBadGateway)
 		case pe.StatusCode >= 400 && pe.StatusCode < 500:
-			status, id = http.StatusBadRequest, "app.ai.call.provider_bad_request.app_error"
+			return model.NewAppError(where, "app.ai.call.provider_bad_request.app_error", nil, pe.Message, http.StatusBadRequest)
 		}
-		return model.NewAppError(where, id, nil, pe.Message, status)
+		return model.NewAppError(where, "app.ai.call.provider_failed.app_error", nil, pe.Message, http.StatusBadGateway)
 	default:
 		return model.NewAppError(where, "app.ai.call.provider_failed.app_error", nil, ai.SanitizeProviderErrorMessage(err.Error()), http.StatusBadGateway)
 	}

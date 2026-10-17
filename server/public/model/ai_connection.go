@@ -293,10 +293,6 @@ func validIDs(ids []string) bool {
 	return true
 }
 
-func aiConnectionError(field string) *AppError {
-	return NewAppError("AIConnection.IsValid", "model.ai_connection."+field+".app_error", nil, "", http.StatusBadRequest)
-}
-
 // PreSave fills in a new connection's ID and times, and normalises its lists.
 func (c *AIConnection) PreSave() {
 	if c.Id == "" {
@@ -343,57 +339,57 @@ func (c *AIConnection) normalize() {
 // IsValid checks a connection before it's saved.
 func (c *AIConnection) IsValid() *AppError {
 	if !IsValidId(c.Id) {
-		return aiConnectionError("id")
+		return NewAppError("AIConnection.IsValid", "model.ai_connection.id.app_error", nil, "", http.StatusBadRequest)
 	}
 	if n := utf8.RuneCountInString(c.Name); n == 0 || n > AIConnectionNameMaxRunes {
-		return aiConnectionError("name")
+		return NewAppError("AIConnection.IsValid", "model.ai_connection.name.app_error", nil, "", http.StatusBadRequest)
 	}
 	if c.Scope != AIConnectionScopeServer && !IsValidId(c.Scope) {
-		return aiConnectionError("scope")
+		return NewAppError("AIConnection.IsValid", "model.ai_connection.scope.app_error", nil, "", http.StatusBadRequest)
 	}
 	if c.Provider != AIProviderOpenAICompatible && c.Provider != AIProviderAnthropic {
-		return aiConnectionError("provider")
+		return NewAppError("AIConnection.IsValid", "model.ai_connection.provider.app_error", nil, "", http.StatusBadRequest)
 	}
 	if !isValidAIBaseURL(c.BaseURL) {
-		return aiConnectionError("base_url")
+		return NewAppError("AIConnection.IsValid", "model.ai_connection.base_url.app_error", nil, "", http.StatusBadRequest)
 	}
 	if c.DecisionsDialect != AIDecisionsDialectOpenAI && c.DecisionsDialect != AIDecisionsDialectSystemOne {
-		return aiConnectionError("decisions_dialect")
+		return NewAppError("AIConnection.IsValid", "model.ai_connection.decisions_dialect.app_error", nil, "", http.StatusBadRequest)
 	}
 	for _, m := range []string{c.Models.Chat, c.Models.Embeddings, c.Models.Transcription, c.Models.Decisions} {
 		if len(m) > AIModelNameMaxLength || strings.ContainsAny(m, "\r\n") {
-			return aiConnectionError("models")
+			return NewAppError("AIConnection.IsValid", "model.ai_connection.models.app_error", nil, "", http.StatusBadRequest)
 		}
 	}
 	if c.Provider == AIProviderAnthropic && (c.Models.Embeddings != "" || c.Models.Transcription != "" || c.Models.Decisions != "") {
-		return aiConnectionError("models_anthropic")
+		return NewAppError("AIConnection.IsValid", "model.ai_connection.models_anthropic.app_error", nil, "", http.StatusBadRequest)
 	}
 	l := c.Limits
 	if l.RequestsPerMinute < 0 || l.MonthlyTokenBudget < 0 || l.PerUserRequestsPerMinute < 0 || l.PerUserMonthlyTokenBudget < 0 {
-		return aiConnectionError("limits")
+		return NewAppError("AIConnection.IsValid", "model.ai_connection.limits.app_error", nil, "", http.StatusBadRequest)
 	}
 	if !c.IsServerScoped() && (c.Sharing.AllTeams || len(c.Sharing.TeamIDs) > 0) {
-		return aiConnectionError("sharing_community")
+		return NewAppError("AIConnection.IsValid", "model.ai_connection.sharing_community.app_error", nil, "", http.StatusBadRequest)
 	}
 	if !validIDs(c.Sharing.TeamIDs) || !validIDs(c.Audience.GroupIDs) {
-		return aiConnectionError("ids")
+		return NewAppError("AIConnection.IsValid", "model.ai_connection.ids.app_error", nil, "", http.StatusBadRequest)
 	}
 	if len(c.Audience.Roles) > AIConnectionMaxListItems {
-		return aiConnectionError("roles")
+		return NewAppError("AIConnection.IsValid", "model.ai_connection.roles.app_error", nil, "", http.StatusBadRequest)
 	}
 	for _, role := range c.Audience.Roles {
 		if !IsValidRoleName(role) {
-			return aiConnectionError("roles")
+			return NewAppError("AIConnection.IsValid", "model.ai_connection.roles.app_error", nil, "", http.StatusBadRequest)
 		}
 	}
 	if len(c.APIKeyLast4) > 16 || len(c.ExtraHeaderNames) > AIConnectionMaxHeaders {
-		return aiConnectionError("api_key")
+		return NewAppError("AIConnection.IsValid", "model.ai_connection.api_key.app_error", nil, "", http.StatusBadRequest)
 	}
 	if utf8.RuneCountInString(c.NeedsAttention) > AINeedsAttentionMaxRunes {
-		return aiConnectionError("needs_attention")
+		return NewAppError("AIConnection.IsValid", "model.ai_connection.needs_attention.app_error", nil, "", http.StatusBadRequest)
 	}
 	if c.CreateAt == 0 || c.UpdateAt == 0 {
-		return aiConnectionError("times")
+		return NewAppError("AIConnection.IsValid", "model.ai_connection.times.app_error", nil, "", http.StatusBadRequest)
 	}
 	return nil
 }
@@ -401,7 +397,7 @@ func (c *AIConnection) IsValid() *AppError {
 // Validate checks a request's own fields (not the permissions or the community's groups).
 func (r *AIConnectionRequest) Validate() *AppError {
 	if len(r.APIKey) > AIConnectionAPIKeyMaxLen || strings.ContainsAny(r.APIKey, "\r\n") {
-		return aiConnectionError("api_key")
+		return NewAppError("AIConnection.IsValid", "model.ai_connection.api_key.app_error", nil, "", http.StatusBadRequest)
 	}
 	return ValidateAIExtraHeaders(r.ExtraHeaders)
 }

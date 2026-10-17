@@ -13180,26 +13180,6 @@
     "description": "API error when saving changes to an outgoing webhook fails."
   },
   {
-    "id": "authentication.permissions.manage_ai_connections.description",
-    "translation": "Add, change and delete the server's model connections (AI providers' addresses and keys), and choose the communities they're shared with.",
-    "description": "Description of the permission to manage the server-wide AI model connections (Antimatter)."
-  },
-  {
-    "id": "authentication.permissions.manage_ai_connections.name",
-    "translation": "Manage server-wide model connections",
-    "description": "Name of the permission to add, change and delete the server-wide AI model connections (Antimatter)."
-  },
-  {
-    "id": "authentication.permissions.manage_team_ai_connections.description",
-    "translation": "Add, change and delete the community's own model connections (AI providers' addresses and keys), used only in this community.",
-    "description": "Description of the permission to manage a community's own AI model connections (Antimatter)."
-  },
-  {
-    "id": "authentication.permissions.manage_team_ai_connections.name",
-    "translation": "Manage the community's model connections",
-    "description": "Name of the permission to manage a community's own AI model connections (Antimatter)."
-  },
-  {
     "id": "basic_security_check.url.too_long_error",
     "translation": "URL is too long",
     "description": "API error returned when the request URL exceeds the server's maximum allowed length."
