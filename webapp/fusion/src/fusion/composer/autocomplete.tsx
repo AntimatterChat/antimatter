@@ -37,6 +37,9 @@ import {am} from 'fusion/utils/class_names';
 
 import type {GlobalState} from 'types/store';
 
+import {parseCommandLine} from './command_args';
+import CommandArgsBar, {ArgChips, useCommandSpecs} from './command_args_bar';
+
 export type AutocompleteHandle = {
 
     // handleKeyDown lets the list take arrows, Enter, Tab and Escape while it's open; true when it did.
@@ -55,6 +58,11 @@ type Kind = 'mention' | 'channel' | 'emoji' | 'command';
 type Row = {term: string; item: unknown};
 
 const SPECIAL_MENTIONS = ['here', 'channel', 'all'];
+
+// Typing a slash command's arguments: "/command " and what follows.
+function isSlashArguments(pretext: string) {
+    return (/^\/\S+\s/).test(pretext);
+}
 const SPECIAL_DESCRIPTIONS: Record<string, {id: string; defaultMessage: string}> = {
     here: {id: 'fusion.ac.here', defaultMessage: 'Notifies everyone online in this channel'},
     channel: {id: 'fusion.ac.channel', defaultMessage: 'Notifies everyone in this channel'},
@@ -129,7 +137,9 @@ function RowContent({kind, row}: {kind: Kind; row: Row}) {
             <>
                 <span className={am('cmd-ic')}>{'/'}</span>
                 <span className={am('main')}>{String(item.Suggestion || item.Complete)}</span>
-                <span className={am('hint')}>{String(item.Hint || '')}</span>
+                <span className={am('hint')}>
+                    <ArgChips hint={String(item.Hint || '')}/>
+                </span>
                 <span className={am('desc')}>
                     {typeof item.IconData === 'string' && (/^(data:|https?:)/).test(item.IconData) && (
                         <img
@@ -160,10 +170,13 @@ const Autocomplete = forwardRef<AutocompleteHandle, Props>(({channelId, rootId, 
     const delayChannelAutocomplete = useSelector((state: GlobalState) => getConfig(state).DelayChannelAutocomplete === 'true');
     const defaultAgent = useSelector(getDefaultAgent);
     const [results, setResults] = useState<{kind: Kind; matchedPretext: string; rows: Row[]} | null>(null);
+    const commands = useCommandSpecs(teamId, value.startsWith('/'));
     const [selected, setSelected] = useState(0);
     const dismissedFor = useRef<string | null>(null);
 
-    const providers = useMemo<Array<[Kind, Provider]>>(() => [
+    // In a slash command's arguments, @, # and ~ suggest people and channels: # completes #channel (the built-in
+    // commands take it), ~ completes ~channel (for the apps that parse that). 'slash' providers only work there.
+    const providers = useMemo<Array<[Kind, Provider, 'slash'?]>>(() => [
         ['command', new CommandProvider({teamId, channelId, rootId})],
         ['mention', new AtMentionProvider({
             currentUserId,
@@ -176,6 +189,7 @@ const Autocomplete = forwardRef<AutocompleteHandle, Props>(({channelId, rootId, 
             defaultAgent,
         })],
         ['channel', new ChannelMentionProvider((term, success, error) => dispatch(autocompleteChannels(term, success, error)), delayChannelAutocomplete, '#')],
+        ['channel', new ChannelMentionProvider((term, success, error) => dispatch(autocompleteChannels(term, success, error)), delayChannelAutocomplete, '~'), 'slash'],
         ['emoji', new EmoticonProvider()],
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -190,7 +204,12 @@ const Autocomplete = forwardRef<AutocompleteHandle, Props>(({channelId, rootId, 
         }
         dismissedFor.current = null;
         let handled = false;
-        for (const [kind, provider] of providers) {
+        const slash = isSlashArguments(pretext);
+        const mentioning = slash && (/(^|\s)[@#~][^\s]*$/).test(pretext);
+        for (const [kind, provider, only] of providers) {
+            if ((only === 'slash' && !slash) || (kind === 'command' && mentioning)) {
+                continue;
+            }
             handled = provider.handlePretextChanged(pretext, (res) => {
                 const terms = flattenTerms(res);
                 const items = flattenItems(res);
@@ -253,8 +272,15 @@ const Autocomplete = forwardRef<AutocompleteHandle, Props>(({channelId, rootId, 
         },
     }));
 
+    const pretext = value.slice(0, textareaRef.current ? textareaRef.current.selectionEnd : value.length);
+    const argsBar = isSlashArguments(pretext) ? (
+        <CommandArgsBar
+            pretext={pretext}
+            commands={commands}
+        />
+    ) : null;
     if (!results) {
-        return null;
+        return argsBar && parseCommandLine(pretext, commands) ? <div className={am('ac-pop', 'args-only')}>{argsBar}</div> : null;
     }
     const title = {
         mention: formatMessage({id: 'fusion.ac.people', defaultMessage: 'People'}),
@@ -268,6 +294,7 @@ const Autocomplete = forwardRef<AutocompleteHandle, Props>(({channelId, rootId, 
             role='listbox'
             aria-label={title}
         >
+            {argsBar}
             <h5>{title}</h5>
             {results.rows.map((row, i) => (
                 <button

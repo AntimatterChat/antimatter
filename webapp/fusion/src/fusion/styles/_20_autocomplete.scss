@@ -13,6 +13,20 @@
 :is(.am-app, .am-layer) .am-ac-item .am-desc { margin-left: auto; font-size: 12.5px; color: var(--am-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
 :is(.am-app, .am-layer) .am-ac-item .am-glyph { width: 24px; text-align: center; font-size: 18px; flex: none; }
 :is(.am-app, .am-layer) .am-ac-item .am-cmd-ic { width: 24px; height: 24px; border-radius: 6px; display: grid; place-items: center; background: var(--am-side); color: var(--am-muted); flex: none; font: 700 13px var(--am-font-mono); }
+/* A slash command's arguments, each a block (in suggestions, and above them while the command is typed). */
+:is(.am-app, .am-layer) .am-ac-pop.am-args-only { padding: 4px; }
+:is(.am-app, .am-layer) .am-arg-chips { display: inline-flex; flex-wrap: nowrap; gap: 4px; }
+:is(.am-app, .am-layer) .am-arg { display: inline-flex; align-items: baseline; gap: 6px; padding: 1px 7px; border-radius: 6px; border: 1px solid var(--am-line); background: var(--am-side); color: var(--am-muted); font: 12px var(--am-font-mono); white-space: nowrap; }
+:is(.am-app, .am-layer) .am-cmd-args { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; padding: 6px 8px 8px; border-bottom: 1px solid var(--am-line); margin-bottom: 4px; }
+:is(.am-app, .am-layer) .am-ac-pop.am-args-only .am-cmd-args { border-bottom: 0; margin-bottom: 0; }
+:is(.am-app, .am-layer) .am-cmd-args .am-cmd-name { font: 700 13px var(--am-font-mono); color: var(--am-text); }
+:is(.am-app, .am-layer) .am-cmd-args .am-arg { padding: 2px 8px; font-size: 12.5px; }
+:is(.am-app, .am-layer) .am-cmd-args .am-arg.am-optional { border-style: dashed; }
+:is(.am-app, .am-layer) .am-cmd-args .am-arg.am-filled { color: var(--am-text-2); }
+:is(.am-app, .am-layer) .am-cmd-args .am-arg.am-filled .am-arg-label { color: var(--am-muted); font-size: 11px; }
+:is(.am-app, .am-layer) .am-cmd-args .am-arg-value { color: var(--am-text); font-weight: 600; }
+:is(.am-app, .am-layer) .am-cmd-args .am-arg.am-on { border-color: var(--am-matter); background: var(--am-select); color: var(--am-text); }
+:is(.am-app, .am-layer) .am-cmd-args .am-arg-help { flex-basis: 100%; font-size: 12.5px; color: var(--am-muted); }
 /* Interactive dialog */
 :is(.am-app, .am-layer) .am-dialog-head { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
 :is(.am-app, .am-layer) .am-dialog-head h2 { margin: 0; }

@@ -20835,6 +20835,10 @@
     "defaultMessage": "Channels",
     "description": ""
   },
+  "fusion.ac.commandArgs": {
+    "defaultMessage": "Arguments of /{command}",
+    "description": "Accessible name (for screen readers) of the row showing each argument of the slash command being typed as a block; {command} is the command's name, such as 'invite' or 'remote create'."
+  },
   "fusion.ac.commands": {
     "defaultMessage": "Commands",
     "description": ""
