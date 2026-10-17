@@ -441,3 +441,18 @@ func TestSystemOneDecisions(t *testing.T) {
 	_, err = newOpenAI(t, f.URL, ai.DecisionsDialectSystemOne).Decide(context.Background(), ai.DecideRequest{Model: "jev", Input: "x"})
 	assert.Error(t, err, "a request without questions is refused before any call")
 }
+
+// A server that ignores "stream" and answers with JSON still gives a stream.
+func TestOpenAIChatStreamFromAWholeAnswer(t *testing.T) {
+	f := newFakeEndpoint(t, func(w http.ResponseWriter, r *http.Request, body map[string]any) {
+		w.Header().Set("Content-Type", "application/json")
+		fmt.Fprint(w, `{"choices":[{"message":{"content":"All at once"},"finish_reason":"stop"}],"usage":{"prompt_tokens":4,"completion_tokens":3}}`)
+	})
+	stream, err := newOpenAI(t, f.URL, "").ChatStream(context.Background(), ai.ChatRequest{Model: "m"})
+	require.NoError(t, err)
+	resp, err := stream.ReadAll()
+	require.NoError(t, err)
+	assert.Equal(t, "All at once", resp.Message.Content)
+	assert.Equal(t, ai.Usage{InputTokens: 4, OutputTokens: 3}, resp.Usage)
+	assert.Equal(t, ai.FinishReasonStop, resp.FinishReason)
+}

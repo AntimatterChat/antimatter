@@ -374,8 +374,47 @@ func (p *openAIProvider) ChatStream(ctx context.Context, req ai.ChatRequest) (*a
 		runner.cancel()
 		return nil, err
 	}
-	go p.readChatStream(runner, resp, req)
+	if strings.HasPrefix(resp.Header.Get("Content-Type"), "application/json") {
+		// A server that ignores "stream" answers at once: its answer becomes the stream.
+		go p.readWholeAnswer(runner, resp, req)
+	} else {
+		go p.readChatStream(runner, resp, req)
+	}
 	return runner.stream(), nil
+}
+
+// readWholeAnswer streams a complete Chat Completions answer, for servers that don't stream.
+func (p *openAIProvider) readWholeAnswer(runner *streamRunner, resp *http.Response, req ai.ChatRequest) {
+	var body oaChatResponse
+	if err := decodeJSON(resp, maxResponseBytes, &body); err != nil {
+		runner.finish(runner.fail(err))
+		return
+	}
+	if len(body.Choices) == 0 {
+		runner.finish(runner.fail(errors.New("the AI endpoint gave no answer")))
+		return
+	}
+	choice := body.Choices[0]
+	content := ""
+	if choice.Message.Content != nil {
+		content = thinkBlock.ReplaceAllString(*choice.Message.Content, "")
+	}
+	if len(req.JSONSchema) > 0 {
+		content = ai.StripMarkdownCodeFencing(content)
+	}
+	if content != "" && !runner.send(ai.StreamEvent{Type: ai.EventText, Text: content}) {
+		runner.finish(runner.fail(runner.ctx.Err()))
+		return
+	}
+	if calls := toToolCalls(choice.Message.ToolCalls); len(calls) > 0 {
+		runner.send(ai.StreamEvent{Type: ai.EventToolCalls, ToolCalls: calls})
+	}
+	usage := estimatedUsage(req, content)
+	if body.Usage != nil {
+		usage = ai.Usage{InputTokens: body.Usage.PromptTokens, OutputTokens: body.Usage.CompletionTokens}
+	}
+	runner.send(ai.StreamEvent{Type: ai.EventUsage, Usage: &usage})
+	runner.finish(ai.StreamEvent{Type: ai.EventEnd, FinishReason: normaliseFinishReason(choice.FinishReason)})
 }
 
 // toolCallBuilder gathers a streamed tool call from its deltas.

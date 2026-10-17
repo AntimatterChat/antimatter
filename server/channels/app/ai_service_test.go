@@ -56,6 +56,7 @@ func newFakeLLM(t *testing.T, answer string) *fakeLLM {
 			fmt.Fprint(w, "mp3")
 		default:
 			content, _ := json.Marshal(answer)
+			w.Header().Set("Content-Type", "application/json")
 			fmt.Fprintf(w, `{"model":"test-model","choices":[{"message":{"role":"assistant","content":%s},"finish_reason":"stop"}],"usage":{"prompt_tokens":10,"completion_tokens":5}}`, content)
 		}
 	}))
@@ -267,11 +268,12 @@ func TestAIConnectionAudience(t *testing.T) {
 		admins := createTestAIConnection(t, th, f, th.BasicTeam.Id, func(req *model.AIConnectionRequest) {
 			req.Audience = model.AIConnectionAudience{Roles: []string{model.TeamAdminRoleId}}
 		})
-		_, appErr = aiChat(th, AICall{UserID: th.BasicUser2.Id, ChannelID: th.BasicChannel.Id}, admins.Id)
+		_, appErr = aiChat(th, AICall{UserID: th.BasicUser2.Id, TeamID: th.BasicTeam.Id}, admins.Id)
 		require.NotNil(t, appErr)
+		assert.Equal(t, "app.ai.call.audience.app_error", appErr.Id)
 		_, appErr = th.App.UpdateTeamMemberSchemeRoles(th.Context, th.BasicTeam.Id, th.BasicUser2.Id, false, true, true)
 		require.Nil(t, appErr)
-		_, appErr = aiChat(th, AICall{UserID: th.BasicUser2.Id, ChannelID: th.BasicChannel.Id}, admins.Id)
+		_, appErr = aiChat(th, AICall{UserID: th.BasicUser2.Id, TeamID: th.BasicTeam.Id}, admins.Id)
 		require.Nil(t, appErr, "the community's admins")
 	})
 
