@@ -206,6 +206,7 @@ func GenerateClientConfig(c *model.Config, telemetryID string) map[string]string
 	props["EnableBurnOnRead"] = strconv.FormatBool(*c.ServiceSettings.EnableBurnOnRead)
 	props["BurnOnReadDurationSeconds"] = strconv.Itoa(*c.ServiceSettings.BurnOnReadDurationSeconds)
 	props["BurnOnReadMaximumTimeToLiveSeconds"] = strconv.Itoa(*c.ServiceSettings.BurnOnReadMaximumTimeToLiveSeconds)
+	props["BurnOnReadMaximumDurationSeconds"] = strconv.Itoa(*c.ServiceSettings.BurnOnReadMaximumDurationSeconds)
 	props["AllowSyncedDrafts"] = strconv.FormatBool(*c.ServiceSettings.AllowSyncedDrafts)
 	props["DelayChannelAutocomplete"] = strconv.FormatBool(*c.ExperimentalSettings.DelayChannelAutocomplete)
 	props["YoutubeReferrerPolicy"] = strconv.FormatBool(*c.ExperimentalSettings.YoutubeReferrerPolicy)

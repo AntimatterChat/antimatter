@@ -3817,6 +3817,11 @@
     "description": "API error when creating a burn-on-read (self-destructing) post while the feature is not enabled in server configuration; admin-oriented wording."
   },
   {
+    "id": "api.post.fill_in_post_props.burn_on_read.duration.app_error",
+    "translation": "The burn-on-read duration must be a positive number of milliseconds.",
+    "description": "API error when a burn-on-read (self-deleting) message is sent with a 'read_duration' (how long it lives once read) that isn't a positive number; developer-oriented wording. Keep 'read_duration' in English."
+  },
+  {
     "id": "api.post.fill_in_post_props.burn_on_read.self_dm.app_error",
     "translation": "Burn-on-read posts are not allowed when messaging yourself.",
     "description": "API error when sending a burn-on-read (self-destructing) message in one's own self-DM, which is not allowed."
@@ -16223,6 +16228,11 @@
     "id": "model.config.is_valid.service_settings.burn_on_read_duration_seconds.app_error",
     "translation": "BurnOnReadDurationSeconds must be a positive number.",
     "description": "Configuration validation error for the burn-on-read (self-deleting messages) duration. 'BurnOnReadDurationSeconds' is a config setting name; keep it in English."
+  },
+  {
+    "id": "model.config.is_valid.service_settings.burn_on_read_maximum_duration_seconds.app_error",
+    "translation": "BurnOnReadMaximumDurationSeconds must be a positive number.",
+    "description": "Configuration validation error for the longest duration a sender can let a burn-on-read (self-deleting) message live once read. 'BurnOnReadMaximumDurationSeconds' is a config setting name; keep it in English."
   },
   {
     "id": "model.config.is_valid.service_settings.burn_on_read_maximum_time_to_live_seconds.app_error",

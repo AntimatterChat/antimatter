@@ -393,6 +393,18 @@ func TestServiceSettingsIsValid(t *testing.T) {
 			},
 			ExpectError: true,
 		},
+		"BurnOnReadMaximumDurationSeconds is zero": {
+			ServiceSettings: ServiceSettings{
+				BurnOnReadMaximumDurationSeconds: new(0),
+			},
+			ExpectError: true,
+		},
+		"BurnOnReadMaximumDurationSeconds is negative": {
+			ServiceSettings: ServiceSettings{
+				BurnOnReadMaximumDurationSeconds: new(-60),
+			},
+			ExpectError: true,
+		},
 		"BurnOnReadSchedulerFrequencySeconds is zero": {
 			ServiceSettings: ServiceSettings{
 				BurnOnReadSchedulerFrequencySeconds: new(0),

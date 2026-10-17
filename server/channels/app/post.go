@@ -721,10 +721,16 @@ func (a *App) FillInPostProps(rctx request.CTX, post *model.Post, channel *model
 
 		// Apply burn-on-read expiration settings from configuration
 		maxTTLSeconds := int64(model.SafeDereference(a.Config().ServiceSettings.BurnOnReadMaximumTimeToLiveSeconds))
-		readDurationSeconds := int64(model.SafeDereference(a.Config().ServiceSettings.BurnOnReadDurationSeconds))
+
+		// How long it lives once read: what the sender picked (read_duration, in milliseconds), within the
+		// administrator's maximum, else the default duration.
+		readDurationMillis, ok := a.burnOnReadDurationMillis(post.GetProp(model.PostPropsReadDurationSeconds))
+		if !ok {
+			return model.NewAppError("FillInPostProps", "api.post.fill_in_post_props.burn_on_read.duration.app_error", nil, "", http.StatusBadRequest)
+		}
 
 		post.AddProp(model.PostPropsExpireAt, model.GetMillis()+(maxTTLSeconds*1000))
-		post.AddProp(model.PostPropsReadDurationSeconds, readDurationSeconds*1000)
+		post.AddProp(model.PostPropsReadDurationSeconds, readDurationMillis)
 	}
 
 	return nil
@@ -4040,6 +4046,14 @@ func (a *App) RevealPost(rctx request.CTX, post *model.Post, userID string, conn
 	return revealedPost, nil
 }
 
+// burnOnReadDurationMillis is how long a burn-on-read message lives once read, in milliseconds, from the duration its
+// sender asked for (its read_duration prop, nil for none): within the configured maximum, else the configured
+// duration. ok is false when requested isn't a duration.
+func (a *App) burnOnReadDurationMillis(requested any) (int64, bool) {
+	settings := a.Config().ServiceSettings
+	return model.BurnOnReadDurationMillis(requested, model.SafeDereference(settings.BurnOnReadDurationSeconds), model.SafeDereference(settings.BurnOnReadMaximumDurationSeconds))
+}
+
 // validateBurnOnReadPost ensures the post is of type burn-on-read.
 func (a *App) validateBurnOnReadPost(rctx request.CTX, post *model.Post) *model.AppError {
 	if post.Type != model.PostTypeBurnOnRead {
@@ -4100,9 +4114,12 @@ func (a *App) getOrCreateReadReceipt(rctx request.CTX, post *model.Post, userID 
 	}
 
 	// Create new read receipt for first-time reveal
-	// Use configured burn-on-read duration (defaults to 10 minutes)
-	burnOnReadDurationSeconds := int64(model.SafeDereference(a.Config().ServiceSettings.BurnOnReadDurationSeconds))
-	readDurationMillis := burnOnReadDurationSeconds * 1000
+	// The message's own duration (its sender's choice), kept within the administrator's maximum as it is now, else the
+	// configured burn-on-read duration (defaults to 10 minutes)
+	readDurationMillis, ok := a.burnOnReadDurationMillis(post.GetProp(model.PostPropsReadDurationSeconds))
+	if !ok {
+		readDurationMillis, _ = a.burnOnReadDurationMillis(nil)
+	}
 	userExpireAt := min(postExpireAt, currentTime+readDurationMillis)
 
 	receipt = &model.ReadReceipt{
