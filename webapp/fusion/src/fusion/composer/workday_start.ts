@@ -26,8 +26,11 @@ starts(9, 0, 'AU CA CN ES FR GB HK IE IT JP KR NZ PT SG TW US');
 starts(9, 30, 'IN');
 
 // The country of an IANA time zone (its main one when several share it, e.g. Europe/Zurich: CH), or ''.
+// (A zone's countries() is in moment-timezone since 0.5.25, but its typings only declare moment.tz.countries().)
+type ZoneWithCountries = {countries?: () => string[]};
 export function zoneCountry(zone: string): string {
-    return moment.tz.zone(zone)?.countries()[0] ?? '';
+    const found = moment.tz.zone(zone) as ZoneWithCountries | null;
+    return found?.countries?.()[0] ?? '';
 }
 
 export function workdayStart(zone: string): {hour: number; minute: number} {
