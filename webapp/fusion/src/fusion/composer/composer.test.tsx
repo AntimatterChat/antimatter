@@ -21,7 +21,7 @@ jest.mock('./confirm_mentions', () => ({confirmChannelWideMentions: () => () => 
 jest.mock('fusion/shell/dialogs_context', () => ({useDialogs: () => ({})}));
 jest.mock('fusion/shell/toast_context', () => ({useToast: () => jest.fn()}));
 jest.mock('components/common/hooks/useCreateBurnOnReadAccess', () => ({useCreateBurnOnReadAccess: () => false}));
-jest.mock('./ai_rewrite', () => ({__esModule: true, default: () => null, useAgentsAvailable: () => false}));
+jest.mock('./ai_rewrite', () => ({__esModule: true, default: () => null, useAIRewriteAvailable: () => false}));
 jest.mock('./autocomplete', () => ({__esModule: true, default: jest.requireActual('react').forwardRef(() => null)}));
 jest.mock('./away_note', () => ({__esModule: true, default: () => null}));
 jest.mock('./sleep_note', () => ({__esModule: true, default: () => null}));
