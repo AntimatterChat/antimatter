@@ -68,6 +68,7 @@ build-v4: node_modules playbooks
 	@cat $(V4_SRC)/delivery_tracking.yaml >> $(V4_YAML)
 	@cat $(V4_SRC)/health.yaml >> $(V4_YAML)
 	@cat $(V4_SRC)/agents.yaml >> $(V4_YAML)
+	@cat $(V4_SRC)/ai_connections.yaml >> $(V4_YAML)
 	@cat $(V4_SRC)/scheduled_recaps.yaml >> $(V4_YAML)
 	@cat $(V4_SRC)/properties.yaml >> $(V4_YAML)
 	@if [ -r $(PLAYBOOKS_SRC)/paths.yaml ]; then cat $(PLAYBOOKS_SRC)/paths.yaml >> $(V4_YAML); fi

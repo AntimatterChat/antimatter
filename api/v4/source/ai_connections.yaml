@@ -1,0 +1,312 @@
+  /api/v4/ai/connections:
+    get:
+      tags:
+        - ai connections
+      summary: List the model connections you manage
+      description: >
+        Lists the model connections of a scope: `server` for the server-wide ones, or a team (community) ID for its
+        own. Without a scope, every connection the caller manages. Keys are never returned: only `api_key_set` and
+        `api_key_last4`.
+
+        ##### Permissions
+
+        `manage_ai_connections` for the server-wide connections; `manage_team_ai_connections` in the community for
+        a community's.
+
+        __Minimum server version__: 11.11 (Antimatter)
+      operationId: GetAIConnections
+      parameters:
+        - name: scope
+          in: query
+          description: "`server`, or a team ID."
+          schema:
+            type: string
+      responses:
+        "200":
+          description: The connections
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AIConnection"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+    post:
+      tags:
+        - ai connections
+      summary: Add a model connection
+      description: >
+        Adds a server-wide connection, or a community's own. The key and the extra headers' values are encrypted
+        at rest and can't be read back.
+
+        ##### Permissions
+
+        `manage_ai_connections` for `scope: server`; `manage_team_ai_connections` in the community otherwise.
+
+        __Minimum server version__: 11.11 (Antimatter)
+      operationId: CreateAIConnection
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AIConnectionRequest"
+      responses:
+        "201":
+          description: The connection
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AIConnection"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+  /api/v4/ai/connections/test:
+    post:
+      tags:
+        - ai connections
+      summary: Test a model connection before saving it
+      description: >
+        Checks an endpoint and key (its model list, else a one-token chat). Nothing is saved.
+
+        ##### Permissions
+
+        As for adding a connection of that scope.
+
+        __Minimum server version__: 11.11 (Antimatter)
+      operationId: TestAIConnectionRequest
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AIConnectionRequest"
+      responses:
+        "200":
+          description: The result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AIConnectionTestResult"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+  /api/v4/ai/connections/usable:
+    get:
+      tags:
+        - ai connections
+      summary: List the model connections you may use
+      description: >
+        Lists the connections the caller may use in a channel or community: a community's own there, server-wide
+        ones shared with it (or with all communities, for direct messages and calls without context), and only
+        those whose audience includes the caller.
+
+        ##### Permissions
+
+        Must be authenticated.
+
+        __Minimum server version__: 11.11 (Antimatter)
+      operationId: GetUsableAIConnections
+      parameters:
+        - name: channel_id
+          in: query
+          schema:
+            type: string
+        - name: team_id
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: The connections
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AIConnectionInfo"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+  /api/v4/ai/connections/{connection_id}:
+    parameters:
+      - name: connection_id
+        in: path
+        required: true
+        schema:
+          type: string
+    get:
+      tags:
+        - ai connections
+      summary: Get a model connection
+      description: >
+        ##### Permissions
+
+        Manage the connection's scope.
+
+        __Minimum server version__: 11.11 (Antimatter)
+      operationId: GetAIConnection
+      responses:
+        "200":
+          description: The connection
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AIConnection"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+    patch:
+      tags:
+        - ai connections
+      summary: Change a model connection
+      description: >
+        Fields left out are kept. `api_key` replaces the key (`""` removes it); `extra_headers` replaces all of
+        them. The scope never changes. Saving clears `needs_attention`.
+
+        ##### Permissions
+
+        Manage the connection's scope.
+
+        __Minimum server version__: 11.11 (Antimatter)
+      operationId: PatchAIConnection
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AIConnectionPatch"
+      responses:
+        "200":
+          description: The connection
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AIConnection"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+    delete:
+      tags:
+        - ai connections
+      summary: Delete a model connection
+      description: >
+        Its key and headers are forgotten. Features set to it stop using AI until an admin picks another.
+
+        ##### Permissions
+
+        Manage the connection's scope.
+
+        __Minimum server version__: 11.11 (Antimatter)
+      operationId: DeleteAIConnection
+      responses:
+        "200":
+          description: The connection was deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StatusOK"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /api/v4/ai/connections/{connection_id}/test:
+    parameters:
+      - name: connection_id
+        in: path
+        required: true
+        schema:
+          type: string
+    post:
+      tags:
+        - ai connections
+      summary: Test a model connection
+      description: >
+        ##### Permissions
+
+        Manage the connection's scope.
+
+        __Minimum server version__: 11.11 (Antimatter)
+      operationId: TestAIConnection
+      responses:
+        "200":
+          description: The result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AIConnectionTestResult"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+  /api/v4/ai/connections/{connection_id}/models:
+    parameters:
+      - name: connection_id
+        in: path
+        required: true
+        schema:
+          type: string
+    get:
+      tags:
+        - ai connections
+      summary: List the models a connection's endpoint offers
+      description: >
+        ##### Permissions
+
+        Manage the connection's scope.
+
+        __Minimum server version__: 11.11 (Antimatter)
+      operationId: GetAIConnectionModels
+      responses:
+        "200":
+          description: The models
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    owned_by:
+                      type: string
+        "403":
+          $ref: "#/components/responses/Forbidden"
+  /api/v4/ai/connections/{connection_id}/usage:
+    parameters:
+      - name: connection_id
+        in: path
+        required: true
+        schema:
+          type: string
+    get:
+      tags:
+        - ai connections
+      summary: Get a model connection's usage this month
+      description: >
+        ##### Permissions
+
+        Manage the connection's scope.
+
+        __Minimum server version__: 11.11 (Antimatter)
+      operationId: GetAIConnectionUsage
+      responses:
+        "200":
+          description: The usage
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AIConnectionUsage"
+        "403":
+          $ref: "#/components/responses/Forbidden"

@@ -4421,6 +4421,249 @@ components:
         type:
           type: string
           description: Type of the service (e.g., openai, anthropic, azure)
+    AIConnectionModels:
+      type: object
+      description: The default model of each capability; empty when not set up.
+      properties:
+        chat:
+          type: string
+        embeddings:
+          type: string
+        transcription:
+          type: string
+        decisions:
+          type: string
+    AIConnectionLimits:
+      type: object
+      description: 0 means no limit. Requests per minute are counted on each server node, budgets per calendar month (UTC).
+      properties:
+        requests_per_minute:
+          type: integer
+        monthly_token_budget:
+          type: integer
+          format: int64
+        per_user_requests_per_minute:
+          type: integer
+        per_user_monthly_token_budget:
+          type: integer
+          format: int64
+    AIConnectionSharing:
+      type: object
+      description: The communities a server-wide connection may be used in; a community's own connection has none.
+      properties:
+        all_teams:
+          type: boolean
+        team_ids:
+          type: array
+          items:
+            type: string
+    AIConnectionAudience:
+      type: object
+      description: Who may use the connection; guests only with allow_guests.
+      properties:
+        everyone:
+          type: boolean
+        group_ids:
+          type: array
+          items:
+            type: string
+        roles:
+          type: array
+          items:
+            type: string
+        allow_guests:
+          type: boolean
+    AIConnection:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        scope:
+          type: string
+          description: "`server`, or the team ID of a community's connection."
+        provider:
+          type: string
+          enum: [openai_compatible, anthropic]
+        base_url:
+          type: string
+        api_key_set:
+          type: boolean
+        api_key_last4:
+          type: string
+        extra_header_names:
+          type: array
+          items:
+            type: string
+        models:
+          $ref: "#/components/schemas/AIConnectionModels"
+        decisions_dialect:
+          type: string
+          enum: [openai, systemone]
+        limits:
+          $ref: "#/components/schemas/AIConnectionLimits"
+        sharing:
+          $ref: "#/components/schemas/AIConnectionSharing"
+        audience:
+          $ref: "#/components/schemas/AIConnectionAudience"
+        needs_attention:
+          type: string
+          description: Why the connection can't be used until an admin saves it; empty when fine.
+        creator_id:
+          type: string
+        updater_id:
+          type: string
+        create_at:
+          type: integer
+          format: int64
+        update_at:
+          type: integer
+          format: int64
+        delete_at:
+          type: integer
+          format: int64
+    AIConnectionRequest:
+      type: object
+      required: [name, provider]
+      properties:
+        name:
+          type: string
+        scope:
+          type: string
+          description: "`server` (the default) or a team ID."
+        provider:
+          type: string
+          enum: [openai_compatible, anthropic]
+        base_url:
+          type: string
+          description: The API's base URL with its version, e.g. https://api.openai.com/v1; empty for the provider's default.
+        api_key:
+          type: string
+          description: Write-only.
+        extra_headers:
+          type: object
+          additionalProperties:
+            type: string
+          description: Write-only values.
+        models:
+          $ref: "#/components/schemas/AIConnectionModels"
+        decisions_dialect:
+          type: string
+          enum: [openai, systemone]
+        limits:
+          $ref: "#/components/schemas/AIConnectionLimits"
+        sharing:
+          $ref: "#/components/schemas/AIConnectionSharing"
+        audience:
+          $ref: "#/components/schemas/AIConnectionAudience"
+    AIConnectionPatch:
+      type: object
+      properties:
+        name:
+          type: string
+        provider:
+          type: string
+        base_url:
+          type: string
+        api_key:
+          type: string
+        extra_headers:
+          type: object
+          additionalProperties:
+            type: string
+        models:
+          $ref: "#/components/schemas/AIConnectionModels"
+        decisions_dialect:
+          type: string
+        limits:
+          $ref: "#/components/schemas/AIConnectionLimits"
+        sharing:
+          $ref: "#/components/schemas/AIConnectionSharing"
+        audience:
+          $ref: "#/components/schemas/AIConnectionAudience"
+    AIConnectionTestResult:
+      type: object
+      properties:
+        ok:
+          type: boolean
+        error:
+          type: string
+        status_code:
+          type: integer
+        latency_ms:
+          type: integer
+          format: int64
+        model_count:
+          type: integer
+    AIConnectionInfo:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        scope:
+          type: string
+        provider:
+          type: string
+        models:
+          $ref: "#/components/schemas/AIConnectionModels"
+        capabilities:
+          type: array
+          items:
+            type: string
+    AIUsageTotals:
+      type: object
+      properties:
+        requests:
+          type: integer
+          format: int64
+        input_tokens:
+          type: integer
+          format: int64
+        output_tokens:
+          type: integer
+          format: int64
+    AIConnectionUsage:
+      type: object
+      properties:
+        connection_id:
+          type: string
+        month:
+          type: integer
+          description: The month, as 202610.
+        totals:
+          $ref: "#/components/schemas/AIUsageTotals"
+        monthly_token_budget:
+          type: integer
+          format: int64
+        by_purpose:
+          type: object
+          additionalProperties:
+            $ref: "#/components/schemas/AIUsageTotals"
+        days:
+          type: array
+          items:
+            type: object
+            properties:
+              connection_id:
+                type: string
+              user_id:
+                type: string
+              purpose:
+                type: string
+              day:
+                type: integer
+              requests:
+                type: integer
+                format: int64
+              input_tokens:
+                type: integer
+                format: int64
+              output_tokens:
+                type: integer
+                format: int64
     AgentsResponse:
       type: object
       properties:
