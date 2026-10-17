@@ -2431,6 +2431,36 @@
     "description": "Display name of the /shrug slash command in the slash command autocomplete list."
   },
   {
+    "id": "api.command_tableflip.desc",
+    "translation": "Adds (╯°□°)╯︵ ┻━┻ to your message",
+    "description": "Autocomplete description for the /tableflip easter egg slash command; the table flip emoticon must be kept exactly as-is."
+  },
+  {
+    "id": "api.command_tableflip.hint",
+    "translation": "[message]",
+    "description": "Autocomplete argument hint for the /tableflip slash command; [message] is a placeholder for optional text; keep the brackets."
+  },
+  {
+    "id": "api.command_tableflip.name",
+    "translation": "tableflip",
+    "description": "Display name of the /tableflip slash command in the slash command autocomplete list; it is the command's trigger word and stays as-is."
+  },
+  {
+    "id": "api.command_unflip.desc",
+    "translation": "Adds ┬─┬ノ( º _ ºノ) to your message",
+    "description": "Autocomplete description for the /unflip easter egg slash command (putting the flipped table back); the emoticon must be kept exactly as-is."
+  },
+  {
+    "id": "api.command_unflip.hint",
+    "translation": "[message]",
+    "description": "Autocomplete argument hint for the /unflip slash command; [message] is a placeholder for optional text; keep the brackets."
+  },
+  {
+    "id": "api.command_unflip.name",
+    "translation": "unflip",
+    "description": "Display name of the /unflip slash command in the slash command autocomplete list; it is the command's trigger word and stays as-is."
+  },
+  {
     "id": "api.config.get_config.restricted_merge.app_error",
     "translation": "Failed to merge given config.",
     "description": "Admin API error when merging the stored configuration with restricted defaults fails while reading the config; 'config' is the server configuration."
