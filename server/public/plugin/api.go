@@ -1866,42 +1866,42 @@ type API interface {
 	// empty for the connection's chat model.
 	//
 	// @tag AI
-	// Minimum server version: 11.11 (Antimatter)
+	// Minimum server version: 11.11
 	AIChat(actingUserID, channelID, teamID string, request *ai.ChatRequest) (*ai.ChatResponse, *model.AppError)
 
 	// AIChatStream streams a chat completion. Read the stream's Events until the channel is closed (it ends with an
 	// end or an error event), or Close it to stop the call.
 	//
 	// @tag AI
-	// Minimum server version: 11.11 (Antimatter)
+	// Minimum server version: 11.11
 	AIChatStream(actingUserID, channelID, teamID string, request *ai.ChatRequest) (*ai.Stream, *model.AppError)
 
 	// AIEmbed gives the embeddings of texts, with the connection's embeddings model unless request.Model says
 	// otherwise.
 	//
 	// @tag AI
-	// Minimum server version: 11.11 (Antimatter)
+	// Minimum server version: 11.11
 	AIEmbed(actingUserID, channelID, teamID string, request *ai.EmbedRequest) (*ai.EmbedResponse, *model.AppError)
 
 	// AITranscribe turns speech into text, with the connection's transcription model unless request.Model says
 	// otherwise.
 	//
 	// @tag AI
-	// Minimum server version: 11.11 (Antimatter)
+	// Minimum server version: 11.11
 	AITranscribe(actingUserID, channelID, teamID string, request *ai.TranscribeRequest) (*ai.TranscribeResponse, *model.AppError)
 
 	// AIDecide asks a decision model typed questions (predicate, choice, score) about a text, in the connection's
 	// decisions dialect (OpenAI's /v1/decisions or SystemOne's /v1/systemone).
 	//
 	// @tag AI
-	// Minimum server version: 11.11 (Antimatter)
+	// Minimum server version: 11.11
 	AIDecide(actingUserID, channelID, teamID string, request *ai.DecideRequest) (*ai.DecideResponse, *model.AppError)
 
 	// AIConnectionsForUser lists the model connections a person may use in a channel or community, with their
 	// models and capabilities (never their keys).
 	//
 	// @tag AI
-	// Minimum server version: 11.11 (Antimatter)
+	// Minimum server version: 11.11
 	AIConnectionsForUser(userID, channelID, teamID string) ([]*model.AIConnectionInfo, *model.AppError)
 }
 
