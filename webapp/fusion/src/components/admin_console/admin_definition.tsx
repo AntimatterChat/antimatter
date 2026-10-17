@@ -8,9 +8,9 @@ import {FormattedMessage, defineMessage, defineMessages} from 'react-intl';
 import {Link} from 'react-router-dom';
 import semver from 'semver';
 
-import {AccountMultipleOutlineIcon, ChartBarIcon, CogOutlineIcon, FlaskOutlineIcon, FormatListBulletedIcon, PowerPlugOutlineIcon, ServerVariantIcon, ShieldOutlineIcon, SitemapIcon, TableLargeIcon} from '@mattermost/compass-icons/components';
+import {AccountMultipleOutlineIcon, ChartBarIcon, CogOutlineIcon, CreationOutlineIcon, FlaskOutlineIcon, FormatListBulletedIcon, PowerPlugOutlineIcon, ServerVariantIcon, ShieldOutlineIcon, SitemapIcon, TableLargeIcon} from '@mattermost/compass-icons/components';
 
-import {Posts} from 'mattermost-redux/constants';
+import {Permissions, Posts} from 'mattermost-redux/constants';
 import {RESOURCE_KEYS} from 'mattermost-redux/constants/permissions_sysconsole';
 
 import {
@@ -45,6 +45,8 @@ import {ID_PATH_PATTERN} from 'utils/path';
 import {getSiteURL} from 'utils/url';
 
 import PolicyList from './access_control';
+import AIBuiltInFeatures, {searchableStrings as aiBuiltInFeaturesSearchableStrings} from './ai/builtin_features';
+import AIModelConnectionsPage, {searchableStrings as aiModelConnectionsSearchableStrings} from './ai/model_connections_page';
 import AccessControlPolicyJobs from './access_control/jobs';
 import PolicyDetails from './access_control/policy_details';
 import * as DefinitionConstants from './admin_definition_constants';
@@ -2600,6 +2602,15 @@ const AdminDefinition: AdminDefinitionType = {
                             key: 'AutoTranslationSettings',
                             component: AutoTranslation,
                             isHidden: it.configIsFalse('FeatureFlags', 'AutoTranslation'),
+                        },
+
+                        // The model connection of auto-translation (AISettings.AutoTranslation), edited by the panel
+                        // above when its provider is "Model connection"; never drawn on its own.
+                        {
+                            type: 'custom',
+                            key: 'AISettings.AutoTranslation',
+                            component: () => null,
+                            isHidden: () => true,
                         },
                     ],
                 },
@@ -5334,6 +5345,48 @@ const AdminDefinition: AdminDefinitionType = {
             },
         },
     },
+    // Antimatter: the server's AI. Model connections (the providers' addresses and keys) and the connection and model
+    // of each built-in feature, for those who manage the server-wide connections.
+    ai: {
+        icon: (
+            <CreationOutlineIcon
+                size={14}
+                color={'currentColor'}
+            />
+        ),
+        sectionTitle: defineMessage({id: 'admin.sidebar.ai', defaultMessage: 'AI'}),
+        id: 'ai',
+        isHidden: it.not(it.userHasSystemPermission(Permissions.MANAGE_AI_CONNECTIONS)),
+        subsections: {
+            model_connections: {
+                url: 'ai/model_connections',
+                title: defineMessage({id: 'admin.sidebar.aiModelConnections', defaultMessage: 'Model connections'}),
+                searchableStrings: aiModelConnectionsSearchableStrings,
+                schema: {
+                    id: 'AIModelConnections',
+                    component: AIModelConnectionsPage,
+                },
+            },
+            builtin_features: {
+                url: 'ai/builtin_features',
+                title: defineMessage({id: 'admin.sidebar.aiBuiltInFeatures', defaultMessage: 'Built-in features'}),
+                searchableStrings: aiBuiltInFeaturesSearchableStrings,
+                isDisabled: it.not(it.userHasWritePermissionOnResource(RESOURCE_KEYS.INTEGRATIONS.INTEGRATION_MANAGEMENT)),
+                schema: {
+                    id: 'AISettings',
+                    name: defineMessage({id: 'admin.ai.features.title', defaultMessage: 'Built-in AI features'}),
+                    settings: [
+                        {
+                            type: 'custom',
+                            key: 'AISettings',
+                            component: AIBuiltInFeatures,
+                            isDisabled: it.not(it.userHasWritePermissionOnResource(RESOURCE_KEYS.INTEGRATIONS.INTEGRATION_MANAGEMENT)),
+                        },
+                    ],
+                },
+            },
+        },
+    },
     plugins: {
         icon: (
             <PowerPlugOutlineIcon
@@ -5672,6 +5725,12 @@ const AdminDefinition: AdminDefinitionType = {
                     id: 'TextToSpeechSettings',
                     name: defineMessage({id: 'admin.integrations.textToSpeech', defaultMessage: 'Text to speech'}),
                     settings: [
+                        {
+                            type: 'banner',
+                            label: defineMessage({id: 'admin.textToSpeech.connectionBanner', defaultMessage: 'Messages are read aloud with the model connection picked in AI › Built-in features: the API base URL and key below aren\'t used. The voice still is, and the model when the connection names none.'}),
+                            banner_type: 'info',
+                            isHidden: (config) => !config.AISettings?.TextToSpeech?.ConnectionId,
+                        },
                         {
                             type: 'bool',
                             key: 'TextToSpeechSettings.Enable',

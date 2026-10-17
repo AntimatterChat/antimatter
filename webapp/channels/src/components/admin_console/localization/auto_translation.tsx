@@ -2,10 +2,9 @@
 // See LICENSE.txt for license information.
 
 import React, {useCallback, useMemo, useState} from 'react';
-import {defineMessage, defineMessages, FormattedMessage} from 'react-intl';
-import {Link} from 'react-router-dom';
+import {defineMessage, defineMessages, FormattedMessage, useIntl} from 'react-intl';
 
-import type {AutoTranslationSettings} from '@mattermost/types/config';
+import type {AIFeatureSettings, AutoTranslationSettings} from '@mattermost/types/config';
 
 import BooleanSetting from 'components/admin_console/boolean_setting';
 import MultiSelectSetting from 'components/admin_console/multiselect_settings';
@@ -16,14 +15,13 @@ import {
     SectionHeader,
 } from 'components/admin_console/system_properties/controls';
 import TextSetting from 'components/admin_console/text_setting';
-import useGetAgentsBridgeEnabled from 'components/common/hooks/useGetAgentsBridgeEnabled';
 import Toggle from 'components/toggle';
 import BetaTag from 'components/widgets/tag/beta_tag';
 
 import * as I18n from 'i18n/i18n';
 
-import AgentsSettings from './agents_settings';
 import AutoTranslationInfo from './auto_translation_info';
+import ConnectionTranslationSettings, {OlderAgentsProvider} from './connection_settings';
 import LibreTranslateSettings from './libreTranslate_settings';
 import OpenAISettings from './openai_settings';
 
@@ -35,6 +33,18 @@ import './localization.scss';
 const locales = I18n.getAllLanguages();
 
 const messages = defineMessages({
+    providerConnection: {
+        id: 'admin.site.localization.autoTranslationProviderConnection',
+        defaultMessage: 'Model connection (recommended)',
+    },
+    providerOpenAI: {
+        id: 'admin.site.localization.autoTranslationProviderOpenAI',
+        defaultMessage: 'OpenAI-compatible API, set up here',
+    },
+    providerAgents: {
+        id: 'admin.site.localization.autoTranslationProviderAgents',
+        defaultMessage: 'AI chat app\'s service (older)',
+    },
     enableAutoTranslationTitle: {
         id: 'admin.site.localization.enableAutoTranslationTitle',
         defaultMessage: 'Auto-translation',
@@ -47,15 +57,29 @@ const messages = defineMessages({
 
 export const searchableStrings: SearchableStrings = Object.values(messages);
 
+// The key of AISettings.AutoTranslation on the Localization page (a hidden setting there saves it).
+export const AI_AUTO_TRANSLATION_KEY = 'AISettings.AutoTranslation';
+
 export default function AutoTranslation(props: SystemConsoleCustomSettingsComponentProps) {
-    const {available: isAgentsBridgeEnabled, reason: agentsBridgeUnavailableReason} = useGetAgentsBridgeEnabled();
+    const {formatMessage} = useIntl();
+    // Antimatter: a model connection is the recommended provider, the default for a new setup.
     const [autoTranslationSettings, setAutoTranslationSettings] = useState<AutoTranslationSettings>(() => {
         const settings = props.value as AutoTranslationSettings;
         if (!settings.Provider) {
-            return {...settings, Provider: 'libretranslate'};
+            return {...settings, Provider: 'connection'};
         }
         return settings;
     });
+
+    // The connection and model when the provider is a model connection: AISettings.AutoTranslation.
+    const [connectionSettings, setConnectionSettings] = useState<AIFeatureSettings>(() => ({
+        ConnectionId: props.config?.AISettings?.AutoTranslation?.ConnectionId || '',
+        Model: props.config?.AISettings?.AutoTranslation?.Model || '',
+    }));
+    const handleConnectionChange = useCallback((value: AIFeatureSettings) => {
+        setConnectionSettings(value);
+        props.onChange(AI_AUTO_TRANSLATION_KEY, value);
+    }, [props]);
 
     // Track timeout input separately to allow intermediate invalid states while typing
     const [timeoutInputValue, setTimeoutInputValue] = useState<string>(
@@ -97,7 +121,7 @@ export default function AutoTranslation(props: SystemConsoleCustomSettingsCompon
 
         // Ensure provider is set when enabling
         if (newValue && !newSettings.Provider) {
-            newSettings.Provider = 'libretranslate';
+            newSettings.Provider = 'connection';
         }
 
         setAutoTranslationSettings(newSettings);
@@ -112,8 +136,6 @@ export default function AutoTranslation(props: SystemConsoleCustomSettingsCompon
         values.sort((a, b) => a.order - b.order);
         return values;
     }, []);
-
-    const showAgentsError = autoTranslationSettings.Provider === 'agents' && !isAgentsBridgeEnabled;
 
     const providerDescription = useMemo(() => (
         <div className='auto-translation-provider-description'>
@@ -189,7 +211,7 @@ export default function AutoTranslation(props: SystemConsoleCustomSettingsCompon
             {autoTranslationSettings.Enable &&
             <SectionContent $compact={true}>
                 <AutoTranslationInfo/>
-                <div className={showAgentsError ? 'autotranslation-provider-error' : ''}>
+                <div>
                     <Setting
                         label={
                             <FormattedMessage
@@ -207,42 +229,33 @@ export default function AutoTranslation(props: SystemConsoleCustomSettingsCompon
                                 data-testid='Providerdropdown'
                                 className='form-control'
                                 id='Provider'
-                                value={autoTranslationSettings.Provider || 'libretranslate'}
+                                value={autoTranslationSettings.Provider || 'connection'}
                                 onChange={(e) => handleChange('Provider', e.target.value as AutoTranslationSettings['Provider'])}
                                 disabled={props.disabled || props.setByEnv}
                             >
+                                <option value='connection'>{formatMessage(messages.providerConnection)}</option>
                                 <option value='libretranslate'>{'LibreTranslate'}</option>
-                                <option value='openai'>{'OpenAI-compatible API'}</option>
-                                <option value='agents'>{'Agents'}</option>
+                                <option value='openai'>{formatMessage(messages.providerOpenAI)}</option>
+                                <option value='agents'>{formatMessage(messages.providerAgents)}</option>
                             </select>
-                            {showAgentsError && (
-                                <div className='auto-translation-provider-error-message'>
-                                    <i className='icon icon-alert-outline'/>
-                                    <FormattedMessage
-                                        id={agentsBridgeUnavailableReason || 'admin.site.localization.autoTranslationAgentsError'}
-                                        defaultMessage={agentsBridgeUnavailableReason ? 'The Agents plugin is unavailable.' : 'The Agents plugin is either disabled or not configured properly.'}
-                                    />
-                                </div>
-                            )}
-                            {showAgentsError && (
-                                <Link
-                                    to='/admin_console/plugins/plugin_mattermost-ai'
-                                    className='agents-config-link'
-                                >
-                                    <FormattedMessage
-                                        id='admin.site.localization.goToAgentsConfig'
-                                        defaultMessage='Go to Agents plugin config'
-                                    />
-                                    <i className='icon icon-chevron-right'/>
-                                </Link>
-                            )}
                         </div>
                     </Setting>
                 </div>
-                {autoTranslationSettings.Provider === 'agents' && !showAgentsError &&
-                <AgentsSettings
-                    {...props}
-                    onChange={handleChange}
+                {autoTranslationSettings.Provider === 'connection' &&
+                <ConnectionTranslationSettings
+                    value={connectionSettings}
+                    disabled={props.disabled || props.setByEnv}
+                    onChange={handleConnectionChange}
+                />
+                }
+                {autoTranslationSettings.Provider === 'agents' &&
+                <OlderAgentsProvider
+                    serviceId={autoTranslationSettings.Agents?.LLMServiceID || ''}
+                    disabled={props.disabled || props.setByEnv}
+                    onSwitch={(connectionId) => {
+                        handleConnectionChange({ConnectionId: connectionSettings.ConnectionId || connectionId, Model: connectionSettings.Model});
+                        handleChange('Provider', 'connection');
+                    }}
                 />
                 }
                 {autoTranslationSettings.Provider === 'libretranslate' &&

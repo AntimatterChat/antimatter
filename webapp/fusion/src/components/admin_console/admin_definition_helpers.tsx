@@ -6,6 +6,7 @@ import type {MessageDescriptor} from 'react-intl';
 import type {AdminConfig, ClientConfig} from '@mattermost/types/config';
 
 import {getConfig as getClientConfig} from 'mattermost-redux/selectors/entities/general';
+import {haveISystemPermission} from 'mattermost-redux/selectors/entities/roles';
 
 import store from 'stores/redux_store';
 
@@ -49,6 +50,10 @@ export const it = {
     userHasReadPermissionOnSomeResources: (key: {[key: string]: string}) => (config: Partial<AdminConfig>, state: any, consoleAccess?: ConsoleAccess) => Object.values(key).some((resource) => (consoleAccess?.read as any)?.[resource]),
     userHasWritePermissionOnResource: (key: string) => (config: Partial<AdminConfig>, state: any, consoleAccess?: ConsoleAccess) => (consoleAccess?.write as any)?.[key],
     isSystemAdmin: (config: Partial<AdminConfig>, state: any, consoleAccess?: ConsoleAccess, isSystemAdmin?: boolean) => Boolean(isSystemAdmin),
+
+    // Antimatter: a system permission of the signed-in admin (e.g. manage_ai_connections), for pages that need more than
+    // the console's read and write access.
+    userHasSystemPermission: (permission: string) => () => haveISystemPermission(store.getState(), {permission}),
 };
 
 export const validators = {

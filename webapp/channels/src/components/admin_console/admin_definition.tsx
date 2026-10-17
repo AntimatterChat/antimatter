@@ -2600,6 +2600,15 @@ const AdminDefinition: AdminDefinitionType = {
                             component: AutoTranslation,
                             isHidden: it.configIsFalse('FeatureFlags', 'AutoTranslation'),
                         },
+
+                        // The model connection of auto-translation (AISettings.AutoTranslation), edited by the panel
+                        // above when its provider is "Model connection"; never drawn on its own.
+                        {
+                            type: 'custom',
+                            key: 'AISettings.AutoTranslation',
+                            component: () => null,
+                            isHidden: () => true,
+                        },
                     ],
                 },
             },
@@ -5640,6 +5649,12 @@ const AdminDefinition: AdminDefinitionType = {
                     id: 'TextToSpeechSettings',
                     name: defineMessage({id: 'admin.integrations.textToSpeech', defaultMessage: 'Text to speech'}),
                     settings: [
+                        {
+                            type: 'banner',
+                            label: defineMessage({id: 'admin.textToSpeech.connectionBanner', defaultMessage: 'Messages are read aloud with the model connection picked for text to speech (in the System Console of the Fusion web app, AI › Built-in features): the API base URL and key below aren\'t used. The voice still is, and the model when the connection names none.'}),
+                            banner_type: 'info',
+                            isHidden: (config) => !config.AISettings?.TextToSpeech?.ConnectionId,
+                        },
                         {
                             type: 'bool',
                             key: 'TextToSpeechSettings.Enable',

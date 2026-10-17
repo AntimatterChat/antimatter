@@ -1,0 +1,29 @@
+// The System Console's AI pages (Antimatter). The model connections' list and form are the Fusion UI's
+// (fusion/styles/_99_ai.scss); here only what places them in the console.
+
+.ai-connections-page .am-layer.am-ai-console {
+    max-width: 880px;
+    height: auto;
+    background: transparent;
+    font-size: 14px;
+}
+
+.ai-builtin-features {
+    .ai-lead {
+        max-width: 72ch;
+        margin: 0 0 16px;
+        color: var(--am-muted, rgba(var(--center-channel-color-rgb), 0.72));
+    }
+
+    .ai-feature-model {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 8px;
+
+        select {
+            min-width: 0;
+            flex: 1 1 220px;
+        }
+    }
+}
