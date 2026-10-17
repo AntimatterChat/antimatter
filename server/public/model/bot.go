@@ -37,9 +37,11 @@ type Bot struct {
 	Description    string `json:"description,omitempty"`
 	OwnerId        string `json:"owner_id"`
 	LastIconUpdate int64  `json:"last_icon_update,omitempty"`
-	CreateAt       int64  `json:"create_at"`
-	UpdateAt       int64  `json:"update_at"`
-	DeleteAt       int64  `json:"delete_at"`
+	// Kind is "bot" or "agent" (Antimatter): an agent is a bot people talk to like a coworker (see AIAgent).
+	Kind     string `json:"kind,omitempty"`
+	CreateAt int64  `json:"create_at"`
+	UpdateAt int64  `json:"update_at"`
+	DeleteAt int64  `json:"delete_at"`
 }
 
 // IsProtectedBotUsername returns whether username is one of the protected,
@@ -83,6 +85,7 @@ func (b *Bot) Auditable() map[string]any {
 		"description":      b.Description,
 		"owner_id":         b.OwnerId,
 		"last_icon_update": b.LastIconUpdate,
+		"kind":             b.Kind,
 		"create_at":        b.CreateAt,
 		"update_at":        b.UpdateAt,
 		"delete_at":        b.DeleteAt,
@@ -106,7 +109,9 @@ func (b *BotPatch) Auditable() map[string]any {
 
 // BotGetOptions acts as a filter on bulk bot fetching queries.
 type BotGetOptions struct {
-	OwnerId        string
+	OwnerId string
+	// Kind lists only the bots of a kind ("bot" or "agent"); empty for all.
+	Kind           string
 	IncludeDeleted bool
 	OnlyOrphaned   bool
 	Page           int
@@ -145,6 +150,10 @@ func (b *Bot) IsValidCreate() *AppError {
 		return NewAppError("Bot.IsValid", "model.bot.is_valid.creator_id.app_error", b.Trace(), "", http.StatusBadRequest)
 	}
 
+	if b.Kind != "" && b.Kind != BotKindBot && b.Kind != BotKindAgent {
+		return NewAppError("Bot.IsValid", "model.bot.is_valid.kind.app_error", b.Trace(), "", http.StatusBadRequest)
+	}
+
 	return nil
 }
 
@@ -170,6 +179,14 @@ func (b *Bot) PreSave() {
 	b.UpdateAt = b.CreateAt
 	b.DeleteAt = 0
 	b.Username = NormalizeUsername(b.Username)
+	if b.Kind == "" {
+		b.Kind = BotKindBot
+	}
+}
+
+// IsAgent tells whether the bot is an agent's account.
+func (b *Bot) IsAgent() bool {
+	return b.Kind == BotKindAgent
 }
 
 // PreUpdate should be run before saving an updated bot to the database.

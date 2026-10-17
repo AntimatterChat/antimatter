@@ -495,3 +495,9 @@ channels/db/migrations/postgres/1000015_antimatter_create_aiconnections.down.sql
 channels/db/migrations/postgres/1000015_antimatter_create_aiconnections.up.sql
 channels/db/migrations/postgres/1000016_antimatter_create_aiusage.down.sql
 channels/db/migrations/postgres/1000016_antimatter_create_aiusage.up.sql
+channels/db/migrations/postgres/1000017_antimatter_add_kind_to_bots.down.sql
+channels/db/migrations/postgres/1000017_antimatter_add_kind_to_bots.up.sql
+channels/db/migrations/postgres/1000018_antimatter_create_aiagents.down.sql
+channels/db/migrations/postgres/1000018_antimatter_create_aiagents.up.sql
+channels/db/migrations/postgres/1000019_antimatter_create_agentactivity.down.sql
+channels/db/migrations/postgres/1000019_antimatter_create_agentactivity.up.sql

@@ -93,6 +93,13 @@ func (a *App) EnsureBot(rctx request.CTX, pluginID string, bot *model.Bot) (stri
 
 // CreateBot creates the given bot and corresponding user.
 func (a *App) CreateBot(rctx request.CTX, bot *model.Bot) (*model.Bot, *model.AppError) {
+	// Antimatter: a bot made here (the REST API, an app) is a plain bot; agents are made through CreateAIAgent.
+	bot.Kind = model.BotKindBot
+	return a.createBotAccount(rctx, bot)
+}
+
+// createBotAccount saves a bot account of the bot's kind and tells its owner, when that's a person.
+func (a *App) createBotAccount(rctx request.CTX, bot *model.Bot) (*model.Bot, *model.AppError) {
 	vErr := bot.IsValidCreate()
 	if vErr != nil {
 		return nil, vErr

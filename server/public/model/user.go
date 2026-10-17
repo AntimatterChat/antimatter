@@ -126,6 +126,7 @@ type User struct {
 	DisableWelcomeEmail    bool        `json:"disable_welcome_email" xml:"DisableWelcomeEmail"`
 	LastLogin              int64       `json:"last_login,omitempty" xml:"LastLogin,omitempty"`
 	MfaUsedTimestamps      StringArray `json:"mfa_used_timestamps,omitempty" xml:"-"`
+	IsAgent                bool        `json:"is_agent,omitempty" xml:"IsAgent,omitempty"`
 }
 
 func (u *User) Auditable() map[string]any {
@@ -154,6 +155,7 @@ func (u *User) Auditable() map[string]any {
 		"is_bot":                     u.IsBot,
 		"bot_description":            u.BotDescription,
 		"bot_last_icon_update":       u.BotLastIconUpdate,
+		"is_agent":                   u.IsAgent,
 		"terms_of_service_id":        u.TermsOfServiceId,
 		"terms_of_service_create_at": u.TermsOfServiceCreateAt,
 		"disable_welcome_email":      u.DisableWelcomeEmail,

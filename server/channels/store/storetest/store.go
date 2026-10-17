@@ -68,6 +68,8 @@ type Store struct {
 	ModerationStore                 mocks.ModerationStore
 	OnTopPostStore                  mocks.OnTopPostStore
 	AIConnectionStore               mocks.AIConnectionStore
+	AIAgentStore                    mocks.AIAgentStore
+	AgentActivityStore              mocks.AgentActivityStore
 	ChannelOverrideStore            mocks.ChannelOverrideStore
 	ScheduledPostStore              mocks.ScheduledPostStore
 	PropertyGroupStore              mocks.PropertyGroupStore
@@ -134,6 +136,8 @@ func (s *Store) ServerCategory() store.ServerCategoryStore   { return &s.ServerC
 func (s *Store) Moderation() store.ModerationStore           { return &s.ModerationStore }
 func (s *Store) OnTopPost() store.OnTopPostStore             { return &s.OnTopPostStore }
 func (s *Store) AIConnection() store.AIConnectionStore       { return &s.AIConnectionStore }
+func (s *Store) AIAgent() store.AIAgentStore                 { return &s.AIAgentStore }
+func (s *Store) AgentActivity() store.AgentActivityStore     { return &s.AgentActivityStore }
 func (s *Store) ChannelOverride() store.ChannelOverrideStore { return &s.ChannelOverrideStore }
 func (s *Store) DesktopTokens() store.DesktopTokensStore     { return &s.DesktopTokensStore }
 func (s *Store) NotifyAdmin() store.NotifyAdminStore         { return &s.NotifyAdminStore }
@@ -269,6 +273,8 @@ func (s *Store) AssertExpectations(t mock.TestingT) bool {
 		&s.ModerationStore,
 		&s.OnTopPostStore,
 		&s.AIConnectionStore,
+		&s.AIAgentStore,
+		&s.AgentActivityStore,
 		&s.ChannelOverrideStore,
 		&s.ScheduledPostStore,
 		&s.AccessControlPolicyStore,

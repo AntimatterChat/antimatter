@@ -22,6 +22,7 @@ type bot struct {
 	Description    string `json:"description"`
 	OwnerId        string `json:"owner_id"`
 	LastIconUpdate int64  `json:"last_icon_update"`
+	Kind           string `json:"kind"`
 	CreateAt       int64  `json:"create_at"`
 	UpdateAt       int64  `json:"update_at"`
 	DeleteAt       int64  `json:"delete_at"`
@@ -33,6 +34,7 @@ func botFromModel(b *model.Bot) *bot {
 		Description:    b.Description,
 		OwnerId:        b.OwnerId,
 		LastIconUpdate: b.LastIconUpdate,
+		Kind:           b.Kind,
 		CreateAt:       b.CreateAt,
 		UpdateAt:       b.UpdateAt,
 		DeleteAt:       b.DeleteAt,
@@ -59,7 +61,7 @@ func newSqlBotStore(sqlStore *SqlStore, metrics einterfaces.MetricsInterface) st
 
 	// note: we are providing field names explicitly here to maintain order of columns (needed when using raw queries)
 	bs.botsQuery = bs.getQueryBuilder().
-		Select("b.UserId", "u.Username", "u.FirstName AS DisplayName", "b.Description", "b.OwnerId", "COALESCE(b.LastIconUpdate, 0) AS LastIconUpdate", "b.CreateAt", "b.UpdateAt", "b.DeleteAt").
+		Select("b.UserId", "u.Username", "u.FirstName AS DisplayName", "b.Description", "b.OwnerId", "COALESCE(b.LastIconUpdate, 0) AS LastIconUpdate", "b.Kind", "b.CreateAt", "b.UpdateAt", "b.DeleteAt").
 		From("Bots b").
 		Join("Users u ON ( u.Id = b.UserId )")
 
@@ -81,6 +83,7 @@ func (us SqlBotStore) Get(botUserId string, includeDeleted bool) (*model.Bot, er
 			b.Description,
 			b.OwnerId,
 			COALESCE(b.LastIconUpdate, 0) AS LastIconUpdate,
+			b.Kind,
 			b.CreateAt,
 			b.UpdateAt,
 			b.DeleteAt
@@ -117,6 +120,10 @@ func (us SqlBotStore) GetAll(options *model.BotGetOptions) ([]*model.Bot, error)
 		conditions = append(conditions, "b.OwnerId = ?")
 		args = append(args, options.OwnerId)
 	}
+	if options.Kind != "" {
+		conditions = append(conditions, "b.Kind = ?")
+		args = append(args, options.Kind)
+	}
 	if options.OnlyOrphaned {
 		additionalJoin = "JOIN Users o ON (o.Id = b.OwnerId)"
 		conditions = append(conditions, "o.DeleteAt != 0")
@@ -134,6 +141,7 @@ func (us SqlBotStore) GetAll(options *model.BotGetOptions) ([]*model.Bot, error)
 			    b.Description,
 			    b.OwnerId,
 			    COALESCE(b.LastIconUpdate, 0) AS LastIconUpdate,
+			    b.Kind,
 			    b.CreateAt,
 			    b.UpdateAt,
 			    b.DeleteAt
@@ -173,9 +181,9 @@ func (us SqlBotStore) Save(bot *model.Bot) (*model.Bot, error) {
 	}
 
 	if _, err := us.GetMaster().NamedExec(`INSERT INTO Bots
-		(UserId, Description, OwnerId, LastIconUpdate, CreateAt, UpdateAt, DeleteAt)
+		(UserId, Description, OwnerId, LastIconUpdate, Kind, CreateAt, UpdateAt, DeleteAt)
 		VALUES
-		(:UserId, :Description, :OwnerId, :LastIconUpdate, :CreateAt, :UpdateAt, :DeleteAt)`, botFromModel(bot)); err != nil {
+		(:UserId, :Description, :OwnerId, :LastIconUpdate, :Kind, :CreateAt, :UpdateAt, :DeleteAt)`, botFromModel(bot)); err != nil {
 		return nil, errors.Wrapf(err, "insert: user_id=%s", bot.UserId)
 	}
 
@@ -220,6 +228,34 @@ func (us SqlBotStore) Update(bot *model.Bot) (*model.Bot, error) {
 	}
 
 	return bot, nil
+}
+
+// SetKind makes a bot a plain bot or an agent (Antimatter). Update never changes the kind.
+func (us SqlBotStore) SetKind(botUserId, kind string) error {
+	if kind != model.BotKindBot && kind != model.BotKindAgent {
+		return store.NewErrInvalidInput("Bot", "Kind", kind)
+	}
+	res, err := us.GetMaster().Exec("UPDATE Bots SET Kind = ?, UpdateAt = ? WHERE UserId = ?", kind, model.GetMillis(), botUserId)
+	if err != nil {
+		return errors.Wrapf(err, "set_kind: user_id=%s", botUserId)
+	}
+	if count, _ := res.RowsAffected(); count == 0 {
+		return store.NewErrNotFound("Bot", botUserId)
+	}
+	return nil
+}
+
+// SetKindForOwner gives every bot of an owner a kind (Antimatter: the Agents plugin's bots become agents), and the
+// IDs of those it changed.
+func (us SqlBotStore) SetKindForOwner(ownerId, kind string) ([]string, error) {
+	if kind != model.BotKindBot && kind != model.BotKindAgent {
+		return nil, store.NewErrInvalidInput("Bot", "Kind", kind)
+	}
+	ids := []string{}
+	if err := us.GetMaster().Select(&ids, "UPDATE Bots SET Kind = ?, UpdateAt = ? WHERE OwnerId = ? AND Kind != ? RETURNING UserId", kind, model.GetMillis(), ownerId, kind); err != nil {
+		return nil, errors.Wrapf(err, "set_kind_for_owner: owner_id=%s", ownerId)
+	}
+	return ids, nil
 }
 
 // PermanentDelete removes the bot from the database altogether.

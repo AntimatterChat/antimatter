@@ -35,6 +35,80 @@ func TestBotStore(t *testing.T, rctx request.CTX, ss store.Store, s SqlStore) {
 	t.Run("Save", func(t *testing.T) { testBotStoreSave(t, rctx, ss) })
 	t.Run("Update", func(t *testing.T) { testBotStoreUpdate(t, rctx, ss) })
 	t.Run("PermanentDelete", func(t *testing.T) { testBotStorePermanentDelete(t, rctx, ss) })
+	t.Run("Kind", func(t *testing.T) { testBotStoreKind(t, rctx, ss) })
+}
+
+// testBotStoreKind: a bot is a plain bot unless made an agent (Antimatter); Update never changes the kind, and the
+// users of agents say so (IsAgent) wherever bots' users are read.
+func testBotStoreKind(t *testing.T, rctx request.CTX, ss store.Store) {
+	plain, _ := makeBotWithUser(t, rctx, ss, &model.Bot{Username: "plain_" + model.NewId()[:8], OwnerId: model.NewId()})
+	defer func() { require.NoError(t, ss.Bot().PermanentDelete(plain.UserId)) }()
+	defer func() { require.NoError(t, ss.User().PermanentDelete(rctx, plain.UserId)) }()
+	pluginOwner := "plugin-" + model.NewId()[:8]
+	agent, _ := makeBotWithUser(t, rctx, ss, &model.Bot{Username: "agent_" + model.NewId()[:8], OwnerId: pluginOwner})
+	defer func() { require.NoError(t, ss.Bot().PermanentDelete(agent.UserId)) }()
+	defer func() { require.NoError(t, ss.User().PermanentDelete(rctx, agent.UserId)) }()
+
+	assert.Equal(t, model.BotKindBot, plain.Kind, "a new bot is a plain bot")
+	got, err := ss.Bot().Get(agent.UserId, false)
+	require.NoError(t, err)
+	assert.Equal(t, model.BotKindBot, got.Kind)
+
+	changed, err := ss.Bot().SetKindForOwner(pluginOwner, model.BotKindAgent)
+	require.NoError(t, err)
+	assert.Equal(t, []string{agent.UserId}, changed)
+	changed, err = ss.Bot().SetKindForOwner(pluginOwner, model.BotKindAgent)
+	require.NoError(t, err)
+	assert.Empty(t, changed, "only the bots it changes")
+
+	got, err = ss.Bot().Get(agent.UserId, false)
+	require.NoError(t, err)
+	assert.Equal(t, model.BotKindAgent, got.Kind)
+	assert.True(t, got.IsAgent())
+
+	got.Description = "still an agent"
+	_, err = ss.Bot().Update(got)
+	require.NoError(t, err)
+	got, err = ss.Bot().Get(agent.UserId, false)
+	require.NoError(t, err)
+	assert.Equal(t, model.BotKindAgent, got.Kind, "Update keeps the kind")
+
+	byName, err := ss.Bot().GetByUsername(got.Username)
+	require.NoError(t, err)
+	assert.Equal(t, model.BotKindAgent, byName.Kind)
+
+	agents, err := ss.Bot().GetAll(&model.BotGetOptions{Kind: model.BotKindAgent, PerPage: 100})
+	require.NoError(t, err)
+	var ids []string
+	for _, b := range agents {
+		ids = append(ids, b.UserId)
+		assert.Equal(t, model.BotKindAgent, b.Kind)
+	}
+	assert.Contains(t, ids, agent.UserId)
+	assert.NotContains(t, ids, plain.UserId)
+
+	user, err := ss.User().Get(rctx, agent.UserId)
+	require.NoError(t, err)
+	assert.True(t, user.IsBot)
+	assert.True(t, user.IsAgent, "the agent's user is an agent")
+	users, err := ss.User().GetMany(rctx, []string{agent.UserId, plain.UserId})
+	require.NoError(t, err)
+	for _, u := range users {
+		assert.Equal(t, u.Id == agent.UserId, u.IsAgent, "GetMany reads the kind too")
+	}
+	plainUser, err := ss.User().Get(rctx, plain.UserId)
+	require.NoError(t, err)
+	assert.True(t, plainUser.IsBot)
+	assert.False(t, plainUser.IsAgent)
+
+	require.NoError(t, ss.Bot().SetKind(agent.UserId, model.BotKindBot))
+	got, err = ss.Bot().Get(agent.UserId, false)
+	require.NoError(t, err)
+	assert.Equal(t, model.BotKindBot, got.Kind)
+
+	assert.Error(t, ss.Bot().SetKind(agent.UserId, "robot"), "only the known kinds")
+	var nfErr *store.ErrNotFound
+	assert.ErrorAs(t, ss.Bot().SetKind(model.NewId(), model.BotKindAgent), &nfErr)
 }
 
 func testBotStoreGet(t *testing.T, rctx request.CTX, ss store.Store, s SqlStore) {

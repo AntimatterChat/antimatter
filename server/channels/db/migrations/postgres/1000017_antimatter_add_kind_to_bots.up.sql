@@ -1,0 +1,1 @@
+ALTER TABLE bots ADD COLUMN IF NOT EXISTS kind varchar(16) NOT NULL DEFAULT 'bot';
