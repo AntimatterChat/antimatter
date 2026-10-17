@@ -48,10 +48,10 @@ func (s *AIFeatureSettings) isValid(feature string) *AppError {
 // auto-translation (when its provider is a connection) and text to speech (when it names a connection, in place of
 // TextToSpeechSettings' URL and key). They no longer go through the AI chat app.
 type AISettings struct {
-	Rewrite         *AIFeatureSettings
-	Recaps          *AIFeatureSettings
-	AutoTranslation *AIFeatureSettings
-	TextToSpeech    *AIFeatureSettings
+	Rewrite         *AIFeatureSettings `access:"integrations_integration_management"`
+	Recaps          *AIFeatureSettings `access:"integrations_integration_management"`
+	AutoTranslation *AIFeatureSettings `access:"integrations_integration_management"`
+	TextToSpeech    *AIFeatureSettings `access:"integrations_integration_management"`
 }
 
 func (s *AISettings) SetDefaults() {
