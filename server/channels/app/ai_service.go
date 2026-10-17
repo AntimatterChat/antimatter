@@ -232,7 +232,9 @@ func (a *App) prepareAICall(rctx request.CTX, call AICall, connectionID, request
 }
 
 // checkAILimits applies a connection's requests per minute (for it and for the person) and its monthly token
-// budgets (for it and for the person).
+// budgets (for it and for the person). The requests per minute are counted on each node, in memory: a cluster of n
+// nodes lets through up to n times the rate. The budgets are counted in the database, for the whole cluster (a few
+// calls running at once may go slightly past them).
 func (a *App) checkAILimits(rctx request.CTX, c *model.AIConnection, userID string) *model.AppError {
 	const where = "checkAILimits"
 	limits := map[string]int{"aiconnection:" + c.Id: c.Limits.RequestsPerMinute}
@@ -265,8 +267,10 @@ func (a *App) checkAILimits(rctx request.CTX, c *model.AIConnection, userID stri
 	return nil
 }
 
-// finishAICall counts a call's usage and writes its audit record: who, the connection, the purpose, the model and
-// the tokens; never what was said.
+// finishAICall counts a call's usage and, for a person's or an app's call, writes its audit record: who, the
+// connection, the purpose, the model and the tokens; never what was said. The server's own features (recaps,
+// rewrite, auto-translation, text to speech) are counted but not audited call by call: auto-translation alone makes
+// one call per message and language; their usage per day and purpose is the record.
 func (a *App) finishAICall(rctx request.CTX, p *aiPreparedCall, usage ai.Usage, callErr error) {
 	if err := a.Srv().Store().AIConnection().AddUsage(rctx, &model.AIUsage{
 		ConnectionId: p.connection.Id,
@@ -278,6 +282,10 @@ func (a *App) finishAICall(rctx request.CTX, p *aiPreparedCall, usage ai.Usage, 
 		OutputTokens: usage.OutputTokens,
 	}); err != nil {
 		rctx.Logger().Warn("Couldn't count the use of a model connection", mlog.String("connection_id", p.connection.Id), mlog.Err(err))
+	}
+
+	if p.call.Purpose != "" {
+		return
 	}
 
 	rec := a.MakeAuditRecord(rctx, model.AuditEventAICall, model.AuditStatusFail)

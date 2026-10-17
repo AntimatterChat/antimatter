@@ -461,3 +461,33 @@ func TestAICommunityConnectionsStayOffInternalAddresses(t *testing.T) {
 	_, appErr = aiChat(th, AICall{UserID: th.BasicUser.Id, ChannelID: th.BasicChannel.Id}, server.Id)
 	require.Nil(t, appErr, "a system admin's may")
 }
+
+// A person's or an app's call is audited, without what was said; the server's own features count their usage but
+// write no record per call.
+func TestAICallAudit(t *testing.T) {
+	th := setupAITest(t)
+	capture := startPluginAuditCapture(t, th)
+	f := newFakeLLM(t, "The secret answer")
+	c := createTestAIConnection(t, th, f, model.AIConnectionScopeServer, nil)
+
+	_, appErr := th.App.AIChat(th.Context, AICall{UserID: th.BasicUser.Id, PluginID: "some.app", ChannelID: th.BasicChannel.Id},
+		ai.ChatRequest{ConnectionID: c.Id, Messages: []ai.Message{{Role: ai.RoleUser, Content: "The secret question"}}, Operation: "summarize_thread"})
+	require.Nil(t, appErr)
+	records := capture.recordsFor(model.AuditEventAICall)
+	require.Len(t, records, 1, "a person's call through an app is audited")
+	data, err := json.Marshal(records[0])
+	require.NoError(t, err)
+	assert.Contains(t, string(data), c.Id)
+	assert.Contains(t, string(data), "plugin:some.app")
+	assert.Contains(t, string(data), th.BasicUser.Id)
+	assert.NotContains(t, string(data), "The secret question", "never what was said")
+	assert.NotContains(t, string(data), "The secret answer")
+	assert.NotContains(t, string(data), aiTestKey)
+
+	_, appErr = aiChat(th, AICall{Purpose: ai.PurposeAutoTranslation}, c.Id)
+	require.Nil(t, appErr)
+	assert.Len(t, capture.recordsFor(model.AuditEventAICall), 1, "an auto-translation call writes no audit record")
+	usage, appErr := th.App.GetAIConnectionUsage(th.Context, c)
+	require.Nil(t, appErr)
+	assert.Equal(t, int64(1), usage.ByPurpose[string(ai.PurposeAutoTranslation)].Requests, "but its usage is counted")
+}
