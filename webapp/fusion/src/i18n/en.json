@@ -24295,6 +24295,14 @@
     "defaultMessage": "Copy link",
     "description": ""
   },
+  "fusion.messageMenu.more": {
+    "defaultMessage": "More actions",
+    "description": "Entry of a message's ⋯ menu opening the submenu with every action that apps add to messages (the AI actions among them)."
+  },
+  "fusion.messageMenu.moreLabel": {
+    "defaultMessage": "More message actions, from apps",
+    "description": "Accessible name (for screen readers) of the submenu holding the actions that apps add to a message."
+  },
   "fusion.messageMenu.moreReactions": {
     "defaultMessage": "More reactions",
     "description": ""
@@ -24313,14 +24321,6 @@
   },
   "fusion.messageMenu.pin": {
     "defaultMessage": "Pin to channel",
-    "description": ""
-  },
-  "fusion.messageMenu.plugins": {
-    "defaultMessage": "Message actions",
-    "description": ""
-  },
-  "fusion.messageMenu.pluginsLabel": {
-    "defaultMessage": "Message actions from integrations",
     "description": ""
   },
   "fusion.messageMenu.reactWith": {

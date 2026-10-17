@@ -20,8 +20,8 @@ describe('fusion/messages/PluginMenuActions', () => {
             <div role='menu'>
                 <PluginMenuActions
                     postId='post1'
-                    label='Apps'
-                    menuLabel='App actions'
+                    label='More actions'
+                    menuLabel='More message actions'
                     run={run}
                 />
             </div>,
@@ -30,11 +30,11 @@ describe('fusion/messages/PluginMenuActions', () => {
         return onDone;
     };
 
-    test('puts the single actions under one flyout, and runs them on the message', async () => {
+    test('puts the single actions under the More actions flyout, and runs them on the message', async () => {
         const remind = action('a1', 'Remind me');
         const onDone = render([remind, action('a2', 'Create a task')]);
-        expect(screen.getByRole('menuitem', {name: 'Apps'})).toBeInTheDocument();
-        const menu = screen.getByRole('menu', {name: 'App actions'});
+        expect(screen.getByRole('menuitem', {name: 'More actions'})).toBeInTheDocument();
+        const menu = screen.getByRole('menu', {name: 'More message actions'});
         expect(within(menu).getAllByRole('menuitem').map((i) => i.textContent)).toEqual(['Remind me', 'Create a task']);
 
         await userEvent.click(within(menu).getByRole('menuitem', {name: 'Remind me'}));
@@ -42,12 +42,28 @@ describe('fusion/messages/PluginMenuActions', () => {
         expect(onDone).toHaveBeenCalled();
     });
 
-    test('gives each submenu its own flyout, the known app\'s icon on it', () => {
+    test('the AI actions are a group inside More actions, not an entry of their own', async () => {
         const summarize = action('s1', 'Summarize');
-        render([action('ai', 'AI actions', {pluginId: 'mattermost-ai', subMenu: [summarize, action('s2', 'Translate')]})]);
-        const menu = screen.getByRole('menu', {name: 'AI actions'});
-        expect(within(menu).getAllByRole('menuitem').map((i) => i.textContent)).toEqual(['Summarize', 'Translate']);
-        expect(screen.queryByRole('menuitem', {name: 'Apps'})).not.toBeInTheDocument();
+        render([
+            action('a1', 'Create a task'),
+            action('ai', 'AI actions', {pluginId: 'mattermost-ai', subMenu: [summarize, action('s2', 'Translate')]}),
+        ]);
+
+        // One flyout only: no "AI actions" entry in the message menu itself.
+        expect(screen.queryByRole('menuitem', {name: 'AI actions'})).not.toBeInTheDocument();
+        expect(screen.queryByRole('menu', {name: 'AI actions'})).not.toBeInTheDocument();
+        const menu = screen.getByRole('menu', {name: 'More message actions'});
+        expect(within(menu).getByText('AI actions')).toBeInTheDocument();
+        expect(within(menu).getAllByRole('menuitem').map((i) => i.textContent)).toEqual(['Create a task', 'Summarize', 'Translate']);
+
+        await userEvent.click(within(menu).getByRole('menuitem', {name: 'Summarize'}));
+        expect(summarize.action).toHaveBeenCalledWith('post1');
+    });
+
+    test('shows More actions for a submenu alone', () => {
+        render([action('ai', 'AI actions', {pluginId: 'mattermost-ai', subMenu: [action('s1', 'Summarize')]})]);
+        expect(screen.getByRole('menuitem', {name: 'More actions'})).toBeInTheDocument();
+        expect(within(screen.getByRole('menu', {name: 'More message actions'})).getAllByRole('menuitem').map((i) => i.textContent)).toEqual(['Summarize']);
     });
 
     test('leaves out actions whose filter refuses the message, and empty submenus', () => {
@@ -56,5 +72,6 @@ describe('fusion/messages/PluginMenuActions', () => {
             action('g', 'Group', {subMenu: [action('s', 'Never', {filter: () => false})]}),
         ]);
         expect(screen.queryAllByRole('menuitem')).toHaveLength(0);
+        expect(screen.queryByText('Group')).not.toBeInTheDocument();
     });
 });

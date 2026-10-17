@@ -400,8 +400,8 @@ export default function MessageMenu({post, anchor, inThread, onClose, onMoreReac
             />
             <PluginMenuActions
                 postId={post.id}
-                label={formatMessage({id: 'fusion.messageMenu.plugins', defaultMessage: 'Message actions'})}
-                menuLabel={formatMessage({id: 'fusion.messageMenu.pluginsLabel', defaultMessage: 'Message actions from integrations'})}
+                label={formatMessage({id: 'fusion.messageMenu.more', defaultMessage: 'More actions'})}
+                menuLabel={formatMessage({id: 'fusion.messageMenu.moreLabel', defaultMessage: 'More message actions, from apps'})}
                 run={run}
             />
             {(canEdit || canDelete || (canReport && post.user_id !== me)) && <MenuSeparator/>}
