@@ -17,7 +17,7 @@ const (
 )
 
 var (
-	errAgentsUnavailable = errors.New("the Agents plugin bridge is not available")
+	ErrAgentsUnavailable = errors.New("the Agents plugin bridge is not available")
 	errNoProvider        = errors.New("no translation provider is configured")
 )
 
@@ -45,7 +45,7 @@ type provider interface {
 
 // newProvider builds the provider selected in the configuration. It returns
 // errNoProvider when the configuration does not name a usable provider.
-func newProvider(h host, cfg *model.Config) (provider, error) {
+func newProvider(h Host, cfg *model.Config) (provider, error) {
 	settings := cfg.AutoTranslationSettings
 	timeout := providerTimeout(cfg)
 	switch model.SafeDereference(settings.Provider) {

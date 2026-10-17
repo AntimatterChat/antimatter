@@ -12,7 +12,6 @@ import (
 
 	"github.com/mattermost/mattermost/server/public/model"
 	"github.com/mattermost/mattermost/server/public/shared/mlog"
-	"github.com/mattermost/mattermost/server/v8/channels/app"
 	"github.com/mattermost/mattermost/server/v8/channels/jobs"
 	"github.com/mattermost/mattermost/server/v8/channels/store"
 	"github.com/mattermost/mattermost/server/v8/channels/store/storetest/mocks"
@@ -29,8 +28,8 @@ type fakeHost struct {
 	logger mlog.LoggerIFace
 
 	agentsAvailable bool
-	agentsReply     func(serviceID string, req app.BridgeCompletionRequest) (string, error)
-	agentsRequests  []app.BridgeCompletionRequest
+	agentsReply     func(serviceID string, req CompletionRequest) (string, error)
+	agentsRequests  []CompletionRequest
 }
 
 func newTestConfig(providerName, url string) *model.Config {
@@ -92,7 +91,7 @@ func (h *fakeHost) AgentsBridgeStatus() (bool, string) {
 	return false, "app.agents.bridge.not_available.plugin_not_active"
 }
 
-func (h *fakeHost) AgentsServiceCompletion(serviceID string, req app.BridgeCompletionRequest) (string, error) {
+func (h *fakeHost) AgentsServiceCompletion(serviceID string, req CompletionRequest) (string, error) {
 	h.mu.Lock()
 	h.agentsRequests = append(h.agentsRequests, req)
 	h.mu.Unlock()

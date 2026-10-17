@@ -8,18 +8,16 @@ import (
 	"encoding/json"
 	"fmt"
 	"strings"
-
-	"github.com/mattermost/mattermost/server/v8/channels/app"
 )
 
 // agentsProvider translates through an LLM service configured in the Agents
 // plugin, reached over the plugin bridge.
 type agentsProvider struct {
-	h         host
+	h         Host
 	serviceID string
 }
 
-func newAgentsProvider(h host, serviceID string) *agentsProvider {
+func newAgentsProvider(h Host, serviceID string) *agentsProvider {
 	return &agentsProvider{h: h, serviceID: serviceID}
 }
 
@@ -70,12 +68,12 @@ var agentsDetectSchema = map[string]any{
 
 // complete runs a bridge completion and honors ctx cancellation; the bridge
 // call itself cannot be interrupted, so a timed-out call is abandoned.
-func (p *agentsProvider) complete(ctx context.Context, req app.BridgeCompletionRequest) (string, error) {
+func (p *agentsProvider) complete(ctx context.Context, req CompletionRequest) (string, error) {
 	if ok, reason := p.h.AgentsBridgeStatus(); !ok {
 		if reason != "" {
-			return "", fmt.Errorf("%w: %s", errAgentsUnavailable, reason)
+			return "", fmt.Errorf("%w: %s", ErrAgentsUnavailable, reason)
 		}
-		return "", errAgentsUnavailable
+		return "", ErrAgentsUnavailable
 	}
 
 	type result struct {
@@ -125,10 +123,8 @@ func (p *agentsProvider) Translate(ctx context.Context, texts []string, src, dst
 		return nil, err
 	}
 
-	completion, err := p.complete(ctx, app.BridgeCompletionRequest{
-		Operation:       app.BridgeOperationAutoTranslate,
-		ClientOperation: string(app.BridgeOperationAutoTranslate),
-		Messages: []app.BridgeMessage{
+	completion, err := p.complete(ctx, CompletionRequest{
+		Messages: []CompletionMessage{
 			{Role: "system", Message: agentsTranslateSystemPrompt},
 			{Role: "user", Message: string(input)},
 		},
@@ -159,10 +155,8 @@ func (p *agentsProvider) Translate(ctx context.Context, texts []string, src, dst
 }
 
 func (p *agentsProvider) Detect(ctx context.Context, text string) (string, *float64, error) {
-	completion, err := p.complete(ctx, app.BridgeCompletionRequest{
-		Operation:       app.BridgeOperationAutoTranslate,
-		ClientOperation: string(app.BridgeOperationAutoTranslate),
-		Messages: []app.BridgeMessage{
+	completion, err := p.complete(ctx, CompletionRequest{
+		Messages: []CompletionMessage{
 			{Role: "system", Message: agentsDetectSystemPrompt},
 			{Role: "user", Message: text},
 		},

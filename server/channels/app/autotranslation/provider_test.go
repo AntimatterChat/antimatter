@@ -16,8 +16,6 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-
-	"github.com/mattermost/mattermost/server/v8/channels/app"
 )
 
 // fakeLibreTranslate emulates the parts of the LibreTranslate API used here.
@@ -208,9 +206,8 @@ func TestAgentsProvider(t *testing.T) {
 	ctx := context.Background()
 
 	t.Run("translate", func(t *testing.T) {
-		h.agentsReply = func(serviceID string, req app.BridgeCompletionRequest) (string, error) {
+		h.agentsReply = func(serviceID string, req CompletionRequest) (string, error) {
 			assert.Equal(t, "openai", serviceID)
-			assert.Equal(t, app.BridgeOperationAutoTranslate, req.Operation)
 			require.Len(t, req.Messages, 2)
 			var input struct {
 				Target string   `json:"target_language"`
@@ -232,7 +229,7 @@ func TestAgentsProvider(t *testing.T) {
 	})
 
 	t.Run("wrong number of translations", func(t *testing.T) {
-		h.agentsReply = func(string, app.BridgeCompletionRequest) (string, error) {
+		h.agentsReply = func(string, CompletionRequest) (string, error) {
 			return `{"translations":[],"source_language":"en","confidence":1}`, nil
 		}
 		_, err := p.Translate(ctx, []string{"Hello"}, "", "es")
@@ -240,7 +237,7 @@ func TestAgentsProvider(t *testing.T) {
 	})
 
 	t.Run("detect", func(t *testing.T) {
-		h.agentsReply = func(string, app.BridgeCompletionRequest) (string, error) {
+		h.agentsReply = func(string, CompletionRequest) (string, error) {
 			return `{"language":"fr","confidence":0.9}`, nil
 		}
 		lang, conf, err := p.Detect(ctx, "Bonjour")
@@ -253,6 +250,6 @@ func TestAgentsProvider(t *testing.T) {
 		h.agentsAvailable = false
 		defer func() { h.agentsAvailable = true }()
 		_, err := p.Translate(ctx, []string{"Hello"}, "", "es")
-		require.ErrorIs(t, err, errAgentsUnavailable)
+		require.ErrorIs(t, err, ErrAgentsUnavailable)
 	})
 }

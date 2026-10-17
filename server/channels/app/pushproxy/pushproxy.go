@@ -23,7 +23,6 @@ import (
 	"github.com/mattermost/mattermost/server/public/model"
 	"github.com/mattermost/mattermost/server/public/shared/mlog"
 	"github.com/mattermost/mattermost/server/public/shared/request"
-	"github.com/mattermost/mattermost/server/v8/channels/app"
 	"github.com/mattermost/mattermost/server/v8/channels/jobs"
 	"github.com/mattermost/mattermost/server/v8/channels/store"
 	"github.com/mattermost/mattermost/server/v8/einterfaces"
@@ -33,16 +32,6 @@ import (
 // cacheTTL bounds how long a token read from the database is reused before
 // being read again (it may be changed by another cluster node).
 const cacheTTL = 5 * time.Minute
-
-func init() {
-	app.RegisterPushProxyInterface(func(a *app.App) einterfaces.PushProxyInterface {
-		return New(
-			func() store.SystemStore { return a.Srv().Store().System() },
-			func() mlog.LoggerIFace { return a.Log() },
-			func() *jobs.JobServer { return a.Srv().Jobs },
-		)
-	})
-}
 
 // tokenCache is shared by every instance: the server creates one instance for
 // the push notification path and another one for the job worker.

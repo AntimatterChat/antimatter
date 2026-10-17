@@ -23,20 +23,13 @@ import (
 
 	"github.com/mattermost/mattermost/server/public/model"
 	"github.com/mattermost/mattermost/server/public/shared/mlog"
-	"github.com/mattermost/mattermost/server/v8/channels/app"
 	"github.com/mattermost/mattermost/server/v8/channels/store"
 	"github.com/mattermost/mattermost/server/v8/einterfaces"
 )
 
-func init() {
-	app.RegisterAutoTranslationInterface(func(s *app.Server) einterfaces.AutoTranslationInterface {
-		return New(newServerHost(s))
-	})
-}
-
 // Service implements einterfaces.AutoTranslationInterface.
 type Service struct {
-	h    host
+	h    Host
 	pool *workerPool
 
 	provMu  sync.Mutex
@@ -51,7 +44,7 @@ type Service struct {
 var _ einterfaces.AutoTranslationInterface = (*Service)(nil)
 
 // New creates the auto-translation service. Workers start with Start.
-func New(h host) *Service {
+func New(h Host) *Service {
 	s := &Service{h: h}
 	s.pool = newWorkerPool(s.processTask, func(depth int) {
 		if m := s.h.Metrics(); m != nil {

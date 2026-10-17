@@ -1401,10 +1401,8 @@ func (s *Server) initJobs() {
 	accessControlTeamSync := accesscontrol.NewSyncJob(s.accessControlSyncJobDeps(), true)
 	s.Jobs.RegisterJobType(model.JobTypeAccessControlTeamSync, accessControlTeamSync.MakeWorker(), accessControlTeamSync.MakeScheduler())
 
-	if pushProxyInterface != nil {
-		builder := pushProxyInterface(New(ServerConnector(s.Channels())))
-		s.Jobs.RegisterJobType(model.JobTypePushProxyAuth, builder.MakeWorker(), builder.MakeScheduler())
-	}
+	pushProxyJob := newPushProxy(New(ServerConnector(s.Channels())))
+	s.Jobs.RegisterJobType(model.JobTypePushProxyAuth, pushProxyJob.MakeWorker(), pushProxyJob.MakeScheduler())
 
 	if s.AutoTranslation != nil {
 		s.Jobs.RegisterJobType(model.JobTypeAutoTranslationRecovery,

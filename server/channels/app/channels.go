@@ -177,41 +177,39 @@ func NewChannels(s *Server) (*Channels, error) {
 	intuneApp := New(ServerConnector(ch))
 	ch.Intune = intune.New(intuneApp, func() *http.Client { return intuneApp.HTTPService().MakeClient(false) })
 
-	if pushProxyInterface != nil {
-		app := New(ServerConnector(ch))
-		s.PushProxy = pushProxyInterface(app)
+	pushProxyApp := New(ServerConnector(ch))
+	s.PushProxy = newPushProxy(pushProxyApp)
 
-		// Add config listener to regenerate token when push proxy URL changes
-		app.AddConfigListener(func(oldCfg, newCfg *model.Config) {
-			// Only cluster leader should regenerate to avoid duplicate requests
-			if !app.IsLeader() {
-				return
-			}
+	// Add config listener to regenerate token when push proxy URL changes
+	pushProxyApp.AddConfigListener(func(oldCfg, newCfg *model.Config) {
+		// Only cluster leader should regenerate to avoid duplicate requests
+		if !pushProxyApp.IsLeader() {
+			return
+		}
 
-			oldURL := model.SafeDereference(oldCfg.EmailSettings.PushNotificationServer)
-			newURL := model.SafeDereference(newCfg.EmailSettings.PushNotificationServer)
+		oldURL := model.SafeDereference(oldCfg.EmailSettings.PushNotificationServer)
+		newURL := model.SafeDereference(newCfg.EmailSettings.PushNotificationServer)
 
-			// If push proxy URL changed
-			if oldURL != newURL {
-				if newURL != "" {
-					// URL changed to a new value, regenerate token
-					s.Log().Info("Push notification server URL changed, regenerating auth token",
-						mlog.String("old_url", oldURL),
-						mlog.String("new_url", newURL))
+		// If push proxy URL changed
+		if oldURL != newURL {
+			if newURL != "" {
+				// URL changed to a new value, regenerate token
+				s.Log().Info("Push notification server URL changed, regenerating auth token",
+					mlog.String("old_url", oldURL),
+					mlog.String("new_url", newURL))
 
-					if err := s.PushProxy.GenerateAuthToken(); err != nil {
-						s.Log().Error("Failed to regenerate auth token after config change", mlog.Err(err))
-					}
-				} else if oldURL != "" {
-					// URL was cleared, delete the old token
-					s.Log().Info("Push notification server URL cleared, removing auth token")
-					if err := s.PushProxy.DeleteAuthToken(); err != nil {
-						s.Log().Error("Failed to delete auth token after URL cleared", mlog.Err(err))
-					}
+				if err := s.PushProxy.GenerateAuthToken(); err != nil {
+					s.Log().Error("Failed to regenerate auth token after config change", mlog.Err(err))
+				}
+			} else if oldURL != "" {
+				// URL was cleared, delete the old token
+				s.Log().Info("Push notification server URL cleared, removing auth token")
+				if err := s.PushProxy.DeleteAuthToken(); err != nil {
+					s.Log().Error("Failed to delete auth token after URL cleared", mlog.Err(err))
 				}
 			}
-		})
-	}
+		}
+	})
 
 	accessControlApp := New(ServerConnector(ch))
 	ch.AccessControl = accesscontrol.New(accesscontrol.Backend{

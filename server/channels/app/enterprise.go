@@ -4,6 +4,7 @@
 package app
 
 import (
+	"github.com/mattermost/mattermost/server/v8/channels/app/autotranslation"
 	"github.com/mattermost/mattermost/server/v8/einterfaces"
 )
 
@@ -19,23 +20,9 @@ func RegisterNotificationInterface(f func(*App) einterfaces.NotificationInterfac
 	notificationInterface = f
 }
 
-var pushProxyInterface func(*App) einterfaces.PushProxyInterface
-
-func RegisterPushProxyInterface(f func(*App) einterfaces.PushProxyInterface) {
-	pushProxyInterface = f
-}
-
-var autoTranslationInterface func(*Server) einterfaces.AutoTranslationInterface
-
-func RegisterAutoTranslationInterface(f func(*Server) einterfaces.AutoTranslationInterface) {
-	autoTranslationInterface = f
-}
-
 func (s *Server) initEnterprise() {
 	if cloudInterface != nil {
 		s.Cloud = cloudInterface(s)
 	}
-	if autoTranslationInterface != nil {
-		s.AutoTranslation = autoTranslationInterface(s)
-	}
+	s.AutoTranslation = autotranslation.New(newAutoTranslationHost(s))
 }
