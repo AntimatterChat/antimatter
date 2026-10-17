@@ -107,7 +107,9 @@ export function SchedulePopover({anchor, onSchedule, onClose}: Props) {
     return (
         <Popover
             anchor={anchor}
-            placement='above'
+
+            // Above the send button, ending where it ends, rather than running on past the composer's right edge.
+            placement='above-end'
             className='plus-pop sched-pop'
             role='menu'
             label={formatMessage({id: 'fusion.schedule.label', defaultMessage: 'Schedule message'})}
