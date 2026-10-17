@@ -2047,11 +2047,12 @@ func TestAuthorizeOAuthUser_InvalidToken(t *testing.T) {
 	})
 }
 
-// TestLoginByIntune_InterfaceNotAvailable tests that LoginByIntune returns proper error when enterprise not compiled
+// TestLoginByIntune_InterfaceNotAvailable tests that LoginByIntune returns proper error without an Intune service
 func TestLoginByIntune_InterfaceNotAvailable(t *testing.T) {
 	th := Setup(t).InitBasic(t)
 
-	// Intune interface should be nil in non-enterprise setup
+	// Without an Intune service (the server builds one).
+	th.App.Srv().Channels().Intune = nil
 	require.Nil(t, th.App.Intune())
 
 	// Attempt login

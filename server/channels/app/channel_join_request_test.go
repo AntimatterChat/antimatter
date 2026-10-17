@@ -349,7 +349,7 @@ func TestFilterDiscoverableChannelsByPolicy_PolicyEnforcedFailSecure(t *testing.
 	channel := markDiscoverableInMemory(t, th.CreatePrivateChannel(t, th.BasicTeam))
 	channel.PolicyEnforced = true
 
-	require.Nil(t, th.App.Srv().Channels().AccessControl, "test fixture must not have ABAC wired")
+	th.App.Srv().Channels().AccessControl = nil
 
 	out, appErr := th.App.FilterDiscoverableChannelsByPolicy(th.Context, []*model.Channel{channel}, th.BasicUser2.Id)
 	require.Nil(t, appErr)

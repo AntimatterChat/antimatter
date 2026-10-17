@@ -8512,6 +8512,8 @@ func TestGetChannelMembersWithTeamData(t *testing.T) {
 func TestMigrateAuthToLDAP(t *testing.T) {
 	mainHelper.Parallel(t)
 	th := Setup(t).InitBasic(t)
+	// Without an implementation (Antimatter's is tested in its own package).
+	th.App.Srv().Channels().AccountMigration = nil
 
 	resp, err := th.Client.MigrateAuthToLdap(context.Background(), "email", "a", false)
 	require.Error(t, err)
@@ -8527,6 +8529,8 @@ func TestMigrateAuthToLDAP(t *testing.T) {
 func TestMigrateAuthToSAML(t *testing.T) {
 	mainHelper.Parallel(t)
 	th := Setup(t).InitBasic(t)
+	// Without an implementation (Antimatter's is tested in its own package).
+	th.App.Srv().Channels().AccountMigration = nil
 
 	resp, err := th.Client.MigrateAuthToSaml(context.Background(), "email", map[string]string{"1": "a"}, true)
 	require.Error(t, err)

@@ -1112,6 +1112,8 @@ func TestAbacFilesBroadcastHook_Process(t *testing.T) {
 func TestSetupBroadcastHookForAbacFiles(t *testing.T) {
 	mainHelper.Parallel(t)
 	th := Setup(t).InitBasic(t)
+	// These cover the path without an access control service (the server builds one).
+	th.App.Srv().Channels().AccessControl = nil
 
 	t.Run("when ABAC is disabled: hook NOT registered", func(t *testing.T) {
 		th.App.UpdateConfig(func(cfg *model.Config) {
@@ -1452,6 +1454,8 @@ func TestAbacBookmarksBroadcastHook_Process(t *testing.T) {
 func TestSetupBroadcastHookForAbacBookmarks(t *testing.T) {
 	mainHelper.Parallel(t)
 	th := Setup(t).InitBasic(t)
+	// These cover the path without an access control service (the server builds one).
+	th.App.Srv().Channels().AccessControl = nil
 
 	bookmarkWithFile := &model.ChannelBookmarkWithFileInfo{
 		ChannelBookmark: &model.ChannelBookmark{

@@ -331,7 +331,7 @@ func TestEvaluatePluginAccessRequestStoreError(t *testing.T) {
 
 	// No AccessControl service here, so pluginAccessControlAvailable() is false
 	// and the fallback read runs.
-	require.Nil(t, th.App.Srv().ch.AccessControl)
+	th.App.Srv().ch.AccessControl = nil
 
 	// Programming errors return before the fallback read.
 	_, appErr := th.App.EvaluatePluginAccessRequest(th.Context, testAgentsPluginID, model.NewId(), testAgentResourceType, "short", testAgentAction)

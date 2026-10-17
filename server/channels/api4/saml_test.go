@@ -18,6 +18,8 @@ import (
 func TestGetSamlMetadata(t *testing.T) {
 	mainHelper.Parallel(t)
 	th := Setup(t)
+	// Without an implementation (Antimatter's is tested in its own package).
+	th.App.Srv().Channels().Saml = nil
 	client := th.Client
 
 	_, resp, err := client.GetSamlMetadata(context.Background())

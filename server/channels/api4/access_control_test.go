@@ -67,6 +67,7 @@ func TestCreateAccessControlPolicy(t *testing.T) {
 	}
 
 	t.Run("CreateAccessControlPolicy without access control service", func(t *testing.T) {
+		th.App.Srv().Channels().AccessControl = nil
 		_, resp, err := th.SystemAdminClient.CreateAccessControlPolicy(context.Background(), samplePolicy)
 		require.Error(t, err)
 		CheckNotImplementedStatus(t, resp)
@@ -803,6 +804,7 @@ func TestGetAccessControlPolicy(t *testing.T) {
 	}
 
 	t.Run("GetAccessControlPolicy without access control service", func(t *testing.T) {
+		th.App.Srv().Channels().AccessControl = nil
 		_, resp, err := th.SystemAdminClient.GetAccessControlPolicy(context.Background(), samplePolicy.ID)
 		require.Error(t, err)
 		CheckNotImplementedStatus(t, resp)
@@ -908,6 +910,7 @@ func TestDeleteAccessControlPolicy(t *testing.T) {
 	samplePolicyID := model.NewId()
 
 	t.Run("DeleteAccessControlPolicy without access control service", func(t *testing.T) {
+		th.App.Srv().Channels().AccessControl = nil
 		resp, err := th.SystemAdminClient.DeleteAccessControlPolicy(context.Background(), samplePolicyID)
 		require.Error(t, err)
 		CheckNotImplementedStatus(t, resp)
@@ -1006,6 +1009,7 @@ func TestCheckExpression(t *testing.T) {
 	th := SetupConfig(t, maskingOffTestConfig).InitBasic(t)
 
 	t.Run("CheckExpression without access control service", func(t *testing.T) {
+		th.App.Srv().Channels().AccessControl = nil
 		_, resp, err := th.SystemAdminClient.CheckExpression(context.Background(), "true")
 		require.Error(t, err)
 		CheckNotImplementedStatus(t, resp)
@@ -1129,6 +1133,7 @@ func TestTestExpression(t *testing.T) {
 	th := SetupConfig(t, maskingOffTestConfig).InitBasic(t)
 
 	t.Run("TestExpression without access control service", func(t *testing.T) {
+		th.App.Srv().Channels().AccessControl = nil
 		_, resp, err := th.SystemAdminClient.TestExpression(context.Background(), model.QueryExpressionParams{})
 		require.Error(t, err)
 		CheckNotImplementedStatus(t, resp)
@@ -1170,6 +1175,7 @@ func TestSearchAccessControlPolicies(t *testing.T) {
 	th := SetupConfig(t, maskingOffTestConfig).InitBasic(t)
 
 	t.Run("SearchAccessControlPolicies without access control service", func(t *testing.T) {
+		th.App.Srv().Channels().AccessControl = nil
 		_, resp, err := th.SystemAdminClient.SearchAccessControlPolicies(context.Background(), model.AccessControlPolicySearch{})
 		require.Error(t, err)
 		CheckNotImplementedStatus(t, resp)
@@ -1338,6 +1344,7 @@ func TestAssignAccessPolicy(t *testing.T) {
 	}
 
 	t.Run("AssignAccessPolicy without access control service", func(t *testing.T) {
+		th.App.Srv().Channels().AccessControl = nil
 		resp, err := th.SystemAdminClient.AssignAccessControlPolicies(context.Background(), model.NewId(), []string{model.NewId()})
 		require.Error(t, err)
 		CheckNotImplementedStatus(t, resp)
@@ -1409,6 +1416,7 @@ func TestUnassignAccessPolicy(t *testing.T) {
 	}
 
 	t.Run("UnassignAccessPolicy without access control service", func(t *testing.T) {
+		th.App.Srv().Channels().AccessControl = nil
 		resp, err := th.SystemAdminClient.UnassignAccessControlPolicies(context.Background(), samplePolicy.ID, []string{model.NewId()})
 		require.Error(t, err)
 		CheckNotImplementedStatus(t, resp)
@@ -1476,6 +1484,7 @@ func TestGetChannelsForAccessControlPolicy(t *testing.T) {
 	}
 
 	t.Run("GetChannelsForAccessControlPolicy without access control service", func(t *testing.T) {
+		th.App.Srv().Channels().AccessControl = nil
 		_, resp, err := th.SystemAdminClient.GetChannelsForAccessControlPolicy(context.Background(), samplePolicy.ID, "", 1000)
 		require.Error(t, err)
 		CheckNotImplementedStatus(t, resp)
@@ -1749,6 +1758,7 @@ func TestSetActiveStatus(t *testing.T) {
 	}
 
 	t.Run("SetActiveStatus without access control service", func(t *testing.T) {
+		th.App.Srv().Channels().AccessControl = nil
 		_, resp, err := th.SystemAdminClient.SetAccessControlPolicyActive(context.Background(), updateReq)
 		require.Error(t, err)
 		CheckNotImplementedStatus(t, resp)

@@ -20,6 +20,8 @@ import (
 func TestDataRetentionGetPolicy(t *testing.T) {
 	mainHelper.Parallel(t)
 	th := Setup(t)
+	// Without an implementation (Antimatter's is tested in its own package).
+	th.App.Srv().Channels().DataRetention = nil
 
 	_, resp, err := th.Client.GetDataRetentionPolicy(context.Background())
 	require.Error(t, err)

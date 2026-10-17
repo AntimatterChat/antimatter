@@ -833,6 +833,8 @@ func TestSearchAccessControlPolicies(t *testing.T) {
 	th := Setup(t).InitBasic(t)
 
 	t.Run("Feature not enabled", func(t *testing.T) {
+		// Without an access control service (the server builds one).
+		th.App.Srv().ch.AccessControl = nil
 		policies, total, err := th.App.SearchAccessControlPolicies(th.Context, model.AccessControlPolicySearch{})
 		require.NotNil(t, err)
 		require.Empty(t, policies)

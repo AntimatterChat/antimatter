@@ -147,6 +147,8 @@ func TestSyncLdap(t *testing.T) {
 func TestGetLdapGroups(t *testing.T) {
 	mainHelper.Parallel(t)
 	th := Setup(t)
+	// Without an implementation (Antimatter's is tested in its own package).
+	th.App.Srv().Channels().Ldap = nil
 
 	_, resp, err := th.Client.GetLdapGroups(context.Background())
 	require.Error(t, err)
@@ -164,6 +166,8 @@ func TestLinkLdapGroup(t *testing.T) {
 	const entryUUID string = "foo"
 
 	th := Setup(t)
+	// Without an implementation (Antimatter's is tested in its own package).
+	th.App.Srv().Channels().Ldap = nil
 
 	_, resp, err := th.Client.LinkLdapGroup(context.Background(), entryUUID)
 	require.Error(t, err)
@@ -207,6 +211,8 @@ func TestUnlinkLdapGroup(t *testing.T) {
 func TestMigrateIdLdap(t *testing.T) {
 	mainHelper.Parallel(t)
 	th := Setup(t)
+	// Without an implementation (Antimatter's is tested in its own package).
+	th.App.Srv().Channels().Ldap = nil
 
 	resp, err := th.Client.MigrateIdLdap(context.Background(), "objectGUID")
 	require.Error(t, err)
