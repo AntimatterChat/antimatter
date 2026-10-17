@@ -220,7 +220,16 @@ func TestCommunityRulesAPI(t *testing.T) {
 		assert.Equal(t, team.Id, event.GetData()["team_id"])
 		assert.Equal(t, team.Id, event.GetBroadcast().TeamId, "the community's members only")
 
-		_, _, err := client.AcceptCommunityRules(ctx, team.Id, rules.Version)
+		// Clients without a screen for the rules are told, where the message was refused, how to agree.
+		_, _, err := client.CreatePost(ctx, &model.Post{ChannelId: th.BasicChannel.Id, Message: "hello"})
+		CheckErrorID(t, err, rulesNotAcceptedID)
+		event = waitFor(model.WebsocketEventEphemeralMessage)
+		reminder, ok := event.GetData()["post"].(string)
+		require.True(t, ok)
+		assert.Contains(t, reminder, "/rules agree")
+		assert.Contains(t, reminder, th.BasicChannel.Id)
+
+		_, _, err = client.AcceptCommunityRules(ctx, team.Id, rules.Version)
 		require.NoError(t, err)
 		event = waitFor(model.WebsocketEventCommunityRulesAccepted)
 		assert.Equal(t, team.Id, event.GetData()["team_id"])

@@ -2166,6 +2166,46 @@
     "description": "Ephemeral error for the /remove or /kick slash command; {{.Username}} is the target @username that is not a channel member."
   },
   {
+    "id": "api.command_rules.agree_hint",
+    "translation": "Type `/rules agree` to agree to them, then you can post.",
+    "description": "Ends the /rules command's answer when the person must still agree to the community's rules. Keep `/rules agree` as is: it's the command to type."
+  },
+  {
+    "id": "api.command_rules.agreed",
+    "translation": "Thanks: you agreed to the rules of {{.Community}}. You can post there now.",
+    "description": "Answer to /rules agree. {{.Community}} is the community's name."
+  },
+  {
+    "id": "api.command_rules.already_agreed",
+    "translation": "You agreed to these rules.",
+    "description": "Ends the /rules command's answer when the person already agreed to the community's current rules."
+  },
+  {
+    "id": "api.command_rules.desc",
+    "translation": "Read this community's rules, or agree to them",
+    "description": "Description of the /rules slash command in the command autocomplete."
+  },
+  {
+    "id": "api.command_rules.hint",
+    "translation": "[agree]",
+    "description": "Hint of the /rules slash command's argument in the autocomplete. Keep 'agree' as is: it's the word to type."
+  },
+  {
+    "id": "api.command_rules.name",
+    "translation": "rules",
+    "description": "Name of the /rules slash command. Keep it as is: it's the command to type."
+  },
+  {
+    "id": "api.command_rules.none",
+    "translation": "This community has no rules to agree to.",
+    "description": "Answer to /rules when the community has no rules, or they are turned off."
+  },
+  {
+    "id": "api.command_rules.title",
+    "translation": "**Rules of {{.Community}}**",
+    "description": "Heading of the /rules command's answer, above the community's rules. {{.Community}} is the community's name; the asterisks make it bold (Markdown)."
+  },
+  {
     "id": "api.command_search.desc",
     "translation": "Search text in messages",
     "description": "Autocomplete description for the /search slash command, which searches message text."
@@ -3690,6 +3730,11 @@
     "id": "api.post.community_rules_not_accepted",
     "translation": "Agree to this community's rules before you post in it.",
     "description": "Error when someone who hasn't agreed to a community's rules (or to their new version) tries to post, edit, schedule a message or run a command that posts in one of its channels. 'Community' is a group of channels (a team)."
+  },
+  {
+    "id": "api.post.community_rules_not_accepted.reminder",
+    "translation": "This community asks everyone to agree to its rules before they post. Type `/rules` to read them, then `/rules agree` to agree.",
+    "description": "Message only the person sees, in the channel, when their message was refused because they haven't agreed to the community's rules. Keep `/rules` and `/rules agree` as they are: they're the commands to type."
   },
   {
     "id": "api.post.create_post.burn_on_read.abac_denied.app_error",

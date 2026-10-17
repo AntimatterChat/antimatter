@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/mattermost/mattermost/server/public/model"
+	"github.com/mattermost/mattermost/server/public/shared/i18n"
 	"github.com/mattermost/mattermost/server/public/shared/mlog"
 	"github.com/mattermost/mattermost/server/public/shared/request"
 	"github.com/mattermost/mattermost/server/v8/channels/store"
@@ -219,6 +220,22 @@ func (a *App) CheckCommunityRulesForUserInChannel(rctx request.CTX, userID, chan
 		return nil
 	}
 	return a.CheckCommunityRulesForUser(rctx, userID, channel)
+}
+
+// SendCommunityRulesReminder tells someone, where they tried to post, how to read and agree to the community's rules
+// (/rules, then /rules agree): the clients without a screen for them (the classic web app, the mobile app) only show
+// the message as failed.
+func (a *App) SendCommunityRulesReminder(rctx request.CTX, userID, channelID, rootID string) {
+	user, appErr := a.GetUser(rctx, userID)
+	if appErr != nil {
+		return
+	}
+	T := i18n.GetUserTranslations(user.Locale)
+	a.SendEphemeralPost(rctx, userID, &model.Post{
+		ChannelId: channelID,
+		RootId:    rootID,
+		Message:   T("api.post.community_rules_not_accepted.reminder"),
+	})
 }
 
 // invalidateCommunityRules forgets a team's cached rules here and on the other nodes, and reloads them from the
