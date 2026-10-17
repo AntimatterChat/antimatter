@@ -44,9 +44,8 @@ export default function ChannelRow({channelId, collapsed}: Props) {
     const muted = useSelector((state: GlobalState) => isChannelMuted(getMyChannelMembership(state, channelId)));
     const hideMuted = useSelector((state: GlobalState) => Boolean(team && isHidingMutedChannels(state, team.id)));
 
-    // A message left half-written: a pencil for the channel's glyph, once you're elsewhere (in the channel, it's in
-    // the composer).
-    const draft = useSelector((state: GlobalState) => !active && hasChannelDraft(state, channelId));
+    // A message left half-written: a pencil for the channel's glyph, in the channel too (it tells the draft is kept).
+    const draft = useSelector((state: GlobalState) => hasChannelDraft(state, channelId));
     const menuButton = useRef<HTMLButtonElement>(null);
     const [menu, setMenu] = useState<{x: number; y: number} | 'button' | null>(null);
 

@@ -53,12 +53,18 @@ describe('fusion/sidebar/DirectRow', () => {
         expect(container.querySelector('.am-dm-count')).not.toBeInTheDocument();
     });
 
-    test('marks a conversation with a draft waiting, until it is open again', () => {
+    test('marks a conversation with a draft waiting, open or not', () => {
         render({draft: 'see you at'});
         expect(screen.getByRole('img', {name: 'Draft waiting'})).toHaveAttribute('data-am-tip', 'Draft waiting');
 
         render({draft: 'see you at', current: 'dm'});
-        expect(screen.getAllByRole('img', {name: 'Draft waiting'})).toHaveLength(1);
+        expect(screen.getAllByRole('img', {name: 'Draft waiting'})).toHaveLength(2);
+    });
+
+    test('shows no pencil without a draft', () => {
+        render();
+
+        expect(screen.queryByRole('img', {name: 'Draft waiting'})).not.toBeInTheDocument();
     });
 
     test('names its close button in the Fusion tooltip, not the browser\'s', () => {

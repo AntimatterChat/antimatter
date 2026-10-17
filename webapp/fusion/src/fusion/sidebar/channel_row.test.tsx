@@ -42,12 +42,16 @@ describe('fusion/sidebar/ChannelRow', () => {
         expect(container.querySelector('.am-ch-ic use')).toHaveAttribute('href', '#am-i-pen');
     });
 
-    test('keeps the channel\'s glyph without a draft, and in the channel you are writing in', () => {
+    test('keeps the channel\'s glyph without a draft', () => {
         render();
-        expect(screen.queryByRole('img', {name: 'Draft waiting'})).not.toBeInTheDocument();
 
-        render({draft: 'Half a thought', current: secret.id});
         expect(screen.queryByRole('img', {name: 'Draft waiting'})).not.toBeInTheDocument();
+    });
+
+    test('shows the pencil in the channel you are writing in too, the draft being kept', () => {
+        render({draft: 'Half a thought', current: secret.id});
+
+        expect(screen.getByRole('img', {name: 'Draft waiting'})).toBeInTheDocument();
     });
 
     test('a draft of spaces only is no draft', () => {

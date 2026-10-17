@@ -80,7 +80,7 @@ export default function DirectRow({channel, dock, meta}: Props) {
     const name = useConversationName(channel);
     const [groupMenu, setGroupMenu] = useState<{x: number; y: number} | null>(null);
     const remote = useSelector((state: GlobalState) => Boolean(teammateId && getUser(state, teammateId)?.remote_id));
-    const draft = useSelector((state: GlobalState) => !active && hasChannelDraft(state, channel.id));
+    const draft = useSelector((state: GlobalState) => hasChannelDraft(state, channel.id));
 
     if (!team) {
         return null;
