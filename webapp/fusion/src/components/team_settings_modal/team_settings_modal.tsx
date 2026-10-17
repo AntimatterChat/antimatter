@@ -20,6 +20,7 @@ import Icon from 'fusion/components/icon';
 import {Dialog} from 'fusion/components/layer';
 import AutolinksSettings from 'fusion/teams/autolinks_settings';
 import ChannelsSettings from 'fusion/teams/channels_settings';
+import CommunityRulesSettings from 'fusion/teams/community_rules_settings';
 import OnboardingSettings from 'fusion/teams/onboarding_editor';
 import RolesSettings from 'fusion/teams/roles_dialog';
 import {TeamLayoutSettings} from 'fusion/teams/team_layout_dialog';
@@ -33,8 +34,8 @@ import './team_settings_modal.scss';
 const SHOW_PANEL_ERROR_STATE_TAB_SWITCH_TIMEOUT = 3000;
 
 // The tabs the Fusion UI draws itself; the others are the classic web app's.
-export type FusionTeamSettingsTab = 'channels' | 'roles' | 'onboarding' | 'layout' | 'attributes' | 'autolinks' | 'ai_connections';
-const FUSION_TABS = new Set<string>(['channels', 'roles', 'onboarding', 'layout', 'attributes', 'autolinks', 'ai_connections']);
+export type FusionTeamSettingsTab = 'channels' | 'roles' | 'onboarding' | 'rules' | 'layout' | 'attributes' | 'autolinks' | 'ai_connections';
+const FUSION_TABS = new Set<string>(['channels', 'roles', 'onboarding', 'rules', 'layout', 'attributes', 'autolinks', 'ai_connections']);
 
 type Props = {
     isOpen: boolean;
@@ -180,6 +181,13 @@ const TeamSettingsModal = ({isOpen, onExited, focusOriginElement, initialTab}: P
             display: canManageTeam && customGroups,
         },
         {
+            name: 'rules',
+            uiName: formatMessage({id: 'fusion.communityRules.tab', defaultMessage: 'Rules'}),
+            icon: 'icon icon-format-list-numbered',
+            iconTitle: formatMessage({id: 'fusion.communityRules.tab', defaultMessage: 'Rules'}),
+            display: canManageTeam,
+        },
+        {
             name: 'attributes',
             uiName: formatMessage({id: 'fusion.communityAttributes.title', defaultMessage: 'Member attributes'}),
             icon: 'icon icon-tag-outline',
@@ -272,6 +280,7 @@ const TeamSettingsModal = ({isOpen, onExited, focusOriginElement, initialTab}: P
                 {shownTab === 'channels' && <ChannelsSettings/>}
                 {shownTab === 'roles' && <RolesSettings onClose={handleHide}/>}
                 {shownTab === 'onboarding' && <OnboardingSettings setUnsaved={setAreThereUnsavedChanges}/>}
+                {shownTab === 'rules' && <CommunityRulesSettings setUnsaved={setAreThereUnsavedChanges}/>}
                 {shownTab === 'attributes' && (
                     <CommunityAttributesSettings
                         teamId={teamId}

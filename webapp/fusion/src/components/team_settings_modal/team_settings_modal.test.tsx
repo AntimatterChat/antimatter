@@ -259,6 +259,27 @@ describe('components/team_settings_modal', () => {
         expect(screen.queryByRole('tab', {name: 'Autolinks'})).not.toBeInTheDocument();
     });
 
+    // Antimatter: the community's rules, which its members agree to before they post, are for its admins to write.
+    test('shows the Rules tab to those who manage the community', async () => {
+        const rules = jest.spyOn(Client4, 'getCommunityRules').mockResolvedValue({team_id: 'team-id', enabled: true, text: 'Be kind.', version: 1, updated_by: 'admin', update_at: 1, accepted_version: 0, must_accept: false});
+        const stats = jest.spyOn(Client4, 'getCommunityRulesStats').mockResolvedValue({team_id: 'team-id', version: 1, accepted_count: 3, member_count: 5});
+        const state = {
+            ...baseState,
+            entities: {...baseState.entities, roles: {roles: {team_user: {permissions: [Permissions.MANAGE_TEAM]}}}},
+        };
+        renderWithContext(<TeamSettingsModal {...baseProps}/>, state);
+        await userEvent.click(screen.getByRole('tab', {name: 'Rules'}));
+        expect(await screen.findByRole('switch', {name: 'Members must agree to the rules'})).toHaveAttribute('aria-checked', 'true');
+        expect(await screen.findByText('3 of 5 members agreed to the current rules.')).toBeInTheDocument();
+        rules.mockRestore();
+        stats.mockRestore();
+    });
+
+    test('hides the Rules tab from the others', () => {
+        renderWithContext(<TeamSettingsModal {...baseProps}/>, baseState);
+        expect(screen.queryByRole('tab', {name: 'Rules'})).not.toBeInTheDocument();
+    });
+
     // Antimatter: the community's roles, onboarding, attributes and layout are tabs of its settings, which the
     // community menu opens on the right tab.
     const withPermissions = (permissions: string[]) => ({
