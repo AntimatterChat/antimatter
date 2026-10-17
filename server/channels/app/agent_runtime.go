@@ -549,7 +549,7 @@ func (a *App) buildAgentConversation(rctx request.CTX, agent *model.AIAgent, bot
 	// The thread up to the post, oldest first; a post that isn't in a thread is the conversation alone.
 	posts := []*model.Post{post}
 	if post.RootId != "" {
-		if list, appErr := a.GetPostThread(rctx, post.RootId, model.GetPostsOptions{SkipFetchThreads: true}, asker.Id); appErr == nil {
+		if list, appErr := a.GetPostThread(rctx, post.RootId, model.GetPostsOptions{}, asker.Id); appErr == nil {
 			posts = posts[:0]
 			for _, p := range list.Posts {
 				if p.ChannelId != channel.Id || p.DeleteAt != 0 || p.IsSystemMessage() || p.CreateAt > post.CreateAt || p.GetProp(PostPropAgentStreaming) != nil {
