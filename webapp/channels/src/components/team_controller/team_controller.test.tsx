@@ -112,3 +112,26 @@ describe('TeamController — team-scoped products', () => {
         expect(screen.getByTestId('pluggable-Product')).toBeInTheDocument();
     });
 });
+
+// The apps' pages (Kanban at /kanban, once /boards; Playbooks) are no teams: before the app's routes
+// are registered, the team route may see their address, and must not try to join a team by that name.
+describe('TeamController — reserved names', () => {
+    it.each(['kanban', 'boards', 'playbooks'])('does not join or load a team named %s', async (name) => {
+        const props = {
+            ...baseProps('team_id_1'),
+            match: {params: {team: name}, isExact: false, path: '/:team', url: `/${name}`},
+        } as unknown as ComponentProps<typeof TeamController>;
+
+        renderWithContext(
+            <MemoryRouter initialEntries={[`/${name}/team/team_id_1`]}>
+                <Route path='/:team'>
+                    <TeamController {...props}/>
+                </Route>
+            </MemoryRouter>,
+        );
+        await act(async () => {});
+
+        expect(props.joinTeam).not.toHaveBeenCalled();
+        expect(props.initializeTeam).not.toHaveBeenCalled();
+    });
+});

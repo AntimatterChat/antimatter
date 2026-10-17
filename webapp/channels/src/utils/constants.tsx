@@ -1448,6 +1448,9 @@ export const Constants = {
         'plugins',
         'playbooks',
         'boards',
+
+        // The Kanban plugin's pages (once at /boards); the server reserves it too.
+        'kanban',
     ],
     RESERVED_USERNAMES: [
         'valet',

@@ -2,10 +2,12 @@
 // See LICENSE.txt for license information.
 
 import {
+    BadUrlReasons,
     getRelativeChannelURL,
     getSiteURL,
     getSiteURLFromWindowObject,
     isPermalinkURL,
+    teamNameToUrl,
     validateChannelUrl,
 } from 'utils/url';
 
@@ -131,6 +133,17 @@ describe('Utils.URL', () => {
             ['https://example.com/teamname-1/pl/affe2344234', false],
         ])('is permalink for %s should return %s', (url, expected) => {
             expect(isPermalinkURL(url)).toBe(expected);
+        });
+    });
+
+    describe('teamNameToUrl', () => {
+        // The apps' pages (/kanban, once /boards; /playbooks) can't be a team's address; the server refuses them too.
+        test.each(['Kanban', 'kanban team', 'Boards', 'Playbooks'])('%s is reserved', (name) => {
+            expect(teamNameToUrl(name).error).toBe(BadUrlReasons.Reserved);
+        });
+
+        test('an ordinary name is fine', () => {
+            expect(teamNameToUrl('Lumen Labs')).toEqual({url: 'lumen-labs', error: false});
         });
     });
 });

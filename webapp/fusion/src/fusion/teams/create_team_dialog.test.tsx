@@ -31,6 +31,11 @@ describe('team addresses', () => {
         expect(teamUrlProblem('ends-')).toBe('format');
         expect(teamUrlProblem('admin-team')).toBe('reserved');
     });
+
+    // The server refuses these names (they are the apps' pages, as /kanban); say so before asking it.
+    test.each(['kanban', 'kanban-team', 'boards', 'playbooks'])('%s is a reserved address', (url) => {
+        expect(teamUrlProblem(url)).toBe('reserved');
+    });
 });
 
 describe('CreateTeamDialog', () => {
