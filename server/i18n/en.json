@@ -6527,6 +6527,171 @@
     "description": "Internal error when the server's call to the AI agents bridge fails while listing available AI services; technical."
   },
   {
+    "id": "app.ai.call.audience.app_error",
+    "translation": "You can't use this model connection.",
+    "description": "API error of the server's AI service (Antimatter): the connection's audience (chosen teams and roles, guests) doesn't include the person."
+  },
+  {
+    "id": "app.ai.call.audio_size.app_error",
+    "translation": "The audio is empty or too large to transcribe.",
+    "description": "API error of the server's AI service (Antimatter): a transcription's audio is empty or over the size limit."
+  },
+  {
+    "id": "app.ai.call.budget_exceeded.app_error",
+    "translation": "This model connection used its token budget for the month.",
+    "description": "API error of the server's AI service (Antimatter): the connection's monthly token budget is spent."
+  },
+  {
+    "id": "app.ai.call.builtin_server_only.app_error",
+    "translation": "The server's own AI features use server-wide model connections only.",
+    "description": "API error of the server's AI service (Antimatter): a built-in feature (rewrite, recaps, translation, text to speech) is set to a community's connection."
+  },
+  {
+    "id": "app.ai.call.channel.app_error",
+    "translation": "You can't use AI in this channel.",
+    "description": "API error of the server's AI service (Antimatter): the channel doesn't exist or the person can't read it."
+  },
+  {
+    "id": "app.ai.call.decision.app_error",
+    "translation": "The decision request isn't valid.",
+    "description": "API error of the server's AI service (Antimatter): a decision call has no questions, duplicate names or bad choices or levels."
+  },
+  {
+    "id": "app.ai.call.no_model.app_error",
+    "translation": "No model is set for {{.Capability}} on this connection.",
+    "description": "API error of the server's AI service (Antimatter): the call names no model and the connection has no default model for this capability. {{.Capability}} is chat, embeddings, transcription, decisions or speech, not translated."
+  },
+  {
+    "id": "app.ai.call.no_request.app_error",
+    "translation": "The AI call has no request.",
+    "description": "API error of the server's AI service (Antimatter): an app called the AI service without a request."
+  },
+  {
+    "id": "app.ai.call.no_user.app_error",
+    "translation": "An AI call needs the person it's for.",
+    "description": "API error of the server's AI service (Antimatter): a call to a model names no person (and is not one of the server's own features)."
+  },
+  {
+    "id": "app.ai.call.not_available_here.app_error",
+    "translation": "This model connection isn't available here.",
+    "description": "API error of the server's AI service (Antimatter): a community's connection used outside its community, or a server-wide connection used in a community it isn't shared with."
+  },
+  {
+    "id": "app.ai.call.provider_bad_request.app_error",
+    "translation": "The AI provider refused the request.",
+    "description": "API error of the server's AI service (Antimatter): the model endpoint answered a 4xx error (bad model name, bad request)."
+  },
+  {
+    "id": "app.ai.call.provider_failed.app_error",
+    "translation": "The AI provider failed to answer.",
+    "description": "API error of the server's AI service (Antimatter): the model endpoint couldn't be reached or answered an error."
+  },
+  {
+    "id": "app.ai.call.provider_rate_limited.app_error",
+    "translation": "The AI provider is limiting requests. Try again later.",
+    "description": "API error of the server's AI service (Antimatter): the model endpoint answered 429 Too Many Requests."
+  },
+  {
+    "id": "app.ai.call.provider_refused.app_error",
+    "translation": "The AI provider refused the connection's key.",
+    "description": "API error of the server's AI service (Antimatter): the model endpoint answered 401 or 403: the key is wrong or lacks access."
+  },
+  {
+    "id": "app.ai.call.purpose.app_error",
+    "translation": "This AI call isn't allowed.",
+    "description": "API error of the server's AI service (Antimatter): a call names an unknown built-in feature, or an app tries to call as a built-in feature."
+  },
+  {
+    "id": "app.ai.call.rate_limited.app_error",
+    "translation": "Too many AI requests right now. Try again in a moment.",
+    "description": "API error of the server's AI service (Antimatter): the connection's or the person's requests-per-minute limit is reached."
+  },
+  {
+    "id": "app.ai.call.team.app_error",
+    "translation": "You can't use AI in this community.",
+    "description": "API error of the server's AI service (Antimatter): the person isn't a member of the community of the call."
+  },
+  {
+    "id": "app.ai.call.team_mismatch.app_error",
+    "translation": "The channel isn't in this community.",
+    "description": "API error of the server's AI service (Antimatter): a call names a channel and a community that doesn't hold it."
+  },
+  {
+    "id": "app.ai.call.timeout.app_error",
+    "translation": "The AI provider took too long to answer.",
+    "description": "API error of the server's AI service (Antimatter): the model endpoint didn't answer in time."
+  },
+  {
+    "id": "app.ai.call.unsupported.app_error",
+    "translation": "This model connection can't do that.",
+    "description": "API error of the server's AI service (Antimatter): the provider doesn't support the operation (for example embeddings or transcription on Anthropic)."
+  },
+  {
+    "id": "app.ai.call.user.app_error",
+    "translation": "This person can't use AI here.",
+    "description": "API error of the server's AI service (Antimatter): the person a call is for doesn't exist or is deactivated."
+  },
+  {
+    "id": "app.ai.call.user_budget_exceeded.app_error",
+    "translation": "You used your AI budget on this connection for the month.",
+    "description": "API error of the server's AI service (Antimatter): the person's monthly token budget on this connection is spent."
+  },
+  {
+    "id": "app.ai.connection.get.app_error",
+    "translation": "Unable to get the model connections.",
+    "description": "API error of the server's AI service (Antimatter): a database error while reading model connections."
+  },
+  {
+    "id": "app.ai.connection.key_unreadable.app_error",
+    "translation": "The key of this model connection can't be decrypted: the AI encryption key changed. Enter the connection's key again.",
+    "description": "API error of the server's AI service (Antimatter): a connection's stored key can't be decrypted with the server's current encryption key."
+  },
+  {
+    "id": "app.ai.connection.manage_permission.app_error",
+    "translation": "You can't manage these model connections.",
+    "description": "API error of the server's AI service (Antimatter): the person may not manage the model connections of this scope (server-wide or a community)."
+  },
+  {
+    "id": "app.ai.connection.needs_attention.app_error",
+    "translation": "This model connection needs an admin's attention before it can be used.",
+    "description": "API error of the server's AI service (Antimatter): a connection migrated from the AI chat app (or otherwise flagged) must be reviewed and saved by an admin before use."
+  },
+  {
+    "id": "app.ai.connection.not_found.app_error",
+    "translation": "This model connection doesn't exist.",
+    "description": "API error of the server's AI service (Antimatter): the model connection asked for doesn't exist or was deleted."
+  },
+  {
+    "id": "app.ai.connection.provider.app_error",
+    "translation": "This model connection's provider isn't supported.",
+    "description": "API error of the server's AI service (Antimatter): the connection names a provider the server doesn't speak."
+  },
+  {
+    "id": "app.ai.connection.references.app_error",
+    "translation": "A community or team the connection refers to doesn't exist, or belongs to another community.",
+    "description": "API error of the server's AI service (Antimatter): a connection names a community, team or role that doesn't exist, or a community connection names another community's team or role."
+  },
+  {
+    "id": "app.ai.connection.save.app_error",
+    "translation": "Unable to save the model connection.",
+    "description": "API error of the server's AI service (Antimatter): a database error while saving a model connection."
+  },
+  {
+    "id": "app.ai.connection.usage.app_error",
+    "translation": "Unable to read the model connection's usage.",
+    "description": "API error of the server's AI service (Antimatter): a database error while reading a connection's usage."
+  },
+  {
+    "id": "app.ai.encryption_key.app_error",
+    "translation": "The server's AI encryption key isn't available, so model connections can't keep keys. Set AM_AI_ENCRYPTION_KEY, or let the server create its key file in the data directory.",
+    "description": "API error of the server's AI service (Antimatter): the key that encrypts model connections' API keys can't be loaded or created. AM_AI_ENCRYPTION_KEY is an environment variable name, not translated."
+  },
+  {
+    "id": "app.ai.feature.not_configured.app_error",
+    "translation": "No model connection is set up for {{.Feature}}. An admin can choose one in the System Console.",
+    "description": "API error of the server's AI service (Antimatter): a built-in AI feature is used but no connection is configured for it. {{.Feature}} is rewrite, recaps, auto_translation or text_to_speech, not translated."
+  },
+  {
     "id": "app.ai.summarize.agent_call_failed",
     "translation": "AI agent call failed.",
     "description": "API error returned when the request to the AI agents service for a summarization (e.g. channel recap) fails."
@@ -13015,6 +13180,26 @@
     "description": "API error when saving changes to an outgoing webhook fails."
   },
   {
+    "id": "authentication.permissions.manage_ai_connections.description",
+    "translation": "Add, change and delete the server's model connections (AI providers' addresses and keys), and choose the communities they're shared with.",
+    "description": "Description of the permission to manage the server-wide AI model connections (Antimatter)."
+  },
+  {
+    "id": "authentication.permissions.manage_ai_connections.name",
+    "translation": "Manage server-wide model connections",
+    "description": "Name of the permission to add, change and delete the server-wide AI model connections (Antimatter)."
+  },
+  {
+    "id": "authentication.permissions.manage_team_ai_connections.description",
+    "translation": "Add, change and delete the community's own model connections (AI providers' addresses and keys), used only in this community.",
+    "description": "Description of the permission to manage a community's own AI model connections (Antimatter)."
+  },
+  {
+    "id": "authentication.permissions.manage_team_ai_connections.name",
+    "translation": "Manage the community's model connections",
+    "description": "Name of the permission to manage a community's own AI model connections (Antimatter)."
+  },
+  {
     "id": "basic_security_check.url.too_long_error",
     "translation": "URL is too long",
     "description": "API error returned when the request URL exceeds the server's maximum allowed length."
@@ -14315,6 +14500,86 @@
     "description": "API error when a post acknowledgement has a malformed user ID for the acknowledging user."
   },
   {
+    "id": "model.ai_connection.api_key.app_error",
+    "translation": "The API key is too long or contains a line break.",
+    "description": "Validation error of an AI model connection (Antimatter) when it is created or changed."
+  },
+  {
+    "id": "model.ai_connection.base_url.app_error",
+    "translation": "The address must be an http or https URL, without a user, query or fragment.",
+    "description": "Validation error of an AI model connection (Antimatter) when it is created or changed."
+  },
+  {
+    "id": "model.ai_connection.decisions_dialect.app_error",
+    "translation": "The decisions format must be OpenAI's or SystemOne.",
+    "description": "Validation error of an AI model connection (Antimatter) when it is created or changed."
+  },
+  {
+    "id": "model.ai_connection.extra_headers.app_error",
+    "translation": "An extra header has a name that isn't allowed, or a value that's too long or has a line break.",
+    "description": "Validation error of an AI model connection (Antimatter) when it is created or changed."
+  },
+  {
+    "id": "model.ai_connection.id.app_error",
+    "translation": "The model connection's ID isn't valid.",
+    "description": "Validation error of an AI model connection (Antimatter) when it is created or changed."
+  },
+  {
+    "id": "model.ai_connection.ids.app_error",
+    "translation": "A community, team or role in the connection isn't valid.",
+    "description": "Validation error of an AI model connection (Antimatter) when it is created or changed."
+  },
+  {
+    "id": "model.ai_connection.limits.app_error",
+    "translation": "Limits can't be negative.",
+    "description": "Validation error of an AI model connection (Antimatter) when it is created or changed."
+  },
+  {
+    "id": "model.ai_connection.models.app_error",
+    "translation": "A model name is too long or contains a line break.",
+    "description": "Validation error of an AI model connection (Antimatter) when it is created or changed."
+  },
+  {
+    "id": "model.ai_connection.models_anthropic.app_error",
+    "translation": "Anthropic connections only have a chat model.",
+    "description": "Validation error of an AI model connection (Antimatter) when it is created or changed."
+  },
+  {
+    "id": "model.ai_connection.name.app_error",
+    "translation": "A model connection needs a name of 1 to 64 characters.",
+    "description": "Validation error of an AI model connection (Antimatter) when it is created or changed."
+  },
+  {
+    "id": "model.ai_connection.needs_attention.app_error",
+    "translation": "The reason the connection needs attention is too long.",
+    "description": "Validation error of an AI model connection (Antimatter) when it is created or changed."
+  },
+  {
+    "id": "model.ai_connection.provider.app_error",
+    "translation": "The provider must be an OpenAI-compatible API or Anthropic.",
+    "description": "Validation error of an AI model connection (Antimatter) when it is created or changed."
+  },
+  {
+    "id": "model.ai_connection.roles.app_error",
+    "translation": "A role in the connection's audience isn't valid.",
+    "description": "Validation error of an AI model connection (Antimatter) when it is created or changed."
+  },
+  {
+    "id": "model.ai_connection.scope.app_error",
+    "translation": "A model connection is either server-wide or a community's.",
+    "description": "Validation error of an AI model connection (Antimatter) when it is created or changed."
+  },
+  {
+    "id": "model.ai_connection.sharing_community.app_error",
+    "translation": "A community's own connection can't be shared with other communities.",
+    "description": "Validation error of an AI model connection (Antimatter) when it is created or changed."
+  },
+  {
+    "id": "model.ai_connection.times.app_error",
+    "translation": "The model connection's dates aren't set.",
+    "description": "Validation error of an AI model connection (Antimatter) when it is created or changed."
+  },
+  {
     "id": "model.authorize.is_valid.auth_code.app_error",
     "translation": "Invalid authorization code.",
     "description": "API validation error during the OAuth 2.0 authorization flow when the generated authorization code field is malformed; developer/integration-facing."
@@ -14965,6 +15230,16 @@
     "description": "Configuration validation error shown to a system admin when the access control sync job interval setting is below the 60 second minimum. Blocks saving the configuration."
   },
   {
+    "id": "model.config.is_valid.ai.connection_id.app_error",
+    "translation": "The model connection of {{.Feature}} isn't a valid ID.",
+    "description": "Config validation error: an AISettings feature (Rewrite, Recaps, AutoTranslation, TextToSpeech) names an invalid model connection ID. {{.Feature}} is the setting's name, not translated."
+  },
+  {
+    "id": "model.config.is_valid.ai.model.app_error",
+    "translation": "The model name of {{.Feature}} is too long.",
+    "description": "Config validation error: an AISettings feature's model name is longer than allowed. {{.Feature}} is the setting's name, not translated."
+  },
+  {
     "id": "model.config.is_valid.ai_recap.cooldown_minutes.app_error",
     "translation": "Invalid AI recap cooldown minutes. Must be greater than or equal to 0.",
     "description": "Config validation error shown to system admins saving AI Recap settings; the cooldown between recaps, in minutes, must be zero or more."
@@ -15018,6 +15293,11 @@
     "id": "model.config.is_valid.autotranslation.agents.llm_service_id.app_error",
     "translation": "Invalid autotranslation agents configuration: AI service must not be empty.",
     "description": "Config validation error shown to system admins saving automatic translation settings when the Agents provider is selected but no AI service is chosen."
+  },
+  {
+    "id": "model.config.is_valid.autotranslation.connection.app_error",
+    "translation": "Choose the model connection auto-translation uses.",
+    "description": "Config validation error: auto-translation is set to translate with a model connection but none is chosen."
   },
   {
     "id": "model.config.is_valid.autotranslation.libretranslate.url.app_error",
@@ -17068,11 +17348,6 @@
     "description": "API error when a scheduled recap's timezone identifier cannot be resolved while computing the next delivery time."
   },
   {
-    "id": "model.scheduled_recap.is_valid.agent_id.app_error",
-    "translation": "Scheduled recap must have an agent ID.",
-    "description": "API error when a scheduled recap lacks an agent ID; 'agent' is the AI bot that generates the recap."
-  },
-  {
     "id": "model.scheduled_recap.is_valid.channel_id.app_error",
     "translation": "Invalid scheduled recap channel ID.",
     "description": "API error when a scheduled recap references a malformed channel ID."
@@ -17711,6 +17986,11 @@
     "id": "oauth.gitlab.tos.error",
     "translation": "GitLab's Terms of Service have updated. Please go to {{.URL}} to accept them and then try logging into Antimatter again.",
     "description": "Login error for GitLab SSO users who must accept GitLab's updated Terms of Service; {{.URL}} is the GitLab ToS page link. Keep 'GitLab' and 'Antimatter' as product names."
+  },
+  {
+    "id": "plugin.api.ai_chat_stream.app_error",
+    "translation": "The app couldn't open the AI stream.",
+    "description": "Error in an app (plugin) when the streamed AI chat between the app and the server can't be set up (Antimatter)."
   },
   {
     "id": "plugin.api.get_users_in_channel",

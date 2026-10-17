@@ -9878,6 +9878,10 @@ This product contains 'mattermost/mattermost-plugin-agents' by Mattermost.
 
 Mattermost Agents plugin supporting multiple LLMs
 
+Parts of its llm package (the token estimate, the structured-output prompt fallback, code-fence stripping,
+conversation truncation, non-printable character escaping, the redaction of keys in provider errors and the
+shape of streamed events) are adapted in server/public/ai (helpers.go, stream.go).
+
 * HOMEPAGE:
   * https://mattermost.com/copilot
 
