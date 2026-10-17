@@ -336,8 +336,8 @@ export default function Message({postId, previousPostId, inThread = false, highl
             })}
             <button
                 ref={moreRef}
-                title={formatMessage({id: 'fusion.message.more', defaultMessage: 'More actions'})}
-                aria-label={formatMessage({id: 'fusion.message.more', defaultMessage: 'More actions'})}
+                title={formatMessage({id: 'fusion.message.menu', defaultMessage: 'Message actions'})}
+                aria-label={formatMessage({id: 'fusion.message.menu', defaultMessage: 'Message actions'})}
                 aria-haspopup='menu'
                 onClick={() => setPopover('menu')}
             >

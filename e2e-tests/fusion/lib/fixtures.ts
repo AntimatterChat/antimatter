@@ -108,9 +108,9 @@ export class Fusion {
         return toolbar;
     }
 
-    // A message's "More actions" menu.
+    // A message's ⋯ menu ("Message actions").
     async moreActions(message: Locator) {
-        await (await this.actions(message)).getByRole('button', {name: 'More actions'}).click();
+        await (await this.actions(message)).getByRole('button', {name: 'Message actions'}).click();
         const menu = this.page.getByRole('menu', {name: 'Message actions'});
         await expect(menu).toBeVisible();
         return menu;

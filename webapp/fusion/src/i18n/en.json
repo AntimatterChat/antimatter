@@ -24207,9 +24207,9 @@
     "defaultMessage": "Important",
     "description": ""
   },
-  "fusion.message.more": {
-    "defaultMessage": "More actions",
-    "description": ""
+  "fusion.message.menu": {
+    "defaultMessage": "Message actions",
+    "description": "Tooltip and accessible name of the ⋯ button on a message (shown when pointing at it); it opens the message's menu."
   },
   "fusion.message.onlyYou": {
     "defaultMessage": "Only visible to you",
