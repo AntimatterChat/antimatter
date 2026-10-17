@@ -30,7 +30,8 @@ import './team_members_modal.scss';
 // plus the governing attribute tags) when the team is policy-enforced. Attribute
 // values that the viewer is not permitted to see are stripped server-side, so a
 // non-holder sees only the generic notice. Rendered as a status region for a11y.
-function MembershipRequirementsBanner({team}: {team: Team}) {
+// Antimatter: also shown on the Members page of the community settings.
+export function MembershipRequirementsBanner({team}: {team: Team}) {
     const isGoverned = Boolean(team.policy_enforced);
 
     // Only private teams enforce strictly; public governance is advisory.

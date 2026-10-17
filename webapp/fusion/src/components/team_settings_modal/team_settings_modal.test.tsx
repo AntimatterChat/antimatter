@@ -8,7 +8,9 @@ import {Permissions} from 'mattermost-redux/constants';
 
 import TeamSettingsModal from 'components/team_settings_modal/team_settings_modal';
 
+import {openInvitePeople, openUserGroups} from 'fusion/utils/modals';
 import {renderWithContext, screen, userEvent, waitFor} from 'tests/react_testing_utils';
+import {getHistory} from 'utils/browser_history';
 
 // Mock Redux actions
 jest.mock('mattermost-redux/actions/teams', () => ({
@@ -18,6 +20,14 @@ jest.mock('mattermost-redux/actions/teams', () => ({
     setTeamIcon: jest.fn(() => async () => ({data: {}, error: null})),
 }));
 
+// The Members page shows the classic member list, which loads people from the server.
+jest.mock('components/member_list_team', () => ({teamId}: {teamId: string}) => jest.requireActual('react').createElement('div', null, `Member list of ${teamId}`));
+jest.mock('fusion/utils/modals', () => ({
+    ...jest.requireActual('fusion/utils/modals'),
+    openInvitePeople: jest.fn(() => ({type: 'MOCK_INVITE'})),
+    openUserGroups: jest.fn(() => ({type: 'MOCK_TEAMS'})),
+}));
+
 describe('components/team_settings_modal', () => {
     const baseProps = {
         isOpen: true,
@@ -25,7 +35,7 @@ describe('components/team_settings_modal', () => {
     };
 
     beforeEach(() => {
-        baseProps.onExited.mockClear();
+        jest.clearAllMocks();
 
         // The Fusion dialog is drawn in the Fusion layer.
         if (!document.getElementById('am-layer')) {
@@ -58,7 +68,7 @@ describe('components/team_settings_modal', () => {
             roles: {
                 roles: {
                     team_user: {
-                        permissions: [Permissions.INVITE_USER],
+                        permissions: [Permissions.INVITE_USER, Permissions.MANAGE_TEAM],
                     },
                 },
             },
@@ -112,7 +122,7 @@ describe('components/team_settings_modal', () => {
                 roles: {
                     roles: {
                         team_user: {
-                            permissions: [],
+                            permissions: [Permissions.MANAGE_TEAM],
                         },
                     },
                 },
@@ -125,10 +135,7 @@ describe('components/team_settings_modal', () => {
             />,
             stateWithoutPermission,
         );
-        const tabs = screen.getAllByRole('tab');
-        expect(tabs.length).toEqual(1);
-        const infoButton = screen.getByRole('tab', {name: 'Overview'});
-        expect(infoButton).toBeDefined();
+        expect(screen.getAllByRole('tab').map((tab) => tab.textContent)).toEqual(['Overview', 'Members', 'Channels', 'Autolinks']);
     });
 
     test('should warn on first close attempt with unsaved changes and stay open', async () => {
@@ -255,7 +262,7 @@ describe('components/team_settings_modal', () => {
     });
 
     test('hides the Autolinks tab from the others', () => {
-        renderWithContext(<TeamSettingsModal {...baseProps}/>, baseState);
+        renderWithContext(<TeamSettingsModal {...baseProps}/>, {...baseState, entities: {...baseState.entities, roles: {roles: {team_user: {permissions: [Permissions.MANAGE_TEAM_ROLES]}}}}});
         expect(screen.queryByRole('tab', {name: 'Autolinks'})).not.toBeInTheDocument();
     });
 
@@ -291,15 +298,17 @@ describe('components/team_settings_modal', () => {
         expect(screen.getByRole('button', {name: 'Save'})).toBeInTheDocument();
     });
 
-    test('those who only manage the roles get the Roles tab alone', () => {
+    test('those who only manage the roles get the members, the teams and the roles', () => {
         renderWithContext(
             <TeamSettingsModal
                 {...baseProps}
                 initialTab='roles'
             />,
-            withPermissions([Permissions.MANAGE_TEAM_ROLES]),
+            withPermissions([Permissions.MANAGE_TEAM_ROLES, Permissions.INVITE_USER]),
         );
-        expect(screen.getAllByRole('tab').map((tab) => tab.textContent)).toEqual(['Roles']);
+
+        // Inviting without managing the community isn't changing its invitations (Access).
+        expect(screen.getAllByRole('tab').map((tab) => tab.textContent)).toEqual(['Members', 'Teams', 'Roles']);
         expect(screen.getByRole('tab', {name: 'Roles'})).toHaveAttribute('aria-selected', 'true');
     });
 
@@ -378,8 +387,94 @@ describe('components/team_settings_modal', () => {
                 />,
                 withPermissions([Permissions.MANAGE_TEAM_AI_CONNECTIONS]),
             );
-            expect(screen.getAllByRole('tab').map((tab) => tab.textContent)).toEqual(['Model connections']);
+            expect(screen.getAllByRole('tab').map((tab) => tab.textContent)).toEqual(['Members', 'Teams', 'Model connections']);
             expect(await screen.findByRole('button', {name: 'Add a connection'})).toBeInTheDocument();
+        });
+    });
+    // Antimatter: the community menu's Manage members, Teams… and the user menu's Integrations are in the settings.
+    describe('members, teams and integrations', () => {
+        const admin = [Permissions.MANAGE_TEAM, Permissions.MANAGE_TEAM_ROLES, Permissions.INVITE_USER, Permissions.ADD_USER_TO_TEAM];
+
+        test('the admins\' tabs, in order', () => {
+            renderWithContext(<TeamSettingsModal {...baseProps}/>, withPermissions(admin));
+            expect(screen.getAllByRole('tab').map((tab) => tab.textContent)).toEqual([
+                'Overview', 'Access', 'Members', 'Teams', 'Channels', 'Roles', 'Onboarding', 'Member attributes', 'Community layout', 'Autolinks',
+            ]);
+        });
+
+        test('the Members page lists the community\'s members, and invites more for those who may', async () => {
+            renderWithContext(
+                <TeamSettingsModal
+                    {...baseProps}
+                    initialTab='members'
+                />,
+                withPermissions(admin),
+            );
+            expect(screen.getByRole('heading', {name: 'Members'})).toBeInTheDocument();
+            expect(screen.getByText('Member list of team-id')).toBeInTheDocument();
+
+            await userEvent.click(screen.getByRole('button', {name: 'Invite people'}));
+            expect(openInvitePeople).toHaveBeenCalled();
+            await waitFor(() => expect(baseProps.onExited).toHaveBeenCalled());
+        });
+
+        test('no Invite people on the Members page for those who can\'t add people', () => {
+            renderWithContext(
+                <TeamSettingsModal
+                    {...baseProps}
+                    initialTab='members'
+                />,
+                withPermissions([Permissions.MANAGE_TEAM_ROLES]),
+            );
+            expect(screen.getByText('Member list of team-id')).toBeInTheDocument();
+            expect(screen.queryByRole('button', {name: 'Invite people'})).not.toBeInTheDocument();
+        });
+
+        test('the Teams page lists the community\'s teams, and leads to the teams dialog', async () => {
+            const state = withPermissions(admin) as typeof baseState & {entities: Record<string, unknown>};
+            const group = (id: string, name: string, teamId: string) => ({id, name: id, display_name: name, tag: name.slice(0, 3).toUpperCase(), source: 'custom', is_team: true, team_id: teamId, delete_at: 0, member_ids: ['user-id']});
+            (state.entities as Record<string, unknown>).groups = {groups: {g1: group('g1', 'Design', 'team-id'), g2: group('g2', 'Ops', 'other-team')}};
+            renderWithContext(
+                <TeamSettingsModal
+                    {...baseProps}
+                    initialTab='teams'
+                />,
+                state,
+            );
+            expect(screen.getByRole('heading', {name: 'Teams'})).toBeInTheDocument();
+            expect(screen.getByRole('button', {name: /Design/})).toBeInTheDocument();
+            expect(screen.queryByRole('button', {name: /Ops/})).not.toBeInTheDocument();
+
+            await userEvent.click(screen.getByRole('button', {name: 'Find and create teams…'}));
+            expect(openUserGroups).toHaveBeenCalledWith('team-id');
+            await waitFor(() => expect(baseProps.onExited).toHaveBeenCalled());
+        });
+
+        test('no Teams page when the server has no teams', () => {
+            renderWithContext(<TeamSettingsModal {...baseProps}/>, baseState);
+            expect(screen.queryByRole('tab', {name: 'Teams'})).not.toBeInTheDocument();
+            expect(screen.getByRole('tab', {name: 'Members'})).toBeInTheDocument();
+        });
+
+        test('Integrations leads to the community\'s integrations pages, for those who manage some', async () => {
+            const push = jest.spyOn(getHistory(), 'push').mockImplementation(() => undefined);
+            try {
+                renderWithContext(<TeamSettingsModal {...baseProps}/>, withPermissions([Permissions.MANAGE_OWN_INCOMING_WEBHOOKS]));
+
+                // Its own pages, not a tab: those who only manage integrations get the members and teams as tabs.
+                expect(screen.queryByRole('tab', {name: 'Integrations'})).not.toBeInTheDocument();
+                expect(screen.getAllByRole('tab').map((tab) => tab.textContent)).toEqual(['Members', 'Teams']);
+                await userEvent.click(screen.getByRole('button', {name: 'Integrations'}));
+                expect(push).toHaveBeenCalledWith('/team-name/integrations');
+                await waitFor(() => expect(baseProps.onExited).toHaveBeenCalled());
+            } finally {
+                push.mockRestore();
+            }
+        });
+
+        test('no Integrations for the community\'s admins without integration rights', () => {
+            renderWithContext(<TeamSettingsModal {...baseProps}/>, withPermissions(admin));
+            expect(screen.queryByRole('button', {name: 'Integrations'})).not.toBeInTheDocument();
         });
     });
 });

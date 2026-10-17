@@ -84,3 +84,15 @@ export function comboLabel(combo: string, mac = navigator.platform.toUpperCase()
         }
     });
 }
+
+const ARIA_KEYS: Record<string, string> = {shift: 'Shift', alt: 'Alt', space: 'Space'};
+
+// comboKeys writes a combo as aria-keyshortcuts wants it: Control+Shift+K, or Meta+Shift+K on macOS.
+export function comboKeys(combo: string, mac = navigator.platform.toUpperCase().includes('MAC')): string {
+    return combo.split('+').map((part) => {
+        if (part === 'mod') {
+            return mac ? 'Meta' : 'Control';
+        }
+        return ARIA_KEYS[part] || (part.length === 1 ? part.toUpperCase() : part.charAt(0).toUpperCase() + part.slice(1));
+    }).join('+');
+}

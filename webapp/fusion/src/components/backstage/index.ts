@@ -10,6 +10,8 @@ import {haveITeamPermission, haveISystemPermission} from 'mattermost-redux/selec
 import {getMyTeams, getCurrentTeam} from 'mattermost-redux/selectors/entities/teams';
 import {getCurrentUser} from 'mattermost-redux/selectors/entities/users';
 
+import {canManageTeamIntegrations} from 'fusion/teams/community_settings_access';
+
 import type {GlobalState} from 'types/store';
 
 import BackstageController from './backstage_controller';
@@ -38,17 +40,8 @@ function mapStateToProps(state: GlobalState) {
         }
     }
 
-    const canManageTeamIntegrations = (
-        haveITeamPermission(state, team?.id, Permissions.MANAGE_SLASH_COMMANDS) ||
-        haveITeamPermission(state, team?.id, Permissions.MANAGE_OWN_SLASH_COMMANDS) ||
-        haveITeamPermission(state, team?.id, Permissions.MANAGE_INCOMING_WEBHOOKS) ||
-        haveITeamPermission(state, team?.id, Permissions.MANAGE_OWN_INCOMING_WEBHOOKS) ||
-        haveITeamPermission(state, team?.id, Permissions.MANAGE_OUTGOING_WEBHOOKS) ||
-        haveITeamPermission(state, team?.id, Permissions.MANAGE_OWN_OUTGOING_WEBHOOKS) ||
-        haveISystemPermission(state, {permission: Permissions.MANAGE_OAUTH})
-    );
-    const canManageSystemBots = (haveISystemPermission(state, {permission: Permissions.MANAGE_BOTS}) || haveISystemPermission(state, {permission: Permissions.MANAGE_OTHERS_BOTS}));
-    const canManageIntegrations = canManageTeamIntegrations || canManageSystemBots;
+    // Antimatter: the same rights as the community menu's way here (Community settings › Integrations).
+    const canManageIntegrations = canManageTeamIntegrations(state, team?.id || '');
 
     return {
         user,

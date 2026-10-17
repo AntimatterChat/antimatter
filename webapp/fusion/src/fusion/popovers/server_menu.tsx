@@ -3,13 +3,12 @@
 
 import React from 'react';
 import {useIntl} from 'react-intl';
-import {useDispatch, useSelector} from 'react-redux';
+import {shallowEqual, useDispatch, useSelector} from 'react-redux';
 
 import type {Team} from '@mattermost/types/teams';
 
 import {Permissions} from 'mattermost-redux/constants';
 import {getConfig} from 'mattermost-redux/selectors/entities/general';
-import {isCustomGroupsEnabled} from 'mattermost-redux/selectors/entities/preferences';
 import {haveITeamPermission} from 'mattermost-redux/selectors/entities/roles';
 import {getCurrentTeam} from 'mattermost-redux/selectors/entities/teams';
 
@@ -25,6 +24,7 @@ import CopyIdItem from 'fusion/popovers/copy_id_item';
 import {addToFolder, folderOfTeam, makeFolder, placeAfter, railItems, removeFromFolder, useFolders} from 'fusion/rail/folders';
 import {getSortedMyTeams} from 'fusion/selectors';
 import {useDialogs} from 'fusion/shell/dialogs_context';
+import {comboKeys, comboLabel, getKeybinds} from 'fusion/shell/keybinds';
 import {useSettings} from 'fusion/shell/settings_context';
 import {useToast} from 'fusion/shell/toast_context';
 import {
@@ -36,6 +36,7 @@ import {
     setTeamMuted,
     withTeam,
 } from 'fusion/sidebar/team_actions';
+import {canOpenCommunitySettings, getCommunitySettingsAccess} from 'fusion/teams/community_settings_access';
 import {getTeamRoles} from 'fusion/teams/roles';
 import {am} from 'fusion/utils/class_names';
 import {
@@ -69,17 +70,21 @@ export default function ServerMenu({team: forTeam, anchor, point, width, onClose
     const team = forTeam || currentTeam;
     const teamId = team?.id || '';
     const config = useSelector(getConfig);
-    const canManage = useSelector((state: GlobalState) => haveITeamPermission(state, teamId, Permissions.MANAGE_TEAM));
-    const customGroups = useSelector(isCustomGroupsEnabled);
     const hasOpenRoles = useSelector((state: GlobalState) => getTeamRoles(state, teamId).some((r) => r.self_assignable));
-    const canManageRoles = useSelector((state: GlobalState) => haveITeamPermission(state, teamId, Permissions.MANAGE_TEAM_ROLES));
-    const canManageAIConnections = useSelector((state: GlobalState) => haveITeamPermission(state, teamId, Permissions.MANAGE_TEAM_AI_CONNECTIONS));
+
+    // Community settings, for anyone who may manage something in it (the community, its members' roles, its roles,
+    // model connections, membership rules or integrations), with only the pages they may use. Its Members and Teams
+    // pages were entries of this menu: those who don't get the settings keep them here.
+    const access = useSelector((state: GlobalState) => getCommunitySettingsAccess(state, teamId), shallowEqual);
+    const settingsShown = canOpenCommunitySettings(access);
     const canAddUsers = useSelector((state: GlobalState) => haveITeamPermission(state, teamId, Permissions.ADD_USER_TO_TEAM));
     const canInviteGuests = useSelector((state: GlobalState) => haveITeamPermission(state, teamId, Permissions.INVITE_GUEST)) && config.EnableGuestAccounts === 'true';
     const unread = useSelector((state: GlobalState) => getUnreadChannelIdsInTeam(state, teamId).length > 0);
     const muted = useSelector((state: GlobalState) => isTeamMuted(state, teamId));
     const hidingMuted = useSelector((state: GlobalState) => isHidingMutedChannels(state, teamId));
     const unreadOnly = useSelector(isUnreadFilterEnabled);
+    const unreadCombo = useSelector((state: GlobalState) => getKeybinds(state).unreadFilter);
+    const unreadShortcut = unreadCombo ? {label: comboLabel(unreadCombo).join('+'), keys: comboKeys(unreadCombo)} : undefined;
     const pluginItems = useSelector(getMainMenuPluginComponents);
     const addChannelItems = useSelector(getSidebarBrowseOrAddChannelMenuPluginComponents);
     const plugins = useSelector((state: GlobalState) => state.plugins.plugins);
@@ -127,50 +132,7 @@ export default function ServerMenu({team: forTeam, anchor, point, width, onClose
             onClose={onClose}
             style={width ? {width} : undefined}
         >
-            <MenuItem
-                icon='compass'
-                label={formatMessage({id: 'fusion.serverMenu.browse', defaultMessage: 'Browse channels'})}
-                sub={allChannels ? formatMessage({id: 'fusion.serverMenu.browseAllSub', defaultMessage: 'You\'re in every channel: archived ones, and those to ask for'}) : undefined}
-                onClick={inTeam(() => dialogs.browseChannels())}
-            />
-            <MenuSeparator/>
-            {unread && (
-                <MenuItem
-                    icon='check'
-                    label={formatMessage({id: 'fusion.serverMenu.markRead', defaultMessage: 'Mark all as read'})}
-                    onClick={run(() => {
-                        dispatch(markTeamAsRead(teamId));
-                        toast(formatMessage({id: 'fusion.toast.markedRead', defaultMessage: 'Marked {name} as read'}, {name: team?.display_name || ''}));
-                    })}
-                />
-            )}
-            <MenuItem
-                icon={muted ? 'bell' : 'bell-off'}
-                label={muted ? formatMessage({id: 'fusion.serverMenu.unmute', defaultMessage: 'Unmute community'}) : formatMessage({id: 'fusion.serverMenu.mute', defaultMessage: 'Mute community'})}
-                sub={muted ? undefined : formatMessage({id: 'fusion.serverMenu.muteSub', defaultMessage: 'Mutes all its categories'})}
-                onClick={run(() => dispatch(setTeamMuted(teamId, !muted)))}
-            />
-            <MenuItem
-                icon='inbox'
-                role='menuitemcheckbox'
-                checked={unreadOnly}
-                label={formatMessage({id: 'fusion.serverMenu.unreadOnly', defaultMessage: 'Show unread channels only'})}
-                sub='Ctrl+Shift+U'
-                onClick={run(() => dispatch(setUnreadFilterEnabled(!unreadOnly)))}
-            />
-            <MenuItem
-                icon='eye-off'
-                role='menuitemcheckbox'
-                checked={hidingMuted}
-                label={formatMessage({id: 'fusion.serverMenu.hideMuted', defaultMessage: 'Hide muted channels'})}
-                onClick={run(() => dispatch(setHidingMutedChannels(teamId, !hidingMuted)))}
-            />
-            <MenuItem
-                icon='bell'
-                label={formatMessage({id: 'fusion.serverMenu.notifications', defaultMessage: 'Notification settings'})}
-                onClick={run(() => settings.open('notifications'))}
-            />
-            <MenuSeparator/>
+            {/* Who's in it: inviting, its settings (or, for those who manage nothing, its members and teams), roles. */}
             {(canAddUsers || canInviteGuests) && (
                 <MenuItem
                     icon='user-plus'
@@ -179,11 +141,25 @@ export default function ServerMenu({team: forTeam, anchor, point, width, onClose
                     onClick={inTeam(() => dispatch(openInvitePeople()))}
                 />
             )}
-            {canManage && (
+            {settingsShown && (
                 <MenuItem
                     icon='cog'
                     label={formatMessage({id: 'fusion.serverMenu.settings', defaultMessage: 'Community settings'})}
                     onClick={inTeam(() => dispatch(openTeamSettings()))}
+                />
+            )}
+            {!settingsShown && (
+                <MenuItem
+                    icon='users'
+                    label={formatMessage({id: 'fusion.serverMenu.viewMembers', defaultMessage: 'View members'})}
+                    onClick={inTeam(() => dispatch(openTeamMembers()))}
+                />
+            )}
+            {!settingsShown && access.teams && (
+                <MenuItem
+                    icon='tag'
+                    label={formatMessage({id: 'fusion.serverMenu.userGroups', defaultMessage: 'Teams…'})}
+                    onClick={inTeam(() => dispatch(openUserGroups(teamId)))}
                 />
             )}
             {hasOpenRoles && (
@@ -193,66 +169,9 @@ export default function ServerMenu({team: forTeam, anchor, point, width, onClose
                     onClick={inTeam(() => dialogs.selfRoles())}
                 />
             )}
-            {(((canManage || canManageRoles) && customGroups) || canManageAIConnections) && (
-                <Flyout
-                    icon='board'
-                    label={formatMessage({id: 'fusion.serverMenu.setup', defaultMessage: 'Organise the community'})}
-                    menuLabel={formatMessage({id: 'fusion.serverMenu.setup', defaultMessage: 'Organise the community'})}
-                >
-                    {canManageRoles && customGroups && (
-                        <MenuItem
-                            icon='rank'
-                            label={formatMessage({id: 'fusion.serverMenu.roles', defaultMessage: 'Roles…'})}
-                            sub={formatMessage({id: 'fusion.serverMenu.rolesSub', defaultMessage: 'Colours, groups in the member list, badges'})}
-                            onClick={inTeam(() => dispatch(openTeamSettings('roles')))}
-                        />
-                    )}
-                    {canManage && customGroups && (
-                        <>
-                            <MenuItem
-                                icon='chat'
-                                label={formatMessage({id: 'fusion.serverMenu.onboarding', defaultMessage: 'Onboarding…'})}
-                                sub={formatMessage({id: 'fusion.serverMenu.onboardingSub', defaultMessage: 'Questions newcomers answer'})}
-                                onClick={inTeam(() => dispatch(openTeamSettings('onboarding')))}
-                            />
-                            <MenuItem
-                                icon='board'
-                                label={formatMessage({id: 'fusion.serverMenu.layout', defaultMessage: 'Community layout…'})}
-                                sub={formatMessage({id: 'fusion.serverMenu.layoutSub', defaultMessage: 'Presets and templates'})}
-                                onClick={inTeam(() => dispatch(openTeamSettings('layout')))}
-                            />
-                            <MenuItem
-                                icon='tag'
-                                label={formatMessage({id: 'fusion.serverMenu.attributes', defaultMessage: 'Member attributes…'})}
-                                sub={formatMessage({id: 'fusion.serverMenu.attributesSub', defaultMessage: 'Company, site… on profiles'})}
-                                onClick={inTeam(() => dispatch(openTeamSettings('attributes')))}
-                            />
-                        </>
-                    )}
-                    {canManageAIConnections && (
-                        <MenuItem
-                            icon='sparkle'
-                            label={formatMessage({id: 'fusion.serverMenu.aiConnections', defaultMessage: 'Model connections…'})}
-                            sub={formatMessage({id: 'fusion.serverMenu.aiConnectionsSub', defaultMessage: 'The community\'s own AI providers'})}
-                            onClick={inTeam(() => dispatch(openTeamSettings('ai_connections')))}
-                        />
-                    )}
-                </Flyout>
-            )}
-            {customGroups && (
-                <MenuItem
-                    icon='tag'
-                    label={formatMessage({id: 'fusion.serverMenu.userGroups', defaultMessage: 'Teams…'})}
-                    sub={formatMessage({id: 'fusion.serverMenu.userGroupsSub', defaultMessage: 'Teams with a tag, a lead and a channel'})}
-                    onClick={inTeam(() => dispatch(openUserGroups(teamId)))}
-                />
-            )}
-            <MenuItem
-                icon='users'
-                label={canManage ? formatMessage({id: 'fusion.serverMenu.manageMembers', defaultMessage: 'Manage members'}) : formatMessage({id: 'fusion.serverMenu.viewMembers', defaultMessage: 'View members'})}
-                onClick={inTeam(() => dispatch(openTeamMembers()))}
-            />
             <MenuSeparator/>
+
+            {/* Its channels. */}
             <MenuItem
                 icon='plus'
                 label={formatMessage({id: 'fusion.serverMenu.createChannel', defaultMessage: 'Create channel'})}
@@ -274,6 +193,51 @@ export default function ServerMenu({team: forTeam, anchor, point, width, onClose
                     {item.text}
                 </button>
             ))}
+            <MenuItem
+                icon='compass'
+                label={formatMessage({id: 'fusion.serverMenu.browse', defaultMessage: 'Browse channels'})}
+                sub={allChannels ? formatMessage({id: 'fusion.serverMenu.browseAllSub', defaultMessage: 'You\'re in every channel: archived ones, and those to ask for'}) : undefined}
+                onClick={inTeam(() => dialogs.browseChannels())}
+            />
+            <MenuSeparator/>
+
+            {/* How the sidebar shows it, and its notifications. The hide options are checkboxes: a check when on. */}
+            <MenuItem
+                icon='inbox'
+                role='menuitemcheckbox'
+                checked={unreadOnly}
+                label={formatMessage({id: 'fusion.serverMenu.unreadOnly', defaultMessage: 'Hide read channels'})}
+                shortcut={unreadShortcut}
+                onClick={run(() => dispatch(setUnreadFilterEnabled(!unreadOnly)))}
+            />
+            <MenuItem
+                icon='eye-off'
+                role='menuitemcheckbox'
+                checked={hidingMuted}
+                label={formatMessage({id: 'fusion.serverMenu.hideMuted', defaultMessage: 'Hide muted channels'})}
+                onClick={run(() => dispatch(setHidingMutedChannels(teamId, !hidingMuted)))}
+            />
+            {unread && (
+                <MenuItem
+                    icon='check'
+                    label={formatMessage({id: 'fusion.serverMenu.markRead', defaultMessage: 'Mark all as read'})}
+                    onClick={run(() => {
+                        dispatch(markTeamAsRead(teamId));
+                        toast(formatMessage({id: 'fusion.toast.markedRead', defaultMessage: 'Marked {name} as read'}, {name: team?.display_name || ''}));
+                    })}
+                />
+            )}
+            <MenuItem
+                icon={muted ? 'bell' : 'bell-off'}
+                label={muted ? formatMessage({id: 'fusion.serverMenu.unmute', defaultMessage: 'Unmute community'}) : formatMessage({id: 'fusion.serverMenu.mute', defaultMessage: 'Mute community'})}
+                sub={muted ? undefined : formatMessage({id: 'fusion.serverMenu.muteSub', defaultMessage: 'Mutes all its categories'})}
+                onClick={run(() => dispatch(setTeamMuted(teamId, !muted)))}
+            />
+            <MenuItem
+                icon='bell'
+                label={formatMessage({id: 'fusion.serverMenu.notifications', defaultMessage: 'Notification settings'})}
+                onClick={run(() => settings.open('notifications'))}
+            />
             {pluginItems.length > 0 && (
                 <>
                     <MenuSeparator/>

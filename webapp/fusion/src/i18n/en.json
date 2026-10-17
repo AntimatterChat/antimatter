@@ -26515,22 +26515,6 @@
     "defaultMessage": "Your roles",
     "description": ""
   },
-  "fusion.serverMenu.aiConnections": {
-    "defaultMessage": "Model connections…",
-    "description": "Community menu entry (under 'Organise the community') opening the community settings' Model connections tab; the ellipsis means a dialog opens."
-  },
-  "fusion.serverMenu.aiConnectionsSub": {
-    "defaultMessage": "The community's own AI providers",
-    "description": "Short subtitle under the 'Model connections…' community menu entry."
-  },
-  "fusion.serverMenu.attributes": {
-    "defaultMessage": "Member attributes…",
-    "description": ""
-  },
-  "fusion.serverMenu.attributesSub": {
-    "defaultMessage": "Company, site… on profiles",
-    "description": ""
-  },
   "fusion.serverMenu.browse": {
     "defaultMessage": "Browse channels",
     "description": ""
@@ -26549,7 +26533,7 @@
   },
   "fusion.serverMenu.hideMuted": {
     "defaultMessage": "Hide muted channels",
-    "description": ""
+    "description": "Community menu checkbox: hides the community's muted channels from the sidebar; a check shows when it is on."
   },
   "fusion.serverMenu.invite": {
     "defaultMessage": "Invite people",
@@ -26563,20 +26547,8 @@
     "defaultMessage": "{team} menu",
     "description": ""
   },
-  "fusion.serverMenu.layout": {
-    "defaultMessage": "Community layout…",
-    "description": ""
-  },
-  "fusion.serverMenu.layoutSub": {
-    "defaultMessage": "Presets and templates",
-    "description": ""
-  },
   "fusion.serverMenu.leave": {
     "defaultMessage": "Leave community",
-    "description": ""
-  },
-  "fusion.serverMenu.manageMembers": {
-    "defaultMessage": "Manage members",
     "description": ""
   },
   "fusion.serverMenu.markRead": {
@@ -26607,14 +26579,6 @@
     "defaultMessage": "Notification settings",
     "description": ""
   },
-  "fusion.serverMenu.onboarding": {
-    "defaultMessage": "Onboarding…",
-    "description": ""
-  },
-  "fusion.serverMenu.onboardingSub": {
-    "defaultMessage": "Questions newcomers answer",
-    "description": ""
-  },
   "fusion.serverMenu.otherPlugins": {
     "defaultMessage": "Other",
     "description": ""
@@ -26623,25 +26587,13 @@
     "defaultMessage": "Remove from {folder}",
     "description": ""
   },
-  "fusion.serverMenu.roles": {
-    "defaultMessage": "Roles…",
-    "description": ""
-  },
-  "fusion.serverMenu.rolesSub": {
-    "defaultMessage": "Colours, groups in the member list, badges",
-    "description": ""
-  },
   "fusion.serverMenu.selfRoles": {
     "defaultMessage": "Your roles…",
     "description": ""
   },
   "fusion.serverMenu.settings": {
     "defaultMessage": "Community settings",
-    "description": ""
-  },
-  "fusion.serverMenu.setup": {
-    "defaultMessage": "Organise the community",
-    "description": ""
+    "description": "Community menu entry opening the community's settings; shown to those who may manage something there (the community, its roles, members' roles, model connections or integrations)."
   },
   "fusion.serverMenu.toFolder": {
     "defaultMessage": "Add to folder",
@@ -26656,20 +26608,16 @@
     "description": ""
   },
   "fusion.serverMenu.unreadOnly": {
-    "defaultMessage": "Show unread channels only",
-    "description": ""
+    "defaultMessage": "Hide read channels",
+    "description": "Community menu checkbox: hides the channels without unread messages from the sidebar, showing only the unread ones; a check shows when it is on. Short: it fits on one line."
   },
   "fusion.serverMenu.userGroups": {
     "defaultMessage": "Teams…",
-    "description": ""
-  },
-  "fusion.serverMenu.userGroupsSub": {
-    "defaultMessage": "Teams with a tag, a lead and a channel",
-    "description": ""
+    "description": "Community menu entry opening the community's teams (groups of people with a tag, a lead and a channel); for those who don't get the community settings, which have a Teams page. The ellipsis means a dialog opens."
   },
   "fusion.serverMenu.viewMembers": {
     "defaultMessage": "View members",
-    "description": ""
+    "description": "Community menu entry opening the list of the community's members; for those who don't get the community settings, which have a Members page."
   },
   "fusion.settings.accessHistory": {
     "defaultMessage": "Access history",
@@ -27835,10 +27783,6 @@
     "defaultMessage": "Remove from recents",
     "description": ""
   },
-  "fusion.status.integrations": {
-    "defaultMessage": "Integrations",
-    "description": ""
-  },
   "fusion.status.label": {
     "defaultMessage": "Set your status",
     "description": ""
@@ -28051,6 +27995,10 @@
     "defaultMessage": "Model connections",
     "description": "Tab name in the community settings: the community's own model connections (AI providers' addresses and keys)."
   },
+  "fusion.teamSettings.allTeams": {
+    "defaultMessage": "Find and create teams…",
+    "description": "Button of the Teams tab of the community settings opening the teams dialog, to search, create and archive teams; the ellipsis means a dialog opens."
+  },
   "fusion.teamSettings.autolinks": {
     "defaultMessage": "Autolinks",
     "description": ""
@@ -28067,9 +28015,29 @@
     "defaultMessage": "Close",
     "description": "Button at the bottom of a tab of the community settings (Roles, Member attributes, Community layout) that closes the community settings."
   },
+  "fusion.teamSettings.integrations": {
+    "defaultMessage": "Integrations",
+    "description": "Last entry of the community settings' tab list: leaves the settings for the community's integrations pages (webhooks, slash commands, bot accounts); shown to those who may manage some."
+  },
+  "fusion.teamSettings.members": {
+    "defaultMessage": "Members",
+    "description": "Tab of the community settings listing the community's members; those who manage roles change a member's role or remove them there."
+  },
+  "fusion.teamSettings.noTeams": {
+    "defaultMessage": "No teams yet.",
+    "description": "Shown in the Teams tab of the community settings when the community has no teams."
+  },
   "fusion.teamSettings.overview": {
     "defaultMessage": "Overview",
     "description": ""
+  },
+  "fusion.teamSettings.teams": {
+    "defaultMessage": "Teams",
+    "description": "Tab of the community settings listing the community's teams (groups of people with a tag, a lead and a channel)."
+  },
+  "fusion.teamSettings.teamsDesc": {
+    "defaultMessage": "Teams have a tag people show next to their name, a lead and a channel.",
+    "description": "Introduction of the Teams tab of the community settings."
   },
   "fusion.theme.code": {
     "defaultMessage": "Theme code",
