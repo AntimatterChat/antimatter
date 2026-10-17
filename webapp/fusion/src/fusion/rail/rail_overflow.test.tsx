@@ -13,7 +13,9 @@ import RailDirectMessages from './rail_dms';
 const mockIds = Array.from({length: 12}, (_, i) => `dm${i}`);
 const mockChannels = mockIds.map((id, i) => TestHelper.getChannelMock({id, name: id, type: 'G', display_name: `group ${i}`, last_post_at: 1000 - i}));
 const mockCategory = {id: 'dms', type: 'direct_messages', channel_ids: mockIds};
-let mockUnreadIds: string[] = [];
+type Unread = {channel: typeof mockChannels[number]; mentions: number; messages: number};
+let mockUnread: Unread[] = [];
+const unreadIn = (ids: string[]) => mockChannels.filter((c) => ids.includes(c.id)).map((channel) => ({channel, mentions: 1, messages: 1}));
 
 jest.mock('fusion/shell/layout_context', () => ({useLayout: () => ({home: false, setHome: jest.fn(), setNavOpen: jest.fn()}), isPhoneLayout: () => false}));
 jest.mock('fusion/sidebar/home_sidebar', () => ({DM_FIND_ID: 'am-dm-find'}));
@@ -21,10 +23,11 @@ jest.mock('fusion/sidebar/server_categories', () => ({getSidebarCategories: () =
 jest.mock('fusion/sidebar/hidden', () => ({getHiddenChannelIds: () => new Set()}));
 jest.mock('fusion/privacy/blocking', () => ({getHiddenDirectIds: () => new Set()}));
 jest.mock('mattermost-redux/selectors/entities/channel_categories', () => ({
+    ...jest.requireActual('mattermost-redux/selectors/entities/channel_categories'),
     makeGetChannelIdsForCategory: () => (_: unknown, category: {channel_ids: string[]}) => category.channel_ids,
 }));
 jest.mock('fusion/selectors', () => ({
-    getUnreadDirectChannels: () => mockChannels.filter((c) => mockUnreadIds.includes(c.id)).map((channel) => ({channel, mentions: 1, messages: 1})),
+    getUnreadDirectChannels: () => mockUnread,
 }));
 
 describe('fusion/rail: the Open conversations overflow', () => {
@@ -43,21 +46,21 @@ describe('fusion/rail: the Open conversations overflow', () => {
     const bubbles = () => screen.queryAllByRole('button', {name: /^group \d+, 1 unread message$/}).map((b) => b.getAttribute('data-am-tip'));
 
     test('the unread conversations past the 10 the dock keeps by default wait on the rail', () => {
-        mockUnreadIds = ['dm0', 'dm10', 'dm11'];
+        mockUnread = unreadIn(['dm0', 'dm10', 'dm11']);
         render();
 
         expect(bubbles()).toEqual(['group 10', 'group 11']);
     });
 
     test('a smaller Open conversations setting sends more to the rail', () => {
-        mockUnreadIds = ['dm0', 'dm6', 'dm10'];
+        mockUnread = unreadIn(['dm0', 'dm6', 'dm10']);
         render('5');
 
         expect(bubbles()).toEqual(['group 6', 'group 10']);
     });
 
     test('none on the rail when every unread conversation fits in the dock', () => {
-        mockUnreadIds = ['dm0', 'dm3', 'dm9'];
+        mockUnread = unreadIn(['dm0', 'dm3', 'dm9']);
         render();
 
         expect(bubbles()).toEqual([]);
