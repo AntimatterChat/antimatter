@@ -4,6 +4,7 @@
 import React from 'react';
 
 import type {Channel} from '@mattermost/types/channels';
+import type {TeamKind} from '@mattermost/types/teams';
 
 import {patchTeam} from 'mattermost-redux/actions/teams';
 
@@ -62,14 +63,14 @@ const dev = ch('dev', 'dev');
 const secret = ch('secret', 'secret', {type: 'P'});
 const all = [town, offTopic, dev, secret];
 
-function state({allChannels = false, defaultChannelId = '', channels = all} = {}) {
+function state({allChannels = false, defaultChannelId = '', channels = all, kind = 'community' as TeamKind} = {}) {
     return {
         entities: {
             general: {config: {}},
             users: {currentUserId: 'me', profiles: {me: TestHelper.getUserMock({id: 'me', roles: 'system_user', delete_at: 0})}},
             teams: {
                 currentTeamId: 't1',
-                teams: {t1: TestHelper.getTeamMock({id: 't1', name: 'lumen', display_name: 'Lumen', all_channels_membership: allChannels, default_channel_id: defaultChannelId})},
+                teams: {t1: TestHelper.getTeamMock({id: 't1', name: 'lumen', display_name: 'Lumen', all_channels_membership: allChannels, default_channel_id: defaultChannelId, kind})},
                 myMembers: {t1: {team_id: 't1', user_id: 'me', roles: 'team_user'}},
             },
             channels: {
@@ -140,6 +141,31 @@ describe('fusion/popovers/ChannelMenu: default channels and all-channels communi
         mockChannelPerms = new Set();
         render(dev);
         expect(item('Archive channel…')).not.toBeInTheDocument();
+    });
+
+    // Antimatter: in a corporate community, the channel's admins (whoever created it) archive it; in a community, not
+    // without the permission.
+    test('in a corporate community, the channel\'s admins archive it', () => {
+        mockChannelPerms = new Set(['manage_channel_roles']);
+        render(dev, state({kind: 'corporate'}));
+        expect(item('Archive channel…')).toBeInTheDocument();
+    });
+
+    test('in a community, the channel\'s admins don\'t archive it without the permission', () => {
+        mockChannelPerms = new Set(['manage_channel_roles']);
+        render(dev);
+        expect(item('Archive channel…')).not.toBeInTheDocument();
+    });
+
+    test('an archived channel offers no permissions to change', () => {
+        mockTeamPerms = new Set(ADMIN);
+        mockChannelPerms = new Set(['manage_channel_roles']);
+        const {unmount} = render(dev);
+        expect(item(/Permissions…/)).toBeInTheDocument();
+        unmount();
+
+        render(ch('old', 'old', {delete_at: 5}));
+        expect(item(/Permissions…/)).not.toBeInTheDocument();
     });
 
     test('an admin makes a channel the default one', async () => {
