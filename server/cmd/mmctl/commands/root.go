@@ -81,7 +81,7 @@ func applyAmctlEnvAliases() {
 }
 
 func printPanic(x any) {
-	u, err := url.Parse("https://github.com/AntimatterChat/antimatter/issues/new")
+	u, err := url.Parse("https://github.com/AntimatterChat/community/issues/new")
 	if err != nil {
 		panic(err)
 	}
