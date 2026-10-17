@@ -18,8 +18,10 @@ import (
 type TimerLayer struct {
 	store.Store
 	Metrics                         einterfaces.MetricsInterface
+	AIAgentStore                    store.AIAgentStore
 	AIConnectionStore               store.AIConnectionStore
 	AccessControlPolicyStore        store.AccessControlPolicyStore
+	AgentActivityStore              store.AgentActivityStore
 	AttributesStore                 store.AttributesStore
 	AuditStore                      store.AuditStore
 	AutoTranslationStore            store.AutoTranslationStore
@@ -87,12 +89,20 @@ type TimerLayer struct {
 	WebhookStore                    store.WebhookStore
 }
 
+func (s *TimerLayer) AIAgent() store.AIAgentStore {
+	return s.AIAgentStore
+}
+
 func (s *TimerLayer) AIConnection() store.AIConnectionStore {
 	return s.AIConnectionStore
 }
 
 func (s *TimerLayer) AccessControlPolicy() store.AccessControlPolicyStore {
 	return s.AccessControlPolicyStore
+}
+
+func (s *TimerLayer) AgentActivity() store.AgentActivityStore {
+	return s.AgentActivityStore
 }
 
 func (s *TimerLayer) Attributes() store.AttributesStore {
@@ -355,6 +365,11 @@ func (s *TimerLayer) Webhook() store.WebhookStore {
 	return s.WebhookStore
 }
 
+type TimerLayerAIAgentStore struct {
+	store.AIAgentStore
+	Root *TimerLayer
+}
+
 type TimerLayerAIConnectionStore struct {
 	store.AIConnectionStore
 	Root *TimerLayer
@@ -362,6 +377,11 @@ type TimerLayerAIConnectionStore struct {
 
 type TimerLayerAccessControlPolicyStore struct {
 	store.AccessControlPolicyStore
+	Root *TimerLayer
+}
+
+type TimerLayerAgentActivityStore struct {
+	store.AgentActivityStore
 	Root *TimerLayer
 }
 
@@ -688,6 +708,118 @@ type TimerLayerViewStore struct {
 type TimerLayerWebhookStore struct {
 	store.WebhookStore
 	Root *TimerLayer
+}
+
+func (s *TimerLayerAIAgentStore) Delete(rctx request.CTX, userID string, deleteAt int64) error {
+	start := time.Now()
+
+	err := s.AIAgentStore.Delete(rctx, userID, deleteAt)
+
+	elapsed := float64(time.Since(start)) / float64(time.Second)
+	if s.Root.Metrics != nil {
+		success := "false"
+		if err == nil {
+			success = "true"
+		}
+		s.Root.Metrics.ObserveStoreMethodDuration("AIAgentStore.Delete", success, elapsed)
+	}
+	return err
+}
+
+func (s *TimerLayerAIAgentStore) Get(rctx request.CTX, userID string) (*model.AIAgent, error) {
+	start := time.Now()
+
+	result, err := s.AIAgentStore.Get(rctx, userID)
+
+	elapsed := float64(time.Since(start)) / float64(time.Second)
+	if s.Root.Metrics != nil {
+		success := "false"
+		if err == nil {
+			success = "true"
+		}
+		s.Root.Metrics.ObserveStoreMethodDuration("AIAgentStore.Get", success, elapsed)
+	}
+	return result, err
+}
+
+func (s *TimerLayerAIAgentStore) GetAgentsPluginUserAgents(rctx request.CTX) ([]*model.AIAgentsPluginAgent, error) {
+	start := time.Now()
+
+	result, err := s.AIAgentStore.GetAgentsPluginUserAgents(rctx)
+
+	elapsed := float64(time.Since(start)) / float64(time.Second)
+	if s.Root.Metrics != nil {
+		success := "false"
+		if err == nil {
+			success = "true"
+		}
+		s.Root.Metrics.ObserveStoreMethodDuration("AIAgentStore.GetAgentsPluginUserAgents", success, elapsed)
+	}
+	return result, err
+}
+
+func (s *TimerLayerAIAgentStore) GetAll(rctx request.CTX) ([]*model.AIAgent, error) {
+	start := time.Now()
+
+	result, err := s.AIAgentStore.GetAll(rctx)
+
+	elapsed := float64(time.Since(start)) / float64(time.Second)
+	if s.Root.Metrics != nil {
+		success := "false"
+		if err == nil {
+			success = "true"
+		}
+		s.Root.Metrics.ObserveStoreMethodDuration("AIAgentStore.GetAll", success, elapsed)
+	}
+	return result, err
+}
+
+func (s *TimerLayerAIAgentStore) GetForScopes(rctx request.CTX, scopes []string) ([]*model.AIAgent, error) {
+	start := time.Now()
+
+	result, err := s.AIAgentStore.GetForScopes(rctx, scopes)
+
+	elapsed := float64(time.Since(start)) / float64(time.Second)
+	if s.Root.Metrics != nil {
+		success := "false"
+		if err == nil {
+			success = "true"
+		}
+		s.Root.Metrics.ObserveStoreMethodDuration("AIAgentStore.GetForScopes", success, elapsed)
+	}
+	return result, err
+}
+
+func (s *TimerLayerAIAgentStore) Save(rctx request.CTX, agent *model.AIAgent) (*model.AIAgent, error) {
+	start := time.Now()
+
+	result, err := s.AIAgentStore.Save(rctx, agent)
+
+	elapsed := float64(time.Since(start)) / float64(time.Second)
+	if s.Root.Metrics != nil {
+		success := "false"
+		if err == nil {
+			success = "true"
+		}
+		s.Root.Metrics.ObserveStoreMethodDuration("AIAgentStore.Save", success, elapsed)
+	}
+	return result, err
+}
+
+func (s *TimerLayerAIAgentStore) Update(rctx request.CTX, agent *model.AIAgent) (*model.AIAgent, error) {
+	start := time.Now()
+
+	result, err := s.AIAgentStore.Update(rctx, agent)
+
+	elapsed := float64(time.Since(start)) / float64(time.Second)
+	if s.Root.Metrics != nil {
+		success := "false"
+		if err == nil {
+			success = "true"
+		}
+		s.Root.Metrics.ObserveStoreMethodDuration("AIAgentStore.Update", success, elapsed)
+	}
+	return result, err
 }
 
 func (s *TimerLayerAIConnectionStore) AddUsage(rctx request.CTX, usage *model.AIUsage) error {
@@ -1038,6 +1170,70 @@ func (s *TimerLayerAccessControlPolicyStore) SetMembershipAutoAdd(rctx request.C
 		s.Root.Metrics.ObserveStoreMethodDuration("AccessControlPolicyStore.SetMembershipAutoAdd", success, elapsed)
 	}
 	return result, err
+}
+
+func (s *TimerLayerAgentActivityStore) Delete(rctx request.CTX, userID string) error {
+	start := time.Now()
+
+	err := s.AgentActivityStore.Delete(rctx, userID)
+
+	elapsed := float64(time.Since(start)) / float64(time.Second)
+	if s.Root.Metrics != nil {
+		success := "false"
+		if err == nil {
+			success = "true"
+		}
+		s.Root.Metrics.ObserveStoreMethodDuration("AgentActivityStore.Delete", success, elapsed)
+	}
+	return err
+}
+
+func (s *TimerLayerAgentActivityStore) Get(rctx request.CTX, userID string) (*model.AgentActivity, error) {
+	start := time.Now()
+
+	result, err := s.AgentActivityStore.Get(rctx, userID)
+
+	elapsed := float64(time.Since(start)) / float64(time.Second)
+	if s.Root.Metrics != nil {
+		success := "false"
+		if err == nil {
+			success = "true"
+		}
+		s.Root.Metrics.ObserveStoreMethodDuration("AgentActivityStore.Get", success, elapsed)
+	}
+	return result, err
+}
+
+func (s *TimerLayerAgentActivityStore) GetMany(rctx request.CTX, userIDs []string) ([]*model.AgentActivity, error) {
+	start := time.Now()
+
+	result, err := s.AgentActivityStore.GetMany(rctx, userIDs)
+
+	elapsed := float64(time.Since(start)) / float64(time.Second)
+	if s.Root.Metrics != nil {
+		success := "false"
+		if err == nil {
+			success = "true"
+		}
+		s.Root.Metrics.ObserveStoreMethodDuration("AgentActivityStore.GetMany", success, elapsed)
+	}
+	return result, err
+}
+
+func (s *TimerLayerAgentActivityStore) Save(rctx request.CTX, activity *model.AgentActivity) error {
+	start := time.Now()
+
+	err := s.AgentActivityStore.Save(rctx, activity)
+
+	elapsed := float64(time.Since(start)) / float64(time.Second)
+	if s.Root.Metrics != nil {
+		success := "false"
+		if err == nil {
+			success = "true"
+		}
+		s.Root.Metrics.ObserveStoreMethodDuration("AgentActivityStore.Save", success, elapsed)
+	}
+	return err
 }
 
 func (s *TimerLayerAttributesStore) ClearUserAttributesCache() {
@@ -1556,6 +1752,38 @@ func (s *TimerLayerBotStore) Save(bot *model.Bot) (*model.Bot, error) {
 			success = "true"
 		}
 		s.Root.Metrics.ObserveStoreMethodDuration("BotStore.Save", success, elapsed)
+	}
+	return result, err
+}
+
+func (s *TimerLayerBotStore) SetKind(userID string, kind string) error {
+	start := time.Now()
+
+	err := s.BotStore.SetKind(userID, kind)
+
+	elapsed := float64(time.Since(start)) / float64(time.Second)
+	if s.Root.Metrics != nil {
+		success := "false"
+		if err == nil {
+			success = "true"
+		}
+		s.Root.Metrics.ObserveStoreMethodDuration("BotStore.SetKind", success, elapsed)
+	}
+	return err
+}
+
+func (s *TimerLayerBotStore) SetKindForOwner(ownerID string, kind string) ([]string, error) {
+	start := time.Now()
+
+	result, err := s.BotStore.SetKindForOwner(ownerID, kind)
+
+	elapsed := float64(time.Since(start)) / float64(time.Second)
+	if s.Root.Metrics != nil {
+		success := "false"
+		if err == nil {
+			success = "true"
+		}
+		s.Root.Metrics.ObserveStoreMethodDuration("BotStore.SetKindForOwner", success, elapsed)
 	}
 	return result, err
 }
@@ -16739,8 +16967,10 @@ func New(childStore store.Store, metrics einterfaces.MetricsInterface) *TimerLay
 		Metrics: metrics,
 	}
 
+	newStore.AIAgentStore = &TimerLayerAIAgentStore{AIAgentStore: childStore.AIAgent(), Root: &newStore}
 	newStore.AIConnectionStore = &TimerLayerAIConnectionStore{AIConnectionStore: childStore.AIConnection(), Root: &newStore}
 	newStore.AccessControlPolicyStore = &TimerLayerAccessControlPolicyStore{AccessControlPolicyStore: childStore.AccessControlPolicy(), Root: &newStore}
+	newStore.AgentActivityStore = &TimerLayerAgentActivityStore{AgentActivityStore: childStore.AgentActivity(), Root: &newStore}
 	newStore.AttributesStore = &TimerLayerAttributesStore{AttributesStore: childStore.Attributes(), Root: &newStore}
 	newStore.AuditStore = &TimerLayerAuditStore{AuditStore: childStore.Audit(), Root: &newStore}
 	newStore.AutoTranslationStore = &TimerLayerAutoTranslationStore{AutoTranslationStore: childStore.AutoTranslation(), Root: &newStore}

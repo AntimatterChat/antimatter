@@ -182,6 +182,54 @@ func (_m *BotStore) Save(bot *model.Bot) (*model.Bot, error) {
 	return r0, r1
 }
 
+// SetKind provides a mock function with given fields: userID, kind
+func (_m *BotStore) SetKind(userID string, kind string) error {
+	ret := _m.Called(userID, kind)
+
+	if len(ret) == 0 {
+		panic("no return value specified for SetKind")
+	}
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(string, string) error); ok {
+		r0 = rf(userID, kind)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// SetKindForOwner provides a mock function with given fields: ownerID, kind
+func (_m *BotStore) SetKindForOwner(ownerID string, kind string) ([]string, error) {
+	ret := _m.Called(ownerID, kind)
+
+	if len(ret) == 0 {
+		panic("no return value specified for SetKindForOwner")
+	}
+
+	var r0 []string
+	var r1 error
+	if rf, ok := ret.Get(0).(func(string, string) ([]string, error)); ok {
+		return rf(ownerID, kind)
+	}
+	if rf, ok := ret.Get(0).(func(string, string) []string); ok {
+		r0 = rf(ownerID, kind)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]string)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(string, string) error); ok {
+		r1 = rf(ownerID, kind)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // Update provides a mock function with given fields: bot
 func (_m *BotStore) Update(bot *model.Bot) (*model.Bot, error) {
 	ret := _m.Called(bot)
