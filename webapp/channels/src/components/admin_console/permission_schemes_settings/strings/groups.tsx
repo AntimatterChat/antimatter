@@ -135,6 +135,16 @@ export const groupRolesStrings: Record<string, Record<string, MessageDescriptor>
             defaultMessage: 'Manage own and others\' AI agents.',
         },
     }),
+    manage_ai_connections_group: defineMessages({
+        name: {
+            id: 'admin.permissions.group.manage_ai_connections.name',
+            defaultMessage: 'Manage model connections',
+        },
+        description: {
+            id: 'admin.permissions.group.manage_ai_connections.description',
+            defaultMessage: 'Manage the AI providers\' addresses and keys: the server-wide connections, and a community\'s own.',
+        },
+    }),
     manage_slash_commands_group: defineMessages({
         name: {
             id: 'admin.permissions.group.manage_slash_commands.name',

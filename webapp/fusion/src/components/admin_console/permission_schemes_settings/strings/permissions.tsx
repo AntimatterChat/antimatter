@@ -55,6 +55,26 @@ export const permissionRolesStrings: Record<string, Record<string, MessageDescri
             defaultMessage: 'Create and manage AI agents for other users.',
         },
     }),
+    manage_ai_connections: defineMessages({
+        name: {
+            id: 'admin.permissions.permission.manage_ai_connections.name',
+            defaultMessage: 'Manage server-wide model connections',
+        },
+        description: {
+            id: 'admin.permissions.permission.manage_ai_connections.description',
+            defaultMessage: 'Add, edit and delete the model connections of the whole server, see their usage, share them with communities, and pick the ones the built-in AI features use.',
+        },
+    }),
+    manage_team_ai_connections: defineMessages({
+        name: {
+            id: 'admin.permissions.permission.manage_team_ai_connections.name',
+            defaultMessage: 'Manage the community\'s model connections',
+        },
+        description: {
+            id: 'admin.permissions.permission.manage_team_ai_connections.description',
+            defaultMessage: 'Add, edit and delete the model connections a community uses on its own, and see their usage.',
+        },
+    }),
     create_direct_channel: defineMessages({
         name: {
             id: 'admin.permissions.permission.create_direct_channel.name',

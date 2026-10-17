@@ -274,6 +274,10 @@ const values = {
     CREATE_CUSTOM_GROUP: 'create_custom_group',
     MANAGE_OWN_AGENT: 'manage_own_agent',
     MANAGE_OTHERS_AGENT: 'manage_others_agent',
+
+    // Antimatter: model connections, the server-wide ones (system) and a community's own (team).
+    MANAGE_AI_CONNECTIONS: 'manage_ai_connections',
+    MANAGE_TEAM_AI_CONNECTIONS: 'manage_team_ai_connections',
     MANAGE_CUSTOM_GROUP_MEMBERS: 'manage_custom_group_members',
     EDIT_CUSTOM_GROUP: 'edit_custom_group',
     DELETE_CUSTOM_GROUP: 'delete_custom_group',

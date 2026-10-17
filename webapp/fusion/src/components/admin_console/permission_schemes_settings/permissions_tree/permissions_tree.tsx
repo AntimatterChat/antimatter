@@ -231,6 +231,19 @@ export default class PermissionsTree extends React.PureComponent<Props, State> {
         if (!integrationsGroup.permissions.some((p: any) => p.id === 'manage_agents_group')) {
             integrationsGroup.permissions.push(manageAgentsGroup);
         }
+
+        // Antimatter: model connections, the server-wide ones (a system permission, so not in team schemes) and a
+        // community's own.
+        const manageAIConnectionsGroup = {
+            id: 'manage_ai_connections_group',
+            permissions: [
+                Permissions.MANAGE_AI_CONNECTIONS,
+                Permissions.MANAGE_TEAM_AI_CONNECTIONS,
+            ],
+        };
+        if (!integrationsGroup.permissions.some((p: any) => p.id === 'manage_ai_connections_group')) {
+            integrationsGroup.permissions.push(manageAIConnectionsGroup);
+        }
         if (config.EnableOAuthServiceProvider === 'true' && !integrationsGroup.permissions.includes(Permissions.MANAGE_OAUTH)) {
             integrationsGroup.permissions.push(Permissions.MANAGE_OAUTH);
         }

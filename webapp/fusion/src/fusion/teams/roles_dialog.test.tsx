@@ -88,4 +88,35 @@ describe('fusion/teams/RolesSettings', () => {
         expect(screen.getByRole('switch', {name: 'Manage messages'})).toHaveAttribute('aria-checked', 'false');
         expect(screen.getByRole('switch', {name: 'Manage messages'})).toBeEnabled();
     });
+
+    test('Administrator shows the management of the community\'s model connections on', async () => {
+        jest.spyOn(Client4, 'getTeamRole').mockResolvedValue({permissions: ['manage_team']} as never);
+        renderWithContext(<RolesSettings onClose={jest.fn()}/>, state());
+        await userEvent.click(screen.getByRole('button', {name: 'Edit the role'}));
+
+        const connections = await screen.findByRole('switch', {name: 'Manage model connections'});
+        await waitFor(() => expect(connections).toHaveAttribute('aria-checked', 'true'));
+        expect(connections).toBeDisabled();
+    });
+
+    test('a role can grant the management of the community\'s model connections on its own', async () => {
+        jest.spyOn(Client4, 'getTeamRole').mockResolvedValue({permissions: []} as never);
+        const update = jest.spyOn(Client4, 'updateTeamRolePermissions').mockResolvedValue({permissions: ['manage_team_ai_connections']} as never);
+        const patch = jest.spyOn(Client4, 'patchGroup').mockResolvedValue(mods as never);
+        const admin = state();
+        (admin as unknown as {entities: {roles: {roles: {team_admin: {permissions: string[]}}}}}).entities.roles.roles.team_admin.permissions.push('manage_team_ai_connections');
+        renderWithContext(<RolesSettings onClose={jest.fn()}/>, admin);
+        await userEvent.click(screen.getByRole('button', {name: 'Edit the role'}));
+
+        const connections = await screen.findByRole('switch', {name: 'Manage model connections'});
+        await waitFor(() => expect(connections).toBeEnabled());
+        expect(connections).toHaveAttribute('aria-checked', 'false');
+        await userEvent.click(connections);
+        expect(connections).toHaveAttribute('aria-checked', 'true');
+
+        await userEvent.click(screen.getByRole('button', {name: 'Save'}));
+        await waitFor(() => expect(update).toHaveBeenCalledWith('mods', ['manage_team_ai_connections']));
+        patch.mockRestore();
+        update.mockRestore();
+    });
 });

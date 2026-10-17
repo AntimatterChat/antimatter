@@ -1066,6 +1066,8 @@ export const PermissionsScope = {
     [Permissions.MANAGE_CUSTOM_GROUP_MEMBERS]: 'system_scope',
     [Permissions.MANAGE_OWN_AGENT]: 'system_scope',
     [Permissions.MANAGE_OTHERS_AGENT]: 'system_scope',
+    [Permissions.MANAGE_AI_CONNECTIONS]: 'system_scope',
+    [Permissions.MANAGE_TEAM_AI_CONNECTIONS]: 'team_scope',
     [Permissions.USE_SLASH_COMMANDS]: 'channel_scope',
     [Permissions.ADD_BOOKMARK_PUBLIC_CHANNEL]: 'channel_scope',
     [Permissions.EDIT_BOOKMARK_PUBLIC_CHANNEL]: 'channel_scope',
@@ -1204,6 +1206,7 @@ export const DefaultRolePermissions = {
         Permissions.MANAGE_PRIVATE_CHANNEL_BANNER,
         Permissions.MANAGE_CHANNEL_ACCESS_RULES,
         Permissions.MANAGE_TEAM_ACCESS_RULES,
+        Permissions.MANAGE_TEAM_AI_CONNECTIONS,
     ],
     guests: [
         Permissions.EDIT_POST,
