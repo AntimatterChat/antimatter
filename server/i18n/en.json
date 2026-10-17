@@ -6617,9 +6617,29 @@
     "description": "The message a person sends to an agent (in their direct message with it) with the 'Find action items' message action. {{.Link}} is a link to the thread."
   },
   {
+    "id": "app.ai.agent.task.request.find_action_items_channel",
+    "translation": "Find the action items in the latest messages of {{.Channel}}",
+    "description": "The message a person sends to an agent (in their direct message with it) to find the action items in a channel. {{.Channel}} is the channel as ~name, or 'this conversation'."
+  },
+  {
+    "id": "app.ai.agent.task.request.find_action_items_channel_since",
+    "translation": "Find the action items in {{.Channel}} since {{.Since}}",
+    "description": "The message a person sends to an agent to find the action items in a channel's unread or recent messages. {{.Channel}} is the channel as ~name, or 'this conversation'; {{.Since}} is a date and time in UTC, e.g. 2026-10-18 14:05 UTC."
+  },
+  {
     "id": "app.ai.agent.task.request.find_open_questions",
     "translation": "Find the open questions in this thread: {{.Link}}",
     "description": "The message a person sends to an agent (in their direct message with it) with the 'Find open questions' message action. {{.Link}} is a link to the thread."
+  },
+  {
+    "id": "app.ai.agent.task.request.find_open_questions_channel",
+    "translation": "Find the open questions in the latest messages of {{.Channel}}",
+    "description": "The message a person sends to an agent (in their direct message with it) to find the open questions in a channel. {{.Channel}} is the channel as ~name, or 'this conversation'."
+  },
+  {
+    "id": "app.ai.agent.task.request.find_open_questions_channel_since",
+    "translation": "Find the open questions in {{.Channel}} since {{.Since}}",
+    "description": "The message a person sends to an agent to find the open questions in a channel's unread or recent messages. {{.Channel}} is the channel as ~name, or 'this conversation'; {{.Since}} is a date and time in UTC, e.g. 2026-10-18 14:05 UTC."
   },
   {
     "id": "app.ai.agent.task.request.summarize_channel",

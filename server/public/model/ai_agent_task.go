@@ -11,8 +11,8 @@ import (
 )
 
 // Agent tasks (Antimatter) are what the AI chat and the message actions ask an agent to do with something the person
-// can read: summarise a thread, find its action items or its open questions, summarise a channel (since a time) or
-// answer a question about it, summarise a call's transcription. A task becomes the person's message in their direct
+// can read: summarise a thread, find the action items or the open questions of a thread or of a channel's messages
+// (since a time), summarise a channel or answer a question about it, summarise a call's transcription. A task becomes the person's message in their direct
 // message with the agent, marked with the task (PostPropAgentTask); the agent runtime answers it there like any
 // message, reading the task's subject for the person, with their permissions, at each turn of that conversation.
 
@@ -40,7 +40,8 @@ const (
 	AIAgentConversationTitleMaxRunes = 120
 )
 
-var aiAgentThreadTasks = []string{AIAgentTaskSummarizeThread, AIAgentTaskFindActionItems, AIAgentTaskFindOpenQuestions}
+// aiAgentFindTasks look for things in a thread (on a post) or in a channel's messages (on a channel, since a time).
+var aiAgentFindTasks = []string{AIAgentTaskFindActionItems, AIAgentTaskFindOpenQuestions}
 
 // AIAgentTaskRequest asks an agent for a task: on a post (a thread's tasks, a transcription) or on a channel.
 type AIAgentTaskRequest struct {
@@ -55,12 +56,12 @@ type AIAgentTaskRequest struct {
 
 // IsThreadTask tells whether the task is about a thread (the post's).
 func (r *AIAgentTaskRequest) IsThreadTask() bool {
-	return slices.Contains(aiAgentThreadTasks, r.Task)
+	return r.Task == AIAgentTaskSummarizeThread || (slices.Contains(aiAgentFindTasks, r.Task) && r.PostId != "")
 }
 
-// IsChannelTask tells whether the task is about a channel.
+// IsChannelTask tells whether the task is about a channel's messages.
 func (r *AIAgentTaskRequest) IsChannelTask() bool {
-	return r.Task == AIAgentTaskSummarizeChannel || r.Task == AIAgentTaskAskChannel
+	return r.Task == AIAgentTaskSummarizeChannel || r.Task == AIAgentTaskAskChannel || (slices.Contains(aiAgentFindTasks, r.Task) && r.ChannelId != "")
 }
 
 // IsValid checks a task's request: a known task, with the subject it needs and nothing else.
@@ -69,12 +70,18 @@ func (r *AIAgentTaskRequest) IsValid() *AppError {
 	invalid := func(id string) *AppError {
 		return NewAppError("AIAgentTaskRequest.IsValid", id, nil, "", http.StatusBadRequest)
 	}
+	onPost := r.Task == AIAgentTaskSummarizeThread || r.Task == AIAgentTaskSummarizeTranscription
+	onChannel := r.Task == AIAgentTaskSummarizeChannel || r.Task == AIAgentTaskAskChannel
+	if slices.Contains(aiAgentFindTasks, r.Task) {
+		// On a thread or on a channel's messages, as asked.
+		onPost, onChannel = r.ChannelId == "", r.ChannelId != ""
+	}
 	switch {
-	case r.IsThreadTask() || r.Task == AIAgentTaskSummarizeTranscription:
+	case onPost:
 		if !IsValidId(r.PostId) || r.ChannelId != "" || r.Since != 0 || r.Question != "" {
 			return invalid("model.ai_agent_task.post_id.app_error")
 		}
-	case r.IsChannelTask():
+	case onChannel:
 		if !IsValidId(r.ChannelId) || r.PostId != "" || r.Since < 0 {
 			return invalid("model.ai_agent_task.channel_id.app_error")
 		}
@@ -82,7 +89,7 @@ func (r *AIAgentTaskRequest) IsValid() *AppError {
 		if r.Task == AIAgentTaskAskChannel && (question == "" || utf8.RuneCountInString(question) > AIAgentTaskQuestionMaxRunes) {
 			return invalid("model.ai_agent_task.question.app_error")
 		}
-		if r.Task == AIAgentTaskSummarizeChannel && r.Question != "" {
+		if r.Task != AIAgentTaskAskChannel && r.Question != "" {
 			return invalid("model.ai_agent_task.question.app_error")
 		}
 	default:

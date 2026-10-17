@@ -453,10 +453,10 @@
         - ai agents
       summary: Ask an agent for a task
       description: >
-        Asks a built-in agent to summarise a thread (`summarize_thread`), find its action items
-        (`find_action_items`) or open questions (`find_open_questions`), summarise a channel (`summarize_channel`,
-        from `since` on) or answer a question about it (`ask_channel`), or summarise a call's transcription
-        (`summarize_transcription`). The request becomes your message in your direct message with the agent, in
+        Asks a built-in agent to summarise a thread (`summarize_thread`), find the action items
+        (`find_action_items`) or open questions (`find_open_questions`) of a thread (`post_id`) or of a channel's
+        messages (`channel_id`, from `since` on), summarise a channel (`summarize_channel`, from `since` on) or
+        answer a question about it (`ask_channel`), or summarise a call's transcription (`summarize_transcription`). The request becomes your message in your direct message with the agent, in
         your language; the agent answers it there, in its thread, reading what the task is about as you, at each
         turn. The answer is that message.
 

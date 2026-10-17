@@ -29,6 +29,12 @@ func TestAIAgentTaskRequestIsValid(t *testing.T) {
 		"no task":                          {AIAgentTaskRequest{PostId: post}, false},
 		"a thread's task without its post": {AIAgentTaskRequest{Task: AIAgentTaskSummarizeThread}, false},
 		"a thread's task with a channel":   {AIAgentTaskRequest{Task: AIAgentTaskSummarizeThread, PostId: post, ChannelId: channel}, false},
+		"a channel's action items":         {AIAgentTaskRequest{Task: AIAgentTaskFindActionItems, ChannelId: channel, Since: 1700000000000}, true},
+		"a channel's open questions":       {AIAgentTaskRequest{Task: AIAgentTaskFindOpenQuestions, ChannelId: channel}, true},
+		"action items of both":             {AIAgentTaskRequest{Task: AIAgentTaskFindActionItems, PostId: post, ChannelId: channel}, false},
+		"action items of neither":          {AIAgentTaskRequest{Task: AIAgentTaskFindActionItems}, false},
+		"a thread's action items since":    {AIAgentTaskRequest{Task: AIAgentTaskFindActionItems, PostId: post, Since: 1}, false},
+		"action items with a question":     {AIAgentTaskRequest{Task: AIAgentTaskFindOpenQuestions, ChannelId: channel, Question: "why?"}, false},
 		"a bad post ID":                    {AIAgentTaskRequest{Task: AIAgentTaskSummarizeThread, PostId: "x"}, false},
 		"a channel's task with a post":     {AIAgentTaskRequest{Task: AIAgentTaskSummarizeChannel, ChannelId: channel, PostId: post}, false},
 		"a channel's task without one":     {AIAgentTaskRequest{Task: AIAgentTaskSummarizeChannel}, false},
@@ -91,4 +97,17 @@ func TestAIAgentConversationTitle(t *testing.T) {
 func TestAIAgentConversationLastActivity(t *testing.T) {
 	assert.Equal(t, int64(20), (&AIAgentConversation{CreateAt: 10, LastReplyAt: 20}).LastActivityAt())
 	assert.Equal(t, int64(10), (&AIAgentConversation{CreateAt: 10}).LastActivityAt(), "not answered yet")
+}
+
+func TestAIAgentTaskKinds(t *testing.T) {
+	post, channel := NewId(), NewId()
+	thread := &AIAgentTaskRequest{Task: AIAgentTaskFindActionItems, PostId: post}
+	assert.True(t, thread.IsThreadTask())
+	assert.False(t, thread.IsChannelTask())
+	inChannel := &AIAgentTaskRequest{Task: AIAgentTaskFindOpenQuestions, ChannelId: channel}
+	assert.True(t, inChannel.IsChannelTask())
+	assert.False(t, inChannel.IsThreadTask())
+	transcription := &AIAgentTaskRequest{Task: AIAgentTaskSummarizeTranscription, PostId: post}
+	assert.False(t, transcription.IsThreadTask(), "a transcription is read from its files")
+	assert.False(t, transcription.IsChannelTask())
 }

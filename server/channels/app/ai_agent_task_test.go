@@ -184,6 +184,15 @@ func TestAIAgentChannelTasks(t *testing.T) {
 	assert.Contains(t, text, "The demo moved to Thursday.")
 	assert.NotContains(t, text, "An old message.", "only since the time asked")
 
+	request, appErr = th.App.StartAIAgentTask(th.Context, sessionOf(th, th.BasicUser), agent.AIAgent, &model.AIAgentTaskRequest{Task: model.AIAgentTaskFindActionItems, ChannelId: th.BasicChannel.Id, Since: since})
+	require.Nil(t, appErr)
+	assert.Contains(t, request.Message, "Find the action items in ~"+th.BasicChannel.Name)
+	waitForTaskAnswer(t, th, agent.UserId, request)
+	text = lastLLMRequestText(t, f)
+	assert.Contains(t, text, "List the action items in the messages below")
+	assert.Contains(t, text, "The demo moved to Thursday.")
+	assert.NotContains(t, text, "An old message.")
+
 	request, appErr = th.App.StartAIAgentTask(th.Context, sessionOf(th, th.BasicUser), agent.AIAgent, &model.AIAgentTaskRequest{Task: model.AIAgentTaskAskChannel, ChannelId: th.BasicChannel.Id, Question: "When is the demo?"})
 	require.Nil(t, appErr)
 	assert.Contains(t, request.Message, "When is the demo?")

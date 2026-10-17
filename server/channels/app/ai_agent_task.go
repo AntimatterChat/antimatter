@@ -39,8 +39,8 @@ const (
 // agentTaskInstructions tells the model what each task is. The person's message says it too, in their language.
 var agentTaskInstructions = map[string]string{
 	model.AIAgentTaskSummarizeThread:        "Summarise the thread below for the person: what it's about, the main points, what was decided and who said what that matters. Keep it short.",
-	model.AIAgentTaskFindActionItems:        "List the action items in the thread below: who is to do what, and by when if the thread says. Say so if there are none.",
-	model.AIAgentTaskFindOpenQuestions:      "List the questions in the thread below that are still unanswered, and who asked them. Say so if there are none.",
+	model.AIAgentTaskFindActionItems:        "List the action items in the messages below: who is to do what, and by when if the messages say. Say so if there are none.",
+	model.AIAgentTaskFindOpenQuestions:      "List the questions in the messages below that are still unanswered, and who asked them. Say so if there are none.",
 	model.AIAgentTaskSummarizeChannel:       "Summarise the channel's messages below: the main topics, what was decided, and anything that needs the person's attention. Keep it short.",
 	model.AIAgentTaskAskChannel:             "Answer the person's question about the channel from its messages below. When the messages don't say, say so rather than guess. The question: ",
 	model.AIAgentTaskSummarizeTranscription: "Summarise the call's transcription below: a short summary, the key points, what was decided, and the action items with who owns them.",
@@ -103,7 +103,21 @@ func (a *App) agentTaskRequestText(T i18n.TranslateFunc, task *model.AIAgentTask
 	if subject.channel.Type == model.ChannelTypeOpen || subject.channel.Type == model.ChannelTypePrivate {
 		channel = "~" + subject.channel.Name
 	}
+	since := ""
+	if task.Since > 0 {
+		since = time.UnixMilli(task.Since).UTC().Format("2006-01-02 15:04 UTC")
+	}
 	// The IDs are written out, for the string extractor.
+	switch {
+	case task.Task == model.AIAgentTaskFindActionItems && task.IsChannelTask() && since != "":
+		return T("app.ai.agent.task.request.find_action_items_channel_since", map[string]any{"Channel": channel, "Since": since})
+	case task.Task == model.AIAgentTaskFindActionItems && task.IsChannelTask():
+		return T("app.ai.agent.task.request.find_action_items_channel", map[string]any{"Channel": channel})
+	case task.Task == model.AIAgentTaskFindOpenQuestions && task.IsChannelTask() && since != "":
+		return T("app.ai.agent.task.request.find_open_questions_channel_since", map[string]any{"Channel": channel, "Since": since})
+	case task.Task == model.AIAgentTaskFindOpenQuestions && task.IsChannelTask():
+		return T("app.ai.agent.task.request.find_open_questions_channel", map[string]any{"Channel": channel})
+	}
 	switch task.Task {
 	case model.AIAgentTaskSummarizeThread:
 		return T("app.ai.agent.task.request.summarize_thread", map[string]any{"Link": link})
@@ -116,8 +130,7 @@ func (a *App) agentTaskRequestText(T i18n.TranslateFunc, task *model.AIAgentTask
 	case model.AIAgentTaskAskChannel:
 		return T("app.ai.agent.task.request.ask_channel", map[string]any{"Channel": channel, "Question": strings.TrimSpace(task.Question)})
 	default:
-		if task.Since > 0 {
-			since := time.UnixMilli(task.Since).UTC().Format("2006-01-02 15:04 UTC")
+		if since != "" {
 			return T("app.ai.agent.task.request.summarize_channel_since", map[string]any{"Channel": channel, "Since": since})
 		}
 		return T("app.ai.agent.task.request.summarize_channel", map[string]any{"Channel": channel})

@@ -4845,11 +4845,11 @@ components:
           description: The thread's (any of its messages) or the transcription's post, for the tasks on a post.
         channel_id:
           type: string
-          description: The channel, for summarize_channel and ask_channel.
+          description: The channel, for summarize_channel, ask_channel, and the find tasks on a channel's messages.
         since:
           type: integer
           format: int64
-          description: For summarize_channel, the messages from this time on (milliseconds); the latest ones without.
+          description: For the tasks on a channel, the messages from this time on (milliseconds); the latest ones without.
         question:
           type: string
           description: For ask_channel, the question (2,000 characters at most).
