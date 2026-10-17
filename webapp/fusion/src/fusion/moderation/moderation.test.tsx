@@ -102,7 +102,7 @@ describe('ModViewPanel', () => {
 });
 
 describe('ModViewPanel: its actions, per role, each once', () => {
-    test.each([
+    test.each<[string, string, string, string[]]>([
         ['a community admin', 'team_user team_admin', 'system_user', ['message', 'search-messages', 'time-out', 'remove-from-community']],
         ['a system admin', 'team_user', 'system_user system_admin', ['message', 'search-messages', 'time-out', 'remove-from-community', 'deactivate']],
         ['a moderator of messages', 'team_user message_mod', 'system_user', ['message', 'search-messages']],

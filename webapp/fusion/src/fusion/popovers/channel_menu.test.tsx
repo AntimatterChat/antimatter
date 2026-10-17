@@ -313,7 +313,7 @@ describe('fusion/popovers/ChannelMenu: the same actions as the menu under the ch
     };
     const SIDEBAR_ONLY = ['mark-read', 'move', 'hide'];
 
-    test.each([['a member', [] as string[]], ['a community admin', ADMIN]])('for %s, both menus offer the same actions in the same order, the sidebar adding its own', (who, team) => {
+    test.each<[string, string[]]>([['a member', []], ['a community admin', ADMIN]])('for %s, both menus offer the same actions in the same order, the sidebar adding its own', (who, team) => {
         mockTeamPerms = new Set(team);
         for (const channel of [dev, secret, town]) {
             const sidebar = sidebarIds(channel);
