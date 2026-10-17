@@ -16,7 +16,7 @@ export const KEY_ACTIONS: Array<{id: KeyAction; label: {id: string; defaultMessa
     {id: 'search', label: {id: 'fusion.keys.search', defaultMessage: 'Search everything'}, combo: 'mod+k'},
     {id: 'shortcuts', label: {id: 'fusion.keys.shortcuts', defaultMessage: 'Show the keyboard shortcuts'}, combo: 'mod+/'},
     {id: 'settings', label: {id: 'fusion.keys.settings', defaultMessage: 'Open the settings'}, combo: 'mod+shift+a'},
-    {id: 'unreadFilter', label: {id: 'fusion.keys.unreadFilter', defaultMessage: 'Show only unread channels'}, combo: 'mod+shift+u'},
+    {id: 'unreadFilter', label: {id: 'fusion.keys.unreadFilter', defaultMessage: 'Hide read channels'}, combo: 'mod+shift+u'},
     {id: 'callMute', label: {id: 'fusion.keys.callMute', defaultMessage: 'Mute or unmute in a call'}, combo: 'mod+shift+space'},
     {id: 'pushToTalk', label: {id: 'fusion.keys.pushToTalk', defaultMessage: 'Push to talk in a call (hold)'}, combo: ''},
     {id: 'callHand', label: {id: 'fusion.keys.callHand', defaultMessage: 'Raise or lower your hand in a call'}, combo: 'mod+shift+y'},

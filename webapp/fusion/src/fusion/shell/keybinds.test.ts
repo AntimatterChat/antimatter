@@ -3,7 +3,7 @@
 
 import type {GlobalState} from 'types/store';
 
-import {comboLabel, comboOf, getKeybinds, isKeybind} from './keybinds';
+import {KEY_ACTIONS, comboKeys, comboLabel, comboOf, getKeybinds, isKeybind} from './keybinds';
 
 const key = (key: string, code: string, mods: Partial<KeyboardEvent> = {}) => ({key, code, ctrlKey: false, metaKey: false, altKey: false, shiftKey: false, ...mods}) as KeyboardEvent;
 const stateWith = (binds: Record<string, string> = {}) => ({entities: {preferences: {myPreferences: {'fusion_keys--keybinds': {value: JSON.stringify(binds)}}}}}) as unknown as GlobalState;
@@ -28,5 +28,16 @@ describe('keybinds', () => {
     test('shortcuts are written as on the keyboard', () => {
         expect(comboLabel('mod+shift+k', false)).toEqual(['Ctrl', 'Shift', 'K']);
         expect(comboLabel('mod+shift+space', true)).toEqual(['⌘', '⇧', 'Space']);
+    });
+
+    // The same words as the community menu's checkbox it toggles.
+    test('the unread filter is called Hide read channels', () => {
+        expect(KEY_ACTIONS.find((a) => a.id === 'unreadFilter')?.label.defaultMessage).toBe('Hide read channels');
+    });
+
+    test('a combo is written for aria-keyshortcuts', () => {
+        expect(comboKeys('mod+shift+u', false)).toBe('Control+Shift+U');
+        expect(comboKeys('mod+shift+u', true)).toBe('Meta+Shift+U');
+        expect(comboKeys('alt+space', false)).toBe('Alt+Space');
     });
 });
