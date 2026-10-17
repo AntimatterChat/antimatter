@@ -1,7 +1,7 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 
-import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {useIntl} from 'react-intl';
 import {useDispatch, useSelector, useStore} from 'react-redux';
 
@@ -20,10 +20,9 @@ import {getFormattedFileSize} from 'mattermost-redux/utils/file_utils';
 import {uploadFile} from 'actions/file_actions';
 import {emitLocalUserTypingEvent} from 'actions/global_actions';
 import {editLatestPost, onSubmit} from 'actions/views/create_comment';
-import {updateDraft} from 'actions/views/drafts';
+import {removeDraft, updateDraft} from 'actions/views/drafts';
 import {replyToLatestPostInChannel} from 'actions/views/rhs';
 import {isBurnOnReadEnabled} from 'selectors/burn_on_read';
-import {makeGetDraft} from 'selectors/drafts';
 
 import {getComposerPlaceholder} from 'components/advanced_text_editor/composer_placeholder';
 import WysiwygEditor from 'components/advanced_text_editor/wysiwyg_editor/wysiwyg_editor';
@@ -57,7 +56,7 @@ import {useToast} from 'fusion/shell/toast_context';
 import {a11yRegion} from 'fusion/utils/a11y_regions';
 import {am} from 'fusion/utils/class_names';
 import PluggableErrorBoundary from 'plugins/pluggable/error_boundary';
-import Constants, {StoragePrefixes} from 'utils/constants';
+import Constants from 'utils/constants';
 import {generateId} from 'utils/utils';
 
 import type {GlobalState} from 'types/store';
@@ -69,6 +68,7 @@ import Autocomplete from './autocomplete';
 import type {AutocompleteHandle} from './autocomplete';
 import AwayNote from './away_note';
 import {confirmChannelWideMentions} from './confirm_mentions';
+import {useDraftAutosave} from './draft_autosave';
 import {FORMATS, applyFormat, formatRich} from './formats';
 import {useShowFormatting} from './formatting_preference';
 import PluginMenuItems from './plugin_menu_items';
@@ -102,8 +102,6 @@ export default function Composer({channelId, rootId = '', placeholder}: Props) {
     const dialogs = useDialogs();
     const dispatch = useDispatch();
     const store = useStore<GlobalState>();
-    const getDraft = useMemo(() => makeGetDraft(), []);
-    const storedDraft = useSelector((state: GlobalState) => getDraft(state, channelId, rootId));
     const priorityEnabled = useSelector(isPostPriorityEnabled);
     const burnEnabledInConfig = useSelector(isBurnOnReadEnabled);
 
@@ -132,7 +130,7 @@ export default function Composer({channelId, rootId = '', placeholder}: Props) {
     const inlineReplies = useInlineRepliesEnabled();
     const mentionByDefault = useSelector((state: GlobalState) => getBool(state, MENTION_PREFERENCE_CATEGORY, MENTION_PREFERENCE_NAME, true));
     const currentUserId = useSelector(getCurrentUserId);
-    const [draft, setDraft] = useState<PostDraft>(storedDraft);
+    const {draft, setDraft, save, cancel: cancelSave, key} = useDraftAutosave(channelId, rootId);
     const [showFormatting, setShowFormatting] = useShowFormatting();
     const [pending, setPending] = useState<Pending[]>([]);
     const [menu, setMenu] = useState<'plus' | 'emoji' | 'priority' | 'burn' | 'more' | 'schedule' | 'ai' | null>(null);
@@ -159,16 +157,10 @@ export default function Composer({channelId, rootId = '', placeholder}: Props) {
     const [scheduleFromBar, setScheduleFromBar] = useState(false);
     const moreRef = useRef<HTMLButtonElement>(null);
     const autocompleteRef = useRef<AutocompleteHandle>(null);
-    const saveTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
 
-    const key = rootId ? StoragePrefixes.COMMENT_DRAFT + rootId : StoragePrefixes.DRAFT + channelId;
-
-    // Switch drafts with the conversation.
+    // The draft switches with the conversation (useDraftAutosave); the uploads in progress don't follow it.
     useEffect(() => {
-        setDraft(storedDraft);
         setPending([]);
-
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [channelId, rootId]);
 
     const grow = useCallback(() => {
@@ -197,12 +189,6 @@ export default function Composer({channelId, rootId = '', placeholder}: Props) {
         observer.observe(el);
         return () => observer.disconnect();
     }, [grow]);
-
-    const save = useCallback((next: PostDraft) => {
-        setDraft(next);
-        clearTimeout(saveTimer.current);
-        saveTimer.current = setTimeout(() => dispatch(updateDraft(key, {...next, updateAt: Date.now()}, rootId, true)), 500);
-    }, [dispatch, key, rootId]);
 
     const change = (patch: Partial<PostDraft>) => {
         if (sendError && 'message' in patch) {
@@ -273,8 +259,10 @@ export default function Composer({channelId, rootId = '', placeholder}: Props) {
         const toSend: PostDraft = {...draft, channelId, rootId};
         const empty: PostDraft = {message: '', fileInfos: [], uploadsInProgress: [], channelId, rootId, createAt: 0, updateAt: 0};
         setDraft(empty);
-        clearTimeout(saveTimer.current);
-        dispatch(updateDraft(key, null, rootId, true));
+        cancelSave();
+
+        // Sent: the draft goes, on the server too, or it would come back from there.
+        dispatch(removeDraft(key, channelId, rootId));
         const result = await dispatch(onSubmit(channelId, rootId, toSend, {}));
         if (result && 'error' in result && result.error) {
             setDraft(toSend);
@@ -304,8 +292,10 @@ export default function Composer({channelId, rootId = '', placeholder}: Props) {
         const toSend: PostDraft = {...draft, channelId, rootId};
         const empty: PostDraft = {message: '', fileInfos: [], uploadsInProgress: [], channelId, rootId, createAt: 0, updateAt: 0};
         setDraft(empty);
-        clearTimeout(saveTimer.current);
-        dispatch(updateDraft(key, null, rootId, true));
+        cancelSave();
+
+        // Sent: the draft goes, on the server too, or it would come back from there.
+        dispatch(removeDraft(key, channelId, rootId));
         const result = await dispatch(onSubmit(channelId, rootId, toSend, {}, {scheduled_at: at}));
         if (result && 'error' in result && result.error) {
             setDraft(toSend);
