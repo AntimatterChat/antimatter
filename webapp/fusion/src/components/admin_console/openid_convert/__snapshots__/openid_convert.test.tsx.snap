@@ -29,12 +29,16 @@ exports[`components/OpenIdConvert should match snapshot 1`] = `
         >
           Convert to OpenID Connect
         </button>
-        <span
+        <a
           class="btn-secondary"
           data-testid="openIdLearnMore"
+          href="https://antimatter.chat/docs/admins/authentication.html#sso"
+          location="openid_convert"
+          rel="noopener noreferrer"
+          target="_blank"
         >
           Learn more
-        </span>
+        </a>
         <div
           class="error-message"
           data-testid="errorMessage"

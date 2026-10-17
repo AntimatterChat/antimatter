@@ -82,9 +82,14 @@ exports[`components/admin_console/manage_tokens_modal/manage_tokens_modal.tsx in
               class="pt-3"
             >
               Personal access tokens function similarly to session tokens and can be used by integrations to 
-              <span>
+              <a
+                href="https://antimatter.chat/docs/developers/api.html#auth"
+                location="manage_tokens_modal"
+                rel="noopener noreferrer"
+                target="_blank"
+              >
                 interact with this Antimatter server
-              </span>
+              </a>
               . Tokens are disabled if the user is deactivated. Learn more about 
               <a
                 href="https://antimatter.chat/docs/developers/api.html#auth"
@@ -212,9 +217,14 @@ exports[`components/admin_console/manage_tokens_modal/manage_tokens_modal.tsx sh
               class="pt-3"
             >
               Personal access tokens function similarly to session tokens and can be used by integrations to 
-              <span>
+              <a
+                href="https://antimatter.chat/docs/developers/api.html#auth"
+                location="manage_tokens_modal"
+                rel="noopener noreferrer"
+                target="_blank"
+              >
                 interact with this Antimatter server
-              </span>
+              </a>
               . Tokens are disabled if the user is deactivated. Learn more about 
               <a
                 href="https://antimatter.chat/docs/developers/api.html#auth"
@@ -404,9 +414,14 @@ exports[`components/admin_console/manage_tokens_modal/manage_tokens_modal.tsx sh
               class="pt-3"
             >
               Personal access tokens function similarly to session tokens and can be used by integrations to 
-              <span>
+              <a
+                href="https://antimatter.chat/docs/developers/api.html#auth"
+                location="manage_tokens_modal"
+                rel="noopener noreferrer"
+                target="_blank"
+              >
                 interact with this Antimatter server
-              </span>
+              </a>
               . Tokens are disabled if the user is deactivated. Learn more about 
               <a
                 href="https://antimatter.chat/docs/developers/api.html#auth"
