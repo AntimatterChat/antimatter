@@ -24639,6 +24639,10 @@
     "defaultMessage": "Customization",
     "description": ""
   },
+  "fusion.integrations.emoji": {
+    "defaultMessage": "Custom emoji",
+    "description": "Entry of the integrations side panel, under Customization, opening the Custom emoji page."
+  },
   "fusion.integrations.incoming": {
     "defaultMessage": "Incoming webhooks",
     "description": ""

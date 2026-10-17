@@ -10,8 +10,6 @@ import {createGlobalStyle} from 'styled-components';
 import type {Team} from '@mattermost/types/teams';
 import type {UserProfile} from '@mattermost/types/users';
 
-import Emoji from 'components/emoji';
-import AddEmoji from 'components/emoji/add_emoji';
 import Integrations from 'components/integrations';
 import AddIncomingWehook from 'components/integrations/add_incoming_webhook';
 import AddOauthApp from 'components/integrations/add_oauth_app';
@@ -30,6 +28,7 @@ import AddOutgoingOAuthConnection from 'components/integrations/outgoing_oauth_c
 import EditOutgoingOAuthConnection from 'components/integrations/outgoing_oauth_connections/edit_outgoing_oauth_connection';
 import InstalledOutgoingOAuthConnections from 'components/integrations/outgoing_oauth_connections/installed_outgoing_oauth_connections';
 
+import CustomEmojiPage from 'fusion/backstage/custom_emoji_page';
 import IntegrationsNav from 'fusion/backstage/integrations_nav';
 import {IconSprite} from 'fusion/components/icon';
 import {am} from 'fusion/utils/class_names';
@@ -207,16 +206,22 @@ const BackstageController = (props: Props) => {
                         path={`${props.match.url}/confirm`}
                         component={ConfirmIntegration}
                     />
-                    <BackstageRoute
-                        extraProps={extraProps}
+
+                    {/* Custom emoji: the emoji picker's add and manage views, on a page (Integrations › Custom emoji). */}
+                    <Route
                         exact={true}
                         path={'/:team/emoji'}
-                        component={Emoji}
+                        render={() => <CustomEmojiPage team={extraProps.team}/>}
                     />
-                    <BackstageRoute
-                        extraProps={extraProps}
-                        path={`${props.match.url}/add`}
-                        component={AddEmoji}
+                    <Route
+                        exact={true}
+                        path={'/:team/emoji/add'}
+                        render={() => (
+                            <CustomEmojiPage
+                                team={extraProps.team}
+                                view='add'
+                            />
+                        )}
                     />
                     <BackstageRoute
                         extraProps={extraProps}
