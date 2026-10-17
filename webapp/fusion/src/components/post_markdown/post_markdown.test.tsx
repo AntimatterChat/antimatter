@@ -240,7 +240,7 @@ describe('components/PostMarkdown', () => {
         expect(screen.getByText('To:')).toBeInTheDocument();
         expect(screen.getByText('now')).toBeInTheDocument();
 
-        const testLink = screen.getAllByRole('link', {name: '~Test'});
+        const testLink = screen.getAllByRole('link', {name: '#Test'});
         expect(testLink).toHaveLength(2);
 
         expect(testLink[0]).toHaveAttribute('data-channel-mention', 'test');

@@ -27,7 +27,7 @@ exports[`components/suggestion/search_channel_suggestion should match snapshot 1
       >
         name
       </span>
-      ~DN
+      #DN
     </div>
   </li>
 </div>
@@ -128,7 +128,7 @@ exports[`components/suggestion/search_channel_suggestion should match snapshot, 
       >
         name
       </span>
-      ~DN
+      #DN
     </div>
   </li>
 </div>
@@ -162,7 +162,7 @@ exports[`components/suggestion/search_channel_suggestion should match snapshot, 
       >
         name
       </span>
-      ~DN
+      #DN
     </div>
   </li>
 </div>
@@ -195,7 +195,7 @@ exports[`components/suggestion/search_channel_suggestion should match snapshot, 
       >
         name
       </span>
-      ~DN
+      #DN
     </div>
   </li>
 </div>
@@ -229,7 +229,7 @@ exports[`components/suggestion/search_channel_suggestion should match snapshot, 
       >
         name
       </span>
-      ~DN
+      #DN
     </div>
   </li>
 </div>

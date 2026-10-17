@@ -199,7 +199,7 @@ export const SwitchChannelSuggestion = React.forwardRef<HTMLLIElement, Props>(({
     }
 
     let name = channel.display_name;
-    let description = '~' + channel.name;
+    let description = '#' + channel.name;
     let icon;
     if (channelIsArchived) {
         icon = (

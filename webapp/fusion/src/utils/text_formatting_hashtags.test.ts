@@ -144,7 +144,7 @@ describe('TextFormatting.Hashtags with default setting', () => {
             team: {id: 'abcd', name: 'abcd', display_name: 'Alphabet'},
         };
         expect(TextFormatting.formatText('#~test', options, emojiMap).trim()).toBe(
-            '<p>#<a class="mention-link" href="/abcd/channels/test" data-channel-mention="test">~Test Channel</a></p>',
+            '<p>#<a class="mention-link" href="/abcd/channels/test" data-channel-mention="test">#Test Channel</a></p>',
         );
 
         expect(TextFormatting.formatText('#:antimatter:', {}, emojiMap).trim()).toBe(

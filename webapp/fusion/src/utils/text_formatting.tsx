@@ -563,8 +563,8 @@ export function autolinkChannelMentions(
         const index = tokens.size;
         const alias = `$MM_CHANNELMENTION${index}$`;
 
-        // The link keeps the sign its author typed: ~ (Mattermost's) or # (Antimatter's).
-        const sigil = mention.charAt(0) === '#' ? '#' : '~';
+        // Antimatter shows every channel link as #name, whether its author wrote #name or Mattermost's ~name.
+        const sigil = '#';
         let href = '#';
         if (teamName) {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any

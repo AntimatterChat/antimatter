@@ -263,7 +263,7 @@ describe('autolink channel mentions', () => {
 
         const output = autolinkChannelMentions(text, tokens, channelNamesMap);
         expect(output).toBe(`${leadingText}$MM_CHANNELMENTION0$${trailingText}`);
-        expect(tokens.get('$MM_CHANNELMENTION0$').value).toBe('<a class="mention-link" href="/ad-1/channels/test-channel" data-channel-mention-team="ad-1" data-channel-mention="test-channel">~Test Channel</a>');
+        expect(tokens.get('$MM_CHANNELMENTION0$').value).toBe('<a class="mention-link" href="/ad-1/channels/test-channel" data-channel-mention-team="ad-1" data-channel-mention="test-channel">#Test Channel</a>');
     });
 });
 

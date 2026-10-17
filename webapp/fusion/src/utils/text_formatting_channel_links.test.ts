@@ -33,7 +33,7 @@ describe('TextFormatting.ChannelLinks', () => {
                     team: TH.getTeamMock({name: 'myteam'}),
                 }, emojiMap).trim(),
             ).toBe(
-                '<p><a class="mention-link" href="/myteam/channels/town-square" data-channel-mention="town-square">~Town Square</a></p>',
+                '<p><a class="mention-link" href="/myteam/channels/town-square" data-channel-mention="town-square">#Town Square</a></p>',
             );
         });
 
@@ -44,7 +44,7 @@ describe('TextFormatting.ChannelLinks', () => {
                     team: TH.getTeamMock({name: 'myteam'}),
                 }, emojiMap).trim(),
             ).toBe(
-                '<p><a class="mention-link" href="/myteam/channels/town-square" data-channel-mention="town-square">~Town Square</a>.</p>',
+                '<p><a class="mention-link" href="/myteam/channels/town-square" data-channel-mention="town-square">#Town Square</a>.</p>',
             );
         });
 
@@ -55,7 +55,7 @@ describe('TextFormatting.ChannelLinks', () => {
                     team: TH.getTeamMock({name: 'myteam'}),
                 }, emojiMap).trim(),
             ).toBe(
-                '<p><a class="mention-link" href="/myteam/channels/town-square" data-channel-mention="town-square">~&lt;b&gt;Reception&lt;/b&gt;</a></p>',
+                '<p><a class="mention-link" href="/myteam/channels/town-square" data-channel-mention="town-square">#&lt;b&gt;Reception&lt;/b&gt;</a></p>',
             );
         });
 
@@ -67,7 +67,7 @@ describe('TextFormatting.ChannelLinks', () => {
                     team: TH.getTeamMock({name: 'myteam'}),
                 }, emojiMap).trim(),
             ).toBe(
-                '<p><a class="mention-link" href="/subpath/myteam/channels/town-square" data-channel-mention="town-square">~&lt;b&gt;Reception&lt;/b&gt;</a></p>',
+                '<p><a class="mention-link" href="/subpath/myteam/channels/town-square" data-channel-mention="town-square">#&lt;b&gt;Reception&lt;/b&gt;</a></p>',
             );
         });
 
@@ -78,7 +78,7 @@ describe('TextFormatting.ChannelLinks', () => {
                     team: TH.getTeamMock({name: 'myteam'}),
                 }, emojiMap).trim(),
             ).toBe(
-                '<p>(<a class="mention-link" href="/myteam/channels/town-square" data-channel-mention="town-square">~Town Square</a>)</p>',
+                '<p>(<a class="mention-link" href="/myteam/channels/town-square" data-channel-mention="town-square">#Town Square</a>)</p>',
             );
         });
     });
@@ -111,12 +111,12 @@ describe('TextFormatting.ChannelLinks', () => {
             );
         });
 
-        test('should link #town-square followed by a period, and keep ~ links working', () => {
+        test('should link #town-square followed by a period, and show old ~ links as #', () => {
             expect(
                 TextFormatting.formatText('#town-square. ~town-square', options(), emojiMap).trim(),
             ).toBe(
                 '<p><a class="mention-link" href="/myteam/channels/town-square" data-channel-mention="town-square">#Town Square</a>. ' +
-                '<a class="mention-link" href="/myteam/channels/town-square" data-channel-mention="town-square">~Town Square</a></p>',
+                '<a class="mention-link" href="/myteam/channels/town-square" data-channel-mention="town-square">#Town Square</a></p>',
             );
         });
 

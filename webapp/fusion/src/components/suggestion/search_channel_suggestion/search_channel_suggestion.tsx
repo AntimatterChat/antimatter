@@ -68,7 +68,7 @@ const SearchChannelSuggestion = React.forwardRef<HTMLLIElement, Props>(({
             </span>
         );
         name = item.display_name;
-        description = '~' + item.name;
+        description = '#' + item.name;
     } else {
         return (<></>);
     }

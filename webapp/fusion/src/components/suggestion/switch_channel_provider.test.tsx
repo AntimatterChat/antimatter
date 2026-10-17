@@ -1807,9 +1807,9 @@ describe('SwitchChannelSuggestion', () => {
         const suggestion = document.getElementById(baseProps.id);
 
         // When the user is on only a single team, the channel's URL name is displayed
-        expect(screen.getByText(`~${channel1.name}`)).toBeInTheDocument();
+        expect(screen.getByText(`#${channel1.name}`)).toBeInTheDocument();
         expect(suggestion).toHaveAccessibleName(channel1.display_name);
-        expect(suggestion).toHaveAccessibleDescription(`~${channel1.name} Public channel`);
+        expect(suggestion).toHaveAccessibleDescription(`#${channel1.name} Public channel`);
 
         replaceStoreState(getBaseState([team1, team2], [channel1]));
 
@@ -1840,7 +1840,7 @@ describe('SwitchChannelSuggestion', () => {
 
         expect(screen.getByLabelText('Public channel')).toBeInTheDocument();
         expect(suggestion).toHaveAccessibleName(channel1.display_name);
-        expect(suggestion).toHaveAccessibleDescription(`~${channel1.name} Public channel`);
+        expect(suggestion).toHaveAccessibleDescription(`#${channel1.name} Public channel`);
 
         rerender(
             <ConnectedSwitchChannelSuggestion
@@ -1856,7 +1856,7 @@ describe('SwitchChannelSuggestion', () => {
 
         expect(screen.getByLabelText('Private channel')).toBeInTheDocument();
         expect(suggestion).toHaveAccessibleName(channel2.display_name);
-        expect(suggestion).toHaveAccessibleDescription(`~${channel2.name} Private channel`);
+        expect(suggestion).toHaveAccessibleDescription(`#${channel2.name} Private channel`);
     });
 
     test('should show if the channel has a draft instead of the channel type', () => {
@@ -1889,7 +1889,7 @@ describe('SwitchChannelSuggestion', () => {
 
         expect(screen.queryByLabelText('Has draft')).not.toBeInTheDocument();
         expect(suggestion).toHaveAccessibleName(channel1.display_name);
-        expect(suggestion).toHaveAccessibleDescription(`~${channel1.name} Public channel`);
+        expect(suggestion).toHaveAccessibleDescription(`#${channel1.name} Public channel`);
 
         rerender(
             <ConnectedSwitchChannelSuggestion
@@ -1905,7 +1905,7 @@ describe('SwitchChannelSuggestion', () => {
 
         expect(screen.queryByLabelText('Has draft')).toBeInTheDocument();
         expect(suggestion).toHaveAccessibleName(channel2.display_name);
-        expect(suggestion).toHaveAccessibleDescription(`~${channel2.name} Has draft`);
+        expect(suggestion).toHaveAccessibleDescription(`#${channel2.name} Has draft`);
     });
 
     test('should show if the channel is archived instead of the channel type', () => {
@@ -1929,7 +1929,7 @@ describe('SwitchChannelSuggestion', () => {
 
         expect(screen.queryByLabelText('Archved channel')).not.toBeInTheDocument();
         expect(suggestion).toHaveAccessibleName(channel1.display_name);
-        expect(suggestion).toHaveAccessibleDescription(`~${channel1.name} Public channel`);
+        expect(suggestion).toHaveAccessibleDescription(`#${channel1.name} Public channel`);
 
         rerender(
             <ConnectedSwitchChannelSuggestion
@@ -1945,7 +1945,7 @@ describe('SwitchChannelSuggestion', () => {
 
         expect(screen.queryByLabelText('Archived channel')).toBeInTheDocument();
         expect(suggestion).toHaveAccessibleName(channel2.display_name);
-        expect(suggestion).toHaveAccessibleDescription(`~${channel2.name} Archived channel`);
+        expect(suggestion).toHaveAccessibleDescription(`#${channel2.name} Archived channel`);
     });
 
     test('should show if the channel has unread mentions', () => {
@@ -1975,7 +1975,7 @@ describe('SwitchChannelSuggestion', () => {
 
         expect(screen.queryByLabelText(/unread/, {exact: false})).not.toBeInTheDocument();
         expect(suggestion).toHaveAccessibleName(channel1.display_name);
-        expect(suggestion).toHaveAccessibleDescription(`~${channel1.name} Public channel`);
+        expect(suggestion).toHaveAccessibleDescription(`#${channel1.name} Public channel`);
 
         rerender(
             <ConnectedSwitchChannelSuggestion
@@ -1991,7 +1991,7 @@ describe('SwitchChannelSuggestion', () => {
 
         expect(screen.queryByLabelText('1 unread notification')).toBeInTheDocument();
         expect(suggestion).toHaveAccessibleName(channel2.display_name);
-        expect(suggestion).toHaveAccessibleDescription(`1 unread notification ~${channel2.name} Public channel`);
+        expect(suggestion).toHaveAccessibleDescription(`1 unread notification #${channel2.name} Public channel`);
 
         rerender(
             <ConnectedSwitchChannelSuggestion
@@ -2007,7 +2007,7 @@ describe('SwitchChannelSuggestion', () => {
 
         expect(screen.queryByLabelText('5 unread notifications')).toBeInTheDocument();
         expect(suggestion).toHaveAccessibleName(channel3.display_name);
-        expect(suggestion).toHaveAccessibleDescription(`5 unread notifications ~${channel3.name} Public channel`);
+        expect(suggestion).toHaveAccessibleDescription(`5 unread notifications #${channel3.name} Public channel`);
     });
 
     describe('layout and tooltip behavior for long names', () => {
