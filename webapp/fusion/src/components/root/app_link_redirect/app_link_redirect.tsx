@@ -9,11 +9,30 @@ import {getMyTeams} from 'mattermost-redux/selectors/entities/teams';
 
 import type {GlobalState} from 'types/store';
 
-// Antimatter: the apps that had a full page and are now apps of the side panel (Playbooks). Their links
-// (/playbooks/runs/<id>... in messages, emails and notifications) open in a community, /<team>/playbooks/..., where
-// the app opens a channel with its panel on the page the link pointed to. An app that still registers a full page
-// at one of these paths keeps it: its route comes first.
-export const APP_LINK_PATHS = ['/playbooks'];
+// Antimatter: the apps that had a full page and are now apps of the side panel (Playbooks, Kanban). Their links
+// (/playbooks/runs/<id>..., /kanban/team/<team>/<board>... in messages, emails and notifications) open in a community,
+// under the route the app registers there (registerNeedsTeamRoute: /<team>/<app id>/...), where the app opens a
+// channel with its panel on the page the link pointed to. An app that still registers a full page at one of these
+// paths keeps it: its route comes first. (/boards, Kanban's name before, is sent to /kanban first.)
+export const APP_LINK_ROUTES: Record<string, string> = {
+    '/playbooks': 'playbooks',
+    '/kanban': 'focalboard',
+};
+
+export const APP_LINK_PATHS = Object.keys(APP_LINK_ROUTES);
+
+/**
+ * appLinkTarget is where an app's old link opens in a community: /playbooks/runs/<id> is /<team>/playbooks/runs/<id>,
+ * /kanban/team/<id>/<board> is /<team>/focalboard/team/<id>/<board>. Null for a path that isn't an app's.
+ */
+export function appLinkTarget(pathname: string, team: string): string | null {
+    for (const base of APP_LINK_PATHS) {
+        if (pathname === base || pathname.startsWith(base + '/')) {
+            return `/${team}/${APP_LINK_ROUTES[base]}${pathname.slice(base.length)}`;
+        }
+    }
+    return null;
+}
 
 type Props = {
 
@@ -30,7 +49,8 @@ export default function AppLinkRedirect({teamName}: Props) {
     });
 
     const team = teamName || firstTeamName;
-    if (!team) {
+    const target = team ? appLinkTarget(location.pathname, team) : null;
+    if (!target) {
         return <Redirect to='/'/>;
     }
 
@@ -38,7 +58,7 @@ export default function AppLinkRedirect({teamName}: Props) {
         <Redirect
             to={{
                 ...location,
-                pathname: `/${team}${location.pathname}`,
+                pathname: target,
             }}
         />
     );

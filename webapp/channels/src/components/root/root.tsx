@@ -397,7 +397,7 @@ export default class Root extends React.PureComponent<Props, State> {
                         from={'/_redirect/pl/:postid'}
                         to={`/${this.props.permalinkRedirectTeamName}/pl/:postid`}
                     />
-                    {/* The Kanban plugin (once Boards) lives at /kanban: links to /boards still open it. */}
+                    {/* The Kanban plugin (once Boards) had its full page at /kanban: links to /boards are its links too. */}
                     <Route
                         path={'/boards'}
                         render={({location}) => (
@@ -468,7 +468,7 @@ export default class Root extends React.PureComponent<Props, State> {
                                         )}
                                     />
                                 ))}
-                                {/* Antimatter: the links to the apps that left their full page (Playbooks) open them in a community. */}
+                                {/* Antimatter: the links to the apps that left their full page (Playbooks, Kanban) open them in a community. */}
                                 <Route
                                     path={APP_LINK_PATHS}
                                     render={(props) => (

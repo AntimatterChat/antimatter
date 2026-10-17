@@ -7,10 +7,10 @@ import {Route} from 'react-router-dom';
 
 import {renderWithContext, waitFor} from 'tests/react_testing_utils';
 
-import AppLinkRedirect, {APP_LINK_PATHS} from './app_link_redirect';
+import AppLinkRedirect, {APP_LINK_PATHS, appLinkTarget} from './app_link_redirect';
 
-// Antimatter: Playbooks left its full page for the side panel; its old links open in a community, where the app
-// opens the panel on the page they point to.
+// Antimatter: Playbooks and Kanban left their full pages for the side panel; their old links open in a community,
+// where the app opens the panel on the page they point to.
 describe('components/root/AppLinkRedirect', () => {
     const team = (id: string, name: string, displayName: string) => ({id, name, display_name: displayName, delete_at: 0});
     const state = {
@@ -45,6 +45,9 @@ describe('components/root/AppLinkRedirect', () => {
         ['/playbooks/runs/abcdefghijklmnopqrstuvwxyz', '/lumen/playbooks/runs/abcdefghijklmnopqrstuvwxyz', '?from=digest_assignedtask', '#playbook-run-retrospective'],
         ['/playbooks/playbooks/abcdefghijklmnopqrstuvwxyz/outline', '/lumen/playbooks/playbooks/abcdefghijklmnopqrstuvwxyz/outline', '', ''],
         ['/playbooks', '/lumen/playbooks', '', ''],
+        ['/kanban/team/t1/abcdefghijklmnopqrstuvwxyz', '/lumen/focalboard/team/t1/abcdefghijklmnopqrstuvwxyz', '', ''],
+        ['/kanban/team/t1/abcdefghijklmnopqrstuvwxyz/0/cdefghijklmnopqrstuvwxyzab', '/lumen/focalboard/team/t1/abcdefghijklmnopqrstuvwxyz/0/cdefghijklmnopqrstuvwxyzab', '?r=x', '#card'],
+        ['/kanban', '/lumen/focalboard', '', ''],
     ])('opens %s in the last community, keeping its query and hash', async (from, to, search, hash) => {
         const history = renderAt(from + search + hash, 'lumen');
 
@@ -71,7 +74,26 @@ describe('components/root/AppLinkRedirect', () => {
         });
     });
 
+    test('uses the first of your communities for a Kanban link too', async () => {
+        const history = renderAt('/kanban/team/t1/abcdefghijklmnopqrstuvwxyz', '');
+
+        await waitFor(() => {
+            expect(history.location.pathname).toBe('/alpha/focalboard/team/t1/abcdefghijklmnopqrstuvwxyz');
+        });
+    });
+
     test('only answers the app paths', () => {
-        expect(APP_LINK_PATHS).toEqual(['/playbooks']);
+        expect(APP_LINK_PATHS).toEqual(['/playbooks', '/kanban']);
+    });
+
+    test.each([
+        ['/playbooks/runs/x', '/lumen/playbooks/runs/x'],
+        ['/kanban/team/t1/b1', '/lumen/focalboard/team/t1/b1'],
+        ['/kanban', '/lumen/focalboard'],
+        ['/kanbanroom/channels/town-square', null],
+        ['/playbooksclub', null],
+        ['/channels/town-square', null],
+    ])('sends %s to the app\'s route in the community', (from, to) => {
+        expect(appLinkTarget(from, 'lumen')).toBe(to);
     });
 });

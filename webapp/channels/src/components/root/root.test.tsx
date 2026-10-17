@@ -235,6 +235,26 @@ describe('components/Root', () => {
         expect(history.location.search).toBe(search);
     });
 
+    // Antimatter: Kanban left its full page at /kanban (once /boards) for the side panel too.
+    test.each([
+        ['/kanban/team/lumen/b1/v2/c3', '/myTeam/focalboard/team/lumen/b1/v2/c3', '?r=token'],
+        ['/boards/team/lumen/b1', '/myTeam/focalboard/team/lumen/b1', ''],
+        ['/kanban', '/myTeam/focalboard', ''],
+    ])('sends the old Kanban link %s to the community', async (from, to, search) => {
+        const history = createMemoryHistory({initialEntries: [from + search]});
+        const props = {
+            ...baseProps,
+            location: {pathname: from} as RouteComponentProps['location'],
+        };
+
+        renderWithContext(<Root {...props}/>, {}, {history});
+
+        await waitFor(() => {
+            expect(history.location.pathname).toBe(to);
+        });
+        expect(history.location.search).toBe(search);
+    });
+
     test('leaves the old app links to an app that still has its full page there', async () => {
         const history = createMemoryHistory({initialEntries: ['/playbooks/runs/abcdefghijklmnopqrstuvwxyz']});
         const props = {

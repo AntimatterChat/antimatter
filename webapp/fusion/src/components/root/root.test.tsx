@@ -211,11 +211,15 @@ describe('components/Root', () => {
         });
     });
 
-    // Antimatter: the Kanban plugin (once Boards) lives at /kanban; old /boards links keep their whole path and query.
+    // Antimatter: the Kanban plugin (once Boards) had its full page at /kanban, and left it for the side panel: its old
+    // /kanban and /boards links keep their whole path and query, and open in the last community, where the plugin opens
+    // the panel on the page they point to.
     test.each([
-        ['/boards', '/kanban', ''],
-        ['/boards/team/lumen/b1', '/kanban/team/lumen/b1', ''],
-        ['/boards/team/lumen/b1/v2/c3', '/kanban/team/lumen/b1/v2/c3', '?cardId=c3'],
+        ['/boards', '/myTeam/focalboard', ''],
+        ['/boards/team/lumen/b1', '/myTeam/focalboard/team/lumen/b1', ''],
+        ['/boards/team/lumen/b1/v2/c3', '/myTeam/focalboard/team/lumen/b1/v2/c3', '?cardId=c3'],
+        ['/kanban/team/lumen/b1/v2/c3', '/myTeam/focalboard/team/lumen/b1/v2/c3', '?r=token'],
+        ['/kanban', '/myTeam/focalboard', ''],
     ])('redirects %s to the Kanban plugin', async (from, to, search) => {
         const history = createMemoryHistory({initialEntries: [from + search]});
         const props = {
