@@ -40,8 +40,9 @@ outbound  server/public/model/push_notification.go  MHPNS\w*\s*=\s*"https://[a-z
 outbound  server/public/model/push_notification.go  host == "mattermost\.com" \|\| strings\.HasSuffix\(host, "\.mattermost\.com"\)
 outbound  server/public/model/config.go  GenericNotificationServer = "https://push-test\.mattermost\.com"
 
-# Old Mattermost support links mapped to Antimatter's: a server still configured with them is switched over.
-outbound  server/public/model/config.go  "https://mattermost\.com/pl/[a-z/-]+":\s+SupportSettingsDefault
+# Old Mattermost support and app download links mapped to Antimatter's: a server still configured with them is
+# switched over.
+outbound  server/public/model/config.go  "https://mattermost\.com/pl/[a-z/-]+":\s+(SupportSettingsDefault|NativeappSettingsDefault)
 
 # Hostname comparisons that recognise Mattermost's services (to warn about them or to treat their links as
 # external); they compare strings and never make a request.
