@@ -133,23 +133,6 @@
                     text-align: center;
                     font-size: 0;
                 }
-                .learn-more-about-sup {	
-                    height: 22px;
-                    width: 100%;	
-                    line-height: 22px;	
-                    text-align: center;
-                    position: absolute;
-                    bottom: 0px;
-                }
-                .learn-more-about-sup a {	
-                    color: #145DBF;
-                    text-decoration: none;
-                    font-family: "Open Sans";	
-                    font-size: 14px;	
-                }
-                .learn-more-about-sup a:hover {
-                    text-decoration: underline;
-                }
                 .vr {
                     display: inline-block;
                     vertical-align: top;
@@ -298,17 +281,16 @@
                     {{.Props.DownloadAppOrUpgradeBrowserString}}
                 </div>
                 <div class='downloads'>
+                    {{if .Props.App}}
                     {{template "unsupported_browser-app" .Props.App}}
                     <div class='vr'></div>
+                    {{end}}
                     {{range .Props.Browsers}}
                         {{template "unsupported_browser-browser" .}}
                     {{end}}
                     {{if .Props.SystemBrowser}}
                         {{template "unsupported_browser-system_browser" .Props.SystemBrowser}}
                     {{end}}
-                    <div class='learn-more-about-sup'>
-                        <a href='https://docs.mattermost.com/install/requirements.html#pc-web' target='_blank' rel='noopener noreferrer'>{{.Props.LearnMoreString}}</a>
-                    </div>
                 </div>
             </div>
         </body>

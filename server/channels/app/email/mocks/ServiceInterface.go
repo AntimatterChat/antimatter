@@ -158,24 +158,6 @@ func (_m *ServiceInterface) SendChangeUsernameEmail(newUsername string, _a1 stri
 	return r0
 }
 
-// SendCloudWelcomeEmail provides a mock function with given fields: userEmail, locale, teamInviteID, workSpaceName, dns, siteURL
-func (_m *ServiceInterface) SendCloudWelcomeEmail(userEmail string, locale string, teamInviteID string, workSpaceName string, dns string, siteURL string) error {
-	ret := _m.Called(userEmail, locale, teamInviteID, workSpaceName, dns, siteURL)
-
-	if len(ret) == 0 {
-		panic("no return value specified for SendCloudWelcomeEmail")
-	}
-
-	var r0 error
-	if rf, ok := ret.Get(0).(func(string, string, string, string, string, string) error); ok {
-		r0 = rf(userEmail, locale, teamInviteID, workSpaceName, dns, siteURL)
-	} else {
-		r0 = ret.Error(0)
-	}
-
-	return r0
-}
-
 // SendDeactivateAccountEmail provides a mock function with given fields: _a0, locale, siteURL
 func (_m *ServiceInterface) SendDeactivateAccountEmail(_a0 string, locale string, siteURL string) error {
 	ret := _m.Called(_a0, locale, siteURL)

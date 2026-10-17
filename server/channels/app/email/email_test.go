@@ -318,45 +318,6 @@ func findLinkDataFromEmail(t *testing.T, emailHTML string) map[string]string {
 	return model.MapFromJSON(strings.NewReader(queryString.Get("d")))
 }
 
-func TestSendCloudWelcomeEmail(t *testing.T) {
-	mainHelper.Parallel(t)
-	th := Setup(t).InitBasic(t)
-	th.ConfigureInbucketMail(t)
-
-	emailTo := "testclouduser@example.com"
-
-	t.Run("TestSendCloudWelcomeEmail", func(t *testing.T) {
-		verifyMailbox := func(t *testing.T) {
-			t.Helper()
-
-			var resultsMailbox mail.JSONMessageHeaderInbucket
-			err2 := mail.RetryInbucket(5, func() error {
-				var err error
-				resultsMailbox, err = mail.GetMailBox(emailTo)
-				return err
-			})
-			if err2 != nil {
-				t.Skipf("No email was received, maybe due load on the server: %v", err2)
-			}
-
-			require.Len(t, resultsMailbox, 1)
-			require.Contains(t, resultsMailbox[0].To[0], emailTo, "Wrong To: recipient")
-			resultsEmail, err := mail.GetMessageFromMailbox(emailTo, resultsMailbox[0].ID)
-			require.NoError(t, err, "Could not get message from mailbox")
-			require.Contains(t, resultsEmail.Subject, "Congratulations!", "Wrong subject message %s", resultsEmail.Subject)
-			require.Contains(t, resultsEmail.Body.Text, "Your workspace is ready to go!", "Wrong body %s", resultsEmail.Body.Text)
-		}
-
-		err := mail.DeleteMailBox(emailTo)
-		require.NoError(t, err, "Failed to delete mailbox")
-
-		err = th.service.SendCloudWelcomeEmail(emailTo, th.BasicUser.Locale, "inviteID", "SomeName", "example.com", "https://example.com")
-		require.NoError(t, err)
-
-		verifyMailbox(t)
-	})
-}
-
 func TestMailServiceConfig(t *testing.T) {
 	mainHelper.Parallel(t)
 	configuredReplyTo := "feedbackexample@test.com"

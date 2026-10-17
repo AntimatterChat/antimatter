@@ -231,50 +231,6 @@ func (es *Service) SendWelcomeEmail(userID string, email string, verified bool, 
 	return nil
 }
 
-// SendCloudWelcomeEmail sends the cloud version of the welcome email
-func (es *Service) SendCloudWelcomeEmail(userEmail, locale, teamInviteID, workSpaceName, dns, siteURL string) error {
-	T := i18n.GetUserTranslations(locale)
-	subject := T("api.templates.cloud_welcome_email.subject")
-
-	data := es.NewEmailTemplateData(locale)
-	data.Props["Title"] = T("api.templates.cloud_welcome_email.title")
-	data.Props["SubTitle"] = T("api.templates.cloud_welcome_email.subtitle")
-	data.Props["SubTitleInfo"] = T("api.templates.cloud_welcome_email.subtitle_info")
-	data.Props["Info"] = T("api.templates.cloud_welcome_email.info")
-	data.Props["Info2"] = T("api.templates.cloud_welcome_email.info2")
-	data.Props["WorkSpacePath"] = siteURL
-	data.Props["DNS"] = dns
-	data.Props["InviteInfo"] = T("api.templates.cloud_welcome_email.invite_info")
-	data.Props["InviteSubInfo"] = T("api.templates.cloud_welcome_email.invite_sub_info", map[string]any{"WorkSpace": workSpaceName})
-	data.Props["InviteSubInfoLink"] = fmt.Sprintf("%s/signup_user_complete/?id=%s", siteURL, teamInviteID)
-	data.Props["AddAppsInfo"] = T("api.templates.cloud_welcome_email.add_apps_info")
-	data.Props["AddAppsSubInfo"] = T("api.templates.cloud_welcome_email.add_apps_sub_info")
-	data.Props["AppMarketPlace"] = T("api.templates.cloud_welcome_email.app_market_place")
-	data.Props["AppMarketPlaceLink"] = "https://integrations.mattermost.com/"
-	data.Props["DownloadMMInfo"] = T("api.templates.cloud_welcome_email.download_mm_info")
-	data.Props["SignInSubInfo"] = T("api.templates.cloud_welcome_email.signin_sub_info")
-	data.Props["MMApps"] = T("api.templates.cloud_welcome_email.mm_apps")
-	data.Props["SignInSubInfo2"] = T("api.templates.cloud_welcome_email.signin_sub_info2")
-	if es.config().NativeAppSettings.AppDownloadLink != nil && *es.config().NativeAppSettings.AppDownloadLink != "" {
-		data.Props["DownloadMMAppsLink"] = es.config().NativeAppSettings.AppDownloadLink
-	} else {
-		data.Props["DownloadMMAppsLink"] = "https://mattermost.com/pl/download-apps"
-	}
-	data.Props["Button"] = T("api.templates.cloud_welcome_email.button")
-	data.Props["GettingStartedQuestions"] = T("api.templates.cloud_welcome_email.start_questions")
-
-	body, err := es.templatesContainer.RenderToString("cloud_welcome_email", data)
-	if err != nil {
-		return err
-	}
-
-	if err := es.sendEmailWithCustomReplyTo(userEmail, subject, body, *es.config().SupportSettings.SupportEmail, "CloudWelcomeEmail"); err != nil {
-		return err
-	}
-
-	return nil
-}
-
 func (es *Service) SendPasswordChangeEmail(email, method, locale, siteURL string) error {
 	T := i18n.GetUserTranslations(locale)
 
@@ -915,12 +871,6 @@ func (es *Service) SendNotificationMail(to, subject, htmlBody string) error {
 // only; they are no longer attached to outgoing emails.
 func (es *Service) sendMail(to, subject, htmlBody, category string) error {
 	return es.sendMailWithCC(to, subject, htmlBody, "", category)
-}
-
-func (es *Service) sendEmailWithCustomReplyTo(to, subject, htmlBody, replyToAddress, category string) error {
-	mailConfig := es.mailServiceConfig(replyToAddress)
-
-	return mail.SendMailUsingConfig(to, subject, htmlBody, mailConfig, true, "", "", "", "", "")
 }
 
 func (es *Service) sendMailWithCC(to, subject, htmlBody, ccMail, category string) error {

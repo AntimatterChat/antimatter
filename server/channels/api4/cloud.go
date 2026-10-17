@@ -484,38 +484,8 @@ func handleCWSWebhook(c *Context, w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	switch event.Event {
-	case model.EventTypeSendAdminWelcomeEmail:
-		user, appErr := c.App.GetUserByUsername(event.CloudWorkspaceOwner.UserName)
-		if appErr != nil {
-			c.Err = model.NewAppError("Api4.handleCWSWebhook", appErr.Id, nil, "", appErr.StatusCode).Wrap(appErr)
-			return
-		}
-
-		teams, appErr := c.App.GetAllTeams()
-		if appErr != nil {
-			c.Err = model.NewAppError("Api4.handleCWSWebhook", appErr.Id, nil, "", appErr.StatusCode).Wrap(appErr)
-			return
-		}
-
-		team := teams[0]
-
-		subscription, err := c.App.Cloud().GetSubscription(user.Id)
-		if err != nil {
-			c.Err = model.NewAppError("Api4.handleCWSWebhook", "api.cloud.request_error", nil, "", http.StatusInternalServerError).Wrap(err)
-			return
-		}
-
-		if err := c.App.Srv().EmailService.SendCloudWelcomeEmail(user.Email, user.Locale, team.InviteId, subscription.GetWorkSpaceNameFromDNS(), subscription.DNS, *c.App.Config().ServiceSettings.SiteURL); err != nil {
-			c.Err = model.NewAppError("SendCloudWelcomeEmail", "api.user.send_cloud_welcome_email.error", nil, "", http.StatusInternalServerError).Wrap(err)
-			return
-		}
-	default:
-		c.Err = model.NewAppError("Api4.handleCWSWebhook", "api.cloud.cws_webhook_event_missing_error", nil, "", http.StatusNotFound)
-		return
-	}
-
-	ReturnStatusOK(w)
+	// The only event Mattermost's Cloud sent here asked for the Cloud welcome email, which Antimatter doesn't have.
+	c.Err = model.NewAppError("Api4.handleCWSWebhook", "api.cloud.cws_webhook_event_missing_error", nil, "event="+event.Event, http.StatusNotFound)
 }
 
 func handleCheckCWSConnection(c *Context, w http.ResponseWriter, r *http.Request) {
