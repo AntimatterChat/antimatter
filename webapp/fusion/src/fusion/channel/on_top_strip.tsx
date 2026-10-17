@@ -27,7 +27,7 @@ import {useRoleColor} from 'fusion/teams/roles';
 import {am} from 'fusion/utils/class_names';
 import {permalinkPath} from 'fusion/utils/paths';
 import {getHistory} from 'utils/browser_history';
-import {isFromBot} from 'utils/post_utils';
+import {isFromBot, isFromWebhook} from 'utils/post_utils';
 
 import type {GlobalState} from 'types/store';
 
@@ -144,7 +144,7 @@ function OnTopBanner({entry, post, now, position, open, setOpen, canRemove, onRe
     const roleColor = useRoleColor(post.user_id);
     const priorityEnabled = useSelector(isPostPriorityEnabled);
     const urgent = priorityEnabled && post.metadata?.priority?.priority === 'urgent';
-    const bot = isFromBot(post) || Boolean(author?.is_bot);
+    const bot = isFromBot(post) || Boolean(author?.is_bot) || isFromWebhook(post);
 
     // The author and who put it on top may not be loaded yet.
     const dispatch = useDispatch();

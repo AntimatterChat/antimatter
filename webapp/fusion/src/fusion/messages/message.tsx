@@ -196,7 +196,10 @@ export default function Message({postId, previousPostId, inThread = false, highl
 
     const ephemeral = post.type === Posts.POST_TYPES.EPHEMERAL;
     const webhook = isFromWebhook(post) && config.EnablePostUsernameOverride === 'true' && Boolean(post.props?.override_username);
-    const bot = isFromBot(post) || Boolean(user?.is_bot);
+
+    // Every post made by a webhook is tagged BOT, as the System Console says and the classic UI does, whether or not
+    // it overrides the username: one posting under its creator's name could pass for them.
+    const bot = isFromBot(post) || Boolean(user?.is_bot) || isFromWebhook(post);
     const priority = priorityEnabled ? post.metadata?.priority?.priority : undefined;
     const burn = post.type === Posts.POST_TYPES.BURN_ON_READ && post.state !== Posts.POST_DELETED;
 
