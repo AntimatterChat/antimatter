@@ -5,6 +5,7 @@ import React from 'react';
 
 import type {ChannelCategory} from '@mattermost/types/channel_categories';
 
+import frMessages from 'i18n/fr.json';
 import {renderWithContext, screen} from 'tests/react_testing_utils';
 
 import Category from './category';
@@ -42,5 +43,43 @@ describe('fusion/sidebar/Category', () => {
         render(false);
 
         expect(screen.getByRole('img', {name: /You can move its channels to your own categories/})).toHaveAttribute('data-am-tip', expect.stringContaining('You can move its channels'));
+    });
+});
+
+describe('fusion/sidebar/Category: names in the user\'s language', () => {
+    const fr = frMessages as Record<string, string>;
+    const category = (id: string, type: ChannelCategory['type'], displayName: string) => ({id, team_id: 'team', user_id: 'me', type, display_name: displayName, sorting: 'default', channel_ids: ['ops'], muted: false, collapsed: false}) as unknown as ChannelCategory;
+    const renderIn = (c: ChannelCategory, locale = 'fr') => renderWithContext(
+        <Category category={c}/>,
+        {
+            entities: {
+                users: {currentUserId: 'me'},
+                teams: {currentTeamId: 'team'},
+                channelCategories: {serverCategories: {}},
+            },
+        } as never,
+        {locale, intlMessages: locale === 'fr' ? fr : undefined},
+    );
+
+    test('in French, the Favourites and Channels categories have their French names, whatever name the server stored', () => {
+        const {unmount} = renderIn(category('favorites_me_team', 'favorites', 'Favorites'));
+        expect(screen.getByText('Favoris')).toBeInTheDocument();
+        expect(screen.queryByText('Favorites')).not.toBeInTheDocument();
+        expect(screen.getByRole('button', {name: 'Options de la catégorie Favoris'})).toBeInTheDocument();
+        unmount();
+
+        renderIn(category('channels_me_team', 'channels', 'Channels'));
+        expect(screen.getByText('Canaux')).toBeInTheDocument();
+    });
+
+    test('a custom category keeps the name its owner gave it', () => {
+        renderIn(category('custom1', 'custom', 'Work'));
+        expect(screen.getByText('Work')).toBeInTheDocument();
+        expect(screen.getByRole('button', {name: 'Options de la catégorie Work'})).toBeInTheDocument();
+    });
+
+    test('in English, the Favourites category says Favourites', () => {
+        renderIn(category('favorites_me_team', 'favorites', 'Favorites'), 'en');
+        expect(screen.getByText('Favourites')).toBeInTheDocument();
     });
 });

@@ -9,6 +9,7 @@ import type {ChannelCategory} from '@mattermost/types/channel_categories';
 import {setCategoryMuted, setCategorySorting} from 'mattermost-redux/actions/channel_categories';
 
 import {openDeleteCategory, openRenameCategory} from 'fusion/utils/modals';
+import frMessages from 'i18n/fr.json';
 import {renderWithContext, screen, userEvent} from 'tests/react_testing_utils';
 
 import CategoryMenu from './category_menu';
@@ -72,5 +73,25 @@ describe('fusion/popovers/CategoryMenu', () => {
 
         await userEvent.click(screen.getByRole('menuitemradio', {name: /By recent activity/}));
         expect(setCategorySorting).toHaveBeenCalledWith('cat', CategorySorting.Recency);
+    });
+
+    test('in French, names the Favourites category in French and a custom one by its own name', () => {
+        const fr = frMessages as Record<string, string>;
+        const renderFr = (c: ChannelCategory) => renderWithContext(
+            <CategoryMenu
+                category={c}
+                point={{x: 10, y: 10}}
+                onClose={jest.fn()}
+            />,
+            {entities: {channels: {channels: {}, myMembers: {}, messageCounts: {}}, channelCategories: {byId: {cat: c}}}} as never,
+            {locale: 'fr', intlMessages: fr},
+        );
+
+        const {unmount} = renderFr(category('favorites', {display_name: 'Favourites'}));
+        expect(screen.getByRole('menu', {name: 'Options pour Favoris'})).toBeInTheDocument();
+        unmount();
+
+        renderFr(category('custom', {display_name: 'Work'}));
+        expect(screen.getByRole('menu', {name: 'Options pour Work'})).toBeInTheDocument();
     });
 });

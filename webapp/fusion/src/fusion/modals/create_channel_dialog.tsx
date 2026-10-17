@@ -21,6 +21,7 @@ import {getCategoriesForCurrentTeam} from 'selectors/views/channel_sidebar';
 import Icon from 'fusion/components/icon';
 import {Dialog} from 'fusion/components/layer';
 import {useToast} from 'fusion/shell/toast_context';
+import {categoryName} from 'fusion/sidebar/category_name';
 import {fileChannel, getServerCategories, isServerCategory, isTeamAdmin, SERVER_CATEGORY_PREFIX} from 'fusion/sidebar/server_categories';
 import {am} from 'fusion/utils/class_names';
 import Constants from 'utils/constants';
@@ -228,7 +229,7 @@ export default function CreateChannelDialog({categoryId, onMoreOptions, onClose}
                                         key={c.id}
                                         value={c.id}
                                     >
-                                        {c.display_name}
+                                        {categoryName({formatMessage}, c)}
                                     </option>
                                 ))}
                             </optgroup>

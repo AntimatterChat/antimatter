@@ -17,6 +17,7 @@ import {Popover} from 'fusion/components/layer';
 import {Flyout, MenuItem, MenuSeparator} from 'fusion/components/menu';
 import {useDialogs} from 'fusion/shell/dialogs_context';
 import {useToast} from 'fusion/shell/toast_context';
+import {categoryName} from 'fusion/sidebar/category_name';
 import {deleteServerCategory, findServerCategory, getServerCategories, isServerCategory, isTeamAdmin, moveServerCategory, setServerCategoryLocked} from 'fusion/sidebar/server_categories';
 import {openDeleteCategory, openRenameCategory} from 'fusion/utils/modals';
 
@@ -64,7 +65,7 @@ export default function CategoryMenu({category, anchor, point, onClose, canCreat
             placement={point ? 'point' : 'right'}
             className='plus-pop ch-menu'
             role='menu'
-            label={formatMessage({id: 'fusion.categoryMenu.label', defaultMessage: 'Options for {name}'}, {name: category.display_name})}
+            label={formatMessage({id: 'fusion.categoryMenu.label', defaultMessage: 'Options for {name}'}, {name: categoryName({formatMessage}, category)})}
             onClose={onClose}
         >
             {canCreate && (
@@ -85,7 +86,7 @@ export default function CategoryMenu({category, anchor, point, onClose, canCreat
                     label={formatMessage({id: 'fusion.categoryMenu.markRead', defaultMessage: 'Mark category as read'})}
                     onClick={run(() => {
                         dispatch(readMultipleChannels(unreadIds));
-                        toast(formatMessage({id: 'fusion.toast.markedRead', defaultMessage: 'Marked {name} as read'}, {name: category.display_name}));
+                        toast(formatMessage({id: 'fusion.toast.markedRead', defaultMessage: 'Marked {name} as read'}, {name: categoryName({formatMessage}, category)}));
                     })}
                 />
             )}

@@ -19,6 +19,7 @@ import {am} from 'fusion/utils/class_names';
 
 import type {GlobalState} from 'types/store';
 
+import {categoryName} from './category_name';
 import ChannelRow from './channel_row';
 import {getHiddenChannelIds} from './hidden';
 import {canFileChannel, fileChannel, fileChannelHere, findServerCategory, getServerCategories, isServerCategory, isTeamAdmin, SERVER_CATEGORY_PREFIX, setServerCategoryCollapsed} from './server_categories';
@@ -53,6 +54,7 @@ export default function Category({category}: {category: ChannelCategory}) {
     const locked = useSelector((state: GlobalState) => Boolean(server && findServerCategory(getServerCategories(state, category.team_id), category.display_name)?.locked));
     const canCreateHere = useSelector((state: GlobalState) => !locked || isTeamAdmin(state, category.team_id));
     const header = `category:${category.id}`;
+    const name = categoryName({formatMessage}, category);
 
     // Favorites, the default channels category and the admins' categories show only with channels in them; the
     // categories people make themselves stay, empty, until they remove them.
@@ -206,7 +208,7 @@ export default function Category({category}: {category: ChannelCategory}) {
                     name='chev'
                     size='xs'
                 />
-                <span className={am('grow')}>{category.display_name}</span>
+                <span className={am('grow')}>{name}</span>
                 {server && (
                     <span
                         className={am('server-mark')}
@@ -230,7 +232,7 @@ export default function Category({category}: {category: ChannelCategory}) {
                     ref={menuButton}
                     className={am('ch-act', 'cat-act', {open: menu !== null})}
                     data-am-tip={formatMessage({id: 'fusion.sidebar.categoryOptions', defaultMessage: 'Category options'})}
-                    aria-label={formatMessage({id: 'fusion.sidebar.categoryOptionsFor', defaultMessage: 'Category options for {name}'}, {name: category.display_name})}
+                    aria-label={formatMessage({id: 'fusion.sidebar.categoryOptionsFor', defaultMessage: 'Category options for {name}'}, {name})}
                     aria-haspopup='menu'
                     aria-expanded={menu !== null}
                     onClick={(e) => {

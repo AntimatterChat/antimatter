@@ -3,13 +3,16 @@
 
 import React from 'react';
 
+import type {ChannelCategory} from '@mattermost/types/channel_categories';
 import type {Channel} from '@mattermost/types/channels';
 import type {TeamKind} from '@mattermost/types/teams';
 
+import {addChannelToCategory} from 'mattermost-redux/actions/channel_categories';
 import {favoriteChannel} from 'mattermost-redux/actions/channels';
 import {patchTeam} from 'mattermost-redux/actions/teams';
 
 import {muteFor} from 'fusion/sidebar/timed_mute';
+import frMessages from 'i18n/fr.json';
 import {renderWithContext, screen, userEvent, waitFor} from 'tests/react_testing_utils';
 import {TestHelper} from 'utils/test_helper';
 
@@ -31,7 +34,8 @@ jest.mock('mattermost-redux/selectors/entities/channel_categories', () => ({
     getCategoryInTeamWithChannel: () => undefined,
     getManagedCategoryMappings: () => mockNoMappings,
 }));
-jest.mock('selectors/views/channel_sidebar', () => ({getCategoriesForCurrentTeam: () => mockNone}));
+let mockCategories: ChannelCategory[] = [];
+jest.mock('selectors/views/channel_sidebar', () => ({getCategoriesForCurrentTeam: () => mockCategories}));
 jest.mock('fusion/sidebar/server_categories', () => ({
     SERVER_CATEGORY_PREFIX: 'managed_',
     canFileChannel: () => false,
@@ -47,6 +51,10 @@ jest.mock('fusion/sidebar/timed_mute', () => ({
     getMuteEnd: () => 0,
     muteFor: jest.fn(() => ({type: 'MOCK_MUTE'})),
     unmute: jest.fn(() => ({type: 'MOCK_UNMUTE'})),
+}));
+jest.mock('mattermost-redux/actions/channel_categories', () => ({
+    ...jest.requireActual('mattermost-redux/actions/channel_categories'),
+    addChannelToCategory: jest.fn(() => ({type: 'MOCK_ADD_TO_CATEGORY'})),
 }));
 jest.mock('mattermost-redux/actions/channels', () => ({
     ...jest.requireActual('mattermost-redux/actions/channels'),
@@ -237,5 +245,52 @@ describe('fusion/popovers/ChannelMenu: default channels and all-channels communi
         await userEvent.click(screen.getByRole('menuitem', {name: 'Favourite'}));
         expect(favoriteChannel).toHaveBeenCalledWith('dev');
         await waitFor(() => expect(mockToast).toHaveBeenCalledWith('Added to Favourites'));
+    });
+});
+
+describe('fusion/popovers/ChannelMenu: the categories to move to, in the user\'s language', () => {
+    const fr = frMessages as Record<string, string>;
+    const category = (id: string, type: ChannelCategory['type'], displayName: string) => ({id, team_id: 't1', user_id: 'me', type, display_name: displayName, channel_ids: [], sorting: 'default', muted: false, collapsed: false}) as unknown as ChannelCategory;
+
+    beforeEach(() => {
+        mockTeamPerms = new Set();
+        mockChannelPerms = new Set(MEMBER);
+        mockCategories = [
+            category('favorites_me_t1', 'favorites', 'Favourites'),
+            category('channels_me_t1', 'channels', 'Channels'),
+            category('custom1', 'custom', 'Work'),
+            category('direct_messages_me_t1', 'direct_messages', 'Direct Messages'),
+        ];
+        if (!document.getElementById('am-layer')) {
+            const layer = document.createElement('div');
+            layer.id = 'am-layer';
+            document.body.appendChild(layer);
+        }
+    });
+    afterEach(() => {
+        mockCategories = [];
+    });
+
+    test('in French, the default categories have their French names and a custom one keeps its own', async () => {
+        renderWithContext(
+            <ChannelMenu
+                channel={dev}
+                point={{x: 1, y: 1}}
+                onClose={jest.fn()}
+            />,
+            state() as never,
+            {locale: 'fr', intlMessages: fr},
+        );
+
+        await userEvent.click(screen.getByRole('menuitem', {name: fr['fusion.channelMenu.move']}));
+        expect(screen.getByRole('menuitemradio', {name: fr['sidebar_left.sidebar_channel_menu.favorites']})).toBeInTheDocument();
+        expect(screen.getByRole('menuitemradio', {name: fr['sidebar_left.sidebar_channel_menu.channels']})).toBeInTheDocument();
+        expect(screen.getByRole('menuitemradio', {name: 'Work'})).toBeInTheDocument();
+        expect(screen.queryByRole('menuitemradio', {name: 'Favourites'})).not.toBeInTheDocument();
+        expect(fr['sidebar_left.sidebar_channel_menu.favorites']).toBe('Favoris');
+
+        await userEvent.click(screen.getByRole('menuitemradio', {name: 'Favoris'}));
+        expect(addChannelToCategory).toHaveBeenCalledWith('favorites_me_t1', 'dev');
+        await waitFor(() => expect(mockToast).toHaveBeenCalledWith('Déplacé vers Favoris'));
     });
 });

@@ -43,6 +43,7 @@ import {MenuItem, MenuSeparator} from 'fusion/components/menu';
 import CopyIdItem from 'fusion/popovers/copy_id_item';
 import {useDialogs} from 'fusion/shell/dialogs_context';
 import {useToast} from 'fusion/shell/toast_context';
+import {categoryName} from 'fusion/sidebar/category_name';
 import {RenameGroupDialog} from 'fusion/sidebar/group_dm';
 import {hideConversation, isHidden, showConversation} from 'fusion/sidebar/hidden';
 import {canFileChannel, fileChannel, fileChannelHere, findServerCategory, getServerCategories, getSidebarCategories, isServerCategory, SERVER_CATEGORY_PREFIX} from 'fusion/sidebar/server_categories';
@@ -343,10 +344,10 @@ export default function ChannelMenu({channel, anchor, point, placement = 'right'
                                     if (c.id !== currentCategory?.id) {
                                         dispatch(addChannelToCategory(c.id, channel.id));
                                     }
-                                    toast(formatMessage({id: 'fusion.toast.moved', defaultMessage: 'Moved to {category}'}, {category: c.display_name}));
+                                    toast(formatMessage({id: 'fusion.toast.moved', defaultMessage: 'Moved to {category}'}, {category: categoryName({formatMessage}, c)}));
                                 })}
                             >
-                                {c.display_name}
+                                {categoryName({formatMessage}, c)}
                             </button>
                         );
                     })}
