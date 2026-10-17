@@ -44,10 +44,10 @@ export type AIBridgeMockRecordedRequest = {
     operation: AIBridgeOperation | string;
     client_operation?: string;
     operation_sub_type?: string;
-    session_user_id?: string;
     user_id?: string;
     channel_id?: string;
-    agent_id?: string;
+
+    // The test model connection the request ran on.
     service_id?: string;
     messages: AIBridgeMockMessage[];
     json_output_format?: Record<string, unknown>;
