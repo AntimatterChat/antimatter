@@ -2022,11 +2022,21 @@ func (a *App) addUserToChannel(rctx request.CTX, user *model.User, channel *mode
 		}
 	}
 
-	newMember, nErr = a.Srv().Store().Channel().SaveMember(rctx, newMember)
+	savedMember, nErr := a.Srv().Store().Channel().SaveMember(rctx, newMember)
 	if nErr != nil {
+		// Antimatter: someone else added them between the check above and the save (a community with everyone in
+		// every channel fills a new channel in the background, while its creator adds people): they're a member,
+		// as when they already were.
+		var conflictErr *store.ErrConflict
+		if errors.As(nErr, &conflictErr) {
+			if existing, getErr := a.Srv().Store().Channel().GetMember(RequestContextWithMaster(rctx), channel.Id, user.Id); getErr == nil {
+				return existing, nil
+			}
+		}
 		return nil, model.NewAppError("AddUserToChannel", "api.channel.add_user.to.channel.failed.app_error", nil,
 			fmt.Sprintf("failed to add member: %v, user_id: %s, channel_id: %s", nErr, user.Id, channel.Id), http.StatusInternalServerError)
 	}
+	newMember = savedMember
 
 	if nErr := a.Srv().Store().ChannelMemberHistory().LogJoinEvent(user.Id, channel.Id, model.GetMillis()); nErr != nil {
 		return nil, model.NewAppError("AddUserToChannel", "app.channel_member_history.log_join_event.internal_error", nil, "", http.StatusInternalServerError).Wrap(nErr)
