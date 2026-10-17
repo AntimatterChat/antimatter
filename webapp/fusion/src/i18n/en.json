@@ -26900,8 +26900,8 @@
     "description": ""
   },
   "fusion.sleep.later": {
-    "defaultMessage": "Send at 07:00 their time",
-    "description": ""
+    "defaultMessage": "Send at {time} their time",
+    "description": "Button in the composer's note that the person you write to may be asleep: schedules the message for the start of their working day. {time} is that time on their clock (e.g. 08:30), already formatted."
   },
   "fusion.sleep.many": {
     "defaultMessage": "It's night for {names} — they may be asleep.",
@@ -27520,8 +27520,8 @@
     "description": ""
   },
   "fusion.toast.scheduledSleeper": {
-    "defaultMessage": "Scheduled — {name} gets it at 07:00 their time (in about {hours} h)",
-    "description": ""
+    "defaultMessage": "Scheduled — {name} gets it at {time} their time (in about {hours} h)",
+    "description": "Toast after scheduling a message for someone who may be asleep. {name} is their first name, {time} the start of their working day on their clock (e.g. 08:30, already formatted), {hours} a whole number of hours from now."
   },
   "fusion.toast.scheduleEmpty": {
     "defaultMessage": "Write your message first, then schedule it",

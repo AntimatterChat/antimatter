@@ -272,7 +272,7 @@ export default function Composer({channelId, rootId = '', placeholder}: Props) {
     };
 
     // Scheduling sends the draft later instead of now (Mattermost's scheduled messages).
-    const schedule = async (at: number, sleeper?: string) => {
+    const schedule = async (at: number, sleeper?: {name: string; time: string}) => {
         setMenu(null);
         if (!draft.message.trim() && !draft.fileInfos.length) {
             toast(formatMessage({id: 'fusion.toast.scheduleEmpty', defaultMessage: 'Write your message first, then schedule it'}));
@@ -305,7 +305,7 @@ export default function Composer({channelId, rootId = '', placeholder}: Props) {
         const when = intl.formatDate(at, {weekday: 'short', hour: 'numeric', minute: '2-digit'});
         if (sleeper) {
             const hours = Math.max(1, Math.round((at - Date.now()) / 36e5));
-            toast(formatMessage({id: 'fusion.toast.scheduledSleeper', defaultMessage: 'Scheduled — {name} gets it at 07:00 their time (in about {hours} h)'}, {name: sleeper, hours}));
+            toast(formatMessage({id: 'fusion.toast.scheduledSleeper', defaultMessage: 'Scheduled — {name} gets it at {time} their time (in about {hours} h)'}, {name: sleeper.name, time: sleeper.time, hours}));
         } else {
             toast(formatMessage({id: 'fusion.toast.scheduled', defaultMessage: 'Scheduled for {when}'}, {when}));
         }

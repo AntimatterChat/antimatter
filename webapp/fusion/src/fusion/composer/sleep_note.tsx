@@ -21,6 +21,8 @@ import Constants from 'utils/constants';
 
 import type {GlobalState} from 'types/store';
 
+import {nextWorkdayStart} from './workday_start';
+
 // The hours when someone may be asleep, as the classic web app's "remote user hour" (22:00 to 06:00).
 const NIGHT_FROM = Constants.REMOTE_USERS_HOUR_LIMIT_END_OF_THE_DAY;
 const NIGHT_TO = Constants.REMOTE_USERS_HOUR_LIMIT_BEGINNING_OF_THE_DAY;
@@ -48,12 +50,13 @@ function sleepers(users: UserProfile[], now: DateTime): Sleeper[] {
 type Props = {
     channelId: string;
 
-    // Schedules the message being written; missing when scheduled messages are off.
-    onSendAt?: (at: number, sleeper: string) => void;
+    // Schedules the message being written; missing when scheduled messages are off. `sleeper` names the reader and
+    // the time they get it, on their clock, formatted for the writer.
+    onSendAt?: (at: number, sleeper: {name: string; time: string}) => void;
 };
 
 // SleepNote warns, in a direct or group message, that the others may be asleep: the mockup's .sleep-note, with
-// "Send at 07:00 their time" for one sleeper.
+// "Send at 08:30 their time" for one sleeper (the start of a working day in their country, see workday_start.ts).
 export default function SleepNote({channelId, onSendAt}: Props) {
     const {formatMessage, formatTime} = useIntl();
     const getProfiles = useMemo(() => makeGetProfilesInChannel(), []);
@@ -96,17 +99,15 @@ export default function SleepNote({channelId, onSendAt}: Props) {
             {time: formatTime(time.toMillis(), {timeZone: time.zoneName || undefined, hour: '2-digit', minute: '2-digit'}), name: first(user), b: (chunks: React.ReactNode) => <b>{chunks}</b>},
         );
         if (scheduling && onSendAt) {
-            let wake = time.set({hour: 7, minute: 0, second: 0, millisecond: 0});
-            if (wake <= time) {
-                wake = wake.plus({days: 1});
-            }
+            const wake = nextWorkdayStart(time);
+            const wakeTime = formatTime(wake.toMillis(), {timeZone: wake.zoneName || undefined, hour: '2-digit', minute: '2-digit'});
             later = (
                 <button
                     type='button'
                     className={am('sleep-later')}
-                    onClick={() => onSendAt(wake.toMillis(), first(user))}
+                    onClick={() => onSendAt(wake.toMillis(), {name: first(user), time: wakeTime})}
                 >
-                    {formatMessage({id: 'fusion.sleep.later', defaultMessage: 'Send at 07:00 their time'})}
+                    {formatMessage({id: 'fusion.sleep.later', defaultMessage: 'Send at {time} their time'}, {time: wakeTime})}
                 </button>
             );
         }
