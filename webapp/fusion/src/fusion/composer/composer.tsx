@@ -86,6 +86,10 @@ type Pending = {clientId: string; name: string; progress: number};
 // The conversation view sends files dropped on it to its composer with this event.
 export const DROP_FILES_EVENT = 'am-drop-files';
 
+// Under this width (a phone, a narrow panel) the message options leave the composer's row for its "+" menu, so that
+// the text box keeps its room.
+export const NARROW_COMPOSER = 400;
+
 // Composer writes messages: the mockup's compose box around the classic web app's drafts and submit logic
 // (slash commands, reactions, message priority).
 const NO_HOOKS: FilesWillUploadHook[] = [];
@@ -149,6 +153,19 @@ export default function Composer({channelId, rootId = '', placeholder}: Props) {
     const sendLaterRef = useRef<HTMLButtonElement>(null);
     const moreRef = useRef<HTMLButtonElement>(null);
     const autocompleteRef = useRef<AutocompleteHandle>(null);
+    const formRef = useRef<HTMLFormElement>(null);
+    const [narrow, setNarrow] = useState(false);
+    useEffect(() => {
+        const el = formRef.current;
+        if (!el || typeof ResizeObserver === 'undefined') {
+            return undefined;
+        }
+        const check = () => setNarrow(el.clientWidth > 0 && el.clientWidth < NARROW_COMPOSER);
+        check();
+        const observer = new ResizeObserver(check);
+        observer.observe(el);
+        return () => observer.disconnect();
+    }, []);
 
     // Apps' composer modes (a poll…): the one the composer is in, if any, and what Send does in it. A mode doesn't
     // follow the conversation, nor stay once its app is gone.
@@ -632,6 +649,7 @@ export default function Composer({channelId, rootId = '', placeholder}: Props) {
     let group = 0;
     return (
         <form
+            ref={formRef}
             {...a11yRegion(am('composer'), 'composer')}
 
             // Reaching the composer with F6 goes on to its text box.
@@ -830,7 +848,7 @@ export default function Composer({channelId, rootId = '', placeholder}: Props) {
                     >
                         <Icon name='smile'/>
                     </button>
-                    {!mode && (
+                    {!mode && !narrow && (
                         <button
                             ref={optionsRef}
                             type='button'
@@ -986,6 +1004,7 @@ export default function Composer({channelId, rootId = '', placeholder}: Props) {
                     rootId={rootId}
                     modes={modes}
                     onMode={enterMode}
+                    onOptions={narrow ? () => openOptions() : undefined}
                     onPickFile={() => fileRef.current?.click()}
                     onUpload={upload}
                     onClose={() => setMenu(null)}
@@ -1054,7 +1073,7 @@ export default function Composer({channelId, rootId = '', placeholder}: Props) {
                 <MessageOptionsPopover
                     key={optionsSection || 'all'}
                     options={options}
-                    anchor={optionsRef.current}
+                    anchor={narrow ? plusRef.current : optionsRef.current}
                     section={optionsSection}
                     onClose={() => setMenu(null)}
                 />

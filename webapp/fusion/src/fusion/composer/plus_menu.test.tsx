@@ -83,4 +83,22 @@ describe('fusion/composer/PlusMenu', () => {
         expect(onClose).toHaveBeenCalled();
         expect(onMode).toHaveBeenCalledWith('polls.poll');
     });
+
+    test('in a narrow composer, it also opens the message options', async () => {
+        const onOptions = jest.fn();
+        renderWithContext(
+            <PlusMenu
+                anchor={null}
+                channelId='c1'
+                rootId=''
+                onPickFile={jest.fn()}
+                onUpload={jest.fn()}
+                onClose={jest.fn()}
+                onOptions={onOptions}
+            />,
+            {plugins: {components: {}}} as never,
+        );
+        await userEvent.click(screen.getByRole('menuitem', {name: 'Message options'}));
+        expect(onOptions).toHaveBeenCalled();
+    });
 });

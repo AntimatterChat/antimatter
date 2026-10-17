@@ -6,7 +6,7 @@ import {useIntl} from 'react-intl';
 import {useSelector} from 'react-redux';
 
 import {Popover} from 'fusion/components/layer';
-import {MenuItem} from 'fusion/components/menu';
+import {MenuItem, MenuSeparator} from 'fusion/components/menu';
 import {am} from 'fusion/utils/class_names';
 
 import type {GlobalState} from 'types/store';
@@ -31,12 +31,15 @@ type Props = {
     // Apps' composer modes (a poll…), which the composer switches to.
     modes?: ComposerModeRegistration[];
     onMode?: (id: string) => void;
+
+    // In a narrow composer, the message options (priority, burn on read, spoiler) open from here.
+    onOptions?: () => void;
 };
 
 // PlusMenu is the composer's "+" menu: only what adds something to the message (a file, and what apps add: a
 // picture from elsewhere, a poll, a location…). Scheduling is the send button's chevron (and the formatting bar's
 // clock); slash commands start by typing /.
-export default function PlusMenu({anchor, channelId, rootId, onPickFile, onUpload, onClose, modes = NO_MODES, onMode}: Props) {
+export default function PlusMenu({anchor, channelId, rootId, onPickFile, onUpload, onClose, modes = NO_MODES, onMode, onOptions}: Props) {
     const {formatMessage} = useIntl();
     const uploadMethods = useSelector((state: GlobalState) => state.plugins.components.FileUploadMethod) || NO_METHODS;
 
@@ -85,6 +88,19 @@ export default function PlusMenu({anchor, channelId, rootId, onPickFile, onUploa
                 rootId={rootId}
                 onClose={onClose}
             />
+            {onOptions && (
+                <>
+                    <MenuSeparator/>
+                    <MenuItem
+                        icon='sliders'
+                        label={formatMessage({id: 'fusion.composer.options', defaultMessage: 'Message options'})}
+                        onClick={() => {
+                            onClose();
+                            onOptions();
+                        }}
+                    />
+                </>
+            )}
         </Popover>
     );
 }

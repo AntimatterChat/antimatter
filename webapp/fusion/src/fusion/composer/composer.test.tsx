@@ -197,6 +197,31 @@ describe('fusion/composer/Composer', () => {
             expect(sent().props?.read_duration).toBeUndefined();
         });
 
+        test('in a narrow composer (a phone), they open from the "+" menu, leaving the text box its room', async () => {
+            const original = window.ResizeObserver;
+            window.ResizeObserver = class {
+                constructor(private callback: () => void) {}
+                observe() {
+                    this.callback();
+                }
+                disconnect() {}
+                unobserve() {}
+            } as unknown as typeof ResizeObserver;
+            const width = jest.spyOn(HTMLElement.prototype, 'clientWidth', 'get').mockReturnValue(320);
+            try {
+                render(options);
+                expect(screen.queryByRole('button', {name: 'Message options'})).not.toBeInTheDocument();
+                await userEvent.click(screen.getByRole('button', {name: 'Add a file and more'}));
+                await userEvent.click(screen.getByRole('menuitem', {name: 'Message options'}));
+                expect(popover()).toBeInTheDocument();
+                await userEvent.click(within(popover()).getByRole('switch', {name: 'Send as a spoiler'}));
+                expect(screen.getByRole('button', {name: 'Spoiler'})).toBeInTheDocument();
+            } finally {
+                width.mockRestore();
+                window.ResizeObserver = original;
+            }
+        });
+
         test('no burning where the channel doesn\'t allow it', async () => {
             mockBurnAllowed = false;
             render(options);
