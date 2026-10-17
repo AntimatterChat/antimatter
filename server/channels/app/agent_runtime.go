@@ -193,14 +193,40 @@ func (a *App) handlePostForAgents(rctx request.CTX, post *model.Post, channel *m
 	}
 }
 
-// agentAnsweredByAIChat tells whether the AI chat app still answers for an agent: the Agents plugin's bots became
-// agents, and while the app runs it keeps answering its own (until it uses the server's agents).
+// AIChatAgentsInServerProp is what the AI chat app's manifest says (in its props, set to true) once it no longer
+// answers for its agents itself and leaves every conversation to the server's runtime.
+const AIChatAgentsInServerProp = "antimatter_agents_in_server"
+
+// aiChatAnswersItsAgents tells whether an AI chat app with this manifest answers for its own agents: the Agents
+// plugin (and the AI chat app before it became a side panel) answered for its bots, which became agents; the app that
+// says AIChatAgentsInServerProp doesn't.
+func aiChatAnswersItsAgents(manifest *model.Manifest) bool {
+	if manifest == nil {
+		return false
+	}
+	leaves, _ := manifest.Props[AIChatAgentsInServerProp].(bool)
+	return !leaves
+}
+
+// agentAnsweredByAIChat tells whether the AI chat app answers for an agent instead of the runtime: only for its own
+// agents (the Agents plugin's bots), and only an older app, running. Exactly one of them answers: an older app
+// keeps answering its agents during an upgrade, and the runtime takes over the moment the newer app is running (or
+// none is); the newer app never answers in its message hooks.
 func (a *App) agentAnsweredByAIChat(bot *model.Bot) bool {
 	if bot.OwnerId != model.AIAgentsPluginId {
 		return false
 	}
 	env := a.GetPluginsEnvironment()
-	return env != nil && env.IsActive(model.AIAgentsPluginId)
+	if env == nil {
+		return false
+	}
+	// The running app's manifest, as it was activated (Active doesn't read the disk).
+	for _, info := range env.Active() {
+		if info.Manifest != nil && info.Manifest.Id == model.AIAgentsPluginId {
+			return aiChatAnswersItsAgents(info.Manifest)
+		}
+	}
+	return false
 }
 
 // agentKV adapts the key-value store to the cluster mutex, in the runtime's own namespace.
