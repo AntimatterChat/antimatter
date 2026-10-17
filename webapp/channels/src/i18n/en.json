@@ -11059,9 +11059,9 @@
     "defaultMessage": "8 hours",
     "description": "Dropdown option for the Burn-on-Read Duration setting in the admin console; a time duration in a compact list."
   },
-  "admin.posts.burnOnRead.duration.desc": {
-    "defaultMessage": "Sets the countdown duration for Burn-on-Read messages once they are revealed. After a recipient clicks to reveal a BoR message, the message will delete itself for that user after the specified duration. This setting applies to all Burn-on-Read messages.",
-    "description": "Admin console help text under the Burn-on-Read Duration dropdown on the Site Configuration > Posts page; BoR abbreviates Burn-on-Read, the self-deleting message feature."
+  "admin.posts.burnOnRead.duration.descDefault": {
+    "defaultMessage": "Sets the countdown duration for Burn-on-Read messages once they are revealed, when their sender didn't choose one. After a recipient clicks to reveal a BoR message, the message will delete itself for that user after this duration.",
+    "description": "Help text of the System Console setting for the default time a burn-on-read (self-deleting) message stays readable after a recipient reveals it; senders can now choose their own duration, so this is the default. 'BoR' abbreviates Burn-on-Read."
   },
   "admin.posts.burnOnRead.duration.title": {
     "defaultMessage": "Burn-on-Read Duration",
@@ -11074,6 +11074,18 @@
   "admin.posts.burnOnRead.enable.title": {
     "defaultMessage": "Enable Burn-on-Read Messages",
     "description": "Setting label (toggle) on the Site Configuration > Posts admin page enabling the self-deleting message feature."
+  },
+  "admin.posts.burnOnRead.maximumDuration.4hours": {
+    "defaultMessage": "4 hours",
+    "description": "Option of the System Console setting for the longest duration a sender can let a burn-on-read (self-deleting) message last once revealed."
+  },
+  "admin.posts.burnOnRead.maximumDuration.desc": {
+    "defaultMessage": "Senders can choose how long each Burn-on-Read message lasts once it is revealed, up to this duration. A longer choice is shortened to it.",
+    "description": "Help text of the System Console setting for the longest duration a sender can choose for a burn-on-read (self-deleting) message, counted from when a recipient reveals it."
+  },
+  "admin.posts.burnOnRead.maximumDuration.title": {
+    "defaultMessage": "Longest duration senders can choose",
+    "description": "Label of the System Console setting for the longest time a sender can let a burn-on-read (self-deleting) message last once a recipient reveals it."
   },
   "admin.posts.burnOnRead.maximumTTL.14days": {
     "defaultMessage": "14 days",
