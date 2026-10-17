@@ -175,8 +175,9 @@ const Autocomplete = forwardRef<AutocompleteHandle, Props>(({channelId, rootId, 
     const dismissedFor = useRef<string | null>(null);
 
     // In a slash command's arguments, @, # and ~ suggest people and channels: # completes #channel (the built-in
-    // commands take it), ~ completes ~channel (for the apps that parse that). 'slash' providers only work there.
-    const providers = useMemo<Array<[Kind, Provider, 'slash'?]>>(() => [
+    // commands take it), ~ completes ~channel (for the apps that parse that). 'slash' providers only work there;
+    // elsewhere ~ also suggests channels, for people used to it, but writes them #channel ('text' providers).
+    const providers = useMemo<Array<[Kind, Provider, ('slash' | 'text')?]>>(() => [
         ['command', new CommandProvider({teamId, channelId, rootId})],
         ['mention', new AtMentionProvider({
             currentUserId,
@@ -190,6 +191,7 @@ const Autocomplete = forwardRef<AutocompleteHandle, Props>(({channelId, rootId, 
         })],
         ['channel', new ChannelMentionProvider((term, success, error) => dispatch(autocompleteChannels(term, success, error)), delayChannelAutocomplete, '#')],
         ['channel', new ChannelMentionProvider((term, success, error) => dispatch(autocompleteChannels(term, success, error)), delayChannelAutocomplete, '~'), 'slash'],
+        ['channel', new ChannelMentionProvider((term, success, error) => dispatch(autocompleteChannels(term, success, error)), delayChannelAutocomplete, '~', '#'), 'text'],
         ['emoji', new EmoticonProvider()],
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -207,7 +209,7 @@ const Autocomplete = forwardRef<AutocompleteHandle, Props>(({channelId, rootId, 
         const slash = isSlashArguments(pretext);
         const mentioning = slash && (/(^|\s)[@#~][^\s]*$/).test(pretext);
         for (const [kind, provider, only] of providers) {
-            if ((only === 'slash' && !slash) || (kind === 'command' && mentioning)) {
+            if ((only === 'slash' && !slash) || (only === 'text' && slash) || (kind === 'command' && mentioning)) {
                 continue;
             }
             handled = provider.handlePretextChanged(pretext, (res) => {

@@ -269,6 +269,26 @@ describe('ChannelMentionProvider with the # trigger (Antimatter)', () => {
         expect(autocompleteChannels).not.toHaveBeenCalled();
     });
 
+    test('~ still suggests channels, and writes them #channel-name', () => {
+        const tilde = new ChannelMentionProvider(autocompleteChannels, false, '~', '#');
+        expect(tilde.handlePretextChanged('see ~town', resultsCallback)).toBe(true);
+        expect(resultsCallback).toHaveBeenCalledWith(expect.objectContaining({matchedPretext: '~town'}));
+
+        const [success] = autocompleteChannels.mock.calls[0].slice(1);
+        success([{id: 'c1', name: 'town-square', display_name: 'Town Square', type: 'O', delete_at: 0}]);
+        const last = resultsCallback.mock.calls[resultsCallback.mock.calls.length - 1][0];
+        expect(last.groups[1].terms).toEqual(['#town-square']);
+    });
+
+    test('in slash command arguments, ~ completes ~channel-name', () => {
+        const tilde = new ChannelMentionProvider(autocompleteChannels, false, '~');
+        expect(tilde.handlePretextChanged('/mute ~town', resultsCallback)).toBe(true);
+        const [success] = autocompleteChannels.mock.calls[0].slice(1);
+        success([{id: 'c1', name: 'town-square', display_name: 'Town Square', type: 'O', delete_at: 0}]);
+        const last = resultsCallback.mock.calls[resultsCallback.mock.calls.length - 1][0];
+        expect(last.groups[1].terms).toEqual(['~town-square']);
+    });
+
     test('the classic provider keeps ~', () => {
         const classic = new ChannelMentionProvider(autocompleteChannels, false);
         expect(classic.triggerCharacter).toBe('~');

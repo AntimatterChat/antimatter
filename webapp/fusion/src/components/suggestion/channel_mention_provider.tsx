@@ -88,18 +88,22 @@ export default class ChannelMentionProvider extends Provider {
     private lastPrefixWithNoResults: string;
     private lastCompletedWord: string;
     triggerCharacter: string;
+
+    // The sign the chosen channel is written with: the trigger, or # for Fusion's ~ (people used to ~ get #name).
+    private completeSign: '~' | '#';
     private delayChannelAutocomplete: boolean;
     autocompleteChannels: (term: string, success: (channels: Channel[]) => void, error: () => void) => Promise<ActionResult>;
 
     // Antimatter: Fusion links channels with #channel-name (the usual sign), so it passes '#'; '~' stays the
     // default for the classic code paths. Both are rendered as channel links.
-    constructor(channelSearchFunc: (term: string, success: (channels: Channel[]) => void, error: () => void) => Promise<ActionResult>, delayChannelAutocomplete: boolean, triggerCharacter: '~' | '#' = '~') {
+    constructor(channelSearchFunc: (term: string, success: (channels: Channel[]) => void, error: () => void) => Promise<ActionResult>, delayChannelAutocomplete: boolean, triggerCharacter: '~' | '#' = '~', completeSign: '~' | '#' = triggerCharacter) {
         super();
 
         this.lastPrefixTrimmed = '';
         this.lastPrefixWithNoResults = '';
         this.lastCompletedWord = '';
         this.triggerCharacter = triggerCharacter;
+        this.completeSign = completeSign;
 
         this.autocompleteChannels = channelSearchFunc;
         this.delayChannelAutocomplete = delayChannelAutocomplete;
@@ -198,8 +202,8 @@ export default class ChannelMentionProvider extends Provider {
         });
         resultCallback({
             groups: [
-                myChannelsGroup(myChannels, trigger),
-                moreChannelsGroup([], true, trigger),
+                myChannelsGroup(myChannels, this.completeSign),
+                moreChannelsGroup([], true, this.completeSign),
             ],
             matchedPretext: captured[1],
         });
@@ -255,8 +259,8 @@ export default class ChannelMentionProvider extends Provider {
             resultCallback({
                 matchedPretext: captured[1],
                 groups: [
-                    myChannelsGroup(myChannels, trigger),
-                    moreChannelsGroup(moreChannels, false, trigger),
+                    myChannelsGroup(myChannels, this.completeSign),
+                    moreChannelsGroup(moreChannels, false, this.completeSign),
                 ],
             });
         };
