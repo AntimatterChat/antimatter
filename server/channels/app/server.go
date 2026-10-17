@@ -151,6 +151,9 @@ type Server struct {
 
 	agentsBridgeOverride AgentsBridge
 
+	// ai holds the AI service's key encryption keyring and rate limiter (Antimatter), made when first needed.
+	ai aiServerState
+
 	ch *Channels
 
 	// notifyAdminCoolOffDaysOverride overrides MM_NOTIFY_ADMIN_COOL_OFF_DAYS.
