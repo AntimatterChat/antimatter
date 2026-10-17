@@ -24109,7 +24109,7 @@
   },
   "fusion.files.hideImages": {
     "defaultMessage": "{count, plural, one {Hide image} other {Hide # images}}",
-    "description": ""
+    "description": "Entry of a message's ⋯ menu hiding the images attached to the message; {count} is how many."
   },
   "fusion.files.linkCopied": {
     "defaultMessage": "Link copied",
@@ -24145,7 +24145,7 @@
   },
   "fusion.files.showImages": {
     "defaultMessage": "{count, plural, one {Show image} other {Show # images}}",
-    "description": ""
+    "description": "Entry of a message's ⋯ menu, and the line left under a message whose images are hidden, showing them again; {count} is how many."
   },
   "fusion.folded.blocked": {
     "defaultMessage": "Message from someone you blocked",
