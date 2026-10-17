@@ -345,6 +345,26 @@ func (_m *Store) CommandWebhook() store.CommandWebhookStore {
 	return r0
 }
 
+// CommunityRules provides a mock function with no fields
+func (_m *Store) CommunityRules() store.CommunityRulesStore {
+	ret := _m.Called()
+
+	if len(ret) == 0 {
+		panic("no return value specified for CommunityRules")
+	}
+
+	var r0 store.CommunityRulesStore
+	if rf, ok := ret.Get(0).(func() store.CommunityRulesStore); ok {
+		r0 = rf()
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(store.CommunityRulesStore)
+		}
+	}
+
+	return r0
+}
+
 // Compliance provides a mock function with no fields
 func (_m *Store) Compliance() store.ComplianceStore {
 	ret := _m.Called()
@@ -814,6 +834,26 @@ func (_m *Store) MarkSystemRanUnitTests() {
 	_m.Called()
 }
 
+// Moderation provides a mock function with no fields
+func (_m *Store) Moderation() store.ModerationStore {
+	ret := _m.Called()
+
+	if len(ret) == 0 {
+		panic("no return value specified for Moderation")
+	}
+
+	var r0 store.ModerationStore
+	if rf, ok := ret.Get(0).(func() store.ModerationStore); ok {
+		r0 = rf()
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(store.ModerationStore)
+		}
+	}
+
+	return r0
+}
+
 // NotifyAdmin provides a mock function with no fields
 func (_m *Store) NotifyAdmin() store.NotifyAdminStore {
 	ret := _m.Called()
@@ -848,6 +888,26 @@ func (_m *Store) OAuth() store.OAuthStore {
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(store.OAuthStore)
+		}
+	}
+
+	return r0
+}
+
+// OnTopPost provides a mock function with no fields
+func (_m *Store) OnTopPost() store.OnTopPostStore {
+	ret := _m.Called()
+
+	if len(ret) == 0 {
+		panic("no return value specified for OnTopPost")
+	}
+
+	var r0 store.OnTopPostStore
+	if rf, ok := ret.Get(0).(func() store.OnTopPostStore); ok {
+		r0 = rf()
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(store.OnTopPostStore)
 		}
 	}
 
@@ -1289,66 +1349,6 @@ func (_m *Store) Scheme() store.SchemeStore {
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(store.SchemeStore)
-		}
-	}
-
-	return r0
-}
-
-// Moderation provides a mock function with no fields
-func (_m *Store) Moderation() store.ModerationStore {
-	ret := _m.Called()
-
-	if len(ret) == 0 {
-		panic("no return value specified for Moderation")
-	}
-
-	var r0 store.ModerationStore
-	if rf, ok := ret.Get(0).(func() store.ModerationStore); ok {
-		r0 = rf()
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(store.ModerationStore)
-		}
-	}
-
-	return r0
-}
-
-// CommunityRules provides a mock function with no fields
-func (_m *Store) CommunityRules() store.CommunityRulesStore {
-	ret := _m.Called()
-
-	if len(ret) == 0 {
-		panic("no return value specified for CommunityRules")
-	}
-
-	var r0 store.CommunityRulesStore
-	if rf, ok := ret.Get(0).(func() store.CommunityRulesStore); ok {
-		r0 = rf()
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(store.CommunityRulesStore)
-		}
-	}
-
-	return r0
-}
-
-// OnTopPost provides a mock function with no fields
-func (_m *Store) OnTopPost() store.OnTopPostStore {
-	ret := _m.Called()
-
-	if len(ret) == 0 {
-		panic("no return value specified for OnTopPost")
-	}
-
-	var r0 store.OnTopPostStore
-	if rf, ok := ret.Get(0).(func() store.OnTopPostStore); ok {
-		r0 = rf()
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(store.OnTopPostStore)
 		}
 	}
 

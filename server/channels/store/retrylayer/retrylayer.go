@@ -34,6 +34,7 @@ type RetryLayer struct {
 	ClusterDiscoveryStore           store.ClusterDiscoveryStore
 	CommandStore                    store.CommandStore
 	CommandWebhookStore             store.CommandWebhookStore
+	CommunityRulesStore             store.CommunityRulesStore
 	ComplianceStore                 store.ComplianceStore
 	ContentFlaggingStore            store.ContentFlaggingStore
 	DeliveryTrackingStore           store.DeliveryTrackingStore
@@ -49,7 +50,6 @@ type RetryLayer struct {
 	NotifyAdminStore                store.NotifyAdminStore
 	OAuthStore                      store.OAuthStore
 	OnTopPostStore                  store.OnTopPostStore
-	CommunityRulesStore             store.CommunityRulesStore
 	OutgoingOAuthConnectionStore    store.OutgoingOAuthConnectionStore
 	PluginStore                     store.PluginStore
 	PostStore                       store.PostStore
@@ -149,6 +149,10 @@ func (s *RetryLayer) CommandWebhook() store.CommandWebhookStore {
 	return s.CommandWebhookStore
 }
 
+func (s *RetryLayer) CommunityRules() store.CommunityRulesStore {
+	return s.CommunityRulesStore
+}
+
 func (s *RetryLayer) Compliance() store.ComplianceStore {
 	return s.ComplianceStore
 }
@@ -207,10 +211,6 @@ func (s *RetryLayer) OAuth() store.OAuthStore {
 
 func (s *RetryLayer) OnTopPost() store.OnTopPostStore {
 	return s.OnTopPostStore
-}
-
-func (s *RetryLayer) CommunityRules() store.CommunityRulesStore {
-	return s.CommunityRulesStore
 }
 
 func (s *RetryLayer) OutgoingOAuthConnection() store.OutgoingOAuthConnectionStore {
@@ -436,6 +436,11 @@ type RetryLayerCommandWebhookStore struct {
 	Root *RetryLayer
 }
 
+type RetryLayerCommunityRulesStore struct {
+	store.CommunityRulesStore
+	Root *RetryLayer
+}
+
 type RetryLayerComplianceStore struct {
 	store.ComplianceStore
 	Root *RetryLayer
@@ -508,11 +513,6 @@ type RetryLayerOAuthStore struct {
 
 type RetryLayerOnTopPostStore struct {
 	store.OnTopPostStore
-	Root *RetryLayer
-}
-
-type RetryLayerCommunityRulesStore struct {
-	store.CommunityRulesStore
 	Root *RetryLayer
 }
 
@@ -5479,6 +5479,174 @@ func (s *RetryLayerCommandWebhookStore) TryUse(id string, limit int) error {
 
 }
 
+func (s *RetryLayerCommunityRulesStore) Accept(rctx request.CTX, acceptance *model.CommunityRulesAcceptance) error {
+
+	tries := 0
+	for {
+		err := s.CommunityRulesStore.Accept(rctx, acceptance)
+		if err == nil {
+			return nil
+		}
+		if !isRepeatableError(err) {
+			return err
+		}
+		tries++
+		if tries >= 3 {
+			err = errors.Wrap(err, "giving up after 3 consecutive repeatable transaction failures")
+			return err
+		}
+		timepkg.Sleep(100 * timepkg.Millisecond)
+	}
+
+}
+
+func (s *RetryLayerCommunityRulesStore) CountAcceptances(rctx request.CTX, teamID string, version int64) (*model.CommunityRulesStats, error) {
+
+	tries := 0
+	for {
+		result, err := s.CommunityRulesStore.CountAcceptances(rctx, teamID, version)
+		if err == nil {
+			return result, nil
+		}
+		if !isRepeatableError(err) {
+			return result, err
+		}
+		tries++
+		if tries >= 3 {
+			err = errors.Wrap(err, "giving up after 3 consecutive repeatable transaction failures")
+			return result, err
+		}
+		timepkg.Sleep(100 * timepkg.Millisecond)
+	}
+
+}
+
+func (s *RetryLayerCommunityRulesStore) DeleteForTeam(rctx request.CTX, teamID string) error {
+
+	tries := 0
+	for {
+		err := s.CommunityRulesStore.DeleteForTeam(rctx, teamID)
+		if err == nil {
+			return nil
+		}
+		if !isRepeatableError(err) {
+			return err
+		}
+		tries++
+		if tries >= 3 {
+			err = errors.Wrap(err, "giving up after 3 consecutive repeatable transaction failures")
+			return err
+		}
+		timepkg.Sleep(100 * timepkg.Millisecond)
+	}
+
+}
+
+func (s *RetryLayerCommunityRulesStore) Get(rctx request.CTX, teamID string) (*model.CommunityRules, error) {
+
+	tries := 0
+	for {
+		result, err := s.CommunityRulesStore.Get(rctx, teamID)
+		if err == nil {
+			return result, nil
+		}
+		if !isRepeatableError(err) {
+			return result, err
+		}
+		tries++
+		if tries >= 3 {
+			err = errors.Wrap(err, "giving up after 3 consecutive repeatable transaction failures")
+			return result, err
+		}
+		timepkg.Sleep(100 * timepkg.Millisecond)
+	}
+
+}
+
+func (s *RetryLayerCommunityRulesStore) GetAcceptancesForUser(rctx request.CTX, userID string) ([]*model.CommunityRulesAcceptance, error) {
+
+	tries := 0
+	for {
+		result, err := s.CommunityRulesStore.GetAcceptancesForUser(rctx, userID)
+		if err == nil {
+			return result, nil
+		}
+		if !isRepeatableError(err) {
+			return result, err
+		}
+		tries++
+		if tries >= 3 {
+			err = errors.Wrap(err, "giving up after 3 consecutive repeatable transaction failures")
+			return result, err
+		}
+		timepkg.Sleep(100 * timepkg.Millisecond)
+	}
+
+}
+
+func (s *RetryLayerCommunityRulesStore) GetAcceptedVersion(rctx request.CTX, teamID string, userID string) (int64, error) {
+
+	tries := 0
+	for {
+		result, err := s.CommunityRulesStore.GetAcceptedVersion(rctx, teamID, userID)
+		if err == nil {
+			return result, nil
+		}
+		if !isRepeatableError(err) {
+			return result, err
+		}
+		tries++
+		if tries >= 3 {
+			err = errors.Wrap(err, "giving up after 3 consecutive repeatable transaction failures")
+			return result, err
+		}
+		timepkg.Sleep(100 * timepkg.Millisecond)
+	}
+
+}
+
+func (s *RetryLayerCommunityRulesStore) PermanentDeleteByUser(rctx request.CTX, userID string) error {
+
+	tries := 0
+	for {
+		err := s.CommunityRulesStore.PermanentDeleteByUser(rctx, userID)
+		if err == nil {
+			return nil
+		}
+		if !isRepeatableError(err) {
+			return err
+		}
+		tries++
+		if tries >= 3 {
+			err = errors.Wrap(err, "giving up after 3 consecutive repeatable transaction failures")
+			return err
+		}
+		timepkg.Sleep(100 * timepkg.Millisecond)
+	}
+
+}
+
+func (s *RetryLayerCommunityRulesStore) Save(rctx request.CTX, rules *model.CommunityRules, askAgain bool) (*model.CommunityRules, error) {
+
+	tries := 0
+	for {
+		result, err := s.CommunityRulesStore.Save(rctx, rules, askAgain)
+		if err == nil {
+			return result, nil
+		}
+		if !isRepeatableError(err) {
+			return result, err
+		}
+		tries++
+		if tries >= 3 {
+			err = errors.Wrap(err, "giving up after 3 consecutive repeatable transaction failures")
+			return result, err
+		}
+		timepkg.Sleep(100 * timepkg.Millisecond)
+	}
+
+}
+
 func (s *RetryLayerComplianceStore) ChannelExportCount(rctx request.CTX, filter model.ChannelExportFilter, limit int) (int, error) {
 
 	tries := 0
@@ -9099,174 +9267,6 @@ func (s *RetryLayerOAuthStore) UpdateApp(app *model.OAuthApp) (*model.OAuthApp, 
 	tries := 0
 	for {
 		result, err := s.OAuthStore.UpdateApp(app)
-		if err == nil {
-			return result, nil
-		}
-		if !isRepeatableError(err) {
-			return result, err
-		}
-		tries++
-		if tries >= 3 {
-			err = errors.Wrap(err, "giving up after 3 consecutive repeatable transaction failures")
-			return result, err
-		}
-		timepkg.Sleep(100 * timepkg.Millisecond)
-	}
-
-}
-
-func (s *RetryLayerCommunityRulesStore) Accept(rctx request.CTX, acceptance *model.CommunityRulesAcceptance) error {
-
-	tries := 0
-	for {
-		err := s.CommunityRulesStore.Accept(rctx, acceptance)
-		if err == nil {
-			return nil
-		}
-		if !isRepeatableError(err) {
-			return err
-		}
-		tries++
-		if tries >= 3 {
-			err = errors.Wrap(err, "giving up after 3 consecutive repeatable transaction failures")
-			return err
-		}
-		timepkg.Sleep(100 * timepkg.Millisecond)
-	}
-
-}
-
-func (s *RetryLayerCommunityRulesStore) CountAcceptances(rctx request.CTX, teamID string, version int64) (*model.CommunityRulesStats, error) {
-
-	tries := 0
-	for {
-		result, err := s.CommunityRulesStore.CountAcceptances(rctx, teamID, version)
-		if err == nil {
-			return result, nil
-		}
-		if !isRepeatableError(err) {
-			return result, err
-		}
-		tries++
-		if tries >= 3 {
-			err = errors.Wrap(err, "giving up after 3 consecutive repeatable transaction failures")
-			return result, err
-		}
-		timepkg.Sleep(100 * timepkg.Millisecond)
-	}
-
-}
-
-func (s *RetryLayerCommunityRulesStore) DeleteForTeam(rctx request.CTX, teamID string) error {
-
-	tries := 0
-	for {
-		err := s.CommunityRulesStore.DeleteForTeam(rctx, teamID)
-		if err == nil {
-			return nil
-		}
-		if !isRepeatableError(err) {
-			return err
-		}
-		tries++
-		if tries >= 3 {
-			err = errors.Wrap(err, "giving up after 3 consecutive repeatable transaction failures")
-			return err
-		}
-		timepkg.Sleep(100 * timepkg.Millisecond)
-	}
-
-}
-
-func (s *RetryLayerCommunityRulesStore) Get(rctx request.CTX, teamID string) (*model.CommunityRules, error) {
-
-	tries := 0
-	for {
-		result, err := s.CommunityRulesStore.Get(rctx, teamID)
-		if err == nil {
-			return result, nil
-		}
-		if !isRepeatableError(err) {
-			return result, err
-		}
-		tries++
-		if tries >= 3 {
-			err = errors.Wrap(err, "giving up after 3 consecutive repeatable transaction failures")
-			return result, err
-		}
-		timepkg.Sleep(100 * timepkg.Millisecond)
-	}
-
-}
-
-func (s *RetryLayerCommunityRulesStore) GetAcceptancesForUser(rctx request.CTX, userID string) ([]*model.CommunityRulesAcceptance, error) {
-
-	tries := 0
-	for {
-		result, err := s.CommunityRulesStore.GetAcceptancesForUser(rctx, userID)
-		if err == nil {
-			return result, nil
-		}
-		if !isRepeatableError(err) {
-			return result, err
-		}
-		tries++
-		if tries >= 3 {
-			err = errors.Wrap(err, "giving up after 3 consecutive repeatable transaction failures")
-			return result, err
-		}
-		timepkg.Sleep(100 * timepkg.Millisecond)
-	}
-
-}
-
-func (s *RetryLayerCommunityRulesStore) GetAcceptedVersion(rctx request.CTX, teamID string, userID string) (int64, error) {
-
-	tries := 0
-	for {
-		result, err := s.CommunityRulesStore.GetAcceptedVersion(rctx, teamID, userID)
-		if err == nil {
-			return result, nil
-		}
-		if !isRepeatableError(err) {
-			return result, err
-		}
-		tries++
-		if tries >= 3 {
-			err = errors.Wrap(err, "giving up after 3 consecutive repeatable transaction failures")
-			return result, err
-		}
-		timepkg.Sleep(100 * timepkg.Millisecond)
-	}
-
-}
-
-func (s *RetryLayerCommunityRulesStore) PermanentDeleteByUser(rctx request.CTX, userID string) error {
-
-	tries := 0
-	for {
-		err := s.CommunityRulesStore.PermanentDeleteByUser(rctx, userID)
-		if err == nil {
-			return nil
-		}
-		if !isRepeatableError(err) {
-			return err
-		}
-		tries++
-		if tries >= 3 {
-			err = errors.Wrap(err, "giving up after 3 consecutive repeatable transaction failures")
-			return err
-		}
-		timepkg.Sleep(100 * timepkg.Millisecond)
-	}
-
-}
-
-func (s *RetryLayerCommunityRulesStore) Save(rctx request.CTX, rules *model.CommunityRules, askAgain bool) (*model.CommunityRules, error) {
-
-	tries := 0
-	for {
-		result, err := s.CommunityRulesStore.Save(rctx, rules, askAgain)
 		if err == nil {
 			return result, nil
 		}
@@ -21335,6 +21335,7 @@ func New(childStore store.Store) *RetryLayer {
 	newStore.ClusterDiscoveryStore = &RetryLayerClusterDiscoveryStore{ClusterDiscoveryStore: childStore.ClusterDiscovery(), Root: &newStore}
 	newStore.CommandStore = &RetryLayerCommandStore{CommandStore: childStore.Command(), Root: &newStore}
 	newStore.CommandWebhookStore = &RetryLayerCommandWebhookStore{CommandWebhookStore: childStore.CommandWebhook(), Root: &newStore}
+	newStore.CommunityRulesStore = &RetryLayerCommunityRulesStore{CommunityRulesStore: childStore.CommunityRules(), Root: &newStore}
 	newStore.ComplianceStore = &RetryLayerComplianceStore{ComplianceStore: childStore.Compliance(), Root: &newStore}
 	newStore.ContentFlaggingStore = &RetryLayerContentFlaggingStore{ContentFlaggingStore: childStore.ContentFlagging(), Root: &newStore}
 	newStore.DeliveryTrackingStore = &RetryLayerDeliveryTrackingStore{DeliveryTrackingStore: childStore.DeliveryTracking(), Root: &newStore}
@@ -21350,7 +21351,6 @@ func New(childStore store.Store) *RetryLayer {
 	newStore.NotifyAdminStore = &RetryLayerNotifyAdminStore{NotifyAdminStore: childStore.NotifyAdmin(), Root: &newStore}
 	newStore.OAuthStore = &RetryLayerOAuthStore{OAuthStore: childStore.OAuth(), Root: &newStore}
 	newStore.OnTopPostStore = &RetryLayerOnTopPostStore{OnTopPostStore: childStore.OnTopPost(), Root: &newStore}
-	newStore.CommunityRulesStore = &RetryLayerCommunityRulesStore{CommunityRulesStore: childStore.CommunityRules(), Root: &newStore}
 	newStore.OutgoingOAuthConnectionStore = &RetryLayerOutgoingOAuthConnectionStore{OutgoingOAuthConnectionStore: childStore.OutgoingOAuthConnection(), Root: &newStore}
 	newStore.PluginStore = &RetryLayerPluginStore{PluginStore: childStore.Plugin(), Root: &newStore}
 	newStore.PostStore = &RetryLayerPostStore{PostStore: childStore.Post(), Root: &newStore}
