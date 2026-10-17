@@ -2581,6 +2581,10 @@ func TestGetDeletedChannelsForTeam(t *testing.T) {
 	client := th.Client
 	team := th.BasicTeam
 
+	// Antimatter: members archive the private channels they created in a workplace, not in a community.
+	_, _, kindErr := th.SystemAdminClient.PatchTeam(context.Background(), team.Id, &model.TeamPatch{Kind: model.NewPointer(model.TeamKindWorkplace)})
+	require.NoError(t, kindErr)
+
 	th.LoginTeamAdmin(t)
 
 	channels, _, err := client.GetDeletedChannelsForTeam(context.Background(), team.Id, 0, 100, "")

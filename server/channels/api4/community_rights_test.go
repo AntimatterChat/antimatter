@@ -331,6 +331,7 @@ func TestArchivedChannelIsLeftAlone(t *testing.T) {
 	require.Error(t, err, "it isn't renamed")
 	CheckBadRequestStatus(t, resp)
 
+	require.NoError(t, h.th.App.SetPhase2PermissionsMigrationStatus(true))
 	scheme, _, err := admin.CreateScheme(ctx, &model.Scheme{DisplayName: "Archive", Name: model.NewId(), Scope: model.SchemeScopeChannel})
 	require.NoError(t, err)
 	_, err = admin.UpdateChannelScheme(ctx, channel.Id, scheme.Id)
@@ -344,7 +345,7 @@ func TestArchivedChannelIsLeftAlone(t *testing.T) {
 	auditor, auditorClient := h.member(t)
 	_, _, err = admin.AddChannelMember(ctx, channel.Id, auditor.Id)
 	require.NoError(t, err, "an archived channel still takes new members")
-	posts, _, err := auditorClient.GetPostsForChannel(ctx, channel.Id, 0, 60, "", false, true)
+	posts, _, err := auditorClient.GetPostsForChannel(ctx, channel.Id, 0, 60, "", false, false)
 	require.NoError(t, err, "they read its history")
 	assert.Contains(t, posts.Order, post.Id)
 	_, _, err = auditorClient.CreatePost(ctx, &model.Post{ChannelId: channel.Id, Message: "late"})
