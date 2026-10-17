@@ -5567,6 +5567,138 @@
     "translation": "A bridge hívás sikertelen."
   },
   {
+    "id": "app.ai.call.audience.app_error",
+    "translation": "Ezt a modellkötést nem használhatod."
+  },
+  {
+    "id": "app.ai.call.audio_size.app_error",
+    "translation": "A hang fájl üres, vagy túl nagy az átirathoz."
+  },
+  {
+    "id": "app.ai.call.budget_exceeded.app_error",
+    "translation": "Ez a modellkötés felhasználta a havi token-kvótáját."
+  },
+  {
+    "id": "app.ai.call.builtin_server_only.app_error",
+    "translation": "A szerver saját MI-funkciói csak szerver-szintű modellkötéseket használnak."
+  },
+  {
+    "id": "app.ai.call.channel.app_error",
+    "translation": "Ebben a csatornában nem használhatsz MI-t."
+  },
+  {
+    "id": "app.ai.call.decision.app_error",
+    "translation": "A döntési kérés érvénytelen."
+  },
+  {
+    "id": "app.ai.call.no_model.app_error",
+    "translation": "Nincs beállítva modell a(z) {{.Capability}} funkcióhoz ezen a kötéseken."
+  },
+  {
+    "id": "app.ai.call.no_request.app_error",
+    "translation": "Az MI-hívásnak nincs kérése."
+  },
+  {
+    "id": "app.ai.call.no_user.app_error",
+    "translation": "Az MI-híváshoz meg kell adni, kinek szól."
+  },
+  {
+    "id": "app.ai.call.not_available_here.app_error",
+    "translation": "Ez a modellkötés itt nem érhető el."
+  },
+  {
+    "id": "app.ai.call.provider_bad_request.app_error",
+    "translation": "Az MI-szolgáltató elutasította a kérést."
+  },
+  {
+    "id": "app.ai.call.provider_failed.app_error",
+    "translation": "Az MI-szolgáltató nem tudott válaszolni."
+  },
+  {
+    "id": "app.ai.call.provider_rate_limited.app_error",
+    "translation": "Az MI-szolgáltató korlátozza a kéréseket. Próbáld újra később."
+  },
+  {
+    "id": "app.ai.call.provider_refused.app_error",
+    "translation": "Az MI-szolgáltató elutasította a kötést kulcsát."
+  },
+  {
+    "id": "app.ai.call.purpose.app_error",
+    "translation": "Ez az MI-hívás nem engedélyezett."
+  },
+  {
+    "id": "app.ai.call.rate_limited.app_error",
+    "translation": "Túl sok MI-kérés van most. Próbáld újra egy pillanat múlva."
+  },
+  {
+    "id": "app.ai.call.team.app_error",
+    "translation": "Ebben a közösségben nem használhatsz MI-t."
+  },
+  {
+    "id": "app.ai.call.team_mismatch.app_error",
+    "translation": "A csatorna nem tartozik ehhez a közösséghez."
+  },
+  {
+    "id": "app.ai.call.timeout.app_error",
+    "translation": "Túl sokat várt az MI-szolgáltató válaszára."
+  },
+  {
+    "id": "app.ai.call.unsupported.app_error",
+    "translation": "Ez a modellkötés nem képes erre."
+  },
+  {
+    "id": "app.ai.call.user.app_error",
+    "translation": "Ez a felhasználó nem használhat MI-t itt."
+  },
+  {
+    "id": "app.ai.call.user_budget_exceeded.app_error",
+    "translation": "Felhasználtad a havi MI-kvótád ezen a kötéseken."
+  },
+  {
+    "id": "app.ai.connection.get.app_error",
+    "translation": "Nem sikerült lekérni a modellkötéseket."
+  },
+  {
+    "id": "app.ai.connection.key_unreadable.app_error",
+    "translation": "Ez a modellkötés kulcsa nem dekódolható: az MI titkosítási kulcsa megváltozott. Írd be újra a kötést kulcsát."
+  },
+  {
+    "id": "app.ai.connection.manage_permission.app_error",
+    "translation": "Nem kezelheted ezeket a modellkötéseket."
+  },
+  {
+    "id": "app.ai.connection.needs_attention.app_error",
+    "translation": "Ehhez a modellkötéshez adminisztrátori beavatkozás szükséges a használat előtt."
+  },
+  {
+    "id": "app.ai.connection.not_found.app_error",
+    "translation": "Ez a modellkötés nem létezik."
+  },
+  {
+    "id": "app.ai.connection.provider.app_error",
+    "translation": "Ez a modellkötés nem támogatott szolgáltatóval rendelkezik."
+  },
+  {
+    "id": "app.ai.connection.references.app_error",
+    "translation": "A kötést hivatkozó közösség vagy csapat nem létezik, vagy egy másik közösséghez tartozik."
+  },
+  {
+    "id": "app.ai.connection.save.app_error",
+    "translation": "Nem sikerült menteni a modellkötést."
+  },
+  {
+    "id": "app.ai.connection.usage.app_error",
+    "translation": "Nem sikerült beolvasni a modellkötés használati adatait."
+  },
+  {
+    "id": "app.ai.encryption_key.app_error",
+    "translation": "A szerver AI titkosítási kulcsa nem érhető el, ezért a modellkötések nem tarthatnak kulcsokat. Állítsa be az AM_AI_ENCRYPTION_KEY-t, vagy engedje meg, hogy a szerver létrehozza a kulcsfájlt az adatkönyvtárban."
+  },
+  {
+    "id": "app.ai.feature.not_configured.app_error",
+    "translation": "Nincs beállítva modellkötés a(z) {{.Feature}} funkcióhoz. Egy adminisztrátor kiválaszthat egyet a Rendszerkonzolban."
+  },
+  {
     "id": "app.ai.summarize.agent_call_failed",
     "translation": "Az AI ügynök hívása sikertelen."
   },
@@ -12127,6 +12259,70 @@
     "translation": "Érvénytelen felhasználó-azonosító."
   },
   {
+    "id": "model.ai_connection.api_key.app_error",
+    "translation": "Az API-kulcs túl hosszú, vagy sorváltást tartalmaz."
+  },
+  {
+    "id": "model.ai_connection.base_url.app_error",
+    "translation": "A címnak http vagy https URL-nek kell lennie, felhasználó, lekérdezés vagy tördelvény nélkül."
+  },
+  {
+    "id": "model.ai_connection.decisions_dialect.app_error",
+    "translation": "A döntések formátumának OpenAI vagy SystemOne formátumnak kell lennie."
+  },
+  {
+    "id": "model.ai_connection.extra_headers.app_error",
+    "translation": "Egy extra fejléc neve nem engedélyezett, vagy értéke túl hosszú, illetve sorváltást tartalmaz."
+  },
+  {
+    "id": "model.ai_connection.id.app_error",
+    "translation": "A modellkötés azonosítója nem érvényes."
+  },
+  {
+    "id": "model.ai_connection.ids.app_error",
+    "translation": "A kötést hivatkozó közösség, csapat vagy szerepkör nem érvényes."
+  },
+  {
+    "id": "model.ai_connection.limits.app_error",
+    "translation": "A korlátok nem lehetnek negatívak."
+  },
+  {
+    "id": "model.ai_connection.models.app_error",
+    "translation": "Egy modell neve túl hosszú, vagy sorváltást tartalmaz."
+  },
+  {
+    "id": "model.ai_connection.models_anthropic.app_error",
+    "translation": "Az Anthropic-kötések csak egy csevegési modellt tartalmaznak."
+  },
+  {
+    "id": "model.ai_connection.name.app_error",
+    "translation": "A modellkötésnek 1 és 64 karakter közötti nevet kell kapnia."
+  },
+  {
+    "id": "model.ai_connection.needs_attention.app_error",
+    "translation": "A kötést igénylő ok túl hosszú."
+  },
+  {
+    "id": "model.ai_connection.provider.app_error",
+    "translation": "A szolgáltatónak OpenAI-kompatibilis API-nak vagy Anthropic-nek kell lennie."
+  },
+  {
+    "id": "model.ai_connection.roles.app_error",
+    "translation": "A kötést hivatkozó közönség szerepköre nem érvényes."
+  },
+  {
+    "id": "model.ai_connection.scope.app_error",
+    "translation": "A modellkötés szerver-szintű vagy egy közösséghez tartozó."
+  },
+  {
+    "id": "model.ai_connection.sharing_community.app_error",
+    "translation": "Egy közösség saját kötése nem osztható meg más közösségekkel."
+  },
+  {
+    "id": "model.ai_connection.times.app_error",
+    "translation": "A modellkötés dátumai nem lettek beállítva."
+  },
+  {
     "id": "model.authorize.is_valid.auth_code.app_error",
     "translation": "Érvénytelen hitelesítési kód."
   },
@@ -12647,6 +12843,14 @@
     "translation": "Érvénytelen hozzáférés-vezérlési szinkronizálási feladat időköz. Legalább 60 másodpercnek kell lennie."
   },
   {
+    "id": "model.config.is_valid.ai.connection_id.app_error",
+    "translation": "A(z) {{.Feature}} funkció modellkötése nem érvényes azonosító."
+  },
+  {
+    "id": "model.config.is_valid.ai.model.app_error",
+    "translation": "A(z) {{.Feature}} modellneve túl hosszú."
+  },
+  {
     "id": "model.config.is_valid.ai_recap.cooldown_minutes.app_error",
     "translation": "Érvénytelen AI-összefoglaló várakozási idő (perc). Az értéknek 0-nak vagy nagyobbnak kell lennie."
   },
@@ -12689,6 +12893,10 @@
   {
     "id": "model.config.is_valid.autotranslation.agents.llm_service_id.app_error",
     "translation": "Érvénytelen automatikus fordítási ügynökkonfiguráció: az AI szolgáltatás nem lehet üres."
+  },
+  {
+    "id": "model.config.is_valid.autotranslation.connection.app_error",
+    "translation": "Válaszd ki, melyik modellkötést használja az automatikus fordítás."
   },
   {
     "id": "model.config.is_valid.autotranslation.libretranslate.url.app_error",
@@ -14849,6 +15057,10 @@
   {
     "id": "oauth.gitlab.tos.error",
     "translation": "A GitLab Általános Szerződési Feltételei frissültek. Kérjük, látogassa meg a {{.URL}} webhelyet, hogy elfogadja őket, majd próbáljon meg újra bejelentkezni az Antimatterbe."
+  },
+  {
+    "id": "plugin.api.ai_chat_stream.app_error",
+    "translation": "Az alkalmazás nem tudta megnyitni az AI-streamet."
   },
   {
     "id": "plugin.api.get_users_in_channel",

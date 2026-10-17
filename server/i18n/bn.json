@@ -5192,6 +5192,138 @@
     "translation": "ব্রিজ কল ব্যর্থ হয়েছে।"
   },
   {
+    "id": "app.ai.call.audience.app_error",
+    "translation": "আপনি এই মডেল কানেকশনটি ব্যবহার করতে পারবেন না।"
+  },
+  {
+    "id": "app.ai.call.audio_size.app_error",
+    "translation": "অডিওটি খালি অথবা ট্রান্সক্রিপশনের জন্য খুব বড়।"
+  },
+  {
+    "id": "app.ai.call.budget_exceeded.app_error",
+    "translation": "এই মডেল কানেকশনটি মাসের টোকেন বাজেট ব্যবহার করে ফেলেছে।"
+  },
+  {
+    "id": "app.ai.call.builtin_server_only.app_error",
+    "translation": "সার্ভারের নিজস্ব AI ফিচারগুলি শুধুমাত্র সার্ভার-ওয়াইড মডেল কানেকশন ব্যবহার করে।"
+  },
+  {
+    "id": "app.ai.call.channel.app_error",
+    "translation": "আপনি এই চ্যানেলে AI ব্যবহার করতে পারবেন না।"
+  },
+  {
+    "id": "app.ai.call.decision.app_error",
+    "translation": "নির্ধারণ অনুরোধটি বৈধ নয়।"
+  },
+  {
+    "id": "app.ai.call.no_model.app_error",
+    "translation": "এই কানেকশনে {{.Capability}}-এর জন্য কোনো মডেল সেট করা নেই।"
+  },
+  {
+    "id": "app.ai.call.no_request.app_error",
+    "translation": "AI কলে কোনো অনুরোধ নেই।"
+  },
+  {
+    "id": "app.ai.call.no_user.app_error",
+    "translation": "AI কলের জন্য সেই ব্যক্তির প্রয়োজন যার জন্য এটি করা হচ্ছে।"
+  },
+  {
+    "id": "app.ai.call.not_available_here.app_error",
+    "translation": "এই মডেল কানেকশনটি এখানে উপলব্ধ নয়।"
+  },
+  {
+    "id": "app.ai.call.provider_bad_request.app_error",
+    "translation": "AI প্রোভাইডারটি অনুরোধটি প্রত্যাখ্যান করেছে।"
+  },
+  {
+    "id": "app.ai.call.provider_failed.app_error",
+    "translation": "AI প্রোভাইডারটি উত্তর দিতে ব্যর্থ হয়েছে।"
+  },
+  {
+    "id": "app.ai.call.provider_rate_limited.app_error",
+    "translation": "AI প্রোভাইডারটি অনুরোধ সীমাবদ্ধ করছে। পরে আবার চেষ্টা করুন।"
+  },
+  {
+    "id": "app.ai.call.provider_refused.app_error",
+    "translation": "AI প্রোভাইডারটি কানেকশনের কী প্রত্যাখ্যান করেছে।"
+  },
+  {
+    "id": "app.ai.call.purpose.app_error",
+    "translation": "এই AI কলটি অনুমোদিত নয়।"
+  },
+  {
+    "id": "app.ai.call.rate_limited.app_error",
+    "translation": "এই মুহূর্তে অনেক বেশি AI অনুরোধ। একটু পরে আবার চেষ্টা করুন।"
+  },
+  {
+    "id": "app.ai.call.team.app_error",
+    "translation": "আপনি এই কমিউনিটিতে AI ব্যবহার করতে পারবেন না।"
+  },
+  {
+    "id": "app.ai.call.team_mismatch.app_error",
+    "translation": "চ্যানেলটি এই কমিউনিটির অংশ নয়।"
+  },
+  {
+    "id": "app.ai.call.timeout.app_error",
+    "translation": "AI প্রোভাইডারটি উত্তর দিতে অনেক বেশি সময় নিয়েছে।"
+  },
+  {
+    "id": "app.ai.call.unsupported.app_error",
+    "translation": "এই মডেল কানেকশনটি এটি করতে পারে না।"
+  },
+  {
+    "id": "app.ai.call.user.app_error",
+    "translation": "এই ব্যক্তি এখানে AI ব্যবহার করতে পারবেন না।"
+  },
+  {
+    "id": "app.ai.call.user_budget_exceeded.app_error",
+    "translation": "আপনি এই কানেকশনে মাসের AI বাজেট ব্যবহার করে ফেলেছেন।"
+  },
+  {
+    "id": "app.ai.connection.get.app_error",
+    "translation": "মডেল কানেকশনগুলি পড়া যাচ্ছে না।"
+  },
+  {
+    "id": "app.ai.connection.key_unreadable.app_error",
+    "translation": "এই মডেল কানেকশনের কী ডিক্রিপ্ট করা যাচ্ছে না: AI এনক্রিপশন কী পরিবর্তিত হয়েছে। আবার কানেকশনের কীটি দিন।"
+  },
+  {
+    "id": "app.ai.connection.manage_permission.app_error",
+    "translation": "আপনি এই মডেল কানেকশনগুলি পরিচালনা করতে পারবেন না।"
+  },
+  {
+    "id": "app.ai.connection.needs_attention.app_error",
+    "translation": "ব্যবহারের আগে এই মডেল কানেকশনটির জন্য একজন অ্যাডমিনের মনোযোগ প্রয়োজন।"
+  },
+  {
+    "id": "app.ai.connection.not_found.app_error",
+    "translation": "এই মডেল কানেকশনটি নেই।"
+  },
+  {
+    "id": "app.ai.connection.provider.app_error",
+    "translation": "এই মডেল কানেকশনটির প্রোভাইডারটি সাপোর্ট করা হয় না।"
+  },
+  {
+    "id": "app.ai.connection.references.app_error",
+    "translation": "কানেকশনটি যে কমিউনিটি বা টিমের উল্লেখ করেছে, সেটি নেই অথবা অন্য একটি কমিউনিটির অংশ।"
+  },
+  {
+    "id": "app.ai.connection.save.app_error",
+    "translation": "মডেল কানেকশনটি সেভ করা যায়নি।"
+  },
+  {
+    "id": "app.ai.connection.usage.app_error",
+    "translation": "মডেল কানেকশনটির ব্যবহার পড়া যায়নি।"
+  },
+  {
+    "id": "app.ai.encryption_key.app_error",
+    "translation": "সার্ভারের AI এনক্রিপশন কীটি উপলব্ধ নয়, তাই মডেল কানেকশনগুলো কী রাখতে পারে না। AM_AI_ENCRYPTION_KEY সেট করুন, অথবা সার্ভারকে ডেটা ডিরেক্টরিতে তার কী ফাইল তৈরি করতে দিন।"
+  },
+  {
+    "id": "app.ai.feature.not_configured.app_error",
+    "translation": "{{.Feature}}-এর জন্য কোনো মডেল কানেকশন সেটআপ করা নেই। একজন অ্যাডমিন সিস্টেম কনসোলে একটি বেছে নিতে পারেন।"
+  },
+  {
     "id": "app.ai.summarize.agent_call_failed",
     "translation": "AI এজেন্ট কল ব্যর্থ হয়েছে।"
   },
@@ -11404,6 +11536,70 @@
     "translation": "অবৈধ ইউজার আইডি।"
   },
   {
+    "id": "model.ai_connection.api_key.app_error",
+    "translation": "API কীটি খুব দীর্ঘ অথবা এতে একটি লাইন ব্রেক রয়েছে।"
+  },
+  {
+    "id": "model.ai_connection.base_url.app_error",
+    "translation": "ঠিকানাটি http বা https URL হতে হবে, কোনো ইউজার, কোয়েরি বা ফ্র্যাগমেন্ট ছাড়া।"
+  },
+  {
+    "id": "model.ai_connection.decisions_dialect.app_error",
+    "translation": "ডিসিশন ফরম্যাটটি OpenAI-এর অথবা SystemOne হতে হবে।"
+  },
+  {
+    "id": "model.ai_connection.extra_headers.app_error",
+    "translation": "একটি বাড়তি হেডারের নাম অনুমোদিত নয়, অথবা এর মান খুব দীর্ঘ বা এতে একটি লাইন ব্রেক রয়েছে।"
+  },
+  {
+    "id": "model.ai_connection.id.app_error",
+    "translation": "মডেল কানেকশনটির IDটি বৈধ নয়।"
+  },
+  {
+    "id": "model.ai_connection.ids.app_error",
+    "translation": "কানেকশনে থাকা কমিউনিটি, টিম বা রোলটি বৈধ নয়।"
+  },
+  {
+    "id": "model.ai_connection.limits.app_error",
+    "translation": "সীমা ঋণাত্মক হতে পারে না।"
+  },
+  {
+    "id": "model.ai_connection.models.app_error",
+    "translation": "একটি মডেলের নাম খুব দীর্ঘ অথবা এতে একটি লাইন ব্রেক রয়েছে।"
+  },
+  {
+    "id": "model.ai_connection.models_anthropic.app_error",
+    "translation": "Anthropic কানেকশনগুলোর মধ্যে শুধুমাত্র একটি চ্যাট মডেল থাকে।"
+  },
+  {
+    "id": "model.ai_connection.name.app_error",
+    "translation": "একটি মডেল কানেকশনের জন্য ১ থেকে ৬৪ অক্ষরের একটি নাম প্রয়োজন।"
+  },
+  {
+    "id": "model.ai_connection.needs_attention.app_error",
+    "translation": "কানেকশনটির মনোযোগ প্রয়োজন হওয়ার কারণটি খুব দীর্ঘ।"
+  },
+  {
+    "id": "model.ai_connection.provider.app_error",
+    "translation": "প্রোভাইডারটি OpenAI-সম্পাদক API অথবা Anthropic হতে হবে।"
+  },
+  {
+    "id": "model.ai_connection.roles.app_error",
+    "translation": "কানেকশনের অডিয়েন্সে থাকা রোলটি বৈধ নয়।"
+  },
+  {
+    "id": "model.ai_connection.scope.app_error",
+    "translation": "একটি মডেল কানেকশন হয় সার্ভার-ব্যাপী অথবা কোনো কমিউনিটির।"
+  },
+  {
+    "id": "model.ai_connection.sharing_community.app_error",
+    "translation": "একটি কমিউনিটির নিজস্ব কানেকশনটি অন্য কমিউনিটিগুলির সাথে শেয়ার করা যায় না।"
+  },
+  {
+    "id": "model.ai_connection.times.app_error",
+    "translation": "মডেল কানেকশনটির তারিখসমূহ সেট করা নেই।"
+  },
+  {
     "id": "model.authorize.is_valid.auth_code.app_error",
     "translation": "অবৈধ অথরাইজেশন কোড।"
   },
@@ -11924,6 +12120,14 @@
     "translation": "অবৈধ অ্যাক্সেস কন্ট্রোল সিঙ্ক জব ইন্টারভাল। কমপক্ষে ৬০ সেকেন্ড হতে হবে।"
   },
   {
+    "id": "model.config.is_valid.ai.connection_id.app_error",
+    "translation": "{{.Feature}}-এর মডেল কানেকশনটি একটি বৈধ ID নয়।"
+  },
+  {
+    "id": "model.config.is_valid.ai.model.app_error",
+    "translation": "{{.Feature}}-এর মডেলের নাম অনেক দীর্ঘ।"
+  },
+  {
     "id": "model.config.is_valid.ai_recap.cooldown_minutes.app_error",
     "translation": "অবৈধ AI রিক্যাপ কুলডাউন মিনিট। ০ বা তার বেশি হতে হবে।"
   },
@@ -11966,6 +12170,10 @@
   {
     "id": "model.config.is_valid.autotranslation.agents.llm_service_id.app_error",
     "translation": "অবৈধ অটো-ট্রান্সলেশন এজেন্ট কনফিগারেশন: AI সার্ভিস খালি থাকতে পারবে না।"
+  },
+  {
+    "id": "model.config.is_valid.autotranslation.connection.app_error",
+    "translation": "অটো-ট্রান্সলেসন কোন মডেল কানেকশন ব্যবহার করবে তা নির্বাচন করুন।"
   },
   {
     "id": "model.config.is_valid.autotranslation.libretranslate.url.app_error",
@@ -14126,6 +14334,10 @@
   {
     "id": "oauth.gitlab.tos.error",
     "translation": "GitLab-এর পরিষেবার শর্তাবলি হালনাগাদ হয়েছে। অনুগ্রহ করে {{.URL}}-এ গিয়ে সেগুলি গ্রহণ করুন এবং তারপর আবার Antimatter-এ লগইন করার চেষ্টা করুন।"
+  },
+  {
+    "id": "plugin.api.ai_chat_stream.app_error",
+    "translation": "অ্যাপটি AI স্ট্রিম খুলতে পারেনি।"
   },
   {
     "id": "plugin.api.get_users_in_channel",

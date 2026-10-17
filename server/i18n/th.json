@@ -5192,6 +5192,138 @@
     "translation": "การเรียกใช้ Bridge ไม่สำเร็จ"
   },
   {
+    "id": "app.ai.call.audience.app_error",
+    "translation": "คุณไม่สามารถใช้การเชื่อมต่อโมเดลนี้ได้"
+  },
+  {
+    "id": "app.ai.call.audio_size.app_error",
+    "translation": "ไฟล์เสียงว่างเปล่าหรือมีขนาดใหญ่เกินไปสำหรับการถอดเสียง"
+  },
+  {
+    "id": "app.ai.call.budget_exceeded.app_error",
+    "translation": "การเชื่อมต่อโมเดลนี้ใช้โทเคนครบตามงบประมาณของเดือนแล้ว"
+  },
+  {
+    "id": "app.ai.call.builtin_server_only.app_error",
+    "translation": "ฟีเจอร์ AI ของเซิร์ฟเวอร์เองจะใช้เฉพาะการเชื่อมต่อโมเดลระดับเซิร์ฟเวอร์เท่านั้น"
+  },
+  {
+    "id": "app.ai.call.channel.app_error",
+    "translation": "คุณไม่สามารถใช้ AI ในช่องนี้ได้"
+  },
+  {
+    "id": "app.ai.call.decision.app_error",
+    "translation": "คำขอการตัดสินใจไม่ถูกต้อง"
+  },
+  {
+    "id": "app.ai.call.no_model.app_error",
+    "translation": "ยังไม่ได้ตั้งค่าโมเดลสำหรับ {{.Capability}} ในการเชื่อมต่อนี้"
+  },
+  {
+    "id": "app.ai.call.no_request.app_error",
+    "translation": "การเรียกใช้ AI ไม่มีคำขอ"
+  },
+  {
+    "id": "app.ai.call.no_user.app_error",
+    "translation": "การเรียกใช้ AI ต้องระบุผู้ใช้ปลายทาง"
+  },
+  {
+    "id": "app.ai.call.not_available_here.app_error",
+    "translation": "การเชื่อมต่อโมเดลนี้ไม่พร้อมใช้งานที่นี่"
+  },
+  {
+    "id": "app.ai.call.provider_bad_request.app_error",
+    "translation": "ผู้ให้บริการ AI ปฏิเสธคำขอ"
+  },
+  {
+    "id": "app.ai.call.provider_failed.app_error",
+    "translation": "ผู้ให้บริการ AI ไม่สามารถตอบกลับได้"
+  },
+  {
+    "id": "app.ai.call.provider_rate_limited.app_error",
+    "translation": "ผู้ให้บริการ AI กำลังจำกัดจำนวนคำขอ กรุณาลองใหม่อีกครั้งในภายหลัง"
+  },
+  {
+    "id": "app.ai.call.provider_refused.app_error",
+    "translation": "ผู้ให้บริการ AI ปฏิเสธคีย์ของการเชื่อมต่อ"
+  },
+  {
+    "id": "app.ai.call.purpose.app_error",
+    "translation": "การเรียกใช้ AI นี้ไม่ได้รับอนุญาต"
+  },
+  {
+    "id": "app.ai.call.rate_limited.app_error",
+    "translation": "มีคำขอ AI มากเกินไปในขณะนี้ กรุณาลองใหม่อีกครั้งในอีกสักครู่"
+  },
+  {
+    "id": "app.ai.call.team.app_error",
+    "translation": "คุณไม่สามารถใช้ AI ในชุมชนนี้ได้"
+  },
+  {
+    "id": "app.ai.call.team_mismatch.app_error",
+    "translation": "ช่องนี้ไม่ได้อยู่ในชุมชนนี้"
+  },
+  {
+    "id": "app.ai.call.timeout.app_error",
+    "translation": "ผู้ให้บริการ AI ใช้เวลาตอบกลับนานเกินไป"
+  },
+  {
+    "id": "app.ai.call.unsupported.app_error",
+    "translation": "การเชื่อมต่อโมเดลนี้ไม่สามารถดำเนินการนี้ได้"
+  },
+  {
+    "id": "app.ai.call.user.app_error",
+    "translation": "ผู้ใช้คนนี้ไม่สามารถใช้ AI ที่นี่ได้"
+  },
+  {
+    "id": "app.ai.call.user_budget_exceeded.app_error",
+    "translation": "คุณใช้งบประมาณ AI ของคุณสำหรับการเชื่อมต่อนี้ครบตามเดือนแล้ว"
+  },
+  {
+    "id": "app.ai.connection.get.app_error",
+    "translation": "ไม่สามารถดึงข้อมูลการเชื่อมต่อโมเดลได้"
+  },
+  {
+    "id": "app.ai.connection.key_unreadable.app_error",
+    "translation": "ไม่สามารถถอดรหัสคีย์ของการเชื่อมต่อโมเดลนี้ได้: คีย์การเข้ารหัส AI เปลี่ยนแปลงแล้ว กรุณากรอกคีย์ของการเชื่อมต่อใหม่อีกครั้ง"
+  },
+  {
+    "id": "app.ai.connection.manage_permission.app_error",
+    "translation": "คุณไม่สามารถจัดการการเชื่อมต่อโมเดลเหล่านี้ได้"
+  },
+  {
+    "id": "app.ai.connection.needs_attention.app_error",
+    "translation": "การเชื่อมต่อโมเดลนี้ต้องการความสนใจจากผู้ดูแลระบบก่อนจึงจะใช้งานได้"
+  },
+  {
+    "id": "app.ai.connection.not_found.app_error",
+    "translation": "การเชื่อมต่อโมเดลนี้ไม่พบ"
+  },
+  {
+    "id": "app.ai.connection.provider.app_error",
+    "translation": "ผู้ให้บริการของการเชื่อมต่อโมเดลนี้ไม่ได้รับการสนับสนุน"
+  },
+  {
+    "id": "app.ai.connection.references.app_error",
+    "translation": "ชุมชนหรือทีมที่การเชื่อมต่ออ้างอิงถึงไม่พบ หรืออยู่ในชุมชนอื่น"
+  },
+  {
+    "id": "app.ai.connection.save.app_error",
+    "translation": "ไม่สามารถบันทึกการเชื่อมต่อโมเดลได้"
+  },
+  {
+    "id": "app.ai.connection.usage.app_error",
+    "translation": "ไม่สามารถอ่านการใช้งานของการเชื่อมต่อโมเดลได้"
+  },
+  {
+    "id": "app.ai.encryption_key.app_error",
+    "translation": "คีย์การเข้ารหัส AI ของเซิร์ฟเวอร์ไม่พร้อมใช้งาน ทำให้การเชื่อมต่อโมเดลไม่สามารถเก็บคีย์ได้ กรุณาตั้งค่า AM_AI_ENCRYPTION_KEY หรือให้เซิร์ฟเวอร์สร้างไฟล์คีย์ในไดเรกทอรีข้อมูล"
+  },
+  {
+    "id": "app.ai.feature.not_configured.app_error",
+    "translation": "ยังไม่ได้ตั้งค่าการเชื่อมต่อโมเดลสำหรับ {{.Feature}} ผู้ดูแลระบบสามารถเลือกได้ในคอนโซลระบบ"
+  },
+  {
     "id": "app.ai.summarize.agent_call_failed",
     "translation": "การเรียกใช้ AI agent ไม่สำเร็จ"
   },
@@ -11404,6 +11536,70 @@
     "translation": "ID ผู้ใช้ไม่ถูกต้อง"
   },
   {
+    "id": "model.ai_connection.api_key.app_error",
+    "translation": "คีย์ API ยาวเกินไปหรือมีตัวอักษรขึ้นบรรทัดใหม่"
+  },
+  {
+    "id": "model.ai_connection.base_url.app_error",
+    "translation": "ที่อยู่ต้องเป็น URL แบบ http หรือ https โดยไม่มีชื่อผู้ใช้, query หรือ fragment"
+  },
+  {
+    "id": "model.ai_connection.decisions_dialect.app_error",
+    "translation": "รูปแบบของ decisions ต้องเป็นของ OpenAI หรือ SystemOne"
+  },
+  {
+    "id": "model.ai_connection.extra_headers.app_error",
+    "translation": "เฮดเดอร์เพิ่มเติมมีชื่อที่ไม่ได้รับอนุญาต หรือมีค่าที่ยาวเกินไปหรือมีตัวอักษรขึ้นบรรทัดใหม่"
+  },
+  {
+    "id": "model.ai_connection.id.app_error",
+    "translation": "ID ของการเชื่อมต่อโมเดลไม่ถูกต้อง"
+  },
+  {
+    "id": "model.ai_connection.ids.app_error",
+    "translation": "ชุมชน ทีม หรือบทบาทในการเชื่อมต่อไม่ถูกต้อง"
+  },
+  {
+    "id": "model.ai_connection.limits.app_error",
+    "translation": "ขีดจำกัดไม่สามารถเป็นค่าติดลบได้"
+  },
+  {
+    "id": "model.ai_connection.models.app_error",
+    "translation": "ชื่อโมเดลยาวเกินไปหรือมีตัวอักษรขึ้นบรรทัดใหม่"
+  },
+  {
+    "id": "model.ai_connection.models_anthropic.app_error",
+    "translation": "การเชื่อมต่อ Anthropic มีเฉพาะโมเดลแชท"
+  },
+  {
+    "id": "model.ai_connection.name.app_error",
+    "translation": "การเชื่อมต่อโมเดลต้องมีชื่อ 1 ถึง 64 ตัวอักษร"
+  },
+  {
+    "id": "model.ai_connection.needs_attention.app_error",
+    "translation": "เหตุผลที่การเชื่อมต่อต้องการความสนใจยาวเกินไป"
+  },
+  {
+    "id": "model.ai_connection.provider.app_error",
+    "translation": "ผู้ให้บริการต้องเป็น API ที่เข้ากันได้กับ OpenAI หรือ Anthropic"
+  },
+  {
+    "id": "model.ai_connection.roles.app_error",
+    "translation": "บทบาทในผู้ชมของการเชื่อมต่อไม่ถูกต้อง"
+  },
+  {
+    "id": "model.ai_connection.scope.app_error",
+    "translation": "การเชื่อมต่อโมเดลต้องเป็นระดับเซิร์ฟเวอร์หรือระดับชุมชน"
+  },
+  {
+    "id": "model.ai_connection.sharing_community.app_error",
+    "translation": "การเชื่อมต่อของชุมชนเองไม่สามารถแชร์กับชุมชนอื่นได้"
+  },
+  {
+    "id": "model.ai_connection.times.app_error",
+    "translation": "วันที่ของการเชื่อมต่อโมเดลยังไม่ได้ตั้งค่า"
+  },
+  {
     "id": "model.authorize.is_valid.auth_code.app_error",
     "translation": "รหัสการอนุญาตไม่ถูกต้อง"
   },
@@ -11924,6 +12120,14 @@
     "translation": "ช่วงเวลา sync job ของ access control ไม่ถูกต้อง ต้องมีค่าอย่างน้อย 60 วินาที"
   },
   {
+    "id": "model.config.is_valid.ai.connection_id.app_error",
+    "translation": "การเชื่อมต่อโมเดลของ {{.Feature}} ไม่ใช่ ID ที่ถูกต้อง"
+  },
+  {
+    "id": "model.config.is_valid.ai.model.app_error",
+    "translation": "ชื่อบทแบบ (model) ของ {{.Feature}} ยาวเกินไป"
+  },
+  {
     "id": "model.config.is_valid.ai_recap.cooldown_minutes.app_error",
     "translation": "จำนวนนาที cooldown ของ AI recap ไม่ถูกต้อง ต้องมีค่ามากกว่าหรือเท่ากับ 0"
   },
@@ -11966,6 +12170,10 @@
   {
     "id": "model.config.is_valid.autotranslation.agents.llm_service_id.app_error",
     "translation": "การตั้งค่าเอเจนต์แปลอัตโนมัติไม่ถูกต้อง: ฟิลด์บริการ AI ต้องไม่ว่างเปล่า"
+  },
+  {
+    "id": "model.config.is_valid.autotranslation.connection.app_error",
+    "translation": "เลือกการเชื่อมต่อของโมเดลท่ีการแปลภาษาอัตโนมัติใช้อยู่"
   },
   {
     "id": "model.config.is_valid.autotranslation.libretranslate.url.app_error",
@@ -14126,6 +14334,10 @@
   {
     "id": "oauth.gitlab.tos.error",
     "translation": "ข้อกำหนดและเงื่อนไขของ GitLab ได้มีการอัปเดต กรุณาไปที่ {{.URL}} เพื่อยอมรับข้อกำหนดดังกล่าว จากนั้นลองเข้าสู่ระบบ Antimatter อีกครั้ง"
+  },
+  {
+    "id": "plugin.api.ai_chat_stream.app_error",
+    "translation": "แอปไม่สามารถเปิดสตรีม AI ได้"
   },
   {
     "id": "plugin.api.get_users_in_channel",

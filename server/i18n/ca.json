@@ -5192,6 +5192,138 @@
     "translation": "La crida al bridge ha fallat."
   },
   {
+    "id": "app.ai.call.audience.app_error",
+    "translation": "No pots utilitzar aquesta connexió de model."
+  },
+  {
+    "id": "app.ai.call.audio_size.app_error",
+    "translation": "L'àudio és buit o massa gran per transcriure."
+  },
+  {
+    "id": "app.ai.call.budget_exceeded.app_error",
+    "translation": "Aquesta connexió de model ha utilitzat el seu pressupost de tokens per al mes."
+  },
+  {
+    "id": "app.ai.call.builtin_server_only.app_error",
+    "translation": "Les funcions de IA pròpies del servidor només utilitzen connexions de model de tot el servidor."
+  },
+  {
+    "id": "app.ai.call.channel.app_error",
+    "translation": "No pots utilitzar IA en aquest canal."
+  },
+  {
+    "id": "app.ai.call.decision.app_error",
+    "translation": "La sol·licitud de decisió no és vàlida."
+  },
+  {
+    "id": "app.ai.call.no_model.app_error",
+    "translation": "No hi ha cap model establert per a {{.Capability}} en aquesta connexió."
+  },
+  {
+    "id": "app.ai.call.no_request.app_error",
+    "translation": "La crida a la IA no té cap sol·licitud."
+  },
+  {
+    "id": "app.ai.call.no_user.app_error",
+    "translation": "Una crida a la IA necessita la persona per a la qual és."
+  },
+  {
+    "id": "app.ai.call.not_available_here.app_error",
+    "translation": "Aquesta connexió de model no està disponible aquí."
+  },
+  {
+    "id": "app.ai.call.provider_bad_request.app_error",
+    "translation": "El proveïdor d'IA ha rebutjat la sol·licitud."
+  },
+  {
+    "id": "app.ai.call.provider_failed.app_error",
+    "translation": "El proveïdor d'IA no ha pogut respondre."
+  },
+  {
+    "id": "app.ai.call.provider_rate_limited.app_error",
+    "translation": "El proveïdor d'IA està limitant les sol·licituds. Torna-ho a provar més tard."
+  },
+  {
+    "id": "app.ai.call.provider_refused.app_error",
+    "translation": "El proveïdor d'IA ha rebutjat la clau de la connexió."
+  },
+  {
+    "id": "app.ai.call.purpose.app_error",
+    "translation": "Aquesta crida a la IA no està permesa."
+  },
+  {
+    "id": "app.ai.call.rate_limited.app_error",
+    "translation": "Massa sol·licituds d'IA ara mateix. Torna-ho a provar en un moment."
+  },
+  {
+    "id": "app.ai.call.team.app_error",
+    "translation": "No pots utilitzar IA en aquesta comunitat."
+  },
+  {
+    "id": "app.ai.call.team_mismatch.app_error",
+    "translation": "El canal no forma part d'aquesta comunitat."
+  },
+  {
+    "id": "app.ai.call.timeout.app_error",
+    "translation": "El proveïdor d'IA ha trigat massa a respondre."
+  },
+  {
+    "id": "app.ai.call.unsupported.app_error",
+    "translation": "Aquesta connexió de model no pot fer això."
+  },
+  {
+    "id": "app.ai.call.user.app_error",
+    "translation": "Aquesta persona no pot utilitzar IA aquí."
+  },
+  {
+    "id": "app.ai.call.user_budget_exceeded.app_error",
+    "translation": "Has utilitzat el teu pressupost d'IA en aquesta connexió per al mes."
+  },
+  {
+    "id": "app.ai.connection.get.app_error",
+    "translation": "No s'han pogut obtenir les connexions de model."
+  },
+  {
+    "id": "app.ai.connection.key_unreadable.app_error",
+    "translation": "No es pot desxifrar la clau d'aquesta connexió de model: la clau de xifratge de la IA ha canviat. Introdueix la clau de la connexió de nou."
+  },
+  {
+    "id": "app.ai.connection.manage_permission.app_error",
+    "translation": "No pots gestionar aquestes connexions de model."
+  },
+  {
+    "id": "app.ai.connection.needs_attention.app_error",
+    "translation": "Aquesta connexió de model necessita l'atenció d'un administrador abans de poder-se utilitzar."
+  },
+  {
+    "id": "app.ai.connection.not_found.app_error",
+    "translation": "Aquesta connexió de model no existeix."
+  },
+  {
+    "id": "app.ai.connection.provider.app_error",
+    "translation": "El proveïdor d'aquesta connexió de model no és compatible."
+  },
+  {
+    "id": "app.ai.connection.references.app_error",
+    "translation": "Una comunitat o equip al qual fa referència la connexió no existeix o pertany a una altra comunitat."
+  },
+  {
+    "id": "app.ai.connection.save.app_error",
+    "translation": "No s'ha pogut desar la connexió de model."
+  },
+  {
+    "id": "app.ai.connection.usage.app_error",
+    "translation": "No s'ha pogut llegir l'ús de la connexió de model."
+  },
+  {
+    "id": "app.ai.encryption_key.app_error",
+    "translation": "La clau de xifratge de IA del servidor no està disponible, de manera que les connexions de model no poden mantenir claus. Estableix AM_AI_ENCRYPTION_KEY o deixa que el servidor creï el seu fitxer de claus al directori de dades."
+  },
+  {
+    "id": "app.ai.feature.not_configured.app_error",
+    "translation": "No hi ha cap connexió de model configurada per a {{.Feature}}. Un administrador pot triar-ne una a la Consola del sistema."
+  },
+  {
     "id": "app.ai.summarize.agent_call_failed",
     "translation": "La crida a l'agent d'IA ha fallat."
   },
@@ -11404,6 +11536,70 @@
     "translation": "ID d'usuari no vàlid."
   },
   {
+    "id": "model.ai_connection.api_key.app_error",
+    "translation": "La clau d'API és massa llarga o conté un salt de línia."
+  },
+  {
+    "id": "model.ai_connection.base_url.app_error",
+    "translation": "L'adreça ha de ser una URL http o https, sense usuari, consulta o fragment."
+  },
+  {
+    "id": "model.ai_connection.decisions_dialect.app_error",
+    "translation": "El format de decisions ha de ser d'OpenAI o SystemOne."
+  },
+  {
+    "id": "model.ai_connection.extra_headers.app_error",
+    "translation": "Una capçalera addicional té un nom no permès o un valor massa llarg o amb un salt de línia."
+  },
+  {
+    "id": "model.ai_connection.id.app_error",
+    "translation": "L'ID de la connexió de model no és vàlid."
+  },
+  {
+    "id": "model.ai_connection.ids.app_error",
+    "translation": "Una comunitat, equip o rol de la connexió no és vàlid."
+  },
+  {
+    "id": "model.ai_connection.limits.app_error",
+    "translation": "Els límits no poden ser negatius."
+  },
+  {
+    "id": "model.ai_connection.models.app_error",
+    "translation": "El nom d'un model és massa llarg o conté un salt de línia."
+  },
+  {
+    "id": "model.ai_connection.models_anthropic.app_error",
+    "translation": "Les connexions d'Anthropic només tenen un model de xat."
+  },
+  {
+    "id": "model.ai_connection.name.app_error",
+    "translation": "Una connexió de model necessita un nom de 1 a 64 caràcters."
+  },
+  {
+    "id": "model.ai_connection.needs_attention.app_error",
+    "translation": "El motiu pel qual la connexió necessita atenció és massa llarg."
+  },
+  {
+    "id": "model.ai_connection.provider.app_error",
+    "translation": "El proveïdor ha de ser una API compatible amb OpenAI o Anthropic."
+  },
+  {
+    "id": "model.ai_connection.roles.app_error",
+    "translation": "Un rol de l'audiència de la connexió no és vàlid."
+  },
+  {
+    "id": "model.ai_connection.scope.app_error",
+    "translation": "Una connexió de model és de tot el servidor o d'una comunitat."
+  },
+  {
+    "id": "model.ai_connection.sharing_community.app_error",
+    "translation": "La connexió pròpia d'una comunitat no es pot compartir amb altres comunitats."
+  },
+  {
+    "id": "model.ai_connection.times.app_error",
+    "translation": "Les dates de la connexió de model no estan establertes."
+  },
+  {
     "id": "model.authorize.is_valid.auth_code.app_error",
     "translation": "Codi d'autorització no vàlid."
   },
@@ -11924,6 +12120,14 @@
     "translation": "Interval de la tasca de sincronització del control d'accés no vàlid. Ha de ser com a mínim 60 segons."
   },
   {
+    "id": "model.config.is_valid.ai.connection_id.app_error",
+    "translation": "La connexió de model de {{.Feature}} no és un ID vàlid."
+  },
+  {
+    "id": "model.config.is_valid.ai.model.app_error",
+    "translation": "El nom del model de {{.Feature}} és massa llarg."
+  },
+  {
     "id": "model.config.is_valid.ai_recap.cooldown_minutes.app_error",
     "translation": "Minuts de refredament de la resuma amb IA no vàlids. Han de ser iguals o superiors a 0."
   },
@@ -11966,6 +12170,10 @@
   {
     "id": "model.config.is_valid.autotranslation.agents.llm_service_id.app_error",
     "translation": "Configuració d'agents de traducció automàtica no vàlida: el servei d'IA no pot estar buit."
+  },
+  {
+    "id": "model.config.is_valid.autotranslation.connection.app_error",
+    "translation": "Trieu la connexió del model que utilitza la traducció automàtica."
   },
   {
     "id": "model.config.is_valid.autotranslation.libretranslate.url.app_error",
@@ -14126,6 +14334,10 @@
   {
     "id": "oauth.gitlab.tos.error",
     "translation": "Els termes de servei de GitLab s'han actualitzat. Ves a {{.URL}} per acceptar-los i després intenta iniciar sessió a Antimatter de nou."
+  },
+  {
+    "id": "plugin.api.ai_chat_stream.app_error",
+    "translation": "L'aplicació no ha pogut obrir el flux de IA."
   },
   {
     "id": "plugin.api.get_users_in_channel",

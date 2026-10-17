@@ -5572,6 +5572,138 @@
     "translation": "Apelul bridge a eșuat."
   },
   {
+    "id": "app.ai.call.audience.app_error",
+    "translation": "Nu poți utiliza această conexiune la model."
+  },
+  {
+    "id": "app.ai.call.audio_size.app_error",
+    "translation": "Audio este gol sau prea mare pentru a fi transcris."
+  },
+  {
+    "id": "app.ai.call.budget_exceeded.app_error",
+    "translation": "Această conexiune la model a folosit bugetul de tokeni pentru luna curentă."
+  },
+  {
+    "id": "app.ai.call.builtin_server_only.app_error",
+    "translation": "Funcțiile AI proprii serverului folosesc doar conexiuni la modele la nivel de server."
+  },
+  {
+    "id": "app.ai.call.channel.app_error",
+    "translation": "Nu poți utiliza AI în acest canal."
+  },
+  {
+    "id": "app.ai.call.decision.app_error",
+    "translation": "Solicitarea de decizie nu este validă."
+  },
+  {
+    "id": "app.ai.call.no_model.app_error",
+    "translation": "Nu este configurat niciun model pentru {{.Capability}} pe această conexiune."
+  },
+  {
+    "id": "app.ai.call.no_request.app_error",
+    "translation": "Apelul AI nu are nicio solicitare."
+  },
+  {
+    "id": "app.ai.call.no_user.app_error",
+    "translation": "Un apel AI are nevoie de persoana pentru care este destinat."
+  },
+  {
+    "id": "app.ai.call.not_available_here.app_error",
+    "translation": "Această conexiune la model nu este disponibilă aici."
+  },
+  {
+    "id": "app.ai.call.provider_bad_request.app_error",
+    "translation": "Furnizorul AI a refuzat solicitarea."
+  },
+  {
+    "id": "app.ai.call.provider_failed.app_error",
+    "translation": "Furnizorul AI nu a putut răspunde."
+  },
+  {
+    "id": "app.ai.call.provider_rate_limited.app_error",
+    "translation": "Furnizorul AI limitează solicitările. Încearcă din nou mai târziu."
+  },
+  {
+    "id": "app.ai.call.provider_refused.app_error",
+    "translation": "Furnizorul AI a refuzat cheia conexiunii."
+  },
+  {
+    "id": "app.ai.call.purpose.app_error",
+    "translation": "Acest apel AI nu este permis."
+  },
+  {
+    "id": "app.ai.call.rate_limited.app_error",
+    "translation": "Prea multe solicitări AI în acest moment. Încearcă din nou într-o clipă."
+  },
+  {
+    "id": "app.ai.call.team.app_error",
+    "translation": "Nu poți utiliza AI în această comunitate."
+  },
+  {
+    "id": "app.ai.call.team_mismatch.app_error",
+    "translation": "Canalul nu se află în această comunitate."
+  },
+  {
+    "id": "app.ai.call.timeout.app_error",
+    "translation": "Furnizorul AI a durat prea mult pentru a răspunde."
+  },
+  {
+    "id": "app.ai.call.unsupported.app_error",
+    "translation": "Această conexiune la model nu poate face asta."
+  },
+  {
+    "id": "app.ai.call.user.app_error",
+    "translation": "Această persoană nu poate utiliza AI aici."
+  },
+  {
+    "id": "app.ai.call.user_budget_exceeded.app_error",
+    "translation": "Ai folosit bugetul tău de AI pe această conexiune pentru luna curentă."
+  },
+  {
+    "id": "app.ai.connection.get.app_error",
+    "translation": "Nu se pot obține conexiunile la modele."
+  },
+  {
+    "id": "app.ai.connection.key_unreadable.app_error",
+    "translation": "Cheia acestei conexiuni la model nu poate fi decriptată: cheia de criptare AI s-a schimbat. Introdu din nou cheia conexiunii."
+  },
+  {
+    "id": "app.ai.connection.manage_permission.app_error",
+    "translation": "Nu poți gestiona aceste conexiuni la modele."
+  },
+  {
+    "id": "app.ai.connection.needs_attention.app_error",
+    "translation": "Această conexiune la model necesită atenția unui administrator înainte de a fi utilizată."
+  },
+  {
+    "id": "app.ai.connection.not_found.app_error",
+    "translation": "Această conexiune la model nu există."
+  },
+  {
+    "id": "app.ai.connection.provider.app_error",
+    "translation": "Furnizorul acestei conexiuni la model nu este acceptat."
+  },
+  {
+    "id": "app.ai.connection.references.app_error",
+    "translation": "O comunitate sau o echipă la care se referă conexiunea nu există sau aparține unei alte comunități."
+  },
+  {
+    "id": "app.ai.connection.save.app_error",
+    "translation": "Nu se poate salva conexiunea la model."
+  },
+  {
+    "id": "app.ai.connection.usage.app_error",
+    "translation": "Nu se poate citi utilizarea conexiunii la model."
+  },
+  {
+    "id": "app.ai.encryption_key.app_error",
+    "translation": "Cheia de criptare AI a serverului nu este disponibilă, astfel încât conexiunile la modele nu pot păstra chei. Setează AM_AI_ENCRYPTION_KEY sau lasă serverul să creeze fișierul de chei în directorul de date."
+  },
+  {
+    "id": "app.ai.feature.not_configured.app_error",
+    "translation": "Nu este configurată nicio conexiune la model pentru {{.Feature}}. Un administrator poate alege una în Consola de sistem."
+  },
+  {
     "id": "app.ai.summarize.agent_call_failed",
     "translation": "Apelul către agentul AI a eșuat."
   },
@@ -12136,6 +12268,70 @@
     "translation": "ID de utilizator invalid."
   },
   {
+    "id": "model.ai_connection.api_key.app_error",
+    "translation": "Cheia API este prea lungă sau conține o întrerupere de linie."
+  },
+  {
+    "id": "model.ai_connection.base_url.app_error",
+    "translation": "Adresa trebuie să fie un URL http sau https, fără utilizator, interogare sau fragment."
+  },
+  {
+    "id": "model.ai_connection.decisions_dialect.app_error",
+    "translation": "Formatul deciziilor trebuie să fie OpenAI sau SystemOne."
+  },
+  {
+    "id": "model.ai_connection.extra_headers.app_error",
+    "translation": "Un antet suplimentar are un nume nepermis sau o valoare prea lungă sau cu o întrerupere de linie."
+  },
+  {
+    "id": "model.ai_connection.id.app_error",
+    "translation": "ID-ul conexiunii la model nu este valid."
+  },
+  {
+    "id": "model.ai_connection.ids.app_error",
+    "translation": "O comunitate, o echipă sau un rol din conexiune nu este valid."
+  },
+  {
+    "id": "model.ai_connection.limits.app_error",
+    "translation": "Limitările nu pot fi negative."
+  },
+  {
+    "id": "model.ai_connection.models.app_error",
+    "translation": "Numele unui model este prea lung sau conține o întrerupere de linie."
+  },
+  {
+    "id": "model.ai_connection.models_anthropic.app_error",
+    "translation": "Conexiunile Anthropic au doar un model de chat."
+  },
+  {
+    "id": "model.ai_connection.name.app_error",
+    "translation": "O conexiune la model are nevoie de un nume de la 1 la 64 de caractere."
+  },
+  {
+    "id": "model.ai_connection.needs_attention.app_error",
+    "translation": "Motivul pentru care conexiunea necesită atenție este prea lung."
+  },
+  {
+    "id": "model.ai_connection.provider.app_error",
+    "translation": "Furnizorul trebuie să fie o API compatibilă cu OpenAI sau Anthropic."
+  },
+  {
+    "id": "model.ai_connection.roles.app_error",
+    "translation": "Un rol din publicul conexiunii nu este valid."
+  },
+  {
+    "id": "model.ai_connection.scope.app_error",
+    "translation": "O conexiune la model este fie la nivel de server, fie a unei comunități."
+  },
+  {
+    "id": "model.ai_connection.sharing_community.app_error",
+    "translation": "Conexiunea proprie a unei comunități nu poate fi partajată cu alte comunități."
+  },
+  {
+    "id": "model.ai_connection.times.app_error",
+    "translation": "Datele conexiunii la model nu sunt setate."
+  },
+  {
     "id": "model.authorize.is_valid.auth_code.app_error",
     "translation": "Cod de autorizare invalid."
   },
@@ -12656,6 +12852,14 @@
     "translation": "Interval nevalid pentru sarcina de sincronizare a controlului accesului. Trebuie să fie de cel puțin 60 de secunde."
   },
   {
+    "id": "model.config.is_valid.ai.connection_id.app_error",
+    "translation": "Conexiunea la model pentru {{.Feature}} nu este un ID valid."
+  },
+  {
+    "id": "model.config.is_valid.ai.model.app_error",
+    "translation": "Numele modelului pentru {{.Feature}} este prea lung."
+  },
+  {
     "id": "model.config.is_valid.ai_recap.cooldown_minutes.app_error",
     "translation": "Valoare invalidă pentru minutele de pauză între recapitulările AI. Trebuie să fie mai mare sau egală cu 0."
   },
@@ -12698,6 +12902,10 @@
   {
     "id": "model.config.is_valid.autotranslation.agents.llm_service_id.app_error",
     "translation": "Configurație invalidă a agenților de traducere automată: serviciul AI nu trebuie să fie gol."
+  },
+  {
+    "id": "model.config.is_valid.autotranslation.connection.app_error",
+    "translation": "Alegeți conexiunea la modelul folosit de traducerea automată."
   },
   {
     "id": "model.config.is_valid.autotranslation.libretranslate.url.app_error",
@@ -14858,6 +15066,10 @@
   {
     "id": "oauth.gitlab.tos.error",
     "translation": "Termenii și condițiile GitLab au fost actualizați. Vă rugăm să accesați {{.URL}} pentru a-i accepta și apoi încercați să vă conectați din nou la Antimatter."
+  },
+  {
+    "id": "plugin.api.ai_chat_stream.app_error",
+    "translation": "Aplicația nu a putut deschide fluxul AI."
   },
   {
     "id": "plugin.api.get_users_in_channel",

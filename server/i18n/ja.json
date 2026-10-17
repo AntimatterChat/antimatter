@@ -5510,6 +5510,138 @@
     "translation": "ブリッジ呼び出しに失敗しました。"
   },
   {
+    "id": "app.ai.call.audience.app_error",
+    "translation": "このモデル接続を使用できません。"
+  },
+  {
+    "id": "app.ai.call.audio_size.app_error",
+    "translation": "オーディオが空か、文字起こしに大きすぎます。"
+  },
+  {
+    "id": "app.ai.call.budget_exceeded.app_error",
+    "translation": "このモデル接続は、今月のトークン予算を使い切りました。"
+  },
+  {
+    "id": "app.ai.call.builtin_server_only.app_error",
+    "translation": "サーバー独自のAI機能は、サーバー全体のモデル接続のみを使用します。"
+  },
+  {
+    "id": "app.ai.call.channel.app_error",
+    "translation": "このチャンネルではAIを使用できません。"
+  },
+  {
+    "id": "app.ai.call.decision.app_error",
+    "translation": "決定リクエストが無効です。"
+  },
+  {
+    "id": "app.ai.call.no_model.app_error",
+    "translation": "この接続では{{.Capability}}にモデルが設定されていません。"
+  },
+  {
+    "id": "app.ai.call.no_request.app_error",
+    "translation": "AI呼び出しにリクエストがありません。"
+  },
+  {
+    "id": "app.ai.call.no_user.app_error",
+    "translation": "AI呼び出しには、対象者が必要です。"
+  },
+  {
+    "id": "app.ai.call.not_available_here.app_error",
+    "translation": "このモデル接続はここでは利用できません。"
+  },
+  {
+    "id": "app.ai.call.provider_bad_request.app_error",
+    "translation": "AIプロバイダーがリクエストを拒否しました。"
+  },
+  {
+    "id": "app.ai.call.provider_failed.app_error",
+    "translation": "AIプロバイダーが応答に失敗しました。"
+  },
+  {
+    "id": "app.ai.call.provider_rate_limited.app_error",
+    "translation": "AIプロバイダーがリクエストを制限しています。しばらくしてから再試行してください。"
+  },
+  {
+    "id": "app.ai.call.provider_refused.app_error",
+    "translation": "AIプロバイダーが接続のキーを拒否しました。"
+  },
+  {
+    "id": "app.ai.call.purpose.app_error",
+    "translation": "このAI呼び出しは許可されていません。"
+  },
+  {
+    "id": "app.ai.call.rate_limited.app_error",
+    "translation": "AIリクエストが多すぎます。しばらくしてから再試行してください。"
+  },
+  {
+    "id": "app.ai.call.team.app_error",
+    "translation": "このコミュニティではAIを使用できません。"
+  },
+  {
+    "id": "app.ai.call.team_mismatch.app_error",
+    "translation": "このチャンネルは、このコミュニティに属していません。"
+  },
+  {
+    "id": "app.ai.call.timeout.app_error",
+    "translation": "AIプロバイダーの応答に時間がかかりすぎました。"
+  },
+  {
+    "id": "app.ai.call.unsupported.app_error",
+    "translation": "このモデル接続では、その操作はできません。"
+  },
+  {
+    "id": "app.ai.call.user.app_error",
+    "translation": "このユーザーは、ここでAIを使用できません。"
+  },
+  {
+    "id": "app.ai.call.user_budget_exceeded.app_error",
+    "translation": "この接続での今月のAI予算を使い切りました。"
+  },
+  {
+    "id": "app.ai.connection.get.app_error",
+    "translation": "モデル接続を取得できません。"
+  },
+  {
+    "id": "app.ai.connection.key_unreadable.app_error",
+    "translation": "このモデル接続のキーを復号できません：AI暗号化キーが変更されました。接続のキーを再入力してください。"
+  },
+  {
+    "id": "app.ai.connection.manage_permission.app_error",
+    "translation": "これらのモデル接続を管理できません。"
+  },
+  {
+    "id": "app.ai.connection.needs_attention.app_error",
+    "translation": "このモデル接続を使用するには、管理者の確認が必要です。"
+  },
+  {
+    "id": "app.ai.connection.not_found.app_error",
+    "translation": "このモデル接続は存在しません。"
+  },
+  {
+    "id": "app.ai.connection.provider.app_error",
+    "translation": "このモデル接続のプロバイダーはサポートされていません。"
+  },
+  {
+    "id": "app.ai.connection.references.app_error",
+    "translation": "接続が参照しているコミュニティまたはチームが存在しないか、別のコミュニティに属しています。"
+  },
+  {
+    "id": "app.ai.connection.save.app_error",
+    "translation": "モデル接続を保存できません。"
+  },
+  {
+    "id": "app.ai.connection.usage.app_error",
+    "translation": "モデル接続の使用状況を読み取れません。"
+  },
+  {
+    "id": "app.ai.encryption_key.app_error",
+    "translation": "サーバーのAI暗号化キーが利用できないため、モデル接続はキーを保持できません。AM_AI_ENCRYPTION_KEYを設定するか、サーバーにデータディレクトリにキーファイルを作成させる必要があります。"
+  },
+  {
+    "id": "app.ai.feature.not_configured.app_error",
+    "translation": "{{.Feature}}用のモデル接続が設定されていません。管理者はシステムコンソールで選択できます。"
+  },
+  {
     "id": "app.ai.summarize.agent_call_failed",
     "translation": "AIエージェントの呼び出しに失敗しました。"
   },
@@ -11942,6 +12074,70 @@
     "translation": "不正なuser idです。"
   },
   {
+    "id": "model.ai_connection.api_key.app_error",
+    "translation": "APIキーが長すぎるか、改行文字が含まれています。"
+  },
+  {
+    "id": "model.ai_connection.base_url.app_error",
+    "translation": "アドレスは、ユーザー情報、クエリ、フラグメントを含まないhttpまたはhttpsのURLである必要があります。"
+  },
+  {
+    "id": "model.ai_connection.decisions_dialect.app_error",
+    "translation": "決定の形式はOpenAIまたはSystemOneである必要があります。"
+  },
+  {
+    "id": "model.ai_connection.extra_headers.app_error",
+    "translation": "追加ヘッダーの名前が許可されていないか、値が長すぎるか、改行文字が含まれています。"
+  },
+  {
+    "id": "model.ai_connection.id.app_error",
+    "translation": "モデル接続のIDが無効です。"
+  },
+  {
+    "id": "model.ai_connection.ids.app_error",
+    "translation": "接続内のコミュニティ、チーム、またはロールが無効です。"
+  },
+  {
+    "id": "model.ai_connection.limits.app_error",
+    "translation": "制限値は負数にできません。"
+  },
+  {
+    "id": "model.ai_connection.models.app_error",
+    "translation": "モデル名が長すぎるか、改行文字が含まれています。"
+  },
+  {
+    "id": "model.ai_connection.models_anthropic.app_error",
+    "translation": "Anthropic接続にはチャットモデルのみがあります。"
+  },
+  {
+    "id": "model.ai_connection.name.app_error",
+    "translation": "モデル接続には1文字から64文字の名前が必要です。"
+  },
+  {
+    "id": "model.ai_connection.needs_attention.app_error",
+    "translation": "接続に注意が必要な理由が長すぎます。"
+  },
+  {
+    "id": "model.ai_connection.provider.app_error",
+    "translation": "プロバイダーはOpenAI互換APIまたはAnthropicである必要があります。"
+  },
+  {
+    "id": "model.ai_connection.roles.app_error",
+    "translation": "接続の対象範囲内のロールが無効です。"
+  },
+  {
+    "id": "model.ai_connection.scope.app_error",
+    "translation": "モデル接続はサーバー全体またはコミュニティのいずれかです。"
+  },
+  {
+    "id": "model.ai_connection.sharing_community.app_error",
+    "translation": "コミュニティ自身の接続は他のコミュニティと共有できません。"
+  },
+  {
+    "id": "model.ai_connection.times.app_error",
+    "translation": "モデル接続の日付が設定されていません。"
+  },
+  {
     "id": "model.authorize.is_valid.auth_code.app_error",
     "translation": "不正な認証コードです。"
   },
@@ -12462,6 +12658,14 @@
     "translation": "アクセス制御の同期ジョブの間隔が不正です。60秒以上である必要があります。"
   },
   {
+    "id": "model.config.is_valid.ai.connection_id.app_error",
+    "translation": "{{.Feature}}のモデル接続が有効なIDではありません。"
+  },
+  {
+    "id": "model.config.is_valid.ai.model.app_error",
+    "translation": "「{{.Feature}}」のモデル名が長すぎます。"
+  },
+  {
     "id": "model.config.is_valid.ai_recap.cooldown_minutes.app_error",
     "translation": "AIリキャップのクールダウン (分) が不正です。0以上でなければなりません。"
   },
@@ -12504,6 +12708,10 @@
   {
     "id": "model.config.is_valid.autotranslation.agents.llm_service_id.app_error",
     "translation": "自動翻訳のエージェント設定が不正です: AIサービスを空にすることはできません。"
+  },
+  {
+    "id": "model.config.is_valid.autotranslation.connection.app_error",
+    "translation": "自動翻訳で使用するモデル接続を選択してください。"
   },
   {
     "id": "model.config.is_valid.autotranslation.libretranslate.url.app_error",
@@ -14664,6 +14872,10 @@
   {
     "id": "oauth.gitlab.tos.error",
     "translation": "GitLabの利用規約が更新されました。{{.URL}}で新しい利用規約に同意してから、もう一度Antimatterへログインしてみてください。"
+  },
+  {
+    "id": "plugin.api.ai_chat_stream.app_error",
+    "translation": "アプリがAIストリームを開けませんでした。"
   },
   {
     "id": "plugin.api.get_users_in_channel",

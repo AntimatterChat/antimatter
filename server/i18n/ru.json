@@ -5577,6 +5577,138 @@
     "translation": "Вызов моста не удался."
   },
   {
+    "id": "app.ai.call.audience.app_error",
+    "translation": "Невозможно использовать это подключение к модели."
+  },
+  {
+    "id": "app.ai.call.audio_size.app_error",
+    "translation": "Аудиофайл пуст или слишком большой для транскрипции."
+  },
+  {
+    "id": "app.ai.call.budget_exceeded.app_error",
+    "translation": "Лимит токенов для этого подключения к модели исчерпан на текущий месяц."
+  },
+  {
+    "id": "app.ai.call.builtin_server_only.app_error",
+    "translation": "Встроенные функции ИИ сервера используют только общесерверные подключения к моделям."
+  },
+  {
+    "id": "app.ai.call.channel.app_error",
+    "translation": "Вы не можете использовать ИИ в этом канале."
+  },
+  {
+    "id": "app.ai.call.decision.app_error",
+    "translation": "Запрос на решение недействителен."
+  },
+  {
+    "id": "app.ai.call.no_model.app_error",
+    "translation": "Для {{.Capability}} на этом подключении не задана модель."
+  },
+  {
+    "id": "app.ai.call.no_request.app_error",
+    "translation": "У AI-звонка нет запроса."
+  },
+  {
+    "id": "app.ai.call.no_user.app_error",
+    "translation": "Для звонка с ИИ нужно указать, кому он адресован."
+  },
+  {
+    "id": "app.ai.call.not_available_here.app_error",
+    "translation": "Соединение с этой моделью здесь недоступно."
+  },
+  {
+    "id": "app.ai.call.provider_bad_request.app_error",
+    "translation": "Поставщик ИИ отклонил запрос."
+  },
+  {
+    "id": "app.ai.call.provider_failed.app_error",
+    "translation": "Поставщик ИИ не смог ответить."
+  },
+  {
+    "id": "app.ai.call.provider_rate_limited.app_error",
+    "translation": "Поставщик ИИ ограничивает количество запросов. Повторите попытку позже."
+  },
+  {
+    "id": "app.ai.call.provider_refused.app_error",
+    "translation": "Поставщик ИИ отклонил ключ соединения."
+  },
+  {
+    "id": "app.ai.call.purpose.app_error",
+    "translation": "Этот ИИ-звонок не разрешён."
+  },
+  {
+    "id": "app.ai.call.rate_limited.app_error",
+    "translation": "Слишком много запросов к ИИ. Повторите попытку через минуту."
+  },
+  {
+    "id": "app.ai.call.team.app_error",
+    "translation": "Вы не можете использовать ИИ в этом сообществе."
+  },
+  {
+    "id": "app.ai.call.team_mismatch.app_error",
+    "translation": "Канал не входит в это сообщество."
+  },
+  {
+    "id": "app.ai.call.timeout.app_error",
+    "translation": "Поставщик ИИ слишком долго не отвечал."
+  },
+  {
+    "id": "app.ai.call.unsupported.app_error",
+    "translation": "Эта модель не поддерживает такую операцию."
+  },
+  {
+    "id": "app.ai.call.user.app_error",
+    "translation": "Этот пользователь не может использовать ИИ здесь."
+  },
+  {
+    "id": "app.ai.call.user_budget_exceeded.app_error",
+    "translation": "Вы исчерпали месячный бюджет ИИ для этого соединения."
+  },
+  {
+    "id": "app.ai.connection.get.app_error",
+    "translation": "Не удалось получить соединения с моделями."
+  },
+  {
+    "id": "app.ai.connection.key_unreadable.app_error",
+    "translation": "Не удалось расшифровать ключ этого подключения к модели: ключ шифрования ИИ был изменён. Введите ключ подключения снова."
+  },
+  {
+    "id": "app.ai.connection.manage_permission.app_error",
+    "translation": "Вы не можете управлять этими подключениями к моделям."
+  },
+  {
+    "id": "app.ai.connection.needs_attention.app_error",
+    "translation": "Для использования этого подключения к модели требуется внимание администратора."
+  },
+  {
+    "id": "app.ai.connection.not_found.app_error",
+    "translation": "Это подключение к модели не существует."
+  },
+  {
+    "id": "app.ai.connection.provider.app_error",
+    "translation": "Провайдер этого подключения к модели не поддерживается."
+  },
+  {
+    "id": "app.ai.connection.references.app_error",
+    "translation": "Сообщество или команда, на которые ссылается подключение, не существуют или принадлежат другому сообществу."
+  },
+  {
+    "id": "app.ai.connection.save.app_error",
+    "translation": "Не удалось сохранить подключение к модели."
+  },
+  {
+    "id": "app.ai.connection.usage.app_error",
+    "translation": "Не удалось получить данные об использовании подключения к модели."
+  },
+  {
+    "id": "app.ai.encryption_key.app_error",
+    "translation": "Ключ шифрования ИИ сервера недоступен, поэтому подключения к моделям не могут сохранять ключи. Установите AM_AI_ENCRYPTION_KEY или позвольте серверу создать файл ключа в каталоге данных."
+  },
+  {
+    "id": "app.ai.feature.not_configured.app_error",
+    "translation": "Для {{.Feature}} не настроено подключение к модели. Администратор может выбрать его в Системной консоли."
+  },
+  {
     "id": "app.ai.summarize.agent_call_failed",
     "translation": "Вызов агента ИИ не удался."
   },
@@ -12145,6 +12277,70 @@
     "translation": "Некорректный user id."
   },
   {
+    "id": "model.ai_connection.api_key.app_error",
+    "translation": "API-ключ слишком длинный или содержит перенос строки."
+  },
+  {
+    "id": "model.ai_connection.base_url.app_error",
+    "translation": "Адрес должен быть URL-адресом http или https без указания пользователя, запроса или фрагмента."
+  },
+  {
+    "id": "model.ai_connection.decisions_dialect.app_error",
+    "translation": "Формат решений должен быть в формате OpenAI или SystemOne."
+  },
+  {
+    "id": "model.ai_connection.extra_headers.app_error",
+    "translation": "Дополнительный заголовок содержит недопустимое имя или значение, которое слишком длинное или содержит перенос строки."
+  },
+  {
+    "id": "model.ai_connection.id.app_error",
+    "translation": "ID подключения к модели недействителен."
+  },
+  {
+    "id": "model.ai_connection.ids.app_error",
+    "translation": "Сообщество, команда или роль в подключении недействительны."
+  },
+  {
+    "id": "model.ai_connection.limits.app_error",
+    "translation": "Лимиты не могут быть отрицательными."
+  },
+  {
+    "id": "model.ai_connection.models.app_error",
+    "translation": "Имя модели слишком длинное или содержит перенос строки."
+  },
+  {
+    "id": "model.ai_connection.models_anthropic.app_error",
+    "translation": "Подключения к Anthropic имеют только чат-модель."
+  },
+  {
+    "id": "model.ai_connection.name.app_error",
+    "translation": "Подключение к модели должно иметь имя от 1 до 64 символов."
+  },
+  {
+    "id": "model.ai_connection.needs_attention.app_error",
+    "translation": "Причина, по которой подключение требует внимания, слишком длинна."
+  },
+  {
+    "id": "model.ai_connection.provider.app_error",
+    "translation": "Провайдер должен быть API, совместимым с OpenAI, или Anthropic."
+  },
+  {
+    "id": "model.ai_connection.roles.app_error",
+    "translation": "Роль в аудитории подключения недействительна."
+  },
+  {
+    "id": "model.ai_connection.scope.app_error",
+    "translation": "Подключение к модели является либо общесерверным, либо принадлежит сообществу."
+  },
+  {
+    "id": "model.ai_connection.sharing_community.app_error",
+    "translation": "Собственное подключение сообщества не может быть общим для других сообществ."
+  },
+  {
+    "id": "model.ai_connection.times.app_error",
+    "translation": "Даты подключения к модели не заданы."
+  },
+  {
     "id": "model.authorize.is_valid.auth_code.app_error",
     "translation": "Недопустимый код авторизации."
   },
@@ -12665,6 +12861,14 @@
     "translation": "Недопустимый интервал задания синхронизации контроля доступа. Значение должно быть не менее 60 секунд."
   },
   {
+    "id": "model.config.is_valid.ai.connection_id.app_error",
+    "translation": "ID подключения к модели для {{.Feature}} недействителен."
+  },
+  {
+    "id": "model.config.is_valid.ai.model.app_error",
+    "translation": "Имя модели для {{.Feature}} слишком длинное."
+  },
+  {
     "id": "model.config.is_valid.ai_recap.cooldown_minutes.app_error",
     "translation": "Недопустимое значение времени ожидания между сводками ИИ в минутах. Должно быть больше или равно 0."
   },
@@ -12707,6 +12911,10 @@
   {
     "id": "model.config.is_valid.autotranslation.agents.llm_service_id.app_error",
     "translation": "Недопустимая конфигурация агентов автоперевода: сервис ИИ не должен быть пустым."
+  },
+  {
+    "id": "model.config.is_valid.autotranslation.connection.app_error",
+    "translation": "Выберите подключение модели, используемое для автоперевода."
   },
   {
     "id": "model.config.is_valid.autotranslation.libretranslate.url.app_error",
@@ -14867,6 +15075,10 @@
   {
     "id": "oauth.gitlab.tos.error",
     "translation": "Условия предоставления услуг GitLab обновлены. Пожалуйста, зайдите на {{.URL}}, чтобы принять их, а затем попробуйте снова войти в Antimatter."
+  },
+  {
+    "id": "plugin.api.ai_chat_stream.app_error",
+    "translation": "Приложение не смогло открыть AI-поток."
   },
   {
     "id": "plugin.api.get_users_in_channel",

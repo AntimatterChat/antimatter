@@ -5567,6 +5567,138 @@
     "translation": "فراخوانی Bridge ناموفق بود."
   },
   {
+    "id": "app.ai.call.audience.app_error",
+    "translation": "شما نمی‌توانید از این اتصال مدل استفاده کنید."
+  },
+  {
+    "id": "app.ai.call.audio_size.app_error",
+    "translation": "صوت خالی است یا برای متن‌نویسی بیش از حد بزرگ است."
+  },
+  {
+    "id": "app.ai.call.budget_exceeded.app_error",
+    "translation": "این اتصال مدل بودجه توکن ماهانه خود را مصرف کرده است."
+  },
+  {
+    "id": "app.ai.call.builtin_server_only.app_error",
+    "translation": "امکانات هوش مصنوعی خود سرور فقط از اتصالات مدل در سطح سرور استفاده می‌کنند."
+  },
+  {
+    "id": "app.ai.call.channel.app_error",
+    "translation": "شما نمی‌توانید از هوش مصنوعی در این کانال استفاده کنید."
+  },
+  {
+    "id": "app.ai.call.decision.app_error",
+    "translation": "درخواست تصمیم‌گیری معتبر نیست."
+  },
+  {
+    "id": "app.ai.call.no_model.app_error",
+    "translation": "مدلی برای {{.Capability}} روی این اتصال تنظیم نشده است."
+  },
+  {
+    "id": "app.ai.call.no_request.app_error",
+    "translation": "مکالمه هوش مصنوعی درخواستی ندارد."
+  },
+  {
+    "id": "app.ai.call.no_user.app_error",
+    "translation": "مکالمه هوش مصنوعی به شخصی که برای آن انجام می‌شود نیاز دارد."
+  },
+  {
+    "id": "app.ai.call.not_available_here.app_error",
+    "translation": "این اتصال مدل در اینجا در دسترس نیست."
+  },
+  {
+    "id": "app.ai.call.provider_bad_request.app_error",
+    "translation": "ارائه‌دهنده هوش مصنوعی درخواست را رد کرد."
+  },
+  {
+    "id": "app.ai.call.provider_failed.app_error",
+    "translation": "ارائه‌دهنده هوش مصنوعی در پاسخ‌دهی ناموفق بود."
+  },
+  {
+    "id": "app.ai.call.provider_rate_limited.app_error",
+    "translation": "ارائه‌دهنده هوش مصنوعی درخواست‌ها را محدود کرده است. لطفاً بعداً دوباره تلاش کنید."
+  },
+  {
+    "id": "app.ai.call.provider_refused.app_error",
+    "translation": "ارائه‌دهنده هوش مصنوعی کلید این اتصال را رد کرد."
+  },
+  {
+    "id": "app.ai.call.purpose.app_error",
+    "translation": "این مکالمه هوش مصنوعی مجاز نیست."
+  },
+  {
+    "id": "app.ai.call.rate_limited.app_error",
+    "translation": "هم‌اکنون درخواست‌های هوش مصنوعی بیش از حد است. لطفاً پس از چند لحظه دوباره تلاش کنید."
+  },
+  {
+    "id": "app.ai.call.team.app_error",
+    "translation": "شما نمی‌توانید از هوش مصنوعی در این تیم استفاده کنید."
+  },
+  {
+    "id": "app.ai.call.team_mismatch.app_error",
+    "translation": "این کانال در این تیم قرار ندارد."
+  },
+  {
+    "id": "app.ai.call.timeout.app_error",
+    "translation": "ارائه‌دهنده هوش مصنوعی برای پاسخ‌دهی بیش از حد زمان برد."
+  },
+  {
+    "id": "app.ai.call.unsupported.app_error",
+    "translation": "این اتصال مدل قادر به انجام این کار نیست."
+  },
+  {
+    "id": "app.ai.call.user.app_error",
+    "translation": "این شخص نمی‌تواند از هوش مصنوعی در اینجا استفاده کند."
+  },
+  {
+    "id": "app.ai.call.user_budget_exceeded.app_error",
+    "translation": "شما بودجه هوش مصنوعی خود را روی این اتصال برای این ماه مصرف کرده‌اید."
+  },
+  {
+    "id": "app.ai.connection.get.app_error",
+    "translation": "نمی‌توان اتصالات مدل را دریافت کرد."
+  },
+  {
+    "id": "app.ai.connection.key_unreadable.app_error",
+    "translation": "کلید این اتصال مدل قابل رمزگشایی نیست: کلید رمزنگاری هوش مصنوعی تغییر کرده است. لطفاً کلید اتصال را دوباره وارد کنید."
+  },
+  {
+    "id": "app.ai.connection.manage_permission.app_error",
+    "translation": "شما نمی‌توانید این اتصالات مدل را مدیریت کنید."
+  },
+  {
+    "id": "app.ai.connection.needs_attention.app_error",
+    "translation": "این اتصال مدل به توجه مدیر نیاز دارد تا بتوان از آن استفاده کرد."
+  },
+  {
+    "id": "app.ai.connection.not_found.app_error",
+    "translation": "این اتصال مدل وجود ندارد."
+  },
+  {
+    "id": "app.ai.connection.provider.app_error",
+    "translation": "ارائه‌دهنده این اتصال مدل پشتیبانی نمی‌شود."
+  },
+  {
+    "id": "app.ai.connection.references.app_error",
+    "translation": "جامعه یا تیمی که اتصال به آن اشاره می‌کند وجود ندارد یا به جامعه دیگری تعلق دارد."
+  },
+  {
+    "id": "app.ai.connection.save.app_error",
+    "translation": "ذخیره کردن اتصال مدل ممکن نیست."
+  },
+  {
+    "id": "app.ai.connection.usage.app_error",
+    "translation": "خواندن میزان استفاده از اتصال مدل ممکن نیست."
+  },
+  {
+    "id": "app.ai.encryption_key.app_error",
+    "translation": "کلید رمزنگاری هوش مصنوعی سرور در دسترس نیست، بنابراین اتصالات مدل نمی‌توانند کلیدها را نگه دارند. AM_AI_ENCRYPTION_KEY را تنظیم کنید یا بگذارید سرور فایل کلید را در پوشه داده ایجاد کند."
+  },
+  {
+    "id": "app.ai.feature.not_configured.app_error",
+    "translation": "هیچ اتصال مدلی برای {{.Feature}} تنظیم نشده است. یک مدیر می‌تواند یکی را در کنسول سیستم انتخاب کند."
+  },
+  {
     "id": "app.ai.summarize.agent_call_failed",
     "translation": "فراخوانی عامل هوش مصنوعی ناموفق بود."
   },
@@ -12127,6 +12259,70 @@
     "translation": "شناسه کاربر نامعتبر است."
   },
   {
+    "id": "model.ai_connection.api_key.app_error",
+    "translation": "کلید API بسیار طولانی است یا شامل خط جدید است."
+  },
+  {
+    "id": "model.ai_connection.base_url.app_error",
+    "translation": "آدرس باید یک URL از نوع http یا https باشد، بدون کاربر، پارامتر یا بخش."
+  },
+  {
+    "id": "model.ai_connection.decisions_dialect.app_error",
+    "translation": "قالب تصمیمات باید از نوع OpenAI یا SystemOne باشد."
+  },
+  {
+    "id": "model.ai_connection.extra_headers.app_error",
+    "translation": "یک هدر اضافی نامی غیرمجاز دارد یا مقداری که بسیار طولانی است یا شامل خط جدید است."
+  },
+  {
+    "id": "model.ai_connection.id.app_error",
+    "translation": "شناسه اتصال مدل معتبر نیست."
+  },
+  {
+    "id": "model.ai_connection.ids.app_error",
+    "translation": "یک جامعه، تیم یا نقش در اتصال معتبر نیست."
+  },
+  {
+    "id": "model.ai_connection.limits.app_error",
+    "translation": "محدودیت‌ها نمی‌توانند منفی باشند."
+  },
+  {
+    "id": "model.ai_connection.models.app_error",
+    "translation": "نام مدل بسیار طولانی است یا شامل خط جدید است."
+  },
+  {
+    "id": "model.ai_connection.models_anthropic.app_error",
+    "translation": "اتصالات Anthropic فقط یک مدل چت دارند."
+  },
+  {
+    "id": "model.ai_connection.name.app_error",
+    "translation": "یک اتصال مدل به نامی از ۱ تا ۶۴ کاراکتر نیاز دارد."
+  },
+  {
+    "id": "model.ai_connection.needs_attention.app_error",
+    "translation": "دلیل نیاز اتصال به توجه بسیار طولانی است."
+  },
+  {
+    "id": "model.ai_connection.provider.app_error",
+    "translation": "ارائه‌دهنده باید یک API سازگار با OpenAI یا Anthropic باشد."
+  },
+  {
+    "id": "model.ai_connection.roles.app_error",
+    "translation": "یک نقش در مخاطبان اتصال معتبر نیست."
+  },
+  {
+    "id": "model.ai_connection.scope.app_error",
+    "translation": "یک اتصال مدل یا در کل سرور است یا متعلق به یک جامعه."
+  },
+  {
+    "id": "model.ai_connection.sharing_community.app_error",
+    "translation": "اتصال اختصاصی یک جامعه نمی‌تواند با سایر جوامع به اشتراک گذاشته شود."
+  },
+  {
+    "id": "model.ai_connection.times.app_error",
+    "translation": "تاریخ‌های اتصال مدل تنظیم نشده‌اند."
+  },
+  {
     "id": "model.authorize.is_valid.auth_code.app_error",
     "translation": "کد مجوز نامعتبر است."
   },
@@ -12647,6 +12843,14 @@
     "translation": "بازه کار همگام‌سازی کنترل دسترسی نامعتبر است. باید دست‌کم 60 ثانیه باشد."
   },
   {
+    "id": "model.config.is_valid.ai.connection_id.app_error",
+    "translation": "شناسه اتصال مدل برای {{.Feature}} معتبر نیست."
+  },
+  {
+    "id": "model.config.is_valid.ai.model.app_error",
+    "translation": "نام مدل {{.Feature}} خیلی طولانی است."
+  },
+  {
     "id": "model.config.is_valid.ai_recap.cooldown_minutes.app_error",
     "translation": "مقدار دقایق فاصله بین جمع‌بندی‌های هوش مصنوعی نامعتبر است. باید بزرگ‌تر یا مساوی 0 باشد."
   },
@@ -12689,6 +12893,10 @@
   {
     "id": "model.config.is_valid.autotranslation.agents.llm_service_id.app_error",
     "translation": "پیکربندی عامل‌های ترجمه خودکار نامعتبر است: سرویس هوش مصنوعی نمی‌تواند خالی باشد."
+  },
+  {
+    "id": "model.config.is_valid.autotranslation.connection.app_error",
+    "translation": "اتصال مدلی را که ترجمه خودکار از آن استفاده می‌کند، انتخاب کنید."
   },
   {
     "id": "model.config.is_valid.autotranslation.libretranslate.url.app_error",
@@ -14849,6 +15057,10 @@
   {
     "id": "oauth.gitlab.tos.error",
     "translation": "شرایط خدمات GitLab به‌روز شده است. لطفاً برای پذیرش آنها به {{.URL}} بروید و سپس دوباره سعی کنید وارد Antimatter شوید."
+  },
+  {
+    "id": "plugin.api.ai_chat_stream.app_error",
+    "translation": "برنامه نمی‌تواند جریان هوش مصنوعی را باز کند."
   },
   {
     "id": "plugin.api.get_users_in_channel",

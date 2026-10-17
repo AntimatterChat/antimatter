@@ -5192,6 +5192,138 @@
     "translation": "Panggilan bridge gagal."
   },
   {
+    "id": "app.ai.call.audience.app_error",
+    "translation": "Anda tidak dapat menggunakan koneksi model ini."
+  },
+  {
+    "id": "app.ai.call.audio_size.app_error",
+    "translation": "Audio kosong atau terlalu besar untuk ditranskripsi."
+  },
+  {
+    "id": "app.ai.call.budget_exceeded.app_error",
+    "translation": "Koneksi model ini telah menggunakan anggaran token bulanan."
+  },
+  {
+    "id": "app.ai.call.builtin_server_only.app_error",
+    "translation": "Fitur AI bawaan server hanya menggunakan koneksi model yang berlaku untuk seluruh server."
+  },
+  {
+    "id": "app.ai.call.channel.app_error",
+    "translation": "Anda tidak dapat menggunakan AI di kanal ini."
+  },
+  {
+    "id": "app.ai.call.decision.app_error",
+    "translation": "Permintaan keputusan tidak valid."
+  },
+  {
+    "id": "app.ai.call.no_model.app_error",
+    "translation": "Tidak ada model yang diatur untuk {{.Capability}} pada koneksi ini."
+  },
+  {
+    "id": "app.ai.call.no_request.app_error",
+    "translation": "Panggilan AI tidak memiliki permintaan."
+  },
+  {
+    "id": "app.ai.call.no_user.app_error",
+    "translation": "Panggilan AI memerlukan pengguna yang dituju."
+  },
+  {
+    "id": "app.ai.call.not_available_here.app_error",
+    "translation": "Koneksi model ini tidak tersedia di sini."
+  },
+  {
+    "id": "app.ai.call.provider_bad_request.app_error",
+    "translation": "Penyedia AI menolak permintaan."
+  },
+  {
+    "id": "app.ai.call.provider_failed.app_error",
+    "translation": "Penyedia AI gagal memberikan respons."
+  },
+  {
+    "id": "app.ai.call.provider_rate_limited.app_error",
+    "translation": "Penyedia AI membatasi permintaan. Coba lagi nanti."
+  },
+  {
+    "id": "app.ai.call.provider_refused.app_error",
+    "translation": "Penyedia AI menolak kunci koneksi."
+  },
+  {
+    "id": "app.ai.call.purpose.app_error",
+    "translation": "Panggilan AI ini tidak diizinkan."
+  },
+  {
+    "id": "app.ai.call.rate_limited.app_error",
+    "translation": "Terlalu banyak permintaan AI saat ini. Coba lagi sebentar lagi."
+  },
+  {
+    "id": "app.ai.call.team.app_error",
+    "translation": "Anda tidak dapat menggunakan AI di komunitas ini."
+  },
+  {
+    "id": "app.ai.call.team_mismatch.app_error",
+    "translation": "Kanal ini tidak ada di komunitas ini."
+  },
+  {
+    "id": "app.ai.call.timeout.app_error",
+    "translation": "Penyedia AI terlalu lama untuk memberikan respons."
+  },
+  {
+    "id": "app.ai.call.unsupported.app_error",
+    "translation": "Koneksi model ini tidak dapat melakukan itu."
+  },
+  {
+    "id": "app.ai.call.user.app_error",
+    "translation": "Pengguna ini tidak dapat menggunakan AI di sini."
+  },
+  {
+    "id": "app.ai.call.user_budget_exceeded.app_error",
+    "translation": "Anda telah menggunakan anggaran AI Anda pada koneksi ini untuk bulan ini."
+  },
+  {
+    "id": "app.ai.connection.get.app_error",
+    "translation": "Tidak dapat mengambil koneksi model."
+  },
+  {
+    "id": "app.ai.connection.key_unreadable.app_error",
+    "translation": "Kunci koneksi model ini tidak dapat didekripsi: kunci enkripsi AI telah berubah. Masukkan kembali kunci koneksi."
+  },
+  {
+    "id": "app.ai.connection.manage_permission.app_error",
+    "translation": "Anda tidak dapat mengelola koneksi model ini."
+  },
+  {
+    "id": "app.ai.connection.needs_attention.app_error",
+    "translation": "Koneksi model ini memerlukan perhatian admin sebelum dapat digunakan."
+  },
+  {
+    "id": "app.ai.connection.not_found.app_error",
+    "translation": "Koneksi model ini tidak ada."
+  },
+  {
+    "id": "app.ai.connection.provider.app_error",
+    "translation": "Penyedia koneksi model ini tidak didukung."
+  },
+  {
+    "id": "app.ai.connection.references.app_error",
+    "translation": "Komunitas atau tim yang dirujuk oleh koneksi ini tidak ada, atau milik komunitas lain."
+  },
+  {
+    "id": "app.ai.connection.save.app_error",
+    "translation": "Tidak dapat menyimpan koneksi model."
+  },
+  {
+    "id": "app.ai.connection.usage.app_error",
+    "translation": "Tidak dapat membaca penggunaan koneksi model."
+  },
+  {
+    "id": "app.ai.encryption_key.app_error",
+    "translation": "Kunci enkripsi AI server tidak tersedia, sehingga koneksi model tidak dapat menyimpan kunci. Atur AM_AI_ENCRYPTION_KEY, atau biarkan server membuat file kunci di direktori data."
+  },
+  {
+    "id": "app.ai.feature.not_configured.app_error",
+    "translation": "Tidak ada koneksi model yang diatur untuk {{.Feature}}. Admin dapat memilih satu di Konsol Sistem."
+  },
+  {
     "id": "app.ai.summarize.agent_call_failed",
     "translation": "Panggilan agen AI gagal."
   },
@@ -11404,6 +11536,70 @@
     "translation": "ID pengguna tidak valid."
   },
   {
+    "id": "model.ai_connection.api_key.app_error",
+    "translation": "Kunci API terlalu panjang atau mengandung baris baru."
+  },
+  {
+    "id": "model.ai_connection.base_url.app_error",
+    "translation": "Alamat harus berupa URL http atau https, tanpa pengguna, kueri, atau fragmen."
+  },
+  {
+    "id": "model.ai_connection.decisions_dialect.app_error",
+    "translation": "Format keputusan harus OpenAI atau SystemOne."
+  },
+  {
+    "id": "model.ai_connection.extra_headers.app_error",
+    "translation": "Header tambahan memiliki nama yang tidak diizinkan, atau nilai yang terlalu panjang atau mengandung baris baru."
+  },
+  {
+    "id": "model.ai_connection.id.app_error",
+    "translation": "ID koneksi model tidak valid."
+  },
+  {
+    "id": "model.ai_connection.ids.app_error",
+    "translation": "Komunitas, tim, atau peran dalam koneksi tidak valid."
+  },
+  {
+    "id": "model.ai_connection.limits.app_error",
+    "translation": "Batas tidak boleh negatif."
+  },
+  {
+    "id": "model.ai_connection.models.app_error",
+    "translation": "Nama model terlalu panjang atau mengandung baris baru."
+  },
+  {
+    "id": "model.ai_connection.models_anthropic.app_error",
+    "translation": "Koneksi Anthropic hanya memiliki model chat."
+  },
+  {
+    "id": "model.ai_connection.name.app_error",
+    "translation": "Koneksi model memerlukan nama 1 hingga 64 karakter."
+  },
+  {
+    "id": "model.ai_connection.needs_attention.app_error",
+    "translation": "Alasan koneksi memerlukan perhatian terlalu panjang."
+  },
+  {
+    "id": "model.ai_connection.provider.app_error",
+    "translation": "Penyedia harus berupa API kompatibel OpenAI atau Anthropic."
+  },
+  {
+    "id": "model.ai_connection.roles.app_error",
+    "translation": "Peran dalam audiens koneksi tidak valid."
+  },
+  {
+    "id": "model.ai_connection.scope.app_error",
+    "translation": "Koneksi model bersifat seluruh server atau milik komunitas."
+  },
+  {
+    "id": "model.ai_connection.sharing_community.app_error",
+    "translation": "Koneksi milik komunitas sendiri tidak dapat dibagikan ke komunitas lain."
+  },
+  {
+    "id": "model.ai_connection.times.app_error",
+    "translation": "Tanggal koneksi model tidak diatur."
+  },
+  {
     "id": "model.authorize.is_valid.auth_code.app_error",
     "translation": "Kode otorisasi tidak valid."
   },
@@ -11924,6 +12120,14 @@
     "translation": "Interval pekerjaan sinkronisasi kontrol akses tidak valid. Harus minimal 60 detik."
   },
   {
+    "id": "model.config.is_valid.ai.connection_id.app_error",
+    "translation": "Koneksi model untuk {{.Feature}} bukan ID yang valid."
+  },
+  {
+    "id": "model.config.is_valid.ai.model.app_error",
+    "translation": "Nama model {{.Feature}} terlalu panjang."
+  },
+  {
     "id": "model.config.is_valid.ai_recap.cooldown_minutes.app_error",
     "translation": "Menit pendinginan ringkasan AI tidak valid. Harus lebih besar dari atau sama dengan 0."
   },
@@ -11966,6 +12170,10 @@
   {
     "id": "model.config.is_valid.autotranslation.agents.llm_service_id.app_error",
     "translation": "Konfigurasi agen penerjemah otomatis tidak valid: layanan AI tidak boleh kosong."
+  },
+  {
+    "id": "model.config.is_valid.autotranslation.connection.app_error",
+    "translation": "Pilih koneksi model yang digunakan oleh terjemahan otomatis."
   },
   {
     "id": "model.config.is_valid.autotranslation.libretranslate.url.app_error",
@@ -14126,6 +14334,10 @@
   {
     "id": "oauth.gitlab.tos.error",
     "translation": "Ketentuan Layanan GitLab telah diperbarui. Silakan buka {{.URL}} untuk menerimanya, lalu coba masuk ke Antimatter lagi."
+  },
+  {
+    "id": "plugin.api.ai_chat_stream.app_error",
+    "translation": "Aplikasi tidak dapat membuka aliran AI."
   },
   {
     "id": "plugin.api.get_users_in_channel",

@@ -5567,6 +5567,138 @@
     "translation": "Bridge call mislukt."
   },
   {
+    "id": "app.ai.call.audience.app_error",
+    "translation": "U kunt deze modelverbinding niet gebruiken."
+  },
+  {
+    "id": "app.ai.call.audio_size.app_error",
+    "translation": "De audio is leeg of te groot om te transcriberen."
+  },
+  {
+    "id": "app.ai.call.budget_exceeded.app_error",
+    "translation": "Deze modelverbinding heeft zijn tokenbudget voor de maand op."
+  },
+  {
+    "id": "app.ai.call.builtin_server_only.app_error",
+    "translation": "De eigen AI-functies van de server gebruiken alleen modelverbindingen voor de hele server."
+  },
+  {
+    "id": "app.ai.call.channel.app_error",
+    "translation": "U kunt AI niet gebruiken in dit kanaal."
+  },
+  {
+    "id": "app.ai.call.decision.app_error",
+    "translation": "Het beslissingsverzoek is niet geldig."
+  },
+  {
+    "id": "app.ai.call.no_model.app_error",
+    "translation": "Er is geen model ingesteld voor {{.Capability}} op deze verbinding."
+  },
+  {
+    "id": "app.ai.call.no_request.app_error",
+    "translation": "De AI-aanroep heeft geen verzoek."
+  },
+  {
+    "id": "app.ai.call.no_user.app_error",
+    "translation": "Een AI-aanroep heeft de persoon waarvoor het is nodig."
+  },
+  {
+    "id": "app.ai.call.not_available_here.app_error",
+    "translation": "Deze modelverbinding is hier niet beschikbaar."
+  },
+  {
+    "id": "app.ai.call.provider_bad_request.app_error",
+    "translation": "De AI-aanbieder heeft het verzoek geweigerd."
+  },
+  {
+    "id": "app.ai.call.provider_failed.app_error",
+    "translation": "De AI-aanbieder kon niet antwoorden."
+  },
+  {
+    "id": "app.ai.call.provider_rate_limited.app_error",
+    "translation": "De AI-aanbieder beperkt verzoeken. Probeer het later opnieuw."
+  },
+  {
+    "id": "app.ai.call.provider_refused.app_error",
+    "translation": "De AI-aanbieder heeft de sleutel van de verbinding geweigerd."
+  },
+  {
+    "id": "app.ai.call.purpose.app_error",
+    "translation": "Deze AI-aanroep is niet toegestaan."
+  },
+  {
+    "id": "app.ai.call.rate_limited.app_error",
+    "translation": "Te veel AI-verzoeken op dit moment. Probeer het over een moment opnieuw."
+  },
+  {
+    "id": "app.ai.call.team.app_error",
+    "translation": "U kunt AI niet gebruiken in deze community."
+  },
+  {
+    "id": "app.ai.call.team_mismatch.app_error",
+    "translation": "Het kanaal zit niet in deze community."
+  },
+  {
+    "id": "app.ai.call.timeout.app_error",
+    "translation": "De AI-aanbieder heeft te lang geduurd om te antwoorden."
+  },
+  {
+    "id": "app.ai.call.unsupported.app_error",
+    "translation": "Deze modelverbinding kan dat niet."
+  },
+  {
+    "id": "app.ai.call.user.app_error",
+    "translation": "Deze persoon kan AI hier niet gebruiken."
+  },
+  {
+    "id": "app.ai.call.user_budget_exceeded.app_error",
+    "translation": "U heeft uw AI-budget op deze verbinding voor de maand op."
+  },
+  {
+    "id": "app.ai.connection.get.app_error",
+    "translation": "Kan de modelverbindingen niet ophalen."
+  },
+  {
+    "id": "app.ai.connection.key_unreadable.app_error",
+    "translation": "De sleutel van deze modelverbinding kan niet worden ontcodeerd: de AI-versleutelingssleutel is gewijzigd. Voer de sleutel van de verbinding opnieuw in."
+  },
+  {
+    "id": "app.ai.connection.manage_permission.app_error",
+    "translation": "U kunt deze modelverbindingen niet beheren."
+  },
+  {
+    "id": "app.ai.connection.needs_attention.app_error",
+    "translation": "Deze modelverbinding vereist aandacht van een beheerder voordat deze kan worden gebruikt."
+  },
+  {
+    "id": "app.ai.connection.not_found.app_error",
+    "translation": "Deze modelverbinding bestaat niet."
+  },
+  {
+    "id": "app.ai.connection.provider.app_error",
+    "translation": "De provider van deze modelverbinding wordt niet ondersteund."
+  },
+  {
+    "id": "app.ai.connection.references.app_error",
+    "translation": "Een community of team waarnaar de verbinding verwijst, bestaat niet of hoort bij een andere community."
+  },
+  {
+    "id": "app.ai.connection.save.app_error",
+    "translation": "De modelverbinding kan niet worden opgeslagen."
+  },
+  {
+    "id": "app.ai.connection.usage.app_error",
+    "translation": "Het gebruik van de modelverbinding kan niet worden gelezen."
+  },
+  {
+    "id": "app.ai.encryption_key.app_error",
+    "translation": "De AI-versleutelingssleutel van de server is niet beschikbaar, waardoor modelverbindingen geen sleutels kunnen bewaren. Stel AM_AI_ENCRYPTION_KEY in of laat de server het sleutelbestand in de gegevensmap aanmaken."
+  },
+  {
+    "id": "app.ai.feature.not_configured.app_error",
+    "translation": "Er is geen modelverbinding geconfigureerd voor {{.Feature}}. Een beheerder kan er een kiezen in de Systeemconsole."
+  },
+  {
     "id": "app.ai.summarize.agent_call_failed",
     "translation": "AI agent aanroepen mislukt."
   },
@@ -12127,6 +12259,70 @@
     "translation": "Ongeldig gebruikersid."
   },
   {
+    "id": "model.ai_connection.api_key.app_error",
+    "translation": "De API-sleutel is te lang of bevat een nieuwe regel."
+  },
+  {
+    "id": "model.ai_connection.base_url.app_error",
+    "translation": "Het adres moet een http- of https-URL zijn, zonder gebruiker, query of fragment."
+  },
+  {
+    "id": "model.ai_connection.decisions_dialect.app_error",
+    "translation": "Het formaat voor beslissingen moet OpenAI of SystemOne zijn."
+  },
+  {
+    "id": "model.ai_connection.extra_headers.app_error",
+    "translation": "Een extra header heeft een niet-toegestane naam of een waarde die te lang is of een nieuwe regel bevat."
+  },
+  {
+    "id": "model.ai_connection.id.app_error",
+    "translation": "De ID van de modelverbinding is niet geldig."
+  },
+  {
+    "id": "model.ai_connection.ids.app_error",
+    "translation": "Een community, team of rol in de verbinding is niet geldig."
+  },
+  {
+    "id": "model.ai_connection.limits.app_error",
+    "translation": "Limieten mogen niet negatief zijn."
+  },
+  {
+    "id": "model.ai_connection.models.app_error",
+    "translation": "Een modelnaam is te lang of bevat een nieuwe regel."
+  },
+  {
+    "id": "model.ai_connection.models_anthropic.app_error",
+    "translation": "Anthropic-verbindingen hebben alleen een chatmodel."
+  },
+  {
+    "id": "model.ai_connection.name.app_error",
+    "translation": "Een modelverbinding heeft een naam nodig van 1 tot 64 tekens."
+  },
+  {
+    "id": "model.ai_connection.needs_attention.app_error",
+    "translation": "De reden waarom de verbinding aandacht vereist, is te lang."
+  },
+  {
+    "id": "model.ai_connection.provider.app_error",
+    "translation": "De provider moet een OpenAI-compatibele API of Anthropic zijn."
+  },
+  {
+    "id": "model.ai_connection.roles.app_error",
+    "translation": "Een rol in het publiek van de verbinding is niet geldig."
+  },
+  {
+    "id": "model.ai_connection.scope.app_error",
+    "translation": "Een modelverbinding is ofwel serverwijd of van een community."
+  },
+  {
+    "id": "model.ai_connection.sharing_community.app_error",
+    "translation": "De eigen verbinding van een community kan niet worden gedeeld met andere communities."
+  },
+  {
+    "id": "model.ai_connection.times.app_error",
+    "translation": "De datums van de modelverbinding zijn niet ingesteld."
+  },
+  {
     "id": "model.authorize.is_valid.auth_code.app_error",
     "translation": "Ongeldige autorisatiecode."
   },
@@ -12647,6 +12843,14 @@
     "translation": "Ongeldig interval voor de synchronisatietaak van de toegangscontrole. Moet minstens 60 seconden zijn."
   },
   {
+    "id": "model.config.is_valid.ai.connection_id.app_error",
+    "translation": "De modelverbinding van {{.Feature}} is geen geldige ID."
+  },
+  {
+    "id": "model.config.is_valid.ai.model.app_error",
+    "translation": "De modelnaam van {{.Feature}} is te lang."
+  },
+  {
     "id": "model.config.is_valid.ai_recap.cooldown_minutes.app_error",
     "translation": "Ongeldig aantal minuten afkoeltijd voor AI-samenvattingen. Moet groter dan of gelijk zijn aan 0."
   },
@@ -12689,6 +12893,10 @@
   {
     "id": "model.config.is_valid.autotranslation.agents.llm_service_id.app_error",
     "translation": "Ongeldige auto-vertalingen agents configuratie: AI-service mag niet leeg zijn."
+  },
+  {
+    "id": "model.config.is_valid.autotranslation.connection.app_error",
+    "translation": "Kies de modelverbinding die automatische vertaling gebruikt."
   },
   {
     "id": "model.config.is_valid.autotranslation.libretranslate.url.app_error",
@@ -14849,6 +15057,10 @@
   {
     "id": "oauth.gitlab.tos.error",
     "translation": "GitLab's gebruiksvoorwaarden zijn bijgewerkt. Ga naar {{.URL}} om deze te aanvaarden probeer opnieuw in te loggen op Antimatter."
+  },
+  {
+    "id": "plugin.api.ai_chat_stream.app_error",
+    "translation": "De app kon de AI-stream niet openen."
   },
   {
     "id": "plugin.api.get_users_in_channel",

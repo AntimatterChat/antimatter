@@ -5562,6 +5562,138 @@
     "translation": "桥接调用失败。"
   },
   {
+    "id": "app.ai.call.audience.app_error",
+    "translation": "无法使用此模型连接。"
+  },
+  {
+    "id": "app.ai.call.audio_size.app_error",
+    "translation": "音频为空或过大，无法进行转录。"
+  },
+  {
+    "id": "app.ai.call.budget_exceeded.app_error",
+    "translation": "该模型连接本月已用完令牌预算。"
+  },
+  {
+    "id": "app.ai.call.builtin_server_only.app_error",
+    "translation": "服务器自带的 AI 功能仅使用服务器级别的模型连接。"
+  },
+  {
+    "id": "app.ai.call.channel.app_error",
+    "translation": "您无法在此频道中使用 AI。"
+  },
+  {
+    "id": "app.ai.call.decision.app_error",
+    "translation": "决策请求无效。"
+  },
+  {
+    "id": "app.ai.call.no_model.app_error",
+    "translation": "此连接未为 {{.Capability}} 设置模型。"
+  },
+  {
+    "id": "app.ai.call.no_request.app_error",
+    "translation": "AI 通话没有请求。"
+  },
+  {
+    "id": "app.ai.call.no_user.app_error",
+    "translation": "AI 通话需要指定对象。"
+  },
+  {
+    "id": "app.ai.call.not_available_here.app_error",
+    "translation": "此模型连接在此处不可用。"
+  },
+  {
+    "id": "app.ai.call.provider_bad_request.app_error",
+    "translation": "AI 提供商拒绝了该请求。"
+  },
+  {
+    "id": "app.ai.call.provider_failed.app_error",
+    "translation": "AI 提供商未能响应。"
+  },
+  {
+    "id": "app.ai.call.provider_rate_limited.app_error",
+    "translation": "AI 服务商正在限制请求。请稍后再试。"
+  },
+  {
+    "id": "app.ai.call.provider_refused.app_error",
+    "translation": "AI 提供商拒绝了该连接的密钥。"
+  },
+  {
+    "id": "app.ai.call.purpose.app_error",
+    "translation": "此 AI 通话不被允许。"
+  },
+  {
+    "id": "app.ai.call.rate_limited.app_error",
+    "translation": "当前 AI 请求过多，请稍后再试。"
+  },
+  {
+    "id": "app.ai.call.team.app_error",
+    "translation": "您无法在此工作区中使用 AI。"
+  },
+  {
+    "id": "app.ai.call.team_mismatch.app_error",
+    "translation": "该频道不属于此社区。"
+  },
+  {
+    "id": "app.ai.call.timeout.app_error",
+    "translation": "AI 服务商响应时间过长。"
+  },
+  {
+    "id": "app.ai.call.unsupported.app_error",
+    "translation": "此模型连接不支持该操作。"
+  },
+  {
+    "id": "app.ai.call.user.app_error",
+    "translation": "此人无法在此处使用 AI。"
+  },
+  {
+    "id": "app.ai.call.user_budget_exceeded.app_error",
+    "translation": "您本月在此连接上已用完 AI 预算。"
+  },
+  {
+    "id": "app.ai.connection.get.app_error",
+    "translation": "无法获取模型连接。"
+  },
+  {
+    "id": "app.ai.connection.key_unreadable.app_error",
+    "translation": "无法解密此模型连接的密钥：AI 加密密钥已更改。请重新输入该连接的密钥。"
+  },
+  {
+    "id": "app.ai.connection.manage_permission.app_error",
+    "translation": "您无法管理这些模型连接。"
+  },
+  {
+    "id": "app.ai.connection.needs_attention.app_error",
+    "translation": "此模型连接需要管理员处理后才能使用。"
+  },
+  {
+    "id": "app.ai.connection.not_found.app_error",
+    "translation": "此模型连接不存在。"
+  },
+  {
+    "id": "app.ai.connection.provider.app_error",
+    "translation": "不支持此模型连接的提供商。"
+  },
+  {
+    "id": "app.ai.connection.references.app_error",
+    "translation": "连接引用的社区或团队不存在，或属于其他社区。"
+  },
+  {
+    "id": "app.ai.connection.save.app_error",
+    "translation": "无法保存模型连接。"
+  },
+  {
+    "id": "app.ai.connection.usage.app_error",
+    "translation": "无法读取模型连接的使用情况。"
+  },
+  {
+    "id": "app.ai.encryption_key.app_error",
+    "translation": "服务器的 AI 加密密钥不可用，因此模型连接无法保存密钥。请设置 AM_AI_ENCRYPTION_KEY，或让服务器在数据目录中创建其密钥文件。"
+  },
+  {
+    "id": "app.ai.feature.not_configured.app_error",
+    "translation": "未为 {{.Feature}} 设置模型连接。管理员可在系统控制台中选择一个。"
+  },
+  {
     "id": "app.ai.summarize.agent_call_failed",
     "translation": "AI 代理调用失败。"
   },
@@ -12118,6 +12250,70 @@
     "translation": "用户 ID 不正确。"
   },
   {
+    "id": "model.ai_connection.api_key.app_error",
+    "translation": "API 密钥过长或包含换行符。"
+  },
+  {
+    "id": "model.ai_connection.base_url.app_error",
+    "translation": "地址必须是 http 或 https URL，且不能包含用户、查询或片段。"
+  },
+  {
+    "id": "model.ai_connection.decisions_dialect.app_error",
+    "translation": "决策格式必须是 OpenAI 或 SystemOne。"
+  },
+  {
+    "id": "model.ai_connection.extra_headers.app_error",
+    "translation": "额外请求头的名称不被允许，或值过长或包含换行符。"
+  },
+  {
+    "id": "model.ai_connection.id.app_error",
+    "translation": "模型连接的 ID 无效。"
+  },
+  {
+    "id": "model.ai_connection.ids.app_error",
+    "translation": "连接中的社区、团队或角色无效。"
+  },
+  {
+    "id": "model.ai_connection.limits.app_error",
+    "translation": "限制值不能为负数。"
+  },
+  {
+    "id": "model.ai_connection.models.app_error",
+    "translation": "模型名称过长或包含换行符。"
+  },
+  {
+    "id": "model.ai_connection.models_anthropic.app_error",
+    "translation": "Anthropic 连接仅包含一个聊天模型。"
+  },
+  {
+    "id": "model.ai_connection.name.app_error",
+    "translation": "模型连接需要一个 1 到 64 个字符的名称。"
+  },
+  {
+    "id": "model.ai_connection.needs_attention.app_error",
+    "translation": "连接需要关注的原因过长。"
+  },
+  {
+    "id": "model.ai_connection.provider.app_error",
+    "translation": "提供商必须是 OpenAI 兼容 API 或 Anthropic。"
+  },
+  {
+    "id": "model.ai_connection.roles.app_error",
+    "translation": "连接受众中的角色无效。"
+  },
+  {
+    "id": "model.ai_connection.scope.app_error",
+    "translation": "模型连接要么是服务器范围的，要么是某个社区的。"
+  },
+  {
+    "id": "model.ai_connection.sharing_community.app_error",
+    "translation": "社区自己的连接不能与其他社区共享。"
+  },
+  {
+    "id": "model.ai_connection.times.app_error",
+    "translation": "未设置模型连接的日期。"
+  },
+  {
     "id": "model.authorize.is_valid.auth_code.app_error",
     "translation": "授权码无效。"
   },
@@ -12638,6 +12834,14 @@
     "translation": "访问控制同步作业间隔无效。必须至少为 60 秒。"
   },
   {
+    "id": "model.config.is_valid.ai.connection_id.app_error",
+    "translation": "{{.Feature}} 的模型连接不是有效的 ID。"
+  },
+  {
+    "id": "model.config.is_valid.ai.model.app_error",
+    "translation": "“{{.Feature}}”的模型名称过长。"
+  },
+  {
     "id": "model.config.is_valid.ai_recap.cooldown_minutes.app_error",
     "translation": "AI 回顾冷却分钟数无效。必须大于或等于 0。"
   },
@@ -12680,6 +12884,10 @@
   {
     "id": "model.config.is_valid.autotranslation.agents.llm_service_id.app_error",
     "translation": "自动翻译代理配置无效：AI 服务不能为空。"
+  },
+  {
+    "id": "model.config.is_valid.autotranslation.connection.app_error",
+    "translation": "请选择自动翻译使用的模型连接。"
   },
   {
     "id": "model.config.is_valid.autotranslation.libretranslate.url.app_error",
@@ -14840,6 +15048,10 @@
   {
     "id": "oauth.gitlab.tos.error",
     "translation": "GitLab 的使用条款已更新。请到 {{.URL}} 接受新的使用条款后再尝试登录 Antimatter。"
+  },
+  {
+    "id": "plugin.api.ai_chat_stream.app_error",
+    "translation": "应用无法打开 AI 流。"
   },
   {
     "id": "plugin.api.get_users_in_channel",

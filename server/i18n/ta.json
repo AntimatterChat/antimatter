@@ -5192,6 +5192,138 @@
     "translation": "பிரிட்ஜ் அழைப்பு தோல்வியடைந்தது."
   },
   {
+    "id": "app.ai.call.audience.app_error",
+    "translation": "இந்த மாதல் இணைப்பை நீங்கள் பயன்படுத்த முடியாது."
+  },
+  {
+    "id": "app.ai.call.audio_size.app_error",
+    "translation": "ஒலி காலியாக உள்ளது அல்லது எழுத்துப்படுத்த முடியாத அளவு பெரியது."
+  },
+  {
+    "id": "app.ai.call.budget_exceeded.app_error",
+    "translation": "இந்த மாதல் இணைப்பு இந்த மாதத்திற்கான டோக்கன் பட்ஜெட்டைப் பயன்படுத்திவிட்டது."
+  },
+  {
+    "id": "app.ai.call.builtin_server_only.app_error",
+    "translation": "சர்வரின் சொந்த AI சேவைகள் சர்வர்-விரிவான மாதல் இணைப்புகளை மட்டுமே பயன்படுத்துகின்றன."
+  },
+  {
+    "id": "app.ai.call.channel.app_error",
+    "translation": "இந்த சேனலில் நீங்கள் AI ஐப் பயன்படுத்த முடியாது."
+  },
+  {
+    "id": "app.ai.call.decision.app_error",
+    "translation": "முடிவு கோரிக்கை சரியானது அல்ல."
+  },
+  {
+    "id": "app.ai.call.no_model.app_error",
+    "translation": "இந்த இணைப்பில் {{.Capability}} க்கு எந்த மாதலும் அமைக்கப்படவில்லை."
+  },
+  {
+    "id": "app.ai.call.no_request.app_error",
+    "translation": "AI அழைப்பில் எந்த கோரிக்கையும் இல்லை."
+  },
+  {
+    "id": "app.ai.call.no_user.app_error",
+    "translation": "AI அழைப்புக்கு அதற்குரிய நபர் தேவை."
+  },
+  {
+    "id": "app.ai.call.not_available_here.app_error",
+    "translation": "இந்த மாதல் இணைப்பு இங்கே கிடைக்கவில்லை."
+  },
+  {
+    "id": "app.ai.call.provider_bad_request.app_error",
+    "translation": "AI வழங்குநர் கோரிக்கையை நிராகரித்தார்."
+  },
+  {
+    "id": "app.ai.call.provider_failed.app_error",
+    "translation": "AI வழங்குநர் பதில் அளிக்கத் தோல்வியடைந்தார்."
+  },
+  {
+    "id": "app.ai.call.provider_rate_limited.app_error",
+    "translation": "AI வழங்குநர் கோரிக்கைகளைக் கட்டுப்படுத்துகிறார். பின்னர் மீண்டும் முயற்சிக்கவும்."
+  },
+  {
+    "id": "app.ai.call.provider_refused.app_error",
+    "translation": "AI வழங்குநர் இணைப்பின் விசையை நிராகரித்தார்."
+  },
+  {
+    "id": "app.ai.call.purpose.app_error",
+    "translation": "இந்த AI அழைப்பு அனுமதிக்கப்படவில்லை."
+  },
+  {
+    "id": "app.ai.call.rate_limited.app_error",
+    "translation": "இப்போது அதிக AI கோரிக்கைகள் உள்ளன. சிறிது நேரத்தில் மீண்டும் முயற்சிக்கவும்."
+  },
+  {
+    "id": "app.ai.call.team.app_error",
+    "translation": "இந்த குழுவில் நீங்கள் AI ஐப் பயன்படுத்த முடியாது."
+  },
+  {
+    "id": "app.ai.call.team_mismatch.app_error",
+    "translation": "இந்த சேனல் இந்த குழுவில் இல்லை."
+  },
+  {
+    "id": "app.ai.call.timeout.app_error",
+    "translation": "AI வழங்குநர் பதில் அளிக்க அதிக நேரம் எடுத்தார்."
+  },
+  {
+    "id": "app.ai.call.unsupported.app_error",
+    "translation": "இந்த மாதல் இணைப்பு அதைச் செய்ய முடியாது."
+  },
+  {
+    "id": "app.ai.call.user.app_error",
+    "translation": "இந்த நபர் இங்கே AI ஐப் பயன்படுத்த முடியாது."
+  },
+  {
+    "id": "app.ai.call.user_budget_exceeded.app_error",
+    "translation": "இந்த இணைப்பில் இந்த மாதத்திற்கான உங்கள் AI பட்ஜெட்டை நீங்கள் பயன்படுத்திவிட்டீர்கள்."
+  },
+  {
+    "id": "app.ai.connection.get.app_error",
+    "translation": "மாதல் இணைப்புகளைப் பெற முடியவில்லை."
+  },
+  {
+    "id": "app.ai.connection.key_unreadable.app_error",
+    "translation": "இந்த மாதல் இணைப்பின் விசையை மீட்டெடுக்க முடியவில்லை: AI மறைவு விசை மாறியுள்ளது. இணைப்பின் விசையை மீண்டும் உள்ளிடவும்."
+  },
+  {
+    "id": "app.ai.connection.manage_permission.app_error",
+    "translation": "இந்த மாதல் இணைப்புகளை நீங்கள் நிர்வகிக்க முடியாது."
+  },
+  {
+    "id": "app.ai.connection.needs_attention.app_error",
+    "translation": "இந்த மாதல் இணைப்பு பயன்படுத்த முன்னர் நிர்வாகியின் கவனம் தேவையு."
+  },
+  {
+    "id": "app.ai.connection.not_found.app_error",
+    "translation": "இந்த மாதல் இணைப்பு இல்லை."
+  },
+  {
+    "id": "app.ai.connection.provider.app_error",
+    "translation": "இந்த மாதல் இணைப்புவின் வழங்குநர் ஆதரிக்கப்படவில்லை."
+  },
+  {
+    "id": "app.ai.connection.references.app_error",
+    "translation": "இணைப்பு குறிப்பு செய்யும் குழு அல்லது குழு இல்லை, அல்லது வேறு குழுவுக்கு உரியது."
+  },
+  {
+    "id": "app.ai.connection.save.app_error",
+    "translation": "மாதல் இணைப்பு சேமிக்க முடியவில்லே."
+  },
+  {
+    "id": "app.ai.connection.usage.app_error",
+    "translation": "மாதல் இணைப்புவின் பயன்பாட்டை படிக்க முடியவில்லே."
+  },
+  {
+    "id": "app.ai.encryption_key.app_error",
+    "translation": "சர்வரின் AI மறைபொருள் விசை கிடைக்கவில்லை, ஆக மாதல் இணைப்புகள் விசைகளை வைத்திருக்க முடியவில்லே. AM_AI_ENCRYPTION_KEY ஐ அமைக்கவும், அல்லது சர்வருக்கு தரவு இடத்தில் அதன் விசை கோப்பை உருவாக்க அனுமதிக்கவும்."
+  },
+  {
+    "id": "app.ai.feature.not_configured.app_error",
+    "translation": "{{.Feature}} க்கு எந்த மாதல் இணைப்பும் அமைக்கப்படவில்லை. நிர்வாகி அமைப்பு கன்சோலில் ஒன்றை தேர்ந்தெடுக்க முடியும்."
+  },
+  {
     "id": "app.ai.summarize.agent_call_failed",
     "translation": "AI ஏஜென்ட் அழைப்பு தோல்வியடைந்தது."
   },
@@ -11404,6 +11536,70 @@
     "translation": "தவறான பயனர் ID."
   },
   {
+    "id": "model.ai_connection.api_key.app_error",
+    "translation": "API விசை மிக நீளமானது அல்லது வரி இடைவெளியைக் கொண்டுள்ளது."
+  },
+  {
+    "id": "model.ai_connection.base_url.app_error",
+    "translation": "முகவரி http அல்லது https URL ஆக இருக்க வேண்டும், பயனர், வினா அல்லது பகுதி இல்லாமல்."
+  },
+  {
+    "id": "model.ai_connection.decisions_dialect.app_error",
+    "translation": "முடிவுகள் வடிவம் OpenAI அல்லது SystemOne ஆக இருக்க வேண்டும்."
+  },
+  {
+    "id": "model.ai_connection.extra_headers.app_error",
+    "translation": "கூடுதல் தலைப்பொருளுக்கு அனுமதி இல்லாத பெயர், அல்லது மிக நீளமான மதிப்பு அல்லது வரி இடைவெளி உள்ளது."
+  },
+  {
+    "id": "model.ai_connection.id.app_error",
+    "translation": "மாதல் இணைப்புவின் ID சரியானது அல்ல."
+  },
+  {
+    "id": "model.ai_connection.ids.app_error",
+    "translation": "இணைப்பில் உள்ள குழு, குழு அல்லது பங்கு சரியானது அல்ல."
+  },
+  {
+    "id": "model.ai_connection.limits.app_error",
+    "translation": "வரம்புகள் எதிர்மறையாக இருக்க முடியவில்லே."
+  },
+  {
+    "id": "model.ai_connection.models.app_error",
+    "translation": "மாதல் பெயர் மிக நீளமானது அல்லது வரி இடைவெளியைக் கொண்டுள்ளது."
+  },
+  {
+    "id": "model.ai_connection.models_anthropic.app_error",
+    "translation": "Anthropic இணைப்புகளுக்கு உரையாடல் மாதல் மட்டுமே உள்ளது."
+  },
+  {
+    "id": "model.ai_connection.name.app_error",
+    "translation": "மாதல் இணைப்புக்கு 1 முதல் 64 எழுத்துகள் வரை பெயர் தேவையு."
+  },
+  {
+    "id": "model.ai_connection.needs_attention.app_error",
+    "translation": "இணைப்பு கவனம் தேவைப்படுவதற்கான காரணம் மிக நீளமானது."
+  },
+  {
+    "id": "model.ai_connection.provider.app_error",
+    "translation": "வழங்குநர் OpenAI-உடன் இணைந்த API அல்லது Anthropic ஆக இருக்க வேண்டும்."
+  },
+  {
+    "id": "model.ai_connection.roles.app_error",
+    "translation": "இணைப்பின் பார்வைக்குள் உள்ள பங்கு சரியானது அல்ல."
+  },
+  {
+    "id": "model.ai_connection.scope.app_error",
+    "translation": "மாதல் இணைப்பு சர்வர்-அகலமானது அல்லது ஒரு குழுவின்து."
+  },
+  {
+    "id": "model.ai_connection.sharing_community.app_error",
+    "translation": "ஒரு குழுவின் சொந்த இணைப்பு மற்ற குழுவுகளுடன் பகிர முடியவில்லே."
+  },
+  {
+    "id": "model.ai_connection.times.app_error",
+    "translation": "மாதல் இணைப்புவின் தேதிகள் அமைக்கப்படவில்லே."
+  },
+  {
     "id": "model.authorize.is_valid.auth_code.app_error",
     "translation": "தவறான அங்கீகாரக் குறியீடு."
   },
@@ -11924,6 +12120,14 @@
     "translation": "தவறான அணுகல் கட்டுப்பாட்டு ஒத்திசைவு பணி இடைவெளி. குறைந்தது 60 வினாடிகள் இருக்க வேண்டும்."
   },
   {
+    "id": "model.config.is_valid.ai.connection_id.app_error",
+    "translation": "{{.Feature}} இன் மாதல் இணைப்பு சரியான ID அல்ல."
+  },
+  {
+    "id": "model.config.is_valid.ai.model.app_error",
+    "translation": "{{.Feature}}-இன் மாதிரி பெயர் மிகவும் நீளமானது."
+  },
+  {
     "id": "model.config.is_valid.ai_recap.cooldown_minutes.app_error",
     "translation": "தவறான AI சுருக்கம் குளிர்வி நிமிடங்கள். 0-க்கு சமமாக அல்லது அதற்கு மேல் இருக்க வேண்டும்."
   },
@@ -11966,6 +12170,10 @@
   {
     "id": "model.config.is_valid.autotranslation.agents.llm_service_id.app_error",
     "translation": "தவறான தானியங்கி மொழிபெயர்ப்பு ஏஜென்கள் அமைப்பு: AI சேவை காலியாக இருக்கக்கூடாது."
+  },
+  {
+    "id": "model.config.is_valid.autotranslation.connection.app_error",
+    "translation": "தானியங்கு மொழிபெயர்ப்பு பயன்படுத்தும் மாதிரி இணைப்பைத் தேர்ந்தெடுக்கவும்."
   },
   {
     "id": "model.config.is_valid.autotranslation.libretranslate.url.app_error",
@@ -14126,6 +14334,10 @@
   {
     "id": "oauth.gitlab.tos.error",
     "translation": "GitLab-இன் சேவை விதிமுறைகள் புதுப்பிக்கப்பட்டுள்ளன. அவற்றை ஏற்க {{.URL}}-க்கு சென்று, பின்னர் Antimatter-இல் மீண்டும் உள்நுழைய முயற்சிக்கவும்."
+  },
+  {
+    "id": "plugin.api.ai_chat_stream.app_error",
+    "translation": "பயன்பாடு AI ஸ்ட்ரீமைத் திறக்க முடியவில்லை."
   },
   {
     "id": "plugin.api.get_users_in_channel",

@@ -5498,6 +5498,138 @@
     "translation": "브리지 호출에 실패했습니다."
   },
   {
+    "id": "app.ai.call.audience.app_error",
+    "translation": "이 모델 연결을 사용할 수 없습니다."
+  },
+  {
+    "id": "app.ai.call.audio_size.app_error",
+    "translation": "오디오가 비어 있거나 녹취할 수 없을 정도로 크기가 너무 큽니다."
+  },
+  {
+    "id": "app.ai.call.budget_exceeded.app_error",
+    "translation": "이 모델 연결의 월간 토큰 예산이 소진되었습니다."
+  },
+  {
+    "id": "app.ai.call.builtin_server_only.app_error",
+    "translation": "서버 자체의 AI 기능은 서버 전체 모델 연결만 사용할 수 있습니다."
+  },
+  {
+    "id": "app.ai.call.channel.app_error",
+    "translation": "이 채널에서는 AI를 사용할 수 없습니다."
+  },
+  {
+    "id": "app.ai.call.decision.app_error",
+    "translation": "결정 요청이 유효하지 않습니다."
+  },
+  {
+    "id": "app.ai.call.no_model.app_error",
+    "translation": "이 연결에 {{.Capability}}용 모델이 설정되어 있지 않습니다."
+  },
+  {
+    "id": "app.ai.call.no_request.app_error",
+    "translation": "AI 호출에 요청이 없습니다."
+  },
+  {
+    "id": "app.ai.call.no_user.app_error",
+    "translation": "AI 호출에는 대상 사용자가 필요합니다."
+  },
+  {
+    "id": "app.ai.call.not_available_here.app_error",
+    "translation": "이 모델 연결은 여기에서 사용할 수 없습니다."
+  },
+  {
+    "id": "app.ai.call.provider_bad_request.app_error",
+    "translation": "AI 제공자가 요청을 거부했습니다."
+  },
+  {
+    "id": "app.ai.call.provider_failed.app_error",
+    "translation": "AI 제공자가 응답하지 못했습니다."
+  },
+  {
+    "id": "app.ai.call.provider_rate_limited.app_error",
+    "translation": "AI 제공자가 요청을 제한하고 있습니다. 잠시 후 다시 시도해 주세요."
+  },
+  {
+    "id": "app.ai.call.provider_refused.app_error",
+    "translation": "AI 제공자가 연결의 키를 거부했습니다."
+  },
+  {
+    "id": "app.ai.call.purpose.app_error",
+    "translation": "이 AI 호출은 허용되지 않습니다."
+  },
+  {
+    "id": "app.ai.call.rate_limited.app_error",
+    "translation": "현재 AI 요청이 너무 많습니다. 잠시 후 다시 시도해 주세요."
+  },
+  {
+    "id": "app.ai.call.team.app_error",
+    "translation": "이 커뮤니티에서는 AI를 사용할 수 없습니다."
+  },
+  {
+    "id": "app.ai.call.team_mismatch.app_error",
+    "translation": "채널이 이 커뮤니티에 속하지 않습니다."
+  },
+  {
+    "id": "app.ai.call.timeout.app_error",
+    "translation": "AI 제공자의 응답 시간이 너무 길었습니다."
+  },
+  {
+    "id": "app.ai.call.unsupported.app_error",
+    "translation": "이 모델 연결은 해당 작업을 지원하지 않습니다."
+  },
+  {
+    "id": "app.ai.call.user.app_error",
+    "translation": "이 사용자는 여기에서 AI를 사용할 수 없습니다."
+  },
+  {
+    "id": "app.ai.call.user_budget_exceeded.app_error",
+    "translation": "이 연결의 월간 AI 예산을 모두 사용했습니다."
+  },
+  {
+    "id": "app.ai.connection.get.app_error",
+    "translation": "모델 연결을 가져올 수 없습니다."
+  },
+  {
+    "id": "app.ai.connection.key_unreadable.app_error",
+    "translation": "이 모델 연결의 키를 복호화할 수 없습니다: AI 암호화 키가 변경되었습니다. 연결의 키를 다시 입력해 주세요."
+  },
+  {
+    "id": "app.ai.connection.manage_permission.app_error",
+    "translation": "이 모델 연결을 관리할 수 없습니다."
+  },
+  {
+    "id": "app.ai.connection.needs_attention.app_error",
+    "translation": "이 모델 연결을 사용하려면 관리자의 확인이 필요합니다."
+  },
+  {
+    "id": "app.ai.connection.not_found.app_error",
+    "translation": "이 모델 연결이 존재하지 않습니다."
+  },
+  {
+    "id": "app.ai.connection.provider.app_error",
+    "translation": "이 모델 연결의 제공자가 지원되지 않습니다."
+  },
+  {
+    "id": "app.ai.connection.references.app_error",
+    "translation": "연결이 참조하는 커뮤니티 또는 팀이 존재하지 않거나, 다른 커뮤니티에 속해 있습니다."
+  },
+  {
+    "id": "app.ai.connection.save.app_error",
+    "translation": "모델 연결을 저장할 수 없습니다."
+  },
+  {
+    "id": "app.ai.connection.usage.app_error",
+    "translation": "모델 연결의 사용량을 읽을 수 없습니다."
+  },
+  {
+    "id": "app.ai.encryption_key.app_error",
+    "translation": "서버의 AI 암호화 키를 사용할 수 없어 모델 연결이 키를 유지할 수 없습니다. AM_AI_ENCRYPTION_KEY를 설정하거나, 데이터 디렉터리에 서버가 키 파일을 생성하도록 하세요."
+  },
+  {
+    "id": "app.ai.feature.not_configured.app_error",
+    "translation": "{{.Feature}}에 대한 모델 연결이 설정되어 있지 않습니다. 관리자가 시스템 콘솔에서 선택할 수 있습니다."
+  },
+  {
     "id": "app.ai.summarize.agent_call_failed",
     "translation": "AI 에이전트 호출에 실패했습니다."
   },
@@ -11934,6 +12066,70 @@
     "translation": "잘못된 사용자 ID"
   },
   {
+    "id": "model.ai_connection.api_key.app_error",
+    "translation": "API 키가 너무 길거나 줄바꿈을 포함하고 있습니다."
+  },
+  {
+    "id": "model.ai_connection.base_url.app_error",
+    "translation": "주소는 사용자, 쿼리 또는 프래그먼트가 없는 http 또는 https URL이어야 합니다."
+  },
+  {
+    "id": "model.ai_connection.decisions_dialect.app_error",
+    "translation": "결정 형식은 OpenAI 또는 SystemOne이어야 합니다."
+  },
+  {
+    "id": "model.ai_connection.extra_headers.app_error",
+    "translation": "추가 헤더의 이름이 허용되지 않거나, 값이 너무 길거나 줄바꿈을 포함하고 있습니다."
+  },
+  {
+    "id": "model.ai_connection.id.app_error",
+    "translation": "모델 연결의 ID가 유효하지 않습니다."
+  },
+  {
+    "id": "model.ai_connection.ids.app_error",
+    "translation": "연결 내의 커뮤니티, 팀 또는 역할이 유효하지 않습니다."
+  },
+  {
+    "id": "model.ai_connection.limits.app_error",
+    "translation": "한도는 음수가 될 수 없습니다."
+  },
+  {
+    "id": "model.ai_connection.models.app_error",
+    "translation": "모델 이름이 너무 길거나 줄바꿈을 포함하고 있습니다."
+  },
+  {
+    "id": "model.ai_connection.models_anthropic.app_error",
+    "translation": "Anthropic 연결에는 채팅 모델만 있습니다."
+  },
+  {
+    "id": "model.ai_connection.name.app_error",
+    "translation": "모델 연결에는 1~64자 사이의 이름이 필요합니다."
+  },
+  {
+    "id": "model.ai_connection.needs_attention.app_error",
+    "translation": "연결에 주의가 필요한 이유가 너무 깁니다."
+  },
+  {
+    "id": "model.ai_connection.provider.app_error",
+    "translation": "제공자는 OpenAI 호환 API 또는 Anthropic이어야 합니다."
+  },
+  {
+    "id": "model.ai_connection.roles.app_error",
+    "translation": "연결 대상의 역할이 유효하지 않습니다."
+  },
+  {
+    "id": "model.ai_connection.scope.app_error",
+    "translation": "모델 연결은 서버 전체 또는 특정 커뮤니티에 속해야 합니다."
+  },
+  {
+    "id": "model.ai_connection.sharing_community.app_error",
+    "translation": "커뮤니티 자체의 연결은 다른 커뮤니티와 공유할 수 없습니다."
+  },
+  {
+    "id": "model.ai_connection.times.app_error",
+    "translation": "모델 연결의 날짜가 설정되어 있지 않습니다."
+  },
+  {
     "id": "model.authorize.is_valid.auth_code.app_error",
     "translation": "잘못된 인증 코드"
   },
@@ -12454,6 +12650,14 @@
     "translation": "액세스 제어 동기화 작업 간격이 잘못되었습니다. 최소 60초 이상이어야 합니다."
   },
   {
+    "id": "model.config.is_valid.ai.connection_id.app_error",
+    "translation": "{{.Feature}}의 모델 연결이 유효한 ID가 아닙니다."
+  },
+  {
+    "id": "model.config.is_valid.ai.model.app_error",
+    "translation": "{{.Feature}}의 모델 이름이 너무 깁니다."
+  },
+  {
     "id": "model.config.is_valid.ai_recap.cooldown_minutes.app_error",
     "translation": "잘못된 AI 리캡 대기 시간(분)입니다. 0 이상이어야 합니다."
   },
@@ -12496,6 +12700,10 @@
   {
     "id": "model.config.is_valid.autotranslation.agents.llm_service_id.app_error",
     "translation": "잘못된 자동 번역 에이전트 구성입니다. AI 서비스는 비워둘 수 없습니다."
+  },
+  {
+    "id": "model.config.is_valid.autotranslation.connection.app_error",
+    "translation": "자동 번역에 사용할 모델 연결을 선택하세요."
   },
   {
     "id": "model.config.is_valid.autotranslation.libretranslate.url.app_error",
@@ -14656,6 +14864,10 @@
   {
     "id": "oauth.gitlab.tos.error",
     "translation": "GitLab 서비스 약관이 변경되었습니다. {{.URL}}으로 이동하여 수락한 다음 Antimatter에 다시 로그인해주세요."
+  },
+  {
+    "id": "plugin.api.ai_chat_stream.app_error",
+    "translation": "앱에서 AI 스트림을 열 수 없습니다."
   },
   {
     "id": "plugin.api.get_users_in_channel",

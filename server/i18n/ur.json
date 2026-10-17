@@ -5192,6 +5192,138 @@
     "translation": "برج کال ناکام ہوئی۔"
   },
   {
+    "id": "app.ai.call.audience.app_error",
+    "translation": "آپ اس ماڈل کنکشن کا استعمال نہیں کر سکتے۔"
+  },
+  {
+    "id": "app.ai.call.audio_size.app_error",
+    "translation": "آڈیا خالی ہے یا ٹرانسکرپشن کے لیے بہت بڑا ہے۔"
+  },
+  {
+    "id": "app.ai.call.budget_exceeded.app_error",
+    "translation": "اس ماڈل کنکشن نے ماہانہ ٹوکن بجٹ استعمال کر لیا ہے۔"
+  },
+  {
+    "id": "app.ai.call.builtin_server_only.app_error",
+    "translation": "سرور کے اپنے AI فیچرز صرف سرور-وائیڈ ماڈل کنکشنز کا استعمال کرتے ہیں۔"
+  },
+  {
+    "id": "app.ai.call.channel.app_error",
+    "translation": "آپ اس چینل میں AI کا استعمال نہیں کر سکتے۔"
+  },
+  {
+    "id": "app.ai.call.decision.app_error",
+    "translation": "فیصلے کی درخواست درست نہیں ہے۔"
+  },
+  {
+    "id": "app.ai.call.no_model.app_error",
+    "translation": "اس کنکشن پر {{.Capability}} کے لیے کوئی ماڈل سیٹ نہیں ہے۔"
+  },
+  {
+    "id": "app.ai.call.no_request.app_error",
+    "translation": "AI کال میں کوئی درخواست موجود نہیں ہے۔"
+  },
+  {
+    "id": "app.ai.call.no_user.app_error",
+    "translation": "AI کال کے لیے اس کے لیے مقررہ شخص ضروری ہے۔"
+  },
+  {
+    "id": "app.ai.call.not_available_here.app_error",
+    "translation": "یہ ماڈل کنکشن یہاں دستیاب نہیں ہے۔"
+  },
+  {
+    "id": "app.ai.call.provider_bad_request.app_error",
+    "translation": "AI پرووائڈر نے درخواست مسترد کر دی۔"
+  },
+  {
+    "id": "app.ai.call.provider_failed.app_error",
+    "translation": "AI پرووائڈر جواب دینے میں ناکام رہا۔"
+  },
+  {
+    "id": "app.ai.call.provider_rate_limited.app_error",
+    "translation": "AI پرووائڈر درخواستوں کو محدود کر رہا ہے۔ بعد میں دوبارہ کوشش کریں۔"
+  },
+  {
+    "id": "app.ai.call.provider_refused.app_error",
+    "translation": "AI پرووائڈر نے کنکشن کی کلید مسترد کر دی۔"
+  },
+  {
+    "id": "app.ai.call.purpose.app_error",
+    "translation": "یہ AI کال اجازت یافتہ نہیں ہے۔"
+  },
+  {
+    "id": "app.ai.call.rate_limited.app_error",
+    "translation": "فی الحال بہت سی AI درخواستیں ہیں۔ ایک لمحے بعد دوبارہ کوشش کریں۔"
+  },
+  {
+    "id": "app.ai.call.team.app_error",
+    "translation": "آپ اس کمیونٹی میں AI کا استعمال نہیں کر سکتے۔"
+  },
+  {
+    "id": "app.ai.call.team_mismatch.app_error",
+    "translation": "یہ چینل اس کمیونٹی کا حصہ نہیں ہے۔"
+  },
+  {
+    "id": "app.ai.call.timeout.app_error",
+    "translation": "AI پرووائڈر نے جواب دینے میں بہت زیادہ وقت لیا۔"
+  },
+  {
+    "id": "app.ai.call.unsupported.app_error",
+    "translation": "یہ ماڈل کنکشن یہ نہیں کر سکتا۔"
+  },
+  {
+    "id": "app.ai.call.user.app_error",
+    "translation": "یہ شخص یہاں AI کا استعمال نہیں کر سکتا۔"
+  },
+  {
+    "id": "app.ai.call.user_budget_exceeded.app_error",
+    "translation": "آپ نے اس ماہ اس کنکشن پر اپنا AI بجٹ استعمال کر لیا ہے۔"
+  },
+  {
+    "id": "app.ai.connection.get.app_error",
+    "translation": "ماڈل کنکشنز حاصل کرنے میں ناکامی۔"
+  },
+  {
+    "id": "app.ai.connection.key_unreadable.app_error",
+    "translation": "اس ماڈل کنکشن کی کلید ڈیکرپٹ نہیں کی جا سکتی: AI انکرپشن کلید تبدیل ہو گئی ہے۔ دوبارہ کنکشن کی کلید درج کریں۔"
+  },
+  {
+    "id": "app.ai.connection.manage_permission.app_error",
+    "translation": "آپ ان ماڈل کنکشنز کا انتظام نہیں کر سکتے۔"
+  },
+  {
+    "id": "app.ai.connection.needs_attention.app_error",
+    "translation": "اس ماڈل کنکشن کو استعمال کرنے سے پہلے ایڈمن کی توجہ درکار ہے۔"
+  },
+  {
+    "id": "app.ai.connection.not_found.app_error",
+    "translation": "یہ ماڈل کنکشن موجود نہیں ہے۔"
+  },
+  {
+    "id": "app.ai.connection.provider.app_error",
+    "translation": "اس ماڈل کنکشن کا پرووائیڈر سپورٹڈ نہیں ہے۔"
+  },
+  {
+    "id": "app.ai.connection.references.app_error",
+    "translation": "کنکشن کا حوالہ دینے والی کمیونٹی یا ٹیم موجود نہیں ہے، یا یہ کسی دوسری کمیونٹی سے تعلق رکھتی ہے۔"
+  },
+  {
+    "id": "app.ai.connection.save.app_error",
+    "translation": "ماڈل کنکشن محفوظ نہیں کیا جا سکا۔"
+  },
+  {
+    "id": "app.ai.connection.usage.app_error",
+    "translation": "ماڈل کنکشن کے استعمال کو پڑھا نہیں جا سکا۔"
+  },
+  {
+    "id": "app.ai.encryption_key.app_error",
+    "translation": "سرور کا AI انکرپشن کلید دستیاب نہیں ہے، اس لیے ماڈل کنکشنز کلیدز کو محفوظ نہیں رکھ سکتے۔ AM_AI_ENCRYPTION_KEY سیٹ کریں، یا ڈیٹا ڈائریکٹری میں سرور کو اپنی کلید فائل بنانے دیں۔"
+  },
+  {
+    "id": "app.ai.feature.not_configured.app_error",
+    "translation": "{{.Feature}} کے لیے کوئی ماڈل کنکشن سیٹ اپ نہیں کیا گیا۔ ایڈمن سسٹم کنسول میں ایک منتخب کر سکتا ہے۔"
+  },
+  {
     "id": "app.ai.summarize.agent_call_failed",
     "translation": "AI ایجنٹ کال ناکام ہوئی۔"
   },
@@ -11404,6 +11536,70 @@
     "translation": "غلط صارف ID۔"
   },
   {
+    "id": "model.ai_connection.api_key.app_error",
+    "translation": "API کلید بہت لمبی ہے یا اس میں لائن بریک شامل ہے۔"
+  },
+  {
+    "id": "model.ai_connection.base_url.app_error",
+    "translation": "پتہ http یا https URL ہونا چاہیے، بغیر یوزر، کوئری یا فریگمنٹ کے۔"
+  },
+  {
+    "id": "model.ai_connection.decisions_dialect.app_error",
+    "translation": "فیصلوں کا فارمیٹ OpenAI یا SystemOne کا ہونا چاہیے۔"
+  },
+  {
+    "id": "model.ai_connection.extra_headers.app_error",
+    "translation": "ایک اضافی ہیڈر کا نام اجازت نہیں ہے، یا اس کی ویلیو بہت لمبی ہے یا اس میں لائن بریک شامل ہے۔"
+  },
+  {
+    "id": "model.ai_connection.id.app_error",
+    "translation": "ماڈل کنکشن کا ID درست نہیں ہے۔"
+  },
+  {
+    "id": "model.ai_connection.ids.app_error",
+    "translation": "کنکشن میں موجود کمیونٹی، ٹیم یا رول درست نہیں ہے۔"
+  },
+  {
+    "id": "model.ai_connection.limits.app_error",
+    "translation": "حدیں منفی نہیں ہو سکتیں۔"
+  },
+  {
+    "id": "model.ai_connection.models.app_error",
+    "translation": "ماڈل کا نام بہت لمبا ہے یا اس میں لائن بریک شامل ہے۔"
+  },
+  {
+    "id": "model.ai_connection.models_anthropic.app_error",
+    "translation": "Anthropic کنکشنز میں صرف چیٹ ماڈل ہوتا ہے۔"
+  },
+  {
+    "id": "model.ai_connection.name.app_error",
+    "translation": "ماڈل کنکشن کے لیے 1 سے 64 حروف کا نام درکار ہے۔"
+  },
+  {
+    "id": "model.ai_connection.needs_attention.app_error",
+    "translation": "کنکشن کی توجہ درکار ہونے کی وجہ بہت لمبی ہے۔"
+  },
+  {
+    "id": "model.ai_connection.provider.app_error",
+    "translation": "پرووائیڈر OpenAI-compatibile API یا Anthropic ہونا چاہیے۔"
+  },
+  {
+    "id": "model.ai_connection.roles.app_error",
+    "translation": "کنکشن کے سامعین میں موجود رول درست نہیں ہے۔"
+  },
+  {
+    "id": "model.ai_connection.scope.app_error",
+    "translation": "ماڈل کنکشن یا پورے سرور کے لیے ہے یا کسی کمیونٹی کے لیے۔"
+  },
+  {
+    "id": "model.ai_connection.sharing_community.app_error",
+    "translation": "کمیونٹی کا اپنا کنکشن دوسری کمیونٹیوں کے ساتھ شیئر نہیں کیا جا سکتا۔"
+  },
+  {
+    "id": "model.ai_connection.times.app_error",
+    "translation": "ماڈل کنکشن کی تاریخیں سیٹ نہیں ہیں۔"
+  },
+  {
     "id": "model.authorize.is_valid.auth_code.app_error",
     "translation": "غلط تصدیقی کوڈ۔"
   },
@@ -11924,6 +12120,14 @@
     "translation": "غلط رسائی کنٹرول سنک جاب انٹروال۔ یہ کم از کم 60 سیکنڈ ہونا چاہیے۔"
   },
   {
+    "id": "model.config.is_valid.ai.connection_id.app_error",
+    "translation": "{{.Feature}} کا ماڈل کنکشن درست ID نہیں ہے۔"
+  },
+  {
+    "id": "model.config.is_valid.ai.model.app_error",
+    "translation": "‎{{.Feature}} کا ماڈل کا نام بہت طویل ہے۔"
+  },
+  {
     "id": "model.config.is_valid.ai_recap.cooldown_minutes.app_error",
     "translation": "غلط AI ری کیپ کوول ڈاؤن منٹ۔ یہ 0 یا اس سے بڑا ہونا چاہیے۔"
   },
@@ -11966,6 +12170,10 @@
   {
     "id": "model.config.is_valid.autotranslation.agents.llm_service_id.app_error",
     "translation": "غلط خودکار ترجمہ ایجنٹس کی ترتیب: AI سروس خالی نہیں ہو سکتی۔"
+  },
+  {
+    "id": "model.config.is_valid.autotranslation.connection.app_error",
+    "translation": "آٹو ترجمے کے لیے ماڈل کنکشن منتخب کریں۔"
   },
   {
     "id": "model.config.is_valid.autotranslation.libretranslate.url.app_error",
@@ -14126,6 +14334,10 @@
   {
     "id": "oauth.gitlab.tos.error",
     "translation": "GitLab کی شرائطِ خدمت میں تبدیلی آئی ہے۔ براہ کرم انہیں قبول کرنے کے لیے {{.URL}} پر جائیں اور پھر Antimatter میں لاگ ان کرنے کی کوشش کریں۔"
+  },
+  {
+    "id": "plugin.api.ai_chat_stream.app_error",
+    "translation": "ایپ AI اسٹریم کھول نہیں سکی۔"
   },
   {
     "id": "plugin.api.get_users_in_channel",

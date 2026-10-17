@@ -5192,6 +5192,138 @@
     "translation": "Hindi matagumpay ang bridge call."
   },
   {
+    "id": "app.ai.call.audience.app_error",
+    "translation": "Hindi mo ma-gamit ang model connection na ito."
+  },
+  {
+    "id": "app.ai.call.audio_size.app_error",
+    "translation": "Walang laman o sobrang laki ng audio para ma-transcribe."
+  },
+  {
+    "id": "app.ai.call.budget_exceeded.app_error",
+    "translation": "Ginamit na ng model connection na ito ang token budget nito para sa buwan."
+  },
+  {
+    "id": "app.ai.call.builtin_server_only.app_error",
+    "translation": "Ang mga sariling AI features ng server ay gumagamit lamang ng server-wide model connections."
+  },
+  {
+    "id": "app.ai.call.channel.app_error",
+    "translation": "Hindi mo ma-gamit ang AI sa channel na ito."
+  },
+  {
+    "id": "app.ai.call.decision.app_error",
+    "translation": "Hindi valid ang request ng desisyon."
+  },
+  {
+    "id": "app.ai.call.no_model.app_error",
+    "translation": "Walang model na nakaset para sa {{.Capability}} sa connection na ito."
+  },
+  {
+    "id": "app.ai.call.no_request.app_error",
+    "translation": "Walang request ang AI call."
+  },
+  {
+    "id": "app.ai.call.no_user.app_error",
+    "translation": "Kailangan ng AI call ng tao na para rito."
+  },
+  {
+    "id": "app.ai.call.not_available_here.app_error",
+    "translation": "Hindi available ang model connection na ito dito."
+  },
+  {
+    "id": "app.ai.call.provider_bad_request.app_error",
+    "translation": "Tinanggihan ng AI provider ang request."
+  },
+  {
+    "id": "app.ai.call.provider_failed.app_error",
+    "translation": "Hindi nakasagot ang AI provider."
+  },
+  {
+    "id": "app.ai.call.provider_rate_limited.app_error",
+    "translation": "Nag-limit ang AI provider ng mga request. Subukan ulit mamaya."
+  },
+  {
+    "id": "app.ai.call.provider_refused.app_error",
+    "translation": "Tinanggihan ng AI provider ang key ng connection."
+  },
+  {
+    "id": "app.ai.call.purpose.app_error",
+    "translation": "Hindi pinapayagan ang AI call na ito."
+  },
+  {
+    "id": "app.ai.call.rate_limited.app_error",
+    "translation": "Masyadong maraming AI requests ngayon. Subukan ulit pagkatapos ng ilang sandali."
+  },
+  {
+    "id": "app.ai.call.team.app_error",
+    "translation": "Hindi mo ma-gamit ang AI sa community na ito."
+  },
+  {
+    "id": "app.ai.call.team_mismatch.app_error",
+    "translation": "Hindi nasa community na ito ang channel."
+  },
+  {
+    "id": "app.ai.call.timeout.app_error",
+    "translation": "Nagtagal nang sobra ang AI provider bago sumagot."
+  },
+  {
+    "id": "app.ai.call.unsupported.app_error",
+    "translation": "Hindi kaya ng model connection na ito ang gawin iyon."
+  },
+  {
+    "id": "app.ai.call.user.app_error",
+    "translation": "Hindi ma-gamit ng tao na ito ang AI dito."
+  },
+  {
+    "id": "app.ai.call.user_budget_exceeded.app_error",
+    "translation": "Ginamit mo na ang AI budget mo sa connection na ito para sa buwan."
+  },
+  {
+    "id": "app.ai.connection.get.app_error",
+    "translation": "Hindi ma-kukuha ang mga model connections."
+  },
+  {
+    "id": "app.ai.connection.key_unreadable.app_error",
+    "translation": "Hindi ma-decrypt ang key ng model connection na ito: nagbago ang AI encryption key. Ilagay ulit ang key ng connection."
+  },
+  {
+    "id": "app.ai.connection.manage_permission.app_error",
+    "translation": "Hindi mo ma-manage ang mga model connection na ito."
+  },
+  {
+    "id": "app.ai.connection.needs_attention.app_error",
+    "translation": "Kailangan ng atensyon ng admin ang koneksyon ng modelong ito bago ito gamitin."
+  },
+  {
+    "id": "app.ai.connection.not_found.app_error",
+    "translation": "Hindi umiiral ang koneksyon ng modelong ito."
+  },
+  {
+    "id": "app.ai.connection.provider.app_error",
+    "translation": "Hindi suportado ang provider ng koneksyon ng modelong ito."
+  },
+  {
+    "id": "app.ai.connection.references.app_error",
+    "translation": "Hindi umiiral ang community o team na tinutukoy ng koneksyon, o kabilang ito sa ibang community."
+  },
+  {
+    "id": "app.ai.connection.save.app_error",
+    "translation": "Hindi ma-save ang koneksyon ng model."
+  },
+  {
+    "id": "app.ai.connection.usage.app_error",
+    "translation": "Hindi mabasa ang paggamit ng koneksyon ng model."
+  },
+  {
+    "id": "app.ai.encryption_key.app_error",
+    "translation": "Hindi available ang AI encryption key ng server, kaya hindi kayang mag-keep ng mga key ang mga koneksyon ng model. I-set ang AM_AI_ENCRYPTION_KEY, o hayaan ang server na gumawa ng key file sa data directory."
+  },
+  {
+    "id": "app.ai.feature.not_configured.app_error",
+    "translation": "Walang koneksyon ng modelong nakaset para sa {{.Feature}}. Pwede pumili ng isa ang admin sa System Console."
+  },
+  {
     "id": "app.ai.summarize.agent_call_failed",
     "translation": "Hindi matagumpay ang AI agent call."
   },
@@ -11404,6 +11536,70 @@
     "translation": "Hindi wasto ang user id."
   },
   {
+    "id": "model.ai_connection.api_key.app_error",
+    "translation": "Masyadong mahaba ang API key o may line break ito."
+  },
+  {
+    "id": "model.ai_connection.base_url.app_error",
+    "translation": "Dapat http o https URL ang address, na walang user, query, o fragment."
+  },
+  {
+    "id": "model.ai_connection.decisions_dialect.app_error",
+    "translation": "Dapat OpenAI o SystemOne ang format ng mga desisyon."
+  },
+  {
+    "id": "model.ai_connection.extra_headers.app_error",
+    "translation": "May extra header na hindi pinapayagang pangalan, o masyadong mahabang value o may line break."
+  },
+  {
+    "id": "model.ai_connection.id.app_error",
+    "translation": "Hindi valid ang ID ng koneksyon ng model."
+  },
+  {
+    "id": "model.ai_connection.ids.app_error",
+    "translation": "Hindi valid ang community, team, o role sa koneksyon."
+  },
+  {
+    "id": "model.ai_connection.limits.app_error",
+    "translation": "Hindi dapat negative ang mga limitasyon."
+  },
+  {
+    "id": "model.ai_connection.models.app_error",
+    "translation": "Masyadong mahaba ang pangalan ng model o may line break ito."
+  },
+  {
+    "id": "model.ai_connection.models_anthropic.app_error",
+    "translation": "May chat model lang ang mga koneksyon ng Anthropic."
+  },
+  {
+    "id": "model.ai_connection.name.app_error",
+    "translation": "Kailangan ng pangalan na 1 hanggang 64 na karakter ang koneksyon ng model."
+  },
+  {
+    "id": "model.ai_connection.needs_attention.app_error",
+    "translation": "Masyadong mahaba ang dahilan kung bakit kailangan ng atensyon ang koneksyon."
+  },
+  {
+    "id": "model.ai_connection.provider.app_error",
+    "translation": "Dapat OpenAI-compatible API o Anthropic ang provider."
+  },
+  {
+    "id": "model.ai_connection.roles.app_error",
+    "translation": "Hindi valid ang role sa audience ng koneksyon."
+  },
+  {
+    "id": "model.ai_connection.scope.app_error",
+    "translation": "O server-wide o ng isang community ang koneksyon ng model."
+  },
+  {
+    "id": "model.ai_connection.sharing_community.app_error",
+    "translation": "Hindi ma-share sa ibang community ang sariling koneksyon ng isang community."
+  },
+  {
+    "id": "model.ai_connection.times.app_error",
+    "translation": "Hindi nakaset ang mga petsa ng koneksyon ng model."
+  },
+  {
     "id": "model.authorize.is_valid.auth_code.app_error",
     "translation": "Hindi wasto ang authorization code."
   },
@@ -11924,6 +12120,14 @@
     "translation": "Hindi wastong interval ng access control sync job. Dapat na hindi bababa sa 60 segundo."
   },
   {
+    "id": "model.config.is_valid.ai.connection_id.app_error",
+    "translation": "Hindi valid ID ang koneksyon ng model ng {{.Feature}}."
+  },
+  {
+    "id": "model.config.is_valid.ai.model.app_error",
+    "translation": "Ang pangalan ng model ng {{.Feature}} ay sobrang haba."
+  },
+  {
     "id": "model.config.is_valid.ai_recap.cooldown_minutes.app_error",
     "translation": "Hindi wastong cooldown minutes ng AI recap. Dapat na hindi bababa sa 0."
   },
@@ -11966,6 +12170,10 @@
   {
     "id": "model.config.is_valid.autotranslation.agents.llm_service_id.app_error",
     "translation": "Hindi wastong configuration ng autotranslation agents: hindi dapat walang laman ang AI service."
+  },
+  {
+    "id": "model.config.is_valid.autotranslation.connection.app_error",
+    "translation": "Piliin ang model connection na ginagamit ng auto-translation."
   },
   {
     "id": "model.config.is_valid.autotranslation.libretranslate.url.app_error",
@@ -14126,6 +14334,10 @@
   {
     "id": "oauth.gitlab.tos.error",
     "translation": "Na-update ang Terms of Service ng GitLab. Pwede kang pumunta sa {{.URL}} upang tanggapin ito, tapos subukan muli ang pag-log in sa Antimatter."
+  },
+  {
+    "id": "plugin.api.ai_chat_stream.app_error",
+    "translation": "Hindi maabukan ng app ang AI stream."
   },
   {
     "id": "plugin.api.get_users_in_channel",

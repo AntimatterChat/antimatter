@@ -5562,6 +5562,138 @@
     "translation": "Lệnh gọi bridge thất bại."
   },
   {
+    "id": "app.ai.call.audience.app_error",
+    "translation": "Bạn không thể sử dụng kết nối mô hình này."
+  },
+  {
+    "id": "app.ai.call.audio_size.app_error",
+    "translation": "Âm thanh trống hoặc quá lớn để chuyển thành văn bản."
+  },
+  {
+    "id": "app.ai.call.budget_exceeded.app_error",
+    "translation": "Kết nối mô hình này đã dùng hết ngân sách token trong tháng."
+  },
+  {
+    "id": "app.ai.call.builtin_server_only.app_error",
+    "translation": "Các tính năng AI của chính máy chủ chỉ sử dụng kết nối mô hình trên toàn máy chủ."
+  },
+  {
+    "id": "app.ai.call.channel.app_error",
+    "translation": "Bạn không thể sử dụng AI trong kênh này."
+  },
+  {
+    "id": "app.ai.call.decision.app_error",
+    "translation": "Yêu cầu quyết định không hợp lệ."
+  },
+  {
+    "id": "app.ai.call.no_model.app_error",
+    "translation": "Chưa đặt mô hình cho {{.Capability}} trên kết nối này."
+  },
+  {
+    "id": "app.ai.call.no_request.app_error",
+    "translation": "Gọi AI không có yêu cầu."
+  },
+  {
+    "id": "app.ai.call.no_user.app_error",
+    "translation": "Gọi AI cần người dùng đích."
+  },
+  {
+    "id": "app.ai.call.not_available_here.app_error",
+    "translation": "Kết nối mô hình này không khả dụng ở đây."
+  },
+  {
+    "id": "app.ai.call.provider_bad_request.app_error",
+    "translation": "Nhà cung cấp AI đã từ chối yêu cầu."
+  },
+  {
+    "id": "app.ai.call.provider_failed.app_error",
+    "translation": "Nhà cung cấp AI không thể trả lời."
+  },
+  {
+    "id": "app.ai.call.provider_rate_limited.app_error",
+    "translation": "Nhà cung cấp AI đang giới hạn yêu cầu. Vui lòng thử lại sau."
+  },
+  {
+    "id": "app.ai.call.provider_refused.app_error",
+    "translation": "Nhà cung cấp AI đã từ chối khóa của kết nối."
+  },
+  {
+    "id": "app.ai.call.purpose.app_error",
+    "translation": "Gọi AI này không được phép."
+  },
+  {
+    "id": "app.ai.call.rate_limited.app_error",
+    "translation": "Quá nhiều yêu cầu AI ngay lúc này. Vui lòng thử lại sau một lúc."
+  },
+  {
+    "id": "app.ai.call.team.app_error",
+    "translation": "Bạn không thể sử dụng AI trong cộng đồng này."
+  },
+  {
+    "id": "app.ai.call.team_mismatch.app_error",
+    "translation": "Kênh không thuộc cộng đồng này."
+  },
+  {
+    "id": "app.ai.call.timeout.app_error",
+    "translation": "Nhà cung cấp AI mất quá nhiều thời gian để trả lời."
+  },
+  {
+    "id": "app.ai.call.unsupported.app_error",
+    "translation": "Kết nối mô hình này không thể thực hiện điều đó."
+  },
+  {
+    "id": "app.ai.call.user.app_error",
+    "translation": "Người dùng này không thể sử dụng AI ở đây."
+  },
+  {
+    "id": "app.ai.call.user_budget_exceeded.app_error",
+    "translation": "Bạn đã dùng hết ngân sách AI trên kết nối này trong tháng."
+  },
+  {
+    "id": "app.ai.connection.get.app_error",
+    "translation": "Không thể lấy các kết nối mô hình."
+  },
+  {
+    "id": "app.ai.connection.key_unreadable.app_error",
+    "translation": "Không thể giải mã khóa của kết nối mô hình này: khóa mã hóa AI đã thay đổi. Vui lòng nhập lại khóa của kết nối."
+  },
+  {
+    "id": "app.ai.connection.manage_permission.app_error",
+    "translation": "Bạn không thể quản lý các kết nối mô hình này."
+  },
+  {
+    "id": "app.ai.connection.needs_attention.app_error",
+    "translation": "Kết nối mô hình này cần sự chú ý của quản trị viên trước khi có thể sử dụng."
+  },
+  {
+    "id": "app.ai.connection.not_found.app_error",
+    "translation": "Kết nối mô hình này không tồn tại."
+  },
+  {
+    "id": "app.ai.connection.provider.app_error",
+    "translation": "Nhà cung cấp của kết nối mô hình này không được hỗ trợ."
+  },
+  {
+    "id": "app.ai.connection.references.app_error",
+    "translation": "Cộng đồng hoặc nhóm mà kết nối tham chiếu không tồn tại, hoặc thuộc về một cộng đồng khác."
+  },
+  {
+    "id": "app.ai.connection.save.app_error",
+    "translation": "Không thể lưu kết nối mô hình."
+  },
+  {
+    "id": "app.ai.connection.usage.app_error",
+    "translation": "Không thể đọc mức sử dụng của kết nối mô hình."
+  },
+  {
+    "id": "app.ai.encryption_key.app_error",
+    "translation": "Khóa mã hóa AI của máy chủ không khả dụng, do đó các kết nối mô hình không thể lưu trữ khóa. Hãy đặt AM_AI_ENCRYPTION_KEY hoặc để máy chủ tạo tệp khóa trong thư mục dữ liệu."
+  },
+  {
+    "id": "app.ai.feature.not_configured.app_error",
+    "translation": "Chưa có kết nối mô hình nào được thiết lập cho {{.Feature}}. Quản trị viên có thể chọn một kết nối trong Bảng điều khiển Hệ thống."
+  },
+  {
     "id": "app.ai.summarize.agent_call_failed",
     "translation": "Lệnh gọi tác nhân AI thất bại."
   },
@@ -12118,6 +12250,70 @@
     "translation": "ID người dùng không hợp lệ."
   },
   {
+    "id": "model.ai_connection.api_key.app_error",
+    "translation": "Khóa API quá dài hoặc chứa ký tự xuống dòng."
+  },
+  {
+    "id": "model.ai_connection.base_url.app_error",
+    "translation": "Địa chỉ phải là URL http hoặc https, không chứa người dùng, truy vấn hoặc đoạn."
+  },
+  {
+    "id": "model.ai_connection.decisions_dialect.app_error",
+    "translation": "Định dạng quyết định phải là của OpenAI hoặc SystemOne."
+  },
+  {
+    "id": "model.ai_connection.extra_headers.app_error",
+    "translation": "Tiêu đề bổ sung có tên không được phép, hoặc giá trị quá dài hoặc chứa ký tự xuống dòng."
+  },
+  {
+    "id": "model.ai_connection.id.app_error",
+    "translation": "ID của kết nối mô hình không hợp lệ."
+  },
+  {
+    "id": "model.ai_connection.ids.app_error",
+    "translation": "Cộng đồng, nhóm hoặc vai trò trong kết nối không hợp lệ."
+  },
+  {
+    "id": "model.ai_connection.limits.app_error",
+    "translation": "Giới hạn không thể là số âm."
+  },
+  {
+    "id": "model.ai_connection.models.app_error",
+    "translation": "Tên mô hình quá dài hoặc chứa ký tự xuống dòng."
+  },
+  {
+    "id": "model.ai_connection.models_anthropic.app_error",
+    "translation": "Kết nối Anthropic chỉ có một mô hình trò chuyện."
+  },
+  {
+    "id": "model.ai_connection.name.app_error",
+    "translation": "Kết nối mô hình cần một tên từ 1 đến 64 ký tự."
+  },
+  {
+    "id": "model.ai_connection.needs_attention.app_error",
+    "translation": "Lý do kết nối cần chú ý quá dài."
+  },
+  {
+    "id": "model.ai_connection.provider.app_error",
+    "translation": "Nhà cung cấp phải là API tương thích OpenAI hoặc Anthropic."
+  },
+  {
+    "id": "model.ai_connection.roles.app_error",
+    "translation": "Vai trò trong đối tượng của kết nối không hợp lệ."
+  },
+  {
+    "id": "model.ai_connection.scope.app_error",
+    "translation": "Kết nối mô hình phải là toàn máy chủ hoặc của một cộng đồng."
+  },
+  {
+    "id": "model.ai_connection.sharing_community.app_error",
+    "translation": "Kết nối của chính cộng đồng không thể được chia sẻ với các cộng đồng khác."
+  },
+  {
+    "id": "model.ai_connection.times.app_error",
+    "translation": "Ngày của kết nối mô hình chưa được thiết lập."
+  },
+  {
     "id": "model.authorize.is_valid.auth_code.app_error",
     "translation": "Mã ủy quyền không hợp lệ"
   },
@@ -12638,6 +12834,14 @@
     "translation": "Khoảng thời gian công việc đồng bộ kiểm soát truy cập không hợp lệ. Phải ít nhất 60 giây."
   },
   {
+    "id": "model.config.is_valid.ai.connection_id.app_error",
+    "translation": "ID của kết nối mô hình cho {{.Feature}} không hợp lệ."
+  },
+  {
+    "id": "model.config.is_valid.ai.model.app_error",
+    "translation": "Tên mô hình của {{.Feature}} quá dài."
+  },
+  {
     "id": "model.config.is_valid.ai_recap.cooldown_minutes.app_error",
     "translation": "Số phút chờ giữa các bản tóm tắt AI không hợp lệ. Phải lớn hơn hoặc bằng 0."
   },
@@ -12680,6 +12884,10 @@
   {
     "id": "model.config.is_valid.autotranslation.agents.llm_service_id.app_error",
     "translation": "Cấu hình tác nhân dịch tự động không hợp lệ: dịch vụ AI không được để trống."
+  },
+  {
+    "id": "model.config.is_valid.autotranslation.connection.app_error",
+    "translation": "Chọn kết nối mô hình mà dịch tự động sử dụng."
   },
   {
     "id": "model.config.is_valid.autotranslation.libretranslate.url.app_error",
@@ -14840,6 +15048,10 @@
   {
     "id": "oauth.gitlab.tos.error",
     "translation": "Điều khoản dịch vụ của GitLab đã được cập nhật. Vui lòng truy cập {{.URL}} để chấp nhận, sau đó thử đăng nhập lại vào Antimatter."
+  },
+  {
+    "id": "plugin.api.ai_chat_stream.app_error",
+    "translation": "Ứng dụng không thể mở luồng AI."
   },
   {
     "id": "plugin.api.get_users_in_channel",

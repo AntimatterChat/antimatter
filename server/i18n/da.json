@@ -5567,6 +5567,138 @@
     "translation": "Bridge-kald mislykkedes."
   },
   {
+    "id": "app.ai.call.audience.app_error",
+    "translation": "Du kan ikke bruge denne modelforbindelse."
+  },
+  {
+    "id": "app.ai.call.audio_size.app_error",
+    "translation": "Lyden er tom eller for stor til at transkribere."
+  },
+  {
+    "id": "app.ai.call.budget_exceeded.app_error",
+    "translation": "Denne modelforbindelse har brugt sin tokenbudget for måneden."
+  },
+  {
+    "id": "app.ai.call.builtin_server_only.app_error",
+    "translation": "Serverens egne AI-funktioner bruger kun serverbrede modelforbindelser."
+  },
+  {
+    "id": "app.ai.call.channel.app_error",
+    "translation": "Du kan ikke bruge AI i denne kanal."
+  },
+  {
+    "id": "app.ai.call.decision.app_error",
+    "translation": "Beslutsaneringen er ikke gyldig."
+  },
+  {
+    "id": "app.ai.call.no_model.app_error",
+    "translation": "Der er ikke sat en model for {{.Capability}} på denne forbindelse."
+  },
+  {
+    "id": "app.ai.call.no_request.app_error",
+    "translation": "AI-opkaldet har ingen anmodning."
+  },
+  {
+    "id": "app.ai.call.no_user.app_error",
+    "translation": "Et AI-opkald kræver den person, det er til."
+  },
+  {
+    "id": "app.ai.call.not_available_here.app_error",
+    "translation": "Denne modelforbindelse er ikke tilgængelig her."
+  },
+  {
+    "id": "app.ai.call.provider_bad_request.app_error",
+    "translation": "AI-leverandøren afviste anmodningen."
+  },
+  {
+    "id": "app.ai.call.provider_failed.app_error",
+    "translation": "AI-leverandøren kunne ikke besvare."
+  },
+  {
+    "id": "app.ai.call.provider_rate_limited.app_error",
+    "translation": "AI-leverandøren begrænser anmodninger. Prøv igen senere."
+  },
+  {
+    "id": "app.ai.call.provider_refused.app_error",
+    "translation": "AI-leverandøren afviste forbindelsens nøgle."
+  },
+  {
+    "id": "app.ai.call.purpose.app_error",
+    "translation": "Dette AI-opkald er ikke tilladt."
+  },
+  {
+    "id": "app.ai.call.rate_limited.app_error",
+    "translation": "For mange AI-anmodninger lige nu. Prøv igen om et øjeblik."
+  },
+  {
+    "id": "app.ai.call.team.app_error",
+    "translation": "Du kan ikke bruge AI i dette team."
+  },
+  {
+    "id": "app.ai.call.team_mismatch.app_error",
+    "translation": "Kanalen er ikke i dette team."
+  },
+  {
+    "id": "app.ai.call.timeout.app_error",
+    "translation": "AI-leverandøren tog for lang tid om at besvare."
+  },
+  {
+    "id": "app.ai.call.unsupported.app_error",
+    "translation": "Denne modelforbindelse kan ikke det."
+  },
+  {
+    "id": "app.ai.call.user.app_error",
+    "translation": "Denne person kan ikke bruge AI her."
+  },
+  {
+    "id": "app.ai.call.user_budget_exceeded.app_error",
+    "translation": "Du har brugt dit AI-budget på denne forbindelse for måneden."
+  },
+  {
+    "id": "app.ai.connection.get.app_error",
+    "translation": "Kunne ikke hente modelforbindelserne."
+  },
+  {
+    "id": "app.ai.connection.key_unreadable.app_error",
+    "translation": "Nøglen til denne modelforbindelse kan ikke afkrypteres: AI-krypteringsnøglen er ændret. Indtast forbindelsens nøgle igen."
+  },
+  {
+    "id": "app.ai.connection.manage_permission.app_error",
+    "translation": "Du kan ikke administrere disse modelforbindelser."
+  },
+  {
+    "id": "app.ai.connection.needs_attention.app_error",
+    "translation": "Denne modelforbindelse kræver en administrators opmærksomhed, før den kan bruges."
+  },
+  {
+    "id": "app.ai.connection.not_found.app_error",
+    "translation": "Denne modelforbindelse findes ikke."
+  },
+  {
+    "id": "app.ai.connection.provider.app_error",
+    "translation": "Udbyderen for denne modelforbindelse understøttes ikke."
+  },
+  {
+    "id": "app.ai.connection.references.app_error",
+    "translation": "En fællesskab eller team, som forbindelsen refererer til, findes ikke, eller tilhører et andet fællesskab."
+  },
+  {
+    "id": "app.ai.connection.save.app_error",
+    "translation": "Kan ikke gemme modelforbindelsen."
+  },
+  {
+    "id": "app.ai.connection.usage.app_error",
+    "translation": "Kan ikke læse brugen af modelforbindelsen."
+  },
+  {
+    "id": "app.ai.encryption_key.app_error",
+    "translation": "Serverens AI-krypteringsnøgle er ikke tilgængelig, så modelforbindelser kan ikke gemme nøgler. Sæt AM_AI_ENCRYPTION_KEY, eller lad serveren oprette sin nøgelfil i datamappen."
+  },
+  {
+    "id": "app.ai.feature.not_configured.app_error",
+    "translation": "Der er ikke opsat en modelforbindelse til {{.Feature}}. En administrator kan vælge en i Systemkonsolen."
+  },
+  {
     "id": "app.ai.summarize.agent_call_failed",
     "translation": "AI-agent-kald mislykkedes."
   },
@@ -12127,6 +12259,70 @@
     "translation": "Ugyldigt bruger-id."
   },
   {
+    "id": "model.ai_connection.api_key.app_error",
+    "translation": "API-nøglen er for lang eller indeholder et linjeskift."
+  },
+  {
+    "id": "model.ai_connection.base_url.app_error",
+    "translation": "Adressen skal være en http- eller https-URL uden bruger, query eller fragment."
+  },
+  {
+    "id": "model.ai_connection.decisions_dialect.app_error",
+    "translation": "Formatet for beslutninger skal være OpenAI's eller SystemOne."
+  },
+  {
+    "id": "model.ai_connection.extra_headers.app_error",
+    "translation": "En ekstra header har et navn, der ikke er tilladt, eller en værdi, der er for lang eller indeholder et linjeskift."
+  },
+  {
+    "id": "model.ai_connection.id.app_error",
+    "translation": "Modelforbindelsens ID er ikke gyldigt."
+  },
+  {
+    "id": "model.ai_connection.ids.app_error",
+    "translation": "Et fællesskab, team eller rolle i forbindelsen er ikke gyldigt."
+  },
+  {
+    "id": "model.ai_connection.limits.app_error",
+    "translation": "Grænser kan ikke være negative."
+  },
+  {
+    "id": "model.ai_connection.models.app_error",
+    "translation": "Et modelnavn er for langt eller indeholder et linjeskift."
+  },
+  {
+    "id": "model.ai_connection.models_anthropic.app_error",
+    "translation": "Anthropic-forbindelser har kun en chatmodel."
+  },
+  {
+    "id": "model.ai_connection.name.app_error",
+    "translation": "En modelforbindelse kræver et navn på 1 til 64 tegn."
+  },
+  {
+    "id": "model.ai_connection.needs_attention.app_error",
+    "translation": "Årsagen til, at forbindelsen kræver opmærksomhed, er for lang."
+  },
+  {
+    "id": "model.ai_connection.provider.app_error",
+    "translation": "Udbyderen skal være en OpenAI-kompatibel API eller Anthropic."
+  },
+  {
+    "id": "model.ai_connection.roles.app_error",
+    "translation": "En rolle i forbindelsens målgruppe er ikke gyldig."
+  },
+  {
+    "id": "model.ai_connection.scope.app_error",
+    "translation": "En modelforbindelse er enten serverbredt eller tilhører et fællesskab."
+  },
+  {
+    "id": "model.ai_connection.sharing_community.app_error",
+    "translation": "Et fællesskabs egen forbindelse kan ikke deles med andre fællesskaber."
+  },
+  {
+    "id": "model.ai_connection.times.app_error",
+    "translation": "Modelforbindelsens datoer er ikke indstillet."
+  },
+  {
     "id": "model.authorize.is_valid.auth_code.app_error",
     "translation": "Ugyldig autorisationskode."
   },
@@ -12647,6 +12843,14 @@
     "translation": "Ugyldigt interval for synkroniseringsjobbet for adgangskontrol. Skal være mindst 60 sekunder."
   },
   {
+    "id": "model.config.is_valid.ai.connection_id.app_error",
+    "translation": "Modelforbindelsen for {{.Feature}} er ikke et gyldigt ID."
+  },
+  {
+    "id": "model.config.is_valid.ai.model.app_error",
+    "translation": "Modellens navn for {{.Feature}} er for langt."
+  },
+  {
     "id": "model.config.is_valid.ai_recap.cooldown_minutes.app_error",
     "translation": "Ugyldig ventetid i minutter for AI-referater. Skal være større end eller lig med 0."
   },
@@ -12689,6 +12893,10 @@
   {
     "id": "model.config.is_valid.autotranslation.agents.llm_service_id.app_error",
     "translation": "Ugyldig konfiguration af autooversættelsesagenter: AI-tjeneste må ikke være tom."
+  },
+  {
+    "id": "model.config.is_valid.autotranslation.connection.app_error",
+    "translation": "Vælg den modelforbindelse, der bruges til automatisk oversættelse."
   },
   {
     "id": "model.config.is_valid.autotranslation.libretranslate.url.app_error",
@@ -14849,6 +15057,10 @@
   {
     "id": "oauth.gitlab.tos.error",
     "translation": "GitLabs servicevilkår er blevet opdateret. Gå venligst til {{.URL}} for at acceptere dem og prøv derefter at logge ind på Antimatter igen."
+  },
+  {
+    "id": "plugin.api.ai_chat_stream.app_error",
+    "translation": "Appen kunne ikke åbne AI-streamen."
   },
   {
     "id": "plugin.api.get_users_in_channel",

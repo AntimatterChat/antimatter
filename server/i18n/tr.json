@@ -5567,6 +5567,138 @@
     "translation": "Köprü çağrısı yapılamadı."
   },
   {
+    "id": "app.ai.call.audience.app_error",
+    "translation": "Bu model bağlantısını kullanamıyorsunuz."
+  },
+  {
+    "id": "app.ai.call.audio_size.app_error",
+    "translation": "Ses boş veya transkripsiyon için çok büyük."
+  },
+  {
+    "id": "app.ai.call.budget_exceeded.app_error",
+    "translation": "Bu model bağlantısı, aylık token bütçesini kullandı."
+  },
+  {
+    "id": "app.ai.call.builtin_server_only.app_error",
+    "translation": "Sunucunun kendi AI özellikleri yalnızca sunucu genelindeki model bağlantılarını kullanır."
+  },
+  {
+    "id": "app.ai.call.channel.app_error",
+    "translation": "Bu kanalda AI kullanamazsınız."
+  },
+  {
+    "id": "app.ai.call.decision.app_error",
+    "translation": "Karar isteği geçerli değil."
+  },
+  {
+    "id": "app.ai.call.no_model.app_error",
+    "translation": "Bu bağlantıda {{.Capability}} için bir model ayarlanmamış."
+  },
+  {
+    "id": "app.ai.call.no_request.app_error",
+    "translation": "Yapay zeka aramasında istek yok."
+  },
+  {
+    "id": "app.ai.call.no_user.app_error",
+    "translation": "Yapay zeka araması, hedeflenen kişiyle yapılmalıdır."
+  },
+  {
+    "id": "app.ai.call.not_available_here.app_error",
+    "translation": "Bu model bağlantısı burada kullanılamıyor."
+  },
+  {
+    "id": "app.ai.call.provider_bad_request.app_error",
+    "translation": "Yapay zeka sağlayıcısı isteği reddetti."
+  },
+  {
+    "id": "app.ai.call.provider_failed.app_error",
+    "translation": "Yapay zeka sağlayıcısı yanıt veremedi."
+  },
+  {
+    "id": "app.ai.call.provider_rate_limited.app_error",
+    "translation": "Yapay zeka sağlayıcısı istekleri kısıtlıyor. Lütfen daha sonra tekrar deneyin."
+  },
+  {
+    "id": "app.ai.call.provider_refused.app_error",
+    "translation": "Yapay zeka sağlayıcısı bağlantının anahtarını reddetti."
+  },
+  {
+    "id": "app.ai.call.purpose.app_error",
+    "translation": "Bu AI aramasına izin verilmiyor."
+  },
+  {
+    "id": "app.ai.call.rate_limited.app_error",
+    "translation": "Şu anda çok fazla yapay zeka isteği var. Birazdan tekrar deneyin."
+  },
+  {
+    "id": "app.ai.call.team.app_error",
+    "translation": "Bu toplulukta AI kullanamazsınız."
+  },
+  {
+    "id": "app.ai.call.team_mismatch.app_error",
+    "translation": "Kanal bu toplulukta değil."
+  },
+  {
+    "id": "app.ai.call.timeout.app_error",
+    "translation": "Yapay zeka sağlayıcısı yanıt vermek için çok uzun süre bekledi."
+  },
+  {
+    "id": "app.ai.call.unsupported.app_error",
+    "translation": "Bu model bağlantısı bunu yapamaz."
+  },
+  {
+    "id": "app.ai.call.user.app_error",
+    "translation": "Bu kişi burada Yapay Zekâ'yı kullanamıyor."
+  },
+  {
+    "id": "app.ai.call.user_budget_exceeded.app_error",
+    "translation": "Bu bağlantı için bu ayki yapay zeka bütçenizi kullandınız."
+  },
+  {
+    "id": "app.ai.connection.get.app_error",
+    "translation": "Model bağlantıları alınamadı."
+  },
+  {
+    "id": "app.ai.connection.key_unreadable.app_error",
+    "translation": "Bu model bağlantısının anahtarı şifre çözülemedi: AI şifreleme anahtarı değişti. Lütfen bağlantının anahtarını yeniden girin."
+  },
+  {
+    "id": "app.ai.connection.manage_permission.app_error",
+    "translation": "Bu model bağlantılarını yönetemezsiniz."
+  },
+  {
+    "id": "app.ai.connection.needs_attention.app_error",
+    "translation": "Bu model bağlantısının kullanılabilebilmesi için bir yöneticinin dikkatini gerektiriyor."
+  },
+  {
+    "id": "app.ai.connection.not_found.app_error",
+    "translation": "Bu model bağlantısı mevcut değil."
+  },
+  {
+    "id": "app.ai.connection.provider.app_error",
+    "translation": "Bu model bağlantısının sağlayıcısı desteklenmiyor."
+  },
+  {
+    "id": "app.ai.connection.references.app_error",
+    "translation": "Bağlantının referans verdiği topluluk veya takım mevcut değil veya başka bir topluluğa ait."
+  },
+  {
+    "id": "app.ai.connection.save.app_error",
+    "translation": "Model bağlantısı kaydedilemiyor."
+  },
+  {
+    "id": "app.ai.connection.usage.app_error",
+    "translation": "Model bağlantısının kullanımı okunamıyor."
+  },
+  {
+    "id": "app.ai.encryption_key.app_error",
+    "translation": "Sunucunun YZ şifreleme anahtarı kullanılamadığı için model bağlantıları anahtarları saklayamıyor. AM_AI_ENCRYPTION_KEY değerini ayarlayın veya sunucunun veri dizininde kendi anahtar dosyasını oluşturmasına izin verin."
+  },
+  {
+    "id": "app.ai.feature.not_configured.app_error",
+    "translation": "{{.Feature}} için yapılandırılmış bir model bağlantısı yok. Bir yönetici bunu Sistem Konsolu'nda seçebilir."
+  },
+  {
     "id": "app.ai.summarize.agent_call_failed",
     "translation": "Yapay zeka aracısı çağrısı yapılamadı."
   },
@@ -12127,6 +12259,70 @@
     "translation": "Kullanıcı kimliği geçersiz."
   },
   {
+    "id": "model.ai_connection.api_key.app_error",
+    "translation": "API anahtarı çok uzun veya satır sonu içeriyor."
+  },
+  {
+    "id": "model.ai_connection.base_url.app_error",
+    "translation": "Adres, kullanıcı, sorgu veya parça içermeyen bir http veya https URL olmalıdır."
+  },
+  {
+    "id": "model.ai_connection.decisions_dialect.app_error",
+    "translation": "Karar biçimi OpenAI veya SystemOne olmalıdır."
+  },
+  {
+    "id": "model.ai_connection.extra_headers.app_error",
+    "translation": "Ek bir başlığın adı izin verilmeyen bir değer, değeri çok uzun veya satır sonu içeriyor."
+  },
+  {
+    "id": "model.ai_connection.id.app_error",
+    "translation": "Model bağlantısının ID'si geçerli değil."
+  },
+  {
+    "id": "model.ai_connection.ids.app_error",
+    "translation": "Bağlantıdaki topluluk, takım veya rol geçerli değil."
+  },
+  {
+    "id": "model.ai_connection.limits.app_error",
+    "translation": "Limitler negatif olamaz."
+  },
+  {
+    "id": "model.ai_connection.models.app_error",
+    "translation": "Bir model adı çok uzun veya satır sonu içeriyor."
+  },
+  {
+    "id": "model.ai_connection.models_anthropic.app_error",
+    "translation": "Anthropic bağlantıları yalnızca bir sohbet modeline sahiptir."
+  },
+  {
+    "id": "model.ai_connection.name.app_error",
+    "translation": "Bir model bağlantısının 1 ila 64 karakterlik bir adı olmalıdır."
+  },
+  {
+    "id": "model.ai_connection.needs_attention.app_error",
+    "translation": "Bağlantının dikkat gerektirme nedeni çok uzun."
+  },
+  {
+    "id": "model.ai_connection.provider.app_error",
+    "translation": "Sağlayıcı OpenAI uyumlu bir API veya Anthropic olmalıdır."
+  },
+  {
+    "id": "model.ai_connection.roles.app_error",
+    "translation": "Bağlantının hedef kitlesindeki rol geçerli değil."
+  },
+  {
+    "id": "model.ai_connection.scope.app_error",
+    "translation": "Bir model bağlantısı ya sunucu genelinde ya da bir topluluğa aittir."
+  },
+  {
+    "id": "model.ai_connection.sharing_community.app_error",
+    "translation": "Bir topluluğun kendi bağlantısı diğer topluluklarla paylaşılamaz."
+  },
+  {
+    "id": "model.ai_connection.times.app_error",
+    "translation": "Model bağlantısının tarihleri ayarlanmamış."
+  },
+  {
     "id": "model.authorize.is_valid.auth_code.app_error",
     "translation": "Kimlik doğrulama kodu geçersiz."
   },
@@ -12647,6 +12843,14 @@
     "translation": "Erişim denetimi eşitleme görevi aralığı geçersiz. En az 60 saniye olmalıdır."
   },
   {
+    "id": "model.config.is_valid.ai.connection_id.app_error",
+    "translation": "{{.Feature}}'ın model bağlantısı geçerli bir ID değil."
+  },
+  {
+    "id": "model.config.is_valid.ai.model.app_error",
+    "translation": "The model name of {{.Feature}} is too long."
+  },
+  {
     "id": "model.config.is_valid.ai_recap.cooldown_minutes.app_error",
     "translation": "Yapay zeka özeti bekleme süresi dakika değeri geçersiz. 0 ya da daha büyük olmalıdır."
   },
@@ -12689,6 +12893,10 @@
   {
     "id": "model.config.is_valid.autotranslation.agents.llm_service_id.app_error",
     "translation": "Otomatik çeviri aracıları yapılandırması geçersiz: Yapay zeka hizmeti boş olmamalıdır."
+  },
+  {
+    "id": "model.config.is_valid.autotranslation.connection.app_error",
+    "translation": "Choose the model connection auto-translation uses."
   },
   {
     "id": "model.config.is_valid.autotranslation.libretranslate.url.app_error",
@@ -14849,6 +15057,10 @@
   {
     "id": "oauth.gitlab.tos.error",
     "translation": "GitLab hizmet koşulları güncellendi. Lütfen {{.URL}} adresine giderek yeni hizmet koşullarını onayladıktan sonra Antimatter oturumunu yeniden açmayı deneyin."
+  },
+  {
+    "id": "plugin.api.ai_chat_stream.app_error",
+    "translation": "The app couldn't open the AI stream."
   },
   {
     "id": "plugin.api.get_users_in_channel",

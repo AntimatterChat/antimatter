@@ -5577,6 +5577,138 @@
     "translation": "Połączenie mostkowe nie powiodło się."
   },
   {
+    "id": "app.ai.call.audience.app_error",
+    "translation": "Nie możesz użyć tego połączenia z modelem."
+  },
+  {
+    "id": "app.ai.call.audio_size.app_error",
+    "translation": "Audio jest puste lub zbyt duże, aby je transkrybować."
+  },
+  {
+    "id": "app.ai.call.budget_exceeded.app_error",
+    "translation": "To połączenie z modelem wykorzystało miesięczny budżet tokenów."
+  },
+  {
+    "id": "app.ai.call.builtin_server_only.app_error",
+    "translation": "Wbudowane funkcje AI serwera używają wyłącznie połączeń z modelami na poziomie serwera."
+  },
+  {
+    "id": "app.ai.call.channel.app_error",
+    "translation": "Nie możesz użyć AI w tym kanale."
+  },
+  {
+    "id": "app.ai.call.decision.app_error",
+    "translation": "Żądanie decyzji jest nieprawidłowe."
+  },
+  {
+    "id": "app.ai.call.no_model.app_error",
+    "translation": "Nie ustawiono modelu dla {{.Capability}} w tym połączeniu."
+  },
+  {
+    "id": "app.ai.call.no_request.app_error",
+    "translation": "Wywołanie AI nie ma żądania."
+  },
+  {
+    "id": "app.ai.call.no_user.app_error",
+    "translation": "Wywołanie AI wymaga wskazania osoby, dla której jest przeznaczone."
+  },
+  {
+    "id": "app.ai.call.not_available_here.app_error",
+    "translation": "To połączenie z modelem nie jest tutaj dostępne."
+  },
+  {
+    "id": "app.ai.call.provider_bad_request.app_error",
+    "translation": "Dostawca AI odrzucił żądanie."
+  },
+  {
+    "id": "app.ai.call.provider_failed.app_error",
+    "translation": "Dostawca AI nie odpowiedział."
+  },
+  {
+    "id": "app.ai.call.provider_rate_limited.app_error",
+    "translation": "Dostawca AI ogranicza liczbę żądań. Spróbuj ponownie później."
+  },
+  {
+    "id": "app.ai.call.provider_refused.app_error",
+    "translation": "Dostawca AI odrzucił klucz tego połączenia."
+  },
+  {
+    "id": "app.ai.call.purpose.app_error",
+    "translation": "To wywołanie AI nie jest dozwolone."
+  },
+  {
+    "id": "app.ai.call.rate_limited.app_error",
+    "translation": "Zbyt wiele żądań AI w tej chwili. Spróbuj ponownie za chwilę."
+  },
+  {
+    "id": "app.ai.call.team.app_error",
+    "translation": "Nie możesz użyć AI w tej społeczności."
+  },
+  {
+    "id": "app.ai.call.team_mismatch.app_error",
+    "translation": "Ten kanał nie należy do tej społeczności."
+  },
+  {
+    "id": "app.ai.call.timeout.app_error",
+    "translation": "Dostawca AI potrzebował zbyt dużo czasu na odpowiedź."
+  },
+  {
+    "id": "app.ai.call.unsupported.app_error",
+    "translation": "To połączenie z modelem nie może tego zrobić."
+  },
+  {
+    "id": "app.ai.call.user.app_error",
+    "translation": "Ta osoba nie może używać AI tutaj."
+  },
+  {
+    "id": "app.ai.call.user_budget_exceeded.app_error",
+    "translation": "Wykorzystałeś swój budżet AI dla tego połączenia w tym miesiącu."
+  },
+  {
+    "id": "app.ai.connection.get.app_error",
+    "translation": "Nie można pobrać połączeń z modelami."
+  },
+  {
+    "id": "app.ai.connection.key_unreadable.app_error",
+    "translation": "Nie można odszyfrować klucza tego połączenia z modelem: klucz szyfrowania AI został zmieniony. Wpisz klucz połączenia ponownie."
+  },
+  {
+    "id": "app.ai.connection.manage_permission.app_error",
+    "translation": "Nie możesz zarządzać tymi połączeniami z modelami."
+  },
+  {
+    "id": "app.ai.connection.needs_attention.app_error",
+    "translation": "Ta połączenie modelu wymaga uwagi administratora, zanim będzie mogło zostać użyte."
+  },
+  {
+    "id": "app.ai.connection.not_found.app_error",
+    "translation": "To połączenie modelu nie istnieje."
+  },
+  {
+    "id": "app.ai.connection.provider.app_error",
+    "translation": "Dostawca tego połączenia modelu nie jest obsługiwany."
+  },
+  {
+    "id": "app.ai.connection.references.app_error",
+    "translation": "Społeczność lub zespół, do których odnosi się połączenie, nie istnieje lub należy do innej społeczności."
+  },
+  {
+    "id": "app.ai.connection.save.app_error",
+    "translation": "Nie można zapisać połączenia modelu."
+  },
+  {
+    "id": "app.ai.connection.usage.app_error",
+    "translation": "Nie można odczytać użycia połączenia modelu."
+  },
+  {
+    "id": "app.ai.encryption_key.app_error",
+    "translation": "Klucz szyfrowania AI serwera jest niedostępny, więc połączenia modeli nie mogą przechowywać kluczy. Ustaw AM_AI_ENCRYPTION_KEY lub pozwól serwerowi utworzyć plik klucza w katalogu danych."
+  },
+  {
+    "id": "app.ai.feature.not_configured.app_error",
+    "translation": "Nie skonfigurowano połączenia modelu dla funkcji {{.Feature}}. Administrator może wybrać je w Konsoli systemu."
+  },
+  {
     "id": "app.ai.summarize.agent_call_failed",
     "translation": "Połączenie z agentem AI nie powiodło się."
   },
@@ -12145,6 +12277,70 @@
     "translation": "Nieprawidłowe id użytkownika."
   },
   {
+    "id": "model.ai_connection.api_key.app_error",
+    "translation": "Klucz API jest zbyt długi lub zawiera znak nowej linii."
+  },
+  {
+    "id": "model.ai_connection.base_url.app_error",
+    "translation": "Adres musi być adresem URL http lub https, bez użytkownika, zapytania lub fragmentu."
+  },
+  {
+    "id": "model.ai_connection.decisions_dialect.app_error",
+    "translation": "Format decyzji musi być zgodny z OpenAI lub SystemOne."
+  },
+  {
+    "id": "model.ai_connection.extra_headers.app_error",
+    "translation": "Dodatkowy nagłówek ma niedozwoloną nazwę lub wartość, która jest zbyt długa lub zawiera znak nowej linii."
+  },
+  {
+    "id": "model.ai_connection.id.app_error",
+    "translation": "ID połączenia modelu jest nieprawidłowe."
+  },
+  {
+    "id": "model.ai_connection.ids.app_error",
+    "translation": "Społeczność, zespół lub rola w połączeniu jest nieprawidłowa."
+  },
+  {
+    "id": "model.ai_connection.limits.app_error",
+    "translation": "Limity nie mogą być ujemne."
+  },
+  {
+    "id": "model.ai_connection.models.app_error",
+    "translation": "Nazwa modelu jest zbyt długa lub zawiera znak nowej linii."
+  },
+  {
+    "id": "model.ai_connection.models_anthropic.app_error",
+    "translation": "Połączenia Anthropic mają tylko model czatu."
+  },
+  {
+    "id": "model.ai_connection.name.app_error",
+    "translation": "Połączenie modelu wymaga nazwy od 1 do 64 znaków."
+  },
+  {
+    "id": "model.ai_connection.needs_attention.app_error",
+    "translation": "Powód, dla którego połączenie wymaga uwagi, jest zbyt długi."
+  },
+  {
+    "id": "model.ai_connection.provider.app_error",
+    "translation": "Dostawca musi być API zgodnym z OpenAI lub Anthropic."
+  },
+  {
+    "id": "model.ai_connection.roles.app_error",
+    "translation": "Rola w grupie docelowej połączenia jest nieprawidłowa."
+  },
+  {
+    "id": "model.ai_connection.scope.app_error",
+    "translation": "Połączenie modelu jest albo na poziomie serwera, albo należy do społeczności."
+  },
+  {
+    "id": "model.ai_connection.sharing_community.app_error",
+    "translation": "Własne połączenie społeczności nie może być udostępniane innym społecznościom."
+  },
+  {
+    "id": "model.ai_connection.times.app_error",
+    "translation": "Daty połączenia modelu nie zostały ustawione."
+  },
+  {
     "id": "model.authorize.is_valid.auth_code.app_error",
     "translation": "Nieprawidłowy kod autoryzacji."
   },
@@ -12665,6 +12861,14 @@
     "translation": "Nieprawidłowy interwał zadania synchronizacji kontroli dostępu. Musi wynosić co najmniej 60 sekund."
   },
   {
+    "id": "model.config.is_valid.ai.connection_id.app_error",
+    "translation": "Połączenie modelu dla funkcji {{.Feature}} nie jest prawidłowym ID."
+  },
+  {
+    "id": "model.config.is_valid.ai.model.app_error",
+    "translation": "Nazwa modelu funkcji {{.Feature}} jest zbyt długa."
+  },
+  {
     "id": "model.config.is_valid.ai_recap.cooldown_minutes.app_error",
     "translation": "Nieprawidłowa liczba minut odstępu dla podsumowań AI. Musi być większa lub równa 0."
   },
@@ -12707,6 +12911,10 @@
   {
     "id": "model.config.is_valid.autotranslation.agents.llm_service_id.app_error",
     "translation": "Nieprawidłowa konfiguracja agentów autotranslacji: Usługa AI nie może być pusta."
+  },
+  {
+    "id": "model.config.is_valid.autotranslation.connection.app_error",
+    "translation": "Wybierz połączenie z modelem używane przez automatyczne tłumaczenie."
   },
   {
     "id": "model.config.is_valid.autotranslation.libretranslate.url.app_error",
@@ -14867,6 +15075,10 @@
   {
     "id": "oauth.gitlab.tos.error",
     "translation": "Warunki korzystania z usług GitLab zostały zaktualizowane. Proszę przejść do {{.URL}}, aby je zaakceptować, a następnie spróbować ponownie zalogować się do Antimatter."
+  },
+  {
+    "id": "plugin.api.ai_chat_stream.app_error",
+    "translation": "Aplikacja nie mogła otworzyć strumienia AI."
   },
   {
     "id": "plugin.api.get_users_in_channel",

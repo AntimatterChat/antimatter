@@ -5562,6 +5562,138 @@
     "translation": "橋接呼叫失敗。"
   },
   {
+    "id": "app.ai.call.audience.app_error",
+    "translation": "您無法使用此模型連線。"
+  },
+  {
+    "id": "app.ai.call.audio_size.app_error",
+    "translation": "音訊為空或過大，無法進行文字轉錄。"
+  },
+  {
+    "id": "app.ai.call.budget_exceeded.app_error",
+    "translation": "此模型連線已用完當月的 Token 預算。"
+  },
+  {
+    "id": "app.ai.call.builtin_server_only.app_error",
+    "translation": "伺服器內建的 AI 功能僅可使用伺服器層級的模型連線。"
+  },
+  {
+    "id": "app.ai.call.channel.app_error",
+    "translation": "您無法在此頻道使用 AI。"
+  },
+  {
+    "id": "app.ai.call.decision.app_error",
+    "translation": "決策請求無效。"
+  },
+  {
+    "id": "app.ai.call.no_model.app_error",
+    "translation": "此連線未設定 {{.Capability}} 的模型。"
+  },
+  {
+    "id": "app.ai.call.no_request.app_error",
+    "translation": "AI 呼叫缺少請求。"
+  },
+  {
+    "id": "app.ai.call.no_user.app_error",
+    "translation": "AI 呼叫需要指定使用者。"
+  },
+  {
+    "id": "app.ai.call.not_available_here.app_error",
+    "translation": "此模型連線在此處不可用。"
+  },
+  {
+    "id": "app.ai.call.provider_bad_request.app_error",
+    "translation": "AI 供應商拒絕了該請求。"
+  },
+  {
+    "id": "app.ai.call.provider_failed.app_error",
+    "translation": "AI 供應商無法回應。"
+  },
+  {
+    "id": "app.ai.call.provider_rate_limited.app_error",
+    "translation": "AI 供應商正在限制請求頻率。請稍後再試。"
+  },
+  {
+    "id": "app.ai.call.provider_refused.app_error",
+    "translation": "AI 供應商拒絕了該連線的金鑰。"
+  },
+  {
+    "id": "app.ai.call.purpose.app_error",
+    "translation": "此 AI 呼叫不被允許。"
+  },
+  {
+    "id": "app.ai.call.rate_limited.app_error",
+    "translation": "目前 AI 請求過多。請稍候再試。"
+  },
+  {
+    "id": "app.ai.call.team.app_error",
+    "translation": "您無法在此團隊使用 AI。"
+  },
+  {
+    "id": "app.ai.call.team_mismatch.app_error",
+    "translation": "該頻道不屬於此團隊。"
+  },
+  {
+    "id": "app.ai.call.timeout.app_error",
+    "translation": "AI 供應商回應時間過長。"
+  },
+  {
+    "id": "app.ai.call.unsupported.app_error",
+    "translation": "此模型連線不支援該功能。"
+  },
+  {
+    "id": "app.ai.call.user.app_error",
+    "translation": "此人無法在此處使用 AI。"
+  },
+  {
+    "id": "app.ai.call.user_budget_exceeded.app_error",
+    "translation": "您在此連線上的本月 AI 預算已用完。"
+  },
+  {
+    "id": "app.ai.connection.get.app_error",
+    "translation": "無法取得模型連線。"
+  },
+  {
+    "id": "app.ai.connection.key_unreadable.app_error",
+    "translation": "無法解密此模型連線的金鑰：AI 加密金鑰已變更。請重新輸入連線金鑰。"
+  },
+  {
+    "id": "app.ai.connection.manage_permission.app_error",
+    "translation": "您無法管理這些模型連線。"
+  },
+  {
+    "id": "app.ai.connection.needs_attention.app_error",
+    "translation": "此模型連線需要管理員處理後才能使用。"
+  },
+  {
+    "id": "app.ai.connection.not_found.app_error",
+    "translation": "此模型連線不存在。"
+  },
+  {
+    "id": "app.ai.connection.provider.app_error",
+    "translation": "此模型連線的提供者不受支援。"
+  },
+  {
+    "id": "app.ai.connection.references.app_error",
+    "translation": "連線所參考的社群或團隊不存在，或屬於其他社群。"
+  },
+  {
+    "id": "app.ai.connection.save.app_error",
+    "translation": "無法儲存模型連線。"
+  },
+  {
+    "id": "app.ai.connection.usage.app_error",
+    "translation": "無法讀取模型連線的使用量。"
+  },
+  {
+    "id": "app.ai.encryption_key.app_error",
+    "translation": "伺服器的 AI 加密金鑰不可用，因此模型連線無法保留金鑰。請設定 AM_AI_ENCRYPTION_KEY，或讓伺服器在資料目錄中建立其金鑰檔案。"
+  },
+  {
+    "id": "app.ai.feature.not_configured.app_error",
+    "translation": "尚未為 {{.Feature}} 設定模型連線。管理員可在系統控制台中選擇一個。"
+  },
+  {
     "id": "app.ai.summarize.agent_call_failed",
     "translation": "AI 代理呼叫失敗。"
   },
@@ -12118,6 +12250,70 @@
     "translation": "使用者 ID 無效。"
   },
   {
+    "id": "model.ai_connection.api_key.app_error",
+    "translation": "API 金鑰過長或包含換行符號。"
+  },
+  {
+    "id": "model.ai_connection.base_url.app_error",
+    "translation": "位址必須是 http 或 https URL，且不得包含使用者、查詢或片段。"
+  },
+  {
+    "id": "model.ai_connection.decisions_dialect.app_error",
+    "translation": "決策格式必須是 OpenAI 或 SystemOne。"
+  },
+  {
+    "id": "model.ai_connection.extra_headers.app_error",
+    "translation": "額外標頭的名称不被允許，或值過長或包含換行符號。"
+  },
+  {
+    "id": "model.ai_connection.id.app_error",
+    "translation": "模型連線的 ID 無效。"
+  },
+  {
+    "id": "model.ai_connection.ids.app_error",
+    "translation": "連線中的社群、團隊或角色無效。"
+  },
+  {
+    "id": "model.ai_connection.limits.app_error",
+    "translation": "限制不能為負數。"
+  },
+  {
+    "id": "model.ai_connection.models.app_error",
+    "translation": "模型名稱過長或包含換行符號。"
+  },
+  {
+    "id": "model.ai_connection.models_anthropic.app_error",
+    "translation": "Anthropic 連線僅包含一個聊天模型。"
+  },
+  {
+    "id": "model.ai_connection.name.app_error",
+    "translation": "模型連線需要 1 至 64 個字元的名稱。"
+  },
+  {
+    "id": "model.ai_connection.needs_attention.app_error",
+    "translation": "連線需要關注的原因過長。"
+  },
+  {
+    "id": "model.ai_connection.provider.app_error",
+    "translation": "提供者必須是 OpenAI 相容 API 或 Anthropic。"
+  },
+  {
+    "id": "model.ai_connection.roles.app_error",
+    "translation": "連線受眾中的角色無效。"
+  },
+  {
+    "id": "model.ai_connection.scope.app_error",
+    "translation": "模型連線必須是伺服器範圍或特定社群的。"
+  },
+  {
+    "id": "model.ai_connection.sharing_community.app_error",
+    "translation": "社群自身的連線無法與其他社群共用。"
+  },
+  {
+    "id": "model.ai_connection.times.app_error",
+    "translation": "未設定模型連線的日期。"
+  },
+  {
     "id": "model.authorize.is_valid.auth_code.app_error",
     "translation": "授權碼無效。"
   },
@@ -12638,6 +12834,14 @@
     "translation": "存取控制同步工作間隔無效。必須至少為 60 秒。"
   },
   {
+    "id": "model.config.is_valid.ai.connection_id.app_error",
+    "translation": "{{.Feature}} 的模型連線不是有效的 ID。"
+  },
+  {
+    "id": "model.config.is_valid.ai.model.app_error",
+    "translation": "「{{.Feature}}」的模型名稱過長。"
+  },
+  {
     "id": "model.config.is_valid.ai_recap.cooldown_minutes.app_error",
     "translation": "AI 重點回顧冷卻分鐘數無效。必須大於或等於 0。"
   },
@@ -12680,6 +12884,10 @@
   {
     "id": "model.config.is_valid.autotranslation.agents.llm_service_id.app_error",
     "translation": "自動翻譯代理設定無效：AI 服務不得為空白。"
+  },
+  {
+    "id": "model.config.is_valid.autotranslation.connection.app_error",
+    "translation": "請選擇自動翻譯所使用的模型連線。"
   },
   {
     "id": "model.config.is_valid.autotranslation.libretranslate.url.app_error",
@@ -14840,6 +15048,10 @@
   {
     "id": "oauth.gitlab.tos.error",
     "translation": "GitLab 的服務使用條款有更新。請前往 {{.URL}} 接受新條款後重新嘗試登入 Antimatter。"
+  },
+  {
+    "id": "plugin.api.ai_chat_stream.app_error",
+    "translation": "應用程式無法開啟 AI 串流。"
   },
   {
     "id": "plugin.api.get_users_in_channel",

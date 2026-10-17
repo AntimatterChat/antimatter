@@ -5192,6 +5192,138 @@
     "translation": "Αποτυχία κλήσης γέφυρας."
   },
   {
+    "id": "app.ai.call.audience.app_error",
+    "translation": "Δεν μπορείτε να χρησιμοποιήσετε αυτή τη σύνδεση μοντέλου."
+  },
+  {
+    "id": "app.ai.call.audio_size.app_error",
+    "translation": "Το ήχος είναι κενό ή πολύ μεγάλο για μεταγραφή."
+  },
+  {
+    "id": "app.ai.call.budget_exceeded.app_error",
+    "translation": "Αυτή η σύνδεση μοντέλου εξάντλησε το προϋπολογισμό token για τον μήνα."
+  },
+  {
+    "id": "app.ai.call.builtin_server_only.app_error",
+    "translation": "Οι ενσωματωμένες λειτουργίες AI του server χρησιμοποιούν μόνο συνδέσεις μοντέλων σε επίπεδο server."
+  },
+  {
+    "id": "app.ai.call.channel.app_error",
+    "translation": "Δεν μπορείτε να χρησιμοποιήσετε AI σε αυτό το Κανάλι."
+  },
+  {
+    "id": "app.ai.call.decision.app_error",
+    "translation": "Το αίτημα απόφασης δεν είναι έγκυρο."
+  },
+  {
+    "id": "app.ai.call.no_model.app_error",
+    "translation": "Δεν έχει οριστεί μοντέλο για {{.Capability}} σε αυτή τη σύνδεση."
+  },
+  {
+    "id": "app.ai.call.no_request.app_error",
+    "translation": "Η κλήση AI δεν έχει αίτημα."
+  },
+  {
+    "id": "app.ai.call.no_user.app_error",
+    "translation": "Μια κλήση AI χρειάζεται το πρόσωπο για το οποίο προορίζεται."
+  },
+  {
+    "id": "app.ai.call.not_available_here.app_error",
+    "translation": "Αυτή η σύνδεση μοντέλου δεν είναι διαθέσιμη εδώ."
+  },
+  {
+    "id": "app.ai.call.provider_bad_request.app_error",
+    "translation": "Ο πάροχος AI απόρριψε το αίτημα."
+  },
+  {
+    "id": "app.ai.call.provider_failed.app_error",
+    "translation": "Ο πάροχος AI απέτυχε να απαντήσει."
+  },
+  {
+    "id": "app.ai.call.provider_rate_limited.app_error",
+    "translation": "Ο πάροχος AI περιορίζει τα αιτήματα. Δοκιμάστε ξανά αργότερα."
+  },
+  {
+    "id": "app.ai.call.provider_refused.app_error",
+    "translation": "Ο πάροχος AI απόρριψε το κλειδί της σύνδεσης."
+  },
+  {
+    "id": "app.ai.call.purpose.app_error",
+    "translation": "Αυτή η κλήση AI δεν επιτρέπεται."
+  },
+  {
+    "id": "app.ai.call.rate_limited.app_error",
+    "translation": "Πάρα πολλά αιτήματα AI αυτή τη στιγμή. Δοκιμάστε ξανά σε λίγο."
+  },
+  {
+    "id": "app.ai.call.team.app_error",
+    "translation": "Δεν μπορείτε να χρησιμοποιήσετε AI σε αυτή την Ομάδα."
+  },
+  {
+    "id": "app.ai.call.team_mismatch.app_error",
+    "translation": "Το Κανάλι δεν ανήκει σε αυτή την Ομάδα."
+  },
+  {
+    "id": "app.ai.call.timeout.app_error",
+    "translation": "Ο πάροχος AI πήρε πολύ χρόνο για να απαντήσει."
+  },
+  {
+    "id": "app.ai.call.unsupported.app_error",
+    "translation": "Αυτή η σύνδεση μοντέλου δεν μπορεί να το κάνει αυτό."
+  },
+  {
+    "id": "app.ai.call.user.app_error",
+    "translation": "Αυτό το πρόσωπο δεν μπορεί να χρησιμοποιήσει AI εδώ."
+  },
+  {
+    "id": "app.ai.call.user_budget_exceeded.app_error",
+    "translation": "Εξάντλησατε τον προϋπολογισμό AI σας σε αυτή τη σύνδεση για τον μήνα."
+  },
+  {
+    "id": "app.ai.connection.get.app_error",
+    "translation": "Δεν ήταν δυνατή η λήψη των συνδέσεων μοντέλων."
+  },
+  {
+    "id": "app.ai.connection.key_unreadable.app_error",
+    "translation": "Το κλειδί αυτής της σύνδεσης μοντέλου δεν μπορεί να αποκρυπτογραφηθεί: άλλαξε το κλειδί κρυπτογράφησης AI. Εισάγετε ξανά το κλειδί της σύνδεσης."
+  },
+  {
+    "id": "app.ai.connection.manage_permission.app_error",
+    "translation": "Δεν μπορείτε να διαχειριστείτε αυτές τις συνδέσεις μοντέλων."
+  },
+  {
+    "id": "app.ai.connection.needs_attention.app_error",
+    "translation": "Αυτή η σύνδεση μοντέλου χρειάζεται την προσοχή ενός διαχειριστή πριν χρησιμοποιηθεί."
+  },
+  {
+    "id": "app.ai.connection.not_found.app_error",
+    "translation": "Αυτή η σύνδεση μοντέλου δεν υπάρχει."
+  },
+  {
+    "id": "app.ai.connection.provider.app_error",
+    "translation": "Ο πάροχος αυτής της σύνδεσης μοντέλου δεν υποστηρίζεται."
+  },
+  {
+    "id": "app.ai.connection.references.app_error",
+    "translation": "Μια κοινότητα ή ομάδα στην οποία αναφέρεται η σύνδεση δεν υπάρχει ή ανήκει σε άλλη κοινότητα."
+  },
+  {
+    "id": "app.ai.connection.save.app_error",
+    "translation": "Δεν ήταν δυνατή η αποθήκευση της σύνδεσης μοντέλου."
+  },
+  {
+    "id": "app.ai.connection.usage.app_error",
+    "translation": "Δεν ήταν δυνατή η ανάγνωση της χρήσης της σύνδεσης μοντέλου."
+  },
+  {
+    "id": "app.ai.encryption_key.app_error",
+    "translation": "Το κλειφή κρυπτογράφησης Τεχνητής Νοημοσύνης του server δεν είναι διαθέσιμο, οπότε οι συνδέσεις μοντέλων δεν μπορούν να διατηρήσουν κλειδιά. Ρυθμίστε το AM_AI_ENCRYPTION_KEY ή επιτρέψτε στο server να δημιουργήσει το αρχείο κλειδιού του στον κατάλογο δεδομένων."
+  },
+  {
+    "id": "app.ai.feature.not_configured.app_error",
+    "translation": "Δεν έχει ρυθμιστεί καμία σύνδεση μοντέλου για το {{.Feature}}. Ένας διαχειριστής μπορεί να επιλέξει μία στην Κονσόλα συστήματος."
+  },
+  {
     "id": "app.ai.summarize.agent_call_failed",
     "translation": "Αποτυχία κλήσης του AI πράκτορα."
   },
@@ -11404,6 +11536,70 @@
     "translation": "Μη έγκυρο id χρήστη."
   },
   {
+    "id": "model.ai_connection.api_key.app_error",
+    "translation": "Το κλειδί API είναι πολύ μακρύ ή περιέχει αλλαγή γραμμής."
+  },
+  {
+    "id": "model.ai_connection.base_url.app_error",
+    "translation": "Η διεύθυνση πρέπει να είναι URL http ή https, χωρίς χρήστη, ερώτημα ή τμήμα."
+  },
+  {
+    "id": "model.ai_connection.decisions_dialect.app_error",
+    "translation": "Η μορφή αποφάσεων πρέπει να είναι OpenAI ή SystemOne."
+  },
+  {
+    "id": "model.ai_connection.extra_headers.app_error",
+    "translation": "Ένα επιπλέον κεφαλίδα έχει όνομα που δεν επιτρέπεται ή τιμή που είναι πολύ μακρή ή περιέχει αλλαγή γραμμής."
+  },
+  {
+    "id": "model.ai_connection.id.app_error",
+    "translation": "Το ID της σύνδεσης μοντέλου δεν είναι έγκυρο."
+  },
+  {
+    "id": "model.ai_connection.ids.app_error",
+    "translation": "Μια κοινότητα, ομάδα ή ρόλος στη σύνδεση δεν είναι έγκυρος."
+  },
+  {
+    "id": "model.ai_connection.limits.app_error",
+    "translation": "Τα όρια δεν μπορούν να είναι αρνητικά."
+  },
+  {
+    "id": "model.ai_connection.models.app_error",
+    "translation": "Ένα όνομα μοντέλου είναι πολύ μακρύ ή περιέχει αλλαγή γραμμής."
+  },
+  {
+    "id": "model.ai_connection.models_anthropic.app_error",
+    "translation": "Οι συνδέσεις Anthropic έχουν μόνο ένα μοντέλο συνομιλίας."
+  },
+  {
+    "id": "model.ai_connection.name.app_error",
+    "translation": "Μια σύνδεση μοντέλου χρειάζεται όνομα 1 έως 64 χαρακτήρες."
+  },
+  {
+    "id": "model.ai_connection.needs_attention.app_error",
+    "translation": "Ο λόγος για τον οποίο η σύνδεση χρειάζεται προσοχή είναι πολύ μακρύς."
+  },
+  {
+    "id": "model.ai_connection.provider.app_error",
+    "translation": "Ο πάροχος πρέπει να είναι API συμβατό με OpenAI ή Anthropic."
+  },
+  {
+    "id": "model.ai_connection.roles.app_error",
+    "translation": "Ένας ρόλος στο κοινό της σύνδεσης δεν είναι έγκυρος."
+  },
+  {
+    "id": "model.ai_connection.scope.app_error",
+    "translation": "Μια σύνδεση μοντέλου είναι είτε σε επίπεδο server είτε ανήκει σε μια κοινότητα."
+  },
+  {
+    "id": "model.ai_connection.sharing_community.app_error",
+    "translation": "Η δική της σύνδεση μιας κοινότητας δεν μπορεί να κοινοποιηθεί σε άλλες κοινότητες."
+  },
+  {
+    "id": "model.ai_connection.times.app_error",
+    "translation": "Οι ημερομηνίες της σύνδεσης μοντέλου δεν έχουν οριστεί."
+  },
+  {
     "id": "model.authorize.is_valid.auth_code.app_error",
     "translation": "Μη έγκυρος κωδικός εξουσιοδότησης."
   },
@@ -11924,6 +12120,14 @@
     "translation": "Μη έγκυρο διάστημα εργασίας συγχρονισμού ελέγχου πρόσβασης. Πρέπει να είναι τουλάχιστον 60 δευτερόλεπτα."
   },
   {
+    "id": "model.config.is_valid.ai.connection_id.app_error",
+    "translation": "Το ID της σύνδεσης μοντέλου του {{.Feature}} δεν είναι έγκυρο."
+  },
+  {
+    "id": "model.config.is_valid.ai.model.app_error",
+    "translation": "Το όνομα του μοντέλου του {{.Feature}} είναι πολύ μεγάλο."
+  },
+  {
     "id": "model.config.is_valid.ai_recap.cooldown_minutes.app_error",
     "translation": "Μη έγκυρα λεπτά ψύξης AI περίληψης. Πρέπει να είναι μεγαλύτερα ή ίσα του 0."
   },
@@ -11966,6 +12170,10 @@
   {
     "id": "model.config.is_valid.autotranslation.agents.llm_service_id.app_error",
     "translation": "Μη έγκυρη ρύθμιση πρακτόρων αυτόματης μετάφρασης: η υπηρεσία AI δεν πρέπει να είναι κενή."
+  },
+  {
+    "id": "model.config.is_valid.autotranslation.connection.app_error",
+    "translation": "Επιλέξτε τη σύνδεση μοντέλου που χρησιμοποιεί η αυτόματη μετάφραση."
   },
   {
     "id": "model.config.is_valid.autotranslation.libretranslate.url.app_error",
@@ -14126,6 +14334,10 @@
   {
     "id": "oauth.gitlab.tos.error",
     "translation": "Οι Όροι Χρήσης του GitLab έχουν ενημερωθεί. Παρακαλώ μεταβείτε στο {{.URL}} για να τους αποδεχτείτε και στη συνέχεια δοκιμάστε ξανά να συνδεθείτε στο Antimatter."
+  },
+  {
+    "id": "plugin.api.ai_chat_stream.app_error",
+    "translation": "Η εφαρμογή δεν μπόρεσε να ανοίξει τη ροή AI."
   },
   {
     "id": "plugin.api.get_users_in_channel",

@@ -5577,6 +5577,138 @@
     "translation": "Volání bridge se nezdařilo."
   },
   {
+    "id": "app.ai.call.audience.app_error",
+    "translation": "Toto připojení modelu nelze použít."
+  },
+  {
+    "id": "app.ai.call.audio_size.app_error",
+    "translation": "Zvuk je prázdný nebo je příliš velký na přepis."
+  },
+  {
+    "id": "app.ai.call.budget_exceeded.app_error",
+    "translation": "Toto připojení modelu využilo svůj měsíční rozpočet tokenů."
+  },
+  {
+    "id": "app.ai.call.builtin_server_only.app_error",
+    "translation": "Vestavěné AI funkce serveru používají pouze modelová připojení pro celý server."
+  },
+  {
+    "id": "app.ai.call.channel.app_error",
+    "translation": "AI v tomto kanálu nelze použít."
+  },
+  {
+    "id": "app.ai.call.decision.app_error",
+    "translation": "Požadavek na rozhodnutí není platný."
+  },
+  {
+    "id": "app.ai.call.no_model.app_error",
+    "translation": "Pro {{.Capability}} na tomto připojení není nastaven žádný model."
+  },
+  {
+    "id": "app.ai.call.no_request.app_error",
+    "translation": "AI volání nemá žádný požadavek."
+  },
+  {
+    "id": "app.ai.call.no_user.app_error",
+    "translation": "AI volání vyžaduje uživatele, pro kterého je určeno."
+  },
+  {
+    "id": "app.ai.call.not_available_here.app_error",
+    "translation": "Toto připojení modelu zde není k dispozici."
+  },
+  {
+    "id": "app.ai.call.provider_bad_request.app_error",
+    "translation": "AI poskytovatel požadavek zamítl."
+  },
+  {
+    "id": "app.ai.call.provider_failed.app_error",
+    "translation": "AI poskytovatel se nepodařilo odpovědět."
+  },
+  {
+    "id": "app.ai.call.provider_rate_limited.app_error",
+    "translation": "AI poskytovatel omezuje počet požadavků. Zkuste to prosím později."
+  },
+  {
+    "id": "app.ai.call.provider_refused.app_error",
+    "translation": "AI poskytovatel zamítl klíč tohoto připojení."
+  },
+  {
+    "id": "app.ai.call.purpose.app_error",
+    "translation": "Toto AI volání není povoleno."
+  },
+  {
+    "id": "app.ai.call.rate_limited.app_error",
+    "translation": "Právě teď je příliš mnoho AI požadavků. Zkuste to prosím za chvíli."
+  },
+  {
+    "id": "app.ai.call.team.app_error",
+    "translation": "AI v tomto týmu nelze použít."
+  },
+  {
+    "id": "app.ai.call.team_mismatch.app_error",
+    "translation": "Kanál není součástí tohoto týmu."
+  },
+  {
+    "id": "app.ai.call.timeout.app_error",
+    "translation": "AI poskytovatel odpověděl příliš pomalu."
+  },
+  {
+    "id": "app.ai.call.unsupported.app_error",
+    "translation": "Toto připojení modelu to nedokáže."
+  },
+  {
+    "id": "app.ai.call.user.app_error",
+    "translation": "Tento uživatel zde nemůže používat AI."
+  },
+  {
+    "id": "app.ai.call.user_budget_exceeded.app_error",
+    "translation": "Na tomto připojení jste využili svůj měsíční AI rozpočet."
+  },
+  {
+    "id": "app.ai.connection.get.app_error",
+    "translation": "Nelze načíst modelová připojení."
+  },
+  {
+    "id": "app.ai.connection.key_unreadable.app_error",
+    "translation": "Klíč tohoto připojení modelu nelze dešifrovat: klíč AI šifrování se změnil. Zadejte klíč připojení znovu."
+  },
+  {
+    "id": "app.ai.connection.manage_permission.app_error",
+    "translation": "Nemůžete spravovat tato modelová připojení."
+  },
+  {
+    "id": "app.ai.connection.needs_attention.app_error",
+    "translation": "Toto připojení modelu vyžaduje pozornost administrátora, než ho bude možné použít."
+  },
+  {
+    "id": "app.ai.connection.not_found.app_error",
+    "translation": "Toto připojení modelu neexistuje."
+  },
+  {
+    "id": "app.ai.connection.provider.app_error",
+    "translation": "Poskytovatel tohoto připojení modelu není podporován."
+  },
+  {
+    "id": "app.ai.connection.references.app_error",
+    "translation": "Komunita nebo tým, na který se připojení odkazuje, neexistuje, nebo patří do jiné komunity."
+  },
+  {
+    "id": "app.ai.connection.save.app_error",
+    "translation": "Připojení modelu se nepodařilo uložit."
+  },
+  {
+    "id": "app.ai.connection.usage.app_error",
+    "translation": "Nepodařilo se načíst využití připojení modelu."
+  },
+  {
+    "id": "app.ai.encryption_key.app_error",
+    "translation": "Šifrovací klíč AI serveru není k dispozici, takže připojení modelu nemohou uchovávat klíče. Nastavte AM_AI_ENCRYPTION_KEY, nebo nechte server vytvořit soubor s klíčem v datovém adresáři."
+  },
+  {
+    "id": "app.ai.feature.not_configured.app_error",
+    "translation": "Pro {{.Feature}} není nastaveno žádné připojení modelu. Administrátor ho může vybrat v Systémové konzoli."
+  },
+  {
     "id": "app.ai.summarize.agent_call_failed",
     "translation": "Volání agenta AI se nezdařilo."
   },
@@ -12145,6 +12277,70 @@
     "translation": "Neplatné ID uživatele."
   },
   {
+    "id": "model.ai_connection.api_key.app_error",
+    "translation": "API klíč je příliš dlouhý nebo obsahuje znak nového řádku."
+  },
+  {
+    "id": "model.ai_connection.base_url.app_error",
+    "translation": "Adresa musí být http nebo https URL bez uživatele, dotazu nebo fragmentu."
+  },
+  {
+    "id": "model.ai_connection.decisions_dialect.app_error",
+    "translation": "Formát rozhodnutí musí být OpenAI nebo SystemOne."
+  },
+  {
+    "id": "model.ai_connection.extra_headers.app_error",
+    "translation": "Další hlavička má nepovolené jméno, nebo je její hodnota příliš dlouhá nebo obsahuje znak nového řádku."
+  },
+  {
+    "id": "model.ai_connection.id.app_error",
+    "translation": "ID připojení modelu není platné."
+  },
+  {
+    "id": "model.ai_connection.ids.app_error",
+    "translation": "Komunita, tým nebo role v připojení není platná."
+  },
+  {
+    "id": "model.ai_connection.limits.app_error",
+    "translation": "Omezení nemohou být záporná."
+  },
+  {
+    "id": "model.ai_connection.models.app_error",
+    "translation": "Název modelu je příliš dlouhý nebo obsahuje znak nového řádku."
+  },
+  {
+    "id": "model.ai_connection.models_anthropic.app_error",
+    "translation": "Připojení Anthropic mají pouze chatovací model."
+  },
+  {
+    "id": "model.ai_connection.name.app_error",
+    "translation": "Připojení modelu potřebuje název o délce 1 až 64 znaků."
+  },
+  {
+    "id": "model.ai_connection.needs_attention.app_error",
+    "translation": "Důvod, proč připojení vyžaduje pozornost, je příliš dlouhý."
+  },
+  {
+    "id": "model.ai_connection.provider.app_error",
+    "translation": "Poskytovatelem musí být API kompatibilní s OpenAI nebo Anthropic."
+  },
+  {
+    "id": "model.ai_connection.roles.app_error",
+    "translation": "Role v cílové skupině připojení není platná."
+  },
+  {
+    "id": "model.ai_connection.scope.app_error",
+    "translation": "Připojení modelu je buď pro celý server, nebo pro konkrétní komunitu."
+  },
+  {
+    "id": "model.ai_connection.sharing_community.app_error",
+    "translation": "Vlastní připojení komunity nelze sdílet s jinými komunitami."
+  },
+  {
+    "id": "model.ai_connection.times.app_error",
+    "translation": "Data připojení modelu nejsou nastavena."
+  },
+  {
     "id": "model.authorize.is_valid.auth_code.app_error",
     "translation": "Neplatný autorizační kód."
   },
@@ -12665,6 +12861,14 @@
     "translation": "Neplatný interval úlohy synchronizace řízení přístupu. Musí být alespoň 60 sekund."
   },
   {
+    "id": "model.config.is_valid.ai.connection_id.app_error",
+    "translation": "Připojení modelu pro {{.Feature}} není platné ID."
+  },
+  {
+    "id": "model.config.is_valid.ai.model.app_error",
+    "translation": "Název modelu pro {{.Feature}} je příliš dlouhý."
+  },
+  {
     "id": "model.config.is_valid.ai_recap.cooldown_minutes.app_error",
     "translation": "Neplatný počet minut čekací doby mezi rekapitulacemi AI. Musí být větší nebo roven 0."
   },
@@ -12707,6 +12911,10 @@
   {
     "id": "model.config.is_valid.autotranslation.agents.llm_service_id.app_error",
     "translation": "Neplatná konfigurace automatického překladu přes Agents: služba AI nesmí být prázdná."
+  },
+  {
+    "id": "model.config.is_valid.autotranslation.connection.app_error",
+    "translation": "Vyberte připojení modelu, které bude používat automatický překlad."
   },
   {
     "id": "model.config.is_valid.autotranslation.libretranslate.url.app_error",
@@ -14867,6 +15075,10 @@
   {
     "id": "oauth.gitlab.tos.error",
     "translation": "Podmínky služby GitLab byly aktualizovány. Přejděte na {{.URL}}, abyste je přijali, a poté se pokuste znovu přihlásit do Antimatteru."
+  },
+  {
+    "id": "plugin.api.ai_chat_stream.app_error",
+    "translation": "Aplikace se nepodařilo otevřít AI stream."
   },
   {
     "id": "plugin.api.get_users_in_channel",

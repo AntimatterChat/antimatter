@@ -5192,6 +5192,138 @@
     "translation": "فشلت مكالمة الجسر."
   },
   {
+    "id": "app.ai.call.audience.app_error",
+    "translation": "لا يمكنك استخدام هذا الاتصال بالنموذج."
+  },
+  {
+    "id": "app.ai.call.audio_size.app_error",
+    "translation": "الملف الصوتي فارغ أو كبير جداً ليتم تحويله إلى نص."
+  },
+  {
+    "id": "app.ai.call.budget_exceeded.app_error",
+    "translation": "استهلك هذا الاتصال بالنموذج ميزانية الرموز الشهرية."
+  },
+  {
+    "id": "app.ai.call.builtin_server_only.app_error",
+    "translation": "تستخدم ميزات الذكاء الاصطناعي الخاصة بالخادم اتصالات النماذج على مستوى الخادم فقط."
+  },
+  {
+    "id": "app.ai.call.channel.app_error",
+    "translation": "لا يمكنك استخدام الذكاء الاصطناعي في هذه القناة."
+  },
+  {
+    "id": "app.ai.call.decision.app_error",
+    "translation": "طلب القرار غير صالح."
+  },
+  {
+    "id": "app.ai.call.no_model.app_error",
+    "translation": "لم يتم تعيين نموذج لـ {{.Capability}} على هذا الاتصال."
+  },
+  {
+    "id": "app.ai.call.no_request.app_error",
+    "translation": "لا يوجد طلب في مكالمة الذكاء الاصطناعي."
+  },
+  {
+    "id": "app.ai.call.no_user.app_error",
+    "translation": "تتطلب مكالمة الذكاء الاصطناعي تحديد الشخص الموجهة إليه."
+  },
+  {
+    "id": "app.ai.call.not_available_here.app_error",
+    "translation": "هذا الاتصال بالنموذج غير متاح هنا."
+  },
+  {
+    "id": "app.ai.call.provider_bad_request.app_error",
+    "translation": "رفض مزود الذكاء الاصطناعي الطلب."
+  },
+  {
+    "id": "app.ai.call.provider_failed.app_error",
+    "translation": "تعذر على مزود الذكاء الاصطناعي تقديم إجابة."
+  },
+  {
+    "id": "app.ai.call.provider_rate_limited.app_error",
+    "translation": "يقوم مزود الذكاء الاصطناعي بتقييد الطلبات. حاول مرة أخرى لاحقاً."
+  },
+  {
+    "id": "app.ai.call.provider_refused.app_error",
+    "translation": "رفض مزود الذكاء الاصطناعي مفتاح الاتصال."
+  },
+  {
+    "id": "app.ai.call.purpose.app_error",
+    "translation": "مكالمة الذكاء الاصطناعي هذه غير مسموح بها."
+  },
+  {
+    "id": "app.ai.call.rate_limited.app_error",
+    "translation": "عدد كبير جداً من طلبات الذكاء الاصطناعي حالياً. حاول مرة أخرى بعد لحظات."
+  },
+  {
+    "id": "app.ai.call.team.app_error",
+    "translation": "لا يمكنك استخدام الذكاء الاصطناعي في هذا الفريق."
+  },
+  {
+    "id": "app.ai.call.team_mismatch.app_error",
+    "translation": "القناة ليست ضمن هذا الفريق."
+  },
+  {
+    "id": "app.ai.call.timeout.app_error",
+    "translation": "استغرق مزود الذكاء الاصطناعي وقتاً طويلاً جداً للإجابة."
+  },
+  {
+    "id": "app.ai.call.unsupported.app_error",
+    "translation": "لا يمكن لهذا الاتصال بالنموذج تنفيذ ذلك."
+  },
+  {
+    "id": "app.ai.call.user.app_error",
+    "translation": "لا يمكن لهذا الشخص استخدام الذكاء الاصطناعي هنا."
+  },
+  {
+    "id": "app.ai.call.user_budget_exceeded.app_error",
+    "translation": "استخدمت ميزانية الذكاء الاصطناعي الخاصة بك على هذا الاتصال لهذا الشهر."
+  },
+  {
+    "id": "app.ai.connection.get.app_error",
+    "translation": "تعذر الحصول على اتصالات النماذج."
+  },
+  {
+    "id": "app.ai.connection.key_unreadable.app_error",
+    "translation": "لا يمكن فك تشفير مفتاح هذا الاتصال بالنموذج: تم تغيير مفتاح تشفير الذكاء الاصطناعي. أدخل مفتاح الاتصال مرة أخرى."
+  },
+  {
+    "id": "app.ai.connection.manage_permission.app_error",
+    "translation": "لا يمكنك إدارة هذه اتصالات النماذج."
+  },
+  {
+    "id": "app.ai.connection.needs_attention.app_error",
+    "translation": "يتطلب هذا الاتصال بالنموذج انتباه مدير قبل استخدامه."
+  },
+  {
+    "id": "app.ai.connection.not_found.app_error",
+    "translation": "لا يوجد هذا الاتصال بالنموذج."
+  },
+  {
+    "id": "app.ai.connection.provider.app_error",
+    "translation": "مزود هذا الاتصال بالنموذج غير مدعوم."
+  },
+  {
+    "id": "app.ai.connection.references.app_error",
+    "translation": "المجتمع أو الفريق الذي يشير إليه الاتصال غير موجود، أو ينتمي إلى مجتمع آخر."
+  },
+  {
+    "id": "app.ai.connection.save.app_error",
+    "translation": "تعذّر حفظ الاتصال بالنموذج."
+  },
+  {
+    "id": "app.ai.connection.usage.app_error",
+    "translation": "تعذّرت قراءة استخدام الاتصال بالنموذج."
+  },
+  {
+    "id": "app.ai.encryption_key.app_error",
+    "translation": "مفتاح تشفير الذكاء الاصطناعي الخاص بالخادم غير متاح، لذا لا يمكن للاتصالات بالنماذج الاحتفاظ بالمفاتيح. اضبط AM_AI_ENCRYPTION_KEY، أو اسمح للخادم بإنشاء ملف مفتاحه في مجلد البيانات."
+  },
+  {
+    "id": "app.ai.feature.not_configured.app_error",
+    "translation": "لم يتم إعداد أي اتصال بالنموذج لـ {{.Feature}}. يمكن لمدير اختيار واحد في وحدة التحكم بالنظام."
+  },
+  {
     "id": "app.ai.summarize.agent_call_failed",
     "translation": "فشلت مكالمة وكيل الذكاء الاصطناعي."
   },
@@ -11404,6 +11536,70 @@
     "translation": "معرّف المستخدم غير صالح."
   },
   {
+    "id": "model.ai_connection.api_key.app_error",
+    "translation": "مفتاح API طويل جدًا أو يحتوي على سطر جديد."
+  },
+  {
+    "id": "model.ai_connection.base_url.app_error",
+    "translation": "يجب أن يكون العنوان عنوان URL من نوع http أو https، دون مستخدم أو استعلام أو جزء."
+  },
+  {
+    "id": "model.ai_connection.decisions_dialect.app_error",
+    "translation": "يجب أن يكون تنسيق القرارات من نوع OpenAI أو SystemOne."
+  },
+  {
+    "id": "model.ai_connection.extra_headers.app_error",
+    "translation": "يحتوي ترويسة إضافية على اسم غير مسموح به، أو قيمة طويلة جدًا أو تحتوي على سطر جديد."
+  },
+  {
+    "id": "model.ai_connection.id.app_error",
+    "translation": "المعرّف الخاص بالاتصال بالنموذج غير صالح."
+  },
+  {
+    "id": "model.ai_connection.ids.app_error",
+    "translation": "المجتمع أو الفريق أو الدور في الاتصال غير صالح."
+  },
+  {
+    "id": "model.ai_connection.limits.app_error",
+    "translation": "لا يمكن أن تكون الحدود سالبة."
+  },
+  {
+    "id": "model.ai_connection.models.app_error",
+    "translation": "اسم النموذج طويل جدًا أو يحتوي على سطر جديد."
+  },
+  {
+    "id": "model.ai_connection.models_anthropic.app_error",
+    "translation": "الاتصالات مع Anthropic تحتوي على نموذج دردشة فقط."
+  },
+  {
+    "id": "model.ai_connection.name.app_error",
+    "translation": "يتطلب الاتصال بالنموذج اسمًا يتراوح طوله بين 1 و64 حرفًا."
+  },
+  {
+    "id": "model.ai_connection.needs_attention.app_error",
+    "translation": "السبب الذي يتطلب الانتباه للاتصال طويل جدًا."
+  },
+  {
+    "id": "model.ai_connection.provider.app_error",
+    "translation": "يجب أن يكون المزود API متوافقًا مع OpenAI أو Anthropic."
+  },
+  {
+    "id": "model.ai_connection.roles.app_error",
+    "translation": "الدور في جمهور الاتصال غير صالح."
+  },
+  {
+    "id": "model.ai_connection.scope.app_error",
+    "translation": "الاتصال بالنموذج يكون إما على مستوى الخادم أو خاصًا بمجتمع."
+  },
+  {
+    "id": "model.ai_connection.sharing_community.app_error",
+    "translation": "لا يمكن مشاركة اتصال المجتمع الخاص به مع مجتمعات أخرى."
+  },
+  {
+    "id": "model.ai_connection.times.app_error",
+    "translation": "لم يتم تعيين تواريخ الاتصال بالنموذج."
+  },
+  {
     "id": "model.authorize.is_valid.auth_code.app_error",
     "translation": "رمز التفويض غير صالح."
   },
@@ -11924,6 +12120,14 @@
     "translation": "فاصل مهمة مزامنة التحكم في الوصول غير صالح. يجب أن يكون 60 ثانية على الأقل."
   },
   {
+    "id": "model.config.is_valid.ai.connection_id.app_error",
+    "translation": "الاتصال بالنموذج الخاص بـ {{.Feature}} ليس معرّفًا صالحًا."
+  },
+  {
+    "id": "model.config.is_valid.ai.model.app_error",
+    "translation": "اسم النموذج الخاص بـ{{.Feature}} طويل جدًا."
+  },
+  {
     "id": "model.config.is_valid.ai_recap.cooldown_minutes.app_error",
     "translation": "دقائق التبريد للملخص الذكي غير صالحة. يجب أن تكون أكبر من أو تساوي 0."
   },
@@ -11966,6 +12170,10 @@
   {
     "id": "model.config.is_valid.autotranslation.agents.llm_service_id.app_error",
     "translation": "إعدادات الوكلاء للترجمة التلقائية غير صالحة: يجب ألا يكون خدمة الذكاء الاصطناعي فارغة."
+  },
+  {
+    "id": "model.config.is_valid.autotranslation.connection.app_error",
+    "translation": "اختر اتصال النموذج الذي تستخدمه الترجمة التلقائية."
   },
   {
     "id": "model.config.is_valid.autotranslation.libretranslate.url.app_error",
@@ -14126,6 +14334,10 @@
   {
     "id": "oauth.gitlab.tos.error",
     "translation": "تم تحديث شروط الخدمة الخاصة بـ GitLab. يرجى الانتقال إلى {{.URL}} لقبولها ثم محاولة تسجيل الدخول إلى Antimatter مرة أخرى."
+  },
+  {
+    "id": "plugin.api.ai_chat_stream.app_error",
+    "translation": "تعذّر على التطبيق فتح تدفق الذكاء الاصطناعي."
   },
   {
     "id": "plugin.api.get_users_in_channel",

@@ -5567,6 +5567,138 @@
     "translation": "Bridge-Aufruf fehlgeschlagen."
   },
   {
+    "id": "app.ai.call.audience.app_error",
+    "translation": "Sie können diese Modellverbindung nicht verwenden."
+  },
+  {
+    "id": "app.ai.call.audio_size.app_error",
+    "translation": "Die Audio-Datei ist leer oder zu groß, um transkribiert zu werden."
+  },
+  {
+    "id": "app.ai.call.budget_exceeded.app_error",
+    "translation": "Diese Modellverbindung hat ihr Token-Budget für den Monat aufgebraucht."
+  },
+  {
+    "id": "app.ai.call.builtin_server_only.app_error",
+    "translation": "Die eigenen KI-Funktionen des Servers verwenden nur serverweite Modellverbindungen."
+  },
+  {
+    "id": "app.ai.call.channel.app_error",
+    "translation": "Sie können KI in diesem Kanal nicht verwenden."
+  },
+  {
+    "id": "app.ai.call.decision.app_error",
+    "translation": "Die Entscheidungsanfrage ist ungültig."
+  },
+  {
+    "id": "app.ai.call.no_model.app_error",
+    "translation": "Für {{.Capability}} ist auf dieser Verbindung kein Modell festgelegt."
+  },
+  {
+    "id": "app.ai.call.no_request.app_error",
+    "translation": "Der KI-Aufruf enthält keine Anfrage."
+  },
+  {
+    "id": "app.ai.call.no_user.app_error",
+    "translation": "Ein KI-Aufruf benötigt die Person, für die er bestimmt ist."
+  },
+  {
+    "id": "app.ai.call.not_available_here.app_error",
+    "translation": "Diese Modellverbindung ist hier nicht verfügbar."
+  },
+  {
+    "id": "app.ai.call.provider_bad_request.app_error",
+    "translation": "Der KI-Anbieter hat die Anfrage abgelehnt."
+  },
+  {
+    "id": "app.ai.call.provider_failed.app_error",
+    "translation": "Der KI-Anbieter konnte nicht antworten."
+  },
+  {
+    "id": "app.ai.call.provider_rate_limited.app_error",
+    "translation": "Der KI-Anbieter begrenzt derzeit die Anzahl der Anfragen. Versuchen Sie es später erneut."
+  },
+  {
+    "id": "app.ai.call.provider_refused.app_error",
+    "translation": "Der KI-Anbieter hat den Schlüssel der Verbindung abgelehnt."
+  },
+  {
+    "id": "app.ai.call.purpose.app_error",
+    "translation": "Dieser KI-Aufruf ist nicht zulässig."
+  },
+  {
+    "id": "app.ai.call.rate_limited.app_error",
+    "translation": "Zu viele KI-Anfragen im Moment. Versuchen Sie es in einem Moment erneut."
+  },
+  {
+    "id": "app.ai.call.team.app_error",
+    "translation": "Sie können KI in dieser Community nicht verwenden."
+  },
+  {
+    "id": "app.ai.call.team_mismatch.app_error",
+    "translation": "Der Kanal gehört nicht zu dieser Community."
+  },
+  {
+    "id": "app.ai.call.timeout.app_error",
+    "translation": "Der KI-Anbieter hat zu lange für die Antwort gebraucht."
+  },
+  {
+    "id": "app.ai.call.unsupported.app_error",
+    "translation": "Diese Modellverbindung kann das nicht."
+  },
+  {
+    "id": "app.ai.call.user.app_error",
+    "translation": "Diese Person kann KI hier nicht verwenden."
+  },
+  {
+    "id": "app.ai.call.user_budget_exceeded.app_error",
+    "translation": "Sie haben Ihr KI-Budget für diese Verbindung im aktuellen Monat aufgebraucht."
+  },
+  {
+    "id": "app.ai.connection.get.app_error",
+    "translation": "Die Modellverbindungen konnten nicht abgerufen werden."
+  },
+  {
+    "id": "app.ai.connection.key_unreadable.app_error",
+    "translation": "Der Schlüssel dieser Modellverbindung kann nicht entschlüsselt werden: Der KI-Verschlüsselungsschlüssel wurde geändert. Geben Sie den Schlüssel der Verbindung erneut ein."
+  },
+  {
+    "id": "app.ai.connection.manage_permission.app_error",
+    "translation": "Sie können diese Modellverbindungen nicht verwalten."
+  },
+  {
+    "id": "app.ai.connection.needs_attention.app_error",
+    "translation": "Diese Modellverbindung benötigt die Aufmerksamkeit eines Administrators, bevor sie verwendet werden kann."
+  },
+  {
+    "id": "app.ai.connection.not_found.app_error",
+    "translation": "Diese Modellverbindung existiert nicht."
+  },
+  {
+    "id": "app.ai.connection.provider.app_error",
+    "translation": "Der Anbieter dieser Modellverbindung wird nicht unterstützt."
+  },
+  {
+    "id": "app.ai.connection.references.app_error",
+    "translation": "Eine Community oder ein Team, auf das sich die Verbindung bezieht, existiert nicht oder gehört zu einer anderen Community."
+  },
+  {
+    "id": "app.ai.connection.save.app_error",
+    "translation": "Die Modellverbindung konnte nicht gespeichert werden."
+  },
+  {
+    "id": "app.ai.connection.usage.app_error",
+    "translation": "Die Nutzung der Modellverbindung konnte nicht gelesen werden."
+  },
+  {
+    "id": "app.ai.encryption_key.app_error",
+    "translation": "Der KI-Verschlüsselungsschlüssel des Servers ist nicht verfügbar, daher können Modellverbindungen keine Schlüssel speichern. Setzen Sie AM_AI_ENCRYPTION_KEY oder lassen Sie den Server seine Schlüsseldatei im Datenverzeichnis erstellen."
+  },
+  {
+    "id": "app.ai.feature.not_configured.app_error",
+    "translation": "Für {{.Feature}} ist keine Modellverbindung eingerichtet. Ein Administrator kann eine in der Systemkonsole auswählen."
+  },
+  {
     "id": "app.ai.summarize.agent_call_failed",
     "translation": "Der Anruf des AI-Agenten ist fehlgeschlagen."
   },
@@ -12127,6 +12259,70 @@
     "translation": "Ungültige Benutzer-ID."
   },
   {
+    "id": "model.ai_connection.api_key.app_error",
+    "translation": "Der API-Schlüssel ist zu lang oder enthält einen Zeilenumbruch."
+  },
+  {
+    "id": "model.ai_connection.base_url.app_error",
+    "translation": "Die Adresse muss eine http- oder https-URL sein, ohne Benutzer, Abfrage oder Fragment."
+  },
+  {
+    "id": "model.ai_connection.decisions_dialect.app_error",
+    "translation": "Das Format für Entscheidungen muss OpenAI oder SystemOne sein."
+  },
+  {
+    "id": "model.ai_connection.extra_headers.app_error",
+    "translation": "Ein zusätzlicher Header hat einen nicht erlaubten Namen oder einen Wert, der zu lang ist oder einen Zeilenumbruch enthält."
+  },
+  {
+    "id": "model.ai_connection.id.app_error",
+    "translation": "Die ID der Modellverbindung ist ungültig."
+  },
+  {
+    "id": "model.ai_connection.ids.app_error",
+    "translation": "Eine Community, ein Team oder eine Rolle in der Verbindung ist ungültig."
+  },
+  {
+    "id": "model.ai_connection.limits.app_error",
+    "translation": "Grenzwerte dürfen nicht negativ sein."
+  },
+  {
+    "id": "model.ai_connection.models.app_error",
+    "translation": "Ein Modellname ist zu lang oder enthält einen Zeilenumbruch."
+  },
+  {
+    "id": "model.ai_connection.models_anthropic.app_error",
+    "translation": "Anthropic-Verbindungen haben nur ein Chat-Modell."
+  },
+  {
+    "id": "model.ai_connection.name.app_error",
+    "translation": "Eine Modellverbindung benötigt einen Namen mit 1 bis 64 Zeichen."
+  },
+  {
+    "id": "model.ai_connection.needs_attention.app_error",
+    "translation": "Der Grund, warum die Verbindung Aufmerksamkeit benötigt, ist zu lang."
+  },
+  {
+    "id": "model.ai_connection.provider.app_error",
+    "translation": "Der Anbieter muss eine OpenAI-kompatible API oder Anthropic sein."
+  },
+  {
+    "id": "model.ai_connection.roles.app_error",
+    "translation": "Eine Rolle im Adressatenkreis der Verbindung ist ungültig."
+  },
+  {
+    "id": "model.ai_connection.scope.app_error",
+    "translation": "Eine Modellverbindung ist entweder serverweit oder einer Community zugeordnet."
+  },
+  {
+    "id": "model.ai_connection.sharing_community.app_error",
+    "translation": "Die eigene Verbindung einer Community kann nicht mit anderen Communities geteilt werden."
+  },
+  {
+    "id": "model.ai_connection.times.app_error",
+    "translation": "Die Daten der Modellverbindung sind nicht festgelegt."
+  },
+  {
     "id": "model.authorize.is_valid.auth_code.app_error",
     "translation": "Ungültiger Authorisationscode."
   },
@@ -12647,6 +12843,14 @@
     "translation": "Ungültiges Intervall für den Zugriffskontroll-Synchronisierungsauftrag. Muss mindestens 60 Sekunden betragen."
   },
   {
+    "id": "model.config.is_valid.ai.connection_id.app_error",
+    "translation": "Die Modellverbindung von {{.Feature}} ist keine gültige ID."
+  },
+  {
+    "id": "model.config.is_valid.ai.model.app_error",
+    "translation": "Der Modellname von {{.Feature}} ist zu lang."
+  },
+  {
     "id": "model.config.is_valid.ai_recap.cooldown_minutes.app_error",
     "translation": "Ungültige Abklingzeit in Minuten für den KI-Rückblick. Muss größer oder gleich 0 sein."
   },
@@ -12689,6 +12893,10 @@
   {
     "id": "model.config.is_valid.autotranslation.agents.llm_service_id.app_error",
     "translation": "Ungültige Konfiguration des Autotranslationsagenten: Der AI-Dienst darf nicht leer sein."
+  },
+  {
+    "id": "model.config.is_valid.autotranslation.connection.app_error",
+    "translation": "Wählen Sie die Modellverbindung aus, die die automatische Übersetzung verwendet."
   },
   {
     "id": "model.config.is_valid.autotranslation.libretranslate.url.app_error",
@@ -14849,6 +15057,10 @@
   {
     "id": "oauth.gitlab.tos.error",
     "translation": "Die Nutzungsbedingungen von GitLab haben sich geändert. Bitte gehe zu {{.URL}} um sie zu akzeptieren und versuche dann, dich erneut an Antimatter anzumelden."
+  },
+  {
+    "id": "plugin.api.ai_chat_stream.app_error",
+    "translation": "Die App konnte den KI-Stream nicht öffnen."
   },
   {
     "id": "plugin.api.get_users_in_channel",
