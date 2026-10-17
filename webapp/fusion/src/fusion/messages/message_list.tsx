@@ -7,6 +7,7 @@ import {useDispatch, useSelector} from 'react-redux';
 
 import {markChannelAsRead} from 'mattermost-redux/actions/channels';
 import {getPost, getRecentPostsChunkInChannel, makeGetPostsChunkAroundPost} from 'mattermost-redux/selectors/entities/posts';
+import {getCurrentUserId} from 'mattermost-redux/selectors/entities/users';
 import {getDateForDateLine, getTimestampForStartOfNewMessages, isCombinedUserActivityPost, isDateLine, isStartOfNewMessages, makeGenerateCombinedPost, makePreparePostIdsForPostList} from 'mattermost-redux/utils/post_list';
 
 import {loadLatestPosts, loadPosts, loadPostsAround, syncPostsInChannel} from 'actions/views/channel';
@@ -61,6 +62,10 @@ type Props = {
     // Whether that message is highlighted: while the address names it. Once it doesn't, the list stays where it
     // is, around the message, and the channel is read.
     highlight?: boolean;
+
+    // Leaves that message for the newest ones: the "Jump to present" of the bar shown while the list is around older
+    // messages. Without it, there's no bar.
+    onJumpToPresent?: () => void;
     scrollRef: React.RefObject<HTMLDivElement | null>;
 
     // What an empty conversation says.
@@ -72,7 +77,7 @@ type Props = {
 
 // MessageList renders a channel's messages top to bottom, loading older ones while scrolling up, like the classic
 // post list but without virtualization: the mockup's plain, selectable list.
-export default function MessageList({channelId, focusedPostId, highlight = true, scrollRef, emptyText, intro}: Props) {
+export default function MessageList({channelId, focusedPostId, highlight = true, onJumpToPresent, scrollRef, emptyText, intro}: Props) {
     const {formatMessage} = useIntl();
     const dispatch = useDispatch();
     const dayLabel = useDayLabel();
@@ -106,13 +111,61 @@ export default function MessageList({channelId, focusedPostId, highlight = true,
     const [arrivedBelow, setArrivedBelow] = useState(0);
     const lastSeenNewest = useRef<string | undefined>(undefined);
 
+    // Discord's "You're viewing older messages · Jump to present": the list is around a message (from a link) and
+    // the newest messages aren't loaded with it (scrolling down to them, or loading them, joins them). The messages
+    // that arrive meanwhile are counted from the newest one known when the list went there.
+    const away = Boolean(onJumpToPresent && focusedPostId && chunk && !chunk.recent);
+    const newestKnown = useSelector((state: GlobalState) => {
+        const recent = getRecentPostsChunkInChannel(state, channelId);
+        return recent?.order.length ? getPost(state, recent.order[0])?.create_at || 0 : 0;
+    });
+    const [awaySince, setAwaySince] = useState<number | null>(null);
+    useEffect(() => {
+        setAwaySince(away ? newestKnown : null);
+
+        // When the list goes away from the newest messages, or comes back.
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [away]);
+    const arrivedAway = useSelector((state: GlobalState) => {
+        const recent = awaySince === null ? undefined : getRecentPostsChunkInChannel(state, channelId);
+        if (!recent || awaySince === null) {
+            return 0;
+        }
+        const me = getCurrentUserId(state);
+        let count = 0;
+        for (const id of recent.order) {
+            const post = getPost(state, id);
+            if (!post || post.create_at <= awaySince) {
+                break;
+            }
+            if (post.user_id !== me) {
+                count++;
+            }
+        }
+        return count;
+    });
+
+    // Jump to present: the newest messages are loaded afresh, and the list opens at the bottom, whatever the reader's
+    // choice of where unread conversations open.
+    const loadLatestNext = useRef(false);
+    const bottomNext = useRef(false);
+    const jumpToPresent = () => {
+        loadLatestNext.current = true;
+        bottomNext.current = true;
+        onJumpToPresent?.();
+    };
+
     // Load the channel's messages when it opens, around the linked message for permalinks.
     useEffect(() => {
         let cancelled = false;
+        const latest = loadLatestNext.current && !focusedPostId;
+        if (latest) {
+            loadLatestNext.current = false;
+        }
         (async () => {
             if (focusedPostId) {
                 await dispatch(loadPostsAround(channelId, focusedPostId));
-            } else if (firstLoad) {
+            } else if (latest || firstLoad) {
                 await dispatch(loadLatestPosts(channelId));
             } else if (latestTimestamp) {
                 await dispatch(syncPostsInChannel(channelId, latestTimestamp, false));
@@ -155,7 +208,8 @@ export default function MessageList({channelId, focusedPostId, highlight = true,
             const target = focusedPostId ? document.getElementById(`post_${focusedPostId}`) : null;
 
             // An unread conversation opens at its Unread line, or at the newest message, as the reader chose.
-            const unreadLine = !focusedPostId && prefs.startFromLeftOff ? view.querySelector('.am-day.am-new') : null;
+            const unreadLine = !focusedPostId && prefs.startFromLeftOff && !bottomNext.current ? view.querySelector('.am-day.am-new') : null;
+            bottomNext.current = false;
             if (target) {
                 target.scrollIntoView({block: 'center'});
                 stick.current = false;
@@ -274,7 +328,7 @@ export default function MessageList({channelId, focusedPostId, highlight = true,
     return (
         <div
             ref={listRef}
-            {...a11yRegion(am('msgs', {compact: prefs.compact, centered: prefs.centered}), 'messages')}
+            {...a11yRegion(am('msgs', {compact: prefs.compact, centered: prefs.centered, away}), 'messages')}
         >
             <div className={am('plugin-toasts')}>
                 <Pluggable pluggableName='ChannelToast'/>
@@ -353,6 +407,32 @@ export default function MessageList({channelId, focusedPostId, highlight = true,
                 );
             })}
             {loadingNewer && <div className={am('empty')}>{formatMessage({id: 'fusion.messages.newer', defaultMessage: 'Loading newer messages…'})}</div>}
+            {away && (
+                <div
+                    className={am('present')}
+                    role='status'
+                >
+                    <span className={am('present-text')}>
+                        {formatMessage({id: 'fusion.messages.olderMessages', defaultMessage: 'You\'re viewing older messages'})}
+                        {arrivedAway > 0 && (
+                            <b className={am('present-new')}>
+                                {formatMessage({id: 'fusion.messages.arrived', defaultMessage: '{count, plural, one {# new message} other {# new messages}}'}, {count: arrivedAway})}
+                            </b>
+                        )}
+                    </span>
+                    <button
+                        type='button'
+                        className={am('present-jump')}
+                        onClick={jumpToPresent}
+                    >
+                        {formatMessage({id: 'fusion.messages.jumpToPresent', defaultMessage: 'Jump to present'})}
+                        <Icon
+                            name='chev'
+                            size='xs'
+                        />
+                    </button>
+                </div>
+            )}
             {arrivedBelow > 0 && (
                 <div className={am('jump', 'jump-bottom')}>
                     <button

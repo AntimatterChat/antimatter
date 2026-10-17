@@ -3,11 +3,12 @@
 
 import React, {useRef} from 'react';
 
+import {PostTypes} from 'mattermost-redux/action_types';
 import {markChannelAsRead} from 'mattermost-redux/actions/channels';
 
-import {loadLatestPosts, loadPostsAround} from 'actions/views/channel';
+import {loadLatestPosts, loadPostsAround, syncPostsInChannel} from 'actions/views/channel';
 
-import {renderWithContext} from 'tests/react_testing_utils';
+import {act, fireEvent, renderWithContext, screen, waitFor} from 'tests/react_testing_utils';
 import {TestHelper} from 'utils/test_helper';
 
 import MessageList from './message_list';
@@ -57,7 +58,7 @@ const state = {
     },
 } as never;
 
-type Props = {focusedPostId?: string; highlight?: boolean};
+type Props = {focusedPostId?: string; highlight?: boolean; onJumpToPresent?: () => void};
 
 function List(props: Props) {
     const ref = useRef<HTMLDivElement>(null);
@@ -134,5 +135,147 @@ describe('fusion/messages/MessageList around a linked message', () => {
         expect(container).toHaveTextContent('Loading messages…');
         expect(container.querySelector('.am-empty')).toBeInTheDocument();
         expect(loadPostsAround).toHaveBeenCalledWith('oncall', 'unknown');
+    });
+});
+
+describe('fusion/messages/MessageList: You\'re viewing older messages · Jump to present', () => {
+    beforeAll(() => {
+        Element.prototype.scrollIntoView = jest.fn();
+    });
+    beforeEach(() => {
+        jest.clearAllMocks();
+    });
+
+    // The channel's newest messages are loaded too, in the recent chunk.
+    const tom = TestHelper.getUserMock({id: 'tom', username: 'tom'});
+    const latest = TestHelper.getPostMock({id: 'latest', type: '', channel_id: 'oncall', user_id: 'tom', create_at: day + 3600000});
+    const withPresent = {
+        entities: {
+            general: {config: {}},
+            users: {currentUserId: 'me', profiles: {me, tom}},
+            posts: {
+                posts: {...Object.fromEntries(posts.map((p) => [p.id, p])), latest},
+                postsInChannel: {oncall: [
+                    {order: ['reply', 'root', 'older'], recent: false, oldest: false},
+                    {order: ['latest'], recent: true, oldest: false},
+                ]},
+                postsInThread: {},
+                reactions: {},
+            },
+            preferences: {myPreferences: {}},
+        },
+    } as never;
+    const bar = () => screen.queryByText('You\'re viewing older messages');
+    const jump = () => screen.getByRole('button', {name: /Jump to present/});
+
+    test('shows on a list opened around an older message, highlighted or not, with a button reached by keyboard', () => {
+        const onJumpToPresent = jest.fn();
+        const {rerender} = renderWithContext(
+            <List
+                focusedPostId='root'
+                highlight={true}
+                onJumpToPresent={onJumpToPresent}
+            />,
+            withPresent,
+        );
+        expect(bar()).toBeInTheDocument();
+        expect(screen.getByRole('status')).toContainElement(jump());
+        expect(jump().tagName).toBe('BUTTON');
+
+        // The highlight has ended; the list is still around the message (the anchor in the address's state).
+        rerender(
+            <List
+                focusedPostId='root'
+                highlight={false}
+                onJumpToPresent={onJumpToPresent}
+            />,
+        );
+        expect(bar()).toBeInTheDocument();
+    });
+
+    test('doesn\'t show in a channel that opened normally', () => {
+        renderWithContext(<List onJumpToPresent={jest.fn()}/>, withPresent);
+        expect(screen.getAllByTestId('message')).toHaveLength(1);
+        expect(bar()).not.toBeInTheDocument();
+    });
+
+    test('doesn\'t show around a message among the newest ones', () => {
+        renderWithContext(
+            <List
+                focusedPostId='latest'
+                onJumpToPresent={jest.fn()}
+            />,
+            withPresent,
+        );
+        expect(bar()).not.toBeInTheDocument();
+    });
+
+    test('hides once the list reaches the newest messages (scrolling down joins them)', () => {
+        const {replaceStoreState} = renderWithContext(
+            <List
+                focusedPostId='root'
+                onJumpToPresent={jest.fn()}
+            />,
+            withPresent,
+        );
+        expect(bar()).toBeInTheDocument();
+        const joined = JSON.parse(JSON.stringify(withPresent));
+        joined.entities.posts.postsInChannel.oncall = [{order: ['latest', 'reply', 'root', 'older'], recent: true, oldest: false}];
+        replaceStoreState(joined);
+        expect(bar()).not.toBeInTheDocument();
+    });
+
+    test('Jump to present leaves the message, loads the newest messages afresh and reads the channel', async () => {
+        const onJumpToPresent = jest.fn();
+        const {rerender} = renderWithContext(
+            <List
+                focusedPostId='root'
+                highlight={false}
+                onJumpToPresent={onJumpToPresent}
+            />,
+            withPresent,
+        );
+        // (The ended highlight has read the channel once already.)
+        await waitFor(() => expect(markChannelAsRead).toHaveBeenCalled());
+        (markChannelAsRead as jest.Mock).mockClear();
+
+        fireEvent.click(jump());
+        expect(onJumpToPresent).toHaveBeenCalledTimes(1);
+
+        // ChannelView's leaveAnchor drops the message from the address.
+        rerender(<List onJumpToPresent={onJumpToPresent}/>);
+        expect(loadLatestPosts).toHaveBeenCalledWith('oncall');
+        expect(syncPostsInChannel).not.toHaveBeenCalled();
+        expect(bar()).not.toBeInTheDocument();
+        expect(screen.getAllByTestId('message')).toHaveLength(1);
+        await waitFor(() => expect(markChannelAsRead).toHaveBeenCalledWith('oncall'));
+    });
+
+    test('counts the messages others send meanwhile', () => {
+        const {store} = renderWithContext(
+            <List
+                focusedPostId='root'
+                onJumpToPresent={jest.fn()}
+            />,
+            withPresent,
+        );
+        expect(screen.getByRole('status')).not.toHaveTextContent('new message');
+
+        const receive = (id: string, userId: string, at: number) => act(() => {
+            store.dispatch({type: PostTypes.RECEIVED_NEW_POST, data: TestHelper.getPostMock({id, type: '', channel_id: 'oncall', user_id: userId, create_at: at}), features: {crtEnabled: false}});
+        });
+        receive('new1', 'tom', day + 3700000);
+        expect(screen.getByRole('status')).toHaveTextContent('1 new message');
+        receive('new2', 'tom', day + 3800000);
+        expect(screen.getByRole('status')).toHaveTextContent('2 new messages');
+
+        // The reader's own messages aren't news to them.
+        receive('mine', 'me', day + 3900000);
+        expect(screen.getByRole('status')).toHaveTextContent('2 new messages');
+    });
+
+    test('without a way to leave the message (the call\'s chat), there\'s no bar', () => {
+        renderWithContext(<List focusedPostId='root'/>, withPresent);
+        expect(bar()).not.toBeInTheDocument();
     });
 });
