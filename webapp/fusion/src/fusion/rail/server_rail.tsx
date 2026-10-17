@@ -10,7 +10,7 @@ import type {Team} from '@mattermost/types/teams';
 import {Permissions} from 'mattermost-redux/constants';
 import {getTeamsUnreadStatuses} from 'mattermost-redux/selectors/entities/channels';
 import {haveISystemPermission} from 'mattermost-redux/selectors/entities/roles';
-import {getCurrentTeam, getCurrentTeamId, getJoinableTeamIds} from 'mattermost-redux/selectors/entities/teams';
+import {getCurrentTeamId, getJoinableTeamIds} from 'mattermost-redux/selectors/entities/teams';
 
 import {switchTeam, updateTeamsOrderForUser} from 'actions/team_actions';
 
@@ -18,12 +18,10 @@ import Icon from 'fusion/components/icon';
 import {Dialog, Popover} from 'fusion/components/layer';
 import {MenuItem} from 'fusion/components/menu';
 import ServerMenu from 'fusion/popovers/server_menu';
-import {getLastTeamChannelName, getSortedMyTeams, getUnreadDirectChannels} from 'fusion/selectors';
+import {getLastTeamChannelName, getSortedMyTeams} from 'fusion/selectors';
 import {useDialogs} from 'fusion/shell/dialogs_context';
 import {useGlobalSearch} from 'fusion/shell/global_search_context';
-import {isPhoneLayout, useLayout} from 'fusion/shell/layout_context';
-import {DirectFace} from 'fusion/sidebar/direct_row';
-import {DM_FIND_ID} from 'fusion/sidebar/home_sidebar';
+import {useLayout} from 'fusion/shell/layout_context';
 import {markTeamAsRead} from 'fusion/sidebar/team_actions';
 import {a11yRegion} from 'fusion/utils/a11y_regions';
 import {am} from 'fusion/utils/class_names';
@@ -38,6 +36,7 @@ import type {GlobalState} from 'types/store';
 import {addToFolder, FOLDER_COLORS, folderOfTeam, isFolderOpen, makeFolder, placeAfter, railItems, removeFromFolder, setFolderOpen, useFolders} from './folders';
 import type {Folder} from './folders';
 import HistoryButtons, {showHistoryButtons} from './history_buttons';
+import RailDirectMessages from './rail_dms';
 
 const initialsOf = (name: string) => name.split(/\s+/).map((p) => p[0] || '').slice(0, 2).join('').toUpperCase();
 
@@ -330,39 +329,8 @@ function FolderButton({folder, teams, open, unread, mentions, onToggle, onDropTe
     );
 }
 
-// DirectMessagesButton heads the rail: a chat bubble that opens the list of all the direct messages in the sidebar
-// (in the navigation drawer on a phone), with the number of messages waiting in them.
-function DirectMessagesButton() {
-    const {formatMessage} = useIntl();
-    const layout = useLayout();
-    const unread = useSelector(getUnreadDirectChannels).reduce((n, dm) => n + Math.max(dm.messages, dm.mentions), 0);
-    const label = formatMessage({id: 'fusion.dock.all', defaultMessage: 'All direct messages'});
-    return (
-        <button
-            className={am('srv', 'dm-home', {active: layout.home})}
-            data-am-tip={label}
-            data-am-tip-side='right'
-            aria-label={unread ? formatMessage({id: 'fusion.dock.allUnread', defaultMessage: '{label}, {count, plural, one {# unread message} other {# unread messages}}'}, {label, count: unread}) : label}
-            aria-current={layout.home ? 'page' : undefined}
-            onClick={() => {
-                layout.setHome(true);
-                layout.setNavOpen(true);
-
-                // Ready to find a conversation; not on a phone, where the keyboard would cover the list.
-                if (!isPhoneLayout()) {
-                    requestAnimationFrame(() => document.getElementById(DM_FIND_ID)?.focus());
-                }
-            }}
-        >
-            <Icon name='chat'/>
-            {unread > 0 && <span className={am('badge')}>{unread > 99 ? '99+' : unread}</span>}
-        </button>
-    );
-}
-
-// ServerRail is the column of teams on the far left; the mockup calls teams servers. On top, the chat bubble of all
-// the direct messages; the ones waiting for you sit at its bottom, above search, as round faces under a chat bubble
-// so they don't read as servers.
+// ServerRail is the column of teams on the far left; the mockup calls teams servers. The direct messages sit at its
+// bottom, above search (see RailDirectMessages).
 export default function ServerRail() {
     const {formatMessage} = useIntl();
     const dispatch = useDispatch();
@@ -370,9 +338,7 @@ export default function ServerRail() {
     const globalSearch = useGlobalSearch();
     const teams = useSelector(getSortedMyTeams);
     const currentTeamId = useSelector(getCurrentTeamId);
-    const currentTeam = useSelector(getCurrentTeam);
     const [unreadTeams, mentionsInTeam] = useSelector(getTeamsUnreadStatuses);
-    const unreadDMs = useSelector(getUnreadDirectChannels);
     const currentChannelId = useSelector((state: GlobalState) => state.entities.channels.currentChannelId);
     const store = useStore<GlobalState>();
 
@@ -385,7 +351,6 @@ export default function ServerRail() {
     const canCreate = useSelector((state: GlobalState) => haveISystemPermission(state, {permission: Permissions.CREATE_TEAM}));
     const dialogs = useDialogs();
 
-    const waitingDMs = unreadDMs.filter((dm) => dm.channel.id !== currentChannelId).slice(0, 5);
     const [folders, saveFolders] = useFolders();
     const [openFolders, setOpenFolders] = useState<Record<string, boolean>>({});
     const [editing, setEditing] = useState<Folder | null>(null);
@@ -469,11 +434,6 @@ export default function ServerRail() {
             aria-label={formatMessage({id: 'fusion.rail.label', defaultMessage: 'Communities'})}
         >
             {showHistoryButtons() && <HistoryButtons/>}
-            <DirectMessagesButton/>
-            <span
-                className={am('srv-sep')}
-                role='separator'
-            />
             {railItems(teams, folders).map((item) => {
                 const teamButton = (team: Team) => (
                     <TeamButton
@@ -580,42 +540,7 @@ export default function ServerRail() {
             <div className={am('rail-plugins')}>
                 <Pluggable pluggableName='BottomTeamSidebar'/>
             </div>
-            {waitingDMs.length > 0 && (
-                <div
-                    className={am('dm-dock')}
-                    role='group'
-                    aria-label={formatMessage({id: 'fusion.rail.unreadDMs', defaultMessage: 'Unread direct messages'})}
-                >
-                    <span
-                        className={am('dm-dock-head')}
-                        aria-hidden='true'
-                    >
-                        <Icon
-                            name='chat'
-                            size='sm'
-                        />
-                    </span>
-                    {waitingDMs.map(({channel, mentions, messages}) => (
-                        <button
-                            key={channel.id}
-                            className={am('srv', 'dm-srv')}
-                            data-am-tip={channel.display_name}
-                            data-am-tip-side='right'
-                            aria-label={formatMessage({id: 'fusion.rail.unreadDM', defaultMessage: '{name}, {count, plural, one {# unread message} other {# unread messages}}'}, {name: channel.display_name, count: mentions || messages})}
-                            onClick={() => {
-                                // The conversation opens beside the team's sidebar, as in the mockup.
-                                layout.setNavOpen(false);
-                                if (currentTeam) {
-                                    getHistory().push(channelPath(currentTeam.name, channel));
-                                }
-                            }}
-                        >
-                            <DirectFace channel={channel}/>
-                            <span className={am('badge')}>{mentions || messages}</span>
-                        </button>
-                    ))}
-                </div>
-            )}
+            <RailDirectMessages/>
             <button
                 className={am('srv', 'rail-search')}
                 data-am-tip={formatMessage({id: 'fusion.rail.search', defaultMessage: 'Search everything (Ctrl K)'})}

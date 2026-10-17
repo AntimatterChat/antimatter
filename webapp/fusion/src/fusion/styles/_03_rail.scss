@@ -56,8 +56,19 @@
 :is(.am-app, .am-layer) .am-srv .am-fed .am-ic { width: 12px; height: 12px; }
 /* Direct messages waiting for you sit at the bottom, above search: smaller round faces under a chat bubble, apart
    from the servers, that don't change shape on hover as servers do. */
-:is(.am-app, .am-layer) .am-dm-dock { display: grid; justify-items: center; gap: 16px; padding-top: 10px; border-top: 2px solid var(--am-raise-2); width: 34px; flex: none; }
-:is(.am-app, .am-layer) .am-dm-dock-head { display: grid; place-items: center; width: 22px; height: 18px; color: var(--am-muted); }
+// The chat bubble of all the direct messages heads them: a rail bubble of its own while none is waiting, a small icon
+// above their faces otherwise. It morphs between the two (size, shape, colour), and the line above the faces comes
+// and goes; not with reduced motion (.am-still, and the media query of _25_responsive.scss).
+:is(.am-app, .am-layer) .am-dm-dock { display: grid; justify-items: center; gap: 16px; width: 46px; flex: none; border-top: 2px solid transparent; transition: width .2s ease, padding-top .2s ease, border-color .2s ease; }
+:is(.am-app, .am-layer) .am-dm-dock.am-stacked { width: 34px; padding-top: 10px; border-top-color: var(--am-raise-2); }
+:is(.am-app, .am-layer) .am-srv.am-dm-home { transition: width .2s ease, height .2s ease, border-radius .2s ease, background .2s ease, color .2s ease; }
+:is(.am-app, .am-layer) .am-srv.am-dm-home .am-ic { transition: width .2s ease, height .2s ease; }
+:is(.am-app, .am-layer) .am-srv.am-dm-home.am-mini { width: 22px; height: 18px; border-radius: 6px; background: transparent; color: var(--am-muted); }
+:is(.am-app, .am-layer) .am-srv.am-dm-home.am-mini .am-ic { width: 16px; height: 16px; }
+:is(.am-app, .am-layer) .am-srv.am-dm-home.am-mini::before { display: none; }
+:is(.am-app, .am-layer) .am-srv.am-dm-home.am-mini:is(:hover, :focus-visible) { border-radius: 6px; background: var(--am-hover); color: var(--am-text); }
+:is(.am-app, .am-layer) .am-srv.am-dm-home.am-mini.am-active { background: transparent; color: var(--am-matter); }
+:is(.am-app, .am-layer) .am-dm-dock.am-still, :is(.am-app, .am-layer) .am-dm-dock.am-still .am-srv.am-dm-home, :is(.am-app, .am-layer) .am-dm-dock.am-still .am-srv.am-dm-home .am-ic { transition: none; }
 :is(.am-app, .am-layer) .am-srv.am-dm-srv { width: 38px; height: 38px; background: none; border-radius: 50%; }
 :is(.am-app, .am-layer) .am-srv.am-dm-srv::before { display: none; }
 :is(.am-app, .am-layer) .am-srv.am-dm-srv .am-av { width: 38px; height: 38px; font-size: 13px; box-shadow: 0 0 0 2px var(--am-rail), 0 0 0 4px var(--am-anti); }

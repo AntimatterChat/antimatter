@@ -16,6 +16,9 @@ export const PHONE_QUERY = '(max-width: 640px), (max-width: 960px) and (max-heig
 // A finger rather than a mouse: no hover, long presses instead of right clicks.
 export const TOUCH_QUERY = '(hover: none) and (pointer: coarse)';
 
+// The system's reduced motion setting: no animations.
+export const REDUCED_MOTION_QUERY = '(prefers-reduced-motion: reduce)';
+
 const matches = (query: string) => typeof window !== 'undefined' && Boolean(window.matchMedia?.(query).matches);
 
 export const isCompact = () => matches(COMPACT_QUERY);
@@ -38,3 +41,4 @@ export function useMediaQuery(query: string): boolean {
 
 export const useIsPhone = () => useMediaQuery(PHONE_QUERY);
 export const useIsCompact = () => useMediaQuery(COMPACT_QUERY);
+export const useReducedMotion = () => useMediaQuery(REDUCED_MOTION_QUERY);

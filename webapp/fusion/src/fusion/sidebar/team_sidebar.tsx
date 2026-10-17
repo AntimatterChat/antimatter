@@ -7,7 +7,6 @@ import {shallowEqual, useDispatch, useSelector, useStore} from 'react-redux';
 
 import type {Channel} from '@mattermost/types/channels';
 
-import {makeGetChannelIdsForCategory} from 'mattermost-redux/selectors/entities/channel_categories';
 import {makeGetChannel} from 'mattermost-redux/selectors/entities/channels';
 import {getCurrentTeam, getCurrentTeamId} from 'mattermost-redux/selectors/entities/teams';
 
@@ -17,7 +16,6 @@ import {isUnreadFilterEnabled} from 'selectors/views/channel_sidebar';
 import {useCallsOnTop} from 'fusion/calls/calls_on_top';
 import Icon from 'fusion/components/icon';
 import ServerMenu from 'fusion/popovers/server_menu';
-import {getHiddenDirectIds} from 'fusion/privacy/blocking';
 import {isKeybind} from 'fusion/shell/keybinds';
 import {a11yRegion} from 'fusion/utils/a11y_regions';
 import {am} from 'fusion/utils/class_names';
@@ -29,6 +27,7 @@ import Category from './category';
 import ChannelRow from './channel_row';
 import {useSidebarThreads} from './channel_threads';
 import DirectRow from './direct_row';
+import {makeGetDockChannelIds} from './dock_channels';
 import {getHiddenChannelIds} from './hidden';
 import HiddenSection from './hidden_section';
 import MoreUnreads from './more_unreads';
@@ -37,19 +36,16 @@ import UnreadCategory from './unread_category';
 import VoicePanel from './voice_panel';
 
 // The direct messages category is shown as a dock of open conversations at the bottom of the sidebar. All the
-// conversations open from the chat bubble at the top of the team rail.
+// conversations open from the chat bubble at the bottom of the team rail.
 function Dock() {
     const {formatMessage} = useIntl();
-    const categories = useSelector(getSidebarCategories);
-    const dmCategory = categories.find((c) => c.type === 'direct_messages');
 
-    // All the open conversations, unread or not: the Unreads section above the categories leaves them here.
-    const getChannelIds = useMemo(() => makeGetChannelIdsForCategory(), []);
-    const channelIds = useSelector((state: GlobalState) => (dmCategory ? getChannelIds(state, dmCategory) : []));
+    // All the open conversations, unread or not: the Unreads section above the categories leaves them here, and the
+    // team rail leaves them out of its unread bubbles.
+    const getDockChannelIds = useMemo(() => makeGetDockChannelIds(), []);
+    const channelIds = useSelector(getDockChannelIds);
     const getChannel = useMemo(() => makeGetChannel(), []);
-    const hidden = useSelector(getHiddenChannelIds);
-    const requestsAndBlocked = useSelector(getHiddenDirectIds);
-    const open = useSelector((state: GlobalState) => channelIds.filter((id) => !hidden.has(id) && !requestsAndBlocked.has(id)).map((id) => getChannel(state, id)).filter(Boolean) as Channel[], shallowEqual);
+    const open = useSelector((state: GlobalState) => channelIds.map((id) => getChannel(state, id)).filter(Boolean) as Channel[], shallowEqual);
 
     // A conversation with a call in progress stays on top while it lasts.
     const channels = useCallsOnTop(open);

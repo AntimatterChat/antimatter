@@ -23261,11 +23261,11 @@
   },
   "fusion.dock.all": {
     "defaultMessage": "All direct messages",
-    "description": "Tooltip and label of the chat bubble at the top of the community rail (far left), which opens the list of all your direct messages."
+    "description": "Tooltip and label of the chat bubble at the bottom of the community rail (far left), which opens the list of all your direct messages: a rail bubble of its own, or a small icon above the pictures of the conversations with unread messages."
   },
   "fusion.dock.allUnread": {
     "defaultMessage": "{label}, {count, plural, one {# unread message} other {# unread messages}}",
-    "description": "Screen reader label of the chat bubble at the top of the community rail when direct messages are unread: {label} is \"All direct messages\", {count} the number of unread messages."
+    "description": "Screen reader label of the chat bubble at the bottom of the community rail when direct messages are unread: {label} is \"All direct messages\", {count} the number of unread messages."
   },
   "fusion.dock.close": {
     "defaultMessage": "Close",
