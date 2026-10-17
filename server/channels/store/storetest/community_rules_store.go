@@ -95,13 +95,12 @@ func testCommunityRulesCountAcceptances(t *testing.T, rctx request.CTX, ss store
 	require.NoError(t, err)
 	member := func(deactivated, left bool) string {
 		t.Helper()
-		user, saveErr := ss.User().Save(rctx, &model.User{Email: MakeEmail(), Username: "u" + NewTestID()})
-		require.NoError(t, saveErr)
+		user := &model.User{Email: MakeEmail(), Username: model.NewUsername()}
 		if deactivated {
 			user.DeleteAt = model.GetMillis()
-			_, saveErr = ss.User().Update(rctx, user, true)
-			require.NoError(t, saveErr)
 		}
+		user, saveErr := ss.User().Save(rctx, user)
+		require.NoError(t, saveErr)
 		tm := &model.TeamMember{TeamId: team.Id, UserId: user.Id}
 		if left {
 			tm.DeleteAt = model.GetMillis()
@@ -114,7 +113,7 @@ func testCommunityRulesCountAcceptances(t *testing.T, rctx request.CTX, ss store
 	gone := member(true, false)
 	left := member(false, true)
 	botID := member(false, false)
-	_, err = ss.Bot().Save(&model.Bot{UserId: botID, Username: "b" + NewTestID(), OwnerId: ada})
+	_, err = ss.Bot().Save(&model.Bot{UserId: botID, Username: model.NewUsername(), OwnerId: ada})
 	require.NoError(t, err)
 
 	for _, id := range []string{ada, bob, gone, left, botID} {
