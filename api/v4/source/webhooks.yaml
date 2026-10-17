@@ -24,7 +24,7 @@
                     the webhook payloads.
                 user_id:
                   type: string
-                  description: The ID of the owner of the webhook if different than the requester. Required for [local mode](https://docs.mattermost.com/administration/mmctl-cli-tool.html#local-mode).
+                  description: The ID of the owner of the webhook if different than the requester. Required for [local mode](https://antimatter.chat/docs/admins/configuration.html#amctl).
                 display_name:
                   type: string
                   description: The display name for this incoming webhook
@@ -274,7 +274,7 @@
                   description: The ID of a public channel that the webhook watchs
                   type: string
                 creator_id:
-                  description: The ID of the owner of the webhook if different than the requester. Required in [local mode](https://docs.mattermost.com/administration/mmctl-cli-tool.html#local-mode).
+                  description: The ID of the owner of the webhook if different than the requester. Required in [local mode](https://antimatter.chat/docs/admins/configuration.html#amctl).
                   type: string
                 description:
                   description: The description for this outgoing webhook
@@ -292,7 +292,7 @@
                     present at all and `1` if the message starts with a trigger
                     word; `2` makes it a message action, picked from the message
                     menu, which never fires on posted messages and has no trigger
-                    words (Antimatter)
+                    words (Antimatter, see [Message actions](https://antimatter.chat/docs/developers/webhooks.html#message-actions))
                   type: integer
                 callback_urls:
                   description: The URLs to POST the payloads to when the webhook is
