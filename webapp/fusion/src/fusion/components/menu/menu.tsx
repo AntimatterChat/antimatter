@@ -9,6 +9,9 @@ import {am} from 'fusion/utils/class_names';
 
 type ItemProps = {
     icon?: IconName;
+
+    // An icon of its own instead of a Fusion one: an app's, in grey (MenuAppIcon).
+    glyph?: React.ReactNode;
     label: React.ReactNode;
     sub?: React.ReactNode;
     danger?: boolean;
@@ -16,22 +19,30 @@ type ItemProps = {
     checked?: boolean;
     role?: 'menuitem' | 'menuitemradio' | 'menuitemcheckbox';
     disabled?: boolean;
+
+    // The action it stands for (data-action), unique in its menu: what tests and the docs' screenshots find it by.
+    action?: string;
+
+    // For an item that shows its choices under it, in the menu (a mute's durations): whether they're shown.
+    expanded?: boolean;
     onClick?: (e: React.MouseEvent) => void;
     children?: React.ReactNode;
 };
 
 // MenuItem is a row of a .am-plus-pop menu.
-export function MenuItem({icon, label, sub, danger, accent, checked, role = 'menuitem', disabled, onClick, children}: ItemProps) {
+export function MenuItem({icon, glyph, label, sub, danger, accent, checked, role = 'menuitem', disabled, action, expanded, onClick, children}: ItemProps) {
     return (
         <button
             type='button'
             role={role}
             aria-checked={role === 'menuitem' ? undefined : Boolean(checked)}
+            aria-expanded={expanded}
+            data-action={action}
             className={am({danger, accent, cur: role === 'menuitemradio' && checked})}
             disabled={disabled}
             onClick={onClick}
         >
-            {icon && <Icon name={icon}/>}
+            {glyph || (icon && <Icon name={icon}/>)}
             {sub ? (
                 <span>
                     {label}

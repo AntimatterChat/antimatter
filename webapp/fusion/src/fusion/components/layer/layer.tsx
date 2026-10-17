@@ -58,6 +58,9 @@ type PopoverProps = {
     className: string;
     role?: string;
     label: string;
+
+    // The id of what describes it, read as it opens (a menu's header: the channel's purpose).
+    describedBy?: string;
     onClose: () => void;
     children: React.ReactNode;
     style?: React.CSSProperties;
@@ -153,7 +156,7 @@ function place(pop: HTMLElement, placement: Placement, anchor?: HTMLElement | nu
 
 // Popover is a floating .am-pop: placed next to its anchor, closed by Escape or a click elsewhere. On a phone it's a
 // sheet (.am-sheet) from the bottom of the screen instead, the whole width, as menus are in phone apps.
-export function Popover({anchor, point, placement = 'below', className, role = 'dialog', label, onClose, children, style, toggles, sheet: canSheet = true, onEscape}: PopoverProps) {
+export function Popover({anchor, point, placement = 'below', className, role = 'dialog', label, describedBy, onClose, children, style, toggles, sheet: canSheet = true, onEscape}: PopoverProps) {
     const ref = useRef<HTMLDivElement>(null);
     const [, setPlaced] = useState(false);
     const togglesRef = useRef(toggles);
@@ -228,6 +231,7 @@ export function Popover({anchor, point, placement = 'below', className, role = '
                 className={am('pop', className, {sheet})}
                 role={role}
                 aria-label={label}
+                aria-describedby={describedBy}
                 style={sheet ? style : {left: -9999, top: -9999, ...style}}
             >
                 {children}
