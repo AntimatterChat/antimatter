@@ -27,6 +27,7 @@ import type {NewMessagesSeparatorActionComponent} from 'types/store/plugins';
 const NO_SEPARATOR_ACTIONS: NewMessagesSeparatorActionComponent[] = [];
 
 import Message from './message';
+import {pageEdges} from './paging';
 import MessageTime, {useDayLabel} from './time';
 
 const PAGE = 60;
@@ -178,18 +179,18 @@ export default function MessageList({channelId, focusedPostId, scrollRef, emptyT
             return;
         }
         setLoadingOlder(true);
-        await dispatch(loadPosts({channelId, postId: realPostIds[0], type: PostRequestTypes.BEFORE_ID, perPage: PAGE}));
+        await dispatch(loadPosts({channelId, postId: pageEdges(items || []).oldest, type: PostRequestTypes.BEFORE_ID, perPage: PAGE}));
         setLoadingOlder(false);
-    }, [loadingOlder, chunk, realPostIds, channelId, dispatch]);
+    }, [loadingOlder, chunk, realPostIds, items, channelId, dispatch]);
 
     const loadNewer = useCallback(async () => {
         if (loadingNewer || chunk?.recent || !realPostIds.length) {
             return;
         }
         setLoadingNewer(true);
-        await dispatch(loadPosts({channelId, postId: realPostIds[realPostIds.length - 1], type: PostRequestTypes.AFTER_ID, perPage: PAGE}));
+        await dispatch(loadPosts({channelId, postId: pageEdges(items || []).newest, type: PostRequestTypes.AFTER_ID, perPage: PAGE}));
         setLoadingNewer(false);
-    }, [loadingNewer, chunk, realPostIds, channelId, dispatch]);
+    }, [loadingNewer, chunk, realPostIds, items, channelId, dispatch]);
 
     useEffect(() => {
         const view = scrollRef.current;
