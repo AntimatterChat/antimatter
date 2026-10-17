@@ -185,6 +185,8 @@ func TestDoAdvancedPermissionsMigration(t *testing.T) {
 			model.PermissionDeletePublicChannel.Id,
 			model.PermissionDeletePrivateChannel.Id,
 			model.PermissionManageTeamAIConnections.Id,
+			model.PermissionManageOwnAgent.Id,
+			model.PermissionManageOthersAgent.Id,
 			model.PermissionDeletePost.Id,
 			model.PermissionDeleteOthersPosts.Id,
 			model.PermissionAddBookmarkPublicChannel.Id,

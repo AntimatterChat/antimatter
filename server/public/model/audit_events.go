@@ -100,6 +100,11 @@ const (
 	AuditEventDeleteAIConnection                = "deleteAIConnection"                // delete a model connection
 	AuditEventTestAIConnection                  = "testAIConnection"                  // test a model connection's endpoint and key
 	AuditEventAICall                            = "aiCall"                            // a call to a model through the AI service (never its content)
+	AuditEventCreateAIAgent                     = "createAIAgent"                     // make an agent (server-wide or a community's)
+	AuditEventPatchAIAgent                      = "patchAIAgent"                      // change an agent's account or settings
+	AuditEventDeleteAIAgent                     = "deleteAIAgent"                     // delete an agent
+	AuditEventEnableAIAgent                     = "enableAIAgent"                     // turn an agent's account on
+	AuditEventDisableAIAgent                    = "disableAIAgent"                    // turn an agent's account off
 	AuditEventCreateCommunityAttribute          = "createCommunityAttribute"          // define a user attribute for a team's members
 	AuditEventPatchCommunityAttribute           = "patchCommunityAttribute"           // change a team's user attribute
 	AuditEventDeleteCommunityAttribute          = "deleteCommunityAttribute"          // delete a team's user attribute

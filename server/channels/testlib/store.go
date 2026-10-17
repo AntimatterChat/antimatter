@@ -119,6 +119,8 @@ func GetMockStoreForSetupFunctions() *mocks.Store {
 	systemStore.On("GetByName", model.MigrationKeyAddAIRecapsPermissions).Return(&model.System{Name: model.MigrationKeyAddAIRecapsPermissions, Value: "true"}, nil)
 	systemStore.On("GetByName", model.MigrationKeyAntimatterChannelArchiveRights).Return(&model.System{Name: model.MigrationKeyAntimatterChannelArchiveRights, Value: "true"}, nil)
 	systemStore.On("GetByName", model.MigrationKeyAntimatterAIConnectionPermissions).Return(&model.System{Name: model.MigrationKeyAntimatterAIConnectionPermissions, Value: "true"}, nil)
+	systemStore.On("GetByName", model.MigrationKeyAntimatterTeamAgentPermissions).Return(&model.System{Name: model.MigrationKeyAntimatterTeamAgentPermissions, Value: "true"}, nil)
+	systemStore.On("GetByName", "AntimatterAgentsFromBotsMigrationComplete").Return(&model.System{Name: "AntimatterAgentsFromBotsMigrationComplete", Value: "true"}, nil)
 
 	systemStore.On("InsertIfExists", mock.AnythingOfType("*model.System")).Return(&model.System{}, nil).Once()
 	systemStore.On("Save", mock.AnythingOfType("*model.System")).Return(nil)
@@ -160,6 +162,11 @@ func GetMockStoreForSetupFunctions() *mocks.Store {
 	propertyGroupStore := mocks.PropertyGroupStore{}
 	propertyFieldStore := mocks.PropertyFieldStore{}
 	propertyValueStore := mocks.PropertyValueStore{}
+
+	// Antimatter: no agents, so posts start no agent turns.
+	aiAgentStore := mocks.AIAgentStore{}
+	aiAgentStore.On("GetAll", mock.Anything).Return([]*model.AIAgent{}, nil)
+	agentActivityStore := mocks.AgentActivityStore{}
 
 	channelGuardStore := mocks.ChannelGuardStore{}
 	channelGuardStore.On("GetAll", mock.Anything).Return([]*store.ChannelGuard{}, nil)
@@ -244,6 +251,8 @@ func GetMockStoreForSetupFunctions() *mocks.Store {
 	mockStore.On("PropertyField").Return(&propertyFieldStore)
 	mockStore.On("PropertyValue").Return(&propertyValueStore)
 	mockStore.On("ChannelGuard").Return(&channelGuardStore)
+	mockStore.On("AIAgent").Return(&aiAgentStore)
+	mockStore.On("AgentActivity").Return(&agentActivityStore)
 	mockStore.On("LockToMaster").Return()
 	mockStore.On("UnlockFromMaster").Return()
 

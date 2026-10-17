@@ -93,8 +93,12 @@ func (a *App) EnsureBot(rctx request.CTX, pluginID string, bot *model.Bot) (stri
 
 // CreateBot creates the given bot and corresponding user.
 func (a *App) CreateBot(rctx request.CTX, bot *model.Bot) (*model.Bot, *model.AppError) {
-	// Antimatter: a bot made here (the REST API, an app) is a plain bot; agents are made through CreateAIAgent.
+	// Antimatter: a bot made here (the REST API, an app) is a plain bot; agents are made through CreateAIAgent. The AI
+	// chat app's bots (the Agents plugin's) are agents from the start, as the migration made the older ones.
 	bot.Kind = model.BotKindBot
+	if bot.OwnerId == model.AIAgentsPluginId {
+		bot.Kind = model.BotKindAgent
+	}
 	return a.createBotAccount(rctx, bot)
 }
 
@@ -409,6 +413,12 @@ func (a *App) IsBotExemptFromDMRestrictions(rctx request.CTX, userID string) (bo
 	// regardless of team membership (e.g. push notification tests, post
 	// reminders, content-flagging notifications, etc.)
 	if bot.IsSystemOwned() {
+		return true, nil
+	}
+
+	// Antimatter: agents are talked to like coworkers, whatever communities people share with them; who may talk to
+	// one is its own access setting.
+	if bot.IsAgent() {
 		return true, nil
 	}
 

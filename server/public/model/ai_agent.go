@@ -270,7 +270,8 @@ func (a *AIAgent) IsValid() *AppError {
 		if a.ConnectionId != "" || a.Model != "" || a.SystemPrompt != "" {
 			return aiAgentError("external")
 		}
-	} else if !IsValidId(a.ConnectionId) {
+	} else if !IsValidId(a.ConnectionId) && (a.ConnectionId != "" || a.NeedsAttention == "") {
+		// Only an agent that needs an admin's attention (one migrated without a connection) may have none.
 		return aiAgentError("connection_id")
 	}
 	if len(a.Model) > AIModelNameMaxLength || strings.ContainsAny(a.Model, "\r\n") {

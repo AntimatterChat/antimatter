@@ -1409,6 +1409,17 @@ func (a *App) getAntimatterAIConnectionPermissionsMigration() (permissionsMap, e
 	}, nil
 }
 
+// getAntimatterTeamAgentPermissionsMigration lets the community's admins manage their community's agents: the ones
+// they made and the others' (the agents' scope keeps them to their own community).
+func (a *App) getAntimatterTeamAgentPermissionsMigration() (permissionsMap, error) {
+	return permissionsMap{
+		permissionTransformation{
+			On:  isRole(model.TeamAdminRoleId),
+			Add: []string{model.PermissionManageOwnAgent.Id, model.PermissionManageOthersAgent.Id},
+		},
+	}, nil
+}
+
 // DoPermissionsMigrations execute all the permissions migrations need by the current version.
 func (a *App) DoPermissionsMigrations() error {
 	return a.Srv().doPermissionsMigrations()
@@ -1476,6 +1487,7 @@ func (s *Server) doPermissionsMigrations() error {
 		{Key: model.MigrationKeyAddAIRecapsPermissions, Migration: a.getAddAIRecapsPermissionsMigration},
 		{Key: model.MigrationKeyAntimatterChannelArchiveRights, Migration: a.getAntimatterChannelArchiveRightsMigration},
 		{Key: model.MigrationKeyAntimatterAIConnectionPermissions, Migration: a.getAntimatterAIConnectionPermissionsMigration},
+		{Key: model.MigrationKeyAntimatterTeamAgentPermissions, Migration: a.getAntimatterTeamAgentPermissionsMigration},
 	}
 
 	roles, err := s.Store().Role().GetAll()

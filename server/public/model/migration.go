@@ -76,4 +76,7 @@ const (
 	// Antimatter: system admins manage the server-wide model connections; the community's admins (team_admin) their
 	// community's own.
 	MigrationKeyAntimatterAIConnectionPermissions = "antimatter_ai_connection_permissions"
+
+	// Antimatter: the community's admins (team_admin) manage their community's agents, whoever made them.
+	MigrationKeyAntimatterTeamAgentPermissions = "antimatter_team_agent_permissions"
 )

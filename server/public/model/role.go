@@ -1101,6 +1101,9 @@ func MakeDefaultRoles() map[string]*Role {
 			PermissionDeletePrivateChannel.Id,
 			// Antimatter: the community's admins manage its own model connections.
 			PermissionManageTeamAIConnections.Id,
+			// Antimatter: and its agents, whoever made them.
+			PermissionManageOwnAgent.Id,
+			PermissionManageOthersAgent.Id,
 			PermissionDeletePost.Id,
 			PermissionDeleteOthersPosts.Id,
 			PermissionAddBookmarkPublicChannel.Id,

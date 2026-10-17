@@ -862,6 +862,13 @@ func (wc *WebConn) ShouldSendEventToGuest(msg *model.WebSocketEvent) bool {
 		userID = user.Id
 	case model.WebsocketEventNewUser:
 		userID = msg.GetData()["user_id"].(string)
+	case model.WebsocketEventAgentActivityChanged:
+		// Antimatter: a guest only hears of the agents they can see.
+		id, ok := msg.GetData()["user_id"].(string)
+		if !ok || id == "" {
+			return false
+		}
+		userID = id
 	default:
 		return true
 	}
@@ -1022,7 +1029,14 @@ func (wc *WebConn) ShouldSendEvent(msg *model.WebSocketEvent) bool {
 
 	// Only report events to users who are in the team for the event
 	if msg.GetBroadcast().TeamId != "" {
-		return wc.isMemberOfTeam(msg.GetBroadcast().TeamId)
+		if !wc.isMemberOfTeam(msg.GetBroadcast().TeamId) {
+			return false
+		}
+		// Antimatter: a community agent's activity goes to its community, and to a guest in it only for an agent the
+		// guest can see.
+		if msg.EventType() != model.WebsocketEventAgentActivityChanged {
+			return true
+		}
 	}
 
 	if wc.GetSession().Props[model.SessionPropIsGuest] == "true" {
